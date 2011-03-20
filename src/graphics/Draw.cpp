@@ -776,8 +776,7 @@ float duab,duac,dvab,dvac,s1,s2,s3;
 /*---------------------------------------------------------------------------------------------------------*/
 void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 {
-	float		du,dv;
-	int			nb;
+	float du, dv;
 
 	if(	(!ep->tv[0].color)&&
 		(!ep->tv[1].color)&&
@@ -791,87 +790,43 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 	du*=alpha;
 	dv*=alpha;
 	
-	if(g_pD3DApp->m_pDeviceInfo->wNbTextureSimultaneous>1)
+	D3DTLVERTEX2UV	v[4];
+	GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+	GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
+	GDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
+
+	GDevice->SetTexture(1,ep->tex->m_pddsBumpMap);
+	GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+	GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
+	GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
+	GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_ADDSIGNED);
+	GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
+	GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_DISABLE);
+	
+	*((D3DTLVERTEX*)(v))=ep->tv[0];
+	v->tu2=ep->tv[0].tu+du;
+	v->tv2=ep->tv[0].tv+dv;
+	*((D3DTLVERTEX*)(v+1))=ep->tv[1];
+	(v+1)->tu2=ep->tv[1].tu+du;
+	(v+1)->tv2=ep->tv[1].tv+dv;
+	*((D3DTLVERTEX*)(v+2))=ep->tv[2];
+	(v+2)->tu2=ep->tv[2].tu+du;
+	(v+2)->tv2=ep->tv[2].tv+dv;
+
+	if(ep->type&POLY_QUAD)
 	{
-		D3DTLVERTEX2UV	v[4];
-		GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-		GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-		GDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-
-		GDevice->SetTexture(1,ep->tex->m_pddsBumpMap);
-		GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-		GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
-		GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-		GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_ADDSIGNED);
-		GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-		GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_DISABLE);
-		
-		*((D3DTLVERTEX*)(v))=ep->tv[0];
-		v->tu2=ep->tv[0].tu+du;
-		v->tv2=ep->tv[0].tv+dv;
-		*((D3DTLVERTEX*)(v+1))=ep->tv[1];
-		(v+1)->tu2=ep->tv[1].tu+du;
-		(v+1)->tv2=ep->tv[1].tv+dv;
-		*((D3DTLVERTEX*)(v+2))=ep->tv[2];
-		(v+2)->tu2=ep->tv[2].tu+du;
-		(v+2)->tv2=ep->tv[2].tv+dv;
-
-		if(ep->type&POLY_QUAD)
-		{
-			*((D3DTLVERTEX*)(v+3))=ep->tv[3];
-			(v+3)->tu2=ep->tv[3].tu+du;
-			(v+3)->tv2=ep->tv[3].tv+dv;
-		
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 4, 0, EERIE_NOCOUNT );
-
-		}
-		else
-		{
-			
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 3, 0, EERIE_NOCOUNT );
-		}
-
-		GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
+		*((D3DTLVERTEX*)(v+3))=ep->tv[3];
+		(v+3)->tu2=ep->tv[3].tu+du;
+		(v+3)->tv2=ep->tv[3].tv+dv;
+	
+		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 4, 0, EERIE_NOCOUNT );
 	}
 	else
 	{
-		D3DTLVERTEX	v[4];
-		GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-		GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-		GDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-		
-		memcpy(v,ep->tv,3*sizeof(D3DTLVERTEX));
-
-		if(ep->type&POLY_QUAD)
-		{
-			v[3]=ep->tv[3];
-
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0, EERIE_NOCOUNT );
-			
-			v[3].tu+=du;
-			v[3].tv+=dv;
-			nb=4;
-		}
-		else
-		{
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, ep->tv, 3, 0, EERIE_NOCOUNT );
-			nb=3;
-		}
-
-		v[0].tu+=du;
-		v[0].tv+=dv;
-		v[1].tu+=du;
-		v[1].tv+=dv;
-		v[2].tu+=du;
-		v[2].tv+=dv;
-		
-		GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
-		GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-		GDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-				
-			EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX|D3DFVF_DIFFUSE, v, nb, 0, EERIE_NOCOUNT );
+		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 3, 0, EERIE_NOCOUNT );
 	}
 
+	GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 	GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
 	GDevice->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
 	GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);

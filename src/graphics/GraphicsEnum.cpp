@@ -685,6 +685,21 @@ HRESULT D3DEnum_SelectDefaultDevice(D3DEnum_DeviceInfo ** ppDevice,
 		return D3DENUMERR_NOCOMPATIBLEDEVICES;
 
 #endif
+
+	// Enforce support of at least 3 simultaneous textures (only cards released in the previous millenium supported less than that!)
+	if((*ppDevice)->wNbTextureSimultaneous < 3)
+	{
+		(*ppDevice) = NULL;
+		return D3DENUMERR_NOCOMPATIBLEDEVICES;
+	}
+
+	// Enforce support of DOTPRODUCT3 texture op...
+	if(!((*ppDevice)->dwTextureOpCaps & D3DTEXOPCAPS_DOTPRODUCT3))
+	{
+		(*ppDevice) = NULL;
+		return D3DENUMERR_NOCOMPATIBLEDEVICES;
+	}
+
 	// Set the windowed state of the newly selected device
 	(*ppDevice)->bWindowed = true;
 

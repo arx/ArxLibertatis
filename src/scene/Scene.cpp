@@ -1475,8 +1475,6 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 	//render all fx!!
 	GRenderer->SetCulling(Renderer::CullCW);
 
-	if(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous>3) danaeApp.m_pDeviceInfo->wNbTextureSimultaneous=3;
-
 	unsigned short iNbIndice = 0;
 	int iNb=vPolyWater.size();
 
@@ -1491,16 +1489,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 		SETTC(enviro);
 
-		int iNbTextureSim=danaeApp.m_pDeviceInfo->wNbTextureSimultaneous;
-
-		switch(iNbTextureSim)
-		{
-		case 3:
-			GDevice->SetTexture(2,enviro?enviro->m_pddsSurface?enviro->m_pddsSurface:NULL:NULL);
-		case 2:
-			GDevice->SetTexture(1,enviro?enviro->m_pddsSurface?enviro->m_pddsSurface:NULL:NULL);
-			break;
-		}
+		GDevice->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
+		
 
 		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 
@@ -1519,85 +1509,27 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 				if(pDynamicVertexBuffer->ussNbIndice)
 				{
-					switch(iNbTextureSim)
-					{
-					case 1:
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						
-						GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,1);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						
-						GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,2);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						break;
-					case 2:
-						GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-						GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-						GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-						GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
-						GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-						GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_DISABLE);
-						
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						
-						GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,2);
-						GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						break;
-					case 3:
-						GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-						GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-						GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-						GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
-						GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-						
-						GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
-						GDevice->SetTextureStageState(2,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-						GDevice->SetTextureStageState(2,D3DTSS_COLORARG2,D3DTA_CURRENT);
-						GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_MODULATE);
-						GDevice->SetTextureStageState(2,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-						GDevice->SetTextureStageState(3,D3DTSS_COLOROP,D3DTOP_DISABLE);
-						
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						break;
-					}
+					GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+					GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+					GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
+					GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
+					GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
 					
+					GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+					GDevice->SetTextureStageState(2,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+					GDevice->SetTextureStageState(2,D3DTSS_COLORARG2,D3DTA_CURRENT);
+					GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_MODULATE);
+					GDevice->SetTextureStageState(2,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
+					GDevice->SetTextureStageState(3,D3DTSS_COLOROP,D3DTOP_DISABLE);
+					
+					GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
+						pDynamicVertexBuffer->pVertexBuffer,
+						iOldNbVertex,
+						pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
+						pDynamicVertexBuffer->pussIndice,
+						pDynamicVertexBuffer->ussNbIndice,
+						0 );
+						
 					GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
 					GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 				}
@@ -1734,84 +1666,26 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		pDynamicVertexBuffer->UnLock();
 		if(pDynamicVertexBuffer->ussNbIndice)
 		{
-			switch(iNbTextureSim)
-			{
-			case 1:
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
+			GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+			GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+			GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
+			GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
+			GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
 			
-				GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,1);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				
-				GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,2);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				break;
-			case 2:
-				GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-				GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-				GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-				GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
-				GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-				GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_DISABLE);
+			GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+			GDevice->SetTextureStageState(2,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+			GDevice->SetTextureStageState(2,D3DTSS_COLORARG2,D3DTA_CURRENT);
+			GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_MODULATE);
+			GDevice->SetTextureStageState(2,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
+			GDevice->SetTextureStageState(3,D3DTSS_COLOROP,D3DTOP_DISABLE);
 
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				
-				GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,2);
-				GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				break;
-			case 3:
-				GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-				GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-				GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-				GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
-				GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-				
-				GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
-				GDevice->SetTextureStageState(2,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-				GDevice->SetTextureStageState(2,D3DTSS_COLORARG2,D3DTA_CURRENT);
-				GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_MODULATE);
-				GDevice->SetTextureStageState(2,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-				GDevice->SetTextureStageState(3,D3DTSS_COLOROP,D3DTOP_DISABLE);
-
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				break;
-			}
+			GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
+												pDynamicVertexBuffer->pVertexBuffer,
+												iOldNbVertex,
+												pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
+												pDynamicVertexBuffer->pussIndice,
+												pDynamicVertexBuffer->ussNbIndice,
+												0 );				
 
 			GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 			GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
@@ -1834,15 +1708,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 		SETTC(enviro);
 
-		switch(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous)
-		{
-		case 3:
-			GDevice->SetTexture(2,enviro?enviro->m_pddsSurface?enviro->m_pddsSurface:NULL:NULL);
-		case 2:
-			GDevice->SetTexture(1,enviro?enviro->m_pddsSurface?enviro->m_pddsSurface:NULL:NULL);
-			break;
-		}
-
+		GDevice->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
+		
 		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 
 		while(iNb--)
@@ -1863,115 +1730,37 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 				if(pDynamicVertexBuffer->ussNbIndice)
 				{
-					switch(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous)
-					{
-					case 1:
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
+					GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+					GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+					GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
+					GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
+					GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
+					
+					GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+					GDevice->SetTextureStageState(2,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+					GDevice->SetTextureStageState(2,D3DTSS_COLORARG2,D3DTA_CURRENT);
+					GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_MODULATE);
+					GDevice->SetTextureStageState(2,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
+					GDevice->SetTextureStageState(3,D3DTSS_COLOROP,D3DTOP_DISABLE);
+					
+					GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
+						pDynamicVertexBuffer->pVertexBuffer,
+						iOldNbVertex,
+						pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
+						pDynamicVertexBuffer->pussIndice,
+						pDynamicVertexBuffer->ussNbIndice,
+						0 );
+					
+					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+					GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
+					GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
+						pDynamicVertexBuffer->pVertexBuffer,
+						iOldNbVertex,
+						pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
+						pDynamicVertexBuffer->pussIndice,
+						pDynamicVertexBuffer->ussNbIndice,
+						0 );
 						
-						GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,1);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						
-						GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,2);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						
-						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						break;
-					case 2:
-						GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-						GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-						GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-						GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
-						GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-						GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_DISABLE);
-						
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						
-						GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,2);
-						GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						
-						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						break;
-					case 3:
-						GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-						GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-						GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-						GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
-						GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-						
-						GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
-						GDevice->SetTextureStageState(2,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-						GDevice->SetTextureStageState(2,D3DTSS_COLORARG2,D3DTA_CURRENT);
-						GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_MODULATE);
-						GDevice->SetTextureStageState(2,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-						GDevice->SetTextureStageState(3,D3DTSS_COLOROP,D3DTOP_DISABLE);
-						
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						
-						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-							pDynamicVertexBuffer->pVertexBuffer,
-							iOldNbVertex,
-							pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-							pDynamicVertexBuffer->pussIndice,
-							pDynamicVertexBuffer->ussNbIndice,
-							0 );
-						break;
-					}
-
 					GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 					GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
 				}
@@ -2079,115 +1868,37 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		{
 			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 			GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE2X);
-
-			switch(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous)
-			{
-			case 1:
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
 			
-				GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,1);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				
-				GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,2);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
+			GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+			GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+			GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
+			GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
+			GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
+			
+			GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+			GDevice->SetTextureStageState(2,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+			GDevice->SetTextureStageState(2,D3DTSS_COLORARG2,D3DTA_CURRENT);
+			GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_MODULATE);
+			GDevice->SetTextureStageState(2,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
+			GDevice->SetTextureStageState(3,D3DTSS_COLOROP,D3DTOP_DISABLE);
 
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				break;
-			case 2:
-				GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-				GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-				GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-				GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
-				GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-				GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_DISABLE);
+			GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
+												pDynamicVertexBuffer->pVertexBuffer,
+												iOldNbVertex,
+												pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
+												pDynamicVertexBuffer->pussIndice,
+												pDynamicVertexBuffer->ussNbIndice,
+												0 );
 
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				
-				GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,2);
-				GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				break;
-			case 3:
-				GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-				GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-				GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-				GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE4X);
-				GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-				
-				GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
-				GDevice->SetTextureStageState(2,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-				GDevice->SetTextureStageState(2,D3DTSS_COLORARG2,D3DTA_CURRENT);
-				GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_MODULATE);
-				GDevice->SetTextureStageState(2,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-				GDevice->SetTextureStageState(3,D3DTSS_COLOROP,D3DTOP_DISABLE);
-
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													pDynamicVertexBuffer->pVertexBuffer,
-													iOldNbVertex,
-													pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-													pDynamicVertexBuffer->pussIndice,
-													pDynamicVertexBuffer->ussNbIndice,
-													0 );
-				break;
-			}
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
+			GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
+												pDynamicVertexBuffer->pVertexBuffer,
+												iOldNbVertex,
+												pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
+												pDynamicVertexBuffer->pussIndice,
+												pDynamicVertexBuffer->ussNbIndice,
+												0 );
 
 			GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 			GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
@@ -3268,196 +2979,144 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			//BUMP
 			if( ( bALLOW_BUMP ) && ( pTexCurr->vPolyBump.size() ) )
 			{
-					//----------------------------------------------------------------------------------
-					//																		Initializing
-					CMY_DYNAMIC_VERTEXBUFFER* pDVB	=	pDynamicVertexBufferBump;
-					SetZBias( 0 );
-		
-					int				iOldNbVertex	=	pDVB->ussNbVertex;
-					pDVB->ussNbIndice				=	0;
-					SMY_D3DVERTEX3*	pVertex			=	(SMY_D3DVERTEX3*)pDVB->Lock( DDLOCK_NOOVERWRITE );
-					pVertex							+=	iOldNbVertex;
-					
-					unsigned short *pussInd			=	pDVB->pussIndice;
+				//----------------------------------------------------------------------------------
+				//																		Initializing
+				CMY_DYNAMIC_VERTEXBUFFER* pDVB	=	pDynamicVertexBufferBump;
+				SetZBias( 0 );
+	
+				int				iOldNbVertex	=	pDVB->ussNbVertex;
+				pDVB->ussNbIndice				=	0;
+				SMY_D3DVERTEX3*	pVertex			=	(SMY_D3DVERTEX3*)pDVB->Lock( DDLOCK_NOOVERWRITE );
+				pVertex							+=	iOldNbVertex;
+				
+				unsigned short *pussInd			=	pDVB->pussIndice;
 				unsigned short iNbIndice = 0;
+				
+				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
+				
+				GDevice->SetTexture( 0, pTexCurr->m_pddsBumpMap );
+				
+				GDevice->SetTexture( 1, pTexCurr->m_pddsBumpMap );
+				GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
+
+				GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+				GDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
+				
+				GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+				GDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
+				GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
+				GDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+				GDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
+				
+				//----------------------------------------------------------------------------------
+				//																				Loop
+				for( vector<EERIEPOLY*>::iterator iT = pTexCurr->vPolyBump.begin() ; iT < pTexCurr->vPolyBump.end() ; iT++ )
+				{
+					EERIEPOLY *pPoly			=	*iT;
+
+					if(	!pPoly->tv[0].color &&
+						!pPoly->tv[1].color &&
+						!pPoly->tv[2].color) continue;
+
+					float fDu,fDv;
+					EERIERTPPoly(pPoly);
+
+					CalculTriangleBump( pPoly->tv[0], pPoly->tv[1], pPoly->tv[2], &fDu, &fDv );
 					
-					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
-					
-					GDevice->SetTexture( 0, pTexCurr->m_pddsBumpMap );
-					int iSimultaneousTexture		=	danaeApp.m_pDeviceInfo->wNbTextureSimultaneous;
-
-					switch( iSimultaneousTexture )
-					{
-					default:
-						GDevice->SetTexture( 1, pTexCurr->m_pddsBumpMap );
-						GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
-
-						GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-						GDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-						
-						GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-						GDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-						GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
-						GDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-						GDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
-
-						break;
-					case 1:
-						GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-						GDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-						GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-						break;
-					}
+					fDu							*=	.8f;
+					fDv							*=	.8f;
+					const unsigned short iNbVertex	=	( pPoly->type & POLY_QUAD )?4:3;
+					pDVB->ussNbVertex			+=	iNbVertex;
 					
 					//----------------------------------------------------------------------------------
-					//																				Loop
-					for( vector<EERIEPOLY*>::iterator iT = pTexCurr->vPolyBump.begin() ; iT < pTexCurr->vPolyBump.end() ; iT++ )
+					//																			Flushing
+					if( pDVB->ussNbVertex > pDVB->ussMaxVertex )
 					{
-						EERIEPOLY *pPoly			=	*iT;
-
-						if(	!pPoly->tv[0].color &&
-							!pPoly->tv[1].color &&
-							!pPoly->tv[2].color) continue;
-
-						float fDu,fDv;
-						EERIERTPPoly(pPoly);
-
-						CalculTriangleBump( pPoly->tv[0], pPoly->tv[1], pPoly->tv[2], &fDu, &fDv );
+						pDVB->UnLock();
+						pDVB->ussNbVertex		-=	iNbVertex;
 						
-						fDu							*=	.8f;
-						fDv							*=	.8f;
-						const unsigned short iNbVertex	=	( pPoly->type & POLY_QUAD )?4:3;
-						pDVB->ussNbVertex			+=	iNbVertex;
-						
-						//----------------------------------------------------------------------------------
-						//																			Flushing
-						if( pDVB->ussNbVertex > pDVB->ussMaxVertex )
+						if( pDVB->ussNbIndice )
 						{
-							pDVB->UnLock();
-							pDVB->ussNbVertex		-=	iNbVertex;
-							
-							if( pDVB->ussNbIndice )
-							{
-							switch (iSimultaneousTexture) 
-								{
-								case 1:
-									GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-									GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-									
-									GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-																		pDVB->pVertexBuffer,
-																		iOldNbVertex,
-																		pDVB->ussNbVertex - iOldNbVertex,
-																		pDVB->pussIndice,
-																		pDVB->ussNbIndice,
-																		0 );
-									
-									GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1 );
-									GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-								default:
-									GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-																		pDVB->pVertexBuffer,
-																		iOldNbVertex,
-																		pDVB->ussNbVertex-iOldNbVertex,
-																		pDVB->pussIndice,
-																		pDVB->ussNbIndice,
-																		0 );
-									break;
-								}
-							}
-
-							pVertex				=	(SMY_D3DVERTEX3*)pDVB->Lock(DDLOCK_DISCARDCONTENTS);
-							pDVB->ussNbVertex	=	iNbVertex;
-							iOldNbVertex		=	iNbIndice			=	pDVB->ussNbIndice	=	0;
-							pussInd				=	pDVB->pussIndice;
-
-							ARX_CHECK( pDVB->ussNbVertex <= pDVB->ussMaxVertex );
-						}
-						
-						//----------------------------------------------------------------------------------
-						//																		  Filling VB
-						//Add 3 Vertices
-						for( short int idx = 0 ; idx < 3 ; ++idx )
-						{
-							pVertex->x			=	pPoly->v[idx].sx;
-							pVertex->y			=	-pPoly->v[idx].sy;
-							pVertex->z			=	pPoly->v[idx].sz;
-							pVertex->color		=	ARX_OPAQUE_WHITE;
-							pVertex->tu			=	pPoly->v[idx].tu;
-							pVertex->tv			=	pPoly->v[idx].tv;
-							pVertex->tu2		=	pPoly->v[idx].tu + fDu;
-							pVertex->tv2		=	pPoly->v[idx].tv + fDv;
-							pVertex++;
-						}
-						//Add Triangle 0-1-2 in Indices Tab
-						*pussInd++				=	iNbIndice++;
-						*pussInd++				=	iNbIndice++;
-						*pussInd++				=	iNbIndice++;
-						pDVB->ussNbIndice		+=	3;
-						
-						if(iNbVertex&4)
-						{
-							//Add vertex
-							pVertex->x			=	pPoly->v[3].sx;
-							pVertex->y			=	-pPoly->v[3].sy;
-							pVertex->z			=	pPoly->v[3].sz;
-							pVertex->color		=	ARX_OPAQUE_WHITE;//pPoly->tv[3].color;
-							pVertex->tu			=	pPoly->v[3].tu;
-							pVertex->tv			=	pPoly->v[3].tv;
-							pVertex->tu2		=	pPoly->v[3].tu + fDu;
-							pVertex->tv2		=	pPoly->v[3].tv + fDv;
-							pVertex++;
-							
-							//Add 2nd triangle 1-2-3
-							*pussInd++=iNbIndice++;
-							*pussInd++=iNbIndice-2;
-							*pussInd++=iNbIndice-3;
-							pDVB->ussNbIndice	+=	3;
-						}
-					}
-			
-					//----------------------------------------------------------------------------------
-					//																			 Drawing
-					pDVB->UnLock();
-					if( pDVB->ussNbIndice )
-					{
-						switch( iSimultaneousTexture )
-						{
-						case 1:
-							GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-							GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-							
-							GDevice->DrawIndexedPrimitiveVB(	
-																D3DPT_TRIANGLELIST,
+							GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 																pDVB->pVertexBuffer,
 																iOldNbVertex,
 																pDVB->ussNbVertex-iOldNbVertex,
 																pDVB->pussIndice,
 																pDVB->ussNbIndice,
 																0 );
-							
-							GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1 );
-							GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-						default:
-							GDevice->DrawIndexedPrimitiveVB(
-																D3DPT_TRIANGLELIST,
-																pDVB->pVertexBuffer,
-																iOldNbVertex,
-																pDVB->ussNbVertex-iOldNbVertex,
-																pDVB->pussIndice,
-																pDVB->ussNbIndice,
-																0 );
-							break;
 						}
-					}
 
+						pVertex				=	(SMY_D3DVERTEX3*)pDVB->Lock(DDLOCK_DISCARDCONTENTS);
+						pDVB->ussNbVertex	=	iNbVertex;
+						iOldNbVertex		=	iNbIndice			=	pDVB->ussNbIndice	=	0;
+						pussInd				=	pDVB->pussIndice;
+
+						ARX_CHECK( pDVB->ussNbVertex <= pDVB->ussMaxVertex );
+					}
+					
 					//----------------------------------------------------------------------------------
-					//																			  Ending
-					GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-					GDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-					GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-					GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-					GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
+					//																		  Filling VB
+					//Add 3 Vertices
+					for( short int idx = 0 ; idx < 3 ; ++idx )
+					{
+						pVertex->x			=	pPoly->v[idx].sx;
+						pVertex->y			=	-pPoly->v[idx].sy;
+						pVertex->z			=	pPoly->v[idx].sz;
+						pVertex->color		=	ARX_OPAQUE_WHITE;
+						pVertex->tu			=	pPoly->v[idx].tu;
+						pVertex->tv			=	pPoly->v[idx].tv;
+						pVertex->tu2		=	pPoly->v[idx].tu + fDu;
+						pVertex->tv2		=	pPoly->v[idx].tv + fDv;
+						pVertex++;
+					}
+					//Add Triangle 0-1-2 in Indices Tab
+					*pussInd++				=	iNbIndice++;
+					*pussInd++				=	iNbIndice++;
+					*pussInd++				=	iNbIndice++;
+					pDVB->ussNbIndice		+=	3;
+					
+					if(iNbVertex&4)
+					{
+						//Add vertex
+						pVertex->x			=	pPoly->v[3].sx;
+						pVertex->y			=	-pPoly->v[3].sy;
+						pVertex->z			=	pPoly->v[3].sz;
+						pVertex->color		=	ARX_OPAQUE_WHITE;//pPoly->tv[3].color;
+						pVertex->tu			=	pPoly->v[3].tu;
+						pVertex->tv			=	pPoly->v[3].tv;
+						pVertex->tu2		=	pPoly->v[3].tu + fDu;
+						pVertex->tv2		=	pPoly->v[3].tv + fDv;
+						pVertex++;
+						
+						//Add 2nd triangle 1-2-3
+						*pussInd++=iNbIndice++;
+						*pussInd++=iNbIndice-2;
+						*pussInd++=iNbIndice-3;
+						pDVB->ussNbIndice	+=	3;
+					}
+				}
+		
+				//----------------------------------------------------------------------------------
+				//																			 Drawing
+				pDVB->UnLock();
+				if( pDVB->ussNbIndice )
+				{
+					GDevice->DrawIndexedPrimitiveVB(D3DPT_TRIANGLELIST,
+													pDVB->pVertexBuffer,
+													iOldNbVertex,
+													pDVB->ussNbVertex-iOldNbVertex,
+													pDVB->pussIndice,
+													pDVB->ussNbIndice,
+													0 );
+				}
+
+				//----------------------------------------------------------------------------------
+				//																			  Ending
+				GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+				GDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+				GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+				GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+				GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
 
 				//Flushing vector
 				pTexCurr->vPolyBump.clear();

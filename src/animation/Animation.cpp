@@ -1074,26 +1074,16 @@ void PopOneInterBump(TextureContainer *_pTex)
 		//																		Initializing
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
 		GDevice->SetTexture( 0, _pTex->m_pddsBumpMap );
-
-		switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
-		{
-		default:
-			GDevice->SetTexture( 1, _pTex->m_pddsBumpMap );
-			GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
-			GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-			GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-			GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
-			GDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-			GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
-			GDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-			GDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
-			break;
-		case 1:
-			GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-			GDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-			GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-			break;
-		}
+		GDevice->SetTexture( 1, _pTex->m_pddsBumpMap );
+		GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
+		GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+		GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+		GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
+		GDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
+		GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
+		GDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+		GDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
+			
 
 		//----------------------------------------------------------------------------------
 		//																				Loop
@@ -1127,29 +1117,12 @@ void PopOneInterBump(TextureContainer *_pTex)
 				//																			Flushing
 				iNbD3DTLVERTEXTab-=3;
 				
-				switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
-				{
-				case 1:
-					GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-					GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-
-					EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
-									FVF_D3DVERTEX3_T,
-									tD3DTLVERTEXTab,
-									iNbD3DTLVERTEXTab,
-									0, 0 );
+				EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
+								FVF_D3DVERTEX3_T,
+								tD3DTLVERTEXTab,
+								iNbD3DTLVERTEXTab,
+								0, 0 );
 			
-					GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1 );
-					GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-				default:
-					EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
-									FVF_D3DVERTEX3_T,
-									tD3DTLVERTEXTab,
-									iNbD3DTLVERTEXTab,
-									0, 0 );
-					break;
-				}
-
 				iNbD3DTLVERTEXTab	=	3;
 				pVertex				=	tD3DTLVERTEXTab;
 			}
@@ -1173,28 +1146,11 @@ void PopOneInterBump(TextureContainer *_pTex)
 		//																	Drawing BUMP tex
 		if( iNbD3DTLVERTEXTab )
 		{
-			switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
-			{
-			case 1:
-				GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-				GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-				
-				EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
-								FVF_D3DVERTEX3_T,
-								tD3DTLVERTEXTab,
-								iNbD3DTLVERTEXTab,
-								0, 0 );
-				
-				GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1);
-				GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-			default:
-				EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
-								FVF_D3DVERTEX3_T,
-								tD3DTLVERTEXTab,
-								iNbD3DTLVERTEXTab,
-								0, 0 );
-				break;
-			}
+			EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
+							FVF_D3DVERTEX3_T,
+							tD3DTLVERTEXTab,
+							iNbD3DTLVERTEXTab,
+							0, 0 );
 
 			iNbD3DTLVERTEXTab	=	0;
 		}
