@@ -54,13 +54,15 @@ const D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
 
 const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
 						D3DRENDERSTATE_ALPHABLENDENABLE,	// AlphaBlending,
-						D3DRENDERSTATE_ZENABLE,				// DepthTest
-						D3DRENDERSTATE_ZWRITEENABLE,		// DepthWrite
-						D3DRENDERSTATE_FOGENABLE,			// Fog
-						D3DRENDERSTATE_LIGHTING             // Lighting,
+						D3DRENDERSTATE_COLORKEYENABLE,		// ColorKey,
+						D3DRENDERSTATE_ZENABLE,				// DepthTest,
+						D3DRENDERSTATE_ZWRITEENABLE,		// DepthWrite,
+						D3DRENDERSTATE_FOGENABLE,			// Fog,
+						D3DRENDERSTATE_LIGHTING,            // Lighting,
+						D3DRENDERSTATE_ZBIAS				// ZBias
                                         };
                    
-const unsigned int ARXToDXPixelCompareFunc[] = {
+const D3DCMPFUNC ARXToDXPixelCompareFunc[] = {
 						D3DCMP_NEVER,                       // CmpNever,
 						D3DCMP_LESS,                        // CmpLess,
 						D3DCMP_EQUAL,                       // CmpEqual,
@@ -71,7 +73,7 @@ const unsigned int ARXToDXPixelCompareFunc[] = {
 						D3DCMP_ALWAYS                       // CmpAlways
                                         };
 
-const unsigned int ARXToDXPixelBlendingFactor[] =  {
+const D3DBLEND ARXToDXPixelBlendingFactor[] =  {
 						D3DBLEND_ZERO,                      // BlendZero,
 						D3DBLEND_ONE,                       // BlendOne,
 						D3DBLEND_SRCCOLOR,                  // BlendSrcColor,
@@ -85,10 +87,16 @@ const unsigned int ARXToDXPixelBlendingFactor[] =  {
 						D3DBLEND_INVDESTALPHA               // BlendInvDstAlpha    
                                             };
 
-const unsigned int ARXToDXCullMode[] = {
+const D3DCULL ARXToDXCullMode[] = {
 						D3DCULL_NONE,						// CullNone,
 						D3DCULL_CW,							// CullCW,
 						D3DCULL_CCW							// CullCCW,
+										};
+
+const D3DFILLMODE ARXToDXFillMode[] = {
+						D3DFILL_POINT,						// FillPoint,
+						D3DFILL_WIREFRAME,					// FillWireframe,
+						D3DFILL_SOLID						// FillSolid,
 										};
 
 const D3DFOGMODE ARXToDXFogMode[] = {
@@ -615,6 +623,16 @@ void Renderer::SetCulling(Renderer::CullingMode mode)
 	GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, ARXToDXCullMode[mode]);
 }
 
+void Renderer::SetDepthBias(int depthBias)
+{
+	GDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, depthBias);
+}
+
+void Renderer::SetFillMode(Renderer::FillMode mode)
+{
+	GDevice->SetRenderState(D3DRENDERSTATE_FILLMODE, ARXToDXFillMode[mode]);
+}
+
 void DX7MatrixIdentity(D3DMATRIX *pout)
 {
 	pout->_11 = 1;
@@ -695,6 +713,24 @@ void Renderer::SetFogParams(Renderer::FogMode fogMode, float fogStart, float fog
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGSTART,	*((LPDWORD) (&fogStart)));
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGEND,		*((LPDWORD) (&fogEnd)));
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGDENSITY,  *((LPDWORD) (&fogDensity)));
+}
+
+void Renderer::SetAntialiasing(bool enable)
+{
+	if(enable)
+	{
+		D3DDEVICEDESC7 ddDesc;
+		GDevice->GetCaps(&ddDesc);
+
+		if(ddDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASSORTINDEPENDENT)
+			GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTINDEPENDENT);
+		else if(ddDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASSORTDEPENDENT)
+			GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTDEPENDENT);
+	}
+	else
+	{
+		GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_NONE);
+	}
 }
 
 unsigned int Renderer::GetTextureStageCount() const

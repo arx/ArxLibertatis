@@ -16,10 +16,12 @@ public:
 	enum RenderState
     {
         AlphaBlending,
+		ColorKey,
 		DepthTest,
 		DepthWrite,
         Fog,
-		Lighting		
+		Lighting,
+		ZBias
     };
 
 	//! Pixel comparison functions
@@ -57,6 +59,13 @@ public:
         CullNone,
         CullCW,
         CullCCW
+    };
+
+	enum FillMode
+    {
+        FillPoint,
+        FillWireframe,
+        FillSolid
     };
 
 	//! Fog
@@ -108,9 +117,6 @@ public:
     void SetViewport(const Viewport& viewport);
     Viewport GetViewport();
 
-	// Culling & Clipping
-	void SetCulling(CullingMode mode);
-	
 	// Projection
 	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
     void End2DProjection();
@@ -121,7 +127,13 @@ public:
 	// Fog
 	void SetFogColor(COLORREF color);
 	void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
-
+		
+	// Rasterizer
+	void SetAntialiasing(bool enable);
+	void SetCulling(CullingMode mode);
+	void SetDepthBias(int depthBias);
+	void SetFillMode(FillMode mode);
+	
 	// Texturing
 	unsigned int GetTextureStageCount() const;
 	TextureStage* GetTextureStage(unsigned int textureStage);

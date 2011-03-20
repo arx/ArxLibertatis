@@ -123,7 +123,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
-	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+	GRenderer->SetRenderState(Renderer::ColorKey, false);
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
@@ -144,7 +144,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 	Project.vsync = 1;
 
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+	GRenderer->SetRenderState(Renderer::ColorKey, true);
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
 }
@@ -155,7 +155,7 @@ void ARX_INTERFACE_ShowARKANE()
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
-	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+	GRenderer->SetRenderState(Renderer::ColorKey, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
@@ -183,7 +183,7 @@ void ARX_INTERFACE_ShowARKANE()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+	GRenderer->SetRenderState(Renderer::ColorKey, true);
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
 }
@@ -271,7 +271,7 @@ void LoadLevelScreen(long num)
 		if (danaeApp.DANAEStartRender())
 		{
 
-			GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+			GRenderer->SetRenderState(Renderer::ColorKey, false);
 
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetCulling(Renderer::CullNone);
@@ -317,7 +317,7 @@ void LoadLevelScreen(long num)
 
 			if (pbar)
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+				GRenderer->SetRenderState(Renderer::ColorKey, true);
 
 				if (num == 10)
 				{
@@ -346,7 +346,7 @@ void LoadLevelScreen(long num)
 					EERIEDrawBitmap_uv( px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1);
 				}
 
-				GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+				GRenderer->SetRenderState(Renderer::ColorKey, false);
 			}
 
 			danaeApp.DANAEEndRender();

@@ -252,13 +252,8 @@ HRESULT Cinematic::New()
 //*************************************************************************************
 HRESULT Cinematic::InitDeviceObjects()
 {
-	D3DMATERIAL7 mtrl;
-	D3DUtil_InitMaterial(mtrl, 1.f, 1.f, 1.f);
-	GDevice->SetMaterial(&mtrl);
-
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, true);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
 
@@ -323,15 +318,8 @@ HRESULT Cinematic::InitDeviceObjects()
 
 HRESULT Cinematic::DeleteDeviceObjects()
 {
-	// Setup Base Material
-	D3DMATERIAL7 mtrl;
-	D3DUtil_InitMaterial(mtrl, 1.f, 1.f, 1.f);
-	GDevice->SetMaterial(&mtrl);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	// Setup Dither Mode
-	GDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, false);
-
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
 
@@ -554,7 +542,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		if (DrawLine)
 		{
 			SETTC(NULL);
-			GDevice->SetRenderState(D3DRENDERSTATE_FILLMODE, D3DFILL_WIREFRAME);
+			GRenderer->SetFillMode(Renderer::FillWireframe);
 			GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 			                             D3DFVF_TLVERTEX,
 			                             AllD3DTLVertex,
@@ -562,7 +550,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			                             ((unsigned short *)grille->inds) + mat->startind,
 			                             mat->nbind,
 			                             0);
-			GDevice->SetRenderState(D3DRENDERSTATE_FILLMODE, D3DFILL_SOLID);
+			GRenderer->SetFillMode(Renderer::FillSolid);
 		}
 
 		mat++;

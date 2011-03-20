@@ -1499,7 +1499,7 @@ void SETTC(TextureContainer * tc)
 	{
 		if ( tc->bColorKey )
 		{
-			GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+			GRenderer->SetRenderState(Renderer::ColorKey, true);
 
 			if (	(Project.bits == 16) &&
 			        (!tc->bColorKey2D)	 )
@@ -1509,7 +1509,7 @@ void SETTC(TextureContainer * tc)
 		}
 		else
 		{
-			GDevice->SetRenderState( D3DRENDERSTATE_COLORKEYENABLE, false );
+			GRenderer->SetRenderState(Renderer::ColorKey, false );
 		}
 		GDevice->SetTexture(0, tc->m_pddsSurface);
 	}

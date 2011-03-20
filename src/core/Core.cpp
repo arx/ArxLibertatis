@@ -7388,55 +7388,18 @@ void ShowFPS()
 
 void ARX_SetAntiAliasing()
 {
-	if(	(pMenuConfig)&&
-		(pMenuConfig->bAntiAliasing) )
-	{
-		D3DDEVICEDESC7 devicedesc7;
-		GDevice->GetCaps(&devicedesc7);
-
-		if(devicedesc7.dpcTriCaps.dwRasterCaps&D3DPRASTERCAPS_ANTIALIASSORTINDEPENDENT)
-		{
-			if( FAILED( GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS,D3DANTIALIAS_SORTINDEPENDENT) ) )
-			{
-
-			}
-		}
-		else
-		{
-			if(devicedesc7.dpcTriCaps.dwRasterCaps&D3DPRASTERCAPS_ANTIALIASSORTDEPENDENT)
-			{
-				GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS,D3DANTIALIAS_SORTDEPENDENT);
-			}
-		}
-	}
-	else
-	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS,D3DANTIALIAS_NONE);
-	}
+	GRenderer->SetAntialiasing(pMenuConfig && pMenuConfig->bAntiAliasing);
 }
-
-
 
 HRESULT DANAE::InitDeviceObjects()
 {
-	// Setup Base Material
-	D3DMATERIAL7 mtrl;
-	D3DUtil_InitMaterial( mtrl, 1.f, 0.f, 0.f );
-	GDevice->SetMaterial( &mtrl );
-	
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	
-	// Setup Ambient Color RenderState
-	GDevice->SetRenderState( D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a );
 	
 	// Restore All Textures RenderState
 	ReloadAllTextures();
 	ARX_PLAYER_Restore_Skin();
 	
-	// Setup Specular RenderState
-	GDevice->SetRenderState( D3DRENDERSTATE_SPECULARENABLE, false );
-
 	// Disable Lighting RenderState
 	GRenderer->SetRenderState(Renderer::Lighting, false);
 

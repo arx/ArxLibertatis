@@ -1361,8 +1361,10 @@ void SetZBias(int _iZBias)
 		_iZBias = max(iCurrZBias, -_iZBias);
 	}
 
-	if (_iZBias == iCurrZBias) return;
+	if (_iZBias == iCurrZBias) 
+		return;
 
 	iCurrZBias = _iZBias;
-	GDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, iCurrZBias);
+
+	GRenderer->SetDepthBias(iCurrZBias);
 }
