@@ -693,8 +693,8 @@ HRESULT D3DEnum_SelectDefaultDevice(D3DEnum_DeviceInfo ** ppDevice,
 		return D3DENUMERR_NOCOMPATIBLEDEVICES;
 	}
 
-	// Enforce support of DOTPRODUCT3 texture op...
-	if(!((*ppDevice)->dwTextureOpCaps & D3DTEXOPCAPS_DOTPRODUCT3))
+	// Enforce support of the ADDSIGNED texture op...
+	if(!((*ppDevice)->dwTextureOpCaps & D3DTEXOPCAPS_ADDSIGNED))
 	{
 		(*ppDevice) = NULL;
 		return D3DENUMERR_NOCOMPATIBLEDEVICES;

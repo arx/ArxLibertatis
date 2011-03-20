@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-extern long EERIE_USES_BUMP_MAP;
+extern bool EERIE_USES_BUMP_MAP;
 #define MAX_MIPS 2
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 void ReleaseAllTCWithFlag(long flag);
