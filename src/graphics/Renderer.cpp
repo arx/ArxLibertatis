@@ -12,15 +12,19 @@ extern LPDIRECT3DDEVICE7 GDevice;
 // ARXToDX7 mapping tables - MOVE THAT SOMEWHERE ELSE!
 ///////////////////////////////////////////////////////////////////////////////
 const D3DTEXTUREOP ARXToDX7TextureOp[] = {
-						D3DTOP_SELECTARG1,					// TexOpSelectArg1,
-						D3DTOP_SELECTARG2,					// TexOpSelectArg2,
-						D3DTOP_MODULATE						// TexOpModulate
+						D3DTOP_DISABLE,						// OpDisable
+						D3DTOP_SELECTARG1,					// OpSelectArg1,
+						D3DTOP_SELECTARG2,					// OpSelectArg2,
+						D3DTOP_MODULATE,					// OpModulate,
+						D3DTOP_MODULATE2X,					// OpModulate2X,
+						D3DTOP_MODULATE4X,					// OpModulate4X,
+						D3DTOP_ADDSIGNED					// OpAddSigned
 									};
 
 const DWORD ARXToDX7TextureArg[] = {
-						D3DTA_CURRENT,						// TexArgCurrent,
 						D3DTA_DIFFUSE,						// TexArgDiffuse,
-						D3DTA_TEXTURE,						// TexArgTexture
+						D3DTA_CURRENT,						// TexArgCurrent,						
+						D3DTA_TEXTURE,						// TexArgTexture,
 									};
 
 const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
@@ -450,7 +454,9 @@ public:
 	void ResetTexture();
 
 	void SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2);
+	void SetColorOp(TextureOp textureOp);
 	void SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2);
+	void SetAlphaOp(TextureOp textureOp);
 };
 
 DX7TextureStage::DX7TextureStage(unsigned int textureStage)
@@ -458,28 +464,66 @@ DX7TextureStage::DX7TextureStage(unsigned int textureStage)
 {
 }
 
+void DX7TextureStage::SetColorOp(TextureOp textureOp)
+{
+	// TODO-DX7: Cache states
+	DWORD colorOp = ARXToDX7TextureOp[textureOp];
+	GDevice->SetTextureStageState(mStage, D3DTSS_COLOROP, colorOp);
+}
+
 void DX7TextureStage::SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2)
 {
 	// TODO-DX7: Cache states
 	DWORD colorOp = ARXToDX7TextureOp[textureOp];
-	DWORD colorArg1 = ARXToDX7TextureArg[texArg1];
-	DWORD colorArg2 = ARXToDX7TextureArg[texArg2];
+	GDevice->SetTextureStageState(mStage, D3DTSS_COLOROP, colorOp);
 
-	GDevice->SetTextureStageState(mStage, D3DTSS_COLOROP,   colorOp);
-	GDevice->SetTextureStageState(mStage, D3DTSS_COLORARG1, colorArg1);
-	GDevice->SetTextureStageState(mStage, D3DTSS_COLORARG2, colorArg2);
+	if(textureOp != TextureStage::OpDisable)
+	{
+		if(textureOp != TextureStage::OpSelectArg2)
+		{
+			DWORD colorArg1 = ARXToDX7TextureArg[texArg1 & TextureStage::ArgMask];
+			colorArg1 |= (texArg1 & TextureStage::ArgComplement) ? D3DTA_COMPLEMENT : 0;
+			GDevice->SetTextureStageState(mStage, D3DTSS_COLORARG1, colorArg1);
+		}
+
+		if(textureOp != TextureStage::OpSelectArg1)
+		{
+			DWORD colorArg2 = ARXToDX7TextureArg[texArg2 & TextureStage::ArgMask];
+			colorArg2 |= (texArg2 & TextureStage::ArgComplement) ? D3DTA_COMPLEMENT : 0;
+			GDevice->SetTextureStageState(mStage, D3DTSS_COLORARG2, colorArg2);
+		}
+	}
+}
+
+void DX7TextureStage::SetAlphaOp(TextureOp textureOp)
+{
+	// TODO-DX7: Cache states
+	DWORD colorOp = ARXToDX7TextureOp[textureOp];
+	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAOP, colorOp);
 }
 
 void DX7TextureStage::SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2)
 {
 	// TODO-DX7: Cache states
 	DWORD alphaOp = ARXToDX7TextureOp[textureOp];
-	DWORD alphaArg1 = ARXToDX7TextureArg[texArg1];
-	DWORD alphaArg2 = ARXToDX7TextureArg[texArg2];
+	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAOP, alphaOp);
 
-	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAOP,   alphaOp);
-	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG1, alphaArg1);
-	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG2, alphaArg2);
+	if(textureOp != TextureStage::OpDisable)
+	{
+		if(textureOp != TextureStage::OpSelectArg2)
+		{
+			DWORD alphaArg1 = ARXToDX7TextureArg[texArg1 & TextureStage::ArgMask];
+			alphaArg1 |= (texArg1 & TextureStage::ArgComplement) ? D3DTA_COMPLEMENT : 0;
+			GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG1, alphaArg1);
+		}
+
+		if(textureOp != TextureStage::OpSelectArg1)
+		{
+			DWORD alphaArg2 = ARXToDX7TextureArg[texArg2 & TextureStage::ArgMask];
+			alphaArg2 |= (texArg2 & TextureStage::ArgComplement) ? D3DTA_COMPLEMENT : 0;
+			GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG2, alphaArg2);
+		}
+	}
 }
 
 void DX7TextureStage::SetTexture( Texture& pTexture )

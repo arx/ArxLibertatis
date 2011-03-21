@@ -7405,8 +7405,9 @@ HRESULT DANAE::InitDeviceObjects()
 
 	// Setup Texture Border RenderState
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
-	GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 
+	GRenderer->GetTextureStage(1)->DisableColor();
+	
 	// Fog
 	float fogEnd = 0.48f;
 	float fogStart = fogEnd * 0.65f;

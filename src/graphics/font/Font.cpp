@@ -140,8 +140,8 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	GRenderer->Begin2DProjection( viewport.x, viewport.x + viewport.width, viewport.y + viewport.height, viewport.y, -1, 1 );
 
 	// Fixed pipeline texture stage operation
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::TexOpSelectArg1, TextureStage::TexArgDiffuse, TextureStage::TexArgCurrent);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::TexOpSelectArg1, TextureStage::TexArgTexture, TextureStage::TexArgCurrent);
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
 
     float penX = x;
     float penY = y;
@@ -191,8 +191,8 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 
     GRenderer->ResetTexture(0);
 
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::TexOpModulate, TextureStage::TexArgTexture, TextureStage::TexArgCurrent);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::TexOpSelectArg1, TextureStage::TexArgTexture, TextureStage::TexArgCurrent);
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
 	
     GRenderer->End2DProjection();
     GRenderer->SetRenderState( Renderer::AlphaBlending, false );

@@ -791,17 +791,16 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 	dv*=alpha;
 	
 	D3DTLVERTEX2UV	v[4];
-	GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-	GDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
 
-	GDevice->SetTexture(1,ep->tex->m_pddsBumpMap);
-	GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-	GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
-	GDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-	GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_ADDSIGNED);
-	GDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-	GDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_DISABLE);
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
+
+	GDevice->SetTexture(1, ep->tex->m_pddsBumpMap);
+	GDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
+	
+	GRenderer->GetTextureStage(0)->DisableAlpha();
+	GRenderer->GetTextureStage(1)->DisableAlpha();
+	GRenderer->GetTextureStage(2)->DisableColor();
 	
 	*((D3DTLVERTEX*)(v))=ep->tv[0];
 	v->tu2=ep->tv[0].tu+du;
@@ -826,13 +825,10 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 3, 0, EERIE_NOCOUNT );
 	}
 
-	GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
-	GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	GDevice->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
-	GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	GDevice->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
-	GDevice->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE);
-	GDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);
+	
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(1)->DisableColor();
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false); 

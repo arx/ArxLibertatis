@@ -1076,14 +1076,11 @@ void PopOneInterBump(TextureContainer *_pTex)
 		GDevice->SetTexture( 0, _pTex->m_pddsBumpMap );
 		GDevice->SetTexture( 1, _pTex->m_pddsBumpMap );
 		GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
-		GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-		GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-		GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
-		GDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-		GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
-		GDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-		GDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
-			
+		
+		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
+		GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
+		GRenderer->GetTextureStage(1)->DisableAlpha();
+		GRenderer->GetTextureStage(2)->DisableColor();
 
 		//----------------------------------------------------------------------------------
 		//																				Loop
@@ -1157,10 +1154,8 @@ void PopOneInterBump(TextureContainer *_pTex)
 
 		//----------------------------------------------------------------------------------
 		//																			  Ending
-		GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		GDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-		GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+		GRenderer->GetTextureStage(1)->DisableColor();
 		GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
 		_pTex->vPolyInterBump.clear();
 	}

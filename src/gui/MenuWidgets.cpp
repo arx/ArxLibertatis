@@ -579,8 +579,6 @@ void CMenuConfig::First()
 	bChangeTextures = false;
 	bNoReturnToWindows=false;
 	bLinkMouseLookToUse=false;
-
-	bForceMetalTwoPass=false;
 	bForceZBias=false;
 
 	SetDefaultKey();
@@ -1159,7 +1157,6 @@ bool CMenuConfig::SaveAll()
 	//misc
 	bOk&=WriteConfigInt("MISC","softfog",(bATI)?1:0);
 	bOk&=WriteConfigInt("MISC","forcenoeax",(bForceNoEAX)?1:0);
-	bOk&=WriteConfigInt("MISC","forcemetaltwopass",(bForceMetalTwoPass)?1:0);
 	bOk&=WriteConfigInt("MISC","forcezbias",(bForceZBias)?1:0);
 	bOk&=WriteConfigInt("MISC","newcontrol",(INTERNATIONAL_MODE)?1:0);
 	bOk&=WriteConfigInt("MISC","forcetoggle",(bOneHanded)?1:0);
@@ -1633,18 +1630,6 @@ bool CMenuConfig::ReadAll()
 	else
 	{
 		bForceNoEAX=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcemetaltwopass",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceMetalTwoPass=false;
-	}
-	else
-	{
-		bForceMetalTwoPass=(iTemp)?true:false;
 	}
 
 	iTemp=ReadConfigInt("MISC","forcezbias",bOkTemp);

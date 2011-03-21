@@ -160,11 +160,8 @@ bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float cu
 
 	if (FlashAlpha == 0.f) FlashAlpha = 1.f;
 
-	GDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-	GDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-	GDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-	GDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgDiffuse);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 
 	col = (int)(255.f * FlashAlpha);
@@ -211,11 +208,9 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 	dv = (float)0.99999f * (h - 1) / mask->m_dwHeight;
 
 	//tracer du mask
-	GDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	GDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	GDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-	GDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
+	
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->DisableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendZero);
 
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
@@ -254,11 +249,8 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
 
-	//empty
-	GDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-	GDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-	GDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->DisableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
 	SETTC(NULL);
@@ -313,11 +305,9 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 	dv = (float)0.99999f * (h - 1) / mask->m_dwHeight;
 
 	//tracer du mask
-	GDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	GDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	GDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-	GDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->DisableAlpha();
+	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendZero);
 
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
@@ -355,10 +345,8 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
 
-	GDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-	GDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-	GDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->DisableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
 	SETTC(NULL);
