@@ -228,3 +228,9 @@ void Credits::render() {
 	
 }
 
+void Credits::reset() {
+	ARXmenu.mda->creditstart = ARX_TIME_Get();
+	ARXmenu.mda->creditspos = 0;
+	CreditsData.iFirstLine = 0;
+}
+

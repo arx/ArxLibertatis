@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"
 #include "gui/ViewImage.h"
+#include "gui/Credits.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -463,7 +464,7 @@ void ARX_MENU_NEW_QUEST_Clicked_QUIT()
 void ARX_MENU_Clicked_CREDITS()
 {
 	ARXmenu.currentmode = AMCM_CREDITS;
-	ARXmenu.mda->creditstart = ARX_TIME_Get();
+	Credits::reset();
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
 extern long FINAL_COMMERCIAL_DEMO;
