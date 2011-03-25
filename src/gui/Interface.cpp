@@ -1176,13 +1176,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 		return;
 	}
 
-	std::string tcIndent;
-	std::string tcIsClass;
-	tcIndent = COMBINE->filename;
-	tcIsClass = GetName(tcIndent);
-	std::stringstream ss;
-	ss << tcIsClass << '_' << std::setfill('0') << std::setw(4) << COMBINE->ident;
-	tcIndent = ss.str();
+	std::string tcIndent = COMBINE->long_name();
 	MakeUpcase(tcIndent);
 
 		char tTxtCombineDest[256];
@@ -1245,7 +1239,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
+									if( !strcasecmp( tTxtCombineDest, COMBINE->short_name() ) )
 									{
 										//same class
 										bCanCombine=true;
@@ -1393,7 +1387,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
+								if( !strcasecmp( tTxtCombineDest, COMBINE->short_name() ) )
 								{
 									//same class
 									bCanCombine=true;
@@ -2396,17 +2390,11 @@ bool DANAE::ManageEditorControls()
 			{
 				if (io!=COMBINE)
 				{
-					std::string temp;
-					char temp2[256];
-					temp = COMBINE->filename;
-					strcpy(temp2,GetName(temp).c_str());
-					std::stringstream ss;
-					ss << temp2 << '_' << std::setfill('0') << std::setw(4) << COMBINE->ident;
-					temp = ss.str();
-					MakeUpcase(temp);				
+					std::string temp = COMBINE->long_name();
+					MakeUpcase(temp);
 					EVENT_SENDER=COMBINE;
 
-					if (!specialstrcmp(temp2,"KEYRING"))
+					if (!specialstrcmp( COMBINE->short_name(),"KEYRING"))
 						ARX_KEYRING_Combine(io);
 					else
 						SendIOScriptEvent(io,SM_COMBINE,temp);

@@ -1073,7 +1073,6 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 {
 	char nameident[256];
 	std::string tmp;
-	char tmp2[512];
 	size_t FileSize;
 	INTERACTIVE_OBJ * io;
 	sprintf(nameident, "%s_%04ld", GetName(dli->name).c_str(), dli->ident);
@@ -1090,7 +1089,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 
 	t = GetTargetByNameTarget(nameident);
 
-	if (t >= 0)
+if (t >= 0)
 	{
 		return inter.iobj[t];
 	}
@@ -1117,24 +1116,11 @@ suite:
 		if (!NODIRCREATION)
 		{
 			io->ident = dli->ident;
-			tmp = io->filename;
-			strcpy(tmp2, GetName(tmp).c_str());
-			RemoveName(tmp);
-			std::stringstream ss;
-			ss << tmp << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
-			tmp = ss.str();
-			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
+			tmp = io->full_name(); // Get the directory name to check for
 
 			if (PAK_DirectoryExist(tmp))
 			{
-				tmp = io->filename;
-				strcpy(tmp2, GetName(tmp).c_str());
-				RemoveName(tmp);
-				std::stringstream ss;
-				ss << tmp << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
-				ss << std::setw(0) << '\\' << tmp2 << ".asl";
-				tmp = ss.str();
-				//sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
+				tmp += '\\' + io->short_name() + ".asl"; // Create the filename to be loaded
 
 				if (PAK_FileExist(tmp))
 				{

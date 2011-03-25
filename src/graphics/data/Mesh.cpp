@@ -351,14 +351,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
 						{
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
-								
-								dest += " ";
-								
-								std::stringstream ss;
-								ss << GetName(inter.iobj[i]->filename) << '_'
-								   << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident;
-								
-								dest += ss.str();
+								dest += ' ' + inter.iobj[i]->long_name();
 								
 							}
 						}

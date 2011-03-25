@@ -1162,16 +1162,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				if (EVENT_SENDER)
 				{
 					if (EVENT_SENDER == inter.iobj[0])
-					{
 						txtcontent = "PLAYER";
-					}
 					else
-					{
-						std::stringstream ss;
-						ss << GetName(EVENT_SENDER->filename) << '_'
-						   << std::setfill('0') << std::setw(4) << EVENT_SENDER->ident;
-						txtcontent = ss.str();
-					}
+						txtcontent = EVENT_SENDER->long_name();
 				}
 				else 	txtcontent = "NONE";
 
@@ -1219,13 +1212,10 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 			if (!specialstrcmp(name, "^ME"))
 			{
-				if (io == inter.iobj[0]) txtcontent = "PLAYER";
+				if (io == inter.iobj[0])
+					txtcontent = "PLAYER";
 				else
-				{
-					std::stringstream ss;
-					ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
-					txtcontent = ss.str();
-				}
+					txtcontent = io->long_name();
 
 				return TYPE_TEXT;
 			}
@@ -1322,13 +1312,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			if (!specialstrcmp(name, "^LAST_SPAWNED"))
 			{
 				if (LASTSPAWNED)
-				{
-					std::stringstream ss;
-					ss << GetName(LASTSPAWNED->filename) << '_'
-					   << std::setfill('0') << std::setw(4) << LASTSPAWNED->ident;
-					txtcontent = ss.str();
-				}
-				else txtcontent = "NONE";
+					txtcontent = LASTSPAWNED->long_name();
+				else
+					txtcontent = "NONE";
 
 				return TYPE_TEXT;
 			}
@@ -1649,16 +1635,11 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				INTERACTIVE_OBJ * ioo = ARX_NPC_GetFirstNPCInSight(io);
 
 				if (ioo == inter.iobj[0])
-				{
 					txtcontent = "PLAYER";
-				}
 				else if (ioo)
-				{
-					std::stringstream ss;
-					ss << GetName(ioo->filename) << '_' << std::setfill('0') << std::setw(4) << ioo->ident;
-					txtcontent = ss.str();
-				}
-				else 	txtcontent = "NONE";
+					txtcontent = ioo->long_name();
+				else
+					txtcontent = "NONE";
 
 				return TYPE_TEXT;
 			}
@@ -1674,12 +1655,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					if (!ValidIONum(io->targetinfo))
 						txtcontent = "NONE";
 					else
-					{
-						std::stringstream ss;
-						ss << GetName(inter.iobj[io->targetinfo]->filename) << '_'
-						   << std::setfill('0') << std::setw(4) << inter.iobj[io->targetinfo]->ident;
-						txtcontent = ss.str();
-					}
+						txtcontent = inter.iobj[io->targetinfo]->long_name();
 				}
 
 				return TYPE_TEXT;
@@ -1717,15 +1693,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 	if (!specialstrcmp(name, " "))
 	{
 		if (io == inter.iobj[0])
-		{
 			txtcontent = "PLAYER";
-		}
 		else
-		{
-			std::stringstream ss;
-			ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
-			txtcontent = ss.str();
-		}
+			txtcontent = io->long_name();
 
 		return TYPE_TEXT;
 	}
