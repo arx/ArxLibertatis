@@ -271,7 +271,7 @@ static INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	return false;
 }
 
-HWND ShowErrorPopup(char * title, char * tex)
+HWND ShowErrorPopup( const char * title, const char * tex)
 {
 	strcpy(ERRORTITLE, title);
 	strcpy(ERRORSTRING, tex);

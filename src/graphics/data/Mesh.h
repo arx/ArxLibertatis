@@ -829,7 +829,7 @@ long AnchorData_GetNearest(EERIE_3D *pos,EERIE_CYLINDER * cyl);
 
 // FAST SAVE LOAD
 bool FastSceneLoad(const std::string& path);
-bool FastSceneSave(const char * path,EERIE_MULTI3DSCENE * ms);
+bool FastSceneSave(const std::string& path,EERIE_MULTI3DSCENE * ms);
 bool CheckUniqueIdent(char * pathh);
 bool CreateUniqueIdent(char * pathh);
 

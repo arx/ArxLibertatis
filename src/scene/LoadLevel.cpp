@@ -1024,8 +1024,6 @@ void CheckIO_NOT_SAVED()
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 {
 	std::string temp;
-	char temp2[256];
-	char temp3[256];
 
 	switch (fl)
 	{
@@ -1048,18 +1046,11 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 
 			if (io->ident != 0)
 			{
-				temp = io->filename;
-				strcpy(temp2, GetName(temp).c_str());
-				RemoveName(temp);
-				sprintf(temp3, "%s%s_%04ld", temp.c_str(), temp2, io->ident);
-				temp = temp3;
-				temp += "\\";
-				temp += temp2;
-				temp += ".asl";
+				temp = io->full_name() + "\\" + io->short_name() + ".asl"; // Looks odd, results in /path/human_0001/human.asl and so on
 
-				if (DirectoryExist(temp3))
+				if (DirectoryExist( io->full_name() ))
 				{
-//					todo win32api
+//					TODO win32api
 //					int fic;
 //					if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
 //					{
@@ -1076,6 +1067,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 			break;
 	}
 }
+
 extern long FORCE_IO_INDEX;
 INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 {

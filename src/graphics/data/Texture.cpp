@@ -574,7 +574,7 @@ HRESULT TextureContainer::LoadImageData()
 HRESULT TextureContainer::LoadFile(const std::string& strPathname)
 {
 	size_t size = 0;
-	char * dat = (char *)PAK_FileLoadMalloc(strPathname.c_str(), size);
+	char * dat = (char *)PAK_FileLoadMalloc(strPathname, size);
 	
 	if(!dat) 
 	{
@@ -2396,7 +2396,7 @@ void LoadRefinementMap(const std::string& fileName, std::map<string, string>& re
 				MakeUpcase( str1 );
 				MakeUpcase( data );
 
-				if(strcmp(data.c_str(), "NONE") != 0)
+				if( data.compare( "NONE" ) != 0 ) // If the string does not contain "NONE"
 					refinementMap[str1] = data;
 			}
 
@@ -2436,14 +2436,14 @@ void LookForRefinementMap(TextureContainer * tc)
 	if( it != g_GlobalRefine.end() )
 	{
 		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
-		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
+		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2, 0, D3DTEXTR_16BITSPERPIXEL);
 	}
 
 	it = g_Refine.find(name);
 	if( it != g_Refine.end() )
 	{
 		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
-		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
+		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2, 0, D3DTEXTR_16BITSPERPIXEL);
 	}
 }
 

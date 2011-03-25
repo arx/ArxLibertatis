@@ -2342,10 +2342,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					if (ap != NULL)
 					{
-						char title[64];
-						word = GetName(io->filename);
-						sprintf(title, "%s_%04ld", word.c_str(), io->ident);
-						strcpy(ap->controled, title);
+						std::string str = io->long_name();
+						strcpy(ap->controled, str.c_str() );
 					}
 
 					LogDebug << "SET_CONTROLLED_ZONE "<< word;

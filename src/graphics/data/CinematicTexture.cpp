@@ -682,7 +682,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 	
 	string filename = path;
 	SetExt(filename, ".bmp");
-	if (PAK_FileExist(filename.c_str()))
+	if (PAK_FileExist(filename))
 	{
 		bi->hbitmap = (HBITMAP)LoadBMPImage(filename.c_str());
 
@@ -700,7 +700,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 	{
 		SetExt(filename, ".tga");
 
-		if (PAK_FileExist(filename.c_str()))
+		if (PAK_FileExist(filename))
 		{
 			bi->hbitmap = LoadTargaFile(filename.c_str());
 
@@ -770,7 +770,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 			//AllTxt, "%s_%4d", name, num);
 			MakeUpcase(texname);
 
-			if (FAILED(D3DTextr_CreateEmptyTexture(texname.c_str(), w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
+			if (FAILED(D3DTextr_CreateEmptyTexture(texname, w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
 			{
 				LogError<< "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
 			}

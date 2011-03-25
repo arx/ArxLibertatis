@@ -305,11 +305,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2);
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
 				}
@@ -337,11 +334,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 							if (t >= 0)
 							{
-								char texx[128];
-								char tex2[128];
-								strcpy(texx, GetName(io->filename).c_str());
-								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
+								std::string str = io->long_name() + ' ' + temp;
+								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str); 
 							}
 						}
 					}
@@ -358,11 +352,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str); 
 						}
 					}
 
@@ -377,11 +368,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2);
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
 					}
 				}

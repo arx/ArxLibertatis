@@ -34,6 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/HashMap.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
+#include "io/String.h"
 
 using std::string;
 using std::vector;
@@ -116,7 +117,7 @@ bool SaveBlock::BeginRead() {
 	
 	LogDebug << "reading savefile " << savefile;
 	
-	handle = FileOpenRead(savefile.c_str());
+	handle = FileOpenRead(savefile);
 	if(!handle) {
 		LogWarning << "cannot open save file " << savefile;
 		return false;
@@ -306,11 +307,11 @@ void SaveBlock::writeFileTable() {
 
 bool SaveBlock::BeginSave() {
 	
-	handle = FileOpenRead(savefile.c_str());
+	handle = FileOpenRead(savefile);
 	
 	if(!handle) {
 		
-		handle = FileOpenWrite(savefile.c_str());
+		handle = FileOpenWrite(savefile);
 		if(!handle) {
 			LogError << "could not open " << savefile << " for writing";
 			return false;
@@ -327,7 +328,7 @@ bool SaveBlock::BeginSave() {
 		}
 		
 		FileClose(handle);
-		handle = FileOpenReadWrite(savefile.c_str());
+		handle = FileOpenReadWrite(savefile);
 		if (!handle) {
 			LogError << "could not open " << savefile << " read/write";
 			return false;
@@ -359,7 +360,7 @@ bool SaveBlock::defragment() {
 	LogDebug << "defrag " << savefile;
 	
 	string tempFileName = savefile + "DFG";
-	FileHandle tempFile = FileOpenWrite(tempFileName.c_str());
+	FileHandle tempFile = FileOpenWrite(tempFileName);
 	
 	u32 fakeFATOffset = 0;
 	FileWrite(tempFile, &fakeFATOffset, 4);
@@ -413,7 +414,7 @@ bool SaveBlock::defragment() {
 SaveBlock::File * SaveBlock::getFile(const std::string & name) {
 	
 	for(FileList::iterator file = files.begin(); file != files.end(); ++file) {
-		if(!strcasecmp(file->name.c_str(), name.c_str())) {
+		if(!strcasecmp(file->name, name)) {
 			return &*file;
 			break;
 		}
@@ -499,7 +500,7 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 		// TODO always create the hashMap
 		file = NULL;
 		for(FileList::const_iterator f = files.begin(); f != files.end(); ++f) {
-			if(!strcasecmp(f->name.c_str(), name.c_str())) {
+			if(!strcasecmp(f->name, name)) {
 				file = &*f;
 			}
 		}
@@ -589,7 +590,7 @@ bool SaveBlock::hasFile(const string & name) const {
 	} else {
 		// TODO always create the hashMap
 		for(FileList::const_iterator file = files.begin(); file != files.end(); ++file) {
-			if(!strcasecmp(file->name.c_str(), name.c_str())) {
+			if(!strcasecmp(file->name, name)) {
 				return true;
 			}
 		}

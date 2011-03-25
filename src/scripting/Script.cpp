@@ -5283,33 +5283,27 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 	if ((errors > 0) || ((warnings > 0) && (SHOWWARNINGS)))
 	{
-		char title[512];
+		std::string title;
 
 		if (es == &io->over_script)
-		{
-			temp = GetName(io->filename);
-			sprintf(title, "%s_%04ld", temp.c_str(), io->ident);
-			strcat(title, " LOCAL SCRIPT.");
-		}
+			title = io->long_name() + " LOCAL SCRIPT.";
 		else
-		{
-			temp = GetName(io->filename);
-			sprintf(title, "%s_%04ld", temp.c_str(), io->ident);
-			strcat(title, " CLASS SCRIPT.");
-		}
+			title = io->long_name() + " CLASS SCRIPT.";
 
-		LastErrorPopup = ShowErrorPopup(title, errstring);
+		LogError << title << " : "  << errstring;
 	}
 	else LastErrorPopup = NULL;
 
 	LogDebug << "Tem" << tem;
 	return returnvalue;
 }
+
 HWND LastErrorPopupNO1 = NULL;
 HWND LastErrorPopupNO2 = NULL;
 
 extern HWND CDP_IOOptions;
 extern INTERACTIVE_OBJ * CDP_EditIO;
+
 bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
 {
 	return true;

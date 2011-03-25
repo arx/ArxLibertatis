@@ -97,6 +97,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/SaveBlock.h"
+#include "io/String.h"
 
 #include "physics/CollisionShapes.h"
 
@@ -325,9 +326,9 @@ void ARX_Changelevel_CurGame_Open() {
 	string savefile = CurGamePath;
 	savefile += "Gsave.sav";
 	
-	if(FileExist(savefile.c_str())) {
+	if(FileExist(savefile)) {
 		
-		GLOBAL_pSaveB = new SaveBlock(savefile.c_str());
+		GLOBAL_pSaveB = new SaveBlock(savefile);
 		if(!GLOBAL_pSaveB->BeginRead()) {
 			LogError << "cannot read cur game save file" << savefile;
 		}
@@ -800,6 +801,7 @@ retry:
 	
 	return 1;
 }
+
 //--------------------------------------------------------------------------------------------
 void FillIOIdent(char * tofill, INTERACTIVE_OBJ * io)
 {
@@ -809,8 +811,9 @@ void FillIOIdent(char * tofill, INTERACTIVE_OBJ * io)
 	   )
 		strcpy(tofill, "NONE");
 	else
-		sprintf(tofill, "%s_%04ld", GetName(io->filename).c_str(), io->ident);
+		sprintf(tofill, "%s", io->long_name().c_str() );
 }
+
 extern long sp_max;
 extern long cur_rf;
 extern long cur_mx;
@@ -2239,7 +2242,7 @@ extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 {
-	if (!strcasecmp(ident.c_str(), "NONE")) return -1;
+	if ( !strcasecmp(ident, "NONE") ) return -1;
 
 	char loadfile[256];
 	ARX_CHANGELEVEL_IO_SAVE * ais;
@@ -3911,7 +3914,7 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 
 	if (!_pSaveBlock->BeginSave()) return -1;
 
-	if (!DirectoryExist(path.c_str())) return -1;
+	if (!DirectoryExist(path)) return -1;
 
 	char * dat = new char[sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA)];
 
@@ -3939,7 +3942,7 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path)
 {
 	// Checks For Directory
-	if (!DirectoryExist(path.c_str())) return -1;
+	if (!DirectoryExist(path)) return -1;
 
 	std::string loadfile;
 
