@@ -37,6 +37,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cassert>
 
+#include <iomanip>
+#include <sstream>
+
 #include "core/Core.h"
 
 #include "game/Damage.h"
@@ -82,7 +85,7 @@ long passwall=0;
 long WILLRETURNTOFREELOOK = 0;
 long GLOBAL_MAGIC_MODE=1;
 bool bPrecastSpell = false;
-extern char LAST_FAILED_SEQUENCE[128];
+extern std::string LAST_FAILED_SEQUENCE;
 enum ARX_SPELLS_RuneDirection
 {
 	AUP,
@@ -1519,7 +1522,7 @@ void ARX_SPELLS_ClearAllSymbolDraw()
 void ARX_SPELLS_AnalyseSYMBOL()
 {
 	long csymb = -1;
-	long sm = atoi(SpellMoves.c_str());
+	long sm = atoi(SpellMoves);
 	
 	switch (sm)
 	{
@@ -2141,7 +2144,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 			if (SpellMoves.length()>=127)
 				SpellMoves.resize(127);
 
-			strcpy(LAST_FAILED_SEQUENCE,SpellMoves.c_str());
+			LAST_FAILED_SEQUENCE = SpellMoves;
 
 			if (!NO_TEXT_AT_ALL) 
 			{
@@ -6727,15 +6730,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					)
 				{
 					tcount++;
-					char param[256];
 					long n = spells[i].caster_level;
-					sprintf(param,"%s_%04ld %ld"
-						,GetName(tmp_io->filename).c_str()
-						,tmp_io->ident
-						,n
-						);
-					
-					SendIOScriptEvent(ioo,-1,param,"NPC_CONTROL");
+					std::string str = tmp_io->long_name() + ' ' + itoa(n);
+					SendIOScriptEvent( ioo, -1, str, "NPC_CONTROL" );
 				}
 			}
 
@@ -9092,7 +9089,7 @@ void ApplySPWep()
 		std::string tex2;
 		tex2 = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\sword_mx\\sword_mx.teo";
 		File_Standardize(tex2,tex);
-		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex.c_str(),IO_IMMEDIATELOAD);
+		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex,IO_IMMEDIATELOAD);
 
 		if (ioo!=NULL)
 		{			
@@ -9214,7 +9211,7 @@ void ApplySPArm()
 	}
 
 	File_Standardize(tex2,tex);
-	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex.c_str(),IO_IMMEDIATELOAD);
+	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex,IO_IMMEDIATELOAD);
 
 	if (ioo!=NULL)
 	{			

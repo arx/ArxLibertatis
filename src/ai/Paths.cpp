@@ -1680,10 +1680,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
 						char weapon_material[64]	= "DAGGER";
-						char bkg_material[64]		= "EARTH";
+						std::string bkg_material = "EARTH";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
-							GetMaterialString(ep->tex->m_texName.c_str(), bkg_material);
+							bkg_material = GetMaterialString( ep->tex->m_texName );
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);

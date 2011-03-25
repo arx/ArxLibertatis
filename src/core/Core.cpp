@@ -331,7 +331,7 @@ QUAKE_FX_STRUCT QuakeFx;
 bool bALLOW_BUMP = false;
 const char * GTE_TITLE;
 char * GTE_TEXT;
-char LAST_FAILED_SEQUENCE[128]="None";
+std::string LAST_FAILED_SEQUENCE = "None";
 // START - Information for Player Teleport between/in Levels-------------------------------------
 char TELEPORT_TO_LEVEL[64];
 char TELEPORT_TO_POSITION[64];
@@ -1220,7 +1220,7 @@ int main(int, char**)
 		
 		if(!pStringMod.empty()) {
 			LogDebug << pStringMod;
-			if(PAK_AddPak(pStringMod.c_str())) {
+			if( PAK_AddPak( pStringMod ) ) {
 				LogDebug << "LoadMode OK";
 			}
 		}
@@ -3446,7 +3446,7 @@ long Player_Arrow_Count()
 
 		if (io)
 		{
-			if (!strcasecmp(GetName(io->filename).c_str(),"Arrows"))
+			if ( !strcasecmp( GetName(io->filename),"Arrows") )
 			{
 				if ( io->durability >= 1.f )
 
@@ -3476,7 +3476,7 @@ INTERACTIVE_OBJ * Player_Arrow_Count_Decrease()
 
 		if (ioo)
 		{
-			if (!strcasecmp(GetName(ioo->filename).c_str(),"Arrows"))
+			if ( !strcasecmp( GetName(ioo->filename), "Arrows") )
 			{
 				if (ioo->durability >= 1.f)
 				{
@@ -7194,7 +7194,7 @@ void ShowTestText()
 	sprintf(tex,"Position : %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
 	danaeApp.OutputText( 0, 48, tex );
 
-	sprintf(tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE);
+	sprintf( tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE.c_str() );
 	danaeApp.OutputText( 0, 64, tex );
 }
 extern float CURRENT_PLAYER_COLOR;

@@ -70,6 +70,11 @@ void AddToName(string & str, const string & cat) {
 	copy(cat.begin(), cat.end(), str.begin() + extpos);
 }
 
+std::string GetDirectory( const std::string& str )
+{
+	return str.substr( 0, str.find_last_of(DIR_SEP) );
+}
+
 void RemoveName(string & str) {
 	size_t pos = str.find_last_of(DIR_SEP);
 	if(pos == string::npos) {

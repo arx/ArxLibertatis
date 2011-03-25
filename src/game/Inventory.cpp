@@ -2096,7 +2096,7 @@ void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
 							{
 								if (item->obj->texturecontainer[lTex])
 								{
-									if (strcmp(item->obj->texturecontainer[lTex]->m_texName.c_str(), _lpszText) == 0)
+									if ( item->obj->texturecontainer[lTex]->m_texName.compare( _lpszText ) == 0)
 									{
 										if (item->GameFlags & GFLAG_INTERACTIVITY)
 											SendIOScriptEvent(item, _lCommand);

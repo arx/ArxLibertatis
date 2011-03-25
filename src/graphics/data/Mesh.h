@@ -436,6 +436,7 @@ struct TWEAK_INFO
 #define MAX_ANIMS 200		// max loadable anims per character
 
 typedef s32 ArxSound;
+
 struct INTERACTIVE_OBJ
 {
 	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
@@ -577,6 +578,10 @@ struct INTERACTIVE_OBJ
 	short				inzone_show;
 	short				summoner;
 	long spark_n_blood;
+
+	std::string short_name() const;
+	std::string long_name() const;
+	std::string full_name() const;
 };
 
 //-----------------------------------------------------------------------------

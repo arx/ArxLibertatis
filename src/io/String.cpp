@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <algorithm>
+#include <sstream>
 
 using std::string;
 using std::transform;
@@ -31,6 +32,23 @@ int strcmp(const string & str1, const string & str2) {
 
 long specialstrcmp(const string & text, const string & seek) {
 	return text.compare(0, seek.length(), seek) ? 1 : 0;
+}
+
+int atoi( const std::string& str )
+{
+	std::stringstream ss( str );
+	int out;
+	ss >> out;
+	return out;
+}
+
+std::string itoa( int i )
+{
+	std::stringstream ss;
+	ss << i;
+	std::string out;
+	ss >> out;
+	return out;
 }
 
 void SAFEstrcpy(char * dest, const char * src, unsigned long max) {

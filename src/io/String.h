@@ -10,6 +10,9 @@ bool NC_IsIn(std::string strin, std::string str);
 int strcasecmp(const std::string & str1, const std::string & str2);
 int strcmp(const std::string & str1, const std::string & str2);
 
+int atoi( const std::string& str );
+std::string itoa( int i );
+
 /**
  * Checks if a string (seek) is at the start of another string (text)
  * returns 0 if "seek" is at the start of "text"

@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+#include "io/String.h"
 
 #include "scene/Interactive.h"
 
@@ -796,11 +797,11 @@ long ARX_SOUND_PlayCollision(const long & mat1, const long & mat2, const float &
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const char * name1, const char * name2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source)
+long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source)
 {
 	if (!bIsActive) return 0;
 
-	if (!name1 || !name2) return 0;
+	if ( name1.empty() || name2.empty() ) return 0;
 
 	if (strcasecmp(name2, "WATER") == 0)
 		ARX_PARTICLES_SpawnWaterSplash(position);

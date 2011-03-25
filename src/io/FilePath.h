@@ -5,6 +5,12 @@
 #include <string>
 
 /**
+ * Return only the directory part of the path given,
+ * this includes everything up until the last slash
+ **/
+std::string GetDirectory( const std::string& );
+
+/**
  * Remove the filename and file extension from the given path,
  * leaving only the directory and a trailing slash (or an empty string).
  **/
