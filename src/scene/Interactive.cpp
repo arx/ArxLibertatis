@@ -145,6 +145,8 @@ long INTER_DRAW = 0;
 long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
+bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t);
+
 
 /* Return the short name for this Object where only the name
  * of the file is returned
@@ -2944,18 +2946,14 @@ void RotateSelectedIO(EERIE_3D * op)
 		}
 	}
 }
+
 //*************************************************************************************
 // Delete All Selected IOs
 //*************************************************************************************
 void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 {
-	if ((i < 1)
-	        ||	(i >= inter.nbmax))
+	if ((i < 1) || (i >= inter.nbmax))
 		return;
-
-	std::string temp;
-	char temp2[HERMES_PATH_SIZE];
-	char temp3[HERMES_PATH_SIZE];
 
 	if (inter.iobj[i] != NULL)
 	{
@@ -2964,19 +2962,12 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 		{
 			if (inter.iobj[i]->ident > 0)
 			{
-				temp = inter.iobj[i]->filename;
-				strcpy(temp2, GetName(temp).c_str());
-				RemoveName(temp);
-				std::stringstream ss;
-				ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident 
-				   << std::setw(0) << '.';
-				temp = ss.str();
-				//sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident)
+				std::string temp = inter.iobj[i]->full_name() + '.';
 
 				if (DirectoryExist(temp))
 				{
 					long _delete = 0;
-					sprintf(temp3, "Really remove Directory & Directory Contents ?\n\n%s", temp.c_str());
+					std::string temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
 
 					if (flag & FLAG_NOCONFIRM)
 					{
@@ -2992,7 +2983,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 					if (_delete)
 					{
 						temp += "\\";
-						KillAllDirectory(temp.c_str());
+						KillAllDirectory(temp);
 					}
 				}
 			}
@@ -3002,6 +2993,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 		inter.iobj[i] = NULL;
 	}
 }
+
 void DeleteSelectedIO()
 {
 	for (long i = 1; i < inter.nbmax; i++)
@@ -3190,13 +3182,7 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 		io->script.data = NULL;
 	}
 
-	texscript = io->filename;
-	string tmp2 = GetName(texscript);
-	RemoveName(texscript);
-	std::stringstream ss;
-	ss << texscript << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
-	ss << std::setw(0) << '\\' << tmp2 << ".asl";
-	texscript = ss.str();
+	texscript = io->full_name() + '\\' + io->short_name() + ".asl";
 
 	if (PAK_FileExist(texscript))
 	{
@@ -3220,29 +3206,17 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 
 	if (ValidIONum(num))
 	{
-		if (inter.iobj[num]
-		        &&	inter.iobj[num]->script.data)
-		{
+		if (inter.iobj[num] && inter.iobj[num]->script.data)
 			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
-		}
 
-		if (inter.iobj[num]
-		        &&	inter.iobj[num]->over_script.data)
-		{
+		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
 			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
-		}
 
-		if (inter.iobj[num]
-		        &&	inter.iobj[num]->script.data)
-		{
+		if (inter.iobj[num] && inter.iobj[num]->script.data)
 			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
-		}
 
-		if (inter.iobj[num]
-		        &&	inter.iobj[num]->over_script.data)
-		{
+		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
 			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
-		}
 	}
 }
 
@@ -3259,7 +3233,7 @@ void ReloadAllScripts()
 			ReloadScript(inter.iobj[i]);
 	}
 }
-bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t);
+
 //*************************************************************************************
 // Creates an unique identifier for an IO
 //*************************************************************************************
@@ -3274,17 +3248,12 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 
 	while (io->ident == 0)
 	{
-		temp = io->filename;
-		strcpy(temp2, GetName(temp).c_str());
-		RemoveName(temp);
-		std::stringstream ss;
-		ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << t << std::setw(0) << '.';
-		//(temp, "%s%s_%04d.", temp, temp2, t);
+		temp = io->full_name() + '.';
 
 		if (!DirectoryExist(temp))
 		{
 			io->ident = t;
-			CreateDirectory(temp.c_str(), NULL);
+			CreateDirectory(temp, NULL);
 			LogDirCreation(temp);
 			WriteIOInfo(io, temp);
 		}
@@ -3292,6 +3261,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 		t++;
 	}
 }
+
 //*************************************************************************************
 // Tells if an ident corresponds to a temporary IO
 // NEED TO OPEN "if (LAST_CHINSTANCE!=-1) ARX_Changelevel_CurGame_Open();"

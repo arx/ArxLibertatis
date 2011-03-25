@@ -974,9 +974,6 @@ void LogDirDestruction( const std::string& dir ) {
 //*************************************************************************************
 void CheckIO_NOT_SAVED()
 {
-	std::string temp;
-	std::string temp3;
-
 	if (ADDED_IO_NOT_SAVED)
 	{
 		if (OKBox("You have added objects, but not saved them...\nDELETE THEM ??????", "Danae WARNING"))
@@ -989,18 +986,11 @@ void CheckIO_NOT_SAVED()
 					{
 						if (inter.iobj[i]->ident > 0)
 						{
-							temp = inter.iobj[i]->filename;
-							string temp2 = GetName(temp);
-							RemoveName(temp);
-							std::stringstream ss;
-							ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident;
-							ss << std::setw(0) << '.';
-							temp = ss.str();
-							//temp += "%s%s_%04d." temp2 + '_' + inter.iobj[i]->ident + '.';
+							std::string temp = inter.iobj[i]->full_name();
 
 							if (DirectoryExist(temp))
 							{
-								temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
+								std::string temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
 
 								if (OKBox(temp3, "WARNING"))
 								{
