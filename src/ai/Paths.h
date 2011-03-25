@@ -151,7 +151,7 @@ void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z);
 void ARX_PATH_ClearAllUsePath();
 void ARX_PATH_ReleaseAllPath();
-ARX_PATH * ARX_PATH_GetAddressByName( const char * name);
+ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 

@@ -564,10 +564,10 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 }
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATH_GetAddressByName( const char * name)
+ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name)
 {
 
-	if ((name) && (name[0]) && (ARXpaths))
+	if ( !(name).empty() && (ARXpaths) )
 		for (long i = 0; i < nbARXpaths; i++)
 		{
 			if (ARXpaths[i])

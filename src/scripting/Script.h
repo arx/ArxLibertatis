@@ -494,7 +494,7 @@ long SkipNextStatement(EERIE_SCRIPT * es, long pos);
 std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
 void ARX_SCRIPT_Timer_GetDefaultName(char * tx);
 void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group);
-void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const char * group);
+void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const std::string& group);
 long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp );
 
 // Use to set the value of a script variable

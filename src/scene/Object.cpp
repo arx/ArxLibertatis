@@ -104,7 +104,7 @@ long GetGroupOriginByName(EERIE_3DOBJ * eobj, const std::string& text)
 
 	for (long i = 0; i < eobj->nbgroups; i++)
 	{
-		if ( !strcasecmp(text, eobj->grouplist[i].name.c_str() )) return eobj->grouplist[i].origin;
+		if ( !strcasecmp(text, eobj->grouplist[i].name ) ) return eobj->grouplist[i].origin;
 	}
 
 	return -1;
@@ -117,7 +117,7 @@ long GetActionPointIdx(EERIE_3DOBJ * eobj, const std::string& text)
 	for(vector<EERIE_ACTIONLIST>::iterator i = eobj->actionlist.begin();
 	    i != eobj->actionlist.end(); ++i) {
 		// TODO use string compare
-		if (!strcasecmp(text, i->name.c_str() )) return i->idx;
+		if ( !strcasecmp(text, i->name ) ) return i->idx;
 	}
 
 	return -1;
@@ -1158,7 +1158,7 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const std::string& dirr)
 
 		while (nb--)
 		{
-			if ( !strcasecmp( GetExt( et->name.c_str() ), ".scn") )
+			if ( !strcasecmp( GetExt( et->name ), ".scn") )
 			{
 				std::string path2;
 				path2 = dirr + et->name;
@@ -1167,7 +1167,7 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const std::string& dirr)
 				adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc);
 				if (adr)
 				{
-					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path.c_str());
+					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path);
 					es->nb_scenes++;
 					free(adr);
 				}
@@ -1794,7 +1794,7 @@ long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string& selna
 
 	for (size_t i = 0; i < obj->selections.size(); i++)
 	{ // TODO iterator
-		if (!strcasecmp(obj->selections[i].name.c_str(), selname)) return i;
+		if (!strcasecmp(obj->selections[i].name, selname)) return i;
 	}
 
 	return -1;
@@ -1806,7 +1806,7 @@ long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const std::string& groupname)
 
 	for (long i = 0; i < obj->nbgroups; i++)
 	{
-		if (!strcasecmp(obj->grouplist[i].name.c_str(), groupname)) return i;
+		if (!strcasecmp(obj->grouplist[i].name, groupname)) return i;
 	}
 
 	return -1;

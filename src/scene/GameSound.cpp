@@ -1731,42 +1731,43 @@ static void ARX_SOUND_ReleaseStaticSamples()
 	SND_SPELL_VISION_LOOP = AAL_SFALSE;
 }
 
-long ARX_MATERIAL_GetIdByName( const char * name)
+long ARX_MATERIAL_GetIdByName( const std::string& name)
 {
-	if (!strcasecmp(name, "WEAPON"))	      return MATERIAL_WEAPON;
+	if (!strcasecmp(name, "WEAPON")) return MATERIAL_WEAPON;
 
-	if (!strcasecmp(name, "FLESH"))		    return MATERIAL_FLESH;
+	if (!strcasecmp(name, "FLESH")) return MATERIAL_FLESH;
 
-	if (!strcasecmp(name, "METAL"))		    return MATERIAL_METAL;
+	if (!strcasecmp(name, "METAL")) return MATERIAL_METAL;
 
-	if (!strcasecmp(name, "GLASS"))		    return MATERIAL_GLASS;
+	if (!strcasecmp(name, "GLASS")) return MATERIAL_GLASS;
 
-	if (!strcasecmp(name, "CLOTH"))		    return MATERIAL_CLOTH;
+	if (!strcasecmp(name, "CLOTH")) return MATERIAL_CLOTH;
 
-	if (!strcasecmp(name, "WOOD"))		      return MATERIAL_WOOD;
+	if (!strcasecmp(name, "WOOD")) return MATERIAL_WOOD;
 
-	if (!strcasecmp(name, "EARTH"))		    return MATERIAL_EARTH;
+	if (!strcasecmp(name, "EARTH")) return MATERIAL_EARTH;
 
-	if (!strcasecmp(name, "WATER"))		    return MATERIAL_WATER;
+	if (!strcasecmp(name, "WATER")) return MATERIAL_WATER;
 
-	if (!strcasecmp(name, "ICE"))		      return MATERIAL_ICE;
+	if (!strcasecmp(name, "ICE")) return MATERIAL_ICE;
 
-	if (!strcasecmp(name, "GRAVEL"))	      return MATERIAL_GRAVEL;
+	if (!strcasecmp(name, "GRAVEL")) return MATERIAL_GRAVEL;
 
-	if (!strcasecmp(name, "STONE"))		    return MATERIAL_STONE;
+	if (!strcasecmp(name, "STONE")) return MATERIAL_STONE;
 
-	if (!strcasecmp(name, "FOOT_LARGE"))   return MATERIAL_FOOT_LARGE;
+	if (!strcasecmp(name, "FOOT_LARGE")) return MATERIAL_FOOT_LARGE;
 
-	if (!strcasecmp(name, "FOOT_BARE"))    return MATERIAL_FOOT_BARE;
+	if (!strcasecmp(name, "FOOT_BARE")) return MATERIAL_FOOT_BARE;
 
-	if (!strcasecmp(name, "FOOT_SHOE"))    return MATERIAL_FOOT_SHOE;
+	if (!strcasecmp(name, "FOOT_SHOE")) return MATERIAL_FOOT_SHOE;
 
-	if (!strcasecmp(name, "FOOT_METAL"))   return MATERIAL_FOOT_METAL;
+	if (!strcasecmp(name, "FOOT_METAL")) return MATERIAL_FOOT_METAL;
 
 	if (!strcasecmp(name, "FOOT_STEALTH")) return MATERIAL_FOOT_STEALTH;
 
 	return MATERIAL_NONE;
 }
+
 bool ARX_MATERIAL_GetNameById(long id, char * name)
 {
 	switch (id)

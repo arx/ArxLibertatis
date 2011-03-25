@@ -299,7 +299,7 @@ void ARX_SPELLS_Update_Lightning(LPDIRECT3DDEVICE7 m_pd3dDevice);
 
 void ClearParticles();
 
-void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const char * name, const float & duration);
+void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const std::string& name, const float& duration);
 
 void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();

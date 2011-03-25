@@ -305,14 +305,10 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 		{
 			io = inter.iobj[i];
 
-			if (i == 0) objname = "PLAYER";
+			if (i == 0)
+				objname = "PLAYER";
 			else
-			{
-				std::stringstream ss;
-				ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
-				objname = ss.str();
-				//sprintf(objname, "%s_%04d", GetName(io->filename).c_str(), io->ident);
-			}
+				objname = io->long_name();
 
 			long pos = 0;
 
@@ -348,7 +344,7 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 
 			while (pos != -1)
 			{
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->over_script, search.c_str(), pos, tline, &nline);
+				pos = ARX_SCRIPT_SearchTextFromPos(&io->over_script, search, pos, tline, &nline);
 
 				if (pos > 0)
 				{
@@ -386,8 +382,6 @@ suite:
 	std::stringstream ss;
 	ss << "Search Results for " << search << '(' << foundnb << " occurences)";
 	ShowTextWindowtext = ss.str();
-	//sprintf(ShowTextWindowtext, "Search Results for %s (%ld occurences)", search.c_str(), foundnb);
-
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
 }
@@ -1634,7 +1628,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					}
 				}
 
-				if (!strcasecmp(name.c_str(), "^PLAYERSPELL_INVISIBILITY"))
+				if (!strcasecmp(name, "^PLAYERSPELL_INVISIBILITY"))
 				{
 					if (inter.iobj[0]->invisibility > 0.3f)
 					{
@@ -3260,7 +3254,7 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params
 		{
 			if (inter.iobj[num])
 			{
-				SendIOScriptEventReverse(inter.iobj[num], msg, params.c_str(), eventname.c_str());
+				SendIOScriptEventReverse(inter.iobj[num], msg, params, eventname);
 				EVENT_SENDER = oes;
 			}
 		}
@@ -3876,10 +3870,10 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					if (!temp.compare("STACK"))
 					{
 					}
-					else if (!strcasecmp(temp.c_str(), "UNSTACK"))
+					else if (!strcasecmp(temp, "UNSTACK"))
 					{
 					}
-					else if (!strcasecmp(temp.c_str(), "UNSTACKALL"))
+					else if (!strcasecmp(temp, "UNSTACKALL"))
 					{
 					}
 					else
@@ -3889,13 +3883,13 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 							pos = GetNextWord(es, pos, temp);
 						}
 
-						if (!strcasecmp(temp.c_str(), "FLEE"))
+						if (!strcasecmp(temp, "FLEE"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp.c_str(), "LOOK_FOR"))
+						else if (!strcasecmp(temp, "LOOK_FOR"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp.c_str(), "HIDE"))
+						else if (!strcasecmp(temp, "HIDE"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp.c_str(), "WANDER_AROUND"))
+						else if (!strcasecmp(temp, "WANDER_AROUND"))
 							pos = GetNextWord(es, pos, temp);
 					}
 				}
@@ -4370,7 +4364,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!strcasecmp(temp.c_str(), "SKIN"))
+					if (!strcasecmp(temp, "SKIN"))
 						pos = GetNextWord(es, pos, temp);
 
 					pos = GetNextWord(es, pos, temp);
@@ -5423,16 +5417,14 @@ void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group)
 	io->nb_iogroups--;
 }
 
-void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const char * group)
+void ARX_IOGROUP_Add( INTERACTIVE_OBJ * io, const std::string& group )
 {
-	if (group == NULL) return;
-
-	if (group[0] == 0) return;
+	if ( group.empty() ) return;
 
 	if (IsIOGroup(io, group)) return;
 
 	io->iogroups = (IO_GROUP_DATA *)realloc(io->iogroups, sizeof(IO_GROUP_DATA) * (io->nb_iogroups + 1));
-	strcpy(io->iogroups[io->nb_iogroups].name, group);
+	strcpy(io->iogroups[io->nb_iogroups].name, group.c_str());
 	io->nb_iogroups++;
 }
 //*********************************************************************************************
@@ -5782,7 +5774,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 
 			if (io) return;
 
-			ival = atoi(content.c_str());
+			ival = atoi(content);
 			sv = SETVarValueLong(svar, NB_GLOBALS, name, ival);
 
 			if (sv != NULL)
@@ -5793,7 +5785,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 
 			if (io == NULL) return;
 
-			ival = atoi(content.c_str());
+			ival = atoi(content);
 			sv = SETVarValueLong(esss->lvar, esss->nblvar, name, ival);
 
 			if (sv != NULL)

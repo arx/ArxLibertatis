@@ -118,9 +118,9 @@ long ARX_LEVELS_GetRealNum(long num)
 	return num;
 }
 
-long GetLevelNumByName(const char * name)
+long GetLevelNumByName(const std::string& name)
 {
-	if (name)
+	if ( !name.empty() )
 	{
 		std::string temp = name;
 		MakeUpcase(temp);
@@ -192,6 +192,7 @@ long GetLevelNumByName(const char * name)
 
 	return -1;
 }
+
 void GetLevelNameByNum(long num, char * name)
 {
 	if (name)

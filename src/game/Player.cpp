@@ -547,7 +547,7 @@ void ARX_Player_Rune_Remove(unsigned long _ulRune)
 // FUNCTION/RESULT:
 //   Add quest "quest" to player Questbook
 //*************************************************************************************
-void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
+void ARX_PLAYER_Quest_Add( const std::string& quest, bool _bLoad)
 {
     std::string output;
     MakeLocalised(quest, output);

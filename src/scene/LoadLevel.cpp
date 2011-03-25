@@ -239,7 +239,7 @@ EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path)
 		tex1 += path;
 	}
 	
-	wr = TheoToEerie_Fast(tex1.c_str(), text, 0);
+	wr = TheoToEerie_Fast(tex1, text, 0);
 	return wr;
 }
 
@@ -486,7 +486,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	sprintf(tx, "_%02ld_%02ld_%ld__%ldh%ldmn", hdt.months, hdt.days, hdt.years, hdt.hours, hdt.mins);
 	SetExt(fic, ".DLF");
 
-	if (FileExist(fic.c_str()))
+	if (FileExist(fic))
 	{
 		fic2 = fic;
 		sprintf(newtext, "Backup_DLF_%s", tx);
@@ -497,7 +497,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	fic2 = fic;
 	SetExt(fic2, ".LLF");
 
-	if (FileExist(fic2.c_str()))
+	if (FileExist(fic2))
 	{
 		fic3 = fic;
 		sprintf(newtext, "Backup_LLF_%s", tx);
@@ -740,7 +740,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	}
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(fic.c_str())))
+	if (!(handle = FileOpenWrite(fic)))
 	{
 		sprintf(_error, "Unable to Open %s for Write...", fic.c_str());
 		goto error;
@@ -869,7 +869,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	}
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(fic2.c_str())))
+	if (!(handle = FileOpenWrite(fic2)))
 	{
 		sprintf(_error, "Unable to Open %s for Write...", fic2.c_str());
 		goto error;
@@ -921,7 +921,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 	FILE * fic;
 	HERMES_DATE_TIME hdt;
 
-	if (DirectoryExist(dir.c_str()))
+	if (DirectoryExist(dir))
 	{
 		strcpy(temp, GetName(io->filename).c_str());
 		sprintf(dfile, "%s\\%s.log", dir.c_str(), temp);
@@ -955,7 +955,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 //*************************************************************************************
 
 void LogDirCreation( const std::string& dir) {
-	if(DirectoryExist(dir.c_str())) {
+	if(DirectoryExist(dir)) {
 		LogDebug << "LogDirCreation: " << dir;
 	}
 }
@@ -964,7 +964,7 @@ void LogDirCreation( const std::string& dir) {
 //*************************************************************************************
 
 void LogDirDestruction( const std::string& dir ) {
-	if(DirectoryExist(dir.c_str())) {
+	if(DirectoryExist(dir)) {
 		LogDebug << "LogDirDestruction: " << dir;
 	}
 }
@@ -998,15 +998,15 @@ void CheckIO_NOT_SAVED()
 							temp = ss.str();
 							//temp += "%s%s_%04d." temp2 + '_' + inter.iobj[i]->ident + '.';
 
-							if (DirectoryExist(temp.c_str()))
+							if (DirectoryExist(temp))
 							{
 								temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
 
-								if (OKBox(temp3.c_str(), "WARNING"))
+								if (OKBox(temp3, "WARNING"))
 								{
 									temp += "\\";
-									LogDirDestruction(temp.c_str());
-									KillAllDirectory(temp.c_str());
+									LogDirDestruction(temp);
+									KillAllDirectory(temp);
 								}
 							}
 
@@ -1133,7 +1133,7 @@ suite:
 			tmp = ss.str();
 			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
 
-			if (PAK_DirectoryExist(tmp.c_str()))
+			if (PAK_DirectoryExist(tmp))
 			{
 				tmp = io->filename;
 				strcpy(tmp2, GetName(tmp).c_str());
@@ -1144,7 +1144,7 @@ suite:
 				tmp = ss.str();
 				//sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
 
-				if (PAK_FileExist(tmp.c_str()))
+				if (PAK_FileExist(tmp))
 				{
 					if (io->over_script.data)
 					{
@@ -1236,7 +1236,7 @@ long DanaeLoadLevel(const std::string& fic) {
 	HERMES_DATE_TIME hdt;
 	LogInfo << "Loading Level " << fic;
 	ClearCurLoadInfo();
-	CURRENTLEVEL = GetLevelNumByName(fic.c_str());
+	CURRENTLEVEL = GetLevelNumByName(fic);
 	GetDate(&hdt);
 	sprintf(tstr, "%2ldh%02ldm%02ld LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
@@ -1250,7 +1250,7 @@ long DanaeLoadLevel(const std::string& fic) {
 	LogDebug << "fic2 " << fic2;
 	LogDebug << "fileDlf " << fileDlf;
 
-	if (!PAK_FileExist(fileDlf.c_str())) {
+	if (!PAK_FileExist(fileDlf)) {
 		LogError <<"Unable to find "<< fileDlf;
 		return -1;
 	}
@@ -1335,7 +1335,7 @@ long DanaeLoadLevel(const std::string& fic) {
 			RemoveName(temp);
 		}
 
-		if (FastSceneLoad(ftemp.c_str()))
+		if (FastSceneLoad(ftemp))
 		{
 			LogDebug << "done loading scene";
 			FASTmse = 1;
@@ -1344,7 +1344,7 @@ long DanaeLoadLevel(const std::string& fic) {
 		LogDebug << "loading scene failed";
 
 		ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-		mse = PAK_MultiSceneToEerie(temp.c_str());
+		mse = PAK_MultiSceneToEerie(temp);
 		PROGRESS_BAR_COUNT += 20.f;
 		LoadLevelScreen();
 	suite:
@@ -1431,7 +1431,7 @@ long DanaeLoadLevel(const std::string& fic) {
 
 	if (dlh.lighting)
 	{
-		if (!PAK_FileExist(fic2.c_str()))
+		if (!PAK_FileExist(fic2))
 		{
 			dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
 			pos += sizeof(DANAE_LS_LIGHTINGHEADER);
@@ -1489,7 +1489,7 @@ long DanaeLoadLevel(const std::string& fic) {
 
 	if (dlh.version < 1.003f) dlh.nb_lights = 0;
 
-	if (!PAK_FileExist(fic2.c_str()))
+	if (!PAK_FileExist(fic2))
 	{
 		if (dlh.nb_lights != 0)
 		{
@@ -1701,7 +1701,7 @@ long DanaeLoadLevel(const std::string& fic) {
 	pos = 0;
 	DANAE_LLF_HEADER * llh;
 
-	if (!PAK_FileExist(fic2.c_str()))
+	if (!PAK_FileExist(fic2))
 	{
 		goto finish;
 	}
@@ -2175,7 +2175,7 @@ long GetIdent( const std::string& ident)
 {
 	for (long n = 0; n < dlfcount; n++)
 	{
-		if (!strcasecmp(dlfcheck[n].ident, ident.c_str()))
+		if (!strcasecmp(dlfcheck[n].ident, ident))
 			return n;
 	}
 
@@ -2222,7 +2222,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 
 	SetExt(fic, ".DLF");
 
-	if (!PAK_FileExist(fic.c_str()))
+	if (!PAK_FileExist(fic))
 	{
 		return;
 	}

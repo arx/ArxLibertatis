@@ -109,9 +109,9 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const char * temp)
+unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
 {
-	if (!temp) return 0;
+	if ( temp.empty() ) return 0;
 
 	char c = temp[0];
 
@@ -1469,11 +1469,12 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 
 	ARX_PLAYER_ComputePlayerFullStats();
 }
+
 //***********************************************************************************************
 // Sets/unsets an object type flag
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const char * temp, long val)
+void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, long val)
 {
 	// avoid erroneous objects
 	if (!io) return;
@@ -1486,6 +1487,7 @@ void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const char * temp, long v
 	else		// remove flag
 		io->type_flags &= ~flagg;
 }
+
 //***********************************************************************************************
 // Initializes Equipment infos
 //-----------------------------------------------------------------------------------------------
@@ -1603,7 +1605,7 @@ float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval
 	return (toadd * trueval * ( 1.0f / 100 ));
 }
 
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const char * param1, const char * param2, float val, short flags)
+void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, const std::string& param2, float val, short flags)
 {
 	if (io == NULL) return;
 

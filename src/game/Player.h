@@ -363,7 +363,7 @@ void	ARX_PLAYER_Frame_Update();
 void	ARX_PLAYER_Manage_Movement();
 void	ARX_PLAYER_Manage_Death();
 void	ARX_PLAYER_GotoAnyPoly();
-void	ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad = false);
+void	ARX_PLAYER_Quest_Add( const std::string& quest, bool _bLoad = false);
 void	ARX_PLAYER_Quest_Init();
 void	ARX_PLAYER_Quest_FirstInit();
 void	ARX_PLAYER_FrontPos(EERIE_3D * pos);

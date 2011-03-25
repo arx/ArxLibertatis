@@ -372,10 +372,9 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 }
 
 
-bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const char * ap_source, const char * ap_target)
+bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_source, const std::string& ap_target)
 {
-	if (!ValidIONum(n_source)
-	        ||	!ValidIONum(n_target))
+	if (!ValidIONum(n_source) || !ValidIONum(n_target))
 		return false;
 
 	inter.iobj[n_source]->show = SHOW_FLAG_LINKED;
@@ -2435,7 +2434,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 // Creates an IO Ident for added object if necessary
 // flags can be IO_IMMEDIATELOAD (1) to FORCE loading
 //***********************************************************************************
-INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags)
+INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file, long id, long flags)
 {
 	INTERACTIVE_OBJ * io = NULL;
 	std::string ficc;
@@ -2575,7 +2574,7 @@ void GetIOScript( INTERACTIVE_OBJ * io, const std::string& texscript )
 //***********************************************************************************
 // Links an Interactive Object to another interactive object using an attach point
 //***********************************************************************************
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attach)
+void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string& attach)
 {
 	if ((!io)
 	        ||	(!io2))
@@ -2589,7 +2588,7 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attac
 // AddFix
 // Adds a FIX INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
+INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file, long flags)
 {
 	std::string tex1 = file;
 	std::string texscript = file;
@@ -2607,7 +2606,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 	}
 
 	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddFix - %s", file);
+	sprintf(texx, "AddFix - %s", file.c_str());
 	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
@@ -2707,7 +2706,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 // AddCamera
 // Adds a CAMERA INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddCamera(const char * file)
+INTERACTIVE_OBJ * AddCamera(const std::string& file)
 {
 	std::string tex1 = file;;
 	std::string texscript = file;
@@ -2726,7 +2725,7 @@ INTERACTIVE_OBJ * AddCamera(const char * file)
 	}
 
 	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddCamera - %s", file);
+	sprintf(texx, "AddCamera - %s", file.c_str());
 	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
@@ -2777,7 +2776,7 @@ INTERACTIVE_OBJ * AddCamera(const char * file)
 // AddMarker
 // Adds a MARKER INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddMarker(const char * file)
+INTERACTIVE_OBJ * AddMarker(const std::string& file)
 {
 	std::string tex1 = file;
 	std::string texscript = file;
@@ -2797,7 +2796,7 @@ INTERACTIVE_OBJ * AddMarker(const char * file)
 	}
 
 	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddMarker - %s", file);
+	sprintf(texx, "AddMarker - %s", file.c_str());
 	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
@@ -3048,7 +3047,7 @@ void GroundSnapSelectedIO()
 // AddNPC
 // Adds a NPC INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddNPC(const char * file, long flags)
+INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags)
 {
     // creates script filename
     std::string texscript = file;;
@@ -3067,7 +3066,7 @@ INTERACTIVE_OBJ * AddNPC(const char * file, long flags)
 		return NULL;
 
 	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddNPC - %s", file);
+	sprintf(texx, "AddNPC - %s", file.c_str());
 	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();

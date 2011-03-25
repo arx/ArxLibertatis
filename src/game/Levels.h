@@ -59,7 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_LEVELS_H
 #define ARX_GAME_LEVELS_H
 
-long GetLevelNumByName(const char * name);
+#include <string>
+
+long GetLevelNumByName(const std::string& name);
 void GetLevelNameByNum(long num, char * name);
 long ARX_LEVELS_GetRealNum(long num);
 

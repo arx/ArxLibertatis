@@ -3636,7 +3636,7 @@ extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 
-bool FastSceneLoad(const char * partial_path)
+bool FastSceneLoad(const std::string& partial_path)
 {
 	// TODO bounds checking
 	

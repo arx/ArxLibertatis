@@ -419,9 +419,9 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, long flags) {
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mood, long flags) {
 	
-	if (!data || !data[0]) return -1;
+	if ( data.empty() ) return -1;
 
 	long num = ARX_SPEECH_GetFree();
 
@@ -476,7 +476,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, lo
 	char speech_label[256];
 	char speech_sample[256];
 
-	strcpy(speech_label, data + 1);
+	strcpy(speech_label, data.substr(1).c_str() );
 	speech_label[strlen(speech_label) - 1] = 0;
 
 	if (flags & ARX_SPEECH_FLAG_NOTEXT)
