@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include "io/Logger.h"
+#include "io/String.h"
 
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
@@ -123,7 +124,6 @@ bool bNoMenu=false;
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _iBpp);
 void ARX_SetAntiAliasing();
 void ARX_MENU_LaunchAmb(char *_lpszAmb);
-void MakeUpcase( std::string& );
 
 //-----------------------------------------------------------------------------
 
@@ -2313,7 +2313,7 @@ bool Menu2_Render()
 							iFirst--;
 						}
 
-						me01 = new CMenuElementText(-1, hFontControls, _T(" "), fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+						me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 							me01->SetCheckOff();
 							pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
@@ -2453,8 +2453,8 @@ bool Menu2_Render()
 
 					for(int iI=save_l.size(); iI<=15; iI++)
 					{
-						_TCHAR tex[256];
-						_stprintf(tex, _T("-%04d-")
+						char tex[256];
+						sprintf(tex, "-%04d-"
 
 							,iI);
 						CMenuElementText * me01 = new CMenuElementText(-1, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
@@ -2464,7 +2464,7 @@ bool Menu2_Render()
 						pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 					}
 
-					me01 = new CMenuElementText(-1, hFontControls, _T(" "), fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+					me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 					me01->SetCheckOff();
 					pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
@@ -3050,8 +3050,8 @@ bool Menu2_Render()
 				//------------------ END INPUT
 
 				//------------------ START CUSTOM CONTROLS
-				_TCHAR    pNoDef1[]=_T("---");
-				_TCHAR    pNoDef2[]=_T("---");
+				char pNoDef1[]="---";
+				char pNoDef2[]="---";
 
 				#define CUSTOM_CTRL_X0    RATIO_X(20)
 				#define CUSTOM_CTRL_X1    RATIO_X(150)
@@ -5294,7 +5294,7 @@ void CWindowMenuConsole::UpdateText()
 
 				if(bKey)
 				{
-					if ((isalnum(tCat) || _istspace(tCat) || _istpunct(tCat)) && (tCat != '\t') && (tCat != '*'))
+					if ((isalnum(tCat) || isspace(tCat) || ispunct(tCat)) && (tCat != '\t') && (tCat != '*'))
 						tText += tCat;
 				}
 			}

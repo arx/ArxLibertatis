@@ -72,7 +72,6 @@ todo:
 #include "graphics/particle/ParticleManager.h"
 
 #include <algorithm>
-#include <sstream>
 #include <vector>
 
 #include "core/Core.h"

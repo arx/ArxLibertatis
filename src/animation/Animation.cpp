@@ -58,14 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 
 #include <cstdio>
-#include <iostream>
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
 #include <cassert>
 #include <climits>
-using std::sprintf;
 
 #include "animation/AnimationRender.h"
 

@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/Logger.h"
 
@@ -202,7 +203,7 @@ INTERACTIVE_OBJ *	STARTED_ACTION_ON_IO=NULL;
 INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
-_TCHAR*				QuestBook_Cache_Text = NULL;		// Cache of screen text
+char*				QuestBook_Cache_Text = NULL;		// Cache of screen text
 long				QuestBook_Cache_nbQuests = -42;
 std::string Page_Buffer;
 bool				bBookHalo = false;
@@ -1175,13 +1176,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 		return;
 	}
 
-	std::string tcIndent;
-	std::string tcIsClass;
-	tcIndent = COMBINE->filename;
-	tcIsClass = GetName(tcIndent);
-	std::stringstream ss;
-	ss << tcIsClass << '_' << std::setfill('0') << std::setw(4) << COMBINE->ident;
-	tcIndent = ss.str();
+	std::string tcIndent = COMBINE->long_name();
 	MakeUpcase(tcIndent);
 
 		char tTxtCombineDest[256];
@@ -1244,7 +1239,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
+									if( !strcasecmp( tTxtCombineDest, COMBINE->short_name() ) )
 									{
 										//same class
 										bCanCombine=true;
@@ -1392,7 +1387,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
+								if( !strcasecmp( tTxtCombineDest, COMBINE->short_name() ) )
 								{
 									//same class
 									bCanCombine=true;
@@ -2298,27 +2293,10 @@ bool DANAE::ManageEditorControls()
 					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}
-			}
-			else if (DRAGINTER->ioflags & IO_GOLD)
-			{
-					ARX_PLAYER_AddGold(DRAGINTER->_itemdata->price);
-					ARX_SOUND_PlayInterface(SND_GOLD);
-
-					if (DRAGINTER->scriptload)
-					{
-						RemoveFromAllInventories(DRAGINTER);
-
-						ReleaseInter(DRAGINTER);
-					}
-					else
-					{
-						DRAGINTER->show=SHOW_FLAG_IN_INVENTORY;
-						DRAGINTER->GameFlags&=~GFLAG_ISINTREATZONE;
-					}
-
-					Set_DragInter(NULL);
-				}
-			else if (DRAGINTER!=NULL)
+			} else if (DRAGINTER->ioflags & IO_GOLD) {
+				ARX_PLAYER_AddGold(DRAGINTER);
+				Set_DragInter(NULL);
+			} else if(DRAGINTER!=NULL)
 			{
 				if (!EDITMODE) // test for NPC & FIX
 				{
@@ -2412,17 +2390,11 @@ bool DANAE::ManageEditorControls()
 			{
 				if (io!=COMBINE)
 				{
-					std::string temp;
-					char temp2[256];
-					temp = COMBINE->filename;
-					strcpy(temp2,GetName(temp).c_str());
-					std::stringstream ss;
-					ss << temp2 << '_' << std::setfill('0') << std::setw(4) << COMBINE->ident;
-					temp = ss.str();
-					MakeUpcase(temp);				
+					std::string temp = COMBINE->long_name();
+					MakeUpcase(temp);
 					EVENT_SENDER=COMBINE;
 
-					if (!specialstrcmp(temp2,"KEYRING"))
+					if (!specialstrcmp( COMBINE->short_name(),"KEYRING"))
 						ARX_KEYRING_Combine(io);
 					else
 						SendIOScriptEvent(io,SM_COMBINE,temp);
@@ -7190,14 +7162,14 @@ void QuestBook_Update()
 		if (PlayerQuest[i].localised.size())
 			lLenght += PlayerQuest[i].localised.length();
 
-	QuestBook_Cache_Text = new _TCHAR[lLenght+nb_PlayerQuest*2+1];
-	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(_TCHAR));
+	QuestBook_Cache_Text = new char[lLenght+nb_PlayerQuest*2+1];
+	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(char));
 
 	for (int i = 0; i < nb_PlayerQuest; ++i)
 		if ( PlayerQuest[i].localised.size() )
 		{
-			_tcscat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
-			_tcscat(QuestBook_Cache_Text, _T("\n\n"));
+			strcat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
+			strcat(QuestBook_Cache_Text, "\n\n");
 			lLenght += 2;
 		}
 
@@ -7356,8 +7328,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
 		ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
 		
-		ARX_Allocate_Text(ITC.Level, _T("system_charsheet_player_lvl"));
-		ARX_Allocate_Text(ITC.Xp, _T("system_charsheet_player_xp"));
+		ARX_Allocate_Text(ITC.Level, "system_charsheet_player_lvl");
+		ARX_Allocate_Text(ITC.Xp, "system_charsheet_player_xp");
 		
 		ANIM_Set(&player.useanim,herowaitbook);
 

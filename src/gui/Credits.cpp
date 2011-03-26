@@ -1,7 +1,6 @@
 
 #include "gui/Credits.h"
 
-#include <string>
 #include <sstream>
 
 #include "core/Core.h"
@@ -226,5 +225,11 @@ void Credits::render() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
+}
+
+void Credits::reset() {
+	ARXmenu.mda->creditstart = ARX_TIME_Get();
+	ARXmenu.mda->creditspos = 0;
+	CreditsData.iFirstLine = 0;
 }
 

@@ -76,7 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 
 #include "physics/Box.h"
@@ -305,11 +305,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2);
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
 				}
@@ -337,11 +334,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 							if (t >= 0)
 							{
-								char texx[128];
-								char tex2[128];
-								strcpy(texx, GetName(io->filename).c_str());
-								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
+								std::string str = io->long_name() + ' ' + temp;
+								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str); 
 							}
 						}
 					}
@@ -358,11 +352,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str); 
 						}
 					}
 
@@ -377,11 +368,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2);
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
 					}
 				}
@@ -564,10 +552,10 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 }
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATH_GetAddressByName( const char * name)
+ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name)
 {
 
-	if ((name) && (name[0]) && (ARXpaths))
+	if ( !(name).empty() && (ARXpaths) )
 		for (long i = 0; i < nbARXpaths; i++)
 		{
 			if (ARXpaths[i])
@@ -1680,10 +1668,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
 						char weapon_material[64]	= "DAGGER";
-						char bkg_material[64]		= "EARTH";
+						std::string bkg_material = "EARTH";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
-							GetMaterialString(ep->tex->m_texName.c_str(), bkg_material);
+							bkg_material = GetMaterialString( ep->tex->m_texName );
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);

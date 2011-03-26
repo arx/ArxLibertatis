@@ -53,73 +53,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-#pragma pack(push,1)
+#include "graphics/BaseGraphicsTypes.h"
 
 #pragma pack(push,1)
-struct EERIE_RGB
-{
-	float r;
-	float g;
-	float b;
-}; // Aligned 1 2 4
-#pragma pack(pop)
 
-
-struct EERIE_QUAT
-{
-	float	x;
-	float	y;
-	float	z;
-	float	w;
-}; // Aligned 1 2 4 8
-
-struct EERIE_2D
-{
-	union
-	{
-		float		x;
-		float		a;
-	};
-	union
-	{
-		float		y;
-		float		b;
-	};
-}; // Aligned 1 2 4 8
-
-#pragma pack(push,1)
-struct EERIE_3D
-{
-	union
-	{
-		float		x;
-		float		a;
-		float		yaw;
-	};
-	union
-	{
-		float		y;
-		float		b;
-		float		pitch;
-	};
-	union
-	{
-		float		z;
-		float		g;
-		float		roll;
-	};
-
-	void clear()
-	{
-		x = 0;
-		y = 0;
-		z = 0;
-	}
-}; // Aligned 1 2 4
-#pragma pack(pop)
-
-struct EERIE_TRI
-{
+struct EERIE_TRI {
 	EERIE_3D v[3];
 }; // Aligned 1 2 4
 
@@ -193,27 +131,6 @@ enum EERIE_TYPES_EXTRAS_MODE
 //*************************************************************************************
 // EERIE Types
 //*************************************************************************************
-
-struct EERIEMATRIX
-{
-	D3DVALUE _11, _12, _13, _14;
-	D3DVALUE _21, _22, _23, _24;
-	D3DVALUE _31, _32, _33, _34;
-	D3DVALUE _41, _42, _43, _44;
-}; // Aligned 1 2 4
-
-struct EERIE_CYLINDER
-{
-	EERIE_3D	origin;
-	float		radius;
-	float		height;
-}; // Aligned 1 2 4
-
-struct EERIE_SPHERE
-{
-	EERIE_3D	origin;
-	float		radius;
-}; // Aligned 1 2 4
 
 struct EERIEPOLY
 {
@@ -364,6 +281,7 @@ struct PROGRESSIVE_DATA
 	short	padd;
 }; // Aligned 1 2 4
 
+// TODO used for loading (FTL)
 struct EERIE_SPRINGS
 {
 	short	startidx;
@@ -378,6 +296,7 @@ struct EERIE_SPRINGS
 #define CLOTHES_FLAG_FIX	1
 #define CLOTHES_FLAG_NOCOL	2
 
+// TODO used for loading (FTL)
 struct CLOTHESVERTEX
 {
 	short		idx;
@@ -396,27 +315,26 @@ struct CLOTHESVERTEX
 
 }; // Aligned 1 2 4
 
-struct CLOTHES_DATA
-{
-	CLOTHESVERTEX *	cvert;
-	CLOTHESVERTEX *	backup;
-	short			nb_cvert;
-	short			nb_springs;
-	EERIE_SPRINGS 	* springs;
+struct CLOTHES_DATA {
+	
+	CLOTHESVERTEX * cvert;
+	CLOTHESVERTEX * backup;
+	short nb_cvert;
+	std::vector<EERIE_SPRINGS> springs;
+	
+	CLOTHES_DATA() : cvert(NULL), backup(NULL), nb_cvert(0) { }
+};
+
+// TODO used for loading (FTL)
+struct COLLISION_SPHERE {
+	short idx;
+	short flags; // TODO not used?
+	float radius;
 }; // Aligned 1 2 4
 
-struct COLLISION_SPHERE
-{
-	short			idx;
-	short			flags;
-	float			radius;
-}; // Aligned 1 2 4
-
-struct COLLISION_SPHERES_DATA
-{
-	long				nb_spheres;
-	COLLISION_SPHERE *	spheres;
-}; // Aligned 1 2 4
+struct COLLISION_SPHERES_DATA {
+	std::vector<COLLISION_SPHERE> spheres;
+};
 
 struct PHYSVERT
 {
@@ -594,11 +512,11 @@ struct EERIE_3DOBJ
 		quat.x = quat.y = quat.z = quat.w = 0;
 		nblinked = 0;
 
-		pbox = 0;
-		pdata = 0;
-		ndata = 0;
-		cdata = 0;
-		sdata = 0;
+		pbox = NULL;
+		pdata = NULL;
+		ndata = NULL;
+		cdata = NULL;
+		sdata = NULL;
 
 		fastaccess.view_attach = 0;
 		fastaccess.primary_attach = 0;

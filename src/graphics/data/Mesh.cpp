@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include <cstdlib>
-#include <sstream>
-#include <iomanip>
 #include <cstdio>
 
 #include "ai/PathFinder.h"
@@ -80,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -347,14 +346,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
 						{
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
-								
-								dest += " ";
-								
-								std::stringstream ss;
-								ss << GetName(inter.iobj[i]->filename) << '_'
-								   << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident;
-								
-								dest += ss.str();
+								dest += ' ' + inter.iobj[i]->long_name();
 								
 							}
 						}
@@ -2819,8 +2811,10 @@ void EERIE_PORTAL_Release()
 		portals = NULL;
 	}
 }
+
 extern long COMPUTE_PORTALS;
-void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const char * name, long px, long py, long idx)
+
+void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long px, long py, long idx)
 {
 	if (!COMPUTE_PORTALS) return;
 
@@ -2900,6 +2894,7 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const char * name, long px, long py, 
 		EERIE_PORTAL_Room_Poly_Add(ep, val1, px, py, idx);
 	}
 }
+
 int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 {
 	long j, posx, posz, posy;
@@ -3017,7 +3012,7 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 				else if ( ep->tex->m_texName.find("EARTH") != std::string::npos )    ep->type |= POLY_EARTH;
 			}
 
-	EERIE_PORTAL_Poly_Add(epp, eobj->name.c_str(), posx, posz, eg->nbpoly - 1);
+	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
 	return 1;
 }
 
@@ -3631,7 +3626,7 @@ extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 
-bool FastSceneLoad(const char * partial_path)
+bool FastSceneLoad(const std::string& partial_path)
 {
 	// TODO bounds checking
 	
@@ -3658,7 +3653,7 @@ bool FastSceneLoad(const char * partial_path)
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
 	//pos += sizeof(UNIQUE_HEADER);
 	
-	if (!NOCHECKSUM) if (strcasecmp(uh->path, path.c_str())) {
+	if (!NOCHECKSUM) if (strcasecmp(uh->path, path)) {
 		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
 		free(dat);
 		return false;
@@ -4179,7 +4174,7 @@ bool FastSceneLoad(const char * partial_path)
 	
 }
 
-bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
+bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 	
 	(void)ms; // TODO why is this never used?
 	
@@ -4196,10 +4191,10 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 	unsigned char * dat;
 	long i, j, k, kk;
 
-	long allocsize =	(256) * 60 + 1000000 +
-						sizeof(FAST_SCENE_HEADER) +
-						sizeof(FAST_TEXTURE_CONTAINER) * 1000 +
-						sizeof(FAST__ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
+	long allocsize = (256) * 60 + 1000000 +
+	                 sizeof(FAST_SCENE_HEADER) +
+	                 sizeof(FAST_TEXTURE_CONTAINER) * 1000 +
+	                 sizeof(FAST__ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
 
 	if (portals)
 	{
@@ -4562,7 +4557,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 	EERIE_PORTAL_Release();
 
 	// Try to Load Fast Scene
-	if (!FastSceneLoad(ftemp.c_str()))
+	if (!FastSceneLoad(ftemp))
 	{
 		//failure: Not-Fast Load;
 		EERIE_3DSCENE * escn;
@@ -4588,7 +4583,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 
 		if (NEED_ANCHORS)	AnchorData_Create(ACTIVEBKG);
 
-		FastSceneSave(ftemp.c_str(), ms);
+		FastSceneSave(ftemp, ms);
 		ComputePortalVertexBuffer();
 		ComputeRoomDistance();
 	}
@@ -4733,7 +4728,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 				}
 
 				if(!eobj->facelist.empty()) {
-					EERIE_PORTAL_Poly_Add(&epp, eobj->name.c_str(), -1, -1, -1);
+					EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
 				}
 
 				return;

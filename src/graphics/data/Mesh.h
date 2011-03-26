@@ -436,6 +436,7 @@ struct TWEAK_INFO
 #define MAX_ANIMS 200		// max loadable anims per character
 
 typedef s32 ArxSound;
+
 struct INTERACTIVE_OBJ
 {
 	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
@@ -577,6 +578,29 @@ struct INTERACTIVE_OBJ
 	short				inzone_show;
 	short				summoner;
 	long spark_n_blood;
+
+	/**
+	 * Return the short name for this Object where only the name
+	 * of the file is returned
+	 * @return The name of the file at the end of the filename path
+	 */
+	std::string short_name() const;
+
+	/**
+	 *  Returns the long name for this Object where the short name
+	 * is combined with the identifying number
+	 * in the form of "%s_4ld"
+	 * @return The short name combined with a 4 digit ident, padded with 0
+	 */
+	std::string long_name() const;
+
+	/**
+	 *  Returns the full name for this Object where the
+	 * directory portion of the filename member is combined
+	 * with the the result of long_name()
+	 * @return The directory of filename + long_name()
+	 */
+	std::string full_name() const;
 };
 
 //-----------------------------------------------------------------------------
@@ -823,8 +847,8 @@ long PhysicalDrawBkgVLine(EERIE_3D * orgn,EERIE_3D * dest);
 long AnchorData_GetNearest(EERIE_3D *pos,EERIE_CYLINDER * cyl);
 
 // FAST SAVE LOAD
-bool FastSceneLoad(const char * path);
-bool FastSceneSave(const char * path,EERIE_MULTI3DSCENE * ms);
+bool FastSceneLoad(const std::string& path);
+bool FastSceneSave(const std::string& path,EERIE_MULTI3DSCENE * ms);
 bool CheckUniqueIdent(char * pathh);
 bool CreateUniqueIdent(char * pathh);
 

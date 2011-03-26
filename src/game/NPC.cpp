@@ -57,10 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/NPC.h"
 
-#include <cstdlib>
-#include <sstream>
-#include <algorithm>
-#include <vector>
 #include <cassert>
 #include <cstdio>
 
@@ -85,6 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+#include "io/String.h"
 
 #include "physics/Box.h"
 #include "physics/Anchors.h"
@@ -793,97 +790,96 @@ failure:
 
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_SetStat(INTERACTIVE_OBJ * io, const char * statname, float value)
+void ARX_NPC_SetStat( INTERACTIVE_OBJ& io, const std::string& statname, float value )
 {
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if ( !(io.ioflags & IO_NPC) )
 		return;
 
 	if (!strcasecmp(statname, "ARMOR_CLASS"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->armor_class = value;
+		io._npcdata->armor_class = value;
 	}
 	else if (!strcasecmp(statname, "BACKSTAB_SKILL"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->backstab_skill = value;
+		io._npcdata->backstab_skill = value;
 	}
 	else if (!strcasecmp(statname, "BACKSTAB"))
 	{
-		if (value == 0) io->_npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
-		else io->_npcdata->npcflags |= NPCFLAG_BACKSTAB;
+		if (value == 0) io._npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
+		else io._npcdata->npcflags |= NPCFLAG_BACKSTAB;
 	}
 	else if (!strcasecmp(statname, "REACH"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->reach = value;
+		io._npcdata->reach = value;
 	}
 	else if (!strcasecmp(statname, "CRITICAL"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->critical = value;
+		io._npcdata->critical = value;
 	}
 	else if (!strcasecmp(statname, "ABSORB"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->absorb = value;
+		io._npcdata->absorb = value;
 	}
 	else if (!strcasecmp(statname, "DAMAGES"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->damages = value;
+		io._npcdata->damages = value;
 	}
 	else if (!strcasecmp(statname, "TOHIT"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->tohit = value;
+		io._npcdata->tohit = value;
 	}
 	else if (!strcasecmp(statname, "AIMTIME"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->aimtime = value;
+		io._npcdata->aimtime = value;
 	}
 	else if (!strcasecmp(statname, "LIFE"))
 	{
 		if (value < 0) value = 0.0000001f;
 
-		io->_npcdata->maxlife = io->_npcdata->life = value;
+		io._npcdata->maxlife = io._npcdata->life = value;
 	}
 	else if (!strcasecmp(statname, "MANA"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->maxmana = io->_npcdata->mana = value;
+		io._npcdata->maxmana = io._npcdata->mana = value;
 	}
 	else if (!strcasecmp(statname, "RESISTFIRE"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
 
-		io->_npcdata->resist_fire = (unsigned char)value;
+		io._npcdata->resist_fire = (unsigned char)value;
 	}
 	else if (!strcasecmp(statname, "RESISTPOISON"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
 
-		io->_npcdata->resist_poison = (unsigned char)value;
+		io._npcdata->resist_poison = (unsigned char)value;
 	}
 	else if (!strcasecmp(statname, "RESISTMAGIC"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
 
-		io->_npcdata->resist_magic = (unsigned char)value;
+		io._npcdata->resist_magic = (unsigned char)value;
 	}
 }
 
@@ -1802,22 +1798,22 @@ extern long GORE_MODE;
 
 short GetCutFlag( const std::string& str )
 {
-	if (!strcasecmp(str.c_str(), "CUT_HEAD"))
+	if (!strcasecmp(str, "CUT_HEAD"))
 		return FLAG_CUT_HEAD;
 
-	if (!strcasecmp(str.c_str(), "CUT_TORSO"))
+	if (!strcasecmp(str, "CUT_TORSO"))
 		return FLAG_CUT_TORSO;
 
-	if (!strcasecmp(str.c_str(), "CUT_LARM"))
+	if (!strcasecmp(str, "CUT_LARM"))
 		return FLAG_CUT_LARM;
 
-	if (!strcasecmp(str.c_str(), "CUT_RARM"))
+	if (!strcasecmp(str, "CUT_RARM"))
 		return FLAG_CUT_HEAD;
 
-	if (!strcasecmp(str.c_str(), "CUT_LLEG"))
+	if (!strcasecmp(str, "CUT_LLEG"))
 		return FLAG_CUT_LLEG;
 
-	if (!strcasecmp(str.c_str(), "CUT_RLEG"))
+	if (!strcasecmp(str, "CUT_RLEG"))
 		return FLAG_CUT_RLEG;
 
 	return 0;
@@ -1828,32 +1824,31 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	if ((!io) || (!(io->ioflags & IO_NPC)) || flag == 0)
 		return -1;
 
-	char tx[64];
-	tx[0] = 0;
+	std::string tx;
 
 	if (flag == FLAG_CUT_HEAD)
-		strcpy(tx, "CUT_HEAD");
+		tx =  "CUT_HEAD";
 	else if (flag == FLAG_CUT_TORSO)
-		strcpy(tx, "CUT_TORSO");
+		tx = "CUT_TORSO";
 	else if (flag == FLAG_CUT_LARM)
-		strcpy(tx, "CUT_LARM");
+		tx = "CUT_LARM";
 
 	if (flag == FLAG_CUT_RARM)
-		strcpy(tx, "CUT_RARM");
+		tx = "CUT_RARM";
 
 	if (flag == FLAG_CUT_LLEG)
-		strcpy(tx, "CUT_LLEG");
+		tx = "CUT_LLEG";
 
 	if (flag == FLAG_CUT_RLEG)
-		strcpy(tx, "CUT_RLEG");
+		tx = "CUT_RLEG";
 
-	if (tx[0])
+	if ( !tx.empty() )
 	{
-		for (size_t i = 0; i < io->obj->selections.size(); i++)
-		{ // TODO iterator
-			if ((io->obj->selections[i].selected.size() > 0)
-			        &&	(!strcasecmp(io->obj->selections[i].name.c_str(), tx)))
-				return i;
+		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
+		for ( iterator iter = io->obj->selections.begin() ; iter != io->obj->selections.end() ; iter++ )
+		{
+			if ( ( iter->selected.size() > 0 ) && ( !strcasecmp( iter->name, tx)))
+				return iter - io->obj->selections.begin();
 		}
 	}
 
@@ -1987,7 +1982,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 		if ((target->obj->selections[i].selected.size() > 0)
 		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
 		{
-			short fll = GetCutFlag(target->obj->selections[i].name.c_str());
+			short fll = GetCutFlag( target->obj->selections[i].name );
 
 			if (IsAlreadyCut(target, fll))
 				continue;
@@ -2030,7 +2025,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 	if (mindist < 60) // can only cut a close part...
 	{
-		short fl = GetCutFlag(target->obj->selections[numsel].name.c_str());
+		short fl = GetCutFlag( target->obj->selections[numsel].name );
 
 		if ((fl)
 		        &&	(!(target->_npcdata->cuts & fl)))
@@ -4100,17 +4095,17 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float volume, const float power)
 {
 	char step_material[64] = "Foot_bare";
-	char floor_material[64] = "EARTH";
+	std::string floor_material = "EARTH";
 
 	if (EEIsUnderWater(pos))
-		strcpy(floor_material, "WATER");
+		floor_material = "WATER";
 	else
 	{
 		EERIEPOLY * ep;
 		ep = CheckInPoly(pos->x, pos->y - 100.0F, pos->z);
 
 		if (ep &&  ep->tex && !ep->tex->m_texName.empty())
-			GetMaterialString(ep->tex->m_texName.c_str(), floor_material);
+			floor_material = GetMaterialString( ep->tex->m_texName );
 	}
 
 	if (io && io->stepmaterial)

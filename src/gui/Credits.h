@@ -7,6 +7,7 @@ class Credits {
 public:
 	
 	static void render();
+	static void reset();
 	
 };
 

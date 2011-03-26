@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"
 #include "gui/ViewImage.h"
+#include "gui/Credits.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -128,7 +129,7 @@ extern TextureContainer * pTextureLoad;
 
 bool MENU_NoActiveWindow();
 void ClearGameDEVICE();
-void GetTextSize(HFONT _hFont, const _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
+void GetTextSize(HFONT _hFont, const char* _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------
 // Exported global variables
@@ -463,7 +464,7 @@ void ARX_MENU_NEW_QUEST_Clicked_QUIT()
 void ARX_MENU_Clicked_CREDITS()
 {
 	ARXmenu.currentmode = AMCM_CREDITS;
-	ARXmenu.mda->creditstart = ARX_TIME_Get();
+	Credits::reset();
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
 extern long FINAL_COMMERCIAL_DEMO;
@@ -696,8 +697,8 @@ bool ARX_Menu_Render()
 			ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
 			ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
 
-			ARX_Allocate_Text(ITC.Level, _T("system_charsheet_player_lvl"));
-			ARX_Allocate_Text(ITC.Xp, _T("system_charsheet_player_xp"));
+			ARX_Allocate_Text(ITC.Level, "system_charsheet_player_lvl");
+			ARX_Allocate_Text(ITC.Xp, "system_charsheet_player_xp");
 
 			ANIM_Set(&player.useanim, herowaitbook);
 

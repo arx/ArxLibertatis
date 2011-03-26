@@ -79,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Renderer.h"
 
 #include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
@@ -117,7 +118,7 @@ public:
 } gDevilLib;
 
 
-TextureContainer * MakeTCFromFile(const char * tex, long flag)
+TextureContainer * MakeTCFromFile(const std::string& tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
@@ -134,7 +135,7 @@ TextureContainer * MakeTCFromFile(const char * tex, long flag)
 	return tc;
 }
 
-TextureContainer * MakeTCFromFile_NoRefinement(const char * tex, long flag)
+TextureContainer * MakeTCFromFile_NoRefinement(const std::string& tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
@@ -573,7 +574,7 @@ HRESULT TextureContainer::LoadImageData()
 HRESULT TextureContainer::LoadFile(const std::string& strPathname)
 {
 	size_t size = 0;
-	char * dat = (char *)PAK_FileLoadMalloc(strPathname.c_str(), size);
+	char * dat = (char *)PAK_FileLoadMalloc(strPathname, size);
 	
 	if(!dat) 
 	{
@@ -2321,7 +2322,7 @@ void ConvertData( std::string& dat)
 	dat = dat.substr(substrStart, substrLen);
 }
 
-void LoadRefinementMap(const char* fileName, std::map<string, string>& refinementMap)
+void LoadRefinementMap(const std::string& fileName, std::map<string, string>& refinementMap)
 {
 	char * fileContent = NULL;
 	size_t fileSize = 0;
@@ -2368,7 +2369,7 @@ void LoadRefinementMap(const char* fileName, std::map<string, string>& refinemen
 				MakeUpcase( str1 );
 				MakeUpcase( data );
 
-				if(strcmp(data.c_str(), "NONE") != 0)
+				if( data.compare( "NONE" ) != 0 ) // If the string does not contain "NONE"
 					refinementMap[str1] = data;
 			}
 
@@ -2408,14 +2409,14 @@ void LookForRefinementMap(TextureContainer * tc)
 	if( it != g_GlobalRefine.end() )
 	{
 		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
-		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
+		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2, 0, D3DTEXTR_16BITSPERPIXEL);
 	}
 
 	it = g_Refine.find(name);
 	if( it != g_Refine.end() )
 	{
 		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
-		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
+		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2, 0, D3DTEXTR_16BITSPERPIXEL);
 	}
 }
 
@@ -2741,7 +2742,7 @@ TextureContainer * D3DTextr_GetSurfaceContainer( const std::string& _strName)
 
 //*************************************************************************************
 //*************************************************************************************
-TextureContainer * GetTextureFile(const char * tex, long flag)
+TextureContainer * GetTextureFile( const std::string& tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
@@ -2757,7 +2758,7 @@ TextureContainer * GetTextureFile(const char * tex, long flag)
 }
 //*************************************************************************************
 //*************************************************************************************
-TextureContainer * GetTextureFile_NoRefinement(const char * tex, long flag)
+TextureContainer * GetTextureFile_NoRefinement( const std::string& tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;

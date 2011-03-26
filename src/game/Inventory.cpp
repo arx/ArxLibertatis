@@ -57,14 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // TODO include file
 
-#include <cstdio>
-#include <vector>
-#include <algorithm>
-#include <functional>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
 #include "ai/Paths.h"
 
 #include "core/Application.h"
@@ -620,23 +612,8 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 
 	if (io->ioflags & IO_MOVABLE) return false;
 
-	if (io->ioflags & IO_GOLD)
-	{
-		ARX_PLAYER_AddGold(io->_itemdata->price);
-
-		if (io->scriptload)
-		{
-			RemoveFromAllInventories(io);
-			long i = GetInterNum(io);
-			ReleaseInter(io);
-			inter.iobj[i] = NULL;
-		}
-		else
-		{
-			io->show = SHOW_FLAG_KILLED;
-			io->GameFlags &= ~GFLAG_ISINTREATZONE;
-		}
-
+	if(io->ioflags & IO_GOLD) {
+		ARX_PLAYER_AddGold(io);
 		return true;
 	}
 
@@ -1203,23 +1180,8 @@ bool PutInInventory()
 					}
 				}
 
-			if (DRAGINTER->ioflags & IO_GOLD)
-			{
-				ARX_PLAYER_AddGold(DRAGINTER->_itemdata->price);
-				ARX_SOUND_PlayInterface(SND_GOLD);
-
-				if (DRAGINTER->scriptload)
-				{
-					RemoveFromAllInventories(DRAGINTER);
-	
-					ReleaseInter(DRAGINTER);
-				}
-				else
-				{
-					DRAGINTER->show = SHOW_FLAG_KILLED;
-					DRAGINTER->GameFlags &= ~GFLAG_ISINTREATZONE;
-				}
-
+			if(DRAGINTER->ioflags & IO_GOLD) {
+				ARX_PLAYER_AddGold(DRAGINTER);
 				Set_DragInter(NULL);
 				return true;
 			}
@@ -1325,23 +1287,8 @@ bool PutInInventory()
 			return false;
 	}
 
-	if (DRAGINTER->ioflags & IO_GOLD)
-	{
-		ARX_PLAYER_AddGold(DRAGINTER->_itemdata->price);
-		ARX_SOUND_PlayInterface(SND_GOLD);
-
-		if (DRAGINTER->scriptload)
-		{
-			RemoveFromAllInventories(DRAGINTER);
- 
-			ReleaseInter(DRAGINTER);
-		}
-		else
-		{
-			DRAGINTER->show = SHOW_FLAG_KILLED;
-			DRAGINTER->GameFlags &= ~GFLAG_ISINTREATZONE;
-		}
-
+	if(DRAGINTER->ioflags & IO_GOLD) {
+		ARX_PLAYER_AddGold(DRAGINTER);
 		Set_DragInter(NULL);
 		return true;
 	}
@@ -1395,17 +1342,6 @@ bool PutInInventory()
 					ARX_SOUND_PlayInterface(SND_INVSTD);
 					return true;
 				}
-
-				if (0)
-					if (CanBePutInInventory(DRAGINTER))
-					{
-						if (DRAGINTER)
-							DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-
-						ARX_SOUND_PlayInterface(SND_INVSTD);
-						Set_DragInter(NULL);
-						return true;
-					}
 
 				return false;
 			}
@@ -2152,7 +2088,7 @@ void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
 							{
 								if (item->obj->texturecontainer[lTex])
 								{
-									if (strcmp(item->obj->texturecontainer[lTex]->m_texName.c_str(), _lpszText) == 0)
+									if ( item->obj->texturecontainer[lTex]->m_texName.compare( _lpszText ) == 0)
 									{
 										if (item->GameFlags & GFLAG_INTERACTIVITY)
 											SendIOScriptEvent(item, _lCommand);
