@@ -25,7 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsModes.h"
 
-#include <sstream>
 #include <vector>
 #include <string>
 #include <algorithm>

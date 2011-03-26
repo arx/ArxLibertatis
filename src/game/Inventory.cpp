@@ -57,14 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // TODO include file
 
-#include <cstdio>
-#include <vector>
-#include <algorithm>
-#include <functional>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
 #include "ai/Paths.h"
 
 #include "core/Application.h"

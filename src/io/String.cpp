@@ -8,8 +8,9 @@
 using std::string;
 using std::transform;
 
-void MakeUpcase( std::string& str ) {
+std::string MakeUpcase( std::string& str ) {
 	transform(str.begin(), str.end(), str.begin(), ::toupper);
+	return str;
 }
 
 bool NC_IsIn(string t1, string t2) {

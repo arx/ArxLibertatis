@@ -56,10 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells02.h"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
 #include <cassert>
 #include <climits>
 

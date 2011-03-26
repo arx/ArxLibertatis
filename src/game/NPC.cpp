@@ -57,10 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/NPC.h"
 
-#include <cstdlib>
-#include <sstream>
-#include <algorithm>
-#include <vector>
 #include <cassert>
 #include <cstdio>
 

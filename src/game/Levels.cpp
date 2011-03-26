@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Levels.h"
 
-#include <vector>
-#include <sstream>
 #include <cstring>
 
 #include "io/String.h"

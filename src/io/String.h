@@ -4,7 +4,7 @@
 
 #include <string>
 
-void MakeUpcase(std::string & str);
+std::string MakeUpcase(std::string & str);
 bool IsIn(const std::string & strin, const std::string & str);
 bool NC_IsIn(std::string strin, std::string str);
 int strcasecmp(const std::string & str1, const std::string & str2);

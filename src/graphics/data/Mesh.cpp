@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include <cstdlib>
-#include <sstream>
-#include <iomanip>
 #include <cstdio>
 
 #include "ai/PathFinder.h"

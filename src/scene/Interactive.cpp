@@ -3239,8 +3239,6 @@ void ReloadAllScripts()
 //*************************************************************************************
 void MakeIOIdent(INTERACTIVE_OBJ * io)
 {
-	std::string temp;
-	char temp2[HERMES_PATH_SIZE];
 	long t = 1;
 
 	if ( (NODIRCREATION) || !io )
@@ -3248,12 +3246,12 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 
 	while (io->ident == 0)
 	{
-		temp = io->full_name() + '.';
+		std::string temp = io->full_name() + '.';
 
 		if (!DirectoryExist(temp))
 		{
 			io->ident = t;
-			CreateDirectory(temp, NULL);
+			CreateFullPath(temp);
 			LogDirCreation(temp);
 			WriteIOInfo(io, temp);
 		}

@@ -1,7 +1,6 @@
 
 #include "gui/Credits.h"
 
-#include <string>
 #include <sstream>
 
 #include "core/Core.h"

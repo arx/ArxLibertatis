@@ -33,11 +33,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/GameSound.h"
 
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <sstream>
-
 #include "audio/Audio.h"
 
 #include "core/Application.h"

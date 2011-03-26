@@ -65,8 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/ChangeLevel.h"
 
-#include <vector>
-#include <algorithm>
 #include <iomanip>
 #include <cassert>
 #include <sstream>

@@ -25,8 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Map.h"
 
-#include <sstream>
-#include <vector>
 #include <cstdio>
 
 #include "core/Core.h"

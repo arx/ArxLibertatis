@@ -58,10 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 
 #include <cstdio>
-#include <cstdlib>
-
-#include <iomanip>
-#include <sstream>
 
 #include "ai/Paths.h"
 
