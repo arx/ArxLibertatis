@@ -579,8 +579,24 @@ struct INTERACTIVE_OBJ
 	short				summoner;
 	long spark_n_blood;
 
+	/* Return the short name for this Object where only the name
+	 * of the file is returned
+	 * @return The name of the file at the end of the filename path
+	 */
 	std::string short_name() const;
+
+	/* Returns the long name for this Object where the short name
+	 * is combined with the identifying number
+	 * in the form of "%s_4ld"
+	 * @return The short name combined with a 4 digit ident, padded with 0
+	 */
 	std::string long_name() const;
+
+	/* Returns the full name for this Object where the
+	 * directory portion of the filename member is combined
+	 * with the the result of long_name()
+	 * @return The directory of filename + long_name()
+	 */
 	std::string full_name() const;
 };
 

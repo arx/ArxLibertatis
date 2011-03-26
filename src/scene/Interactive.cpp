@@ -168,6 +168,10 @@ std::string INTERACTIVE_OBJ::long_name() const
 	return ss.str();
 }
 
+/* Returns the full name for this Object where the
+ * directory portion of the filename member is combined
+ * with the the result of long_name()
+ */
 std::string INTERACTIVE_OBJ::full_name() const
 {
 	return GetDirectory( filename ) + long_name();
