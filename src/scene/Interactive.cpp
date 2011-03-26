@@ -170,7 +170,7 @@ std::string INTERACTIVE_OBJ::long_name() const
 
 std::string INTERACTIVE_OBJ::full_name() const
 {
-	return GetDirectory( filename ) + full_name();
+	return GetDirectory( filename ) + long_name();
 }
 
 float STARTED_ANGLE = 0;
