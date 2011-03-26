@@ -123,7 +123,6 @@ bool bNoMenu=false;
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _iBpp);
 void ARX_SetAntiAliasing();
 void ARX_MENU_LaunchAmb(char *_lpszAmb);
-void MakeUpcase( std::string& );
 
 //-----------------------------------------------------------------------------
 
