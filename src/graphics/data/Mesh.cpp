@@ -777,7 +777,7 @@ EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos) {
 
 bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
 {
-	register EERIE_3D	n, s21, s31;
+	EERIE_3D	n, s21, s31;
 
 	s21.x = ep->v[1].sx - ep->v[0].sx;
 	s21.y = ep->v[1].sy - ep->v[0].sy;
@@ -4309,30 +4309,22 @@ error:
 	return false;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
-{
-	char fic[256];
+void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
+	
 	std::string ftemp = LastLoadedScene;
 	RemoveName(ftemp);
-	strcpy(fic, LastLoadedScene);
-
+	
 	// First Release Any Portal Data
 	EERIE_PORTAL_Release();
-
+	
 	// Try to Load Fast Scene
-	if (!FastSceneLoad(ftemp))
-	{
-		//failure: Not-Fast Load;
-		EERIE_3DSCENE * escn;
-
-		for (long j = 0; j < ms->nb_scenes; j++)
-		{
-			escn = ms->scenes[j];
-
-			for (long i = 0; i < escn->nbobj; i++)
-			{
+	if(!FastSceneLoad(ftemp)) {
+		
+		//failure: Not-Fast Load
+		
+		for(long j = 0; j < ms->nb_scenes; j++) {
+			EERIE_3DSCENE * escn = ms->scenes[j];
+			for(long i = 0; i < escn->nbobj; i++) {
 				escn->objs[i]->pos.x += ms->pos.x;
 				escn->objs[i]->pos.y += ms->pos.y;
 				escn->objs[i]->pos.z += ms->pos.z;

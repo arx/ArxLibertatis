@@ -3156,6 +3156,8 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	float dist = FLT_MAX;
 	long CHANGE = 0;
 
+	EERIE_3D ForcedMove;
+	
 	// GetTargetPos MUST be called before FaceTarget2
 	if ((io->_npcdata->pathfind.listnb > 0)
 	        &&	(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
@@ -3414,7 +3416,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	io->physics.startpos.z = io->physics.cyl.origin.z = io->pos.z;
 
 
-	EERIE_3D ForcedMove;
+	
 
 	if ((io->forcedmove.x == 0.f) && (io->forcedmove.y == 0.f) && (io->forcedmove.z == 0.f))
 		Vector_Init(&ForcedMove);

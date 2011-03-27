@@ -43,11 +43,93 @@ struct EERIE_3D {
 		float g;
 		float roll;
 	};
-
-	void clear() {
-		x = 0;
-		y = 0;
-		z = 0;
+	
+	inline EERIE_3D() {
+		// TODO initialize?
+	}
+	
+	inline EERIE_3D(const EERIE_3D & o) {
+		x = o.x, y = o.y, z = o.z;
+	}
+	
+	inline EERIE_3D(float _x, float _y, float _z) {
+		x = _x, y = _y, z = _z;
+	}
+	
+	inline void clear() {
+		x = y = z = 0;
+	}
+	
+	inline EERIE_3D operator-() const {
+		return EERIE_3D(-x, -y, -z);
+	}
+	
+	inline EERIE_3D & operator+=(const EERIE_3D & o) {
+		x += o.x, y += o.y, z += o.z;
+		return *this;
+	}
+	
+	inline EERIE_3D & operator-=(const EERIE_3D & o) {
+		x -= o.x, y -= o.y, z -= o.z;
+		return *this;
+	}
+	
+	inline EERIE_3D & operator*=(const EERIE_3D & o) {
+		x *= o.x, y *= o.y, z *= o.z;
+		return *this;
+	}
+	
+	inline EERIE_3D & operator+=(const float v) {
+		x += v, y += v, z += v;
+		return *this;
+	}
+	
+	inline EERIE_3D & operator-=(const float v) {
+		x -= v, y -= v, z -= v;
+		return *this;
+	}
+	
+	inline EERIE_3D & operator*=(const float v) {
+		x *= v, y *= v, z *= v;
+		return *this;
+	}
+	
+	inline EERIE_3D & operator/=(const float v) {
+		x /= v, y /= v, z /= v;
+		return *this;
+	}
+	
+	inline EERIE_3D operator+(const EERIE_3D & o) const {
+		return EERIE_3D(x + o.x, y + o.y, z + o.z);
+	}
+	
+	inline EERIE_3D operator-(const EERIE_3D & o) const {
+		return EERIE_3D(x - o.x, y - o.y, z - o.z);
+	}
+	
+	inline EERIE_3D operator*(const EERIE_3D & o) const {
+		return EERIE_3D(x * o.x, y * o.y, z * o.z);
+	}
+	
+	inline EERIE_3D operator+(const float v) const {
+		return EERIE_3D(x + v, y + v, z + v);
+	}
+	
+	inline EERIE_3D operator-(const float v) const {
+		return EERIE_3D(x - v, y - v, z - v);
+	}
+	
+	inline EERIE_3D operator*(const float v) const {
+		return EERIE_3D(x * v, y * v, z * v);
+	}
+	
+	inline EERIE_3D operator/(const float v) const {
+		return EERIE_3D(x / v, y / v, z / v);
+	}
+	
+	inline EERIE_3D & operator=(const EERIE_3D & o) {
+		x = o.x, y = o.y, z = o.z;
+		return *this;
 	}
 	
 };

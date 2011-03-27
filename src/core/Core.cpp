@@ -6113,7 +6113,7 @@ static float _AvgFrameDiff = 150.f;
 
 				switch (acs->type)
 				{
-					case ARX_CINE_SPEECH_KEEP:
+					case ARX_CINE_SPEECH_KEEP: {
 						subj.pos.x=acs->pos1.x;
 						subj.pos.y=acs->pos1.y;
 						subj.pos.z=acs->pos1.z;
@@ -6121,16 +6121,14 @@ static float _AvgFrameDiff = 150.f;
 						subj.angle.b=acs->pos2.b;
 						subj.angle.g=acs->pos2.g;
 						EXTERNALVIEW=1;
-					break;
-					case ARX_CINE_SPEECH_ZOOM:
+						break;
+					}
+					case ARX_CINE_SPEECH_ZOOM: {
 						//need to compute current values
 						alpha=acs->startangle.a*itime+acs->endangle.a*rtime;
 						beta=acs->startangle.b*itime+acs->endangle.b*rtime;
 						distance=acs->startpos*itime+acs->endpos*rtime;
-						EERIE_3D targetpos;
-						targetpos.x=acs->pos1.x;
-						targetpos.y=acs->pos1.y;
-						targetpos.z=acs->pos1.z;
+						EERIE_3D targetpos = acs->pos1;
 						conversationcamera.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
 						conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
 						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;						
@@ -6142,24 +6140,19 @@ static float _AvgFrameDiff = 150.f;
 						subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 						subj.angle.g=0.f;
 						EXTERNALVIEW=1;
-					break;
+						break;
+					}
 					case ARX_CINE_SPEECH_SIDE_LEFT:
-					case ARX_CINE_SPEECH_SIDE:
+					case ARX_CINE_SPEECH_SIDE: {
 
 						if (ValidIONum(acs->ionum))
 						{
 
 							EERIE_3D from,to,vect,vect2;
-							from.x=acs->pos1.x;
-							from.y=acs->pos1.y;
-							from.z=acs->pos1.z;
-							to.x=acs->pos2.x;
-							to.y=acs->pos2.y;
-							to.z=acs->pos2.z;
+							from = acs->pos1;
+							to = acs->pos2;
 
-							vect.x=to.x-from.x;
-							vect.y=to.y-from.y;
-							vect.z=to.z-from.z;
+							vect= to - from;
 							TRUEVector_Normalize(&vect);
 
 							if (acs->type==ARX_CINE_SPEECH_SIDE_LEFT)
@@ -6172,9 +6165,7 @@ static float _AvgFrameDiff = 150.f;
 							}
 
 							distance=acs->f0*itime+acs->f1*rtime;
-							vect2.x*=distance;
-							vect2.y*=distance;
-							vect2.z*=distance;
+							vect2 *= distance;
 							dist=TRUEEEDistance3D(&from,&to);
 							EERIE_3D tfrom,tto;
 							tfrom.x=from.x+vect.x*acs->startpos*( 1.0f / 100 )*dist;
@@ -6183,6 +6174,7 @@ static float _AvgFrameDiff = 150.f;
 							tto.x=from.x+vect.x*acs->endpos*( 1.0f / 100 )*dist;
 							tto.y=from.y+vect.y*acs->endpos*( 1.0f / 100 )*dist;
 							tto.z=from.z+vect.z*acs->endpos*( 1.0f / 100 )*dist;
+							EERIE_3D targetpos;
 							targetpos.x=tfrom.x*itime+tto.x*rtime;
 							targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;
 							targetpos.z=tfrom.z*itime+tto.z*rtime;
@@ -6199,11 +6191,12 @@ static float _AvgFrameDiff = 150.f;
 							EXTERNALVIEW=1;
 						}
 
-					break;
+						break;
+					}
 					case ARX_CINE_SPEECH_CCCLISTENER_R:
 					case ARX_CINE_SPEECH_CCCLISTENER_L:
 					case ARX_CINE_SPEECH_CCCTALKER_R:
-					case ARX_CINE_SPEECH_CCCTALKER_L:
+					case ARX_CINE_SPEECH_CCCTALKER_L: {
 
 						//need to compute current values
 						if (ValidIONum(acs->ionum))
@@ -6212,6 +6205,7 @@ static float _AvgFrameDiff = 150.f;
 							INTERACTIVE_OBJ * o1=io;
 							INTERACTIVE_OBJ * o2=ioo;
 
+							EERIE_3D targetpos;
 							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
 								|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
 							{
@@ -6274,7 +6268,8 @@ static float _AvgFrameDiff = 150.f;
 							EXTERNALVIEW=1;
 						}
 
-					break;
+						break;
+					}
 				}
 
 				LASTCAMPOS.x=subj.pos.x;
@@ -6473,17 +6468,19 @@ static float _AvgFrameDiff = 150.f;
 
 
 	// Set Listener Position
-	EERIE_3D front, up;
-	float t;
-	t=radians(MAKEANGLE(ACTIVECAM->angle.b));			
-	front.x=-EEsin(t);
-	front.y=0.f;
-	front.z=EEcos(t);
-	TRUEVector_Normalize(&front);
-	up.x=0.f;
-	up.y=1.f;
-	up.z=0.f;
-	ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
+	{
+		EERIE_3D front, up;
+		float t;
+		t=radians(MAKEANGLE(ACTIVECAM->angle.b));			
+		front.x=-EEsin(t);
+		front.y=0.f;
+		front.z=EEcos(t);
+		TRUEVector_Normalize(&front);
+		up.x=0.f;
+		up.y=1.f;
+		up.z=0.f;
+		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
+	}
 
 	// Reset Transparent Polys Idx
 	INTERTRANSPOLYSPOS=TRANSPOLYSPOS=0;
