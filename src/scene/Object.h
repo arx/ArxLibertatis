@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEOBJECT_H
 #define EERIEOBJECT_H
 
-#include "graphics/d3dwrapper.h"
 #include "core/Application.h"
 #include "scene/Light.h"
 #include "graphics/data/Texture.h"
@@ -65,11 +64,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 struct ACTIONSTRUCT
 {
-    EERIE_LIGHT	light;
-    EERIE_3D	pos;
-    long		dl;
-    short		type;
-    short		exist;
+	EERIE_LIGHT	light;
+	EERIE_3D	pos;
+	long		dl;
+	short		type;
+	short		exist;
 };
 
 //-----------------------------------------------------------------------------

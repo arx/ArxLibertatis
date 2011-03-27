@@ -51,9 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Common.h"
 
-class TextureContainer;
-
 #include "graphics/BaseGraphicsTypes.h"
+
+class TextureContainer;
 
 #pragma pack(push,1)
 
