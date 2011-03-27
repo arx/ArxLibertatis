@@ -65,8 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/ChangeLevel.h"
 
-#include <vector>
-#include <algorithm>
 #include <iomanip>
 #include <cassert>
 #include <sstream>
@@ -98,6 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/SaveBlock.h"
+#include "io/String.h"
 
 #include "physics/CollisionShapes.h"
 
@@ -314,9 +313,9 @@ void ARX_Changelevel_CurGame_Open() {
 	string savefile = CurGamePath;
 	savefile += "Gsave.sav";
 	
-	if(FileExist(savefile.c_str())) {
+	if(FileExist(savefile)) {
 		
-		GLOBAL_pSaveB = new SaveBlock(savefile.c_str());
+		GLOBAL_pSaveB = new SaveBlock(savefile);
 		if(!GLOBAL_pSaveB->BeginRead()) {
 			LogError << "cannot read cur game save file" << savefile;
 		}
@@ -783,6 +782,7 @@ retry:
 	
 	return 1;
 }
+
 //--------------------------------------------------------------------------------------------
 void FillIOIdent(char * tofill, INTERACTIVE_OBJ * io)
 {
@@ -792,8 +792,9 @@ void FillIOIdent(char * tofill, INTERACTIVE_OBJ * io)
 	   )
 		strcpy(tofill, "NONE");
 	else
-		sprintf(tofill, "%s_%04ld", GetName(io->filename).c_str(), io->ident);
+		sprintf(tofill, "%s", io->long_name().c_str() );
 }
+
 extern long sp_max;
 extern long cur_rf;
 extern long cur_mx;
@@ -980,7 +981,7 @@ retry:
 	for (int i = 0; i < nb_PlayerQuest; i++)
 	{
 		memset(dat + pos, 0, 80);
-		strcpy((char *)(dat + pos), PlayerQuest[i].ident);
+		strcpy((char *)(dat + pos), PlayerQuest[i].ident.c_str());
 		pos += 80;
 	}
 
@@ -2162,8 +2163,10 @@ extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 //-----------------------------------------------------------------------------
 static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 	
-	if (!strcasecmp(ident.c_str(), "NONE")) return -1;
-
+	if(!strcasecmp(ident, "NONE")) {
+		return -1;
+	}
+	
 	char loadfile[256];
 	ARX_CHANGELEVEL_IO_SAVE * ais;
 	long pos = 0;
@@ -3779,7 +3782,7 @@ static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LE
 
 	if (!_pSaveBlock->BeginSave()) return false;
 
-	if (!DirectoryExist(path.c_str())) return false;
+	if (!DirectoryExist(path)) return false;
 
 	char * dat = new char[sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA)];
 
@@ -3804,9 +3807,7 @@ static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LE
 static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const string path)
 {
 	// Checks For Directory
-	if (!DirectoryExist(path.c_str())) return false;
-
-	std::string loadfile;
+	if (!DirectoryExist(path)) return false;
 
 	// Open Save Block
 	char sfile[256];
@@ -3819,7 +3820,7 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	}
 
 	// Get Size
-	loadfile = "pld.sav";
+	std::string loadfile = "pld.sav";
 	
 	size_t size;
 	char * dat = _pSaveBlock->load(loadfile, size);

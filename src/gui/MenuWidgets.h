@@ -877,7 +877,6 @@ class CMenuConfig
 		bool		bLinkMouseLookToUse;
 		//MISC
 		bool		bATI;
-		bool		bForceMetalTwoPass;
 		bool		bForceZBias;
 		bool		bOneHanded;
 		unsigned int uiGoreMode;

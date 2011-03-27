@@ -510,33 +510,25 @@ void HERMES_Memory_Security_Off()
 	HERMES_MEMORY_SECURITY = NULL;
 }
 
-long HERMES_Memory_Emergency_Out(long size, const char * info)
+long HERMES_Memory_Emergency_Out( long size, const std::string& info )
 {
-	if (HERMES_MEMORY_SECURITY)
+	/* TODO Is HERMES_MEMORY_SECURITY still useful? */
+	if (HERMES_MEMORY_SECURITY) 
 		free(HERMES_MEMORY_SECURITY);
 
 	HERMES_MEMORY_SECURITY = NULL;
-	char out[512];
 
-	if (info)
+	if ( size > 0 )
 	{
-		if (size > 0)
-			sprintf(out, "FATAL ERROR: Unable To Allocate %ld bytes... %s", size, info);
-		else
-			sprintf(out, "FATAL ERROR: Unable To Allocate Memory... %s", info);
-	}
-	else if (size > 0)
-		sprintf(out, "FATAL ERROR: Unable To Allocate %ld bytes...", size);
-	else
-		sprintf(out, "FATAL ERROR: Unable To Allocate Memory...");
-
-	LogError << out;
-
-	if (size > 0)
+		LogError << "FATAL ERROR: Unable to To Allocate " << size << " bytes..." << info;
 		return 1;
-
-	exit(0);
-	return 0;
+	}
+	else
+	{
+		LogError << "FATAL ERROR: Unable to To Allocate Memory..." << info;
+		exit(0);
+		return 0; // Never reached
+	}
 }
 
 LARGE_INTEGER	start_chrono;

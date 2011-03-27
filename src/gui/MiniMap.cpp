@@ -57,9 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MiniMap.h"
 
-#include <sstream>
 #include <cstdio>
-#include <algorithm>
 
 #include "core/Core.h"
 
@@ -109,7 +107,7 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 
 		if (minimap[SHOWLEVEL].tc) // 4 pix/meter
 		{
-			minimap[SHOWLEVEL].tc->Restore(GDevice);
+			minimap[SHOWLEVEL].tc->Restore();
 			SpecialBorderSurface(minimap[SHOWLEVEL].tc, minimap[SHOWLEVEL].tc->m_dwOriginalWidth, minimap[SHOWLEVEL].tc->m_dwOriginalHeight);
 
 
@@ -177,7 +175,7 @@ void ARX_MINIMAP_ValidatePos() {
 
 		if ((minimap[SHOWLEVEL].tc) && (minimap[SHOWLEVEL].tc->m_pddsSurface))
 		{
-			ARX_MINIMAP_Show(GDevice, ARX_LEVELS_GetRealNum(CURRENTLEVEL), 2);
+			ARX_MINIMAP_Show( ARX_LEVELS_GetRealNum(CURRENTLEVEL), 2);
 		}
 	}
 }
@@ -310,7 +308,7 @@ TextureContainer * MapMarkerTc = NULL;
 float DECALY = -150;
 float DECALX = +40;
 //-----------------------------------------------------------------------------
-void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag, long fl2)
+void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 {
 	// Nuky - centralized some constants and dezoomed ingame minimap
 	static const int FL2_SIZE = 300;
@@ -408,7 +406,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 
 		D3DTLVERTEX verts[4];
-		SETTC(m_pd3dDevice, minimap[SHOWLEVEL].tc);
+		SETTC(minimap[SHOWLEVEL].tc);
 
 		for (long k = 0; k < 4; k++)
 		{
@@ -468,16 +466,14 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 				}
 			}
 
-			SETALPHABLEND(m_pd3dDevice, true);
-			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
-			SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_CLAMP);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
+			SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 
 			if (fl2)
 			{
-				m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-				m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
 			}
 		}
 		else
@@ -731,7 +727,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 								verts[3].sy += DECALY * Yratio;
 							}
 
-							EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
+							EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
 						}
 					}
 				}
@@ -740,10 +736,9 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 		if (flag != 2)
 		{
-			m_pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
-			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
-
-			SETALPHABLEND(m_pd3dDevice, false);
+			GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 			if ((SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)))
 			{
@@ -776,11 +771,11 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 				verts[2].sx = (px + rx3 * ca + ry3 * sa) * Xratio;
 				verts[2].sy = (py + ry3 * ca - rx3 * sa) * Yratio;
 
-				SETTC(GDevice, NULL);
+				SETTC( NULL);
 
 				if (fl2)
 				{
-					SETALPHABLEND(m_pd3dDevice, TRUE);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					verts[0].sx += DECALX * Xratio;
 					verts[0].sy += DECALY * Yratio;
 					verts[1].sx += DECALX * Xratio;
@@ -789,9 +784,9 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					verts[2].sy += DECALY * Yratio;
 				}
 
-				EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 3, 0);
+				EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 3, 0);
 
-				if (fl2) SETALPHABLEND(m_pd3dDevice, false);
+				if (fl2) GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
 
@@ -842,12 +837,11 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 										if (!fl2)
 										{
-											SETALPHABLEND(m_pd3dDevice, true);
-											m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-											m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+											GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+											GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 										}
 										else
-											SETALPHABLEND(m_pd3dDevice, true);
+											GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 										if (fl2)
 										{
@@ -857,11 +851,11 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 										fpx *= Xratio;
 										fpy *= Yratio;
-										EERIEDrawBitmap(GDevice, fpx, fpy,
+										EERIEDrawBitmap( fpx, fpy,
 														5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect, D3DRGB(col, 0, 0));
 
 										if (!fl2)
-											SETALPHABLEND(m_pd3dDevice, false);
+											GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 									}
 								}
 							}
@@ -951,7 +945,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					if (MapMarkerTc == NULL)
 						MapMarkerTc = MakeTCFromFile("Graph\\interface\\icons\\mapmarker.bmp");
 
-					SETTC(GDevice, MapMarkerTc);
+					SETTC( MapMarkerTc);
 
 					if (fl2)
 					{
@@ -965,7 +959,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						verts[3].sy += DECALY * Yratio;
 					}
 
-					EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
+					EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
 				}
 			}
 	}

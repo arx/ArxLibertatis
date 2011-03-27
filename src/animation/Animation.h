@@ -79,8 +79,8 @@ void PushInterBump(TextureContainer *, D3DTLVERTEX *);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, D3DTLVERTEX * _pD3DVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
 
-void EERIEDrawAnimQuat(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, ANIM_USE * eanim, EERIE_3D * angle, EERIE_3D  * pos, unsigned long time, INTERACTIVE_OBJ * io, long typ = 0);
+void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj, ANIM_USE * eanim, EERIE_3D * angle, EERIE_3D  * pos, unsigned long time, INTERACTIVE_OBJ * io, long typ = 0);
 
-void DrawEERIEInterMatrix(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIEMATRIX * mat, EERIE_3D  * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
+void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, EERIE_3D  * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
 
 #endif // ARX_ANIMATION_ANIMATION_H

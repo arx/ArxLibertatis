@@ -212,7 +212,7 @@ extern ArxSound SND_SPELL_VISION_START;
 extern ArxSound SND_SPELL_VISION_LOOP;
 
 // inter-material sounds
-long ARX_MATERIAL_GetIdByName( const char * name );
+long ARX_MATERIAL_GetIdByName( const std::string& name );
 bool ARX_MATERIAL_GetNameById(long id, char * name);
 
 long ARX_SOUND_Init(HWND hwnd);
@@ -233,7 +233,7 @@ long ARX_SOUND_PlayInterface(ArxSound & sample_id, const float & pitch = 1.0F, c
  
 long ARX_SOUND_PlaySpeech(const char * name, const INTERACTIVE_OBJ * io = NULL);
 long ARX_SOUND_PlayCollision(const long & mat1, const long & mat2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source);
-long ARX_SOUND_PlayCollision(const char * mat1, const char * mat2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source);
+long ARX_SOUND_PlayCollision(const std::string& mat1, const std::string& mat2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source);
 
 long ARX_SOUND_PlayScript(const char * name, const INTERACTIVE_OBJ * io = NULL, const float & pitch = 1.0F, const int & loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position = NULL);

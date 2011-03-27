@@ -103,7 +103,7 @@ class CMagicMissile: public CSpellFx
 		void	Create(EERIE_3D, EERIE_3D);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ class CMultiMagicMissile: public CSpellFx
 		void	Create(EERIE_3D, EERIE_3D);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 //-----------------------------------------------------------------------------
@@ -169,7 +169,7 @@ class CIgnit: public CSpellFx
 
 		void	Create(EERIE_3D * posc, float perim, int speed);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7 device);
+		float	Render();
 		void	Kill();
 		void	AddLight(int iLight);
 		void	Action(int);
@@ -255,9 +255,9 @@ class CPortal: public CSpellFx
 		};
 
 		void	AddNewEclair(EERIE_3D * endpos, int nbseg, int duration, int numpt);
-		void	DrawAllEclair(LPDIRECT3DDEVICE7);
+		void	DrawAllEclair();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7 device);
+		float	Render();
  
 };
 

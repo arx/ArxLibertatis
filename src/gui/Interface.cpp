@@ -206,7 +206,7 @@ INTERACTIVE_OBJ *	STARTED_ACTION_ON_IO=NULL;
 INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
-_TCHAR*				QuestBook_Cache_Text = NULL;		// Cache of screen text
+char*				QuestBook_Cache_Text = NULL;		// Cache of screen text
 long				QuestBook_Cache_nbQuests = -42;
 std::string Page_Buffer;
 bool				bBookHalo = false;
@@ -366,7 +366,7 @@ bool ARX_INTERFACE_MouseInBook()
 void ARX_INTERFACE_DrawItem(TextureContainer *tc, const float x, const float y, const float z, const D3DCOLOR col)
 {
 	if ((tc) && (tc->m_pddsSurface))
-		EERIEDrawBitmap(GDevice,
+		EERIEDrawBitmap(
 		x, y,
 		                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 		z,
@@ -419,9 +419,9 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 				ttx=0.5f*divideY;
 				v[1].tv = v[0].tv = divideY + ttx;
 				v[2].tv = v[3].tv = divideY * 12;
-				SETTC(GDevice,inventory_font);
+				SETTC(inventory_font);
 
-				EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE| D3DFVF_SPECULAR ,v, 4, 0 );
+				EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE| D3DFVF_SPECULAR ,v, 4, 0 );
 			}
 		}
 	}
@@ -529,14 +529,14 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 
 	if (_lHaloType & HALO_NEGATIVE)
 	{
-		SETBLENDMODE(GDevice,D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	}
 	else
 	{
-		SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	}
 
-	SETALPHABLEND(GDevice,true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DDSURFACEDESC2 ddsdSurfaceDescSrc;
 	DDSURFACEDESC2 ddsdSurfaceDescHalo;
 	ddsdSurfaceDescSrc.dwSize=sizeof(DDSURFACEDESC2);
@@ -573,11 +573,11 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 		fDeltaXP = 1;
 		fDeltaYP = 1;
 
-	EERIEDrawBitmap(GDevice,(float)(POSX-tc->halodecalX*fDeltaX),(float)(POSY-tc->halodecalY*fDeltaY)
+	EERIEDrawBitmap((float)(POSX-tc->halodecalX*fDeltaX),(float)(POSY-tc->halodecalY*fDeltaY)
 								,((float)fSizeX)*fDeltaXP
 								,((float)fSizeY)*fDeltaYP,0.00001f
 								,tc2,col);
-	SETALPHABLEND(GDevice,false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void ARX_INTERFACE_HALO_Draw(INTERACTIVE_OBJ * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1) {
@@ -630,7 +630,7 @@ bool NeedHalo(INTERACTIVE_OBJ * io)
 	{
 		if ((io->inv) && (io->inv->TextureHalo==NULL))
 		{
-			io->inv->CreateHalo(GDevice);
+			io->inv->CreateHalo();
 		}
 
 		return true;
@@ -923,8 +923,8 @@ void ARX_INTERFACE_NoteManage()
 
 		if (NoteTexture)
 		{
-			SETTEXTUREWRAPMODE(GDevice, D3DTADDRESS_CLAMP);
-			DrawBookInterfaceItem(GDevice, NoteTexture, NotePosX, NotePosY);
+			SETTEXTUREWRAPMODE( D3DTADDRESS_CLAMP);
+			DrawBookInterfaceItem( NoteTexture, NotePosX, NotePosY);
 
 			if (Note.type==NOTE_TYPE_BOOK || Note.type == NOTE_TYPE_BIGNOTE)
 			{
@@ -941,7 +941,7 @@ void ARX_INTERFACE_NoteManage()
 						float fWidth = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureRight->m_dwWidth);
 						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureRight->m_dwHeight);
 
-						DrawBookInterfaceItem(GDevice, NoteTextureRight,x0, y0);
+						DrawBookInterfaceItem( NoteTextureRight,x0, y0);
 
 						if (MouseInBookRect(x0, y0, fWidth, fHeight))
 						{
@@ -968,7 +968,7 @@ void ARX_INTERFACE_NoteManage()
 						float fWidth  = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureLeft->m_dwWidth);
 						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureLeft->m_dwHeight);
 
-						DrawBookInterfaceItem(GDevice, NoteTextureLeft, x0, y0);
+						DrawBookInterfaceItem( NoteTextureLeft, x0, y0);
 
 						if ( MouseInBookRect( x0, y0, fWidth, fHeight) )
 
@@ -1008,7 +1008,7 @@ void ARX_INTERFACE_NoteManage()
 					}
 				}
 
-				SETTEXTUREWRAPMODE(GDevice, D3DTADDRESS_WRAP);
+				SETTEXTUREWRAPMODE( D3DTADDRESS_WRAP);
 			}
 			else
 			{
@@ -1179,13 +1179,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 		return;
 	}
 
-	std::string tcIndent;
-	std::string tcIsClass;
-	tcIndent = COMBINE->filename;
-	tcIsClass = GetName(tcIndent);
-	std::stringstream ss;
-	ss << tcIsClass << '_' << std::setfill('0') << std::setw(4) << COMBINE->ident;
-	tcIndent = ss.str();
+	std::string tcIndent = COMBINE->long_name();
 	MakeUpcase(tcIndent);
 
 		char tTxtCombineDest[256];
@@ -1248,7 +1242,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
+									if( !strcasecmp( tTxtCombineDest, COMBINE->short_name() ) )
 									{
 										//same class
 										bCanCombine=true;
@@ -1396,7 +1390,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
+								if( !strcasecmp( tTxtCombineDest, COMBINE->short_name() ) )
 								{
 									//same class
 									bCanCombine=true;
@@ -2399,17 +2393,11 @@ bool DANAE::ManageEditorControls()
 			{
 				if (io!=COMBINE)
 				{
-					std::string temp;
-					char temp2[256];
-					temp = COMBINE->filename;
-					strcpy(temp2,GetName(temp).c_str());
-					std::stringstream ss;
-					ss << temp2 << '_' << std::setfill('0') << std::setw(4) << COMBINE->ident;
-					temp = ss.str();
-					MakeUpcase(temp);				
+					std::string temp = COMBINE->long_name();
+					MakeUpcase(temp);
 					EVENT_SENDER=COMBINE;
 
-					if (!specialstrcmp(temp2,"KEYRING"))
+					if (!specialstrcmp( COMBINE->short_name(),"KEYRING"))
 						ARX_KEYRING_Combine(io);
 					else
 						SendIOScriptEvent(io,SM_COMBINE,temp);
@@ -5947,11 +5935,10 @@ void DANAE::ManageKeyMouse()
 						CDP_FogOptions=NULL;
 						ARX_TIME_Pause();
 						DanaeSwitchFullScreen();
-						ReloadAllTextures(GDevice);
+						ReloadAllTextures();
 
 						if(ControlCinematique)
 						{
-							ControlCinematique->m_pd3dDevice=GDevice;
 							ActiveAllTexture(ControlCinematique);
 						}
 
@@ -6175,7 +6162,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 							color=0xFF00FF00;
 						else color=D3DCOLORWHITE;
 
-						EERIEDrawBitmap(GDevice,
+						EERIEDrawBitmap(
 							px,
 							py,
 						                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
@@ -6184,36 +6171,36 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 
 						if (!bItemSteal && (io==FlyingOverIO))
 						{
-							SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-							SETALPHABLEND(GDevice,true);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-							EERIEDrawBitmap(GDevice,
+							EERIEDrawBitmap(
 								px,
 								py,
 							                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 								0.001f,
 								tc,
 								D3DCOLORWHITE);
-							SETALPHABLEND(GDevice,false);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
 						else
 						{
 							if (!bItemSteal && (io->ioflags & IO_CAN_COMBINE))
 							{
-								SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-								SETALPHABLEND(GDevice,true);
+								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 								float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
 								DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
 
-								EERIEDrawBitmap(GDevice,
+								EERIEDrawBitmap(
 									px,
 									py,
 								                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 									0.001f,
 									tc,
 									(dwColor<<16)|(dwColor<<8)|dwColor);
-								SETALPHABLEND(GDevice,false);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
 						}
 
@@ -6281,7 +6268,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 							color=0xFF00FF00;
 						else color=D3DCOLORWHITE;
 
-						EERIEDrawBitmap(GDevice,
+						EERIEDrawBitmap(
 							px,
 							py,
 
@@ -6293,9 +6280,9 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 
 						if (io==FlyingOverIO)
 						{
-							SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-							SETALPHABLEND(GDevice,true);
-							EERIEDrawBitmap(GDevice,
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							EERIEDrawBitmap(
 								px,
 								py,
 
@@ -6304,7 +6291,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 
 								0.001f,
 								tc,D3DCOLORWHITE);
-							SETALPHABLEND(GDevice,false);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
 						else
 						{
@@ -6313,9 +6300,9 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 								float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
 								DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
 
-								SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-								SETALPHABLEND(GDevice,true);
-								EERIEDrawBitmap(GDevice,
+								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+								EERIEDrawBitmap(
 									px,
 									py,
 
@@ -6324,7 +6311,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 
 									0.001f,
 									tc,(dwColor<<16)|(dwColor<<8)|dwColor);
-								SETALPHABLEND(GDevice,false);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
 						}
 					}
@@ -6370,16 +6357,16 @@ void ARX_INTERFACE_Draw_Stealth_Gauge()
 			else v=(t*( 1.0f / 15 ))*0.9f+0.1f;
 
 			D3DCOLOR col=_EERIERGB(v);
-			SETALPHABLEND(GDevice, true);
-			SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
-			EERIEDrawBitmap(GDevice,
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
+			EERIEDrawBitmap(
 			                px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth), INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
 				stealth_gauge_tc,col);
 
-			danaeApp.EnableZBuffer();
-			SETALPHABLEND(GDevice, false);
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
 }
@@ -6435,13 +6422,13 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 
 	if (needdraw)
 	{
-		SETALPHABLEND(GDevice, true);
-		SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		danaeApp.EnableZBuffer();
-		GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
-		SETZWRITE(GDevice, true);
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
+		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		GRenderer->SetRenderState(Renderer::Fog, false);
 
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(10 + 32 + 100);
 
@@ -6480,7 +6467,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 					INTERACTIVE_OBJ * io=inter.iobj[player.equiped[eq]];
 					float ratio=io->durability/io->max_durability;
 					D3DCOLOR col=EERIERGB(1.f-ratio,ratio,0);
-					EERIEDrawBitmap2(GDevice,
+					EERIEDrawBitmap2(
 						px,py,
 					                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth), INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight),
 						0.001f,
@@ -6490,18 +6477,18 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 		}
 
 		currpos += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(33.f));
-		SETALPHABLEND(GDevice, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
 
 
 
 //-----------------------------------------------------------------------------
-void DrawBookInterfaceItem(LPDIRECT3DDEVICE7 m_pd3dDevice,TextureContainer *tc,float x,float y,float z)
+void DrawBookInterfaceItem(TextureContainer *tc,float x,float y,float z)
 {
 	if ((tc) && (tc->m_pddsSurface))
 	{
-		EERIEDrawBitmap2(m_pd3dDevice,
+		EERIEDrawBitmap2(
 			(x+BOOKDECX)*Xratio,
 			(y+BOOKDECY)*Yratio,
 			(float)(tc->m_dwWidth)*Xratio,
@@ -6534,7 +6521,7 @@ bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 		rval=true;
 
 		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
-			DrawBookInterfaceItem(GDevice,tc,x,y);
+			DrawBookInterfaceItem(tc,x,y);
 
 		if (!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1))
 		{
@@ -6581,7 +6568,7 @@ bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float
 		rval=true;
 
 		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
-			DrawBookInterfaceItem(GDevice,tc,x,y);
+			DrawBookInterfaceItem(tc,x,y);
 
 		if (!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1))
 		{
@@ -6634,16 +6621,16 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 
 	if (tc)
 	{
-		EERIEDrawBitmap(GDevice, posx, posy, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.01f, tc, color);
+		EERIEDrawBitmap( posx, posy, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.01f, tc, color);
 
 		if (flag & 2)
 		{
-			SETBLENDMODE(GDevice,D3DBLEND_ZERO,D3DBLEND_ONE);
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
 
-			EERIEDrawBitmap(GDevice,posx-1,posy-1,INTERFACE_RATIO_DWORD(tc->m_dwWidth)*0.5f,INTERFACE_RATIO_DWORD(tc->m_dwHeight)*0.5f,0.0001f, tc,color);
-			EERIEDrawBitmap(GDevice,posx+1,posy+1,INTERFACE_RATIO_DWORD(tc->m_dwWidth)*0.5f,INTERFACE_RATIO_DWORD(tc->m_dwHeight)*0.5f,0.0001f, tc,color);
+			EERIEDrawBitmap(posx-1,posy-1,INTERFACE_RATIO_DWORD(tc->m_dwWidth)*0.5f,INTERFACE_RATIO_DWORD(tc->m_dwHeight)*0.5f,0.0001f, tc,color);
+			EERIEDrawBitmap(posx+1,posy+1,INTERFACE_RATIO_DWORD(tc->m_dwWidth)*0.5f,INTERFACE_RATIO_DWORD(tc->m_dwHeight)*0.5f,0.0001f, tc,color);
 
-			SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		}
 
 		if (!(flag & 1))
@@ -6745,9 +6732,9 @@ extern float GLOBAL_LIGHT_FACTOR;
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
-	SETZWRITE(GDevice, true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE)))
 	{
@@ -6798,7 +6785,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			float n;
 			long xpos=0;
 			long ypos=0;
-			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 			for (long i=0;i<NB_RUNES;i++)
 			{
@@ -6815,7 +6802,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 					if (player.rune_flags & (1<<i))
 					{
-						DrawEERIEInter(GDevice,necklace.lacet,&angle,&pos,NULL);
+						DrawEERIEInter(necklace.lacet,&angle,&pos,NULL);
 
 						if (necklace.runes[i]->angle.b!=0.f)
 						{
@@ -6843,8 +6830,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						angle.b-=20.f;
 
 						angle.b+=20.f;
-						SETZWRITE(GDevice,true);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetRenderState(Renderer::DepthWrite, true);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						DynLight[0].exist=1;	
 						
 						bookcam.centerx = (382 + xpos * 45 + BOOKDECX) * Xratio;
@@ -6853,7 +6840,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						PrepareCamera(&bookcam);
 
 						// Now draw the rune
-						DrawEERIEInter(GDevice,necklace.runes[i],&angle,&pos,NULL);
+						DrawEERIEInter(necklace.runes[i],&angle,&pos,NULL);
 
 						if(bRenderInterList)
 						{
@@ -6887,9 +6874,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 							if (r)
 							{
-								SETALPHABLEND(GDevice,true);
-								SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-								DrawEERIEInter(GDevice,necklace.runes[i],&angle,&pos,NULL);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+								DrawEERIEInter(necklace.runes[i],&angle,&pos,NULL);
 
 								necklace.runes[i]->angle.b+=_framedelay*2.f;
 
@@ -6898,7 +6885,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									PopAllTriangleList(true);
 								}
 								
-								SETALPHABLEND(GDevice,false);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 								SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -6997,9 +6984,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 				}
 			}
 
-			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
-
-			SETCULL( GDevice, D3DCULL_CCW);
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
+			GRenderer->SetCulling(Renderer::CullCCW);
 
 			if (!found2) LastRune=-1;
 
@@ -7076,14 +7062,14 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								{
 									pos.x = (240-(count*32)*( 1.0f / 2 )+j*32);
 									pos.y = (306);
-									DrawBookInterfaceItem(GDevice, necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
+									DrawBookInterfaceItem( necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
 								}
 						}
 
 						if (spellicons[i].tc)
 						{
-							SETALPHABLEND(GDevice, true);
-							SETBLENDMODE(GDevice,D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
 							if (flyingover)
 							{
@@ -7103,10 +7089,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							}
 							else BOOKINTERFACEITEMCOLOR = 0xFFa8d0df;
 
-							DrawBookInterfaceItem(GDevice, spellicons[i].tc, fPosX, fPosY);
+							DrawBookInterfaceItem( spellicons[i].tc, fPosX, fPosY);
 
 							BOOKINTERFACEITEMCOLOR = D3DCOLORWHITE;
-							SETALPHABLEND(GDevice, false);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
 
 						posx ++;
@@ -7179,14 +7165,14 @@ void QuestBook_Update()
 		if (PlayerQuest[i].localised.size())
 			lLenght += PlayerQuest[i].localised.length();
 
-	QuestBook_Cache_Text = new _TCHAR[lLenght+nb_PlayerQuest*2+1];
-	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(_TCHAR));
+	QuestBook_Cache_Text = new char[lLenght+nb_PlayerQuest*2+1];
+	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(char));
 
 	for (int i = 0; i < nb_PlayerQuest; ++i)
 		if ( PlayerQuest[i].localised.size() )
 		{
-			_tcscat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
-			_tcscat(QuestBook_Cache_Text, _T("\n\n"));
+			strcat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
+			strcat(QuestBook_Cache_Text, "\n\n");
 			lLenght += 2;
 		}
 
@@ -7222,7 +7208,7 @@ void QuestBook_Render()
 		float x0 =   8 + NotePosX;
 		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerLeft")->m_dwHeight;
 
-		DrawBookInterfaceItem(GDevice, ITC.Get("pTexCornerLeft"), x0, y0);
+		DrawBookInterfaceItem( ITC.Get("pTexCornerLeft"), x0, y0);
 
 		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerLeft")->m_dwWidth, y0 + ITC.Get("pTexCornerLeft")->m_dwHeight))
 		{
@@ -7242,7 +7228,7 @@ void QuestBook_Render()
 		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("pTexCornerRight")->m_dwWidth;
 		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerRight")->m_dwHeight;
 
-		DrawBookInterfaceItem(GDevice, ITC.Get("pTexCornerRight"), x0, y0);
+		DrawBookInterfaceItem( ITC.Get("pTexCornerRight"), x0, y0);
 
 		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerRight")->m_dwWidth, y0 + ITC.Get("pTexCornerRight")->m_dwHeight))
 		{
@@ -7286,7 +7272,7 @@ void QuestBook_Render()
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook()
 {
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false );
+	GRenderer->SetRenderState(Renderer::Fog, false);
 	
 	if (ITC.Get("questbook")==NULL)
 	{
@@ -7345,8 +7331,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
 		ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
 		
-		ARX_Allocate_Text(ITC.Level, _T("system_charsheet_player_lvl"));
-		ARX_Allocate_Text(ITC.Xp, _T("system_charsheet_player_xp"));
+		ARX_Allocate_Text(ITC.Level, "system_charsheet_player_lvl");
+		ARX_Allocate_Text(ITC.Xp, "system_charsheet_player_xp");
 		
 		ANIM_Set(&player.useanim,herowaitbook);
 
@@ -7363,26 +7349,26 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 		if (Book_Mode == BOOKMODE_STATS)
 		{
-			DrawBookInterfaceItem(GDevice, ITC.Get("playerbook"), 97, 64, 0.9999f); 
+			DrawBookInterfaceItem( ITC.Get("playerbook"), 97, 64, 0.9999f); 
 		}
 		else if (Book_Mode == BOOKMODE_SPELLS)
 		{
-			DrawBookInterfaceItem(GDevice, ITC.Get("pTexSpellBook"), 97, 64, 0.9999f);
+			DrawBookInterfaceItem( ITC.Get("pTexSpellBook"), 97, 64, 0.9999f);
 		}
 		else if (Book_Mode == 2)
 		{
-			DrawBookInterfaceItem(GDevice, ITC.Get("questbook"), 97, 64, 0.9999f);
+			DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, 0.9999f);
 		}
 		else
 		{
-			DrawBookInterfaceItem(GDevice,ITC.Get("questbook"), 97, 64, 0.9999f);
+			DrawBookInterfaceItem(ITC.Get("questbook"), 97, 64, 0.9999f);
 		}
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 	else
 	{
@@ -7396,7 +7382,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
 			y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
 
-			DrawBookInterfaceItem( GDevice, ITC.Get("playerbook"), x, y );//95.f+2.f,47.f+17.f);
+			DrawBookInterfaceItem( ITC.Get("playerbook"), x, y );//95.f+2.f,47.f+17.f);
 		}
 
 		BOOKDECX = x - 97;
@@ -7418,7 +7404,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float px=BOOKMARKS_POS_X;
 			float py=BOOKMARKS_POS_Y;
 			TextureContainer* tcBookmarkChar = ITC.Get("bookmark_char");
-			DrawBookInterfaceItem(GDevice,tcBookmarkChar,px,py);
+			DrawBookInterfaceItem(tcBookmarkChar,px,py);
 
 			// Check for cursor on charcter sheet bookmark
 			if (	tcBookmarkChar
@@ -7426,10 +7412,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				// Draw highlighted Character sheet icon
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
-				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,true);
-				DrawBookInterfaceItem(GDevice,tcBookmarkChar,px,py);
-				SETALPHABLEND(GDevice,false);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				DrawBookInterfaceItem(tcBookmarkChar,px,py);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 				// Set cursor to interacting
@@ -7451,7 +7437,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				float px=BOOKMARKS_POS_X+32;
 				float py=BOOKMARKS_POS_Y;
-				DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_magic"),px,py);
+				DrawBookInterfaceItem(ITC.Get("bookmark_magic"),px,py);
 
 				//////////////// TO BE REDONE/REMOVED - START
 				if (NewSpell==1)
@@ -7467,11 +7453,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					// Draw highlighted Magic sheet icon
 					BOOKINTERFACEITEMCOLOR=0xFF555555;
-					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-					SETALPHABLEND(GDevice,true);
-					DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_magic"),px,py);
-					SETALPHABLEND(GDevice,false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.Get("bookmark_magic"),px,py);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 					// Set cursor to interacting
@@ -7493,16 +7479,16 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float px=BOOKMARKS_POS_X+64;
 			float py=BOOKMARKS_POS_Y;
 
-			DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_map"),px,py);			
+			DrawBookInterfaceItem(ITC.Get("bookmark_map"),px,py);			
 
 			if (	ITC.Get("bookmark_map")
 				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_map")->m_dwWidth,py+ITC.Get("bookmark_map")->m_dwHeight))				
 			{
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
-				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,true);
-				DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_map"),px,py);			
-				SETALPHABLEND(GDevice,false);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				DrawBookInterfaceItem(ITC.Get("bookmark_map"),px,py);			
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 				// Set cursor to interacting
@@ -7522,16 +7508,16 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			float px=BOOKMARKS_POS_X+96;
 			float py=BOOKMARKS_POS_Y;
-			DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_quest"),px,py);
+			DrawBookInterfaceItem(ITC.Get("bookmark_quest"),px,py);
 
 			if (	ITC.Get("bookmark_quest")
 				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_quest")->m_dwWidth,py+ITC.Get("bookmark_quest")->m_dwHeight))				
 			{
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
-				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,true);
-				DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_quest"),px,py);
-				SETALPHABLEND(GDevice,false);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				DrawBookInterfaceItem(ITC.Get("bookmark_quest"),px,py);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 				// Set cursor to interacting
@@ -7589,15 +7575,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=100.f;
 					float py=82.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_1"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_1"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_1"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_1"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7608,7 +7594,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_1"),102.f,82.f);
+				else DrawBookInterfaceItem(ITC.Get("current_1"),102.f,82.f);
 			}
 
 			if (bOnglet[2])
@@ -7617,15 +7603,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=98.f;
 					float py=112.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_2"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_2"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_2"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_2"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7636,7 +7622,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_2"),100.f,114.f);
+				else DrawBookInterfaceItem(ITC.Get("current_2"),100.f,114.f);
 			}
 
 			if (bOnglet[3])
@@ -7645,15 +7631,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=97.f;
 					float py=143.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_3"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_3"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_3"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_3"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7664,7 +7650,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_3"),101.f,141.f);
+				else DrawBookInterfaceItem(ITC.Get("current_3"),101.f,141.f);
 			}
 
 			if (bOnglet[4])
@@ -7673,15 +7659,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=95.f;
 					float py=170.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_4"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_4"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_4"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_4"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7692,7 +7678,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_4"),100.f,170.f);
+				else DrawBookInterfaceItem(ITC.Get("current_4"),100.f,170.f);
 			}
 
 			if (bOnglet[5])
@@ -7701,15 +7687,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=95.f;
 					float py=200.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_5"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_5"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_5"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_5"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7720,7 +7706,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_5"),97.f,199.f);
+				else DrawBookInterfaceItem(ITC.Get("current_5"),97.f,199.f);
 			}
 
 			if (bOnglet[6])
@@ -7729,15 +7715,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=94.f;
 					float py=229.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_6"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_6"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_6"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_6"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7748,7 +7734,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_6"),103.f,226.f);
+				else DrawBookInterfaceItem(ITC.Get("current_6"),103.f,226.f);
 			}
 
 			if (bOnglet[7])
@@ -7757,15 +7743,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=94.f;
 					float py=259.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_7"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_7"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_7"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_7"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7776,7 +7762,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_7"),101.f,255.f);
+				else DrawBookInterfaceItem(ITC.Get("current_7"),101.f,255.f);
 			}
 
 			if (bOnglet[8])
@@ -7785,15 +7771,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=92.f;
 					float py=282.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_8"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_8"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_8"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_8"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7804,7 +7790,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_8"),99.f,283.f);
+				else DrawBookInterfaceItem(ITC.Get("current_8"),99.f,283.f);
 			}
 
 			if (bOnglet[9])
@@ -7813,15 +7799,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=90.f;
 					float py=308.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_9"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_9"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_9"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_9"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7832,7 +7818,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_9"),99.f,307.f);
+				else DrawBookInterfaceItem(ITC.Get("current_9"),99.f,307.f);
 			}
 
 			if (bOnglet[10])
@@ -7841,15 +7827,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=97.f;
 					float py=331.f;
-					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_10"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_10"),px,py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
-						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_10"),px,py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						DrawBookInterfaceItem(ITC.Get("accessible_10"),px,py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7860,7 +7846,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.Get("current_10"),104.f,331.f);
+				else DrawBookInterfaceItem(ITC.Get("current_10"),104.f,331.f);
 			}		
 
 			if (Book_Mode==1) Book_SpellPage=Book_Page;
@@ -8417,12 +8403,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 		long SHOWLEVEL = Book_MapPage - 1;
 
 		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			ARX_MINIMAP_Show(GDevice, SHOWLEVEL, 0);
+			ARX_MINIMAP_Show( SHOWLEVEL, 0);
 
 		SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			ARX_MINIMAP_Show(GDevice, SHOWLEVEL, 1);
+			ARX_MINIMAP_Show( SHOWLEVEL, 1);
 	}
 	else if (Book_Mode == BOOKMODE_QUESTS)
 	{
@@ -8435,9 +8421,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 	if ((Book_Mode == BOOKMODE_STATS) && (inter.iobj[0]->obj != NULL))
 	{
 
-		SETZWRITE(GDevice,true);
-		danaeApp.EnableZBuffer();
-		SetFilteringMode(GDevice,1);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
+		SetFilteringMode(1);
 		D3DRECT rec;
 
 		if (BOOKZOOM) {
@@ -8447,7 +8433,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			rec.x2 = (280.f + BOOKDECY) * Xratio;
 			rec.y2 = (310.f + BOOKDECY) * Yratio;
 
-			GDevice->Clear( 1, &rec, D3DCLEAR_ZBUFFER, 0, 1.f, 0L );
+			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
 
 			if (ARXmenu.currentmode!=AMCM_OFF)
 				danaeApp.SetClipping(139.f*Xratio,0,139.f*Xratio,310.f*Yratio);
@@ -8457,7 +8443,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 			rec.x2 = (300.f + 50 + BOOKDECX) * Xratio;
 			rec.y2 = (338.f + BOOKDECY) * Yratio;
 			
-			GDevice->Clear( 1, &rec, D3DCLEAR_ZBUFFER, 0, 1.f, 0L );
+			GRenderer->Clear(Renderer::DepthBuffer, 0, 0, 1, &rec);
+
 			rec.x2 -= 50;
 		}
 
@@ -8566,8 +8553,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		if (inter.iobj[0]->invisibility>0.f)
 		{
-			SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-			SETALPHABLEND(GDevice,true);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		}
 
 		INVISIBILITY_OVERRIDE=inter.iobj[0]->invisibility;
@@ -8583,14 +8570,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 
 			ARX_CHECK_ULONG(Original_framedelay);
-			EERIEDrawAnimQuat(GDevice,inter.iobj[0]->obj, &player.useanim,&ePlayerAngle,&pos,
+			EERIEDrawAnimQuat(inter.iobj[0]->obj, &player.useanim,&ePlayerAngle,&pos,
 				ARX_CLEAN_WARN_CAST_ULONG(Original_framedelay),
 				NULL, 0);
 
 		}
 		else
 		{
-			DrawEERIEInter(GDevice,inter.iobj[0]->obj,&ePlayerAngle,&pos,NULL);
+			DrawEERIEInter(inter.iobj[0]->obj,&ePlayerAngle,&pos,NULL);
 		}
 
 		INVISIBILITY_OVERRIDE=0;
@@ -8601,11 +8588,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if(bRenderInterList)
 			{
 				GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_NONE);
-				SETALPHABLEND(GDevice,false);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				PopAllTriangleList(true);
-				SETALPHABLEND(GDevice,true);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				PopAllTriangleListTransparency();
-				SETALPHABLEND(GDevice,false);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_POINT);
 			}
 		}
@@ -8633,8 +8620,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 			danaeApp.SetClipping(0,0,(float)DANAESIZX,(float)DANAESIZY);
 		}
 
-		SETALPHABLEND(GDevice,false);
-		SETCULL(GDevice,D3DCULL_NONE);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->SetCulling(Renderer::CullNone);
 		SetActiveCamera(oldcam);
 
 		INTERACTIVE_OBJ * io=inter.iobj[0];
@@ -8652,7 +8639,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				}
 			}
 
-			SETCULL(GDevice,D3DCULL_NONE);
+			GRenderer->SetCulling(Renderer::CullNone);
 
 			if (	(player.equiped[EQUIP_SLOT_ARMOR]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]	))
@@ -8758,7 +8745,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 			TextureContainer * tc;
 			TextureContainer * tc2=NULL;
-			SETCULL(GDevice,D3DCULL_NONE);
+			GRenderer->SetCulling(Renderer::CullNone);
 
 			if (	(player.equiped[EQUIP_SLOT_RING_LEFT]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT]	))
@@ -8778,7 +8765,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						BOOKINTERFACEITEMCOLOR=0xFF00FF00;
 					else BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
 
-					DrawBookInterfaceItem(GDevice,tc,todraw->bbox1.x,todraw->bbox1.y,0);
+					DrawBookInterfaceItem(tc,todraw->bbox1.x,todraw->bbox1.y,0);
 
 					BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
 
@@ -8835,7 +8822,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						BOOKINTERFACEITEMCOLOR=0xFF00FF00;
 					else BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
 
-					DrawBookInterfaceItem(GDevice,tc,todraw->bbox1.x,todraw->bbox1.y,0);
+					DrawBookInterfaceItem(tc,todraw->bbox1.x,todraw->bbox1.y,0);
 
 					BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
 
@@ -8882,11 +8869,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 			//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
 			if (HALOCUR>0)
 			{
-				SETTC(GDevice,NULL);
-				SETBLENDMODE(GDevice,D3DBLEND_SRCCOLOR,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,true);			
-				SETCULL(GDevice,D3DCULL_NONE);
-				SETZWRITE(GDevice,false);
+				SETTC(NULL);
+				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
+				GRenderer->SetCulling(Renderer::CullNone);
+				GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 				for (int i=0;i<HALOCUR;i++)
 				{
@@ -8894,16 +8881,16 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 					if (vert[2].color == 0)
 					{
-						SETBLENDMODE(GDevice,D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						vert[2].color =0xFF000000;
-						EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
-						SETBLENDMODE(GDevice,D3DBLEND_SRCCOLOR,D3DBLEND_ONE);
+						EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+						GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 					}
-					else EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+					else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 				}
 
 				HALOCUR=0;
-				SETALPHABLEND(GDevice,false);			
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);			
 			}
 		}
 	}	
@@ -8920,8 +8907,8 @@ void DANAE::DrawAllInterfaceFinish()
 	if (rrr>1.f) rrr=1.f;
 	else if (rrr<0.f) rrr=0.f;
 
-	SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-	SETALPHABLEND(GDevice,true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	PRECAST_NUM=0;
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
@@ -8979,14 +8966,14 @@ void ARX_INTERFACE_DrawCurrentTorch()
 
 	py = DANAESIZY - INTERFACE_RATIO(158+32);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	EERIEDrawBitmap(GDevice,
+	EERIEDrawBitmap(
 		px, py,
 	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth), INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
 		0.001f,
 		CURRENT_TORCH->inv,D3DCOLORWHITE);
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	if ( rnd() > 0.2f )
 	{
@@ -9027,7 +9014,7 @@ void DANAE::DrawAllInterface()
 {
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 
 	if (!EDITMODE)
 	{
@@ -9062,11 +9049,11 @@ void DANAE::DrawAllInterface()
 
 			}
 
-			SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-			GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true );
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(j,j,j));
-			GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false );
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(1,1,1));
 			
 			if (bHitFlash)
@@ -9074,9 +9061,9 @@ void DANAE::DrawAllInterface()
 				if (player.Full_Skill_Etheral_Link >= 40)
 				{
 					float j = 1.0f - fHitFlash;
-					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-					GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true );
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					long col = 0;
 
 					if (j < 0.5f)
@@ -9085,7 +9072,7 @@ void DANAE::DrawAllInterface()
 						col = D3DRGB(1,fHitFlash,0);
 
 					ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), DANAESIZY + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
-					GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 			}
 		}
@@ -9243,11 +9230,11 @@ void DANAE::DrawAllInterface()
 
 						if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
 						{
-							SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-							SETALPHABLEND(GDevice,true);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							SpecialCursor=CURSOR_INTERACTION_ON;
 							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), posx, posy);
-							SETALPHABLEND(GDevice,false);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							SpecialCursor=CURSOR_INTERACTION_ON;
 
 							if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
@@ -9276,10 +9263,10 @@ void DANAE::DrawAllInterface()
 
 						if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
 						{
-							SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-							SETALPHABLEND(GDevice,true);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
-							SETALPHABLEND(GDevice,false);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							SpecialCursor=CURSOR_INTERACTION_ON;
 
 							if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
@@ -9453,10 +9440,10 @@ void DANAE::DrawAllInterface()
 
 			if (eMouseState == MOUSE_IN_BOOK_ICON)
 			{
-				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,true);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
-				SETALPHABLEND(GDevice,false);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 
 			// Draw/Manage BackPack Icon
@@ -9466,10 +9453,10 @@ void DANAE::DrawAllInterface()
 
 			if (eMouseState == MOUSE_IN_INVENTORY_ICON)
 			{
-				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,true);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
-				SETALPHABLEND(GDevice,false);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 
 			// Draw/Manage Steal Icon
@@ -9481,10 +9468,10 @@ void DANAE::DrawAllInterface()
 
 				if (eMouseState == MOUSE_IN_STEAL_ICON)
 				{
-					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-					SETALPHABLEND(GDevice,true);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
-					SETALPHABLEND(GDevice,false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 			}
 
@@ -9501,10 +9488,10 @@ void DANAE::DrawAllInterface()
 
 					if (eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON)
 					{
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,true);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
-						SETALPHABLEND(GDevice,false);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 				}
 
@@ -9514,10 +9501,10 @@ void DANAE::DrawAllInterface()
 
 				if (eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON)
 				{
-					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-					SETALPHABLEND(GDevice,true);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
-					SETALPHABLEND(GDevice,false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 			}
 
@@ -9530,10 +9517,10 @@ void DANAE::DrawAllInterface()
 
 				if (eMouseState == MOUSE_IN_REDIST_ICON)
 				{
-					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-					SETALPHABLEND(GDevice,true);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					ARX_INTERFACE_DrawItem(ITC.Get("Icon_Lvl_Up"),px,py);		
-					SETALPHABLEND(GDevice,false);	
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 				}			  
 			}
 
@@ -9546,11 +9533,11 @@ void DANAE::DrawAllInterface()
 
 				if (eMouseState == MOUSE_IN_GOLD_ICON)
 				{
-					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-					SETALPHABLEND(GDevice,true);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
-					SETALPHABLEND(GDevice,false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					ARX_INTERFACE_DrawNumber(px-INTERFACE_RATIO(30),py + INTERFACE_RATIO(10-25), player.gold, 6, D3DRGB(1,1,1));
 				}
 			}
@@ -9572,7 +9559,7 @@ void DANAE::DrawAllInterface()
 				TextureContainer *tc = ITC.Get("gold");
 				TextureContainer *tc2 = NULL;
 
-				if (ITC.Get("gold")->CreateHalo(GDevice))
+				if (ITC.Get("gold")->CreateHalo())
 					tc2=ITC.Get("gold")->TextureHalo;
 
 				if (tc2 != NULL)
@@ -9600,7 +9587,7 @@ void DANAE::DrawAllInterface()
 				TextureContainer *tc = ITC.Get("book");
 					TextureContainer * tc2 = NULL; 
 
-				if (ITC.Get("book")->CreateHalo(GDevice))
+				if (ITC.Get("book")->CreateHalo())
 					tc2=ITC.Get("book")->TextureHalo;
 
 				if (tc2 != NULL)
@@ -9621,14 +9608,14 @@ void DANAE::DrawAllInterface()
 			float px = DANAESIZX - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
 		float py = 0;
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		float vv = 0.9f - EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 2 )+rnd()*( 1.0f / 10 );
 
 		if ( vv < 0.f ) vv = 0;
 		else if ( vv > 1.f ) vv = 1.f;
 
 		ARX_INTERFACE_DrawItem( ChangeLevel, px, py, 0.0001f, D3DRGB( vv, vv, vv ) );
-		danaeApp.EnableZBuffer();
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 			if (MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
 		{
@@ -9699,7 +9686,7 @@ void DANAE::DrawAllInterface()
 
 			if (player.SpellToMemorize.iSpellSymbols[i]!=255)
 			{
-				EERIEDrawBitmap2(GDevice, pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+				EERIEDrawBitmap2( pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
 					necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]]
 					, D3DRGB(1,1,1));
 
@@ -9708,7 +9695,7 @@ void DANAE::DrawAllInterface()
 					TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
 					TextureContainer *tc2;
 
-					tc->CreateHalo(GDevice);
+					tc->CreateHalo();
 
 					tc2 = tc->TextureHalo;
 
@@ -9717,13 +9704,13 @@ void DANAE::DrawAllInterface()
 
 				if (!(player.rune_flags & (1<<player.SpellToMemorize.iSpellSymbols[i])))
 				{
-					SETBLENDMODE(GDevice,D3DBLEND_INVDESTCOLOR,D3DBLEND_ONE);
-					SETALPHABLEND(GDevice,true);
+					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-					EERIEDrawBitmap2(GDevice, pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+					EERIEDrawBitmap2( pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
 						Movable
 						, D3DRGB(0.8f,0.8f,0.8f));
-					SETALPHABLEND(GDevice,false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 
 				pos.x += INTERFACE_RATIO(32);
@@ -9745,7 +9732,7 @@ void DANAE::DrawAllInterface()
 		v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 1.f, 1.f);
 		v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 0.f, 1.f);
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
 		py = DANAESIZY - INTERFACE_RATIO(81);
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
@@ -9772,10 +9759,10 @@ void DANAE::DrawAllInterface()
 			long vvv = vuv;
 				vuv = (float)vvv / ITC.Get("filled_gauge_red")->m_dwHeight; 
 			//ir=
-				EERIEDrawBitmap2DecalY(GDevice, fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, vuv);
+				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, vuv);
 		}
 		else
-				EERIEDrawBitmap2DecalY(GDevice, fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, (1.f - fnl));
+				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, (1.f - fnl));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9796,7 +9783,7 @@ void DANAE::DrawAllInterface()
 		//---------------------------------------------------------------------
 		//END RED GAUGE
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = 0.f-lSLID_VALUE;
 		py = DANAESIZY - INTERFACE_RATIO(78);
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), px, py, 0.001f);
@@ -9814,10 +9801,10 @@ void DANAE::DrawAllInterface()
 			long vvv = vuv;
 				vuv = (float)vvv / ITC.Get("filled_gauge_blue")->m_dwHeight; 
 			//ir=
-				EERIEDrawBitmap2DecalY(GDevice, DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, vuv);
+				EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, vuv);
 		}
 		else
-				EERIEDrawBitmap2DecalY(GDevice, DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
+				EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9841,8 +9828,8 @@ void DANAE::DrawAllInterface()
 			{
 				if (bRenderInCursorMode)
 				{
-					SETALPHABLEND(GDevice, true);
-					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 					if (mecanism_tc && (MAGICMODE < 0) && (lNbToDrawMecanismCursor < 3))
 					{
@@ -9862,15 +9849,12 @@ void DANAE::DrawAllInterface()
 
 						lTimeToDrawMecanismCursor += ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
 
-					EERIEDrawBitmap(	GDevice,
-						0,0,
-
-						INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth),
-						INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
-
-						0.01f,
-						mecanism_tc,
-						lColorMecanism );
+					EERIEDrawBitmap(0,0,
+									INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth),
+									INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
+									0.01f,
+									mecanism_tc,
+									lColorMecanism );
 				}
 
 					if (arrow_left_tc)
@@ -9887,65 +9871,61 @@ void DANAE::DrawAllInterface()
 
 					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 					
-					EERIEDrawBitmap(	GDevice,					//left
-						0+fMove,
-						(DANAESIZY-fSizeY)*.5f,
-						fSizeX,
-						fSizeY,
-						0.01f,
-						arrow_left_tc,
-						lColor );
+					EERIEDrawBitmap(0+fMove,						// Left
+									(DANAESIZY-fSizeY)*.5f,
+									fSizeX,
+									fSizeY,
+									0.01f,
+									arrow_left_tc,
+									lColor );
 
-					EERIEDrawBitmapUVs(	GDevice,				//right
-						DANAESIZX-fSizeX-fMove,
-						(DANAESIZY-fSizeY)*.5f,
-						fSizeX,
-						fSizeY,
-						0.01f,
-						arrow_left_tc,
-						lColor,
-						1.f,0.f,
-						0.f,0.f,
-						1.f,1.f,
-						0.f,1.f);
+					EERIEDrawBitmapUVs( DANAESIZX-fSizeX-fMove,		// Right
+										(DANAESIZY-fSizeY)*.5f,
+										fSizeX,
+										fSizeY,
+										0.01f,
+										arrow_left_tc,
+										lColor,
+										1.f,0.f,
+										0.f,0.f,
+										1.f,1.f,
+										0.f,1.f);
 
-					EERIEDrawBitmapUVs(	GDevice,				//up
-						(DANAESIZX-fSizeY)*.5f,
-						0.f+fMove,
-						fSizeY,
-						fSizeX,
-						0.01f,
-						arrow_left_tc,
-						lColor,
-						0.f,1.f,
-						0.f,0.f,
-						1.f,1.f,
-						1.f,0.f);
+					EERIEDrawBitmapUVs((DANAESIZX-fSizeY)*.5f,		// Up
+										0.f+fMove,
+										fSizeY,
+										fSizeX,
+										0.01f,
+										arrow_left_tc,
+										lColor,
+										0.f,1.f,
+										0.f,0.f,
+										1.f,1.f,
+										1.f,0.f);
 
-					EERIEDrawBitmapUVs(	GDevice,				//down
-						(DANAESIZX-fSizeY)*.5f,
-						(DANAESIZY-fSizeX)-fMove,
-						fSizeY,
-						fSizeX,
-						0.01f,
-						arrow_left_tc,
-						lColor,
-						1.f,1.f,
-						1.f,0.f,
-						0.f,1.f,
-						0.f,0.f);
+					EERIEDrawBitmapUVs(	(DANAESIZX-fSizeY)*.5f,		// Down
+										(DANAESIZY-fSizeX)-fMove,
+										fSizeY,
+										fSizeX,
+										0.01f,
+										arrow_left_tc,
+										lColor,
+										1.f,1.f,
+										1.f,0.f,
+										0.f,1.f,
+										0.f,0.f);
 				}
 
-				SETALPHABLEND(GDevice, false);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
 		}
 	}
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
-	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 }
 
 extern long FRAME_COUNT;
@@ -9968,7 +9948,7 @@ long Manage3DCursor(long flags)
 	if ((DANAEMouse.y<drop_miny) && (!EDITMODE))
 		return 0;
 
-	SetFilteringMode(GDevice,Bilinear);
+	SetFilteringMode(Bilinear);
 
 	INTERACTIVE_OBJ * io=DRAGINTER;
 
@@ -10229,13 +10209,13 @@ long Manage3DCursor(long flags)
 								|| (lastanything>EEfabs(height)))
 							{
 						io->invisibility = 0.5f;
-								DrawEERIEInter(GDevice,io->obj,&temp,&collidpos,io);
+								DrawEERIEInter(io->obj,&temp,&collidpos,io);
 								io->invisibility=old;
 							}
 							else if (lastanything>0.f)
-						DrawEERIEInter(GDevice, io->obj, &temp, &pos, io);
+						DrawEERIEInter( io->obj, &temp, &pos, io);
 							else
-								DrawEERIEInter(GDevice,io->obj,&temp,&pos,io);
+								DrawEERIEInter(io->obj,&temp,&pos,io);
 							}
 
 							PrecalcIOLighting(NULL,0,1);
@@ -10243,7 +10223,7 @@ long Manage3DCursor(long flags)
 
 							if (	(!SPECIAL_DRAGINTER_RENDER)
 								&&	(INTERTRANSPOLYSPOS)	)
-								ARXDRAW_DrawAllInterTransPolyPos(GDevice);
+								ARXDRAW_DrawAllInterTransPolyPos();
 
 							if (!SPECIAL_DRAGINTER_RENDER && !DESTROYED_DURING_RENDERING)
 							{
@@ -10308,7 +10288,7 @@ long Manage3DCursor(long flags)
 							}
 						}
 
-						SETCULL(GDevice,D3DCULL_NONE);
+						GRenderer->SetCulling(Renderer::CullNone);
 						return 1;
 					}
 					else
@@ -10328,7 +10308,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 		ManageIgnition_2(DRAGINTER);
 		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-		SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
+		SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 	}
 
 	TextureContainer * surf;
@@ -10377,11 +10357,11 @@ void ARX_INTERFACE_RenderCursor(long flag)
 		float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 		float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-		EERIEDrawBitmap(GDevice,(float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
+		EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
 			fTexSizeX, fTexSizeY, 0.f,
 			surf,D3DCOLORWHITE);
 
-		SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+		SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 		return;
 	}
 
@@ -10393,7 +10373,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 		RECT rect;
 
 		if (!SPECIAL_DRAGINTER_RENDER)
-			SETCULL(GDevice,D3DCULL_NONE);
+			GRenderer->SetCulling(Renderer::CullNone);
 
 		if ((COMBINE) || (COMBINEGOLD))
 		{
@@ -10484,7 +10464,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 					if (tc->m_pddsSurface==NULL)
 					{
-						D3DTextr_Restore(tc->m_strName,GDevice);
+						D3DTextr_Restore(tc->m_strName);
 					}
 
 					float MODIF=0.f;
@@ -10496,7 +10476,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 					if (SpecialCursor==CURSOR_COMBINEON)
 					{
-						EERIEDrawBitmap(GDevice,(float)POSX+MODIF,(float)POSY+MODIF
+						EERIEDrawBitmap((float)POSX+MODIF,(float)POSY+MODIF
 							,(float)fTexSizeX
 							,(float)fTexSizeY,0.00001f
 							,tc,0xFFFFFFFF);
@@ -10513,7 +10493,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						}
 					}
 					else
-						EERIEDrawBitmap(GDevice,(float)POSX+MODIF,(float)POSY+MODIF
+						EERIEDrawBitmap((float)POSX+MODIF,(float)POSY+MODIF
 						,(float)fTexSizeX
 						,(float)fTexSizeY,0.00001f
 						,tc,0xFFFFAA66);
@@ -10605,7 +10585,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 					if (SpecialCursor == CURSOR_REDIST)
 					{
-						EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
+						EERIEDrawBitmap((float)POSX,(float)POSY,
 							surf->m_dwWidth * Xratio,
 							surf->m_dwHeight * Yratio,
 							0.f,
@@ -10621,7 +10601,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 						float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-						EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
+						EERIEDrawBitmap((float)POSX,(float)POSY,
 							fTexSizeX, fTexSizeY, 0.f,
 							surf,D3DCOLORWHITE);
 					}
@@ -10661,14 +10641,13 @@ void ARX_INTERFACE_RenderCursor(long flag)
 					float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
 
-					EERIEDrawBitmap(	GDevice,
-										(float)(POSX - (fTexSizeX*0.5f)),
-										(float)(POSY - (fTexSizeY*0.5f)),
-										(float)fTexSizeX,
-										(float)fTexSizeY,
-										0.f,
-										surf,
-										D3DCOLORWHITE);
+					EERIEDrawBitmap((float)(POSX - (fTexSizeX*0.5f)),
+									(float)(POSY - (fTexSizeY*0.5f)),
+									(float)fTexSizeX,
+									(float)fTexSizeY,
+									0.f,
+									surf,
+									D3DCOLORWHITE);
 				}
 				else
 				{
@@ -10688,7 +10667,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 						if (tc->m_pddsSurface==NULL)
 						{
-							tc->Restore(GDevice);
+							tc->Restore();
 						}
 
 						D3DCOLOR color;
@@ -10712,7 +10691,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 						if (!(DRAGINTER->ioflags & IO_MOVABLE))
 						{
-							EERIEDrawBitmap(GDevice,(float)mx,(float)my
+							EERIEDrawBitmap((float)mx,(float)my
 								,(float)fTexSizeX
 								,(float)fTexSizeY,0.00001f
 								,tc,color);
@@ -10727,7 +10706,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 								||
 								(CANNOT_PUT_IT_HERE != -1))
 							{
-								EERIEDrawBitmap(GDevice,(float)mx,(float)my
+								EERIEDrawBitmap((float)mx,(float)my
 									,(float)fTexSizeX
 									,(float)fTexSizeY,0.00001f
 									,tc,color);
@@ -10745,7 +10724,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 									tcc=ThrowObject;
 
 								if ((tcc) && (tcc!=tc)) // to avoid movable double red cross...
-									EERIEDrawBitmap(GDevice,(float)mx+16,(float)my
+									EERIEDrawBitmap((float)mx+16,(float)my
 
 									,INTERFACE_RATIO_DWORD(tcc->m_dwWidth)
 									,INTERFACE_RATIO_DWORD(tcc->m_dwHeight),0.00001f
@@ -10781,7 +10760,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 						if (surf)
 						{
-							EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
+							EERIEDrawBitmap((float)POSX,(float)POSY,
 							                INTERFACE_RATIO_DWORD(surf->m_dwWidth), INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f,
 								surf,D3DCOLORWHITE);
 						}
@@ -10826,22 +10805,22 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 						if (surf)
 						{
-							SETALPHABLEND(GDevice, true);
-							SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 							POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
 							POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
 
 							D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
 
-							EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
+							EERIEDrawBitmap((float)POSX,(float)POSY,
 
 								INTERFACE_RATIO_DWORD(surf->m_dwWidth),
 								INTERFACE_RATIO_DWORD(surf->m_dwHeight),
 
 								0.f,
 								surf, col);
-							SETALPHABLEND(GDevice, false);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
 					}
 				}
@@ -10849,6 +10828,6 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
 		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
-		SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+		SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 	}
 }

@@ -285,7 +285,7 @@ void ARX_SPELLS_AbortSpellSound();
 void ARX_SPELLS_InitKnownSpells();
 void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();
-void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice);
+void ARX_SPELLS_Update();
 void ARX_SPELLS_Fizzle(const long & num);
 
 /**
@@ -295,11 +295,11 @@ void ARX_SPELLS_FizzleNoMana(const long & num);
 void ARX_SPELLS_Kill(const long & i);
 void ARX_SPELLS_ManageMagic();
 
-void ARX_SPELLS_Update_Lightning(LPDIRECT3DDEVICE7 m_pd3dDevice);
+void ARX_SPELLS_Update_Lightning();
 
 void ClearParticles();
 
-void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const char * name, const float & duration);
+void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const std::string& name, const float& duration);
 
 void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();

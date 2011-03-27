@@ -119,7 +119,7 @@ void CCreateField::Create(EERIE_3D aeSrc, float afBeta)
 }
 
 //-----------------------------------------------------------------------------
-void CCreateField::RenderQuad(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4, int rec, EERIE_3D norm)
+void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4, int rec, EERIE_3D norm)
 {
 	D3DTLVERTEX v[5];
 	D3DTLVERTEX v2[5];
@@ -169,10 +169,10 @@ void CCreateField::RenderQuad(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX p1, D3
 		v[4].sy += (float) sin(radians((v[4].sy - eSrc.y) * patchsize + fwrap)) * 5;
 		v[4].sz += (float) sin(radians((v[4].sz - eSrc.z) * patchsize + fwrap)) * 5;
 
-		RenderQuad(m_pd3dDevice, p1, v[4], v[0], v[1], rec, norm);
-		RenderQuad(m_pd3dDevice, v[4], p2, v[2], v[0], rec, norm);
-		RenderQuad(m_pd3dDevice, v[0], v[2], p3, v[3], rec, norm);
-		RenderQuad(m_pd3dDevice, v[1], v[0], v[3], p4, rec, norm);
+		RenderQuad(p1, v[4], v[0], v[1], rec, norm);
+		RenderQuad(v[4], p2, v[2], v[0], rec, norm);
+		RenderQuad(v[0], v[2], p3, v[3], rec, norm);
+		RenderQuad(v[1], v[0], v[3], p4, rec, norm);
 	}
 	else if (rec == 3)
 	{
@@ -203,14 +203,14 @@ void CCreateField::RenderQuad(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX p1, D3
 }
 
 //-----------------------------------------------------------------------------
-void CCreateField::RenderSubDivFace(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2)
+void CCreateField::RenderSubDivFace(D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2)
 {
 	EERIE_3D norm;
 	norm.x = (b[b1].sx + b[b2].sx + t[t1].sx + t[t2].sx) * 0.25f - eSrc.x;
 	norm.y = (b[b1].sy + b[b2].sy + t[t1].sy + t[t2].sy) * 0.25f - eSrc.y;
 	norm.z = (b[b1].sz + b[b2].sz + t[t1].sz + t[t2].sz) * 0.25f - eSrc.z;
 	Vector_Normalize(&norm);
-	RenderQuad(m_pd3dDevice, b[b1], b[b2], t[t1], t[t2], 1, norm);
+	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm);
 }
 
 //-----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ void CCreateField::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CCreateField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CCreateField::Render()
 {
 	if (ulCurrentTime >= ulDuration) return 0.f;
 
@@ -228,12 +228,11 @@ float CCreateField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (falpha > 1.f) falpha = 1.f;
 
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
-	SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_CLAMP);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//-------------------------------------------------------------------------
 	// rendu
@@ -331,22 +330,22 @@ float CCreateField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		fwrap = 360;
 	}
 
-	SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_WRAP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 
 	if (tex_jelly && tex_jelly->m_pddsSurface)
 	{
-		SETTC(m_pd3dDevice, tex_jelly);
+		SETTC(tex_jelly);
 	}
 
-	RenderSubDivFace(m_pd3dDevice, b, b, 0, 1, 2, 3);
-	RenderSubDivFace(m_pd3dDevice, t, t, 0, 3, 2, 1);
-	RenderSubDivFace(m_pd3dDevice, b, t, 1, 0, 0, 1);
-	RenderSubDivFace(m_pd3dDevice, b, t, 3, 2, 2, 3);
-	RenderSubDivFace(m_pd3dDevice, b, t, 0, 3, 3, 0);
-	RenderSubDivFace(m_pd3dDevice, b, t, 2, 1, 1, 2);
+	RenderSubDivFace(b, b, 0, 1, 2, 3);
+	RenderSubDivFace(t, t, 0, 3, 2, 1);
+	RenderSubDivFace(b, t, 1, 0, 0, 1);
+	RenderSubDivFace(b, t, 3, 2, 2, 3);
+	RenderSubDivFace(b, t, 0, 3, 3, 0);
+	RenderSubDivFace(b, t, 2, 1, 1, 2);
 
-	SETZWRITE(m_pd3dDevice, true);
-	SETALPHABLEND(m_pd3dDevice, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	if (lLightId != -1)
 	{
@@ -468,7 +467,7 @@ void CSlowDown::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CSlowDown::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CSlowDown::Render()
 {
 	int i = 0;
 
@@ -481,8 +480,8 @@ float CSlowDown::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	SETZWRITE(m_pd3dDevice, false);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for (i = 0; i < inter.nbmax; i++)
 	{
@@ -516,7 +515,7 @@ float CSlowDown::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.y = y;
 	stitepos.z = z;
 
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	stiteangle.b = -stiteangle.b * 1.5f;
 	stitecolor.r = 0.7f;
@@ -533,7 +532,7 @@ float CSlowDown::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.x = 2;
 	stitescale.y = 2;
 	stitescale.z = 2;
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	y = player.pos.y + 20;
 	stitepos.y = y;
@@ -836,12 +835,11 @@ void CRiseDead::AddStone(EERIE_3D * pos)
 }
 
 /*--------------------------------------------------------------------------*/
-void CRiseDead::DrawStone(LPDIRECT3DDEVICE7 _pD3DDevice)
+void CRiseDead::DrawStone()
 {
 	int	nb = 256;
-	_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
-	_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(_pD3DDevice, true);
+	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	while (nb--)
 	{
@@ -856,7 +854,7 @@ void CRiseDead::DrawStone(LPDIRECT3DDEVICE7 _pD3DDevice)
 			}
 
 			int col = RGBA_MAKE(255, 255, 255, (int)(255.f * (1.f - a)));
-			DrawEERIEObjExEx(_pD3DDevice, this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
+			DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
 
 			int j = ARX_PARTICLES_GetFree();
 
@@ -901,7 +899,7 @@ void CRiseDead::DrawStone(LPDIRECT3DDEVICE7 _pD3DDevice)
 		}
 	}
 
-	SETALPHABLEND(_pD3DDevice, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -923,7 +921,7 @@ void CRiseDead::Split(D3DTLVERTEX * v, int a, int b, float yo)
 }
 
 //-----------------------------------------------------------------------------
-void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void CRiseDead::RenderFissure()
 {
 	int i;
 	float ff;
@@ -970,7 +968,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
-	SETALPHABLEND(m_pd3dDevice, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = D3DRGB(0, 0, 0);
 
 	if (bIntro)
@@ -1009,7 +1007,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
 	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
 
@@ -1057,12 +1055,12 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	// blend additif ou mul
 	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	if (tex_light && tex_light->m_pddsSurface)
 	{
-		SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_MIRROR);
-		SETTC(m_pd3dDevice, tex_light);
+		SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
+		SETTC(tex_light);
 	}
 
 	target.sx = eSrc.x ;
@@ -1228,18 +1226,17 @@ void CRiseDead::Update(unsigned long _ulTime)
 
 //-----------------------------------------------------------------------------
 // rendu de la déchirure spatio temporelle
-float CRiseDead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CRiseDead::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
 
-	SETTC(m_pd3dDevice, NULL);
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
+	SETTC(NULL);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_CLAMP);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//-------------------------------------------------------------------------
 
@@ -1278,8 +1275,8 @@ float CRiseDead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		}
 	}
 
-	SETALPHABLEND(m_pd3dDevice, false);
-	RenderFissure(m_pd3dDevice);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	RenderFissure();
 
 	//cailloux
 	if (this->timestone <= 0)
@@ -1293,15 +1290,14 @@ float CRiseDead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		this->AddStone(&pos);
 	}
 
-	SETZWRITE(m_pd3dDevice, true);
-	SETALPHABLEND(m_pd3dDevice, true);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	this->DrawStone(m_pd3dDevice);
-	SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_WRAP);
-	SETALPHABLEND(m_pd3dDevice, false);
-	SETZWRITE(m_pd3dDevice, true);
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+	this->DrawStone();
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetCulling(Renderer::CullNone);
 	return (fSizeIntro / end);
 }
 
@@ -1728,15 +1724,14 @@ void CParalyse::Update(unsigned long aulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
+float CParalyse::Render()
 {
 	if (key > 1) return 0;
 
-	SETALPHABLEND(pD3DDevice, true);
-	SETZWRITE(pD3DDevice, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	int			nb;
 	EERIE_3D	* vertex;
@@ -1767,8 +1762,8 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 		nb--;
 	}
 
-	if (tex_prism) pD3DDevice->SetTexture(0, tex_prism->m_pddsSurface);
-	else pD3DDevice->SetTexture(0, NULL);
+	if (tex_prism) GDevice->SetTexture(0, tex_prism->m_pddsSurface);
+	else GDevice->SetTexture(0, NULL);
 
 	int	nb2 = 50;
 
@@ -1796,10 +1791,10 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 					nb--;
 				}
 
-				SETCULL(pD3DDevice, D3DCULL_CW);
-				pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
-				SETCULL(pD3DDevice, D3DCULL_CCW);
-				pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->SetCulling(Renderer::CullCW);
+				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->SetCulling(Renderer::CullCCW);
+				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
 
 				vertex = this->tabprism[nb2].vertex;
 				int j;
@@ -1858,10 +1853,10 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 					nb--;
 				}
 
-				SETCULL(pD3DDevice, D3DCULL_CW);
-				pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
-				SETCULL(pD3DDevice, D3DCULL_CCW);
-				pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->SetCulling(Renderer::CullCW);
+				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->SetCulling(Renderer::CullCCW);
+				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
 			}
 
 			vertex = this->prismvertex;
@@ -1985,10 +1980,10 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 					nb--;
 				}
 
-				SETCULL(pD3DDevice, D3DCULL_CW);
-				pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
-				SETCULL(pD3DDevice, D3DCULL_CCW);
-				pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->SetCulling(Renderer::CullCW);
+				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->SetCulling(Renderer::CullCCW);
+				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
 			}
 
 			col = RGBA_MAKE((int)(this->prismrd + (this->prismre - this->prismrd) * this->prisminterpcol),
@@ -2015,10 +2010,10 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 			break;
 	}
 
-	SETCULL(pD3DDevice, D3DCULL_CW);
-	pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
-	SETCULL(pD3DDevice, D3DCULL_CCW);
-	pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+	GRenderer->SetCulling(Renderer::CullCW);
+	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+	GRenderer->SetCulling(Renderer::CullCCW);
+	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
 
 
 	for (int i = 0; i < 20; i++)
@@ -2109,10 +2104,9 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 		}
 	}
 
-	pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(pD3DDevice, false);
-	SETZWRITE(pD3DDevice, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	return 0;
 }
@@ -2218,7 +2212,7 @@ void CDisarmTrap::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CDisarmTrap::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CDisarmTrap::Render()
 {
 	int i = 0;
 
@@ -2232,8 +2226,8 @@ float CDisarmTrap::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 
 
-	SETZWRITE(m_pd3dDevice, false);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 
 	for (i = 0; i < inter.nbmax; i++)
@@ -2249,10 +2243,10 @@ float CDisarmTrap::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	//-------------------------------------------------------------------------
 	if (tex_p2 && tex_p2->m_pddsSurface)
 	{
-		SETTC(m_pd3dDevice, tex_p2);
+		SETTC(tex_p2);
 	}
 
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
@@ -2272,7 +2266,7 @@ float CDisarmTrap::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.z = 1.8f;
 	stitescale.y = 1.8f;
 	stitescale.x = 1.8f;
-	DrawEERIEObjEx(m_pd3dDevice, srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	return 1;
 }

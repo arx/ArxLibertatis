@@ -96,7 +96,6 @@ class CD3DFramework7
 		bool                 m_bIsStereo;          // Stereo view mode
 		LPDIRECTDRAW7        m_pDD;                // The DirectDraw object
 		LPDIRECT3D7          m_pD3D;               // The Direct3D object
-		LPDIRECT3DDEVICE7    m_pd3dDevice;         // The D3D device
 		LPDIRECTDRAWSURFACE7 m_pddsBackBufferLeft; // For stereo modes
 		DWORD                m_dwDeviceMemType;
 
@@ -149,11 +148,6 @@ class CD3DFramework7
 		{
 			return m_pD3D;
 		}
-		LPDIRECT3DDEVICE7    GetD3DDevice()
-		{
-			return m_pd3dDevice;
-		}
- 
 		LPDIRECTDRAWSURFACE7 GetRenderSurface()
 		{
 			return m_pddsBackBuffer;

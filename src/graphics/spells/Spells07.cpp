@@ -423,7 +423,7 @@ void GetChestPos(long num, EERIE_3D * p)
 	}
 }
 //------------------------------------------------------------------------------
-float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CLightning::Render()
 {
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v2[4];
@@ -531,18 +531,16 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	//-------------------------------------------------------------------------
 	// rendu
 
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	cnodetab[0].fx = frand2() * 1.5f * fMySize; //5
 	cnodetab[0].fy = frand2() * 1.5f * fMySize; //5
 	cnodetab[0].fz = frand2() * 1.5f * fMySize; //5
 
-
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
-	SETTC(m_pd3dDevice, NULL);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	SETTC(NULL);
 
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = D3DRGB(1, 1, 1);
 
@@ -748,8 +746,8 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		                             &v2[3]);
 	}
 
-	SETZWRITE(m_pd3dDevice, true);
-	SETALPHABLEND(m_pd3dDevice, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	return falpha;
 }
 
@@ -838,7 +836,7 @@ void CConfuse::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CConfuse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CConfuse::Render()
 {
 	int i = 0;
 
@@ -851,16 +849,14 @@ float CConfuse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	SETZWRITE(m_pd3dDevice, false);
-
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//-------------------------------------------------------------------------
 	if (tex_trail && tex_trail->m_pddsSurface)
 	{
-		SETTC(m_pd3dDevice, tex_trail);
+		SETTC(tex_trail);
 	}
 
 	EERIE_3D stiteangle;
@@ -898,7 +894,7 @@ float CConfuse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.x = 1;
 	stitescale.y = 1;
 	stitescale.z = 1;
-	DrawEERIEObjEx(m_pd3dDevice, spapi, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	long j = -1;
 
@@ -1124,26 +1120,24 @@ void CFireField::Update(unsigned long _ulTime)
 }
 
 /*--------------------------------------------------------------------------*/
-float CFireField::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
+float CFireField::Render()
 {
 	if (this->key > 1) return 0;
 
-	SETALPHABLEND(_pD3DDevice, true);
-	SETZWRITE(_pD3DDevice, false);
-	_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	SETCULL(_pD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_pD3DDevice, false);
-	SETALPHABLEND(_pD3DDevice, true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	pPSStream.Render(_pD3DDevice);
-	pPSStream1.Render(_pD3DDevice);
+	pPSStream.Render();
+	pPSStream1.Render();
 
-	_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(_pD3DDevice, false);
-	SETZWRITE(_pD3DDevice, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	return 0;
 }
@@ -1297,15 +1291,14 @@ void CIceField::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CIceField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CIceField::Render()
 {
 	int i = 0;
 
 	
-	SETZWRITE(m_pd3dDevice, true);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	iMax = (int)(iNumber); 
 
@@ -1373,9 +1366,9 @@ float CIceField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		stitescale.x = tSize[i].z;
 
 		if (tType[i] == 0)
-			DrawEERIEObjEx(m_pd3dDevice, smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
 		else
-			DrawEERIEObjEx(m_pd3dDevice, stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	}
 
 	//----------------

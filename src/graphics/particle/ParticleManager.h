@@ -63,7 +63,7 @@ class CParticleManager
  
 		bool	IsAlive(CParticleSystem);
 		void	Update(long alTime);
-		void	Render(LPDIRECT3DDEVICE7 _lpD3DDevice);
+		void	Render();
 
 		//flag post prod/genre filtre
 };

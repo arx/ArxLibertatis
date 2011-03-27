@@ -50,19 +50,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef ARX_FTL_H
 #define ARX_FTL_H
 
+#include <string>
+
 struct EERIE_3DOBJ;
 
-/**
- * Saves an FTL File
+/*!
+ * Save a FTL File
  * Must pass the original name of the theo file
  */
-bool ARX_FTL_Save(const char * file, const EERIE_3DOBJ * obj);
+bool ARX_FTL_Save(const std::string & file, const EERIE_3DOBJ * obj);
 
-// Load a FTL file
-EERIE_3DOBJ * ARX_FTL_Load(const char * file);
+/*!
+ * Load a FTL file
+ */
+EERIE_3DOBJ * ARX_FTL_Load(const std::string & file);
 
 void MCache_ClearAll();
 

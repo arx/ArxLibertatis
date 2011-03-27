@@ -138,13 +138,13 @@ ARX_PATH * ARX_PATHS_AddNew(EERIE_3D * pos)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_PATHS_RedrawAll(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_PATHS_RedrawAll()
 {
 	ARX_PATHS_FlyingOverAP = NULL;
 	ARX_PATHS_FlyingOverNum = -1;
 
 	for (long i = 0; i < nbARXpaths; i++)
-		ARX_PATHS_DrawPath(ARXpaths[i], pd3dDevice);
+		ARX_PATHS_DrawPath(ARXpaths[i]);
 }
 
 void ARX_PATH_ComputeBB(ARX_PATH * ap)
@@ -305,11 +305,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2);
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
 				}
@@ -337,11 +334,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 							if (t >= 0)
 							{
-								char texx[128];
-								char tex2[128];
-								strcpy(texx, GetName(io->filename).c_str());
-								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
+								std::string str = io->long_name() + ' ' + temp;
+								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str); 
 							}
 						}
 					}
@@ -358,11 +352,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str); 
 						}
 					}
 
@@ -377,11 +368,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (t >= 0)
 						{
-							char texx[128];
-							char tex2[128];
-							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2);
+							std::string str = io->long_name() + ' ' + temp;
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
 					}
 				}
@@ -564,10 +552,10 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 }
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATH_GetAddressByName( const char * name)
+ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name)
 {
 
-	if ((name) && (name[0]) && (ARXpaths))
+	if ( !(name).empty() && (ARXpaths) )
 		for (long i = 0; i < nbARXpaths; i++)
 		{
 			if (ARXpaths[i])
@@ -944,7 +932,7 @@ void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_PATHS_DrawPathWay(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3D * pos, float siz, D3DCOLOR color, long height)
+void ARX_PATHS_DrawPathWay(EERIE_3D * pos, float siz, D3DCOLOR color, long height)
 {
 	D3DTLVERTEX vert;
 	vert.sx = pos->x;
@@ -952,8 +940,8 @@ void ARX_PATHS_DrawPathWay(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3D * pos, float s
 	vert.sz = pos->z;
 
 	if (height == 0)
-		EERIEDrawSprite(pd3dDevice, &vert, siz, EERIE_DRAW_sphere_particle, color, 2.f);
-	else EERIEDrawSprite(pd3dDevice, &vert, siz, EERIE_DRAW_square_particle, color, 2.f);
+		EERIEDrawSprite(&vert, siz, EERIE_DRAW_sphere_particle, color, 2.f);
+	else EERIEDrawSprite(&vert, siz, EERIE_DRAW_square_particle, color, 2.f);
 }
 ARX_PATH *	ARX_PATHS_FlyingOverAP = NULL;
 long		ARX_PATHS_FlyingOverNum = -1;
@@ -961,7 +949,7 @@ ARX_PATH *	ARX_PATHS_SelectedAP = NULL;
 long		ARX_PATHS_SelectedNum = -1;
 //*************************************************************************************
 //*************************************************************************************
-void ARX_PATHS_DrawPath(ARX_PATH * ap, LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_PATHS_DrawPath(ARX_PATH * ap)
 {
 	if (ap == NULL) return;
 
@@ -991,26 +979,26 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap, LPDIRECT3DDEVICE7 pd3dDevice)
 				{
 					if (selected)
 					{
-						EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFFFFFFF);
+						EERIEDraw3DLine(&from, &to,  0xFFFFFFFF);
 
 						if (ap->height > 0)
 						{
 							to.y -= ap->height;
 							from.y -= ap->height;
-							EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFFFFFFF);
+							EERIEDraw3DLine(&from, &to,  0xFFFFFFFF);
 							to.y += ap->height;
 							from.y += ap->height;
 						}
 					}
 					else
 					{
-						EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFCCCCCC);
+						EERIEDraw3DLine(&from, &to,  0xFFCCCCCC);
 
 						if (ap->height > 0)
 						{
 							to.y -= ap->height;
 							from.y -= ap->height;
-							EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFCCCCCC);
+							EERIEDraw3DLine(&from, &to,  0xFFCCCCCC);
 							to.y += ap->height;
 							from.y += ap->height;
 						}
@@ -1024,26 +1012,26 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap, LPDIRECT3DDEVICE7 pd3dDevice)
 
 						if (selected)
 						{
-							EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFDDDDDD);
+							EERIEDraw3DLine(&from, &to,  0xFFDDDDDD);
 
 							if (ap->height > 0)
 							{
 								to.y -= ap->height;
 								from.y -= ap->height;
-								EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFDDDDDD);
+								EERIEDraw3DLine(&from, &to,  0xFFDDDDDD);
 								to.y += ap->height;
 								from.y += ap->height;
 							}
 						}
 						else
 						{
-							EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFAAAAAA);
+							EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
 
 							if (ap->height > 0)
 							{
 								to.y -= ap->height;
 								from.y -= ap->height;
-								EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFAAAAAA);
+								EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
 								to.y += ap->height;
 								from.y += ap->height;
 							}
@@ -1052,8 +1040,8 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap, LPDIRECT3DDEVICE7 pd3dDevice)
 				}
 				else
 				{
-					if (selected) EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFFFFF00);
-					else EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFAAAAAA);
+					if (selected) EERIEDraw3DLine(&from, &to,  0xFFFFFF00);
+					else EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
 				}
 
 				break;
@@ -1077,8 +1065,8 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap, LPDIRECT3DDEVICE7 pd3dDevice)
 					newpos.y += ap->pos.y + ap->pathways[i].rpos.y;
 					newpos.z += ap->pos.z + ap->pathways[i].rpos.z;
 
-					if (selected) EERIEDraw3DLine(pd3dDevice, &lastpos, &newpos,  0xFF00FF00);
-					else EERIEDraw3DLine(pd3dDevice, &lastpos, &newpos,  0xFFAAAAAA);
+					if (selected) EERIEDraw3DLine(&lastpos, &newpos,  0xFF00FF00);
+					else EERIEDraw3DLine(&lastpos, &newpos,  0xFFAAAAAA);
 
 					memcpy(&lastpos, &newpos, sizeof(EERIE_3D));
 				}
@@ -1103,30 +1091,30 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap, LPDIRECT3DDEVICE7 pd3dDevice)
 			to.x = from.x;
 			to.y = from.y - ap->height;
 			to.z = from.z;
-			EERIEDraw3DLine(pd3dDevice, &from, &to,  0xFFAAAAAA);
+			EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
 		}
 
 		if ((ARX_PATHS_SelectedNum == (i + 1)) &&
-		        (ap == ARX_PATHS_SelectedAP)) ARX_PATHS_DrawPathWay(pd3dDevice, &from, 4.f, 0xFF0000FF, ap->height);
+		        (ap == ARX_PATHS_SelectedAP)) ARX_PATHS_DrawPathWay(&from, 4.f, 0xFF0000FF, ap->height);
 
 		if (i == 0)
 		{
-			if (selected) ARX_PATHS_DrawPathWay(pd3dDevice, &from, 3.f, 0xFFFF0000, ap->height);
-			else ARX_PATHS_DrawPathWay(pd3dDevice, &from, 3.f, 0xFFAA0000, ap->height);
+			if (selected) ARX_PATHS_DrawPathWay(&from, 3.f, 0xFFFF0000, ap->height);
+			else ARX_PATHS_DrawPathWay(&from, 3.f, 0xFFAA0000, ap->height);
 		}
 		else
 			switch (ap->pathways[i].flag)
 			{
 				case PATHWAY_STANDARD:
 
-					if (selected) ARX_PATHS_DrawPathWay(pd3dDevice, &from, 2.4f, 0xFFFFFF00, ap->height);
-					else ARX_PATHS_DrawPathWay(pd3dDevice, &from, 2.4f, 0xFFAAAAAA, ap->height);
+					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFFFFF00, ap->height);
+					else ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFAAAAAA, ap->height);
 
 					break;
 				case PATHWAY_BEZIER:
 
-					if (selected) ARX_PATHS_DrawPathWay(pd3dDevice, &from, 2.4f, 0xFF00FF00, ap->height);
-					else ARX_PATHS_DrawPathWay(pd3dDevice, &from, 2.4f, 0xFFAAAAAA, ap->height);
+					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFF00FF00, ap->height);
+					else ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFAAAAAA, ap->height);
 
 					break;
 			}
@@ -1472,8 +1460,8 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
 	if (Thrown_Count <= 0) return;
 
-	SETZWRITE(GDevice, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
 	{
@@ -1513,7 +1501,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			MatrixFromQuat(&mat, &Thrown[i].quat);
 			long ccount = FRAME_COUNT;
 			FRAME_COUNT = 0;
-			DrawEERIEInterMatrix(GDevice, Thrown[i].obj, &mat, &Thrown[i].position, NULL);
+			DrawEERIEInterMatrix(Thrown[i].obj, &mat, &Thrown[i].position, NULL);
 
 			if ((Thrown[i].flags & ATO_FIERY)
 			        &&	(Thrown[i].flags & ATO_MOVING)
@@ -1606,7 +1594,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 				Thrown[i].pRuban->Update();
 
-				Thrown[i].pRuban->Render(GDevice);
+				Thrown[i].pRuban->Render();
 			}
 
 			FRAME_COUNT = ccount;
@@ -1680,10 +1668,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
 						char weapon_material[64]	= "DAGGER";
-						char bkg_material[64]		= "EARTH";
+						std::string bkg_material = "EARTH";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
-							GetMaterialString(ep->tex->m_texName.c_str(), bkg_material);
+							bkg_material = GetMaterialString( ep->tex->m_texName );
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
@@ -1990,14 +1978,12 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 }
 
 //-----------------------------------------------------------------------------
-float CRuban::Render(LPDIRECT3DDEVICE7 device)
+float CRuban::Render()
 {
-	SETCULL(device, D3DCULL_NONE);
-	SETALPHABLEND(device, true);
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-
-	SETTC(device, NULL);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	SETTC(NULL);
 
 	for (int i = 0; i < nbrubandef; i++)
 	{
@@ -2008,9 +1994,8 @@ float CRuban::Render(LPDIRECT3DDEVICE7 device)
 		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2) ;
 	}
 
-	SETALPHABLEND(device, false);
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
 	return 0;
 }

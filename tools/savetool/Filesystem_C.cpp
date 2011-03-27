@@ -53,9 +53,9 @@ long FileTell(FileHandle handle) {
 	return ftell(GETHANDLE(handle));
 }
 
-static FileHandle FileOpen(const char * name, const char * mode) {
+static FileHandle FileOpen(const std::string& name, const std::string& mode) {
 	
-	FILE * handle = fopen(name, mode);
+	FILE * handle = fopen(name.c_str(), mode.c_str());
 	if(!handle) {
 		return INVALID_FILE_HANDLE;
 	}
@@ -65,15 +65,15 @@ static FileHandle FileOpen(const char * name, const char * mode) {
 	return MAKEHANDLE(handle);
 }
 
-FileHandle FileOpenRead(const char * name) {
+FileHandle FileOpenRead(const std::string& name) {
 	return FileOpen(name, "rb");
 }
 
-FileHandle FileOpenWrite(const char * name) {
+FileHandle FileOpenWrite(const std::string& name) {
 	return FileOpen(name, "wb");
 }
 
-FileHandle FileOpenReadWrite(const char * name) {
+FileHandle FileOpenReadWrite(const std::string& name) {
 	return FileOpen(name, "r+");
 }
 
@@ -105,7 +105,7 @@ long FileSeek(FileHandle handle, int offset, long mode) {
 	}
 }
 
-void * FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
+void * FileLoadMalloc(const std::string& name, size_t * SizeLoadMalloc)
 {
 	FileHandle handle;
 	long	size1, size2;

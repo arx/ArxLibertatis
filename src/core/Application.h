@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <commctrl.h>
 
 #include "graphics/d3dwrapper.h"
+#include "graphics/Renderer.h"
 
 struct D3DEnum_DeviceInfo;
 class CD3DFramework7;
@@ -243,8 +244,8 @@ struct EERIETOOLBAR {
 	long CreationToolBar;
 	long ToolBarNb;
 	LPCTBBUTTON Buttons;
-	long Bitmap;
-	char * String;
+	long		Bitmap;
+	std::string		String;
 	long Type;
 };
 
@@ -285,7 +286,7 @@ public:
 protected:
 	
 	// Overridable variables for the app
-	const char * m_strWindowTitle;
+		std::string m_strWindowTitle;
 	bool m_bAppUseZBuffer;
 	bool m_bAppUseStereo;
 	bool m_bShowStats;
@@ -325,7 +326,6 @@ protected:
 public:
 	
 	LPDIRECTDRAW7 m_pDD;
-	LPDIRECT3DDEVICE7 m_pd3dDevice;
 	LPDIRECTDRAWSURFACE7 m_pddsRenderTarget;
 	LPDIRECTDRAWSURFACE7 m_pddsRenderTargetLeft;	// For stereo modes
 	DDSURFACEDESC2 m_ddsdRenderTarget;
@@ -337,7 +337,7 @@ public:
 	virtual HRESULT InitDeviceObjects() {
 		return S_OK;
 	}
-	void OutputText(DWORD x, DWORD y, const char * str);
+	void OutputText(DWORD x, DWORD y, const std::string& str);
 	
 	HRESULT SetClipping(float x1, float y1, float x2, float y2);
 	
@@ -383,8 +383,6 @@ public:
 	DDSURFACEDESC2 ddsd;
 	DDSURFACEDESC2 ddsd2;
 	
-	void EnableZBuffer();
-	
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
 	DDGAMMARAMP DDGammaRamp; // modified ramp value
 	DDGAMMARAMP DDGammaOld; // backup gamma values
@@ -417,10 +415,10 @@ private:
 	CD3DApplicationScopedLock& operator=(const CD3DApplicationScopedLock&);
 };
 
-bool OKBox(const char * text, const char * title);
+bool OKBox(const std::string& text, const std::string& title);
 
 void CalcFPS(bool reset = false);
 
-void SetZBias(const LPDIRECT3DDEVICE7, int);
+void SetZBias(int);
 
 #endif // ARX_CORE_APPLICATION_H

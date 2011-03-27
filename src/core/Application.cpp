@@ -101,7 +101,6 @@ CD3DApplication		* g_pD3DApp = NULL;
 EERIE_CAMERA		* Kam;
 LPDIRECT3DDEVICE7	GDevice;
 HWND				MSGhwnd = NULL;
-bool				bZBUFFER = true;
 float				FPS;
 int					ModeLight = 0;
 long				ViewMode = 0;
@@ -130,7 +129,6 @@ CD3DApplication::CD3DApplication()
 	m_dlghWnd		= NULL;
 	m_pDD          = NULL;
 	m_pD3D         = NULL;
-	m_pd3dDevice   = NULL;
 
 	m_pddsRenderTarget     = NULL;
 	m_pddsRenderTargetLeft = NULL;
@@ -237,7 +235,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	                      LoadIcon(hInst, MAKEINTRESOURCE(IDI_MAIN)),
 	                      LoadCursor(NULL, IDC_ARROW),
 	                      (HBRUSH)GetStockObject(BLACK_BRUSH),
-	                      NULL, _T("D3D Window")
+	                      NULL, "D3D Window"
 	                    };
 	RegisterClass(&wndClass);
 
@@ -272,7 +270,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		else
 			menu = CreationMenu;
 
-		MSGhwnd = m_hWnd = CreateWindow(_T("D3D Window"), m_strWindowTitle,
+		MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
 		                                flags,
 		                                CW_USEDEFAULT, CW_USEDEFAULT, CreationSizeX, CreationSizeY, owner,
 		                                LoadMenu(hInst, MAKEINTRESOURCE(menu)),
@@ -818,7 +816,6 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 	{
 		m_pDD        = m_pFramework->GetDirectDraw();
 		m_pD3D       = m_pFramework->GetDirect3D();
-		m_pd3dDevice = m_pFramework->GetD3DDevice();
 
 		m_pddsRenderTarget     = m_pFramework->GetRenderSurface();
 		m_pddsRenderTargetLeft = m_pFramework->GetRenderSurfaceLeft();
@@ -1168,7 +1165,7 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 {
 	D3DVIEWPORT7 vp = {(unsigned long)x1, (unsigned long)y1, (unsigned long)x2, (unsigned long)y2, 0.f, 1.f};
 
-	if (FAILED(m_pd3dDevice->SetViewport(&vp))) return D3DFWERR_NOVIEWPORT;
+	if (FAILED(GDevice->SetViewport(&vp))) return D3DFWERR_NOVIEWPORT;
 
 	return S_OK;
 }
@@ -1177,7 +1174,7 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 // OutputText()
 // Draws text on the window.
 //*************************************************************************************
-VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
+VOID CD3DApplication::OutputText(DWORD x, DWORD y, const std::string& str)
 {
 	if (m_pddsRenderTarget)
 	{
@@ -1334,28 +1331,18 @@ bool CD3DApplication::Unlock()
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-void CD3DApplication::EnableZBuffer()
-{
-	if (m_pd3dDevice)
-	{
-		m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
-	}
-	bZBUFFER = true;
-}
-
 //******************************************************************************
 // MESSAGE BOXES
 //******************************************************************************
 //*************************************************************************************
 //*************************************************************************************
 //TODO(lubosz): is this needed in the game? replace
-bool OKBox(const char * text, const char * title)
+bool OKBox(const std::string& text, const std::string& title)
 
 {
 	int i;
 	g_pD3DApp->Pause(true);
-	i = MessageBox(g_pD3DApp->m_hWnd, text, title, MB_ICONQUESTION | MB_OKCANCEL);
+	i = MessageBox(g_pD3DApp->m_hWnd, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
 	g_pD3DApp->Pause(false);
 
 	if (i == IDCANCEL) return false;
@@ -1366,7 +1353,7 @@ bool OKBox(const char * text, const char * title)
 extern void ExitProc();
 
 
-void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)
+void SetZBias(int _iZBias)
 {
 	if (_iZBias < 0)
 	{
@@ -1374,8 +1361,10 @@ void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)
 		_iZBias = max(iCurrZBias, -_iZBias);
 	}
 
-	if (_iZBias == iCurrZBias) return;
+	if (_iZBias == iCurrZBias) 
+		return;
 
 	iCurrZBias = _iZBias;
-	_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, iCurrZBias);
+
+	GRenderer->SetDepthBias(iCurrZBias);
 }

@@ -57,9 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include <cstdio>
-#include <algorithm>
-#include <sstream>
-#include <vector>
 #include <climits>
 
 #include "animation/AnimationRender.h"
@@ -89,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::sprintf;
 using std::min;
 using std::max;
+using std::string;
 
 extern char LastLoadedScene[256];
 extern PakManager * pPakManager;
@@ -97,7 +95,7 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
 
-long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const char * text) {
+long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
 	
 	if(!eobj) {
 		return -1;
@@ -105,7 +103,7 @@ long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const char * text) {
 	
 	for(long i = 0; i < eobj->nbgroups; i++) {
 		// TODO use string compare
-		if(!strcasecmp(text, eobj->grouplist[i].name.c_str())) {
+		if(!strcasecmp(text, eobj->grouplist[i].name)) {
 			return eobj->grouplist[i].origin;
 		}
 	}
@@ -113,7 +111,7 @@ long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const char * text) {
 	return -1;
 }
 
-long GetActionPointIdx(const EERIE_3DOBJ * eobj, const char * text) {
+long GetActionPointIdx(const EERIE_3DOBJ * eobj, const string & text) {
 	
 	if(!eobj) {
 		return -1;
@@ -122,7 +120,7 @@ long GetActionPointIdx(const EERIE_3DOBJ * eobj, const char * text) {
 	for(vector<EERIE_ACTIONLIST>::const_iterator i = eobj->actionlist.begin();
 	    i != eobj->actionlist.end(); ++i) {
 		// TODO use string compare
-		if(!strcasecmp(text, i->name.c_str())) {
+		if(!strcasecmp(text, i->name)) {
 			return i->idx;
 		}
 	}
@@ -275,7 +273,7 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 	return time;
 }
 
-static void * safeAlloc(size_t size, const char * desc) {
+static void * safeAlloc(size_t size, const std::string& desc) {
 	void * result;
 	do {
 		result = malloc(size); 
@@ -286,30 +284,30 @@ static void * safeAlloc(size_t size, const char * desc) {
 	return result;
 }
 
-static void * safeAllocZero(size_t size, const char * desc) {
+static void * safeAllocZero(size_t size, const std::string& desc) {
 	void * result = safeAlloc(size, desc);
 	memset(result, 0, size);
 	return result;
 }
 
 template <class T>
-static T * allocStruct(const char * desc, size_t n = 1) {
+static T * allocStruct(const std::string& desc, size_t n = 1) {
 	return (T*)safeAlloc(n * sizeof(T), desc);
 }
 
 template <class T>
-static T * allocStructZero(const char * desc, size_t n = 1) {
+static T * allocStructZero(const std::string& desc, size_t n = 1) {
 	return (T*)safeAllocZero(n * sizeof(T), desc);
 }
 
 template <class T>
-static T * copyStruct(const T * src, const char * desc, size_t n = 1) {
+static T * copyStruct(const T * src, const std::string& desc, size_t n = 1) {
 	T * result = allocStruct<T>(desc, n);
 	memcpy(result, src, sizeof(T) * n);
 	return result;
 }
 
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) {
 	
 	(void)size; // TODO use size
 	
@@ -977,15 +975,15 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms) {
 	free(ms);
 }
 
-EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr) {
+EERIE_MULTI3DSCENE * MultiSceneToEerie(const string & dirr) {
 	
 	EERIE_MULTI3DSCENE * es;
 	char pathh[512];
 
 	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMultiScn");
 
-	strcpy(LastLoadedScene, dirr);
-	sprintf(pathh, "%s*.scn", dirr);
+	strcpy(LastLoadedScene, dirr.c_str());
+	sprintf(pathh, "%s*.scn", dirr.c_str());
 
 	LogWarning << "partially unimplemented MultiSceneToEerie";
 //	TODO: finddata
@@ -1058,13 +1056,13 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr) {
 	return es;
 }
 
-EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr) {
+EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 	
 	EERIE_MULTI3DSCENE * es;
 	
 	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMulti3DScn");
 
-	strcpy(LastLoadedScene, dirr);
+	strcpy(LastLoadedScene, dirr.c_str());
 
 	string path = dirr;
 	RemoveName(path);
@@ -1081,13 +1079,10 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr) {
 		while(nb--) {
 			if(!strcasecmp(GetExt( et->name), ".scn")) {
 				
-				std::string path2;
-				path2 = dirr + et->name;
-				size_t SizeAlloc = 0;
-				
-				unsigned char * adr = (unsigned char*)PAK_FileLoadMalloc(path2, SizeAlloc);
+				size_t SizeAlloc;
+				unsigned char * adr = (unsigned char*)PAK_FileLoadMalloc(dirr + et->name, SizeAlloc);
 				if(adr) {
-					es->scenes[es->nb_scenes] = ScnToEerie(adr, SizeAlloc, path.c_str());
+					es->scenes[es->nb_scenes] = ScnToEerie(adr, SizeAlloc, path);
 					es->nb_scenes++;
 					free(adr);
 				}
@@ -1132,7 +1127,7 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr) {
 	return es;
 }
 
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr) {
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const string & dirr) {
 	
 	LogInfo << "Loading Multiscene " << dirr;
 	
@@ -1599,25 +1594,25 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj) {
 	return nouvo;
 }
 
-long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname) {
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const string & selname) {
 	
 	if (!obj) return -1;
 
 	for (size_t i = 0; i < obj->selections.size(); i++)
 	{ // TODO iterator
-		if (!strcasecmp(obj->selections[i].name.c_str(), selname)) return i;
+		if (!strcasecmp(obj->selections[i].name, selname)) return i;
 	}
 
 	return -1;
 }
 //-----------------------------------------------------------------------------------------------------
-long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const char * groupname)
+long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const std::string& groupname)
 {
 	if (!obj) return -1;
 
 	for (long i = 0; i < obj->nbgroups; i++)
 	{
-		if (!strcasecmp(obj->grouplist[i].name.c_str(), groupname)) return i;
+		if (!strcasecmp(obj->grouplist[i].name, groupname)) return i;
 	}
 
 	return -1;
@@ -1937,7 +1932,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 
 // Converts a Theo Object to an EERIE object
 // flag 1 progressive alloc 2 SLOW
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice) {
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath, const string & fic, long flag) {
 	
 	LogWarning << "TheoToEerie " << fic;
 	
@@ -1945,8 +1940,8 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 		return NULL;
 	}
 	
-	const char * txpath;
-	if(!texpath || texpath[0] == 0) {
+	string txpath;
+	if(texpath.empty()) {
 		txpath = "Graph\\Obj3D\\Textures\\";
 	} else {
 		txpath = texpath;
@@ -2019,8 +2014,8 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 					MakeUserFlag(eerie->texturecontainer[i]);
 					
 					if(eerie->texturecontainer[i]) {
-						if(!(flag & TTE_NO_RESTORE) && pd3dDevice) {
-							eerie->texturecontainer[i]->Restore(pd3dDevice);
+						if(!(flag & TTE_NO_RESTORE)) {
+							eerie->texturecontainer[i]->Restore();
 						}
 					}
 				}
@@ -2199,7 +2194,7 @@ void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj)
 		{
 			if (eobj->texturecontainer[i])
 			{
-				eobj->texturecontainer[i]->Restore(GDevice);
+				eobj->texturecontainer[i]->Restore();
 			}
 		}
 	}

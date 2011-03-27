@@ -54,9 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-extern void ComputeSingleFogVertex(D3DTLVERTEX*);
-
-
 TextureContainer * EERIE_DRAW_sphere_particle=NULL;
 TextureContainer * EERIE_DRAW_square_particle=NULL;
 
@@ -82,7 +79,6 @@ extern TextureContainer * enviro;
 extern float FrameTime;
 extern EERIE_3D e3dPosBump;
 extern bool bALLOW_BUMP;
-extern bool bZBUFFER;
 
 /*---------------------------------------------------------------------------------------------------------*/
 struct D3DTLVERTEX2UV
@@ -354,16 +350,15 @@ void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
 {
 	Zmap=Z_map;
 }
-void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
+void DRAWLATER_Render()
 {
 	if (curdrawlater==0) return;
 
 		D3DTLVERTEX verts[4];
-		pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-		pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
-		SETZWRITE(pd3dDevice,false); 
-		SETALPHABLEND(pd3dDevice,true);					
-		SETCULL( pd3dDevice, D3DCULL_NONE );
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
+		GRenderer->SetRenderState(Renderer::DepthWrite, false); 
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
+		GRenderer->SetCulling(Renderer::CullNone);
 		long to;
 
 		for (long j=0;j<curdrawlater;j++)
@@ -374,7 +369,7 @@ void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 
 			if (tdl[j].ep->tex->TextureRefinement->m_pddsSurface==NULL)
 			{
-				tdl[j].ep->tex->TextureRefinement->Restore(pd3dDevice);
+				tdl[j].ep->tex->TextureRefinement->Restore();
 
 				if (tdl[j].ep->tex->TextureRefinement->m_pddsSurface==NULL) continue;
 			}
@@ -394,17 +389,7 @@ void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 				tdl[j].ep->tv[i].tu*=4.f;
 				tdl[j].ep->tv[i].tv*=4.f;
 
-				float val;
-
-				if(bZBUFFER)
-				{
-				val = (0.048f - tdl[j].ep->tv[i].sz); 
-				}
-				else
-				{
-				val = (0.048f - tdl[j].ep->tv[i].rhw);
-				}
-				
+				float val = (0.048f - tdl[j].ep->tv[i].sz); 
 				if (val<=0.f) 
 				{
 					tdl[j].ep->tv[i].color=0xFF000000;
@@ -426,8 +411,8 @@ void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 
 			tdl[j].ep->tv[i].sz-=0.001f;
 
-			SETTC(pd3dDevice,tdl[j].ep->tex->TextureRefinement);
-			EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, tdl[j].ep, to, 0, EERIE_NOCOUNT );
+			SETTC(tdl[j].ep->tex->TextureRefinement);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, tdl[j].ep, to, 0, EERIE_NOCOUNT );
 
 			for (int i=0;i<to;i++)
 			{
@@ -439,17 +424,16 @@ void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 
 		EERIEDrawnPolys+=curdrawlater;
-		SETALPHABLEND(pd3dDevice,false); 
-		SETZWRITE(pd3dDevice,true); 
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
+		GRenderer->SetRenderState(Renderer::DepthWrite, true); 
 
-	SETTC(pd3dDevice,NULL);
+	SETTC(NULL);
 }
 
 //------------------------------------------------------------------------------
 
 //Draw primitive using vertex buffer
-HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice, 
-								D3DPRIMITIVETYPE	_dptPrimitiveType, 
+HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType, 
 								DWORD				_dwVertexTypeDesc,	// Vertex Format
 								LPVOID				_pD3DTLVertex,		// don't specify _pD3DTLVertex type.
 								int *				_piNbVertex, 
@@ -457,8 +441,7 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 
 //------------------------------------------------------------------------------
 
-HRESULT EERIEDRAWPRIM(	LPDIRECT3DDEVICE7 pd3dDevice,
-						D3DPRIMITIVETYPE dptPrimitiveType,  
+HRESULT EERIEDRAWPRIM(	D3DPRIMITIVETYPE dptPrimitiveType,  
 						DWORD  dwVertexTypeDesc,            
 						LPVOID lpvVertices,                 
 						DWORD  dwVertexCount,               
@@ -468,11 +451,11 @@ HRESULT EERIEDRAWPRIM(	LPDIRECT3DDEVICE7 pd3dDevice,
 	if( !( EERIE_NOCOUNT & flags ) )
 		EERIEDrawnPolys++;
 
-	return ARX_DrawPrimitiveVB(pd3dDevice,dptPrimitiveType,dwVertexTypeDesc,lpvVertices,(int*)&dwVertexCount,dwFlags);
-	//return pd3dDevice->DrawPrimitive(dptPrimitiveType,dwVertexTypeDesc,lpvVertices,dwVertexCount,dwFlags);	
+	return ARX_DrawPrimitiveVB(dptPrimitiveType,dwVertexTypeDesc,lpvVertices,(int*)&dwVertexCount,dwFlags);
+	//return GDevice->DrawPrimitive(dptPrimitiveType,dwVertexTypeDesc,lpvVertices,dwVertexCount,dwFlags);	
 }
 		
-void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
+void Delayed_FlushAll()
 {
 	int flg_NOCOUNT_USEVB = EERIE_NOCOUNT;
 
@@ -485,9 +468,9 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 			long to;
 
 			if (ViewMode & VIEWMODE_FLAT)
-				SETTC(pd3dDevice,NULL);
+				SETTC(NULL);
 			else 
-				SETTC(pd3dDevice,ptcTexture);
+				SETTC(ptcTexture);
 
 			DELAYED_PRIM * del=(DELAYED_PRIM *)ptcTexture->delayed;
 
@@ -496,36 +479,34 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 				EERIEPOLY * ep=del[i].data;
 
 				if (!(ep->type & POLY_DOUBLESIDED))
-					SETCULL( pd3dDevice, D3DCULL_CW );			
+					GRenderer->SetCulling(Renderer::CullCW);
 				else 
-					SETCULL( pd3dDevice, D3DCULL_NONE );
+					GRenderer->SetCulling(Renderer::CullNone);
 				
 				if (ep->type & POLY_QUAD)
 					to=4;
 				else to=3;
 
-				EERIEDRAWPRIM(	pd3dDevice, D3DPT_TRIANGLESTRIP,
-										D3DFVF_TLVERTEX| D3DFVF_DIFFUSE,
+				EERIEDRAWPRIM(	D3DPT_TRIANGLESTRIP,
+								D3DFVF_TLVERTEX| D3DFVF_DIFFUSE,
 								ep->tv,	to,	0 , flg_NOCOUNT_USEVB );
 					
 				if ( ptcTexture->userflags & POLY_METAL)
 				{
-					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND(pd3dDevice,true);	
-					SETTC(pd3dDevice,NULL); 
+					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
+					SETTC(NULL); 
 
-					EERIEDRAWPRIM(	pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ep->tv,	to,	0, flg_NOCOUNT_USEVB );
+					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ep->tv,	to,	0, flg_NOCOUNT_USEVB );
 					EERIEDrawnPolys++;	
 				}
 
 				if ( (ep->type & POLY_LAVA) || (ep->type & POLY_WATER) )
 				{
-					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND(pd3dDevice,true);	
+					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					D3DTLVERTEX verts[4];
-					SETTC(pd3dDevice,enviro);
+					SETTC(enviro);
 
 					for (long i=0;i<to;i++)
 					{
@@ -543,7 +524,7 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 						}
 						else
 						{
-							pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE );
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							verts[i].tu=ep->v[i].sx*( 1.0f / 800 )+EEsin((ep->v[i].sx)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
 							verts[i].tv=ep->v[i].sz*( 1.0f / 800 )+EEcos((ep->v[i].sz)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
 
@@ -551,7 +532,7 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 						}
 					}
 
-					EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 
 					if (ep->type & POLY_WATER)
 					{
@@ -566,7 +547,7 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 							}
 						}	
 
-						EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 						EERIEDrawnPolys++;
 					}
 
@@ -577,7 +558,7 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 							verts[i].tu=ep->v[i].sx*( 1.0f / 1000 )+EEsin((ep->v[i].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 							verts[i].tv=ep->v[i].sz*( 1.0f / 1000 )+EEcos((ep->v[i].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 						}	
-						EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 						for ( int i=0;i<to;i++)
 						{
 							verts[i].tu=ep->v[i].sx*( 1.0f / 600 )+EEsin((ep->v[i].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
@@ -585,9 +566,8 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 							verts[i].color=0xFF666666;
 						}	
 
-						pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-						pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-						EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 						EERIEDrawnPolys+=2;
 					}
 				}
@@ -607,15 +587,15 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 						if(fDist<=(MAX_DIST_BUMP*MAX_DIST_BUMP))	//6 metres
 						{
 							fDist=(float)sqrt(fDist);
-							EERIE_DrawPolyBump(pd3dDevice,ep,MAX_BUMP*(MAX_DIST_BUMP-fDist)*ONE_ONE_MAX_DIST_BUMP);
+							EERIE_DrawPolyBump(ep,MAX_BUMP*(MAX_DIST_BUMP-fDist)*ONE_ONE_MAX_DIST_BUMP);
 							EERIEDrawnPolys++;
 
 						}
 
 					}
 
-					SETTC(pd3dDevice,ptcTexture);				
-					SETALPHABLEND(pd3dDevice,false);	
+					SETTC(ptcTexture);				
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 			}				
 			
 			if (ZMAPMODE)
@@ -623,19 +603,18 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 				if (ptcTexture->TextureRefinement==NULL) ptcTexture->delayed_nb=0;
 				else if (ptcTexture->TextureRefinement->m_pddsSurface==NULL)
 				{
-					ptcTexture->TextureRefinement->Restore(pd3dDevice);
+					ptcTexture->TextureRefinement->Restore();
 
 					if (ptcTexture->TextureRefinement->m_pddsSurface==NULL) ptcTexture->delayed_nb=0;
 				}
 
 				if (ptcTexture->delayed_nb)
 				{
-					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
-					SETZWRITE(pd3dDevice,false); 
-					SETALPHABLEND(pd3dDevice,true);					
+					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
+					GRenderer->SetRenderState(Renderer::DepthWrite, false); 
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
 					D3DTLVERTEX verts[4];
-					SETTC(pd3dDevice,ptcTexture->TextureRefinement); 
+					SETTC(ptcTexture->TextureRefinement); 
 
 					for (long i=0;i<ptcTexture->delayed_nb;i++)
 					{
@@ -661,8 +640,8 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 						}					
 
 						if (!(ep->type & POLY_DOUBLESIDED))
-							SETCULL( pd3dDevice, D3DCULL_CW );			
-						else SETCULL( pd3dDevice, D3DCULL_NONE );
+							GRenderer->SetCulling(Renderer::CullCW);			
+						else GRenderer->SetCulling(Renderer::CullNone);
 						
 						
 						register long tmp;
@@ -698,13 +677,13 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 							}				
 						}
 
-						EERIEDRAWPRIM(	pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 					}
 				}
 
 				EERIEDrawnPolys+=ptcTexture->delayed_nb;
-				SETALPHABLEND(pd3dDevice,false); 
-				SETZWRITE(pd3dDevice,true);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
+				GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			}
 
 			EERIEDrawnPolys+=ptcTexture->delayed_nb;
@@ -747,11 +726,10 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 /* To Keep...
 					if ((REFLECTFX) && enviro)
 					{
-						pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-						pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-						SETALPHABLEND(pd3dDevice,true);	
+						GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 						D3DTLVERTEX verts[4];
-						SETTC(pd3dDevice,enviro);
+						SETTC(enviro);
 						for (long i=0;i<to;i++)
 						{
 							verts[i].sx=ep->tv[i].sx;
@@ -762,7 +740,7 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 							verts[i].tu=(ep->v[i].sx-ep->tv[i].sx)*( 1.0f / 800 )+(EEsin((ep->v[i].sx-ep->tv[i].sx)*( 1.0f / 200 ))*( 1.0f / 8 ))*ep->tv[i].rhw;
 							verts[i].tv=(ep->v[i].sz-ep->tv[i].sy)*( 1.0f / 800 )+(EEcos((ep->v[i].sz-ep->tv[i].sy)*( 1.0f / 200 ))*( 1.0f / 8 ))*ep->tv[i].rhw;						
 						}
-						EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0,1,ep);
+						EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0,1,ep);
 					}*/
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -796,116 +774,65 @@ float duab,duac,dvab,dvac,s1,s2,s3;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-void EERIE_DrawPolyBump(LPDIRECT3DDEVICE7 pd3dDevice,EERIEPOLY *ep,float alpha)
+void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 {
-	float		du,dv;
-	int			nb;
+	float du, dv;
 
 	if(	(!ep->tv[0].color)&&
 		(!ep->tv[1].color)&&
 		(!ep->tv[2].color) ) return;
 
-	pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_DESTCOLOR);
-	pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_SRCCOLOR);	
-	SETALPHABLEND(pd3dDevice,true);			
-	SETTC(pd3dDevice,ep->tex);
+	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
+	SETTC(ep->tex);
 
 	CalculTriangleBump( ep->tv[0], ep->tv[1], ep->tv[2], &du, &dv );
 	du*=alpha;
 	dv*=alpha;
 	
-	if(g_pD3DApp->m_pDeviceInfo->wNbTextureSimultaneous>1)
+	D3DTLVERTEX2UV	v[4];
+
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
+
+	GDevice->SetTexture(1, ep->tex->m_pddsBumpMap);
+	GDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
+	
+	GRenderer->GetTextureStage(0)->DisableAlpha();
+	GRenderer->GetTextureStage(1)->DisableAlpha();
+	GRenderer->GetTextureStage(2)->DisableColor();
+	
+	*((D3DTLVERTEX*)(v))=ep->tv[0];
+	v->tu2=ep->tv[0].tu+du;
+	v->tv2=ep->tv[0].tv+dv;
+	*((D3DTLVERTEX*)(v+1))=ep->tv[1];
+	(v+1)->tu2=ep->tv[1].tu+du;
+	(v+1)->tv2=ep->tv[1].tv+dv;
+	*((D3DTLVERTEX*)(v+2))=ep->tv[2];
+	(v+2)->tu2=ep->tv[2].tu+du;
+	(v+2)->tv2=ep->tv[2].tv+dv;
+
+	if(ep->type&POLY_QUAD)
 	{
-		D3DTLVERTEX2UV	v[4];
-		pd3dDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-		pd3dDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-		pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-
-		pd3dDevice->SetTexture(1,ep->tex->m_pddsBumpMap);
-		pd3dDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
-		pd3dDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
-		pd3dDevice->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-		pd3dDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_ADDSIGNED);
-		pd3dDevice->SetTextureStageState(1,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-		pd3dDevice->SetTextureStageState(2,D3DTSS_COLOROP,D3DTOP_DISABLE);
-		
-		*((D3DTLVERTEX*)(v))=ep->tv[0];
-		v->tu2=ep->tv[0].tu+du;
-		v->tv2=ep->tv[0].tv+dv;
-		*((D3DTLVERTEX*)(v+1))=ep->tv[1];
-		(v+1)->tu2=ep->tv[1].tu+du;
-		(v+1)->tv2=ep->tv[1].tv+dv;
-		*((D3DTLVERTEX*)(v+2))=ep->tv[2];
-		(v+2)->tu2=ep->tv[2].tu+du;
-		(v+2)->tv2=ep->tv[2].tv+dv;
-
-		if(ep->type&POLY_QUAD)
-		{
-			*((D3DTLVERTEX*)(v+3))=ep->tv[3];
-			(v+3)->tu2=ep->tv[3].tu+du;
-			(v+3)->tv2=ep->tv[3].tv+dv;
-		
-				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 4, 0, EERIE_NOCOUNT );
-
-		}
-		else
-		{
-			
-				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 3, 0, EERIE_NOCOUNT );
-		}
-
-		pd3dDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
+		*((D3DTLVERTEX*)(v+3))=ep->tv[3];
+		(v+3)->tu2=ep->tv[3].tu+du;
+		(v+3)->tv2=ep->tv[3].tv+dv;
+	
+		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 4, 0, EERIE_NOCOUNT );
 	}
 	else
 	{
-		D3DTLVERTEX	v[4];
-		pd3dDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-		pd3dDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-		pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-		
-		memcpy(v,ep->tv,3*sizeof(D3DTLVERTEX));
-
-		if(ep->type&POLY_QUAD)
-		{
-			v[3]=ep->tv[3];
-
-				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0, EERIE_NOCOUNT );
-			
-			v[3].tu+=du;
-			v[3].tv+=dv;
-			nb=4;
-		}
-		else
-		{
-				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, ep->tv, 3, 0, EERIE_NOCOUNT );
-			nb=3;
-		}
-
-		v[0].tu+=du;
-		v[0].tv+=dv;
-		v[1].tu+=du;
-		v[1].tv+=dv;
-		v[2].tu+=du;
-		v[2].tv+=dv;
-		
-		pd3dDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
-		pd3dDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-		pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
-				
-			EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX|D3DFVF_DIFFUSE, v, nb, 0, EERIE_NOCOUNT );
+		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 3, 0, EERIE_NOCOUNT );
 	}
 
-	pd3dDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	pd3dDevice->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
-	pd3dDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
-	pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE);
-	pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);
+	
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(1)->DisableColor();
 
-	pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
-	pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ZERO);	
-	SETALPHABLEND(pd3dDevice,false); 
-	SETZWRITE(pd3dDevice,true); 
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
+	GRenderer->SetRenderState(Renderer::DepthWrite, true); 
 }
 
 //*************************************************************************************
@@ -921,19 +848,19 @@ void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 	tv[1].rhw=tv[0].rhw=1.f;
 	tv[1].sx=x1;
 	tv[1].sy=y1;	
-	SETTC(GDevice,NULL);
-	EERIEDRAWPRIM(GDevice,D3DPT_LINELIST ,	D3DFVF_TLVERTEX,tv, 2,  0  );	
+	SETTC(NULL);
+	EERIEDRAWPRIM(D3DPT_LINELIST ,	D3DFVF_TLVERTEX,tv, 2,  0  );	
 
 }
 
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
+void EERIEDraw2DLine(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
 	D3DTLVERTEX v[2];
 
-	SETTC(pd3dDevice,NULL);
+	SETTC(NULL);
 	v[0].sx=x0;
 	v[0].sy=y0;
 	v[0].sz=v[1].sz=z;
@@ -942,16 +869,16 @@ void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,fl
 	v[1].color=v[0].color=col;
 	v[1].rhw=v[0].rhw=1.f;
 
-	SETTC(pd3dDevice,NULL);
-	EERIEDRAWPRIM(pd3dDevice, D3DPT_LINELIST, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, 
+	SETTC(NULL);
+	EERIEDRAWPRIM( D3DPT_LINELIST, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, 
 					 v, 2,  0  );	
 }
 
-void EERIEDraw2DRect(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
+void EERIEDraw2DRect(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
 	D3DTLVERTEX v[5];
 
-	SETTC(pd3dDevice,NULL);
+	SETTC(NULL);
 	v[4].sx=v[3].sx=v[0].sx=x0;
 	v[4].sy=v[1].sy=v[0].sy=y0;
 	v[2].sx=v[1].sx=x1;
@@ -960,15 +887,15 @@ void EERIEDraw2DRect(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,fl
 	v[4].color=v[3].color=v[2].color=v[1].color=v[0].color=col;
 	v[4].rhw=v[3].rhw=v[2].rhw=v[1].rhw=v[0].rhw=1.f;
 
-	SETTC(pd3dDevice,NULL);
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_LINESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 5,  0  );	
+	SETTC(NULL);
+	EERIEDRAWPRIM(D3DPT_LINESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 5,  0  );	
 }
 
-void EERIEDrawFill2DRectDegrad(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR cold, D3DCOLOR cole)
+void EERIEDrawFill2DRectDegrad(float x0,float y0,float x1,float y1,float z, D3DCOLOR cold, D3DCOLOR cole)
 {
 	D3DTLVERTEX v[4];
 
-	SETTC(pd3dDevice,NULL);
+	SETTC(NULL);
 	v[0].sx=v[2].sx=x0;
 	v[0].sy=v[1].sy=y0;
 	v[1].sx=v[3].sx=x1;
@@ -977,11 +904,11 @@ void EERIEDrawFill2DRectDegrad(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,f
 	v[2].color=v[3].color=cole;
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=z;
 	v[3].rhw=v[2].rhw=v[1].rhw=v[0].rhw=1.f;
-	SETTC(pd3dDevice,NULL);
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4,  0  );	
+	SETTC(NULL);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4,  0  );	
 }
 
-void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col)
+void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
 	EERIE_3D from,to;
 	#define STEPCYL 16
@@ -1000,7 +927,7 @@ void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3D
 		to.x=cyl->origin.x+es2;
 		to.y=cyl->origin.y;
 		to.z=cyl->origin.z+ec2;
-		EERIEDraw3DLine(pd3dDevice,&from, &to,  col);
+		EERIEDraw3DLine(&from, &to,  col);
 		// Draw vertical 
 		from.x=cyl->origin.x+es;
 		from.y=cyl->origin.y;
@@ -1008,7 +935,7 @@ void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3D
 		to.x=from.x;
 		to.y=from.y+cyl->height;
 		to.z=from.z;
-		EERIEDraw3DLine(pd3dDevice,&from, &to,  col);
+		EERIEDraw3DLine(&from, &to,  col);
 		// Draw high pos
 		from.x=cyl->origin.x+es;
 		from.y=cyl->origin.y+cyl->height;
@@ -1016,11 +943,11 @@ void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3D
 		to.x=cyl->origin.x+es2;
 		to.y=from.y;
 		to.z=cyl->origin.z+ec2;
-		EERIEDraw3DLine(pd3dDevice,&from, &to,  col);
+		EERIEDraw3DLine(&from, &to,  col);
 	}
 }
 
-void EERIEDraw3DCylinderBase(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col)
+void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
 	EERIE_3D from,to;
 	#define STEPCYL 16
@@ -1039,7 +966,7 @@ void EERIEDraw3DCylinderBase(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl,
 		to.x=cyl->origin.x+es2;
 		to.y=cyl->origin.y;
 		to.z=cyl->origin.z+ec2;
-		EERIEDraw3DLine(pd3dDevice,&from, &to,  col);	
+		EERIEDraw3DLine(&from, &to,  col);	
 	}
 }
 
@@ -1049,7 +976,7 @@ void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
 	register float lx=x0;
 	register float ly=y0+r;
 	register float t;
-	SETTC(GDevice,NULL);	
+	SETTC(NULL);	
 
 	for (long i=0;i<361;i+=10)
 	{
@@ -1065,7 +992,7 @@ void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
+void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 {
 	EERIE_3D vect;
 	vect.x=dest->x-orgn->x;
@@ -1091,7 +1018,7 @@ void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D 
 		tpos.x=cpos.x+vect.x*dep;
 		tpos.y=cpos.y+vect.y*dep;
 		tpos.z=cpos.z+vect.z*dep;
-		EERIEDraw3DLine(pd3dDevice, &cpos,&tpos,col);
+		EERIEDraw3DLine(&cpos,&tpos,col);
 		Vector_Copy(&cpos,&tpos);
 		m-=dep;
 	}
@@ -1099,7 +1026,7 @@ void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D 
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDraw3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
+void EERIEDraw3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 {
 	D3DTLVERTEX v[2];
 	D3DTLVERTEX in;
@@ -1120,16 +1047,16 @@ void EERIEDraw3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D * de
 
 	if (v[1].sz<0.f) return;
 
-	SETTC(pd3dDevice,NULL);
+	SETTC(NULL);
 	v[1].color=v[0].color=col;
 	
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_LINELIST, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE,v, 2,  0  );	
+	EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE,v, 2,  0  );	
 }
 #define BASICFOCAL 350.f
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos)
+void EERIEDrawSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos)
 {
 	D3DTLVERTEX out;
 	
@@ -1163,8 +1090,6 @@ void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,Text
 			out.rhw*=(1.f/3000.f);
 		}
 
-		ComputeSingleFogVertex(&out);
-
 		SPRmaxs.x=out.sx+t;
 		SPRmins.x=out.sx-t;
 		SPRmaxs.y=out.sy+t;			
@@ -1176,8 +1101,8 @@ void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,Text
 		v[2]= D3DTLVERTEX( D3DVECTOR( SPRmins.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 0.f, 1.f);
 		v[3]= D3DTLVERTEX( D3DVECTOR( SPRmaxs.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 1.f, 1.f);
 
-		SETTC(pd3dDevice,tex);
-		EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , v, 4,  0  );		
+		SETTC(tex);
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , v, 4,  0  );		
 	}
 	else SPRmaxs.x=-1;
 }
@@ -1185,7 +1110,7 @@ void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,Text
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos,float rot)
+void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos,float rot)
 {
 	D3DTLVERTEX out;
 	register float tt;
@@ -1210,8 +1135,6 @@ void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float s
 			out.rhw*=(1.f/3000.f);
 		}
 
-		ComputeSingleFogVertex(&out);
-
 		D3DTLVERTEX v[4];
 		v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 0.f);
 		v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 0.f);
@@ -1234,8 +1157,8 @@ void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float s
 			v[i].sy=EEcos(tt)*t+out.sy;
 		}		
 
-		SETTC(pd3dDevice,tex);
-		EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , 
+		SETTC(tex);
+		EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , 
 				 v, 4,  0  );		
 	}
 	else SPRmaxs.x=-1;
@@ -1244,42 +1167,15 @@ void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float s
 //*************************************************************************************
 //*************************************************************************************
 
-void SETTEXTUREWRAPMODE(LPDIRECT3DDEVICE7 pd3dDevice,DWORD mode)
+void SETTEXTUREWRAPMODE(DWORD mode)
 {
-	pd3dDevice->SetTextureStageState( 0,D3DTSS_ADDRESS ,mode);
+	GDevice->SetTextureStageState( 0,D3DTSS_ADDRESS ,mode);
 }
 
 //*************************************************************************************
 //*************************************************************************************
 
-void SETCULL(LPDIRECT3DDEVICE7 pd3dDevice,DWORD state)
-{
-	pd3dDevice->SetRenderState( D3DRENDERSTATE_CULLMODE , state);
-}
-
-//*************************************************************************************
-
-void SETZWRITE(LPDIRECT3DDEVICE7 pd3dDevice,DWORD _dwState)
-{
-		pd3dDevice->SetRenderState( D3DRENDERSTATE_ZWRITEENABLE , _dwState);
-}	
-
-//*************************************************************************************
-//*************************************************************************************
-
-void SETALPHABLEND(LPDIRECT3DDEVICE7 pd3dDevice,DWORD state)
-{
-	pd3dDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, state);
-}	
-
-void SETBLENDMODE(LPDIRECT3DDEVICE7 pd3dDevice,DWORD srcblend,DWORD destblend)
-{
-	pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  srcblend  );
-	pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, destblend );
-	
-}
-
-void EERIEPOLY_DrawWired(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY *ep,long col)
+void EERIEPOLY_DrawWired(EERIEPOLY *ep,long col)
 {
 	D3DTLVERTEX ltv[5];
 	ltv[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
@@ -1308,7 +1204,7 @@ void EERIEPOLY_DrawWired(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY *ep,long col)
 	}
 	else memcpy(&ltv[to],&ltv[0],sizeof(D3DTLVERTEX));
 
-	SETTC(pd3dDevice, NULL);
+	SETTC(NULL);
 
 	if (col)
 	 ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=col;
@@ -1316,10 +1212,10 @@ void EERIEPOLY_DrawWired(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY *ep,long col)
 			ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=0xFF00FF00;
 	else ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFFFFFF00;
 							
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_LINESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ltv, to+1,  0  );
+	EERIEDRAWPRIM(D3DPT_LINESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ltv, to+1,  0  );
 }
 					
-void EERIEPOLY_DrawNormals(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY *ep)
+void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 {
 	D3DTLVERTEX ltv[5];
 	ltv[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
@@ -1342,11 +1238,11 @@ void EERIEPOLY_DrawNormals(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY *ep)
 	lv.sy+=ep->norm.y*10.f;
 	lv.sz+=ep->norm.z*10.f;
 	EE_RTP(&lv,&ltv[1]);					
-	SETTC(pd3dDevice,NULL);
+	SETTC(NULL);
 	ltv[1].color=ltv[0].color=0xFFFF0000;
 
 	if ((ltv[1].sz>0.f) && (ltv[0].sz>0.f))
-		EERIEDRAWPRIM(pd3dDevice,D3DPT_LINELIST, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ltv, 3,  0  );								
+		EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ltv, 3,  0  );								
 
 	for (long h=0;h<to;h++)
 	{
@@ -1358,18 +1254,18 @@ void EERIEPOLY_DrawNormals(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY *ep)
 		lv.sy+=ep->nrml[h].y*10.f;
 		lv.sz+=ep->nrml[h].z*10.f;
 		EE_RTP(&lv,&ltv[1]);					
-		SETTC(pd3dDevice,NULL);
+		SETTC(NULL);
 		ltv[1].color=ltv[0].color=EERIECOLOR_YELLOW;
 
 		if ((ltv[1].sz>0.f) &&  (ltv[0].sz>0.f))
-			EERIEDRAWPRIM(pd3dDevice,D3DPT_LINELIST, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ltv, 3,  0  );									
+			EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ltv, 3,  0  );									
 	}
 }
 
 
 //-----------------------------------------------------------------------------
 
-void EERIEDrawBitmap(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col)
+void EERIEDrawBitmap(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col)
 {
 	register float smu,smv;
 	float fEndu,fEndv;
@@ -1393,11 +1289,11 @@ void EERIEDrawBitmap(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,float
 	v[2]= D3DTLVERTEX( D3DVECTOR( x,	y+sy,	z ), 1.f, col, 0xFF000000, smu,		fEndv);
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, fEndu,	fEndv);
 	
-	SETTC(pd3dDevice,tex);
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
+	SETTC(tex);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
-void EERIEDrawBitmap_uv(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col,float u0,float v0,float u1,float v1)
+void EERIEDrawBitmap_uv(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col,float u0,float v0,float u1,float v1)
 {
 	float smu,smv;
 	float fEndu,fEndv;
@@ -1429,11 +1325,11 @@ void EERIEDrawBitmap_uv(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,fl
 	v[2]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), 1.f, col, 0xFF000000, u1, v1);
 	v[3]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), 1.f, col, 0xFF000000, u0, v1);
 
-	SETTC(pd3dDevice,tex);
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
+	SETTC(tex);
+	EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
-void EERIEDrawBitmapUVs(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col
+void EERIEDrawBitmapUVs(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col
 						,float u0,float v0
 						,float u1,float v1
 						,float u2,float v2
@@ -1462,13 +1358,13 @@ void EERIEDrawBitmapUVs(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,fl
 	v[2]= D3DTLVERTEX( D3DVECTOR( x,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u2,	smv+v2);
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u3,	smv+v3);
 	
-	SETTC(pd3dDevice,tex);
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
+	SETTC(tex);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
 //-----------------------------------------------------------------------------
 
-void EERIEDrawBitmap2(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col)
+void EERIEDrawBitmap2(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col)
 {
 	float smu,smv;
 	float fEndu,fEndv;
@@ -1494,13 +1390,13 @@ void EERIEDrawBitmap2(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,floa
 	v[2]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), fZMinus, col, 0xFF000000, smu, fEndv);
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), fZMinus, col, 0xFF000000, fEndu, fEndv);
 
-	SETTC(pd3dDevice,tex);
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
+	SETTC(tex);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
 //-----------------------------------------------------------------------------
 
-void EERIEDrawBitmap2DecalY(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col,float _fDeltaY)
+void EERIEDrawBitmap2DecalY(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col,float _fDeltaY)
 {
 	float smu,smv;
 	float fDepv;
@@ -1540,32 +1436,32 @@ void EERIEDrawBitmap2DecalY(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float s
 		v[3]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), 1.f, col, 0xFF000000, smu, fEndv);
 	}
 
-	SETTC(pd3dDevice,tex);
-	EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
+	SETTC(tex);
+	EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
-void SETTC(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc)
+void SETTC(TextureContainer * tc)
 {
 	if ( (!tc) || (!tc->m_pddsSurface) )
 	{
-		pd3dDevice->SetTexture( 0, NULL );
+		GDevice->SetTexture( 0, NULL );
 	}
 	else
 	{
 		if ( tc->bColorKey )
 		{
-			pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+			GRenderer->SetRenderState(Renderer::ColorKey, true);
 
 			if (	(Project.bits == 16) &&
 			        (!tc->bColorKey2D)	 )
 			{
-				SetZBias( pd3dDevice, -4 );
+				SetZBias( -4 );
 			}
 		}
 		else
 		{
-			pd3dDevice->SetRenderState( D3DRENDERSTATE_COLORKEYENABLE, false );
+			GRenderer->SetRenderState(Renderer::ColorKey, false );
 		}
-		pd3dDevice->SetTexture(0, tc->m_pddsSurface);
+		GDevice->SetTexture(0, tc->m_pddsSurface);
 	}
 }

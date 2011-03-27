@@ -58,8 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MENU_H
 #define ARX_MENU_H
 
-#include <tchar.h>
-
 #include <string>
 #include <vector>
 

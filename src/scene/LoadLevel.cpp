@@ -240,7 +240,7 @@ EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path)
 		tex1 += path;
 	}
 	
-	wr = TheoToEerie_Fast(tex1.c_str(), text, 0);
+	wr = TheoToEerie_Fast(tex1, text, 0);
 	return wr;
 }
 
@@ -297,7 +297,7 @@ long DanaeSaveLevel(const string & _fic) {
 	
 	string fic = _fic;
 	SetExt(fic, ".DLF");
-	if(FileExist(fic.c_str())) {
+	if(FileExist(fic)) {
 		std::string fic2 = fic;
 		char newtext[128];
 		sprintf(newtext, "Backup_DLF_%s", tx);
@@ -307,7 +307,7 @@ long DanaeSaveLevel(const string & _fic) {
 
 	std::string fic2 = fic;
 	SetExt(fic2, ".LLF");
-	if(FileExist(fic2.c_str())) {
+	if(FileExist(fic2)) {
 		std::string fic3 = fic;
 		char newtext[128];
 		sprintf(newtext, "Backup_LLF_%s", tx);
@@ -529,7 +529,7 @@ long DanaeSaveLevel(const string & _fic) {
 	
 	// Now Saving Whole Buffer
 	FileHandle handle;
-	if(!(handle = FileOpenWrite(fic.c_str()))) {
+	if(!(handle = FileOpenWrite(fic))) {
 		LogError << "Unable to Open " << fic << " for Write...";
 		delete[] dat;
 		return -1;
@@ -643,7 +643,7 @@ long DanaeSaveLevel(const string & _fic) {
 	}
 	
 	// Now Saving Whole Buffer
-	if(!(handle = FileOpenWrite(fic2.c_str()))) {
+	if(!(handle = FileOpenWrite(fic2))) {
 		LogError << "Unable to Open " << fic2 << " for Write...";
 		delete[] dat;
 		return -1;
@@ -683,7 +683,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 	FILE * fic;
 	HERMES_DATE_TIME hdt;
 
-	if (DirectoryExist(dir.c_str()))
+	if (DirectoryExist(dir))
 	{
 		strcpy(temp, GetName(io->filename).c_str());
 		sprintf(dfile, "%s\\%s.log", dir.c_str(), temp);
@@ -717,7 +717,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 //*************************************************************************************
 
 void LogDirCreation( const std::string& dir) {
-	if(DirectoryExist(dir.c_str())) {
+	if(DirectoryExist(dir)) {
 		LogDebug << "LogDirCreation: " << dir;
 	}
 }
@@ -726,7 +726,7 @@ void LogDirCreation( const std::string& dir) {
 //*************************************************************************************
 
 void LogDirDestruction( const std::string& dir ) {
-	if(DirectoryExist(dir.c_str())) {
+	if(DirectoryExist(dir)) {
 		LogDebug << "LogDirDestruction: " << dir;
 	}
 }
@@ -736,9 +736,6 @@ void LogDirDestruction( const std::string& dir ) {
 //*************************************************************************************
 void CheckIO_NOT_SAVED()
 {
-	std::string temp;
-	std::string temp3;
-
 	if (ADDED_IO_NOT_SAVED)
 	{
 		if (OKBox("You have added objects, but not saved them...\nDELETE THEM ??????", "Danae WARNING"))
@@ -751,24 +748,17 @@ void CheckIO_NOT_SAVED()
 					{
 						if (inter.iobj[i]->ident > 0)
 						{
-							temp = inter.iobj[i]->filename;
-							string temp2 = GetName(temp);
-							RemoveName(temp);
-							std::stringstream ss;
-							ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident;
-							ss << std::setw(0) << '.';
-							temp = ss.str();
-							//temp += "%s%s_%04d." temp2 + '_' + inter.iobj[i]->ident + '.';
+							std::string temp = inter.iobj[i]->full_name();
 
-							if (DirectoryExist(temp.c_str()))
+							if (DirectoryExist(temp))
 							{
-								temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
+								std::string temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
 
-								if (OKBox(temp3.c_str(), "WARNING"))
+								if (OKBox(temp3, "WARNING"))
 								{
 									temp += "\\";
-									LogDirDestruction(temp.c_str());
-									KillAllDirectory(temp.c_str());
+									LogDirDestruction(temp);
+									KillAllDirectory(temp);
 								}
 							}
 
@@ -786,8 +776,6 @@ void CheckIO_NOT_SAVED()
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 {
 	std::string temp;
-	char temp2[256];
-	char temp3[256];
 
 	switch (fl)
 	{
@@ -810,18 +798,11 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 
 			if (io->ident != 0)
 			{
-				temp = io->filename;
-				strcpy(temp2, GetName(temp).c_str());
-				RemoveName(temp);
-				sprintf(temp3, "%s%s_%04ld", temp.c_str(), temp2, io->ident);
-				temp = temp3;
-				temp += "\\";
-				temp += temp2;
-				temp += ".asl";
+				temp = io->full_name() + "\\" + io->short_name() + ".asl"; // Looks odd, results in /path/human_0001/human.asl and so on
 
-				if (DirectoryExist(temp3))
+				if (DirectoryExist( io->full_name() ))
 				{
-//					todo win32api
+//					TODO win32api
 //					int fic;
 //					if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
 //					{
@@ -838,35 +819,29 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 			break;
 	}
 }
+
 extern long FORCE_IO_INDEX;
 INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D & pos, const EERIE_3D & angle, const EERIE_3D & trans) {
 	char nameident[256];
 	std::string tmp;
-	char tmp2[512];
 	size_t FileSize;
 	INTERACTIVE_OBJ * io;
-	sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
-	long t;
-	t = GetTargetByNameTarget(nameident);
-
-	if (FORCE_IO_INDEX != -1)
-	{
-		io = AddInteractive(GDevice, name.c_str(), ident, NO_MESH | NO_ON_LOAD);
+	
+	if(FORCE_IO_INDEX != -1) {
+		io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
 	} else {
-
-	sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
-
-	t = GetTargetByNameTarget(nameident);
-
-	if (t >= 0)
-	{
-		return inter.iobj[t];
-	}
-
-	char * nname = strdup(name.c_str()); // TODO use string
-	ReplaceSpecifics(nname);
-
-	io = AddInteractive(GDevice, nname, ident, NO_MESH | NO_ON_LOAD);
+		
+		sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
+		
+		long t = GetTargetByNameTarget(nameident);
+		if(t >= 0) {
+			return inter.iobj[t];
+		}
+		
+		char * nname = strdup(name.c_str()); // TODO use string
+		ReplaceSpecifics(nname);
+		
+		io = AddInteractive(nname, ident, NO_MESH | NO_ON_LOAD);
 	}
 
 	if (io)
@@ -884,26 +859,13 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 		if (!NODIRCREATION)
 		{
 			io->ident = ident;
-			tmp = io->filename;
-			strcpy(tmp2, GetName(tmp).c_str());
-			RemoveName(tmp);
-			std::stringstream ss;
-			ss << tmp << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
-			tmp = ss.str();
-			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
+			tmp = tmp = io->full_name(); // Get the directory name to check for
 
-			if (PAK_DirectoryExist(tmp.c_str()))
+			if (PAK_DirectoryExist(tmp))
 			{
-				tmp = io->filename;
-				strcpy(tmp2, GetName(tmp).c_str());
-				RemoveName(tmp);
-				std::stringstream ss;
-				ss << tmp << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
-				ss << std::setw(0) << '\\' << tmp2 << ".asl";
-				tmp = ss.str();
-				//sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
+				tmp += '\\' + io->short_name() + ".asl"; // Create the filename to be loaded
 
-				if (PAK_FileExist(tmp.c_str()))
+				if (PAK_FileExist(tmp))
 				{
 					if (io->over_script.data)
 					{
@@ -938,11 +900,11 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 				const char dirpath[] = "Graph\\Obj3D\\Textures\\";
 
 				if (io->ioflags & IO_ITEM)
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, 0, GDevice);
+					io->obj = TheoToEerie_Fast(dirpath, io->filename, 0);
 				else if (io->ioflags & IO_NPC)
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX | TTE_NPC);
 				else
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX, GDevice);
+					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX);
 
 				if (io->ioflags & IO_NPC)
 					EERIE_COLLISION_Cylinder_Create(io);
@@ -978,7 +940,7 @@ long DanaeLoadLevel(const string & fic) {
 	LogInfo << "Loading Level " << fic;
 	
 	ClearCurLoadInfo();
-	CURRENTLEVEL = GetLevelNumByName(fic.c_str());
+	CURRENTLEVEL = GetLevelNumByName(fic);
 	
 	HERMES_DATE_TIME hdt;
 	GetDate(&hdt);
@@ -994,8 +956,8 @@ long DanaeLoadLevel(const string & fic) {
 	LogDebug << "fic2 " << fic2;
 	LogDebug << "fileDlf " << fileDlf;
 
-	if(!PAK_FileExist(fileDlf.c_str())) {
-		LogError <<"Unable to find "<< fileDlf;
+	if(!PAK_FileExist(fileDlf)) {
+		LogError << "Unable to find " << fileDlf;
 		return -1;
 	}
 	
@@ -1065,13 +1027,13 @@ long DanaeLoadLevel(const string & fic) {
 			RemoveName(ftemp);
 		}
 		
-		if(FastSceneLoad(ftemp.c_str())) {
+		if(FastSceneLoad(ftemp)) {
 			LogDebug << "done loading scene";
 			FASTmse = 1;
 		} else {
 			LogDebug << "fast loading scene failed";
 			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-			mse = PAK_MultiSceneToEerie(ftemp.c_str());
+			mse = PAK_MultiSceneToEerie(ftemp);
 			PROGRESS_BAR_COUNT += 20.f;
 			LoadLevelScreen();
 		}
@@ -1144,7 +1106,7 @@ long DanaeLoadLevel(const string & fic) {
 		pos += sizeof(DANAE_LS_LIGHTINGHEADER);
 		long bcount = dll->nb_values;
 		
-		if(!PAK_FileExist(fic2.c_str())) {
+		if(!PAK_FileExist(fic2)) {
 			
 			LastLoadedLightningNb = bcount;
 			if(LastLoadedLightning != NULL) {
@@ -1185,7 +1147,7 @@ long DanaeLoadLevel(const string & fic) {
 		dlh.nb_lights = 0;
 	}
 	
-	if(!PAK_FileExist(fic2.c_str())) {
+	if(!PAK_FileExist(fic2)) {
 		
 		if(dlh.nb_lights != 0) {
 			EERIE_LIGHT_GlobalInit();
@@ -1369,7 +1331,7 @@ long DanaeLoadLevel(const string & fic) {
 	pos = 0;
 	dat = NULL;
 	
-	if(PAK_FileExist(fic2.c_str())) {
+	if(PAK_FileExist(fic2)) {
 		
 		ClearCurLoadInfo();
 		LogDebug << "Loading LLF Info";
@@ -1786,7 +1748,7 @@ long GetIdent( const std::string& ident)
 {
 	for (long n = 0; n < dlfcount; n++)
 	{
-		if (!strcasecmp(dlfcheck[n].ident, ident.c_str()))
+		if (!strcasecmp(dlfcheck[n].ident, ident))
 			return n;
 	}
 
@@ -1834,7 +1796,7 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 
 	SetExt(fic, ".DLF");
 
-	if (!PAK_FileExist(fic.c_str()))
+	if (!PAK_FileExist(fic))
 	{
 		return;
 	}

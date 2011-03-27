@@ -82,7 +82,7 @@ class CHeal: public CSpellFx
 	public:
 		void	Create();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 
@@ -101,7 +101,7 @@ class CHarm: public CSpellFx
 
  
 	public:
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ class CLowerArmor: public CSpellFx
 		void	Create(long);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ class CArmor: public CSpellFx
 		// surcharge
 		void	Create(long);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 

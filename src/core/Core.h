@@ -169,7 +169,7 @@ void Danae_Registry_Read(const char * string, char * text, const char * defaults
 void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue = 0);
 void Danae_Registry_Write(const char * string, const char * text);
 void Danae_Registry_WriteValue(const char * string, DWORD value);
-void SetFilteringMode(LPDIRECT3DDEVICE7 m_pd3dDevice, long mode);
+void SetFilteringMode(long mode);
 void SendGameReadyMsg();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();

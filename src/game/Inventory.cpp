@@ -57,14 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // TODO include file
 
-#include <cstdio>
-#include <vector>
-#include <algorithm>
-#include <functional>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
 #include "ai/Paths.h"
 
 #include "core/Application.h"
@@ -1985,7 +1977,7 @@ bool TakeFromInventory(EERIE_S2D * pos)
 				{
 					if (io->_itemdata->count - 1 > 0)
 					{
-						ioo = AddItem(GDevice, io->filename);
+						ioo = AddItem( io->filename);
 						MakeTemporaryIOIdent(ioo);
 						ioo->show = SHOW_FLAG_NOT_DRAWN;
 						ioo->_itemdata->count = 1;
@@ -2096,7 +2088,7 @@ void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
 							{
 								if (item->obj->texturecontainer[lTex])
 								{
-									if (strcmp(item->obj->texturecontainer[lTex]->m_texName.c_str(), _lpszText) == 0)
+									if ( item->obj->texturecontainer[lTex]->m_texName.compare( _lpszText ) == 0)
 									{
 										if (item->GameFlags & GFLAG_INTERACTIVITY)
 											SendIOScriptEvent(item, _lCommand);

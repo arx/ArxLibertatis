@@ -104,7 +104,7 @@ class CSummonCreature: public CSpellFx
 
 	private:
 		void Split(D3DTLVERTEX * v, int a, int b, float yo);
-		void RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		void RenderFissure();
 
 		// accesseurs
 	public:
@@ -123,7 +123,7 @@ class CSummonCreature: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 
@@ -159,7 +159,7 @@ class CNegateMagic: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 
@@ -197,7 +197,7 @@ class CIncinerate: public CSpellFx
 		void	Create(EERIE_3D, float, float);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 //-----------------------------------------------------------------------------
@@ -223,7 +223,7 @@ class CMassParalyse: public CSpellFx
  
 		~CMassParalyse() {};
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 #endif

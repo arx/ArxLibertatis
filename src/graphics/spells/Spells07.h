@@ -128,7 +128,7 @@ class CLightning: public CSpellFx
 	public:
 		void	Create(EERIE_3D, EERIE_3D, float beta = 0);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 		void	Kill();
 };
 
@@ -172,7 +172,7 @@ class CConfuse: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 
@@ -198,7 +198,7 @@ class CFireField: public CSpellFx
 	public:
 		void	Create(float largeur, EERIE_3D * pos, int duration);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 
@@ -238,7 +238,7 @@ class CIceField: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 #endif

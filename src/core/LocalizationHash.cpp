@@ -26,8 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // todo remover les strIcmp
 
 #include "core/LocalizationHash.h"
-
-#include <cstring>
+#include "io/String.h"
 
 //-----------------------------------------------------------------------------
 CLocalisationHash::CLocalisationHash(int _iSize)
@@ -193,7 +192,7 @@ std::string* CLocalisationHash::GetPtrWithString(const std::string& _lpszUText)
 
 		if ( pTab[iH1] )
 		{
-			if (!strcasecmp(_lpszUText.c_str(), pTab[iH1]->lpszUSection.c_str()))
+			if ( !strcasecmp( _lpszUText, pTab[iH1]->lpszUSection ) )
 			{
 				if (pTab[iH1]->vUKeys.size() > 0)
 				{
@@ -225,7 +224,7 @@ unsigned long CLocalisationHash::GetKeyCount(const std::string& _lpszUText)
 
 		if (pTab[iH1])
 		{
-			if (!strcasecmp(_lpszUText.c_str(), pTab[iH1]->lpszUSection.c_str()))
+			if ( !strcasecmp( _lpszUText, pTab[iH1]->lpszUSection ) )
 			{
 				return pTab[iH1]->vUKeys.size();
 

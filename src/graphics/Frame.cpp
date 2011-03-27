@@ -83,7 +83,6 @@ CD3DFramework7::CD3DFramework7()
 	m_pddsBackBufferLeft = NULL;
 
 	m_pddsZBuffer     = NULL;
-	m_pd3dDevice      = NULL;
 	m_pDD             = NULL;
 	m_pD3D            = NULL;
 	m_dwDeviceMemType = 0;
@@ -123,11 +122,13 @@ HRESULT CD3DFramework7::DestroyObjects()
 	}
 
 	// Do a safe check for releasing the D3DDEVICE. RefCount must be zero.
-	if (m_pd3dDevice)
-		if (0 < (nD3D = m_pd3dDevice->Release()))
+	if (GDevice)
+	{
+		if (0 < (nD3D = GDevice->Release()))
 			DEBUG_MSG("Error: D3DDevice object is still referenced!");
 
-	m_pd3dDevice = NULL;
+		GDevice = NULL;
+	}
 
 	SAFE_RELEASE(m_pddsBackBuffer);
 	SAFE_RELEASE(m_pddsBackBufferLeft);
@@ -232,7 +233,7 @@ HRESULT CD3DFramework7::CreateEnvironment(GUID * pDriverGUID, GUID * pDeviceGUID
 	if (FAILED(hr))
 		return hr;
 
-	this->m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 	return S_OK;
 }
@@ -506,7 +507,7 @@ HRESULT CD3DFramework7::CreateDirect3D(GUID * pDeviceGUID)
 
 	// Create the device
 	if (FAILED(m_pD3D->CreateDevice(*pDeviceGUID, m_pddsBackBuffer,
-	                                &m_pd3dDevice)))
+	                                &GDevice)))
 	{
 		DEBUG_MSG("Unable to create D3DDevice");
 		return D3DFWERR_NO3DDEVICE;
@@ -515,7 +516,7 @@ HRESULT CD3DFramework7::CreateDirect3D(GUID * pDeviceGUID)
 	// Finally, set the viewport for the newly created device
 	D3DVIEWPORT7 vp = { 0, 0, m_dwRenderWidth, m_dwRenderHeight, 0.f, 1.f };
 
-	if (FAILED(m_pd3dDevice->SetViewport(&vp)))
+	if (FAILED(GDevice->SetViewport(&vp)))
 	{
 		DEBUG_MSG("Unable to set current viewport to device");
 		return D3DFWERR_NOVIEWPORT;
@@ -603,7 +604,7 @@ HRESULT CD3DFramework7::CreateZBuffer(GUID * pDeviceGUID)
 		}
 
 		// Finally, this call rebuilds internal structures
-		if (SUCCEEDED(m_pd3dDevice->SetRenderTarget(m_pddsBackBuffer, 0L)))
+		if (SUCCEEDED(GDevice->SetRenderTarget(m_pddsBackBuffer, 0L)))
 		{
 			free((void *)zbiZBufferInfo.pddpfPixelFormat);
 			return S_OK;
@@ -721,7 +722,7 @@ bool CD3DFramework7::RenderError()
 
 bool CD3DFramework7::StartRender()
 {
-	if (FAILED(m_pd3dDevice->BeginScene()))
+	if (FAILED(GDevice->BeginScene()))
 	{
 		return false;
 	}
@@ -733,7 +734,7 @@ bool CD3DFramework7::StartRender()
 //-----------------------------------------------------------------------------
 bool CD3DFramework7::EndRender()
 {
-	if (FAILED(m_pd3dDevice->EndScene()))
+	if (FAILED(GDevice->EndScene()))
 	{
 		return false;
 	}

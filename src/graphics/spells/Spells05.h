@@ -114,7 +114,7 @@ class CRuneOfGuarding: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 
@@ -167,7 +167,7 @@ class CLevitate: public CSpellFx
 		T_STONE			tstone[256];
 
 		void AddStone(EERIE_3D * pos);
-		void DrawStone(LPDIRECT3DDEVICE7 device);
+		void DrawStone();
 
 		void CreateConeStrip(float rout, float rhaut, float hauteur, int def, int numcone);
 	public:
@@ -181,7 +181,7 @@ class CLevitate: public CSpellFx
 
 		void	Create(int def, float rout, float rhaut, float hauteur, EERIE_3D * pos, unsigned long);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 //-----------------------------------------------------------------------------
@@ -207,7 +207,7 @@ class CCurePoison: public CSpellFx
 	public:
 		void	Create();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 
@@ -250,7 +250,7 @@ class CPoisonProjectile: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 //-----------------------------------------------------------------------------
@@ -271,7 +271,7 @@ class CMultiPoisonProjectile: public CSpellFx
 		void	Create(EERIE_3D, float);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 //-----------------------------------------------------------------------------
@@ -302,7 +302,7 @@ class CRepelUndead: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 

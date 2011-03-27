@@ -86,7 +86,7 @@ void ARX_MINIMAP_FirstInit();
 void ARX_MINIMAP_Reset();
 void ARX_MINIMAP_PurgeTC();
  
-void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag, long fl2 = 0);
+void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2 = 0);
 void ARX_MINIMAP_FirstInit();
 void ARX_MINIMAP_PurgeTC();
 void ARX_MINIMAP_ValidatePos();

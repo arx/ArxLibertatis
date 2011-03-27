@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-extern long EERIE_USES_BUMP_MAP;
+extern bool EERIE_USES_BUMP_MAP;
 #define MAX_MIPS 2
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 void ReleaseAllTCWithFlag(long flag);
@@ -159,7 +159,7 @@ public:
 
 	HRESULT LoadFile(const std::string& strPathname);
 	
-	HRESULT Restore(LPDIRECT3DDEVICE7 pd3dDevice);
+	HRESULT Restore();
 
 	HRESULT CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface);
 	HRESULT CopyBitmapToSurface(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur);
@@ -172,8 +172,8 @@ public:
 	long locks;
 	long systemflags;
 
-	bool CreateHalo(LPDIRECT3DDEVICE7 _lpDevice);
-	TextureContainer * AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _iNbCouche, float _fR, float _fG, float _fB, float & _iDecalX, float & _iDecalY);
+	bool CreateHalo();
+	TextureContainer * AddHalo(int _iNbCouche, float _fR, float _fG, float _fB, float & _iDecalX, float & _iDecalY);
 	float halodecalX;
 	float halodecalY;
 	TextureContainer * TextureHalo;
@@ -202,11 +202,11 @@ long CountTextures( std::string& tex, long * memsize, long * memmip);
 // Texture invalidation and restoration functions
 //-----------------------------------------------------------------------------
  
-HRESULT D3DTextr_Restore( const std::string& strName, LPDIRECT3DDEVICE7 pd3dDevice);
+HRESULT D3DTextr_Restore( const std::string& strName);
 HRESULT D3DTextr_InvalidateAllTextures();
-HRESULT D3DTextr_RestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice);
-HRESULT D3DTextr_TESTRestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice);
-void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice);
+HRESULT D3DTextr_RestoreAllTextures();
+HRESULT D3DTextr_TESTRestoreAllTextures();
+void ReloadAllTextures();
 void ReloadTexture(TextureContainer * tc);
 #define D3DCOLORWHITE 0xFFFFFFFF
 #define D3DCOLORBLACK 0xFF000000
@@ -233,10 +233,10 @@ HRESULT D3DTextr_CreateEmptyTexture(const std::string& strName, DWORD dwWidth,
 HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture);
 
 TextureContainer * GetAnyTexture();
-TextureContainer * MakeTCFromFile(const char * tex, long flag = 0);
-TextureContainer * MakeTCFromFile_NoRefinement(const char * tex, long flag = 0);
-TextureContainer * GetTextureFile(const char * tex, long flag = 0);
-TextureContainer * GetTextureFile_NoRefinement(const char * tex, long flag = 0);
+TextureContainer * MakeTCFromFile( const std::string& tex, long flag = 0);
+TextureContainer * MakeTCFromFile_NoRefinement( const std::string& tex, long flag = 0);
+TextureContainer * GetTextureFile( const std::string& tex, long flag = 0);
+TextureContainer * GetTextureFile_NoRefinement( const std::string& tex, long flag = 0);
 
 void EERIE_ActivateBump();
 void EERIE_DesactivateBump();

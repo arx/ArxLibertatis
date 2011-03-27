@@ -279,14 +279,14 @@ void CCurePoison::Update(unsigned long aulTime)
 }
 
 //---------------------------------------------------------------------
-float CCurePoison::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CCurePoison::Render()
 {
 	if (ulCurrentTime >= ulDuration)
 	{
 		return 0.f;
 	}
 
-	pPS->Render(m_pd3dDevice);
+	pPS->Render();
 
 	return 1;
 }
@@ -422,7 +422,7 @@ void CRuneOfGuarding::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CRuneOfGuarding::Render()
 {
  
 
@@ -430,10 +430,9 @@ float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	float y = eSrc.y - 20;
 	float z = eSrc.z;
 
-	SETZWRITE(m_pd3dDevice, false);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//----------------------------
 	//	long color = D3DRGB(1,1,1);
@@ -462,7 +461,7 @@ float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.z = 1;
 
 	if (slight)
-		DrawEERIEObjEx(m_pd3dDevice, slight, &stiteangle, &stitepos, &stitescale, &stitecolor);
+		DrawEERIEObjEx(slight, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	stiteangle.b = stiteangleb;
 	stitecolor.r = 0.6f;
@@ -473,7 +472,7 @@ float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.z = 2;
 
 	if (ssol)
-		DrawEERIEObjEx(m_pd3dDevice, ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+		DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.3f;
@@ -484,7 +483,7 @@ float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 
 	if (srune)
-		DrawEERIEObjEx(m_pd3dDevice, srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
+		DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 
 	for (int n = 0; n < 4; n++)
@@ -863,7 +862,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CPoisonProjectile::Render()
 {
 	int i = 0;
 
@@ -872,12 +871,10 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
-	//-------------------------------------------------------------------------
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	// ------------------------------------------------------------------------
 	int n = BEZIERPrecision;
@@ -999,9 +996,9 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		LaunchPoisonExplosion(&lastpos);
 	}
 
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	return 1;
 }
@@ -1146,13 +1143,13 @@ void CMultiPoisonProjectile::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CMultiPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CMultiPoisonProjectile::Render()
 {
  
 
 	for (UINT i = 0 ; i < uiNumber ; i++)
 	{
-		float fa = pTab[i]->Render(m_pd3dDevice);
+		float fa = pTab[i]->Render();
 
 		CPoisonProjectile * pPoisonProjectile = (CPoisonProjectile *) pTab[i];
 
@@ -1303,7 +1300,7 @@ void CRepelUndead::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CRepelUndead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CRepelUndead::Render()
 {
  
 
@@ -1313,10 +1310,9 @@ float CRepelUndead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	SETZWRITE(m_pd3dDevice, false);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//----------------------------
 	EERIE_3D  eObjAngle;
@@ -1342,7 +1338,7 @@ float CRepelUndead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	eObjScale.x = vv;
 
 	if (ssol)
-		DrawEERIEObjEx(m_pd3dDevice, ssol, &eObjAngle, &eObjPos, &eObjScale, &rgbObjColor);
+		DrawEERIEObjEx(ssol, &eObjAngle, &eObjPos, &eObjScale, &rgbObjColor);
 
 	vv *= 100.f;
 
@@ -1565,11 +1561,10 @@ void CLevitate::AddStone(EERIE_3D * pos)
 }
 
 /*--------------------------------------------------------------------------*/
-void CLevitate::DrawStone(LPDIRECT3DDEVICE7 device)
+void CLevitate::DrawStone()
 {
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_INVDESTCOLOR);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(device, true);
+	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	int	nb = 256;
 
 	while (nb--)
@@ -1587,7 +1582,7 @@ void CLevitate::DrawStone(LPDIRECT3DDEVICE7 device)
 			int col = RGBA_MAKE(255, 255, 255, (int)(255.f * (1.f - a)));
 
 			if (this->stone[this->tstone[nb].numstone])
-				DrawEERIEObjExEx(device, this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
+				DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
 
 			int j = ARX_PARTICLES_GetFree();
 
@@ -1632,7 +1627,7 @@ void CLevitate::DrawStone(LPDIRECT3DDEVICE7 device)
 		}
 	}
 
-	SETALPHABLEND(device, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1700,12 +1695,12 @@ void CLevitate::Update(unsigned long _ulTime)
 }
 
 /*--------------------------------------------------------------------------*/
-float CLevitate::Render(LPDIRECT3DDEVICE7 device)
+float CLevitate::Render()
 {
 	if (this->key > 1) return 0;
 
-	SETALPHABLEND(device, true);
-	SETZWRITE(device, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	//calcul du cone
 	D3DTLVERTEX d3dvs, *d3dv;
@@ -1898,15 +1893,14 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 	}
 
 	//trac� du cone back
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(device, true);
-	SETTEXTUREWRAPMODE(device, D3DTADDRESS_MIRROR);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
 
-	if (this->tsouffle) device->SetTexture(0, this->tsouffle->m_pddsSurface);
-	else device->SetTexture(0, NULL);
+	if (this->tsouffle) GDevice->SetTexture(0, this->tsouffle->m_pddsSurface);
+	else GDevice->SetTexture(0, NULL);
 
-	SETCULL(device, D3DCULL_CW);
+	GRenderer->SetCulling(Renderer::CullCW);
 	int i = cone[1].conenbfaces - 2;
 	int j = 0;
 
@@ -1930,7 +1924,7 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 	}
 
 	//trac� du cone front
-	SETCULL(device, D3DCULL_CCW);
+	GRenderer->SetCulling(Renderer::CullCCW);
 	
 	i = cone[1].conenbfaces - 2;
 	j = 0;
@@ -1955,14 +1949,12 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 	}
 
 	//trac� des pierres
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	this->DrawStone(device);
+	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+	this->DrawStone();
 
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(device, false);
-	SETZWRITE(device, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	return 0;
 }

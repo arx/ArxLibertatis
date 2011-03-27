@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include <cstdlib>
-#include <sstream>
-#include <iomanip>
 #include <cstdio>
 #include <map>
 
@@ -225,29 +223,26 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	ProjectionMatrix._43 = (-Q * fNearPlane);
 	ProjectionMatrix._34 = 1.f;
 
-	if (GDevice)
-	{
-		D3DMATRIX mat;
-		mat._11 = 1.f;
-		mat._12 = 0.f;
-		mat._13 = 0.f;
-		mat._14 = 0.f;
-		mat._21 = 0.f;
-		mat._22 = 1.f;
-		mat._23 = 0.f;
-		mat._24 = 0.f;
-		mat._31 = 0.f;
-		mat._32 = 0.f;
-		mat._33 = 1.f;
-		mat._34 = 0.f;
-		mat._41 = 0.f;
-		mat._42 = 0.f;
-		mat._43 = 0.f;
-		mat._44 = 1.f;
-		GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-		GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
-		GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &ProjectionMatrix);
-	}
+	D3DMATRIX mat;
+	mat._11 = 1.f;
+	mat._12 = 0.f;
+	mat._13 = 0.f;
+	mat._14 = 0.f;
+	mat._21 = 0.f;
+	mat._22 = 1.f;
+	mat._23 = 0.f;
+	mat._24 = 0.f;
+	mat._31 = 0.f;
+	mat._32 = 0.f;
+	mat._33 = 1.f;
+	mat._34 = 0.f;
+	mat._41 = 0.f;
+	mat._42 = 0.f;
+	mat._43 = 0.f;
+	mat._44 = 1.f;
+	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &ProjectionMatrix);
 
 	ProjectionMatrix._11 *= _fWidth * .5f;
 	ProjectionMatrix._22 *= _fHeight * .5f;
@@ -381,14 +376,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
 						{
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
-								
-								dest += " ";
-								
-								std::stringstream ss;
-								ss << GetName(inter.iobj[i]->filename) << '_'
-								   << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident;
-								
-								dest += ss.str();
+								dest += ' ' + inter.iobj[i]->long_name();
 								
 							}
 						}
@@ -1214,7 +1202,6 @@ long GetVertexPos(INTERACTIVE_OBJ * io, long id, EERIE_3D * pos)
 
 long EERIEDrawnPolys = 0;
 
-extern LPDIRECT3DDEVICE7 GDevice;
 extern EERIE_CAMERA * Kam;
 
 //*************************************************************************************
@@ -2854,8 +2841,10 @@ void EERIE_PORTAL_Release()
 		portals = NULL;
 	}
 }
+
 extern long COMPUTE_PORTALS;
-void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const char * name, long px, long py, long idx)
+
+void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long px, long py, long idx)
 {
 	if (!COMPUTE_PORTALS) return;
 
@@ -2935,6 +2924,7 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const char * name, long px, long py, 
 		EERIE_PORTAL_Room_Poly_Add(ep, val1, px, py, idx);
 	}
 }
+
 int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 {
 	long j, posx, posz, posy;
@@ -3052,7 +3042,7 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 				else if ( ep->tex->m_texName.find("EARTH") != std::string::npos )    ep->type |= POLY_EARTH;
 			}
 
-	EERIE_PORTAL_Poly_Add(epp, eobj->name.c_str(), posx, posz, eg->nbpoly - 1);
+	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
 	return 1;
 }
 
@@ -3333,7 +3323,7 @@ long CountBkgVertex()
 
 //*************************************************************************************
 //*************************************************************************************
-void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
+void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
 					EERIE_3D * angle, EERIE_3D  * pos, EERIE_3D * scale, EERIE_RGB * col)
 {
 	if (eobj == NULL) return;
@@ -3396,16 +3386,16 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		if ((eobj->facelist[i].facetype == 0)
 				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
 		{
-			SETTC(pd3dDevice , NULL);
+			SETTC(NULL);
 		}
 		else
 		{
-			SETTC(pd3dDevice, eobj->texturecontainer[eobj->facelist[i].texid]);
+			SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
 		}
 
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			SETCULL(pd3dDevice, D3DCULL_NONE);
-		else SETCULL(pd3dDevice, D3DCULL_CW);
+			GRenderer->SetCulling(Renderer::CullNone);
+		else GRenderer->SetCulling(Renderer::CullCW);
 
 		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
 									 &vert_list[1],
@@ -3415,7 +3405,7 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 //*************************************************************************************
 //routine qui gere l'alpha au vertex SEB
 //*************************************************************************************
-void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
+void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 					  EERIE_3D * angle, EERIE_3D  * pos, EERIE_3D * scale, int coll)
 {
 	if (eobj == NULL) return;
@@ -3477,16 +3467,16 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		if ((eobj->facelist[i].facetype == 0)
 				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
 		{
-			SETTC(pd3dDevice , NULL);
+			SETTC(NULL);
 		}
 		else
 		{
-			SETTC(pd3dDevice, eobj->texturecontainer[eobj->facelist[i].texid]);
+			SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
 		}
 
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			SETCULL(pd3dDevice, D3DCULL_NONE);
-		else SETCULL(pd3dDevice, D3DCULL_CW);
+			GRenderer->SetCulling(Renderer::CullNone);
+		else GRenderer->SetCulling(Renderer::CullCW);
 
 		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
 									 &vert_list[1],
@@ -3663,12 +3653,13 @@ extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 
+// TODO remove
 typedef std::map<s32, TextureContainer *> TextureContainerMap;
 
 TextureContainerMap tcLookupTable;
 
-bool FastSceneLoad(const char * partial_path)
-{
+bool FastSceneLoad(const std::string & partial_path) {
+	
 	// TODO bounds checking
 	
 	LogDebug << "Fast Scene Load " << partial_path;
@@ -3677,8 +3668,7 @@ bool FastSceneLoad(const char * partial_path)
 		return false;
 	}
 	
-	std::string path = "Game\\";
-	path += partial_path;
+	std::string path = "Game\\" + partial_path;
 	
 	char fic[256];
 	
@@ -3694,7 +3684,7 @@ bool FastSceneLoad(const char * partial_path)
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
 	//pos += sizeof(UNIQUE_HEADER);
 	
-	if (!NOCHECKSUM) if (strcasecmp(uh->path, path.c_str())) {
+	if (!NOCHECKSUM) if (strcasecmp(uh->path, path)) {
 		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
 		free(dat);
 		return false;
@@ -3848,18 +3838,17 @@ bool FastSceneLoad(const char * partial_path)
 	tex = (unsigned char *)(rawdata + pos);
 	
 	//ReCreate textures...
-	for (k = 0; k < fsh->nb_textures; k++)
-	{
+	for (k = 0; k < fsh->nb_textures; k++) {
+		
 		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(rawdata + pos);
-		char fic[256];
-		sprintf(fic, "%s", ftc->fic);
-
-        TextureContainer * tmpTC = D3DTextr_CreateTextureFromFile(fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-        if (tmpTC)
-        {
-            tcLookupTable[ftc->tc] = tmpTC;
-            if ((GDevice) && (tmpTC->m_pddsSurface == NULL)) tmpTC->Restore(GDevice);
-        }
+		
+		TextureContainer * tmpTC = D3DTextr_CreateTextureFromFile(ftc->fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+		if(tmpTC) {
+			tcLookupTable[ftc->tc] = tmpTC;
+			if(!tmpTC->m_pddsSurface) {
+				tmpTC->Restore();
+			}
+		}
 		pos += sizeof(FAST_TEXTURE_CONTAINER);
 	}
 
@@ -4223,7 +4212,7 @@ bool FastSceneLoad(const char * partial_path)
 	
 }
 
-bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
+bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 	
 	(void)ms; // TODO why is this never used?
 	
@@ -4240,10 +4229,10 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 	unsigned char * dat;
 	long i, j, k, kk;
 
-	long allocsize =	(256) * 60 + 1000000 +
-						sizeof(FAST_SCENE_HEADER) +
-						sizeof(FAST_TEXTURE_CONTAINER) * 1000 +
-						sizeof(FAST__ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
+	long allocsize = (256) * 60 + 1000000 +
+	                 sizeof(FAST_SCENE_HEADER) +
+	                 sizeof(FAST_TEXTURE_CONTAINER) * 1000 +
+	                 sizeof(FAST__ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
 
 	if (portals)
 	{
@@ -4608,7 +4597,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 	EERIE_PORTAL_Release();
 
 	// Try to Load Fast Scene
-	if (!FastSceneLoad(ftemp.c_str()))
+	if (!FastSceneLoad(ftemp))
 	{
 		//failure: Not-Fast Load;
 		EERIE_3DSCENE * escn;
@@ -4634,7 +4623,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 
 		if (NEED_ANCHORS)	AnchorData_Create(ACTIVEBKG);
 
-		FastSceneSave(ftemp.c_str(), ms);
+		FastSceneSave(ftemp, ms);
 		ComputePortalVertexBuffer();
 		ComputeRoomDistance();
 	}
@@ -4779,7 +4768,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 				}
 
 				if(!eobj->facelist.empty()) {
-					EERIE_PORTAL_Poly_Add(&epp, eobj->name.c_str(), -1, -1, -1);
+					EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
 				}
 
 				return;

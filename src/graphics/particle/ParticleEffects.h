@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PARTICLES_H
 #define ARX_PARTICLES_H
 
-#include <tchar.h>
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
@@ -238,7 +237,7 @@ void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 void TreatBackgroundDynlights();
 void MakeBookFX(float posx, float posy, float posz);
-void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) ;
+void UpdateObjFx() ;
 void Add3DBoom(EERIE_3D * position);
 void AddRandomSmoke(INTERACTIVE_OBJ * io, long amount = 1);
 void AddFlare(EERIE_S2D * pos, float sm, short typ, INTERACTIVE_OBJ * io = NULL);
@@ -256,7 +255,7 @@ void SpawnGroundSplat(EERIE_SPHERE * sp, EERIE_RGB * rgb, float size, long flags
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
 long ARX_PARTICLES_GetFree();
-void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam);
+void ARX_PARTICLES_Render(EERIE_CAMERA * cam);
 void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos, float dmgs, long source);
 void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos, float dmgs, D3DCOLOR col, INTERACTIVE_OBJ * io);
 void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * pos, INTERACTIVE_OBJ * io = NULL);
@@ -271,7 +270,7 @@ void ARX_BOOMS_Add(EERIE_3D * pos, long type = 0);
 
 void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();
-void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7 pd3dDevice, long FRAMETICKS);
+void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS);
 
 void LaunchFireballBoom(EERIE_3D * poss, float level, EERIE_3D * direction = NULL, EERIE_RGB * rgb = NULL);
 void SpawnFireballTail(EERIE_3D *, EERIE_3D *, float, long);

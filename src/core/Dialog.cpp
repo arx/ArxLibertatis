@@ -100,7 +100,6 @@ long FASTLOADS = 0;
 extern long CURRENTSNAPNUM;
 extern long SnapShotMode;
 
-extern long USE_D3DFOG;
 extern long ARX_DEMO;
 extern long NOCHECKSUM;
 extern long ZMAPMODE;
@@ -267,7 +266,7 @@ static INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	return false;
 }
 
-HWND ShowErrorPopup(char * title, char * tex)
+HWND ShowErrorPopup( const char * title, const char * tex)
 {
 	strcpy(ERRORTITLE, title);
 	strcpy(ERRORSTRING, tex);
@@ -1022,24 +1021,20 @@ void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type
 {
 	TVINSERTSTRUCT tis;
 	HTREEITEM parent = NULL;
-	char temp[512];
-	char temp2[512];
-
+	std::string temp;
 
 	memset(&tis, 0, sizeof(TVINSERTSTRUCT));
 	tvv[TVVcount] = (TVINFO *)malloc(sizeof(TVINFO));
 	memset(tvv[TVVcount], 0, sizeof(TVINFO));
 
-	if (type == IOTVTYPE_PLAYER) strcpy(temp, "PLAYER");
+	if (type == IOTVTYPE_PLAYER)
+		temp = "PLAYER";
 	else if (io != NULL)
-	{
-		strcpy(temp, GetName(io->filename).c_str());
-		sprintf(temp2, "_%04ld", io->ident);
-		strcat(temp, temp2);
-	}
-	else strcpy(temp, name);
+		temp = io->long_name();
+	else
+		temp = name;
 
-	strcpy(tvv[TVVcount]->text, temp);
+	strcpy(tvv[TVVcount]->text, temp.c_str());
 	tvv[TVVcount]->io = io;
 	tis.item.pszText = tvv[TVVcount]->text;
 	tis.item.cchTextMax = strlen(tvv[TVVcount]->text);
@@ -1066,6 +1061,7 @@ void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type
 	TVVcount++;
 	InterTreeViewDisplayInfo(parent);
 }
+
 void FillInterTreeView(HWND tvhwnd)
 {
 	long i;
@@ -2132,8 +2128,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (TRUEFIGHT)					SetClick(hWnd, IDC_TRUEFIGHT);
 
-			if (USE_D3DFOG)					SetClick(hWnd, IDC_USED3DFOG);
-
 			if (ModeLight & MODE_STATICLIGHT)
 			{
 				SetClick(hWnd, IDC_SHOWLIGHTSNSHADOWS);
@@ -2319,16 +2313,13 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						restoretex = 1;
 					}
 
-					if (restoretex) D3DTextr_RestoreAllTextures(GDevice);
+					if (restoretex) D3DTextr_RestoreAllTextures();
 
 					if (IsChecked(hWnd, IDC_POINTINTERPOLATION)) POINTINTERPOLATION = 1;
 					else POINTINTERPOLATION = 0;
 
 					if (IsChecked(hWnd, IDC_INTERPOLATEMOUSE)) Project.interpolatemouse = 1;
 					else Project.interpolatemouse = 0;
-
-					if (IsChecked(hWnd, IDC_USED3DFOG)) USE_D3DFOG = 1;
-					else USE_D3DFOG = 0;
 
 					if (IsChecked(hWnd, IDC_TRUEFIGHT)) TRUEFIGHT = 1;
 					else TRUEFIGHT = 0;
@@ -2598,7 +2589,6 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 						return 0;
 					}
 
-					GDevice = danaeApp.m_pd3dDevice;
 					ARX_Text_Init();
 				}
 				else LogError << ("Error Changing Device");

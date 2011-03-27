@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern long NOCHECKSUM;
 
-bool ARX_FTL_Save(const char * file, const EERIE_3DOBJ * obj) {
+bool ARX_FTL_Save(const std::string & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;
 	
@@ -86,8 +86,7 @@ bool ARX_FTL_Save(const char * file, const EERIE_3DOBJ * obj) {
 	}
 	
 	// Generate File name/path and create it
-	string gamefic = "Game\\";
-	gamefic += file;
+	string gamefic = "Game\\" + file;
 	SetExt(gamefic, ".FTL");
 	
 	if(!CreateFullPath(gamefic)) {
@@ -417,7 +416,7 @@ static char* MCache_Pop( const std::string& file, size_t& size)
 	return meshCache[num].data;
 }
 
-EERIE_3DOBJ * ARX_FTL_Load(const char * file) {
+EERIE_3DOBJ * ARX_FTL_Load(const std::string & file) {
 	
 	// Creates FTL file name
 	std::string filename = "Game\\";
@@ -573,8 +572,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file) {
 			// Create the texture and put it in the container list
 			obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile( name, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 			
-			if(GDevice && obj->texturecontainer[i] && !obj->texturecontainer[i]->m_pddsSurface) {
-				obj->texturecontainer[i]->Restore(GDevice);
+			if(obj->texturecontainer[i] && !obj->texturecontainer[i]->m_pddsSurface) {
+				obj->texturecontainer[i]->Restore();
 			}
 			
 			MakeUserFlag(obj->texturecontainer[i]);

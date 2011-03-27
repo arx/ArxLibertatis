@@ -26,9 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/ViewImage.h"
 
 #include <cstdio>
-#include <sstream>
-#include <algorithm>
-#include <vector>
 
 #include "core/Core.h"
 #include "core/Time.h"
@@ -218,7 +215,7 @@ void ViewImage::DrawAllImage()
 
 			ARX_CHECK_NOT_NEG(DANAESIZX);
 			ARX_CHECK_NOT_NEG(DANAESIZY);
-			EERIEDrawBitmap(GDevice,
+			EERIEDrawBitmap(
 			                fDepX,
 			                fDepY,
 			                ARX_CLEAN_WARN_CAST_FLOAT(min((unsigned long)pTex->m_dwWidth, ARX_CAST_ULONG(DANAESIZX))),

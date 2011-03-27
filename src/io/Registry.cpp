@@ -78,7 +78,7 @@ HRESULT WriteRegKeyValue( HKEY hKey, const char * strName, DWORD val )
 // Name: ReadRegKey()
 // Desc: Read a registry key 
 //-----------------------------------------------------------------------------
-HRESULT ReadRegKey( HKEY hKey, const char * strName, TCHAR* strValue, 
+HRESULT ReadRegKey( HKEY hKey, const char * strName, char* strValue, 
                     DWORD dwLength, const char * strDefault )
 {
 	DWORD dwType;
@@ -97,5 +97,6 @@ HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val) {
 	DWORD dwLength=4;
 	
 	RegQueryValueEx( hKey, strName, 0, &dwType, (LPBYTE) val, &dwLength );
-  return S_OK;
+
+	return S_OK;
 }

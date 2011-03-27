@@ -128,7 +128,7 @@ int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName
 bool HERMES_CreateFileCheck(const char *name, char *scheck, size_t size, float id);
 void HERMES_Memory_Security_On(long size);
 void HERMES_Memory_Security_Off();
-long HERMES_Memory_Emergency_Out(long size = 0, const char * info=NULL);
+long HERMES_Memory_Emergency_Out( long size = 0, const std::string& info = "" );
 void StartBench();
 unsigned long EndBench();
 extern long NEED_BENCH;

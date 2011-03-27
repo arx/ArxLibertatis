@@ -74,7 +74,7 @@ static const bool PREFER_LOCAL_FILES_OVER_PAK = true;
 
 PakManager * pPakManager = 0;
 
-bool PAK_AddPak(const char * pakfile) {
+bool PAK_AddPak(const std::string& pakfile) {
 	
 	if(!pPakManager) {
 		pPakManager = new PakManager();
@@ -117,11 +117,11 @@ void * _PAK_FileLoadMallocZero(const string & name, size_t & sizeRead) {
 	return mem;
 }
 
-bool _PAK_DirectoryExist(const char * name) {
+bool _PAK_DirectoryExist(const std::string& name) {
 	
-	size_t len = strlen(name);
+	size_t len = name.length();
 	char temp[256];
-	strcpy(temp, name); // TODO this copy can be avoided
+	strcpy(temp, name.c_str()); // TODO this copy can be avoided
 	if(len != 0 && temp[len - 1] != '\\' && temp[len - 1] != '/') {
 		strcat(temp, "\\");
 	}
@@ -138,7 +138,7 @@ bool PAK_DirectoryExist(const std::string& name) {
 	return DirectoryExist(name.c_str());
 }
 
-bool PAK_FileExist(const char* name) {
+bool PAK_FileExist(const std::string& name) {
 	
 	if(pPakManager->ExistFile(name)) {
 		return true;
@@ -197,7 +197,7 @@ long PAK_ftell(PakFileHandle * pfh) {
 	return FileTell(pfh->truefile);
 }
 
-PakFileHandle * FileOpenPFH(const char * filename) {
+PakFileHandle * FileOpenPFH(const std::string& filename) {
 	
 	FileHandle fh = FileOpenRead(filename);
 	if(!fh) {
@@ -216,7 +216,7 @@ PakFileHandle * FileOpenPFH(const char * filename) {
 	return pfh;
 }
 
-PakFileHandle * PAK_fopen(const char * filename) {
+PakFileHandle * PAK_fopen(const std::string& filename) {
 	
 	PakFileHandle * pfh = NULL;
 	
