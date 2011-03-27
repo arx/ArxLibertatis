@@ -63,10 +63,6 @@ Lock * mutex = NULL;
 static const aalULong MUTEX_TIMEOUT(500);
 static aalError EnableEnvironmentalAudio();
 
-LPALGENEFFECTS alGenEffects = NULL;
-LPALDELETEEFFECTS alDeleteEffects = NULL;
-LPALEFFECTF alEffectf = NULL;
-
 static struct timespec start_timespec;
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -97,9 +93,9 @@ static struct timespec start_timespec;
 		context = alcCreateContext(device, NULL);
 		alcMakeContextCurrent(context);
 		
-		alGenEffects = alGetProcAddress("alGenEffects");
-		alDeleteEffects = alGetProcAddress("alDeleteEffects");
-		alEffectf = alGetProcAddress("alEffectf");
+		alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
+		alDeleteEffects = (LPALDELETEEFFECTS)alGetProcAddress("alDeleteEffects");
+		alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
 		if(!alGenEffects || !alDeleteEffects || !alEffectf) {
 			LogError << "Missing OpenAL EFX extension.";
 			if(mutex) {
@@ -536,7 +532,7 @@ static struct timespec start_timespec;
 		{
 			delete sample;
 			
-			LogWarning << "Sample " << name << " not found";
+			LogDebug << "Sample " << name << " not found";
 
 			if (mutex) mutex->unlock();
 

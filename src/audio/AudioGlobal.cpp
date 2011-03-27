@@ -39,14 +39,18 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	// Audio device interface                                                    //
-	ALCdevice *device(NULL);
-	ALCcontext *context(NULL);
+	ALCdevice * device(NULL);
+	ALCcontext * context(NULL);
 	ALuint primary[1] = { 0 };
 	// FIXME -- don't have this
 	//LPKSPROPERTYSET environment(NULL);
 	aalUBool is_reverb_present(AAL_UFALSE);
 	aalSLong environment_id(AAL_SFALSE);
-
+	
+	LPALGENEFFECTS alGenEffects = NULL;
+	LPALDELETEEFFECTS alDeleteEffects = NULL;
+	LPALEFFECTF alEffectf = NULL;
+	
 	// Global settings                                                           //
 	char * sample_path = NULL;
 	char * ambiance_path = NULL;

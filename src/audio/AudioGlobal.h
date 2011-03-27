@@ -58,13 +58,17 @@ namespace ATHENA {
 	                              FLAG_ANY_ENV_FX);
 	
 	// Audio device interface
-	extern ALCdevice *device;
-	extern ALCcontext *context;
+	extern ALCdevice * device;
+	extern ALCcontext * context;
 	extern ALuint primary[1];
 	//extern LPDIRECTSOUNDBUFFER primary;
 	//extern LPKSPROPERTYSET environment;
 	extern aalUBool is_reverb_present;
 	extern aalSLong environment_id;
+	
+	extern LPALGENEFFECTS alGenEffects;
+	extern LPALDELETEEFFECTS alDeleteEffects;
+	extern LPALEFFECTF alEffectf;
 	
 	// Global settings
 	extern char * sample_path;
