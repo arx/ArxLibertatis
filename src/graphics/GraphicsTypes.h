@@ -51,9 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Common.h"
 
-#include "graphics/BaseGraphicsTypes.h"
-
 class TextureContainer;
+
+#include "graphics/BaseGraphicsTypes.h"
 
 #pragma pack(push,1)
 
@@ -132,6 +132,14 @@ enum EERIE_TYPES_EXTRAS_MODE
 // EERIE Types
 //*************************************************************************************
 
+struct EERIE_TLVERTEX
+{
+	EERIE_3D vert;
+	EERIE_RGBA color;
+	EERIE_RGBA specular;
+	EERIE_2D tex;
+};
+
 struct EERIEPOLY
 {
 	long 			type;	// at least 16 bits
@@ -167,6 +175,7 @@ struct EERIE_VERTEX
 		vert(rhs.vert), v(rhs.v), norm(rhs.norm)
 	{}
 
+	EERIE_TLVERTEX tlvert;
 	D3DTLVERTEX vert;
 	EERIE_3D	v;
 	EERIE_3D	norm;

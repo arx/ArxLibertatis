@@ -8,6 +8,11 @@ struct EERIE_RGB {
 	float b;
 };
 
+struct EERIE_RGBA : EERIE_RGB
+{
+	float a;
+};
+
 struct EERIE_QUAT {
 	float x;
 	float y;
@@ -19,10 +24,12 @@ struct EERIE_2D {
 	union {
 		float x;
 		float a;
+		float u;
 	};
 	union {
 		float y;
 		float b;
+		float v;
 	};
 };
 
@@ -50,6 +57,11 @@ struct EERIE_3D {
 		z = 0;
 	}
 	
+};
+
+struct EERIE_4D : EERIE_3D
+{
+	float w;
 };
 
 struct EERIEMATRIX {
