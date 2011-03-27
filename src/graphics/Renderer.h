@@ -94,7 +94,7 @@ public:
 	};
 
 	Renderer();
-	~Renderer();
+	virtual ~Renderer();
 
 	// Texture management
 	void ReleaseAllTextures();
