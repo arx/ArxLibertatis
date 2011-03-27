@@ -31,6 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/GraphicsTypes.h"
+#include "graphics/Renderer.h"
 
 #define PARTICLE_CIRCULAR  1
 #define PARTICLE_BORDER	   2
@@ -98,8 +99,8 @@ class CParticleSystem
 		float	fParticleEndColor[4];
 		float	fParticleEndColorRandom[4];
 
-		int		iSrcBlend;
-		int		iDstBlend;
+		Renderer::PixelBlendingFactor iSrcBlend;
+		Renderer::PixelBlendingFactor iDstBlend;
 
 		bool	bParticleFollow;
 
@@ -126,7 +127,7 @@ class CParticleSystem
 
 
 	public:
-		void	Render(LPDIRECT3DDEVICE7 _pD3DDevice);
+		void	Render();
 		bool	IsAlive();
 		void	Update(long);
 		void	RecomputeDirection();

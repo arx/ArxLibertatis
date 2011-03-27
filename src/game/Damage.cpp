@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 
 #include <cstdio>
-#include <cstdlib>
 
 #include "ai/Paths.h"
 
@@ -206,7 +205,7 @@ void ARX_DAMAGE_Reset_Blood_Info()
 	Blood_Duration = 0;
 }
 
-void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_DAMAGE_Show_Hit_Blood()
 {
 	D3DCOLOR color;
 	static float Last_Blood_Pos = 0.f;
@@ -219,35 +218,33 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 	}
 	else if (Blood_Pos > 1.f)
 	{
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
-		SETALPHABLEND(pd3dDevice, true);
-		SETZWRITE(pd3dDevice, false);
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendSrcColor);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		if (player.poison > 1.f)
 			color = D3DRGB(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f);
 		else
 			color = D3DRGB(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f);
 
-		EERIEDrawBitmap(pd3dDevice, 0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
-		SETZWRITE(pd3dDevice, true);
-		SETALPHABLEND(pd3dDevice, false);
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 	else if (Blood_Pos > 0.f)
 	{
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
-		SETALPHABLEND(pd3dDevice, true);
-		SETZWRITE(pd3dDevice, false);
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendSrcColor);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		if (player.poison > 1.f)
 			color = D3DRGB(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos);
 		else
 			color = D3DRGB(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos);
 
-		EERIEDrawBitmap(pd3dDevice, 0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
-		SETALPHABLEND(pd3dDevice, false);
-		SETZWRITE(pd3dDevice, true);
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
 
 	if (Blood_Pos > 0.f)
@@ -366,18 +363,15 @@ float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source) {
 						if ((ioo->targetinfo == 0) || (ioo->targetinfo == TARGET_PLAYER))
 						{
 							EVENT_SENDER = inter.iobj[0];
-							char killer[256];
-							memset(killer, 0, 256);
+							std::string killer;
 
-							if (source == 0) strcpy(killer, "PLAYER");
-							else if (source <= -1) strcpy(killer, "NONE");
+							if (source == 0) killer = "PLAYER";
+							else if (source <= -1) killer = "NONE";
 							else if (ValidIONum(source)
 							         &&	(inter.iobj[source]->filename)
 							         &&	(inter.iobj[source]->filename[0] != 0))
 							{
-								char temp[256];
-								strcpy(temp, GetName(inter.iobj[source]->filename).c_str());
-								sprintf(killer, "%s_%04ld", temp, inter.iobj[source]->ident);
+								killer = inter.iobj[source]->long_name();
 							}
 
 							SendIOScriptEvent(inter.iobj[i], 0, killer, "TARGET_DEATH");
@@ -566,8 +560,10 @@ void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long fl
 		if (SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT) return;
 	}
 }
+
 extern INTERACTIVE_OBJ * FlyingOverIO;
 extern MASTER_CAMERA_STRUCT MasterCamera;
+
 void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer)
 {
 	if (!strcasecmp(io_dead->mainevent, "DEAD"))
@@ -619,23 +615,18 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 		io_dead->lastanimtime = 0;
 	}
 
-	char killer[256];
-	killer[0] = 0;
+	std::string killer;
 
 	if (io_dead->ioflags & IO_NPC)
 		io_dead->_npcdata->weaponinhand = 0;
 
 	ARX_INTERACTIVE_DestroyDynamicInfo(io_dead);
 
-	if (io_killer == inter.iobj[0]) strcpy(killer, "PLAYER");
+	if (io_killer == inter.iobj[0]) killer = "PLAYER";
 	else
 	{
 		if (io_killer)
-		{
-			char temp[256];
-			strcpy(temp, GetName(io_killer->filename).c_str());
-			sprintf(killer, "%s_%04ld", temp, io_killer->ident);
-		}
+			killer = io_killer->long_name();
 	}
 
 	for (long i = 1; i < inter.nbmax; i++)
@@ -697,6 +688,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 
 	EVENT_SENDER = old_sender;
 }
+
 void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
 {
 	if ((power > 0.f)

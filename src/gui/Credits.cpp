@@ -1,7 +1,6 @@
 
 #include "gui/Credits.h"
 
-#include <string>
 #include <sstream>
 
 #include "core/Core.h"
@@ -153,15 +152,15 @@ void Credits::render() {
 		//Set the device
 		if(!danaeApp.DANAEStartRender()) return;
 		
-		SETALPHABLEND(GDevice,false);
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-		SETZWRITE(GDevice,true);
-		GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->SetRenderState(Renderer::Fog, false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		//Draw Background
 		if(ARXmenu.mda->pTexCredits)
 		{
-			EERIEDrawBitmap2(GDevice, 0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, 0xFFFFFFFF);
+			EERIEDrawBitmap2( 0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, 0xFFFFFFFF);
 		}    
 
 		//Use time passed between frame to create scroll effect
@@ -223,8 +222,14 @@ void Credits::render() {
 	
 	danaeApp.DANAEEndRender();
 	
-	SETZWRITE(GDevice,true);
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
+}
+
+void Credits::reset() {
+	ARXmenu.mda->creditstart = ARX_TIME_Get();
+	ARXmenu.mda->creditspos = 0;
+	CreditsData.iFirstLine = 0;
 }
 

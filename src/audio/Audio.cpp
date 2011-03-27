@@ -43,12 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <AL/al.h>
 
-#ifdef HAVE_PTHREADS
-#include <pthread.h>
-#include <time.h>
-#include <errno.h>
-#endif
-
 #include "audio/AudioResource.h"
 #include "audio/Mixer.h"
 #include "audio/Sample.h"
@@ -56,88 +50,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioInstance.h"
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
+#include "audio/Lock.h"
 
 #include "io/Logger.h"
 
-namespace ATHENA
-{
+namespace ATHENA {
 
 //Multithread data
 
-// TODO move to external file
-#ifdef HAVE_PTHREADS
-	
-	static const int WAIT_TIMEOUT(1);
-	
-	struct _Lock {
-		
-		pthread_mutex_t mutex;
-		pthread_cond_t cond;
-		bool locked;
-		
-		_Lock() : locked(false) {
-			const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
-			mutex = mutex_init;
-			const pthread_cond_t cond_init = PTHREAD_COND_INITIALIZER;
-			cond = cond_init;
-		}
-		
-		int lock(u32 timeout) {
-			
-			pthread_mutex_lock(&mutex);
-			
-			if(locked) {
-				struct timespec time;
-				clock_gettime(CLOCK_REALTIME, &time);
-				time.tv_nsec += timeout * 1000;
-				int rc;
-				do {
-					rc = pthread_cond_timedwait(&cond, &mutex, &time);
-				} while(rc == 0 && locked);
-				if(rc == ETIMEDOUT) {
-					pthread_mutex_unlock(&mutex);
-					return WAIT_TIMEOUT;
-				}
-			}
-			
-			locked = true;
-			pthread_mutex_unlock(&mutex);
-			return 0;
-		}
-		
-		int unlock() {
-			pthread_mutex_lock(&mutex);
-			locked = false;
-			pthread_cond_signal(&cond);
-			return !pthread_mutex_unlock(&mutex);
-		}
-		
-	};
-	
-	typedef _Lock * Lock;
-	
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
-	typedef HANDLE Lock;
-#else
-	#warning "locking not supported"
-#endif
-
-Lock mutex = NULL;
+Lock * mutex = NULL;
 
 static const aalULong MUTEX_TIMEOUT(500);
 static aalError EnableEnvironmentalAudio();
 
-#ifdef HAVE_PTHREADS
-#define WaitForSingleObject(mutex, timeout) ((mutex)->lock(timeout))
-#define ReleaseMutex(mutex) ((mutex)->unlock())
-#undef CreateMutex
-#define CreateMutex(x, y, z) (new _Lock())
-#define DestroyMutex(mutex) (delete (mutex))
-#else
-#define DestroyMutex(mutex) CloseHandle(mutex)
-#endif
+LPALGENEFFECTS alGenEffects = NULL;
+LPALDELETEEFFECTS alDeleteEffects = NULL;
+LPALEFFECTF alEffectf = NULL;
 
-	static struct timespec start_timespec;
+static struct timespec start_timespec;
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -146,7 +76,7 @@ static aalError EnableEnvironmentalAudio();
 	///////////////////////////////////////////////////////////////////////////////
 	aalError aalInit(void * param)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		//Clean any initialized data
@@ -157,18 +87,32 @@ static aalError EnableEnvironmentalAudio();
 
 		// Create OpenAL interface
 		device = alcOpenDevice(NULL);
-		if (device) {
-			context = alcCreateContext(device, NULL);
-			alcMakeContextCurrent(context);
-		} else {
-			if (mutex) ReleaseMutex(mutex);
+		if(!device) {
+			if(mutex) {
+				mutex->unlock();
+			}
 			return AAL_ERROR_SYSTEM;
 		}
+		
+		context = alcCreateContext(device, NULL);
+		alcMakeContextCurrent(context);
+		
+		alGenEffects = alGetProcAddress("alGenEffects");
+		alDeleteEffects = alGetProcAddress("alDeleteEffects");
+		alEffectf = alGetProcAddress("alEffectf");
+		if(!alGenEffects || !alDeleteEffects || !alEffectf) {
+			LogError << "Missing OpenAL EFX extension.";
+			if(mutex) {
+				mutex->unlock();
+			}
+			return AAL_ERROR_SYSTEM;
+		}
+		
 		alGetError(); // clear error code
 		alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 		is_reverb_present = alcIsExtensionPresent(device, "ALC_EXT_EFX") ? AAL_UTRUE : AAL_UFALSE;
-
-		if (mutex) ReleaseMutex(mutex);
+		
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -183,7 +127,7 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalClean()
 	{
-		if (mutex) WaitForSingleObject(mutex, MUTEX_TIMEOUT);
+		if (mutex) mutex->lock(MUTEX_TIMEOUT);
 
 		_mixer.Clean();
 		_amb.Clean();
@@ -207,14 +151,14 @@ static aalError EnableEnvironmentalAudio();
 		session_time = 0;
 		is_reverb_present = AAL_UFALSE;
 
-		if (mutex) ReleaseMutex(mutex), DestroyMutex(mutex), mutex = NULL;
+		if (mutex) delete mutex, mutex = NULL;
 
 		return AAL_OK;
 	}
 
 	aalError aalSetOutputFormat(const aalFormat & f)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		alDeleteBuffers(1, primary);
@@ -222,7 +166,7 @@ static aalError EnableEnvironmentalAudio();
 		//Get new buffer and set its format
 		alGenBuffers(1, primary);
 		if (alGetError() != AL_NO_ERROR) {
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 			return AAL_ERROR_SYSTEM;
 		}
 
@@ -234,27 +178,27 @@ static aalError EnableEnvironmentalAudio();
 
 		//Must restore all buffers here?!
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetStreamLimit(const aalULong & limit)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		stream_limit_ms = limit < 500 ? 500 : limit;
 		stream_limit_bytes = UnitsToBytes(stream_limit_ms, global_format, AAL_UNIT_MS);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetSamplePath(const char * _path)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_path)
@@ -270,7 +214,7 @@ static aalError EnableEnvironmentalAudio();
 
 				if (!ptr)
 				{
-					if (mutex) ReleaseMutex(mutex);
+					if (mutex) mutex->unlock();
 
 					return AAL_ERROR_MEMORY;
 				}
@@ -284,14 +228,14 @@ static aalError EnableEnvironmentalAudio();
 		}
 		else free(sample_path), sample_path = NULL;
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetAmbiancePath(const char * _path)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_path)
@@ -307,7 +251,7 @@ static aalError EnableEnvironmentalAudio();
 
 				if (!ptr)
 				{
-					if (mutex) ReleaseMutex(mutex);
+					if (mutex) mutex->unlock();
 
 					return AAL_ERROR_MEMORY;
 				}
@@ -321,14 +265,14 @@ static aalError EnableEnvironmentalAudio();
 		}
 		else free(ambiance_path), ambiance_path = NULL;
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetEnvironmentPath(const char * _path)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_path)
@@ -344,7 +288,7 @@ static aalError EnableEnvironmentalAudio();
 
 				if (!ptr)
 				{
-					if (mutex) ReleaseMutex(mutex);
+					if (mutex) mutex->unlock();
 
 					return AAL_ERROR_MEMORY;
 				}
@@ -358,7 +302,7 @@ static aalError EnableEnvironmentalAudio();
 		}
 		else free(environment_path), environment_path = NULL;
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -368,16 +312,16 @@ static aalError EnableEnvironmentalAudio();
 		aalError _error(AAL_OK);
 
 
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (flags & AAL_FLAG_MULTITHREAD && !mutex)
 		{
-			mutex = CreateMutex(NULL, false, NULL);
+			mutex = new Lock();
 
 			if (!mutex) return AAL_ERROR_SYSTEM;
 
-			if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+			if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 				return AAL_ERROR_TIMEOUT;
 
 		}
@@ -387,7 +331,7 @@ static aalError EnableEnvironmentalAudio();
 		{
 			// if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
 			// {
-			// 	if (mutex) ReleaseMutex(mutex);
+			// 	if (mutex) mutex->unlock();
 
 			// 	return AAL_ERROR_SYSTEM;
 			// }
@@ -401,7 +345,7 @@ static aalError EnableEnvironmentalAudio();
 
 			if (_error)
 			{
-				if (mutex) ReleaseMutex(mutex);
+				if (mutex) mutex->unlock();
 
 				return _error;
 			}
@@ -409,18 +353,18 @@ static aalError EnableEnvironmentalAudio();
 			global_status |= FLAG_ANY_ENV_FX;
 		}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalDisable(const aalULong & flags)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (flags & AAL_FLAG_MULTITHREAD && mutex)
-			ReleaseMutex(mutex), DestroyMutex(mutex), mutex = NULL;
+			delete mutex, mutex = NULL;
 
 		return AAL_OK;
 	}
@@ -433,7 +377,7 @@ static aalError EnableEnvironmentalAudio();
 
 	aalUBool aalIsEnabled(const aalFlag & flag)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_UFALSE;
 
 		aalUBool status;
@@ -461,7 +405,7 @@ static aalError EnableEnvironmentalAudio();
 				status = AAL_UFALSE;
 		}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return status;
 	}
@@ -475,7 +419,7 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalUpdate()
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		// Update global timer
@@ -542,7 +486,7 @@ static aalError EnableEnvironmentalAudio();
 		// FIXME -- I don't think we need this
 		//if (listener) listener->CommitDeferredSettings();
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -557,7 +501,7 @@ static aalError EnableEnvironmentalAudio();
 		Mixer * mixer = NULL;
 		aalSLong id;
 
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT) return AAL_SFALSE;
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT)) return AAL_SFALSE;
 
 		mixer = new Mixer;
 
@@ -565,19 +509,19 @@ static aalError EnableEnvironmentalAudio();
 		{
 			delete mixer;
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_SFALSE;
 		}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return id;
 	}
 
 	aalSLong aalCreateSample(const char * name)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_SFALSE;
 
 		Sample * sample = NULL;
@@ -594,14 +538,14 @@ static aalError EnableEnvironmentalAudio();
 			
 			LogWarning << "Sample " << name << " not found";
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_SFALSE;
 		}
 
 		sample->Catch();
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return s_id | 0xffff0000;
 	}
@@ -611,7 +555,7 @@ static aalError EnableEnvironmentalAudio();
 		Ambiance * ambiance = NULL;
 		aalSLong a_id;
 
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT) return AAL_SFALSE;
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT)) return AAL_SFALSE;
 
 		ambiance = new Ambiance;
 
@@ -621,7 +565,7 @@ static aalError EnableEnvironmentalAudio();
 			
 			LogError << "Ambiance " << name << " not found";
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_SFALSE;
 		}
@@ -635,7 +579,7 @@ static aalError EnableEnvironmentalAudio();
 			track->a_id = a_id;
 		}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return a_id;
 	}
@@ -645,7 +589,7 @@ static aalError EnableEnvironmentalAudio();
 		Environment * env = NULL;
 		aalSLong e_id;
 
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT) return AAL_SFALSE;
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT)) return AAL_SFALSE;
 
 		env = new Environment;
 
@@ -655,12 +599,12 @@ static aalError EnableEnvironmentalAudio();
 			
 			LogError << "Environment " << name << " not found";
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_SFALSE;
 		}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return e_id;
 	}
@@ -673,33 +617,33 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalDeleteSample(const aalSLong & sample_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
 
 		if (_sample.IsNotValid(s_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_sample.Delete(s_id);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalDeleteAmbiance(const aalSLong & a_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		_amb.Delete(a_id);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -712,54 +656,54 @@ static aalError EnableEnvironmentalAudio();
 	///////////////////////////////////////////////////////////////////////////////
 	aalSLong aalGetMixer(const char * name)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _mixer.Size(); i++)
 			if (_mixer[i] && (!name || !strcasecmp(name, _mixer[i]->name)))
 			{
-				if (mutex) ReleaseMutex(mutex);
+				if (mutex) mutex->unlock();
 
 				return i;
 			}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_SFALSE;
 	}
 
 	aalSLong aalGetAmbiance(const char * name)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _amb.Size(); i++)
 			if (_amb[i] && (!name || !strcasecmp(name, _amb[i]->name)))
 			{
-				if (mutex) ReleaseMutex(mutex);
+				if (mutex) mutex->unlock();
 
 				return i;
 			}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_SFALSE;
 	}
 
 	aalSLong aalGetEnvironment(const char * name)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _env.Size(); i++)
 			if (_env[i] && (!name || !strcasecmp(name, _env[i]->name)))
 			{
-				if (mutex) ReleaseMutex(mutex);
+				if (mutex) mutex->unlock();
 
 				return i;
 			}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_SFALSE;
 	}
@@ -771,7 +715,7 @@ static aalError EnableEnvironmentalAudio();
 	///////////////////////////////////////////////////////////////////////////////
 	aalSLong aalGetNextAmbiance(const aalSLong & ambiance_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_SFALSE;
 
 		aalULong i(_amb.IsValid(ambiance_id) ? ambiance_id + 1 : 0);
@@ -780,7 +724,7 @@ static aalError EnableEnvironmentalAudio();
 		{
 			if (_amb[i])
 			{
-				if (mutex) ReleaseMutex(mutex);
+				if (mutex) mutex->unlock();
 
 				return i;
 			}
@@ -788,7 +732,7 @@ static aalError EnableEnvironmentalAudio();
 			++i;
 		}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_SFALSE;
 	}
@@ -801,19 +745,19 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalSetEnvironmentRolloffFactor(const aalSLong & e_id, const aalFloat & factor)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_env.IsNotValid(e_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_env[e_id]->SetRolloffFactor(factor);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -825,71 +769,75 @@ static aalError EnableEnvironmentalAudio();
 	///////////////////////////////////////////////////////////////////////////////
 	aalError aalSetListenerUnitFactor(const aalFloat & factor)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
-		// if (!listener)
-		// {
-		// 	if (mutex) ReleaseMutex(mutex);
+		/*
+		if (!listener)
+		{
+			if (mutex) mutex->unlock();
 
-		// 	return AAL_ERROR_INIT;
-		// }
+			return AAL_ERROR_INIT;
+		}
 
-		// if (listener->SetDistanceFactor(factor, DS3D_DEFERRED))
-		// {
-		// 	if (mutex) ReleaseMutex(mutex);
+		if (listener->SetDistanceFactor(factor, DS3D_DEFERRED))
+		{
+			if (mutex) mutex->unlock();
 
-		// 	return AAL_ERROR_SYSTEM;
-		// }
+			return AAL_ERROR_SYSTEM;
+		}
+		*/
 
 		// FIXME -- this doesn't exist in OpenAL
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetListenerRolloffFactor(const aalFloat & factor)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
-		// if (!listener)
-		// {
-		// 	if (mutex) ReleaseMutex(mutex);
+		/*
+		if (!listener)
+		{
+			if (mutex) mutex->unlock();
 
-		// 	return AAL_ERROR_INIT;
-		// }
+			return AAL_ERROR_INIT;
+		}
 
-		// if (listener->SetRolloffFactor(factor, DS3D_DEFERRED))
-		// {
-		// 	if (mutex) ReleaseMutex(mutex);
+		if (listener->SetRolloffFactor(factor, DS3D_DEFERRED))
+		{
+			if (mutex) mutex->unlock();
 
-		// 	return AAL_ERROR_SYSTEM;
-		// }
+			return AAL_ERROR_SYSTEM;
+		}
+		*/
 
 		// FIXME -- this property doesn't exist in OpenAL
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetListenerPosition(const aalVector & position)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		alListener3f(AL_POSITION, position.x, position.y, position.z);
 
 		if (alGetError() != AL_NO_ERROR)
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_SYSTEM;
 		}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -897,31 +845,31 @@ static aalError EnableEnvironmentalAudio();
 	aalError aalSetListenerDirection(const aalVector & front, const aalVector & up)
 	{
 		ALfloat orientation[] = {front.x, front.y, front.z, up.x, up.y, up.z};
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		alListenerfv(AL_ORIENTATION, orientation);
 
 		if (alGetError() != AL_NO_ERROR)
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_SYSTEM;
 		}
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetListenerEnvironment(const aalSLong & e_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_env.IsNotValid(e_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
@@ -964,7 +912,7 @@ static aalError EnableEnvironmentalAudio();
 		if (env->reflect_delay >= 300.0F) env->SetEffect(AL_REVERB_REFLECTIONS_DELAY, 0.3F);
 		else env->SetEffect(AL_REVERB_REFLECTIONS_DELAY, aalFloat(env->reflect_delay) * 0.001F);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -977,38 +925,38 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalSetMixerVolume(const aalSLong & m_id, const aalFloat & volume)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_mixer.IsNotValid(m_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_mixer[m_id]->SetVolume(volume);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetMixerParent(const aalSLong & m_id, const aalSLong & pm_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (m_id == pm_id || _mixer.IsNotValid(m_id) || _mixer.IsNotValid(pm_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_mixer[m_id]->SetParent(_mixer[pm_id]);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -1021,7 +969,7 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalGetMixerVolume(const aalSLong & m_id, aalFloat * volume)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 		{
 			*volume = AAL_DEFAULT_VOLUME;
 			return AAL_ERROR_TIMEOUT;
@@ -1031,14 +979,14 @@ static aalError EnableEnvironmentalAudio();
 		{
 			*volume = AAL_DEFAULT_VOLUME;
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_mixer[m_id]->GetVolume(*volume);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -1051,57 +999,57 @@ static aalError EnableEnvironmentalAudio();
 	
 	aalError aalMixerStop(const aalSLong & m_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_mixer.IsNotValid(m_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_mixer[m_id]->Stop();
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalMixerPause(const aalSLong & m_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_mixer.IsNotValid(m_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_mixer[m_id]->Pause();
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalMixerResume(const aalSLong & m_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_mixer.IsNotValid(m_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_mixer[m_id]->Resume();
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -1114,7 +1062,7 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalSetSampleVolume(const aalSLong & sample_id, const aalFloat & volume)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
@@ -1122,21 +1070,21 @@ static aalError EnableEnvironmentalAudio();
 
 		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_inst[i_id]->SetVolume(volume);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetSamplePitch(const aalSLong & sample_id, const aalFloat & pitch)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
@@ -1144,21 +1092,21 @@ static aalError EnableEnvironmentalAudio();
 
 		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_inst[i_id]->SetPitch(pitch);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetSamplePosition(const aalSLong & sample_id, const aalVector & position)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
@@ -1166,14 +1114,14 @@ static aalError EnableEnvironmentalAudio();
 
 		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_inst[i_id]->SetPosition(position);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -1185,7 +1133,7 @@ static aalError EnableEnvironmentalAudio();
 	///////////////////////////////////////////////////////////////////////////////
 	aalError aalGetSampleName(const aalSLong & s_id, char * name, const aalULong & max_char)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 		{
 			*name = 0;
 			return AAL_ERROR_TIMEOUT;
@@ -1195,21 +1143,21 @@ static aalError EnableEnvironmentalAudio();
 		{
 			*name = 0;
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_sample[GetSampleID(s_id)]->GetName(name, max_char);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalGetSampleLength(const aalSLong & s_id, aalULong & _length, const aalUnit & unit)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 		{
 			_length = 0;
 			return AAL_ERROR_TIMEOUT;
@@ -1219,21 +1167,21 @@ static aalError EnableEnvironmentalAudio();
 		{
 			_length = 0;
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_sample[GetSampleID(s_id)]->GetLength(_length, unit);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalUBool aalIsSamplePlaying(const aalSLong & sample_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_UFALSE;
 
 		aalSLong s_id(GetSampleID(sample_id));
@@ -1241,14 +1189,14 @@ static aalError EnableEnvironmentalAudio();
 
 		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_UFALSE;
 		}
 
 		aalUBool status(_inst[i_id]->IsPlaying());
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return status;
 	}
@@ -1283,7 +1231,7 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, const aalULong & play_count)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
@@ -1292,7 +1240,7 @@ static aalError EnableEnvironmentalAudio();
 
 		if (_sample.IsNotValid(s_id) || _mixer.IsNotValid(channel.mixer))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
@@ -1349,7 +1297,7 @@ static aalError EnableEnvironmentalAudio();
 			{
 				delete instance;
 
-				if (mutex) ReleaseMutex(mutex);
+				if (mutex) mutex->unlock();
 
 				return AAL_ERROR_SYSTEM;
 			}
@@ -1362,7 +1310,7 @@ static aalError EnableEnvironmentalAudio();
 		{
 			_inst.Delete(i_id);
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_SYSTEM;
 		}
@@ -1371,19 +1319,19 @@ static aalError EnableEnvironmentalAudio();
 
 		if (channel.flags & AAL_FLAG_AUTOFREE) _sample[s_id]->Release();
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSampleStop(aalSLong & s_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_sample.IsNotValid(GetSampleID(s_id)) || _inst.IsNotValid(GetInstanceID(s_id)))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
@@ -1391,7 +1339,7 @@ static aalError EnableEnvironmentalAudio();
 		_inst[GetInstanceID(s_id)]->Stop();
 		s_id |= 0xffff0000;
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -1405,19 +1353,19 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalMuteAmbianceTrack(const aalSLong & a_id, const aalSLong & t_id, const aalUBool & mute)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_amb.IsNotValid(a_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->MuteTrack(t_id, mute);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -1430,38 +1378,38 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalSetAmbianceUserData(const aalSLong & a_id, void * data)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_amb.IsNotValid(a_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->SetUserData(data);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalSetAmbianceVolume(const aalSLong & a_id, const aalFloat & volume)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_amb.IsNotValid(a_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->SetVolume(volume);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
@@ -1474,7 +1422,7 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalGetAmbianceName(const aalSLong & a_id, char * name, const aalULong & max_char)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 		{
 			*name = 0;
 			return AAL_ERROR_TIMEOUT;
@@ -1484,40 +1432,40 @@ static aalError EnableEnvironmentalAudio();
 		{
 			*name = 0;
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->GetName(name, max_char);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalGetAmbianceUserData(const aalSLong & a_id, void ** data)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_amb.IsNotValid(a_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->GetUserData(data);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalGetAmbianceTrackID(const aalSLong & a_id, const char * name, aalSLong & _t_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 		{
 			_t_id = AAL_SFALSE;
 			return AAL_ERROR_TIMEOUT;
@@ -1527,21 +1475,21 @@ static aalError EnableEnvironmentalAudio();
 		{
 			_t_id = AAL_SFALSE;
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->GetTrackID(name, _t_id);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalGetAmbianceVolume(const aalSLong & a_id, aalFloat & _volume)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 		{
 			_volume = AAL_DEFAULT_VOLUME;
 			return AAL_ERROR_TIMEOUT;
@@ -1551,33 +1499,33 @@ static aalError EnableEnvironmentalAudio();
 		{
 			_volume = AAL_DEFAULT_VOLUME;
 
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->GetVolume(_volume);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalUBool aalIsAmbianceLooped(const aalSLong & a_id)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_UFALSE;
 
 		if (_amb.IsNotValid(a_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_UFALSE;
 		}
 
 		aalUBool status(_amb[a_id]->IsLooped());
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return status;
 	}
@@ -1590,38 +1538,38 @@ static aalError EnableEnvironmentalAudio();
 
 	aalError aalAmbiancePlay(const aalSLong & a_id, const aalChannel & channel, const aalULong & play_count, const aalULong & fade_interval)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_amb.IsNotValid(a_id) || _mixer.IsNotValid(channel.mixer))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->Play(channel, play_count, fade_interval);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}
 
 	aalError aalAmbianceStop(const aalSLong & a_id, const aalULong & fade_interval)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
 		if (_amb.IsNotValid(a_id))
 		{
-			if (mutex) ReleaseMutex(mutex);
+			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
 		_amb[a_id]->Stop(fade_interval);
 
-		if (mutex) ReleaseMutex(mutex);
+		if (mutex) mutex->unlock();
 
 		return AAL_OK;
 	}

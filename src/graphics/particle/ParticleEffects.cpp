@@ -1083,14 +1083,13 @@ void ManageTorch()
 }
 #define DIV_MAX_FLARELIFE	0.00025f
 //-----------------------------------------------------------------------------
-void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
+void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 {
 	/////////FLARE
-	SETZWRITE(m_pd3dDevice, false );
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	SETALPHABLEND(m_pd3dDevice,true);
 	shinum++;
 
 	if (shinum>=10) shinum=1;
@@ -1226,21 +1225,21 @@ void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 
 						if (!flare[i].io) 
 						{
-							GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+							GRenderer->SetRenderState(Renderer::DepthTest, false);
 						}
 						else
 						{
-							GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
+							GRenderer->SetRenderState(Renderer::DepthTest, true);
 						}
 
 						if(flare[i].bDrawBitmap)
 						{
 							s*=2.f;
-							EERIEDrawBitmap(m_pd3dDevice,flare[i].v.sx,flare[i].v.sy,s,s,flare[i].v.sz,surf,flare[i].tv.color);
+							EERIEDrawBitmap(flare[i].v.sx,flare[i].v.sy,s,s,flare[i].v.sz,surf,flare[i].tv.color);
 						}
 						else
 						{
-							EERIEDrawSprite(m_pd3dDevice,&flare[i].v,(float)s*0.025f+1.f, surf,flare[i].tv.color,2.f);
+							EERIEDrawSprite(&flare[i].v,(float)s*0.025f+1.f, surf,flare[i].tv.color,2.f);
 						}
 					}
 				}
@@ -1256,8 +1255,8 @@ void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 
 	if (DynLight[0].rgb.b>1.f) DynLight[0].rgb.b=1.f;
 
-	SETZWRITE(m_pd3dDevice, true );
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true); 
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::DepthTest, true); 
 }
 
 //-----------------------------------------------------------------------------
@@ -1508,7 +1507,7 @@ void Add3DBoom(EERIE_3D * position) {
 }
 
 //-----------------------------------------------------------------------------
-void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) {
+void UpdateObjFx() {
 
 	unsigned long framediff;
 	float val,aa,bb;
@@ -1527,12 +1526,9 @@ void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) {
 	v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 0.f);
 	v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 1.f);
 	
-	pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-	pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-	SETALPHABLEND(pd3dDevice,true);
-
-	SETZWRITE(pd3dDevice, false );
-	
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	for (long i=0;i<MAX_OBJFX;i++)
 	{
@@ -1580,7 +1576,7 @@ void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) {
 			angle.b=0.f;
 			angle.g=0.f;
 
-			DrawEERIEObjEx(pd3dDevice,objfx[i].obj,
+			DrawEERIEObjEx(objfx[i].obj,
 					&angle,&pos,&scale,&color);
 
 			if (objfx[i].dynlight!=-1)
@@ -1598,7 +1594,7 @@ void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) {
 			if (objfx[i].special & SPECIAL_RAYZ)
 			{
 
-				SETCULL(pd3dDevice,D3DCULL_NONE);
+				GRenderer->SetCulling(Renderer::CullNone);
 
 				for (long k=0;k<8;k++)
 				{
@@ -1645,8 +1641,8 @@ void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) {
 							v2[p].color=D3DRGB(color.r/(3.f+(float)p),color.g/(4.f+(float)p),color.b/(5.f+(float)p));
 					}
 
-					SETTC(pd3dDevice,NULL);
-					EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , v2, 3,  0, 0 );
+					SETTC(NULL);
+					EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , v2, 3,  0, 0 );
 				}
 			}
 		}
@@ -2063,7 +2059,7 @@ void LaunchFireballBoom(EERIE_3D * poss,float level,EERIE_3D * direction,EERIE_R
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam) 
+void ARX_PARTICLES_Render(EERIE_CAMERA * cam) 
 {
 	if (!ACTIVEBKG) return;
 
@@ -2085,9 +2081,9 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 	
 	tim = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'	
 	
-	SETCULL(pd3dDevice,D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
+	GRenderer->SetFogColor(0);
 
 	TextureContainer * tc=NULL;
 	long pcc=ParticleCount;
@@ -2263,11 +2259,11 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 			
 			if (part->special & PARTICLE_NOZBUFFER) 
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+				GRenderer->SetRenderState(Renderer::DepthTest, false);
 			}
 			else
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
+				GRenderer->SetRenderState(Renderer::DepthTest, true);
 			}
 
 			if (part->special & FADE_IN_AND_OUT) 
@@ -2308,25 +2304,23 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 				{
 					if (part->special & NO_TRANS)
 					{
-						SETALPHABLEND(pd3dDevice,false);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 					else
 					{
-						SETALPHABLEND(pd3dDevice,true);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 						if (part->special & SUBSTRACT) 
 						{
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						}
 						else
 						{
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						}
 					}
 
-					SETCULL(pd3dDevice,D3DCULL_NONE);
+					GRenderer->SetCulling(Renderer::CullNone);
 					EERIE_3D vect;
 					vect.x=part->oldpos.x-in.sx;
 					vect.y=part->oldpos.y-in.sy;
@@ -2350,10 +2344,9 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 					temp.sz=in.sz+vect.z*part->fparam;
 
 					EERIETreatPoint(&temp,&tv[2]);
-					SETTC(pd3dDevice,NULL);
-					ComputeFogVertex(tv);
+					SETTC(NULL);
 
-					EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , tv, 3, 0, 0);
+					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , tv, 3, 0, 0);
 					if(!ARXPausedTimer)
 					{
 						part->oldpos.x=in.sx;
@@ -2418,21 +2411,19 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 			{
 				if (part->special & NO_TRANS)
 				{
-					SETALPHABLEND(pd3dDevice,false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 				else
 				{
-					SETALPHABLEND(pd3dDevice,true);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 					if (part->special & SUBSTRACT) 
 					{
-						pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-						pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 					}
 					else
 					{
-						pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-						pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					}
 				}
 				
@@ -2500,15 +2491,13 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 						{
 							D3DTLVERTEX in2;
 							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);						
-							EERIEDrawRotatedSprite(pd3dDevice,&in,siz,tc,color,temp,rott);
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);						
-							EERIEDrawRotatedSprite(pd3dDevice,&in2,siz,tc,0xFFFFFFFF,temp,rott);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
+							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
+							EERIEDrawRotatedSprite(&in2,siz,tc,0xFFFFFFFF,temp,rott);
 						}
 						else
-							EERIEDrawRotatedSprite(pd3dDevice,&in,siz,tc,color,temp,rott);
+							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
 					}					
 				}
 				else if (part->type & PARTICLE_2D) 
@@ -2519,15 +2508,13 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 					{
 						D3DTLVERTEX in2;
 						memcpy(&in2,&in,sizeof(D3DTLVERTEX));
-						pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-						pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);						
-						EERIEDrawBitmap(pd3dDevice,in.sx,in.sy,siz,siz2,in.sz,tc,color);
-						pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-						pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);						
-						EERIEDrawBitmap(pd3dDevice,in2.sx,in.sy,siz,siz2,in.sz,tc,0xFFFFFFFF);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
+						EERIEDrawBitmap(in.sx,in.sy,siz,siz2,in.sz,tc,color);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
+						EERIEDrawBitmap(in2.sx,in.sy,siz,siz2,in.sz,tc,0xFFFFFFFF);
 					}
 					else
-						EERIEDrawBitmap(pd3dDevice,in.sx,in.sy,siz,siz2,in.sz,tc,color);
+						EERIEDrawBitmap(in.sx,in.sy,siz,siz2,in.sz,tc,color);
 				}
 				else 
 				{
@@ -2543,7 +2530,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 						end.z=pos.z-(pos.z-op.z)*2.5f;
 						Draw3DLineTex2(end,pos,2.f,color1 & part->mask,color1);
 						
-						EERIEDrawSprite(pd3dDevice,&in,.7f,tc,color1,2.f);				
+						EERIEDrawSprite(&in,.7f,tc,color1,2.f);				
 						
 					}
 					else
@@ -2557,15 +2544,13 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 						{
 							D3DTLVERTEX in2;
 							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-							EERIEDrawSprite(pd3dDevice,&in,siz,tc,color,temp);				
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-							pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-							EERIEDrawSprite(pd3dDevice,&in2,siz,tc,0xFFFFFFFF,temp);				
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+							EERIEDrawSprite(&in,siz,tc,color,temp);				
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+							EERIEDrawSprite(&in2,siz,tc,0xFFFFFFFF,temp);				
 						}
 						else 
-							EERIEDrawSprite(pd3dDevice,&in,siz,tc,color,temp);				
+							EERIEDrawSprite(&in,siz,tc,color,temp);				
 					}
 				}
 			}
@@ -2574,14 +2559,14 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 
 			if (pcc<=0)
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
+				GRenderer->SetFogColor(ulBKGColor);
 				return;
 			}
 		}	
 	}
 
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
+	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }
 
 //-----------------------------------------------------------------------------

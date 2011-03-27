@@ -136,10 +136,11 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 // DeviceEnumCallback()
 // Callback function for enumerating devices
 //************************************************************************************
-static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
-        TCHAR		*	strName,
-        D3DDEVICEDESC7	* pDesc,
-        VOID		*		pParentInfo) {
+static HRESULT WINAPI DeviceEnumCallback( char*	strDesc,
+                                          char* strName,
+                                          D3DDEVICEDESC7* pDesc,
+                                          VOID* pParentInfo)
+{
 	
 	(void)strDesc;
 	
@@ -247,8 +248,9 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 // DriverEnumCallback()
 // Callback function for enumerating drivers.
 //************************************************************************************
-static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
-                                      TCHAR * strName, VOID *, HMONITOR) {
+static BOOL WINAPI DriverEnumCallback(GUID * pGUID, char* strDesc,
+                                      char* strName, VOID *, HMONITOR)
+{
 	
 	(void)strName;
 	
@@ -685,6 +687,21 @@ HRESULT D3DEnum_SelectDefaultDevice(D3DEnum_DeviceInfo ** ppDevice,
 		return D3DENUMERR_NOCOMPATIBLEDEVICES;
 
 #endif
+
+	// Enforce support of at least 3 simultaneous textures (only cards released in the previous millenium supported less than that!)
+	if((*ppDevice)->wNbTextureSimultaneous < 3)
+	{
+		(*ppDevice) = NULL;
+		return D3DENUMERR_NOCOMPATIBLEDEVICES;
+	}
+
+	// Enforce support of the ADDSIGNED texture op...
+	if(!((*ppDevice)->dwTextureOpCaps & D3DTEXOPCAPS_ADDSIGNED))
+	{
+		(*ppDevice) = NULL;
+		return D3DENUMERR_NOCOMPATIBLEDEVICES;
+	}
+
 	// Set the windowed state of the newly selected device
 	(*ppDevice)->bWindowed = true;
 

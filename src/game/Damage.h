@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
-class INTERACTIVE_OBJ;
+struct INTERACTIVE_OBJ;
 
 struct DAMAGE_INFO {
 	short exist;
@@ -123,7 +123,7 @@ void CheckForIgnition(EERIE_3D * pos, float radius, long mode, long flag = 0);
 bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ = 0, long numsource = -1);
 
 void ARX_DAMAGE_Reset_Blood_Info();
-void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice);
+void ARX_DAMAGE_Show_Hit_Blood();
 void ARX_DAMAGES_Reset();
 long ARX_DAMAGES_GetFree();
  

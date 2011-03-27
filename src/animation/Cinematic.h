@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h> // for HRESULT
 
-#include "graphics/d3dwrapper.h" // for LPDIRECT3DDEVICE7
+#include "graphics/d3dwrapper.h"
 #include "graphics/GraphicsTypes.h" // for EERIE_3D
 
 // TODO macros
@@ -80,9 +80,6 @@ public:
 class Cinematic {
 	
 public:
-	
-	LPDIRECT3DDEVICE7 m_pd3dDevice;
-	
 	EERIE_3D pos;
 	float angz;
 	EERIE_3D possuiv; // in the case of a non-fade interpolation
@@ -118,7 +115,7 @@ public:
 	float flTime;
 	float m_flIntensityRND;
 	
-	Cinematic(LPDIRECT3DDEVICE7, int, int);
+	Cinematic(int, int);
 	bool ActiveTexture(int id);
 	HRESULT InitDeviceObjects();
 	HRESULT OneTimeSceneReInit();
@@ -129,7 +126,7 @@ public:
 	
 };
 
-void DrawGrille(LPDIRECT3DDEVICE7 device, CinematicGrid * grille, int col, int fx, CinematicLight * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);
+void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);
 void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, EERIE_3D * posgrille, float angzgrille, float speedtrack);
 
 #endif // ARX_ANIMATION_CINEMATIC_H

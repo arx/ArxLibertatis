@@ -200,17 +200,16 @@ bool CheckLastSpeech(int _iI)
 	return true;
 }
 //-----------------------------------------------------------------------------
-void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_SPEECH_Render()
 {
-	_TCHAR temp[4096];
+	char temp[4096];
 	long igrec = 14;
 
 	Vector2i sSize = hFontInBook->GetTextSize("p");
 	sSize.y *= 3;
 	
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(pd3dDevice, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	int iEnd = igrec + sSize.y;
 
@@ -221,11 +220,11 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 			if (!speech[i].lpszUText.empty())
 			{
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
-					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText.c_str());
+					sprintf(temp, "%s > %s", speech[i].name, speech[i].lpszUText.c_str());
 				else
-					_stprintf(temp, _T(" %s"), speech[i].lpszUText.c_str());//>
+					sprintf(temp, " %s", speech[i].lpszUText.c_str());//>
 
-				EERIEDrawBitmap(GDevice,
+				EERIEDrawBitmap(
 								120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
 								16 * Xratio, 16 * Xratio,
 								0.00001f,
@@ -242,10 +241,10 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 	}
 
-	SETALPHABLEND(pd3dDevice, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_SPEECH_Check()
 {
 	bool bClear = false;
 	long exist = 0;
@@ -273,7 +272,7 @@ void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 	}
 
-	if (exist) ARX_SPEECH_Render(pd3dDevice);
+	if (exist) ARX_SPEECH_Render();
 }
 
 //-----------------------------------------------------------------------------
@@ -419,9 +418,9 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, long flags) {
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mood, long flags) {
 	
-	if (!data || !data[0]) return -1;
+	if ( data.empty() ) return -1;
 
 	long num = ARX_SPEECH_GetFree();
 
@@ -476,7 +475,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, lo
 	char speech_label[256];
 	char speech_sample[256];
 
-	strcpy(speech_label, data + 1);
+	strcpy(speech_label, data.substr(1).c_str() );
 	speech_label[strlen(speech_label) - 1] = 0;
 
 	if (flags & ARX_SPEECH_FLAG_NOTEXT)
@@ -627,12 +626,11 @@ void ARX_SPEECH_Update() {
 						                    RGB(255, 255, 255),
 						                    &clippingRect);
 
-						SETTC(GDevice, NULL);
-						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);
-						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
-						GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-						EERIEDrawFill2DRectDegrad(GDevice,
+						SETTC( NULL);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						GRenderer->SetRenderState(Renderer::DepthTest, false);
+						EERIEDrawFill2DRectDegrad(
 												  0.f,
 												  fZoneClippY - 1.f, 
 												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
@@ -641,7 +639,7 @@ void ARX_SPEECH_Update() {
 												  RGBA_MAKE(255, 255, 255, 255),
 												  RGBA_MAKE(0, 0, 0, 255));
 
-						EERIEDrawFill2DRectDegrad(GDevice,
+						EERIEDrawFill2DRectDegrad(
 												  0.f,
 												  fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
 												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
@@ -650,11 +648,10 @@ void ARX_SPEECH_Update() {
 												  RGBA_MAKE(0, 0, 0, 255),
 												  RGBA_MAKE(255, 255, 255, 255));
 
-						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
-						danaeApp.EnableZBuffer();
-						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+						GRenderer->SetRenderState(Renderer::DepthTest, true);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 
 						iTaille += (int)fZoneClippHeight;

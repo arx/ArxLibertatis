@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/Texture.h"
 
-#include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
@@ -682,7 +682,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 	
 	string filename = path;
 	SetExt(filename, ".bmp");
-	if (PAK_FileExist(filename.c_str()))
+	if (PAK_FileExist(filename))
 	{
 		bi->hbitmap = (HBITMAP)LoadBMPImage(filename.c_str());
 
@@ -700,7 +700,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 	{
 		SetExt(filename, ".tga");
 
-		if (PAK_FileExist(filename.c_str()))
+		if (PAK_FileExist(filename))
 		{
 			bi->hbitmap = LoadTargaFile(filename.c_str());
 
@@ -770,7 +770,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 			//AllTxt, "%s_%4d", name, num);
 			MakeUpcase(texname);
 
-			if (FAILED(D3DTextr_CreateEmptyTexture(texname.c_str(), w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
+			if (FAILED(D3DTextr_CreateEmptyTexture(texname, w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
 			{
 				LogError<< "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
 			}
@@ -907,7 +907,7 @@ bool Cinematic::ActiveTexture(int id)
 
 		if (!tc) return false;
 
-		if (tc->Restore(GDevice) != S_OK) return false;	
+		if (tc->Restore() != S_OK) return false;	
 
 		if (tc->CopyBitmapToSurface(cb->hbitmap, mat->bitmapdepx, mat->bitmapdepy, mat->bitmapw, mat->bitmaph) != S_OK) return false;
 

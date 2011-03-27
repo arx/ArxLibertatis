@@ -436,6 +436,7 @@ struct TWEAK_INFO
 #define MAX_ANIMS 200		// max loadable anims per character
 
 typedef s32 ArxSound;
+
 struct INTERACTIVE_OBJ
 {
 	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
@@ -577,6 +578,29 @@ struct INTERACTIVE_OBJ
 	short				inzone_show;
 	short				summoner;
 	long spark_n_blood;
+
+	/**
+	 * Return the short name for this Object where only the name
+	 * of the file is returned
+	 * @return The name of the file at the end of the filename path
+	 */
+	std::string short_name() const;
+
+	/**
+	 *  Returns the long name for this Object where the short name
+	 * is combined with the identifying number
+	 * in the form of "%s_4ld"
+	 * @return The short name combined with a 4 digit ident, padded with 0
+	 */
+	std::string long_name() const;
+
+	/**
+	 *  Returns the full name for this Object where the
+	 * directory portion of the filename member is combined
+	 * with the the result of long_name()
+	 * @return The directory of filename + long_name()
+	 */
+	std::string full_name() const;
 };
 
 //-----------------------------------------------------------------------------
@@ -768,7 +792,7 @@ void SetNextAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * ea,long layer=0,long loop=0)
 void AcquireLastAnim(INTERACTIVE_OBJ * io);
 void FinishAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * eanim);
 bool Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit);
-void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
+void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
 void FaceTarget(INTERACTIVE_OBJ * io);
 
 void DebugSphere(float x,float y,float z,float siz,long tim,D3DCOLOR color);
@@ -823,8 +847,8 @@ long PhysicalDrawBkgVLine(EERIE_3D * orgn,EERIE_3D * dest);
 long AnchorData_GetNearest(EERIE_3D *pos,EERIE_CYLINDER * cyl);
 
 // FAST SAVE LOAD
-bool FastSceneLoad(const char * path);
-bool FastSceneSave(const char * path,EERIE_MULTI3DSCENE * ms);
+bool FastSceneLoad(const std::string& path);
+bool FastSceneSave(const std::string& path,EERIE_MULTI3DSCENE * ms);
 bool CheckUniqueIdent(char * pathh);
 bool CreateUniqueIdent(char * pathh);
 
@@ -832,22 +856,19 @@ bool CreateUniqueIdent(char * pathh);
 //****************************************************************************
 // DRAWING FUNCTIONS START
 
-void DrawEERIEObjEx(		LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
+void DrawEERIEObjEx(		EERIE_3DOBJ * eobj,
 							EERIE_3D * angle,
 							EERIE_3D  * pos,
 							EERIE_3D * scale,
 							EERIE_RGB * col
 						);
-void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice,
-						EERIE_3DOBJ * eobj,
+void DrawEERIEObjExEx(	EERIE_3DOBJ * eobj,
 						EERIE_3D * angle,
 						EERIE_3D  * pos,
 						EERIE_3D * scale,
 						int coll
 						);
-void DrawEERIEInter(		LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
+void DrawEERIEInter(		EERIE_3DOBJ * eobj,
 							EERIE_3D * angle,
 							EERIE_3D  * pos,
 							INTERACTIVE_OBJ * io,
@@ -876,9 +897,7 @@ void EERIEAddPoly(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * te
 
 //****************************************************************************
 // RENDERING FUNCTIONS START
-void SETALPHABLEND(LPDIRECT3DDEVICE7 pd3dDevice,DWORD state);
-void SETTEXTURE0(LPDIRECT3DDEVICE7 pd3dDevice,IDirectDrawSurface7 * tex);
-void SETCULL(LPDIRECT3DDEVICE7 pd3dDevice,DWORD state);
+void SETTEXTURE0(IDirectDrawSurface7 * tex);
 // RENDERING FUNCTIONS END
 //****************************************************************************
 
@@ -978,7 +997,7 @@ EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);
 
 long GetVertexPos(INTERACTIVE_OBJ * io,long id,EERIE_3D * pos);
 void PrepareBackgroundNRMLs();
-void DrawInWorld(LPDIRECT3DDEVICE7 pd3dDevice);
+void DrawInWorld();
 long CountBkgVertex();
 void CreateInWorld();
 void EERIE_LIGHT_ChangeLighting();

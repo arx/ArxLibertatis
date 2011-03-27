@@ -72,20 +72,6 @@ VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags,
 }
 
 //-----------------------------------------------------------------------------
-// Name: D3DUtil_InitMaterial()
-// Desc: Helper function called to build a D3DMATERIAL7 structure
-//-----------------------------------------------------------------------------
-VOID D3DUtil_InitMaterial(D3DMATERIAL7 & mtrl, float r, float g, float b,
-                          float a)
-{
-	ZeroMemory(&mtrl, sizeof(D3DMATERIAL7));
-	mtrl.dcvDiffuse.r = mtrl.dcvAmbient.r = r;
-	mtrl.dcvDiffuse.g = mtrl.dcvAmbient.g = g;
-	mtrl.dcvDiffuse.b = mtrl.dcvAmbient.b = b;
-	mtrl.dcvDiffuse.a = mtrl.dcvAmbient.a = a;
-}
-
-//-----------------------------------------------------------------------------
 // Name: D3DUtil_SetViewMatrix()
 // Desc: Given an eye point, a lookat point, and an up vector, this
 //       function builds a 4x4 view matrix.

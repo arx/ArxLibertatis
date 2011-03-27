@@ -151,21 +151,21 @@ void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z);
 void ARX_PATH_ClearAllUsePath();
 void ARX_PATH_ReleaseAllPath();
-ARX_PATH * ARX_PATH_GetAddressByName( const char * name);
+ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 
 void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname);
 ARX_PATH * ARX_PATHS_ExistName(char * name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
-void ARX_PATHS_RedrawAll(LPDIRECT3DDEVICE7 pd3dDevice);
+void ARX_PATHS_RedrawAll();
 ARX_PATH * ARX_PATHS_Create(const char * name, EERIE_3D * pos);
 ARX_PATH * ARX_PATHS_AddNew(EERIE_3D * pos);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert);
 void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, long mods, EERIE_3D * pos, long flags, unsigned long time);
 void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del);
-void ARX_PATHS_DrawPath(ARX_PATH * ap, LPDIRECT3DDEVICE7 pd3dDevice);
+void ARX_PATHS_DrawPath(ARX_PATH * ap);
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos);
 
 #define ATO_EXIST      1
@@ -235,7 +235,7 @@ public:
 	void AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 	void Create(int numinteractive, int duration);
 	void Update();
-	float Render(LPDIRECT3DDEVICE7);
+	float Render();
 	
 };
 

@@ -5,8 +5,9 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
-#include <windows.h>	// TEMP: for COLORREF....
-
+// TEMP - move back to .cpp once types are all abstracted
+#include <windows.h>
+#include <d3d.h>
 
 class Renderer
 {
@@ -14,10 +15,13 @@ public:
 	//! Render states
 	enum RenderState
     {
-        Blend,
+        AlphaBlending,
+		ColorKey,
 		DepthTest,
-		DepthMask,
-        Lighting,
+		DepthWrite,
+        Fog,
+		Lighting,
+		ZBias
     };
 
 	//! Pixel comparison functions
@@ -57,6 +61,30 @@ public:
         CullCCW
     };
 
+	enum FillMode
+    {
+        FillPoint,
+        FillWireframe,
+        FillSolid
+    };
+
+	//! Fog
+	enum FogMode
+	{
+		FogNone,
+		FogExp,
+		FogExp2,
+		FogLinear
+	};
+
+	//! Target surface
+	enum BufferType
+    {
+        ColorBuffer     = 0x00000001,
+        DepthBuffer     = 0x00000002,
+        StencilBuffer   = 0x00000004
+    };
+
 	struct Viewport
 	{
 		int x;
@@ -89,13 +117,23 @@ public:
     void SetViewport(const Viewport& viewport);
     Viewport GetViewport();
 
-	// Culling & Clipping
-	void SetCulling( CullingMode mode );
-	
 	// Projection
 	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
     void End2DProjection();
 
+	// Render Target
+	void Clear(int bufferFlags, COLORREF clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
+
+	// Fog
+	void SetFogColor(COLORREF color);
+	void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
+		
+	// Rasterizer
+	void SetAntialiasing(bool enable);
+	void SetCulling(CullingMode mode);
+	void SetDepthBias(int depthBias);
+	void SetFillMode(FillMode mode);
+	
 	// Texturing
 	unsigned int GetTextureStageCount() const;
 	TextureStage* GetTextureStage(unsigned int textureStage);
@@ -105,7 +143,7 @@ public:
 	float GetMaxAnisotropy() const;
 
 	// Utilities...
-	void DrawTexturedRect( float pX, float pY, float pW, float pH, float pUStart, float pVStart, float pUEnd, float pVEnd, COLORREF pColor );
+	void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, COLORREF color );
 
 private:
 	std::vector<TextureStage*>	m_TextureStages;

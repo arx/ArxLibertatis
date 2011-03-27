@@ -70,8 +70,8 @@ CParticleSystem::CParticleSystem()
 	fParticleRotation = 0;
 	
 	fParticleFreq = -1;
-	iSrcBlend = D3DBLEND_ONE;
-	iDstBlend = D3DBLEND_ONE;
+	iSrcBlend = Renderer::BlendOne;
+	iDstBlend = Renderer::BlendOne;
 	ulParticleSpawn = 0;
 
 	// default settings for EDITOR MODE only
@@ -129,10 +129,8 @@ CParticleSystem::CParticleSystem()
 	fParticleEndColorRandom[2] = 0.1f;
 	fParticleEndColorRandom[3] = 0.1f;
 
-	iSrcBlend = 0;
-	iDstBlend = 0;
-	iSrcBlend = D3DBLEND_ONE;
-	iDstBlend = D3DBLEND_ONE;
+	iSrcBlend = Renderer::BlendOne;
+	iDstBlend = Renderer::BlendOne;
 }
 
 //-----------------------------------------------------------------------------
@@ -253,32 +251,28 @@ void CParticleSystem::SetParams(CParticleParams & _pp)
 	switch (_pp.iBlendMode)
 	{
 		case 0:
-			iSrcBlend = D3DBLEND_ONE;
-			iDstBlend = D3DBLEND_ONE;
+			iSrcBlend = Renderer::BlendOne;
+			iDstBlend = Renderer::BlendOne;
 			break;
 		case 1:
-			iSrcBlend = D3DBLEND_ZERO;
-			iDstBlend = D3DBLEND_INVSRCCOLOR;
+			iSrcBlend = Renderer::BlendZero;
+			iDstBlend = Renderer::BlendInvSrcColor;
 			break;
 		case 2:
-			iSrcBlend = D3DBLEND_SRCCOLOR;
-			iDstBlend = D3DBLEND_DESTCOLOR;
+			iSrcBlend = Renderer::BlendSrcColor;
+			iDstBlend = Renderer::BlendDstColor;
 			break;
 		case 3:
-			iSrcBlend = D3DBLEND_SRCALPHA;
-			iDstBlend = D3DBLEND_ONE;
-			break;
-		case 4:
-			iSrcBlend = 0;
-			iDstBlend = 0;
+			iSrcBlend = Renderer::BlendSrcAlpha;
+			iDstBlend = Renderer::BlendOne;
 			break;
 		case 5:
-			iSrcBlend = D3DBLEND_INVDESTCOLOR;
-			iDstBlend = D3DBLEND_ONE;
+			iSrcBlend = Renderer::BlendInvDstColor;
+			iDstBlend = Renderer::BlendOne;
 			break;
 		default:
-			iSrcBlend = D3DBLEND_ONE;
-			iDstBlend = D3DBLEND_ONE;
+			iSrcBlend = Renderer::BlendOne;
+			iDstBlend = Renderer::BlendOne;
 			break;
 
 	}
@@ -560,14 +554,12 @@ void CParticleSystem::Update(long _lTime)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice) {
+void CParticleSystem::Render() {
 	
-	SETCULL(_lpD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_lpD3DDevice, false);
-
-	_lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  iSrcBlend);
-	_lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, iDstBlend);
-	SETALPHABLEND(_lpD3DDevice, true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(iSrcBlend, iDstBlend);
 
 	int inumtex = 0;
 
@@ -649,12 +641,12 @@ void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice) {
 					fRot = (-fParticleRotation) * p->ulTime + p->fRotStart;
 
 				if ((tex_tab[inumtex] && tex_tab[inumtex]->m_pddsSurface))
-					EERIEDrawRotatedSprite(_lpD3DDevice, &p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
+					EERIEDrawRotatedSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
 			}
 			else
 			{
 				if ((tex_tab[inumtex] && tex_tab[inumtex]->m_pddsSurface))
-					EERIEDrawSprite(_lpD3DDevice, &p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
+					EERIEDrawSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
 			}
 		}
 	}

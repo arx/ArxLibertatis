@@ -28,8 +28,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cmath>
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#include <al.h>
+#include <alc.h>
+
 #include "AudioTypes.h"
 #include "AudioResource.h"
 #include "Stream.h"

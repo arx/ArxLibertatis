@@ -1,20 +1,34 @@
 cmake_minimum_required(VERSION 2.8)
-# compile unpak tool
+# compile tools
+
+find_package(ZLIB REQUIRED)
 
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Woverloaded-virtual")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-aliasing")
 
 include_directories(
-	../include
+	../src
 )
 
 add_executable(unpaker 
-unpak/unpak.cpp 
-../src/io/PakEntry.cpp 
-../src/io/PakReader.cpp 
-../src/io/HashMap.cpp 
-../src/io/Logger.cpp 
-../src/io/Blast.cpp)
+	unpak/unpak.cpp
+	../src/io/PakEntry.cpp
+	../src/io/PakReader.cpp
+	../src/io/HashMap.cpp
+	../src/io/Logger.cpp
+	../src/io/Blast.cpp
+)
 
-# target_link_libraries(unpak z)
+add_executable(savetool
+	savetool/savetool.cpp
+	savetool/Filesystem_C.cpp
+	../src/io/Logger.cpp
+	../src/io/Blast.cpp
+	../src/io/SaveBlock.cpp
+	../src/io/HashMap.cpp
+	../src/io/String.cpp
+	../src/io/FilePath.cpp
+)
+
+target_link_libraries(savetool ${ZLIB_LIBRARIES})

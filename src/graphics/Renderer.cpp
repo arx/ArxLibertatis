@@ -12,15 +12,19 @@ extern LPDIRECT3DDEVICE7 GDevice;
 // ARXToDX7 mapping tables - MOVE THAT SOMEWHERE ELSE!
 ///////////////////////////////////////////////////////////////////////////////
 const D3DTEXTUREOP ARXToDX7TextureOp[] = {
-						D3DTOP_SELECTARG1,					// TexOpSelectArg1,
-						D3DTOP_SELECTARG2,					// TexOpSelectArg2,
-						D3DTOP_MODULATE						// TexOpModulate
+						D3DTOP_DISABLE,						// OpDisable
+						D3DTOP_SELECTARG1,					// OpSelectArg1,
+						D3DTOP_SELECTARG2,					// OpSelectArg2,
+						D3DTOP_MODULATE,					// OpModulate,
+						D3DTOP_MODULATE2X,					// OpModulate2X,
+						D3DTOP_MODULATE4X,					// OpModulate4X,
+						D3DTOP_ADDSIGNED					// OpAddSigned
 									};
 
 const DWORD ARXToDX7TextureArg[] = {
-						D3DTA_CURRENT,						// TexArgCurrent,
 						D3DTA_DIFFUSE,						// TexArgDiffuse,
-						D3DTA_TEXTURE,						// TexArgTexture
+						D3DTA_CURRENT,						// TexArgCurrent,						
+						D3DTA_TEXTURE,						// TexArgTexture,
 									};
 
 const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
@@ -53,13 +57,16 @@ const D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
 
 
 const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
-						D3DRENDERSTATE_ALPHABLENDENABLE,	// Blend,
-						D3DRENDERSTATE_ZENABLE,				// DepthTest
-						D3DRENDERSTATE_ZWRITEENABLE,		// DepthMask
+						D3DRENDERSTATE_ALPHABLENDENABLE,	// AlphaBlending,
+						D3DRENDERSTATE_COLORKEYENABLE,		// ColorKey,
+						D3DRENDERSTATE_ZENABLE,				// DepthTest,
+						D3DRENDERSTATE_ZWRITEENABLE,		// DepthWrite,
+						D3DRENDERSTATE_FOGENABLE,			// Fog,
 						D3DRENDERSTATE_LIGHTING,            // Lighting,
+						D3DRENDERSTATE_ZBIAS				// ZBias
                                         };
                    
-const unsigned int ARXToDXPixelCompareFunc[] = {
+const D3DCMPFUNC ARXToDXPixelCompareFunc[] = {
 						D3DCMP_NEVER,                       // CmpNever,
 						D3DCMP_LESS,                        // CmpLess,
 						D3DCMP_EQUAL,                       // CmpEqual,
@@ -70,7 +77,7 @@ const unsigned int ARXToDXPixelCompareFunc[] = {
 						D3DCMP_ALWAYS                       // CmpAlways
                                         };
 
-const unsigned int ARXToDXPixelBlendingFactor[] =  {
+const D3DBLEND ARXToDXPixelBlendingFactor[] =  {
 						D3DBLEND_ZERO,                      // BlendZero,
 						D3DBLEND_ONE,                       // BlendOne,
 						D3DBLEND_SRCCOLOR,                  // BlendSrcColor,
@@ -84,11 +91,24 @@ const unsigned int ARXToDXPixelBlendingFactor[] =  {
 						D3DBLEND_INVDESTALPHA               // BlendInvDstAlpha    
                                             };
 
-const unsigned int ARXToDXCullMode[] = {
+const D3DCULL ARXToDXCullMode[] = {
 						D3DCULL_NONE,						// CullNone,
 						D3DCULL_CW,							// CullCW,
 						D3DCULL_CCW							// CullCCW,
 										};
+
+const D3DFILLMODE ARXToDXFillMode[] = {
+						D3DFILL_POINT,						// FillPoint,
+						D3DFILL_WIREFRAME,					// FillWireframe,
+						D3DFILL_SOLID						// FillSolid,
+										};
+
+const D3DFOGMODE ARXToDXFogMode[] = {
+						D3DFOG_NONE,						// FogNone,
+						D3DFOG_EXP,							// FogExp,
+						D3DFOG_EXP2,						// FogExp2,
+						D3DFOG_LINEAR						// FogLinear
+									};
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -434,7 +454,9 @@ public:
 	void ResetTexture();
 
 	void SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2);
+	void SetColorOp(TextureOp textureOp);
 	void SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2);
+	void SetAlphaOp(TextureOp textureOp);
 };
 
 DX7TextureStage::DX7TextureStage(unsigned int textureStage)
@@ -442,28 +464,66 @@ DX7TextureStage::DX7TextureStage(unsigned int textureStage)
 {
 }
 
+void DX7TextureStage::SetColorOp(TextureOp textureOp)
+{
+	// TODO-DX7: Cache states
+	DWORD colorOp = ARXToDX7TextureOp[textureOp];
+	GDevice->SetTextureStageState(mStage, D3DTSS_COLOROP, colorOp);
+}
+
 void DX7TextureStage::SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2)
 {
 	// TODO-DX7: Cache states
 	DWORD colorOp = ARXToDX7TextureOp[textureOp];
-	DWORD colorArg1 = ARXToDX7TextureArg[texArg1];
-	DWORD colorArg2 = ARXToDX7TextureArg[texArg2];
+	GDevice->SetTextureStageState(mStage, D3DTSS_COLOROP, colorOp);
 
-	GDevice->SetTextureStageState(mStage, D3DTSS_COLOROP,   colorOp);
-	GDevice->SetTextureStageState(mStage, D3DTSS_COLORARG1, colorArg1);
-	GDevice->SetTextureStageState(mStage, D3DTSS_COLORARG2, colorArg2);
+	if(textureOp != TextureStage::OpDisable)
+	{
+		if(textureOp != TextureStage::OpSelectArg2)
+		{
+			DWORD colorArg1 = ARXToDX7TextureArg[texArg1 & TextureStage::ArgMask];
+			colorArg1 |= (texArg1 & TextureStage::ArgComplement) ? D3DTA_COMPLEMENT : 0;
+			GDevice->SetTextureStageState(mStage, D3DTSS_COLORARG1, colorArg1);
+		}
+
+		if(textureOp != TextureStage::OpSelectArg1)
+		{
+			DWORD colorArg2 = ARXToDX7TextureArg[texArg2 & TextureStage::ArgMask];
+			colorArg2 |= (texArg2 & TextureStage::ArgComplement) ? D3DTA_COMPLEMENT : 0;
+			GDevice->SetTextureStageState(mStage, D3DTSS_COLORARG2, colorArg2);
+		}
+	}
+}
+
+void DX7TextureStage::SetAlphaOp(TextureOp textureOp)
+{
+	// TODO-DX7: Cache states
+	DWORD colorOp = ARXToDX7TextureOp[textureOp];
+	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAOP, colorOp);
 }
 
 void DX7TextureStage::SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2)
 {
 	// TODO-DX7: Cache states
 	DWORD alphaOp = ARXToDX7TextureOp[textureOp];
-	DWORD alphaArg1 = ARXToDX7TextureArg[texArg1];
-	DWORD alphaArg2 = ARXToDX7TextureArg[texArg2];
+	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAOP, alphaOp);
 
-	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAOP,   alphaOp);
-	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG1, alphaArg1);
-	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG2, alphaArg2);
+	if(textureOp != TextureStage::OpDisable)
+	{
+		if(textureOp != TextureStage::OpSelectArg2)
+		{
+			DWORD alphaArg1 = ARXToDX7TextureArg[texArg1 & TextureStage::ArgMask];
+			alphaArg1 |= (texArg1 & TextureStage::ArgComplement) ? D3DTA_COMPLEMENT : 0;
+			GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG1, alphaArg1);
+		}
+
+		if(textureOp != TextureStage::OpSelectArg1)
+		{
+			DWORD alphaArg2 = ARXToDX7TextureArg[texArg2 & TextureStage::ArgMask];
+			alphaArg2 |= (texArg2 & TextureStage::ArgComplement) ? D3DTA_COMPLEMENT : 0;
+			GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG2, alphaArg2);
+		}
+	}
 }
 
 void DX7TextureStage::SetTexture( Texture& pTexture )
@@ -565,18 +625,18 @@ Cubemap* Renderer::CreateCubemap()
 	return 0;
 }
 
-void Renderer::SetRenderState(RenderState renderState, bool enable)
+void Renderer::SetRenderState(Renderer::RenderState renderState, bool enable)
 {
 	GDevice->SetRenderState(ARXToDXRenderState[renderState], enable ? TRUE : FALSE);
 }
 
-void Renderer::SetAlphaFunc(PixelCompareFunc func, float fef)
+void Renderer::SetAlphaFunc(Renderer::PixelCompareFunc func, float fef)
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)fef*255);
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, ARXToDXPixelCompareFunc[func]);
 }
 
-void Renderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor)
+void Renderer::SetBlendFunc(Renderer::PixelBlendingFactor srcFactor, Renderer::PixelBlendingFactor dstFactor)
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  ARXToDXPixelBlendingFactor[srcFactor]);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, ARXToDXPixelBlendingFactor[dstFactor]);
@@ -602,9 +662,19 @@ Renderer::Viewport Renderer::GetViewport()
 	return viewport;
 }
 
-void Renderer::SetCulling(CullingMode mode)
+void Renderer::SetCulling(Renderer::CullingMode mode)
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, ARXToDXCullMode[mode]);
+}
+
+void Renderer::SetDepthBias(int depthBias)
+{
+	GDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, depthBias);
+}
+
+void Renderer::SetFillMode(Renderer::FillMode mode)
+{
+	GDevice->SetRenderState(D3DRENDERSTATE_FILLMODE, ARXToDXFillMode[mode]);
 }
 
 void DX7MatrixIdentity(D3DMATRIX *pout)
@@ -664,6 +734,47 @@ void Renderer::End2DProjection()
 	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &matProj);
 	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matWorld);
 	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &matView);
+}
+
+void Renderer::Clear(int bufferFlags, COLORREF clearColor, float clearDepth, unsigned int rectCount, D3DRECT* pRects)
+{
+	DWORD clearTargets = 0;
+	clearTargets |= (bufferFlags & ColorBuffer) ? D3DCLEAR_TARGET : 0;
+	clearTargets |= (bufferFlags & DepthBuffer) ?  D3DCLEAR_ZBUFFER : 0;
+	clearTargets |= (bufferFlags & StencilBuffer) ? D3DCLEAR_STENCIL : 0;
+
+	GDevice->Clear(rectCount, pRects, clearTargets, clearColor, clearDepth, 0);
+}
+
+void Renderer::SetFogColor(COLORREF color)
+{
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color);
+}
+
+void Renderer::SetFogParams(Renderer::FogMode fogMode, float fogStart, float fogEnd, float fogDensity)
+{
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, ARXToDXFogMode[fogMode]);
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGSTART,	*((LPDWORD) (&fogStart)));
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGEND,		*((LPDWORD) (&fogEnd)));
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGDENSITY,  *((LPDWORD) (&fogDensity)));
+}
+
+void Renderer::SetAntialiasing(bool enable)
+{
+	if(enable)
+	{
+		D3DDEVICEDESC7 ddDesc;
+		GDevice->GetCaps(&ddDesc);
+
+		if(ddDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASSORTINDEPENDENT)
+			GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTINDEPENDENT);
+		else if(ddDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASSORTDEPENDENT)
+			GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTDEPENDENT);
+	}
+	else
+	{
+		GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_NONE);
+	}
 }
 
 unsigned int Renderer::GetTextureStageCount() const

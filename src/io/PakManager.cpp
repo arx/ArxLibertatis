@@ -70,11 +70,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-// TODO prefer real files over those in PAK?
+static const bool PREFER_LOCAL_FILES_OVER_PAK = true;
 
 PakManager * pPakManager = 0;
 
-bool PAK_AddPak(const char * pakfile) {
+bool PAK_AddPak(const std::string& pakfile) {
 	
 	if(!pPakManager) {
 		pPakManager = new PakManager();
@@ -117,22 +117,16 @@ void * _PAK_FileLoadMallocZero(const string & name, size_t & sizeRead) {
 	return mem;
 }
 
-bool _PAK_DirectoryExist(const char * name) {
+bool _PAK_DirectoryExist(const std::string& name) {
 	
-	size_t len = strlen(name);
+	size_t len = name.length();
 	char temp[256];
-	strcpy(temp, name); // TODO this copy can be avoided
+	strcpy(temp, name.c_str()); // TODO this copy can be avoided
 	if(len != 0 && temp[len - 1] != '\\' && temp[len - 1] != '/') {
 		strcat(temp, "\\");
 	}
 	
-	vector<PakDirectory *> * pvRepertoire = pPakManager->ExistDirectory(temp);
-	
-	bool result = !pvRepertoire->empty();
-	
-	delete pvRepertoire;
-	
-	return result;
+	return pPakManager->ExistDirectory(temp);
 }
 
 bool PAK_DirectoryExist(const std::string& name) {
@@ -144,7 +138,7 @@ bool PAK_DirectoryExist(const std::string& name) {
 	return DirectoryExist(name.c_str());
 }
 
-bool PAK_FileExist(const char* name) {
+bool PAK_FileExist(const std::string& name) {
 	
 	if(pPakManager->ExistFile(name)) {
 		return true;
@@ -155,11 +149,18 @@ bool PAK_FileExist(const char* name) {
 
 void * PAK_FileLoadMalloc(const std::string& name, size_t& sizeLoaded) {
 	LogDebug << "File Name " << name;
+	
 	void * ret = NULL;
 	
-	ret = pPakManager->ReadAlloc(name, sizeLoaded);
+	if(PREFER_LOCAL_FILES_OVER_PAK) {
+		ret = FileLoadMalloc(name.c_str(), &sizeLoaded);
+	}
 	
 	if(!ret) {
+		ret = pPakManager->ReadAlloc(name, sizeLoaded);
+	}
+	
+	if(!PREFER_LOCAL_FILES_OVER_PAK && !ret) {
 		ret = FileLoadMalloc(name.c_str(), &sizeLoaded);
 	}
 	
@@ -170,9 +171,15 @@ void * PAK_FileLoadMallocZero(const std::string& name, size_t& sizeLoaded) {
 	
 	void * ret = NULL;
 	
-	ret = _PAK_FileLoadMallocZero(name, sizeLoaded);
+	if(PREFER_LOCAL_FILES_OVER_PAK) {
+		ret = FileLoadMallocZero(name.c_str(), &sizeLoaded);
+	}
 	
 	if(!ret) {
+		ret = _PAK_FileLoadMallocZero(name, sizeLoaded);
+	}
+	
+	if(!PREFER_LOCAL_FILES_OVER_PAK && !ret) {
 		ret = FileLoadMallocZero(name.c_str(), &sizeLoaded);
 	}
 	
@@ -190,34 +197,41 @@ long PAK_ftell(PakFileHandle * pfh) {
 	return FileTell(pfh->truefile);
 }
 
-PakFileHandle * PAK_fopen(const char * filename) {
+PakFileHandle * FileOpenPFH(const std::string& filename) {
 	
-	if(!pPakManager){
-		printf("FATAL: No Pack Manager!\n");
-		exit(0);
-		//TODO(lubosz): Logger does not work here :/
-//		LogFatal << "No Pakmanager!";
-	}
-
-	PakFileHandle * pfh = pPakManager->fOpen(filename);
-	if(pfh) {
-		return pfh;
-	}
-
 	FileHandle fh = FileOpenRead(filename);
 	if(!fh) {
 		return NULL;
 	}
-
-	pfh = new PakFileHandle;
+	
+	PakFileHandle * pfh = new PakFileHandle;
 	if(!pfh) {
 		return NULL;
 	}
-
+	
 	pfh->active = true;
 	pfh->reader = NULL;
 	pfh->truefile = fh;
+	
+	return pfh;
+}
 
+PakFileHandle * PAK_fopen(const std::string& filename) {
+	
+	PakFileHandle * pfh = NULL;
+	
+	if(PREFER_LOCAL_FILES_OVER_PAK) {
+		pfh = FileOpenPFH(filename);
+	}
+	
+	if(!pfh) {
+		pfh = pPakManager->fOpen(filename);
+	}
+	
+	if(!PREFER_LOCAL_FILES_OVER_PAK && !pfh) {
+		pfh = FileOpenPFH(filename);
+	}
+	
 	return pfh;
 }
 
@@ -264,16 +278,14 @@ PakManager::PakManager() : loadedPaks() {
 
 PakManager::~PakManager() {
 	
-	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		delete(*i);
 	}
-	
-	loadedPaks.clear();
 }
 
 bool PakManager::AddPak(const std::string& pakname) {
 	
-	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		if( !(*i)->pakname.empty() && !strcmp(pakname.c_str(), (*i)->pakname.c_str())) {
 			// Already loaded.
 			return true;
@@ -299,7 +311,7 @@ bool PakManager::RemovePak(const std::string& pakname)
 {
 	LogInfo << "Remove Pack " << pakname;
 	
-	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		
 		PakReader * reader = *i;
 		
@@ -324,7 +336,7 @@ bool PakManager::Read(const std::string& _filename, void * buffer) {
 		filename++;
 	}
 
-	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		if((*i)->Read(filename, buffer)) {
 			LogInfo << "Read from PAK "<< filename;
 			return true;
@@ -343,7 +355,7 @@ void * PakManager::ReadAlloc(const std::string& _filename, size_t& sizeRead) {
 		filename++;
 	}
 	
-	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		void * buf;
 		if((buf = (*i)->ReadAlloc(filename, sizeRead))) {
 			LogInfo << "Read from PAK (a) "<< filename;
@@ -367,7 +379,7 @@ size_t PakManager::GetSize(const std::string& _filename) {
 		filename++;
 	}
 	
-	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		int size;
 		if((size = (*i)->GetSize(filename)) >= 0) {
 			LogInfo << "Got size in PAK "<< filename << " "<<size;
@@ -387,7 +399,7 @@ PakFileHandle * PakManager::fOpen(const std::string& _filename) {
 		filename++;
 	}
 	
-	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		PakFileHandle * pfh;
 		if((pfh = (*i)->fOpen(filename))) {
 			LogInfo << "Opened from PAK "<< filename;
@@ -427,23 +439,40 @@ int PakManager::fTell(PakFileHandle * pfh) {
 	return pfh->reader->fTell(pfh);
 }
 
-vector<PakDirectory *> * PakManager::ExistDirectory(const std::string& _name) {
+bool PakManager::ExistDirectory(const std::string& _name) {
 	
 	const char* name = _name.c_str();
 
 	if((name[0] == '\\') || (name[0] == '/')) {
 		name++;
 	}
-	
-	vector<PakDirectory *> * directories = new vector<PakDirectory *>();
-	
-	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+
+	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		PakDirectory * dir;
 		if((dir = (*i)->root->getDirectory(name))) {
-			directories->insert(directories->end(), dir);
+			return true;
 		}
 	}
-	return directories;
+
+	return false;
+}
+
+bool PakManager::GetDirectories(const std::string& _name, vector<PakDirectory*>& directories) {
+	
+	const char* name = _name.c_str();
+
+	if((name[0] == '\\') || (name[0] == '/')) {
+		name++;
+	}
+
+	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
+		PakDirectory * dir;
+		if((dir = (*i)->root->getDirectory(name))) {
+			directories.push_back(dir);
+		}
+	}
+
+	return !directories.empty();
 }
 
 bool PakManager::ExistFile(const std::string& _name) {
@@ -454,7 +483,7 @@ bool PakManager::ExistFile(const std::string& _name) {
 		name++;
 	}
 	
-	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); ++i) {
 		if((*i)->getFile(name)) {
 			LogInfo << "Found in PAK "<< name;
 			return true;

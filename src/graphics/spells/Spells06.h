@@ -137,7 +137,7 @@ class CParalyse : public CSpellFx
 
 		void	Create(int, float, float, float, EERIE_3D *, int);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 		void	Kill();
 };
 /*--------------------------------------------------------------------------*/
@@ -172,8 +172,8 @@ class CCreateField: public CSpellFx
 		CCreateField();
 
 	private:
-		void RenderQuad(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4,  int rec, EERIE_3D);
-		void RenderSubDivFace(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2);
+		void RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4,  int rec, EERIE_3D);
+		void RenderSubDivFace(D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2);
 
 	public:
 		void SetPos(EERIE_3D);
@@ -183,7 +183,7 @@ class CCreateField: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 //-----------------------------------------------------------------------------
@@ -215,7 +215,7 @@ class CDisarmTrap: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 
@@ -249,7 +249,7 @@ class CSlowDown: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 
@@ -309,14 +309,14 @@ class CRiseDead: public CSpellFx
 		T_STONE			tstone[256];
 
 		void AddStone(EERIE_3D * pos);
-		void DrawStone(LPDIRECT3DDEVICE7 device);
+		void DrawStone();
 	public:
 		CRiseDead();
 		~CRiseDead();
 
 	private:
 		void Split(D3DTLVERTEX * v, int a, int b, float yo);
-		void RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		void RenderFissure();
 
 		// accesseurs
 	public:
@@ -335,7 +335,7 @@ class CRiseDead: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 

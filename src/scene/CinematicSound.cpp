@@ -30,7 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Cinematic.h"
 #include "core/Application.h"
 #include "io/FilePath.h"
-#include "io/IO.h"
+#include "io/String.h"
 #include "io/Logger.h"
 #include "scene/GameSound.h"
 
@@ -145,9 +145,9 @@ int ExistSound(const string & dir, const string & name) {
 		if ((cs->active) &&
 		        ((cs->active & 0xFF00) == LSoundChoose))
 		{
-			if (!strcasecmp(dir.c_str(), cs->dir))
+			if (!strcasecmp(dir, cs->dir))
 			{
-				if (!strcasecmp(name.c_str(), cs->name))
+				if (!strcasecmp(name, cs->name))
 				{
 					return MAX_SOUND - nb;
 				}

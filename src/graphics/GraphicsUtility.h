@@ -77,9 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 VOID D3DUtil_InitDeviceDesc(D3DDEVICEDESC7 & ddDevDesc);
 VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags = 0,
                              DWORD dwCaps = 0);
-VOID D3DUtil_InitMaterial(D3DMATERIAL7 & mtrl, float r = 0.0f, float g = 0.0f,
-                          float b = 0.0f, float a = 1.0f);
- 
+
 //-----------------------------------------------------------------------------
 // D3D Matrix functions. For performance reasons, some functions are inline.
 //-----------------------------------------------------------------------------

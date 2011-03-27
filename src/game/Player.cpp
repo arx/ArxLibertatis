@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Player.h"
 
+#include <cassert>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -78,7 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -231,11 +233,11 @@ void ARX_KEYRING_Init()
 // FUNCTION/RESULT:
 //   Add a key to Keyring
 //*************************************************************************************
-void ARX_KEYRING_Add( const char * key)
+void ARX_KEYRING_Add( const std::string& key)
 {
 	Keyring = (KEYRING_SLOT *)realloc(Keyring, sizeof(KEYRING_SLOT) * (Keyring_Number + 1));
 	memset(&Keyring[Keyring_Number], 0, sizeof(KEYRING_SLOT));
-	strcpy(Keyring[Keyring_Number].slot, key);
+	strcpy(Keyring[Keyring_Number].slot, key.c_str());
 	Keyring_Number++;
 }
 
@@ -545,18 +547,15 @@ void ARX_Player_Rune_Remove(unsigned long _ulRune)
 // FUNCTION/RESULT:
 //   Add quest "quest" to player Questbook
 //*************************************************************************************
-void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
+void ARX_PLAYER_Quest_Add( const std::string& quest, bool _bLoad)
 {
     std::string output;
     MakeLocalised(quest, output);
 
     if (output[0] == 0) return;
 
-//    PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
     PlayerQuest.push_back(STRUCT_QUEST());
-    PlayerQuest[nb_PlayerQuest].ident = (char *)malloc(strlen(quest) + 1);
-    PlayerQuest[nb_PlayerQuest].localised.resize( output.length() );
-    strcpy(PlayerQuest[nb_PlayerQuest].ident, quest);
+    PlayerQuest[nb_PlayerQuest].ident = quest;
     PlayerQuest[nb_PlayerQuest].localised = output;
     PlayerQuest[nb_PlayerQuest].localised = output;
     nb_PlayerQuest++;
@@ -1703,7 +1702,7 @@ void	ARX_PLAYER_Restore_Skin()
 			MakeUpcase(tx);
 			PLAYER_SKIN_TC->m_strName = tx;
 			ReloadTexture(PLAYER_SKIN_TC);
-			PLAYER_SKIN_TC->Restore(GDevice);
+			PLAYER_SKIN_TC->Restore();
 		}
 	}
 
@@ -1716,7 +1715,7 @@ void	ARX_PLAYER_Restore_Skin()
 		MakeUpcase(tx2);
 		tmpTC->m_strName = tx2;
 		ReloadTexture(tmpTC);
-		tmpTC->Restore(GDevice);
+		tmpTC->Restore();
 	}
 
 	tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
@@ -1728,7 +1727,7 @@ void	ARX_PLAYER_Restore_Skin()
 		MakeUpcase(tx3);
 		tmpTC->m_strName = tx3;
 		ReloadTexture(tmpTC);
-		tmpTC->Restore(GDevice);
+		tmpTC->Restore();
 	}
 
 	tt = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
@@ -1740,7 +1739,7 @@ void	ARX_PLAYER_Restore_Skin()
 		MakeUpcase(tx4);
 		tmpTC->m_strName = tx4;
 		ReloadTexture(tmpTC);
-		tmpTC->Restore(GDevice);
+		tmpTC->Restore();
 	}
 }
 extern void LaunchMoulinex();
@@ -1753,7 +1752,7 @@ extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 void ARX_PLAYER_LoadHeroAnimsAndMesh()
 {
-	const char texpath[] = "Graph\\Obj3D\\Textures\\";
+	const std::string texpath = "Graph\\Obj3D\\Textures\\";
 	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
  
 	hero = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
@@ -1791,7 +1790,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	std::string texscript = io->filename;
 	SetExt(texscript, ".asl");
 
-	if (PAK_FileExist(texscript.c_str()))
+	if ( PAK_FileExist(texscript) )
 	{
 		size_t FileSize = 0;
 		io->script.data = (char *)PAK_FileLoadMalloc(texscript, FileSize);
@@ -3651,10 +3650,9 @@ void ARX_PLAYER_Manage_Death()
 	}
 
 	{
-		SETALPHABLEND(GDevice, true);
-		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-		EERIEDrawBitmap(GDevice, 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f,
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		EERIEDrawBitmap( 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f,
 		                NULL, _EERIERGB(ratio));
 
 	}
@@ -3743,12 +3741,30 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val)
 //******************************************************************************
 // Add gold to player purse
 //******************************************************************************
-void ARX_PLAYER_AddGold(long _lValue)
-{
+void ARX_PLAYER_AddGold(long _lValue) {
 	player.gold += _lValue;
 	bGoldHalo = true;
 	ulGoldHaloTime = 0;
 }
+
+void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
+	
+	assert(gold->ioflags & IO_GOLD);
+	
+	ARX_PLAYER_AddGold(gold->_itemdata->price * max((short)1, gold->_itemdata->count));
+	
+	ARX_SOUND_PlayInterface(SND_GOLD);
+	
+	if(gold->scriptload) {
+		RemoveFromAllInventories(gold);
+		ReleaseInter(gold);
+	} else {
+		gold->show = SHOW_FLAG_KILLED;
+		gold->GameFlags &= ~GFLAG_ISINTREATZONE;
+	}
+	
+}
+
 extern long GAME_EDITOR;
 void ARX_PLAYER_Start_New_Quest()
 {

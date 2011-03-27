@@ -60,8 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-class INTERACTIVE_OBJ;
-class EERIE_3D;
+struct INTERACTIVE_OBJ;
+struct EERIE_3D;
 
 enum WeaponType {
 	WEAPON_BARE = 0,
@@ -97,9 +97,9 @@ enum EquipmentSlot {
 
 void ARX_EQUIPMENT_Init();
 void ARX_EQUIPMENT_Remove_All_Special(INTERACTIVE_OBJ * io);
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const char * param1, const char * param2, float val, short flags);
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const char * temp, long val);
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag(const char * temp);
+void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, const std::string& param2, float val, short flags);
+void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, long val);
+unsigned long ARX_EQUIPMENT_GetObjectTypeFlag(const std::string& temp);
 void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip);
 void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip, long flags = 0);
 void ARX_EQUIPMENT_ReleaseAll(INTERACTIVE_OBJ * io);

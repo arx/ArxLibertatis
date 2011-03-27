@@ -89,36 +89,6 @@ UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
 long DEBUGG = 1;
 
-void SAFEstrcpy(char * dest, const char * src, unsigned long max)
-{
-	if (strlen(src) > max)
-	{
-		memcpy(dest, src, max);
-	}
-	else
-	{
-		strcpy(dest, src);
-	}
-}
-
-bool NC_IsIn(string t1, string t2) {
-	MakeUpcase(t1);
-	MakeUpcase(t2);
-	return (t1.find(t2) != string::npos);
-}
-
-bool IsIn(const string & strin, const string & str) {
-	return (strin.find( str ) != string::npos);
-}
-
-int strcasecmp(const string & str1, const string & str2) {
-	return strcasecmp(str1.c_str(), str2.c_str());
-}
-
-int strcmp(const string & str1, const string & str2) {
-	return str1.compare(str2);
-}
-
 void GetDate(HERMES_DATE_TIME * hdt)
 {
 	struct tm * newtime;
@@ -158,10 +128,6 @@ void HERMES_InitDebug()
 	DebugLvl[4] = 1;
 	DebugLvl[5] = 1;
 	DEBUGG = 0;
-}
-
-void MakeUpcase( std::string& str ) {
-	std::transform( str.begin(), str.end(), str.begin(), ::toupper );
 }
 
 HKEY    ConsoleKey = NULL;
@@ -544,33 +510,25 @@ void HERMES_Memory_Security_Off()
 	HERMES_MEMORY_SECURITY = NULL;
 }
 
-long HERMES_Memory_Emergency_Out(long size, const char * info)
+long HERMES_Memory_Emergency_Out( long size, const std::string& info )
 {
-	if (HERMES_MEMORY_SECURITY)
+	/* TODO Is HERMES_MEMORY_SECURITY still useful? */
+	if (HERMES_MEMORY_SECURITY) 
 		free(HERMES_MEMORY_SECURITY);
 
 	HERMES_MEMORY_SECURITY = NULL;
-	char out[512];
 
-	if (info)
+	if ( size > 0 )
 	{
-		if (size > 0)
-			sprintf(out, "FATAL ERROR: Unable To Allocate %ld bytes... %s", size, info);
-		else
-			sprintf(out, "FATAL ERROR: Unable To Allocate Memory... %s", info);
-	}
-	else if (size > 0)
-		sprintf(out, "FATAL ERROR: Unable To Allocate %ld bytes...", size);
-	else
-		sprintf(out, "FATAL ERROR: Unable To Allocate Memory...");
-
-	LogError << out;
-
-	if (size > 0)
+		LogError << "FATAL ERROR: Unable to To Allocate " << size << " bytes..." << info;
 		return 1;
-
-	exit(0);
-	return 0;
+	}
+	else
+	{
+		LogError << "FATAL ERROR: Unable to To Allocate Memory..." << info;
+		exit(0);
+		return 0; // Never reached
+	}
 }
 
 LARGE_INTEGER	start_chrono;

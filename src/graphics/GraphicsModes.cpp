@@ -25,7 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsModes.h"
 
-#include <sstream>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -40,10 +39,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 
-bool bUSE_D3DFOG_INTER;
-float fZFogStartWorld;
-float fZFogEndWorld;
-
 GLOBAL_MODS current;
 GLOBAL_MODS desired;
 GLOBAL_MODS stacked;
@@ -57,7 +52,6 @@ extern long EDITMODE;
 extern CMenuConfig * pMenuConfig;
 extern float fZFogEnd;
 extern float fZFogStart;
-extern bool bZBUFFER;
 extern D3DMATRIX ProjectionMatrix;
 
 unsigned long ulBKGColor = 0;
@@ -151,55 +145,20 @@ void ARX_GLOBALMODS_Apply()
 		SetCameraDepth(current.zclip);
 	}
 
-	if (USE_D3DFOG)
+	ulBKGColor = D3DRGB(current.depthcolor.r, current.depthcolor.g, current.depthcolor.b);
+	GRenderer->SetFogColor(ulBKGColor);
+	
+	float fogEnd = fZFogEnd;
+	float fogStart = fZFogStart;
+
+	// WORLD COORDINATE
+	D3DDEVICEDESC7 d3dDeviceDesc;
+	GDevice->GetCaps(&d3dDeviceDesc);
+	if (d3dDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WFOG)
 	{
-		D3DDEVICEDESC7 d3dDeviceDesc;
-		GDevice->GetCaps(&d3dDeviceDesc);
-#define PERCENT_FOG (.6f)
-
-		ulBKGColor = D3DRGB(current.depthcolor.r, current.depthcolor.g, current.depthcolor.b);
-		
-		//pour compatibilit� ATI, etc...
-		GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, ulBKGColor);
-		float zval;
-
-		zval = fZFogEnd;
-		float zvalstart = fZFogStart;
-
-		if ((!pMenuConfig->bATI) &&
-		        (d3dDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGTABLE))
-		{
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE,  D3DFOG_NONE);
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_LINEAR);
-			bUSE_D3DFOG_INTER = true;
-
-			//WORLD COORDINATE
-			if (d3dDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WFOG)
-			{
-				zval *= ACTIVECAM->cdepth;
-				zvalstart *= ACTIVECAM->cdepth;
-			}
-		}
-		else
-		{
-			zval *= ACTIVECAM->cdepth;
-			zvalstart *= ACTIVECAM->cdepth;
-
-			fZFogStartWorld = zvalstart;
-			fZFogEndWorld = zval; 
-
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE,  D3DFOG_LINEAR);
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
-			bUSE_D3DFOG_INTER = false;
-		}
-
-		GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEEND,    *((LPDWORD)(&zval)));
-		GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLESTART,  *((LPDWORD)(&zvalstart)));
+		fogEnd   *= ACTIVECAM->cdepth;
+		fogStart *= ACTIVECAM->cdepth;
 	}
-	else
-	{
-		GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, D3DRGB(current.depthcolor.r, current.depthcolor.g, current.depthcolor.b));
-		GDevice->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE,  D3DFOG_NONE);
-		GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
-	}
+
+	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
 }

@@ -200,7 +200,7 @@ extern long NOCHECKSUM;
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
+bool ARX_FTL_Save(const std::string& file, EERIE_3DOBJ * obj)
 {
 	(void)file;
 	(void)obj;
@@ -630,7 +630,7 @@ char* MCache_Pop( const std::string& file, size_t& size)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-EERIE_3DOBJ * ARX_FTL_Load(const char * file)
+EERIE_3DOBJ * ARX_FTL_Load(const std::string& file)
 {
 	// Creates FTL file name
 	std::string filename;
@@ -829,7 +829,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile( name, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
 				if (GDevice && obj->texturecontainer[i] && !obj->texturecontainer[i]->m_pddsSurface)
-					obj->texturecontainer[i]->Restore(GDevice);
+					obj->texturecontainer[i]->Restore();
 
 				MakeUserFlag(obj->texturecontainer[i]);
 				pos += sizeof(Texture_Container_FTL);
@@ -906,26 +906,25 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	}
 
 	// Alloc'n'Copy Collision Spheres Data
-	if (afsh->offset_collision_spheres != -1)
-	{
+	if (afsh->offset_collision_spheres != -1) {
+		
 		// Cast to header
 		ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
-		afcsdh = reinterpret_cast<ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + afsh->offset_collision_spheres);
 		pos = afsh->offset_collision_spheres;
+		afcsdh = reinterpret_cast<ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + pos);
 		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
-
+		
 		// Alloc the collision sphere data object
 		obj->sdata = new COLLISION_SPHERES_DATA();
-		obj->sdata->nb_spheres = afcsdh->nb_spheres;
-
+		obj->sdata->spheres.resize(afcsdh->nb_spheres);
+		
 		// Alloc the collision speheres
-		obj->sdata->spheres = new COLLISION_SPHERE[obj->sdata->nb_spheres];
-
-		// TODO Replace with copy
-		memcpy(obj->sdata->spheres, dat + pos, sizeof(COLLISION_SPHERE)*obj->sdata->nb_spheres);
-		pos += sizeof(COLLISION_SPHERE) * obj->sdata->nb_spheres;
+		COLLISION_SPHERE * begin = (COLLISION_SPHERE*)(dat + pos);
+		pos += sizeof(COLLISION_SPHERE) * obj->sdata->spheres.size();
+		COLLISION_SPHERE * end = (COLLISION_SPHERE*)(dat + pos);
+		std::copy(begin, end, obj->sdata->spheres.begin());
 	}
-
+	
 	// Alloc'n'Copy Progressive DATA
 	if (afsh->offset_progressive_data != -1)
 	{
@@ -944,7 +943,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		ARX_FTL_CLOTHES_DATA_HEADER 	*	afcdh;
 		afcdh = reinterpret_cast<ARX_FTL_CLOTHES_DATA_HEADER*>(dat + afsh->offset_clothes_data);
 		obj->cdata->nb_cvert = (short)afcdh->nb_cvert;
-		obj->cdata->nb_springs = (short)afcdh->nb_springs;
+		obj->cdata->springs.resize(afcdh->nb_springs);
 		pos = afsh->offset_clothes_data;
 		pos += sizeof(ARX_FTL_CLOTHES_DATA_HEADER);
 
@@ -956,9 +955,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		pos += sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert;
 
 		// now load springs
-		obj->cdata->springs = new EERIE_SPRINGS[obj->cdata->nb_springs];
-		memcpy(obj->cdata->springs, dat + pos, sizeof(EERIE_SPRINGS)*obj->cdata->nb_springs);
-		pos += sizeof(EERIE_SPRINGS) * obj->cdata->nb_springs;
+		EERIE_SPRINGS * begin = (EERIE_SPRINGS*)(dat + pos);
+		pos += sizeof(EERIE_SPRINGS) * obj->cdata->springs.size();
+		EERIE_SPRINGS * end = (EERIE_SPRINGS*)(dat + pos);
+		std::copy(begin, end, obj->cdata->springs.begin());
 	}
 
 	// Free the loaded file memory

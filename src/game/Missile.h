@@ -34,8 +34,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_MISSILE_H
 #define ARX_GAME_MISSILE_H
 
-class INTERACTIVE_OBJ;
-class EERIE_3D;
+struct INTERACTIVE_OBJ;
+struct EERIE_3D;
 
 enum ARX_SPELLS_MISSILE_TYPE {
 	MISSILE_NONE = 0,

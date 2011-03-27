@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include "io/Logger.h"
+#include "io/String.h"
 
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
@@ -123,7 +124,6 @@ bool bNoMenu=false;
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _iBpp);
 void ARX_SetAntiAliasing();
 void ARX_MENU_LaunchAmb(char *_lpszAmb);
-void MakeUpcase( std::string& );
 
 //-----------------------------------------------------------------------------
 
@@ -314,12 +314,10 @@ void ARX_DrawAfterQuickLoad()
 
 	if(!pTex) return;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	EERIEDrawBitmap2(	GDevice,
-						0,
+	EERIEDrawBitmap2(	0,
 						0,
 						INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
 						INTERFACE_RATIO_DWORD(pTex->m_dwHeight),
@@ -327,7 +325,7 @@ void ARX_DrawAfterQuickLoad()
 						pTex,
 						D3DRGB(fColor,fColor,fColor) );
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -581,8 +579,6 @@ void CMenuConfig::First()
 	bChangeTextures = false;
 	bNoReturnToWindows=false;
 	bLinkMouseLookToUse=false;
-
-	bForceMetalTwoPass=false;
 	bForceZBias=false;
 
 	SetDefaultKey();
@@ -1161,7 +1157,6 @@ bool CMenuConfig::SaveAll()
 	//misc
 	bOk&=WriteConfigInt("MISC","softfog",(bATI)?1:0);
 	bOk&=WriteConfigInt("MISC","forcenoeax",(bForceNoEAX)?1:0);
-	bOk&=WriteConfigInt("MISC","forcemetaltwopass",(bForceMetalTwoPass)?1:0);
 	bOk&=WriteConfigInt("MISC","forcezbias",(bForceZBias)?1:0);
 	bOk&=WriteConfigInt("MISC","newcontrol",(INTERNATIONAL_MODE)?1:0);
 	bOk&=WriteConfigInt("MISC","forcetoggle",(bOneHanded)?1:0);
@@ -1237,8 +1232,8 @@ bool CMenuConfig::ReadAll()
 
 	if( !pcText.empty() )
 	{
-		std::string width_string = pcText.substr( 0, pcText.find_first_of( 'x' ) );
-		std::string height_string = pcText.substr( pcText.find_first_of( 'x' ) );
+		std::string width_string = pcText.substr( 0, pcText.find( 'x' ) );
+		std::string height_string = pcText.substr( pcText.find('x') + 1 );
 
 		// If both width and height are specified
 		if( !( width_string.empty() || height_string.empty() ) )
@@ -1637,18 +1632,6 @@ bool CMenuConfig::ReadAll()
 		bForceNoEAX=(iTemp)?true:false;
 	}
 
-	iTemp=ReadConfigInt("MISC","forcemetaltwopass",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceMetalTwoPass=false;
-	}
-	else
-	{
-		bForceMetalTwoPass=(iTemp)?true:false;
-	}
-
 	iTemp=ReadConfigInt("MISC","forcezbias",bOkTemp);
 	bOk&=bOkTemp;
 
@@ -1860,22 +1843,21 @@ static void FadeInOut(float _fVal)
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
 
-	SETTC(GDevice,NULL);
-	SETALPHABLEND(GDevice,true);
+	SETTC(NULL);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-	SETZWRITE(GDevice, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
-	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	GRenderer->SetCulling(Renderer::CullNone);
 
-	EERIEDRAWPRIM( GDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
+	EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
 
-	SETALPHABLEND(GDevice,false);
-	SETZWRITE(GDevice, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	danaeApp.EnableZBuffer();
-	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_CCW);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	GRenderer->SetCulling(Renderer::CullCCW);
 }
 
 //-----------------------------------------------------------------------------
@@ -1960,10 +1942,10 @@ bool Menu2_Render()
 
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-	SETZWRITE(GDevice, false);
-	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
-	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	GRenderer->SetCulling(Renderer::CullNone);
 
 	MENUSTATE eOldMenuState=NOP;
 	MENUSTATE eM;
@@ -2093,10 +2075,10 @@ bool Menu2_Render()
 				pMenu=NULL;
 			}
 
-			SETALPHABLEND(GDevice,false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
-			SETZWRITE(GDevice, true);
-			danaeApp.EnableZBuffer();
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			danaeApp.DANAEEndRender();
 
 			return true;
@@ -2331,7 +2313,7 @@ bool Menu2_Render()
 							iFirst--;
 						}
 
-						me01 = new CMenuElementText(-1, hFontControls, _T(" "), fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+						me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 							me01->SetCheckOff();
 							pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
@@ -2471,8 +2453,8 @@ bool Menu2_Render()
 
 					for(int iI=save_l.size(); iI<=15; iI++)
 					{
-						_TCHAR tex[256];
-						_stprintf(tex, _T("-%04d-")
+						char tex[256];
+						sprintf(tex, "-%04d-"
 
 							,iI);
 						CMenuElementText * me01 = new CMenuElementText(-1, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
@@ -2482,7 +2464,7 @@ bool Menu2_Render()
 						pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 					}
 
-					me01 = new CMenuElementText(-1, hFontControls, _T(" "), fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+					me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 					me01->SetCheckOff();
 					pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
@@ -3068,8 +3050,8 @@ bool Menu2_Render()
 				//------------------ END INPUT
 
 				//------------------ START CUSTOM CONTROLS
-				_TCHAR    pNoDef1[]=_T("---");
-				_TCHAR    pNoDef2[]=_T("---");
+				char pNoDef1[]="---";
+				char pNoDef2[]="---";
 
 				#define CUSTOM_CTRL_X0    RATIO_X(20)
 				#define CUSTOM_CTRL_X1    RATIO_X(150)
@@ -3334,26 +3316,26 @@ bool Menu2_Render()
 
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-	SETZWRITE(GDevice, false);
-	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
-	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	GRenderer->SetCulling(Renderer::CullNone);
 	pGetInfoDirectInput->DrawCursor();
 
 	if(pMenu->bReInitAll)
 	{
-		GDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DRGBA(0,0,0,0), 1.0f, 0L);
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 		if(bForceReInitAllTexture)
 		{
-			D3DTextr_RestoreAllTextures(GDevice);
+			D3DTextr_RestoreAllTextures();
 			bForceReInitAllTexture=false;
 		}
 	}
 
 	if (pTextureLoadRender)
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 		int iOffsetX = 0;
 		int iOffsetY=0;
@@ -3368,27 +3350,21 @@ bool Menu2_Render()
 
 		}
 
-		EERIEDrawBitmap(    GDevice,
-			ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
-			ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
+		EERIEDrawBitmap(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
+						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
+						(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+						(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+						0.001f,
+						pTextureLoad,
+						ARX_OPAQUE_WHITE);
 
-							(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-							(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
-
-							0.001f,
-							pTextureLoad,
-			ARX_OPAQUE_WHITE);
-
-		SETTC(GDevice,NULL);
-		EERIEDraw2DRect(    GDevice,
-			ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
-			ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
-
-							DANAEMouse.x+iOffsetX+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-							DANAEMouse.y+iOffsetY+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
-
-							0.01f,
-			ARX_OPAQUE_WHITE);
+		SETTC(NULL);
+		EERIEDraw2DRect(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
+						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
+						DANAEMouse.x+iOffsetX+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+						DANAEMouse.y+iOffsetY+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+						0.01f,
+						ARX_OPAQUE_WHITE);
 
 		pTextureLoadRender=NULL;
 	}
@@ -3421,15 +3397,15 @@ bool Menu2_Render()
 		}
 	}
 
-	SETALPHABLEND(GDevice,false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 
-	SETZWRITE(GDevice, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	danaeApp.EnableZBuffer();
-	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_CCW);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	GRenderer->SetCulling(Renderer::CullCCW);
 
 	danaeApp.DANAEEndRender();
 	return true;
@@ -3755,7 +3731,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 					if ( lData )
 					{
 						eMenuState = MAIN;
-						GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
+						GRenderer->Clear(Renderer::DepthBuffer);
 						ARXMenu_LoadQuest( lData );
 						bNoMenu=true;
 						if(pTextManage) {
@@ -4072,9 +4048,8 @@ void CMenuElementText::RenderMouseOver()
 
 	pGetInfoDirectInput->SetMouseOver();
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	EERIE_3D ePos;
 	ePos.x = (float)rZone.left;
@@ -4083,7 +4058,7 @@ void CMenuElementText::RenderMouseOver()
 
 	FontRenderText(pFont, ePos, lpszText, lColorHighlight);
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	switch (iID)
 	{
@@ -4106,7 +4081,7 @@ void CMenuElementText::RenderMouseOver()
 
 				if (pTextureLoad)
 				{
-					pTextureLoad->Restore(GDevice);
+					pTextureLoad->Restore();
 					pTextureLoad->bColorKey=false;
 				}
 			}
@@ -4133,7 +4108,7 @@ void CMenuElementText::RenderMouseOver()
 
 				if (pTextureLoad)
 				{
-					pTextureLoad->Restore(GDevice);
+					pTextureLoad->Restore();
 					pTextureLoad->bColorKey=false;
 				}
 			}
@@ -4247,7 +4222,7 @@ void CMenuState::Render()
 	{
 		if (pTexBackGround->m_pddsSurface)
 		{
-			EERIEDrawBitmap2(GDevice, 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
+			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
 	}
 		}
 
@@ -4274,7 +4249,7 @@ void CMenuState::Render()
 	}
 
 	//DEBUG ZONE
-	SETTC(GDevice,NULL);
+	SETTC(NULL);
 	pMenuAllZone->DrawZone();
 }
 
@@ -4476,13 +4451,12 @@ void CMenuAllZone::DrawZone()
 	return;
 #endif
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(GDevice,true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	vector<CMenuZone*>::iterator i;
 
-	SETTC(GDevice,NULL);
+	SETTC(NULL);
 
 	for(std::vector<CMenuZone*>::const_iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
 	{
@@ -4509,12 +4483,12 @@ void CMenuAllZone::DrawZone()
 			v1[0].sz=v1[1].sz=v1[2].sz=v2[0].sz=v2[1].sz=v2[2].sz=0.f;    
 			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;    
 			
-			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v1,3,0);
-			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v2,3,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v1,3,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v2,3,0);
 		}
 	}
 
-	SETALPHABLEND(GDevice,false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -4766,9 +4740,8 @@ void CMenuCheckButton::Render()
 
 	if(bNoMenu) return;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	if (vTex.size())
 	{
@@ -4794,14 +4767,14 @@ void CMenuCheckButton::Render()
 		}
 		
 		//carre
-		EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
+		EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
 	}
 
 	if (pText)
 		pText->Render();
 
 	//DEBUG
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -4814,14 +4787,13 @@ void CMenuCheckButton::RenderMouseOver()
 
 	pGetInfoDirectInput->SetMouseOver();
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	TextureContainer *pTex = vTex[iState];
 
-	if(pTex) SETTC(GDevice, pTex);
-	else SETTC(GDevice,NULL);
+	if(pTex) SETTC( pTex);
+	else SETTC(NULL);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
@@ -4835,7 +4807,7 @@ void CMenuCheckButton::RenderMouseOver()
 
 	//carre
 
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, ARX_OPAQUE_WHITE); 
+	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, ARX_OPAQUE_WHITE); 
 
 
 	//tick
@@ -4843,7 +4815,7 @@ void CMenuCheckButton::RenderMouseOver()
 		pText->RenderMouseOver();
 
 	//DEBUG
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -4959,16 +4931,15 @@ MENUSTATE CWindowMenu::Render()
 		bChangeConsole=false;
 	}
 
-	SETALPHABLEND(GDevice, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	MENUSTATE eMS=NOP;
 
@@ -4993,13 +4964,13 @@ MENUSTATE CWindowMenu::Render()
 		if(eCurrentMenuState==(*i)->eMenuState)
 		{
 			if ((*i)->Render())
-				SETALPHABLEND(GDevice,false);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 			break;
 		}
 	}
 
-	SETALPHABLEND(GDevice,false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	if (eMS != NOP)
 	{
@@ -5323,7 +5294,7 @@ void CWindowMenuConsole::UpdateText()
 
 				if(bKey)
 				{
-					if ((isalnum(tCat) || _istspace(tCat) || _istpunct(tCat)) && (tCat != '\t') && (tCat != '*'))
+					if ((isalnum(tCat) || isspace(tCat) || ispunct(tCat)) && (tCat != '\t') && (tCat != '*'))
 						tText += tCat;
 				}
 			}
@@ -5365,7 +5336,7 @@ void CWindowMenuConsole::UpdateText()
 
 	//DRAW CURSOR
 	D3DTLVERTEX v[4];
-	SETTC(GDevice,NULL);
+	SETTC(NULL);
 	float col=.5f+rnd()*.5f;
 	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
@@ -5379,7 +5350,7 @@ void CWindowMenuConsole::UpdateText()
 	v[2].sy = (float)pZoneClick->rZone.bottom;
 	v[3].sx = v[1].sx;
 	v[3].sy = v[2].sy;
-	EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 }
 
 //-----------------------------------------------------------------------------
@@ -5805,28 +5776,22 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 	int iSlider=0;
 
-	SETALPHABLEND(GDevice,true);
-
 	//------------------------------------------------------------------------
-	//Affichage de la console
+	// Console display
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
+	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
 		RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
 		0, pTexBackground, ARX_OPAQUE_WHITE);
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-
-	SETALPHABLEND(GDevice, false);
-
-	SETALPHABLEND(GDevice,false);
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
 		RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
 		0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);
 
@@ -6285,7 +6250,7 @@ void CMenuButton::Render()
 	//affichage de la texture
 	if (pTex)
 	{
-		EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.left), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top),
+		EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.left), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top),
 			RATIO_X(pTex->m_dwWidth),
 			RATIO_Y(pTex->m_dwHeight),
 			0,
@@ -6298,9 +6263,8 @@ void CMenuButton::Render()
 	{
 		char pText = vText[iPos];
 
-		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 		EERIE_3D ePos;
 		ePos.x = (float)rZone.left;
@@ -6309,7 +6273,7 @@ void CMenuButton::Render()
 		
 		FontRenderText(pFont, ePos, &pText, RGB(232, 204, 142));
 
-		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
 
@@ -6331,7 +6295,7 @@ void CMenuButton::RenderMouseOver()
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-		SETTC(GDevice,pTexOver);
+		SETTC(pTexOver);
 		v[0].sx = (float)rZone.left;
 		v[0].sy = (float)rZone.top;
 		v[0].tu = 0.f;
@@ -6348,16 +6312,15 @@ void CMenuButton::RenderMouseOver()
 		v[3].sy = v[2].sy;
 		v[3].tu = 0.999999f;
 		v[3].tv = 0.999999f;
-		EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 	}
 
 	if( vText.size() )
 	{
 		char pText=vText[iPos];
 
-		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		
 		EERIE_3D ePos;
 		ePos.x = (float)rZone.left;
@@ -6366,7 +6329,7 @@ void CMenuButton::RenderMouseOver()
 		
 		FontRenderText(pFont, ePos, &pText, RGB(255, 255, 255));
 		
-		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
 
@@ -6623,9 +6586,9 @@ void CMenuSliderText::Render()
 
 	if (vText[iPos])
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		vText[iPos]->Render();
-		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
 
@@ -6642,9 +6605,8 @@ void CMenuSliderText::RenderMouseOver()
 	int iX = pGetInfoDirectInput->iMouseAX;
 	int iY = pGetInfoDirectInput->iMouseAY;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -6857,9 +6819,8 @@ void CMenuSlider::Render()
 	float iTexW = 0;
 	float iTexH = 0;
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
@@ -6892,7 +6853,7 @@ void CMenuSlider::Render()
 			}
 		}
 
-		EERIEDrawBitmap2(GDevice, iX, iY, 
+		EERIEDrawBitmap2( iX, iY, 
 			RATIO_X(pTex->m_dwWidth),
 			RATIO_Y(pTex->m_dwHeight),
 			0,
@@ -6902,7 +6863,7 @@ void CMenuSlider::Render()
 		iX += iTexW;
 	}
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void CMenuSlider::RenderMouseOver()
@@ -6916,9 +6877,8 @@ void CMenuSlider::RenderMouseOver()
 	int iX = pGetInfoDirectInput->iMouseAX;
 	int iY = pGetInfoDirectInput->iMouseAY;
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -6942,7 +6902,7 @@ void CMenuSlider::RenderMouseOver()
 		}
 	}
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -7384,9 +7344,9 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 	
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
+	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
 
 					INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
 					INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
@@ -7395,7 +7355,7 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 					scursor[iNumCursor],D3DCOLORWHITE);
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
-	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 }
 
 //-----------------------------------------------------------------------------
@@ -7447,10 +7407,9 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	float fDColorBlue=_fBlue/_iNbPt;
 	float fColorBlue=fDColorBlue;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVDESTCOLOR);
-	SETTC(GDevice,NULL);
-	SETALPHABLEND(GDevice,true);
+	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendInvDstColor);
+	SETTC(NULL);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	D3DTLVERTEX v[4];
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
@@ -7477,7 +7436,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 		if(ComputePer(psOldPoint,_psPoint1+1,&v[1],&v[3],fTaille))
 		{
 			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 
 			v[0].sx=v[1].sx;
 			v[0].sy=v[1].sy;
@@ -7498,10 +7457,10 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	if(ComputePer(_psPoint1,psOldPoint,&v[1],&v[3],fTaille)) 
 	{
 		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-		EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 	}
 
-	SETALPHABLEND(GDevice,false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -7510,18 +7469,18 @@ void CDirectInput::DrawCursor()
 {
 	if(!bDrawCursor) return;
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
 
-	if(pTex[iNumCursor]) SETTC(GDevice, pTex[iNumCursor]);
-	else SETTC(GDevice,NULL);
+	if(pTex[iNumCursor]) SETTC( pTex[iNumCursor]);
+	else SETTC(NULL);
 
-	SETALPHABLEND(GDevice,false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	DrawOneCursor(iMouseAX,iMouseAY);
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 
 	ARX_CHECK_LONG( ARXDiffTimeMenu );
@@ -7560,7 +7519,7 @@ void CDirectInput::DrawCursor()
 		lFrameDiff=0;
 	}
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
