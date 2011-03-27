@@ -199,41 +199,9 @@ struct EERIE_SPRINGS_FTL {
 	
 };
 
-struct D3DTLVERTEX_FTL {
-	
-	SavedVec3 pos;
-	f32 rhw;
-	u32 color;
-	u32 specular;
-	f32 tu;
-	f32 tv;
-	
-	inline operator D3DTLVERTEX() {
-		D3DTLVERTEX a;
-		a.sx = pos.x, a.sy = pos.y, a.sz = pos.z;
-		a.rhw = rhw;
-		a.color = color;
-		a.specular = specular;
-		a.tu = tu;
-		a.tv = tv;
-		return a;
-	}
-	
-	inline D3DTLVERTEX_FTL & operator=(const D3DTLVERTEX & b) {
-		pos.x = b.sx, pos.y = b.sy, pos.z = b.sz;
-		rhw = b.rhw;
-		color = b.color;
-		specular = b.specular;
-		tu = b.tu;
-		tv = b.tv;
-		return *this;
-	}
-	
-};
-
 struct EERIE_OLD_VERTEX {
 	
-	D3DTLVERTEX_FTL vert;
+	SavedD3DTLVertex vert;
 	SavedVec3 v;
 	SavedVec3 norm;
 	

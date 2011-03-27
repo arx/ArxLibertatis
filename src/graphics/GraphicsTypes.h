@@ -644,15 +644,12 @@ struct EERIE_PORTALS
 	short		paddy;
 };
 
-#pragma pack(push,1)
-struct EP_DATA
-{
-	s16	px;
-	s16	py;
-	s16	idx;
-	s16	padd;
+struct EP_DATA {
+	short px;
+	short py;
+	short idx;
+	short padd;
 };
-#pragma pack(pop)
 
 struct EERIE_ROOM_DATA
 {

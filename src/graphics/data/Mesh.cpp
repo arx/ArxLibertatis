@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Texture.h"
+#include "graphics/data/FastSceneFormat.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
@@ -97,6 +98,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::copy;
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
@@ -112,34 +114,7 @@ extern long CYRIL_VERSION;
 extern CMenuConfig * pMenuConfig;
 long COMPUTE_PORTALS = 1;
 
-#pragma pack(push,1)
-struct SAVE_EERIEPOLY {
-	s32 			type;	// at least 16 bits
-	EERIE_3D		min;
-	EERIE_3D		max;
-	EERIE_3D		norm;
-	EERIE_3D		norm2;
-	D3DTLVERTEX		v[4];
-	D3DTLVERTEX		tv[4];
-	EERIE_3D		nrml[4];
-	s32 tex;
-	EERIE_3D		center;
-	f32			transval;
-	f32			area;
-	s16			room;
-	s16			misc;
-}; // Aligned 1 2 4
-#pragma pack(pop)
 
-#pragma pack(push,1)
-struct EERIE_SAVE_PORTALS {
-	SAVE_EERIEPOLY	poly;
-	s32		room_1; // facing normal
-	s32		room_2;
-	s16		useportal;
-	s16		paddy;
-};
-#pragma pack(pop)
 
 
 bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D * intersect);
@@ -337,13 +312,13 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
 
 	for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
 	{
-		boxmin.x = std::min(boxmin.x, io->obj->vertexlist3[i].v.x);
-		boxmin.y = std::min(boxmin.y, io->obj->vertexlist3[i].v.y);
-		boxmin.z = std::min(boxmin.z, io->obj->vertexlist3[i].v.z);
+		boxmin.x = min(boxmin.x, io->obj->vertexlist3[i].v.x);
+		boxmin.y = min(boxmin.y, io->obj->vertexlist3[i].v.y);
+		boxmin.z = min(boxmin.z, io->obj->vertexlist3[i].v.z);
 
-		boxmax.x = std::max(boxmax.x, io->obj->vertexlist3[i].v.x);
-		boxmax.y = std::max(boxmax.y, io->obj->vertexlist3[i].v.y);
-		boxmax.z = std::max(boxmax.z, io->obj->vertexlist3[i].v.z);
+		boxmax.x = max(boxmax.x, io->obj->vertexlist3[i].v.x);
+		boxmax.y = max(boxmax.y, io->obj->vertexlist3[i].v.y);
+		boxmax.z = max(boxmax.z, io->obj->vertexlist3[i].v.z);
 	}
 
 	boxmin.y -= 5.f;
@@ -1109,9 +1084,9 @@ D3DCOLOR GetColorz(float x, float y, float z)
 				}
 
 				dc *= 0.4f * 255.f; 
-				ffr = std::max(ffr, el->rgb.r * dc);
-				ffg = std::max(ffg, el->rgb.g * dc);
-				ffb = std::max(ffb, el->rgb.b * dc);
+				ffr = max(ffr, el->rgb.r * dc);
+				ffg = max(ffg, el->rgb.g * dc);
+				ffb = max(ffb, el->rgb.b * dc);
 			}
 		}
 	}
@@ -1906,12 +1881,12 @@ bool GetRoomCenter(long room_num, EERIE_3D * center)
 		FAST_BKG_DATA * feg;
 		feg = &ACTIVEBKG->fastdata[portals->room[room_num].epdata[lll].px][portals->room[room_num].epdata[lll].py];
 		EERIEPOLY * ep = &feg->polydata[portals->room[room_num].epdata[lll].idx];
-		bbox.min.x = std::min(bbox.min.x, ep->center.x);
-		bbox.min.y = std::min(bbox.min.y, ep->center.y);
-		bbox.min.z = std::min(bbox.min.z, ep->center.z);
-		bbox.max.x = std::max(bbox.max.x, ep->center.x);
-		bbox.max.y = std::max(bbox.max.y, ep->center.y);
-		bbox.max.z = std::max(bbox.max.z, ep->center.z);
+		bbox.min.x = min(bbox.min.x, ep->center.x);
+		bbox.min.y = min(bbox.min.y, ep->center.y);
+		bbox.min.z = min(bbox.min.z, ep->center.z);
+		bbox.max.x = max(bbox.max.x, ep->center.x);
+		bbox.max.y = max(bbox.max.y, ep->center.y);
+		bbox.max.z = max(bbox.max.z, ep->center.z);
 	}
 
 	center->x = (bbox.max.x + bbox.min.x) * ( 1.0f / 2 );
@@ -1926,20 +1901,21 @@ bool GetRoomCenter(long room_num, EERIE_3D * center)
 ROOM_DIST_DATA * RoomDistance = NULL;
 long NbRoomDistance = 0;
 
-void SetRoomDistance(long i, long j, float val, EERIE_3D * p1, EERIE_3D * p2)
-{
-	if ((i < 0) || (j < 0) || (i >= NbRoomDistance) || (j >= NbRoomDistance) || !RoomDistance)
+static void SetRoomDistance(long i, long j, float val, const EERIE_3D * p1, const EERIE_3D * p2) {
+	
+	if((i < 0) || (j < 0) || (i >= NbRoomDistance) || (j >= NbRoomDistance) || !RoomDistance) {
 		return;
-
+	}
+	
 	long offs = i + j * NbRoomDistance;
-
+	
 	if (p1) Vector_Copy(&RoomDistance[offs].startpos, p1);
 
 	if (p2) Vector_Copy(&RoomDistance[offs].endpos, p2);
 
 	RoomDistance[offs].distance = val;
 }
-float GetRoomDistance(long i, long j, EERIE_3D * p1, EERIE_3D * p2)
+static float GetRoomDistance(long i, long j, EERIE_3D * p1, EERIE_3D * p2)
 {
 	if ((i < 0) || (j < 0) || (i >= NbRoomDistance) || (j >= NbRoomDistance))
 		return -1.f;
@@ -2458,7 +2434,7 @@ void PrepareBackgroundNRMLs()
 
 				for (long ii = 0; ii < nbvert; ii++)
 				{
-					dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+					dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
 				}
 
 				ep->v[0].rhw = dist;
@@ -2534,10 +2510,10 @@ void EERIEPOLY_Compute_PolyIn()
 			eg->polyin = NULL;
 			eg->nbpolyin = 0;
 
-			ii = std::max(i - 2, 0L);
-			ij = std::max(j - 2, 0L);
-			ai = std::min(i + 2, ACTIVEBKG->Xsize - 1L);
-			aj = std::min(j + 2, ACTIVEBKG->Zsize - 1L);
+			ii = max(i - 2, 0L);
+			ij = max(j - 2, 0L);
+			ai = min(i + 2, ACTIVEBKG->Xsize - 1L);
+			aj = min(j + 2, ACTIVEBKG->Zsize - 1L);
 
 			EERIE_2D_BBOX bb;
 			bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10;
@@ -2609,8 +2585,8 @@ void EERIEPOLY_Compute_PolyIn()
 			for (long kk = 0; kk < eg->nbpolyin; kk++)
 			{
 				EERIEPOLY * ep = eg->polyin[kk];
-				eg->tile_miny = std::min(eg->tile_miny, ep->min.y);
-				eg->tile_maxy = std::max(eg->tile_maxy, ep->max.y);
+				eg->tile_miny = min(eg->tile_miny, ep->min.y);
+				eg->tile_maxy = max(eg->tile_maxy, ep->max.y);
 			}
 
 			FAST_BKG_DATA * fbd = &ACTIVEBKG->fastdata[i][j];
@@ -2636,7 +2612,7 @@ float GetTileMinY(long i, long j)
 	for (long kk = 0; kk < eg->nbpolyin; kk++)
 	{
 		EERIEPOLY * ep = eg->polyin[kk];
-		minf = std::min(minf, ep->min.y);
+		minf = min(minf, ep->min.y);
 	}
 
 	return minf;
@@ -2650,7 +2626,7 @@ float GetTileMaxY(long i, long j)
 	for (long kk = 0; kk < eg->nbpolyin; kk++)
 	{
 		EERIEPOLY * ep = eg->polyin[kk];
-		maxf = std::max(maxf, ep->max.y);
+		maxf = max(maxf, ep->max.y);
 	}
 
 	return maxf;
@@ -2740,12 +2716,12 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 			ep->center.y += ep->v[i].sy;
 			ep->center.z += ep->v[i].sz;
 
-			ep->min.x = std::min(ep->min.x, ep->v[i].sx);
-			ep->min.y = std::min(ep->min.y, ep->v[i].sy);
-			ep->min.z = std::min(ep->min.z, ep->v[i].sz);
-			ep->max.x = std::max(ep->max.x, ep->v[i].sx);
-			ep->max.y = std::max(ep->max.y, ep->v[i].sy);
-			ep->max.z = std::max(ep->max.z, ep->v[i].sz);
+			ep->min.x = min(ep->min.x, ep->v[i].sx);
+			ep->min.y = min(ep->min.y, ep->v[i].sy);
+			ep->min.z = min(ep->min.z, ep->v[i].sz);
+			ep->max.x = max(ep->max.x, ep->v[i].sx);
+			ep->max.y = max(ep->max.y, ep->v[i].sy);
+			ep->max.z = max(ep->max.z, ep->v[i].sz);
 		}
 
 		ep->center.x *= divide;
@@ -2755,7 +2731,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 
 		for (long ii = 0; ii < to; ii++)
 		{
-			dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+			dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
 		}
 
 		ep->norm2.x = dist;
@@ -2894,8 +2870,8 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long px, lon
 		for (int ii = 0; ii < nbvert; ii++)
 		{
 			float fDist = TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center);
-			fDistMin = std::min(fDistMin, fDist);
-			fDistMax = std::max(fDistMax, fDist);
+			fDistMin = min(fDistMin, fDist);
+			fDistMax = max(fDistMax, fDist);
 		}
 
 		fDistMin = (fDistMax + fDistMin) * .5f;
@@ -2994,20 +2970,20 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	epp->center.x = cx; 
 	epp->center.y = cy; 
 	epp->center.z = cz; 
-	epp->max.x = std::max(epp->v[0].sx, epp->v[1].sx);
-	epp->max.x = std::max(epp->max.x, epp->v[2].sx);
-	epp->min.x = std::min(epp->v[0].sx, epp->v[1].sx);
-	epp->min.x = std::min(epp->min.x, epp->v[2].sx);
+	epp->max.x = max(epp->v[0].sx, epp->v[1].sx);
+	epp->max.x = max(epp->max.x, epp->v[2].sx);
+	epp->min.x = min(epp->v[0].sx, epp->v[1].sx);
+	epp->min.x = min(epp->min.x, epp->v[2].sx);
 
-	epp->max.y = std::max(epp->v[0].sy, epp->v[1].sy);
-	epp->max.y = std::max(epp->max.y, epp->v[2].sy);
-	epp->min.y = std::min(epp->v[0].sy, epp->v[1].sy);
-	epp->min.y = std::min(epp->min.y, epp->v[2].sy);
+	epp->max.y = max(epp->v[0].sy, epp->v[1].sy);
+	epp->max.y = max(epp->max.y, epp->v[2].sy);
+	epp->min.y = min(epp->v[0].sy, epp->v[1].sy);
+	epp->min.y = min(epp->min.y, epp->v[2].sy);
 
-	epp->max.z = std::max(epp->v[0].sz, epp->v[1].sz);
-	epp->max.z = std::max(epp->max.z, epp->v[2].sz);
-	epp->min.z = std::min(epp->v[0].sz, epp->v[1].sz);
-	epp->min.z = std::min(epp->min.z, epp->v[2].sz);
+	epp->max.z = max(epp->v[0].sz, epp->v[1].sz);
+	epp->max.z = max(epp->max.z, epp->v[2].sz);
+	epp->min.z = min(epp->v[0].sz, epp->v[1].sz);
+	epp->min.z = min(epp->min.z, epp->v[2].sz);
 	epp->type = ep->type;
 	epp->type &= ~POLY_QUAD;
 
@@ -3542,110 +3518,6 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 	return false;
 }
 
-#define NON_PORTAL_VERSION 0.136f
-#define UNIQUE_VERSION 0.141f
-
-#pragma pack(push,1)
-struct UNIQUE_HEADER
-{
-	char path[256];
-	s32 count;
-	f32 version;
-	s32	compressedsize;
-	s32	pad[3];
-};
-#pragma pack(pop)
-
-#pragma pack(push,1)
-struct UNIQUE_HEADER2
-{
-	char path[256];
-};
-#pragma pack(pop)
-
-
-#define SIZ_WRK 10
-
-#pragma pack(push,1)
-struct FAST_VERTEX
-{
-	f32	sy;
-	f32	ssx;
-	f32	ssz;
-	f32	stu;
-	f32	stv;
-};
-#pragma pack(pop)
-
-#pragma pack(push,1)
-struct FAST_EERIEPOLY
-{
-	FAST_VERTEX		v[4];
-    s32 tex;
-	EERIE_3D		norm;
-	EERIE_3D		norm2;
-	EERIE_3D		nrml[4];
-	f32			transval;
-	f32			area;
-	s32			type;
-	s16			room;
-	s16			paddy;
-};
-#pragma pack(pop)
-
-#pragma pack(push,1)
-struct FAST_SCENE_HEADER
-{
-	f32	version;
-	s32	sizex;
-	s32	sizez;
-	s32	nb_textures;
-	s32	nb_polys;
-	s32	nb_anchors;
-	EERIE_3D	playerpos;
-	EERIE_3D	Mscenepos;
-	s32	nb_portals;
-	s32	nb_rooms;
-};
-#pragma pack(pop)
-
-#pragma pack(push,1)
-struct FAST_TEXTURE_CONTAINER
-{
-    s32 tc;
-    s32 temp;
-	char		fic[256];
-};
-#pragma pack(pop)
-
-#pragma pack(push,1)
-struct FAST__ANCHOR_DATA
-{
-	EERIE_3D	pos;
-	f32		radius;
-	f32		height;
-	s16		nb_linked;
-	s16		flags;
-};
-#pragma pack(pop)
-
-#pragma pack(push,1)
-struct FAST_SCENE_INFO
-{
-	s32	nbpoly;
-	s32	nbianchors;
-};
-#pragma pack(pop)
-
-#pragma pack(push,1)
-struct ROOM_DIST_DATA_SAVE
-{
-	f32	distance; // -1 means use truedist
-	EERIE_3D startpos;
-	EERIE_3D endpos;
-};
-#pragma pack(pop)
-
 extern void LoadLevelScreen();
 extern void LoadLevelScreen(long lev);
 
@@ -3654,7 +3526,7 @@ long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 
 
-bool FastSceneLoad(const std::string & partial_path) {
+bool FastSceneLoad(const string & partial_path) {
 	
 	// TODO bounds checking
 	
@@ -3664,30 +3536,27 @@ bool FastSceneLoad(const std::string & partial_path) {
 		return false;
 	}
 	
-	std::string path = "Game\\" + partial_path;
-	
-	char fic[256];
-	
-	sprintf(fic, "%sfast.fts", path.c_str());
+	string path = "Game\\" + partial_path;
+	string file = path + "fast.fts";
 	
 	size_t size;
-	char * dat = (char *)PAK_FileLoadMalloc(fic, size);
+	char * dat = (char *)PAK_FileLoadMalloc(file, size);
 	if(!dat) {
-		LogError << "FastSceneLoad: could not find " << fic;
+		LogError << "FastSceneLoad: could not find " << file;
 	}
 	
 	size_t pos = 0;
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
-	//pos += sizeof(UNIQUE_HEADER);
+	pos += sizeof(UNIQUE_HEADER);
 	
-	if (!NOCHECKSUM) if (strcasecmp(uh->path, path)) {
+	if(!NOCHECKSUM && strcasecmp(uh->path, path)) {
 		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
 		free(dat);
 		return false;
 	}
 	
-	if (uh->version != UNIQUE_VERSION) {
-		LogError << "FastSceneLoad version mistmatch: got " << uh->version << " expected " << UNIQUE_VERSION;
+	if(uh->version != FTS_VERSION) {
+		LogError << "FastSceneLoad version mistmatch: got " << uh->version << " expected " << FTS_VERSION;
 		free(dat);
 		return false;
 	}
@@ -3695,87 +3564,8 @@ bool FastSceneLoad(const std::string & partial_path) {
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
-	//if (uh->count == 0) goto lasuite;
-	
-	//long c_count;
-	//c_count = 0;
-	
-	/* TODO This will not work in a PAK file and no .scn files are shipped outside PAKs
-	char path2[256];
-	sprintf(path2, "%s*.scn", partial_path);
-	
-	LogDebug << "Looking for " << path2;
-	
-	HANDLE idx;
-	WIN32_FIND_DATA fd;
-	if ((idx = FindFirstFile(path2.c_str(), &fd)) != INVALID_HANDLE_VALUE)
-	
-	{
-		do
-		{
-			LogDebug << "Doing something " << fd.cFileName;
-			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && (!strcasecmp(GetExt(fd.cFileName), ".scn")))
-			{
-				c_count++;
-			}
-		}
-		while (FindNextFile(idx, &fd));
-		
-		FindClose(idx);
-	}
-	*/
-	
-	//long count;
-	//count = 0;
-	
-	/* while (count < uh->count) TODO there are no .scn files in the sources
-	{
-		UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
-		pos += sizeof(UNIQUE_HEADER2);
-		char check[512];
-		char * check2 = (char *)(dat + pos);
-		pos += 512;
-		path2 = partial_path;
-		path2 += uh2->path;
-		SetExt(path2, ".scn");
-		
-		LogDebug << "Looking for " << path2;
-
-		if (PAK_FileExist(path2.c_str()))
-		{
-			if (!NOCHECKSUM)
-			{
-					HERMES_CreateFileCheck(path2.c_str(), check, 512, UNIQUE_VERSION);
-
-				for (long jj = 0; jj < 512; jj++)
-					if (check[jj] != check2[jj]) goto release;
-			}
-		} else {
-			LogDebug << "Didn't find " << path2;
-		}
-		
-		count++;
-		
-		if (count > 60)	goto release;
-	}
-	
-	LogDebug << "FastSceneLoad: done counting files";
-	
-	LogDebug << "count is " << count;
-	
-	
-	if (c_count != uh->count)
-	{
-		LogDebug << "FastSceneLoad: count mismatch, was " << c_count << " expected " << uh->count;
-		if (NOCHECKSUM)
-		{ */
-			pos = sizeof(UNIQUE_HEADER) + uh->count * (512 + sizeof(UNIQUE_HEADER2));
-		/*}
-		else goto release;
-	}*/
-
-//lasuite:
-//	;
+	// Skip .scn file list.
+	pos += uh->count * (512 + sizeof(UNIQUE_HEADER2));
 	
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	PROGRESS_BAR_COUNT += 1.f;
@@ -3796,8 +3586,6 @@ bool FastSceneLoad(const std::string & partial_path) {
 		return false;
 	}
 	
-	long i, j, k, kk;
-	
 	PROGRESS_BAR_COUNT += 3.f;
 	LoadLevelScreen();
 	pos = 0;
@@ -3805,20 +3593,14 @@ bool FastSceneLoad(const std::string & partial_path) {
 	FAST_SCENE_HEADER * fsh = (FAST_SCENE_HEADER *)(rawdata + pos);
 	pos += sizeof(FAST_SCENE_HEADER);
 	
-	if (fsh->version != UNIQUE_VERSION) {
+	if(fsh->version != FTS_VERSION) {
 		LogError << "FastSceneLoad: version mismatch in FAST_SCENE_HEADER";
 		delete[] rawdata;
 		return false;
 	}
 	
-	if(fsh->sizex != ACTIVEBKG->Xsize) {
-		LogError << "FastSceneLoad: sizex mismatch in FAST_SCENE_HEADER";
-		delete[] rawdata;
-		return false;
-	}
-	
-	if(fsh->sizez != ACTIVEBKG->Zsize) {
-		LogError << "FastSceneLoad: sizez mismatch in FAST_SCENE_HEADER";
+	if(fsh->sizex != ACTIVEBKG->Xsize || fsh->sizez != ACTIVEBKG->Zsize) {
+		LogError << "FastSceneLoad: size mismatch in FAST_SCENE_HEADER";
 		delete[] rawdata;
 		return false;
 	}
@@ -3833,7 +3615,7 @@ bool FastSceneLoad(const std::string & partial_path) {
 	// load textures
 	typedef std::map<s32, TextureContainer *> TextureContainerMap;
 	TextureContainerMap textures;
-	for (k = 0; k < fsh->nb_textures; k++) {
+	for(long k = 0; k < fsh->nb_textures; k++) {
 		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(rawdata + pos);
 		TextureContainer * tmpTC = D3DTextr_CreateTextureFromFile(ftc->fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 		if(tmpTC) {
@@ -3844,57 +3626,48 @@ bool FastSceneLoad(const std::string & partial_path) {
 		}
 		pos += sizeof(FAST_TEXTURE_CONTAINER);
 	}
-
+	
 	PROGRESS_BAR_COUNT += 4.f;
 	LoadLevelScreen();
-
-	for (j = 0; j < fsh->sizez; j++)
-		for (i = 0; i < fsh->sizex; i++)
-		{
+	
+	for(long j = 0; j < fsh->sizez; j++) {
+		for(long i = 0; i < fsh->sizex; i++) {
+			
 			FAST_SCENE_INFO * fsi = (FAST_SCENE_INFO *)(rawdata + pos);
 			pos += sizeof(FAST_SCENE_INFO);
-			ACTIVEBKG->Backg[i+j * fsh->sizex].nbianchors = (short)fsi->nbianchors;
-			ACTIVEBKG->Backg[i+j * fsh->sizex].nbpoly = (short)fsi->nbpoly;
-
-			if (fsi->nbpoly > 0)
-			{
-				ACTIVEBKG->Backg[i+j * fsh->sizex].polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * fsi->nbpoly);
-
-				if (!ACTIVEBKG->Backg[i+j*fsh->sizex].polydata) HERMES_Memory_Emergency_Out();
+			
+			EERIE_BKG_INFO & bkg = ACTIVEBKG->Backg[i + (j * fsh->sizex)];
+			
+			bkg.nbianchors = (short)fsi->nbianchors;
+			bkg.nbpoly = (short)fsi->nbpoly;
+			
+			if(fsi->nbpoly > 0) {
+				bkg.polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * fsi->nbpoly);
+				if(!bkg.polydata) {
+					HERMES_Memory_Emergency_Out();
+				}
+			} else {
+				bkg.polydata = NULL;
 			}
-			else
-				ACTIVEBKG->Backg[i+j * fsh->sizex].polydata = 0;
-
-			ACTIVEBKG->Backg[i+j * fsh->sizex].treat = 0;
-
-			if (fsi->nbpoly)
-			{
-				ACTIVEBKG->Backg[i+j * fsh->sizex].nothing = 0;
-			}
-			else
-			{
-				ACTIVEBKG->Backg[i+j * fsh->sizex].nothing = 1;
-			}
-
-			ACTIVEBKG->Backg[i+j * fsh->sizex].frustrum_maxy = -99999999.f;
-			ACTIVEBKG->Backg[i+j * fsh->sizex].frustrum_miny = 99999999.f;
-
-			for (k = 0; k < fsi->nbpoly; k++)
-			{
+			
+			bkg.treat = 0;
+			bkg.nothing = fsi->nbpoly ? 0 : 1;
+			
+			bkg.frustrum_maxy = -99999999.f;
+			bkg.frustrum_miny = 99999999.f;
+			
+			for(long k = 0; k < fsi->nbpoly; k++) {
+				
 				FAST_EERIEPOLY * ep = (FAST_EERIEPOLY *)(rawdata + pos);
 				pos += sizeof(FAST_EERIEPOLY);
 				
-				EERIEPOLY * ep2 = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
+				EERIEPOLY * ep2 = &bkg.polydata[k];
 				memset(ep2, 0, sizeof(EERIEPOLY));
 				ep2->room = ep->room;
 				ep2->area = ep->area;
-				ep2->norm.x = ep->norm.x;
-				ep2->norm.y = ep->norm.y;
-				ep2->norm.z = ep->norm.z;
-				ep2->norm2.x = ep->norm2.x;
-				ep2->norm2.y = ep->norm2.y;
-				ep2->norm2.z = ep->norm2.z;
-				memcpy(ep2->nrml, ep->nrml, sizeof(EERIE_3D) * 4);
+				ep2->norm = ep->norm;
+				ep2->norm2 = ep->norm2;
+				copy(ep->nrml, ep->nrml + 4, ep2->nrml);
 				
 				if(ep->tex != 0) {
 					TextureContainerMap::const_iterator cit = textures.find(ep->tex);
@@ -3906,8 +3679,7 @@ bool FastSceneLoad(const std::string & partial_path) {
 				ep2->transval = ep->transval;
 				ep2->type = ep->type;
 				
-				for (kk = 0; kk < 4; kk++)
-				{
+				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->v[kk].color = 0xFFFFFFFF;
 					ep2->v[kk].rhw = 1;
 					ep2->v[kk].specular = 1;
@@ -3917,256 +3689,232 @@ bool FastSceneLoad(const std::string & partial_path) {
 					ep2->v[kk].tu = ep->v[kk].stu;
 					ep2->v[kk].tv = ep->v[kk].stv;
 				}
-
+				
 				memcpy(ep2->tv, ep2->v, sizeof(D3DTLVERTEX) * 4);
-
-				for (kk = 0; kk < 4; kk++)
+				
+				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->tv[kk].color = 0xFF000000;
-
+				}
+				
 				long to;
 				float div;
-
-				if (ep->type & POLY_QUAD)
-				{
+				if(ep->type & POLY_QUAD) {
 					to = 4;
 					div = 0.25f;
-				}
-				else
-				{
+				} else {
 					to = 3;
 					div = 0.333333333333f;
 				}
-
+				
 				ep2->center.x = 0.f;
 				ep2->center.y = 0.f;
 				ep2->center.z = 0.f;
-
-				for (long h = 0; h < to; h++)
-				{
+				
+				for(long h = 0; h < to; h++) {
+					
 					ep2->center.x += ep2->v[h].sx;
 					ep2->center.y += ep2->v[h].sy;
 					ep2->center.z += ep2->v[h].sz;
-
-					if (h != 0)
-					{
-						ep2->max.x = std::max(ep2->max.x, ep2->v[h].sx);
-						ep2->min.x = std::min(ep2->min.x, ep2->v[h].sx);
-
-						ep2->max.y = std::max(ep2->max.y, ep2->v[h].sy);
-						ep2->min.y = std::min(ep2->min.y, ep2->v[h].sy);
-
-						ep2->max.z = std::max(ep2->max.z, ep2->v[h].sz);
-						ep2->min.z = std::min(ep2->min.z, ep2->v[h].sz);
-					}
-					else
-					{
+					
+					if(h != 0) {
+						ep2->max.x = max(ep2->max.x, ep2->v[h].sx);
+						ep2->min.x = min(ep2->min.x, ep2->v[h].sx);
+						ep2->max.y = max(ep2->max.y, ep2->v[h].sy);
+						ep2->min.y = min(ep2->min.y, ep2->v[h].sy);
+						ep2->max.z = max(ep2->max.z, ep2->v[h].sz);
+						ep2->min.z = min(ep2->min.z, ep2->v[h].sz);
+					} else {
 						ep2->min.x = ep2->max.x = ep2->v[0].sx;
 						ep2->min.y = ep2->max.y = ep2->v[0].sy;
 						ep2->min.z = ep2->max.z = ep2->v[0].sz;
 					}
 				}
-
+				
 				ep2->center.x *= div;
 				ep2->center.y *= div;
 				ep2->center.z *= div;
-
+				
 				float dist = 0.f;
-
-				for (int h = 0; h < to; h++)
-				{
-					dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep2->v[h], &ep2->center));
+				for(int h = 0; h < to; h++) {
+					float x = ep2->v[h].sx - ep2->center.x;
+					float y = ep2->v[h].sy - ep2->center.y;
+					float z = ep2->v[h].sz - ep2->center.z;
+					float d = sqrt((x * x) + (y * y) + (z * z));
+					dist = max(dist, d);
 				}
-
 				ep2->v[0].rhw = dist;
+				
 				DeclareEGInfo(ep2->center.x, ep2->center.z);
 				DeclareEGInfo(ep2->v[0].sx, ep2->v[0].sz);
 				DeclareEGInfo(ep2->v[1].sx, ep2->v[1].sz);
 				DeclareEGInfo(ep2->v[2].sx, ep2->v[2].sz);
-
-				if (ep->type & POLY_QUAD)
+				if(ep->type & POLY_QUAD) {
 					DeclareEGInfo(ep2->v[3].sx, ep2->v[3].sz);
+				}
 			}
-
-			if (fsi->nbianchors <= 0)
-			{
-				ACTIVEBKG->Backg[i+j * fsh->sizex].ianchors = NULL;
+			
+			if(fsi->nbianchors <= 0) {
+				bkg.ianchors = NULL;
+			} else {
+				bkg.ianchors = (long *)malloc(sizeof(long) * fsi->nbianchors);
+				if(!bkg.ianchors) {
+					HERMES_Memory_Emergency_Out();
+				}
+				memset(bkg.ianchors, 0, sizeof(long)*fsi->nbianchors);
 			}
-			else
-			{
-				ACTIVEBKG->Backg[i+j * fsh->sizex].ianchors = (long *)malloc(sizeof(long) * fsi->nbianchors);
-
-				if (!ACTIVEBKG->Backg[i+j*fsh->sizex].ianchors) HERMES_Memory_Emergency_Out();
-
-				memset(ACTIVEBKG->Backg[i+j*fsh->sizex].ianchors, 0, sizeof(long)*fsi->nbianchors);
-			}
-
-			for (k = 0; k < fsi->nbianchors; k++)
-			{
+			
+			for(long k = 0; k < fsi->nbianchors; k++) {
 				s32 * ianch = (s32 *)(rawdata + pos);
 				pos += sizeof(s32);
 				ACTIVEBKG->Backg[i+j * fsh->sizex].ianchors[k] = *ianch;
 			}
 		}
-
+	}
+	
 	PROGRESS_BAR_COUNT += 4.f;
 	LoadLevelScreen();
 	ACTIVEBKG->nbanchors = fsh->nb_anchors;
-
-	if (fsh->nb_anchors > 0)
-	{
+	
+	if(fsh->nb_anchors > 0) {
 		ACTIVEBKG->anchors = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * fsh->nb_anchors);
-
-		if (!ACTIVEBKG->anchors) HERMES_Memory_Emergency_Out();
-
-		memset(ACTIVEBKG->anchors, 0, sizeof(_ANCHOR_DATA)*fsh->nb_anchors);
-	}
-	else
-		ACTIVEBKG->anchors = NULL;
-
-	for (i = 0; i < fsh->nb_anchors; i++)
-	{
-		FAST__ANCHOR_DATA * fad = (FAST__ANCHOR_DATA *)(rawdata + pos);
-		pos += sizeof(FAST__ANCHOR_DATA);
-		ACTIVEBKG->anchors[i].flags = fad->flags;
-		ACTIVEBKG->anchors[i].pos.x = fad->pos.x;
-		ACTIVEBKG->anchors[i].pos.y = fad->pos.y;
-		ACTIVEBKG->anchors[i].pos.z = fad->pos.z;
-		ACTIVEBKG->anchors[i].nblinked = fad->nb_linked;
-		ACTIVEBKG->anchors[i].height = fad->height;
-		ACTIVEBKG->anchors[i].radius = fad->radius;
-
-		if (fad->nb_linked > 0)
-		{
-			//todo free +++
-			ACTIVEBKG->anchors[i].linked = (long *)malloc(sizeof(long) * fad->nb_linked);
-
-			if (!ACTIVEBKG->anchors[i].linked) HERMES_Memory_Emergency_Out();
+		if(!ACTIVEBKG->anchors) {
+			HERMES_Memory_Emergency_Out();
 		}
-		else ACTIVEBKG->anchors[i].linked = NULL;
-
-		for (long kk = 0; kk < fad->nb_linked; kk++)
-		{
+		memset(ACTIVEBKG->anchors, 0, sizeof(_ANCHOR_DATA)*fsh->nb_anchors);
+	} else {
+		ACTIVEBKG->anchors = NULL;
+	}
+	
+	for(long i = 0; i < fsh->nb_anchors; i++) {
+		
+		FAST_ANCHOR_DATA * fad = (FAST_ANCHOR_DATA *)(rawdata + pos);
+		pos += sizeof(FAST_ANCHOR_DATA);
+		
+		_ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
+		anchor.flags = fad->flags;
+		anchor.pos = fad->pos;
+		anchor.nblinked = fad->nb_linked;
+		anchor.height = fad->height;
+		anchor.radius = fad->radius;
+		
+		if(fad->nb_linked > 0) {
+			anchor.linked = (long *)malloc(sizeof(long) * fad->nb_linked);
+			if(!ACTIVEBKG->anchors[i].linked) {
+				HERMES_Memory_Emergency_Out();
+			}
+		} else {
+			anchor.linked = NULL;
+		}
+		
+		for(long kk = 0; kk < fad->nb_linked; kk++) {
 			s32 * lng = (s32 *)(rawdata + pos);
 			pos += sizeof(s32);
-			ACTIVEBKG->anchors[i].linked[kk] = *lng;
+			anchor.linked[kk] = *lng;
 		}
 	}
-
+	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-
-	if (fsh->nb_rooms > 0)
-	{
-		if (portals != NULL)
+	
+	if(fsh->nb_rooms > 0) {
+		
+		if(portals != NULL) {
 			EERIE_PORTAL_Release();
-
+		}
+		
 		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
 		portals->nb_rooms = fsh->nb_rooms;
 		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA) * (portals->nb_rooms + 1));
 		portals->nb_total = fsh->nb_portals;
 		portals->portals = (EERIE_PORTALS *)malloc(sizeof(EERIE_PORTALS) * portals->nb_total);
-
-
-		for (i = 0; i < portals->nb_total; i++)
-		{
+		
+		for(long i = 0; i < portals->nb_total; i++) {
+			
 			EERIE_SAVE_PORTALS * epo = (EERIE_SAVE_PORTALS *)(rawdata + pos);
 			pos += sizeof(EERIE_SAVE_PORTALS);
-			memset(&portals->portals[i], 0, sizeof(EERIE_PORTALS));
-			portals->portals[i].room_1 = epo->room_1;
-			portals->portals[i].room_2 = epo->room_2;
-			portals->portals[i].useportal = epo->useportal;
-			portals->portals[i].paddy = epo->paddy;
-			portals->portals[i].poly.area = epo->poly.area;
-			portals->portals[i].poly.type = epo->poly.type;
-			portals->portals[i].poly.transval = epo->poly.transval;
-			portals->portals[i].poly.room = epo->poly.room;
-			portals->portals[i].poly.misc = epo->poly.misc;
-			Vector_Copy(&portals->portals[i].poly.center, &epo->poly.center);
-			Vector_Copy(&portals->portals[i].poly.max, &epo->poly.max);
-			Vector_Copy(&portals->portals[i].poly.min, &epo->poly.min);
-			Vector_Copy(&portals->portals[i].poly.norm, &epo->poly.norm);
-			Vector_Copy(&portals->portals[i].poly.norm2, &epo->poly.norm2);
-
-			for (long jj = 0; jj < 4; jj++)
-			{
-				Vector_Copy(&portals->portals[i].poly.nrml[jj], &epo->poly.nrml[j]);
-				memcpy(&portals->portals[i].poly.v[jj], &epo->poly.v[jj], sizeof(D3DTLVERTEX));
-				memcpy(&portals->portals[i].poly.tv[jj], &epo->poly.tv[jj], sizeof(D3DTLVERTEX));
-			}
+			
+			EERIE_PORTALS & portal = portals->portals[i];
+			
+			memset(&portal, 0, sizeof(EERIE_PORTALS));
+			portal.room_1 = epo->room_1;
+			portal.room_2 = epo->room_2;
+			portal.useportal = epo->useportal;
+			portal.paddy = epo->paddy;
+			portal.poly.area = epo->poly.area;
+			portal.poly.type = epo->poly.type;
+			portal.poly.transval = epo->poly.transval;
+			portal.poly.room = epo->poly.room;
+			portal.poly.misc = epo->poly.misc;
+			portal.poly.center = epo->poly.center;
+			portal.poly.max = epo->poly.max;
+			portal.poly.min = epo->poly.min;
+			portal.poly.norm = epo->poly.norm;
+			portal.poly.norm2 = epo->poly.norm2;
+			
+			copy(epo->poly.nrml, epo->poly.nrml + 4, portal.poly.nrml);
+			copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
+			copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
 		}
-
-		for (i = 0; i < portals->nb_rooms + 1; i++)
-		{
+		
+		for(long i = 0; i < portals->nb_rooms + 1; i++) {
+			
 			EERIE_SAVE_ROOM_DATA * erd = (EERIE_SAVE_ROOM_DATA *)(rawdata + pos);
 			pos += sizeof(EERIE_SAVE_ROOM_DATA);
-			memset(&portals->room[i], 0, sizeof(EERIE_ROOM_DATA));
-			portals->room[i].nb_portals = erd->nb_portals;
-			portals->room[i].nb_polys = erd->nb_polys;
-
-			if (portals->room[i].nb_portals)
-			{
-				portals->room[i].portals =	(long *)	malloc(sizeof(long) * portals->room[i].nb_portals);
-				
+			
+			EERIE_ROOM_DATA & room = portals->room[i];
+			
+			memset(&room, 0, sizeof(EERIE_ROOM_DATA));
+			room.nb_portals = erd->nb_portals;
+			room.nb_polys = erd->nb_polys;
+			
+			if(room.nb_portals) {
+				room.portals = (long *)malloc(sizeof(long) * room.nb_portals);
 				s32 * start = (s32 *)(rawdata + pos);
 				pos += sizeof(s32) * portals->room[i].nb_portals;
-				std::copy(start, (s32 *)(rawdata + pos), portals->room[i].portals);
+				copy(start, (s32 *)(rawdata + pos), room.portals);
+			} else {
+				room.portals = NULL;
 			}
-			else
-			{
-				portals->room[i].portals = NULL;
-			}
-
-			if (portals->room[i].nb_polys)
-			{
-				portals->room[i].epdata =	(EP_DATA *)	malloc(sizeof(EP_DATA) * portals->room[i].nb_polys);
-				EP_DATA * ed = (EP_DATA *)(rawdata + pos);
-				pos += sizeof(EP_DATA) * portals->room[i].nb_polys;
-				memcpy(portals->room[i].epdata, ed, sizeof(EP_DATA)*portals->room[i].nb_polys);
-			}
-			else
-			{
+			
+			if(room.nb_polys) {
+				room.epdata = (EP_DATA *)malloc(sizeof(EP_DATA) * room.nb_polys);
+				FAST_EP_DATA * ed = (FAST_EP_DATA *)(rawdata + pos);
+				pos += sizeof(FAST_EP_DATA) * portals->room[i].nb_polys;
+				copy(ed, (FAST_EP_DATA *)(rawdata + pos), room.epdata);
+			} else {
 				portals->room[i].epdata = NULL;
 			}
-
-
+			
 		}
-
-		if (COMPUTE_PORTALS == 0)
-			USE_PORTALS = 0;
-		else
-		{
-			USE_PORTALS = 4;
-		}
-	}
-	else
-	{
+		
+		USE_PORTALS = (COMPUTE_PORTALS == 0) ? 0 : 4;
+	} else {
 		USE_PORTALS = 0;
 	}
-
-	if (RoomDistance)
+	
+	if(RoomDistance) {
 		free(RoomDistance);
-
+	}
 	RoomDistance = NULL;
 	NbRoomDistance = 0;
-
-	if (portals)
-	{
+	
+	if(portals) {
 		NbRoomDistance = portals->nb_rooms + 1;
-		RoomDistance =
-			(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
-
-		for (long n = 0; n < NbRoomDistance; n++)
-			for (long m = 0; m < NbRoomDistance; m++)
-			{
+		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
+		for(long n = 0; n < NbRoomDistance; n++) {
+			for(long m = 0; m < NbRoomDistance; m++) {
 				ROOM_DIST_DATA_SAVE * rdds = (ROOM_DIST_DATA_SAVE *)(rawdata + pos);
 				pos += sizeof(ROOM_DIST_DATA_SAVE);
-				SetRoomDistance(m, n, rdds->distance, &rdds->startpos, &rdds->endpos);
+				EERIE_3D start = rdds->startpos;
+				EERIE_3D end = rdds->endpos;
+				SetRoomDistance(m, n, rdds->distance, &start, &end);
 			}
+		}
 	}
-
+	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-
+	
 	EERIEPOLY_Compute_PolyIn();
 	PROGRESS_BAR_COUNT += 3.f;
 	LoadLevelScreen();
@@ -4174,9 +3922,9 @@ bool FastSceneLoad(const std::string & partial_path) {
 	EERIE_PORTAL_Blend_Portals_And_Rooms();
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-
+	
 	ComputePortalVertexBuffer();
-
+	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	delete[] rawdata;
@@ -4206,7 +3954,7 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 	long allocsize = (256) * 60 + 1000000 +
 	                 sizeof(FAST_SCENE_HEADER) +
 	                 sizeof(FAST_TEXTURE_CONTAINER) * 1000 +
-	                 sizeof(FAST__ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
+	                 sizeof(FAST_ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
 
 	if (portals)
 	{
@@ -4245,7 +3993,7 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 	memset(dat, 0, allocsize);
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
 	strcpy(uh->path, path.c_str());
-	uh->version = UNIQUE_VERSION;
+	uh->version = FTS_VERSION;
 	pos += sizeof(UNIQUE_HEADER);
 
 	std::string path2 = partial_path;
@@ -4301,7 +4049,7 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 
 	if (pos >= allocsize - 100000) goto error;
 
-	fsh->version = UNIQUE_VERSION;
+	fsh->version = FTS_VERSION;
 	fsh->sizex = ACTIVEBKG->Xsize;
 	fsh->sizez = ACTIVEBKG->Zsize;
 	fsh->nb_textures = 0;
@@ -4425,8 +4173,8 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 
 	for (i = 0; i < ACTIVEBKG->nbanchors; i++)
 	{
-		FAST__ANCHOR_DATA * fad = (FAST__ANCHOR_DATA *)(dat + pos);
-		pos += sizeof(FAST__ANCHOR_DATA);
+		FAST_ANCHOR_DATA * fad = (FAST_ANCHOR_DATA *)(dat + pos);
+		pos += sizeof(FAST_ANCHOR_DATA);
 
 		if (pos >= allocsize - 100000) goto error;
 
@@ -4456,6 +4204,8 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 		{
 			EERIE_SAVE_PORTALS * epo = (EERIE_SAVE_PORTALS *)(dat + pos);
 			pos += sizeof(EERIE_SAVE_PORTALS);
+			
+			const EERIE_PORTALS & portal = portals->portals[i];
 
 			epo->room_1 = portals->portals[i].room_1;
 			epo->room_2 = portals->portals[i].room_2;
@@ -4466,18 +4216,15 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 			epo->poly.transval = portals->portals[i].poly.transval;
 			epo->poly.room = portals->portals[i].poly.room;
 			epo->poly.misc = portals->portals[i].poly.misc;
-			Vector_Copy(&epo->poly.center, &portals->portals[i].poly.center);
-			Vector_Copy(&epo->poly.max, &portals->portals[i].poly.max);
-			Vector_Copy(&epo->poly.min, &portals->portals[i].poly.min);
-			Vector_Copy(&epo->poly.norm, &portals->portals[i].poly.norm);
-			Vector_Copy(&epo->poly.norm2, &portals->portals[i].poly.norm2);
+			epo->poly.center = portals->portals[i].poly.center;
+			epo->poly.max = portals->portals[i].poly.max;
+			epo->poly.min = portals->portals[i].poly.min;
+			epo->poly.norm = portals->portals[i].poly.norm;
+			epo->poly.norm2 = portals->portals[i].poly.norm2;
 
-			for (long jj = 0; jj < 4; jj++)
-			{
-				Vector_Copy(&epo->poly.nrml[j], &portals->portals[i].poly.nrml[jj]);
-				memcpy(&epo->poly.v[jj], &portals->portals[i].poly.v[jj], sizeof(D3DTLVERTEX));
-				memcpy(&epo->poly.tv[jj], &portals->portals[i].poly.tv[jj], sizeof(D3DTLVERTEX));
-			}
+			copy(portal.poly.nrml, portal.poly.nrml + 4, epo->poly.nrml);
+			copy(portal.poly.v, portal.poly.v + 4, epo->poly.v);
+			copy(portal.poly.tv, portal.poly.tv + 4, epo->poly.tv);
 		}
 
 		for (i = 0; i < portals->nb_rooms + 1; i++)
@@ -4513,7 +4260,11 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 			{
 				ROOM_DIST_DATA_SAVE * rdds = (ROOM_DIST_DATA_SAVE *)(dat + pos);
 				pos += sizeof(ROOM_DIST_DATA_SAVE);
-				rdds->distance = GetRoomDistance(m, n, &rdds->startpos, &rdds->endpos);
+				EERIE_3D start;
+				EERIE_3D end;
+				rdds->distance = GetRoomDistance(m, n, &start, &end);
+				rdds->startpos = start;
+				rdds->endpos = end;
 			}
 	}
 
@@ -4871,7 +4622,7 @@ void ComputePortalVertexBuffer()
 
 		vector<SINFO_TEXTURE_VERTEX *> vTextureVertex;
 
-		int iMaxRoom = std::min(portals->nb_rooms, 255L);
+		int iMaxRoom = min(portals->nb_rooms, 255L);
 
 		if (portals->nb_rooms > 255)
 		{
