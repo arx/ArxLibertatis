@@ -3653,10 +3653,6 @@ extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 
-// TODO remove
-typedef std::map<s32, TextureContainer *> TextureContainerMap;
-
-TextureContainerMap tcLookupTable;
 
 bool FastSceneLoad(const std::string & partial_path) {
 	
@@ -3834,17 +3830,14 @@ bool FastSceneLoad(const std::string & partial_path) {
 	Mscenepos.y = fsh->Mscenepos.y;
 	Mscenepos.z = fsh->Mscenepos.z;
 	
-	unsigned char * tex;
-	tex = (unsigned char *)(rawdata + pos);
-	
-	//ReCreate textures...
+	// load textures
+	typedef std::map<s32, TextureContainer *> TextureContainerMap;
+	TextureContainerMap textures;
 	for (k = 0; k < fsh->nb_textures; k++) {
-		
 		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(rawdata + pos);
-		
 		TextureContainer * tmpTC = D3DTextr_CreateTextureFromFile(ftc->fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 		if(tmpTC) {
-			tcLookupTable[ftc->tc] = tmpTC;
+			textures[ftc->tc] = tmpTC;
 			if(!tmpTC->m_pddsSurface) {
 				tmpTC->Restore();
 			}
@@ -3890,33 +3883,7 @@ bool FastSceneLoad(const std::string & partial_path) {
 			{
 				FAST_EERIEPOLY * ep = (FAST_EERIEPOLY *)(rawdata + pos);
 				pos += sizeof(FAST_EERIEPOLY);
-
-                TextureContainer * tmpTC = 0;
-				if (ep->tex != 0)
-				{
-                    kk = 0;
-                    while ((tmpTC == 0) && (kk < fsh->nb_textures))
-					{
-                        FAST_TEXTURE_CONTAINER * tmpFTC = (FAST_TEXTURE_CONTAINER *)(tex + sizeof(FAST_TEXTURE_CONTAINER) * kk);
-                        if (tmpFTC->tc == ep->tex)
-						{
-                            TextureContainerMap::const_iterator cit = tcLookupTable.find(ep->tex);
-                            if (cit != tcLookupTable.end())
-					{
-                                tmpTC = cit->second;
-                            }
-                            else
-						{
-                                kk = fsh->nb_textures;
-                            }
-						}
-						else
-                        {
-                            kk++;
-						}
-					}
-				}
-
+				
 				EERIEPOLY * ep2 = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
 				memset(ep2, 0, sizeof(EERIEPOLY));
 				ep2->room = ep->room;
@@ -3928,10 +3895,17 @@ bool FastSceneLoad(const std::string & partial_path) {
 				ep2->norm2.y = ep->norm2.y;
 				ep2->norm2.z = ep->norm2.z;
 				memcpy(ep2->nrml, ep->nrml, sizeof(EERIE_3D) * 4);
-				ep2->tex = tmpTC;
+				
+				if(ep->tex != 0) {
+					TextureContainerMap::const_iterator cit = textures.find(ep->tex);
+					ep2->tex = (cit != textures.end()) ? cit->second : NULL;
+				} else {
+					ep2->tex = NULL;
+				}
+				
 				ep2->transval = ep->transval;
 				ep2->type = ep->type;
-
+				
 				for (kk = 0; kk < 4; kk++)
 				{
 					ep2->v[kk].color = 0xFFFFFFFF;
