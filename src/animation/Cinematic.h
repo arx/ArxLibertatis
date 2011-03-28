@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct C_KEY;
 struct CinematicGrid;
+class CinematicBitmap;
 
 // TODO used for loading
 #pragma pack(push,1)
@@ -114,16 +115,18 @@ public:
 	float speedtrack;
 	float flTime;
 	float m_flIntensityRND;
+	std::vector<CinematicBitmap*>	m_bitmaps;
 	
 	Cinematic(int, int);
-	bool ActiveTexture(int id);
+	~Cinematic();
+
 	HRESULT InitDeviceObjects();
 	HRESULT OneTimeSceneReInit();
 	HRESULT Render(float framediff);
 	HRESULT New();
-	void ReInitMapp(int id);
 	HRESULT DeleteDeviceObjects();
-	
+
+	void DeleteAllBitmap();
 };
 
 void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);

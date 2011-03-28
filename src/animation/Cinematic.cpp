@@ -76,12 +76,10 @@ int				LSoundChoose;
 /*---------------------------------------------------------------------------------*/
  
 /*---------------------------------------------------------------------------------*/
-extern CinematicBitmap	TabBitmap[];
 extern float	FlashAlpha;
 extern char FileNameDirLoad[];
 extern char FileNameDirSave[];
 extern int UndoPile;
-extern int NbBitmap;
 extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
@@ -108,6 +106,13 @@ Cinematic::Cinematic(int _w, int _h)
 
 	m_flIntensityRND = 0.f;
 }
+
+/*-------------------------------------------------------------------*/
+Cinematic::~Cinematic()
+{
+	DeleteAllBitmap();
+}
+
 /*-------------------------------------------------------------------*/
 void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, EERIE_3D * posgrille, float azgrille, float speedtrack)
 {
@@ -134,17 +139,6 @@ void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, 
 	else
 	{
 		KeyTemp.light.intensity = -2.f;
-	}
-}
-
-/* Recreation d'une mapp */
-void Cinematic::ReInitMapp(int id)
-{
-	if (id < 0) return;
-
-	if (TabBitmap[id].actif)
-	{
-		ReCreateAllMapsForBitmap(id, TabBitmap[id].grid.echelle, this);
 	}
 }
 
@@ -193,7 +187,6 @@ HRESULT Cinematic::OneTimeSceneReInit()
 	DeleteAllBitmap();
 	DeleteAllSound();
 
-	InitMapLoad();
 	InitSound();
 	DeleteTrack();
 
@@ -229,7 +222,6 @@ HRESULT Cinematic::New()
 	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
 
-	InitMapLoad();
 	InitSound();
 	InitUndo();
 
@@ -246,6 +238,17 @@ HRESULT Cinematic::New()
 
 	return S_OK;
 }
+
+void Cinematic::DeleteAllBitmap()
+{
+	for(std::vector<CinematicBitmap*>::iterator it = m_bitmaps.begin(); it != m_bitmaps.end(); ++it)
+	{
+		delete *it;
+	}
+
+	m_bitmaps.clear();
+}
+
 //*************************************************************************************
 // InitDeviceObjects()
 // Sets RenderStates
@@ -504,16 +507,16 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		}
 	}
 
-	C_INDEXED	* mat = grille->mats;
-	C_UV	*	uvs = grille->uvs;
-	nb = grille->nbmat;
+	C_UV* uvs = grille->uvs;
 
-	while (nb--)
+	for(std::vector<C_INDEXED>::iterator it = grille->mats.begin(); it != grille->mats.end(); ++it)
 	{
+		C_INDEXED* mat = &(*it);
+
 		if (mat->tex)
-			SETTC(mat->tex);
+			GRenderer->SetTexture(0, *mat->tex);
 		else
-			SETTC(NULL);
+			GRenderer->ResetTexture(0);
 
 		int	nb2 = mat->nbvertexs;
 
@@ -548,8 +551,6 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			                             0);
 			GRenderer->SetFillMode(Renderer::FillSolid);
 		}
-
-		mat++;
 	}
 }
 /*---------------------------------------------------------------*/
@@ -567,7 +568,7 @@ HRESULT Cinematic::Render(float FDIFF)
 		danaeApp.DANAEStartRender();
 		InRender = true;
 
-		if (InsertKey && NbBitmap)
+		if (InsertKey && m_bitmaps.size() > 0)
 		{
 			FillKeyTemp(&pos, angz, GetCurrentFrame(), numbitmap, fx, ti, colorchoose, colorchoosed, colorflashchoose, speedchoose, idsound, force, &light, &posgrille, angzgrille, speedtrack);
 			AddDiffKey(this, &KeyTemp, true, true, true);
@@ -595,7 +596,7 @@ HRESULT Cinematic::Render(float FDIFF)
 		GRenderer->GetTextureStage(1)->DisableAlpha();
 		
 		//image key
-		tb = &TabBitmap[numbitmap];
+		tb = m_bitmaps[numbitmap];
 
 		//fx
 		col = 0x00FFFFFF;
@@ -698,7 +699,7 @@ HRESULT Cinematic::Render(float FDIFF)
 					break;
 			}
 
-			tb = &TabBitmap[numbitmapsuiv];
+			tb = m_bitmaps[numbitmapsuiv];
 
 			alpha = 0xFF000000 - alpha;
 			col &= 0x00FFFFFF;
