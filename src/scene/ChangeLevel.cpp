@@ -2187,9 +2187,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 	char * dat = _pSaveBlock->load(loadfile, size);
 	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
-		if(ident == "Player_-001") {
-			DebugBreak();
-		}
 		return -1;
 	}
 	
@@ -2949,34 +2946,24 @@ corrupted:
 	return idx;
 }
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi)
-{
+long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
+	
 	float increment = 0;
-
-	if (asi->nb_inter > 0)
-	{
+	if(asi->nb_inter > 0) {
 		increment = (60.f / (float)asi->nb_inter);
-	}
-	else
-	{
+	} else {
 		PROGRESS_BAR_COUNT += 60;
 		LoadLevelScreen();
 	}
 
-	for (long i = 0; i < asi->nb_inter; i++)
-	{
-		if ((i == 4) || (i == 62))
-		{
-			i = i;
-		}
-
+	for (long i = 0; i < asi->nb_inter; i++) {
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
 		char tempo[256];
 		sprintf(tempo, "%s_%04d", GetName(idx_io[i].filename).c_str(), idx_io[i].ident);
 		ARX_CHANGELEVEL_Pop_IO(tempo);
 	}
-
+	
 	return 1;
 }
 extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
