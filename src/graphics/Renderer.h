@@ -14,59 +14,59 @@ class Renderer
 public:
 	//! Render states
 	enum RenderState
-    {
-        AlphaBlending,
+	{
+		AlphaBlending,
 		ColorKey,
 		DepthTest,
 		DepthWrite,
-        Fog,
+		Fog,
 		Lighting,
 		ZBias
-    };
+	};
 
 	//! Pixel comparison functions
-    enum PixelCompareFunc
-    {
-        CmpNever,               //!< Never
-        CmpLess,                //!< Less
-        CmpEqual,               //!< Equal
-        CmpLessEqual,           //!< Less Equal
-        CmpGreater,             //!< Greater
-        CmpNotEqual,            //!< Not Equal
-        CmpGreaterEqual,        //!< Greater Equal
-        CmpAlways               //!< Always
-    };
+	enum PixelCompareFunc
+	{
+		CmpNever,               //!< Never
+		CmpLess,                //!< Less
+		CmpEqual,               //!< Equal
+		CmpLessEqual,           //!< Less Equal
+		CmpGreater,             //!< Greater
+		CmpNotEqual,            //!< Not Equal
+		CmpGreaterEqual,        //!< Greater Equal
+		CmpAlways               //!< Always
+	};
 
-    //! Pixel blending factor
-    enum PixelBlendingFactor
-    {
-        BlendZero,              //!< Zero    
-        BlendOne,               //!< One
-        BlendSrcColor,          //!< Source color
-        BlendSrcAlpha,          //!< Source alpha
-        BlendInvSrcColor,       //!< Inverse source color
-        BlendInvSrcAlpha,       //!< Inverse source alpha
-        BlendSrcAlphaSaturate,  //!< Source alpha saturate
-        BlendDstColor,          //!< Destination color
-        BlendDstAlpha,          //!< Destination alpha
-        BlendInvDstColor,       //!< Inverse destination color
-        BlendInvDstAlpha        //!< Inverse destination alpha
-    };
+	//! Pixel blending factor
+	enum PixelBlendingFactor
+	{
+		BlendZero,              //!< Zero    
+		BlendOne,               //!< One
+		BlendSrcColor,          //!< Source color
+		BlendSrcAlpha,          //!< Source alpha
+		BlendInvSrcColor,       //!< Inverse source color
+		BlendInvSrcAlpha,       //!< Inverse source alpha
+		BlendSrcAlphaSaturate,  //!< Source alpha saturate
+		BlendDstColor,          //!< Destination color
+		BlendDstAlpha,          //!< Destination alpha
+		BlendInvDstColor,       //!< Inverse destination color
+		BlendInvDstAlpha        //!< Inverse destination alpha
+	};
 
-	//! Culling 
+//! Culling 
 	enum CullingMode
-    {
-        CullNone,
-        CullCW,
-        CullCCW
-    };
+	{
+		CullNone,
+		CullCW,
+		CullCCW
+	};
 
 	enum FillMode
-    {
-        FillPoint,
-        FillWireframe,
-        FillSolid
-    };
+	{
+		FillPoint,
+		FillWireframe,
+		FillSolid
+	};
 
 	//! Fog
 	enum FogMode
@@ -79,11 +79,11 @@ public:
 
 	//! Target surface
 	enum BufferType
-    {
-        ColorBuffer     = 0x00000001,
-        DepthBuffer     = 0x00000002,
-        StencilBuffer   = 0x00000004
-    };
+	{
+		ColorBuffer     = 0x00000001,
+		DepthBuffer     = 0x00000002,
+		StencilBuffer   = 0x00000004
+	};
 
 	struct Viewport
 	{
@@ -94,7 +94,7 @@ public:
 	};
 
 	Renderer();
-	~Renderer();
+	virtual ~Renderer();
 
 	// Texture management
 	void ReleaseAllTextures();
@@ -107,19 +107,19 @@ public:
 	Cubemap*	CreateCubemap();
 
 	// Render states
-    void SetRenderState(RenderState renderState, bool enable);
+	void SetRenderState(RenderState renderState, bool enable);
 
-    // Alphablending & Transparency
-    void SetAlphaFunc(PixelCompareFunc func, float fef);    // Ref = [0.0f, 1.0f]
-    void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
+	// Alphablending & Transparency
+	void SetAlphaFunc(PixelCompareFunc func, float fef);    // Ref = [0.0f, 1.0f]
+	void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
 
 	// Viewport
-    void SetViewport(const Viewport& viewport);
-    Viewport GetViewport();
+	void SetViewport(const Viewport& viewport);
+	Viewport GetViewport();
 
 	// Projection
 	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
-    void End2DProjection();
+	void End2DProjection();
 
 	// Render Target
 	void Clear(int bufferFlags, COLORREF clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
@@ -137,8 +137,8 @@ public:
 	// Texturing
 	unsigned int GetTextureStageCount() const;
 	TextureStage* GetTextureStage(unsigned int textureStage);
-    void ResetTexture(unsigned int textureStage);
-    void SetTexture(unsigned int textureStage, Texture& pTexture);
+	void ResetTexture(unsigned int textureStage);
+	void SetTexture(unsigned int textureStage, Texture& pTexture);
 	
 	float GetMaxAnisotropy() const;
 

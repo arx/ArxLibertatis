@@ -82,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
 
-#include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/Logger.h"
 
@@ -305,14 +305,10 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 		{
 			io = inter.iobj[i];
 
-			if (i == 0) objname = "PLAYER";
+			if (i == 0)
+				objname = "PLAYER";
 			else
-			{
-				std::stringstream ss;
-				ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
-				objname = ss.str();
-				//sprintf(objname, "%s_%04d", GetName(io->filename).c_str(), io->ident);
-			}
+				objname = io->long_name();
 
 			long pos = 0;
 
@@ -348,7 +344,7 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 
 			while (pos != -1)
 			{
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->over_script, search.c_str(), pos, tline, &nline);
+				pos = ARX_SCRIPT_SearchTextFromPos(&io->over_script, search, pos, tline, &nline);
 
 				if (pos > 0)
 				{
@@ -386,8 +382,6 @@ suite:
 	std::stringstream ss;
 	ss << "Search Results for " << search << '(' << foundnb << " occurences)";
 	ShowTextWindowtext = ss.str();
-	//sprintf(ShowTextWindowtext, "Search Results for %s (%ld occurences)", search.c_str(), foundnb);
-
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
 }
@@ -583,15 +577,6 @@ void ReleaseScript(EERIE_SCRIPT * es)
 
 	ARX_SCRIPT_ReleaseLabels(es);
 	memset(es->shortcut, 0, sizeof(long)*MAX_SHORTCUT);
-}
-
-//*************************************************************************************
-// Checks if a string (seek) is at the start of another string (text)
-// returns 0 if "seek" is at the start of "text"
-// else returns 1
-//*************************************************************************************
-long specialstrcmp( const std::string& text, const std::string& seek) {
-	return text.compare(0, seek.length(), seek) ? 1 : 0;
 }
 
 //*************************************************************************************
@@ -1177,16 +1162,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				if (EVENT_SENDER)
 				{
 					if (EVENT_SENDER == inter.iobj[0])
-					{
 						txtcontent = "PLAYER";
-					}
 					else
-					{
-						std::stringstream ss;
-						ss << GetName(EVENT_SENDER->filename) << '_'
-						   << std::setfill('0') << std::setw(4) << EVENT_SENDER->ident;
-						txtcontent = ss.str();
-					}
+						txtcontent = EVENT_SENDER->long_name();
 				}
 				else 	txtcontent = "NONE";
 
@@ -1234,13 +1212,10 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 			if (!specialstrcmp(name, "^ME"))
 			{
-				if (io == inter.iobj[0]) txtcontent = "PLAYER";
+				if (io == inter.iobj[0])
+					txtcontent = "PLAYER";
 				else
-				{
-					std::stringstream ss;
-					ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
-					txtcontent = ss.str();
-				}
+					txtcontent = io->long_name();
 
 				return TYPE_TEXT;
 			}
@@ -1337,13 +1312,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			if (!specialstrcmp(name, "^LAST_SPAWNED"))
 			{
 				if (LASTSPAWNED)
-				{
-					std::stringstream ss;
-					ss << GetName(LASTSPAWNED->filename) << '_'
-					   << std::setfill('0') << std::setw(4) << LASTSPAWNED->ident;
-					txtcontent = ss.str();
-				}
-				else txtcontent = "NONE";
+					txtcontent = LASTSPAWNED->long_name();
+				else
+					txtcontent = "NONE";
 
 				return TYPE_TEXT;
 			}
@@ -1643,7 +1614,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					}
 				}
 
-				if (!strcasecmp(name.c_str(), "^PLAYERSPELL_INVISIBILITY"))
+				if (!strcasecmp(name, "^PLAYERSPELL_INVISIBILITY"))
 				{
 					if (inter.iobj[0]->invisibility > 0.3f)
 					{
@@ -1664,16 +1635,11 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				INTERACTIVE_OBJ * ioo = ARX_NPC_GetFirstNPCInSight(io);
 
 				if (ioo == inter.iobj[0])
-				{
 					txtcontent = "PLAYER";
-				}
 				else if (ioo)
-				{
-					std::stringstream ss;
-					ss << GetName(ioo->filename) << '_' << std::setfill('0') << std::setw(4) << ioo->ident;
-					txtcontent = ss.str();
-				}
-				else 	txtcontent = "NONE";
+					txtcontent = ioo->long_name();
+				else
+					txtcontent = "NONE";
 
 				return TYPE_TEXT;
 			}
@@ -1689,12 +1655,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					if (!ValidIONum(io->targetinfo))
 						txtcontent = "NONE";
 					else
-					{
-						std::stringstream ss;
-						ss << GetName(inter.iobj[io->targetinfo]->filename) << '_'
-						   << std::setfill('0') << std::setw(4) << inter.iobj[io->targetinfo]->ident;
-						txtcontent = ss.str();
-					}
+						txtcontent = inter.iobj[io->targetinfo]->long_name();
 				}
 
 				return TYPE_TEXT;
@@ -1732,15 +1693,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 	if (!specialstrcmp(name, " "))
 	{
 		if (io == inter.iobj[0])
-		{
 			txtcontent = "PLAYER";
-		}
 		else
-		{
-			std::stringstream ss;
-			ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
-			txtcontent = ss.str();
-		}
+			txtcontent = io->long_name();
 
 		return TYPE_TEXT;
 	}
@@ -3269,7 +3224,7 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params
 		{
 			if (inter.iobj[num])
 			{
-				SendIOScriptEventReverse(inter.iobj[num], msg, params.c_str(), eventname.c_str());
+				SendIOScriptEventReverse(inter.iobj[num], msg, params, eventname);
 				EVENT_SENDER = oes;
 			}
 		}
@@ -3414,7 +3369,6 @@ void ARX_SCRIPT_Timer_ClearByNum(long timer_idx)
 	{
 		scr_timer[timer_idx].name.clear();
 		ActiveTimers--;
-		scr_timer[timer_idx].namelength = 0;
 		scr_timer[timer_idx].exist = 0;
 	}
 }
@@ -3886,10 +3840,10 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					if (!temp.compare("STACK"))
 					{
 					}
-					else if (!strcasecmp(temp.c_str(), "UNSTACK"))
+					else if (!strcasecmp(temp, "UNSTACK"))
 					{
 					}
-					else if (!strcasecmp(temp.c_str(), "UNSTACKALL"))
+					else if (!strcasecmp(temp, "UNSTACKALL"))
 					{
 					}
 					else
@@ -3899,13 +3853,13 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 							pos = GetNextWord(es, pos, temp);
 						}
 
-						if (!strcasecmp(temp.c_str(), "FLEE"))
+						if (!strcasecmp(temp, "FLEE"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp.c_str(), "LOOK_FOR"))
+						else if (!strcasecmp(temp, "LOOK_FOR"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp.c_str(), "HIDE"))
+						else if (!strcasecmp(temp, "HIDE"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp.c_str(), "WANDER_AROUND"))
+						else if (!strcasecmp(temp, "WANDER_AROUND"))
 							pos = GetNextWord(es, pos, temp);
 					}
 				}
@@ -4380,7 +4334,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!strcasecmp(temp.c_str(), "SKIN"))
+					if (!strcasecmp(temp, "SKIN"))
 						pos = GetNextWord(es, pos, temp);
 
 					pos = GetNextWord(es, pos, temp);
@@ -5299,33 +5253,27 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 	if ((errors > 0) || ((warnings > 0) && (SHOWWARNINGS)))
 	{
-		char title[512];
+		std::string title;
 
 		if (es == &io->over_script)
-		{
-			temp = GetName(io->filename);
-			sprintf(title, "%s_%04ld", temp.c_str(), io->ident);
-			strcat(title, " LOCAL SCRIPT.");
-		}
+			title = io->long_name() + " LOCAL SCRIPT.";
 		else
-		{
-			temp = GetName(io->filename);
-			sprintf(title, "%s_%04ld", temp.c_str(), io->ident);
-			strcat(title, " CLASS SCRIPT.");
-		}
+			title = io->long_name() + " CLASS SCRIPT.";
 
-		LastErrorPopup = ShowErrorPopup(title, errstring);
+		LogError << title << " : "  << errstring;
 	}
 	else LastErrorPopup = NULL;
 
 	LogDebug << "Tem" << tem;
 	return returnvalue;
 }
+
 HWND LastErrorPopupNO1 = NULL;
 HWND LastErrorPopupNO2 = NULL;
 
 extern HWND CDP_IOOptions;
 extern INTERACTIVE_OBJ * CDP_EditIO;
+
 bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
 {
 	return true;
@@ -5433,16 +5381,14 @@ void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group)
 	io->nb_iogroups--;
 }
 
-void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const char * group)
+void ARX_IOGROUP_Add( INTERACTIVE_OBJ * io, const std::string& group )
 {
-	if (group == NULL) return;
-
-	if (group[0] == 0) return;
+	if ( group.empty() ) return;
 
 	if (IsIOGroup(io, group)) return;
 
 	io->iogroups = (IO_GROUP_DATA *)realloc(io->iogroups, sizeof(IO_GROUP_DATA) * (io->nb_iogroups + 1));
-	strcpy(io->iogroups[io->nb_iogroups].name, group);
+	strcpy(io->iogroups[io->nb_iogroups].name, group.c_str());
 	io->nb_iogroups++;
 }
 //*********************************************************************************************
@@ -5792,7 +5738,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 
 			if (io) return;
 
-			ival = atoi(content.c_str());
+			ival = atoi(content);
 			sv = SETVarValueLong(svar, NB_GLOBALS, name, ival);
 
 			if (sv != NULL)
@@ -5803,7 +5749,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 
 			if (io == NULL) return;
 
-			ival = atoi(content.c_str());
+			ival = atoi(content);
 			sv = SETVarValueLong(esss->lvar, esss->nblvar, name, ival);
 
 			if (sv != NULL)

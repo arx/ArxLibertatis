@@ -244,8 +244,8 @@ struct EERIETOOLBAR {
 	long CreationToolBar;
 	long ToolBarNb;
 	LPCTBBUTTON Buttons;
-	long Bitmap;
-	char * String;
+	long		Bitmap;
+	std::string		String;
 	long Type;
 };
 
@@ -286,7 +286,7 @@ public:
 protected:
 	
 	// Overridable variables for the app
-	const char * m_strWindowTitle;
+		std::string m_strWindowTitle;
 	bool m_bAppUseZBuffer;
 	bool m_bAppUseStereo;
 	bool m_bShowStats;
@@ -337,7 +337,7 @@ public:
 	virtual HRESULT InitDeviceObjects() {
 		return S_OK;
 	}
-	void OutputText(DWORD x, DWORD y, const char * str);
+	void OutputText(DWORD x, DWORD y, const std::string& str);
 	
 	HRESULT SetClipping(float x1, float y1, float x2, float y2);
 	
@@ -415,7 +415,7 @@ private:
 	CD3DApplicationScopedLock& operator=(const CD3DApplicationScopedLock&);
 };
 
-bool OKBox(const char * text, const char * title);
+bool OKBox(const std::string& text, const std::string& title);
 
 void CalcFPS(bool reset = false);
 

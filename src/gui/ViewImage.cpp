@@ -26,9 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/ViewImage.h"
 
 #include <cstdio>
-#include <sstream>
-#include <algorithm>
-#include <vector>
 
 #include "core/Core.h"
 #include "core/Time.h"
@@ -36,7 +33,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Frame.h"
-#include "graphics/d3dwrapper.h"
 #include "graphics/data/Texture.h"
 #include "graphics/Draw.h"
 

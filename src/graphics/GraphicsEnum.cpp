@@ -136,10 +136,11 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 // DeviceEnumCallback()
 // Callback function for enumerating devices
 //************************************************************************************
-static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
-        TCHAR		*	strName,
-        D3DDEVICEDESC7	* pDesc,
-        VOID		*		pParentInfo) {
+static HRESULT WINAPI DeviceEnumCallback( char*	strDesc,
+                                          char* strName,
+                                          D3DDEVICEDESC7* pDesc,
+                                          VOID* pParentInfo)
+{
 	
 	(void)strDesc;
 	
@@ -247,8 +248,9 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 // DriverEnumCallback()
 // Callback function for enumerating drivers.
 //************************************************************************************
-static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
-                                      TCHAR * strName, VOID *, HMONITOR) {
+static BOOL WINAPI DriverEnumCallback(GUID * pGUID, char* strDesc,
+                                      char* strName, VOID *, HMONITOR)
+{
 	
 	(void)strName;
 	

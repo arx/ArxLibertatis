@@ -201,7 +201,7 @@ void ParseFile( const std::string& file_text )
 			iter++;
 
 			// Iterate over more strings until a section is encountered or no more strings remain
-			while ( ( iter != input_strings.end() ) && ( !isSection( iter->c_str() ) ) )
+			while ( ( iter != input_strings.end() ) && ( !isSection( *iter ) ) )
 			{
 				// If a key is found, add it to the localisation entry
 				if ( isKey( *iter ) )

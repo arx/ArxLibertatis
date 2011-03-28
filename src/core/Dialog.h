@@ -72,7 +72,6 @@ void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name = NULL);
 void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name = NULL, long type = 0);
 void SetWindowTitle(HWND hWnd, const char * tex);
 void KillInterTreeView();
-HWND ShowErrorPopup(char * title, char * tex);
 INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
 INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
 INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

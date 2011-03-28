@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_INTERACTIVE_H
 
 #include <string>
-#include <tchar.h>
 #include "graphics/data/Mesh.h"
 
 //-----------------------------------------------------------------------------
@@ -144,7 +143,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1 );
 void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, long flag = 0);
-bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const char * ap_source, const char * ap_target);
+bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_source, const std::string& ap_target);
 void ARX_INTERACTIVE_Detach(long n_source, long n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state);
 
@@ -163,7 +162,7 @@ bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io);
 void CleanScriptLoadedIO();
 void PrepareIOTreatZone(long flag = 0);
  
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attach);
+void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string& attach);
  
 void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
 bool CanBePutInInventory(INTERACTIVE_OBJ * io);
@@ -231,12 +230,12 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size);
 INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
  
-INTERACTIVE_OBJ * AddInteractive(const char * file, long id, long flags = 0);
-INTERACTIVE_OBJ * AddFix(const char * file, long flags = 0);
-INTERACTIVE_OBJ * AddNPC(const char * file, long flags = 0);
+INTERACTIVE_OBJ * AddInteractive(const std::string& file, long id, long flags = 0);
+INTERACTIVE_OBJ * AddFix(const std::string& file, long flags = 0);
+INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags = 0);
 INTERACTIVE_OBJ  * AddItem(const std::string& file, long flags = 0);
-INTERACTIVE_OBJ * AddCamera(const char * file);
-INTERACTIVE_OBJ * AddMarker(const char * file);
+INTERACTIVE_OBJ * AddCamera(const std::string& file);
+INTERACTIVE_OBJ * AddMarker(const std::string& file);
 
 void InitInter(long nb);
 INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
@@ -258,7 +257,7 @@ void SetWeapon_On(INTERACTIVE_OBJ * io);
 void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
-void GetMaterialString( const char * origin, char * dest);
+std::string GetMaterialString( const std::string& origin );
 INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
 // TODO create separate header fro functions from ARX_Invetory.cpp

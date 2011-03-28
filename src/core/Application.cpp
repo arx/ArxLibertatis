@@ -235,7 +235,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	                      LoadIcon(hInst, MAKEINTRESOURCE(IDI_MAIN)),
 	                      LoadCursor(NULL, IDC_ARROW),
 	                      (HBRUSH)GetStockObject(BLACK_BRUSH),
-	                      NULL, _T("D3D Window")
+	                      NULL, "D3D Window"
 	                    };
 	RegisterClass(&wndClass);
 
@@ -270,7 +270,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		else
 			menu = CreationMenu;
 
-		MSGhwnd = m_hWnd = CreateWindow(_T("D3D Window"), m_strWindowTitle,
+		MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
 		                                flags,
 		                                CW_USEDEFAULT, CW_USEDEFAULT, CreationSizeX, CreationSizeY, owner,
 		                                LoadMenu(hInst, MAKEINTRESOURCE(menu)),
@@ -1174,7 +1174,7 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 // OutputText()
 // Draws text on the window.
 //*************************************************************************************
-VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
+VOID CD3DApplication::OutputText(DWORD x, DWORD y, const std::string& str)
 {
 	if (m_pddsRenderTarget)
 	{
@@ -1337,12 +1337,12 @@ bool CD3DApplication::Unlock()
 //*************************************************************************************
 //*************************************************************************************
 //TODO(lubosz): is this needed in the game? replace
-bool OKBox(const char * text, const char * title)
+bool OKBox(const std::string& text, const std::string& title)
 
 {
 	int i;
 	g_pD3DApp->Pause(true);
-	i = MessageBox(g_pD3DApp->m_hWnd, text, title, MB_ICONQUESTION | MB_OKCANCEL);
+	i = MessageBox(g_pD3DApp->m_hWnd, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
 	g_pD3DApp->Pause(false);
 
 	if (i == IDCANCEL) return false;

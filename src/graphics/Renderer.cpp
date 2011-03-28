@@ -28,23 +28,23 @@ const DWORD ARXToDX7TextureArg[] = {
 									};
 
 const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
-                        D3DTADDRESS_CLAMP,					// Wrap_Clamp,
-                        D3DTADDRESS_WRAP					// Wrap_Repeat
-                                    };
+						D3DTADDRESS_CLAMP,					// Wrap_Clamp,
+						D3DTADDRESS_WRAP					// Wrap_Repeat
+									};
 
 const D3DTEXTUREMAGFILTER ARXToDX7MagFilter[] = {
-                        D3DTFG_POINT,						// MagFilter_Nearest,
-                        D3DTFG_LINEAR						// MagFilter_Linear
-                                    };
+						D3DTFG_POINT,						// MagFilter_Nearest,
+						D3DTFG_LINEAR						// MagFilter_Linear
+									};
 
 const D3DTEXTUREMINFILTER ARXToDX7MinFilter[] = {
-                        D3DTFN_POINT,						// MinFilter_Nearest,
-                        D3DTFN_LINEAR,						// MinFilter_Linear
+						D3DTFN_POINT,						// MinFilter_Nearest,
+						D3DTFN_LINEAR,						// MinFilter_Linear
 						D3DTFN_POINT,						// MinFilter_NearestMipmapNearest,
 						D3DTFN_LINEAR,						// MinFilter_LinearMipmapNearest,
 						D3DTFN_POINT,						// MinFilter_NearestMipmapLinear,
 						D3DTFN_LINEAR						// MinFilter_LinearMipmapLinear,
-                                    };
+									};
 
 const D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
 						D3DTFP_NONE,						// MinFilter_Nearest,
@@ -64,8 +64,8 @@ const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
 						D3DRENDERSTATE_FOGENABLE,			// Fog,
 						D3DRENDERSTATE_LIGHTING,            // Lighting,
 						D3DRENDERSTATE_ZBIAS				// ZBias
-                                        };
-                   
+										};
+				   
 const D3DCMPFUNC ARXToDXPixelCompareFunc[] = {
 						D3DCMP_NEVER,                       // CmpNever,
 						D3DCMP_LESS,                        // CmpLess,
@@ -75,7 +75,7 @@ const D3DCMPFUNC ARXToDXPixelCompareFunc[] = {
 						D3DCMP_NOTEQUAL,                    // CmpNotEqual,
 						D3DCMP_GREATEREQUAL,                // CmpGreaterEqual,
 						D3DCMP_ALWAYS                       // CmpAlways
-                                        };
+										};
 
 const D3DBLEND ARXToDXPixelBlendingFactor[] =  {
 						D3DBLEND_ZERO,                      // BlendZero,
@@ -89,7 +89,7 @@ const D3DBLEND ARXToDXPixelBlendingFactor[] =  {
 						D3DBLEND_DESTALPHA,                 // BlendDstAlpha,
 						D3DBLEND_INVDESTCOLOR,              // BlendInvDstColor,
 						D3DBLEND_INVDESTALPHA               // BlendInvDstAlpha    
-                                            };
+											};
 
 const D3DCULL ARXToDXCullMode[] = {
 						D3DCULL_NONE,						// CullNone,
@@ -116,20 +116,20 @@ const D3DFOGMODE ARXToDXFogMode[] = {
 ///////////////////////////////////////////////////////////////////////////////
 class DX7Texture2D : public Texture2D
 {
-    friend class Renderer;
+	friend class Renderer;
 
 public:
-    LPDIRECTDRAWSURFACE7 GetTextureID() const
-    {
-        return m_pddsSurface;
-    }
+	LPDIRECTDRAWSURFACE7 GetTextureID() const
+	{
+		return m_pddsSurface;
+	}
 
 private:
-    DX7Texture2D();
+	DX7Texture2D();
 	virtual ~DX7Texture2D();
 
-    virtual void Init();
-    virtual void Kill();
+	virtual void Init();
+	virtual void Kill();
 
 	LPDIRECTDRAWSURFACE7 CreateTexture();
 	void LoadTextureFromImage();
@@ -137,14 +137,14 @@ private:
 	static HRESULT CALLBACK TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param );
 
 private:
-    LPDIRECTDRAWSURFACE7 m_pddsSurface;
+	LPDIRECTDRAWSURFACE7 m_pddsSurface;
 };
 
 // TODO-DX7: This should really be an intrusive list!
 std::list<DX7Texture2D*> g_Textures2D;
 
 DX7Texture2D::DX7Texture2D()
-    : m_pddsSurface(0)
+	: m_pddsSurface(0)
 {
 	g_Textures2D.push_back(this);
 }
@@ -177,7 +177,7 @@ void DX7Texture2D::Kill()
 
 HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param )
 {
-    if (NULL == pddpf || NULL == param)
+	if (NULL == pddpf || NULL == param)
 		return DDENUMRET_OK;
 
 	// Since we'll get rid of this DX7 renderer as soon as possible, I won't invest any more time figuring out the optimal texture matches
@@ -198,24 +198,24 @@ HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID
 
 LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
 {
-    LPDIRECTDRAWSURFACE7 pddsTexture;
-    HRESULT hr;
+	LPDIRECTDRAWSURFACE7 pddsTexture;
+	HRESULT hr;
 
-    // Get the device caps so we can check if the device has any constraints
-    // when using textures
-    D3DDEVICEDESC7 ddDesc;
-    if( FAILED( GDevice->GetCaps( &ddDesc ) ) )
-        return NULL;
+	// Get the device caps so we can check if the device has any constraints
+	// when using textures
+	D3DDEVICEDESC7 ddDesc;
+	if( FAILED( GDevice->GetCaps( &ddDesc ) ) )
+		return NULL;
 
-    // Setup the new surface desc for the texture. Note how we are using the
-    // texture manage attribute, so Direct3D does alot of dirty work for us
-    DDSURFACEDESC2 ddsd;
-    ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
-    ddsd.dwSize          = sizeof(DDSURFACEDESC2);
-    ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE;
-    ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;
-    ddsd.dwWidth         = mWidth;
-    ddsd.dwHeight        = mHeight;
+	// Setup the new surface desc for the texture. Note how we are using the
+	// texture manage attribute, so Direct3D does alot of dirty work for us
+	DDSURFACEDESC2 ddsd;
+	ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
+	ddsd.dwSize          = sizeof(DDSURFACEDESC2);
+	ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE;
+	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;
+	ddsd.dwWidth         = mWidth;
+	ddsd.dwHeight        = mHeight;
 
 	if(mHasMipmaps)
 	{
@@ -223,25 +223,25 @@ LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
 		ddsd.ddsCaps.dwCaps |= DDSCAPS_MIPMAP | DDSCAPS_COMPLEX;
 	}
 
-    // Turn on texture management for hardware devices
-    if( ddDesc.deviceGUID == IID_IDirect3DHALDevice )
-        ddsd.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
-    else if( ddDesc.deviceGUID == IID_IDirect3DTnLHalDevice )
-        ddsd.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
-    else
-        ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
+	// Turn on texture management for hardware devices
+	if( ddDesc.deviceGUID == IID_IDirect3DHALDevice )
+		ddsd.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
+	else if( ddDesc.deviceGUID == IID_IDirect3DTnLHalDevice )
+		ddsd.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
+	else
+		ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
 
-    // Adjust width and height, if the driver requires it
-    if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2 )
-    {
-        for( ddsd.dwWidth=1;  mWidth>ddsd.dwWidth;   ddsd.dwWidth<<=1 );
-        for( ddsd.dwHeight=1; mHeight>ddsd.dwHeight; ddsd.dwHeight<<=1 );
-    }
-    if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY )
-    {
-        if( ddsd.dwWidth > ddsd.dwHeight ) ddsd.dwHeight = ddsd.dwWidth;
-        else                               ddsd.dwWidth  = ddsd.dwHeight;
-    }
+	// Adjust width and height, if the driver requires it
+	if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2 )
+	{
+		for( ddsd.dwWidth=1;  mWidth>ddsd.dwWidth;   ddsd.dwWidth<<=1 );
+		for( ddsd.dwHeight=1; mHeight>ddsd.dwHeight; ddsd.dwHeight<<=1 );
+	}
+	if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY )
+	{
+		if( ddsd.dwWidth > ddsd.dwHeight ) ddsd.dwHeight = ddsd.dwWidth;
+		else                               ddsd.dwWidth  = ddsd.dwHeight;
+	}
 
 	// Limit max texture sizes, if the driver can't handle large textures
 	DWORD dwMaxWidth  = ddDesc.dwMaxTextureWidth;
@@ -253,30 +253,30 @@ LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
 	if (ddsd.dwHeight > dwMaxHeight)
 		ddsd.dwHeight = dwMaxHeight;
 
-    // Enumerate the texture formats, and find the closest device-supported
-    // texture pixel format.
-    GDevice->EnumTextureFormats( TextureSearchCallback, &ddsd.ddpfPixelFormat );
-    if( 0L == ddsd.ddpfPixelFormat.dwRGBBitCount )
-        return NULL;
+	// Enumerate the texture formats, and find the closest device-supported
+	// texture pixel format.
+	GDevice->EnumTextureFormats( TextureSearchCallback, &ddsd.ddpfPixelFormat );
+	if( 0L == ddsd.ddpfPixelFormat.dwRGBBitCount )
+		return NULL;
 
-    // Get the device's render target, so we can then use the render target to
-    // get a ptr to a DDraw object. We need the DirectDraw interface for
-    // creating surfaces.
-    LPDIRECTDRAWSURFACE7 pddsRender;
-    LPDIRECTDRAW7        pDD;
-    GDevice->GetRenderTarget( &pddsRender );
-    pddsRender->GetDDInterface( (VOID**)&pDD );
-    pddsRender->Release();
+	// Get the device's render target, so we can then use the render target to
+	// get a ptr to a DDraw object. We need the DirectDraw interface for
+	// creating surfaces.
+	LPDIRECTDRAWSURFACE7 pddsRender;
+	LPDIRECTDRAW7        pDD;
+	GDevice->GetRenderTarget( &pddsRender );
+	pddsRender->GetDDInterface( (VOID**)&pDD );
+	pddsRender->Release();
 
-    // Create a new surface for the texture
-    if( FAILED( hr = pDD->CreateSurface( &ddsd, &pddsTexture, NULL ) ) )
-    {
-        pDD->Release();
-        return NULL;
-    }
+	// Create a new surface for the texture
+	if( FAILED( hr = pDD->CreateSurface( &ddsd, &pddsTexture, NULL ) ) )
+	{
+		pDD->Release();
+		return NULL;
+	}
 
-    // Done with DDraw
-    pDD->Release();
+	// Done with DDraw
+	pDD->Release();
 
 	return pddsTexture;
 }
@@ -541,7 +541,7 @@ void DX7TextureStage::SetTexture( Texture& pTexture )
 	GDevice->SetTextureStageState(mStage, D3DTSS_ADDRESSU, addressU);
 	GDevice->SetTextureStageState(mStage, D3DTSS_ADDRESSV, addressV);
 	GDevice->SetTextureStageState(mStage, D3DTSS_MAGFILTER, magFilter);
-    GDevice->SetTextureStageState(mStage, D3DTSS_MINFILTER, minFilter);
+	GDevice->SetTextureStageState(mStage, D3DTSS_MINFILTER, minFilter);
 	GDevice->SetTextureStageState(mStage, D3DTSS_MIPFILTER, mipFilter);
 
 	// TODO-DX7: Handle anisotropy...
@@ -699,14 +699,14 @@ void DX7MatrixIdentity(D3DMATRIX *pout)
 
 D3DMATRIX* DX7MatrixOrthoOffCenterLH(D3DMATRIX *pout, float l, float r, float b, float t, float zn, float zf)
 {
-    DX7MatrixIdentity(pout);
-    pout->_11 = 2.0f / (r - l);
-    pout->_22 = 2.0f / (t - b);
-    pout->_33 = 1.0f / (zf -zn);
-    pout->_41 = -1.0f -2.0f *l / (r - l);
-    pout->_42 = 1.0f + 2.0f * t / (b - t);
-    pout->_43 = zn / (zn -zf);
-    return pout;
+	DX7MatrixIdentity(pout);
+	pout->_11 = 2.0f / (r - l);
+	pout->_22 = 2.0f / (t - b);
+	pout->_33 = 1.0f / (zf -zn);
+	pout->_41 = -1.0f -2.0f *l / (r - l);
+	pout->_42 = 1.0f + 2.0f * t / (b - t);
+	pout->_43 = zn / (zn -zf);
+	return pout;
 }
 
 D3DMATRIX matProj;
@@ -813,7 +813,7 @@ void Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, float p
 	pY -= 0.5f;
 
 	const D3DCOLOR DIFFUSE  = RGBA_MAKE(GetRValue(pCol), GetGValue(pCol), GetBValue(pCol), 0xFF);
-    const D3DCOLOR SPECULAR = 0;
+	const D3DCOLOR SPECULAR = 0;
 
 	rect[0].x = pX;
 	rect[0].y = pY;

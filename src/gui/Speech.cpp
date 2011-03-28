@@ -202,7 +202,7 @@ bool CheckLastSpeech(int _iI)
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_Render()
 {
-	_TCHAR temp[4096];
+	char temp[4096];
 	long igrec = 14;
 
 	Vector2i sSize = hFontInBook->GetTextSize("p");
@@ -220,9 +220,9 @@ void ARX_SPEECH_Render()
 			if (!speech[i].lpszUText.empty())
 			{
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
-					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText.c_str());
+					sprintf(temp, "%s > %s", speech[i].name, speech[i].lpszUText.c_str());
 				else
-					_stprintf(temp, _T(" %s"), speech[i].lpszUText.c_str());//>
+					sprintf(temp, " %s", speech[i].lpszUText.c_str());//>
 
 				EERIEDrawBitmap(
 								120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
@@ -418,9 +418,9 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, long flags) {
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mood, long flags) {
 	
-	if (!data || !data[0]) return -1;
+	if ( data.empty() ) return -1;
 
 	long num = ARX_SPEECH_GetFree();
 
@@ -475,7 +475,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, lo
 	char speech_label[256];
 	char speech_sample[256];
 
-	strcpy(speech_label, data + 1);
+	strcpy(speech_label, data.substr(1).c_str() );
 	speech_label[strlen(speech_label) - 1] = 0;
 
 	if (flags & ARX_SPEECH_FLAG_NOTEXT)

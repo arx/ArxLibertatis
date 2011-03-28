@@ -267,7 +267,7 @@ static INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	return false;
 }
 
-HWND ShowErrorPopup(char * title, char * tex)
+HWND ShowErrorPopup( const char * title, const char * tex)
 {
 	strcpy(ERRORTITLE, title);
 	strcpy(ERRORSTRING, tex);
@@ -1022,24 +1022,20 @@ void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type
 {
 	TVINSERTSTRUCT tis;
 	HTREEITEM parent = NULL;
-	char temp[512];
-	char temp2[512];
-
+	std::string temp;
 
 	memset(&tis, 0, sizeof(TVINSERTSTRUCT));
 	tvv[TVVcount] = (TVINFO *)malloc(sizeof(TVINFO));
 	memset(tvv[TVVcount], 0, sizeof(TVINFO));
 
-	if (type == IOTVTYPE_PLAYER) strcpy(temp, "PLAYER");
+	if (type == IOTVTYPE_PLAYER)
+		temp = "PLAYER";
 	else if (io != NULL)
-	{
-		strcpy(temp, GetName(io->filename).c_str());
-		sprintf(temp2, "_%04ld", io->ident);
-		strcat(temp, temp2);
-	}
-	else strcpy(temp, name);
+		temp = io->long_name();
+	else
+		temp = name;
 
-	strcpy(tvv[TVVcount]->text, temp);
+	strcpy(tvv[TVVcount]->text, temp.c_str());
 	tvv[TVVcount]->io = io;
 	tis.item.pszText = tvv[TVVcount]->text;
 	tis.item.cchTextMax = strlen(tvv[TVVcount]->text);
@@ -1066,6 +1062,7 @@ void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type
 	TVVcount++;
 	InterTreeViewDisplayInfo(parent);
 }
+
 void FillInterTreeView(HWND tvhwnd)
 {
 	long i;

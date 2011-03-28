@@ -34,6 +34,7 @@
 
 #include "io/Logger.h"
 #include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 
@@ -162,10 +163,10 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 			std::string dest;
 			GetNextWord(&es, es.shortcut[j], dest);
 
-			if (!strcasecmp(dest.c_str(), "{")) {
+			if (!strcasecmp(dest, "{")) {
 				GetNextWord(&es, es.shortcut[j], dest);
 
-				if (!strcasecmp(dest.c_str(), "ACCEPT")) {
+				if (!strcasecmp(dest, "ACCEPT")) {
 					es.shortcut[j] = -1;
 				}
 			}
@@ -583,7 +584,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 		MakeStandard(word);
 
 		//TODO(lubosz): this is one mega switch
-		LogDebug << "Switching! current word '" << word.c_str() << "'";
+		LogDebug << "Switching! current word '" << word << "'";
 
 		switch (word[0]) {
 			case '}':
@@ -798,7 +799,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				else if (!strcmp(word, "ATTRACTOR"))
 				{
 					pos = GetNextWord(es, pos, word);
-					long t = GetTargetByNameTarget(word.c_str());
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -2) t = GetInterNum(io);
 
@@ -898,21 +899,21 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					std::string temp2;
 					pos = GetNextWord(es, pos, word); // Source IO
 					LogDebug << word;
-					long t = GetTargetByNameTarget(word.c_str());
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -2) t = GetInterNum(io); //self
 
 					pos = GetNextWord(es, pos, temp1); // source action_point
 					LogDebug <<  temp1;
 					pos = GetNextWord(es, pos, word); // target IO
-					long t2 = GetTargetByNameTarget(word.c_str());
+					long t2 = GetTargetByNameTarget(word);
 					LogDebug << word;
 
 					if (t2 == -2) t2 = GetInterNum(io); //self
 
 					pos = GetNextWord(es, pos, temp2); // target action_point
 					LogDebug << temp2;
-					if (ARX_INTERACTIVE_Attach(t, t2, temp1.c_str(), temp2.c_str()))
+					if (ARX_INTERACTIVE_Attach(t, t2, temp1, temp2))
 					{
 						LogDebug << "--> success";
 					}
@@ -1046,7 +1047,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						File_Standardize(tex2, tex);
 						EERIE_3D last_angle;
 						memcpy(&last_angle, &io->angle, sizeof(EERIE_3D));
-						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive( tex.c_str(), -1); //AddItem(tex);
+						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive( tex, -1); //AddItem(tex);
 
 						if (ioo != NULL)
 						{
@@ -1611,7 +1612,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				else if (!strcmp(word, "QUEST"))
 				{
 					pos = GetNextWord(es, pos, word);
-					ARX_PLAYER_Quest_Add(word.c_str());
+					ARX_PLAYER_Quest_Add(word);
 					LogDebug <<  "QUEST "<< word;
 				}
 
@@ -1642,7 +1643,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						ARX_INTERFACE_NoteClose();
 					else
 					{
-						ARX_INTERFACE_NoteOpen(type, word.c_str());
+						ARX_INTERFACE_NoteOpen(type, word);
 					}
 				}
 
@@ -1945,10 +1946,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (player)
 							{
-								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1.c_str(), mood, voixoff);
+								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1, mood, voixoff);
 							}
 							else
-								speechnum = ARX_SPEECH_AddSpeech(io, temp1.c_str(), mood, voixoff);
+								speechnum = ARX_SPEECH_AddSpeech(io, temp1, mood, voixoff);
 
 							ttt = GetNextWord(es, pos, temp2);
 							LogDebug <<  temp2;
@@ -2187,7 +2188,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					if (io)
 					{
-						io->material = ARX_MATERIAL_GetIdByName(word.c_str());
+						io->material = ARX_MATERIAL_GetIdByName(word);
 					}
 
 					LogDebug <<  "SET_MATERIAL "<< word;
@@ -2251,13 +2252,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					{
 						if (!strcasecmp(temp1, "DOOR")) io->GameFlags &= ~GFLAG_DOOR;
 
-						ARX_IOGROUP_Remove(io, temp1.c_str());
+						ARX_IOGROUP_Remove(io, temp1);
 					}
 					else
 					{
 						if (!strcasecmp(temp1, "DOOR")) io->GameFlags |= GFLAG_DOOR;
 
-						ARX_IOGROUP_Add(io, temp1.c_str());
+						ARX_IOGROUP_Add(io, temp1);
 					}
 
 					LogDebug <<  "SET_GROUP "<< word;
@@ -2267,7 +2268,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					std::string temp2;
 					pos = GetNextWord(es, pos, word);
 					pos = GetNextWord(es, pos, temp2);
-					ARX_NPC_SetStat(io, word.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io));
+					ARX_NPC_SetStat( *io, word, GetVarValueInterpretedAsFloat(temp2, esss, io));
 					LogDebug <<  "SET_NPC_STAT "<< word;
 				}
 				else if (!strcmp(word, "SETXPVALUE"))
@@ -2337,14 +2338,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				else if (!strcmp(word, "SETCONTROLLEDZONE"))
 				{
 					pos = GetNextWord(es, pos, word);
-					ARX_PATH * ap = ARX_PATH_GetAddressByName(word.c_str());
+					ARX_PATH * ap = ARX_PATH_GetAddressByName(word);
 
 					if (ap != NULL)
 					{
-						char title[64];
-						word = GetName(io->filename);
-						sprintf(title, "%s_%04ld", word.c_str(), io->ident);
-						strcpy(ap->controled, title);
+						std::string str = io->long_name();
+						strcpy(ap->controled, str.c_str() );
 					}
 
 					LogDebug << "SET_CONTROLLED_ZONE "<< word;
@@ -2399,7 +2398,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (FORBID_SCRIPT_IO_CREATION == 0)
 							{
-								ioo = AddNPC(tmptext.c_str(), IO_IMMEDIATELOAD);
+								ioo = AddNPC(tmptext, IO_IMMEDIATELOAD);
 
 								if (ioo)
 								{
@@ -2450,7 +2449,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (FORBID_SCRIPT_IO_CREATION == 0)
 							{
-								ioo = AddItem( tmptext.c_str(), IO_IMMEDIATELOAD);
+								ioo = AddItem( tmptext, IO_IMMEDIATELOAD);
 
 								if (ioo)
 								{
@@ -2499,7 +2498,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						pos = GetNextWord(es, pos, word);
 					}
 
-					ARX_EQUIPMENT_SetObjectType(io, word.c_str(), val);
+					ARX_EQUIPMENT_SetObjectType(io, word, val);
 					LogDebug <<  "SET_OBJECT_TYPE "<< word;
 				}
 				else if (!strcmp(word, "SETRIGHTHAND"))
@@ -2584,7 +2583,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 					else flag = 0;
 
-					ARX_EQUIPMENT_SetEquip(io, temp3.c_str(), word.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io), flag);
+					ARX_EQUIPMENT_SetEquip(io, temp3, word, GetVarValueInterpretedAsFloat(temp2, esss, io), flag);
 				}
 				else if (!strcmp(word, "SETONEHANDED"))
 				{
@@ -2686,7 +2685,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 						else
 						{
-							ARX_PATH * ap = ARX_PATH_GetAddressByName(word.c_str());
+							ARX_PATH * ap = ARX_PATH_GetAddressByName(word);
 
 							if ((ap != NULL) && (ap != io->usepath))
 							{
@@ -3856,7 +3855,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
 					word = GetVarValueInterpretedAsText(temp2, esss, io);
-					ARX_KEYRING_Add(word.c_str());
+					ARX_KEYRING_Add(word);
 				}
 
 				break;
@@ -3867,7 +3866,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					std::string temp2;
 					long num;
 					pos = GetNextWord(es, pos, temp2);
-					num = GetNumAnim(temp2.c_str());
+					num = GetNumAnim(temp2);
 
 					if (num > -1)
 					{
@@ -4149,7 +4148,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 												scr_timer[num2].exist = 1;
 												scr_timer[num2].io = io;
 												scr_timer[num2].msecs = max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.0f);
-												scr_timer[num2].namelength = strlen(timername) + 1;
 												scr_timer[num2].name = timername;
 												scr_timer[num2].pos = pos;
 												scr_timer[num2].tim = ARXTimeUL();
@@ -4311,7 +4309,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 					{
 						ARX_TIME_Pause();
-						LogError << (word.c_str());
+						LogError << word;
 						ARX_TIME_UnPause();
 					}
 
@@ -4444,9 +4442,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								SetExt(tex3, ".tea");
 								File_Standardize(tex3, tex2);
 
-								if (PAK_FileExist(tex2.c_str()))
+								if (PAK_FileExist(tex2))
 								{
-									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2.c_str());
+									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2);
 
 									if (iot->anims[num] == NULL)
 									{
@@ -4472,7 +4470,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					pos = GetNextWord(es, pos, word);
 
 					if (ValidIONum(t))
-						LinkObjToMe(io, inter.iobj[t], word.c_str());
+						LinkObjToMe(io, inter.iobj[t], word);
 
 #ifdef NEEDING_DEBUG
 
@@ -4787,7 +4785,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 									if (t == -2) t = GetInterNum(io);
 
-									long flagg	=	ARX_EQUIPMENT_GetObjectTypeFlag(tvar2.c_str());
+									long flagg	=	ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
 
 									if ((flagg != 0) && (ValidIONum(t)))
 									{
@@ -5234,7 +5232,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 									if (FORBID_SCRIPT_IO_CREATION == 0)
 									{
-										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem( tex.c_str(), IO_IMMEDIATELOAD);
+										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem( tex, IO_IMMEDIATELOAD);
 
 										if (ioo != NULL)
 										{
@@ -5249,13 +5247,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 												if (ioo->ioflags & IO_GOLD)
 												{
-													ioo->_itemdata->price = atoi(temp2.c_str());
+													ioo->_itemdata->price = atoi(temp2);
 												}
 												else
 												{
 													ioo->_itemdata->maxcount = 9999;
 
-													int iTemp = atoi(temp2.c_str());
+													int iTemp = atoi(temp2);
 													ARX_CHECK_SHORT(iTemp);
 
 													ioo->_itemdata->count = ARX_CLEAN_WARN_CAST_SHORT(iTemp);
@@ -5371,10 +5369,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 										if (!strcmp(word, "ADDMULTI"))
 										{
 											pos = GetNextWord(es, pos, temp2);
-											multi = atoi(temp2.c_str());
+											multi = atoi(temp2);
 										}
 
-										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem( tex.c_str(), IO_IMMEDIATELOAD);
+										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem( tex, IO_IMMEDIATELOAD);
 										long xx, yy;
 
 										if ((ioo != NULL)
@@ -6036,7 +6034,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 #endif
 							}
 
-							times = atoi(temp2.c_str());
+							times = atoi(temp2);
 							pos = GetNextWord(es, pos, temp3);
 #ifdef NEEDING_DEBUG
 
@@ -6047,7 +6045,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							}
 
 #endif
-							msecs = atoi(temp3.c_str());
+							msecs = atoi(temp3);
 
 							if (!mili) msecs *= 1000;
 
@@ -6060,7 +6058,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								scr_timer[num].exist = 1;
 								scr_timer[num].io = io;
 								scr_timer[num].msecs = msecs;
-								scr_timer[num].namelength = strlen(timername) + 1;
 								scr_timer[num].name = timername;
 								scr_timer[num].pos = pos;
 								scr_timer[num].tim = ARXTimeUL();
@@ -6213,11 +6210,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						const char texpath[] = "Graph\\Obj3D\\Textures\\";
 
 						if (io->ioflags & IO_FIX)
-							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), TTE_NO_NDATA | TTE_NO_PHYSICS_BOX);
+							io->obj = TheoToEerie_Fast(texpath, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX);
 						else if (io->ioflags & IO_NPC)
-							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC);
+							io->obj = TheoToEerie_Fast(texpath, tex, TTE_NO_PHYSICS_BOX | TTE_NPC);
 						else
-							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), 0);
+							io->obj = TheoToEerie_Fast(texpath, tex, 0);
 
 						EERIE_COLLISION_Cylinder_Create(io);
 					}
@@ -6275,7 +6272,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				else if (!strcmp(word, "UNSETCONTROLLEDZONE"))
 				{
 					pos = GetNextWord(es, pos, word);
-					ARX_PATH * ap = ARX_PATH_GetAddressByName(word.c_str());
+					ARX_PATH * ap = ARX_PATH_GetAddressByName(word);
 
 					if (ap != NULL)
 					{
@@ -6952,7 +6949,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					{
 						MakeUpcase(temp1);
 						float dur = GetVarValueInterpretedAsFloat(temp2, esss, io);
-						ARX_SPELLS_RequestSymbolDraw(io, temp1.c_str(), dur);
+						ARX_SPELLS_RequestSymbolDraw(io, temp1, dur);
 					}
 
 #ifdef NEEDING_DEBUG

@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEOBJECT_H
 #define EERIEOBJECT_H
 
-#include "graphics/d3dwrapper.h"
 #include "core/Application.h"
 #include "scene/Light.h"
 #include "graphics/data/Texture.h"
@@ -65,11 +64,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 struct ACTIONSTRUCT
 {
-    EERIE_LIGHT	light;
-    EERIE_3D	pos;
-    long		dl;
-    short		type;
-    short		exist;
+	EERIE_LIGHT	light;
+	EERIE_3D	pos;
+	long		dl;
+	short		type;
+	short		exist;
 };
 
 //-----------------------------------------------------------------------------
@@ -98,28 +97,28 @@ extern D3DTLVERTEX	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 //-----------------------------------------------------------------------------
-EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const char * dir);
+EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const std::string& dir);
 
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 void ReleaseScene(EERIE_3DSCENE	*	scene);
 void MakeUserFlag(TextureContainer	* tc);
-long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const char * groupname);
-long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname);
+long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const std::string& groupname);
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string& selname);
  
 void GlobalInitLight();
 void MoveAllLights(EERIE_3D * trans);
 void ReCreateUVs(EERIE_3DOBJ * eerie);
-long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text);
-long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text);
+long GetGroupOriginByName(EERIE_3DOBJ * eobj, const std::string& text);
+long GetActionPointIdx(EERIE_3DOBJ * eobj, const std::string& text);
 long GetActionPointGroup(EERIE_3DOBJ * eobj, long idx);
 void XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const char * texpath, const char * fic,long flag,long flag2=0);
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const std::string& texpath, const std::string& fic,long flag,long flag2=0);
 void _THEObjLoad(EERIE_3DOBJ *eerie,unsigned char * adr,long * poss,long version,long flag=0,long flag2=0);
-EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * fic,long flag);
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const char * fic);
+EERIE_3DOBJ * TheoToEerie_Fast(const std::string& texpath, const std::string& fic,long flag);
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const std::string& fic);
 
 EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& fic);
 

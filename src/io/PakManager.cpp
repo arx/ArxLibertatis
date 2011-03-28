@@ -70,11 +70,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-// TODO prefer real files over those in PAK?
+static const bool PREFER_LOCAL_FILES_OVER_PAK = true;
 
 PakManager * pPakManager = 0;
 
-bool PAK_AddPak(const char * pakfile) {
+bool PAK_AddPak(const std::string& pakfile) {
 	
 	if(!pPakManager) {
 		pPakManager = new PakManager();
@@ -117,11 +117,11 @@ void * _PAK_FileLoadMallocZero(const string & name, size_t & sizeRead) {
 	return mem;
 }
 
-bool _PAK_DirectoryExist(const char * name) {
+bool _PAK_DirectoryExist(const std::string& name) {
 	
-	size_t len = strlen(name);
+	size_t len = name.length();
 	char temp[256];
-	strcpy(temp, name); // TODO this copy can be avoided
+	strcpy(temp, name.c_str()); // TODO this copy can be avoided
 	if(len != 0 && temp[len - 1] != '\\' && temp[len - 1] != '/') {
 		strcat(temp, "\\");
 	}
@@ -138,7 +138,7 @@ bool PAK_DirectoryExist(const std::string& name) {
 	return DirectoryExist(name.c_str());
 }
 
-bool PAK_FileExist(const char* name) {
+bool PAK_FileExist(const std::string& name) {
 	
 	if(pPakManager->ExistFile(name)) {
 		return true;
@@ -149,11 +149,18 @@ bool PAK_FileExist(const char* name) {
 
 void * PAK_FileLoadMalloc(const std::string& name, size_t& sizeLoaded) {
 	LogDebug << "File Name " << name;
+	
 	void * ret = NULL;
 	
-	ret = pPakManager->ReadAlloc(name, sizeLoaded);
+	if(PREFER_LOCAL_FILES_OVER_PAK) {
+		ret = FileLoadMalloc(name.c_str(), &sizeLoaded);
+	}
 	
 	if(!ret) {
+		ret = pPakManager->ReadAlloc(name, sizeLoaded);
+	}
+	
+	if(!PREFER_LOCAL_FILES_OVER_PAK && !ret) {
 		ret = FileLoadMalloc(name.c_str(), &sizeLoaded);
 	}
 	
@@ -164,9 +171,15 @@ void * PAK_FileLoadMallocZero(const std::string& name, size_t& sizeLoaded) {
 	
 	void * ret = NULL;
 	
-	ret = _PAK_FileLoadMallocZero(name, sizeLoaded);
+	if(PREFER_LOCAL_FILES_OVER_PAK) {
+		ret = FileLoadMallocZero(name.c_str(), &sizeLoaded);
+	}
 	
 	if(!ret) {
+		ret = _PAK_FileLoadMallocZero(name, sizeLoaded);
+	}
+	
+	if(!PREFER_LOCAL_FILES_OVER_PAK && !ret) {
 		ret = FileLoadMallocZero(name.c_str(), &sizeLoaded);
 	}
 	
@@ -184,34 +197,41 @@ long PAK_ftell(PakFileHandle * pfh) {
 	return FileTell(pfh->truefile);
 }
 
-PakFileHandle * PAK_fopen(const char * filename) {
+PakFileHandle * FileOpenPFH(const std::string& filename) {
 	
-	if(!pPakManager){
-		printf("FATAL: No Pack Manager!\n");
-		exit(0);
-		//TODO(lubosz): Logger does not work here :/
-//		LogFatal << "No Pakmanager!";
-	}
-
-	PakFileHandle * pfh = pPakManager->fOpen(filename);
-	if(pfh) {
-		return pfh;
-	}
-
 	FileHandle fh = FileOpenRead(filename);
 	if(!fh) {
 		return NULL;
 	}
-
-	pfh = new PakFileHandle;
+	
+	PakFileHandle * pfh = new PakFileHandle;
 	if(!pfh) {
 		return NULL;
 	}
-
+	
 	pfh->active = true;
 	pfh->reader = NULL;
 	pfh->truefile = fh;
+	
+	return pfh;
+}
 
+PakFileHandle * PAK_fopen(const std::string& filename) {
+	
+	PakFileHandle * pfh = NULL;
+	
+	if(PREFER_LOCAL_FILES_OVER_PAK) {
+		pfh = FileOpenPFH(filename);
+	}
+	
+	if(!pfh) {
+		pfh = pPakManager->fOpen(filename);
+	}
+	
+	if(!PREFER_LOCAL_FILES_OVER_PAK && !pfh) {
+		pfh = FileOpenPFH(filename);
+	}
+	
 	return pfh;
 }
 

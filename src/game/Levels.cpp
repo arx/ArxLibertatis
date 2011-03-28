@@ -57,21 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Levels.h"
 
-#include <vector>
-#include <sstream>
+#include <cstring>
 
-#include "ai/PathFinderManager.h"
-#include "ai/Paths.h"
-
-#include "game/Spells.h"
-#include "gui/Speech.h"
-
-#include "io/IO.h"
-#include "physics/CollisionShapes.h"
-
-#include "scene/LoadLevel.h"
-#include "scene/Scene.h"
-#include "scene/GameSound.h"
+#include "io/String.h"
 
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_SCENE;
@@ -128,9 +116,9 @@ long ARX_LEVELS_GetRealNum(long num)
 	return num;
 }
 
-long GetLevelNumByName(const char * name)
+long GetLevelNumByName(const std::string& name)
 {
-	if (name)
+	if ( !name.empty() )
 	{
 		std::string temp = name;
 		MakeUpcase(temp);
@@ -202,6 +190,7 @@ long GetLevelNumByName(const char * name)
 
 	return -1;
 }
+
 void GetLevelNameByNum(long num, char * name)
 {
 	if (name)

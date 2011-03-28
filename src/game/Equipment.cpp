@@ -65,12 +65,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Interface.h"
 
-#include "graphics/d3dwrapper.h"
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
+#include "io/String.h"
 
 #include "physics/Collisions.h"
 
@@ -90,7 +90,7 @@ struct EQUIP_INFO
 };
 
 #define SP_SPARKING 1
-#define SP_BLOODY	2
+#define SP_BLOODY 2
 
 extern float PLAYER_BASE_HEIGHT;
 extern long TRUEFIGHT;
@@ -108,9 +108,9 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const char * temp)
+unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
 {
-	if (!temp) return 0;
+	if ( temp.empty() ) return 0;
 
 	char c = temp[0];
 
@@ -245,7 +245,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
-					if (!strcasecmp(io->obj->selections[i].name.c_str(), "head"))
+					if (!strcasecmp(io->obj->selections[i].name, "head"))
 					{
 						sel_ = i;
 						break;
@@ -256,7 +256,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
+					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName) ) )
 						textochange = i;
 				}
 
@@ -301,7 +301,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
-					if (!strcasecmp(io->obj->selections[i].name.c_str(), "chest"))
+					if (!strcasecmp(io->obj->selections[i].name, "chest"))
 					{
 						sel_ = i;
 						break;
@@ -312,7 +312,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
+					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName) ) )
 						textochange = i;
 				}
 
@@ -357,7 +357,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
-					if (!strcasecmp(io->obj->selections[i].name.c_str(), "leggings"))
+					if ( !strcasecmp(io->obj->selections[i].name, "leggings") )
 					{
 						sel_ = i;
 						break;
@@ -368,7 +368,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
+					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName) ) )
 						textochange = i;
 				}
 
@@ -973,7 +973,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 	{
 		if (!ValidIONum(weapon)) return false;
 
-		rad = GetHitValue(io_weapon->obj->actionlist[j].name.c_str());
+		rad = GetHitValue(io_weapon->obj->actionlist[j].name);
 
 		if (rad == -1) continue;
 
@@ -1229,10 +1229,10 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 						else
 							strcpy(weapon_material, "METAL");
 
-						char bkg_material[64] = "EARTH";
+						std::string bkg_material = "EARTH";
 
-						if (ep &&  ep->tex && ep->tex->m_texName.c_str())
-							GetMaterialString(ep->tex->m_texName.c_str(), bkg_material);
+						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
+							bkg_material = GetMaterialString( ep->tex->m_texName );
 
 						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
 					}
@@ -1468,11 +1468,12 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 
 	ARX_PLAYER_ComputePlayerFullStats();
 }
+
 //***********************************************************************************************
 // Sets/unsets an object type flag
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const char * temp, long val)
+void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, long val)
 {
 	// avoid erroneous objects
 	if (!io) return;
@@ -1485,6 +1486,7 @@ void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const char * temp, long v
 	else		// remove flag
 		io->type_flags &= ~flagg;
 }
+
 //***********************************************************************************************
 // Initializes Equipment infos
 //-----------------------------------------------------------------------------------------------
@@ -1602,7 +1604,7 @@ float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval
 	return (toadd * trueval * ( 1.0f / 100 ));
 }
 
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const char * param1, const char * param2, float val, short flags)
+void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, const std::string& param2, float val, short flags)
 {
 	if (io == NULL) return;
 
@@ -1691,7 +1693,7 @@ float GetHitValue( const std::string& name)
 	        && ((name[2] == 'T') || (name[1] == 't'))
 	        && (name[3] == '_'))
 	{
-		long val = atoi(name.c_str() + 4);
+		long val = atoi( name.substr(4) ); // Get the number after the first 4 characters in the string
 		return (float)val;
 	}
 

@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/Texture.h"
 
-#include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
@@ -292,7 +292,7 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 }
 
 CinematicBitmap* CreateCinematicBitmap(const string & path, Cinematic * c, int scale) {
-	
+
 	int nbx, nby, w, h, num;
 	CinematicBitmap	* bi;
 	
@@ -304,38 +304,38 @@ CinematicBitmap* CreateCinematicBitmap(const string & path, Cinematic * c, int s
 	bi = new CinematicBitmap();
 	if (!bi) 
 		return 0;
-	
+
 	LogDebug << "loading cinematic texture " << path;
-	
+
 	char * data = 0;
 	size_t size = 0;
-
+	
 	string filename = path;
 	SetExt(filename, ".bmp");
-	if (PAK_FileExist(filename.c_str()))
-	{		
-		data = (char*)PAK_FileLoadMalloc(filename.c_str(), size);
+	if (PAK_FileExist(filename))
+	{
+		data = (char*)PAK_FileLoadMalloc(filename, size);
 	}
 	else
 	{
 		SetExt(filename, ".tga");
-		if (PAK_FileExist(filename.c_str()))
+		if (PAK_FileExist(filename))
 		{
-			data = (char*)PAK_FileLoadMalloc(filename.c_str(), size);
+			data = (char*)PAK_FileLoadMalloc(filename, size);
+			}
 		}
-	}
 
 	if(!data)
-	{
-		LogError << path << " not found";
+		{
+			LogError << path << " not found";
 		return 0;
-	}
+		}
 
 	Image cinematicImage;
 	cinematicImage.LoadFromMemory(data, size);
 
 	free(data);
-	
+
 	unsigned int width = cinematicImage.GetWidth();
 	unsigned int height = cinematicImage.GetHeight();
 	nbx = width / MaxW;
@@ -379,7 +379,7 @@ CinematicBitmap* CreateCinematicBitmap(const string & path, Cinematic * c, int s
 			tex->GetImage().Create(w2, h2, Image::Format_R8G8B8A8);
 			tex->GetImage().Copy(cinematicImage, 0, 0, bi->w - w, bi->h - h, w2, h2);
 			tex->Update();
-			
+
 			AddQuadUVs(&bi->grid, (bi->nbx - nbxx) * scale, (bi->nby - nby) * scale, scale, scale, bi->w - w, bi->h - h, w2, h2, tex);
 
 			dx += (float)w2;
@@ -403,7 +403,7 @@ CinematicBitmap* CreateCinematicBitmap(const string & path, Cinematic * c, int s
 
 /*-----------------------------------------------------------*/
 static void ReajustUV(CinematicBitmap* cb) {
-	
+
 	C_UV* uvs = cb->grid.uvs;
 
 	for(std::vector<C_INDEXED>::iterator mat = cb->grid.mats.begin(); mat != cb->grid.mats.end(); ++mat)
@@ -436,5 +436,5 @@ static void ReajustUV(CinematicBitmap* cb) {
 		{
 			uvs += mat->nbvertexs;
 		}
-	}
+		}
 }

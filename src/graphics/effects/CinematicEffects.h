@@ -2,9 +2,6 @@
 #ifndef ARX_GRAPHICS_EFFECTS_CINEMATICEFFECTS_H
 #define ARX_GRAPHICS_EFFECTS_CINEMATICEFFECTS_H
 
-#include "graphics/d3dwrapper.h"
-
-
 class TextureContainer;
 class CinematicBitmap;
 class Cinematic;

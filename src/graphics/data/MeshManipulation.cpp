@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 
-#include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
@@ -192,7 +192,7 @@ static long GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 
 	for (size_t n = 0; n < obj->actionlist.size(); n++)
 	{ // TODO iterator
-		if (!strcasecmp(obj->actionlist[n].name.c_str(), name))
+		if (!strcasecmp(obj->actionlist[n].name, name))
 			return obj->actionlist[n].idx;
 	}
 
@@ -339,16 +339,16 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// First we retreive selection groups indexes
 	for (size_t i = 0; i < obj1->selections.size(); i++)
 	{ // TODO iterator
-		if (!strcasecmp(obj1->selections[i].name.c_str(), "head")) sel_head1 = i;
-		else if (!strcasecmp(obj1->selections[i].name.c_str(), "chest")) sel_torso1 = i;
-		else if (!strcasecmp(obj1->selections[i].name.c_str(), "leggings")) sel_legs1 = i;
+		if (!strcasecmp(obj1->selections[i].name, "head")) sel_head1 = i;
+		else if (!strcasecmp(obj1->selections[i].name, "chest")) sel_torso1 = i;
+		else if (!strcasecmp(obj1->selections[i].name, "leggings")) sel_legs1 = i;
 	}
 
 	for (size_t i = 0; i < obj2->selections.size(); i++)
 	{ // TODO iterator
-		if (!strcasecmp(obj2->selections[i].name.c_str(), "head")) sel_head2 = i;
-		else if (!strcasecmp(obj2->selections[i].name.c_str(), "chest")) sel_torso2 = i;
-		else if (!strcasecmp(obj2->selections[i].name.c_str(), "leggings")) sel_legs2 = i;
+		if (!strcasecmp(obj2->selections[i].name, "head")) sel_head2 = i;
+		else if (!strcasecmp(obj2->selections[i].name, "chest")) sel_torso2 = i;
+		else if (!strcasecmp(obj2->selections[i].name, "leggings")) sel_legs2 = i;
 	}
 
 	if (sel_head1 == -1) return NULL;
@@ -479,11 +479,11 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	{
 		if ((IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1)
 		        || (IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
-		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))
-		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "chest2leggings"))
+		        || (!strcasecmp(obj1->actionlist[i].name, "head2chest"))
+		        || (!strcasecmp(obj1->actionlist[i].name, "chest2leggings"))
 		   )
 		{
-			ObjectAddAction(work, obj1->actionlist[i].name.c_str(), obj1->actionlist[i].act,
+			ObjectAddAction(work, obj1->actionlist[i].name, obj1->actionlist[i].act,
 			                obj1->actionlist[i].sfx, &obj1vertexlist2[obj1->actionlist[i].idx]);
 		}
 	}
@@ -492,11 +492,11 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for (size_t i = 0; i < obj2->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1)
-		        || (!strcasecmp(obj2->actionlist[i].name.c_str(), "head2chest"))
-		        || (!strcasecmp(obj2->actionlist[i].name.c_str(), "chest2leggings"))
+		        || (!strcasecmp(obj2->actionlist[i].name, "head2chest"))
+		        || (!strcasecmp(obj2->actionlist[i].name, "chest2leggings"))
 		   ) // Was obj1 in both strcasecmp calls
 		{
-			ObjectAddAction(work, obj2->actionlist[i].name.c_str(), obj2->actionlist[i].act,
+			ObjectAddAction(work, obj2->actionlist[i].name, obj2->actionlist[i].act,
 			                obj2->actionlist[i].sfx, &obj2vertexlist2[obj2->actionlist[i].idx]);
 		}
 	}
@@ -706,7 +706,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	//Now recreates other selections...
 	for (size_t i = 0; i < obj1->selections.size(); i++) {
 		
-		if (EERIE_OBJECT_GetSelection(work, obj1->selections[i].name.c_str()) == -1)
+		if (EERIE_OBJECT_GetSelection(work, obj1->selections[i].name) == -1)
 		{
 			long num = work->selections.size();
 			work->selections.resize(num + 1);
@@ -726,7 +726,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 				}
 			}
 
-			long ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name.c_str());
+			long ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name);
 
 			if (ii != -1)
 				for (size_t l = 0; l < obj2->selections[ii].selected.size(); l++)
@@ -747,7 +747,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	for (size_t i = 0; i < obj2->selections.size(); i++) {
 		
-		if (EERIE_OBJECT_GetSelection(work, obj2->selections[i].name.c_str()) == -1)
+		if (EERIE_OBJECT_GetSelection(work, obj2->selections[i].name) == -1)
 		{
 			long num = work->selections.size();
 			work->selections.resize(num + 1);
@@ -815,7 +815,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 	SetExt(filet, ".FTL");
 	File_Standardize(filet, file2);
 
-	if ((!PAK_FileExist(file2.c_str())) && (!PAK_FileExist(path.c_str()))) return;
+	if ((!PAK_FileExist(file2)) && (!PAK_FileExist(path))) return;
 
 	if (tw == TWEAK_ERROR) return;
 
@@ -842,14 +842,14 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 	EERIE_3DOBJ * result = NULL;
 	EERIE_3DOBJ * result2 = NULL;
 
-	if ((PAK_FileExist(file2.c_str())) || (PAK_FileExist(path.c_str())))
+	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
 	{
 		const char tex1[] = "Graph\\Obj3D\\Textures\\";
 
 		if (io->ioflags & IO_NPC)
-			tobj = TheoToEerie_Fast(tex1, path.c_str(), TTE_NPC);
+			tobj = TheoToEerie_Fast(tex1, path, TTE_NPC);
 		else
-			tobj = TheoToEerie_Fast(tex1, path.c_str(), 0);
+			tobj = TheoToEerie_Fast(tex1, path, 0);
 
 		if (!tobj) return;
 

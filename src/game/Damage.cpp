@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 
 #include <cstdio>
-#include <cstdlib>
 
 #include "ai/Paths.h"
 
@@ -364,18 +363,15 @@ float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source) {
 						if ((ioo->targetinfo == 0) || (ioo->targetinfo == TARGET_PLAYER))
 						{
 							EVENT_SENDER = inter.iobj[0];
-							char killer[256];
-							memset(killer, 0, 256);
+							std::string killer;
 
-							if (source == 0) strcpy(killer, "PLAYER");
-							else if (source <= -1) strcpy(killer, "NONE");
+							if (source == 0) killer = "PLAYER";
+							else if (source <= -1) killer = "NONE";
 							else if (ValidIONum(source)
 							         &&	(inter.iobj[source]->filename)
 							         &&	(inter.iobj[source]->filename[0] != 0))
 							{
-								char temp[256];
-								strcpy(temp, GetName(inter.iobj[source]->filename).c_str());
-								sprintf(killer, "%s_%04ld", temp, inter.iobj[source]->ident);
+								killer = inter.iobj[source]->long_name();
 							}
 
 							SendIOScriptEvent(inter.iobj[i], 0, killer, "TARGET_DEATH");
@@ -564,8 +560,10 @@ void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long fl
 		if (SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT) return;
 	}
 }
+
 extern INTERACTIVE_OBJ * FlyingOverIO;
 extern MASTER_CAMERA_STRUCT MasterCamera;
+
 void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer)
 {
 	if (!strcasecmp(io_dead->mainevent, "DEAD"))
@@ -617,23 +615,18 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 		io_dead->lastanimtime = 0;
 	}
 
-	char killer[256];
-	killer[0] = 0;
+	std::string killer;
 
 	if (io_dead->ioflags & IO_NPC)
 		io_dead->_npcdata->weaponinhand = 0;
 
 	ARX_INTERACTIVE_DestroyDynamicInfo(io_dead);
 
-	if (io_killer == inter.iobj[0]) strcpy(killer, "PLAYER");
+	if (io_killer == inter.iobj[0]) killer = "PLAYER";
 	else
 	{
 		if (io_killer)
-		{
-			char temp[256];
-			strcpy(temp, GetName(io_killer->filename).c_str());
-			sprintf(killer, "%s_%04ld", temp, io_killer->ident);
-		}
+			killer = io_killer->long_name();
 	}
 
 	for (long i = 1; i < inter.nbmax; i++)
@@ -695,6 +688,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 
 	EVENT_SENDER = old_sender;
 }
+
 void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
 {
 	if ((power > 0.f)
