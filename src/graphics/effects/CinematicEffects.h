@@ -6,7 +6,7 @@
 
 
 class TextureContainer;
-struct CinematicBitmap;
+class CinematicBitmap;
 class Cinematic;
 
 

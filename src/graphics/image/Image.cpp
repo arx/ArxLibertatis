@@ -5,6 +5,26 @@
 #include <map>
 #include <IL/il.h>
 
+class DevilLib
+{
+public:
+    DevilLib()
+    {
+        ilInit();
+
+		// Set the origin to be used when loading all images, 
+		// so that any image with a different origin will be
+		// flipped to have the set origin
+		ilOriginFunc( IL_ORIGIN_UPPER_LEFT );
+		ilEnable( IL_ORIGIN_SET );
+    }
+
+    ~DevilLib()
+    {
+        ilShutDown();
+    }
+} gDevilLib;
+
 const unsigned int SIZE_TABLE[Image::Format_Num] =
 {
         1,          // Format_L8,
@@ -124,6 +144,46 @@ bool Image::IsCompressed( Image::Format pFormat )
     return pFormat >= Format_DXT1 && pFormat <= Format_DXT5;
 }
 
+bool Image::LoadFromMemory(void* pData, unsigned int size)
+{
+	if(!pData) 
+		return false;
+
+	ILuint imageName;
+    ilGenImages( 1, &imageName );
+    ilBindImage( imageName );    
+
+	ILboolean bLoaded = ilLoadL(IL_TYPE_UNKNOWN, pData, size);
+	if(!bLoaded)
+		return false;
+		
+	mWidth  = ilGetInteger( IL_IMAGE_WIDTH );
+    mHeight = ilGetInteger( IL_IMAGE_HEIGHT );
+    mDepth  = 1;
+    mFormat = Format_R8G8B8A8;
+    mNumMipmaps = 1;
+
+	ilConvertImage( IL_RGBA, IL_UNSIGNED_BYTE );
+
+	mDataSize = Image::GetSizeWithMipmaps( mFormat, mWidth, mHeight, mDepth, mNumMipmaps );
+
+	if( mData )
+        delete[] mData;
+    mData = new unsigned char[mDataSize];
+
+	if (mData == NULL)
+	{
+		ilDeleteImages( 1, &imageName );
+		return false;
+	}
+
+    memcpy(mData, ilGetData(), mDataSize);
+		
+    ilDeleteImages( 1, &imageName );
+
+	return true;
+}
+
 void Image::Create( unsigned int pWidth, unsigned int pHeight, Image::Format pFormat, unsigned int pNumMipmaps, unsigned int pDepth )
 {
     arx_assert_msg( pWidth > 0, "[Image::Create] Width is 0!" );
@@ -160,33 +220,44 @@ unsigned char* Image::GetData()
     return mData;
 }
 
-bool Image::Copy( const Image& pImage, unsigned int pX, unsigned int pY )
+bool Image::Copy( const Image& srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height )
 {
-    arx_assert_msg( !IsCompressed(), "[Image::Copy] Copy of compressed images not supported yet!" );
+	arx_assert_msg( !IsCompressed(), "[Image::Copy] Copy of compressed images not supported yet!" );
     arx_assert_msg( !IsVolume(), "[Image::Copy] Copy of volume images not supported yet!" );
 
     unsigned int bpp = SIZE_TABLE[mFormat];
 
     // Format must match.
-    if( pImage.GetFormat() != mFormat )
+    if( srcImage.GetFormat() != mFormat )
         return false;
 
     // Must fit inside boundaries
-    if( pX + pImage.GetWidth() > mWidth || pY + pImage.GetHeight() > mHeight )
+    if( dstX + width > mWidth || dstY + height > mHeight )
         return false;
 
-    // Copy scanline by scanline
-    unsigned char* dst = &mData[pY * mWidth * bpp];
-    const unsigned char* src = pImage.GetData();
-    for( unsigned int i = 0; i < pImage.GetHeight(); i++ )
-    {
-        memcpy( &dst[pX * bpp], src, pImage.GetWidth() * bpp );
+	// Must fit inside boundaries
+	if( srcX + width > srcImage.GetWidth() || srcY + height > srcImage.GetHeight() )
+        return false;
 
+    // Copy line by line
+    unsigned char* dst = &mData[dstY * mWidth * bpp];
+    const unsigned char* src = &srcImage.GetData()[srcY * srcImage.GetWidth() * bpp];
+    for( unsigned int i = 0; i < height; i++ )
+    {
+		// Copy line
+        memcpy( &dst[dstX * bpp], &src[srcX * bpp], width * bpp );
+
+		// Advance to next line
         dst += mWidth * bpp;
-        src += pImage.GetWidth() * bpp;
+        src += srcImage.GetWidth() * bpp;
     }
 
     return true;
+}
+
+bool Image::Copy( const Image& srcImage, unsigned int destX, unsigned int destY )
+{
+	return Copy(srcImage, destX, destY, 0, 0, srcImage.GetWidth(), srcImage.GetHeight());
 }
 
 void Image::ChangeGamma( float pGamma )

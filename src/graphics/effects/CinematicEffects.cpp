@@ -103,7 +103,8 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 	float		alpha, dalpha;
 	int			col;
 
-	if (c->numbitmap < 0 || !tb->actif) return false;
+	if (c->numbitmap < 0 || tb == 0)
+		return false;
 
 	if (TotOldPos == NBOLDPOS)
 	{

@@ -5436,12 +5436,6 @@ static float _AvgFrameDiff = 150.f;
 	{
 		LogDebug << "reload all textures";
 		ReloadAllTextures();
-
-		if(ControlCinematique)
-		{
-			ActiveAllTexture(ControlCinematique);
-		}
-
 		WILL_RELOAD_ALL_TEXTURES=0;
 	}
 

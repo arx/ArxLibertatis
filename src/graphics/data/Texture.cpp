@@ -96,27 +96,6 @@ bool				bGlobalTextureStretch;
 
 /*-----------------------------------------------------------------------------*/
 
-class DevilLib
-{
-public:
-    DevilLib()
-    {
-        ilInit();
-
-		// Set the origin to be used when loading all images, 
-		// so that any image with a different origin will be
-		// flipped to have the set origin
-		ilOriginFunc( IL_ORIGIN_UPPER_LEFT );
-		ilEnable( IL_ORIGIN_SET );
-    }
-
-    ~DevilLib()
-    {
-        ilShutDown();
-    }
-} gDevilLib;
-
-
 TextureContainer * MakeTCFromFile(const char * tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;

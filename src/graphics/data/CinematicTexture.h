@@ -2,18 +2,10 @@
 #ifndef ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
 #define ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
 
-#include <windows.h> // TODO for HBITMAP
-
 #include "graphics/GraphicsTypes.h" // for EERIE_2D and EERIE_3D
-
-
-#define MAX_WIDTH_AND_HEIGHT 256
-#define MAX_BITMAP 256
-
 
 class TextureContainer;
 class Cinematic;
-
 
 // TODO better name
 struct C_INDEXED {
@@ -22,7 +14,7 @@ struct C_INDEXED {
 	int bitmapw;
 	int bitmaph;
 	int nbvertexs;
-	TextureContainer * tex;
+	Texture2D* tex;
 	int startind;
 	int nbind;
 };
@@ -49,8 +41,7 @@ struct CinematicGrid {
 	EERIE_3D * vertexs;
 	C_UV * uvs;
 	C_IND * inds;
-	int nbmat;
-	C_INDEXED * mats;
+	std::vector<C_INDEXED> mats;
 	float dx;
 	float dy;
 	int nbx;
@@ -58,26 +49,17 @@ struct CinematicGrid {
 	int echelle;
 };
 
-struct CinematicBitmap {
-	short actif, load;
-	char * dir;
-	char * name;
-	HBITMAP hbitmap;
+class CinematicBitmap {
+public:
+	~CinematicBitmap();
+
+public:
 	int w, h;
 	int nbx, nby;
 	CinematicGrid grid;
 	int dreaming;
 };
 
-
-void DeleteAllBitmap();
-
-void InitMapLoad();
-CinematicBitmap * GetFreeBitmap(int * num);
-bool DeleteFreeBitmap(int num);
-int CreateAllMapsForBitmap(const std::string & path, Cinematic * c);
-bool ActiveAllTexture(Cinematic * c);
-
-bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c);
+CinematicBitmap* CreateCinematicBitmap(const std::string & path, Cinematic * c);
 
 #endif // ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H

@@ -5961,12 +5961,6 @@ void DANAE::ManageKeyMouse()
 						ARX_TIME_Pause();
 						DanaeSwitchFullScreen();
 						ReloadAllTextures();
-
-						if(ControlCinematique)
-						{
-							ActiveAllTexture(ControlCinematique);
-						}
-
 						ARX_TIME_UnPause();
 						LaunchDummyParticle();
 						this->kbd.inkey[INKEY_F1]=0;

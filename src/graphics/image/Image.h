@@ -28,7 +28,9 @@ public:
 
     const Image& operator = ( const Image& pOther );
 
-    void Create( unsigned int pWidth, unsigned int pHeight, Format pFormat, unsigned int pNumMipmaps = 1, unsigned int pDepth = 1 );
+	bool LoadFromMemory(void* pData, unsigned int size);
+
+    void Create( unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1 );
 	
 	void Clear();
 
@@ -51,7 +53,8 @@ public:
 
     //! Copy an image into this image's buffer.
     //! Works only with uncompressed formats
-    bool Copy( const Image& pImage, unsigned int pX, unsigned int pY );
+    bool Copy( const Image& srcImage, unsigned int dstX, unsigned int dstY );
+	bool Copy( const Image& srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height );
 
     void ChangeGamma( float pGamma );
     

@@ -186,11 +186,6 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 
 	ARX_Text_Init();
 
-	if (ControlCinematique)
-	{
-		ActiveAllTexture(ControlCinematique);
-	}
-
 	danaeApp.DANAEStartRender();
 }
 
@@ -206,11 +201,6 @@ void ARXMenu_Options_Video_SetFullscreen(bool _bEnable)
 {
 	DanaeSwitchFullScreen();
 	pMenuConfig->bFullScreen = _bEnable;
-
-	if (ControlCinematique)
-	{
-		ActiveAllTexture(ControlCinematique);
-	}
 }
 
 //-----------------------------------------------------------------------------
