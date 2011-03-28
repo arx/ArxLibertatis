@@ -76,6 +76,9 @@ const u32 CURRENT_THEA_VERSION = 2015;
 const size_t SIZE_NAME = 256;
 const size_t SIZE_IDENTITY_OBJECT = 17;
 
+// Magic conversion constant used for loading rotations in TEO files.
+const float THEO_ROTCONVERT = 0.087890625f;
+
 typedef s32 TBOOL;
 
 struct ArxQuat {

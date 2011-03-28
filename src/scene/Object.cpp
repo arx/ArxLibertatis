@@ -550,9 +550,6 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	return eerie;
 }
 
-// Magic conversion constant used for loading rotations in TEO files.
-const float THEO_ROTCONVERT = 0.087890625f;
-
 // TODO is this actually used?
 void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, size_t * poss, long version) {
 	

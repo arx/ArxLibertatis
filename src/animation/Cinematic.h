@@ -49,8 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct C_KEY;
 struct CinematicGrid;
 
-// TODO used for loading
-#pragma pack(push,1)
 class CinematicLight {
 	
 public:
@@ -75,7 +73,6 @@ public:
 	};
 	
 };
-#pragma pack(pop)
 
 class Cinematic {
 	

@@ -40,14 +40,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
+#include "io/CinematicFormat.h"
 
 #include "scene/CinematicSound.h"
 
 using std::search;
 using std::string;
-
-static const s32 CINEMATIC_FILE_VERSION = (1<<16) | 76;
-static const s16 INTERP_NO_FADE = 2;
+using std::copy;
 
 extern CinematicBitmap TabBitmap[];
 extern CinematicTrack * CKTrack;
@@ -56,167 +55,7 @@ extern int LSoundChoose;
 
 #pragma pack(push,1)
 
-// Version 1.59 structures
 
-struct C_KEY_1_59 {
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	int typeinterp;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	float speed;
-};
-
-// Version 1.65 structures
-
-struct C_KEY_1_65 {
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	int typeinterp;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	int idsound;
-	float speed;
-};
-
-// Version 1.70 structures
-
-struct C_KEY_1_70 {
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	short typeinterp, force;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	int idsound;
-	float speed;
-};
-
-// Version 1.71 structures
-
-struct C_KEY_1_71 {
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	short typeinterp, force;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	int idsound;
-	float speed;
-	CinematicLight light;
-};
-
-// Version 1.72 structures
-
-struct CinematicLight_1_72 {
-	EERIE_3D pos;
-	float fallin;
-	float fallout;
-	float r, g, b;
-	float intensity;
-	float intensiternd;
-};
-
-struct C_KEY_1_72 {
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	short typeinterp, force;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	int idsound;
-	float speed;
-	CinematicLight_1_72 light;
-	EERIE_3D posgrille;
-	float angzgrille;
-};
-
-// Version 1.74 structures
-
-struct CinematicLight_1_74 {
-	EERIE_3D pos;
-	float fallin;
-	float fallout;
-	float r, g, b;
-	float intensity;
-	float intensiternd;
-	int   prev;
-	int   next;
-};
-
-struct C_KEY_1_74 {
-	int frame;
-	int numbitmap;
-	int fx; //associated fx
-	short typeinterp, force;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	int idsound;
-	float speed;
-	CinematicLight_1_74 light;
-	EERIE_3D posgrille;
-	float angzgrille;
-};
-
-// Version 1.75 structures
-
-struct C_KEY_1_75 {
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	short typeinterp, force;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	int idsound;
-	float speed;
-	CinematicLight_1_74 light;
-	EERIE_3D posgrille;
-	float angzgrille;
-	float speedtrack;
-};
-
-// Version 1.75 structures
-
-struct C_KEY_1_76 {
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	short typeinterp, force;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	float speed;
-	CinematicLight_1_74 light;
-	EERIE_3D posgrille;
-	float angzgrille;
-	float speedtrack;
-	int idsound[16];
-};
 
 #pragma pack(pop)
 
@@ -420,8 +259,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	// Load track and keys.
 	
-	// TODO struct loading
-	CinematicTrack t;
+	SavedCinematicTrack t;
 	if(!safeGet(t, data, size)) {
 		LogDebug << "error reading track";
 		return false;
@@ -568,17 +406,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.typeinterp = k172.typeinterp;
 			k.force = k172.force;
 			k.idsound[C_KEY::French] = k172.idsound;
-			k.light.pos = k172.light.pos;
-			k.light.fallin = k172.light.fallin;
-			k.light.fallout = k172.light.fallout;
-			k.light.r = k172.light.r;
-			k.light.g = k172.light.g;
-			k.light.b = k172.light.b;
-			k.light.intensity = k172.light.intensity;
-			k.light.intensiternd = k172.light.intensiternd;
-			k.posgrille.x = k172.posgrille.x;
-			k.posgrille.y = k172.posgrille.y;
-			k.posgrille.z = k172.posgrille.z;
+			k.light = k172.light;
+			k.posgrille = k172.posgrille;
 			k.angzgrille = k172.angzgrille;
 			k.speedtrack = 1.f;
 			
@@ -606,17 +435,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.typeinterp = k174.typeinterp;
 			k.force = k174.force;
 			k.idsound[C_KEY::French] = k174.idsound;
-			k.light.pos = k174.light.pos;
-			k.light.fallin = k174.light.fallin;
-			k.light.fallout = k174.light.fallout;
-			k.light.r = k174.light.r;
-			k.light.g = k174.light.g;
-			k.light.b = k174.light.b;
-			k.light.intensity = k174.light.intensity;
-			k.light.intensiternd = k174.light.intensiternd;
-			k.posgrille.x = k174.posgrille.x;
-			k.posgrille.y = k174.posgrille.y;
-			k.posgrille.z = k174.posgrille.z;
+			k.light = k174.light;
+			k.posgrille = k174.posgrille;
 			k.angzgrille = k174.angzgrille;
 			k.speedtrack = 1.f;
 			
@@ -640,27 +460,19 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.typeinterp = k175.typeinterp;
 			k.force = k175.force;
 			k.idsound[C_KEY::French] = k175.idsound;
-			k.light.pos = k175.light.pos;
-			k.light.fallin = k175.light.fallin;
-			k.light.fallout = k175.light.fallout;
-			k.light.r = k175.light.r;
-			k.light.g = k175.light.g;
-			k.light.b = k175.light.b;
-			k.light.intensity = k175.light.intensity;
-			k.light.intensiternd = k175.light.intensiternd;
-			k.posgrille.x = k175.posgrille.x;
-			k.posgrille.y = k175.posgrille.y;
-			k.posgrille.z = k175.posgrille.z;
+			k.light = k175.light;
+			k.posgrille = k175.posgrille;
 			k.angzgrille = k175.angzgrille;
 			k.speedtrack = k175.speedtrack;
 			
 		} else {
+			
 			C_KEY_1_76 k176;
 			if(!safeGet(k176, data, size)) {
 				LogDebug << "error reading key v1.76";
 				return false;
 			}
-
+			
 			k.angz = k176.angz;
 			k.color = k176.color;
 			k.colord = k176.colord;
@@ -672,20 +484,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.speed = k176.speed;
 			k.typeinterp = k176.typeinterp;
 			k.force = k176.force;
-			k.light.pos = k176.light.pos;
-			k.light.fallin = k176.light.fallin;
-			k.light.fallout = k176.light.fallout;
-			k.light.r = k176.light.r;
-			k.light.g = k176.light.g;
-			k.light.b = k176.light.b;
-			k.light.intensity = k176.light.intensity;
-			k.light.intensiternd = k176.light.intensiternd;
-			k.posgrille.x = k176.posgrille.x;
-			k.posgrille.y = k176.posgrille.y;
-			k.posgrille.z = k176.posgrille.z;
+			k.light = k176.light;
+			k.posgrille = k176.posgrille;
 			k.angzgrille = k176.angzgrille;
 			k.speedtrack = k176.speedtrack;
-			memcpy(k.idsound, k176.idsound, sizeof(int) * 16);
+			copy(k176.idsound, k176.idsound + 16, k.idsound);
+			
 		}
 		
 		if(version <= ((1 << 16) | 67)) {
@@ -708,7 +512,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		}
 		
 		FillKeyTemp(&k.pos, k.angz, k.frame, k.numbitmap, k.fx, k.typeinterp, k.color, k.colord, k.colorf, k.speed, -1, k.force, &k.light, &k.posgrille, k.angzgrille, k.speedtrack);
-		memcpy(&KeyTemp.idsound, &k.idsound, 16 * 4);
+		copy(k.idsound, k.idsound + 16, KeyTemp.idsound);
 		AddKeyLoad(&KeyTemp);
 		
 		if(i == 0) {
