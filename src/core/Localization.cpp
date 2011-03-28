@@ -239,7 +239,7 @@ void Localisation_Init()
 	u16* Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
 
 	// if no file was loaded
-	if ( Localisation )
+	if ( !Localisation )
 	{
 		// No file loaded and locale is set to german or french
 		if (GERMAN_VERSION || FRENCH_VERSION)
@@ -257,6 +257,10 @@ void Localisation_Init()
 		// Load the default english locale file
 		Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
 	}
+
+	LogDebug << "Loaded localisation file " << tx;
+	if ( !Localisation )
+		LogFatal << "Could not load localisation file " << tx;
 	
 	// Scale the loaded size to new stride of uint16_t vs char
 	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
