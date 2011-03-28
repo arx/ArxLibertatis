@@ -564,7 +564,7 @@ void ARXDRAW_DrawPolyBoom()
 								
 							{
 								
-								SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							SETTC(polyboom[i].tc); 
 
@@ -596,7 +596,7 @@ void ARXDRAW_DrawPolyBoom()
 																		&ltv[3]);
 									}
 								
-								SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 							}
 						}
 					break;				
@@ -650,7 +650,7 @@ void ARXDRAW_DrawPolyBoom()
 							EE_RT2(&ltv[1],&ltv[1]);
 							EE_RT2(&ltv[2],&ltv[2]);
 								
-								SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 								GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 						SETTC(polyboom[i].tc); 
 				
@@ -666,7 +666,7 @@ void ARXDRAW_DrawPolyBoom()
 																	&ltv[3]);
 								}
 
-						SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+						GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 								
 							}
 					break;

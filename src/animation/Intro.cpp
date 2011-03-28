@@ -121,7 +121,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 	Project.vsync = 0;
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
 	GRenderer->SetRenderState(Renderer::ColorKey, false);
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
@@ -142,7 +142,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	Project.vsync = 1;
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
@@ -153,7 +153,7 @@ void ARX_INTERFACE_ShowARKANE()
 {
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
 	GRenderer->SetRenderState(Renderer::ColorKey, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
@@ -181,7 +181,7 @@ void ARX_INTERFACE_ShowARKANE()
 	Project.vsync = 1;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);

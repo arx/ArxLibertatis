@@ -920,7 +920,7 @@ void ARX_INTERFACE_NoteManage()
 
 		if (NoteTexture)
 		{
-			SETTEXTUREWRAPMODE( D3DTADDRESS_CLAMP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 			DrawBookInterfaceItem( NoteTexture, NotePosX, NotePosY);
 
 			if (Note.type==NOTE_TYPE_BOOK || Note.type == NOTE_TYPE_BIGNOTE)
@@ -1005,7 +1005,7 @@ void ARX_INTERFACE_NoteManage()
 					}
 				}
 
-				SETTEXTUREWRAPMODE( D3DTADDRESS_WRAP);
+				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			}
 			else
 			{
@@ -9005,7 +9005,7 @@ void DANAE::DrawAllInterface()
 {
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	if (!EDITMODE)
 	{
@@ -9916,7 +9916,7 @@ void DANAE::DrawAllInterface()
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
 
 extern long FRAME_COUNT;
@@ -10299,7 +10299,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 		ManageIgnition_2(DRAGINTER);
 		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-		SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	}
 
 	TextureContainer * surf;
@@ -10352,7 +10352,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 			fTexSizeX, fTexSizeY, 0.f,
 			surf,D3DCOLORWHITE);
 
-		SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 		return;
 	}
 
@@ -10819,6 +10819,6 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
 		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
-		SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	}
 }

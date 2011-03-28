@@ -4368,7 +4368,7 @@ extern long FINAL_COMMERCIAL_DEMO;
 bool bRenderInterList = true; //false;
 void RenderInter(float from, float to) {
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	float val = -0.6f;
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
 	EERIE_3D temp;
@@ -4638,7 +4638,7 @@ void RenderInter(float from, float to) {
 	}
 
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	val = -0.3f;
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
 }

@@ -4688,7 +4688,7 @@ void DANAE_StartNewQuest()
 
 bool DANAE_ManageSplashThings()
 {
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	SetFilteringMode(Bilinear);
 
@@ -4767,7 +4767,7 @@ bool DANAE_ManageSplashThings()
 
 				SPLASH_START=0;
 				SPLASH_THINGS_STAGE++;
-				GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 				return true;
 			}
 
@@ -4785,7 +4785,7 @@ bool DANAE_ManageSplashThings()
 				SPLASH_THINGS_STAGE++;
 			}
 
-			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
 			
 		}
@@ -4808,7 +4808,7 @@ bool DANAE_ManageSplashThings()
 				SPLASH_THINGS_STAGE++;
 			}
 
-			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
 		}
 
@@ -4841,7 +4841,7 @@ bool DANAE_ManageSplashThings()
 			if (bGameNotFirstLaunch == false)
 				bGameNotFirstLaunch = true;
 
-			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
 			
 		}
@@ -4856,12 +4856,12 @@ bool DANAE_ManageSplashThings()
 			if (bGameNotFirstLaunch == false)
 				bGameNotFirstLaunch = true;
 
-			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
 		}
 	}
 
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	return false;
 }
 
@@ -5472,7 +5472,7 @@ static float _AvgFrameDiff = 150.f;
 		FirstFrame=1;
 		SPLASH_THINGS_STAGE=0;
 		INTRO_NOT_LOADED=0;
-		GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 		return false;
 	}
 
@@ -5663,7 +5663,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 
 	GRenderer->SetRenderState(Renderer::Fog, true);
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	// Are we displaying a 2D cinematic ? Yes = manage it
 	if (	PLAY_LOADED_CINEMATIC
@@ -6719,7 +6719,7 @@ static float _AvgFrameDiff = 150.f;
 	if (ARXmenu.currentmode == AMCM_OFF)
 	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
 	{
-		SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 		DrawAllInterface();
 		DrawAllInterfaceFinish();
 
@@ -6735,7 +6735,7 @@ static float _AvgFrameDiff = 150.f;
 		}
 	}
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	if(bRenderInterList)
 	{
@@ -6760,7 +6760,7 @@ static float _AvgFrameDiff = 150.f;
 		BENCH_SPEECH = EndBench();
 	}
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	if(pTextManage && !pTextManage->Empty())
 	{
@@ -7399,7 +7399,7 @@ HRESULT DANAE::InitDeviceObjects()
 	GRenderer->SetRenderState(Renderer::Lighting, false);
 
 	// Setup Texture Border RenderState
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->GetTextureStage(1)->DisableColor();
 	
@@ -7412,12 +7412,12 @@ HRESULT DANAE::InitDeviceObjects()
 	
 	SetZBias(0);
 
-	GDevice->SetTextureStageState(1,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
-	GDevice->SetTextureStageState(1,D3DTSS_MINFILTER,D3DTFN_LINEAR);
-	GDevice->SetTextureStageState(1,D3DTSS_MAGFILTER,D3DTFN_LINEAR);
-	GDevice->SetTextureStageState(2,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
-	GDevice->SetTextureStageState(2,D3DTSS_MINFILTER,D3DTFN_LINEAR);
-	GDevice->SetTextureStageState(2,D3DTSS_MAGFILTER,D3DTFN_LINEAR);
+	GRenderer->GetTextureStage(1)->SetWrapMode(TextureStage::WrapRepeat);
+	GDevice->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_LINEAR);
+	GDevice->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFN_LINEAR);
+	GRenderer->GetTextureStage(2)->SetWrapMode(TextureStage::WrapRepeat);
+	GDevice->SetTextureStageState(2, D3DTSS_MINFILTER, D3DTFN_LINEAR);
+	GDevice->SetTextureStageState(2, D3DTSS_MAGFILTER, D3DTFN_LINEAR);
 
 	ComputePortalVertexBuffer();
 	pDynamicVertexBuffer				=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);

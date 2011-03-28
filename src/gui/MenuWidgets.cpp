@@ -1940,7 +1940,7 @@ bool Menu2_Render()
 		pTextManage->Clear();
 	}
 
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -2076,7 +2076,7 @@ bool Menu2_Render()
 			}
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			danaeApp.DANAEEndRender();
@@ -3314,7 +3314,7 @@ bool Menu2_Render()
 		pTextManage->Render();
 	}
 
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -3398,9 +3398,9 @@ bool Menu2_Render()
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
+	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
@@ -7344,7 +7344,7 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 	
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
 
@@ -7355,7 +7355,7 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 					scursor[iNumCursor],D3DCOLORWHITE);
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
 
 //-----------------------------------------------------------------------------

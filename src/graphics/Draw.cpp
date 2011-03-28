@@ -1167,14 +1167,6 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3D
 //*************************************************************************************
 //*************************************************************************************
 
-void SETTEXTUREWRAPMODE(DWORD mode)
-{
-	GDevice->SetTextureStageState( 0,D3DTSS_ADDRESS ,mode);
-}
-
-//*************************************************************************************
-//*************************************************************************************
-
 void EERIEPOLY_DrawWired(EERIEPOLY *ep,long col)
 {
 	D3DTLVERTEX ltv[5];

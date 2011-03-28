@@ -29,6 +29,13 @@ public:
 		ArgMask			= 0x0000F,
 		ArgComplement   = 0x00010		
 	};
+
+	enum WrapMode
+    {
+        WrapRepeat,
+        WrapMirror,
+		WrapClamp
+	};
 	
 	TextureStage(unsigned int stage);
 	
@@ -37,32 +44,40 @@ public:
 
 	virtual void SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
 	virtual void SetColorOp(TextureOp textureOp) = 0;
+	inline void SetColorOp(TextureArg texArg);
+	inline void DisableColor();
+
 	virtual void SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
 	virtual void SetAlphaOp(TextureOp textureOp) = 0;
+	inline void SetAlphaOp(TextureArg texArg);
+	inline void DisableAlpha();
 
-	inline void SetColorOp(TextureArg texArg)
-	{
-		SetColorOp(OpSelectArg1, texArg, ArgCurrent);
-	}
-	
-	inline void DisableColor()
-	{
-		SetColorOp(OpDisable, ArgCurrent, ArgCurrent);
-	}
-
-	inline void SetAlphaOp(TextureArg texArg)
-	{
-		SetAlphaOp(OpSelectArg1, texArg, ArgCurrent);
-	}
-	
-	inline void DisableAlpha()
-	{
-		SetAlphaOp(OpDisable, ArgCurrent, ArgCurrent);
-	}
+	virtual void SetWrapMode(WrapMode wrapMode) = 0;
 	
 protected:
 	unsigned int mStage;
 };
+
+
+inline void TextureStage::SetColorOp(TextureArg texArg)
+{
+	SetColorOp(OpSelectArg1, texArg, ArgCurrent);
+}
+
+inline void TextureStage::DisableColor()
+{
+	SetColorOp(OpDisable, ArgCurrent, ArgCurrent);
+}
+
+inline void TextureStage::SetAlphaOp(TextureArg texArg)
+{
+	SetAlphaOp(OpSelectArg1, texArg, ArgCurrent);
+}
+
+inline void TextureStage::DisableAlpha()
+{
+	SetAlphaOp(OpDisable, ArgCurrent, ArgCurrent);
+}
 
 
 #endif // _TEXTURE_STAGE_H_

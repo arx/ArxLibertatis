@@ -24,12 +24,13 @@ const D3DTEXTUREOP ARXToDX7TextureOp[] = {
 const DWORD ARXToDX7TextureArg[] = {
 						D3DTA_DIFFUSE,						// TexArgDiffuse,
 						D3DTA_CURRENT,						// TexArgCurrent,						
-						D3DTA_TEXTURE,						// TexArgTexture,
+						D3DTA_TEXTURE						// TexArgTexture,
 									};
 
 const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
-						D3DTADDRESS_CLAMP,					// Wrap_Clamp,
-						D3DTADDRESS_WRAP					// Wrap_Repeat
+						D3DTADDRESS_WRAP,					// WrapRepeat,
+						D3DTADDRESS_MIRROR,					// WrapMirror,
+						D3DTADDRESS_CLAMP					// WrapClamp,
 									};
 
 const D3DTEXTUREMAGFILTER ARXToDX7MagFilter[] = {
@@ -457,6 +458,8 @@ public:
 	void SetColorOp(TextureOp textureOp);
 	void SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2);
 	void SetAlphaOp(TextureOp textureOp);
+
+	void SetWrapMode(WrapMode wrapMode);
 };
 
 DX7TextureStage::DX7TextureStage(unsigned int textureStage)
@@ -532,14 +535,10 @@ void DX7TextureStage::SetTexture( Texture& pTexture )
 	DX7Texture2D* tex = (DX7Texture2D*)&pTexture;
 
 	// TODO-DX7: Cache states
-	D3DTEXTUREADDRESS addressU = ARXToDX7WrapMode[tex->GetWrapMode(Texture::Wrap_S)];
-	D3DTEXTUREADDRESS addressV = ARXToDX7WrapMode[tex->GetWrapMode(Texture::Wrap_T)];
 	D3DTEXTUREMAGFILTER magFilter = ARXToDX7MagFilter[tex->GetMagFilter()];
 	D3DTEXTUREMINFILTER minFilter = ARXToDX7MinFilter[tex->GetMinFilter()];	
 	D3DTEXTUREMIPFILTER mipFilter = ARXToDX7MipFilter[tex->GetMinFilter()];	
 
-	GDevice->SetTextureStageState(mStage, D3DTSS_ADDRESSU, addressU);
-	GDevice->SetTextureStageState(mStage, D3DTSS_ADDRESSV, addressV);
 	GDevice->SetTextureStageState(mStage, D3DTSS_MAGFILTER, magFilter);
 	GDevice->SetTextureStageState(mStage, D3DTSS_MINFILTER, minFilter);
 	GDevice->SetTextureStageState(mStage, D3DTSS_MIPFILTER, mipFilter);
@@ -553,6 +552,11 @@ void DX7TextureStage::SetTexture( Texture& pTexture )
 void DX7TextureStage::ResetTexture()
 {
 	GDevice->SetTexture(mStage, 0);
+}
+
+void DX7TextureStage::SetWrapMode(TextureStage::WrapMode wrapMode)
+{
+	GDevice->SetTextureStageState(mStage, D3DTSS_ADDRESS, ARXToDX7WrapMode[wrapMode]);
 }
 
 

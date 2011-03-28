@@ -1895,7 +1895,7 @@ float CLevitate::Render()
 	//trac� du cone back
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
 
 	if (this->tsouffle) GDevice->SetTexture(0, this->tsouffle->m_pddsSurface);
 	else GDevice->SetTexture(0, NULL);

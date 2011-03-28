@@ -436,7 +436,7 @@ void CSummonCreature::RenderFissure()
 
 	if (tex_light && tex_light->m_pddsSurface)
 	{
-		SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
 		SETTC(tex_light);
 	}
 
@@ -544,7 +544,7 @@ float CSummonCreature::Render()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -591,7 +591,7 @@ float CSummonCreature::Render()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	return (fSizeIntro / end);
 }

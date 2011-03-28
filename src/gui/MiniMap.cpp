@@ -469,7 +469,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 			if (fl2)
 			{
@@ -736,7 +736,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 		if (flag != 2)
 		{
-			GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

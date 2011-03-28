@@ -9,22 +9,6 @@
 class Texture
 {
 public:
-    enum WrapAxis
-    {
-        Wrap_S,
-        Wrap_T,
-        Wrap_AxisNum,
-        Wrap_AxisMAX = 0xFFFFFFFF
-    };
-
-    enum WrapMode
-    {
-        Wrap_Clamp,
-        Wrap_Repeat,
-        Wrap_ModeNum,
-        Wrap_ModeMAX = 0xFFFFFFFF
-    };
-
     enum MagFilter
     {
         MagFilter_Nearest,
@@ -73,11 +57,6 @@ public:
         return mFormat;
     }
         
-    virtual void SetWrapMode( WrapAxis pWrapAxis, WrapMode pWrapMode )
-    {
-        mWrapMode[pWrapAxis] = pWrapMode;        
-    }
-    
     virtual void SetMagFilter( MagFilter pFilter )
     {
         mMagFilter = pFilter;
@@ -108,12 +87,7 @@ public:
         return mMagFilter;
     }
 
-    WrapMode GetWrapMode( WrapAxis pWrapAxis ) const
-    {
-        return mWrapMode[pWrapAxis];
-    }
-
-    float GetAnisotropy() const
+	float GetAnisotropy() const
     {
         return mAnisotropy;
     }
@@ -129,8 +103,6 @@ protected:
         , mDepth(1)
         , mAnisotropy(0.0f)
     {
-        mWrapMode[Wrap_S] = Wrap_Repeat;
-        mWrapMode[Wrap_T] = Wrap_Repeat;
     }
     
 protected:
@@ -138,7 +110,6 @@ protected:
     bool            mHasMipmaps;
     MinFilter       mMinFilter;
     MagFilter       mMagFilter;
-    WrapMode        mWrapMode[2];    
     unsigned int    mWidth;
     unsigned int    mHeight;
     unsigned int    mDepth;

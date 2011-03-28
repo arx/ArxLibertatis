@@ -214,7 +214,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 	GRenderer->GetTextureStage(0)->DisableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendZero);
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	//SETTC(mask->m_pddsSurface);
 	SETTC(mask);
@@ -289,7 +289,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 		SpecialFadeDx = -1.f;
 	}
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	return true;
 }
@@ -311,7 +311,7 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendZero);
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	SETTC(mask);
 
@@ -385,7 +385,7 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 		SpecialFadeDx = -1.f;
 	}
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	return true;
 }

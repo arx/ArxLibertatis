@@ -230,7 +230,7 @@ float CCreateField::Render()
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -330,7 +330,7 @@ float CCreateField::Render()
 		fwrap = 360;
 	}
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	if (tex_jelly && tex_jelly->m_pddsSurface)
 	{
@@ -1059,7 +1059,7 @@ void CRiseDead::RenderFissure()
 
 	if (tex_light && tex_light->m_pddsSurface)
 	{
-		SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
 		SETTC(tex_light);
 	}
 
@@ -1234,7 +1234,7 @@ float CRiseDead::Render()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -1294,7 +1294,7 @@ float CRiseDead::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 	this->DrawStone();
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullNone);

@@ -258,7 +258,7 @@ HRESULT Cinematic::InitDeviceObjects()
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(Renderer::CullNone);
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	D3DDEVICEDESC7 devicedesc;
 	GDevice->GetCaps(&devicedesc);
@@ -324,7 +324,7 @@ HRESULT Cinematic::DeleteDeviceObjects()
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	D3DDEVICEDESC7 devicedesc;
 	GDevice->GetCaps(&devicedesc);
