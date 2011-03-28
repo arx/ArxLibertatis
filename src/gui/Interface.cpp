@@ -8440,7 +8440,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			rec.x2 = (300.f + 50 + BOOKDECX) * Xratio;
 			rec.y2 = (338.f + BOOKDECY) * Yratio;
 			
-			GRenderer->Clear(Renderer::DepthBuffer, 0, 0, 1, &rec);
+			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
 
 			rec.x2 -= 50;
 		}
