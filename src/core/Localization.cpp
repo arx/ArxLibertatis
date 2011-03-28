@@ -257,6 +257,9 @@ void Localisation_Init()
 		// Load the default english locale file
 		Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
 	}
+
+	if ( !Localisation )
+		LogFatal << "Could not load localisation files";
 	
 	// Scale the loaded size to new stride of uint16_t vs char
 	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
