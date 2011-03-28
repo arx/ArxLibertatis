@@ -55,7 +55,6 @@ class TextureContainer;
 
 #include "graphics/BaseGraphicsTypes.h"
 
-#pragma pack(push,1)
 
 struct EERIE_TRI {
 	EERIE_3D v[3];
@@ -247,56 +246,54 @@ struct EERIE_PFACE
 //***********************************************************************
 //*		BEGIN EERIE OBJECT STRUCTURES									*
 //***********************************************************************
-struct NEIGHBOURS_DATA
-{
-	short	nb_Nvertex;
-	short	nb_Nfaces;
-	short *	Nvertex;
-	short *	Nfaces;
-}; // Aligned 1 2 4
+struct NEIGHBOURS_DATA {
+	short nb_Nvertex;
+	short nb_Nfaces;
+	short * Nvertex;
+	short * Nfaces;
+};
 
-struct PROGRESSIVE_DATA
-{
+struct PROGRESSIVE_DATA {
 	// ingame data
-	s16	actual_collapse; // -1 = no collapse
-	s16	need_computing;
-	f32	collapse_ratio;
+	short actual_collapse; // -1 = no collapse
+	short need_computing;
+	float collapse_ratio;
 	// static data
-	f32	collapse_cost;
-	s16	collapse_candidate;
-	s16	padd;
-}; // Aligned 1 2 4
+	float collapse_cost;
+	short collapse_candidate;
+	short padd;
+};
 
 struct EERIE_SPRINGS {
-	s16	startidx;
-	s16	endidx;
-	f32	restlength;
-	f32	constant;	// spring constant
-	f32	damping;	// spring damping
-	s32	type;
+	short startidx;
+	short endidx;
+	float restlength;
+	float constant; // spring constant
+	float damping; // spring damping
+	long type;
 };
 
 #define CLOTHES_FLAG_NORMAL	0
 #define CLOTHES_FLAG_FIX	1
 #define CLOTHES_FLAG_NOCOL	2
 
-struct CLOTHESVERTEX
-{
-	s16		idx;
-	u8		flags;
-	s8		coll;
-	EERIE_3D	pos;
-	EERIE_3D	velocity;
-	EERIE_3D	force;
-	f32		mass; // 1.f/mass
-
-	EERIE_3D	t_pos;
-	EERIE_3D	t_velocity;
-	EERIE_3D	t_force;
-
-	EERIE_3D	lastpos;
-
-}; // Aligned 1 2 4
+struct CLOTHESVERTEX {
+	
+	short idx;
+	unsigned char flags;
+	char coll;
+	EERIE_3D pos;
+	EERIE_3D velocity;
+	EERIE_3D force;
+	float mass; // 1.f/mass
+	
+	EERIE_3D t_pos;
+	EERIE_3D t_velocity;
+	EERIE_3D t_force;
+	
+	EERIE_3D lastpos;
+	
+};
 
 struct CLOTHES_DATA {
 	
@@ -665,15 +662,6 @@ struct EERIE_ROOM_DATA
 	TextureContainer		**	ppTextureContainer;
 };
 
-#pragma pack(push,1)
-struct EERIE_SAVE_ROOM_DATA
-{
-	s32 nb_portals;
-	s32 nb_polys;
-	s32 padd[6];
-};
-#pragma pack(pop)
-
 struct EERIE_PORTAL_DATA
 {
 	long nb_rooms;
@@ -681,8 +669,6 @@ struct EERIE_PORTAL_DATA
 	long nb_total;	// of portals
 	EERIE_PORTALS * portals;
 };
-
-#pragma pack(pop)
 
 
 typedef D3DTLVERTEX ARX_D3DVERTEX;

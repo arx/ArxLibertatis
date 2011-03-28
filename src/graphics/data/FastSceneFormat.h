@@ -15,7 +15,7 @@ struct UNIQUE_HEADER {
 	char path[256];
 	s32 count;
 	f32 version;
-	s32 compressedsize;
+	s32 uncompressedsize;
 	s32 pad[3];
 };
 
@@ -131,6 +131,12 @@ struct FAST_EP_DATA {
 		return *this;
 	}
 	
+};
+
+struct EERIE_SAVE_ROOM_DATA {
+	s32 nb_portals;
+	s32 nb_polys;
+	s32 padd[6];
 };
 
 

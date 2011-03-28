@@ -3510,14 +3510,14 @@ bool FastSceneLoad(const string & partial_path) {
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
-	char * rawdata = new char[uh->compressedsize];
+	char * rawdata = new char[uh->uncompressedsize];
 	if(rawdata == NULL) {
 		LogError << "FastSceneLoad: can't allocate buffer for uncompressed data";
 		free(dat);
 		return false;
 	}
 	
-	size_t rawsize = blastMem(dat + pos, size - pos, rawdata, uh->compressedsize);
+	size_t rawsize = blastMem(dat + pos, size - pos, rawdata, uh->uncompressedsize);
 	free(dat);
 	if(!rawsize) {
 		LogDebug << "FastSceneLoad: blastMem didn't return anything " << size << " " << pos;
@@ -3867,72 +3867,69 @@ bool FastSceneLoad(const string & partial_path) {
 	
 }
 
-bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
+#define checkalloc if(pos >= allocsize - 100000) { free(dat); return false; }
+
+/*!
+ * Save the currently loaded scene.
+ * @param partal_path Where to save the scene to.
+ */
+bool FastSceneSave(const string & partial_path) {
 	
-	(void)ms; // TODO why is this never used?
-	
-	std::string path;
-	path = "Game\\";
-	path += partial_path;
+	string path = "Game\\" + partial_path;
 	
 	LogDebug << "FastSceneSave" << path;
-
-	if (!CreateFullPath(path)) return false;
-
-	FileHandle	handle;
-	long count = 0;
-	unsigned char * dat;
-	long i, j, k, kk;
-
-	long allocsize = (256) * 60 + 1000000 +
-	                 sizeof(FAST_SCENE_HEADER) +
-	                 sizeof(FAST_TEXTURE_CONTAINER) * 1000 +
-	                 sizeof(FAST_ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
-
-	if (portals)
-	{
-		for (i = 0; i < portals->nb_total + 1; i++)
-		{
+	
+	if(!CreateFullPath(path)) {
+		return false;
+	}
+	
+	size_t allocsize = (256) * 60 + 1000000 + sizeof(FAST_SCENE_HEADER)
+	                   + sizeof(FAST_TEXTURE_CONTAINER) * 1000
+	                   + sizeof(FAST_ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
+	
+	if(portals) {
+		
+		for(long i = 0; i < portals->nb_total + 1; i++) {
 			allocsize += sizeof(EERIE_SAVE_PORTALS);
 		}
-
-		for (i = 0; i < portals->nb_rooms + 1; i++)
-		{
-			allocsize += sizeof(EERIE_ROOM_DATA);
+		
+		for(long i = 0; i < portals->nb_rooms + 1; i++) {
+			allocsize += sizeof(EERIE_SAVE_ROOM_DATA);
 			allocsize += sizeof(s32) * portals->room[i].nb_portals;
-			allocsize += sizeof(EP_DATA) * portals->room[i].nb_polys;
+			allocsize += sizeof(FAST_EP_DATA) * portals->room[i].nb_polys;
 		}
-
+		
 		allocsize += sizeof(ROOM_DIST_DATA_SAVE) * (portals->nb_rooms + 1) * (portals->nb_rooms + 1);
 	}
-
-	for (i = 0; i < ACTIVEBKG->nbanchors; i++)
-		allocsize += ACTIVEBKG->anchors[i].nblinked * 4;
-
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
+	
+	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
+		allocsize += ACTIVEBKG->anchors[i].nblinked * sizeof(s32);
+	}
+	
+	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
+		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
 			allocsize += sizeof(FAST_SCENE_INFO);
 			allocsize += ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize].nbpoly * (sizeof(EERIEPOLY) + 1);
 		}
-
-
-	long pos = 0;
-	dat = (unsigned char *)malloc(allocsize);
-
-	if (!dat)
+	}
+	
+	
+	size_t pos = 0;
+	unsigned char * dat = (unsigned char *)malloc(allocsize);
+	if(!dat) {
 		HERMES_Memory_Emergency_Out();
-
+	}
+	
 	memset(dat, 0, allocsize);
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
 	strcpy(uh->path, path.c_str());
 	uh->version = FTS_VERSION;
 	pos += sizeof(UNIQUE_HEADER);
-
-	std::string path2 = partial_path;
-	path2 +="*.scn";
-
-//	todo: find
+	
+	string path2 = partial_path + "*.scn";
+	
+	long count = 0;
+//	TODO: find
 //	struct _finddata_t fd;
 //  long idx;
 //	if ((idx = _findfirst(path2, &fd)) != -1)
@@ -3970,18 +3967,14 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 //
 //		_findclose(idx);
 //	}
-
-
+	
 	uh->count = count;
-	char fic[256];
-	sprintf(fic, "%sfast.fts", path.c_str());
+	string file = path + "fast.fts";
 	long compressedstart = pos;
-
+	
 	FAST_SCENE_HEADER * fsh = (FAST_SCENE_HEADER *)(dat + pos);
 	pos += sizeof(FAST_SCENE_HEADER);
-
-	if (pos >= allocsize - 100000) goto error;
-
+	
 	fsh->version = FTS_VERSION;
 	fsh->sizex = ACTIVEBKG->Xsize;
 	fsh->sizez = ACTIVEBKG->Zsize;
@@ -3991,92 +3984,73 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 	fsh->nb_anchors = ACTIVEBKG->nbanchors;
 	fsh->nb_portals = 0;
 	fsh->nb_rooms = 0;
-
-	if (portals)
-	{
+	
+	if(portals) {
 		fsh->nb_portals = portals->nb_total;
 		fsh->nb_rooms = portals->nb_rooms;
 	}
-
-	//FAST_TEXTURE_CONTAINER
-	unsigned char * tex;
-	tex = (unsigned char *)(dat + pos);
-
+	
 	fsh->nb_polys = 0;
-
+	
 	//Count textures...
-/*
-	for (j = 0; j < fsh->sizez; j++)
-		for (i = 0; i < fsh->sizex; i++)
-		{
-			for (k = 0; k < ACTIVEBKG->Backg[i+j*fsh->sizex].nbpoly; k++)
-			{
+	typedef std::map<TextureContainer *, s32> TextureContainerMap;
+	TextureContainerMap textures;
+	s32 texid = 0;
+	for(long j = 0; j < fsh->sizez; j++) {
+		for(long i = 0; i < fsh->sizex; i++) {
+			for(long k = 0; k < ACTIVEBKG->Backg[i+j*fsh->sizex].nbpoly; k++) {
+				
 				EERIEPOLY * ep = (EERIEPOLY *)&ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
-
-				if ((ep) && (ep->tex))
-				{
-					FAST_TEXTURE_CONTAINER * temp_tex = (FAST_TEXTURE_CONTAINER *)(tex);
-
-					for (kk = 0; kk < fsh->nb_textures; kk++)
-					{
-						if (temp_tex->tc == ep->tex) goto already_stored;
-
-						temp_tex = (FAST_TEXTURE_CONTAINER *)
-						           (unsigned char *)(tex + (sizeof(FAST_TEXTURE_CONTAINER) * (kk + 1)));
+				
+				if(ep && ep->tex) {
+					
+					if(textures.find(ep->tex) == textures.end()) {
+						textures[ep->tex] = ++texid;
+						
+						FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(dat + pos);
+						ftc->tc = texid;
+						strcpy(ftc->fic, ep->tex->m_texName.c_str());
+						ftc->temp = 0;
+						fsh->nb_textures++;
+						pos += sizeof(FAST_TEXTURE_CONTAINER);
+						
+						checkalloc
 					}
-
-					FAST_TEXTURE_CONTAINER * ftc;
-					ftc = (FAST_TEXTURE_CONTAINER *)(dat + pos);
-					ftc->tc = ep->tex;
-					strcpy(ftc->fic, ep->tex->m_texName.c_str());
-					ftc->temp = NULL;
-					fsh->nb_textures++;
-					pos += sizeof(FAST_TEXTURE_CONTAINER);
-
-					if (pos >= allocsize - 100000) goto error;
-
-				already_stored:
-					;
 				}
 			}
 		}
-*/
-
-	for (j = 0; j < fsh->sizez; j++)
-		for (i = 0; i < fsh->sizex; i++)
-		{
+	}
+	
+	for(long j = 0; j < fsh->sizez; j++) {
+		for(long i = 0; i < fsh->sizex; i++) {
 			FAST_SCENE_INFO * fsi = (FAST_SCENE_INFO *)(dat + pos);
 			pos += sizeof(FAST_SCENE_INFO);
-
-			if (pos >= allocsize - 100000) goto error;
-
+			
+			checkalloc
+			
 			fsi->nbianchors = ACTIVEBKG->Backg[i+j*fsh->sizex].nbianchors;
 			fsi->nbpoly = ACTIVEBKG->Backg[i+j*fsh->sizex].nbpoly;
-
-
-
-			for (k = 0; k < fsi->nbpoly; k++)
-			{
+			
+			for(long k = 0; k < fsi->nbpoly; k++) {
 				fsh->nb_polys++;
-
+				
 				FAST_EERIEPOLY * ep = (FAST_EERIEPOLY *)(dat + pos);
 				EERIEPOLY * ep2 = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
 				pos += sizeof(FAST_EERIEPOLY);
-
-				if (pos >= allocsize - 100000) goto error;
-
+				
+				checkalloc
+				
 				ep->room = ep2->room;
 				ep->paddy = 0;
 				ep->area = ep2->area;
 				ep->norm = ep2->norm;
 				ep->norm2 = ep2->norm2;
-				memcpy(ep->nrml, ep2->nrml, sizeof(EERIE_3D) * 4);
-				ep->tex = 0; //ep2->tex; FIXME
+				std::copy(ep2->nrml, ep2->nrml + 4, ep->nrml);
+				ep->tex = textures[ep2->tex];
 				ep->transval = ep2->transval;
 				ep->type = ep2->type;
-
-				for (kk = 0; kk < 4; kk++)
-				{
+				
+				for(long kk = 0; kk < 4; kk++) {
 					ep->v[kk].ssx = ep2->v[kk].sx;
 					ep->v[kk].sy = ep2->v[kk].sy;
 					ep->v[kk].ssz = ep2->v[kk].sz;
@@ -4084,103 +4058,96 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 					ep->v[kk].stv = ep2->v[kk].tv;
 				}
 			}
-
-			for (k = 0; k < fsi->nbianchors; k++)
-			{
+			
+			for(long k = 0; k < fsi->nbianchors; k++) {
 				s32 * ianch = (s32 *)(dat + pos);
 				pos += sizeof(s32);
-
-				if (pos >= allocsize - 100000) goto error;
-
+				checkalloc
 				*ianch = ACTIVEBKG->Backg[i+j*fsh->sizex].ianchors[k];
 			}
 		}
-
-	for (i = 0; i < ACTIVEBKG->nbanchors; i++)
-	{
+	}
+	
+	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
+		
 		FAST_ANCHOR_DATA * fad = (FAST_ANCHOR_DATA *)(dat + pos);
 		pos += sizeof(FAST_ANCHOR_DATA);
-
-		if (pos >= allocsize - 100000) goto error;
-
+		
+		checkalloc
+		
 		fad->flags = ACTIVEBKG->anchors[i].flags;
 		fad->pos = ACTIVEBKG->anchors[i].pos;
 		fad->nb_linked = ACTIVEBKG->anchors[i].nblinked;
 		fad->radius = ACTIVEBKG->anchors[i].radius;
 		fad->height = ACTIVEBKG->anchors[i].height;
-
-		for (long kk = 0; kk < fad->nb_linked; kk++)
-		{
+		
+		for(long kk = 0; kk < fad->nb_linked; kk++) {
 			s32 * lng = (s32 *)(dat + pos);
 			pos += sizeof(s32);
-
-			if (pos >= allocsize - 100000) goto error;
-
+			checkalloc
 			*lng = ACTIVEBKG->anchors[i].linked[kk];
 		}
 	}
-
-
-	if (portals)
-	{
-		for (i = 0; i < portals->nb_total; i++)
-		{
+	
+	if(portals) {
+		
+		for(long i = 0; i < portals->nb_total; i++) {
+			
 			EERIE_SAVE_PORTALS * epo = (EERIE_SAVE_PORTALS *)(dat + pos);
 			pos += sizeof(EERIE_SAVE_PORTALS);
 			
 			const EERIE_PORTALS & portal = portals->portals[i];
-
-			epo->room_1 = portals->portals[i].room_1;
-			epo->room_2 = portals->portals[i].room_2;
-			epo->useportal = portals->portals[i].useportal;
-			epo->paddy = portals->portals[i].paddy;
-			epo->poly.area = portals->portals[i].poly.area;
-			epo->poly.type = portals->portals[i].poly.type;
-			epo->poly.transval = portals->portals[i].poly.transval;
-			epo->poly.room = portals->portals[i].poly.room;
-			epo->poly.misc = portals->portals[i].poly.misc;
-			epo->poly.center = portals->portals[i].poly.center;
-			epo->poly.max = portals->portals[i].poly.max;
-			epo->poly.min = portals->portals[i].poly.min;
-			epo->poly.norm = portals->portals[i].poly.norm;
-			epo->poly.norm2 = portals->portals[i].poly.norm2;
-
+			
+			epo->room_1 = portal.room_1;
+			epo->room_2 = portal.room_2;
+			epo->useportal = portal.useportal;
+			epo->paddy = portal.paddy;
+			epo->poly.area = portal.poly.area;
+			epo->poly.type = portal.poly.type;
+			epo->poly.transval = portal.poly.transval;
+			epo->poly.room = portal.poly.room;
+			epo->poly.misc = portal.poly.misc;
+			epo->poly.center = portal.poly.center;
+			epo->poly.max = portal.poly.max;
+			epo->poly.min = portal.poly.min;
+			epo->poly.norm = portal.poly.norm;
+			epo->poly.norm2 = portal.poly.norm2;
+			
 			copy(portal.poly.nrml, portal.poly.nrml + 4, epo->poly.nrml);
 			copy(portal.poly.v, portal.poly.v + 4, epo->poly.v);
 			copy(portal.poly.tv, portal.poly.tv + 4, epo->poly.tv);
 		}
-
-		for (i = 0; i < portals->nb_rooms + 1; i++)
-		{
+		
+		for(long i = 0; i < portals->nb_rooms + 1; i++) {
+			
 			EERIE_SAVE_ROOM_DATA * erd = (EERIE_SAVE_ROOM_DATA *)(dat + pos);
 			pos += sizeof(EERIE_SAVE_ROOM_DATA);
+			
 			memset(erd, 0, sizeof(EERIE_SAVE_ROOM_DATA));
 			erd->nb_polys = portals->room[i].nb_polys;
 			erd->nb_portals = portals->room[i].nb_portals;
-
-            for (long jj = 0; jj < portals->room[i].nb_portals; jj++)
-			{
-                s32 * lng = (s32 *)(dat + pos);
-                pos += sizeof(s32);
-                *lng = portals->room[i].portals[jj];
+			
+			for(long jj = 0; jj < portals->room[i].nb_portals; jj++) {
+				s32 * lng = (s32 *)(dat + pos);
+				pos += sizeof(s32);
+				*lng = portals->room[i].portals[jj];
 			}
-
-			if (portals->room[i].nb_polys)
-			{
+			
+			if(portals->room[i].nb_polys) {
 				EP_DATA * ed = (EP_DATA *)(dat + pos);
 				pos += sizeof(EP_DATA) * portals->room[i].nb_polys;
 				memcpy(ed, portals->room[i].epdata, sizeof(EP_DATA)*portals->room[i].nb_polys);
 			}
 		}
 	}
-
-	if (!RoomDistance) ComputeRoomDistance();
-
-	if (portals && RoomDistance && NbRoomDistance > 0)
-	{
-		for (long n = 0; n < NbRoomDistance; n++)
-			for (long m = 0; m < NbRoomDistance; m++)
-			{
+	
+	if(!RoomDistance) {
+		ComputeRoomDistance();
+	}
+	
+	if(portals && RoomDistance && NbRoomDistance > 0) {
+		for(long n = 0; n < NbRoomDistance; n++) {
+			for(long m = 0; m < NbRoomDistance; m++) {
 				ROOM_DIST_DATA_SAVE * rdds = (ROOM_DIST_DATA_SAVE *)(dat + pos);
 				pos += sizeof(ROOM_DIST_DATA_SAVE);
 				EERIE_3D start;
@@ -4189,23 +4156,23 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 				rdds->startpos = start;
 				rdds->endpos = end;
 			}
+		}
 	}
-
+	
 	// Now Saving Whole Buffer
-	uh->compressedsize = pos - compressedstart;
-
-	if (!(handle = FileOpenWrite(fic)))
-	{
+	uh->uncompressedsize = pos - compressedstart;
+	
+	FileHandle handle = FileOpenWrite(file);
+	if(!handle) {
 		free(dat);
 		return false;
 	}
-
-	if (FileWrite(handle, dat, compressedstart) != compressedstart)
-	{
+	
+	if(FileWrite(handle, dat, compressedstart) != compressedstart) {
 		free(dat);
 		return false;
 	}
-
+	
 	size_t compressedSize;
 	char * compressed;
 	compressed = implodeAlloc((char *)(dat + compressedstart), pos - compressedstart, compressedSize);
@@ -4214,22 +4181,18 @@ bool FastSceneSave(const std::string& partial_path, EERIE_MULTI3DSCENE * ms) {
 		free(dat);
 		return false;
 	}
-
+	
 	if((size_t)FileWrite(handle, compressed, compressedSize) != compressedSize) {
 		FileClose(handle);
 		free(dat);
 		return false;
 	}
-
+	
 	delete[] compressed;
 	FileClose(handle);
 	free(dat);
+	
 	return true;
-error:
-	;
-	LogError << ("FTL Memory Problem...");
-	free(dat);
-	return false;
 }
 
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
@@ -4263,7 +4226,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 			AnchorData_Create(ACTIVEBKG);
 		}
 		
-		FastSceneSave(ftemp, ms);
+		FastSceneSave(ftemp);
 		ComputePortalVertexBuffer();
 		ComputeRoomDistance();
 	}
