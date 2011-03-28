@@ -615,7 +615,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, size_t * poss, long v
 		
 		THEO_FACES_3006 ptf3006;
 		if(version >= 3006) {
-			mempcpy(&ptf3006, adr + pos, sizeof(THEO_FACES_3006));
+			memcpy(&ptf3006, adr + pos, sizeof(THEO_FACES_3006));
 			pos += sizeof(THEO_FACES_3006);
 		} else {
 			memset(&ptf3006, 0, sizeof(THEO_FACES_3006));

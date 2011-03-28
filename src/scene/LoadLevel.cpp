@@ -335,7 +335,7 @@ long DanaeSaveLevel(const string & _fic) {
 
 					 + 1000000
 					 + nbARXpaths * sizeof(DANAE_LS_PATH) + nbARXpaths * sizeof(DANAE_LS_PATHWAYS) * 30;
-	allocsize = max(dlh.nb_bkgpolys * (sizeof(u32) + 2) + 1000000, allocsize);
+	allocsize = max((size_t)dlh.nb_bkgpolys * (sizeof(u32) + 2) + 1000000, allocsize);
 	
 	char * dat = new char[allocsize];
 	if(!dat) {
