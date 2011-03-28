@@ -97,53 +97,53 @@ public:
 	virtual ~Renderer();
 
 	// Texture management
-	void ReleaseAllTextures();
-	void RestoreAllTextures();
+	virtual void ReleaseAllTextures();
+	virtual void RestoreAllTextures();
 
 	// Factory
-	Texture1D*	CreateTexture1D();
-	Texture2D*	CreateTexture2D();
-	Texture3D*	CreateTexture3D();
-	Cubemap*	CreateCubemap();
+	virtual Texture1D*	CreateTexture1D();
+	virtual Texture2D*	CreateTexture2D();
+	virtual Texture3D*	CreateTexture3D();
+	virtual Cubemap*	CreateCubemap();
 
 	// Render states
-	void SetRenderState(RenderState renderState, bool enable);
+	virtual void SetRenderState(RenderState renderState, bool enable);
 
 	// Alphablending & Transparency
-	void SetAlphaFunc(PixelCompareFunc func, float fef);    // Ref = [0.0f, 1.0f]
-	void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
+	virtual void SetAlphaFunc(PixelCompareFunc func, float fef);    // Ref = [0.0f, 1.0f]
+	virtual void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
 
 	// Viewport
-	void SetViewport(const Viewport& viewport);
-	Viewport GetViewport();
+	virtual void SetViewport(const Viewport& viewport);
+	virtual Viewport GetViewport();
 
 	// Projection
-	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
-	void End2DProjection();
+	virtual void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
+	virtual void End2DProjection();
 
 	// Render Target
-	void Clear(int bufferFlags, COLORREF clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
+	virtual void Clear(int bufferFlags, COLORREF clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
 
 	// Fog
-	void SetFogColor(COLORREF color);
-	void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
+	virtual void SetFogColor(COLORREF color);
+	virtual void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
 		
 	// Rasterizer
-	void SetAntialiasing(bool enable);
-	void SetCulling(CullingMode mode);
-	void SetDepthBias(int depthBias);
-	void SetFillMode(FillMode mode);
+	virtual void SetAntialiasing(bool enable);
+	virtual void SetCulling(CullingMode mode);
+	virtual void SetDepthBias(int depthBias);
+	virtual void SetFillMode(FillMode mode);
 	
 	// Texturing
-	unsigned int GetTextureStageCount() const;
-	TextureStage* GetTextureStage(unsigned int textureStage);
-	void ResetTexture(unsigned int textureStage);
-	void SetTexture(unsigned int textureStage, Texture& pTexture);
+	virtual unsigned int GetTextureStageCount() const;
+	virtual TextureStage* GetTextureStage(unsigned int textureStage);
+	virtual void ResetTexture(unsigned int textureStage);
+	virtual void SetTexture(unsigned int textureStage, Texture& pTexture);
 	
-	float GetMaxAnisotropy() const;
+	virtual float GetMaxAnisotropy() const;
 
 	// Utilities...
-	void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, COLORREF color );
+	virtual void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, COLORREF color );
 
 private:
 	std::vector<TextureStage*>	m_TextureStages;
