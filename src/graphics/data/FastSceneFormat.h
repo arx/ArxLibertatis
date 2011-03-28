@@ -1,6 +1,6 @@
 
-#ifndef ARX_GRAPHICS_DATA_FTLFORMAT_H
-#define ARX_GRAPHICS_DATA_FTLFORMAT_H
+#ifndef ARX_GRAPHICS_DATA_FASTSCENEFORMAT_H
+#define ARX_GRAPHICS_DATA_FASTSCENEFORMAT_H
 
 #include "core/Common.h"
 #include "graphics/GraphicsFormat.h"
@@ -143,4 +143,4 @@ struct EERIE_SAVE_ROOM_DATA {
 #pragma pack(pop)
 
 
-#endif // ARX_GRAPHICS_DATA_FTLFORMAT_H
+#endif // ARX_GRAPHICS_DATA_FASTSCENEFORMAT_H
