@@ -410,7 +410,7 @@ static void ReajustUV(CinematicBitmap* cb) {
 	{
 		Texture2D* tex = mat->tex;
 
-		if (!tc)
+		if (!tex)
 			return;
 
 		int w, h;
@@ -436,5 +436,5 @@ static void ReajustUV(CinematicBitmap* cb) {
 		{
 			uvs += mat->nbvertexs;
 		}
-		}
+	}
 }

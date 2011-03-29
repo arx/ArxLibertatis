@@ -3,6 +3,7 @@
 #define ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
 
 #include "graphics/GraphicsTypes.h" // for EERIE_2D and EERIE_3D
+#include "graphics/texture/Texture.h" // For Texture2D
 
 class TextureContainer;
 class Cinematic;
