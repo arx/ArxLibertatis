@@ -68,6 +68,7 @@ find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
+find_package(OpenGL REQUIRED)
 find_package(Doxygen)
 find_package(PythonInterp)
 
@@ -193,7 +194,7 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
 set(ARX_SOUND_LIBS dsound)
-target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS} GL)
+target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS} ${OPENGL_LIBRARIES})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core
