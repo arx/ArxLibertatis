@@ -33,6 +33,7 @@
 #include "graphics/data/Texture.h"
 #include "gui/MenuPublic.h"
 #include "io/Logger.h"
+#include "io/String.h"
 #include "scene/GameSound.h"
 #include "window/Input.h"
 
@@ -416,11 +417,9 @@ bool CMenuConfig::WriteConfig( const std::string& _pcSection, const std::string&
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, const int _iDatas)
+bool CMenuConfig::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int data )
 {
-	std::stringstream ss;
-	ss << _iDatas;
-	return WriteConfig(_pcSection,_pcKey, ss.str());
+	return WriteConfig(_pcSection,_pcKey, itoa( data ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -806,15 +805,6 @@ bool CMenuConfig::ReadAll()
 	}
 
 	bool bWarningGore=false;
-
-	if (!strcasecmp(Project.localisationpath.c_str(), "Deutsch"))
-	{
-		//no gore
-		GERMAN_VERSION=1;
-		uiGoreMode=0;
-		GORE_MODE=0;
-		bWarningGore=true;
-	}
 
 	Localisation_Init();
 
