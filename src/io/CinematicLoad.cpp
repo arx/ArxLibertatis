@@ -215,7 +215,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		
 		LogDebug << "adding bitmap " << i << ": " << path;
 		
-		CinematicBitmap* newBitmap = CreateCinematicBitmap(path, c, scale);
+		CinematicBitmap* newBitmap = CreateCinematicBitmap(path, scale);
 		if(newBitmap)
 			c->m_bitmaps.push_back(newBitmap);
 	}

@@ -142,11 +142,11 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	// Fixed pipeline texture stage operation
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
+
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	/*
-    GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::MinFilterLinear);
-    GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::MagFilterLinear);
-	*/
+    GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+    GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+
     float penX = x;
     float penY = y;
 
@@ -197,7 +197,10 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
+
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+    GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	
     GRenderer->End2DProjection();
     GRenderer->SetRenderState( Renderer::AlphaBlending, false );

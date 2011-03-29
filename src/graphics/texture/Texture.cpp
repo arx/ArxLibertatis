@@ -14,20 +14,6 @@ bool Texture1D::Create( const Image& pImage, bool pCreateMipmaps )
     mWidth  = pImage.GetWidth();
     mHasMipmaps = pCreateMipmaps;
 
-    // Filtering
-    if( mHasMipmaps )
-    {
-        mMagFilter = MagFilter_Linear; 
-        mMinFilter = MinFilter_LinearMipmapLinear;
-    }
-    else
-    {
-        mMagFilter = MagFilter_Linear; 
-        mMinFilter = MinFilter_Linear;
-    }
-
-    mAnisotropy = GRenderer->GetMaxAnisotropy();
-
     return true;
 }
 
@@ -37,12 +23,6 @@ bool Texture1D::Create( unsigned int pWidth, Image::Format pFormat)
     mWidth  = pWidth;
     mFormat = pFormat;
     mHasMipmaps = false;
-
-    // Filtering
-    mMagFilter = MagFilter_Linear; 
-    mMinFilter = MinFilter_Linear;
-
-    mAnisotropy = GRenderer->GetMaxAnisotropy();
 
     return true;
 }
@@ -65,21 +45,7 @@ bool Texture2D::Create( const Image& pImage, bool pCreateMipmaps )
     mWidth  = pImage.GetWidth();
     mHeight = pImage.GetHeight();
     mHasMipmaps = pCreateMipmaps;
-
-    // Filtering
-    if( mHasMipmaps )
-    {
-        mMagFilter = MagFilter_Linear; 
-        mMinFilter = MinFilter_LinearMipmapLinear;
-    }
-    else
-    {
-        mMagFilter = MagFilter_Linear; 
-        mMinFilter = MinFilter_Linear;
-    }
-
-    mAnisotropy = GRenderer->GetMaxAnisotropy();
-
+   
     return true;
 }
 
@@ -90,12 +56,6 @@ bool Texture2D::Create( unsigned int pWidth, unsigned int pHeight, Image::Format
     mHeight = pHeight;
     mFormat = pFormat;
     mHasMipmaps = false;
-
-    // Filtering
-    mMagFilter = MagFilter_Linear; 
-    mMinFilter = MinFilter_Linear;
-
-    mAnisotropy = GRenderer->GetMaxAnisotropy();
 
     return true;
 }
@@ -120,20 +80,6 @@ bool Texture3D::Create( const Image& pImage, bool pCreateMipmaps )
     mDepth  = pImage.GetDepth();
     mHasMipmaps = pCreateMipmaps;
 
-    // Filtering
-    if( mHasMipmaps )
-    {
-        mMagFilter = MagFilter_Linear; 
-        mMinFilter = MinFilter_LinearMipmapLinear;
-    }
-    else
-    {
-        mMagFilter = MagFilter_Linear; 
-        mMinFilter = MinFilter_Linear;
-    }
-
-    mAnisotropy = GRenderer->GetMaxAnisotropy();
-
     return true;
 }
 
@@ -145,13 +91,7 @@ bool Texture3D::Create( unsigned int pWidth, unsigned int pHeight, unsigned int 
     mDepth  = pDepth;
     mFormat = pFormat;
     mHasMipmaps = false;
-
-    // Filtering
-    mMagFilter = MagFilter_Linear; 
-    mMinFilter = MinFilter_Linear;
-
-    mAnisotropy = GRenderer->GetMaxAnisotropy();
-
+    
     return true;
 }
 
@@ -201,20 +141,6 @@ bool Cubemap::Create( const std::vector<Image*>& pImages, bool pCreateMipmaps )
     mHeight = height;
     mHasMipmaps = pCreateMipmaps;
 
-    // Filtering
-    if( mHasMipmaps && mImages[PositiveX].GetNumMipmaps() > 1 )
-    {
-        mMagFilter = MagFilter_Linear; 
-        mMinFilter = MinFilter_LinearMipmapLinear;
-    }
-    else
-    {
-        mMagFilter = MagFilter_Linear; 
-        mMinFilter = MinFilter_Linear;
-    }
-
-    mAnisotropy = GRenderer->GetMaxAnisotropy();
-
     return true;
 }
 
@@ -231,12 +157,6 @@ bool Cubemap::Create( unsigned int pWidth, unsigned int pHeight, Image::Format p
     mHeight = pHeight;
     mFormat = pFormat;
     mHasMipmaps = false;
-
-    // Filtering
-    mMagFilter = MagFilter_Linear; 
-    mMinFilter = MinFilter_Linear;
-
-    mAnisotropy = GRenderer->GetMaxAnisotropy();
 
     return true;
 }

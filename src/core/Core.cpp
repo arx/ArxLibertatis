@@ -356,7 +356,6 @@ float LASTfps2=0;
 float fps2=0;
 float fps2min=0;
 long LASTfpscount=0;
-long Bilinear=1;
 long DEBUG1ST=0;
 long DEBUGSYS=0;
 
@@ -366,7 +365,6 @@ long LASTEXTERNALVIEW=1;
 long EXTERNALVIEWING=0;
 long lSLID_VALUE=0;
 long _NB_=0;
-long POINTINTERPOLATION=1;
 long LOAD_N_DONT_ERASE=0;
 long NO_TIME_INIT=0;
 long DANAESIZX=640;
@@ -2982,7 +2980,6 @@ void FirstTimeThings() {
 
 void ExitProc()
 {
-
 	if (danaeApp.m_hWnd!=NULL)
 		SendMessage( danaeApp.m_hWnd, WM_QUIT, 0, 0 );
 
@@ -2991,39 +2988,7 @@ void ExitProc()
 
 //*************************************************************************************
 
-void SetFilteringMode(long mode)
-{
-	if (POINTINTERPOLATION)
-	{
-		GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_POINT  );
-	}
-	else
-	{
-		GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_LINEAR  );
-	}
-
-	switch (mode)
-	{
-		case 1:
-			GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
-			GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
-		break;
-		case 2:
-			GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_ANISOTROPIC );
-			GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_ANISOTROPIC );
-		break;
-		default:
-			GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
-			GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-		break;
-	}
-
-	float val=-0.3f;
-	GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
-}
 long NO_GMOD_RESET=0;
-
-//*************************************************************************************
 
 void FirstFrameProc() {
 	
@@ -4689,8 +4654,6 @@ void DANAE_StartNewQuest()
 bool DANAE_ManageSplashThings()
 {
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
-	SetFilteringMode(Bilinear);
 
 	if (SPLASH_THINGS_STAGE>10)
 	{
@@ -6510,8 +6473,6 @@ static float _AvgFrameDiff = 150.f;
 			ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
 		}
 
-		SetFilteringMode(Bilinear);
-
 		if ((!EXTERNALVIEW) && GLOBAL_FORCE_PLAYER_IN_FRONT)
 			FORCE_FRONT_DRAW=1;
 
@@ -6526,7 +6487,6 @@ static float _AvgFrameDiff = 150.f;
 	}
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
-	SetFilteringMode(Bilinear);		
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
@@ -7412,12 +7372,13 @@ HRESULT DANAE::InitDeviceObjects()
 	
 	SetZBias(0);
 
+	// Texture filtering
 	GRenderer->GetTextureStage(1)->SetWrapMode(TextureStage::WrapRepeat);
-	GDevice->SetTextureStageState(1, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-	GDevice->SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTFN_LINEAR);
+	GRenderer->GetTextureStage(1)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(1)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(2)->SetWrapMode(TextureStage::WrapRepeat);
-	GDevice->SetTextureStageState(2, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-	GDevice->SetTextureStageState(2, D3DTSS_MAGFILTER, D3DTFN_LINEAR);
+	GRenderer->GetTextureStage(2)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(2)->SetMagFilter(TextureStage::FilterLinear);
 
 	ComputePortalVertexBuffer();
 	pDynamicVertexBuffer				=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);

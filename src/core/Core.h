@@ -97,7 +97,6 @@ extern float _framedelay;
 extern float BASE_FOCAL;
 extern float Xratio;
 extern float Yratio;
-extern long Bilinear;
 extern long	FADEDURATION;
 extern long	FADEDIR;
 extern float FrameDiff;
@@ -169,7 +168,6 @@ void Danae_Registry_Read(const char * string, char * text, const char * defaults
 void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue = 0);
 void Danae_Registry_Write(const char * string, const char * text);
 void Danae_Registry_WriteValue(const char * string, DWORD value);
-void SetFilteringMode(long mode);
 void SendGameReadyMsg();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();

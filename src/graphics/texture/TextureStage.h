@@ -8,19 +8,19 @@
 class TextureStage
 {
 public:
-	// Texture blending operations
+	//! Texture blending operations
 	enum TextureOp
 	{
-		OpDisable,		// Disables output from this texture stage and all stages with a higher index.
-		OpSelectArg1,	// Use this texture stage's first color or alpha argument, unmodified, as the output.
-		OpSelectArg2,	// Use this texture stage's second color or alpha argument, unmodified, as the output.
-		OpModulate,		// Multiply the components of the arguments together.
-		OpModulate2X,	// Multiply the components of the arguments, and shift the products to the left 1 bit.
-		OpModulate4X,	// Multiply the components of the arguments, and shift the products to the left 2 bits.
-		OpAddSigned		// Add args with -0.5 bias
+		OpDisable,			//!< Disables output from this texture stage and all stages with a higher index.
+		OpSelectArg1,		//!< Use this texture stage's first color or alpha argument, unmodified, as the output.
+		OpSelectArg2,		//!< Use this texture stage's second color or alpha argument, unmodified, as the output.
+		OpModulate,			//!< Multiply the components of the arguments together.
+		OpModulate2X,		//!< Multiply the components of the arguments, and shift the products to the left 1 bit.
+		OpModulate4X,		//!< Multiply the components of the arguments, and shift the products to the left 2 bits.
+		OpAddSigned			//!< Add args with -0.5 bias
 	};
 
-	// Texture blending arguments
+	//! Texture blending arguments
 	enum TextureArg
 	{
 		ArgDiffuse		= 0x00000,
@@ -30,13 +30,22 @@ public:
 		ArgComplement   = 0x00010		
 	};
 
+	//! Texture wrapping/addressing mode
 	enum WrapMode
     {
-        WrapRepeat,
-        WrapMirror,
-		WrapClamp
+        WrapRepeat,			//!< Tile the texture at every integer junction. For example, for u values between 0 and 3, the texture is repeated three times; no mirroring is performed.
+        WrapMirror,			//!< Similar to WrapRepeat, except that the texture is flipped at every integer junction.
+		WrapClamp			//!< Texture coordinates outside the range [0.0, 1.0] are set to the texture color at 0.0 or 1.0, respectively.
 	};
-	
+
+	//! Minification/Magnification/Mipmap filter
+	enum FilterMode
+    {
+		FilterNone,			//!< Only valid for mip filtering.
+        FilterNearest,		//!< Point filtering. The texel with coordinates nearest to the desired pixel value is used. 
+        FilterLinear		//!< Bilinear interpolation filtering. A weighted average of a 2×2 area of texels surrounding the desired pixel is used.
+    };
+
 	TextureStage(unsigned int stage);
 	
 	virtual void SetTexture( Texture& pTexture ) = 0;
@@ -53,6 +62,10 @@ public:
 	inline void DisableAlpha();
 
 	virtual void SetWrapMode(WrapMode wrapMode) = 0;
+
+	virtual void SetMinFilter(FilterMode filterMode) = 0;
+	virtual void SetMagFilter(FilterMode filterMode) = 0;
+	virtual void SetMipFilter(FilterMode filterMode) = 0;
 	
 protected:
 	unsigned int mStage;

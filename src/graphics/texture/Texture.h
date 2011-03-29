@@ -9,27 +9,6 @@
 class Texture
 {
 public:
-    enum MagFilter
-    {
-        MagFilter_Nearest,
-        MagFilter_Linear,
-        MagFilter_Num,
-        MagFilter_MAX = 0xFFFFFFFF
-    };
-
-    enum MinFilter
-    {
-        MinFilter_Nearest,
-        MinFilter_Linear,
-        MinFilter_NearestMipmapNearest,
-        MinFilter_LinearMipmapNearest,
-        MinFilter_NearestMipmapLinear,
-        MinFilter_LinearMipmapLinear,
-        MinFilter_Num,
-        MinFilter_MAX = 0xFFFFFFFF
-    };
-
-public:
     virtual ~Texture()
     {
     }
@@ -56,64 +35,28 @@ public:
     {
         return mFormat;
     }
-        
-    virtual void SetMagFilter( MagFilter pFilter )
-    {
-        mMagFilter = pFilter;
-    }
-    
-    virtual void SetMinFilter( MinFilter pFilter )
-    {
-        mMinFilter = pFilter;
-    }
-
-    virtual void SetAnisotropy( float pAnisotropy )
-    {
-        mAnisotropy = pAnisotropy;
-    }
 
     bool HasMipmaps() const
     {
         return mHasMipmaps;
-    }
-
-    MinFilter GetMinFilter() const
-    {
-        return mMinFilter;
-    }
-
-    MagFilter GetMagFilter() const
-    {
-        return mMagFilter;
-    }
-
-	float GetAnisotropy() const
-    {
-        return mAnisotropy;
     }
     
 protected:
     Texture()
         : mFormat(Image::Format_Unknown)
         , mHasMipmaps(false)
-        , mMinFilter(MinFilter_NearestMipmapLinear)
-        , mMagFilter(MagFilter_Linear)
         , mWidth(0)
         , mHeight(1)
         , mDepth(1)
-        , mAnisotropy(0.0f)
     {
     }
     
 protected:
     Image::Format   mFormat;
     bool            mHasMipmaps;
-    MinFilter       mMinFilter;
-    MagFilter       mMagFilter;
     unsigned int    mWidth;
     unsigned int    mHeight;
     unsigned int    mDepth;
-    float           mAnisotropy;
 };
 
 

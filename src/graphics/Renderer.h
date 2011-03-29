@@ -96,6 +96,8 @@ public:
 	Renderer();
 	virtual ~Renderer();
 
+	void Initialize();
+
 	// Texture management
 	void ReleaseAllTextures();
 	void RestoreAllTextures();

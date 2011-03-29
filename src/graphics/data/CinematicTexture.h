@@ -60,6 +60,6 @@ public:
 	int dreaming;
 };
 
-CinematicBitmap* CreateCinematicBitmap(const std::string & path, Cinematic * c);
+CinematicBitmap* CreateCinematicBitmap(const std::string & path, int scale);
 
 #endif // ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H

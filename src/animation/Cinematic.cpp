@@ -260,56 +260,6 @@ HRESULT Cinematic::InitDeviceObjects()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
-	D3DDEVICEDESC7 devicedesc;
-	GDevice->GetCaps(&devicedesc);
-	DWORD f;
-	bool bAnisotropicOk = false;
-
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC)
-	{
-		f = D3DTFG_ANISOTROPIC;
-		bAnisotropicOk = true;
-	}
-	else
-	{
-		if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR)
-		{
-			f = D3DTFG_LINEAR;
-		}
-		else
-		{
-			f = D3DTFG_POINT;
-		}
-	}
-
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, f);
-
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC)
-	{
-		f = D3DTFG_ANISOTROPIC;
-		bAnisotropicOk = true;
-	}
-	else
-	{
-		if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
-		{
-			f = D3DTFG_LINEAR;
-		}
-		else
-		{
-			f = D3DTFG_POINT;
-		}
-	}
-
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, f);
-
-	if (bAnisotropicOk)
-	{
-		GDevice->SetTextureStageState(0, D3DTSS_MAXANISOTROPY, 0);
-	}
-
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFG_LINEAR);
-	GDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::Fog, false);
@@ -325,37 +275,8 @@ HRESULT Cinematic::DeleteDeviceObjects()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
-	D3DDEVICEDESC7 devicedesc;
-	GDevice->GetCaps(&devicedesc);
-	DWORD f;
-
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR)
-	{
-		f = D3DTFG_LINEAR;
-	}
-	else
-	{
-		f = D3DTFG_POINT;
-	}
 	
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, f);
-
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
-	{
-		f = D3DTFG_LINEAR;
-	}
-	else
-	{
-		f = D3DTFG_POINT;
-	}
-	
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, f);
-	GDevice->SetTextureStageState(0, D3DTSS_MAXANISOTROPY, 1);
-
-	GDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, true);
 

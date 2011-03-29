@@ -119,8 +119,6 @@ void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade 
 void ARX_INTERFACE_ShowFISHTANK()
 {
 	Project.vsync = 0;
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
 	GRenderer->SetRenderState(Renderer::ColorKey, false);
 
@@ -144,15 +142,11 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
 }
 
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_ShowARKANE()
 {
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
 	GRenderer->SetRenderState(Renderer::ColorKey, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -183,8 +177,6 @@ void ARX_INTERFACE_ShowARKANE()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
 }
 
 static long lastloadednum = -1;
@@ -206,8 +198,8 @@ void LoadLevelScreen(long num)
 {
 	Project.vsync = 0;
 
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 
 	if (num < -1) // resets status
 	{

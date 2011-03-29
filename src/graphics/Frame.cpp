@@ -233,8 +233,8 @@ HRESULT CD3DFramework7::CreateEnvironment(GUID * pDriverGUID, GUID * pDeviceGUID
 	if (FAILED(hr))
 		return hr;
 
-	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-
+	GRenderer->Initialize();
+	
 	return S_OK;
 }
 

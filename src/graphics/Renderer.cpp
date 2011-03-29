@@ -33,27 +33,22 @@ const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
 						D3DTADDRESS_CLAMP					// WrapClamp,
 									};
 
-const D3DTEXTUREMAGFILTER ARXToDX7MagFilter[] = {
-						D3DTFG_POINT,						// MagFilter_Nearest,
-						D3DTFG_LINEAR						// MagFilter_Linear
+D3DTEXTUREMAGFILTER ARXToDX7MagFilter[] = {
+						D3DTFG_POINT,						// FilterNone - Invalid for magnification
+						D3DTFG_POINT,						// FilterNearest,
+						D3DTFG_LINEAR						// FilterLinear
 									};
 
-const D3DTEXTUREMINFILTER ARXToDX7MinFilter[] = {
-						D3DTFN_POINT,						// MinFilter_Nearest,
-						D3DTFN_LINEAR,						// MinFilter_Linear
-						D3DTFN_POINT,						// MinFilter_NearestMipmapNearest,
-						D3DTFN_LINEAR,						// MinFilter_LinearMipmapNearest,
-						D3DTFN_POINT,						// MinFilter_NearestMipmapLinear,
-						D3DTFN_LINEAR						// MinFilter_LinearMipmapLinear,
+D3DTEXTUREMINFILTER ARXToDX7MinFilter[] = {
+						D3DTFN_POINT,						// FilterNone - Invalid for minification
+						D3DTFN_POINT,						// FilterNearest,
+						D3DTFN_LINEAR,						// FilterLinear
 									};
 
-const D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
-						D3DTFP_NONE,						// MinFilter_Nearest,
-						D3DTFP_NONE,						// MinFilter_Linear,
-						D3DTFP_POINT,						// MinFilter_NearestMipmapNearest,
-						D3DTFP_POINT,						// MinFilter_LinearMipmapNearest,
-						D3DTFP_LINEAR,						// MinFilter_NearestMipmapLinear,
-						D3DTFP_LINEAR						// MinFilter_LinearMipmapLinear,
+D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
+						D3DTFP_NONE,						// FilterNone
+						D3DTFP_POINT,						// FilterNearest,
+						D3DTFP_LINEAR						// FilterLinear
 									};
 
 
@@ -460,6 +455,10 @@ public:
 	void SetAlphaOp(TextureOp textureOp);
 
 	void SetWrapMode(WrapMode wrapMode);
+
+	void SetMinFilter(FilterMode filterMode);
+	void SetMagFilter(FilterMode filterMode);
+	void SetMipFilter(FilterMode filterMode);
 };
 
 DX7TextureStage::DX7TextureStage(unsigned int textureStage)
@@ -534,18 +533,6 @@ void DX7TextureStage::SetTexture( Texture& pTexture )
 	// TODO-DX7: Support multiple texture types
 	DX7Texture2D* tex = (DX7Texture2D*)&pTexture;
 
-	// TODO-DX7: Cache states
-	D3DTEXTUREMAGFILTER magFilter = ARXToDX7MagFilter[tex->GetMagFilter()];
-	D3DTEXTUREMINFILTER minFilter = ARXToDX7MinFilter[tex->GetMinFilter()];	
-	D3DTEXTUREMIPFILTER mipFilter = ARXToDX7MipFilter[tex->GetMinFilter()];	
-
-	GDevice->SetTextureStageState(mStage, D3DTSS_MAGFILTER, magFilter);
-	GDevice->SetTextureStageState(mStage, D3DTSS_MINFILTER, minFilter);
-	GDevice->SetTextureStageState(mStage, D3DTSS_MIPFILTER, mipFilter);
-
-	// TODO-DX7: Handle anisotropy...
-	//GDevice->SetTextureStageState(mStage, D3DTSS_MAXANISOTROPY, tex->GetAnisotropy() );
-
 	GDevice->SetTexture(mStage, tex->GetTextureID());
 }
 
@@ -559,6 +546,22 @@ void DX7TextureStage::SetWrapMode(TextureStage::WrapMode wrapMode)
 	GDevice->SetTextureStageState(mStage, D3DTSS_ADDRESS, ARXToDX7WrapMode[wrapMode]);
 }
 
+void DX7TextureStage::SetMinFilter(FilterMode filterMode)
+{
+	arx_assert_msg(filterMode != TextureStage::FilterNone, "Invalid minification filter");
+	GDevice->SetTextureStageState(mStage, D3DTSS_MINFILTER, ARXToDX7MinFilter[filterMode]);
+}
+
+void DX7TextureStage::SetMagFilter(FilterMode filterMode)
+{
+	arx_assert_msg(filterMode != TextureStage::FilterNone, "Invalid magnification filter");
+	GDevice->SetTextureStageState(mStage, D3DTSS_MAGFILTER, ARXToDX7MagFilter[filterMode]);
+}
+
+void DX7TextureStage::SetMipFilter(FilterMode filterMode)
+{
+	GDevice->SetTextureStageState(mStage, D3DTSS_MIPFILTER, ARXToDX7MipFilter[filterMode]);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Renderer - DX7 implementation
@@ -570,15 +573,55 @@ Renderer  RendererInstance;
 Renderer::Renderer()
 {
 	GRenderer = this;
+}
 
-	// TODO-DX7: Hardcoded... number of textures stages available for DX7
-	const unsigned int DX7_TEXTURE_STAGE_COUNT = 8;
-	m_TextureStages.resize(DX7_TEXTURE_STAGE_COUNT, 0);
+void Renderer::Initialize()
+{
+	D3DDEVICEDESC7 devicedesc;
+	GDevice->GetCaps(&devicedesc);
+
+	///////////////////////////////////////////////////////////////////////////
+	// Texture stages...
+
+	m_TextureStages.resize(devicedesc.wMaxTextureBlendStages, 0);
+
+	DWORD maxAnisotropy = 1;
+	if( devicedesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANISOTROPY )
+        maxAnisotropy = devicedesc.dwMaxAnisotropy;
 
 	for(size_t i = 0; i < m_TextureStages.size(); ++i)
 	{
 		m_TextureStages[i] = new DX7TextureStage(i);
+		GDevice->SetTextureStageState(i, D3DTSS_MAXANISOTROPY, maxAnisotropy);
 	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// Initialize filtering options depending on the card capabilities...
+
+	// Minification
+	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC)
+		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_ANISOTROPIC;
+	else if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR)
+		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_LINEAR;
+	else
+		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_POINT;
+		
+	// Magnification
+	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
+		ARXToDX7MagFilter[TextureStage::FilterLinear] = D3DTFG_LINEAR;
+	else
+		ARXToDX7MagFilter[TextureStage::FilterLinear] = D3DTFG_POINT;
+
+	// Mipmapping
+	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MIPFLINEAR)
+		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_LINEAR;
+	else if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MIPFPOINT)
+		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_POINT;
+	else
+		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_NONE;
+
+	// Clear screen
+	Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 }
 
 Renderer::~Renderer()

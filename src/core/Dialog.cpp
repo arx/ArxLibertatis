@@ -119,7 +119,6 @@ extern long SHOWSHADOWS;
 extern long HIPOLY;
 extern long BLURTEXTURES;
 extern long NOMIPMAPS;
-extern long POINTINTERPOLATION;
 extern long ForceIODraw;
 extern long NEED_ANCHORS;
 long HIDEANCHORS = 1;
@@ -2177,17 +2176,11 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (DebugLvl[5])				SetClick(hWnd, IDC_LEVEL5);
 
-			if (Bilinear == 0)				SetClick(hWnd, IDC_FILTERPOINT);
-			else if (Bilinear == 1)			SetClick(hWnd, IDC_FILTERLINEAR);
-			else if (Bilinear == 2)			SetClick(hWnd, IDC_FILTERANISOTROPIC);
-
 			if (MAPUPDATE)					SetClick(hWnd, IDC_MAPUPDATE);
 
 			if (BLURTEXTURES) SetClick(hWnd, IDC_BLURTEXTURES);
 
 			if (NOMIPMAPS)    SetClick(hWnd, IDC_NOMIPMAPS);
-
-			if (POINTINTERPOLATION) SetClick(hWnd, IDC_POINTINTERPOLATION);
 
 			if (ALLOW_MESH_TWEAKING) SetClick(hWnd, IDC_MESHTWEAK);
 
@@ -2315,9 +2308,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					}
 
 					if (restoretex) D3DTextr_RestoreAllTextures();
-
-					if (IsChecked(hWnd, IDC_POINTINTERPOLATION)) POINTINTERPOLATION = 1;
-					else POINTINTERPOLATION = 0;
 
 					if (IsChecked(hWnd, IDC_INTERPOLATEMOUSE)) Project.interpolatemouse = 1;
 					else Project.interpolatemouse = 0;
@@ -2517,12 +2507,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_D3DTRANSFORM)) D3DTRANSFORM = 1;
 					else D3DTRANSFORM = 0;
-
-					if (IsChecked(hWnd, IDC_FILTERANISOTROPIC))	Bilinear = 2;
-
-					if (IsChecked(hWnd, IDC_FILTERLINEAR))		Bilinear = 1;
-
-					if (IsChecked(hWnd, IDC_FILTERPOINT))		Bilinear = 0;
 
 					if (IsChecked(hWnd, IDC_MAPUPDATE)) MAPUPDATE = 1;
 					else MAPUPDATE = 0;

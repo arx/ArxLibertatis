@@ -1903,8 +1903,8 @@ bool Menu2_Render()
 	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reset
 		ARXDiffTimeMenu = 0 ;
 
-	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 
 	if ((AMCM_NEWQUEST==ARXmenu.currentmode)
 		|| (AMCM_CREDITS==ARXmenu.currentmode)
@@ -3398,8 +3398,8 @@ bool Menu2_Render()
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -7342,8 +7342,8 @@ bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey)
 
 void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 	
-	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
-	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
@@ -7353,8 +7353,8 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 
 					0.00000001f,
 					scursor[iNumCursor],D3DCOLORWHITE);
-	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
 

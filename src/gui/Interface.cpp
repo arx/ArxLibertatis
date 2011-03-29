@@ -7335,8 +7335,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 	BOOKDECX = 0;
 	BOOKDECY = 0;
-	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
 
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
 	{
@@ -8414,7 +8412,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
-		SetFilteringMode(1);
+
 		D3DRECT rec;
 
 		if (BOOKZOOM) {
@@ -8578,13 +8576,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			if(bRenderInterList)
 			{
-				GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_NONE);
+				GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				PopAllTriangleList(true);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				PopAllTriangleListTransparency();
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_POINT);
+				GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterLinear);
 			}
 		}
 
@@ -9003,8 +9001,8 @@ extern long SPLASH_THINGS_STAGE;
 //-----------------------------------------------------------------------------
 void DANAE::DrawAllInterface()
 {
-	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
-	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	if (!EDITMODE)
@@ -9914,8 +9912,8 @@ void DANAE::DrawAllInterface()
 	}
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
-	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
 
@@ -9938,8 +9936,6 @@ long Manage3DCursor(long flags)
 
 	if ((DANAEMouse.y<drop_miny) && (!EDITMODE))
 		return 0;
-
-	SetFilteringMode(Bilinear);
 
 	INTERACTIVE_OBJ * io=DRAGINTER;
 
@@ -10297,8 +10293,8 @@ void ARX_INTERFACE_RenderCursor(long flag)
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
 		ManageIgnition_2(DRAGINTER);
-		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
-		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
+		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	}
 
@@ -10817,8 +10813,8 @@ void ARX_INTERFACE_RenderCursor(long flag)
 				}
 			}
 
-		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
-		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
+		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	}
 }
