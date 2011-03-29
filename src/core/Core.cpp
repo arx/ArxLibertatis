@@ -166,7 +166,6 @@ extern EERIE_LIGHT *PDL[MAX_DYNLIGHTS];
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3D loddpos;
 extern EERIE_3DOBJ * fogobj;
-extern bool		bGameNotFirstLaunch;
 extern bool		bSkipVideoIntro;
 extern std::string      SCRIPT_SEARCH_TEXT;
 extern std::string      ShowText;
@@ -709,9 +708,9 @@ void DanaeSwitchFullScreen()
 		for(int i=0;i<nb;i++)
 		{
 
-			ARX_CHECK_NOT_NEG( pMenuConfig->iBpp );
+			ARX_CHECK_NOT_NEG( pMenuConfig->bpp );
 
-			if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( pMenuConfig->iBpp ) )
+			if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( pMenuConfig->bpp ) )
 			{
 				ARX_CHECK_NOT_NEG( pMenuConfig->iWidth );
 				ARX_CHECK_NOT_NEG( pMenuConfig->iHeight );
@@ -727,7 +726,7 @@ void DanaeSwitchFullScreen()
 			}
 		}
 
-		pMenuConfig->iNewBpp=pMenuConfig->iBpp=danaeApp.m_pFramework->bitdepth=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
+		pMenuConfig->iNewBpp=pMenuConfig->bpp=danaeApp.m_pFramework->bitdepth=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
 		pMenuConfig->iNewHeight=pMenuConfig->iHeight=danaeApp.m_pFramework->m_dwRenderHeight=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
 		pMenuConfig->iNewWidth=pMenuConfig->iWidth=danaeApp.m_pFramework->m_dwRenderWidth=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
 	}
@@ -4696,7 +4695,7 @@ bool DANAE_ManageSplashThings()
 
 	if (SPLASH_THINGS_STAGE>10)
 	{
-		if (EDITMODE || bGameNotFirstLaunch)
+		if (EDITMODE || !pMenuConfig->first_launch )
 		{
 			for (int i=0; i<256; i++)
 			{
@@ -4840,8 +4839,8 @@ bool DANAE_ManageSplashThings()
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if (bGameNotFirstLaunch == false)
-				bGameNotFirstLaunch = true;
+			if ( !pMenuConfig->first_launch )
+				pMenuConfig->first_launch = true;
 
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			return true;
@@ -4855,8 +4854,8 @@ bool DANAE_ManageSplashThings()
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if (bGameNotFirstLaunch == false)
-				bGameNotFirstLaunch = true;
+			if ( !pMenuConfig->first_launch )
+				pMenuConfig->first_launch = true;
 
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			return true;

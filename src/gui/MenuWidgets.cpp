@@ -117,7 +117,7 @@ void ARX_GAMESAVE_MakePath();
 float INTERFACE_RATIO(float a);
 bool bNoMenu=false;
 
-void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _iBpp);
+void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _bpp );
 void ARX_SetAntiAliasing();
 void ARX_MENU_LaunchAmb(char *_lpszAmb);
 
@@ -463,7 +463,7 @@ void Check_Apply()
 			(pMenuConfig->iTextureResol!=pMenuConfig->iNewTextureResol)||
 			(pMenuConfig->iWidth!=pMenuConfig->iNewWidth)||
 			(pMenuConfig->iHeight!=pMenuConfig->iNewHeight)||
-			(pMenuConfig->iBpp!=pMenuConfig->iNewBpp) )
+			(pMenuConfig->bpp!=pMenuConfig->iNewBpp) )
 		{
 			pMenuElementApply->SetCheckOn();
 			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
@@ -2321,7 +2321,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		{
 			pMenuConfig->iNewWidth = pMenuConfig->iWidth;
 			pMenuConfig->iNewHeight = pMenuConfig->iHeight;
-			pMenuConfig->iNewBpp = pMenuConfig->iBpp;
+			pMenuConfig->iNewBpp = pMenuConfig->bpp;
 			pMenuConfig->iNewTextureResol = pMenuConfig->iTextureResol;
 
 			pMenuConfig->bChangeResolution = false;
@@ -2514,14 +2514,14 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			//----------RESOLUTION
 			if(    (pMenuConfig->iNewWidth!=pMenuConfig->iWidth)||
 				(pMenuConfig->iNewHeight!=pMenuConfig->iHeight)||
-				(pMenuConfig->iNewBpp!=pMenuConfig->iBpp) )
+				(pMenuConfig->iNewBpp!=pMenuConfig->bpp) )
 			{
 				pMenuConfig->iWidth=pMenuConfig->iNewWidth;
 				pMenuConfig->iHeight=pMenuConfig->iNewHeight;
-				pMenuConfig->iBpp=pMenuConfig->iNewBpp;
+				pMenuConfig->bpp=pMenuConfig->iNewBpp;
 				ARXMenu_Private_Options_Video_SetResolution(    pMenuConfig->iWidth,
 																pMenuConfig->iHeight,
-																pMenuConfig->iBpp);
+																pMenuConfig->bpp);
 
 				pMenuSliderResol->iOldPos=-1;
 				pMenuSliderBpp->iOldPos=-1;
@@ -3360,7 +3360,7 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 				{
 					pMenuSliderBpp->iPos=pMenuSliderBpp->iOldPos;
 					pMenuSliderBpp->iOldPos=-1;
-					pMenuConfig->iNewBpp=pMenuConfig->iBpp;
+					pMenuConfig->iNewBpp=pMenuConfig->bpp;
 				}
 
 				if(    (pMenuSliderTexture)&&

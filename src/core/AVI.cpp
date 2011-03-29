@@ -34,6 +34,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include "core/Config.h"
+
 #include "gui/MenuWidgets.h"
 
 //-----------------------------------------------------------------------------
@@ -53,7 +55,6 @@ IVideoWindow  *  pVidWin = NULL;
 IBasicVideo	*	pBasicVideo = NULL;
 IMediaEvent	*	pMediaEvent = NULL;
 bool			bSkipVideoIntro = false;
-bool			bGameNotFirstLaunch = false;
 
 //-----------------------------------------------------------------------------
 void CleanUp(void)
@@ -132,7 +133,7 @@ bool PlayFile(HWND hWnd, char * file)
 
 		while (!l && !bSkipVideoIntro)
 		{
-			if (bGameNotFirstLaunch || EDITMODE)
+			if ( !pMenuConfig->first_launch || EDITMODE)
 			{
 				pGetInfoDirectInput->GetInput();
 

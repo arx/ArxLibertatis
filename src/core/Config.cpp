@@ -42,7 +42,6 @@ void ARX_SetAntiAliasing();
 /* Externs */
 extern long INTERNATIONAL_MODE;
 extern CDirectInput * pGetInfoDirectInput;
-extern bool bGameNotFirstLaunch;
 extern long GORE_MODE;
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
@@ -233,8 +232,8 @@ void Config::DefaultValue()
 	iHeight=480;
 	iNewWidth=iWidth;
 	iNewHeight=iHeight;
-	iBpp=16;
-	iNewBpp=iBpp;
+	bpp=16;
+	iNewBpp=bpp;
 	bFullScreen=true;
 	bBumpMapping=false;
 	bNewBumpMapping=bBumpMapping;
@@ -359,7 +358,8 @@ int Config::GetDIKWithASCII( const std::string& _pcTouch)
 }
 
 //-----------------------------------------------------------------------------
-std::string Config::ReadConfig( const std::string& _section, const std::string& _key) {
+std::string Config::ReadConfig( const std::string& _section, const std::string& _key) const
+{
 	
 	// TODO unify with localisation loading (and make platform-independent)
 	char text[256];
@@ -390,8 +390,42 @@ int Config::ReadConfigInt( const std::string& _pcSection, const std::string& _pc
 	return iI;
 }
 
+/**
+ * Reads a string from the Config and returns it, returning the default value if an empty string was found
+ * @param section The section to read from
+ * @param key The key in the section to return
+ * @param default_value The default value to be returned in the case of an empty string
+ */
+std::string Config::ReadConfig( const std::string& section, const std::string& key, const std::string& default_value ) const
+{
+	std::string temp( ReadConfig( section, key ) );
+
+	if ( temp.empty() )
+		return default_value;
+	else
+		return temp;
+}
+
+/**
+ * Reads a string from the Config and returns its converted int value,
+ * return the default value if an empty string is found.
+ * @param section The section to read from
+ * @param key The key in the section to return
+ * @param default_value The default value to return in the case of an empty string
+ */
+int Config::ReadConfig( const std::string& section, const std::string& key, int default_value ) const
+{
+	std::string temp( ReadConfig( section, key ) );
+
+	if ( temp.empty() )
+		return default_value;
+	else
+		return atoi( temp );
+}
+
+
 //-----------------------------------------------------------------------------
-std::string Config::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey)
+std::string Config::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey) const
 {
 	std::string temp = ReadConfig( _pcSection,_pcKey);
 	return temp;
@@ -666,11 +700,11 @@ bool Config::SaveAll()
 	strcat(tcTxt,Project.localisationpath.c_str());
 	strcat(tcTxt,"\"");
 	bOk&=WriteConfigString("LANGUAGE","string",tcTxt);
-	bOk&=WriteConfigInt("FIRSTRUN","int", bGameNotFirstLaunch?1:0);
+	bOk&=WriteConfigInt("FIRSTRUN","int", first_launch?1:0);
 	//video
 	sprintf(tcTxt,"%dx%d",iWidth,iHeight);
 	bOk&=WriteConfigString("VIDEO","resolution",tcTxt);
-	bOk&=WriteConfigInt("VIDEO","bpp",iBpp);
+	bOk&=WriteConfigInt("VIDEO","bpp",bpp);
 	bOk&=WriteConfigInt("VIDEO","full_screen",(bFullScreen)?1:0);
 	bOk&=WriteConfigInt("VIDEO","bump",(bBumpMapping)?1:0);
 	bOk&=WriteConfigInt("VIDEO","texture",iTextureResol);
@@ -758,368 +792,51 @@ bool Config::SaveAll()
 
 extern bool IsNoGore( void );
 
-//-----------------------------------------------------------------------------
-
 bool Config::ReadAll()
 {
-	std::string pcText;
 	bool bOk = false; 
 	bool bOkTemp;
 	int iTemp;
-
-	// Get the locale language
-	Project.localisationpath = ReadConfigString( "LANGUAGE", "string" );
-
-/*
-	//language
-	if ( Project.localisationpath.length() == 0 )
-	{
-		if(GERMAN_VERSION)
-		{
-			pcText = "Deutsch";
-		}
-		else
-		{
-			if(FRENCH_VERSION)
-			{
-				pcText = ReadConfigString( "LANGUAGE", "string" );
-
-				if( !pcText.empty() &&
-					(strcasecmp(pcText.c_str(),"francais")&&
-					strcasecmp(pcText.c_str(),"deutsch")) )
-				{
-					pcText = "Francais";
-				}
-				else
-				{
-					if( pcText.empty() )
-					{
-						pcText = "Francais";
-					}
-				}
-			}
-			else
-			{
-				pcText = ReadConfigString("LANGUAGE","string");
-			}
-		}
-
-		if( !pcText.empty() )
-			Project.localisationpath = pcText;
-	}
-*/
 	bool bWarningGore=false;
 
-	Localisation_Init();
-
-	bGameNotFirstLaunch = ReadConfigInt("FIRSTRUN","int",bOkTemp)?true:false;
-
-	//video
-	pcText=ReadConfigString("VIDEO","resolution");
-
-	if( !pcText.empty() )
-	{
-		std::string width_string = pcText.substr( 0, pcText.find( 'x' ) );
-		std::string height_string = pcText.substr( pcText.find('x') + 1 );
-
-		// If both width and height are specified
-		if( !( width_string.empty() || height_string.empty() ) )
-		{
-			iWidth = atoi( width_string.c_str() );
-			iHeight = atoi( height_string.c_str() );
-			bOk = true;
-		}
-		else
-		{
-			ARXMenu_Options_Video_GetResolution(iWidth,iHeight,iBpp);
-		}
-	}
-	else
-	{
-		ARXMenu_Options_Video_GetResolution(iWidth,iHeight,iBpp);
-		bOk=false;
-	}
-
-	iNewWidth=iWidth;
-	iNewHeight=iHeight;
-
-	iTemp=ReadConfigInt("VIDEO","bpp",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetBitPlane(iBpp);
-		iTemp=iBpp;
-	}
-
-	iNewBpp=iBpp=iTemp;
-	iTemp=ReadConfigInt("VIDEO","full_screen",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetFullscreen(bFullScreen);
-	}
-	else
-	{
-		bFullScreen=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","bump",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetBump(bBumpMapping);
-		bNewBumpMapping=bBumpMapping;
-	}
-	else
-	{
-		bNewBumpMapping=bBumpMapping=(iTemp)?true:false;
-	}
-
-	bBumpMapping=bNewBumpMapping;
-
-	if(bBumpMapping)
-	{
-		EERIE_ActivateBump();
-	}
-	else
-	{
-		EERIE_DesactivateBump();
-	}
-
-	bALLOW_BUMP=bBumpMapping;
-
-	iTemp=ReadConfigInt("VIDEO","texture",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetTextureQuality(iTextureResol);
-		iTemp=iNewTextureResol=iTextureResol;
-	}
-
-	iTextureResol=iNewTextureResol=iTemp;
-
-	if(iTextureResol==2) Project.TextureSize=0;
-
-	if(iTextureResol==1) Project.TextureSize=2;
-
-	if(iTextureResol==0) Project.TextureSize=64;
-
-	WILL_RELOAD_ALL_TEXTURES=1;
-
-	iTemp=ReadConfigInt("VIDEO","mesh_reduction",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetLODQuality(iMeshReduction);
-		iMeshReduction=iTemp;
-	}
-
-	iMeshReduction=iTemp;
-	iTemp=ReadConfigInt("VIDEO","others_details",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetDetailsQuality(iLevelOfDetails);
-		iTemp=iLevelOfDetails;
-	}
-
-	iLevelOfDetails=iTemp;
-	iTemp=ReadConfigInt("VIDEO","fog",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetFogDistance(iFogDistance);
-		iTemp=iFogDistance;
-	}
-
-	iFogDistance=iTemp;
-
-	iTemp=ReadConfigInt("VIDEO","gamma",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=5;
-	}
-
-	iGamma=iTemp;
-	iTemp=ReadConfigInt("VIDEO","luminosity",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=4;
-	}
-
-	iLuminosite=iTemp;
-
-	if((iLuminosite<0)||(iLuminosite>10))
-	{
-		iLuminosite=4;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","contrast",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=5;
-	}
-
-	iContrast=iTemp;
-
-	if((iContrast<0)||(iContrast>10))
-	{
-		iContrast=5;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","show_crosshair",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=1;
-	}
-
-	bShowCrossHair = iTemp?true:false;
-
-	iTemp=ReadConfigInt("VIDEO","antialiasing",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=0;
-	}
-
-	bAntiAliasing=iTemp?true:false;
-
-	//audio
-	iTemp=ReadConfigInt("AUDIO","master_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iMasterVolume;
-	}
-
-	iMasterVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","effects_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iSFXVolume;
-	}
-
-	iSFXVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","speech_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iSpeechVolume;
-	}
-
-	iSpeechVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","ambiance_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iAmbianceVolume;
-	}
-
-	iAmbianceVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","EAX",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Audio_GetEAX(bEAX);
-	}
-	else
-	{
-		bEAX=(iTemp)?true:false;
-	}
-
-	//input
-	iTemp=ReadConfigInt("INPUT","invert_mouse",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetInvertMouse(bInvertMouse);
-	}
-	else
-	{
-		bInvertMouse=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","auto_ready_weapon",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetAutoReadyWeapon(bAutoReadyWeapon);
-	}
-	else
-	{
-		bAutoReadyWeapon=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","mouse_look_toggle",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bMouseLookToggle=true;
-	}
-	else
-	{
-		bMouseLookToggle=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","mouse_sensitivity",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetMouseSensitivity(iMouseSensitivity);
-		iTemp=iMouseSensitivity;
-	}
-
-	iMouseSensitivity=iTemp;
-
-	iTemp=ReadConfigInt("INPUT","mouse_smoothing",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bMouseSmoothing=false;
-	}
-	else
-	{
-		bMouseSmoothing=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","auto_description",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bAutoDescription=true;
-	}
-	else
-	{
-		bAutoDescription=(iTemp)?true:false;
-	}
+	// Check if this is the first run of the game
+	first_launch = ReadConfig( "FIRSTRUN", "int", 1 );
+
+	// Get the locale language
+	Project.localisationpath = ReadConfig( "LANGUAGE", "string", "english" );
+
+	// Get the video settings
+	std::string resolution = ReadConfig("VIDEO","resolution", "640x480" );
+	iWidth = atoi( resolution.substr( 0, resolution.find( 'x' ) ) );
+	iHeight = atoi( resolution.substr( resolution.find('x') + 1 ) );
+	bpp = ReadConfig( "VIDEO", "bpp", 16 );
+	bFullScreen = ReadConfig( "VIDEO", "full_screen", 1 );
+	bBumpMapping = ReadConfig( "VIDEO", "bump", 0 );
+	iTextureResol = ReadConfig( "VIDEO", "texture", 2 );
+	iMeshReduction = ReadConfig( "VIDEO", "mesh_reduction", 0 );
+	iLevelOfDetails = ReadConfig( "VIDEO", "others_details", 2 );
+	iFogDistance = ReadConfig( "VIDEO", "fog", 5 );
+	iGamma = ReadConfig( "VIDEO", "gamma", 5 );
+	iLuminosite = ReadConfig( "VIDEO", "luminosity", 4 );
+	iContrast = ReadConfig( "VIDEO", "constrast", 5 );
+	bShowCrossHair = ReadConfig( "VIDEO", "show_crosshair", 1 );
+	bAntiAliasing = ReadConfig( "VIDEO", "antialiasing", 0 );
+
+	// Get audio settings
+	iSFXVolume = ReadConfig( "AUDIO", "master_volume", 10 );
+	iSFXVolume = ReadConfig( "AUDIO", "effects_volume", 10 );
+	iSpeechVolume = ReadConfig( "AUDIO", "speech_volume", 10 );
+	iAmbianceVolume = ReadConfig( "AUDIO", "ambiance_volume", 10 );
+	bEAX = ReadConfig( "AUDIO", "EAX", 0 );
+
+	// Get input settings
+	bInvertMouse = ReadConfig( "INPUT", "invert_mouse", 0 );
+	bAutoReadyWeapon = ReadConfig( "INPUT", "auto_ready_weapon", 0 );
+	bMouseLookToggle = ReadConfig( "INPUT", "mouse_look_toggle", 0 );
+	iMouseSensitivity = ReadConfig( "INPUT", "mouse_sensitivity", 4 );
+	bMouseSmoothing = ReadConfig( "INPUT", "mouse_smoothing", 0 );
+	bAutoDescription = ReadConfig( "INPUT", "auto_description", 1 );
+	bLinkMouseLookToUse = ReadConfig( "INPUT", "link_mouse_look_to_use", 0 );
 
 	//key
 	bool bOk2=true;
@@ -1134,16 +851,7 @@ bool Config::ReadAll()
 	bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
 	bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);
 	bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
-	iTemp=ReadConfigInt("INPUT","link_mouse_look_to_use",bOkTemp);
 
-	if(!bOkTemp)
-	{
-		bLinkMouseLookToUse=true;
-	}
-	else
-	{
-		bLinkMouseLookToUse=(iTemp)?true:false;
-	}
 
 	bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);
 	bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);
@@ -1194,42 +902,15 @@ bool Config::ReadAll()
 		}
 	}
 
-	//misc
-	iTemp=ReadConfigInt("MISC","softfog",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bATI=false;
-	}
-	else
-	{
-		bATI=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcenoeax",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceNoEAX=false;
-	}
-	else
-	{
-		bForceNoEAX=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcezbias",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceZBias=false;
-	}
-	else
-	{
-		bForceZBias=(iTemp)?true:false;
-	}
+	// Get miscellaneous settings
+	bATI = ReadConfig( "MISC", "softfog", 0 );
+	bForceNoEAX = ReadConfig( "MISC", "forcenoeax", 0 );
+	bForceZBias = ReadConfig( "MISC", "forcezbias", 0 );
+	bOneHanded = ReadConfig( "MISC", "forcetoggle", 0 );
+	uiGoreMode = ReadConfig("MISC", "fg", 1 );
+	pStringMod = ReadConfig( "MISC", "mod", "mod.pak" );
+	pStringModSfx = ReadConfig("MISC", "modsfx", "modsfx.pak" );
+	pStringModSpeech = ReadConfig("MISC", "modspeech", "modspeech.pak" );
 
 	iTemp=ReadConfigInt("MISC","newcontrol",bOkTemp);
 	bOk&=bOkTemp;
@@ -1248,52 +929,6 @@ bool Config::ReadAll()
 		bLinkMouseLookToUse=false;
 	}
 
-	iTemp=ReadConfigInt("MISC","forcetoggle",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bOneHanded=false;
-	}
-	else
-	{
-		bOneHanded=(iTemp)?true:false;
-	}
-
-	std::string pcTextMod = ReadConfigString( "MISC", "mod" );
-
-	if( ( !pcTextMod.empty() ) && ( pcTextMod.length() < 256 ) )
-	{
-		pStringMod = pcTextMod;
-	}
-	else
-	{
-		pStringMod = "mod.pak";
-	}
-
-	pcTextMod = ReadConfigString("MISC","modsfx");
-
-	if( ( !pcTextMod.empty() ) && ( pcTextMod.length() < 256 ) )
-	{
-		pStringModSfx = pcTextMod;
-	}
-	else
-	{
-		pStringModSfx = "modsfx.pak";
-	}
-
-	pcTextMod = ReadConfigString("MISC","modspeech");
-
-	if( ( !pcTextMod.empty() ) && ( pcTextMod.length() < 256 ) )
-	{
-		pStringModSpeech = pcTextMod;
-	}
-	else
-	{
-		pStringModSpeech = "modspeech.pak";
-	}
-
-	uiGoreMode = ReadConfigInt("MISC", "fg", bOkTemp);
 	bOk&=bOkTemp;
 
 	if(!bOkTemp)
@@ -1369,7 +1004,26 @@ bool Config::ReadAll()
 
 	Localisation_Close();
 
+	bALLOW_BUMP=bBumpMapping;
+	WILL_RELOAD_ALL_TEXTURES=1;
 	GORE_MODE = IsNoGore()? 0 : 1;
+	Localisation_Init();
+
+	if(bBumpMapping)
+	{
+		EERIE_ActivateBump();
+	}
+	else
+	{
+		EERIE_DesactivateBump();
+	}
+
+	if( iTextureResol==2 ) Project.TextureSize=0;
+
+	if( iTextureResol==1 ) Project.TextureSize=2;
+
+	if( iTextureResol==0 ) Project.TextureSize=64;
+
 	return bOk;
 }
 
