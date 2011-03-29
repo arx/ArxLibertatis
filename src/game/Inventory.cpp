@@ -94,7 +94,6 @@ extern float InventoryDir;
 extern long PLAYER_INTERFACE_HIDE_COUNT;
 extern long	DRAGGING;
 
-extern CMenuConfig * pMenuConfig;
 extern long TRUE_PLAYER_MOUSELOOK_ON;
 
 void ARX_INTERFACE_Combat_Mode(long i);

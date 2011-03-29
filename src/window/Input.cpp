@@ -66,7 +66,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 extern CDirectInput * pGetInfoDirectInput;
-extern CMenuConfig * pMenuConfig;
 extern long STOP_KEYBOARD_INPUT;
 
 bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd) {

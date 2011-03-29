@@ -127,7 +127,6 @@ extern bool bRenderInterList;
 extern bool bALLOW_BUMP;
 extern unsigned long ulBKGColor;
 extern CDirectInput *pGetInfoDirectInput;
-extern CMenuConfig *pMenuConfig;
 //-----------------------------------------------------------------------------
 EERIEPOLY VF_Center;
 EERIEPOLY VF_Top;

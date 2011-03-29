@@ -77,7 +77,6 @@ static const float IMPROVED_FOCAL = 320.0f;
 
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;
-extern CMenuConfig *pMenuConfig;
 extern long TRUE_PLAYER_MOUSELOOK_ON;
 long passwall=0;
 long WILLRETURNTOFREELOOK = 0;

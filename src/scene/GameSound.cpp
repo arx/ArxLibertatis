@@ -66,8 +66,6 @@ extern long FINAL_RELEASE;
 extern long EXTERNALVIEW;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 
-extern CMenuConfig * pMenuConfig;
-
 struct ARX_SOUND_Material
 {
 	char * name;

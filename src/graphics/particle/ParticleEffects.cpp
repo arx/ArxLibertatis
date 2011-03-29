@@ -90,7 +90,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::max;
 
 //TODO(lubosz): extern globals :(
-extern CMenuConfig *pMenuConfig;
 extern float fZFogEnd;
 extern unsigned long ulBKGColor;
 

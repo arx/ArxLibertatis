@@ -95,7 +95,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
-extern CMenuConfig * pMenuConfig;
 extern EERIE_3D ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;

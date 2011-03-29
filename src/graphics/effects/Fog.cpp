@@ -71,8 +71,6 @@ EERIE_3DOBJ * fogobj = NULL;
 extern FOG_DEF fogcopy;
 FOG_DEF fogs[MAX_FOG];
 
-extern CMenuConfig * pMenuConfig;
-
 //*************************************************************************************
 // Used to Set 3D Object Visual for Fogs
 //*************************************************************************************

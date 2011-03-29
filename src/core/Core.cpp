@@ -154,7 +154,7 @@ extern long LAST_PORTALS_COUNT;
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CDirectInput		*pGetInfoDirectInput;
-extern CMenuConfig		*pMenuConfig;
+extern Config		*pMenuConfig;
 extern CMenuState		*pMenu;
 extern SNAPSHOTINFO		snapshotdata;
 extern short uw_mode;
@@ -1484,7 +1484,7 @@ int main( int argc, char** argv )
 		config_path = RESOURCE_CONFIG_DEFAULT;
 	}
 
-	pMenuConfig=new CMenuConfig(config_path);
+	pMenuConfig=new Config(config_path);
 	pMenuConfig->ReadAll();
 	LogInfo << "DInput Init Success";
 

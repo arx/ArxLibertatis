@@ -85,7 +85,6 @@ using std::max;
 //-----------------------------------------------------------------------------
 extern long USE_OLD_MOUSE_SYSTEM;
 extern long FINAL_RELEASE;
-extern CMenuConfig * pMenuConfig;
 extern bool bGLOBAL_DINPUT_GAME;
 
 extern long FINAL_COMMERCIAL_DEMO;

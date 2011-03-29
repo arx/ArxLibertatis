@@ -87,7 +87,6 @@ extern TextureContainer * Boom;
 POLYBOOM polyboom[MAX_POLYBOOM];
 
 extern unsigned long ulBKGColor;
-extern CMenuConfig *pMenuConfig;
 
 void EE_RT2(D3DTLVERTEX*,D3DTLVERTEX*);
 

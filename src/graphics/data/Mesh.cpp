@@ -112,7 +112,6 @@ long NEED_ANCHORS = 1;
 float Xratio = 1.f;
 float Yratio = 1.f;
 extern long CYRIL_VERSION;
-extern CMenuConfig * pMenuConfig;
 long COMPUTE_PORTALS = 1;
 
 

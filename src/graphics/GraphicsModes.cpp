@@ -50,7 +50,6 @@ extern long EDITMODE;
 #define DEFAULT_ZCLIP		6400.f 
 #define DEFAULT_MINZCLIP	1200.f 
 
-extern CMenuConfig * pMenuConfig;
 extern float fZFogEnd;
 extern float fZFogStart;
 extern D3DMATRIX ProjectionMatrix;

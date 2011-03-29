@@ -55,16 +55,16 @@ extern long WILL_RELOAD_ALL_TEXTURES;
 std::string pStringMod;
 std::string pStringModSfx;
 std::string pStringModSpeech;
-CMenuConfig *pMenuConfig;
+Config *pMenuConfig;
 
-CMenuConfig::CMenuConfig()
+Config::Config()
 {
 	First();
 }
 
 //-----------------------------------------------------------------------------
 
-void CMenuConfig::First()
+void Config::First()
 {
 	ResetActionKey();
 
@@ -196,7 +196,7 @@ void CMenuConfig::First()
 
 //-----------------------------------------------------------------------------
 
-CMenuConfig::CMenuConfig( const std::string& _pName)
+Config::Config( const std::string& _pName)
 {
 	// if _pName equals exactly "cfg"
 	if ( strcasecmp( _pName.c_str(), "cfg" ) == 0 )
@@ -226,7 +226,7 @@ CMenuConfig::CMenuConfig( const std::string& _pName)
 
 //-----------------------------------------------------------------------------
 
-void CMenuConfig::DefaultValue()
+void Config::DefaultValue()
 {
 	//VIDEO
 	iWidth=640;
@@ -264,13 +264,13 @@ void CMenuConfig::DefaultValue()
 	INTERNATIONAL_MODE=1;
 }
 
-CMenuConfig::~CMenuConfig()
+Config::~Config()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void CMenuConfig::SetDefaultKey()
+void Config::SetDefaultKey()
 {
 	int iI=MAX_ACTION_KEY;
 
@@ -291,7 +291,7 @@ void CMenuConfig::SetDefaultKey()
 	}
 }
 
-int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
+int Config::GetDIKWithASCII( const std::string& _pcTouch)
 {
 	std::string pcT = _pcTouch;
 	
@@ -359,7 +359,7 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 }
 
 //-----------------------------------------------------------------------------
-std::string CMenuConfig::ReadConfig( const std::string& _section, const std::string& _key) {
+std::string Config::ReadConfig( const std::string& _section, const std::string& _key) {
 	
 	// TODO unify with localisation loading (and make platform-independent)
 	char text[256];
@@ -372,7 +372,7 @@ std::string CMenuConfig::ReadConfig( const std::string& _section, const std::str
 
 //-----------------------------------------------------------------------------
 
-int CMenuConfig::ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool &_bOk )
+int Config::ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool &_bOk )
 {
 	std::string pcText=ReadConfig(_pcSection,_pcKey);
 
@@ -391,7 +391,7 @@ int CMenuConfig::ReadConfigInt( const std::string& _pcSection, const std::string
 }
 
 //-----------------------------------------------------------------------------
-std::string CMenuConfig::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey)
+std::string Config::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey)
 {
 	std::string temp = ReadConfig( _pcSection,_pcKey);
 	return temp;
@@ -399,7 +399,7 @@ std::string CMenuConfig::ReadConfigString( const std::string& _pcSection, const 
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
+bool Config::WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
 {
 	int iErreur=0;
 
@@ -417,21 +417,21 @@ bool CMenuConfig::WriteConfig( const std::string& _pcSection, const std::string&
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int data )
+bool Config::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int data )
 {
 	return WriteConfig(_pcSection,_pcKey, itoa( data ) );
 }
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
+bool Config::WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
 {
 	return WriteConfig(_pcSection,_pcKey,_pcDatas);
 }
 
 //-----------------------------------------------------------------------------
 
-void CMenuConfig::ResetActionKey()
+void Config::ResetActionKey()
 {
 	for (unsigned int iI=0; iI<MAX_ACTION_KEY; iI++)
 	{
@@ -446,7 +446,7 @@ void CMenuConfig::ResetActionKey()
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
+bool Config::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
 {
 	if(    (_iAction>=MAX_ACTION_KEY)||
 		(_iActionNum>1) ) return false;
@@ -523,7 +523,7 @@ bool CMenuConfig::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigKey( const std::string& _pcKey,int _iAction)
+bool Config::WriteConfigKey( const std::string& _pcKey,int _iAction)
 {
 	char tcTxt[256];
 	char tcTxt2[256];
@@ -563,7 +563,7 @@ bool CMenuConfig::WriteConfigKey( const std::string& _pcKey,int _iAction)
 
 //-----------------------------------------------------------------------------
 
-void CMenuConfig::ReInitActionKey(CWindowMenuConsole *_pwmcWindowMenuConsole)
+void Config::ReInitActionKey(CWindowMenuConsole *_pwmcWindowMenuConsole)
 {
 	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
 	int iI=MAX_ACTION_KEY;
@@ -605,7 +605,7 @@ void CMenuConfig::ReInitActionKey(CWindowMenuConsole *_pwmcWindowMenuConsole)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::ReadConfigKey( const std::string& _pcKey, int _iAction )
+bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
 {
 	char tcTxt[256];
 	char tcTxt2[256];
@@ -656,7 +656,7 @@ bool CMenuConfig::ReadConfigKey( const std::string& _pcKey, int _iAction )
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::SaveAll()
+bool Config::SaveAll()
 {
 	char tcTxt[256];
 	bool bOk=true;
@@ -760,13 +760,17 @@ extern bool IsNoGore( void );
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::ReadAll()
+bool Config::ReadAll()
 {
 	std::string pcText;
 	bool bOk = false; 
 	bool bOkTemp;
 	int iTemp;
 
+	// Get the locale language
+	Project.localisationpath = ReadConfigString( "LANGUAGE", "string" );
+
+/*
 	//language
 	if ( Project.localisationpath.length() == 0 )
 	{
@@ -803,7 +807,7 @@ bool CMenuConfig::ReadAll()
 		if( !pcText.empty() )
 			Project.localisationpath = pcText;
 	}
-
+*/
 	bool bWarningGore=false;
 
 	Localisation_Init();
