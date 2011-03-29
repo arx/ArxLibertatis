@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 #include "animation/CinematicKeyframer.h"
 
+#include "core/Config.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
 #include "core/AVI.h"
@@ -1140,8 +1141,13 @@ void forInternalPeople(LPSTR strCmdLine) {
 
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
-int main(int, char**)
+int main( int argc, char** argv )
 {
+	std::vector<std::string> args;
+
+	for ( int i = 0 ; i < argc ; i++ )
+		args.push_back( argv[i] );
+
 	LPSTR strCmdLine = GetCommandLine();
 	hInstance = GetModuleHandle(0);
 	

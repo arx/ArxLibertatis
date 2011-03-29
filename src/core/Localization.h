@@ -22,10 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Code: Didier P�dreno
-
-#ifndef ARX_CORE_LOCALIZATION_H
-#define ARX_CORE_LOCALIZATION_H
+#ifndef LOCALISATION_H
+#define LOCALISATION_H
 
 #include <string>
 
@@ -37,4 +35,4 @@ bool PAK_UNICODE_GetPrivateProfileString(const std::string & section, const std:
 long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string & sectionname);
 long HERMES_UNICODE_GetProfileString(const std::string & sectionname, const std::string & defaultstring, std::string & destination);
 
-#endif // ARX_CORE_LOCALIZATION_H
+#endif // LOCALISATION_H

@@ -58,9 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/DrawEffects.h"
 
-#include "core/Time.h"
 #include "core/Application.h"
+#include "core/Config.h"
 #include "core/Core.h"
+#include "core/Time.h"
 
 #include "game/Spells.h"
 #include "gui/MenuWidgets.h"

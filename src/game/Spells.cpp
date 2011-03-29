@@ -37,6 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cassert>
 
+#include "core/Config.h"
 #include "core/Core.h"
 
 #include "game/Damage.h"

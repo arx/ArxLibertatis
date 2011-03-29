@@ -259,8 +259,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define	CONTROLS_CUST_MINIMAP			39
 
-#define MAX_ACTION_KEY					40
-
 //-----------------------------------------------------------------------------
 
 #define DIK_BUTTON1		(0x80000000|DXI_BUTTON0)
@@ -825,94 +823,6 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-struct SACTION_KEY
-{
-	int	iKey[2];
-	int iPage;
-};
-
-class CMenuConfig
-{
-	public:
-		std::string     pcName;
-		//LANGUAGE
-		//VIDEO
-		int			iWidth;
-		int			iHeight;
-		int			iNewWidth;
-		int			iNewHeight;
-		int			iBpp;
-		int			iNewBpp;
-		bool		bFullScreen;
-		bool		bBumpMapping;
-		bool		bNewBumpMapping;
-		bool		bMouseSmoothing;
-		int			iTextureResol;
-		int			iNewTextureResol;
-		int			iMeshReduction;
-		int			iLevelOfDetails;
-		int			iFogDistance;
-		int			iGamma;
-		int			iLuminosite;
-		int			iContrast;
-		bool		bShowCrossHair;
-		bool		bAntiAliasing;
-		bool		bChangeResolution;
-		bool		bChangeTextures;
-		bool		bDebugSetting;
-		//AUDIO
-		int			iMasterVolume;
-		int			iSFXVolume;
-		int			iSpeechVolume;
-		int			iAmbianceVolume;
-		bool		bEAX;
-		//INPUT
-		bool		bInvertMouse;
-		bool		bAutoReadyWeapon;
-		bool		bMouseLookToggle;
-		bool		bAutoDescription;
-		int			iMouseSensitivity;
-		SACTION_KEY sakActionKey[MAX_ACTION_KEY];
-		SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY];
-		bool		bLinkMouseLookToUse;
-		//MISC
-		bool		bATI;
-		bool		bForceZBias;
-		bool		bOneHanded;
-		unsigned int uiGoreMode;
-
-		bool		bNoReturnToWindows;
-	private:
-		int GetDIKWithASCII( const std::string& _pcTouch);
-		std::string ReadConfig( const std::string& _pcSection, const std::string& _pcKey);
-		bool WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
-	public:
-		CMenuConfig();
-		CMenuConfig( const std::string& );
-		virtual ~CMenuConfig();
-
-		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
-		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
- 
-		std::string ReadConfigString( const std::string& _pcSection, const std::string& _pcKey);
-		bool WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int _iDatas);
- 
-		bool WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
- 
- 
- 
-		void ResetActionKey();
-		bool WriteConfigKey( const std::string& _pcKey, int _iAction);
-		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
-		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
-		void SetDefaultKey();
-		void DefaultValue();
-		void First();
-
-		bool SaveAll();
-		bool ReadAll();
-};
-
 
 //-----------------------------------------------------------------------------
 bool Menu2_Render();

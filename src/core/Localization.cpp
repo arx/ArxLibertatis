@@ -28,128 +28,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <list>
 #include <sstream>
 
-#include "core/Common.h"
-#include "core/LocalizationHash.h"
+#include "core/Application.h"
+#include "core/ConfigHashMap.h"
 #include "core/Unicode.hpp"
-
-#include "gui/MenuWidgets.h"
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+namespace
+{
+	ConfigHashMap* pHashLocalisation;
+}
 
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
 extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
 extern long FINAL_COMMERCIAL_DEMO;
-extern CMenuConfig * pMenuConfig;
-
-CLocalisationHash * pHashLocalisation;
-
-bool isKey( const std::string& str );
-bool isSection( const std::string& str );
-std::string CleanKey( std::string str );
-std::string CleanSection( std::string str );
-
-/*****************************************************************
- * Checks a str for square brackets and makes sure they appear
- * left first, right second. This confirms str as a section line.
- *****************************************************************/
-bool isSection( const std::string& str )
-{
-	// Location of square brackets in str
-	size_t first_bracket, last_bracket;
-
-	// Get location of '[' and ']' in str
-	first_bracket = str.find_first_of('[');
-	last_bracket = str.find_last_of(']');
-
-	// If either of the brackets are not present, not a section
-	if ( first_bracket == std::string::npos ) return false;
-	if ( last_bracket == std::string::npos ) return false;
-
-	// '[' must be before ']'
-	if ( first_bracket > last_bracket ) return false;
-
-	// It is a section
-	return true;
-}
-
-
-/*****************************************************************
- * Checks whether or not str is a valid key line.
- * Looks for an alphanumeric key followed by
- * at least one '=' character.
- ****************************************************************/
-bool isKey( const std::string& str )
-{
-	// Iterate through str until alphanumeric characters are found
-	for ( size_t i = 0 ; i < str.length() ; i++ )
-	{
-		// If we hit an '=' before other alphanumeric characters, return false
-		if ( str[i] == '=' ) return false;
-
-		// Just one alphanumeric is enough for a key, break out of the loop
-		if ( isalnum(str[i]) )
-			break;
-	}
-
-	// Now find the location of the first equals sign
-	size_t equals_loc = str.find('=');
-
-	// No equals sign present means not a key, return false
-	if ( equals_loc == std::string::npos ) return false;
-
-	// Value can be empty, no need to check for one. Return true
-	return true;
-}
-	
-/**************************************************************
- * Removes all characters preceding the first '[' and
- * proceeding the first ']' in a copy of _str and returns
- * the result.
- *************************************************************/
-std::string CleanSection( std::string str )
-{
-	// Find the cutoff points for the line trimming
-	size_t first_bracket = str.find_first_of('[');
-	size_t last_bracket = str.find_last_of(']');
-
-	// Erase all characters up to but not including the '['
-	str.erase( 0, first_bracket );
-
-	// Erase all characters following but not including the ']'
-	str.erase( last_bracket + 1 );
-
-	// Return the processed string
-	return str;
-}
-
-/********************************************************************
- * Cleans up a key string by removing the type identifier before
- * '=' appears and extracting the string between the first two ""
- * marks.
- *******************************************************************/
-std::string CleanKey( std::string str )
-{
-	// The equals sign seperates the type identifier from the value
-	size_t equals_loc = str.find_first_of('=');
-
-	// Find the beginning of the value after the equals sign
-	size_t first_quot_mark = str.find( '"', equals_loc );
-
-	// Cut the string until the beginning of the value
-	str = str.substr( first_quot_mark + 1 );
-
-	// Find the next " mark that shows the end of the value
-	size_t last_quot_mark = str.find_last_of('"');
-
-	// Cut the string at the end of the value
-	str = str.substr( 0, last_quot_mark );
-
-	// Return the processed string
-	return str;
-}
 
 /*******************************************************************************
  * Takes a string as a memory buffer for the contents of a file and extracts
@@ -189,23 +84,23 @@ void ParseFile( const std::string& file_text )
 	while( iter != input_strings.end() )
 	{
 		// If a section string is found, make en entry for it
-		if ( isSection( *iter ) )
+		if ( ConfigSection::isSection( *iter ) )
 		{
 			// Create a localisation entry for this section
-			CLocalisation* loc = new CLocalisation();
+			ConfigSection* loc = new ConfigSection();
 
 			// Set the section name as the cleaned section string
-			loc->SetSection( CleanSection( *iter ) );
+			loc->SetSection( ConfigSection::CleanSection( *iter ) );
 
 			// Advance to the line after the section string to start looking for keys
 			iter++;
 
 			// Iterate over more strings until a section is encountered or no more strings remain
-			while ( ( iter != input_strings.end() ) && ( !isSection( *iter ) ) )
+			while ( ( iter != input_strings.end() ) && ( !ConfigSection::isSection( *iter ) ) )
 			{
 				// If a key is found, add it to the localisation entry
-				if ( isKey( *iter ) )
-					loc->AddKey( CleanKey( *iter ) );
+				if ( ConfigSection::isKey( *iter ) )
+					loc->AddKey( ConfigSection::CleanKey( *iter ) );
 
 				iter++; // Continue looking for more keys
 			}
@@ -225,7 +120,6 @@ void ParseFile( const std::string& file_text )
  ***************************************************************************/
 void Localisation_Init() 
 {
-
 	// If a locale is already initialized, close it
 	if (pHashLocalisation)
 		Localisation_Close();
@@ -241,16 +135,7 @@ void Localisation_Init()
 	// if no file was loaded
 	if ( !Localisation )
 	{
-		// No file loaded and locale is set to german or french
-		if (GERMAN_VERSION || FRENCH_VERSION)
-		{
-			// Delete the menuconfig and abort the program
-			delete pMenuConfig;
-			pMenuConfig = NULL;
-			exit(0);
-		}
-
-		// Otherwise default to english locale
+		// Default to english locale
 		Project.localisationpath = "english";
 		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
 
@@ -276,7 +161,7 @@ void Localisation_Init()
 	if ( Localisation && loc_file_size)
 	{
 		LogDebug << "Preparing to parse localisation file";
-		pHashLocalisation = new CLocalisationHash(1 << 13);
+		pHashLocalisation = new ConfigHashMap(1 << 13);
 
 		LogDebug << "Converting loaded localistation file:";
 		ParseFile( out );

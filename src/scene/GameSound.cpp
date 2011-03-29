@@ -36,6 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Audio.h"
 
 #include "core/Application.h"
+#include "core/Config.h"
 
 #include "game/NPC.h"
 #include "game/Player.h"
