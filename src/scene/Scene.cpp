@@ -2644,7 +2644,7 @@ SMY_D3DVERTEX *pMyVertex;
 			TextureContainer *pTexCurr=*ppTexCurr;
 
 			if (ViewMode & VIEWMODE_FLAT) 
-				SETTC(NULL);
+				GRenderer->ResetTexture(0);
 			else
 				SETTC(pTexCurr);
 
@@ -3988,7 +3988,7 @@ else
 
 if (HALOCUR>0)
 {
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 	GRenderer->SetCulling(Renderer::CullNone);

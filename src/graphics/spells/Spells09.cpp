@@ -540,7 +540,7 @@ float CSummonCreature::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 

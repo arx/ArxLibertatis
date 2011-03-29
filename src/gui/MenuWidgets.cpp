@@ -1843,7 +1843,7 @@ static void FadeInOut(float _fVal)
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
@@ -3358,7 +3358,7 @@ bool Menu2_Render()
 						pTextureLoad,
 						ARX_OPAQUE_WHITE);
 
-		SETTC(NULL);
+		GRenderer->ResetTexture(0);
 		EERIEDraw2DRect(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
 						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
 						DANAEMouse.x+iOffsetX+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
@@ -4249,7 +4249,7 @@ void CMenuState::Render()
 	}
 
 	//DEBUG ZONE
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	pMenuAllZone->DrawZone();
 }
 
@@ -4456,7 +4456,7 @@ void CMenuAllZone::DrawZone()
 
 	vector<CMenuZone*>::iterator i;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 
 	for(std::vector<CMenuZone*>::const_iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
 	{
@@ -4793,7 +4793,7 @@ void CMenuCheckButton::RenderMouseOver()
 	TextureContainer *pTex = vTex[iState];
 
 	if(pTex) SETTC( pTex);
-	else SETTC(NULL);
+	else GRenderer->ResetTexture(0);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
@@ -5336,7 +5336,7 @@ void CWindowMenuConsole::UpdateText()
 
 	//DRAW CURSOR
 	D3DTLVERTEX v[4];
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	float col=.5f+rnd()*.5f;
 	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
@@ -7408,7 +7408,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	float fColorBlue=fDColorBlue;
 
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendInvDstColor);
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	D3DTLVERTEX v[4];
@@ -7473,7 +7473,7 @@ void CDirectInput::DrawCursor()
 	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
 
 	if(pTex[iNumCursor]) SETTC( pTex[iNumCursor]);
-	else SETTC(NULL);
+	else GRenderer->ResetTexture(0);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

@@ -262,7 +262,6 @@ long				CURCURPOS=0;
 long				INTERFACE_HALO_NB=0;
 long				INTERFACE_HALO_MAX_NB=0;
 long				ObjectRotAxis=0;
-long				SPECIAL_DRAW_INTER_SHADOW=0;
 long				PRECAST_NUM=0;
 long				LastMouseClick=0;
 long				LastSelectedNode=-1;
@@ -8858,7 +8857,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
 			if (HALOCUR>0)
 			{
-				SETTC(NULL);
+				GRenderer->ResetTexture(0);
 				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 				GRenderer->SetCulling(Renderer::CullNone);
@@ -10288,7 +10287,7 @@ long Manage3DCursor(long flags)
 
 }
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_RenderCursor(long flag)
+void ARX_INTERFACE_RenderCursorInternal(long flag)
 {
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
@@ -10301,58 +10300,57 @@ void ARX_INTERFACE_RenderCursor(long flag)
 	TextureContainer * surf;
 
 	if (!SPECIAL_DRAGINTER_RENDER)
-	if (LOOKING_FOR_SPELL_TARGET)
 	{
-		if (ARXTime>LOOKING_FOR_SPELL_TARGET_TIME+7000)
+		if (LOOKING_FOR_SPELL_TARGET)
 		{
-			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
-			ARX_SPELLS_CancelSpellTarget();
-		}
-
-		if (	(FlyingOverIO)
-			&&	(	((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
-			|| ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM))	)	)
-		{
-			surf=ITC.Get("target_on");
-
-			if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-			{
-				ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
-			}
-		}
-		else
-		{
-			surf=ITC.Get("target_off");
-
-			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+			if (ARXTime>LOOKING_FOR_SPELL_TARGET_TIME+7000)
 			{
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 				ARX_SPELLS_CancelSpellTarget();
 			}
+
+			if (	(FlyingOverIO)
+				&&	(	((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
+				|| ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM))	)	)
+			{
+				surf=ITC.Get("target_on");
+
+				if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+				{
+					ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
+				}
+			}
+			else
+			{
+				surf=ITC.Get("target_off");
+
+				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+				{
+					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
+					ARX_SPELLS_CancelSpellTarget();
+				}
+			}
+
+			float POSX=DANAEMouse.x;
+			float POSY=DANAEMouse.y;
+
+			if (TRUE_PLAYER_MOUSELOOK_ON)
+			{
+				POSX = MemoMouse.x;
+				POSY = MemoMouse.y;
+			}
+
+
+			float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
+			float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
+
+			EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
+				fTexSizeX, fTexSizeY, 0.f,
+				surf,D3DCOLORWHITE);
+
+			return;
 		}
-
-		float POSX=DANAEMouse.x;
-		float POSY=DANAEMouse.y;
-
-		if (TRUE_PLAYER_MOUSELOOK_ON)
-		{
-			POSX = MemoMouse.x;
-			POSY = MemoMouse.y;
-		}
-
-
-		float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
-		float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
-
-		EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
-			fTexSizeX, fTexSizeY, 0.f,
-			surf,D3DCOLORWHITE);
-
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-		return;
 	}
-
-	SPECIAL_DRAW_INTER_SHADOW = 0;
 
 	if (flag || ((!BLOCK_PLAYER_CONTROLS) &&
 		(!PLAYER_INTERFACE_HIDE_COUNT)))
@@ -10783,36 +10781,45 @@ void ARX_INTERFACE_RenderCursor(long flag)
 					CURCURPOS=0;
 					float POSX, POSY;
 
-						surf = pTCCrossHair;
+					surf = pTCCrossHair;
 
-						if (!surf)
-						{
-							surf=ITC.Get("target_off");
-						}
+					if (!surf)
+					{
+						surf=ITC.Get("target_off");
+					}
 
-						if (surf)
-						{
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					if (surf)
+					{
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-							POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
-							POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
+						POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
+						POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
 
-							D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
+						D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
 
-							EERIEDrawBitmap((float)POSX,(float)POSY,
+						EERIEDrawBitmap((float)POSX,(float)POSY,
 
-								INTERFACE_RATIO_DWORD(surf->m_dwWidth),
-								INTERFACE_RATIO_DWORD(surf->m_dwHeight),
+							INTERFACE_RATIO_DWORD(surf->m_dwWidth),
+							INTERFACE_RATIO_DWORD(surf->m_dwHeight),
 
-								0.f,
-								surf, col);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
+							0.f,
+							surf, col);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 				}
 			}
+		}
+	}
+}
 
+void ARX_INTERFACE_RenderCursor(long flag)
+{
+	ARX_INTERFACE_RenderCursorInternal(flag);
+
+	// Ensure filtering settings are restored in all cases
+	if (!SPECIAL_DRAGINTER_RENDER)
+	{
 		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);

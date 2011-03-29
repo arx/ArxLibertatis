@@ -1641,7 +1641,7 @@ void UpdateObjFx() {
 							v2[p].color=D3DRGB(color.r/(3.f+(float)p),color.g/(4.f+(float)p),color.b/(5.f+(float)p));
 					}
 
-					SETTC(NULL);
+					GRenderer->ResetTexture(0);
 					EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , v2, 3,  0, 0 );
 				}
 			}
@@ -2344,7 +2344,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					temp.sz=in.sz+vect.z*part->fparam;
 
 					EERIETreatPoint(&temp,&tv[2]);
-					SETTC(NULL);
+					GRenderer->ResetTexture(0);
 
 					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , tv, 3, 0, 0);
 					if(!ARXPausedTimer)

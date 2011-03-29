@@ -501,7 +501,7 @@ float CTelekinesis::Render()
 
 	//DumpMap();
 
-	//SETTC(NULL);
+	//GRenderer->ResetTexture(0);
 	//GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	//GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -588,7 +588,7 @@ float CTelekinesis::Render()
 		SETTC(tex_p2);
 	}
 
-	//SETTC(NULL);
+	//GRenderer->ResetTexture(0);
 
 
 	//----------------------------

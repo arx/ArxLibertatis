@@ -1037,7 +1037,7 @@ float CSpeed::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	
 	for (int i = 0; i < nbrubandef; i++)
 	{

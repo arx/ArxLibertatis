@@ -427,7 +427,7 @@ void DRAWLATER_Render()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
 		GRenderer->SetRenderState(Renderer::DepthWrite, true); 
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 }
 
 //------------------------------------------------------------------------------
@@ -468,7 +468,7 @@ void Delayed_FlushAll()
 			long to;
 
 			if (ViewMode & VIEWMODE_FLAT)
-				SETTC(NULL);
+				GRenderer->ResetTexture(0);
 			else 
 				SETTC(ptcTexture);
 
@@ -495,7 +495,7 @@ void Delayed_FlushAll()
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
-					SETTC(NULL); 
+					GRenderer->ResetTexture(0); 
 
 					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ep->tv,	to,	0, flg_NOCOUNT_USEVB );
 					EERIEDrawnPolys++;	
@@ -848,7 +848,7 @@ void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 	tv[1].rhw=tv[0].rhw=1.f;
 	tv[1].sx=x1;
 	tv[1].sy=y1;	
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	EERIEDRAWPRIM(D3DPT_LINELIST ,	D3DFVF_TLVERTEX,tv, 2,  0  );	
 
 }
@@ -860,7 +860,7 @@ void EERIEDraw2DLine(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
 	D3DTLVERTEX v[2];
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	v[0].sx=x0;
 	v[0].sy=y0;
 	v[0].sz=v[1].sz=z;
@@ -869,7 +869,7 @@ void EERIEDraw2DLine(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 	v[1].color=v[0].color=col;
 	v[1].rhw=v[0].rhw=1.f;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	EERIEDRAWPRIM( D3DPT_LINELIST, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, 
 					 v, 2,  0  );	
 }
@@ -878,7 +878,7 @@ void EERIEDraw2DRect(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
 	D3DTLVERTEX v[5];
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	v[4].sx=v[3].sx=v[0].sx=x0;
 	v[4].sy=v[1].sy=v[0].sy=y0;
 	v[2].sx=v[1].sx=x1;
@@ -887,7 +887,7 @@ void EERIEDraw2DRect(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 	v[4].color=v[3].color=v[2].color=v[1].color=v[0].color=col;
 	v[4].rhw=v[3].rhw=v[2].rhw=v[1].rhw=v[0].rhw=1.f;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	EERIEDRAWPRIM(D3DPT_LINESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 5,  0  );	
 }
 
@@ -895,7 +895,7 @@ void EERIEDrawFill2DRectDegrad(float x0,float y0,float x1,float y1,float z, D3DC
 {
 	D3DTLVERTEX v[4];
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	v[0].sx=v[2].sx=x0;
 	v[0].sy=v[1].sy=y0;
 	v[1].sx=v[3].sx=x1;
@@ -904,7 +904,7 @@ void EERIEDrawFill2DRectDegrad(float x0,float y0,float x1,float y1,float z, D3DC
 	v[2].color=v[3].color=cole;
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=z;
 	v[3].rhw=v[2].rhw=v[1].rhw=v[0].rhw=1.f;
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4,  0  );	
 }
 
@@ -976,7 +976,7 @@ void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
 	register float lx=x0;
 	register float ly=y0+r;
 	register float t;
-	SETTC(NULL);	
+	GRenderer->ResetTexture(0);	
 
 	for (long i=0;i<361;i+=10)
 	{
@@ -1047,7 +1047,7 @@ void EERIEDraw3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 
 	if (v[1].sz<0.f) return;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	v[1].color=v[0].color=col;
 	
 	EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE,v, 2,  0  );	
@@ -1196,7 +1196,7 @@ void EERIEPOLY_DrawWired(EERIEPOLY *ep,long col)
 	}
 	else memcpy(&ltv[to],&ltv[0],sizeof(D3DTLVERTEX));
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 
 	if (col)
 	 ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=col;
@@ -1230,7 +1230,7 @@ void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 	lv.sy+=ep->norm.y*10.f;
 	lv.sz+=ep->norm.z*10.f;
 	EE_RTP(&lv,&ltv[1]);					
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	ltv[1].color=ltv[0].color=0xFFFF0000;
 
 	if ((ltv[1].sz>0.f) && (ltv[0].sz>0.f))
@@ -1246,7 +1246,7 @@ void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 		lv.sy+=ep->nrml[h].y*10.f;
 		lv.sz+=ep->nrml[h].z*10.f;
 		EE_RTP(&lv,&ltv[1]);					
-		SETTC(NULL);
+		GRenderer->ResetTexture(0);
 		ltv[1].color=ltv[0].color=EERIECOLOR_YELLOW;
 
 		if ((ltv[1].sz>0.f) &&  (ltv[0].sz>0.f))

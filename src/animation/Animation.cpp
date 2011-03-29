@@ -2965,7 +2965,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 			&& (eobj->texturecontainer[eobj->facelist[i].texid]!=NULL))
 				SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
 		else  // Set to Flat if invalid
-				SETTC(NULL);
+				GRenderer->ResetTexture(0);
 
 		if (FRAME_COUNT!=0)
 		for (long j=0;j<3;j++)		

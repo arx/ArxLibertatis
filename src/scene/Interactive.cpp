@@ -118,7 +118,6 @@ extern INTERACTIVE_OBJ * FlyingOverIO;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern TextureContainer * Movable;
 extern long NODIRCREATION;
-extern long SPECIAL_DRAW_INTER_SHADOW;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
 extern long CURRENTLEVEL;

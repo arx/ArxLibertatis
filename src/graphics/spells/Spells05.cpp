@@ -1897,8 +1897,10 @@ float CLevitate::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
 
-	if (this->tsouffle) GDevice->SetTexture(0, this->tsouffle->m_pddsSurface);
-	else GDevice->SetTexture(0, NULL);
+	if (this->tsouffle)
+		GDevice->SetTexture(0, this->tsouffle->m_pddsSurface);
+	else
+		GDevice->SetTexture(0, NULL);
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	int i = cone[1].conenbfaces - 2;

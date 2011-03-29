@@ -386,7 +386,7 @@ float CMagicMissile::Render()
 	if (tex_mm && tex_mm->m_pddsSurface)
 	{
 		if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-			SETTC(NULL);
+			GRenderer->ResetTexture(0);
 		else
 			SETTC(tex_mm);
 	}
@@ -1092,7 +1092,7 @@ void DrawArcElectrique(EERIE_3D * tabdef, int nbseg, TextureContainer * tex, flo
 
 	//-------------------------------------------------------------------------
 	// rendu
-	//	SETTC(NULL);
+	//	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
 
 	if (tex && tex->m_pddsSurface)

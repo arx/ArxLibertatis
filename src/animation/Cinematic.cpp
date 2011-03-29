@@ -461,7 +461,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 
 		if (DrawLine)
 		{
-			SETTC(NULL);
+			GRenderer->ResetTexture(0);
 			GRenderer->SetFillMode(Renderer::FillWireframe);
 			GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 			                             D3DFVF_TLVERTEX,

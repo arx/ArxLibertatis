@@ -3356,7 +3356,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
 		if ((eobj->facelist[i].facetype == 0)
 				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
 		{
-			SETTC(NULL);
+			GRenderer->ResetTexture(0);
 		}
 		else
 		{
@@ -3437,7 +3437,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 		if ((eobj->facelist[i].facetype == 0)
 				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
 		{
-			SETTC(NULL);
+			GRenderer->ResetTexture(0);
 		}
 		else
 		{

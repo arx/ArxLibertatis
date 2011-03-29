@@ -2481,7 +2481,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 
 			// Set texture
 			if ((eface->texid == -1) || (eobj->texturecontainer[eface->texid] == NULL))
-				SETTC(NULL);
+				GRenderer->ResetTexture(0);
 			else
 				SETTC(eobj->texturecontainer[eface->texid]);
 
@@ -2506,7 +2506,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				GRenderer->SetRenderState(Renderer::DepthWrite, false);
-				SETTC(NULL);
+				GRenderer->ResetTexture(0);
 				unsigned long v = _EERIERGB(special_color.r);
 
 				for (long j = 0; j < 3; j++)
