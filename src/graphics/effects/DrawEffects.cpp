@@ -77,9 +77,6 @@ extern long DANAESIZX;
 extern EERIE_3D SPRmins;
 extern EERIE_3D SPRmaxs;
 extern long MOVETYPE;
-extern ANIM_HANDLE * herowait;
-extern ANIM_HANDLE * herowalk;
-extern ANIM_HANDLE * herorun;
 extern EERIE_3DOBJ * eyeballobj; 
 extern TextureContainer * Boom;
 

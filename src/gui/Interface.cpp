@@ -161,7 +161,6 @@ extern EERIE_S2D DANAEMouse;
 extern short sActiveInventory;
 extern unsigned long WILLADDSPEECHTIME;
 extern unsigned long LOOKING_FOR_SPELL_TARGET_TIME;
-extern ANIM_HANDLE * herowait_2h;
 
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
@@ -208,7 +207,7 @@ INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
 char*				QuestBook_Cache_Text = NULL;		// Cache of screen text
-long				QuestBook_Cache_nbQuests = -42;
+size_t QuestBook_Cache_nbQuests = -42;
 std::string Page_Buffer;
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
@@ -7131,7 +7130,7 @@ namespace
 /// Update QuestBook_Cache_Text if it needs to. Otherwise does nothing.
 void QuestBook_Update()
 {
-	if (QuestBook_Cache_nbQuests == nb_PlayerQuest)
+	if(QuestBook_Cache_nbQuests == PlayerQuest.size())
 		return;
 
 	delete[] QuestBook_Cache_Text;
@@ -7162,21 +7161,21 @@ void QuestBook_Update()
 
 	QuestBook.pages[0] = 0;
 
-	for (long i = 0; i < nb_PlayerQuest; ++i)
-		if (PlayerQuest[i].localised.size())
-			lLenght += PlayerQuest[i].localised.length();
+	for(size_t i = 0; i < PlayerQuest.size(); ++i) {
+		lLenght += PlayerQuest[i].localised.length();
+	}
 
-	QuestBook_Cache_Text = new char[lLenght+nb_PlayerQuest*2+1];
-	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(char));
+	QuestBook_Cache_Text = new char[lLenght+PlayerQuest.size()*2+1];
+	ZeroMemory(QuestBook_Cache_Text, (lLenght+PlayerQuest.size()*2+1)*sizeof(char));
 
-	for (int i = 0; i < nb_PlayerQuest; ++i)
-		if ( PlayerQuest[i].localised.size() )
-		{
+	for(size_t i = 0; i < PlayerQuest.size(); ++i) {
+		if(PlayerQuest[i].localised.size()) {
 			strcat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
 			strcat(QuestBook_Cache_Text, "\n\n");
 			lLenght += 2;
 		}
-
+	}
+	
 	while (lLenght > 0)
 	{
 		long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, QuestBook_Cache_Text + lLenghtCurr, rRect);
@@ -7195,7 +7194,7 @@ void QuestBook_Update()
 
 	QuestBook.totpages = lCurPage;
 
-	QuestBook_Cache_nbQuests = nb_PlayerQuest;
+	QuestBook_Cache_nbQuests = PlayerQuest.size();
 }
 
 void QuestBook_Render()
@@ -8413,7 +8412,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 	}
 	else if (Book_Mode == BOOKMODE_QUESTS)
 	{
-		if(nb_PlayerQuest > 0) {
+		if(!PlayerQuest.empty()) {
 			QuestBook_Update();
 			QuestBook_Render();
 		}

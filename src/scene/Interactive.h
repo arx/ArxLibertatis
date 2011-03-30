@@ -260,7 +260,7 @@ void SetYlsideDeath(INTERACTIVE_OBJ * io);
 std::string GetMaterialString( const std::string& origin );
 INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
-// TODO create separate header fro functions from ARX_Invetory.cpp
+// TODO create separate header for functions from ARX_Invetory.cpp
 void CleanInventory();
 void SendInventoryObjectCommand(const char * _lpszText, long _lCommand);
 bool PutInInventory();
@@ -273,7 +273,7 @@ bool IsInPlayerInventory(INTERACTIVE_OBJ * io);
 bool IsInSecondaryInventory(INTERACTIVE_OBJ * io);
 bool InInventoryPos(EERIE_S2D * pos);
 void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
-void RemoveFromAllInventories(INTERACTIVE_OBJ * io);
+void RemoveFromAllInventories(const INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability();
 void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ *);

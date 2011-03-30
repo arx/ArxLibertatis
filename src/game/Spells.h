@@ -88,6 +88,27 @@ const size_t ARX_SPELLS_SYMBOL_COUNT = 21;
 #define RUNE_YOK			SYMBOL_YOK
 #define NB_RUNES			(SYMBOL_AKBAA)+1
 
+#define FLAG_AAM			(1<<(RUNE_AAM))
+#define FLAG_CETRIUS		(1<<(RUNE_CETRIUS))
+#define FLAG_COMUNICATUM	(1<<(RUNE_COMUNICATUM))
+#define FLAG_COSUM			(1<<(RUNE_COSUM))
+#define FLAG_FOLGORA		(1<<(RUNE_FOLGORA))
+#define FLAG_FRIDD			(1<<(RUNE_FRIDD))
+#define FLAG_KAOM			(1<<(RUNE_KAOM))
+#define FLAG_MEGA			(1<<(RUNE_MEGA))
+#define FLAG_MORTE			(1<<(RUNE_MORTE))
+#define FLAG_MOVIS			(1<<(RUNE_MOVIS))
+#define FLAG_NHI			(1<<(RUNE_NHI))
+#define FLAG_RHAA			(1<<(RUNE_RHAA))
+#define FLAG_SPACIUM		(1<<(RUNE_SPACIUM))
+#define FLAG_STREGUM		(1<<(RUNE_STREGUM))
+#define FLAG_TAAR			(1<<(RUNE_TAAR))
+#define FLAG_TEMPUS			(1<<(RUNE_TEMPUS))
+#define FLAG_TERA			(1<<(RUNE_TERA))
+#define FLAG_VISTA			(1<<(RUNE_VISTA))
+#define FLAG_VITAE			(1<<(RUNE_VITAE))
+#define FLAG_YOK			(1<<(RUNE_YOK))
+
 enum ARX_SPELLS_SPELLCAST_FLAG
 {
 	SPELLCAST_FLAG_NODRAW			= (1 << 0),

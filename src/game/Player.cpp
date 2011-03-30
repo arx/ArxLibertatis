@@ -163,8 +163,7 @@ ANIM_HANDLE * herowait_2h = NULL;
 
 ARX_NECKLACE necklace;
 
-long Keyring_Number = 0;
-KEYRING_SLOT * Keyring = NULL;
+vector<KEYRING_SLOT> Keyring;
 float PLAYER_BASE_RADIUS = 52;
 float PLAYER_BASE_HEIGHT = -170;
 float PLAYER_CROUCH_HEIGHT = -120;
@@ -173,10 +172,7 @@ INTERACTIVE_OBJ * CURRENT_TORCH = NULL;
 
 unsigned long FALLING_TIME = 0;
 
-
-//STRUCT_QUEST * PlayerQuest;
 vector<STRUCT_QUEST> PlayerQuest;
-long nb_PlayerQuest = 0;
 long FistParticles = 0;
 void Manage_sp_max();
 bool ARX_PLAYER_IsInFightMode() {
@@ -224,13 +220,8 @@ bool ARX_PLAYER_IsInFightMode() {
 // FUNCTION/RESULT:
 //   Init/Reset player Keyring structures
 //*************************************************************************************
-void ARX_KEYRING_Init()
-{
-	if (Keyring)
-		free((void *)Keyring);
-
-	Keyring = NULL;
-	Keyring_Number = 0;
+void ARX_KEYRING_Init() {
+	Keyring.clear();
 }
 //*************************************************************************************
 // void ARX_KEYRING_Add(char * key)
@@ -238,12 +229,10 @@ void ARX_KEYRING_Init()
 // FUNCTION/RESULT:
 //   Add a key to Keyring
 //*************************************************************************************
-void ARX_KEYRING_Add( const std::string& key)
-{
-	Keyring = (KEYRING_SLOT *)realloc(Keyring, sizeof(KEYRING_SLOT) * (Keyring_Number + 1));
-	memset(&Keyring[Keyring_Number], 0, sizeof(KEYRING_SLOT));
-	strcpy(Keyring[Keyring_Number].slot, key.c_str());
-	Keyring_Number++;
+void ARX_KEYRING_Add(const std::string & key) {
+	Keyring.resize(Keyring.size() + 1);
+	memset(&Keyring.back(), 0, sizeof(KEYRING_SLOT));
+	strcpy(Keyring.back().slot, key.c_str());
 }
 
 //*************************************************************************************
@@ -252,12 +241,11 @@ void ARX_KEYRING_Add( const std::string& key)
 // FUNCTION/RESULT:
 //   Sends COMBINE event to "io" for each keyring entry
 //*************************************************************************************
-void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io)
-{
-	for (long i = 0; i < Keyring_Number; i++)
-	{
-		if (SendIOScriptEvent(io, SM_COMBINE, Keyring[i].slot) == REFUSE)
+void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io) {
+	for(size_t i = 0; i < Keyring.size(); i++) {
+		if(SendIOScriptEvent(io, SM_COMBINE, Keyring[i].slot) == REFUSE) {
 			return;
+		}
 	}
 }
 //-----------------------------------------------------------------------------
@@ -408,9 +396,7 @@ void ARX_PLAYER_ClickedOnTorch(INTERACTIVE_OBJ * io)
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PLAYER_ManageTorch()
-{
+static void ARX_PLAYER_ManageTorch() {
 	if (CURRENT_TORCH)
 	{
 		CURRENT_TORCH->ignition = 0;
@@ -446,24 +432,8 @@ void ARX_PLAYER_ManageTorch()
 // FUNCTION/RESULT:
 //   Init/Reset player Quest structures
 //*************************************************************************************
-void ARX_PLAYER_Quest_Init()
-{
-	if (PlayerQuest.size() != 0) {
-//		for (long i = 0; i < nb_PlayerQuest; i++)
-//		{
-//			if (PlayerQuest[i].ident)
-//				free((void *)PlayerQuest[i].ident);
-//
-//			if (!PlayerQuest[i].localised.empty())
-//				PlayerQuest[i].localised.clear();
-//		}
-//
-//		free((void *)PlayerQuest);
-//		PlayerQuest = NULL;
-		PlayerQuest.clear();
-	}
-
-	nb_PlayerQuest = 0;
+void ARX_PLAYER_Quest_Init() {
+	PlayerQuest.clear();
 }
 
 //*************************************************************************************
@@ -560,10 +530,9 @@ void ARX_PLAYER_Quest_Add( const std::string& quest, bool _bLoad)
     if (output[0] == 0) return;
 
     PlayerQuest.push_back(STRUCT_QUEST());
-    PlayerQuest[nb_PlayerQuest].ident = quest;
-    PlayerQuest[nb_PlayerQuest].localised = output;
-    PlayerQuest[nb_PlayerQuest].localised = output;
-    nb_PlayerQuest++;
+    PlayerQuest.back().ident = quest;
+    PlayerQuest.back().localised = output;
+    PlayerQuest.back().localised = output;
     bBookHalo = !_bLoad;//true;
     ulBookHaloTime = 0;
 }
@@ -822,8 +791,8 @@ float ARX_PLAYER_Get_Skill_Defense(long type)
 // FUNCTION/RESULT:
 //   Compute secondary attributes for player
 //*************************************************************************************
-void ARX_PLAYER_ComputePlayerStats()
-{
+static void ARX_PLAYER_ComputePlayerStats() {
+	
 	player.maxlife = (float)player.Attribute_Constitution * (float)(player.level + 2);
 	player.maxmana = (float)player.Attribute_Mind * (float)(player.level + 1);
 	float t = ARX_PLAYER_Get_Skill_Defense(0);

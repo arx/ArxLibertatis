@@ -24,6 +24,18 @@ inline size_t array_size(T(&)[N]) {
 	return N;
 }
 
+enum SavePlayerFlag {
+	SP_MAX  = (1<<0),
+	SP_RF   = (1<<2),
+	SP_WEP  = (1<<3),
+	SP_MR   = (1<<4),
+	SP_ARM1 = (1<<5),
+	SP_ARM2 = (1<<6),
+	SP_ARM3 = (1<<7),
+	SP_SP   = (1<<8),
+	SP_SP2  = (1<<9)
+};
+
 
 #pragma pack(push,1)
 
@@ -362,7 +374,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	s32 TELEPORT_TO_ANGLE;
 	s32 CHANGE_LEVEL_ICON;
 	s16 bag;
-	s16 sp_flags; // padding;
+	s16 sp_flags; // combinations of SavePlayerFlag
 	SavedPrecast  precast[SAVED_MAX_PRECAST];
 	s32 Global_Magic_Mode;
 	s32 Nb_Mapmarkers;

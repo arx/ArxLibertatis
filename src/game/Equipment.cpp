@@ -94,7 +94,6 @@ struct EQUIP_INFO
 #define SP_SPARKING 1
 #define SP_BLOODY 2
 
-extern float PLAYER_BASE_HEIGHT;
 extern long TRUEFIGHT;
 extern long GAME_EDITOR;
 extern EERIE_3D PUSH_PLAYER_FORCE;

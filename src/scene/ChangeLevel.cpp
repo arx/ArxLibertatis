@@ -809,8 +809,8 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	ARX_CHANGELEVEL_PLAYER * asp;
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
-	allocsize += Keyring_Number * 64;
-	allocsize += 80 * nb_PlayerQuest;
+	allocsize += Keyring.size() * 64;
+	allocsize += 80 * PlayerQuest.size();
 	allocsize += sizeof(SavedMapMakerData) * Mapmarkers.size();
 
 
@@ -951,8 +951,8 @@ retry:
 	asp->skin = player.skin;
 
 	asp->xp = player.xp;
-	asp->nb_PlayerQuest = nb_PlayerQuest;
-	asp->keyring_nb = Keyring_Number;
+	asp->nb_PlayerQuest = PlayerQuest.size();
+	asp->keyring_nb = Keyring.size();
 	asp->Global_Magic_Mode = GLOBAL_MAGIC_MODE;
 	asp->Nb_Mapmarkers = Mapmarkers.size();
 
@@ -978,24 +978,22 @@ retry:
 		else
 			strcpy(asp->equiped[k], "");
 	}
-
-	for (int i = 0; i < nb_PlayerQuest; i++)
-	{
+	
+	for(size_t i = 0; i < PlayerQuest.size(); i++) {
 		memset(dat + pos, 0, 80);
+		assert(PlayerQuest[i].ident.length() < 80);
 		strcpy((char *)(dat + pos), PlayerQuest[i].ident.c_str());
 		pos += 80;
 	}
-
-	for (int i = 0; i < asp->keyring_nb; i++)
-	{
+	
+	for(size_t i = 0; i < Keyring.size(); i++) {
 		const size_t SLOT_SIZE = 64;
 		assert(sizeof(Keyring[i].slot) == SLOT_SIZE);
 		memcpy((char *)(dat + pos), Keyring[i].slot, SLOT_SIZE);
 		pos += sizeof(SLOT_SIZE);
 	}
-
-	for (int i = 0; i < asp->Nb_Mapmarkers; i++)
-	{
+	
+	for(size_t i = 0; i < Mapmarkers.size(); i++) {
 		SavedMapMakerData acmd = Mapmarkers[i];
 		memcpy((char *)(dat + pos), &acmd, sizeof(SavedMapMakerData));
 		pos += sizeof(SavedMapMakerData);
@@ -1952,10 +1950,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Mind = asp.Attribute_Mind;
 	player.Attribute_Strength = asp.Attribute_Strength;
 	player.Critical_Hit = asp.Critical_Hit;
-	player.Current_Movement = asp.Current_Movement;
+	player.Current_Movement = Flag(asp.Current_Movement); // TODO save/load flags
 	player.damages = asp.damages;
 	player.doingmagic = asp.doingmagic;
-	player.playerflags = asp.playerflags;
+	player.playerflags = Flag(asp.playerflags); // TODO save/load flags
 	
 	if(asp.TELEPORT_TO_LEVEL[0]) {
 		strcpy(TELEPORT_TO_LEVEL, asp.TELEPORT_TO_LEVEL);
@@ -1982,7 +1980,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.inzone = ARX_PATH_GetAddressByName(asp.inzone);;
 	player.jumpphase = asp.jumpphase;
 	player.jumpstarttime = asp.jumpstarttime;
-	player.Last_Movement = asp.Last_Movement;
+	player.Last_Movement = Flag(asp.Last_Movement); // TODO save/load flags
 	
 	ARX_CHECK_UCHAR(asp.level);
 	player.level = static_cast<unsigned char>(asp.level);

@@ -1715,8 +1715,8 @@ bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos)
 // FUNCTION:
 //   Seeks an IO in all Inventories to remove it
 //*************************************************************************************
-void RemoveFromAllInventories(INTERACTIVE_OBJ * io)
-{
+void RemoveFromAllInventories(const INTERACTIVE_OBJ * io) {
+	
 	if (!io) return;
 
 	long iNbBag, i, j, k;
