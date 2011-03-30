@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 
 #include "game/Damage.h"
+#include "game/Equipment.h"
 
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
@@ -470,7 +471,7 @@ struct INTERACTIVE_OBJ
 	char *				usemesh;	// Alternate Mesh/path
 	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
 	ArxSound				sound;
-	unsigned long		type_flags;			// object type (weapon,goblin...)
+	ObjectType type_flags;			// object type (weapon,goblin...)
 	long				scriptload;			// Is This object Loaded by Script ?
 	EERIE_3D			target;				// Target position
 	long				targetinfo;			// Target Type/Ident

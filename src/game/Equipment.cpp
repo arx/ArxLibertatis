@@ -110,7 +110,7 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
+ObjectType ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
 {
 	if ( temp.empty() ) return 0;
 
@@ -1480,7 +1480,7 @@ void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, 
 	if (!io) return;
 
 	// retrieves flag
-	unsigned long flagg = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
+	ObjectType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
 
 	if (val)	// add flag
 		io->type_flags |= flagg;

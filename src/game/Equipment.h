@@ -60,6 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "platform/Flags.h"
+
 struct INTERACTIVE_OBJ;
 struct EERIE_3D;
 
@@ -71,18 +73,22 @@ enum WeaponType {
 	WEAPON_BOW = 4
 };
 
-#define OBJECT_TYPE_WEAPON   (1<<0)
-#define OBJECT_TYPE_DAGGER   (1<<1)
-#define OBJECT_TYPE_1H       (1<<2)
-#define OBJECT_TYPE_2H       (1<<3)
-#define OBJECT_TYPE_BOW      (1<<4)
-#define OBJECT_TYPE_SHIELD   (1<<5)
-#define OBJECT_TYPE_FOOD     (1<<6)
-#define OBJECT_TYPE_GOLD     (1<<7)
-#define OBJECT_TYPE_ARMOR    (1<<8)
-#define OBJECT_TYPE_HELMET   (1<<9)
-#define OBJECT_TYPE_RING     (1<<10)
-#define OBJECT_TYPE_LEGGINGS (1<<11)
+enum ObjectTypeFlag {
+	OBJECT_TYPE_WEAPON   = (1<<0),
+	OBJECT_TYPE_DAGGER   = (1<<1),
+	OBJECT_TYPE_1H       = (1<<2),
+	OBJECT_TYPE_2H       = (1<<3),
+	OBJECT_TYPE_BOW      = (1<<4),
+	OBJECT_TYPE_SHIELD   = (1<<5),
+	OBJECT_TYPE_FOOD     = (1<<6),
+	OBJECT_TYPE_GOLD     = (1<<7),
+	OBJECT_TYPE_ARMOR    = (1<<8),
+	OBJECT_TYPE_HELMET   = (1<<9),
+	OBJECT_TYPE_RING     = (1<<10),
+	OBJECT_TYPE_LEGGINGS = (1<<11)
+};
+DECLARE_FLAGS(ObjectTypeFlag, ObjectType)
+DECLARE_FLAGS_OPERATORS(ObjectType)
 
 enum EquipmentSlot {
 	EQUIP_SLOT_RING_LEFT = 0,
@@ -99,7 +105,7 @@ void ARX_EQUIPMENT_Init();
 void ARX_EQUIPMENT_Remove_All_Special(INTERACTIVE_OBJ * io);
 void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, const std::string& param2, float val, short flags);
 void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, long val);
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag(const std::string& temp);
+ObjectType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string& temp);
 void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip);
 void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip, long flags = 0);
 void ARX_EQUIPMENT_ReleaseAll(INTERACTIVE_OBJ * io);
