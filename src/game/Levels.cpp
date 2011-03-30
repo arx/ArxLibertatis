@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 
-#include "io/String.h"
+#include "platform/String.h"
 
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_SCENE;

@@ -34,13 +34,14 @@
 
 #include "io/Logger.h"
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 
 #include "physics/Actors.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
+
+#include "platform/String.h"
 
 #include "scene/Scene.h"
 #include "scene/GameSound.h"

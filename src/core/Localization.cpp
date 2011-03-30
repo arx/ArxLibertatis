@@ -28,7 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <list>
 #include <sstream>
 
-#include "core/Common.h"
 #include "core/LocalizationHash.h"
 #include "core/Unicode.hpp"
 
@@ -36,6 +35,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "platform/Platform.h"
 
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;

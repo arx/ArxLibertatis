@@ -81,12 +81,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 
 #include "physics/Box.h"
 #include "physics/Anchors.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
+
+#include "platform/String.h"
 
 #include "scene/Object.h"
 #include "scene/Interactive.h"

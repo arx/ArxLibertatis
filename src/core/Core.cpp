@@ -104,7 +104,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
@@ -116,6 +115,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 #include "physics/Actors.h"
 #include "physics/Physics.h"
+
+#include "platform/String.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"

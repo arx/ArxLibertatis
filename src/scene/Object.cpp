@@ -68,7 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Progressive.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/PakEntry.h"
@@ -78,6 +77,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Clothes.h"
 #include "physics/Box.h"
 #include "physics/CollisionShapes.h"
+
+#include "platform/String.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/GameSound.h"

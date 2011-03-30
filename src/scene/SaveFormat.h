@@ -5,11 +5,11 @@
 #include <cassert>
 #include <algorithm>
 
-#include "core/Common.h"
 #include "gui/MiniMap.h"
 #include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/data/Mesh.h"
+#include "platform/Platform.h"
 
 const s32 SAVEFLAGS_EXTRA_ROTATE = 1;
 const float ARX_GAMESAVE_VERSION = 1.005f;

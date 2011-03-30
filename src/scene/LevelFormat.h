@@ -2,8 +2,8 @@
 #ifndef ARX_SCENE_LEVELFORMAT_H
 #define ARX_SCENE_LEVELFORMAT_H
 
-#include "core/Common.h"
 #include "graphics/GraphicsFormat.h"
+#include "platform/Platform.h"
 
 
 #pragma pack(push,1)

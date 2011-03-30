@@ -28,9 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cassert>
 
-#include "core/Common.h"
-
 #include "io/HashMap.h"
+#include "platform/Platform.h"
 
 static char* GetFirstDir(const std::string& dir, size_t& l);
 

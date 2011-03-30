@@ -3,8 +3,8 @@
 #define ARX_IO_CINEMATICFORMAT_H
 
 #include "animation/Cinematic.h"
-#include "core/Common.h"
 #include "graphics/GraphicsFormat.h"
+#include "platform/Platform.h"
 
 
 #pragma pack(push,1)
