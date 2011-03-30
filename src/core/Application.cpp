@@ -102,8 +102,8 @@ EERIE_CAMERA		* Kam;
 LPDIRECT3DDEVICE7	GDevice;
 HWND				MSGhwnd = NULL;
 float				FPS;
-int					ModeLight = 0;
-long				ViewMode = 0;
+LightMode ModeLight = 0;
+ViewModeFlags ViewMode = 0;
 
 static RECT srRect;
 static int iCurrZBias;

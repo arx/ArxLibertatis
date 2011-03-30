@@ -1136,8 +1136,8 @@ long DanaeLoadLevel(const string & fic) {
 			pos += sizeof(u32) * bcount;
 		}
 		
-		ModeLight = dll->ModeLight;
-		ViewMode = dll->ViewMode;
+		ModeLight = Flag(dll->ModeLight); // TODO save/load flags
+		ViewMode = Flag(dll->ViewMode); // TODO save/load flags
 		ViewMode &= ~VIEWMODE_WIRE;
 	}
 	
@@ -1450,8 +1450,8 @@ long DanaeLoadLevel(const string & fic) {
 		}
 	}
 	
-	ModeLight = dll->ModeLight;
-	ViewMode = dll->ViewMode;
+	ModeLight = Flag(dll->ModeLight); // TODO save/load flags
+	ViewMode = Flag(dll->ViewMode); // TODO save/load flags
 	ViewMode &= ~VIEWMODE_WIRE;
 	
 	free(dat);

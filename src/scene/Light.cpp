@@ -983,7 +983,7 @@ void _RecalcLightZone(float x, float z, long siz) {
 	if (z1 < 2) z1 = 0;
 	else if (z1 >= ACTIVEBKG->Zsize - 2) z1 = ACTIVEBKG->Zsize - 3;
 
-	long oldml = ModeLight;
+	LightMode oldml = ModeLight;
 	ModeLight &= ~MODE_RAYLAUNCH;
 	EERIEPrecalcLights(x0, z0, x1, z1);
 	ModeLight = oldml;

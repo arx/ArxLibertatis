@@ -4588,7 +4588,7 @@ void LaunchMoulinex()
 
 		if (FileExist(saveto))
 		{
-			long oldmode=ModeLight;
+			LightMode oldmode = ModeLight;
 			ModeLight=MODE_NORMALS | MODE_RAYLAUNCH | MODE_STATICLIGHT | MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
 
 			if (TSU_LIGHTING) ModeLight|=MODE_SMOOTH;
@@ -4596,7 +4596,7 @@ void LaunchMoulinex()
 			EERIERemovePrecalcLights();
 			EERIEPrecalcLights(0,0,999999,999999);
 			DanaeSaveLevel(saveto);
-			ModeLight=oldmode;
+			ModeLight = oldmode;
 		}
 
 		if (PROCESS_ONLY_ONE_LEVEL!=-1)
