@@ -402,8 +402,6 @@ long FINAL_COMMERCIAL_DEMO =1;
 long FINAL_COMMERCIAL_DEMO =0;
 #endif
 
-float GLOBAL_NPC_MIPMAP_BIAS	=-2.2f;
-float GLOBAL_MIPMAP_BIAS		= 0;
 float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 long GLOBAL_FORCE_PLAYER_IN_FRONT	=1;
 long USE_NEW_SKILLS=1;
@@ -6506,10 +6504,10 @@ static float _AvgFrameDiff = 150.f;
 		if (uw_mode)
 		{
 			float val=10.f;
-			GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
+			GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 			ARX_SCENE_Render(1);
 			val=-0.3f;
-			GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
+			GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 		}
 		else {
 			ARX_SCENE_Render(1);
@@ -7371,14 +7369,6 @@ HRESULT DANAE::InitDeviceObjects()
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	
 	SetZBias(0);
-
-	// Texture filtering
-	GRenderer->GetTextureStage(1)->SetWrapMode(TextureStage::WrapRepeat);
-	GRenderer->GetTextureStage(1)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(1)->SetMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(2)->SetWrapMode(TextureStage::WrapRepeat);
-	GRenderer->GetTextureStage(2)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(2)->SetMagFilter(TextureStage::FilterLinear);
 
 	ComputePortalVertexBuffer();
 	pDynamicVertexBuffer				=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);

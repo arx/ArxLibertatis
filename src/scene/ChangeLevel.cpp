@@ -3052,11 +3052,6 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi)
 
 	for (long i = 0; i < asi->nb_inter; i++)
 	{
-		if ((i == 4) || (i == 62))
-		{
-			i = i;
-		}
-
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
 		char tempo[256];

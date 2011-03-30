@@ -4369,7 +4369,7 @@ void RenderInter(float from, float to) {
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	float val = -0.6f;
-	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 	EERIE_3D temp;
 	EERIEMATRIX mat;
 	INTER_DRAW = 0;
@@ -4384,9 +4384,6 @@ void RenderInter(float from, float to) {
 
 	for (long i = 1; i < inter.nbmax; i++) // Player isn't rendered here...
 	{
-		if (i == 379)
-			i = i;
-
 		INTERACTIVE_OBJ * io = inter.iobj[i];
 
 		if ((io)
@@ -4639,7 +4636,7 @@ void RenderInter(float from, float to) {
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	val = -0.3f;
-	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 }
 
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)

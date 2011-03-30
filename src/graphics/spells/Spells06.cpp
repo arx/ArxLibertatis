@@ -1763,7 +1763,7 @@ float CParalyse::Render()
 	}
 
 	if (tex_prism) GDevice->SetTexture(0, tex_prism->m_pddsSurface);
-	else GDevice->SetTexture(0, NULL);
+	else GRenderer->ResetTexture(0);
 
 	int	nb2 = 50;
 

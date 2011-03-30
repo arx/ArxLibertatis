@@ -1386,7 +1386,7 @@ float CPortal::Render()
 
 	//affichage de la sphere back
 	GRenderer->SetCulling(Renderer::CullCW);
-	GDevice->SetTexture(0, NULL);
+	GRenderer->ResetTexture(0);
 	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
 
 	//affichage eclair
@@ -1430,7 +1430,7 @@ float CPortal::Render()
 
 	//affichage de la sphere front
 	GRenderer->SetCulling(Renderer::CullCCW);
-	GDevice->SetTexture(0, NULL);
+	GRenderer->ResetTexture(0);
 	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);

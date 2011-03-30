@@ -260,7 +260,7 @@ HRESULT Cinematic::InitDeviceObjects()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
-	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
+    GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
@@ -276,7 +276,7 @@ HRESULT Cinematic::DeleteDeviceObjects()
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	
-	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
+    GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, true);
 

@@ -415,7 +415,7 @@ float CExplosion::Render()
 
 	//trac� du disque
 	GRenderer->SetCulling(Renderer::CullNone);
-	GDevice->SetTexture(0, NULL);
+	GRenderer->ResetTexture(0);
 	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, disqued3d, disquenbvertex, (unsigned short *)disqueind, disquenbvertex + 2, 0);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);

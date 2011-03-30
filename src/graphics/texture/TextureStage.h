@@ -66,6 +66,17 @@ public:
 	virtual void SetMinFilter(FilterMode filterMode) = 0;
 	virtual void SetMagFilter(FilterMode filterMode) = 0;
 	virtual void SetMipFilter(FilterMode filterMode) = 0;
+
+	//! Level of detail bias for mipmaps. Can be used to make textures appear more chunky or more blurred.
+	/* Each unit bias (+/-1.0) biases the selection by exactly one MIP map level. 
+	 * A negative bias causes the use of larger MIP map levels, resulting in a sharper but more aliased image. 
+	 * A positive bias causes the use of smaller MIP map levels, resulting in a blurrier image. 
+	 * Applying a negative bias also results in the referencing of a smaller amount of texture data, which can boost performance on some systems.
+	 */
+	virtual void SetMipMapLODBias(float bias) = 0;
+
+	//! Set the index of the texture coordinate set to use with this texture stage.
+	virtual void SetTextureCoordIndex(int texCoordIdx) = 0;
 	
 protected:
 	unsigned int mStage;

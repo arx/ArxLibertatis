@@ -459,6 +459,9 @@ public:
 	void SetMinFilter(FilterMode filterMode);
 	void SetMagFilter(FilterMode filterMode);
 	void SetMipFilter(FilterMode filterMode);
+
+	void SetMipMapLODBias(float bias);
+	void SetTextureCoordIndex(int texCoordIdx);
 };
 
 DX7TextureStage::DX7TextureStage(unsigned int textureStage)
@@ -560,7 +563,27 @@ void DX7TextureStage::SetMagFilter(FilterMode filterMode)
 
 void DX7TextureStage::SetMipFilter(FilterMode filterMode)
 {
-	GDevice->SetTextureStageState(mStage, D3DTSS_MIPFILTER, ARXToDX7MipFilter[filterMode]);
+	D3DTEXTUREMIPFILTER mipFilter = ARXToDX7MipFilter[filterMode];
+	GDevice->SetTextureStageState(mStage, D3DTSS_MIPFILTER, mipFilter);
+}
+
+void DX7TextureStage::SetMipMapLODBias(float bias)
+{
+	HRESULT hRet;
+	if(GetKeyState(VK_F12) != 0)
+	{
+		float val = 0;
+		hRet = GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+	}
+	else
+	{
+		hRet = GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&bias)));
+	}
+}
+
+void DX7TextureStage::SetTextureCoordIndex(int texCoordIdx)
+{
+	GDevice->SetTextureStageState(mStage, D3DTSS_TEXCOORDINDEX, texCoordIdx);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -581,6 +604,33 @@ void Renderer::Initialize()
 	GDevice->GetCaps(&devicedesc);
 
 	///////////////////////////////////////////////////////////////////////////
+	// Initialize filtering options depending on the card capabilities...
+
+	// Minification
+	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC)
+		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_ANISOTROPIC;
+	else if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR)
+		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_LINEAR;
+	else
+		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_POINT;
+		
+	// Magnification
+	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC)
+		ARXToDX7MagFilter[TextureStage::FilterLinear] = D3DTFG_ANISOTROPIC;
+	else if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
+		ARXToDX7MagFilter[TextureStage::FilterLinear] = D3DTFG_LINEAR;
+	else
+		ARXToDX7MagFilter[TextureStage::FilterLinear] = D3DTFG_POINT;
+
+	// Mipmapping
+	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MIPFLINEAR)
+		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_LINEAR;
+	else if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MIPFPOINT)
+		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_POINT;
+	else
+		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_NONE;
+
+	///////////////////////////////////////////////////////////////////////////
 	// Texture stages...
 
 	m_TextureStages.resize(devicedesc.wMaxTextureBlendStages, 0);
@@ -593,32 +643,13 @@ void Renderer::Initialize()
 	{
 		m_TextureStages[i] = new DX7TextureStage(i);
 		GDevice->SetTextureStageState(i, D3DTSS_MAXANISOTROPY, maxAnisotropy);
+
+        // Set default state
+		m_TextureStages[i]->SetWrapMode(TextureStage::WrapRepeat);
+		m_TextureStages[i]->SetMinFilter(TextureStage::FilterLinear);
+		m_TextureStages[i]->SetMagFilter(TextureStage::FilterLinear);
+		m_TextureStages[i]->SetMipFilter(TextureStage::FilterLinear);
 	}
-
-	///////////////////////////////////////////////////////////////////////////
-	// Initialize filtering options depending on the card capabilities...
-
-	// Minification
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC)
-		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_ANISOTROPIC;
-	else if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR)
-		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_LINEAR;
-	else
-		ARXToDX7MinFilter[TextureStage::FilterLinear] = D3DTFN_POINT;
-		
-	// Magnification
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
-		ARXToDX7MagFilter[TextureStage::FilterLinear] = D3DTFG_LINEAR;
-	else
-		ARXToDX7MagFilter[TextureStage::FilterLinear] = D3DTFG_POINT;
-
-	// Mipmapping
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MIPFLINEAR)
-		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_LINEAR;
-	else if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MIPFPOINT)
-		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_POINT;
-	else
-		ARXToDX7MipFilter[TextureStage::FilterLinear] = D3DTFP_NONE;
 
 	// Clear screen
 	Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);

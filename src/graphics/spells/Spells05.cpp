@@ -1900,7 +1900,7 @@ float CLevitate::Render()
 	if (this->tsouffle)
 		GDevice->SetTexture(0, this->tsouffle->m_pddsSurface);
 	else
-		GDevice->SetTexture(0, NULL);
+		GRenderer->ResetTexture(0);
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	int i = cone[1].conenbfaces - 2;

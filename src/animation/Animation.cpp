@@ -825,8 +825,8 @@ ARX_D3DVERTEX * PushVertexInTableCull_TMetal(TextureContainer *pTex)
 }
 
 void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex);
-extern float GLOBAL_NPC_MIPMAP_BIAS;
-extern float GLOBAL_MIPMAP_BIAS;
+
+
 //-----------------------------------------------------------------------------
 void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 {
@@ -837,19 +837,13 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	SETTC(_pTex);
-	float val;
 
 	if (_pTex->userflags & POLY_LATE_MIP)
 	{
-		val=GLOBAL_NPC_MIPMAP_BIAS;
-		GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
+		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
+		GRenderer->GetTextureStage(0)->SetMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
 	}
-	else
-	{
-		val=GLOBAL_MIPMAP_BIAS;
-		GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
-	}
-
+	
 	if( _pTex->ulNbVertexListCull )
 	{
 		EERIEDRAWPRIM(	D3DPT_TRIANGLELIST,
@@ -858,11 +852,16 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 						_pTex->ulNbVertexListCull,
 						0, 
 						0 );
-		if(_bUpdate) _pTex->ulNbVertexListCull = 0;
+
+		if(_bUpdate) 
+			_pTex->ulNbVertexListCull = 0;
 	}
 	
-	val=GLOBAL_MIPMAP_BIAS;
-	GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
+	if (_pTex->userflags & POLY_LATE_MIP)
+	{
+		float biasResetVal = 0;
+		GRenderer->GetTextureStage(0)->SetMipMapLODBias(biasResetVal);
+	}
 }
 
 //-----------------------------------------------------------------------------
