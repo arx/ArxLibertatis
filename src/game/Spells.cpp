@@ -7453,10 +7453,15 @@ void ARX_SPELLS_Update()
 				case SPELL_EXPLOSION:					
 				break;
 				//----------------------------------------------------------------------------
-				case SPELL_INVISIBILITY:											
-					inter.iobj[spells[i].target]->GameFlags&=~GFLAG_INVISIBILITY;											
-					ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &inter.iobj[spells[i].target]->pos);					
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+				case SPELL_INVISIBILITY:	
+					{
+						if (ValidIONum(spells[i].target))
+						{
+							inter.iobj[spells[i].target]->GameFlags&=~GFLAG_INVISIBILITY;											
+							ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &inter.iobj[spells[i].target]->pos);					
+							ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+						}
+					}
 				break;
 				//----------------------------------------------------------------------------------
 				//**********************************************************************************
