@@ -37,12 +37,117 @@
 #include "scene/GameSound.h"
 #include "window/Input.h"
 
-void ARX_SetAntiAliasing();
+// To avoid conflicts with potential other classes/namespaces
+namespace
+{
 
-/* Externs */
-extern long INTERNATIONAL_MODE;
-extern CDirectInput * pGetInfoDirectInput;
-extern long GORE_MODE;
+	/* Default values for config */
+	namespace Default
+	{
+		std::string
+			language = "english",
+			resolution = "640x480",
+			modpak = "mod.pak",
+			modsfxpak = "modsfx.pak",
+			speechmodpak = "modspeech.pak",
+			empty_string = "";
+
+		int
+			bpp = 16,
+			texture = 2,
+			mesh_reduction = 0,
+			others_details = 2,
+			fog = 5,
+			gamma = 5,
+			luminosity = 4,
+			contrast = 5,
+			master_volume = 10,
+			effects_volume = 10,
+			speech_volume = 10,
+			ambiance_volume = 10,
+			mouse_sensitivity = 4;
+
+		bool
+			first_run = true,
+			full_screen = true,
+			bump = false,
+		show_crosshair = true,
+		antialiasing = false,
+		EAX = false,
+		invert_mouse = false,
+		auto_ready_weapon = false,
+		mouse_look_toggle = false,
+		mouse_smoothing = false,
+		auto_description = true,
+		link_mouse_look_to_use = false,
+		softfog = false,
+		forcenoeax = false,
+		forcezbias = false,
+		forcetoggle = false,
+		fg = true,
+		new_control = false;
+	};
+
+	namespace Section
+	{
+		std::string
+			Language = "LANGUAGE",
+			FirstRun = "FIRSTRUN",
+			Video = "VIDEO",
+			Audio = "AUDIO",
+			Input = "INPUT",
+			Key = "KEY",
+			Misc = "MISC";
+	};
+
+	namespace Key
+	{
+		std::string
+			// Language options
+			language_string = "string",
+			// First run options
+			first_run_int = "int",
+			// Video options
+			resolution = "resolution",
+			bpp = "bpp",
+			full_screen = "full_screen",
+			bump = "bump",
+			texture = "texture",
+			mesh_reduction = "mesh_reduction",
+			others_details = "others_details",
+			fog = "fog",
+			gamma = "gamma",
+			luminosity = "luminosity",
+			contrast = "contrast",
+			show_crosshair = "show_crosshair",
+			antialiasing = "antialiasing",
+			// Audio options
+			master_volume = "master_volume",
+			effects_volume = "effects_volume",
+			speech_volume = "speech_volume",
+			ambiance_volume = "ambiance_volume",
+			EAX = "EAX",
+			// Input options
+			invert_mouse = "invert_mouse",
+			auto_ready_weapon = "auto_ready_weapon",
+			mouse_look_toggle = "mouse_look_toggle",
+			mouse_sensitivity = "mouse_sensitivity",
+			mouse_smoothing = "mouse_smoothing",
+			auto_description = "auto_description",
+			link_mouse_look_to_use = "link_mouse_look_to_use",
+			// Input key options
+			jump = "jump",
+			magic_mode = "magic_mode"
+			;
+	};
+};
+
+	void ARX_SetAntiAliasing();
+
+	/* Externs */
+	extern long INTERNATIONAL_MODE;
+	extern CDirectInput * pGetInfoDirectInput;
+	extern long GORE_MODE;
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
 extern bool bForceNoEAX;
@@ -423,14 +528,6 @@ int Config::ReadConfig( const std::string& section, const std::string& key, int 
 		return atoi( temp );
 }
 
-
-//-----------------------------------------------------------------------------
-std::string Config::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey) const
-{
-	std::string temp = ReadConfig( _pcSection,_pcKey);
-	return temp;
-}
-
 //-----------------------------------------------------------------------------
 
 bool Config::WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
@@ -651,7 +748,7 @@ bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
 	int iDIK;
 	strcpy(tcTxt2,tcTxt);
 	strcat(tcTxt2,"_k0");
-	pcText = ReadConfigString( "KEY", tcTxt2 );
+	pcText = ReadConfig( "KEY", tcTxt2 );
 
 	if( pcText.empty() )
 		bOk=false;
@@ -667,7 +764,7 @@ bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
 
 	strcpy( tcTxt2, tcTxt );
 	strcat( tcTxt2, "_k1" );
-	pcText = ReadConfigString( "KEY", tcTxt2 );
+	pcText = ReadConfig( "KEY", tcTxt2 );
 
 	if( pcText.empty() )
 		bOk = false;
@@ -699,7 +796,7 @@ bool Config::SaveAll()
 	strcpy(tcTxt,"\"");
 	strcat(tcTxt,Project.localisationpath.c_str());
 	strcat(tcTxt,"\"");
-	bOk&=WriteConfigString("LANGUAGE","string",tcTxt);
+	bOk&=WriteConfigString( Section::Language, Key::language_string, tcTxt);
 	bOk&=WriteConfigInt("FIRSTRUN","int", first_launch?1:0);
 	//video
 	sprintf(tcTxt,"%dx%d",iWidth,iHeight);
@@ -781,12 +878,12 @@ bool Config::SaveAll()
 	bOk&=WriteConfigKey("minimap",CONTROLS_CUST_MINIMAP);
 
 	//misc
-	bOk&=WriteConfigInt("MISC","softfog",(bATI)?1:0);
-	bOk&=WriteConfigInt("MISC","forcenoeax",(bForceNoEAX)?1:0);
-	bOk&=WriteConfigInt("MISC","forcezbias",(bForceZBias)?1:0);
-	bOk&=WriteConfigInt("MISC","newcontrol",(INTERNATIONAL_MODE)?1:0);
-	bOk&=WriteConfigInt("MISC","forcetoggle",(bOneHanded)?1:0);
-	bOk&=WriteConfigInt("MISC","fg",uiGoreMode);
+	bOk&=WriteConfigInt(Section::Misc,"softfog",(bATI)?1:0);
+	bOk&=WriteConfigInt(Section::Misc,"forcenoeax",(bForceNoEAX)?1:0);
+	bOk&=WriteConfigInt(Section::Misc,"forcezbias",(bForceZBias)?1:0);
+	bOk&=WriteConfigInt(Section::Misc,"newcontrol",(INTERNATIONAL_MODE)?1:0);
+	bOk&=WriteConfigInt(Section::Misc,"forcetoggle",(bOneHanded)?1:0);
+	bOk&=WriteConfigInt(Section::Misc,"fg",uiGoreMode);
 	return bOk;
 }
 
@@ -800,43 +897,43 @@ bool Config::ReadAll()
 	bool bWarningGore=false;
 
 	// Check if this is the first run of the game
-	first_launch = ReadConfig( "FIRSTRUN", "int", 1 );
+	first_launch = ReadConfig( Section::FirstRun, Key::first_run_int, 1 );
 
 	// Get the locale language
-	Project.localisationpath = ReadConfig( "LANGUAGE", "string", "english" );
+	Project.localisationpath = ReadConfig( Section::Language, Key::language_string, Default::language );
 
 	// Get the video settings
-	std::string resolution = ReadConfig("VIDEO","resolution", "640x480" );
+	std::string resolution = ReadConfig( Section::Video, Key::resolution, Default::resolution );
 	iWidth = atoi( resolution.substr( 0, resolution.find( 'x' ) ) );
 	iHeight = atoi( resolution.substr( resolution.find('x') + 1 ) );
-	bpp = ReadConfig( "VIDEO", "bpp", 16 );
-	bFullScreen = ReadConfig( "VIDEO", "full_screen", 1 );
-	bBumpMapping = ReadConfig( "VIDEO", "bump", 0 );
-	iTextureResol = ReadConfig( "VIDEO", "texture", 2 );
-	iMeshReduction = ReadConfig( "VIDEO", "mesh_reduction", 0 );
-	iLevelOfDetails = ReadConfig( "VIDEO", "others_details", 2 );
-	iFogDistance = ReadConfig( "VIDEO", "fog", 5 );
-	iGamma = ReadConfig( "VIDEO", "gamma", 5 );
-	iLuminosite = ReadConfig( "VIDEO", "luminosity", 4 );
-	iContrast = ReadConfig( "VIDEO", "constrast", 5 );
-	bShowCrossHair = ReadConfig( "VIDEO", "show_crosshair", 1 );
-	bAntiAliasing = ReadConfig( "VIDEO", "antialiasing", 0 );
+	bpp = ReadConfig( Section::Video, Key::bpp, Default::bpp );
+	bFullScreen = ReadConfig( Section::Video, Key::full_screen, 1 );
+	bBumpMapping = ReadConfig( Section::Video, Key::bump, 0 );
+	iTextureResol = ReadConfig( Section::Video, Key::texture, Default::texture );
+	iMeshReduction = ReadConfig( Section::Video, Key::mesh_reduction, Default::mesh_reduction );
+	iLevelOfDetails = ReadConfig( Section::Video, Key::others_details, Default::others_details );
+	iFogDistance = ReadConfig( Section::Video, Key::fog, Default::fog );
+	iGamma = ReadConfig( Section::Video, Key::gamma, Default::gamma );
+	iLuminosite = ReadConfig( Section::Video, Key::luminosity, Default::luminosity );
+	iContrast = ReadConfig( Section::Video, Key::contrast, Default::contrast );
+	bShowCrossHair = ReadConfig( Section::Video, Key::show_crosshair, 1 );
+	bAntiAliasing = ReadConfig( Section::Video, Key::antialiasing, 0 );
 
 	// Get audio settings
-	iSFXVolume = ReadConfig( "AUDIO", "master_volume", 10 );
-	iSFXVolume = ReadConfig( "AUDIO", "effects_volume", 10 );
-	iSpeechVolume = ReadConfig( "AUDIO", "speech_volume", 10 );
-	iAmbianceVolume = ReadConfig( "AUDIO", "ambiance_volume", 10 );
-	bEAX = ReadConfig( "AUDIO", "EAX", 0 );
+	iSFXVolume = ReadConfig( Section::Audio, Key::master_volume, Default::master_volume );
+	iSFXVolume = ReadConfig( Section::Audio, Key::effects_volume, Default::effects_volume );
+	iSpeechVolume = ReadConfig( Section::Audio, Key::speech_volume, Default::speech_volume );
+	iAmbianceVolume = ReadConfig( Section::Audio, Key::ambiance_volume, Default::ambiance_volume );
+	bEAX = ReadConfig( Section::Audio, Key::EAX, 0 );
 
 	// Get input settings
-	bInvertMouse = ReadConfig( "INPUT", "invert_mouse", 0 );
-	bAutoReadyWeapon = ReadConfig( "INPUT", "auto_ready_weapon", 0 );
-	bMouseLookToggle = ReadConfig( "INPUT", "mouse_look_toggle", 0 );
-	iMouseSensitivity = ReadConfig( "INPUT", "mouse_sensitivity", 4 );
-	bMouseSmoothing = ReadConfig( "INPUT", "mouse_smoothing", 0 );
-	bAutoDescription = ReadConfig( "INPUT", "auto_description", 1 );
-	bLinkMouseLookToUse = ReadConfig( "INPUT", "link_mouse_look_to_use", 0 );
+	bInvertMouse = ReadConfig( Section::Input, Key::invert_mouse, 0 );
+	bAutoReadyWeapon = ReadConfig( Section::Input, Key::auto_ready_weapon, 0 );
+	bMouseLookToggle = ReadConfig( Section::Input, Key::mouse_look_toggle, 0 );
+	iMouseSensitivity = ReadConfig( Section::Input, Key::mouse_sensitivity, Default::mouse_sensitivity );
+	bMouseSmoothing = ReadConfig( Section::Input, Key::mouse_smoothing, 0 );
+	bAutoDescription = ReadConfig( Section::Input, Key::auto_description, 1 );
+	bLinkMouseLookToUse = ReadConfig( Section::Input, Key::link_mouse_look_to_use, 0 );
 
 	//key
 	bool bOk2=true;
@@ -903,16 +1000,16 @@ bool Config::ReadAll()
 	}
 
 	// Get miscellaneous settings
-	bATI = ReadConfig( "MISC", "softfog", 0 );
-	bForceNoEAX = ReadConfig( "MISC", "forcenoeax", 0 );
-	bForceZBias = ReadConfig( "MISC", "forcezbias", 0 );
-	bOneHanded = ReadConfig( "MISC", "forcetoggle", 0 );
-	uiGoreMode = ReadConfig("MISC", "fg", 1 );
-	pStringMod = ReadConfig( "MISC", "mod", "mod.pak" );
-	pStringModSfx = ReadConfig("MISC", "modsfx", "modsfx.pak" );
-	pStringModSpeech = ReadConfig("MISC", "modspeech", "modspeech.pak" );
+	bATI = ReadConfig( Section::Misc, "softfog", 0 );
+	bForceNoEAX = ReadConfig( Section::Misc, "forcenoeax", 0 );
+	bForceZBias = ReadConfig( Section::Misc, "forcezbias", 0 );
+	bOneHanded = ReadConfig( Section::Misc, "forcetoggle", 0 );
+	uiGoreMode = ReadConfig(Section::Misc, "fg", 1 );
+	pStringMod = ReadConfig( Section::Misc, "mod", Default::modpak );
+	pStringModSfx = ReadConfig(Section::Misc, "modsfx", Default::modsfxpak );
+	pStringModSpeech = ReadConfig(Section::Misc, "modspeech", Default::speechmodpak );
 
-	iTemp=ReadConfigInt("MISC","newcontrol",bOkTemp);
+	iTemp=ReadConfig(Section::Misc,"newcontrol", 0);
 	bOk&=bOkTemp;
 
 	if(!bOkTemp)
