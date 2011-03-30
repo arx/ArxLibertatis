@@ -2445,7 +2445,7 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 		*(1.f+
 		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
 
-	ARX_THROWN_OBJECT_Throw(ATO_TYPE_ARROW,
+	ARX_THROWN_OBJECT_Throw(
 										0, //source
 										&position,
 										&vect,
@@ -2522,7 +2522,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 		*(1.f+
 		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
 
-	ARX_THROWN_OBJECT_Throw(ATO_TYPE_ARROW,
+	ARX_THROWN_OBJECT_Throw(
 										0, //source
 										&position,
 										&vect,

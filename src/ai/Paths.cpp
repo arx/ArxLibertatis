@@ -99,7 +99,7 @@ bool IsPointInField(EERIE_3D * pos);
 ARX_PATH **	ARXpaths = NULL;
 ARX_USE_PATH USE_CINEMATICS_PATH;
 MASTER_CAMERA_STRUCT MasterCamera;
-long ARX_PATHS_HIERARCHYMOVE = 0;
+PathMods ARX_PATHS_HIERARCHYMOVE = 0;
 long		nbARXpaths = 0;
 long USE_CINEMATICS_CAMERA = 0;
 
@@ -724,7 +724,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
 		}
 
 		// Manages a Bezier block
-		if (ap->pathways[targetwaypoint-1].flag & PATHWAY_BEZIER)
+		if (ap->pathways[targetwaypoint-1].flag == PATHWAY_BEZIER)
 		{
 
 			targetwaypoint += 1;
@@ -817,7 +817,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, long mods, EERIE_3D * pos, long flags, unsigned long duration)
+void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, EERIE_3D * pos, PathwayType flags, unsigned long duration)
 {
 	if (ap == NULL) return;
 
@@ -1119,6 +1119,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 					else ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFAAAAAA, ap->height);
 
 					break;
+				case PATHWAY_BEZIER_CONTROLPOINT: break;
 			}
 
 		if ((DANAEMouse.x > SPRmins.x) && (DANAEMouse.x < SPRmaxs.x)
@@ -1145,7 +1146,7 @@ ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 long Thrown_Count = 0;
 void ARX_THROWN_OBJECT_Kill(long num)
 {
-	if ((num >= 0) && (num < MAX_THROWN_OBJECTS))
+	if ((num >= 0) && ((size_t)num < MAX_THROWN_OBJECTS))
 	{
 		Thrown[num].flags = 0;
 		Thrown_Count--;
@@ -1159,7 +1160,7 @@ void ARX_THROWN_OBJECT_Kill(long num)
 }
 void ARX_THROWN_OBJECT_KillAll()
 {
-	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
+	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
 	{
 		ARX_THROWN_OBJECT_Kill(i);
 	}
@@ -1171,7 +1172,7 @@ long ARX_THROWN_OBJECT_GetFree()
 	unsigned long latest_time = ARXTimeUL();
 	long latest_obj = -1;
 
-	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
+	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
 	{
 		if (Thrown[i].flags & ATO_EXIST)
 		{
@@ -1196,7 +1197,7 @@ long ARX_THROWN_OBJECT_GetFree()
 	return -1;
 }
 extern EERIE_3DOBJ * arrowobj;
-long ARX_THROWN_OBJECT_Throw(long type, long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poison)
+long ARX_THROWN_OBJECT_Throw(long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poison)
 {
 	long num = ARX_THROWN_OBJECT_GetFree();
 
@@ -1216,14 +1217,7 @@ long ARX_THROWN_OBJECT_Throw(long type, long source, EERIE_3D * position, EERIE_
 		Thrown[num].pRuban = new CRuban();
 		Thrown[num].pRuban->Create(num, 2000);
 
-		switch (type)
-		{
-			case ATO_TYPE_ARROW:
-				Thrown[num].obj = arrowobj;
-				break;
-			default:
-				break;
-		}
+		Thrown[num].obj = arrowobj;
 
 		if (Thrown[num].obj)
 		{
@@ -1465,7 +1459,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
+	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
 	{
 		if (Thrown[i].flags & ATO_EXIST)
 		{

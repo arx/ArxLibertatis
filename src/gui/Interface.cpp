@@ -2718,7 +2718,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=-(float)EEsin(radians(player.angle.b))*val;
 					trans.y=0.f;
 					trans.z=(float)EEcos(radians(player.angle.b))*val;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PAD8]=0;
@@ -2731,7 +2731,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=(float)EEsin(radians(player.angle.b))*val;
 					trans.y=0.f;
 					trans.z=-(float)EEcos(radians(player.angle.b))*val;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PAD2]=0;
@@ -2744,7 +2744,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 					trans.y=0.f;
 					trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b-90.f)))*val;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PAD6]=0;
@@ -2757,7 +2757,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 					trans.y=0.f;
 					trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b+90.f)))*val;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PAD4]=0;
@@ -2770,7 +2770,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=0.f;
 					trans.y=-val;
 					trans.z=0.f;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PADADD]=0;
@@ -2783,7 +2783,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=0.f;
 					trans.y=val;
 					trans.z=0.f;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PADMINUS]=0;
@@ -2885,7 +2885,7 @@ bool DANAE::ManageEditorControls()
 					else pos.y=0.f;
 
 					ARX_PATHS_SelectedNum=v;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,v,ARX_PATH_MOD_ALL,&pos,0,2000);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,v,ARX_PATH_MOD_ALL,&pos,PATHWAY_STANDARD,2000);
 
 				}
 

@@ -287,8 +287,6 @@ HWND ShowErrorPopup( const char * title, const char * tex)
 	return hdl;
 }
 
-extern long ARX_PATHS_HIERARCHYMOVE;
-
 INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                  LPARAM lParam) {
 	

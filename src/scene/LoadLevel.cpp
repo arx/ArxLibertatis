@@ -1285,7 +1285,7 @@ long DanaeLoadLevel(const string & fic) {
 		DANAE_LS_PATH * dlp = (DANAE_LS_PATH *)(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
 		
-		ap->flags = dlp->flags;
+		ap->flags = Flag(dlp->flags); // TODO save/load flags
 		ap->idx = dlp->idx;
 		ap->initpos.x = dlp->initpos.x + trans.x;
 		ap->initpos.y = dlp->initpos.y + trans.y;
@@ -1315,7 +1315,7 @@ long DanaeLoadLevel(const string & fic) {
 			DANAE_LS_PATHWAYS  * dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
 			pos += sizeof(DANAE_LS_PATHWAYS);
 			
-			app[j].flag = dlpw->flag;
+			app[j].flag = (PathwayType)dlpw->flag; // save/load enum
 			app[j].rpos = dlpw->rpos;
 			app[j]._time = static_cast<float>(dlpw->time);
 		}

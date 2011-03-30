@@ -2292,7 +2292,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 			io->usepath = (void *)malloc(sizeof(ARX_USE_PATH));
 			ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
 
-			aup->aupflags = ais->usepath_aupflags;
+			aup->aupflags = Flag(ais->usepath_aupflags); // TODO save/load flags
 			aup->_curtime = ARX_CLEAN_WARN_CAST_FLOAT(ais->usepath_curtime);
 			aup->initpos = ais->usepath_initpos;
 			aup->lastWP = ais->usepath_lastWP;

@@ -57,23 +57,40 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_AI_PATHS_H
 
 #include "graphics/GraphicsTypes.h"
+#include "platform/Flags.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_CAMERA;
 
 class CRuban;
 
+enum PathwayType {
+	PATHWAY_STANDARD = 0,
+	PATHWAY_BEZIER = 1,
+	PATHWAY_BEZIER_CONTROLPOINT = 2
+};
 
 struct ARX_PATHWAY {
 	EERIE_3D rpos; //relative pos
-	long flag;
+	PathwayType flag;
 	float _time;
 };
+
+// ARX_PATH@flags values
+enum PathFlag {
+	PATH_LOOP = (1<<0),
+	PATH_AMBIANCE = (1<<1),
+	PATH_RGB = (1<<2),
+	PATH_FARCLIP = (1<<3),
+	PATH_REVERB = (1<<4)
+};
+DECLARE_FLAGS(PathFlag, PathFlags)
+DECLARE_FLAGS_OPERATORS(PathFlags)
 
 struct ARX_PATH {
 	char name[64];
 	short idx;
-	long flags;
+	PathFlags flags;
 	EERIE_3D initpos;
 	EERIE_3D pos;
 	long nb_pathways;
@@ -90,11 +107,23 @@ struct ARX_PATH {
 	EERIE_3D bbmax;
 };
 
+enum UsePathFlag {
+	ARX_USEPATH_FLAG_FINISHED = (1<<0),
+	ARX_USEPATH_WORM_SPECIFIC = (1<<1),
+	ARX_USEPATH_FOLLOW_DIRECTION = (1<<2),
+	ARX_USEPATH_FORWARD = (1<<3),
+	ARX_USEPATH_BACKWARD = (1<<4),
+	ARX_USEPATH_PAUSE = (1<<5),
+	ARX_USEPATH_FLAG_ADDSTARTPOS = (1<<6)
+};
+DECLARE_FLAGS(UsePathFlag, UsePathFlags)
+DECLARE_FLAGS_OPERATORS(UsePathFlags)
+
 struct ARX_USE_PATH {
 	ARX_PATH * path;
 	float _starttime;
 	float _curtime;
-	long aupflags;
+	UsePathFlags aupflags;
 	EERIE_3D initpos;
 	long lastWP;
 };
@@ -109,32 +138,17 @@ struct MASTER_CAMERA_STRUCT {
 	EERIE_CAMERA * want_cam;
 };
 
-#define PATHWAY_STANDARD            0
-#define PATHWAY_BEZIER              1
-#define PATHWAY_BEZIER_CONTROLPOINT 2
-
-#define ARX_PATH_MOD_NONE      0
-#define ARX_PATH_MOD_POSITION  1
-#define ARX_PATH_MOD_FLAGS     2
-#define ARX_PATH_MOD_TIME      4
-#define ARX_PATH_MOD_TRANSLATE 8
-#define ARX_PATH_MOD_ALL       ARX_PATH_MOD_POSITION | ARX_PATH_MOD_FLAGS | ARX_PATH_MOD_TIME
-#define ARX_PATH_HIERARCHY     16
-
-// ARX_PATH@flags values
-#define PATH_LOOP     1
-#define PATH_AMBIANCE 2
-#define PATH_RGB      4
-#define PATH_FARCLIP  8
-#define PATH_REVERB   16
-
-#define ARX_USEPATH_FLAG_FINISHED    1
-#define ARX_USEPATH_WORM_SPECIFIC    2
-#define ARX_USEPATH_FOLLOW_DIRECTION 4
-#define ARX_USEPATH_FORWARD          8
-#define ARX_USEPATH_BACKWARD         16
-#define ARX_USEPATH_PAUSE            32
-#define	ARX_USEPATH_FLAG_ADDSTARTPOS 64
+enum PathMod {
+	ARX_PATH_MOD_POSITION = (1<<0),
+	ARX_PATH_MOD_FLAGS = (1<<1),
+	ARX_PATH_MOD_TIME = (1<<2),
+	ARX_PATH_MOD_TRANSLATE = (1<<3),
+	ARX_PATH_HIERARCHY = (1<<4)
+};
+DECLARE_FLAGS(PathMod, PathMods)
+DECLARE_FLAGS_OPERATORS(PathMods)
+const PathMods ARX_PATH_MOD_NONE = 0;
+const PathMods ARX_PATH_MOD_ALL = ARX_PATH_MOD_POSITION | ARX_PATH_MOD_FLAGS | ARX_PATH_MOD_TIME;
 
 extern MASTER_CAMERA_STRUCT MasterCamera;
 extern ARX_USE_PATH USE_CINEMATICS_PATH;
@@ -142,7 +156,7 @@ extern ARX_PATH ** ARXpaths;
 extern ARX_PATH * ARX_PATHS_FlyingOverAP;
 extern ARX_PATH * ARX_PATHS_SelectedAP;
 extern long	ARX_PATHS_SelectedNum;
-extern long ARX_PATHS_HIERARCHYMOVE;
+extern PathMods ARX_PATHS_HIERARCHYMOVE;
 extern long USE_CINEMATICS_CAMERA;
 extern long	nbARXpaths;
 extern long	ARX_PATHS_FlyingOverNum;
@@ -163,20 +177,22 @@ ARX_PATH * ARX_PATHS_Create(const char * name, EERIE_3D * pos);
 ARX_PATH * ARX_PATHS_AddNew(EERIE_3D * pos);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert);
-void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, long mods, EERIE_3D * pos, long flags, unsigned long time);
+void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, EERIE_3D * pos, PathwayType flags, unsigned long time);
 void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del);
 void ARX_PATHS_DrawPath(ARX_PATH * ap);
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos);
 
-#define ATO_EXIST      1
-#define ATO_MOVING     2
-#define ATO_UNDERWATER 4
-#define ATO_FIERY      8
-
-#define ATO_TYPE_ARROW 1
+enum ThrownObjectFlag {
+	ATO_EXIST = (1<<0),
+	ATO_MOVING = (1<<1),
+	ATO_UNDERWATER = (1<<2),
+	ATO_FIERY = (1<<3)
+};
+DECLARE_FLAGS(ThrownObjectFlag, ThrownObjectFlags)
+DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
 
 struct ARX_THROWN_OBJECT {
-	long flags;
+	ThrownObjectFlags flags;
 	EERIE_3D vector;
 	EERIE_3D upvect;
 	EERIE_QUAT quat;
@@ -191,7 +207,7 @@ struct ARX_THROWN_OBJECT {
 	CRuban * pRuban;
 };
 
-#define MAX_THROWN_OBJECTS 100
+const size_t MAX_THROWN_OBJECTS = 100;
 
 extern ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 extern long Thrown_Count;
@@ -240,7 +256,7 @@ public:
 };
 
 long ARX_THROWN_OBJECT_GetFree();
-long ARX_THROWN_OBJECT_Throw(long type, long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
+long ARX_THROWN_OBJECT_Throw(long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
 void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect, long flags = 0, EERIE_3D * angle = NULL);
