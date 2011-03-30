@@ -6774,7 +6774,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				else if (!strcmp(word, "DODAMAGE"))
 				{
 					pos = GetNextWord(es, pos, word); // Source IO
-					long type = 0;
+					DamageType type = 0;
 
 					if (word[0] == '-')
 					{

@@ -60,6 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
+#include "game/Damage.h"
+
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
 
@@ -559,7 +561,7 @@ struct INTERACTIVE_OBJ
 
 	short				damager_damages;
 	short				padding2;
-	long				damager_type;
+	DamageType damager_type;
 	char *				stepmaterial;
 	char *				armormaterial;
 	char *				weaponmaterial;

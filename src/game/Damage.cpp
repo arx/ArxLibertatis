@@ -270,7 +270,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 
 //*************************************************************************************
 //*************************************************************************************
-float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source) {
+float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 	if (player.playerflags & PLAYERFLAGS_INVULNERABILITY)
 		return 0;
 
@@ -720,7 +720,7 @@ void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
 	}
 }
 
-float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, EERIE_3D * pos)
+float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, EERIE_3D * pos)
 {
 	if ((!ValidIONum(target))
 	        ||	(!ValidIONum(source)))
@@ -1071,7 +1071,7 @@ long ARX_DAMAGES_GetFree()
 			damages[i].radius = 100.f;
 			damages[i].start_time = ARXTimeUL(); 
 			damages[i].duration = 1000;
-			damages[i].area = 0;
+			damages[i].area = DAMAGE_AREA;
 			damages[i].flags = 0;
 			damages[i].type = 0;
 			damages[i].special = 0;
@@ -1307,6 +1307,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 								dmg = dmg * ratio + 1.f;
 							}
 							break;
+							case DAMAGE_FULL: break;
 						}
 
 						if (dmg <= 0.f) continue;
@@ -1544,12 +1545,7 @@ bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long sou
 	return ret;
 }
 
-// mode=1 ON mode=0  OFF
-// flag & 1 no lights;
-// flag & 2 Only affects small sources
-//*************************************************************************************
-//*************************************************************************************
-void CheckForIgnition(EERIE_3D * pos, float radius, long mode, long flag)
+void CheckForIgnition(EERIE_3D * pos, float radius, bool mode, long flag)
 {
 	long i;
 	float dist;
@@ -1635,7 +1631,7 @@ void CheckForIgnition(EERIE_3D * pos, float radius, long mode, long flag)
 
 //*************************************************************************************
 //*************************************************************************************
-bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ, long numsource)
+bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, DamageArea flags, DamageType typ, long numsource)
 {
 	bool damagesdone = false;
 	EERIE_3D sub;
@@ -1721,6 +1717,7 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 						case DAMAGE_AREAHALF:
 							dmg = dmg * (radius + 30 - mindist * ( 1.0f / 2 )) * rad;
 							break;
+						case DAMAGE_FULL: break;
 					}
 
 					if (i == 0)

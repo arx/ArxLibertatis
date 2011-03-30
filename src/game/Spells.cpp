@@ -6159,7 +6159,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				damages[spells[i].longinfo].radius=350.f;
 				damages[spells[i].longinfo].damages=10.f;
-				damages[spells[i].longinfo].area = 0; 
+				damages[spells[i].longinfo].area = DAMAGE_AREA; 
 				damages[spells[i].longinfo].duration=spells[i].tolive;
 				damages[spells[i].longinfo].source=spells[i].caster;
 				damages[spells[i].longinfo].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
@@ -6285,7 +6285,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				long id=spells[i].longinfo;
 				damages[id].radius=150.f;
 				damages[id].damages=spells[i].caster_level*( 1.0f / 10 )*.8f;
-				damages[id].area = 0; 
+				damages[id].area = DAMAGE_AREA; 
 				damages[id].duration=100000000;
 				damages[id].source=spells[i].caster;
 				damages[id].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;

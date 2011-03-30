@@ -87,39 +87,41 @@ INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 void LaunchSnapShotParamApp(HWND hwnd);
 
-#define LEVEL0     0
-#define LEVEL1     1
-#define LEVEL2     2
-#define LEVEL3     3
-#define LEVEL4     4
-#define LEVEL5     5
-#define LEVEL6     6
-#define LEVEL7     7
-#define LEVEL8     8
-#define LEVEL9     9
-#define LEVEL10    10
-#define LEVEL11    11
-#define LEVEL12    12
-#define LEVEL13    13
-#define LEVEL14    14
-#define LEVEL15    15
-#define LEVEL16    16
-#define LEVEL17    17
-#define LEVEL18    18
-#define LEVEL19    19
-#define LEVEL20    20
-#define LEVEL21    21
-#define LEVEL22    22
-#define LEVEL23    23
-#define LEVEL24    24
-#define LEVEL25    25
-#define LEVEL26    26
-#define LEVEL27    27
-#define LEVELDEMO  28
-#define LEVELDEMO2 29
-#define LEVELDEMO3 30
-#define LEVELDEMO4 31
-#define NOLEVEL    32
+enum LevelNumber {
+	LEVEL0     = 0,
+	LEVEL1     = 1,
+	LEVEL2     = 2,
+	LEVEL3     = 3,
+	LEVEL4     = 4,
+	LEVEL5     = 5,
+	LEVEL6     = 6,
+	LEVEL7     = 7,
+	LEVEL8     = 8,
+	LEVEL9     = 9,
+	LEVEL10    = 10,
+	LEVEL11    = 11,
+	LEVEL12    = 12,
+	LEVEL13    = 13,
+	LEVEL14    = 14,
+	LEVEL15    = 15,
+	LEVEL16    = 16,
+	LEVEL17    = 17,
+	LEVEL18    = 18,
+	LEVEL19    = 19,
+	LEVEL20    = 20,
+	LEVEL21    = 21,
+	LEVEL22    = 22,
+	LEVEL23    = 23,
+	LEVEL24    = 24,
+	LEVEL25    = 25,
+	LEVEL26    = 26,
+	LEVEL27    = 27,
+	LEVELDEMO  = 28,
+	LEVELDEMO2 = 29,
+	LEVELDEMO3 = 30,
+	LEVELDEMO4 = 31,
+	NOLEVEL    = 32
+};
  
 void TextBox(const char * title, char * text, long size);
 void launchlightdialog();

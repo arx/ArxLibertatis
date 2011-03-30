@@ -41,47 +41,47 @@ public:
 	
 	inline Flags(Flag flag) : flags(flag) { }
 	
-	inline bool has(Enum flag) {
+	inline bool has(Enum flag) const {
 		return (bool)(flags & (u32)flag);
 	}
 	
-	inline bool hasAll(Flags o) {
+	inline bool hasAll(Flags o) const {
 		return (flags & o.flags) == o.flags;
 	}
 	
-	inline Flags except(Enum flag) {
+	inline Flags except(Enum flag) const {
 		Flags r;
 		r.flags = flags & ~(u32)flag;
 		return r;
 	}
 	
-	inline operator u32() {
+	inline operator u32() const {
 		return flags;
 	}
 	
-	inline Flags operator~() {
+	inline Flags operator~() const {
 		Flags r;
 		r.flags = ~flags;
 		return r;
 	}
 	
-	inline bool operator!() {
+	inline bool operator!() const {
 		return (flags == 0);
 	}
 	
-	inline Flags operator&(Flags o) {
+	inline Flags operator&(Flags o) const {
 		Flags r;
 		r.flags = flags & o.flags;
 		return r;
 	}
 	
-	inline Flags<Enum> operator|(Flags<Enum> o) {
+	inline Flags<Enum> operator|(Flags<Enum> o) const {
 		Flags r;
 		r.flags = flags | o.flags;
 		return r;
 	}
 	
-	inline Flags<Enum> operator^(Flags<Enum> o) {
+	inline Flags<Enum> operator^(Flags<Enum> o) const {
 		Flags r;
 		r.flags = flags ^ o.flags;
 		return r;
@@ -102,19 +102,19 @@ public:
 		return *this;
 	}
 	
-	inline Flags<Enum> operator&(Enum flag) {
+	inline Flags<Enum> operator&(Enum flag) const {
 		Flags r;
 		r.flags = flags & (u32)flag;
 		return r;
 	}
 	
-	inline Flags<Enum> operator|(Enum flag) {
+	inline Flags<Enum> operator|(Enum flag) const {
 		Flags r;
 		r.flags = flags | (u32)flag;
 		return r;
 	}
 	
-	inline Flags<Enum> operator^(Enum flag) {
+	inline Flags<Enum> operator^(Enum flag) const {
 		Flags r;
 		r.flags = flags ^ (u32)flag;
 		return r;

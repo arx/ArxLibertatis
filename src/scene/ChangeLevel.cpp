@@ -2278,7 +2278,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		io->head_rot = ais->head_rot;
 		io->damager_damages = ais->damager_damages;
 		io->nb_iogroups = ais->nb_iogroups;
-		io->damager_type = ais->damager_type;
+		io->damager_type = Flag(ais->damager_type); // TODO save/load flags
 		io->type_flags = ais->type_flags;
 		io->secretvalue = ais->secretvalue;
 		io->shop_multiply = ais->shop_multiply;
