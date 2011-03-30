@@ -60,8 +60,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
+// TODO move INTERCATIVE_OBJ somewhere else / move flags here
 #include "game/Damage.h"
 #include "game/Equipment.h"
+#include "game/Spells.h"
 
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
@@ -272,14 +274,13 @@ struct IO_BEHAVIOR_DATA
 };
 
 
-struct IO_SPELLCAST_DATA
-{
-	long		castingspell; // spell being casted...
-	unsigned char	symb[4]; // symbols to draw before casting...
-	short		spell_flags;
-	short		spell_level;
-	long		target;
-	long		duration;
+struct IO_SPELLCAST_DATA {
+	long castingspell; // spell being casted...
+	unsigned char symb[4]; // symbols to draw before casting...
+	SpellcastFlags spell_flags;
+	short spell_level;
+	long target;
+	long duration;
 };
 
 struct IO_PATHFIND

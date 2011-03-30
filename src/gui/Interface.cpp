@@ -6787,8 +6787,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			long ypos=0;
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-			for (long i=0;i<NB_RUNES;i++)
-			{
+			for(size_t i = 0; i < RUNE_COUNT; i++) {
+				
 				if (necklace.runes[i])
 				{
 					bookcam.centerx = (382 + xpos * 45 + BOOKDECX) * Xratio;
@@ -6890,7 +6890,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								SpecialCursor=CURSOR_INTERACTION_ON;
 
 								if ((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-									if (LastRune!=i)
+									if ((size_t)LastRune!=i)
 									{
 										switch(i)
 										{

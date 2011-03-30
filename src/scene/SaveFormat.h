@@ -274,7 +274,7 @@ struct SavedPrecast {
 		a.typ = typ;
 		a.level = level;
 		a.launch_time = launch_time;
-		a.flags = flags;
+		a.flags = Flag(flags); // TODO save/load flags
 		a.duration = duration;
 		return a;
 	}
@@ -528,7 +528,7 @@ struct SavedSpellcastData {
 		a.castingspell = castingspell;
 		assert(array_size(a.symb) == SYMB_SIZE);
 		std::copy(symb, symb + SYMB_SIZE, a.symb);
-		a.spell_flags = spell_flags;
+		a.spell_flags = Flag(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
 		a.target = target;
 		a.duration = duration;

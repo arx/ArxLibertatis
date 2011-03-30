@@ -33,114 +33,74 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SPELLS_H
 #define ARX_SPELLS_H
 
-#include "graphics/data/Mesh.h"
+#include "graphics/GraphicsTypes.h"
+#include "platform/Flags.h"
 
+struct INTERACTIVE_OBJ;
+struct EERIE_S2D;
 class CSpellFx;
 
 void ARX_SPELLS_CancelAll();
 
 // Spells symbol list
-enum ARX_SPELLS_SYMBOL {
-	SYMBOL_AAM = 0,     // Create
-	SYMBOL_NHI,         // Negate
-	SYMBOL_MEGA,        // Improve
-	SYMBOL_YOK,         // Fire
-	SYMBOL_TAAR,        // Projectile
-	SYMBOL_KAOM,        // Protection
-	SYMBOL_VITAE,       // Life
-	SYMBOL_VISTA,       // Vision
-	SYMBOL_STREGUM,     // Magic
-	SYMBOL_MORTE,       // Death
-	SYMBOL_COSUM,       // Object
-	SYMBOL_COMUNICATUM, // Communication
-	SYMBOL_MOVIS,       // Movement
-	SYMBOL_TEMPUS,      // Time
-	SYMBOL_FOLGORA,     // Storm
-	SYMBOL_SPACIUM,     // Space
-	SYMBOL_TERA,        // Earth
-	SYMBOL_CETRIUS,     // Poison
-	SYMBOL_RHAA,        // Lower
-	SYMBOL_FRIDD,       // Ice
-	SYMBOL_AKBAA,       // Akbaa
-	SYMBOL_NONE = 255
+enum Rune {
+	RUNE_AAM = 0,     // Create
+	RUNE_NHI,         // Negate
+	RUNE_MEGA,        // Improve
+	RUNE_YOK,         // Fire
+	RUNE_TAAR,        // Projectile
+	RUNE_KAOM,        // Protection
+	RUNE_VITAE,       // Life
+	RUNE_VISTA,       // Vision
+	RUNE_STREGUM,     // Magic
+	RUNE_MORTE,       // Death
+	RUNE_COSUM,       // Object
+	RUNE_COMUNICATUM, // Communication
+	RUNE_MOVIS,       // Movement
+	RUNE_TEMPUS,      // Time
+	RUNE_FOLGORA,     // Storm
+	RUNE_SPACIUM,     // Space
+	RUNE_TERA,        // Earth
+	RUNE_CETRIUS,     // Poison
+	RUNE_RHAA,        // Lower
+	RUNE_FRIDD,       // Ice
+	RUNE_AKBAA,       // Akbaa
+	RUNE_NONE = 255
 };
-const size_t ARX_SPELLS_SYMBOL_COUNT = 21;
+const size_t RUNE_COUNT = 21;
 
-#define RUNE_AAM			SYMBOL_AAM
-#define RUNE_CETRIUS		SYMBOL_CETRIUS
-#define RUNE_COMUNICATUM	SYMBOL_COMUNICATUM
-#define RUNE_COSUM			SYMBOL_COSUM
-#define RUNE_FOLGORA		SYMBOL_FOLGORA
-#define RUNE_FRIDD			SYMBOL_FRIDD
-#define RUNE_KAOM			SYMBOL_KAOM
-#define	RUNE_MEGA			SYMBOL_MEGA
-#define RUNE_MORTE			SYMBOL_MORTE
-#define RUNE_MOVIS			SYMBOL_MOVIS
-#define RUNE_NHI			SYMBOL_NHI
-#define RUNE_RHAA			SYMBOL_RHAA
-#define RUNE_SPACIUM		SYMBOL_SPACIUM
-#define RUNE_STREGUM		SYMBOL_STREGUM
-#define RUNE_TAAR			SYMBOL_TAAR
-#define RUNE_TEMPUS			SYMBOL_TEMPUS
-#define RUNE_TERA			SYMBOL_TERA
-#define RUNE_VISTA			SYMBOL_VISTA
-#define RUNE_VITAE			SYMBOL_VITAE
-#define RUNE_YOK			SYMBOL_YOK
-#define NB_RUNES			(SYMBOL_AKBAA)+1
-
-#define FLAG_AAM			(1<<(RUNE_AAM))
-#define FLAG_CETRIUS		(1<<(RUNE_CETRIUS))
-#define FLAG_COMUNICATUM	(1<<(RUNE_COMUNICATUM))
-#define FLAG_COSUM			(1<<(RUNE_COSUM))
-#define FLAG_FOLGORA		(1<<(RUNE_FOLGORA))
-#define FLAG_FRIDD			(1<<(RUNE_FRIDD))
-#define FLAG_KAOM			(1<<(RUNE_KAOM))
-#define FLAG_MEGA			(1<<(RUNE_MEGA))
-#define FLAG_MORTE			(1<<(RUNE_MORTE))
-#define FLAG_MOVIS			(1<<(RUNE_MOVIS))
-#define FLAG_NHI			(1<<(RUNE_NHI))
-#define FLAG_RHAA			(1<<(RUNE_RHAA))
-#define FLAG_SPACIUM		(1<<(RUNE_SPACIUM))
-#define FLAG_STREGUM		(1<<(RUNE_STREGUM))
-#define FLAG_TAAR			(1<<(RUNE_TAAR))
-#define FLAG_TEMPUS			(1<<(RUNE_TEMPUS))
-#define FLAG_TERA			(1<<(RUNE_TERA))
-#define FLAG_VISTA			(1<<(RUNE_VISTA))
-#define FLAG_VITAE			(1<<(RUNE_VITAE))
-#define FLAG_YOK			(1<<(RUNE_YOK))
-
-enum ARX_SPELLS_SPELLCAST_FLAG
-{
-	SPELLCAST_FLAG_NODRAW			= (1 << 0),
-	SPELLCAST_FLAG_NOANIM			= (1 << 1),
-	SPELLCAST_FLAG_NOMANA			= (1 << 2),
-	SPELLCAST_FLAG_PRECAST			= (1 << 3),
-	SPELLCAST_FLAG_LAUNCHPRECAST	= (1 << 4),
-	SPELLCAST_FLAG_NOCHECKCANCAST	= (1 << 5),
-	SPELLCAST_FLAG_NOSOUND			= (1 << 6),
-	SPELLCAST_FLAG_RESTORE			= (1 << 7),
+enum SpellcastFlag {
+	SPELLCAST_FLAG_NODRAW         = (1<<0),
+	SPELLCAST_FLAG_NOANIM         = (1<<1),
+	SPELLCAST_FLAG_NOMANA         = (1<<2),
+	SPELLCAST_FLAG_PRECAST        = (1<<3),
+	SPELLCAST_FLAG_LAUNCHPRECAST  = (1<<4),
+	SPELLCAST_FLAG_NOCHECKCANCAST = (1<<5),
+	SPELLCAST_FLAG_NOSOUND        = (1<<6),
+	SPELLCAST_FLAG_RESTORE        = (1<<7),
 };
+DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
+DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
 const size_t MAX_PRECAST = 3;
 
-struct PRECAST_STRUCT
-{
+struct PRECAST_STRUCT {
 	long typ;
 	long level;
 	unsigned long launch_time;
-	long flags;
+	SpellcastFlags flags;
 	long duration;
 };
 
 extern PRECAST_STRUCT Precast[MAX_PRECAST];
 
 void ARX_SPELLS_Precast_Reset();
-void ARX_SPELLS_Precast_Add(long typ, long level = 1, long flags = 0);
+void ARX_SPELLS_Precast_Add(long typ, long level = 1, SpellcastFlags flags = 0);
 void ARX_SPELLS_Precast_Launch(const long & num);
 
 long GetSpellId(const std::string& spell);
 bool MakeSpellName(char * spell, const long & num);
-void TryToCastSpell(INTERACTIVE_OBJ * io, const long & spellid, const long & level, const long & target, const long & flags, const long & duration);
+void TryToCastSpell(INTERACTIVE_OBJ * io, long spellid, long level, long target, SpellcastFlags flags, long duration);
 void ARX_SPELLS_Precast_Check();
 void ARX_SPELLS_Precast_Launch2();
 struct EYEBALL_DEF {
@@ -154,7 +114,7 @@ struct EYEBALL_DEF {
 extern EYEBALL_DEF eyeball;
 
 const size_t MAX_SPELL_SYMBOLS = 6;
-extern ARX_SPELLS_SYMBOL SpellSymbol[MAX_SPELL_SYMBOLS];
+extern Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 extern size_t CurrSpellSymbol;
 
 
@@ -297,7 +257,7 @@ extern long LastSlot;
 extern long CurrPoint;
 extern long NETSPELL;
 
-bool ARX_SPELLS_Launch(const long & typ, const long & source, const long & flags = 0, const long & level = -1, const long & target = -1, const long & duration = -1); //const long &net = 0);
+bool ARX_SPELLS_Launch(long typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
 long ARX_SPELLS_GetFree();
 void ARX_SPELLS_ResetRecognition();
 void ARX_SPELLS_AddPoint(const EERIE_S2D * pos);

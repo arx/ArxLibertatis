@@ -62,14 +62,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "game/Spells.h"
+#include "graphics/data/Mesh.h"
 #include "platform/Flags.h"
 
 struct EERIE_3DOBJ;
 
 struct ARX_NECKLACE {
 	EERIE_3DOBJ * lacet;
-	EERIE_3DOBJ * runes[NB_RUNES];
-	TextureContainer * pTexTab[NB_RUNES];
+	EERIE_3DOBJ * runes[RUNE_COUNT];
+	TextureContainer * pTexTab[RUNE_COUNT];
 };
 
 struct ARX_INTERFACE_MEMORIZE_SPELL {
@@ -102,6 +103,31 @@ enum PlayerFlag {
 };
 DECLARE_FLAGS(PlayerFlag, PlayerFlags)
 DECLARE_FLAGS_OPERATORS(PlayerFlags)
+
+enum RuneFlag {
+	FLAG_AAM         = (1<<(RUNE_AAM)),
+	FLAG_CETRIUS     = (1<<(RUNE_CETRIUS)),
+	FLAG_COMUNICATUM = (1<<(RUNE_COMUNICATUM)),
+	FLAG_COSUM       = (1<<(RUNE_COSUM)),
+	FLAG_FOLGORA     = (1<<(RUNE_FOLGORA)),
+	FLAG_FRIDD       = (1<<(RUNE_FRIDD)),
+	FLAG_KAOM        = (1<<(RUNE_KAOM)),
+	FLAG_MEGA        = (1<<(RUNE_MEGA)),
+	FLAG_MORTE       = (1<<(RUNE_MORTE)),
+	FLAG_MOVIS       = (1<<(RUNE_MOVIS)),
+	FLAG_NHI         = (1<<(RUNE_NHI)),
+	FLAG_RHAA        = (1<<(RUNE_RHAA)),
+	FLAG_SPACIUM     = (1<<(RUNE_SPACIUM)),
+	FLAG_STREGUM     = (1<<(RUNE_STREGUM)),
+	FLAG_TAAR        = (1<<(RUNE_TAAR)),
+	FLAG_TEMPUS      = (1<<(RUNE_TEMPUS)),
+	FLAG_TERA        = (1<<(RUNE_TERA)),
+	FLAG_VISTA       = (1<<(RUNE_VISTA)),
+	FLAG_VITAE       = (1<<(RUNE_VITAE)),
+	FLAG_YOK         = (1<<(RUNE_YOK))
+};
+DECLARE_FLAGS(RuneFlag, RuneFlags)
+DECLARE_FLAGS_OPERATORS(RuneFlags)
 
 struct ARXCHARACTER {
 	
@@ -239,7 +265,7 @@ struct ARXCHARACTER {
 	long xp;
 	char skin;
 	
-	unsigned long rune_flags;
+	RuneFlags rune_flags;
 	TextureContainer * heads[5];
 	float damages;
 	float poison;
@@ -303,8 +329,8 @@ void ARX_PLAYER_FrameCheck(float _framedelay);
 void ARX_PLAYER_Poison(float val);
 void ARX_PLAYER_Manage_Visual();
 void ARX_PLAYER_Remove_Invisibility();
-void ARX_Player_Rune_Add(unsigned long);
-void ARX_Player_Rune_Remove(unsigned long);
+void ARX_Player_Rune_Add(RuneFlag rune);
+void ARX_Player_Rune_Remove(RuneFlag rune);
 void ARX_PLAYER_AddGold(long value);
 void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold);
 void ARX_PLAYER_AddBag();

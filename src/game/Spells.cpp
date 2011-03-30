@@ -153,13 +153,11 @@ struct Scan
 	short SlotDir; 
 };
 
-struct SYMBOL_DRAW
-{
+struct SYMBOL_DRAW {
 	unsigned long	starttime;
 	EERIE_3D		lastpos;
 	short			lasttim;
 	short			duration;
-	short			symbol;
 	char			sequence[32];
 	char			cPosStartX;
 	char			cPosStartY;
@@ -195,7 +193,7 @@ EERIE_S2D Lm;
 static const long MAX_POINTS(200);
 static EERIE_S2D plist[MAX_POINTS];
 std::string SpellMoves;
-ARX_SPELLS_SYMBOL SpellSymbol[MAX_SPELL_SYMBOLS];
+Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 size_t CurrSpellSymbol=0;
 
 Scan spell[MAX_SLOT + 1];
@@ -598,34 +596,36 @@ void ARX_SPELLS_RemoveAllSpellsOn(INTERACTIVE_OBJ *io)
 //-----------------------------------------------------------------------------
 void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const std::string& name, const float &duration)
 {
-	long symb(-1);
+	Rune symb = RUNE_NONE;
 	char sequence[32];
 	int iPosX = 0;
 	int iPosY = 0;
 
-	if (!name.compare("AAM"))              symb = SYMBOL_AAM,			iPosX = 0,	iPosY = 2,	strcpy(sequence, "6666");
-	else if (!name.compare("CETRIUS"))     symb = SYMBOL_CETRIUS,		iPosX = 1,	iPosY = 1,	strcpy(sequence, "33388886666");
-	else if (!name.compare("COMUNICATUM")) symb = SYMBOL_COMUNICATUM,	iPosX = 0,	iPosY = 0,	strcpy(sequence, "6666622244442226666");
-	else if (!name.compare("COSUM"))       symb = SYMBOL_COSUM,			iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666222244448888");
-	else if (!name.compare("FOLGORA"))     symb = SYMBOL_FOLGORA,		iPosX = 0,	iPosY = 3,	strcpy(sequence, "99993333");
-	else if (!name.compare("FRIDD"))       symb = SYMBOL_FRIDD,			iPosX = 0,	iPosY = 4,	strcpy(sequence, "888886662222");
-	else if (!name.compare("KAOM"))        symb = SYMBOL_KAOM,			iPosX = 3,	iPosY = 0,	strcpy(sequence, "44122366");
-	else if (!name.compare("MEGA"))        symb = SYMBOL_MEGA,			iPosX = 2,	iPosY = 4,	strcpy(sequence, "88888");
-	else if (!name.compare("MORTE"))       symb = SYMBOL_MORTE,			iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666222");
-	else if (!name.compare("MOVIS"))       symb = SYMBOL_MOVIS,			iPosX = 0,	iPosY = 0,	strcpy(sequence, "666611116666");
-	else if (!name.compare("NHI"))         symb = SYMBOL_NHI,			iPosX = 4,	iPosY = 2,	strcpy(sequence, "4444");
-	else if (!name.compare("RHAA"))        symb = SYMBOL_RHAA,			iPosX = 2,	iPosY = 0,	strcpy(sequence, "22222");
-	else if (!name.compare("SPACIUM"))     symb = SYMBOL_SPACIUM,		iPosX = 4,	iPosY = 0,	strcpy(sequence, "44444222266688");
-	else if (!name.compare("STREGUM"))     symb = SYMBOL_STREGUM,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "8888833338888");
-	else if (!name.compare("TAAR"))        symb = SYMBOL_TAAR,			iPosX = 0,	iPosY = 1,	strcpy(sequence, "666222666");
-	else if (!name.compare("TEMPUS"))      symb = SYMBOL_TEMPUS,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "88886662226668866");
-	else if (!name.compare("TERA"))        symb = SYMBOL_TERA,			iPosX = 0,	iPosY = 3,	strcpy(sequence, "99922266");
-	else if (!name.compare("VISTA"))       symb = SYMBOL_VISTA,			iPosX = 1,	iPosY = 0,	strcpy(sequence, "333111");
-	else if (!name.compare("VITAE"))       symb = SYMBOL_VITAE,			iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666888");
-	else if (!name.compare("YOK"))         symb = SYMBOL_YOK,			iPosX = 0,	iPosY = 0,	strcpy(sequence, "222226666888");
-	else if (!name.compare("AKBAA"))       symb = SYMBOL_AKBAA,			iPosX = 0,	iPosY = 0,	strcpy(sequence, "22666772222");
+	if (!name.compare("AAM"))              symb = RUNE_AAM,			iPosX = 0,	iPosY = 2,	strcpy(sequence, "6666");
+	else if (!name.compare("CETRIUS"))     symb = RUNE_CETRIUS,		iPosX = 1,	iPosY = 1,	strcpy(sequence, "33388886666");
+	else if (!name.compare("COMUNICATUM")) symb = RUNE_COMUNICATUM,	iPosX = 0,	iPosY = 0,	strcpy(sequence, "6666622244442226666");
+	else if (!name.compare("COSUM"))       symb = RUNE_COSUM,			iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666222244448888");
+	else if (!name.compare("FOLGORA"))     symb = RUNE_FOLGORA,		iPosX = 0,	iPosY = 3,	strcpy(sequence, "99993333");
+	else if (!name.compare("FRIDD"))       symb = RUNE_FRIDD,			iPosX = 0,	iPosY = 4,	strcpy(sequence, "888886662222");
+	else if (!name.compare("KAOM"))        symb = RUNE_KAOM,			iPosX = 3,	iPosY = 0,	strcpy(sequence, "44122366");
+	else if (!name.compare("MEGA"))        symb = RUNE_MEGA,			iPosX = 2,	iPosY = 4,	strcpy(sequence, "88888");
+	else if (!name.compare("MORTE"))       symb = RUNE_MORTE,			iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666222");
+	else if (!name.compare("MOVIS"))       symb = RUNE_MOVIS,			iPosX = 0,	iPosY = 0,	strcpy(sequence, "666611116666");
+	else if (!name.compare("NHI"))         symb = RUNE_NHI,			iPosX = 4,	iPosY = 2,	strcpy(sequence, "4444");
+	else if (!name.compare("RHAA"))        symb = RUNE_RHAA,			iPosX = 2,	iPosY = 0,	strcpy(sequence, "22222");
+	else if (!name.compare("SPACIUM"))     symb = RUNE_SPACIUM,		iPosX = 4,	iPosY = 0,	strcpy(sequence, "44444222266688");
+	else if (!name.compare("STREGUM"))     symb = RUNE_STREGUM,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "8888833338888");
+	else if (!name.compare("TAAR"))        symb = RUNE_TAAR,			iPosX = 0,	iPosY = 1,	strcpy(sequence, "666222666");
+	else if (!name.compare("TEMPUS"))      symb = RUNE_TEMPUS,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "88886662226668866");
+	else if (!name.compare("TERA"))        symb = RUNE_TERA,			iPosX = 0,	iPosY = 3,	strcpy(sequence, "99922266");
+	else if (!name.compare("VISTA"))       symb = RUNE_VISTA,			iPosX = 1,	iPosY = 0,	strcpy(sequence, "333111");
+	else if (!name.compare("VITAE"))       symb = RUNE_VITAE,			iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666888");
+	else if (!name.compare("YOK"))         symb = RUNE_YOK,			iPosX = 0,	iPosY = 0,	strcpy(sequence, "222226666888");
+	else if (!name.compare("AKBAA"))       symb = RUNE_AKBAA,			iPosX = 0,	iPosY = 0,	strcpy(sequence, "22666772222");
 
-	if (symb == -1) return;
+	if(symb == RUNE_NONE) {
+		return;
+	}
 
 	io->symboldraw = realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
@@ -638,7 +638,6 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const std::string& name, 
 
 	sd->starttime = ARXTimeUL();
 	sd->lasttim = 0;
-	sd->symbol = (short)symb;
 	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
 	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
@@ -665,67 +664,67 @@ void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, const long &symb, const 
 	switch (symb)
 	{
 		case RUNE_AAM   :
-			_symb = SYMBOL_AAM;
+			_symb = RUNE_AAM;
 			iPosX = 0;
 			iPosY = 2;
 			strcpy(sequence, "6666");
 			break;
 		case RUNE_CETRIUS:
-			_symb = SYMBOL_CETRIUS,		iPosX = 0,	iPosY = 1,	strcpy(sequence, "33388886666");
+			_symb = RUNE_CETRIUS,		iPosX = 0,	iPosY = 1,	strcpy(sequence, "33388886666");
 			break;
 		case RUNE_COMUNICATUM:
-			_symb = SYMBOL_COMUNICATUM,	iPosX = 0,	iPosY = 0,	strcpy(sequence, "6666622244442226666");
+			_symb = RUNE_COMUNICATUM,	iPosX = 0,	iPosY = 0,	strcpy(sequence, "6666622244442226666");
 			break;
 		case RUNE_COSUM:
-			_symb = SYMBOL_COSUM,		iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666222244448888");
+			_symb = RUNE_COSUM,		iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666222244448888");
 			break;
 		case RUNE_FOLGORA:
-			_symb = SYMBOL_FOLGORA,		iPosX = 0,	iPosY = 3,	strcpy(sequence, "99993333");
+			_symb = RUNE_FOLGORA,		iPosX = 0,	iPosY = 3,	strcpy(sequence, "99993333");
 			break;
 		case RUNE_FRIDD:
-			_symb = SYMBOL_FRIDD,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "888886662222");
+			_symb = RUNE_FRIDD,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "888886662222");
 			break;
 		case RUNE_KAOM:
-			_symb = SYMBOL_KAOM,		iPosX = 3,	iPosY = 0,	strcpy(sequence, "44122366");
+			_symb = RUNE_KAOM,		iPosX = 3,	iPosY = 0,	strcpy(sequence, "44122366");
 			break;
 		case RUNE_MEGA:
-			_symb = SYMBOL_MEGA,		iPosX = 2,	iPosY = 4,	strcpy(sequence, "88888");
+			_symb = RUNE_MEGA,		iPosX = 2,	iPosY = 4,	strcpy(sequence, "88888");
 			break;
 		case RUNE_MORTE:
-			_symb = SYMBOL_MORTE,		iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666222");
+			_symb = RUNE_MORTE,		iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666222");
 			break;
 		case RUNE_MOVIS:
-			_symb = SYMBOL_MOVIS,		iPosX = 0,	iPosY = 0,	strcpy(sequence, "666611116666");
+			_symb = RUNE_MOVIS,		iPosX = 0,	iPosY = 0,	strcpy(sequence, "666611116666");
 			break;
 		case RUNE_NHI:
-			_symb = SYMBOL_NHI,			iPosX = 4,	iPosY = 2,	strcpy(sequence, "4444");
+			_symb = RUNE_NHI,			iPosX = 4,	iPosY = 2,	strcpy(sequence, "4444");
 			break;
 		case RUNE_RHAA:
-			_symb = SYMBOL_RHAA,		iPosX = 2,	iPosY = 0,	strcpy(sequence, "22222");
+			_symb = RUNE_RHAA,		iPosX = 2,	iPosY = 0,	strcpy(sequence, "22222");
 			break;
 		case RUNE_SPACIUM:
-			_symb = SYMBOL_SPACIUM,		iPosX = 4,	iPosY = 0,	strcpy(sequence, "44444222266688");
+			_symb = RUNE_SPACIUM,		iPosX = 4,	iPosY = 0,	strcpy(sequence, "44444222266688");
 			break;
 		case RUNE_STREGUM:
-			_symb = SYMBOL_STREGUM,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "8888833338888");
+			_symb = RUNE_STREGUM,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "8888833338888");
 			break;
 		case RUNE_TAAR:
-			_symb = SYMBOL_TAAR,		iPosX = 0,	iPosY = 1,	strcpy(sequence, "666222666");
+			_symb = RUNE_TAAR,		iPosX = 0,	iPosY = 1,	strcpy(sequence, "666222666");
 			break;
 		case RUNE_TEMPUS:
-			_symb = SYMBOL_TEMPUS,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "88886662226668866");
+			_symb = RUNE_TEMPUS,		iPosX = 0,	iPosY = 4,	strcpy(sequence, "88886662226668866");
 			break;
 		case RUNE_TERA:
-			_symb = SYMBOL_TERA,		iPosX = 0,	iPosY = 3,	strcpy(sequence, "99922266");
+			_symb = RUNE_TERA,		iPosX = 0,	iPosY = 3,	strcpy(sequence, "99922266");
 			break;
 		case RUNE_VISTA:
-			_symb = SYMBOL_VISTA,		iPosX = 1,	iPosY = 0,	strcpy(sequence, "333111");
+			_symb = RUNE_VISTA,		iPosX = 1,	iPosY = 0,	strcpy(sequence, "333111");
 			break;
 		case RUNE_VITAE:
-			_symb = SYMBOL_VITAE,		iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666888");
+			_symb = RUNE_VITAE,		iPosX = 0,	iPosY = 2,	strcpy(sequence, "66666888");
 			break;
 		case RUNE_YOK:
-			_symb = SYMBOL_YOK,			iPosX = 0,	iPosY = 0,	strcpy(sequence, "222226666888");
+			_symb = RUNE_YOK,			iPosX = 0,	iPosY = 0,	strcpy(sequence, "222226666888");
 			break;
 		default:
 			return;
@@ -743,7 +742,6 @@ void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, const long &symb, const 
 	strcpy(sd->sequence, sequence);
 	sd->starttime = ARXTimeUL();
 	sd->lasttim = 0;
-	sd->symbol = (short)_symb;
 	
 	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
@@ -1531,7 +1529,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 62498  :
 		case 62748  :
 		case 6248   :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_COSUM;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_COSUM;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1546,7 +1544,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 634236 :
 		case 624326 :
 		case 62426  :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_COMUNICATUM;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_COMUNICATUM;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1563,7 +1561,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 923    :
 		case 932    :
 		case 93     :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_FOLGORA;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_FOLGORA;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1577,7 +1575,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 42678  :
 		case 42698  :
 		case 4268   :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_SPACIUM;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_SPACIUM;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1592,7 +1590,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 9264   :
 		case 9296   :
 		case 926    :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_TERA;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_TERA;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1609,7 +1607,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 2986  :
 		case 2386  :
 		case 386   :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_CETRIUS;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_CETRIUS;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1621,7 +1619,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		// RHAA
 		case 28    :
 		case 2     :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_RHAA;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_RHAA;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1636,7 +1634,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 8632	:
 		case 8962	:
 		case 862	:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_FRIDD;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_FRIDD;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1664,7 +1662,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 				else
 					cur_arm=-1;
 
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_KAOM;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_KAOM;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1680,7 +1678,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 8938  :
 		case 8238  :
 		case 838   :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_STREGUM;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_STREGUM;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1691,7 +1689,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 628   :
 		case 621   :
 		case 62    :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_MORTE;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_MORTE;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1702,7 +1700,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 962686  :
 		case 862686  :
 		case 8626862 : 
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_TEMPUS;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_TEMPUS;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1721,7 +1719,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 6126:
 		case 6136:
 		case 616: 
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_MOVIS;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_MOVIS;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1731,7 +1729,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		// NHI
 		case 46:
 		case 4:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_NHI;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_NHI;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1741,7 +1739,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		// AAM
 		case 64:
 		case 6:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_AAM;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_AAM;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1757,7 +1755,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 2368:
 		case 2689:
 		case 268:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_YOK;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_YOK;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1768,7 +1766,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 6236:
 		case 6264:
 		case 626:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_TAAR;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_TAAR;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1786,7 +1784,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 				else
 					cur_arm=-1;
 
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_MEGA;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_MEGA;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1803,7 +1801,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 314:
 		case 321:
 		case 31:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_VISTA;
+				csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_VISTA;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1813,7 +1811,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		// VITAE
 		case 698:
 		case 68:
-			csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_VITAE;
+			csymb=SpellSymbol[CurrSpellSymbol++]=RUNE_VITAE;
 
 			if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -2162,10 +2160,10 @@ void ARX_SPELLS_AnalyseSYMBOL()
 }
 
 struct SpellDefinition {
-	SpellDefinition * next[ARX_SPELLS_SYMBOL_COUNT];
+	SpellDefinition * next[RUNE_COUNT];
 	ARX_SPELLS_SPELLS spell;
 	SpellDefinition() : spell(SPELL_NONE) {
-		for(size_t i = 0; i < ARX_SPELLS_SYMBOL_COUNT; i++) {
+		for(size_t i = 0; i < RUNE_COUNT; i++) {
 			next[i] = NULL;
 		}
 	}
@@ -2173,15 +2171,15 @@ struct SpellDefinition {
 
 static SpellDefinition definedSpells;
 
-static void addSpell(const ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMBOLS], ARX_SPELLS_SPELLS spell) {
+static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], ARX_SPELLS_SPELLS spell) {
 	
 	SpellDefinition * def = &definedSpells;
 	
 	for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
-		if(symbols[i] == SYMBOL_NONE) {
+		if(symbols[i] == RUNE_NONE) {
 			break;
 		}
-		assert(symbols[i] >= 0 && (size_t)symbols[i] < ARX_SPELLS_SYMBOL_COUNT);
+		assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			def->next[symbols[i]] = new SpellDefinition();
 		}
@@ -2193,15 +2191,15 @@ static void addSpell(const ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMBOLS], ARX_SPE
 	def->spell = spell;
 }
 
-static ARX_SPELLS_SPELLS getSpell(const ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMBOLS]) {
+static ARX_SPELLS_SPELLS getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 	
 	const SpellDefinition * def = &definedSpells;
 	
 	for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
-		if(symbols[i] == SYMBOL_NONE) {
+		if(symbols[i] == RUNE_NONE) {
 			break;
 		}
-		assert(symbols[i] >= 0 && (size_t)symbols[i] < ARX_SPELLS_SYMBOL_COUNT);
+		assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			return SPELL_NONE;
 		}
@@ -2212,67 +2210,67 @@ static ARX_SPELLS_SPELLS getSpell(const ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMB
 }
 
 struct RawSpellDefinition {
-	ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMBOLS];
+	Rune symbols[MAX_SPELL_SYMBOLS];
 	ARX_SPELLS_SPELLS spell;
 };
 
 // TODO move to external file
 static const RawSpellDefinition allSpells[] = {
-	{{SYMBOL_RHAA, SYMBOL_STREGUM, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_CURSE}, // level 4
-	{{SYMBOL_RHAA, SYMBOL_TEMPUS, SYMBOL_NONE}, SPELL_FREEZE_TIME}, // level 10
-	{{SYMBOL_RHAA, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_LOWER_ARMOR}, // level 2
-	{{SYMBOL_RHAA, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_SLOW_DOWN}, // level 6
-	{{SYMBOL_RHAA, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_HARM}, // level 2
-	{{SYMBOL_RHAA, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_CONFUSE}, // level 7
-	{{SYMBOL_MEGA, SYMBOL_NHI, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_MASS_PARALYSE}, // level 9
-	{{SYMBOL_MEGA, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_ARMOR}, // level 2
-	{{SYMBOL_MEGA, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_MAGIC_SIGHT}, // level 1
-	{{SYMBOL_MEGA, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_HEAL}, // level 2
-	{{SYMBOL_MEGA, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_SPEED}, // level 3
-	{{SYMBOL_MEGA, SYMBOL_STREGUM, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_BLESS}, // level 4
-	{{SYMBOL_MEGA, SYMBOL_STREGUM, SYMBOL_COSUM, SYMBOL_NONE}, SPELL_ENCHANT_WEAPON}, // level 8
-	{{SYMBOL_MEGA, SYMBOL_AAM, SYMBOL_MEGA, SYMBOL_YOK, SYMBOL_NONE}, SPELL_MASS_INCINERATE}, // level 10
-	{{SYMBOL_MEGA, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_ACTIVATE_PORTAL}, // level ?
-	{{SYMBOL_MEGA, SYMBOL_SPACIUM, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_LEVITATE}, // level 5
-	{{SYMBOL_NHI, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_PARALYSE}, // level 6
-	{{SYMBOL_NHI, SYMBOL_CETRIUS, SYMBOL_NONE}, SPELL_CURE_POISON}, // level 5
-	{{SYMBOL_NHI, SYMBOL_YOK, SYMBOL_NONE}, SPELL_DOUSE}, // level 1
-	{{SYMBOL_NHI, SYMBOL_STREGUM, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_DISPELL_ILLUSION}, // level 3
-	{{SYMBOL_NHI, SYMBOL_STREGUM, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_NEGATE_MAGIC}, // level 9
-	{{SYMBOL_NHI, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_DISPELL_FIELD}, // level 4
-	{{SYMBOL_NHI, SYMBOL_MORTE, SYMBOL_COSUM, SYMBOL_NONE}, SPELL_DISARM_TRAP}, // level 6
-	{{SYMBOL_NHI, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_INVISIBILITY}, // level ?
-	{{SYMBOL_VISTA, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_FLYING_EYE}, // level 7
-	{{SYMBOL_MORTE, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_REPEL_UNDEAD}, // level 5
-	{{SYMBOL_MORTE, SYMBOL_COSUM, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_DETECT_TRAP}, // level 2
-	{{SYMBOL_MOVIS, SYMBOL_COMUNICATUM, SYMBOL_NONE}, SPELL_CONTROL_TARGET}, // level 10
-	{{SYMBOL_STREGUM, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_MANA_DRAIN}, // level 8
-	{{SYMBOL_AAM, SYMBOL_MEGA, SYMBOL_YOK, SYMBOL_NONE}, SPELL_INCINERATE}, // level 9
-	{{SYMBOL_AAM, SYMBOL_MEGA, SYMBOL_MORTE, SYMBOL_NONE}, SPELL_EXPLOSION}, // level 8
-	{{SYMBOL_AAM, SYMBOL_KAOM, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_CREATE_FIELD}, // level 6
-	{{SYMBOL_AAM, SYMBOL_MORTE, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_RISE_DEAD}, // level 6
-	{{SYMBOL_AAM, SYMBOL_MORTE, SYMBOL_COSUM, SYMBOL_NONE}, SPELL_RUNE_OF_GUARDING}, // level 5
-	{{SYMBOL_AAM, SYMBOL_VITAE, SYMBOL_TERA, SYMBOL_NONE}, SPELL_SUMMON_CREATURE}, // level 9
-	{{SYMBOL_AAM, SYMBOL_VITAE, SYMBOL_COSUM, SYMBOL_NONE}, SPELL_CREATE_FOOD}, // level 3
-	{{SYMBOL_AAM, SYMBOL_FOLGORA, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_LIGHTNING_STRIKE}, // level 7
-	{{SYMBOL_AAM, SYMBOL_FOLGORA, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_MASS_LIGHTNING_STRIKE}, // level 10
-	{{SYMBOL_AAM, SYMBOL_YOK, SYMBOL_NONE}, SPELL_IGNIT}, // level 1
-	{{SYMBOL_AAM, SYMBOL_YOK, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_FIRE_FIELD}, // level 7
-	{{SYMBOL_AAM, SYMBOL_YOK, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_FIREBALL}, // level 3
-	{{SYMBOL_AAM, SYMBOL_FRIDD, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_ICE_FIELD}, // level 7
-	{{SYMBOL_AAM, SYMBOL_FRIDD, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_ICE_PROJECTILE}, // level 3
-	{{SYMBOL_AAM, SYMBOL_CETRIUS, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_POISON_PROJECTILE}, // level 5
-	{{SYMBOL_AAM, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_MAGIC_MISSILE}, // level 1
-	{{SYMBOL_YOK, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_FIRE_PROTECTION}, // level 4
-	{{SYMBOL_FRIDD, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_COLD_PROTECTION}, // level 4
-	{{SYMBOL_VITAE, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_LIFE_DRAIN}, // level 8
-	{{SYMBOL_SPACIUM, SYMBOL_COMUNICATUM, SYMBOL_NONE}, SPELL_TELEKINESIS}, // level 4
+	{{RUNE_RHAA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_CURSE}, // level 4
+	{{RUNE_RHAA, RUNE_TEMPUS, RUNE_NONE}, SPELL_FREEZE_TIME}, // level 10
+	{{RUNE_RHAA, RUNE_KAOM, RUNE_NONE}, SPELL_LOWER_ARMOR}, // level 2
+	{{RUNE_RHAA, RUNE_MOVIS, RUNE_NONE}, SPELL_SLOW_DOWN}, // level 6
+	{{RUNE_RHAA, RUNE_VITAE, RUNE_NONE}, SPELL_HARM}, // level 2
+	{{RUNE_RHAA, RUNE_VISTA, RUNE_NONE}, SPELL_CONFUSE}, // level 7
+	{{RUNE_MEGA, RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_MASS_PARALYSE}, // level 9
+	{{RUNE_MEGA, RUNE_KAOM, RUNE_NONE}, SPELL_ARMOR}, // level 2
+	{{RUNE_MEGA, RUNE_VISTA, RUNE_NONE}, SPELL_MAGIC_SIGHT}, // level 1
+	{{RUNE_MEGA, RUNE_VITAE, RUNE_NONE}, SPELL_HEAL}, // level 2
+	{{RUNE_MEGA, RUNE_MOVIS, RUNE_NONE}, SPELL_SPEED}, // level 3
+	{{RUNE_MEGA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_BLESS}, // level 4
+	{{RUNE_MEGA, RUNE_STREGUM, RUNE_COSUM, RUNE_NONE}, SPELL_ENCHANT_WEAPON}, // level 8
+	{{RUNE_MEGA, RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_MASS_INCINERATE}, // level 10
+	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_NONE}, SPELL_ACTIVATE_PORTAL}, // level ?
+	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_MOVIS, RUNE_NONE}, SPELL_LEVITATE}, // level 5
+	{{RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_PARALYSE}, // level 6
+	{{RUNE_NHI, RUNE_CETRIUS, RUNE_NONE}, SPELL_CURE_POISON}, // level 5
+	{{RUNE_NHI, RUNE_YOK, RUNE_NONE}, SPELL_DOUSE}, // level 1
+	{{RUNE_NHI, RUNE_STREGUM, RUNE_VISTA, RUNE_NONE}, SPELL_DISPELL_ILLUSION}, // level 3
+	{{RUNE_NHI, RUNE_STREGUM, RUNE_SPACIUM, RUNE_NONE}, SPELL_NEGATE_MAGIC}, // level 9
+	{{RUNE_NHI, RUNE_SPACIUM, RUNE_NONE}, SPELL_DISPELL_FIELD}, // level 4
+	{{RUNE_NHI, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_DISARM_TRAP}, // level 6
+	{{RUNE_NHI, RUNE_VISTA, RUNE_NONE}, SPELL_INVISIBILITY}, // level ?
+	{{RUNE_VISTA, RUNE_MOVIS, RUNE_NONE}, SPELL_FLYING_EYE}, // level 7
+	{{RUNE_MORTE, RUNE_KAOM, RUNE_NONE}, SPELL_REPEL_UNDEAD}, // level 5
+	{{RUNE_MORTE, RUNE_COSUM, RUNE_VISTA, RUNE_NONE}, SPELL_DETECT_TRAP}, // level 2
+	{{RUNE_MOVIS, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_CONTROL_TARGET}, // level 10
+	{{RUNE_STREGUM, RUNE_MOVIS, RUNE_NONE}, SPELL_MANA_DRAIN}, // level 8
+	{{RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_INCINERATE}, // level 9
+	{{RUNE_AAM, RUNE_MEGA, RUNE_MORTE, RUNE_NONE}, SPELL_EXPLOSION}, // level 8
+	{{RUNE_AAM, RUNE_KAOM, RUNE_SPACIUM, RUNE_NONE}, SPELL_CREATE_FIELD}, // level 6
+	{{RUNE_AAM, RUNE_MORTE, RUNE_VITAE, RUNE_NONE}, SPELL_RISE_DEAD}, // level 6
+	{{RUNE_AAM, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_RUNE_OF_GUARDING}, // level 5
+	{{RUNE_AAM, RUNE_VITAE, RUNE_TERA, RUNE_NONE}, SPELL_SUMMON_CREATURE}, // level 9
+	{{RUNE_AAM, RUNE_VITAE, RUNE_COSUM, RUNE_NONE}, SPELL_CREATE_FOOD}, // level 3
+	{{RUNE_AAM, RUNE_FOLGORA, RUNE_TAAR, RUNE_NONE}, SPELL_LIGHTNING_STRIKE}, // level 7
+	{{RUNE_AAM, RUNE_FOLGORA, RUNE_SPACIUM, RUNE_NONE}, SPELL_MASS_LIGHTNING_STRIKE}, // level 10
+	{{RUNE_AAM, RUNE_YOK, RUNE_NONE}, SPELL_IGNIT}, // level 1
+	{{RUNE_AAM, RUNE_YOK, RUNE_SPACIUM, RUNE_NONE}, SPELL_FIRE_FIELD}, // level 7
+	{{RUNE_AAM, RUNE_YOK, RUNE_TAAR, RUNE_NONE}, SPELL_FIREBALL}, // level 3
+	{{RUNE_AAM, RUNE_FRIDD, RUNE_SPACIUM, RUNE_NONE}, SPELL_ICE_FIELD}, // level 7
+	{{RUNE_AAM, RUNE_FRIDD, RUNE_TAAR, RUNE_NONE}, SPELL_ICE_PROJECTILE}, // level 3
+	{{RUNE_AAM, RUNE_CETRIUS, RUNE_TAAR, RUNE_NONE}, SPELL_POISON_PROJECTILE}, // level 5
+	{{RUNE_AAM, RUNE_TAAR, RUNE_NONE}, SPELL_MAGIC_MISSILE}, // level 1
+	{{RUNE_YOK, RUNE_KAOM, RUNE_NONE}, SPELL_FIRE_PROTECTION}, // level 4
+	{{RUNE_FRIDD, RUNE_KAOM, RUNE_NONE}, SPELL_COLD_PROTECTION}, // level 4
+	{{RUNE_VITAE, RUNE_MOVIS, RUNE_NONE}, SPELL_LIFE_DRAIN}, // level 8
+	{{RUNE_SPACIUM, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_TELEKINESIS}, // level 4
 };
 
 bool ARX_SPELLS_AnalyseSPELL() {
 	
 	long caster = 0; // Local Player
-	long flags = 0;
+	SpellcastFlags flags = 0;
 	
 	if(ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE) || bPrecastSpell) {
 		flags |= SPELLCAST_FLAG_PRECAST;
@@ -2282,9 +2280,9 @@ bool ARX_SPELLS_AnalyseSPELL() {
 	
 	ARX_SPELLS_SPELLS spell;
 	
-	if(SpellSymbol[0] == SYMBOL_MEGA && SpellSymbol[1] == SYMBOL_MEGA
-	   && SpellSymbol[2] == SYMBOL_MEGA && SpellSymbol[3] == SYMBOL_AAM
-	   && SpellSymbol[4] == SYMBOL_VITAE && SpellSymbol[5] == SYMBOL_TERA) {
+	if(SpellSymbol[0] == RUNE_MEGA && SpellSymbol[1] == RUNE_MEGA
+	   && SpellSymbol[2] == RUNE_MEGA && SpellSymbol[3] == RUNE_AAM
+	   && SpellSymbol[4] == RUNE_VITAE && SpellSymbol[5] == RUNE_TERA) {
 		cur_mega = 10;
 		spell = SPELL_SUMMON_CREATURE;
 	} else {
@@ -2575,7 +2573,7 @@ long CanPayMana(long num,float cost, bool _bSound = true)
 void ARX_SPELLS_ResetRecognition() {
 	
 	for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
-		SpellSymbol[i] = SYMBOL_NONE;
+		SpellSymbol[i] = RUNE_NONE;
 	}
 	
 	for(size_t i = 0; i < 6; i++) {
@@ -3013,7 +3011,7 @@ void ARX_SPELLS_Precast_Reset() {
 	}
 }
 
-void ARX_SPELLS_Precast_Add(long typ, long _level, long flags, long duration) {
+void ARX_SPELLS_Precast_Add(long typ, long _level, SpellcastFlags flags, long duration) {
 	
 	long found = -1;
 	
@@ -3134,11 +3132,10 @@ void ARX_SPELLS_Precast_Launch2() {
 	FinishAnim(inter.iobj[0], ause1->cur_anim);
 	ANIM_Set(ause1, inter.iobj[0]->anims[ANIM_CAST]);	
 }
-struct TARGETING_SPELL
-{
+struct TARGETING_SPELL {
 	long typ;
 	long source;
-	long flags;
+	SpellcastFlags flags;
 	long level;
 	long target;
 	long duration;
@@ -3160,7 +3157,7 @@ void ARX_SPELLS_LaunchSpellTarget(INTERACTIVE_OBJ * io)
 	{
 		long type=t_spell.typ;
 		long source=t_spell.source;
-		long flags=t_spell.flags;
+		SpellcastFlags flags=t_spell.flags;
 		long level=t_spell.level;
 		long duration=t_spell.duration;
 		ARX_SPELLS_Launch(type, source, flags, level, num, duration);
@@ -3405,11 +3402,9 @@ float ARX_SPELLS_GetManaCost(long _lNumSpell,long lNumSpellTab)
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Function used to launch a spell, returns Created Spell Ident
-bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss, const long& levell, const long& target, const long& duration) //const long &netspell)
-{
-	long flags = flagss;
+bool ARX_SPELLS_Launch(long typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
+	
+	SpellcastFlags flags = flagss;
 	long level = levell;
 
 	if ( cur_rf == 3 )
@@ -3484,7 +3479,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 		}
 
-		long flgs=flags;
+		SpellcastFlags flgs=flags;
 		flgs&=~SPELLCAST_FLAG_PRECAST;
 		ARX_SPELLS_Precast_Add( typ, l, flgs, duration);
 		return true;
@@ -9017,7 +9012,7 @@ void ARX_SPELLS_Update()
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-void TryToCastSpell(INTERACTIVE_OBJ * io, const long &spellid, const long &level, const long &target, const long &flags, const long &duration)
+void TryToCastSpell(INTERACTIVE_OBJ * io, long spellid, long level, long target, SpellcastFlags flags, long duration)
 {
 	if (!io || io->spellcast_data.castingspell >= 0) return;
 
@@ -9050,9 +9045,8 @@ void TryToCastSpell(INTERACTIVE_OBJ * io, const long &spellid, const long &level
 	io->spellcast_data.castingspell = spellid;
 	
 
- 	ARX_CHECK_SHORT(flags);
 	ARX_CHECK_SHORT(level);
-	io->spellcast_data.spell_flags = ARX_CLEAN_WARN_CAST_SHORT(flags);
+	io->spellcast_data.spell_flags = flags;
 	io->spellcast_data.spell_level = ARX_CLEAN_WARN_CAST_SHORT(level);
 
 

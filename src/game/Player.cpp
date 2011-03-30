@@ -442,7 +442,7 @@ void ARX_PLAYER_Quest_Init() {
 // FUNCTION/RESULT:
 //   Add "_ulRune" to player runes
 //*************************************************************************************
-void ARX_Player_Rune_Add(unsigned long _ulRune)
+void ARX_Player_Rune_Add(RuneFlag _ulRune)
 {
 	int iNbSpells = 0;
 	int iNbSpellsAfter = 0;
@@ -511,7 +511,7 @@ void ARX_Player_Rune_Add(unsigned long _ulRune)
 // FUNCTION/RESULT:
 //   Remove "_ulRune" from player runes
 //*************************************************************************************
-void ARX_Player_Rune_Remove(unsigned long _ulRune)
+void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 {
 	player.rune_flags &= ~_ulRune;
 }
@@ -1210,7 +1210,7 @@ void ARX_PLAYER_MakeSpHero()
 	player.life = player.maxlife;
 	player.mana = player.maxmana;
 
-	player.rune_flags = 0xFFFFFFFF;
+	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
 
 	SKIN_MOD = 0;
@@ -1252,7 +1252,7 @@ void ARX_PLAYER_MakePowerfullHero()
 	player.life = player.maxlife;
 	player.mana = player.maxmana;
 
-	player.rune_flags = 0xFFFFFFFF;
+	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
 }
 

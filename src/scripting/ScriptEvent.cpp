@@ -1656,7 +1656,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					std::string temp2;
 					long duration = -1;
-					long flags = 0;
+					SpellcastFlags flags = 0;
 					long dur = 0;
 					pos = GetNextWord(es, pos, word); // switch or level
 
@@ -3971,7 +3971,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				{
 					std::string temp2;
 					long duration = -1;
-					long flags = 0;
+					SpellcastFlags flags = 0;
 					long dur = 0;
 					pos = GetNextWord(es, pos, word); // switch or level
 

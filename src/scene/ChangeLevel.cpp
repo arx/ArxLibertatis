@@ -2045,7 +2045,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Redistribute = static_cast<unsigned char>(asp.Attribute_Redistribute);
 	player.Skill_Redistribute = static_cast<unsigned char>(asp.Skill_Redistribute);
 	
-	player.rune_flags = asp.rune_flags;
+	player.rune_flags = Flag(asp.rune_flags); // TODO save/load flags
 	player.size = asp.size;
 	player.Skill_Stealth = asp.Skill_Stealth;
 	player.Skill_Mecanism = asp.Skill_Mecanism;

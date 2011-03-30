@@ -2895,10 +2895,10 @@ HRESULT DANAE::BeforeRun()
 	necklace.pTexTab[RUNE_VITAE]		= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vitae[icon].BMP");
 	necklace.pTexTab[RUNE_YOK]			= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_yok[icon].BMP");
 
-	for (long i = 0; i<NB_RUNES-1; i++)
-	{
-		if (necklace.pTexTab[i])
+	for(size_t i = 0; i<RUNE_COUNT-1; i++) { // TODO why -1?
+		if(necklace.pTexTab[i]) {
 			necklace.pTexTab[i]->CreateHalo();
+		}
 	}
 
 	EERIE_3DOBJ * _fogobj;

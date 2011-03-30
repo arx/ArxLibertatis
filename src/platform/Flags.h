@@ -75,69 +75,73 @@ public:
 		return r;
 	}
 	
-	inline Flags<Enum> operator|(Flags<Enum> o) const {
+	inline Flags operator|(Flags o) const {
 		Flags r;
 		r.flags = flags | o.flags;
 		return r;
 	}
 	
-	inline Flags<Enum> operator^(Flags<Enum> o) const {
+	inline Flags operator^(Flags o) const {
 		Flags r;
 		r.flags = flags ^ o.flags;
 		return r;
 	}
 	
-	inline Flags<Enum> & operator&=(const Flags<Enum> & o) {
+	inline Flags & operator&=(const Flags & o) {
 		flags &= o.flags;
 		return *this;
 	}
 	
-	inline Flags<Enum> & operator|=(Flags<Enum> o) {
+	inline Flags & operator|=(Flags o) {
 		flags |= o.flags;
 		return *this;
 	}
 	
-	inline Flags<Enum> & operator^=(Flags<Enum> o) {
+	inline Flags & operator^=(Flags o) {
 		flags ^= o.flags;
 		return *this;
 	}
 	
-	inline Flags<Enum> operator&(Enum flag) const {
+	inline Flags operator&(Enum flag) const {
 		Flags r;
 		r.flags = flags & (u32)flag;
 		return r;
 	}
 	
-	inline Flags<Enum> operator|(Enum flag) const {
+	inline Flags operator|(Enum flag) const {
 		Flags r;
 		r.flags = flags | (u32)flag;
 		return r;
 	}
 	
-	inline Flags<Enum> operator^(Enum flag) const {
+	inline Flags operator^(Enum flag) const {
 		Flags r;
 		r.flags = flags ^ (u32)flag;
 		return r;
 	}
 	
-	inline Flags<Enum> & operator&=(Enum flag) {
+	inline Flags & operator&=(Enum flag) {
 		flags &= (u32)flag;
 		return *this;
 	}
 	
-	inline Flags<Enum> & operator|=(Enum flag) {
+	inline Flags & operator|=(Enum flag) {
 		flags |= (u32)flag;
 		return *this;
 	}
 	
-	inline Flags<Enum> & operator^=(Enum flag) {
+	inline Flags & operator^=(Enum flag) {
 		flags ^= (u32)flag;
 		return *this;
 	}
 	
-	inline Flags<Enum> & operator=(Flags<Enum> o) {
+	inline Flags & operator=(Flags o) {
 		flags = o.flags;
 		return *this;
+	}
+	
+	static inline Flags all() {
+		return ~Flags(0);
 	}
 	
 };
