@@ -64,8 +64,8 @@ Run this form the root directory:
 
 ## Wiki
 
-http://arx.parpg.net/
+[http://arx.parpg.net/](http://arx.parpg.net/)
 
 ## Reddit
 
-http://www.reddit.com/r/ArxFatalis/
+[http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis/)
