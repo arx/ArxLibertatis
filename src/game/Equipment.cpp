@@ -207,9 +207,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 	if (io == NULL) return;
 
-	if (io->obj != hero)
-	{
-		ReleaseEERIE3DObj(io->obj);
+	if(io->obj != hero) {
+		delete io->obj;
 	}
 
 	const char texpath[] = "Graph\\Obj3D\\Textures\\";

@@ -3421,7 +3421,7 @@ long curpixel;
 bool spGetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
 	{
 		
-	register EERIE_3D n,s21,s31;
+	EERIE_3D n,s21,s31;
 
 	s21.x=ep->v[1].sx-ep->v[0].sx;
 	s21.y=ep->v[1].sy-ep->v[0].sy;

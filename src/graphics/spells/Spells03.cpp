@@ -467,7 +467,7 @@ CIceProjectile::~CIceProjectile()
 	if (stite && (stite_count <= 0))
 	{
 		stite_count = 0;
-		ReleaseEERIE3DObj(stite);
+		delete stite;
 		stite = NULL;
 	}
 
@@ -476,7 +476,7 @@ CIceProjectile::~CIceProjectile()
 	if (smotte && (smotte_count <= 0))
 	{
 		smotte_count = 0;
-		ReleaseEERIE3DObj(smotte);
+		delete smotte;
 		smotte = NULL;
 	}
 }

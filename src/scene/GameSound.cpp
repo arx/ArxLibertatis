@@ -104,6 +104,7 @@ enum PlayingAmbianceType {
 	PLAYING_AMBIANCE_ZONE
 };
 
+// TODO used for saving
 struct PlayingAmbiance
 {
 	char name[256];
@@ -1842,7 +1843,7 @@ static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const 
 
 	for (size_t i = 0; i < MAX_VARIANTS; i++)
 	{
-		sprintf(path, "%s_%d.wav", name, i + 1);
+		sprintf(path, "%s_" PRINT_SIZE_T ".wav", name, i + 1);
 		Inter_Materials[mat1][mat2][i] = aalCreateSample(path);
 
 		if (mat1 != mat2)

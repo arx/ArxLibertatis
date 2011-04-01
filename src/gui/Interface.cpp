@@ -51,10 +51,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Equipment.h"
 #include "game/Player.h"
+#include "game/Levels.h"
 
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
+#include "gui/MiniMap.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
@@ -77,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/ChangeLevel.h"
 #include "scene/LoadLevel.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;
@@ -2819,13 +2822,13 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_PATHWAYDLG), this->m_hWnd, PathwayOptionsProc);
 					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else
-					CDP_PATHWAYS_Options=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					CDP_PATHWAYS_Options=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 					MAKEINTRESOURCE(IDD_PATHWAYDLG), this->m_hWnd, PathwayOptionsProc,0 ));
 
 				this->kbd.inkey[INKEY_RETURN]=0;
@@ -3425,13 +3428,13 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_FOGDIALOG), this->m_hWnd, FogOptionsProc);
 					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else
-					CDP_FogOptions=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					CDP_FogOptions=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 					MAKEINTRESOURCE(IDD_FOGDIALOG), this->m_hWnd, FogOptionsProc,0 ));
 			}
 
@@ -3733,13 +3736,13 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc);
 					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else
-					CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 					MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc,0 ));
 			}
 
@@ -5800,13 +5803,13 @@ void DANAE::ManageKeyMouse()
 							{
 								ARX_TIME_Pause();
 								Pause(true);
-								DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+								DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 									MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc);
 								Pause(false);
 								ARX_TIME_UnPause();				
 							}
 							else
-								CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+								CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 								MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc,0 ));
 						}
 					}
@@ -8440,7 +8443,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			rec.x2 = (300.f + 50 + BOOKDECX) * Xratio;
 			rec.y2 = (338.f + BOOKDECY) * Yratio;
 			
-			GRenderer->Clear(Renderer::DepthBuffer, 0, 0, 1, &rec);
+			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
 
 			rec.x2 -= 50;
 		}

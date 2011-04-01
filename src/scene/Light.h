@@ -88,7 +88,7 @@ void EERIE_LIGHT_ClearByIndex(long num);
 void EERIE_LIGHT_GlobalInit();
 long EERIE_LIGHT_GetFree();
 long EERIE_LIGHT_Count();
-void EERIE_LIGHT_GlobalAdd(EERIE_LIGHT * el);
+void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
 void EERIE_LIGHT_MoveAll(EERIE_3D * trans);
 long EERIE_LIGHT_Create();
 

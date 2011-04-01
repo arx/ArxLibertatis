@@ -79,6 +79,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern float _framedelay;
 
+struct CLightning::LIGHTNING {
+	EERIE_3D eStart;
+	EERIE_3D eVect;
+	int anb;
+	int anbrec;
+	bool abFollow;
+	int aParent;
+	float fAngleXMin;
+	float fAngleXMax;
+	float fAngleYMin;
+	float fAngleYMax;
+	float fAngleZMin;
+	float fAngleZMax;
+};
+
 //------------------------------------------------------------------------------
 CLightning::CLightning() :
 	nbtotal(0),
@@ -111,16 +126,8 @@ CLightning::CLightning() :
 
 void CLightning::BuildS(LIGHTNING * pLInfo)
 {
-	EERIE_3D astart;
-	EERIE_3D avect;
-	avect.x = avect.y = avect.z = 0.0f;
-	avect.x = pLInfo->eVect.x;
-	avect.y = pLInfo->eVect.y;
-	avect.z = pLInfo->eVect.z;
-
-	astart.x = pLInfo->eStart.x;
-	astart.y = pLInfo->eStart.y;
-	astart.z = pLInfo->eStart.z;
+	EERIE_3D astart = pLInfo->eStart;
+	EERIE_3D avect = pLInfo->eVect;
 
 	if ((pLInfo->anb > 0) && (nbtotal < 2000))
 	{
@@ -135,12 +142,6 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 			TRUEVector_Normalize(&avect);
 		}
 
-		pLInfo->fSize *= 0.9f;
-
-		if (pLInfo->fSize < fSizeMin) pLInfo->fSize = fSizeMin;
-
-		if (pLInfo->fSize > fSizeMax) pLInfo->fSize = fSizeMax;
-
 		float fAngleX = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleXMin) + pLInfo->fAngleXMin;
 		float fAngleY = frand2() * (pLInfo->fAngleYMax - pLInfo->fAngleYMin) + pLInfo->fAngleYMin;
 		float fAngleZ = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleZMin) + pLInfo->fAngleZMin;
@@ -151,9 +152,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		av.z = (float) tan(atan(avect.z) - radians(fAngleZ));
 
 		TRUEVector_Normalize(&av);
-		avect.x = av.x;
-		avect.y = av.y;
-		avect.z = av.z;
+		avect = av;
 
 		float ts = rnd();
 		av.x *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
@@ -163,9 +162,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		astart.x += av.x;
 		astart.y += av.y;
 		astart.z += av.z;
-		pLInfo->eStart.x = astart.x;
-		pLInfo->eStart.y = astart.y;
-		pLInfo->eStart.z = astart.z;
+		pLInfo->eStart = astart;
 
 		cnodetab[nbtotal].x = pLInfo->eStart.x;
 		cnodetab[nbtotal].y = pLInfo->eStart.y;
@@ -184,12 +181,8 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 
 			if (pLInfo->abFollow)
 			{
-				pLInfo->eStart.x = astart.x;
-				pLInfo->eStart.y = astart.y;
-				pLInfo->eStart.z = astart.z;
-				pLInfo->eVect.x = avect.x;
-				pLInfo->eVect.y = avect.y;
-				pLInfo->eVect.z = avect.z;
+				pLInfo->eStart = astart;
+				pLInfo->eVect = avect;
 				pLInfo->abFollow = false;
 				pLInfo->anb =  anb - (int)(10 * (1 - m));
 				pLInfo->anbrec = anbrec + (int)(2 * m);
@@ -202,12 +195,8 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				pLInfo->fAngleZMax = fAngleZMax;
 				BuildS(pLInfo);
 
-				pLInfo->eStart.x = astart.x;
-				pLInfo->eStart.y = astart.y;
-				pLInfo->eStart.z = astart.z;
-				pLInfo->eVect.x = avect.x;
-				pLInfo->eVect.y = avect.y;
-				pLInfo->eVect.z = avect.z;
+				pLInfo->eStart = astart;
+				pLInfo->eVect = avect;
 				pLInfo->abFollow = true;
 				pLInfo->anb = anb - (int)(10 * m);
 				pLInfo->anbrec = anbrec + (int)(2 * m);
@@ -223,12 +212,8 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 			else
 			{
 				pLInfo->abFollow = false;
-				pLInfo->eStart.x = astart.x;
-				pLInfo->eStart.y = astart.y;
-				pLInfo->eStart.z = astart.z;
-				pLInfo->eVect.x = avect.x;
-				pLInfo->eVect.y = avect.y;
-				pLInfo->eVect.z = avect.z;
+				pLInfo->eStart = astart;
+				pLInfo->eVect = avect;
 				pLInfo->anb = anb - (int)(10 * (1 - m));
 				pLInfo->anbrec = anbrec + (int)(2 * m);
 				pLInfo->aParent = moi;
@@ -241,12 +226,8 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				BuildS(pLInfo);
 
 				pLInfo->abFollow = false;
-				pLInfo->eStart.x = astart.x;
-				pLInfo->eStart.y = astart.y;
-				pLInfo->eStart.z = astart.z;
-				pLInfo->eVect.x = avect.x;
-				pLInfo->eVect.y = avect.y;
-				pLInfo->eVect.z = avect.z;
+				pLInfo->eStart = astart;
+				pLInfo->eVect = avect;
 				pLInfo->anb = anb - (int)(10 * m);
 				pLInfo->anbrec = anbrec + (int)(2 * m);
 				pLInfo->aParent = moi;
@@ -267,12 +248,8 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				pLInfo->abFollow = true;
 			}
 
-			pLInfo->eStart.x = astart.x;
-			pLInfo->eStart.y = astart.y;
-			pLInfo->eStart.z = astart.z;
-			pLInfo->eVect.x = avect.x;
-			pLInfo->eVect.y = avect.y;
-			pLInfo->eVect.z = avect.z;
+			pLInfo->eStart = astart;
+			pLInfo->eVect = avect;
 			pLInfo->anb = anb - 1;
 			pLInfo->anbrec = anbrec;
 			pLInfo->aParent = moi;
@@ -287,37 +264,21 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 	}
 }
 
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-// ACCESSEURS
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-void CLightning::SetPosSrc(EERIE_3D aeSrc)
-{
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
+void CLightning::SetPosSrc(EERIE_3D aeSrc) {
+	eSrc = aeSrc;
 }
 
-//-----------------------------------------------------------------------------
-void CLightning::SetPosDest(EERIE_3D aeDest)
-{
-	eDest.x = aeDest.x;
-	eDest.y = aeDest.y;
-	eDest.z = aeDest.z;
+void CLightning::SetPosDest(EERIE_3D aeDest) {
+	eDest = aeDest;
 }
 
-//-----------------------------------------------------------------------------
-void CLightning::SetColor1(float afR, float afG, float afB)
-{
+void CLightning::SetColor1(float afR, float afG, float afB) {
 	fColor1[0] = afR;
 	fColor1[1] = afG;
 	fColor1[2] = afB;
 }
 
-//-----------------------------------------------------------------------------
-void CLightning::SetColor2(float afR, float afG, float afB)
-{
+void CLightning::SetColor2(float afR, float afG, float afB) {
 	fColor2[0] = afR;
 	fColor2[1] = afG;
 	fColor2[2] = afB;
@@ -327,10 +288,7 @@ void CLightning::SetColor2(float afR, float afG, float afB)
 float fTotoro = 0;
 float fMySize = 2;
 
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta)
-{
+void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta) {
 	
 	(void)beta; // TODO removing this parameter makes the signature clash with method from superclass
 	
@@ -351,12 +309,7 @@ void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta)
 		LIGHTNING LInfo;
 		ZeroMemory(&LInfo, sizeof(LIGHTNING));
 
-		LInfo.eStart.x = eSrc.x;
-		LInfo.eStart.y = eSrc.y;
-		LInfo.eStart.z = eSrc.z;
-		LInfo.eEnd.x = eDest.x;
-		LInfo.eEnd.y = eDest.y;
-		LInfo.eEnd.z = eDest.z;
+		LInfo.eStart = eSrc;
 		LInfo.eVect.x = eDest.x - eSrc.x;
 		LInfo.eVect.y = eDest.y - eSrc.y;
 		LInfo.eVect.z = eDest.z - eSrc.z;
@@ -364,7 +317,6 @@ void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta)
 		LInfo.anbrec = 0;
 		LInfo.abFollow = true;
 		LInfo.aParent = 0;
-		LInfo.fSize = fSize;
 		LInfo.fAngleXMin = fAngleXMin;
 		LInfo.fAngleXMax = fAngleXMax;
 		LInfo.fAngleYMin = fAngleYMin;
@@ -402,12 +354,7 @@ void CLightning::ReCreate()
 		LIGHTNING LInfo;
 		ZeroMemory(&LInfo, sizeof(LIGHTNING));
 
-		LInfo.eStart.x = eSrc.x;
-		LInfo.eStart.y = eSrc.y;
-		LInfo.eStart.z = eSrc.z;
-		LInfo.eEnd.x = eDest.x;
-		LInfo.eEnd.y = eDest.y;
-		LInfo.eEnd.z = eDest.z;
+		LInfo.eStart = eSrc;
 		LInfo.eVect.x = eDest.x - eSrc.x;
 		LInfo.eVect.y = eDest.y - eSrc.y;
 		LInfo.eVect.z = eDest.z - eSrc.z;
@@ -415,7 +362,6 @@ void CLightning::ReCreate()
 		LInfo.anbrec = 0;
 		LInfo.abFollow = true;
 		LInfo.aParent = 0;
-		LInfo.fSize = fSize;
 		LInfo.fAngleXMin = fAngleXMin;
 		LInfo.fAngleXMax = fAngleXMax;
 		LInfo.fAngleYMin = fAngleYMin;
@@ -465,11 +411,8 @@ void GetChestPos(long num, EERIE_3D * p)
 	{
 		long idx = GetGroupOriginByName(inter.iobj[num]->obj, "CHEST");
 
-		if (idx >= 0)
-		{
-			p->x = inter.iobj[num]->obj->vertexlist3[idx].v.x;
-			p->y = inter.iobj[num]->obj->vertexlist3[idx].v.y;
-			p->z = inter.iobj[num]->obj->vertexlist3[idx].v.z;
+		if(idx >= 0) {
+			*p = inter.iobj[num]->obj->vertexlist3[idx].v;
 		}
 		else
 		{
@@ -816,7 +759,7 @@ CConfuse::~CConfuse()
 	if (spapi && (spapi_count <= 0))
 	{
 		spapi_count = 0;
-		ReleaseEERIE3DObj(spapi);
+		delete spapi;
 		spapi = NULL;
 	}
 }
@@ -1207,7 +1150,7 @@ CIceField::~CIceField()
 	if (smotte && (smotte_count <= 0))
 	{
 		smotte_count = 0;
-		ReleaseEERIE3DObj(smotte);
+		delete smotte;
 		smotte = NULL;
 	}
 
@@ -1216,7 +1159,7 @@ CIceField::~CIceField()
 	if (stite && (stite_count <= 0))
 	{
 		stite_count = 0;
-		ReleaseEERIE3DObj(stite);
+		delete stite;
 		stite = NULL;
 	}
 }

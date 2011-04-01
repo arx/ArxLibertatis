@@ -361,7 +361,7 @@ CTelekinesis::~CTelekinesis()
 	if (ssol && (ssol_count <= 0))
 	{
 		ssol_count = 0;
-		ReleaseEERIE3DObj(ssol);
+		delete ssol;
 		ssol = NULL;
 	}
 
@@ -370,7 +370,7 @@ CTelekinesis::~CTelekinesis()
 	if (slight && (slight_count <= 0))
 	{
 		slight_count = 0;
-		ReleaseEERIE3DObj(slight);
+		delete slight;
 		slight = NULL;
 	}
 
@@ -379,7 +379,7 @@ CTelekinesis::~CTelekinesis()
 	if (srune && (srune_count <= 0))
 	{
 		srune_count = 0;
-		ReleaseEERIE3DObj(srune);
+		delete srune;
 		srune = NULL;
 	}
 }
@@ -661,7 +661,7 @@ CCurse::~CCurse()
 	if (svoodoo && (svoodoo_count <= 0))
 	{
 		svoodoo_count = 0;
-		ReleaseEERIE3DObj(svoodoo);
+		delete svoodoo;
 		svoodoo = NULL;
 	}
 }

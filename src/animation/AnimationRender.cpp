@@ -1515,7 +1515,7 @@ bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVerte
 
 	switch (iClipp)
 	{
-		case 0:
+		case 0: {
 			EERIE_3D e3dTemp;
 			e3dTemp.x = _pVertex1->sx;
 			e3dTemp.y = _pVertex1->sy;
@@ -1542,6 +1542,7 @@ bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVerte
 			pD3DPointAdd[2].tu = _pVertex3->tu;
 			pD3DPointAdd[2].tv = _pVertex3->tv;
 			break;
+		}
 		case 1:						//pt1 outside
 			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex2, &D3DClippZ1, _fAddZ);
 			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex3, &D3DClippZ2, _fAddZ);
