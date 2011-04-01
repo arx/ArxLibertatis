@@ -53,11 +53,6 @@ extern CinematicTrack * CKTrack;
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
-#pragma pack(push,1)
-
-
-
-#pragma pack(pop)
 
 bool charCaseEqual(char ch1, char ch2) {
 	return toupper(ch1) == toupper(ch2);
