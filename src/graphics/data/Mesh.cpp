@@ -116,7 +116,7 @@ bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D *
  
 static int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp);
 
-D3DMATRIX ProjectionMatrix;
+EERIEMATRIX ProjectionMatrix;
 
 bool bGMergeVertex = false;
 
@@ -186,14 +186,16 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 
 	fK3 = (_fZFar - _fZNear);
 
-	ZeroMemory(&ProjectionMatrix, sizeof(D3DMATRIX));
+	ZeroMemory(&ProjectionMatrix, sizeof(EERIEMATRIX));
 	ProjectionMatrix._11 = w;
 	ProjectionMatrix._22 = h;
 	ProjectionMatrix._33 = Q;
 	ProjectionMatrix._43 = (-Q * fNearPlane);
 	ProjectionMatrix._34 = 1.f;
+	GRenderer->SetProjectionMatrix(ProjectionMatrix);
 
-	D3DMATRIX mat;
+	// Set view matrix to identity
+	EERIEMATRIX mat;
 	mat._11 = 1.f;
 	mat._12 = 0.f;
 	mat._13 = 0.f;
@@ -209,10 +211,8 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	mat._41 = 0.f;
 	mat._42 = 0.f;
 	mat._43 = 0.f;
-	mat._44 = 1.f;
-	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &ProjectionMatrix);
+	mat._44 = 1.f;	
+	GRenderer->SetViewMatrix(mat);
 
 	ProjectionMatrix._11 *= _fWidth * .5f;
 	ProjectionMatrix._22 *= _fHeight * .5f;

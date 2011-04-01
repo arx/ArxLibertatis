@@ -52,7 +52,7 @@ extern long EDITMODE;
 extern CMenuConfig * pMenuConfig;
 extern float fZFogEnd;
 extern float fZFogStart;
-extern D3DMATRIX ProjectionMatrix;
+extern EERIEMATRIX ProjectionMatrix;
 
 unsigned long ulBKGColor = 0;
 

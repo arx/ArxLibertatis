@@ -1210,7 +1210,7 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 
 //-----------------------------------------------------------------------------
 int ARX_SoftClippZ(EERIE_VERTEX *_pVertex1,EERIE_VERTEX *_pVertex2,EERIE_VERTEX *_pVertex3,D3DTLVERTEX **_ptV,EERIE_FACE *_pFace,float _fInvibility,TextureContainer *_pTex,bool _bBump,bool _bZMapp,EERIE_3DOBJ *_pObj,int _iNumFace,long *_pInd,INTERACTIVE_OBJ *_pioInteractive,bool _bNPC,long _lSpecialColorFlag,EERIE_RGB *_pRGB);
-extern D3DMATRIX ProjectionMatrix;
+extern EERIEMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 //-----------------------------------------------------------------------------
 void DrawEERIEInter2(EERIE_3DOBJ * eobj,

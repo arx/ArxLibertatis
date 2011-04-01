@@ -529,7 +529,7 @@ inline float MAKEANGLE(float a)
 float GetNearestSnappedAngle(float angle);
 void QuatFromAngles(EERIE_QUAT * q, const EERIE_3D * angle);
 
-extern D3DMATRIX ProjectionMatrix;
+extern EERIEMATRIX ProjectionMatrix;
 
 inline void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
 {

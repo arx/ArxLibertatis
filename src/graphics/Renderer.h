@@ -102,6 +102,13 @@ public:
 	virtual bool BeginScene();
 	virtual bool EndScene();
 
+    // Matrices
+	virtual void SetViewMatrix(const EERIEMATRIX& matView);
+	virtual void SetViewMatrix(const EERIE_3D& vPosition, const EERIE_3D& vDir, const EERIE_3D& vUp);
+	virtual void GetViewMatrix(EERIEMATRIX& matView) const;
+	virtual void SetProjectionMatrix(const EERIEMATRIX& matProj);
+	virtual void GetProjectionMatrix(EERIEMATRIX& matProj) const;
+
 	// Texture management
 	virtual void ReleaseAllTextures();
 	virtual void RestoreAllTextures();

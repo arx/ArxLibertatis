@@ -472,7 +472,7 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 
 
 
-extern D3DMATRIX ProjectionMatrix;
+extern EERIEMATRIX ProjectionMatrix;
 void specialEE_RTP2(D3DTLVERTEX *in,D3DTLVERTEX *out)
 {
 	register EERIE_TRANSFORM * et=(EERIE_TRANSFORM *)&ACTIVECAM->transform;
@@ -1300,32 +1300,31 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum,EERIEPOLY * ep,long cull)
 
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum)
 {
+	EERIE_3D vEyePt = {{ACTIVECAM->pos.x}, {-ACTIVECAM->pos.y}, {ACTIVECAM->pos.z}};
+	EERIE_3D vTout = {{0.0f}, {0.0f}, {10000.0f}};
 
-	D3DVECTOR vEyePt    = D3DVECTOR( ACTIVECAM->pos.x , -ACTIVECAM->pos.y, ACTIVECAM->pos.z );
+	EERIE_3D vTarget;
+	vTarget.y = -(vTout.z * ACTIVECAM->Xsin);
+	vTarget.z = -(vTout.z * ACTIVECAM->Xcos);
+	vTarget.x =  (vTarget.z * ACTIVECAM->Ysin);
+	vTarget.z = -(vTarget.z * ACTIVECAM->Ycos);
+	vTarget.x += ACTIVECAM->pos.x;
+	vTarget.y -= ACTIVECAM->pos.y;
+	vTarget.z += ACTIVECAM->pos.z;
 
-	EERIE_3D target,tout;
-	tout.x=0.f;
-	tout.y=0.f;
-	tout.z=10000.f;
-	target.y =- (tout.z*ACTIVECAM->Xsin);
-	target.z =-(tout.z*ACTIVECAM->Xcos);
-	target.x= (target.z*ACTIVECAM->Ysin);
-	target.z=-(target.z*ACTIVECAM->Ycos);
-	target.x+=ACTIVECAM->pos.x;
-	target.y-=ACTIVECAM->pos.y;
-	target.z+=ACTIVECAM->pos.z;
-
-	D3DVECTOR vLookatPt = D3DVECTOR(target.x,target.y,target.z);
-	D3DVECTOR vUpVec    = D3DVECTOR( 0.f, 1.f, 0.f );
+	EERIE_3D vUpVec = {{0.f}, {1.f}, {0.f}};
 
 	// Set the app view matrix for normal viewing
-	D3DMATRIX matView,matProj;
-	D3DUtil_SetViewMatrix( matView, vEyePt, vLookatPt, vUpVec );
-	GDevice->SetTransform( D3DTRANSFORMSTATE_VIEW, &matView );
+	GRenderer->SetViewMatrix(vEyePt, vTarget, vUpVec);
+	
+	EERIEMATRIX matProj;
+	GRenderer->GetProjectionMatrix(matProj);
 
-	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION,&matProj);
-	D3DMATRIX matres;
-	MatrixMultiply((EERIEMATRIX *)&matres,(EERIEMATRIX *)&matView,(EERIEMATRIX *)&matProj);
+	EERIEMATRIX matView;
+	GRenderer->GetViewMatrix(matView);
+	
+	EERIEMATRIX matres;
+	MatrixMultiply(&matres, &matView, &matProj);
 
 	float a,b,c,d,n;
 	a=matres._14-matres._11;

@@ -239,7 +239,7 @@ extern INTERACTIVE_OBJ * FlyingOverIO;
 
 extern unsigned long ulBKGColor;
 long LAST_LOCK_SUCCESSFULL=0;
-extern D3DMATRIX ProjectionMatrix;
+extern EERIEMATRIX ProjectionMatrix;
 
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferBump;			// Duplicate pDynamicVertexBuffer for BUMP mapping.
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;		// VB using TLVERTEX format.

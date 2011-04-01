@@ -665,6 +665,37 @@ bool Renderer::EndScene()
 	return GDevice->EndScene() == D3D_OK;
 }
 
+void Renderer::SetViewMatrix(const EERIEMATRIX& matView)
+{
+	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, (D3DMATRIX*)&matView);
+}
+
+void Renderer::SetViewMatrix(const EERIE_3D& vPosition, const EERIE_3D& vDir, const EERIE_3D& vUp)
+{
+	D3DMATRIX matView;
+	D3DVECTOR pos(vPosition.x, vPosition.y, vPosition.z);
+	D3DVECTOR at(vDir.x, vDir.y, vDir.z);
+	D3DVECTOR up(vUp.x, vUp.y, vUp.z);
+	
+	D3DUtil_SetViewMatrix( matView, pos, at, up );
+	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &matView);
+}
+
+void Renderer::GetViewMatrix(EERIEMATRIX& matView) const
+{
+	GDevice->GetTransform(D3DTRANSFORMSTATE_VIEW, (D3DMATRIX*)&matView);
+}
+
+void Renderer::SetProjectionMatrix(const EERIEMATRIX& matProj)
+{
+	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (D3DMATRIX*)&matProj);
+}
+
+void Renderer::GetProjectionMatrix(EERIEMATRIX& matProj) const
+{
+	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION, (D3DMATRIX*)&matProj);
+}
+
 Renderer::~Renderer()
 {
 	for(size_t i = 0; i < m_TextureStages.size(); ++i)
@@ -797,14 +828,15 @@ D3DMATRIX* DX7MatrixOrthoOffCenterLH(D3DMATRIX *pout, float l, float r, float b,
 	return pout;
 }
 
-D3DMATRIX matProj;
-D3DMATRIX matWorld;
-D3DMATRIX matView;
+D3DMATRIX g_MatProj;
+D3DMATRIX g_MatWorld;
+D3DMATRIX g_MatView;
+
 void Renderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar)
 {
-	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION, &matProj);
-	GDevice->GetTransform(D3DTRANSFORMSTATE_WORLD, &matWorld);
-	GDevice->GetTransform(D3DTRANSFORMSTATE_VIEW, &matView);
+	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
+	GDevice->GetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
+	GDevice->GetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
 	
 	D3DMATRIX matOrtho;
 	DX7MatrixOrthoOffCenterLH(&matOrtho, left, right, bottom, top, zNear, zFar);
@@ -819,9 +851,9 @@ void Renderer::Begin2DProjection(float left, float right, float bottom, float to
 
 void Renderer::End2DProjection()
 {
-	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &matProj);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matWorld);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &matView);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
 }
 
 void Renderer::Clear(int bufferFlags, COLORREF clearColor, float clearDepth, unsigned int rectCount, D3DRECT* pRects)
