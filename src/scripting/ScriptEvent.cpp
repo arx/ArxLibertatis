@@ -1665,7 +1665,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if (iCharIn(word, 'K'))
 						{
 							pos = GetNextWord(es, pos, word); //spell id
-							long spellid = GetSpellId(word);
+							Spell spellid = GetSpellId(word);
 							long from = GetInterNum(io);
 
 							if (ValidIONum(from))
@@ -1736,7 +1736,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						duration = 1000 + level * 2000;
 
 					pos = GetNextWord(es, pos, word); //spell id
-					long spellid;
+					Spell spellid;
 					spellid = GetSpellId(word);
 					pos = GetNextWord(es, pos, word); //spell target
 					long t;
@@ -1746,7 +1746,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					if ((t >= 0)
 							&&	(t < inter.nbmax)
-							&&	(spellid != -1))
+							&&	(spellid != SPELL_NONE))
 					{
 						if (io != inter.iobj[0])
 						{
@@ -4000,10 +4000,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					else if (level > 10) level = 10;
 
 					pos = GetNextWord(es, pos, word); //spell id
-					long spellid;
+					Spell spellid;
 					spellid = GetSpellId(word);
 
-					if (spellid != -1)
+					if (spellid != SPELL_NONE)
 					{
 						flags |= SPELLCAST_FLAG_PRECAST;
 

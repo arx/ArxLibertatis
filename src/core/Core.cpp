@@ -1628,26 +1628,26 @@ void LoadSysTextures()
 {
 	char temp[256];
 
-	long i;
-
-	for (i=1;i<10;i++)
+	for (long i=1;i<10;i++)
 	{
 		sprintf(temp,"Graph\\Particles\\shine%ld.bmp",i);
 		flaretc.shine[i]=_GetTexture_NoRefinement(temp);
 
 	}
 
-	for (i=0;i<SPELL_COUNT;i++)
+	for (size_t i=0;i<SPELL_COUNT;i++)
 	{
 		// TODO use constructor for initialization
-		for (long j = 0; j < 6; j++) spellicons[i].symbols[j] = 255;
+		for (long j = 0; j < 6; j++) spellicons[i].symbols[j] = RUNE_NONE;
 		spellicons[i].level = 0;
-		spellicons[i].spellid = 0;
+		spellicons[i].spellid = SPELL_NONE;
 		spellicons[i].tc = NULL;
 		spellicons[i].bSecret = false;
 		spellicons[i].bDuration = true;
 		spellicons[i].bAudibleAtStart = false;
 	}
+	
+	long i;
 
 	SPELL_ICON * current;
 
@@ -2322,17 +2322,13 @@ void LoadSysTextures()
 	GetTextureFile_NoRefinement("Graph\\Interface\\bars\\flash_gauge.bmp");
 }
 
-void ClearSysTextures()
-{
-	long i;
-
-	for (i=0;i<SPELL_COUNT;i++)
-	{
-		if (!spellicons[i].name.empty())
+void ClearSysTextures() {
+	for(size_t i = 0; i < SPELL_COUNT; i++) {
+		if(!spellicons[i].name.empty())
 			//free(spellicons[i].name);
 			spellicons[i].name.clear();
 
-		if (!spellicons[i].description.empty())
+		if(!spellicons[i].description.empty())
 			//free(spellicons[i].description);
 			spellicons[i].description.clear();
 	}
@@ -6598,13 +6594,12 @@ static float _AvgFrameDiff = 150.f;
 			if (EERIEMouseButton & 1)
 			{
 				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT)) 
-					ARX_SPELLS_AddPoint(&DANAEMouse);
+					ARX_SPELLS_AddPoint(DANAEMouse);
 				else
 				{
 					CurrPoint=0;
 					ARX_FLARES_Block=0;
 					CurrSlot=1;
-					LastSlot=0;
 				}
 			}
 			else if (ARX_FLARES_Block==0)

@@ -124,7 +124,7 @@ void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io)
 			}
 		}
 
-		io->spellcast_data.castingspell = -1;
+		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 }
 //***********************************************************************************************
@@ -2418,7 +2418,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 	}
 	//Decides fight moves
 	else if ((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
-	         ||	(io->spellcast_data.castingspell >= 0))
+	         ||	(io->spellcast_data.castingspell != SPELL_NONE))
 	{
 		if (rnd() > 0.85f)
 		{
@@ -2484,7 +2484,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 		ause1->cur_anim = NULL;
 	}
 
-	if ((io->spellcast_data.castingspell < 0)
+	if ((io->spellcast_data.castingspell == SPELL_NONE)
 	        &&	(ause1->cur_anim == io->anims[ANIM_CAST_START])
 	        &&	(io->anims[ANIM_CAST_START]))
 	{
@@ -2505,7 +2505,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 		return;
 	}
 
-	if (io->spellcast_data.castingspell >= 0) return;
+	if (io->spellcast_data.castingspell != SPELL_NONE) return;
 
 	if (ause1->cur_anim)
 	{
@@ -2866,7 +2866,7 @@ void ComputeTolerance(INTERACTIVE_OBJ * io, long targ, float * dst)
 		}
 
 		// If distant of magic behavior Maximize tolerance
-		if ((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) || (io->spellcast_data.castingspell >= 0))
+		if ((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) || (io->spellcast_data.castingspell != SPELL_NONE))
 			TOLERANCE += 300.f;
 
 		// if target is a marker set to a minimal tolerance

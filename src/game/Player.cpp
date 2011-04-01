@@ -447,7 +447,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	int iNbSpells = 0;
 	int iNbSpellsAfter = 0;
 
-	for (long i = 0; i < SPELL_COUNT; i++)
+	for (size_t i = 0; i < SPELL_COUNT; i++)
 	{
 		if (spellicons[i].bSecret == false)
 		{
@@ -473,7 +473,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 
 	player.rune_flags |= _ulRune;
 
-	for (int i = 0; i < SPELL_COUNT; i++)
+	for (size_t i = 0; i < SPELL_COUNT; i++)
 	{
 		if (spellicons[i].bSecret == false)
 		{
@@ -994,6 +994,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 						player.Mod_Attribute_Constitution += spells[n].caster_level;
 						player.Mod_Attribute_Mind += spells[n].caster_level;
 						break;
+					default: break;
 				}
 			}
 		}
@@ -3706,6 +3707,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val)
 					case SPELL_FLYING_EYE:
 						spells[i].tolive = 0;
 						break;
+					default: break;
 				}
 			}
 		}
@@ -3872,7 +3874,7 @@ void ARX_GAME_Reset(long type)
 	cur_mr = 0;
 
 
-	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = -1;
+	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = SPELL_NONE;
 
 	LAST_PRECAST_TIME = 0;
 

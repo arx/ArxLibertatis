@@ -176,8 +176,6 @@ extern TextManager *pTextManageFlyingOver;
 
 bool IsPlayerStriking();
 void OptmizeInventory(unsigned int);
-long ARX_SPELLS_GetInstance(const long &);
-void ARX_SPELLS_Kill(const long &);
 
 extern long SHOW_INGAME_MINIMAP;
 
@@ -3805,7 +3803,6 @@ void ARX_INTERFACE_Combat_Mode(long i)
 	}
 }
 long CSEND=0;
-extern void ApplySPArm();
 long MOVE_PRECEDENCE=0;
 
 extern long DISABLE_JUMP;
@@ -6683,7 +6680,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 	D3DCOLOR color;
 	float posx = POSX+lSLID_VALUE;
 	float posy = (float)currpos;
-	long typ=spells[i].type;
+	Spell typ=spells[i].type;
 
 	if (flag & 1)
 	{
@@ -6698,7 +6695,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 
 		posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
 		posy =DANAESIZY - INTERFACE_RATIO(126+32); // niveau du stealth
-		typ = i;
+		typ = (Spell)i; // TODO ugh
 	}
 	else
 	{
@@ -6723,7 +6720,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 		}
 	}
 
-	if ( ( (bOk) && (typ>=0) &&	(typ<SPELL_COUNT) ) || (flag == 2) )
+	if ( ( (bOk) && (typ>=0) &&	((size_t)typ<SPELL_COUNT) ) || (flag == 2) )
 		StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
 
 	currpos += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(33.f));
@@ -6998,7 +6995,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			float fPosY = 0;
 			bool	bFlyingOver = false;
 
-			for (int i=0; i < SPELL_COUNT; i++)
+			for (size_t i=0; i < SPELL_COUNT; i++)
 			{
 				if ((spellicons[i].level==Book_SpellPage) && (!spellicons[i].bSecret))
 				{
@@ -7006,7 +7003,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					bool bOk = true;
 					long j = 0;
 
-					while ((j < 4) && (spellicons[i].symbols[j] != 255))
+					while ((j < 4) && (spellicons[i].symbols[j] != RUNE_NONE))
 					{
 						if (!(player.rune_flags & (1<<spellicons[i].symbols[j])))
 						{
@@ -7054,11 +7051,11 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							long count = 0;
 							
 							for (long j = 0; j < 6; ++j)
-								if (spellicons[i].symbols[j] != 255)
+								if (spellicons[i].symbols[j] != RUNE_NONE)
 									++count;
 
 							for (int j = 0; j < 6; ++j)
-								if (spellicons[i].symbols[j] != 255)
+								if (spellicons[i].symbols[j] != RUNE_NONE)
 								{
 									pos.x = (240-(count*32)*( 1.0f / 2 )+j*32);
 									pos.y = (306);
@@ -7546,13 +7543,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			max_onglet = 0;
 
-			for (long i = 0; i < SPELL_COUNT; ++i)
+			for (size_t i = 0; i < SPELL_COUNT; ++i)
 			{
 				if (spellicons[i].bSecret == false)
 				{
 					bool bOk = true;
 
-					for(long j = 0; j < 4 && spellicons[i].symbols[j] != 255; ++j) {
+					for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
 						if(!(player.rune_flags & (1<<spellicons[i].symbols[j])))
 							bOk = false;
 					}
@@ -9648,10 +9645,10 @@ void DANAE::DrawAllInterface()
 
 		for (long j=0;j<6;j++)
 		{
-			if (player.SpellToMemorize.iSpellSymbols[j] != 255)
+			if (player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE)
 				count++;
 
-			if (SpellSymbol[j] != 255)
+			if (SpellSymbol[j] != RUNE_NONE)
 				count2 ++;
 		}
 
@@ -9667,7 +9664,7 @@ void DANAE::DrawAllInterface()
 		{
 			bool bHalo = false;
 
-			if (SpellSymbol[i] != 255)
+			if (SpellSymbol[i] != RUNE_NONE)
 			{
 				if (SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i])
 				{
@@ -9679,12 +9676,12 @@ void DANAE::DrawAllInterface()
 
 					for (int j=i+1; j<6; j++)
 					{
-						player.SpellToMemorize.iSpellSymbols[j] = 255;
+						player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
 					}
 				}
 			}
 
-			if (player.SpellToMemorize.iSpellSymbols[i]!=255)
+			if (player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE)
 			{
 				EERIEDrawBitmap2( pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
 					necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]]

@@ -77,7 +77,7 @@ struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;
 	unsigned long lTimeCreation;
 	unsigned long lDuration;
-	int iSpellSymbols[6];
+	Rune iSpellSymbols[6];
 	float fPosX;
 	float fPosY;
 };

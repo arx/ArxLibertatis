@@ -1260,9 +1260,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			if (!specialstrcmp(name, "^MYSPELL_"))
 			{
 				char * temp = &name[9];
-				long id = GetSpellId(temp);
+				Spell id = GetSpellId(temp);
 
-				if (id >= 0)
+				if(id != SPELL_NONE)
 				{
 					for (size_t i = 0; i < MAX_SPELLS; i++)
 					{
@@ -1597,9 +1597,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			if (!specialstrcmp(name, "^PLAYERSPELL_"))
 			{
 				char * temp = &name[13];
-				long id = GetSpellId(temp);
+				Spell id = GetSpellId(temp);
 
-				if (id >= 0)
+				if (id != SPELL_NONE)
 				{
 					for (size_t i = 0; i < MAX_SPELLS; i++)
 					{

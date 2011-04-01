@@ -271,7 +271,7 @@ struct SavedPrecast {
 	
 	inline operator PRECAST_STRUCT() {
 		PRECAST_STRUCT a;
-		a.typ = typ;
+		a.typ = (typ < 0) ? SPELL_NONE : (Spell)typ; // TODO save/load enum
 		a.level = level;
 		a.launch_time = launch_time;
 		a.flags = Flag(flags); // TODO save/load flags
@@ -280,7 +280,7 @@ struct SavedPrecast {
 	}
 	
 	inline SavedPrecast & operator=(const PRECAST_STRUCT & b) {
-		typ = b.typ;
+		typ = (b.typ == SPELL_NONE) ? -1 : b.typ;
 		level = b.level;
 		launch_time = b.launch_time;
 		flags = b.flags;
@@ -514,10 +514,8 @@ struct SavedAnimUse {
 
 struct SavedSpellcastData {
 	
-	static const size_t SYMB_SIZE = 4;
-	
 	s32 castingspell; // spell being casted...
-	u8 symb[SYMB_SIZE]; // symbols to draw before casting...
+	u8 symb[4]; // symbols to draw before casting...
 	s16 spell_flags;
 	s16 spell_level;
 	s32 target;
@@ -525,9 +523,12 @@ struct SavedSpellcastData {
 	
 	inline operator IO_SPELLCAST_DATA() {
 		IO_SPELLCAST_DATA a;
-		a.castingspell = castingspell;
-		assert(array_size(a.symb) == SYMB_SIZE);
-		std::copy(symb, symb + SYMB_SIZE, a.symb);
+		a.castingspell = (castingspell < 0) ? SPELL_NONE : (Spell)castingspell; // TODO save/load enum
+		assert(array_size(a.symb) == 4);
+		a.symb[0] = (Rune)symb[0]; // TODO save/load enum
+		a.symb[1] = (Rune)symb[1];
+		a.symb[2] = (Rune)symb[2];
+		a.symb[3] = (Rune)symb[3];
 		a.spell_flags = Flag(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
 		a.target = target;
@@ -536,9 +537,9 @@ struct SavedSpellcastData {
 	}
 	
 	inline SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
-		castingspell = b.castingspell;
-		assert(array_size(b.symb) == SYMB_SIZE);
-		std::copy(b.symb, b.symb + SYMB_SIZE, symb);
+		castingspell = (b.castingspell == SPELL_NONE) ? -1 : b.castingspell;
+		assert(array_size(b.symb) == 4);
+		std::copy(b.symb, b.symb + 4, symb);
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
 		target = b.target;

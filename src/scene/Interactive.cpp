@@ -1292,7 +1292,7 @@ void RestoreInitialIOStatus()
 	ARX_INTERACTIVE_HideGore(inter.iobj[0]);
 	ARX_NPC_Behaviour_ResetAll();
 
-	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = -1;
+	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = SPELL_NONE;
 
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -1396,7 +1396,7 @@ void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io)
 			free(io->symboldraw);
 
 		io->symboldraw = NULL;
-		io->spellcast_data.castingspell = -1;
+		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 }
 void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
@@ -1418,7 +1418,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 			free(io->symboldraw);
 
 		io->symboldraw = NULL;
-		io->spellcast_data.castingspell = -1;
+		io->spellcast_data.castingspell = SPELL_NONE;
 
 		if (io->shop_category)
 			free(io->shop_category);
@@ -1680,7 +1680,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->fall = 0;
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = TARGET_NONE;
-		io->spellcast_data.castingspell = -1;
+		io->spellcast_data.castingspell = SPELL_NONE;
 		io->summoner = -1;
 		io->spark_n_blood = 0;
 
@@ -2629,7 +2629,7 @@ INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
 
-	io->spellcast_data.castingspell = -1;
+	io->spellcast_data.castingspell = SPELL_NONE;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
 	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
@@ -3077,7 +3077,7 @@ INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags)
 
 	GetIOScript( io, texscript );
 	
-	io->spellcast_data.castingspell = -1;
+	io->spellcast_data.castingspell = SPELL_NONE;
 	io->_npcdata->life = io->_npcdata->maxlife = 20.f;
 	io->_npcdata->mana = io->_npcdata->maxmana = 10.f;
 	io->_npcdata->poisonned = 0.f;
@@ -3420,7 +3420,7 @@ INTERACTIVE_OBJ * AddItem(const std::string& fil, long flags)
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
 
-	io->spellcast_data.castingspell = -1;
+	io->spellcast_data.castingspell = SPELL_NONE;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
 	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
@@ -4804,6 +4804,7 @@ float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io)
 				case SPELL_LOWER_ARMOR:
 					ac -= spells[n].caster_level;
 					break;
+				default: break;
 			}
 		}
 	}
