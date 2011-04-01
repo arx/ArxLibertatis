@@ -66,7 +66,7 @@ option(ARX_MINGW "Build on MinGW" OFF)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
-option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" OFF)
+option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" ON)
 
 if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
 	force_recheck_library(DevIL IL)
