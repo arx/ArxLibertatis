@@ -15,8 +15,9 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Dependencies
 
-Currently wine, DevIL (libil.so), zlib (libz.so). All of these must be available as 32bit libraries.
-Wine and 32bit is only a temporary solution.
+Currently wine, DevIL (libil.so), zlib (libz.so). Wine is only a temporary solution.
+
+Because of limitations in 64-bit wine that hinder debugging, arx is currently compiled as a 32-bit application by default, even on 64-bit systems. You can enable the 64-bit build by passing `-DARX_FORCE_32BIT=0` to cmake.
 
 ## Compile
 
