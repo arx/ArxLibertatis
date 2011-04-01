@@ -655,6 +655,16 @@ void Renderer::Initialize()
 	Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 }
 
+bool Renderer::BeginScene()
+{
+	return GDevice->BeginScene() == D3D_OK;
+}
+
+bool Renderer::EndScene()
+{
+	return GDevice->EndScene() == D3D_OK;
+}
+
 Renderer::~Renderer()
 {
 	for(size_t i = 0; i < m_TextureStages.size(); ++i)

@@ -620,7 +620,7 @@ bool ARX_Menu_Render()
 		EERIEMouseButton = 0;
 	}
 
-	if (!danaeApp.DANAEStartRender())
+	if (!GRenderer->BeginScene())
 	{
 		return true;
 	}
@@ -1024,6 +1024,6 @@ bool ARX_Menu_Render()
 		}
 	}
 
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 	return true;
 }

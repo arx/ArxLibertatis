@@ -105,7 +105,7 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 	if (!GDevice) return;
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 
 	danaeApp.m_pFramework->ShowFrame();
 
@@ -186,7 +186,7 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 
 	ARX_Text_Init();
 
-	danaeApp.DANAEStartRender();
+	GRenderer->BeginScene();
 }
 
 //-----------------------------------------------------------------------------
@@ -652,11 +652,11 @@ void ARXMenu_NewQuest()
 void ARXMenu_LoadQuest(long num)
 {
 	CAN_REPLAY_INTRO = 0;
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	LoadSaveGame(num); 
-	danaeApp.DANAEStartRender();
+	GRenderer->BeginScene();
 }
 
 //-----------------------------------------------------------------------------

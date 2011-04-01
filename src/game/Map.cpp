@@ -148,7 +148,8 @@ bool C_ARX_Carte::Render(void)
 	CalcFPS();
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-	if(!danaeApp.DANAEStartRender()) return false;
+	if(!GRenderer->BeginScene())
+		return false;
 
 	int depx = (int)(this->posx * this->background->Xmul);
 
@@ -370,7 +371,7 @@ float oldposx,oldposz;
 		while(nbxx--)
 		{
 			this->Render();
-			danaeApp.DANAEEndRender();
+			GRenderer->EndScene();
 
 			int dw=0;
 

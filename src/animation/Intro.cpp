@@ -62,9 +62,9 @@ void LoadScreen()
 {
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-	if (danaeApp.DANAEStartRender())
+	if (GRenderer->BeginScene())
 	{
-		danaeApp.DANAEEndRender();
+		GRenderer->EndScene();
 		danaeApp.m_pFramework->ShowFrame();
 	}
 }
@@ -124,7 +124,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-	if (danaeApp.DANAEStartRender())
+	if (GRenderer->BeginScene())
 	{
 		if (FISHTANK_img == NULL) FISHTANK_img = MakeTCFromFile("misc\\logo.bmp");
 
@@ -134,7 +134,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 			DrawCenteredImage(FISHTANK_img, false);
 		}
 
-		danaeApp.DANAEEndRender();
+		GRenderer->EndScene();
 		danaeApp.m_pFramework->ShowFrame();
 	}
 
@@ -157,7 +157,7 @@ void ARX_INTERFACE_ShowARKANE()
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-	if (danaeApp.DANAEStartRender())
+	if (GRenderer->BeginScene())
 	{
 		if (ARKANE_img == NULL)
 			ARKANE_img = MakeTCFromFile("Graph\\Interface\\misc\\Arkane.bmp");
@@ -168,7 +168,7 @@ void ARX_INTERFACE_ShowARKANE()
 			DrawCenteredImage( ARKANE_img, false);
 		}
 
-		danaeApp.DANAEEndRender();
+		GRenderer->EndScene();
 		danaeApp.m_pFramework->ShowFrame();
 	}
 
@@ -259,7 +259,7 @@ void LoadLevelScreen(long num)
 
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-		if (danaeApp.DANAEStartRender())
+		if (GRenderer->BeginScene())
 		{
 
 			GRenderer->SetRenderState(Renderer::ColorKey, false);
@@ -340,7 +340,7 @@ void LoadLevelScreen(long num)
 				GRenderer->SetRenderState(Renderer::ColorKey, false);
 			}
 
-			danaeApp.DANAEEndRender();
+			GRenderer->EndScene();
 			danaeApp.m_pFramework->ShowFrame();
 		}
 

@@ -1558,20 +1558,6 @@ DANAE::DANAE() : CD3DApplication()
 
 //-----------------------------------------------------------------------------
 
-bool DANAE::DANAEStartRender()
-{
-	return m_pFramework->StartRender();
-}
-
-//-----------------------------------------------------------------------------
-
-bool DANAE::DANAEEndRender()
-{
-	return m_pFramework->EndRender();
-}
-
-//-----------------------------------------------------------------------------
-
 TextureContainer * _GetTexture_NoRefinement(const char * text)
 {
 
@@ -5694,9 +5680,9 @@ static float _AvgFrameDiff = 150.f;
 		}
 		//-------------------------------------------------------------------------------
 
-	if(!danaeApp.DANAEStartRender())
+	if(!GRenderer->BeginScene())
 	{
-			return E_FAIL;
+		return E_FAIL;
 	}
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -6861,7 +6847,7 @@ static float _AvgFrameDiff = 150.f;
 		ARX_DrawAfterQuickLoad();
 	}
 
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 
 	//--------------NORENDEREND---------------------------------------------------
 	norenderend:
@@ -6904,7 +6890,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if (NEED_BENCH)
 	{
-		if(danaeApp.DANAEStartRender())
+		if(GRenderer->BeginScene())
 		{
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -6920,7 +6906,7 @@ static float _AvgFrameDiff = 150.f;
 			ShowValue(&oBENCH_SOUND,&BENCH_SOUND,"Sound Thread");
 			BENCH_SOUND=0;
 
-			danaeApp.DANAEEndRender();
+			GRenderer->EndScene();
 		}
 	}
 

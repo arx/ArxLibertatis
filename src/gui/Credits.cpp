@@ -150,7 +150,8 @@ void Credits::render() {
 	if(CreditsData.iFontAverageHeight != -1) {
 		
 		//Set the device
-		if(!danaeApp.DANAEStartRender()) return;
+		if(!GRenderer->BeginScene())
+			return;
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::Fog, false);
@@ -220,7 +221,7 @@ void Credits::render() {
 		}
 	}
 	
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);

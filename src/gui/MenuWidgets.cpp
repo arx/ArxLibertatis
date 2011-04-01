@@ -1930,7 +1930,7 @@ bool Menu2_Render()
 		return false;
 	}
 
-	if(!danaeApp.DANAEStartRender())
+	if(!GRenderer->BeginScene())
 	{
 		return true;
 	}
@@ -2079,7 +2079,7 @@ bool Menu2_Render()
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
-			danaeApp.DANAEEndRender();
+			GRenderer->EndScene();
 
 			return true;
 		}
@@ -3407,7 +3407,7 @@ bool Menu2_Render()
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
 
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 	return true;
 }
 

@@ -133,10 +133,7 @@ class CD3DFramework7
 	public:
 		CD3DFramework7();
 		~CD3DFramework7();
-		unsigned short	usBeginEndSceneCount;
 
-		bool StartRender();
-		bool EndRender();
 		bool RenderError();
 		void SetZBias(int);
 

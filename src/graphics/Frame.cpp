@@ -92,8 +92,6 @@ CD3DFramework7::CD3DFramework7()
 	ClipWin.bottom = 0;
 	ClipWin.right = 0;
 	ClipWin.left = 0;
-
-	usBeginEndSceneCount = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -718,30 +716,6 @@ bool CD3DFramework7::RenderError()
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-
-bool CD3DFramework7::StartRender()
-{
-	if (FAILED(GDevice->BeginScene()))
-	{
-		return false;
-	}
-
-	usBeginEndSceneCount++;
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-bool CD3DFramework7::EndRender()
-{
-	if (FAILED(GDevice->EndScene()))
-	{
-		return false;
-	}
-
-	usBeginEndSceneCount--;
-	return true;
-}
 DWORD RenderStartTicks = 0;
 
 //-----------------------------------------------------------------------------

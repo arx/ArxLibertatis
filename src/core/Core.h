@@ -154,10 +154,6 @@ public:
 	LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	DANAE();
 	long MustRefresh;
-	
-	bool DANAEStartRender();
-	bool DANAEEndRender();
-	
 };
 
 extern DANAE danaeApp;

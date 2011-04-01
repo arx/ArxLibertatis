@@ -98,6 +98,10 @@ public:
 
 	void Initialize();
 
+	// Scene begin/end...
+	virtual bool BeginScene();
+	virtual bool EndScene();
+
 	// Texture management
 	virtual void ReleaseAllTextures();
 	virtual void RestoreAllTextures();

@@ -486,7 +486,7 @@ HRESULT Cinematic::Render(float FDIFF)
 	if (projectload)
 	{
 		GRenderer->Clear(Renderer::ColorBuffer);
-		danaeApp.DANAEStartRender();
+		GRenderer->BeginScene();
 		InRender = true;
 
 		if (InsertKey && m_bitmaps.size() > 0)

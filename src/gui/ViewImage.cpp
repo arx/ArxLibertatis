@@ -207,7 +207,8 @@ void ViewImage::DrawAllImage()
 				iJ++;
 			}
 
-			if (!danaeApp.DANAEStartRender()) continue;
+			if (!GRenderer->BeginScene())
+				continue;
 
 			float fDepX = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZX - (long)pTex->m_dwWidth) / 2)));
 			float fDepY = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZY - (long)pTex->m_dwHeight) / 2)));
@@ -225,7 +226,7 @@ void ViewImage::DrawAllImage()
 
 
 
-			danaeApp.DANAEEndRender();
+			GRenderer->EndScene();
 			danaeApp.m_pFramework->ShowFrame();
 
 			if (bActiveFade)
@@ -271,7 +272,7 @@ void StartImageDemo()
 
 	if (!pViewImage) return;
 
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 	pViewImage->DrawAllImage();
 
 	delete pViewImage;
