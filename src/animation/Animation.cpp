@@ -1068,7 +1068,7 @@ void PopOneInterBump(TextureContainer *_pTex)
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
 		GDevice->SetTexture( 0, _pTex->m_pddsBumpMap );
 		GDevice->SetTexture( 1, _pTex->m_pddsBumpMap );
-		GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
+		GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 		
 		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
 		GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
@@ -1149,7 +1149,7 @@ void PopOneInterBump(TextureContainer *_pTex)
 		//																			  Ending
 		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 		GRenderer->GetTextureStage(1)->DisableColor();
-		GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
+		GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 		_pTex->vPolyInterBump.clear();
 	}
 }

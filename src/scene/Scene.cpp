@@ -1506,11 +1506,11 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 				if(pDynamicVertexBuffer->ussNbIndice)
 				{
-					GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 					GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 					GRenderer->GetTextureStage(1)->DisableAlpha();
 										
-					GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 					GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 					GRenderer->GetTextureStage(2)->DisableAlpha();
 					
@@ -1522,9 +1522,10 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 						pDynamicVertexBuffer->ussNbIndice,
 						0 );
 						
-					GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
 					GRenderer->GetTextureStage(1)->DisableColor();
+					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 					GRenderer->GetTextureStage(2)->DisableColor();
+					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 				}
 
 				pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
@@ -1659,11 +1660,11 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		pDynamicVertexBuffer->UnLock();
 		if(pDynamicVertexBuffer->ussNbIndice)
 		{
-			GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 			GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 			GRenderer->GetTextureStage(1)->DisableAlpha();
 			
-			GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 			GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 			GRenderer->GetTextureStage(2)->DisableAlpha();
 
@@ -1676,9 +1677,10 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 												0 );				
 
 			GRenderer->GetTextureStage(1)->DisableColor();
-			GRenderer->GetTextureStage(2)->DisableColor();
-			
-			GDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
+			GRenderer->GetTextureStage(2)->DisableColor();			
+			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
+
 		}
 
 		vPolyWater.clear();
@@ -1720,11 +1722,11 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 				if(pDynamicVertexBuffer->ussNbIndice)
 				{
-					GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 					GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 					GRenderer->GetTextureStage(1)->DisableAlpha();
 					
-					GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 					GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 					GRenderer->GetTextureStage(2)->DisableAlpha();
 					
@@ -1748,8 +1750,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 						0 );
 						
 					GRenderer->GetTextureStage(1)->DisableColor();
+					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 					GRenderer->GetTextureStage(2)->DisableColor();
-					GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
+					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 				}
 
 				pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
@@ -1856,11 +1859,11 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
 			
-			GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 			GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 			GRenderer->GetTextureStage(1)->DisableAlpha();
 		
-			GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 			GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 			GRenderer->GetTextureStage(2)->DisableAlpha();
 
@@ -1883,8 +1886,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 												0 );
 
 			GRenderer->GetTextureStage(1)->DisableColor();
+			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 			GRenderer->GetTextureStage(2)->DisableColor();
-			GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
+			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 		}
 
 		vPolyLava.clear();
@@ -2864,10 +2868,9 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
 
 				GDevice->SetTexture( 1, pTexCurr->m_pddsBumpMap );
-				GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
+				GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 				GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture|TextureStage::ArgComplement), TextureStage::ArgCurrent);
 				GRenderer->GetTextureStage(1)->DisableAlpha();
-
                 GRenderer->GetTextureStage(2)->DisableColor();
 	
 				//----------------------------------------------------------------------------------
@@ -2974,8 +2977,8 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 				//----------------------------------------------------------------------------------
 				//																			  Ending
-				GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
 				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+				GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 				GRenderer->GetTextureStage(1)->DisableColor();
 
 				//Flushing vector

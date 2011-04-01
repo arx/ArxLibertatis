@@ -795,7 +795,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
 
 	GDevice->SetTexture(1, ep->tex->m_pddsBumpMap);
-	GDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
 	
 	GRenderer->GetTextureStage(0)->DisableAlpha();
@@ -829,6 +829,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(1)->DisableColor();
+	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
