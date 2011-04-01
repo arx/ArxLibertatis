@@ -51,8 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_FTL_H
-#define ARX_FTL_H
+#ifndef ARX_GRAPHICS_DATA_FTL_H
+#define ARX_GRAPHICS_DATA_FTL_H
 
 #include <string>
 
@@ -71,4 +71,4 @@ EERIE_3DOBJ * ARX_FTL_Load(const std::string & file);
 
 void MCache_ClearAll();
 
-#endif
+#endif // ARX_GRAPHICS_DATA_FTL_H
