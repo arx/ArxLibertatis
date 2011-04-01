@@ -28,6 +28,16 @@ Because of limitations in 64-bit wine that hinder debugging, arx is currently co
 
 `$ make`
 
+Build options:
+
+* `ARX_BUILD_TOOLS` (default=ON): Build tools
+* `ARX_USE_UNITYBUILD` (default=OFF): Unity build (faster build, better optimizations but no inclemental build)
+* `ARX_DEBUG` (default=ON): Normal debug options
+* `ARX_DEBUG_EXTRA` (default=OFF): Expensive debug options
+* `ARX_FORCE_32BIT` (default=ON): Force a 32-bit build on 64-bit systems
+
+Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
+
 ## Run
 
 Rename all .pak files in the Arx Fatalis installation to lowercase and the run from the directory containing the .pak files.
