@@ -219,14 +219,12 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	ProjectionMatrix._33 = -(fFarPlane * fNearPlane) / (fFarPlane - fNearPlane);	//HYPERBOLIC
 	ProjectionMatrix._43 = Q;
 
-	D3DVIEWPORT7 vp;
-	vp.dwX		=	0;
-	vp.dwY		=	0;
-	vp.dwWidth	=	ARX_CLEAN_WARN_CAST_DWORD(_fWidth);
-	vp.dwHeight	=	ARX_CLEAN_WARN_CAST_DWORD(_fHeight);
-	vp.dvMinZ = 0.f;
-	vp.dvMaxZ = 1.f;
-	GDevice->SetViewport(&vp);
+	Renderer::Viewport vp;
+	vp.x = 0;
+	vp.y = 0;
+	vp.width = ARX_CLEAN_WARN_CAST_DWORD(_fWidth);
+	vp.height = ARX_CLEAN_WARN_CAST_DWORD(_fHeight);
+	GRenderer->SetViewport(vp);
 }
 
 void specialEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)

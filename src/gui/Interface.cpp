@@ -8424,7 +8424,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
 
 			if (ARXmenu.currentmode!=AMCM_OFF)
-				danaeApp.SetClipping(139.f*Xratio,0,139.f*Xratio,310.f*Yratio);
+			{
+				Renderer::Viewport vp;
+				vp.x = 139.f*Xratio;
+				vp.y = 0;
+				vp.width = 139.f*Xratio;
+				vp.height = 310.f*Yratio;
+				GRenderer->SetViewport(vp);
+			}
 		} else {
 			rec.x1 = (118.F + BOOKDECX) * Xratio;
 			rec.y1 = (69.f + BOOKDECY) * Yratio;
@@ -8492,28 +8499,22 @@ void ARX_INTERFACE_ManageOpenedBook()
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 
-		D3DVIEWPORT7 vp;
-
+		Renderer::Viewport vp;
 		if (BOOKZOOM)
 		{
-
-			vp.dwX		=	ARX_CLEAN_WARN_CAST_DWORD( rec.x1 + 52.f * Xratio );
-			vp.dwY		=	rec.y1;
-			vp.dwWidth	=	ARX_CLEAN_WARN_CAST_DWORD( rec.x2 - rec.x1 - 73.f * Xratio );
-			vp.dwHeight	=	ARX_CLEAN_WARN_CAST_DWORD( rec.y2 - rec.y1 - 17.f * Yratio );
-
+			vp.x		=	ARX_CLEAN_WARN_CAST_DWORD( rec.x1 + 52.f * Xratio );
+			vp.y		=	rec.y1;
+			vp.width	=	ARX_CLEAN_WARN_CAST_DWORD( rec.x2 - rec.x1 - 73.f * Xratio );
+			vp.height	=	ARX_CLEAN_WARN_CAST_DWORD( rec.y2 - rec.y1 - 17.f * Yratio );
 		}
 		else
 		{
-			vp.dwX		=	rec.x1;
-			vp.dwY		=	rec.y1;
-			vp.dwWidth	=	rec.x2 - rec.x1;
-			vp.dwHeight	=	rec.y2 - rec.y1;
+			vp.x		=	rec.x1;
+			vp.y		=	rec.y1;
+			vp.width	=	rec.x2 - rec.x1;
+			vp.height	=	rec.y2 - rec.y1;
 		}
-
-		vp.dvMinZ	=	0.f;
-		vp.dvMaxZ	=	1.f;
-		GDevice->SetViewport(&vp);
+		GRenderer->SetViewport(vp);
 
 		ePlayerAngle.a=0.f;
 		ePlayerAngle.g=0.f;
@@ -8594,19 +8595,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 		FORCE_NO_HIDE=0;
 		Project.improve=ti;
 
-		vp.dwX		=	0;
-		vp.dwY		=	0;
-
-		vp.dwWidth	=	DANAESIZX;
-		vp.dwHeight	=	DANAESIZY;
-		vp.dvMinZ	=	0.f;
-		vp.dvMaxZ	=	1.f;
-		GDevice->SetViewport(&vp);
-
-		if (ARXmenu.currentmode!=AMCM_OFF)
-		{
-			danaeApp.SetClipping(0,0,(float)DANAESIZX,(float)DANAESIZY);
-		}
+		vp.x		=	0;
+		vp.y		=	0;
+		vp.width	=	DANAESIZX;
+		vp.height	=	DANAESIZY;
+		GRenderer->SetViewport(vp);
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetCulling(Renderer::CullNone);

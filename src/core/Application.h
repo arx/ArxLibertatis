@@ -339,8 +339,6 @@ public:
 	}
 	void OutputText(DWORD x, DWORD y, const std::string& str);
 	
-	HRESULT SetClipping(float x1, float y1, float x2, float y2);
-	
 	bool m_bFrameMoving;
 	bool m_bActive;
 	HRESULT Change3DEnvironment();

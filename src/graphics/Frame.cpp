@@ -512,14 +512,13 @@ HRESULT CD3DFramework7::CreateDirect3D(GUID * pDeviceGUID)
 	}
 
 	// Finally, set the viewport for the newly created device
-	D3DVIEWPORT7 vp = { 0, 0, m_dwRenderWidth, m_dwRenderHeight, 0.f, 1.f };
-
-	if (FAILED(GDevice->SetViewport(&vp)))
-	{
-		DEBUG_MSG("Unable to set current viewport to device");
-		return D3DFWERR_NOVIEWPORT;
-	}
-
+	Renderer::Viewport vp;
+	vp.x = 0;
+	vp.y = 0;
+	vp.width = m_dwRenderWidth;
+	vp.height = m_dwRenderHeight;
+	GRenderer->SetViewport(vp);
+	
 	return S_OK;
 }
 
