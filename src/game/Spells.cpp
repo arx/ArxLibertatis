@@ -2904,7 +2904,7 @@ long ARX_SPELLS_GetInstanceForThisCaster(Spell typ, long caster) {
 	return -1;
 }
 
-bool ARX_SPELLS_ExistAnyInstanceForThisCaster(Spell typ, long caster) {
+static bool ARX_SPELLS_ExistAnyInstanceForThisCaster(Spell typ, long caster) {
 	return (ARX_SPELLS_GetInstanceForThisCaster(typ, caster) != -1);
 }
 

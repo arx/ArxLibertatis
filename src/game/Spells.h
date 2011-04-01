@@ -267,7 +267,6 @@ void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(INTERACTIVE_OBJ * io);
 float ARX_SPELLS_ApplyFireProtection(INTERACTIVE_OBJ * io, float damages);
 float ARX_SPELLS_ApplyColdProtection(INTERACTIVE_OBJ * io, float damages);
-bool ARX_SPELLS_ExistAnyInstanceForThisCaster(const long & typ, long caster);
 void ARX_SPELLS_FizzleAllSpellsFromCaster(long num);
 
 #endif // ARX_GAME_SPELLS_H
