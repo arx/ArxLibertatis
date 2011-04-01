@@ -1,4 +1,5 @@
 #include "graphics/Renderer.h"
+#include "graphics/GraphicsUtility.h"
 
 #include <list>
 #include <d3d.h>

@@ -2,11 +2,14 @@
 #define _RENDERER_H_
 
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
 // TEMP - move back to .cpp once types are all abstracted
 #include <windows.h>
+
+#define D3D_OVERLOADS
 #include <d3d.h>
 
 class Renderer
