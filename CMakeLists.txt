@@ -33,6 +33,23 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 endfunction(enable_unity_build) 
 
 ##############################################################################
+# Check that the configured CMAKE_CXX_COMPILER works.
+function(check_compiler)
+	if(NOT CHECK_COMPILER)
+		message(STATUS "Checking compler: ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
+		
+		# See if we can link a simple 32-bit program with the library.
+		set(compile_test_file ${CMAKE_CURRENT_BINARY_DIR}/compile_test.cpp)
+		file(WRITE ${compile_test_file} "int main(){}\n")
+		try_compile(CHECK_COMPILER ${CMAKE_BINARY_DIR} ${compile_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" OUTPUT_VARIABLE ERRORLOG)
+		
+		if(NOT CHECK_COMPILER)
+			message(FATAL_ERROR "\n${ERRORLOG}\n\n!! Compiler does not work, tried ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}\n")
+		endif()
+	endif()
+endfunction(check_compiler)
+
+##############################################################################
 # Check that a a library actually works for the current configuration.
 function(check_link_library LIBRARY_NAME LIBRARY_FILE)
 	if(NOT CHECK_${LIBRARY_NAME}_LINK)
@@ -130,7 +147,7 @@ else(MSVC)
 	
 	find_package(Wine REQUIRED)
 	
-	#wine compiler
+	# wine compiler
 	set(CMAKE_CXX_COMPILER ${Wine_GXX})
 	set(CMAKE_C_COMPILER ${Wine_GCC})
 	
@@ -138,6 +155,9 @@ else(MSVC)
 		set(CMAKE_C_FLAGS "-m32 ${CMAKE_C_FLAGS}")
 		set(CMAKE_CXX_FLAGS "-m32 ${CMAKE_CXX_FLAGS}")
 	endif()
+	
+	# since we change the compiler after it was checked by CMake, manually check if it works
+	check_compiler()
 	
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
 	check_link_library(DevIL ${IL_LIBRARIES} IL)
