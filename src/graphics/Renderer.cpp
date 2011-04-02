@@ -2,8 +2,6 @@
 #include "graphics/GraphicsUtility.h"
 
 #include <list>
-#include <d3d.h>
-
 
 // TEMP: needed until all D3D code is isolated...
 extern LPDIRECT3DDEVICE7 GDevice;

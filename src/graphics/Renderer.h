@@ -8,9 +8,7 @@
 
 // TEMP - move back to .cpp once types are all abstracted
 #include <windows.h>
-
-#define D3D_OVERLOADS
-#include <d3d.h>
+#include "graphics/d3dwrapper.h"
 
 class Renderer
 {
