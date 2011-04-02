@@ -60,9 +60,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
+#include <cassert>
+#include <cstdio>
+
 #include <fstream>
 #include <sstream>
-#include <cassert>
 
 #include <windows.h>
 #include <shellapi.h>
@@ -167,9 +169,9 @@ extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3D loddpos;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bSkipVideoIntro;
-extern std::string      SCRIPT_SEARCH_TEXT;
-extern std::string      ShowText;
-extern std::string      ShowText2;
+extern std::string SCRIPT_SEARCH_TEXT;
+extern std::string ShowText;
+extern std::string ShowText2;
 extern float Full_Jump_Height;
 extern float	MAX_ALLOWED_PER_SECOND;
 extern float	InventoryX;

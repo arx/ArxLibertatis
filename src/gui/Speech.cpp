@@ -482,7 +482,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 	{
 		long count = 0;
 
-		count = HERMES_UNICODE_GetProfileSectionKeyCount(lpszUSection.c_str());
+		count = HERMES_UNICODE_GetProfileSectionKeyCount(lpszUSection);
 
 		flg = rnd() * count;
 

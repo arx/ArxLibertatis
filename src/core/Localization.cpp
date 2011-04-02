@@ -38,6 +38,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace
 {
 	ConfigHashMap* pHashLocalisation;
+	std::string empty_string = "";
+	std::string default_string = "default";
 }
 
 extern long GERMAN_VERSION;
@@ -90,7 +92,7 @@ void ParseFile( const std::string& file_text )
 			ConfigSection* loc = new ConfigSection();
 
 			// Set the section name as the cleaned section string
-			loc->SetSection( ConfigSection::CleanSection( *iter ) );
+			loc->SetSection( *iter );
 
 			// Advance to the line after the section string to start looking for keys
 			iter++;
@@ -100,7 +102,7 @@ void ParseFile( const std::string& file_text )
 			{
 				// If a key is found, add it to the localisation entry
 				if ( ConfigSection::isKey( *iter ) )
-					loc->AddKey( ConfigSection::CleanKey( *iter ) );
+					loc->AddKey( *iter );
 
 				iter++; // Continue looking for more keys
 			}
@@ -207,7 +209,7 @@ void Localisation_Close()
 	pHashLocalisation = NULL;
 }
 
-//-----------------------------------------------------------------------------
+
 long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
                                       const std::string&  defaultstring,
                                       std::string&        destination )
@@ -260,3 +262,12 @@ bool PAK_UNICODE_GetPrivateProfileString( const std::string&  _in_section,
 	return true;
 }
 
+/**
+ * Returns the localized string for the given key name
+ * @param name The string to be looked up
+ * @return The localized string based on the currently loaded locale file
+ */
+const std::string& getLocalized( const std::string& name )
+{
+	return pHashLocalisation->getConfigValue( name, default_string, empty_string );
+}

@@ -806,23 +806,23 @@ bool Menu2_Render()
 
 					CMenuElement *me = NULL;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,NEW_QUEST);
-					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_confirm", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_main_editquest_confirm" );
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_main_newquest_confirm", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_main_newquest_confirm" );
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					CMenuPanel *pPanel = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_yes", "", szMenuText);
-					szMenuText += "   ";
+					szMenuText = getLocalized( "System_yes" ); // getLocalised is case sensitive, fix pak files
+					szMenuText += "   "; // TODO This space can probably go
 					me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 					me->SetPos(RATIO_X(iWindowConsoleWidth - (me->GetWidth() + 10)),0);
 					pPanel->AddElementNoCenterIn(me);
-					PAK_UNICODE_GetPrivateProfileString("system_no", "", szMenuText);
+					szMenuText = getLocalized( "System_no" );
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
 					me->SetShortCut(DIK_ESCAPE);
 					pPanel->AddElementNoCenterIn(me);

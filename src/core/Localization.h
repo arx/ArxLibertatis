@@ -30,6 +30,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 void Localisation_Init();
 void Localisation_Close();
 
+/**
+ * Returns the localized string for the given key name
+ * @param name The string to be looked up
+ * @return The localized string based on the currently loaded locale file
+ */
+const std::string& getLocalized( const std::string& name );
+
 bool PAK_UNICODE_GetPrivateProfileString(const std::string & section, const std::string & default_return, std::string & buffer);
 
 long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string & sectionname);
