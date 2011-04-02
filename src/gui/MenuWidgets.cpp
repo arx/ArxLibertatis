@@ -661,7 +661,7 @@ bool Menu2_Render()
 	int iPosMenuPrincipaleY=100;
 	int iDecMenuPrincipaleY=50;
 #define MACRO_MENU_PRINCIPALE(MACRO_button,MACRO_menu,MACRO_locate,MACRO_check){\
-		PAK_UNICODE_GetPrivateProfileString( MACRO_locate, "", szMenuText);\
+		szMenuText = getLocalized( MACRO_locate );\
 		me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);\
 		if(MACRO_check)\
 		{\
@@ -849,11 +849,11 @@ bool Menu2_Render()
 					std::string szMenuText;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST);
 
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_main_editquest_load", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_main_editquest_load");
 					me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_LOAD);
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_main_editquest_save", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_main_editquest_save");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
 					bool bBOOL;
 					ARXMenu_GetResumeGame(bBOOL);
@@ -910,7 +910,7 @@ bool Menu2_Render()
 								{
 									if(!iFirst || (b1 && b2)) continue;
 
-									PAK_UNICODE_GetPrivateProfileString( "system_menus_main_quickloadsave", "Quick", tex);
+									tex = getLocalized( "system_menus_main_quickloadsave", "Quick");
 
 									if ( szMenuText.find( tex2) != std::string::npos )
 									{
@@ -986,7 +986,7 @@ bool Menu2_Render()
 							pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
 						CMenuPanel *pc = new CMenuPanel();
-						PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_load", "", szMenuText);
+						szMenuText = getLocalized("system_menus_main_editquest_load");
 						szMenuText += "   ";
 						me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
 
@@ -1041,7 +1041,7 @@ bool Menu2_Render()
 								{
 									if(!iFirst || (b1 && b2)) continue;
 
-									PAK_UNICODE_GetPrivateProfileString( "system_menus_main_quickloadsave", "Quick", tex);
+									tex = getLocalized( "system_menus_main_quickloadsave", "Quick" );
 
 									if ( szMenuText.find( tex2 ) != std::string::npos )
 									{
@@ -1153,7 +1153,7 @@ bool Menu2_Render()
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 					
-					PAK_UNICODE_GetPrivateProfileString("system_menu_editquest_newsavegame", "---", szMenuText);
+					szMenuText = getLocalized("system_menu_editquest_newsavegame", "---");
 
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->lData=0;
@@ -1164,7 +1164,7 @@ bool Menu2_Render()
 
 					pPanel = new CMenuPanel();
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_save", "", szMenuText);
+					szMenuText = getLocalized("system_menus_main_editquest_save", "");
 
 					me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
 
@@ -1191,15 +1191,15 @@ bool Menu2_Render()
 
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS);
 
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_video", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_options_video", "");
 					me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
 					pWindowMenuConsole->AddMenuCenter(me);
 					
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_audio", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_options_audio", "");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_AUDIO);
 					pWindowMenuConsole->AddMenuCenter(me);
 					
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_options_input", "");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
 					pWindowMenuConsole->AddMenuCenter(me);
 
@@ -1216,7 +1216,7 @@ bool Menu2_Render()
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_video_resolution", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_options_video_resolution", "");
 					szMenuText += "  ";
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
@@ -1290,7 +1290,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					CMenuPanel *pc1 = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_texture");
 					szMenuText += " ";
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
@@ -1298,11 +1298,11 @@ bool Menu2_Render()
 					iOffsetX = iPosX2;
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_TEXTURES, 0, 0);
 					pMenuSliderTexture = (CMenuSliderText*)me;
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_low", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_texture_low");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_med", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_texture_med");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_high", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_texture_high");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
 
 
@@ -1319,7 +1319,7 @@ bool Menu2_Render()
 					((CMenuSliderText *)me)->iPos = iQuality;
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_bpp", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_bpp");
 					szMenuText += " ";
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
@@ -1355,18 +1355,18 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(pc1);
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_detail", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_detail");
 					szMenuText += " ";
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
 					iOffsetX = iPosX2;
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, 0, 0);
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_low", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_texture_low");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_med", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_texture_med");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_high", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_texture_high");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
 
 					
@@ -1383,7 +1383,7 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_bump", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_bump");
 					szMenuText += " ";
 					TextureContainer *pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					TextureContainer *pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1406,7 +1406,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(me);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_brouillard", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_brouillard");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1419,7 +1419,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_gamma", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_gamma");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1431,7 +1431,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_luminosity", "luminosity", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_luminosity", "luminosity");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1443,7 +1443,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_contrast", "contrast", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_contrast", "contrast");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1454,7 +1454,7 @@ bool Menu2_Render()
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_crosshair", "Show Crosshair", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_crosshair", "Show Crosshair");
 					szMenuText += " ";
 					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1473,7 +1473,7 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_antialiasing", "antialiasing", szMenuText);
+					szMenuText = getLocalized("system_menus_options_video_antialiasing", "antialiasing");
 					szMenuText += " ";
 					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1494,7 +1494,7 @@ bool Menu2_Render()
 					ARX_SetAntiAliasing();
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_video_apply", "", szMenuText);
+					szMenuText = getLocalized("system_menus_video_apply");
 					szMenuText += "   ";
 					pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, fPosApply, 0.f, lColor, 1.f, NOP);
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
@@ -1516,7 +1516,7 @@ bool Menu2_Render()
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_master_volume", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_audio_master_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1528,7 +1528,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_effects_volume", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_audio_effects_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1540,7 +1540,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_speech_volume", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_audio_speech_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1552,7 +1552,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_ambiance_volume", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_audio_ambiance_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1563,7 +1563,7 @@ bool Menu2_Render()
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_eax", "EAX", szMenuText);
+					szMenuText = getLocalized("system_menus_options_audio_eax", "EAX");
 					szMenuText += " ";
 					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1595,11 +1595,11 @@ bool Menu2_Render()
 					//------------------ START INPUT
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
 					
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_input_customize_controls");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 					pWindowMenuConsole->AddMenuCenterY(me);
 					
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_invert_mouse", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_input_invert_mouse");
 					szMenuText += " ";
 					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1618,7 +1618,7 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_auto_ready_weapon", "", szMenuText);
+					szMenuText = getLocalized("system_menus_options_auto_ready_weapon");
 					szMenuText += " ";
 					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1637,7 +1637,7 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_look_toggle", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_options_input_mouse_look_toggle" );
 					szMenuText += " ";
 					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1657,7 +1657,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(me);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_sensitivity", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_options_input_mouse_sensitivity" );
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -1670,7 +1670,7 @@ bool Menu2_Render()
 
 					if (INTERNATIONAL_MODE)
 					{
-						PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_smoothing", "mouse_smoothing", szMenuText);
+						szMenuText = getLocalized( "system_menus_options_input_mouse_smoothing", "mouse_smoothing" );
 						szMenuText += " ";
 						pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 						pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1689,7 +1689,7 @@ bool Menu2_Render()
 
 						pWindowMenuConsole->AddMenuCenterY(me);
 
-						PAK_UNICODE_GetPrivateProfileString("system_menus_autodescription", "auto_description", szMenuText);
+						szMenuText = getLocalized( "system_menus_autodescription", "auto_description" );
 						szMenuText += " ";
 						pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 						pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1727,7 +1727,7 @@ bool Menu2_Render()
 					long fControlPosY    =    ARX_CLEAN_WARN_CAST_LONG(RATIO_Y(8.f));
 				#define CUSTOM_CTRL_FUNC(a,b,c,d){\
 						pc=new CMenuPanel();\
-						PAK_UNICODE_GetPrivateProfileString(a, "?", szMenuText);\
+						szMenuText = getLocalized(a, "?");\
 						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
 						me->SetCheckOff();\
 						pc->AddElement(me);\
@@ -1755,7 +1755,7 @@ bool Menu2_Render()
 
 				#define CUSTOM_CTRL_FUNC2(a,b,c,d){\
 						pc=new CMenuPanel();\
-						PAK_UNICODE_GetPrivateProfileString(a, "?", szMenuText);\
+						szMenuText = getLocalized(a, "?");\
 						szMenuText += "2";\
 						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
 						me->SetCheckOff();\
@@ -1788,7 +1788,7 @@ bool Menu2_Render()
 
 					if (!INTERNATIONAL_MODE)
 					{
-						PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_link_use_to_mouselook", "?", szMenuText);
+						szMenuText = getLocalized( "system_menus_options_input_customize_controls_link_use_to_mouselook", "?" );
 						\
 				pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 				pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -1833,7 +1833,7 @@ bool Menu2_Render()
 					me->eMenuState = OPTIONS_INPUT;
 					me->SetShortCut(DIK_ESCAPE);
 					pc->AddElementNoCenterIn(me);
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_default", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_options_input_customize_default" );
 					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
 					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
 					pc->AddElementNoCenterIn(me);
@@ -1884,7 +1884,7 @@ bool Menu2_Render()
 					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 					me->SetShortCut(DIK_ESCAPE);
 					pc->AddElementNoCenterIn(me);
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_default", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_options_input_customize_default" );
 					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
 					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
 					pc->AddElementNoCenterIn(me);
@@ -1909,24 +1909,24 @@ bool Menu2_Render()
 					std::string szMenuText;
 					CMenuElement *me = NULL;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_main_quit", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_main_quit" );
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_main_editquest_confirm", "", szMenuText);
+					szMenuText = getLocalized( "system_menus_main_editquest_confirm" );
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					CMenuPanel *pPanel = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString( "system_yes", "", szMenuText);
+					szMenuText = getLocalized( "System_yes" ); // TODO Is case sensitive, fix pak
 
 					me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), 0);
 					pPanel->AddElementNoCenterIn(me);
-					PAK_UNICODE_GetPrivateProfileString( "system_no", "", szMenuText);
+					szMenuText = getLocalized( "System_no" ); // TODO Is case sensitive, fix pak
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
 					me->SetShortCut(DIK_ESCAPE);
 					pPanel->AddElementNoCenterIn(me);
@@ -2657,7 +2657,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 						szText = save_l[lData].name;
 					else
 					{
-						PAK_UNICODE_GetPrivateProfileString( "system_menu_editquest_newsavegame", "", szText );
+						szText = getLocalized( "system_menu_editquest_newsavegame" );
 					}
 
 					me->SetText( szText );
@@ -3847,7 +3847,7 @@ void CWindowMenuConsole::UpdateText()
 			if( ((CMenuElementText*)pZoneClick)->lpszText.empty() )
 			{
 				std::string szMenuText;
-				PAK_UNICODE_GetPrivateProfileString("system_menu_editquest_newsavegame", "", szMenuText);
+				szMenuText = getLocalized("system_menu_editquest_newsavegame");
 
 				((CMenuElementText*)pZoneClick)->SetText(szMenuText);
 
@@ -6231,22 +6231,22 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
 	
 	switch(_iVirtualKey) {
 	case DIK_HOME:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_home", "---", pText );
+		pText = getLocalized( "system_menus_options_input_customize_controls_home", "---" );
 		break;
 	case DIK_NEXT:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_pagedown", "---", pText );
+		pText = getLocalized( "system_menus_options_input_customize_controls_pagedown", "---" );
 		break;
 	case DIK_END:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_end", "---", pText );
+		pText = getLocalized( "system_menus_options_input_customize_controls_end", "---" );
 		break;
 	case DIK_INSERT:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_insert", "---", pText );
+		pText = getLocalized( "system_menus_options_input_customize_controls_insert", "---" );
 		break;
 	case DIK_DELETE:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_delete", "---", pText );
+		pText = getLocalized( "system_menus_options_input_customize_controls_delete", "---" );
 		break;
 	case DIK_NUMLOCK:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_numlock", "---", pText );
+		pText = getLocalized( "system_menus_options_input_customize_controls_numlock", "---" );
 		break;
 	case DIK_DIVIDE:
 		pText = "_/_";
@@ -6258,121 +6258,121 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
 		pText = "?";
 		break;
 	case DIK_UP:                  // UpArrow on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_up", "---", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_up", "---");
 		break;
 	case DIK_PRIOR:               // PgUp on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_pageup", "---", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_pageup", "---");
 		break;
 	case DIK_LEFT:                // LeftArrow on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_left", "---");
 		break;
 	case DIK_RIGHT:               // RightArrow on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_right", "---", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_right", "---");
 		break;
 	case DIK_DOWN:                // DownArrow on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_down", "---", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_down", "---");
 		break;
 	case DIK_BUTTON1:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button0", "b1", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button0", "b1");
 		break;
 	case DIK_BUTTON2:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button1", "b2", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button1", "b2");
 		break;
 	case DIK_BUTTON3:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button2", "b3", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button2", "b3");
 		break;
 	case DIK_BUTTON4:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button3", "b4", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button3", "b4");
 		break;
 	case DIK_BUTTON5:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button4", "b5", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button4", "b5");
 		break;
 	case DIK_BUTTON6:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button5", "b6", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button5", "b6");
 		break;
 	case DIK_BUTTON7:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button6", "b7", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button6", "b7");
 		break;
 	case DIK_BUTTON8:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button7", "b8", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button7", "b8");
 		break;
 	case DIK_BUTTON9:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button8", "b9", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button8", "b9");
 		break;
 	case DIK_BUTTON10:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button9", "b10", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button9", "b10");
 		break;
 	case DIK_BUTTON11:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button10", "b11", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button10", "b11");
 		break;
 	case DIK_BUTTON12:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button11", "b12", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button11", "b12");
 		break;
 	case DIK_BUTTON13:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button12", "b13", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button12", "b13");
 		break;
 	case DIK_BUTTON14:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button13", "b14", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button13", "b14");
 		break;
 	case DIK_BUTTON15:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button14", "b15", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button14", "b15");
 		break;
 	case DIK_BUTTON16:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button15", "b16", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button15", "b16");
 		break;
 	case DIK_BUTTON17:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button16", "b17", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button16", "b17");
 		break;
 	case DIK_BUTTON18:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button17", "b18", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button17", "b18");
 		break;
 	case DIK_BUTTON19:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button18", "b19", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button18", "b19");
 		break;
 	case DIK_BUTTON20:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button19", "b20", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button19", "b20");
 		break;
 	case DIK_BUTTON21:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button20", "b21", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button20", "b21");
 		break;
 	case DIK_BUTTON22:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button21", "b22", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button21", "b22");
 		break;
 	case DIK_BUTTON23:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button22", "b23", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button22", "b23");
 		break;
 	case DIK_BUTTON24:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button23", "b24", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button23", "b24");
 		break;
 	case DIK_BUTTON25:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button24", "b25", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button24", "b25");
 		break;
 	case DIK_BUTTON26:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button25", "b26", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button25", "b26");
 		break;
 	case DIK_BUTTON27:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button26", "b27", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button26", "b27");
 		break;
 	case DIK_BUTTON28:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button27", "b28", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button27", "b28");
 		break;
 	case DIK_BUTTON29:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button28", "b29", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button28", "b29");
 		break;
 	case DIK_BUTTON30:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button29", "b30", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button29", "b30");
 		break;
 	case DIK_BUTTON31:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button30", "b31", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button30", "b31");
 		break;
 	case DIK_BUTTON32:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button31", "b32", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_button31", "b32");
 		break;
 	case DIK_WHEELUP:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_wheelup", "w0", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_wheelup", "w0");
 		break;
 	case DIK_WHEELDOWN:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_wheeldown", "w1", pText);
+		pText = getLocalized("system_menus_options_input_customize_controls_wheeldown", "w1");
 		break;
 	case -1:
 		pText += "---";
@@ -6393,19 +6393,19 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
 			
 			if(_iVirtualKey == DIK_LSHIFT) {
 				std::string tText2;
-				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
+				tText2 = getLocalized( "system_menus_options_input_customize_controls_left", "---");
 				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
 			
 			if(_iVirtualKey == DIK_LCONTROL) {
 				std::string tText2;
-				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
+				tText2 = getLocalized( "system_menus_options_input_customize_controls_left", "---");
 				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
 			
 			if(_iVirtualKey == DIK_LALT) {
 				std::string tText2;
-				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
+				tText2 = getLocalized( "system_menus_options_input_customize_controls_left", "---");
 				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
 			

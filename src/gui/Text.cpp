@@ -321,7 +321,7 @@ Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned in
 	ss.clear();
 
 	std::string szUT;
-	PAK_UNICODE_GetPrivateProfileString(fontProfileName, szFontSize, szUT);
+	szUT = getLocalized( fontProfileName, szFontSize );
 	ss << szUT;
 	ss >> fontSize;
 	ss.clear();

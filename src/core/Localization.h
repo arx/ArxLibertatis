@@ -35,7 +35,7 @@ void Localisation_Close();
  * @param name The string to be looked up
  * @return The localized string based on the currently loaded locale file
  */
-const std::string& getLocalized( const std::string& name );
+std::string getLocalized( const std::string& name, const std::string& default_value = "" );
 
 bool PAK_UNICODE_GetPrivateProfileString(const std::string & section, const std::string & default_return, std::string & buffer);
 

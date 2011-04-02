@@ -946,13 +946,13 @@ bool ARX_Menu_Render()
 
 		Color = RGB(232, 204, 143);
 
-		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText);
+		szText = getLocalized("system_menus_main_cdnotfound");
 		Vector2i textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
-		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText);
+		szText = getLocalized("System_yes");
 		textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
@@ -971,7 +971,7 @@ bool ARX_Menu_Render()
 
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
-		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText);
+		szText = getLocalized("System_no");
 		textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 

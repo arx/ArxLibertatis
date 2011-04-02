@@ -39,7 +39,6 @@ namespace
 {
 	ConfigHashMap* pHashLocalisation;
 	std::string empty_string = "";
-	std::string default_string = "default";
 }
 
 extern long GERMAN_VERSION;
@@ -173,7 +172,7 @@ void Localisation_Init()
 	if (FINAL_COMMERCIAL_DEMO)
 	{
 		std::string szMenuText;
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "", szMenuText );
+		szMenuText = getLocalized( "system_menus_main_cdnotfound" );
 
 		if (szMenuText.empty()) //warez
 		{
@@ -184,7 +183,7 @@ void Localisation_Init()
 	if (FINAL_COMMERCIAL_GAME)
 	{
 		std::string szMenuText;
-		PAK_UNICODE_GetPrivateProfileString( "unicode", "", szMenuText );
+		szMenuText = getLocalized( "unicode" );
 
 		if (!szMenuText.empty()) //warez
 		{
@@ -241,33 +240,12 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-bool PAK_UNICODE_GetPrivateProfileString( const std::string&  _in_section,
-                                         const std::string&  _default_return,
-                                         std::string&        _buf )
-{
-	if ( _in_section.empty())
-	{
-		LogError <<  _default_return << " not found";
-		_buf = _default_return + ":NOT FOUND";
-		return false;
-	}
-
-	std::string section = "[" + _in_section + "]";
-
-	HERMES_UNICODE_GetProfileString( section,
-	                                 _default_return,
-	                                 _buf );
-
-	return true;
-}
-
 /**
  * Returns the localized string for the given key name
  * @param name The string to be looked up
  * @return The localized string based on the currently loaded locale file
  */
-const std::string& getLocalized( const std::string& name )
+std::string getLocalized( const std::string& name, const std::string& default_value )
 {
-	return pHashLocalisation->getConfigValue( name, default_string, empty_string );
+	return pHashLocalisation->getConfigValue( name, default_value, empty_string );
 }
