@@ -84,14 +84,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/Map.h"
 #include "game/Player.h"
+#include "game/Levels.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
+#include "gui/MiniMap.h"
 
 #include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
+#include "graphics/GraphicsModes.h"
 #include "graphics/Frame.h"
 #include "graphics/Draw.h"
 #include "graphics/data/FTL.h"
@@ -120,6 +123,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
+#include "scene/Interactive.h"
 
 #include "scripting/ScriptEvent.h"
 #include "scripting/ScriptDebugger.h"
@@ -2547,7 +2551,7 @@ HRESULT DANAE::FrameMove()
 		{
 			this->kbd.inkey[INKEY_F4]=0;
 			ARX_TIME_Pause();
-			DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+			DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						   MAKEINTRESOURCE(IDD_LEVEL_SELECTOR), this->m_hWnd, ChangeLevelProc );
 
 			if (CHANGE_LEVEL_PROC_RESULT!=-1)
@@ -2575,7 +2579,7 @@ HRESULT DANAE::FrameMove()
 				this->kbd.inkey[INKEY_F2]=0;
 				ARX_TIME_Pause();
 				Pause(true);
-				DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+				DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 					MAKEINTRESOURCE(IDD_OPTIONS), this->m_hWnd, OptionsProc );
 				EERIE_LIGHT_ChangeLighting();
 				Pause(false);
@@ -2586,7 +2590,7 @@ HRESULT DANAE::FrameMove()
 				this->kbd.inkey[INKEY_F3]=0;
 				ARX_TIME_Pause();
 				Pause(true);
-				DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+				DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_OPTIONS2), this->m_hWnd, OptionsProc_2 );
 				Pause(false);
 				ARX_TIME_UnPause();
@@ -2689,63 +2693,63 @@ void DANAE_ReleaseAllDatasDynamic()
 
 	if(ssol)
 	{
-		ReleaseEERIE3DObj(ssol);
+		delete ssol;
 		ssol=NULL;
 		ssol_count=0;
 	}
 
 	if(slight)
 	{
-		ReleaseEERIE3DObj(slight);
+		delete slight;
 		slight=NULL;
 		slight_count=0;
 	}
 
 	if(srune)
 	{
-		ReleaseEERIE3DObj(srune);
+		delete srune;
 		srune=NULL;
 		srune_count=0;
 	}
 
 	if(smotte)
 	{
-		ReleaseEERIE3DObj(smotte);
+		delete smotte;
 		smotte=NULL;
 		smotte_count=0;
 	}
 
 	if(stite)
 	{
-		ReleaseEERIE3DObj(stite);
+		delete stite;
 		stite=NULL;
 		stite_count=0;
 	}
 
 	if(smissile)
 	{
-		ReleaseEERIE3DObj(smissile);
+		delete smissile;
 		smissile=NULL;
 		smissile_count=0;
 	}
 
 	if(spapi)
 	{
-		ReleaseEERIE3DObj(spapi);
+		delete spapi;
 		spapi=NULL;
 		spapi_count=0;
 	}
 
 	if(sfirewave)
 	{
-		ReleaseEERIE3DObj(sfirewave);
+		delete sfirewave;
 		sfirewave=NULL;
 		sfirewave_count=0;
 	}
 
 	if(svoodoo)
 	{
-		ReleaseEERIE3DObj(svoodoo);
+		delete svoodoo;
 		svoodoo=NULL;
 		svoodoo_count=0;
 	}
@@ -2757,70 +2761,62 @@ void ReleaseDanaeBeforeRun()
 {
 	if(necklace.lacet)
 	{
-		ReleaseEERIE3DObj(necklace.lacet);
+		delete necklace.lacet;
 		necklace.lacet=NULL;
 	}
 
 	for (long i=0; i<20; i++)
 	{
-		if(necklace.runes[i])
-		{
-			ReleaseEERIE3DObj(necklace.runes[i]);
-			necklace.runes[i]=NULL;
+		if(necklace.runes[i]) {
+			delete necklace.runes[i];
+			necklace.runes[i] = NULL;
 		}
 
 		if (necklace.pTexTab[i])
 		{
 
-			necklace.pTexTab[i]=NULL;
+			necklace.pTexTab[i] = NULL;
 		}
 	}
 
-	if(eyeballobj)
-	{
-		ReleaseEERIE3DObj(eyeballobj);
-		eyeballobj=NULL;
+	if(eyeballobj) {
+		delete eyeballobj;
+		eyeballobj = NULL;
 	}
 
-	if(cabal)
-	{
-		ReleaseEERIE3DObj(cabal);
-		cabal=NULL;
+	if(cabal) {
+		delete cabal;
+		cabal = NULL;
 	}
 
-	if(nodeobj)
-	{
-		ReleaseEERIE3DObj(nodeobj);
-		nodeobj=NULL;
+	if(nodeobj) {
+		delete nodeobj;
+		nodeobj = NULL;
 	}
 
-	if(fogobj)
-	{
-		ReleaseEERIE3DObj(fogobj);
-		fogobj=NULL;
+	if(fogobj) {
+		delete fogobj;
+		fogobj = NULL;
 	}
 
-	if(cameraobj)
-	{
-		ReleaseEERIE3DObj(cameraobj);
-		cameraobj=NULL;
+	if(cameraobj) {
+		delete cameraobj;
+		cameraobj = NULL;
 	}
 
-	if(markerobj)
-	{
-		ReleaseEERIE3DObj(markerobj);
-		markerobj=NULL;
+	if(markerobj) {
+		delete markerobj;
+		markerobj = NULL;
 	}
 
-	if(arrowobj)
-	{
-		ReleaseEERIE3DObj(arrowobj);
-		arrowobj=NULL;
+	if(arrowobj) {
+		delete arrowobj;
+		arrowobj = NULL;
 	}
 
 	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		if(GoldCoinsObj[i]) {
-			ReleaseEERIE3DObj(GoldCoinsObj[i]);
+			delete GoldCoinsObj[i];
 			GoldCoinsObj[i] = NULL;
 		}
 	}
@@ -2903,14 +2899,14 @@ HRESULT DANAE::BeforeRun()
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin.teo");
 		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%d.teo",i+1);
+			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin" PRINT_SIZE_T ".teo",i+1);
 
 		GoldCoinsObj[i]=	_LoadTheObj(temp,"..\\..\\..\\..\\textures\\");
 
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin[icon].bmp");
 		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%d[icon].bmp",i+1);
+			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin" PRINT_SIZE_T "[icon].bmp",i+1);
 
 		GoldCoinsTC[i] =	MakeTCFromFile_NoRefinement(temp);
 	}
@@ -6058,7 +6054,7 @@ static float _AvgFrameDiff = 150.f;
 
 				switch (acs->type)
 				{
-					case ARX_CINE_SPEECH_KEEP:
+					case ARX_CINE_SPEECH_KEEP: {
 						subj.pos.x=acs->pos1.x;
 						subj.pos.y=acs->pos1.y;
 						subj.pos.z=acs->pos1.z;
@@ -6066,16 +6062,14 @@ static float _AvgFrameDiff = 150.f;
 						subj.angle.b=acs->pos2.b;
 						subj.angle.g=acs->pos2.g;
 						EXTERNALVIEW=1;
-					break;
-					case ARX_CINE_SPEECH_ZOOM:
+						break;
+					}
+					case ARX_CINE_SPEECH_ZOOM: {
 						//need to compute current values
 						alpha=acs->startangle.a*itime+acs->endangle.a*rtime;
 						beta=acs->startangle.b*itime+acs->endangle.b*rtime;
 						distance=acs->startpos*itime+acs->endpos*rtime;
-						EERIE_3D targetpos;
-						targetpos.x=acs->pos1.x;
-						targetpos.y=acs->pos1.y;
-						targetpos.z=acs->pos1.z;
+						EERIE_3D targetpos = acs->pos1;
 						conversationcamera.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
 						conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
 						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;						
@@ -6087,24 +6081,19 @@ static float _AvgFrameDiff = 150.f;
 						subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 						subj.angle.g=0.f;
 						EXTERNALVIEW=1;
-					break;
+						break;
+					}
 					case ARX_CINE_SPEECH_SIDE_LEFT:
-					case ARX_CINE_SPEECH_SIDE:
+					case ARX_CINE_SPEECH_SIDE: {
 
 						if (ValidIONum(acs->ionum))
 						{
 
 							EERIE_3D from,to,vect,vect2;
-							from.x=acs->pos1.x;
-							from.y=acs->pos1.y;
-							from.z=acs->pos1.z;
-							to.x=acs->pos2.x;
-							to.y=acs->pos2.y;
-							to.z=acs->pos2.z;
+							from = acs->pos1;
+							to = acs->pos2;
 
-							vect.x=to.x-from.x;
-							vect.y=to.y-from.y;
-							vect.z=to.z-from.z;
+							vect= to - from;
 							TRUEVector_Normalize(&vect);
 
 							if (acs->type==ARX_CINE_SPEECH_SIDE_LEFT)
@@ -6117,9 +6106,7 @@ static float _AvgFrameDiff = 150.f;
 							}
 
 							distance=acs->f0*itime+acs->f1*rtime;
-							vect2.x*=distance;
-							vect2.y*=distance;
-							vect2.z*=distance;
+							vect2 *= distance;
 							dist=TRUEEEDistance3D(&from,&to);
 							EERIE_3D tfrom,tto;
 							tfrom.x=from.x+vect.x*acs->startpos*( 1.0f / 100 )*dist;
@@ -6128,6 +6115,7 @@ static float _AvgFrameDiff = 150.f;
 							tto.x=from.x+vect.x*acs->endpos*( 1.0f / 100 )*dist;
 							tto.y=from.y+vect.y*acs->endpos*( 1.0f / 100 )*dist;
 							tto.z=from.z+vect.z*acs->endpos*( 1.0f / 100 )*dist;
+							EERIE_3D targetpos;
 							targetpos.x=tfrom.x*itime+tto.x*rtime;
 							targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;
 							targetpos.z=tfrom.z*itime+tto.z*rtime;
@@ -6144,11 +6132,12 @@ static float _AvgFrameDiff = 150.f;
 							EXTERNALVIEW=1;
 						}
 
-					break;
+						break;
+					}
 					case ARX_CINE_SPEECH_CCCLISTENER_R:
 					case ARX_CINE_SPEECH_CCCLISTENER_L:
 					case ARX_CINE_SPEECH_CCCTALKER_R:
-					case ARX_CINE_SPEECH_CCCTALKER_L:
+					case ARX_CINE_SPEECH_CCCTALKER_L: {
 
 						//need to compute current values
 						if (ValidIONum(acs->ionum))
@@ -6157,6 +6146,7 @@ static float _AvgFrameDiff = 150.f;
 							INTERACTIVE_OBJ * o1=io;
 							INTERACTIVE_OBJ * o2=ioo;
 
+							EERIE_3D targetpos;
 							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
 								|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
 							{
@@ -6219,7 +6209,8 @@ static float _AvgFrameDiff = 150.f;
 							EXTERNALVIEW=1;
 						}
 
-					break;
+						break;
+					}
 				}
 
 				LASTCAMPOS.x=subj.pos.x;
@@ -6418,17 +6409,19 @@ static float _AvgFrameDiff = 150.f;
 
 
 	// Set Listener Position
-	EERIE_3D front, up;
-	float t;
-	t=radians(MAKEANGLE(ACTIVECAM->angle.b));			
-	front.x=-EEsin(t);
-	front.y=0.f;
-	front.z=EEcos(t);
-	TRUEVector_Normalize(&front);
-	up.x=0.f;
-	up.y=1.f;
-	up.z=0.f;
-	ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
+	{
+		EERIE_3D front, up;
+		float t;
+		t=radians(MAKEANGLE(ACTIVECAM->angle.b));			
+		front.x=-EEsin(t);
+		front.y=0.f;
+		front.z=EEcos(t);
+		TRUEVector_Normalize(&front);
+		up.x=0.f;
+		up.y=1.f;
+		up.z=0.f;
+		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
+	}
 
 	// Reset Transparent Polys Idx
 	INTERTRANSPOLYSPOS=TRANSPOLYSPOS=0;
@@ -7556,7 +7549,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_B015:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_SEARCH), danaeApp.m_hWnd, ScriptSearchProc);
 
 					if (SCRIPT_SEARCH_TEXT[0])
@@ -7773,13 +7766,13 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						{
 							ARX_TIME_Pause();
 							Pause(true);
-							DialogBox( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+							DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 								MAKEINTRESOURCE(IDD_MESHREDUCTION), danaeApp.m_hWnd, MeshReductionProc);
 							Pause(false);
 							ARX_TIME_UnPause();				
 						}
 						else
-						MESH_REDUCTION_WINDOW=(CreateDialogParam( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+						MESH_REDUCTION_WINDOW=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_MESHREDUCTION), danaeApp.m_hWnd, MeshReductionProc,0 ));
 					}
 
@@ -7805,7 +7798,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_B013:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
 							   MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
 					EERIE_LIGHT_ChangeLighting();
 					Pause(false);
@@ -7841,13 +7834,13 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						{
 							ARX_TIME_Pause();
 							Pause(true);
-							DialogBox( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+							DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 								MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc);
 							Pause(false);
 							ARX_TIME_UnPause();				
 						}
 						else
-						PRECALC=(CreateDialogParam( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+						PRECALC=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc,0 ));
 					}
 
@@ -7880,7 +7873,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					std::stringstream ss;
 					ss << "Allocated Memory " << msize << " bytes " << (msize>>10) << " Kb";
 					ShowTextWindowtext = ss.str();
-					CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
 				}
 				break;
@@ -7896,7 +7889,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_LANGUAGE:
 					ARX_TIME_Pause();
 					Pause(true);			
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_LANGUAGEDIALOG), this->m_hWnd, LanguageOptionsProc);
 					Localisation_Init();
 					Pause(false);
@@ -8063,7 +8056,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_ABOUT:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
 							   MAKEINTRESOURCE(IDD_DANAEABOUT), hWnd, AboutProc );
 					Pause(false);
 					ARX_TIME_UnPause();
@@ -8071,7 +8064,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_OPTIONS:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
 							   MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
 					Pause(false);
 					ARX_TIME_UnPause();
@@ -8079,7 +8072,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_OPTIONS2:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 							   MAKEINTRESOURCE(IDD_OPTIONS2), this->m_hWnd, OptionsProc_2 );
 					Pause(false);
 					ARX_TIME_UnPause();
@@ -8094,8 +8087,9 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 }
 
 void ReleaseSystemObjects() {
-	if (hero) {
-		ReleaseEERIE3DObj(hero);
+	
+	if(hero) {
+		delete hero;
 		hero=NULL;
 	}
 
@@ -8110,45 +8104,45 @@ void ReleaseSystemObjects() {
 		}
 	}
 
-	if (eyeballobj)	{
-		ReleaseEERIE3DObj(eyeballobj);
-		eyeballobj=NULL;
+	if(eyeballobj) {
+		delete eyeballobj;
+		eyeballobj = NULL;
 	}
 
-	if (cabal) {
-		ReleaseEERIE3DObj(cabal);
-		cabal=NULL;
+	if(cabal) {
+		delete cabal;
+		cabal = NULL;
 	}
 
-	if (nodeobj) {
-		ReleaseEERIE3DObj(nodeobj);
-		nodeobj=NULL;
+	if(nodeobj) {
+		delete nodeobj;
+		nodeobj = NULL;
 	}
 
-	if (fogobj) {
-		ReleaseEERIE3DObj(fogobj);
-		fogobj=NULL;
+	if(fogobj) {
+		delete fogobj;
+		fogobj = NULL;
 	}
 
-	if (cameraobj) {
-		ReleaseEERIE3DObj(cameraobj);
-		cameraobj=NULL;
+	if(cameraobj) {
+		delete cameraobj;
+		cameraobj = NULL;
 	}
 
-	if (markerobj) {
-		ReleaseEERIE3DObj(markerobj);
-		markerobj=NULL;
+	if(markerobj) {
+		delete markerobj;
+		markerobj = NULL;
 	}
 
-	if (arrowobj) {
-		ReleaseEERIE3DObj(arrowobj);
-		arrowobj=NULL;
+	if(arrowobj) {
+		delete arrowobj;
+		arrowobj = NULL;
 	}
 
 	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		if(GoldCoinsObj[i]) {
-			ReleaseEERIE3DObj(GoldCoinsObj[i]);
-			GoldCoinsObj[i]=NULL;
+			delete GoldCoinsObj[i];
+			GoldCoinsObj[i] = NULL;
 		}
 	}
 }

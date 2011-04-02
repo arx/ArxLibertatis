@@ -415,7 +415,7 @@ CSlowDown::~CSlowDown()
 	if (ssol && (ssol_count <= 0))
 	{
 		ssol_count = 0;
-		ReleaseEERIE3DObj(ssol);
+		delete ssol;
 		ssol = NULL;
 	}
 
@@ -424,7 +424,7 @@ CSlowDown::~CSlowDown()
 	if (slight && (slight_count <= 0))
 	{
 		slight_count = 0;
-		ReleaseEERIE3DObj(slight);
+		delete slight;
 		slight = NULL;
 	}
 
@@ -433,7 +433,7 @@ CSlowDown::~CSlowDown()
 	if (srune && (srune_count <= 0))
 	{
 		srune_count = 0;
-		ReleaseEERIE3DObj(srune);
+		delete srune;
 		srune = NULL;
 	}
 }
@@ -557,7 +557,7 @@ CRiseDead::~CRiseDead()
 	if (stone0 && (stone0_count <= 0))
 	{
 		stone0_count = 0;
-		ReleaseEERIE3DObj(stone0);
+		delete stone0;
 		stone0 = NULL;
 	}
 
@@ -566,7 +566,7 @@ CRiseDead::~CRiseDead()
 	if (stone1 && (stone1_count <= 0))
 	{
 		stone1_count = 0;
-		ReleaseEERIE3DObj(stone1);
+		delete stone1;
 		stone1 = NULL;
 	}
 }
@@ -2160,7 +2160,7 @@ CDisarmTrap::~CDisarmTrap()
 	if (smotte && (smotte_count <= 0))
 	{
 		smotte_count = 0;
-		ReleaseEERIE3DObj(smotte);
+		delete smotte;
 		smotte = NULL;
 	}
 
@@ -2169,7 +2169,7 @@ CDisarmTrap::~CDisarmTrap()
 	if (slight && (slight_count <= 0))
 	{
 		slight_count = 0;
-		ReleaseEERIE3DObj(slight);
+		delete slight;
 		slight = NULL;
 	}
 
@@ -2178,7 +2178,7 @@ CDisarmTrap::~CDisarmTrap()
 	if (srune && (srune_count <= 0))
 	{
 		srune_count = 0;
-		ReleaseEERIE3DObj(srune);
+		delete srune;
 		srune = NULL;
 	}
 }

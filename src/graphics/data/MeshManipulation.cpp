@@ -826,16 +826,15 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 
 	EERIE_MESH_ReleaseTransPolys(io->obj);
 
-	if ( path.empty() && (tw == TWEAK_REMOVE))
-	{
-		if (io->tweaky)
-		{
-			ReleaseEERIE3DObj(io->obj);
+	if(path.empty() && tw == TWEAK_REMOVE) {
+		
+		if(io->tweaky) {
+			delete io->obj;
 			io->obj = io->tweaky;
 			EERIE_Object_Precompute_Fast_Access(io->obj);
 			io->tweaky = NULL;
 		}
-
+		
 		return;
 	}
 
@@ -858,8 +857,8 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 		{
 			case TWEAK_ALL:
 
-				if (io->tweaky == NULL) io->tweaky = io->obj;
-				else ReleaseEERIE3DObj(io->obj);
+				if (!io->tweaky) io->tweaky = io->obj;
+				else delete io->obj;
 
 				for (size_t i = 0; i < tobj->facelist.size(); i++)
 				{
@@ -879,12 +878,12 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 			case TWEAK_UPPER:
 				result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
 				result = CreateIntermediaryMesh(result2, tobj, TWEAK_TORSO);
-				ReleaseEERIE3DObj(result2);
+				delete result2;
 				break;
 			case TWEAK_LOWER:
 				result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_TORSO);
 				result = CreateIntermediaryMesh(result2, tobj, TWEAK_LEGS);
-				ReleaseEERIE3DObj(result2);
+				delete result2;
 				break;
 			case TWEAK_UP_LO:
 				result = CreateIntermediaryMesh(tobj, io->obj, TWEAK_TORSO);
@@ -894,9 +893,8 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 				break;
 		}
 
-		if (result == NULL)
-		{
-			ReleaseEERIE3DObj(tobj);
+		if(!result) {
+			delete tobj;
 			return;
 		}
 
@@ -905,7 +903,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 
 		if (io->tweaky == NULL) io->tweaky = io->obj;
 		else if (io->tweaky != io->obj)
-			ReleaseEERIE3DObj(io->obj);
+			delete io->obj;
 
 		io->obj = result;
 		EERIE_Object_Precompute_Fast_Access(io->obj);
@@ -919,5 +917,5 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 		io->nb_lastanimvertex = 0;
 	}
 
-	ReleaseEERIE3DObj(tobj);
+	delete tobj;
 }

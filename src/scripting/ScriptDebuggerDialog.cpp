@@ -387,7 +387,7 @@ void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 			else
 			{
 				InsertItem(iInfo.hGlobals, _s.pGlobalVars[i].lpszVarName, _s.pGlobalVars[i].lpszVarValue);
-				ListView_SortItems(iInfo.hGlobals, MyCompareFunc, 0);
+				(void)ListView_SortItems(iInfo.hGlobals, MyCompareFunc, 0);
 			}
 
 		}
@@ -418,7 +418,7 @@ void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 			else
 			{
 				InsertItem(iInfo.hLocals, _s.pLocalVars[i].lpszVarName, _s.pLocalVars[i].lpszVarValue);
-				ListView_SortItems(iInfo.hLocals, MyCompareFunc, 0);
+				(void)ListView_SortItems(iInfo.hLocals, MyCompareFunc, 0);
 			}
 		}
 	}

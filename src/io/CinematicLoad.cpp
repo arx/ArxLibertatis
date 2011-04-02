@@ -40,41 +40,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
+#include "io/CinematicFormat.h"
 
 #include "scene/CinematicSound.h"
 
 using std::search;
 using std::string;
-
-static const s32 CINEMATIC_FILE_VERSION = (1<<16) | 76;
-static const s16 INTERP_NO_FADE = 2;
+using std::copy;
 
 extern CinematicTrack * CKTrack;
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
-#pragma pack(push,1)
-
-// Version 1.75 structure
-struct C_KEY_1_75 {
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	short typeinterp, force;
-	EERIE_3D pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	int idsound;
-	float speed;
-	CinematicLight light;
-	EERIE_3D posgrille;
-	float angzgrille;
-	float speedtrack;
-};
-
-#pragma pack(pop)
 
 bool charCaseEqual(char ch1, char ch2) {
 	return toupper(ch1) == toupper(ch2);
@@ -261,8 +238,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	// Load track and keys.
 	
-	// TODO struct loading
-	CinematicTrack t;
+	SavedCinematicTrack t;
 	if(!safeGet(t, data, size)) {
 		LogDebug << "error reading track";
 		return false;
@@ -270,8 +246,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	AllocTrack(t.startframe, t.endframe, t.fps);
 	
 	// Hack: ignore the pointer at the end of the struct.
-	data -= 4;
-	size += 4;
+	data -= sizeof(void *);
+	size += sizeof(void *);
 	
 	LogDebug << "nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY);
 	for(int i = 0; i < t.nbkey; i++) {
@@ -300,17 +276,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.typeinterp = k175.typeinterp;
 			k.force = k175.force;
 			k.idsound[C_KEY::French] = k175.idsound;
-			k.light.pos = k175.light.pos;
-			k.light.fallin = k175.light.fallin;
-			k.light.fallout = k175.light.fallout;
-			k.light.r = k175.light.r;
-			k.light.g = k175.light.g;
-			k.light.b = k175.light.b;
-			k.light.intensity = k175.light.intensity;
-			k.light.intensiternd = k175.light.intensiternd;
-			k.posgrille.x = k175.posgrille.x;
-			k.posgrille.y = k175.posgrille.y;
-			k.posgrille.z = k175.posgrille.z;
+			k.light = k175.light;
+			k.posgrille = k175.posgrille;
 			k.angzgrille = k175.angzgrille;
 			k.speedtrack = k175.speedtrack;
 			
@@ -330,7 +297,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		}
 		
 		FillKeyTemp(&k.pos, k.angz, k.frame, k.numbitmap, k.fx, k.typeinterp, k.color, k.colord, k.colorf, k.speed, -1, k.force, &k.light, &k.posgrille, k.angzgrille, k.speedtrack);
-		memcpy(&KeyTemp.idsound, &k.idsound, 16 * 4);
+		copy(k.idsound, k.idsound + 16, KeyTemp.idsound);
 		AddKeyLoad(&KeyTemp);
 		
 		if(i == 0) {

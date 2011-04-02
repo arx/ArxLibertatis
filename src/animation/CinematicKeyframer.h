@@ -9,8 +9,6 @@
 #define INTERP_BEZIER 0
 #define INTERP_LINEAR 1
 
-// TODO used for loading
-#pragma pack(push,1)
 struct C_KEY {
 	
 	enum Language {
@@ -34,12 +32,10 @@ struct C_KEY {
 	EERIE_3D posgrille;
 	float angzgrille;
 	float speedtrack;
-	int idsound[16];	// 16 languages max.
+	int idsound[16]; // 16 languages max.
+	
 };
-#pragma pack(pop)
 
-// TODO used for loading
-#pragma pack(push,1)
 struct CinematicTrack {
 	int startframe;
 	int endframe;
@@ -49,7 +45,6 @@ struct CinematicTrack {
 	int pause;
 	C_KEY * key;
 };
-#pragma pack(pop)
 
 bool DeleteTrack();
 bool AllocTrack(int sf, int ef, float fps);

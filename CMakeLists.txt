@@ -41,16 +41,24 @@ function(check_link_library LIBRARY_NAME LIBRARY_FILE)
 		# See if we can link a simple 32-bit program with the library.
 		set(link_test_file ${CMAKE_CURRENT_BINARY_DIR}/link_test.cpp)
 		file(WRITE ${link_test_file} "int main(){}\n")
-		try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" "-DLINK_LIBRARIES:STRING=${LIBRARY_FILE}")
+		try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" "-DLINK_LIBRARIES:STRING=${LIBRARY_FILE}" OUTPUT_VARIABLE ERRORLOG)
 		
 		if(NOT CHECK_${LIBRARY_NAME}_LINK)
 			# Force cmake to search again, as the cached library doesn't work.
 			unset(FIND_PACKAGE_MESSAGE_DETAILS_${ARGV2} CACHE)
 			unset(FIND_PACKAGE_MESSAGE_DETAILS_${LIBRARY_NAME} CACHE)
-			message(FATAL_ERROR "No suitable (32-bit) version of ${LIBRARY_NAME} found; tried ${LIBRARY_FILE}")
+			set(error_log_file "${CMAKE_CURRENT_BINARY_DIR}/link_error.txt")
+			file(WRITE ${error_log_file} ${ERRORLOG})
+			message(FATAL_ERROR "!! No suitable (32- vs. 64-bit) version of ${LIBRARY_NAME} found; tried ${LIBRARY_FILE}\nError log saved as ${error_log_file}")
 		endif()
 	endif()
 endfunction(check_link_library)
+
+function(force_recheck_library LIBRARY_NAME)
+	unset(FIND_PACKAGE_MESSAGE_DETAILS_${ARGV1} CACHE)
+	unset(FIND_PACKAGE_MESSAGE_DETAILS_${LIBRARY_NAME} CACHE)
+	unset(CHECK_${LIBRARY_NAME}_LINK CACHE)
+endfunction()
 
 ##############################################################################
 
@@ -60,6 +68,15 @@ option(ARX_MINGW "Build on MinGW" OFF)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
+option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" ON)
+
+if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
+	force_recheck_library(DevIL IL)
+	force_recheck_library(ZLIB)
+	force_recheck_library(Freetype)
+	force_recheck_library(Threads)
+	set(LAST_ARX_FORCE_32BIT ${ARX_FORCE_32BIT} CACHE INTERNAL "The last ARX_FORCE_32BIT value")
+endif()
 
 # For custom cmake modules.
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/")
@@ -120,10 +137,12 @@ else(MSVC)
 	set(CMAKE_CXX_COMPILER ${Wine_GXX})
 	set(CMAKE_C_COMPILER ${Wine_GCC})
 	
-	#set 32bit
-	set(CMAKE_CXX_FLAGS "-m32")
+	if(ARX_FORCE_32BIT)
+		set(CMAKE_C_FLAGS "-m32 ${CMAKE_C_FLAGS}")
+		set(CMAKE_CXX_FLAGS "-m32 ${CMAKE_CXX_FLAGS}")
+	endif()
 	
-	# Check the dependencies so there won't by cryptic link errors later on when 32-bit libraries are missing.
+	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
 	check_link_library(DevIL ${IL_LIBRARIES} IL)
 	check_link_library(ZLIB ${ZLIB_LIBRARIES})
 	check_link_library(Freetype ${FREETYPE_LIBRARIES})

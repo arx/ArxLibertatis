@@ -1300,8 +1300,8 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum,EERIEPOLY * ep,long cull)
 
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum)
 {
-	EERIE_3D vEyePt = {{ACTIVECAM->pos.x}, {-ACTIVECAM->pos.y}, {ACTIVECAM->pos.z}};
-	EERIE_3D vTout = {{0.0f}, {0.0f}, {10000.0f}};
+	EERIE_3D vEyePt(ACTIVECAM->pos.x, -ACTIVECAM->pos.y, ACTIVECAM->pos.z);
+	EERIE_3D vTout(0.0f, 0.0f, 10000.0f);
 
 	EERIE_3D vTarget;
 	vTarget.y = -(vTout.z * ACTIVECAM->Xsin);
@@ -1312,7 +1312,7 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum)
 	vTarget.y -= ACTIVECAM->pos.y;
 	vTarget.z += ACTIVECAM->pos.z;
 
-	EERIE_3D vUpVec = {{0.f}, {1.f}, {0.f}};
+	EERIE_3D vUpVec(0.f, 1.f, 0.f);
 
 	// Set the app view matrix for normal viewing
 	GRenderer->SetViewMatrix(vEyePt, vTarget, vUpVec);
@@ -3422,7 +3422,7 @@ long curpixel;
 bool spGetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
 	{
 		
-	register EERIE_3D n,s21,s31;
+	EERIE_3D n,s21,s31;
 
 	s21.x=ep->v[1].sx-ep->v[0].sx;
 	s21.y=ep->v[1].sy-ep->v[0].sy;

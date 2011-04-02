@@ -1045,7 +1045,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 				}
 
 				break;
-			case PATHWAY_BEZIER:
+			case PATHWAY_BEZIER: {
 				#define BEZIERPrecision 32
 				EERIE_3D lastpos, newpos;
 				lastpos.x = ap->pos.x + ap->pathways[i].rpos.x;
@@ -1073,6 +1073,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 
 				i++;
 				break;
+			}
 			case PATHWAY_BEZIER_CONTROLPOINT:
 				// There MUST be an ERROR.
 				return;

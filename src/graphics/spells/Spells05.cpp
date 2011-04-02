@@ -339,7 +339,7 @@ CRuneOfGuarding::~CRuneOfGuarding()
 	if (ssol && (ssol_count <= 0))
 	{
 		ssol_count = 0;
-		ReleaseEERIE3DObj(ssol);
+		delete ssol;
 		ssol = NULL;
 	}
 
@@ -348,7 +348,7 @@ CRuneOfGuarding::~CRuneOfGuarding()
 	if (slight && (slight_count <= 0))
 	{
 		slight_count = 0;
-		ReleaseEERIE3DObj(slight);
+		delete slight;
 		slight = NULL;
 	}
 
@@ -357,7 +357,7 @@ CRuneOfGuarding::~CRuneOfGuarding()
 	if (srune && (srune_count <= 0))
 	{
 		srune_count = 0;
-		ReleaseEERIE3DObj(srune);
+		delete srune;
 		srune = NULL;
 	}
 }
@@ -1241,7 +1241,7 @@ CRepelUndead::~CRepelUndead()
 	if (ssol && (ssol_count <= 0))
 	{
 		ssol_count = 0;
-		ReleaseEERIE3DObj(ssol);
+		delete ssol;
 		ssol = NULL;
 	}
 
@@ -1250,7 +1250,7 @@ CRepelUndead::~CRepelUndead()
 	if (slight && (slight_count <= 0))
 	{
 		slight_count = 0;
-		ReleaseEERIE3DObj(slight);
+		delete slight;
 		slight = NULL;
 	}
 
@@ -1259,7 +1259,7 @@ CRepelUndead::~CRepelUndead()
 	if (srune && (srune_count <= 0))
 	{
 		srune_count = 0;
-		ReleaseEERIE3DObj(srune);
+		delete srune;
 		srune = NULL;
 	}
 }
@@ -1435,7 +1435,7 @@ CLevitate::~CLevitate()
 	if (stone0 && (stone0_count <= 0))
 	{
 		stone0_count = 0;
-		ReleaseEERIE3DObj(stone0);
+		delete stone0;
 		stone0 = NULL;
 	}
 
@@ -1444,7 +1444,7 @@ CLevitate::~CLevitate()
 	if (stone1 && (stone1_count <= 0))
 	{
 		stone1_count = 0;
-		ReleaseEERIE3DObj(stone1);
+		delete stone1;
 		stone1 = NULL;
 	}
 }

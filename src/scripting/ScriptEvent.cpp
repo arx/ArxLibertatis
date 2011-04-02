@@ -6201,9 +6201,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 						strcpy(io->usemesh, tex.c_str());
 
-						if (io->obj != NULL)
-						{
-							ReleaseEERIE3DObj(io->obj);
+						if(io->obj) {
+							delete io->obj;
 							io->obj = NULL;
 						}
 

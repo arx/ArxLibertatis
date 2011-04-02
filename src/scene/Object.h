@@ -108,17 +108,16 @@ long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string& selna
 void GlobalInitLight();
 void MoveAllLights(EERIE_3D * trans);
 void ReCreateUVs(EERIE_3DOBJ * eerie);
-long GetGroupOriginByName(EERIE_3DOBJ * eobj, const std::string& text);
-long GetActionPointIdx(EERIE_3DOBJ * eobj, const std::string& text);
-long GetActionPointGroup(EERIE_3DOBJ * eobj, long idx);
+long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string& text);
+long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string& text);
+long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx);
 void XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const std::string& texpath, const std::string& fic,long flag,long flag2=0);
-void _THEObjLoad(EERIE_3DOBJ *eerie,unsigned char * adr,long * poss,long version,long flag=0,long flag2=0);
-EERIE_3DOBJ * TheoToEerie_Fast(const std::string& texpath, const std::string& fic,long flag);
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const std::string& fic);
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const std::string & texpath, const std::string & fic, long flag);
+EERIE_3DOBJ * TheoToEerie_Fast(const std::string & texpath, const std::string & fic, long flag);
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const std::string & fic);
 
 EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& fic);
 
@@ -131,8 +130,6 @@ float DrawEERIEAnimTQuat(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, flo
 void DrawEERIEAnimQuat(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long fr, float pour, long flag);
 void SceneAddObj(EERIE_3DOBJ * eobj);
 void SceneAddScn(EERIE_3DSCENE * escn);
-void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie);
-void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie);
 void ReleaseAnim(EERIE_ANIM * ea);
 
 EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj);

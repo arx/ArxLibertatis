@@ -15,14 +15,28 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Dependencies
 
-Currently wine, DevIL (libil.so), zlib (libz.so). All of these must be available as 32bit libraries.
-Wine and 32bit is only a temporary solution.
+DevIL (libil.so)
+zlib (libz.so)
+
+Non-Windows systems also need Wine (including development headers and tools). Wine is only a temporary solution.
+
+Because of limitations in 64-bit wine that hinder debugging, arx is currently compiled as a 32-bit application by default, even on 64-bit systems. You can enable the 64-bit build by passing `-DARX_FORCE_32BIT=0` to cmake.
 
 ## Compile
 
 `$ cmake .`
 
 `$ make`
+
+Build options:
+
+* `ARX_BUILD_TOOLS` (default=ON): Build tools
+* `ARX_USE_UNITYBUILD` (default=OFF): Unity build (faster build, better optimizations but no inclemental build)
+* `ARX_DEBUG` (default=ON): Normal debug options
+* `ARX_DEBUG_EXTRA` (default=OFF): Expensive debug options
+* `ARX_FORCE_32BIT` (default=ON): Force a 32-bit build on 64-bit systems
+
+Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
 ## Run
 
@@ -50,8 +64,8 @@ Run this form the root directory:
 
 ## Wiki
 
-http://arx.parpg.net/
+[http://arx.parpg.net/](http://arx.parpg.net/)
 
 ## Reddit
 
-http://www.reddit.com/r/ArxFatalis/
+[http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis/)

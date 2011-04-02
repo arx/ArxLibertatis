@@ -419,8 +419,7 @@ void	QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat);
 	dest[1]=v1[1]-v2[1]; \
 	dest[2]=v1[2]-v2[2];
 
-inline float ScalarProduct(EERIE_3D * v0, EERIE_3D * v1)
-{
+inline float ScalarProduct(const EERIE_3D * v0, const EERIE_3D * v1) {
 	return	((v0->x * v1->x) +	(v0->y * v1->y) +	(v0->z * v1->z));
 }
 

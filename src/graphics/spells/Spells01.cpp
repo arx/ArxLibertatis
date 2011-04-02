@@ -244,7 +244,7 @@ CMagicMissile::~CMagicMissile()
 	if (smissile && (smissile_count <= 0))
 	{
 		smissile_count = 0;
-		ReleaseEERIE3DObj(smissile);
+		delete smissile;
 		smissile = NULL;
 	}
 

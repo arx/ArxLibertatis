@@ -71,34 +71,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CLightningNode
 {
 	public:
-		float x, y, z; // 3*4 = 12
+		float x, y, z;
 		float size;
-		//short nbfils;  // 2
 		int parent;
-		//list<CNode> *fils;
 		float fx, fy, fz;
-};
-
-//-----------------------------------------------------------------------------
-struct LIGHTNING
-{
-	EERIE_3D eStart;
-	EERIE_3D eEnd;
-	EERIE_3D eVect;
-	//	float ax;
-	//	float ay;
-	//	float az;
-	int anb;
-	int anbrec;
-	bool abFollow;
-	int aParent;
-	float fSize;
-	float fAngleXMin;
-	float fAngleXMax;
-	float fAngleYMin;
-	float fAngleYMax;
-	float fAngleZMin;
-	float fAngleZMax;
 };
 
 //-----------------------------------------------------------------------------
@@ -106,16 +82,11 @@ class CLightning: public CSpellFx
 {
 	private:
 		int		nbtotal;
-		// tests du nombre de segments
-		//	int		nbmin;
-		//	int		nbmax;
 		long	lNbSegments;
 		float	fColor1[3];
 		float	fColor2[3];
 		float	invNbSegments;
 		float	fSize;
-		float	fSizeMin;
-		float	fSizeMax;
 		float	fLengthMin;
 		float	fLengthMax;
 		float	fAngleXMin;
@@ -130,12 +101,10 @@ class CLightning: public CSpellFx
 		TextureContainer * tex_light;
 		int iTTL;
 
-		//LIGHTNING lInfo;
-
 		CLightningNode	cnodetab[2000];
-		// long lightsidx[10]
 
 	private:
+		struct LIGHTNING;
 		void BuildS(LIGHTNING *);
 		void ReCreate();
 
