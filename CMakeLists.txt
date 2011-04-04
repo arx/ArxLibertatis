@@ -58,7 +58,7 @@ function(check_link_library LIBRARY_NAME LIBRARY_FILE)
 		# See if we can link a simple 32-bit program with the library.
 		set(link_test_file ${CMAKE_CURRENT_BINARY_DIR}/link_test.cpp)
 		file(WRITE ${link_test_file} "int main(){}\n")
-		try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" "-DLINK_LIBRARIES:STRING=${LIBRARY_FILE}" OUTPUT_VARIABLE ERRORLOG)
+		try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" "-DLINK_LIBRARIES:STRING=${LIBRARY_FILE}" "-DLINK_LIBRARIES:STRING=pthread" OUTPUT_VARIABLE ERRORLOG)
 		
 		if(NOT CHECK_${LIBRARY_NAME}_LINK)
 			# Force cmake to search again, as the cached library doesn't work.
