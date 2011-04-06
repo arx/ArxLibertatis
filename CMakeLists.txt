@@ -160,10 +160,10 @@ else(MSVC)
 	check_compiler()
 	
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
+	check_link_library(Threads ${CMAKE_THREAD_LIBS_INIT})
 	check_link_library(DevIL ${IL_LIBRARIES} IL)
 	check_link_library(ZLIB ${ZLIB_LIBRARIES})
 	check_link_library(Freetype ${FREETYPE_LIBRARIES})
-	check_link_library(Threads ${CMAKE_THREAD_LIBS_INIT})
 	
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
