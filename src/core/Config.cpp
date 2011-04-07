@@ -879,7 +879,7 @@ void Config::SaveAll()
 	WriteConfig(Section::Misc,"forcezbias",(bForceZBias)?1:0);
 	WriteConfig(Section::Misc,"newcontrol",(INTERNATIONAL_MODE)?1:0);
 	WriteConfig(Section::Misc,"forcetoggle",(bOneHanded)?1:0);
-	WriteConfig(Section::Misc,"fg",uiGoreMode);
+	WriteConfig(Section::Misc,"fg",(uiGoreMode)?1:0);
 }
 
 extern bool IsNoGore( void );
