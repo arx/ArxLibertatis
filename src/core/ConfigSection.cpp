@@ -41,7 +41,6 @@ void ConfigSection::SetSection( const std::string& _section )
 {
 	if ( isSection( _section ) )
 		section = CleanSection( _section );
-	LogDebug << "Set section to " << section;
 };
 
 /**
