@@ -374,7 +374,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 								killer = inter.iobj[source]->long_name();
 							}
 
-							SendIOScriptEvent(inter.iobj[i], 0, killer, "TARGET_DEATH");
+							SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "TARGET_DEATH");
 						}
 					}
 				}
@@ -642,7 +642,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 				if (inter.iobj[ioo->targetinfo] == io_dead)
 				{
 					EVENT_SENDER = io_dead; 
-					Stack_SendIOScriptEvent(inter.iobj[i], 0, killer, "TARGET_DEATH");
+					Stack_SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "TARGET_DEATH");
 					ioo->targetinfo = TARGET_NONE;
 					ioo->_npcdata->reachedtarget = 0;
 				}
@@ -651,7 +651,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 				if (inter.iobj[ioo->_npcdata->pathfind.truetarget] == io_dead)
 				{
 					EVENT_SENDER = io_dead; 
-					Stack_SendIOScriptEvent(inter.iobj[i], 0, killer, "TARGET_DEATH");
+					Stack_SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "TARGET_DEATH");
 					ioo->_npcdata->pathfind.truetarget = TARGET_NONE;
 					ioo->_npcdata->reachedtarget = 0;
 				}

@@ -878,7 +878,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 									if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 									io->_npcdata->pathfind.list=NULL;
-									SendIOScriptEvent(io,0,"","PATHFINDER_END");
+									SendIOScriptEvent(io,SM_NULL,"","PATHFINDER_END");
 								}							
 
 								if (!io->_npcdata->reachedtarget)

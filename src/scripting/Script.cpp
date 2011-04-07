@@ -139,7 +139,7 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string& str)
 
 	int len2 = str.length();
 	
-	assert(len2 + result <= es->size);
+	assert(len2 + result <= (int)es->size);
 
 	if (es->data[result+len2] <= 32) return result;
 
@@ -220,45 +220,34 @@ long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, const std::string& search, 
 {
 	static long lastline = 0;
 	long curline;
-
-	long curpos; // current pos in stream
-	long curtpos; // current pos in current line;
-	std::string curtline;
-
-
+	
 	if (es == NULL) return -1;
-
+	
 	if (es->data == NULL) return -1;
-
+	
 	if (es->size <= 0) return -1;
-
+	
 	if (startpos == 0) curline = lastline = 0;
 	else curline = lastline;
-
-	curpos = startpos;
-
+	
+	size_t curpos = startpos; // current pos in stream
+	
 	// Get a line from stream
-	while (curpos < es->size)
-	{
-		curtline.clear();
-		curtpos = 0;
-
-		while ((curpos < es->size) && (es->data[curpos] != '\n'))
-		{
-			curtline[curtpos] = es->data[curpos];
-			curtpos++; // advance in line
+	while (curpos < es->size) {
+		std::string curtline;
+		
+		while((curpos < es->size) && (es->data[curpos] != '\n')) {
+			curtline.push_back(es->data[curpos]);
 			curpos++; // advance in stream
 		}
-
+		
 		curpos++;
 		curline++;
-
-		if (curtpos > 0)
-		{
+		
+		if(!curtline.empty()) {
 			MakeUpcase(curtline);
-
-			if ( curtline.find( search) != std::string::npos )
-			{
+			
+			if(curtline.find( search) != std::string::npos) {
 				*nline = curline;
 				tline = curtline;
 				lastline = curline;
@@ -266,15 +255,15 @@ long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, const std::string& search, 
 			}
 		}
 	}
-
+	
 	lastline = 0;
 	return -1;
 }
 
 
-long SendMsgToAllIO(long msg, const char * dat)
-{
-	long ret = ACCEPT;
+ScriptResult SendMsgToAllIO(ScriptMessage msg, const char * dat) {
+	
+	ScriptResult ret = ACCEPT;
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -523,8 +512,8 @@ void ARX_SCRIPT_AllowInterScriptExec()
 				if (inter.iobj[i] != NULL)
 					if (inter.iobj[i]->GameFlags & GFLAG_ISINTREATZONE)
 					{
-						if (inter.iobj[i]->mainevent[0])
-							SendIOScriptEvent(inter.iobj[i], 0, "", inter.iobj[i]->mainevent);
+						if(inter.iobj[i]->mainevent[0])
+							SendIOScriptEvent(inter.iobj[i], SM_NULL, "", inter.iobj[i]->mainevent);
 						else SendIOScriptEvent(inter.iobj[i], SM_MAIN);
 					}
 			}
@@ -582,7 +571,7 @@ void ReleaseScript(EERIE_SCRIPT * es)
 
 //*************************************************************************************
 //*************************************************************************************
-long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent, float * fcontent,long * lcontent)
+ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent, float * fcontent,long * lcontent)
 {
 	std::string name = _name;
 	MakeUpcase(name);
@@ -1904,35 +1893,32 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	return var_text;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
-{
-	if (temp1[0] == '^')
-	{
+float GetVarValueInterpretedAsFloat(string & temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io) {
+	
+	if(temp1[0] == '^') {
 		long lv;
 		float fv;
 		std::string tv; 
-
-		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
-		{
+		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv)) {
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
-				break;
 			case TYPE_LONG:
 				return (float)lv;
-				break;
-				// Nuky - unreachable code (should it be case TYPE_FLOAT: ?)
-				return (fv);
+				// TODO unreachable code (should it be case TYPE_FLOAT: ?)
+				//return (fv);
+			default:
 				break;
 		}
-
+	} else if(temp1[0] == '#') {
+		return (float)GETVarValueLong(svar, NB_GLOBALS, temp1);
+	} else if(temp1[0] == '\xA7') {
+		return (float)GETVarValueLong(esss->lvar, esss->nblvar, temp1);
+	} else if(temp1[0] == '&') {
+		return GETVarValueFloat(svar, NB_GLOBALS, temp1);
+	} else if(temp1[0] == '@') {
+		return GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 	}
-	else if (temp1[0] == '#')	return (float)GETVarValueLong(svar, NB_GLOBALS, temp1);
-	else if (temp1[0] == '\xA7') return (float)GETVarValueLong(esss->lvar, esss->nblvar, temp1);
-	else if (temp1[0] == '&') return GETVarValueFloat(svar, NB_GLOBALS, temp1);
-	else if (temp1[0] == '@') return GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
-
+	
 	return (float)atof(temp1.c_str());
 }
 //*************************************************************************************
@@ -2006,16 +1992,10 @@ SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name,
 	return tsv;
 }
 
-
-//*************************************************************************************
-//*************************************************************************************
-long GetNumAnim( const std::string& name)
-{
-
-
-	char c	= ARX_CLEAN_WARN_CAST_CHAR(toupper(name[0]));
-
-
+AnimationNumber GetNumAnim(const string & name) {
+	
+	char c = ARX_CLEAN_WARN_CAST_CHAR(toupper(name[0]));
+	
 	switch (c)
 	{
 		case 'W':
@@ -2372,8 +2352,8 @@ long GetNumAnim( const std::string& name)
 
 			break;
 	}
-
-	return -1;
+	
+	return ANIM_NONE;
 }
 
 long LINEEND;
@@ -2392,7 +2372,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 	if (i < 0) return -1;
 
 	// Avoids position superior to script size
-	if (i >= es->size) return -1;
+	if (i >= (long)es->size) return -1;
 
 	long tildes = 0;	// number of tildes
 	long old = i;		// stores start pos in old
@@ -2400,7 +2380,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 	unsigned char * esdat = (unsigned char *)es->data;
 
 	// First ignores spaces & unused chars
-	while ((i < es->size) &&
+	while ((i < (long)es->size) &&
 			((esdat[i] <= 32)	|| (esdat[i] == '(') || (esdat[i] == ')'))
 		  )
 	{
@@ -2422,7 +2402,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 		{
 			i++;
 
-			if (i >= es->size) return -1;
+			if (i >= (long)es->size) return -1;
 
 			while ((esdat[i] != '"') && (!LINEEND))
 			{
@@ -2432,7 +2412,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 				temp.push_back(esdat[i]);
 				i++;
 
-				if (i >= es->size) return -1;
+				if (i >= (long)es->size) return -1;
 
 			}
 
@@ -2447,7 +2427,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 
 		i++;
 
-		if (i >= es->size) return -1;
+		if (i >= (long)es->size) return -1;
 
 	}
 
@@ -2622,14 +2602,12 @@ long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 	return pos;
 }
 
-void MakeGlobalText( std::string& tx)
+void MakeGlobalText(std::string & tx)
 {
 	char texx[256];
 
-	for (long i = 0; i < NB_GLOBALS; i++)
-	{
-		switch (svar[i].type)
-		{
+	for(long i = 0; i < NB_GLOBALS; i++) {
+		switch(svar[i].type) {
 			case TYPE_G_TEXT:
 				tx += svar[i].name;
 				tx += " = ";
@@ -2649,6 +2627,11 @@ void MakeGlobalText( std::string& tx)
 				sprintf(texx, "%f", svar[i].fval);
 				tx += texx;
 				tx += "\r\n";
+				break;
+			case TYPE_UNKNOWN:
+			case TYPE_L_TEXT:
+			case TYPE_L_LONG:
+			case TYPE_L_FLOAT:
 				break;
 		}
 	}
@@ -2686,6 +2669,11 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 				sprintf(texx, "%f", es->lvar[i].fval);
 				tx += texx;
 				tx += "\r\n";
+				break;
+			case TYPE_UNKNOWN:
+			case TYPE_G_TEXT:
+			case TYPE_G_LONG:
+			case TYPE_G_FLOAT:
 				break;
 		}
 	}
@@ -2851,104 +2839,6 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 	io->target.z = io->pos.z;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
-{
-
-	if (io == NULL) return;
-
-
-
-
-	{
-		EERIE_3D ppos, pos, from, to;
-		Vector_Init(&from, 0.f, 0.f, -90.f);
-		Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
-		ppos.x = io->pos.x;
-		pos.x = ppos.x + to.x;
-		ppos.y = io->pos.y - (80.f);
-		pos.y = ppos.y + to.y;
-		ppos.z = io->pos.z;
-		pos.z = ppos.z + to.z;
-
-		if (DEBUGNPCMOVE) EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
-
-		float dmg;
-
-		if (io->ioflags & IO_NPC)
-		{
-			dmg = io->_npcdata->damages;
-		}
-		else dmg = 40.f;
-
-
-
-		long i = io->targetinfo;
-		float dist;
-
-		if (!ValidIONum(i)) return;
-
-		{
-			INTERACTIVE_OBJ * ioo = inter.iobj[i];
-
-			if (! ioo) return;
-
-			if (ioo->ioflags & IO_MARKER) return;
-
-			if (ioo->ioflags & IO_CAMERA) return;
-
-
-			if (ioo->GameFlags & GFLAG_ISINTREATZONE)
-				if (ioo->show == SHOW_FLAG_IN_SCENE)
-					if (ioo->obj)
-						if (ioo->pos.y >	(io->pos.y + io->physics.cyl.height))
-							if (io->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
-							{
-								float dist_limit = io->_npcdata->reach + io->physics.cyl.radius;
-								long count = 0;
-								float mindist = FLT_MAX;
-
-								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
-								{
-									dist = EEDistance3D(&pos, &inter.iobj[i]->obj->vertexlist3[k].v);
-
-									if ((dist <= dist_limit)
-											&&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
-									{
-										count++;
-
-										if (dist < mindist) mindist = dist;
-									}
-								}
-
-								float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
-
-								if (ioo->ioflags & IO_NPC)
-								{
-
-									if (mindist <= dist_limit)
-									{
-										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
-									}
-
-								}
-								else
-								{
-									dist = EEDistance3D(&pos, &ioo->pos);
-
-									if (mindist <= 120.f)
-									{
-										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
-									}
-								}
-							}
-		}
-
-
-	}
-}
-
 void MakeStandard( std::string& str)
 {
 	size_t i = 0;
@@ -2963,22 +2853,6 @@ void MakeStandard( std::string& str)
 			str.erase(i, 1);
 		}
 	}
-}
-
-//*************************************************************************************
-//*************************************************************************************
-
-// TODO why is this in Script?
-long MakeLocalised( const std::string& text, std::string& output) {
-	
-	if ( text.empty() )
-	{
-		output = "ERROR";
-		return 0;
-	}
-
-	std::string __text;
-	return HERMES_UNICODE_GetProfileString(text, "error", output);
 }
 
 //-----------------------------------------------------------------------------
@@ -3033,41 +2907,30 @@ void MakeSSEPARAMS(const char * params)
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg)
-{
-	if (SendIOScriptEvent(io, msg) != REFUSE)
-	{
-		switch (msg)
-		{
-			case SM_DIE:
-			{
-				if (io && ValidIOAddress(io))
-				{
-					io->infracolor.b = 1.f;
-					io->infracolor.g = 0.f;
-					io->infracolor.r = 0.f;
-				}
-			}
-		}
 
+ScriptResult NotifyIOEvent(INTERACTIVE_OBJ * io, ScriptMessage msg) {
+	
+	if(SendIOScriptEvent(io, msg) != REFUSE) {
+		if(msg == SM_DIE && io && ValidIOAddress(io)) {
+			io->infracolor.b = 1.f;
+			io->infracolor.g = 0.f;
+			io->infracolor.r = 0.f;
+		}
 		return ACCEPT;
 	}
-
+	
 	return REFUSE;
 }
-//*************************************************************************************
-//*************************************************************************************
+
+
 #define MAX_EVENT_STACK 800
-struct STACKED_EVENT
-{
-	INTERACTIVE_OBJ* sender;
-	long             exist;
-	INTERACTIVE_OBJ* io;
-	long             msg;
-	std::string      params;
-	std::string      eventname;
+struct STACKED_EVENT {
+	INTERACTIVE_OBJ * sender;
+	long              exist;
+	INTERACTIVE_OBJ * io;
+	ScriptMessage     msg;
+	std::string       params;
+	std::string       eventname;
 };
 
 STACKED_EVENT eventstack[MAX_EVENT_STACK];
@@ -3089,7 +2952,7 @@ void ARX_SCRIPT_EventStackClear( bool check_exist )
 			eventstack[i].sender = NULL;
 			eventstack[i].exist = 0;
 			eventstack[i].io = NULL;
-			eventstack[i].msg = 0;
+			eventstack[i].msg = SM_NULL;
 			eventstack[i].params.clear();
 			eventstack[i].eventname.clear();
 	}
@@ -3108,7 +2971,7 @@ void ARX_SCRIPT_EventStackClearForIo(INTERACTIVE_OBJ * io)
 				eventstack[i].sender = NULL;
 				eventstack[i].exist = 0;
 				eventstack[i].io = NULL;
-				eventstack[i].msg = 0;
+				eventstack[i].msg = SM_NULL;
 				eventstack[i].params.clear();
 				eventstack[i].eventname.clear();
 			}
@@ -3139,7 +3002,7 @@ void ARX_SCRIPT_EventStackExecute()
 			eventstack[i].sender = NULL;
 			eventstack[i].exist = 0;
 			eventstack[i].io = NULL;
-			eventstack[i].msg = 0;
+			eventstack[i].msg = SM_NULL;
 			eventstack[i].params.clear();
 			eventstack[i].eventname.clear();
 			count++;
@@ -3156,7 +3019,7 @@ void ARX_SCRIPT_EventStackExecuteAll()
 	STACK_FLOW = 20;
 }
 
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
+void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
 	// LogDebug << "Stack_SendIOScriptEvent "<< eventname;
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
@@ -3175,11 +3038,11 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& 
 	}
 }
 
-long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
+ScriptResult SendIOScriptEventReverse(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
 	// LogDebug << "SendIOScriptEventReverse "<< eventname;
 	// checks invalid IO
-	if (!io) return -1;
+	if (!io) return REFUSE;
 
 	long num = GetInterNum(io);
 
@@ -3208,12 +3071,12 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string&
 	return REFUSE;
 }
 
-long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
+ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
 	//if (msg != 8)
 	//	LogDebug << "SendIOScriptEvent event '"<< eventname<<"' message " << msg;
 	// checks invalid IO
-	if (!io) return -1;
+	if (!io) return REFUSE;
 
 	long num = GetInterNum(io);
 
@@ -3233,20 +3096,19 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params
 		// if this IO only has a Local script, send event to it
 		if (inter.iobj[num] && !inter.iobj[num]->over_script.data)
 		{
-			long ret = ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname);
+			ScriptResult ret = ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname);
 			EVENT_SENDER = oes;
 			return ret;
 		}
 
 		// If this IO has a Global script send to Local (if exists)
 		// then to Global if no overriden by Local
-		if (inter.iobj[num] && (ScriptEvent::send(&inter.iobj[num]->over_script, msg, params, inter.iobj[num], eventname) != REFUSE))
-		{
+		if (inter.iobj[num] && ScriptEvent::send(&inter.iobj[num]->over_script, msg, params, inter.iobj[num], eventname) != REFUSE) {
 			EVENT_SENDER = oes;
 
 			if (inter.iobj[num])
 			{
-				long ret = (ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname));
+				ScriptResult ret = ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname);
 				EVENT_SENDER = oes;
 				return ret;
 			}
@@ -3267,9 +3129,9 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params
 
 
 
-long SendInitScriptEvent(INTERACTIVE_OBJ * io)
-{
-	if (!io) return -1;
+ScriptResult SendInitScriptEvent(INTERACTIVE_OBJ * io) {
+	
+	if (!io) return REFUSE;
 
 	INTERACTIVE_OBJ * oes = EVENT_SENDER;
 	EVENT_SENDER = NULL;
@@ -3630,9 +3492,9 @@ long CountBrackets(EERIE_SCRIPT * es)
 {
 	long count = 0;
 
-	for (long i = 0; i < es->size; i++)
+	for (long i = 0; i < (long)es->size; i++)
 	{
-		if ((es->data[i] == '/') && (i < es->size - 1) && (es->data[i+1] == '/'))
+		if ((es->data[i] == '/') && (i < (long)es->size - 1) && (es->data[i+1] == '/'))
 		{
 			i = GotoNextLine(es, i);
 
@@ -3653,7 +3515,7 @@ long GetCurrentLine(EERIE_SCRIPT * es, long poss)
 	long pos = 0;
 	long linecount = -1;
 
-	while ((pos < poss) && (pos < es->size))
+	while ((pos < poss) && (pos < (long)es->size))
 	{
 		pos = GotoNextLine(es, pos);
 
@@ -3671,7 +3533,7 @@ long GetLastLineNum(EERIE_SCRIPT * es)
 	long pos = 0;
 	long linecount = -1;
 
-	while (pos < es->size)
+	while (pos < (long)es->size)
 	{
 		pos = GotoNextLine(es, pos);
 
@@ -3687,11 +3549,11 @@ long GetLastLineNum(EERIE_SCRIPT * es)
 
 void GetLineAsText(EERIE_SCRIPT * es, long curline, char * tex)
 {
-	long curpos = 0;
+	
 	long pos = 1;
 	long linecount = -1;
 
-	while ((linecount + 2 < curline) && (pos < es->size))
+	while ((linecount + 2 < curline) && (pos < (long)es->size))
 	{
 		pos = GotoNextLine(es, pos);
 
@@ -3703,7 +3565,8 @@ void GetLineAsText(EERIE_SCRIPT * es, long curline, char * tex)
 
 		linecount++;
 	}
-
+	
+	size_t curpos = 0;
 	while (pos + curpos < es->size)
 	{
 		if ((es->data[pos+curpos] == '\n') || (es->data[pos+curpos] == '\0'))
@@ -3768,7 +3631,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 	long pos = 0;
 	_CURIO = io;
 
-	while (((pos = GetNextWord(es, pos, temp)) >= 0) && (pos >= 0) && (pos < es->size - 1))
+	while (((pos = GetNextWord(es, pos, temp)) >= 0) && (pos >= 0) && (pos < (long)es->size - 1))
 	{
 		MakeStandard(temp);
 		long currentline = GetCurrentLine(es, pos);
@@ -5309,16 +5172,13 @@ bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 
 	return true; // no errors.
 }
-long Event_Total_Count = 0;
 
-void ARX_SCRIPT_Init_Event_Stats()
-{
-	Event_Total_Count = 0;
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
+void ARX_SCRIPT_Init_Event_Stats() {
+	
+	ScriptEvent::totalCount = 0;
+	
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i] != NULL) {
 			inter.iobj[i]->stat_count = 0;
 			inter.iobj[i]->stat_sent = 0;
 		}
@@ -5436,8 +5296,6 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 
 	return NULL;
 }
-
-long BIG_DEBUG_POS = 0;
 
 void ManageCasseDArme(INTERACTIVE_OBJ * io)
 {
@@ -5574,7 +5432,7 @@ INTERACTIVE_OBJ * IO_DEBUG = NULL;
 
 bool InSubStack(EERIE_SCRIPT * es, long pos)
 {
-	for (long i = 0; i < MAX_GOSUB; i++)
+	for (size_t i = 0; i < MAX_GOSUB; i++)
 	{
 		if (es->sub[i] == -1)
 		{
@@ -5587,7 +5445,7 @@ bool InSubStack(EERIE_SCRIPT * es, long pos)
 }
 void ClearSubStack(EERIE_SCRIPT * es)
 {
-	for (long i = 0; i < MAX_GOSUB; i++)
+	for (size_t i = 0; i < MAX_GOSUB; i++)
 		es->sub[i] = -1;
 }
 long GetSubStack(EERIE_SCRIPT * es)
@@ -5609,7 +5467,7 @@ long GetSubStack(EERIE_SCRIPT * es)
 
 void InitScript(EERIE_SCRIPT * es)
 {
-	for (long i = 0; i < MAX_GOSUB; i++)
+	for (size_t i = 0; i < MAX_GOSUB; i++)
 	{
 		es->sub[i] = -1;
 	}
@@ -5625,7 +5483,7 @@ void InitScript(EERIE_SCRIPT * es)
 
 	es->master = NULL;
 
-	for (long j = 0; j < MAX_SCRIPTTIMERS; j++)
+	for (size_t j = 0; j < MAX_SCRIPTTIMERS; j++)
 		es->timers[j] = 0;
 
 

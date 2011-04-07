@@ -1477,7 +1477,7 @@ void ARX_PLAYER_LEVEL_UP()
 	player.Old_Skill_Projectile			=	player.Skill_Projectile;
 	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat;
 	player.Old_Skill_Defense			=	player.Skill_Defense;
-	SendIOScriptEvent(inter.iobj[0], 0, "", "LEVEL_UP");
+	SendIOScriptEvent(inter.iobj[0], SM_NULL, "", "LEVEL_UP");
 }
 
 //*************************************************************************************

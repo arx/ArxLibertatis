@@ -2462,7 +2462,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		//////////////////
 		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 
-		io->script.allowevents = ass->allowevents;
+		io->script.allowevents = Flag(ass->allowevents); // TODO save/load flags
 		io->script.nblvar = 0;
 
 		if (io->script.lvar)
@@ -2573,7 +2573,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 		ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 
-		io->over_script.allowevents = ass->allowevents;
+		io->over_script.allowevents = Flag(ass->allowevents); // TODO save/load flags
 
 		io->over_script.nblvar = 0; 
 

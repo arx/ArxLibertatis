@@ -65,6 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/Spells.h"
 
+#include "platform/Flags.h"
+
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
 
@@ -282,9 +284,16 @@ struct IO_SPELLCAST_DATA {
 	long duration;
 };
 
-struct IO_PATHFIND
-{
-	unsigned long flags;
+enum PathfindFlag {
+	PATHFIND_ALWAYS    = (1<<0),
+	PATHFIND_ONCE      = (1<<1),
+	PATHFIND_NO_UPDATE = (1<<2)
+};
+DECLARE_FLAGS(PathfindFlag, PathfindFlags)
+DECLARE_FLAGS_OPERATORS(PathfindFlags)
+
+struct IO_PATHFIND {
+	PathfindFlags flags;
 	long	listnb;
 	unsigned short * list;
 	unsigned short listpos;
@@ -353,7 +362,7 @@ struct IO_NPCDATA
 	short		walk_start_time;
 	long		aiming_start;
 	long		npcflags;
-	IO_PATHFIND		pathfind;
+	IO_PATHFIND pathfind;
 	EERIE_EXTRA_ROTATE *	ex_rotate;
 	D3DCOLOR	blood_color;
 

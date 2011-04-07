@@ -17,10 +17,13 @@ struct SCRIPT_EVENT {
 
 class ScriptEvent {
 public:
+	
+	static long totalCount;
+	
 	ScriptEvent();
 	virtual ~ScriptEvent();
-	static long checkInteractiveObject(INTERACTIVE_OBJ * io, long msg);
-	static long send(EERIE_SCRIPT * es, long msg, const std::string & params, INTERACTIVE_OBJ * io, const std::string & eventname, long info = 0);
+	static ScriptResult send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string & params, INTERACTIVE_OBJ * io, const std::string & eventname, long info = 0);
+	
 };
 
 #endif // ARX_SCRIPTING_SCRIPTEVENT_H

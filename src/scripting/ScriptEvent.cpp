@@ -68,9 +68,27 @@ extern long CHANGE_LEVEL_ICON;
 extern long FRAME_COUNT;
 extern float g_TimeStartCinemascope;
 
+enum ScriptOperator {
+	OPER_UNKNOWN = 0,
+	OPER_EQUAL = 1,
+	OPER_NOTEQUAL = 2,
+	OPER_INFEQUAL = 3,
+	OPER_INFERIOR = 4,
+	OPER_SUPEQUAL = 5,
+	OPER_SUPERIOR = 6,
+	OPER_INCLASS = 7,
+	OPER_ISELEMENT = 8,
+	OPER_ISIN = 9,
+	OPER_ISTYPE = 10,
+	OPER_ISGROUP = 11,
+	OPER_NOTISGROUP = 12
+};
+
 #ifdef NEEDING_DEBUG
 long NEED_DEBUG = 0;
 #endif // NEEDING_DEBUG
+
+long ScriptEvent::totalCount = 0;
 
 SCRIPT_EVENT AS_EVENT[] =
 {
@@ -154,7 +172,7 @@ SCRIPT_EVENT AS_EVENT[] =
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 {
-	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
+	long nb = min((long)MAX_SHORTCUT, (long)SM_MAXCMD);
 	// LogDebug << "Compute " << nb << " shortcuts";
 
 	for (long j = 1; j < nb; j++) {
@@ -301,12 +319,9 @@ void ShowScriptError(const char * tx, const char * cmd)
 	LogError << (text);
 }
 
-void Stack_SendMsgToAllNPC_IO(long msg, const char * dat)
-{
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i]) && (inter.iobj[i]->ioflags & IO_NPC))
-		{
+static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC)) {
 			Stack_SendIOScriptEvent(inter.iobj[i], msg, dat);
 		}
 	}
@@ -390,39 +405,44 @@ ScriptEvent::~ScriptEvent() {
 	// TODO Auto-generated destructor stub
 }
 
-long ScriptEvent::checkInteractiveObject(INTERACTIVE_OBJ * io, long msg) {
+static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, ScriptResult & ret) {
+	
 	io->stat_count++;
-
-	if ((io->GameFlags & GFLAG_MEGAHIDE) && (msg != SM_RELOAD))
-		return ACCEPT;
-
-	if (io->show == SHOW_FLAG_DESTROYED) // destroyed
-		return ACCEPT;
-
-	if (io->ioflags & IO_FREEZESCRIPT) {
-		if (msg == SM_LOAD) return ACCEPT;
-		return REFUSE;
+	
+	if((io->GameFlags & GFLAG_MEGAHIDE) && msg != SM_RELOAD) {
+		ret = ACCEPT;
+		return true;
 	}
-
-	if (io->ioflags & IO_NPC
-		&& io->_npcdata->life <= 0.f
-		&& msg != SM_DEAD
-		&& msg != SM_DIE
-		&& msg != SM_EXECUTELINE
-		&& msg != SM_RELOAD
-		&& msg != SM_EXECUTELINE
-		&& msg != SM_INVENTORY2_OPEN
-		&& msg != SM_INVENTORY2_CLOSE) {
-			return ACCEPT;
+	
+	if(io->show == SHOW_FLAG_DESTROYED) {
+		ret = ACCEPT;
+		return true;
 	}
-
+	
+	if(io->ioflags & IO_FREEZESCRIPT) {
+		ret = (msg == SM_LOAD) ? ACCEPT : REFUSE;
+		return true;
+	}
+	
+	if(io->ioflags & IO_NPC
+	  && io->_npcdata->life <= 0.f
+	  && msg != SM_DEAD
+	  && msg != SM_DIE
+	  && msg != SM_EXECUTELINE
+	  && msg != SM_RELOAD
+	  && msg != SM_EXECUTELINE
+	  && msg != SM_INVENTORY2_OPEN
+	  && msg != SM_INVENTORY2_CLOSE) {
+		ret = ACCEPT;
+		return true;
+	}
+	
 	//change weapons if you break
-	if ((io->ioflags & IO_FIX || io->ioflags & IO_ITEM)
-		&&	msg == SM_BREAK) {
-			ManageCasseDArme(io);
+	if((io->ioflags & IO_FIX || io->ioflags & IO_ITEM) && msg == SM_BREAK) {
+		ManageCasseDArme(io);
 	}
-
-	return 0;
+	
+	return false;
 }
 
 extern long LINEEND; // set by GetNextWord
@@ -430,25 +450,19 @@ extern INTERACTIVE_OBJ * LASTSPAWNED;
 extern long PauseScript;
 extern long RELOADING;
 
-long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
-{
-
-	long ret = ACCEPT;
+ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
+	
+	ScriptResult ret = ACCEPT;
 	std::string word = "";
 	char cmd[256];
 	char eventname[64];
 	long brackets = 0;
 	long pos;
-
-//	LogDebug << "msg " << msg << " "
-//	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
-//	         << " " << Logger::nullstr(io->filename);
-
-	Event_Total_Count++;
-
-	if (io)	{
-		long ioReturn = ScriptEvent::checkInteractiveObject(io, msg);
-		if (ioReturn != 0) return ioReturn;
+	
+	totalCount++;
+	
+	if(io && checkInteractiveObject(io, msg, ret)) {
+		return ret;
 	}
 
 	if ((EDITMODE || PauseScript)
@@ -457,13 +471,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			&& msg != SM_INITEND) {
 		return ACCEPT;
 	}
-
-
+	
 	// Retrieves in esss script pointer to script holding variables.
 	EERIE_SCRIPT * esss = (EERIE_SCRIPT *)es->master;
-
-	if (esss == NULL) esss = es;
-
+	if(esss == NULL) {
+		esss = es;
+	}
+	
 	// Finds script position to execute code...
 	if (!evname.empty()) {
 		strcpy(eventname, "ON ");
@@ -473,7 +487,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 		if (msg == SM_EXECUTELINE) {
 			pos = info;
 		} else {
-			switch (msg) {
+			switch(msg) {
 				case SM_COLLIDE_NPC:
 					if (esss->allowevents & DISABLE_COLLIDE_NPC) return REFUSE;
 					break;
@@ -505,16 +519,18 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				case SM_EXPLORATIONMODE:
 					if (esss->allowevents & DISABLE_EXPLORATIONMODE) return REFUSE;
 					break;
-				case SM_KEY_PRESSED:
+				case SM_KEY_PRESSED: {
 					float dwCurrTime = ARX_TIME_Get();
 					if ((dwCurrTime - g_TimeStartCinemascope) < 3000) {
 						LogDebug << "refusing SM_KEY_PRESSED";
 						return REFUSE;
 					}
 					break;
+				}
+				default: break;
 			}
 
-			if (msg < MAX_SHORTCUT) {
+			if (msg < (long)MAX_SHORTCUT) {
 				pos = es->shortcut[msg];
 			} else {
 				
@@ -573,7 +589,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 		cmd[0] = 0;
 
-		if (pos >= es->size - 1)
+		if (pos >= (int)es->size - 1)
 			return ACCEPT;
 
 		if ((pos = GetNextWord(es, pos, word)) < 0)
@@ -2967,10 +2983,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 									GetItemWorldPosition(inter.iobj[l], &_pos);
 									GetItemWorldPosition(io, &_pos2);
 
-									if (EEDistance3D(&_pos, &_pos2) <= rad)
-									{
+									if(EEDistance3D(&_pos, &_pos2) <= rad) {
 										io->stat_sent++;
-										Stack_SendIOScriptEvent(inter.iobj[l], 0, temp3, evt);
+										Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, temp3, evt);
 									}
 								}
 							}
@@ -2998,10 +3013,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 									{
 										GetItemWorldPosition(inter.iobj[l], &_pos);
 
-										if (ARX_PATH_IsPosInZone(ap, _pos.x, _pos.y, _pos.z))
-										{
+										if(ARX_PATH_IsPosInZone(ap, _pos.x, _pos.y, _pos.z)) {
 											io->stat_sent++;
-											Stack_SendIOScriptEvent(inter.iobj[l], 0, temp3, evt);
+											Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, temp3, evt);
 										}
 									}
 								}
@@ -3012,13 +3026,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					{
 						for (long l = 0; l < inter.nbmax; l++)
 						{
-							if ((inter.iobj[l] != NULL)
-									&& (inter.iobj[l] != io)
-									&& (IsIOGroup(inter.iobj[l], groupname))
-							   )
-							{
+							if((inter.iobj[l] != NULL) && (inter.iobj[l] != io) && (IsIOGroup(inter.iobj[l], groupname))) {
 								io->stat_sent++;
-								Stack_SendIOScriptEvent(inter.iobj[l], 0, temp3, evt);
+								Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, temp3, evt);
 							}
 						}
 					}
@@ -3030,10 +3040,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 
 
-						if (ValidIONum(t))
-						{
+						if(ValidIONum(t)) {
 							io->stat_sent++;
-							Stack_SendIOScriptEvent(inter.iobj[t], 0, temp3, evt);
+							Stack_SendIOScriptEvent(inter.iobj[t], SM_NULL, temp3, evt);
 						}
 					}
 
@@ -4486,7 +4495,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				if ((word[1] == 'F') && (word.size() == 2))
 				{
 					std::string temp3;
-					short oper = 0;
+					ScriptOperator oper = OPER_UNKNOWN;
 					short failed = 0;
 					short typ1, typ2;
 					std::string tvar1;
@@ -4904,6 +4913,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							}
 
 							break;
+						case OPER_UNKNOWN: break;
 					}
 
 					if (failed)

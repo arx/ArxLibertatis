@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Resource.h"
 #include "core/Time.h"
 #include "core/Dialog.h"
+#include "core/Localization.h"
 
 #include "game/Damage.h"
 #include "game/NPC.h"
@@ -1053,7 +1054,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	}
 	else
 	{
-		SendIOScriptEvent(inter.iobj[0],0,"","BOOK_OPEN");
+		SendIOScriptEvent(inter.iobj[0],SM_NULL,"","BOOK_OPEN");
 
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
 		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN);

@@ -6509,7 +6509,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					tcount++;
 					long n = spells[i].caster_level;
 					std::string str = tmp_io->long_name() + ' ' + itoa(n);
-					SendIOScriptEvent( ioo, -1, str, "NPC_CONTROL" );
+					SendIOScriptEvent( ioo, SM_NULL, str, "NPC_CONTROL" );
 				}
 			}
 

@@ -4162,7 +4162,7 @@ void UpdateCameras()
 						EVENT_SENDER = NULL;
 						SendIOScriptEvent(io, SM_WAYPOINT, str);
 						sprintf(str, "WAYPOINT%ld", aup->path->nb_pathways - 1);
-						SendIOScriptEvent(io, 0, "", str);
+						SendIOScriptEvent(io, SM_NULL, "", str);
 						SendIOScriptEvent(io, SM_PATHEND);
 						aup->lastWP = last;
 					}
@@ -4183,7 +4183,7 @@ void UpdateCameras()
 						EVENT_SENDER = NULL;
 						SendIOScriptEvent(io, SM_WAYPOINT, str);
 						sprintf(str, "WAYPOINT%ld", ii);
-						SendIOScriptEvent(io, 0, "", str);
+						SendIOScriptEvent(io, SM_NULL, "", str);
 
 						if (ii == aup->path->nb_pathways)
 						{

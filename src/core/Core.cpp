@@ -7225,11 +7225,11 @@ static void ShowInfoText() {
 	char temp[256];
 
 	if (io==NULL)
-		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",Event_Total_Count,ARX_SCRIPT_CountTimers());
+		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",ScriptEvent::totalCount,ARX_SCRIPT_CountTimers());
 	else 
 	{
 		strcpy(temp,GetName(io->filename).c_str());	
-		sprintf(tex,"Events %ld (IOmax %s_%04ld %d) Timers %ld",Event_Total_Count,temp,io->ident,io->stat_count,ARX_SCRIPT_CountTimers());
+		sprintf(tex,"Events %ld (IOmax %s_%04ld %d) Timers %ld",ScriptEvent::totalCount,temp,io->ident,io->stat_count,ARX_SCRIPT_CountTimers());
 	}
 
 	danaeApp.OutputText( 70, 94, tex );
@@ -7301,7 +7301,7 @@ static void ShowInfoText() {
 					danaeApp.OutputText( 170, 360, "PF_ALWAYS" );
 				else
 				{
-					sprintf(tex,"PF_%ld",io->_npcdata->pathfind.flags);
+					sprintf(tex,"PF_%ld", (long)io->_npcdata->pathfind.flags);
 					danaeApp.OutputText( 170, 360, tex); 
 				}
 			  }

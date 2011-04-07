@@ -713,7 +713,8 @@ struct SavedPathfindTarget {
 	
 	inline operator IO_PATHFIND() {
 		IO_PATHFIND a;
-		a.flags = a.listnb = a.listpos = a.pathwait = 0;
+		a.flags = 0;
+		a.listnb = a.listpos = a.pathwait = 0;
 		a.list = NULL;
 		a.truetarget = truetarget;
 		return a;

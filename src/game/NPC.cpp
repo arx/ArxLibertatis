@@ -111,6 +111,101 @@ extern long APPLY_PUSH;
 void StareAtTarget(INTERACTIVE_OBJ * io);
 #define RUN_WALK_RADIUS 450
 
+static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
+
+	if (io == NULL) return;
+
+
+
+
+	{
+		EERIE_3D ppos, pos, from, to;
+		Vector_Init(&from, 0.f, 0.f, -90.f);
+		Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
+		ppos.x = io->pos.x;
+		pos.x = ppos.x + to.x;
+		ppos.y = io->pos.y - (80.f);
+		pos.y = ppos.y + to.y;
+		ppos.z = io->pos.z;
+		pos.z = ppos.z + to.z;
+
+		if (DEBUGNPCMOVE) EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+
+		float dmg;
+
+		if (io->ioflags & IO_NPC)
+		{
+			dmg = io->_npcdata->damages;
+		}
+		else dmg = 40.f;
+
+
+
+		long i = io->targetinfo;
+		float dist;
+
+		if (!ValidIONum(i)) return;
+
+		{
+			INTERACTIVE_OBJ * ioo = inter.iobj[i];
+
+			if (! ioo) return;
+
+			if (ioo->ioflags & IO_MARKER) return;
+
+			if (ioo->ioflags & IO_CAMERA) return;
+
+
+			if (ioo->GameFlags & GFLAG_ISINTREATZONE)
+				if (ioo->show == SHOW_FLAG_IN_SCENE)
+					if (ioo->obj)
+						if (ioo->pos.y >	(io->pos.y + io->physics.cyl.height))
+							if (io->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
+							{
+								float dist_limit = io->_npcdata->reach + io->physics.cyl.radius;
+								long count = 0;
+								float mindist = FLT_MAX;
+
+								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
+								{
+									dist = EEDistance3D(&pos, &inter.iobj[i]->obj->vertexlist3[k].v);
+
+									if ((dist <= dist_limit)
+											&&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
+									{
+										count++;
+
+										if (dist < mindist) mindist = dist;
+									}
+								}
+
+								float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
+
+								if (ioo->ioflags & IO_NPC)
+								{
+
+									if (mindist <= dist_limit)
+									{
+										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
+									}
+
+								}
+								else
+								{
+									dist = EEDistance3D(&pos, &ioo->pos);
+
+									if (mindist <= 120.f)
+									{
+										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
+									}
+								}
+							}
+		}
+
+
+	}
+}
+
 void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io)
 {
 	if (io)
@@ -1075,6 +1170,8 @@ static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
 		}
 	}
 }
+
+static void ManageNPCMovement(INTERACTIVE_OBJ * io);
 
 extern float MAX_ALLOWED_PER_SECOND;
 long REACTIVATION_COUNT = 0;
@@ -2884,7 +2981,7 @@ extern long FRAME_COUNT;
 //***********************************************************************************************
 //***********************************************************************************************
 
-void ManageNPCMovement(INTERACTIVE_OBJ * io)
+static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 {
 	float dis = FLT_MAX;
 	IO_PHYSICS phys;
@@ -3717,7 +3814,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 					if ((io->_npcdata->behavior & BEHAVIOUR_FLEE)
 					        && (!io->_npcdata->pathfind.pathwait))
-						SendIOScriptEvent(io, 0, "", "FLEE_END");
+						SendIOScriptEvent(io, SM_NULL, "", "FLEE_END");
 
 					if ((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) &&
 					        (io->_npcdata->pathfind.pathwait == 0))

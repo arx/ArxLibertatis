@@ -55,6 +55,10 @@ public:
 		return r;
 	}
 	
+	inline void remove(Enum flag) const {
+		flags &= ~(u32)flag;
+	}
+	
 	inline operator u32() const {
 		return flags;
 	}

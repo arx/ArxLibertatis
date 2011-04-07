@@ -262,7 +262,7 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
 // TODO create separate header for functions from ARX_Invetory.cpp
 void CleanInventory();
-void SendInventoryObjectCommand(const char * _lpszText, long _lCommand);
+void SendInventoryObjectCommand(const char * _lpszText, ScriptMessage _lCommand);
 bool PutInInventory();
 char * GetInventoryName();
 bool TakeFromInventory(EERIE_S2D * pos);

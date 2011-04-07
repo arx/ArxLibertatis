@@ -376,3 +376,13 @@ bool PAK_UNICODE_GetPrivateProfileString( const std::string&  _in_section,
 	return true;
 }
 
+long MakeLocalised(const string & text, string & output) {
+	
+	if(text.empty()) {
+		output = "ERROR";
+		return 0;
+	}
+	
+	return HERMES_UNICODE_GetProfileString(text, "error", output);
+}
+
