@@ -4841,8 +4841,8 @@ bool DANAE_ManageSplashThings()
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if ( !pMenuConfig->first_launch )
-				pMenuConfig->first_launch = true;
+			if ( pMenuConfig->first_launch )
+				pMenuConfig->first_launch = false;
 
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			return true;
@@ -4856,8 +4856,8 @@ bool DANAE_ManageSplashThings()
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if ( !pMenuConfig->first_launch )
-				pMenuConfig->first_launch = true;
+			if ( pMenuConfig->first_launch )
+				pMenuConfig->first_launch = false;
 
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			return true;
