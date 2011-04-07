@@ -793,7 +793,7 @@ void Config::SaveAll()
 	strcat(tcTxt,Project.localisationpath.c_str());
 	strcat(tcTxt,"\"");
 	WriteConfig( Section::Language, Key::language_string, Project.localisationpath );
-	WriteConfigInt("FIRSTRUN","int", first_launch?1:0);
+	WriteConfig("FIRSTRUN","int", first_launch?1:0);
 	//video
 	sprintf(tcTxt,"%dx%d",iWidth,iHeight);
 	WriteConfig("VIDEO","resolution", std::string(tcTxt) );
@@ -810,18 +810,18 @@ void Config::SaveAll()
 	WriteConfig("VIDEO","show_crosshair",bShowCrossHair?1:0);
 	WriteConfig("VIDEO","antialiasing",bAntiAliasing?1:0);
 	//audio
-	WriteConfigInt("AUDIO","master_volume",iMasterVolume);
-	WriteConfigInt("AUDIO","effects_volume",iSFXVolume);
-	WriteConfigInt("AUDIO","speech_volume",iSpeechVolume);
-	WriteConfigInt("AUDIO","ambiance_volume",iAmbianceVolume);
-	WriteConfigInt("AUDIO","EAX",(bEAX)?1:0);
+	WriteConfig("AUDIO","master_volume",iMasterVolume);
+	WriteConfig("AUDIO","effects_volume",iSFXVolume);
+	WriteConfig("AUDIO","speech_volume",iSpeechVolume);
+	WriteConfig("AUDIO","ambiance_volume",iAmbianceVolume);
+	WriteConfig("AUDIO","EAX",(bEAX)?1:0);
 	//input
-	WriteConfigInt("INPUT","invert_mouse",(bInvertMouse)?1:0);
-	WriteConfigInt("INPUT","auto_ready_weapon",(bAutoReadyWeapon)?1:0);
-	WriteConfigInt("INPUT","mouse_look_toggle",(bMouseLookToggle)?1:0);
-	WriteConfigInt("INPUT","mouse_sensitivity",iMouseSensitivity);
-	WriteConfigInt("INPUT","mouse_smoothing",(bMouseSmoothing)?1:0);
-	WriteConfigInt("INPUT","auto_description",(bAutoDescription)?1:0);
+	WriteConfig("INPUT","invert_mouse",(bInvertMouse)?1:0);
+	WriteConfig("INPUT","auto_ready_weapon",(bAutoReadyWeapon)?1:0);
+	WriteConfig("INPUT","mouse_look_toggle",(bMouseLookToggle)?1:0);
+	WriteConfig("INPUT","mouse_sensitivity",iMouseSensitivity);
+	WriteConfig("INPUT","mouse_smoothing",(bMouseSmoothing)?1:0);
+	WriteConfig("INPUT","auto_description",(bAutoDescription)?1:0);
 	//key
 	WriteConfigKey("jump",CONTROLS_CUST_JUMP);
 	WriteConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
@@ -874,12 +874,12 @@ void Config::SaveAll()
 	WriteConfigKey("minimap",CONTROLS_CUST_MINIMAP);
 
 	//misc
-	WriteConfigInt(Section::Misc,"softfog",(bATI)?1:0);
-	WriteConfigInt(Section::Misc,"forcenoeax",(bForceNoEAX)?1:0);
-	WriteConfigInt(Section::Misc,"forcezbias",(bForceZBias)?1:0);
-	WriteConfigInt(Section::Misc,"newcontrol",(INTERNATIONAL_MODE)?1:0);
-	WriteConfigInt(Section::Misc,"forcetoggle",(bOneHanded)?1:0);
-	WriteConfigInt(Section::Misc,"fg",uiGoreMode);
+	WriteConfig(Section::Misc,"softfog",(bATI)?1:0);
+	WriteConfig(Section::Misc,"forcenoeax",(bForceNoEAX)?1:0);
+	WriteConfig(Section::Misc,"forcezbias",(bForceZBias)?1:0);
+	WriteConfig(Section::Misc,"newcontrol",(INTERNATIONAL_MODE)?1:0);
+	WriteConfig(Section::Misc,"forcetoggle",(bOneHanded)?1:0);
+	WriteConfig(Section::Misc,"fg",uiGoreMode);
 }
 
 extern bool IsNoGore( void );
