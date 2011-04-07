@@ -222,6 +222,12 @@ std::string ConfigSection::KeyValue( std::string str ) const
 	// Cut the string at the end of the value
 	str = str.substr( 0, last_quot_mark );
 
+	// Newlines are bad, if one is at the end of the line, remove it
+	size_t nl_loc = str.find_first_of( "\n\r" );
+
+	// Cut the string before the newline
+	str = str.substr( 0, nl_loc );
+
 	// Return the processed string
 	return str;
 }

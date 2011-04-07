@@ -412,10 +412,10 @@ void ConfigHashMap::save_all( std::ostream& out ) const
 void ConfigHashMap::output_section( const ConfigSection& section, std::ostream& out ) const
 {
 	// output section name with included surrounding brackets
-	LogDebug << '[' << section.section << ']';
+	out << '[' << section.section << ']' << std::endl;
 
 	// Iterate over all the keys and output them into the stream
 	std::vector<ConfigSection::Key>::const_iterator iter;
 	for ( iter = section._keys.begin() ; iter != section._keys.end() ; iter++ )
-		LogDebug << iter->name << '=' << '\"' << iter->value << '\"';
+		out << iter->name << '=' << '\"' << iter->value << '\"' << std::endl;
 }

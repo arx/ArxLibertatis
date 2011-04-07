@@ -788,7 +788,8 @@ bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
 
 bool Config::SaveAll()
 {
-	config_map.save_all( std::cout );
+	std::ofstream out( "test.cfg" );
+	config_map.save_all( out );
 	char tcTxt[256];
 	bool bOk=true;
 
