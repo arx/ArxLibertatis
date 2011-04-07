@@ -35,18 +35,6 @@ enum DXIMode {
 	DXI_MODE_NONEXCLUSIF_OURMSG = 3
 };
 
-#define DXI_XAxis   1
-#define DXI_YAxis   2
-#define DXI_ZAxis   4
-#define DXI_RxAxis  8
-#define DXI_RyAxis  16
-#define DXI_RzAxis  32
-#define DXI_Slider  64
-#define DXI_Button  128
-#define DXI_Key     256
-#define DXI_POV     512
-#define DXI_Unknown 1024
-
 enum DXIButton {
 	DXI_BUTTON0 = 0,
 	DXI_BUTTON1 = 1,
