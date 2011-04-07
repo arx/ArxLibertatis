@@ -22,13 +22,14 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef DANAE_DEBUGGER_H
-#define DANAE_DEBUGGER_H
+
+#ifndef ARX_SCIPTING_SCIPTDEBUGGER_H
+#define ARX_SCIPTING_SCIPTDEBUGGER_H
 
 #include <windows.h>
 
 void DANAE_DEBUGGER_Launch(HWND hWnd);
 void DANAE_DEBUGGER_Update();
 
-#endif
+#endif // ARX_SCIPTING_SCIPTDEBUGGER_H
 
