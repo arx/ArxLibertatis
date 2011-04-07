@@ -232,7 +232,7 @@ std::string ConfigSection::KeyValue( std::string str ) const
  * not checked for the presence of keys, beware.
  * @return The first Key in the list of Keys
  */
-const Key& ConfigSection::first_key() const
+const ConfigSection::Key& ConfigSection::first_key() const
 {
 	return _keys.front();
 }

@@ -379,26 +379,26 @@ void ConfigHashMap::parse_stream( std::istream& is )
 	}
 }
 
-// TODO Awful encapsulation violating code, proper functions must be implemented
+/**
+ * Updates the specified key in the specifified section
+ * with the value given. If the section or key does not
+ * exist in the map, it is created.
+ * @param section The section to update
+ * @param key The key in the section to update
+ * @param value The value to update the key with
+ */
 void ConfigHashMap::updateConfigValue( const std::string& section, const std::string& key, const std::string value )
 {
-	std::map<std::string, ConfigSection>::iterator section_iter = section_map.find( section );
+	std::map<std::string, ConfigSection>::iterator iter = section_map.find( section );
 
-	if ( section_iter != section_map.end() )
+	// If the section exists, set the key value
+	if ( iter != section_map.end() )
+		iter->second.set_key( key, value );
+	else // Otherwise, create the section and set the key in that section
 	{
-		// TODO Should use a setKey function
-		std::vector<ConfigSection::Key>::iterator key_iter;
-		for ( key_iter = section_iter->second._keys.begin() ; key_iter != section_iter->second._keys.end() ; key_iter++ )
-		{
-			if ( key_iter->name == key )
-				key_iter->value = value;
-			else
-				section_iter->second._keys.push_back( ConfigSection::Key( key, value ) );
-		}
+		section_map[section].section = section;
+		section_map[section].set_key( key, value );
 	}
-	else
-		// TODO Should use a setKey function
-		section_map[section]._keys.push_back( ConfigSection::Key( key, value ) );
 }
 
 void ConfigHashMap::save_all( std::ostream& out ) const
@@ -417,5 +417,5 @@ void ConfigHashMap::output_section( const ConfigSection& section, std::ostream& 
 	// Iterate over all the keys and output them into the stream
 	std::vector<ConfigSection::Key>::const_iterator iter;
 	for ( iter = section._keys.begin() ; iter != section._keys.end() ; iter++ )
-		LogDebug << iter->name << '=' << iter->value;
+		LogDebug << iter->name << '=' << '\"' << iter->value << '\"';
 }
