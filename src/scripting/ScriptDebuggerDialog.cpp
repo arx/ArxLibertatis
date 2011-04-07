@@ -281,12 +281,6 @@ BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 }
 
 //-----------------------------------------------------------------------------
-const char * SCRIPT_DEBUGGER_GetName()
-{
-	return "SCRIPT DEBUGGER";
-}
-
-//-----------------------------------------------------------------------------
 unsigned long SCRIPT_DEBUGGER_GetVersion()
 {
 	return MAKELONG(1, 0);
