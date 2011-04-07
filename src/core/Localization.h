@@ -37,8 +37,6 @@ void Localisation_Close();
  */
 std::string getLocalized( const std::string& name, const std::string& default_value = "" );
 
-bool PAK_UNICODE_GetPrivateProfileString(const std::string & section, const std::string & default_return, std::string & buffer);
-
 long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string & sectionname);
 long HERMES_UNICODE_GetProfileString(const std::string & sectionname, const std::string & defaultstring, std::string & destination);
 

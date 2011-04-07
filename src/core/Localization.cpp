@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace
 {
-	ConfigHashMap* pHashLocalisation;
+	ConfigHashMap* pHashLocalisation = 0;
 	std::string empty_string = "";
 }
 
@@ -47,80 +47,12 @@ extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
 extern long FINAL_COMMERCIAL_DEMO;
 
-/*******************************************************************************
- * Takes a string as a memory buffer for the contents of a file and extracts
- * extract lines from it that correspond to sections and keys. It then maps
- * these sections with corresponding keys into the localization hashmap for
- * later lookup when the strings are used to display text.
- ******************************************************************************/
-void ParseFile( const std::string& file_text )
-{
-	std::stringstream ss( file_text ); // Input stream to extract lines from
-	std::list<std::string> input_strings; // Resulting list of lines extracted
-	
-	while ( ss.good() ) // While lines remain to be extracted
-	{
-		// Get a line to process
-		std::string str;
-		std::getline( ss, str );
-
-		// Remove any commented bits until the line end
-		size_t comment_start = std::string::npos;
-		comment_start = str.find("//");
-
-		// Whole line was commented, no need to do anything with it. Continue getting the next line
-		if ( comment_start == 0 ) continue;
-
-		// Remove any commented bits from the line
-		if ( comment_start != std::string::npos )
-			str = str.substr(0, comment_start );
-
-		if ( str.empty() ) continue;
-		// Push back the line
-		input_strings.push_back( str );
-	}
-
-	// Iterate over all the lines entered into the list earlier
-	std::list<std::string>::iterator iter = input_strings.begin();
-	while( iter != input_strings.end() )
-	{
-		// If a section string is found, make en entry for it
-		if ( ConfigSection::isSection( *iter ) )
-		{
-			// Create a localisation entry for this section
-			ConfigSection* loc = new ConfigSection();
-
-			// Set the section name as the cleaned section string
-			loc->SetSection( *iter );
-
-			// Advance to the line after the section string to start looking for keys
-			iter++;
-
-			// Iterate over more strings until a section is encountered or no more strings remain
-			while ( ( iter != input_strings.end() ) && ( !ConfigSection::isSection( *iter ) ) )
-			{
-				// If a key is found, add it to the localisation entry
-				if ( ConfigSection::isKey( *iter ) )
-					loc->AddKey( *iter );
-
-				iter++; // Continue looking for more keys
-			}
-
-			pHashLocalisation->AddElement(loc);
-			continue; // Continue loop, the next section or end of input was encountered
-		}
-
-		// Only get here if a non-content string managed to escape the earlier culling, advance to the next line
-		iter++;
-	}
-}
-
-
 /****************************************************************************
  * Initializes the localisation hashmap based on the current chosen locale
  ***************************************************************************/
 void Localisation_Init() 
 {
+	LogDebug << "Starting localization";
 	// If a locale is already initialized, close it
 	if (pHashLocalisation)
 		Localisation_Close();
@@ -162,10 +94,11 @@ void Localisation_Init()
 	if ( Localisation && loc_file_size)
 	{
 		LogDebug << "Preparing to parse localisation file";
-		pHashLocalisation = new ConfigHashMap(1 << 13);
+		std::istringstream iss( out );
+		pHashLocalisation = new ConfigHashMap(1 << 13, iss);
 
-		LogDebug << "Converting loaded localistation file:";
-		ParseFile( out );
+		//LogDebug << "Converting loaded localistation file:";
+		//ParseFile( out );
 	}
 
 	//CD Check
@@ -247,5 +180,8 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
  */
 std::string getLocalized( const std::string& name, const std::string& default_value )
 {
+	if ( !pHashLocalisation )
+		return default_value;
+
 	return pHashLocalisation->getConfigValue( name, default_value, empty_string );
 }

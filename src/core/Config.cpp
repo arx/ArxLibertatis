@@ -27,6 +27,7 @@
 
 #include <cstdio>
 
+#include <fstream>
 #include <sstream>
 
 #include "core/Localization.h"
@@ -311,6 +312,9 @@ Config::Config( const std::string& _pName)
 	{
 		pcName = _pName;
 	}
+
+	std::ifstream ifs( _pName.c_str() );
+	config_map = ConfigHashMap( 100, ifs );
 	
 	// TODO GetPrivateProfileString needs an absolute path
 	if(pcName.length() > 2 && pcName[1] != ':') {
@@ -466,13 +470,8 @@ int Config::GetDIKWithASCII( const std::string& _pcTouch)
 std::string Config::ReadConfig( const std::string& _section, const std::string& _key) const
 {
 	
-	// TODO unify with localisation loading (and make platform-independent)
-	char text[256];
-	GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
-	
-	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << text;
-
-	return std::string( text );
+	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << config_map.getConfigValue( _section, "", _key );
+	return config_map.getConfigValue( _section, "", _key );
 }
 
 //-----------------------------------------------------------------------------
@@ -789,6 +788,7 @@ bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
 
 bool Config::SaveAll()
 {
+	config_map.save_all( std::cout );
 	char tcTxt[256];
 	bool bOk=true;
 
