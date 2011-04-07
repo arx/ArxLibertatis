@@ -99,23 +99,21 @@ class Config
 		ConfigHashMap config_map; // Map containing the config file contents
 
 		int GetDIKWithASCII( const std::string& _pcTouch);
-		std::string ReadConfig( const std::string& _pcSection, const std::string& _pcKey) const;
-		bool WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
 
 	public:
 		Config();
 		Config( const std::string& );
 		virtual ~Config();
 
-		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
-
+		std::string ReadConfig( const std::string& section, const std::string& key ) const;
 		std::string ReadConfig( const std::string& section, const std::string& key, const std::string& default_value ) const;
 		int ReadConfig( const std::string& section, const std::string& key, int default_value ) const;
 		bool ReadConfig( const std::string& section, const std::string& key, bool default_value ) const;
+		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
 
-		void WriteConfig( const std::string& section, const std::string& key, bool data );
-		void WriteConfig( const std::string& section, const std::string& key, int data );
-		//void WriteConfig( const std::string& section, const std::string& key, const std::string& data );
+		void WriteConfig( const std::string& section, const std::string& key, const std::string& value );
+		void WriteConfig( const std::string& section, const std::string& key, int value );
+		void WriteConfig( const std::string& section, const std::string& key, bool value );
 		bool WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int _iDatas);
 		bool WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
 
@@ -128,7 +126,7 @@ class Config
 		void DefaultValue();
 		void First();
 
-		bool SaveAll();
+		void SaveAll();
 		bool ReadAll();
 };
 

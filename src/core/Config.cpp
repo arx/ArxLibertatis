@@ -529,34 +529,30 @@ int Config::ReadConfig( const std::string& section, const std::string& key, int 
 
 //-----------------------------------------------------------------------------
 
-bool Config::WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
+void Config::WriteConfig( const std::string& section, const std::string& key, const std::string& value )
 {
-	int iErreur=0;
+	config_map.updateConfigValue( section, key, value );
+}
 
-	char tcText[256];
-
-	if(!GetPrivateProfileSection(_pcSection.c_str(),tcText,256,pcName.c_str()))
-	{
-		if(WritePrivateProfileSection(_pcSection.c_str(),"",pcName.c_str())) iErreur++;
-	}
-
-	if(WritePrivateProfileString(_pcSection.c_str(),_pcKey.c_str(),_pcDatas.c_str(),pcName.c_str())) iErreur++;
-
-	return (iErreur==2);
+void Config::WriteConfig( const std::string& section, const std::string& key, int value )
+{
+	WriteConfig( section, key, itoa( value ) );
 }
 
 //-----------------------------------------------------------------------------
 
 bool Config::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int data )
 {
-	return WriteConfig(_pcSection,_pcKey, itoa( data ) );
+	WriteConfig(_pcSection,_pcKey, itoa( data ) );
+	return false;
 }
 
 //-----------------------------------------------------------------------------
 
 bool Config::WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
 {
-	return WriteConfig(_pcSection,_pcKey,_pcDatas);
+	WriteConfig(_pcSection,_pcKey,_pcDatas);
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -786,106 +782,104 @@ bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
 
 //-----------------------------------------------------------------------------
 
-bool Config::SaveAll()
+void Config::SaveAll()
 {
 	std::ofstream out( "test.cfg" );
 	config_map.save_all( out );
 	char tcTxt[256];
-	bool bOk=true;
 
 	//language
 	strcpy(tcTxt,"\"");
 	strcat(tcTxt,Project.localisationpath.c_str());
 	strcat(tcTxt,"\"");
-	bOk&=WriteConfigString( Section::Language, Key::language_string, tcTxt);
-	bOk&=WriteConfigInt("FIRSTRUN","int", first_launch?1:0);
+	WriteConfig( Section::Language, Key::language_string, Project.localisationpath );
+	WriteConfigInt("FIRSTRUN","int", first_launch?1:0);
 	//video
 	sprintf(tcTxt,"%dx%d",iWidth,iHeight);
-	bOk&=WriteConfigString("VIDEO","resolution",tcTxt);
-	bOk&=WriteConfigInt("VIDEO","bpp",bpp);
-	bOk&=WriteConfigInt("VIDEO","full_screen",(bFullScreen)?1:0);
-	bOk&=WriteConfigInt("VIDEO","bump",(bBumpMapping)?1:0);
-	bOk&=WriteConfigInt("VIDEO","texture",iTextureResol);
-	bOk&=WriteConfigInt("VIDEO","mesh_reduction",iMeshReduction);
-	bOk&=WriteConfigInt("VIDEO","others_details",iLevelOfDetails);
-	bOk&=WriteConfigInt("VIDEO","fog",iFogDistance);
-	bOk&=WriteConfigInt("VIDEO","gamma",iGamma);
-	bOk&=WriteConfigInt("VIDEO","luminosity",iLuminosite);
-	bOk&=WriteConfigInt("VIDEO","contrast",iContrast);
-	bOk&=WriteConfigInt("VIDEO","show_crosshair",bShowCrossHair?1:0);
-	bOk&=WriteConfigInt("VIDEO","antialiasing",bAntiAliasing?1:0);
+	WriteConfig("VIDEO","resolution", std::string(tcTxt) );
+	WriteConfig("VIDEO","bpp",bpp);
+	WriteConfig("VIDEO","full_screen",(bFullScreen)?1:0);
+	WriteConfig("VIDEO","bump",(bBumpMapping)?1:0);
+	WriteConfig("VIDEO","texture",iTextureResol);
+	WriteConfig("VIDEO","mesh_reduction",iMeshReduction);
+	WriteConfig("VIDEO","others_details",iLevelOfDetails);
+	WriteConfig("VIDEO","fog",iFogDistance);
+	WriteConfig("VIDEO","gamma",iGamma);
+	WriteConfig("VIDEO","luminosity",iLuminosite);
+	WriteConfig("VIDEO","contrast",iContrast);
+	WriteConfig("VIDEO","show_crosshair",bShowCrossHair?1:0);
+	WriteConfig("VIDEO","antialiasing",bAntiAliasing?1:0);
 	//audio
-	bOk&=WriteConfigInt("AUDIO","master_volume",iMasterVolume);
-	bOk&=WriteConfigInt("AUDIO","effects_volume",iSFXVolume);
-	bOk&=WriteConfigInt("AUDIO","speech_volume",iSpeechVolume);
-	bOk&=WriteConfigInt("AUDIO","ambiance_volume",iAmbianceVolume);
-	bOk&=WriteConfigInt("AUDIO","EAX",(bEAX)?1:0);
+	WriteConfigInt("AUDIO","master_volume",iMasterVolume);
+	WriteConfigInt("AUDIO","effects_volume",iSFXVolume);
+	WriteConfigInt("AUDIO","speech_volume",iSpeechVolume);
+	WriteConfigInt("AUDIO","ambiance_volume",iAmbianceVolume);
+	WriteConfigInt("AUDIO","EAX",(bEAX)?1:0);
 	//input
-	bOk&=WriteConfigInt("INPUT","invert_mouse",(bInvertMouse)?1:0);
-	bOk&=WriteConfigInt("INPUT","auto_ready_weapon",(bAutoReadyWeapon)?1:0);
-	bOk&=WriteConfigInt("INPUT","mouse_look_toggle",(bMouseLookToggle)?1:0);
-	bOk&=WriteConfigInt("INPUT","mouse_sensitivity",iMouseSensitivity);
-	bOk&=WriteConfigInt("INPUT","mouse_smoothing",(bMouseSmoothing)?1:0);
-	bOk&=WriteConfigInt("INPUT","auto_description",(bAutoDescription)?1:0);
+	WriteConfigInt("INPUT","invert_mouse",(bInvertMouse)?1:0);
+	WriteConfigInt("INPUT","auto_ready_weapon",(bAutoReadyWeapon)?1:0);
+	WriteConfigInt("INPUT","mouse_look_toggle",(bMouseLookToggle)?1:0);
+	WriteConfigInt("INPUT","mouse_sensitivity",iMouseSensitivity);
+	WriteConfigInt("INPUT","mouse_smoothing",(bMouseSmoothing)?1:0);
+	WriteConfigInt("INPUT","auto_description",(bAutoDescription)?1:0);
 	//key
-	bOk&=WriteConfigKey("jump",CONTROLS_CUST_JUMP);
-	bOk&=WriteConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
-	bOk&=WriteConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
-	bOk&=WriteConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk&=WriteConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
-	bOk&=WriteConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
-	bOk&=WriteConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk&=WriteConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
-	bOk&=WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
-	bOk&=WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);
-	bOk&=WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
-	bOk&=WriteConfigInt("INPUT","link_mouse_look_to_use",(bLinkMouseLookToUse)?1:0);
-	bOk&=WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);
-	bOk&=WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);
-	bOk&=WriteConfigKey("book",CONTROLS_CUST_BOOK);
-	bOk&=WriteConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
-	bOk&=WriteConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
-	bOk&=WriteConfigKey("map",CONTROLS_CUST_BOOKMAP);
-	bOk&=WriteConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
-	bOk&=WriteConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
-	bOk&=WriteConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
-	bOk&=WriteConfigKey("torch",CONTROLS_CUST_TORCH);
+	WriteConfigKey("jump",CONTROLS_CUST_JUMP);
+	WriteConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
+	WriteConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
+	WriteConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
+	WriteConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
+	WriteConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
+	WriteConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
+	WriteConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
+	WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
+	WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);
+	WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
+	WriteConfigInt("INPUT","link_mouse_look_to_use",(bLinkMouseLookToUse)?1:0);
+	WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);
+	WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);
+	WriteConfigKey("book",CONTROLS_CUST_BOOK);
+	WriteConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
+	WriteConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
+	WriteConfigKey("map",CONTROLS_CUST_BOOKMAP);
+	WriteConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
+	WriteConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
+	WriteConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
+	WriteConfigKey("torch",CONTROLS_CUST_TORCH);
 
-	bOk&=WriteConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
-	bOk&=WriteConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
-	bOk&=WriteConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
-	bOk&=WriteConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
-	bOk&=WriteConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
-	bOk&=WriteConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
-	bOk&=WriteConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
+	WriteConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
+	WriteConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
+	WriteConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
+	WriteConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
+	WriteConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
+	WriteConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
+	WriteConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
 
-	bOk&=WriteConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
-	bOk&=WriteConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
-	bOk&=WriteConfigKey("look_up",CONTROLS_CUST_LOOKUP);
-	bOk&=WriteConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
+	WriteConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
+	WriteConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
+	WriteConfigKey("look_up",CONTROLS_CUST_LOOKUP);
+	WriteConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
 
-	bOk&=WriteConfigKey("strafe",CONTROLS_CUST_STRAFE);
-	bOk&=WriteConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
+	WriteConfigKey("strafe",CONTROLS_CUST_STRAFE);
+	WriteConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
 
-	bOk&=WriteConfigKey("freelook",CONTROLS_CUST_FREELOOK);
+	WriteConfigKey("freelook",CONTROLS_CUST_FREELOOK);
 
-	bOk&=WriteConfigKey("previous",CONTROLS_CUST_PREVIOUS);
-	bOk&=WriteConfigKey("next",CONTROLS_CUST_NEXT);
+	WriteConfigKey("previous",CONTROLS_CUST_PREVIOUS);
+	WriteConfigKey("next",CONTROLS_CUST_NEXT);
 
-	bOk&=WriteConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
+	WriteConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
 
-	bOk&=WriteConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
+	WriteConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
 
-	bOk&=WriteConfigKey("minimap",CONTROLS_CUST_MINIMAP);
+	WriteConfigKey("minimap",CONTROLS_CUST_MINIMAP);
 
 	//misc
-	bOk&=WriteConfigInt(Section::Misc,"softfog",(bATI)?1:0);
-	bOk&=WriteConfigInt(Section::Misc,"forcenoeax",(bForceNoEAX)?1:0);
-	bOk&=WriteConfigInt(Section::Misc,"forcezbias",(bForceZBias)?1:0);
-	bOk&=WriteConfigInt(Section::Misc,"newcontrol",(INTERNATIONAL_MODE)?1:0);
-	bOk&=WriteConfigInt(Section::Misc,"forcetoggle",(bOneHanded)?1:0);
-	bOk&=WriteConfigInt(Section::Misc,"fg",uiGoreMode);
-	return bOk;
+	WriteConfigInt(Section::Misc,"softfog",(bATI)?1:0);
+	WriteConfigInt(Section::Misc,"forcenoeax",(bForceNoEAX)?1:0);
+	WriteConfigInt(Section::Misc,"forcezbias",(bForceZBias)?1:0);
+	WriteConfigInt(Section::Misc,"newcontrol",(INTERNATIONAL_MODE)?1:0);
+	WriteConfigInt(Section::Misc,"forcetoggle",(bOneHanded)?1:0);
+	WriteConfigInt(Section::Misc,"fg",uiGoreMode);
 }
 
 extern bool IsNoGore( void );
