@@ -368,8 +368,7 @@ void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power)
 	dtv->tv+=EEcos((WATEREFFECT+odtv->z))*power;
 }
 
-void ApplyLavaGlowToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power)
-{
+static void ApplyLavaGlowToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv, float power) {
 	register float f;
 	register long lr, lg, lb;
 	power = 1.f - (EEsin((WATEREFFECT+odtv->x+odtv->z)) * 0.05f) * power;
@@ -529,20 +528,24 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 
 	return true;
 }
-bool	EEVisibleSphere(EERIE_3D * pos,float radius)
-{
-	if (EEDistance3D(pos,&ACTIVECAM->pos)-radius>ACTIVECAM->cdepth*0.5f)
+
+bool VisibleSphere(float x, float y, float z, float radius) {
+	
+	EERIE_3D pos;
+	pos.x=x;
+	pos.y=y;
+	pos.z=z;
+	
+	if(EEDistance3D(pos, ACTIVECAM->pos) - radius>ACTIVECAM->cdepth*0.5f)
 		return false;
 
-	long room_num=ARX_PORTALS_GetRoomNumForPosition(pos);
+	long room_num = ARX_PORTALS_GetRoomNumForPosition(&pos);
 
 	if (room_num>=0)
 	{
 		EERIE_SPHERE sphere;
-		sphere.origin.x=pos->x;
-		sphere.origin.y=pos->y;
-		sphere.origin.z=pos->z;
-		sphere.radius=radius;
+		sphere.origin = pos;
+		sphere.radius = radius;
 							
 		EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
 
@@ -551,14 +554,6 @@ bool	EEVisibleSphere(EERIE_3D * pos,float radius)
 	}
 
 	return true;
-}
-bool VisibleSphere(float x,float y,float z,float radius)
-{
-	EERIE_3D pos;
-	pos.x=x;
-	pos.y=y;
-	pos.z=z;
-	return EEVisibleSphere(&pos,radius);
 }
 bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
 bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
