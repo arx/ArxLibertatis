@@ -63,6 +63,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
 #include "core/Time.h"
 #include "core/Application.h"
 #include "core/Localization.h"
@@ -91,6 +96,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
+
+#include "window/DXInput.h"
 
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;

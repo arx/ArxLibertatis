@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MenuWidgets.h" //controls
 #include "io/Logger.h"
+#include "window/DXInput.h"
 
 extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
@@ -68,9 +69,6 @@ extern long STOP_KEYBOARD_INPUT;
 
 bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd) {
 	
-#ifdef NO_DIRECT_INPUT
-	return true;
-#endif
 	DXI_Init(hInst);
 	
 	if(!DXI_GetKeyboardInputDevice(hWnd, DXI_MODE_NONEXCLUSIF_OURMSG)) {
@@ -91,64 +89,8 @@ bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd) {
 	return true;
 }
 
-void ARX_INPUT_Release()
-{
-#ifdef NO_DIRECT_INPUT
-	return;
-#endif
+void ARX_INPUT_Release() {
 	DXI_Release();
-}
-
-//ARX_GAME_IMPULSES GameImpulses;
-long GameImpulses[MAX_IMPULSES][MAX_IMPULSES_NB];
-
-
-void ARX_INPUT_Init_Game_Impulses()
-{
-	for (long i = 0; i < MAX_IMPULSES; i++)
-		for (long j = 0; j < MAX_IMPULSES_NB; j++)
-			GameImpulses[i][j] = 0;
-
-	GameImpulses[ARX_INPUT_IMPULSE_MAGIC_MODE][0] = 29;
-	GameImpulses[ARX_INPUT_IMPULSE_MAGIC_MODE][1] = 157;
-	GameImpulses[ARX_INPUT_IMPULSE_MAGIC_MODE][2] = 0; 
-	GameImpulses[ARX_INPUT_IMPULSE_COMBAT_MODE][0] = 28;
-	GameImpulses[ARX_INPUT_IMPULSE_COMBAT_MODE][1] = INTERNAL_JOYSTICK_7;
-	GameImpulses[ARX_INPUT_IMPULSE_JUMP][0] = 82;
-	GameImpulses[ARX_INPUT_IMPULSE_JUMP][1] = INTERNAL_MOUSE_3;
-	GameImpulses[ARX_INPUT_IMPULSE_JUMP][2] = INTERNAL_JOYSTICK_1;
-	GameImpulses[ARX_INPUT_IMPULSE_STEALTH][0] = 54;
-	GameImpulses[ARX_INPUT_IMPULSE_STEALTH][1] = 42;
-
-	GameImpulses[ARX_INPUT_IMPULSE_WALK_FORWARD][0] = 200;
-	GameImpulses[ARX_INPUT_IMPULSE_WALK_FORWARD][1] = 0;
-	GameImpulses[ARX_INPUT_IMPULSE_WALK_BACKWARD][0] = 208;
-	GameImpulses[ARX_INPUT_IMPULSE_WALK_BACKWARD][1] = 0;
-	GameImpulses[ARX_INPUT_IMPULSE_STRAFE_LEFT][0] = 203;
-	GameImpulses[ARX_INPUT_IMPULSE_STRAFE_LEFT][1] = 0;
-	GameImpulses[ARX_INPUT_IMPULSE_STRAFE_RIGHT][0] = 205;
-	GameImpulses[ARX_INPUT_IMPULSE_STRAFE_RIGHT][1] = 0;
-
-	GameImpulses[ARX_INPUT_IMPULSE_MOUSE_LOOK][0] = INTERNAL_MOUSE_2;
-	GameImpulses[ARX_INPUT_IMPULSE_MOUSE_LOOK][1] = 0;
-
-	GameImpulses[ARX_INPUT_IMPULSE_ACTION][0] = INTERNAL_MOUSE_1;
-	GameImpulses[ARX_INPUT_IMPULSE_ACTION][1] = INTERNAL_JOYSTICK_13;
-
-	GameImpulses[ARX_INPUT_IMPULSE_INVENTORY][0] = 23;
-	GameImpulses[ARX_INPUT_IMPULSE_INVENTORY][1] = INTERNAL_JOYSTICK_8;
-
-	GameImpulses[ARX_INPUT_IMPULSE_BOOK][0] = 15;
-	GameImpulses[ARX_INPUT_IMPULSE_BOOK][1] = INTERNAL_JOYSTICK_6;
-
-	GameImpulses[ARX_INPUT_IMPULSE_LEAN_RIGHT][0] = 49;
-	GameImpulses[ARX_INPUT_IMPULSE_LEAN_RIGHT][1] = 0;
-
-	GameImpulses[ARX_INPUT_IMPULSE_LEAN_LEFT][0] = 51;
-	GameImpulses[ARX_INPUT_IMPULSE_LEAN_LEFT][1] = 0;
-
-	GameImpulses[ARX_INPUT_IMPULSE_CROUCH][0] = 83; //50;
-	GameImpulses[ARX_INPUT_IMPULSE_CROUCH][1] = INTERNAL_JOYSTICK_2;
 }
  
 //-----------------------------------------------------------------------------
@@ -469,30 +411,3 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 
 	return false;
 }
-
-//-----------------------------------------------------------------------------
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 

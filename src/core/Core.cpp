@@ -67,6 +67,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <shellapi.h>
 
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -128,6 +133,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scripting/ScriptEvent.h"
 #include "scripting/ScriptDebugger.h"
+
+#include "window/DXInput.h"
 
 using std::min;
 using std::max;
@@ -1467,7 +1474,6 @@ int main(int, char**)
 
 	LogInfo << "Sound Init Success";
 	LogDebug << "DInput Init";
-	ARX_INPUT_Init_Game_Impulses();
 	pGetInfoDirectInput = new CDirectInput();
 	
 	const char RESOURCE_CONFIG[] = "cfg.ini";
