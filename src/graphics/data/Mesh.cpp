@@ -1811,8 +1811,7 @@ void AddAData(_ANCHOR_DATA * ad, long linked)
 
 void UpdateIORoom(INTERACTIVE_OBJ * io)
 {
-	EERIE_3D pos;
-	Vector_Copy(&pos, &io->pos);
+	EERIE_3D pos = io->pos;
 	pos.y -= 60.f;
 
 	long roo = ARX_PORTALS_GetRoomNumForPosition(&pos, 2);
@@ -1855,7 +1854,7 @@ bool GetRoomCenter(long room_num, EERIE_3D * center)
 
 	*center = (bbox.max + bbox.min) * ( 1.0f / 2 );
 
-	Vector_Copy(&portals->room[room_num].center, center);
+	portals->room[room_num].center = *center;
 	portals->room[room_num].radius = EEDistance3D(center, &bbox.max);
 	return true;
 }
@@ -1871,9 +1870,9 @@ static void SetRoomDistance(long i, long j, float val, const EERIE_3D * p1, cons
 	
 	long offs = i + j * NbRoomDistance;
 	
-	if (p1) Vector_Copy(&RoomDistance[offs].startpos, p1);
+	if (p1) RoomDistance[offs].startpos = *p1;
 
-	if (p2) Vector_Copy(&RoomDistance[offs].endpos, p2);
+	if (p2) RoomDistance[offs].endpos = *p2;
 
 	RoomDistance[offs].distance = val;
 }
@@ -1884,9 +1883,9 @@ static float GetRoomDistance(long i, long j, EERIE_3D * p1, EERIE_3D * p2)
 
 	long offs = i + j * NbRoomDistance;
 
-	if (p1) Vector_Copy(p1, &RoomDistance[offs].startpos);
+	if (p1) *p1 = RoomDistance[offs].startpos;
 
-	if (p2) Vector_Copy(p2, &RoomDistance[offs].endpos);
+	if (p2) *p2 = RoomDistance[offs].endpos;
 
 	return (RoomDistance[offs].distance);
 }
