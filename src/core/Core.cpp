@@ -2478,7 +2478,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 
 	if (inter.iobj[0]->obj->fastaccess.left_attach>=0)
 	{
-		Vector_Copy(&position,&inter.iobj[0]->obj->vertexlist3[inter.iobj[0]->obj->fastaccess.left_attach].v);
+		position = inter.iobj[0]->obj->vertexlist3[inter.iobj[0]->obj->fastaccess.left_attach].v;
 	}
 
 	anglea=radians(player.angle.a);
@@ -3307,8 +3307,8 @@ long FirstFrameHandling()
 
 	if (WILL_RESTORE_PLAYER_POSITION_FLAG)
 	{
-		Vector_Copy(&player.pos,&WILL_RESTORE_PLAYER_POSITION);
-		Vector_Copy(&inter.iobj[0]->pos,&WILL_RESTORE_PLAYER_POSITION);
+		player.pos = WILL_RESTORE_PLAYER_POSITION;
+		inter.iobj[0]->pos = WILL_RESTORE_PLAYER_POSITION;
 		inter.iobj[0]->pos.y+=170.f;
 		INTERACTIVE_OBJ * io=inter.iobj[0];
 
@@ -6220,14 +6220,14 @@ static float _AvgFrameDiff = 150.f;
 							
 							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );						
 							
-							EERIE_3D vect,vect3;
+							EERIE_3D vect;
 							vect.x=conversationcamera.pos.x-targetpos.x;
 							vect.y=conversationcamera.pos.y-targetpos.y;
 							vect.z=conversationcamera.pos.z-targetpos.z;
 							EERIE_3D vect2;
 							Vector_RotateY(&vect2,&vect,90);
 							TRUEVector_Normalize(&vect2);
-							Vector_Copy(&vect3,&vect);
+							EERIE_3D vect3 = vect;
 							TRUEVector_Normalize(&vect3);
 
 							vect.x=vect.x*(distance)+vect3.x*80.f;
