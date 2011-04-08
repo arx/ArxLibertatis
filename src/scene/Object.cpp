@@ -1538,8 +1538,8 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->c_data = NULL;
 	nouvo->vertexlocal = NULL;
 	
-	Vector_Copy(&nouvo->angle, &obj->angle);
-	Vector_Copy(&nouvo->pos, &obj->pos);
+	nouvo->angle = obj->angle;
+	nouvo->pos = obj->pos;
 	nouvo->cub.xmax = obj->cub.xmax;
 	nouvo->cub.xmin = obj->cub.xmin;
 	nouvo->cub.ymax = obj->cub.ymax;
@@ -1557,7 +1557,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 		nouvo->name = obj->name;
 
 	nouvo->origin = obj->origin;
-	Vector_Copy(&nouvo->point0, &obj->point0);
+	nouvo->point0 = obj->point0;
 	Quat_Copy(&nouvo->quat, &obj->quat);
 
 
@@ -1705,7 +1705,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		Vector_Init(&eobj->c_data->bones[0].scaleinit);
 		Vector_Init(&eobj->c_data->bones[0].scaleanim);
 		Vector_Init(&eobj->c_data->bones[0].transinit);
-		Vector_Copy(&eobj->c_data->bones[0].transinit_global, &eobj->c_data->bones[0].transinit);
+		eobj->c_data->bones[0].transinit_global = eobj->c_data->bones[0].transinit;
 		eobj->c_data->bones[0].original_group = NULL;
 		eobj->c_data->bones[0].father = -1;
 	}
@@ -1738,7 +1738,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			Vector_Init(&eobj->c_data->bones[i].scaleinit);
 			Vector_Init(&eobj->c_data->bones[i].scaleanim);
 			Vector_Init(&eobj->c_data->bones[i].transinit, v_origin->v.x, v_origin->v.y, v_origin->v.z);
-			Vector_Copy(&eobj->c_data->bones[i].transinit_global, &eobj->c_data->bones[i].transinit);
+			eobj->c_data->bones[i].transinit_global = eobj->c_data->bones[i].transinit;
 			eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
 			eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
 		}
@@ -1780,7 +1780,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				eobj->c_data->bones[i].transinit.z -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.z;
 			}
 
-			Vector_Copy(&eobj->c_data->bones[i].transinit_global, &eobj->c_data->bones[i].transinit);
+			eobj->c_data->bones[i].transinit_global = eobj->c_data->bones[i].transinit;
 		}
 
 	}
@@ -1811,7 +1811,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				/* Rotation*/
 				Quat_Copy(&obj->bones[i].quatanim, &obj->bones[i].quatinit);
 				/* Translation */
-				Vector_Copy(&obj->bones[i].transanim, &obj->bones[i].transinit);
+				obj->bones[i].transanim = obj->bones[i].transinit;
 				/* Scale */
 				Vector_Init(&obj->bones[i].scaleanim, 1.0f, 1.0f, 1.0f);
 			}
@@ -1823,11 +1823,10 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 
 		for (long i = 0; i != obj->nb_bones; i++)
 		{
-			EERIE_3D	vector;
 			EERIE_VERTEX * inVert;
 			EERIE_3DPAD * outVert;
 
-			Vector_Copy(&vector, &obj->bones[i].transanim);
+			EERIE_3D vector = obj->bones[i].transanim;
 
 			for (int v = 0; v != obj->bones[i].nb_idxvertices; v++)
 			{
@@ -2129,9 +2128,8 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	if ((head_idx >= 0) && (neck_orgn >= 0))
 	{
 		EERIE_3D center;
-		EERIE_3D origin;
 		Vector_Init(&center);
-		Vector_Copy(&origin, &eerie->vertexlist[neck_orgn].v);
+		EERIE_3D origin = eerie->vertexlist[neck_orgn].v;
 		float count = (float)eerie->grouplist[head_idx].indexes.size();
 
 		if (count > 0.f)
@@ -2300,8 +2298,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 {
 	if (!ret) return;
 
-	EERIE_3D offset;
-	Vector_Copy(&offset, &ret->vertexlist[ret->origin].v);
+	EERIE_3D offset = ret->vertexlist[ret->origin].v;
 
 	if ((offset.x == 0) && (offset.y == 0) && (offset.z == 0))
 		return;
