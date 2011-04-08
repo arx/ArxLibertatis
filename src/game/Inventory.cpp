@@ -1626,7 +1626,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 					{
 						if (id->slot[k][j].io == io)
 						{
-							Vector_Copy(pos, &ioo->pos);
+							*pos = ioo->pos;
 							return true;
 						}
 					}
@@ -1635,7 +1635,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 	}
 
 	// Default position.
-	Vector_Copy(pos, &io->pos);
+	*pos = io->pos;
 	return true;
 }
 
