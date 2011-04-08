@@ -1199,15 +1199,6 @@ bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 
 bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
 {
-	long nbv;
-
-	if (ep->type & POLY_QUAD)
-		nbv=4;
-	else
-		nbv=3;
-
- 
-
 	for (long i=0;i<frustrums->nb_frustrums;i++)
 	{
 		if (IsSphereInFrustrum(ep->v[0].rhw,(EERIE_3D *)&ep->center,&frustrums->frustrums[i]))
@@ -3492,7 +3483,6 @@ void ARX_SCENE_Render(long flag) {
 
 	// First if scene camera hasn't moved we set MODIF to 0
 	// This allows us not to Clip/Rotate/Translate/Project again the scene
-	bool MODIF=true;
 
 	if (flag == 3)
 	{
@@ -3506,9 +3496,8 @@ void ARX_SCENE_Render(long flag) {
 			(lastangle.a == ACTIVECAM->angle.a) &&
 			(lastangle.b == ACTIVECAM->angle.b) &&
 			(lastangle.g == ACTIVECAM->angle.g) &&
-			(lastfocal == ACTIVECAM->focal ) ) MODIF=0;
-	else 
-	{
+			(lastfocal == ACTIVECAM->focal ) ) {
+	} else {
 		lastpos.x = ACTIVECAM->pos.x;
 		lastpos.y = ACTIVECAM->pos.y;
 		lastpos.z = ACTIVECAM->pos.z;
@@ -3516,7 +3505,6 @@ void ARX_SCENE_Render(long flag) {
 		lastangle.b = ACTIVECAM->angle.b;
 		lastangle.g = ACTIVECAM->angle.g;
 		lastfocal = ACTIVECAM->focal;
-		MODIF=1;
 	}
     
 	// If LightThread is running we suspend it to avoid too much performance

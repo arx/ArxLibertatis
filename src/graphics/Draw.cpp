@@ -1337,18 +1337,15 @@ void EERIEDrawBitmapUVs(float x,float y,float sx,float sy,float z,TextureContain
 						)
 {
 	register float smu,smv;
-	float fEndv;
 
 	if (tex)
 	{
 		smu=tex->m_hdx;
 		smv=tex->m_hdy;
-		fEndv=tex->m_dy;
 	}
 	else
 	{
 		smu=smv=0.f;
-		fEndv=0.f;
 	}
 
 	D3DTLVERTEX v[4];

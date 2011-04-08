@@ -9992,12 +9992,10 @@ long Manage3DCursor(long flags)
 				if (vd<0) vd=0;
 
 				float mx = DANAEMouse.x;
-				float my = DANAEMouse.y;
 
 				if (TRUE_PLAYER_MOUSELOOK_ON && (pMenuConfig->bAutoReadyWeapon))
 				{
 					mx = MemoMouse.x;
-					my = MemoMouse.y;
 				}
 
 				pos.x=player.pos.x+EEsin(angle2)*(DANAECENTERX-mx)*0.7f*va

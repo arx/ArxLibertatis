@@ -326,9 +326,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	long tw1 = -1;
 	long tw2 = -1;
 	long iw1 = -1;
-	long iw2 = -1;
 	long jw1 = -1;
-	long jw2 = -1;
 	long sel_head1 = -1;
 	long sel_head2 = -1;
 	long sel_torso1 = -1;
@@ -368,9 +366,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		tw1 = sel_head1;
 		tw2 = sel_head2;
 		iw1 = sel_torso1;
-		iw2 = sel_torso2;
 		jw1 = sel_legs1;
-		jw2 = sel_legs2;
 	}
 
 	if (tw == TWEAK_TORSO)
@@ -378,9 +374,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		tw1 = sel_torso1;
 		tw2 = sel_torso2;
 		iw1 = sel_head1;
-		iw2 = sel_head2;
 		jw1 = sel_legs1;
-		jw2 = sel_legs2;
 	}
 
 	if (tw == TWEAK_LEGS)
@@ -388,9 +382,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		tw1 = sel_legs1;
 		tw2 = sel_legs2;
 		iw1 = sel_torso1;
-		iw2 = sel_torso2;
 		jw1 = sel_head1;
-		jw2 = sel_head2;
 	}
 
 	if ((tw1 == -1) || (tw2 == -1)) return NULL;

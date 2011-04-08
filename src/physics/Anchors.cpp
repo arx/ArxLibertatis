@@ -554,14 +554,12 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 			long				RFOUND		=	0;
 			long				LFOUND		=	0;
 			long				maxRANGLE	=	90;
-			long				maxLANGLE	=	270;
 			float				ANGLESTEPP;
 
 			if (flags & CFLAG_EASY_SLIDING)    // player sliding in fact...
 			{
 				ANGLESTEPP	=	10.f;
 				maxRANGLE	=	70;
-				maxLANGLE	=	290;
 			}
 			else ANGLESTEPP	=	30.f;
 
@@ -1164,7 +1162,6 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 {
 	EERIE_BKG_INFO * eg;
 	EERIE_3D pos;
-	long k;
 	float count = 0;
 
 	long lastper	=	-1;
@@ -1190,7 +1187,6 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 			pos.x = (float)((float)((float)i) * (float)eb->Xdiv);
 			pos.y = 0.f;
 			pos.z = (float)((float)((float)j) * (float)eb->Zdiv);
-			k = 0;
 			EERIE_CYLINDER currcyl;
 			currcyl.radius = 30;
 			currcyl.height = -150.f;
@@ -1278,7 +1274,6 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 	EERIEPOLY * ep;
 	EERIE_3D pos;
 #define DECALLL 20.f
-	long k;
 	float count = 0;
 	long lastper	=	-1;
 	long per;
@@ -1353,7 +1348,6 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 				pos.y = 0.f;
 				pos.z = (float)((float)((float)j + 0.33f * (float)divvy) * (float)eb->Zdiv);
 				ep = GetMinPoly(pos.x, pos.y, pos.z);
-				k = 0;
 				EERIE_CYLINDER currcyl;
 				currcyl.radius = 20 - (4.f * divv);
 				currcyl.height = -120.f;
@@ -1426,7 +1420,6 @@ void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 	EERIE_BKG_INFO * eg;
 	EERIEPOLY * ep;
 	EERIE_3D pos;
-	long k;
 	float count = 0;
 
 	long lastper	=	-1;
@@ -1481,7 +1474,6 @@ void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 				pos.y = 0.f;
 				pos.z = (float)((float)((float)j + 0.5f * (float)divvy) * (float)eb->Zdiv);
 				ep = GetMinPoly(pos.x, pos.y, pos.z);
-				k = 0;
 				EERIE_CYLINDER currcyl;
 				currcyl.radius = 20 - (4.f * divv);
 				currcyl.height = -120.f;
