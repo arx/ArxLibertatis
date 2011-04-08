@@ -731,7 +731,6 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	long best = 0;
 	long stop_radius = 0;
 	float best_dist = 99999999999.f;
-	float v_dist = 99999999999.f;
 
 	EERIE_CYLINDER testcyl;
 	EERIE_CYLINDER currcyl;
@@ -781,7 +780,6 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	if (found)
 	{
 		float dist = TRUEEEDistance3D(pos, &currcyl.origin);
-		float vd = EEfabs(pos->y - currcyl.origin.y);
 
 		if ((currcyl.radius >= bestcyl.radius))
 		{
@@ -790,7 +788,6 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 			{
 				memcpy(&bestcyl, &currcyl, sizeof(EERIE_CYLINDER));
 				best_dist = dist;
-				v_dist = vd;
 				best = 1;
 			}
 		}
@@ -847,7 +844,6 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 	long best = 0;
 	long stop_radius = 0;
 	float best_dist = 99999999999.f;
-	float v_dist = 99999999999.f;
 
 	EERIE_CYLINDER testcyl;
 	EERIE_CYLINDER currcyl;
@@ -903,7 +899,6 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 			if (found)
 			{
 				float dist = TRUEEEDistance3D(pos, &currcyl.origin);
-				float vd = EEfabs(pos->y - currcyl.origin.y);
 
 				if (currcyl.radius >= bestcyl.radius)	
 				{
@@ -912,7 +907,6 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 					{
 						memcpy(&bestcyl, &currcyl, sizeof(EERIE_CYLINDER));
 						best_dist = dist;
-						v_dist = vd;
 						best = 1;
 					}
 				}

@@ -1199,12 +1199,10 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 				memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
 			}
 
-			char* pcDataEnd=NULL;
 			char *pcFound=NULL;
 
 			if(pCopyOverScript)
 			{
-				pcDataEnd=((char*)pCopyOverScript)+_pWithIO->over_script.size;
 				pcFound=strstr((char*)pCopyOverScript,"ON COMBINE");
 
 				if(pcFound)
@@ -1352,7 +1350,6 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 				return;
 			}
 
-			pcDataEnd=((char*)pCopyScript)+_pWithIO->script.size;
 			pcFound=strstr((char*)pCopyScript,"ON COMBINE");
 
 			if(pcFound)
@@ -6102,9 +6099,6 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 
 
 	long i,j;
-	RECT rect;
-	rect.top=0;
-	rect.bottom=0;
 
 	for (j=0;j<TSecondaryInventory->sizey;j++)
 	{
@@ -6234,13 +6228,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 	float fPosX = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 	float fPosY = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 
-
-
 	ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory"), fPosX, fPosY - INTERFACE_RATIO(5));
-	
-	RECT rect;
-	rect.top=0;
-	rect.bottom=0;
 
 	for (long j=0;j<INVENTORY_Y;j++)
 		for (long i=0;i<INVENTORY_X;i++)

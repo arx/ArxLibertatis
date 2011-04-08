@@ -2391,7 +2391,6 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source) {
 	
 	PHYSVERT * pv;
-	long validd[32];
 	EERIE_3D oldpos[32];
 	long COUNT = 0;
 	COUNT++;
@@ -2414,9 +2413,6 @@ bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long sour
 
 		if (pv->velocity.z > VELOCITY_THRESHOLD) pv->velocity.z = VELOCITY_THRESHOLD;
 		else if (pv->velocity.z < -VELOCITY_THRESHOLD) pv->velocity.z = -VELOCITY_THRESHOLD;
-
-
-		validd[kk] = 1;
 	}
 
  

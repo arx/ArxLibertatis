@@ -2738,7 +2738,7 @@ SMY_D3DVERTEX *pMyVertex;
 					float tu[4];
 					float tv[4];
 					float _fTransp[4];
-					unsigned short nu, nuu;
+					unsigned short nu;
 					long nrm=0;
 
 					if	(	(EEfabs(ep->nrml[0].y)>=0.9f)
@@ -2746,7 +2746,7 @@ SMY_D3DVERTEX *pMyVertex;
 						||	(EEfabs(ep->nrml[2].y)>=0.9f)	)
 						nrm=1;
 
-					for (nu=0,nuu=iNbVertex-1;nu<iNbVertex;nuu=nu++)
+					for (nu=0;nu<iNbVertex;nu++)
 					{
 						if (nrm)
 						{
@@ -3230,12 +3230,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		pos.y=epp->center.y-ACTIVECAM->pos.y;
 		pos.z=epp->center.z-ACTIVECAM->pos.z;
 		float fRes = Vector_DotProduct(&pos, &epp->norm);
-		long to;
-
-		if (epp->type & POLY_QUAD)
-			to=4;
-		else
-			to=3;
 
 		long ret=1;
 

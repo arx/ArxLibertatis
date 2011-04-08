@@ -1389,7 +1389,6 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	ass->lastcall = io->script.lastcall;
 	ass->nblvar = io->script.nblvar;
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
-	long posi = 0;
 
 	for (int i = 0; i < io->script.nblvar; i++)
 	{
@@ -1469,7 +1468,6 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	ass->lastcall = io->over_script.lastcall;
 	ass->nblvar = io->over_script.nblvar;
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
-	posi = 0;
 
 	for (int i = 0; i < io->over_script.nblvar; i++)
 	{
