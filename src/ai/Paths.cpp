@@ -1205,10 +1205,10 @@ long ARX_THROWN_OBJECT_Throw(long source, EERIE_3D * position, EERIE_3D * vect, 
 	{
 
 		Thrown[num].damages = damages;
-		Vector_Copy(&Thrown[num].position, position);
-		Vector_Copy(&Thrown[num].initial_position, position);
-		Vector_Copy(&Thrown[num].vector, vect);
-		Vector_Copy(&Thrown[num].upvect, upvect);
+		Thrown[num].position = *position;
+		Thrown[num].initial_position = *position;
+		Thrown[num].vector = *vect;
+		Thrown[num].upvect = *upvect;
 		Quat_Copy(&Thrown[num].quat, quat);
 		Thrown[num].source = source;
 		Thrown[num].obj = NULL;
@@ -1369,12 +1369,12 @@ EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
 	EERIE_TRI pol;
 	EERIE_TRI pol2;
 
-	Vector_Copy(&pol.v[0], start);
-	Vector_Copy(&pol.v[2], end);
+	pol.v[0] = *start;
+	pol.v[2] = *end;
 	pol.v[2].x -= 2.f;
 	pol.v[2].y -= 15.f;
 	pol.v[2].z -= 2.f;
-	Vector_Copy(&pol.v[1], end);
+	pol.v[1] = *end;
 	
 	long px, pz;
 	px = end->x * ACTIVEBKG->Xmul;
@@ -1547,7 +1547,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						if (notok < 0)
 						{
-							Vector_Copy(&pos, &Thrown[i].obj->vertexlist3[Thrown[i].obj->facelist[num].vid[0]].v);
+							pos = Thrown[i].obj->vertexlist3[Thrown[i].obj->facelist[num].vid[0]].v;
 
 							for (long nn = 0; nn < 2; nn++)
 							{
@@ -1559,7 +1559,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									PARTICLE_DEF * pd = &particle[j];
 									pd->exist	=	true;
 									pd->zdec	=	0;
-									Vector_Copy(&pd->ov, &pos);
+									pd->ov = pos;
 									pd->move.x	=	(2.f - 4.f * rnd());
 									pd->move.y	=	(2.f - 22.f * rnd());
 									pd->move.z	=	(2.f - 4.f * rnd());
@@ -1600,7 +1600,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			{
 				long need_kill = 0;
 				float mod = (float)time_offset * Thrown[i].velocity;
-				Vector_Copy(&original_pos, &Thrown[i].position);
+				original_pos = Thrown[i].position;
 				Thrown[i].position.x += Thrown[i].vector.x * mod;
 				float gmod = 1.f - Thrown[i].velocity;
 
@@ -1612,8 +1612,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 				CheckForIgnition(&original_pos, 10.f, 0, 2);
 
-				EERIE_3D wpos;
-				Vector_Copy(&wpos, &Thrown[i].position);
+				EERIE_3D wpos = Thrown[i].position;
 				wpos.y += 20.f;
 				EERIEPOLY * ep = EEIsUnderWater(&wpos);
 
@@ -1672,7 +1671,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
 
-						Vector_Copy(&Thrown[i].position, &original_pos);
+						Thrown[i].position = original_pos;
 						j = 200;
 
 					}
@@ -1692,7 +1691,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
 
-						Vector_Copy(&Thrown[i].position, &original_pos);
+						Thrown[i].position = original_pos;
 						j = 200;
 						need_kill = 1;
 					}
@@ -1741,7 +1740,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 											if (hitpoint >= 0)
 											{
 												color	=	target->_npcdata->blood_color;
-												Vector_Copy(&pos, &target->obj->vertexlist3[hitpoint].v);
+												pos = target->obj->vertexlist3[hitpoint].v;
 											}
 
 											if (Thrown[i].source == 0)
@@ -2228,24 +2227,34 @@ bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long
 bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
 	EERIE_3D pol[3];
-	Vector_Copy(&pol[0], (EERIE_3D *)&ep->v[0]);
-	Vector_Copy(&pol[1], (EERIE_3D *)&ep->v[1]);
-	Vector_Copy(&pol[2], (EERIE_3D *)&ep->v[2]);
+	pol[0].x = ep->v[0].sx;
+	pol[0].y = ep->v[0].sy;
+	pol[0].z = ep->v[0].sz;
+	pol[1].x = ep->v[1].sx;
+	pol[1].y = ep->v[1].sy;
+	pol[1].z = ep->v[1].sz;
+	pol[2].x = ep->v[2].sx;
+	pol[2].y = ep->v[2].sy;
+	pol[2].z = ep->v[2].sz;
 
 	
 	if (ep->type & POLY_QUAD)
 	{
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
+		
+		pol[1].x = ep->v[2].sx;
+		pol[1].y = ep->v[2].sy;
+		pol[1].z = ep->v[2].sz;
+		pol[2].x = ep->v[3].sx;
+		pol[2].y = ep->v[3].sy;
+		pol[2].z = ep->v[3].sz;
 
-		Vector_Copy(&pol[1], (EERIE_3D *)&ep->v[2]);
-		Vector_Copy(&pol[2], (EERIE_3D *)&ep->v[3]);
-
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 
 		return false;
 	}
 
-	if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+	if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 
 	return false;
 }
@@ -2469,7 +2478,7 @@ bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long sour
 					pv->velocity.y *= -0.4f;
 				}
 
-				Vector_Copy(&pv->pos, &oldpos[k]);
+				pv->pos = oldpos[k];
 			}
 		}
 		else
@@ -2495,7 +2504,7 @@ bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long sour
 				pv->velocity.z *= 0.3f;
 				pv->velocity.y *= 0.4f;
 
-				Vector_Copy(&pv->pos, &oldpos[k]);
+				pv->pos = oldpos[k];
 			}
 		}
 	}
