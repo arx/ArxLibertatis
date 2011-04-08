@@ -399,7 +399,6 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	{
 		long idx_head1, idx_head2;
 		long idx_torso1, idx_torso2;
-		long idx_legs1, idx_legs2;
 
 		idx_head1 = GetActionPoint(obj1, "head2chest");
 
@@ -416,10 +415,6 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		idx_torso2 = GetActionPoint(obj2, "chest2leggings");
 
 		if (idx_torso2 < 0) return NULL;
-
-		idx_legs1 = obj1->origin;
-		idx_legs2 = obj2->origin;
-
 	}
 
 	// copy vertices

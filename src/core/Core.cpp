@@ -2950,7 +2950,6 @@ HRESULT DANAE::BeforeRun()
 
 void FirstTimeThings() {
 	
-	static long done = 0;
 	long i;
 	eyeball.exist=0;
 	WILLADDSPEECHTIME=0;
@@ -2970,7 +2969,6 @@ void FirstTimeThings() {
 	}
 
 	LastFrameTime=FrameTime;
-	done = 1;
 	return;
 }
 
@@ -5259,8 +5257,6 @@ HRESULT DANAE::Render()
 		ft=FrameTime-LastFrameTime;
 
 		FrameDiff = ft;
-		float FD;
-		FD=FrameDiff;
 		// Under 10 FPS the whole game slows down to avoid unexpected results...
 		_framedelay=(float)FrameDiff;
 	}

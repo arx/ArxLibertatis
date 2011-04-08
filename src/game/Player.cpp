@@ -3292,7 +3292,6 @@ void PlayerMovementIterate(float DeltaTime)
 			else
 				player.physics.forces.y += WORLD_GRAVITY;
 
-			float dist;
 			EERIE_3D mod_vect;
 			long mod_vect_count = -1;
 			Vector_Init(&mod_vect);
@@ -3303,8 +3302,6 @@ void PlayerMovementIterate(float DeltaTime)
 
 			if (ep)
 			{
-				dist = inter.iobj[0]->pos.y - epcentery;
-
 				if ((ep->type & POLY_LAVA) && (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) < 30))
 				{
 					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) * ( 1.0f / 30 ));

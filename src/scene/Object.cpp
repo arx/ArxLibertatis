@@ -2054,10 +2054,6 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath
 		    &eerie->vertexlist[eerie->facelist[i].vid[2]].v,
 		    &eerie->facelist[i]
 		);
-		D3DTLVERTEX * ev[3];
-		ev[0] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
-		ev[1] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
-		ev[2] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
 		float area = eerie->facelist[i].temp;
 
 		for (j = 0; j < 3; j++)

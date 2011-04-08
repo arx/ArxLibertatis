@@ -1766,7 +1766,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 
 					std::string temp2;
-					long ttt;
 
 					long player		=	0;
 					long voixoff	=	0;
@@ -1951,7 +1950,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							else
 								speechnum = ARX_SPEECH_AddSpeech(io, temp1, mood, voixoff);
 
-							ttt = GetNextWord(es, pos, temp2);
 							LogDebug <<  temp2;
 
 							if ((!LINEEND) && (speechnum >= 0))
@@ -4399,7 +4397,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 
 					std::string temp2;
-					long flag;
 
 					pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
@@ -4430,12 +4427,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 								if ((iot == inter.iobj[0]) || (iot->ioflags & IO_NPC))
 								{
-									flag = TEA_NPC_SAMPLES;
 									tex3 = "Graph\\Obj3D\\Anims\\npc\\" + temp2;
 								}
 								else
 								{
-									flag = TEA_FIX_SAMPLES;
 									tex3 = "Graph\\Obj3D\\Anims\\Fix_Inter\\" + temp2;
 								}
 
@@ -6556,7 +6551,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				if ((!strcmp(word, "++")) ||
 						(!strcmp(word, "--")))
 				{
-					SCRIPT_VAR * sv = NULL;
 					std::string temp1;
 					long	ival;
 					float	fval;
@@ -6569,11 +6563,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (!strcmp(word, "--"))
 							{
-								sv = SETVarValueLong(svar, NB_GLOBALS, temp1, ival - 1);
+								SETVarValueLong(svar, NB_GLOBALS, temp1, ival - 1);
 							}
 							else
 							{
-								sv = SETVarValueLong(svar, NB_GLOBALS, temp1, ival + 1);
+								SETVarValueLong(svar, NB_GLOBALS, temp1, ival + 1);
 							}
 
 							break;
@@ -6582,11 +6576,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (!strcmp(word, "--"))
 							{
-								sv = SETVarValueLong(esss->lvar, esss->nblvar, temp1, ival - 1);
+								SETVarValueLong(esss->lvar, esss->nblvar, temp1, ival - 1);
 							}
 							else
 							{
-								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, ival + 1.f);
+								SETVarValueFloat(esss->lvar, esss->nblvar, temp1, ival + 1.f);
 							}
 
 							break;
@@ -6596,11 +6590,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (!strcmp(word, "--"))
 							{
-								sv = SETVarValueFloat(svar, NB_GLOBALS, temp1, fval  - 1.f);
+								SETVarValueFloat(svar, NB_GLOBALS, temp1, fval  - 1.f);
 							}
 							else
 							{
-								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval + 1.f);
+								SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval + 1.f);
 							}
 
 							break;
@@ -6609,11 +6603,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (!strcmp(word, "--"))
 							{
-								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval - 1.f);
+								SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval - 1.f);
 							}
 							else
 							{
-								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval + 1.f);
+								SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval + 1.f);
 							}
 
 							break;

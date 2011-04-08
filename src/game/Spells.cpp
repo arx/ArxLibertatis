@@ -1518,7 +1518,6 @@ void ARX_SPELLS_ClearAllSymbolDraw()
 //*************************************************************************************
 void ARX_SPELLS_AnalyseSYMBOL()
 {
-	long csymb = -1;
 	long sm = atoi(SpellMoves);
 	
 	switch (sm)
@@ -1530,7 +1529,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 62498  :
 		case 62748  :
 		case 6248   :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_COSUM;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_COSUM;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1545,7 +1544,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 634236 :
 		case 624326 :
 		case 62426  :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_COMUNICATUM;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_COMUNICATUM;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1562,7 +1561,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 923    :
 		case 932    :
 		case 93     :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_FOLGORA;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_FOLGORA;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1576,7 +1575,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 42678  :
 		case 42698  :
 		case 4268   :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_SPACIUM;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_SPACIUM;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1591,7 +1590,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 9264   :
 		case 9296   :
 		case 926    :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_TERA;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_TERA;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1608,7 +1607,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 2986  :
 		case 2386  :
 		case 386   :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_CETRIUS;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_CETRIUS;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1620,7 +1619,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		// RHAA
 		case 28    :
 		case 2     :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_RHAA;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_RHAA;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1635,7 +1634,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 8632	:
 		case 8962	:
 		case 862	:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_FRIDD;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_FRIDD;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1663,7 +1662,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 				else
 					cur_arm=-1;
 
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_KAOM;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_KAOM;
 
 				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
@@ -1679,7 +1678,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 8938  :
 		case 8238  :
 		case 838   :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_STREGUM;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_STREGUM;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1690,7 +1689,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 628   :
 		case 621   :
 		case 62    :
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_MORTE;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_MORTE;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1701,7 +1700,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 962686  :
 		case 862686  :
 		case 8626862 : 
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_TEMPUS;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_TEMPUS;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1720,7 +1719,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 6126:
 		case 6136:
 		case 616: 
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_MOVIS;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_MOVIS;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1730,7 +1729,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		// NHI
 		case 46:
 		case 4:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_NHI;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_NHI;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1740,7 +1739,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		// AAM
 		case 64:
 		case 6:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_AAM;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_AAM;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1756,7 +1755,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 2368:
 		case 2689:
 		case 268:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_YOK;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_YOK;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1767,7 +1766,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 6236:
 		case 6264:
 		case 626:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_TAAR;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_TAAR;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1785,7 +1784,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 				else
 					cur_arm=-1;
 
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_MEGA;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_MEGA;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1802,7 +1801,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 314:
 		case 321:
 		case 31:
-				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_VISTA;
+				SpellSymbol[CurrSpellSymbol++]=SYMBOL_VISTA;
 
 				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -1812,7 +1811,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		// VITAE
 		case 698:
 		case 68:
-			csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_VITAE;
+			SpellSymbol[CurrSpellSymbol++]=SYMBOL_VITAE;
 
 			if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
 
@@ -3807,8 +3806,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 			
-			bool bLightInRadius = false;
-					
 			spells[i].exist = true;
 			spells[i].tolive = 20000;
 					
@@ -3877,7 +3874,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 						if (dist<=(pIgnit->GetPerimetre()))								
 						{
 								pIgnit->AddLight(ii);
-								bLightInRadius = true;
 							}
 						}
 					}
@@ -3931,7 +3927,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 			
-			bool bLightInRadius = false;
 			spells[i].exist = true;
 			spells[i].tolive = 20000;
 					
@@ -3978,7 +3973,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 						if (dist <= (pDoze->GetPerimetre())) 
 							{
 								pDoze->AddLightDoze(ii);	
-								bLightInRadius = true;
 							}
 						}
 					}
@@ -6193,13 +6187,10 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				for ( long j = -100 ; j < 100 ; j += 50 )
 				{	
-					long		lvl;
-					float		rr,		r2;
+					float		rr;
 					EERIE_3D	pos,	dir;
 
-					lvl = rnd() * 9.f + 4.f;
 					rr		=	radians( (float) i_angle );
-					r2		=	radians( (float) ( j + 100 ) * ( 1.0f / 200 ) * 360.f ); 
 					pos.x	=	target.x - EEsin(rr) * 360.f;  
 					pos.y	=	target.y;
 					pos.z	=	target.z + EEcos(rr) * 360.f;  
@@ -6339,8 +6330,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			else
 				spells[i].tolive = 2000000;
 			
-
-			float beta;
 			EERIE_3D target;
 
 			if (spells[i].caster==0)
@@ -6348,8 +6337,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				target.x=player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*300.f;
 				target.y = player.pos.y + 170.f; 
 				target.z=player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*300.f;
-				beta=MAKEANGLE(player.angle.b);
-				
 			}
 			else
 			{
@@ -6365,8 +6352,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					target.y=inter.iobj[spells[i].caster]->pos.y;
 					target.z=inter.iobj[spells[i].caster]->pos.z;					
 				}
-
-				beta=MAKEANGLE(inter.iobj[spells[i].caster]->angle.b);
 			}
 
 			if (!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target))
@@ -6660,14 +6645,12 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				pCSpellFx->spellinstance=i;
 				EERIE_3D target;
-				float beta;
 
 				if (spells[i].caster==0)
 				{
 					target.x=player.pos.x  - EEsin(radians(MAKEANGLE(player.angle.b)))*500.f;
 					target.y=player.pos.y  + 150.f;
 					target.z=player.pos.z  + EEcos(radians(MAKEANGLE(player.angle.b)))*500.f;
-					beta=player.angle.b;
 				}
 				else
 				{
@@ -6675,7 +6658,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					target.x=io->pos.x  - EEsin(radians(MAKEANGLE(io->angle.b)))*500.f;
 					target.y=io->pos.y  - 20.f;
 					target.z=io->pos.z  + EEcos(radians(MAKEANGLE(io->angle.b)))*500.f;
-					beta=io->angle.b;
 				}
 
 				pCSpellFx->SetDuration((long)(500*spells[i].caster_level));
@@ -7166,7 +7148,7 @@ void ARX_SPELLS_Update()
 {
 	
 	unsigned long tim;
-	long framediff,framediff2,framediff3;
+	long framediff,framediff3;
 
 	ucFlick++;
 
@@ -7182,7 +7164,6 @@ void ARX_SPELLS_Update()
 				ARX_SPELLS_Fizzle(i);
 
 			framediff=spells[i].timcreation+spells[i].tolive-tim;
-			framediff2=spells[i].timcreation+spells[i].tolive-spells[i].lastupdate;
 			framediff3=tim-spells[i].lastupdate;
 
 			if (framediff<0) 
