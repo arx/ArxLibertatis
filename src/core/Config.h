@@ -127,7 +127,7 @@ class Config
 		void First();
 
 		void SaveAll();
-		bool ReadAll();
+		void ReadAll();
 };
 
 extern Config* pMenuConfig;

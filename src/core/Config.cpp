@@ -895,11 +895,8 @@ void Config::SaveAll()
 
 extern bool IsNoGore( void );
 
-bool Config::ReadAll()
+void Config::ReadAll()
 {
-	bool bOk = false; 
-	bool bOkTemp;
-	int iTemp;
 	bool bWarningGore=false;
 
 	// Check if this is the first run of the game
@@ -942,59 +939,55 @@ bool Config::ReadAll()
 	bLinkMouseLookToUse = ReadConfig( Section::Input, Key::link_mouse_look_to_use, 0 );
 
 	//key
-	bool bOk2=true;
-	bOk2&=ReadConfigKey("jump",CONTROLS_CUST_JUMP);
-	bOk2&=ReadConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
-	bOk2&=ReadConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
-	bOk2&=ReadConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk2&=ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
-	bOk2&=ReadConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
-	bOk2&=ReadConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk2&=ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
-	bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
-	bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);
-	bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
+	ReadConfigKey("jump",CONTROLS_CUST_JUMP);
+	ReadConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
+	ReadConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
+	ReadConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
+	ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
+	ReadConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
+	ReadConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
+	ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
+	ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
+	ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);
+	ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
 
 
-	bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);
-	bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);
-	bOk2&=ReadConfigKey("book",CONTROLS_CUST_BOOK);
-	bOk2&=ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
-	bOk2&=ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
-	bOk2&=ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);
-	bOk2&=ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
-	bOk2&=ReadConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
-	bOk2&=ReadConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
-	bOk2&=ReadConfigKey("torch",CONTROLS_CUST_TORCH);
+	ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);
+	ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);
+	ReadConfigKey("book",CONTROLS_CUST_BOOK);
+	ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
+	ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
+	ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);
+	ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
+	ReadConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
+	ReadConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
+	ReadConfigKey("torch",CONTROLS_CUST_TORCH);
 
-	bOk2&=ReadConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
-	bOk2&=ReadConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
-	bOk2&=ReadConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
-	bOk2&=ReadConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
-	bOk2&=ReadConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
-	bOk2&=ReadConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
-	bOk2&=ReadConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
-	bOk2&=ReadConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
-	bOk2&=ReadConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
-	bOk2&=ReadConfigKey("look_up",CONTROLS_CUST_LOOKUP);
-	bOk2&=ReadConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
-	bOk2&=ReadConfigKey("strafe",CONTROLS_CUST_STRAFE);
-	bOk2&=ReadConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
+	ReadConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
+	ReadConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
+	ReadConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
+	ReadConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
+	ReadConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
+	ReadConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
+	ReadConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
+	ReadConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
+	ReadConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
+	ReadConfigKey("look_up",CONTROLS_CUST_LOOKUP);
+	ReadConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
+	ReadConfigKey("strafe",CONTROLS_CUST_STRAFE);
+	ReadConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
+	ReadConfigKey("freelook",CONTROLS_CUST_FREELOOK);
 
-	bOk2&=ReadConfigKey("freelook",CONTROLS_CUST_FREELOOK);
+	ReadConfigKey("previous",CONTROLS_CUST_PREVIOUS);
+	ReadConfigKey("next",CONTROLS_CUST_NEXT);
+	ReadConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
 
-	bOk2&=ReadConfigKey("previous",CONTROLS_CUST_PREVIOUS);
-	bOk2&=ReadConfigKey("next",CONTROLS_CUST_NEXT);
+	ReadConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
 
-	bOk2&=ReadConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
+	ReadConfigKey("minimap",CONTROLS_CUST_MINIMAP);
 
-	bOk2&=ReadConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
-
-	bOk2&=ReadConfigKey("minimap",CONTROLS_CUST_MINIMAP);
-
-	bOk2&=bOk;
-
-	if(!bOk2)
+// TODO Replace with defaulted functions above
+/*	if(!bOk2)
 	{
 		int iI=MAX_ACTION_KEY;
 
@@ -1004,7 +997,7 @@ bool Config::ReadAll()
 			sakActionKey[iI].iKey[1]=sakActionDefaultKey[iI].iKey[1];
 		}
 	}
-
+*/
 	// Get miscellaneous settings
 	bATI = ReadConfig( Section::Misc, Key::softfog, 0 );
 	bForceNoEAX = ReadConfig( Section::Misc, Key::forcenoeax, 0 );
@@ -1015,28 +1008,13 @@ bool Config::ReadAll()
 	pStringModSfx = ReadConfig(Section::Misc, Key::modsfxpak, Default::modsfxpak );
 	pStringModSpeech = ReadConfig(Section::Misc, Key::modspeechpak, Default::speechmodpak );
 
-	iTemp=ReadConfig(Section::Misc, Key::newcontrol, 0);
-	bOk&=bOkTemp;
+	int iTemp=ReadConfig(Section::Misc, Key::newcontrol, 0);
 
-	if(!bOkTemp)
-	{
-		INTERNATIONAL_MODE=1;
-	}
-	else
-	{
-		INTERNATIONAL_MODE=(iTemp)?1:0;
-	}
+	INTERNATIONAL_MODE=(iTemp)?1:0;
 
 	if(INTERNATIONAL_MODE)
 	{
 		bLinkMouseLookToUse=false;
-	}
-
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		uiGoreMode=bWarningGore?0:1;
 	}
 
 	switch(uiGoreMode)
@@ -1126,7 +1104,5 @@ bool Config::ReadAll()
 	if( iTextureResol==1 ) Project.TextureSize=2;
 
 	if( iTextureResol==0 ) Project.TextureSize=64;
-
-	return bOk;
 }
 
