@@ -875,14 +875,11 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				Vector_Normalize(&ppos);
 
 				//------- player push START
-				EERIE_3D push;
-				Vector_Copy(&push, &ppos);
+				EERIE_3D push = ppos;
 				push.x *= -dmgs * ( 1.0f / 11 );
 				push.y *= -dmgs * ( 1.0f / 30 );
 				push.z *= -dmgs * ( 1.0f / 11 );
-				PUSH_PLAYER_FORCE.x += push.x;
-				PUSH_PLAYER_FORCE.y += push.y;
-				PUSH_PLAYER_FORCE.z += push.z;
+				PUSH_PLAYER_FORCE += push;
 				//------- player push END
 
 				ppos.x *= 60.f;
@@ -908,14 +905,9 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				Vector_Normalize(&ppos);
 
 				//------- player NPC START
-				EERIE_3D push;
-				Vector_Copy(&push, &ppos);
-				push.x *= -dmgs;
-				push.y *= -dmgs;
-				push.z *= -dmgs;
-				io_target->forcedmove.x += push.x;
-				io_target->forcedmove.y += push.y;
-				io_target->forcedmove.z += push.z;
+				EERIE_3D push = ppos;
+				push *= -dmgs;
+				io_target->forcedmove += push;
 
 				//------- player NPC END
 				if (position)
@@ -1035,7 +1027,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							color = target->_npcdata->blood_color;
 						else color = 0xFFFFFFFF;
 
-						Vector_Copy(&pos, &target->obj->vertexlist3[hitpoint].v);
+						pos = target->obj->vertexlist3[hitpoint].v;
 					}
 					else ARX_CHECK_NO_ENTRY(); 
 					
@@ -1046,7 +1038,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 						if (hitpoint >= 0)
 						{
-							Vector_Copy(&posi, &target->obj->vertexlist3[hitpoint].v);
+							posi = target->obj->vertexlist3[hitpoint].v;
 							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &posi);
 
 						}
