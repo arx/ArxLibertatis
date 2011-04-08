@@ -178,7 +178,25 @@ Config::Config()
 	First();
 }
 
-//-----------------------------------------------------------------------------
+Config::Config( const std::string& _pName)
+{
+	// if _pName equals exactly "cfg"
+	if ( _pName == "cfg" )
+		pcName="cfg.ini";
+	else
+		pcName = _pName;
+
+	// Load the config file
+	std::ifstream ifs( _pName.c_str() );
+	config_map = ConfigHashMap( 100, ifs );
+
+	First();
+}
+
+Config::~Config()
+{
+
+}
 
 void Config::First()
 {
@@ -310,41 +328,6 @@ void Config::First()
 	DefaultValue();
 }
 
-//-----------------------------------------------------------------------------
-
-Config::Config( const std::string& _pName)
-{
-	// if _pName equals exactly "cfg"
-	if ( strcasecmp( _pName.c_str(), "cfg" ) == 0 )
-	{
-		pcName="cfg.ini";
-	}
-	else
-	{
-		pcName = _pName;
-	}
-
-	std::ifstream ifs( _pName.c_str() );
-	config_map = ConfigHashMap( 100, ifs );
-	
-	// TODO GetPrivateProfileString needs an absolute path
-	if(pcName.length() > 2 && pcName[1] != ':') {
-		
-		char cwd[512];
-		GetCurrentDirectory(512, cwd);
-		if(cwd[strlen(cwd)-1] != '\\' && pcName[0] != '\\') {
-			pcName = cwd + ('\\' + pcName);
-		} else {
-			pcName = cwd + pcName;
-		}
-		
-	}
-
-	First();
-}
-
-//-----------------------------------------------------------------------------
-
 void Config::DefaultValue()
 {
 	//VIDEO
@@ -382,12 +365,6 @@ void Config::DefaultValue()
 	//MISC
 	INTERNATIONAL_MODE=1;
 }
-
-Config::~Config()
-{
-}
-
-//-----------------------------------------------------------------------------
 
 void Config::SetDefaultKey()
 {
@@ -1011,9 +988,7 @@ void Config::ReadAll()
 	INTERNATIONAL_MODE = ReadConfig(Section::Misc, Key::newcontrol, 0);
 
 	if(INTERNATIONAL_MODE)
-	{
 		bLinkMouseLookToUse=false;
-	}
 
 	switch(uiGoreMode)
 	{
@@ -1031,21 +1006,18 @@ void Config::ReadAll()
 			}
 		}
 		break;
+
 	case 1:
-		{
-			GORE_MODE=1;
-		}
+		GORE_MODE=1;
 		break;
+
 	case 2:
-		{
-			GORE_MODE=0;
-		}
+		GORE_MODE=0;
 		break;
+
 	default:
-		{
-			uiGoreMode=0;
-			GORE_MODE=0;
-		}
+		uiGoreMode=0;
+		GORE_MODE=0;
 		break;
 	}
 
@@ -1089,13 +1061,9 @@ void Config::ReadAll()
 	Localisation_Init();
 
 	if(bBumpMapping)
-	{
 		EERIE_ActivateBump();
-	}
 	else
-	{
 		EERIE_DesactivateBump();
-	}
 
 	if( iTextureResol==2 ) Project.TextureSize=0;
 
