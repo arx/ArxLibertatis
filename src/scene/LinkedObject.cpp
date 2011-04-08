@@ -85,7 +85,7 @@ void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj)
 //*************************************************************************************
 //*************************************************************************************
 // Add New Data field for a linked object to an object
-long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
+static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 {
 	if (obj == NULL) return -1;
 
@@ -105,7 +105,7 @@ long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 //*************************************************************************************
 //*************************************************************************************
 // Removes a linked object Data field from an object
-void EERIE_LINKEDOBJ_Remove(EERIE_3DOBJ * obj, long num)
+static void EERIE_LINKEDOBJ_Remove(EERIE_3DOBJ * obj, long num)
 {
 	if (obj == NULL) return;
 
