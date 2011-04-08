@@ -104,9 +104,6 @@ using std::copy;
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
 extern bool ARXPausedTimer;
-extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
-extern EERIE_LIGHT * GLight[MAX_LIGHTS];
-extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 void EERIE_PORTAL_Release();
 long NEED_ANCHORS = 1;
 float Xratio = 1.f;
@@ -3157,51 +3154,38 @@ void RecalcLight(EERIE_LIGHT * el)
 	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
 }
 
-void ClearDynLights()
-{
-	long i;
-
-	for (i = 0; i < MAX_DYNLIGHTS; i++)
-	{
-		if (DynLight[i].exist)
-		{
+void ClearDynLights() {
+	
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+		if(DynLight[i].exist) {
 			DynLight[i].exist = 0;
 		}
 	}
-
-	for (i = 0; i < MAX_LIGHTS; i++)
-	{
-		if ((GLight[i]) && (GLight[i]->tl > 0))
+	
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i] && GLight[i]->tl > 0) {
 			GLight[i]->tl = 0;
+		}
 	}
-
+	
 	TOTPDL = 0;
 	TOTIOPDL = 0;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-long GetFreeDynLight()
-{
-	long i;
-
-	for (i = 1; i < MAX_DYNLIGHTS; i++)
-	{
-		if (!(DynLight[i].exist))
-		{
+long GetFreeDynLight() {
+	
+	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
+		if(!(DynLight[i].exist)) {
 			DynLight[i].type = 0;
 			DynLight[i].intensity = 1.3f;
 			DynLight[i].treat = 1;
-
 			DynLight[i].time_creation = ARXTimeUL();
-
 			DynLight[i].duration = 0;
 			DynLight[i].extras = 0;
-
 			return i;
 		}
 	}
-
+	
 	return -1;
 }
 

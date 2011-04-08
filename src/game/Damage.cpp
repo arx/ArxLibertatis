@@ -1547,11 +1547,10 @@ bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long sou
 
 void CheckForIgnition(EERIE_3D * pos, float radius, bool mode, long flag)
 {
-	long i;
 	float dist;
 
 	if (!(flag & 1))
-		for (i = 0; i < MAX_LIGHTS; i++)
+		for (size_t i = 0; i < MAX_LIGHTS; i++)
 		{
 			EERIE_LIGHT * el = GLight[i];
 
@@ -1584,7 +1583,7 @@ void CheckForIgnition(EERIE_3D * pos, float radius, bool mode, long flag)
 			}
 		}
 
-	for (i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < inter.nbmax; i++)
 	{
 		INTERACTIVE_OBJ * io = inter.iobj[i];
 

@@ -61,8 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float GLOBAL_LIGHT_FACTOR;
 EERIE_LIGHT * GLight[MAX_LIGHTS];
 EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
-long LIGHTPOWERUP = 0;
-float LPpower = 3.f;
 
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 long TOTPDL = 0;
@@ -79,14 +77,14 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 bool ValidDynLight(long num)
 {
 	if (	(num >= 0)
-        &&	(num < MAX_DYNLIGHTS)
+        &&	((size_t)num < MAX_DYNLIGHTS)
         &&	DynLight[num].exist)
 		return true;
 
 	return false;
 }
 extern float GLOBAL_LIGHT_FACTOR;
-void PrecalcIOLighting(EERIE_3D * pos, float radius, long flags)
+void PrecalcIOLighting(const EERIE_3D * pos, float radius, long flags)
 {
 	static EERIE_3D lastpos;
 
@@ -110,8 +108,8 @@ void PrecalcIOLighting(EERIE_3D * pos, float radius, long flags)
 
 	TOTIOPDL = 0;
 
-	for (long i = 0; i < MAX_LIGHTS; i++)
-	{
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		
 		EERIE_LIGHT * el = GLight[i];
 
 		if ((el)  && (el->exist) && (el->status)
@@ -131,7 +129,7 @@ void PrecalcIOLighting(EERIE_3D * pos, float radius, long flags)
 			
 				TOTIOPDL++;
 
-				if (TOTIOPDL >= MAX_DYNLIGHTS) TOTIOPDL--;
+				if ((size_t)TOTIOPDL >= MAX_DYNLIGHTS) TOTIOPDL--;
 			}
 		}
 	}
@@ -149,8 +147,8 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	epg[3] = epg[2] = epg[1] = epg[0] = 0; 
 	epb[3] = epb[2] = epb[1] = epb[0] = 0; 
 
-	for (long i = 0; i < MAX_LIGHTS; i++)
-	{
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		
 		EERIE_LIGHT * el = GLight[i];
 
 		if ((el) && (el->treat) && (el->exist) && (el->status) 
@@ -192,37 +190,29 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	}
 }
 
-void EERIE_LIGHT_TranslateSelected(EERIE_3D * trans)
-{
-	for (long i = 0; i < MAX_LIGHTS; i++)
-	{
-		if (GLight[i] != NULL)
-			if (GLight[i]->selected)
-			{
-				if (GLight[i]->tl > 0) DynLight[GLight[i]->tl].exist = 0;
-
-				GLight[i]->tl = -1;
-				GLight[i]->pos.x += trans->x;
-				GLight[i]->pos.y += trans->y;
-				GLight[i]->pos.z += trans->z;
+void EERIE_LIGHT_TranslateSelected(const EERIE_3D * trans) {
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i] && GLight[i]->selected) {
+			if(GLight[i]->tl > 0) {
+				DynLight[GLight[i]->tl].exist = 0;
 			}
+			GLight[i]->tl = -1;
+			GLight[i]->pos += *trans;
+		}
 	}
 }
-void EERIE_LIGHT_UnselectAll()
-{
-	for (long i = 0; i < MAX_LIGHTS; i++)
-	{
-		if (GLight[i] != NULL)
-			if ((GLight[i]->exist) && (GLight[i]->treat))
-			{
-				GLight[i]->selected = 0;
-			}
+
+void EERIE_LIGHT_UnselectAll() {
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i] && GLight[i]->exist && GLight[i]->treat) {
+			GLight[i]->selected = 0;
+		}
 	}
 }
 
 void EERIE_LIGHT_ClearByIndex(long num)
 {
-	if ((num >= 0) && (num < MAX_LIGHTS))
+	if ((num >= 0) && ((size_t)num < MAX_LIGHTS))
 	{
 		if (GLight[num] != NULL)
 		{
@@ -233,87 +223,83 @@ void EERIE_LIGHT_ClearByIndex(long num)
 		}
 	}
 }
-void EERIE_LIGHT_ClearAll()
-{
-	for (long i = 0; i < MAX_LIGHTS; i++)
-	{
+
+void EERIE_LIGHT_ClearAll() {
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT_ClearByIndex(i);
 	}
 }
-void EERIE_LIGHT_ClearSelected()
-{
-	for (long i = 0; i < MAX_LIGHTS; i++)
-	{
-		if (GLight[i] != NULL)
-			if (GLight[i]->selected)
-			{
-				EERIE_LIGHT_ClearByIndex(i);
-			}
+
+void EERIE_LIGHT_ClearSelected() {
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i] && GLight[i]->selected) {
+			EERIE_LIGHT_ClearByIndex(i);
+		}
 	}
 }
 
-void EERIE_LIGHT_GlobalInit()
-{
+void EERIE_LIGHT_GlobalInit() {
+	
 	static long init = 0;
-
-	if (!init)
-	{
+	
+	if(!init) {
 		memset(GLight, 0, sizeof(EERIE_LIGHT *) * MAX_LIGHTS);
-
 		init = 1;
 		return;
 	}
-
-	for (long i = 0; i < MAX_LIGHTS; i++)
-		if (GLight[i])
-		{
-			if (GLight[i]->tl > 0) DynLight[GLight[i]->tl].exist = 0;
-
+	
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i]) {
+			if(GLight[i]->tl > 0) {
+				DynLight[GLight[i]->tl].exist = 0;
+			}
 			free(GLight[i]);
 			GLight[i] = NULL;
-
 		}
+	}
 }
 
-long EERIE_LIGHT_GetFree()
-{
-	for (long i = 0; i < MAX_LIGHTS; i++)
-	{
-		if (!GLight[i])
-		{
+long EERIE_LIGHT_GetFree() {
+	
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(!GLight[i]) {
 			return i;
 		}
 	}
-
+	
 	return -1;
 }
 
-long EERIE_LIGHT_Create()
-{
-	for (unsigned long i(0); i < MAX_LIGHTS; i++)
-		if (!GLight[i])
-		{
+long EERIE_LIGHT_Create() {
+	
+	for (size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(!GLight[i]) {
+			
 			GLight[i] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
-
-			if (!GLight[i]) return -1;
-
+			if(!GLight[i]) {
+				return -1;
+			}
+			
 			memset(GLight[i], 0, sizeof(EERIE_LIGHT));
 			GLight[i]->sample = ARX_SOUND_INVALID_RESOURCE;
 			GLight[i]->tl = -1;
 			return i;
 		}
-
+	}
+	
 	return -1;
 }
 
 
-long EERIE_LIGHT_Count()
-{
+long EERIE_LIGHT_Count() {
+	
 	long count = 0;
-
-	for (long i = 0; i < MAX_LIGHTS; i++)
-		if (GLight[i] && !(GLight[i]->type & TYP_SPECIAL1)) count++;
-
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i] && !(GLight[i]->type & TYP_SPECIAL1)) {
+			count++;
+		}
+	}
+	
 	return count;
 }
 
@@ -330,15 +316,12 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 	}
 }
 
-void EERIE_LIGHT_MoveAll(EERIE_3D * trans)
-{
-	for (long i = 0; i < MAX_LIGHTS; i++)
-		if (GLight[i] != NULL)
-		{
-			GLight[i]->pos.x += trans->x;
-			GLight[i]->pos.y += trans->y;
-			GLight[i]->pos.z += trans->z;
+void EERIE_LIGHT_MoveAll(const EERIE_3D * trans) {
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i]) {
+			GLight[i]->pos += *trans;
 		}
+	}
 }
 
 float BIGLIGHTPOWER = 0.f;
@@ -592,7 +575,7 @@ void TreatBackgroundDynlights()
 {
 	long n;
 
-	for (long i = 0; i < MAX_LIGHTS; i++)
+	for (size_t i = 0; i < MAX_LIGHTS; i++)
 	{
 		if ((GLight[i] != NULL) && (GLight[i]->extras & EXTRAS_SEMIDYNAMIC))
 		{
@@ -698,7 +681,6 @@ void TreatBackgroundDynlights()
 //-----------------------------------------------------------------------------
 void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 {
-	long i;		// iterator
 
 	TreatBackgroundDynlights();
 	TOTPDL = 0;
@@ -708,7 +690,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 	float fx1 = ACTIVEBKG->Xdiv * (float)x1;
 	float fz1 = ACTIVEBKG->Zdiv * (float)z1;
 
-	for (i = 0; i < MAX_DYNLIGHTS; i++)
+	for (size_t i = 0; i < MAX_DYNLIGHTS; i++)
 	{
 		EERIE_LIGHT * el = &DynLight[i];
 
@@ -731,7 +713,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 				PDL[TOTPDL] = el;
 				TOTPDL++;
 
-				if (TOTPDL >= MAX_DYNLIGHTS) TOTPDL--;
+				if ((size_t)TOTPDL >= MAX_DYNLIGHTS) TOTPDL--;
 			}
 			else if (el->treat) el->treat = 0;
 
@@ -797,7 +779,6 @@ extern long LIGHT_THREAD_STATUS;
 extern long PAUSED_PRECALC;
 void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 {
-	long i, j;		// iterators
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
  
@@ -816,7 +797,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	{
 		if (LIGHT_THREAD_STATUS == 3) return;
 
-		for (i = 0; i < MAX_LIGHTS; i++)
+		for (size_t i = 0; i < MAX_LIGHTS; i++)
 		{
 			if (GLight[i] != NULL)
 			{
@@ -842,8 +823,8 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 		if (LIGHT_THREAD_STATUS == 3) return;
 
-		for (j = minz; j <= maxz; j++)
-			for (i = minx; i <= maxx; i++)
+		for (long j = minz; j <= maxz; j++)
+			for (long i = minx; i <= maxx; i++)
 			{
 				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
@@ -856,8 +837,8 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 		if (LIGHT_THREAD_STATUS == 3) return;
 
-		for (j = minz; j <= maxz; j++)
-			for (i = minx; i <= maxx; i++)
+		for (long j = minz; j <= maxz; j++)
+			for (long i = minx; i <= maxx; i++)
 			{
 				if (LIGHT_THREAD_STATUS == 3) return;
 
@@ -888,8 +869,8 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 		float totr, totg, totb;
 		float tr, tg, tb, tcd, tc;
 
-		for (j = minz; j <= maxz; j++)
-			for (i = minx; i <= maxx; i++)
+		for (long j = minz; j <= maxz; j++)
+			for (long i = minx; i <= maxx; i++)
 			{
 				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
@@ -964,24 +945,24 @@ void _RecalcLightZone(float x, float z, long siz) {
 
 	i = x * ACTIVEBKG->Xmul;
 	j = z * ACTIVEBKG->Zmul;
-
+	
 	x0 = i - siz;
 	x1 = i + siz;
 	z0 = j - siz;
 	z1 = j + siz;
-
+	
 	if (x0 < 2) x0 = 2;
 	else if (x0 >= ACTIVEBKG->Xsize - 2) x0 = ACTIVEBKG->Xsize - 3;
-
+	
 	if (x1 < 2) x1 = 0;
 	else if (x1 >= ACTIVEBKG->Xsize - 2) x1 = ACTIVEBKG->Xsize - 3;
-
+	
 	if (z0 < 2) z0 = 0;
 	else if (z0 >= ACTIVEBKG->Zsize - 2) z0 = ACTIVEBKG->Zsize - 3;
-
+	
 	if (z1 < 2) z1 = 0;
 	else if (z1 >= ACTIVEBKG->Zsize - 2) z1 = ACTIVEBKG->Zsize - 3;
-
+	
 	LightMode oldml = ModeLight;
 	ModeLight &= ~MODE_RAYLAUNCH;
 	EERIEPrecalcLights(x0, z0, x1, z1);
@@ -991,48 +972,48 @@ void _RecalcLightZone(float x, float z, long siz) {
 void RecalcLightZone(float x, float z, long siz) {
 	
 	long i, j, x0, x1, z0, z1;
-
+	
 	i = x * ACTIVEBKG->Xmul;
 	j = z * ACTIVEBKG->Zmul;
+	
 	x0 = i - siz;
 	x1 = i + siz;
 	z0 = j - siz;
 	z1 = j + siz;
-
+	
 	if (x0 < 2) x0 = 2;
 	else if (x0 >= ACTIVEBKG->Xsize - 2) x0 = ACTIVEBKG->Xsize - 3;
-
+	
 	if (x1 < 2) x1 = 0;
 	else if (x1 >= ACTIVEBKG->Xsize - 2) x1 = ACTIVEBKG->Xsize - 3;
 
 	if (z0 < 2) z0 = 0;
 	else if (z0 >= ACTIVEBKG->Zsize - 2) z0 = ACTIVEBKG->Zsize - 3;
-
+	
 	if (z1 < 2) z1 = 0;
 	else if (z1 >= ACTIVEBKG->Zsize - 2) z1 = ACTIVEBKG->Zsize - 3;
-
+	
 	LaunchLightThread(x0, z0, x1, z1);
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void EERIERemovePrecalcLights()
-{
-	long i, j;
+void EERIERemovePrecalcLights() {
+	
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
  
-	for (i = 0; i < MAX_LIGHTS; i++) 	if (GLight[i] != NULL) GLight[i]->treat = 1;
-
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if (GLight[i] != NULL) GLight[i]->treat = 1;
+	}
+	
+	for(int j = 0; j < ACTIVEBKG->Zsize; j++) {
+		for(int i = 0; i < ACTIVEBKG->Xsize; i++) {
+			
 			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
+			
+			for (long k = 0; k < eg->nbpoly; k++) {
 				ep = &eg->polydata[k];
 				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = D3DCOLORWHITE;
 			}
 		}
+	}
 }

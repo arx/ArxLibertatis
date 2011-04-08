@@ -2570,11 +2570,8 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }
 
-//-----------------------------------------------------------------------------
-void RestoreAllLightsInitialStatus()
-{
-	for (long i=0;i<MAX_LIGHTS;i++)
-	{
+void RestoreAllLightsInitialStatus() {
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if ( (GLight[i]!=NULL) )
 		{
 			GLight[i]->status=1;
@@ -2607,8 +2604,7 @@ void TreatBackgroundActions()
 
 	float fZFar=ACTIVECAM->cdepth*fZFogEnd*1.3f;	
 
-	for (long i=0;i<MAX_LIGHTS;i++)
-	{
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * gl=GLight[i];
 
 		if (gl==NULL) continue;

@@ -171,7 +171,6 @@ extern long SPECIAL_DRAGINTER_RENDER;
 extern HWND		PRECALC;
 extern HWND		CDP_LIGHTOptions;
 extern HWND		CDP_FogOptions;
-extern EERIE_LIGHT *PDL[MAX_DYNLIGHTS];
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bGameNotFirstLaunch;
@@ -2957,7 +2956,6 @@ HRESULT DANAE::BeforeRun()
 void FirstTimeThings() {
 	
 	static long done = 0;
-	long i;
 	eyeball.exist=0;
 	WILLADDSPEECHTIME=0;
 	WILLADDSPEECH.clear();
@@ -2969,10 +2967,8 @@ void FirstTimeThings() {
 
 	_NB_++;
 
-	for (i=0;i<MAX_DYNLIGHTS;i++)
-	{
-		if ((DynLight[i].exist))
-			DynLight[i].exist=0;
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+		DynLight[i].exist = 0;
 	}
 
 	LastFrameTime=FrameTime;
@@ -7874,12 +7870,9 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					ARX_TIME_Pause();
 					Pause(true);
 
-					if (OKBox("Remove Casts Shadows Flag from all Lights ?","DANAE Confirm Box"))
-					{
-						for (long i=0;i<MAX_LIGHTS;i++)
-						{
-							if (GLight[i]!=NULL)
-							{
+					if(OKBox("Remove Casts Shadows Flag from all Lights ?","DANAE Confirm Box")) {
+						for(size_t i=0;i<MAX_LIGHTS;i++) {
+							if(GLight[i]) {
 								GLight[i]->extras |= EXTRAS_NOCASTED;
 							}
 						}

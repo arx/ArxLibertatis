@@ -3700,8 +3700,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				pIgnit->Create(&target, fPerimeter, 500);
 				CheckForIgnition(&target,fPerimeter,1,1);
 
-				for (long ii=0;ii<MAX_LIGHTS;ii++)
-				{
+				for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
 					if (GLight[ii]==NULL) continue;
 
 					if ( (GLight[ii]->extras & EXTRAS_EXTINGUISHABLE)
@@ -3789,8 +3788,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				pDoze->CreateDoze(&target, fPerimeter, 500);						
 				CheckForIgnition(&target,fPerimeter,0,1);		
 
-				for (long ii=0;ii<MAX_LIGHTS;ii++)
-				{
+				for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
 					if (GLight[ii]==NULL) continue;
 
 					if ( (GLight[ii]->extras & EXTRAS_EXTINGUISHABLE)

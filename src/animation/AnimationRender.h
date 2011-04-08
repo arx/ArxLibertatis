@@ -37,6 +37,9 @@ struct EERIE_FACE;
 struct EERIE_RGB;
 class TextureContainer;
 
+extern long LIGHTPOWERUP;
+extern float LPpower;
+
 #define CEDRIC 1
 #define REFERENCE_FPS (20.0f)
 #define ANIMQUATTYPE_FIRST_PERSON 2

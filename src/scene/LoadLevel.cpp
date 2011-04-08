@@ -178,15 +178,14 @@ void BIG_PURGE()
 				}
 		}
 
-		for (int i = 0; i < MAX_LIGHTS; i++)
-		{
-			if (GLight[i])
-				if (CanPurge(&GLight[i]->pos))
-				{
+		for(size_t i = 0; i < MAX_LIGHTS; i++) {
+			if(GLight[i]) {
+				if(CanPurge(&GLight[i]->pos)) {
 					// purge light
 					EERIE_LIGHT_ClearByIndex(i);
 					LIGHT_count++;
 				}
+			}
 		}
 
 		for (int i = nbARXpaths - 1; i >= 0; i--)
@@ -1578,8 +1577,7 @@ void DanaeClearLevel(long flag)
 
 	INTERTRANSPOLYSPOS = 0;
 
-	for (long i = 0; i < MAX_DYNLIGHTS; i++) // DynLight 0 is reserved for torch & flares !
-	{
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		DynLight[i].exist = 0;
 	}
 

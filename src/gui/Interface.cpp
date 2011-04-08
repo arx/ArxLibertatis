@@ -2412,8 +2412,7 @@ bool DANAE::ManageEditorControls()
 
 			if (Project.telekinesis) fMaxdist = 850;
 
-			for (long i=0;i<MAX_LIGHTS;i++)
-			{
+			for(size_t i = 0; i < MAX_LIGHTS; i++) {
 				if ((GLight[i]!=NULL) &&
 					(GLight[i]->exist) &&
 					(EEDistance3D(&GLight[i]->pos, &player.pos) <= fMaxdist) &&
@@ -2497,8 +2496,7 @@ bool DANAE::ManageEditorControls()
 
 		if (Project.telekinesis) fMaxdist = 850;
 
-		for (long i=0;i<MAX_LIGHTS;i++)
-		{
+		for(size_t i = 0; i < MAX_LIGHTS; i++) {
 			if ((GLight[i]!=NULL) &&
 				(GLight[i]->exist) &&
 
@@ -2900,8 +2898,7 @@ bool DANAE::ManageEditorControls()
 			{
 				PrecalcIOLighting(NULL,0,1);
 
-				for (long i=0;i<MAX_LIGHTS;i++)
-				{
+				for(size_t i = 0; i < MAX_LIGHTS; i++) {
 					if (GLight[i]!=NULL)
 					if (GLight[i]->exist)
 						{

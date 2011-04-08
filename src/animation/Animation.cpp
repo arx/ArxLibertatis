@@ -103,9 +103,6 @@ long MAX_LLIGHTS=18;
 //-----------------------------------------------------------------------------
 extern long FINAL_RELEASE;
 extern EERIE_CAMERA TCAM[32];
-extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
-extern EERIE_LIGHT * GLight[MAX_LIGHTS];
-extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern QUAKE_FX_STRUCT QuakeFx;
 extern float _framedelay;
 extern float FORCED_REDUCTION_VALUE;

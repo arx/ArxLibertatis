@@ -589,15 +589,14 @@ static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 			asi->nb_inter++;
 		}
 	}
-
-	for (int i = 0; i < MAX_LIGHTS; i++)
-	{
+	
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * el = GLight[i];
-
-		if ((el != NULL) && (!(el->type & TYP_SPECIAL1)))
+		if(el && !(el->type & TYP_SPECIAL1)) {
 			asi->nb_lights++;
+		}
 	}
-
+	
 	char savefile[256];
 	sprintf(savefile, "lvl%03ld.sav", num);
 
@@ -664,8 +663,8 @@ retry:
 		free(playlist);
 	}
 
-	for (int i = 0; i < MAX_LIGHTS; i++)
-	{
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		
 		EERIE_LIGHT * el = GLight[i];
 
 		if ((el != NULL) && (!(el->type & TYP_SPECIAL1)))
@@ -1820,8 +1819,8 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 		pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		long count = 0;
 
-		for (long j = 0; j < MAX_LIGHTS; j++)
-		{
+		for(size_t j = 0; j < MAX_LIGHTS; j++) {
+			
 			EERIE_LIGHT * el = GLight[j];
 
 			if ((el != NULL) && (!(el->type & TYP_SPECIAL1)))
