@@ -157,9 +157,9 @@ namespace
 	void ARX_SetAntiAliasing();
 
 	/* Externs */
-	extern long INTERNATIONAL_MODE;
-	extern CDirectInput * pGetInfoDirectInput;
-	extern long GORE_MODE;
+extern long INTERNATIONAL_MODE;
+extern CDirectInput * pGetInfoDirectInput;
+extern long GORE_MODE;
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
 extern bool bForceNoEAX;
