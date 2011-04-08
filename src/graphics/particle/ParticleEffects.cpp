@@ -730,7 +730,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTI
 
 	if (	(io)
 		&&	(io->ioflags & IO_NPC)	)
-		Vector_Copy(&io->_npcdata->last_splat_pos,pos);
+		io->_npcdata->last_splat_pos = *pos;
 }
 
 //-----------------------------------------------------------------------------
@@ -1348,8 +1348,7 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 		}
 	}
 
-	EERIE_3D pos;
-	Vector_Copy(&pos,poss);
+	EERIE_3D pos = *poss;
 
 	typ=0;
 	x0 = poss->x * ACTIVEBKG->Xmul;
@@ -1455,8 +1454,7 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 void Add3DBoom(EERIE_3D * position) {
 	
 	float dist=Distance3D(player.pos.x,player.pos.y-160.f,player.pos.z,position->x,position->y,position->z);
-	EERIE_3D poss;
-	Vector_Copy(&poss,position);
+	EERIE_3D poss = *position;
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &poss);
 
 	if (dist<300)
@@ -2016,12 +2014,10 @@ void LaunchFireballBoom(EERIE_3D * poss,float level,EERIE_3D * direction,EERIE_R
 			PARTICLE_DEF * pd=&particle[j];
 			pd->special=FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
 			pd->exist=true;
-			pd->ov.x=poss->x;
-			pd->ov.y=poss->y;
-			pd->ov.z=poss->z;
+			pd->ov = *poss;
 
 			if (direction)
-				Vector_Copy(&pd->move,direction);
+				pd->move = *direction;
 			else
 			{
 				pd->move.x = 0.f; 
