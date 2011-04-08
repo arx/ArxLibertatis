@@ -1013,13 +1013,10 @@ void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 
 	while (m>0)
 	{
-		EERIE_3D tpos;
 		float dep=std::min(m,30.f);
-		tpos.x=cpos.x+vect.x*dep;
-		tpos.y=cpos.y+vect.y*dep;
-		tpos.z=cpos.z+vect.z*dep;
+		EERIE_3D tpos = cpos + (vect * dep);
 		EERIEDraw3DLine(&cpos,&tpos,col);
-		Vector_Copy(&cpos,&tpos);
+		cpos = tpos;
 		m-=dep;
 	}
 }
