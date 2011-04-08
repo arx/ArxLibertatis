@@ -312,8 +312,7 @@ void ARX_FOGS_Render() {
 //*************************************************************************************
 void ARX_FOGS_RenderAll()
 {
-	EERIE_3D angle;
-	Vector_Init(&angle); 
+	EERIE_3D angle(0, 0, 0);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

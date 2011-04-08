@@ -1702,9 +1702,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		// Initialize the bone
 		Quat_Init(&eobj->c_data->bones[0].quatinit);
 		Quat_Init(&eobj->c_data->bones[0].quatanim);
-		Vector_Init(&eobj->c_data->bones[0].scaleinit);
-		Vector_Init(&eobj->c_data->bones[0].scaleanim);
-		Vector_Init(&eobj->c_data->bones[0].transinit);
+		eobj->c_data->bones[0].scaleinit.clear();
+		eobj->c_data->bones[0].scaleanim.clear();
+		eobj->c_data->bones[0].transinit.clear();
 		eobj->c_data->bones[0].transinit_global = eobj->c_data->bones[0].transinit;
 		eobj->c_data->bones[0].original_group = NULL;
 		eobj->c_data->bones[0].father = -1;
@@ -1735,9 +1735,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 
 			Quat_Init(&eobj->c_data->bones[i].quatinit);
 			Quat_Init(&eobj->c_data->bones[i].quatanim);
-			Vector_Init(&eobj->c_data->bones[i].scaleinit);
-			Vector_Init(&eobj->c_data->bones[i].scaleanim);
-			Vector_Init(&eobj->c_data->bones[i].transinit, v_origin->v.x, v_origin->v.y, v_origin->v.z);
+			eobj->c_data->bones[i].scaleinit.clear();
+			eobj->c_data->bones[i].scaleanim.clear();
+			eobj->c_data->bones[i].transinit = EERIE_3D(v_origin->v.x, v_origin->v.y, v_origin->v.z);
 			eobj->c_data->bones[i].transinit_global = eobj->c_data->bones[i].transinit;
 			eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
 			eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
@@ -1803,8 +1803,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				/* Translation */
 				TransformVertexQuat(&obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].transinit, &obj->bones[i].transanim);
 				Vector_Add(&obj->bones[i].transanim, &obj->bones[obj->bones[i].father].transanim, &obj->bones[i].transanim);
-				/* Scale */
-				Vector_Init(&obj->bones[i].scaleanim, 1.0f, 1.0f, 1.0f);
 			}
 			else
 			{
@@ -1812,9 +1810,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				Quat_Copy(&obj->bones[i].quatanim, &obj->bones[i].quatinit);
 				/* Translation */
 				obj->bones[i].transanim = obj->bones[i].transinit;
-				/* Scale */
-				Vector_Init(&obj->bones[i].scaleanim, 1.0f, 1.0f, 1.0f);
 			}
+			obj->bones[i].scaleanim = EERIE_3D(1.0f, 1.0f, 1.0f);
 		}
 
 		eobj->vertexlocal = new EERIE_3DPAD[eobj->vertexlist.size()];
@@ -2127,8 +2124,7 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 
 	if ((head_idx >= 0) && (neck_orgn >= 0))
 	{
-		EERIE_3D center;
-		Vector_Init(&center);
+		EERIE_3D center(0, 0, 0);
 		EERIE_3D origin = eerie->vertexlist[neck_orgn].v;
 		float count = (float)eerie->grouplist[head_idx].indexes.size();
 

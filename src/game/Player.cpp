@@ -3248,8 +3248,7 @@ void PlayerMovementIterate(float DeltaTime)
 		player.physics.forces.y += mv2.y;
 		player.physics.forces.z += mv2.z;
 
-		EERIE_3D modifplayermove;
-		Vector_Init(&modifplayermove);
+		EERIE_3D modifplayermove(0, 0, 0);
 
 		// No Vertical Interpolation
 		if (player.jumpphase)
@@ -3264,9 +3263,8 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.forces.y += WORLD_GRAVITY;
 
 			float dist;
-			EERIE_3D mod_vect;
+			EERIE_3D mod_vect(0, 0, 0);
 			long mod_vect_count = -1;
-			Vector_Init(&mod_vect);
 
 			// Check for LAVA Damage !!!
 			float epcentery;
@@ -3992,7 +3990,7 @@ void ARX_GAME_Reset(long type)
 	ROTATE_START = 0;
 	BLOCK_PLAYER_CONTROLS = 0;
 	HERO_SHOW_1ST = -1;
-	Vector_Init(&PUSH_PLAYER_FORCE);
+	PUSH_PLAYER_FORCE.clear();
 	player.jumplastposition = 0;
 	player.jumpstarttime = 0;
 	player.jumpphase = 0;

@@ -511,7 +511,7 @@ float CMagicMissile::Render()
 		stitecolor.b = 0.5f;
 	}
 
-	Vector_Init(&stitescale, 1, 1, 1);
+	stitescale = EERIE_3D(1, 1, 1);
 	{
 		if ((smissile))
 			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);

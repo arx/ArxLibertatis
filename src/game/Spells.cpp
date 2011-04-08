@@ -3632,12 +3632,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (pCSpellFx != NULL)
 			{
-				EERIE_3D source_position,vector;
+				EERIE_3D source_position(0, 0, 0);
+				EERIE_3D vector(0, 0, 0);
 				pCSpellFx->spellinstance=i;
-				Vector_Init(&source_position);
-				Vector_Init(&vector);
 				pCSpellFx->SetDuration((unsigned long) (6000));
-				pCSpellFx->Create(source_position, vector );				
+				pCSpellFx->Create(source_position, vector);
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
 			}				
@@ -5035,8 +5034,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
-				Vector_Init(&target);					
+				EERIE_3D target(0, 0, 0);
 				pCSpellFx->SetDuration((unsigned long) (8000));
 				float ang;
 
@@ -6755,7 +6753,7 @@ void ARX_SPELLS_Kill(long i) {
 					pd->move.z=2.f-4.f*rnd();
 					pd->siz=28.f;
 					pd->tolive=2000+(unsigned long)(float)(rnd()*4000.f);
-					Vector_Init(&pd->scale,12.f,12.f,12.f);
+					pd->scale = EERIE_3D(12.f, 12.f, 12.f);
 					pd->timcreation=spells[i].lastupdate;
 					pd->tc=tc4;
 					pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
@@ -7548,8 +7546,7 @@ void ARX_SPELLS_Update()
 						{
 							if (rnd()<0.9f)
 							{
-								EERIE_3D move;
-								Vector_Init(&move);
+								EERIE_3D move(0, 0, 0);
 								float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
 
 								if (dd>spells[i].caster_level) dd=spells[i].caster_level;
@@ -7624,8 +7621,7 @@ void ARX_SPELLS_Update()
 						if (ValidIONum(spells[i].target))
 						{
 							pBless->eSrc = inter.iobj[spells[i].target]->pos;
-							EERIE_3D angle;
-							Vector_Init(&angle);
+							EERIE_3D angle(0, 0, 0);
 
 							if (spells[i].target==0)
 								angle.b=player.angle.b;	
@@ -7647,8 +7643,7 @@ void ARX_SPELLS_Update()
 			if (spells[i].pSpellFx)
 			{
 				CCurse * curse=(CCurse *)spells[i].pSpellFx;
-				EERIE_3D target;
-				Vector_Init(&target);
+				EERIE_3D target(0, 0, 0);
 					
 				if ((spells[i].target>=0) && (inter.iobj[spells[i].target]))
 				{

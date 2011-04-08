@@ -120,8 +120,8 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 
 	{
-		EERIE_3D ppos, pos, from, to;
-		Vector_Init(&from, 0.f, 0.f, -90.f);
+		EERIE_3D ppos, pos, to;
+		EERIE_3D from(0.f, 0.f, -90.f);
 		Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
 		ppos.x = io->pos.x;
 		pos.x = ppos.x + to.x;
@@ -3509,15 +3509,13 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	
 
 	if ((io->forcedmove.x == 0.f) && (io->forcedmove.y == 0.f) && (io->forcedmove.z == 0.f))
-		Vector_Init(&ForcedMove);
+		ForcedMove.clear();
 	else
 	{
 		EERIE_3D vect = io->forcedmove;
 		float d = TRUEVector_Normalize(&vect);
 		float dd = min(d, (float)FrameDiff * ( 1.0f / 6 ));
-		ForcedMove.x = vect.x * dd;
-		ForcedMove.y = vect.y * dd;
-		ForcedMove.z = vect.z * dd;
+		ForcedMove = vect * dd;
 	}
 
 	// Sets Target position to desired position...

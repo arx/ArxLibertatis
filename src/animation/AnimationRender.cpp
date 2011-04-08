@@ -214,8 +214,8 @@ static	void	Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io, long typ)
 static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, long typ, EERIE_3D & ftr, EERIE_3D & ftr2)
 {
 	// Resets Frame Translate
-	Vector_Init(&ftr);
-	Vector_Init(&ftr2);
+	ftr.clear();
+	ftr2.clear();
 
 
 	// Fill frame translate values with multi-layer translate informations...
@@ -291,10 +291,8 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 		// Use calculated value to notify the Movement engine of the translation to do
 		if (io->ioflags & IO_NPC)
 		{
-			Vector_Init(&ftr);
-			io->move.x -= io->lastmove.x;
-			io->move.y -= io->lastmove.y;
-			io->move.z -= io->lastmove.z;
+			ftr.clear();
+			io->move -= io->lastmove;
 		}
 		// Must recover translations for NON-NPC IO
 		else
@@ -305,9 +303,7 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 			}
 		}
 
-		io->lastmove.x = ftr2.x;
-		io->lastmove.y = ftr2.y;
-		io->lastmove.z = ftr2.z;
+		io->lastmove = ftr2;
 	}
 }
 
@@ -451,9 +447,8 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 				ang.b = (ang.b);
 				ang.g = (ang.g);
 				EERIEMATRIX mat;
-				EERIE_3D vect, up;
-				Vector_Init(&vect, 0, 0, 1);
-				Vector_Init(&up, 0, 1, 0);
+				EERIE_3D vect(0, 0, 1);
+				EERIE_3D up(0, 1, 0);
 				VRotateY(&vect, ang.b);
 				VRotateX(&vect, ang.a);
 				VRotateZ(&vect, ang.g);
@@ -2850,12 +2845,12 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 	}
 
 	llightsInit();
-	EERIE_3D tv;
+	EERIE_3D tv = *pos;
 
 	if ((io) && (io->ioflags & IO_ITEM))
-		Vector_Init(&tv, pos->x, pos->y - 60.f, pos->z);
+		tv.y -= 60.f;
 	else
-		Vector_Init(&tv, pos->x, pos->y - 90.f, pos->z);
+		tv.y -= 90.f;
 
 	for (long i = 0; i < TOTIOPDL; i++)
 	{
@@ -3046,12 +3041,12 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 		}
 	}
 
-	EERIE_3D tv;
+	EERIE_3D tv = *pos;
 
 	if ((io) && (io->ioflags & IO_ITEM))
-		Vector_Init(&tv, pos->x, pos->y - 60.f, pos->z);
+		tv.y -= 60.f;
 	else
-		Vector_Init(&tv, pos->x, pos->y - 90.f, pos->z);
+		tv.y -= 90.f;
 
 
 	for (long l = 0; l != MAX_LLIGHTS; l++)

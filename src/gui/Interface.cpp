@@ -10005,8 +10005,7 @@ long Manage3DCursor(long flags)
 				pos.y=player.pos.y;
 
 				{
-					EERIE_3D objcenter;
-					Vector_Init(&objcenter);
+					EERIE_3D objcenter(0, 0, 0);
 					float maxdist= 0.f;
 					float miny=  99999999.f;
 					float maxy= -99999999.f;

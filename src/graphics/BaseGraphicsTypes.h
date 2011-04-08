@@ -57,7 +57,7 @@ struct EERIE_3D {
 	}
 	
 	inline void clear() {
-		x = y = z = 0;
+		x = y = z = 0.f;
 	}
 	
 	inline EERIE_3D operator-() const {

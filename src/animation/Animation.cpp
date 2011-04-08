@@ -2356,8 +2356,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 			Insertllight(PDL[i], EEDistance3D(&PDL[i]->pos, &pos)); 
 		}
 
-		EERIE_3D l_pos;
-		Vector_Init(&l_pos,pos.x,pos.y-60.f,pos.z);
+		EERIE_3D l_pos(pos.x, pos.y - 60.f, pos.z);
 		Preparellights(&l_pos);	
 
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {

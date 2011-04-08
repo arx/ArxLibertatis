@@ -682,7 +682,7 @@ void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, aalVector & pos)
 	}
 	else
 	{
-		Vector_Init((EERIE_3D *)&pos);
+		pos.x = pos.y = pos.z = 0.f;
 	}
 }
 

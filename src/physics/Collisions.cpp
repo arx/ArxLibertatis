@@ -796,8 +796,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 						for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 						{
-							EERIE_3D c;
-							Vector_Init(&c);
+							EERIE_3D c(0, 0, 0);
 							float height=io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
 
 							for (long kk=0;kk<3;kk++)

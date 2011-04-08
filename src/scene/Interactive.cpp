@@ -1497,7 +1497,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->halo.dynlight = -1;
 
 		io->level = io->truelevel;
-		Vector_Init(&io->forcedmove);
+		io->forcedmove.clear();
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
@@ -1534,7 +1534,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->invisibility = 0.f;
 		io->rubber = BASE_RUBBER;
 		io->scale = 1.f;
-		Vector_Init(&io->move);
+		io->move.clear();
 		io->type_flags = 0;
 		io->sound = -1;
 		io->soundtime = 0;

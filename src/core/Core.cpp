@@ -1277,7 +1277,7 @@ int main(int, char**)
 
 	ARX_INTERFACE_NoteInit();
 	LogDebug << "Note Init";
-	Vector_Init(&PUSH_PLAYER_FORCE);	
+	PUSH_PLAYER_FORCE.clear();
 	ARX_SPECIAL_ATTRACTORS_Reset();
 	LogDebug << "Attractors Init";
 	ARX_SPELLS_Precast_Reset();
@@ -2397,7 +2397,7 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 {
 	EERIE_3D position;
 	EERIE_3D vect;
-	EERIE_3D dvect,upvect;
+	EERIE_3D dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	float anglea;
@@ -2412,10 +2412,10 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
-	Vector_Init(&upvect,0,0,-1);
+	EERIE_3D upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
-	Vector_Init(&upvect,0,-1,0);
+	upvect = EERIE_3D(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
@@ -2424,13 +2424,13 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 
 	if (velocity<0.9f) velocity=0.9f;
 
-	EERIE_3D vv,v1,v2;
-	Vector_Init(&vv,0,0,1);
+	EERIE_3D v1,v2;
+	EERIE_3D vv(0,0,1);
 	float aa=angle->a;
 	float ab=90-angle->b;
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
-	Vector_Init(&vv,0,-1,0);
+	vv = EERIE_3D(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
@@ -2462,7 +2462,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 {
 	EERIE_3D position;
 	EERIE_3D vect;
-	EERIE_3D dvect,upvect;
+	EERIE_3D dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	float anglea;
@@ -2487,11 +2487,11 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
 
-	Vector_Init(&upvect,0,0,-1);
+	EERIE_3D upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 
-	Vector_Init(&upvect,0,-1,0);
+	upvect = EERIE_3D(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
@@ -2501,13 +2501,13 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 
 	if (velocity<0.9f) velocity=0.9f;
 
-	EERIE_3D vv,v1,v2;
-	Vector_Init(&vv,0,0,1);
+	EERIE_3D v1,v2;
+	EERIE_3D vv(0,0,1);
 	float aa=player.angle.a;
 	float ab=90-player.angle.b;
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
-	Vector_Init(&vv,0,-1,0);
+	vv = EERIE_3D(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
@@ -4417,10 +4417,9 @@ void DrawMagicSightInterface()
 
 void RenderAllNodes()
 {
-	EERIE_3D angle;
+	EERIE_3D angle(0, 0, 0);
 	float xx,yy;
 	long j;
-	Vector_Init(&angle);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

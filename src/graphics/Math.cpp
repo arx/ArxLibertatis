@@ -1053,15 +1053,6 @@ bool Vector_Compare(const EERIE_3D * v1, const EERIE_3D * v2)
 	        &&	(v1->z == v2->z));
 }
 //*************************************************************************************
-// Copy Vector "src" in vector "dest"
-//*************************************************************************************
-void Vector_Copy(EERIE_3D * dest, const EERIE_3D * src)
-{
-	dest->x = src->x;
-	dest->y = src->y;
-	dest->z = src->z;
-}
-//*************************************************************************************
 // Computes Cross Product of vectors "v1" & "v2" giving vector "dest"
 //*************************************************************************************
 void Vector_CrossProduct(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2)
@@ -1187,9 +1178,9 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const EERIE_3D * vect, cons
 	EERIE_3D yAxis;
 
 	if (!zAxis.x && !zAxis.z)
-		Vinit(&yAxis, -zAxis.y, 0.f, 0.f);
+		yAxis = EERIE_3D(-zAxis.y, 0.f, 0.f);
 	else
-		Vinit(&yAxis, 0.f, 1.f, 0.f);
+		yAxis = EERIE_3D(0.f, 1.f, 0.f);
 
 	// Build the X axis vector based on the two existing vectors
 	EERIE_3D xAxis;
