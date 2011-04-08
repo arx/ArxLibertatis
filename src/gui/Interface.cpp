@@ -3923,8 +3923,7 @@ void DANAE::ManagePlayerControls()
 		{
 			FD=18.f;
 
-			EERIE_3D old;
-			Vector_Copy(&old,&eyeball.pos);
+			EERIE_3D old = eyeball.pos;
 
 			// Checks WALK_FORWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKFORWARD) )
@@ -10141,7 +10140,7 @@ long Manage3DCursor(long flags)
 
 							iterating = 0;
 
-							Vector_Copy( &collidpos, &cyl2.origin );
+							collidpos = cyl2.origin;
 				bCollidposNoInit = false;
 
 							if ( lastanything < 0.f )
@@ -10250,12 +10249,12 @@ long Manage3DCursor(long flags)
 								io->velocity.z=0.f;
 
 								io->stopped=1;
-								EERIE_3D viewvector;
+								
 
 								movev.x*=0.0001f;
 								movev.z*=0.0001f;
 								movev.y=0.1f;
-								Vector_Copy(&viewvector,&movev);
+								EERIE_3D viewvector = movev;
 
 								EERIE_3D angle;
 								angle.a=temp.a;
