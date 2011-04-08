@@ -138,7 +138,18 @@ namespace
 			link_mouse_look_to_use = "link_mouse_look_to_use",
 			// Input key options
 			jump = "jump",
-			magic_mode = "magic_mode"
+			magic_mode = "magic_mode",
+
+			// Misc options
+			softfog = "softfog",
+			forcenoeax = "forcenoeax",
+			forcezbias = "forcezbias",
+			forcetoggle = "forcetoggle",
+			fg = "fg",
+			modpak = "mod",
+			modsfxpak = "modsfx",
+			modspeechpak = "modspeech",
+			newcontrol = "newcontrol"
 			;
 	};
 };
@@ -874,12 +885,12 @@ void Config::SaveAll()
 	WriteConfigKey("minimap",CONTROLS_CUST_MINIMAP);
 
 	//misc
-	WriteConfig(Section::Misc,"softfog",(bATI)?1:0);
-	WriteConfig(Section::Misc,"forcenoeax",(bForceNoEAX)?1:0);
-	WriteConfig(Section::Misc,"forcezbias",(bForceZBias)?1:0);
-	WriteConfig(Section::Misc,"newcontrol",(INTERNATIONAL_MODE)?1:0);
-	WriteConfig(Section::Misc,"forcetoggle",(bOneHanded)?1:0);
-	WriteConfig(Section::Misc,"fg",(uiGoreMode)?1:0);
+	WriteConfig( Section::Misc, Key::softfog,(bATI)?1:0);
+	WriteConfig( Section::Misc, Key::forcenoeax,(bForceNoEAX)?1:0);
+	WriteConfig( Section::Misc, Key::forcezbias,(bForceZBias)?1:0);
+	WriteConfig( Section::Misc, Key::newcontrol,(INTERNATIONAL_MODE)?1:0);
+	WriteConfig( Section::Misc, Key::forcetoggle,(bOneHanded)?1:0);
+	WriteConfig( Section::Misc, Key::fg,(uiGoreMode)?1:0);
 }
 
 extern bool IsNoGore( void );
@@ -995,16 +1006,16 @@ bool Config::ReadAll()
 	}
 
 	// Get miscellaneous settings
-	bATI = ReadConfig( Section::Misc, "softfog", 0 );
-	bForceNoEAX = ReadConfig( Section::Misc, "forcenoeax", 0 );
-	bForceZBias = ReadConfig( Section::Misc, "forcezbias", 0 );
-	bOneHanded = ReadConfig( Section::Misc, "forcetoggle", 0 );
-	uiGoreMode = ReadConfig(Section::Misc, "fg", 1 );
-	pStringMod = ReadConfig( Section::Misc, "mod", Default::modpak );
-	pStringModSfx = ReadConfig(Section::Misc, "modsfx", Default::modsfxpak );
-	pStringModSpeech = ReadConfig(Section::Misc, "modspeech", Default::speechmodpak );
+	bATI = ReadConfig( Section::Misc, Key::softfog, 0 );
+	bForceNoEAX = ReadConfig( Section::Misc, Key::forcenoeax, 0 );
+	bForceZBias = ReadConfig( Section::Misc, Key::forcezbias, 0 );
+	bOneHanded = ReadConfig( Section::Misc, Key::forcetoggle, 0 );
+	uiGoreMode = ReadConfig(Section::Misc, Key::fg, 1 );
+	pStringMod = ReadConfig( Section::Misc, Key::modpak, Default::modpak );
+	pStringModSfx = ReadConfig(Section::Misc, Key::modsfxpak, Default::modsfxpak );
+	pStringModSpeech = ReadConfig(Section::Misc, Key::modspeechpak, Default::speechmodpak );
 
-	iTemp=ReadConfig(Section::Misc,"newcontrol", 0);
+	iTemp=ReadConfig(Section::Misc, Key::newcontrol, 0);
 	bOk&=bOkTemp;
 
 	if(!bOkTemp)
