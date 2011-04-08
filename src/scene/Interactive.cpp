@@ -4405,8 +4405,7 @@ void RenderInter(float from, float to) {
 						LOOK_AT_TARGET = 1;
 				}
 
-				EERIE_3D pos;
-				Vector_Copy(&pos, &io->pos);
+				EERIE_3D pos = io->pos;
 
 				if (io->ioflags & IO_NPC)
 				{
