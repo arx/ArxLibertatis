@@ -14,10 +14,12 @@
 const s32 SAVEFLAGS_EXTRA_ROTATE = 1;
 const float ARX_GAMESAVE_VERSION = 1.005f;
 
-const s32 SYSTEM_FLAG_TWEAKER_INFO = 1;
-const s32 SYSTEM_FLAG_INVENTORY = 2;
-const s32 SYSTEM_FLAG_EQUIPITEMDATA = 4;
-const s32 SYSTEM_FLAG_USEPATH = 8;
+enum SystemFlag {
+	SYSTEM_FLAG_TWEAKER_INFO  = (1<<0),
+	SYSTEM_FLAG_INVENTORY     = (1<<1),
+	SYSTEM_FLAG_EQUIPITEMDATA = (1<<2),
+	SYSTEM_FLAG_USEPATH       = (1<<3)
+};
 
 template<class T, size_t N>
 inline size_t array_size(T(&)[N]) {
@@ -159,6 +161,7 @@ struct SavedMapMakerData {
 		a.lvl = lvl;
 		assert(array_size(a.string) == STRING_SIZE);
 		std::copy(string, string + STRING_SIZE, a.string);
+		return a;
 	}
 	
 };
