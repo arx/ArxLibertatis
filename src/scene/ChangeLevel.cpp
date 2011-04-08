@@ -141,7 +141,6 @@ extern long HERO_SHOW_1ST;
 extern long EXTERNALVIEW;
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_INTERS;
-extern long FORCE_IO_INDEX;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
 extern long RELOADING;

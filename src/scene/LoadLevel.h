@@ -64,27 +64,27 @@ struct INTERACTIVE_OBJ;
 struct EERIE_3D;
 struct EERIE_3DOBJ;
 
+// TODO why is this in LoadLevel?
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
-void LogDirCreation( const std::string& dir);
+void LogDirCreation(const std::string & dir);
 
-#define	SP_IGNORED	1
-#define	SP_CHILD	2
-
-void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir);
+void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string & dir);
 
 extern EERIE_3D loddpos;
-long DanaeSaveLevel( const std::string& fic);
-long DanaeLoadLevel(const std::string& file);
+long DanaeSaveLevel(const std::string & file);
+long DanaeLoadLevel(const std::string & file);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();
-void LogDirDestruction( const std::string& dir);
 
+// TODO editor-specific?
 void CheckIO_NOT_SAVED();
+
 INTERACTIVE_OBJ * LoadInter_Ex(const std::string & name, long ident, const EERIE_3D & pos, const EERIE_3D & angle, const EERIE_3D & trans);
+
 extern EERIE_3D MSP;
+
 void BIG_PURGE();
-void CheckIO_NOT_SAVED();
 
 void ARX_SAVELOAD_CheckDLFs();
 

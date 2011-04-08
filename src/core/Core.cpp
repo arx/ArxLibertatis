@@ -173,7 +173,6 @@ extern HWND		CDP_LIGHTOptions;
 extern HWND		CDP_FogOptions;
 extern EERIE_LIGHT *PDL[MAX_DYNLIGHTS];
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern EERIE_3D loddpos;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bGameNotFirstLaunch;
 extern bool		bSkipVideoIntro;
@@ -3137,17 +3136,10 @@ long FirstFrameHandling()
 	{
 		FASTmse=0;
 
-		if (LOADEDD)
-		{
-			trans.x=Mscenepos.x;
-			trans.y=Mscenepos.y;
-			trans.z=Mscenepos.z;
-			player.pos.x = loddpos.x+trans.x;
-			player.pos.y = loddpos.y+trans.y;
-			player.pos.z = loddpos.z+trans.z;
-		}
-		else
-		{
+		if(LOADEDD) {
+			trans = Mscenepos;
+			player.pos = loddpos + trans;
+		} else {
 			player.pos.y +=PLAYER_BASE_HEIGHT;
 		}
 
@@ -3185,22 +3177,17 @@ long FirstFrameHandling()
 		PROGRESS_BAR_COUNT+=2.f;
 		LoadLevelScreen();
 
-		trans.x=mse->pos.x;
-		trans.y=mse->pos.y;
-		trans.z=mse->pos.z;
+		trans = mse->pos;
 
 		ReleaseMultiScene(mse);
 		mse=NULL;
 
-		if (!NO_PLAYER_POSITION_RESET)
-		{
-			if (LOADEDD)
-			{
-				player.pos.x = loddpos.x+trans.x;
-				player.pos.y = loddpos.y+trans.y;
-				player.pos.z = loddpos.z+trans.z;
+		if(!NO_PLAYER_POSITION_RESET) {
+			if(LOADEDD) {
+				player.pos = loddpos + trans;
+			} else {
+				player.pos.y += PLAYER_BASE_HEIGHT;
 			}
-			else player.pos.y +=PLAYER_BASE_HEIGHT;
 		}
 
 		NO_PLAYER_POSITION_RESET=0;

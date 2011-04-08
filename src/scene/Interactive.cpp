@@ -146,7 +146,6 @@ long NbIOSelected = 0;
 long LastSelectedIONum = -1;
 long INTERNMB = -1;
 long LASTINTERCLICKNB = -1;
-long FORCE_IO_INDEX = -1;
 long INTER_DRAW = 0;
 long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
@@ -1754,9 +1753,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 		goto create;
 	}
 
-	if (FORCE_IO_INDEX != -1)
-		tocreate = FORCE_IO_INDEX;
-	else for (i = 1; i < inter.nbmax; i++) // ignoring player
+	for (i = 1; i < inter.nbmax; i++) // ignoring player
 		{			
 			if (!inter.iobj[i])
 			{
@@ -1859,12 +1856,10 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 
 		io->weight = 1.f;
 		memset(io->animlayer, 0, sizeof(ANIM_USE)*MAX_ANIM_LAYERS);
-		FORCE_IO_INDEX = -1;
 		return (io);
 
 	}
 
-	FORCE_IO_INDEX = -1;
 	return NULL;
 }
 // Be careful with this func...
