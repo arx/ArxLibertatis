@@ -401,7 +401,7 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 					}
 				}
 
-				Vector_Copy(&obj->bones[j].scaleinit, &scale);
+				obj->bones[j].scaleinit = scale;
 			}
 		}
 	}
@@ -446,8 +446,7 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			if ((io) && !(io->ioflags & IO_NPC))
 			{
 				// To correct invalid angle in Animated FIX/ITEMS
-				EERIE_3D ang;
-				Vector_Copy(&ang, angle);
+				EERIE_3D ang = *angle;
 				ang.a = (360 - ang.a);
 				ang.b = (ang.b);
 				ang.g = (ang.g);
@@ -467,7 +466,7 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			}
 			else
 			{
-				Vector_Copy(&vt1, angle);
+				vt1 = *angle;
 				vt1.x = radians(vt1.x);
 				vt1.y = radians(vt1.y);
 				vt1.z = radians(vt1.z);
@@ -508,10 +507,9 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 	for (long i = 0; i != obj->nb_bones; i++)
 	{
 		EERIEMATRIX	 matrix;
-		EERIE_3D	vector;
 
 		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
-		Vector_Copy(&vector, &obj->bones[i].transanim);
+		EERIE_3D vector = obj->bones[i].transanim;
 
 		// Apply Scale
 		matrix._11 *= obj->bones[i].scaleanim.x;
@@ -2595,8 +2593,8 @@ void Cedric_SaveBlendData(INTERACTIVE_OBJ * io) {
 		for (long i = 0; i < io->obj->c_data->nb_bones; i++)
 		{
 			Quat_Copy(&io->obj->c_data->bones[i].quatlast, &io->obj->c_data->bones[i].quatinit);
-			Vector_Copy(&io->obj->c_data->bones[i].scalelast, &io->obj->c_data->bones[i].scaleinit);
-			Vector_Copy(&io->obj->c_data->bones[i].translast, &io->obj->c_data->bones[i].transinit);
+			io->obj->c_data->bones[i].scalelast = io->obj->c_data->bones[i].scaleinit;
+			io->obj->c_data->bones[i].translast = io->obj->c_data->bones[i].transinit;
 		}
 	}
 }
@@ -2606,7 +2604,7 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 	for (long i = 0; i != obj->c_data->nb_bones; i++)
 	{
 		Quat_Init(&obj->c_data->bones[i].quatinit);
-		Vector_Copy(&obj->c_data->bones[i].transinit, &obj->c_data->bones[i].transinit_global);
+		obj->c_data->bones[i].transinit = obj->c_data->bones[i].transinit_global;
 	}
 
 	if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->ex_rotate))
@@ -2900,14 +2898,14 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 
 			if (angle)
 			{
-				Vector_Copy(&vt1, angle);
+				vt1 = *angle;
 			}
 			else
 			{
 				if (io) 
-					Vector_Copy(&vt1, &io->angle);
+					vt1 = io->angle;
 				else
-					Vector_Copy(&vt1, &eobj->angle);
+					vt1 = eobj->angle;
 			}
 
 			vt1.x = radians(MAKEANGLE(-vt1.z));
@@ -3031,14 +3029,14 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 
 			if (angle)
 			{
-				Vector_Copy(&vt1, angle);
+				vt1 = *angle;
 			}
 			else
 			{
 				if (io) 
-					Vector_Copy(&vt1, &io->angle);
+					vt1 = io->angle;
 				else
-					Vector_Copy(&vt1, &eobj->angle);
+					vt1 = eobj->angle;
 			}
 
 			vt1.x = radians(vt1.x);
