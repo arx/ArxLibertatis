@@ -6125,13 +6125,6 @@ CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX
 
 CMenuButton::~CMenuButton()
 {
-	std::string::iterator i;
-
-	for(i=vText.begin();i!=vText.end();++i)
-	{
-		free((void*)(*i));
-	}
-
 	vText.clear();
 }
 
