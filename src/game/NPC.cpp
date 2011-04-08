@@ -2895,19 +2895,10 @@ float GetIORadius(INTERACTIVE_OBJ * io)
 
 	return v;
 }
-void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl)
-{
+void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl) {
 	cyl->height = GetIOHeight(io);
 	cyl->radius = GetIORadius(io);
-
-	if (io == inter.iobj[0])
-	{
-		cyl->origin.x = inter.iobj[0]->pos.x;
-		cyl->origin.y = inter.iobj[0]->pos.y; 
-		cyl->origin.z = inter.iobj[0]->pos.z; 
-	}
-	else
-		Vector_Copy(&cyl->origin, &io->pos);
+	cyl->origin = io->pos;
 }
 
 //***********************************************************************************************
@@ -3521,10 +3512,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 		Vector_Init(&ForcedMove);
 	else
 	{
-		EERIE_3D vect;
-		Vector_Copy(&vect, &io->forcedmove);
-		float d = TRUEVector_Magnitude(&vect);
-		TRUEVector_Normalize(&vect);
+		EERIE_3D vect = io->forcedmove;
+		float d = TRUEVector_Normalize(&vect);
 		float dd = min(d, (float)FrameDiff * ( 1.0f / 6 ));
 		ForcedMove.x = vect.x * dd;
 		ForcedMove.y = vect.y * dd;
@@ -4348,7 +4337,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				// TODO when is this no true?
 				if (notok < 0)
 				{
-					Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v);
+					pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 
 					for (long nn = 0 ; nn < 1 ; nn++)
 					{
@@ -4360,7 +4349,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							PARTICLE_DEF * pd	=	&particle[j];
 							pd->exist			=	true;
 							pd->zdec			=	0;
-							Vector_Copy(&pd->ov, &pos);
+							pd->ov = pos;
 							pd->move.x			=	(2.f - 4.f * rnd());
 							pd->move.y			=	(2.f - 22.f * rnd());
 							pd->move.z			=	(2.f - 4.f * rnd());
@@ -4418,8 +4407,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			return;
 		}
 
-		EERIE_3D pos;
-		Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->fastaccess.fire].v);
+		EERIE_3D pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
 
 		for (long nn = 0; nn < 2; nn++)
 		{
@@ -4431,7 +4419,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				PARTICLE_DEF * pd	=	&particle[j];
 				pd->exist		=	true;
 				pd->zdec		=	0;
-				Vector_Copy(&pd->ov, &pos);
+				pd->ov = pos;
 				pd->move.x		=	(2.f - 4.f * rnd());
 				pd->move.y		=	(2.f - 22.f * rnd());
 				pd->move.z		=	(2.f - 4.f * rnd());
@@ -4485,7 +4473,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				// TODO how can this not be true?
 				if (notok < 0)
 				{
-					Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v);
+					pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 
 					for (long nn = 0 ; nn < 6 ; nn++)
 					{
@@ -4497,9 +4485,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							PARTICLE_DEF * pd	=	&particle[j];
 							pd->exist			=	true;
 							pd->zdec			=	0;
-
-							Vector_Copy(&pd->ov, &pos);
-
+							pd->ov = pos;
 							pd->move.x			=	(2.f - 4.f * rnd());
 							pd->move.y			=	(2.f - 22.f * rnd());
 							pd->move.z			=	(2.f - 4.f * rnd());
@@ -4541,15 +4527,15 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 		if (io->obj && (io->obj->fastaccess.fire >= 0))
 		{
 			if (io == DRAGINTER)
-				Vector_Copy(&position, &player.pos);
+				position = player.pos;
 			else
 			{
-				Vector_Copy(&position, &io->obj->vertexlist3[io->obj->fastaccess.fire].v);
+				position = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
 			}
 		}
 		else
 		{
-			Vector_Copy(&position, &io->pos);
+			position = io->pos;
 		}
 
 		if (io->ignit_light == -1)
