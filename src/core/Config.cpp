@@ -1008,9 +1008,7 @@ void Config::ReadAll()
 	pStringModSfx = ReadConfig(Section::Misc, Key::modsfxpak, Default::modsfxpak );
 	pStringModSpeech = ReadConfig(Section::Misc, Key::modspeechpak, Default::speechmodpak );
 
-	int iTemp=ReadConfig(Section::Misc, Key::newcontrol, 0);
-
-	INTERNATIONAL_MODE=(iTemp)?1:0;
+	INTERNATIONAL_MODE = ReadConfig(Section::Misc, Key::newcontrol, 0);
 
 	if(INTERNATIONAL_MODE)
 	{
