@@ -1814,7 +1814,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (AttemptValidCylinderPos(&test.cyl, io, flags)) 
 				{
-					Vector_Copy(&rpos,&test.cyl.origin);
+					rpos = test.cyl.origin;
 					RFOUND=1;
 				}
 				else io->_npcdata->climb_count=cc;
@@ -1831,7 +1831,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
-					Vector_Copy(&lpos,&test.cyl.origin);
+					lpos = test.cyl.origin;
 					LFOUND=1;
 				}
 				else io->_npcdata->climb_count=cc;
@@ -1847,23 +1847,23 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (langle<rangle) 
 				{
-					Vector_Copy(&ip->cyl.origin,&lpos);
+					ip->cyl.origin = lpos;
 					distance -= curmovedist;
 				}
 				else
 				{
-					Vector_Copy(&ip->cyl.origin,&rpos);
+					ip->cyl.origin = rpos;
 					distance -= curmovedist;
 				}
 			}
 			else if (LFOUND)
 			{
-				Vector_Copy(&ip->cyl.origin,&lpos);
+				ip->cyl.origin = lpos;
 				distance -= curmovedist; 
 			}
 			else if (RFOUND)
 			{
-				Vector_Copy(&ip->cyl.origin,&rpos);
+				ip->cyl.origin = rpos;
 				distance -= curmovedist; 
 			}
 			else  //stopped
