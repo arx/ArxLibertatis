@@ -82,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/ChangeLevel.h"
 #include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
+#include "scene/Light.h"
 
 using std::min;
 using std::max;

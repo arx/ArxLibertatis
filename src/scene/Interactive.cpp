@@ -505,25 +505,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 		}
 }
 extern long GORE_MODE;
- 
-EERIE_3DOBJ * GetExistingEerie(const std::string& file)
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(!inter.iobj[i]->tweaky)
-		        &&	(inter.iobj[i]->obj))
-		{
-			if ((!inter.iobj[i]->obj->originaltextures)
-			        && ( !strcmp(file, inter.iobj[i]->obj->file ) ) )
-			{
-				return inter.iobj[i]->obj;
-			}
-		}
-	}
 
-	return NULL;
-}
 
 bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 {
@@ -547,82 +529,6 @@ bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 	}
 
 	return false;
-}
-
-EERIE_3DOBJ * TheoToEerie_Fast(const std::string& texpath, const std::string& file, long flag)
-{
-	EERIE_3DOBJ * ret = new EERIE_3DOBJ();
-
-	if ((ret = ARX_FTL_Load(file)) != NULL)
-	{
-
-		if (!(flag & TTE_NO_PHYSICS_BOX))
-			EERIE_PHYSICS_BOX_Create(ret);
-
-		return ret;
-	}
-	
-	// TODO the actual .teo files are not shipped with Arx, only the compressed?/preprocessed?/optimized? .ftl files, so if the ARX_FTL_Load call fails we can give up anyway
-
-	ret = GetExistingEerie(file);
-	if (ret)
-	{
-		ret = Eerie_Copy(ret);
-
-		if (!ret) goto alternateway;
-	}
-	else
-	{
-	alternateway:
-		;
-		size_t FileSize = 0;
-		unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(file, FileSize);
-
-		if (adr)
-		{
-			ret = TheoToEerie(adr, FileSize, texpath, file, flag);
-
-			if (!ret)
-			{
-				free(adr);
-				return NULL;
-			}
-
-			EERIE_OBJECT_CenterObjectCoordinates(ret);
-			free(adr);
-		}
-		else return NULL;
-	}
-
-	if (FASTLOADS)
-	{
-		if ((ret)
-		        &&	(ret->pdata))
-		{
-			free(ret->pdata);
-			ret->pdata = NULL;
-		}
-
-		return ret;
-	}
-
-	if ((ret)
-	        &&	(!(flag & TTE_NO_PDATA)))
-	{
-		CreateNeighbours(ret);
-		EERIEOBJECT_AddClothesData(ret);
-		KillNeighbours(ret);
-
-		if (ret->cdata)
-			EERIE_COLLISION_SPHERES_Create(ret); // Must be out of the Neighbours zone
-
-		if (!(flag & TTE_NO_PHYSICS_BOX))
-			EERIE_PHYSICS_BOX_Create(ret);
-
-		ARX_FTL_Save(file, ret);
-	}
-
-	return ret;
 }
 
 //*************************************************************************************
@@ -1332,12 +1238,8 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
             io->obj = NULL;
         }
 
-        if (io->ioflags & IO_FIX)
-            io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX);
-        else if (io->ioflags & IO_NPC)
-            io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_PHYSICS_BOX | TTE_NPC);
-        else
-            io->obj = TheoToEerie_Fast(tex1, tex, 0);
+        bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
+        io->obj = TheoToEerie_Fast(tex1, tex, pbox);
 
 		EERIE_COLLISION_Cylinder_Create(io);
 	}
@@ -2669,7 +2571,7 @@ INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
 		else
 		{
 			const char texdir[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texdir, tex1, TTE_NO_PHYSICS_BOX);
+			io->obj = TheoToEerie_Fast(texdir, tex1, false);
 		}
 	}
 
@@ -3133,7 +3035,7 @@ INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags)
 		else
 		{
 			const char texpath[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texpath, tex1, TTE_NO_PHYSICS_BOX | TTE_NPC);
+			io->obj = TheoToEerie_Fast(texpath, tex1, false);
 		}
 	}
 
@@ -3464,7 +3366,7 @@ INTERACTIVE_OBJ * AddItem(const std::string& fil, long flags)
  
 			const char texdir[] = "Graph\\Obj3D\\Textures\\";
 
-			io->obj = TheoToEerie_Fast(texdir, tex1, 0);
+			io->obj = TheoToEerie_Fast(texdir, tex1);
 		}
 	}
 

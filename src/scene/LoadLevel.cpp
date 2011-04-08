@@ -103,6 +103,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/LevelFormat.h"
+#include "scene/Light.h"
 
 using std::max;
 
@@ -241,7 +242,7 @@ EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path)
 		tex1 += path;
 	}
 	
-	wr = TheoToEerie_Fast(tex1, text, 0);
+	wr = TheoToEerie_Fast(tex1, text);
 	return wr;
 }
 
@@ -899,13 +900,9 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 			if (io->obj == NULL)
 			{
 				const char dirpath[] = "Graph\\Obj3D\\Textures\\";
-
-				if (io->ioflags & IO_ITEM)
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, 0);
-				else if (io->ioflags & IO_NPC)
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX | TTE_NPC);
-				else
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX);
+				
+				bool pbox = (io->ioflags & IO_ITEM);
+				io->obj = TheoToEerie_Fast(dirpath, io->filename, pbox);
 
 				if (io->ioflags & IO_NPC)
 					EERIE_COLLISION_Cylinder_Create(io);

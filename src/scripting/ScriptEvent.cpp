@@ -47,6 +47,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Object.h"
+#include "scene/Light.h"
 
 using std::max;
 using std::min;
@@ -4410,7 +4411,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 
 					std::string temp2;
-					long flag;
 
 					pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
@@ -4439,14 +4439,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								std::string tex2;
 								std::string tex3;
 
-								if ((iot == inter.iobj[0]) || (iot->ioflags & IO_NPC))
-								{
-									flag = TEA_NPC_SAMPLES;
+								if ((iot == inter.iobj[0]) || (iot->ioflags & IO_NPC)) {
 									tex3 = "Graph\\Obj3D\\Anims\\npc\\" + temp2;
-								}
-								else
-								{
-									flag = TEA_FIX_SAMPLES;
+								} else {
 									tex3 = "Graph\\Obj3D\\Anims\\Fix_Inter\\" + temp2;
 								}
 
@@ -6220,12 +6215,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						const char texpath[] = "Graph\\Obj3D\\Textures\\";
 
-						if (io->ioflags & IO_FIX)
-							io->obj = TheoToEerie_Fast(texpath, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX);
-						else if (io->ioflags & IO_NPC)
-							io->obj = TheoToEerie_Fast(texpath, tex, TTE_NO_PHYSICS_BOX | TTE_NPC);
-						else
-							io->obj = TheoToEerie_Fast(texpath, tex, 0);
+						bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
+						io->obj = TheoToEerie_Fast(texpath, tex, pbox);
 
 						EERIE_COLLISION_Cylinder_Create(io);
 					}

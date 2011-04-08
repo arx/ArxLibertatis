@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/d3dwrapper.h"
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
+#include "graphics/data/Texture.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
@@ -213,8 +214,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 	const char texpath[] = "Graph\\Obj3D\\Textures\\";
 	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
-	// TODO wrong order of parameters?
-	io->obj = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
+	io->obj = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, false);
 	
 	long sel_ = -1;
 	char pathh[256];

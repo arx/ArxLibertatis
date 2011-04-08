@@ -1732,7 +1732,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	const std::string texpath = "Graph\\Obj3D\\Textures\\";
 	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
  
-	hero = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
+	hero = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, false);
 	PLAYER_SKIN_TC = MakeTCFromFile("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
 
 	const char ANIM_WAIT_BOOK[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book.tea";

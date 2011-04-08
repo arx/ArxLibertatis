@@ -63,9 +63,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 
+#include "core/Dialog.h"
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/data/Progressive.h"
+#include "graphics/data/FTL.h"
+#include "graphics/data/Texture.h"
 
 #include "io/IO.h"
 #include "io/FilePath.h"
@@ -83,6 +87,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LinkedObject.h"
 #include "scene/GameSound.h"
 #include "scene/ObjectFormat.h"
+#include "scene/Interactive.h"
+#include "scene/Light.h"
 
 using std::sprintf;
 using std::min;
@@ -95,6 +101,10 @@ extern PakManager * pPakManager;
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
+
+static void ReCreateUVs(EERIE_3DOBJ * eerie);
+static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string & fic);
+void Clear3DScene(EERIE_3DSCENE	* eerie);
 
 long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
 	
@@ -551,8 +561,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	return eerie;
 }
 
-// TODO is this actually used?
-void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, size_t * poss, long version) {
+void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t * poss, long version) {
 	
 	LogWarning << "_THEObjLoad";
 	
@@ -890,7 +899,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, size_t * poss, long v
 	EERIE_Object_Precompute_Fast_Access(eerie);
 }
 
-void ReleaseScene(EERIE_3DSCENE * scene) {
+static void ReleaseScene(EERIE_3DSCENE * scene) {
 	
 	if(scene->texturecontainer != NULL) {
 		free(scene->texturecontainer);
@@ -1144,7 +1153,7 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const string & dirr) {
 	return em;
 }
 
-EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const string & fic) {
+EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string & fic) {
 	
 	(void)size; // TODO use size
 	
@@ -1477,7 +1486,7 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 	}
 }
 
-void ReCreateUVs(EERIE_3DOBJ * eerie) {
+static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	
 	if(eerie->texturecontainer.empty()) return;
 
@@ -1512,7 +1521,7 @@ void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	}
 }
 
-EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj) {
+EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ(); 
 	
@@ -1594,28 +1603,34 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj) {
 
 long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const string & selname) {
 	
-	if (!obj) return -1;
-
-	for (size_t i = 0; i < obj->selections.size(); i++)
-	{ // TODO iterator
-		if (!strcasecmp(obj->selections[i].name, selname)) return i;
+	if(!obj) {
+		return -1;
 	}
-
+	
+	for(size_t i = 0; i < obj->selections.size(); i++) {
+		if(!strcasecmp(obj->selections[i].name, selname)) {
+			return i;
+		}
+	}
+	
 	return -1;
 }
-//-----------------------------------------------------------------------------------------------------
-long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const std::string& groupname)
-{
-	if (!obj) return -1;
 
-	for (long i = 0; i < obj->nbgroups; i++)
-	{
-		if (!strcasecmp(obj->grouplist[i].name, groupname)) return i;
+long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const string & groupname) {
+	
+	if(!obj) {
+		return -1;
 	}
-
+	
+	for(long i = 0; i < obj->nbgroups; i++) {
+		if(!strcasecmp(obj->grouplist[i].name, groupname)) {
+			return i;
+		}
+	}
+	
 	return -1;
 }
-//-----------------------------------------------------------------------------------------------------
+
 void AddIdxToBone(EERIE_BONE * bone, long idx)
 {
 	bone->idxvertices = (long *)realloc(bone->idxvertices, sizeof(long) * (bone->nb_idxvertices + 1));
@@ -1929,8 +1944,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 }
 
 // Converts a Theo Object to an EERIE object
-// flag 1 progressive alloc 2 SLOW
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath, const string & fic, long flag) {
+static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath, const string & fic) {
 	
 	LogWarning << "TheoToEerie " << fic;
 	
@@ -2012,9 +2026,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath
 					MakeUserFlag(eerie->texturecontainer[i]);
 					
 					if(eerie->texturecontainer[i]) {
-						if(!(flag & TTE_NO_RESTORE)) {
-							eerie->texturecontainer[i]->Restore();
-						}
+						eerie->texturecontainer[i]->Restore();
 					}
 				}
 			}
@@ -2172,7 +2184,80 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath
 	eerie->c_data = NULL;
 	EERIE_CreateCedricData(eerie);
 	EERIEOBJECT_CreatePFaces(eerie);
-	return(eerie);
+	return eerie;
+}
+
+static EERIE_3DOBJ * GetExistingEerie(const string & file) {
+	
+	for(long i = 1; i < inter.nbmax; i++) {
+		if(inter.iobj[i] != NULL && !inter.iobj[i]->tweaky && inter.iobj[i]->obj) {
+			EERIE_3DOBJ * obj = inter.iobj[i]->obj;
+			if(!obj->originaltextures && inter.iobj[i]->obj->file == file) {
+				return inter.iobj[i]->obj;
+			}
+		}
+	}
+	
+	return NULL;
+}
+
+EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & file, bool pbox) {
+	
+	EERIE_3DOBJ * ret = ARX_FTL_Load(file);
+	if(ret) {
+		if(pbox) {
+			EERIE_PHYSICS_BOX_Create(ret);
+		}
+		return ret;
+	}
+	
+	ret = GetExistingEerie(file);
+	if(ret) {
+		ret = Eerie_Copy(ret);
+	}
+	
+	if(!ret) {
+		
+		size_t size = 0;
+		unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(file, size);
+		
+		if(!adr) {
+			return NULL;
+		}
+		
+		ret = TheoToEerie(adr, size, texpath, file);
+		if(!ret) {
+			free(adr);
+			return NULL;
+		}
+		
+		EERIE_OBJECT_CenterObjectCoordinates(ret);
+		free(adr);
+	}
+	
+	if(FASTLOADS) {
+		if(ret->pdata) {
+			free(ret->pdata);
+			ret->pdata = NULL;
+		}
+		return ret;
+	}
+	
+	CreateNeighbours(ret);
+	EERIEOBJECT_AddClothesData(ret);
+	KillNeighbours(ret);
+	
+	if(ret->cdata) {
+		EERIE_COLLISION_SPHERES_Create(ret); // Must be out of the Neighbours zone
+	}
+	
+	if(pbox) {
+		EERIE_PHYSICS_BOX_Create(ret);
+	}
+	
+	ARX_FTL_Save(file, ret);
+	
+	return ret;
 }
 
 // TODO why is this in EERIEobject
@@ -2181,7 +2266,7 @@ void RemoveAllBackgroundActions()
 {
 	memset(actions, 0, sizeof(ACTIONSTRUCT)*MAX_ACTIONS);
 
-	for (long i = 0; i < MAX_ACTIONS; i++) actions[i].dl = -1;
+	for(size_t i = 0; i < MAX_ACTIONS; i++) actions[i].dl = -1;
 }
 
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj)
