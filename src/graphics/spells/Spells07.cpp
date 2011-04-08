@@ -620,7 +620,7 @@ float CLightning::Render()
 
 				if (si != -1)
 				{
-					Vector_Copy(&damages[si].pos, &sphere.origin);
+					damages[si].pos = sphere.origin;
 					damages[si].radius = sphere.radius;
 					damages[si].damages = fDamage * spells[spellinstance].caster_level * ( 1.0f / 3 ); 
 					damages[si].area = DAMAGE_FULL;

@@ -264,21 +264,15 @@ void CMagicMissile::Create(EERIE_3D aeSrc, EERIE_3D angles)
 	SetDuration(ulDuration);
 	SetAngle(angles.b);
 
-	Vector_Copy(&this->angles, &angles);
-	eCurPos.x = eSrc.x = aeSrc.x;
-	eCurPos.y = eSrc.y = aeSrc.y;
-	eCurPos.z = eSrc.z = aeSrc.z;
+	this->angles = angles;
+	eCurPos = eSrc = aeSrc;
 
 
 	fSize = 1;
 	bDone = true;
 
-	s.x = eSrc.x;
-	s.y = eSrc.y;
-	s.z = eSrc.z;
-	e.x = eSrc.x;
-	e.y = eSrc.y;
-	e.z = eSrc.z;
+	s = eSrc;
+	e = eSrc;
 
 	i = 0;
 
@@ -401,7 +395,7 @@ float CMagicMissile::Render()
 	lastpos.y = pathways[0].sy;
 	lastpos.z = pathways[0].sz;
 
-	Vector_Copy(&newpos, &lastpos);
+	newpos = lastpos;
 
 	for (i = 0; i < 5; i++)
 	{
@@ -439,7 +433,7 @@ float CMagicMissile::Render()
 			p1 = 0.5f * (pathways[kpsuivsuiv].sz - pathways[kp].sz) ;
 			v.z = f0 * pathways[kp].sz + f1 * val + f2 * p0 + f3 * p1 ;
 
-			Vector_Copy(&newpos, &v);
+			newpos = v;
 
 			if (!((fTrail - (i * iBezierPrecision + toto)) > iLength))
 			{
@@ -476,10 +470,9 @@ float CMagicMissile::Render()
 				Draw3DLineTex(lastpos, newpos, color, fs, fe);
 			}
 
-			EERIE_3D temp_vector;
-			Vector_Copy(&temp_vector, &lastpos);
-			Vector_Copy(&lastpos, &newpos);
-			Vector_Copy(&newpos, &temp_vector);
+			EERIE_3D temp_vector = lastpos;
+			lastpos = newpos;
+			newpos = temp_vector;
 		}
 	}
 
@@ -490,7 +483,7 @@ float CMagicMissile::Render()
 	float bubu = GetAngle(av.x, av.z, 0, 0);
 	float bubu1 = GetAngle(av.x, av.y, 0, 0);
 
-	Vector_Copy(&stitepos, &lastpos);
+	stitepos = lastpos;
 
 	stiteangle.b = -degrees(bubu);
 	stiteangle.a = 0;
@@ -524,7 +517,7 @@ float CMagicMissile::Render()
 			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	}
 
-	Vector_Copy(&eCurPos, &lastpos);
+	eCurPos = lastpos;
 
 	return 1 - 0.5f * rnd();
 }

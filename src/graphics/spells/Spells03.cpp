@@ -385,8 +385,7 @@ void CFireBall::Update(unsigned long aulTime)
 			if (ValidIONum(io->targetinfo))
 			{
 				EERIE_3D * p1 = &eCurPos;
-				EERIE_3D p2;
-				Vector_Copy(&p2, &inter.iobj[io->targetinfo]->pos);
+				EERIE_3D p2 = inter.iobj[io->targetinfo]->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
