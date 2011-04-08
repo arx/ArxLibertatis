@@ -235,7 +235,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -245,7 +245,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -259,7 +259,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -282,7 +282,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -295,7 +295,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -305,7 +305,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -318,7 +318,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -348,7 +348,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -364,7 +364,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -373,8 +373,8 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 		// LEVEL 7 SPELLS -----------------------------------------------------------------------------
 		case SPELL_FLYING_EYE:
 		{	
-			Vector_Copy(pos,&eyeball.pos);
-			return true;		
+			*pos = eyeball.pos;
+			return true;
 		}	
 		break;
 		//----------------------------------------------------------------------------
@@ -386,7 +386,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			{
 				CFireField *pFireField = (CFireField *) pCSpellFX;
 					
-				Vector_Copy(pos,&pFireField->pos);
+				*pos = pFireField->pos;
 				return true;
 			}
 
@@ -402,7 +402,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -413,7 +413,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -423,7 +423,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -439,7 +439,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -456,7 +456,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
+				*pos = inter.iobj[spells[i].target]->pos;
 				return true;
 			}
 
@@ -487,7 +487,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 	if (ValidIONum(spells[i].caster))
 	{
-		Vector_Copy(pos,&inter.iobj[spells[i].caster]->pos);
+		*pos = inter.iobj[spells[i].caster]->pos;
 		return true;
 	}
 
@@ -3439,12 +3439,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		case SPELL_CONTROL_TARGET:
 		{
 			long		tcount = 0;
-			EERIE_3D	cpos;
 
 			if ( !ValidIONum( source ) )
 				return false;
 
-			Vector_Copy( &cpos, &inter.iobj[source]->pos );
+			EERIE_3D cpos = inter.iobj[source]->pos;
 
 			for ( long ii = 1 ; ii < inter.nbmax ; ii++ )
 			{
@@ -6835,7 +6834,7 @@ void ARX_SPELLS_Kill(long i) {
 				{
 					AddRandomSmoke(inter.iobj[spells[i].longinfo2],100);
 					EERIE_3D posi;
-					Vector_Copy(&posi,&inter.iobj[spells[i].longinfo2]->pos);
+					posi = inter.iobj[spells[i].longinfo2]->pos;
 					posi.y-=100.f;
 					MakeCoolFx(&posi);
 					long nn=GetFreeDynLight();
@@ -7143,8 +7142,7 @@ void ARX_SPELLS_Update()
 							&&	(inter.iobj[spells[i].longinfo]->ioflags & IO_NOSAVE)	)
 						{
 							AddRandomSmoke(inter.iobj[spells[i].longinfo],100);
-							EERIE_3D posi;
-							Vector_Copy(&posi,&inter.iobj[spells[i].longinfo]->pos);
+							EERIE_3D posi = inter.iobj[spells[i].longinfo]->pos;
 							posi.y-=100.f;
 							MakeCoolFx(&posi);
 							long nn=GetFreeDynLight();
@@ -7524,7 +7522,7 @@ void ARX_SPELLS_Update()
 						long id=spells[i].longinfo;
 						EERIE_LIGHT * el=&DynLight[id];
 						el->exist=1;
-						Vector_Copy(&el->pos,&pCF->eCurPos);
+						el->pos = pCF->eCurPos;
 						el->intensity = 2.2f;
 						el->fallend = 500.f;
 						el->fallstart = 400.f;
@@ -7625,7 +7623,7 @@ void ARX_SPELLS_Update()
 					{
 						if (ValidIONum(spells[i].target))
 						{
-							Vector_Copy(&pBless->eSrc,&inter.iobj[spells[i].target]->pos);
+							pBless->eSrc = inter.iobj[spells[i].target]->pos;
 							EERIE_3D angle;
 							Vector_Init(&angle);
 
