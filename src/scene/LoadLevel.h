@@ -55,14 +55,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DANAESAVELOAD_H
-#define DANAESAVELOAD_H
-#include "core/Core.h"
+#ifndef ARX_SCENE_LOADLEVEL_H
+#define ARX_SCENE_LOADLEVEL_H
 
-//Fileformat version
-#define CURRENT_VERSION 1.44f
+#include <string>
 
-EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path);
+struct INTERACTIVE_OBJ;
+struct EERIE_3D;
+struct EERIE_3DOBJ;
+
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 void LogDirCreation( const std::string& dir);
 
@@ -86,4 +87,5 @@ void BIG_PURGE();
 void CheckIO_NOT_SAVED();
 
 void ARX_SAVELOAD_CheckDLFs();
-#endif
+
+#endif // ARX_SCENE_LOADLEVEL_H

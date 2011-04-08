@@ -92,11 +92,16 @@ long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string& text);
 long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx);
 
 /*!
- * Load a possibly cached 3D object.
+ * Load a possibly cached 3D object using the default texture path.
  * 
- * @param pbox True if the object should have a physics box.
+ * @param pbox true if the object should have a physics box.
  */
-EERIE_3DOBJ * TheoToEerie_Fast(const std::string & texpath, const std::string & file, bool pbox = true);
+EERIE_3DOBJ * loadObject(const std::string & file, bool pbox = true);
+
+/*!
+ * @param texpath texture path relative to file
+ */
+EERIE_3DOBJ * _LoadTheObj(const std::string & file, const std::string & texpath);
 
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const std::string & fic);
 

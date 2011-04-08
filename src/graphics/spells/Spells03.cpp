@@ -490,20 +490,16 @@ CIceProjectile::CIceProjectile()
 	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
-	if (!stite)
-	{
-		stite   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo", NULL);
+	if(!stite) {
+		stite = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo");
 		EERIE_3DOBJ_RestoreTextures(stite);
 	}
-
 	stite_count++;
 
-	if (!smotte)
-	{
-		smotte   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+	if(!smotte) {
+		smotte = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 		EERIE_3DOBJ_RestoreTextures(smotte);
 	}
-
 	smotte_count++;
 
 	iMax = MAX_ICE;

@@ -141,7 +141,6 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	
 	if (ep->type & POLY_IGNORE)  return;
 
-	long i;
 	float epr[4];
 	float epg[4];
 	float epb[4];
@@ -150,7 +149,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	epg[3] = epg[2] = epg[1] = epg[0] = 0; 
 	epb[3] = epb[2] = epb[1] = epb[0] = 0; 
 
-	for (i = 0; i < MAX_LIGHTS; i++)
+	for (long i = 0; i < MAX_LIGHTS; i++)
 	{
 		EERIE_LIGHT * el = GLight[i];
 
@@ -163,7 +162,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 		}
 	}
 
-	for (i = 0; i < MAX_ACTIONS; i++)
+	for (size_t i = 0; i < MAX_ACTIONS; i++)
 	{
 		if ((actions[i].exist) && ((actions[i].type == ACT_FIRE2) || (actions[i].type == ACT_FIRE)))
 		{
@@ -178,7 +177,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	if (ep->type & POLY_QUAD) nbvert = 4;
 	else nbvert = 3;
 
-	for (i = 0; i < nbvert; i++)
+	for (long i = 0; i < nbvert; i++)
 	{
 		if (epr[i] > 1.f) epr[i] = 1.f;
 		else if (epr[i] < ACTIVEBKG->ambient.r) epr[i] = ACTIVEBKG->ambient.r;

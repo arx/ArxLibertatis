@@ -2856,27 +2856,27 @@ HRESULT DANAE::BeforeRun()
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=-1;
-	necklace.lacet =                   _LoadTheObj("Graph\\Interface\\book\\runes\\lacet.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_AAM] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_aam.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_CETRIUS] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_citrius.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_COMUNICATUM] = _LoadTheObj("Graph\\Interface\\book\\runes\\runes_comunicatum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_COSUM] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_cosum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_FOLGORA] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_folgora.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_FRIDD] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_fridd.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_KAOM] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_kaom.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MEGA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_mega.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MORTE] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_morte.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MOVIS] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_movis.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_NHI] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_nhi.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_RHAA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_rhaa.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_SPACIUM] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_spacium.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_STREGUM] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_stregum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TAAR] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_taar.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TEMPUS] =      _LoadTheObj("Graph\\Interface\\book\\runes\\runes_tempus.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TERA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_tera.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_VISTA] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_vista.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_VITAE] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_vitae.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_YOK] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_yok.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.lacet =                   loadObject("Graph\\Interface\\book\\runes\\lacet.teo");
+	necklace.runes[RUNE_AAM] =         loadObject("Graph\\Interface\\book\\runes\\runes_aam.teo");
+	necklace.runes[RUNE_CETRIUS] =     loadObject("Graph\\Interface\\book\\runes\\runes_citrius.teo");
+	necklace.runes[RUNE_COMUNICATUM] = loadObject("Graph\\Interface\\book\\runes\\runes_comunicatum.teo");
+	necklace.runes[RUNE_COSUM] =       loadObject("Graph\\Interface\\book\\runes\\runes_cosum.teo");
+	necklace.runes[RUNE_FOLGORA] =     loadObject("Graph\\Interface\\book\\runes\\runes_folgora.teo");
+	necklace.runes[RUNE_FRIDD] =       loadObject("Graph\\Interface\\book\\runes\\runes_fridd.teo");
+	necklace.runes[RUNE_KAOM] =        loadObject("Graph\\Interface\\book\\runes\\runes_kaom.teo");
+	necklace.runes[RUNE_MEGA] =        loadObject("Graph\\Interface\\book\\runes\\runes_mega.teo");
+	necklace.runes[RUNE_MORTE] =       loadObject("Graph\\Interface\\book\\runes\\runes_morte.teo");
+	necklace.runes[RUNE_MOVIS] =       loadObject("Graph\\Interface\\book\\runes\\runes_movis.teo");
+	necklace.runes[RUNE_NHI] =         loadObject("Graph\\Interface\\book\\runes\\runes_nhi.teo");
+	necklace.runes[RUNE_RHAA] =        loadObject("Graph\\Interface\\book\\runes\\runes_rhaa.teo");
+	necklace.runes[RUNE_SPACIUM] =     loadObject("Graph\\Interface\\book\\runes\\runes_spacium.teo");
+	necklace.runes[RUNE_STREGUM] =     loadObject("Graph\\Interface\\book\\runes\\runes_stregum.teo");
+	necklace.runes[RUNE_TAAR] =        loadObject("Graph\\Interface\\book\\runes\\runes_taar.teo");
+	necklace.runes[RUNE_TEMPUS] =      loadObject("Graph\\Interface\\book\\runes\\runes_tempus.teo");
+	necklace.runes[RUNE_TERA] =        loadObject("Graph\\Interface\\book\\runes\\runes_tera.teo");
+	necklace.runes[RUNE_VISTA] =       loadObject("Graph\\Interface\\book\\runes\\runes_vista.teo");
+	necklace.runes[RUNE_VITAE] =       loadObject("Graph\\Interface\\book\\runes\\runes_vitae.teo");
+	necklace.runes[RUNE_YOK] =         loadObject("Graph\\Interface\\book\\runes\\runes_yok.teo");
 
 	necklace.pTexTab[RUNE_AAM]			= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_Aam[icon].BMP");
 	necklace.pTexTab[RUNE_CETRIUS]		= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cetrius[icon].BMP");
@@ -2905,16 +2905,18 @@ HRESULT DANAE::BeforeRun()
 		}
 	}
 
+	// TODO the .teo files are not shipped with the game, only the textures are
+	// TODO this is the only place where _LoadTheObj is used
 	EERIE_3DOBJ * _fogobj;
 	_fogobj=		_LoadTheObj("Editor\\Obj3D\\fog_generator.teo","node_TEO MAPS\\");
 	ARX_FOGS_Set_Object(_fogobj);
-
-	eyeballobj=		_LoadTheObj("Editor\\Obj3D\\eyeball.teo","eyeball_TEO MAPS\\");
-	cabal=			_LoadTheObj("Editor\\Obj3D\\cabal.teo","cabal_TEO MAPS\\");
-	nodeobj=		_LoadTheObj("Editor\\Obj3D\\node.teo","node_TEO MAPS\\");
-	cameraobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\System\\Camera\\Camera.teo","..\\..\\..\\textures\\");
-	markerobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo","..\\..\\..\\textures\\");
-	arrowobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\Items\\Weapons\\arrow\\arrow.teo","..\\..\\..\\..\\textures\\");
+	eyeballobj = _LoadTheObj("Editor\\Obj3D\\eyeball.teo","eyeball_TEO MAPS\\");
+	cabal = _LoadTheObj("Editor\\Obj3D\\cabal.teo","cabal_TEO MAPS\\");
+	nodeobj = _LoadTheObj("Editor\\Obj3D\\node.teo","node_TEO MAPS\\");
+	
+	cameraobj = loadObject("Graph\\Obj3D\\Interactive\\System\\Camera\\Camera.teo");
+	markerobj = loadObject("Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo");
+	arrowobj = loadObject("Graph\\Obj3D\\Interactive\\Items\\Weapons\\arrow\\arrow.teo");
 
 	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		char temp[256];
@@ -2924,7 +2926,7 @@ HRESULT DANAE::BeforeRun()
 		else
 			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin" PRINT_SIZE_T ".teo",i+1);
 
-		GoldCoinsObj[i]=	_LoadTheObj(temp,"..\\..\\..\\..\\textures\\");
+		GoldCoinsObj[i] = loadObject(temp);
 
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin[icon].bmp");

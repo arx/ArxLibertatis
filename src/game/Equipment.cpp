@@ -212,9 +212,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		delete io->obj;
 	}
 
-	const char texpath[] = "Graph\\Obj3D\\Textures\\";
 	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
-	io->obj = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, false);
+	io->obj = loadObject(OBJECT_HUMAN_BASE, false);
 	
 	long sel_ = -1;
 	char pathh[256];

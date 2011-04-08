@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Time.h"
 #include "core/Dialog.h"
 #include "core/Localization.h"
+#include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Levels.h"
@@ -222,33 +223,6 @@ void BIG_PURGE()
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
-EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path)
-{
-	
-	std::string tex1;
-	EERIE_3DOBJ * wr;
-	
-	if (path == NULL)
-	{
-		tex1 = "Graph\\obj3D\\textures\\";
-	}
-	else
-	{
-		tex1 = text;
-		RemoveName(tex1);
-		tex1 += path;
-	}
-	
-	wr = TheoToEerie_Fast(tex1, text);
-	return wr;
-}
-
-//*************************************************************************************
-//*************************************************************************************
-
 void ReplaceSpecifics( char* text )
 {
 /*	std::string temp = text;
@@ -348,7 +322,7 @@ long DanaeSaveLevel(const string & _fic) {
 	memset(dat, 0, allocsize);
 	
 	// Preparing HEADER
-	dlh.version = CURRENT_VERSION;
+	dlh.version = DLH_CURRENT_VERSION;
 	if(NODIRCREATION) {
 		dlh.version = 1.004f;
 	}
@@ -566,7 +540,7 @@ long DanaeSaveLevel(const string & _fic) {
 	memset(&llh, 0, sizeof(DANAE_LLF_HEADER));
 	
 	// Preparing HEADER
-	llh.version = CURRENT_VERSION;
+	llh.version = DLH_CURRENT_VERSION;
 	llh.nb_lights = EERIE_LIGHT_Count();
 	llh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
 	strcpy(llh.ident, "DANAE_LLH_FILE");
@@ -897,12 +871,9 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 
 		if (SendIOScriptEvent(io, SM_LOAD) == ACCEPT)
 		{
-			if (io->obj == NULL)
-			{
-				const char dirpath[] = "Graph\\Obj3D\\Textures\\";
-				
+			if(io->obj == NULL) {
 				bool pbox = (io->ioflags & IO_ITEM);
-				io->obj = TheoToEerie_Fast(dirpath, io->filename, pbox);
+				io->obj = loadObject(io->filename, pbox);
 
 				if (io->ioflags & IO_NPC)
 					EERIE_COLLISION_Cylinder_Create(io);
@@ -974,7 +945,7 @@ long DanaeLoadLevel(const string & fic) {
 	
 	LogDebug << "dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER);
 	
-	if(dlh.version > CURRENT_VERSION) {
+	if(dlh.version > DLH_CURRENT_VERSION) {
 		LogError << "DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...";
 		free(dat);
 		dat = NULL;
@@ -1803,7 +1774,7 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
 
-	if (dlh.version > CURRENT_VERSION) // using compression
+	if (dlh.version > DLH_CURRENT_VERSION) // using compression
 	{
 		LogError << ("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
 		free(dat);

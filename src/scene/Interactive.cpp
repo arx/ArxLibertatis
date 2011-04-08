@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Time.h"
 #include "core/Dialog.h"
+#include "core/Core.h"
 
 #include "game/Equipment.h"
 #include "game/NPC.h"
@@ -1215,7 +1216,6 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
         return;
 
     std::string tex;
-    const char tex1[] = "Graph\\Obj3D\\Textures\\";
     std::string tex2;
 
     if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp;
@@ -1239,7 +1239,7 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
         }
 
         bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
-        io->obj = TheoToEerie_Fast(tex1, tex, pbox);
+        io->obj = loadObject(tex, pbox);
 
 		EERIE_COLLISION_Cylinder_Create(io);
 	}
@@ -2570,8 +2570,7 @@ INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
 		}
 		else
 		{
-			const char texdir[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texdir, tex1, false);
+			io->obj = loadObject(tex1, false);
 		}
 	}
 
@@ -3034,8 +3033,7 @@ INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags)
 		}
 		else
 		{
-			const char texpath[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texpath, tex1, false);
+			io->obj = loadObject(tex1, false);
 		}
 	}
 
@@ -3357,16 +3355,10 @@ INTERACTIVE_OBJ * AddItem(const std::string& fil, long flags)
 
 	if (!io->obj)
 	{
-		if (flags & NO_MESH)
-		{
+		if(flags & NO_MESH) {
 			io->obj = NULL;
-		}
-		else
-		{
- 
-			const char texdir[] = "Graph\\Obj3D\\Textures\\";
-
-			io->obj = TheoToEerie_Fast(texdir, tex1);
+		} else {
+			io->obj = loadObject(tex1);
 		}
 	}
 

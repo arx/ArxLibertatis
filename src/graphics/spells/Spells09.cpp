@@ -909,13 +909,12 @@ CNegateMagic::CNegateMagic()
 	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 	tex_sol = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_negate_magic.bmp");
 
-	if (!ssol)
-	{
-		ssol   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+	if(!ssol) {
+		ssol = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 		EERIE_3DOBJ_RestoreTextures(ssol);
 	}
-
 	ssol_count++;
+	
 }
 
 //-----------------------------------------------------------------------------

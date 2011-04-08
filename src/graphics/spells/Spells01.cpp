@@ -217,9 +217,8 @@ CMagicMissile::CMagicMissile() : CSpellFx()
 
 	tex_mm = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
-	if (!smissile)
-	{
-		smissile  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo", NULL);
+	if(!smissile) {
+		smissile = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo");
 		EERIE_3DOBJ_RestoreTextures(smissile);
 	}
 

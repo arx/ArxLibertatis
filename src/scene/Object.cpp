@@ -2201,7 +2201,7 @@ static EERIE_3DOBJ * GetExistingEerie(const string & file) {
 	return NULL;
 }
 
-EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & file, bool pbox) {
+static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & file, bool pbox) {
 	
 	EERIE_3DOBJ * ret = ARX_FTL_Load(file);
 	if(ret) {
@@ -2258,6 +2258,19 @@ EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & file, bool
 	ARX_FTL_Save(file, ret);
 	
 	return ret;
+}
+
+EERIE_3DOBJ * loadObject(const string & file, bool pbox) {
+	return TheoToEerie_Fast("graph\\obj3d\\textures\\", file, pbox);
+}
+
+EERIE_3DOBJ * _LoadTheObj(const string & file, const string & texpath) {
+	
+	std::string path = file;
+	RemoveName(path);
+	path += texpath;
+	
+	return TheoToEerie_Fast(path, texpath, true);
 }
 
 // TODO why is this in EERIEobject

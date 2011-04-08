@@ -845,9 +845,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 
 	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
 	{
-		const char tex1[] = "Graph\\Obj3D\\Textures\\";
-
-		tobj = TheoToEerie_Fast(tex1, path);
+		tobj = loadObject(path);
 
 		if (!tobj) return;
 

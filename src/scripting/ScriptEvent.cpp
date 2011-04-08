@@ -6212,12 +6212,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							delete io->obj;
 							io->obj = NULL;
 						}
-
-						const char texpath[] = "Graph\\Obj3D\\Textures\\";
-
+						
 						bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
-						io->obj = TheoToEerie_Fast(texpath, tex, pbox);
-
+						io->obj = loadObject(tex, pbox);
+						
 						EERIE_COLLISION_Cylinder_Create(io);
 					}
 				}

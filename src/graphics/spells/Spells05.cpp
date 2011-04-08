@@ -292,43 +292,40 @@ float CCurePoison::Render()
 }
 
 //-----------------------------------------------------------------------------
-CRuneOfGuarding::CRuneOfGuarding()
-{
+CRuneOfGuarding::CRuneOfGuarding() {
+	
 	eSrc.x = 0;
 	eSrc.y = 0;
 	eSrc.z = 0;
-
+	
 	eTarget.x = 0;
 	eTarget.y = 0;
 	eTarget.z = 0;
-
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-
-	if (!ssol)
-	{
-		ssol   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+	
+	if(!ssol) {
+		ssol = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 		EERIE_3DOBJ_RestoreTextures(ssol);
 	}
-
+	
 	ssol_count++;
-
-	if (!slight)
-	{
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
+	
+	if(!slight) {
+		slight = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 		EERIE_3DOBJ_RestoreTextures(slight);
 	}
-
+	
 	slight_count++;
-
-	if (!srune)
-	{
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+	
+	if(!srune) {
+		srune = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 		EERIE_3DOBJ_RestoreTextures(srune);
 	}
-
+	
 	srune_count++;
 }
 
@@ -1210,25 +1207,24 @@ CRepelUndead::CRepelUndead()
 
 	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
-	if (!ssol) // Pentacle
-	{
-		ssol   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+	if(!ssol) {
+		// Pentacle
+		ssol = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 		EERIE_3DOBJ_RestoreTextures(ssol);
 	}
 
 	ssol_count++;
 
-	if (!slight) // Twirl
-	{
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
+	if(!slight) {
+		// Twirl
+		slight = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 		EERIE_3DOBJ_RestoreTextures(slight);
 	}
 
 	slight_count++; //runes
 
-	if (!srune)
-	{
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+	if(!srune) {
+		srune  = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 		EERIE_3DOBJ_RestoreTextures(srune);
 	}
 
@@ -1413,16 +1409,14 @@ CLevitate::CLevitate()
 		this->cone[nb].conevertex = NULL;
 	}
 
-	if (stone0 == NULL)
-	{
-		stone0 = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo", NULL);
+	if(!stone0) {
+		stone0 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo");
 	}
 
 	stone0_count++;
 
-	if (stone1 == NULL)
-	{
-		stone1 = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo", NULL);
+	if(!stone1) {
+		stone1 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo");
 	}
 
 	stone1_count++;
