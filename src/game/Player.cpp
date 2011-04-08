@@ -3548,7 +3548,7 @@ void PlayerMovementIterate(float DeltaTime)
 	}
 
 	// Finally update player pos !
-	Vector_Copy(&player.pos, &moveto);
+	player.pos = moveto;
 
 lasuite:
 	;
