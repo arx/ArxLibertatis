@@ -1035,15 +1035,6 @@ void Vector_Sub(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2)
 	dest->z = v1->z - v2->z;
 }
 //*************************************************************************************
-// Adds 2 vectors together giving "dest"
-//*************************************************************************************
-void Vector_Add(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2)
-{
-	dest->x = v1->x + v2->x;
-	dest->y = v1->y + v2->y;
-	dest->z = v1->z + v2->z;
-}
-//*************************************************************************************
 // Returns true if vector v1 equals vector v2
 //*************************************************************************************
 bool Vector_Compare(const EERIE_3D * v1, const EERIE_3D * v2)

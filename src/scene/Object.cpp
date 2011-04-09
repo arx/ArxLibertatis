@@ -1802,7 +1802,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				Quat_Multiply(&obj->bones[i].quatanim, &obj->bones[obj->bones[i].father].quatanim, &qt1);
 				/* Translation */
 				TransformVertexQuat(&obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].transinit, &obj->bones[i].transanim);
-				Vector_Add(&obj->bones[i].transanim, &obj->bones[obj->bones[i].father].transanim, &obj->bones[i].transanim);
+				obj->bones[i].transanim = obj->bones[obj->bones[i].father].transanim + obj->bones[i].transanim;
 			}
 			else
 			{

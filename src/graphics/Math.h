@@ -382,7 +382,6 @@ void	QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat);
 
 #define VrotY Vector_RotateY
 #define Vsub Vector_Sub
-#define Vadd Vector_Add
 #define Vcmp Vector_Compare
 #define Vinv Vector_Invert
 #define Vscale Vector_Scale

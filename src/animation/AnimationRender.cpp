@@ -378,14 +378,10 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 				Quat_Copy(&temp, &obj->bones[j].quatinit);
 				Quat_Multiply(&obj->bones[j].quatinit, &temp, &t);
 
-				vect.x = sGroup->translate.x + (eGroup->translate.x - sGroup->translate.x) * animuse->pour;
-				vect.y = sGroup->translate.y + (eGroup->translate.y - sGroup->translate.y) * animuse->pour;
-				vect.z = sGroup->translate.z + (eGroup->translate.z - sGroup->translate.z) * animuse->pour;
-				Vector_Add(&obj->bones[j].transinit, &vect, &obj->bones[j].transinit_global);
+				vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
+				obj->bones[j].transinit = vect + obj->bones[j].transinit_global;
 
-				scale.x = sGroup->zoom.x + (eGroup->zoom.x - sGroup->zoom.x) * animuse->pour;
-				scale.y = sGroup->zoom.y + (eGroup->zoom.y - sGroup->zoom.y) * animuse->pour;
-				scale.z = sGroup->zoom.z + (eGroup->zoom.z - sGroup->zoom.z) * animuse->pour;
+				scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
 
 				if (BH_MODE)
 				{
@@ -424,16 +420,12 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			Quat_Multiply(&obj->bones[i].quatanim, &obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].quatinit);
 
 			// Translation
-			obj->bones[i].transanim.x = obj->bones[i].transinit.x * obj->bones[obj->bones[i].father].scaleanim.x;
-			obj->bones[i].transanim.y = obj->bones[i].transinit.y * obj->bones[obj->bones[i].father].scaleanim.y;
-			obj->bones[i].transanim.z = obj->bones[i].transinit.z * obj->bones[obj->bones[i].father].scaleanim.z;
+			obj->bones[i].transanim = obj->bones[i].transinit * obj->bones[obj->bones[i].father].scaleanim;
 			TransformVertexQuat(&obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].transanim, &obj->bones[i].transanim);
-			Vector_Add(&obj->bones[i].transanim, &obj->bones[obj->bones[i].father].transanim, &obj->bones[i].transanim);
+			obj->bones[i].transanim = obj->bones[obj->bones[i].father].transanim + obj->bones[i].transanim;
 
 			/* Scale */
-			obj->bones[i].scaleanim.x = (obj->bones[i].scaleinit.x + 1.f) * obj->bones[obj->bones[i].father].scaleanim.x;
-			obj->bones[i].scaleanim.y = (obj->bones[i].scaleinit.y + 1.f) * obj->bones[obj->bones[i].father].scaleanim.y;
-			obj->bones[i].scaleanim.z = (obj->bones[i].scaleinit.z + 1.f) * obj->bones[obj->bones[i].father].scaleanim.z;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + EERIE_3D(1,1,1)) * obj->bones[obj->bones[i].father].scaleanim;
 
 		}
 		else // Root Bone
@@ -470,17 +462,13 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			}
 
 			// Translation
-			Vector_Add(&vt1, &obj->bones[i].transinit, &ftr);
+			vt1 = obj->bones[i].transinit + ftr;
 			TransformVertexQuat(&qt2, &vt1, &obj->bones[i].transanim);
-			obj->bones[i].transanim.x *= g_scale;
-			obj->bones[i].transanim.y *= g_scale;
-			obj->bones[i].transanim.z *= g_scale;
-			Vector_Add(&obj->bones[i].transanim, pos, &obj->bones[i].transanim);
+			obj->bones[i].transanim *= g_scale;
+			obj->bones[i].transanim = *pos + obj->bones[i].transanim;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			obj->bones[i].scaleanim.x = (obj->bones[i].scaleinit.x + 1.f) * g_scale;
-			obj->bones[i].scaleanim.y = (obj->bones[i].scaleinit.y + 1.f) * g_scale;
-			obj->bones[i].scaleanim.z = (obj->bones[i].scaleinit.z + 1.f) * g_scale;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + EERIE_3D(1,1,1)) * g_scale;
 		}
 	}
 }
@@ -527,7 +515,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 
 			TransformVertexMatrix(&matrix, (EERIE_3D *)inVert, &outVert->v);
 
-			Vector_Add(&outVert->v, &vector, &outVert->v);
+			outVert->v += vector;
 			outVert->vert.sx = outVert->v.x;
 			outVert->vert.sy = outVert->v.y;
 			outVert->vert.sz = outVert->v.z;
