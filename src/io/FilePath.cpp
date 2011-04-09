@@ -37,7 +37,7 @@ string GetExt(const string & str) {
 	return string(str, extpos);
 }
 
-void SetExt(string & str, const string & new_ext) {
+const string & SetExt(string & str, const string & new_ext) {
 	size_t extpos = str.find_last_of(EXT_OR_DIR_SEP);
 	// No extension so far.
 	if(extpos == string::npos || str[extpos] != '.') {
@@ -45,7 +45,7 @@ void SetExt(string & str, const string & new_ext) {
 			str += '.';
 		}
 		str += new_ext;
-		return;
+		return str;
 	}
 	if(!new_ext.empty() && new_ext[0] != '.') {
 		str.resize(extpos + 1 + new_ext.length());
@@ -55,6 +55,8 @@ void SetExt(string & str, const string & new_ext) {
 		str.resize(extpos + new_ext.length());
 		copy(new_ext.begin(), new_ext.end(), str.begin() + extpos);
 	}
+
+	return str;
 }
 
 void AddToName(string & str, const string & cat) {

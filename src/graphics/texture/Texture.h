@@ -13,8 +13,8 @@ public:
     {
     }
 
-	virtual void Init() = 0;
-	virtual void Kill() = 0;
+	virtual void Upload() = 0;
+	virtual void Destroy() = 0;
 
     unsigned int GetWidth() const
     {
@@ -46,10 +46,12 @@ protected:
         : mFormat(Image::Format_Unknown)
         , mHasMipmaps(false)
         , mWidth(0)
-        , mHeight(1)
-        , mDepth(1)
+        , mHeight(0)
+        , mDepth(0)
     {
     }
+
+	virtual bool Create() = 0;
     
 protected:
     Image::Format   mFormat;
@@ -59,88 +61,28 @@ protected:
     unsigned int    mDepth;
 };
 
-
-class Texture1D : public Texture
-{
-public:
-    virtual ~Texture1D() {}
-    
-    bool Create( const Image& pImage, bool pCreateMipmaps = true );
-    bool Create( unsigned int pWidth, Image::Format pFormat );
-
-    Image&  GetImage();
-    void    Update();
-
-protected:
-    Texture1D() {}
-
-    Image   mImage;
-};
-
-
 class Texture2D : public Texture
 {
 public:
-    virtual ~Texture2D() {}
+    virtual ~Texture2D() 
+	{
+	}
 
-    bool Create( const Image& pImage, bool pCreateMipmaps = true );
-    bool Create( unsigned int pWidth, unsigned int pHeight, Image::Format pFormat );
+	bool Init( const std::string& strFileName );
+    bool Init( const Image& image, bool createMipmaps = true );
+    bool Init( unsigned int width, unsigned int height, Image::Format format );
 
-    Image&  GetImage();
-    void    Update();
+	bool Restore();
 
-protected:
-    Texture2D() {} 
-
-    Image   mImage;
-};
-
-
-class Texture3D : public Texture
-{
-public:
-    virtual ~Texture3D() {}
-
-    bool Create( const Image& pImage, bool pCreateMipmaps = true );
-    bool Create( unsigned int pWidth, unsigned int pHeight, unsigned int pDepth, Image::Format pFormat );
-       
-    Image&  GetImage();
-    void    Update();
+    Image& GetImage();
 
 protected:
-    Texture3D() {}
+	Texture2D()
+	{
+	} 
 
-    Image   mImage;
-};
-
-
-class Cubemap : public Texture
-{
-public:
-    enum CubemapFace
-    {
-        PositiveX,
-        NegativeX,
-        PositiveY,
-        NegativeY,
-        PositiveZ,
-        NegativeZ,
-        NumFaces
-    };
-
-public:
-    virtual ~Cubemap() {}
-
-    bool Create( const std::vector<Image*>& pImages, bool pCreateMipmaps = true );
-    bool Create( unsigned int pWidth, unsigned int pHeight, Image::Format pFormat );
-
-    Image&  GetImage( CubemapFace pFace );
-    void    Update();
-
-protected:
-    Cubemap() {}   
-
-    Image   mImages[NumFaces];
+    Image			mImage;
+	std::string		mFileName;
 };
 
 

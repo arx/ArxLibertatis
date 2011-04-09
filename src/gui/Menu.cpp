@@ -305,8 +305,8 @@ void ARX_Menu_Resources_Create() {
 	}
 
 	ARXmenu.mda = new MENU_DYNAMIC_DATA();
-	ARXmenu.mda->pTexCredits = MakeTCFromFile("Graph\\Interface\\menus\\Menu_credits.bmp");
-	ARXmenu.mda->BookBackground = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
+	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("Graph\\Interface\\menus\\Menu_credits.bmp");
+	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
 
 	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],              "system_charsheet_strength");
 	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],                  "system_charsheet_intel");
@@ -386,13 +386,13 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 
 	if (ARXmenu.mda->Background != NULL)
 	{
-		D3DTextr_KillTexture(ARXmenu.mda->Background);
+		delete ARXmenu.mda->Background;
 		ARXmenu.mda->Background = NULL;
 	}
 
 	if (ARXmenu.mda->BookBackground != NULL)
 	{
-		D3DTextr_KillTexture(ARXmenu.mda->BookBackground);
+		delete ARXmenu.mda->BookBackground;
 		ARXmenu.mda->BookBackground = NULL;
 	}
 	
@@ -412,7 +412,7 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 
 	if (pTextureLoad)
 	{
-		D3DTextr_KillTexture(pTextureLoad);
+		delete pTextureLoad;
 		pTextureLoad = NULL;
 	}
 }

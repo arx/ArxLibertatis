@@ -1186,8 +1186,7 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const string & fic)
 			pos += sizeof(THEO_TEXTURE);
 			
 			string mapsname = temp + tt.texture_name + ".bmp";
-			seerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-			MakeUserFlag(seerie->texturecontainer[i]);
+			seerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
 		}
 		
 	} else {
@@ -1220,8 +1219,7 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const string & fic)
 						mapsname += ".tga";
 					}
 					
-					seerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-					MakeUserFlag(seerie->texturecontainer[i]);
+					seerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
 				}
 			}
 		}
@@ -1929,7 +1927,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 
 // Converts a Theo Object to an EERIE object
 // flag 1 progressive alloc 2 SLOW
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath, const string & fic, long flag) {
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath, const string & fic) {
 	
 	LogWarning << "TheoToEerie " << fic;
 	
@@ -2007,14 +2005,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath
 						mapsname += ".tga";
 					}
 					
-					eerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-					MakeUserFlag(eerie->texturecontainer[i]);
-					
-					if(eerie->texturecontainer[i]) {
-						if(!(flag & TTE_NO_RESTORE)) {
-							eerie->texturecontainer[i]->Restore();
-						}
-					}
+					eerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
 				}
 			}
 		}
@@ -2181,20 +2172,6 @@ void RemoveAllBackgroundActions()
 	memset(actions, 0, sizeof(ACTIONSTRUCT)*MAX_ACTIONS);
 
 	for (long i = 0; i < MAX_ACTIONS; i++) actions[i].dl = -1;
-}
-
-void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj)
-{
-	if ((eobj) && !eobj->texturecontainer.empty())
-	{
-		for (size_t i = 0; i < eobj->texturecontainer.size(); i++)
-		{
-			if (eobj->texturecontainer[i])
-			{
-				eobj->texturecontainer[i]->Restore();
-			}
-		}
-	}
 }
 
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)

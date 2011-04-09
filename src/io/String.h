@@ -9,7 +9,7 @@
  * @param A reference to the string being converted
  * @return A copy of the converted string
  */
-std::string MakeUpcase(std::string & str);
+std::string & MakeUpcase(std::string & str);
 
 bool IsIn(const std::string & strin, const std::string & str);
 bool NC_IsIn(std::string strin, std::string str);

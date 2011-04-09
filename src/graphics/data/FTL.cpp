@@ -570,14 +570,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const std::string & file) {
 			File_Standardize( tex->name, name );
 			
 			// Create the texture and put it in the container list
-			obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile( name, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-			
-			if(obj->texturecontainer[i] && !obj->texturecontainer[i]->m_pddsSurface) {
-				obj->texturecontainer[i]->Restore();
-			}
-			
-			MakeUserFlag(obj->texturecontainer[i]);
-			
+			obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);
 		}
 	}
 	

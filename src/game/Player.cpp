@@ -1644,9 +1644,8 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 }
 TextureContainer * PLAYER_SKIN_TC = NULL;
 
-void	ARX_PLAYER_Restore_Skin()
+void ARX_PLAYER_Restore_Skin()
 {
-
 	std::string tx;
 	std::string tx2;
 	std::string tx3;
@@ -1655,96 +1654,65 @@ void	ARX_PLAYER_Restore_Skin()
 	switch (player.skin)
 	{
 		case 0:
-			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp";
+			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp";
 			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
 			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
 			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 1:
-			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp";
+			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp";
 			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero2_head.bmp";
 			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero2_head.bmp";
 			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero2_head.bmp";
 			break;
 		case 2:
-			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp";
+			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp";
 			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero3_head.bmp";
 			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero3_head.bmp";
 			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero3_head.bmp";
 			break;
 		case 3:
-			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero4_head.bmp";
+			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero4_head.bmp";
 			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero4_head.bmp";
 			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero4_head.bmp";
 			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero4_head.bmp";
 			break;
 		case 4:
-			tx = "Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp";
+			tx  = "Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp";
 			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
 			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
 			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 5:
-			tx = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
+			tx  = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
 			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
 			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
 			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 6: //just in case
-			tx ="Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
+			tx  = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
 			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
 			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
 			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 	}
 
-	if (PLAYER_SKIN_TC)
-	{
+	TextureContainer * tmpTC;
 
-		if (tx[0])
-		{
-			MakeUpcase(tx);
-			PLAYER_SKIN_TC->m_strName = tx;
-			ReloadTexture(PLAYER_SKIN_TC);
-			PLAYER_SKIN_TC->Restore();
-		}
-	}
+	if (PLAYER_SKIN_TC && !tx.empty())
+		PLAYER_SKIN_TC->LoadFile(tx);
 
-	std::string tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-	MakeUpcase(tt);
-	TextureContainer * tmpTC = FindTexture(tt);
+	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
+	if (tmpTC && !tx2.empty())
+		tmpTC->LoadFile(tx2);
 
-	if ((tmpTC) && (tx2[0]))
-	{
-		MakeUpcase(tx2);
-		tmpTC->m_strName = tx2;
-		ReloadTexture(tmpTC);
-		tmpTC->Restore();
-	}
+	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
+	if (tmpTC && !tx3.empty())
+		tmpTC->LoadFile(tx3);
 
-	tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-	MakeUpcase(tt);
-	tmpTC = FindTexture(tt);
-
-	if ((tmpTC) && (tx3[0]))
-	{
-		MakeUpcase(tx3);
-		tmpTC->m_strName = tx3;
-		ReloadTexture(tmpTC);
-		tmpTC->Restore();
-	}
-
-	tt = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
-	MakeUpcase(tt);
-	tmpTC = FindTexture(tt);
-
-	if ((tmpTC) && (tx4[0]))
-	{
-		MakeUpcase(tx4);
-		tmpTC->m_strName = tx4;
-		ReloadTexture(tmpTC);
-		tmpTC->Restore();
-	}
+	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+	if (tmpTC && !tx4.empty())
+		tmpTC->LoadFile(tx4);
 }
 extern void LaunchMoulinex();
 extern HRESULT DANAEFinalCleanup();
@@ -1760,7 +1728,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
  
 	hero = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
-	PLAYER_SKIN_TC = MakeTCFromFile("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
+	PLAYER_SKIN_TC = TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
 
 	const char ANIM_WAIT_BOOK[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book.tea";
 	herowaitbook = EERIE_ANIMMANAGER_Load(ANIM_WAIT_BOOK);

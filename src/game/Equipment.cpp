@@ -235,9 +235,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 			{
 				char path[256];
 				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = MakeTCFromFile(path, 1);
-
-				if (temp) temp->Restore();
+				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
 
@@ -255,7 +253,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName) ) )
+					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
 						textochange = i;
 				}
 
@@ -291,9 +289,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 			{
 				char path[256];
 				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = MakeTCFromFile(path, 1);
-
-				if (temp) temp->Restore();
+				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
 
@@ -311,7 +307,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName) ) )
+					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
 						textochange = i;
 				}
 
@@ -347,9 +343,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 			{
 				char path[256];
 				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = MakeTCFromFile(path, 1);
-
-				if (temp) temp->Restore();
+				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
 
@@ -367,7 +361,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName) ) )
+					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
 						textochange = i;
 				}
 

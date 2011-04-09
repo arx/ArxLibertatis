@@ -3550,12 +3550,9 @@ bool FastSceneLoad(const string & partial_path) {
 	TextureContainerMap textures;
 	for(long k = 0; k < fsh->nb_textures; k++) {
 		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(rawdata + pos);
-		TextureContainer * tmpTC = D3DTextr_CreateTextureFromFile(ftc->fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+		TextureContainer * tmpTC = TextureContainer::Load(ftc->fic, TextureContainer::Level);
 		if(tmpTC) {
 			textures[ftc->tc] = tmpTC;
-			if(!tmpTC->m_pddsSurface) {
-				tmpTC->Restore();
-			}
 		}
 		pos += sizeof(FAST_TEXTURE_CONTAINER);
 	}

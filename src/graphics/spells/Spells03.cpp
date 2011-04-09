@@ -487,22 +487,16 @@ CIceProjectile::CIceProjectile()
 
 	iNumber = MAX_ICE;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
 	if (!stite)
-	{
-		stite   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(stite);
-	}
+		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo", NULL);
 
 	stite_count++;
 
 	if (!smotte)
-	{
-		smotte   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(smotte);
-	}
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
 
 	smotte_count++;
 
@@ -871,7 +865,7 @@ void CSpeed::Create(int numinteractive, int duration)
 		grouplist += 2;
 	}
 
-	this->tp = MakeTCFromFile("Graph\\Particles\\fire.bmp");
+	this->tp = TextureContainer::Load("Graph\\Particles\\fire.bmp");
 }
 
 //-----------------------------------------------------------------------------

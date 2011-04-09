@@ -99,7 +99,7 @@ CCreateField::CCreateField() {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_jelly = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu3.bmp");
+	tex_jelly = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu3.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -381,29 +381,20 @@ CSlowDown::CSlowDown()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
 	if (!ssol) // Pentacle
-	{
-		ssol   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(ssol);
-	}
+		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
 
 	ssol_count++;
 
 	if (!slight) // Twirl
-	{
 		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(slight);
-	}
 
 	slight_count++; //runes
 
 	if (!srune)
-	{
 		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(srune);
-	}
 
 	srune_count++;
 }
@@ -608,7 +599,7 @@ CRiseDead::CRiseDead()
 	}
 
 	stone1_count++;
-	tex_light = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
+	tex_light = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -1519,10 +1510,10 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		tabprism[i].vertex = new EERIE_3D[prismnbpt];
 	}
 
-	tex_prism = MakeTCFromFile("Graph\\Obj3D\\Textures\\(FX)_paralyze.bmp");
-	tex_p	  = MakeTCFromFile("Graph\\Particles\\missile.bmp");
-	tex_p1	  = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2	  = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_prism = TextureContainer::Load("Graph\\Obj3D\\Textures\\(FX)_paralyze.bmp");
+	tex_p	  = TextureContainer::Load("Graph\\Particles\\missile.bmp");
+	tex_p1	  = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2	  = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
 	CreatePrismTriangleList(arayon, ahcapuchon, ahauteur, adef);
 	CreateLittlePrismTriangleList();
@@ -1762,8 +1753,10 @@ float CParalyse::Render()
 		nb--;
 	}
 
-	if (tex_prism) GDevice->SetTexture(0, tex_prism->m_pddsSurface);
-	else GRenderer->ResetTexture(0);
+	if (tex_prism) 
+		GRenderer->SetTexture(0, tex_prism->m_pddsSurface);
+	else 
+		GRenderer->ResetTexture(0);
 
 	int	nb2 = 50;
 
@@ -2127,30 +2120,21 @@ CDisarmTrap::CDisarmTrap()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 	
 	if (!smotte)
-	{
-		smotte   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(smotte);
-	}
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
 
 	smotte_count++;
 
 	if (!slight)
-	{
 		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(slight);
-	}
-
+	
 	slight_count++; 
 
 	if (!srune)
-	{
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(srune);
-	}
-
+		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+	
 	srune_count++;
 }
 CDisarmTrap::~CDisarmTrap()

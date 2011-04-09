@@ -776,14 +776,11 @@ CConfuse::CConfuse()
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_trail = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_trail = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
 	if (!spapi)
-	{
-		spapi   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(spapi);
-	}
+		spapi = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo", NULL);
 
 	spapi_count++;
 
@@ -1179,22 +1176,16 @@ CIceField::CIceField()
 
 	iNumber = 50;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
 	if (!stite)
-	{
-		stite   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(stite);
-	}
-
+		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+		
 	stite_count++;
 
 	if (!smotte)
-	{
-		smotte   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(smotte);
-	}
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
 
 	smotte_count++;
 }

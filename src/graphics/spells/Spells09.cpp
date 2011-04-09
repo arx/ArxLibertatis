@@ -98,7 +98,7 @@ CSummonCreature::CSummonCreature()
 	fColorRays2[1] = 0;
 	fColorRays2[2] = 0;
 
-	tex_light = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
+	tex_light = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
 }
 
 void CSummonCreature::SetDuration(const unsigned long alDuration)
@@ -906,15 +906,12 @@ CNegateMagic::CNegateMagic()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
-	tex_sol = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_negate_magic.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_sol = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_negate_magic.bmp");
 
 	if (!ssol)
-	{
-		ssol   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(ssol);
-	}
-
+		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+		
 	ssol_count++;
 }
 

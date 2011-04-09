@@ -218,9 +218,9 @@ bool C_ARX_Carte::Render(void)
 					}
 
 					if(ep->tex)
-						GDevice->SetTexture(0,ep->tex->m_pddsSurface);
+						GRenderer->SetTexture(0,ep->tex->m_pddsSurface);
 					else
-						GDevice->SetTexture(0,NULL);
+						GRenderer->ResetTexture(0);
 
 					EERIEDRAWPRIM(	D3DPT_TRIANGLESTRIP,
 									D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,

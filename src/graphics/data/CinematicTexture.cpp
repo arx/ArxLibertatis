@@ -376,9 +376,9 @@ CinematicBitmap* CreateCinematicBitmap(const string & path, int scale) {
 			int w2 = (w - MaxW) < 0 ? w : MaxW;
 
 			Texture2D* tex = GRenderer->CreateTexture2D();
-			tex->GetImage().Create(w2, h2, Image::Format_R8G8B8A8);
+			tex->Init(w2, h2, cinematicImage.GetFormat());
 			tex->GetImage().Copy(cinematicImage, 0, 0, bi->w - w, bi->h - h, w2, h2);
-			tex->Update();
+			tex->Upload();
 
 			AddQuadUVs(&bi->grid, (bi->nbx - nbxx) * scale, (bi->nby - nby) * scale, scale, scale, bi->w - w, bi->h - h, w2, h2, tex);
 

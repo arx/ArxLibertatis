@@ -364,15 +364,8 @@ void DRAWLATER_Render()
 		for (long j=0;j<curdrawlater;j++)
 		{
 			if (tdl[j].ep->tex==NULL) continue;
-
 			if (tdl[j].ep->tex->TextureRefinement==NULL) continue;
-
-			if (tdl[j].ep->tex->TextureRefinement->m_pddsSurface==NULL)
-			{
-				tdl[j].ep->tex->TextureRefinement->Restore();
-
-				if (tdl[j].ep->tex->TextureRefinement->m_pddsSurface==NULL) continue;
-			}
+			if (tdl[j].ep->tex->TextureRefinement->m_pddsSurface==NULL) continue;
 
 			if (tdl[j].ep->type & POLY_QUAD) to=4;
 			else to=3;
@@ -601,12 +594,7 @@ void Delayed_FlushAll()
 			if (ZMAPMODE)
 			{				
 				if (ptcTexture->TextureRefinement==NULL) ptcTexture->delayed_nb=0;
-				else if (ptcTexture->TextureRefinement->m_pddsSurface==NULL)
-				{
-					ptcTexture->TextureRefinement->Restore();
-
-					if (ptcTexture->TextureRefinement->m_pddsSurface==NULL) ptcTexture->delayed_nb=0;
-				}
+				else if (ptcTexture->TextureRefinement->m_pddsSurface==NULL) ptcTexture->delayed_nb=0;
 
 				if (ptcTexture->delayed_nb)
 				{
@@ -794,7 +782,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
 
-	GDevice->SetTexture(1, ep->tex->m_pddsBumpMap);
+	GRenderer->SetTexture(1, ep->tex->m_pddsBumpMap);
 	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
 	
@@ -1435,26 +1423,12 @@ void EERIEDrawBitmap2DecalY(float x,float y,float sx,float sy,float z,TextureCon
 
 void SETTC(TextureContainer * tc)
 {
-	if ( (!tc) || (!tc->m_pddsSurface) )
+	if (!tc || !tc->m_pddsSurface)
 	{
-		GDevice->SetTexture( 0, NULL );
+		GRenderer->ResetTexture(0);
 	}
 	else
 	{
-		if ( tc->bColorKey )
-		{
-			GRenderer->SetRenderState(Renderer::ColorKey, true);
-
-			if (	(Project.bits == 16) &&
-			        (!tc->bColorKey2D)	 )
-			{
-				SetZBias( -4 );
-			}
-		}
-		else
-		{
-			GRenderer->SetRenderState(Renderer::ColorKey, false );
-		}
-		GDevice->SetTexture(0, tc->m_pddsSurface);
+		GRenderer->SetTexture(0, tc->m_pddsSurface);
 	}
 }

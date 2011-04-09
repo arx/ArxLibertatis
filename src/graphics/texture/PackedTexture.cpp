@@ -56,9 +56,8 @@ void PackedTexture::EndPacking()
     for( unsigned int i = 0; i < mTextures.size(); i++ )
     {
         mTextures[i] = GRenderer->CreateTexture2D();
-        mTextures[i]->Create( *mImages[i], false );
-        mTextures[i]->Init();        
-        
+        mTextures[i]->Init( *mImages[i], false );
+
         // Images are not needed anymore.
         delete mImages[i];
     }

@@ -1485,7 +1485,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 		SETTC(enviro);
 
-		GDevice->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
+		GRenderer->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
 		
 
 		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
@@ -1699,7 +1699,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 		SETTC(enviro);
 
-		GDevice->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
+		GRenderer->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
 		
 		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 
@@ -2863,10 +2863,10 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 				
 				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
 				
-				GDevice->SetTexture( 0, pTexCurr->m_pddsBumpMap );
+				GRenderer->SetTexture(0, pTexCurr->m_pddsBumpMap);
 				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
 
-				GDevice->SetTexture( 1, pTexCurr->m_pddsBumpMap );
+				GRenderer->SetTexture(1, pTexCurr->m_pddsBumpMap);
 				GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 				GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture|TextureStage::ArgComplement), TextureStage::ArgCurrent);
 				GRenderer->GetTextureStage(1)->DisableAlpha();

@@ -48,7 +48,7 @@ public:
 
 	TextureStage(unsigned int stage);
 	
-	virtual void SetTexture( Texture& pTexture ) = 0;
+	virtual void SetTexture( Texture* pTexture ) = 0;
 	virtual void ResetTexture() = 0;
 
 	virtual void SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;

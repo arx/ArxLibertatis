@@ -72,14 +72,14 @@ void LoadScreen()
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_KillFISHTANK()
 {
-	D3DTextr_KillTexture(FISHTANK_img);
+	delete FISHTANK_img;
 	FISHTANK_img = NULL;
 }
 
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_KillARKANE()
 {
-	D3DTextr_KillTexture(ARKANE_img);
+	delete ARKANE_img;
 	ARKANE_img = NULL;
 }
 //-----------------------------------------------------------------------------
@@ -126,7 +126,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	if (GRenderer->BeginScene())
 	{
-		if (FISHTANK_img == NULL) FISHTANK_img = MakeTCFromFile("misc\\logo.bmp");
+		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::Load("misc\\logo.bmp");
 
 		if (FISHTANK_img != NULL)
 		{
@@ -160,7 +160,7 @@ void ARX_INTERFACE_ShowARKANE()
 	if (GRenderer->BeginScene())
 	{
 		if (ARKANE_img == NULL)
-			ARKANE_img = MakeTCFromFile("Graph\\Interface\\misc\\Arkane.bmp");
+			ARKANE_img = TextureContainer::LoadUI("Graph\\Interface\\misc\\Arkane.bmp");
 
 		if (ARKANE_img != NULL)
 		{
@@ -205,7 +205,7 @@ void LoadLevelScreen(long num)
 	{
 		if (tc)
 		{
-			D3DTextr_KillTexture(tc);
+			delete tc;
 			tc = NULL;
 		}
 
@@ -261,9 +261,6 @@ void LoadLevelScreen(long num)
 
 		if (GRenderer->BeginScene())
 		{
-
-			GRenderer->SetRenderState(Renderer::ColorKey, false);
-
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -274,9 +271,9 @@ void LoadLevelScreen(long num)
 			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
 
 			if (num == 10)
-				pbar = MakeTCFromFile("Graph\\interface\\menus\\load_full.bmp");
+				pbar = TextureContainer::Load("Graph\\interface\\menus\\load_full.bmp");
 			else
-				pbar = MakeTCFromFile("Graph\\interface\\menus\\load_full_level.bmp");
+				pbar = TextureContainer::Load("Graph\\interface\\menus\\load_full_level.bmp");
 
 			nopbar = 1;
 			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
@@ -288,7 +285,7 @@ void LoadLevelScreen(long num)
 
 				if (tc)
 				{
-					D3DTextr_KillTexture(tc);
+					delete tc;
 					tc = NULL;
 				}
 
@@ -297,19 +294,19 @@ void LoadLevelScreen(long num)
 				char tx[256];
 				GetLevelNameByNum(num, tx);
 				sprintf(temp, "Graph\\Levels\\Level%s\\loading.bmp", tx);
-				tc = MakeTCFromFile(temp);
+				tc = TextureContainer::Load(temp);
 				GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 			}
 
 			if (tc)
 			{
+				GRenderer->SetRenderState(Renderer::ColorKey, false);
 				DrawCenteredImage(tc, true, fFadeColor);
+				GRenderer->SetRenderState(Renderer::ColorKey, true);
 			}
 
 			if (pbar)
 			{
-				GRenderer->SetRenderState(Renderer::ColorKey, true);
-
 				if (num == 10)
 				{
 					float px, py, px2, py2;
@@ -325,10 +322,8 @@ void LoadLevelScreen(long num)
 				{
 					float px, py, px2, py2;
 
-
 					int ipx = ((640 - 320) / 2) + 60;
 					int ipy = ((480 - 390) / 2) + 230;
-
 
 					px = ipx * Xratio;
 					py = ipy * Yratio;
@@ -336,8 +331,6 @@ void LoadLevelScreen(long num)
 					py2 = pbar->m_dwHeight * Yratio;
 					EERIEDrawBitmap_uv( px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1);
 				}
-
-				GRenderer->SetRenderState(Renderer::ColorKey, false);
 			}
 
 			GRenderer->EndScene();

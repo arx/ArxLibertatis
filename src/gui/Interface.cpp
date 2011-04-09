@@ -444,23 +444,23 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("inventory_close", "Graph\\Interface\\Inventory\\inv_close.bmp");
 	ITC.Set("Icon_Lvl_Up", "Graph\\Interface\\Icons\\lvl_up.bmp");
 
-	ITC.Set("backpack", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Backpack.bmp"));
-	ITC.Set("gold", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Inventory\\Gold.bmp"));
-	ITC.Set("book", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Book.bmp"));
-	ITC.Set("steal", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Steal.bmp"));
-	ITC.Set("item_cant_steal", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\cant_steal_item.bmp"));
-	ITC.Set("empty_gauge_red", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Red.bmp"));
-	ITC.Set("empty_gauge_blue", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Blue.bmp"));
-	ITC.Set("filled_gauge_red", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Red.bmp"));
-	ITC.Set("filled_gauge_blue", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Blue.bmp"));
-	ITC.Set("target_on", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_on.bmp"));
-	ITC.Set("target_off", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_off.bmp"));
-	ITC.Set("interaction_on", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_on.bmp"));
-	ITC.Set("interaction_off", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_off.bmp"));
-	ITC.Set("magic", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\magic.bmp"));
+	ITC.Set("backpack", "Graph\\Interface\\Icons\\Backpack.bmp");
+	ITC.Set("gold", "Graph\\Interface\\Inventory\\Gold.bmp");
+	ITC.Set("book", "Graph\\Interface\\Icons\\Book.bmp");
+	ITC.Set("steal", "Graph\\Interface\\Icons\\Steal.bmp");
+	ITC.Set("item_cant_steal", "Graph\\Interface\\Icons\\cant_steal_item.bmp");
+	ITC.Set("empty_gauge_red", "Graph\\interface\\bars\\Empty_gauge_Red.bmp");
+	ITC.Set("empty_gauge_blue", "Graph\\interface\\bars\\Empty_gauge_Blue.bmp");
+	ITC.Set("filled_gauge_red", "Graph\\interface\\bars\\Filled_gauge_Red.bmp");
+	ITC.Set("filled_gauge_blue", "Graph\\interface\\bars\\Filled_gauge_Blue.bmp");
+	ITC.Set("target_on", "Graph\\Interface\\cursors\\target_on.bmp");
+	ITC.Set("target_off", "Graph\\Interface\\cursors\\target_off.bmp");
+	ITC.Set("interaction_on", "Graph\\Interface\\cursors\\interaction_on.bmp");
+	ITC.Set("interaction_off", "Graph\\Interface\\cursors\\interaction_off.bmp");
+	ITC.Set("magic", "Graph\\Interface\\cursors\\magic.bmp");
 	
-	BasicInventorySkin = MakeTCFromFile("Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
-	ThrowObject = D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\throw.bmp");
+	BasicInventorySkin = TextureContainer::LoadUI("Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
+	ThrowObject = TextureContainer::LoadUI("Graph\\Interface\\cursors\\throw.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -486,7 +486,7 @@ void INTERFACE_TC::Set(const std::string& textureName, TextureContainer* pTextur
 
 void INTERFACE_TC::Set(const std::string& textureName, const std::string& fileName)
 {
-	m_Textures[textureName] = MakeTCFromFile(fileName.c_str());
+	m_Textures[textureName] = TextureContainer::LoadUI(fileName.c_str());
 }
 
 TextureContainer* INTERFACE_TC::Get(const std::string& name)
@@ -501,7 +501,7 @@ void INTERFACE_TC::Reset()
 	for(TextureDictionary::iterator it = m_Textures.begin(); it != m_Textures.end(); ++it)
 	{
 		// Free the textures...
-		D3DTextr_KillTexture((*it).second);
+		delete (*it).second;
 	}
 
 	m_Textures.clear();
@@ -517,7 +517,7 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 							   TextureContainer * tc2,
 							   float POSX, float POSY, float fRatioX = 1, float fRatioY = 1)
 {
-	float power=0.9f-EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 10 )+rnd()*( 1.0f / 10 );
+	/*float power=0.9f-EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 10 )+rnd()*( 1.0f / 10 );
 
 	if (power>1.f) power=1.f;
 
@@ -576,7 +576,7 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 								,((float)fSizeX)*fDeltaXP
 								,((float)fSizeY)*fDeltaYP,0.00001f
 								,tc2,col);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);*/
 }
 
 void ARX_INTERFACE_HALO_Draw(INTERACTIVE_OBJ * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1) {
@@ -702,19 +702,19 @@ void ARX_INTERFACE_NoteClear()
 
 	if (NoteTexture)
 	{
-		D3DTextr_KillTexture(NoteTexture);
+		delete NoteTexture;
 		NoteTexture=NULL;
 	}
 
 	if (NoteTextureLeft)
 	{
-		D3DTextr_KillTexture(NoteTextureLeft);
+		delete NoteTextureLeft;
 		NoteTextureLeft=NULL;
 	}
 
 	if (NoteTextureRight)
 	{
-		D3DTextr_KillTexture(NoteTextureRight);
+		delete NoteTextureRight;
 		NoteTextureRight=NULL;
 	}
 }
@@ -738,19 +738,19 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 
 	if (NoteTexture)
 	{
-		D3DTextr_KillTexture(NoteTexture);
+		delete NoteTexture;
 		NoteTexture=NULL;
 	}
 
 	if (NoteTextureLeft)
 	{
-		D3DTextr_KillTexture(NoteTextureLeft);
+		delete NoteTextureLeft;
 		NoteTextureLeft=NULL;
 	}
 
 	if (NoteTextureRight)
 	{
-		D3DTextr_KillTexture(NoteTextureRight);
+		delete NoteTextureRight;
 		NoteTextureRight=NULL;
 	}
 	
@@ -760,7 +760,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 	long length = Note.text.length();
 	long curpage = 1;
 
-	NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
+	NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
 	RECT rRect;
 
 
@@ -861,7 +861,7 @@ void ARX_INTERFACE_NoteManage()
 			switch (Note.type)
 			{
 			case NOTE_TYPE_NOTE:
-				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\BigNote.bmp");
+				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\BigNote.bmp");
 
 				if (NoteTexture)
 				{
@@ -875,7 +875,7 @@ void ARX_INTERFACE_NoteManage()
 
 				break;
 			case NOTE_TYPE_NOTICE:
-				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Notice.bmp");
+				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Notice.bmp");
 
 				if (NoteTexture)
 				{
@@ -893,15 +893,15 @@ void ARX_INTERFACE_NoteManage()
 
 				if (Note.type == NOTE_TYPE_BIGNOTE)
 				{
-					NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Very_BigNote.bmp");
-					NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
-					NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+					NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Very_BigNote.bmp");
+					NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
+					NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
 				}
 				else
 				{
-					NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-					NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
-					NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+					NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
+					NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
+					NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
 				}
 
 				if (NoteTexture)
@@ -2034,7 +2034,7 @@ bool DANAE::ManageEditorControls()
 		switch (Note.type)
 		{
 		case NOTE_TYPE_NOTE:
-			NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\BigNote.bmp");
+			NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\BigNote.bmp");
 
 			if (NoteTexture)
 			{
@@ -2048,7 +2048,7 @@ bool DANAE::ManageEditorControls()
 
 			break;
 		case NOTE_TYPE_NOTICE:
-			NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Notice.bmp");
+			NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Notice.bmp");
 
 			if (NoteTexture)
 			{
@@ -2066,15 +2066,15 @@ bool DANAE::ManageEditorControls()
 
 			if (Note.type ==NOTE_TYPE_BIGNOTE)
 			{
-				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Very_BigNote.bmp");
-				NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
-				NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Very_BigNote.bmp");
+				NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
+				NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
 			}
 			else
 			{
-				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-				NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
-				NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
+				NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
+				NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
 			}
 
 			if (NoteTexture)
@@ -5934,7 +5934,7 @@ void DANAE::ManageKeyMouse()
 						CDP_FogOptions=NULL;
 						ARX_TIME_Pause();
 						DanaeSwitchFullScreen();
-						ReloadAllTextures();
+						//ReloadAllTextures();
 						ARX_TIME_UnPause();
 						LaunchDummyParticle();
 						this->kbd.inkey[INKEY_F1]=0;
@@ -6079,7 +6079,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 	{
 		char temp[256];
 		sprintf(temp,"Graph\\Interface\\Inventory\\%s.bmp",TSecondaryInventory->io->inventory_skin);
-		TextureContainer * tc=MakeTCFromFile(temp);
+		TextureContainer * tc=TextureContainer::LoadUI(temp);
 
 		if (tc)
 			ITC.Set("ingame_inventory", tc);
@@ -6606,7 +6606,7 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 	if (tcc==NULL)
 	{
 		if (ITC.Get("unknown")==NULL)
-			ITC.Set("unknown", MakeTCFromFile("Graph\\interface\\icons\\spell_unknown.bmp"));
+			ITC.Set("unknown", TextureContainer::Load("Graph\\interface\\icons\\spell_unknown.bmp"));
 
 		tc=ITC.Get("unknown");
 	}
@@ -10443,11 +10443,6 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					if (COMBINEGOLD) tc=GoldCoinsTC[5];
 					else tc=COMBINE->inv;
 
-					if (tc->m_pddsSurface==NULL)
-					{
-						D3DTextr_Restore(tc->m_strName);
-					}
-
 					float MODIF=0.f;
 
 
@@ -10645,11 +10640,6 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						tc=DRAGINTER->inv;
 
 						if (NeedHalo(DRAGINTER)) tc2=DRAGINTER->inv->TextureHalo;//>_itemdata->halo_tc;
-
-						if (tc->m_pddsSurface==NULL)
-						{
-							tc->Restore();
-						}
 
 						D3DCOLOR color;
 

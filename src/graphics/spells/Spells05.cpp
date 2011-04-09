@@ -305,29 +305,20 @@ CRuneOfGuarding::CRuneOfGuarding()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
 	if (!ssol)
-	{
-		ssol   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(ssol);
-	}
+		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
 
 	ssol_count++;
 
 	if (!slight)
-	{
 		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(slight);
-	}
 
 	slight_count++;
 
 	if (!srune)
-	{
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(srune);
-	}
+		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
 
 	srune_count++;
 }
@@ -1208,29 +1199,20 @@ CRepelUndead::CRepelUndead()
 
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
 	if (!ssol) // Pentacle
-	{
-		ssol   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(ssol);
-	}
+		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
 
 	ssol_count++;
 
 	if (!slight) // Twirl
-	{
 		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(slight);
-	}
 
 	slight_count++; //runes
 
 	if (!srune)
-	{
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(srune);
-	}
+		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
 
 	srune_count++;
 }
@@ -1508,7 +1490,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, EERIE_3
 	this->scale = 0.f;
 	this->ang = 0.f;
 	this->def = (short)def;
-	this->tsouffle = MakeTCFromFile("Graph\\Obj3D\\Textures\\(FX)_sebsouffle.bmp");
+	this->tsouffle = TextureContainer::Load("Graph\\Obj3D\\Textures\\(FX)_sebsouffle.bmp");
 
 	this->timestone = 0;
 	this->nbstone = 0;
@@ -1898,7 +1880,7 @@ float CLevitate::Render()
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
 
 	if (this->tsouffle)
-		GDevice->SetTexture(0, this->tsouffle->m_pddsSurface);
+		GRenderer->SetTexture(0, this->tsouffle->m_pddsSurface);
 	else
 		GRenderer->ResetTexture(0);
 

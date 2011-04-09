@@ -203,7 +203,7 @@ void ViewImage::DrawAllImage()
 				if (iJ >= iI) break;
 
 				char * pName = vListImage[iJ];
-				pTex = MakeTCFromFile(pName, 0);
+				pTex = TextureContainer::Load(pName);
 				iJ++;
 			}
 

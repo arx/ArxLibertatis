@@ -123,11 +123,9 @@ private:
 	DX7Texture2D();
 	virtual ~DX7Texture2D();
 
-	virtual void Init();
-	virtual void Kill();
-
-	LPDIRECTDRAWSURFACE7 CreateTexture();
-	void LoadTextureFromImage();
+	virtual bool Create();
+	virtual void Upload();
+	virtual void Destroy();
 
 	static HRESULT CALLBACK TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param );
 
@@ -147,27 +145,7 @@ DX7Texture2D::DX7Texture2D()
 DX7Texture2D::~DX7Texture2D()
 {
 	g_Textures2D.remove(this);
-	Kill();
-}
-
-void DX7Texture2D::Init()
-{
-	if(m_pddsSurface == 0)
-	{
-		m_pddsSurface = CreateTexture();
-		
-		if(m_pddsSurface)
-			LoadTextureFromImage();
-	}
-}
-
-void DX7Texture2D::Kill()
-{
-	if(m_pddsSurface)
-	{ 
-		m_pddsSurface->Release();
-		m_pddsSurface = 0;
-	}
+	Destroy();
 }
 
 HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param )
@@ -191,9 +169,12 @@ HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID
 	return DDENUMRET_OK;
 }
 
-LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
+bool DX7Texture2D::Create()
 {
-	LPDIRECTDRAWSURFACE7 pddsTexture;
+	arx_assert_msg(m_pddsSurface == 0, "Texture already created!");
+	arx_assert(mWidth != 0);
+	arx_assert(mHeight != 0);
+
 	HRESULT hr;
 
 	// Get the device caps so we can check if the device has any constraints
@@ -207,7 +188,7 @@ LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
 	DDSURFACEDESC2 ddsd;
 	ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
 	ddsd.dwSize          = sizeof(DDSURFACEDESC2);
-	ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE;
+	ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE|DDSD_CKSRCBLT;
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;
 	ddsd.dwWidth         = mWidth;
 	ddsd.dwHeight        = mHeight;
@@ -217,6 +198,10 @@ LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
 		ddsd.dwFlags        |= DDSD_MIPMAPCOUNT;
 		ddsd.ddsCaps.dwCaps |= DDSCAPS_MIPMAP | DDSCAPS_COMPLEX;
 	}
+
+	// Specify black as our color key
+	ddsd.ddckCKSrcBlt.dwColorSpaceHighValue = RGB(0, 0, 0);
+	ddsd.ddckCKSrcBlt.dwColorSpaceLowValue = RGB(0, 0, 0);
 
 	// Turn on texture management for hardware devices
 	if( ddDesc.deviceGUID == IID_IDirect3DHALDevice )
@@ -264,20 +249,30 @@ LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
 	pddsRender->Release();
 
 	// Create a new surface for the texture
-	if( FAILED( hr = pDD->CreateSurface( &ddsd, &pddsTexture, NULL ) ) )
+	if( FAILED( hr = pDD->CreateSurface( &ddsd, &m_pddsSurface, NULL ) ) )
 	{
 		pDD->Release();
 		return NULL;
 	}
 
+	// Store texture size
+	mWidth = ddsd.dwWidth;
+	mHeight = ddsd.dwHeight;
+
 	// Done with DDraw
 	pDD->Release();
 
-	return pddsTexture;
+	// Set color key
+	if( m_pddsSurface )
+		m_pddsSurface->SetColorKey(DDCKEY_SRCBLT, &ddsd.ddckCKSrcBlt);
+
+	return m_pddsSurface != NULL;
 }
 
-void DX7Texture2D::LoadTextureFromImage()
+void DX7Texture2D::Upload()
 {
+	arx_assert_msg(m_pddsSurface != NULL, "Texture was never initialized!");
+
 	// Get a DDraw object to create a temporary surface
 	LPDIRECTDRAW7 pDD;
 	m_pddsSurface->GetDDInterface((VOID **)&pDD);
@@ -289,7 +284,7 @@ void DX7Texture2D::LoadTextureFromImage()
 	ddsd.dwFlags         = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
 	ddsd.ddsCaps.dwCaps2 = 0L;
-
+	
 	// Create a new surface for the texture
 	LPDIRECTDRAWSURFACE7 pddsTempSurface;
 	HRESULT hr;
@@ -322,13 +317,20 @@ void DX7Texture2D::LoadTextureFromImage()
 
 	BYTE* pSrc = (BYTE*)mImage.GetData();
 	BYTE r, g, b, a;
-	DWORD pitchIncrement = (ddsd.lPitch >> 2) - ddsd.dwWidth;
+
+	DWORD imageWidth = mImage.GetWidth();
+	DWORD imageHeight = mImage.GetHeight();
+
+	arx_assert(imageWidth <= ddsd.dwWidth);
+	arx_assert(imageHeight <= ddsd.dwHeight);
+	
+	DWORD pitchIncrement = (ddsd.lPitch >> 2) - imageWidth;
 
 	if(mFormat == Image::Format_L8)
 	{
-		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		for (DWORD y = 0; y < imageHeight; y++)
 		{
-			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
+			for (DWORD x = 0; x < imageWidth; x++, pDst++)
 			{
 				r = g = b = *pSrc;
 				a = 0xFF;
@@ -345,9 +347,9 @@ void DX7Texture2D::LoadTextureFromImage()
 	}
 	else if(mFormat == Image::Format_A8)
 	{
-		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		for (DWORD y = 0; y < imageHeight; y++)
 		{
-			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
+			for (DWORD x = 0; x < imageWidth; x++, pDst++)
 			{
 				r = g = b = 0xFF;
 				a = *pSrc;
@@ -364,9 +366,9 @@ void DX7Texture2D::LoadTextureFromImage()
 	}
 	else if(mFormat == Image::Format_L8A8)
 	{
-		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		for (DWORD y = 0; y < imageHeight; y++)
 		{
-			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
+			for (DWORD x = 0; x < imageWidth; x++, pDst++)
 			{
 				r = g = b = pSrc[0];
 				a = pSrc[1];
@@ -383,9 +385,9 @@ void DX7Texture2D::LoadTextureFromImage()
 	}
 	else if(mFormat == Image::Format_R8G8B8)
 	{
-		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		for (DWORD y = 0; y < imageHeight; y++)
 		{
-			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
+			for (DWORD x = 0; x < imageWidth; x++, pDst++)
 			{
 				r = pSrc[0];
 				g = pSrc[1];
@@ -402,15 +404,57 @@ void DX7Texture2D::LoadTextureFromImage()
 			pDst += pitchIncrement;
 		}
 	}
+	else if(mFormat == Image::Format_B8G8R8)
+	{
+		for (DWORD y = 0; y < imageHeight; y++)
+		{
+			for (DWORD x = 0; x < imageWidth; x++, pDst++)
+			{
+				b = pSrc[0];
+				g = pSrc[1];
+				r = pSrc[2];
+				a = 0xFF;
+				pSrc += 3;
+
+				DWORD dr = (r << dwRShiftR)&dwRMask;
+				DWORD dg = (g << dwGShiftR)&dwGMask;
+				DWORD db = (b << dwBShiftR)&dwBMask;
+				DWORD da = (a << dwAShiftR)&dwAMask;
+				*pDst = (DWORD)(dr + dg + db + da);
+			}
+			pDst += pitchIncrement;
+		}
+	}
 	else if(mFormat == Image::Format_R8G8B8A8)
 	{
-		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		for (DWORD y = 0; y < imageHeight; y++)
 		{
-			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
+			for (DWORD x = 0; x < imageWidth; x++, pDst++)
 			{
 				r = pSrc[0];
 				g = pSrc[1];
 				b = pSrc[2];
+				a = pSrc[3];
+				pSrc += 4;
+
+				DWORD dr = (r << dwRShiftR)&dwRMask;
+				DWORD dg = (g << dwGShiftR)&dwGMask;
+				DWORD db = (b << dwBShiftR)&dwBMask;
+				DWORD da = (a << dwAShiftR)&dwAMask;
+				*pDst = (DWORD)(dr + dg + db + da);
+			}
+			pDst += pitchIncrement;
+		}
+	}
+	else if(mFormat == Image::Format_B8G8R8A8)
+	{
+		for (DWORD y = 0; y < imageHeight; y++)
+		{
+			for (DWORD x = 0; x < imageWidth; x++, pDst++)
+			{
+				b = pSrc[0];
+				g = pSrc[1];
+				r = pSrc[2];
 				a = pSrc[3];
 				pSrc += 4;
 
@@ -437,6 +481,17 @@ void DX7Texture2D::LoadTextureFromImage()
 	pDD->Release();
 }
 
+void DX7Texture2D::Destroy()
+{
+	if(m_pddsSurface)
+	{ 
+		m_pddsSurface->DeleteAttachedSurface(0, NULL);
+		m_pddsSurface->Release();
+		m_pddsSurface = 0;
+	}
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // DX7TextureStage - MOVE THAT SOMEWHERE ELSE!
 ///////////////////////////////////////////////////////////////////////////////
@@ -445,7 +500,7 @@ class DX7TextureStage : public TextureStage
 public:
 	DX7TextureStage(unsigned int textureStage);
 
-	void SetTexture( Texture& pTexture );
+	void SetTexture( Texture* pTexture );
 	void ResetTexture();
 
 	void SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2);
@@ -530,10 +585,10 @@ void DX7TextureStage::SetAlphaOp(TextureOp textureOp, TextureArg texArg1, Textur
 	}
 }
 
-void DX7TextureStage::SetTexture( Texture& pTexture )
+void DX7TextureStage::SetTexture( Texture* pTexture )
 {
 	// TODO-DX7: Support multiple texture types
-	DX7Texture2D* tex = (DX7Texture2D*)&pTexture;
+	DX7Texture2D* tex = (DX7Texture2D*)pTexture;
 
 	GDevice->SetTexture(mStage, tex->GetTextureID());
 }
@@ -650,6 +705,8 @@ void Renderer::Initialize()
 		m_TextureStages[i]->SetMipFilter(TextureStage::FilterLinear);
 	}
 
+	SetRenderState(Renderer::ColorKey, true);
+
 	// Clear screen
 	Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 }
@@ -710,7 +767,7 @@ void Renderer::ReleaseAllTextures()
 	std::list<DX7Texture2D*>::iterator it;
 	for(it = g_Textures2D.begin(); it != g_Textures2D.end(); ++it)
 	{
-		(*it)->Kill();
+		(*it)->Destroy();
 	}
 }
 
@@ -719,28 +776,13 @@ void Renderer::RestoreAllTextures()
 	std::list<DX7Texture2D*>::iterator it;
 	for(it = g_Textures2D.begin(); it != g_Textures2D.end(); ++it)
 	{
-		(*it)->Update();
+		(*it)->Restore();
 	}
-}
-
-Texture1D* Renderer::CreateTexture1D()
-{
-	return 0;
 }
 
 Texture2D* Renderer::CreateTexture2D()
 {
 	return new DX7Texture2D();
-}
-
-Texture3D* Renderer::CreateTexture3D()
-{
-	return 0;
-}
-
-Cubemap* Renderer::CreateCubemap()
-{
-	return 0;
 }
 
 void Renderer::SetRenderState(Renderer::RenderState renderState, bool enable)
@@ -914,7 +956,7 @@ void Renderer::ResetTexture(unsigned int textureStage)
 	GetTextureStage(textureStage)->ResetTexture();
 }
 
-void Renderer::SetTexture(unsigned int textureStage, Texture& pTexture)
+void Renderer::SetTexture(unsigned int textureStage, Texture* pTexture)
 {
 	GetTextureStage(textureStage)->SetTexture(pTexture);
 }

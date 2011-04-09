@@ -103,17 +103,15 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 		GetLevelNameByNum(SHOWLEVEL, name);
 
 		sprintf(LevelMap, "Graph\\Levels\\Level%s\\map.bmp", name);
-		minimap[SHOWLEVEL].tc = MakeTCFromFile(LevelMap);
+		minimap[SHOWLEVEL].tc = TextureContainer::Load(LevelMap);
 
 		if (minimap[SHOWLEVEL].tc) // 4 pix/meter
 		{
-			minimap[SHOWLEVEL].tc->Restore();
-			SpecialBorderSurface(minimap[SHOWLEVEL].tc, minimap[SHOWLEVEL].tc->m_dwOriginalWidth, minimap[SHOWLEVEL].tc->m_dwOriginalHeight);
-
+			//TODO-RENDERING: SpecialBorderSurface...
+			//SpecialBorderSurface(minimap[SHOWLEVEL].tc, minimap[SHOWLEVEL].tc->m_dwWidth, minimap[SHOWLEVEL].tc->m_dwHeight);
 
 			minimap[SHOWLEVEL].height = ARX_CLEAN_WARN_CAST_FLOAT(minimap[SHOWLEVEL].tc->m_dwHeight); 
 			minimap[SHOWLEVEL].width = ARX_CLEAN_WARN_CAST_FLOAT(minimap[SHOWLEVEL].tc->m_dwWidth);
-
 
 			float minx = FLT_MAX;
 			float maxx = FLT_MIN;
@@ -278,7 +276,7 @@ void ARX_MINIMAP_Reset()
 	{
 		if (minimap[i].tc)
 		{
-			D3DTextr_KillTexture(minimap[i].tc);
+			delete minimap[i].tc;
 			minimap[i].tc = NULL;
 		}
 	}
@@ -293,7 +291,7 @@ void ARX_MINIMAP_PurgeTC()
 	{
 		if (minimap[i].tc)
 		{
-			D3DTextr_KillTexture(minimap[i].tc);
+			delete minimap[i].tc;
 			minimap[i].tc = NULL;
 		}
 	}
@@ -321,11 +319,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 	float sstartx, sstarty;
 
 	if (!pTexDetect)
-	{
-		const char tex_flare[] = "Graph\\particles\\flare.bmp";
-		GetTextureFile(tex_flare); // TODO why discard the return? leak!?
-		pTexDetect = D3DTextr_GetSurfaceContainer(tex_flare);
-	}
+		pTexDetect = TextureContainer::Load("Graph\\particles\\flare.bmp");
 
 	//	SHOWLEVEL=8;
 	// First Load Minimap TC & DATA if needed
@@ -417,8 +411,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 		float div = ( 1.0f / 25 );
 		TextureContainer * tc = minimap[SHOWLEVEL].tc;
-		float dw = 1.f / (float)max(tc->m_dwDeviceWidth, tc->m_dwOriginalWidth); 
-		float dh = 1.f / (float)max(tc->m_dwDeviceHeight, tc->m_dwOriginalHeight);
+		float dw = 1.f / tc->m_dwDeviceWidth; 
+		float dh = 1.f / tc->m_dwDeviceHeight;
 		
 		float vx2 = 4.f * dw * mod_x;
 		float vy2 = 4.f * dh * mod_z;
@@ -943,7 +937,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					}
 
 					if (MapMarkerTc == NULL)
-						MapMarkerTc = MakeTCFromFile("Graph\\interface\\icons\\mapmarker.bmp");
+						MapMarkerTc = TextureContainer::Load("Graph\\interface\\icons\\mapmarker.bmp");
 
 					SETTC( MapMarkerTc);
 

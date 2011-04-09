@@ -8,7 +8,7 @@
 using std::string;
 using std::transform;
 
-std::string MakeUpcase( std::string& str ) {
+std::string & MakeUpcase( std::string& str ) {
 	transform(str.begin(), str.end(), str.begin(), ::toupper);
 	return str;
 }

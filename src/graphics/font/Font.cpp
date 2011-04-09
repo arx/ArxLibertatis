@@ -186,7 +186,7 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 		prevRsbDelta = glyph.rsb_delta;        
 
 		// Draw
-		GRenderer->SetTexture( 0, m_Textures->GetTexture(glyph.texture) );
+		GRenderer->SetTexture( 0, &m_Textures->GetTexture(glyph.texture) );
         GRenderer->DrawTexturedRect( ((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y, glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x, glyph.uv_start.y, color );
 
 		// Advance

@@ -104,7 +104,6 @@ extern long FirstFrame;
 extern long EDITMODE;
 extern long EDITION;
 extern long DEBUGNPCMOVE;
-extern long DEBUGSYS;
 extern long SHOW_TORCH;
 extern long USE_COLLISIONS;
 extern long CURRENTLEVEL;

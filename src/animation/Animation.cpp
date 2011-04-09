@@ -717,7 +717,9 @@ void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
 
 void specialEE_P(D3DTLVERTEX *in,D3DTLVERTEX *out);
 
-TextureContainer TexSpecialColor("SPECIALCOLOR_LIST",0,D3DTEXTR_NO_INSERT);
+// TODO: Convert to a RenderBatch & make TextureContainer constructor private 
+TextureContainer TexSpecialColor("SPECIALCOLOR_LIST", TextureContainer::NoInsert);
+
 //-----------------------------------------------------------------------------
 ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *pTex)
 {
@@ -1066,8 +1068,8 @@ void PopOneInterBump(TextureContainer *_pTex)
 		//----------------------------------------------------------------------------------
 		//																		Initializing
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
-		GDevice->SetTexture( 0, _pTex->m_pddsBumpMap );
-		GDevice->SetTexture( 1, _pTex->m_pddsBumpMap );
+		GRenderer->SetTexture(0, _pTex->m_pddsBumpMap);
+		GRenderer->SetTexture(1, _pTex->m_pddsBumpMap);
 		GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 		
 		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);

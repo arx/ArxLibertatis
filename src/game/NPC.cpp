@@ -217,7 +217,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 	{
 		if (!io->obj->texturecontainer.empty()
 		        &&	io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_strName, "GORE")))
+		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName, "GORE")))
 		{
 			goretex = i;
 			break;
@@ -1528,7 +1528,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	for (size_t k = 0; k < from->texturecontainer.size(); k++)
 	{
 		if (from->texturecontainer[k]
-		        && (IsIn(from->texturecontainer[k]->m_strName, "GORE")))
+		        && (IsIn(from->texturecontainer[k]->m_texName, "GORE")))
 		{
 			gore = k;
 			break;
@@ -1678,7 +1678,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if (from->texturecontainer[k]
-			        && (IsIn(from->texturecontainer[k]->m_strName, "GORE")))
+			        && (IsIn(from->texturecontainer[k]->m_texName, "GORE")))
 			{
 				gore = k;
 				break;
@@ -1898,7 +1898,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
 		if (io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_strName, "GORE")))
+		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName, "GORE")))
 		{
 			goretex = i;
 			break;
@@ -1965,7 +1965,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
 	{
 		if (target->obj->texturecontainer[i]
-		        &&	(IsIn(target->obj->texturecontainer[i]->m_strName, "GORE")))
+		        &&	(IsIn(target->obj->texturecontainer[i]->m_texName, "GORE")))
 		{
 			goretex = i;
 			break;

@@ -87,8 +87,8 @@ CBless::CBless()
 	SetDuration(4000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_sol = MakeTCFromFile("Graph\\particles\\(Fx)_pentagram_bless.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_sol = TextureContainer::Load("Graph\\particles\\(Fx)_pentagram_bless.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -678,16 +678,12 @@ CCurse::CCurse()
 	SetDuration(3000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
 	if (!svoodoo)
-	{
-		svoodoo  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_voodoodoll\\fx_voodoodoll.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(svoodoo);
-	}
+		svoodoo = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_voodoodoll\\fx_voodoodoll.teo", NULL);
 
 	svoodoo_count++;
-	//EERIE_3DOBJ_RestoreTextures(obj_voodoo);
 }
 
 //-----------------------------------------------------------------------------

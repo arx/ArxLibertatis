@@ -288,7 +288,7 @@ void CParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, 
 {
 	if (_iNbTex == 0)
 	{
-		tex_tab[0] = MakeTCFromFile(_pszTex);
+		tex_tab[0] = TextureContainer::Load(_pszTex);
 		iNbTex = 0;
 	}
 	else
@@ -300,7 +300,7 @@ void CParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, 
 		{
 			ZeroMemory(cBuf, 256);
 			sprintf(cBuf, "%s_%04d.bmp", _pszTex, i + 1);
-			tex_tab[i] = MakeTCFromFile(cBuf);
+			tex_tab[i] = TextureContainer::Load(cBuf);
 		}
 
 		iNbTex = _iNbTex;

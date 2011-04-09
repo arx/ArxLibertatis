@@ -215,13 +215,10 @@ CMagicMissile::CMagicMissile() : CSpellFx()
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_mm = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
+	tex_mm = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
 	if (!smissile)
-	{
-		smissile  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo", NULL);
-		EERIE_3DOBJ_RestoreTextures(smissile);
-	}
+		smissile = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo", NULL);
 
 	smissile_count++;
 
@@ -893,7 +890,7 @@ void CIgnit::Create(EERIE_3D * posc, float perim, int speed)
 		this->tablight[nb].idl = -1;
 	}
 
-	this->ChangeTexture(MakeTCFromFile("Graph\\Particles\\fire_hit.bmp"));
+	this->ChangeTexture(TextureContainer::Load("Graph\\Particles\\fire_hit.bmp"));
 	this->ChangeRGBMask(1.f, 1.f, 1.f, RGBA_MAKE(255, 200, 0, 255));
 }
 

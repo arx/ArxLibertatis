@@ -115,10 +115,7 @@ public:
 	virtual void RestoreAllTextures();
 
 	// Factory
-	virtual Texture1D*	CreateTexture1D();
 	virtual Texture2D*	CreateTexture2D();
-	virtual Texture3D*	CreateTexture3D();
-	virtual Cubemap*	CreateCubemap();
 
 	// Render states
 	virtual void SetRenderState(RenderState renderState, bool enable);
@@ -152,7 +149,7 @@ public:
 	virtual unsigned int GetTextureStageCount() const;
 	virtual TextureStage* GetTextureStage(unsigned int textureStage);
 	virtual void ResetTexture(unsigned int textureStage);
-	virtual void SetTexture(unsigned int textureStage, Texture& pTexture);
+	virtual void SetTexture(unsigned int textureStage, Texture* pTexture);
 	
 	virtual float GetMaxAnisotropy() const;
 

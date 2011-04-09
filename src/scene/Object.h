@@ -86,7 +86,6 @@ struct ACTIONSTRUCT
 
 #define TTE_NOPOPUP			1
 #define TTE_SLOWLOAD		2
-#define TTE_NO_RESTORE		4
 #define TTE_NO_NDATA		8
 #define TTE_NO_PDATA		16
 #define TTE_NO_PHYSICS_BOX	32
@@ -115,7 +114,7 @@ void XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const std::string & texpath, const std::string & fic, long flag);
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const std::string & texpath, const std::string & fic);
 EERIE_3DOBJ * TheoToEerie_Fast(const std::string & texpath, const std::string & fic, long flag);
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const std::string & fic);
 
@@ -134,7 +133,6 @@ void ReleaseAnim(EERIE_ANIM * ea);
 
 EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj);
 void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * obj);
-void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj);
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret);
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);

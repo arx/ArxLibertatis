@@ -435,7 +435,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		C_INDEXED* mat = &(*it);
 
 		if (mat->tex)
-			GRenderer->SetTexture(0, *mat->tex);
+			GRenderer->SetTexture(0, mat->tex);
 		else
 			GRenderer->ResetTexture(0);
 
