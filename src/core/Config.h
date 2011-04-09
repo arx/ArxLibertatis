@@ -123,7 +123,6 @@ class Config
 		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
 		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
 		void SetDefaultKey();
-		void DefaultValue();
 		void First();
 
 		void SaveAll();

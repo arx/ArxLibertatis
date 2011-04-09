@@ -325,45 +325,6 @@ void Config::First()
 	bForceZBias=false;
 
 	SetDefaultKey();
-	DefaultValue();
-}
-
-void Config::DefaultValue()
-{
-	//VIDEO
-	iWidth=640;
-	iHeight=480;
-	iNewWidth=iWidth;
-	iNewHeight=iHeight;
-	bpp=16;
-	iNewBpp=bpp;
-	bFullScreen=true;
-	bBumpMapping=false;
-	bNewBumpMapping=bBumpMapping;
-	iTextureResol=2;
-	iNewTextureResol=iTextureResol;
-	iMeshReduction=0;
-	iLevelOfDetails=2;
-	iFogDistance=5;
-	iLuminosite=4;
-	iContrast=5;
-	iGamma=5;
-	bShowCrossHair=true;
-	//AUDIO
-	iMasterVolume=10;
-	iSFXVolume=10;
-	iSpeechVolume=10;
-	iAmbianceVolume=8;
-	bEAX=false;
-	//INPUT
-	bInvertMouse=false;
-	bAutoReadyWeapon=false;
-	bMouseLookToggle=false;
-	bAutoDescription=true;
-	iMouseSensitivity=4;
-	bMouseSmoothing=false;
-	//MISC
-	INTERNATIONAL_MODE=1;
 }
 
 void Config::SetDefaultKey()
@@ -986,9 +947,6 @@ void Config::ReadAll()
 	pStringModSpeech = ReadConfig(Section::Misc, Key::modspeechpak, Default::speechmodpak );
 
 	INTERNATIONAL_MODE = ReadConfig(Section::Misc, Key::newcontrol, 0);
-
-	if(INTERNATIONAL_MODE)
-		bLinkMouseLookToUse=false;
 
 	switch(uiGoreMode)
 	{
