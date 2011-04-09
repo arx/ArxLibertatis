@@ -290,7 +290,7 @@ public:
      */
     bool IsNormalized() const
     {
-        return GetLength() == 1;
+        return GetLengthSqr() == 1;
     }
 
     /**
