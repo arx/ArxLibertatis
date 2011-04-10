@@ -156,7 +156,7 @@ namespace
 	SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY];
 };
 
-	void ARX_SetAntiAliasing();
+void ARX_SetAntiAliasing();
 
 	/* Externs */
 extern long INTERNATIONAL_MODE;
@@ -180,16 +180,16 @@ Config::Config()
 	First();
 }
 
-Config::Config( const std::string& _pName)
+Config::Config( const std::string& _filename)
 {
 	// if _pName equals exactly "cfg"
-	if ( _pName == "cfg" )
-		pcName="cfg.ini";
+	if ( _filename == "cfg" )
+		pcName = "cfg.ini";
 	else
-		pcName = _pName;
+		pcName = _filename;
 
 	// Load the config file
-	std::ifstream ifs( _pName.c_str() );
+	std::ifstream ifs( pcName.c_str() );
 	config_map = ConfigHashMap( 100, ifs );
 
 	First();
@@ -671,7 +671,7 @@ bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
 
 void Config::SaveAll()
 {
-	std::ofstream out( "test.cfg" );
+	std::ofstream out( pcName.c_str() );
 	config_map.save_all( out );
 	char tcTxt[256];
 
