@@ -6123,9 +6123,7 @@ CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX
 
 //-----------------------------------------------------------------------------
 
-CMenuButton::~CMenuButton()
-{
-	vText.clear();
+CMenuButton::~CMenuButton() {
 }
 
 //-----------------------------------------------------------------------------
