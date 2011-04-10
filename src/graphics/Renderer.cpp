@@ -316,7 +316,7 @@ void DX7Texture2D::Upload()
 	for (dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
 
 	BYTE* pSrc = (BYTE*)mImage.GetData();
-	BYTE r, g, b, a;
+	DWORD r, g, b, a;
 
 	DWORD imageWidth = mImage.GetWidth();
 	DWORD imageHeight = mImage.GetHeight();
@@ -392,7 +392,7 @@ void DX7Texture2D::Upload()
 				r = pSrc[0];
 				g = pSrc[1];
 				b = pSrc[2];
-				a = 0xFF;
+				a = r + g + b == 0 ? 0x00 : 0xFF;
 				pSrc += 3;
 
 				DWORD dr = (r << dwRShiftR)&dwRMask;
@@ -413,7 +413,7 @@ void DX7Texture2D::Upload()
 				b = pSrc[0];
 				g = pSrc[1];
 				r = pSrc[2];
-				a = 0xFF;
+				a = r + g + b == 0 ? 0x00 : 0xFF;
 				pSrc += 3;
 
 				DWORD dr = (r << dwRShiftR)&dwRMask;
