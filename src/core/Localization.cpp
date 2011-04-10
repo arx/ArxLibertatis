@@ -146,11 +146,22 @@ long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
                                       const std::string&  defaultstring,
                                       std::string&        destination )
 {
+	std::string section = sectionname;
+
+	// if the section name has the qualifying brackets "[]", cut the back one then the front off
+	if ( section[0] == '[' && section[section.length()-1] == ']' )
+		section = section.substr( 0, section.length() - 1 ).substr( 1 );
+
+	LogDebug << "Looking up " << section << " for localization";
+
+		
+	destination = getLocalized( section, defaultstring );
+	return 0;
 	// If localisation has been initialized
 	if (pHashLocalisation)
 	{
 		// Get the string for this section
-		std::string* t = pHashLocalisation->GetPtrWithString(sectionname);
+		std::string* t = pHashLocalisation->GetPtrWithString(section);
 
 		// If a string is found matching the section
 		if (t)
