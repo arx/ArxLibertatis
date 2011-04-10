@@ -1621,15 +1621,14 @@ void RestoreLastLoadedLightning()
 	EERIE_BKG_INFO * eg;
 
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
-	long i, j;
 
 	bcount = LastLoadedLightningNb;
 
 	EERIEPOLY * ep;
 	long nbvert;
 
-	for (j = 0; j < eb->Zsize; j++)
-		for (i = 0; i < eb->Xsize; i++)
+	for (long j = 0; j < eb->Zsize; j++)
+		for (long i = 0; i < eb->Xsize; i++)
 		{
 			eg = (EERIE_BKG_INFO *)&eb->Backg[i+j*eb->Xsize];
 
@@ -1660,7 +1659,7 @@ plusloin:
 	LastLoadedLightning = NULL;
 	LastLoadedLightningNb = 0;
 
-	for (i = 0; i < MAX_ACTIONS; i++)
+	for (size_t i = 0; i < MAX_ACTIONS; i++)
 	{
 		if (actions[i].exist)
 		{
@@ -1673,6 +1672,9 @@ plusloin:
 					break;
 				case ACT_FIRE2:
 					modd = 1;
+					break;
+				case ACT_FIREOFF:
+				case ACT_FIRE2OFF:
 					break;
 			}
 
