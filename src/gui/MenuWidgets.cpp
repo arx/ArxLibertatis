@@ -4074,9 +4074,6 @@ void CMenuElementText::RenderMouseOver()
 					delete pTextureLoad;
 
 				pTextureLoad=pTextureTemp;
-
-				if (pTextureLoad)
-					pTextureLoad->bColorKey=false;
 			}
 
 			pTextureLoadRender=pTextureLoad;
@@ -4096,9 +4093,6 @@ void CMenuElementText::RenderMouseOver()
 					delete pTextureLoad;
 
 				pTextureLoad=pTextureTemp;
-
-				if (pTextureLoad)
-					pTextureLoad->bColorKey=false;
 			}
 
 			pTextureLoadRender=pTextureLoad;

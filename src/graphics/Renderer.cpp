@@ -1,5 +1,6 @@
 #include "graphics/Renderer.h"
 #include "graphics/GraphicsUtility.h"
+#include "graphics/Math.h"
 
 #include <list>
 
@@ -11,43 +12,43 @@ extern LPDIRECT3DDEVICE7 GDevice;
 // ARXToDX7 mapping tables - MOVE THAT SOMEWHERE ELSE!
 ///////////////////////////////////////////////////////////////////////////////
 const D3DTEXTUREOP ARXToDX7TextureOp[] = {
-						D3DTOP_DISABLE,						// OpDisable
+						D3DTOP_DISABLE,							// OpDisable
 						D3DTOP_SELECTARG1,					// OpSelectArg1,
 						D3DTOP_SELECTARG2,					// OpSelectArg2,
-						D3DTOP_MODULATE,					// OpModulate,
+						D3DTOP_MODULATE,						// OpModulate,
 						D3DTOP_MODULATE2X,					// OpModulate2X,
 						D3DTOP_MODULATE4X,					// OpModulate4X,
-						D3DTOP_ADDSIGNED					// OpAddSigned
+						D3DTOP_ADDSIGNED						// OpAddSigned
 									};
 
 const DWORD ARXToDX7TextureArg[] = {
-						D3DTA_DIFFUSE,						// TexArgDiffuse,
-						D3DTA_CURRENT,						// TexArgCurrent,						
-						D3DTA_TEXTURE						// TexArgTexture,
+						D3DTA_DIFFUSE,							// TexArgDiffuse,
+						D3DTA_CURRENT,							// TexArgCurrent,						
+						D3DTA_TEXTURE								// TexArgTexture,
 									};
 
 const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
-						D3DTADDRESS_WRAP,					// WrapRepeat,
+						D3DTADDRESS_WRAP,						// WrapRepeat,
 						D3DTADDRESS_MIRROR,					// WrapMirror,
-						D3DTADDRESS_CLAMP					// WrapClamp,
+						D3DTADDRESS_CLAMP						// WrapClamp,
 									};
 
 D3DTEXTUREMAGFILTER ARXToDX7MagFilter[] = {
-						D3DTFG_POINT,						// FilterNone - Invalid for magnification
-						D3DTFG_POINT,						// FilterNearest,
-						D3DTFG_LINEAR						// FilterLinear
+						D3DTFG_POINT,								// FilterNone - Invalid for magnification
+						D3DTFG_POINT,								// FilterNearest,
+						D3DTFG_LINEAR								// FilterLinear
 									};
 
 D3DTEXTUREMINFILTER ARXToDX7MinFilter[] = {
-						D3DTFN_POINT,						// FilterNone - Invalid for minification
-						D3DTFN_POINT,						// FilterNearest,
-						D3DTFN_LINEAR,						// FilterLinear
+						D3DTFN_POINT,								// FilterNone - Invalid for minification
+						D3DTFN_POINT,								// FilterNearest,
+						D3DTFN_LINEAR,							// FilterLinear
 									};
 
 D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
-						D3DTFP_NONE,						// FilterNone
-						D3DTFP_POINT,						// FilterNearest,
-						D3DTFP_LINEAR						// FilterLinear
+						D3DTFP_NONE,								// FilterNone
+						D3DTFP_POINT,								// FilterNearest,
+						D3DTFP_LINEAR								// FilterLinear
 									};
 
 
@@ -130,6 +131,8 @@ private:
 	static HRESULT CALLBACK TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param );
 
 private:
+	void CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSURFACE7 pddsSrc);
+
 	LPDIRECTDRAWSURFACE7 m_pddsSurface;
 };
 
@@ -193,12 +196,6 @@ bool DX7Texture2D::Create()
 	ddsd.dwWidth         = mWidth;
 	ddsd.dwHeight        = mHeight;
 
-	if(mHasMipmaps)
-	{
-		ddsd.dwFlags        |= DDSD_MIPMAPCOUNT;
-		ddsd.ddsCaps.dwCaps |= DDSCAPS_MIPMAP | DDSCAPS_COMPLEX;
-	}
-
 	// Specify black as our color key
 	ddsd.ddckCKSrcBlt.dwColorSpaceHighValue = RGB(0, 0, 0);
 	ddsd.ddckCKSrcBlt.dwColorSpaceLowValue = RGB(0, 0, 0);
@@ -212,15 +209,17 @@ bool DX7Texture2D::Create()
 		ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
 
 	// Adjust width and height, if the driver requires it
-	if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2 )
+	if( mHasMipmaps || ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2 )
 	{
-		for( ddsd.dwWidth=1;  mWidth>ddsd.dwWidth;   ddsd.dwWidth<<=1 );
-		for( ddsd.dwHeight=1; mHeight>ddsd.dwHeight; ddsd.dwHeight<<=1 );
+		ddsd.dwWidth = GetNextPowerOf2(ddsd.dwWidth);
+		ddsd.dwHeight = GetNextPowerOf2(ddsd.dwHeight);
 	}
 	if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY )
 	{
-		if( ddsd.dwWidth > ddsd.dwHeight ) ddsd.dwHeight = ddsd.dwWidth;
-		else                               ddsd.dwWidth  = ddsd.dwHeight;
+		if( ddsd.dwWidth > ddsd.dwHeight ) 
+			ddsd.dwHeight = ddsd.dwWidth;
+		else
+			ddsd.dwWidth  = ddsd.dwHeight;
 	}
 
 	// Limit max texture sizes, if the driver can't handle large textures
@@ -232,6 +231,32 @@ bool DX7Texture2D::Create()
 
 	if (ddsd.dwHeight > dwMaxHeight)
 		ddsd.dwHeight = dwMaxHeight;
+
+	if(mHasMipmaps)
+	{
+		arx_assert_msg(IsPowerOf2(ddsd.dwWidth), "Texture size must be a power of two to support mipmapping");
+
+		// Count how many mip-map levels we need
+		int mipLevels = 0;
+		int mipWidth = ddsd.dwWidth; 
+		int mipHeight = ddsd.dwHeight; 
+
+		// Smallest mip-map we want is 2 x 2
+		while ((mipWidth > 2) && (mipHeight > 2)) 
+		{ 
+			mipLevels++; 
+			mipWidth  >>= 1; 
+			mipHeight >>= 1; 
+		} 
+
+		// Set appropriate flags
+		if (mipLevels > 1) 
+		{ 
+			ddsd.dwFlags  |= DDSD_MIPMAPCOUNT; 
+			ddsd.ddsCaps.dwCaps  |= DDSCAPS_MIPMAP | DDSCAPS_COMPLEX;
+			ddsd.dwMipMapCount = mipLevels;
+		}
+	}
 
 	// Enumerate the texture formats, and find the closest device-supported
 	// texture pixel format.
@@ -479,6 +504,122 @@ void DX7Texture2D::Upload()
 	// Done with the temp objects
 	pddsTempSurface->Release();
 	pDD->Release();
+
+	if (ddsd.dwMipMapCount > 0)
+	{
+		DDSCAPS2 ddsCaps;
+		ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_MIPMAP;
+		ddsCaps.dwCaps2 = 0;
+		ddsCaps.dwCaps3 = 0;
+		ddsCaps.dwCaps4 = 0;
+		LPDIRECTDRAWSURFACE7 pddsSrc = m_pddsSurface;
+		pddsSrc->AddRef();
+		
+		for (unsigned int i = 0; i < ddsd.dwMipMapCount; i++)
+		{
+			LPDIRECTDRAWSURFACE7 pddsDst = 0;
+			if (FAILED(hr = pddsSrc->GetAttachedSurface(&ddsCaps, &pddsDst)))
+			{
+				pddsSrc->Release();
+				break;
+			}
+
+			CopyNextMipLevel(pddsDst, pddsSrc);
+
+			pddsSrc->Release();
+			pddsSrc = pddsDst;
+		}
+	}
+}
+
+void DX7Texture2D::CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSURFACE7 pddsSrc)
+{
+	DDSURFACEDESC2 descSrc;
+	DDSURFACEDESC2 descDst;
+
+	pddsSrc->Lock(NULL, &descSrc, DDLOCK_WAIT, NULL);
+	pddsDst->Lock(NULL, &descDst, DDLOCK_WAIT, NULL);
+
+	arx_assert(descDst.dwWidth == (descSrc.dwWidth >> 1));
+	arx_assert(descDst.dwHeight == (descSrc.dwHeight >> 1));
+
+	DWORD pitchIncrementSrc = (descSrc.lPitch >> 2) - descSrc.dwWidth;
+	DWORD pitchIncrementDst = (descDst.lPitch >> 2) - descDst.dwWidth;
+
+	DWORD * pSrc[4];
+	
+	pSrc[0] = (DWORD *)descSrc.lpSurface;		// Top left pixel
+	pSrc[1] = pSrc[0] + 1;						// Top right pixel
+	pSrc[2] = pSrc[0] + (descSrc.lPitch >> 2);	// Bottom left pixel
+	pSrc[3] = pSrc[2] + 1;						// Bottom right pixel
+
+	DWORD * pDst = (DWORD *)descDst.lpSurface;
+
+	DWORD dwRMask = descDst.ddpfPixelFormat.dwRBitMask;
+	DWORD dwGMask = descDst.ddpfPixelFormat.dwGBitMask;
+	DWORD dwBMask = descDst.ddpfPixelFormat.dwBBitMask;
+	DWORD dwAMask = descDst.ddpfPixelFormat.dwRGBAlphaBitMask;
+
+	DWORD dwRShiftL = 8, dwRShiftR = 0;
+	DWORD dwGShiftL = 8, dwGShiftR = 0;
+	DWORD dwBShiftL = 8, dwBShiftR = 0;
+	DWORD dwAShiftL = 8, dwAShiftR = 0;
+
+	DWORD dwMask;
+
+	for (dwMask = dwRMask ; dwMask && !(dwMask & 0x1) ; dwMask >>= 1) dwRShiftR++;
+	for (; dwMask ; dwMask >>= 1) dwRShiftL--;
+
+	for (dwMask = dwGMask ; dwMask && !(dwMask & 0x1) ; dwMask >>= 1) dwGShiftR++;
+	for (; dwMask ; dwMask >>= 1) dwGShiftL--;
+
+	for (dwMask = dwBMask ; dwMask && !(dwMask & 0x1) ; dwMask >>= 1) dwBShiftR++;
+	for (; dwMask ; dwMask >>= 1) dwBShiftL--;
+
+	for (dwMask = dwAMask ; dwMask && !(dwMask & 0x1) ; dwMask >>= 1) dwAShiftR++;
+	for (; dwMask ; dwMask >>= 1) dwAShiftL--;
+
+	for (DWORD y = 0; y < descDst.dwHeight; y++)
+	{
+		for (DWORD x = 0; x < descDst.dwWidth; x++, pDst++ )
+		{
+			DWORD r = 0;
+			DWORD g = 0;
+			DWORD b = 0;
+			DWORD a = 0;
+
+			for(int i = 0; i < 4; i++)
+			{
+				r += (((*pSrc[i] & dwRMask) >> dwRShiftR) << dwRShiftL);
+				g += (((*pSrc[i] & dwGMask) >> dwGShiftR) << dwGShiftL);      
+				b += (((*pSrc[i] & dwBMask) >> dwBShiftR) << dwBShiftL);     
+				a += (((*pSrc[i] & dwAMask) >> dwAShiftR) << dwAShiftL);
+
+				pSrc[i] += 2;
+			}
+
+			r >>= 2;
+			g >>= 2;
+			b >>= 2;
+			a >>= 2;
+
+			DWORD dr, dg, db, da;
+			dr = ((r >> (dwRShiftL)) << dwRShiftR) & dwRMask;
+			dg = ((g >> (dwGShiftL)) << dwGShiftR) & dwGMask;
+			db = ((b >> (dwBShiftL)) << dwBShiftR) & dwBMask;
+			da = ((a >> (dwAShiftL)) << dwAShiftR) & dwAMask;
+			
+			*pDst = (DWORD)(dr + dg + db + da);
+		}
+
+		pDst += pitchIncrementDst;
+
+		for(int i = 0; i < 4; i++)
+			pSrc[i] += pitchIncrementSrc + (descSrc.lPitch >> 2);
+	}
+
+	pddsDst->Unlock(0);
+	pddsSrc->Unlock(0);
 }
 
 void DX7Texture2D::Destroy()

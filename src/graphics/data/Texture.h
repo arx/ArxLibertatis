@@ -147,10 +147,7 @@ public:
 	DWORD	m_dwDeviceHeight;
 	DWORD   m_dwBPP;
 	TCFlags m_dwFlags;
-	bool    m_bHasAlpha;
 	DWORD	userflags;
-	bool	bColorKey;
-	bool	bColorKey2D;
 
 	Texture2D* m_pddsSurface;			// Surface of the texture
 	Texture2D* m_pddsBumpMap;			// Surface of BumpMap

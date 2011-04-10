@@ -2,7 +2,7 @@
 
 #include "graphics/Renderer.h"
 
-bool Texture2D::Init( const std::string& strFileName )
+bool Texture2D::Init( const std::string& strFileName, bool pCreateMipmaps )
 {
 	mFileName = strFileName;
 
@@ -17,6 +17,7 @@ bool Texture2D::Init( const std::string& strFileName )
 	mFormat = mImage.GetFormat();
     mWidth  = mImage.GetWidth();
     mHeight = mImage.GetHeight();
+	mHasMipmaps = pCreateMipmaps;
 	
 	bool bCreated = Create();
 	if(!bCreated)

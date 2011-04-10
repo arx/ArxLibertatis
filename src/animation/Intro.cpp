@@ -126,7 +126,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	if (GRenderer->BeginScene())
 	{
-		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::Load("misc\\logo.bmp");
+		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::LoadUI("misc\\logo.bmp");
 
 		if (FISHTANK_img != NULL)
 		{
@@ -271,9 +271,9 @@ void LoadLevelScreen(long num)
 			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
 
 			if (num == 10)
-				pbar = TextureContainer::Load("Graph\\interface\\menus\\load_full.bmp");
+				pbar = TextureContainer::LoadUI("Graph\\interface\\menus\\load_full.bmp");
 			else
-				pbar = TextureContainer::Load("Graph\\interface\\menus\\load_full_level.bmp");
+				pbar = TextureContainer::LoadUI("Graph\\interface\\menus\\load_full_level.bmp");
 
 			nopbar = 1;
 			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
@@ -294,7 +294,7 @@ void LoadLevelScreen(long num)
 				char tx[256];
 				GetLevelNameByNum(num, tx);
 				sprintf(temp, "Graph\\Levels\\Level%s\\loading.bmp", tx);
-				tc = TextureContainer::Load(temp);
+				tc = TextureContainer::LoadUI(temp);
 				GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 			}
 

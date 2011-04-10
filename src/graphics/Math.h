@@ -192,6 +192,22 @@ inline float FastRSqrt( float pValue )
     return pValue * (1.5f - v_half * pValue * pValue);
 }
 
+inline bool IsPowerOf2(unsigned int n)
+{
+	return (n & (n-1)) == 0;
+}
+
+inline unsigned int GetNextPowerOf2(unsigned int n) 
+{
+	--n;    
+	n |= n >> 1;
+	n |= n >> 2;    
+	n |= n >> 4;    
+	n |= n >> 8;    
+	n |= n >> 16;    
+	return ++n;
+}
+
 #define FORCERANGE(a,b,c)	if (a<b) a=b; \
 	if (a>c) a=c;
 

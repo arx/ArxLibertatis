@@ -68,7 +68,7 @@ public:
 	{
 	}
 
-	bool Init( const std::string& strFileName );
+	bool Init( const std::string& strFileName, bool pCreateMipmaps = false );
     bool Init( const Image& image, bool createMipmaps = true );
     bool Init( unsigned int width, unsigned int height, Image::Format format );
 

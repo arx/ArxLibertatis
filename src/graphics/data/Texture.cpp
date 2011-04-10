@@ -219,9 +219,6 @@ TextureContainer::TextureContainer(const std::string& strName, TextureContainer:
 	m_dwHeight		= 0;
 	m_dwBPP			= 0;
 	m_dwFlags		= flags;
-	m_bHasAlpha		= 0;
-	bColorKey		= false;
-	bColorKey2D		= false;
 
 	m_pddsSurface = NULL;
 	m_pddsBumpMap = NULL;
@@ -325,12 +322,12 @@ bool TextureContainer::LoadFile(const std::string& strPathname)
 	m_pddsSurface = GRenderer->CreateTexture2D();
 	if(m_pddsSurface)
 	{
-		bLoaded = m_pddsSurface->Init(tempPath);
+		bool bMipmaps = !(m_dwFlags & NoMipmap);
+		bLoaded = m_pddsSurface->Init(tempPath, bMipmaps);
 		if(bLoaded)
 		{
 			m_dwWidth   = m_pddsSurface->GetImage().GetWidth();
 			m_dwHeight  = m_pddsSurface->GetImage().GetHeight();
-			m_bHasAlpha = m_pddsSurface->GetImage().HasAlpha();
 			m_dwBPP     = m_pddsSurface->GetImage().GetNumChannels() * 8;
 
 			// Do not keep image data in memory
@@ -409,6 +406,7 @@ TextureContainer * TextureContainer::LoadUI(const std::string& strName, TextureC
 TextureContainer * TextureContainer::Find(const std::string& strTextureName)
 {
 	TextureContainer * ptcTexture = g_ptcTextureList;
+	TextureContainer * ptcLast;
 
 	std::string strTexNameUpper = strTextureName;
 	MakeUpcase(strTexNameUpper);
@@ -418,6 +416,7 @@ TextureContainer * TextureContainer::Find(const std::string& strTextureName)
 		if ( strTexNameUpper.find(ptcTexture->m_texName) != std::string::npos )
 			return ptcTexture;
 
+		ptcLast = ptcTexture;
 		ptcTexture = ptcTexture->m_pNext;
 	}
 
