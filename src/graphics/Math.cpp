@@ -1026,24 +1026,6 @@ void Vector_RotateZ(EERIE_3D * dest, const EERIE_3D * src, const float angle)
 }
 
 //*************************************************************************************
-// Subtract v2 from v1 giving "dest"
-//*************************************************************************************
-void Vector_Sub(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2)
-{
-	dest->x = v1->x - v2->x;
-	dest->y = v1->y - v2->y;
-	dest->z = v1->z - v2->z;
-}
-//*************************************************************************************
-// Returns true if vector v1 equals vector v2
-//*************************************************************************************
-bool Vector_Compare(const EERIE_3D * v1, const EERIE_3D * v2)
-{
-	return ((v1->x == v2->x)
-	        &&	(v1->y == v2->y)
-	        &&	(v1->z == v2->z));
-}
-//*************************************************************************************
 // Computes Cross Product of vectors "v1" & "v2" giving vector "dest"
 //*************************************************************************************
 void Vector_CrossProduct(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2)
@@ -1143,7 +1125,7 @@ void MatrixSetByVectors(EERIEMATRIX * m, const EERIE_3D * d, const EERIE_3D * u)
 	U.y -= D.y * t;
 	U.z -= D.y * t;
 	TRUEVector_Normalize(&U);
-	Vcross(&R, &U, &D);
+	Vector_CrossProduct(&R, &U, &D);
 	m->_11 = R.x;
 	m->_12 = R.y;
 	m->_21 = U.x;
@@ -1175,11 +1157,11 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const EERIE_3D * vect, cons
 
 	// Build the X axis vector based on the two existing vectors
 	EERIE_3D xAxis;
-	Vcross(&xAxis, &yAxis, &zAxis);
+	Vector_CrossProduct(&xAxis, &yAxis, &zAxis);
 	TRUEVector_Normalize(&xAxis);
 
 	// Correct the Y reference vector
-	Vcross(&yAxis, &xAxis, &zAxis);
+	Vector_CrossProduct(&yAxis, &xAxis, &zAxis);
 	TRUEVector_Normalize(&yAxis);
 	yAxis.x = -yAxis.x;
 	yAxis.y = -yAxis.y;

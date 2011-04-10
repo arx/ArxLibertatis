@@ -1818,20 +1818,18 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		// TODO constructor is better than memset
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
 
-		for (long i = 0; i != obj->nb_bones; i++)
-		{
-			EERIE_VERTEX * inVert;
-			EERIE_3DPAD * outVert;
-
+		for (long i = 0; i != obj->nb_bones; i++) {
 			EERIE_3D vector = obj->bones[i].transanim;
-
-			for (int v = 0; v != obj->bones[i].nb_idxvertices; v++)
-			{
-				inVert  = &eobj->vertexlist[obj->bones[i].idxvertices[v]];
-				outVert = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
-
-				Vector_Sub((EERIE_3D *)outVert, &inVert->v, &vector);
-				TransformInverseVertexQuat(&obj->bones[i].quatanim, (EERIE_3D *)outVert, (EERIE_3D *)outVert);
+			
+			for (int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+				
+				long idx = obj->bones[i].idxvertices[v];
+				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];
+				EERIE_3DPAD & outVert = eobj->vertexlocal[idx];
+				
+				EERIE_3D temp = inVert.v - vector;
+				TransformInverseVertexQuat(&obj->bones[i].quatanim, &temp, &temp);
+				outVert.x = temp.x, outVert.y = temp.y, outVert.z = temp.z;
 			}
 		}
 	}

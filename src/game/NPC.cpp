@@ -551,7 +551,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 		GetIOCyl(io, &phys.cyl);
 
 		// Now we try the physical move for real
-		if	(Vector_Compare(&io->physics.startpos, &io->physics.targetpos) 
+		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC))))
 		{
 			float dist = EEDistance3D(&phys.cyl.origin, &ACTIVEBKG->anchors[pos].pos); 
@@ -782,7 +782,7 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		GetIOCyl(io, &phys.cyl);
 
 		// Now we try the physical move for real
-		if	(Vector_Compare(&io->physics.startpos, &io->physics.targetpos) // optim
+		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC | CFLAG_NO_HEIGHT_MOD)) ))
 		{
 
@@ -3587,8 +3587,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	DIRECT_PATH = true;
 
 	// Now we try the physical move for real
-	if	(Vector_Compare(&io->physics.startpos, &io->physics.targetpos) // optim
-	        ||	(ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC)))
+	if(io->physics.startpos == io->physics.targetpos
+	        || ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC))
 	{
 		// Successfull move now validate it
 		if (!DIRECT_PATH) io->_npcdata->moveproblem += 1;

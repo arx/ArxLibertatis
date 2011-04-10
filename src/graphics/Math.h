@@ -361,11 +361,6 @@ void Quat_GetShortestArc(EERIE_QUAT * q1 , EERIE_QUAT * q2);
 //*******************************************************************************
 // VECTORS Functions
 //*******************************************************************************
-void	Vector_Sub(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2);
-void	Vector_Add(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2);
- 
-void	Vector_ScaleTo(EERIE_3D * dest, EERIE_3D * v, float scale);
-bool	Vector_Compare(const EERIE_3D * v1, const EERIE_3D * v2);
 float	Vector_Magnitude(const EERIE_3D * v);
 float	Vector_Normalize(EERIE_3D * v);
 float	TRUEVector_Magnitude(const EERIE_3D * v);
@@ -379,17 +374,6 @@ void	VRotateX(EERIE_3D * v1, const float angle);
 void	VRotateY(EERIE_3D * v1, const float angle);
 void	VRotateZ(EERIE_3D * v1, const float angle);
 void	QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat);
-
-#define VrotY Vector_RotateY
-#define Vsub Vector_Sub
-#define Vcmp Vector_Compare
-#define Vinv Vector_Invert
-#define Vscale Vector_Scale
-#define Vscaleto Vector_ScaleTo
-#define Vcross Vector_CrossProduct
-#define Vdot Vector_DotProduct
-#define Vmag Vector_Magnitude
-#define Vnorm Vector_Normalize
 
 #define CROSS(dest,v1,v2) \
 	dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \

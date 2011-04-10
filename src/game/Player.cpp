@@ -3525,10 +3525,11 @@ void PlayerMovementIterate(float DeltaTime)
 
 		player.onfirmground = 0;
 	}
-
-
-	if (Vector_Compare(&player.pos, &moveto)) d = 0.f;
-
+	
+	if(player.pos == moveto) {
+		d = 0.f;
+	}
+	
 	// Emit Stepsound
 	if ((USE_PLAYERCOLLISIONS) && (!EDITMODE))
 	{

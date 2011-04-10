@@ -132,6 +132,10 @@ struct EERIE_3D {
 		return *this;
 	}
 	
+	inline bool operator==(const EERIE_3D & o) {
+		return (x == o.x && y == o.y && z == o.z);
+	}
+	
 };
 
 struct EERIEMATRIX {
