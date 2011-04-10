@@ -152,6 +152,8 @@ namespace
 			newcontrol = "newcontrol"
 			;
 	};
+
+	SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY];
 };
 
 	void ARX_SetAntiAliasing();
@@ -223,16 +225,8 @@ void Config::First()
 	sakActionDefaultKey[CONTROLS_CUST_CROUCH].iKey[0] = DIK_X;
 	sakActionDefaultKey[CONTROLS_CUST_CROUCH].iKey[1]=-1;
 
-	if (INTERNATIONAL_MODE)
-	{
-		sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[0]=DIK_F;
-		sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[1]=DIK_RETURN;
-	}
-	else
-	{
-		sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[0]=DIK_BUTTON2;
-		sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[1]=-1;
-	}
+	sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[0]=DIK_F;
+	sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[1]=DIK_RETURN;
 
 	sakActionDefaultKey[CONTROLS_CUST_ACTION].iKey[0]=DIK_BUTTON1;
 	sakActionDefaultKey[CONTROLS_CUST_ACTION].iKey[1]=-1;
@@ -292,16 +286,8 @@ void Config::First()
 	sakActionDefaultKey[CONTROLS_CUST_CENTERVIEW].iKey[0]=DIK_END;
 	sakActionDefaultKey[CONTROLS_CUST_CENTERVIEW].iKey[1]=-1;
 
-	if (INTERNATIONAL_MODE)
-	{
-		sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[0]=DIK_L;
-		sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[1]=DIK_BUTTON2;
-	}
-	else
-	{
-		sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[0]=DIK_L;
-		sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[1]=-1;
-	}
+	sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[0]=DIK_L;
+	sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[1]=DIK_BUTTON2;
 
 	sakActionDefaultKey[CONTROLS_CUST_PREVIOUS].iKey[0] = GetDIKWithASCII(")");
 	sakActionDefaultKey[CONTROLS_CUST_PREVIOUS].iPage=1;
@@ -339,13 +325,9 @@ void Config::SetDefaultKey()
 	}
 
 	if (!INTERNATIONAL_MODE)
-	{
 		bLinkMouseLookToUse=true;
-	}
 	else
-	{
 		bLinkMouseLookToUse=false;
-	}
 }
 
 int Config::GetDIKWithASCII( const std::string& _pcTouch)
