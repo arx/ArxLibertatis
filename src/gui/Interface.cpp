@@ -517,6 +517,17 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 							   TextureContainer * tc2,
 							   float POSX, float POSY, float fRatioX = 1, float fRatioY = 1)
 {
+	ARX_UNUSED(_fR);
+	ARX_UNUSED(_fG);
+	ARX_UNUSED(_fB);
+	ARX_UNUSED(_lHaloType);
+	ARX_UNUSED(tc);
+	ARX_UNUSED(tc2);
+	ARX_UNUSED(POSX);
+	ARX_UNUSED(POSY);
+	ARX_UNUSED(fRatioX);
+	ARX_UNUSED(fRatioY);
+
 	/*float power=0.9f-EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 10 )+rnd()*( 1.0f / 10 );
 
 	if (power>1.f) power=1.f;

@@ -220,7 +220,8 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
                            Pragma
 ------------------------------------------------------------*/
 
-#define ARX_DEAD_CODE() {arx_assert( false );}
+#define ARX_DEAD_CODE()		{arx_assert( false );}
+#define ARX_UNUSED(x)		((void)&x)
 
 #define ARX_CHECK_UCHAR(_x)	{arx_assert( static_cast<u16>(_x) <= UCHAR_MAX	&& _x >= 0 ) ;}
 #define ARX_CHECK_BYTE(_x) ARX_CHECK_UCHAR(_x)
