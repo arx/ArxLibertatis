@@ -618,50 +618,6 @@ bool Config::WriteConfigKey( const std::string& _pcKey,int _iAction)
 	return bOk;
 }
 
-//-----------------------------------------------------------------------------
-
-void Config::ReInitActionKey(CWindowMenuConsole *_pwmcWindowMenuConsole)
-{
-	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
-	int iI=MAX_ACTION_KEY;
-	bool bOldTouch=pGetInfoDirectInput->bTouch;
-	int iOldVirtualKey=pGetInfoDirectInput->iKeyId;
-	pGetInfoDirectInput->bTouch=true;
-
-	while(iI--)
-	{
-		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
-
-		CMenuZone *pmzMenuZone = _pwmcWindowMenuConsole->MenuAllZone.GetZoneWithID(iID);
-
-		if (pmzMenuZone)
-		{
-			if(pmzMenuZone)
-			{
-				_pwmcWindowMenuConsole->pZoneClick=(CMenuElement*)pmzMenuZone;
-				pGetInfoDirectInput->iKeyId=sakActionKey[iTab].iKey[0];
-				_pwmcWindowMenuConsole->GetTouch();
-			}
-
-			pmzMenuZone=_pwmcWindowMenuConsole->MenuAllZone.GetZoneWithID(iID+1);
-
-			if(pmzMenuZone)
-			{
-				_pwmcWindowMenuConsole->pZoneClick=(CMenuElement*)pmzMenuZone;
-				pGetInfoDirectInput->iKeyId=sakActionKey[iTab].iKey[1];
-				_pwmcWindowMenuConsole->GetTouch();
-			}
-		}
-
-		iID+=2;
-	}
-
-	pGetInfoDirectInput->bTouch=bOldTouch;
-	pGetInfoDirectInput->iKeyId=iOldVirtualKey;
-}
-
-//-----------------------------------------------------------------------------
-
 bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
 {
 	char tcTxt[256];

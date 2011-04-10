@@ -38,6 +38,7 @@ enum
 
 struct SACTION_KEY
 {
+	SACTION_KEY() { iKey[0] = iKey[1] = -1; iPage = 0; }
 	int	iKey[2];
 	int iPage;
 };
@@ -84,7 +85,6 @@ class Config
 		bool		bAutoDescription;
 		int			iMouseSensitivity;
 		SACTION_KEY sakActionKey[MAX_ACTION_KEY];
-		SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY];
 		bool		bLinkMouseLookToUse;
 		//MISC
 		bool		bATI;
@@ -121,7 +121,6 @@ class Config
 		void ResetActionKey();
 		bool WriteConfigKey( const std::string& _pcKey, int _iAction);
 		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
-		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
 		void SetDefaultKey();
 		void First();
 

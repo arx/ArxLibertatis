@@ -700,6 +700,7 @@ class CWindowMenuConsole
 		int Render();
  
 		CMenuElement * GetTouch(bool _bValidateTest = false);
+		void ReInitActionKey();
 };
 
 //-----------------------------------------------------------------------------

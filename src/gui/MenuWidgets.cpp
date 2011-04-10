@@ -1846,7 +1846,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenu(pc);
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
-					pMenuConfig->ReInitActionKey(pWindowMenuConsole);
+					pWindowMenuConsole->ReInitActionKey();
 
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
@@ -1892,7 +1892,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenu(pc);
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
-					pMenuConfig->ReInitActionKey(pWindowMenuConsole);
+					pWindowMenuConsole->ReInitActionKey();
 					#undef CUSTOM_CTRL_X0
 					#undef CUSTOM_CTRL_X1
 					#undef CUSTOM_CTRL_X2
@@ -4423,12 +4423,12 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 	}
 
 	return bChange;
-	}
+}
 
-	//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-	int CWindowMenuConsole::Render()
-	{
+int CWindowMenuConsole::Render()
+{
 	if(WILL_RELOAD_ALL_TEXTURES) return 0;
 
 	if(bNoMenu) return 0;
@@ -4442,8 +4442,8 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
-		RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
-		0, pTexBackground, ARX_OPAQUE_WHITE);
+	RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
+	0, pTexBackground, ARX_OPAQUE_WHITE);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -4451,8 +4451,8 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
-		RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
-		0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);
+	RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
+	0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);
 
 	//------------------------------------------------------------------------
 
@@ -4578,7 +4578,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 		if(bReInit)
 		{
-			pMenuConfig->ReInitActionKey(this);
+			ReInitActionKey();
 			bMouseAttack=false;
 		}
 	}
@@ -4587,6 +4587,46 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 	MenuAllZone.DrawZone();
 
 	return iSlider;
+}
+
+void CWindowMenuConsole::ReInitActionKey()
+{
+	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
+	int iI=MAX_ACTION_KEY;
+	bool bOldTouch=pGetInfoDirectInput->bTouch;
+	int iOldVirtualKey=pGetInfoDirectInput->iKeyId;
+	pGetInfoDirectInput->bTouch=true;
+
+	while(iI--)
+	{
+		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
+
+		CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(iID);
+
+		if (pmzMenuZone)
+		{
+			if(pmzMenuZone)
+			{
+				pZoneClick = (CMenuElement*)pmzMenuZone;
+				pGetInfoDirectInput->iKeyId = pMenuConfig->sakActionKey[iTab].iKey[0];
+				GetTouch();
+			}
+
+			pmzMenuZone = MenuAllZone.GetZoneWithID(iID+1);
+
+			if( pmzMenuZone )
+			{
+				pZoneClick = (CMenuElement*)pmzMenuZone;
+				pGetInfoDirectInput->iKeyId = pMenuConfig->sakActionKey[iTab].iKey[1];
+				GetTouch();
+			}
+		}
+
+		iID+=2;
+	}
+
+	pGetInfoDirectInput->bTouch=bOldTouch;
+	pGetInfoDirectInput->iKeyId=iOldVirtualKey;
 }
 
 //-----------------------------------------------------------------------------
