@@ -1950,6 +1950,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							else
 								speechnum = ARX_SPEECH_AddSpeech(io, temp1, mood, voixoff);
 
+							GetNextWord(es, pos, temp2);
 							LogDebug <<  temp2;
 
 							if ((!LINEEND) && (speechnum >= 0))
