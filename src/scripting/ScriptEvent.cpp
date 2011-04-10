@@ -21,6 +21,7 @@
 #include "game/Missile.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Inventory.h"
 
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"

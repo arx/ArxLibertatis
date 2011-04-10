@@ -83,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "game/Player.h"
 #include "game/Levels.h"
+#include "game/Inventory.h"
 
 #include "gui/MiniMap.h"
 #include "gui/Speech.h"
@@ -867,13 +868,14 @@ retry:
 	std::copy(Precast, Precast + SAVED_MAX_PRECAST, asp->precast);
 
 	//inventaires
-	for (long iNbBag = 0; iNbBag < 3; iNbBag++)
-		for (long m = 0; m < INVENTORY_Y; m++)
-			for (long n = 0; n < INVENTORY_X; n++)
-			{
+	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
+		for(size_t m = 0; m < INVENTORY_Y; m++) {
+			for(size_t n = 0; n < INVENTORY_X; n++) {
 				FillIOIdent(asp->id_inventory[iNbBag][n][m], inventory[iNbBag][n][m].io);
 				asp->inventory_show[iNbBag][n][m] = inventory[iNbBag][n][m].show;
 			}
+		}
+	}
 
 	std::copy(minimap, minimap + SAVED_MAX_MINIMAPS, asp->minimap);
 

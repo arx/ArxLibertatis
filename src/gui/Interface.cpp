@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/Player.h"
 #include "game/Levels.h"
+#include "game/Inventory.h"
 
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
@@ -1146,8 +1147,8 @@ void ReleaseInfosCombine()
 
 	if (player.bag)
 	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (long j=0;j<INVENTORY_Y;j++)
-	for (long i=0;i<INVENTORY_X;i++)
+	for (size_t j=0;j<INVENTORY_Y;j++)
+	for (size_t i=0;i<INVENTORY_X;i++)
 	{
 		io = inventory[iNbBag][i][j].io;
 
@@ -1505,8 +1506,8 @@ void GetInfosCombine()
 
 	if (player.bag)
 	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (long j=0;j<INVENTORY_Y;j++)
-	for (long i=0;i<INVENTORY_X;i++)
+	for (size_t j=0;j<INVENTORY_Y;j++)
+	for (size_t i=0;i<INVENTORY_X;i++)
 	{
 		io = inventory[iNbBag][i][j].io;
 		GetInfosCombineWithIO(io);
@@ -6238,8 +6239,8 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 	rect.top=0;
 	rect.bottom=0;
 
-	for (long j=0;j<INVENTORY_Y;j++)
-		for (long i=0;i<INVENTORY_X;i++)
+	for (size_t j=0;j<INVENTORY_Y;j++)
+		for (size_t i=0;i<INVENTORY_X;i++)
 		{
 			INTERACTIVE_OBJ * io = inventory[_sNum][i][j].io;
 

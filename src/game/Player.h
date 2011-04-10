@@ -364,4 +364,6 @@ long GetXPforLevel(long level);
 bool ARX_PLAYER_IsInFightMode();
 void ARX_PLAYER_Invulnerability(long flag);
 
+void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io);
+
 #endif // ARX_GAME_PLAYER_H

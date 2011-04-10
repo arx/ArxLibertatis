@@ -84,13 +84,6 @@ struct ANIM_HANDLE
 	long			locks;
 };
 
-//minimap special infos
-struct EERIE_S2D
-{
-	short x;
-	short y;
-};
-
 struct EERIE_TRANSFORM
 {
 	float posx;

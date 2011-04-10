@@ -90,6 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/Levels.h"
+#include "game/Inventory.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -3411,62 +3412,57 @@ void ManageNONCombatModeAnimations()
 		}
 	}
 }
-long Player_Arrow_Count()
-{
-	long count=0;
 
-	if (player.bag)
-	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (long j=0;j<INVENTORY_Y;j++)
-	for (long i=0;i<INVENTORY_X;i++)
-	{
-		INTERACTIVE_OBJ * io=inventory[iNbBag][i][j].io;
-
-		if (io)
-		{
-			if ( !strcasecmp( GetName(io->filename),"Arrows") )
-			{
-				if ( io->durability >= 1.f )
-
-				{
-					ARX_CHECK_LONG( io->durability );
-					count += ARX_CLEAN_WARN_CAST_LONG( io->durability );
+long Player_Arrow_Count() {
+	
+	long count = 0;
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					INTERACTIVE_OBJ * io = inventory[iNbBag][i][j].io;
+					if(io) {
+						if(GetName(io->filename) == "Arrows") {
+							if(io->durability >= 1.f) {
+								ARX_CHECK_LONG(io->durability);
+								count += static_cast<long>(io->durability);
+							}
+						}
+					}
 				}
-
-
 			}
 		}
 	}
-
+	
 	return count;
 }
 
-INTERACTIVE_OBJ * Player_Arrow_Count_Decrease()
-{
+INTERACTIVE_OBJ * Player_Arrow_Count_Decrease() {
+	
 	INTERACTIVE_OBJ * io = NULL;
-
-	if (player.bag)
-	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (long j=0;j<INVENTORY_Y;j++)
-	for (long i=0;i<INVENTORY_X;i++)
-	{
-		INTERACTIVE_OBJ * ioo = inventory[iNbBag][i][j].io;
-
-		if (ioo)
-		{
-			if ( !strcasecmp( GetName(ioo->filename), "Arrows") )
-			{
-				if (ioo->durability >= 1.f)
-				{
-					if (!io)
-						io = ioo;
-					else if (io->durability > ioo->durability)
-						io = ioo;
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X;i++) {
+					INTERACTIVE_OBJ * ioo = inventory[iNbBag][i][j].io;
+					if(ioo) {
+						if(GetName(ioo->filename) == "Arrows") {
+							if(ioo->durability >= 1.f) {
+								if(!io) {
+									io = ioo;
+								} else if(io->durability > ioo->durability) {
+									io = ioo;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 	}
-
+	
 	return io;
 }
 float GLOBAL_SLOWDOWN=1.f;
@@ -4419,7 +4415,6 @@ void RenderAllNodes()
 {
 	EERIE_3D angle(0, 0, 0);
 	float xx,yy;
-	long j;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -4450,11 +4445,9 @@ void RenderAllNodes()
 				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
 			}
 
-			for (j=0;j<MAX_LINKS;j++)
-			{
-				if (nodes.nodes[i].link[j]!=-1)
-				{
-					EERIEDrawTrue3DLine(&nodes.nodes[i].pos,&nodes.nodes[nodes.nodes[i].link[j]].pos,EERIECOLOR_GREEN);
+			for(size_t j = 0; j < MAX_LINKS; j++) {
+				if(nodes.nodes[i].link[j]!=-1) {
+					EERIEDrawTrue3DLine(&nodes.nodes[i].pos, &nodes.nodes[nodes.nodes[i].link[j]].pos, EERIECOLOR_GREEN);
 				}
 			}
 		}

@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "game/Player.h"
 #include "game/Levels.h"
+#include "game/Inventory.h"
 
 #include "gui/Speech.h"
 #include "gui/MenuWidgets.h"
@@ -150,7 +151,9 @@ long INTER_DRAW = 0;
 long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
-bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t);
+static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
+static INTERACTIVE_OBJ * AddCamera(const std::string & file);
+static INTERACTIVE_OBJ * AddMarker(const std::string & file);
 
 
 /* Return the short name for this Object where only the name
@@ -228,8 +231,9 @@ long ValidIOAddress(INTERACTIVE_OBJ * io)
 
 	return 0;
 }
-float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop)
-{
+
+static float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
+	
 	if ((!io)
 	        ||	(!(io->ioflags & IO_ITEM)))
 		return 0;
@@ -247,8 +251,8 @@ long ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
 	return ARX_INTERACTIVE_fGetPrice(io, shop);
 }
 
-void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags)
-{
+static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
+	
 	ARX_PATH * op = (ARX_PATH *)io->inzone;
 
 	if (op)
@@ -897,33 +901,29 @@ long GetNumNodeByName(char * name)
 
 	return -1;
 }
-//*************************************************************************************
-//*************************************************************************************
-void RestoreNodeNumbers()
-{
-	for (long i = 0; i < nodes.nbmax; i++)
-		for (long j = 0; j < MAX_LINKS; j++)
-		{
-			if (nodes.nodes[i].lnames[j][0] != 0)
-			{
+
+void RestoreNodeNumbers() {
+	for(long i = 0; i < nodes.nbmax; i++) {
+		for(size_t j = 0; j < MAX_LINKS; j++) {
+			if(nodes.nodes[i].lnames[j][0] != 0) {
 				nodes.nodes[i].link[j] = GetNumNodeByName(nodes.nodes[i].lnames[j]);
 			}
 		}
+	}
 }
-//*************************************************************************************
-//*************************************************************************************
-void ClearNode(long i, long first = 0)
-{
+
+void ClearNode(long i, long first = 0) {
+	
 	nodes.nodes[i].exist = 0;
 	nodes.nodes[i].selected = 0;
 
-	for (long j = 0; j < MAX_LINKS; j++)
+	for (size_t j = 0; j < MAX_LINKS; j++)
 	{
 		if ((nodes.nodes[i].link[j] != -1) && (!first))
 		{
 			long k = nodes.nodes[i].link[j];
 
-			for (long l = 0; l < MAX_LINKS; l++)
+			for (size_t l = 0; l < MAX_LINKS; l++)
 				if (nodes.nodes[k].link[l] == i)
 					nodes.nodes[k].link[l] = -1;
 		}
@@ -991,7 +991,7 @@ bool IsLinkedNode(long i, long j)
 	        ||	(!nodes.nodes[j].exist))
 		return false;
 
-	for (long k = 0; k < MAX_LINKS; k++)
+	for (size_t k = 0; k < MAX_LINKS; k++)
 	{
 		if (nodes.nodes[i].link[k] == j) return true;
 	}
@@ -1022,7 +1022,7 @@ void AddLink(long i, long j)
 	        ||	(!nodes.nodes[j].exist))
 		return;
 
-	for (long k = 0; k < MAX_LINKS; k++)
+	for (size_t k = 0; k < MAX_LINKS; k++)
 	{
 		if (nodes.nodes[i].link[k] == -1)
 		{
@@ -1039,7 +1039,7 @@ void RemoveLink(long i, long j)
 	        ||	(!nodes.nodes[j].exist))
 		return;
 
-	for (long k = 0; k < MAX_LINKS; k++)
+	for (size_t k = 0; k < MAX_LINKS; k++)
 	{
 		if (nodes.nodes[i].link[k] == j)
 		{
@@ -1243,14 +1243,16 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
 		EERIE_COLLISION_Cylinder_Create(io);
 	}
 }
-void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io)
-{
-	if (io->Tweaks)
-		free(io->Tweaks);
 
+static void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io) {
+	
+	if(io->Tweaks) {
+		free(io->Tweaks);
+	}
 	io->Tweaks = NULL;
 	io->Tweak_nb = 0;
 }
+
 void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string& param1, const std::string& param2)
 {
 	io->Tweaks = (TWEAK_INFO *)realloc(io->Tweaks, sizeof(TWEAK_INFO) * (io->Tweak_nb + 1));
@@ -1446,10 +1448,9 @@ void ARX_INTERACTIVE_ClearAllDynData()
 		ARX_INTERACTIVE_ClearIODynData(inter.iobj[i]);
 	}
 }
-void RestoreIOInitPos(INTERACTIVE_OBJ * io)
-{
-	if (io)
-	{
+
+static void RestoreIOInitPos(INTERACTIVE_OBJ * io) {
+	if(io) {
 		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
 		io->pos.x = io->lastpos.x = io->initpos.x;
 		io->pos.y = io->lastpos.y = io->initpos.y;
@@ -1461,15 +1462,14 @@ void RestoreIOInitPos(INTERACTIVE_OBJ * io)
 		io->angle.g = io->initangle.g;
 	}
 }
-void RestoreAllIOInitPos()
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
+
+void RestoreAllIOInitPos() {
+	for(long i = 1; i < inter.nbmax; i++) {
 		RestoreIOInitPos(inter.iobj[i]);
 	}
 }
-void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io)
-{
+
+void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io) {
 	io->halo.color.r = io->halo_native.color.r;
 	io->halo.color.g = io->halo_native.color.g;
 	io->halo.color.b = io->halo_native.color.b;
@@ -2210,8 +2210,8 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	}
 
 	for (long iNbBag = 0; iNbBag < 3; iNbBag++)
-		for (long j = 0; j < INVENTORY_Y; j++)
-			for (long i = 0; i < INVENTORY_X; i++)
+		for (size_t j = 0; j < INVENTORY_Y; j++)
+			for (size_t i = 0; i < INVENTORY_X; i++)
 			{
 				if (inventory[iNbBag][i][j].io == io)
 					inventory[iNbBag][i][j].io = NULL;
@@ -2330,15 +2330,9 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	io = NULL;
 }
 
-//***********************************************************************************
-// AddInteractive:
-// Adds an Interactive Object to the Scene
-// Calls appropriate func depending on object Type (ITEM, NPC or FIX)
-// Creates an IO Ident for added object if necessary
-// flags can be IO_IMMEDIATELOAD (1) to FORCE loading
-//***********************************************************************************
-INTERACTIVE_OBJ * AddInteractive(const std::string& file, long id, long flags)
-{
+
+INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFlags flags) {
+	
 	INTERACTIVE_OBJ * io = NULL;
 	std::string ficc;
 	ficc = file;
@@ -2487,12 +2481,9 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string&
 	io2->show = SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
-//***********************************************************************************
-// AddFix
-// Adds a FIX INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
-{
+
+INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
+	
 	std::string tex1 = file;
 	std::string texscript = file;
 	SetExt(texscript, "asl");
@@ -2604,12 +2595,8 @@ INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
 	return io;
 }
 
-//***********************************************************************************
-// AddCamera
-// Adds a CAMERA INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddCamera(const std::string& file)
-{
+static INTERACTIVE_OBJ * AddCamera(const string & file) {
+	
 	std::string tex1 = file;;
 	std::string texscript = file;
 
@@ -2674,12 +2661,9 @@ INTERACTIVE_OBJ * AddCamera(const std::string& file)
 
 	return io;
 }
-//***********************************************************************************
-// AddMarker
-// Adds a MARKER INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddMarker(const std::string& file)
-{
+
+static INTERACTIVE_OBJ * AddMarker(const string & file) {
+	
 	std::string tex1 = file;
 	std::string texscript = file;
 
@@ -2850,8 +2834,8 @@ void RotateSelectedIO(EERIE_3D * op)
 //*************************************************************************************
 // Delete All Selected IOs
 //*************************************************************************************
-void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
-{
+void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
+	
 	if ((i < 1) || (i >= inter.nbmax))
 		return;
 
@@ -2935,12 +2919,8 @@ void GroundSnapSelectedIO()
 	}
 }
 
-//***********************************************************************************
-// AddNPC
-// Adds a NPC INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags)
-{
+INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
+	
     // creates script filename
     std::string texscript = file;;
     SetExt(texscript, "asl");
@@ -3164,8 +3144,8 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 // NEED TO OPEN "if (LAST_CHINSTANCE!=-1) ARX_Changelevel_CurGame_Open();"
 // And close after seek session
 //*************************************************************************************
-bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
-{
+static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
+	
 	if (!io)
 		return false;
 
@@ -3239,12 +3219,8 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
-//***********************************************************************************
-// AddItem
-// Adds an ITEM INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddItem(const std::string& fil, long flags)
-{
+INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
+	
 	std::string tex1;
 	std::string tex2;
 	std::string texscript;
@@ -3672,8 +3648,8 @@ long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size)
 //*************************************************************************************
 // To upgrade to a more precise collision.
 //*************************************************************************************
-bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
-{
+static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos) {
+	
 	long nbv;
 	long idx;
 

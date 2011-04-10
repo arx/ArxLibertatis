@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Inventory.h"
 
 #include "gui/Speech.h"
 
@@ -5299,24 +5300,21 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 
 void ManageCasseDArme(INTERACTIVE_OBJ * io)
 {
-	if ((io->type_flags & OBJECT_TYPE_DAGGER) ||
+	if((io->type_flags & OBJECT_TYPE_DAGGER) ||
 			(io->type_flags & OBJECT_TYPE_1H) ||
 			(io->type_flags & OBJECT_TYPE_2H) ||
-			(io->type_flags & OBJECT_TYPE_BOW))
-	{
-		if (player.bag)
-		{
+			(io->type_flags & OBJECT_TYPE_BOW)) {
+		
+		if(player.bag) {
 			INTERACTIVE_OBJ * pObjMin = NULL;
 			INTERACTIVE_OBJ * pObjMax = NULL;
 			INTERACTIVE_OBJ * pObjFIX = NULL;
 			bool bStop = false;
-
-			for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			{
-				for (int j = 0; j < INVENTORY_Y; j++)
-				{
-					for (int i = 0; i < INVENTORY_X; i++)
-					{
+			
+			for (int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+				for (size_t j = 0; j < INVENTORY_Y; j++) {
+					for (size_t i = 0; i < INVENTORY_X; i++) {
+						
 						if ((inventory[iNbBag][i][j].io) &&
 								(inventory[iNbBag][i][j].io != io) &&
 								((inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_DAGGER) ||
