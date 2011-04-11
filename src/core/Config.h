@@ -37,14 +37,12 @@ enum
 
 struct ActionKey
 {
-	ActionKey( int key_0, int key_1, int _page )
+	ActionKey( int key_0 = -1, int key_1 = -1, int _page = 0 )
 	{
 		iKey[0] = key_0;
 		iKey[1] = key_1;
 		iPage = _page;
 	}
-
-	ActionKey() { iKey[0] = iKey[1] = -1; iPage = 0; }
 
 	int	iKey[2];
 	int iPage;

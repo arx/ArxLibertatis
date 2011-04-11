@@ -156,7 +156,49 @@ namespace
 
 	ActionKey sakActionDefaultKey[MAX_ACTION_KEY] =
 	{
-	
+		ActionKey( DIK_SPACE ), // JUMP
+		ActionKey( DIK_LCONTROL, DIK_RCONTROL ), // MAGICMODE
+		ActionKey( DIK_LSHIFT, DIK_RSHIFT ), // STEALTHMODE
+		ActionKey( DIK_W, DIK_UP ), // WALKFORWARD
+		ActionKey( DIK_S, DIK_DOWN ), // WALKBACKWARD
+		ActionKey( DIK_A ), // STRAFELEFT
+		ActionKey( DIK_D ), // STRAFERIGHT
+		ActionKey( DIK_Q ), // LEANLEFT
+		ActionKey( DIK_E ), // LEANRIGHT
+		ActionKey( DIK_X ), // CROUCH
+		ActionKey( DIK_F, DIK_RETURN ), // MOUSELOOK
+		ActionKey( DIK_BUTTON1 ), // ACTION
+		ActionKey( DIK_I, -1, 1 ), // INVENTORY
+		ActionKey( DIK_BACKSPACE, -1, 1 ), // BOOK
+		ActionKey( DIK_F1, -1, 1 ), // BOOKCHARSHEET
+		ActionKey( DIK_F2, -1, 1 ), // BOOKSPELL
+		ActionKey( DIK_F3, -1, 1 ), // BOOKMAP
+		ActionKey( DIK_F4, -1, 1 ), // BOOKQUEST
+		ActionKey( DIK_H, -1, 1 ), // DRINKPOTIONLIFE
+		ActionKey( DIK_G, -1, 1 ), // DRINKPOTIONMANA
+		ActionKey( DIK_T, -1, 1 ), // TORCH
+		ActionKey( DIK_4, -1, 1 ), // CANCELCURSPELL
+		ActionKey( DIK_1, -1, 1 ), // PRECAST1
+		ActionKey( DIK_2, -1, 1 ), // PRECAST2
+		ActionKey( DIK_3, -1, 1 ), // PRECAST3
+		ActionKey( DIK_TAB, DIK_NUMPAD0, 1 ), // WEAPON
+		ActionKey( DIK_F9, -1, 1 ), // QUICKLOAD
+		ActionKey( DIK_F5, -1, 1 ), // QUICKSAVE
+		ActionKey( DIK_LEFT ), // TURNLEFT
+		ActionKey( DIK_RIGHT ), // TURNRIGHT
+		ActionKey( DIK_PGUP ), // LOOKUP
+		ActionKey( DIK_PGDN ), // LOOKDOWN
+		ActionKey( DIK_LALT ), // STRAFE
+		ActionKey( DIK_END ), // CENTERVIEW
+		ActionKey( DIK_L, DIK_BUTTON2 ), // FREELOOK
+
+		// TODO Get these intialized const, not through DInput calls
+		ActionKey( -1, -1, 1 ), // PREVIOUS
+		ActionKey( -1, -1, 1 ), // NEXT
+		ActionKey( -1, -1, 1 ), // CROUCHTOGGLE
+
+		ActionKey( DIK_B, -1, 1 ), // UNEQUIPWEAPON
+		ActionKey( DIK_R, DIK_M, 1 ), // MINIMAP
 	};
 };
 
@@ -206,105 +248,14 @@ Config::~Config()
 
 void Config::First()
 {
-	sakActionDefaultKey[CONTROLS_CUST_JUMP].iKey[0]=DIK_SPACE;
-	sakActionDefaultKey[CONTROLS_CUST_JUMP].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_MAGICMODE].iKey[0]=DIK_LCONTROL;
-	sakActionDefaultKey[CONTROLS_CUST_MAGICMODE].iKey[1]=DIK_RCONTROL;
-	sakActionDefaultKey[CONTROLS_CUST_STEALTHMODE].iKey[0]=DIK_LSHIFT;
-	sakActionDefaultKey[CONTROLS_CUST_STEALTHMODE].iKey[1]=DIK_RSHIFT;
-	sakActionDefaultKey[CONTROLS_CUST_WALKFORWARD].iKey[0] = DIK_W;
-	sakActionDefaultKey[CONTROLS_CUST_WALKFORWARD].iKey[1]=DIK_UP;
-	sakActionDefaultKey[CONTROLS_CUST_WALKBACKWARD].iKey[0] = DIK_S;
-	sakActionDefaultKey[CONTROLS_CUST_WALKBACKWARD].iKey[1]=DIK_DOWN;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFELEFT].iKey[0] = DIK_A;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFELEFT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFERIGHT].iKey[0] = DIK_D;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFERIGHT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_LEANLEFT].iKey[0] = DIK_Q;
-	sakActionDefaultKey[CONTROLS_CUST_LEANLEFT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_LEANRIGHT].iKey[0] = DIK_E;
-	sakActionDefaultKey[CONTROLS_CUST_LEANRIGHT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_CROUCH].iKey[0] = DIK_X;
-	sakActionDefaultKey[CONTROLS_CUST_CROUCH].iKey[1]=-1;
 
-	sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[0]=DIK_F;
-	sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[1]=DIK_RETURN;
-
-	sakActionDefaultKey[CONTROLS_CUST_ACTION].iKey[0]=DIK_BUTTON1;
-	sakActionDefaultKey[CONTROLS_CUST_ACTION].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[0] = DIK_I;
-	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOK].iKey[0]=DIK_BACKSPACE;
-	sakActionDefaultKey[CONTROLS_CUST_BOOK].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOK].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKCHARSHEET].iKey[0] = DIK_F1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKCHARSHEET].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKSPELL].iKey[0] = DIK_F2;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKSPELL].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKMAP].iKey[0] = DIK_F3;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKMAP].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKQUEST].iKey[0] = DIK_F4;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKQUEST].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONLIFE].iKey[0] = DIK_H;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONLIFE].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONLIFE].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONMANA].iKey[0] = DIK_G;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONMANA].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONMANA].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_TORCH].iKey[0]=DIK_T;
-	sakActionDefaultKey[CONTROLS_CUST_TORCH].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_TORCH].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_CANCELCURSPELL].iKey[0] = DIK_4;
-	sakActionDefaultKey[CONTROLS_CUST_CANCELCURSPELL].iKey[1] = -1;
-	sakActionDefaultKey[CONTROLS_CUST_CANCELCURSPELL].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST1].iKey[0] = DIK_1;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST1].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST2].iKey[0] = DIK_2;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST2].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST3].iKey[0] = DIK_3;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST3].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_WEAPON].iKey[0] = DIK_TAB;
-	sakActionDefaultKey[CONTROLS_CUST_WEAPON].iKey[1] = DIK_NUMPAD0;
-	sakActionDefaultKey[CONTROLS_CUST_WEAPON].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_QUICKLOAD].iKey[0] = DIK_F9;
-	sakActionDefaultKey[CONTROLS_CUST_QUICKLOAD].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_QUICKSAVE].iKey[0] = DIK_F5;
-	sakActionDefaultKey[CONTROLS_CUST_QUICKSAVE].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_TURNLEFT].iKey[0]=DIK_LEFT;
-	sakActionDefaultKey[CONTROLS_CUST_TURNLEFT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_TURNRIGHT].iKey[0]=DIK_RIGHT;
-	sakActionDefaultKey[CONTROLS_CUST_TURNRIGHT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_LOOKUP].iKey[0]=DIK_PGUP;
-	sakActionDefaultKey[CONTROLS_CUST_LOOKUP].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_LOOKDOWN].iKey[0]=DIK_PGDN;
-	sakActionDefaultKey[CONTROLS_CUST_LOOKDOWN].iKey[1]=-1;
-
-	sakActionDefaultKey[CONTROLS_CUST_STRAFE].iKey[0]=DIK_LALT;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFE].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_CENTERVIEW].iKey[0]=DIK_END;
-	sakActionDefaultKey[CONTROLS_CUST_CENTERVIEW].iKey[1]=-1;
-
-	sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[0]=DIK_L;
-	sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[1]=DIK_BUTTON2;
-
+	// TODO Remove these and constify sakActionDefaultKey
 	sakActionDefaultKey[CONTROLS_CUST_PREVIOUS].iKey[0] = GetDIKWithASCII(")");
 	sakActionDefaultKey[CONTROLS_CUST_PREVIOUS].iPage=1;
 	sakActionDefaultKey[CONTROLS_CUST_NEXT].iKey[0] = GetDIKWithASCII("=");
 	sakActionDefaultKey[CONTROLS_CUST_NEXT].iPage=1;
 
 	sakActionDefaultKey[CONTROLS_CUST_CROUCHTOGGLE].iKey[0] = GetDIKWithASCII("C");
-
-	sakActionDefaultKey[CONTROLS_CUST_UNEQUIPWEAPON].iKey[0] = DIK_B;
-	sakActionDefaultKey[CONTROLS_CUST_UNEQUIPWEAPON].iKey[1] = -1;
-	sakActionDefaultKey[CONTROLS_CUST_UNEQUIPWEAPON].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_MINIMAP].iKey[0] = DIK_R;
-	sakActionDefaultKey[CONTROLS_CUST_MINIMAP].iKey[1] = DIK_M;
-	sakActionDefaultKey[CONTROLS_CUST_MINIMAP].iPage=1;
 
 	bChangeResolution = false;
 	bChangeTextures = false;
