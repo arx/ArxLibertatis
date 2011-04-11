@@ -66,7 +66,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
 
-//#pragma pack(push,1)
 
 //-----------------------------------------------------------------------------
 struct ANIM_HANDLE
@@ -1089,7 +1088,5 @@ struct TILE_LIGHTS
 	short			max;
 	EERIE_LIGHT **	el;
 };
-
-//#pragma pack(pop)
 
 #endif

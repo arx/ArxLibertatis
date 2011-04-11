@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AI_PATHFINDER_H
 #define ARX_AI_PATHFINDER_H
 
+#include <stddef.h>
 #include <vector>
 
 struct _ANCHOR_DATA;

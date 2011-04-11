@@ -33,23 +33,63 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 endfunction(enable_unity_build) 
 
 ##############################################################################
-# Check that a a library actually works for the current configuration.
-function(check_link_library LIBRARY_NAME LIBRARY_FILE)
-	if(NOT CHECK_${LIBRARY_NAME}_LINK)
-		message(STATUS "Checking ${LIBRARY_NAME}: ${LIBRARY_FILE} ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
+# Check that the configured CMAKE_CXX_COMPILER works.
+function(check_compiler)
+	if(NOT CHECK_COMPILER)
+		message(STATUS "Checking compler: ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
 		
 		# See if we can link a simple 32-bit program with the library.
-		set(link_test_file ${CMAKE_CURRENT_BINARY_DIR}/link_test.cpp)
-		file(WRITE ${link_test_file} "int main(){}\n")
-		try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" "-DLINK_LIBRARIES:STRING=${LIBRARY_FILE}")
+		set(compile_test_file ${CMAKE_CURRENT_BINARY_DIR}/compile_test.cpp)
+		file(WRITE ${compile_test_file} "int main(){}\n")
+		try_compile(CHECK_COMPILER ${CMAKE_BINARY_DIR} ${compile_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" OUTPUT_VARIABLE ERRORLOG)
 		
-		if(NOT CHECK_${LIBRARY_NAME}_LINK)
-			# Force cmake to search again, as the cached library doesn't work.
-			unset(FIND_PACKAGE_MESSAGE_DETAILS_${ARGV2} CACHE)
-			unset(FIND_PACKAGE_MESSAGE_DETAILS_${LIBRARY_NAME} CACHE)
-			message(FATAL_ERROR "No suitable (32- vs. 64-bit) version of ${LIBRARY_NAME} found; tried ${LIBRARY_FILE}")
+		if(NOT CHECK_COMPILER)
+			message(FATAL_ERROR "\n${ERRORLOG}\n\n!! Compiler does not work, tried ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}\n")
 		endif()
 	endif()
+endfunction(check_compiler)
+
+function(try_link_library LIBRARY_NAME LIBRARY_FILE ERROR_VAR)
+	# See if we can link a simple program with the library using the configured c++ compiler.
+	set(link_test_file ${CMAKE_CURRENT_BINARY_DIR}/link_test.cpp)
+	file(WRITE ${link_test_file} "int main(){}\n")
+	try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" "-DLINK_LIBRARIES=pthread ${LIBRARY_FILE}" OUTPUT_VARIABLE ERRORLOG)
+	set(${ERROR_VAR} "${ERRORLOG}" PARENT_SCOPE)
+endfunction(try_link_library)
+
+##############################################################################
+# Check that a a library actually works for the current configuration.
+function(check_link_library LIBRARY_NAME LIBRARY_VARIABLE)
+	
+	if(CHECK_${LIBRARY_NAME}_LINK)
+		return()
+	endif()
+	
+	message(STATUS "Checking ${LIBRARY_NAME}: ${${LIBRARY_VARIABLE}}")
+	
+	# Check if we can link to the full path found by find_package.
+	try_link_library(${LIBRARY_NAME} "${${LIBRARY_VARIABLE}}" ERRORLOG1)
+	
+	if(CHECK_${LIBRARY_NAME}_LINK)
+		return()
+	endif()
+	
+	# Check if the linker is smarter than cmake and try to link with only the library name.
+	string(REGEX REPLACE "^.*/lib" "-l" LIBRARY_FILE ${${LIBRARY_VARIABLE}})
+	string(REGEX REPLACE ".so$" "" LIBRARY_FILE ${LIBRARY_FILE})
+	try_link_library(${LIBRARY_NAME} ${LIBRARY_FILE} ERRORLOG2)
+	
+	if(CHECK_${LIBRARY_NAME}_LINK)
+		set("${LIBRARY_VARIABLE}" "${LIBRARY_FILE}" PARENT_SCOPE)
+		return()
+	endif()
+	
+	# Force cmake to search again, as the cached library doesn't work.
+	unset(FIND_PACKAGE_MESSAGE_DETAILS_${ARGV2} CACHE)
+	unset(FIND_PACKAGE_MESSAGE_DETAILS_${LIBRARY_NAME} CACHE)
+	
+	message(FATAL_ERROR "\n${ERRORLOG1}\n\n${ERRORLOG2}\n\n!! No suitable (32- vs. 64-bit) version of ${LIBRARY_NAME} found; tried ${${LIBRARY_VARIABLE}} and ${LIBRARY_FILE}\nusing compiler ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}\n")
+	
 endfunction(check_link_library)
 
 function(force_recheck_library LIBRARY_NAME)
@@ -131,7 +171,7 @@ else(MSVC)
 	
 	find_package(Wine REQUIRED)
 	
-	#wine compiler
+	# wine compiler
 	set(CMAKE_CXX_COMPILER ${Wine_GXX})
 	set(CMAKE_C_COMPILER ${Wine_GCC})
 	
@@ -140,11 +180,14 @@ else(MSVC)
 		set(CMAKE_CXX_FLAGS "-m32 ${CMAKE_CXX_FLAGS}")
 	endif()
 	
+	# since we change the compiler after it was checked by CMake, manually check if it works
+	check_compiler()
+	
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
-	check_link_library(DevIL ${IL_LIBRARIES} IL)
-	check_link_library(ZLIB ${ZLIB_LIBRARIES})
-	check_link_library(Freetype ${FREETYPE_LIBRARIES})
-	check_link_library(Threads ${CMAKE_THREAD_LIBS_INIT})
+	check_link_library(Threads CMAKE_THREAD_LIBS_INIT)
+	check_link_library(DevIL IL_LIBRARIES IL)
+	check_link_library(ZLIB ZLIB_LIBRARIES)
+	check_link_library(Freetype FREETYPE_LIBRARIES)
 	
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")

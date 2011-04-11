@@ -153,3 +153,30 @@ void * FileLoadMalloc(const std::string& name, size_t * SizeLoadMalloc)
 	return(adr);
 }
 
+// TODO stub functions
+
+void * FileLoadMallocZero(const string & name, size_t * SizeLoadMalloc) {
+	(void)name;
+	if(SizeLoadMalloc) {
+		*SizeLoadMalloc = 0;
+	}
+	return NULL;
+}
+
+bool DirectoryExist(const string & _name) {
+	(void)_name;
+	return false;
+}
+
+bool FileExist(const std::string & name) {
+	
+	FileHandle handle = FileOpenRead(name);
+	if(!handle) {
+		LogError << "Didn't find " << name;
+		return false;
+	}
+	
+	FileClose(handle);
+	LogInfo << "Found " << name;
+	return true;
+}

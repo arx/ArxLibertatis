@@ -71,8 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
 
-#include "io/Perf.h"
-
 #include "physics/Box.h"
 
 #include "scene/Light.h"
@@ -1966,11 +1964,8 @@ bool TakeFromInventory(EERIE_S2D * pos)
 	int iPosY = ARX_CLEAN_WARN_CAST_INT(fSizY);
 
 
-	long inplayer = 0;
-
 	if (InPlayerInventoryPos(pos))
 	{
-		inplayer = 1;
 		{
 			if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE))
 				if ((io->ioflags & IO_ITEM) && (io->_itemdata->count > 1)) // Multi-obj

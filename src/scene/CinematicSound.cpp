@@ -88,13 +88,10 @@ CinematicSound * GetFreeSound(int * num)
 bool DeleteFreeSound(int num)
 {
 	CinematicSound	*	cs;
-	int			l;
 
 	cs = &TabSound[num];
 
 	if (!cs->active) return false;
-
-	l = 0;
 
 	if (cs->dir)
 	{
