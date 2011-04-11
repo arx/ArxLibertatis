@@ -33,13 +33,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/String.h"
 #include "io/Logger.h"
 
-//-----------------------------------------------------------------------------
-ConfigHashMap::ConfigHashMap( unsigned int init_size )
-{
-
-}
-
-ConfigHashMap::ConfigHashMap( unsigned int init_size, std::istream& input )
+ConfigHashMap::ConfigHashMap( std::istream& input )
 {
 	parse_stream( input );
 }

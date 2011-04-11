@@ -95,7 +95,7 @@ void Localisation_Init()
 	{
 		LogDebug << "Preparing to parse localisation file";
 		std::istringstream iss( out );
-		pHashLocalisation = new ConfigHashMap(1 << 13, iss);
+		pHashLocalisation = new ConfigHashMap( iss );
 
 		//LogDebug << "Converting loaded localistation file:";
 		//ParseFile( out );

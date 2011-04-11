@@ -55,8 +55,8 @@ private:
 
 public:
 	
-	ConfigHashMap( unsigned int init_size = 1024);
-	ConfigHashMap( unsigned int init_size, std::istream& input );
+	ConfigHashMap() {}
+	ConfigHashMap( std::istream& input );
 
 	bool AddElement( ConfigSection * _pLoc);
 

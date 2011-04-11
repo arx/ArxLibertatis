@@ -236,7 +236,7 @@ Config::Config( const std::string& _filename)
 
 	// Load the config file
 	std::ifstream ifs( pcName.c_str() );
-	config_map = ConfigHashMap( 100, ifs );
+	config_map = ConfigHashMap( ifs );
 
 	init();
 }
@@ -337,7 +337,7 @@ int Config::GetDIKWithASCII( const std::string& _pcTouch)
 			return iI;
 	}
 
-	for(int iI=DIK_WHEELUP;iI<=DIK_WHEELDOWN;iI++)
+	for( unsigned iI=DIK_WHEELUP;iI<=DIK_WHEELDOWN;iI++)
 	{
 		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
 
