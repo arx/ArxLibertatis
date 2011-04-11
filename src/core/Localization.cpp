@@ -152,9 +152,6 @@ long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
 	if ( section[0] == '[' && section[section.length()-1] == ']' )
 		section = section.substr( 0, section.length() - 1 ).substr( 1 );
 
-	LogDebug << "Looking up " << section << " for localization";
-
-		
 	destination = getLocalized( section, defaultstring );
 	return 0;
 }
