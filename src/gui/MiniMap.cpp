@@ -171,7 +171,7 @@ void ARX_MINIMAP_ValidatePos() {
 			ARX_MINIMAP_GetData(CURRENTLEVEL);
 		}
 
-		if ((minimap[SHOWLEVEL].tc) && (minimap[SHOWLEVEL].tc->m_pddsSurface))
+		if (minimap[SHOWLEVEL].tc)
 		{
 			ARX_MINIMAP_Show( ARX_LEVELS_GetRealNum(CURRENTLEVEL), 2);
 		}
@@ -328,7 +328,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		ARX_MINIMAP_GetData(SHOWLEVEL);
 	}
 
-	if ((minimap[SHOWLEVEL].tc) && (minimap[SHOWLEVEL].tc->m_pddsSurface))
+	if (minimap[SHOWLEVEL].tc)
 	{
 		float startx, starty, casex, casey, ratiooo;
 		float mod_x = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
@@ -400,7 +400,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 
 		D3DTLVERTEX verts[4];
-		SETTC(minimap[SHOWLEVEL].tc);
+		GRenderer->SetTexture(0, minimap[SHOWLEVEL].tc);
 
 		for (long k = 0; k < 4; k++)
 		{
@@ -765,7 +765,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 				verts[2].sx = (px + rx3 * ca + ry3 * sa) * Xratio;
 				verts[2].sy = (py + ry3 * ca - rx3 * sa) * Yratio;
 
-				SETTC( NULL);
+				GRenderer->ResetTexture(0);
 
 				if (fl2)
 				{
@@ -939,7 +939,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					if (MapMarkerTc == NULL)
 						MapMarkerTc = TextureContainer::Load("Graph\\interface\\icons\\mapmarker.bmp");
 
-					SETTC( MapMarkerTc);
+					GRenderer->SetTexture(0, MapMarkerTc);
 
 					if (fl2)
 					{

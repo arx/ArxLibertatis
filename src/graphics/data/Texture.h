@@ -149,8 +149,8 @@ public:
 	TCFlags m_dwFlags;
 	DWORD	userflags;
 
-	Texture2D* m_pddsSurface;			// Surface of the texture
-	Texture2D* m_pddsBumpMap;			// Surface of BumpMap
+	Texture2D* m_pTexture;				// Diffuse
+	Texture2D* m_pTextureBump;			// Bump
 
 	// Precalculated values
 	float	m_dx;						// 1.f / width

@@ -433,12 +433,8 @@ void CSummonCreature::RenderFissure()
 	// smooth sur les cot�s ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	if (tex_light && tex_light->m_pddsSurface)
-	{
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
-		SETTC(tex_light);
-	}
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
+	GRenderer->SetTexture(0, tex_light);
 
 	target.sx = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
 	target.sy = eSrc.y;
@@ -973,11 +969,7 @@ float CNegateMagic::Render()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	if (tex_sol && tex_sol->m_pddsSurface)
-	{
-		SETTC(tex_sol);
-	}
+	GRenderer->SetTexture(0, tex_sol);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);

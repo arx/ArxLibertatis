@@ -3303,7 +3303,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
 		}
 		else
 		{
-			SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
+			GRenderer->SetTexture(0, eobj->texturecontainer[eobj->facelist[i].texid]);
 		}
 
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
@@ -3384,7 +3384,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 		}
 		else
 		{
-			SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
+			GRenderer->SetTexture(0, eobj->texturecontainer[eobj->facelist[i].texid]);
 		}
 
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)

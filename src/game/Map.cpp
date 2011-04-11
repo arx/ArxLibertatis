@@ -218,7 +218,7 @@ bool C_ARX_Carte::Render(void)
 					}
 
 					if(ep->tex)
-						GRenderer->SetTexture(0,ep->tex->m_pddsSurface);
+						GRenderer->SetTexture(0, ep->tex);
 					else
 						GRenderer->ResetTexture(0);
 

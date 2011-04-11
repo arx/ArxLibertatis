@@ -178,7 +178,7 @@ void ARXDRAW_DrawInterShadows()
 								GRenderer->SetRenderState(Renderer::DepthWrite, false);
 								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								SETTC(Boom);
+								GRenderer->SetTexture(0, Boom);
 							}
 
 							EE_RT2(&in,&ltv[0]);
@@ -234,7 +234,7 @@ void ARXDRAW_DrawInterShadows()
 								GRenderer->SetRenderState(Renderer::DepthWrite, false);
 								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								SETTC(Boom);
+								GRenderer->SetTexture(0, Boom);
 							}
 
 							EE_RT2(&in,&ltv[0]);
@@ -519,7 +519,7 @@ void ARXDRAW_DrawPolyBoom()
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						}
 
-						SETTC(Boom);
+						GRenderer->SetTexture(0, Boom);
 						ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
 														&ltv[1],
 														&ltv[2]);
@@ -566,7 +566,7 @@ void ARXDRAW_DrawPolyBoom()
 								
 								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							SETTC(polyboom[i].tc); 
+							GRenderer->SetTexture(0, polyboom[i].tc); 
 
  									ARX_DrawPrimitive_SoftClippZ(		&ltv[0],
  																		&ltv[1],
@@ -652,7 +652,7 @@ void ARXDRAW_DrawPolyBoom()
 								
 								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 								GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-						SETTC(polyboom[i].tc); 
+						GRenderer->SetTexture(0, polyboom[i].tc); 
 				
 								ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
 																&ltv[1],
@@ -701,7 +701,7 @@ void ARXDRAW_DrawAllInterTransPolyPos()
 				GRenderer->SetCulling(Renderer::CullNone);
 		else	GRenderer->SetCulling(Renderer::CullCW);
 
-		SETTC(InterTransTC[i]);
+		GRenderer->SetTexture(0, InterTransTC[i]);
 		EERIE_FACE * ef=InterTransFace[i];
 		float ttt=ef->transval;
 
@@ -758,8 +758,10 @@ void ARXDRAW_DrawAllTransPolysPos() {
 			if ( ep->type & POLY_DOUBLESIDED ) GRenderer->SetCulling(Renderer::CullNone);
 			else GRenderer->SetCulling(Renderer::CullCW);
 		
-			if ( ViewMode & VIEWMODE_FLAT ) SETTC( NULL );
-			else	SETTC( ep->tex );
+			if ( ViewMode & VIEWMODE_FLAT )
+				GRenderer->ResetTexture(0);
+			else	
+				GRenderer->SetTexture(0, ep->tex);
 
 			if ( ep->type & POLY_QUAD ) to = 4;
 			else to = 3;
@@ -799,7 +801,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					D3DTLVERTEX verts[4];
-					SETTC( enviro );
+					GRenderer->SetTexture(0, enviro );
 
 				ARX_CHECK(to > 0);
 
@@ -843,7 +845,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				
 				D3DTLVERTEX verts[4];
 
-				SETTC( enviro );
+				GRenderer->SetTexture(0, enviro );
 
 			ARX_CHECK(to > 0);
 

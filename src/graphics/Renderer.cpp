@@ -1102,6 +1102,14 @@ void Renderer::SetTexture(unsigned int textureStage, Texture* pTexture)
 	GetTextureStage(textureStage)->SetTexture(pTexture);
 }
 
+void Renderer::SetTexture(unsigned int textureStage, TextureContainer* pTextureContainer)
+{
+	if(pTextureContainer && pTextureContainer->m_pTexture)
+		GetTextureStage(textureStage)->SetTexture(pTextureContainer->m_pTexture);
+	else
+		GetTextureStage(textureStage)->ResetTexture();
+}
+
 float Renderer::GetMaxAnisotropy() const
 {
 	return 8.0f; // TODO-DX7

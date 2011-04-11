@@ -838,7 +838,7 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 	}
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETTC(_pTex);
+	GRenderer->SetTexture(0, _pTex);
 
 	if (_pTex->userflags & POLY_LATE_MIP)
 	{
@@ -877,7 +877,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 		) return;
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETTC(_pTex);
+	GRenderer->SetTexture(0, _pTex);
 
 	if(	_pTex->ulNbVertexListCull_TNormalTrans )
 	{
@@ -977,7 +977,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 
 	if(_pTex->TextureRefinement->vPolyInterZMap.size())
 	{
-		SETTC(_pTex->TextureRefinement);
+		GRenderer->SetTexture(0, _pTex->TextureRefinement);
 
 		int iPos=0;
  
@@ -1068,8 +1068,8 @@ void PopOneInterBump(TextureContainer *_pTex)
 		//----------------------------------------------------------------------------------
 		//																		Initializing
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
-		GRenderer->SetTexture(0, _pTex->m_pddsBumpMap);
-		GRenderer->SetTexture(1, _pTex->m_pddsBumpMap);
+		GRenderer->SetTexture(0, _pTex->m_pTextureBump);
+		GRenderer->SetTexture(1, _pTex->m_pTextureBump);
 		GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 		
 		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
@@ -2964,7 +2964,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 		// Set Texture for Poly
 		if ((eobj->facelist[i].texid>=0) 
 			&& (eobj->texturecontainer[eobj->facelist[i].texid]!=NULL))
-				SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
+				GRenderer->SetTexture(0, eobj->texturecontainer[eobj->facelist[i].texid]);
 		else  // Set to Flat if invalid
 				GRenderer->ResetTexture(0);
 

@@ -254,11 +254,7 @@ float CControlTarget::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-	if (tex_mm && tex_mm->m_pddsSurface)
-	{
-		SETTC(tex_mm);
-	}
+	GRenderer->SetTexture(0, tex_mm);
 
 	// -------------------
 	fTrail += 1;

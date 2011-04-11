@@ -4310,19 +4310,19 @@ void CheckMr()
 }
 void DrawImproveVisionInterface()
 {
-	if (ombrignon->m_pddsSurface)
+	if(ombrignon)
 	{
 		float mod = 0.6f + PULSATE * 0.35f;
-		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-			ombrignon,EERIERGB((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f));		
+		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f, ombrignon,EERIERGB((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f));
 	}
 }
+
 float MagicSightFader=0.f;
 void DrawMagicSightInterface()
 {
 	if (eyeball.exist==1) return;
 
-	if (Flying_Eye && Flying_Eye->m_pddsSurface)
+	if (Flying_Eye)
 	{
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);										
 		float col=(0.75f+PULSATE*( 1.0f / 20 ));

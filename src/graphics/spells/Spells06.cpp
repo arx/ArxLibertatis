@@ -331,11 +331,7 @@ float CCreateField::Render()
 	}
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
-	if (tex_jelly && tex_jelly->m_pddsSurface)
-	{
-		SETTC(tex_jelly);
-	}
+	GRenderer->SetTexture(0, tex_jelly);
 
 	RenderSubDivFace(b, b, 0, 1, 2, 3);
 	RenderSubDivFace(t, t, 0, 3, 2, 1);
@@ -1047,12 +1043,8 @@ void CRiseDead::RenderFissure()
 	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	if (tex_light && tex_light->m_pddsSurface)
-	{
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
-		SETTC(tex_light);
-	}
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
+	GRenderer->SetTexture(0, tex_light);
 
 	target.sx = eSrc.x ;
 	target.sy = eSrc.y + 1.5f * sizeF; 
@@ -1753,10 +1745,7 @@ float CParalyse::Render()
 		nb--;
 	}
 
-	if (tex_prism) 
-		GRenderer->SetTexture(0, tex_prism->m_pddsSurface);
-	else 
-		GRenderer->ResetTexture(0);
+	GRenderer->SetTexture(0, tex_prism);
 
 	int	nb2 = 50;
 
@@ -2225,11 +2214,7 @@ float CDisarmTrap::Render()
 	}
 
 	//-------------------------------------------------------------------------
-	if (tex_p2 && tex_p2->m_pddsSurface)
-	{
-		SETTC(tex_p2);
-	}
-
+	GRenderer->SetTexture(0, tex_p2);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	EERIE_3D stiteangle;

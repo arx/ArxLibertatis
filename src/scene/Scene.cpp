@@ -1483,9 +1483,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		pVertex+=iOldNbVertex;
 		
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-		SETTC(enviro);
+		GRenderer->SetTexture(0, enviro);
 
-		GRenderer->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
+		GRenderer->SetTexture(2, enviro);
 		
 
 		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
@@ -1697,9 +1697,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		pVertex+=iOldNbVertex;
 		
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-		SETTC(enviro);
+		GRenderer->SetTexture(0, enviro);
 
-		GRenderer->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
+		GRenderer->SetTexture(2, enviro);
 		
 		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 
@@ -2628,7 +2628,7 @@ SMY_D3DVERTEX *pMyVertex;
 
 			if( bALLOW_BUMP )
 			{
-				if( ( fDist < fDistBump ) && ( ep->tex->m_pddsBumpMap ) )
+				if( (fDist < fDistBump) && (ep->tex->m_pTextureBump ) )
 				{
 					ep->tex->vPolyBump.push_back(ep);
 				}
@@ -2649,7 +2649,7 @@ SMY_D3DVERTEX *pMyVertex;
 			if (ViewMode & VIEWMODE_FLAT) 
 				GRenderer->ResetTexture(0);
 			else
-				SETTC(pTexCurr);
+				GRenderer->SetTexture(0, pTexCurr);
 
 			if(pTexCurr->userflags&POLY_METAL)
 			{
@@ -2700,7 +2700,7 @@ SMY_D3DVERTEX *pMyVertex;
 				SMY_D3DVERTEX3 *pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_NOOVERWRITE);
 				pVertex+=iOldNbVertex;
 				
-				SETTC(pTexCurr->TextureRefinement);
+				GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
 				
 				unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 				unsigned short iNbIndice = 0;
@@ -2863,10 +2863,10 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 				
 				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
 				
-				GRenderer->SetTexture(0, pTexCurr->m_pddsBumpMap);
+				GRenderer->SetTexture(0, pTexCurr->m_pTextureBump);
 				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
 
-				GRenderer->SetTexture(1, pTexCurr->m_pddsBumpMap);
+				GRenderer->SetTexture(1, pTexCurr->m_pTextureBump);
 				GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 				GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture|TextureStage::ArgComplement), TextureStage::ArgCurrent);
 				GRenderer->GetTextureStage(1)->DisableAlpha();
@@ -2985,7 +2985,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 			} // END BUMP
 
-			SETTC(pTexCurr);
+			GRenderer->SetTexture(0, pTexCurr);
 
 			//NORMAL TRANS
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans)

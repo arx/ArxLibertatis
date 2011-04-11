@@ -2484,7 +2484,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 			if ((eface->texid == -1) || (eobj->texturecontainer[eface->texid] == NULL))
 				GRenderer->ResetTexture(0);
 			else
-				SETTC(eobj->texturecontainer[eface->texid]);
+				GRenderer->SetTexture(0, eobj->texturecontainer[eface->texid]);
 
 			if (invisibility > 0.f)
 			{

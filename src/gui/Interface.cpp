@@ -364,13 +364,8 @@ bool ARX_INTERFACE_MouseInBook()
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_DrawItem(TextureContainer *tc, const float x, const float y, const float z, const D3DCOLOR col)
 {
-	if ((tc) && (tc->m_pddsSurface))
-		EERIEDrawBitmap(
-		x, y,
-		                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-		z,
-		tc,
-		col);
+	if (tc)
+		EERIEDrawBitmap(x, y, INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), z, tc, col);
 }
 
 //-----------------------------------------------------------------------------
@@ -418,7 +413,7 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 				ttx=0.5f*divideY;
 				v[1].tv = v[0].tv = divideY + ttx;
 				v[2].tv = v[3].tv = divideY * 12;
-				SETTC(inventory_font);
+				GRenderer->SetTexture(0, inventory_font);
 
 				EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE| D3DFVF_SPECULAR ,v, 4, 0 );
 			}
@@ -528,66 +523,7 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	ARX_UNUSED(fRatioX);
 	ARX_UNUSED(fRatioY);
 
-	/*float power=0.9f-EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 10 )+rnd()*( 1.0f / 10 );
-
-	if (power>1.f) power=1.f;
-
-	_fR *= power;
-	_fG *= power;
-	_fB *= power;
-	D3DCOLOR col=D3DRGB(_fR,_fG,_fB);
-
-	if (_lHaloType & HALO_NEGATIVE)
-	{
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	}
-	else
-	{
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DDSURFACEDESC2 ddsdSurfaceDescSrc;
-	DDSURFACEDESC2 ddsdSurfaceDescHalo;
-	ddsdSurfaceDescSrc.dwSize=sizeof(DDSURFACEDESC2);
-	ddsdSurfaceDescHalo.dwSize=sizeof(DDSURFACEDESC2);
-	tc->m_pddsSurface->GetSurfaceDesc(&ddsdSurfaceDescSrc);
-	tc2->m_pddsSurface->GetSurfaceDesc(&ddsdSurfaceDescHalo);
-
-	float fDeltaXP=((float)tc2->m_dwWidth/(float)ddsdSurfaceDescHalo.dwWidth)*((float)tc->m_dwWidth/(float)ddsdSurfaceDescSrc.dwWidth);
-	float fDeltaYP=((float)tc2->m_dwHeight/(float)ddsdSurfaceDescHalo.dwHeight)*((float)tc->m_dwHeight/(float)ddsdSurfaceDescSrc.dwHeight);
-	float fDeltaX=(float)tc->m_dwWidth/(float)ddsdSurfaceDescSrc.dwWidth;
-	float fDeltaY=(float)tc->m_dwHeight/(float)ddsdSurfaceDescSrc.dwHeight;
-
-	if(fDeltaX<1.f)
-	{
-		fDeltaXP*=(1.f/fDeltaX);
-		fDeltaX=1.f;
-	}
-
-	if(fDeltaY<1.f)
-	{
-		fDeltaYP*=(1.f/fDeltaY);
-		fDeltaY=1.f;
-	}
-
-
-	float fSizeX = ARX_CLEAN_WARN_CAST_FLOAT(ddsdSurfaceDescHalo.dwWidth);
-	float fSizeY = ARX_CLEAN_WARN_CAST_FLOAT(ddsdSurfaceDescHalo.dwHeight);
-
-
-		fSizeX *= fRatioX;
-		fSizeY *= fRatioY;
-		POSX -= (fSizeX - ddsdSurfaceDescHalo.dwWidth)*0.25f;
-		POSY -= (fSizeY - ddsdSurfaceDescHalo.dwHeight)*0.25f;
-		fDeltaXP = 1;
-		fDeltaYP = 1;
-
-	EERIEDrawBitmap((float)(POSX-tc->halodecalX*fDeltaX),(float)(POSY-tc->halodecalY*fDeltaY)
-								,((float)fSizeX)*fDeltaXP
-								,((float)fSizeY)*fDeltaYP,0.00001f
-								,tc2,col);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);*/
+	// TODO: Draw halo effect somehow...
 }
 
 void ARX_INTERFACE_HALO_Draw(INTERACTIVE_OBJ * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1) {
@@ -6155,28 +6091,45 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 						io->inv=GoldCoinsTC[num];
 					}
 
-					if (tc->m_pddsSurface)
+					float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
+					float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
+
+					D3DCOLOR color;
+
+					if ((io->poisonous) && (io->poisonous_count!=0))
+						color=0xFF00FF00;
+					else color=D3DCOLORWHITE;
+
+					EERIEDrawBitmap(
+						px,
+						py,
+					                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
+						0.001f,
+						tc,color);
+
+					if (!bItemSteal && (io==FlyingOverIO))
 					{
-						float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
-						float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
-
-						D3DCOLOR color;
-
-						if ((io->poisonous) && (io->poisonous_count!=0))
-							color=0xFF00FF00;
-						else color=D3DCOLORWHITE;
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 						EERIEDrawBitmap(
 							px,
 							py,
 						                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 							0.001f,
-							tc,color);
-
-						if (!bItemSteal && (io==FlyingOverIO))
+							tc,
+							D3DCOLORWHITE);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					}
+					else
+					{
+						if (!bItemSteal && (io->ioflags & IO_CAN_COMBINE))
 						{
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+
+							float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
+							DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
 
 							EERIEDrawBitmap(
 								px,
@@ -6184,40 +6137,20 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 							                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 								0.001f,
 								tc,
-								D3DCOLORWHITE);
+								(dwColor<<16)|(dwColor<<8)|dwColor);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
-						else
-						{
-							if (!bItemSteal && (io->ioflags & IO_CAN_COMBINE))
-							{
-								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-								float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-								DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
-
-								EERIEDrawBitmap(
-									px,
-									py,
-								                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-									0.001f,
-									tc,
-									(dwColor<<16)|(dwColor<<8)|dwColor);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							}
-						}
-
-						if (tc2!=NULL)
-						{
-							ARX_INTERFACE_HALO_Draw(io,tc,tc2,
-								px,
-								py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-						}
-
-						if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
-							ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, D3DCOLORWHITE);
 					}
+
+					if (tc2!=NULL)
+					{
+						ARX_INTERFACE_HALO_Draw(io,tc,tc2,
+							px,
+							py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					}
+
+					if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
+						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, D3DCOLORWHITE);
 				}
 			}
 		}
@@ -6264,14 +6197,26 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 					float px = fPosX + i*INTERFACE_RATIO(32) + INTERFACE_RATIO(7);
 					float py = fPosY + j*INTERFACE_RATIO(32) + INTERFACE_RATIO(6);
 
-					if (tc->m_pddsSurface)
+					D3DCOLOR color;
+
+					if ((io->poisonous) && (io->poisonous_count!=0))
+						color=0xFF00FF00;
+					else color=D3DCOLORWHITE;
+
+					EERIEDrawBitmap(
+						px,
+						py,
+
+						INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						INTERFACE_RATIO_DWORD(tc->m_dwHeight),
+
+						0.001f,
+						tc,color);
+
+					if (io==FlyingOverIO)
 					{
-						D3DCOLOR color;
-
-						if ((io->poisonous) && (io->poisonous_count!=0))
-							color=0xFF00FF00;
-						else color=D3DCOLORWHITE;
-
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						EERIEDrawBitmap(
 							px,
 							py,
@@ -6280,10 +6225,16 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 							INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 
 							0.001f,
-							tc,color);
-
-						if (io==FlyingOverIO)
+							tc,D3DCOLORWHITE);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					}
+					else
+					{
+						if (io->ioflags & IO_CAN_COMBINE)
 						{
+							float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
+							DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
+
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							EERIEDrawBitmap(
@@ -6294,29 +6245,8 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 								INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 
 								0.001f,
-								tc,D3DCOLORWHITE);
+								tc,(dwColor<<16)|(dwColor<<8)|dwColor);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
-						else
-						{
-							if (io->ioflags & IO_CAN_COMBINE)
-							{
-								float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-								DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
-
-								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								EERIEDrawBitmap(
-									px,
-									py,
-
-									INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-									INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-
-									0.001f,
-									tc,(dwColor<<16)|(dwColor<<8)|dwColor);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							}
 						}
 					}
 
@@ -6490,15 +6420,8 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 //-----------------------------------------------------------------------------
 void DrawBookInterfaceItem(TextureContainer *tc,float x,float y,float z)
 {
-	if ((tc) && (tc->m_pddsSurface))
-	{
-		EERIEDrawBitmap2(
-			(x+BOOKDECX)*Xratio,
-			(y+BOOKDECY)*Yratio,
-			(float)(tc->m_dwWidth)*Xratio,
-			(float)(tc->m_dwHeight)*Yratio,
-			z, tc, BOOKINTERFACEITEMCOLOR);
-	}
+	if (tc)
+		EERIEDrawBitmap2((x+BOOKDECX)*Xratio, (y+BOOKDECY)*Yratio, (float)(tc->m_dwWidth)*Xratio, (float)(tc->m_dwHeight)*Yratio, z, tc, BOOKINTERFACEITEMCOLOR);
 }
 
 //-----------------------------------------------------------------------------

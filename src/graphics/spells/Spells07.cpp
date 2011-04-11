@@ -849,12 +849,7 @@ float CConfuse::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	//-------------------------------------------------------------------------
-	if (tex_trail && tex_trail->m_pddsSurface)
-	{
-		SETTC(tex_trail);
-	}
+	GRenderer->SetTexture(0, tex_trail);
 
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;

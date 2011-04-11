@@ -380,12 +380,12 @@ float CMagicMissile::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	// Set Texture ------------------------------------------------------------
-	if (tex_mm && tex_mm->m_pddsSurface)
+	if (tex_mm)
 	{
 		if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
 			GRenderer->ResetTexture(0);
 		else
-			SETTC(tex_mm);
+			GRenderer->SetTexture(0, tex_mm);
 	}
 
 	// ------------------------------------------------------------------------
@@ -1092,11 +1092,8 @@ void DrawArcElectrique(EERIE_3D * tabdef, int nbseg, TextureContainer * tex, flo
 	//	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
 
-	if (tex && tex->m_pddsSurface)
-	{
-		SETTC(tex);
-	}
-
+	GRenderer->SetTexture(0, tex);
+	
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = RGBA_MAKE(tsp, tsp, tsp, 255);
 
 	float xx;

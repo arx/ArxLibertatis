@@ -220,8 +220,8 @@ TextureContainer::TextureContainer(const std::string& strName, TextureContainer:
 	m_dwBPP			= 0;
 	m_dwFlags		= flags;
 
-	m_pddsSurface = NULL;
-	m_pddsBumpMap = NULL;
+	m_pTexture = NULL;
+	m_pTextureBump = NULL;
 
 	userflags = 0;
 	TextureRefinement = NULL;
@@ -274,8 +274,8 @@ TextureContainer::TextureContainer(const std::string& strName, TextureContainer:
 
 TextureContainer::~TextureContainer()
 {
-	delete m_pddsSurface;
-	delete m_pddsBumpMap;
+	delete m_pTexture;
+	delete m_pTextureBump;
 
 	if (delayed)
 	{
@@ -316,25 +316,25 @@ bool TextureContainer::LoadFile(const std::string& strPathname)
 		return false;
 	}
 	
-	if(m_pddsSurface)
-		delete m_pddsSurface;
+	if(m_pTexture)
+		delete m_pTexture;
 
-	m_pddsSurface = GRenderer->CreateTexture2D();
-	if(m_pddsSurface)
+	m_pTexture = GRenderer->CreateTexture2D();
+	if(m_pTexture)
 	{
 		bool bMipmaps = !(m_dwFlags & NoMipmap);
-		bLoaded = m_pddsSurface->Init(tempPath, bMipmaps);
+		bLoaded = m_pTexture->Init(tempPath, bMipmaps);
 		if(bLoaded)
 		{
-			m_dwWidth   = m_pddsSurface->GetImage().GetWidth();
-			m_dwHeight  = m_pddsSurface->GetImage().GetHeight();
-			m_dwBPP     = m_pddsSurface->GetImage().GetNumChannels() * 8;
+			m_dwWidth   = m_pTexture->GetImage().GetWidth();
+			m_dwHeight  = m_pTexture->GetImage().GetHeight();
+			m_dwBPP     = m_pTexture->GetImage().GetNumChannels() * 8;
 
 			// Do not keep image data in memory
-			m_pddsSurface->GetImage().Reset();
+			m_pTexture->GetImage().Reset();
 
-			m_dwDeviceWidth = m_pddsSurface->GetWidth();
-			m_dwDeviceHeight = m_pddsSurface->GetHeight();
+			m_dwDeviceWidth = m_pTexture->GetWidth();
+			m_dwDeviceHeight = m_pTexture->GetHeight();
 
 			m_odx = (1.f / (float)m_dwWidth);
 			m_hdx = 0.5f * (1.f / (float)m_dwDeviceWidth);

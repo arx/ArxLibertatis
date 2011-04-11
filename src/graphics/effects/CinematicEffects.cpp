@@ -216,7 +216,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-	SETTC(mask);
+	GRenderer->SetTexture(0, mask);
 
 	v[0].sx = SpecialFadeDx - w;
 	v[0].sy = 0;
@@ -312,7 +312,7 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-	SETTC(mask);
+	GRenderer->SetTexture(0, mask);
 
 	v[0].sx = ws + 1.f - SpecialFadeDx + w;
 	v[0].sy = 0;

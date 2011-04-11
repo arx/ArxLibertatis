@@ -894,13 +894,6 @@ void EERIEAddPoly(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * te
 
 
 //****************************************************************************
-// RENDERING FUNCTIONS START
-void SETTEXTURE0(IDirectDrawSurface7 * tex);
-// RENDERING FUNCTIONS END
-//****************************************************************************
-
-
-//****************************************************************************
 // LIGHT FUNCTIONS START
 void EERIEPrecalcLights(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
 void EERIERemovePrecalcLights();

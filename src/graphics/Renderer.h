@@ -3,6 +3,7 @@
 
 
 #include "graphics/BaseGraphicsTypes.h"
+#include "graphics/data/Texture.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -150,6 +151,7 @@ public:
 	virtual TextureStage* GetTextureStage(unsigned int textureStage);
 	virtual void ResetTexture(unsigned int textureStage);
 	virtual void SetTexture(unsigned int textureStage, Texture* pTexture);
+	virtual void SetTexture(unsigned int textureStage, TextureContainer* pTextureContainer);
 	
 	virtual float GetMaxAnisotropy() const;
 

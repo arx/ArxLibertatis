@@ -626,7 +626,7 @@ void ARX_SPEECH_Update() {
 						                    RGB(255, 255, 255),
 						                    &clippingRect);
 
-						SETTC( NULL);
+						GRenderer->ResetTexture(0);
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthTest, false);

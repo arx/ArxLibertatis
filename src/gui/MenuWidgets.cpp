@@ -4195,12 +4195,7 @@ void CMenuState::Render()
 	if(bNoMenu) return;
 
 	if (pTexBackGround)
-	{
-		if (pTexBackGround->m_pddsSurface)
-		{
-			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
-	}
-		}
+		EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
 
 	//------------------------------------------------------------------------
 
@@ -4767,7 +4762,7 @@ void CMenuCheckButton::RenderMouseOver()
 
 	TextureContainer *pTex = vTex[iState];
 
-	if(pTex) SETTC( pTex);
+	if(pTex) GRenderer->SetTexture(0, pTex);
 	else GRenderer->ResetTexture(0);
 
 	D3DTLVERTEX v[4];
@@ -6268,7 +6263,7 @@ void CMenuButton::RenderMouseOver()
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-		SETTC(pTexOver);
+		GRenderer->SetTexture(0, pTexOver);
 		v[0].sx = (float)rZone.left;
 		v[0].sy = (float)rZone.top;
 		v[0].tu = 0.f;
@@ -7445,7 +7440,7 @@ void CDirectInput::DrawCursor()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
 
-	if(pTex[iNumCursor]) SETTC( pTex[iNumCursor]);
+	if(pTex[iNumCursor]) GRenderer->SetTexture(0, pTex[iNumCursor]);
 	else GRenderer->ResetTexture(0);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

@@ -365,8 +365,7 @@ void DRAWLATER_Render()
 		{
 			if (tdl[j].ep->tex==NULL) continue;
 			if (tdl[j].ep->tex->TextureRefinement==NULL) continue;
-			if (tdl[j].ep->tex->TextureRefinement->m_pddsSurface==NULL) continue;
-
+			
 			if (tdl[j].ep->type & POLY_QUAD) to=4;
 			else to=3;
 
@@ -404,7 +403,7 @@ void DRAWLATER_Render()
 
 			tdl[j].ep->tv[i].sz-=0.001f;
 
-			SETTC(tdl[j].ep->tex->TextureRefinement);
+			GRenderer->SetTexture(0, tdl[j].ep->tex->TextureRefinement);
 			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, tdl[j].ep, to, 0, EERIE_NOCOUNT );
 
 			for (int i=0;i<to;i++)
@@ -463,7 +462,7 @@ void Delayed_FlushAll()
 			if (ViewMode & VIEWMODE_FLAT)
 				GRenderer->ResetTexture(0);
 			else 
-				SETTC(ptcTexture);
+				GRenderer->SetTexture(0, ptcTexture);
 
 			DELAYED_PRIM * del=(DELAYED_PRIM *)ptcTexture->delayed;
 
@@ -499,7 +498,7 @@ void Delayed_FlushAll()
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					D3DTLVERTEX verts[4];
-					SETTC(enviro);
+					GRenderer->SetTexture(0, enviro);
 
 					for (long i=0;i<to;i++)
 					{
@@ -568,9 +567,7 @@ void Delayed_FlushAll()
 #define ONE_ONE_MAX_DIST_BUMP	(1.f/MAX_DIST_BUMP)
 #define MAX_BUMP				.8f
 
-				if ((bALLOW_BUMP) &&
-						( ep->tex     )					&&
-						( ep->tex->m_pddsBumpMap ) )
+				if (bALLOW_BUMP && ep->tex &&ep->tex->m_pTextureBump)
 					{
 						float fDx=e3dPosBump.x-ep->center.x;
 						float fDy=e3dPosBump.y-ep->center.y;
@@ -587,22 +584,22 @@ void Delayed_FlushAll()
 
 					}
 
-					SETTC(ptcTexture);				
+					GRenderer->SetTexture(0, ptcTexture);				
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 			}				
 			
 			if (ZMAPMODE)
 			{				
-				if (ptcTexture->TextureRefinement==NULL) ptcTexture->delayed_nb=0;
-				else if (ptcTexture->TextureRefinement->m_pddsSurface==NULL) ptcTexture->delayed_nb=0;
-
+				if (ptcTexture->TextureRefinement==NULL) 
+					ptcTexture->delayed_nb=0;
+				
 				if (ptcTexture->delayed_nb)
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 					GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
 					D3DTLVERTEX verts[4];
-					SETTC(ptcTexture->TextureRefinement); 
+					GRenderer->SetTexture(0, ptcTexture->TextureRefinement); 
 
 					for (long i=0;i<ptcTexture->delayed_nb;i++)
 					{
@@ -717,7 +714,7 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 						GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 						D3DTLVERTEX verts[4];
-						SETTC(enviro);
+						GRenderer->SetTexture(enviro);
 						for (long i=0;i<to;i++)
 						{
 							verts[i].sx=ep->tv[i].sx;
@@ -772,7 +769,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
-	SETTC(ep->tex);
+	GRenderer->SetTexture(0, ep->tex);
 
 	CalculTriangleBump( ep->tv[0], ep->tv[1], ep->tv[2], &du, &dv );
 	du*=alpha;
@@ -782,7 +779,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
 
-	GRenderer->SetTexture(1, ep->tex->m_pddsBumpMap);
+	GRenderer->SetTexture(1, ep->tex->m_pTextureBump);
 	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
 	
@@ -1090,7 +1087,7 @@ void EERIEDrawSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR c
 		v[2]= D3DTLVERTEX( D3DVECTOR( SPRmins.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 0.f, 1.f);
 		v[3]= D3DTLVERTEX( D3DVECTOR( SPRmaxs.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 1.f, 1.f);
 
-		SETTC(tex);
+		GRenderer->SetTexture(0, tex);
 		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , v, 4,  0  );		
 	}
 	else SPRmaxs.x=-1;
@@ -1146,7 +1143,7 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3D
 			v[i].sy=EEcos(tt)*t+out.sy;
 		}		
 
-		SETTC(tex);
+		GRenderer->SetTexture(0, tex);
 		EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , 
 				 v, 4,  0  );		
 	}
@@ -1270,7 +1267,7 @@ void EERIEDrawBitmap(float x,float y,float sx,float sy,float z,TextureContainer 
 	v[2]= D3DTLVERTEX( D3DVECTOR( x,	y+sy,	z ), 1.f, col, 0xFF000000, smu,		fEndv);
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, fEndu,	fEndv);
 	
-	SETTC(tex);
+	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
@@ -1306,7 +1303,7 @@ void EERIEDrawBitmap_uv(float x,float y,float sx,float sy,float z,TextureContain
 	v[2]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), 1.f, col, 0xFF000000, u1, v1);
 	v[3]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), 1.f, col, 0xFF000000, u0, v1);
 
-	SETTC(tex);
+	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
@@ -1339,7 +1336,7 @@ void EERIEDrawBitmapUVs(float x,float y,float sx,float sy,float z,TextureContain
 	v[2]= D3DTLVERTEX( D3DVECTOR( x,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u2,	smv+v2);
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u3,	smv+v3);
 	
-	SETTC(tex);
+	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
@@ -1371,7 +1368,7 @@ void EERIEDrawBitmap2(float x,float y,float sx,float sy,float z,TextureContainer
 	v[2]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), fZMinus, col, 0xFF000000, smu, fEndv);
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), fZMinus, col, 0xFF000000, fEndu, fEndv);
 
-	SETTC(tex);
+	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
 
@@ -1417,18 +1414,6 @@ void EERIEDrawBitmap2DecalY(float x,float y,float sx,float sy,float z,TextureCon
 		v[3]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), 1.f, col, 0xFF000000, smu, fEndv);
 	}
 
-	SETTC(tex);
+	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
-}
-
-void SETTC(TextureContainer * tc)
-{
-	if (!tc || !tc->m_pddsSurface)
-	{
-		GRenderer->ResetTexture(0);
-	}
-	else
-	{
-		GRenderer->SetTexture(0, tc->m_pddsSurface);
-	}
 }
