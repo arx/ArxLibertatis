@@ -985,12 +985,10 @@ retry:
 		pos += 80;
 	}
 
-	for (int i = 0; i < asp->keyring_nb; i++)
-	{
-		const size_t SLOT_SIZE = 64;
-		assert(sizeof(Keyring[i].slot) == SLOT_SIZE);
-		memcpy((char *)(dat + pos), Keyring[i].slot, SLOT_SIZE);
-		pos += sizeof(SLOT_SIZE);
+	for(int i = 0; i < asp->keyring_nb; i++) {
+		assert(sizeof(Keyring[i].slot) == SAVED_KEYRING_SLOT_SIZE);
+		memcpy((char *)(dat + pos), Keyring[i].slot, SAVED_KEYRING_SLOT_SIZE);
+		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 
 	for (int i = 0; i < asp->Nb_Mapmarkers; i++)
@@ -2099,9 +2097,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	}
 	
 	ARX_KEYRING_Init();
+	LogDebug << asp.keyring_nb;
 	for(int i = 0; i < asp.keyring_nb; i++) {
 		ARX_KEYRING_Add((char *)(dat + pos));
-		pos += 64;
+		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
 	ARX_MAPMARKER_Init();
