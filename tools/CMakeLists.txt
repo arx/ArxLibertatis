@@ -5,7 +5,7 @@ find_package(ZLIB REQUIRED)
 
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-aliasing")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-aliasing -ggdb")
 
 include_directories(
 	../src
@@ -28,6 +28,9 @@ add_executable(savetool
 	../src/io/SaveBlock.cpp
 	../src/io/HashMap.cpp
 	../src/io/FilePath.cpp
+	../src/io/PakEntry.cpp
+	../src/io/PakReader.cpp
+	../src/io/PakManager.cpp
 	../src/platform/String.cpp
 )
 

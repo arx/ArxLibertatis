@@ -279,14 +279,12 @@ extern long COMPUTE_PORTALS;
 #define TYPE_ROOM	2
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 {
-	long posx,posz,posy;
-	float cx,cy,cz;
+	long posx,posz;
+	float cx,cz;
 	EERIE_BKG_INFO * eg;
 	cx=(ep->v[0].sx+ep->v[1].sx+ep->v[2].sx);
-	cy=(ep->v[0].sy+ep->v[1].sy+ep->v[2].sy);
 	cz=(ep->v[0].sz+ep->v[1].sz+ep->v[2].sz);
 	posx = cx*( 1.0f / 3 )*ACTIVEBKG->Xmul;
-	posy = cy*( 1.0f / 3 )*ACTIVEBKG->Xmul+ACTIVEBKG->Xsize*( 1.0f / 2 );
 	posz = cz*( 1.0f / 3 )*ACTIVEBKG->Zmul;
 	
 	long dx,dz,fx,fz;
@@ -1334,19 +1332,15 @@ void EERIEDrawBitmapUVs(float x,float y,float sx,float sy,float z,TextureContain
 						)
 {
 	register float smu,smv;
-	float fEndu,fEndv;
 
 	if (tex)
 	{
 		smu=tex->m_hdx;
 		smv=tex->m_hdy;
-		fEndu=tex->m_dx;
-		fEndv=tex->m_dy;
 	}
 	else
 	{
 		smu=smv=0.f;
-		fEndu=fEndv=0.f;
 	}
 
 	D3DTLVERTEX v[4];

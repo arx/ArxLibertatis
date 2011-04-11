@@ -247,11 +247,7 @@ void ARX_FOGS_Render() {
 	{
 		if (fogs[i].exist)
 		{
-			unsigned long offs;
 			float fval;
-
-			offs = 0;
-		
 
 			ARX_CHECK_LONG(FrameDiff / flDiv);
 			long count	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff / flDiv);

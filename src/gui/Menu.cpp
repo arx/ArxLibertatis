@@ -636,9 +636,6 @@ bool ARX_Menu_Render()
 	}
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-	long posx;
-	posx = DANAESIZX >> 1;
-
 	
 	FLYING_OVER = 0;
 

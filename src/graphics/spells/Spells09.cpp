@@ -857,7 +857,6 @@ float CIncinerate::Render()
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
 	EERIE_3D stitescale;
-	EERIE_RGB stitecolor;
 
 	stiteangle.b = 90 - fBeta;
 	stiteangle.a = 0;
@@ -868,9 +867,6 @@ float CIncinerate::Render()
 	stitescale.x = 0.5f;
 	stitescale.y = 0.5f;
 	stitescale.z = 0.5f;
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -986,8 +982,6 @@ float CNegateMagic::Render()
 
 	fSize = ulCurrentTime * fOneOnDuration * 200;
  
-	float size = 50;
-
 	for (i = 0; i < 360; i++)
 	{
 
@@ -1027,9 +1021,6 @@ float CNegateMagic::Render()
 			}
 		}
 	}
-
-	//----------------------------
-	size = 100;
 
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;

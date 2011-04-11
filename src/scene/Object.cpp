@@ -1491,7 +1491,6 @@ static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	if(eerie->texturecontainer.empty()) return;
 
 	float sxx, syy;
-	float sxmod, symod;
 
 	for (size_t i = 0; i < eerie->facelist.size(); i++)
 	{
@@ -1501,15 +1500,11 @@ static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 		{
 			sxx = eerie->texturecontainer[eerie->facelist[i].texid]->m_odx;
 			syy = eerie->texturecontainer[eerie->facelist[i].texid]->m_ody;
-			sxmod = eerie->texturecontainer[eerie->facelist[i].texid]->m_hdx;
-			symod = eerie->texturecontainer[eerie->facelist[i].texid]->m_hdy;
 		}
 		else
 		{
 			sxx = ( 1.0f / 256 );
 			syy = ( 1.0f / 256 );
-			sxmod = 0.5f * ( 1.0f / 256 );
-			symod = 0.5f * ( 1.0f / 256 );
 		}
 
 		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * sxx; 
@@ -2061,10 +2056,6 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 		    &eerie->vertexlist[eerie->facelist[i].vid[2]].v,
 		    &eerie->facelist[i]
 		);
-		D3DTLVERTEX * ev[3];
-		ev[0] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
-		ev[1] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
-		ev[2] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
 		float area = eerie->facelist[i].temp;
 
 		for (j = 0; j < 3; j++)

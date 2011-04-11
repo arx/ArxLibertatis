@@ -1151,10 +1151,6 @@ extern EERIE_CAMERA * Kam;
 int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
 {
 	register int i, j, c = 0;
-	long to;
-
-	if (ep->type & POLY_QUAD) to = 4;
-	else to = 3;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1534,7 +1530,6 @@ bool Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit)
 	EERIEPOLY	*	ep;
 	EERIE_BKG_INFO	* eg;
 	float			pas			=	35.f;
-	float			found_dd	=	999999999999.f;
 	EERIE_3D		found_hit;
 	EERIEPOLY	*	found_ep	=	NULL;
 	float iter, t;
@@ -1646,7 +1641,6 @@ bool Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit)
 									if (dd < nearest)
 									{
 										nearest		=	dd;
-										found_dd	=	dd;
 										found_ep	=	ep;
 										found_hit.x	=	hit->x;
 										found_hit.y	=	hit->y;
@@ -2037,10 +2031,6 @@ void ComputeRoomDistance()
 	}
 
 	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
-
-	long BLOCKED;
-	BLOCKED = 0;
-
 
 	for (int i = 0; i < NbRoomDistance; i++)
 		for (long j = 0; j < NbRoomDistance; j++)
@@ -2842,10 +2832,9 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	long j, posx, posz, posy;
 	float cx, cy, cz;
 	EERIE_BKG_INFO * eg;
-	long type, val1, val2;
+	long type, val1;
 	type = -1;
 	val1 = -1;
-	val2 = -1;
 
 	if (TryToQuadify(ep, eobj)) return 0;
 

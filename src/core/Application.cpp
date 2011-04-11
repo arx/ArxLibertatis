@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Updates: (date) (person) (update)
 //
 // Code:	Cyril Meynier
-//			Sébastien Scieux	(Zbuffer)
+//			Sï¿½bastien Scieux	(Zbuffer)
 //			Didier Pedreno		(ScreenSaver Problem Fix)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
@@ -290,7 +290,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	}
 
 	// Nuky - this isnt used for the game, and I can set WIN32_LEAN_AND_MEAN with it commented
-	//// à supprimer au final
+	//// ï¿½ supprimer au final
 	//if (CreationFlags & WCF_ACCEPTFILES)
 	//	DragAcceptFiles(m_hWnd, true);
 
@@ -524,14 +524,13 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                  LPARAM lParam)
 {
 	HRESULT hr;
-	long t4, iii, ij;
+	long iii, ij;
 
 	switch (uMsg)
 	{
 		case WM_KEYDOWN:
 			this->kbd.nbkeydown++;
 			iii = (lParam >> 16) & 255;
-			t4 = iii;
 			ij = (lParam >> 24) & 1;
 
 			if (ij)
@@ -542,7 +541,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			else this->kbd.inkey[iii] = 1;;
 
 			this->kbd.lastkey = (short)iii;
-			t4 = iii;
 
 			if (iii == 18)
 			{

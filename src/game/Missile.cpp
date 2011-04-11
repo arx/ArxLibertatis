@@ -161,7 +161,7 @@ void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, ARX_SPELLS_MISSILE_TYPE type, const
 // Updates all currently launched projectiles
 void ARX_MISSILES_Update()
 {
-	long framediff, framediff2, framediff3;
+	long framediff, framediff3;
 	EERIE_3D orgn, dest, hit;
 	TextureContainer * tc = TC_fire; 
 	EERIEPOLY *tp = NULL;
@@ -179,7 +179,6 @@ void ARX_MISSILES_Update()
 			continue;
 		}
 
-		framediff2 = missiles[i].timecreation + missiles[i].tolive - missiles[i].lastupdate;
 		framediff3 = tim - missiles[i].timecreation;
 
 		switch (missiles[i].type)

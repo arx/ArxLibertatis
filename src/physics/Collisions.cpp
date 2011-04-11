@@ -620,8 +620,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 	
-	int itest = 0;
-	
 	if (TSU_TEST_COLLISIONS)
 	if (	(iXBackup >= px-rad)
 		&&	(iXBackup <= px-rad)
@@ -634,7 +632,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 		if (anything != minanything)
 		{
 			anything = minanything;
-			itest = 1;
 		}
 
 		if (POLYIN && (pEPBackup->type & POLY_CLIMB))
@@ -768,10 +765,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 					||	((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))
 					)
 				{
-					float miny,maxy;
-					miny=io->bbox3D.min.y;
-					maxy=io->bbox3D.max.y;
-
 					if (Distance2D(io->pos.x,io->pos.z,cyl->origin.x,cyl->origin.z)<440.f+cyl->radius)
 					if (In3DBBoxTolerance(&cyl->origin,&io->bbox3D, cyl->radius+80))
 					{
@@ -1786,14 +1779,12 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 			long RFOUND=0;
 			long LFOUND=0;
 			long maxRANGLE=90;
-			long maxLANGLE=270;
 			float ANGLESTEPP;
 
 			if (flags & CFLAG_EASY_SLIDING)  // player sliding in fact...
 			{
 				ANGLESTEPP=10.f;	
 				maxRANGLE=70;
-				maxLANGLE=290;
 			}
 			else ANGLESTEPP=30.f;
 
@@ -1903,7 +1894,6 @@ bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 	float pas=35.f;
  
 
-	float found_dd=999999999999.f;
 	EERIE_3D found_hit;
 	EERIEPOLY * found_ep=NULL;
 	float iter,t;
@@ -2040,7 +2030,6 @@ bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 						if (dd<nearest)
 						{
 							nearest=dd;
-							found_dd=dd;
 							found_ep=ep;
 							found_hit.x=hit->x;
 							found_hit.y=hit->y;

@@ -1997,7 +1997,6 @@ void ARX_PLAYER_Manage_Visual()
 		ANIM_HANDLE * ChangeMoveAnim2 = NULL;
 		long ChangeMA_Loop = 1;
 		long ChangeMA_Stopend = 0;
-		long NO_Interpolation = 0;
 
 		if (io->ioflags & IO_FREEZESCRIPT) goto nochanges;
 
@@ -2037,8 +2036,6 @@ void ARX_PLAYER_Manage_Visual()
 
 		if ((ROTATE_START) && (player.angle.a > 60.f) && (player.angle.a < 180.f) && (LASTPLAYERA > 60.f) && (LASTPLAYERA < 180.f))
 		{
-			NO_Interpolation = 1;
-
 			if (PLAYER_ROTATION < 0)
 			{
 				if (player.Interface & INTER_COMBATMODE)
@@ -2438,7 +2435,6 @@ void ARX_PLAYER_Manage_Visual()
 					}
 					break;
 				case 4: // Post-synch
-					NO_Interpolation = 1;
 					ChangeMA_Stopend = 1;
 					LAST_JUMP_ENDTIME = ARXTimeUL();
 
@@ -2453,7 +2449,6 @@ void ARX_PLAYER_Manage_Visual()
 
 					break;
 				case 5: // Post-synch
-					NO_Interpolation = 1;
 					LAST_JUMP_ENDTIME = ARXTimeUL();
 
 					if ((ause0->cur_anim == alist[ANIM_JUMP_END_PART2])
@@ -3263,7 +3258,6 @@ void PlayerMovementIterate(float DeltaTime)
 			else
 				player.physics.forces.y += WORLD_GRAVITY;
 
-			float dist;
 			EERIE_3D mod_vect(0, 0, 0);
 			long mod_vect_count = -1;
 
@@ -3273,8 +3267,6 @@ void PlayerMovementIterate(float DeltaTime)
 
 			if (ep)
 			{
-				dist = inter.iobj[0]->pos.y - epcentery;
-
 				if ((ep->type & POLY_LAVA) && (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) < 30))
 				{
 					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) * ( 1.0f / 30 ));

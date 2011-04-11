@@ -794,7 +794,7 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
 
 		long LineOffset = ddesc.dwWidth;
 		DWORD dwPixel;
-		long aa, rr, gg, bb;
+		long rr, gg, bb;
 		long posx, posy;
 		DWORD * pSrcData32;
 		WORD * pSrcData16;
@@ -817,12 +817,11 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
 					dwPixel = pSrcData32[posx+posy];
 				else dwPixel = pSrcData16[posx+posy];
 
-				aa = rr = gg = bb = 0;
+				rr = gg = bb = 0;
 
 				rr = (BYTE)(((dwPixel & dwRMask) >> dwRShiftR) << dwRShiftL);
 				gg = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);      
 				bb = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL);      
-				aa = (BYTE)(((dwPixel & dwAMask) >> dwAShiftR) << dwAShiftL);
 
 				if ((rr == 0) &&
 						(gg == 0) &&

@@ -958,10 +958,10 @@ float CPoisonProjectile::Render()
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
 	EERIE_3D stitescale;
-	EERIE_RGB stitecolor;
-
 	EERIE_3D av;
+
 	ARX_CHECK_NOT_NEG(arx_check_init);
+
 	av.x = newpos.x - lastpos.x;
 	av.y = newpos.y - lastpos.y;
 	av.z = newpos.z - lastpos.z;
@@ -977,9 +977,6 @@ float CPoisonProjectile::Render()
 	stiteangle.b = -degrees(bubu);
 	stiteangle.a = 0;
 	stiteangle.g = -90 - degrees(bubu1);
-	stitecolor.r = 0.7f;
-	stitecolor.g = 0.7f;
-	stitecolor.b = 0.7f;
 	stitescale.x = 2;
 	stitescale.y = 2;
 	stitescale.z = 2;
@@ -1039,7 +1036,6 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0) {
 	
 	(void)_afBeta;
 
-	float afAlpha = 0.f;
 	float afBeta = 0.f;
 
 	spells[spellinstance].hand_group = inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;
@@ -1054,7 +1050,6 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0) {
 	if (spells[spellinstance].caster == 0) // player
 	{
 		afBeta = player.angle.b;
-		afAlpha = player.angle.a;
 
 		if (spells[spellinstance].hand_group != -1)
 		{

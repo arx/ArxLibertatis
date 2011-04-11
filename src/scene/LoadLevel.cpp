@@ -942,8 +942,6 @@ long DanaeLoadLevel(const string & fic) {
 	// using compression
 	if(dlh.version >= 1.44f) {
 		char * torelease = dat;
-		long cpr_pos;
-		cpr_pos = 0;
 		dat = blastMemAlloc(dat + pos, FileSize - pos, FileSize);
 		free(torelease);
 		pos = 0;
@@ -1741,7 +1739,6 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
-	DANAE_LS_SCENE		*		dls;
 	DANAE_LS_INTER		*		dli;
 	unsigned char * dat = NULL;
 
@@ -1772,8 +1769,6 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	{
 		char * torelease = (char *)dat;
 		char * compressed = (char *)(dat + pos);
-		long cpr_pos;
-		cpr_pos = 0;
 		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
 
 		if (dat == NULL)
@@ -1797,7 +1792,6 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	// Loading Scene
 	if (dlh.nb_scn >= 1)
 	{
-		dls = (DANAE_LS_SCENE *)(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
 	}
 
