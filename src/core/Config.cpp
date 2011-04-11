@@ -286,12 +286,10 @@ void Config::SetDefaultKey()
 int Config::GetDIKWithASCII( const std::string& _pcTouch)
 {
 	std::string pcT = _pcTouch;
-	
 
-	if( strcasecmp(pcT.c_str(), "---"  ) == 0 )
-	{
+	// If a noneset key, return -1
+	if( strcasecmp( pcT, "---"  ) == 0 )
 		return -1;
-	}
 
 	for(int iI=0;iI<256;iI++)
 	{
@@ -721,6 +719,9 @@ void Config::ReadAll()
 
 	// Get the locale language
 	Project.localisationpath = ReadConfig( Section::Language, Key::language_string, Default::language );
+
+	// TODO Config should have no business calling this function. Is needed since gettings keys from the config will call localization functions
+	Localisation_Init();
 
 	// Get the video settings
 	std::string resolution = ReadConfig( Section::Video, Key::resolution, Default::resolution );
