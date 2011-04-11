@@ -36,7 +36,7 @@ endfunction(enable_unity_build)
 # Check that the configured CMAKE_CXX_COMPILER works.
 function(check_compiler)
 	if(NOT CHECK_COMPILER)
-		message(STATUS "Checking compler: ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
+		message(STATUS "Checking compiler: ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
 		
 		# See if we can link a simple 32-bit program with the library.
 		set(compile_test_file ${CMAKE_CURRENT_BINARY_DIR}/compile_test.cpp)
@@ -109,6 +109,7 @@ option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" ON)
 
 if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
+	unset(CHECK_COMPILER CACHE)
 	force_recheck_library(DevIL IL)
 	force_recheck_library(ZLIB)
 	force_recheck_library(Freetype)
