@@ -877,6 +877,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	
 	Remap remap;
 	remap[name] = i;
+	idents[ident] = where;
 	
 	fix_iodata(save, idents, ais, dat, where + ":" + ident, remap);
 	
@@ -905,7 +906,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	if(it != idents.end()) {
 		printf("duplicate ident %s detected: in %s and %s\n", name.c_str(), it->second.c_str(), where.c_str());
 		// we already fixed this!
-		long newIdent = copy_io(save, name, idents, where + ":" + name, dat, size);
+		long newIdent = copy_io(save, name, idents, where, dat, size);
 		printf(" -> copied %s as %ld for %s\n", name.c_str(), newIdent, where.c_str());
 		free(dat);
 		remap[name] = newIdent;
