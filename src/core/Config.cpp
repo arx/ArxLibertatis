@@ -788,7 +788,7 @@ void Config::ReadAll()
 	bAntiAliasing = ReadConfig( Section::Video, Key::antialiasing, 0 );
 
 	// Get audio settings
-	iSFXVolume = ReadConfig( Section::Audio, Key::master_volume, Default::master_volume );
+	iMasterVolume = ReadConfig( Section::Audio, Key::master_volume, Default::master_volume );
 	iSFXVolume = ReadConfig( Section::Audio, Key::effects_volume, Default::effects_volume );
 	iSpeechVolume = ReadConfig( Section::Audio, Key::speech_volume, Default::speech_volume );
 	iAmbianceVolume = ReadConfig( Section::Audio, Key::ambiance_volume, Default::ambiance_volume );
