@@ -37,19 +37,8 @@ class ConfigHashMap
 {
 private:
 
-	unsigned long size;
-	long iMask;
-	unsigned long fill;
-	ConfigSection ** pTab;
-	unsigned long iNbCollisions;
-	unsigned long iNbNoInsert;
 	std::map<std::string, ConfigSection> section_map;
 	
-	int FuncH1(int);
-	int FuncH2(int);
-	int GetKey(const std::string &);
-	void ReHash();
-
 	/**
 	 * Parses an input stream for configuration section and respective keys.
 	 * Stores them all in a section map as ConfigSection objects.
@@ -68,7 +57,6 @@ public:
 	
 	ConfigHashMap( unsigned int init_size = 1024);
 	ConfigHashMap( unsigned int init_size, std::istream& input );
-	~ConfigHashMap();
 
 	bool AddElement( ConfigSection * _pLoc);
 
@@ -92,7 +80,7 @@ public:
 	void updateConfigValue( const std::string& section, const std::string& key, const std::string value );
 
 	const ConfigSection* getConfigSection( const std::string& str ) const;
-	std::string * GetPtrWithString(const std::string &);
+
 	unsigned long GetKeyCount(const std::string &);
 
 	/**

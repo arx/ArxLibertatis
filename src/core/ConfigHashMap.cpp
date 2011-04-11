@@ -36,171 +36,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 ConfigHashMap::ConfigHashMap( unsigned int init_size )
 {
-	pTab = new ConfigSection* [init_size];
 
-	size = init_size;
-	fill = 0;
-	iMask = size - 1;
-
-	for (unsigned long i = 0; i < size; i++)
-	{
-		pTab[i] = NULL;
-	}
-
-	iNbCollisions = iNbNoInsert = 0;
 }
 
 ConfigHashMap::ConfigHashMap( unsigned int init_size, std::istream& input )
 {
-	pTab = new ConfigSection* [init_size];
-
-	size = init_size;
-	fill = 0;
-	iMask = size - 1;
-
-	for (unsigned long i = 0; i < size; i++)
-	{
-		pTab[i] = NULL;
-	}
-
-	iNbCollisions = iNbNoInsert = 0;
-
 	parse_stream( input );
 }
 
-//-----------------------------------------------------------------------------
-ConfigHashMap::~ConfigHashMap()
-{
-	while (size--)
-	{
-		if (pTab[size] != NULL)
-		{
-			delete pTab[size];
-			pTab[size] = NULL;
-		}
-	}
-
-	delete [] pTab;
-	pTab = NULL;
-}
-
-//-----------------------------------------------------------------------------
-int ConfigHashMap::FuncH1(int _iKey)
-{
-	return _iKey;
-}
-
-//-----------------------------------------------------------------------------
-int	ConfigHashMap::FuncH2(int _iKey)
-{
-	return ((_iKey >> 1) | 1);
-}
-
-//-----------------------------------------------------------------------------
-int	ConfigHashMap::GetKey(const std::string& _lpszUText)
-{
-	int iKey = 0;
-	int iLenght = _lpszUText.length();
-	int iLenght2 = iLenght;
-
-	while (iLenght--)
-	{
-		iKey += _lpszUText[iLenght] * (iLenght + 1) + _lpszUText[iLenght] * iLenght2;
-	}
-
-	return iKey;
-}
-
-//-----------------------------------------------------------------------------
-void ConfigHashMap::ReHash()
-{
-	unsigned long	iNewSize = size << 1;
-	long	iNewMask = iNewSize - 1;
-
-	ConfigSection ** pTab2 = new ConfigSection *[iNewSize];
-
-	for (unsigned long i = 0 ; i < iNewSize ; i++)
-	{
-		pTab2[i] = NULL;
-	}
-
-
-	for (unsigned int i = 0 ; i < size ; i++)
-	{
-		if (pTab[i] != NULL)
-		{
-			int iKey = GetKey( pTab[i]->section );
-			int	iH1	 = FuncH1(iKey);
-			int	iH2  = FuncH2(iKey);
-
-			unsigned int iNbSolution = 0;
-
-			while (iNbSolution < iNewSize)
-			{
-				iH1 &= iNewMask;
-
-				if (pTab2[iH1] == NULL)
-				{
-					pTab2[iH1]	= pTab[i];
-					pTab[i]		= NULL;
-					//fill ++;
-				}
-
-				iNbCollisions ++;
-				iH1 += iH2;
-
-				iNbSolution ++;
-			}
-
-			iNbNoInsert ++;
-		}
-	}
-
-	size = iNewSize;
-	iMask = iNewMask;
-
-	delete [] pTab;
-	pTab = pTab2;
-}
-
-//-----------------------------------------------------------------------------
 bool ConfigHashMap::AddElement(ConfigSection * _pLoc)
 {
 	if ( section_map.find( _pLoc->section ) == section_map.end() )
 		section_map.insert( std::pair<std::string, ConfigSection>( _pLoc->section, *_pLoc ) );
 
-	if (fill >= size * 0.75)
-	{
-		ReHash();
-	}
-
-	if ( !(_pLoc && !_pLoc->section.empty()) ) return false;
-
-	int iKey = GetKey(_pLoc->section);
-	int	iH1 = FuncH1(iKey);
-	int	iH2 = FuncH2(iKey);
-
-	unsigned long iNbSolution = 0;
-
-	while (iNbSolution < size)
-	{
-		iH1 &= iMask;
-
-		if (pTab[iH1] == NULL)
-		{
-			pTab[iH1] = _pLoc;
-			fill++;
-			return true;
-		}
-
-		iNbCollisions ++;
-		iH1 += iH2;
-
-		iNbSolution ++;
-	}
-
-	iNbNoInsert ++;
-	return false;
+	return true;
 }
 
 const ConfigSection* ConfigHashMap::getConfigSection( const std::string& section ) const
@@ -213,67 +62,13 @@ const ConfigSection* ConfigHashMap::getConfigSection( const std::string& section
 		return 0;
 }
 
-std::string* ConfigHashMap::GetPtrWithString(const std::string& _lpszUText)
-{
-	std::map<std::string, ConfigSection>::iterator iter = section_map.find( _lpszUText );
-
-	int iKey = GetKey(_lpszUText);
-	int	iH1 = FuncH1(iKey);
-	int	iH2 = FuncH2(iKey);
-
-	unsigned long iNbSolution = 0;
-
-	while (iNbSolution < size)
-	{
-		iH1 &= iMask;
-
-		if ( pTab[iH1] )
-		{
-			if ( !strcasecmp( _lpszUText, pTab[iH1]->section ) )
-			{
-				if (pTab[iH1]->keys.size() > 0)
-				{
-					return &pTab[iH1]->keys[0];
-				}
-
-				return NULL;
-			}
-		}
-
-		iH1 += iH2;
-		iNbSolution++;
-	}
-
-	return NULL;
-}
-
 unsigned long ConfigHashMap::GetKeyCount(const std::string& _lpszUText)
 {
-	int iKey = GetKey(_lpszUText);
-	int	iH1 = FuncH1(iKey);
-	int	iH2 = FuncH2(iKey);
-
-	unsigned long iNbSolution = 0;
-
-	while (iNbSolution < size)
-	{
-		iH1 &= iMask;
-
-		if (pTab[iH1])
-		{
-			if ( !strcasecmp( _lpszUText, pTab[iH1]->section ) )
-			{
-				return pTab[iH1]->keys.size();
-
-				return 0;
-			}
-		}
-
-		iH1 += iH2;
-		iNbSolution++;
-	}
-
-	return 0;
+	const ConfigSection* section = getConfigSection( _lpszUText );
+	if ( section )
+		return section->_keys.size();
+	else
+		return 0;
 }
 
 /**

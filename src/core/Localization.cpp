@@ -157,22 +157,6 @@ long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
 		
 	destination = getLocalized( section, defaultstring );
 	return 0;
-	// If localisation has been initialized
-	if (pHashLocalisation)
-	{
-		// Get the string for this section
-		std::string* t = pHashLocalisation->GetPtrWithString(section);
-
-		// If a string is found matching the section
-		if (t)
-			destination = *t; // Return that string in destination
-		else
-			destination = defaultstring; // Otherwise, return the default value
-	}
-	else
-		destination = defaultstring; // No localisation, return the default string
-
-	return 0;
 }
 
 //-----------------------------------------------------------------------------
