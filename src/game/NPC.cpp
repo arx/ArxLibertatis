@@ -1089,8 +1089,6 @@ void ARX_PHYSICS_Apply()
 
 	if (CURRENT_DETECT > TREATZONE_CUR) CURRENT_DETECT = 1;
 
-	long needkill = 0;
-
 	for (long i = 1; i < TREATZONE_CUR; i++) // We don't manage Player(0) this way
 	{
 		if (treatio[i].show != 1) continue;
@@ -1126,7 +1124,6 @@ void ARX_PHYSICS_Apply()
 
 				ARX_PARTICLES_Spawn_Splat(&io->obj->vertexlist3[idx].v, 20, 0xFFFF0000);
 				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20, GetInterNum(io));
-				needkill = 1;
 			}
 
 			ARX_INTERACTIVE_DestroyIO(io);
@@ -1157,9 +1154,6 @@ void ARX_PHYSICS_Apply()
 			if ((io->obj->pbox->active == 1))
 			{
 				PHYSICS_CURIO = io;
-				long flags = 0;
-
-				if (io->GameFlags & GFLAG_NO_PHYS_IO_COL) flags = 1;
 
 				if (ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)FrameDiff, io->rubber, treatio[i].num))
 				{

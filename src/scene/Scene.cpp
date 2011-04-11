@@ -1199,15 +1199,6 @@ bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 
 bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
 {
-	long nbv;
-
-	if (ep->type & POLY_QUAD)
-		nbv=4;
-	else
-		nbv=3;
-
- 
-
 	for (long i=0;i<frustrums->nb_frustrums;i++)
 	{
 		if (IsSphereInFrustrum(ep->v[0].rhw,(EERIE_3D *)&ep->center,&frustrums->frustrums[i]))
@@ -2747,7 +2738,7 @@ SMY_D3DVERTEX *pMyVertex;
 					float tu[4];
 					float tv[4];
 					float _fTransp[4];
-					unsigned short nu, nuu;
+					unsigned short nu;
 					long nrm=0;
 
 					if	(	(EEfabs(ep->nrml[0].y)>=0.9f)
@@ -2755,7 +2746,7 @@ SMY_D3DVERTEX *pMyVertex;
 						||	(EEfabs(ep->nrml[2].y)>=0.9f)	)
 						nrm=1;
 
-					for (nu=0,nuu=iNbVertex-1;nu<iNbVertex;nuu=nu++)
+					for (nu=0;nu<iNbVertex;nu++)
 					{
 						if (nrm)
 						{
@@ -3239,12 +3230,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		pos.y=epp->center.y-ACTIVECAM->pos.y;
 		pos.z=epp->center.z-ACTIVECAM->pos.z;
 		float fRes = Vector_DotProduct(&pos, &epp->norm);
-		long to;
-
-		if (epp->type & POLY_QUAD)
-			to=4;
-		else
-			to=3;
 
 		long ret=1;
 
@@ -3492,7 +3477,6 @@ void ARX_SCENE_Render(long flag) {
 
 	// First if scene camera hasn't moved we set MODIF to 0
 	// This allows us not to Clip/Rotate/Translate/Project again the scene
-	bool MODIF=true;
 
 	if (flag == 3)
 	{
@@ -3506,9 +3490,8 @@ void ARX_SCENE_Render(long flag) {
 			(lastangle.a == ACTIVECAM->angle.a) &&
 			(lastangle.b == ACTIVECAM->angle.b) &&
 			(lastangle.g == ACTIVECAM->angle.g) &&
-			(lastfocal == ACTIVECAM->focal ) ) MODIF=0;
-	else 
-	{
+			(lastfocal == ACTIVECAM->focal ) ) {
+	} else {
 		lastpos.x = ACTIVECAM->pos.x;
 		lastpos.y = ACTIVECAM->pos.y;
 		lastpos.z = ACTIVECAM->pos.z;
@@ -3516,7 +3499,6 @@ void ARX_SCENE_Render(long flag) {
 		lastangle.b = ACTIVECAM->angle.b;
 		lastangle.g = ACTIVECAM->angle.g;
 		lastfocal = ACTIVECAM->focal;
-		MODIF=1;
 	}
     
 	// If LightThread is running we suspend it to avoid too much performance
