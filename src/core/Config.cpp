@@ -177,7 +177,6 @@ namespace
 		ActionKey( DIK_H, -1, 1 ), // DRINKPOTIONLIFE
 		ActionKey( DIK_G, -1, 1 ), // DRINKPOTIONMANA
 		ActionKey( DIK_T, -1, 1 ), // TORCH
-		ActionKey( DIK_4, -1, 1 ), // CANCELCURSPELL
 		ActionKey( DIK_1, -1, 1 ), // PRECAST1
 		ActionKey( DIK_2, -1, 1 ), // PRECAST2
 		ActionKey( DIK_3, -1, 1 ), // PRECAST3
@@ -198,6 +197,7 @@ namespace
 		ActionKey( -1, -1, 1 ), // CROUCHTOGGLE
 
 		ActionKey( DIK_B, -1, 1 ), // UNEQUIPWEAPON
+		ActionKey( DIK_4, -1, 1 ), // CANCELCURSPELL
 		ActionKey( DIK_R, DIK_M, 1 ), // MINIMAP
 	};
 };
