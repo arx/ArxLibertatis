@@ -261,7 +261,6 @@ void ARX_QuickSave()
 		UpdateSaveGame( 0 );
 		ARXMenu_Options_Video_SetGamma( iOldGamma );
 		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
-
 		CopyFile( tcDst, tcSrc, false );
 		DeleteFile( tcDst );
 	}
@@ -454,7 +453,7 @@ void to_lower(std::string & str) {
 
 //-----------------------------------------------------------------------------
 
-
+	
 void Check_Apply()
 {
 	if(pMenuElementApply)
@@ -1221,7 +1220,6 @@ bool Menu2_Render()
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					int iOffsetX = iPosX2;
 					int iModeX,iModeY,iModeBpp;
 					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
@@ -1295,7 +1293,6 @@ bool Menu2_Render()
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc1->AddElement(me);
-					iOffsetX = iPosX2;
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_TEXTURES, 0, 0);
 					pMenuSliderTexture = (CMenuSliderText*)me;
 					szMenuText = getLocalized("system_menus_options_video_texture_low");
@@ -1360,7 +1357,6 @@ bool Menu2_Render()
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					iOffsetX = iPosX2;
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, 0, 0);
 					szMenuText = getLocalized("system_menus_options_video_texture_low");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
@@ -4661,7 +4657,7 @@ void CMenuPanel::Move(int _iX, int _iY)
 }
 
 //-----------------------------------------------------------------------------
-// patch on ajoute à droite en ligne
+// patch on ajoute ï¿½ droite en ligne
 void CMenuPanel::AddElement(CMenuElement* _pElem)
 {
 	vElement.push_back(_pElem);
@@ -4837,16 +4833,7 @@ CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX
 
 //-----------------------------------------------------------------------------
 
-CMenuButton::~CMenuButton()
-{
-	std::string::iterator i;
-
-	for(i=vText.begin();i!=vText.end();++i)
-	{
-		free((void*)(*i));
-	}
-
-	vText.clear();
+CMenuButton::~CMenuButton() {
 }
 
 //-----------------------------------------------------------------------------
@@ -5516,7 +5503,6 @@ void CMenuSlider::Render()
 	float iY = ARX_CLEAN_WARN_CAST_FLOAT( rZone.top );
 
 	float iTexW = 0;
-	float iTexH = 0;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -5531,7 +5517,6 @@ void CMenuSlider::Render()
 	for (int i=0; i<10; i++)
 	{
 		iTexW = 0;
-		iTexH = 0;
 
 		if (i<iPos)
 		{
@@ -5539,7 +5524,6 @@ void CMenuSlider::Render()
 			{
 				pTex = pTex1;
 				iTexW = RATIO_X(pTex1->m_dwWidth);
-				iTexH = RATIO_Y(pTex1->m_dwHeight);
 			}
 		}
 		else
@@ -5548,7 +5532,6 @@ void CMenuSlider::Render()
 			{
 				pTex = pTex2;
 				iTexW = RATIO_X(pTex2->m_dwWidth);
-				iTexH = RATIO_Y(pTex2->m_dwHeight);
 			}
 		}
 
@@ -5768,7 +5751,7 @@ void CDirectInput::GetInput()
 		}
 	}
 
-	if(bTouch)    //prioritê des touches
+	if(bTouch)    //prioritï¿½ des touches
 	{
 		switch(iKeyId)
 		{

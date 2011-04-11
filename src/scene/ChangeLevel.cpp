@@ -310,6 +310,10 @@ void ARX_Changelevel_CurGame_Open() {
 		ARX_Changelevel_CurGame_Close();
 	}
 	
+	if(_pSaveBlock) {
+		return;
+	}
+	
 	string savefile = CurGamePath;
 	savefile += "Gsave.sav";
 	
@@ -320,16 +324,20 @@ void ARX_Changelevel_CurGame_Open() {
 			LogError << "cannot read cur game save file" << savefile;
 		}
 		
+	} else {
+		// this is normal when starting a new game
 	}
 }
 
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
-	if(GLOBAL_pSaveB) {
-		if(GLOBAL_pSaveB->hasFile( ident + ".sav" )) {
-			return true;
-		}
+	if(_pSaveBlock) {
+		return _pSaveBlock->hasFile( ident + ".sav" );
+	} else if(GLOBAL_pSaveB) {
+		return GLOBAL_pSaveB->hasFile( ident + ".sav" );
+	} else {
+		// this is normal when starting a new game
+		return false;
 	}
-	return false;
 }
 
 void ARX_Changelevel_CurGame_Close() {
@@ -985,12 +993,10 @@ retry:
 		pos += 80;
 	}
 
-	for (int i = 0; i < asp->keyring_nb; i++)
-	{
-		const size_t SLOT_SIZE = 64;
-		assert(sizeof(Keyring[i].slot) == SLOT_SIZE);
-		memcpy((char *)(dat + pos), Keyring[i].slot, SLOT_SIZE);
-		pos += sizeof(SLOT_SIZE);
+	for(int i = 0; i < asp->keyring_nb; i++) {
+		assert(sizeof(Keyring[i].slot) == SAVED_KEYRING_SLOT_SIZE);
+		memcpy((char *)(dat + pos), Keyring[i].slot, SAVED_KEYRING_SLOT_SIZE);
+		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 
 	for (int i = 0; i < asp->Nb_Mapmarkers; i++)
@@ -1389,7 +1395,6 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	ass->lastcall = io->script.lastcall;
 	ass->nblvar = io->script.nblvar;
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
-	long posi = 0;
 
 	for (int i = 0; i < io->script.nblvar; i++)
 	{
@@ -1469,7 +1474,6 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	ass->lastcall = io->over_script.lastcall;
 	ass->nblvar = io->over_script.nblvar;
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
-	posi = 0;
 
 	for (int i = 0; i < io->over_script.nblvar; i++)
 	{
@@ -2099,9 +2103,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	}
 	
 	ARX_KEYRING_Init();
+	LogDebug << asp.keyring_nb;
 	for(int i = 0; i < asp.keyring_nb; i++) {
 		ARX_KEYRING_Add((char *)(dat + pos));
-		pos += 64;
+		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
 	ARX_MAPMARKER_Init();
@@ -2595,7 +2600,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 		io->over_script.nblvar = ass->nblvar;
 
-		pos += sizeof(ARX_SCRIPT_SAVE);
+		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 
 		for (int i = 0; i < ass->nblvar; i++)
 		{

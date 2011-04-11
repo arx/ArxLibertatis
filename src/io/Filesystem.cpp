@@ -170,8 +170,8 @@ long FileSeek(FileHandle handle, int offset, long mode) {
 	return SetFilePointer(GETHANDLE(handle), offset, NULL, mode);
 }
 
-void	* FileLoadMallocZero(const std::string& name, size_t * SizeLoadMalloc)
-{
+void * FileLoadMallocZero(const string & name, size_t * SizeLoadMalloc) {
+	
 	FileHandle handle;
 	long	size1, size2;
 	unsigned char	* adr;

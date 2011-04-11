@@ -1099,7 +1099,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 	if (TICKS<0) 
 		return;
 
-	float zapp,x,y,z,s,r,g,b;
+	float z,s,r,g,b;
 
 	TextureContainer * surf;
 	bool key=!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE);
@@ -1185,11 +1185,6 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 					}
 					else 
 					{
-						if (( (s<45) && (flare[i].type==1) ) || (flare[i].type==4) ) 
-						{
-							zapp=((MAX_FLARELIFE-flare[i].tolive)*(MAX_FLARELIFE-flare[i].tolive))*0.000001f;
-						}
-
 						if ((flare[i].type==1) ) 
 						{
 							if (z<0.6f) z=0.6f;						
@@ -1199,10 +1194,6 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 						r=flare[i].r*z;
 						b=flare[i].b*z;
 						
-						zapp = 48 - s * 0.5f; 
-						x=flare[i].x+zapp;
-						y=flare[i].y+zapp;
-								
 						flare[i].tv.color=D3DRGB(r,g,b);
 						flare[i].v.sx=flare[i].tv.sx;
 						flare[i].v.sy=flare[i].tv.sy;

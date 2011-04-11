@@ -2957,7 +2957,6 @@ HRESULT DANAE::BeforeRun()
 
 void FirstTimeThings() {
 	
-	static long done = 0;
 	long i;
 	eyeball.exist=0;
 	WILLADDSPEECHTIME=0;
@@ -2977,7 +2976,6 @@ void FirstTimeThings() {
 	}
 
 	LastFrameTime=FrameTime;
-	done = 1;
 	return;
 }
 
@@ -5266,8 +5264,6 @@ HRESULT DANAE::Render()
 		ft=FrameTime-LastFrameTime;
 
 		FrameDiff = ft;
-		float FD;
-		FD=FrameDiff;
 		// Under 10 FPS the whole game slows down to avoid unexpected results...
 		_framedelay=(float)FrameDiff;
 	}
@@ -6208,16 +6204,10 @@ static float _AvgFrameDiff = 150.f;
 						//need to compute current values
 						if (ValidIONum(acs->ionum))
 						{
-							INTERACTIVE_OBJ * ioo=inter.iobj[acs->ionum];
-							INTERACTIVE_OBJ * o1=io;
-							INTERACTIVE_OBJ * o2=ioo;
-
 							EERIE_3D targetpos;
 							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
 								|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
 							{
-								o1=ioo;
-								o2=io;
 								conversationcamera.pos.x=acs->pos2.x;
 								conversationcamera.pos.y=acs->pos2.y;
 								conversationcamera.pos.z=acs->pos2.z;

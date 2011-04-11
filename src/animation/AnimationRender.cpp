@@ -901,19 +901,16 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 			/* Get light value for each vertex */
 			for (v = 0; v != obj->bones[i].nb_idxvertices; v++)
 			{
-				EERIE_3DPAD *	inVert;
 				EERIE_3D	*	posVert;
 				float			r, g, b;
 				long	ir, ig, ib;
 
 				if (io)
 				{
-					inVert  = (EERIE_3DPAD *)&io->obj->vertexlist[obj->bones[i].idxvertices[v]].norm; 
 					posVert  = (EERIE_3D *)&io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				}
 				else
 				{
-					inVert  = (EERIE_3DPAD *)&eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 					posVert  = (EERIE_3D *)&eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				}
 

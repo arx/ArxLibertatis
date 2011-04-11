@@ -223,7 +223,7 @@ Config *pMenuConfig = 0;
 
 Config::Config()
 {
-	First();
+	init();
 }
 
 Config::Config( const std::string& _filename)
@@ -238,7 +238,7 @@ Config::Config( const std::string& _filename)
 	std::ifstream ifs( pcName.c_str() );
 	config_map = ConfigHashMap( 100, ifs );
 
-	First();
+	init();
 }
 
 Config::~Config()
@@ -246,7 +246,7 @@ Config::~Config()
 
 }
 
-void Config::First()
+void Config::init()
 {
 
 	// TODO Remove these and constify sakActionDefaultKey
@@ -415,6 +415,7 @@ int Config::ReadConfig( const std::string& section, const std::string& key, int 
 
 void Config::WriteConfig( const std::string& section, const std::string& key, const std::string& value )
 {
+	LogDebug << "Updating map with Section: " << section << " Key: " << key << " Value: " << value;
 	config_map.updateConfigValue( section, key, value );
 }
 

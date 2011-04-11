@@ -3314,8 +3314,8 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 //*************************************************************************************
 // Creates a Temporary IO Ident
 //*************************************************************************************
-void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
-{
+void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
+	
 	long t = 1;
 
 	if (!io) return;
@@ -3827,7 +3827,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
 	bool col = false;
 	float dist;
-	long i, ret;
+	long i;
 	long avoid = -1;
 	INTERACTIVE_OBJ * io_source = NULL;
 
@@ -3857,9 +3857,6 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 			if ((dist < 450.f) && (In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius)))
 			{
-
-				ret = -1;
-
 				if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
 				{
 					if (PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
@@ -3908,7 +3905,6 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 								return true;
 								col = true;
-								ret = 1;
 							}
 						}
 					}
@@ -3923,7 +3919,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 {
 	bool col = false;
 	float dist;
-	long i, ret;
+	long i;
 	long avoid = -1;
 	INTERACTIVE_OBJ * io_source = NULL;
 	INTERACTIVE_OBJ * io = NULL;
@@ -3962,8 +3958,6 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 		if ((dist < 600.f) && (In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)))
 		{
-			ret = -1;
-
 			if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
 			{
 				for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)

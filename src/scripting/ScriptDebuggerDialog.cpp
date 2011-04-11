@@ -300,13 +300,9 @@ void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow) {
 	if (!gbDialog)
 	{
 		ZeroMemory(&iInfo, sizeof(info));
-
-
-		long dw = GetLastError();
 		// TODO script debugger
 		// HINSTANCE ghInstance;
 		// ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow,  SCRIPT_DEBUGGER_Proc);
-		dw = GetLastError();
 		ShowWindow(ghDialog, SW_SHOW);
 
 		sdu.bPause = false;

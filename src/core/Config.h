@@ -105,6 +105,8 @@ class Config
 
 		int GetDIKWithASCII( const std::string& _pcTouch);
 
+		void init();
+
 	public:
 		Config();
 		Config( const std::string& );
@@ -127,7 +129,6 @@ class Config
 		bool WriteConfigKey( const std::string& _pcKey, int _iAction);
 		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
 		void SetDefaultKey();
-		void First();
 
 		void SaveAll();
 		void ReadAll();
