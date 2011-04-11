@@ -33,6 +33,7 @@
 #include "core/Localization.h"
 #include "graphics/data/Texture.h"
 #include "gui/MenuPublic.h"
+#include "gui/MenuWidgets.h"
 #include "io/Logger.h"
 #include "io/String.h"
 #include "scene/GameSound.h"
@@ -153,7 +154,10 @@ namespace
 			;
 	};
 
-	SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY];
+	SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY] =
+	{
+	
+	};
 };
 
 void ARX_SetAntiAliasing();
@@ -173,7 +177,7 @@ extern long WILL_RELOAD_ALL_TEXTURES;
 std::string pStringMod;
 std::string pStringModSfx;
 std::string pStringModSpeech;
-Config *pMenuConfig;
+Config *pMenuConfig = 0;
 
 Config::Config()
 {
@@ -202,8 +206,6 @@ Config::~Config()
 
 void Config::First()
 {
-	ResetActionKey();
-
 	sakActionDefaultKey[CONTROLS_CUST_JUMP].iKey[0]=DIK_SPACE;
 	sakActionDefaultKey[CONTROLS_CUST_JUMP].iKey[1]=-1;
 	sakActionDefaultKey[CONTROLS_CUST_MAGICMODE].iKey[0]=DIK_LCONTROL;
@@ -487,19 +489,6 @@ bool Config::WriteConfigString( const std::string& _pcSection, const std::string
 }
 
 //-----------------------------------------------------------------------------
-
-void Config::ResetActionKey()
-{
-	for (unsigned int iI=0; iI<MAX_ACTION_KEY; iI++)
-	{
-		sakActionKey[iI].iKey[0] = sakActionKey[iI].iKey[1]=-1;
-
-		sakActionDefaultKey[iI].iKey[0] = sakActionDefaultKey[iI].iKey[1]=-1;
-
-		sakActionKey[iI].iPage=0;
-		sakActionDefaultKey[iI].iPage=0;
-	}
-}
 
 //-----------------------------------------------------------------------------
 
@@ -931,7 +920,6 @@ void Config::ReadAll()
 	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(iAmbianceVolume);
 
-	pMenuConfig->bEAX=bEAX;
 	ARXMenu_Options_Control_SetInvertMouse(bInvertMouse);
 	ARXMenu_Options_Control_SetAutoReadyWeapon(bAutoReadyWeapon);
 	ARXMenu_Options_Control_SetMouseLookToggleMode(bMouseLookToggle);

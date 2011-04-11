@@ -29,7 +29,6 @@
 #include <string>
 
 #include "core/ConfigHashMap.h"
-#include "gui/MenuWidgets.h"
 
 enum
 {
@@ -38,6 +37,13 @@ enum
 
 struct SACTION_KEY
 {
+	SACTION_KEY( int key_0, int key_1, int _page )
+	{
+		iKey[0] = key_0;
+		iKey[1] = key_1;
+		iPage = _page;
+	}
+
 	SACTION_KEY() { iKey[0] = iKey[1] = -1; iPage = 0; }
 	int	iKey[2];
 	int iPage;
