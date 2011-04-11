@@ -310,6 +310,10 @@ void ARX_Changelevel_CurGame_Open() {
 		ARX_Changelevel_CurGame_Close();
 	}
 	
+	if(_pSaveBlock) {
+		return;
+	}
+	
 	string savefile = CurGamePath;
 	savefile += "Gsave.sav";
 	
@@ -320,16 +324,20 @@ void ARX_Changelevel_CurGame_Open() {
 			LogError << "cannot read cur game save file" << savefile;
 		}
 		
+	} else {
+		// this is normal when starting a new game
 	}
 }
 
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
-	if(GLOBAL_pSaveB) {
-		if(GLOBAL_pSaveB->hasFile( ident + ".sav" )) {
-			return true;
-		}
+	if(_pSaveBlock) {
+		return _pSaveBlock->hasFile( ident + ".sav" );
+	} else if(GLOBAL_pSaveB) {
+		return GLOBAL_pSaveB->hasFile( ident + ".sav" );
+	} else {
+		// this is normal when starting a new game
+		return false;
 	}
-	return false;
 }
 
 void ARX_Changelevel_CurGame_Close() {

@@ -3314,8 +3314,8 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 //*************************************************************************************
 // Creates a Temporary IO Ident
 //*************************************************************************************
-void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
-{
+void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
+	
 	long t = 1;
 
 	if (!io) return;
