@@ -154,7 +154,7 @@ namespace
 			;
 	};
 
-	SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY] =
+	ActionKey sakActionDefaultKey[MAX_ACTION_KEY] =
 	{
 	
 	};

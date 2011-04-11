@@ -35,16 +35,17 @@ enum
 	MAX_ACTION_KEY = 40
 };
 
-struct SACTION_KEY
+struct ActionKey
 {
-	SACTION_KEY( int key_0, int key_1, int _page )
+	ActionKey( int key_0, int key_1, int _page )
 	{
 		iKey[0] = key_0;
 		iKey[1] = key_1;
 		iPage = _page;
 	}
 
-	SACTION_KEY() { iKey[0] = iKey[1] = -1; iPage = 0; }
+	ActionKey() { iKey[0] = iKey[1] = -1; iPage = 0; }
+
 	int	iKey[2];
 	int iPage;
 };
@@ -90,7 +91,7 @@ class Config
 		bool		bMouseLookToggle;
 		bool		bAutoDescription;
 		int			iMouseSensitivity;
-		SACTION_KEY sakActionKey[MAX_ACTION_KEY];
+		ActionKey sakActionKey[MAX_ACTION_KEY];
 		bool		bLinkMouseLookToUse;
 		//MISC
 		bool		bATI;
