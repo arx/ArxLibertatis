@@ -300,8 +300,7 @@ void LoadSaveGame(const long & i)
 // Menu Sounds
 //-----------------------------------------------------------------------------
 
-void ARX_MENU_LaunchAmb(char * _lpszAmb)
-{
+void ARX_MENU_LaunchAmb(const string & _lpszAmb) {
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
 

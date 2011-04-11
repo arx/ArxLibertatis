@@ -4217,7 +4217,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "PLAY"))
 				{
-					unsigned long loop(ARX_SOUND_PLAY_ONCE);
+					SoundLoopMode loop(ARX_SOUND_PLAY_ONCE);
 					std::string temp2;
 					float pitch(1.0F);
 					bool unique(false);

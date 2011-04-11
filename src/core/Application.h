@@ -226,6 +226,13 @@ struct EERIE_RGBB {
 	float b;
 };
 
+enum SoundModeFlag {
+	ARX_SOUND_ON     = 0x00000001,
+	ARX_SOUND_REVERB = 0x00000002
+};
+DECLARE_FLAGS(SoundModeFlag, SoundMode)
+DECLARE_FLAGS_OPERATORS(SoundMode)
+
 struct PROJECT {
 	
 	PROJECT()
@@ -236,8 +243,8 @@ struct PROJECT {
 		  bits(0), hide(0), TextureSize(0), TextureBits(0), 
 		  interpolatemouse(0), vsync(0) {
 	}
-
-	long soundmode;
+	
+	SoundMode soundmode;
 	long compatibility;
 	long ambient;
 	long improve;
@@ -255,6 +262,7 @@ struct PROJECT {
 	long interpolatemouse;
 	long vsync;
 	std::string localisationpath;
+	
 };
 
 struct EERIETOOLBAR {
