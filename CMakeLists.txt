@@ -36,7 +36,7 @@ endfunction(enable_unity_build)
 # Check that the configured CMAKE_CXX_COMPILER works.
 function(check_compiler)
 	if(NOT CHECK_COMPILER)
-		message(STATUS "Checking compler: ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
+		message(STATUS "Checking compiler: ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
 		
 		# See if we can link a simple 32-bit program with the library.
 		set(compile_test_file ${CMAKE_CURRENT_BINARY_DIR}/compile_test.cpp)
@@ -109,10 +109,12 @@ option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" ON)
 
 if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
+	unset(CHECK_COMPILER CACHE)
 	force_recheck_library(DevIL IL)
 	force_recheck_library(ZLIB)
 	force_recheck_library(Freetype)
 	force_recheck_library(Threads)
+	force_recheck_library(OpenAL)
 	set(LAST_ARX_FORCE_32BIT ${ARX_FORCE_32BIT} CACHE INTERNAL "The last ARX_FORCE_32BIT value")
 endif()
 
@@ -188,6 +190,7 @@ else(MSVC)
 	check_link_library(DevIL IL_LIBRARIES IL)
 	check_link_library(ZLIB ZLIB_LIBRARIES)
 	check_link_library(Freetype FREETYPE_LIBRARIES)
+	check_link_library(OpenAL OPENAL_LIBRARY)
 	
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
