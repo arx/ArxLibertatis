@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <cstring>
 #include <cstdlib>
+#include <map>
 using std::string;
 using std::vector;
 using std::printf;
@@ -15,6 +16,7 @@ using std::setfill;
 using std::setw;
 using std::memcpy;
 using std::free;
+using std::map;
 
 #include "io/SaveBlock.h"
 #include "io/Filesystem.h"
@@ -441,10 +443,21 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 	return 0;
 }
 
-static void fix_io(SaveBlock & save, const string & name) {
+typedef map<string, string> Idents;
+
+static void fix_io(SaveBlock & save, const string & name, Idents & idents, const string & where) {
 	
 	if(!strcasecmp(name, "none") || name.empty()) {
 		return;
+	}
+	
+	Idents::iterator it = idents.find(name);
+	if(it != idents.end()) {
+		printf("duplicate ident %s detected: in %s and %s\n", name.c_str(), it->second.c_str(), where.c_str());
+		// we already fixed this!
+		return;
+	} else {
+		idents[name] = where;
 	}
 	
 	ARX_CHANGELEVEL_IO_SAVE ais;
@@ -497,7 +510,7 @@ static void fix_io(SaveBlock & save, const string & name) {
 	
 }
 
-static void fix_player(SaveBlock & save) {
+static void fix_player(SaveBlock & save, Idents & idents) {
 	
 	printf("player\n");
 	
@@ -515,24 +528,28 @@ static void fix_player(SaveBlock & save) {
 	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
 		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
 			for(size_t n = 0; n < SAVED_INVENTORY_X; n++) {
-				fix_io(save, asp.id_inventory[iNbBag][n][m]);
+				if(asp.inventory_show[iNbBag][n][m]) {
+					stringstream where;
+					where << "player inventory bag " << iNbBag << " x=" << n << " y=" << m; 
+					fix_io(save, asp.id_inventory[iNbBag][n][m], idents, where.str());
+				}
 			}
 		}
 	}
 	
-	fix_io(save, asp.equipsecondaryIO);
-	fix_io(save, asp.equipshieldIO);
-	fix_io(save, asp.leftIO);
-	fix_io(save, asp.rightIO);
-	fix_io(save, asp.curtorch);
+	fix_io(save, asp.equipsecondaryIO, idents, "equiped secondary");
+	fix_io(save, asp.equipshieldIO, idents, "equiped shield");
+	fix_io(save, asp.leftIO, idents, "player left");
+	fix_io(save, asp.rightIO, idents, "player right");
+	fix_io(save, asp.curtorch, idents, "equiped torch");
 	
 	for(size_t k = 0; k < SAVED_MAX_EQUIPED; k++) {
-		fix_io(save, asp.equiped[k]);
+		fix_io(save, asp.equiped[k], idents, "equiped");
 	}
 	
 }
 
-static void fix_level(SaveBlock & save, long num) {
+static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 	stringstream ss;
 	ss << "lvl" << setfill('0') << setw(3) << num << ".sav";
@@ -561,11 +578,13 @@ static void fix_level(SaveBlock & save, long num) {
 	
 	free(dat);
 	
+	stringstream where;
+	where << "level " << num;
+	
 	for(long i = 0; i < asi.nb_inter; i++) {
 		stringstream name;
 		name << GetName(idx_io[i].filename) << "_" << setw(4) << setfill('0') << idx_io[i].ident;
-		fix_io(save, name.str());
-		fix_io(save, name.str());
+		fix_io(save, name.str(), idents, where.str());
 	}
 	
 	delete[] idx_io;
@@ -585,11 +604,13 @@ static int main_fix(SaveBlock & save, int argc, char ** argv) {
 		return 2;
 	}
 	
-	fix_player(save);
+	Idents idents;
+	
+	fix_player(save, idents);
 	
 	const long MAX_LEVEL = 24;
 	for(long i = 0; i <= MAX_LEVEL; i++) {
-		fix_level(save, i);
+		fix_level(save, i, idents);
 	}
 	
 	save.flush();

@@ -2594,7 +2594,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 		io->over_script.nblvar = ass->nblvar;
 
-		pos += sizeof(ARX_SCRIPT_SAVE);
+		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 
 		for (int i = 0; i < ass->nblvar; i++)
 		{
