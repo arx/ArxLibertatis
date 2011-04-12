@@ -2253,7 +2253,7 @@ EERIE_3DOBJ * _LoadTheObj(const string & file, const string & texpath) {
 	RemoveName(path);
 	path += texpath;
 	
-	return TheoToEerie_Fast(path, texpath, true);
+	return TheoToEerie_Fast(path, file, true);
 }
 
 // TODO why is this in EERIEobject
