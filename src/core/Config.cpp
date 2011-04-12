@@ -87,7 +87,7 @@ namespace
 			forcezbias = false,
 			forcetoggle = false,
 			fg = true,
-			new_control = false;
+			newcontrol = false;
 	};
 
 	namespace Section
@@ -409,6 +409,23 @@ int Config::ReadConfig( const std::string& section, const std::string& key, int 
 		return atoi( temp );
 }
 
+/**
+ * Reads a string from the Config and returns its converted bool value,
+ * return the default value if an empty string is found.
+ * @param section The section to read from
+ * @param key The key in the section to return
+ * @param default_value The default value to return in the case of an empty string
+ */
+bool Config::ReadConfig( const std::string& section, const std::string& key, bool default_value ) const
+{
+	std::string temp( ReadConfig( section, key ) );
+
+	if ( temp.empty() )
+		return default_value;
+	else
+		return atob( temp );
+}
+
 //-----------------------------------------------------------------------------
 
 void Config::WriteConfig( const std::string& section, const std::string& key, const std::string& value )
@@ -420,6 +437,17 @@ void Config::WriteConfig( const std::string& section, const std::string& key, co
 void Config::WriteConfig( const std::string& section, const std::string& key, int value )
 {
 	WriteConfig( section, key, itoa( value ) );
+}
+
+/**
+ * Writes a key to the section map after converting the bool value
+ * @param section The section to write to
+ * @param key The Key in the section to write
+ * @param value The bool value to be written
+ */
+void Config::WriteConfig( const std::string& section, const std::string& key, bool value )
+{
+	WriteConfig( section, key, btoa( value ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -619,13 +647,13 @@ void Config::SaveAll()
 	strcat(tcTxt,Project.localisationpath.c_str());
 	strcat(tcTxt,"\"");
 	WriteConfig( Section::Language, Key::language_string, Project.localisationpath );
-	WriteConfig( Section::FirstRun, Key::first_run_int, first_launch?1:0);
+	WriteConfig( Section::FirstRun, Key::first_run_int, first_launch );
 	//video
 	sprintf(tcTxt,"%dx%d",iWidth,iHeight);
 	WriteConfig( Section::Video, Key::resolution, std::string(tcTxt) );
 	WriteConfig( Section::Video, Key::bpp, bpp);
-	WriteConfig( Section::Video, Key::full_screen, (bFullScreen)?1:0);
-	WriteConfig( Section::Video, Key::bump, (bBumpMapping)?1:0);
+	WriteConfig( Section::Video, Key::full_screen, bFullScreen );
+	WriteConfig( Section::Video, Key::bump, bBumpMapping );
 	WriteConfig( Section::Video, Key::texture, iTextureResol);
 	WriteConfig( Section::Video, Key::mesh_reduction, iMeshReduction);
 	WriteConfig( Section::Video, Key::others_details, iLevelOfDetails);
@@ -633,21 +661,21 @@ void Config::SaveAll()
 	WriteConfig( Section::Video, Key::gamma, iGamma);
 	WriteConfig( Section::Video, Key::luminosity, iLuminosite);
 	WriteConfig( Section::Video, Key::contrast, iContrast);
-	WriteConfig( Section::Video, Key::show_crosshair, bShowCrossHair?1:0);
-	WriteConfig( Section::Video, Key::antialiasing, bAntiAliasing?1:0);
+	WriteConfig( Section::Video, Key::show_crosshair, bShowCrossHair );
+	WriteConfig( Section::Video, Key::antialiasing, bAntiAliasing );
 	//audio
 	WriteConfig( Section::Audio, Key::master_volume, iMasterVolume );
 	WriteConfig( Section::Audio, Key::effects_volume, iSFXVolume);
 	WriteConfig( Section::Audio, Key::speech_volume, iSpeechVolume);
 	WriteConfig( Section::Audio, Key::ambiance_volume, iAmbianceVolume);
-	WriteConfig( Section::Audio, Key::EAX, (bEAX)?1:0);
+	WriteConfig( Section::Audio, Key::EAX, bEAX );
 	//input
-	WriteConfig( Section::Input, Key::invert_mouse, (bInvertMouse)?1:0);
-	WriteConfig( Section::Input, Key::auto_ready_weapon, (bAutoReadyWeapon)?1:0);
-	WriteConfig( Section::Input, Key::mouse_look_toggle, (bMouseLookToggle)?1:0);
-	WriteConfig( Section::Input, Key::mouse_sensitivity, iMouseSensitivity);
-	WriteConfig( Section::Input, Key::mouse_smoothing, (bMouseSmoothing)?1:0);
-	WriteConfig( Section::Input, Key::auto_description, (bAutoDescription)?1:0);
+	WriteConfig( Section::Input, Key::invert_mouse, bInvertMouse );
+	WriteConfig( Section::Input, Key::auto_ready_weapon, bAutoReadyWeapon );
+	WriteConfig( Section::Input, Key::mouse_look_toggle, bMouseLookToggle );
+	WriteConfig( Section::Input, Key::mouse_sensitivity, iMouseSensitivity );
+	WriteConfig( Section::Input, Key::mouse_smoothing, bMouseSmoothing );
+	WriteConfig( Section::Input, Key::auto_description, bAutoDescription );
 	//key
 	WriteConfigKey("jump",CONTROLS_CUST_JUMP);
 	WriteConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
@@ -660,7 +688,7 @@ void Config::SaveAll()
 	WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
 	WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);
 	WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
-	WriteConfigInt("INPUT","link_mouse_look_to_use",(bLinkMouseLookToUse)?1:0);
+	WriteConfigInt("INPUT","link_mouse_look_to_use", bLinkMouseLookToUse );
 	WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);
 	WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);
 	WriteConfigKey("book",CONTROLS_CUST_BOOK);
@@ -700,12 +728,12 @@ void Config::SaveAll()
 	WriteConfigKey("minimap",CONTROLS_CUST_MINIMAP);
 
 	//misc
-	WriteConfig( Section::Misc, Key::softfog,(bATI)?1:0);
-	WriteConfig( Section::Misc, Key::forcenoeax,(bForceNoEAX)?1:0);
-	WriteConfig( Section::Misc, Key::forcezbias,(bForceZBias)?1:0);
-	WriteConfig( Section::Misc, Key::newcontrol,(INTERNATIONAL_MODE)?1:0);
-	WriteConfig( Section::Misc, Key::forcetoggle,(bOneHanded)?1:0);
-	WriteConfig( Section::Misc, Key::fg,(uiGoreMode)?1:0);
+	WriteConfig( Section::Misc, Key::softfog, bATI );
+	WriteConfig( Section::Misc, Key::forcenoeax, bForceNoEAX );
+	WriteConfig( Section::Misc, Key::forcezbias, bForceZBias );
+	WriteConfig( Section::Misc, Key::newcontrol, (bool)INTERNATIONAL_MODE );
+	WriteConfig( Section::Misc, Key::forcetoggle, bOneHanded );
+	WriteConfig( Section::Misc, Key::fg, (bool)uiGoreMode );
 }
 
 extern bool IsNoGore( void );
@@ -715,7 +743,7 @@ void Config::ReadAll()
 	bool bWarningGore=false;
 
 	// Check if this is the first run of the game
-	first_launch = ReadConfig( Section::FirstRun, Key::first_run_int, 1 );
+	first_launch = ReadConfig( Section::FirstRun, Key::first_run_int, Default::first_run );
 
 	// Get the locale language
 	Project.localisationpath = ReadConfig( Section::Language, Key::language_string, Default::language );
@@ -728,8 +756,8 @@ void Config::ReadAll()
 	iWidth = atoi( resolution.substr( 0, resolution.find( 'x' ) ) );
 	iHeight = atoi( resolution.substr( resolution.find('x') + 1 ) );
 	bpp = ReadConfig( Section::Video, Key::bpp, Default::bpp );
-	bFullScreen = ReadConfig( Section::Video, Key::full_screen, 1 );
-	bBumpMapping = ReadConfig( Section::Video, Key::bump, 0 );
+	bFullScreen = ReadConfig( Section::Video, Key::full_screen, Default::full_screen );
+	bBumpMapping = ReadConfig( Section::Video, Key::bump, Default::bump );
 	iTextureResol = ReadConfig( Section::Video, Key::texture, Default::texture );
 	iMeshReduction = ReadConfig( Section::Video, Key::mesh_reduction, Default::mesh_reduction );
 	iLevelOfDetails = ReadConfig( Section::Video, Key::others_details, Default::others_details );
@@ -737,24 +765,24 @@ void Config::ReadAll()
 	iGamma = ReadConfig( Section::Video, Key::gamma, Default::gamma );
 	iLuminosite = ReadConfig( Section::Video, Key::luminosity, Default::luminosity );
 	iContrast = ReadConfig( Section::Video, Key::contrast, Default::contrast );
-	bShowCrossHair = ReadConfig( Section::Video, Key::show_crosshair, 1 );
-	bAntiAliasing = ReadConfig( Section::Video, Key::antialiasing, 0 );
+	bShowCrossHair = ReadConfig( Section::Video, Key::show_crosshair, Default::show_crosshair );
+	bAntiAliasing = ReadConfig( Section::Video, Key::antialiasing, Default::antialiasing );
 
 	// Get audio settings
 	iMasterVolume = ReadConfig( Section::Audio, Key::master_volume, Default::master_volume );
 	iSFXVolume = ReadConfig( Section::Audio, Key::effects_volume, Default::effects_volume );
 	iSpeechVolume = ReadConfig( Section::Audio, Key::speech_volume, Default::speech_volume );
 	iAmbianceVolume = ReadConfig( Section::Audio, Key::ambiance_volume, Default::ambiance_volume );
-	bEAX = ReadConfig( Section::Audio, Key::EAX, 0 );
+	bEAX = ReadConfig( Section::Audio, Key::EAX, Default::EAX );
 
 	// Get input settings
-	bInvertMouse = ReadConfig( Section::Input, Key::invert_mouse, 0 );
-	bAutoReadyWeapon = ReadConfig( Section::Input, Key::auto_ready_weapon, 0 );
-	bMouseLookToggle = ReadConfig( Section::Input, Key::mouse_look_toggle, 0 );
+	bInvertMouse = ReadConfig( Section::Input, Key::invert_mouse, Default::invert_mouse );
+	bAutoReadyWeapon = ReadConfig( Section::Input, Key::auto_ready_weapon, Default::auto_ready_weapon );
+	bMouseLookToggle = ReadConfig( Section::Input, Key::mouse_look_toggle, Default::mouse_look_toggle );
 	iMouseSensitivity = ReadConfig( Section::Input, Key::mouse_sensitivity, Default::mouse_sensitivity );
-	bMouseSmoothing = ReadConfig( Section::Input, Key::mouse_smoothing, 0 );
-	bAutoDescription = ReadConfig( Section::Input, Key::auto_description, 1 );
-	bLinkMouseLookToUse = ReadConfig( Section::Input, Key::link_mouse_look_to_use, 0 );
+	bMouseSmoothing = ReadConfig( Section::Input, Key::mouse_smoothing, Default::mouse_smoothing );
+	bAutoDescription = ReadConfig( Section::Input, Key::auto_description, Default::auto_description );
+	bLinkMouseLookToUse = ReadConfig( Section::Input, Key::link_mouse_look_to_use, Default::link_mouse_look_to_use );
 
 	//key
 	ReadConfigKey("jump",CONTROLS_CUST_JUMP);
@@ -817,16 +845,16 @@ void Config::ReadAll()
 	}
 */
 	// Get miscellaneous settings
-	bATI = ReadConfig( Section::Misc, Key::softfog, 0 );
-	bForceNoEAX = ReadConfig( Section::Misc, Key::forcenoeax, 0 );
-	bForceZBias = ReadConfig( Section::Misc, Key::forcezbias, 0 );
-	bOneHanded = ReadConfig( Section::Misc, Key::forcetoggle, 0 );
-	uiGoreMode = ReadConfig(Section::Misc, Key::fg, 1 );
+	bATI = ReadConfig( Section::Misc, Key::softfog, Default::softfog );
+	bForceNoEAX = ReadConfig( Section::Misc, Key::forcenoeax, Default::forcenoeax );
+	bForceZBias = ReadConfig( Section::Misc, Key::forcezbias, Default::forcezbias );
+	bOneHanded = ReadConfig( Section::Misc, Key::forcetoggle, Default::forcetoggle );
+	uiGoreMode = ReadConfig(Section::Misc, Key::fg, Default::fg );
 	pStringMod = ReadConfig( Section::Misc, Key::modpak, Default::modpak );
 	pStringModSfx = ReadConfig(Section::Misc, Key::modsfxpak, Default::modsfxpak );
 	pStringModSpeech = ReadConfig(Section::Misc, Key::modspeechpak, Default::speechmodpak );
 
-	INTERNATIONAL_MODE = ReadConfig(Section::Misc, Key::newcontrol, 0);
+	INTERNATIONAL_MODE = ReadConfig(Section::Misc, Key::newcontrol, Default::newcontrol );
 
 	switch(uiGoreMode)
 	{
