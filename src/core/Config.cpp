@@ -140,6 +140,44 @@ namespace
 			// Input key options
 			jump = "jump",
 			magic_mode = "magic_mode",
+			stealth_mode = "stealth_mode",
+			walk_forward = "walk_forward",
+			walk_backward = "walk_backward",
+			strafe_left = "strafe_left",
+			strafe_right = "strafe_right",
+			lean_left = "lean_left",
+			lean_right = "lean_right",
+			crouch = "crouch",
+			mouselook = "mouselook",
+			action_combine = "action_combine",
+			inventory = "inventory",
+			book = "book",
+			char_sheet = "char_sheet",
+			magic_book = "magic_book",
+			map = "map",
+			quest_book = "quest_book",
+			drink_potion_life = "drink_potion_life",
+			drink_potion_mana = "drink_potion_mana",
+			torch = "torch",
+			cancel_current_spell = "cancel_current_spell",
+			precast_1 = "precast_1",
+			precast_2 = "precast_2",
+			precast_3 = "precast_3",
+			draw_weapon = "draw_weapon",
+			quicksave = "quicksave",
+			quickload = "quickload",
+			turn_left = "turn_left",
+			turn_right = "turn_right",
+			look_up = "look_up",
+			look_down = "look_down",
+			strafe = "strafe",
+			center_view = "center_view",
+			freelook = "freelook",
+			previous = "previous",
+			next = "next",
+			crouch_toggle = "crouch_toggle",
+			unequip_weapon = "unequip_weapon",
+			minimap = "minimap",
 
 			// Misc options
 			softfog = "softfog",
@@ -283,7 +321,7 @@ void Config::SetDefaultKey()
 		bLinkMouseLookToUse=false;
 }
 
-int Config::GetDIKWithASCII( const std::string& _pcTouch)
+int Config::GetDIKWithASCII( const std::string& _pcTouch) const
 {
 	std::string pcT = _pcTouch;
 
@@ -545,112 +583,58 @@ bool Config::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
 	return bChange;
 }
 
-//-----------------------------------------------------------------------------
-
-bool Config::WriteConfigKey( const std::string& _pcKey,int _iAction)
+void Config::WriteConfig( const std::string& section, const std::string& key, ControlAction index )
 {
-	char tcTxt[256];
-	char tcTxt2[256];
-	std::string pcText;
-	bool bOk=true;
-	std::string pcText1;
+	std::string value;
 
-	strcpy(tcTxt,_pcKey.c_str());
+	value = pGetInfoDirectInput->GetFullNameTouch( sakActionKey[index].iKey[0] );
 
-	int iL;
-	pcText1 = pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[0]);
-	iL = pcText1.length() + 1;
+	if ( value.empty() )
+		value = pGetInfoDirectInput->GetFullNameTouch( sakActionDefaultKey[index].iKey[0] );
 
-	pcText = pcText1;
+	WriteConfig( section, key + "_k0", value );
 
-	if( !pcText.empty() )
-	{
-		strcpy(tcTxt2,tcTxt);
-		strcat(tcTxt2,"_k0");
-		bOk&=WriteConfigString("KEY",tcTxt2,pcText);
-	}
+	value = pGetInfoDirectInput->GetFullNameTouch( sakActionKey[index].iKey[1] );
 
-	pcText1 = pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[1]);
-	iL = pcText1.length() + 1;
-		
-	pcText = pcText1;
+	if ( value.empty() )
+		value = pGetInfoDirectInput->GetFullNameTouch( sakActionDefaultKey[index].iKey[1] );
 
-	if( !pcText.empty() )
-	{
-		strcpy(tcTxt2,tcTxt);
-		strcat(tcTxt2,"_k1");
-		bOk&=WriteConfigString("KEY",tcTxt2,pcText);
-	}
-
-	return bOk;
+	WriteConfig( section, key + "_k1", value );
 }
 
-bool Config::ReadConfigKey( const std::string& _pcKey, int _iAction )
+ActionKey Config::ReadConfig( const std::string& section, const std::string& key, ControlAction index ) const
 {
-	char tcTxt[256];
-	char tcTxt2[256];
-	std::string pcText;
-	bool bOk=true;
-	strcpy(tcTxt, _pcKey.c_str());
+	ActionKey action_key = sakActionDefaultKey[index];
 
+	std::string key_value;
 
-	int iDIK;
-	strcpy(tcTxt2,tcTxt);
-	strcat(tcTxt2,"_k0");
-	pcText = ReadConfig( "KEY", tcTxt2 );
+	key_value = ReadConfig( section, key + "_k0" );
 
-	if( pcText.empty() )
-		bOk=false;
-	else
-	{
-		iDIK = GetDIKWithASCII( pcText );
+	if ( !key_value.empty() )
+		action_key.iKey[0] = GetDIKWithASCII( key_value );
 
-		if( iDIK == -1 )
-			sakActionKey[_iAction].iKey[0]=-1;
-		else
-			SetActionKey( _iAction, 0, iDIK) ;
-	}
+	key_value = ReadConfig( section, key + "_k1" );
 
-	strcpy( tcTxt2, tcTxt );
-	strcat( tcTxt2, "_k1" );
-	pcText = ReadConfig( "KEY", tcTxt2 );
+	if ( !key_value.empty() )
+		action_key.iKey[1] = GetDIKWithASCII( key_value );
 
-	if( pcText.empty() )
-		bOk = false;
-	else
-	{
-		iDIK = GetDIKWithASCII( pcText );
-
-		if( iDIK == -1 )
-		{
-			sakActionKey[_iAction].iKey[1]=-1;
-		}
-		else
-		{
-			SetActionKey( _iAction, 1, iDIK );
-		}
-	}
-
-	return bOk;
+	return action_key;
 }
 
-//-----------------------------------------------------------------------------
-
+/**
+ * Writes all the data in the config to the section map
+ * and then saves the data to file
+ */
 void Config::SaveAll()
 {
-	std::ofstream out( pcName.c_str() );
-	config_map.save_all( out );
-	char tcTxt[256];
+	/** Update all the relevant sections in the config with current config data **/
 
 	//language
-	strcpy(tcTxt,"\"");
-	strcat(tcTxt,Project.localisationpath.c_str());
-	strcat(tcTxt,"\"");
 	WriteConfig( Section::Language, Key::language_string, Project.localisationpath );
 	WriteConfig( Section::FirstRun, Key::first_run_int, first_launch );
+
 	//video
-	sprintf(tcTxt,"%dx%d",iWidth,iHeight);
-	WriteConfig( Section::Video, Key::resolution, std::string(tcTxt) );
+	WriteConfig( Section::Video, Key::resolution, itoa( iWidth ) + 'x' + itoa( iHeight ) );
 	WriteConfig( Section::Video, Key::bpp, bpp);
 	WriteConfig( Section::Video, Key::full_screen, bFullScreen );
 	WriteConfig( Section::Video, Key::bump, bBumpMapping );
@@ -663,12 +647,14 @@ void Config::SaveAll()
 	WriteConfig( Section::Video, Key::contrast, iContrast);
 	WriteConfig( Section::Video, Key::show_crosshair, bShowCrossHair );
 	WriteConfig( Section::Video, Key::antialiasing, bAntiAliasing );
+
 	//audio
 	WriteConfig( Section::Audio, Key::master_volume, iMasterVolume );
 	WriteConfig( Section::Audio, Key::effects_volume, iSFXVolume);
 	WriteConfig( Section::Audio, Key::speech_volume, iSpeechVolume);
 	WriteConfig( Section::Audio, Key::ambiance_volume, iAmbianceVolume);
 	WriteConfig( Section::Audio, Key::EAX, bEAX );
+
 	//input
 	WriteConfig( Section::Input, Key::invert_mouse, bInvertMouse );
 	WriteConfig( Section::Input, Key::auto_ready_weapon, bAutoReadyWeapon );
@@ -676,56 +662,57 @@ void Config::SaveAll()
 	WriteConfig( Section::Input, Key::mouse_sensitivity, iMouseSensitivity );
 	WriteConfig( Section::Input, Key::mouse_smoothing, bMouseSmoothing );
 	WriteConfig( Section::Input, Key::auto_description, bAutoDescription );
+	WriteConfigInt( Section::Input, Key::link_mouse_look_to_use, bLinkMouseLookToUse );
+
 	//key
-	WriteConfigKey("jump",CONTROLS_CUST_JUMP);
-	WriteConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
-	WriteConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
-	WriteConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	WriteConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
-	WriteConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
-	WriteConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	WriteConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
-	WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
-	WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);
-	WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
-	WriteConfigInt("INPUT","link_mouse_look_to_use", bLinkMouseLookToUse );
-	WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);
-	WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);
-	WriteConfigKey("book",CONTROLS_CUST_BOOK);
-	WriteConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
-	WriteConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
-	WriteConfigKey("map",CONTROLS_CUST_BOOKMAP);
-	WriteConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
-	WriteConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
-	WriteConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
-	WriteConfigKey("torch",CONTROLS_CUST_TORCH);
+	WriteConfig( Section::Key, Key::jump, CONTROLS_CUST_JUMP );
+	WriteConfig( Section::Key, Key::magic_mode, CONTROLS_CUST_MAGICMODE );
+	WriteConfig( Section::Key, Key::stealth_mode, CONTROLS_CUST_STEALTHMODE);
+	WriteConfig( Section::Key, Key::walk_forward, CONTROLS_CUST_WALKFORWARD);
+	WriteConfig( Section::Key, Key::walk_backward, CONTROLS_CUST_WALKBACKWARD);
+	WriteConfig( Section::Key, Key::strafe_left, CONTROLS_CUST_STRAFELEFT);
+	WriteConfig( Section::Key, Key::strafe_right, CONTROLS_CUST_STRAFERIGHT);
+	WriteConfig( Section::Key, Key::lean_left, CONTROLS_CUST_LEANLEFT);
+	WriteConfig( Section::Key, Key::lean_right, CONTROLS_CUST_LEANRIGHT);
+	WriteConfig( Section::Key, Key::crouch, CONTROLS_CUST_CROUCH);
+	WriteConfig( Section::Key, Key::mouselook, CONTROLS_CUST_MOUSELOOK);
+	WriteConfig( Section::Key, Key::action_combine, CONTROLS_CUST_ACTION);
+	WriteConfig( Section::Key, Key::inventory, CONTROLS_CUST_INVENTORY);
+	WriteConfig( Section::Key, Key::book, CONTROLS_CUST_BOOK);
+	WriteConfig( Section::Key, Key::char_sheet, CONTROLS_CUST_BOOKCHARSHEET);
+	WriteConfig( Section::Key, Key::magic_book, CONTROLS_CUST_BOOKSPELL);
+	WriteConfig( Section::Key, Key::map, CONTROLS_CUST_BOOKMAP);
+	WriteConfig( Section::Key, Key::quest_book, CONTROLS_CUST_BOOKQUEST);
+	WriteConfig( Section::Key, Key::drink_potion_life, CONTROLS_CUST_DRINKPOTIONLIFE);
+	WriteConfig( Section::Key, Key::drink_potion_mana, CONTROLS_CUST_DRINKPOTIONMANA);
+	WriteConfig( Section::Key, Key::torch, CONTROLS_CUST_TORCH);
 
-	WriteConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
-	WriteConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
-	WriteConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
-	WriteConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
-	WriteConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
-	WriteConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
-	WriteConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
+	WriteConfig( Section::Key, Key::cancel_current_spell, CONTROLS_CUST_CANCELCURSPELL);
+	WriteConfig( Section::Key, Key::precast_1, CONTROLS_CUST_PRECAST1);
+	WriteConfig( Section::Key, Key::precast_2, CONTROLS_CUST_PRECAST2);
+	WriteConfig( Section::Key, Key::precast_3, CONTROLS_CUST_PRECAST3);
+	WriteConfig( Section::Key, Key::draw_weapon, CONTROLS_CUST_WEAPON);
+	WriteConfig( Section::Key, Key::quicksave, CONTROLS_CUST_QUICKSAVE);
+	WriteConfig( Section::Key, Key::quickload, CONTROLS_CUST_QUICKLOAD);
 
-	WriteConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
-	WriteConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
-	WriteConfigKey("look_up",CONTROLS_CUST_LOOKUP);
-	WriteConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
+	WriteConfig( Section::Key, Key::turn_left, CONTROLS_CUST_TURNLEFT);
+	WriteConfig( Section::Key, Key::turn_right, CONTROLS_CUST_TURNRIGHT);
+	WriteConfig( Section::Key, Key::look_up, CONTROLS_CUST_LOOKUP);
+	WriteConfig( Section::Key, Key::look_down, CONTROLS_CUST_LOOKDOWN);
 
-	WriteConfigKey("strafe",CONTROLS_CUST_STRAFE);
-	WriteConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
+	WriteConfig( Section::Key, Key::strafe, CONTROLS_CUST_STRAFE);
+	WriteConfig( Section::Key, Key::center_view, CONTROLS_CUST_CENTERVIEW);
 
-	WriteConfigKey("freelook",CONTROLS_CUST_FREELOOK);
+	WriteConfig( Section::Key, Key::freelook, CONTROLS_CUST_FREELOOK);
 
-	WriteConfigKey("previous",CONTROLS_CUST_PREVIOUS);
-	WriteConfigKey("next",CONTROLS_CUST_NEXT);
+	WriteConfig( Section::Key, Key::previous, CONTROLS_CUST_PREVIOUS);
+	WriteConfig( Section::Key, Key::next, CONTROLS_CUST_NEXT);
 
-	WriteConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
+	WriteConfig( Section::Key, Key::crouch_toggle, CONTROLS_CUST_CROUCHTOGGLE);
 
-	WriteConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
+	WriteConfig( Section::Key, Key::unequip_weapon, CONTROLS_CUST_UNEQUIPWEAPON);
 
-	WriteConfigKey("minimap",CONTROLS_CUST_MINIMAP);
+	WriteConfig( Section::Key, Key::minimap, CONTROLS_CUST_MINIMAP);
 
 	//misc
 	WriteConfig( Section::Misc, Key::softfog, bATI );
@@ -734,6 +721,10 @@ void Config::SaveAll()
 	WriteConfig( Section::Misc, Key::newcontrol, (bool)INTERNATIONAL_MODE );
 	WriteConfig( Section::Misc, Key::forcetoggle, bOneHanded );
 	WriteConfig( Section::Misc, Key::fg, (bool)uiGoreMode );
+
+	// Finally save it all to file/stream
+	std::ofstream out( pcName.c_str() );
+	config_map.save_all( out );
 }
 
 extern bool IsNoGore( void );
@@ -784,66 +775,54 @@ void Config::ReadAll()
 	bAutoDescription = ReadConfig( Section::Input, Key::auto_description, Default::auto_description );
 	bLinkMouseLookToUse = ReadConfig( Section::Input, Key::link_mouse_look_to_use, Default::link_mouse_look_to_use );
 
-	//key
-	ReadConfigKey("jump",CONTROLS_CUST_JUMP);
-	ReadConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
-	ReadConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
-	ReadConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
-	ReadConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
-	ReadConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
-	ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
-	ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);
-	ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
+	// Get action key settings
+	sakActionKey[CONTROLS_CUST_JUMP] = ReadConfig( Section::Key, Key::jump, CONTROLS_CUST_JUMP );
+	sakActionKey[CONTROLS_CUST_MAGICMODE] = ReadConfig( Section::Key, Key::magic_mode, CONTROLS_CUST_MAGICMODE );
+	sakActionKey[CONTROLS_CUST_STEALTHMODE] = ReadConfig( Section::Key, Key::stealth_mode, CONTROLS_CUST_STEALTHMODE );
+	sakActionKey[CONTROLS_CUST_WALKFORWARD] = ReadConfig( Section::Key, Key::walk_forward, CONTROLS_CUST_WALKFORWARD );
+	sakActionKey[CONTROLS_CUST_WALKBACKWARD] = ReadConfig( Section::Key, Key::walk_backward, CONTROLS_CUST_WALKBACKWARD );
+	sakActionKey[CONTROLS_CUST_STRAFELEFT] = ReadConfig( Section::Key, Key::strafe_left, CONTROLS_CUST_STRAFELEFT );
+	sakActionKey[CONTROLS_CUST_STRAFERIGHT] = ReadConfig( Section::Key, Key::strafe_right, CONTROLS_CUST_STRAFERIGHT );
+	sakActionKey[CONTROLS_CUST_LEANLEFT] = ReadConfig( Section::Key, Key::lean_left, CONTROLS_CUST_LEANLEFT );
+	sakActionKey[CONTROLS_CUST_LEANRIGHT] = ReadConfig( Section::Key, Key::lean_right, CONTROLS_CUST_LEANRIGHT );
+	sakActionKey[CONTROLS_CUST_CROUCH] = ReadConfig( Section::Key, Key::crouch, CONTROLS_CUST_CROUCH );
+	sakActionKey[CONTROLS_CUST_MOUSELOOK] = ReadConfig( Section::Key, Key::mouselook, CONTROLS_CUST_MOUSELOOK );
 
 
-	ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);
-	ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);
-	ReadConfigKey("book",CONTROLS_CUST_BOOK);
-	ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
-	ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
-	ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);
-	ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
-	ReadConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
-	ReadConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
-	ReadConfigKey("torch",CONTROLS_CUST_TORCH);
+	sakActionKey[CONTROLS_CUST_ACTION] = ReadConfig( Section::Key, Key::action_combine, CONTROLS_CUST_ACTION );
+	sakActionKey[CONTROLS_CUST_INVENTORY] = ReadConfig( Section::Key, Key::inventory, CONTROLS_CUST_INVENTORY );
+	sakActionKey[CONTROLS_CUST_BOOK] = ReadConfig( Section::Key, Key::book, CONTROLS_CUST_BOOK );
+	sakActionKey[CONTROLS_CUST_BOOKCHARSHEET] = ReadConfig( Section::Key, Key::char_sheet, CONTROLS_CUST_BOOKCHARSHEET );
+	sakActionKey[CONTROLS_CUST_BOOKSPELL] = ReadConfig( Section::Key, Key::magic_book, CONTROLS_CUST_BOOKSPELL );
+	sakActionKey[CONTROLS_CUST_BOOKMAP] = ReadConfig( Section::Key, Key::map, CONTROLS_CUST_BOOKMAP );
+	sakActionKey[CONTROLS_CUST_BOOKQUEST] = ReadConfig( Section::Key, Key::quest_book, CONTROLS_CUST_BOOKQUEST );
+	sakActionKey[CONTROLS_CUST_DRINKPOTIONLIFE] = ReadConfig( Section::Key, Key::drink_potion_life, CONTROLS_CUST_DRINKPOTIONLIFE );
+	sakActionKey[CONTROLS_CUST_DRINKPOTIONMANA] = ReadConfig( Section::Key, Key::drink_potion_mana, CONTROLS_CUST_DRINKPOTIONMANA );
+	sakActionKey[CONTROLS_CUST_TORCH] = ReadConfig( Section::Key, Key::torch, CONTROLS_CUST_TORCH );
 
-	ReadConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
-	ReadConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
-	ReadConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
-	ReadConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
-	ReadConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
-	ReadConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
-	ReadConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
-	ReadConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
-	ReadConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
-	ReadConfigKey("look_up",CONTROLS_CUST_LOOKUP);
-	ReadConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
-	ReadConfigKey("strafe",CONTROLS_CUST_STRAFE);
-	ReadConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
-	ReadConfigKey("freelook",CONTROLS_CUST_FREELOOK);
+	sakActionKey[CONTROLS_CUST_CANCELCURSPELL] = ReadConfig( Section::Key, Key::cancel_current_spell, CONTROLS_CUST_CANCELCURSPELL );
+	sakActionKey[CONTROLS_CUST_PRECAST1] = ReadConfig( Section::Key, Key::precast_1, CONTROLS_CUST_PRECAST1 );
+	sakActionKey[CONTROLS_CUST_PRECAST2] = ReadConfig( Section::Key, Key::precast_2, CONTROLS_CUST_PRECAST2 );
+	sakActionKey[CONTROLS_CUST_PRECAST3] = ReadConfig( Section::Key, Key::precast_3, CONTROLS_CUST_PRECAST3 );
+	sakActionKey[CONTROLS_CUST_WEAPON] = ReadConfig( Section::Key, Key::draw_weapon, CONTROLS_CUST_WEAPON );
+	sakActionKey[CONTROLS_CUST_QUICKSAVE] = ReadConfig( Section::Key, Key::quicksave, CONTROLS_CUST_QUICKSAVE );
+	sakActionKey[CONTROLS_CUST_QUICKLOAD] = ReadConfig( Section::Key, Key::quickload, CONTROLS_CUST_QUICKLOAD );
+	sakActionKey[CONTROLS_CUST_TURNLEFT] = ReadConfig( Section::Key, Key::turn_left, CONTROLS_CUST_TURNLEFT );
+	sakActionKey[CONTROLS_CUST_TURNRIGHT] = ReadConfig( Section::Key, Key::turn_right, CONTROLS_CUST_TURNRIGHT );
+	sakActionKey[CONTROLS_CUST_LOOKUP] = ReadConfig( Section::Key, Key::look_up, CONTROLS_CUST_LOOKUP );
+	sakActionKey[CONTROLS_CUST_LOOKDOWN] = ReadConfig( Section::Key, Key::look_down, CONTROLS_CUST_LOOKDOWN );
+	sakActionKey[CONTROLS_CUST_STRAFE] = ReadConfig( Section::Key, Key::strafe, CONTROLS_CUST_STRAFE );
+	sakActionKey[CONTROLS_CUST_CENTERVIEW] = ReadConfig( Section::Key, Key::center_view, CONTROLS_CUST_CENTERVIEW );
+	sakActionKey[CONTROLS_CUST_FREELOOK] = ReadConfig( Section::Key, Key::freelook, CONTROLS_CUST_FREELOOK );
 
-	ReadConfigKey("previous",CONTROLS_CUST_PREVIOUS);
-	ReadConfigKey("next",CONTROLS_CUST_NEXT);
-	ReadConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
+	sakActionKey[CONTROLS_CUST_PREVIOUS] = ReadConfig( Section::Key, Key::previous, CONTROLS_CUST_PREVIOUS );
+	sakActionKey[CONTROLS_CUST_NEXT] = ReadConfig( Section::Key, Key::next, CONTROLS_CUST_NEXT );
+	sakActionKey[CONTROLS_CUST_CROUCHTOGGLE] = ReadConfig( Section::Key, Key::crouch_toggle, CONTROLS_CUST_CROUCHTOGGLE );
 
-	ReadConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
+	sakActionKey[CONTROLS_CUST_UNEQUIPWEAPON] = ReadConfig( Section::Key, Key::unequip_weapon, CONTROLS_CUST_UNEQUIPWEAPON );
 
-	ReadConfigKey("minimap",CONTROLS_CUST_MINIMAP);
+	sakActionKey[CONTROLS_CUST_MINIMAP] = ReadConfig( Section::Key, Key::minimap, CONTROLS_CUST_MINIMAP );
 
-// TODO Replace with defaulted functions above
-/*	if(!bOk2)
-	{
-		int iI=MAX_ACTION_KEY;
-
-		while(iI--)
-		{
-			sakActionKey[iI].iKey[0]=sakActionDefaultKey[iI].iKey[0];
-			sakActionKey[iI].iKey[1]=sakActionDefaultKey[iI].iKey[1];
-		}
-	}
-*/
 	// Get miscellaneous settings
 	bATI = ReadConfig( Section::Misc, Key::softfog, Default::softfog );
 	bForceNoEAX = ReadConfig( Section::Misc, Key::forcenoeax, Default::forcenoeax );

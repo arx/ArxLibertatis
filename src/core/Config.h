@@ -29,11 +29,7 @@
 #include <string>
 
 #include "core/ConfigHashMap.h"
-
-enum
-{
-	MAX_ACTION_KEY = 40
-};
+#include "window/Input.h"
 
 struct ActionKey
 {
@@ -103,7 +99,7 @@ class Config
 	private:
 		ConfigHashMap config_map; // Map containing the config file contents
 
-		int GetDIKWithASCII( const std::string& _pcTouch);
+		int GetDIKWithASCII( const std::string& _pcTouch) const;
 
 		void init();
 
@@ -116,18 +112,18 @@ class Config
 		std::string ReadConfig( const std::string& section, const std::string& key, const std::string& default_value ) const;
 		int ReadConfig( const std::string& section, const std::string& key, int default_value ) const;
 		bool ReadConfig( const std::string& section, const std::string& key, bool default_value ) const;
+		ActionKey ReadConfig( const std::string& section, const std::string& key, ControlAction index ) const;
 		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
 
 		void WriteConfig( const std::string& section, const std::string& key, const std::string& value );
 		void WriteConfig( const std::string& section, const std::string& key, int value );
 		void WriteConfig( const std::string& section, const std::string& key, bool value );
+		void WriteConfig( const std::string& section, const std::string& key, ControlAction index );
 		bool WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int _iDatas);
 		bool WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
 
 		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
 		void ResetActionKey();
-		bool WriteConfigKey( const std::string& _pcKey, int _iAction);
-		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
 		void SetDefaultKey();
 
 		void SaveAll();
