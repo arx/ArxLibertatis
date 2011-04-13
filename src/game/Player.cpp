@@ -3819,9 +3819,9 @@ extern INTERACTIVE_OBJ * FlyingOverIO;
 extern long cur_sm;
 extern void ClearDynLights();
 
-void ARX_GAME_Reset(long type)
-{
-	ARX_SPELLS_CancelAll();
+void ARX_GAME_Reset(long type) {
+	
+	inter.iobj[0]->speed_modif = 0;
 
 	LAST_JUMP_ENDTIME = 0;
 	FlyingOverIO = NULL;
@@ -3912,7 +3912,7 @@ void ARX_GAME_Reset(long type)
 
 	// Speech Things
 	REQUEST_SPEECH_SKIP = 0;
-	ARX_SPEECH_ClearAll(); // to remove later...
+	ARX_SPEECH_ClearAll();
 	ARX_SPEECH_Reset();
 
 	// Spells
