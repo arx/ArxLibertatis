@@ -38,7 +38,7 @@
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 
-#include "physics/Actors.h"
+#include "physics/Attractors.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
 

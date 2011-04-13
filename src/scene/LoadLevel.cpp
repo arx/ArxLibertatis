@@ -95,7 +95,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Implode.h"
 
 #include "physics/CollisionShapes.h"
-#include "physics/Actors.h"
 
 #include "platform/String.h"
 

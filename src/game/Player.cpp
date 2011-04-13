@@ -90,7 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 #include "physics/Collisions.h"
-#include "physics/Actors.h"
+#include "physics/Attractors.h"
 
 #include "platform/String.h"
 
@@ -3303,7 +3303,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 		// Apply Attraction
 		EERIE_3D attraction;
-		ARX_SPECIAL_ATTRACTORS_ComputeForIO(inter.iobj[0], &attraction);
+		ARX_SPECIAL_ATTRACTORS_ComputeForIO(*inter.iobj[0], attraction);
 		player.physics.forces.x += attraction.x;
 		player.physics.forces.y += attraction.y;
 		player.physics.forces.z += attraction.z;

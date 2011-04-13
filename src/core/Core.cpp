@@ -120,7 +120,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Screenshot.h"
  
 #include "physics/Collisions.h"
-#include "physics/Actors.h"
+#include "physics/Attractors.h"
 
 #include "platform/String.h"
 
