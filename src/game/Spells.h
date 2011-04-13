@@ -41,8 +41,6 @@ struct INTERACTIVE_OBJ;
 struct EERIE_S2D;
 class CSpellFx;
 
-void ARX_SPELLS_CancelAll();
-
 // Spells symbol list
 enum Rune {
 	RUNE_AAM = 0,     // Create
