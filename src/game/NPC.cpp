@@ -569,8 +569,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 //*****************************************************************************
 // Checks for nearest VALID anchor for a cylinder from a position
 //*****************************************************************************
-long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl)
-{
+static long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl) {
 	long returnvalue = -1;
 	float distmax = 99999999.f;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -593,8 +592,9 @@ long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl)
 
 	return returnvalue;
 }
-long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl)
-{
+
+static long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl) {
+	
 	EERIE_3D vect;
 	float d = radians(beta);
 	vect.x = -EEsin(d);
@@ -609,8 +609,8 @@ long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl)
 	return AnchorData_GetNearest(&posi, cyl);
 }
 
-long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long except)
-{
+static long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long except) {
+	
 	long returnvalue = -1;
 	float distmax = 99999999.f;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
