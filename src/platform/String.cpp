@@ -1,5 +1,5 @@
 
-#include "io/String.h"
+#include "platform/String.h"
 
 #include <cstring>
 #include <algorithm>

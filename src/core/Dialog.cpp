@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Time.h"
 #include "core/Resource.h"
+#include "core/Core.h"
 
 #include "game/Player.h"
 
@@ -286,8 +287,6 @@ HWND ShowErrorPopup( const char * title, const char * tex)
 	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc, 0);
 	return hdl;
 }
-
-extern long ARX_PATHS_HIERARCHYMOVE;
 
 INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                  LPARAM lParam) {

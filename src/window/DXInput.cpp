@@ -66,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 #include <dinput.h>
 
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 using std::vector;
 

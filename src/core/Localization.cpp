@@ -35,6 +35,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
+#include "platform/Platform.h"
+
 namespace
 {
 	ConfigHashMap* pHashLocalisation = 0;
@@ -176,4 +178,15 @@ std::string getLocalized( const std::string& name, const std::string& default_va
 		return default_value;
 
 	return pHashLocalisation->getConfigValue( name, default_value, empty_string );
+}
+
+long MakeLocalised(const std::string & text, std::string & output)
+{
+	
+	if(text.empty()) {
+		output = "ERROR";
+		return 0;
+	}
+	
+	return HERMES_UNICODE_GetProfileString(text, "error", output);
 }

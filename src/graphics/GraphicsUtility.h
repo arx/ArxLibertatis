@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define D3D_OVERLOADS
 #include "graphics/d3dwrapper.h"
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 //-----------------------------------------------------------------------------
 // Miscellaneous helper functions

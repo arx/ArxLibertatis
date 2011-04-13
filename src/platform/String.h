@@ -1,6 +1,6 @@
 
-#ifndef ARX_IO_STRING_H
-#define ARX_IO_STRING_H
+#ifndef ARX_PLATFORM_STRING_H
+#define ARX_PLATFORM_STRING_H
 
 #include <string>
 
@@ -53,4 +53,4 @@ long specialstrcmp(const std::string & text, const std::string & seek);
 
 void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 
-#endif // ARX_IO_STRING_H
+#endif // ARX_PLATFORM_STRING_H

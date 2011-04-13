@@ -47,12 +47,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "core/Resource.h"
 #include "core/Time.h"
+#include "core/Dialog.h"
+#include "core/Localization.h"
+#include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/NPC.h"
 #include "game/Equipment.h"
 #include "game/Player.h"
 #include "game/Levels.h"
+#include "game/Inventory.h"
 
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
@@ -68,12 +72,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/Logger.h"
 
 #include "physics/Box.h"
 #include "physics/Collisions.h"
+
+#include "platform/String.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/Object.h"
@@ -81,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/ChangeLevel.h"
 #include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
+#include "scene/Light.h"
 
 using std::min;
 using std::max;
@@ -160,7 +166,6 @@ extern EERIE_S2D DANAEMouse;
 extern short sActiveInventory;
 extern unsigned long WILLADDSPEECHTIME;
 extern unsigned long LOOKING_FOR_SPELL_TARGET_TIME;
-extern ANIM_HANDLE * herowait_2h;
 
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
@@ -176,8 +181,6 @@ extern TextManager *pTextManageFlyingOver;
 
 bool IsPlayerStriking();
 void OptmizeInventory(unsigned int);
-long ARX_SPELLS_GetInstance(const long &);
-void ARX_SPELLS_Kill(const long &);
 
 extern long SHOW_INGAME_MINIMAP;
 
@@ -207,7 +210,7 @@ INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
 char*				QuestBook_Cache_Text = NULL;		// Cache of screen text
-long				QuestBook_Cache_nbQuests = -42;
+size_t QuestBook_Cache_nbQuests = -42;
 std::string Page_Buffer;
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
@@ -1055,7 +1058,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	}
 	else
 	{
-		SendIOScriptEvent(inter.iobj[0],0,"","BOOK_OPEN");
+		SendIOScriptEvent(inter.iobj[0],SM_NULL,"","BOOK_OPEN");
 
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
 		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN);
@@ -1145,8 +1148,8 @@ void ReleaseInfosCombine()
 
 	if (player.bag)
 	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (long j=0;j<INVENTORY_Y;j++)
-	for (long i=0;i<INVENTORY_X;i++)
+	for (size_t j=0;j<INVENTORY_Y;j++)
+	for (size_t i=0;i<INVENTORY_X;i++)
 	{
 		io = inventory[iNbBag][i][j].io;
 
@@ -1501,8 +1504,8 @@ void GetInfosCombine()
 
 	if (player.bag)
 	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (long j=0;j<INVENTORY_Y;j++)
-	for (long i=0;i<INVENTORY_X;i++)
+	for (size_t j=0;j<INVENTORY_Y;j++)
+	for (size_t i=0;i<INVENTORY_X;i++)
 	{
 		io = inventory[iNbBag][i][j].io;
 		GetInfosCombineWithIO(io);
@@ -2408,8 +2411,7 @@ bool DANAE::ManageEditorControls()
 
 			if (Project.telekinesis) fMaxdist = 850;
 
-			for (long i=0;i<MAX_LIGHTS;i++)
-			{
+			for(size_t i = 0; i < MAX_LIGHTS; i++) {
 				if ((GLight[i]!=NULL) &&
 					(GLight[i]->exist) &&
 					(EEDistance3D(&GLight[i]->pos, &player.pos) <= fMaxdist) &&
@@ -2493,8 +2495,7 @@ bool DANAE::ManageEditorControls()
 
 		if (Project.telekinesis) fMaxdist = 850;
 
-		for (long i=0;i<MAX_LIGHTS;i++)
-		{
+		for(size_t i = 0; i < MAX_LIGHTS; i++) {
 			if ((GLight[i]!=NULL) &&
 				(GLight[i]->exist) &&
 
@@ -2714,7 +2715,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=-(float)EEsin(radians(player.angle.b))*val;
 					trans.y=0.f;
 					trans.z=(float)EEcos(radians(player.angle.b))*val;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PAD8]=0;
@@ -2727,7 +2728,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=(float)EEsin(radians(player.angle.b))*val;
 					trans.y=0.f;
 					trans.z=-(float)EEcos(radians(player.angle.b))*val;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PAD2]=0;
@@ -2740,7 +2741,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 					trans.y=0.f;
 					trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b-90.f)))*val;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PAD6]=0;
@@ -2753,7 +2754,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 					trans.y=0.f;
 					trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b+90.f)))*val;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PAD4]=0;
@@ -2766,7 +2767,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=0.f;
 					trans.y=-val;
 					trans.z=0.f;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PADADD]=0;
@@ -2779,7 +2780,7 @@ bool DANAE::ManageEditorControls()
 					trans.x=0.f;
 					trans.y=val;
 					trans.z=0.f;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,PATHWAY_STANDARD,0);
 				}
 
 				this->kbd.inkey[INKEY_PADMINUS]=0;
@@ -2881,7 +2882,7 @@ bool DANAE::ManageEditorControls()
 					else pos.y=0.f;
 
 					ARX_PATHS_SelectedNum=v;
-					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,v,ARX_PATH_MOD_ALL,&pos,0,2000);
+					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,v,ARX_PATH_MOD_ALL,&pos,PATHWAY_STANDARD,2000);
 
 				}
 
@@ -2896,8 +2897,7 @@ bool DANAE::ManageEditorControls()
 			{
 				PrecalcIOLighting(NULL,0,1);
 
-				for (long i=0;i<MAX_LIGHTS;i++)
-				{
+				for(size_t i = 0; i < MAX_LIGHTS; i++) {
 					if (GLight[i]!=NULL)
 					if (GLight[i]->exist)
 						{
@@ -3802,7 +3802,6 @@ void ARX_INTERFACE_Combat_Mode(long i)
 	}
 }
 long CSEND=0;
-extern void ApplySPArm();
 long MOVE_PRECEDENCE=0;
 
 extern long DISABLE_JUMP;
@@ -3923,8 +3922,7 @@ void DANAE::ManagePlayerControls()
 		{
 			FD=18.f;
 
-			EERIE_3D old;
-			Vector_Copy(&old,&eyeball.pos);
+			EERIE_3D old = eyeball.pos;
 
 			// Checks WALK_FORWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKFORWARD) )
@@ -6230,8 +6228,8 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 
 	ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory"), fPosX, fPosY - INTERFACE_RATIO(5));
 
-	for (long j=0;j<INVENTORY_Y;j++)
-		for (long i=0;i<INVENTORY_X;i++)
+	for (size_t j=0;j<INVENTORY_Y;j++)
+		for (size_t i=0;i<INVENTORY_X;i++)
 		{
 			INTERACTIVE_OBJ * io = inventory[_sNum][i][j].io;
 
@@ -6671,7 +6669,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 	D3DCOLOR color;
 	float posx = POSX+lSLID_VALUE;
 	float posy = (float)currpos;
-	long typ=spells[i].type;
+	Spell typ=spells[i].type;
 
 	if (flag & 1)
 	{
@@ -6686,7 +6684,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 
 		posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
 		posy =DANAESIZY - INTERFACE_RATIO(126+32); // niveau du stealth
-		typ = i;
+		typ = (Spell)i; // TODO ugh
 	}
 	else
 	{
@@ -6711,7 +6709,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 		}
 	}
 
-	if ( ( (bOk) && (typ>=0) &&	(typ<SPELL_COUNT) ) || (flag == 2) )
+	if ( ( (bOk) && (typ>=0) &&	((size_t)typ<SPELL_COUNT) ) || (flag == 2) )
 		StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
 
 	currpos += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(33.f));
@@ -6775,8 +6773,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			long ypos=0;
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-			for (long i=0;i<NB_RUNES;i++)
-			{
+			for(size_t i = 0; i < RUNE_COUNT; i++) {
+				
 				if (necklace.runes[i])
 				{
 					bookcam.centerx = (382 + xpos * 45 + BOOKDECX) * Xratio;
@@ -6878,7 +6876,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								SpecialCursor=CURSOR_INTERACTION_ON;
 
 								if ((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-									if (LastRune!=i)
+									if ((size_t)LastRune!=i)
 									{
 										switch(i)
 										{
@@ -6986,7 +6984,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			float fPosY = 0;
 			bool	bFlyingOver = false;
 
-			for (int i=0; i < SPELL_COUNT; i++)
+			for (size_t i=0; i < SPELL_COUNT; i++)
 			{
 				if ((spellicons[i].level==Book_SpellPage) && (!spellicons[i].bSecret))
 				{
@@ -6994,7 +6992,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					bool bOk = true;
 					long j = 0;
 
-					while ((j < 4) && (spellicons[i].symbols[j] != 255))
+					while ((j < 4) && (spellicons[i].symbols[j] != RUNE_NONE))
 					{
 						if (!(player.rune_flags & (1<<spellicons[i].symbols[j])))
 						{
@@ -7042,11 +7040,11 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							long count = 0;
 							
 							for (long j = 0; j < 6; ++j)
-								if (spellicons[i].symbols[j] != 255)
+								if (spellicons[i].symbols[j] != RUNE_NONE)
 									++count;
 
 							for (int j = 0; j < 6; ++j)
-								if (spellicons[i].symbols[j] != 255)
+								if (spellicons[i].symbols[j] != RUNE_NONE)
 								{
 									pos.x = (240-(count*32)*( 1.0f / 2 )+j*32);
 									pos.y = (306);
@@ -7118,7 +7116,7 @@ namespace
 /// Update QuestBook_Cache_Text if it needs to. Otherwise does nothing.
 void QuestBook_Update()
 {
-	if (QuestBook_Cache_nbQuests == nb_PlayerQuest)
+	if(QuestBook_Cache_nbQuests == PlayerQuest.size())
 		return;
 
 	delete[] QuestBook_Cache_Text;
@@ -7149,21 +7147,21 @@ void QuestBook_Update()
 
 	QuestBook.pages[0] = 0;
 
-	for (long i = 0; i < nb_PlayerQuest; ++i)
-		if (PlayerQuest[i].localised.size())
-			lLenght += PlayerQuest[i].localised.length();
+	for(size_t i = 0; i < PlayerQuest.size(); ++i) {
+		lLenght += PlayerQuest[i].localised.length();
+	}
 
-	QuestBook_Cache_Text = new char[lLenght+nb_PlayerQuest*2+1];
-	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(char));
+	QuestBook_Cache_Text = new char[lLenght+PlayerQuest.size()*2+1];
+	ZeroMemory(QuestBook_Cache_Text, (lLenght+PlayerQuest.size()*2+1)*sizeof(char));
 
-	for (int i = 0; i < nb_PlayerQuest; ++i)
-		if ( PlayerQuest[i].localised.size() )
-		{
+	for(size_t i = 0; i < PlayerQuest.size(); ++i) {
+		if(PlayerQuest[i].localised.size()) {
 			strcat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
 			strcat(QuestBook_Cache_Text, "\n\n");
 			lLenght += 2;
 		}
-
+	}
+	
 	while (lLenght > 0)
 	{
 		long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, QuestBook_Cache_Text + lLenghtCurr, rRect);
@@ -7182,7 +7180,7 @@ void QuestBook_Update()
 
 	QuestBook.totpages = lCurPage;
 
-	QuestBook_Cache_nbQuests = nb_PlayerQuest;
+	QuestBook_Cache_nbQuests = PlayerQuest.size();
 }
 
 void QuestBook_Render()
@@ -7534,13 +7532,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			max_onglet = 0;
 
-			for (long i = 0; i < SPELL_COUNT; ++i)
+			for (size_t i = 0; i < SPELL_COUNT; ++i)
 			{
 				if (spellicons[i].bSecret == false)
 				{
 					bool bOk = true;
 
-					for(long j = 0; j < 4 && spellicons[i].symbols[j] != 255; ++j) {
+					for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
 						if(!(player.rune_flags & (1<<spellicons[i].symbols[j])))
 							bOk = false;
 					}
@@ -8400,7 +8398,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 	}
 	else if (Book_Mode == BOOKMODE_QUESTS)
 	{
-		if(nb_PlayerQuest > 0) {
+		if(!PlayerQuest.empty()) {
 			QuestBook_Update();
 			QuestBook_Render();
 		}
@@ -9636,10 +9634,10 @@ void DANAE::DrawAllInterface()
 
 		for (long j=0;j<6;j++)
 		{
-			if (player.SpellToMemorize.iSpellSymbols[j] != 255)
+			if (player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE)
 				count++;
 
-			if (SpellSymbol[j] != 255)
+			if (SpellSymbol[j] != RUNE_NONE)
 				count2 ++;
 		}
 
@@ -9655,7 +9653,7 @@ void DANAE::DrawAllInterface()
 		{
 			bool bHalo = false;
 
-			if (SpellSymbol[i] != 255)
+			if (SpellSymbol[i] != RUNE_NONE)
 			{
 				if (SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i])
 				{
@@ -9667,12 +9665,12 @@ void DANAE::DrawAllInterface()
 
 					for (int j=i+1; j<6; j++)
 					{
-						player.SpellToMemorize.iSpellSymbols[j] = 255;
+						player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
 					}
 				}
 			}
 
-			if (player.SpellToMemorize.iSpellSymbols[i]!=255)
+			if (player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE)
 			{
 				EERIEDrawBitmap2( pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
 					necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]]
@@ -9995,8 +9993,7 @@ long Manage3DCursor(long flags)
 				pos.y=player.pos.y;
 
 				{
-					EERIE_3D objcenter;
-					Vector_Init(&objcenter);
+					EERIE_3D objcenter(0, 0, 0);
 					float maxdist= 0.f;
 					float miny=  99999999.f;
 					float maxy= -99999999.f;
@@ -10130,7 +10127,7 @@ long Manage3DCursor(long flags)
 
 							iterating = 0;
 
-							Vector_Copy( &collidpos, &cyl2.origin );
+							collidpos = cyl2.origin;
 				bCollidposNoInit = false;
 
 							if ( lastanything < 0.f )
@@ -10239,12 +10236,12 @@ long Manage3DCursor(long flags)
 								io->velocity.z=0.f;
 
 								io->stopped=1;
-								EERIE_3D viewvector;
+								
 
 								movev.x*=0.0001f;
 								movev.z*=0.0001f;
 								movev.y=0.1f;
-								Vector_Copy(&viewvector,&movev);
+								EERIE_3D viewvector = movev;
 
 								EERIE_3D angle;
 								angle.a=temp.a;

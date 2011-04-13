@@ -25,6 +25,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef _ARX_MENU_EXPORT
 #define _ARX_MENU_EXPORT
 
+#include "platform/Platform.h"
+
 //-----------------------------------------------------------------------------
 //OPTIONS LANGUAGE
 void ARXMenu_Options_Language_Get(int & _iLanguage);

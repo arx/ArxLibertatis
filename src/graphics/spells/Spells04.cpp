@@ -680,14 +680,12 @@ CCurse::CCurse()
 
 	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
-	if (!svoodoo)
-	{
-		svoodoo  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_voodoodoll\\fx_voodoodoll.teo", NULL);
+	if(!svoodoo) {
+		svoodoo = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_voodoodoll\\fx_voodoodoll.teo");
 		EERIE_3DOBJ_RestoreTextures(svoodoo);
 	}
-
 	svoodoo_count++;
-	//EERIE_3DOBJ_RestoreTextures(obj_voodoo);
+	
 }
 
 //-----------------------------------------------------------------------------

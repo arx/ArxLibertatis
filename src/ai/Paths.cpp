@@ -70,14 +70,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Damage.h"
 #include "game/Equipment.h"
+#include "game/Inventory.h"
 
 #include "graphics/GraphicsModes.h"
 #include "graphics/Draw.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/String.h"
 #include "io/FilePath.h"
+
+#include "platform/String.h"
 
 #include "physics/Box.h"
 #include "physics/Collisions.h"
@@ -98,7 +100,7 @@ bool IsPointInField(EERIE_3D * pos);
 ARX_PATH **	ARXpaths = NULL;
 ARX_USE_PATH USE_CINEMATICS_PATH;
 MASTER_CAMERA_STRUCT MasterCamera;
-long ARX_PATHS_HIERARCHYMOVE = 0;
+PathMods ARX_PATHS_HIERARCHYMOVE = 0;
 long		nbARXpaths = 0;
 long USE_CINEMATICS_CAMERA = 0;
 
@@ -723,7 +725,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
 		}
 
 		// Manages a Bezier block
-		if (ap->pathways[targetwaypoint-1].flag & PATHWAY_BEZIER)
+		if (ap->pathways[targetwaypoint-1].flag == PATHWAY_BEZIER)
 		{
 
 			targetwaypoint += 1;
@@ -816,7 +818,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, long mods, EERIE_3D * pos, long flags, unsigned long duration)
+void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, EERIE_3D * pos, PathwayType flags, unsigned long duration)
 {
 	if (ap == NULL) return;
 
@@ -1118,6 +1120,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 					else ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFAAAAAA, ap->height);
 
 					break;
+				case PATHWAY_BEZIER_CONTROLPOINT: break;
 			}
 
 		if ((DANAEMouse.x > SPRmins.x) && (DANAEMouse.x < SPRmaxs.x)
@@ -1144,7 +1147,7 @@ ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 long Thrown_Count = 0;
 void ARX_THROWN_OBJECT_Kill(long num)
 {
-	if ((num >= 0) && (num < MAX_THROWN_OBJECTS))
+	if ((num >= 0) && ((size_t)num < MAX_THROWN_OBJECTS))
 	{
 		Thrown[num].flags = 0;
 		Thrown_Count--;
@@ -1158,7 +1161,7 @@ void ARX_THROWN_OBJECT_Kill(long num)
 }
 void ARX_THROWN_OBJECT_KillAll()
 {
-	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
+	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
 	{
 		ARX_THROWN_OBJECT_Kill(i);
 	}
@@ -1170,7 +1173,7 @@ long ARX_THROWN_OBJECT_GetFree()
 	unsigned long latest_time = ARXTimeUL();
 	long latest_obj = -1;
 
-	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
+	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
 	{
 		if (Thrown[i].flags & ATO_EXIST)
 		{
@@ -1195,7 +1198,7 @@ long ARX_THROWN_OBJECT_GetFree()
 	return -1;
 }
 extern EERIE_3DOBJ * arrowobj;
-long ARX_THROWN_OBJECT_Throw(long type, long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poison)
+long ARX_THROWN_OBJECT_Throw(long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poison)
 {
 	long num = ARX_THROWN_OBJECT_GetFree();
 
@@ -1203,10 +1206,10 @@ long ARX_THROWN_OBJECT_Throw(long type, long source, EERIE_3D * position, EERIE_
 	{
 
 		Thrown[num].damages = damages;
-		Vector_Copy(&Thrown[num].position, position);
-		Vector_Copy(&Thrown[num].initial_position, position);
-		Vector_Copy(&Thrown[num].vector, vect);
-		Vector_Copy(&Thrown[num].upvect, upvect);
+		Thrown[num].position = *position;
+		Thrown[num].initial_position = *position;
+		Thrown[num].vector = *vect;
+		Thrown[num].upvect = *upvect;
 		Quat_Copy(&Thrown[num].quat, quat);
 		Thrown[num].source = source;
 		Thrown[num].obj = NULL;
@@ -1215,14 +1218,7 @@ long ARX_THROWN_OBJECT_Throw(long type, long source, EERIE_3D * position, EERIE_
 		Thrown[num].pRuban = new CRuban();
 		Thrown[num].pRuban->Create(num, 2000);
 
-		switch (type)
-		{
-			case ATO_TYPE_ARROW:
-				Thrown[num].obj = arrowobj;
-				break;
-			default:
-				break;
-		}
+		Thrown[num].obj = arrowobj;
 
 		if (Thrown[num].obj)
 		{
@@ -1374,12 +1370,12 @@ EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
 	EERIE_TRI pol;
 	EERIE_TRI pol2;
 
-	Vector_Copy(&pol.v[0], start);
-	Vector_Copy(&pol.v[2], end);
+	pol.v[0] = *start;
+	pol.v[2] = *end;
 	pol.v[2].x -= 2.f;
 	pol.v[2].y -= 15.f;
 	pol.v[2].z -= 2.f;
-	Vector_Copy(&pol.v[1], end);
+	pol.v[1] = *end;
 	
 	long px, pz;
 	px = end->x * ACTIVEBKG->Xmul;
@@ -1464,7 +1460,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
+	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
 	{
 		if (Thrown[i].flags & ATO_EXIST)
 		{
@@ -1552,7 +1548,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						if (notok < 0)
 						{
-							Vector_Copy(&pos, &Thrown[i].obj->vertexlist3[Thrown[i].obj->facelist[num].vid[0]].v);
+							pos = Thrown[i].obj->vertexlist3[Thrown[i].obj->facelist[num].vid[0]].v;
 
 							for (long nn = 0; nn < 2; nn++)
 							{
@@ -1564,7 +1560,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									PARTICLE_DEF * pd = &particle[j];
 									pd->exist	=	true;
 									pd->zdec	=	0;
-									Vector_Copy(&pd->ov, &pos);
+									pd->ov = pos;
 									pd->move.x	=	(2.f - 4.f * rnd());
 									pd->move.y	=	(2.f - 22.f * rnd());
 									pd->move.z	=	(2.f - 4.f * rnd());
@@ -1605,7 +1601,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			{
 				long need_kill = 0;
 				float mod = (float)time_offset * Thrown[i].velocity;
-				Vector_Copy(&original_pos, &Thrown[i].position);
+				original_pos = Thrown[i].position;
 				Thrown[i].position.x += Thrown[i].vector.x * mod;
 				float gmod = 1.f - Thrown[i].velocity;
 
@@ -1617,8 +1613,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 				CheckForIgnition(&original_pos, 10.f, 0, 2);
 
-				EERIE_3D wpos;
-				Vector_Copy(&wpos, &Thrown[i].position);
+				EERIE_3D wpos = Thrown[i].position;
 				wpos.y += 20.f;
 				EERIEPOLY * ep = EEIsUnderWater(&wpos);
 
@@ -1677,7 +1672,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
 
-						Vector_Copy(&Thrown[i].position, &original_pos);
+						Thrown[i].position = original_pos;
 						j = 200;
 
 					}
@@ -1697,7 +1692,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
 
-						Vector_Copy(&Thrown[i].position, &original_pos);
+						Thrown[i].position = original_pos;
 						j = 200;
 						need_kill = 1;
 					}
@@ -1746,7 +1741,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 											if (hitpoint >= 0)
 											{
 												color	=	target->_npcdata->blood_color;
-												Vector_Copy(&pos, &target->obj->vertexlist3[hitpoint].v);
+												pos = target->obj->vertexlist3[hitpoint].v;
 											}
 
 											if (Thrown[i].source == 0)
@@ -2233,24 +2228,34 @@ bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long
 bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
 	EERIE_3D pol[3];
-	Vector_Copy(&pol[0], (EERIE_3D *)&ep->v[0]);
-	Vector_Copy(&pol[1], (EERIE_3D *)&ep->v[1]);
-	Vector_Copy(&pol[2], (EERIE_3D *)&ep->v[2]);
+	pol[0].x = ep->v[0].sx;
+	pol[0].y = ep->v[0].sy;
+	pol[0].z = ep->v[0].sz;
+	pol[1].x = ep->v[1].sx;
+	pol[1].y = ep->v[1].sy;
+	pol[1].z = ep->v[1].sz;
+	pol[2].x = ep->v[2].sx;
+	pol[2].y = ep->v[2].sy;
+	pol[2].z = ep->v[2].sz;
 
 	
 	if (ep->type & POLY_QUAD)
 	{
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
+		
+		pol[1].x = ep->v[2].sx;
+		pol[1].y = ep->v[2].sy;
+		pol[1].z = ep->v[2].sz;
+		pol[2].x = ep->v[3].sx;
+		pol[2].y = ep->v[3].sy;
+		pol[2].z = ep->v[3].sz;
 
-		Vector_Copy(&pol[1], (EERIE_3D *)&ep->v[2]);
-		Vector_Copy(&pol[2], (EERIE_3D *)&ep->v[3]);
-
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 
 		return false;
 	}
 
-	if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+	if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 
 	return false;
 }
@@ -2470,7 +2475,7 @@ bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long sour
 					pv->velocity.y *= -0.4f;
 				}
 
-				Vector_Copy(&pv->pos, &oldpos[k]);
+				pv->pos = oldpos[k];
 			}
 		}
 		else
@@ -2496,7 +2501,7 @@ bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long sour
 				pv->velocity.z *= 0.3f;
 				pv->velocity.y *= 0.4f;
 
-				Vector_Copy(&pv->pos, &oldpos[k]);
+				pv->pos = oldpos[k];
 			}
 		}
 	}

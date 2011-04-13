@@ -70,7 +70,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <IL/il.h>
 
-#include "core/Common.h"
 #include "core/Application.h"
 
 #include "graphics/GraphicsUtility.h"
@@ -79,10 +78,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Renderer.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "platform/Platform.h"
+#include "platform/String.h"
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 

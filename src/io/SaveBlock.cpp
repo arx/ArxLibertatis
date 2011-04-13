@@ -34,7 +34,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/HashMap.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
-#include "io/String.h"
+
+#include "platform/String.h"
 
 using std::string;
 using std::vector;

@@ -54,8 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_INPUT_H
-#define ARX_INPUT_H
+
+#ifndef ARX_WINDOW_INPUT_H
+#define ARX_WINDOW_INPUT_H
 
 #ifndef DIRECTINPUT_VERSION
 	#define DIRECTINPUT_VERSION 0x0700
@@ -208,18 +209,11 @@ enum InputButton
 	DIK_WHEELDOWN = 0x40000000 | 1,
 };
 
-//-----------------------------------------------------------------------------
-extern long GameImpulses[MAX_IMPULSES][MAX_IMPULSES_NB];
-
-//-----------------------------------------------------------------------------
-void ARX_INPUT_Init_Game_Impulses();
 bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd);
 void ARX_INPUT_Release();
- 
-//-----------------------------------------------------------------------------
+
 bool ARX_IMPULSE_NowPressed(long ident);
 bool ARX_IMPULSE_Pressed(long ident);
 bool ARX_IMPULSE_NowUnPressed(long ident);
  
-
-#endif
+#endif // ARX_WINDOW_INPUT_H

@@ -63,11 +63,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
 #include "core/Config.h"
 #include "core/Time.h"
 #include "core/Application.h"
 #include "core/Localization.h"
 #include "core/Unicode.hpp"
+#include "core/Core.h"
 
 #include "game/Equipment.h"
 #include "game/Player.h"
@@ -92,6 +98,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
+#include "scene/Light.h"
+
+#include "window/DXInput.h"
 
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
@@ -291,8 +300,7 @@ void LoadSaveGame(const long & i)
 // Menu Sounds
 //-----------------------------------------------------------------------------
 
-void ARX_MENU_LaunchAmb(char * _lpszAmb)
-{
+void ARX_MENU_LaunchAmb(const string & _lpszAmb) {
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
 

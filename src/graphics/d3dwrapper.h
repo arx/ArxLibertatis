@@ -5,7 +5,7 @@
 #define D3D_OVERLOADS
 
 #include <cmath>
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 #if ARX_COMPILER == ARX_COMPILER_GCC
     #pragma GCC diagnostic ignored "-fpermissive"

@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::vector;
 
 //-----------------------------------------------------------------------------
 #define MAX_IN_SPHERE 20
@@ -788,8 +789,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 						for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 						{
-							EERIE_3D c;
-							Vector_Init(&c);
+							EERIE_3D c(0, 0, 0);
 							float height=io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
 
 							for (long kk=0;kk<3;kk++)
@@ -870,7 +870,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 									if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 									io->_npcdata->pathfind.list=NULL;
-									SendIOScriptEvent(io,0,"","PATHFINDER_END");
+									SendIOScriptEvent(io,SM_NULL,"","PATHFINDER_END");
 								}							
 
 								if (!io->_npcdata->reachedtarget)
@@ -1804,7 +1804,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (AttemptValidCylinderPos(&test.cyl, io, flags)) 
 				{
-					Vector_Copy(&rpos,&test.cyl.origin);
+					rpos = test.cyl.origin;
 					RFOUND=1;
 				}
 				else io->_npcdata->climb_count=cc;
@@ -1821,7 +1821,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
-					Vector_Copy(&lpos,&test.cyl.origin);
+					lpos = test.cyl.origin;
 					LFOUND=1;
 				}
 				else io->_npcdata->climb_count=cc;
@@ -1837,23 +1837,23 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (langle<rangle) 
 				{
-					Vector_Copy(&ip->cyl.origin,&lpos);
+					ip->cyl.origin = lpos;
 					distance -= curmovedist;
 				}
 				else
 				{
-					Vector_Copy(&ip->cyl.origin,&rpos);
+					ip->cyl.origin = rpos;
 					distance -= curmovedist;
 				}
 			}
 			else if (LFOUND)
 			{
-				Vector_Copy(&ip->cyl.origin,&lpos);
+				ip->cyl.origin = lpos;
 				distance -= curmovedist; 
 			}
 			else if (RFOUND)
 			{
-				Vector_Copy(&ip->cyl.origin,&rpos);
+				ip->cyl.origin = rpos;
 				distance -= curmovedist; 
 			}
 			else  //stopped

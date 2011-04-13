@@ -42,7 +42,7 @@ enum ARX_SPELLS_MISSILE_TYPE {
 	MISSILE_FIREBALL = 1
 };
 
-void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, const long & type, const EERIE_3D * startpos, const EERIE_3D * targetpos);
+void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, ARX_SPELLS_MISSILE_TYPE type, const EERIE_3D * startpos, const EERIE_3D * targetpos);
 void ARX_MISSILES_Update();
 void ARX_MISSILES_ClearAll();
 

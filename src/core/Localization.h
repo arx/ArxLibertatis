@@ -22,8 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef LOCALISATION_H
-#define LOCALISATION_H
+#ifndef LOCALIZATION_H
+#define LOCALIZATION_H
 
 #include <string>
 
@@ -40,4 +40,6 @@ std::string getLocalized( const std::string& name, const std::string& default_va
 long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string & sectionname);
 long HERMES_UNICODE_GetProfileString(const std::string & sectionname, const std::string & defaultstring, std::string & destination);
 
-#endif // LOCALISATION_H
+long MakeLocalised(const std::string & text, std::string & output);
+
+#endif // LOCALIZATION_H

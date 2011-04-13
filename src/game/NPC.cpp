@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/Spells.h"
 #include "game/Player.h"
+#include "game/Inventory.h"
 
 #include "gui/Interface.h"
 #include "gui/Speech.h"
@@ -81,17 +82,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 
 #include "physics/Box.h"
 #include "physics/Anchors.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
 
+#include "platform/String.h"
+
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
+#include "scene/Light.h"
 
 #include "scripting/Script.h"
 
@@ -110,6 +113,101 @@ extern long APPLY_PUSH;
 void StareAtTarget(INTERACTIVE_OBJ * io);
 #define RUN_WALK_RADIUS 450
 
+static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
+
+	if (io == NULL) return;
+
+
+
+
+	{
+		EERIE_3D ppos, pos, to;
+		EERIE_3D from(0.f, 0.f, -90.f);
+		Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
+		ppos.x = io->pos.x;
+		pos.x = ppos.x + to.x;
+		ppos.y = io->pos.y - (80.f);
+		pos.y = ppos.y + to.y;
+		ppos.z = io->pos.z;
+		pos.z = ppos.z + to.z;
+
+		if (DEBUGNPCMOVE) EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+
+		float dmg;
+
+		if (io->ioflags & IO_NPC)
+		{
+			dmg = io->_npcdata->damages;
+		}
+		else dmg = 40.f;
+
+
+
+		long i = io->targetinfo;
+		float dist;
+
+		if (!ValidIONum(i)) return;
+
+		{
+			INTERACTIVE_OBJ * ioo = inter.iobj[i];
+
+			if (! ioo) return;
+
+			if (ioo->ioflags & IO_MARKER) return;
+
+			if (ioo->ioflags & IO_CAMERA) return;
+
+
+			if (ioo->GameFlags & GFLAG_ISINTREATZONE)
+				if (ioo->show == SHOW_FLAG_IN_SCENE)
+					if (ioo->obj)
+						if (ioo->pos.y >	(io->pos.y + io->physics.cyl.height))
+							if (io->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
+							{
+								float dist_limit = io->_npcdata->reach + io->physics.cyl.radius;
+								long count = 0;
+								float mindist = FLT_MAX;
+
+								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
+								{
+									dist = EEDistance3D(&pos, &inter.iobj[i]->obj->vertexlist3[k].v);
+
+									if ((dist <= dist_limit)
+											&&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
+									{
+										count++;
+
+										if (dist < mindist) mindist = dist;
+									}
+								}
+
+								float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
+
+								if (ioo->ioflags & IO_NPC)
+								{
+
+									if (mindist <= dist_limit)
+									{
+										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
+									}
+
+								}
+								else
+								{
+									dist = EEDistance3D(&pos, &ioo->pos);
+
+									if (mindist <= 120.f)
+									{
+										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
+									}
+								}
+							}
+		}
+
+
+	}
+}
+
 void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io)
 {
 	if (io)
@@ -123,7 +221,7 @@ void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io)
 			}
 		}
 
-		io->spellcast_data.castingspell = -1;
+		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 }
 //***********************************************************************************************
@@ -454,7 +552,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 		GetIOCyl(io, &phys.cyl);
 
 		// Now we try the physical move for real
-		if	(Vector_Compare(&io->physics.startpos, &io->physics.targetpos) 
+		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC))))
 		{
 			float dist = EEDistance3D(&phys.cyl.origin, &ACTIVEBKG->anchors[pos].pos); 
@@ -685,7 +783,7 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		GetIOCyl(io, &phys.cyl);
 
 		// Now we try the physical move for real
-		if	(Vector_Compare(&io->physics.startpos, &io->physics.targetpos) // optim
+		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC | CFLAG_NO_HEIGHT_MOD)) ))
 		{
 
@@ -1074,6 +1172,8 @@ static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
 		}
 	}
 }
+
+static void ManageNPCMovement(INTERACTIVE_OBJ * io);
 
 extern float MAX_ALLOWED_PER_SECOND;
 long REACTIVATION_COUNT = 0;
@@ -2411,7 +2511,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 	}
 	//Decides fight moves
 	else if ((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
-	         ||	(io->spellcast_data.castingspell >= 0))
+	         ||	(io->spellcast_data.castingspell != SPELL_NONE))
 	{
 		if (rnd() > 0.85f)
 		{
@@ -2477,7 +2577,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 		ause1->cur_anim = NULL;
 	}
 
-	if ((io->spellcast_data.castingspell < 0)
+	if ((io->spellcast_data.castingspell == SPELL_NONE)
 	        &&	(ause1->cur_anim == io->anims[ANIM_CAST_START])
 	        &&	(io->anims[ANIM_CAST_START]))
 	{
@@ -2498,7 +2598,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 		return;
 	}
 
-	if (io->spellcast_data.castingspell >= 0) return;
+	if (io->spellcast_data.castingspell != SPELL_NONE) return;
 
 	if (ause1->cur_anim)
 	{
@@ -2790,19 +2890,10 @@ float GetIORadius(INTERACTIVE_OBJ * io)
 
 	return v;
 }
-void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl)
-{
+void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl) {
 	cyl->height = GetIOHeight(io);
 	cyl->radius = GetIORadius(io);
-
-	if (io == inter.iobj[0])
-	{
-		cyl->origin.x = inter.iobj[0]->pos.x;
-		cyl->origin.y = inter.iobj[0]->pos.y; 
-		cyl->origin.z = inter.iobj[0]->pos.z; 
-	}
-	else
-		Vector_Copy(&cyl->origin, &io->pos);
+	cyl->origin = io->pos;
 }
 
 //***********************************************************************************************
@@ -2859,7 +2950,7 @@ void ComputeTolerance(INTERACTIVE_OBJ * io, long targ, float * dst)
 		}
 
 		// If distant of magic behavior Maximize tolerance
-		if ((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) || (io->spellcast_data.castingspell >= 0))
+		if ((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) || (io->spellcast_data.castingspell != SPELL_NONE))
 			TOLERANCE += 300.f;
 
 		// if target is a marker set to a minimal tolerance
@@ -2877,7 +2968,7 @@ extern long FRAME_COUNT;
 //***********************************************************************************************
 //***********************************************************************************************
 
-void ManageNPCMovement(INTERACTIVE_OBJ * io)
+static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 {
 	float dis = FLT_MAX;
 	IO_PHYSICS phys;
@@ -3413,17 +3504,13 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	
 
 	if ((io->forcedmove.x == 0.f) && (io->forcedmove.y == 0.f) && (io->forcedmove.z == 0.f))
-		Vector_Init(&ForcedMove);
+		ForcedMove.clear();
 	else
 	{
-		EERIE_3D vect;
-		Vector_Copy(&vect, &io->forcedmove);
-		float d = TRUEVector_Magnitude(&vect);
-		TRUEVector_Normalize(&vect);
+		EERIE_3D vect = io->forcedmove;
+		float d = TRUEVector_Normalize(&vect);
 		float dd = min(d, (float)FrameDiff * ( 1.0f / 6 ));
-		ForcedMove.x = vect.x * dd;
-		ForcedMove.y = vect.y * dd;
-		ForcedMove.z = vect.z * dd;
+		ForcedMove = vect * dd;
 	}
 
 	// Sets Target position to desired position...
@@ -3495,8 +3582,8 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	DIRECT_PATH = true;
 
 	// Now we try the physical move for real
-	if	(Vector_Compare(&io->physics.startpos, &io->physics.targetpos) // optim
-	        ||	(ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC)))
+	if(io->physics.startpos == io->physics.targetpos
+	        || ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC))
 	{
 		// Successfull move now validate it
 		if (!DIRECT_PATH) io->_npcdata->moveproblem += 1;
@@ -3710,7 +3797,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 					if ((io->_npcdata->behavior & BEHAVIOUR_FLEE)
 					        && (!io->_npcdata->pathfind.pathwait))
-						SendIOScriptEvent(io, 0, "", "FLEE_END");
+						SendIOScriptEvent(io, SM_NULL, "", "FLEE_END");
 
 					if ((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) &&
 					        (io->_npcdata->pathfind.pathwait == 0))
@@ -4243,7 +4330,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				// TODO when is this no true?
 				if (notok < 0)
 				{
-					Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v);
+					pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 
 					for (long nn = 0 ; nn < 1 ; nn++)
 					{
@@ -4255,7 +4342,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							PARTICLE_DEF * pd	=	&particle[j];
 							pd->exist			=	true;
 							pd->zdec			=	0;
-							Vector_Copy(&pd->ov, &pos);
+							pd->ov = pos;
 							pd->move.x			=	(2.f - 4.f * rnd());
 							pd->move.y			=	(2.f - 22.f * rnd());
 							pd->move.z			=	(2.f - 4.f * rnd());
@@ -4313,8 +4400,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			return;
 		}
 
-		EERIE_3D pos;
-		Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->fastaccess.fire].v);
+		EERIE_3D pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
 
 		for (long nn = 0; nn < 2; nn++)
 		{
@@ -4326,7 +4412,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				PARTICLE_DEF * pd	=	&particle[j];
 				pd->exist		=	true;
 				pd->zdec		=	0;
-				Vector_Copy(&pd->ov, &pos);
+				pd->ov = pos;
 				pd->move.x		=	(2.f - 4.f * rnd());
 				pd->move.y		=	(2.f - 22.f * rnd());
 				pd->move.z		=	(2.f - 4.f * rnd());
@@ -4380,7 +4466,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				// TODO how can this not be true?
 				if (notok < 0)
 				{
-					Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v);
+					pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 
 					for (long nn = 0 ; nn < 6 ; nn++)
 					{
@@ -4392,9 +4478,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							PARTICLE_DEF * pd	=	&particle[j];
 							pd->exist			=	true;
 							pd->zdec			=	0;
-
-							Vector_Copy(&pd->ov, &pos);
-
+							pd->ov = pos;
 							pd->move.x			=	(2.f - 4.f * rnd());
 							pd->move.y			=	(2.f - 22.f * rnd());
 							pd->move.z			=	(2.f - 4.f * rnd());
@@ -4436,15 +4520,15 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 		if (io->obj && (io->obj->fastaccess.fire >= 0))
 		{
 			if (io == DRAGINTER)
-				Vector_Copy(&position, &player.pos);
+				position = player.pos;
 			else
 			{
-				Vector_Copy(&position, &io->obj->vertexlist3[io->obj->fastaccess.fire].v);
+				position = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
 			}
 		}
 		else
 		{
-			Vector_Copy(&position, &io->pos);
+			position = io->pos;
 		}
 
 		if (io->ignit_light == -1)

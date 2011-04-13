@@ -35,7 +35,7 @@
 #include "gui/MenuPublic.h"
 #include "gui/MenuWidgets.h"
 #include "io/Logger.h"
-#include "io/String.h"
+#include "platform/String.h"
 #include "scene/GameSound.h"
 #include "window/Input.h"
 

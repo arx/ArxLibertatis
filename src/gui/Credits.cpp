@@ -23,7 +23,7 @@ using std::vector;
 extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;
-void ARX_MENU_LaunchAmb(char *_lpszAmb);
+void ARX_MENU_LaunchAmb(const string & _lpszAmb);
 
 
 struct CreditsTextInformations {
