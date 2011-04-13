@@ -2722,7 +2722,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					io->_npcdata->tohit = as->tohit;
 					io->_npcdata->weaponinhand = as->weaponinhand;
 					strcpy(io->_npcdata->weaponname, as->weaponname);
-					io->_npcdata->weapontype = as->weapontype;
+					io->_npcdata->weapontype = Flag(as->weapontype); // TODO save/load flags
 					io->_npcdata->xpvalue = as->xpvalue;
 					
 					assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);

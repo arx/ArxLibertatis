@@ -459,7 +459,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 
 			while ((j < 4) && (spellicons[i].symbols[j] != 255))
 			{
-				if (!(player.rune_flags & (1 << spellicons[i].symbols[j])))
+				if (!(player.rune_flags & (RuneFlag)(1 << spellicons[i].symbols[j])))
 				{
 					bOk = false;
 				}
@@ -485,7 +485,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 
 			while ((j < 4) && (spellicons[i].symbols[j] != 255))
 			{
-				if (!(player.rune_flags & (1 << spellicons[i].symbols[j])))
+				if (!(player.rune_flags & (RuneFlag)(1 << spellicons[i].symbols[j])))
 				{
 					bOk = false;
 				}

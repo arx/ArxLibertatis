@@ -6785,7 +6785,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					// First draw the lace
 					angle.b=0.f;
 
-					if (player.rune_flags & (1<<i))
+					if (player.rune_flags & (RuneFlag)(1<<i))
 					{
 						DrawEERIEInter(necklace.lacet,&angle,&pos,NULL);
 
@@ -6993,7 +6993,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 					while ((j < 4) && (spellicons[i].symbols[j] != RUNE_NONE))
 					{
-						if (!(player.rune_flags & (1<<spellicons[i].symbols[j])))
+						if (!(player.rune_flags & (RuneFlag)(1<<spellicons[i].symbols[j])))
 						{
 							bOk = false;
 						}
@@ -7538,7 +7538,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					bool bOk = true;
 
 					for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
-						if(!(player.rune_flags & (1<<spellicons[i].symbols[j])))
+						if(!(player.rune_flags & (RuneFlag)(1<<spellicons[i].symbols[j])))
 							bOk = false;
 					}
 
@@ -9687,7 +9687,7 @@ void DANAE::DrawAllInterface()
 					ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, tc, tc2, pos.x, pos.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 				}
 
-				if (!(player.rune_flags & (1<<player.SpellToMemorize.iSpellSymbols[i])))
+				if (!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i])))
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);

@@ -332,7 +332,7 @@ struct IO_NPCDATA
 	long		cut;
 
 	float				moveproblem;
-	long		weapontype;
+	ObjectType weapontype;
 	long		weaponinhand;
 	long		fightdecision;
 	char		weaponname[256];

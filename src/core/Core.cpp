@@ -6381,7 +6381,7 @@ static float _AvgFrameDiff = 150.f;
 			else
 				DebugSphere(pos.x,pos.y,pos.z,2,50,0xFFFF0000);
 
-			if (USE_CINEMATICS_PATH.path->flags & ARX_USEPATH_FLAG_FINISHED)
+			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
 			{
 				USE_CINEMATICS_CAMERA=0;
 				USE_CINEMATICS_PATH.path=NULL;

@@ -3331,7 +3331,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		for (size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
 			if ( SpellSymbol[i] != RUNE_NONE )
 			{
-				if ( !( player.rune_flags & ( 1 << SpellSymbol[i] ) ) )
+				if ( !( player.rune_flags & (RuneFlag)( 1 << SpellSymbol[i] ) ) )
 				{
 					ARX_SOUND_PlaySpeech( "player_cantcast" );
 					CurrSpellSymbol = 0;

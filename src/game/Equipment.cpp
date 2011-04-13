@@ -980,7 +980,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 		if (CheckEverythingInSphere(&sphere, source, targ))
 		{
-			for (long jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
+			for (size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
 			{
 				float dmgs = 0.f;
 
@@ -1100,7 +1100,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 								sp.origin.z = target->obj->vertexlist3[hitpoint].v.z + vect.z * 30.f;
 								sp.radius = 3.5f * power * 20;
 
-								if (CheckAnythingInSphere(&sp, 0, 1))
+								if (CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL))
 								{
 									EERIE_RGB rgb;
 									rgb.r = (float)((long)((color >> 16) & 255)) * ( 1.0f / 255 );

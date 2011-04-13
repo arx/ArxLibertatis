@@ -880,7 +880,7 @@ failure:
 
 	io->_npcdata->pathfind.listnb = -2;
 
-	if (io->_npcdata->pathfind.flags & BEHAVIOUR_NONE) return false;
+	if (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) return false; // TODO was BEHAVIOUR_NONE
 
 	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 	return false;

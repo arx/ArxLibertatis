@@ -1259,7 +1259,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 					sphere.origin.z = damages[j].pos.z;
 					sphere.radius = damages[j].radius - 10.f;
 
-					if (CheckIOInSphere(&sphere, i, IIS_NO_NOCOL))
+					if (CheckIOInSphere(&sphere, i, true))
 					{
 						sub.x = io->pos.x;
 						sub.y = io->pos.y - 60.f;

@@ -1707,7 +1707,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 	
 							if (CheckEverythingInSphere(&sphere, Thrown[i].source, -1))
 							{
-								for (long jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
+								for (size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
 								{
  
  
