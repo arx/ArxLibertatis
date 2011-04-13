@@ -69,24 +69,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define MOLLESS_COLLISION_PENETRATING	1
 #define MOLLESS_COLLISION_COLLIDING		2
 
-long MOLLESS_Nb_Interpolations = 1;
-extern EERIE_3D SP_EC_POS;
- 
- 
-long DEBUG_MOLLESS = 0;
-long MOLLESS_ComputeCollisionsII(EERIE_3DOBJ * obj, float deltaTime);
-
- 
-
-extern long USE_CEDRIC_ANIM;
-
-
-void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag)
-{
-	if ((obj) && (obj->cdata))
-	{
-		for (long i = 0; i < obj->cdata->nb_cvert; i++)
-		{
+void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag) {
+	
+	if ((obj) && (obj->cdata)) {
+		for (long i = 0; i < obj->cdata->nb_cvert; i++) {
+			
 			CLOTHESVERTEX * cv = &obj->cdata->cvert[i];
 			cv->velocity.x = 0.f;
 			cv->velocity.y = 0.f;
@@ -94,19 +81,12 @@ void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag)
 			cv->force.x = 0.f;
 			cv->force.y = 0.f;
 			cv->force.z = 0.f;
-
-			if (!(flag & 1))
-			{
+			
+			if(!(flag & 1)) {
 				cv->coll = -1;
-				cv->pos.x = cv->t_pos.x = obj->vertexlist[cv->idx].v.x;
-				cv->pos.y = cv->t_pos.y = obj->vertexlist[cv->idx].v.y;
-				cv->pos.z = cv->t_pos.z = obj->vertexlist[cv->idx].v.z;
-			}
-			else
-			{
-				cv->t_pos.x = cv->pos.x;
-				cv->t_pos.y = cv->pos.y;
-				cv->t_pos.z = cv->pos.z;
+				cv->t_pos = cv->pos = obj->vertexlist[cv->idx].v;
+			} else {
+				cv->t_pos = cv->pos;
 			}
 		}
 	}

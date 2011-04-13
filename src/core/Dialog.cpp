@@ -130,7 +130,6 @@ extern char * GTE_TEXT;
 extern long GTE_SIZE;
 extern float TIMEFACTOR;
 extern long ALLOW_MESH_TWEAKING;
-extern long DEBUG_MOLLESS;
 extern long HIDESPEECH;
 extern HWND MESH_REDUCTION_WINDOW;
 extern HWND PRECALC;
@@ -2078,10 +2077,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 
 			oml = ModeLight;
-			char tex[64];
-			thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
-			sprintf(tex, "%ld", MOLLESS_Nb_Interpolations);
-			SetWindowText(thWnd, tex);
 
 			if (ARX_DEMO)					SetClick(hWnd, IDC_ARXDEMO);
 
@@ -2116,8 +2111,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (DEBUGSYS)					SetClick(hWnd, IDC_DEBUGSYS);
 
 			if (DEBUGNPCMOVE)				SetClick(hWnd, IDC_DEBUGNPCMOVE);
-
-			if (DEBUG_MOLLESS)				SetClick(hWnd, IDC_DEBUGMOLLESS);
 
 			if (DYNAMIC_NORMALS)			SetClick(hWnd, IDC_DYNAMICNORMALS);
 
@@ -2367,9 +2360,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_DEBUGNPCMOVE)) DEBUGNPCMOVE = 1;
 					else DEBUGNPCMOVE = 0;
 
-					if (IsChecked(hWnd, IDC_DEBUGMOLLESS)) DEBUG_MOLLESS = 1;
-					else DEBUG_MOLLESS = 0;
-
 					if (IsChecked(hWnd, IDC_DYNAMICNORMALS)) DYNAMIC_NORMALS = 1;
 					else DYNAMIC_NORMALS = 0;
 
@@ -2540,11 +2530,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
 					TIMEFACTOR = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
-
-					thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
-					char tex[64];
-					GetWindowText(thWnd, tex, 63);
-					MOLLESS_Nb_Interpolations = atoi(tex);
 
 					EndDialog(hWnd, true);
 					break;
