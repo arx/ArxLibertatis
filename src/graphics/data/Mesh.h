@@ -824,7 +824,10 @@ EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos);
 EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos);
 
 bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos,float * ret);
+bool IsAnyPolyThere(float x, float z);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
+EERIEPOLY * GetMinPoly(float x, float y, float z);
+EERIEPOLY * GetMaxPoly(float x, float y, float z);
  
 D3DCOLOR GetColorz(float x,float y,float z);
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);

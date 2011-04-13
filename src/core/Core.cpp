@@ -91,6 +91,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Levels.h"
 #include "game/Inventory.h"
+#include "game/NPC.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -120,7 +121,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  
 #include "physics/Collisions.h"
 #include "physics/Actors.h"
-#include "physics/Physics.h"
 
 #include "platform/String.h"
 
