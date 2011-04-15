@@ -26,13 +26,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOINSTANCE_H
 #define ARX_AUDIO_AUDIOINSTANCE_H
 
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alext.h>
-#include "AudioTypes.h"
-#include "Sample.h"
-#include "Stream.h"
 #include <vector>
+
+#include "audio/AudioTypes.h"
+#include "audio/Sample.h"
+#include "audio/Stream.h"
+#include "audio/alwrapper.h"
 using namespace std;
 
 namespace ATHENA {

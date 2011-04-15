@@ -28,9 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cmath>
 
-#include <al.h>
-#include <alc.h>
-
 #include "AudioTypes.h"
 #include "AudioResource.h"
 #include "Stream.h"
@@ -39,6 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Sample.h"
 #include "Ambient.h"
 #include "AudioInstance.h"
+#include "alwrapper.h"
 
 namespace ATHENA {
 	

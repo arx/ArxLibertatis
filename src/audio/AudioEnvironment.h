@@ -26,11 +26,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOENVIRONMENT_H
 #define ARX_AUDIO_AUDIOENVIRONMENT_H
 
-#include "AudioTypes.h"
-#include "AudioResource.h"
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alext.h>
+#include "audio/AudioTypes.h"
+#include "audio/AudioResource.h"
+#include "audio/alwrapper.h"
 
 namespace ATHENA {
 	
