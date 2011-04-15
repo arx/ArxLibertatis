@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Interactive.h"
 #include "scene/LoadLevel.h"
+#include "scene/Light.h"
 
 extern float _framedelay;
 
@@ -619,7 +620,7 @@ float CLightning::Render()
 
 				if (si != -1)
 				{
-					Vector_Copy(&damages[si].pos, &sphere.origin);
+					damages[si].pos = sphere.origin;
 					damages[si].radius = sphere.radius;
 					damages[si].damages = fDamage * spells[spellinstance].caster_level * ( 1.0f / 3 ); 
 					damages[si].area = DAMAGE_FULL;
@@ -779,9 +780,8 @@ CConfuse::CConfuse()
 	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 	tex_trail = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
-	if (!spapi)
-	{
-		spapi   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo", NULL);
+	if(!spapi) {
+		spapi = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo");
 		EERIE_3DOBJ_RestoreTextures(spapi);
 	}
 
@@ -1182,20 +1182,16 @@ CIceField::CIceField()
 	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
-	if (!stite)
-	{
-		stite   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+	if(!stite) {
+		stite = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 		EERIE_3DOBJ_RestoreTextures(stite);
 	}
-
 	stite_count++;
 
-	if (!smotte)
-	{
-		smotte   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+	if(!smotte) {
+		smotte = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 		EERIE_3DOBJ_RestoreTextures(smotte);
 	}
-
 	smotte_count++;
 }
 

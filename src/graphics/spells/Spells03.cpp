@@ -385,8 +385,7 @@ void CFireBall::Update(unsigned long aulTime)
 			if (ValidIONum(io->targetinfo))
 			{
 				EERIE_3D * p1 = &eCurPos;
-				EERIE_3D p2;
-				Vector_Copy(&p2, &inter.iobj[io->targetinfo]->pos);
+				EERIE_3D p2 = inter.iobj[io->targetinfo]->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
@@ -490,20 +489,16 @@ CIceProjectile::CIceProjectile()
 	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
-	if (!stite)
-	{
-		stite   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo", NULL);
+	if(!stite) {
+		stite = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo");
 		EERIE_3DOBJ_RestoreTextures(stite);
 	}
-
 	stite_count++;
 
-	if (!smotte)
-	{
-		smotte   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+	if(!smotte) {
+		smotte = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 		EERIE_3DOBJ_RestoreTextures(smotte);
 	}
-
 	smotte_count++;
 
 	iMax = MAX_ICE;

@@ -39,6 +39,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Inventory.h"
 
 #include "gui/MenuWidgets.h"
 
@@ -51,7 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-#include "io/String.h"
+
+#include "platform/String.h"
 
 #include "scene/Interactive.h"
 
@@ -105,12 +107,11 @@ enum PlayingAmbianceType {
 };
 
 // TODO used for saving
-struct PlayingAmbiance
-{
+struct PlayingAmbiance {
 	char name[256];
-	float volume;
-	long loop;
-	long type;
+	f32 volume;
+	s32 loop;
+	s32 type;
 };
 
 static const unsigned long ARX_SOUND_UPDATE_INTERVAL(100);  
@@ -167,16 +168,8 @@ ArxSound ARX_SOUND_MixerMenuSample(AAL_SFALSE);
 ArxSound ARX_SOUND_MixerMenuSpeech(AAL_SFALSE);
 ArxSound ARX_SOUND_MixerMenuAmbiance(AAL_SFALSE);
 
-// Menu ambiances
-char AMB_MENU[] = "ambient_menu.amb";
-char AMB_CREDITS[] = "ambient_credits.amb";
-
 // Menu samples
 ArxSound SND_MENU_CLICK(AAL_SFALSE);
-//ArxSound SND_MENU_CREDITS_LOOP(AAL_SFALSE);
-//ArxSound SND_MENU_LOOP(AAL_SFALSE);
-//ArxSound SND_MENU_OPTIONS_LOOP(AAL_SFALSE);
-ArxSound SND_MENU_PUSH(AAL_SFALSE);
 ArxSound SND_MENU_RELEASE(AAL_SFALSE);
 
 // Interface samples
@@ -186,7 +179,6 @@ ArxSound SND_BOOK_CLOSE(AAL_SFALSE);
 ArxSound SND_BOOK_PAGE_TURN(AAL_SFALSE);
 ArxSound SND_GOLD(AAL_SFALSE);
 ArxSound SND_INVSTD(AAL_SFALSE);
-ArxSound SND_MAP(AAL_SFALSE);
 ArxSound SND_SCROLL_OPEN(AAL_SFALSE);
 ArxSound SND_SCROLL_CLOSE(AAL_SFALSE);
 ArxSound SND_TORCH_START(AAL_SFALSE);
@@ -200,7 +192,6 @@ ArxSound SND_QUAKE(AAL_SFALSE);
 ArxSound SND_WHOOSH(AAL_SFALSE);
 
 // Player samples
-ArxSound SND_PLAYER_DEATH(AAL_SFALSE);
 ArxSound SND_PLAYER_DEATH_BY_FIRE(AAL_SFALSE);
 
 ArxSound SND_PLAYER_FILLLIFEMANA(AAL_SFALSE);
@@ -319,8 +310,10 @@ ArxSound SND_SPELL_TELEPORTED(AAL_SFALSE);
 ArxSound SND_SPELL_VISION_START(AAL_SFALSE);
 ArxSound SND_SPELL_VISION_LOOP(AAL_SFALSE);
 
+
 bool bForceNoEAX = false;
 
+static void ARX_SOUND_EnvironmentSet(const std::string & name);
 static void ARX_SOUND_CreateEnvironments();
 static void ARX_SOUND_CreateStaticSamples();
 static void ARX_SOUND_ReleaseStaticSamples();
@@ -330,7 +323,7 @@ static void ARX_SOUND_DeleteCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
 static void ARX_SOUND_CreatePresenceMap();
 static void ARX_SOUND_DeletePresenceMap();
-static float GetSamplePresenceFactor(const char * name);
+static float GetSamplePresenceFactor(const string & name);
 LPTHREAD_START_ROUTINE UpdateSoundThread(char *);
 static void ARX_SOUND_LaunchUpdateThread();
 static void ARX_SOUND_KillUpdateThread();
@@ -493,8 +486,8 @@ long ARX_SOUND_IsEnabled()
 	return bIsActive ? 1 : 0;
 }
 
-void ARX_SOUND_EnableReverb(const long & status)
-{
+void ARX_SOUND_EnableReverb(long status) {
+	
 	if (bIsActive)
 	{
 		if (status)
@@ -519,38 +512,44 @@ long ARX_SOUND_IsReverbEnabled()
 	return aalIsEnabled(AAL_FLAG_REVERBERATION);
 }
 
-void ARX_SOUND_MixerSetVolume(const ArxMixer & mixer_id, const float & volume)
-{
-	if (bIsActive) aalSetMixerVolume(mixer_id, volume);
+void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume) {
+	if(bIsActive) {
+		aalSetMixerVolume(mixer_id, volume);
+	}
 }
 
-float ARX_SOUND_MixerGetVolume(const ArxMixer & mixer_id)
-{
+float ARX_SOUND_MixerGetVolume(ArxMixer mixer_id) {
+	
 	float volume(0.0F);
-
-	if (bIsActive) aalGetMixerVolume(mixer_id, &volume);
-
+	
+	if(bIsActive) {
+		aalGetMixerVolume(mixer_id, &volume);
+	}
+	
 	return volume;
 }
 
-void ARX_SOUND_MixerStop(const ArxMixer & mixer_id)
-{
-	if (bIsActive) aalMixerStop(mixer_id);
+void ARX_SOUND_MixerStop(ArxMixer mixer_id) {
+	if(bIsActive) {
+		aalMixerStop(mixer_id);
+	}
 }
 
-void ARX_SOUND_MixerPause(const ArxMixer & mixer_id)
-{
-	if (bIsActive) aalMixerPause(mixer_id);
+void ARX_SOUND_MixerPause(ArxMixer mixer_id) {
+	if(bIsActive) {
+		aalMixerPause(mixer_id);
+	}
 }
 
-void ARX_SOUND_MixerResume(const ArxMixer & mixer_id)
-{
-	if (bIsActive) aalMixerResume(mixer_id);
+void ARX_SOUND_MixerResume(ArxMixer mixer_id) {
+	if(bIsActive) {
+		aalMixerResume(mixer_id);
+	}
 }
 
-void ARX_SOUND_MixerSwitch(const ArxMixer & from, const ArxMixer & to)
-{
+void ARX_SOUND_MixerSwitch(ArxMixer from, ArxMixer to) {
 	ARX_SOUND_MixerPause(from);
+	// TODO why set the volume three times?
 	ARX_SOUND_MixerSetVolume(to, ARX_SOUND_MixerGetVolume(from));
 	ARX_SOUND_MixerSetVolume(to, ARX_SOUND_MixerGetVolume(from));
 	ARX_SOUND_MixerSetVolume(to, ARX_SOUND_MixerGetVolume(from));
@@ -567,11 +566,11 @@ void ARX_SOUND_SetListener(const EERIE_3D * position, const EERIE_3D * front, co
 	}
 }
 
-void ARX_SOUND_EnvironmentSet(const char * name)
-{
+void ARX_SOUND_EnvironmentSet(const string & name) {
+	
 	if (bIsActive)
 	{
-		aalSLong e_id(aalGetEnvironment(name));
+		aalSLong e_id(aalGetEnvironment(name.c_str()));
 
 		if (e_id != AAL_SFALSE)
 		{
@@ -581,8 +580,7 @@ void ARX_SOUND_EnvironmentSet(const char * name)
 	}
 }
 
-long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, const float & pitch, const int & loop)
-{
+long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, float pitch, SoundLoopMode loop) {
 	if (!bIsActive || sample_id == AAL_SFALSE) return AAL_SFALSE;
 
 	aalChannel channel;
@@ -630,8 +628,8 @@ long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, const fl
 }
 
 
-long ARX_SOUND_PlayInterface(ArxSound & sample_id, const float & pitch, const int & loop)
-{
+long ARX_SOUND_PlayInterface(ArxSound & sample_id, float pitch, SoundLoopMode loop) {
+	
 	if (!bIsActive || sample_id == AAL_SFALSE) return AAL_SFALSE;
 
 	aalChannel channel;
@@ -647,8 +645,8 @@ long ARX_SOUND_PlayInterface(ArxSound & sample_id, const float & pitch, const in
 	return sample_id;
 }
 
-long ARX_SOUND_PlayMenu(ArxSound & sample_id, const float & pitch, const int & loop)
-{
+long ARX_SOUND_PlayMenu(ArxSound & sample_id, float pitch, SoundLoopMode loop) {
+	
 	if (!bIsActive || sample_id == AAL_SFALSE) return AAL_SFALSE;
 
 	aalChannel channel;
@@ -681,21 +679,20 @@ void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, aalVector & pos)
 	}
 	else
 	{
-		Vector_Init((EERIE_3D *)&pos);
+		pos.x = pos.y = pos.z = 0.f;
 	}
 }
 
-long ARX_SOUND_PlaySpeech(const char * name, const INTERACTIVE_OBJ * io)
+long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 {
 	if (!bIsActive) return AAL_SFALSE;
 
-	char file_name[256];
 	aalChannel channel;
 	aalSLong sample_id;
 
-	sprintf(file_name, "speech\\%s\\%s.wav", Project.localisationpath.c_str(), name);
+	string file_name = "speech\\" + Project.localisationpath + "\\" + name + ".wav";
 
-	sample_id = aalCreateSample(file_name);
+	sample_id = aalCreateSample(file_name.c_str());
 
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = AAL_FLAG_VOLUME | AAL_FLAG_POSITION | AAL_FLAG_REVERBERATION | AAL_FLAG_AUTOFREE | AAL_FLAG_FALLOFF;
@@ -738,7 +735,7 @@ long ARX_SOUND_PlaySpeech(const char * name, const INTERACTIVE_OBJ * io)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCollision(const long & mat1, const long & mat2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source)
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source)
 {
 	if (!bIsActive) return 0;
 
@@ -793,7 +790,7 @@ long ARX_SOUND_PlayCollision(const long & mat1, const long & mat2, const float &
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source)
+long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source)
 {
 	if (!bIsActive) return 0;
 
@@ -865,14 +862,14 @@ long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2,
 	return 0;
 }
 
-long ARX_SOUND_PlayScript(const char * name, const INTERACTIVE_OBJ * io, const float & pitch, const int & loop)
+long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
 {
 	if (!bIsActive) return AAL_SFALSE;
 
 	aalChannel channel;
 	s32 sample_id;
 
-	sample_id = aalCreateSample(name);
+	sample_id = aalCreateSample(name.c_str());
 
 	if (sample_id == AAL_SFALSE) return AAL_SFALSE;
 
@@ -949,14 +946,14 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const char * name) {
+long ARX_SOUND_PlayCinematic(const string & name) {
 	
 	LogDebug << "playing cinematic sound";
 	
 	s32 sample_id;
 	aalChannel channel;
 
-	sample_id = aalCreateSample(name);
+	sample_id = aalCreateSample(name.c_str());
 
 	if(sample_id == AAL_SFALSE) {
 		LogError << "cannot load sound for cinematic: " << name;
@@ -1010,14 +1007,12 @@ float ARX_SOUND_GetDuration(ArxSound & sample_id)
 	return 0.f;
 }
 
-void ARX_SOUND_RefreshVolume(ArxSound & sample_id, const float & volume)
-{
+void ARX_SOUND_RefreshVolume(ArxSound & sample_id, float volume) {
 	if (bIsActive && sample_id != AAL_SFALSE)
 		aalSetSampleVolume(sample_id, volume);
 }
 
-void ARX_SOUND_RefreshPitch(ArxSound & sample_id, const float & pitch)
-{
+void ARX_SOUND_RefreshPitch(ArxSound & sample_id, float pitch) {
 	if (bIsActive && sample_id != AAL_SFALSE)
 		aalSetSamplePitch(sample_id, pitch);
 }
@@ -1062,15 +1057,13 @@ void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ
 	aalSetSamplePosition(sample_id, position);
 }
 
-ArxSound ARX_SOUND_Load(const char * name)
-{
+ArxSound ARX_SOUND_Load(const string & name) {
+	
 	if (!bIsActive) return AAL_SFALSE;
 
-	char sample_name[256];
+	string sample_name = name + ARX_SOUND_FILE_EXTENSION_WAV;
 
-	sprintf(sample_name, "%s%s", name, ARX_SOUND_FILE_EXTENSION_WAV);
-
-	return aalCreateSample(sample_name);
+	return aalCreateSample(sample_name.c_str());
 }
 
 void ARX_SOUND_Free(const ArxSound & sample)
@@ -1085,8 +1078,8 @@ void ARX_SOUND_Stop(ArxSound & sample_id)
 	if (bIsActive && sample_id != AAL_SFALSE) aalSampleStop(sample_id);
 }
 
-long ARX_SOUND_PlayScriptAmbiance(const char * name, const int & loop, const float & volume) //, const EERIE_3D *position)
-{
+long ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float volume) {
+	
 	if (!bIsActive) return AAL_SFALSE;
 
 	std::string temp = name;
@@ -1123,8 +1116,8 @@ long ARX_SOUND_PlayScriptAmbiance(const char * name, const int & loop, const flo
 	return ambiance_id;
 }
 
-long ARX_SOUND_PlayZoneAmbiance(const char * name, const int & loop, const float & volume) 
-{
+long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float volume) {
+	
 	if (!bIsActive) return AAL_SFALSE;
 
 	std::string temp = name;
@@ -1159,9 +1152,9 @@ long ARX_SOUND_PlayZoneAmbiance(const char * name, const int & loop, const float
 	return ambiance_zone;
 }
 
-long ARX_SOUND_SetAmbianceTrackStatus(const char * ambiance_name, const char * track_name, const unsigned long & status)
-{
-	if (!bIsActive || !ambiance_name) return AAL_SFALSE;
+long ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string & track_name, unsigned long status) {
+	
+	if (!bIsActive) return AAL_SFALSE;
 
 	s32 ambiance_id, track_id;
 	std::string temp = ambiance_name;
@@ -1171,7 +1164,7 @@ long ARX_SOUND_SetAmbianceTrackStatus(const char * ambiance_name, const char * t
 
 	if (ambiance_id == AAL_SFALSE) return AAL_SFALSE;
 
-	if (aalGetAmbianceTrackID(ambiance_id, track_name, track_id)) return AAL_SFALSE;
+	if (aalGetAmbianceTrackID(ambiance_id, track_name.c_str(), track_id)) return AAL_SFALSE;
 
 	aalMuteAmbianceTrack(ambiance_id, track_id, (aalUBool)status);
 
@@ -1193,12 +1186,12 @@ void ARX_SOUND_KillAmbiances()
 	ambiance_zone = AAL_SFALSE;
 }
 
-long ARX_SOUND_PlayMenuAmbiance(const char * ambiance_name)
-{
+long ARX_SOUND_PlayMenuAmbiance(const string & ambiance_name) {
+	
 	if (!bIsActive) return AAL_SFALSE;
 
 	aalDeleteAmbiance(ambiance_menu);
-	ambiance_menu = aalCreateAmbiance(ambiance_name);
+	ambiance_menu = aalCreateAmbiance(ambiance_name.c_str());
 
 	aalSetAmbianceUserData(ambiance_menu, (void *)PLAYING_AMBIANCE_MENU);
 
@@ -1372,11 +1365,12 @@ void ARX_SOUND_AmbianceRestorePlayList(void * _play_list, unsigned long size)
 		switch (playing->type)
 		{
 			case PLAYING_AMBIANCE_SCRIPT :
-				ARX_SOUND_PlayScriptAmbiance(playing->name, playing->loop, playing->volume);
+				// TODO save/load enum
+				ARX_SOUND_PlayScriptAmbiance(playing->name, (SoundLoopMode)playing->loop, playing->volume);
 				break;
 
 			case PLAYING_AMBIANCE_ZONE :
-				ARX_SOUND_PlayZoneAmbiance(playing->name, playing->loop, playing->volume);
+				ARX_SOUND_PlayZoneAmbiance(playing->name, (SoundLoopMode)playing->loop, playing->volume);
 				break;
 		}
 	}
@@ -1435,7 +1429,7 @@ static void ARX_SOUND_CreateStaticSamples()
 {
 	// Interface
 	SND_BACKPACK                       = aalCreateSample("interface_backpack.wav");
-	SND_MAP                            = aalCreateSample("interface_map.wav");
+	//SND_MAP                            = aalCreateSample("interface_map.wav");
 	SND_BOOK_OPEN                      = aalCreateSample("book_open.wav");
 	SND_BOOK_CLOSE                     = aalCreateSample("book_close.wav");
 	SND_BOOK_PAGE_TURN                 = aalCreateSample("book_page_turn.wav");
@@ -1452,7 +1446,7 @@ static void ARX_SOUND_CreateStaticSamples()
 	//SND_MENU_CREDITS_LOOP              = aalCreateSample("menu_credits_loop.wav");
 	//SND_MENU_LOOP                      = aalCreateSample("menu_loop.wav");
 	//SND_MENU_OPTIONS_LOOP              = aalCreateSample("menu_options_loop.wav");
-	SND_MENU_PUSH                      = aalCreateSample("menu_push.wav");
+	//SND_MENU_PUSH                      = aalCreateSample("menu_push.wav");
 	SND_MENU_RELEASE                   = aalCreateSample("menu_release.wav");
 
 	//Other SFX samples
@@ -1589,7 +1583,6 @@ static void ARX_SOUND_ReleaseStaticSamples()
 	SND_BOOK_PAGE_TURN = AAL_SFALSE;
 	SND_GOLD = AAL_SFALSE;
 	SND_INVSTD = AAL_SFALSE;
-	SND_MAP = AAL_SFALSE;
 	SND_SCROLL_OPEN = AAL_SFALSE;
 	SND_SCROLL_CLOSE = AAL_SFALSE;
 	SND_TORCH_START = AAL_SFALSE;
@@ -1603,19 +1596,12 @@ static void ARX_SOUND_ReleaseStaticSamples()
 
 	// Menu samples
 	SND_MENU_CLICK = AAL_SFALSE;
-	//SND_MENU_CREDITS_LOOP = AAL_SFALSE;
-	//SND_MENU_LOOP = AAL_SFALSE;
-	//SND_MENU_OPTIONS_LOOP = AAL_SFALSE;
-	SND_MENU_PUSH = AAL_SFALSE;
 	SND_MENU_RELEASE = AAL_SFALSE;
 
 	// Player samples
-	SND_PLAYER_DEATH = AAL_SFALSE;
 	SND_PLAYER_DEATH_BY_FIRE = AAL_SFALSE;
 	SND_PLAYER_FILLLIFEMANA = AAL_SFALSE;
 	SND_PLAYER_HEART_BEAT = AAL_SFALSE;
-	//SND_PLAYER_JUMP = AAL_SFALSE;
-	//SND_PLAYER_JUMP_END = AAL_SFALSE;
 	SND_PLAYER_LEVEL_UP = AAL_SFALSE;
 	SND_PLAYER_POISONED = AAL_SFALSE;
 
@@ -1727,8 +1713,8 @@ static void ARX_SOUND_ReleaseStaticSamples()
 	SND_SPELL_VISION_LOOP = AAL_SFALSE;
 }
 
-long ARX_MATERIAL_GetIdByName( const std::string& name)
-{
+long ARX_MATERIAL_GetIdByName(const string & name) {
+	
 	if (!strcasecmp(name, "WEAPON")) return MATERIAL_WEAPON;
 
 	if (!strcasecmp(name, "FLESH")) return MATERIAL_FLESH;
@@ -2167,9 +2153,9 @@ static void ARX_SOUND_DeletePresenceMap()
 	free(presence_l), presence_l = NULL, presence_c = 0;
 }
 
-static float GetSamplePresenceFactor(const char * name) {
+static float GetSamplePresenceFactor(const string & name) {
 	for (unsigned long i(0); i < presence_c; i++)
-		if (!strncasecmp(presence_l[i].name, name, presence_l[i].name_size)) return presence_l[i].factor;
+		if (!strncasecmp(presence_l[i].name, name.c_str(), presence_l[i].name_size)) return presence_l[i].factor;
 
 	return 1.0F;
 }

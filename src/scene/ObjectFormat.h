@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_OBJECTFORMAT_H
 #define ARX_SCENE_OBJECTFORMAT_H
 
-#include "core/Common.h"
 #include "graphics/GraphicsFormat.h"
+#include "platform/Platform.h"
 
 
 #pragma pack(push,1)

@@ -57,7 +57,7 @@ struct EERIE_3D {
 	}
 	
 	inline void clear() {
-		x = y = z = 0;
+		x = y = z = 0.f;
 	}
 	
 	inline EERIE_3D operator-() const {
@@ -132,6 +132,10 @@ struct EERIE_3D {
 		return *this;
 	}
 	
+	inline bool operator==(const EERIE_3D & o) {
+		return (x == o.x && y == o.y && z == o.z);
+	}
+	
 };
 
 struct EERIEMATRIX {
@@ -150,6 +154,11 @@ struct EERIE_CYLINDER {
 struct EERIE_SPHERE {
 	EERIE_3D origin;
 	float radius;
+};
+
+struct EERIE_S2D {
+	short x;
+	short y;
 };
 
 #endif // ARX_GRAPHICS_BASEGRAPHICSTYPES_H

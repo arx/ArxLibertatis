@@ -37,4 +37,6 @@ bool PAK_UNICODE_GetPrivateProfileString(const std::string & section, const std:
 long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string & sectionname);
 long HERMES_UNICODE_GetProfileString(const std::string & sectionname, const std::string & defaultstring, std::string & destination);
 
+long MakeLocalised(const std::string & text, std::string & output);
+
 #endif // ARX_CORE_LOCALIZATION_H

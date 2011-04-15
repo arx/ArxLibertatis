@@ -30,98 +30,157 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_SPELLS_H
-#define ARX_SPELLS_H
 
-#include "graphics/data/Mesh.h"
+#ifndef ARX_GAME_SPELLS_H
+#define ARX_GAME_SPELLS_H
 
+#include "graphics/GraphicsTypes.h"
+#include "platform/Flags.h"
+
+struct INTERACTIVE_OBJ;
+struct EERIE_S2D;
 class CSpellFx;
 
-void ARX_SPELLS_CancelAll();
-
 // Spells symbol list
-enum ARX_SPELLS_SYMBOL {
-	SYMBOL_AAM = 0,     // Create
-	SYMBOL_NHI,         // Negate
-	SYMBOL_MEGA,        // Improve
-	SYMBOL_YOK,         // Fire
-	SYMBOL_TAAR,        // Projectile
-	SYMBOL_KAOM,        // Protection
-	SYMBOL_VITAE,       // Life
-	SYMBOL_VISTA,       // Vision
-	SYMBOL_STREGUM,     // Magic
-	SYMBOL_MORTE,       // Death
-	SYMBOL_COSUM,       // Object
-	SYMBOL_COMUNICATUM, // Communication
-	SYMBOL_MOVIS,       // Movement
-	SYMBOL_TEMPUS,      // Time
-	SYMBOL_FOLGORA,     // Storm
-	SYMBOL_SPACIUM,     // Space
-	SYMBOL_TERA,        // Earth
-	SYMBOL_CETRIUS,     // Poison
-	SYMBOL_RHAA,        // Lower
-	SYMBOL_FRIDD,       // Ice
-	SYMBOL_AKBAA,       // Akbaa
-	SYMBOL_NONE = 255
+enum Rune {
+	RUNE_AAM = 0,     // Create
+	RUNE_NHI,         // Negate
+	RUNE_MEGA,        // Improve
+	RUNE_YOK,         // Fire
+	RUNE_TAAR,        // Projectile
+	RUNE_KAOM,        // Protection
+	RUNE_VITAE,       // Life
+	RUNE_VISTA,       // Vision
+	RUNE_STREGUM,     // Magic
+	RUNE_MORTE,       // Death
+	RUNE_COSUM,       // Object
+	RUNE_COMUNICATUM, // Communication
+	RUNE_MOVIS,       // Movement
+	RUNE_TEMPUS,      // Time
+	RUNE_FOLGORA,     // Storm
+	RUNE_SPACIUM,     // Space
+	RUNE_TERA,        // Earth
+	RUNE_CETRIUS,     // Poison
+	RUNE_RHAA,        // Lower
+	RUNE_FRIDD,       // Ice
+	RUNE_AKBAA,       // Akbaa
+	RUNE_NONE = 255
 };
-const size_t ARX_SPELLS_SYMBOL_COUNT = 21;
+const size_t RUNE_COUNT = 21;
 
-#define RUNE_AAM			SYMBOL_AAM
-#define RUNE_CETRIUS		SYMBOL_CETRIUS
-#define RUNE_COMUNICATUM	SYMBOL_COMUNICATUM
-#define RUNE_COSUM			SYMBOL_COSUM
-#define RUNE_FOLGORA		SYMBOL_FOLGORA
-#define RUNE_FRIDD			SYMBOL_FRIDD
-#define RUNE_KAOM			SYMBOL_KAOM
-#define	RUNE_MEGA			SYMBOL_MEGA
-#define RUNE_MORTE			SYMBOL_MORTE
-#define RUNE_MOVIS			SYMBOL_MOVIS
-#define RUNE_NHI			SYMBOL_NHI
-#define RUNE_RHAA			SYMBOL_RHAA
-#define RUNE_SPACIUM		SYMBOL_SPACIUM
-#define RUNE_STREGUM		SYMBOL_STREGUM
-#define RUNE_TAAR			SYMBOL_TAAR
-#define RUNE_TEMPUS			SYMBOL_TEMPUS
-#define RUNE_TERA			SYMBOL_TERA
-#define RUNE_VISTA			SYMBOL_VISTA
-#define RUNE_VITAE			SYMBOL_VITAE
-#define RUNE_YOK			SYMBOL_YOK
-#define NB_RUNES			(SYMBOL_AKBAA)+1
+enum SpellcastFlag {
+	SPELLCAST_FLAG_NODRAW         = (1<<0),
+	SPELLCAST_FLAG_NOANIM         = (1<<1),
+	SPELLCAST_FLAG_NOMANA         = (1<<2),
+	SPELLCAST_FLAG_PRECAST        = (1<<3),
+	SPELLCAST_FLAG_LAUNCHPRECAST  = (1<<4),
+	SPELLCAST_FLAG_NOCHECKCANCAST = (1<<5),
+	SPELLCAST_FLAG_NOSOUND        = (1<<6),
+	SPELLCAST_FLAG_RESTORE        = (1<<7),
+};
+DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
+DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
-enum ARX_SPELLS_SPELLCAST_FLAG
-{
-	SPELLCAST_FLAG_NODRAW			= (1 << 0),
-	SPELLCAST_FLAG_NOANIM			= (1 << 1),
-	SPELLCAST_FLAG_NOMANA			= (1 << 2),
-	SPELLCAST_FLAG_PRECAST			= (1 << 3),
-	SPELLCAST_FLAG_LAUNCHPRECAST	= (1 << 4),
-	SPELLCAST_FLAG_NOCHECKCANCAST	= (1 << 5),
-	SPELLCAST_FLAG_NOSOUND			= (1 << 6),
-	SPELLCAST_FLAG_RESTORE			= (1 << 7),
+// Spell list
+enum Spell {
+	
+	// LEVEL 1
+	SPELL_MAGIC_SIGHT           ,//= 11,
+	SPELL_MAGIC_MISSILE         ,//= 12,
+	SPELL_IGNIT                 ,//= 13,
+	SPELL_DOUSE                 ,//= 14,
+	SPELL_ACTIVATE_PORTAL       ,//= 15,
+	
+	// LEVEL 2
+	SPELL_HEAL                  ,//= 21,
+	SPELL_DETECT_TRAP           ,//= 22,
+	SPELL_ARMOR                 ,//= 23,
+	SPELL_LOWER_ARMOR           ,//= 24,
+	SPELL_HARM                  ,//= 25,
+	
+	// LEVEL 3
+	SPELL_SPEED                 ,//= 31,
+	SPELL_DISPELL_ILLUSION      ,//= 32,
+	SPELL_FIREBALL              ,//= 33,
+	SPELL_CREATE_FOOD           ,//= 34,
+	SPELL_ICE_PROJECTILE        ,//= 35,
+	
+	// LEVEL 4
+	SPELL_BLESS                 ,//= 41,
+	SPELL_DISPELL_FIELD         ,//= 42,
+	SPELL_FIRE_PROTECTION       ,//= 43,
+	SPELL_TELEKINESIS           ,//= 44,
+	SPELL_CURSE                 ,//= 45,
+	SPELL_COLD_PROTECTION       ,//= 46,
+	
+	// LEVEL 5
+	SPELL_RUNE_OF_GUARDING      ,//= 51,
+	SPELL_LEVITATE              ,//= 52,
+	SPELL_CURE_POISON           ,//= 53,
+	SPELL_REPEL_UNDEAD          ,//= 54,
+	SPELL_POISON_PROJECTILE     ,//= 55,
+	
+	// LEVEL 6
+	SPELL_RISE_DEAD             ,//= 61,
+	SPELL_PARALYSE              ,//= 62,
+	SPELL_CREATE_FIELD          ,//= 63,
+	SPELL_DISARM_TRAP           ,//= 64,
+	SPELL_SLOW_DOWN             ,//= 65, //secret
+	
+	// LEVEL 7
+	SPELL_FLYING_EYE            ,//= 71,
+	SPELL_FIRE_FIELD            ,//= 72,
+	SPELL_ICE_FIELD             ,//= 73,
+	SPELL_LIGHTNING_STRIKE      ,//= 74,
+	SPELL_CONFUSE               ,//= 75,
+	
+	// LEVEL 8
+	SPELL_INVISIBILITY          ,//= 81,
+	SPELL_MANA_DRAIN            ,//= 82,
+	SPELL_EXPLOSION             ,//= 83,
+	SPELL_ENCHANT_WEAPON        ,//= 84,
+	SPELL_LIFE_DRAIN            ,//= 85, //secret
+	
+	// LEVEL 9
+	SPELL_SUMMON_CREATURE       ,//= 91,
+	SPELL_NEGATE_MAGIC          ,//= 92,
+	SPELL_INCINERATE            ,//= 93,
+	SPELL_MASS_PARALYSE         ,//= 94,
+	
+	// LEVEL 10
+	SPELL_MASS_LIGHTNING_STRIKE ,//= 101,
+	SPELL_CONTROL_TARGET        ,//= 102,
+	SPELL_FREEZE_TIME           ,//= 103,
+	SPELL_MASS_INCINERATE       ,//= 104
+	
+	SPELL_FAKE_SUMMON           ,// special =105
+	
+	// LEVEL ZOB
+	SPELL_TELEPORT = SPELL_FAKE_SUMMON + 2, // TODO explicit value for savegame compatability
+	
+	SPELL_NONE = -1
 };
 
-const size_t MAX_PRECAST = 3;
+const size_t SPELL_COUNT = SPELL_FAKE_SUMMON + 1;
 
-struct PRECAST_STRUCT
-{
-	long typ;
+struct PRECAST_STRUCT {
+	Spell typ;
 	long level;
 	unsigned long launch_time;
-	long flags;
+	SpellcastFlags flags;
 	long duration;
 };
 
+const size_t MAX_PRECAST = 3;
 extern PRECAST_STRUCT Precast[MAX_PRECAST];
 
 void ARX_SPELLS_Precast_Reset();
-void ARX_SPELLS_Precast_Add(long typ, long level = 1, long flags = 0);
-void ARX_SPELLS_Precast_Launch(const long & num);
+void ARX_SPELLS_Precast_Launch(long num);
 
-long GetSpellId(const std::string& spell);
-bool MakeSpellName(char * spell, const long & num);
-void TryToCastSpell(INTERACTIVE_OBJ * io, const long & spellid, const long & level, const long & target, const long & flags, const long & duration);
+Spell GetSpellId(const std::string & spell);
+void TryToCastSpell(INTERACTIVE_OBJ * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration);
 void ARX_SPELLS_Precast_Check();
-void ARX_SPELLS_Precast_Launch2();
+
 struct EYEBALL_DEF {
 	long exist;
 	EERIE_3D pos;
@@ -133,189 +192,79 @@ struct EYEBALL_DEF {
 extern EYEBALL_DEF eyeball;
 
 const size_t MAX_SPELL_SYMBOLS = 6;
-extern ARX_SPELLS_SYMBOL SpellSymbol[MAX_SPELL_SYMBOLS];
+extern Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 extern size_t CurrSpellSymbol;
 
-
-// Spell list
-enum ARX_SPELLS_SPELLS
-{
-	// LEVEL 1
-	SPELL_MAGIC_SIGHT           ,//= 11,
-	SPELL_MAGIC_MISSILE         ,//= 12,
-	SPELL_IGNIT                 ,//= 13,
-	SPELL_DOUSE                 ,//= 14,
-	SPELL_ACTIVATE_PORTAL       ,//= 15,
-
-	// LEVEL 2
-	SPELL_HEAL                  ,//= 21,
-	SPELL_DETECT_TRAP           ,//= 22,
-	SPELL_ARMOR                 ,//= 23,
-	SPELL_LOWER_ARMOR           ,//= 24,
-	SPELL_HARM                  ,//= 25,
-
-	// LEVEL 3
-	SPELL_SPEED                 ,//= 31,
-	SPELL_DISPELL_ILLUSION      ,//= 32,
-	SPELL_FIREBALL              ,//= 33,
-	SPELL_CREATE_FOOD           ,//= 34,
-	SPELL_ICE_PROJECTILE        ,//= 35,
-
-	// LEVEL 4
-	SPELL_BLESS                 ,//= 41,
-	SPELL_DISPELL_FIELD         ,//= 42,
-	SPELL_FIRE_PROTECTION       ,//= 43,
-	SPELL_TELEKINESIS           ,//= 44,
-	SPELL_CURSE                 ,//= 45,
-	SPELL_COLD_PROTECTION       ,//= 46,
-
-	// LEVEL 5
-	SPELL_RUNE_OF_GUARDING      ,//= 51,
-	SPELL_LEVITATE              ,//= 52,
-	SPELL_CURE_POISON           ,//= 53,
-	SPELL_REPEL_UNDEAD          ,//= 54,
-	SPELL_POISON_PROJECTILE     ,//= 55,
-
-	// LEVEL 6
-	SPELL_RISE_DEAD             ,//= 61,
-	SPELL_PARALYSE              ,//= 62,
-	SPELL_CREATE_FIELD          ,//= 63,
-	SPELL_DISARM_TRAP           ,//= 64,
-	SPELL_SLOW_DOWN             ,//= 65, //secret
-
-	// LEVEL 7
-	SPELL_FLYING_EYE            ,//= 71,
-	SPELL_FIRE_FIELD            ,//= 72,
-	SPELL_ICE_FIELD             ,//= 73,
-	SPELL_LIGHTNING_STRIKE      ,//= 74,
-	SPELL_CONFUSE               ,//= 75,
-
-	// LEVEL 8
-	SPELL_INVISIBILITY          ,//= 81,
-	SPELL_MANA_DRAIN            ,//= 82,
-	SPELL_EXPLOSION             ,//= 83,
-	SPELL_ENCHANT_WEAPON        ,//= 84,
-	SPELL_LIFE_DRAIN            ,//= 85, //secret
-
-	// LEVEL 9
-	SPELL_SUMMON_CREATURE       ,//= 91,
-	SPELL_NEGATE_MAGIC          ,//= 92,
-	SPELL_INCINERATE            ,//= 93,
-	SPELL_MASS_PARALYSE         ,//= 94,
-
-	// LEVEL 10
-	SPELL_MASS_LIGHTNING_STRIKE	,//= 101,
-	SPELL_CONTROL_TARGET        ,//= 102,
-	SPELL_FREEZE_TIME           ,//= 103,
-	SPELL_MASS_INCINERATE       ,//= 104
-
-	SPELL_FAKE_SUMMON			, // special =105
-	SPELL_COUNT					,
-
-	// LEVEL ZOB
-	SPELL_TELEPORT				,
+struct SPELL {
 	
-	SPELL_NONE
-};
-
-extern float TELEPORT;
-extern float LASTTELEPORT;
-
-const size_t MAX_LINFO = 20;
-const size_t MAX_SPELLS = 20;
-
-struct SPELL
-{
-	bool		exist;
-	long		caster;         // Number of the source interactive obj (0==player)
-	long		target;         // Number of the target interactive obj if any
-	float		caster_level;   // Level of Magic 1-10
-
-	long		hand_group;
-	EERIE_3D	hand_pos;     // Only valid if hand_group>=0
-	EERIE_3D	caster_pos;
-	EERIE_3D	caster_angle;
-	EERIE_3D	target_pos;
-	EERIE_3D	target_angle;
-	EERIE_3D	vector_dir;
-
-	float		fdata;          // Specific use for each spell
-
-	long		type;
-	EERIE_3D	vsource;
-	EERIE_3D	v;
-
-	EERIE_3D	move;
-	EERIE_3D	scale;
-	float		siz;
-	unsigned long		timcreation;
-	unsigned long		lastupdate;
-	unsigned long		tolive;
-
+	bool exist;
+	long caster; //!< Number of the source interactive obj (0==player)
+	long target; //!< Number of the target interactive obj if any
+	float caster_level; //!< Level of Magic 1-10
+	
+	long hand_group;
+	EERIE_3D hand_pos; //!< Only valid if hand_group>=0
+	EERIE_3D caster_pos;
+	EERIE_3D target_pos;
+	
+	float fdata; //!< Specific use for each spell
+	
+	Spell type;
+	EERIE_3D vsource; // TODO this is used but never set
+	
+	EERIE_3D move;
+	EERIE_3D scale;
+	float siz;
+	unsigned long timcreation;
+	unsigned long lastupdate;
+	unsigned long tolive;
+	
 	TextureContainer * tc;
-	long		longinfo;
-	long		longinfo2;
-	long		linfo[MAX_LINFO];
-	unsigned long		cumul;
-	bool		bDuration;
-	float		fManaCostPerSecond;
-
-	long		flags;
-	long lSpellSource;
+	long longinfo;
+	long longinfo2;
+	bool bDuration;
+	float fManaCostPerSecond;
+	
+	SpellcastFlags flags;
 	ArxSound snd_loop;
-	CSpellFx	* pSpellFx;
-	void 	*	misc;
+	CSpellFx * pSpellFx;
+	void * misc;
 };
 
+const size_t MAX_SPELLS = 20;
 extern SPELL spells[MAX_SPELLS];
 
-const unsigned long MAX_SLOT = 10;    // nombre maximum de directions dans une sequence
-const unsigned long NAME_LENGTH = 8;  // longueur du nom des sorts
+const unsigned long MAX_SLOT = 10; // nombre maximum de directions dans une sequence
 extern long CurrSlot;
-extern long LastSlot;
 extern long CurrPoint;
-extern long NETSPELL;
 
-bool ARX_SPELLS_Launch(const long & typ, const long & source, const long & flags = 0, const long & level = -1, const long & target = -1, const long & duration = -1); //const long &net = 0);
-long ARX_SPELLS_GetFree();
+bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
 void ARX_SPELLS_ResetRecognition();
-void ARX_SPELLS_AddPoint(const EERIE_S2D * pos);
-void ARX_SPELLS_Analyse();
+void ARX_SPELLS_AddPoint(const EERIE_S2D & pos);
 void ARX_SPELLS_AbortSpellSound();
-void ARX_SPELLS_InitKnownSpells();
 void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update();
-void ARX_SPELLS_Fizzle(const long & num);
 
-/**
- * Plays the sound of Fizzling spell plus "NO MANA" speech
- **/
-void ARX_SPELLS_FizzleNoMana(const long & num);
-void ARX_SPELLS_Kill(const long & i);
+void ARX_SPELLS_Kill(long i);
+long ARX_SPELLS_GetInstance(Spell typ);
 void ARX_SPELLS_ManageMagic();
 
-void ARX_SPELLS_Update_Lightning();
-
-void ClearParticles();
-
-void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const std::string& name, const float& duration);
-
+void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const std::string & name, float duration);
 void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();
 
 void ARX_SPELLS_Init_Rects();
 
-bool ARX_SPELLS_ExistAnyInstance(const long & typ);
+bool ARX_SPELLS_ExistAnyInstance(Spell typ);
 void ARX_SPELLS_RemoveAllSpellsOn(INTERACTIVE_OBJ * io);
-long ARX_SPELLS_GetSpellOn(const INTERACTIVE_OBJ * io, const long & spellid);
-long ARX_SPELLS_GetInstanceForThisCaster(const long & typ, const long & caster);
+long ARX_SPELLS_GetSpellOn(const INTERACTIVE_OBJ * io, Spell spellid);
+long ARX_SPELLS_GetInstanceForThisCaster(Spell typ, long caster);
 
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(INTERACTIVE_OBJ * io);
 float ARX_SPELLS_ApplyFireProtection(INTERACTIVE_OBJ * io, float damages);
 float ARX_SPELLS_ApplyColdProtection(INTERACTIVE_OBJ * io, float damages);
-bool ARX_SPELLS_ExistAnyInstanceForThisCaster(const long & typ, const long & caster);
-void ApplySPWep();
 void ARX_SPELLS_FizzleAllSpellsFromCaster(long num);
-#endif//ARX_SPELLS_H
+
+#endif // ARX_GAME_SPELLS_H

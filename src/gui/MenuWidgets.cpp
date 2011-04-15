@@ -32,6 +32,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <sstream>
 
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
 #include "core/Core.h"
 #include "core/Time.h"
 #include "core/Localization.h"
@@ -49,7 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include "io/Logger.h"
-#include "io/String.h"
+
+#include "platform/String.h"
 
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
@@ -123,7 +129,6 @@ bool bNoMenu=false;
 
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _iBpp);
 void ARX_SetAntiAliasing();
-void ARX_MENU_LaunchAmb(char *_lpszAmb);
 
 //-----------------------------------------------------------------------------
 

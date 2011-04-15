@@ -60,6 +60,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
+// TODO move INTERCATIVE_OBJ somewhere else / move flags here
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/Spells.h"
+
+#include "platform/Flags.h"
+
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
 
@@ -75,13 +82,6 @@ struct ANIM_HANDLE
 	long *			sizes;
 	short			alt_nb;
 	long			locks;
-};
-
-//minimap special infos
-struct EERIE_S2D
-{
-	short x;
-	short y;
 };
 
 struct EERIE_TRANSFORM
@@ -268,19 +268,25 @@ struct IO_BEHAVIOR_DATA
 };
 
 
-struct IO_SPELLCAST_DATA
-{
-	long		castingspell; // spell being casted...
-	unsigned char	symb[4]; // symbols to draw before casting...
-	short		spell_flags;
-	short		spell_level;
-	long		target;
-	long		duration;
+struct IO_SPELLCAST_DATA {
+	Spell castingspell; // spell being casted...
+	Rune symb[4]; // symbols to draw before casting...
+	SpellcastFlags spell_flags;
+	short spell_level;
+	long target;
+	long duration;
 };
 
-struct IO_PATHFIND
-{
-	unsigned long flags;
+enum PathfindFlag {
+	PATHFIND_ALWAYS    = (1<<0),
+	PATHFIND_ONCE      = (1<<1),
+	PATHFIND_NO_UPDATE = (1<<2)
+};
+DECLARE_FLAGS(PathfindFlag, PathfindFlags)
+DECLARE_FLAGS_OPERATORS(PathfindFlags)
+
+struct IO_PATHFIND {
+	PathfindFlags flags;
 	long	listnb;
 	unsigned short * list;
 	unsigned short listpos;
@@ -349,7 +355,7 @@ struct IO_NPCDATA
 	short		walk_start_time;
 	long		aiming_start;
 	long		npcflags;
-	IO_PATHFIND		pathfind;
+	IO_PATHFIND pathfind;
 	EERIE_EXTRA_ROTATE *	ex_rotate;
 	D3DCOLOR	blood_color;
 
@@ -467,7 +473,7 @@ struct INTERACTIVE_OBJ
 	char *				usemesh;	// Alternate Mesh/path
 	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
 	ArxSound				sound;
-	unsigned long		type_flags;			// object type (weapon,goblin...)
+	ObjectType type_flags;			// object type (weapon,goblin...)
 	long				scriptload;			// Is This object Loaded by Script ?
 	EERIE_3D			target;				// Target position
 	long				targetinfo;			// Target Type/Ident
@@ -558,7 +564,7 @@ struct INTERACTIVE_OBJ
 
 	short				damager_damages;
 	short				padding2;
-	long				damager_type;
+	DamageType damager_type;
 	char *				stepmaterial;
 	char *				armormaterial;
 	char *				weaponmaterial;

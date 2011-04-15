@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct ARX_MISSILE
 {
-	long	type;
+	ARX_SPELLS_MISSILE_TYPE type;
 	EERIE_3D startpos;
 	EERIE_3D velocity;
 	EERIE_3D lastpos;
@@ -90,6 +90,7 @@ void ARX_MISSILES_Kill(long i)
 			}
 
 			break;
+		case MISSILE_NONE: break;
 	}
 
 	missiles[i].type = MISSILE_NONE;
@@ -105,7 +106,7 @@ void ARX_MISSILES_ClearAll() {
 
 //-----------------------------------------------------------------------------
 // Spawns a Projectile using type, starting position/TargetPosition
-void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, const long &type, const EERIE_3D *startpos, const EERIE_3D *targetpos)
+void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, ARX_SPELLS_MISSILE_TYPE type, const EERIE_3D *startpos, const EERIE_3D *targetpos)
 {
 	long i(ARX_MISSILES_GetFree());
 
@@ -127,6 +128,7 @@ void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, const long &type, const EERIE_3D *s
 
 	switch (type)
 	{
+		case MISSILE_NONE: break;
 		case MISSILE_FIREBALL:
 		{
 			missiles[i].tolive = 6000;
@@ -181,8 +183,8 @@ void ARX_MISSILES_Update()
 
 		switch (missiles[i].type)
 		{
-			case MISSILE_FIREBALL :
-			{
+			case MISSILE_NONE: break;
+			case MISSILE_FIREBALL: {
 				EERIE_3D pos;
 
 				pos.x = missiles[i].startpos.x + missiles[i].velocity.x * framediff3;

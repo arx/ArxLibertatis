@@ -75,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Time.h"
 #include "core/Dialog.h"
+#include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -82,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "game/Player.h"
 #include "game/Levels.h"
+#include "game/Inventory.h"
 
 #include "gui/MiniMap.h"
 #include "gui/Speech.h"
@@ -96,15 +98,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/SaveBlock.h"
-#include "io/String.h"
 
 #include "physics/CollisionShapes.h"
+
+#include "platform/String.h"
 
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "scene/Object.h"
 #include "scene/LoadLevel.h"
 #include "scene/SaveFormat.h"
+#include "scene/Light.h"
 
 #include "scripting/ScriptEvent.h"
 
@@ -138,7 +142,6 @@ extern long HERO_SHOW_1ST;
 extern long EXTERNALVIEW;
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_INTERS;
-extern long FORCE_IO_INDEX;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
 extern long RELOADING;
@@ -595,15 +598,14 @@ static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 			asi->nb_inter++;
 		}
 	}
-
-	for (int i = 0; i < MAX_LIGHTS; i++)
-	{
+	
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * el = GLight[i];
-
-		if ((el != NULL) && (!(el->type & TYP_SPECIAL1)))
+		if(el && !(el->type & TYP_SPECIAL1)) {
 			asi->nb_lights++;
+		}
 	}
-
+	
 	char savefile[256];
 	sprintf(savefile, "lvl%03ld.sav", num);
 
@@ -670,8 +672,8 @@ retry:
 		free(playlist);
 	}
 
-	for (int i = 0; i < MAX_LIGHTS; i++)
-	{
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		
 		EERIE_LIGHT * el = GLight[i];
 
 		if ((el != NULL) && (!(el->type & TYP_SPECIAL1)))
@@ -816,8 +818,8 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	ARX_CHANGELEVEL_PLAYER * asp;
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
-	allocsize += Keyring_Number * 64;
-	allocsize += 80 * nb_PlayerQuest;
+	allocsize += Keyring.size() * 64;
+	allocsize += 80 * PlayerQuest.size();
 	allocsize += sizeof(SavedMapMakerData) * Mapmarkers.size();
 
 
@@ -874,13 +876,14 @@ retry:
 	std::copy(Precast, Precast + SAVED_MAX_PRECAST, asp->precast);
 
 	//inventaires
-	for (long iNbBag = 0; iNbBag < 3; iNbBag++)
-		for (long m = 0; m < INVENTORY_Y; m++)
-			for (long n = 0; n < INVENTORY_X; n++)
-			{
+	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
+		for(size_t m = 0; m < INVENTORY_Y; m++) {
+			for(size_t n = 0; n < INVENTORY_X; n++) {
 				FillIOIdent(asp->id_inventory[iNbBag][n][m], inventory[iNbBag][n][m].io);
 				asp->inventory_show[iNbBag][n][m] = inventory[iNbBag][n][m].show;
 			}
+		}
+	}
 
 	std::copy(minimap, minimap + SAVED_MAX_MINIMAPS, asp->minimap);
 
@@ -958,8 +961,8 @@ retry:
 	asp->skin = player.skin;
 
 	asp->xp = player.xp;
-	asp->nb_PlayerQuest = nb_PlayerQuest;
-	asp->keyring_nb = Keyring_Number;
+	asp->nb_PlayerQuest = PlayerQuest.size();
+	asp->keyring_nb = Keyring.size();
 	asp->Global_Magic_Mode = GLOBAL_MAGIC_MODE;
 	asp->Nb_Mapmarkers = Mapmarkers.size();
 
@@ -985,27 +988,26 @@ retry:
 		else
 			strcpy(asp->equiped[k], "");
 	}
-
-	for (int i = 0; i < nb_PlayerQuest; i++)
-	{
+	
+	for(size_t i = 0; i < PlayerQuest.size(); i++) {
 		memset(dat + pos, 0, 80);
+		assert(PlayerQuest[i].ident.length() < 80);
 		strcpy((char *)(dat + pos), PlayerQuest[i].ident.c_str());
 		pos += 80;
 	}
-
-	for(int i = 0; i < asp->keyring_nb; i++) {
+	
+	for(size_t i = 0; i < Keyring.size(); i++) {
 		assert(sizeof(Keyring[i].slot) == SAVED_KEYRING_SLOT_SIZE);
 		memcpy((char *)(dat + pos), Keyring[i].slot, SAVED_KEYRING_SLOT_SIZE);
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
-
-	for (int i = 0; i < asp->Nb_Mapmarkers; i++)
-	{
+	
+	for(size_t i = 0; i < Mapmarkers.size(); i++) {
 		SavedMapMakerData acmd = Mapmarkers[i];
 		memcpy((char *)(dat + pos), &acmd, sizeof(SavedMapMakerData));
 		pos += sizeof(SavedMapMakerData);
 	}
-
+	
 	LastValidPlayerPos.x = asp->LAST_VALID_POS.x;
 	LastValidPlayerPos.y = asp->LAST_VALID_POS.y;
 	LastValidPlayerPos.z = asp->LAST_VALID_POS.z;
@@ -1824,8 +1826,8 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 		pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		long count = 0;
 
-		for (long j = 0; j < MAX_LIGHTS; j++)
-		{
+		for(size_t j = 0; j < MAX_LIGHTS; j++) {
+			
 			EERIE_LIGHT * el = GLight[j];
 
 			if ((el != NULL) && (!(el->type & TYP_SPECIAL1)))
@@ -1955,10 +1957,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Mind = asp.Attribute_Mind;
 	player.Attribute_Strength = asp.Attribute_Strength;
 	player.Critical_Hit = asp.Critical_Hit;
-	player.Current_Movement = asp.Current_Movement;
+	player.Current_Movement = Flag(asp.Current_Movement); // TODO save/load flags
 	player.damages = asp.damages;
 	player.doingmagic = asp.doingmagic;
-	player.playerflags = asp.playerflags;
+	player.playerflags = Flag(asp.playerflags); // TODO save/load flags
 	
 	if(asp.TELEPORT_TO_LEVEL[0]) {
 		strcpy(TELEPORT_TO_LEVEL, asp.TELEPORT_TO_LEVEL);
@@ -1985,7 +1987,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.inzone = ARX_PATH_GetAddressByName(asp.inzone);;
 	player.jumpphase = asp.jumpphase;
 	player.jumpstarttime = asp.jumpstarttime;
-	player.Last_Movement = asp.Last_Movement;
+	player.Last_Movement = Flag(asp.Last_Movement); // TODO save/load flags
 	
 	ARX_CHECK_UCHAR(asp.level);
 	player.level = static_cast<unsigned char>(asp.level);
@@ -2050,7 +2052,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Redistribute = static_cast<unsigned char>(asp.Attribute_Redistribute);
 	player.Skill_Redistribute = static_cast<unsigned char>(asp.Skill_Redistribute);
 	
-	player.rune_flags = asp.rune_flags;
+	player.rune_flags = Flag(asp.rune_flags); // TODO save/load flags
 	player.size = asp.size;
 	player.Skill_Stealth = asp.Skill_Stealth;
 	player.Skill_Mecanism = asp.Skill_Mecanism;
@@ -2282,8 +2284,8 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		io->head_rot = ais->head_rot;
 		io->damager_damages = ais->damager_damages;
 		io->nb_iogroups = ais->nb_iogroups;
-		io->damager_type = ais->damager_type;
-		io->type_flags = ais->type_flags;
+		io->damager_type = Flag(ais->damager_type); // TODO save/load flags
+		io->type_flags = Flag(ais->type_flags); // TODO save/load flags
 		io->secretvalue = ais->secretvalue;
 		io->shop_multiply = ais->shop_multiply;
 		io->aflags = ais->aflags;
@@ -2296,7 +2298,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 			io->usepath = (void *)malloc(sizeof(ARX_USE_PATH));
 			ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
 
-			aup->aupflags = ais->usepath_aupflags;
+			aup->aupflags = Flag(ais->usepath_aupflags); // TODO save/load flags
 			aup->_curtime = ARX_CLEAN_WARN_CAST_FLOAT(ais->usepath_curtime);
 			aup->initpos = ais->usepath_initpos;
 			aup->lastWP = ais->usepath_lastWP;
@@ -2468,7 +2470,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		//////////////////
 		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 
-		io->script.allowevents = ass->allowevents;
+		io->script.allowevents = Flag(ass->allowevents); // TODO save/load flags
 		io->script.nblvar = 0;
 
 		if (io->script.lvar)
@@ -2579,7 +2581,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 		ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 
-		io->over_script.allowevents = ass->allowevents;
+		io->over_script.allowevents = Flag(ass->allowevents); // TODO save/load flags
 
 		io->over_script.nblvar = 0; 
 

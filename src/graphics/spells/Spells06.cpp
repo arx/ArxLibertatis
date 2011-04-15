@@ -383,29 +383,26 @@ CSlowDown::CSlowDown()
 
 	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
-	if (!ssol) // Pentacle
-	{
-		ssol   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+	if(!ssol) {
+		// Pentacle
+		ssol = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 		EERIE_3DOBJ_RestoreTextures(ssol);
 	}
-
 	ssol_count++;
-
-	if (!slight) // Twirl
-	{
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
+	
+	if(!slight) {
+		// Twirl
+		slight = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 		EERIE_3DOBJ_RestoreTextures(slight);
 	}
-
-	slight_count++; //runes
-
-	if (!srune)
-	{
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+	slight_count++;
+	
+	if(!srune) {
+		srune = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 		EERIE_3DOBJ_RestoreTextures(srune);
 	}
-
 	srune_count++;
+	
 }
 
 CSlowDown::~CSlowDown()
@@ -585,20 +582,18 @@ CRiseDead::CRiseDead()
 	fColorRays2[1] = 0;
 	fColorRays2[2] = 0;
 
-	if (stone0 == NULL)
-	{
-		stone0 = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo", NULL);
+	if(stone0 == NULL) {
+		stone0 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo");
 	}
-
 	stone0_count++;
-
-	if (stone1 == NULL)
-	{
-		stone1 = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo", NULL);
+	
+	if(stone1 == NULL) {
+		stone1 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo");
 	}
-
 	stone1_count++;
+	
 	tex_light = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -2110,17 +2105,15 @@ CDisarmTrap::CDisarmTrap()
 
 	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 	
-	if (!smotte)
-	{
-		smotte   = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+	if(!smotte) {
+		smotte = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 		EERIE_3DOBJ_RestoreTextures(smotte);
 	}
 
 	smotte_count++;
 
-	if (!slight)
-	{
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
+	if(!slight) {
+		slight = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 		EERIE_3DOBJ_RestoreTextures(slight);
 	}
 
@@ -2128,7 +2121,7 @@ CDisarmTrap::CDisarmTrap()
 
 	if (!srune)
 	{
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+		srune = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 		EERIE_3DOBJ_RestoreTextures(srune);
 	}
 

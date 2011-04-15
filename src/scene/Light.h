@@ -55,32 +55,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef EERIELIGHT_H
-#define EERIELIGHT_H
+#ifndef ARX_SCENE_LIGHT_H
+#define ARX_SCENE_LIGHT_H
 
-#include "graphics/GraphicsTypes.h"
+#include <stddef.h>
 
-//-----------------------------------------------------------------------------
-#define MAX_LIGHTS 1200
-#define MAX_DYNLIGHTS 500
+struct EERIE_LIGHT;
+struct EERIE_3D;
+struct EERIEPOLY;
 
-//-----------------------------------------------------------------------------
+const size_t MAX_LIGHTS = 1200;
+const size_t MAX_DYNLIGHTS = 500;
+
 extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 extern EERIE_LIGHT * GLight[MAX_LIGHTS];
 extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
-extern long DLights;
-extern long NEED2DFX;
-extern long LIGHTPOWERUP;
 extern long TOTPDL;
-extern float LPpower;
 extern long TOTIOPDL;
 
-//-----------------------------------------------------------------------------
-void PrecalcIOLighting(EERIE_3D * pos, float radius, long flags = 0);
+void PrecalcIOLighting(const EERIE_3D * pos, float radius, long flags = 0);
 
 void EERIE_LIGHT_Apply(EERIEPOLY * ep);
-void EERIE_LIGHT_TranslateSelected(EERIE_3D * trans);
+void EERIE_LIGHT_TranslateSelected(const EERIE_3D * trans);
 void EERIE_LIGHT_UnselectAll();
 void EERIE_LIGHT_ClearAll();
 void EERIE_LIGHT_ClearSelected();
@@ -89,11 +86,12 @@ void EERIE_LIGHT_GlobalInit();
 long EERIE_LIGHT_GetFree();
 long EERIE_LIGHT_Count();
 void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
-void EERIE_LIGHT_MoveAll(EERIE_3D * trans);
+void EERIE_LIGHT_MoveAll(const EERIE_3D * trans);
 long EERIE_LIGHT_Create();
 
 void _RecalcLightZone(float x, float z, long siz);
 void RecalcLightZone(float x, float z, long siz);
  
 bool ValidDynLight(long num);
-#endif
+
+#endif // ARX_SCENE_LIGHT_H

@@ -62,18 +62,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Damage.h"
 #include "game/Player.h"
+#include "game/Inventory.h"
 
 #include "gui/Interface.h"
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
+#include "graphics/data/Texture.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/String.h"
 
 #include "physics/Collisions.h"
+
+#include "platform/String.h"
 
 #include "scene/Object.h"
 #include "scene/LinkedObject.h"
@@ -93,7 +96,6 @@ struct EQUIP_INFO
 #define SP_SPARKING 1
 #define SP_BLOODY 2
 
-extern float PLAYER_BASE_HEIGHT;
 extern long TRUEFIGHT;
 extern long GAME_EDITOR;
 extern EERIE_3D PUSH_PLAYER_FORCE;
@@ -109,7 +111,7 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
+ObjectType ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
 {
 	if ( temp.empty() ) return 0;
 
@@ -211,10 +213,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		delete io->obj;
 	}
 
-	const char texpath[] = "Graph\\Obj3D\\Textures\\";
 	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
-	// TODO wrong order of parameters?
-	io->obj = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
+	io->obj = loadObject(OBJECT_HUMAN_BASE, false);
 	
 	long sel_ = -1;
 	char pathh[256];
@@ -876,14 +876,11 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				Vector_Normalize(&ppos);
 
 				//------- player push START
-				EERIE_3D push;
-				Vector_Copy(&push, &ppos);
+				EERIE_3D push = ppos;
 				push.x *= -dmgs * ( 1.0f / 11 );
 				push.y *= -dmgs * ( 1.0f / 30 );
 				push.z *= -dmgs * ( 1.0f / 11 );
-				PUSH_PLAYER_FORCE.x += push.x;
-				PUSH_PLAYER_FORCE.y += push.y;
-				PUSH_PLAYER_FORCE.z += push.z;
+				PUSH_PLAYER_FORCE += push;
 				//------- player push END
 
 				ppos.x *= 60.f;
@@ -909,14 +906,9 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				Vector_Normalize(&ppos);
 
 				//------- player NPC START
-				EERIE_3D push;
-				Vector_Copy(&push, &ppos);
-				push.x *= -dmgs;
-				push.y *= -dmgs;
-				push.z *= -dmgs;
-				io_target->forcedmove.x += push.x;
-				io_target->forcedmove.y += push.y;
-				io_target->forcedmove.z += push.z;
+				EERIE_3D push = ppos;
+				push *= -dmgs;
+				io_target->forcedmove += push;
 
 				//------- player NPC END
 				if (position)
@@ -1036,7 +1028,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							color = target->_npcdata->blood_color;
 						else color = 0xFFFFFFFF;
 
-						Vector_Copy(&pos, &target->obj->vertexlist3[hitpoint].v);
+						pos = target->obj->vertexlist3[hitpoint].v;
 					}
 					else ARX_CHECK_NO_ENTRY(); 
 					
@@ -1047,7 +1039,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 						if (hitpoint >= 0)
 						{
-							Vector_Copy(&posi, &target->obj->vertexlist3[hitpoint].v);
+							posi = target->obj->vertexlist3[hitpoint].v;
 							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &posi);
 
 						}
@@ -1479,7 +1471,7 @@ void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, 
 	if (!io) return;
 
 	// retrieves flag
-	unsigned long flagg = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
+	ObjectType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
 
 	if (val)	// add flag
 		io->type_flags |= flagg;

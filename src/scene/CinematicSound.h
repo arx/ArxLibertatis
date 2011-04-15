@@ -2,14 +2,11 @@
 #ifndef ARX_SCENE_CINEMATICSOUND_H
 #define ARX_SCENE_CINEMATICSOUND_H
 
-#include "scene/GameSound.h" // TODO for ArxSound
-
+#include "scene/GameSound.h"
 
 class Cinematic;
 
-
 #define MAX_SOUND 256
-
 
 struct CinematicSound {
 	short active, load;
@@ -18,7 +15,6 @@ struct CinematicSound {
 	char * sound;
 	ArxSound idhandle;
 };
-
 
 void DeleteAllSound();
 

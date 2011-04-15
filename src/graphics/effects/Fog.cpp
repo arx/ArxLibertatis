@@ -308,8 +308,7 @@ void ARX_FOGS_Render() {
 //*************************************************************************************
 void ARX_FOGS_RenderAll()
 {
-	EERIE_3D angle;
-	Vector_Init(&angle); 
+	EERIE_3D angle(0, 0, 0);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -320,8 +319,8 @@ void ARX_FOGS_RenderAll()
 			if (fogobj)
 				DrawEERIEInter(fogobj, &angle, &fogs[i].pos, NULL);
 
-			Vector_Copy(&fogs[i].bboxmin, &BBOXMIN);
-			Vector_Copy(&fogs[i].bboxmax, &BBOXMAX);
+			fogs[i].bboxmin = BBOXMIN;
+			fogs[i].bboxmax = BBOXMAX;
 
 			if (fogs[i].special & FOG_DIRECTIONAL)
 			{

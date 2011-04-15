@@ -61,12 +61,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cstdlib>
 
-#include "core/Common.h"
-
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+
+#include "platform/Platform.h"
 
 using std::vector;
 

@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 #define BASH_COLOR !ARX_COMPILER_MSVC
 

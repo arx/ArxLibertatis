@@ -29,7 +29,7 @@
 #ifndef ARX_CORE_UNICODE_HPP
 #define ARX_CORE_UNICODE_HPP
 
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 ////////////////////////////////////////////////////////////
 /// Generic function to convert an UTF-16 characters range

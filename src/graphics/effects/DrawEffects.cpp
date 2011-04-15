@@ -77,9 +77,6 @@ extern long DANAESIZX;
 extern EERIE_3D SPRmins;
 extern EERIE_3D SPRmaxs;
 extern long MOVETYPE;
-extern ANIM_HANDLE * herowait;
-extern ANIM_HANDLE * herowalk;
-extern ANIM_HANDLE * herorun;
 extern EERIE_3DOBJ * eyeballobj; 
 extern TextureContainer * Boom;
 
@@ -320,19 +317,13 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1)
-{
-	long i,tx,tz;
-
-	for (i=0;i<MAX_LIGHTS;i++) 
-	{	
+void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if (GLight[i]!=NULL)
 		{
 			
-			tx = GLight[i]->pos.x * ACTIVEBKG->Xmul;
-			tz = GLight[i]->pos.z * ACTIVEBKG->Zmul;
+			long tx = GLight[i]->pos.x * ACTIVEBKG->Xmul;
+			long tz = GLight[i]->pos.z * ACTIVEBKG->Zmul;
 			GLight[i]->mins.x=9999999999.f;
 
 			if ((tx>=x0) && (tx<=x1) &&

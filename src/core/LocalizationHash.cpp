@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // todo remover les strIcmp
 
 #include "core/LocalizationHash.h"
-#include "io/String.h"
+#include "platform/String.h"
 
 //-----------------------------------------------------------------------------
 CLocalisationHash::CLocalisationHash(int _iSize)

@@ -54,15 +54,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
-#ifndef EERIE_LINKED_OBJ_H
-#define EERIE_LINKED_OBJ_H
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
+#ifndef ARX_SCENE_LINKEDOBJECT_H
+#define ARX_SCENE_LINKEDOBJECT_H
+
+#include <string>
+
+struct EERIE_3DOBJ;
+struct INTERACTIVE_OBJ;
 
 void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj);
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj);
 void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink);
-bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, const std::string& actiontext, const std::string& actiontext2, INTERACTIVE_OBJ * io = NULL);
+bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, const std::string & actiontext, const std::string & actiontext2, INTERACTIVE_OBJ * io = NULL);
 
-#endif
+#endif // ARX_SCENE_LINKEDOBJECT_H

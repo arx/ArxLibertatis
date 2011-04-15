@@ -66,36 +66,54 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/d3dwrapper.h"
 #include "graphics/Renderer.h"
 
+#include "platform/Flags.h"
+
 struct D3DEnum_DeviceInfo;
 class CD3DFramework7;
 
-#define HIDE_BACKGROUND 1
-#define HIDE_NPC        2
-#define HIDE_FIXINTER   4
-#define HIDE_ITEMS      8
-#define HIDE_PARTICLES  16
-#define HIDE_INTERFACE  32
-#define HIDE_NODES      64
-#define HIDE_CAMERAS    128
+enum HideFlag {
+	HIDE_BACKGROUND = (1<<0),
+	HIDE_NPC        = (1<<1),
+	HIDE_FIXINTER   = (1<<2),
+	HIDE_ITEMS      = (1<<3),
+	HIDE_PARTICLES  = (1<<4),
+	HIDE_INTERFACE  = (1<<5),
+	HIDE_NODES      = (1<<6),
+	HIDE_CAMERAS    = (1<<7)
+};
+DECLARE_FLAGS(HideFlag, HideFlags);
+DECLARE_FLAGS_OPERATORS(HideFlags);
 
-#define VIEWMODE_WIRE           1
-#define VIEWMODE_NORMALS        2
-#define VIEWMODE_FLAT           4
-#define VIEWMODE_NOLIGHTSOURCES 8
-#define VIEWMODE_INFOTEXT       16
+enum ViewModeFlag {
+	VIEWMODE_WIRE           = (1<<0),
+	VIEWMODE_NORMALS        = (1<<1),
+	VIEWMODE_FLAT           = (1<<2),
+	VIEWMODE_NOLIGHTSOURCES = (1<<3),
+	VIEWMODE_INFOTEXT       = (1<<4)
+};
+DECLARE_FLAGS(ViewModeFlag, ViewModeFlags);
+DECLARE_FLAGS_OPERATORS(ViewModeFlags);
 
-#define MODE_STATICLIGHT  1
-#define MODE_DEPTHCUEING  2
-#define MODE_DYNAMICLIGHT 4
-#define MODE_NORMALS      8
-#define MODE_RAYLAUNCH    16
-#define MODE_SMOOTH       32
+enum LightModeFlag {
+	MODE_STATICLIGHT  = (1<<0),
+	MODE_DEPTHCUEING  = (1<<1),
+	MODE_DYNAMICLIGHT = (1<<2),
+	MODE_NORMALS      = (1<<3),
+	MODE_RAYLAUNCH    = (1<<4),
+	MODE_SMOOTH       = (1<<5)
+};
+DECLARE_FLAGS(LightModeFlag, LightMode);
+DECLARE_FLAGS_OPERATORS(LightMode);
 
-#define WCF_NORESIZE     1
-#define WCF_NOFRAMEINFOS (1<<1)
-#define WCF_NOSTDPOPUP   (1<<2)
-#define	WCF_CHILD        (1<<3)
-#define WCF_ACCEPTFILES  (1<<4)
+enum WindowCreationFlag {
+	WCF_NORESIZE     = (1<<0),
+	WCF_NOFRAMEINFOS = (1<<1),
+	WCF_NOSTDPOPUP   = (1<<2),
+	WCF_CHILD        = (1<<3),
+	WCF_ACCEPTFILES  = (1<<4)
+};
+DECLARE_FLAGS(WindowCreationFlag, WindowCreationFlags);
+DECLARE_FLAGS_OPERATORS(WindowCreationFlags);
 
 enum ToolbarPosition {
 	EERIE_TOOLBAR_TOP,
@@ -208,6 +226,13 @@ struct EERIE_RGBB {
 	float b;
 };
 
+enum SoundModeFlag {
+	ARX_SOUND_ON     = 0x00000001,
+	ARX_SOUND_REVERB = 0x00000002
+};
+DECLARE_FLAGS(SoundModeFlag, SoundMode)
+DECLARE_FLAGS_OPERATORS(SoundMode)
+
 struct PROJECT {
 	
 	PROJECT()
@@ -218,8 +243,8 @@ struct PROJECT {
 		  bits(0), hide(0), TextureSize(0), TextureBits(0), 
 		  interpolatemouse(0), vsync(0) {
 	}
-
-	long soundmode;
+	
+	SoundMode soundmode;
 	long compatibility;
 	long ambient;
 	long improve;
@@ -229,7 +254,7 @@ struct PROJECT {
 	long multiplayer;
 	long demo;
 	long bits;
-	long hide;
+	HideFlags hide;
 	long TextureSize;
 	long TextureBits;
 	EERIE_RGBB interfacergb;
@@ -237,6 +262,7 @@ struct PROJECT {
 	long interpolatemouse;
 	long vsync;
 	std::string localisationpath;
+	
 };
 
 struct EERIETOOLBAR {
@@ -259,11 +285,11 @@ struct KEYBOARD_MNG {
 extern PROJECT Project;
 extern float FPS;
 extern LPDIRECT3DDEVICE7 GDevice;
-extern int ModeLight;
+extern LightMode ModeLight;
 
 extern short WINDOWCREATIONSIZEX;
 extern short WINDOWCREATIONSIZEY;
-extern long ViewMode;
+extern ViewModeFlags ViewMode;
 
 extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
 extern long EERIEMouseButton, EERIEMouseGrab;
@@ -368,7 +394,7 @@ public:
 	char StatusText[512];
 	short CreationSizeX;
 	short CreationSizeY;
-	long CreationFlags;
+	WindowCreationFlags CreationFlags;
 	long CreationMenu;
 	EERIETOOLBAR * ToolBar;
 	HWND owner;

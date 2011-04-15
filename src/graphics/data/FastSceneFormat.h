@@ -2,8 +2,8 @@
 #ifndef ARX_GRAPHICS_DATA_FASTSCENEFORMAT_H
 #define ARX_GRAPHICS_DATA_FASTSCENEFORMAT_H
 
-#include "core/Common.h"
 #include "graphics/GraphicsFormat.h"
+#include "platform/Platform.h"
 
 
 #pragma pack(push,1)

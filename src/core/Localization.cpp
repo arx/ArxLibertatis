@@ -28,7 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <list>
 #include <sstream>
 
-#include "core/Common.h"
 #include "core/LocalizationHash.h"
 #include "core/Unicode.hpp"
 
@@ -36,6 +35,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "platform/Platform.h"
 
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
@@ -373,5 +374,15 @@ bool PAK_UNICODE_GetPrivateProfileString( const std::string&  _in_section,
 	                                 _buf );
 
 	return true;
+}
+
+long MakeLocalised(const string & text, string & output) {
+	
+	if(text.empty()) {
+		output = "ERROR";
+		return 0;
+	}
+	
+	return HERMES_UNICODE_GetProfileString(text, "error", output);
 }
 

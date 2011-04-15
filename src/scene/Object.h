@@ -54,86 +54,60 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef EERIEOBJECT_H
-#define EERIEOBJECT_H
 
-#include "graphics/d3dwrapper.h"
-#include "core/Application.h"
-#include "scene/Light.h"
-#include "graphics/data/Texture.h"
+#ifndef ARX_SCENE_OBJECT_H
+#define ARX_SCENE_OBJECT_H
 
-//-----------------------------------------------------------------------------
-struct ACTIONSTRUCT
-{
-    EERIE_LIGHT	light;
-    EERIE_3D	pos;
-    long		dl;
-    short		type;
-    short		exist;
+#include "graphics/GraphicsTypes.h"
+
+enum ActionType {
+	ACT_FIRE = 1,
+	ACT_FIREOFF = 2,
+	ACT_FIRE2 = 3,
+	ACT_FIRE2OFF = 4
 };
 
-//-----------------------------------------------------------------------------
-#define ACT_FIRE			1
-#define ACT_FIREOFF			2
-#define ACT_FIRE2			3
-#define ACT_FIRE2OFF		4
+struct ACTIONSTRUCT {
+	EERIE_LIGHT light;
+	EERIE_3D pos;
+	long dl;
+	ActionType type;
+	short exist;
+};
 
-#define MAX_ACTIONS			100
+const size_t MAX_ACTIONS = 100;
 
-#define TEA_NO_SAMPLES		0
-#define TEA_NPC_SAMPLES		1
-#define TEA_FIX_SAMPLES		2
-#define TEA_PLAYER_SAMPLES	3
-
-#define TTE_NOPOPUP			1
-#define TTE_SLOWLOAD		2
-#define TTE_NO_RESTORE		4
-#define TTE_NO_NDATA		8
-#define TTE_NO_PDATA		16
-#define TTE_NO_PHYSICS_BOX	32
-#define TTE_NPC				64
-
-//-----------------------------------------------------------------------------
 extern D3DTLVERTEX	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
-//-----------------------------------------------------------------------------
-EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const std::string& dir);
+EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const std::string & dir);
 
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
-void ReleaseScene(EERIE_3DSCENE	*	scene);
-void MakeUserFlag(TextureContainer	* tc);
-long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const std::string& groupname);
-long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string& selname);
+void MakeUserFlag(TextureContainer * tc);
+long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname);
  
-void GlobalInitLight();
-void MoveAllLights(EERIE_3D * trans);
-void ReCreateUVs(EERIE_3DOBJ * eerie);
-long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string& text);
+long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text);
 long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string& text);
 long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx);
-void XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
-void YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
-void ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const std::string & texpath, const std::string & fic, long flag);
-EERIE_3DOBJ * TheoToEerie_Fast(const std::string & texpath, const std::string & fic, long flag);
+/*!
+ * Load a possibly cached 3D object using the default texture path.
+ * 
+ * @param pbox true if the object should have a physics box.
+ */
+EERIE_3DOBJ * loadObject(const std::string & file, bool pbox = true);
+
+/*!
+ * @param texpath texture path relative to file
+ */
+EERIE_3DOBJ * _LoadTheObj(const std::string & file, const std::string & texpath);
+
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const std::string & fic);
 
-EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& fic);
-
-void Clear3DScene(EERIE_3DSCENE	* eerie);
-void DrawEERIEObj(EERIE_3DOBJ * eobj, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, IDirectDrawSurface7 * envir);
-void DrawEERIEAnim(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long fr, float pour, long flag);
-float DrawEERIEAnimT(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long tim, long flag);
-float DrawEERIEAnimTQuat(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long tim, long flag);
-
-void DrawEERIEAnimQuat(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long fr, float pour, long flag);
-void SceneAddObj(EERIE_3DOBJ * eobj);
-void SceneAddScn(EERIE_3DSCENE * escn);
 void ReleaseAnim(EERIE_ANIM * ea);
 
-EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj);
+EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj);
 void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * obj);
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj);
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret);
@@ -141,4 +115,4 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void RemoveAllBackgroundActions();
 
-#endif
+#endif // ARX_SCENE_OBJECT_H

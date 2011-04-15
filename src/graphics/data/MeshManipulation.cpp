@@ -60,11 +60,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include "graphics/Math.h"
+#include "graphics/data/Texture.h"
 
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "platform/String.h"
 
 #include "scene/Object.h"
 
@@ -830,12 +832,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 
 	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
 	{
-		const char tex1[] = "Graph\\Obj3D\\Textures\\";
-
-		if (io->ioflags & IO_NPC)
-			tobj = TheoToEerie_Fast(tex1, path, TTE_NPC);
-		else
-			tobj = TheoToEerie_Fast(tex1, path, 0);
+		tobj = loadObject(path);
 
 		if (!tobj) return;
 

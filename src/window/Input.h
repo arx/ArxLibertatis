@@ -54,76 +54,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_INPUT_H
-#define ARX_INPUT_H
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
+#ifndef ARX_WINDOW_INPUT_H
+#define ARX_WINDOW_INPUT_H
 
-#include "window/DXInput.h"
+#include <windows.h>
 
-//-----------------------------------------------------------------------------
-#define INTERNAL_MOUSE_1	257
-#define INTERNAL_MOUSE_2	258
-#define INTERNAL_MOUSE_3	259
-#define INTERNAL_MOUSE_4	260
-#define INTERNAL_MOUSE_5	261
-#define INTERNAL_MOUSE_6	262
-
-#define INTERNAL_MOUSEWHEEL_DOWN	280
-#define INTERNAL_MOUSEWHEEL_UP		281
-
-#define INTERNAL_SCID			400
-
-#define INTERNAL_JOYSTICK_1		297
-#define INTERNAL_JOYSTICK_2		298
-#define INTERNAL_JOYSTICK_3		299
-#define INTERNAL_JOYSTICK_4		300
-#define INTERNAL_JOYSTICK_5		301
-#define INTERNAL_JOYSTICK_6		302
-#define INTERNAL_JOYSTICK_7		303
-#define INTERNAL_JOYSTICK_8		304
-#define INTERNAL_JOYSTICK_9		305
-#define INTERNAL_JOYSTICK_10	306
-#define INTERNAL_JOYSTICK_11	307
-#define INTERNAL_JOYSTICK_12	308
-#define INTERNAL_JOYSTICK_13	309
-
-#define MAX_IMPULSES						17
-#define MAX_IMPULSES_NB						3
-
-#define ARX_INPUT_IMPULSE_JUMP				0
-#define ARX_INPUT_IMPULSE_COMBAT_MODE		1
-#define ARX_INPUT_IMPULSE_MAGIC_MODE		2
-#define ARX_INPUT_IMPULSE_STEALTH			3
-#define ARX_INPUT_IMPULSE_WALK_FORWARD		4
-#define ARX_INPUT_IMPULSE_WALK_BACKWARD		5
-#define ARX_INPUT_IMPULSE_STRAFE_LEFT		6
-#define ARX_INPUT_IMPULSE_STRAFE_RIGHT		7
-#define ARX_INPUT_IMPULSE_MOUSE_LOOK		8
-#define ARX_INPUT_IMPULSE_ACTION			9
-#define ARX_INPUT_IMPULSE_INVENTORY			10
-#define ARX_INPUT_IMPULSE_BOOK				11
-#define ARX_INPUT_IMPULSE_ROTATE_LEFT		12
-#define ARX_INPUT_IMPULSE_ROTATE_RIGHT		13
-#define ARX_INPUT_IMPULSE_LEAN_RIGHT		14
-#define ARX_INPUT_IMPULSE_LEAN_LEFT			15
-#define ARX_INPUT_IMPULSE_CROUCH			16
-
-//-----------------------------------------------------------------------------
-extern long GameImpulses[MAX_IMPULSES][MAX_IMPULSES_NB];
-
-//-----------------------------------------------------------------------------
-void ARX_INPUT_Init_Game_Impulses();
 bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd);
 void ARX_INPUT_Release();
- 
-//-----------------------------------------------------------------------------
+
 bool ARX_IMPULSE_NowPressed(long ident);
 bool ARX_IMPULSE_Pressed(long ident);
 bool ARX_IMPULSE_NowUnPressed(long ident);
  
-
-#endif
+#endif // ARX_WINDOW_INPUT_H

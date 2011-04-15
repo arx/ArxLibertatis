@@ -27,11 +27,11 @@ add_executable(savetool
 	../src/io/Blast.cpp
 	../src/io/SaveBlock.cpp
 	../src/io/HashMap.cpp
-	../src/io/String.cpp
 	../src/io/FilePath.cpp
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
 	../src/io/PakManager.cpp
+	../src/platform/String.cpp
 )
 
 target_link_libraries(savetool ${ZLIB_LIBRARIES})
