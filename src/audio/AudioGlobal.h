@@ -74,7 +74,6 @@ namespace ATHENA {
 	extern char * environment_path;
 	extern aalULong stream_limit_ms;
 	extern aalULong stream_limit_bytes;
-	extern aalULong session_start;
 	extern aalULong session_time;
 	extern aalULong global_status;
 	extern aalFormat global_format;

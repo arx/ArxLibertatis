@@ -33,8 +33,8 @@ namespace ATHENA {
 	// Global
 	
 	// Setup
-	aalError aalInit(void * param = NULL);
-	aalError aalInitForceNoEAX(void * param = NULL);
+	aalError aalInit();
+	aalError aalInitForceNoEAX();
 	aalError aalClean();
 	aalError aalSetStreamLimit(const aalULong & size);
 	aalError aalSetOutputFormat(const aalFormat & format);

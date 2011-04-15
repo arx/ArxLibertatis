@@ -333,14 +333,14 @@ void ARX_SOUND_PreloadAll();
 extern std::string pStringModSfx;
 extern std::string pStringModSpeech;
 
-long ARX_SOUND_Init(HWND hwnd)
+long ARX_SOUND_Init()
 {
 	if (bIsActive) ARX_SOUND_Release();
 
 	if ((bForceNoEAX) ||
 	        (pMenuConfig && (!pMenuConfig->bEAX)))
 	{
-		if (aalInitForceNoEAX(hwnd) || aalEnable(AAL_FLAG_MULTITHREAD))
+		if (aalInitForceNoEAX() || aalEnable(AAL_FLAG_MULTITHREAD))
 		{
 			aalClean();
 			return -1;
@@ -348,7 +348,7 @@ long ARX_SOUND_Init(HWND hwnd)
 	}
 	else
 	{
-		if (aalInit(hwnd) || aalEnable(AAL_FLAG_MULTITHREAD))
+		if (aalInit() || aalEnable(AAL_FLAG_MULTITHREAD))
 		{
 			aalClean();
 			return -1;

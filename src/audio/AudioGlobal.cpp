@@ -54,7 +54,6 @@ namespace ATHENA
 	char * environment_path = NULL;
 	aalULong stream_limit_ms(AAL_DEFAULT_STREAMLIMIT);
 	aalULong stream_limit_bytes = 0;
-	aalULong session_start(0);
 	aalULong session_time(0);
 	aalULong global_status(0);
 	aalFormat global_format = { 0, 0, 0 };

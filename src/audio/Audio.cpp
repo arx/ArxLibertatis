@@ -68,8 +68,8 @@ static struct timespec start_timespec;
 	// Global setup                                                              //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError aalInit(void * param)
-	{
+	aalError aalInit() {
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -111,9 +111,8 @@ static struct timespec start_timespec;
 		return AAL_OK;
 	}
 
-	aalError aalInitForceNoEAX(void * param)
-	{
-		aalError ret = aalInit(param);
+	aalError aalInitForceNoEAX() {
+		aalError ret = aalInit();
 		is_reverb_present = AAL_UFALSE;
 
 		return ret;
@@ -137,11 +136,7 @@ static struct timespec start_timespec;
 		free(ambiance_path), ambiance_path = NULL;
 		free(environment_path), environment_path = NULL;
 		stream_limit_ms = AAL_DEFAULT_STREAMLIMIT;
-		struct timespec ts;
-		clock_gettime(CLOCK_REALTIME, &ts);
-		session_start = (ts.tv_sec * 1000000000 + ts.tv_nsec) / 1000000; // session_start shouldn't really be used any more
-		start_timespec.tv_sec = ts.tv_sec;
-		start_timespec.tv_nsec = ts.tv_nsec;
+		clock_gettime(CLOCK_REALTIME, &start_timespec);
 		session_time = 0;
 		is_reverb_present = AAL_UFALSE;
 
