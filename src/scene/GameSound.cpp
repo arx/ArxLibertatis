@@ -340,16 +340,14 @@ long ARX_SOUND_Init()
 	if ((bForceNoEAX) ||
 	        (pMenuConfig && (!pMenuConfig->bEAX)))
 	{
-		if (aalInitForceNoEAX() || aalEnable(AAL_FLAG_MULTITHREAD))
-		{
+		if(aalInitForceNoEAX()) {
 			aalClean();
 			return -1;
 		}
 	}
 	else
 	{
-		if (aalInit() || aalEnable(AAL_FLAG_MULTITHREAD))
-		{
+		if(aalInit()) {
 			aalClean();
 			return -1;
 		}

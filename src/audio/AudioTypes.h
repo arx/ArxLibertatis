@@ -95,7 +95,6 @@ namespace ATHENA {
 		AAL_FLAG_PRELOAD         = 0x00004000, // Preload sample if not streamed
 		AAL_FLAG_AUTOFREE        = 0x00008000, // Free resource when playing is finished
 		AAL_FLAG_CALLBACK        = 0x00010000, // Enable sample callback management
-		AAL_FLAG_MULTITHREAD     = 0x00020000, // Enable multithreaded processing safety
 	};
 	
 	// Length units

@@ -107,6 +107,8 @@ static struct timespec start_timespec;
 		is_reverb_present = alcIsExtensionPresent(device, "ALC_EXT_EFX") ? AAL_UTRUE : AAL_UFALSE;
 		
 		if (mutex) mutex->unlock();
+		
+		mutex = new Lock();
 
 		return AAL_OK;
 	}
@@ -304,17 +306,6 @@ static struct timespec start_timespec;
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
-		if (flags & AAL_FLAG_MULTITHREAD && !mutex)
-		{
-			mutex = new Lock();
-
-			if (!mutex) return AAL_ERROR_SYSTEM;
-
-			if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-				return AAL_ERROR_TIMEOUT;
-
-		}
-
 		// I don't think we need to worry about this
 		if (flags & FLAG_ANY_3D_FX)
 		{
@@ -352,9 +343,6 @@ static struct timespec start_timespec;
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
-		if (flags & AAL_FLAG_MULTITHREAD && mutex)
-			delete mutex, mutex = NULL;
-
 		return AAL_OK;
 	}
 
@@ -373,9 +361,6 @@ static struct timespec start_timespec;
 
 		switch (flag)
 		{
-			case AAL_FLAG_MULTITHREAD   :
-				status = mutex ? AAL_UTRUE : AAL_UFALSE;
-				break;
 
 			case AAL_FLAG_POSITION      :
 			case AAL_FLAG_VELOCITY      :
