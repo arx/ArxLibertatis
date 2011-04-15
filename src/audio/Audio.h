@@ -42,7 +42,6 @@ namespace ATHENA {
 	aalError aalSetAmbiancePath(const char * path);
 	aalError aalSetEnvironmentPath(const char * path);
 	aalError aalEnable(const aalULong & flags);
-	aalError aalDisable(const aalULong & flags);
 	// Status
 	aalError aalGetStreamLimit(aalULong & limit);
 	aalUBool aalIsEnabled(const aalFlag & flag);

@@ -338,14 +338,6 @@ static struct timespec start_timespec;
 		return AAL_OK;
 	}
 
-	aalError aalDisable(const aalULong & flags)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		return AAL_OK;
-	}
-
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
 	// Global status                                                             //

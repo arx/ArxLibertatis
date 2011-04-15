@@ -497,7 +497,6 @@ void ARX_SOUND_EnableReverb(long status) {
 		}
 		else
 		{
-			aalDisable(AAL_FLAG_REVERBERATION);
 			Project.soundmode &= ~ARX_SOUND_REVERB;
 		}
 	}
