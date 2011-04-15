@@ -262,10 +262,6 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
 	
-	// Hack: ignore the pointer at the end of the struct.
-	data -= sizeof(void *);
-	size += sizeof(void *);
-	
 	LogDebug << "nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY_1_76);
 	for(int i = 0; i < t.nbkey; i++) {
 		
