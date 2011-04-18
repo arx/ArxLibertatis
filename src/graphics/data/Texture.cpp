@@ -89,8 +89,7 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 // Local list of textures
 //-----------------------------------------------------------------------------
  
-TextureContainer	* g_ptcTextureList = NULL;
-bool				bGlobalTextureStretch;
+TextureContainer * g_ptcTextureList = NULL;
 
 TextureContainer * GetTextureList()
 {
