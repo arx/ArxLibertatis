@@ -54,7 +54,12 @@ Logger::Logger(const char* file, int line, Logger::LogLevel level) {
 
 Logger::~Logger() {
   if (print)
+  {
     std::cout<<std::endl;
+#if ARX_COMPILER_MSVC
+	OutputDebugString("\n");
+#endif
+  }
   if (fatal)
 	  exit(0);
 }
@@ -101,7 +106,12 @@ void Logger::log(int mode, int color, const string & level,
 	cout<<"[\e["<< mode <<";"<< color <<"m" << level << "\e[m]  "
 			<<"\e[0;35m"<<file<<"\e[m:\e[0;33m"<<line<<"\e[m"<<"  ";
 #else
-	cout<<"["<< level << "]  "<<file<<":"<<line<<"  ";
+	stringstream ss;
+	ss <<"["<< level << "]  "<<file<<":"<<line<<"  ";
+	cout << ss.str();
+#if ARX_COMPILER_MSVC
+	OutputDebugString(ss.str().c_str());
+#endif
 #endif
 }
 

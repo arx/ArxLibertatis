@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using std::string;
 
@@ -31,8 +32,15 @@ public:
   virtual ~Logger();
   template<class T>
   Logger& operator<< (const T & i) {
-    if(print)
-      std::cout << i;
+	if(print)
+	{
+		std::stringstream ss;
+		ss << i;
+		std::cout << ss.str();
+#if ARX_COMPILER_MSVC
+		OutputDebugString(ss.str().c_str());
+#endif
+	}
     return *this;
   }
   
