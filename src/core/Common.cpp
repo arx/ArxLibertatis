@@ -68,10 +68,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 
-void assertionFailed(const char * _sExpression, const char * _sFile, unsigned int _iLine, const char * _sMessage)
+void assertionFailed(const char * _sExpression, const char * _sFile, unsigned int _iLine, const char * _sMessage, ...)
 {
-	char msgbuf[8192];
-	char fn[MAX_PATH + 1], expr[MAX_PATH + 1], iFile[MAX_PATH + 1];
+	char msgbuf[4096];
+	char formattedmsgbuf[4096];
+
+	char expr[MAX_PATH + 1], iFile[MAX_PATH + 1];
 
 	strcpy(expr, _sExpression);
 	strcpy(iFile, _sFile);
@@ -86,17 +88,16 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned in
 		strcpy(expr, "?");
 	}
 
-	fn[MAX_PATH] = 0;
-
-	if (! GetModuleFileNameA(NULL, fn, MAX_PATH))
-	{
-		strcpy(fn, "<unknown>");
-	}
-
 	if(_sMessage == 0)
-		sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s", fn, iFile, _iLine, expr);
+		sprintf(msgbuf, "ASSERTION FAILED!\n%s(%u): %s\n", iFile, _iLine, expr);
 	else
-		sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s\nMessage: %s", fn, iFile, _iLine, expr, _sMessage);
+	{
+		va_list args;
+		va_start(args, _sMessage);
+		vsnprintf(formattedmsgbuf, sizeof(formattedmsgbuf) - 1, _sMessage, args);
+		va_end(args);
+		sprintf(msgbuf, "ASSERTION FAILED!\n%s(%u): %s\n\t Message: %s\n", iFile, _iLine, expr, formattedmsgbuf);
+	}
 
 	LogError << msgbuf;
 }

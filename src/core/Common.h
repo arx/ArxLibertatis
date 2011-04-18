@@ -186,71 +186,90 @@ typedef double f64; // 64 bits double float
                      Maccro for assertion
 ------------------------------------------------------------*/
 
-void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = NULL);
+void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = NULL, ...);
 
 #ifdef _DEBUG
-	#define arx_assert_msg(_Expression, _Message) (void) ((_Expression) ||  (assertionFailed((#_Expression), (__FILE__), __LINE__, _Message),  ARX_DEBUG_BREAK(), 0))
+	#define arx_assert_msg(_Expression, _Message, ...)											\
+		{																						\
+			if(!(_Expression))																	\
+			{																					\
+				assertionFailed(#_Expression, (__FILE__), __LINE__, _Message, ##__VA_ARGS__);	\
+				ARX_DEBUG_BREAK();																\
+			}																					\
+		}
+
+	#define arx_assert(_Expression)																\
+		{																						\
+			if(!(_Expression))																	\
+			{																					\
+				assertionFailed(#_Expression, (__FILE__), __LINE__);							\
+				ARX_DEBUG_BREAK();																\
+			}																					\
+		}
+
 #else // _DEBUG
 	#if ARX_COMPILER_MSVC  // MS compilers support noop which discards everything inside the parens
-		#define arx_assert_msg(_Expression, _Message) __noop
+		#define arx_assert_msg(_Expression, _Message, ...)	__noop
+		#define arx_assert(_Expression, _Message)			__noop
 	#else
-		#define arx_assert_msg(_Expression, _Message) ((void)0)
+		#define arx_assert_msg(_Expression, _Message, ...)	((void)0)
+		#define arx_assert(_Expression, _Message)			((void)0)
 	#endif
 #endif // _DEBUG
-#define arx_assert(_Expression) arx_assert_msg(_Expression, NULL)
+
 
 /* ---------------------------------------------------------
                             Define
 ------------------------------------------------------------*/
 
-#define ARX_CHECK_NOT_NEG( _x )  (arx_assert((_x) >= 0))
+#define ARX_CHECK_NOT_NEG( _x ) arx_assert((_x) >= 0)
 
-#define ARX_CAST_LONG( _x )	( static_cast<long>( _x ) )
-#define ARX_CAST_ULONG( _x )( static_cast<unsigned long>( _x ) )
-#define ARX_CAST_UINT( _x ) ( static_cast<unsigned int>( _x ) )
-#define ARX_CAST_USHORT( _x ) ( static_cast<unsigned short>( _x ) )
+#define ARX_CAST_LONG( _x )		static_cast<long>( _x )
+#define ARX_CAST_ULONG( _x )	static_cast<unsigned long>( _x )
+#define ARX_CAST_UINT( _x )		static_cast<unsigned int>( _x )
+#define ARX_CAST_USHORT( _x )	static_cast<unsigned short>( _x )
 
-#define ARX_OPAQUE_WHITE 0xFFFFFFFF
+#define ARX_OPAQUE_WHITE		0xFFFFFFFF
 
 // TODO use assert directly
-#define ARX_CHECK_NO_ENTRY( ) (arx_assert(false))
-#define ARX_CHECK( _expr ) (arx_assert( _expr ))
+#define ARX_CHECK_NO_ENTRY( )	arx_assert(false)
+#define ARX_CHECK( _expr )		arx_assert(_expr)
 
 /* ---------------------------------------------------------
                            Pragma
 ------------------------------------------------------------*/
 
-#define ARX_DEAD_CODE()		{arx_assert( false );}
+#define ARX_DEAD_CODE()		arx_assert(false)
 #define ARX_UNUSED(x)		((void)&x)
 
-#define ARX_CHECK_UCHAR(_x)	{arx_assert( static_cast<u16>(_x) <= UCHAR_MAX	&& _x >= 0 ) ;}
-#define ARX_CHECK_BYTE(_x) ARX_CHECK_UCHAR(_x)
-#define ARX_CHECK_CHAR(_x)	{arx_assert( static_cast<s16>(_x) <= CHAR_MAX	&& static_cast<s16>(_x) >= CHAR_MIN ) ;}
-#define ARX_CHECK_SHORT(_x)	{arx_assert( static_cast<s32>(_x) <= SHRT_MAX	&& static_cast<s32>(_x) >= SHRT_MIN ) ;}
-#define ARX_CHECK_USHORT(_x){arx_assert( static_cast<u32>(_x) <= USHRT_MAX	&& _x >= 0 ) ;}
+#define ARX_CHECK_UCHAR(_x)	arx_assert( static_cast<u16>(_x) <= UCHAR_MAX	&& _x >= 0 )
+#define ARX_CHECK_BYTE(_x)  ARX_CHECK_UCHAR(_x)
+#define ARX_CHECK_CHAR(_x)	arx_assert( static_cast<s16>(_x) <= CHAR_MAX	&& static_cast<s16>(_x) >= CHAR_MIN )
+#define ARX_CHECK_SHORT(_x)	arx_assert( static_cast<s32>(_x) <= SHRT_MAX	&& static_cast<s32>(_x) >= SHRT_MIN )
+#define ARX_CHECK_USHORT(_x)arx_assert( static_cast<u32>(_x) <= USHRT_MAX	&& _x >= 0 )
 #define ARX_CHECK_WORD(_x)	ARX_CHECK_USHORT(_x)
-#define ARX_CHECK_INT(_x)	{arx_assert( static_cast<s64>(_x) <= INT_MAX	&& static_cast<s64>(_x) >= INT_MIN ) ;}
-#define ARX_CHECK_UINT(_x)  {arx_assert( static_cast<u64>(_x) <= UINT_MAX	&& _x >= 0 ) ;}
+#define ARX_CHECK_INT(_x)	arx_assert( static_cast<s64>(_x) <= INT_MAX	&& static_cast<s64>(_x) >= INT_MIN )
+#define ARX_CHECK_UINT(_x)  arx_assert( static_cast<u64>(_x) <= UINT_MAX	&& _x >= 0 )
 #define ARX_CHECK_SIZET(_x) ARX_CHECK_UINT(_x)
-#define ARX_CHECK_LONG(_x)	{arx_assert( static_cast<s64>(_x) <= LONG_MAX	&& static_cast<s64>(_x) >= LONG_MIN ) ;}
-#define ARX_CHECK_ULONG(_x) {arx_assert( static_cast<u64>(_x) <= ULONG_MAX	&& _x >= 0	);}
+#define ARX_CHECK_LONG(_x)	arx_assert( static_cast<s64>(_x) <= LONG_MAX	&& static_cast<s64>(_x) >= LONG_MIN )
+#define ARX_CHECK_ULONG(_x) arx_assert( static_cast<u64>(_x) <= ULONG_MAX	&& _x >= 0	)
 #define ARX_CHECK_DWORD(_x) ARX_CHECK_ULONG(_x)
 
 // TODO remove
-#define ARX_CLEAN_WARN_CAST_FLOAT(_x) (static_cast<float>( _x ))
-#define ARX_CLEAN_WARN_CAST_UCHAR(_x) (static_cast<unsigned char>( _x ))
-#define ARX_CLEAN_WARN_CAST_CHAR(_x) (static_cast<char>( _x ))
-#define ARX_CLEAN_WARN_CAST_BYTE(_x) (static_cast<BYTE>( _x ))
-#define ARX_CLEAN_WARN_CAST_SHORT(_x) (static_cast<short>( _x ))
-#define ARX_CLEAN_WARN_CAST_USHORT(_x) (static_cast<unsigned short>( _x ))
+#define ARX_CLEAN_WARN_CAST_FLOAT(_x)	(static_cast<float>( _x ))
+#define ARX_CLEAN_WARN_CAST_UCHAR(_x)	(static_cast<unsigned char>( _x ))
+#define ARX_CLEAN_WARN_CAST_CHAR(_x)	(static_cast<char>( _x ))
+#define ARX_CLEAN_WARN_CAST_BYTE(_x)	(static_cast<BYTE>( _x ))
+#define ARX_CLEAN_WARN_CAST_SHORT(_x)	(static_cast<short>( _x ))
+#define ARX_CLEAN_WARN_CAST_USHORT(_x)	(static_cast<unsigned short>( _x ))
 #define ARX_CLEAN_WARN_CAST_WORD(_x)	(static_cast<WORD>( _x ))
-#define ARX_CLEAN_WARN_CAST_INT(_x)	  (static_cast<int>( _x ))
-#define ARX_CLEAN_WARN_CAST_UINT(_x)  (static_cast<unsigned int>( _x ))
-#define ARX_CLEAN_WARN_CAST_SIZET(_x) (static_cast<size_t>( _x ))
-#define ARX_CLEAN_WARN_CAST_LONG(_x)  (static_cast<long>( _x ))
-#define ARX_CLEAN_WARN_CAST_ULONG(_x) (static_cast<unsigned long>( _x ))
-#define ARX_CLEAN_WARN_CAST_DWORD(_x) (static_cast<DWORD>( _x ))
-#define ARX_CLEAN_WARN_CAST_D3DVALUE(_x) (static_cast<D3DVALUE>( _x ))
+#define ARX_CLEAN_WARN_CAST_INT(_x)		(static_cast<int>( _x ))
+#define ARX_CLEAN_WARN_CAST_UINT(_x)	(static_cast<unsigned int>( _x ))
+#define ARX_CLEAN_WARN_CAST_SIZET(_x)	(static_cast<size_t>( _x ))
+#define ARX_CLEAN_WARN_CAST_LONG(_x)	(static_cast<long>( _x ))
+#define ARX_CLEAN_WARN_CAST_ULONG(_x)	(static_cast<unsigned long>( _x ))
+#define ARX_CLEAN_WARN_CAST_DWORD(_x)	(static_cast<DWORD>( _x ))
+#define ARX_CLEAN_WARN_CAST_D3DVALUE(_x)(static_cast<D3DVALUE>( _x ))
 
 /* ---------------------------------------------------------
                       String utilities
