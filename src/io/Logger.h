@@ -2,7 +2,7 @@
 #define LOGGER_H
 
 #include <cstring>
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 #define LogDebug    Logger(__FILE__,__LINE__, Logger::Debug)
 #define LogError    Logger(__FILE__,__LINE__, Logger::Error)

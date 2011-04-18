@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Time.h"
 #include "core/Dialog.h"
 #include "core/Localization.h"
+#include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Levels.h"
@@ -86,7 +87,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -97,13 +97,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/CollisionShapes.h"
 #include "physics/Actors.h"
 
+#include "platform/String.h"
+
 #include "scene/Object.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/LevelFormat.h"
+#include "scene/Light.h"
 
 using std::max;
+using std::string;
 
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
@@ -174,15 +178,14 @@ void BIG_PURGE()
 				}
 		}
 
-		for (int i = 0; i < MAX_LIGHTS; i++)
-		{
-			if (GLight[i])
-				if (CanPurge(&GLight[i]->pos))
-				{
+		for(size_t i = 0; i < MAX_LIGHTS; i++) {
+			if(GLight[i]) {
+				if(CanPurge(&GLight[i]->pos)) {
 					// purge light
 					EERIE_LIGHT_ClearByIndex(i);
 					LIGHT_count++;
 				}
+			}
 		}
 
 		for (int i = nbARXpaths - 1; i >= 0; i--)
@@ -219,33 +222,6 @@ void BIG_PURGE()
 		LogError << (text);
 	}
 }
-
-//*************************************************************************************
-//*************************************************************************************
-
-EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path)
-{
-	
-	std::string tex1;
-	EERIE_3DOBJ * wr;
-	
-	if (path == NULL)
-	{
-		tex1 = "Graph\\obj3D\\textures\\";
-	}
-	else
-	{
-		tex1 = text;
-		RemoveName(tex1);
-		tex1 += path;
-	}
-	
-	wr = TheoToEerie_Fast(tex1, text, 0);
-	return wr;
-}
-
-//*************************************************************************************
-//*************************************************************************************
 
 void ReplaceSpecifics( char* text )
 {
@@ -346,7 +322,7 @@ long DanaeSaveLevel(const string & _fic) {
 	memset(dat, 0, allocsize);
 	
 	// Preparing HEADER
-	dlh.version = CURRENT_VERSION;
+	dlh.version = DLH_CURRENT_VERSION;
 	if(NODIRCREATION) {
 		dlh.version = 1.004f;
 	}
@@ -564,7 +540,7 @@ long DanaeSaveLevel(const string & _fic) {
 	memset(&llh, 0, sizeof(DANAE_LLF_HEADER));
 	
 	// Preparing HEADER
-	llh.version = CURRENT_VERSION;
+	llh.version = DLH_CURRENT_VERSION;
 	llh.nb_lights = EERIE_LIGHT_Count();
 	llh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
 	strcpy(llh.ident, "DANAE_LLH_FILE");
@@ -713,19 +689,15 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
 
-void LogDirCreation( const std::string& dir) {
+void LogDirCreation(const string & dir) {
 	if(DirectoryExist(dir)) {
 		LogDebug << "LogDirCreation: " << dir;
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
 
-void LogDirDestruction( const std::string& dir ) {
+static void LogDirDestruction(const string & dir ) {
 	if(DirectoryExist(dir)) {
 		LogDebug << "LogDirDestruction: " << dir;
 	}
@@ -820,39 +792,30 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 	}
 }
 
-extern long FORCE_IO_INDEX;
 INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D & pos, const EERIE_3D & angle, const EERIE_3D & trans) {
 	char nameident[256];
-	std::string tmp;
+	string tmp;
 	size_t FileSize;
 	INTERACTIVE_OBJ * io;
 	
-	if(FORCE_IO_INDEX != -1) {
-		io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
-	} else {
-		
-		sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
-		
-		long t = GetTargetByNameTarget(nameident);
-		if(t >= 0) {
-			return inter.iobj[t];
-		}
-		
-		char * nname = strdup(name.c_str()); // TODO use string
-		ReplaceSpecifics(nname);
-		
-		io = AddInteractive(nname, ident, NO_MESH | NO_ON_LOAD);
+	sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
+	
+	long t = GetTargetByNameTarget(nameident);
+	if(t >= 0) {
+		return inter.iobj[t];
 	}
-
+	
+	char * nname = strdup(name.c_str()); // TODO use string
+	ReplaceSpecifics(nname);
+	
+	io = AddInteractive(nname, ident, NO_MESH | NO_ON_LOAD);
+	
 	if (io)
 	{
 		RestoreInitialIOStatusOfIO(io);
 		ARX_INTERACTIVE_HideGore(io);
 
-		// TODO operator overloading
-		io->lastpos.x = io->initpos.x = io->pos.x = pos.x + trans.x; // RELATIVE !!!!!!!!!
-		io->lastpos.y = io->initpos.y = io->pos.y = pos.y + trans.y;
-		io->lastpos.z = io->initpos.z = io->pos.z = pos.z + trans.z;
+		io->lastpos = io->initpos = io->pos = pos + trans; // RELATIVE !!!!!!!!!
 		io->move.x = io->move.y = io->move.z = 0.f;
 		io->initangle = io->angle = angle;
 
@@ -895,16 +858,9 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 
 		if (SendIOScriptEvent(io, SM_LOAD) == ACCEPT)
 		{
-			if (io->obj == NULL)
-			{
-				const char dirpath[] = "Graph\\Obj3D\\Textures\\";
-
-				if (io->ioflags & IO_ITEM)
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, 0);
-				else if (io->ioflags & IO_NPC)
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX | TTE_NPC);
-				else
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX);
+			if(io->obj == NULL) {
+				bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
+				io->obj = loadObject(io->filename, pbox);
 
 				if (io->ioflags & IO_NPC)
 					EERIE_COLLISION_Cylinder_Create(io);
@@ -976,7 +932,7 @@ long DanaeLoadLevel(const string & fic) {
 	
 	LogDebug << "dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER);
 	
-	if(dlh.version > CURRENT_VERSION) {
+	if(dlh.version > DLH_CURRENT_VERSION) {
 		LogError << "DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...";
 		free(dat);
 		dat = NULL;
@@ -986,8 +942,6 @@ long DanaeLoadLevel(const string & fic) {
 	// using compression
 	if(dlh.version >= 1.44f) {
 		char * torelease = dat;
-		long cpr_pos;
-		cpr_pos = 0;
 		dat = blastMemAlloc(dat + pos, FileSize - pos, FileSize);
 		free(torelease);
 		pos = 0;
@@ -1045,9 +999,7 @@ long DanaeLoadLevel(const string & fic) {
 	EERIE_3D trans;
 	if(FASTmse) {
 		trans = Mscenepos;
-		player.pos.x = loddpos.x + trans.x;
-		player.pos.y = loddpos.y + trans.y;
-		player.pos.z = loddpos.z + trans.z;
+		player.pos = loddpos + trans;
 	} else if(mse != NULL) {
 		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * ( 1.0f / 2 );
 		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * ( 1.0f / 2 );
@@ -1059,7 +1011,7 @@ long DanaeLoadLevel(const string & fic) {
 		Mscenepos.z = (float)((long)(Mscenepos.z / BKG_SIZZ)) * BKG_SIZZ + (float)BKG_SIZZ * ( 1.0f / 2 );
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
-		Mscenepos.y = mse->pos.y = -mse->cub.ymin - 100.f - mse->point0.y;
+		mse->pos.y = Mscenepos.y = -mse->cub.ymin - 100.f - mse->point0.y;
 		lastteleport.x = mapcam.pos.x = player.pos.x = subj.pos.x = moveto.x = mse->pos.x + mse->point0.x;
 		lastteleport.z = mapcam.pos.z = player.pos.z = subj.pos.z = moveto.z = mse->pos.z + mse->point0.z;
 		lastteleport.y                = player.pos.y = subj.pos.y = moveto.y = mse->pos.y + mse->point0.y;
@@ -1135,8 +1087,8 @@ long DanaeLoadLevel(const string & fic) {
 			pos += sizeof(u32) * bcount;
 		}
 		
-		ModeLight = dll->ModeLight;
-		ViewMode = dll->ViewMode;
+		ModeLight = Flag(dll->ModeLight); // TODO save/load flags
+		ViewMode = Flag(dll->ViewMode); // TODO save/load flags
 		ViewMode &= ~VIEWMODE_WIRE;
 	}
 	
@@ -1284,7 +1236,7 @@ long DanaeLoadLevel(const string & fic) {
 		DANAE_LS_PATH * dlp = (DANAE_LS_PATH *)(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
 		
-		ap->flags = dlp->flags;
+		ap->flags = Flag(dlp->flags); // TODO save/load flags
 		ap->idx = dlp->idx;
 		ap->initpos.x = dlp->initpos.x + trans.x;
 		ap->initpos.y = dlp->initpos.y + trans.y;
@@ -1314,7 +1266,7 @@ long DanaeLoadLevel(const string & fic) {
 			DANAE_LS_PATHWAYS  * dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
 			pos += sizeof(DANAE_LS_PATHWAYS);
 			
-			app[j].flag = dlpw->flag;
+			app[j].flag = (PathwayType)dlpw->flag; // save/load enum
 			app[j].rpos = dlpw->rpos;
 			app[j]._time = static_cast<float>(dlpw->time);
 		}
@@ -1449,8 +1401,8 @@ long DanaeLoadLevel(const string & fic) {
 		}
 	}
 	
-	ModeLight = dll->ModeLight;
-	ViewMode = dll->ViewMode;
+	ModeLight = Flag(dll->ModeLight); // TODO save/load flags
+	ViewMode = Flag(dll->ViewMode); // TODO save/load flags
 	ViewMode &= ~VIEWMODE_WIRE;
 	
 	free(dat);
@@ -1623,8 +1575,7 @@ void DanaeClearLevel(long flag)
 
 	INTERTRANSPOLYSPOS = 0;
 
-	for (long i = 0; i < MAX_DYNLIGHTS; i++) // DynLight 0 is reserved for torch & flares !
-	{
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		DynLight[i].exist = 0;
 	}
 
@@ -1668,15 +1619,14 @@ void RestoreLastLoadedLightning()
 	EERIE_BKG_INFO * eg;
 
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
-	long i, j;
 
 	bcount = LastLoadedLightningNb;
 
 	EERIEPOLY * ep;
 	long nbvert;
 
-	for (j = 0; j < eb->Zsize; j++)
-		for (i = 0; i < eb->Xsize; i++)
+	for (long j = 0; j < eb->Zsize; j++)
+		for (long i = 0; i < eb->Xsize; i++)
 		{
 			eg = (EERIE_BKG_INFO *)&eb->Backg[i+j*eb->Xsize];
 
@@ -1707,7 +1657,7 @@ plusloin:
 	LastLoadedLightning = NULL;
 	LastLoadedLightningNb = 0;
 
-	for (i = 0; i < MAX_ACTIONS; i++)
+	for (size_t i = 0; i < MAX_ACTIONS; i++)
 	{
 		if (actions[i].exist)
 		{
@@ -1720,6 +1670,9 @@ plusloin:
 					break;
 				case ACT_FIRE2:
 					modd = 1;
+					break;
+				case ACT_FIREOFF:
+				case ACT_FIRE2OFF:
 					break;
 			}
 
@@ -1786,7 +1739,6 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
-	DANAE_LS_SCENE		*		dls;
 	DANAE_LS_INTER		*		dli;
 	unsigned char * dat = NULL;
 
@@ -1805,7 +1757,7 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
 
-	if (dlh.version > CURRENT_VERSION) // using compression
+	if (dlh.version > DLH_CURRENT_VERSION) // using compression
 	{
 		LogError << ("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
 		free(dat);
@@ -1817,8 +1769,6 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	{
 		char * torelease = (char *)dat;
 		char * compressed = (char *)(dat + pos);
-		long cpr_pos;
-		cpr_pos = 0;
 		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
 
 		if (dat == NULL)
@@ -1842,7 +1792,6 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	// Loading Scene
 	if (dlh.nb_scn >= 1)
 	{
-		dls = (DANAE_LS_SCENE *)(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
 	}
 

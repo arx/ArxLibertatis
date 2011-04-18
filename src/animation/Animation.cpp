@@ -103,9 +103,6 @@ long MAX_LLIGHTS=18;
 //-----------------------------------------------------------------------------
 extern long FINAL_RELEASE;
 extern EERIE_CAMERA TCAM[32];
-extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
-extern EERIE_LIGHT * GLight[MAX_LIGHTS];
-extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern QUAKE_FX_STRUCT QuakeFx;
 extern float _framedelay;
 extern float FORCED_REDUCTION_VALUE;
@@ -2358,8 +2355,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 			Insertllight(PDL[i], EEDistance3D(&PDL[i]->pos, &pos)); 
 		}
 
-		EERIE_3D l_pos;
-		Vector_Init(&l_pos,pos.x,pos.y-60.f,pos.z);
+		EERIE_3D l_pos(pos.x, pos.y - 60.f, pos.z);
 		Preparellights(&l_pos);	
 
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {

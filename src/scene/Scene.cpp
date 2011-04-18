@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Spells.h"
 #include "game/Player.h"
+#include "game/Inventory.h"
 
 #include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
@@ -365,8 +366,7 @@ void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power)
 	dtv->tv+=EEcos((WATEREFFECT+odtv->z))*power;
 }
 
-void ApplyLavaGlowToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power)
-{
+static void ApplyLavaGlowToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv, float power) {
 	register float f;
 	register long lr, lg, lb;
 	power = 1.f - (EEsin((WATEREFFECT+odtv->x+odtv->z)) * 0.05f) * power;
@@ -526,20 +526,24 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 
 	return true;
 }
-bool	EEVisibleSphere(EERIE_3D * pos,float radius)
-{
-	if (EEDistance3D(pos,&ACTIVECAM->pos)-radius>ACTIVECAM->cdepth*0.5f)
+
+bool VisibleSphere(float x, float y, float z, float radius) {
+	
+	EERIE_3D pos;
+	pos.x=x;
+	pos.y=y;
+	pos.z=z;
+	
+	if(EEDistance3D(pos, ACTIVECAM->pos) - radius>ACTIVECAM->cdepth*0.5f)
 		return false;
 
-	long room_num=ARX_PORTALS_GetRoomNumForPosition(pos);
+	long room_num = ARX_PORTALS_GetRoomNumForPosition(&pos);
 
 	if (room_num>=0)
 	{
 		EERIE_SPHERE sphere;
-		sphere.origin.x=pos->x;
-		sphere.origin.y=pos->y;
-		sphere.origin.z=pos->z;
-		sphere.radius=radius;
+		sphere.origin = pos;
+		sphere.radius = radius;
 							
 		EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
 
@@ -548,14 +552,6 @@ bool	EEVisibleSphere(EERIE_3D * pos,float radius)
 	}
 
 	return true;
-}
-bool VisibleSphere(float x,float y,float z,float radius)
-{
-	EERIE_3D pos;
-	pos.x=x;
-	pos.y=y;
-	pos.z=z;
-	return EEVisibleSphere(&pos,radius);
 }
 bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
 bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
@@ -1196,15 +1192,6 @@ bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 
 bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
 {
-	long nbv;
-
-	if (ep->type & POLY_QUAD)
-		nbv=4;
-	else
-		nbv=3;
-
- 
-
 	for (long i=0;i<frustrums->nb_frustrums;i++)
 	{
 		if (IsSphereInFrustrum(ep->v[0].rhw,(EERIE_3D *)&ep->center,&frustrums->frustrums[i]))
@@ -2747,7 +2734,7 @@ SMY_D3DVERTEX *pMyVertex;
 					float tu[4];
 					float tv[4];
 					float _fTransp[4];
-					unsigned short nu, nuu;
+					unsigned short nu;
 					long nrm=0;
 
 					if	(	(EEfabs(ep->nrml[0].y)>=0.9f)
@@ -2755,7 +2742,7 @@ SMY_D3DVERTEX *pMyVertex;
 						||	(EEfabs(ep->nrml[2].y)>=0.9f)	)
 						nrm=1;
 
-					for (nu=0,nuu=iNbVertex-1;nu<iNbVertex;nuu=nu++)
+					for (nu=0;nu<iNbVertex;nu++)
 					{
 						if (nrm)
 						{
@@ -3238,12 +3225,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		pos.y=epp->center.y-ACTIVECAM->pos.y;
 		pos.z=epp->center.z-ACTIVECAM->pos.z;
 		float fRes = Vector_DotProduct(&pos, &epp->norm);
-		long to;
-
-		if (epp->type & POLY_QUAD)
-			to=4;
-		else
-			to=3;
 
 		long ret=1;
 

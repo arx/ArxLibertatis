@@ -32,6 +32,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <sstream>
 
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
 #include "core/Core.h"
 #include "core/Time.h"
 #include "core/Localization.h"
@@ -49,7 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include "io/Logger.h"
-#include "io/String.h"
+
+#include "platform/String.h"
 
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
@@ -123,7 +129,6 @@ bool bNoMenu=false;
 
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _iBpp);
 void ARX_SetAntiAliasing();
-void ARX_MENU_LaunchAmb(char *_lpszAmb);
 
 //-----------------------------------------------------------------------------
 
@@ -941,9 +946,7 @@ bool CMenuConfig::WriteConfigKey( const std::string& _pcKey,int _iAction)
 
 	strcpy(tcTxt,_pcKey.c_str());
 
-	int iL;
 	pcText1 = pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[0]);
-	iL = pcText1.length() + 1;
 
 	pcText = pcText1;
 
@@ -955,7 +958,6 @@ bool CMenuConfig::WriteConfigKey( const std::string& _pcKey,int _iAction)
 	}
 
 	pcText1 = pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[1]);
-	iL = pcText1.length() + 1;
 		
 	pcText = pcText1;
 
@@ -2551,7 +2553,6 @@ bool Menu2_Render()
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					int iOffsetX = iPosX2;
 					int iModeX,iModeY,iModeBpp;
 					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
@@ -2625,7 +2626,6 @@ bool Menu2_Render()
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc1->AddElement(me);
-					iOffsetX = iPosX2;
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_TEXTURES, 0, 0);
 					pMenuSliderTexture = (CMenuSliderText*)me;
 					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_low", "", szMenuText);
@@ -2690,7 +2690,6 @@ bool Menu2_Render()
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					iOffsetX = iPosX2;
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, 0, 0);
 					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_low", "", szMenuText);
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
@@ -5930,7 +5929,7 @@ void CMenuPanel::Move(int _iX, int _iY)
 }
 
 //-----------------------------------------------------------------------------
-// patch on ajoute à droite en ligne
+// patch on ajoute ï¿½ droite en ligne
 void CMenuPanel::AddElement(CMenuElement* _pElem)
 {
 	vElement.push_back(_pElem);
@@ -6106,16 +6105,7 @@ CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX
 
 //-----------------------------------------------------------------------------
 
-CMenuButton::~CMenuButton()
-{
-	std::string::iterator i;
-
-	for(i=vText.begin();i!=vText.end();++i)
-	{
-		free((void*)(*i));
-	}
-
-	vText.clear();
+CMenuButton::~CMenuButton() {
 }
 
 //-----------------------------------------------------------------------------
@@ -6785,7 +6775,6 @@ void CMenuSlider::Render()
 	float iY = ARX_CLEAN_WARN_CAST_FLOAT( rZone.top );
 
 	float iTexW = 0;
-	float iTexH = 0;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -6800,7 +6789,6 @@ void CMenuSlider::Render()
 	for (int i=0; i<10; i++)
 	{
 		iTexW = 0;
-		iTexH = 0;
 
 		if (i<iPos)
 		{
@@ -6808,7 +6796,6 @@ void CMenuSlider::Render()
 			{
 				pTex = pTex1;
 				iTexW = RATIO_X(pTex1->m_dwWidth);
-				iTexH = RATIO_Y(pTex1->m_dwHeight);
 			}
 		}
 		else
@@ -6817,7 +6804,6 @@ void CMenuSlider::Render()
 			{
 				pTex = pTex2;
 				iTexW = RATIO_X(pTex2->m_dwWidth);
-				iTexH = RATIO_Y(pTex2->m_dwHeight);
 			}
 		}
 
@@ -7037,7 +7023,7 @@ void CDirectInput::GetInput()
 		}
 	}
 
-	if(bTouch)    //prioritê des touches
+	if(bTouch)    //prioritï¿½ des touches
 	{
 		switch(iKeyId)
 		{

@@ -70,19 +70,17 @@ private:
 	
 } ;
 
-//-----------------------------------------------------------------------------
-typedef struct
-{
-	TextureContainer*   tc;
-	std::string         name;
-	std::string         description;
-	long                level;
-	long                spellid;
-	unsigned char       symbols[6];
-	bool                bSecret;
-	bool                bDuration;
-	bool                bAudibleAtStart;
-} SPELL_ICON;
+struct SPELL_ICON {
+	TextureContainer * tc;
+	std::string name;
+	std::string description;
+	long level;
+	Spell spellid;
+	Rune symbols[6];
+	bool bSecret;
+	bool bDuration;
+	bool bAudibleAtStart;
+} ;
 
 
 const unsigned long MAX_PAGES(256);

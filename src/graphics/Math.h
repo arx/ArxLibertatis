@@ -239,16 +239,6 @@ inline void _XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
 //*************************************************************************************
 #define EPSILON 0.000001f
  
-
-//*************************************************************************************
-// Init a vector if v1, v2 & v3 aren't given, init vector with 0s
-//*************************************************************************************
-inline void Vector_Init(EERIE_3D * dest, const float x, const float y, const float z)
-{
-	dest->x = x;
-	dest->y = y;
-	dest->z = z;
-}
 //*************************************************************************************
 // Computes Length of a vector
 // WARNING: EEsqrt may use a approximative way of computing sqrt
@@ -387,14 +377,6 @@ void Quat_GetShortestArc(EERIE_QUAT * q1 , EERIE_QUAT * q2);
 //*******************************************************************************
 // VECTORS Functions
 //*******************************************************************************
-void	Vector_Copy(EERIE_3D * dest, const EERIE_3D * src);
- 
-void	Vector_Init(EERIE_3D * dest, float v1 = 0.f, float v2 = 0.f, float v3 = 0.f);
-void	Vector_Sub(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2);
-void	Vector_Add(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2);
- 
-void	Vector_ScaleTo(EERIE_3D * dest, EERIE_3D * v, float scale);
-bool	Vector_Compare(const EERIE_3D * v1, const EERIE_3D * v2);
 float	Vector_Magnitude(const EERIE_3D * v);
 float	Vector_Normalize(EERIE_3D * v);
 float	TRUEVector_Magnitude(const EERIE_3D * v);
@@ -408,20 +390,6 @@ void	VRotateX(EERIE_3D * v1, const float angle);
 void	VRotateY(EERIE_3D * v1, const float angle);
 void	VRotateZ(EERIE_3D * v1, const float angle);
 void	QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat);
-
-#define Vinit Vector_Init
-#define VrotY Vector_RotateY
-#define Vsub Vector_Sub
-#define Vadd Vector_Add
-#define Vcmp Vector_Compare
-#define Vcopy Vector_Copy
-#define Vinv Vector_Invert
-#define Vscale Vector_Scale
-#define Vscaleto Vector_ScaleTo
-#define Vcross Vector_CrossProduct
-#define Vdot Vector_DotProduct
-#define Vmag Vector_Magnitude
-#define Vnorm Vector_Normalize
 
 #define CROSS(dest,v1,v2) \
 	dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \

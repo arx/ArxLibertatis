@@ -63,10 +63,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
 #include "core/Time.h"
 #include "core/Application.h"
 #include "core/Localization.h"
 #include "core/Unicode.hpp"
+#include "core/Core.h"
 
 #include "game/Equipment.h"
 #include "game/Player.h"
@@ -91,6 +97,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
+#include "scene/Light.h"
+
+#include "window/DXInput.h"
 
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
@@ -291,8 +300,7 @@ void LoadSaveGame(const long & i)
 // Menu Sounds
 //-----------------------------------------------------------------------------
 
-void ARX_MENU_LaunchAmb(char * _lpszAmb)
-{
+void ARX_MENU_LaunchAmb(const string & _lpszAmb) {
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
 
@@ -627,9 +635,6 @@ bool ARX_Menu_Render()
 	}
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-	long posx;
-	posx = DANAESIZX >> 1;
-
 	
 	FLYING_OVER = 0;
 
@@ -684,14 +689,6 @@ bool ARX_Menu_Render()
 			ITC.Set("current_8", "Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
 			ITC.Set("current_9", "Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
 			ITC.Set("current_10", "Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
-			ITC.Set("heropageleft", "Graph\\Interface\\book\\character_sheet\\Hero_left_X24_Y24.BMP");
-			ITC.Set("heropageright", "Graph\\Interface\\book\\character_sheet\\Hero_right_X305_Y270.BMP");
-
-			ITC.Set("symbol_mega", NULL);
-			ITC.Set("symbol_vista", NULL);
-			ITC.Set("symbol_aam", NULL);
-			ITC.Set("symbol_taar", NULL);
-			ITC.Set("symbol_yok", NULL);
 
 			ITC.Set("pTexCursorRedist", "Graph\\Interface\\cursors\\add_points.bmp");
 

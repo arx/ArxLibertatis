@@ -67,6 +67,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <shellapi.h>
 
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -85,6 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/Levels.h"
+#include "game/Inventory.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -104,7 +110,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
@@ -117,6 +122,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Actors.h"
 #include "physics/Physics.h"
 
+#include "platform/String.h"
+
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
 #include "scene/ChangeLevel.h"
@@ -124,9 +131,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
 
 #include "scripting/ScriptEvent.h"
 #include "scripting/ScriptDebugger.h"
+
+#include "window/DXInput.h"
 
 using std::min;
 using std::max;
@@ -161,9 +172,7 @@ extern long SPECIAL_DRAGINTER_RENDER;
 extern HWND		PRECALC;
 extern HWND		CDP_LIGHTOptions;
 extern HWND		CDP_FogOptions;
-extern EERIE_LIGHT *PDL[MAX_DYNLIGHTS];
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern EERIE_3D loddpos;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bGameNotFirstLaunch;
 extern bool		bSkipVideoIntro;
@@ -1261,7 +1270,7 @@ int main(int, char**)
 
 	ARX_INTERFACE_NoteInit();
 	LogDebug << "Note Init";
-	Vector_Init(&PUSH_PLAYER_FORCE);	
+	PUSH_PLAYER_FORCE.clear();
 	ARX_SPECIAL_ATTRACTORS_Reset();
 	LogDebug << "Attractors Init";
 	ARX_SPELLS_Precast_Reset();
@@ -1458,7 +1467,6 @@ int main(int, char**)
 
 	LogInfo << "Sound Init Success";
 	LogDebug << "DInput Init";
-	ARX_INPUT_Init_Game_Impulses();
 	pGetInfoDirectInput = new CDirectInput();
 	
 	const char RESOURCE_CONFIG[] = "cfg.ini";
@@ -1596,26 +1604,26 @@ void LoadSysTextures()
 {
 	char temp[256];
 
-	long i;
-
-	for (i=1;i<10;i++)
+	for (long i=1;i<10;i++)
 	{
 		sprintf(temp,"Graph\\Particles\\shine%ld.bmp",i);
 		flaretc.shine[i]=TextureContainer::LoadUI(temp);
 
 	}
 
-	for (i=0;i<SPELL_COUNT;i++)
+	for (size_t i=0;i<SPELL_COUNT;i++)
 	{
 		// TODO use constructor for initialization
-		for (long j = 0; j < 6; j++) spellicons[i].symbols[j] = 255;
+		for (long j = 0; j < 6; j++) spellicons[i].symbols[j] = RUNE_NONE;
 		spellicons[i].level = 0;
-		spellicons[i].spellid = 0;
+		spellicons[i].spellid = SPELL_NONE;
 		spellicons[i].tc = NULL;
 		spellicons[i].bSecret = false;
 		spellicons[i].bDuration = true;
 		spellicons[i].bAudibleAtStart = false;
 	}
+	
+	long i;
 
 	SPELL_ICON * current;
 
@@ -2290,17 +2298,13 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("Graph\\Interface\\bars\\flash_gauge.bmp");
 }
 
-void ClearSysTextures()
-{
-	long i;
-
-	for (i=0;i<SPELL_COUNT;i++)
-	{
-		if (!spellicons[i].name.empty())
+void ClearSysTextures() {
+	for(size_t i = 0; i < SPELL_COUNT; i++) {
+		if(!spellicons[i].name.empty())
 			//free(spellicons[i].name);
 			spellicons[i].name.clear();
 
-		if (!spellicons[i].description.empty())
+		if(!spellicons[i].description.empty())
 			//free(spellicons[i].description);
 			spellicons[i].description.clear();
 	}
@@ -2363,7 +2367,7 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 {
 	EERIE_3D position;
 	EERIE_3D vect;
-	EERIE_3D dvect,upvect;
+	EERIE_3D dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	float anglea;
@@ -2378,10 +2382,10 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
-	Vector_Init(&upvect,0,0,-1);
+	EERIE_3D upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
-	Vector_Init(&upvect,0,-1,0);
+	upvect = EERIE_3D(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
@@ -2390,13 +2394,13 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 
 	if (velocity<0.9f) velocity=0.9f;
 
-	EERIE_3D vv,v1,v2;
-	Vector_Init(&vv,0,0,1);
+	EERIE_3D v1,v2;
+	EERIE_3D vv(0,0,1);
 	float aa=angle->a;
 	float ab=90-angle->b;
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
-	Vector_Init(&vv,0,-1,0);
+	vv = EERIE_3D(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
@@ -2413,7 +2417,7 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 		*(1.f+
 		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
 
-	ARX_THROWN_OBJECT_Throw(ATO_TYPE_ARROW,
+	ARX_THROWN_OBJECT_Throw(
 										0, //source
 										&position,
 										&vect,
@@ -2428,7 +2432,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 {
 	EERIE_3D position;
 	EERIE_3D vect;
-	EERIE_3D dvect,upvect;
+	EERIE_3D dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	float anglea;
@@ -2444,7 +2448,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 
 	if (inter.iobj[0]->obj->fastaccess.left_attach>=0)
 	{
-		Vector_Copy(&position,&inter.iobj[0]->obj->vertexlist3[inter.iobj[0]->obj->fastaccess.left_attach].v);
+		position = inter.iobj[0]->obj->vertexlist3[inter.iobj[0]->obj->fastaccess.left_attach].v;
 	}
 
 	anglea=radians(player.angle.a);
@@ -2453,11 +2457,11 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
 
-	Vector_Init(&upvect,0,0,-1);
+	EERIE_3D upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 
-	Vector_Init(&upvect,0,-1,0);
+	upvect = EERIE_3D(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
@@ -2467,13 +2471,13 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 
 	if (velocity<0.9f) velocity=0.9f;
 
-	EERIE_3D vv,v1,v2;
-	Vector_Init(&vv,0,0,1);
+	EERIE_3D v1,v2;
+	EERIE_3D vv(0,0,1);
 	float aa=player.angle.a;
 	float ab=90-player.angle.b;
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
-	Vector_Init(&vv,0,-1,0);
+	vv = EERIE_3D(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
@@ -2490,7 +2494,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 		*(1.f+
 		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
 
-	ARX_THROWN_OBJECT_Throw(ATO_TYPE_ARROW,
+	ARX_THROWN_OBJECT_Throw(
 										0, //source
 										&position,
 										&vect,
@@ -2820,27 +2824,27 @@ HRESULT DANAE::BeforeRun()
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=-1;
-	necklace.lacet =                   _LoadTheObj("Graph\\Interface\\book\\runes\\lacet.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_AAM] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_aam.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_CETRIUS] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_citrius.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_COMUNICATUM] = _LoadTheObj("Graph\\Interface\\book\\runes\\runes_comunicatum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_COSUM] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_cosum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_FOLGORA] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_folgora.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_FRIDD] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_fridd.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_KAOM] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_kaom.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MEGA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_mega.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MORTE] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_morte.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MOVIS] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_movis.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_NHI] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_nhi.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_RHAA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_rhaa.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_SPACIUM] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_spacium.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_STREGUM] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_stregum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TAAR] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_taar.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TEMPUS] =      _LoadTheObj("Graph\\Interface\\book\\runes\\runes_tempus.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TERA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_tera.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_VISTA] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_vista.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_VITAE] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_vitae.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_YOK] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_yok.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.lacet =                   loadObject("Graph\\Interface\\book\\runes\\lacet.teo");
+	necklace.runes[RUNE_AAM] =         loadObject("Graph\\Interface\\book\\runes\\runes_aam.teo");
+	necklace.runes[RUNE_CETRIUS] =     loadObject("Graph\\Interface\\book\\runes\\runes_citrius.teo");
+	necklace.runes[RUNE_COMUNICATUM] = loadObject("Graph\\Interface\\book\\runes\\runes_comunicatum.teo");
+	necklace.runes[RUNE_COSUM] =       loadObject("Graph\\Interface\\book\\runes\\runes_cosum.teo");
+	necklace.runes[RUNE_FOLGORA] =     loadObject("Graph\\Interface\\book\\runes\\runes_folgora.teo");
+	necklace.runes[RUNE_FRIDD] =       loadObject("Graph\\Interface\\book\\runes\\runes_fridd.teo");
+	necklace.runes[RUNE_KAOM] =        loadObject("Graph\\Interface\\book\\runes\\runes_kaom.teo");
+	necklace.runes[RUNE_MEGA] =        loadObject("Graph\\Interface\\book\\runes\\runes_mega.teo");
+	necklace.runes[RUNE_MORTE] =       loadObject("Graph\\Interface\\book\\runes\\runes_morte.teo");
+	necklace.runes[RUNE_MOVIS] =       loadObject("Graph\\Interface\\book\\runes\\runes_movis.teo");
+	necklace.runes[RUNE_NHI] =         loadObject("Graph\\Interface\\book\\runes\\runes_nhi.teo");
+	necklace.runes[RUNE_RHAA] =        loadObject("Graph\\Interface\\book\\runes\\runes_rhaa.teo");
+	necklace.runes[RUNE_SPACIUM] =     loadObject("Graph\\Interface\\book\\runes\\runes_spacium.teo");
+	necklace.runes[RUNE_STREGUM] =     loadObject("Graph\\Interface\\book\\runes\\runes_stregum.teo");
+	necklace.runes[RUNE_TAAR] =        loadObject("Graph\\Interface\\book\\runes\\runes_taar.teo");
+	necklace.runes[RUNE_TEMPUS] =      loadObject("Graph\\Interface\\book\\runes\\runes_tempus.teo");
+	necklace.runes[RUNE_TERA] =        loadObject("Graph\\Interface\\book\\runes\\runes_tera.teo");
+	necklace.runes[RUNE_VISTA] =       loadObject("Graph\\Interface\\book\\runes\\runes_vista.teo");
+	necklace.runes[RUNE_VITAE] =       loadObject("Graph\\Interface\\book\\runes\\runes_vitae.teo");
+	necklace.runes[RUNE_YOK] =         loadObject("Graph\\Interface\\book\\runes\\runes_yok.teo");
 
 	necklace.pTexTab[RUNE_AAM]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_Aam[icon].BMP");
 	necklace.pTexTab[RUNE_CETRIUS]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cetrius[icon].BMP");
@@ -2863,22 +2867,24 @@ HRESULT DANAE::BeforeRun()
 	necklace.pTexTab[RUNE_VITAE]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vitae[icon].BMP");
 	necklace.pTexTab[RUNE_YOK]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_yok[icon].BMP");
 
-	for (long i = 0; i<NB_RUNES-1; i++)
-	{
-		if (necklace.pTexTab[i])
+	for(size_t i = 0; i<RUNE_COUNT-1; i++) { // TODO why -1?
+		if(necklace.pTexTab[i]) {
 			necklace.pTexTab[i]->CreateHalo();
+		}
 	}
 
+	// TODO the .teo files are not shipped with the game, only the textures are
+	// TODO this is the only place where _LoadTheObj is used
 	EERIE_3DOBJ * _fogobj;
 	_fogobj=		_LoadTheObj("Editor\\Obj3D\\fog_generator.teo","node_TEO MAPS\\");
 	ARX_FOGS_Set_Object(_fogobj);
-
-	eyeballobj=		_LoadTheObj("Editor\\Obj3D\\eyeball.teo","eyeball_TEO MAPS\\");
-	cabal=			_LoadTheObj("Editor\\Obj3D\\cabal.teo","cabal_TEO MAPS\\");
-	nodeobj=		_LoadTheObj("Editor\\Obj3D\\node.teo","node_TEO MAPS\\");
-	cameraobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\System\\Camera\\Camera.teo","..\\..\\..\\textures\\");
-	markerobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo","..\\..\\..\\textures\\");
-	arrowobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\Items\\Weapons\\arrow\\arrow.teo","..\\..\\..\\..\\textures\\");
+	eyeballobj = _LoadTheObj("Editor\\Obj3D\\eyeball.teo","eyeball_TEO MAPS\\");
+	cabal = _LoadTheObj("Editor\\Obj3D\\cabal.teo","cabal_TEO MAPS\\");
+	nodeobj = _LoadTheObj("Editor\\Obj3D\\node.teo","node_TEO MAPS\\");
+	
+	cameraobj = loadObject("Graph\\Obj3D\\Interactive\\System\\Camera\\Camera.teo");
+	markerobj = loadObject("Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo");
+	arrowobj = loadObject("Graph\\Obj3D\\Interactive\\Items\\Weapons\\arrow\\arrow.teo");
 
 	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		char temp[256];
@@ -2888,7 +2894,7 @@ HRESULT DANAE::BeforeRun()
 		else
 			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin" PRINT_SIZE_T ".teo",i+1);
 
-		GoldCoinsObj[i]=	_LoadTheObj(temp,"..\\..\\..\\..\\textures\\");
+		GoldCoinsObj[i] = loadObject(temp);
 
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin[icon].bmp");
@@ -2919,8 +2925,6 @@ HRESULT DANAE::BeforeRun()
 
 void FirstTimeThings() {
 	
-	static long done = 0;
-	long i;
 	eyeball.exist=0;
 	WILLADDSPEECHTIME=0;
 	WILLADDSPEECH.clear();
@@ -2932,14 +2936,11 @@ void FirstTimeThings() {
 
 	_NB_++;
 
-	for (i=0;i<MAX_DYNLIGHTS;i++)
-	{
-		if ((DynLight[i].exist))
-			DynLight[i].exist=0;
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+		DynLight[i].exist = 0;
 	}
 
 	LastFrameTime=FrameTime;
-	done = 1;
 	return;
 }
 
@@ -3066,17 +3067,10 @@ long FirstFrameHandling()
 	{
 		FASTmse=0;
 
-		if (LOADEDD)
-		{
-			trans.x=Mscenepos.x;
-			trans.y=Mscenepos.y;
-			trans.z=Mscenepos.z;
-			player.pos.x = loddpos.x+trans.x;
-			player.pos.y = loddpos.y+trans.y;
-			player.pos.z = loddpos.z+trans.z;
-		}
-		else
-		{
+		if(LOADEDD) {
+			trans = Mscenepos;
+			player.pos = loddpos + trans;
+		} else {
 			player.pos.y +=PLAYER_BASE_HEIGHT;
 		}
 
@@ -3114,22 +3108,17 @@ long FirstFrameHandling()
 		PROGRESS_BAR_COUNT+=2.f;
 		LoadLevelScreen();
 
-		trans.x=mse->pos.x;
-		trans.y=mse->pos.y;
-		trans.z=mse->pos.z;
+		trans = mse->pos;
 
 		ReleaseMultiScene(mse);
 		mse=NULL;
 
-		if (!NO_PLAYER_POSITION_RESET)
-		{
-			if (LOADEDD)
-			{
-				player.pos.x = loddpos.x+trans.x;
-				player.pos.y = loddpos.y+trans.y;
-				player.pos.z = loddpos.z+trans.z;
+		if(!NO_PLAYER_POSITION_RESET) {
+			if(LOADEDD) {
+				player.pos = loddpos + trans;
+			} else {
+				player.pos.y += PLAYER_BASE_HEIGHT;
 			}
-			else player.pos.y +=PLAYER_BASE_HEIGHT;
 		}
 
 		NO_PLAYER_POSITION_RESET=0;
@@ -3252,8 +3241,8 @@ long FirstFrameHandling()
 
 	if (WILL_RESTORE_PLAYER_POSITION_FLAG)
 	{
-		Vector_Copy(&player.pos,&WILL_RESTORE_PLAYER_POSITION);
-		Vector_Copy(&inter.iobj[0]->pos,&WILL_RESTORE_PLAYER_POSITION);
+		player.pos = WILL_RESTORE_PLAYER_POSITION;
+		inter.iobj[0]->pos = WILL_RESTORE_PLAYER_POSITION;
 		inter.iobj[0]->pos.y+=170.f;
 		INTERACTIVE_OBJ * io=inter.iobj[0];
 
@@ -3356,62 +3345,57 @@ void ManageNONCombatModeAnimations()
 		}
 	}
 }
-long Player_Arrow_Count()
-{
-	long count=0;
 
-	if (player.bag)
-	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (long j=0;j<INVENTORY_Y;j++)
-	for (long i=0;i<INVENTORY_X;i++)
-	{
-		INTERACTIVE_OBJ * io=inventory[iNbBag][i][j].io;
-
-		if (io)
-		{
-			if ( !strcasecmp( GetName(io->filename),"Arrows") )
-			{
-				if ( io->durability >= 1.f )
-
-				{
-					ARX_CHECK_LONG( io->durability );
-					count += ARX_CLEAN_WARN_CAST_LONG( io->durability );
+long Player_Arrow_Count() {
+	
+	long count = 0;
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					INTERACTIVE_OBJ * io = inventory[iNbBag][i][j].io;
+					if(io) {
+						if(GetName(io->filename) == "Arrows") {
+							if(io->durability >= 1.f) {
+								ARX_CHECK_LONG(io->durability);
+								count += static_cast<long>(io->durability);
+							}
+						}
+					}
 				}
-
-
 			}
 		}
 	}
-
+	
 	return count;
 }
 
-INTERACTIVE_OBJ * Player_Arrow_Count_Decrease()
-{
+INTERACTIVE_OBJ * Player_Arrow_Count_Decrease() {
+	
 	INTERACTIVE_OBJ * io = NULL;
-
-	if (player.bag)
-	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (long j=0;j<INVENTORY_Y;j++)
-	for (long i=0;i<INVENTORY_X;i++)
-	{
-		INTERACTIVE_OBJ * ioo = inventory[iNbBag][i][j].io;
-
-		if (ioo)
-		{
-			if ( !strcasecmp( GetName(ioo->filename), "Arrows") )
-			{
-				if (ioo->durability >= 1.f)
-				{
-					if (!io)
-						io = ioo;
-					else if (io->durability > ioo->durability)
-						io = ioo;
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X;i++) {
+					INTERACTIVE_OBJ * ioo = inventory[iNbBag][i][j].io;
+					if(ioo) {
+						if(GetName(ioo->filename) == "Arrows") {
+							if(ioo->durability >= 1.f) {
+								if(!io) {
+									io = ioo;
+								} else if(io->durability > ioo->durability) {
+									io = ioo;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 	}
-
+	
 	return io;
 }
 float GLOBAL_SLOWDOWN=1.f;
@@ -4359,10 +4343,8 @@ void DrawMagicSightInterface()
 
 void RenderAllNodes()
 {
-	EERIE_3D angle;
+	EERIE_3D angle(0, 0, 0);
 	float xx,yy;
-	long j;
-	Vector_Init(&angle);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -4393,11 +4375,9 @@ void RenderAllNodes()
 				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
 			}
 
-			for (j=0;j<MAX_LINKS;j++)
-			{
-				if (nodes.nodes[i].link[j]!=-1)
-				{
-					EERIEDrawTrue3DLine(&nodes.nodes[i].pos,&nodes.nodes[nodes.nodes[i].link[j]].pos,EERIECOLOR_GREEN);
+			for(size_t j = 0; j < MAX_LINKS; j++) {
+				if(nodes.nodes[i].link[j]!=-1) {
+					EERIEDrawTrue3DLine(&nodes.nodes[i].pos, &nodes.nodes[nodes.nodes[i].link[j]].pos, EERIECOLOR_GREEN);
 				}
 			}
 		}
@@ -4519,7 +4499,7 @@ void LaunchMoulinex()
 
 		if (FileExist(saveto))
 		{
-			long oldmode=ModeLight;
+			LightMode oldmode = ModeLight;
 			ModeLight=MODE_NORMALS | MODE_RAYLAUNCH | MODE_STATICLIGHT | MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
 
 			if (TSU_LIGHTING) ModeLight|=MODE_SMOOTH;
@@ -4527,7 +4507,7 @@ void LaunchMoulinex()
 			EERIERemovePrecalcLights();
 			EERIEPrecalcLights(0,0,999999,999999);
 			DanaeSaveLevel(saveto);
-			ModeLight=oldmode;
+			ModeLight = oldmode;
 		}
 
 		if (PROCESS_ONLY_ONE_LEVEL!=-1)
@@ -5189,8 +5169,6 @@ HRESULT DANAE::Render()
 		ft=FrameTime-LastFrameTime;
 
 		FrameDiff = ft;
-		float FD;
-		FD=FrameDiff;
 		// Under 10 FPS the whole game slows down to avoid unexpected results...
 		_framedelay=(float)FrameDiff;
 	}
@@ -6124,16 +6102,10 @@ static float _AvgFrameDiff = 150.f;
 						//need to compute current values
 						if (ValidIONum(acs->ionum))
 						{
-							INTERACTIVE_OBJ * ioo=inter.iobj[acs->ionum];
-							INTERACTIVE_OBJ * o1=io;
-							INTERACTIVE_OBJ * o2=ioo;
-
 							EERIE_3D targetpos;
 							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
 								|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
 							{
-								o1=ioo;
-								o2=io;
 								conversationcamera.pos.x=acs->pos2.x;
 								conversationcamera.pos.y=acs->pos2.y;
 								conversationcamera.pos.z=acs->pos2.z;
@@ -6153,14 +6125,14 @@ static float _AvgFrameDiff = 150.f;
 							
 							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );						
 							
-							EERIE_3D vect,vect3;
+							EERIE_3D vect;
 							vect.x=conversationcamera.pos.x-targetpos.x;
 							vect.y=conversationcamera.pos.y-targetpos.y;
 							vect.z=conversationcamera.pos.z-targetpos.z;
 							EERIE_3D vect2;
 							Vector_RotateY(&vect2,&vect,90);
 							TRUEVector_Normalize(&vect2);
-							Vector_Copy(&vect3,&vect);
+							EERIE_3D vect3 = vect;
 							TRUEVector_Normalize(&vect3);
 
 							vect.x=vect.x*(distance)+vect3.x*80.f;
@@ -6517,13 +6489,12 @@ static float _AvgFrameDiff = 150.f;
 			if (EERIEMouseButton & 1)
 			{
 				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT)) 
-					ARX_SPELLS_AddPoint(&DANAEMouse);
+					ARX_SPELLS_AddPoint(DANAEMouse);
 				else
 				{
 					CurrPoint=0;
 					ARX_FLARES_Block=0;
 					CurrSlot=1;
-					LastSlot=0;
 				}
 			}
 			else if (ARX_FLARES_Block==0)
@@ -7134,11 +7105,11 @@ static void ShowInfoText() {
 	char temp[256];
 
 	if (io==NULL)
-		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",Event_Total_Count,ARX_SCRIPT_CountTimers());
+		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",ScriptEvent::totalCount,ARX_SCRIPT_CountTimers());
 	else 
 	{
 		strcpy(temp,GetName(io->filename).c_str());	
-		sprintf(tex,"Events %ld (IOmax %s_%04ld %d) Timers %ld",Event_Total_Count,temp,io->ident,io->stat_count,ARX_SCRIPT_CountTimers());
+		sprintf(tex,"Events %ld (IOmax %s_%04ld %d) Timers %ld",ScriptEvent::totalCount,temp,io->ident,io->stat_count,ARX_SCRIPT_CountTimers());
 	}
 
 	danaeApp.OutputText( 70, 94, tex );
@@ -7210,7 +7181,7 @@ static void ShowInfoText() {
 					danaeApp.OutputText( 170, 360, "PF_ALWAYS" );
 				else
 				{
-					sprintf(tex,"PF_%ld",io->_npcdata->pathfind.flags);
+					sprintf(tex,"PF_%ld", (long)io->_npcdata->pathfind.flags);
 					danaeApp.OutputText( 170, 360, tex); 
 				}
 			  }
@@ -7786,12 +7757,9 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					ARX_TIME_Pause();
 					Pause(true);
 
-					if (OKBox("Remove Casts Shadows Flag from all Lights ?","DANAE Confirm Box"))
-					{
-						for (long i=0;i<MAX_LIGHTS;i++)
-						{
-							if (GLight[i]!=NULL)
-							{
+					if(OKBox("Remove Casts Shadows Flag from all Lights ?","DANAE Confirm Box")) {
+						for(size_t i=0;i<MAX_LIGHTS;i++) {
+							if(GLight[i]) {
 								GLight[i]->extras |= EXTRAS_NOCASTED;
 							}
 						}

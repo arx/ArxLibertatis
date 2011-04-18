@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
+#include "game/Inventory.h"
 
 #include "gui/Menu.h"
 #include "gui/Text.h"
@@ -83,7 +84,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -92,10 +92,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 #include "physics/Actors.h"
 
+#include "platform/String.h"
+
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
@@ -162,8 +166,7 @@ ANIM_HANDLE * herowait_2h = NULL;
 
 ARX_NECKLACE necklace;
 
-long Keyring_Number = 0;
-KEYRING_SLOT * Keyring = NULL;
+vector<KEYRING_SLOT> Keyring;
 float PLAYER_BASE_RADIUS = 52;
 float PLAYER_BASE_HEIGHT = -170;
 float PLAYER_CROUCH_HEIGHT = -120;
@@ -172,10 +175,7 @@ INTERACTIVE_OBJ * CURRENT_TORCH = NULL;
 
 unsigned long FALLING_TIME = 0;
 
-
-//STRUCT_QUEST * PlayerQuest;
 vector<STRUCT_QUEST> PlayerQuest;
-long nb_PlayerQuest = 0;
 long FistParticles = 0;
 void Manage_sp_max();
 bool ARX_PLAYER_IsInFightMode() {
@@ -223,13 +223,8 @@ bool ARX_PLAYER_IsInFightMode() {
 // FUNCTION/RESULT:
 //   Init/Reset player Keyring structures
 //*************************************************************************************
-void ARX_KEYRING_Init()
-{
-	if (Keyring)
-		free((void *)Keyring);
-
-	Keyring = NULL;
-	Keyring_Number = 0;
+void ARX_KEYRING_Init() {
+	Keyring.clear();
 }
 //*************************************************************************************
 // void ARX_KEYRING_Add(char * key)
@@ -237,12 +232,10 @@ void ARX_KEYRING_Init()
 // FUNCTION/RESULT:
 //   Add a key to Keyring
 //*************************************************************************************
-void ARX_KEYRING_Add( const std::string& key)
-{
-	Keyring = (KEYRING_SLOT *)realloc(Keyring, sizeof(KEYRING_SLOT) * (Keyring_Number + 1));
-	memset(&Keyring[Keyring_Number], 0, sizeof(KEYRING_SLOT));
-	strcpy(Keyring[Keyring_Number].slot, key.c_str());
-	Keyring_Number++;
+void ARX_KEYRING_Add(const std::string & key) {
+	Keyring.resize(Keyring.size() + 1);
+	memset(&Keyring.back(), 0, sizeof(KEYRING_SLOT));
+	strcpy(Keyring.back().slot, key.c_str());
 }
 
 //*************************************************************************************
@@ -251,12 +244,11 @@ void ARX_KEYRING_Add( const std::string& key)
 // FUNCTION/RESULT:
 //   Sends COMBINE event to "io" for each keyring entry
 //*************************************************************************************
-void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io)
-{
-	for (long i = 0; i < Keyring_Number; i++)
-	{
-		if (SendIOScriptEvent(io, SM_COMBINE, Keyring[i].slot) == REFUSE)
+void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io) {
+	for(size_t i = 0; i < Keyring.size(); i++) {
+		if(SendIOScriptEvent(io, SM_COMBINE, Keyring[i].slot) == REFUSE) {
 			return;
+		}
 	}
 }
 //-----------------------------------------------------------------------------
@@ -407,9 +399,7 @@ void ARX_PLAYER_ClickedOnTorch(INTERACTIVE_OBJ * io)
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PLAYER_ManageTorch()
-{
+static void ARX_PLAYER_ManageTorch() {
 	if (CURRENT_TORCH)
 	{
 		CURRENT_TORCH->ignition = 0;
@@ -445,24 +435,8 @@ void ARX_PLAYER_ManageTorch()
 // FUNCTION/RESULT:
 //   Init/Reset player Quest structures
 //*************************************************************************************
-void ARX_PLAYER_Quest_Init()
-{
-	if (PlayerQuest.size() != 0) {
-//		for (long i = 0; i < nb_PlayerQuest; i++)
-//		{
-//			if (PlayerQuest[i].ident)
-//				free((void *)PlayerQuest[i].ident);
-//
-//			if (!PlayerQuest[i].localised.empty())
-//				PlayerQuest[i].localised.clear();
-//		}
-//
-//		free((void *)PlayerQuest);
-//		PlayerQuest = NULL;
-		PlayerQuest.clear();
-	}
-
-	nb_PlayerQuest = 0;
+void ARX_PLAYER_Quest_Init() {
+	PlayerQuest.clear();
 }
 
 //*************************************************************************************
@@ -471,12 +445,12 @@ void ARX_PLAYER_Quest_Init()
 // FUNCTION/RESULT:
 //   Add "_ulRune" to player runes
 //*************************************************************************************
-void ARX_Player_Rune_Add(unsigned long _ulRune)
+void ARX_Player_Rune_Add(RuneFlag _ulRune)
 {
 	int iNbSpells = 0;
 	int iNbSpellsAfter = 0;
 
-	for (long i = 0; i < SPELL_COUNT; i++)
+	for (size_t i = 0; i < SPELL_COUNT; i++)
 	{
 		if (spellicons[i].bSecret == false)
 		{
@@ -502,7 +476,7 @@ void ARX_Player_Rune_Add(unsigned long _ulRune)
 
 	player.rune_flags |= _ulRune;
 
-	for (int i = 0; i < SPELL_COUNT; i++)
+	for (size_t i = 0; i < SPELL_COUNT; i++)
 	{
 		if (spellicons[i].bSecret == false)
 		{
@@ -540,7 +514,7 @@ void ARX_Player_Rune_Add(unsigned long _ulRune)
 // FUNCTION/RESULT:
 //   Remove "_ulRune" from player runes
 //*************************************************************************************
-void ARX_Player_Rune_Remove(unsigned long _ulRune)
+void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 {
 	player.rune_flags &= ~_ulRune;
 }
@@ -559,10 +533,9 @@ void ARX_PLAYER_Quest_Add( const std::string& quest, bool _bLoad)
     if (output[0] == 0) return;
 
     PlayerQuest.push_back(STRUCT_QUEST());
-    PlayerQuest[nb_PlayerQuest].ident = quest;
-    PlayerQuest[nb_PlayerQuest].localised = output;
-    PlayerQuest[nb_PlayerQuest].localised = output;
-    nb_PlayerQuest++;
+    PlayerQuest.back().ident = quest;
+    PlayerQuest.back().localised = output;
+    PlayerQuest.back().localised = output;
     bBookHalo = !_bLoad;//true;
     ulBookHaloTime = 0;
 }
@@ -821,8 +794,8 @@ float ARX_PLAYER_Get_Skill_Defense(long type)
 // FUNCTION/RESULT:
 //   Compute secondary attributes for player
 //*************************************************************************************
-void ARX_PLAYER_ComputePlayerStats()
-{
+static void ARX_PLAYER_ComputePlayerStats() {
+	
 	player.maxlife = (float)player.Attribute_Constitution * (float)(player.level + 2);
 	player.maxmana = (float)player.Attribute_Mind * (float)(player.level + 1);
 	float t = ARX_PLAYER_Get_Skill_Defense(0);
@@ -1024,6 +997,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 						player.Mod_Attribute_Constitution += spells[n].caster_level;
 						player.Mod_Attribute_Mind += spells[n].caster_level;
 						break;
+					default: break;
 				}
 			}
 		}
@@ -1240,7 +1214,7 @@ void ARX_PLAYER_MakeSpHero()
 	player.life = player.maxlife;
 	player.mana = player.maxmana;
 
-	player.rune_flags = 0xFFFFFFFF;
+	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
 
 	SKIN_MOD = 0;
@@ -1282,7 +1256,7 @@ void ARX_PLAYER_MakePowerfullHero()
 	player.life = player.maxlife;
 	player.mana = player.maxmana;
 
-	player.rune_flags = 0xFFFFFFFF;
+	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
 }
 
@@ -1506,7 +1480,7 @@ void ARX_PLAYER_LEVEL_UP()
 	player.Old_Skill_Projectile			=	player.Skill_Projectile;
 	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat;
 	player.Old_Skill_Defense			=	player.Skill_Defense;
-	SendIOScriptEvent(inter.iobj[0], 0, "", "LEVEL_UP");
+	SendIOScriptEvent(inter.iobj[0], SM_NULL, "", "LEVEL_UP");
 }
 
 //*************************************************************************************
@@ -1724,10 +1698,8 @@ extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 void ARX_PLAYER_LoadHeroAnimsAndMesh()
 {
-	const std::string texpath = "Graph\\Obj3D\\Textures\\";
-	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
- 
-	hero = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
+	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo"; 
+	hero = loadObject(OBJECT_HUMAN_BASE, false);
 	PLAYER_SKIN_TC = TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
 
 	const char ANIM_WAIT_BOOK[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book.tea";
@@ -1993,7 +1965,6 @@ void ARX_PLAYER_Manage_Visual()
 		ANIM_HANDLE * ChangeMoveAnim2 = NULL;
 		long ChangeMA_Loop = 1;
 		long ChangeMA_Stopend = 0;
-		long NO_Interpolation = 0;
 
 		if (io->ioflags & IO_FREEZESCRIPT) goto nochanges;
 
@@ -2033,8 +2004,6 @@ void ARX_PLAYER_Manage_Visual()
 
 		if ((ROTATE_START) && (player.angle.a > 60.f) && (player.angle.a < 180.f) && (LASTPLAYERA > 60.f) && (LASTPLAYERA < 180.f))
 		{
-			NO_Interpolation = 1;
-
 			if (PLAYER_ROTATION < 0)
 			{
 				if (player.Interface & INTER_COMBATMODE)
@@ -2434,7 +2403,6 @@ void ARX_PLAYER_Manage_Visual()
 					}
 					break;
 				case 4: // Post-synch
-					NO_Interpolation = 1;
 					ChangeMA_Stopend = 1;
 					LAST_JUMP_ENDTIME = ARXTimeUL();
 
@@ -2449,7 +2417,6 @@ void ARX_PLAYER_Manage_Visual()
 
 					break;
 				case 5: // Post-synch
-					NO_Interpolation = 1;
 					LAST_JUMP_ENDTIME = ARXTimeUL();
 
 					if ((ause0->cur_anim == alist[ANIM_JUMP_END_PART2])
@@ -3245,8 +3212,7 @@ void PlayerMovementIterate(float DeltaTime)
 		player.physics.forces.y += mv2.y;
 		player.physics.forces.z += mv2.z;
 
-		EERIE_3D modifplayermove;
-		Vector_Init(&modifplayermove);
+		EERIE_3D modifplayermove(0, 0, 0);
 
 		// No Vertical Interpolation
 		if (player.jumpphase)
@@ -3260,10 +3226,8 @@ void PlayerMovementIterate(float DeltaTime)
 			else
 				player.physics.forces.y += WORLD_GRAVITY;
 
-			float dist;
-			EERIE_3D mod_vect;
+			EERIE_3D mod_vect(0, 0, 0);
 			long mod_vect_count = -1;
-			Vector_Init(&mod_vect);
 
 			// Check for LAVA Damage !!!
 			float epcentery;
@@ -3271,8 +3235,6 @@ void PlayerMovementIterate(float DeltaTime)
 
 			if (ep)
 			{
-				dist = inter.iobj[0]->pos.y - epcentery;
-
 				if ((ep->type & POLY_LAVA) && (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) < 30))
 				{
 					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) * ( 1.0f / 30 ));
@@ -3524,10 +3486,11 @@ void PlayerMovementIterate(float DeltaTime)
 
 		player.onfirmground = 0;
 	}
-
-
-	if (Vector_Compare(&player.pos, &moveto)) d = 0.f;
-
+	
+	if(player.pos == moveto) {
+		d = 0.f;
+	}
+	
 	// Emit Stepsound
 	if ((USE_PLAYERCOLLISIONS) && (!EDITMODE))
 	{
@@ -3545,7 +3508,7 @@ void PlayerMovementIterate(float DeltaTime)
 	}
 
 	// Finally update player pos !
-	Vector_Copy(&player.pos, &moveto);
+	player.pos = moveto;
 
 lasuite:
 	;
@@ -3704,6 +3667,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val)
 					case SPELL_FLYING_EYE:
 						spells[i].tolive = 0;
 						break;
+					default: break;
 				}
 			}
 		}
@@ -3823,9 +3787,9 @@ extern INTERACTIVE_OBJ * FlyingOverIO;
 extern long cur_sm;
 extern void ClearDynLights();
 
-void ARX_GAME_Reset(long type)
-{
-	ARX_SPELLS_CancelAll();
+void ARX_GAME_Reset(long type) {
+	
+	inter.iobj[0]->speed_modif = 0;
 
 	LAST_JUMP_ENDTIME = 0;
 	FlyingOverIO = NULL;
@@ -3870,7 +3834,7 @@ void ARX_GAME_Reset(long type)
 	cur_mr = 0;
 
 
-	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = -1;
+	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = SPELL_NONE;
 
 	LAST_PRECAST_TIME = 0;
 
@@ -3916,7 +3880,7 @@ void ARX_GAME_Reset(long type)
 
 	// Speech Things
 	REQUEST_SPEECH_SKIP = 0;
-	ARX_SPEECH_ClearAll(); // to remove later...
+	ARX_SPEECH_ClearAll();
 	ARX_SPEECH_Reset();
 
 	// Spells
@@ -3988,7 +3952,7 @@ void ARX_GAME_Reset(long type)
 	ROTATE_START = 0;
 	BLOCK_PLAYER_CONTROLS = 0;
 	HERO_SHOW_1ST = -1;
-	Vector_Init(&PUSH_PLAYER_FORCE);
+	PUSH_PLAYER_FORCE.clear();
 	player.jumplastposition = 0;
 	player.jumpstarttime = 0;
 	player.jumpphase = 0;

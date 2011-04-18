@@ -80,7 +80,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -96,6 +95,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
+#include "platform/String.h"
+
 using std::min;
 using std::max;
 using std::copy;
@@ -103,9 +104,6 @@ using std::copy;
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
 extern bool ARXPausedTimer;
-extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
-extern EERIE_LIGHT * GLight[MAX_LIGHTS];
-extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 void EERIE_PORTAL_Release();
 long NEED_ANCHORS = 1;
 float Xratio = 1.f;
@@ -1149,10 +1147,6 @@ extern EERIE_CAMERA * Kam;
 int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
 {
 	register int i, j, c = 0;
-	long to;
-
-	if (ep->type & POLY_QUAD) to = 4;
-	else to = 3;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1532,7 +1526,6 @@ bool Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit)
 	EERIEPOLY	*	ep;
 	EERIE_BKG_INFO	* eg;
 	float			pas			=	35.f;
-	float			found_dd	=	999999999999.f;
 	EERIE_3D		found_hit;
 	EERIEPOLY	*	found_ep	=	NULL;
 	float iter, t;
@@ -1644,7 +1637,6 @@ bool Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit)
 									if (dd < nearest)
 									{
 										nearest		=	dd;
-										found_dd	=	dd;
 										found_ep	=	ep;
 										found_hit.x	=	hit->x;
 										found_hit.y	=	hit->y;
@@ -1809,8 +1801,7 @@ void AddAData(_ANCHOR_DATA * ad, long linked)
 
 void UpdateIORoom(INTERACTIVE_OBJ * io)
 {
-	EERIE_3D pos;
-	Vector_Copy(&pos, &io->pos);
+	EERIE_3D pos = io->pos;
 	pos.y -= 60.f;
 
 	long roo = ARX_PORTALS_GetRoomNumForPosition(&pos, 2);
@@ -1853,7 +1844,7 @@ bool GetRoomCenter(long room_num, EERIE_3D * center)
 
 	*center = (bbox.max + bbox.min) * ( 1.0f / 2 );
 
-	Vector_Copy(&portals->room[room_num].center, center);
+	portals->room[room_num].center = *center;
 	portals->room[room_num].radius = EEDistance3D(center, &bbox.max);
 	return true;
 }
@@ -1869,9 +1860,9 @@ static void SetRoomDistance(long i, long j, float val, const EERIE_3D * p1, cons
 	
 	long offs = i + j * NbRoomDistance;
 	
-	if (p1) Vector_Copy(&RoomDistance[offs].startpos, p1);
+	if (p1) RoomDistance[offs].startpos = *p1;
 
-	if (p2) Vector_Copy(&RoomDistance[offs].endpos, p2);
+	if (p2) RoomDistance[offs].endpos = *p2;
 
 	RoomDistance[offs].distance = val;
 }
@@ -1882,9 +1873,9 @@ static float GetRoomDistance(long i, long j, EERIE_3D * p1, EERIE_3D * p2)
 
 	long offs = i + j * NbRoomDistance;
 
-	if (p1) Vector_Copy(p1, &RoomDistance[offs].startpos);
+	if (p1) *p1 = RoomDistance[offs].startpos;
 
-	if (p2) Vector_Copy(p2, &RoomDistance[offs].endpos);
+	if (p2) *p2 = RoomDistance[offs].endpos;
 
 	return (RoomDistance[offs].distance);
 }
@@ -2036,10 +2027,6 @@ void ComputeRoomDistance()
 	}
 
 	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
-
-	long BLOCKED;
-	BLOCKED = 0;
-
 
 	for (int i = 0; i < NbRoomDistance; i++)
 		for (long j = 0; j < NbRoomDistance; j++)
@@ -2841,10 +2828,9 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	long j, posx, posz, posy;
 	float cx, cy, cz;
 	EERIE_BKG_INFO * eg;
-	long type, val1, val2;
+	long type, val1;
 	type = -1;
 	val1 = -1;
-	val2 = -1;
 
 	if (TryToQuadify(ep, eobj)) return 0;
 
@@ -3152,51 +3138,38 @@ void RecalcLight(EERIE_LIGHT * el)
 	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
 }
 
-void ClearDynLights()
-{
-	long i;
-
-	for (i = 0; i < MAX_DYNLIGHTS; i++)
-	{
-		if (DynLight[i].exist)
-		{
+void ClearDynLights() {
+	
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+		if(DynLight[i].exist) {
 			DynLight[i].exist = 0;
 		}
 	}
-
-	for (i = 0; i < MAX_LIGHTS; i++)
-	{
-		if ((GLight[i]) && (GLight[i]->tl > 0))
+	
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i] && GLight[i]->tl > 0) {
 			GLight[i]->tl = 0;
+		}
 	}
-
+	
 	TOTPDL = 0;
 	TOTIOPDL = 0;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-long GetFreeDynLight()
-{
-	long i;
-
-	for (i = 1; i < MAX_DYNLIGHTS; i++)
-	{
-		if (!(DynLight[i].exist))
-		{
+long GetFreeDynLight() {
+	
+	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
+		if(!(DynLight[i].exist)) {
 			DynLight[i].type = 0;
 			DynLight[i].intensity = 1.3f;
 			DynLight[i].treat = 1;
-
 			DynLight[i].time_creation = ARXTimeUL();
-
 			DynLight[i].duration = 0;
 			DynLight[i].extras = 0;
-
 			return i;
 		}
 	}
-
+	
 	return -1;
 }
 

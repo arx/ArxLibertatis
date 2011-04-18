@@ -393,6 +393,7 @@ CSlowDown::CSlowDown()
 		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
 
 	srune_count++;
+	
 }
 
 CSlowDown::~CSlowDown()
@@ -489,7 +490,6 @@ float CSlowDown::Render()
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
 	EERIE_3D stitescale;
-	EERIE_RGB stitecolor;
 
 	x = player.pos.x;
 	y = player.pos.y + 80;
@@ -505,17 +505,11 @@ float CSlowDown::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	stiteangle.b = -stiteangle.b * 1.5f;
-	stitecolor.r = 0.7f;
-	stitecolor.g = 0.7f;
-	stitecolor.b = 0.7f;
 	stitescale.x = 1;
 	stitescale.y = -0.1f;
 	stitescale.z = 1;
 
 	stiteangle.b = -stiteangle.b;
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
 	stitescale.x = 2;
 	stitescale.y = 2;
 	stitescale.z = 2;
@@ -523,9 +517,6 @@ float CSlowDown::Render()
 
 	y = player.pos.y + 20;
 	stitepos.y = y;
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
 	stitescale.z = 1.8f;
 	stitescale.y = 1.8f;
 	stitescale.x = 1.8f;
@@ -582,19 +573,16 @@ CRiseDead::CRiseDead()
 	fColorRays2[1] = 0;
 	fColorRays2[2] = 0;
 
-	if (stone0 == NULL)
-	{
-		stone0 = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo", NULL);
+	if(stone0 == NULL) {
+		stone0 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo");
 	}
-
 	stone0_count++;
-
-	if (stone1 == NULL)
-	{
-		stone1 = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo", NULL);
+	
+	if(stone1 == NULL) {
+		stone1 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo");
 	}
-
 	stone1_count++;
+
 	tex_light = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
 }
 
@@ -723,7 +711,7 @@ void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
 	this->Split(v1a, 0, end, 80);
 	this->Split(v1b, 0, end, -80);
 
-	// check de la conformité du split
+	// check de la conformitï¿½ du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
 	if (0)
@@ -1040,7 +1028,7 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu des faisceaux
 	// blend additif ou mul
-	// smooth sur les cotés ou pas ..
+	// smooth sur les cotï¿½s ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
@@ -1208,7 +1196,7 @@ void CRiseDead::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-// rendu de la déchirure spatio temporelle
+// rendu de la dï¿½chirure spatio temporelle
 float CRiseDead::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
@@ -1413,20 +1401,11 @@ void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ah
 void CParalyse::CreateLittlePrismTriangleList()
 {
 	float		sc;
-	float		beta, beta2, gamma;
 	EERIE_3D	* v, *vd;
 	EERIE_3D	vt;
 
 	for (int i = 0; i < 50; i++)
 	{
-		
-		beta = 0;
-		float g = frand2();
-		g = 20 + rnd() * 45.f; 
-		gamma = radians(g);
-		//xz
-		beta2 = radians(rnd() * 360); 
-
 		v = prismvertex;
 		vd = tabprism[i].vertex;
 
@@ -1526,7 +1505,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	}
 
 
-	// système de partoches pour la poussière
+	// systï¿½me de partoches pour la poussiï¿½re
 	CParticleSystem * pPS = new CParticleSystem();
 	CParticleParams cp;
 	cp.iNbMax = 200;
@@ -1588,7 +1567,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		pParticleManager->AddSystem(pPS);
 	}
 
-	// système de partoches pour la poussière au sol
+	// systï¿½me de partoches pour la poussiï¿½re au sol
 	pPS = new CParticleSystem();
 	
 	cp.iNbMax = 20;

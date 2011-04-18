@@ -60,11 +60,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include "graphics/Math.h"
+#include "graphics/data/Texture.h"
 
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "platform/String.h"
 
 #include "scene/Object.h"
 
@@ -328,9 +330,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	long tw1 = -1;
 	long tw2 = -1;
 	long iw1 = -1;
-	long iw2 = -1;
 	long jw1 = -1;
-	long jw2 = -1;
 	long sel_head1 = -1;
 	long sel_head2 = -1;
 	long sel_torso1 = -1;
@@ -370,9 +370,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		tw1 = sel_head1;
 		tw2 = sel_head2;
 		iw1 = sel_torso1;
-		iw2 = sel_torso2;
 		jw1 = sel_legs1;
-		jw2 = sel_legs2;
 	}
 
 	if (tw == TWEAK_TORSO)
@@ -380,9 +378,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		tw1 = sel_torso1;
 		tw2 = sel_torso2;
 		iw1 = sel_head1;
-		iw2 = sel_head2;
 		jw1 = sel_legs1;
-		jw2 = sel_legs2;
 	}
 
 	if (tw == TWEAK_LEGS)
@@ -390,9 +386,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		tw1 = sel_legs1;
 		tw2 = sel_legs2;
 		iw1 = sel_torso1;
-		iw2 = sel_torso2;
 		jw1 = sel_head1;
-		jw2 = sel_head2;
 	}
 
 	if ((tw1 == -1) || (tw2 == -1)) return NULL;
@@ -401,7 +395,6 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	{
 		long idx_head1, idx_head2;
 		long idx_torso1, idx_torso2;
-		long idx_legs1, idx_legs2;
 
 		idx_head1 = GetActionPoint(obj1, "head2chest");
 
@@ -418,10 +411,6 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		idx_torso2 = GetActionPoint(obj2, "chest2leggings");
 
 		if (idx_torso2 < 0) return NULL;
-
-		idx_legs1 = obj1->origin;
-		idx_legs2 = obj2->origin;
-
 	}
 
 	// copy vertices
@@ -839,12 +828,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 
 	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
 	{
-		const char tex1[] = "Graph\\Obj3D\\Textures\\";
-
-		if (io->ioflags & IO_NPC)
-			tobj = TheoToEerie_Fast(tex1, path, TTE_NPC);
-		else
-			tobj = TheoToEerie_Fast(tex1, path, 0);
+		tobj = loadObject(path);
 
 		if (!tobj) return;
 

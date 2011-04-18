@@ -1,7 +1,7 @@
 #ifndef _ARX_IMAGE_H_
 #define _ARX_IMAGE_H_
 
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 class Image
 {

@@ -71,12 +71,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Time.h"
 #include "core/Dialog.h"
+#include "core/Core.h"
 
 #include "game/Equipment.h"
 #include "game/NPC.h"
 #include "game/Damage.h"
 #include "game/Player.h"
 #include "game/Levels.h"
+#include "game/Inventory.h"
 
 #include "gui/Speech.h"
 #include "gui/MenuWidgets.h"
@@ -89,7 +91,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
-#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -99,11 +100,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Clothes.h"
 
+#include "platform/String.h"
+
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
 #include "scene/LinkedObject.h"
 #include "scene/LoadLevel.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
 
 #include "scripting/ScriptEvent.h"
 
@@ -141,12 +146,13 @@ long NbIOSelected = 0;
 long LastSelectedIONum = -1;
 long INTERNMB = -1;
 long LASTINTERCLICKNB = -1;
-long FORCE_IO_INDEX = -1;
 long INTER_DRAW = 0;
 long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
-bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t);
+static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
+static INTERACTIVE_OBJ * AddCamera(const std::string & file);
+static INTERACTIVE_OBJ * AddMarker(const std::string & file);
 
 
 /* Return the short name for this Object where only the name
@@ -224,8 +230,9 @@ long ValidIOAddress(INTERACTIVE_OBJ * io)
 
 	return 0;
 }
-float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop)
-{
+
+static float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
+	
 	if ((!io)
 	        ||	(!(io->ioflags & IO_ITEM)))
 		return 0;
@@ -243,8 +250,8 @@ long ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
 	return ARX_INTERACTIVE_fGetPrice(io, shop);
 }
 
-void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags)
-{
+static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
+	
 	ARX_PATH * op = (ARX_PATH *)io->inzone;
 
 	if (op)
@@ -497,25 +504,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 	}
 }
 extern long GORE_MODE;
- 
-EERIE_3DOBJ * GetExistingEerie(const std::string& file)
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(!inter.iobj[i]->tweaky)
-		        &&	(inter.iobj[i]->obj))
-		{
-			if ((!inter.iobj[i]->obj->originaltextures)
-			        && ( !strcmp(file, inter.iobj[i]->obj->file ) ) )
-			{
-				return inter.iobj[i]->obj;
-			}
-		}
-	}
 
-	return NULL;
-}
 
 bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 {
@@ -539,82 +528,6 @@ bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 	}
 
 	return false;
-}
-
-EERIE_3DOBJ * TheoToEerie_Fast(const std::string& texpath, const std::string& file, long flag)
-{
-	EERIE_3DOBJ * ret = new EERIE_3DOBJ();
-
-	if ((ret = ARX_FTL_Load(file)) != NULL)
-	{
-
-		if (!(flag & TTE_NO_PHYSICS_BOX))
-			EERIE_PHYSICS_BOX_Create(ret);
-
-		return ret;
-	}
-	
-	// TODO the actual .teo files are not shipped with Arx, only the compressed?/preprocessed?/optimized? .ftl files, so if the ARX_FTL_Load call fails we can give up anyway
-
-	ret = GetExistingEerie(file);
-	if (ret)
-	{
-		ret = Eerie_Copy(ret);
-
-		if (!ret) goto alternateway;
-	}
-	else
-	{
-	alternateway:
-		;
-		size_t FileSize = 0;
-		unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(file, FileSize);
-
-		if (adr)
-		{
-			ret = TheoToEerie(adr, FileSize, texpath, file);
-
-			if (!ret)
-			{
-				free(adr);
-				return NULL;
-			}
-
-			EERIE_OBJECT_CenterObjectCoordinates(ret);
-			free(adr);
-		}
-		else return NULL;
-	}
-
-	if (FASTLOADS)
-	{
-		if ((ret)
-		        &&	(ret->pdata))
-		{
-			free(ret->pdata);
-			ret->pdata = NULL;
-		}
-
-		return ret;
-	}
-
-	if ((ret)
-	        &&	(!(flag & TTE_NO_PDATA)))
-	{
-		CreateNeighbours(ret);
-		EERIEOBJECT_AddClothesData(ret);
-		KillNeighbours(ret);
-
-		if (ret->cdata)
-			EERIE_COLLISION_SPHERES_Create(ret); // Must be out of the Neighbours zone
-
-		if (!(flag & TTE_NO_PHYSICS_BOX))
-			EERIE_PHYSICS_BOX_Create(ret);
-
-		ARX_FTL_Save(file, ret);
-	}
-
-	return ret;
 }
 
 //*************************************************************************************
@@ -983,33 +896,29 @@ long GetNumNodeByName(char * name)
 
 	return -1;
 }
-//*************************************************************************************
-//*************************************************************************************
-void RestoreNodeNumbers()
-{
-	for (long i = 0; i < nodes.nbmax; i++)
-		for (long j = 0; j < MAX_LINKS; j++)
-		{
-			if (nodes.nodes[i].lnames[j][0] != 0)
-			{
+
+void RestoreNodeNumbers() {
+	for(long i = 0; i < nodes.nbmax; i++) {
+		for(size_t j = 0; j < MAX_LINKS; j++) {
+			if(nodes.nodes[i].lnames[j][0] != 0) {
 				nodes.nodes[i].link[j] = GetNumNodeByName(nodes.nodes[i].lnames[j]);
 			}
 		}
+	}
 }
-//*************************************************************************************
-//*************************************************************************************
-void ClearNode(long i, long first = 0)
-{
+
+void ClearNode(long i, long first = 0) {
+	
 	nodes.nodes[i].exist = 0;
 	nodes.nodes[i].selected = 0;
 
-	for (long j = 0; j < MAX_LINKS; j++)
+	for (size_t j = 0; j < MAX_LINKS; j++)
 	{
 		if ((nodes.nodes[i].link[j] != -1) && (!first))
 		{
 			long k = nodes.nodes[i].link[j];
 
-			for (long l = 0; l < MAX_LINKS; l++)
+			for (size_t l = 0; l < MAX_LINKS; l++)
 				if (nodes.nodes[k].link[l] == i)
 					nodes.nodes[k].link[l] = -1;
 		}
@@ -1077,7 +986,7 @@ bool IsLinkedNode(long i, long j)
 	        ||	(!nodes.nodes[j].exist))
 		return false;
 
-	for (long k = 0; k < MAX_LINKS; k++)
+	for (size_t k = 0; k < MAX_LINKS; k++)
 	{
 		if (nodes.nodes[i].link[k] == j) return true;
 	}
@@ -1108,7 +1017,7 @@ void AddLink(long i, long j)
 	        ||	(!nodes.nodes[j].exist))
 		return;
 
-	for (long k = 0; k < MAX_LINKS; k++)
+	for (size_t k = 0; k < MAX_LINKS; k++)
 	{
 		if (nodes.nodes[i].link[k] == -1)
 		{
@@ -1125,7 +1034,7 @@ void RemoveLink(long i, long j)
 	        ||	(!nodes.nodes[j].exist))
 		return;
 
-	for (long k = 0; k < MAX_LINKS; k++)
+	for (size_t k = 0; k < MAX_LINKS; k++)
 	{
 		if (nodes.nodes[i].link[k] == j)
 		{
@@ -1286,7 +1195,7 @@ void RestoreInitialIOStatus()
 	ARX_INTERACTIVE_HideGore(inter.iobj[0]);
 	ARX_NPC_Behaviour_ResetAll();
 
-	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = -1;
+	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = SPELL_NONE;
 
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -1301,7 +1210,6 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
         return;
 
     std::string tex;
-    const char tex1[] = "Graph\\Obj3D\\Textures\\";
     std::string tex2;
 
     if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp;
@@ -1324,24 +1232,22 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
             io->obj = NULL;
         }
 
-        if (io->ioflags & IO_FIX)
-            io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX);
-        else if (io->ioflags & IO_NPC)
-            io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_PHYSICS_BOX | TTE_NPC);
-        else
-            io->obj = TheoToEerie_Fast(tex1, tex, 0);
+        bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
+        io->obj = loadObject(tex, pbox);
 
 		EERIE_COLLISION_Cylinder_Create(io);
 	}
 }
-void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io)
-{
-	if (io->Tweaks)
-		free(io->Tweaks);
 
+static void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io) {
+	
+	if(io->Tweaks) {
+		free(io->Tweaks);
+	}
 	io->Tweaks = NULL;
 	io->Tweak_nb = 0;
 }
+
 void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string& param1, const std::string& param2)
 {
 	io->Tweaks = (TWEAK_INFO *)realloc(io->Tweaks, sizeof(TWEAK_INFO) * (io->Tweak_nb + 1));
@@ -1390,7 +1296,7 @@ void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io)
 			free(io->symboldraw);
 
 		io->symboldraw = NULL;
-		io->spellcast_data.castingspell = -1;
+		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 }
 void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
@@ -1412,7 +1318,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 			free(io->symboldraw);
 
 		io->symboldraw = NULL;
-		io->spellcast_data.castingspell = -1;
+		io->spellcast_data.castingspell = SPELL_NONE;
 
 		if (io->shop_category)
 			free(io->shop_category);
@@ -1537,10 +1443,9 @@ void ARX_INTERACTIVE_ClearAllDynData()
 		ARX_INTERACTIVE_ClearIODynData(inter.iobj[i]);
 	}
 }
-void RestoreIOInitPos(INTERACTIVE_OBJ * io)
-{
-	if (io)
-	{
+
+static void RestoreIOInitPos(INTERACTIVE_OBJ * io) {
+	if(io) {
 		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
 		io->pos.x = io->lastpos.x = io->initpos.x;
 		io->pos.y = io->lastpos.y = io->initpos.y;
@@ -1552,15 +1457,14 @@ void RestoreIOInitPos(INTERACTIVE_OBJ * io)
 		io->angle.g = io->initangle.g;
 	}
 }
-void RestoreAllIOInitPos()
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
+
+void RestoreAllIOInitPos() {
+	for(long i = 1; i < inter.nbmax; i++) {
 		RestoreIOInitPos(inter.iobj[i]);
 	}
 }
-void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io)
-{
+
+void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io) {
 	io->halo.color.r = io->halo_native.color.r;
 	io->halo.color.g = io->halo_native.color.g;
 	io->halo.color.b = io->halo_native.color.b;
@@ -1588,7 +1492,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->halo.dynlight = -1;
 
 		io->level = io->truelevel;
-		Vector_Init(&io->forcedmove);
+		io->forcedmove.clear();
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
@@ -1625,7 +1529,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->invisibility = 0.f;
 		io->rubber = BASE_RUBBER;
 		io->scale = 1.f;
-		Vector_Init(&io->move);
+		io->move.clear();
 		io->type_flags = 0;
 		io->sound = -1;
 		io->soundtime = 0;
@@ -1674,7 +1578,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->fall = 0;
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = TARGET_NONE;
-		io->spellcast_data.castingspell = -1;
+		io->spellcast_data.castingspell = SPELL_NONE;
 		io->summoner = -1;
 		io->spark_n_blood = 0;
 
@@ -1833,9 +1737,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 		goto create;
 	}
 
-	if (FORCE_IO_INDEX != -1)
-		tocreate = FORCE_IO_INDEX;
-	else for (i = 1; i < inter.nbmax; i++) // ignoring player
+	for (i = 1; i < inter.nbmax; i++) // ignoring player
 		{			
 			if (!inter.iobj[i])
 			{
@@ -1938,12 +1840,10 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 
 		io->weight = 1.f;
 		memset(io->animlayer, 0, sizeof(ANIM_USE)*MAX_ANIM_LAYERS);
-		FORCE_IO_INDEX = -1;
 		return (io);
 
 	}
 
-	FORCE_IO_INDEX = -1;
 	return NULL;
 }
 // Be careful with this func...
@@ -2294,8 +2194,8 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	}
 
 	for (long iNbBag = 0; iNbBag < 3; iNbBag++)
-		for (long j = 0; j < INVENTORY_Y; j++)
-			for (long i = 0; i < INVENTORY_X; i++)
+		for (size_t j = 0; j < INVENTORY_Y; j++)
+			for (size_t i = 0; i < INVENTORY_X; i++)
 			{
 				if (inventory[iNbBag][i][j].io == io)
 					inventory[iNbBag][i][j].io = NULL;
@@ -2414,15 +2314,9 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	io = NULL;
 }
 
-//***********************************************************************************
-// AddInteractive:
-// Adds an Interactive Object to the Scene
-// Calls appropriate func depending on object Type (ITEM, NPC or FIX)
-// Creates an IO Ident for added object if necessary
-// flags can be IO_IMMEDIATELOAD (1) to FORCE loading
-//***********************************************************************************
-INTERACTIVE_OBJ * AddInteractive(const std::string& file, long id, long flags)
-{
+
+INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFlags flags) {
+	
 	INTERACTIVE_OBJ * io = NULL;
 	std::string ficc;
 	ficc = file;
@@ -2571,12 +2465,9 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string&
 	io2->show = SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
-//***********************************************************************************
-// AddFix
-// Adds a FIX INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
-{
+
+INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
+	
 	std::string tex1 = file;
 	std::string texscript = file;
 	SetExt(texscript, "asl");
@@ -2612,7 +2503,7 @@ INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
 
-	io->spellcast_data.castingspell = -1;
+	io->spellcast_data.castingspell = SPELL_NONE;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
 	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
@@ -2649,8 +2540,7 @@ INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
 		}
 		else
 		{
-			const char texdir[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texdir, tex1, TTE_NO_PHYSICS_BOX);
+			io->obj = loadObject(tex1, false);
 		}
 	}
 
@@ -2687,12 +2577,8 @@ INTERACTIVE_OBJ * AddFix(const std::string& file, long flags)
 	return io;
 }
 
-//***********************************************************************************
-// AddCamera
-// Adds a CAMERA INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddCamera(const std::string& file)
-{
+static INTERACTIVE_OBJ * AddCamera(const string & file) {
+	
 	std::string tex1 = file;;
 	std::string texscript = file;
 
@@ -2757,12 +2643,9 @@ INTERACTIVE_OBJ * AddCamera(const std::string& file)
 
 	return io;
 }
-//***********************************************************************************
-// AddMarker
-// Adds a MARKER INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddMarker(const std::string& file)
-{
+
+static INTERACTIVE_OBJ * AddMarker(const string & file) {
+	
 	std::string tex1 = file;
 	std::string texscript = file;
 
@@ -2933,8 +2816,8 @@ void RotateSelectedIO(EERIE_3D * op)
 //*************************************************************************************
 // Delete All Selected IOs
 //*************************************************************************************
-void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
-{
+void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
+	
 	if ((i < 1) || (i >= inter.nbmax))
 		return;
 
@@ -3018,12 +2901,8 @@ void GroundSnapSelectedIO()
 	}
 }
 
-//***********************************************************************************
-// AddNPC
-// Adds a NPC INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags)
-{
+INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
+	
     // creates script filename
     std::string texscript = file;;
     SetExt(texscript, "asl");
@@ -3058,7 +2937,7 @@ INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags)
 
 	GetIOScript( io, texscript );
 	
-	io->spellcast_data.castingspell = -1;
+	io->spellcast_data.castingspell = SPELL_NONE;
 	io->_npcdata->life = io->_npcdata->maxlife = 20.f;
 	io->_npcdata->mana = io->_npcdata->maxmana = 10.f;
 	io->_npcdata->poisonned = 0.f;
@@ -3111,8 +2990,7 @@ INTERACTIVE_OBJ * AddNPC(const std::string& file, long flags)
 		}
 		else
 		{
-			const char texpath[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texpath, tex1, TTE_NO_PHYSICS_BOX | TTE_NPC);
+			io->obj = loadObject(tex1, false);
 		}
 	}
 
@@ -3248,8 +3126,8 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 // NEED TO OPEN "if (LAST_CHINSTANCE!=-1) ARX_Changelevel_CurGame_Open();"
 // And close after seek session
 //*************************************************************************************
-bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
-{
+static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
+	
 	if (!io)
 		return false;
 
@@ -3296,8 +3174,8 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 //*************************************************************************************
 // Creates a Temporary IO Ident
 //*************************************************************************************
-void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
-{
+void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
+	
 	long t = 1;
 
 	if (!io) return;
@@ -3323,12 +3201,8 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
-//***********************************************************************************
-// AddItem
-// Adds an ITEM INTERACTIVE OBJECT to the Scene
-//***********************************************************************************
-INTERACTIVE_OBJ * AddItem(const std::string& fil, long flags)
-{
+INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
+	
 	std::string tex1;
 	std::string tex2;
 	std::string texscript;
@@ -3401,7 +3275,7 @@ INTERACTIVE_OBJ * AddItem(const std::string& fil, long flags)
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
 
-	io->spellcast_data.castingspell = -1;
+	io->spellcast_data.castingspell = SPELL_NONE;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
 	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
@@ -3434,16 +3308,10 @@ INTERACTIVE_OBJ * AddItem(const std::string& fil, long flags)
 
 	if (!io->obj)
 	{
-		if (flags & NO_MESH)
-		{
+		if(flags & NO_MESH) {
 			io->obj = NULL;
-		}
-		else
-		{
- 
-			const char texdir[] = "Graph\\Obj3D\\Textures\\";
-
-			io->obj = TheoToEerie_Fast(texdir, tex1, 0);
+		} else {
+			io->obj = loadObject(tex1);
 		}
 	}
 
@@ -3751,8 +3619,8 @@ long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size)
 //*************************************************************************************
 // To upgrade to a more precise collision.
 //*************************************************************************************
-bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
-{
+static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos) {
+	
 	long nbv;
 	long idx;
 
@@ -3798,7 +3666,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
 	bool col = false;
 	float dist;
-	long i, ret;
+	long i;
 	long avoid = -1;
 	INTERACTIVE_OBJ * io_source = NULL;
 
@@ -3828,9 +3696,6 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 			if ((dist < 450.f) && (In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius)))
 			{
-
-				ret = -1;
-
 				if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
 				{
 					if (PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
@@ -3879,7 +3744,6 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 								return true;
 								col = true;
-								ret = 1;
 							}
 						}
 					}
@@ -3894,7 +3758,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 {
 	bool col = false;
 	float dist;
-	long i, ret;
+	long i;
 	long avoid = -1;
 	INTERACTIVE_OBJ * io_source = NULL;
 	INTERACTIVE_OBJ * io = NULL;
@@ -3933,8 +3797,6 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 		if ((dist < 600.f) && (In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)))
 		{
-			ret = -1;
-
 			if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
 			{
 				for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
@@ -4132,7 +3994,7 @@ void UpdateCameras()
 						EVENT_SENDER = NULL;
 						SendIOScriptEvent(io, SM_WAYPOINT, str);
 						sprintf(str, "WAYPOINT%ld", aup->path->nb_pathways - 1);
-						SendIOScriptEvent(io, 0, "", str);
+						SendIOScriptEvent(io, SM_NULL, "", str);
 						SendIOScriptEvent(io, SM_PATHEND);
 						aup->lastWP = last;
 					}
@@ -4153,7 +4015,7 @@ void UpdateCameras()
 						EVENT_SENDER = NULL;
 						SendIOScriptEvent(io, SM_WAYPOINT, str);
 						sprintf(str, "WAYPOINT%ld", ii);
-						SendIOScriptEvent(io, 0, "", str);
+						SendIOScriptEvent(io, SM_NULL, "", str);
 
 						if (ii == aup->path->nb_pathways)
 						{
@@ -4481,8 +4343,7 @@ void RenderInter(float from, float to) {
 						LOOK_AT_TARGET = 1;
 				}
 
-				EERIE_3D pos;
-				Vector_Copy(&pos, &io->pos);
+				EERIE_3D pos = io->pos;
 
 				if (io->ioflags & IO_NPC)
 				{
@@ -4771,6 +4632,7 @@ float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io)
 				case SPELL_LOWER_ARMOR:
 					ac -= spells[n].caster_level;
 					break;
+				default: break;
 			}
 		}
 	}

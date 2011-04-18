@@ -2,7 +2,7 @@
 #ifndef ARX_AUDIO_LOCK_H
 #define ARX_AUDIO_LOCK_H
 
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 #ifdef HAVE_PTHREADS
 #include <pthread.h>

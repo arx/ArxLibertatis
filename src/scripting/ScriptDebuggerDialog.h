@@ -22,23 +22,18 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-#ifndef SCRIPT_DEBUGGER_H
-#define SCRIPT_DEBUGGER_H
 
+#ifndef ARX_SCRIPTING_SCRIPTDEBUGGERDIALOG_H
+#define ARX_SCRIPTING_SCRIPTDEBUGGERDIALOG_H
 
 #include <windows.h>
-#include "core/Common.h"
 
-struct Vars
-{
+struct Vars {
 	char * lpszVarName;
 	char * lpszVarValue;
 };
 
-struct ScriptDebuggerUpdate
-{
+struct ScriptDebuggerUpdate {
 	bool bVariables;
 	bool bEvents;
 	bool bTimers;
@@ -50,8 +45,7 @@ struct ScriptDebuggerUpdate
 	Vars localVar;
 };
 
-struct ScriptDebuggerInfos
-{
+struct ScriptDebuggerInfos {
 	bool bClear;
 	//obj inter
 	char * lpszObjName;
@@ -75,27 +69,16 @@ struct ScriptDebuggerInfos
 	char * lpszTimers;
 };
 
-
-//-----------------------------------------------------------------------------
-const char * SCRIPT_DEBUGGER_GetName();
-
-//-----------------------------------------------------------------------------
 unsigned long	SCRIPT_DEBUGGER_GetVersion();
 
-//-----------------------------------------------------------------------------
-// Cr�ation de la boite de dialogue
-void			SCRIPT_DEBUGGER_CreateDialog(HWND);
+void SCRIPT_DEBUGGER_CreateDialog(HWND);
 
-//-----------------------------------------------------------------------------
-void			SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos &);
+void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos &);
 
-//-----------------------------------------------------------------------------
-void			SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate &);
+void SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate &);
 
-//-----------------------------------------------------------------------------
-bool			SCRIPT_DEBUGGER_WindowOpened();
+bool SCRIPT_DEBUGGER_WindowOpened();
 
-//-----------------------------------------------------------------------------
-void			SCRIPT_DEBUGGER_Destroy();
+void SCRIPT_DEBUGGER_Destroy();
 
-#endif
+#endif // ARX_SCRIPTING_SCRIPTDEBUGGERDIALOG_H

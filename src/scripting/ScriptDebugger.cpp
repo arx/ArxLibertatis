@@ -51,6 +51,7 @@ DD_GETPARAMS DD_GetParams = NULL;
 DD_GETVERSION DD_GetVersion = NULL;
 
 std::string BIG_DEBUG_STRING;
+long BIG_DEBUG_POS = 0;
 
 void DANAE_DEBUGGER_Launch(HWND hWnd)
 {
@@ -344,8 +345,6 @@ void DANAE_DEBUGGER_Update()
 		s.bTimers = true;
 		char buf[16000];
 		ZeroMemory(buf, 16000);
-		long num;
-		num = 0;
 
 		for (i = 0; i < MAX_TIMER_SCRIPT; i++)
 		{

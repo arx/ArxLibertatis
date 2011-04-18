@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-// TODO include file
+#include "game/Inventory.h"
 
 #include "ai/Paths.h"
 
@@ -70,8 +70,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
-
-#include "io/Perf.h"
 
 #include "physics/Box.h"
 
@@ -102,13 +100,13 @@ void ARX_INVENTORY_IdentifyIO(INTERACTIVE_OBJ * _pIO);
 
 //------------------------------------------------------------------------------------
 //CInventory Inventory;
-INVENTORY_SLOT		inventory[3][INVENTORY_X][INVENTORY_Y];
-INVENTORY_DATA *	SecondaryInventory	= NULL;
-INTERACTIVE_OBJ *	DRAGINTER			= NULL;
-INTERACTIVE_OBJ *	ioSteal				= NULL;
-long InventoryY			= 100;
-long HERO_OR_SECONDARY	= 0;
-short sActiveInventory	= 0;
+INVENTORY_SLOT inventory[3][INVENTORY_X][INVENTORY_Y];
+INVENTORY_DATA * SecondaryInventory = NULL;
+INTERACTIVE_OBJ * DRAGINTER = NULL;
+INTERACTIVE_OBJ * ioSteal = NULL;
+long InventoryY = 100;
+long HERO_OR_SECONDARY = 0;
+short sActiveInventory = 0;
 
 // 1 player 2 secondary
 short sInventory = -1;
@@ -156,16 +154,17 @@ void ARX_INVENTORY_Declare_InventoryIn(INTERACTIVE_OBJ * io)
 // FUNCTION/RESULT:
 //   Cleans Player inventory
 //*************************************************************************************
-void CleanInventory()
-{
-	for (long iNbBag = 0; iNbBag < 3; iNbBag++)
-		for (long j = 0; j < INVENTORY_Y; j++)
-			for (long i = 0; i < INVENTORY_X; i++)
-			{
+void CleanInventory() {
+	
+	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) {
+			for(size_t i = 0; i < INVENTORY_X; i++) {
 				inventory[iNbBag][i][j].io	 = NULL;
 				inventory[iNbBag][i][j].show = 1;
 			}
-
+		}
+	}
+	
 	sActiveInventory = 0;
 }
 
@@ -175,14 +174,8 @@ extern long DANAESIZY;
 extern long DANAECENTERX;
 extern long DANAECENTERY;
 
-//*************************************************************************************
-// INTERACTIVE_OBJ * GetInventoryObj()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//
-//*************************************************************************************
-INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
-{
+static INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos) {
+	
 	long tx, ty;
 
 
@@ -209,7 +202,7 @@ INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
 			ty = ARX_CLEAN_WARN_CAST_LONG(ty / INTERFACE_RATIO(32));
 
 
-			if ((tx >= 0) && (tx < INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
+			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
 			{
 				if ((inventory[sActiveInventory][tx][ty].io)
 				        &&	(inventory[sActiveInventory][tx][ty].io->GameFlags & GFLAG_INTERACTIVITY))
@@ -243,7 +236,7 @@ INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
 			ty = ARX_CLEAN_WARN_CAST_LONG(ty / INTERFACE_RATIO(32));
 
 
-			if ((tx >= 0) && (tx < INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
+			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
 			{
 				if ((inventory[i][tx][ty].io)
 					&&	(inventory[i][tx][ty].io->GameFlags & GFLAG_INTERACTIVITY))
@@ -377,18 +370,16 @@ void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io)
 	}
 }
 
-//*************************************************************************************
-// 
-//*************************************************************************************
-void ForcePlayerInventoryObjectLevel(long level)
-{
-	for (long iNbBag = 0; iNbBag < 3; iNbBag++)
-		for (long j = 0; j < INVENTORY_Y; j++)
-			for (long i = 0; i < INVENTORY_X; i++)
-			{
-				if (inventory[iNbBag][i][j].io != NULL)
+void ForcePlayerInventoryObjectLevel(long level) {
+	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) {
+			for(size_t i = 0; i < INVENTORY_X; i++) {
+				if(inventory[iNbBag][i][j].io != NULL) {
 					inventory[iNbBag][i][j].io->level = (short)level;
+				}
 			}
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -434,10 +425,9 @@ bool FastInsert(INTERACTIVE_OBJ * _pIO, long _uiNumBag)
 	//on essaye de stacker
 	bool bFullStack = false;
 
-	for (long i = 0; i < INVENTORY_X; i++)
-	{
-		for (long j = 0; j < INVENTORY_Y; j++)
-		{
+	for(size_t i = 0; i < INVENTORY_X; i++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) {
+			
 			INTERACTIVE_OBJ * ioo = inventory[_uiNumBag][i][j].io;
 
 			if ((ioo) &&
@@ -496,27 +486,26 @@ bool FastInsert(INTERACTIVE_OBJ * _pIO, long _uiNumBag)
 		}
 	}
 
-	for (int i = 0; i < INVENTORY_X; i++)
-	{
-		for (long j = 0; j < INVENTORY_Y; j++)
-		{
-			if (inventory[_uiNumBag][i][j].io == NULL)
-			{
+	for(size_t i = 0; i < INVENTORY_X; i++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) {
+			
+			if(inventory[_uiNumBag][i][j].io == NULL) {
+				
 				int iSizeX = _pIO->sizex;
 				int iSizeY = _pIO->sizey;
 				bool bFound = true;
 
-				if (((i + iSizeX) > INVENTORY_X) ||
-				        ((j + iSizeY) > INVENTORY_Y))
+				if (((size_t)(i + iSizeX) > INVENTORY_X) ||
+				        ((size_t)(j + iSizeY) > INVENTORY_Y))
 				{
 					bFound = false;
 				}
 
 				if (bFound)
 				{
-					for (long jj = j; jj < (j + iSizeY); jj++)
+					for (size_t jj = j; jj < (j + iSizeY); jj++)
 					{
-						for (long ii = i; ii < (i + iSizeX); ii++)
+						for (size_t ii = i; ii < (i + iSizeX); ii++)
 						{
 							if (inventory[_uiNumBag][ii][jj].io)
 							{
@@ -538,12 +527,12 @@ bool FastInsert(INTERACTIVE_OBJ * _pIO, long _uiNumBag)
 
 				if (bFound)
 				{
-					for (long jj = j; jj < (j + iSizeY); jj++)
+					for (size_t jj = j; jj < (j + iSizeY); jj++)
 					{
-						for (long ii = i; ii < (i + iSizeX); ii++)
+						for (size_t ii = i; ii < (i + iSizeX); ii++)
 						{
 							inventory[_uiNumBag][ii][jj].io = _pIO;
-							inventory[_uiNumBag][ii][jj].show = (ii == i) && (jj == j) ? 1 : 0;
+							inventory[_uiNumBag][ii][jj].show = ((size_t)ii == i) && ((size_t)jj == j) ? 1 : 0;
 						}
 					}
 
@@ -566,20 +555,16 @@ void OptmizeInventory(unsigned int _uiNumBag)
 
 		vector<INTERACTIVE_OBJ *> vIO;
 
-		for (long j = 0 ; j < INVENTORY_Y ; j++)
-		{
-			for (long i = 0 ; i < INVENTORY_X ; i++)
-			{
-				if (inventory[_uiNumBag][i][j].io)
-				{
+		for(size_t j = 0 ; j < INVENTORY_Y ; j++) {
+			for(size_t i = 0 ; i < INVENTORY_X ; i++) {
+				if(inventory[_uiNumBag][i][j].io) {
+					
 					vIO.push_back(inventory[_uiNumBag][i][j].io);
 					int iSizeX = inventory[_uiNumBag][i][j].io->sizex;
 					int iSizeY = inventory[_uiNumBag][i][j].io->sizey;
-
-					for (long jj = j ; jj < (j + iSizeY) ; jj++)
-					{
-						for (long ii = i ; ii < (i + iSizeX) ; ii++)
-						{
+					
+					for(size_t jj = j ; jj < (j + iSizeY) ; jj++) {
+						for(size_t ii = i ; ii < (i + iSizeX) ; ii++) {
 							inventory[_uiNumBag][ii][jj].io = NULL;
 						}
 					}
@@ -626,9 +611,9 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 	// on essaie de le remettre � son ancienne place --------------------------
 	if (sInventory == 1 &&
 	        (sInventoryX >= 0) &&
-	        (sInventoryX <= INVENTORY_X - sx) &&
+	        ((size_t)sInventoryX <= INVENTORY_X - sx) &&
 	        (sInventoryY >= 0) &&
-	        (sInventoryY <= INVENTORY_Y - sy))
+	        ((size_t)sInventoryY <= INVENTORY_Y - sy))
 	{
 		j = sInventoryY;
 		i = sInventoryX;
@@ -724,11 +709,11 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 	}
 
 
-	if (player.bag)
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (i = 0; i <= INVENTORY_X - sx; i++)
-				for (j = 0; j <= INVENTORY_Y - sy; j++)			
-				{
+	if(player.bag) {
+		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t i = 0; i <= INVENTORY_X - sx; i++) {
+				for(size_t j = 0; j <= INVENTORY_Y - sy; j++) {
+					
 					INTERACTIVE_OBJ * ioo = inventory[iNbBag][i][j].io;
 
 					if ((ioo)
@@ -776,29 +761,31 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 						}
 					}
 				}
-
-
-	if (player.bag)
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (i = 0; i <= INVENTORY_X - sx; i++)
-				for (j = 0; j <= INVENTORY_Y - sy; j++)
-				{
+			}
+		}
+	}
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t i = 0; i <= INVENTORY_X - sx; i++) {
+				for(size_t j = 0; j <= INVENTORY_Y - sy; j++) {
+					
 					if (inventory[iNbBag][i][j].io == NULL)
 					{
 						bool valid = true;
 
 						if ((sx == 0) || (sy == 0)) valid = false;
 
-						for (k = j; k < j + sy; k++)
-							for (l = i; l < i + sx; l++)
+						for (size_t k = j; k < j + sy; k++)
+							for (size_t l = i; l < i + sx; l++)
 							{
 								if (inventory[iNbBag][l][k].io != NULL) valid = false;
 							}
 
 						if (valid)
 						{
-							for (k = j; k < j + sy; k++)
-								for (l = i; l < i + sx; l++)
+							for (size_t k = j; k < j + sy; k++)
+								for (size_t l = i; l < i + sx; l++)
 								{
 									inventory[iNbBag][l][k].io = io;
 									inventory[iNbBag][l][k].show = 0;
@@ -810,7 +797,10 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 						}
 					}
 				}
-
+			}
+		}
+	}
+	
 	return false;
 }
 
@@ -1423,7 +1413,7 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 			tx = tx / SHORT_INTERFACE_RATIO(32);
 			ty = ty / SHORT_INTERFACE_RATIO(32);
 
-			if ((tx >= 0) && (tx <= INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
+			if ((tx >= 0) && ((size_t)tx <= INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
 				return true;
 			else
 				return false;
@@ -1454,7 +1444,7 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 				tx = tx / SHORT_INTERFACE_RATIO(32);
 				ty = ty / SHORT_INTERFACE_RATIO(32);
 
-				if ((tx >= 0) && (tx <= INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
+				if ((tx >= 0) && ((size_t)tx <= INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
 					return true;
 			}
 
@@ -1599,18 +1589,18 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 		}
 
 		// Is it in any player inventory ?
-		for (long iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (long j = 0; j < INVENTORY_Y; j++)
-				for (long i = 0; i < INVENTORY_X; i++)
-				{
-					if (inventory[iNbBag][i][j].io == io)
-					{
+		for(long iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					if(inventory[iNbBag][i][j].io == io) {
 						pos->x = player.pos.x;
 						pos->y = player.pos.y + 80.f; 
 						pos->z = player.pos.z;
 						return true;
 					}
 				}
+			}
+		}
 
 		// Is it in any other IO inventory ?
 		for (long i = 0; i < inter.nbmax; i++)
@@ -1626,7 +1616,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 					{
 						if (id->slot[k][j].io == io)
 						{
-							Vector_Copy(pos, &ioo->pos);
+							*pos = ioo->pos;
 							return true;
 						}
 					}
@@ -1635,7 +1625,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 	}
 
 	// Default position.
-	Vector_Copy(pos, &io->pos);
+	*pos = io->pos;
 	return true;
 }
 
@@ -1649,47 +1639,44 @@ bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	if (!io) return false;
 
-	long i, j, k;
 	INVENTORY_DATA * id;
-
-	if (DRAGINTER == io)
-	{
+	
+	if (DRAGINTER == io) {
 		ARX_PLAYER_FrontPos(pos);
 		return true;
 	}
-
-	if (io->show != SHOW_FLAG_IN_SCENE)
-	{
-		if (IsEquipedByPlayer(io))
-		{
+	
+	if (io->show != SHOW_FLAG_IN_SCENE) {
+		if (IsEquipedByPlayer(io)) {
 			// in player inventory
 			ARX_PLAYER_FrontPos(pos);
 			return true;
 		}
-
-		if (player.bag)
-			for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-				for (j = 0; j < INVENTORY_Y; j++)
-					for (i = 0; i < INVENTORY_X; i++)
-					{
-						if (inventory[iNbBag][i][j].io == io)
-						{
+		
+		if(player.bag) {
+			for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+				for(size_t j = 0; j < INVENTORY_Y; j++) {
+					for(size_t i = 0; i < INVENTORY_X; i++) {
+						if(inventory[iNbBag][i][j].io == io) {
 							// in player inventory
 							ARX_PLAYER_FrontPos(pos);
 							return true;
 						}
 					}
-
-		for (i = 0; i < inter.nbmax; i++)
-		{
+				}
+			}
+		}
+		
+		for(long i = 0; i < inter.nbmax; i++) {
+			
 			INTERACTIVE_OBJ * ioo = inter.iobj[i];
-
+			
 			if (ioo && ioo->inventory)
 			{
 				id = (INVENTORY_DATA *)ioo->inventory;
 
-				for (j = 0; j < id->sizey; j++)
-					for (k = 0; k < id->sizex; k++)
+				for (long j = 0; j < id->sizey; j++)
+					for (long k = 0; k < id->sizex; k++)
 					{
 						if (id->slot[k][j].io == io)
 						{
@@ -1715,132 +1702,122 @@ bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos)
 // FUNCTION:
 //   Seeks an IO in all Inventories to remove it
 //*************************************************************************************
-void RemoveFromAllInventories(INTERACTIVE_OBJ * io)
-{
-	if (!io) return;
-
-	long iNbBag, i, j, k;
-	INVENTORY_DATA * id;
+void RemoveFromAllInventories(const INTERACTIVE_OBJ * io) {
+	
+	if(!io) {
+		return;
+	}
+	
 	long removed_count = 0;
-
+	
 	// Seek IO in Player Inventory/ies
-	for (iNbBag = 0; iNbBag < player.bag; iNbBag++)
-		for (j = 0; j < INVENTORY_Y; j++)
-			for (i = 0; i < INVENTORY_X; i++)
-			{
-				if (inventory[iNbBag][i][j].io == io)
-				{
+	for(long iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) {
+			for(size_t i = 0; i < INVENTORY_X; i++) {
+				if(inventory[iNbBag][i][j].io == io) {
 					inventory[iNbBag][i][j].io = NULL;
 					inventory[iNbBag][i][j].show = 1;
 					removed_count++;
 				}
 			}
-
+		}
+	}
+	
 	// Seek IO in Other IO's Inventories
-	for (i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			if (inter.iobj[i]->inventory != NULL)
-			{
-				id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
-
-				for (j = 0; j < id->sizey; j++)
-					for (k = 0; k < id->sizex; k++)
-					{
-						if (id->slot[k][j].io == io)
-						{
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i] != NULL) {
+			if(inter.iobj[i]->inventory != NULL) {
+				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
+				
+				for(long j = 0; j < id->sizey; j++) {
+					for(long k = 0; k < id->sizex; k++) {
+						if(id->slot[k][j].io == io) {
 							id->slot[k][j].io = NULL;
 							id->slot[k][j].show = 1;
 							removed_count++;
 						}
 					}
+				}
 			}
 		}
 	}
 }
+
 //*************************************************************************************
 // Seeks an IO in all Inventories to replace it by another IO
 //*************************************************************************************
-void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old)
-{
-	if (player.bag)
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (long j = 0; j < INVENTORY_Y; j++)
-				for (long i = 0; i < INVENTORY_X; i++)
-				{
-					if (inventory[iNbBag][i][j].io == old)
-					{
-						if (CanBePutInInventory(io)) return;
-
-						PutInFrontOfPlayer(io);
+void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old) {
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					if(inventory[iNbBag][i][j].io == old) {
+						if(!CanBePutInInventory(io)) {
+							PutInFrontOfPlayer(io);
+						}
 						return;
 					}
 				}
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			if (inter.iobj[i]->inventory != NULL)
-			{
+			}
+		}
+	}
+	
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i] != NULL) {
+			if(inter.iobj[i]->inventory != NULL) {
 				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
-
-				for (long j = 0; j < id->sizey; j++)
-					for (long k = 0; k < id->sizex; k++)
-					{
-						if (id->slot[k][j].io == old)
-						{
+				
+				for(long j = 0; j < id->sizey; j++) {
+					for(long k = 0; k < id->sizex; k++) {
+						if (id->slot[k][j].io == old) {
 							long xx, yy;
-
-							if (CanBePutInSecondaryInventory(id, io, &xx, &yy)) return;
-
+							if(CanBePutInSecondaryInventory(id, io, &xx, &yy)) {
+								return;
+							}
 							PutInFrontOfPlayer(io); 
 							return;
 						}
 					}
+				}
 			}
 		}
 	}
 }
-void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
-{
-	if ((io == NULL) || (ioo == NULL)) return;
 
-	long i, j, k;
-	INVENTORY_DATA * id;
-
+void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+	
+	if(!io || !ioo) {
+		return;
+	}
+	
 	long ion = GetInterNum(io);
 	long ioon = GetInterNum(ioo);
-
-	if (player.bag)
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (j = 0; j < INVENTORY_Y; j++)
-				for (i = 0; i < INVENTORY_X; i++)
-				{
-					if (inventory[iNbBag][i][j].io == inter.iobj[ion])
-					{
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					if(inventory[iNbBag][i][j].io == inter.iobj[ion]) {
 						inventory[iNbBag][i][j].io = inter.iobj[ioon];
 					}
 				}
-
-	for (i = 0; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i] != inter.iobj[ion]))
-		{
-			if (inter.iobj[i]->inventory != NULL)
-			{
-				id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
-
-				for (j = 0; j < id->sizey; j++)
-					for (k = 0; k < id->sizex; k++)
-					{
-						if (id->slot[k][j].io == inter.iobj[ion])
-						{
+			}
+		}
+	}
+	
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i] && inter.iobj[i] != inter.iobj[ion]) {
+			if(inter.iobj[i]->inventory != NULL) {
+				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
+				
+				for(long j = 0; j < id->sizey; j++) {
+					for(long k = 0; k < id->sizex; k++) {
+						if (id->slot[k][j].io == inter.iobj[ion]) {
 							id->slot[k][j].io = inter.iobj[ioon];
 						}
 					}
+				}
 			}
 		}
 	}
@@ -1966,11 +1943,8 @@ bool TakeFromInventory(EERIE_S2D * pos)
 	int iPosY = ARX_CLEAN_WARN_CAST_INT(fSizY);
 
 
-	long inplayer = 0;
-
 	if (InPlayerInventoryPos(pos))
 	{
-		inplayer = 1;
 		{
 			if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE))
 				if ((io->ioflags & IO_ITEM) && (io->_itemdata->count > 1)) // Multi-obj
@@ -2006,93 +1980,83 @@ bool TakeFromInventory(EERIE_S2D * pos)
 				}
 		}
 	}
-
-	if (player.bag)
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (j = 0; j < INVENTORY_Y; j++)
-				for (i = 0; i < INVENTORY_X; i++)
-				{
-					if (inventory[iNbBag][i][j].io == io)
-					{
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					if (inventory[iNbBag][i][j].io == io) {
+						
 						inventory[iNbBag][i][j].io = NULL;
 						inventory[iNbBag][i][j].show = 1;
 						sInventory = 1;
-
-
+						
 						float fX = (pos->x - iPosX) / INTERFACE_RATIO(32);
 						float fY = (pos->y - iPosY) / INTERFACE_RATIO(32);
 						ARX_CHECK_SHORT(fX);
 						ARX_CHECK_SHORT(fY);
-
+						
 						sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(fX);
 						sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(fY);
-
 					}
 				}
-
+			}
+		}
+	}
+	
 	Set_DragInter(io);
-
+	
 	RemoveFromAllInventories(io);
 	ARX_INVENTORY_IdentifyIO(io);
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-bool IsInPlayerInventory(INTERACTIVE_OBJ * io)
-{
-	for (long iNbBag = 0; iNbBag < player.bag; iNbBag ++)
-		for (long j = 0; j < INVENTORY_Y; j++)
-			for (long i = 0; i < INVENTORY_X; i++)
-			{
-				if (inventory[iNbBag][i][j].io == io)
-				{
+bool IsInPlayerInventory(INTERACTIVE_OBJ * io) {
+	
+	for(long iNbBag = 0; iNbBag < player.bag; iNbBag ++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) {
+			for(size_t i = 0; i < INVENTORY_X; i++) {
+				if(inventory[iNbBag][i][j].io == io) {
 					return true;
 				}
 			}
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-bool IsInSecondaryInventory(INTERACTIVE_OBJ * io)
-{
-	if (SecondaryInventory)
-	{
-		for (long j = 0; j < SecondaryInventory->sizey; j++)
-			for (long i = 0; i < SecondaryInventory->sizex; i++)
-			{
-				if (SecondaryInventory->slot[i][j].io == io)
-				{
-					return true;
-				}
-			}
+		}
 	}
-
+	
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
-{
-	if (player.bag)
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (long j = 0; j < INVENTORY_Y; j++)
-				for (long i = 0; i < INVENTORY_X; i++)
-				{
-					if ((inventory[iNbBag][i][j].io)
-					        &&	(inventory[iNbBag][i][j].io->obj)) {
-						INTERACTIVE_OBJ * item = inventory[iNbBag][i][j].io;
-						for (size_t lTex = 0; lTex < item->obj->texturecontainer.size(); lTex++)
-						{
-							if (!item->obj->texturecontainer.empty())
-							{
-								if (item->obj->texturecontainer[lTex])
-								{
-									if ( item->obj->texturecontainer[lTex]->m_texName.compare( _lpszText ) == 0)
-									{
-										if (item->GameFlags & GFLAG_INTERACTIVITY)
-											SendIOScriptEvent(item, _lCommand);
+bool IsInSecondaryInventory(INTERACTIVE_OBJ * io) {
+	
+	if(SecondaryInventory) {
+		for(long j = 0; j < SecondaryInventory->sizey; j++) {
+			for(long i = 0; i < SecondaryInventory->sizex; i++) {
+				if(SecondaryInventory->slot[i][j].io == io) {
+					return true;
+				}
+			}
+		}
+	}
+	
+	return false;
+}
 
+void SendInventoryObjectCommand(const string & _lpszText, ScriptMessage _lCommand) {
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					
+					if(inventory[iNbBag][i][j].io && inventory[iNbBag][i][j].io->obj) {
+						INTERACTIVE_OBJ * item = inventory[iNbBag][i][j].io;
+						for(size_t lTex = 0; lTex < item->obj->texturecontainer.size(); lTex++) {
+							if(!item->obj->texturecontainer.empty()) {
+								if(item->obj->texturecontainer[lTex]) {
+									if(item->obj->texturecontainer[lTex]->m_texName == _lpszText) {
+										if(item->GameFlags & GFLAG_INTERACTIVITY) {
+											SendIOScriptEvent(item, _lCommand);
+										}
 										return;
 									}
 								}
@@ -2100,77 +2064,64 @@ void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
 						}
 					}
 				}
+			}
+		}
+	}
 }
 
-//-----------------------------------------------------------------------------
-INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability()
-{
+INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability() {
+	
 	INTERACTIVE_OBJ * io = NULL;
-
-	if (player.bag)
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (long j = 0; j < INVENTORY_Y; j++)
-				for (long i = 0; i < INVENTORY_X; i++)
-				{
-					if (inventory[iNbBag][i][j].io)
-					{
-						if (strcmp(inventory[iNbBag][i][j].io->locname, "[description_torch]") == 0)
-						{
-							if (!io)
-							{
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					if(inventory[iNbBag][i][j].io) {
+						if(strcmp(inventory[iNbBag][i][j].io->locname, "[description_torch]") == 0) {
+							if(!io) {
 								io = inventory[iNbBag][i][j].io;
-							}
-							else
-							{
-								if (inventory[iNbBag][i][j].io->durability < io->durability)
-								{
+							} else {
+								if(inventory[iNbBag][i][j].io->durability < io->durability) {
 									io = inventory[iNbBag][i][j].io;
 								}
 							}
 						}
 					}
 				}
-
+			}
+		}
+	}
+	
 	return io;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INVENTORY_IdentifyIO(INTERACTIVE_OBJ * _pIO)
-{
-	if (_pIO)
-	{
-		if ((_pIO) && (_pIO->ioflags & IO_ITEM) && _pIO->_itemdata->equipitem)
-		{
-			if (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
-			        >= _pIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value)
-			{
-				SendIOScriptEvent(_pIO, SM_IDENTIFY);
-			}
+void ARX_INVENTORY_IdentifyIO(INTERACTIVE_OBJ * _pIO) {
+	if(_pIO && (_pIO->ioflags & IO_ITEM) && _pIO->_itemdata->equipitem) {
+		if(player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+		   >= _pIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
+			SendIOScriptEvent(_pIO, SM_IDENTIFY);
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INVENTORY_IdentifyAll()
-{
-	INTERACTIVE_OBJ * io = NULL;
-
-	if (player.bag)
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for (long j = 0; j < INVENTORY_Y; j++)
-				for (long i = 0; i < INVENTORY_X; i++)
-				{
-					io = inventory[iNbBag][i][j].io;
-
-					if ((io) && (io->ioflags & IO_ITEM) && io->_itemdata->equipitem)
-					{
-						if (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
-						        >= io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value)
-						{
+void ARX_INVENTORY_IdentifyAll() {
+	
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					INTERACTIVE_OBJ * io = inventory[iNbBag][i][j].io;
+					if(io && (io->ioflags & IO_ITEM) && io->_itemdata->equipitem) {
+						if(player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+						   >= io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
 							SendIOScriptEvent(io, SM_IDENTIFY);
 						}
 					}
 				}
+			}
+		}
+	}
 }
 
 extern bool bInventoryClosing;

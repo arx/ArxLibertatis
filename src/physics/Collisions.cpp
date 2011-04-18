@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::vector;
 
 //-----------------------------------------------------------------------------
 #define MAX_IN_SPHERE 20
@@ -619,8 +620,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 	
-	int itest = 0;
-	
 	if (TSU_TEST_COLLISIONS)
 	if (	(iXBackup >= px-rad)
 		&&	(iXBackup <= px-rad)
@@ -633,7 +632,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 		if (anything != minanything)
 		{
 			anything = minanything;
-			itest = 1;
 		}
 
 		if (POLYIN && (pEPBackup->type & POLY_CLIMB))
@@ -767,10 +765,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 					||	((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))
 					)
 				{
-					float miny,maxy;
-					miny=io->bbox3D.min.y;
-					maxy=io->bbox3D.max.y;
-
 					if (Distance2D(io->pos.x,io->pos.z,cyl->origin.x,cyl->origin.z)<440.f+cyl->radius)
 					if (In3DBBoxTolerance(&cyl->origin,&io->bbox3D, cyl->radius+80))
 					{
@@ -795,8 +789,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 						for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 						{
-							EERIE_3D c;
-							Vector_Init(&c);
+							EERIE_3D c(0, 0, 0);
 							float height=io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
 
 							for (long kk=0;kk<3;kk++)
@@ -877,7 +870,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 									if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 									io->_npcdata->pathfind.list=NULL;
-									SendIOScriptEvent(io,0,"","PATHFINDER_END");
+									SendIOScriptEvent(io,SM_NULL,"","PATHFINDER_END");
 								}							
 
 								if (!io->_npcdata->reachedtarget)
@@ -1786,14 +1779,12 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 			long RFOUND=0;
 			long LFOUND=0;
 			long maxRANGLE=90;
-			long maxLANGLE=270;
 			float ANGLESTEPP;
 
 			if (flags & CFLAG_EASY_SLIDING)  // player sliding in fact...
 			{
 				ANGLESTEPP=10.f;	
 				maxRANGLE=70;
-				maxLANGLE=290;
 			}
 			else ANGLESTEPP=30.f;
 
@@ -1813,7 +1804,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (AttemptValidCylinderPos(&test.cyl, io, flags)) 
 				{
-					Vector_Copy(&rpos,&test.cyl.origin);
+					rpos = test.cyl.origin;
 					RFOUND=1;
 				}
 				else io->_npcdata->climb_count=cc;
@@ -1830,7 +1821,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
-					Vector_Copy(&lpos,&test.cyl.origin);
+					lpos = test.cyl.origin;
 					LFOUND=1;
 				}
 				else io->_npcdata->climb_count=cc;
@@ -1846,23 +1837,23 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 				if (langle<rangle) 
 				{
-					Vector_Copy(&ip->cyl.origin,&lpos);
+					ip->cyl.origin = lpos;
 					distance -= curmovedist;
 				}
 				else
 				{
-					Vector_Copy(&ip->cyl.origin,&rpos);
+					ip->cyl.origin = rpos;
 					distance -= curmovedist;
 				}
 			}
 			else if (LFOUND)
 			{
-				Vector_Copy(&ip->cyl.origin,&lpos);
+				ip->cyl.origin = lpos;
 				distance -= curmovedist; 
 			}
 			else if (RFOUND)
 			{
-				Vector_Copy(&ip->cyl.origin,&rpos);
+				ip->cyl.origin = rpos;
 				distance -= curmovedist; 
 			}
 			else  //stopped
@@ -1903,7 +1894,6 @@ bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 	float pas=35.f;
  
 
-	float found_dd=999999999999.f;
 	EERIE_3D found_hit;
 	EERIEPOLY * found_ep=NULL;
 	float iter,t;
@@ -2040,7 +2030,6 @@ bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 						if (dd<nearest)
 						{
 							nearest=dd;
-							found_dd=dd;
 							found_ep=ep;
 							found_hit.x=hit->x;
 							found_hit.y=hit->y;

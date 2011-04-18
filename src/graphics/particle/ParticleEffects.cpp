@@ -83,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/Object.h"
 #include "scene/Interactive.h"
+#include "scene/Light.h"
 
 #include "window/Input.h"
 
@@ -729,7 +730,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTI
 
 	if (	(io)
 		&&	(io->ioflags & IO_NPC)	)
-		Vector_Copy(&io->_npcdata->last_splat_pos,pos);
+		io->_npcdata->last_splat_pos = *pos;
 }
 
 //-----------------------------------------------------------------------------
@@ -1099,7 +1100,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 	if (TICKS<0) 
 		return;
 
-	float zapp,x,y,z,s,r,g,b;
+	float z,s,r,g,b;
 
 	TextureContainer * surf;
 	bool key=!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE);
@@ -1185,11 +1186,6 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 					}
 					else 
 					{
-						if (( (s<45) && (flare[i].type==1) ) || (flare[i].type==4) ) 
-						{
-							zapp=((MAX_FLARELIFE-flare[i].tolive)*(MAX_FLARELIFE-flare[i].tolive))*0.000001f;
-						}
-
 						if ((flare[i].type==1) ) 
 						{
 							if (z<0.6f) z=0.6f;						
@@ -1199,10 +1195,6 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 						r=flare[i].r*z;
 						b=flare[i].b*z;
 						
-						zapp = 48 - s * 0.5f; 
-						x=flare[i].x+zapp;
-						y=flare[i].y+zapp;
-								
 						flare[i].tv.color=D3DRGB(r,g,b);
 						flare[i].v.sx=flare[i].tv.sx;
 						flare[i].v.sy=flare[i].tv.sy;
@@ -1347,8 +1339,7 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 		}
 	}
 
-	EERIE_3D pos;
-	Vector_Copy(&pos,poss);
+	EERIE_3D pos = *poss;
 
 	typ=0;
 	x0 = poss->x * ACTIVEBKG->Xmul;
@@ -1454,8 +1445,7 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 void Add3DBoom(EERIE_3D * position) {
 	
 	float dist=Distance3D(player.pos.x,player.pos.y-160.f,player.pos.z,position->x,position->y,position->z);
-	EERIE_3D poss;
-	Vector_Copy(&poss,position);
+	EERIE_3D poss = *position;
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &poss);
 
 	if (dist<300)
@@ -2015,12 +2005,10 @@ void LaunchFireballBoom(EERIE_3D * poss,float level,EERIE_3D * direction,EERIE_R
 			PARTICLE_DEF * pd=&particle[j];
 			pd->special=FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
 			pd->exist=true;
-			pd->ov.x=poss->x;
-			pd->ov.y=poss->y;
-			pd->ov.z=poss->z;
+			pd->ov = *poss;
 
 			if (direction)
-				Vector_Copy(&pd->move,direction);
+				pd->move = *direction;
 			else
 			{
 				pd->move.x = 0.f; 
@@ -2569,11 +2557,8 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }
 
-//-----------------------------------------------------------------------------
-void RestoreAllLightsInitialStatus()
-{
-	for (long i=0;i<MAX_LIGHTS;i++)
-	{
+void RestoreAllLightsInitialStatus() {
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if ( (GLight[i]!=NULL) )
 		{
 			GLight[i]->status=1;
@@ -2606,8 +2591,7 @@ void TreatBackgroundActions()
 
 	float fZFar=ACTIVECAM->cdepth*fZFogEnd*1.3f;	
 
-	for (long i=0;i<MAX_LIGHTS;i++)
-	{
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * gl=GLight[i];
 
 		if (gl==NULL) continue;

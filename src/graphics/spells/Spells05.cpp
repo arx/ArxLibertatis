@@ -292,34 +292,34 @@ float CCurePoison::Render()
 }
 
 //-----------------------------------------------------------------------------
-CRuneOfGuarding::CRuneOfGuarding()
-{
+CRuneOfGuarding::CRuneOfGuarding() {
+	
 	eSrc.x = 0;
 	eSrc.y = 0;
 	eSrc.z = 0;
-
+	
 	eTarget.x = 0;
 	eTarget.y = 0;
 	eTarget.z = 0;
-
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
 	if (!ssol)
 		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
-
+	
 	ssol_count++;
 
 	if (!slight)
 		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
-
+	
 	slight_count++;
 
 	if (!srune)
 		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
-
+	
 	srune_count++;
 }
 
@@ -952,10 +952,10 @@ float CPoisonProjectile::Render()
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
 	EERIE_3D stitescale;
-	EERIE_RGB stitecolor;
-
 	EERIE_3D av;
+
 	ARX_CHECK_NOT_NEG(arx_check_init);
+
 	av.x = newpos.x - lastpos.x;
 	av.y = newpos.y - lastpos.y;
 	av.z = newpos.z - lastpos.z;
@@ -971,9 +971,6 @@ float CPoisonProjectile::Render()
 	stiteangle.b = -degrees(bubu);
 	stiteangle.a = 0;
 	stiteangle.g = -90 - degrees(bubu1);
-	stitecolor.r = 0.7f;
-	stitecolor.g = 0.7f;
-	stitecolor.b = 0.7f;
 	stitescale.x = 2;
 	stitescale.y = 2;
 	stitescale.z = 2;
@@ -1033,7 +1030,6 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0) {
 	
 	(void)_afBeta;
 
-	float afAlpha = 0.f;
 	float afBeta = 0.f;
 
 	spells[spellinstance].hand_group = inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;
@@ -1048,7 +1044,6 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0) {
 	if (spells[spellinstance].caster == 0) // player
 	{
 		afBeta = player.angle.b;
-		afAlpha = player.angle.a;
 
 		if (spells[spellinstance].hand_group != -1)
 		{
@@ -1395,16 +1390,14 @@ CLevitate::CLevitate()
 		this->cone[nb].conevertex = NULL;
 	}
 
-	if (stone0 == NULL)
-	{
-		stone0 = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo", NULL);
+	if(!stone0) {
+		stone0 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo");
 	}
 
 	stone0_count++;
 
-	if (stone1 == NULL)
-	{
-		stone1 = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo", NULL);
+	if(!stone1) {
+		stone1 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo");
 	}
 
 	stone1_count++;

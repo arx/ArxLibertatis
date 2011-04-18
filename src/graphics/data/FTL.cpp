@@ -71,7 +71,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Blast.h"
 #include "io/Implode.h"
 #include "io/IO.h"
-#include "io/String.h"
+
+#include "platform/String.h"
 
 #include "scene/Object.h"
 

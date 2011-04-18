@@ -52,16 +52,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <cassert>
 
-#include "core/Common.h"
-
 #include "io/Blast.h"
 #include "io/PakEntry.h"
 #include "io/HashMap.h"
 #include "io/Logger.h"
 
+#include "platform/Platform.h"
+
 using std::min;
 using std::max;
-using std::size_t;
 using std::strlen;
 
 #define PAK_READ_BUF_SIZE 1024

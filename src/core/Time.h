@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_TIME_H
 #define ARX_CORE_TIME_H
 
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 extern float ARXPausedTime;
 extern float ARXTotalPausedTime;

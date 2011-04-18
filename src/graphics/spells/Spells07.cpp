@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Interactive.h"
 #include "scene/LoadLevel.h"
+#include "scene/Light.h"
 
 extern float _framedelay;
 
@@ -619,7 +620,7 @@ float CLightning::Render()
 
 				if (si != -1)
 				{
-					Vector_Copy(&damages[si].pos, &sphere.origin);
+					damages[si].pos = sphere.origin;
 					damages[si].radius = sphere.radius;
 					damages[si].damages = fDamage * spells[spellinstance].caster_level * ( 1.0f / 3 ); 
 					damages[si].area = DAMAGE_FULL;

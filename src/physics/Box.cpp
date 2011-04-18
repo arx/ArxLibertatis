@@ -298,7 +298,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 {
 	EERIE_TRI t1, t2;
 	bool ret = false;
-	memcpy(&t2, verts, sizeof(EERIE_3D) * 3);
+	memcpy(t2.v, verts, sizeof(EERIE_3D) * 3);
 
 	PHYSVERT * vert = obj->pbox->vert;
 
@@ -332,9 +332,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//TOP
 	if ((k == -1) || (k == 1) || (k == 2) || (k == 3))
 	{
-		Vector_Copy(&t1.v[0], &vert[1].pos);
-		Vector_Copy(&t1.v[1], &vert[2].pos);
-		Vector_Copy(&t1.v[2], &vert[3].pos);
+		t1.v[0] = vert[1].pos;
+		t1.v[1] = vert[2].pos;
+		t1.v[2] = vert[3].pos;
 		PHYS_COLLIDER = 1;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -354,9 +354,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 1) || (k == 4) || (k == 3))
 	{
-		Vector_Copy(&t1.v[0], &vert[3].pos);
-		Vector_Copy(&t1.v[1], &vert[4].pos);
-		Vector_Copy(&t1.v[2], &vert[1].pos);
+		t1.v[0] = vert[3].pos;
+		t1.v[1] = vert[4].pos;
+		t1.v[2] = vert[1].pos;
 		PHYS_COLLIDER = 1;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -377,9 +377,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//BOTTOM
 	if ((k == -1) || (k == 9) || (k == 10) || (k == 12))
 	{
-		Vector_Copy(&t1.v[0], &vert[10].pos);
-		Vector_Copy(&t1.v[1], &vert[9].pos);
-		Vector_Copy(&t1.v[2], &vert[11].pos);
+		t1.v[0] = vert[10].pos;
+		t1.v[1] = vert[9].pos;
+		t1.v[2] = vert[11].pos;
 		PHYS_COLLIDER = 9;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -399,9 +399,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 10) || (k == 11) || (k == 12))
 	{
-		Vector_Copy(&t1.v[0], &vert[9].pos);
-		Vector_Copy(&t1.v[1], &vert[12].pos);
-		Vector_Copy(&t1.v[2], &vert[11].pos);
+		t1.v[0] = vert[9].pos;
+		t1.v[1] = vert[12].pos;
+		t1.v[2] = vert[11].pos;
 		PHYS_COLLIDER = 10;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -422,9 +422,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//UP/FRONT
 	if ((k == -1) || (k == 1) || (k == 4) || (k == 5))
 	{
-		Vector_Copy(&t1.v[0], &vert[1].pos);
-		Vector_Copy(&t1.v[1], &vert[4].pos);
-		Vector_Copy(&t1.v[2], &vert[5].pos);
+		t1.v[0] = vert[1].pos;
+		t1.v[1] = vert[4].pos;
+		t1.v[2] = vert[5].pos;
 		PHYS_COLLIDER = 4;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -444,9 +444,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 4) || (k == 5) || (k == 8))
 	{
-		Vector_Copy(&t1.v[0], &vert[4].pos);
-		Vector_Copy(&t1.v[1], &vert[8].pos);
-		Vector_Copy(&t1.v[2], &vert[5].pos);
+		t1.v[0] = vert[4].pos;
+		t1.v[1] = vert[8].pos;
+		t1.v[2] = vert[5].pos;
 		PHYS_COLLIDER = 5;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -467,9 +467,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//DOWN/FRONT
 	if ((k == -1) || (k == 5) || (k == 8) || (k == 9))
 	{
-		Vector_Copy(&t1.v[0], &vert[5].pos);
-		Vector_Copy(&t1.v[1], &vert[8].pos);
-		Vector_Copy(&t1.v[2], &vert[9].pos);
+		t1.v[0] = vert[5].pos;
+		t1.v[1] = vert[8].pos;
+		t1.v[2] = vert[9].pos;
 		PHYS_COLLIDER = 8;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -489,9 +489,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 8) || (k == 12) || (k == 9))
 	{
-		Vector_Copy(&t1.v[0], &vert[8].pos);
-		Vector_Copy(&t1.v[1], &vert[12].pos);
-		Vector_Copy(&t1.v[2], &vert[9].pos);
+		t1.v[0] = vert[8].pos;
+		t1.v[1] = vert[12].pos;
+		t1.v[2] = vert[9].pos;
 		PHYS_COLLIDER = 12;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -512,9 +512,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//UP/BACK
 	if ((k == -1) || (k == 3) || (k == 2) || (k == 7))
 	{
-		Vector_Copy(&t1.v[0], &vert[3].pos);
-		Vector_Copy(&t1.v[1], &vert[2].pos);
-		Vector_Copy(&t1.v[2], &vert[7].pos);
+		t1.v[0] = vert[3].pos;
+		t1.v[1] = vert[2].pos;
+		t1.v[2] = vert[7].pos;
 		PHYS_COLLIDER = 3;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -534,9 +534,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 2) || (k == 6) || (k == 7))
 	{
-		Vector_Copy(&t1.v[0], &vert[2].pos);
-		Vector_Copy(&t1.v[1], &vert[6].pos);
-		Vector_Copy(&t1.v[2], &vert[7].pos);
+		t1.v[0] = vert[2].pos;
+		t1.v[1] = vert[6].pos;
+		t1.v[2] = vert[7].pos;
 		PHYS_COLLIDER = 2;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -557,9 +557,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//DOWN/BACK
 	if ((k == -1) || (k == 7) || (k == 6) || (k == 11))
 	{
-		Vector_Copy(&t1.v[0], &vert[7].pos);
-		Vector_Copy(&t1.v[1], &vert[6].pos);
-		Vector_Copy(&t1.v[2], &vert[11].pos);
+		t1.v[0] = vert[7].pos;
+		t1.v[1] = vert[6].pos;
+		t1.v[2] = vert[11].pos;
 		PHYS_COLLIDER = 7;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -579,9 +579,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 6) || (k == 10) || (k == 11))
 	{
-		Vector_Copy(&t1.v[0], &vert[6].pos);
-		Vector_Copy(&t1.v[1], &vert[10].pos);
-		Vector_Copy(&t1.v[2], &vert[11].pos);
+		t1.v[0] = vert[6].pos;
+		t1.v[1] = vert[10].pos;
+		t1.v[2] = vert[11].pos;
 		PHYS_COLLIDER = 6;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -602,9 +602,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//UP/LEFT
 	if ((k == -1) || (k == 1) || (k == 2) || (k == 6))
 	{
-		Vector_Copy(&t1.v[0], &vert[6].pos);
-		Vector_Copy(&t1.v[1], &vert[2].pos);
-		Vector_Copy(&t1.v[2], &vert[1].pos);
+		t1.v[0] = vert[6].pos;
+		t1.v[1] = vert[2].pos;
+		t1.v[2] = vert[1].pos;
 		PHYS_COLLIDER = 2;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -624,9 +624,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 1) || (k == 5) || (k == 6))
 	{
-		Vector_Copy(&t1.v[0], &vert[1].pos);
-		Vector_Copy(&t1.v[1], &vert[5].pos);
-		Vector_Copy(&t1.v[2], &vert[6].pos);
+		t1.v[0] = vert[1].pos;
+		t1.v[1] = vert[5].pos;
+		t1.v[2] = vert[6].pos;
 		PHYS_COLLIDER = 5;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -647,9 +647,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//DOWN/LEFT
 	if ((k == -1) || (k == 10) || (k == 6) || (k == 5))
 	{
-		Vector_Copy(&t1.v[0], &vert[10].pos);
-		Vector_Copy(&t1.v[1], &vert[6].pos);
-		Vector_Copy(&t1.v[2], &vert[5].pos);
+		t1.v[0] = vert[10].pos;
+		t1.v[1] = vert[6].pos;
+		t1.v[2] = vert[5].pos;
 		PHYS_COLLIDER = 6;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -669,9 +669,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 5) || (k == 9) || (k == 10))
 	{
-		Vector_Copy(&t1.v[0], &vert[5].pos);
-		Vector_Copy(&t1.v[1], &vert[9].pos);
-		Vector_Copy(&t1.v[2], &vert[10].pos);
+		t1.v[0] = vert[5].pos;
+		t1.v[1] = vert[9].pos;
+		t1.v[2] = vert[10].pos;
 		PHYS_COLLIDER = 5;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -692,9 +692,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//UP/RIGHT
 	if ((k == -1) || (k == 4) || (k == 3) || (k == 7))
 	{
-		Vector_Copy(&t1.v[0], &vert[4].pos);
-		Vector_Copy(&t1.v[1], &vert[3].pos);
-		Vector_Copy(&t1.v[2], &vert[7].pos);
+		t1.v[0] = vert[4].pos;
+		t1.v[1] = vert[3].pos;
+		t1.v[2] = vert[7].pos;
 		PHYS_COLLIDER = 4;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -714,9 +714,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 7) || (k == 8) || (k == 4))
 	{
-		Vector_Copy(&t1.v[0], &vert[7].pos);
-		Vector_Copy(&t1.v[1], &vert[8].pos);
-		Vector_Copy(&t1.v[2], &vert[4].pos);
+		t1.v[0] = vert[7].pos;
+		t1.v[1] = vert[8].pos;
+		t1.v[2] = vert[4].pos;
 		PHYS_COLLIDER = 7;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -737,9 +737,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	//DOWN/RIGHT
 	if ((k == -1) || (k == 8) || (k == 7) || (k == 11))
 	{
-		Vector_Copy(&t1.v[0], &vert[8].pos);
-		Vector_Copy(&t1.v[1], &vert[7].pos);
-		Vector_Copy(&t1.v[2], &vert[11].pos);
+		t1.v[0] = vert[8].pos;
+		t1.v[1] = vert[7].pos;
+		t1.v[2] = vert[11].pos;
 		PHYS_COLLIDER = 8;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -759,9 +759,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 	if ((k == -1) || (k == 11) || (k == 12) || (k == 8))
 	{
-		Vector_Copy(&t1.v[0], &vert[11].pos);
-		Vector_Copy(&t1.v[1], &vert[12].pos);
-		Vector_Copy(&t1.v[2], &vert[8].pos);
+		t1.v[0] = vert[11].pos;
+		t1.v[1] = vert[12].pos;
+		t1.v[2] = vert[8].pos;
 		PHYS_COLLIDER = 11;
 
 		if (Triangles_Intersect(&t1, &t2))
@@ -781,33 +781,37 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	return ret;
 }
 
+static void copy(EERIE_3D & dest, const D3DTLVERTEX & src) {
+	dest.x = src.sx;
+	dest.y = src.sy;
+	dest.z = src.sz;
+}
+
 //*************************************************************************************
 //*************************************************************************************
 bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
 	EERIE_3D pol[3];
-	Vector_Copy(&pol[0], (EERIE_3D *)&ep->v[0]);
-	Vector_Copy(&pol[1], (EERIE_3D *)&ep->v[1]);
-	Vector_Copy(&pol[2], (EERIE_3D *)&ep->v[2]);
+	copy(pol[0], ep->v[0]);
+	copy(pol[1], ep->v[1]);
+	copy(pol[2], ep->v[2]);
 	float mul = 1.3f;
-	pol[0].x = (pol[0].x - ep->center.x) * mul + ep->center.x;
-	pol[0].y = (pol[0].y - ep->center.y) * mul + ep->center.y;
-	pol[0].z = (pol[0].z - ep->center.z) * mul + ep->center.z;
+	pol[0] = (pol[0] - ep->center) * mul + ep->center;
 
 	if (ep->type & POLY_QUAD)
 	{
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 
-		Vector_Copy(&pol[0], (EERIE_3D *)&ep->v[2]);
-		Vector_Copy(&pol[1], (EERIE_3D *)&ep->v[3]);
-		Vector_Copy(&pol[2], (EERIE_3D *)&ep->v[0]);
+		copy(pol[0], ep->v[2]);
+		copy(pol[1], ep->v[3]);
+		copy(pol[2], ep->v[0]);
 
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 
 		return false;
 	}
 
-	if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
+	if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 
 	return false;
 }
@@ -825,8 +829,7 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 
 	if (!back_ep)
 	{
-		EERIE_3D posi;
-		Vector_Copy(&posi, &obj->pbox->vert[kk].pos);
+		EERIE_3D posi = obj->pbox->vert[kk].pos;
 		posi.y -= 30.f;
 
 		CUR_COLLISION_MATERIAL = MATERIAL_STONE;

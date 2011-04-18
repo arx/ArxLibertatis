@@ -2,8 +2,8 @@
 #ifndef ARX_GRAPHICS_DATA_FTLFORMAT_H
 #define ARX_GRAPHICS_DATA_FTLFORMAT_H
 
-#include "core/Common.h"
 #include "graphics/GraphicsFormat.h"
+#include "platform/Platform.h"
 
 #define CURRENT_FTL_VERSION  0.83257f
 

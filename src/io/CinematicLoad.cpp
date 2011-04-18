@@ -32,7 +32,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
 
-#include "core/Common.h"
 #include "core/Application.h"
 
 #include "graphics/data/CinematicTexture.h"
@@ -41,6 +40,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/FilePath.h"
 #include "io/CinematicFormat.h"
+
+#include "platform/Platform.h"
 
 #include "scene/CinematicSound.h"
 
@@ -244,10 +245,6 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
-	
-	// Hack: ignore the pointer at the end of the struct.
-	data -= sizeof(void *);
-	size += sizeof(void *);
 	
 	LogDebug << "nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY);
 	for(int i = 0; i < t.nbkey; i++) {

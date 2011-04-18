@@ -59,8 +59,49 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GAME_DAMAGE_H
 
 #include "graphics/GraphicsTypes.h"
+#include "platform/Flags.h"
 
 struct INTERACTIVE_OBJ;
+
+enum DamageTypeFlag {
+	DAMAGE_TYPE_GENERIC    = 0,
+	DAMAGE_TYPE_FIRE       = (1<<0),
+	DAMAGE_TYPE_MAGICAL    = (1<<1),
+	DAMAGE_TYPE_LIGHTNING  = (1<<2),
+	DAMAGE_TYPE_COLD       = (1<<3),
+	DAMAGE_TYPE_POISON     = (1<<4),
+	DAMAGE_TYPE_GAS        = (1<<5),
+	DAMAGE_TYPE_METAL      = (1<<6),
+	DAMAGE_TYPE_WOOD       = (1<<7),
+	DAMAGE_TYPE_STONE      = (1<<8),
+	DAMAGE_TYPE_ACID       = (1<<9),
+	DAMAGE_TYPE_ORGANIC    = (1<<10),
+	DAMAGE_TYPE_PER_SECOND = (1<<11),
+	DAMAGE_TYPE_DRAIN_LIFE = (1<<12),
+	DAMAGE_TYPE_DRAIN_MANA = (1<<13),
+	DAMAGE_TYPE_PUSH       = (1<<14),
+	DAMAGE_TYPE_FAKEFIRE   = (1<<15),
+	DAMAGE_TYPE_FIELD      = (1<<16),
+	DAMAGE_TYPE_NO_FIX     = (1<<17)
+};
+DECLARE_FLAGS(DamageTypeFlag, DamageType)
+DECLARE_FLAGS_OPERATORS(DamageType)
+
+enum DamageArea {
+	DAMAGE_AREA = 0,
+	DAMAGE_FULL = 1,
+	DAMAGE_AREAHALF = 2
+};
+
+enum DamageFlag {
+	DAMAGE_FLAG_DONT_HURT_SOURCE = (1<<0),
+	DAMAGE_FLAG_ADD_VISUAL_FX    = (1<<1), // depending on type
+	DAMAGE_FLAG_FOLLOW_SOURCE    = (1<<2),
+	DAMAGE_NOT_FRAME_DEPENDANT   = (1<<5),
+	DAMAGE_SPAWN_BLOOD           = (1<<6)
+};
+DECLARE_FLAGS(DamageFlag, DamageFlags)
+DECLARE_FLAGS_OPERATORS(DamageFlags)
 
 struct DAMAGE_INFO {
 	short exist;
@@ -74,53 +115,26 @@ struct DAMAGE_INFO {
 	// -1 for apply once
 	// else damage *=framediff
 	long source; // io index or -1 for player
-	long area; // damage area type
-	long flags; // damages flags
-	long type; // damages type
+	DamageArea area; // damage area type
+	DamageFlags flags; // damages flags
+	DamageType type; // damages type
 	long special; // slowdown, paralysis...
 	long special_ID; // for io localised immunities or any other customization
 	unsigned long lastupd;
 };
 
-enum DamageArea {
-	DAMAGE_AREA = 0,
-	DAMAGE_FULL = 1,
-	DAMAGE_AREAHALF = 2
-};
-
-#define DAMAGE_TYPE_GENERIC    0
-#define DAMAGE_TYPE_FIRE       (1<<0)
-#define DAMAGE_TYPE_MAGICAL    (1<<1)
-#define DAMAGE_TYPE_LIGHTNING  (1<<2)
-#define DAMAGE_TYPE_COLD       (1<<3)
-#define DAMAGE_TYPE_POISON     (1<<4)
-#define DAMAGE_TYPE_GAS        (1<<5)
-#define DAMAGE_TYPE_METAL      (1<<6)
-#define DAMAGE_TYPE_WOOD       (1<<7)
-#define DAMAGE_TYPE_STONE      (1<<8)
-#define DAMAGE_TYPE_ACID       (1<<9)
-#define DAMAGE_TYPE_ORGANIC    (1<<10)
-#define DAMAGE_TYPE_PER_SECOND (1<<11)
-#define DAMAGE_TYPE_DRAIN_LIFE (1<<12)
-#define DAMAGE_TYPE_DRAIN_MANA (1<<13)
-#define DAMAGE_TYPE_PUSH       (1<<14)
-#define DAMAGE_TYPE_FAKEFIRE   (1<<15)
-#define DAMAGE_TYPE_FIELD      (1<<16)
-#define DAMAGE_TYPE_NO_FIX     (1<<17)
-
-#define DAMAGE_FLAG_DONT_HURT_SOURCE 1
-#define DAMAGE_FLAG_ADD_VISUAL_FX    2 // depending on type
-#define DAMAGE_FLAG_FOLLOW_SOURCE    4
-#define	DAMAGE_NOT_FRAME_DEPENDANT   32
-#define DAMAGE_SPAWN_BLOOD           64
-
 const size_t MAX_DAMAGES = 200;
 
 extern DAMAGE_INFO damages[MAX_DAMAGES];
 
-void CheckForIgnition(EERIE_3D * pos, float radius, long mode, long flag = 0);
+/*!
+ * mode=true ON mode=false  OFF
+ * flag & 1 no lights;
+ * flag & 2 Only affects small sources
+ */
+void CheckForIgnition(EERIE_3D * pos, float radius, bool mode, long flag = 0);
 
-bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ = 0, long numsource = -1);
+bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, DamageArea flags, DamageType typ = 0, long numsource = -1);
 
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
@@ -128,13 +142,13 @@ void ARX_DAMAGES_Reset();
 long ARX_DAMAGES_GetFree();
  
 void ARX_DAMAGES_UpdateAll();
-float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source = -1); 
+float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source = -1); 
 void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0);
 float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0, EERIE_3D * pos = NULL); 
 bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source); 
 void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer);
 void ARX_DAMAGES_UpdateDamage(long j, float tim);
-float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, EERIE_3D * pos);
+float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, EERIE_3D * pos);
 
 void ARX_DAMAGES_HealInter(INTERACTIVE_OBJ * io, float dmg);
 

@@ -86,6 +86,9 @@ extern float fZFogStart;
 
 extern CDirectInput * pGetInfoDirectInput;
 
+long LIGHTPOWERUP = 0;
+float LPpower = 3.f;
+
 float SOFTNEARCLIPPZ=1.f;
 
 void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out);
@@ -211,8 +214,8 @@ static	void	Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io, long typ)
 static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, long typ, EERIE_3D & ftr, EERIE_3D & ftr2)
 {
 	// Resets Frame Translate
-	Vector_Init(&ftr);
-	Vector_Init(&ftr2);
+	ftr.clear();
+	ftr2.clear();
 
 
 	// Fill frame translate values with multi-layer translate informations...
@@ -288,10 +291,8 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 		// Use calculated value to notify the Movement engine of the translation to do
 		if (io->ioflags & IO_NPC)
 		{
-			Vector_Init(&ftr);
-			io->move.x -= io->lastmove.x;
-			io->move.y -= io->lastmove.y;
-			io->move.z -= io->lastmove.z;
+			ftr.clear();
+			io->move -= io->lastmove;
 		}
 		// Must recover translations for NON-NPC IO
 		else
@@ -302,9 +303,7 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 			}
 		}
 
-		io->lastmove.x = ftr2.x;
-		io->lastmove.y = ftr2.y;
-		io->lastmove.z = ftr2.z;
+		io->lastmove = ftr2;
 	}
 }
 
@@ -379,14 +378,10 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 				Quat_Copy(&temp, &obj->bones[j].quatinit);
 				Quat_Multiply(&obj->bones[j].quatinit, &temp, &t);
 
-				vect.x = sGroup->translate.x + (eGroup->translate.x - sGroup->translate.x) * animuse->pour;
-				vect.y = sGroup->translate.y + (eGroup->translate.y - sGroup->translate.y) * animuse->pour;
-				vect.z = sGroup->translate.z + (eGroup->translate.z - sGroup->translate.z) * animuse->pour;
-				Vector_Add(&obj->bones[j].transinit, &vect, &obj->bones[j].transinit_global);
+				vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
+				obj->bones[j].transinit = vect + obj->bones[j].transinit_global;
 
-				scale.x = sGroup->zoom.x + (eGroup->zoom.x - sGroup->zoom.x) * animuse->pour;
-				scale.y = sGroup->zoom.y + (eGroup->zoom.y - sGroup->zoom.y) * animuse->pour;
-				scale.z = sGroup->zoom.z + (eGroup->zoom.z - sGroup->zoom.z) * animuse->pour;
+				scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
 
 				if (BH_MODE)
 				{
@@ -398,7 +393,7 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 					}
 				}
 
-				Vector_Copy(&obj->bones[j].scaleinit, &scale);
+				obj->bones[j].scaleinit = scale;
 			}
 		}
 	}
@@ -425,16 +420,12 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			Quat_Multiply(&obj->bones[i].quatanim, &obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].quatinit);
 
 			// Translation
-			obj->bones[i].transanim.x = obj->bones[i].transinit.x * obj->bones[obj->bones[i].father].scaleanim.x;
-			obj->bones[i].transanim.y = obj->bones[i].transinit.y * obj->bones[obj->bones[i].father].scaleanim.y;
-			obj->bones[i].transanim.z = obj->bones[i].transinit.z * obj->bones[obj->bones[i].father].scaleanim.z;
+			obj->bones[i].transanim = obj->bones[i].transinit * obj->bones[obj->bones[i].father].scaleanim;
 			TransformVertexQuat(&obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].transanim, &obj->bones[i].transanim);
-			Vector_Add(&obj->bones[i].transanim, &obj->bones[obj->bones[i].father].transanim, &obj->bones[i].transanim);
+			obj->bones[i].transanim = obj->bones[obj->bones[i].father].transanim + obj->bones[i].transanim;
 
 			/* Scale */
-			obj->bones[i].scaleanim.x = (obj->bones[i].scaleinit.x + 1.f) * obj->bones[obj->bones[i].father].scaleanim.x;
-			obj->bones[i].scaleanim.y = (obj->bones[i].scaleinit.y + 1.f) * obj->bones[obj->bones[i].father].scaleanim.y;
-			obj->bones[i].scaleanim.z = (obj->bones[i].scaleinit.z + 1.f) * obj->bones[obj->bones[i].father].scaleanim.z;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + EERIE_3D(1,1,1)) * obj->bones[obj->bones[i].father].scaleanim;
 
 		}
 		else // Root Bone
@@ -443,15 +434,13 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			if ((io) && !(io->ioflags & IO_NPC))
 			{
 				// To correct invalid angle in Animated FIX/ITEMS
-				EERIE_3D ang;
-				Vector_Copy(&ang, angle);
+				EERIE_3D ang = *angle;
 				ang.a = (360 - ang.a);
 				ang.b = (ang.b);
 				ang.g = (ang.g);
 				EERIEMATRIX mat;
-				EERIE_3D vect, up;
-				Vector_Init(&vect, 0, 0, 1);
-				Vector_Init(&up, 0, 1, 0);
+				EERIE_3D vect(0, 0, 1);
+				EERIE_3D up(0, 1, 0);
 				VRotateY(&vect, ang.b);
 				VRotateX(&vect, ang.a);
 				VRotateZ(&vect, ang.g);
@@ -464,7 +453,7 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			}
 			else
 			{
-				Vector_Copy(&vt1, angle);
+				vt1 = *angle;
 				vt1.x = radians(vt1.x);
 				vt1.y = radians(vt1.y);
 				vt1.z = radians(vt1.z);
@@ -473,17 +462,13 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			}
 
 			// Translation
-			Vector_Add(&vt1, &obj->bones[i].transinit, &ftr);
+			vt1 = obj->bones[i].transinit + ftr;
 			TransformVertexQuat(&qt2, &vt1, &obj->bones[i].transanim);
-			obj->bones[i].transanim.x *= g_scale;
-			obj->bones[i].transanim.y *= g_scale;
-			obj->bones[i].transanim.z *= g_scale;
-			Vector_Add(&obj->bones[i].transanim, pos, &obj->bones[i].transanim);
+			obj->bones[i].transanim *= g_scale;
+			obj->bones[i].transanim = *pos + obj->bones[i].transanim;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			obj->bones[i].scaleanim.x = (obj->bones[i].scaleinit.x + 1.f) * g_scale;
-			obj->bones[i].scaleanim.y = (obj->bones[i].scaleinit.y + 1.f) * g_scale;
-			obj->bones[i].scaleanim.z = (obj->bones[i].scaleinit.z + 1.f) * g_scale;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + EERIE_3D(1,1,1)) * g_scale;
 		}
 	}
 }
@@ -505,10 +490,9 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 	for (long i = 0; i != obj->nb_bones; i++)
 	{
 		EERIEMATRIX	 matrix;
-		EERIE_3D	vector;
 
 		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
-		Vector_Copy(&vector, &obj->bones[i].transanim);
+		EERIE_3D vector = obj->bones[i].transanim;
 
 		// Apply Scale
 		matrix._11 *= obj->bones[i].scaleanim.x;
@@ -531,7 +515,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 
 			TransformVertexMatrix(&matrix, (EERIE_3D *)inVert, &outVert->v);
 
-			Vector_Add(&outVert->v, &vector, &outVert->v);
+			outVert->v += vector;
 			outVert->vert.sx = outVert->v.x;
 			outVert->vert.sy = outVert->v.y;
 			outVert->vert.sz = outVert->v.z;
@@ -901,19 +885,16 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 			/* Get light value for each vertex */
 			for (v = 0; v != obj->bones[i].nb_idxvertices; v++)
 			{
-				EERIE_3DPAD *	inVert;
 				EERIE_3D	*	posVert;
 				float			r, g, b;
 				long	ir, ig, ib;
 
 				if (io)
 				{
-					inVert  = (EERIE_3DPAD *)&io->obj->vertexlist[obj->bones[i].idxvertices[v]].norm; 
 					posVert  = (EERIE_3D *)&io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				}
 				else
 				{
-					inVert  = (EERIE_3DPAD *)&eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 					posVert  = (EERIE_3D *)&eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				}
 
@@ -2592,8 +2573,8 @@ void Cedric_SaveBlendData(INTERACTIVE_OBJ * io) {
 		for (long i = 0; i < io->obj->c_data->nb_bones; i++)
 		{
 			Quat_Copy(&io->obj->c_data->bones[i].quatlast, &io->obj->c_data->bones[i].quatinit);
-			Vector_Copy(&io->obj->c_data->bones[i].scalelast, &io->obj->c_data->bones[i].scaleinit);
-			Vector_Copy(&io->obj->c_data->bones[i].translast, &io->obj->c_data->bones[i].transinit);
+			io->obj->c_data->bones[i].scalelast = io->obj->c_data->bones[i].scaleinit;
+			io->obj->c_data->bones[i].translast = io->obj->c_data->bones[i].transinit;
 		}
 	}
 }
@@ -2603,7 +2584,7 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 	for (long i = 0; i != obj->c_data->nb_bones; i++)
 	{
 		Quat_Init(&obj->c_data->bones[i].quatinit);
-		Vector_Copy(&obj->c_data->bones[i].transinit, &obj->c_data->bones[i].transinit_global);
+		obj->c_data->bones[i].transinit = obj->c_data->bones[i].transinit_global;
 	}
 
 	if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->ex_rotate))
@@ -2849,12 +2830,12 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 	}
 
 	llightsInit();
-	EERIE_3D tv;
+	EERIE_3D tv = *pos;
 
 	if ((io) && (io->ioflags & IO_ITEM))
-		Vector_Init(&tv, pos->x, pos->y - 60.f, pos->z);
+		tv.y -= 60.f;
 	else
-		Vector_Init(&tv, pos->x, pos->y - 90.f, pos->z);
+		tv.y -= 90.f;
 
 	for (long i = 0; i < TOTIOPDL; i++)
 	{
@@ -2897,14 +2878,14 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 
 			if (angle)
 			{
-				Vector_Copy(&vt1, angle);
+				vt1 = *angle;
 			}
 			else
 			{
 				if (io) 
-					Vector_Copy(&vt1, &io->angle);
+					vt1 = io->angle;
 				else
-					Vector_Copy(&vt1, &eobj->angle);
+					vt1 = eobj->angle;
 			}
 
 			vt1.x = radians(MAKEANGLE(-vt1.z));
@@ -3028,14 +3009,14 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 
 			if (angle)
 			{
-				Vector_Copy(&vt1, angle);
+				vt1 = *angle;
 			}
 			else
 			{
 				if (io) 
-					Vector_Copy(&vt1, &io->angle);
+					vt1 = io->angle;
 				else
-					Vector_Copy(&vt1, &eobj->angle);
+					vt1 = eobj->angle;
 			}
 
 			vt1.x = radians(vt1.x);
@@ -3045,12 +3026,12 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 		}
 	}
 
-	EERIE_3D tv;
+	EERIE_3D tv = *pos;
 
 	if ((io) && (io->ioflags & IO_ITEM))
-		Vector_Init(&tv, pos->x, pos->y - 60.f, pos->z);
+		tv.y -= 60.f;
 	else
-		Vector_Init(&tv, pos->x, pos->y - 90.f, pos->z);
+		tv.y -= 90.f;
 
 
 	for (long l = 0; l != MAX_LLIGHTS; l++)

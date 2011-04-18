@@ -5,29 +5,44 @@
 #include <cassert>
 #include <algorithm>
 
-#include "core/Common.h"
 #include "gui/MiniMap.h"
 #include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/data/Mesh.h"
+#include "platform/Platform.h"
 
 const s32 SAVEFLAGS_EXTRA_ROTATE = 1;
 const float ARX_GAMESAVE_VERSION = 1.005f;
 
-const s32 SYSTEM_FLAG_TWEAKER_INFO = 1;
-const s32 SYSTEM_FLAG_INVENTORY = 2;
-const s32 SYSTEM_FLAG_EQUIPITEMDATA = 4;
-const s32 SYSTEM_FLAG_USEPATH = 8;
+enum SystemFlag {
+	SYSTEM_FLAG_TWEAKER_INFO  = (1<<0),
+	SYSTEM_FLAG_INVENTORY     = (1<<1),
+	SYSTEM_FLAG_EQUIPITEMDATA = (1<<2),
+	SYSTEM_FLAG_USEPATH       = (1<<3)
+};
 
 template<class T, size_t N>
 inline size_t array_size(T(&)[N]) {
 	return N;
 }
 
+enum SavePlayerFlag {
+	SP_MAX  = (1<<0),
+	SP_RF   = (1<<2),
+	SP_WEP  = (1<<3),
+	SP_MR   = (1<<4),
+	SP_ARM1 = (1<<5),
+	SP_ARM2 = (1<<6),
+	SP_ARM3 = (1<<7),
+	SP_SP   = (1<<8),
+	SP_SP2  = (1<<9)
+};
+
 
 #pragma pack(push,1)
 
 
+const size_t SAVED_KEYRING_SLOT_SIZE = 64;
 const size_t MAX_LINKED_SAVE = 16;
 const size_t SIZE_ID = 64;
 const size_t SAVED_MAX_STACKED_BEHAVIOR = 5;
@@ -147,6 +162,7 @@ struct SavedMapMakerData {
 		a.lvl = lvl;
 		assert(array_size(a.string) == STRING_SIZE);
 		std::copy(string, string + STRING_SIZE, a.string);
+		return a;
 	}
 	
 };
@@ -259,16 +275,16 @@ struct SavedPrecast {
 	
 	inline operator PRECAST_STRUCT() {
 		PRECAST_STRUCT a;
-		a.typ = typ;
+		a.typ = (typ < 0) ? SPELL_NONE : (Spell)typ; // TODO save/load enum
 		a.level = level;
 		a.launch_time = launch_time;
-		a.flags = flags;
+		a.flags = Flag(flags); // TODO save/load flags
 		a.duration = duration;
 		return a;
 	}
 	
 	inline SavedPrecast & operator=(const PRECAST_STRUCT & b) {
-		typ = b.typ;
+		typ = (b.typ == SPELL_NONE) ? -1 : b.typ;
 		level = b.level;
 		launch_time = b.launch_time;
 		flags = b.flags;
@@ -362,7 +378,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	s32 TELEPORT_TO_ANGLE;
 	s32 CHANGE_LEVEL_ICON;
 	s16 bag;
-	s16 sp_flags; // padding;
+	s16 sp_flags; // combinations of SavePlayerFlag
 	SavedPrecast  precast[SAVED_MAX_PRECAST];
 	s32 Global_Magic_Mode;
 	s32 Nb_Mapmarkers;
@@ -502,10 +518,8 @@ struct SavedAnimUse {
 
 struct SavedSpellcastData {
 	
-	static const size_t SYMB_SIZE = 4;
-	
 	s32 castingspell; // spell being casted...
-	u8 symb[SYMB_SIZE]; // symbols to draw before casting...
+	u8 symb[4]; // symbols to draw before casting...
 	s16 spell_flags;
 	s16 spell_level;
 	s32 target;
@@ -513,10 +527,13 @@ struct SavedSpellcastData {
 	
 	inline operator IO_SPELLCAST_DATA() {
 		IO_SPELLCAST_DATA a;
-		a.castingspell = castingspell;
-		assert(array_size(a.symb) == SYMB_SIZE);
-		std::copy(symb, symb + SYMB_SIZE, a.symb);
-		a.spell_flags = spell_flags;
+		a.castingspell = (castingspell < 0) ? SPELL_NONE : (Spell)castingspell; // TODO save/load enum
+		assert(array_size(a.symb) == 4);
+		a.symb[0] = (Rune)symb[0]; // TODO save/load enum
+		a.symb[1] = (Rune)symb[1];
+		a.symb[2] = (Rune)symb[2];
+		a.symb[3] = (Rune)symb[3];
+		a.spell_flags = Flag(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
 		a.target = target;
 		a.duration = duration;
@@ -524,9 +541,9 @@ struct SavedSpellcastData {
 	}
 	
 	inline SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
-		castingspell = b.castingspell;
-		assert(array_size(b.symb) == SYMB_SIZE);
-		std::copy(b.symb, b.symb + SYMB_SIZE, symb);
+		castingspell = (b.castingspell == SPELL_NONE) ? -1 : b.castingspell;
+		assert(array_size(b.symb) == 4);
+		std::copy(b.symb, b.symb + 4, symb);
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
 		target = b.target;
@@ -700,7 +717,8 @@ struct SavedPathfindTarget {
 	
 	inline operator IO_PATHFIND() {
 		IO_PATHFIND a;
-		a.flags = a.listnb = a.listpos = a.pathwait = 0;
+		a.flags = 0;
+		a.listnb = a.listpos = a.pathwait = 0;
 		a.list = NULL;
 		a.truetarget = truetarget;
 		return a;

@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
-#include "core/Common.h"
+#include "platform/Platform.h"
 
 
 class HashMap;

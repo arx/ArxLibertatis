@@ -54,29 +54,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_SCENE_H
-#define ARX_SCENE_H
 
-#include "core/Application.h"
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
-#include "scene/Object.h"
+#ifndef ARX_SCENE_SCENE_H
+#define ARX_SCENE_SCENE_H
 
-//-----------------------------------------------------------------------------
-#define PARAM_NO_INTERACTIVE	1
-#define PARAM_MINIMALIST		2
+struct EERIE_3D;
+struct INTERACTIVE_OBJ;
 
-//-----------------------------------------------------------------------------
 long ARX_PORTALS_GetRoomNumForPosition(EERIE_3D * pos, long flag = 0);
 
 void ARX_SCENE_Render(long flag);
-void ApplyLavaGlowToVertex(EERIE_3D * odtv, D3DTLVERTEX * dtv, float power);
 bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position);
 void RoomDrawRelease();
 bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io);
 
-bool EEVisibleSphere(EERIE_3D * pos, float radius);
 bool VisibleSphere(float x, float y, float z, float radius);
 void ClearTileLights();
 
-#endif
+#endif // ARX_SCENE_SCENE_H

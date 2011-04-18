@@ -462,8 +462,8 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 /*---------------------------------------------------------------*/
 HRESULT Cinematic::Render(float FDIFF)
 {
-	int			nb, col;
-	CinematicBitmap	* tb;
+	int col;
+	CinematicBitmap * tb;
 
 	LargeurRender = DANAESIZX;
 	HauteurRender = DANAESIZY;
@@ -517,7 +517,6 @@ HRESULT Cinematic::Render(float FDIFF)
 				break;
 			case FX_BLUR:
 				FX_Blur(this, tb);
-				nb = 0;
 				break;
 			default:
 				break;
@@ -551,11 +550,6 @@ HRESULT Cinematic::Render(float FDIFF)
 
 		int alpha = ((int)(a * 255.f)) << 24;
 
-		if ((numbitmap < 0) || (numbitmapsuiv < 0))
-		{
-			nb = 0;
-		}
- 
 		int stopline = tb->nbx;
 
 		if (stopline & 1) stopline++;

@@ -56,8 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_CORE_COMMON_H
-#define ARX_CORE_COMMON_H
+#ifndef ARX_PLATFORM_PLATFORM_H
+#define ARX_PLATFORM_PLATFORM_H
 
 #include <string>
 #include <climits>
@@ -303,4 +303,4 @@ inline bool safeGet(T & data, const char * & pos, STYPE & size) {
 	return true;
 }
 
-#endif // ARX_CORE_COMMON_H
+#endif // ARX_PLATFORM_PLATFORM_H

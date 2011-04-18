@@ -398,8 +398,6 @@ float CControlTarget::Render()
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
 	EERIE_3D stitescale;
-	EERIE_RGB stitecolor;
-
 	EERIE_3D av;
 	ARX_CHECK_NOT_NEG(arx_check_init);
 	av.x = lastpos.x - newpos.x;
@@ -417,9 +415,6 @@ float CControlTarget::Render()
 	stiteangle.b = 180 - degrees(bubu);
 	stiteangle.a = 0;
 	stiteangle.g = 90 - degrees(bubu1);
-	stitecolor.r = 0.7f;
-	stitecolor.g = 0.7f;
-	stitecolor.b = 0.7f;
 	stitescale.x = 1;
 	stitescale.y = 1;
 	stitescale.z = 1;

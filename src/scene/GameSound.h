@@ -30,27 +30,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_SOUND_H
-#define ARX_SOUND_H
 
-#include "graphics/data/Mesh.h"
+#ifndef ARX_SCENE_GAMESOUND_H
+#define ARX_SCENE_GAMESOUND_H
 
-enum
-{
-	ARX_SOUND_ON     = 0x00000001,
-	ARX_SOUND_REVERB = 0x00000002
-};
+#include <string>
 
-enum
-{
+#include <windows.h> // TODO remove, needed for HWND in ARX_SOUND_Init
+
+#include "platform/Platform.h"
+
+struct INTERACTIVE_OBJ;
+struct EERIE_3D;
+
+enum SoundLoopMode {
 	ARX_SOUND_PLAY_LOOPED = 0,
-	ARX_SOUND_PLAY_ONCE =   1
+	ARX_SOUND_PLAY_ONCE = 1
 };
 
 typedef s32 ArxSound;
 typedef s32 ArxMixer;
 
-const ArxSound ARX_SOUND_INVALID_RESOURCE(-1);
+const ArxSound ARX_SOUND_INVALID_RESOURCE = -1;
 
 extern ArxMixer ARX_SOUND_MixerGame;
 extern ArxMixer ARX_SOUND_MixerGameSample;
@@ -62,15 +63,11 @@ extern ArxMixer ARX_SOUND_MixerMenuSpeech;
 extern ArxMixer ARX_SOUND_MixerMenuAmbiance;
 
 // Menu ambiances
-extern char AMB_MENU[];
-extern char AMB_CREDITS[];
+const std::string AMB_MENU = "ambient_menu.amb";
+const std::string AMB_CREDITS = "ambient_credits.amb";
 
 // Menu samples
 extern ArxSound SND_MENU_CLICK;
-//extern ArxSound SND_MENU_CREDITS_LOOP;
-//extern ArxSound SND_MENU_LOOP;
-//extern ArxSound SND_MENU_OPTIONS_LOOP;
-extern ArxSound SND_MENU_PUSH;
 extern ArxSound SND_MENU_RELEASE;
 
 // Interface samples
@@ -80,7 +77,6 @@ extern ArxSound SND_BOOK_CLOSE;
 extern ArxSound SND_BOOK_PAGE_TURN;
 extern ArxSound SND_GOLD;
 extern ArxSound SND_INVSTD;
-extern ArxSound SND_MAP;
 extern ArxSound SND_SCROLL_OPEN;
 extern ArxSound SND_SCROLL_CLOSE;
 extern ArxSound SND_TORCH_START;
@@ -94,12 +90,9 @@ extern ArxSound SND_QUAKE;
 extern ArxSound SND_WHOOSH;
 
 // Player samples
-extern ArxSound SND_PLAYER_DEATH;
 extern ArxSound SND_PLAYER_DEATH_BY_FIRE;
 extern ArxSound SND_PLAYER_FILLLIFEMANA;
 extern ArxSound SND_PLAYER_HEART_BEAT;
-//extern ArxSound SND_PLAYER_JUMP;
-//extern ArxSound SND_PLAYER_JUMP_END;
 extern ArxSound SND_PLAYER_LEVEL_UP;
 extern ArxSound SND_PLAYER_POISONED;
 
@@ -176,7 +169,6 @@ extern ArxSound SND_SPELL_LIGHTNING_START;
 extern ArxSound SND_SPELL_LIGHTNING_LOOP;
 extern ArxSound SND_SPELL_LIGHTNING_END;
 
-//extern ArxSound SND_SPELL_MASS_LIGHTNING_END;
 extern ArxSound SND_SPELL_FIRE_FIELD_START;
 extern ArxSound SND_SPELL_FIRE_FIELD_LOOP;
 extern ArxSound SND_SPELL_FIRE_FIELD_END;
@@ -212,58 +204,55 @@ extern ArxSound SND_SPELL_VISION_START;
 extern ArxSound SND_SPELL_VISION_LOOP;
 
 // inter-material sounds
-long ARX_MATERIAL_GetIdByName( const std::string& name );
+long ARX_MATERIAL_GetIdByName(const std::string & name);
 bool ARX_MATERIAL_GetNameById(long id, char * name);
 
 long ARX_SOUND_Init(HWND hwnd);
 void ARX_SOUND_Release();
 
 long ARX_SOUND_IsEnabled();
-void ARX_SOUND_EnableReverb(const long & status);
+void ARX_SOUND_EnableReverb(long status);
 long ARX_SOUND_IsReverbEnabled();
-void ARX_SOUND_EnvironmentSet(const char * name);
 
 void ARX_SOUND_SetListener(const EERIE_3D * position, const EERIE_3D * front, const EERIE_3D * up);
 
-ArxSound ARX_SOUND_Load(const char * name);
+ArxSound ARX_SOUND_Load(const std::string & name);
 void ARX_SOUND_Free(const ArxSound & sample);
 
-long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position = NULL, const float & pitch = 1.0F, const int & loop = ARX_SOUND_PLAY_ONCE);
-long ARX_SOUND_PlayInterface(ArxSound & sample_id, const float & pitch = 1.0F, const int & loop = ARX_SOUND_PLAY_ONCE);
- 
-long ARX_SOUND_PlaySpeech(const char * name, const INTERACTIVE_OBJ * io = NULL);
-long ARX_SOUND_PlayCollision(const long & mat1, const long & mat2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source);
-long ARX_SOUND_PlayCollision(const std::string& mat1, const std::string& mat2, const float & volume, const float & power, EERIE_3D * position, INTERACTIVE_OBJ * source);
+long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position = NULL, float pitch = 1.0F, const SoundLoopMode = ARX_SOUND_PLAY_ONCE);
+long ARX_SOUND_PlayInterface(ArxSound & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
-long ARX_SOUND_PlayScript(const char * name, const INTERACTIVE_OBJ * io = NULL, const float & pitch = 1.0F, const int & loop = ARX_SOUND_PLAY_ONCE);
+long ARX_SOUND_PlaySpeech(const std::string & name, const INTERACTIVE_OBJ * io = NULL);
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source);
+long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, float volume, float power, EERIE_3D* position, INTERACTIVE_OBJ* source);
+
+long ARX_SOUND_PlayScript(const std::string & name, const INTERACTIVE_OBJ * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position = NULL);
-long ARX_SOUND_PlayCinematic(const char * name);
-long ARX_SOUND_PlayMenu(ArxSound & sample_id, const float & pitch = 1.0F, const int & loop = ARX_SOUND_PLAY_ONCE);
+long ARX_SOUND_PlayCinematic(const std::string & name);
+long ARX_SOUND_PlayMenu(ArxSound & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_IsPlaying(ArxSound & sample_id);
 float ARX_SOUND_GetDuration(ArxSound & sample_id);
- 
-void ARX_SOUND_RefreshVolume(ArxSound & sample_id, const float & volume);
+
+void ARX_SOUND_RefreshVolume(ArxSound & sample_id, float volume);
 void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const EERIE_3D * position = NULL);
-void ARX_SOUND_RefreshPitch(ArxSound & sample_id, const float & pitch);
+void ARX_SOUND_RefreshPitch(ArxSound & sample_id, float pitch);
 void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ * io = NULL);
- 
- 
+
 void ARX_SOUND_Stop(ArxSound & sample_id);
 
-long ARX_SOUND_PlayScriptAmbiance(const char * ambiance_name, const int & loop = ARX_SOUND_PLAY_LOOPED, const float & volume = 1.0F); //, const EERIE_3D *position = NULL);
-long ARX_SOUND_PlayZoneAmbiance(const char * ambiance_name, const int & loop = ARX_SOUND_PLAY_LOOPED, const float & volume = 1.0F); //, const EERIE_3D *position = NULL);
-long ARX_SOUND_PlayMenuAmbiance(const char * ambiance_name);
-long ARX_SOUND_SetAmbianceTrackStatus(const char * ambiance_name, const char * track_name, const unsigned long & status); //0 = off; 1 = on
+long ARX_SOUND_PlayScriptAmbiance(const std::string & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+long ARX_SOUND_PlayZoneAmbiance(const std::string & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+long ARX_SOUND_PlayMenuAmbiance(const std::string & ambiance_name);
+long ARX_SOUND_SetAmbianceTrackStatus(const std::string & ambiance_name, const std::string & track_name, unsigned long status); //0 = off; 1 = on
 void ARX_SOUND_KillAmbiances();
 void ARX_SOUND_AmbianceSavePlayList(void ** play_list, unsigned long * size);
 void ARX_SOUND_AmbianceRestorePlayList(void * play_list, unsigned long size);
 
-// TODO what is the point in passing const references instead of the int itself?
-void ARX_SOUND_MixerSetVolume(const ArxMixer & mixer_id, const float & volume);
-float ARX_SOUND_MixerGetVolume(const ArxMixer & mixer_id);
-void ARX_SOUND_MixerStop(const ArxMixer & mixer_id);
-void ARX_SOUND_MixerPause(const ArxMixer & mixer_id);
-void ARX_SOUND_MixerResume(const ArxMixer & mixer_id);
-void ARX_SOUND_MixerSwitch(const ArxMixer & from, const ArxMixer & to);
+void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume);
+float ARX_SOUND_MixerGetVolume(ArxMixer mixer_id);
+void ARX_SOUND_MixerStop(ArxMixer mixer_id);
+void ARX_SOUND_MixerPause(ArxMixer mixer_id);
+void ARX_SOUND_MixerResume(ArxMixer mixer_id);
+void ARX_SOUND_MixerSwitch(ArxMixer from, ArxMixer to);
 
-#endif//ARX_SOUND_H
+#endif // ARX_SCENE_GAMESOUND_H

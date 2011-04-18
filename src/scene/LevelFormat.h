@@ -2,8 +2,11 @@
 #ifndef ARX_SCENE_LEVELFORMAT_H
 #define ARX_SCENE_LEVELFORMAT_H
 
-#include "core/Common.h"
 #include "graphics/GraphicsFormat.h"
+#include "platform/Platform.h"
+
+//Fileformat version
+const f32 DLH_CURRENT_VERSION = 1.44f;
 
 
 #pragma pack(push,1)

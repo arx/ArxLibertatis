@@ -5,23 +5,25 @@
  *      Author: bmonkey
  */
 
-#ifndef SCRIPTEVENT_H_
-#define SCRIPTEVENT_H_
+#ifndef ARX_SCRIPTING_SCRIPTEVENT_H
+#define ARX_SCRIPTING_SCRIPTEVENT_H
 
 #include "scripting/Script.h"
 
-	struct SCRIPT_EVENT
-	{
-		SCRIPT_EVENT( const std::string& str ): name( str ) {}
-		std::string name;
-	};
+struct SCRIPT_EVENT {
+	SCRIPT_EVENT(const std::string & str): name(str) {}
+	std::string name;
+};
 
 class ScriptEvent {
 public:
+	
+	static long totalCount;
+	
 	ScriptEvent();
 	virtual ~ScriptEvent();
-	static long checkInteractiveObject(INTERACTIVE_OBJ * io, long msg);
-	static long send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& eventname, long info = 0);
+	static ScriptResult send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string & params, INTERACTIVE_OBJ * io, const std::string & eventname, long info = 0);
+	
 };
 
-#endif /* SCRIPTEVENT_H_ */
+#endif // ARX_SCRIPTING_SCRIPTEVENT_H
