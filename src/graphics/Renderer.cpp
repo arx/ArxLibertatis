@@ -540,8 +540,8 @@ void DX7Texture2D::CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSU
 	pddsSrc->Lock(NULL, &descSrc, DDLOCK_WAIT, NULL);
 	pddsDst->Lock(NULL, &descDst, DDLOCK_WAIT, NULL);
 
-	arx_assert(descDst.dwWidth == (descSrc.dwWidth >> 1));
-	arx_assert(descDst.dwHeight == (descSrc.dwHeight >> 1));
+	arx_assert_msg(descDst.dwWidth == (descSrc.dwWidth >> 1), "src width = %d, dst width = %d (%s)", descSrc.dwWidth, descDst.dwWidth, mFileName.c_str());
+	arx_assert_msg(descDst.dwHeight == (descSrc.dwHeight >> 1), "src height = %d, dst height = %d (%s)", descSrc.dwHeight, descDst.dwHeight, mFileName.c_str());
 
 	DWORD pitchIncrementSrc = (descSrc.lPitch >> 2) - descSrc.dwWidth;
 	DWORD pitchIncrementDst = (descDst.lPitch >> 2) - descDst.dwWidth;
