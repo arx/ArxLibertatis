@@ -815,7 +815,8 @@ static struct timespec start_timespec;
 
 	aalError aalSetListenerDirection(const aalVector & front, const aalVector & up)
 	{
-		ALfloat orientation[] = {front.x, front.y, front.z, up.x, up.y, up.z};
+		// Invert up vector to fix left-right inversion
+		ALfloat orientation[] = {front.x, front.y, front.z, -up.x, -up.y, -up.z};
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
