@@ -5902,14 +5902,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							tw = TWEAK_ERROR;
 
 							if (!strcasecmp(word, "HEAD"))
-							{
-								if (io->ident == 33)
-								{
-									tw = tw;
-								}
-
 								tw = TWEAK_HEAD;
-							}
 							else if (!strcasecmp(word, "TORSO"))
 								tw = TWEAK_TORSO;
 							else if (!strcasecmp(word, "LEGS"))

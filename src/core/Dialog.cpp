@@ -108,7 +108,6 @@ extern long HIDEMAGICDUST;
 extern long LaunchDemo;
 extern long LIGHTPOWERUP;
 extern float LPpower;
-extern long D3DTRANSFORM;
 extern long USE_PLAYERCOLLISIONS;
 extern long A_FLARES;
 extern long NODIRCREATION;
@@ -2194,11 +2193,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			t = (long)(TIMEFACTOR * 100.f);
 			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
-
-			thWnd = GetDlgItem(hWnd, IDC_D3DTRANSFORM);
-
-			if (D3DTRANSFORM) SendMessage(thWnd, BM_CLICK, 0, 0);
-
 			if (!ARX_SOUND_IsEnabled())
 			{
 				SetCheck(hWnd, IDC_DISABLESOUND, CHECK);
@@ -2458,10 +2452,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_MESHTWEAK))  ALLOW_MESH_TWEAKING = 1;
 					else ALLOW_MESH_TWEAKING = 0;
-
-
-					if (IsChecked(hWnd, IDC_D3DTRANSFORM)) D3DTRANSFORM = 1;
-					else D3DTRANSFORM = 0;
 
 					if (IsChecked(hWnd, IDC_MAPUPDATE)) MAPUPDATE = 1;
 					else MAPUPDATE = 0;

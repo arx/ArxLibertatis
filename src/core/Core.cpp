@@ -211,7 +211,6 @@ extern long LastEERIEMouseButton;
 extern long PLAYER_PARALYSED;
 extern float fZFogEnd;
 extern bool bOLD_CLIPP;
-extern bool bGMergeVertex;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern E_ARX_STATE_MOUSE	eMouseState;
 
@@ -5243,7 +5242,6 @@ static float _AvgFrameDiff = 150.f;
 	if(	(pGetInfoDirectInput)&&
 		(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F12)))
 	{
-		bGMergeVertex=!bGMergeVertex;
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
 	}
@@ -6780,15 +6778,6 @@ static float _AvgFrameDiff = 150.f;
 			if (bRenderInterList)
 			{
 				danaeApp.OutputText( 320, 257, "Seb" );
-			}
-
-			if(bGMergeVertex)
-			{
-				danaeApp.OutputText( 0, 284, "Portal MergeVertex" );
-			}
-			else
-			{
-				danaeApp.OutputText( 0, 284, "Portal Non MergeVertex" );
 			}
 		}
 

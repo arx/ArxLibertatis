@@ -122,8 +122,6 @@ static int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp);
 
 EERIEMATRIX ProjectionMatrix;
 
-bool bGMergeVertex = false;
-
 void ReleaseAnimFromIO(INTERACTIVE_OBJ * io, long num)
 {
 	for (long count = 0; count < MAX_ANIM_LAYERS; count++)

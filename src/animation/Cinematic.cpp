@@ -61,7 +61,6 @@ extern float DreamTable[];
 
 C_KEY			KeyTemp;
 bool			EditLight;
-bool			DrawLine;
 bool			ShiftKey;
 bool			AltKey;
 
@@ -457,20 +456,6 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		                                        0)))
 		{
 			ARX_DEAD_CODE();
-		}
-
-		if (DrawLine)
-		{
-			GRenderer->ResetTexture(0);
-			GRenderer->SetFillMode(Renderer::FillWireframe);
-			GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-			                             D3DFVF_TLVERTEX,
-			                             AllD3DTLVertex,
-			                             grille->nbvertexs,
-			                             ((unsigned short *)grille->inds) + mat->startind,
-			                             mat->nbind,
-			                             0);
-			GRenderer->SetFillMode(Renderer::FillSolid);
 		}
 	}
 }

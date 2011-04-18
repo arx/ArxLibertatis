@@ -2500,7 +2500,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 				continue;
 			}
 
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, &tv, 3,  0, 0 );
 
 			if (special_color_flag & 2)
 			{
@@ -2514,8 +2514,8 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 				{
 					tv[j].color = v;
 				}
-				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
-				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );//duplicate ???? @TBR ?
+				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, &tv, 3,  0, 0 );
+				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, &tv, 3,  0, 0 );//duplicate ???? @TBR ?
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			}
@@ -2558,7 +2558,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					GRenderer->SetRenderState(Renderer::DepthWrite, false);
-					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, &tv, 3, 0, 0 );
+					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, &tv, 3, 0, 0 );
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					GRenderer->SetRenderState(Renderer::DepthWrite, true);
 				}

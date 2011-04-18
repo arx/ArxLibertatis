@@ -47,7 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define D3D_OVERLOADS
 
-#define EERIE_USEVB		0x8000	// using vertex buffer for EERIEDRAWPRIM
 #define EERIE_NOCOUNT	0x4000	// do not incr EERIEDrawnPolys for EERIEDRAWPRIM
 
 #define MAX_DIST_BUMP	600.f

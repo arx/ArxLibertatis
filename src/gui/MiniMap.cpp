@@ -721,7 +721,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 								verts[3].sy += DECALY * Yratio;
 							}
 
-							EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
+							EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 4, 0);
 						}
 					}
 				}
@@ -778,7 +778,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					verts[2].sy += DECALY * Yratio;
 				}
 
-				EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 3, 0);
+				EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 3, 0);
 
 				if (fl2) GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
@@ -953,7 +953,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						verts[3].sy += DECALY * Yratio;
 					}
 
-					EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
+					EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 4, 0);
 				}
 			}
 	}

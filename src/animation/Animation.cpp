@@ -110,7 +110,6 @@ extern QUAKE_FX_STRUCT QuakeFx;
 extern float _framedelay;
 extern float FORCED_REDUCTION_VALUE;
 extern float METALdecal;
-extern long D3DTRANSFORM;
 extern long ForceIODraw;
 extern long INTER_DRAW;
 extern long INTER_COMPUTE;
@@ -146,7 +145,6 @@ long LOOK_AT_TARGET=0;
 #endif
 long TRAP_DETECT=-1;
 long TRAP_SECRET=-1;
-long VF_CLIP_IO=0;
 long USEINTERNORM=1;
 long HALOCUR=0;
 long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
@@ -2976,7 +2974,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 			eobj->facelist[i].color[j]=vert_list[j].color;		
 
 		// Finally render our primitive			
-		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE ,&vert_list, 3,  0, 0 );
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,&vert_list, 3,  0, 0 );
 			
 
 		// Add some fake specular to Metallic polys
@@ -3025,7 +3023,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 					GRenderer->SetRenderState(Renderer::DepthWrite, false);
-					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, 0 );
+					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, &vert_list, 3, 0, 0 );
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);			
 					GRenderer->SetRenderState(Renderer::DepthWrite, true);
 				}				

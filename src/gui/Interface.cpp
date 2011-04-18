@@ -415,7 +415,7 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 				v[2].tv = v[3].tv = divideY * 12;
 				GRenderer->SetTexture(0, inventory_font);
 
-				EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE| D3DFVF_SPECULAR ,v, 4, 0 );
+				EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX,v, 4, 0 );
 			}
 		}
 	}
@@ -8801,10 +8801,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						vert[2].color =0xFF000000;
-						EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+						EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 						GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 					}
-					else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+					else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 				}
 
 				HALOCUR=0;

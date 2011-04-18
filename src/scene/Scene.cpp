@@ -109,7 +109,6 @@ extern HANDLE LIGHTTHREAD;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
 extern long DEBUGCODE;
-extern long VF_CLIP_IO;
 extern long DEBUG_FRUSTRUM;
 extern long HIDEANCHORS;
 extern long EXTERNALVIEW;
@@ -142,7 +141,6 @@ float WATEREFFECT=0.f;
 long INTERTRANSPOLYSPOS=0;
 
 long TRANSPOLYSPOS=0;
-long D3DTRANSFORM=0;
 long SHOWSHADOWS=1;
 long TESTMODE=1;
 long FRAME_COUNT=0;
@@ -3465,15 +3463,7 @@ void ARX_SCENE_Render(long flag) {
 
 	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE))) 
 		FRAME_COUNT=0;
-
-	if (D3DTRANSFORM) 
-	{
-		return;
-	}
 		
-	static EERIE_3D lastpos;
-	static EERIE_3D lastangle;
-	static float lastfocal;
 	long to;
 	static long x0=0;
 	static long x1=0;
@@ -3491,35 +3481,9 @@ void ARX_SCENE_Render(long flag) {
 	
 	WATEREFFECT+=0.0005f*_framedelay;
 
-	// First if scene camera hasn't moved we set MODIF to 0
-	// This allows us not to Clip/Rotate/Translate/Project again the scene
-	bool MODIF=true;
-
 	if (flag == 3)
-	{
-		lastpos.x = 0.f;
 		return;
-	}
 
-	if (	(lastpos.x == ACTIVECAM->pos.x) &&
-			(lastpos.y == ACTIVECAM->pos.y) &&
-			(lastpos.z == ACTIVECAM->pos.z) &&
-			(lastangle.a == ACTIVECAM->angle.a) &&
-			(lastangle.b == ACTIVECAM->angle.b) &&
-			(lastangle.g == ACTIVECAM->angle.g) &&
-			(lastfocal == ACTIVECAM->focal ) ) MODIF=0;
-	else 
-	{
-		lastpos.x = ACTIVECAM->pos.x;
-		lastpos.y = ACTIVECAM->pos.y;
-		lastpos.z = ACTIVECAM->pos.z;
-		lastangle.a = ACTIVECAM->angle.a;
-		lastangle.b = ACTIVECAM->angle.b;
-		lastangle.g = ACTIVECAM->angle.g;
-		lastfocal = ACTIVECAM->focal;
-		MODIF=1;
-	}
-    
 	// If LightThread is running we suspend it to avoid too much performance
 	// decrease and eventual interference 
 	if (LIGHTTHREAD) 
@@ -3557,13 +3521,6 @@ void ARX_SCENE_Render(long flag) {
 			
 
 	long lll;
-	#ifdef USE_RTS
-	{
-		ResetWorlds();
-		CreatePWorld(x0,x1,z0,z1);
-		ComputeSworld();
-	}
-	#endif
 
 	DRAWLATER_ReInit();
 	
@@ -3933,10 +3890,7 @@ else
 		ARX_CHECK_ULONG(FrameDiff);
 		ARX_THROWN_OBJECT_Manage(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
 		
-		VF_CLIP_IO=1;
 		RenderInter(0.f, 3200.f);
-		
-		VF_CLIP_IO=0;
 		
 
 	if (DRAGINTER) // To render Dragged objs
@@ -4005,10 +3959,10 @@ if (HALOCUR>0)
 		{
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);									
 			vert[2].color =0xFF000000;
-			EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
+			EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 );
 			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
 		}
-		else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
+		else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 );
 	}
 
 		 HALOCUR = 0; 

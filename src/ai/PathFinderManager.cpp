@@ -281,9 +281,6 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 			CURPATHFINDIO = curpr.ioid;
 			PATHFINDER_WORKING = 2;
 
-			if (CURPATHFINDIO->ident == 43)
-				CURPATHFINDIO->ident = 43;
-
 			if (curpr.ioid && curpr.ioid->_npcdata)
 			{
 				float heuristic(PATHFINDER_HEURISTIC_MAX);
