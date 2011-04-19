@@ -361,9 +361,7 @@ aalError Instance::SetVolume(float v) {
 		volume *= mixer->volume, mixer = mixer->parent;
 	}
 	
-	volume = std::max(volume, channel.volume); // TODO
-	
-	alSourcef(source, AL_GAIN, volume);
+	alSourcef(source, AL_GAIN, channel.volume * volume);
 	AL_CHECK_ERROR("setting source gain")
 	
 	return AAL_OK;
