@@ -4771,7 +4771,7 @@ bool DANAE_ManageSplashThings()
 			if (SPLASH_START==0) //firsttime
 			{
 				SPLASH_START = ARX_TIME_GetUL();
-				ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT, 1.f, ARX_SOUND_PLAY_LOOPED);
+				ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
 			}
 
 			ARX_INTERFACE_ShowARKANE();
