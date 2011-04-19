@@ -71,7 +71,8 @@ Instance::Instance() :
 	tooFar(false),
 	streaming(false), loadCount(0), written(0), stream(NULL),
 	time(0), read(0), callb_i(0),
-	source(0) {
+	source(0),
+	refcount(NULL) {
 	for(size_t i = 0; i < NBUFFERS; i++) {
 		buffers[i] = 0;
 	}
@@ -136,7 +137,7 @@ aalError Instance::init() {
 	
 	LogAL("streaming=" << streaming);
 	
-	if(!streaming) {
+	if(!streaming && !buffers[0]) {
 		LogAL("opening sample");
 		stream = CreateStream(sample->name);
 		if(!stream) {
@@ -150,7 +151,6 @@ aalError Instance::init() {
 		loadCount = 1;
 		fillBuffer(buffers[0], sample->length);
 		arx_assert(!stream && !loadCount);
-		// TODO share the buffer between instances
 	}
 	
 	SetVolume(channel.volume);
@@ -287,6 +287,15 @@ aalError Instance::Init(Instance * instance, const aalChannel & _channel) {
 	sample->Catch();
 	channel = _channel;
 	
+	arx_assert(instance->buffers[0] != 0);
+	buffers[0] = instance->buffers[0];
+	if(!instance->refcount) {
+		instance->refcount = new unsigned int;
+		*instance->refcount = 1;
+	}
+	refcount = instance->refcount;
+	(*refcount)++;
+	
 	return init();
 }
 
@@ -310,21 +319,37 @@ aalError Instance::Clean() {
 		source = 0;
 	}
 	
-	if(!stream) {
+	if(stream) {
+		for(size_t i = 0; i < NBUFFERS; i++) {
+			if(buffers[i] && alIsBuffer(buffers[i])) {
+				LogAL("deleting buffer " << buffers[i]);
+				alDeleteBuffers(1, &buffers[i]);
+				nbbuffers--;
+				AL_CHECK_ERROR("deleting buffer")
+				buffers[i] = 0;
+			}
+		}
+		arx_assert(!refcount);
+	} else {
+		if(buffers[0]) {
+			arx_assert(!refcount || *refcount > 0);
+			if(!refcount || !--*refcount) {
+				if(refcount) {
+					delete refcount;
+				}
+				LogAL("deleting buffer " << buffers[0]);
+				alDeleteBuffers(1, &buffers[0]);
+				nbbuffers--;
+				AL_CHECK_ERROR("deleting buffer")
+			}
+		} else {
+			arx_assert(!refcount);
+		}
 		for(size_t i = 1; i < NBUFFERS; i++) {
 			arx_assert(!buffers[i]);
 		}
 	}
-	
-	for(size_t i = 0; i < NBUFFERS; i++) {
-		if(buffers[i] && alIsBuffer(buffers[i])) {
-			LogAL("deleting buffer " << buffers[i]);
-			alDeleteBuffers(1, &buffers[i]);
-			nbbuffers--;
-			AL_CHECK_ERROR("deleting buffer")
-			buffers[i] = 0;
-		}
-	}
+	refcount = NULL;
 	
 	if(stream) {
 		DeleteStream(stream);
@@ -776,7 +801,7 @@ aalError Instance::Update() {
 	read = newRead;
 	
 	//LogAL("Update: read " << read << " -> " << newRead << " time " << oldTime << " -> " << time);
-	arx_assert(time >= oldTime);
+	arx_assert(time >= oldTime); // TODO this fails sometimes
 	
 	while(true) {
 		

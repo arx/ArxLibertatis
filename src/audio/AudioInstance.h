@@ -129,6 +129,7 @@ private:
 	
 	const static size_t NBUFFERS = 2;
 	ALuint buffers[NBUFFERS];
+	unsigned int * refcount; // reference count for shared buffers
 	
 };
 
