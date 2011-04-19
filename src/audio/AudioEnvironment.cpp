@@ -128,12 +128,9 @@ namespace ATHENA
 
 		if (is_reverb_present)
 		{
-			int error;
-			alGetError(); // Clear error
+			AL_CLEAR_ERROR(); // Clear error
 			alEffectf(effect[0], AL_REVERB_ROOM_ROLLOFF_FACTOR, rolloff);
-			if ((error = alGetError()) != AL_NO_ERROR) {
-				return AAL_ERROR_SYSTEM;
-			}
+			AL_CHECK_ERROR("setting effect rolloff factor");
 		}
 
 		return AAL_OK;
@@ -141,12 +138,9 @@ namespace ATHENA
 
 	aalError Environment::SetEffect(const int type, const aalFloat val)
 	{
-		int error;
-		alGetError(); // Clear error
+		AL_CLEAR_ERROR(); // Clear error
 		alEffectf(effect[0], type, val);
-		if ((error = alGetError()) != AL_NO_ERROR) {
-			return AAL_ERROR_SYSTEM;
-		}
+		AL_CHECK_ERROR("setting effect var");
 		return AAL_OK;
 	}
 

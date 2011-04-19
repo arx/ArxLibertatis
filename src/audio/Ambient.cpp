@@ -699,7 +699,7 @@ namespace ATHENA
 				aalSLong s_id(GetSampleID(track->s_id));
 				aalSLong i_id(GetInstanceID(track->s_id));
 
-				if (_sample.IsValid(s_id) && _inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
+				if (_sample.IsValid(s_id) && _inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
 					_inst[i_id]->SetVolume(track->key_l[track->key_i].volume.cur * channel.volume);
 			}
 		}
@@ -725,7 +725,7 @@ namespace ATHENA
 				{
 					aalSLong i_id(GetInstanceID(track->s_id));
 
-					if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
+					if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
 						_inst[i_id]->Stop();
 				}
 			}
@@ -928,7 +928,7 @@ namespace ATHENA
 			{
 				aalSLong i_id(GetInstanceID(track->s_id));
 
-				if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
+				if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
 					_inst[i_id]->Stop();
 			}
 
@@ -962,7 +962,7 @@ namespace ATHENA
 				{
 					Instance * instance = _inst[i_id];
 
-					if (instance->sample == _sample[s_id] && instance->IsPlaying())
+					if (instance->getSample() == _sample[s_id] && instance->IsPlaying())
 					{
 						instance->Pause();
 						track->flags |= TRACK_PAUSED;
@@ -989,7 +989,7 @@ namespace ATHENA
 				aalSLong s_id(GetSampleID(track->s_id));
 				aalSLong i_id(GetInstanceID(track->s_id));
 
-				if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
+				if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
 					_inst[i_id]->Resume();
 
 				track->flags &= ~TRACK_PAUSED;
@@ -1066,7 +1066,7 @@ namespace ATHENA
 
 					aalSLong i_id(GetInstanceID(track->s_id));
 
-					if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
+					if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
 					{
 						Instance * instance = _inst[i_id];
 
@@ -1191,7 +1191,7 @@ namespace ATHENA
 		aalSLong i_id(GetInstanceID(track.s_id));
 		Instance * inst = NULL;
 
-		if (_inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			Ambiance * ambiance = _amb[track.a_id];
 			aalChannel channel;
@@ -1291,7 +1291,7 @@ namespace ATHENA
 
 		instance->SetPitch(UpdateSetting(key->pitch));
 
-		if (instance->channel.flags & AAL_FLAG_POSITION)
+		if (instance->getChannel().flags & AAL_FLAG_POSITION)
 		{
 			aalVector position;
 

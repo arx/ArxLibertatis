@@ -38,6 +38,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioInstance.h"
 #include "alwrapper.h"
 
+#include "io/Logger.h"
+
+#define ALError LogError
+
+#define AL_CHECK_ERROR(desc) { ALenum error = alGetError(); \
+	if(error != AL_NO_ERROR) { \
+		ALError << "error " desc ": " << error; \
+		return AAL_ERROR_SYSTEM; \
+	}} \
+
+#define AL_CHECK_ERROR_N(desc, todo) { ALenum error = alGetError(); \
+	if(error != AL_NO_ERROR) { \
+		ALError << "error " desc ": " << error; \
+		todo \
+	}} \
+
+#define AL_CLEAR_ERROR() { ALenum error = alGetError(); \
+	if(error != AL_NO_ERROR) { \
+		ALError << "unknown error: " << error; \
+	}} \
+
 namespace ATHENA {
 	
 	// Common resource memory management

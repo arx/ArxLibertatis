@@ -125,7 +125,7 @@ find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
-find_package(OpenAL REQUIRED)
+find_package(OpenAL 1.12 REQUIRED)
 find_package(Doxygen)
 find_package(PythonInterp)
 

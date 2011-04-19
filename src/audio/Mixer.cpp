@@ -64,8 +64,8 @@ namespace ATHENA
 		for (i = 0; i < _inst.Size(); i++)
 			if (_inst[i] &&
 			        _inst[i]->IsPlaying() &&
-			        _mixer.IsValid(_inst[i]->channel.mixer) &&
-			        _mixer[_inst[i]->channel.mixer] == this)
+			        _mixer.IsValid(_inst[i]->getChannel().mixer) &&
+			        _mixer[_inst[i]->getChannel().mixer] == this)
 				_inst.Delete(i);
 
 		for (i = 0; i < _amb.Size(); i++)
@@ -115,8 +115,8 @@ namespace ATHENA
 				_mixer[i]->SetVolume(_mixer[i]->volume);
 
 		for (i = 0; i < _inst.Size(); i++)
-			if (_inst[i] && _mixer[_inst[i]->channel.mixer] == this)
-				_inst[i]->SetVolume(_inst[i]->channel.volume);
+			if (_inst[i] && _mixer[_inst[i]->getChannel().mixer] == this)
+				_inst[i]->SetVolume(_inst[i]->getChannel().volume);
 
 		return AAL_OK;
 	}
@@ -187,7 +187,7 @@ namespace ATHENA
 		{
 			Instance * instance = _inst[i];
 
-			if (instance && _mixer[instance->channel.mixer] == this)
+			if (instance && _mixer[instance->getChannel().mixer] == this)
 				_inst.Delete(i);
 		}
 
@@ -209,7 +209,7 @@ namespace ATHENA
 				_amb[i]->Pause();
 
 		for (i = 0; i < _inst.Size(); i++)
-			if (_inst[i] && _mixer[_inst[i]->channel.mixer] == this)
+			if (_inst[i] && _mixer[_inst[i]->getChannel().mixer] == this)
 				_inst[i]->Pause();
 
 		status |= MIXER_PAUSED;
@@ -231,7 +231,7 @@ namespace ATHENA
 				_amb[i]->Resume();
 
 		for (i = 0; i < _inst.Size(); i++)
-			if (_inst[i] && _mixer[_inst[i]->channel.mixer] == this)
+			if (_inst[i] && _mixer[_inst[i]->getChannel().mixer] == this)
 				_inst[i]->Resume();
 
 		status &= ~MIXER_PAUSED;

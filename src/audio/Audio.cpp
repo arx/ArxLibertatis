@@ -70,6 +70,8 @@ static struct timespec start_timespec;
 	///////////////////////////////////////////////////////////////////////////////
 	aalError aalInit() {
 		
+		LogDebug << "Init";
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -102,7 +104,7 @@ static struct timespec start_timespec;
 			return AAL_ERROR_SYSTEM;
 		}
 		
-		alGetError(); // clear error code
+		AL_CLEAR_ERROR(); // clear error code
 		alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 		is_reverb_present = alcIsExtensionPresent(device, "ALC_EXT_EFX") ? AAL_UTRUE : AAL_UFALSE;
 		
@@ -122,6 +124,9 @@ static struct timespec start_timespec;
 
 	aalError aalClean()
 	{
+		
+		LogDebug << "Clean";
+		
 		if (mutex) mutex->lock(MUTEX_TIMEOUT);
 
 		_mixer.Clean();
@@ -149,6 +154,9 @@ static struct timespec start_timespec;
 
 	aalError aalSetOutputFormat(const aalFormat & f)
 	{
+		
+		LogDebug << "SetOutputFormat c=" << f.channels << " f=" << f.frequency << " q=" << f.quality;
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -156,10 +164,10 @@ static struct timespec start_timespec;
 
 		//Get new buffer and set its format
 		alGenBuffers(1, primary);
-		if (alGetError() != AL_NO_ERROR) {
+		AL_CHECK_ERROR_N("generating buffer",
 			if (mutex) mutex->unlock();
 			return AAL_ERROR_SYSTEM;
-		}
+		)
 
 		global_format.frequency = f.frequency;
 		global_format.quality = f.quality;
@@ -176,6 +184,9 @@ static struct timespec start_timespec;
 
 	aalError aalSetStreamLimit(const aalULong & limit)
 	{
+		
+		LogDebug << "SetStreamLimit " << limit;
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -189,6 +200,9 @@ static struct timespec start_timespec;
 
 	aalError aalSetSamplePath(const char * _path)
 	{
+		
+		LogDebug << "SetSamplePath " << _path;
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -226,6 +240,9 @@ static struct timespec start_timespec;
 
 	aalError aalSetAmbiancePath(const char * _path)
 	{
+		
+		LogDebug << "SetAmbiancePath " << _path;
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -263,6 +280,9 @@ static struct timespec start_timespec;
 
 	aalError aalSetEnvironmentPath(const char * _path)
 	{
+		
+		LogDebug << "SetEnvironmentPath " << _path;
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -300,6 +320,9 @@ static struct timespec start_timespec;
 
 	aalError aalEnable(const aalULong & flags)
 	{
+		
+		LogDebug << "Enable " << flags;
+		
 		aalError _error(AAL_OK);
 
 
@@ -337,7 +360,7 @@ static struct timespec start_timespec;
 
 		return AAL_OK;
 	}
-
+	
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
 	// Global status                                                             //
@@ -464,6 +487,7 @@ static struct timespec start_timespec;
 	///////////////////////////////////////////////////////////////////////////////
 	aalSLong aalCreateMixer(const char * name)
 	{
+		
 		Mixer * mixer = NULL;
 		aalSLong id;
 
@@ -487,6 +511,7 @@ static struct timespec start_timespec;
 
 	aalSLong aalCreateSample(const char * name)
 	{
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_SFALSE;
 
@@ -501,8 +526,6 @@ static struct timespec start_timespec;
 		if ((name && sample->Load(name)) || (s_id = _sample.Add(sample)) == AAL_SFALSE)
 		{
 			delete sample;
-			
-			LogDebug << "Sample " << name << " not found";
 
 			if (mutex) mutex->unlock();
 
@@ -518,6 +541,9 @@ static struct timespec start_timespec;
 
 	aalSLong aalCreateAmbiance(const char * name)
 	{
+		
+		LogDebug << "CreateAmbiance " << name;
+		
 		Ambiance * ambiance = NULL;
 		aalSLong a_id;
 
@@ -552,6 +578,7 @@ static struct timespec start_timespec;
 
 	aalSLong aalCreateEnvironment(const char * name)
 	{
+		
 		Environment * env = NULL;
 		aalSLong e_id;
 
@@ -711,6 +738,7 @@ static struct timespec start_timespec;
 
 	aalError aalSetEnvironmentRolloffFactor(const aalSLong & e_id, const aalFloat & factor)
 	{
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -720,6 +748,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "SetEnvironmentRolloffFactor " << _env[e_id]->name << " " << factor;
 
 		_env[e_id]->SetRolloffFactor(factor);
 
@@ -733,56 +763,33 @@ static struct timespec start_timespec;
 	// Listener settings                                                         //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError aalSetListenerUnitFactor(const aalFloat & factor)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
+	aalError aalSetListenerUnitFactor(const aalFloat & factor) {
+		
+		if(mutex && !mutex->lock(MUTEX_TIMEOUT)) {
 			return AAL_ERROR_TIMEOUT;
-
-		/*
-		if (!listener)
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_INIT;
 		}
-
-		if (listener->SetDistanceFactor(factor, DS3D_DEFERRED))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_SYSTEM;
+		
+		alListenerf(AL_METERS_PER_UNIT, factor);
+		
+		LogDebug << "SetListenerUnitFactor " << factor;
+		AL_CHECK_ERROR_N("setting listener factor",)
+		
+		if(mutex) {
+			mutex->unlock();
 		}
-		*/
-
-		// FIXME -- this doesn't exist in OpenAL
-
-		if (mutex) mutex->unlock();
-
+		
 		return AAL_OK;
 	}
 
-	aalError aalSetListenerRolloffFactor(const aalFloat & factor)
-	{
+	aalError aalSetListenerRolloffFactor(const aalFloat & factor) {
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
-
-		/*
-		if (!listener)
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_INIT;
-		}
-
-		if (listener->SetRolloffFactor(factor, DS3D_DEFERRED))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_SYSTEM;
-		}
-		*/
-
-		// FIXME -- this property doesn't exist in OpenAL
+		
+		alListenerf(AL_ROLLOFF_FACTOR, factor); // FIXME this is a source property
+		
+		LogDebug << "SetListenerRolloffFactor " << factor;
+		AL_CHECK_ERROR_N("setting listener rolloff factor",)
 
 		if (mutex) mutex->unlock();
 
@@ -796,12 +803,10 @@ static struct timespec start_timespec;
 
 		alListener3f(AL_POSITION, position.x, position.y, position.z);
 
-		if (alGetError() != AL_NO_ERROR)
-		{
+		AL_CHECK_ERROR_N("setting listener posiotion",
 			if (mutex) mutex->unlock();
-
 			return AAL_ERROR_SYSTEM;
-		}
+		)
 
 		if (mutex) mutex->unlock();
 
@@ -815,13 +820,10 @@ static struct timespec start_timespec;
 			return AAL_ERROR_TIMEOUT;
 
 		alListenerfv(AL_ORIENTATION, orientation);
-
-		if (alGetError() != AL_NO_ERROR)
-		{
+		AL_CHECK_ERROR_N("setting listener orientation",
 			if (mutex) mutex->unlock();
-
 			return AAL_ERROR_SYSTEM;
-		}
+		)
 
 		if (mutex) mutex->unlock();
 
@@ -842,6 +844,8 @@ static struct timespec start_timespec;
 
 		environment_id = e_id;
 		Environment * env = _env[environment_id];
+		
+		LogDebug << "SetListenerEnvironment " << _env[e_id]->name;
 
 		// EAXLISTENERPROPERTIES props;
 
@@ -891,6 +895,7 @@ static struct timespec start_timespec;
 
 	aalError aalSetMixerVolume(const aalSLong & m_id, const aalFloat & volume)
 	{
+		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
@@ -900,6 +905,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "SetMixerVolume " << m_id << " " << volume;
 
 		_mixer[m_id]->SetVolume(volume);
 
@@ -919,6 +926,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "SetMixerParent " << m_id << " " << pm_id;
 
 		_mixer[m_id]->SetParent(_mixer[pm_id]);
 
@@ -974,6 +983,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "MixerStop " << m_id;
 
 		_mixer[m_id]->Stop();
 
@@ -993,6 +1004,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "MixerPause " << m_id;
 
 		_mixer[m_id]->Pause();
 
@@ -1012,6 +1025,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "MixerResume " << m_id;
 
 		_mixer[m_id]->Resume();
 
@@ -1034,12 +1049,14 @@ static struct timespec start_timespec;
 		aalSLong s_id(GetSampleID(sample_id));
 		aalSLong i_id(GetInstanceID(sample_id));
 
-		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "SetSampleVolume " << _sample[s_id]->name << " " << volume;
 
 		_inst[i_id]->SetVolume(volume);
 
@@ -1056,12 +1073,14 @@ static struct timespec start_timespec;
 		aalSLong s_id(GetSampleID(sample_id));
 		aalSLong i_id(GetInstanceID(sample_id));
 
-		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "SetSamplePitch " << _sample[s_id]->name << " " << pitch;
 
 		_inst[i_id]->SetPitch(pitch);
 
@@ -1078,7 +1097,7 @@ static struct timespec start_timespec;
 		aalSLong s_id(GetSampleID(sample_id));
 		aalSLong i_id(GetInstanceID(sample_id));
 
-		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			if (mutex) mutex->unlock();
 
@@ -1153,7 +1172,7 @@ static struct timespec start_timespec;
 		aalSLong s_id(GetSampleID(sample_id));
 		aalSLong i_id(GetInstanceID(sample_id));
 
-		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			if (mutex) mutex->unlock();
 
@@ -1168,70 +1187,50 @@ static struct timespec start_timespec;
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
 	// Sample control                                                            //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, const aalULong & play_count)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
+	aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, const aalULong & play_count) {
+		
+		if(mutex && !mutex->lock(MUTEX_TIMEOUT)) {
+			LogDebug << "lock timeout";
 			return AAL_ERROR_TIMEOUT;
-
+		}
+		
 		aalSLong s_id(GetSampleID(sample_id));
-
+		
 		sample_id = s_id;
-
-		if (_sample.IsNotValid(s_id) || _mixer.IsNotValid(channel.mixer))
-		{
-			if (mutex) mutex->unlock();
-
+		
+		if(_sample.IsNotValid(s_id) || _mixer.IsNotValid(channel.mixer)) {
+			if(mutex) {
+				mutex->unlock();
+			}
 			return AAL_ERROR_HANDLE;
 		}
-
+		
+		LogDebug << "SamplePlay " << _sample[s_id]->name << " " << play_count;
+		
 		aalSLong i_id(GetInstanceID(sample_id));
 		Instance * instance = NULL;
-
-		if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id] &&
-		        !(channel.flags ^ _inst[i_id]->channel.flags))
-		{
-
+		
+		if(_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id] &&
+		   channel.flags == _inst[i_id]->getChannel().flags) {
+			
 			instance = _inst[i_id];
-
-			if (channel.flags & AAL_FLAG_RESTART)
-			{
+			
+			if(channel.flags & AAL_FLAG_RESTART) {
+				LogDebug << " -> stopping instance";
 				instance->Stop();
-			}
-			else if (channel.flags & AAL_FLAG_ENQUEUE && instance->channel.flags == channel.flags)
-			{
+			} else if(channel.flags & AAL_FLAG_ENQUEUE && instance->getChannel().flags == channel.flags) {
+				LogDebug << " -> playing instance";
 				instance->Play(play_count);
-			}
-			else if (instance->IsIdled())
-			{
-				instance->channel.mixer = channel.mixer;
-				instance->channel.environment = channel.environment;
+			} else if(instance->IsIdled()) {
+				LogDebug << " -> resetting instance";
+				instance->SetMixer(channel.mixer);
+				instance->SetEnvironment(channel.environment);
 				instance->SetVolume(channel.volume);
 				instance->SetPitch(channel.pitch);
 				instance->SetPan(channel.pan);
@@ -1240,53 +1239,52 @@ static struct timespec start_timespec;
 				instance->SetDirection(channel.direction);
 				instance->SetCone(channel.cone);
 				instance->SetFalloff(channel.falloff);
+			} else {
+				instance = NULL;
 			}
-			else instance = NULL;
 		}
-
-		if (!instance)
-		{
+		
+		if(!instance) {
 			Sample * sample = _sample[s_id];
-
-			aalULong i(0);
-
-			for (; i < _inst.Size(); i++)
-			{
-				if (_inst[i] && _inst[i]->sample == sample)
+			
+			aalULong i = 0;
+			for(; i < _inst.Size(); i++) {
+				if(_inst[i] && _inst[i]->getSample() == sample) {
 					break;
+				}
 			}
-
+			
 			instance = new Instance;
-
-			if ((i < _inst.Size() ? instance->Init(_inst[i], channel) : instance->Init(_sample[s_id], channel)) ||
-			        (i_id = _inst.Add(instance)) == AAL_SFALSE)
-			{
+			
+			if((i < _inst.Size() ? instance->Init(_inst[i], channel) : instance->Init(_sample[s_id], channel))
+				 || (i_id = _inst.Add(instance)) == AAL_SFALSE) {
+				LogDebug << " -> error initializing new instance";
 				delete instance;
-
-				if (mutex) mutex->unlock();
-
+				if(mutex) mutex->unlock();
 				return AAL_ERROR_SYSTEM;
 			}
 		}
-
-		//if (listener && channel.flags & FLAG_ANY_3D_FX) listener->CommitDeferredSettings();
-		// FIXME -- I don't think we need the above
-
-		if (instance->Play(play_count))
-		{
+		
+		LogDebug << " -> playing";
+		if(instance->Play(play_count)) {
+			LogDebug << " -> error playing";
 			_inst.Delete(i_id);
-
-			if (mutex) mutex->unlock();
-
+			if(mutex) {
+				mutex->unlock();
+			}
 			return AAL_ERROR_SYSTEM;
 		}
-
+		
 		sample_id = instance->id = (i_id << 16) | s_id;
-
-		if (channel.flags & AAL_FLAG_AUTOFREE) _sample[s_id]->Release();
-
-		if (mutex) mutex->unlock();
-
+		
+		if(channel.flags & AAL_FLAG_AUTOFREE) {
+			_sample[s_id]->Release();
+		}
+		
+		if(mutex) {
+			mutex->unlock();
+		}
+		
 		return AAL_OK;
 	}
 
@@ -1301,6 +1299,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "SampleStop " << s_id;
 
 		_inst[GetInstanceID(s_id)]->Stop();
 		s_id |= 0xffff0000;
@@ -1328,6 +1328,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "MuteAmbianceTrack " << _amb[a_id]->name << " " << t_id << " " << mute;
 
 		_amb[a_id]->MuteTrack(t_id, mute);
 
@@ -1353,6 +1355,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "SetAmbianceUserData " << _amb[a_id]->name << " " << data;
 
 		_amb[a_id]->SetUserData(data);
 
@@ -1372,6 +1376,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "SetAmbianceVolume " << _amb[a_id]->name << " " << volume;
 
 		_amb[a_id]->SetVolume(volume);
 
@@ -1513,6 +1519,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "AmbiancePlay " << _amb[a_id]->name << " " << play_count << " " << fade_interval;
 
 		_amb[a_id]->Play(channel, play_count, fade_interval);
 
@@ -1532,6 +1540,8 @@ static struct timespec start_timespec;
 
 			return AAL_ERROR_HANDLE;
 		}
+		
+		LogDebug << "AmbianceStop " << _amb[a_id]->name << " " << fade_interval;
 
 		_amb[a_id]->Stop(fade_interval);
 

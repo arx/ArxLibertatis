@@ -26,76 +26,112 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOINSTANCE_H
 #define ARX_AUDIO_AUDIOINSTANCE_H
 
-#include <vector>
-
 #include "audio/AudioTypes.h"
 #include "audio/Sample.h"
 #include "audio/Stream.h"
 #include "audio/alwrapper.h"
-using namespace std;
 
 namespace ATHENA {
+
+class Instance {
 	
-	class Instance {
-		
-	public:
-		
-		Instance();
-		~Instance();
-		
-		// Setup
-		aalError Init(Sample * sample, const aalChannel & channel);
-		aalError Init(Instance * instance, const aalChannel & channel);
-		aalError Clean();
-		aalError SetVolume(const aalFloat & volume);
-		aalError SetPitch(const aalFloat & pitch);
-		aalError SetPan(const aalFloat & pan);
-		aalError SetPosition(const aalVector & position);
-		aalError SetVelocity(const aalVector & velocity);
-		aalError SetDirection(const aalVector & direction);
-		aalError SetCone(const aalCone & cone);
-		aalError SetFalloff(const aalFalloff & falloff);
-		aalError SetMixer(const aalSLong & mixer_handle);
-		aalError SetEnvironment(const aalSLong & environment_handle);
-		
-		//Status
-		aalError GetPosition(aalVector & position) const;
-		aalError GetFalloff(aalFalloff & falloff) const;
-		aalError GetMixer(aalSLong & mixer_handle);
-		aalError GetEnvironment(aalSLong & environment_handle);
-		aalUBool IsIdled();
-		aalUBool IsPlaying();
-		aalULong Time(const aalUnit & unit = AAL_UNIT_MS);
-		
-		// Control
-		aalError Play(const aalULong & play_count = 1);
-		aalError Stop();
-		aalError Pause();
-		aalError Resume();
-		aalError Update();
-		void UpdateStreaming();
-		aalUBool IsTooFar();
-		
-		// Data
-		aalSLong id;
-		Sample * sample;
-		aalChannel channel;
-		aalULong status;
-		aalULong callb_i; // Next callback index
-		aalULong loop; // Remaining loop count
-		aalULong time; // Elapsed 'time'
-		Stream * stream;
-		aalULong read, write; // Streaming status
-		aalULong size; // Buffer size
-		
-		vector<ALuint *> buffers;
-		
-		ALuint source[1];
-		ALuint buffer[1];
-		ALenum alformat;
-		
+public:
+	
+	Instance();
+	~Instance();
+	
+	// Setup
+	aalError Init(Sample * sample, const aalChannel & channel);
+	aalError Init(Instance * instance, const aalChannel & channel);
+	aalError Clean();
+	aalError SetVolume(float volume);
+	aalError SetPitch(float pitch);
+	aalError SetPan(float pan);
+	aalError SetPosition(const aalVector & position);
+	aalError SetVelocity(const aalVector & velocity);
+	aalError SetDirection(const aalVector & direction);
+	aalError SetCone(const aalCone & cone);
+	aalError SetFalloff(const aalFalloff & falloff);
+	aalError SetMixer(aalSLong mixer);
+	aalError SetEnvironment(aalSLong environment);
+	
+	//Status
+	aalError GetPosition(aalVector & position) const;
+	aalError GetFalloff(aalFalloff & falloff) const;
+	bool IsIdled();
+	bool IsPlaying();
+	aalULong Time(const aalUnit & unit = AAL_UNIT_MS);
+	
+	// Control
+	aalError Play(const aalULong & play_count = 1);
+	aalError Stop();
+	aalError Pause();
+	aalError Resume();
+	aalError Update();
+	
+	aalSLong id;
+	
+	inline Sample * getSample() { return sample; }
+	inline const aalChannel & getChannel() { return channel; }
+	
+private:
+	
+	
+	enum Status {
+		PLAYING = 0, // New or playing
+		IDLED  = 1,
+		PAUSED = 2,
 	};
 	
+	aalError sourcePlay();
+	
+	/**
+	 * Check if this source is too far from the listener and play/pause it accordingly.
+	 */
+	bool isTooFar();
+	
+	aalError init();
+	
+	/*!
+	 * Create buffers for all unused entries of the buffers array and fill them.
+	 */
+	aalError fillAllBuffers();
+	
+	/*!
+	 * Fills the given buffer with the next size bytes of audio data from the current stream.
+	 * Adjusts written and loadCount and closes the stream once loadCount reaches 0.
+	 */
+	aalError fillBuffer(ALuint buffer, size_t size);
+	
+	bool load();
+	
+	aalChannel channel;
+	
+	Sample * sample;
+	Status status;
+	bool tooFar; // True if the listener is too far from this source.
+	
+	/*
+	 * Remaining play count, excluding queued buffers.
+	 * For stream mode, the loadCount is decremented after the whole sample has been loaded.
+	 * In that case, written will hold the amount ob bytes already loaded.
+	 */
+	bool streaming;
+	aalULong loadCount;
+	size_t written; // Streaming status
+	Stream * stream;
+	
+	aalULong time; // Elapsed 'time'
+	aalULong read;
+	aalULong callb_i; // Next callback index
+	
+	ALuint source;
+	
+	const static size_t NBUFFERS = 2;
+	ALuint buffers[NBUFFERS];
+	
+};
+
 } // namespace ATHENA
 
 #endif // ARX_AUDIO_AUDIOINSTANCE_H
