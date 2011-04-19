@@ -9,7 +9,7 @@
 
 #include <al.h>
 #include <alc.h>
-#include <alext.h>
+#include <efx.h>
 
 #ifdef _OLD_WIN32
 	#define _WIN32 1
