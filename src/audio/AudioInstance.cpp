@@ -824,6 +824,7 @@ aalError Instance::Update() {
 		
 		// Check if it's time to launch a callback
 		while(callb_i < sample->callb_c && sample->callb[callb_i].time <= time) {
+			LogAL("invoking callback " << callb_i << " for time " << sample->callb[callb_i].time);
 			sample->callb[callb_i].func(this, id, sample->callb[callb_i].data);
 			callb_i++;
 		}
