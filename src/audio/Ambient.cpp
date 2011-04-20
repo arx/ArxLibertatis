@@ -1240,10 +1240,6 @@ namespace ATHENA
 		if (!key.delay_min && !key.delay_max) {
 			inst->Play(key.loopc + 1);
 		} else {
-			// FIXME: I'm not quite sure why this test works
-			if (track.name == NULL)
-				return;
-
 			inst->Play();
 		}
 
