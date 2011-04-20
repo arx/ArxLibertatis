@@ -1225,6 +1225,7 @@ namespace ATHENA
 
 			inst = new Instance;
 
+			// TODO check if there is another instance with the same sample to share buffers
 			if (inst->Init(_sample[s_id], channel) || (i_id = _inst.Add(inst)) == AAL_SFALSE)
 			{
 				delete inst;
