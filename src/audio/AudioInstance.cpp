@@ -322,6 +322,8 @@ aalError Instance::Clean() {
 		AL_CHECK_ERROR("deleting source")
 		
 		source = 0;
+	} else {
+		arx_assert(!source);
 	}
 	
 	if(streaming) {
@@ -341,6 +343,7 @@ aalError Instance::Clean() {
 			if(!refcount || !--*refcount) {
 				if(refcount) {
 					delete refcount;
+					refcount = NULL;
 				}
 				LogAL("deleting buffer " << buffers[0]);
 				alDeleteBuffers(1, &buffers[0]);
@@ -354,7 +357,6 @@ aalError Instance::Clean() {
 			arx_assert(!buffers[i]);
 		}
 	}
-	refcount = NULL;
 	
 	if(stream) {
 		DeleteStream(stream);
@@ -369,6 +371,9 @@ aalError Instance::Clean() {
 	tooFar = false;
 	
 	loadCount = 0;
+	written = 0;
+	
+	callb_i = time = read = 0;
 	
 	return AAL_OK;
 }
@@ -801,11 +806,14 @@ aalError Instance::Update() {
 	AL_CHECK_ERROR("getting source byte offset")
 	arx_assert(newRead >= 0);
 	
-	
 	time = time - read + newRead;
+	LogAL("Update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	read = newRead;
 	
-	//LogAL("Update: read " << read << " -> " << newRead << " time " << oldTime << " -> " << time);
+	if(time < oldTime) {
+		ALError << "what just happened?";
+	}
+	
 	arx_assert(time >= oldTime); // TODO this fails sometimes
 	
 	while(true) {
