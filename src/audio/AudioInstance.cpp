@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace ATHENA {
 
-#define ALPREFIX << "[" << id << "," << (sample ? sample->name : "(none)") << "," << nbsources << "," << nbbuffers << "] "
+#define ALPREFIX << "[" << id << "," << (sample ? sample->name : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
 
 #undef ALError
 #define ALError LogError ALPREFIX
@@ -793,10 +793,10 @@ aalError Instance::Update() {
 		if(!buffersQueued) {
 			LogAL("done playing");
 			ret = Stop();
-		} else {
-			ret = sourcePlay();
 		}
-	} else {
+	}
+	
+	if(status == PLAYING) {
 		ret = sourcePlay();
 	}
 	
@@ -816,7 +816,7 @@ aalError Instance::Update() {
 		ALError << "what just happened?";
 	}
 	
-	arx_assert(time >= oldTime); // TODO this fails sometimes
+	//arx_assert(time >= oldTime); // TODO this fails sometimes
 	
 	while(true) {
 		
@@ -832,9 +832,11 @@ aalError Instance::Update() {
 		}
 		
 		time -= sample->length;
+		callb_i = 0;
 		
-		if(channel.flags & AAL_FLAG_CALLBACK) {
-			callb_i = 0;
+		if(!time && status != PLAYING) {
+			// Prevent callback for time==0 being called again after playing.
+			break;
 		}
 		
 	}
