@@ -45,6 +45,11 @@ namespace ATHENA {
 static size_t nbsources = 0;
 static size_t nbbuffers = 0;
 
+// How often to queue the buffer when looping but not streaming.
+#define MAXLOOPBUFFERS std::max(NBUFFERS, NBUFFERS * stream_limit_bytes / sample->length)
+
+const size_t Instance::NBUFFERS;
+
 aalError Instance::sourcePlay() {
 	
 	ALint val;
@@ -576,7 +581,7 @@ aalError Instance::Play(const aalULong & play_count) {
 		ALint queuedBuffers;
 		alGetSourcei(source, AL_BUFFERS_QUEUED, &queuedBuffers);
 		AL_CHECK_ERROR("getting queued buffer count")
-		aalULong nbuffers = NBUFFERS * stream_limit_bytes / sample->length;
+		aalULong nbuffers = MAXLOOPBUFFERS;
 		for(aalULong i = queuedBuffers; i < nbuffers && loadCount ; i++) {
 			LogAL("queueing buffer " << buffers[0]);
 			alSourceQueueBuffers(source, 1, &buffers[0]);
@@ -718,7 +723,7 @@ aalError Instance::Update() {
 	AL_CHECK_ERROR("getting processed buffer count")
 	arx_assert(nbuffers >= 0);
 	
-	ALint maxbuffers = (streaming ? (ALint)NBUFFERS : (NBUFFERS * stream_limit_bytes / sample->length));
+	ALint maxbuffers = (streaming ? (ALint)NBUFFERS : MAXLOOPBUFFERS);
 	arx_assert(nbuffers <= maxbuffers);
 	if(loadCount && nbuffers == maxbuffers) {
 		ALWarning << "buffer underrun detected";
