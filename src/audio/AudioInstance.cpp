@@ -665,9 +665,7 @@ aalError Instance::Resume() {
 		return AAL_OK;
 	}
 	
-	sourcePlay();
-	
-	return AAL_OK;
+	return sourcePlay();
 }
 
 bool Instance::isTooFar() {
