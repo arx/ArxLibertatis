@@ -54,6 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace ATHENA {
 
+#undef ALError
+#define ALError LogError
+
 //Multithread data
 
 Lock * mutex = NULL;

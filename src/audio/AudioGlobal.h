@@ -40,8 +40,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Logger.h"
 
-#define ALError LogError
-
 #define AL_CHECK_ERROR(desc) { ALenum error = alGetError(); \
 	if(error != AL_NO_ERROR) { \
 		ALError << "error " desc ": " << error; \

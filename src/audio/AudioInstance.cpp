@@ -37,7 +37,6 @@ namespace ATHENA {
 
 #define ALPREFIX << "[" << id << "," << (sample ? sample->name : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
 
-// TODO this could break unity build
 #undef ALError
 #define ALError LogError ALPREFIX
 #define ALWarning LogWarning ALPREFIX
