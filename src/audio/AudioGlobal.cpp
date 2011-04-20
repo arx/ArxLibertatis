@@ -36,9 +36,11 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	// Audio device interface                                                    //
-	ALCdevice * device(NULL);
-	ALCcontext * context(NULL);
-	ALuint primary[1] = { 0 };
+	
+	ALCdevice * device = NULL;
+	ALCcontext * context = NULL;
+	float rolloffFactor = 1.f;
+	
 	// FIXME -- don't have this
 	//LPKSPROPERTYSET environment(NULL);
 	aalUBool is_reverb_present(AAL_UFALSE);

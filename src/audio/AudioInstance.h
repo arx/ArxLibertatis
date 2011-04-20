@@ -73,6 +73,8 @@ public:
 	inline Sample * getSample() { return sample; }
 	inline const aalChannel & getChannel() { return channel; }
 	
+	aalError updateRolloffFactor();
+	
 private:
 	
 	enum Status {

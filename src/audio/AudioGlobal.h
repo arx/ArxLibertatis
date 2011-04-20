@@ -75,10 +75,11 @@ namespace ATHENA {
 	                              FLAG_ANY_ENV_FX);
 	
 	// Audio device interface
+	// TODO move into class
 	extern ALCdevice * device;
 	extern ALCcontext * context;
-	extern ALuint primary[1];
-	//extern LPDIRECTSOUNDBUFFER primary;
+	extern float rolloffFactor;
+	
 	//extern LPKSPROPERTYSET environment;
 	extern aalUBool is_reverb_present;
 	extern aalSLong environment_id;

@@ -163,22 +163,13 @@ static struct timespec start_timespec;
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
-		alDeleteBuffers(1, primary);
-
-		//Get new buffer and set its format
-		alGenBuffers(1, primary);
-		AL_CHECK_ERROR_N("generating buffer",
-			if (mutex) mutex->unlock();
-			return AAL_ERROR_SYSTEM;
-		)
-
 		global_format.frequency = f.frequency;
 		global_format.quality = f.quality;
 		global_format.channels = f.channels;
 
 		stream_limit_bytes = UnitsToBytes(stream_limit_ms, global_format, AAL_UNIT_MS);
 
-		//Must restore all buffers here?!
+		// TODO Must restore all buffers here?!
 
 		if (mutex) mutex->unlock();
 
@@ -332,16 +323,7 @@ static struct timespec start_timespec;
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
-		// I don't think we need to worry about this
-		if (flags & FLAG_ANY_3D_FX)
-		{
-			// if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
-			// {
-			// 	if (mutex) mutex->unlock();
-
-			// 	return AAL_ERROR_SYSTEM;
-			// }
-
+		if(flags & FLAG_ANY_3D_FX) {
 			global_status |= FLAG_ANY_3D_FX & ~FLAG_ANY_ENV_FX;
 		}
 
@@ -772,10 +754,10 @@ static struct timespec start_timespec;
 			return AAL_ERROR_TIMEOUT;
 		}
 		
-		alListenerf(AL_METERS_PER_UNIT, factor);
-		
 		LogDebug << "SetListenerUnitFactor " << factor;
-		AL_CHECK_ERROR_N("setting listener factor",)
+		
+		alListenerf(AL_METERS_PER_UNIT, factor);
+		AL_CHECK_ERROR_N("setting unit factor",)
 		
 		if(mutex) {
 			mutex->unlock();
@@ -789,10 +771,15 @@ static struct timespec start_timespec;
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 		
-		alListenerf(AL_ROLLOFF_FACTOR, factor); // FIXME this is a source property
-		
 		LogDebug << "SetListenerRolloffFactor " << factor;
-		AL_CHECK_ERROR_N("setting listener rolloff factor",)
+		
+		rolloffFactor = factor;
+		for(aalULong i = 0; i < _inst.Size(); i++) {
+			if(_inst[i]) {
+				_inst[i]->updateRolloffFactor();
+			}
+		}
+		
 
 		if (mutex) mutex->unlock();
 
@@ -816,23 +803,25 @@ static struct timespec start_timespec;
 		return AAL_OK;
 	}
 
-	aalError aalSetListenerDirection(const aalVector & front, const aalVector & up)
-	{
-		// Invert up vector to fix left-right inversion
-		ALfloat orientation[] = {front.x, front.y, front.z, -up.x, -up.y, -up.z};
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		alListenerfv(AL_ORIENTATION, orientation);
-		AL_CHECK_ERROR_N("setting listener orientation",
-			if (mutex) mutex->unlock();
-			return AAL_ERROR_SYSTEM;
-		)
-
+aalError aalSetListenerDirection(const aalVector & front, const aalVector & up) {
+	
+	// Invert up vector to fix left-right inversion
+	ALfloat orientation[] = { front.x, front.y, front.z, -up.x, -up.y, -up.z };
+	if (mutex && !mutex->lock(MUTEX_TIMEOUT))
+		return AAL_ERROR_TIMEOUT;
+	
+	alListenerfv(AL_ORIENTATION, orientation);
+	AL_CHECK_ERROR_N("setting listener orientation",
 		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+		return AAL_ERROR_SYSTEM;
+	)
+	
+	if(mutex) {
+		mutex->unlock();
 	}
+	
+	return AAL_OK;
+}
 
 	aalError aalSetListenerEnvironment(const aalSLong & e_id)
 	{
@@ -855,7 +844,6 @@ static struct timespec start_timespec;
 
 		// props.dwEnvironment = 0;
 		// props.dwFlags = EAXLISTENERFLAGS_DECAYHFLIMIT;
-		// props.flRoomRolloffFactor = 1.0F;
 		// props.lRoom = 0;
 		// props.lRoomHF = 0;
 		// props.flEnvironmentSize = env->size;
@@ -1615,7 +1603,6 @@ static struct timespec start_timespec;
 
 		props.dwEnvironment = 0;
 		props.dwFlags = EAXLISTENERFLAGS_DECAYHFLIMIT;
-		props.flRoomRolloffFactor = 1.0F;
 		props.lRoom = 0;
 		props.lRoomHF = 0;
 		props.flEnvironmentSize = AAL_DEFAULT_ENVIRONMENT_SIZE;

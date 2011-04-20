@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioInstance.h"
 
 #include <cstdio>
+#include <limits>
 
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
@@ -198,6 +199,8 @@ aalError Instance::init() {
 	} else {
 		SetPan(channel.pan);
 	}
+	
+	updateRolloffFactor();
 	
 	return AAL_OK;
 }
@@ -581,9 +584,9 @@ aalError Instance::Play(const aalULong & play_count) {
 		
 		status = PLAYING;
 		
-		// TODO set these in Stop()? (ie: why are these reset when pausing/resuming?)
+		// TODO set these in Stop() and init()? (ie: why are these reset when pausing/resuming?)
 		time = read = written = 0;
-		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : 0xffffffff;
+		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : std::numeric_limits<aalULong>::max();
 		
 		alSourcei(source, AL_SEC_OFFSET, 0);
 		AL_CHECK_ERROR("set source offset")
@@ -858,7 +861,7 @@ aalError Instance::updateBuffers() {
 		}
 		
 		time -= sample->length;
-		callb_i = 0;
+		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : std::numeric_limits<aalULong>::max();
 		
 		if(!time && status != PLAYING) {
 			// Prevent callback for time==0 being called again after playing.
@@ -872,6 +875,14 @@ aalError Instance::updateBuffers() {
 
 bool Instance::markAsLoaded() {
 	return (loadCount == (aalULong)-1 || --loadCount);
+}
+
+aalError Instance::updateRolloffFactor() {
+	
+	alSourcef(source, AL_ROLLOFF_FACTOR, rolloffFactor);
+	AL_CHECK_ERROR("setting rolloff factor");
+	
+	return AAL_OK;
 }
 
 } // namespace ATHENA
