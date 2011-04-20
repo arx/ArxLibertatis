@@ -319,7 +319,7 @@ aalError Instance::Clean() {
 		source = 0;
 	}
 	
-	if(stream) {
+	if(streaming) {
 		for(size_t i = 0; i < NBUFFERS; i++) {
 			if(buffers[i] && alIsBuffer(buffers[i])) {
 				LogAL("deleting buffer " << buffers[i]);
