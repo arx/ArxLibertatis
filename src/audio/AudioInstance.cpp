@@ -140,7 +140,7 @@ aalError Instance::init() {
 	
 	streaming = (sample->length > (stream_limit_bytes * NBUFFERS));
 	
-	LogAL("streaming=" << streaming);
+	LogAL("length=" << sample->length << " streaming=" << streaming);
 	
 	if(!streaming && !buffers[0]) {
 		LogAL("opening sample");
