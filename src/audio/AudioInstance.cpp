@@ -84,7 +84,7 @@ Instance::Instance() :
 }
 
 Instance::~Instance() {
-	Clean();
+	clean();
 }
 
 static ALenum getALFormat(const aalFormat & format) {
@@ -102,7 +102,9 @@ static ALenum getALFormat(const aalFormat & format) {
 
 aalError Instance::Init(Sample * _sample, const aalChannel & _channel) {
 	
-	Clean();
+	if(aalError error = clean())  {
+		return error;
+	}
 	
 	sample = _sample;
 	LogAL("Init");
@@ -285,7 +287,9 @@ aalError Instance::Init(Instance * instance, const aalChannel & _channel) {
 		return Init(instance->sample, _channel);
 	}
 	
-	Clean();
+	if(aalError error = clean()) {
+		return error;
+	}
 	
 	sample = instance->sample;
 	LogAL("Init(copy)");
@@ -304,12 +308,12 @@ aalError Instance::Init(Instance * instance, const aalChannel & _channel) {
 	return init();
 }
 
-aalError Instance::Clean() {
+aalError Instance::clean() {
 	
 	AL_CLEAR_ERROR()
 	
 	if(sample) {
-		LogAL("Clean");
+		LogAL("clean");
 	}
 	
 	if(alIsSource(source)) {

@@ -43,7 +43,6 @@ public:
 	// Setup
 	aalError Init(Sample * sample, const aalChannel & channel);
 	aalError Init(Instance * instance, const aalChannel & channel);
-	aalError Clean();
 	aalError SetVolume(float volume);
 	aalError SetPitch(float pitch);
 	aalError SetPan(float pan);
@@ -76,12 +75,13 @@ public:
 	
 private:
 	
-	
 	enum Status {
 		PLAYING = 0, // New or playing
 		IDLED  = 1,
 		PAUSED = 2,
 	};
+	
+	aalError clean();
 	
 	aalError sourcePlay();
 	
