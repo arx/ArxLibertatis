@@ -37,6 +37,7 @@ namespace ATHENA {
 
 #define ALPREFIX << "[" << id << "," << (sample ? sample->name : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
 
+// TODO this could break unity build
 #undef ALError
 #define ALError LogError ALPREFIX
 #define ALWarning LogWarning ALPREFIX
@@ -53,20 +54,38 @@ const size_t Instance::NBUFFERS;
 aalError Instance::sourcePlay() {
 	
 	ALint val;
-	AL_CLEAR_ERROR();
 	alGetSourcei(source, AL_SOURCE_STATE, &val);
 	AL_CHECK_ERROR("getting source state")
 	
-	if(val == AL_STOPPED || val == AL_INITIAL || val == AL_PAUSED) {
+	if(val == AL_STOPPED) {
+			return updateBuffers();
+	} else if(val == AL_INITIAL || val == AL_PAUSED) {
 		alSourcePlay(source);
 		AL_CHECK_ERROR("playing source")
 		return AAL_OK;
 	} else if(val == AL_PLAYING) {
 		return AAL_OK;
 	} else {
+		ALError << "unexpected source state: " << val;
 		return AAL_ERROR;
 	}
 	
+}
+
+aalError Instance::sourcePause() {
+	
+	alSourcePause(source);
+	AL_CHECK_ERROR("pausing source")
+	
+	ALint val;
+	alGetSourcei(source, AL_SOURCE_STATE, &val);
+	AL_CHECK_ERROR("getting source state")
+	
+	if(val == AL_STOPPED) {
+		return updateBuffers();
+	}
+	
+	return AAL_OK;
 }
 
 Instance::Instance() :
@@ -163,13 +182,13 @@ aalError Instance::init() {
 	SetVolume(channel.volume);
 	SetPitch(channel.pitch);
 	
+	if(!(channel.flags & AAL_FLAG_POSITION) || (channel.flags & AAL_FLAG_RELATIVE)) {
+		alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
+		AL_CHECK_ERROR("setting relative flag")
+	}
+	
 	// Create 3D interface if required
 	if(channel.flags & FLAG_ANY_3D_FX) {
-		
-		if(channel.flags & AAL_FLAG_RELATIVE) {
-			alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
-			AL_CHECK_ERROR("setting relative flag")
-		}
 		
 		SetPosition(channel.position);
 		SetVelocity(channel.velocity);
@@ -178,10 +197,6 @@ aalError Instance::init() {
 		SetFalloff(channel.falloff);
 		
 	} else {
-		
-		alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
-		AL_CHECK_ERROR("setting relative flag")
-		
 		SetPan(channel.pan);
 	}
 	
@@ -256,7 +271,7 @@ aalError Instance::fillBuffer(ALuint buffer, size_t size) {
 	arx_assert(written <= sample->length);
 	if(written == sample->length) {
 		written = 0;
-		if(!load()) {
+		if(!markAsLoaded()) {
 			LogAL("closing sample");
 			DeleteStream(stream);
 			stream = NULL;
@@ -309,8 +324,6 @@ aalError Instance::Init(Instance * instance, const aalChannel & _channel) {
 }
 
 aalError Instance::clean() {
-	
-	AL_CLEAR_ERROR()
 	
 	if(sample) {
 		LogAL("clean");
@@ -437,7 +450,7 @@ aalError Instance::SetPan(float p) {
 	
 	if(channel.pan != 0.f) {
 		ALError << "setting channel pan not supported: " << p;
-		// FIXME -- OpenAL doesn't have a pan feature
+		// OpenAL doesn't have a pan feature, but it doesn't seem to be used
 	}
 	
 	return AAL_OK;
@@ -568,8 +581,9 @@ aalError Instance::Play(const aalULong & play_count) {
  		LogAL("Play(" << play_count << ") vol=" << channel.volume);
 		
 		status = PLAYING;
-		time = read = written = 0;
 		
+		// TODO set these in Stop()? (ie: why are these reset when pausing/resuming?)
+		time = read = written = 0;
 		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : 0xffffffff;
 		
 		alSourcei(source, AL_SEC_OFFSET, 0);
@@ -595,15 +609,13 @@ aalError Instance::Play(const aalULong & play_count) {
 			LogAL("queueing buffer " << buffers[0]);
 			alSourceQueueBuffers(source, 1, &buffers[0]);
 			AL_CHECK_ERROR("queueing buffer")
-			load();
+			markAsLoaded();
 		}
 	}
 	
-	if(aalError error = sourcePlay()) {
-		return error;
-	}
+	// TODO why is there no culling here?
 	
-	return AAL_OK;
+	return sourcePlay();
 }
 
 aalError Instance::Stop() {
@@ -638,22 +650,22 @@ aalError Instance::Stop() {
 
 aalError Instance::Pause() {
 	
-	if(status == IDLED) {
+	if(status == IDLED || status == PAUSED) {
 		return AAL_OK;
 	}
 	
 	LogAL("Pause");
 	
-	alSourcePause(source);
-	AL_CHECK_ERROR("pausing source")
 	status = PAUSED;
+	
+	sourcePause();
 	
 	return AAL_OK;
 }
 
 aalError Instance::Resume() {
 	
-	if(status == IDLED) {
+	if(status == IDLED || status == PLAYING) {
 		return AAL_OK;
 	}
 	
@@ -661,14 +673,16 @@ aalError Instance::Resume() {
 	
 	status = PLAYING;
 	
-	if(isTooFar()) {
+	if(updateCulling()) {
 		return AAL_OK;
 	}
 	
 	return sourcePlay();
 }
 
-bool Instance::isTooFar() {
+bool Instance::updateCulling() {
+	
+	arx_assert(status == PLAYING);
 	
 	if(!(channel.flags & AAL_FLAG_POSITION) || !alIsSource(source)) {
 		return false;
@@ -693,8 +707,9 @@ bool Instance::isTooFar() {
 		if(dist > max) {
 			return true;
 		}
+		
+		LogAL("in range");
 		tooFar = false;
-		AL_CLEAR_ERROR();
 		sourcePlay();
 		return false;
 		
@@ -703,8 +718,10 @@ bool Instance::isTooFar() {
 		if(dist <= max) {
 			return false;
 		}
+		
+		LogAL("out of range");
 		tooFar = true;
-		alSourcePause(source);
+		sourcePause();
 		return true;
 		
 	}
@@ -716,12 +733,14 @@ aalError Instance::Update() {
 		return AAL_OK;
 	}
 	
-	if(isTooFar()) {
+	if(updateCulling()) {
 		return AAL_OK;
 	}
 	
-	AL_CLEAR_ERROR();
-	
+	return updateBuffers();
+}
+
+aalError Instance::updateBuffers() {
 	
 	// Stream data / queue buffers.
 	
@@ -778,7 +797,7 @@ aalError Instance::Update() {
 			LogAL("re-queueing buffer " << buffer);
 			alSourceQueueBuffers(source, 1, &buffer);
 			AL_CHECK_ERROR("queueing buffer")
-			load();
+			markAsLoaded();
 		}
 		
 	}
@@ -786,7 +805,7 @@ aalError Instance::Update() {
 	
 	// Check if we are done playing.
 	
-	aalError ret;
+	aalError ret = AAL_OK;
 	if(!oldLoadCount) {
 		ALint buffersQueued;
 		alGetSourcei(source, AL_BUFFERS_QUEUED, &buffersQueued);
@@ -797,7 +816,20 @@ aalError Instance::Update() {
 	}
 	
 	if(status == PLAYING) {
-		ret = sourcePlay();
+		ALint val;
+		alGetSourcei(source, AL_SOURCE_STATE, &val);
+		AL_CHECK_ERROR("getting source state")
+		arx_assert(val != AL_INITIAL && val != AL_PAUSED);
+		if(val == AL_STOPPED) {
+			if(!loadCount || nbuffers != maxbuffers) {
+				ALError << "buffer underrun detected";
+			}
+			alSourcePlay(source);
+			AL_CHECK_ERROR("playing source")
+		} else if(val != AL_PLAYING) {
+			ALError << "unexpected source state: " << val;
+			ret = AAL_ERROR;
+		}
 	}
 	
 	
@@ -809,20 +841,15 @@ aalError Instance::Update() {
 	arx_assert(newRead >= 0);
 	
 	time = time - read + newRead;
-	LogAL("Update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	read = newRead;
 	
-	if(time < oldTime) {
-		ALError << "what just happened?";
-	}
-	
-	//arx_assert(time >= oldTime); // TODO this fails sometimes
+	arx_assert(time >= oldTime);
 	
 	while(true) {
 		
 		// Check if it's time to launch a callback
 		while(callb_i < sample->callb_c && sample->callb[callb_i].time <= time) {
-			LogAL("invoking callback " << callb_i << " for time " << sample->callb[callb_i].time);
+			LogAL("invoking callback " << callb_i << " for time==" << sample->callb[callb_i].time);
 			sample->callb[callb_i].func(this, id, sample->callb[callb_i].data);
 			callb_i++;
 		}
@@ -844,7 +871,7 @@ aalError Instance::Update() {
 	return ret;
 }
 
-bool Instance::load() {
+bool Instance::markAsLoaded() {
 	return (loadCount == (aalULong)-1 || --loadCount);
 }
 

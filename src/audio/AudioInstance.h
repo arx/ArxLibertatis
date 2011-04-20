@@ -84,11 +84,15 @@ private:
 	aalError clean();
 	
 	aalError sourcePlay();
+	aalError sourcePause();
 	
 	/**
 	 * Check if this source is too far from the listener and play/pause it accordingly.
+	 * @return true if the source is too far and should not be played
 	 */
-	bool isTooFar();
+	bool updateCulling();
+	
+	aalError updateBuffers();
 	
 	aalError init();
 	
@@ -103,7 +107,7 @@ private:
 	 */
 	aalError fillBuffer(ALuint buffer, size_t size);
 	
-	bool load();
+	bool markAsLoaded();
 	
 	aalChannel channel;
 	
