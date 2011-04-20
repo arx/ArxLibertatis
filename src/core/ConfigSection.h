@@ -48,7 +48,6 @@ public:
 	};
 	
 	std::string section;
-	std::vector<std::string> keys;
 	std::vector<Key> _keys;
 	
 public:

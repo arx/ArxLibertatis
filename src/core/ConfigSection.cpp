@@ -49,11 +49,7 @@ void ConfigSection::SetSection( const std::string& _section )
  * adding it.
  * @param _key The new key to be added to this ConfigSection
  */
-void ConfigSection::AddKey( const std::string& _key )
-{
-	if ( isKey( _key ) )
-		keys.push_back( CleanKey( _key ) );
-
+void ConfigSection::AddKey( const std::string& _key ) {
 	_keys.push_back( Key( KeyName( _key ), KeyValue( _key ) ) );
 };
 
