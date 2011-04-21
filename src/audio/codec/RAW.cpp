@@ -67,7 +67,7 @@ namespace ATHENA
 
 	aalError CodecRAW::SetPosition(const aalULong & _position)
 	{
-		if (PAK_fseek(stream, _position, SEEK_CUR)) return AAL_ERROR_FILEIO;
+		if (PAK_fseek(stream, _position, SEEK_CUR) == -1) return AAL_ERROR_FILEIO;
 
 		cursor = _position;
 
