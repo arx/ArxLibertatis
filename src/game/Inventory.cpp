@@ -503,9 +503,9 @@ bool FastInsert(INTERACTIVE_OBJ * _pIO, long _uiNumBag)
 
 				if (bFound)
 				{
-					for (long jj = j; jj < (j + iSizeY); jj++)
+					for (size_t jj = j; jj < (j + iSizeY); jj++)
 					{
-						for (long ii = i; ii < (i + iSizeX); ii++)
+						for (size_t ii = i; ii < (i + iSizeX); ii++)
 						{
 							if (inventory[_uiNumBag][ii][jj].io)
 							{
@@ -527,9 +527,9 @@ bool FastInsert(INTERACTIVE_OBJ * _pIO, long _uiNumBag)
 
 				if (bFound)
 				{
-					for (long jj = j; jj < (j + iSizeY); jj++)
+					for (size_t jj = j; jj < (j + iSizeY); jj++)
 					{
-						for (long ii = i; ii < (i + iSizeX); ii++)
+						for (size_t ii = i; ii < (i + iSizeX); ii++)
 						{
 							inventory[_uiNumBag][ii][jj].io = _pIO;
 							inventory[_uiNumBag][ii][jj].show = ((size_t)ii == i) && ((size_t)jj == j) ? 1 : 0;
@@ -563,8 +563,8 @@ void OptmizeInventory(unsigned int _uiNumBag)
 					int iSizeX = inventory[_uiNumBag][i][j].io->sizex;
 					int iSizeY = inventory[_uiNumBag][i][j].io->sizey;
 					
-					for(long jj = j ; jj < (j + iSizeY) ; jj++) {
-						for(long ii = i ; ii < (i + iSizeX) ; ii++) {
+					for(size_t jj = j ; jj < (j + iSizeY) ; jj++) {
+						for(size_t ii = i ; ii < (i + iSizeX) ; ii++) {
 							inventory[_uiNumBag][ii][jj].io = NULL;
 						}
 					}
