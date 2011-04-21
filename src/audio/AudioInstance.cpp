@@ -420,7 +420,12 @@ aalError Instance::SetVolume(float v) {
 		volume *= mixer->volume, mixer = mixer->parent;
 	}
 	
-	alSourcef(source, AL_GAIN, channel.volume * volume);
+	if(volume) {
+		// LogToLinearVolume(LinearToLogVolume(volume) * channel.volume)
+		volume = std::pow(100000.f * volume, channel.volume) / 100000.f;
+	}
+	
+	alSourcef(source, AL_GAIN, volume);
 	AL_CHECK_ERROR("setting source gain")
 	
 	return AAL_OK;
