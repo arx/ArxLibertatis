@@ -75,6 +75,26 @@ LARGE_INTEGER   liInitPerfCounter;        // Nuky - added initial time
 bool			bTimerInit = false;
 float			startupTime = 0;
 
+namespace Time
+{
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	// Avoid costly calls to QueryPerformanceFrequency... cache its result
+    class FrequencyInit
+    {
+    public:
+        FrequencyInit()
+        {
+            QueryPerformanceFrequency(&Frequency);
+        }
+        LARGE_INTEGER Frequency;
+    } ;
+
+    FrequencyInit gFrequencyInit;
+    const u64 FREQUENCY_HZ  = gFrequencyInit.Frequency.QuadPart;
+#endif
+}
+
+
 void _ARX_TIME_Init()
 {
 	if (bTimerInit)
