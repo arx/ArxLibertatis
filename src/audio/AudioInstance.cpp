@@ -162,7 +162,7 @@ aalError Instance::init() {
 	
 	streaming = (sample->length > (stream_limit_bytes * NBUFFERS));
 	
-	LogAL("Init: length=" << sample->length << " streaming=" << streaming << (buffers[0] ? " (copy)" : ""));
+	LogAL("Init: length=" << sample->length << " " << (streaming ? "streaming" : "static") << (buffers[0] ? " (copy)" : ""));
 	
 	if(!streaming && !buffers[0]) {
 		stream = CreateStream(sample->name);
