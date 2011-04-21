@@ -30,7 +30,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
-#include "io/Logger.h"
 
 using namespace std;
 
@@ -43,19 +42,18 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	Sample::Sample() : ResourceHandle(),
-		name(NULL),
 		length(0),
 		data(NULL),
 		callb_c(0), callb(NULL)
 	{
 	}
 
-	Sample::~Sample()
-	{
-		for (aalULong i(0); i < _inst.Size(); i++)
-			if (_inst[i] && _inst[i]->getSample() == this) _inst.Delete(i);
-
-		free(name);
+	Sample::~Sample() {
+		
+		for(aalULong i(0); i < _inst.Size(); i++) {
+			if(_inst[i] && _inst[i]->getSample() == this) _inst.Delete(i);
+		}
+		
 		free(callb);
 		free(data);
 	}
@@ -65,7 +63,7 @@ namespace ATHENA
 	// File I/O                                                                  //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError Sample::Load(const char * _name)
+	aalError Sample::Load(const string & _name)
 	{
 		Stream * stream = CreateStream(_name);
 
@@ -77,12 +75,7 @@ namespace ATHENA
 		stream->GetLength(length);
 		DeleteStream(stream);
 
-		void * ptr = realloc(name, strlen(_name) + 1);
-
-		if (!ptr) return AAL_ERROR_MEMORY;
-
-		name = (char *)ptr;
-		strcpy(name, _name);
+		name = _name;
 
 		return AAL_OK;
 	}
@@ -121,7 +114,7 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Sample::GetName(char * _name, const aalULong & max_char)
 	{
-		strncpy(_name, name, max_char);
+		strncpy(_name, name.c_str(), max_char);
 
 		return AAL_OK;
 	}

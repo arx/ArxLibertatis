@@ -394,73 +394,51 @@ static u32 startMs;
 	///////////////////////////////////////////////////////////////////////////////
 
 
-	aalError aalUpdate()
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
+	aalError aalUpdate() {
+		
+		if(mutex && !mutex->lock(MUTEX_TIMEOUT)) {
 			return AAL_ERROR_TIMEOUT;
-
+		}
+		
 		// Update global timer
 		session_time = Time::GetElapsedMs(startMs);
-
-		aalULong i;
-
-		unsigned long ulNb = 0;
-
+		
 		// Update instances
-		for (i = 0; i < _inst.Size(); i++)
-		{
+		for(aalULong i = 0; i < _inst.Size(); i++) {
 			Instance * instance = _inst[i];
-
-			if (instance)
-			{
+			if(instance) {
 				instance->Update();
-
-				if (instance->IsIdled())
-				{
+				if(instance->IsIdled()) {
+					LogDebug << "cleaning instance " << i;
 					_inst.Delete(i);
 				}
-				else
-				{
-					ulNb ++;
+			}
+		}
+		
+		// Update ambiances
+		for(aalULong i = 0; i < _amb.Size(); i++) {
+			Ambiance * ambiance = _amb[i];
+			if(ambiance) {
+				ambiance->Update();
+				if(ambiance->channel.flags & AAL_FLAG_AUTOFREE &&
+				   !ambiance->IsPaused() && !ambiance->IsPlaying()) {
+					_amb.Delete(i);
 				}
 			}
 		}
-
-		// Update ambiances
-		for (i = 0; i < _amb.Size(); i++)
-		{
-			Ambiance * ambiance = _amb[i];
-
-			if (ambiance)
-			{
-				ambiance->Update();
-
-				if (ambiance->channel.flags & AAL_FLAG_AUTOFREE &&
-				        !ambiance->IsPaused() && !ambiance->IsPlaying())
-					_amb.Delete(i);
-			}
-		}
-
+		
 		// Update samples
-		Sample * sample = NULL;
-
-		for (i = 0; i < _sample.Size(); i++)
-		{
-			sample = _sample[i];
-
-			if (sample && sample->IsHandled() < 1)
-			{
-				//Console_Log("- %s", sample->name);
+		for(aalULong i = 0; i < _sample.Size(); i++) {
+			Sample * sample = _sample[i];
+			if(sample && sample->IsHandled() < 1) {
 				_sample.Delete(i);
 			}
 		}
-
-		// Update output buffer with new 3D positional settings
-		// FIXME -- I don't think we need this
-		//if (listener) listener->CommitDeferredSettings();
-
-		if (mutex) mutex->unlock();
-
+		
+		if(mutex) {
+			mutex->unlock();
+		}
+		
 		return AAL_OK;
 	}
 
@@ -493,7 +471,7 @@ static u32 startMs;
 		return id;
 	}
 
-	aalSLong aalCreateSample(const char * name)
+	aalSLong aalCreateSample(const string & name)
 	{
 		
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
@@ -507,7 +485,7 @@ static u32 startMs;
 			sample = new Sample();
 		}
 
-		if ((name && sample->Load(name)) || (s_id = _sample.Add(sample)) == AAL_SFALSE)
+		if (sample->Load(name) || (s_id = _sample.Add(sample)) == AAL_SFALSE)
 		{
 			delete sample;
 
@@ -1217,7 +1195,7 @@ static u32 startMs;
 				instance->Stop();
 			} else if(channel.flags & AAL_FLAG_ENQUEUE && instance->getChannel().flags == channel.flags) {
 				LogDebug << " -> playing instance";
-				instance->Play(play_count);
+				instance->Play(play_count); // TODO this looks wrong - Play will be called twice
 			} else if(instance->IsIdled()) {
 				LogDebug << " -> resetting instance";
 				instance->SetMixer(channel.mixer);
@@ -1256,7 +1234,6 @@ static u32 startMs;
 			}
 		}
 		
-		LogDebug << " -> playing";
 		if(instance->Play(play_count)) {
 			LogDebug << " -> error playing";
 			_inst.Delete(i_id);

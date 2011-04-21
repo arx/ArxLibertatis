@@ -57,7 +57,7 @@ namespace ATHENA {
 	};
 	
 	// Utilities
-	Stream * CreateStream(const char * name);
+	Stream * CreateStream(const std::string & name);
 	aalError DeleteStream(Stream *&stream);
 	
 } // namespace ATHENA

@@ -106,8 +106,9 @@ private:
 	/*!
 	 * Fills the given buffer with the next size bytes of audio data from the current stream.
 	 * Adjusts written and loadCount and closes the stream once loadCount reaches 0.
+	 * @param i The index of the buffer to fill.
 	 */
-	aalError fillBuffer(ALuint buffer, size_t size);
+	aalError fillBuffer(size_t i, size_t size);
 	
 	bool markAsLoaded();
 	
@@ -135,6 +136,7 @@ private:
 	
 	const static size_t NBUFFERS = 2;
 	ALuint buffers[NBUFFERS];
+	size_t bufferSizes[NBUFFERS];
 	unsigned int * refcount; // reference count for shared buffers
 	
 };

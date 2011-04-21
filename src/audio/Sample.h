@@ -46,7 +46,7 @@ namespace ATHENA {
 		~Sample();
 		
 		// File I/O
-		aalError Load(const char * name);
+		aalError Load(const std::string & name);
 		
 		// Setup
 		aalError SetCallback(aalSampleCallback func, void * data, const aalULong & time, const aalUnit & unit = AAL_UNIT_MS);
@@ -55,7 +55,7 @@ namespace ATHENA {
 		aalError GetName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
 		aalError GetLength(aalULong & length, const aalUnit & unit = AAL_UNIT_MS);
 		
-		char * name;
+		std::string name;
 		aalULong length;
 		aalFormat format;
 		void * data; // User data

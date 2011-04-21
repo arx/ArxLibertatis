@@ -36,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace ATHENA {
 
-#define ALPREFIX << "[" << id << "," << (sample ? sample->name : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
+#define ALPREFIX << "[" << (s16)GetInstanceID(id) << "," << (s16)GetSampleID(id) << "," << (sample ? sample->name : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
 
 #undef ALError
 #define ALError LogError ALPREFIX
@@ -114,6 +114,7 @@ static ALenum getALFormat(const aalFormat & format) {
 		case 16:
 			return format.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 		default:
+			LogError << "unexpected aalFormat: quality=" << format.quality;
 			arx_assert(false);
 			return 0;
 	}
@@ -126,7 +127,6 @@ aalError Instance::Init(Sample * _sample, const aalChannel & _channel) {
 	}
 	
 	sample = _sample;
-	LogAL("Init");
 	sample->Catch();
 	channel = _channel;
 	
@@ -161,10 +161,9 @@ aalError Instance::init() {
 	
 	streaming = (sample->length > (stream_limit_bytes * NBUFFERS));
 	
-	LogAL("length=" << sample->length << " streaming=" << streaming);
+	LogAL("Init: length=" << sample->length << " streaming=" << streaming << (buffers[0] ? " (copy)" : ""));
 	
 	if(!streaming && !buffers[0]) {
-		LogAL("opening sample");
 		stream = CreateStream(sample->name);
 		if(!stream) {
 			ALError << "error creating stream";
@@ -175,7 +174,9 @@ aalError Instance::init() {
 		AL_CHECK_ERROR("generating buffer")
 		arx_assert(buffers[0] != 0);
 		loadCount = 1;
-		fillBuffer(buffers[0], sample->length);
+		if(aalError error = fillBuffer(0, sample->length)) {
+			return error;
+		}
 		arx_assert(!stream && !loadCount);
 	}
 	
@@ -189,6 +190,11 @@ aalError Instance::init() {
 	
 	// Create 3D interface if required
 	if(channel.flags & FLAG_ANY_3D_FX) {
+		
+		if(sample->format.channels > 1) {
+			// TODO stereo formats don't work with positional audio
+			ALWarning << "too many channels for positional audio: " << sample->format.channels;
+		}
 		
 		SetPosition(channel.position);
 		SetVelocity(channel.velocity);
@@ -214,7 +220,6 @@ aalError Instance::fillAllBuffers() {
 	}
 	
 	if(!stream) {
-		LogAL("opening sample");
 		stream = CreateStream(sample->name);
 		if(!stream) {
 			ALError << "error creating stream";
@@ -233,12 +238,11 @@ aalError Instance::fillAllBuffers() {
 		AL_CHECK_ERROR("generating buffer")
 		arx_assert(buffers[i] != 0);
 		
-		aalError error = fillBuffer(buffers[i], stream_limit_bytes);
-		if(error != AAL_OK) {
+		if(aalError error = fillBuffer(i, stream_limit_bytes)) {
 			return error;
 		}
 		
-		LogAL("queueing buffer " << buffers[i]);
+		//LogAL("queueing buffer " << buffers[i]);
 		alSourceQueueBuffers(source, 1, &buffers[i]);
 		AL_CHECK_ERROR("queueing buffer")
 		
@@ -247,7 +251,7 @@ aalError Instance::fillAllBuffers() {
 	return AAL_OK;
 }
 
-aalError Instance::fillBuffer(ALuint buffer, size_t size) {
+aalError Instance::fillBuffer(size_t i, size_t size) {
 	
 	arx_assert(loadCount > 0);
 	
@@ -256,7 +260,7 @@ aalError Instance::fillBuffer(ALuint buffer, size_t size) {
 		size = left;
 	}
 	
-	LogAL("filling buffer " << buffer << " with " << size << " bytes");
+	//LogAL("filling buffer " << buffers[i] << " with " << size << " bytes");
 	
 	char * data = new char[size];
 	if(!data) {
@@ -274,7 +278,6 @@ aalError Instance::fillBuffer(ALuint buffer, size_t size) {
 	if(written == sample->length) {
 		written = 0;
 		if(!markAsLoaded()) {
-			LogAL("closing sample");
 			DeleteStream(stream);
 			stream = NULL;
 		} else {
@@ -291,9 +294,11 @@ aalError Instance::fillBuffer(ALuint buffer, size_t size) {
 		}
 	}
 	
-	alBufferData(buffer, getALFormat(sample->format), data, size, sample->format.frequency);
+	alBufferData(buffers[i], getALFormat(sample->format), data, size, sample->format.frequency);
 	delete[] data;
 	AL_CHECK_ERROR("setting buffer data")
+	
+	bufferSizes[i] = size;
 	
 	return AAL_OK;
 }
@@ -309,12 +314,12 @@ aalError Instance::Init(Instance * instance, const aalChannel & _channel) {
 	}
 	
 	sample = instance->sample;
-	LogAL("Init(copy)");
 	sample->Catch();
 	channel = _channel;
 	
 	arx_assert(instance->buffers[0] != 0);
 	buffers[0] = instance->buffers[0];
+	bufferSizes[0] = instance->bufferSizes[0];
 	if(!instance->refcount) {
 		instance->refcount = new unsigned int;
 		*instance->refcount = 1;
@@ -348,7 +353,7 @@ aalError Instance::clean() {
 	if(streaming) {
 		for(size_t i = 0; i < NBUFFERS; i++) {
 			if(buffers[i] && alIsBuffer(buffers[i])) {
-				LogAL("deleting buffer " << buffers[i]);
+				//LogAL("deleting buffer " << buffers[i]);
 				alDeleteBuffers(1, &buffers[i]);
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
@@ -364,7 +369,7 @@ aalError Instance::clean() {
 					delete refcount;
 					refcount = NULL;
 				}
-				LogAL("deleting buffer " << buffers[0]);
+				//LogAL("deleting buffer " << buffers[0]);
 				alDeleteBuffers(1, &buffers[0]);
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
@@ -448,11 +453,13 @@ aalError Instance::SetPan(float p) {
 		return AAL_ERROR_INIT;
 	}
 	
+	float oldPan = channel.pan;
+	
 	channel.pan = clamp(p, -1.f, 1.f);
 	
-	if(channel.pan != 0.f) {
-		ALError << "setting channel pan not supported: " << p;
-		// OpenAL doesn't have a pan feature, but it doesn't seem to be used
+	if(channel.pan != 0.f && oldPan == 0.f) {
+		ALError << "pan not supported: " << p;
+		// OpenAL doesn't have a pan feature, but it isn't used much (only in abiances?)
 	}
 	
 	return AAL_OK;
@@ -580,7 +587,7 @@ aalError Instance::Play(const aalULong & play_count) {
 	
 	if(status != PLAYING) {
 		
- 		LogAL("Play(" << play_count << ") vol=" << channel.volume);
+		LogAL("Play(" << play_count << ") vol=" << channel.volume);
 		
 		status = PLAYING;
 		
@@ -608,7 +615,7 @@ aalError Instance::Play(const aalULong & play_count) {
 		AL_CHECK_ERROR("getting queued buffer count")
 		aalULong nbuffers = MAXLOOPBUFFERS;
 		for(aalULong i = queuedBuffers; i < nbuffers && loadCount ; i++) {
-			LogAL("queueing buffer " << buffers[0]);
+			//LogAL("queueing buffer " << buffers[0]);
 			alSourceQueueBuffers(source, 1, &buffers[0]);
 			AL_CHECK_ERROR("queueing buffer")
 			markAsLoaded();
@@ -636,7 +643,7 @@ aalError Instance::Stop() {
 	if(streaming) {
 		for(size_t i = 0; i < NBUFFERS; i++) {
 			if(buffers[i] && alIsBuffer(buffers[i])) {
-				LogAL("deleting buffer " << buffers[i]);
+				//LogAL("deleting buffer " << buffers[i]);
 				alDeleteBuffers(1, &buffers[i]);
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
@@ -761,42 +768,42 @@ aalError Instance::updateBuffers() {
 	
 	aalULong oldTime = time;
 	
-	for(ALint i = 0; i < nbuffers; i++) {
+	for(ALint c = 0; c < nbuffers; c++) {
 		
 		ALuint buffer;
 		alSourceUnqueueBuffers(source, 1, &buffer);
 		AL_CHECK_ERROR("unqueueing buffer")
 		
-		ALint bufsize;
-		alGetBufferi(buffer, AL_SIZE, &bufsize);
-		AL_CHECK_ERROR("getting buffer size")
+		size_t i = 0;
+		if(streaming) {
+			for(; buffers[i] != buffer; i++) {
+				arx_assert(i < NBUFFERS);
+			}
+		}
 		
-		LogAL("done playing buffer " << buffer << " with " << bufsize << " bytes");
+		//LogAL("done playing buffer " << buffer << " (" << i << ") with " << bufferSizes[i] << " bytes");
 		
-		time += bufsize;
+		/*
+		 * We can't use the AL_SIZE buffer attribute here as it describes the internal buffer size,
+		 * which might differ from the original size as the OpenAL implementation may convert the data.
+		 */
+		time += bufferSizes[i];
 		
 		if(streaming) {
 			if(loadCount) {
-				fillBuffer(buffer, stream_limit_bytes);
-				LogAL("queueing buffer " << buffer);
+				fillBuffer(i, stream_limit_bytes);
+				//LogAL("queueing buffer " << buffer);
 				alSourceQueueBuffers(source, 1, &buffer);
 				AL_CHECK_ERROR("queueing buffer")
 			} else {
-				int deleted = 0;
-				for(size_t i = 0; i < NBUFFERS; i++) {
-					if(buffers[i] == buffer) {
-						buffers[i] = 0;
-						deleted++;
-					}
-				}
-				arx_assert(deleted == 1);
-				LogAL("deleting buffer " << buffer);
+				//LogAL("deleting buffer " << buffer);
 				alDeleteBuffers(1, &buffer);
+				buffers[i] = 0;
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
 			}
 		} else if(loadCount) {
-			LogAL("re-queueing buffer " << buffer);
+			//LogAL("re-queueing buffer " << buffer);
 			alSourceQueueBuffers(source, 1, &buffer);
 			AL_CHECK_ERROR("queueing buffer")
 			markAsLoaded();
@@ -807,10 +814,13 @@ aalError Instance::updateBuffers() {
 	
 	// Check if we are done playing.
 	
+	
+	
 	aalError ret = AAL_OK;
 	if(oldLoadCount == 0) {
 		ALint buffersQueued;
 		alGetSourcei(source, AL_BUFFERS_QUEUED, &buffersQueued);
+		AL_CHECK_ERROR("getting queued buffer count")
 		if(!buffersQueued) {
 			LogAL("done playing");
 			ret = Stop();
@@ -843,6 +853,7 @@ aalError Instance::updateBuffers() {
 	arx_assert(newRead >= 0);
 	
 	time = time - read + newRead;
+	//LogAL("Update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	read = newRead;
 	
 	arx_assert(time >= oldTime);

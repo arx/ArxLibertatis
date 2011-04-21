@@ -34,6 +34,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakManager.h"
 
+#include "platform/String.h"
+
 using namespace std;
 
 namespace ATHENA
@@ -74,7 +76,7 @@ namespace ATHENA
 	static void UpdateKeySynch(TrackKey & key);
 	static void KeyPlay(Track & track, TrackKey & key);
 	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data);
-	static void OnAmbianceSampleStop(void *, const aalSLong &, void * data);
+	static void OnAmbianceSampleEnd(void *, const aalSLong &, void * data);
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -91,6 +93,7 @@ namespace ATHENA
 
 	Ambiance::~Ambiance()
 	{
+		LogDebug << "deleting ambiance " << Logger::nullstr(name);
 		if (track_l)
 		{
 			Track * track = &track_l[track_c];
@@ -849,7 +852,7 @@ namespace ATHENA
 				if (!sample->callb_c)
 				{
 					sample->SetCallback(OnAmbianceSampleStart, track, 0, AAL_UNIT_BYTES);
-					sample->SetCallback(OnAmbianceSampleStop, track, sample->length, AAL_UNIT_BYTES);
+					sample->SetCallback(OnAmbianceSampleEnd, track, sample->length, AAL_UNIT_BYTES);
 				}
 			}
 
@@ -1122,9 +1125,18 @@ namespace ATHENA
 	// Static                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	static void FreeTrack(Track & track)
-	{
-		_sample.Delete(GetSampleID(track.s_id));
+	static void FreeTrack(Track & track) {
+		aalSLong s_id = GetSampleID(track.s_id);
+		aalSLong i_id = GetInstanceID(track.s_id);
+		LogDebug << "deleting ambiance track " << Logger::nullstr(track.name) << " with sample " << (s16)i_id << "," << (s16)s_id;
+		if(_sample.IsValid(s_id)) {
+			if(_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id]) {
+				_inst.Delete(i_id);
+			}
+			_sample[s_id]->Release();
+			LogDebug << " => remaining refcount for " << _sample[s_id]->name << ": " << _sample[s_id]->IsHandled();
+		}
+		
 		free(track.name);
 		free(track.key_l);
 	}
@@ -1246,13 +1258,14 @@ namespace ATHENA
 		key.n_start = KEY_CONTINUE;
 	}
 
-	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data)
-	{
+	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data) {
+		
 		Instance * instance = (Instance *)inst;
 		Track * track = (Track *)data;
+		arx_assert(_amb.IsValid(track->a_id));
 		TrackKey * key = &track->key_l[track->key_i];
 		aalFloat value;
-
+		
 		//aalUBool prefetch_done(AAL_UFALSE);
 		if (track->flags & TRACK_PREFETCHED)
 		{
@@ -1304,9 +1317,10 @@ namespace ATHENA
 		else instance->SetPan(UpdateSetting(key->pan));
 	}
 
-	static void OnAmbianceSampleStop(void *, const aalSLong &, void * data)
-	{
+	static void OnAmbianceSampleEnd(void *, const aalSLong &, void * data) {
+		
 		Track * track = (Track *)data;
+		arx_assert(_amb.IsValid(track->a_id));
 		Ambiance * ambiance = _amb[track->a_id];
 		TrackKey * key = &track->key_l[track->key_i];
 
