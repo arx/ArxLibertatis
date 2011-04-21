@@ -47,7 +47,7 @@ static size_t nbsources = 0;
 static size_t nbbuffers = 0;
 
 // How often to queue the buffer when looping but not streaming.
-#define MAXLOOPBUFFERS std::max(NBUFFERS, NBUFFERS * stream_limit_bytes / sample->length)
+#define MAXLOOPBUFFERS std::max(NBUFFERS, NBUFFERS * (size_t)stream_limit_bytes / (size_t)sample->length)
 
 const size_t Instance::NBUFFERS;
 
@@ -251,7 +251,7 @@ aalError Instance::fillBuffer(ALuint buffer, size_t size) {
 	
 	arx_assert(loadCount > 0);
 	
-	size_t left = std::min(size, sample->length - written);
+	size_t left = std::min(size, (size_t)sample->length - written);
 	if(loadCount == 1) {
 		size = left;
 	}
@@ -757,7 +757,7 @@ aalError Instance::updateBuffers() {
 		ALWarning << "buffer underrun detected";
 	}
 	
-	bool oldLoadCount = loadCount;
+	aalULong oldLoadCount = loadCount;
 	
 	aalULong oldTime = time;
 	
@@ -808,7 +808,7 @@ aalError Instance::updateBuffers() {
 	// Check if we are done playing.
 	
 	aalError ret = AAL_OK;
-	if(!oldLoadCount) {
+	if(oldLoadCount == 0) {
 		ALint buffersQueued;
 		alGetSourcei(source, AL_BUFFERS_QUEUED, &buffersQueued);
 		if(!buffersQueued) {

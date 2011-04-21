@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Stream.h"
 #include "audio/Lock.h"
 
+#include "core/Time.h"
+
 #include "io/Logger.h"
 
 namespace ATHENA {
@@ -64,7 +66,7 @@ Lock * mutex = NULL;
 static const aalULong MUTEX_TIMEOUT(500);
 static aalError EnableEnvironmentalAudio();
 
-static struct timespec start_timespec;
+static u32 startMs;
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -146,7 +148,8 @@ static struct timespec start_timespec;
 		free(ambiance_path), ambiance_path = NULL;
 		free(environment_path), environment_path = NULL;
 		stream_limit_ms = AAL_DEFAULT_STREAMLIMIT;
-		clock_gettime(CLOCK_REALTIME, &start_timespec);
+		
+		startMs = Time::GetMs();
 		session_time = 0;
 		is_reverb_present = AAL_UFALSE;
 
@@ -397,11 +400,7 @@ static struct timespec start_timespec;
 			return AAL_ERROR_TIMEOUT;
 
 		// Update global timer
-		struct timespec ts;
-		clock_gettime(CLOCK_REALTIME, &ts);
-		unsigned long elapsed_seconds = ts.tv_sec - start_timespec.tv_sec;
-		unsigned long elapsed_nseconds = ts.tv_nsec - start_timespec.tv_nsec;
-		session_time = elapsed_seconds * 1000 + elapsed_nseconds / 1000000;
+		session_time = Time::GetElapsedMs(startMs);
 
 		aalULong i;
 
@@ -803,25 +802,25 @@ static struct timespec start_timespec;
 		return AAL_OK;
 	}
 
-aalError aalSetListenerDirection(const aalVector & front, const aalVector & up) {
+	aalError aalSetListenerDirection(const aalVector & front, const aalVector & up) {
 	
-	// Invert up vector to fix left-right inversion
-	ALfloat orientation[] = { front.x, front.y, front.z, -up.x, -up.y, -up.z };
-	if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-		return AAL_ERROR_TIMEOUT;
-	
-	alListenerfv(AL_ORIENTATION, orientation);
-	AL_CHECK_ERROR_N("setting listener orientation",
-		if (mutex) mutex->unlock();
-		return AAL_ERROR_SYSTEM;
-	)
-	
-	if(mutex) {
-		mutex->unlock();
+		// Invert up vector to fix left-right inversion
+		ALfloat orientation[] = {front.x, front.y, front.z, -up.x, -up.y, -up.z};
+		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
+			return AAL_ERROR_TIMEOUT;
+
+		alListenerfv(AL_ORIENTATION, orientation);
+		AL_CHECK_ERROR_N("setting listener orientation",
+			if (mutex) mutex->unlock();
+			return AAL_ERROR_SYSTEM;
+		)
+
+	    if(mutex) {
+		    mutex->unlock();
+	    }
+
+		return AAL_OK;
 	}
-	
-	return AAL_OK;
-}
 
 	aalError aalSetListenerEnvironment(const aalSLong & e_id)
 	{
