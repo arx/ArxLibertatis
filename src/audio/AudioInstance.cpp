@@ -464,8 +464,8 @@ aalError Instance::SetPan(float p) {
 	channel.pan = clamp(p, -1.f, 1.f);
 	
 	if(channel.pan != 0.f && oldPan == 0.f) {
-		ALError << "pan not supported: " << p;
-		// OpenAL doesn't have a pan feature, but it isn't used much (only in abiances?)
+		// TODO OpenAL doesn't have a pan feature, but it isn't used much (only in abiances?)
+		ALWarning << "pan not supported: " << p;
 	}
 	
 	return AAL_OK;
