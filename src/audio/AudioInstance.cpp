@@ -42,6 +42,7 @@ namespace ATHENA {
 #define ALError LogError ALPREFIX
 #define ALWarning LogWarning ALPREFIX
 #define LogAL(x) LogDebug ALPREFIX << x
+#define TraceAL(x) (void)0
 
 static size_t nbsources = 0;
 static size_t nbbuffers = 0;
@@ -242,7 +243,7 @@ aalError Instance::fillAllBuffers() {
 			return error;
 		}
 		
-		//LogAL("queueing buffer " << buffers[i]);
+		TraceAL("queueing buffer " << buffers[i]);
 		alSourceQueueBuffers(source, 1, &buffers[i]);
 		AL_CHECK_ERROR("queueing buffer")
 		
@@ -260,7 +261,7 @@ aalError Instance::fillBuffer(size_t i, size_t size) {
 		size = left;
 	}
 	
-	//LogAL("filling buffer " << buffers[i] << " with " << size << " bytes");
+	TraceAL("filling buffer " << buffers[i] << " with " << size << " bytes");
 	
 	char * data = new char[size];
 	if(!data) {
@@ -353,7 +354,7 @@ aalError Instance::clean() {
 	if(streaming) {
 		for(size_t i = 0; i < NBUFFERS; i++) {
 			if(buffers[i] && alIsBuffer(buffers[i])) {
-				//LogAL("deleting buffer " << buffers[i]);
+				TraceAL("deleting buffer " << buffers[i]);
 				alDeleteBuffers(1, &buffers[i]);
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
@@ -369,7 +370,7 @@ aalError Instance::clean() {
 					delete refcount;
 					refcount = NULL;
 				}
-				//LogAL("deleting buffer " << buffers[0]);
+				TraceAL("deleting buffer " << buffers[0]);
 				alDeleteBuffers(1, &buffers[0]);
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
@@ -556,7 +557,7 @@ aalError Instance::SetEnvironment(aalSLong environment) {
 	
 	channel.environment = environment;
 	
-	// TODO
+	// TODO implement evironments (effects)
 	return AAL_ERROR_SYSTEM;
 }
 
@@ -620,7 +621,7 @@ aalError Instance::Play(const aalULong & play_count) {
 		AL_CHECK_ERROR("getting queued buffer count")
 		aalULong nbuffers = MAXLOOPBUFFERS;
 		for(aalULong i = queuedBuffers; i < nbuffers && loadCount ; i++) {
-			//LogAL("queueing buffer " << buffers[0]);
+			TraceAL("queueing buffer " << buffers[0]);
 			alSourceQueueBuffers(source, 1, &buffers[0]);
 			AL_CHECK_ERROR("queueing buffer")
 			markAsLoaded();
@@ -648,7 +649,7 @@ aalError Instance::Stop() {
 	if(streaming) {
 		for(size_t i = 0; i < NBUFFERS; i++) {
 			if(buffers[i] && alIsBuffer(buffers[i])) {
-				//LogAL("deleting buffer " << buffers[i]);
+				TraceAL("deleting buffer " << buffers[i]);
 				alDeleteBuffers(1, &buffers[i]);
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
@@ -786,7 +787,7 @@ aalError Instance::updateBuffers() {
 			}
 		}
 		
-		//LogAL("done playing buffer " << buffer << " (" << i << ") with " << bufferSizes[i] << " bytes");
+		TraceAL("done playing buffer " << buffer << " (" << i << ") with " << bufferSizes[i] << " bytes");
 		
 		/*
 		 * We can't use the AL_SIZE buffer attribute here as it describes the internal buffer size,
@@ -797,18 +798,18 @@ aalError Instance::updateBuffers() {
 		if(streaming) {
 			if(loadCount) {
 				fillBuffer(i, stream_limit_bytes);
-				//LogAL("queueing buffer " << buffer);
+				TraceAL("queueing buffer " << buffer);
 				alSourceQueueBuffers(source, 1, &buffer);
 				AL_CHECK_ERROR("queueing buffer")
 			} else {
-				//LogAL("deleting buffer " << buffer);
+				TraceAL("deleting buffer " << buffer);
 				alDeleteBuffers(1, &buffer);
 				buffers[i] = 0;
 				nbbuffers--;
 				AL_CHECK_ERROR("deleting buffer")
 			}
 		} else if(loadCount) {
-			//LogAL("re-queueing buffer " << buffer);
+			TraceAL("re-queueing buffer " << buffer);
 			alSourceQueueBuffers(source, 1, &buffer);
 			AL_CHECK_ERROR("queueing buffer")
 			markAsLoaded();
@@ -858,7 +859,7 @@ aalError Instance::updateBuffers() {
 	arx_assert(newRead >= 0);
 	
 	time = time - read + newRead;
-	//LogAL("Update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
+	TraceAL("Update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	read = newRead;
 	
 	arx_assert(time >= oldTime);
