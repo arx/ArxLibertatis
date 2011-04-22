@@ -22,13 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef ARX_HERMES_PAKENTRY_H
-#define ARX_HERMES_PAKENTRY_H
+
+#ifndef ARX_IO_PAKENTRY_H
+#define ARX_IO_PAKENTRY_H
 
 class HashMap;
 
 #include <stddef.h>
-
 #include <string>
 
 #define PAK_FILE_COMPRESSED 1
@@ -89,4 +89,4 @@ public:
 
 char * EVEF_GetDirName(const char * dirplusname);
 
-#endif // ARX_HERMES_PAKENTRY_H
+#endif // ARX_IO_PAKENTRY_H
