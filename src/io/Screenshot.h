@@ -22,34 +22,35 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef ARX_SNAPSHOT_H
-#define ARX_SNAPSHOT_H
 
-#include "platform/Platform.h"
+#ifndef ARX_IO_SCREENSHOT_H
+#define ARX_IO_SCREENSHOT_H
 
-class SnapShot
-{
-	public:
-		char		*	pName;
-		unsigned long	ulNum;
-	public:
-		SnapShot(const char *, const char *, bool _bReplace = false);
-		~SnapShot();
-
-		bool GetSnapShot();
-		bool GetSnapShotDim(int, int);
+class SnapShot {
+	
+private:
+	
+	char * pName;
+	unsigned long ulNum;
+	
+public:
+	
+	SnapShot(const char *, const char *, bool _bReplace = false);
+	~SnapShot();
+	
+	bool GetSnapShot();
+	bool GetSnapShotDim(int, int);
+	
 };
 
-//-----------------------------------------------------------------------------
-struct SNAPSHOTINFO
-{
-	long	imgsec;
-	long	xsize;
-	long	ysize;
-	long	bits;
-	char	filenames[256];
-	char	path[512];
-	long	flag;
+struct SNAPSHOTINFO {
+	long imgsec;
+	long xsize;
+	long ysize;
+	long bits;
+	char filenames[256];
+	char path[512];
+	long flag;
 };
 
 extern SNAPSHOTINFO snapshotdata;
@@ -58,4 +59,4 @@ void InitSnapShot(const char *, const char *);
 void GetSnapShot();
 void FreeSnapShot();
 
-#endif
+#endif // ARX_IO_SCREENSHOT_H

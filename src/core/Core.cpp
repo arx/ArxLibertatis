@@ -166,7 +166,6 @@ extern float FORCE_TIME_RESTORE;
 extern CDirectInput		*pGetInfoDirectInput;
 extern CMenuConfig		*pMenuConfig;
 extern CMenuState		*pMenu;
-extern SNAPSHOTINFO		snapshotdata;
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern HWND		PRECALC;
