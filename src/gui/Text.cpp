@@ -63,11 +63,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Unicode.hpp"
 
 #include "gui/Interface.h"
+#include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
 #include "graphics/Renderer.h"
 #include "graphics/effects/Fog.h"
+#include "graphics/font/FontCache.h"
 
 #include "io/Filesystem.h"
 #include "io/Logger.h"
@@ -80,7 +82,6 @@ TextManager * pTextManageFlyingOver;
 
 //-----------------------------------------------------------------------------
 Font* hFontInBook	= NULL;
-Font* hFontRedist	= NULL;
 Font* hFontMainMenu = NULL;
 Font* hFontMenu		= NULL;
 Font* hFontControls = NULL;
@@ -305,11 +306,8 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
 void ARX_Allocate_Text( std::string& dest, const std::string& id_string) {
-	std::string output;
-	PAK_UNICODE_GetPrivateProfileString(id_string, "default", output);
-	dest = output;
+	PAK_UNICODE_GetPrivateProfileString(id_string, "default", dest);
 }
 
 Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned int fontSize, float scaleFactor = Yratio)
@@ -372,9 +370,6 @@ void ARX_Text_Init()
 	hFontCredits  = _CreateFont(strInMenuFont, "system_font_menucredits_size", 36);
 	LogInfo << "Created hFontCredits, size " << hFontCredits->GetSize();
 
-	hFontRedist   = _CreateFont(strInGameFont, "system_font_redist_size", 18);
-	LogInfo << "Created hFontRedist, size " << hFontRedist->GetSize();
-
 	// Keep small font small when increasing resolution
 	float smallFontRatio = Yratio > 1.0f ? Yratio * 0.8f : Yratio;
 
@@ -401,9 +396,6 @@ void ARX_Text_Close()
 
 	FontCache::ReleaseFont(hFontInBook);
 	hFontInBook = NULL;
-	
-	FontCache::ReleaseFont(hFontRedist);
-	hFontRedist = NULL;
 	
 	FontCache::ReleaseFont(hFontMainMenu);
 	hFontMainMenu = NULL;

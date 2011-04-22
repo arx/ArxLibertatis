@@ -11,6 +11,7 @@
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
+#include "graphics/font/Font.h"
 
 #include "io/Logger.h"
 
