@@ -164,8 +164,6 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 	ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
 	ptcTexture->ulMaxVertexListCull_TMetal = 0;
 
-	ptcTexture->vPolyBump.clear();
-	ptcTexture->vPolyInterBump.clear();
 	ptcTexture->vPolyInterZMap.clear();
 	ptcTexture->vPolyZMap.clear();
 
@@ -221,7 +219,6 @@ TextureContainer::TextureContainer(const std::string& strName, TextureContainer:
 	m_dwFlags		= flags;
 
 	m_pTexture = NULL;
-	m_pTextureBump = NULL;
 
 	userflags = 0;
 	TextureRefinement = NULL;
@@ -266,8 +263,6 @@ TextureContainer::TextureContainer(const std::string& strName, TextureContainer:
 
 	tMatRoom = NULL;
 
-	vPolyBump.clear();
-	vPolyInterBump.clear();
 	vPolyInterZMap.clear();
 	vPolyZMap.clear();
 }
@@ -275,7 +270,6 @@ TextureContainer::TextureContainer(const std::string& strName, TextureContainer:
 TextureContainer::~TextureContainer()
 {
 	delete m_pTexture;
-	delete m_pTextureBump;
 
 	if (delayed)
 	{
@@ -551,16 +545,4 @@ void TextureContainer::LookForRefinementMap(TextureContainer::TCFlags flags)
 		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
 		TextureRefinement = TextureContainer::Load(str2, flags);
 	}
-}
-
-bool EERIE_USES_BUMP_MAP = false;
-
-void EERIE_ActivateBump(void)
-{
-	EERIE_USES_BUMP_MAP = true;
-}
-
-void EERIE_DesactivateBump(void)
-{
-	EERIE_USES_BUMP_MAP = false;
 }

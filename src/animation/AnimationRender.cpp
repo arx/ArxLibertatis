@@ -68,7 +68,6 @@ extern		long		USEINTERNORM;
 extern 		long 		INTER_DRAW;
 
 extern		float		dists[];
-extern bool bALLOW_BUMP;
 extern long BH_MODE;
 extern int iHighLight;
 
@@ -1255,7 +1254,7 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 	}
 }
 
-int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bBump, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB)
+int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB)
 {
 	int iPointAdd = 3;
 	int iClipp = 0;
@@ -1351,11 +1350,6 @@ int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VER
 	if (pD3DPointAdd)
 	{
 		*_ptV = ptV;
-
-		if (_bBump)
-		{
-			PushInterBump(_pTex, pD3DPointAdd);
-		}
 
 		if (_bZMapp)
 		{
@@ -1701,10 +1695,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 	}
 
 	{
-		bool bBumpOnIO;
-		float fDist		= EEDistance3D(pos, &ACTIVECAM->pos);
-		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < min( max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
-
 		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
 		{
 			ARX_D3DVERTEX	* tv			= NULL;
@@ -1867,7 +1857,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 			                                   eface,
 			                                   invisibility,
 			                                   pTex,
-			                                   bBumpOnIO,
 			                                   (io) && (io->ioflags & IO_ZMAP),
 			                                   eobj,
 			                                   i,
@@ -1879,11 +1868,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 			{
 				*pNb -= 3;
 				continue;
-			}
-
-			if (bBumpOnIO)
-			{
-				PushInterBump(pTex, tv);
 			}
 
 			if ((io) && (io->ioflags & IO_ZMAP))

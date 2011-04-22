@@ -240,18 +240,6 @@ void ARXMenu_Options_Video_SetTextureQuality(int _iQuality)
 }
 
 //-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetBump(bool & _bEnable)
-{
-	_bEnable = pMenuConfig->bBumpMapping;
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetBump(bool _bEnable)
-{
-	pMenuConfig->bNewBumpMapping = _bEnable;
-}
-
-//-----------------------------------------------------------------------------
 void SetGammaLumContrast()
 {
 	if (!pMenuConfig) return;

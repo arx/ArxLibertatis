@@ -49,8 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define EERIE_NOCOUNT	0x4000	// do not incr EERIEDrawnPolys for EERIEDRAWPRIM
 
-#define MAX_DIST_BUMP	600.f
-
 #include "graphics/d3dwrapper.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
@@ -76,7 +74,6 @@ HRESULT EERIEDRAWPRIM(D3DPRIMITIVETYPE dptPrimitiveType,
                       long flags = 0					//eerie flag
                      );
 
-void EERIE_DrawPolyBump(EERIEPOLY * ep, float alpha);
 void EERIEDrawLine(float x, float y, float x1, float y1, float z, D3DCOLOR col);
 void EERIEDrawCircle(float x0, float y0, float r, D3DCOLOR col, float z);
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, D3DCOLOR col);

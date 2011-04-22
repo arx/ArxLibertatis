@@ -92,12 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-//-----------------------------------------------------------------------------
-void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex);
-void PopOneInterBump(TextureContainer *_pTex);
-//-----------------------------------------------------------------------------
-
-#define MAX_DIST_BUMP_INTER (400.f)
 extern float IN_FRONT_DIVIDER_ITEMS;
 long MAX_LLIGHTS=18;
 //-----------------------------------------------------------------------------
@@ -112,11 +106,9 @@ extern long INTER_DRAW;
 extern long INTER_COMPUTE;
 extern long FRAME_COUNT;
 extern unsigned long ulBKGColor;
-extern bool bALLOW_BUMP;
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;	// VB using TLVERTEX format.
-extern CMY_DYNAMIC_VERTEXBUFFER* pDynamicVertexBufferBump;		// VB for Bump Mapping (duplicate pDynamicVertexBuffer).
 extern long ZMAPMODE;
 extern float fZFogStart;
 //-----------------------------------------------------------------------------
@@ -150,8 +142,6 @@ long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 int iNbD3DTLVERTEXTab;
 SMY_D3DVERTEX3_T tD3DTLVERTEXTab[4000];
 D3DTLVERTEX tD3DTLVERTEXTab2[4000];
-
-void CalculTriangleBump( const D3DTLVERTEX& v0, const D3DTLVERTEX& v1, const D3DTLVERTEX& v2, float *du, float *dv );
 
 extern long EXTERNALVIEW;
 void EERIE_ANIM_Get_Scale_Invisibility(INTERACTIVE_OBJ * io,float &invisibility,float &scale)
@@ -1035,120 +1025,12 @@ void PopAllTriangleListTransparency()
 		//ZMAP
 		PopOneInterZMapp(pTex);
 
-		//BUMP
-		PopOneInterBump(pTex);
-
 		pTex=pTex->m_pNext;
 	}
 
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-}
-
-//-----------------------------------------------------------------------------
-void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex)
-{
-	_pTex->vPolyInterBump.push_back(_pVertex[0]);
-	_pTex->vPolyInterBump.push_back(_pVertex[1]);
-	_pTex->vPolyInterBump.push_back(_pVertex[2]);
-}
-
-//-----------------------------------------------------------------------------
-void PopOneInterBump(TextureContainer *_pTex)
-{
-	//BUMP
-	if( _pTex->vPolyInterBump.size() )
-	{
-		//----------------------------------------------------------------------------------
-		//																		Initializing
-		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
-		GRenderer->SetTexture(0, _pTex->m_pTextureBump);
-		GRenderer->SetTexture(1, _pTex->m_pTextureBump);
-		GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
-		
-		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
-		GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
-		GRenderer->GetTextureStage(1)->DisableAlpha();
-		GRenderer->GetTextureStage(2)->DisableColor();
-
-		//----------------------------------------------------------------------------------
-		//																				Loop
-		iNbD3DTLVERTEXTab	=	0;
-		vector<D3DTLVERTEX>::iterator iT;
-
-		for( iT = _pTex->vPolyInterBump.begin() ; iT < _pTex->vPolyInterBump.end() ;  )
-		{
-			D3DTLVERTEX pVertexS[3];
-
-			pVertexS[0]	=	*iT;	iT++;
-			pVertexS[1]	=	*iT;	iT++;
-			pVertexS[2]	=	*iT;	iT++;
-			
-			if(	!pVertexS[0].color&&
-				!pVertexS[1].color&&
-				!pVertexS[2].color) continue;
-			
-			float fDu, fDv;
-			CalculTriangleBump( pVertexS[0], pVertexS[1], pVertexS[2], &fDu, &fDv );
-			fDu			*=	.8f;
-			fDv			*=	.8f;
-
-			SMY_D3DVERTEX3_T *pVertex;
-			pVertex=&tD3DTLVERTEXTab[iNbD3DTLVERTEXTab];
-			iNbD3DTLVERTEXTab	+=	3;
-			
-			if( iNbD3DTLVERTEXTab > 4000 )
-			{
-				//----------------------------------------------------------------------------------
-				//																			Flushing
-				iNbD3DTLVERTEXTab-=3;
-				
-				EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
-								FVF_D3DVERTEX3_T,
-								tD3DTLVERTEXTab,
-								iNbD3DTLVERTEXTab,
-								0, 0 );
-			
-				iNbD3DTLVERTEXTab	=	3;
-				pVertex				=	tD3DTLVERTEXTab;
-			}
-			
-			for (int idx = 0 ; idx < 3 ; ++idx)
-			{
-				pVertex->x		=	pVertexS[idx].sx;
-				pVertex->y		=	pVertexS[idx].sy;
-				pVertex->z		=	pVertexS[idx].sz;
-				pVertex->rhw	=	pVertexS[idx].rhw;
-				pVertex->color	=	pVertexS[idx].color;
-				pVertex->tu		=	pVertexS[idx].tu;
-				pVertex->tv		=	pVertexS[idx].tv;
-				pVertex->tu2	=	pVertexS[idx].tu + fDu;
-				pVertex->tv2	=	pVertexS[idx].tv + fDv;
-				pVertex++;
-			}
-		}
-		
-		//----------------------------------------------------------------------------------
-		//																	Drawing BUMP tex
-		if( iNbD3DTLVERTEXTab )
-		{
-			EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
-							FVF_D3DVERTEX3_T,
-							tD3DTLVERTEXTab,
-							iNbD3DTLVERTEXTab,
-							0, 0 );
-
-			iNbD3DTLVERTEXTab	=	0;
-		}
-
-		//----------------------------------------------------------------------------------
-		//																			  Ending
-		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-		GRenderer->GetTextureStage(1)->DisableColor();
-		GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
-		_pTex->vPolyInterBump.clear();
-	}
 }
 
 float INVISIBILITY_OVERRIDE=0.f;
@@ -1206,7 +1088,7 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 }
 
 //-----------------------------------------------------------------------------
-int ARX_SoftClippZ(EERIE_VERTEX *_pVertex1,EERIE_VERTEX *_pVertex2,EERIE_VERTEX *_pVertex3,D3DTLVERTEX **_ptV,EERIE_FACE *_pFace,float _fInvibility,TextureContainer *_pTex,bool _bBump,bool _bZMapp,EERIE_3DOBJ *_pObj,int _iNumFace,long *_pInd,INTERACTIVE_OBJ *_pioInteractive,bool _bNPC,long _lSpecialColorFlag,EERIE_RGB *_pRGB);
+int ARX_SoftClippZ(EERIE_VERTEX *_pVertex1,EERIE_VERTEX *_pVertex2,EERIE_VERTEX *_pVertex3,D3DTLVERTEX **_ptV,EERIE_FACE *_pFace,float _fInvibility,TextureContainer *_pTex,bool _bZMapp,EERIE_3DOBJ *_pObj,int _iNumFace,long *_pInd,INTERACTIVE_OBJ *_pioInteractive,bool _bNPC,long _lSpecialColorFlag,EERIE_RGB *_pRGB);
 extern EERIEMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 //-----------------------------------------------------------------------------
@@ -1637,10 +1519,8 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 		}
 	}
 
-	bool bBumpOnIO;
 	float fDist;
 	fDist=EEDistance3D(&pos,&ACTIVECAM->pos);
-	bBumpOnIO=(bALLOW_BUMP)&&(io)&&(io->ioflags&IO_BUMP)&&(fDist<min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),600.f))?true:false;
 
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
@@ -1898,7 +1778,6 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 						&eobj->facelist[i],
 						invisibility,
 						pTex,
-						bBumpOnIO,
 						(io)&&(io->ioflags&IO_ZMAP),
 						eobj,
 						i,
@@ -1910,11 +1789,6 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 	{
 		*pNbVertexPush-=3;
 		continue;
-	}
-
-	if(bBumpOnIO)
-	{
-		PushInterBump(pTex,vert_list);
 	}
 
 	if((io)&&(io->ioflags&IO_ZMAP))

@@ -77,8 +77,6 @@ extern long REFLECTFX;
 extern long WATERFX;
 extern TextureContainer * enviro;
 extern float FrameTime;
-extern EERIE_3D e3dPosBump;
-extern bool bALLOW_BUMP;
 
 /*---------------------------------------------------------------------------------------------------------*/
 struct D3DTLVERTEX2UV
@@ -562,28 +560,8 @@ void Delayed_FlushAll()
 					}
 				}
 					
-#define ONE_ONE_MAX_DIST_BUMP	(1.f/MAX_DIST_BUMP)
-#define MAX_BUMP				.8f
-
-				if (bALLOW_BUMP && ep->tex &&ep->tex->m_pTextureBump)
-					{
-						float fDx=e3dPosBump.x-ep->center.x;
-						float fDy=e3dPosBump.y-ep->center.y;
-						float fDz=e3dPosBump.z-ep->center.z;
-						float fDist=(fDx*fDx)+(fDy*fDy)+(fDz*fDz);
-
-						if(fDist<=(MAX_DIST_BUMP*MAX_DIST_BUMP))	//6 metres
-						{
-							fDist=(float)sqrt(fDist);
-							EERIE_DrawPolyBump(ep,MAX_BUMP*(MAX_DIST_BUMP-fDist)*ONE_ONE_MAX_DIST_BUMP);
-							EERIEDrawnPolys++;
-
-						}
-
-					}
-
-					GRenderer->SetTexture(0, ptcTexture);				
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
+				GRenderer->SetTexture(0, ptcTexture);				
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 			}				
 			
 			if (ZMAPMODE)
@@ -704,119 +682,6 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 	DELAYED_PRIM * del=(DELAYED_PRIM *)tc->delayed;
 	del[tc->delayed_nb].data=ep;
 	tc->delayed_nb++;
-}
-
-/* To Keep...
-					if ((REFLECTFX) && enviro)
-					{
-						GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
-						D3DTLVERTEX verts[4];
-						GRenderer->SetTexture(enviro);
-						for (long i=0;i<to;i++)
-						{
-							verts[i].sx=ep->tv[i].sx;
-							verts[i].sy=ep->tv[i].sy;
-							verts[i].sz=ep->tv[i].sz;
-							verts[i].rhw=ep->tv[i].rhw;
-							verts[i].color=0xFFFFFFFF;
-							verts[i].tu=(ep->v[i].sx-ep->tv[i].sx)*( 1.0f / 800 )+(EEsin((ep->v[i].sx-ep->tv[i].sx)*( 1.0f / 200 ))*( 1.0f / 8 ))*ep->tv[i].rhw;
-							verts[i].tv=(ep->v[i].sz-ep->tv[i].sy)*( 1.0f / 800 )+(EEcos((ep->v[i].sz-ep->tv[i].sy)*( 1.0f / 200 ))*( 1.0f / 8 ))*ep->tv[i].rhw;						
-						}
-						EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0,1,ep);
-					}*/
-
-/*---------------------------------------------------------------------------------------------------------*/
-
-void CalculTriangleBump(const D3DTLVERTEX& v0,const D3DTLVERTEX& v1,const D3DTLVERTEX& v2,float *du,float *dv)
-{
-float duab,duac,dvab,dvac,s1,s2,s3;
-
-	duab	=	v1.tu - v0.tu + .3f;
-	dvab	=	v1.tv - v0.tv - .3f;
-	duac	=	v2.tu - v0.tu + .3f;
-	dvac	=	v2.tv - v0.tv - .3f;
-
-	s1		=	( (float)( ( (v0.color >> 16) & 0xFF ) + ( (v0.color >> 8) & 0xFF ) + (v0.color & 0xFF) ) ) * ( .1f / (3.f * 255.f) );
-	s2		=	( (float)( ( (v1.color >> 16) & 0xFF ) + ( (v1.color >> 8) & 0xFF ) + (v1.color & 0xFF) ) ) * ( .1f / (3.f * 255.f) );
-	s3		=	( (float)( ( (v2.color >> 16) & 0xFF ) + ( (v2.color >> 8) & 0xFF ) + (v2.color & 0xFF) ) ) * ( .1f / (3.f * 255.f) );
-	
-	s2-=s1;
-	s3-=s1;
-	
-	duab*=s2;
-	dvab*=s2;
-	duac*=s3;
-	dvac*=s3;
-	
-	duab+=dvac;
-	dvab+=dvac;
-
-	*du=duab;
-	*dv=dvab;
-}
-
-/*---------------------------------------------------------------------------------------------------------*/
-void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
-{
-	float du, dv;
-
-	if(	(!ep->tv[0].color)&&
-		(!ep->tv[1].color)&&
-		(!ep->tv[2].color) ) return;
-
-	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
-	GRenderer->SetTexture(0, ep->tex);
-
-	CalculTriangleBump( ep->tv[0], ep->tv[1], ep->tv[2], &du, &dv );
-	du*=alpha;
-	dv*=alpha;
-	
-	D3DTLVERTEX2UV	v[4];
-
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
-
-	GRenderer->SetTexture(1, ep->tex->m_pTextureBump);
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
-	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture | TextureStage::ArgComplement), TextureStage::ArgCurrent);
-	
-	GRenderer->GetTextureStage(0)->DisableAlpha();
-	GRenderer->GetTextureStage(1)->DisableAlpha();
-	GRenderer->GetTextureStage(2)->DisableColor();
-	
-	*((D3DTLVERTEX*)(v))=ep->tv[0];
-	v->tu2=ep->tv[0].tu+du;
-	v->tv2=ep->tv[0].tv+dv;
-	*((D3DTLVERTEX*)(v+1))=ep->tv[1];
-	(v+1)->tu2=ep->tv[1].tu+du;
-	(v+1)->tv2=ep->tv[1].tv+dv;
-	*((D3DTLVERTEX*)(v+2))=ep->tv[2];
-	(v+2)->tu2=ep->tv[2].tu+du;
-	(v+2)->tv2=ep->tv[2].tv+dv;
-
-	if(ep->type&POLY_QUAD)
-	{
-		*((D3DTLVERTEX*)(v+3))=ep->tv[3];
-		(v+3)->tu2=ep->tv[3].tu+du;
-		(v+3)->tv2=ep->tv[3].tv+dv;
-	
-		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 4, 0, EERIE_NOCOUNT );
-	}
-	else
-	{
-		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 3, 0, EERIE_NOCOUNT );
-	}
-
-	
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
-
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
-	GRenderer->SetRenderState(Renderer::DepthWrite, true); 
 }
 
 //*************************************************************************************

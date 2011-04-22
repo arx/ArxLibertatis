@@ -121,7 +121,6 @@ long LAST_PORTALS_COUNT=0;
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
 extern bool bRenderInterList;
-extern bool bALLOW_BUMP;
 extern unsigned long ulBKGColor;
 extern CDirectInput *pGetInfoDirectInput;
 extern CMenuConfig *pMenuConfig;
@@ -155,10 +154,8 @@ long iTotPoly;
 unsigned long FrameCount;
 
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
-CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferBump;			// VB based on pDynamicVertexBuffer (for BUMP only).
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;	// VB using TLVERTEX format.
-CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_D3DVERTEX3_T;// VB using D3DVERTEX3_T format (for BUMP).
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
 EERIE_FRUSTRUM_PLANE efpPlaneFar;
@@ -340,13 +337,6 @@ HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType,
 													_piNbVertex,
 													_dwFlags,
 													pDynamicVertexBuffer);
-			break;
-		case FVF_D3DVERTEX3_T:
-			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
-													(SMY_D3DVERTEX3_T*) _pVertex,
-													_piNbVertex,
-													_dwFlags,
-													pDynamicVertexBuffer_D3DVERTEX3_T);
 			break;
 		default:
 			printf("FVF is not supported by ARX_DrawPrimitiveVB\n");
@@ -1116,20 +1106,6 @@ void ARX_PORTALS_InitDrawnRooms()
 		pDynamicVertexBuffer_TLVERTEX->Lock(DDLOCK_DISCARDCONTENTS);
 		pDynamicVertexBuffer_TLVERTEX->UnLock();
 		pDynamicVertexBuffer_TLVERTEX->ussNbVertex=0;
-	}
-
-	if (pDynamicVertexBufferBump)
-	{
-		pDynamicVertexBufferBump->Lock(DDLOCK_DISCARDCONTENTS);
-		pDynamicVertexBufferBump->UnLock();
-		pDynamicVertexBufferBump->ussNbVertex=0;
-}
-
-	if (pDynamicVertexBuffer_D3DVERTEX3_T)
-	{
-		pDynamicVertexBuffer_D3DVERTEX3_T->Lock(DDLOCK_DISCARDCONTENTS);
-		pDynamicVertexBuffer_D3DVERTEX3_T->UnLock();
-		pDynamicVertexBuffer_D3DVERTEX3_T->ussNbVertex=0;
 	}
 }
 bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
@@ -2289,8 +2265,6 @@ SMY_D3DVERTEX *pMyVertex;
 		EERIEPOLY * ep;
 		EP_DATA *pEPDATA = &portals->room[room_num].epdata[0];
 
-		float fDistBump=min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),MAX_DIST_BUMP);
-
 		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++)
 		{
 
@@ -2342,7 +2316,7 @@ SMY_D3DVERTEX *pMyVertex;
 				continue;
 			}
 
-			//Clipp ZNear + Distance pour les ZMapps et Bump!!!
+			//Clipp ZNear + Distance pour les ZMapps!!!
 			float fDist=(ep->center.x*efpPlaneNear.a + ep->center.y*efpPlaneNear.b + ep->center.z*efpPlaneNear.c + efpPlaneNear.d);
 
 			if(ep->v[0].rhw<-fDist)
@@ -2610,14 +2584,6 @@ SMY_D3DVERTEX *pMyVertex;
 					}
 				}
 			}
-
-			if( bALLOW_BUMP )
-			{
-				if( (fDist < fDistBump) && (ep->tex->m_pTextureBump ) )
-				{
-					ep->tex->vPolyBump.push_back(ep);
-				}
-			}
 		}
 
 		portals->room[room_num].pVertexBuffer->Unlock();
@@ -2814,8 +2780,6 @@ SMY_D3DVERTEX *pMyVertex;
 	}
 }
 
-void CalculTriangleBump( const D3DTLVERTEX& v0, const D3DTLVERTEX& v1, const D3DTLVERTEX& v2, float *du, float *dv );
-
 //-----------------------------------------------------------------------------
 
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
@@ -2829,147 +2793,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 		while(iNbTex--)
 		{
 			TextureContainer *pTexCurr=*ppTexCurr;
-
-			//BUMP
-			if( ( bALLOW_BUMP ) && ( pTexCurr->vPolyBump.size() ) )
-			{
-				//----------------------------------------------------------------------------------
-				//																		Initializing
-				CMY_DYNAMIC_VERTEXBUFFER* pDVB	=	pDynamicVertexBufferBump;
-				SetZBias( 0 );
-	
-				int				iOldNbVertex	=	pDVB->ussNbVertex;
-				pDVB->ussNbIndice				=	0;
-				SMY_D3DVERTEX3*	pVertex			=	(SMY_D3DVERTEX3*)pDVB->Lock( DDLOCK_NOOVERWRITE );
-				pVertex							+=	iOldNbVertex;
-				
-				unsigned short *pussInd			=	pDVB->pussIndice;
-				unsigned short iNbIndice = 0;
-				
-				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
-				
-				GRenderer->SetTexture(0, pTexCurr->m_pTextureBump);
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
-
-				GRenderer->SetTexture(1, pTexCurr->m_pTextureBump);
-				GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
-				GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture|TextureStage::ArgComplement), TextureStage::ArgCurrent);
-				GRenderer->GetTextureStage(1)->DisableAlpha();
-                GRenderer->GetTextureStage(2)->DisableColor();
-	
-				//----------------------------------------------------------------------------------
-				//																				Loop
-				for( vector<EERIEPOLY*>::iterator iT = pTexCurr->vPolyBump.begin() ; iT < pTexCurr->vPolyBump.end() ; iT++ )
-				{
-					EERIEPOLY *pPoly			=	*iT;
-
-					if(	!pPoly->tv[0].color &&
-						!pPoly->tv[1].color &&
-						!pPoly->tv[2].color) continue;
-
-					float fDu,fDv;
-					EERIERTPPoly(pPoly);
-
-					CalculTriangleBump( pPoly->tv[0], pPoly->tv[1], pPoly->tv[2], &fDu, &fDv );
-					
-					fDu							*=	.8f;
-					fDv							*=	.8f;
-					const unsigned short iNbVertex	=	( pPoly->type & POLY_QUAD )?4:3;
-					pDVB->ussNbVertex			+=	iNbVertex;
-					
-					//----------------------------------------------------------------------------------
-					//																			Flushing
-					if( pDVB->ussNbVertex > pDVB->ussMaxVertex )
-					{
-						pDVB->UnLock();
-						pDVB->ussNbVertex		-=	iNbVertex;
-						
-						if( pDVB->ussNbIndice )
-						{
-							GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-																pDVB->pVertexBuffer,
-																iOldNbVertex,
-																pDVB->ussNbVertex-iOldNbVertex,
-																pDVB->pussIndice,
-																pDVB->ussNbIndice,
-																0 );
-						}
-
-						pVertex				=	(SMY_D3DVERTEX3*)pDVB->Lock(DDLOCK_DISCARDCONTENTS);
-						pDVB->ussNbVertex	=	iNbVertex;
-						iOldNbVertex		=	iNbIndice			=	pDVB->ussNbIndice	=	0;
-						pussInd				=	pDVB->pussIndice;
-
-						ARX_CHECK( pDVB->ussNbVertex <= pDVB->ussMaxVertex );
-					}
-					
-					//----------------------------------------------------------------------------------
-					//																		  Filling VB
-					//Add 3 Vertices
-					for( short int idx = 0 ; idx < 3 ; ++idx )
-					{
-						pVertex->x			=	pPoly->v[idx].sx;
-						pVertex->y			=	-pPoly->v[idx].sy;
-						pVertex->z			=	pPoly->v[idx].sz;
-						pVertex->color		=	ARX_OPAQUE_WHITE;
-						pVertex->tu			=	pPoly->v[idx].tu;
-						pVertex->tv			=	pPoly->v[idx].tv;
-						pVertex->tu2		=	pPoly->v[idx].tu + fDu;
-						pVertex->tv2		=	pPoly->v[idx].tv + fDv;
-						pVertex++;
-					}
-					//Add Triangle 0-1-2 in Indices Tab
-					*pussInd++				=	iNbIndice++;
-					*pussInd++				=	iNbIndice++;
-					*pussInd++				=	iNbIndice++;
-					pDVB->ussNbIndice		+=	3;
-					
-					if(iNbVertex&4)
-					{
-						//Add vertex
-						pVertex->x			=	pPoly->v[3].sx;
-						pVertex->y			=	-pPoly->v[3].sy;
-						pVertex->z			=	pPoly->v[3].sz;
-						pVertex->color		=	ARX_OPAQUE_WHITE;//pPoly->tv[3].color;
-						pVertex->tu			=	pPoly->v[3].tu;
-						pVertex->tv			=	pPoly->v[3].tv;
-						pVertex->tu2		=	pPoly->v[3].tu + fDu;
-						pVertex->tv2		=	pPoly->v[3].tv + fDv;
-						pVertex++;
-						
-						//Add 2nd triangle 1-2-3
-						*pussInd++=iNbIndice++;
-						*pussInd++=iNbIndice-2;
-						*pussInd++=iNbIndice-3;
-						pDVB->ussNbIndice	+=	3;
-					}
-				}
-		
-				//----------------------------------------------------------------------------------
-				//																			 Drawing
-				pDVB->UnLock();
-				if( pDVB->ussNbIndice )
-				{
-					GDevice->DrawIndexedPrimitiveVB(D3DPT_TRIANGLELIST,
-													pDVB->pVertexBuffer,
-													iOldNbVertex,
-													pDVB->ussNbVertex-iOldNbVertex,
-													pDVB->pussIndice,
-													pDVB->ussNbIndice,
-													0 );
-				}
-
-				//----------------------------------------------------------------------------------
-				//																			  Ending
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-				GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
-				GRenderer->GetTextureStage(1)->DisableColor();
-
-				//Flushing vector
-				pTexCurr->vPolyBump.clear();
-
-			} // END BUMP
-
+			
 			GRenderer->SetTexture(0, pTexCurr);
 
 			//NORMAL TRANS

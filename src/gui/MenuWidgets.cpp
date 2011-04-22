@@ -92,7 +92,6 @@ extern long DANAESIZY;
 extern long LastEERIEMouseButton;
 
 extern bool bForceReInitAllTexture;
-extern bool bALLOW_BUMP;
 extern long WILL_RELOAD_ALL_TEXTURES;
 
 extern long FINAL_RELEASE;
@@ -632,8 +631,6 @@ void CMenuConfig::DefaultValue()
 	iBpp=16;
 	iNewBpp=iBpp;
 	bFullScreen=true;
-	bBumpMapping=false;
-	bNewBumpMapping=bBumpMapping;
 	iTextureResol=2;
 	iNewTextureResol=iTextureResol;
 	iMeshReduction=0;
@@ -1082,7 +1079,6 @@ bool CMenuConfig::SaveAll()
 	bOk&=WriteConfigString("VIDEO","resolution",tcTxt);
 	bOk&=WriteConfigInt("VIDEO","bpp",iBpp);
 	bOk&=WriteConfigInt("VIDEO","full_screen",(bFullScreen)?1:0);
-	bOk&=WriteConfigInt("VIDEO","bump",(bBumpMapping)?1:0);
 	bOk&=WriteConfigInt("VIDEO","texture",iTextureResol);
 	bOk&=WriteConfigInt("VIDEO","mesh_reduction",iMeshReduction);
 	bOk&=WriteConfigInt("VIDEO","others_details",iLevelOfDetails);
@@ -1279,32 +1275,6 @@ bool CMenuConfig::ReadAll()
 	{
 		bFullScreen=(iTemp)?true:false;
 	}
-
-	iTemp=ReadConfigInt("VIDEO","bump",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetBump(bBumpMapping);
-		bNewBumpMapping=bBumpMapping;
-	}
-	else
-	{
-		bNewBumpMapping=bBumpMapping=(iTemp)?true:false;
-	}
-
-	bBumpMapping=bNewBumpMapping;
-
-	if(bBumpMapping)
-	{
-		EERIE_ActivateBump();
-	}
-	else
-	{
-		EERIE_DesactivateBump();
-	}
-
-	bALLOW_BUMP=bBumpMapping;
 
 	iTemp=ReadConfigInt("VIDEO","texture",bOkTemp);
 	bOk&=bOkTemp;
@@ -1752,7 +1722,6 @@ bool CMenuConfig::ReadAll()
 
 	ARXMenu_Options_Video_SetFogDistance(iFogDistance);
 	ARXMenu_Options_Video_SetTextureQuality(iTextureResol);
-	ARXMenu_Options_Video_SetBump(bBumpMapping);
 	ARXMenu_Options_Video_SetLODQuality(iMeshReduction);
 	ARXMenu_Options_Video_SetDetailsQuality(iLevelOfDetails);
 	ARXMenu_Options_Video_SetGamma(iGamma);
@@ -1791,8 +1760,7 @@ void Check_Apply()
 {
 	if(pMenuElementApply)
 	{
-		if(    (pMenuConfig->bBumpMapping!=pMenuConfig->bNewBumpMapping)||
-			(pMenuConfig->iTextureResol!=pMenuConfig->iNewTextureResol)||
+		if( (pMenuConfig->iTextureResol!=pMenuConfig->iNewTextureResol)||
 			(pMenuConfig->iWidth!=pMenuConfig->iNewWidth)||
 			(pMenuConfig->iHeight!=pMenuConfig->iNewHeight)||
 			(pMenuConfig->iBpp!=pMenuConfig->iNewBpp) )
@@ -2712,28 +2680,8 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_bump", "", szMenuText);
-					szMenuText += " ";
-					TextureContainer *pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					TextureContainer *pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
-					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					metemp->SetCheckOff();
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BUMP, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
-					pMenuCheckButtonBump=(CMenuCheckButton*)me;
 					bool bBOOL = false;
-					ARXMenu_Options_Video_GetBump(bBOOL);
-
-					if (bBOOL)
-					{
-						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
-						((CMenuCheckButton*)me)->iState=0;
-					}
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
+					
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_brouillard", "", szMenuText);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
@@ -2785,9 +2733,9 @@ bool Menu2_Render()
 
 					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_crosshair", "Show Crosshair", szMenuText);
 					szMenuText += " ";
-					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
-					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					TextureContainer *pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					TextureContainer *pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
@@ -3451,12 +3399,6 @@ CMenuElement::~CMenuElement()
 	{
 		pMenuSliderTexture = NULL;
 	}
-
-	if( this == pMenuCheckButtonBump )
-	{
-		pMenuCheckButtonBump = NULL;
-	}
-
 }
 
 //-----------------------------------------------------------------------------
@@ -3796,32 +3738,6 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
-			//----------BUMP
-			if(pMenuConfig->bNewBumpMapping!=pMenuConfig->bBumpMapping)
-			{
-				pMenuConfig->bBumpMapping=pMenuConfig->bNewBumpMapping;
-
-				if(pMenuConfig->bBumpMapping)
-				{
-					EERIE_ActivateBump();
-				}
-				else
-				{
-					EERIE_DesactivateBump();
-				}
-
-				if(pMenuConfig->bBumpMapping!=bALLOW_BUMP)
-				{
-					bForceReInitAllTexture=true;
-				}
-
-				bALLOW_BUMP=pMenuConfig->bBumpMapping;
-
-				pMenuCheckButtonBump->iOldState=-1;
-			}
-
-			//----------END_BUMP
-
 			//----------CHANGE_TEXTURE
 			if(pMenuConfig->iNewTextureResol!=pMenuConfig->iTextureResol)
 			{
@@ -4595,11 +4511,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			pMenu->bReInitAll=true;
 		}
 		break;
-	case BUTTON_MENUOPTIONSVIDEO_BUMP:
-		{
-			ARXMenu_Options_Video_SetBump((iState)?true:false);
-		}
-		break;
 	case BUTTON_MENUOPTIONSVIDEO_CROSSHAIR:
 		{
 			if(pMenuConfig) pMenuConfig->bShowCrossHair=(iState)?true:false;
@@ -4677,14 +4588,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 					pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
 					pMenuSliderTexture->iOldPos=-1;
 					pMenuConfig->iNewTextureResol=pMenuConfig->iTextureResol;
-				}
-
-				if(    (pMenuCheckButtonBump)&&
-					(pMenuCheckButtonBump->iOldState>=0) )
-				{
-					pMenuCheckButtonBump->iState=pMenuCheckButtonBump->iOldState;
-					pMenuCheckButtonBump->iOldState=-1;
-					pMenuConfig->bNewBumpMapping=pMenuConfig->bBumpMapping;
 				}
 			}
 		}

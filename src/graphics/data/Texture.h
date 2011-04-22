@@ -72,7 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-extern bool EERIE_USES_BUMP_MAP;
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 
 struct DELAYED_PRIM
@@ -150,7 +149,6 @@ public:
 	DWORD	userflags;
 
 	Texture2D* m_pTexture;				// Diffuse
-	Texture2D* m_pTextureBump;			// Bump
 
 	// Precalculated values
 	float	m_dx;						// 1.f / width
@@ -170,8 +168,6 @@ public:
 	long	delayed_max;
 	
 	std::vector<EERIEPOLY *> vPolyZMap;
-	std::vector<EERIEPOLY *> vPolyBump;
-	std::vector<D3DTLVERTEX> vPolyInterBump;
 	std::vector<SMY_ZMAPPINFO> vPolyInterZMap;
 
 	SMY_ARXMAT * tMatRoom;
@@ -227,8 +223,5 @@ long CountTextures( std::string& tex, long * memsize, long * memmip);
 //-----------------------------------------------------------------------------
 
 TextureContainer * GetAnyTexture();
-
-void EERIE_ActivateBump();
-void EERIE_DesactivateBump();
 
 #endif

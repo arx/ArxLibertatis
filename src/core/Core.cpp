@@ -253,9 +253,7 @@ extern unsigned long ulBKGColor;
 long LAST_LOCK_SUCCESSFULL=0;
 extern EERIEMATRIX ProjectionMatrix;
 
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferBump;			// Duplicate pDynamicVertexBuffer for BUMP mapping.
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;		// VB using TLVERTEX format.
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_D3DVERTEX3_T;	// VB using D3DVERTEX3_T format.
+extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer_TLVERTEX;		// VB using TLVERTEX format.
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
@@ -317,7 +315,6 @@ EERIE_S2D DANAEMouse;
 EERIE_3D moveto;
 EERIE_3D Mscenepos;
 EERIE_3D lastteleport;
-EERIE_3D e3dPosBump;
 EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
 EERIE_3DOBJ	* arrowobj=NULL;			// 3D Object for arrows
 EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
@@ -338,7 +335,6 @@ INTERACTIVE_OBJ * COMBINE=NULL;
 HWND MESH_REDUCTION_WINDOW=NULL;
 
 QUAKE_FX_STRUCT QuakeFx;
-bool bALLOW_BUMP = false;
 const char * GTE_TITLE;
 char * GTE_TEXT;
 std::string LAST_FAILED_SEQUENCE = "None";
@@ -5244,12 +5240,6 @@ static float _AvgFrameDiff = 150.f;
 		}
 	}
 
-	//BUMP
-	if(pMenuConfig->bBumpMapping)
-	{
-		e3dPosBump=player.pos;
-	}
-
 	if (this->m_pFramework->m_bHasMoved)
 	{
 		LogDebug << "has moved";
@@ -7296,10 +7286,8 @@ HRESULT DANAE::InitDeviceObjects()
 
 	ComputePortalVertexBuffer();
 	pDynamicVertexBuffer				=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);
-	pDynamicVertexBufferBump			=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);		// pDynamicVertexBuffer for BUMP mapping.
 	pDynamicVertexBufferTransform		=	new CMY_DYNAMIC_VERTEXBUFFER(4000, FVF_D3DVERTEX );
 	pDynamicVertexBuffer_TLVERTEX		=	new CMY_DYNAMIC_VERTEXBUFFER(4000, D3DFVF_TLVERTEX );	// VB using TLVERTEX format (creating).
-	pDynamicVertexBuffer_D3DVERTEX3_T	=	new CMY_DYNAMIC_VERTEXBUFFER(4000, FVF_D3DVERTEX3_T );	// using D3DVERTEX3_T format (creating).
 
 	if(pMenu)
 	{
@@ -7351,18 +7339,6 @@ HRESULT DANAE::DeleteDeviceObjects()
 	{
 		delete pDynamicVertexBuffer;
 		pDynamicVertexBuffer=NULL;
-	}
-
-	if( pDynamicVertexBufferBump )
-	{
-		delete pDynamicVertexBufferBump;
-		pDynamicVertexBufferBump			=	NULL;
-	}
-
-	if( pDynamicVertexBuffer_D3DVERTEX3_T )
-	{
-		delete pDynamicVertexBuffer_D3DVERTEX3_T;
-		pDynamicVertexBuffer_D3DVERTEX3_T	=	NULL;
 	}
 
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
