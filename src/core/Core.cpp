@@ -446,7 +446,6 @@ long DEBUG_FRUSTRUM		= 0;
 long GAME_EDITOR		= 1;
 long NEED_EDITOR		= 1;
 long USE_CEDRIC_ANIM	= 1;
-extern long NEED_BENCH;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
@@ -5081,25 +5080,6 @@ extern long INTERTRANSPOLYSPOS;
 extern long TRANSPOLYSPOS;
 
 extern bool bRenderInterList;
-unsigned long BENCH_STARTUP=0;
-unsigned long BENCH_PLAYER=0;
-unsigned long BENCH_RENDER=0;
-unsigned long BENCH_PARTICLES=0;
-unsigned long BENCH_SPEECH=0;
-unsigned long BENCH_SCRIPT=0;
-
-unsigned long oBENCH_STARTUP=0;
-unsigned long oBENCH_PLAYER=0;
-unsigned long oBENCH_RENDER=0;
-unsigned long oBENCH_PARTICLES=0;
-unsigned long oBENCH_SPEECH=0;
-unsigned long oBENCH_SCRIPT=0;
-
-extern unsigned long BENCH_PATHFINDER;
-unsigned long oBENCH_PATHFINDER=0;
-
-extern unsigned long BENCH_SOUND;
-unsigned long oBENCH_SOUND=0;
 
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
@@ -5255,18 +5235,6 @@ static float _AvgFrameDiff = 150.f;
 	{
 		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
 	}
-
-	if (NEED_BENCH)
-	{
-		BENCH_STARTUP=0;
-		BENCH_PLAYER=0;
-		BENCH_RENDER=0;
-		BENCH_PARTICLES=0;
-		BENCH_SPEECH=0;
-		BENCH_SCRIPT=0;
-	}
-
-	StartBench();
 
 	RenderStartTicks	=	dwARX_TIME_Get();
 
@@ -5639,9 +5607,6 @@ static float _AvgFrameDiff = 150.f;
 		goto renderend;
 	}
 
-	BENCH_STARTUP=EndBench();
-	StartBench();
-
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		if (!PLAYER_PARALYSED)
@@ -5661,8 +5626,6 @@ static float _AvgFrameDiff = 150.f;
 
 	if (FRAME_COUNT<=0)
 		ARX_MINIMAP_ValidatePlayerPos();
-
-	BENCH_PLAYER=EndBench();
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	{
@@ -6486,7 +6449,6 @@ static float _AvgFrameDiff = 150.f;
 
 	if (FirstFrame==0)
 	{
-		StartBench();
 		PrepareIOTreatZone();
 			ARX_PHYSICS_Apply();
 
@@ -6509,8 +6471,6 @@ static float _AvgFrameDiff = 150.f;
 			ARX_SCENE_Render(1);
 		}
 
-		BENCH_RENDER=EndBench();
-
 	}
 
 	if (EDITION==EDITION_PATHWAYS)
@@ -6521,8 +6481,6 @@ static float _AvgFrameDiff = 150.f;
 	// Begin Particles ***************************************************************************
 	if (!(Project.hide & HIDE_PARTICLES))
 	{
-		StartBench();
-
 		if (pParticleManager)
 		{
 				pParticleManager->Update(ARX_CLEAN_WARN_CAST_LONG(FrameDiff));
@@ -6538,7 +6496,6 @@ static float _AvgFrameDiff = 150.f;
 		UpdateObjFx();
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		BENCH_PARTICLES=EndBench();
 
 	}
 
@@ -6707,10 +6664,8 @@ static float _AvgFrameDiff = 150.f;
 	// Speech Management
 	if (!EDITMODE)
 	{
-		StartBench();
 		ARX_SPEECH_Check();
 		ARX_SPEECH_Update();
-		BENCH_SPEECH = EndBench();
 	}
 
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
@@ -6874,8 +6829,7 @@ static float _AvgFrameDiff = 150.f;
 		LaunchDummyParticle();
 	}
 	}
-	StartBench();
-
+	
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		ARX_SCRIPT_AllowInterScriptExec();
@@ -6888,34 +6842,10 @@ static float _AvgFrameDiff = 150.f;
 			ARX_PATH_UpdateAllZoneInOutInside();
 	}
 
-	BENCH_SCRIPT=EndBench();
-
 	LastFrameTime=FrameTime;
 	LastMouseClick=EERIEMouseButton;
 
 		DANAE_DEBUGGER_Update();
-
-	if (NEED_BENCH)
-	{
-		if(danaeApp.DANAEStartRender())
-		{
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			iVPOS=0;
-			ShowValue(&oBENCH_STARTUP,&BENCH_STARTUP,"Startup");
-			ShowValue(&oBENCH_PLAYER,&BENCH_PLAYER,"Player");
-			ShowValue(&oBENCH_RENDER,&BENCH_RENDER,"Render");
-			ShowValue(&oBENCH_PARTICLES,&BENCH_PARTICLES,"Particles");
-			ShowValue(&oBENCH_SPEECH,&BENCH_SPEECH,"Speech");
-			ShowValue(&oBENCH_SCRIPT,&BENCH_SCRIPT,"Script");
-			ShowValue(&oBENCH_PATHFINDER,&BENCH_PATHFINDER,"Pathfinder");
-			BENCH_PATHFINDER=0;
-			ShowValue(&oBENCH_SOUND,&BENCH_SOUND,"Sound Thread");
-			BENCH_SOUND=0;
-
-			danaeApp.DANAEEndRender();
-		}
-	}
 
 	return S_OK;
 }

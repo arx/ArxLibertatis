@@ -77,8 +77,4 @@ int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName
  **/
 bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, float id);
 
-void StartBench();
-unsigned long EndBench();
-extern long NEED_BENCH;
-
 #endif // ARX_IO_IO_H

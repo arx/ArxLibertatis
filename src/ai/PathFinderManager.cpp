@@ -252,8 +252,6 @@ static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request)
 
 	return true;
 }
-LARGE_INTEGER Pstart_chrono, Pend_chrono;
-unsigned long BENCH_PATHFINDER = 0;
 
 // Pathfinder Thread
 LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
@@ -266,7 +264,6 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 
 	while (!bExitPathfinderThread)
 	{
-		QueryPerformanceCounter(&Pstart_chrono);
 
 		if (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_MUTEX_WAIT) == WAIT_TIMEOUT)
 			continue;
@@ -350,8 +347,6 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 		PATHFINDER_WORKING = 0;
 
 		ReleaseMutex(PATHFINDER_MUTEX);
-		QueryPerformanceCounter(&Pend_chrono);
-		BENCH_PATHFINDER += (unsigned long)(Pend_chrono.QuadPart - Pstart_chrono.QuadPart);
 		Sleep(PATHFINDER_UPDATE_INTERVAL);
 	}
 

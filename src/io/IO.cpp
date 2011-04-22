@@ -144,7 +144,7 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 //******************************************************************************
 // OPEN/SAVE FILES DIALOGS
 //******************************************************************************
-char	LastFolder[MAX_PATH];		// Last Folder used
+char	LastFolder[MAX_PATH]; // Last Folder used
 static OPENFILENAME ofn;
 
 static bool HERMESFolderBrowse(const char * str)
@@ -174,13 +174,10 @@ static bool HERMESFolderBrowse(const char * str)
 
 
 bool HERMESFolderSelector(char * file_name, const char * title) {
-	if (HERMESFolderBrowse(title))
-	{
+	if(HERMESFolderBrowse(title)) {
 		sprintf(file_name, "%s\\", LastFolder);
 		return true;
-	}
-	else
-	{
+	} else {
 		strcpy(file_name, " ");
 		return false;
 	}
@@ -236,26 +233,3 @@ int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd) {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }
-
-LARGE_INTEGER	start_chrono;
-long NEED_BENCH = 0;
-void StartBench()
-{
-	if (NEED_BENCH)
-	{
-		QueryPerformanceCounter(&start_chrono);
-	}
-}
-unsigned long EndBench()
-{
-	if (NEED_BENCH)
-	{
-		LARGE_INTEGER	end_chrono;
-		QueryPerformanceCounter(&end_chrono);
-		unsigned long ret = (unsigned long)(end_chrono.QuadPart - start_chrono.QuadPart);
-		return ret;
-	}
-
-	return 0;
-}
-
