@@ -41,6 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 
+using std::string;
+
 CinematicBitmap	TabBitmap[MAX_BITMAP];
 int			MaxW, MaxH;
 int			NbBitmap;

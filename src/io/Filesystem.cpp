@@ -32,6 +32,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Logger.h"
 
+using std::string;
+
 long KillAllDirectory(const std::string& path) {
 	LogInfo << "KillAllDirectory "<< path;
 	

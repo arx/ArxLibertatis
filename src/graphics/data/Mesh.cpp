@@ -100,6 +100,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 using std::copy;
+using std::string;
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;

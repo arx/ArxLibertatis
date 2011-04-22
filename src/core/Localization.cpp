@@ -38,6 +38,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
+using std::string;
+
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
 extern long CHINESE_VERSION;

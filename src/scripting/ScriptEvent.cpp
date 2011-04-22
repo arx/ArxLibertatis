@@ -52,6 +52,7 @@
 
 using std::max;
 using std::min;
+using std::string;
 
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;

@@ -29,6 +29,8 @@
 
 #include "io/Implode.h"
 
+#include <cstring>
+
 #include "io/Logger.h"
 
 // Truncate value to a specified number of bits

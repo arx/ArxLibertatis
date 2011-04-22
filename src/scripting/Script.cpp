@@ -96,6 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::sprintf;
 using std::min;
 using std::max;
+using std::string;
 
 //#define NEEDING_DEBUG 1
 #define MAX_SSEPARAMS 5

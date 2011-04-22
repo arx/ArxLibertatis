@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::wistringstream;
 using std::min;
 using std::max;
+using std::string;
 
 typedef std::pair<HFONT, const char*> textsize_key;
 typedef std::pair<int, int> textsize_value;

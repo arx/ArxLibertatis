@@ -112,6 +112,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scripting/ScriptEvent.h"
 
+using std::string;
+
 
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
