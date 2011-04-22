@@ -83,35 +83,6 @@ using std::transform;
 
 HWND MAIN_PROGRAM_HANDLE = NULL;
 
-void GetDate(HERMES_DATE_TIME * hdt)
-{
-	struct tm * newtime;
- 
-	time_t long_time;
-
-	time(&long_time);                  // Get time as long integer.
-	newtime = localtime(&long_time);   // Convert to local time.
-
-	if (newtime)
-	{
-		hdt->secs = newtime->tm_sec;
-		hdt->mins = newtime->tm_min;
-		hdt->hours = newtime->tm_hour;
-		hdt->months = newtime->tm_mon + 1;
-		hdt->days = newtime->tm_mday;
-		hdt->years = newtime->tm_year + 1900;
-	}
-	else
-	{
-		hdt->secs = 0;
-		hdt->mins = 0;
-		hdt->hours = 0;
-		hdt->months = 5;
-		hdt->days = 32;
-		hdt->years = 2002;
-	}
-}
-
 //******************************************************************************
 // MEMORY MANAGEMENT
 //******************************************************************************

@@ -55,27 +55,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-// Desc: HERMES main functionalities
-#ifndef  HERMESMAIN_H
-#define  HERMESMAIN_H
+#ifndef ARX_IO_IO_H
+#define ARX_IO_IO_H
 
-#define HERMES_PATH_SIZE	512
-
+#include <stddef.h>
 #include <string>
-
-
 #include <windows.h>
 
-#include <cstddef>
-
-typedef struct {
-	long	secs;
-	long	mins;
-	long	hours;
-	long	days;
-	long	months;
-	long	years;
-}HERMES_DATE_TIME;
 
 ///////////////////// PACKING
 //Always on for now...
@@ -94,8 +80,6 @@ typedef struct PassedParam
 
 
 extern HWND		MAIN_PROGRAM_HANDLE;
-
-void GetDate(HERMES_DATE_TIME * hdt);
 
 void MemFree(void * adr);
 unsigned long MakeMemoryText(char * text);
@@ -122,4 +106,4 @@ void StartBench();
 unsigned long EndBench();
 extern long NEED_BENCH;
 
-#endif // HERMESMAIN_H
+#endif // ARX_IO_IO_H

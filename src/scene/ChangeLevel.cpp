@@ -359,16 +359,6 @@ extern long FINAL_COMMERCIAL_DEMO;
 void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle, long confirm)
 {
 	LogDebug << "ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle << " " << confirm;
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-
-	if (NEED_LOG)
-	{
-		char tex[256];
-		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
-		LogDebug << tex;
-		LogDebug << "level " << level << " target " << target;
-	}
 
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
@@ -3853,16 +3843,6 @@ extern long STARTED_A_GAME;
 long ARX_CHANGELEVEL_Load(long instance) {
 	
 	LogDebug << "begin ARX_CHANGELEVEL_Load";
-	
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-	
-	if(NEED_LOG) {
-		LogDebug << "ARX_CHANGELEVEL_Load";
-		char tex[256];
-		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
-		LogDebug << tex;
-	}
 	
 	iTimeToDrawD7 = -3000;
 	
