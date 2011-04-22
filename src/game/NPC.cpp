@@ -3756,7 +3756,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				io->_npcdata->pathfind.listnb = -1;
 				io->_npcdata->pathfind.pathwait = 0;
 
-				if (io->_npcdata->pathfind.list) MemFree(io->_npcdata->pathfind.list);
+				if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 				io->_npcdata->pathfind.list = NULL;
 
@@ -3790,7 +3790,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
 
-					if (io->_npcdata->pathfind.list) MemFree(io->_npcdata->pathfind.list);
+					if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 					io->_npcdata->pathfind.list = NULL;
 					EVENT_SENDER = NULL;

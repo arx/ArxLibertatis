@@ -124,7 +124,6 @@ extern long POINTINTERPOLATION;
 extern long ForceIODraw;
 extern long NEED_ANCHORS;
 long HIDEANCHORS = 1;
-extern long HERMES_KEEP_MEMORY_TRACE;
 extern const char * GTE_TITLE;
 extern char * GTE_TEXT;
 extern long GTE_SIZE;
@@ -1850,9 +1849,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 					if (IsChecked(hWnd, IDC_TLEVEL24))	Project.demo = LEVEL24;
 
-					if (IsChecked(hWnd, IDC_TRACEMEMORY)) HERMES_KEEP_MEMORY_TRACE = 1;
-					else HERMES_KEEP_MEMORY_TRACE = 0;
-
 					if (IsChecked(hWnd, IDC_NEED_ANCHOR)) NEED_ANCHORS = 1;
 					else NEED_ANCHORS = 0;
 
@@ -1973,8 +1969,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			//Danae_Registry_Read("LastWorkingDir", Project_workingdir, "c:\\arx\\", 256);
 			thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
 			//SetWindowText(thWnd, Project_workingdir);
-
-			if (HERMES_KEEP_MEMORY_TRACE) SetClick(hWnd, IDC_TRACEMEMORY);
 
 			SetClick(hWnd, IDC_OTHERSERVER);
 

@@ -90,7 +90,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Progressive.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -1779,15 +1778,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 		INTERACTIVE_OBJ * io;
 		//todo free
 
-	retry_allocation:
-		;
 		inter.iobj[i] = (INTERACTIVE_OBJ *)malloc(sizeof(INTERACTIVE_OBJ)); 
-
-		if (!inter.iobj[i])
-		{
-			if (HERMES_Memory_Emergency_Out(sizeof(INTERACTIVE_OBJ), "Interactive_Object_Alloc"))
-				goto retry_allocation;
-		}
 
 		memset(inter.iobj[i], 0, sizeof(INTERACTIVE_OBJ));
 		io = inter.iobj[i];

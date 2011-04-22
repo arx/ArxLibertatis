@@ -1197,7 +1197,6 @@ int main(int, char**)
 	}
 
 	CalcFPS(true);
-	HERMES_Memory_Security_On(32000);
 
 	ARX_MAPMARKER_Init();
 
@@ -7872,20 +7871,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						LogError << ("No Interactive Object Selected");
 
 				break;
-				case DANAE_MENU_MEMORY:
-				{
-					ShowText = "";
-					unsigned long msize;
-					char temp[512];
-					msize=MakeMemoryText( temp );
-					ShowText = temp;
-					std::stringstream ss;
-					ss << "Allocated Memory " << msize << " bytes " << (msize>>10) << " Kb";
-					ShowTextWindowtext = ss.str();
-					CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
-				}
-				break;
 				case DANAE_MENU_GLOBALLIST:
 					ShowText = "";
 					MakeGlobalText(ShowText);
@@ -8257,7 +8242,6 @@ void ClearGame() {
 
 	//Halo
 	ReleaseHalo();
-	HERMES_Memory_Security_Off();
 	FreeSnapShot();
 	ARX_INPUT_Release();
 }

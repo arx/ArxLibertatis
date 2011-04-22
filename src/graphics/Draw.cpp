@@ -49,8 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Mesh.h"
 
-#include "io/IO.h"
-
 using std::min;
 using std::max;
 
@@ -700,19 +698,7 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 
 	if (tc->delayed_nb>=tc->delayed_max)
 	{
-		while(true)
-		{
-			tc->delayed=(DELAYED_PRIM *)realloc(tc->delayed,sizeof(DELAYED_PRIM)*(tc->delayed_nb+1));
-
-			if (!tc->delayed) 
-			{
-				if (HERMES_Memory_Emergency_Out(sizeof(DELAYED_PRIM)*(tc->delayed_nb+1),"tc->delayed"))
-					continue; // Try again
-
-					break; // Got the memory we wanted, break out
-			}
-		}
-
+		tc->delayed=(DELAYED_PRIM *)realloc(tc->delayed,sizeof(DELAYED_PRIM)*(tc->delayed_nb+1));
 		tc->delayed_max=tc->delayed_nb+1;
 	}
 

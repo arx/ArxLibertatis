@@ -62,28 +62,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <windows.h>
 
-
-void MemFree(void * adr);
-unsigned long MakeMemoryText(char * text);
-
-// Strings Funcs
 bool HERMESFolderSelector(char * file_name, const char * title);
 
-int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
-int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
 
 /**
- * Create a hash of the file. TODO can this be removed?
+ * Create a hash of the file.
  * @param name Name of the file to hash. Must be on the local filesystem and not in a PAK.
  * @param scheck The destination buffer to which the hash is written.
  * @param size The size of the destination buffer scheck.
  * @param id An ID that contributes to the hash.
  * @return false if the hash was created, true if the file could not be read
  **/
-bool HERMES_CreateFileCheck(const char *name, char *scheck, size_t size, float id);
-void HERMES_Memory_Security_On(long size);
-void HERMES_Memory_Security_Off();
-long HERMES_Memory_Emergency_Out( long size = 0, const std::string& info = "" );
+bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, float id);
+
 void StartBench();
 unsigned long EndBench();
 extern long NEED_BENCH;

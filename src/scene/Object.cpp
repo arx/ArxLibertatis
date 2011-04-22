@@ -71,7 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 #include "graphics/data/Texture.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/PakEntry.h"
@@ -284,36 +283,16 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 	return time;
 }
 
-static void * safeAlloc(size_t size, const std::string& desc) {
-	void * result;
-	do {
-		result = malloc(size); 
-		if(!result) {
-			HERMES_Memory_Emergency_Out(size, desc);
-		}
-	} while(!result);
-	return result;
-}
-
-static void * safeAllocZero(size_t size, const std::string& desc) {
-	void * result = safeAlloc(size, desc);
-	memset(result, 0, size);
+template <class T>
+static T * allocStructZero(size_t n = 1) {
+	T * result = (T*)malloc(n * sizeof(T));
+	memset(result, 0, n * sizeof(T));
 	return result;
 }
 
 template <class T>
-static T * allocStruct(const std::string& desc, size_t n = 1) {
-	return (T*)safeAlloc(n * sizeof(T), desc);
-}
-
-template <class T>
-static T * allocStructZero(const std::string& desc, size_t n = 1) {
-	return (T*)safeAllocZero(n * sizeof(T), desc);
-}
-
-template <class T>
-static T * copyStruct(const T * src, const std::string& desc, size_t n = 1) {
-	T * result = allocStruct<T>(desc, n);
+static T * copyStruct(const T * src, size_t n = 1) {
+	T * result = (T*)malloc(n * sizeof(T));
 	memcpy(result, src, sizeof(T) * n);
 	return result;
 }
@@ -326,7 +305,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	
 	size_t pos = 0;
 	
-	EERIE_ANIM * eerie = allocStructZero<EERIE_ANIM>("EEAnim");
+	EERIE_ANIM * eerie = allocStructZero<EERIE_ANIM>();
 	
 	THEA_HEADER th;
 	memcpy(&th, adr + pos, sizeof(THEA_HEADER));
@@ -345,9 +324,9 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	eerie->nb_groups = th.nb_groups;
 	eerie->nb_key_frames = th.nb_key_frames;
 	
-	eerie->frames = allocStructZero<EERIE_FRAME>("EEAnimFrames", th.nb_key_frames);
-	eerie->groups = allocStructZero<EERIE_GROUP>("EEAnimGroups", th.nb_key_frames * th.nb_groups);
-	eerie->voidgroups = allocStructZero<unsigned char>("EEAnimVoidGroups", th.nb_groups);
+	eerie->frames = allocStructZero<EERIE_FRAME>(th.nb_key_frames);
+	eerie->groups = allocStructZero<EERIE_GROUP>(th.nb_key_frames * th.nb_groups);
+	eerie->voidgroups = allocStructZero<unsigned char>(th.nb_groups);
 	
 	eerie->anim_time = 0.f;
 	
@@ -987,7 +966,7 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const string & dirr) {
 	EERIE_MULTI3DSCENE * es;
 	char pathh[512];
 
-	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMultiScn");
+	es = allocStructZero<EERIE_MULTI3DSCENE>();
 
 	strcpy(LastLoadedScene, dirr.c_str());
 	sprintf(pathh, "%s*.scn", dirr.c_str());
@@ -1067,7 +1046,7 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 	
 	EERIE_MULTI3DSCENE * es;
 	
-	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMulti3DScn");
+	es = allocStructZero<EERIE_MULTI3DSCENE>();
 
 	strcpy(LastLoadedScene, dirr.c_str());
 
@@ -1165,7 +1144,7 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 	
 	size_t pos = 0;
 	
-	EERIE_3DSCENE * seerie = allocStructZero<EERIE_3DSCENE>("Scn2EE");
+	EERIE_3DSCENE * seerie = allocStructZero<EERIE_3DSCENE>();
 	Clear3DScene(seerie);
 	
 	TSCN_HEADER psth;
@@ -1187,7 +1166,7 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 	
 	if(psth.type_write == 0) {
 		
-		seerie->texturecontainer = allocStructZero<TextureContainer *>("SEETc", psth.nb_maps); 
+		seerie->texturecontainer = allocStructZero<TextureContainer *>(psth.nb_maps); 
 		
 		for(long i = 0; i < psth.nb_maps; i++) {
 			
@@ -1204,7 +1183,7 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 		
 		if((psth.type_write & SAVE_MAP_BMP) || (psth.type_write & SAVE_MAP_TGA)) {
 			
-			seerie->texturecontainer = allocStructZero<TextureContainer *>("SEETc", psth.nb_maps);
+			seerie->texturecontainer = allocStructZero<TextureContainer *>(psth.nb_maps);
 			
 			for(long i = 0; i < psth.nb_maps; i++) {
 				
@@ -1245,7 +1224,7 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 	pos += sizeof(s32);
 	
 	seerie->nbobj = nbo;
-	seerie->objs = allocStructZero<EERIE_3DOBJ *>("SceneObjectList", nbo); 
+	seerie->objs = allocStructZero<EERIE_3DOBJ *>(nbo); 
 	
 	seerie->point0.x = -999999999999.f;
 	seerie->point0.y = -999999999999.f;
@@ -1558,7 +1537,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 	if (obj->ndata)
 	{
-		nouvo->ndata = copyStruct(obj->ndata, "EECopyNdata", obj->vertexlist.size());
+		nouvo->ndata = copyStruct(obj->ndata, obj->vertexlist.size());
 	}
 	else nouvo->ndata = NULL;
 
@@ -1582,12 +1561,12 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 	if (obj->pbox)
 	{
-		nouvo->pbox = allocStructZero<PHYSICS_BOX_DATA>("Physics Data");
+		nouvo->pbox = allocStructZero<PHYSICS_BOX_DATA>();
 		nouvo->pbox->nb_physvert = obj->pbox->nb_physvert;
 		nouvo->pbox->stopcount = 0;
 		nouvo->pbox->radius = obj->pbox->radius;
 		
-		nouvo->pbox->vert = copyStruct(obj->pbox->vert, "PhysVerts", obj->pbox->nb_physvert);
+		nouvo->pbox->vert = copyStruct(obj->pbox->vert, obj->pbox->nb_physvert);
 	}
 
 	nouvo->linked = NULL;

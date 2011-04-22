@@ -46,7 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "gui/Text.h"
 #include "graphics/Math.h"
-#include "io/IO.h"
 #include "io/Logger.h"
 #include "physics/Physics.h"
 
@@ -811,14 +810,10 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 	eg->ianchors = (long *)realloc(eg->ianchors, sizeof(long) * (eg->nbianchors + 1));
 
-	if (!eg->ianchors) HERMES_Memory_Emergency_Out();
-
 	eg->ianchors[eg->nbianchors] = eb->nbanchors;
 	eg->nbianchors++;
 
 	eb->anchors = (_ANCHOR_DATA *)realloc(eb->anchors, sizeof(_ANCHOR_DATA) * (eb->nbanchors + 1));
-
-	if (!eb->anchors) HERMES_Memory_Emergency_Out();
 
 	_ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
 	ad->pos.x = bestcyl.origin.x; 
@@ -936,14 +931,10 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 
 	eg->ianchors = (long *)realloc(eg->ianchors, sizeof(long) * (eg->nbianchors + 1));
 
-	if (!eg->ianchors) HERMES_Memory_Emergency_Out();
-
 	eg->ianchors[eg->nbianchors] = eb->nbanchors;
 	eg->nbianchors++;
 
 	eb->anchors = (_ANCHOR_DATA *)realloc(eb->anchors, sizeof(_ANCHOR_DATA) * (eb->nbanchors + 1));
-
-	if (!eb->anchors) HERMES_Memory_Emergency_Out();
 
 	_ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
 	ad->pos.x = bestcyl.origin.x; 
@@ -969,8 +960,6 @@ static void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked) {
 
 	// Realloc & fill data
 	eb->anchors[anchor].linked = (long *)realloc(eb->anchors[anchor].linked, sizeof(long) * (eb->anchors[anchor].nblinked + 1));
-
-	if (!eb->anchors[anchor].linked) HERMES_Memory_Emergency_Out();
 
 	eb->anchors[anchor].linked[eb->anchors[anchor].nblinked] = linked;
 	eb->anchors[anchor].nblinked++;
