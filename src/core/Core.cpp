@@ -1458,12 +1458,11 @@ int main(int, char**)
 
 	LogInfo << "Application Creation Success";
 	ShowWindow(danaeApp.m_hWnd, SW_HIDE);
-	MAIN_PROGRAM_HANDLE=danaeApp.m_hWnd;
 	danaeApp.m_pFramework->bitdepth=Project.bits;
 
 	LogDebug << "Sound Init";
 	if (Project.soundmode != 0 && ARX_SOUND_INIT)
-		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
+		ARX_SOUND_Init(danaeApp.m_hWnd);
 
 	LogInfo << "Sound Init Success";
 	LogDebug << "DInput Init";
@@ -1499,8 +1498,7 @@ int main(int, char**)
 			LogError << "Unable To Initialize ARX INPUT, Leaving...";
 			ARX_INPUT_Release();
 
-			if (MAIN_PROGRAM_HANDLE!=NULL)
-			SendMessage(MAIN_PROGRAM_HANDLE,WM_CLOSE,0,0);
+			SendMessage(danaeApp.m_hWnd, WM_CLOSE, 0, 0);
 
 			exit(0);
 		}

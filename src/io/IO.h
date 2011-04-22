@@ -63,24 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 
 
-///////////////////// PACKING
-//Always on for now...
-typedef struct PassedParam
-{
-	const char * pSource;                   /* Pointer to source buffer           */
-	char * pDestination;              /* Pointer to destination buffer      */
-	std::size_t SourceOffset;      /* Offset into the source buffer      */
-	std::size_t DestinationOffset; /* Offset into the destination buffer */
-	std::size_t CompressedSize;    /* Need this for extracting!          */
-	std::size_t UnCompressedSize;  /* Size of uncompressed data file     */
-	std::size_t BufferSize;
-	unsigned long Crc;               /* Calculated CRC value               */
-	unsigned long OrigCrc;           /* Original CRC value of data         */
-} PARAM;
-
-
-extern HWND		MAIN_PROGRAM_HANDLE;
-
 void MemFree(void * adr);
 unsigned long MakeMemoryText(char * text);
 

@@ -81,7 +81,7 @@ using std::transform;
     #define _MAX_FNAME 512
 #endif
 
-HWND MAIN_PROGRAM_HANDLE = NULL;
+
 
 //******************************************************************************
 // MEMORY MANAGEMENT
