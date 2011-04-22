@@ -22,15 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef _CLUSTER_SAVE_H_
-#define _CLUSTER_SAVE_H_
 
-#include <cstddef>
+#ifndef ARX_IO_SAVEBLOCK_H
+#define ARX_IO_SAVEBLOCK_H
+
+#include <stddef.h>
 #include <string>
 #include <vector>
-
-#include "platform/Platform.h"
-
 
 class HashMap;
 typedef void * FileHandle;
@@ -72,4 +70,4 @@ public:
 	
 };
 
-#endif // _CLUSTER_SAVE_H_
+#endif // ARX_IO_SAVEBLOCK_H
