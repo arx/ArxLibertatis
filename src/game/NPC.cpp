@@ -81,8 +81,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
-
 #include "physics/Box.h"
 #include "physics/Anchors.h"
 #include "physics/CollisionShapes.h"
