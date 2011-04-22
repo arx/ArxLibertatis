@@ -79,7 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"
-#include "gui/ViewImage.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
 
@@ -485,11 +484,6 @@ void ARX_MENU_Clicked_QUIT_GAME()
 		ARX_MENU_Clicked_QUIT();
 	else
 	{
-		if	(FINAL_COMMERCIAL_DEMO)
-		{
-			StartImageDemo();
-		}
-
 		ARX_Menu_Resources_Release();
 		ARXmenu.currentmode = AMCM_OFF;
 		ARX_TIME_UnPause();
