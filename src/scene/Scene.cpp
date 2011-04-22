@@ -3934,8 +3934,6 @@ else
 
 	DRAWLATER_Render();
 
-	if (DEBUGCODE) ForceSendConsole("RenderBackground - Boom",1,0,(HWND)1);	
-
 	if (ACTIVECAM->type!=CAM_TOPVIEW) 
 	{
 		

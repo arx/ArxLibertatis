@@ -94,17 +94,8 @@ typedef struct PassedParam
 
 
 extern HWND		MAIN_PROGRAM_HANDLE;
-extern long DEBUGG;
-extern long DebugLvl[6];
-extern unsigned int			GaiaWM;
-
-char * HERMES_GaiaCOM_Receive();
-
-void HERMES_InitDebug();
 
 void GetDate(HERMES_DATE_TIME * hdt);
-void SendConsole( const std::string& dat,long level,long flag,HWND source);
-void ForceSendConsole( const std::string& dat,long level,long flag,HWND source);
 
 void MemFree(void * adr);
 unsigned long MakeMemoryText(char * text);

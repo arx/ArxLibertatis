@@ -94,6 +94,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+#include "io/Logger.h"
 
 #include "physics/Collisions.h"
 #include "physics/CollisionShapes.h"
@@ -2499,9 +2500,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		return NULL;
 	}
 
-	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddFix - %s", file.c_str());
-	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
+	LogDebug << "AddFix " << file;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 
@@ -2613,9 +2612,7 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 		return NULL;
 	}
 
-	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddCamera - %s", file.c_str());
-	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
+	LogDebug << "AddCamera " << file;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -2681,9 +2678,7 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
 		return NULL;
 	}
 
-	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddMarker - %s", file.c_str());
-	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
+	LogDebug << "AddMarker " << file;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -2937,9 +2932,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	if ( ( !PAK_FileExist(file2) ) && ( !PAK_FileExist(file) ) )
 		return NULL;
 
-	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddNPC - %s", file.c_str());
-	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
+	LogDebug << "AddNPC " << file;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;

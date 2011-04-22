@@ -67,7 +67,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <shlobj.h>
 #include <windows.h>
 
-#include "io/Registry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
@@ -79,15 +78,10 @@ using std::transform;
 
 // TODO(lubosz): temporary include replacement
 #if !ARX_COMPILER_MSVC
-    #define _MAX_EXT 3
     #define _MAX_FNAME 512
-    #define _MAX_DRIVE 1
-    #define _MAX_DIR _MAX_FNAME
 #endif
 
-UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
-long DEBUGG = 1;
 
 void GetDate(HERMES_DATE_TIME * hdt)
 {
@@ -116,80 +110,6 @@ void GetDate(HERMES_DATE_TIME * hdt)
 		hdt->days = 32;
 		hdt->years = 2002;
 	}
-}
-
-long DebugLvl[6];
-void HERMES_InitDebug()
-{
-	DebugLvl[0] = 1;
-	DebugLvl[1] = 1;
-	DebugLvl[2] = 1;
-	DebugLvl[3] = 1;
-	DebugLvl[4] = 1;
-	DebugLvl[5] = 1;
-	DEBUGG = 0;
-}
-
-HKEY    ConsoleKey = NULL;
-#define CONSOLEKEY_KEY     TEXT("Software\\Arkane_Studios\\ASMODEE")
-
-void ConsoleSend( const std::string& dat, long level, HWND source, long flag)
-{
-	printf("ConsoleSend: %s %ld %p %ld\n", dat.c_str(), level, source, flag);
-	RegCreateKeyEx(HKEY_CURRENT_USER, CONSOLEKEY_KEY, 0, NULL,
-				   REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
-				   &ConsoleKey, NULL);
-	WriteRegKey(ConsoleKey, "ConsInfo", dat.c_str() );
-	WriteRegKeyValue(ConsoleKey, "ConsHwnd", (ULONG_PTR)source);
-	WriteRegKeyValue(ConsoleKey, "ConsLevel", (DWORD)level);
-	WriteRegKeyValue(ConsoleKey, "ConsFlag", (DWORD)flag);
-	RegCloseKey(ConsoleKey);
-}
-
-void SendConsole( const std::string& dat, long level, long flag, HWND source) {
-	if (GaiaWM != 0)
-	{
-		if (DebugLvl[0]) return;
-
-		if (level < 1) return;
-
-		if (level > 5) return;
-
-		if (DebugLvl[level])
-		{
-			ConsoleSend(dat, level, source, flag);
-			SendMessage(HWND_BROADCAST, GaiaWM, 33, 33);
-		}
-	}
-}
-
-long FINAL_COMMERCIAL_DEMO_bis = 1;
-
-void ForceSendConsole( const std::string& dat, long level, long flag, HWND source)
-{
-	if (!FINAL_COMMERCIAL_DEMO_bis)
-	{
-		if (GaiaWM != 0)
-		{
-			ConsoleSend(dat, level, source, flag);
-			SendMessage(HWND_BROADCAST, GaiaWM, 33, 33);
-		}
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////
-HKEY    ComKey = NULL;
-#define COMKEY_KEY     TEXT("Software\\Arkane_Studios\\GaiaCom")
-char * HERMES_GaiaCOM_Receive()
-{
-	static char dat[1024];
-	RegCreateKeyEx(HKEY_CURRENT_USER, COMKEY_KEY, 0, NULL,
-				   REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
-				   &ComKey, NULL);
-	ReadRegKey(ComKey, "ComInfo",
-			   dat, 512, "");
-	RegCloseKey(ComKey);
-	return dat;
 }
 
 //******************************************************************************

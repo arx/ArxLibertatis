@@ -4452,19 +4452,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								{
 									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2);
 
-									if (iot->anims[num] == NULL)
-									{
-										char ttmp[512];
-										sprintf(ttmp, "LOADANIM %s %s FAILED", word.c_str(), temp2.c_str());
-										ForceSendConsole(ttmp, 1, 0, (HWND)1);
+									if(iot->anims[num] == NULL) {
+										LogWarning << "LOADANIM " << word << " " << temp2 << " FAILED";
 									}
 								}
-							}
-							else
-							{
-								char ttmp[512];
-								sprintf(ttmp, "LOADANIM %s %s FAILED", word.c_str(), temp2.c_str());
-								ForceSendConsole(ttmp, 1, 0, (HWND)1);
+							} else {
+								LogWarning << "LOADANIM " << word << " " << temp2 << " FAILED";
 							}
 						}
 					}

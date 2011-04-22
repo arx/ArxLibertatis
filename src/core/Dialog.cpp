@@ -2156,18 +2156,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (EXTERNALVIEWING)			SetClick(hWnd, IDC_THIRDPERSON);
 
-			if (DebugLvl[0])				SetClick(hWnd, IDC_LEVELNONE);
-
-			if (DebugLvl[1])				SetClick(hWnd, IDC_LEVEL1);
-
-			if (DebugLvl[2])				SetClick(hWnd, IDC_LEVEL2);
-
-			if (DebugLvl[3])				SetClick(hWnd, IDC_LEVEL3);
-
-			if (DebugLvl[4])				SetClick(hWnd, IDC_LEVEL4);
-
-			if (DebugLvl[5])				SetClick(hWnd, IDC_LEVEL5);
-
 			if (Bilinear == 0)				SetClick(hWnd, IDC_FILTERPOINT);
 			else if (Bilinear == 1)			SetClick(hWnd, IDC_FILTERLINEAR);
 			else if (Bilinear == 2)			SetClick(hWnd, IDC_FILTERANISOTROPIC);
@@ -2472,32 +2460,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_RAY)) Cross = 1;
 					else Cross = 0;
-
-					if (IsChecked(hWnd, IDC_LEVELNONE))
-					{
-						DebugLvl[0] = 1;
-						DEBUGG = 0;
-					}
-					else
-					{
-						DebugLvl[0] = 0;
-						DEBUGG = 1;
-					}
-
-					if (IsChecked(hWnd, IDC_LEVEL1))  DebugLvl[1] = 1;
-					else DebugLvl[1] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL2))  DebugLvl[2] = 1;
-					else DebugLvl[2] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL3))  DebugLvl[3] = 1;
-					else DebugLvl[3] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL4))  DebugLvl[4] = 1;
-					else DebugLvl[4] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL5))  DebugLvl[5] = 1;
-					else DebugLvl[5] = 0;
 
 					if (IsChecked(hWnd, IDC_MESHTWEAK))  ALLOW_MESH_TWEAKING = 1;
 					else ALLOW_MESH_TWEAKING = 0;

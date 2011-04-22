@@ -897,12 +897,6 @@ long DanaeLoadLevel(const string & fic) {
 	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(fic);
 	
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-	char tstr[128];
-	sprintf(tstr, "%2ldh%02ldm%02ld LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
-	ForceSendConsole(tstr, 1, 0, (HWND)1);
-	
 	string fileDlf = fic;
 	// SetExt(fileDlf, ".DLF");
 	string fic2 = fic;

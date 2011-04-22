@@ -1358,7 +1358,6 @@ int main(int, char**)
 
 	memset(&player,0,sizeof(ARXCHARACTER));
 	ARX_PLAYER_InitPlayer();
-	HERMES_InitDebug();
 
 	CleanInventory();
 
@@ -1462,12 +1461,6 @@ int main(int, char**)
 	MAIN_PROGRAM_HANDLE=danaeApp.m_hWnd;
 	danaeApp.m_pFramework->bitdepth=Project.bits;
 
-	if (!MOULINEX && !FINAL_RELEASE) {
-		char texx[64];
-		strcpy(texx,"GaiaMessages");
-		GaiaWM=RegisterWindowMessage(texx);
-	}
-
 	LogDebug << "Sound Init";
 	if (Project.soundmode != 0 && ARX_SOUND_INIT)
 		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
@@ -1494,7 +1487,6 @@ int main(int, char**)
 	}
 
 	ARX_MINIMAP_FirstInit();
-	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
 
 	i = 10;
 	LogDebug << "AInput Init";
@@ -2346,7 +2338,6 @@ void ClearSysTextures() {
 //*************************************************************************************
 HRESULT DANAE::OneTimeSceneInit()
 {
-	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
 	return S_OK;
 }
 EERIE_3D ePos;
@@ -3058,9 +3049,6 @@ void FirstFrameProc() {
 	}
 
 	ARX_SPELLS_ResetRecognition();
-
-	if (DEBUGCODE)
-		ForceSendConsole("...NEXT...",1,0,(HWND)1);
 	
 	FirstTimeThings();
 
@@ -4548,8 +4536,7 @@ void LaunchMoulinex()
 	if (PROCESS_ONLY_ONE_LEVEL!=-1)
 		lvl=PROCESS_ONLY_ONE_LEVEL;
 
-	sprintf(tx,"Moulinex Lvl %ld",lvl);
-	ForceSendConsole(tx,1,0,NULL);
+	LogDebug << "Moulinex Lvl " << lvl;
 
 	if (LASTMOULINEX!=-1)
 	{
@@ -6909,8 +6896,6 @@ static float _AvgFrameDiff = 150.f;
 	LastFrameTime=FrameTime;
 	LastMouseClick=EERIEMouseButton;
 
-	if (DEBUGCODE) ForceSendConsole("RenderEnd_____________________________", 1, 0, (HWND)1);
-
 		DANAE_DEBUGGER_Update();
 
 	if (NEED_BENCH)
@@ -7506,16 +7491,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 
 		break;
-		case WM_USER+12: // GAIA Specific Message
-
-			if (	!FINAL_COMMERCIAL_DEMO
-				&& !FINAL_COMMERCIAL_GAME
-				)
-			{
-				char texx[1024];
-				strcpy(texx,HERMES_GaiaCOM_Receive());
-				strcpy(ItemToBeAdded,texx);
-			}
 
 		break;
 		case WM_CLOSE:
