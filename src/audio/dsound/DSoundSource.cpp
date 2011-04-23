@@ -41,36 +41,8 @@ const GUID CLSID_EAXDirectSound = { 0x4ff53b81, 0x1ce0, 0x11d3, { 0xaa, 0xb8, 0x
 
 namespace audio {
 
-	// Status flags                                                              //
-
-	enum ATHENASource
-	{
-		ATHENA_IDLED     = 0x00000001,
-		ATHENA_PAUSED    = 0x00000002,
-		ATHENA_TOOFAR    = 0x00000004
-	};
-
-	static void SourceDebugLog(Source * instance, const char * _text)
-	{
-		char text[256];
-		aalULong _time(BytesToUnits(instance->time, instance->sample->format, AAL_UNIT_MS));
-
-		sprintf(text, "[%03u - %03u][%02u\" %02u' %03u][%02u][%s]\n",
-		        GetSampleID(instance->id), GetSourceID(instance->id),
-		        _time / 60000, _time % 60000 / 1000, _time % 1000,
-		        instance->loop, _text);
-		LogDebug << text;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Constructor and destructor                                                //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	Source::Source() :
-		id((aalSLong)-1), // Otherwise id might be uninitialized for SourceDebugLog
-		sample(NULL),
-		status(0),
+	DSoundSource::DSoundSource(Sample * _sample) : Source(_sample),
+		tooFar(false),
 		loop(0), time(0),
 		stream(NULL), read(0), write(0), size(0),
 		lpdsb(NULL), lpds3db(NULL), lpeax(NULL)
@@ -80,9 +52,8 @@ namespace audio {
 	extern char szT[1024];
 	extern bool bLog;
 
-	Source::~Source()
-	{
-		Clean();
+	DSoundSource::~DSoundSource() {
+		clean();
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -90,16 +61,17 @@ namespace audio {
 	// Setup                                                                     //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError Source::Init(Sample * __sample, const aalChannel & _channel)
+	aalError DSoundSource::init(aalSLong _id, const aalChannel & _channel)
 	{
+		
+		id = _id;
+		
 		DSBUFFERDESC _desc;
 		WAVEFORMATEX _format;
 		aalUBool streaming(AAL_UFALSE);
 
-		Clean();
+		clean();
 
-		sample = __sample;
-		sample->Catch();
 		channel = _channel;
 
 		memset(&_desc, 0, sizeof(DSBUFFERDESC));
@@ -156,8 +128,8 @@ namespace audio {
 
 		if (device->CreateSoundBuffer(&_desc, &lpdsb, NULL)) return AAL_ERROR_SYSTEM;
 
-		SetVolume(channel.volume);
-		SetPitch(channel.pitch);
+		setVolume(channel.volume);
+		setPitch(channel.pitch);
 
 		// Create 3D interface if required
 		if (channel.flags & FLAG_ANY_3D_FX)
@@ -169,11 +141,11 @@ namespace audio {
 			        lpds3db->SetMode(DS3DMODE_HEADRELATIVE, DS3D_DEFERRED))
 				return AAL_ERROR_SYSTEM;
 
-			SetPosition(channel.position);
-			SetVelocity(channel.velocity);
-			SetDirection(channel.direction);
-			SetCone(channel.cone);
-			SetFalloff(channel.falloff);
+			setPosition(channel.position);
+			setVelocity(channel.velocity);
+			setDirection(channel.direction);
+			setCone(channel.cone);
+			setFalloff(channel.falloff);
 
 			if (is_reverb_present)
 			{
@@ -197,7 +169,7 @@ namespace audio {
 				}
 			}
 		}
-		else SetPan(channel.pan);
+		else setPan(channel.pan);
 
 		stream = CreateStream(sample->name);
 
@@ -226,23 +198,26 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError Source::Init(Source * instance, const aalChannel & _channel)
+	aalError DSoundSource::init(aalSLong _id, DSoundSource * instance, const aalChannel & _channel)
 	{
+		
+		arx_assert(instance->sample == sample);
+		
 		if (instance->stream || _channel.flags ^ instance->channel.flags)
-			return Init(instance->sample, _channel);
+			return init(id, _channel);
 
-		Clean();
+		id = _id;
+		
+		clean();
 
-		sample = instance->sample;
-		sample->Catch();
 		channel = _channel;
 		size = instance->size;
 
 		if (device->DuplicateSoundBuffer(instance->lpdsb, &lpdsb))
 			return AAL_ERROR_SYSTEM;
 
-		SetVolume(channel.volume);
-		SetPitch(channel.pitch);
+		setVolume(channel.volume);
+		setPitch(channel.pitch);
 
 		//Create 3D interface if required
 		if (channel.flags & FLAG_ANY_3D_FX)
@@ -254,11 +229,11 @@ namespace audio {
 			        lpds3db->SetMode(DS3DMODE_HEADRELATIVE, DS3D_DEFERRED))
 				return AAL_ERROR_SYSTEM;
 
-			SetPosition(channel.position);
-			SetVelocity(channel.velocity);
-			SetDirection(channel.direction);
-			SetCone(channel.cone);
-			SetFalloff(channel.falloff);
+			setPosition(channel.position);
+			setVelocity(channel.velocity);
+			setDirection(channel.direction);
+			setCone(channel.cone);
+			setFalloff(channel.falloff);
 
 			if (is_reverb_present)
 			{
@@ -282,12 +257,12 @@ namespace audio {
 				}
 			}
 		}
-		else SetPan(channel.pan);
+		else setPan(channel.pan);
 
 		return AAL_OK;
 	}
 
-	aalError Source::Clean()
+	aalError DSoundSource::clean()
 	{
 		if (lpeax) lpeax->Release(), lpeax = NULL;
 
@@ -295,22 +270,20 @@ namespace audio {
 
 		if (lpdsb)
 		{
-			if (IsPlaying()) lpdsb->Stop();
+			if (checkPlaying()) lpdsb->Stop();
 
 			lpdsb->Release(), lpdsb = NULL;
 		}
 
 		if (stream) DeleteStream(stream);
 
-		if (sample) sample->Release(), sample = NULL;
-
-		status = 0;
+		status = IDLE;
 
 		return AAL_OK;
 	}
 
-	aalError Source::SetVolume(const aalFloat & v)
-	{
+	aalError DSoundSource::setVolume(float v) {
+		
 		if (!(channel.flags & AAL_FLAG_VOLUME)) return AAL_ERROR_INIT;
 
 		aalFloat volume(1.0F);
@@ -336,8 +309,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError Source::SetPitch(const aalFloat & p)
-	{
+	aalError DSoundSource::setPitch(float p) {
 		if (!(channel.flags & AAL_FLAG_PITCH)) return AAL_ERROR_INIT;
 
 		float pitch = 1.f;
@@ -359,8 +331,8 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError Source::SetPan(const aalFloat & p)
-	{
+	aalError DSoundSource::setPan(float p) {
+		
 		if (!(channel.flags & AAL_FLAG_PAN)) return AAL_ERROR_INIT;
 
 		channel.pan = p > 1.0F ? 1.0F : p < -1.0F ? -1.0F : p;
@@ -370,7 +342,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError Source::SetPosition(const aalVector & position)
+	aalError DSoundSource::setPosition(const aalVector & position)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
 
@@ -382,7 +354,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError Source::SetVelocity(const aalVector & velocity)
+	aalError DSoundSource::setVelocity(const aalVector & velocity)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_VELOCITY)) return AAL_ERROR_INIT;
 
@@ -394,7 +366,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError Source::SetDirection(const aalVector & direction)
+	aalError DSoundSource::setDirection(const aalVector & direction)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_DIRECTION)) return AAL_ERROR_INIT;
 
@@ -406,7 +378,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError Source::SetCone(const aalCone & cone)
+	aalError DSoundSource::setCone(const aalCone & cone)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_CONE)) return AAL_ERROR_INIT;
 
@@ -423,7 +395,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError Source::SetFalloff(const aalFalloff & falloff)
+	aalError DSoundSource::setFalloff(const aalFalloff & falloff)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_FALLOFF)) return AAL_ERROR_INIT;
 
@@ -436,106 +408,40 @@ namespace audio {
 		return AAL_OK;
 	}
 
+aalError DSoundSource::setMixer(aalSLong mixer) {
+	channel.mixer = mixer;
+	return AAL_OK;
+}
+
+aalError DSoundSource::setEnvironment(aalSLong environment) {
+	channel.environment = environment;
+	return AAL_OK;
+}
+
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
 	// Status                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError Source::GetStatistics(aalFloat & av_vol, aalFloat & av_dev) const
-	{
-		aalULong pos, length(0);
-		aalULong cur0, cur1;
-		void * ptr0, *ptr1;
-
-		av_vol = av_dev = 0.0F;
-
-		if (lpdsb->GetCurrentPosition(&pos, NULL)) return AAL_ERROR_SYSTEM;
-
-		if (pos > 150) pos -= 150;
-
-		if (stream) length = write < pos ? write + size : write;
-		else length = sample->length;
-
-		length -= pos;
-
-		aalULong sec(256);
-
-		if (length > sec) length = sec;
-
-		if (lpdsb->Lock(pos, length, &ptr0, &cur0, &ptr1, &cur1, 0)) return AAL_ERROR_SYSTEM;
-
-		length >>= 1;
-
-		if (ptr0)
-		{
-			aalUWord * ptr = (aalUWord *)ptr0 + (cur0 >> 1);
-
-			while (ptr > ptr0) av_vol += *(--ptr);
-		}
-
-		if (ptr1)
-		{
-			aalUWord * ptr = (aalUWord *)ptr1 + (cur1 >> 1);
-
-			while (ptr > ptr1) av_vol += *(--ptr);
-		}
-
-		av_vol /= length;
-		av_vol /= 65535.0F;
-
-		if (ptr0)
-		{
-			aalFloat dev;
-			aalUWord * ptr = (aalUWord *)ptr0 + (cur0 >> 1);
-
-			while (ptr > ptr0)
-			{
-				dev = aalFloat(*(--ptr)) / 65535.0F - av_vol;
-				dev *= dev;
-				av_dev += dev;
-			}
-		}
-
-		if (ptr1)
-		{
-			aalFloat dev;
-			aalUWord * ptr = (aalUWord *)ptr1 + (cur1 >> 1);
-
-			while (ptr > ptr1)
-			{
-				dev = aalFloat(*(--ptr)) / 65535.0F - av_vol;
-				dev *= dev;
-				av_dev += dev;
-			}
-		}
-
-		av_dev /= length;
-		av_dev = (aalFloat)sqrt(av_dev);
-
-		lpdsb->Unlock(ptr0, cur0, ptr1, cur1);
-
-		LogDebug << "AVV[" << av_vol << "] - AVD[" << av_dev << "f]";
-
-		return AAL_OK;
-	}
-
-	aalError Source::GetPosition(aalVector & position) const
+	aalError DSoundSource::getPosition(aalVector & position) const
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
 
-		if (lpds3db->GetPosition((D3DVECTOR *)&position)) return AAL_ERROR_SYSTEM;
+		D3DVECTOR pos;
+		if (lpds3db->GetPosition(&pos)) return AAL_ERROR_SYSTEM;
+		position.x = pos.x, position.y = pos.y, position.z = pos.z;
 
 		return AAL_OK;
 	}
 
-	aalError Source::GetFalloff(aalFalloff & falloff) const
+	aalError DSoundSource::getFalloff(aalFalloff & falloff) const
 	{
 		falloff = channel.falloff;
 		return AAL_OK;
 	}
 
-	aalUBool Source::IsPlaying()
+	aalUBool DSoundSource::checkPlaying()
 	{
 		aalULong value;
 
@@ -544,13 +450,7 @@ namespace audio {
 		return value & DSBSTATUS_PLAYING ? AAL_UTRUE : AAL_UFALSE;
 	}
 
-	aalUBool Source::IsIdled()
-	{
-		return status & ATHENA_IDLED ? AAL_UTRUE : AAL_UFALSE;
-	}
-
-	aalULong Source::Time(const aalUnit & unit)
-	{
+	aalULong DSoundSource::getTime(aalUnit unit) const {
 		return BytesToUnits(time, sample->format, unit);
 	}
 
@@ -559,17 +459,15 @@ namespace audio {
 	// Control                                                                   //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError Source::Play(const aalULong & play_count)
+	aalError DSoundSource::play(aalULong play_count)
 	{
 		//Enqueue _loop count if instance is already playing
-		if (IsPlaying())
+		if (checkPlaying())
 		{
 			if (play_count) loop += play_count;
 			else loop = 0xffffffff;
 
 			lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
-
-			SourceDebugLog(this, "QUEUED");
 
 			return AAL_OK;
 		}
@@ -591,7 +489,7 @@ namespace audio {
 			if (write != size) return AAL_ERROR;
 		}
 
-		status &= ~ATHENA_PAUSED;
+		status = PLAYING;
 		time = read = write = 0;
 		loop = play_count - 1;
 		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : 0xffffffff;
@@ -601,46 +499,37 @@ namespace audio {
 		if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
 			return AAL_ERROR_SYSTEM;
 
-		SourceDebugLog(this, "STARTED");
-
 		return AAL_OK;
 	}
 
-	aalError Source::Stop()
-	{
-		if (status & ATHENA_IDLED) return AAL_OK;
-
-		SourceDebugLog(this, "STOPPED");
+	aalError DSoundSource::stop() {
+		
+		if(status == IDLE) return AAL_OK;
 
 		if (lpdsb->Stop() || lpdsb->SetCurrentPosition(0)) return AAL_ERROR_SYSTEM;
 
-		status &= ~ATHENA_PAUSED;
-		status |= ATHENA_IDLED;
+		status = IDLE;
 
 		return AAL_OK;
 	}
 
-	aalError Source::Pause()
+	aalError DSoundSource::pause()
 	{
-		if (status & ATHENA_IDLED) return AAL_OK;
-
-		SourceDebugLog(this, "PAUSED");
+		if (status == IDLE || status == PAUSED) return AAL_OK;
 
 		lpdsb->Stop();
-		status |= ATHENA_PAUSED;
+		status = PAUSED;
 
 		return AAL_OK;
 	}
 
-	aalError Source::Resume()
+	aalError DSoundSource::resume()
 	{
-		if (status & ATHENA_IDLED) return AAL_OK;
+		if (status != PAUSED) return AAL_OK;
 
-		SourceDebugLog(this, "RESUMED");
+		status = PLAYING;
 
-		status &= ~ATHENA_PAUSED;
-
-		if (listener && channel.flags & AAL_FLAG_POSITION && lpds3db && IsTooFar())
+		if (listener && channel.flags & AAL_FLAG_POSITION && lpds3db && isTooFar())
 			return AAL_OK;
 
 		if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
@@ -660,7 +549,7 @@ namespace audio {
 		return aalFloat(sqrt(x * x + y * y + z * z));
 	}
 
-	aalUBool Source::IsTooFar()
+	aalUBool DSoundSource::isTooFar()
 	{
 		aalVector listener_pos;
 		aalFloat dist, max;
@@ -674,11 +563,11 @@ namespace audio {
 
 		dist = Distance(listener_pos, channel.position);
 
-		if (status & ATHENA_TOOFAR)
+		if (tooFar)
 		{
 			if (dist > max) return AAL_UTRUE;
 
-			status &= ~ATHENA_TOOFAR;
+			tooFar = false;
 			lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
 
 			return AAL_UFALSE;
@@ -687,20 +576,18 @@ namespace audio {
 		{
 			if (dist <= max) return AAL_UFALSE;
 
-			status |= ATHENA_TOOFAR;
+			tooFar = true;
 			lpdsb->Stop();
 		}
 
 		return AAL_UTRUE;
 	}
 
-	void Source::UpdateStreaming()
+	void DSoundSource::updateStreaming()
 	{
 		void * ptr0, *ptr1;
 		aalULong cur0, cur1;
 		aalULong to_fill, count;
-
-		SourceDebugLog(this, "STREAMED");
 
 		to_fill = write >= read ? read + size - write : read - write;
 
@@ -751,17 +638,17 @@ namespace audio {
 		if (write >= size) write -= size;
 	}
 
-	aalError Source::Update()
+	aalError DSoundSource::update()
 	{
 		aalULong last;
 
-		if (status & (ATHENA_IDLED | ATHENA_PAUSED)) return AAL_OK;
+		if (status != PLAYING) return AAL_OK;
 
-		if (listener && channel.flags & AAL_FLAG_POSITION && lpds3db && IsTooFar())
+		if (listener && channel.flags & AAL_FLAG_POSITION && lpds3db && isTooFar())
 		{
 			if (! this->loop)
 			{
-				this->Stop();
+				stop();
 			}
 			else
 			{
@@ -774,9 +661,9 @@ namespace audio {
 
 		if (read == last)
 		{
-			if (!IsPlaying())
+			if (!checkPlaying())
 			{
-				Stop();
+				stop();
 			}
 
 			return AAL_OK;
@@ -795,15 +682,11 @@ namespace audio {
 		{
 			if (loop)
 			{
-				SourceDebugLog(this, "LOOPED");
-
 				if (!--loop && !stream) lpdsb->Play(0, 0, 0);
 			}
 			else
 			{
-				SourceDebugLog(this, "IDLED");
-
-				status |= ATHENA_IDLED;
+				status = IDLE;
 				return AAL_OK;
 			}
 
@@ -812,7 +695,7 @@ namespace audio {
 			time -= sample->length;
 		}
 
-		if (stream) UpdateStreaming();
+		if (stream) updateStreaming();
 
 		return AAL_OK;
 	}
