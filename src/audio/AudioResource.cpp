@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakManager.h"
 
-namespace ATHENA {
+namespace audio {
 
 
 PakFileHandle * OpenResource(const char * name, const char * resource_path) {
@@ -50,4 +50,4 @@ PakFileHandle * OpenResource(const char * name, const char * resource_path) {
 	return file;
 }
 
-}//ATHENA::
+} // audio

@@ -31,7 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct PakFileHandle;
 
-namespace ATHENA {
+namespace audio {
 	
 	class CodecRAW : public Codec {
 		
@@ -62,6 +62,6 @@ namespace ATHENA {
 		
 	};
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_CODEC_RAW_H

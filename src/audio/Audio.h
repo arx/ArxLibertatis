@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "AudioTypes.h"
 
-namespace ATHENA {
+namespace audio {
 	
 	// Global
 	
@@ -153,6 +153,6 @@ namespace ATHENA {
 	aalError aalAmbiancePlay(const aalSLong & ambiance_id, const aalChannel & channel, const aalULong & play_count = 1, const aalULong & fade_interval = 0);
 	aalError aalAmbianceStop(const aalSLong & ambiance_id, const aalULong & fade_interval = 0);
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_AUDIO_H

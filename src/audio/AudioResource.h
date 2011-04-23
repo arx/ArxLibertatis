@@ -30,7 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct PakFileHandle;
 
-namespace ATHENA {
+namespace audio {
 	
 	const aalULong ALIGNMENT(0x10);
 	
@@ -165,6 +165,6 @@ namespace ATHENA {
 		free(list), list = NULL, size = 0;
 	}
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_AUDIORESOURCE_H

@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Ambient.h"
 #include "dsound/DSoundSource.h"
 
-namespace ATHENA {
+namespace audio {
 	
 	// Common resource memory management
 	
@@ -125,6 +125,6 @@ namespace ATHENA {
 		return dst;
 	}
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_AUDIOGLOBAL_H

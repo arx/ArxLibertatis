@@ -28,8 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "io/PakManager.h"
 
-namespace ATHENA
-{
+namespace audio {
 
 	// Fixed point delta adaption table                                          //
 	static const short gai_p4[] =
@@ -360,4 +359,4 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-}//ATHENA::
+} // namespace audio

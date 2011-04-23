@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioTypes.h"
 #include "AudioResource.h"
 
-namespace ATHENA {
+namespace audio {
 	
 	struct Callback {
 		aalSampleCallback func;
@@ -64,6 +64,6 @@ namespace ATHENA {
 		
 	};
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_SAMPLE_H

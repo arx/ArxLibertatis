@@ -30,7 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioResource.h"
 #include "dsound/dsoundfwd.h"
 
-namespace ATHENA {
+namespace audio {
 	
 	class Environment {
 		
@@ -61,6 +61,6 @@ namespace ATHENA {
 		LPKSPROPERTYSET lpksps;
 	};
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_AUDIOENVIRONMENT_H

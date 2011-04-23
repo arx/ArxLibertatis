@@ -32,8 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakManager.h"
 
-namespace ATHENA
-{
+namespace audio {
 
 	static const aalReflection DEFAULT_REFLECTION = { 0.8F, 7 };
 	static const aalReverberation DEFAULT_REVERBERATION = { 1.02F, 11, 1490, 1236 };
@@ -135,4 +134,4 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-}//ATHENA::
+} // namespace audio

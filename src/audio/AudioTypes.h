@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
-namespace ATHENA {
+namespace audio {
 	
 	// TODO remove
 	typedef u8      aalUBool;
@@ -189,6 +189,6 @@ namespace ATHENA {
 	typedef void(* aalSampleCallback)(void * reserved, const aalSLong & sample_id, void * data);
 	typedef void(* aalEnvironmentCallback)(const aalVector & sample_position, const aalVector & listener_position, const aalObstruction & obstruction);
 	
-} // namespace ATHENA::
-	
+} // namespace audio
+
 #endif // ARX_AUDIO_AUDIOTYPES_H

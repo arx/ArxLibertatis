@@ -34,7 +34,7 @@ struct PakFileHandle;
 #include <windows.h> // needed by mmreg.h
 #include <mmreg.h> // for ADPCMWAVEFORMAT
 
-namespace ATHENA {
+namespace audio {
 	
 	class CodecADPCM : public Codec {
 		
@@ -83,6 +83,6 @@ namespace ATHENA {
 		
 	};
 
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_CODEC_ADPCM_H

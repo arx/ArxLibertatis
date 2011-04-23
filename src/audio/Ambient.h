@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioTypes.h"
 #include "AudioResource.h"
 
-namespace ATHENA {
+namespace audio {
 	
 	struct KeySetting {
 		aalULong flags; // A set of KeySettingFlag
@@ -115,6 +115,6 @@ namespace ATHENA {
 		
 	};
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_AMBIENT_H

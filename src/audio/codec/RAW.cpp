@@ -27,8 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakManager.h"
 
-namespace ATHENA
-{
+namespace audio {
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -118,4 +117,5 @@ namespace ATHENA
 
 		return AAL_OK;
 	}
-}//ATHENA::
+
+} // namespace audio

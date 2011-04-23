@@ -39,8 +39,7 @@ const GUID DSPROPSETID_EAX20_BufferProperties = { 0x306a6a7, 0xb224, 0x11d2, { 0
 const GUID DSPROPSETID_EAX20_ListenerProperties = { 0x306a6a8, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };
 const GUID CLSID_EAXDirectSound = { 0x4ff53b81, 0x1ce0, 0x11d3, { 0xaa, 0xb8, 0x0, 0xa0, 0xc9, 0x59, 0x49, 0xd5 } };
 
-namespace ATHENA
-{
+namespace audio {
 
 	// Status flags                                                              //
 
@@ -818,4 +817,4 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-}//ATHENA::
+} // namespace audio

@@ -36,8 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using namespace std;
 
-namespace ATHENA
-{
+namespace audio {
 
 	static const aalULong AMBIANCE_FILE_SIGNATURE(0x424d4147); //'GAMB'
 	static const aalULong AMBIANCE_FILE_VERSION_1000(0x01000000);
@@ -1350,4 +1349,4 @@ namespace ATHENA
 		}
 	}
 
-}//ATHENA::
+} // namespace audio

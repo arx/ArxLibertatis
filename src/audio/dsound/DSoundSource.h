@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "audio/dsound/dsoundfwd.h"
 
-namespace ATHENA {
+namespace audio {
 	
 	class Stream;
 	class Sample;
@@ -92,6 +92,6 @@ namespace ATHENA {
 		
 	};
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_AUDIOINSTANCE_H

@@ -34,8 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/codec/RAW.h"
 #include "audio/codec/ADPCM.h"
 
-namespace ATHENA
-{
+namespace audio {
 
 #define AS_FORMAT_PCM(x) ((WAVEFORMATEX *)x)
 #define AS_FORMAT_ADPCM(x) ((ADPCMWAVEFORMAT *)x)
@@ -359,4 +358,4 @@ namespace ATHENA
 
 		return AAL_STRUE;
 	}
-}//ATHENA::
+} // namespace audio

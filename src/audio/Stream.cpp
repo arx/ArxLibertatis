@@ -31,8 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-namespace ATHENA
-{
+namespace audio {
 
 	Stream * CreateStream(const char * name)
 	{
@@ -69,4 +68,4 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-}//ATHENA::
+} // namespace audio

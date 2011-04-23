@@ -30,7 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct PakFileHandle;
 
-namespace ATHENA {
+namespace audio {
 	
 	class Stream {
 		
@@ -60,6 +60,6 @@ namespace ATHENA {
 	Stream * CreateStream(const char * name);
 	aalError DeleteStream(Stream *&stream);
 	
-} // namespace ATHENA
+} // namespace audio
 
 #endif // ARX_AUDIO_STREAM_H
