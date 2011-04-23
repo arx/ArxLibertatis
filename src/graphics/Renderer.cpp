@@ -505,7 +505,7 @@ void DX7Texture2D::Upload()
 	pddsTempSurface->Release();
 	pDD->Release();
 
-	if (ddsd.dwMipMapCount > 0)
+	if ((ddsd.dwFlags & DDSD_MIPMAPCOUNT) &&  ddsd.dwMipMapCount > 0)
 	{
 		DDSCAPS2 ddsCaps;
 		ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_MIPMAP;
