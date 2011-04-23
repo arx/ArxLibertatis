@@ -35,8 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioEnvironment.h"
 #include "Sample.h"
 #include "Ambient.h"
-#include "AudioInstance.h"
-#include "dsoundfwd.h"
+#include "dsound/DSoundSource.h"
 
 namespace ATHENA {
 	
@@ -78,7 +77,7 @@ namespace ATHENA {
 	extern ResourceList<Sample> _sample;
 	extern ResourceList<Ambiance> _amb;
 	extern ResourceList<Environment> _env;
-	extern ResourceList<Instance> _inst;
+	extern ResourceList<Source> _inst;
 	
 	// Internal functions
 	
@@ -100,7 +99,7 @@ namespace ATHENA {
 		return id & 0x0000ffff;
 	}
 	
-	inline aalSLong GetInstanceID(const aalSLong & id) {
+	inline aalSLong GetSourceID(const aalSLong & id) {
 		return ((id >> 16) & 0x0000ffff);
 	}
 	

@@ -23,11 +23,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "audio/AudioInstance.h"
+#include "audio/dsound/DSoundSource.h"
 
 #include <cstdio>
 
-#include "audio/eax.h"
+#include "audio/dsound/eax.h"
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 
@@ -44,20 +44,20 @@ namespace ATHENA
 
 	// Status flags                                                              //
 
-	enum ATHENAInstance
+	enum ATHENASource
 	{
 		ATHENA_IDLED     = 0x00000001,
 		ATHENA_PAUSED    = 0x00000002,
 		ATHENA_TOOFAR    = 0x00000004
 	};
 
-	static void InstanceDebugLog(Instance * instance, const char * _text)
+	static void SourceDebugLog(Source * instance, const char * _text)
 	{
 		char text[256];
 		aalULong _time(BytesToUnits(instance->time, instance->sample->format, AAL_UNIT_MS));
 
 		sprintf(text, "[%03u - %03u][%02u\" %02u' %03u][%02u][%s]\n",
-		        GetSampleID(instance->id), GetInstanceID(instance->id),
+		        GetSampleID(instance->id), GetSourceID(instance->id),
 		        _time / 60000, _time % 60000 / 1000, _time % 1000,
 		        instance->loop, _text);
 		LogDebug << text;
@@ -68,8 +68,8 @@ namespace ATHENA
 	// Constructor and destructor                                                //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	Instance::Instance() :
-		id((aalSLong)-1), // Otherwise id might be uninitialized for InstanceDebugLog
+	Source::Source() :
+		id((aalSLong)-1), // Otherwise id might be uninitialized for SourceDebugLog
 		sample(NULL),
 		status(0),
 		loop(0), time(0),
@@ -81,7 +81,7 @@ namespace ATHENA
 	extern char szT[1024];
 	extern bool bLog;
 
-	Instance::~Instance()
+	Source::~Source()
 	{
 		Clean();
 	}
@@ -91,7 +91,7 @@ namespace ATHENA
 	// Setup                                                                     //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError Instance::Init(Sample * __sample, const aalChannel & _channel)
+	aalError Source::Init(Sample * __sample, const aalChannel & _channel)
 	{
 		DSBUFFERDESC _desc;
 		WAVEFORMATEX _format;
@@ -227,7 +227,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::Init(Instance * instance, const aalChannel & _channel)
+	aalError Source::Init(Source * instance, const aalChannel & _channel)
 	{
 		if (instance->stream || _channel.flags ^ instance->channel.flags)
 			return Init(instance->sample, _channel);
@@ -288,7 +288,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::Clean()
+	aalError Source::Clean()
 	{
 		if (lpeax) lpeax->Release(), lpeax = NULL;
 
@@ -310,7 +310,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::SetVolume(const aalFloat & v)
+	aalError Source::SetVolume(const aalFloat & v)
 	{
 		if (!(channel.flags & AAL_FLAG_VOLUME)) return AAL_ERROR_INIT;
 
@@ -337,7 +337,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::SetPitch(const aalFloat & p)
+	aalError Source::SetPitch(const aalFloat & p)
 	{
 		if (!(channel.flags & AAL_FLAG_PITCH)) return AAL_ERROR_INIT;
 
@@ -360,7 +360,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::SetPan(const aalFloat & p)
+	aalError Source::SetPan(const aalFloat & p)
 	{
 		if (!(channel.flags & AAL_FLAG_PAN)) return AAL_ERROR_INIT;
 
@@ -371,7 +371,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::SetPosition(const aalVector & position)
+	aalError Source::SetPosition(const aalVector & position)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
 
@@ -383,7 +383,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::SetVelocity(const aalVector & velocity)
+	aalError Source::SetVelocity(const aalVector & velocity)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_VELOCITY)) return AAL_ERROR_INIT;
 
@@ -395,7 +395,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::SetDirection(const aalVector & direction)
+	aalError Source::SetDirection(const aalVector & direction)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_DIRECTION)) return AAL_ERROR_INIT;
 
@@ -407,7 +407,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::SetCone(const aalCone & cone)
+	aalError Source::SetCone(const aalCone & cone)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_CONE)) return AAL_ERROR_INIT;
 
@@ -424,7 +424,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::SetFalloff(const aalFalloff & falloff)
+	aalError Source::SetFalloff(const aalFalloff & falloff)
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_FALLOFF)) return AAL_ERROR_INIT;
 
@@ -443,7 +443,7 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError Instance::GetStatistics(aalFloat & av_vol, aalFloat & av_dev) const
+	aalError Source::GetStatistics(aalFloat & av_vol, aalFloat & av_dev) const
 	{
 		aalULong pos, length(0);
 		aalULong cur0, cur1;
@@ -521,7 +521,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::GetPosition(aalVector & position) const
+	aalError Source::GetPosition(aalVector & position) const
 	{
 		if (!lpds3db || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
 
@@ -530,13 +530,13 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::GetFalloff(aalFalloff & falloff) const
+	aalError Source::GetFalloff(aalFalloff & falloff) const
 	{
 		falloff = channel.falloff;
 		return AAL_OK;
 	}
 
-	aalUBool Instance::IsPlaying()
+	aalUBool Source::IsPlaying()
 	{
 		aalULong value;
 
@@ -545,12 +545,12 @@ namespace ATHENA
 		return value & DSBSTATUS_PLAYING ? AAL_UTRUE : AAL_UFALSE;
 	}
 
-	aalUBool Instance::IsIdled()
+	aalUBool Source::IsIdled()
 	{
 		return status & ATHENA_IDLED ? AAL_UTRUE : AAL_UFALSE;
 	}
 
-	aalULong Instance::Time(const aalUnit & unit)
+	aalULong Source::Time(const aalUnit & unit)
 	{
 		return BytesToUnits(time, sample->format, unit);
 	}
@@ -560,7 +560,7 @@ namespace ATHENA
 	// Control                                                                   //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError Instance::Play(const aalULong & play_count)
+	aalError Source::Play(const aalULong & play_count)
 	{
 		//Enqueue _loop count if instance is already playing
 		if (IsPlaying())
@@ -570,7 +570,7 @@ namespace ATHENA
 
 			lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
 
-			InstanceDebugLog(this, "QUEUED");
+			SourceDebugLog(this, "QUEUED");
 
 			return AAL_OK;
 		}
@@ -602,16 +602,16 @@ namespace ATHENA
 		if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
 			return AAL_ERROR_SYSTEM;
 
-		InstanceDebugLog(this, "STARTED");
+		SourceDebugLog(this, "STARTED");
 
 		return AAL_OK;
 	}
 
-	aalError Instance::Stop()
+	aalError Source::Stop()
 	{
 		if (status & ATHENA_IDLED) return AAL_OK;
 
-		InstanceDebugLog(this, "STOPPED");
+		SourceDebugLog(this, "STOPPED");
 
 		if (lpdsb->Stop() || lpdsb->SetCurrentPosition(0)) return AAL_ERROR_SYSTEM;
 
@@ -621,11 +621,11 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::Pause()
+	aalError Source::Pause()
 	{
 		if (status & ATHENA_IDLED) return AAL_OK;
 
-		InstanceDebugLog(this, "PAUSED");
+		SourceDebugLog(this, "PAUSED");
 
 		lpdsb->Stop();
 		status |= ATHENA_PAUSED;
@@ -633,11 +633,11 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Instance::Resume()
+	aalError Source::Resume()
 	{
 		if (status & ATHENA_IDLED) return AAL_OK;
 
-		InstanceDebugLog(this, "RESUMED");
+		SourceDebugLog(this, "RESUMED");
 
 		status &= ~ATHENA_PAUSED;
 
@@ -661,7 +661,7 @@ namespace ATHENA
 		return aalFloat(sqrt(x * x + y * y + z * z));
 	}
 
-	aalUBool Instance::IsTooFar()
+	aalUBool Source::IsTooFar()
 	{
 		aalVector listener_pos;
 		aalFloat dist, max;
@@ -695,13 +695,13 @@ namespace ATHENA
 		return AAL_UTRUE;
 	}
 
-	void Instance::UpdateStreaming()
+	void Source::UpdateStreaming()
 	{
 		void * ptr0, *ptr1;
 		aalULong cur0, cur1;
 		aalULong to_fill, count;
 
-		InstanceDebugLog(this, "STREAMED");
+		SourceDebugLog(this, "STREAMED");
 
 		to_fill = write >= read ? read + size - write : read - write;
 
@@ -752,7 +752,7 @@ namespace ATHENA
 		if (write >= size) write -= size;
 	}
 
-	aalError Instance::Update()
+	aalError Source::Update()
 	{
 		aalULong last;
 
@@ -796,13 +796,13 @@ namespace ATHENA
 		{
 			if (loop)
 			{
-				InstanceDebugLog(this, "LOOPED");
+				SourceDebugLog(this, "LOOPED");
 
 				if (!--loop && !stream) lpdsb->Play(0, 0, 0);
 			}
 			else
 			{
-				InstanceDebugLog(this, "IDLED");
+				SourceDebugLog(this, "IDLED");
 
 				status |= ATHENA_IDLED;
 				return AAL_OK;

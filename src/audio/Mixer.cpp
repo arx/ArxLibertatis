@@ -30,7 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include "audio/AudioGlobal.h"
-#include "audio/AudioInstance.h"
+#include "audio/dsound/DSoundSource.h"
 
 using namespace std;
 
@@ -185,7 +185,7 @@ namespace ATHENA
 
 		for (i = 0; i < _inst.Size(); i++)
 		{
-			Instance * instance = _inst[i];
+			Source * instance = _inst[i];
 
 			if (instance && _mixer[instance->channel.mixer] == this)
 				_inst.Delete(i);

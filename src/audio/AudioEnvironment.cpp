@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cmath>
 
-#include "audio/eax.h"
+#include "audio/dsound/eax.h"
 #include "audio/AudioGlobal.h"
 
 #include "io/PakManager.h"

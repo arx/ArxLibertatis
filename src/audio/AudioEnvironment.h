@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "AudioTypes.h"
 #include "AudioResource.h"
-#include "dsoundfwd.h"
+#include "dsound/dsoundfwd.h"
 
 namespace ATHENA {
 	

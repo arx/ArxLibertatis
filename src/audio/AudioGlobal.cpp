@@ -59,7 +59,7 @@ namespace ATHENA
 	ResourceList<Sample> _sample;
 	ResourceList<Ambiance> _amb;
 	ResourceList<Environment> _env;
-	ResourceList<Instance> _inst;
+	ResourceList<Source> _inst;
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //

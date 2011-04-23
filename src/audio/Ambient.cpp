@@ -697,7 +697,7 @@ namespace ATHENA
 				--track;
 
 				aalSLong s_id(GetSampleID(track->s_id));
-				aalSLong i_id(GetInstanceID(track->s_id));
+				aalSLong i_id(GetSourceID(track->s_id));
 
 				if (_sample.IsValid(s_id) && _inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
 					_inst[i_id]->SetVolume(track->key_l[track->key_i].volume.cur * channel.volume);
@@ -723,7 +723,7 @@ namespace ATHENA
 
 				if (_sample.IsValid(s_id))
 				{
-					aalSLong i_id(GetInstanceID(track->s_id));
+					aalSLong i_id(GetSourceID(track->s_id));
 
 					if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
 						_inst[i_id]->Stop();
@@ -926,7 +926,7 @@ namespace ATHENA
 
 			if (_sample.IsValid(s_id))
 			{
-				aalSLong i_id(GetInstanceID(track->s_id));
+				aalSLong i_id(GetSourceID(track->s_id));
 
 				if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
 					_inst[i_id]->Stop();
@@ -956,11 +956,11 @@ namespace ATHENA
 
 			if (_sample.IsValid(s_id))
 			{
-				aalSLong i_id(GetInstanceID(track->s_id));
+				aalSLong i_id(GetSourceID(track->s_id));
 
 				if (_inst.IsValid(i_id))
 				{
-					Instance * instance = _inst[i_id];
+					Source * instance = _inst[i_id];
 
 					if (instance->sample == _sample[s_id] && instance->IsPlaying())
 					{
@@ -987,7 +987,7 @@ namespace ATHENA
 			if (track->flags & TRACK_PAUSED)
 			{
 				aalSLong s_id(GetSampleID(track->s_id));
-				aalSLong i_id(GetInstanceID(track->s_id));
+				aalSLong i_id(GetSourceID(track->s_id));
 
 				if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
 					_inst[i_id]->Resume();
@@ -1064,11 +1064,11 @@ namespace ATHENA
 				{
 					key->n_start -= interval;
 
-					aalSLong i_id(GetInstanceID(track->s_id));
+					aalSLong i_id(GetSourceID(track->s_id));
 
 					if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
 					{
-						Instance * instance = _inst[i_id];
+						Source * instance = _inst[i_id];
 
 						if (key->volume.interval)
 						{
@@ -1188,8 +1188,8 @@ namespace ATHENA
 	static void KeyPlay(Track & track, TrackKey & key)
 	{
 		aalSLong s_id(GetSampleID(track.s_id));
-		aalSLong i_id(GetInstanceID(track.s_id));
-		Instance * inst = NULL;
+		aalSLong i_id(GetSourceID(track.s_id));
+		Source * inst = NULL;
 
 		if (_inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
@@ -1223,7 +1223,7 @@ namespace ATHENA
 				channel.pan = key.pan.cur;
 			}
 
-			inst = new Instance;
+			inst = new Source;
 
 			if (inst->Init(_sample[s_id], channel) || (i_id = _inst.Add(inst)) == AAL_SFALSE)
 			{
@@ -1247,7 +1247,7 @@ namespace ATHENA
 
 	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data)
 	{
-		Instance * instance = (Instance *)inst;
+		Source * instance = (Source *)inst;
 		Track * track = (Track *)data;
 		TrackKey * key = &track->key_l[track->key_i];
 		aalFloat value;

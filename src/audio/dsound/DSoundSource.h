@@ -26,23 +26,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOINSTANCE_H
 #define ARX_AUDIO_AUDIOINSTANCE_H
 
-#include "AudioTypes.h"
-#include "Sample.h"
-#include "Stream.h"
-#include "dsoundfwd.h"
+#include "audio/AudioTypes.h"
+#include "audio/dsound/dsoundfwd.h"
 
 namespace ATHENA {
 	
-	class Instance {
+	class Stream;
+	class Sample;
+	
+	class Source {
 		
 	public:
 		
-		Instance();
-		~Instance();
+		Source();
+		~Source();
 		
 		// Setup
 		aalError Init(Sample * sample, const aalChannel & channel);
-		aalError Init(Instance * instance, const aalChannel & channel);
+		aalError Init(Source * instance, const aalChannel & channel);
 		aalError Clean();
 		aalError SetVolume(const aalFloat & volume);
 		aalError SetPitch(const aalFloat & pitch);

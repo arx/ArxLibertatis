@@ -47,10 +47,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Mixer.h"
 #include "audio/Sample.h"
 #include "audio/Ambient.h"
-#include "audio/AudioInstance.h"
+#include "audio/dsound/DSoundSource.h"
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
-#include "audio/eax.h"
+#include "audio/dsound/eax.h"
 #include "audio/Lock.h"
 
 #include "io/Logger.h"
@@ -492,7 +492,7 @@ HWND hwnd = NULL;
 		// Update instances
 		for (i = 0; i < _inst.Size(); i++)
 		{
-			Instance * instance = _inst[i];
+			Source * instance = _inst[i];
 
 			if (instance)
 			{
@@ -1138,7 +1138,7 @@ HWND hwnd = NULL;
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
-		aalSLong i_id(GetInstanceID(sample_id));
+		aalSLong i_id(GetSourceID(sample_id));
 
 		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
@@ -1160,7 +1160,7 @@ HWND hwnd = NULL;
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
-		aalSLong i_id(GetInstanceID(sample_id));
+		aalSLong i_id(GetSourceID(sample_id));
 
 		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
@@ -1182,7 +1182,7 @@ HWND hwnd = NULL;
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
-		aalSLong i_id(GetInstanceID(sample_id));
+		aalSLong i_id(GetSourceID(sample_id));
 
 		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
@@ -1257,7 +1257,7 @@ HWND hwnd = NULL;
 			return AAL_UFALSE;
 
 		aalSLong s_id(GetSampleID(sample_id));
-		aalSLong i_id(GetInstanceID(sample_id));
+		aalSLong i_id(GetSourceID(sample_id));
 
 		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
 		{
@@ -1317,8 +1317,8 @@ HWND hwnd = NULL;
 			return AAL_ERROR_HANDLE;
 		}
 
-		aalSLong i_id(GetInstanceID(sample_id));
-		Instance * instance = NULL;
+		aalSLong i_id(GetSourceID(sample_id));
+		Source * instance = NULL;
 
 		if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id] &&
 		        !(channel.flags ^ _inst[i_id]->channel.flags))
@@ -1362,7 +1362,7 @@ HWND hwnd = NULL;
 					break;
 			}
 
-			instance = new Instance;
+			instance = new Source;
 
 			if ((i < _inst.Size() ? instance->Init(_inst[i], channel) : instance->Init(_sample[s_id], channel)) ||
 			        (i_id = _inst.Add(instance)) == AAL_SFALSE)
@@ -1400,14 +1400,14 @@ HWND hwnd = NULL;
 		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
 			return AAL_ERROR_TIMEOUT;
 
-		if (_sample.IsNotValid(GetSampleID(s_id)) || _inst.IsNotValid(GetInstanceID(s_id)))
+		if (_sample.IsNotValid(GetSampleID(s_id)) || _inst.IsNotValid(GetSourceID(s_id)))
 		{
 			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
-		_inst[GetInstanceID(s_id)]->Stop();
+		_inst[GetSourceID(s_id)]->Stop();
 		s_id |= 0xffff0000;
 
 		if (mutex) mutex->unlock();
