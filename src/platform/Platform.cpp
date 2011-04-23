@@ -58,46 +58,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
-#include <windows.h>
-#include <signal.h>
-#include <fcntl.h>
-
 #include <cstdio>
-#include <ctime>
+#include <cstdarg>
 
 #include "io/Logger.h"
 
+using std::va_list;
+using std::vsnprintf;
 
-void assertionFailed(const char * _sExpression, const char * _sFile, unsigned int _iLine, const char * _sMessage, ...)
-{
-	char msgbuf[4096];
-	char formattedmsgbuf[4096];
 
-	char expr[MAX_PATH + 1], iFile[MAX_PATH + 1];
-
-	strcpy(expr, _sExpression);
-	strcpy(iFile, _sFile);
-
-	if (iFile[0] == 0)
-	{
-		strcpy(iFile, "<unknown>");
+void assertionFailed(const char * expr, const char * file, unsigned int line, const char * msg, ...) {
+	
+	if(!file || file[0] == '\0') {
+		file = "<unknown>";
 	}
-
-	if (expr[0] == 0)
-	{
-		strcpy(expr, "?");
-	}
-
-	if(_sMessage == 0)
-		sprintf(msgbuf, "ASSERTION FAILED!\n%s(%u): %s\n", iFile, _iLine, expr);
-	else
-	{
+	
+	Logger(file, line, Logger::Error) << "Assertion Failed: " << expr;
+	if(msg) {
+		char formattedmsgbuf[4096];
 		va_list args;
-		va_start(args, _sMessage);
-		vsnprintf(formattedmsgbuf, sizeof(formattedmsgbuf) - 1, _sMessage, args);
+		va_start(args, msg);
+		vsnprintf(formattedmsgbuf, sizeof(formattedmsgbuf) - 1, msg, args);
 		va_end(args);
-		sprintf(msgbuf, "ASSERTION FAILED!\n%s(%u): %s\n\t Message: %s\n", iFile, _iLine, expr, formattedmsgbuf);
+		Logger(file, line, Logger::Error) << "Message: " << formattedmsgbuf;
 	}
-
-	LogError << msgbuf;
+	
+	// TODO should we exit here?
 }
