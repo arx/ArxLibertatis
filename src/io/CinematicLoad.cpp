@@ -156,8 +156,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	LogDebug << "version " << version;
 	
-	if(version > CINEMATIC_FILE_VERSION) {
-		LogError << "wrong version " << version << " expected max " << CINEMATIC_FILE_VERSION;
+	if(version < CINEMATIC_VERSION_1_75) {
+		LogError << "too old version " << version << " expected at least " << CINEMATIC_VERSION_1_75;
+	}
+	
+	if(version > CINEMATIC_VERSION_1_76) {
+		LogError << "wrong version " << version << " expected max " << CINEMATIC_VERSION_1_76;
 		return false;
 	}
 	
@@ -171,11 +175,11 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	LogDebug << "nbitmaps " << nbitmaps;
-
+	
 	c->m_bitmaps.reserve(nbitmaps);
-
+	
 	for(int i = 0; i < nbitmaps; i++) {
-
+		
 		s32 scale = 0;
 		if(!safeGet(scale, data, size)) {
 			LogError << "error reading bitmap scale";
@@ -193,9 +197,10 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		
 		LogDebug << "adding bitmap " << i << ": " << path;
 		
-		CinematicBitmap* newBitmap = CreateCinematicBitmap(path, scale);
-		if(newBitmap)
+		CinematicBitmap * newBitmap = CreateCinematicBitmap(path, scale);
+		if(newBitmap) {
 			c->m_bitmaps.push_back(newBitmap);
+		}
 	}
 	
 	// Load sounds.
@@ -210,7 +215,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LogDebug << "nsounds " << nsounds;
 	for(int i = 0; i < nsounds; i++) {
 		
-		if(version >= CINEMATIC_FILE_VERSION) {
+		if(version >= CINEMATIC_VERSION_1_76) {
 			s16 il;
 			if(!safeGet(il, data, size)) {
 				LogError << "error reading sound id";
@@ -234,7 +239,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		
 		if(AddSoundToList(path) < 0) {
 			LogError << "AddSoundToList failed for " << path;
-		}		
+		}
 	}
 	
 	// Load track and keys.
@@ -246,14 +251,14 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
 	
-	LogDebug << "nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY);
+	LogDebug << "nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY_1_76);
 	for(int i = 0; i < t.nbkey; i++) {
 		
 		C_KEY k;
 		
 		LogDebug << "loading key " << i << " " << size;
 				
-		if(version <= ((1 << 16) | 75)) {
+		if(version <= CINEMATIC_VERSION_1_75) {
 			
 			C_KEY_1_75 k175;
 			if(!safeGet(k175, data, size)) {
@@ -272,21 +277,40 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.speed = k175.speed;
 			k.typeinterp = k175.typeinterp;
 			k.force = k175.force;
-			k.idsound[C_KEY::French] = k175.idsound;
+			k.idsound[0] = k175.idsound;
+			for(size_t i = 1; i < 16; i++) {
+				k.idsound[i] = -1;
+			}
 			k.light = k175.light;
 			k.posgrille = k175.posgrille;
 			k.angzgrille = k175.angzgrille;
 			k.speedtrack = k175.speedtrack;
 			
 		} else {
-			if(!safeGet(k, data, size)) {
+			
+			C_KEY_1_76 k176;
+			if(!safeGet(k176, data, size)) {
 				LogError << "error reading key v1.76";
 				return false;
 			}
-		}
-
-		if(version <= ((1 << 16) | 75)) {
-			for (int i = 1; i < 16; i++) k.idsound[i] = -1;
+			
+			k.angz = k176.angz;
+			k.color = k176.color;
+			k.colord = k176.colord;
+			k.colorf = k176.colorf;
+			k.frame = k176.frame;
+			k.fx = k176.fx;
+			k.numbitmap = k176.numbitmap;
+			k.pos = k176.pos;
+			k.speed = k176.speed;
+			k.typeinterp = k176.typeinterp;
+			k.force = k176.force;
+			k.light = k176.light;
+			k.posgrille = k176.posgrille;
+			k.angzgrille = k176.angzgrille;
+			k.speedtrack = k176.speedtrack;
+			copy(k176.idsound, k176.idsound + 16, k.idsound);
+			
 		}
 		
 		if(k.force < 0) {
