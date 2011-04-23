@@ -140,24 +140,24 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	const char * cinematicId = safeGetString(data, size);
 	if(!cinematicId) {
-		LogDebug << "error parsing file magic number";
+		LogError << "error parsing file magic number";
 		return false;
 	}
 	
 	if(strcmp(cinematicId, "KFA")) {
-		LogDebug << "wrong magic number";
+		LogError << "wrong magic number";
 		return false;
 	}
 	
 	s32 version;
 	if(!safeGet(version, data, size)) {
-		LogDebug << "error reading file version";
+		LogError << "error reading file version";
 		return false;
 	}
 	LogDebug << "version " << version;
 	
 	if(version > CINEMATIC_FILE_VERSION) {
-		LogDebug << "wrong version " << version << " expected max " << CINEMATIC_FILE_VERSION;
+		LogError << "wrong version " << version << " expected max " << CINEMATIC_FILE_VERSION;
 		return false;
 	}
 	
@@ -167,7 +167,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	// Load bitmaps.
 	s32 nbitmaps;
 	if(!safeGet(nbitmaps, data, size)) {
-		LogDebug << "error reading bitmap count";
+		LogError << "error reading bitmap count";
 		return false;
 	}
 	LogDebug << "nbitmaps " << nbitmaps;
@@ -178,13 +178,13 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 
 		s32 scale = 0;
 		if(!safeGet(scale, data, size)) {
-			LogDebug << "error reading bitmap scale";
+			LogError << "error reading bitmap scale";
 			return false;
 		}
 		
 		const char * str = safeGetString(data, size);
 		if(!str) {
-			LogDebug << "error bitmap path";
+			LogError << "error reading bitmap path";
 			return false;
 		}
 		string path = str;
@@ -203,7 +203,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			
 	s32 nsounds;
 	if(!safeGet(nsounds, data, size)) {
-		LogDebug << "error reading sound count";
+		LogError << "error reading sound count";
 		return false;
 	}
 	
@@ -213,7 +213,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		if(version >= CINEMATIC_FILE_VERSION) {
 			s16 il;
 			if(!safeGet(il, data, size)) {
-				LogDebug << "error reading sound id";
+				LogError << "error reading sound id";
 				return false;
 			}
 			LSoundChoose = il;
@@ -221,7 +221,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		
 		const char * str = safeGetString(data, size);
 		if(!str) {
-			LogDebug << "error reading sound path";
+			LogError << "error reading sound path";
 			return false;
 		}
 		string path = str;
@@ -241,7 +241,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	SavedCinematicTrack t;
 	if(!safeGet(t, data, size)) {
-		LogDebug << "error reading track";
+		LogError << "error reading track";
 		return false;
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
@@ -257,7 +257,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			
 			C_KEY_1_75 k175;
 			if(!safeGet(k175, data, size)) {
-				LogDebug << "error reading key v1.75";
+				LogError << "error reading key v1.75";
 				return false;
 			}
 			
@@ -280,7 +280,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			
 		} else {
 			if(!safeGet(k, data, size)) {
-				LogDebug << "error reading key v1.76";
+				LogError << "error reading key v1.76";
 				return false;
 			}
 		}
