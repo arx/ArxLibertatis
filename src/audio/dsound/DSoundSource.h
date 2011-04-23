@@ -23,75 +23,72 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_AUDIO_AUDIOINSTANCE_H
-#define ARX_AUDIO_AUDIOINSTANCE_H
+#ifndef ARX_AUDIO_DSOUND_DSOUNDSOURCE_H
+#define ARX_AUDIO_DSOUND_DSOUNDSOURCE_H
 
 #include "audio/AudioTypes.h"
+#include "audio/AudioSource.h"
 #include "audio/dsound/dsoundfwd.h"
 
 namespace audio {
+
+class Stream;
+class Sample;
+
+class DSoundSource : public Source {
 	
-	class Stream;
-	class Sample;
+public:
 	
-	class Source {
-		
-	public:
-		
-		Source();
-		~Source();
-		
-		// Setup
-		aalError Init(Sample * sample, const aalChannel & channel);
-		aalError Init(Source * instance, const aalChannel & channel);
-		aalError Clean();
-		aalError SetVolume(const aalFloat & volume);
-		aalError SetPitch(const aalFloat & pitch);
-		aalError SetPan(const aalFloat & pan);
-		aalError SetPosition(const aalVector & position);
-		aalError SetVelocity(const aalVector & velocity);
-		aalError SetDirection(const aalVector & direction);
-		aalError SetCone(const aalCone & cone);
-		aalError SetFalloff(const aalFalloff & falloff);
-		aalError SetMixer(const aalSLong & mixer_handle);
-		aalError SetEnvironment(const aalSLong & environment_handle);
-		
-		//Status
-		aalError GetPosition(aalVector & position) const;
-		aalError GetFalloff(aalFalloff & falloff) const;
-		aalError GetMixer(aalSLong & mixer_handle);
-		aalError GetEnvironment(aalSLong & environment_handle);
-		aalError GetStatistics(aalFloat & average_volume, aalFloat & deviance) const;
-		aalUBool IsIdled();
-		aalUBool IsPlaying();
-		aalULong Time(const aalUnit & unit = AAL_UNIT_MS);
-		
-		// Control
-		aalError Play(const aalULong & play_count = 1);
-		aalError Stop();
-		aalError Pause();
-		aalError Resume();
-		aalError Update();
-		void UpdateStreaming();
-		aalUBool IsTooFar();
-		
-		// Data
-		aalSLong id;
-		Sample * sample;
-		aalChannel channel;
-		aalULong status;
-		aalULong callb_i; // Next callback index
-		aalULong loop; // Remaining loop count
-		aalULong time; // Elapsed 'time'
-		Stream * stream;
-		aalULong read, write; // Streaming status
-		aalULong size; // Buffer size
-		LPDIRECTSOUNDBUFFER lpdsb;
-		LPDIRECTSOUND3DBUFFER lpds3db;
-		LPKSPROPERTYSET lpeax;
-		
-	};
+	DSoundSource(Sample * Sample);
+	~DSoundSource();
 	
+	aalError init(aalSLong _id, const aalChannel & channel);
+	aalError init(aalSLong _id, DSoundSource * instance, const aalChannel & channel);
+	
+	aalError setVolume(float volume);
+	aalError setPitch(float pitch);
+	aalError setPan(float pan);
+	
+	aalError setPosition(const aalVector & position);
+	aalError setVelocity(const aalVector & velocity);
+	aalError setDirection(const aalVector & direction);
+	aalError setCone(const aalCone & cone);
+	aalError setFalloff(const aalFalloff & falloff);
+	aalError setMixer(aalSLong mixer);
+	aalError setEnvironment(aalSLong environment);
+	
+	//Status
+	aalError getPosition(aalVector & position) const;
+	aalError getFalloff(aalFalloff & falloff) const;
+	aalULong getTime(aalUnit unit = AAL_UNIT_MS) const;
+	
+	// Control
+	aalError play(unsigned playCount = 1);
+	aalError stop();
+	aalError pause();
+	aalError resume();
+	aalError update();
+	
+private:
+	
+	void updateStreaming();
+	aalUBool isTooFar();
+	aalError clean();
+	aalUBool checkPlaying();
+	
+	bool tooFar;
+	aalULong callb_i; // Next callback index
+	aalULong loop; // Remaining loop count
+	aalULong time; // Elapsed 'time'
+	Stream * stream;
+	aalULong read, write; // Streaming status
+	aalULong size; // Buffer size
+	LPDIRECTSOUNDBUFFER lpdsb;
+	LPDIRECTSOUND3DBUFFER lpds3db;
+	LPKSPROPERTYSET lpeax;
+	
+};
+
 } // namespace audio
 
-#endif // ARX_AUDIO_AUDIOINSTANCE_H
+#endif // ARX_AUDIO_DSOUND_DSOUNDSOURCE_H

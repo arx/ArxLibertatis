@@ -495,9 +495,9 @@ HWND hwnd = NULL;
 
 			if (instance)
 			{
-				instance->Update();
+				instance->update();
 
-				if (instance->IsIdled())
+				if (instance->isIdle())
 				{
 					_inst.Delete(i);
 				}
@@ -1139,14 +1139,14 @@ HWND hwnd = NULL;
 		aalSLong s_id(GetSampleID(sample_id));
 		aalSLong i_id(GetSourceID(sample_id));
 
-		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
-		_inst[i_id]->SetVolume(volume);
+		_inst[i_id]->setVolume(volume);
 
 		if (mutex) mutex->unlock();
 
@@ -1161,14 +1161,14 @@ HWND hwnd = NULL;
 		aalSLong s_id(GetSampleID(sample_id));
 		aalSLong i_id(GetSourceID(sample_id));
 
-		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
-		_inst[i_id]->SetPitch(pitch);
+		_inst[i_id]->setPitch(pitch);
 
 		if (mutex) mutex->unlock();
 
@@ -1183,14 +1183,14 @@ HWND hwnd = NULL;
 		aalSLong s_id(GetSampleID(sample_id));
 		aalSLong i_id(GetSourceID(sample_id));
 
-		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			if (mutex) mutex->unlock();
 
 			return AAL_ERROR_HANDLE;
 		}
 
-		_inst[i_id]->SetPosition(position);
+		_inst[i_id]->setPosition(position);
 
 		if (mutex) mutex->unlock();
 
@@ -1258,41 +1258,19 @@ HWND hwnd = NULL;
 		aalSLong s_id(GetSampleID(sample_id));
 		aalSLong i_id(GetSourceID(sample_id));
 
-		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_sample.IsNotValid(s_id) || _inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			if (mutex) mutex->unlock();
 
 			return AAL_UFALSE;
 		}
 
-		aalUBool status(_inst[i_id]->IsPlaying());
+		aalUBool status(_inst[i_id]->isPlaying());
 
 		if (mutex) mutex->unlock();
 
 		return status;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -1319,32 +1297,32 @@ HWND hwnd = NULL;
 		aalSLong i_id(GetSourceID(sample_id));
 		Source * instance = NULL;
 
-		if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id] &&
-		        !(channel.flags ^ _inst[i_id]->channel.flags))
+		if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id] &&
+		        !(channel.flags ^ _inst[i_id]->getChannel().flags))
 		{
 
 			instance = _inst[i_id];
 
 			if (channel.flags & AAL_FLAG_RESTART)
 			{
-				instance->Stop();
+				instance->stop();
 			}
-			else if (channel.flags & AAL_FLAG_ENQUEUE && instance->channel.flags == channel.flags)
+			else if (channel.flags & AAL_FLAG_ENQUEUE && instance->getChannel().flags == channel.flags)
 			{
-				instance->Play(play_count);
+				instance->play(play_count);
 			}
-			else if (instance->IsIdled())
+			else if (instance->isIdle())
 			{
-				instance->channel.mixer = channel.mixer;
-				instance->channel.environment = channel.environment;
-				instance->SetVolume(channel.volume);
-				instance->SetPitch(channel.pitch);
-				instance->SetPan(channel.pan);
-				instance->SetPosition(channel.position);
-				instance->SetVelocity(channel.velocity);
-				instance->SetDirection(channel.direction);
-				instance->SetCone(channel.cone);
-				instance->SetFalloff(channel.falloff);
+				instance->setMixer(channel.mixer);
+				instance->setEnvironment(channel.environment);
+				instance->setVolume(channel.volume);
+				instance->setPitch(channel.pitch);
+				instance->setPan(channel.pan);
+				instance->setPosition(channel.position);
+				instance->setVelocity(channel.velocity);
+				instance->setDirection(channel.direction);
+				instance->setCone(channel.cone);
+				instance->setFalloff(channel.falloff);
 			}
 			else instance = NULL;
 		}
@@ -1355,28 +1333,40 @@ HWND hwnd = NULL;
 
 			aalULong i(0);
 
+			
+			DSoundSource * orig = NULL;
 			for (; i < _inst.Size(); i++)
 			{
-				if (_inst[i] && _inst[i]->sample == sample)
+				if(_inst[i] && _inst[i]->getSample() == sample) {
+					orig = (DSoundSource*)_inst[i];
 					break;
+				}
 			}
 
-			instance = new Source;
+			DSoundSource * inst = new DSoundSource(sample);
+			instance = inst;
 
-			if ((i < _inst.Size() ? instance->Init(_inst[i], channel) : instance->Init(_sample[s_id], channel)) ||
-			        (i_id = _inst.Add(instance)) == AAL_SFALSE)
-			{
+			if((i_id = _inst.Add(instance)) == AAL_SFALSE) {
 				delete instance;
-
-				if (mutex) mutex->unlock();
-
+				if(mutex) {
+					mutex->unlock();
+				}
+				return AAL_ERROR_SYSTEM;
+			}
+			
+			aalSLong id = (i_id << 16) | s_id;;
+			if(orig ? inst->init(id, orig, channel) : inst->init(id, channel)) {
+				_inst.Delete(i_id);
+				if(mutex) {
+					mutex->unlock();
+				}
 				return AAL_ERROR_SYSTEM;
 			}
 		}
 
 		if (listener && channel.flags & FLAG_ANY_3D_FX) listener->CommitDeferredSettings();
 
-		if (instance->Play(play_count))
+		if (instance->play(play_count))
 		{
 			_inst.Delete(i_id);
 
@@ -1385,7 +1375,7 @@ HWND hwnd = NULL;
 			return AAL_ERROR_SYSTEM;
 		}
 
-		sample_id = instance->id = (i_id << 16) | s_id;
+		sample_id = instance->getId();
 
 		if (channel.flags & AAL_FLAG_AUTOFREE) _sample[s_id]->Release();
 
@@ -1406,7 +1396,7 @@ HWND hwnd = NULL;
 			return AAL_ERROR_HANDLE;
 		}
 
-		_inst[GetSourceID(s_id)]->Stop();
+		_inst[GetSourceID(s_id)]->stop();
 		s_id |= 0xffff0000;
 
 		if (mutex) mutex->unlock();

@@ -52,7 +52,7 @@ namespace audio {
 	Sample::~Sample()
 	{
 		for (aalULong i(0); i < _inst.Size(); i++)
-			if (_inst[i] && _inst[i]->sample == this) _inst.Delete(i);
+			if (_inst[i] && _inst[i]->getSample() == this) _inst.Delete(i);
 
 		free(name);
 		free(callb);

@@ -698,8 +698,8 @@ namespace audio {
 				aalSLong s_id(GetSampleID(track->s_id));
 				aalSLong i_id(GetSourceID(track->s_id));
 
-				if (_sample.IsValid(s_id) && _inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
-					_inst[i_id]->SetVolume(track->key_l[track->key_i].volume.cur * channel.volume);
+				if (_sample.IsValid(s_id) && _inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
+					_inst[i_id]->setVolume(track->key_l[track->key_i].volume.cur * channel.volume);
 			}
 		}
 
@@ -724,8 +724,8 @@ namespace audio {
 				{
 					aalSLong i_id(GetSourceID(track->s_id));
 
-					if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
-						_inst[i_id]->Stop();
+					if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
+						_inst[i_id]->stop();
 				}
 			}
 		}
@@ -927,8 +927,8 @@ namespace audio {
 			{
 				aalSLong i_id(GetSourceID(track->s_id));
 
-				if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
-					_inst[i_id]->Stop();
+				if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
+					_inst[i_id]->stop();
 			}
 
 			s_id |= 0xffff0000;
@@ -961,9 +961,9 @@ namespace audio {
 				{
 					Source * instance = _inst[i_id];
 
-					if (instance->sample == _sample[s_id] && instance->IsPlaying())
+					if (instance->getSample() == _sample[s_id] && instance->isPlaying())
 					{
-						instance->Pause();
+						instance->pause();
 						track->flags |= TRACK_PAUSED;
 					}
 				}
@@ -988,8 +988,8 @@ namespace audio {
 				aalSLong s_id(GetSampleID(track->s_id));
 				aalSLong i_id(GetSourceID(track->s_id));
 
-				if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
-					_inst[i_id]->Resume();
+				if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
+					_inst[i_id]->resume();
 
 				track->flags &= ~TRACK_PAUSED;
 			}
@@ -1065,7 +1065,7 @@ namespace audio {
 
 					aalSLong i_id(GetSourceID(track->s_id));
 
-					if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
+					if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
 					{
 						Source * instance = _inst[i_id];
 
@@ -1075,11 +1075,11 @@ namespace audio {
 
 							if (channel.flags & AAL_FLAG_VOLUME) value *= channel.volume;
 
-							instance->SetVolume(value);
+							instance->setVolume(value);
 						}
-						else instance->SetVolume(key->volume.cur * channel.volume);
+						else instance->setVolume(key->volume.cur * channel.volume);
 
-						if (key->pitch.interval) instance->SetPitch(UpdateSetting(key->pitch, time));
+						if (key->pitch.interval) instance->setPitch(UpdateSetting(key->pitch, time));
 
 						if (track->flags & TRACK_3D)
 						{
@@ -1090,9 +1090,9 @@ namespace audio {
 
 							if (channel.flags & AAL_FLAG_POSITION) position += channel.position;
 
-							instance->SetPosition(position);
+							instance->setPosition(position);
 						}
-						else instance->SetPan(UpdateSetting(key->pan, time));
+						else instance->setPan(UpdateSetting(key->pan, time));
 					}
 				}
 			}
@@ -1190,7 +1190,7 @@ namespace audio {
 		aalSLong i_id(GetSourceID(track.s_id));
 		Source * inst = NULL;
 
-		if (_inst.IsNotValid(i_id) || _inst[i_id]->sample != _sample[s_id])
+		if (_inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
 		{
 			Ambiance * ambiance = _amb[track.a_id];
 			aalChannel channel;
@@ -1222,24 +1222,31 @@ namespace audio {
 				channel.pan = key.pan.cur;
 			}
 
-			inst = new Source;
+			DSoundSource * instance =  new DSoundSource(_sample[s_id]);
+			inst = instance;
 
-			if (inst->Init(_sample[s_id], channel) || (i_id = _inst.Add(inst)) == AAL_SFALSE)
-			{
+			if((i_id = _inst.Add(inst)) == AAL_SFALSE) {
 				delete inst;
 				track.s_id |= 0xffff0000;
 				return;
 			}
+			
+			
+			if(instance->init((i_id << 16) | s_id, channel)) {
+				_inst.Delete(i_id);
+				track.s_id |= 0xffff0000;
+				return;
+			}
 
-			track.s_id = inst->id = (i_id << 16) | s_id;
+			track.s_id = inst->getId();
 		}
 		else inst = _inst[i_id];
 
 
 		if (!key.delay_min && !key.delay_max)
-			inst->Play(key.loopc + 1);
+			inst->play(key.loopc + 1);
 		else
-			inst->Play();
+			inst->play();
 
 		key.n_start = KEY_CONTINUE;
 	}
@@ -1272,7 +1279,7 @@ namespace audio {
 
 			if (!track->key_l[i].start && !track->key_l[i].delay_min && !track->key_l[i].delay_max)
 			{
-				instance->Play(track->key_l[i].loop + 1);
+				instance->play(track->key_l[i].loop + 1);
 				track->flags |= TRACK_PREFETCHED;
 			}
 		}
@@ -1282,11 +1289,11 @@ namespace audio {
 		if (_amb[track->a_id]->channel.flags & AAL_FLAG_VOLUME)
 			value *= _amb[track->a_id]->channel.volume;
 
-		instance->SetVolume(value);
+		instance->setVolume(value);
 
-		instance->SetPitch(UpdateSetting(key->pitch));
+		instance->setPitch(UpdateSetting(key->pitch));
 
-		if (instance->channel.flags & AAL_FLAG_POSITION)
+		if (instance->getChannel().flags & AAL_FLAG_POSITION)
 		{
 			aalVector position;
 
@@ -1297,9 +1304,9 @@ namespace audio {
 			if (_amb[track->a_id]->channel.flags & AAL_FLAG_POSITION)
 				position += _amb[track->a_id]->channel.position;
 
-			instance->SetPosition(position);
+			instance->setPosition(position);
 		}
-		else instance->SetPan(UpdateSetting(key->pan));
+		else instance->setPan(UpdateSetting(key->pan));
 	}
 
 	static void OnAmbianceSampleStop(void *, const aalSLong &, void * data)

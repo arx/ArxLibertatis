@@ -23,8 +23,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_AUDIO_AUDIOINSTANCE_H
-#define ARX_AUDIO_AUDIOINSTANCE_H
+#ifndef ARX_AUDIO_AUDIOSOURCE_H
+#define ARX_AUDIO_AUDIOSOURCE_H
 
 #include "audio/AudioTypes.h"
 
@@ -46,14 +46,9 @@ public:
 		PAUSED
 	};
 	
-	virtual ~Source();
+	Source(Sample * sample);
 	
-	/*!
-	 * Initialize this source with the given channel properties.
-	 * Only those properties set in the channel can be changed later.
-	 * @param instance An optional reference to another source with the same sample. This can be used by implementations to share internal buffers.
-	 */
-	virtual aalError init(const aalChannel & channel) = 0;
+	virtual ~Source();
 	
 	/*!
 	 * Set the volume of this source and update the volume calculated from the sources mixers.
@@ -105,13 +100,16 @@ public:
 	virtual aalError resume() = 0;
 	virtual aalError update() = 0;
 	
-	aalSLong id;
-	
+	inline aalSLong getId() { return id; }
 	inline Sample * getSample() { return sample; }
 	inline const aalChannel & getChannel() { return channel; }
-	inline const Status getStatus() { return status; }
+	inline Status getStatus() { return status; }
+	inline bool isPlaying() { return status == PLAYING; }
+	inline bool isIdle() { return status == IDLE; }
 	
 protected:
+	
+	aalSLong id;
 	
 	aalChannel channel;
 	
@@ -122,4 +120,4 @@ protected:
 
 } // namespace audio
 
-#endif // ARX_AUDIO_AUDIOINSTANCE_H
+#endif // ARX_AUDIO_AUDIOSOURCE_H
