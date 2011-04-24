@@ -30,34 +30,36 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
+#include "audio/AudioBackend.h"
+#include "audio/AudioSource.h"
 #include "io/Logger.h"
 
 using namespace std;
 
 namespace audio {
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Constrcutor and destructor                                                //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	Sample::Sample() : ResourceHandle(),
-		name(NULL),
-		length(0),
-		data(NULL),
-		callb_c(0), callb(NULL)
-	{
-	}
+Sample::Sample() : ResourceHandle(),
+	name(NULL),
+	length(0),
+	data(NULL),
+	callb_c(0), callb(NULL) {
+}
 
-	Sample::~Sample()
-	{
-		for (aalULong i(0); i < _inst.Size(); i++)
-			if (_inst[i] && _inst[i]->getSample() == this) _inst.Delete(i);
-
-		free(name);
-		free(callb);
-		free(data);
+Sample::~Sample() {
+	
+	// Delete sources referencing this sample.
+	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
+		if(*p && (*p)->getSample() == this) {
+			p = backend->deleteSource(p);
+		} else {
+			++p;
+		}
 	}
+	
+	free(name);
+	free(callb);
+	free(data);
+}
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //

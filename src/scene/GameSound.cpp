@@ -115,7 +115,7 @@ struct PlayingAmbiance {
 };
 
 static const unsigned long ARX_SOUND_UPDATE_INTERVAL(100);  
-static const unsigned long ARX_SOUND_STREAMING_LIMIT(2000); 
+static const unsigned long ARX_SOUND_STREAMING_LIMIT(176400); 
 static const unsigned long MAX_MATERIALS(17);
 static const unsigned long MAX_VARIANTS(5);
 static const unsigned long AMBIANCE_FADE_TIME(2000);
@@ -337,22 +337,10 @@ long ARX_SOUND_Init(HWND hwnd)
 {
 	if (bIsActive) ARX_SOUND_Release();
 
-	if ((bForceNoEAX) ||
-	        (pMenuConfig && (!pMenuConfig->bEAX)))
-	{
-		if (aalInitForceNoEAX(hwnd) || aalEnable(AAL_FLAG_MULTITHREAD))
-		{
-			aalClean();
-			return -1;
-		}
-	}
-	else
-	{
-		if (aalInit(hwnd) || aalEnable(AAL_FLAG_MULTITHREAD))
-		{
-			aalClean();
-			return -1;
-		}
+	bool enableEAX = !((bForceNoEAX) || (pMenuConfig && (!pMenuConfig->bEAX)));
+	if(aalInit(enableEAX)) {
+		aalClean();
+		return -1;
 	}
 
 	if (aalSetSamplePath(ARX_SOUND_PATH_SAMPLE) ||
@@ -393,17 +381,6 @@ long ARX_SOUND_Init(HWND hwnd)
 		aalClean();
 		return -1;
 	}
-
-	// Standard Mixer: 22050 16 Stereo
-	aalFormat af;
-
-	af.frequency = 22050;
-	af.quality = 16;
-	af.channels = 2;
-	aalSetOutputFormat(af);
-
-	// Enable 3D positionning system
-	aalEnable(AAL_FLAG_POSITION);
 
 	aalSetStreamLimit(ARX_SOUND_STREAMING_LIMIT);
 
@@ -450,9 +427,8 @@ long ARX_SOUND_Init(HWND hwnd)
 	// Load environments, enable environment system and set default one if required
 	ARX_SOUND_CreateEnvironments();
 
-	if (Project.soundmode & ARX_SOUND_REVERB)
-	{
-		aalEnable(AAL_FLAG_REVERBERATION);
+	if(Project.soundmode & ARX_SOUND_REVERB) {
+		setReverbEnabled(true);
 		ARX_SOUND_EnvironmentSet("alley.aef");
 	}
 
@@ -492,14 +468,14 @@ void ARX_SOUND_EnableReverb(long status) {
 	{
 		if (status)
 		{
-			if (aalEnable(AAL_FLAG_REVERBERATION))
+			if (setReverbEnabled(true))
 				Project.soundmode &= ~ARX_SOUND_REVERB;
 			else
 				Project.soundmode |= ARX_SOUND_REVERB;
 		}
 		else
 		{
-			aalDisable(AAL_FLAG_REVERBERATION);
+			setReverbEnabled(false);
 			Project.soundmode &= ~ARX_SOUND_REVERB;
 		}
 	}
@@ -509,7 +485,7 @@ long ARX_SOUND_IsReverbEnabled()
 {
 	if (!bIsActive) return 0;
 
-	return aalIsEnabled(AAL_FLAG_REVERBERATION);
+	return Project.soundmode & ARX_SOUND_REVERB;
 }
 
 void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume) {
@@ -568,14 +544,11 @@ void ARX_SOUND_SetListener(const EERIE_3D * position, const EERIE_3D * front, co
 
 void ARX_SOUND_EnvironmentSet(const string & name) {
 	
-	if (bIsActive)
-	{
-		aalSLong e_id(aalGetEnvironment(name.c_str()));
-
-		if (e_id != AAL_SFALSE)
-		{
+	if(bIsActive) {
+		aalSLong e_id = aalGetEnvironment(name);
+		if(e_id != AAL_SFALSE) {
 			aalSetListenerEnvironment(e_id);
-			aalSetEnvironmentRolloffFactor(e_id, ARX_SOUND_ROLLOFF_FACTOR);
+			aalSetRoomRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
 		}
 	}
 }

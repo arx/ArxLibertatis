@@ -33,7 +33,7 @@ namespace audio {
 	
 	class Mixer {
 		
-		public:
+	public:
 		
 		Mixer();
 		~Mixer();
@@ -60,6 +60,10 @@ namespace audio {
 		aalFloat pitch;
 		aalFloat pan;
 		const Mixer * parent;
+		
+	private:
+		
+		void clear(bool force);
 		
 	};
 	

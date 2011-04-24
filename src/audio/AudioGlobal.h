@@ -35,7 +35,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioEnvironment.h"
 #include "Sample.h"
 #include "Ambient.h"
-#include "dsound/DSoundSource.h"
 
 namespace audio {
 	
@@ -43,41 +42,29 @@ namespace audio {
 	
 	// Internal globals
 	
-	const aalULong FLAG_ANY_ENV_FX(AAL_FLAG_OBSTRUCTION |
-	                               AAL_FLAG_REVERBERATION);
-	
 	const aalULong FLAG_ANY_3D_FX(AAL_FLAG_POSITION |
 	                              AAL_FLAG_VELOCITY |
 	                              AAL_FLAG_DIRECTION |
 	                              AAL_FLAG_CONE |
 	                              AAL_FLAG_FALLOFF |
-	                              FLAG_ANY_ENV_FX);
+	                              AAL_FLAG_REVERBERATION);
 	
 	// Audio device interface
-	extern LPDIRECTSOUND device;
-	extern LPDIRECTSOUNDBUFFER primary;
-	extern LPDIRECTSOUND3DLISTENER listener;
-	extern LPKSPROPERTYSET environment;
-	extern aalUBool is_reverb_present;
-	extern aalSLong environment_id;
+	class Backend;
+	extern Backend * backend;
 	
 	// Global settings
-	extern char * sample_path;
-	extern char * ambiance_path;
-	extern char * environment_path;
-	extern aalULong stream_limit_ms;
+	extern std::string sample_path;
+	extern std::string ambiance_path;
+	extern std::string environment_path;
 	extern aalULong stream_limit_bytes;
-	extern aalULong session_start;
 	extern aalULong session_time;
-	extern aalULong global_status;
-	extern aalFormat global_format;
 	
 	// Resources
 	extern ResourceList<Mixer> _mixer;
 	extern ResourceList<Sample> _sample;
 	extern ResourceList<Ambiance> _amb;
 	extern ResourceList<Environment> _env;
-	extern ResourceList<Source> _inst;
 	
 	// Internal functions
 	
@@ -92,15 +79,6 @@ namespace audio {
 	
 	inline aalFloat LinearToLogVolume(const aalFloat & volume) {
 		return 0.2F * (float)log10(volume) + 1.0F;
-	}
-	
-	// Validity
-	inline aalSLong GetSampleID(const aalSLong & id) {
-		return id & 0x0000ffff;
-	}
-	
-	inline aalSLong GetSourceID(const aalSLong & id) {
-		return ((id >> 16) & 0x0000ffff);
 	}
 	
 	// Vector operators

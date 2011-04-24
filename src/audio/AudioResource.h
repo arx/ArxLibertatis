@@ -34,7 +34,7 @@ namespace audio {
 	
 	const aalULong ALIGNMENT(0x10);
 	
-	PakFileHandle * OpenResource(const char * name, const char * resource_path);
+	PakFileHandle * OpenResource(const std::string & name, const std::string & resource_path);
 	
 	class ResourceHandle {
 		
@@ -66,6 +66,8 @@ namespace audio {
 		
 	public:
 		
+		typedef T * const * iterator;
+		
 		ResourceList();
 		~ResourceList();
 		
@@ -78,6 +80,10 @@ namespace audio {
 		inline aalSLong Add(T * element);
 		inline void Delete(const aalSLong & index);
 		inline void Clean();
+		
+		inline iterator begin() { return list; }
+		inline iterator end() { return list + size; }
+		inline iterator remove(iterator i) { Delete(i - begin()); return i + 1; }
 		
 	private:
 		

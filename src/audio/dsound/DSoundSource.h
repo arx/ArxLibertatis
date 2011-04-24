@@ -26,20 +26,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_DSOUND_DSOUNDSOURCE_H
 #define ARX_AUDIO_DSOUND_DSOUNDSOURCE_H
 
+#include "audio/dsound/dsoundfwd.h"
+
 #include "audio/AudioTypes.h"
 #include "audio/AudioSource.h"
-#include "audio/dsound/dsoundfwd.h"
 
 namespace audio {
 
 class Stream;
 class Sample;
+class DSoundBackend;
 
 class DSoundSource : public Source {
 	
 public:
 	
-	DSoundSource(Sample * Sample);
+	DSoundSource(Sample * Sample, DSoundBackend * backend);
 	~DSoundSource();
 	
 	aalError init(aalSLong _id, const aalChannel & channel);
@@ -69,6 +71,8 @@ public:
 	aalError resume();
 	aalError update();
 	
+	aalError updateVolume();
+	
 private:
 	
 	void updateStreaming();
@@ -86,6 +90,8 @@ private:
 	LPDIRECTSOUNDBUFFER lpdsb;
 	LPDIRECTSOUND3DBUFFER lpds3db;
 	LPKSPROPERTYSET lpeax;
+	
+	DSoundBackend * backend;
 	
 };
 

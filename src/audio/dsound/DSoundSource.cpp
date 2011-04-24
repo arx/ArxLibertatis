@@ -28,6 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include "audio/dsound/eax.h"
+#include "audio/dsound/DSoundBackend.h"
+
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 
@@ -41,11 +43,13 @@ const GUID CLSID_EAXDirectSound = { 0x4ff53b81, 0x1ce0, 0x11d3, { 0xaa, 0xb8, 0x
 
 namespace audio {
 
-	DSoundSource::DSoundSource(Sample * _sample) : Source(_sample),
+	DSoundSource::DSoundSource(Sample * _sample, DSoundBackend * _backend) :
+		Source(_sample),
 		tooFar(false),
 		loop(0), time(0),
 		stream(NULL), read(0), write(0), size(0),
-		lpdsb(NULL), lpds3db(NULL), lpeax(NULL)
+		lpdsb(NULL), lpds3db(NULL), lpeax(NULL),
+		backend(_backend)
 	{
 	}
 
@@ -126,7 +130,7 @@ namespace audio {
 
 		_desc.dwBufferBytes = size;
 
-		if (device->CreateSoundBuffer(&_desc, &lpdsb, NULL)) return AAL_ERROR_SYSTEM;
+		if(backend->device->CreateSoundBuffer(&_desc, &lpdsb, NULL)) return AAL_ERROR_SYSTEM;
 
 		setVolume(channel.volume);
 		setPitch(channel.pitch);
@@ -147,7 +151,7 @@ namespace audio {
 			setCone(channel.cone);
 			setFalloff(channel.falloff);
 
-			if (is_reverb_present)
+			if (backend->hasEAX)
 			{
 				lpds3db->QueryInterface(IID_IKsPropertySet, (void **)&lpeax);
 
@@ -156,7 +160,7 @@ namespace audio {
 				           DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
 				           NULL, 0, &value, sizeof(aalSLong));
 
-				if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
+				if (!backend->environment || !(channel.flags & AAL_FLAG_REVERBERATION))
 				{
 					value = -10000;
 					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
@@ -213,7 +217,7 @@ namespace audio {
 		channel = _channel;
 		size = instance->size;
 
-		if (device->DuplicateSoundBuffer(instance->lpdsb, &lpdsb))
+		if (backend->device->DuplicateSoundBuffer(instance->lpdsb, &lpdsb))
 			return AAL_ERROR_SYSTEM;
 
 		setVolume(channel.volume);
@@ -235,7 +239,7 @@ namespace audio {
 			setCone(channel.cone);
 			setFalloff(channel.falloff);
 
-			if (is_reverb_present)
+			if (backend->hasEAX)
 			{
 				lpds3db->QueryInterface(IID_IKsPropertySet, (void **)&lpeax);
 
@@ -244,7 +248,7 @@ namespace audio {
 				           DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
 				           NULL, 0, &value, sizeof(aalSLong));
 
-				if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
+				if (!backend->environment || !(channel.flags & AAL_FLAG_REVERBERATION))
 				{
 					value = -10000;
 					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
@@ -282,32 +286,48 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError DSoundSource::setVolume(float v) {
-		
-		if (!(channel.flags & AAL_FLAG_VOLUME)) return AAL_ERROR_INIT;
-
-		aalFloat volume(1.0F);
-		const Mixer * mixer = _mixer[channel.mixer];
-
-		channel.volume = v > 1.0F ? 1.0F : v < 0.0F ? 0.0F : v;
-
-		while (mixer) volume *= mixer->volume, mixer = mixer->parent;
-
-		if (volume) volume = LinearToLogVolume(volume) * channel.volume;
-
-		aalSLong value(aalSLong((volume - 1.0F) * 10000.0F));
-
-		if (lpdsb->SetVolume(value)) return AAL_ERROR_SYSTEM;
-
-		if (lpeax)
-		{
-			if (lpeax->Set(DSPROPSETID_EAX_SourceProperties, DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
-			               NULL, 0, &value, sizeof(aalSLong)))
-				return AAL_ERROR_SYSTEM;
-		}
-
-		return AAL_OK;
+aalError DSoundSource::setVolume(float v) {
+	
+	if(!(channel.flags & AAL_FLAG_VOLUME)) {
+		return AAL_ERROR_INIT;
 	}
+	
+	channel.volume = v > 1.0F ? 1.0F : v < 0.0F ? 0.0F : v;
+	
+	return updateVolume();
+}
+
+aalError DSoundSource::updateVolume() {
+	
+	if(!(channel.flags & AAL_FLAG_VOLUME)) {
+		return AAL_ERROR_INIT;
+	}
+	
+	aalFloat volume = 1.f;
+	
+	const Mixer * mixer = _mixer[channel.mixer];
+	while(mixer) {
+		volume *= mixer->volume, mixer = mixer->parent;
+	}
+	
+	if(volume) {
+		volume = LinearToLogVolume(volume) * channel.volume;
+	}
+	
+	LONG value = (LONG)((volume - 1.0F) * 10000.0F);
+	
+	if(FAILED(lpdsb->SetVolume(value))) {
+		return AAL_ERROR_SYSTEM;
+	}
+	
+	if(lpeax) {
+		if(FAILED(lpeax->Set(DSPROPSETID_EAX_SourceProperties, DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED, NULL, 0, &value, sizeof(LONG)))) {
+			return AAL_ERROR_SYSTEM;
+		}
+	}
+	
+	return AAL_OK;
+}
 
 	aalError DSoundSource::setPitch(float p) {
 		if (!(channel.flags & AAL_FLAG_PITCH)) return AAL_ERROR_INIT;
@@ -409,8 +429,10 @@ namespace audio {
 	}
 
 aalError DSoundSource::setMixer(aalSLong mixer) {
+	
 	channel.mixer = mixer;
-	return AAL_OK;
+	
+	return updateVolume();
 }
 
 aalError DSoundSource::setEnvironment(aalSLong environment) {
@@ -529,7 +551,7 @@ aalError DSoundSource::setEnvironment(aalSLong environment) {
 
 		status = PLAYING;
 
-		if (listener && channel.flags & AAL_FLAG_POSITION && lpds3db && isTooFar())
+		if (channel.flags & AAL_FLAG_POSITION && lpds3db && isTooFar())
 			return AAL_OK;
 
 		if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
@@ -559,7 +581,7 @@ aalError DSoundSource::setEnvironment(aalSLong environment) {
 		if (channel.flags & AAL_FLAG_RELATIVE)
 			listener_pos.x = listener_pos.y = listener_pos.z = 0.0F;
 		else
-			listener->GetPosition((D3DVECTOR *)&listener_pos);
+			backend->listener->GetPosition((D3DVECTOR *)&listener_pos);
 
 		dist = Distance(listener_pos, channel.position);
 
@@ -644,8 +666,7 @@ aalError DSoundSource::setEnvironment(aalSLong environment) {
 
 		if (status != PLAYING) return AAL_OK;
 
-		if (listener && channel.flags & AAL_FLAG_POSITION && lpds3db && isTooFar())
-		{
+		if(channel.flags & AAL_FLAG_POSITION && lpds3db && isTooFar()) {
 			if (! this->loop)
 			{
 				stop();

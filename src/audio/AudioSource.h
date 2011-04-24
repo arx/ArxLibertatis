@@ -46,10 +46,6 @@ public:
 		PAUSED
 	};
 	
-	Source(Sample * sample);
-	
-	virtual ~Source();
-	
 	/*!
 	 * Set the volume of this source and update the volume calculated from the sources mixers.
 	 * @param volume The new source volume. The volume will be clamped to the range [0,1].
@@ -107,7 +103,12 @@ public:
 	inline bool isPlaying() { return status == PLAYING; }
 	inline bool isIdle() { return status == IDLE; }
 	
+	virtual aalError updateVolume() = 0;
+	
 protected:
+	
+	Source(Sample * sample);
+	virtual ~Source();
 	
 	aalSLong id;
 	

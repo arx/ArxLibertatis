@@ -31,6 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioGlobal.h"
 #include "audio/Sample.h"
+#include "audio/AudioBackend.h"
+#include "audio/AudioSource.h"
 
 #include "io/PakManager.h"
 
@@ -593,7 +595,7 @@ namespace audio {
 
 		if (IsNotTrackKey(t_id, k_id)) return AAL_ERROR_HANDLE;
 
-		s_id = GetSampleID(track_l[t_id].s_id);
+		s_id = Backend::getSampleId(track_l[t_id].s_id);
 
 		if (_sample.IsNotValid(s_id))
 		{
@@ -691,15 +693,12 @@ namespace audio {
 		{
 			Track * track = &track_l[track_c];
 
-			while (track > track_l)
-			{
+			while(track > track_l) {
 				--track;
-
-				aalSLong s_id(GetSampleID(track->s_id));
-				aalSLong i_id(GetSourceID(track->s_id));
-
-				if (_sample.IsValid(s_id) && _inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
-					_inst[i_id]->setVolume(track->key_l[track->key_i].volume.cur * channel.volume);
+				Source * source = backend->getSource(track->s_id);
+				if(source) {
+					source->setVolume(track->key_l[track->key_i].volume.cur * channel.volume);
+				}
 			}
 		}
 
@@ -708,32 +707,29 @@ namespace audio {
 
 	aalError Ambiance::MuteTrack(const aalSLong & t_id, const aalUBool & mute)
 	{
-		Track * track = &track_l[t_id];
+		Track & track = track_l[t_id];
 
 		if (IsNotTrack(t_id)) return AAL_ERROR_HANDLE;
 
 		if (mute)
 		{
-			track->flags |= TRACK_MUTED;
+			track.flags |= TRACK_MUTED;
 
 			if (flags & IS_PLAYING)
 			{
-				aalSLong s_id(GetSampleID(track->s_id));
-
-				if (_sample.IsValid(s_id))
-				{
-					aalSLong i_id(GetSourceID(track->s_id));
-
-					if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
-						_inst[i_id]->stop();
+				
+				Source * source = backend->getSource(track.s_id);
+				if(source) {
+					source->stop();
 				}
+				
 			}
 		}
 		else
 		{
-			track->flags &= ~TRACK_MUTED;
+			track.flags &= ~TRACK_MUTED;
 
-			if (flags & IS_PLAYING) KeyPlay(*track, track->key_l[track->key_i = 0]);
+			if (flags & IS_PLAYING) KeyPlay(track, track.key_l[track.key_i = 0]);
 		}
 
 		return AAL_OK;
@@ -774,7 +770,7 @@ namespace audio {
 			--track;
 
 			if (track->name && !strcasecmp(track->name, _name)) break;
-			else if (!strcasecmp(_sample[GetSampleID(track->s_id)]->name, _name)) break;
+			else if (!strcasecmp(_sample[Backend::getSampleId(track->s_id)]->name, _name)) break;
 		}
 
 		t_id = track < track_l ? AAL_SFALSE : track - track_l;
@@ -833,20 +829,14 @@ namespace audio {
 
 		Track * track = &track_l[track_c];
 
-		while (track > track_l)
-		{
-			aalSLong s_id;
-
+		while(track > track_l) {
+			
 			--track;
-
-			s_id = GetSampleID(track->s_id);
-
-			if (_sample.IsValid(s_id))
-			{
+			
+			aalSLong s_id = Backend::getSampleId(track->s_id);
+			if(_sample.IsValid(s_id)) {
 				Sample * sample = _sample[s_id];
-
-				if (!sample->callb_c)
-				{
+				if(!sample->callb_c) {
 					sample->SetCallback(OnAmbianceSampleStart, track, 0, AAL_UNIT_BYTES);
 					sample->SetCallback(OnAmbianceSampleStop, track, sample->length, AAL_UNIT_BYTES);
 				}
@@ -917,21 +907,13 @@ namespace audio {
 
 		Track * track = &track_l[track_c];
 
-		while (track > track_l)
-		{
+		while(track > track_l) {
 			--track;
-
-			aalSLong s_id(GetSampleID(track->s_id));
-
-			if (_sample.IsValid(s_id))
-			{
-				aalSLong i_id(GetSourceID(track->s_id));
-
-				if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
-					_inst[i_id]->stop();
+			Source * source = backend->getSource(track->s_id);
+			if(source) {
+				source->stop();
 			}
-
-			s_id |= 0xffff0000;
+			track->s_id = Backend::clearSource(track->s_id);
 		}
 
 		return AAL_OK;
@@ -947,26 +929,12 @@ namespace audio {
 
 		Track * track = &track_l[track_c];
 
-		while (track > track_l)
-		{
+		while (track > track_l) {
 			--track;
-
-			aalSLong s_id(GetSampleID(track->s_id));
-
-			if (_sample.IsValid(s_id))
-			{
-				aalSLong i_id(GetSourceID(track->s_id));
-
-				if (_inst.IsValid(i_id))
-				{
-					Source * instance = _inst[i_id];
-
-					if (instance->getSample() == _sample[s_id] && instance->isPlaying())
-					{
-						instance->pause();
-						track->flags |= TRACK_PAUSED;
-					}
-				}
+			Source * source = backend->getSource(track->s_id);
+			if(source) {
+				source->pause();
+				track->flags |= TRACK_PAUSED;
 			}
 		}
 
@@ -979,18 +947,13 @@ namespace audio {
 
 		Track * track = &track_l[track_c];
 
-		while (track > track_l)
-		{
+		while(track > track_l) {
 			--track;
-
-			if (track->flags & TRACK_PAUSED)
-			{
-				aalSLong s_id(GetSampleID(track->s_id));
-				aalSLong i_id(GetSourceID(track->s_id));
-
-				if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
-					_inst[i_id]->resume();
-
+			if(track->flags & TRACK_PAUSED) {
+				Source * source = backend->getSource(track->s_id);
+				if(source) {
+					source->resume();
+				}
 				track->flags &= ~TRACK_PAUSED;
 			}
 		}
@@ -1045,13 +1008,14 @@ namespace audio {
 		//Update tracks
 		Track * track = &track_l[track_c];
 
-		while (track > track_l)
-		{
+		while (track > track_l) {
+			
 			--track;
-
-			aalSLong s_id(GetSampleID(track->s_id));
-
-			if (_sample.IsNotValid(s_id) || track->flags & TRACK_MUTED) continue;
+			
+			aalSLong s_id = Backend::getSampleId(track->s_id);
+			if(!_sample.IsValid(s_id) || track->flags & TRACK_MUTED) {
+				continue;
+			}
 
 			if (track->key_i < track->key_c)
 			{
@@ -1059,15 +1023,10 @@ namespace audio {
 
 				//Run / update keys
 				if (key->n_start <= interval) KeyPlay(*track, *key);
-				else
-				{
+				else {
 					key->n_start -= interval;
-
-					aalSLong i_id(GetSourceID(track->s_id));
-
-					if (_inst.IsValid(i_id) && _inst[i_id]->getSample() == _sample[s_id])
-					{
-						Source * instance = _inst[i_id];
+					Source * source = backend->getSource(track->s_id);
+					if(source) {
 
 						if (key->volume.interval)
 						{
@@ -1075,11 +1034,11 @@ namespace audio {
 
 							if (channel.flags & AAL_FLAG_VOLUME) value *= channel.volume;
 
-							instance->setVolume(value);
+							source->setVolume(value);
 						}
-						else instance->setVolume(key->volume.cur * channel.volume);
+						else source->setVolume(key->volume.cur * channel.volume);
 
-						if (key->pitch.interval) instance->setPitch(UpdateSetting(key->pitch, time));
+						if (key->pitch.interval) source->setPitch(UpdateSetting(key->pitch, time));
 
 						if (track->flags & TRACK_3D)
 						{
@@ -1090,9 +1049,9 @@ namespace audio {
 
 							if (channel.flags & AAL_FLAG_POSITION) position += channel.position;
 
-							instance->setPosition(position);
+							source->setPosition(position);
 						}
-						else instance->setPan(UpdateSetting(key->pan, time));
+						else source->setPan(UpdateSetting(key->pan, time));
 					}
 				}
 			}
@@ -1123,7 +1082,7 @@ namespace audio {
 	///////////////////////////////////////////////////////////////////////////////
 	static void FreeTrack(Track & track)
 	{
-		_sample.Delete(GetSampleID(track.s_id));
+		_sample.Delete(Backend::getSampleId(track.s_id));
 		free(track.name);
 		free(track.key_l);
 	}
@@ -1184,14 +1143,11 @@ namespace audio {
 		else key.delay = key.delay_min;
 	}
 
-	static void KeyPlay(Track & track, TrackKey & key)
-	{
-		aalSLong s_id(GetSampleID(track.s_id));
-		aalSLong i_id(GetSourceID(track.s_id));
-		Source * inst = NULL;
-
-		if (_inst.IsNotValid(i_id) || _inst[i_id]->getSample() != _sample[s_id])
-		{
+	static void KeyPlay(Track & track, TrackKey & key) {
+		
+		Source * source = backend->getSource(track.s_id);
+		if(!source) {
+			
 			Ambiance * ambiance = _amb[track.a_id];
 			aalChannel channel;
 
@@ -1221,32 +1177,20 @@ namespace audio {
 				channel.flags |= AAL_FLAG_PAN;
 				channel.pan = key.pan.cur;
 			}
-
-			DSoundSource * instance =  new DSoundSource(_sample[s_id]);
-			inst = instance;
-
-			if((i_id = _inst.Add(inst)) == AAL_SFALSE) {
-				delete inst;
-				track.s_id |= 0xffff0000;
-				return;
-			}
 			
-			
-			if(instance->init((i_id << 16) | s_id, channel)) {
-				_inst.Delete(i_id);
-				track.s_id |= 0xffff0000;
+			source = backend->createSource(track.s_id, channel);
+			if(!source) {
+				track.s_id = Backend::clearSource(track.s_id);
 				return;
 			}
 
-			track.s_id = inst->getId();
+			track.s_id = source->getId();
 		}
-		else inst = _inst[i_id];
-
 
 		if (!key.delay_min && !key.delay_max)
-			inst->play(key.loopc + 1);
+			source->play(key.loopc + 1);
 		else
-			inst->play();
+			source->play();
 
 		key.n_start = KEY_CONTINUE;
 	}

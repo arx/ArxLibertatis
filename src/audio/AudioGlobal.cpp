@@ -27,6 +27,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <ctime>
 
+using std::string;
+
 namespace audio {
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -35,30 +37,20 @@ namespace audio {
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	// Audio device interface                                                    //
-	LPDIRECTSOUND device(NULL);
-	LPDIRECTSOUNDBUFFER primary(NULL);
-	LPDIRECTSOUND3DLISTENER listener(NULL);
-	LPKSPROPERTYSET environment(NULL);
-	aalUBool is_reverb_present(AAL_UFALSE);
-	aalSLong environment_id(AAL_SFALSE);
+	Backend * backend = NULL;
 
 	// Global settings                                                           //
-	char * sample_path = NULL;
-	char * ambiance_path = NULL;
-	char * environment_path = NULL;
-	aalULong stream_limit_ms(AAL_DEFAULT_STREAMLIMIT);
-	aalULong stream_limit_bytes = 0;
-	aalULong session_start(0);
-	aalULong session_time(0);
-	aalULong global_status(0);
-	aalFormat global_format = { 0, 0, 0 };
+	string sample_path = NULL;
+	string ambiance_path = NULL;
+	string environment_path = NULL;
+	aalULong stream_limit_bytes = AAL_DEFAULT_STREAMLIMIT;
+	aalULong session_time = 0;
 
 	// Resources                                                                 //
 	ResourceList<Mixer> _mixer;
 	ResourceList<Sample> _sample;
 	ResourceList<Ambiance> _amb;
 	ResourceList<Environment> _env;
-	ResourceList<Source> _inst;
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //

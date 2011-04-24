@@ -28,7 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "AudioTypes.h"
 #include "AudioResource.h"
-#include "dsound/dsoundfwd.h"
 
 namespace audio {
 	
@@ -40,15 +39,10 @@ namespace audio {
 		~Environment();
 		
 		// File input/output
-		aalError Load(const char * name);
+		aalError Load(const std::string & name);
 		
-		// Setup
-		aalError SetName(const char * name);
-		aalError SetRolloffFactor(const aalFloat & factor);
-		
-		char * name;
+		std::string name;
 		aalFloat size;
-		aalFloat rolloff;
 		aalFloat diffusion;
 		aalFloat absorption;
 		aalFloat reflect_volume;
@@ -57,8 +51,6 @@ namespace audio {
 		aalFloat reverb_delay;
 		aalFloat reverb_decay;
 		aalFloat reverb_hf_decay;
-		aalEnvironmentCallback callback;
-		LPKSPROPERTYSET lpksps;
 	};
 	
 } // namespace audio

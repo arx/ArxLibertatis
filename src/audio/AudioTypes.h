@@ -47,7 +47,7 @@ namespace audio {
 	const aalSBool AAL_STRUE(0);
 	
 	// Default values
-	const aalULong AAL_DEFAULT_STREAMLIMIT(1000); // 1 second
+	const aalULong AAL_DEFAULT_STREAMLIMIT(88200); // 1 second for the correct format
 	
 	const aalULong AAL_DEFAULT_STRINGSIZE(0xff); // 256 characters
 	
@@ -89,13 +89,11 @@ namespace audio {
 		AAL_FLAG_CONE            = 0x00000100, // Enable cone control
 		AAL_FLAG_FALLOFF         = 0x00000200, // Enable intensity control
 		AAL_FLAG_REVERBERATION   = 0x00000400, // Enable environment reverberation / reflection
-		AAL_FLAG_OBSTRUCTION     = 0x00000800, // Enable environment obstruction
 		AAL_FLAG_RELATIVE        = 0x00001000, // Compute position relative to the listener
 		AAL_FLAG_BACKGROUND      = 0x00002000, // Continue playing even if app is in background
 		AAL_FLAG_PRELOAD         = 0x00004000, // Preload sample if not streamed
 		AAL_FLAG_AUTOFREE        = 0x00008000, // Free resource when playing is finished
 		AAL_FLAG_CALLBACK        = 0x00010000, // Enable sample callback management
-		AAL_FLAG_MULTITHREAD     = 0x00020000, // Enable multithreaded processing safety
 	};
 	
 	// Length units
@@ -133,6 +131,7 @@ namespace audio {
 	
 	// Vector
 	struct aalVector {
+		// TODO use Vector3f
 		aalFloat x, y, z;
 	};
 	
@@ -147,13 +146,6 @@ namespace audio {
 	struct aalFalloff {
 		aalFloat start;
 		aalFloat end;
-	};
-	
-	// Environment obstruction
-	struct aalObstruction {
-		aalFloat direct; // Direct attenuation per unit
-		aalFloat direct_lf; // Direct low frequency attenuation per unit
-		aalFloat reverb; // Reverberation attenuation per unit
 	};
 	
 	// Environment reflection
@@ -187,7 +179,6 @@ namespace audio {
 	
 	// Callbacks prototype
 	typedef void(* aalSampleCallback)(void * reserved, const aalSLong & sample_id, void * data);
-	typedef void(* aalEnvironmentCallback)(const aalVector & sample_position, const aalVector & listener_position, const aalObstruction & obstruction);
 	
 } // namespace audio
 

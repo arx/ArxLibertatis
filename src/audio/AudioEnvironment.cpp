@@ -27,15 +27,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cmath>
 
-#include "audio/dsound/eax.h"
 #include "audio/AudioGlobal.h"
 
 #include "io/PakManager.h"
 
-namespace audio {
+using std::string;
 
-	static const aalReflection DEFAULT_REFLECTION = { 0.8F, 7 };
-	static const aalReverberation DEFAULT_REVERBERATION = { 1.02F, 11, 1490, 1236 };
+namespace audio {
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -43,9 +41,7 @@ namespace audio {
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	Environment::Environment() :
-		name(NULL),
 		size(AAL_DEFAULT_ENVIRONMENT_SIZE),
-		rolloff(0.0F),
 		diffusion(AAL_DEFAULT_ENVIRONMENT_DIFFUSION),
 		absorption(AAL_DEFAULT_ENVIRONMENT_ABSORPTION),
 		reflect_volume(AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME),
@@ -53,15 +49,10 @@ namespace audio {
 		reverb_volume(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME),
 		reverb_delay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY)),
 		reverb_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY)),
-		reverb_hf_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY)),
-		callback(NULL),
-		lpksps(NULL)
-	{
+		reverb_hf_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY)) {
 	}
 
-	Environment::~Environment()
-	{
-		free(name);
+	Environment::~Environment() {
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -69,7 +60,7 @@ namespace audio {
 	// File I/O                                                                  //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError Environment::Load(const char * _name)
+	aalError Environment::Load(const string & _name)
 	{
 		PakFileHandle * file = OpenResource(_name, environment_path);
 
@@ -91,45 +82,7 @@ namespace audio {
 
 		PAK_fclose(file);
 
-		SetName(_name);
-
-		return AAL_OK;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Setup                                                                     //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError Environment::SetName(const char * _name)
-	{
-		if (_name)
-		{
-			aalULong length(strlen(_name) + 1);
-			void * ptr = realloc(name, length);
-
-			if (!ptr) return AAL_ERROR_MEMORY;
-
-			name = (char *)ptr;
-
-			memcpy(name, _name, length);
-		}
-		else free(name), name = NULL;
-
-		return AAL_OK;
-	}
-
-	aalError Environment::SetRolloffFactor(const aalFloat & _factor)
-	{
-		rolloff = _factor < 0.0F ? 0.0F  : _factor > 10.0F ? 10.0F : _factor;
-
-		if (lpksps)
-		{
-			if (lpksps->Set(DSPROPSETID_EAX_ListenerProperties,
-			                DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR | DSPROPERTY_EAXLISTENER_DEFERRED,
-			                NULL, 0, &rolloff, sizeof(aalFloat)))
-				return AAL_ERROR_SYSTEM;
-		}
+		name = _name;
 
 		return AAL_OK;
 	}
