@@ -211,7 +211,13 @@ struct Ambiance::Track {
 	}
 	
 	~Track() {
-		_sample.Delete(Backend::getSampleId(s_id));
+		Source * source = backend->getSource(s_id);
+		if(source) {
+			source->stop();
+		}
+		SampleId sid = Backend::getSampleId(s_id);
+		arx_assert(_sample.IsValid(sid));
+		_sample[sid]->Release();
 		delete[] key_l;
 	}
 	

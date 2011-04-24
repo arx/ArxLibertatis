@@ -70,7 +70,7 @@ aalError Sample::load() {
 
 aalError Sample::setCallback(aalSampleCallback func, void * _data, size_t time, TimeUnit unit) {
 	
-	callbacks.reserve(callbacks.size() + 1);
+	callbacks.resize(callbacks.size() + 1);
 	
 	callbacks.back().func = func;
 	callbacks.back().data = _data;

@@ -409,7 +409,7 @@ aalError aalSetRolloffFactor(float factor) {
 	
 	AAL_ENTRY
 	
-	LogDebug << "SetListenerRolloffFactor " << factor;
+	LogDebug << "SetRolloffFactor " << factor;
 	
 	aalError ret = backend->setRolloffFactor(factor);
 	

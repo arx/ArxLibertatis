@@ -335,11 +335,11 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	return AAL_OK;
 }
 
-aalError OpenALSource::init(SourceId _id, OpenALSource * source, const Channel & _channel) {
+aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _channel) {
 	
-	arx_assert(source->sample == sample);
+	arx_assert(inst->sample == sample);
 	
-	if(source->stream || _channel.flags != source->channel.flags) {
+	if(inst->stream || _channel.flags != inst->channel.flags) {
 		return init(_id, _channel);
 	}
 	
@@ -349,14 +349,14 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * source, const Channel &
 	
 	channel = _channel;
 	
-	arx_assert(source->buffers[0] != 0);
-	buffers[0] = source->buffers[0];
-	bufferSizes[0] = source->bufferSizes[0];
-	if(!source->refcount) {
-		source->refcount = new unsigned int;
-		*source->refcount = 1;
+	arx_assert(inst->buffers[0] != 0);
+	buffers[0] = inst->buffers[0];
+	bufferSizes[0] = inst->bufferSizes[0];
+	if(!inst->refcount) {
+		inst->refcount = new unsigned int;
+		*inst->refcount = 1;
 	}
-	refcount = source->refcount;
+	refcount = inst->refcount;
 	(*refcount)++;
 	
 	return init();
@@ -784,7 +784,7 @@ aalError OpenALSource::updateBuffers() {
 		AL_CHECK_ERROR("getting source state")
 		arx_assert(val != AL_INITIAL && val != AL_PAUSED);
 		if(val == AL_STOPPED) {
-			if(!loadCount || nbuffers != maxbuffers) {
+			if(nbuffers != maxbuffers) {
 				ALError << "buffer underrun detected";
 			}
 			alSourcePlay(source);

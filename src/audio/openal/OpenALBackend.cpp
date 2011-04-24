@@ -89,10 +89,16 @@ aalError OpenALBackend::updateDeferred() {
 
 Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel) {
 	
-	Sample * sample = _sample[sampleId];
+	SampleId s_id = getSampleId(sampleId);
+	
+	if(!_sample.IsValid(s_id)) {
+		return NULL;
+	}
+	
+	Sample * sample = _sample[s_id];
 	
 	OpenALSource * orig = NULL;
-	for(size_t i; i < sources.Size(); i++) {
+	for(size_t i = 0; i < sources.Size(); i++) {
 		if(sources[i] && sources[i]->getSample() == sample) {
 			orig = (OpenALSource*)sources[i];
 			break;
@@ -107,7 +113,7 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 		return NULL;
 	}
 	
-	SourceId id = (index << 16) | sampleId;
+	SourceId id = (index << 16) | s_id;
 	if(orig ? source->init(id, orig, channel) : source->init(id, channel)) {
 		sources.Delete(index);
 		return NULL;
