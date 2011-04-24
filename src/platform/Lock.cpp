@@ -1,5 +1,5 @@
 
-#include "audio/Lock.h"
+#include "platform/Lock.h"
 
 #ifdef HAVE_PTHREADS
 

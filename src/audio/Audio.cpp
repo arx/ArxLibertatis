@@ -42,7 +42,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Ambiance.h"
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
-#include "audio/Lock.h"
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
 #include "audio/AudioEnvironment.h"
@@ -54,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 #include "platform/String.h"
+#include "platform/Lock.h"
 
 namespace audio {
 
