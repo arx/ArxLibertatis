@@ -45,9 +45,9 @@ namespace audio {
 	Backend * backend = NULL;
 
 	// Global settings                                                           //
-	string sample_path = NULL;
-	string ambiance_path = NULL;
-	string environment_path = NULL;
+	string sample_path;
+	string ambiance_path;
+	string environment_path;
 	size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
 	size_t session_time = 0;
 
