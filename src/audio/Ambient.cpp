@@ -1183,7 +1183,7 @@ namespace audio {
 				track.s_id = Backend::clearSource(track.s_id);
 				return;
 			}
-
+			
 			track.s_id = source->getId();
 		}
 
