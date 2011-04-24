@@ -35,8 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioEnvironment.h"
 #include "Sample.h"
 #include "Ambient.h"
-#include "AudioInstance.h"
-#include "alwrapper.h"
+#include "openal/AudioInstance.h"
 
 #include "io/Logger.h"
 

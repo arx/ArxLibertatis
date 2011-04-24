@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "audio/AudioInstance.h"
+#include "audio/openal/AudioInstance.h"
 
 #include <cstdio>
 #include <limits>

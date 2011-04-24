@@ -30,7 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include "audio/AudioGlobal.h"
-#include "audio/AudioInstance.h"
+#include "audio/openal/AudioInstance.h"
 
 using namespace std;
 
