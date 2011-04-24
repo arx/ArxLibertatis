@@ -84,7 +84,7 @@ namespace audio {
 		
 		inline iterator begin() { return list; }
 		inline iterator end() { return list + size; }
-		inline iterator remove(iterator i) { Delete(i - begin()); return i + 1; }
+		inline iterator remove(iterator i);
 		
 	private:
 		
@@ -166,7 +166,14 @@ namespace audio {
 			
 		free(list), list = NULL, size = 0;
 	}
-	
+
+template <class T>
+inline typename ResourceList<T>::iterator ResourceList<T>::remove(iterator i) {
+	size_t idx = i - begin();
+	Delete(idx);
+	return begin() + idx + 1;
+}
+
 } // namespace audio
 
 #endif // ARX_AUDIO_AUDIORESOURCE_H

@@ -62,8 +62,8 @@ aalError aalSetRoomRolloffFactor(float factor);
 
 // Listener
 
-aalError aalSetListenerUnitFactor(float factor);
-aalError aalSetListenerRolloffFactor(float factor);
+aalError aalSetUnitFactor(float factor);
+aalError aalSetRolloffFactor(float factor);
 aalError aalSetListenerPosition(const Vector3f & position);
 aalError aalSetListenerDirection(const Vector3f & front, const Vector3f & up);
 aalError aalSetListenerEnvironment(EnvId environment_id);

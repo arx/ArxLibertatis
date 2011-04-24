@@ -173,7 +173,7 @@ Source * DSoundBackend::getSource(SourceId sourceId) {
 		return NULL;
 	}
 	
-	arx_assert(source->getId() == sample);
+	arx_assert(source->getId() == sourceId);
 	
 	return source;
 }

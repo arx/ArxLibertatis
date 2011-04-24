@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioSource.h"
 #include "audio/AudioEnvironment.h"
 #include "audio/dsound/DSoundBackend.h"
+#include "audio/openal/OpenALBackend.h"
 
 #include "core/Time.h"
 
@@ -71,7 +72,7 @@ aalError aalInit(bool enableEAX) {
 	//Initialize random number generator
 	InitSeed();
 	
-	DSoundBackend * _backend = new DSoundBackend();
+	OpenALBackend * _backend = new OpenALBackend();
 	if(aalError error = _backend->init(enableEAX)) {
 		return error;
 	}
@@ -105,6 +106,7 @@ aalError aalClean() {
 	ambiance_path.clear();
 	environment_path.clear();
 	
+	mutex->unlock();
 	delete mutex, mutex = NULL;
 	
 	return AAL_OK;
@@ -113,26 +115,16 @@ aalError aalClean() {
 #define AAL_ENTRY \
 	if(!backend) { \
 		return AAL_ERROR_INIT; \
-	} \
-	if(!mutex->lock(MUTEX_TIMEOUT)) { \
+	} else if(!mutex->lock(MUTEX_TIMEOUT)) { \
 		return AAL_ERROR_TIMEOUT; \
 	}
 
 #define AAL_ENTRY_V(value) \
-	if(!backend) { \
-		return (value); \
-	} \
-	if(!mutex->lock(MUTEX_TIMEOUT)) { \
+	if(!backend || !mutex->lock(MUTEX_TIMEOUT)) { \
 		return (value); \
 	}
 
 #define AAL_EXIT mutex->unlock();
-
-#define AAL_CHECK(expr) \
-	if(aalError error = (expr)) { \
-		AAL_EXIT \
-		return error; \
-	}
 
 aalError aalSetStreamLimit(size_t limit) {
 	
@@ -258,7 +250,6 @@ SampleId aalCreateSample(const string & name) {
 	SampleId s_id = INVALID_ID;
 	if(sample->load() || (s_id = _sample.Add(sample)) == INVALID_ID) {
 		delete sample;
-		LogWarning << "Sample " << name << " not found";
 	} else {
 		sample->Catch();
 	}
@@ -390,6 +381,8 @@ aalError aalSetRoomRolloffFactor(float factor) {
 	
 	AAL_ENTRY
 	
+	LogDebug << "SetRoomRolloffFactor " << factor;
+	
 	aalError ret = backend->setRoomRolloffFactor(factor);
 	
 	AAL_EXIT
@@ -399,9 +392,11 @@ aalError aalSetRoomRolloffFactor(float factor) {
 
 // Listener settings
 
-aalError aalSetListenerUnitFactor(float factor) {
+aalError aalSetUnitFactor(float factor) {
 	
 	AAL_ENTRY
+	
+	LogDebug << "SetUnitFactor " << factor;
 	
 	aalError ret = backend->setUnitFactor(factor);
 	
@@ -410,9 +405,11 @@ aalError aalSetListenerUnitFactor(float factor) {
 	return ret;
 }
 
-aalError aalSetListenerRolloffFactor(float factor) {
+aalError aalSetRolloffFactor(float factor) {
 	
 	AAL_ENTRY
+	
+	LogDebug << "SetListenerRolloffFactor " << factor;
 	
 	aalError ret = backend->setRolloffFactor(factor);
 	
@@ -583,6 +580,7 @@ aalError aalSetSampleVolume(SourceId sample_id, float volume) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
+		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
@@ -599,6 +597,7 @@ aalError aalSetSamplePitch(SourceId sample_id, float pitch) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
+		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
@@ -615,6 +614,7 @@ aalError aalSetSamplePosition(SourceId sample_id, const Vector3f & position) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
+		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
@@ -672,6 +672,7 @@ bool aalIsSamplePlaying(SourceId sample_id) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
+		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
@@ -753,6 +754,7 @@ aalError aalSampleStop(SourceId & sample_id) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
+		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	

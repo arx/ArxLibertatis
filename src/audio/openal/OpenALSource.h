@@ -78,8 +78,6 @@ public:
 	
 private:
 	
-	aalError clean();
-	
 	aalError sourcePlay();
 	aalError sourcePause();
 	

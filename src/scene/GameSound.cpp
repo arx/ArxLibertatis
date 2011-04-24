@@ -385,8 +385,8 @@ long ARX_SOUND_Init()
 
 	aalSetStreamLimit(ARX_SOUND_STREAMING_LIMIT);
 
-	aalSetListenerUnitFactor(ARX_SOUND_UNIT_FACTOR);
-	aalSetListenerRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
+	aalSetUnitFactor(ARX_SOUND_UNIT_FACTOR);
+	aalSetRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
 
 	if(FINAL_RELEASE) {
 		

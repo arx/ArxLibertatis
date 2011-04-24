@@ -103,7 +103,59 @@ OpenALSource::OpenALSource(Sample * _sample) :
 }
 
 OpenALSource::~OpenALSource() {
-	clean();
+	
+	LogAL("clean");
+	
+	if(alIsSource(source)) {
+		
+		alSourceStop(source);
+		AL_CHECK_ERROR_N("stopping source",)
+		
+		alDeleteSources(1, &source);
+		nbsources--;
+		AL_CHECK_ERROR_N("deleting source",)
+		
+		source = 0;
+	} else {
+		arx_assert(!source);
+	}
+	
+	if(streaming) {
+		for(size_t i = 0; i < NBUFFERS; i++) {
+			if(buffers[i] && alIsBuffer(buffers[i])) {
+				TraceAL("deleting buffer " << buffers[i]);
+				alDeleteBuffers(1, &buffers[i]);
+				nbbuffers--;
+				AL_CHECK_ERROR_N("deleting buffer",)
+				buffers[i] = 0;
+			}
+		}
+		arx_assert(!refcount);
+	} else {
+		if(buffers[0]) {
+			arx_assert(!refcount || *refcount > 0);
+			if(!refcount || !--*refcount) {
+				if(refcount) {
+					delete refcount;
+					refcount = NULL;
+				}
+				TraceAL("deleting buffer " << buffers[0]);
+				alDeleteBuffers(1, &buffers[0]);
+				nbbuffers--;
+				AL_CHECK_ERROR_N("deleting buffer",)
+			}
+		} else {
+			arx_assert(!refcount);
+		}
+		for(size_t i = 1; i < NBUFFERS; i++) {
+			arx_assert(!buffers[i]);
+		}
+	}
+	
+	if(stream) {
+		DeleteStream(stream), stream = NULL;
+	}
+	
 }
 
 static ALenum getALFormat(const PCMFormat & format) {
@@ -124,9 +176,7 @@ aalError OpenALSource::init(SourceId _id, const Channel & _channel) {
 	
 	id = _id;
 	
-	if(aalError error = clean())  {
-		return error;
-	}
+	arx_assert(!source);
 	
 	channel = _channel;
 	if(channel.flags & FLAG_ANY_3D_FX) {
@@ -145,7 +195,7 @@ aalError OpenALSource::init() {
 	
 	streaming = (sample->getLength() > (stream_limit_bytes * NBUFFERS));
 	
-	LogAL("Init: length=" << sample->getLength() << " " << (streaming ? "streaming" : "static") << (buffers[0] ? " (copy)" : ""));
+	LogAL("init: length=" << sample->getLength() << " " << (streaming ? "streaming" : "static") << (buffers[0] ? " (copy)" : ""));
 	
 	if(!streaming && !buffers[0]) {
 		stream = CreateStream(sample->getName());
@@ -295,9 +345,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * source, const Channel &
 	
 	id = _id;
 	
-	if(aalError error = clean()) {
-		return error;
-	}
+	arx_assert(!source);
 	
 	channel = _channel;
 	
@@ -312,74 +360,6 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * source, const Channel &
 	(*refcount)++;
 	
 	return init();
-}
-
-aalError OpenALSource::clean() {
-	
-	if(sample) {
-		LogAL("clean");
-	}
-	
-	if(alIsSource(source)) {
-		
-		alSourceStop(source);
-		AL_CHECK_ERROR("stopping source")
-		
-		alDeleteSources(1, &source);
-		nbsources--;
-		AL_CHECK_ERROR("deleting source")
-		
-		source = 0;
-	} else {
-		arx_assert(!source);
-	}
-	
-	if(streaming) {
-		for(size_t i = 0; i < NBUFFERS; i++) {
-			if(buffers[i] && alIsBuffer(buffers[i])) {
-				TraceAL("deleting buffer " << buffers[i]);
-				alDeleteBuffers(1, &buffers[i]);
-				nbbuffers--;
-				AL_CHECK_ERROR("deleting buffer")
-				buffers[i] = 0;
-			}
-		}
-		arx_assert(!refcount);
-	} else {
-		if(buffers[0]) {
-			arx_assert(!refcount || *refcount > 0);
-			if(!refcount || !--*refcount) {
-				if(refcount) {
-					delete refcount;
-					refcount = NULL;
-				}
-				TraceAL("deleting buffer " << buffers[0]);
-				alDeleteBuffers(1, &buffers[0]);
-				nbbuffers--;
-				AL_CHECK_ERROR("deleting buffer")
-			}
-		} else {
-			arx_assert(!refcount);
-		}
-		for(size_t i = 1; i < NBUFFERS; i++) {
-			arx_assert(!buffers[i]);
-		}
-	}
-	
-	if(stream) {
-		DeleteStream(stream);
-		stream = NULL;
-	}
-	
-	status = Idle;
-	tooFar = false;
-	
-	loadCount = 0;
-	written = 0;
-	
-	callb_i = time = read = 0;
-	
-	return AAL_OK;
 }
 
 aalError OpenALSource::setVolume(float v) {
@@ -560,7 +540,7 @@ aalError OpenALSource::play(unsigned play_count) {
 	
 	if(status != Playing) {
 		
-		LogAL("Play(" << play_count << ") vol=" << channel.volume);
+		LogAL("play(" << play_count << ") vol=" << channel.volume);
 		
 		status = Playing;
 		
@@ -606,7 +586,7 @@ aalError OpenALSource::stop() {
 		return AAL_OK;
 	}
 	
-	LogAL("Stop");
+	LogAL("stop");
 	
 	alSourceStop(source);
 	alSourceRewind(source);
@@ -636,7 +616,7 @@ aalError OpenALSource::pause() {
 		return AAL_OK;
 	}
 	
-	LogAL("Pause");
+	LogAL("pause");
 	
 	status = Paused;
 	
@@ -651,7 +631,7 @@ aalError OpenALSource::resume() {
 		return AAL_OK;
 	}
 	
-	LogAL("Resume");
+	LogAL("resume");
 	
 	status = Playing;
 	
@@ -824,7 +804,7 @@ aalError OpenALSource::updateBuffers() {
 	arx_assert(newRead >= 0);
 	
 	time = time - read + newRead;
-	TraceAL("Update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
+	TraceAL("update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	read = newRead;
 	
 	arx_assert(time >= oldTime);
