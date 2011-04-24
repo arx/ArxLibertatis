@@ -42,10 +42,7 @@ Environment::Environment() :
 	reverb_volume(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME),
 	reverb_delay(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY),
 	reverb_decay(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY),
-	reverb_hf_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY)) {
-}
-
-Environment::~Environment() {
+	reverb_hf_decay(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY) {
 }
 
 aalError Environment::load(const string & _name) {

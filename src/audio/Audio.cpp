@@ -324,30 +324,21 @@ aalSLong aalCreateMixer() {
 		return a_id;
 	}
 
-	aalSLong aalCreateEnvironment(const char * name)
-	{
-		Environment * env = NULL;
-		aalSLong e_id;
-
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT)) return AAL_SFALSE;
-
-		env = new Environment;
-
-		if ((name && env->load(name)) || (e_id = _env.Add(env)) == AAL_SFALSE)
-		{
-			delete env;
-			
-			LogError << "Environment " << name << " not found";
-
-			if (mutex) mutex->unlock();
-
-			return AAL_SFALSE;
-		}
-
-		if (mutex) mutex->unlock();
-
-		return e_id;
+aalSLong aalCreateEnvironment(const string & name) {
+	
+	AAL_ENTRY
+	
+	Environment * env = new Environment();
+	aalSLong e_id = AAL_SFALSE;
+	if(env->load(name) || (e_id = _env.Add(env)) == AAL_SFALSE) {
+		delete env;
+		LogError << "Environment " << name << " not found";
 	}
+	
+	AAL_EXIT
+	
+	return e_id;
+}
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //

@@ -35,12 +35,12 @@ class Environment {
 public:
 	
 	Environment();
-	~Environment();
 	
 	// File input/output
 	aalError load(const std::string & name);
 	
 	std::string name;
+	
 	float size;
 	float diffusion;
 	float absorption;

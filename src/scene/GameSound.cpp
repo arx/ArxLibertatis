@@ -1373,7 +1373,7 @@ static void ARX_SOUND_CreateEnvironments()
 
 			while (nb--)
 			{
-				aalCreateEnvironment( et->name.c_str() );
+				aalCreateEnvironment(et->name);
 				et = et->next;
 			}
 		}

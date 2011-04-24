@@ -48,7 +48,7 @@ namespace audio {
 	aalSLong aalCreateMixer();
 	aalSLong aalCreateSample(const std::string & name);
 	aalSLong aalCreateAmbiance(const char * name = NULL);
-	aalSLong aalCreateEnvironment(const char * name = NULL);
+	aalSLong aalCreateEnvironment(const std::string & name);
 	// Destruction
 	aalError aalDeleteSample(aalSLong sample_id);
 	aalError aalDeleteAmbiance(aalSLong ambiance_id);
