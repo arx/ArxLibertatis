@@ -95,9 +95,9 @@ aalError aalClean() {
 	
 	mutex->lock(MUTEX_TIMEOUT);
 	
+	_amb.clear();
 	_sample.clear();
 	_mixer.clear();
-	_amb.clear();
 	_env.clear();
 	
 	delete backend, backend = NULL;
