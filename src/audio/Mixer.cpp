@@ -28,6 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioGlobal.h"
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
+#include "audio/Ambiance.h"
 
 namespace audio {
 
@@ -54,11 +55,11 @@ void Mixer::clear(bool force) {
 	
 	for(aalULong i = 0; i < _amb.Size(); i++) {
 		Ambiance * ambiance = _amb[i];
-		if(ambiance && _mixer[ambiance->channel.mixer] == this) {
-			if(force || ambiance->channel.flags & AAL_FLAG_AUTOFREE) {
+		if(ambiance && _mixer[ambiance->getChannel().mixer] == this) {
+			if(force || ambiance->getChannel().flags & AAL_FLAG_AUTOFREE) {
 				_amb.Delete(i);
 			} else {
-				ambiance->Stop();
+				ambiance->stop();
 			}
 		}
 	}
@@ -160,8 +161,8 @@ aalError Mixer::pause() {
 	}
 	
 	for(aalULong i = 0; i < _amb.Size(); i++) {
-		if(_amb[i] && _mixer[_amb[i]->channel.mixer] == this) {
-			_amb[i]->Pause();
+		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
+			_amb[i]->pause();
 		}
 	}
 	
@@ -189,8 +190,8 @@ aalError Mixer::resume() {
 	}
 	
 	for(aalULong i = 0; i < _amb.Size(); i++) {
-		if(_amb[i] && _mixer[_amb[i]->channel.mixer] == this) {
-			_amb[i]->Resume();
+		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
+			_amb[i]->resume();
 		}
 	}
 	

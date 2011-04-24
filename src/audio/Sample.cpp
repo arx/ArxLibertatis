@@ -34,8 +34,7 @@ using namespace std;
 
 namespace audio {
 
-Sample::Sample() : ResourceHandle(),
-	length(0) {
+Sample::Sample(const string & _name) : ResourceHandle(), name(_name), length(0) {
 }
 
 Sample::~Sample() {
@@ -51,13 +50,13 @@ Sample::~Sample() {
 	
 }
 
-aalError Sample::load(const string & _name) {
+aalError Sample::load() {
 	
-	if(!name.empty()) {
+	if(length != 0) {
 		return AAL_ERROR_INIT;
 	}
 	
-	Stream * stream = CreateStream(_name);
+	Stream * stream = CreateStream(name);
 	if(!stream) {
 		return AAL_ERROR_FILEIO;
 	}
@@ -65,8 +64,6 @@ aalError Sample::load(const string & _name) {
 	stream->GetFormat(format);
 	stream->GetLength(length);
 	DeleteStream(stream);
-	
-	name = _name;
 	
 	return AAL_OK;
 }

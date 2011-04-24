@@ -23,55 +23,78 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_AUDIO_SAMPLE_H
-#define ARX_AUDIO_SAMPLE_H
-
-#include <vector>
+#ifndef ARX_AUDIO_AMBIANCE_H
+#define ARX_AUDIO_AMBIANCE_H
 
 #include "AudioTypes.h"
-#include "AudioResource.h"
 
 namespace audio {
 
-
-
-class Sample : public ResourceHandle {
+class Ambiance {
 	
 public:
 	
-	struct Callback {
-		aalSampleCallback func;
-		void * data;
-		aalULong time;
-	};
+	Ambiance(const std::string & name);
+	~Ambiance();
 	
-	Sample(const std::string & name);
-	~Sample();
-	
-	// File I/O
 	aalError load();
 	
-	// Setup
-	aalError setCallback(aalSampleCallback func, void * data, aalULong time, aalUnit unit = AAL_UNIT_MS);
+	inline void setUserData(void * _data) { data = _data; }
+	inline void * getUserData() const { return data; }
 	
-	inline const std::string & getName() const { return name; }
-	inline aalULong getLength() const { return length; }
-	inline const aalFormat & getFormat() const { return format; }
-	inline size_t getCallbackCount() const { return callbacks.size(); }
-	inline const Callback & getCallback(size_t i) const { return callbacks[i]; }
+	const aalChannel & getChannel() const { return channel; }
+	const std::string & getName() const { return name; }
 	
+	aalError setVolume(float volume);
+	
+	inline bool isPaused() const { return status == Paused; }
+	inline bool isPlaying() const { return status == Playing; }
+	inline bool isIdle() const { return status == Idle; }
+	inline bool isLooped() const { return loop; }
+	
+	aalError play(const aalChannel & channel, bool loop = true, aalULong fade_interval = 0.f);
+	aalError stop(aalULong volume_interval = 0.f);
+	aalError pause();
+	aalError resume();
+	aalError update();
+	
+	aalError muteTrack(const std::string & track, bool mute);
+	
+	void setId(aalSLong id);
+	
+	struct Track;
 	
 private:
 	
-	std::string name;
-	aalULong length;
-	aalFormat format;
+	static void OnAmbianceSampleEnd(void *, const aalSLong &, void * data);
 	
-	// TODO why is this in Sample?
-	std::vector<Callback> callbacks; // User callback list
+	enum Fade {
+		None,
+		FadeUp,
+		FadeDown
+	};
+	
+	enum Status {
+		Idle,
+		Playing,
+		Paused
+	};
+	
+	Status status;
+	bool loop;
+	Fade fade;
+	
+	aalChannel channel;
+	float fade_time, fade_interval, fade_max;
+	aalULong start, time;
+	size_t track_c;
+	Track * track_l;
+	std::string name;
+	
+	void * data;
 	
 };
 
 } // namespace audio
 
-#endif // ARX_AUDIO_SAMPLE_H
+#endif // ARX_AUDIO_AMBIANCE_H

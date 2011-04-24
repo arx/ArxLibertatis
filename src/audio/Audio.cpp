@@ -28,8 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //                                                                           //
 // Finish reverb implementation                                              //
 // Keep finished instances a while before deleting in case we need it again  //
-// Abstract driver API for testing other libs than DirectSound               //
-// Finish ASF format implementation                                          //
 //                                                                           //
 // Ambiance                                                                  //
 // Make sure global 3D localisation and multiple keys / track works properly //
@@ -38,18 +36,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Audio.h"
 
-#include <cmath>
-#include <cstring>
-
 #include "audio/AudioResource.h"
 #include "audio/Mixer.h"
 #include "audio/Sample.h"
-#include "audio/Ambient.h"
+#include "audio/Ambiance.h"
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 #include "audio/Lock.h"
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
+#include "audio/AudioEnvironment.h"
 #include "audio/dsound/DSoundBackend.h"
 
 #include "core/Time.h"
@@ -138,7 +134,7 @@ aalError aalClean() {
 		return error; \
 	}
 
-aalError aalSetStreamLimit(const aalULong & limit) {
+aalError aalSetStreamLimit(aalULong limit) {
 	
 	AAL_ENTRY
 	
@@ -213,9 +209,8 @@ aalError aalUpdate() {
 	for(aalULong i = 0; i < _amb.Size(); i++) {
 		Ambiance * ambiance = _amb[i];
 		if(ambiance) {
-			ambiance->Update();
-			if(ambiance->channel.flags & AAL_FLAG_AUTOFREE &&
-         !ambiance->IsPaused() && !ambiance->IsPlaying()) {
+			ambiance->update();
+			if(ambiance->getChannel().flags & AAL_FLAG_AUTOFREE && ambiance->isIdle()) {
 				_amb.Delete(i);
 			}
 		}
@@ -240,7 +235,7 @@ aalError aalUpdate() {
 
 aalSLong aalCreateMixer() {
 	
-	AAL_ENTRY
+	AAL_ENTRY_V(AAL_SFALSE)
 	
 	Mixer * mixer = new Mixer();
 	
@@ -258,12 +253,12 @@ aalSLong aalCreateMixer() {
 
 aalSLong aalCreateSample(const string & name) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_V(AAL_SFALSE)
 	
-	Sample * sample = new Sample();
+	Sample * sample = new Sample(name);
 	
 	aalSLong s_id;
-	if(sample->load(name) || (s_id = _sample.Add(sample)) == AAL_SFALSE) {
+	if(sample->load() || (s_id = _sample.Add(sample)) == AAL_SFALSE) {
 		delete sample;
 		LogWarning << "Sample " << name << " not found";
 		AAL_EXIT
@@ -277,49 +272,33 @@ aalSLong aalCreateSample(const string & name) {
 	return Backend::clearSource(s_id);
 }
 
-	aalSLong aalCreateAmbiance(const char * name)
-	{
-		Ambiance * ambiance = NULL;
-		aalSLong a_id;
-
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT)) return AAL_SFALSE;
-
-		ambiance = new Ambiance;
-
-		if ((name && ambiance->Load(name)) || (a_id = _amb.Add(ambiance)) == AAL_SFALSE)
-		{
-			delete ambiance;
-			
-			LogError << "Ambiance " << name << " not found";
-
-			if (mutex) mutex->unlock();
-
-			return AAL_SFALSE;
-		}
-
-		//MISERY
-		Track * track = &ambiance->track_l[ambiance->track_c];
-
-		while (track > ambiance->track_l)
-		{
-			--track;
-			track->a_id = a_id;
-		}
-
-	    if(mutex) {
-		    mutex->unlock();
-	    }
-
-		return a_id;
+aalSLong aalCreateAmbiance(const string & name) {
+	
+	AAL_ENTRY_V(AAL_SFALSE)
+	
+	Ambiance * ambiance = new Ambiance(name);
+	aalSLong a_id;
+	if(ambiance->load() || (a_id = _amb.Add(ambiance)) == AAL_SFALSE) {
+		delete ambiance;
+		LogError << "Ambiance " << name << " not found";
+		AAL_EXIT
+		return AAL_SFALSE;
 	}
+	
+	ambiance->setId(a_id);
+	
+	AAL_EXIT
+	
+	return a_id;
+}
 
 aalSLong aalCreateEnvironment(const string & name) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_V(AAL_SFALSE)
 	
-	Environment * env = new Environment();
+	Environment * env = new Environment(name);
 	aalSLong e_id = AAL_SFALSE;
-	if(env->load(name) || (e_id = _env.Add(env)) == AAL_SFALSE) {
+	if(env->load() || (e_id = _env.Add(env)) == AAL_SFALSE) {
 		delete env;
 		LogError << "Environment " << name << " not found";
 	}
@@ -329,11 +308,7 @@ aalSLong aalCreateEnvironment(const string & name) {
 	return e_id;
 }
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Resource destruction                                                      //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
+// Resource destruction
 
 aalError aalDeleteSample(aalSLong sample_id) {
 	
@@ -352,35 +327,32 @@ aalError aalDeleteSample(aalSLong sample_id) {
 	return AAL_OK;
 }
 
-	aalError aalDeleteAmbiance(aalSLong a_id)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
+aalError aalDeleteAmbiance(aalSLong a_id) {
+	
+	AAL_ENTRY
+	
+	_amb.Delete(a_id);
+	
+	AAL_EXIT
+	
+	return AAL_OK;
+}
 
-		_amb.Delete(a_id);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalSLong aalGetAmbiance(const string & name) {
+	
+	AAL_ENTRY_V(AAL_SFALSE)
+	
+	for(aalULong i(0); i < _amb.Size(); i++) {
+		if(_amb[i] && !strcasecmp(name, _amb[i]->getName())) {
+			AAL_EXIT
+			return i;
+		}
 	}
-
-	aalSLong aalGetAmbiance(const char * name)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_SFALSE;
-
-		for (aalULong i(0); i < _amb.Size(); i++)
-			if (_amb[i] && (!name || !strcasecmp(name, _amb[i]->name)))
-			{
-				if (mutex) mutex->unlock();
-
-				return i;
-			}
-
-		if (mutex) mutex->unlock();
-
-		return AAL_SFALSE;
-	}
+	
+	AAL_EXIT
+	
+	return AAL_SFALSE;
+}
 
 aalSLong aalGetEnvironment(const string & name) {
 	
@@ -398,34 +370,25 @@ aalSLong aalGetEnvironment(const string & name) {
 	return AAL_SFALSE;
 }
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Retrieve next resource by ID                                              //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalSLong aalGetNextAmbiance(aalSLong ambiance_id)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_SFALSE;
+// Retrieve next resource by ID
 
-		aalULong i(_amb.IsValid(ambiance_id) ? ambiance_id + 1 : 0);
-
-		while (i < _amb.Size())
-		{
-			if (_amb[i])
-			{
-				if (mutex) mutex->unlock();
-
-				return i;
-			}
-
-			++i;
+aalSLong aalGetNextAmbiance(aalSLong ambiance_id) {
+	
+	AAL_ENTRY_V(AAL_SFALSE)
+	
+	size_t i = _amb.IsValid(ambiance_id) ? ambiance_id + 1 : 0;
+	
+	for(; i < _amb.Size(); i++) {
+		if(_amb[i]) {
+			AAL_EXIT
+			return i;
 		}
-
-		if (mutex) mutex->unlock();
-
-		return AAL_SFALSE;
 	}
+	
+	AAL_EXIT
+	
+	return AAL_SFALSE;
+}
 
 // Environment setup
 
@@ -544,7 +507,7 @@ aalError aalSetMixerParent(aalSLong m_id, aalSLong pm_id) {
 
 // Mixer status
 
-aalError aalGetMixerVolume(aalSLong m_id, aalFloat * volume) {
+aalError aalGetMixerVolume(aalSLong m_id, float * volume) {
 	
 	*volume = AAL_DEFAULT_VOLUME;
 	
@@ -727,7 +690,7 @@ bool aalIsSamplePlaying(aalSLong sample_id) {
 
 // Sample control
 
-aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, const aalULong & play_count) {
+aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, aalULong play_count) {
 	
 	AAL_ENTRY
 	
@@ -810,244 +773,175 @@ aalError aalSampleStop(aalSLong & sample_id) {
 	return ret;
 }
 
+// Track setup
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Track setup                                                               //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-
-	aalError aalMuteAmbianceTrack(aalSLong a_id, aalSLong t_id, const aalUBool & mute)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_amb.IsNotValid(a_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "MuteAmbianceTrack " << _amb[a_id]->name << " " << t_id << " " << mute;
-
-		_amb[a_id]->MuteTrack(t_id, mute);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalMuteAmbianceTrack(aalSLong a_id, const string & track, bool mute) {
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	LogDebug << "MuteAmbianceTrack " << _amb[a_id]->getName() << " " << track << " " << mute;
+	
+	aalError ret = _amb[a_id]->muteTrack(track, mute);
+	
+	AAL_EXIT
+	
+	return ret;
+}
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Ambiance setup                                                            //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
+// Ambiance setup
 
-	aalError aalSetAmbianceUserData(aalSLong a_id, void * data)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_amb.IsNotValid(a_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "SetAmbianceUserData " << _amb[a_id]->name << " " << data;
-
-		_amb[a_id]->SetUserData(data);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalSetAmbianceUserData(aalSLong a_id, void * data) {
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	LogDebug << "SetAmbianceUserData " << _amb[a_id]->getName() << " " << data;
+	
+	_amb[a_id]->setUserData(data);
+	
+	AAL_EXIT
+	
+	return AAL_OK;
+}
 
-	aalError aalSetAmbianceVolume(aalSLong a_id, float volume)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_amb.IsNotValid(a_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "SetAmbianceVolume " << _amb[a_id]->name << " " << volume;
-
-		_amb[a_id]->SetVolume(volume);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalSetAmbianceVolume(aalSLong a_id, float volume) {
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	LogDebug << "SetAmbianceVolume " << _amb[a_id]->getName() << " " << volume;
+	
+	aalError ret = _amb[a_id]->setVolume(volume);
+	
+	AAL_EXIT
+	
+	return ret;
+}
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Ambiance status                                                           //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
+// Ambiance status
 
-	aalError aalGetAmbianceName(aalSLong a_id, char * name, const aalULong & max_char)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-		{
-			*name = 0;
-			return AAL_ERROR_TIMEOUT;
-		}
-
-		if (_amb.IsNotValid(a_id))
-		{
-			*name = 0;
-
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-
-		_amb[a_id]->GetName(name, max_char);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalGetAmbianceName(aalSLong a_id, string & name) {
+	
+	name.clear();
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	name = _amb[a_id]->getName();
+	
+	AAL_EXIT
+	
+	return AAL_OK;
+}
 
-	aalError aalGetAmbianceUserData(aalSLong a_id, void ** data)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_amb.IsNotValid(a_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-
-		_amb[a_id]->GetUserData(data);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalGetAmbianceUserData(aalSLong a_id, void ** data) {
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	*data = _amb[a_id]->getUserData();
+	
+	AAL_EXIT
+	
+	return AAL_OK;
+}
 
-	aalError aalGetAmbianceTrackID(aalSLong a_id, const char * name, aalSLong & _t_id)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-		{
-			_t_id = AAL_SFALSE;
-			return AAL_ERROR_TIMEOUT;
-		}
-
-		if (_amb.IsNotValid(a_id))
-		{
-			_t_id = AAL_SFALSE;
-
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-
-		_amb[a_id]->GetTrackID(name, _t_id);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalGetAmbianceVolume(aalSLong a_id, float & _volume) {
+	
+	_volume = AAL_DEFAULT_VOLUME;
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
-
-	aalError aalGetAmbianceVolume(aalSLong a_id, aalFloat & _volume)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-		{
-			_volume = AAL_DEFAULT_VOLUME;
-			return AAL_ERROR_TIMEOUT;
-		}
-
-		if (_amb.IsNotValid(a_id))
-		{
-			_volume = AAL_DEFAULT_VOLUME;
-
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-
-		_amb[a_id]->GetVolume(_volume);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+	
+	if(!(_amb[a_id]->getChannel().flags & AAL_FLAG_VOLUME)) {
+		AAL_EXIT
+		return AAL_ERROR_INIT;
 	}
+	
+	_volume = _amb[a_id]->getChannel().volume;
+	
+	AAL_EXIT
+	
+	return AAL_OK;
+}
 
-	aalUBool aalIsAmbianceLooped(aalSLong a_id)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_UFALSE;
-
-		if (_amb.IsNotValid(a_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_UFALSE;
-		}
-
-		aalUBool status(_amb[a_id]->IsLooped());
-
-		if (mutex) mutex->unlock();
-
-		return status;
+bool aalIsAmbianceLooped(aalSLong a_id) {
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id)) {
+		AAL_EXIT
+		return false;
 	}
+	
+	bool isLooped = _amb[a_id]->isLooped();
+	
+	AAL_EXIT
+	
+	return isLooped;
+}
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Ambiance control                                                          //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
+// Ambiance control
 
-	aalError aalAmbiancePlay(aalSLong a_id, const aalChannel & channel, const aalULong & play_count, const aalULong & fade_interval)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_amb.IsNotValid(a_id) || _mixer.IsNotValid(channel.mixer))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "AmbiancePlay " << _amb[a_id]->name << " " << play_count << " " << fade_interval;
-
-		_amb[a_id]->Play(channel, play_count, fade_interval);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalAmbiancePlay(aalSLong a_id, const aalChannel & channel, bool loop, aalULong fade_interval) {
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id) || !_mixer.IsValid(channel.mixer)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	LogDebug << "AmbiancePlay " << _amb[a_id]->getName() << " loop=" << loop << " fade=" << fade_interval;
+	
+	aalError ret = _amb[a_id]->play(channel, loop, fade_interval);
+	
+	AAL_EXIT
+	
+	return ret;
+}
 
-	aalError aalAmbianceStop(aalSLong a_id, const aalULong & fade_interval)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_amb.IsNotValid(a_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "AmbianceStop " << _amb[a_id]->name << " " << fade_interval;
-
-		_amb[a_id]->Stop(fade_interval);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalAmbianceStop(aalSLong a_id, aalULong fade_interval) {
+	
+	AAL_ENTRY
+	
+	if(!_amb.IsValid(a_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	LogDebug << "AmbianceStop " << _amb[a_id]->getName() << " " << fade_interval;
+	
+	_amb[a_id]->stop(fade_interval);
+	
+	AAL_EXIT
+	
+	return AAL_OK;
+}
 
 } // namespace audio

@@ -30,15 +30,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioTypes.h"
 #include "audio/AudioResource.h"
-#include "audio/Stream.h"
-#include "audio/Mixer.h"
-#include "audio/AudioEnvironment.h"
-#include "audio/Sample.h"
-#include "audio/Ambient.h"
 
 #include "io/Logger.h"
 
 namespace audio {
+	
+	class Backend;
+	class Ambiance;
+	class Environment;
+	class Sample;
+	class Mixer;
 	
 	// Common resource memory management
 	
@@ -52,7 +53,6 @@ namespace audio {
 	                              AAL_FLAG_REVERBERATION);
 	
 	// Audio device interface
-	class Backend;
 	extern Backend * backend;
 	
 	// Global settings

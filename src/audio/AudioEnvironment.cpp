@@ -33,7 +33,8 @@ using std::string;
 
 namespace audio {
 
-Environment::Environment() :
+Environment::Environment(const string & _name) :
+	name(_name),
 	size(AAL_DEFAULT_ENVIRONMENT_SIZE),
 	diffusion(AAL_DEFAULT_ENVIRONMENT_DIFFUSION),
 	absorption(AAL_DEFAULT_ENVIRONMENT_ABSORPTION),
@@ -45,13 +46,9 @@ Environment::Environment() :
 	reverb_hf_decay(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY) {
 }
 
-aalError Environment::load(const string & _name) {
+aalError Environment::load() {
 	
-	if(!name.empty()) {
-		return AAL_ERROR_INIT;
-	}
-	
-	PakFileHandle * file = OpenResource(_name, environment_path);
+	PakFileHandle * file = OpenResource(name, environment_path);
 	if(!file) {
 		return AAL_ERROR_FILEIO;
 	}
@@ -70,8 +67,6 @@ aalError Environment::load(const string & _name) {
 	}
 	
 	PAK_fclose(file);
-	
-	name = _name;
 	
 	return AAL_OK;
 }

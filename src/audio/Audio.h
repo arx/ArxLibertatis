@@ -29,113 +29,91 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioTypes.h"
 
 namespace audio {
-	
-	// Global
-	
-	// Setup
-	aalError aalInit(bool enableEAX);
-	aalError aalClean();
-	aalError aalSetStreamLimit(const aalULong & size);
-	aalError aalSetSamplePath(const std::string & path);
-	aalError aalSetAmbiancePath(const std::string & path);
-	aalError aalSetEnvironmentPath(const std::string & path);
-	aalError setReverbEnabled(bool enable);
-	aalError aalUpdate();
-	
-	// Resource
-	
-	// Creation
-	aalSLong aalCreateMixer();
-	aalSLong aalCreateSample(const std::string & name);
-	aalSLong aalCreateAmbiance(const char * name = NULL);
-	aalSLong aalCreateEnvironment(const std::string & name);
-	// Destruction
-	aalError aalDeleteSample(aalSLong sample_id);
-	aalError aalDeleteAmbiance(aalSLong ambiance_id);
-	
-	// Checking
-	aalUBool aalIsEnvironment(aalSLong environment_id);
-	// Retrieving by name (If resource_name == NULL, return first found)
-	aalSLong aalGetMixer(const char * mixer_name = NULL);
-	
-	aalSLong aalGetAmbiance(const char * ambiance_name = NULL);
-	aalSLong aalGetEnvironment(const std::string & environment_name);
-	// Retrieving by ID (If resource_id == AAL_SFALSE, return first found)
-	aalSLong aalGetNextAmbiance(aalSLong ambiance_id = AAL_SFALSE);
-	
-	// Environment
-	
-	aalError aalSetRoomRolloffFactor(float factor);
-	
-	// Listener
-	
-	aalError aalSetListenerName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalSetListenerUnitFactor(float factor);
-	aalError aalSetListenerRolloffFactor(float factor);
-	aalError aalSetListenerPosition(const aalVector & position);
-	aalError aalSetListenerDirection(const aalVector & front, const aalVector & up);
-	aalError aalSetListenerEnvironment(aalSLong environment_id);
-	
-	aalError aalGetListenerName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalGetListenerUnitFactor(float & factor);
-	aalError aalGetListenerDopplerFactor(float & factor);
-	aalError aalGetListenerRolloffFactor(float & factor);
-	aalError aalGetListenerPosition(aalVector & position);
-	aalError aalGetListenerDirection(aalVector & front, aalVector * up);
-	aalError aalGetListenerVelocity(aalVector & velocity);
-	aalError aalGetListenerEnvironment(aalSLong & environment_id);
-	
-	// Mixer
-	
-	// Setup
-	aalError aalSetMixerVolume(aalSLong mixer_id, float volume);
-	aalError aalSetMixerParent(aalSLong mixer_id, aalSLong parent_mixer_id);
-	// Status
-	aalError aalGetMixerVolume(aalSLong mixer_id, float * volume);
-	aalUBool IsMixerEnabled(aalSLong mixer_id, const aalFlag & flag);
-	aalUBool IsMixerDisabled(aalSLong mixer_id, const aalFlag & flag);
-	aalUBool IsMixerPaused(aalSLong mixer_id);
-	// Control
-	aalError aalMixerStop(aalSLong mixer_id);
-	aalError aalMixerPause(aalSLong mixer_id);
-	aalError aalMixerResume(aalSLong mixer_id);
-	
-	// Sample
-	
-	// Setup
-	aalError aalSetSampleVolume(aalSLong sample_id, float volume);
-	aalError aalSetSamplePitch(aalSLong sample_id, float pitch);
-	aalError aalSetSamplePosition(aalSLong sample_id, const aalVector & position);
-	// Status
-	aalError aalGetSampleName(aalSLong sample_id, std::string & name);
-	aalError aalGetSampleLength(aalSLong sample_id, aalULong & length, aalUnit unit = AAL_UNIT_MS);
-	aalError aalGetSamplePan(aalSLong sample_id, float * pan);
-	aalError aalGetSampleCone(aalSLong sample_id, aalCone * cone);
-	bool aalIsSamplePlaying(aalSLong sample_id);
-	// Control
-	//play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
-	aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, const aalULong & play_count = 1);
-	aalError aalSampleStop(aalSLong & sample_id);
-	
-	// Track setup
-	aalError aalMuteAmbianceTrack(aalSLong ambiance_id, aalSLong track_id, const aalUBool & mute);
-	
-	// Ambiance
-	
-	// Setup
-	aalError aalSetAmbianceUserData(aalSLong ambiance_id, void * data);
-	aalError aalSetAmbianceVolume(aalSLong ambiance_id, float volume);
-	// Status
-	aalError aalGetAmbianceName(aalSLong ambiance_id, char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalGetAmbianceUserData(aalSLong ambiance_id, void ** data);
-	aalError aalGetAmbianceTrackID(aalSLong ambiance_id, const char * name, aalSLong & track_id);
-	aalError aalGetAmbianceVolume(aalSLong ambiance_id, float & volume);
-	aalUBool aalIsAmbianceLooped(aalSLong ambiance_id);
-	// Control
-	//play_count == 0 -> infinite loop, play_count == 1 -> play once
-	aalError aalAmbiancePlay(aalSLong ambiance_id, const aalChannel & channel, const aalULong & play_count = 1, const aalULong & fade_interval = 0);
-	aalError aalAmbianceStop(aalSLong ambiance_id, const aalULong & fade_interval = 0);
-	
+
+// Global
+
+aalError aalInit(bool enableEAX);
+aalError aalClean();
+aalError aalSetStreamLimit(aalULong size);
+aalError aalSetSamplePath(const std::string & path);
+aalError aalSetAmbiancePath(const std::string & path);
+aalError aalSetEnvironmentPath(const std::string & path);
+aalError setReverbEnabled(bool enable);
+aalError aalUpdate();
+
+// Resource
+
+aalSLong aalCreateMixer();
+aalSLong aalCreateSample(const std::string & name);
+aalSLong aalCreateAmbiance(const std::string & name);
+aalSLong aalCreateEnvironment(const std::string & name);
+aalError aalDeleteSample(aalSLong sample_id);
+aalError aalDeleteAmbiance(aalSLong ambiance_id);
+
+aalSLong aalGetAmbiance(const std::string & ambiance_name);
+aalSLong aalGetEnvironment(const std::string & environment_name);
+
+//! Retrieving by ID (If resource_id == AAL_SFALSE, return first found)
+aalSLong aalGetNextAmbiance(aalSLong ambiance_id = AAL_SFALSE);
+
+// Environment
+
+aalError aalSetRoomRolloffFactor(float factor);
+
+// Listener
+
+aalError aalSetListenerUnitFactor(float factor);
+aalError aalSetListenerRolloffFactor(float factor);
+aalError aalSetListenerPosition(const aalVector & position);
+aalError aalSetListenerDirection(const aalVector & front, const aalVector & up);
+aalError aalSetListenerEnvironment(aalSLong environment_id);
+
+// Mixer
+
+aalError aalSetMixerVolume(aalSLong mixer_id, float volume);
+aalError aalSetMixerParent(aalSLong mixer_id, aalSLong parent_mixer_id);
+
+aalError aalGetMixerVolume(aalSLong mixer_id, float * volume);
+bool IsMixerEnabled(aalSLong mixer_id, const aalFlag & flag);
+bool IsMixerDisabled(aalSLong mixer_id, const aalFlag & flag);
+bool IsMixerPaused(aalSLong mixer_id);
+
+aalError aalMixerStop(aalSLong mixer_id);
+aalError aalMixerPause(aalSLong mixer_id);
+aalError aalMixerResume(aalSLong mixer_id);
+
+// Sample
+
+aalError aalSetSampleVolume(aalSLong sample_id, float volume);
+aalError aalSetSamplePitch(aalSLong sample_id, float pitch);
+aalError aalSetSamplePosition(aalSLong sample_id, const aalVector & position);
+
+aalError aalGetSampleName(aalSLong sample_id, std::string & name);
+aalError aalGetSampleLength(aalSLong sample_id, aalULong & length, aalUnit unit = AAL_UNIT_MS);
+aalError aalGetSamplePan(aalSLong sample_id, float * pan);
+aalError aalGetSampleCone(aalSLong sample_id, aalCone * cone);
+bool aalIsSamplePlaying(aalSLong sample_id);
+
+//! play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
+aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, aalULong play_count = 1);
+aalError aalSampleStop(aalSLong & sample_id);
+
+// Ambiance
+
+aalError aalMuteAmbianceTrack(aalSLong ambiance_id, const std::string & track, bool mute);
+
+aalError aalSetAmbianceUserData(aalSLong ambiance_id, void * data);
+aalError aalSetAmbianceVolume(aalSLong ambiance_id, float volume);
+
+aalError aalGetAmbianceName(aalSLong ambiance_id, std::string & name);
+aalError aalGetAmbianceUserData(aalSLong ambiance_id, void ** data);
+aalError aalGetAmbianceVolume(aalSLong ambiance_id, float & volume);
+bool aalIsAmbianceLooped(aalSLong ambiance_id);
+
+//! play_count == 0 -> infinite loop, play_count == 1 -> play once
+aalError aalAmbiancePlay(aalSLong ambiance_id, const aalChannel & channel, bool loop = false, aalULong fade_interval = 0);
+aalError aalAmbianceStop(aalSLong ambiance_id, aalULong fade_interval = 0);
+
 } // namespace audio
 
 #endif // ARX_AUDIO_AUDIO_H

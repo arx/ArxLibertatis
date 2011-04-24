@@ -34,10 +34,10 @@ class Environment {
 	
 public:
 	
-	Environment();
+	Environment(const std::string & name);
 	
 	// File input/output
-	aalError load(const std::string & name);
+	aalError load();
 	
 	std::string name;
 	

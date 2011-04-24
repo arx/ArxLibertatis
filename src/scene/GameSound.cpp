@@ -1052,16 +1052,16 @@ long ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float
 	
 	if (!bIsActive) return AAL_SFALSE;
 
-	std::string temp = name;
+	string temp = name;
 	SetExt(temp, ".amb");
 
-	long ambiance_id(aalGetAmbiance(temp.c_str()));
+	long ambiance_id(aalGetAmbiance(temp));
 
 	if (ambiance_id == AAL_SFALSE)
 	{
 		if (volume == 0.0F) return AAL_SFALSE;
 
-		ambiance_id = aalCreateAmbiance(temp.c_str());
+		ambiance_id = aalCreateAmbiance(temp);
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_SCRIPT);
 
 		aalChannel channel;
@@ -1070,7 +1070,7 @@ long ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float
 		channel.flags = AAL_FLAG_VOLUME | AAL_FLAG_AUTOFREE;
 		channel.volume = volume;
 
-		aalAmbiancePlay(ambiance_id, channel, loop);
+		aalAmbiancePlay(ambiance_id, channel, loop == ARX_SOUND_PLAY_LOOPED);
 	}
 	else
 	{
@@ -1090,7 +1090,7 @@ long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 	
 	if (!bIsActive) return AAL_SFALSE;
 
-	std::string temp = name;
+	string temp = name;
 	SetExt(temp, ".amb");
 
 	if (!strcasecmp(name, "NONE"))
@@ -1100,11 +1100,11 @@ long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 		return AAL_SFALSE;
 	}
 
-	long ambiance_id(aalGetAmbiance(temp.c_str()));
+	long ambiance_id(aalGetAmbiance(temp));
 
 	if (ambiance_id == AAL_SFALSE)
 	{
-		ambiance_id = aalCreateAmbiance(temp.c_str());
+		ambiance_id = aalCreateAmbiance(temp);
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_ZONE);
 	}
 	else if (ambiance_id == ambiance_zone)
@@ -1117,7 +1117,7 @@ long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 	channel.volume = volume;
 
 	aalAmbianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
-	aalAmbiancePlay(ambiance_zone = ambiance_id, channel, loop, AMBIANCE_FADE_TIME);
+	aalAmbiancePlay(ambiance_zone = ambiance_id, channel, loop == ARX_SOUND_PLAY_LOOPED, AMBIANCE_FADE_TIME);
 
 	return ambiance_zone;
 }
@@ -1126,33 +1126,32 @@ long ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string
 	
 	if (!bIsActive) return AAL_SFALSE;
 
-	s32 ambiance_id, track_id;
-	std::string temp = ambiance_name;
+	s32 ambiance_id;
+	string temp = ambiance_name;
 	SetExt(temp, ".amb");
 
-	ambiance_id = aalGetAmbiance(temp.c_str());
+	ambiance_id = aalGetAmbiance(temp);
 
 	if (ambiance_id == AAL_SFALSE) return AAL_SFALSE;
 
-	if (aalGetAmbianceTrackID(ambiance_id, track_name.c_str(), track_id)) return AAL_SFALSE;
-
-	aalMuteAmbianceTrack(ambiance_id, track_id, (aalUBool)status);
+	aalMuteAmbianceTrack(ambiance_id, track_name, status);
 
 	return ambiance_id;
 }
 
-void ARX_SOUND_KillAmbiances()
-{
-	if (!bIsActive) return;
-
-	aalSLong ambiance_id = aalGetAmbiance();
-
-	while (ambiance_id != AAL_SFALSE)
-	{
-		aalDeleteAmbiance(ambiance_id);
-		ambiance_id = aalGetAmbiance();
+void ARX_SOUND_KillAmbiances() {
+	
+	if(!bIsActive) {
+		return;
 	}
-
+	
+	aalSLong ambiance_id = aalGetNextAmbiance();
+	
+	while(ambiance_id != AAL_SFALSE) {
+		aalDeleteAmbiance(ambiance_id);
+		ambiance_id = aalGetNextAmbiance(ambiance_id);
+	}
+	
 	ambiance_zone = AAL_SFALSE;
 }
 
@@ -1161,7 +1160,7 @@ long ARX_SOUND_PlayMenuAmbiance(const string & ambiance_name) {
 	if (!bIsActive) return AAL_SFALSE;
 
 	aalDeleteAmbiance(ambiance_menu);
-	ambiance_menu = aalCreateAmbiance(ambiance_name.c_str());
+	ambiance_menu = aalCreateAmbiance(ambiance_name);
 
 	aalSetAmbianceUserData(ambiance_menu, (void *)PLAYING_AMBIANCE_MENU);
 
@@ -1171,7 +1170,7 @@ long ARX_SOUND_PlayMenuAmbiance(const string & ambiance_name) {
 	channel.flags = AAL_FLAG_VOLUME;
 	channel.volume = 1.0F;
 
-	aalAmbiancePlay(ambiance_menu, channel, 0);
+	aalAmbiancePlay(ambiance_menu, channel, true);
 
 	return ambiance_menu;
 }
@@ -1307,7 +1306,11 @@ void ARX_SOUND_AmbianceSavePlayList(void ** _play_list, unsigned long * size)
 			playing = &play_list[count];
 			
 			memset(playing->name, 0, sizeof(playing->name));
-			aalGetAmbianceName(ambiance_id, playing->name, sizeof(playing->name)/sizeof(*playing->name));
+			
+			string name;
+			aalGetAmbianceName(ambiance_id, name);
+			arx_assert(name.length() + 1 < sizeof(playing->name)/sizeof(*playing->name));
+			strcpy(playing->name, name.c_str());
 			aalGetAmbianceVolume(ambiance_id, playing->volume);
 			playing->loop = aalIsAmbianceLooped(ambiance_id) ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
 			playing->type = type;
