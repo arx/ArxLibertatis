@@ -28,13 +28,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cmath>
 
-#include "AudioTypes.h"
-#include "AudioResource.h"
-#include "Stream.h"
-#include "Mixer.h"
-#include "AudioEnvironment.h"
-#include "Sample.h"
-#include "Ambient.h"
+#include "audio/AudioTypes.h"
+#include "audio/AudioResource.h"
+#include "audio/Stream.h"
+#include "audio/Mixer.h"
+#include "audio/AudioEnvironment.h"
+#include "audio/Sample.h"
+#include "audio/Ambient.h"
+
+#include "io/Logger.h"
 
 namespace audio {
 	
@@ -101,6 +103,10 @@ namespace audio {
 		dst.y *= factor;
 		dst.z *= factor;
 		return dst;
+	}
+	
+	static inline float clamp(float v, float min, float max) {
+		return std::min(max, std::max(min, v));
 	}
 	
 } // namespace audio

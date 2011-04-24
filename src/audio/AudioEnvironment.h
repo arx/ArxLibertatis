@@ -26,33 +26,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOENVIRONMENT_H
 #define ARX_AUDIO_AUDIOENVIRONMENT_H
 
-#include "AudioTypes.h"
-#include "AudioResource.h"
+#include "audio/AudioTypes.h"
 
 namespace audio {
+
+class Environment {
 	
-	class Environment {
-		
-	public:
-		
-		Environment();
-		~Environment();
-		
-		// File input/output
-		aalError Load(const std::string & name);
-		
-		std::string name;
-		aalFloat size;
-		aalFloat diffusion;
-		aalFloat absorption;
-		aalFloat reflect_volume;
-		aalFloat reflect_delay;
-		aalFloat reverb_volume;
-		aalFloat reverb_delay;
-		aalFloat reverb_decay;
-		aalFloat reverb_hf_decay;
-	};
+public:
 	
+	Environment();
+	~Environment();
+	
+	// File input/output
+	aalError load(const std::string & name);
+	
+	std::string name;
+	float size;
+	float diffusion;
+	float absorption;
+	float reflect_volume;
+	float reflect_delay;
+	float reverb_volume;
+	float reverb_delay;
+	float reverb_decay;
+	float reverb_hf_decay;
+	
+};
+
 } // namespace audio
 
 #endif // ARX_AUDIO_AUDIOENVIRONMENT_H

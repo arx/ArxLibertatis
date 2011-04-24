@@ -33,12 +33,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-	Stream * CreateStream(const char * name)
+	Stream * CreateStream(const string & name)
 	{
 		PakFileHandle * file;
 		Stream * stream = NULL;
 
-		file = OpenResource(name, sample_path);
+		file = OpenResource(name.c_str(), sample_path);
 		if(!file) {
 			return NULL;
 		}

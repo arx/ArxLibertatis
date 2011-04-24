@@ -27,6 +27,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_AUDIO_AUDIORESOURCE_H
 
 #include "AudioTypes.h"
+#include <stdlib.h>
+
+#include "platform/Platform.h"
 
 struct PakFileHandle;
 
@@ -49,6 +52,7 @@ namespace audio {
 			++__count;
 		}
 		inline void Release() {
+			arx_assert(__count > 0);
 			--__count;
 		}
 		inline s32 IsHandled() {

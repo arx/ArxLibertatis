@@ -39,7 +39,6 @@ using namespace std;
 namespace audio {
 
 Sample::Sample() : ResourceHandle(),
-	name(NULL),
 	length(0),
 	data(NULL),
 	callb_c(0), callb(NULL) {
@@ -56,7 +55,6 @@ Sample::~Sample() {
 		}
 	}
 	
-	free(name);
 	free(callb);
 	free(data);
 }
@@ -66,7 +64,7 @@ Sample::~Sample() {
 	// File I/O                                                                  //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError Sample::Load(const char * _name)
+	aalError Sample::load(const string & _name)
 	{
 		Stream * stream = CreateStream(_name);
 
@@ -78,12 +76,7 @@ Sample::~Sample() {
 		stream->GetLength(length);
 		DeleteStream(stream);
 
-		void * ptr = realloc(name, strlen(_name) + 1);
-
-		if (!ptr) return AAL_ERROR_MEMORY;
-
-		name = (char *)ptr;
-		strcpy(name, _name);
+		name = _name;
 
 		return AAL_OK;
 	}
@@ -122,7 +115,7 @@ Sample::~Sample() {
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Sample::GetName(char * _name, const aalULong & max_char)
 	{
-		strncpy(_name, name, max_char);
+		strncpy(_name, name.c_str(), max_char);
 
 		return AAL_OK;
 	}

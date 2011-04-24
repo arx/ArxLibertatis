@@ -200,7 +200,7 @@ namespace audio {
 		cursor = position;
 
 		// Reset stream position at the begining of data chunk
-		if (PAK_fseek(stream, offset, SEEK_SET)) return AAL_ERROR_FILEIO;
+		if (PAK_fseek(stream, offset, SEEK_SET) == -1) return AAL_ERROR_FILEIO;
 
 		return codec->SetPosition(cursor);
 	}
@@ -310,7 +310,7 @@ namespace audio {
 	// Skip!                                                                     //
 	aalSBool ChunkFile::Skip(const aalULong & size)
 	{
-		if (PAK_fseek(file, size, SEEK_CUR)) return AAL_SFALSE;
+		if (PAK_fseek(file, size, SEEK_CUR) == -1) return AAL_SFALSE;
 
 		if (offset) offset -= size;
 
@@ -330,7 +330,7 @@ namespace audio {
 
 			if (!memcmp(cc, id, 4)) return AAL_STRUE;
 
-			if (PAK_fseek(file, offset, SEEK_CUR)) return AAL_SFALSE;
+			if (PAK_fseek(file, offset, SEEK_CUR) == -1) return AAL_SFALSE;
 		}
 
 		return AAL_SFALSE;
@@ -354,7 +354,7 @@ namespace audio {
 	{
 		offset = 0;
 
-		if (PAK_fseek(file, 0, SEEK_SET)) return AAL_SFALSE;
+		if (PAK_fseek(file, 0, SEEK_SET) == -1) return AAL_SFALSE;
 
 		return AAL_STRUE;
 	}

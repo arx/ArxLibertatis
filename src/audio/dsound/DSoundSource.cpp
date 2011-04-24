@@ -110,8 +110,6 @@ namespace audio {
 			channel.flags &= ~AAL_FLAG_PAN;
 		}
 
-		if (channel.flags & AAL_FLAG_BACKGROUND) _desc.dwFlags |= DSBCAPS_GLOBALFOCUS;
-
 		_desc.lpwfxFormat = &_format;
 
 		_format.nSamplesPerSec = sample->format.frequency;
@@ -558,17 +556,6 @@ aalError DSoundSource::setEnvironment(aalSLong environment) {
 			return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
-	}
-
-	static inline aalFloat Distance(const aalVector & from, const aalVector & to)
-	{
-		aalFloat x, y, z;
-
-		x = from.x - to.x;
-		y = from.y - to.y;
-		z = from.z - to.z;
-
-		return aalFloat(sqrt(x * x + y * y + z * z));
 	}
 
 	aalUBool DSoundSource::isTooFar()

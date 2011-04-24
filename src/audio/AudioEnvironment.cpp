@@ -25,66 +25,54 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioEnvironment.h"
 
-#include <cmath>
-
+#include "audio/AudioResource.h"
 #include "audio/AudioGlobal.h"
-
 #include "io/PakManager.h"
 
 using std::string;
 
 namespace audio {
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Constructor and destructor                                                //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	Environment::Environment() :
-		size(AAL_DEFAULT_ENVIRONMENT_SIZE),
-		diffusion(AAL_DEFAULT_ENVIRONMENT_DIFFUSION),
-		absorption(AAL_DEFAULT_ENVIRONMENT_ABSORPTION),
-		reflect_volume(AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME),
-		reflect_delay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REFLECTION_DELAY)),
-		reverb_volume(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME),
-		reverb_delay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY)),
-		reverb_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY)),
-		reverb_hf_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY)) {
+Environment::Environment() :
+	size(AAL_DEFAULT_ENVIRONMENT_SIZE),
+	diffusion(AAL_DEFAULT_ENVIRONMENT_DIFFUSION),
+	absorption(AAL_DEFAULT_ENVIRONMENT_ABSORPTION),
+	reflect_volume(AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME),
+	reflect_delay(AAL_DEFAULT_ENVIRONMENT_REFLECTION_DELAY),
+	reverb_volume(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME),
+	reverb_delay(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY),
+	reverb_decay(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY),
+	reverb_hf_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY)) {
+}
+
+Environment::~Environment() {
+}
+
+aalError Environment::load(const string & _name) {
+	
+	PakFileHandle * file = OpenResource(_name, environment_path);
+	if(!file) {
+		return AAL_ERROR_FILEIO;
 	}
-
-	Environment::~Environment() {
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// File I/O                                                                  //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError Environment::Load(const string & _name)
-	{
-		PakFileHandle * file = OpenResource(_name, environment_path);
-
-		if (!file) return AAL_ERROR_FILEIO;
-
-		if (!PAK_fread(&size, 4, 1, file) ||
-		        !PAK_fread(&diffusion, 4, 1, file) ||
-		        !PAK_fread(&absorption, 4, 1, file) ||
-		        !PAK_fread(&reflect_volume, 4, 1, file) ||
-		        !PAK_fread(&reflect_delay, 4, 1, file) ||
-		        !PAK_fread(&reverb_volume, 4, 1, file) ||
-		        !PAK_fread(&reverb_delay, 4, 1, file) ||
-		        !PAK_fread(&reverb_decay, 4, 1, file) ||
-		        !PAK_fread(&reverb_hf_decay, 4, 1, file))
-		{
-			PAK_fclose(file);
-			return AAL_ERROR_FILEIO;
-		}
-
+	
+	if(!PAK_fread(&size, 4, 1, file) ||
+	   !PAK_fread(&diffusion, 4, 1, file) ||
+	   !PAK_fread(&absorption, 4, 1, file) ||
+	   !PAK_fread(&reflect_volume, 4, 1, file) ||
+	   !PAK_fread(&reflect_delay, 4, 1, file) ||
+	   !PAK_fread(&reverb_volume, 4, 1, file) ||
+	   !PAK_fread(&reverb_delay, 4, 1, file) ||
+	   !PAK_fread(&reverb_decay, 4, 1, file) ||
+	   !PAK_fread(&reverb_hf_decay, 4, 1, file)) {
 		PAK_fclose(file);
-
-		name = _name;
-
-		return AAL_OK;
+		return AAL_ERROR_FILEIO;
 	}
+	
+	PAK_fclose(file);
+	
+	name = _name;
+	
+	return AAL_OK;
+}
 
 } // namespace audio

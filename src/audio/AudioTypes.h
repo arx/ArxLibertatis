@@ -26,6 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOTYPES_H
 #define ARX_AUDIO_AUDIOTYPES_H
 
+#include <cmath>
+
 #include "platform/Platform.h"
 
 namespace audio {
@@ -90,7 +92,6 @@ namespace audio {
 		AAL_FLAG_FALLOFF         = 0x00000200, // Enable intensity control
 		AAL_FLAG_REVERBERATION   = 0x00000400, // Enable environment reverberation / reflection
 		AAL_FLAG_RELATIVE        = 0x00001000, // Compute position relative to the listener
-		AAL_FLAG_BACKGROUND      = 0x00002000, // Continue playing even if app is in background
 		AAL_FLAG_PRELOAD         = 0x00004000, // Preload sample if not streamed
 		AAL_FLAG_AUTOFREE        = 0x00008000, // Free resource when playing is finished
 		AAL_FLAG_CALLBACK        = 0x00010000, // Enable sample callback management
@@ -105,7 +106,7 @@ namespace audio {
 	
 	// Errors
 	enum aalError {
-		AAL_OK,
+		AAL_OK = 0,
 		AAL_ERROR, // General error
 		AAL_ERROR_INIT, // Not initialized
 		AAL_ERROR_TIMEOUT, // Wait timeout
@@ -134,6 +135,16 @@ namespace audio {
 		// TODO use Vector3f
 		aalFloat x, y, z;
 	};
+	
+	inline aalFloat Distance(const aalVector & from, const aalVector & to) {
+		aalFloat x, y, z;
+
+		x = from.x - to.x;
+		y = from.y - to.y;
+		z = from.z - to.z;
+
+		return aalFloat(sqrt(x * x + y * y + z * z));
+	}
 	
 	// Source cone
 	struct aalCone {

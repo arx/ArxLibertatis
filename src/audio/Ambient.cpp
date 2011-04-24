@@ -36,6 +36,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakManager.h"
 
+#include "platform/String.h"
+
 using namespace std;
 
 namespace audio {
@@ -75,7 +77,7 @@ namespace audio {
 	static void UpdateKeySynch(TrackKey & key);
 	static void KeyPlay(Track & track, TrackKey & key);
 	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data);
-	static void OnAmbianceSampleStop(void *, const aalSLong &, void * data);
+	static void OnAmbianceSampleEnd(void *, const aalSLong &, void * data);
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -92,6 +94,7 @@ namespace audio {
 
 	Ambiance::~Ambiance()
 	{
+		LogDebug << "deleting ambiance " << Logger::nullstr(name);
 		if (track_l)
 		{
 			Track * track = &track_l[track_c];
@@ -125,7 +128,7 @@ namespace audio {
 
 			sample = new Sample;
 
-			if (sample->Load(text))
+			if (sample->load(text))
 			{
 				delete sample;
 				return AAL_ERROR_FILEIO;
@@ -206,7 +209,7 @@ namespace audio {
 
 			sample = new Sample;
 
-			if (sample->Load(text))
+			if (sample->load(text))
 			{
 				delete sample;
 				return AAL_ERROR_FILEIO;
@@ -299,7 +302,7 @@ namespace audio {
 			//Open sample
 			sample = new Sample;
 
-			if (sample->Load(text))
+			if (sample->load(text))
 			{
 				delete sample;
 				return AAL_ERROR_FILEIO;
@@ -413,7 +416,7 @@ namespace audio {
 			//Open sample
 			sample = new Sample;
 
-			if (sample->Load(text))
+			if (sample->load(text))
 			{
 				delete sample;
 				return AAL_ERROR_FILEIO;
@@ -838,7 +841,7 @@ namespace audio {
 				Sample * sample = _sample[s_id];
 				if(!sample->callb_c) {
 					sample->SetCallback(OnAmbianceSampleStart, track, 0, AAL_UNIT_BYTES);
-					sample->SetCallback(OnAmbianceSampleStop, track, sample->length, AAL_UNIT_BYTES);
+					sample->SetCallback(OnAmbianceSampleEnd, track, sample->length, AAL_UNIT_BYTES);
 				}
 			}
 
@@ -1080,8 +1083,7 @@ namespace audio {
 	// Static                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	static void FreeTrack(Track & track)
-	{
+	static void FreeTrack(Track & track) {
 		_sample.Delete(Backend::getSampleId(track.s_id));
 		free(track.name);
 		free(track.key_l);
@@ -1143,65 +1145,64 @@ namespace audio {
 		else key.delay = key.delay_min;
 	}
 
-	static void KeyPlay(Track & track, TrackKey & key) {
+static void KeyPlay(Track & track, TrackKey & key) {
+	
+	Source * source = backend->getSource(track.s_id);
+	if(!source) {
 		
-		Source * source = backend->getSource(track.s_id);
-		if(!source) {
-			
-			Ambiance * ambiance = _amb[track.a_id];
-			aalChannel channel;
-
-			channel.mixer = ambiance->channel.mixer;
-			channel.flags = AAL_FLAG_CALLBACK | AAL_FLAG_VOLUME | AAL_FLAG_PITCH | AAL_FLAG_RELATIVE;
-			channel.flags |= ambiance->channel.flags;
-			channel.volume = key.volume.cur;
-
-			if (ambiance->channel.flags & AAL_FLAG_VOLUME) channel.volume *= ambiance->channel.volume;
-
-			channel.pitch = key.pitch.cur;
-
-			if (track.flags & TRACK_3D)
-			{
-				channel.flags |= AAL_FLAG_POSITION;
-				channel.position.x = key.x.cur;
-				channel.position.y = key.y.cur;
-				channel.position.z = key.z.cur;
-
-				if (ambiance->channel.flags & AAL_FLAG_POSITION)
-					channel.position += ambiance->channel.position;
-
-				channel.flags |= ambiance->channel.flags & AAL_FLAG_REVERBERATION;
-			}
-			else
-			{
-				channel.flags |= AAL_FLAG_PAN;
-				channel.pan = key.pan.cur;
-			}
-			
-			source = backend->createSource(track.s_id, channel);
-			if(!source) {
-				track.s_id = Backend::clearSource(track.s_id);
-				return;
-			}
-			
-			track.s_id = source->getId();
+		Ambiance * ambiance = _amb[track.a_id];
+		aalChannel channel;
+		
+		channel.mixer = ambiance->channel.mixer;
+		channel.flags = AAL_FLAG_CALLBACK | AAL_FLAG_VOLUME | AAL_FLAG_PITCH | AAL_FLAG_RELATIVE;
+		channel.flags |= ambiance->channel.flags;
+		channel.volume = key.volume.cur;
+		
+		if(ambiance->channel.flags & AAL_FLAG_VOLUME) {
+			channel.volume *= ambiance->channel.volume;
 		}
-
-		if (!key.delay_min && !key.delay_max)
-			source->play(key.loopc + 1);
-		else
-			source->play();
-
-		key.n_start = KEY_CONTINUE;
+		
+		channel.pitch = key.pitch.cur;
+		
+		if(track.flags & TRACK_3D) {
+			channel.flags |= AAL_FLAG_POSITION;
+			channel.position.x = key.x.cur;
+			channel.position.y = key.y.cur;
+			channel.position.z = key.z.cur;
+			if(ambiance->channel.flags & AAL_FLAG_POSITION) {
+				channel.position += ambiance->channel.position;
+			}
+			channel.flags |= ambiance->channel.flags & AAL_FLAG_REVERBERATION;
+		} else {
+			channel.flags |= AAL_FLAG_PAN;
+			channel.pan = key.pan.cur;
+		}
+		
+		source = backend->createSource(track.s_id, channel);
+		if(!source) {
+			track.s_id = Backend::clearSource(track.s_id);
+			return;
+		}
+		
+		track.s_id = source->getId();
 	}
+	
+	if(!key.delay_min && !key.delay_max) {
+		source->play(key.loopc + 1);
+	} else {
+		source->play();
+	}
+	
+	key.n_start = KEY_CONTINUE;
+}
 
-	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data)
-	{
+	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data) {
 		Source * instance = (Source *)inst;
 		Track * track = (Track *)data;
+		arx_assert(_amb.IsValid(track->a_id));
 		TrackKey * key = &track->key_l[track->key_i];
 		aalFloat value;
-
+		
 		//aalUBool prefetch_done(AAL_UFALSE);
 		if (track->flags & TRACK_PREFETCHED)
 		{
@@ -1253,9 +1254,10 @@ namespace audio {
 		else instance->setPan(UpdateSetting(key->pan));
 	}
 
-	static void OnAmbianceSampleStop(void *, const aalSLong &, void * data)
-	{
+	static void OnAmbianceSampleEnd(void *, const aalSLong &, void * data) {
+		
 		Track * track = (Track *)data;
+		arx_assert(_amb.IsValid(track->a_id));
 		Ambiance * ambiance = _amb[track->a_id];
 		TrackKey * key = &track->key_l[track->key_i];
 

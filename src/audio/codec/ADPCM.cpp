@@ -168,7 +168,7 @@ namespace audio {
 
 		aalULong i = (_position >> shift) / header->wSamplesPerBlock;
 
-		if (PAK_fseek(stream, i * header->wfx.nBlockAlign, SEEK_CUR))
+		if (PAK_fseek(stream, i * header->wfx.nBlockAlign, SEEK_CUR) == -1)
 			return AAL_ERROR_FILEIO;
 
 		i = _position - i * (header->wSamplesPerBlock << shift);

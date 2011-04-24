@@ -23,7 +23,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-
 #include "audio/dsound/DSoundBackend.h"
 
 #include <windows.h>

@@ -128,6 +128,7 @@ if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
 	force_recheck_library(ZLIB)
 	force_recheck_library(Freetype)
 	force_recheck_library(Threads)
+	force_recheck_library(OpenAL)
 	set(LAST_ARX_FORCE_32BIT ${ARX_FORCE_32BIT} CACHE INTERNAL "The last ARX_FORCE_32BIT value")
 endif()
 
@@ -138,6 +139,7 @@ find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
+find_package(OpenAL 1.12 REQUIRED)
 find_package(Doxygen)
 find_package(PythonInterp)
 
@@ -149,7 +151,7 @@ mark_as_advanced(IL_LIBRARIES)
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
-include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 
 if(MSVC)
 	# Set optimal options for msvc:
@@ -202,6 +204,7 @@ else(MSVC)
 	check_link_library(DevIL IL_LIBRARIES IL)
 	check_link_library(ZLIB ZLIB_LIBRARIES)
 	check_link_library(Freetype FREETYPE_LIBRARIES)
+	check_link_library(OpenAL OPENAL_LIBRARY)
 	
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
@@ -267,8 +270,7 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 #link
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
-set(ARX_SOUND_LIBS dsound)
-target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS})
+target_link_libraries(arx ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS} ${OPENAL_LIBRARY})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core

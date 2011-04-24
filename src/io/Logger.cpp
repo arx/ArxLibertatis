@@ -20,7 +20,6 @@ const LogSetting blackList[] = {
 	{ "FTL.cpp", Logger::Warning },
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "Filesystem.cpp", Logger::Fatal },
-	{ "Audio.cpp", Logger::Error },
 	{ "Object.cpp", Logger::Warning },
 	{ "Speech.cpp", Logger::Error },
 	{ "IO.cpp", Logger::Debug },

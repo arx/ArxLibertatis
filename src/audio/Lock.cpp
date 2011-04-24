@@ -6,6 +6,8 @@
 #include <time.h>
 #include <errno.h>
 
+#include "io/Logger.h"
+
 Lock::Lock() : locked(false) {
 	const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
 	mutex = mutex_init;
@@ -24,13 +26,14 @@ bool Lock::lock(long timeout) {
 	if(locked) {
 		struct timespec time;
 		clock_gettime(CLOCK_REALTIME, &time);
-		time.tv_nsec += timeout * 1000;
+		time.tv_sec += timeout;
 		int rc;
 		do {
 			rc = pthread_cond_timedwait(&cond, &mutex, &time);
 		} while(rc == 0 && locked);
 		if(rc == ETIMEDOUT) {
 			pthread_mutex_unlock(&mutex);
+			LogWarning << "lock timeout " << timeout << " " << time.tv_nsec;
 			return false;
 		}
 	}

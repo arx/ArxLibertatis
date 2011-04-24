@@ -1471,7 +1471,7 @@ int main(int, char**)
 
 	LogDebug << "Sound Init";
 	if (Project.soundmode != 0 && ARX_SOUND_INIT)
-		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
+		ARX_SOUND_Init();
 
 	LogInfo << "Sound Init Success";
 	LogDebug << "DInput Init";

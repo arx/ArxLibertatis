@@ -99,4 +99,117 @@ inline unsigned long ARXTimeUL() {
 	return static_cast<unsigned long>(ARXTime);
 }
 
+
+namespace Time
+{
+	/**
+	 * Suspends the execution of the current thread.
+	 * @param sleepMs The time interval for which execution is to be suspended, in milliseconds.
+	 **/
+	inline void SleepMs(u32 sleepMs);
+
+	/**
+	 * Get the number of milliseconds elapsed since some unspecified starting point.
+	 * @return The number of milliseconds elapsed.
+	 **/
+	inline u32 GetMs();
+
+	/**
+	 * Get the number of microseconds elapsed since some unspecified starting point.
+	 * @return The number of microseconds elapsed.
+	 **/
+	inline u64 GetUs();
+
+	/**
+	 * Get the number of milliseconds elapsed between now and the specified time, handling wrap around correctly.
+	 * @param startMs Start time in milliseconds.
+	 * @return The number of milliseconds elapsed between now and startMs.
+	 **/
+	inline u32 GetElapsedMs(u32 startMs);
+
+	/**
+	 * Get the number of milliseconds elapsed between two point in time, handling wrap around correctly.
+	 * @param startMs Start time in milliseconds.
+	 * @param endMs End time in milliseconds.
+	 * @return The number of milliseconds elapsed between the specified time range.
+	 **/
+	inline u32 GetElapsedMs(u32 startMs, u32 endMs);
+
+	/**
+	 * Get the number of microseconds elapsed between now and the specified time, handling wrap around correctly.
+	 * @param startUs Start time in microseconds.
+	 * @return The number of microseconds elapsed between now and startUs.
+	 **/
+	inline u64 GetElapsedUs(u64 startUs);
+
+	/**
+	 * Get the number of microseconds elapsed between two point in time, handling wrap around correctly.
+	 * @param startUs Start time in microseconds.
+	 * @param endUs End time in microseconds.
+	 * @return The number of microseconds elapsed between the specified time range.
+	 **/
+	inline u64 GetElapsedUs(u64 startUs, u64 endUs);
+
+	//-------------------------------------------------------------------------
+
+#if ARX_PLATFORM == ARX_PLATFORM_LINUX
+	inline void SleepMs(u32 sleepMs) {
+		int ret = usleep(sleepMs*1000);
+		arx_assert_msg(ret == 0, "usleep failed");
+		ARX_UNUSED(ret);
+	}
+
+	inline u32 GetMs() {
+		struct timespec ts;
+		clock_gettime(CLOCK_MONOTONIC, &ts);
+		return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
+	}
+	
+	inline u64 GetUs() {
+		struct timespec ts;
+		clock_gettime(CLOCK_MONOTONIC, &ts);
+		return ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
+	}
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+	inline void SleepMs(u32 sleepMs) {
+		Sleep(sleepMs);
+	}
+
+    extern const u64 FREQUENCY_HZ;
+	inline u32 GetMs() {
+		LARGE_INTEGER counter;
+		QueryPerformanceCounter(&counter);
+		u32 valMs = (counter.QuadPart * 10) / (FREQUENCY_HZ / 100);		// Ugly trick to avoid losing precision...
+		return valMs;
+	}
+	
+	inline u64 GetUs() {
+		LARGE_INTEGER counter;
+		QueryPerformanceCounter(&counter);
+		u32 valUs = (counter.QuadPart * 1000) / (FREQUENCY_HZ / 1000);	// Ugly trick to avoid losing precision...
+		return valUs;
+	}
+#endif
+
+	inline u32 GetElapsedMs(u32 startMs) {
+		return GetElapsedMs(startMs, GetMs());
+	}
+	
+	inline u32 GetElapsedMs(u32 startMs, u32 endMs) {
+		return (u32)(((u64)endMs - (u64)startMs) & ULONG_MAX);
+	}
+
+	inline u64 GetElapsedUs(u64 startUs) {
+		return GetElapsedUs(startUs, GetUs());
+	}
+	
+	inline u64 GetElapsedUs(u64 startUs, u64 endUs) {
+		if (endUs >= startUs)
+            return endUs - startUs;
+        else
+            return (ULLONG_MAX - startUs) + endUs + 1;
+	}
+}
+
+
 #endif // ARX_CORE_TIME_H

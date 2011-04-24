@@ -333,7 +333,7 @@ void ARX_SOUND_PreloadAll();
 extern std::string pStringModSfx;
 extern std::string pStringModSpeech;
 
-long ARX_SOUND_Init(HWND hwnd)
+long ARX_SOUND_Init()
 {
 	if (bIsActive) ARX_SOUND_Release();
 
@@ -665,7 +665,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 
 	string file_name = "speech\\" + Project.localisationpath + "\\" + name + ".wav";
 
-	sample_id = aalCreateSample(file_name.c_str());
+	sample_id = aalCreateSample(file_name);
 
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = AAL_FLAG_VOLUME | AAL_FLAG_POSITION | AAL_FLAG_REVERBERATION | AAL_FLAG_AUTOFREE | AAL_FLAG_FALLOFF;
@@ -842,7 +842,7 @@ long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float
 	aalChannel channel;
 	s32 sample_id;
 
-	sample_id = aalCreateSample(name.c_str());
+	sample_id = aalCreateSample(name);
 
 	if (sample_id == AAL_SFALSE) return AAL_SFALSE;
 
@@ -926,7 +926,7 @@ long ARX_SOUND_PlayCinematic(const string & name) {
 	s32 sample_id;
 	aalChannel channel;
 
-	sample_id = aalCreateSample(name.c_str());
+	sample_id = aalCreateSample(name);
 
 	if(sample_id == AAL_SFALSE) {
 		LogError << "cannot load sound for cinematic: " << name;
@@ -1036,7 +1036,7 @@ ArxSound ARX_SOUND_Load(const string & name) {
 
 	string sample_name = name + ARX_SOUND_FILE_EXTENSION_WAV;
 
-	return aalCreateSample(sample_name.c_str());
+	return aalCreateSample(sample_name);
 }
 
 void ARX_SOUND_Free(const ArxSound & sample)
@@ -1274,6 +1274,7 @@ void ARX_SOUND_PopAnimSamples()
 
 					if (number == numbers[curelem]) 
 					{
+						arx_assert(elems[curelem] != NULL);
 						anim->frames[k].sample = aalCreateSample(elems[curelem++]);
 					}
 				}
