@@ -51,19 +51,16 @@ namespace audio {
 			ChunkFile(PakFileHandle * file);
 			~ChunkFile();
 			//I/O
-			aalSBool Read(void *, const aalULong &);
-			aalSBool Skip(const aalULong &);
-			aalSBool Find(const char *);
-			aalSBool Check(const char *);
-			aalULong Size()
-			{
-				return offset;
-			};
-			aalSBool Restart();
+			bool Read(void *, size_t);
+			bool Skip(size_t);
+			bool Find(const char *);
+			bool Check(const char *);
+			inline size_t Size() { return offset; };
+			bool Restart();
 		private:
 			//Data
 			PakFileHandle * file;
-			aalULong offset;
+			size_t offset;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -111,16 +108,16 @@ namespace audio {
 		ChunkFile wave(stream);
 
 		// Check for 'RIFF' chunk id and skip file size
-		if(wave.Check("RIFF") ||
-		        wave.Skip(4) ||
-		        wave.Check("WAVE") ||
-		        wave.Find("fmt ") ||
-		        wave.Read(&AS_FORMAT_PCM(format)->wFormatTag, 2) ||
-		        wave.Read(&AS_FORMAT_PCM(format)->nChannels, 2) ||
-		        wave.Read(&AS_FORMAT_PCM(format)->nSamplesPerSec, 4) ||
-		        wave.Read(&AS_FORMAT_PCM(format)->nAvgBytesPerSec, 4) ||
-		        wave.Read(&AS_FORMAT_PCM(format)->nBlockAlign, 2) ||
-		        wave.Read(&AS_FORMAT_PCM(format)->wBitsPerSample, 2)) {
+		if(!wave.Check("RIFF") ||
+		        !wave.Skip(4) ||
+		        !wave.Check("WAVE") ||
+		        !wave.Find("fmt ") ||
+		        !wave.Read(&AS_FORMAT_PCM(format)->wFormatTag, 2) ||
+		        !wave.Read(&AS_FORMAT_PCM(format)->nChannels, 2) ||
+		        !wave.Read(&AS_FORMAT_PCM(format)->nSamplesPerSec, 4) ||
+		        !wave.Read(&AS_FORMAT_PCM(format)->nAvgBytesPerSec, 4) ||
+		        !wave.Read(&AS_FORMAT_PCM(format)->nBlockAlign, 2) ||
+		        !wave.Read(&AS_FORMAT_PCM(format)->wBitsPerSample, 2)) {
 			return AAL_ERROR_FORMAT;
 		}
 
@@ -130,7 +127,7 @@ namespace audio {
 			void * ptr;
 
 			//Load extra bytes from header
-			if (wave.Read(&AS_FORMAT_PCM(format)->cbSize, 2)) return AAL_ERROR_FORMAT;
+			if (!wave.Read(&AS_FORMAT_PCM(format)->cbSize, 2)) return AAL_ERROR_FORMAT;
 
 			ptr = realloc(format, sizeof(WAVEFORMATEX) + AS_FORMAT_PCM(format)->cbSize);
 
@@ -162,7 +159,7 @@ namespace audio {
 		wave.Restart();
 		wave.Skip(12);
 
-		if (wave.Find("data")) return AAL_ERROR_FORMAT;
+		if (!wave.Find("data")) return AAL_ERROR_FORMAT;
 
 		size = wave.Size();
 
@@ -183,17 +180,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError StreamWAV::SetFormat(const aalFormat &)
-	{
-		return AAL_ERROR;
-	}
-
-	aalError StreamWAV::SetLength(const aalULong &)
-	{
-		return AAL_ERROR;
-	}
-
-	aalError StreamWAV::SetPosition(const aalULong & position)
+	aalError StreamWAV::SetPosition(size_t position)
 	{
 		if (position >= outsize) return AAL_ERROR_FILEIO;
 
@@ -217,7 +204,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError StreamWAV::GetFormat(aalFormat & _format)
+	aalError StreamWAV::GetFormat(PCMFormat & _format)
 	{
 		_format.frequency = AS_FORMAT_PCM(format)->nSamplesPerSec;
 		_format.channels = AS_FORMAT_PCM(format)->nChannels;
@@ -235,14 +222,14 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError StreamWAV::GetLength(aalULong & _length)
+	aalError StreamWAV::GetLength(size_t & _length)
 	{
 		_length = outsize;
 
 		return AAL_OK;
 	}
 
-	aalError StreamWAV::GetPosition(aalULong & _position)
+	aalError StreamWAV::GetPosition(size_t & _position)
 	{
 		return codec->GetPosition(_position);
 	}
@@ -252,13 +239,13 @@ namespace audio {
 	// I/O                                                                       //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError StreamWAV::Read(void * buffer, const aalULong & to_read, aalULong & _read)
+	aalError StreamWAV::Read(void * buffer, size_t to_read, size_t & _read)
 	{
 		_read = 0;
 
 		if (cursor >= outsize) return AAL_OK;
 
-		aalULong count(cursor + to_read > outsize ? outsize - cursor : to_read);
+		size_t count(cursor + to_read > outsize ? outsize - cursor : to_read);
 
 		aalError error;
 
@@ -269,13 +256,6 @@ namespace audio {
 		cursor += _read;
 
 		return AAL_OK;
-	}
-
-	aalError StreamWAV::Write(void *, const aalULong &, aalULong & write)
-	{
-		write = 0;
-
-		return AAL_ERROR;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -298,64 +278,66 @@ namespace audio {
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	// Read!                                                                     //
-	aalSBool ChunkFile::Read(void * buffer, const aalULong & size)
+	bool ChunkFile::Read(void * buffer, size_t size)
 	{
-		if (PAK_fread(buffer, 1, size, file) != size) return AAL_SFALSE;
+		if (PAK_fread(buffer, 1, size, file) != size) return false;
 
 		if (offset) offset -= size;
 
-		return AAL_STRUE;
+		return true;
 	}
 
 	// Skip!                                                                     //
-	aalSBool ChunkFile::Skip(const aalULong & size)
+	bool ChunkFile::Skip(size_t size)
 	{
-		if (PAK_fseek(file, size, SEEK_CUR) == -1) return AAL_SFALSE;
+		if (PAK_fseek(file, size, SEEK_CUR) == -1) return false;
 
 		if (offset) offset -= size;
 
-		return AAL_STRUE;
+		return true;
 	}
 
 	// Return AAL_OK if chunk is found                                        //
-	aalSBool ChunkFile::Find(const char * id)
+	bool ChunkFile::Find(const char * id)
 	{
-		aalUByte cc[4];
+		u8 cc[4];
 
 		PAK_fseek(file, offset, SEEK_CUR);
 
 		while (PAK_fread(cc, 4, 1, file))
 		{
-			if (!PAK_fread(&offset, 4, 1, file)) return AAL_SFALSE;
+			u32 _offset;
+			if (!PAK_fread(&_offset, 4, 1, file)) return false;
+			offset = _offset;
 
-			if (!memcmp(cc, id, 4)) return AAL_STRUE;
+			if (!memcmp(cc, id, 4)) return true;
 
-			if (PAK_fseek(file, offset, SEEK_CUR) == -1) return AAL_SFALSE;
+			if (PAK_fseek(file, offset, SEEK_CUR) == -1) return false;
 		}
 
-		return AAL_SFALSE;
+		return false;
 	}
 
 	// Return AAL_OK if next four bytes = chunk id;                          //
-	aalSBool ChunkFile::Check(const char * id)
+	bool ChunkFile::Check(const char * id)
 	{
-		aalUByte cc[4];
+		u8 cc[4];
 
-		if (!PAK_fread(cc, 4, 1, file)) return AAL_SFALSE;
+		if (!PAK_fread(cc, 4, 1, file)) return false;
 
-		if (memcmp(cc, id, 4)) return AAL_SFALSE;
+		if (memcmp(cc, id, 4)) return false;
 
 		if (offset) offset -= 4;
 
-		return AAL_STRUE;
+		return true;
 	}
 
-	aalSBool ChunkFile::Restart()
+	bool ChunkFile::Restart()
 	{
 		offset = 0;
 
-		if (PAK_fseek(file, 0, SEEK_SET) == -1) return AAL_SFALSE;
+		if (PAK_fseek(file, 0, SEEK_SET) == -1) return false;
 
-		return AAL_STRUE;
+		return true;
 	}
 } // namespace audio

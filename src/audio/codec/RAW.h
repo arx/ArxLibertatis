@@ -43,22 +43,21 @@ namespace audio {
 		// Setup
 		aalError SetHeader(void * header);
 		aalError SetStream(PakFileHandle * stream);
-		aalError SetPosition(const aalULong & position);
+		aalError SetPosition(size_t position);
 		
 		// Status
 		aalError GetHeader(void *& header);
 		aalError GetStream(PakFileHandle *& stream);
-		aalError GetPosition(aalULong & position);
+		aalError GetPosition(size_t & position);
 		
 		// File I/O
-		aalError Read(void * buffer, const aalULong & to_read, aalULong & read);
-		aalError Write(void * buffer, const aalULong & to_write, aalULong & write);
+		aalError Read(void * buffer, size_t to_read, size_t & read);
 		
 	private:
 		
 		void * header;
 		PakFileHandle * stream;
-		aalULong cursor;
+		size_t cursor;
 		
 	};
 	

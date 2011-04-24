@@ -46,40 +46,39 @@ namespace audio {
 		// Setup
 		aalError SetHeader(void * header);
 		aalError SetStream(PakFileHandle * stream);
-		aalError SetPosition(const aalULong & position);
+		aalError SetPosition(size_t position);
 		
 		// Status
 		aalError GetHeader(void *& header);
 		aalError GetStream(PakFileHandle *& stream);
-		aalError GetPosition(aalULong & position);
+		aalError GetPosition(size_t & position);
 		
 		// File I/O
-		aalError Read(void * buffer, const aalULong & to_read, aalULong & read);
-		aalError Write(void * buffer, const aalULong & to_write, aalULong & write);
+		aalError Read(void * buffer, size_t to_read, size_t & read);
 		
 	private:
 		
-		void GetSample(const aalULong & channel_i, aalSByte nybble);
+		void GetSample(size_t channel_i, s8 nybble);
 		aalError GetNextBlock();
 		
 		PakFileHandle * stream;
 		ADPCMWAVEFORMAT * header;
-		aalULong padding;
-		aalULong shift;
-		aalULong sample_i;
+		u32 padding;
+		u32 shift;
+		u32 sample_i;
 		char * predictor;
-		aalSWord * delta;
-		aalSWord * samp1;
-		aalSWord * samp2;
-		aalSWord * coef1;
-		aalSWord * coef2;
-		aalSByte * nybble_l;
-		aalULong nybble_c, nybble_i;
-		aalSByte nybble;
-		aalUByte odd;
-		aalUByte cache_c, cache_i;
+		s16 * delta;
+		s16 * samp1;
+		s16 * samp2;
+		s16 * coef1;
+		s16 * coef2;
+		s8 * nybble_l;
+		u32 nybble_c, nybble_i;
+		s8 nybble;
+		bool odd;
+		u8 cache_c, cache_i;
 		void * cache_l;
-		aalULong cursor;
+		size_t cursor;
 		
 	};
 

@@ -42,7 +42,7 @@ public:
 	struct Callback {
 		aalSampleCallback func;
 		void * data;
-		aalULong time;
+		size_t time;
 	};
 	
 	Sample(const std::string & name);
@@ -52,11 +52,11 @@ public:
 	aalError load();
 	
 	// Setup
-	aalError setCallback(aalSampleCallback func, void * data, aalULong time, aalUnit unit = AAL_UNIT_MS);
+	aalError setCallback(aalSampleCallback func, void * data, size_t time, TimeUnit unit = UNIT_MS);
 	
 	inline const std::string & getName() const { return name; }
-	inline aalULong getLength() const { return length; }
-	inline const aalFormat & getFormat() const { return format; }
+	inline size_t getLength() const { return length; }
+	inline const PCMFormat & getFormat() const { return format; }
 	inline size_t getCallbackCount() const { return callbacks.size(); }
 	inline const Callback & getCallback(size_t i) const { return callbacks[i]; }
 	
@@ -64,8 +64,8 @@ public:
 private:
 	
 	std::string name;
-	aalULong length;
-	aalFormat format;
+	size_t length;
+	PCMFormat format;
 	
 	// TODO why is this in Sample?
 	std::vector<Callback> callbacks; // User callback list

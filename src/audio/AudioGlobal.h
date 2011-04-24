@@ -45,12 +45,8 @@ namespace audio {
 	
 	// Internal globals
 	
-	const aalULong FLAG_ANY_3D_FX(AAL_FLAG_POSITION |
-	                              AAL_FLAG_VELOCITY |
-	                              AAL_FLAG_DIRECTION |
-	                              AAL_FLAG_CONE |
-	                              AAL_FLAG_FALLOFF |
-	                              AAL_FLAG_REVERBERATION);
+	const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY | FLAG_DIRECTION |
+	                                    FLAG_CONE | FLAG_FALLOFF | FLAG_REVERBERATION;
 	
 	// Audio device interface
 	extern Backend * backend;
@@ -59,8 +55,8 @@ namespace audio {
 	extern std::string sample_path;
 	extern std::string ambiance_path;
 	extern std::string environment_path;
-	extern aalULong stream_limit_bytes;
-	extern aalULong session_time;
+	extern size_t stream_limit_bytes;
+	extern size_t session_time;
 	
 	// Resources
 	extern ResourceList<Mixer> _mixer;
@@ -71,41 +67,19 @@ namespace audio {
 	// Internal functions
 	
 	// Random number generator
-	aalULong Random();
-	aalFloat FRandom();
-	aalULong InitSeed();
+	size_t Random();
+	float FRandom();
+	size_t InitSeed();
 	
 	// Conversion
-	aalULong UnitsToBytes(const aalULong & v, const aalFormat & format, const aalUnit & unit = AAL_UNIT_MS);
-	aalULong BytesToUnits(const aalULong & v, const aalFormat & format, const aalUnit & unit = AAL_UNIT_MS);
+	size_t UnitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
+	size_t BytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
 	
-	inline aalFloat LinearToLogVolume(const aalFloat & volume) {
+	inline float LinearToLogVolume(float volume) {
 		return 0.2F * (float)log10(volume) + 1.0F;
 	}
 	
-	// Vector operators
-	inline aalVector & operator+=(aalVector & dst, const aalVector & src) {
-		dst.x += src.x;
-		dst.y += src.y;
-		dst.z += src.z;
-		return dst;
-	}
-	
-	inline aalVector & operator*=(aalVector & dst, const aalVector & src) {
-		dst.x *= src.x;
-		dst.y *= src.y;
-		dst.z *= src.z;
-		return dst;
-	}
-	
-	inline aalVector & operator*=(aalVector & dst, const aalFloat & factor) {
-		dst.x *= factor;
-		dst.y *= factor;
-		dst.z *= factor;
-		return dst;
-	}
-	
-	static inline float clamp(float v, float min, float max) {
+	inline float clamp(float v, float min, float max) {
 		return std::min(max, std::max(min, v));
 	}
 	

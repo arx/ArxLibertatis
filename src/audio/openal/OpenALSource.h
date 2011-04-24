@@ -45,25 +45,25 @@ public:
 	~OpenALSource();
 	
 	// Setup
-	aalError init(aalSLong id, const aalChannel & channel);
-	aalError init(aalSLong id, OpenALSource * instance, const aalChannel & channel);
+	aalError init(SourceId id, const Channel & channel);
+	aalError init(SourceId id, OpenALSource * instance, const Channel & channel);
 	
 	aalError setVolume(float volume);
 	aalError setPitch(float pitch);
 	aalError setPan(float pan);
 	
-	aalError setPosition(const aalVector & position);
-	aalError setVelocity(const aalVector & velocity);
-	aalError setDirection(const aalVector & direction);
-	aalError setCone(const aalCone & cone);
-	aalError setFalloff(const aalFalloff & falloff);
-	aalError setMixer(aalSLong mixer);
-	aalError setEnvironment(aalSLong environment);
+	aalError setPosition(const Vector3f & position);
+	aalError setVelocity(const Vector3f & velocity);
+	aalError setDirection(const Vector3f & direction);
+	aalError setCone(const SourceCone & cone);
+	aalError setFalloff(const SourceFalloff & falloff);
+	aalError setMixer(MixerId mixer);
+	aalError setEnvironment(EnvId environment);
 	
 	//Status
-	aalError getPosition(aalVector & position) const;
-	aalError getFalloff(aalFalloff & falloff) const;
-	aalULong getTime(aalUnit unit = AAL_UNIT_MS) const;
+	aalError getPosition(Vector3f & position) const;
+	aalError getFalloff(SourceFalloff & falloff) const;
+	size_t getTime(TimeUnit unit = UNIT_MS) const;
 	
 	// Control
 	aalError play(unsigned playCount = 1);
@@ -115,12 +115,12 @@ private:
 	 * In that case, written will hold the amount ob bytes already loaded.
 	 */
 	bool streaming;
-	aalULong loadCount;
+	unsigned loadCount;
 	size_t written; // Streaming status
 	Stream * stream;
 	
-	aalULong time; // Elapsed 'time'
-	aalULong read;
+	size_t time; // Elapsed 'time'
+	size_t read;
 	size_t callb_i; // Next callback index
 	
 	ALuint source;

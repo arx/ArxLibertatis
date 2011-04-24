@@ -41,16 +41,15 @@ namespace audio {
 		// Setup
 		virtual aalError SetHeader(void * header) = 0;
 		virtual aalError SetStream(PakFileHandle * stream) = 0;
-		virtual aalError SetPosition(const aalULong & position) = 0;
+		virtual aalError SetPosition(size_t position) = 0;
 		
 		// Status
 		virtual aalError GetHeader(void *& header) = 0;
 		virtual aalError GetStream(PakFileHandle *& stream) = 0;
-		virtual aalError GetPosition(aalULong & position) = 0;
+		virtual aalError GetPosition(size_t & position) = 0;
 		
 		// File I/O
-		virtual aalError Read(void * buffer, const aalULong & to_read, aalULong & read) = 0;
-		virtual aalError Write(void * buffer, const aalULong & to_write, aalULong & write) = 0;
+		virtual aalError Read(void * buffer, size_t to_read, size_t & read) = 0;
 		
 	};
 	

@@ -56,8 +56,8 @@ namespace {
 		aalKeySettingFlag flags; // A set of KeySettingFlag
 		float min, max; // Min and max setting values
 		float from, to, cur; // Current min and max values
-		aalULong interval; // Interval between updates (On Start = 0)
-		aalSLong tupdate; // Last update time
+		unsigned interval; // Interval between updates (On Start = 0)
+		int tupdate; // Last update time
 		
 		KeySetting() : flags(AAL_KEY_SETTING_UNKNOEN),
 		               min(0), max(0), from(0), to(0), cur(0), interval(0), tupdate(0) { }
@@ -89,14 +89,14 @@ namespace {
 			to = max;
 		}
 		
-		float update(aalSLong timez = 0) {
+		float update(signed timez = 0) {
 			
 			if(min == max) {
 				return cur;
 			}
 			
-			aalSLong elapsed(timez - tupdate);
-			if(elapsed >= aalSLong(interval)) {
+			signed elapsed = timez - tupdate;
+			if(elapsed >= (signed)interval) {
 				elapsed = 0;
 				tupdate += interval;
 				if(flags == AAL_KEY_SETTING_FLAG_RANDOM) {
@@ -123,11 +123,11 @@ namespace {
 	
 	struct TrackKey {
 		
-		aalULong start; // Start time (after last key)
-		u32 n_start; // Next time to play sample (when delayed)
-		u32 loop, loopc; // Loop count
-		u32 delay_min, delay_max; // Min and max delay before each sample loop
-		u32 delay; // Current delay
+		size_t start; // Start time (after last key)
+		size_t n_start; // Next time to play sample (when delayed)
+		size_t loop, loopc; // Loop count
+		unsigned delay_min, delay_max; // Min and max delay before each sample loop
+		unsigned delay; // Current delay
 		KeySetting volume; // Volume settings
 		KeySetting pitch; // Pitch settings
 		KeySetting pan; // Pan settings
@@ -184,7 +184,7 @@ enum aalAmbianceFlag {
 DECLARE_FLAGS(aalAmbianceFlag, aalAmbianceFlags)
 DECLARE_FLAGS_OPERATORS(aalAmbianceFlags)
 
-static const aalULong KEY_CONTINUE = 0xffffffff;
+static const size_t KEY_CONTINUE = (size_t)-1;
 
 struct Ambiance::Track {
 	
@@ -198,16 +198,16 @@ struct Ambiance::Track {
 	};
 	DECLARE_FLAGS(Flag, TrackFlags)
 	
-	aalSLong s_id; // Sample id
-	aalSLong a_id; // Ambiance id
+	SourceId s_id; // Sample id
+	AmbianceId a_id; // Ambiance id
 	
 	std::string name; // Track name (if NULL use sample name instead)
 	
 	TrackFlags flags;
-	aalULong key_c, key_i; // Key count and current index
+	size_t key_c, key_i; // Key count and current index
 	TrackKey * key_l; // Key list
 	
-	Track() : s_id(AAL_SFALSE), a_id(AAL_SFALSE), flags(0), key_c(0), key_i(0), key_l(NULL) {
+	Track() : s_id(INVALID_ID), a_id(INVALID_ID), flags(0), key_c(0), key_i(0), key_l(NULL) {
 	}
 	
 	~Track() {
@@ -221,30 +221,30 @@ struct Ambiance::Track {
 		if(!source) {
 			
 			Ambiance * ambiance = _amb[a_id];
-			aalChannel channel;
+			Channel channel;
 			
 			channel.mixer = ambiance->channel.mixer;
-			channel.flags = AAL_FLAG_CALLBACK | AAL_FLAG_VOLUME | AAL_FLAG_PITCH | AAL_FLAG_RELATIVE;
+			channel.flags = FLAG_CALLBACK | FLAG_VOLUME | FLAG_PITCH | FLAG_RELATIVE;
 			channel.flags |= ambiance->channel.flags;
 			channel.volume = key.volume.cur;
 			
-			if(ambiance->channel.flags & AAL_FLAG_VOLUME) {
+			if(ambiance->channel.flags & FLAG_VOLUME) {
 				channel.volume *= ambiance->channel.volume;
 			}
 			
 			channel.pitch = key.pitch.cur;
 			
 			if(flags & POSITION) {
-				channel.flags |= AAL_FLAG_POSITION;
+				channel.flags |= FLAG_POSITION;
 				channel.position.x = key.x.cur;
 				channel.position.y = key.y.cur;
 				channel.position.z = key.z.cur;
-				if(ambiance->channel.flags & AAL_FLAG_POSITION) {
+				if(ambiance->channel.flags & FLAG_POSITION) {
 					channel.position += ambiance->channel.position;
 				}
-				channel.flags |= ambiance->channel.flags & AAL_FLAG_REVERBERATION;
+				channel.flags |= ambiance->channel.flags & FLAG_REVERBERATION;
 			} else {
-				channel.flags |= AAL_FLAG_PAN;
+				channel.flags |= FLAG_PAN;
 				channel.pan = key.pan.cur;
 			}
 			
@@ -269,13 +269,13 @@ struct Ambiance::Track {
 };
 DECLARE_FLAGS_OPERATORS(Ambiance::Track::TrackFlags)
 
-static const aalULong AMBIANCE_FILE_SIGNATURE(0x424d4147); //'GAMB'
-static const aalULong AMBIANCE_FILE_VERSION_1001(0x01000001); // y
-static const aalULong AMBIANCE_FILE_VERSION_1002(0x01000002); // y
-static const aalULong AMBIANCE_FILE_VERSION_1003(0x01000003); // y
-static const aalULong AMBIANCE_FILE_VERSION(AMBIANCE_FILE_VERSION_1003);
+static const u32 AMBIANCE_FILE_SIGNATURE = 0x424d4147; //'GAMB'
+static const u32 AMBIANCE_FILE_VERSION_1001 = 0x01000001; // y
+static const u32 AMBIANCE_FILE_VERSION_1002 = 0x01000002; // y
+static const u32 AMBIANCE_FILE_VERSION_1003 = 0x01000003; // y
+static const u32 AMBIANCE_FILE_VERSION = AMBIANCE_FILE_VERSION_1003;
 
-static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data);
+static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data);
 
 Ambiance::Ambiance(const string & _name) :
 	status(Idle), loop(false), fade(None), start(0), time(0),
@@ -291,10 +291,10 @@ Ambiance::~Ambiance() {
 	}
 }
 
-static aalSLong _loadSample(PakFileHandle * file) {
+static SampleId _loadSample(PakFileHandle * file) {
 	
 	char text[256];
-	aalULong k = 0;
+	size_t k = 0;
 	do {
 		if(!PAK_fread(&text[k], 1, 1, file)) {
 			return AAL_ERROR_FILEIO;
@@ -302,16 +302,12 @@ static aalSLong _loadSample(PakFileHandle * file) {
 	} while (text[k++]);
 	
 	Sample * sample = new Sample(text);
-	if(sample->load()) {
+	SampleId id = INVALID_ID;
+	if(sample->load() || (id = _sample.Add(sample)) == INVALID_ID) {
 		delete sample;
-		return AAL_SFALSE;
+	} else {
+		sample->Catch();
 	}
-	aalSLong id;
-	if((id = _sample.Add(sample)) == AAL_SFALSE) {
-		delete sample;
-		return AAL_SFALSE;
-	}
-	sample->Catch();
 	return id;
 }
 
@@ -321,7 +317,7 @@ static aalError _LoadAmbiance_1001(PakFileHandle * file, size_t track_c, Ambianc
 		Ambiance::Track * track = &track_l[i];
 		
 		// Get track sample name
-		if((track->s_id = _loadSample(file)) == AAL_SFALSE) {
+		if((track->s_id = _loadSample(file)) == INVALID_ID) {
 			return AAL_ERROR_FILEIO;
 		}
 		
@@ -343,7 +339,7 @@ static aalError _LoadAmbiance_1001(PakFileHandle * file, size_t track_c, Ambianc
 		}
 		
 		//Read settings for each key
-		for(aalULong j = 0; j < track->key_c; j++) {
+		for(size_t j = 0; j < track->key_c; j++) {
 			if(!track->key_l[j].load(file)) {
 				return AAL_ERROR_FILEIO;
 			}
@@ -355,16 +351,16 @@ static aalError _LoadAmbiance_1001(PakFileHandle * file, size_t track_c, Ambianc
 
 static aalError _LoadAmbiance_1002(PakFileHandle * file, size_t track_c, Ambiance::Track * track_l) {
 	
-	for(aalULong i = 0; i < track_c; i++) {
+	for(size_t i = 0; i < track_c; i++) {
 		Ambiance::Track * track = &track_l[i];
 		
 		//Get track sample name
-		if((track->s_id = _loadSample(file)) == AAL_SFALSE) {
+		if((track->s_id = _loadSample(file)) == INVALID_ID) {
 			return AAL_ERROR_FILEIO;
 		}
 		
 		//Get track name (!= sample name)
-		aalULong k = 0;
+		size_t k = 0;
 		char text[256];
 		do {
 			if(!PAK_fread(&text[k], 1, 1, file)) return AAL_ERROR_FILEIO;
@@ -392,7 +388,7 @@ static aalError _LoadAmbiance_1002(PakFileHandle * file, size_t track_c, Ambianc
 		}
 		
 		//Read settings for each key
-		for(aalULong j = 0; j < track->key_c; j++) {
+		for(size_t j = 0; j < track->key_c; j++) {
 			if(!track->key_l[j].load(file)) {
 				return AAL_ERROR_FILEIO;
 			}
@@ -410,12 +406,12 @@ static aalError _LoadAmbiance_1003(PakFileHandle * file, size_t track_c, Ambianc
 		--track;
 		
 		//Get track sample name
-		if((track->s_id = _loadSample(file)) == AAL_SFALSE) {
+		if((track->s_id = _loadSample(file)) == INVALID_ID) {
 			return AAL_ERROR_FILEIO;
 		}
 		
 		//Get track name (!= sample name)
-		aalULong k = 0;
+		size_t k = 0;
 		char text[256];
 		do {
 			if(!PAK_fread(&text[k], 1, 1, file)) {
@@ -511,7 +507,7 @@ aalError Ambiance::load() {
 
 aalError Ambiance::setVolume(float _volume) {
 	
-	if(!(channel.flags & AAL_FLAG_VOLUME)) {
+	if(!(channel.flags & FLAG_VOLUME)) {
 		return AAL_ERROR_INIT;
 	}
 	
@@ -574,7 +570,7 @@ aalError Ambiance::muteTrack(const string & name, bool mute) {
 	return AAL_OK;
 }
 
-aalError Ambiance::play(const aalChannel & _channel, bool _loop, aalULong _fade_interval) {
+aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_interval) {
 	
 	channel = _channel;
 	
@@ -598,12 +594,12 @@ aalError Ambiance::play(const aalChannel & _channel, bool _loop, aalULong _fade_
 	while(track > track_l) {
 		--track;
 		
-		aalSLong s_id = Backend::getSampleId(track->s_id);
+		SampleId s_id = Backend::getSampleId(track->s_id);
 		if(_sample.IsValid(s_id)) {
 			Sample * sample = _sample[s_id];
 			if(!sample->getCallbackCount()) {
-				sample->setCallback(OnAmbianceSampleStart, track, 0, AAL_UNIT_BYTES);
-				sample->setCallback(OnAmbianceSampleEnd, track, sample->getLength(), AAL_UNIT_BYTES);
+				sample->setCallback(OnAmbianceSampleStart, track, 0, UNIT_BYTES);
+				sample->setCallback(OnAmbianceSampleEnd, track, sample->getLength(), UNIT_BYTES);
 			}
 		}
 		
@@ -639,7 +635,7 @@ aalError Ambiance::play(const aalChannel & _channel, bool _loop, aalULong _fade_
 	return AAL_OK;
 }
 
-aalError Ambiance::stop(aalULong _fade_interval) {
+aalError Ambiance::stop(size_t _fade_interval) {
 	
 	if(!isIdle()) {
 		return AAL_OK;
@@ -721,7 +717,7 @@ aalError Ambiance::update() {
 		return AAL_OK;
 	}
 	
-	aalULong interval = session_time - start - time;
+	size_t interval = session_time - start - time;
 	time += interval;
 	
 	// Fading
@@ -748,7 +744,7 @@ aalError Ambiance::update() {
 	while(track > track_l) {
 		--track;
 		
-		aalSLong s_id = Backend::getSampleId(track->s_id);
+		SampleId s_id = Backend::getSampleId(track->s_id);
 		if(!_sample.IsValid(s_id) || track->flags & Track::MUTED) {
 			continue;
 		}
@@ -773,7 +769,7 @@ aalError Ambiance::update() {
 		
 		if(key->volume.interval) {
 			float value = key->volume.update(time);
-			if (channel.flags & AAL_FLAG_VOLUME) value *= channel.volume;
+			if (channel.flags & FLAG_VOLUME) value *= channel.volume;
 			source->setVolume(value);
 		} else {
 			source->setVolume(key->volume.cur * channel.volume);
@@ -782,11 +778,11 @@ aalError Ambiance::update() {
 			source->setPitch(key->pitch.update(time));
 		}
 		if(track->flags & Track::POSITION) {
-			aalVector position;
+			Vector3f position;
 			position.x = key->x.interval ? key->x.update(time) : key->x.cur;
 			position.y = key->y.interval ? key->y.update(time) : key->y.cur;
 			position.z = key->z.interval ? key->z.update(time) : key->z.cur;
-			if(channel.flags & AAL_FLAG_POSITION) {
+			if(channel.flags & FLAG_POSITION) {
 				position += channel.position;
 			}
 			source->setPosition(position);
@@ -798,7 +794,7 @@ aalError Ambiance::update() {
 	return AAL_OK;
 }
 
-static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data) {
+static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data) {
 	
 	Source * instance = (Source *)inst;
 	Ambiance::Track * track = (Ambiance::Track*)data;
@@ -816,7 +812,7 @@ static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data) {
 	
 	// Prefetch
 	if(!key->loopc && _amb[track->a_id]->isLooped()) {
-		aalULong i = track->key_i + 1;
+		size_t i = track->key_i + 1;
 		if(i == track->key_c) {
 			i = 0;
 		}
@@ -827,19 +823,19 @@ static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data) {
 	}
 	
 	float value = key->volume.update();
-	if(_amb[track->a_id]->getChannel().flags & AAL_FLAG_VOLUME) {
+	if(_amb[track->a_id]->getChannel().flags & FLAG_VOLUME) {
 		value *= _amb[track->a_id]->getChannel().volume;
 	}
 	instance->setVolume(value);
 	
 	instance->setPitch(key->pitch.update());
 	
-	if(instance->getChannel().flags & AAL_FLAG_POSITION) {
-		aalVector position;
+	if(instance->getChannel().flags & FLAG_POSITION) {
+		Vector3f position;
 		position.x = key->x.update();
 		position.y = key->y.update();
 		position.z = key->z.update();
-		if(_amb[track->a_id]->getChannel().flags & AAL_FLAG_POSITION) {
+		if(_amb[track->a_id]->getChannel().flags & FLAG_POSITION) {
 			position += _amb[track->a_id]->getChannel().position;
 		}
 		instance->setPosition(position);
@@ -848,7 +844,7 @@ static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data) {
 	}
 }
 
-void Ambiance::OnAmbianceSampleEnd(void *, const aalSLong &, void * data) {
+void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
 	
 	Ambiance::Track * track = (Ambiance::Track*)data;
 	arx_assert(_amb.IsValid(track->a_id));
@@ -892,7 +888,7 @@ void Ambiance::OnAmbianceSampleEnd(void *, const aalSLong &, void * data) {
 	}
 }
 
-void Ambiance::setId(aalSLong id) {
+void Ambiance::setId(AmbianceId id) {
 	
 	arx_assert(_amb.IsValid(id) && _amb[id] == this);
 	

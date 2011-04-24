@@ -48,8 +48,8 @@ namespace audio {
 	string sample_path = NULL;
 	string ambiance_path = NULL;
 	string environment_path = NULL;
-	aalULong stream_limit_bytes = AAL_DEFAULT_STREAMLIMIT;
-	aalULong session_time = 0;
+	size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
+	size_t session_time = 0;
 
 	// Resources                                                                 //
 	ResourceList<Mixer> _mixer;
@@ -63,39 +63,39 @@ namespace audio {
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	// Random number generator                                                   //
-	static const aalULong SEED = 43;
-	static const aalULong MODULO = 2147483647;
-	static const aalULong FACTOR = 16807;
-	static const aalULong SHIFT = 91;
+	static const size_t SEED = 43;
+	static const size_t MODULO = 2147483647;
+	static const size_t FACTOR = 16807;
+	static const size_t SHIFT = 91;
 
-	static aalULong __current(SEED);
+	static size_t __current = SEED;
 
-	aalULong Random()
+	size_t Random()
 	{
 		return __current = (__current * FACTOR + SHIFT) % MODULO;
 	}
 
-	aalFloat FRandom()
+	float FRandom()
 	{
 		__current = (__current * FACTOR + SHIFT) % MODULO;
-		return aalFloat(__current) / aalFloat(MODULO);
+		return float(__current) / float(MODULO);
 	}
 
-	aalULong InitSeed()
+	size_t InitSeed()
 	{
-		__current = (aalULong)time(NULL);
+		__current = (size_t)time(NULL);
 		return Random();
 	}
 
 	// Convert a value from time units to bytes                                  //
-	aalULong UnitsToBytes(const aalULong & v, const aalFormat & _format, const aalUnit & unit)
+	size_t UnitsToBytes(size_t v, const PCMFormat & _format, TimeUnit unit)
 	{
 		switch (unit)
 		{
-			case AAL_UNIT_MS:
-				return aalULong(aalFloat(v) * 0.001F * _format.frequency * _format.channels * (_format.quality >> 3));
+			case UNIT_MS:
+				return (size_t)(float(v) * 0.001F * _format.frequency * _format.channels * (_format.quality >> 3)) / 1000;
 
-			case AAL_UNIT_SAMPLES:
+			case UNIT_SAMPLES:
 				return v * _format.channels * (_format.quality >> 3);
 			
 			default:
@@ -104,14 +104,14 @@ namespace audio {
 	}
 
 	// Convert a value from bytes to time units                                  //
-	aalULong BytesToUnits(const aalULong & v, const aalFormat & _format, const aalUnit & unit)
+	size_t BytesToUnits(size_t v, const PCMFormat & _format, TimeUnit unit)
 	{
 		switch (unit)
 		{
-			case AAL_UNIT_MS      :
-				return aalULong(aalFloat(v) * 1000.0F / (_format.frequency * _format.channels * (_format.quality >> 3)));
+			case UNIT_MS      :
+				return (size_t)(float(v) * 1000.0F / (_format.frequency * _format.channels * (_format.quality >> 3)));
 
-			case AAL_UNIT_SAMPLES :
+			case UNIT_SAMPLES :
 				return v / (_format.frequency * _format.channels * (_format.quality >> 3));
 			
 			default:

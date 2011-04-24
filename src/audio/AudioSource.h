@@ -41,9 +41,9 @@ class Source {
 public:
 	
 	enum Status {
-		IDLE,
-		PLAYING,
-		PAUSED
+		Idle,
+		Playing,
+		Paused
 	};
 	
 	/*!
@@ -64,22 +64,22 @@ public:
 	 */
 	virtual aalError setPan(float pan) = 0;
 	
-	virtual aalError setPosition(const aalVector & position) = 0;
-	virtual aalError setVelocity(const aalVector & velocity) = 0;
-	virtual aalError setDirection(const aalVector & direction) = 0;
-	virtual aalError setCone(const aalCone & cone) = 0;
-	virtual aalError setFalloff(const aalFalloff & falloff) = 0;
-	virtual aalError setMixer(aalSLong mixer) = 0;
-	virtual aalError setEnvironment(aalSLong environment) = 0;
+	virtual aalError setPosition(const Vector3f & position) = 0;
+	virtual aalError setVelocity(const Vector3f & velocity) = 0;
+	virtual aalError setDirection(const Vector3f & direction) = 0;
+	virtual aalError setCone(const SourceCone & cone) = 0;
+	virtual aalError setFalloff(const SourceFalloff & falloff) = 0;
+	virtual aalError setMixer(MixerId mixer) = 0;
+	virtual aalError setEnvironment(EnvId environment) = 0;
 	
 	//Status
-	virtual aalError getPosition(aalVector & position) const = 0;
-	virtual aalError getFalloff(aalFalloff & falloff) const = 0;
+	virtual aalError getPosition(Vector3f & position) const = 0;
+	virtual aalError getFalloff(SourceFalloff & falloff) const = 0;
 	
 	/*!
 	 * Get the current play position in the sample.
 	 */
-	virtual aalULong getTime(aalUnit unit = AAL_UNIT_MS) const = 0;
+	virtual size_t getTime(TimeUnit unit = UNIT_MS) const = 0;
 	
 	// Control
 	/*!
@@ -96,12 +96,12 @@ public:
 	virtual aalError resume() = 0;
 	virtual aalError update() = 0;
 	
-	inline aalSLong getId() const { return id; }
+	inline SourceId getId() const { return id; }
 	inline Sample * getSample() const { return sample; }
-	inline const aalChannel & getChannel() const { return channel; }
+	inline const Channel & getChannel() const { return channel; }
 	inline Status getStatus() const { return status; }
-	inline bool isPlaying() const { return status == PLAYING; }
-	inline bool isIdle() const { return status == IDLE; }
+	inline bool isPlaying() const { return status == Playing; }
+	inline bool isIdle() const { return status == Idle; }
 	
 	virtual aalError updateVolume() = 0;
 	
@@ -110,9 +110,9 @@ protected:
 	Source(Sample * sample);
 	virtual ~Source();
 	
-	aalSLong id;
+	SourceId id;
 	
-	aalChannel channel;
+	Channel channel;
 	
 	Sample * sample;
 	Status status;

@@ -26,165 +26,114 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOTYPES_H
 #define ARX_AUDIO_AUDIOTYPES_H
 
-#include <cmath>
+#include "core/math/Vector3.h"
 
 #include "platform/Platform.h"
+#include "platform/Flags.h"
 
 namespace audio {
-	
-	// TODO remove
-	typedef u8      aalUBool;
-	typedef s8      aalSBool;
-	typedef u8      aalUByte;
-	typedef s8      aalSByte;
-	typedef u16     aalUWord;
-	typedef s16     aalSWord;
-	typedef u32     aalULong;
-	typedef s32     aalSLong;
-	typedef f32     aalFloat;
-	
-	const aalUBool AAL_UFALSE(0);
-	const aalUBool AAL_UTRUE(1);
-	const aalSBool AAL_SFALSE(-1);
-	const aalSBool AAL_STRUE(0);
-	
-	// Default values
-	const aalULong AAL_DEFAULT_STREAMLIMIT(88200); // 1 second for the correct format
-	
-	const aalULong AAL_DEFAULT_STRINGSIZE(0xff); // 256 characters
-	
-	const aalFloat AAL_DEFAULT_LISTENER_UNIT_FACTOR(1.0F); // 1 unit = 1 meter
-	const aalFloat AAL_DEFAULT_LISTENER_DOPPLER_FACTOR(1.0F); // Air-like doppler effect
-	const aalFloat AAL_DEFAULT_LISTENER_ROLLOFF_FACTOR(1.0F); // Air-like rolloff effect
-	
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_SIZE(7.5F);
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_DIFFUSION(1.0F); // High density echoes
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_ABSORPTION(0.05F); // Air-like absorbtion
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME(0.8F);
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REFLECTION_DELAY(7);
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME(1.0F);
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY(10);
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY(1500);
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY(1200);
-	
-	const aalFloat AAL_DEFAULT_VOLUME(1.0F); // Original gain
-	const aalFloat AAL_DEFAULT_AVERAGEVOLUME(0.0F); // No gain
-	const aalFloat AAL_DEFAULT_PITCH(1.0F); // Original frequency
-	const aalFloat AAL_DEFAULT_PAN(1.0F); // Centered panning
-	const aalFloat AAL_DEFAULT_FALLSTART(1.0F); // Volume fallstart
-	const aalFloat AAL_DEFAULT_FALLEND(1000000000.0F); // Volume fallend
-	const aalFloat AAL_DEFAULT_CONE_INNERANGLE(360.0F); // All directions
-	const aalFloat AAL_DEFAULT_CONE_OUTERANGLE(360.0F); // All directions
-	const aalFloat AAL_DEFAULT_CONE_OUTERVOLUME(0.0F); // No gain
-	
-	// Flags
-	enum aalFlag {
-		AAL_FLAG_DUPLICATE       = 0x00000000, // Duplicate sample if already playing
-		AAL_FLAG_RESTART         = 0x00000001, // Force restart sample if already playing
-		AAL_FLAG_ENQUEUE         = 0x00000002, // Enqueue sample if already playing
-		AAL_FLAG_VOLUME          = 0x00000004, // Enable volume control
-		AAL_FLAG_PITCH           = 0x00000008, // Enable pitch control
-		AAL_FLAG_PAN             = 0x00000010, // Enable pan control
-		AAL_FLAG_POSITION        = 0x00000020, // Enable position control
-		AAL_FLAG_VELOCITY        = 0x00000040, // Enable velocity control
-		AAL_FLAG_DIRECTION       = 0x00000080, // Enable orientation control
-		AAL_FLAG_CONE            = 0x00000100, // Enable cone control
-		AAL_FLAG_FALLOFF         = 0x00000200, // Enable intensity control
-		AAL_FLAG_REVERBERATION   = 0x00000400, // Enable environment reverberation / reflection
-		AAL_FLAG_RELATIVE        = 0x00001000, // Compute position relative to the listener
-		AAL_FLAG_PRELOAD         = 0x00004000, // Preload sample if not streamed
-		AAL_FLAG_AUTOFREE        = 0x00008000, // Free resource when playing is finished
-		AAL_FLAG_CALLBACK        = 0x00010000, // Enable sample callback management
-	};
-	
-	// Length units
-	enum aalUnit {
-		AAL_UNIT_MS,
-		AAL_UNIT_SAMPLES,
-		AAL_UNIT_BYTES
-	};
-	
-	// Errors
-	enum aalError {
-		AAL_OK = 0,
-		AAL_ERROR, // General error
-		AAL_ERROR_INIT, // Not initialized
-		AAL_ERROR_TIMEOUT, // Wait timeout
-		AAL_ERROR_MEMORY, // Not enough memory
-		AAL_ERROR_FILEIO, // File input/output error
-		AAL_ERROR_FORMAT, // Invalid or corrupted file format
-		AAL_ERROR_SYSTEM, // Internal system error
-		AAL_ERROR_HANDLE // Invalid resource handle
-	};
-	
-	// Output format
-	struct aalFormat {
-		aalULong frequency; // Samples per second
-		aalULong quality; // Bits per sample
-		aalULong channels; // Output channels count
-	};
-	
-	// Vector
-	struct aalVector {
-		// TODO use Vector3f
-		aalFloat x, y, z;
-	};
-	
-	inline aalFloat Distance(const aalVector & from, const aalVector & to) {
-		aalFloat x, y, z;
 
-		x = from.x - to.x;
-		y = from.y - to.y;
-		z = from.z - to.z;
+// Default values
+const size_t DEFAULT_STREAMLIMIT = 88200; // in Bytes; ~1 second for the correct format
 
-		return aalFloat(sqrt(x * x + y * y + z * z));
-	}
-	
-	// Source cone
-	struct aalCone {
-		aalFloat inner_angle;
-		aalFloat outer_angle;
-		aalFloat outer_volume;
-	};
-	
-	// Source falloff
-	struct aalFalloff {
-		aalFloat start;
-		aalFloat end;
-	};
-	
-	// Environment reflection
-	struct aalReflection {
-		aalFloat volume;
-		aalULong delay;
-	};
-	
-	// Environment reverberation
-	struct aalReverberation {
-		aalFloat volume;
-		aalULong delay;
-		aalULong decay;
-		aalULong hf_decay;
-	};
-	
-	// Play channel initialization parameters
-	struct aalChannel {
-		aalULong flags; // A set of aalFlag
-		aalSLong mixer; // Mixer id
-		aalSLong environment; // Environment id
-		aalFloat volume;
-		aalFloat pitch;
-		aalFloat pan;
-		aalVector position;
-		aalVector velocity;
-		aalVector direction;
-		aalCone cone;
-		aalFalloff falloff;
-	};
-	
-	// Callbacks prototype
-	typedef void(* aalSampleCallback)(void * reserved, const aalSLong & sample_id, void * data);
-	
+const float DEFAULT_ENVIRONMENT_SIZE = 7.5f;
+const float DEFAULT_ENVIRONMENT_DIFFUSION = 1.f; // High density echoes
+const float DEFAULT_ENVIRONMENT_ABSORPTION = 0.05f; // Air-like absorbtion
+const float DEFAULT_ENVIRONMENT_REFLECTION_VOLUME = 0.8f;
+const float DEFAULT_ENVIRONMENT_REFLECTION_DELAY = 7.f;
+const float DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME = 1.f;
+const float DEFAULT_ENVIRONMENT_REVERBERATION_DELAY = 10.f;
+const float DEFAULT_ENVIRONMENT_REVERBERATION_DECAY = 1500.f;
+const float DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY = 1200.f;
+
+const float DEFAULT_VOLUME = 1.f; // Original gain
+
+// Flags
+enum ChannelFlag {
+	FLAG_RESTART       = 0x00000001, // Force restart sample if already playing
+	FLAG_ENQUEUE       = 0x00000002, // Enqueue sample if already playing
+	FLAG_VOLUME        = 0x00000004, // Enable volume control
+	FLAG_PITCH         = 0x00000008, // Enable pitch control
+	FLAG_PAN           = 0x00000010, // Enable pan control
+	FLAG_POSITION      = 0x00000020, // Enable position control
+	FLAG_VELOCITY      = 0x00000040, // Enable velocity control
+	FLAG_DIRECTION     = 0x00000080, // Enable orientation control
+	FLAG_CONE          = 0x00000100, // Enable cone control
+	FLAG_FALLOFF       = 0x00000200, // Enable intensity control
+	FLAG_REVERBERATION = 0x00000400, // Enable environment reverberation / reflection
+	FLAG_RELATIVE      = 0x00001000, // Compute position relative to the listener
+	FLAG_AUTOFREE      = 0x00008000, // Free resource when playing is finished
+	FLAG_CALLBACK      = 0x00010000, // Enable sample callback management
+};
+DECLARE_FLAGS(ChannelFlag, ChannelFlags)
+DECLARE_FLAGS_OPERATORS(ChannelFlags)
+
+// Length units
+enum TimeUnit {
+	UNIT_MS,
+	UNIT_SAMPLES,
+	UNIT_BYTES
+};
+
+// Errors
+enum aalError {
+	AAL_OK = 0,
+	AAL_ERROR, // General error
+	AAL_ERROR_INIT, // Not initialized
+	AAL_ERROR_TIMEOUT, // Wait timeout
+	AAL_ERROR_MEMORY, // Not enough memory
+	AAL_ERROR_FILEIO, // File input/output error
+	AAL_ERROR_FORMAT, // Invalid or corrupted file format
+	AAL_ERROR_SYSTEM, // Internal system error
+	AAL_ERROR_HANDLE // Invalid resource handle
+};
+
+// Output format
+struct PCMFormat {
+	size_t frequency; // Samples per second
+	size_t quality; // Bits per sample
+	size_t channels; // Output channels count
+};
+
+// Source cone
+struct SourceCone {
+	float inner_angle;
+	float outer_angle;
+	float outer_volume;
+};
+
+// Source falloff
+struct SourceFalloff {
+	float start;
+	float end;
+};
+
+const s32 INVALID_ID = -1;
+
+typedef s32 SourceId;
+typedef s32 SampleId;
+typedef s32 MixerId;
+typedef s32 EnvId;
+typedef s32 AmbianceId;
+
+// Play channel initialization parameters
+struct Channel {
+	ChannelFlags flags;
+	MixerId mixer;
+	EnvId environment;
+	float volume;
+	float pitch;
+	float pan;
+	Vector3f position;
+	Vector3f velocity;
+	Vector3f direction;
+	SourceCone cone;
+	SourceFalloff falloff;
+};
+
+// Callbacks prototype
+typedef void(*aalSampleCallback)(void * reserved, const SourceId & sample_id, void * data);
+
 } // namespace audio
 
 #endif // ARX_AUDIO_AUDIOTYPES_H

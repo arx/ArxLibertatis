@@ -64,7 +64,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError CodecRAW::SetPosition(const aalULong & _position)
+	aalError CodecRAW::SetPosition(size_t _position)
 	{
 		if (PAK_fseek(stream, _position, SEEK_CUR) == -1) return AAL_ERROR_FILEIO;
 
@@ -92,7 +92,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError CodecRAW::GetPosition(aalULong & _position)
+	aalError CodecRAW::GetPosition(size_t & _position)
 	{
 		_position = cursor;
 
@@ -104,16 +104,9 @@ namespace audio {
 	// File I/O                                                                  //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecRAW::Read(void * buffer, const aalULong & to_read, aalULong & read)
+	aalError CodecRAW::Read(void * buffer, size_t to_read, size_t & read)
 	{
 		read = PAK_fread(buffer, 1, to_read, stream);
-
-		return AAL_OK;
-	}
-
-	aalError CodecRAW::Write(void *, const aalULong &, aalULong & write)
-	{
-		write = 0;
 
 		return AAL_OK;
 	}

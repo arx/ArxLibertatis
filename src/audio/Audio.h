@@ -34,7 +34,7 @@ namespace audio {
 
 aalError aalInit(bool enableEAX);
 aalError aalClean();
-aalError aalSetStreamLimit(aalULong size);
+aalError aalSetStreamLimit(size_t size);
 aalError aalSetSamplePath(const std::string & path);
 aalError aalSetAmbiancePath(const std::string & path);
 aalError aalSetEnvironmentPath(const std::string & path);
@@ -43,18 +43,18 @@ aalError aalUpdate();
 
 // Resource
 
-aalSLong aalCreateMixer();
-aalSLong aalCreateSample(const std::string & name);
-aalSLong aalCreateAmbiance(const std::string & name);
-aalSLong aalCreateEnvironment(const std::string & name);
-aalError aalDeleteSample(aalSLong sample_id);
-aalError aalDeleteAmbiance(aalSLong ambiance_id);
+MixerId aalCreateMixer();
+SampleId aalCreateSample(const std::string & name);
+AmbianceId aalCreateAmbiance(const std::string & name);
+EnvId aalCreateEnvironment(const std::string & name);
+aalError aalDeleteSample(SampleId sample_id);
+aalError aalDeleteAmbiance(AmbianceId ambiance_id);
 
-aalSLong aalGetAmbiance(const std::string & ambiance_name);
-aalSLong aalGetEnvironment(const std::string & environment_name);
+AmbianceId aalGetAmbiance(const std::string & ambiance_name);
+EnvId aalGetEnvironment(const std::string & environment_name);
 
-//! Retrieving by ID (If resource_id == AAL_SFALSE, return first found)
-aalSLong aalGetNextAmbiance(aalSLong ambiance_id = AAL_SFALSE);
+//! Retrieving by ID (If resource_id == INVALID_ID, return first found)
+AmbianceId aalGetNextAmbiance(AmbianceId ambiance_id = INVALID_ID);
 
 // Environment
 
@@ -64,55 +64,52 @@ aalError aalSetRoomRolloffFactor(float factor);
 
 aalError aalSetListenerUnitFactor(float factor);
 aalError aalSetListenerRolloffFactor(float factor);
-aalError aalSetListenerPosition(const aalVector & position);
-aalError aalSetListenerDirection(const aalVector & front, const aalVector & up);
-aalError aalSetListenerEnvironment(aalSLong environment_id);
+aalError aalSetListenerPosition(const Vector3f & position);
+aalError aalSetListenerDirection(const Vector3f & front, const Vector3f & up);
+aalError aalSetListenerEnvironment(EnvId environment_id);
 
 // Mixer
 
-aalError aalSetMixerVolume(aalSLong mixer_id, float volume);
-aalError aalSetMixerParent(aalSLong mixer_id, aalSLong parent_mixer_id);
+aalError aalSetMixerVolume(MixerId mixer_id, float volume);
+aalError aalSetMixerParent(MixerId mixer_id, MixerId parent_mixer_id);
 
-aalError aalGetMixerVolume(aalSLong mixer_id, float * volume);
-bool IsMixerEnabled(aalSLong mixer_id, const aalFlag & flag);
-bool IsMixerDisabled(aalSLong mixer_id, const aalFlag & flag);
-bool IsMixerPaused(aalSLong mixer_id);
+aalError aalGetMixerVolume(MixerId mixer_id, float * volume);
 
-aalError aalMixerStop(aalSLong mixer_id);
-aalError aalMixerPause(aalSLong mixer_id);
-aalError aalMixerResume(aalSLong mixer_id);
+aalError aalMixerStop(MixerId mixer_id);
+aalError aalMixerPause(MixerId mixer_id);
+aalError aalMixerResume(MixerId mixer_id);
 
 // Sample
 
-aalError aalSetSampleVolume(aalSLong sample_id, float volume);
-aalError aalSetSamplePitch(aalSLong sample_id, float pitch);
-aalError aalSetSamplePosition(aalSLong sample_id, const aalVector & position);
+aalError aalSetSampleVolume(SourceId sample_id, float volume);
+aalError aalSetSamplePitch(SourceId sample_id, float pitch);
+aalError aalSetSamplePosition(SourceId sample_id, const Vector3f & position);
 
-aalError aalGetSampleName(aalSLong sample_id, std::string & name);
-aalError aalGetSampleLength(aalSLong sample_id, aalULong & length, aalUnit unit = AAL_UNIT_MS);
-aalError aalGetSamplePan(aalSLong sample_id, float * pan);
-aalError aalGetSampleCone(aalSLong sample_id, aalCone * cone);
-bool aalIsSamplePlaying(aalSLong sample_id);
+aalError aalGetSampleName(SampleId sample_id, std::string & name);
+aalError aalGetSampleLength(SampleId sample_id, size_t & length, TimeUnit unit = UNIT_MS);
+aalError aalGetSamplePan(SourceId sample_id, float * pan);
+aalError aalGetSampleCone(SourceId sample_id, SourceCone * cone);
+bool aalIsSamplePlaying(SourceId sample_id);
 
 //! play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
-aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, aalULong play_count = 1);
-aalError aalSampleStop(aalSLong & sample_id);
+aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned play_count = 1);
+aalError aalSampleStop(SourceId & sample_id);
 
 // Ambiance
 
-aalError aalMuteAmbianceTrack(aalSLong ambiance_id, const std::string & track, bool mute);
+aalError aalMuteAmbianceTrack(AmbianceId ambiance_id, const std::string & track, bool mute);
 
-aalError aalSetAmbianceUserData(aalSLong ambiance_id, void * data);
-aalError aalSetAmbianceVolume(aalSLong ambiance_id, float volume);
+aalError aalSetAmbianceUserData(AmbianceId ambiance_id, void * data);
+aalError aalSetAmbianceVolume(AmbianceId ambiance_id, float volume);
 
-aalError aalGetAmbianceName(aalSLong ambiance_id, std::string & name);
-aalError aalGetAmbianceUserData(aalSLong ambiance_id, void ** data);
-aalError aalGetAmbianceVolume(aalSLong ambiance_id, float & volume);
-bool aalIsAmbianceLooped(aalSLong ambiance_id);
+aalError aalGetAmbianceName(AmbianceId ambiance_id, std::string & name);
+aalError aalGetAmbianceUserData(AmbianceId ambiance_id, void ** data);
+aalError aalGetAmbianceVolume(AmbianceId ambiance_id, float & volume);
+bool aalIsAmbianceLooped(AmbianceId ambiance_id);
 
 //! play_count == 0 -> infinite loop, play_count == 1 -> play once
-aalError aalAmbiancePlay(aalSLong ambiance_id, const aalChannel & channel, bool loop = false, aalULong fade_interval = 0);
-aalError aalAmbianceStop(aalSLong ambiance_id, aalULong fade_interval = 0);
+aalError aalAmbiancePlay(AmbianceId ambiance_id, const Channel & channel, bool loop = false, size_t fade_interval = 0);
+aalError aalAmbianceStop(AmbianceId ambiance_id, size_t fade_interval = 0);
 
 } // namespace audio
 

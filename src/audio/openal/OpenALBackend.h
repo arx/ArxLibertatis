@@ -23,17 +23,17 @@ public:
 	
 	aalError updateDeferred();
 	
-	Source * createSource(aalSLong sampleId, const aalChannel & channel);
+	Source * createSource(SampleId sampleId, const Channel & channel);
 	
-	Source * getSource(aalSLong sourceId);
+	Source * getSource(SourceId sourceId);
 	
 	aalError setReverbEnabled(bool enable);
 	
 	aalError setUnitFactor(float factor);
 	aalError setRolloffFactor(float factor);
 	
-	aalError setListenerPosition(const aalVector & position);
-	aalError setListenerOrientation(const aalVector & front, const aalVector & up);
+	aalError setListenerPosition(const Vector3f & position);
+	aalError setListenerOrientation(const Vector3f & front, const Vector3f & up);
 	
 	aalError setListenerEnvironment(const Environment & env);
 	aalError setRoomRolloffFactor(float factor);

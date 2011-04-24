@@ -42,7 +42,7 @@ public:
 	inline void setUserData(void * _data) { data = _data; }
 	inline void * getUserData() const { return data; }
 	
-	const aalChannel & getChannel() const { return channel; }
+	const Channel & getChannel() const { return channel; }
 	const std::string & getName() const { return name; }
 	
 	aalError setVolume(float volume);
@@ -52,21 +52,21 @@ public:
 	inline bool isIdle() const { return status == Idle; }
 	inline bool isLooped() const { return loop; }
 	
-	aalError play(const aalChannel & channel, bool loop = true, aalULong fade_interval = 0.f);
-	aalError stop(aalULong volume_interval = 0.f);
+	aalError play(const Channel & channel, bool loop = true, size_t fade_interval = 0.f);
+	aalError stop(size_t fade_interval = 0.f);
 	aalError pause();
 	aalError resume();
 	aalError update();
 	
 	aalError muteTrack(const std::string & track, bool mute);
 	
-	void setId(aalSLong id);
+	void setId(AmbianceId id);
 	
 	struct Track;
 	
 private:
 	
-	static void OnAmbianceSampleEnd(void *, const aalSLong &, void * data);
+	static void OnAmbianceSampleEnd(void *, const SourceId &, void * data);
 	
 	enum Fade {
 		None,
@@ -84,9 +84,9 @@ private:
 	bool loop;
 	Fade fade;
 	
-	aalChannel channel;
+	Channel channel;
 	float fade_time, fade_interval, fade_max;
-	aalULong start, time;
+	s32 start, time;
 	size_t track_c;
 	Track * track_l;
 	std::string name;

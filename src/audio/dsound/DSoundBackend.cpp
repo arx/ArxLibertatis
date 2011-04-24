@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-static const aalFormat globalFormat = { 22050, 16, 2 };
+static const PCMFormat globalFormat = { 22050, 16, 2 };
 
 DSoundBackend::DSoundBackend() : device(NULL), primary(NULL), listener(NULL), environment(NULL) {
 	
@@ -104,10 +104,10 @@ aalError DSoundBackend::init(bool enableEax) {
 	WAVEFORMATEX formatex;
 	memset(&formatex, 0, sizeof(WAVEFORMATEX));
 	formatex.wFormatTag = WAVE_FORMAT_PCM;
-	formatex.nChannels = (aalUWord)(globalFormat.channels);
+	formatex.nChannels = (WORD)(globalFormat.channels);
 	formatex.nSamplesPerSec = globalFormat.frequency;
-	formatex.wBitsPerSample = (aalUWord)(globalFormat.quality);
-	formatex.nBlockAlign = (aalUWord)(globalFormat.channels * globalFormat.quality / 8);
+	formatex.wBitsPerSample = (WORD)(globalFormat.quality);
+	formatex.nBlockAlign = (WORD)(globalFormat.channels * globalFormat.quality / 8);
 	formatex.nAvgBytesPerSec = formatex.nBlockAlign * globalFormat.frequency;
 	if(FAILED(primary->SetFormat(&formatex))) {
 		return AAL_ERROR_SYSTEM;
@@ -130,12 +130,12 @@ aalError DSoundBackend::updateDeferred() {
 	return AAL_OK;
 }
 
-Source * DSoundBackend::createSource(aalSLong sampleId, const aalChannel & channel) {
+Source * DSoundBackend::createSource(SampleId sampleId, const Channel & channel) {
 	
 	Sample * sample = _sample[sampleId];
 	
 	DSoundSource * orig = NULL;
-	for(aalULong i; i < sources.Size(); i++) {
+	for(size_t i; i < sources.Size(); i++) {
 		if(sources[i] && sources[i]->getSample() == sample) {
 			orig = (DSoundSource*)sources[i];
 			break;
@@ -144,13 +144,13 @@ Source * DSoundBackend::createSource(aalSLong sampleId, const aalChannel & chann
 	
 	DSoundSource * source = new DSoundSource(sample, this);
 	
-	aalSLong index = sources.Add(source);
-	if(index == AAL_SFALSE) {
+	size_t index = sources.Add(source);
+	if(index == (size_t)INVALID_ID) {
 		delete source;
 		return NULL;
 	}
 	
-	aalSLong id = (index << 16) | sampleId;
+	SourceId id = (index << 16) | sampleId;
 	if(orig ? source->init(id, orig, channel) : source->init(id, channel)) {
 		sources.Delete(index);
 		return NULL;
@@ -159,16 +159,16 @@ Source * DSoundBackend::createSource(aalSLong sampleId, const aalChannel & chann
 	return source;
 }
 
-Source * DSoundBackend::getSource(aalSLong sourceId) {
+Source * DSoundBackend::getSource(SourceId sourceId) {
 	
-	aalSLong index = ((sourceId >> 16) & 0x0000ffff);
+	size_t index = ((sourceId >> 16) & 0x0000ffff);
 	if(!sources.IsValid(index)) {
 		return NULL;
 	}
 	
 	Source * source = sources[index];
 	
-	aalSLong sample = getSampleId(sourceId);
+	SampleId sample = getSampleId(sourceId);
 	if(!_sample.IsValid(sample) || source->getSample() != _sample[sample]) {
 		return NULL;
 	}
@@ -194,10 +194,10 @@ aalError DSoundBackend::setReverbEnabled(bool enable) {
 	WAVEFORMATEX formatex;
 	memset(&formatex, 0, sizeof(WAVEFORMATEX));
 	formatex.wFormatTag = WAVE_FORMAT_PCM;
-	formatex.nChannels = (aalUWord)(globalFormat.channels);
+	formatex.nChannels = (WORD)(globalFormat.channels);
 	formatex.nSamplesPerSec = globalFormat.frequency;
-	formatex.wBitsPerSample = (aalUWord)(globalFormat.quality);
-	formatex.nBlockAlign = (aalUWord)(globalFormat.channels * globalFormat.quality / 8);
+	formatex.wBitsPerSample = (WORD)(globalFormat.quality);
+	formatex.nBlockAlign = (WORD)(globalFormat.channels * globalFormat.quality / 8);
 	formatex.nAvgBytesPerSec = formatex.nBlockAlign * globalFormat.frequency;
 	
 	DSBUFFERDESC desc;
@@ -241,18 +241,18 @@ aalError DSoundBackend::setReverbEnabled(bool enable) {
 	EAXLISTENERPROPERTIES props;
 	props.dwEnvironment = 0;
 	props.dwFlags = EAXLISTENERFLAGS_DECAYHFLIMIT;
-	props.flRoomRolloffFactor = 1.0F;
+	props.flRoomRolloffFactor = 1.f;
 	props.lRoom = 0;
 	props.lRoomHF = 0;
-	props.flEnvironmentSize = AAL_DEFAULT_ENVIRONMENT_SIZE;
-	props.flEnvironmentDiffusion = AAL_DEFAULT_ENVIRONMENT_DIFFUSION;
-	props.flAirAbsorptionHF = AAL_DEFAULT_ENVIRONMENT_ABSORPTION * -100.0F;
-	props.lReflections = aalSLong(2000 * log10(AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME));
-	props.flReflectionsDelay = aalFloat(AAL_DEFAULT_ENVIRONMENT_REFLECTION_DELAY) * 0.001F;
-	props.lReverb = aalSLong(2000 * log10(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME));
-	props.flReverbDelay = aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY) * 0.001F;
-	props.flDecayTime = aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY) * 0.001F;
-	props.flDecayHFRatio = AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY / AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY;
+	props.flEnvironmentSize = DEFAULT_ENVIRONMENT_SIZE;
+	props.flEnvironmentDiffusion = DEFAULT_ENVIRONMENT_DIFFUSION;
+	props.flAirAbsorptionHF = DEFAULT_ENVIRONMENT_ABSORPTION * -100.f;
+	props.lReflections = (long)(2000 * log10(DEFAULT_ENVIRONMENT_REFLECTION_VOLUME));
+	props.flReflectionsDelay = float(DEFAULT_ENVIRONMENT_REFLECTION_DELAY) * 0.001f;
+	props.lReverb = (long)(2000 * log10(DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME));
+	props.flReverbDelay = DEFAULT_ENVIRONMENT_REVERBERATION_DELAY * 0.001f;
+	props.flDecayTime = DEFAULT_ENVIRONMENT_REVERBERATION_DECAY * 0.001f;
+	props.flDecayHFRatio = DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY / DEFAULT_ENVIRONMENT_REVERBERATION_DECAY;
 	if(environment->Set(DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ALLPARAMETERS | DSPROPERTY_EAXLISTENER_DEFERRED, NULL, 0, &props, sizeof(EAXLISTENERPROPERTIES))) {
 		environment->Release(), environment = NULL;
 		return AAL_ERROR_SYSTEM;
@@ -279,7 +279,7 @@ aalError DSoundBackend::setRolloffFactor(float factor) {
 	return AAL_OK;
 }
 
-aalError DSoundBackend::setListenerPosition(const aalVector & position) {
+aalError DSoundBackend::setListenerPosition(const Vector3f & position) {
 	
 	if(FAILED(listener->SetPosition(position.x, position.y, position.z, DS3D_DEFERRED))) {
 		return AAL_ERROR_SYSTEM;
@@ -288,7 +288,7 @@ aalError DSoundBackend::setListenerPosition(const aalVector & position) {
 	return AAL_OK;
 }
 
-aalError DSoundBackend::setListenerOrientation(const aalVector & front, const aalVector & up) {
+aalError DSoundBackend::setListenerOrientation(const Vector3f & front, const Vector3f & up) {
 	
 	if(FAILED(listener->SetOrientation(front.x, front.y, front.z, up.x, up.y, up.z, DS3D_DEFERRED))) {
 		return AAL_ERROR_SYSTEM;
@@ -333,7 +333,7 @@ aalError DSoundBackend::setListenerEnvironment(const Environment & env) {
 	} else if(env.reverb_decay >= 20000.f) {
 		props.flDecayTime = 20.f;
 	} else {
-		props.flDecayTime = aalFloat(env.reverb_decay) * 0.001f;
+		props.flDecayTime = float(env.reverb_decay) * 0.001f;
 	}
 	
 	props.flDecayHFRatio = env.reverb_hf_decay / env.reverb_decay;
@@ -354,7 +354,7 @@ aalError DSoundBackend::setListenerEnvironment(const Environment & env) {
 	if(env.reflect_delay >= 300.f) {
 		props.flReflectionsDelay = 0.3f;
 	} else {
-		props.flReflectionsDelay = aalFloat(env.reflect_delay) * 0.001f;
+		props.flReflectionsDelay = float(env.reflect_delay) * 0.001f;
 	}
 	
 	if(FAILED(environment->Set(DSPROPSETID_EAX_ListenerProperties,
@@ -376,7 +376,7 @@ aalError DSoundBackend::setRoomRolloffFactor(float factor) {
 	
 	if(FAILED(environment->Set(DSPROPSETID_EAX_ListenerProperties,
 			                       DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR | DSPROPERTY_EAXLISTENER_DEFERRED,
-			                       NULL, 0, &rolloff, sizeof(aalFloat)))) {
+			                       NULL, 0, &rolloff, sizeof(float)))) {
 		return AAL_ERROR_SYSTEM;
 	}
 	

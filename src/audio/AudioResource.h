@@ -35,7 +35,7 @@ struct PakFileHandle;
 
 namespace audio {
 	
-	const aalULong ALIGNMENT(0x10);
+	const size_t ALIGNMENT = 16;
 	
 	PakFileHandle * OpenResource(const std::string & name, const std::string & resource_path);
 	
@@ -75,14 +75,11 @@ namespace audio {
 		ResourceList();
 		~ResourceList();
 		
-		inline aalUBool IsValid(const aalSLong & index);
-		inline aalUBool IsNotValid(const aalSLong & index);
-		inline T * operator[](const aalSLong & index);
-		inline aalULong Size() {
-			return size;
-		}
-		inline aalSLong Add(T * element);
-		inline void Delete(const aalSLong & index);
+		inline bool IsValid(s32 index);
+		inline T * operator[](s32 index);
+		inline size_t Size() { return size; }
+		inline s32 Add(T * element);
+		inline void Delete(s32 index);
 		inline void Clean();
 		
 		inline iterator begin() { return list; }
@@ -91,7 +88,7 @@ namespace audio {
 		
 	private:
 		
-		aalULong size;
+		size_t size;
 		T ** list;
 		
 	};
@@ -101,29 +98,24 @@ namespace audio {
 	
 	template <class T>
 	inline ResourceList<T>::~ResourceList() {
-		for (aalULong i(0); i < size; i++) if (list[i]) delete list[i];
+		for (size_t i(0); i < size; i++) if (list[i]) delete list[i];
 	}
 	
 	template <class T>
-	inline aalUBool ResourceList<T>::IsValid(const aalSLong & index) {
-		return (aalULong(index) < size && list[index]) ? AAL_UTRUE : AAL_UFALSE;
+	inline bool ResourceList<T>::IsValid(s32 index) {
+		return ((size_t)index < size && list[index]) ? true : false;
 	}
 	
 	template <class T>
-	inline aalUBool ResourceList<T>::IsNotValid(const aalSLong & index) {
-		return (aalULong(index) >= size || !list[index]) ? AAL_UTRUE : AAL_UFALSE;
-	}
-	
-	template <class T>
-	inline T * ResourceList<T>::operator[](const aalSLong & index) {
+	inline T * ResourceList<T>::operator[](s32 index) {
 		return list[index];
 	}
 	
 	template <class T>
-	inline aalSLong ResourceList<T>::Add(T * element) {
+	inline s32 ResourceList<T>::Add(T * element) {
 		
 		void * ptr;
-		aalULong i(0);
+		size_t i(0);
 		
 		for(; i < size; i++) {
 			if(!list[i]) {
@@ -134,7 +126,7 @@ namespace audio {
 		
 		ptr = realloc(list, (size + ALIGNMENT) * sizeof(T *));
 		if(!ptr) {
-			return AAL_SFALSE;
+			return INVALID_ID;
 		}
 		
 		list = (T **)ptr, size += ALIGNMENT;
@@ -146,16 +138,16 @@ namespace audio {
 	}
 	
 	template <class T>
-	inline void ResourceList<T>::Delete(const aalSLong & index) {
+	inline void ResourceList<T>::Delete(s32 index) {
 		
-		if(aalULong(index) >= size  || !list[index]) return;
+		if(size_t(index) >= size  || !list[index]) return;
 		
 		delete list[index];
 		list[index] = NULL;
 		
 		if(size <= ALIGNMENT) return;
 		
-		for(aalULong j(size - ALIGNMENT); j < size; j++) {
+		for(size_t j(size - ALIGNMENT); j < size; j++) {
 			if(list[j])
 				return;
 		}
@@ -166,7 +158,7 @@ namespace audio {
 	template <class T>
 	inline void ResourceList<T>::Clean() {
 		
-		for(aalULong i(0); i < size; i++) {
+		for(size_t i(0); i < size; i++) {
 			if(list[i]) {
 				delete list[i];
 			}

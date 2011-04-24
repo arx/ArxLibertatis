@@ -44,25 +44,25 @@ public:
 	DSoundSource(Sample * Sample, DSoundBackend * backend);
 	~DSoundSource();
 	
-	aalError init(aalSLong _id, const aalChannel & channel);
-	aalError init(aalSLong _id, DSoundSource * instance, const aalChannel & channel);
+	aalError init(SourceId _id, const Channel & channel);
+	aalError init(SourceId _id, DSoundSource * instance, const Channel & channel);
 	
 	aalError setVolume(float volume);
 	aalError setPitch(float pitch);
 	aalError setPan(float pan);
 	
-	aalError setPosition(const aalVector & position);
-	aalError setVelocity(const aalVector & velocity);
-	aalError setDirection(const aalVector & direction);
-	aalError setCone(const aalCone & cone);
-	aalError setFalloff(const aalFalloff & falloff);
-	aalError setMixer(aalSLong mixer);
-	aalError setEnvironment(aalSLong environment);
+	aalError setPosition(const Vector3f & position);
+	aalError setVelocity(const Vector3f & velocity);
+	aalError setDirection(const Vector3f & direction);
+	aalError setCone(const SourceCone & cone);
+	aalError setFalloff(const SourceFalloff & falloff);
+	aalError setMixer(MixerId mixer);
+	aalError setEnvironment(EnvId environment);
 	
 	//Status
-	aalError getPosition(aalVector & position) const;
-	aalError getFalloff(aalFalloff & falloff) const;
-	aalULong getTime(aalUnit unit = AAL_UNIT_MS) const;
+	aalError getPosition(Vector3f & position) const;
+	aalError getFalloff(SourceFalloff & falloff) const;
+	size_t getTime(TimeUnit unit = UNIT_MS) const;
 	
 	// Control
 	aalError play(unsigned playCount = 1);
@@ -76,17 +76,17 @@ public:
 private:
 	
 	void updateStreaming();
-	aalUBool isTooFar();
+	bool isTooFar();
 	aalError clean();
-	aalUBool checkPlaying();
+	bool checkPlaying();
 	
 	bool tooFar;
-	aalULong callb_i; // Next callback index
-	aalULong loop; // Remaining loop count
-	aalULong time; // Elapsed 'time'
+	size_t callb_i; // Next callback index
+	unsigned loop; // Remaining loop count
+	size_t time; // Elapsed 'time'
 	Stream * stream;
-	aalULong read, write; // Streaming status
-	aalULong size; // Buffer size
+	size_t read, write; // Streaming status
+	size_t size; // Buffer size
 	LPDIRECTSOUNDBUFFER lpdsb;
 	LPDIRECTSOUND3DBUFFER lpds3db;
 	LPKSPROPERTYSET lpeax;

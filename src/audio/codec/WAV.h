@@ -44,19 +44,16 @@ namespace audio {
 		
 		// Setup
 		aalError SetStream(PakFileHandle * stream);
-		aalError SetFormat(const aalFormat & format);
-		aalError SetLength(const aalULong & length);
-		aalError SetPosition(const aalULong & position);
+		aalError SetPosition(size_t position);
 		
 		// Status
 		aalError GetStream(PakFileHandle *&stream);
-		aalError GetFormat(aalFormat & format);
-		aalError GetLength(aalULong & length);
-		aalError GetPosition(aalULong & position);
+		aalError GetFormat(PCMFormat & format);
+		aalError GetLength(size_t & length);
+		aalError GetPosition(size_t & position);
 		
 		// File I/O
-		aalError Read(void * buffer, const aalULong & to_read, aalULong & read);
-		aalError Write(void * buffer, const aalULong & to_write, aalULong & write);
+		aalError Read(void * buffer, size_t to_read, size_t & read);
 		
 	private:
 		
@@ -64,9 +61,9 @@ namespace audio {
 		Codec * codec;
 		void * status; // Stream status
 		void * format; // File data format
-		aalULong size, outsize; // Compressed and uncompessed data size
-		aalULong offset; // Offset of data in file
-		aalULong cursor;
+		size_t size, outsize; // Compressed and uncompessed data size
+		size_t offset; // Offset of data in file
+		size_t cursor;
 		
 	};
 	

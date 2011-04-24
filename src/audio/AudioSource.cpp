@@ -5,7 +5,7 @@
 
 namespace audio {
 
-Source::Source(Sample * _sample) : id((aalSLong)-1), sample(_sample), status(IDLE) {
+Source::Source(Sample * _sample) : id(INVALID_ID), sample(_sample), status(Idle) {
 	sample->Catch();
 }
 

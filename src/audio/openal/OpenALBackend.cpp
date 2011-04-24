@@ -87,12 +87,12 @@ aalError OpenALBackend::updateDeferred() {
 	return AAL_OK;
 }
 
-Source * OpenALBackend::createSource(aalSLong sampleId, const aalChannel & channel) {
+Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel) {
 	
 	Sample * sample = _sample[sampleId];
 	
 	OpenALSource * orig = NULL;
-	for(aalULong i; i < sources.Size(); i++) {
+	for(size_t i; i < sources.Size(); i++) {
 		if(sources[i] && sources[i]->getSample() == sample) {
 			orig = (OpenALSource*)sources[i];
 			break;
@@ -101,13 +101,13 @@ Source * OpenALBackend::createSource(aalSLong sampleId, const aalChannel & chann
 	
 	OpenALSource * source = new OpenALSource(sample);
 	
-	aalSLong index = sources.Add(source);
-	if(index == AAL_SFALSE) {
+	size_t index = sources.Add(source);
+	if(index == (size_t)INVALID_ID) {
 		delete source;
 		return NULL;
 	}
 	
-	aalSLong id = (index << 16) | sampleId;
+	SourceId id = (index << 16) | sampleId;
 	if(orig ? source->init(id, orig, channel) : source->init(id, channel)) {
 		sources.Delete(index);
 		return NULL;
@@ -116,16 +116,16 @@ Source * OpenALBackend::createSource(aalSLong sampleId, const aalChannel & chann
 	return source;
 }
 
-Source * OpenALBackend::getSource(aalSLong sourceId) {
+Source * OpenALBackend::getSource(SourceId sourceId) {
 	
-	aalSLong index = ((sourceId >> 16) & 0x0000ffff);
+	size_t index = ((sourceId >> 16) & 0x0000ffff);
 	if(!sources.IsValid(index)) {
 		return NULL;
 	}
 	
 	Source * source = sources[index];
 	
-	aalSLong sample = getSampleId(sourceId);
+	SampleId sample = getSampleId(sourceId);
 	if(!_sample.IsValid(sample) || source->getSample() != _sample[sample]) {
 		return NULL;
 	}
@@ -155,7 +155,7 @@ aalError OpenALBackend::setUnitFactor(float factor) {
 aalError OpenALBackend::setRolloffFactor(float factor) {
 	
 	rolloffFactor = factor;
-	for(aalULong i = 0; i < sources.Size(); i++) {
+	for(size_t i = 0; i < sources.Size(); i++) {
 		if(sources[i]) {
 			sources[i]->setRolloffFactor(rolloffFactor);
 		}
@@ -164,7 +164,7 @@ aalError OpenALBackend::setRolloffFactor(float factor) {
 	return AAL_OK;
 }
 
-aalError OpenALBackend::setListenerPosition(const aalVector & position) {
+aalError OpenALBackend::setListenerPosition(const Vector3f & position) {
 	
 	alListener3f(AL_POSITION, position.x, position.y, position.z);
 	AL_CHECK_ERROR("setting listener posiotion")
@@ -172,7 +172,7 @@ aalError OpenALBackend::setListenerPosition(const aalVector & position) {
 	return AAL_OK;
 }
 
-aalError OpenALBackend::setListenerOrientation(const aalVector & front, const aalVector & up) {
+aalError OpenALBackend::setListenerOrientation(const Vector3f & front, const Vector3f & up) {
 	
 	ALfloat orientation[] = {front.x, front.y, front.z, -up.x, -up.y, -up.z};
 	alListenerfv(AL_ORIENTATION, orientation);

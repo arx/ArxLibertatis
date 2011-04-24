@@ -54,7 +54,7 @@ namespace audio {
 		coef1(NULL), coef2(NULL),
 		nybble_l(NULL), nybble_c(0), nybble_i(0),
 		nybble(0),
-		odd(0),
+		odd(false),
 		cache_c(0), cache_i(0), cache_l(NULL),
 		cursor(0)
 	{
@@ -96,37 +96,37 @@ namespace audio {
 
 		predictor = (char *)ptr;
 
-		ptr = realloc(delta, sizeof(aalSWord) << shift);
+		ptr = realloc(delta, sizeof(s16) << shift);
 
 		if (!ptr) return AAL_ERROR_MEMORY;
 
-		delta = (aalSWord *)ptr;
+		delta = (s16 *)ptr;
 
-		ptr = realloc(coef1, sizeof(aalSWord) << shift);
-
-		if (!ptr) return AAL_ERROR_MEMORY;
-
-		coef1 = (aalSWord *)ptr;
-
-		ptr = realloc(coef2, sizeof(aalSWord) << shift);
+		ptr = realloc(coef1, sizeof(s16) << shift);
 
 		if (!ptr) return AAL_ERROR_MEMORY;
 
-		coef2 = (aalSWord *)ptr;
+		coef1 = (s16 *)ptr;
 
-		ptr = realloc(samp1, sizeof(aalSWord) << shift);
-
-		if (!ptr) return AAL_ERROR_MEMORY;
-
-		samp1 = (aalSWord *)ptr;
-
-		ptr = realloc(samp2, sizeof(aalSWord) << shift);
+		ptr = realloc(coef2, sizeof(s16) << shift);
 
 		if (!ptr) return AAL_ERROR_MEMORY;
 
-		samp2 = (aalSWord *)ptr;
+		coef2 = (s16 *)ptr;
 
-		ptr = realloc(cache_l, cache_c = cache_i = (aalUByte)(sizeof(aalSWord) << shift));
+		ptr = realloc(samp1, sizeof(s16) << shift);
+
+		if (!ptr) return AAL_ERROR_MEMORY;
+
+		samp1 = (s16 *)ptr;
+
+		ptr = realloc(samp2, sizeof(s16) << shift);
+
+		if (!ptr) return AAL_ERROR_MEMORY;
+
+		samp2 = (s16 *)ptr;
+
+		ptr = realloc(cache_l, cache_c = cache_i = (u8)(sizeof(s16) << shift));
 
 		if (!ptr) return AAL_ERROR_MEMORY;
 
@@ -140,7 +140,7 @@ namespace audio {
 
 		if (!ptr) return AAL_ERROR_MEMORY;
 
-		nybble_l = (aalSByte *)ptr;
+		nybble_l = (s8 *)ptr;
 
 		padding = ((header->wfx.nBlockAlign - (7 << shift)) << 3) -
 		          (header->wSamplesPerBlock - 2) * (header->wfx.wBitsPerSample << shift);
@@ -162,11 +162,11 @@ namespace audio {
 	}
 
 	// The stream cursor must be at the begining of waveform data                //
-	aalError CodecADPCM::SetPosition(const aalULong & _position)
+	aalError CodecADPCM::SetPosition(size_t _position)
 	{
 		aalError error;
 
-		aalULong i = (_position >> shift) / header->wSamplesPerBlock;
+		size_t i = (_position >> shift) / header->wSamplesPerBlock;
 
 		if (PAK_fseek(stream, i * header->wfx.nBlockAlign, SEEK_CUR) == -1)
 			return AAL_ERROR_FILEIO;
@@ -182,7 +182,7 @@ namespace audio {
 		cache_i = 0;
 
 		char buffer[256];
-		aalULong to_read, read;
+		size_t to_read, read;
 
 		while (i)
 		{
@@ -219,7 +219,7 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError CodecADPCM::GetPosition(aalULong & _position)
+	aalError CodecADPCM::GetPosition(size_t & _position)
 	{
 		_position = cursor;
 
@@ -230,13 +230,13 @@ namespace audio {
 	// Macros!                                                                   //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	void CodecADPCM::GetSample(const aalULong & i, aalSByte adpcm_sample)
+	void CodecADPCM::GetSample(size_t i, s8 adpcm_sample)
 	{
-		aalSLong predict, pcm_sample, old_delta;
+		s32 predict, pcm_sample, old_delta;
 
 		// Update delta
 		old_delta = delta[i];
-		delta[i] = aalSWord((gai_p4[adpcm_sample] * old_delta) >> 8);
+		delta[i] = s16((gai_p4[adpcm_sample] * old_delta) >> 8);
 
 		if (delta[i] < 16) delta[i] = 16;
 
@@ -244,7 +244,7 @@ namespace audio {
 		if (adpcm_sample & 0x08) adpcm_sample -= 16;
 
 		// Predict next sample
-		predict = ((aalSLong)samp1[i] * coef1[i] + (aalSLong)samp2[i] * coef2[i]) >> 8;
+		predict = ((s32)samp1[i] * coef1[i] + (s32)samp2[i] * coef2[i]) >> 8;
 
 		// Reconstruct original PCM
 		pcm_sample = adpcm_sample * old_delta + predict;
@@ -255,7 +255,7 @@ namespace audio {
 
 		// Update samples
 		samp2[i] = samp1[i];
-		samp1[i] = (aalSWord)pcm_sample;
+		samp1[i] = (s16)pcm_sample;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -263,7 +263,7 @@ namespace audio {
 	// File I/O                                                                  //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecADPCM::Read(void * buffer, const aalULong & to_read, aalULong & read)
+	aalError CodecADPCM::Read(void * buffer, size_t to_read, size_t & read)
 	{
 		read = 0;
 
@@ -272,7 +272,7 @@ namespace audio {
 			// If prefetched bytes are remaining, put the next one into the buffer
 			if (cache_i < cache_c)
 			{
-				((aalSByte *)buffer)[read++] = ((aalSByte *)cache_l)[cache_i++];
+				((s8 *)buffer)[read++] = ((s8 *)cache_l)[cache_i++];
 				continue;
 			}
 
@@ -289,28 +289,28 @@ namespace audio {
 			}
 			else if (sample_i == 1)
 			{
-				for (aalULong i(0); i < header->wfx.nChannels; i++)
-					((aalSWord *)cache_l)[i] = samp1[i];
+				for (size_t i = 0; i < header->wfx.nChannels; i++)
+					((s16 *)cache_l)[i] = samp1[i];
 			}
 			else
 			{
 				// Get new sample for each channel
-				for (aalULong i(0); i < header->wfx.nChannels; i++)
+				for (size_t i = 0; i < header->wfx.nChannels; i++)
 				{
 					if (odd)
 					{
-						GetSample(i, (aalSByte)(nybble & 0x0f));
-						odd = AAL_UFALSE;
+						GetSample(i, (s8)(nybble & 0x0f));
+						odd = false;
 					}
 					else
 					{
 						nybble = nybble_l[nybble_i++];
 
-						GetSample(i, aalSByte((nybble >> 4) & 0x0f));
-						odd = AAL_UTRUE;
+						GetSample(i, s8((nybble >> 4) & 0x0f));
+						odd = true;
 					}
 
-					((aalSWord *)cache_l)[i] = samp1[i];
+					((s16 *)cache_l)[i] = samp1[i];
 				}
 			}
 
@@ -321,37 +321,29 @@ namespace audio {
 		return AAL_OK;
 	}
 
-	aalError CodecADPCM::Write(void *, const aalULong &, aalULong & write)
-	{
-		write = 0;
-
-		return AAL_ERROR;
-	}
-
-
 	aalError CodecADPCM::GetNextBlock()
 	{
 		// Load and check block header
-		if (!PAK_fread(predictor, sizeof(aalUByte) << shift, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(predictor, sizeof(char) << shift, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!PAK_fread(delta, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(delta, sizeof(s16) << shift, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!PAK_fread(samp1, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(samp1, sizeof(s16) << shift, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!PAK_fread(samp2, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(samp2, sizeof(s16) << shift, 1, stream)) return AAL_ERROR_FILEIO;
 
-		odd = AAL_UFALSE;
+		odd = false;
 		sample_i = 0;
 		nybble_i = 0;
 
-		for (aalULong i(0); i < header->wfx.nChannels; i++)
+		for (size_t i = 0; i < header->wfx.nChannels; i++)
 		{
 			if (predictor[i] >= header->wNumCoef) return AAL_ERROR_FORMAT;
 
 			coef1[i] = header->aCoef[(size_t)predictor[i]].iCoef1;
 			coef2[i] = header->aCoef[(size_t)predictor[i]].iCoef2;
 
-			((aalSWord *)cache_l)[i] = samp2[i];
+			((s16 *)cache_l)[i] = samp2[i];
 		}
 
 		if (!PAK_fread(nybble_l, nybble_c, 1, stream)) return AAL_ERROR_FILEIO;

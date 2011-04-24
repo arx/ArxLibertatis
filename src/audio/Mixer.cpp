@@ -34,15 +34,15 @@ namespace audio {
 
 Mixer::Mixer() :
 	paused(false),
-	volume(AAL_DEFAULT_VOLUME),
+	volume(DEFAULT_VOLUME),
 	parent(NULL),
-	finalVolume(AAL_DEFAULT_VOLUME)
+	finalVolume(DEFAULT_VOLUME)
 {
 }
 
 Mixer::~Mixer() {
 	
-	for(aalULong i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.Size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
 			_mixer.Delete(i);
 		}
@@ -53,10 +53,10 @@ Mixer::~Mixer() {
 
 void Mixer::clear(bool force) {
 	
-	for(aalULong i = 0; i < _amb.Size(); i++) {
+	for(size_t i = 0; i < _amb.Size(); i++) {
 		Ambiance * ambiance = _amb[i];
 		if(ambiance && _mixer[ambiance->getChannel().mixer] == this) {
-			if(force || ambiance->getChannel().flags & AAL_FLAG_AUTOFREE) {
+			if(force || ambiance->getChannel().flags & FLAG_AUTOFREE) {
 				_amb.Delete(i);
 			} else {
 				ambiance->stop();
@@ -96,7 +96,7 @@ void Mixer::updateVolume() {
 	}
 	finalVolume = vol;
 	
-	for(aalULong i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.Size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
 			_mixer[i]->updateVolume();
 		}
@@ -138,7 +138,7 @@ aalError Mixer::setParent(const Mixer * _mixer) {
 
 aalError Mixer::stop() {
 	
-	for(aalULong i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.Size(); i++) {
 		Mixer * mixer = _mixer[i];
 		if(mixer && mixer->parent == this) {
 			mixer->stop();
@@ -154,13 +154,13 @@ aalError Mixer::stop() {
 
 aalError Mixer::pause() {
 	
-	for(aalULong i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.Size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
 			_mixer[i]->pause();
 		}
 	}
 	
-	for(aalULong i = 0; i < _amb.Size(); i++) {
+	for(size_t i = 0; i < _amb.Size(); i++) {
 		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
 			_amb[i]->pause();
 		}
@@ -183,13 +183,13 @@ aalError Mixer::resume() {
 		return AAL_OK;
 	}
 	
-	for(aalULong i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.Size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
 			_mixer[i]->resume();
 		}
 	}
 	
-	for(aalULong i = 0; i < _amb.Size(); i++) {
+	for(size_t i = 0; i < _amb.Size(); i++) {
 		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
 			_amb[i]->resume();
 		}
