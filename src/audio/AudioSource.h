@@ -96,12 +96,12 @@ public:
 	virtual aalError resume() = 0;
 	virtual aalError update() = 0;
 	
-	inline aalSLong getId() { return id; }
-	inline Sample * getSample() { return sample; }
-	inline const aalChannel & getChannel() { return channel; }
-	inline Status getStatus() { return status; }
-	inline bool isPlaying() { return status == PLAYING; }
-	inline bool isIdle() { return status == IDLE; }
+	inline aalSLong getId() const { return id; }
+	inline Sample * getSample() const { return sample; }
+	inline const aalChannel & getChannel() const { return channel; }
+	inline Status getStatus() const { return status; }
+	inline bool isPlaying() const { return status == PLAYING; }
+	inline bool isIdle() const { return status == IDLE; }
 	
 	virtual aalError updateVolume() = 0;
 	

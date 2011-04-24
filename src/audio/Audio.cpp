@@ -229,40 +229,32 @@ aalError aalUpdate() {
 		}
 	}
 	
-	backend->updateDeferred();
+	aalError ret = backend->updateDeferred();
 	
 	AAL_EXIT
 	
-	return AAL_OK;
+	return ret;
 }
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Resource creation                                                         //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalSLong aalCreateMixer(const char * name)
-	{
-		Mixer * mixer = NULL;
-		aalSLong id;
+// Resource creation
 
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT)) return AAL_SFALSE;
-
-		mixer = new Mixer;
-
-		if ((name && mixer->SetName(name)) || (id = _mixer.Add(mixer)) == AAL_SFALSE)
-		{
-			delete mixer;
-
-			if (mutex) mutex->unlock();
-
-			return AAL_SFALSE;
-		}
-
-		if (mutex) mutex->unlock();
-
-		return id;
+aalSLong aalCreateMixer() {
+	
+	AAL_ENTRY
+	
+	Mixer * mixer = new Mixer();
+	
+	aalSLong id = _mixer.Add(mixer);
+	if(id == AAL_SFALSE) {
+		delete mixer;
+		AAL_EXIT
+		return AAL_SFALSE;
 	}
+	
+	AAL_EXIT
+	
+	return id;
+}
 
 	aalSLong aalCreateSample(const string & name)
 	{
@@ -390,30 +382,6 @@ aalError aalDeleteSample(aalSLong sample_id) {
 		if (mutex) mutex->unlock();
 
 		return AAL_OK;
-	}
-
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Retrieve resource by name                                                 //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalSLong aalGetMixer(const char * name)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_SFALSE;
-
-		for (aalULong i(0); i < _mixer.Size(); i++)
-			if (_mixer[i] && (!name || !strcasecmp(name, _mixer[i]->name)))
-			{
-				if (mutex) mutex->unlock();
-
-				return i;
-			}
-
-		if (mutex) mutex->unlock();
-
-		return AAL_SFALSE;
 	}
 
 	aalSLong aalGetAmbiance(const char * name)
@@ -556,152 +524,119 @@ aalError aalSetListenerEnvironment(aalSLong e_id) {
 	return ret;
 }
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Mixer setup                                                               //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
+// Mixer setup
 
-	aalError aalSetMixerVolume(aalSLong m_id, float volume)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_mixer.IsNotValid(m_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "SetMixerVolume " << m_id << " volume=" << volume;
-
-		_mixer[m_id]->SetVolume(volume);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
-	}
-
-	aalError aalSetMixerParent(aalSLong m_id, aalSLong pm_id)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (m_id == pm_id || _mixer.IsNotValid(m_id) || _mixer.IsNotValid(pm_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "SetMixerParent " << m_id << " parent=" << pm_id;
-
-		_mixer[m_id]->SetParent(_mixer[pm_id]);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Mixer status                                                              //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-
-	aalError aalGetMixerVolume(aalSLong m_id, aalFloat * volume)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-		{
-			*volume = AAL_DEFAULT_VOLUME;
-			return AAL_ERROR_TIMEOUT;
-		}
-
-		if (_mixer.IsNotValid(m_id))
-		{
-			*volume = AAL_DEFAULT_VOLUME;
-
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-
-		_mixer[m_id]->GetVolume(*volume);
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Mixer control                                                             //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
+aalError aalSetMixerVolume(aalSLong m_id, float volume) {
 	
-	aalError aalMixerStop(aalSLong m_id)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_mixer.IsNotValid(m_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "MixerStop " << m_id;
-
-		_mixer[m_id]->Stop();
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+	AAL_ENTRY
+	
+	if(!_mixer.IsValid(m_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	LogDebug << "SetMixerVolume " << m_id << " volume=" << volume;
+	
+	aalError ret = _mixer[m_id]->setVolume(volume);
+	
+	AAL_EXIT
+	
+	return ret;
+}
 
-	aalError aalMixerPause(aalSLong m_id)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
-
-		if (_mixer.IsNotValid(m_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "MixerPause " << m_id;
-
-		_mixer[m_id]->Pause();
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalSetMixerParent(aalSLong m_id, aalSLong pm_id) {
+	
+	AAL_ENTRY
+	
+	if(m_id == pm_id || !_mixer.IsValid(m_id) || !_mixer.IsValid(pm_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	LogDebug << "SetMixerParent " << m_id << " parent=" << pm_id;
+	
+	aalError ret = _mixer[m_id]->setParent(_mixer[pm_id]);
+	
+	AAL_EXIT
+	
+	return ret;
+}
 
-	aalError aalMixerResume(aalSLong m_id)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_ERROR_TIMEOUT;
+// Mixer status
 
-		if (_mixer.IsNotValid(m_id))
-		{
-			if (mutex) mutex->unlock();
-
-			return AAL_ERROR_HANDLE;
-		}
-		
-		LogDebug << "MixerResume " << m_id;
-
-		_mixer[m_id]->Resume();
-
-		if (mutex) mutex->unlock();
-
-		return AAL_OK;
+aalError aalGetMixerVolume(aalSLong m_id, aalFloat * volume) {
+	
+	*volume = AAL_DEFAULT_VOLUME;
+	
+	AAL_ENTRY
+	
+	if(!_mixer.IsValid(m_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
 	}
+	
+	*volume = _mixer[m_id]->getVolume();
+	
+	AAL_EXIT
+	
+	return AAL_OK;
+}
+
+// Mixer control 
+
+aalError aalMixerStop(aalSLong m_id) {
+	
+	AAL_ENTRY
+	
+	if(!_mixer.IsValid(m_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
+	}
+	
+	LogDebug << "MixerStop " << m_id;
+	
+	aalError ret = _mixer[m_id]->stop();
+	
+	AAL_EXIT
+	
+	return ret;
+}
+
+aalError aalMixerPause(aalSLong m_id) {
+	
+	AAL_ENTRY;
+	
+	if(!_mixer.IsValid(m_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
+	}
+	
+	LogDebug << "MixerPause " << m_id;
+	
+	aalError ret = _mixer[m_id]->pause();
+	
+	AAL_EXIT
+	
+	return ret;
+}
+
+aalError aalMixerResume(aalSLong m_id) {
+	
+	AAL_ENTRY
+	
+	if(!_mixer.IsValid(m_id)) {
+		AAL_EXIT
+		return AAL_ERROR_HANDLE;
+	}
+	
+	LogDebug << "MixerResume " << m_id;
+	
+	aalError ret = _mixer[m_id]->resume();
+	
+	AAL_EXIT
+	
+	return ret;
+}
 
 // Sample setup
 

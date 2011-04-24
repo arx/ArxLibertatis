@@ -45,7 +45,7 @@ namespace audio {
 	// Resource
 	
 	// Creation
-	aalSLong aalCreateMixer(const char * name = NULL);
+	aalSLong aalCreateMixer();
 	aalSLong aalCreateSample(const std::string & name);
 	aalSLong aalCreateAmbiance(const char * name = NULL);
 	aalSLong aalCreateEnvironment(const char * name = NULL);

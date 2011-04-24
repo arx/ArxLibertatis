@@ -128,22 +128,6 @@ aalError OpenALSource::init(aalSLong _id, const aalChannel & _channel) {
 	}
 	
 	channel = _channel;
-	
-	if(_mixer[channel.mixer]->flags & AAL_FLAG_VOLUME) {
-		channel.flags |= AAL_FLAG_VOLUME;
-		channel.volume = 1.0F;
-	}
-	
-	if(_mixer[channel.mixer]->flags & AAL_FLAG_PITCH) {
-		channel.flags |= AAL_FLAG_PITCH;
-		channel.pitch = 1.0F;
-	}
-	
-	if(_mixer[channel.mixer]->flags & AAL_FLAG_PAN) {
-		channel.flags |= AAL_FLAG_PAN;
-		channel.pan = 0.0F;
-	}
-	
 	if(channel.flags & FLAG_ANY_3D_FX) {
 		channel.flags &= ~AAL_FLAG_PAN;
 	}
@@ -414,11 +398,8 @@ aalError OpenALSource::updateVolume() {
 		return AAL_ERROR_INIT;
 	}
 	
-	aalFloat volume = 1.f;
 	const Mixer * mixer = _mixer[channel.mixer];
-	while(mixer) {
-		volume *= mixer->volume, mixer = mixer->parent;
-	}
+	aalFloat volume = mixer ? mixer->getFinalVolume() : 1.f;
 	
 	if(volume) {
 		// LogToLinearVolume(LinearToLogVolume(volume) * channel.volume)
@@ -439,14 +420,7 @@ aalError OpenALSource::setPitch(float p) {
 	
 	channel.pitch = clamp(p, 0.1f, 2.f);
 	
-	float pitch = 1.f;
-	const Mixer * mixer = _mixer[channel.mixer];
-	while(mixer) {
-		pitch *= mixer->pitch, mixer = mixer->parent;
-	}
-	pitch = clamp(pitch, 0.1f, 2.f);
-	
-	alSourcef(source, AL_PITCH, channel.pitch * pitch);
+	alSourcef(source, AL_PITCH, channel.pitch);
 	AL_CHECK_ERROR("setting source pitch")
 	
 	return AAL_OK;

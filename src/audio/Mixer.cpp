@@ -37,21 +37,13 @@ using namespace std;
 
 namespace audio {
 
-	const aalULong MIXER_PAUSED = 0x00000001;
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Constrcutor and destructor                                                //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	Mixer::Mixer() :
-		name(NULL), status(0), flags(0),
-		volume(AAL_DEFAULT_VOLUME),
-		pitch(AAL_DEFAULT_PITCH),
-		pan(AAL_DEFAULT_PAN),
-		parent(NULL)
-	{
-	}
+Mixer::Mixer() :
+	paused(false),
+	volume(AAL_DEFAULT_VOLUME),
+	parent(NULL),
+	finalVolume(AAL_DEFAULT_VOLUME)
+{
+}
 
 Mixer::~Mixer() {
 	
@@ -62,8 +54,6 @@ Mixer::~Mixer() {
 	}
 	
 	clear(true);
-	
-	free(name);
 }
 
 void Mixer::clear(bool force) {
@@ -90,39 +80,30 @@ void Mixer::clear(bool force) {
 	
 }
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Setup                                                                     //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError Mixer::SetName(const char * _name)
-	{
-		void * ptr;
-
-		if (!_name)
-		{
-			free(name), name = NULL;
-			return AAL_OK;
-		}
-
-		ptr = realloc(name, strlen(_name) + 1);
-
-		if (!ptr) return AAL_ERROR_MEMORY;
-
-		name = (char *)ptr;
-
-		strcpy(name, _name);
-
+aalError Mixer::setVolume(float v) {
+	
+	float vol = clamp(v, 0.f, 1.f);
+	if(volume == vol) {
 		return AAL_OK;
 	}
-
-aalError Mixer::SetVolume(const aalFloat & v) {
+	volume = vol;
 	
-	volume = v > 1.f ? 1.f : v < 0.f ? 0.f : v;
+	updateVolume();
+	
+	return AAL_OK;
+}
+
+void Mixer::updateVolume() {
+	
+	float vol = parent ? parent->finalVolume * volume : volume;
+	if(finalVolume == vol) {
+		return;
+	}
+	finalVolume = vol;
 	
 	for(aalULong i = 0; i < _mixer.Size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
-			_mixer[i]->SetVolume(_mixer[i]->volume);
+			_mixer[i]->updateVolume();
 		}
 	}
 	
@@ -132,64 +113,55 @@ aalError Mixer::SetVolume(const aalFloat & v) {
 		}
 	}
 	
+}
+
+aalError Mixer::setParent(const Mixer * _mixer) {
+	
+	if(parent == _mixer) {
+		return AAL_OK;
+	}
+	
+	// Check for cyles.
+	const Mixer * mixer = _mixer;
+	while(mixer) {
+		if(mixer == this) {
+			return AAL_ERROR;
+		}
+		mixer = mixer->parent;
+	}
+	
+	parent = _mixer;
+	
+	updateVolume();
+	
+	if(parent && !paused && parent->paused) {
+		pause();
+	}
+	
 	return AAL_OK;
 }
 
-	aalError Mixer::SetParent(const Mixer * _mixer)
-	{
-		const Mixer * mixer = _mixer;
-
-		while (mixer)
-		{
-			if (mixer == this) return AAL_ERROR;
-
-			mixer = mixer->parent;
-		}
-
-		parent = _mixer;
-		return AAL_OK;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Status                                                                    //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-
-	aalError Mixer::GetVolume(aalFloat & _volume) const
-	{
-		_volume = volume;
-		return AAL_OK;
-	}
-
-	aalUBool Mixer::IsPaused() const
-	{
-		return status & MIXER_PAUSED ? AAL_UTRUE : AAL_UFALSE;
-	}
-
-// Control
-
-aalError Mixer::Stop() {
+aalError Mixer::stop() {
 	
 	for(aalULong i = 0; i < _mixer.Size(); i++) {
 		Mixer * mixer = _mixer[i];
 		if(mixer && mixer->parent == this) {
-			mixer->Stop();
+			mixer->stop();
 		}
 	}
 	
 	clear(false);
 	
-	status &= ~MIXER_PAUSED;
+	paused = false;
 	
 	return AAL_OK;
 }
 
-aalError Mixer::Pause() {
+aalError Mixer::pause() {
 	
 	for(aalULong i = 0; i < _mixer.Size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
-			_mixer[i]->Pause();
+			_mixer[i]->pause();
 		}
 	}
 	
@@ -205,20 +177,20 @@ aalError Mixer::Pause() {
 		}
 	}
 	
-	status |= MIXER_PAUSED;
+	paused = true;
 	
 	return AAL_OK;
 }
 
-aalError Mixer::Resume() {
+aalError Mixer::resume() {
 	
-	if(!(status & MIXER_PAUSED)) {
+	if(!paused) {
 		return AAL_OK;
 	}
 	
 	for(aalULong i = 0; i < _mixer.Size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
-			_mixer[i]->Resume();
+			_mixer[i]->resume();
 		}
 	}
 	
@@ -234,7 +206,7 @@ aalError Mixer::Resume() {
 		}
 	}
 	
-	status &= ~MIXER_PAUSED;
+	paused = false;
 	
 	return AAL_OK;
 }

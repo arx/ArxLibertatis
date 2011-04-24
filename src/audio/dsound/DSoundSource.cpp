@@ -83,25 +83,8 @@ namespace audio {
 		_desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2;
 
 		if (channel.flags & AAL_FLAG_VOLUME) _desc.dwFlags |= DSBCAPS_CTRLVOLUME;
-		else if (_mixer[channel.mixer]->flags & AAL_FLAG_VOLUME)
-		{
-			channel.flags |= AAL_FLAG_VOLUME;
-			channel.volume = 1.0F;
-		}
-
 		if (channel.flags & AAL_FLAG_PITCH) _desc.dwFlags |= DSBCAPS_CTRLFREQUENCY;
-		else if (_mixer[channel.mixer]->flags & AAL_FLAG_PITCH)
-		{
-			channel.flags |= AAL_FLAG_PITCH;
-			channel.pitch = 1.0F;
-		}
-
 		if (channel.flags & AAL_FLAG_PAN) _desc.dwFlags |= DSBCAPS_CTRLPAN;
-		else if (_mixer[channel.mixer]->flags & AAL_FLAG_PAN)
-		{
-			channel.flags |= AAL_FLAG_PAN;
-			channel.pan = 0.0F;
-		}
 
 		if (channel.flags & FLAG_ANY_3D_FX)
 		{
@@ -301,12 +284,8 @@ aalError DSoundSource::updateVolume() {
 		return AAL_ERROR_INIT;
 	}
 	
-	aalFloat volume = 1.f;
-	
 	const Mixer * mixer = _mixer[channel.mixer];
-	while(mixer) {
-		volume *= mixer->volume, mixer = mixer->parent;
-	}
+	aalFloat volume = mixer ? mixer->getFinalVolume() : 1.f;
 	
 	if(volume) {
 		volume = LinearToLogVolume(volume) * channel.volume;
@@ -327,27 +306,20 @@ aalError DSoundSource::updateVolume() {
 	return AAL_OK;
 }
 
-	aalError DSoundSource::setPitch(float p) {
-		if (!(channel.flags & AAL_FLAG_PITCH)) return AAL_ERROR_INIT;
-
-		float pitch = 1.f;
-		const Mixer * mixer = _mixer[channel.mixer];
-
-		channel.pitch = p;
-
-		if (channel.pitch > 2.0F) channel.pitch = 2.0F;
-		else if (channel.pitch < 0.1F) channel.pitch = 0.1F;
-
-		while (mixer) pitch *= mixer->pitch, mixer = mixer->parent;
-
-		if (pitch > 2.0F) pitch = 2.0F;
-		else if (pitch < 0.1F) pitch = 0.1F;
-
-		if (lpdsb->SetFrequency(aalULong(channel.pitch * pitch * sample->format.frequency)))
-			return AAL_ERROR_SYSTEM;
-
-		return AAL_OK;
+aalError DSoundSource::setPitch(float p) {
+	
+	if(!(channel.flags & AAL_FLAG_PITCH)) {
+		return AAL_ERROR_INIT;
 	}
+	
+	channel.pitch = clamp(p, 0.1f, 2.f);
+	
+	if(lpdsb->SetFrequency((DWORD)(channel.pitch * sample->format.frequency))) {
+		return AAL_ERROR_SYSTEM;
+	}
+	
+	return AAL_OK;
+}
 
 	aalError DSoundSource::setPan(float p) {
 		

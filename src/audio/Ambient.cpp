@@ -873,16 +873,9 @@ namespace audio {
 
 		const Mixer * mixer = _mixer[channel.mixer];
 
-		while (mixer)
-		{
-			if (mixer->IsPaused())
-			{
-				flags |= IS_PAUSED;
-				flags &= ~IS_PLAYING;
-				break;
-			}
-
-			mixer = mixer->parent;
+		if(mixer && mixer->isPaused()) {
+			flags |= IS_PAUSED;
+			flags &= ~IS_PLAYING;
 		}
 
 		return AAL_OK;
