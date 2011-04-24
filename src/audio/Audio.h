@@ -77,9 +77,9 @@ namespace audio {
 	aalError aalSetListenerEnvironment(aalSLong environment_id);
 	
 	aalError aalGetListenerName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalGetListenerUnitFactor(aalFloat & factor);
-	aalError aalGetListenerDopplerFactor(aalFloat & factor);
-	aalError aalGetListenerRolloffFactor(aalFloat & factor);
+	aalError aalGetListenerUnitFactor(float & factor);
+	aalError aalGetListenerDopplerFactor(float & factor);
+	aalError aalGetListenerRolloffFactor(float & factor);
 	aalError aalGetListenerPosition(aalVector & position);
 	aalError aalGetListenerDirection(aalVector & front, aalVector * up);
 	aalError aalGetListenerVelocity(aalVector & velocity);
@@ -91,7 +91,7 @@ namespace audio {
 	aalError aalSetMixerVolume(aalSLong mixer_id, float volume);
 	aalError aalSetMixerParent(aalSLong mixer_id, aalSLong parent_mixer_id);
 	// Status
-	aalError aalGetMixerVolume(aalSLong mixer_id, aalFloat * volume);
+	aalError aalGetMixerVolume(aalSLong mixer_id, float * volume);
 	aalUBool IsMixerEnabled(aalSLong mixer_id, const aalFlag & flag);
 	aalUBool IsMixerDisabled(aalSLong mixer_id, const aalFlag & flag);
 	aalUBool IsMixerPaused(aalSLong mixer_id);
@@ -107,9 +107,9 @@ namespace audio {
 	aalError aalSetSamplePitch(aalSLong sample_id, float pitch);
 	aalError aalSetSamplePosition(aalSLong sample_id, const aalVector & position);
 	// Status
-	aalError aalGetSampleName(aalSLong sample_id, char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalGetSampleLength(aalSLong sample_id, aalULong & length, const aalUnit & unit = AAL_UNIT_MS);
-	aalError aalGetSamplePan(aalSLong sample_id, aalFloat * pan);
+	aalError aalGetSampleName(aalSLong sample_id, std::string & name);
+	aalError aalGetSampleLength(aalSLong sample_id, aalULong & length, aalUnit unit = AAL_UNIT_MS);
+	aalError aalGetSamplePan(aalSLong sample_id, float * pan);
 	aalError aalGetSampleCone(aalSLong sample_id, aalCone * cone);
 	bool aalIsSamplePlaying(aalSLong sample_id);
 	// Control
@@ -129,7 +129,7 @@ namespace audio {
 	aalError aalGetAmbianceName(aalSLong ambiance_id, char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
 	aalError aalGetAmbianceUserData(aalSLong ambiance_id, void ** data);
 	aalError aalGetAmbianceTrackID(aalSLong ambiance_id, const char * name, aalSLong & track_id);
-	aalError aalGetAmbianceVolume(aalSLong ambiance_id, aalFloat & volume);
+	aalError aalGetAmbianceVolume(aalSLong ambiance_id, float & volume);
 	aalUBool aalIsAmbianceLooped(aalSLong ambiance_id);
 	// Control
 	//play_count == 0 -> infinite loop, play_count == 1 -> play once

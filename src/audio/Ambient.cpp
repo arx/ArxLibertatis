@@ -615,11 +615,11 @@ namespace audio {
 			aalFloat min, max, cur;
 			aalFloat size;
 
-			length = sample->length;
+			length = sample->getLength();
 			size = aalFloat(length) * (key->loop + 1);
 
-			min = key->pitch.min * sample->format.frequency * key->pitch.interval * 0.001F;
-			max = key->pitch.max * sample->format.frequency * key->pitch.interval * 0.001F;
+			min = key->pitch.min * sample->getFormat().frequency * key->pitch.interval * 0.001F;
+			max = key->pitch.max * sample->getFormat().frequency * key->pitch.interval * 0.001F;
 
 			cur = max;
 
@@ -636,8 +636,8 @@ namespace audio {
 		else
 		{
 			aalULong size, loop;
-
-			sample->GetLength(size);
+			
+			size = BytesToUnits(sample->getLength(), sample->getFormat(), AAL_UNIT_MS);
 
 			loop = (key->loop + 1) / 2;
 			f_lgt = (size * loop) * (1.0F / key->pitch.max);
@@ -773,7 +773,7 @@ namespace audio {
 			--track;
 
 			if (track->name && !strcasecmp(track->name, _name)) break;
-			else if (!strcasecmp(_sample[Backend::getSampleId(track->s_id)]->name, _name)) break;
+			else if (!strcasecmp(_sample[Backend::getSampleId(track->s_id)]->getName(), _name)) break;
 		}
 
 		t_id = track < track_l ? AAL_SFALSE : track - track_l;
@@ -839,9 +839,9 @@ namespace audio {
 			aalSLong s_id = Backend::getSampleId(track->s_id);
 			if(_sample.IsValid(s_id)) {
 				Sample * sample = _sample[s_id];
-				if(!sample->callb_c) {
-					sample->SetCallback(OnAmbianceSampleStart, track, 0, AAL_UNIT_BYTES);
-					sample->SetCallback(OnAmbianceSampleEnd, track, sample->length, AAL_UNIT_BYTES);
+				if(!sample->getCallbackCount()) {
+					sample->setCallback(OnAmbianceSampleStart, track, 0, AAL_UNIT_BYTES);
+					sample->setCallback(OnAmbianceSampleEnd, track, sample->getLength(), AAL_UNIT_BYTES);
 				}
 			}
 

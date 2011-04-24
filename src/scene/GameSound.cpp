@@ -557,7 +557,6 @@ long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, float pi
 	if (!bIsActive || sample_id == AAL_SFALSE) return AAL_SFALSE;
 
 	aalChannel channel;
-	char sample_name[256];
 	float presence;
 
 	channel.mixer = ARX_SOUND_MixerGameSample;
@@ -570,6 +569,7 @@ long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, float pi
 			return -1;
 	}
 
+	string sample_name;
 	aalGetSampleName(sample_id, sample_name);
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -724,13 +724,13 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EE
 	if (sample_id == AAL_SFALSE) return 0;
 
 	aalChannel channel;
-	char sample_name[256];
 	float presence;
 
 	channel.mixer = ARX_SOUND_MixerGameSample;
 
 	channel.flags = AAL_FLAG_VOLUME | AAL_FLAG_PITCH | AAL_FLAG_POSITION | AAL_FLAG_REVERBERATION | AAL_FLAG_FALLOFF;
 
+	string sample_name;
 	aalGetSampleName(sample_id, sample_name);
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -794,11 +794,11 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 
 					aalChannel channel;
 					channel.mixer = ARX_SOUND_MixerGameSample;
-					char sample_name[256];
 					float presence;
 
 					channel.flags = AAL_FLAG_VOLUME | AAL_FLAG_PITCH | AAL_FLAG_POSITION | AAL_FLAG_REVERBERATION | AAL_FLAG_FALLOFF;
 
+					string sample_name;
 					aalGetSampleName(sample_id, sample_name);
 					presence = GetSamplePresenceFactor(sample_name);
 					channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -896,14 +896,11 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
 	channel.flags = AAL_FLAG_VOLUME;
 	channel.volume = 1.0F;
 
-	if (position)
-	{
-		char sample_name[256];
-		float presence;
-
+	if(position) {
 		channel.flags |= AAL_FLAG_POSITION | AAL_FLAG_REVERBERATION | AAL_FLAG_FALLOFF;
+		string sample_name;
 		aalGetSampleName(sample_id, sample_name);
-		presence = GetSamplePresenceFactor(sample_name);
+		float presence = GetSamplePresenceFactor(sample_name);
 		channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 		channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
 		channel.position.x = position->x;
@@ -1232,13 +1229,11 @@ void ARX_SOUND_PushAnimSamples()
 
 					if (anim->frames[k].sample != -1)
 					{
-						char dest[256];
+						string dest;
 						aalGetSampleName(anim->frames[k].sample, dest);
-
-						if (dest[0])
-						{
+						if(!dest.empty()) {
 							elems = (char **)realloc(elems, sizeof(char *) * (nbelems + 1));
-							elems[nbelems] = strdup(dest);
+							elems[nbelems] = strdup(dest.c_str());
 							numbers = (long *)realloc(numbers, sizeof(long) * (nbelems + 1));
 							numbers[nbelems] = number;
 							nbelems++;

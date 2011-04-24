@@ -47,6 +47,10 @@ Environment::Environment() :
 
 aalError Environment::load(const string & _name) {
 	
+	if(!name.empty()) {
+		return AAL_ERROR_INIT;
+	}
+	
 	PakFileHandle * file = OpenResource(_name, environment_path);
 	if(!file) {
 		return AAL_ERROR_FILEIO;

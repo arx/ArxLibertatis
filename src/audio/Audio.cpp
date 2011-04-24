@@ -256,37 +256,26 @@ aalSLong aalCreateMixer() {
 	return id;
 }
 
-	aalSLong aalCreateSample(const string & name)
-	{
-		if (mutex && !mutex->lock(MUTEX_TIMEOUT))
-			return AAL_SFALSE;
-
-		Sample * sample = NULL;
-		aalSLong s_id;
-
-		if (!sample)
-		{
-			sample = new Sample();
-		}
-		
-
-		if (sample->load(name) || (s_id = _sample.Add(sample)) == AAL_SFALSE)
-		{
-			delete sample;
-			
-			LogWarning << "Sample " << name << " not found";
-
-			if (mutex) mutex->unlock();
-
-			return AAL_SFALSE;
-		}
-
-		sample->Catch();
-
-		if (mutex) mutex->unlock();
-
-		return Backend::clearSource(s_id);
+aalSLong aalCreateSample(const string & name) {
+	
+	AAL_ENTRY
+	
+	Sample * sample = new Sample();
+	
+	aalSLong s_id;
+	if(sample->load(name) || (s_id = _sample.Add(sample)) == AAL_SFALSE) {
+		delete sample;
+		LogWarning << "Sample " << name << " not found";
+		AAL_EXIT
+		return AAL_SFALSE;
 	}
+	
+	sample->Catch();
+	
+	AAL_EXIT
+	
+	return Backend::clearSource(s_id);
+}
 
 	aalSLong aalCreateAmbiance(const char * name)
 	{
@@ -681,9 +670,9 @@ aalError aalSetSamplePosition(aalSLong sample_id, const aalVector & position) {
 
 // Sample status
 
-aalError aalGetSampleName(aalSLong sample_id, char * name, const aalULong & max_char) {
+aalError aalGetSampleName(aalSLong sample_id, string & name) {
 	
-	*name = 0;
+	name.clear();
 	
 	AAL_ENTRY
 	
@@ -693,27 +682,27 @@ aalError aalGetSampleName(aalSLong sample_id, char * name, const aalULong & max_
 		return AAL_ERROR_HANDLE;
 	}
 	
-	_sample[s_id]->GetName(name, max_char);
+	name = _sample[s_id]->getName();
 	
 	AAL_EXIT
 	
 	return AAL_OK;
 }
 
-aalError aalGetSampleLength(aalSLong sample_id, aalULong & _length, const aalUnit & unit) {
+aalError aalGetSampleLength(aalSLong sample_id, aalULong & _length, aalUnit unit) {
 	
 	_length = 0;
 	
 	AAL_ENTRY
 	
 	aalSLong s_id = Backend::getSampleId(sample_id);
-	
 	if(!_sample.IsValid(s_id)) {
 		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
-	_sample[s_id]->GetLength(_length, unit);
+	Sample * sample = _sample[s_id];
+	_length = BytesToUnits(sample->getLength(), sample->getFormat(), unit);
 	
 	AAL_EXIT
 	
@@ -749,7 +738,7 @@ aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, const a
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SamplePlay " << _sample[s_id]->name << " play_count=" << play_count;
+	LogDebug << "SamplePlay " << _sample[s_id]->getName() << " play_count=" << play_count;
 	
 	Source * source = backend->getSource(sample_id);
 	if(source) {
@@ -810,7 +799,7 @@ aalError aalSampleStop(aalSLong & sample_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SampleStop " << source->getSample()->name;
+	LogDebug << "SampleStop " << source->getSample()->getName();
 	
 	aalError ret = source->stop();
 	

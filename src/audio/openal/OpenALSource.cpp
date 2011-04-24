@@ -26,7 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/openal/OpenALSource.h"
 
 #include <cstdio>
-#include <limits>
 
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
@@ -36,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-#define ALPREFIX << "[" << (s16)(((id)&0xffff0000)>>16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->name : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
+#define ALPREFIX << "[" << (s16)(((id)&0xffff0000)>>16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
 
 #undef ALError
 #define ALError LogError ALPREFIX
@@ -48,7 +47,7 @@ static size_t nbsources = 0;
 static size_t nbbuffers = 0;
 
 // How often to queue the buffer when looping but not streaming.
-#define MAXLOOPBUFFERS std::max(NBUFFERS, NBUFFERS * (size_t)stream_limit_bytes / (size_t)sample->length)
+#define MAXLOOPBUFFERS std::max(NBUFFERS, NBUFFERS * (size_t)stream_limit_bytes / (size_t)sample->getLength())
 
 const size_t OpenALSource::NBUFFERS;
 
@@ -142,12 +141,12 @@ aalError OpenALSource::init() {
 	alSourcei(source, AL_LOOPING, AL_FALSE);
 	AL_CHECK_ERROR("generating source")
 	
-	streaming = (sample->length > (stream_limit_bytes * NBUFFERS));
+	streaming = (sample->getLength() > (stream_limit_bytes * NBUFFERS));
 	
-	LogAL("Init: length=" << sample->length << " " << (streaming ? "streaming" : "static") << (buffers[0] ? " (copy)" : ""));
+	LogAL("Init: length=" << sample->getLength() << " " << (streaming ? "streaming" : "static") << (buffers[0] ? " (copy)" : ""));
 	
 	if(!streaming && !buffers[0]) {
-		stream = CreateStream(sample->name);
+		stream = CreateStream(sample->getName());
 		if(!stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
@@ -157,7 +156,7 @@ aalError OpenALSource::init() {
 		AL_CHECK_ERROR("generating buffer")
 		arx_assert(buffers[0] != 0);
 		loadCount = 1;
-		if(aalError error = fillBuffer(0, sample->length)) {
+		if(aalError error = fillBuffer(0, sample->getLength())) {
 			return error;
 		}
 		arx_assert(!stream && !loadCount);
@@ -174,9 +173,9 @@ aalError OpenALSource::init() {
 	// Create 3D interface if required
 	if(channel.flags & FLAG_ANY_3D_FX) {
 		
-		if(sample->format.channels > 1) {
+		if(sample->getFormat().channels > 1) {
 			// TODO stereo formats don't work with positional audio
-			ALWarning << "too many channels for positional audio: " << sample->format.channels;
+			ALWarning << "too many channels for positional audio: " << sample->getFormat().channels;
 		}
 		
 		setPosition(channel.position);
@@ -201,7 +200,7 @@ aalError OpenALSource::fillAllBuffers() {
 	}
 	
 	if(!stream) {
-		stream = CreateStream(sample->name);
+		stream = CreateStream(sample->getName());
 		if(!stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
@@ -236,7 +235,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	arx_assert(loadCount > 0);
 	
-	size_t left = std::min(size, (size_t)sample->length - written);
+	size_t left = std::min(size, (size_t)sample->getLength() - written);
 	if(loadCount == 1) {
 		size = left;
 	}
@@ -255,8 +254,8 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 		return AAL_ERROR_SYSTEM;
 	}
 	written += read;
-	arx_assert(written <= sample->length);
-	if(written == sample->length) {
+	arx_assert(written <= sample->getLength());
+	if(written == sample->getLength()) {
 		written = 0;
 		if(!markAsLoaded()) {
 			DeleteStream(stream);
@@ -270,12 +269,12 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 					return AAL_ERROR_SYSTEM;
 				}
 				written += read;
-				arx_assert(written < sample->length);
+				arx_assert(written < sample->getLength());
 			}
 		}
 	}
 	
-	alBufferData(buffers[i], getALFormat(sample->format), data, size, sample->format.frequency);
+	alBufferData(buffers[i], getALFormat(sample->getFormat()), data, size, sample->getFormat().frequency);
 	delete[] data;
 	AL_CHECK_ERROR("setting buffer data")
 	
@@ -552,7 +551,7 @@ aalError OpenALSource::getFalloff(aalFalloff & falloff) const {
 }
 
 aalULong OpenALSource::getTime(aalUnit unit) const {
-	return BytesToUnits(time, sample->format, unit);
+	return BytesToUnits(time, sample->getFormat(), unit);
 }
 
 aalError OpenALSource::play(aalULong play_count) {
@@ -565,7 +564,7 @@ aalError OpenALSource::play(aalULong play_count) {
 		
 		// TODO set these in stop() and init()? (ie: why are these reset when pausing/resuming?)
 		time = read = written = 0;
-		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : std::numeric_limits<aalULong>::max();
+		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : (size_t)-1;
 		
 		alSourcei(source, AL_SEC_OFFSET, 0);
 		AL_CHECK_ERROR("set source offset")
@@ -831,18 +830,18 @@ aalError OpenALSource::updateBuffers() {
 	while(true) {
 		
 		// Check if it's time to launch a callback
-		while(callb_i < sample->callb_c && sample->callb[callb_i].time <= time) {
-			LogAL("invoking callback " << callb_i << " for time==" << sample->callb[callb_i].time);
-			sample->callb[callb_i].func(this, id, sample->callb[callb_i].data);
+		while(callb_i < sample->getCallbackCount() && sample->getCallback(callb_i).time <= time) {
+			LogAL("invoking callback " << callb_i << " for time==" << sample->getCallback(callb_i).time);
+			sample->getCallback(callb_i).func(this, id, sample->getCallback(callb_i).data);
 			callb_i++;
 		}
 		
-		if(time < sample->length) {
+		if(time < sample->getLength()) {
 			break;
 		}
 		
-		time -= sample->length;
-		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : std::numeric_limits<aalULong>::max();
+		time -= sample->getLength();
+		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : (size_t)-1;
 		
 		if(!time && status != PLAYING) {
 			// Prevent callback for time==0 being called again after playing.

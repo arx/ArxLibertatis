@@ -95,19 +95,19 @@ namespace audio {
 
 		_desc.lpwfxFormat = &_format;
 
-		_format.nSamplesPerSec = sample->format.frequency;
-		_format.wBitsPerSample = (aalUWord)sample->format.quality;
-		_format.nChannels = (aalUWord)sample->format.channels;
+		_format.nSamplesPerSec = sample->getFormat().frequency;
+		_format.wBitsPerSample = (aalUWord)sample->getFormat().quality;
+		_format.nChannels = (aalUWord)sample->getFormat().channels;
 		_format.wFormatTag = WAVE_FORMAT_PCM;
-		_format.nBlockAlign = (aalUWord)(sample->format.channels * (sample->format.quality >> 3));
-		_format.nAvgBytesPerSec = _format.nBlockAlign * sample->format.frequency;
+		_format.nBlockAlign = (aalUWord)(sample->getFormat().channels * (sample->getFormat().quality >> 3));
+		_format.nAvgBytesPerSec = _format.nBlockAlign * sample->getFormat().frequency;
 		_format.cbSize = 0;
 
 		// Get buffer size and determine if streaming must be enable
-		if (sample->length > stream_limit_bytes)
+		if (sample->getLength() > stream_limit_bytes)
 			size = stream_limit_bytes, streaming = AAL_UTRUE;
 		else
-			size = sample->length;
+			size = sample->getLength();
 
 		_desc.dwBufferBytes = size;
 
@@ -156,7 +156,7 @@ namespace audio {
 		}
 		else setPan(channel.pan);
 
-		stream = CreateStream(sample->name);
+		stream = CreateStream(sample->getName());
 
 		if (!stream) return AAL_ERROR_FILEIO;
 
@@ -314,7 +314,7 @@ aalError DSoundSource::setPitch(float p) {
 	
 	channel.pitch = clamp(p, 0.1f, 2.f);
 	
-	if(lpdsb->SetFrequency((DWORD)(channel.pitch * sample->format.frequency))) {
+	if(lpdsb->SetFrequency((DWORD)(channel.pitch * sample->getFormat().frequency))) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
@@ -443,7 +443,7 @@ aalError DSoundSource::setEnvironment(aalSLong environment) {
 	}
 
 	aalULong DSoundSource::getTime(aalUnit unit) const {
-		return BytesToUnits(time, sample->format, unit);
+		return BytesToUnits(time, sample->getFormat(), unit);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -652,13 +652,12 @@ aalError DSoundSource::setEnvironment(aalSLong environment) {
 		time += read < last ? read + size - last : read - last;
 
 		//Check if's time to launch a callback
-		if (callb_i < sample->callb_c && sample->callb[callb_i].time <= time)
-		{
-			sample->callb[callb_i].func(this, id, sample->callb[callb_i].data);
+		if(callb_i < sample->getCallbackCount() && sample->getCallback(callb_i).time <= time) {
+			sample->getCallback(callb_i).func(this, id, sample->getCallback(callb_i).data);
 			callb_i++;
 		}
 
-		if (time >= sample->length)
+		if (time >= sample->getLength())
 		{
 			if (loop)
 			{
@@ -672,7 +671,7 @@ aalError DSoundSource::setEnvironment(aalSLong environment) {
 
 			if (channel.flags & AAL_FLAG_CALLBACK) callb_i = 0;
 
-			time -= sample->length;
+			time -= sample->getLength();
 		}
 
 		if (stream) updateStreaming();

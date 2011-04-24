@@ -25,23 +25,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Sample.h"
 
-#include <cstdlib>
-#include <cstring>
-
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
-#include "io/Logger.h"
 
 using namespace std;
 
 namespace audio {
 
 Sample::Sample() : ResourceHandle(),
-	length(0),
-	data(NULL),
-	callb_c(0), callb(NULL) {
+	length(0) {
 }
 
 Sample::~Sample() {
@@ -55,76 +49,40 @@ Sample::~Sample() {
 		}
 	}
 	
-	free(callb);
-	free(data);
 }
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// File I/O                                                                  //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError Sample::load(const string & _name)
-	{
-		Stream * stream = CreateStream(_name);
-
-		if(!stream) {
-			return AAL_ERROR_FILEIO;
-		}
-
-		stream->GetFormat(format);
-		stream->GetLength(length);
-		DeleteStream(stream);
-
-		name = _name;
-
-		return AAL_OK;
+aalError Sample::load(const string & _name) {
+	
+	if(!name.empty()) {
+		return AAL_ERROR_INIT;
 	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Setup                                                                     //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-
-	aalError Sample::SetCallback(aalSampleCallback func, void * _data, const aalULong & time, const aalUnit & unit)
-	{
-		void * ptr;
-
-		ptr = realloc(callb, sizeof(Callback) * (callb_c + 1));
-
-		if (!ptr) return AAL_ERROR_MEMORY;
-
-		callb = (Callback *)ptr;
-
-		callb[callb_c].func = func;
-		callb[callb_c].data = _data;
-		callb[callb_c].time = UnitsToBytes(time, format, unit);
-
-		if (callb[callb_c].time > length) callb[callb_c].time = length;
-
-		callb_c++;
-
-		return AAL_OK;
+	
+	Stream * stream = CreateStream(_name);
+	if(!stream) {
+		return AAL_ERROR_FILEIO;
 	}
+	
+	stream->GetFormat(format);
+	stream->GetLength(length);
+	DeleteStream(stream);
+	
+	name = _name;
+	
+	return AAL_OK;
+}
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Status                                                                    //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError Sample::GetName(char * _name, const aalULong & max_char)
-	{
-		strncpy(_name, name.c_str(), max_char);
-
-		return AAL_OK;
+aalError Sample::setCallback(aalSampleCallback func, void * _data, aalULong time, aalUnit unit) {
+	
+	callbacks.reserve(callbacks.size() + 1);
+	
+	callbacks.back().func = func;
+	callbacks.back().data = _data;
+	callbacks.back().time = UnitsToBytes(time, format, unit);
+	if(callbacks.back().time > length) {
+		callbacks.back().time = length;
 	}
-
-	aalError Sample::GetLength(aalULong & _length, const aalUnit & unit)
-	{
-		_length = BytesToUnits(length, format, unit);
-
-		return AAL_OK;
-	}
+	
+	return AAL_OK;
+}
 
 } // namespace audio

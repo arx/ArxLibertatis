@@ -26,44 +26,52 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_SAMPLE_H
 #define ARX_AUDIO_SAMPLE_H
 
+#include <vector>
+
 #include "AudioTypes.h"
 #include "AudioResource.h"
 
 namespace audio {
+
+
+
+class Sample : public ResourceHandle {
+	
+public:
 	
 	struct Callback {
 		aalSampleCallback func;
 		void * data;
 		aalULong time;
-		aalULong done;
 	};
 	
-	class Sample : public ResourceHandle {
-		
-	public:
-		
-		Sample();
-		~Sample();
-		
-		// File I/O
-		aalError load(const std::string & name);
-		
-		// Setup
-		aalError SetCallback(aalSampleCallback func, void * data, const aalULong & time, const aalUnit & unit = AAL_UNIT_MS);
-		
-		// Status
-		aalError GetName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-		aalError GetLength(aalULong & length, const aalUnit & unit = AAL_UNIT_MS);
-		
-		std::string name;
-		aalULong length;
-		aalFormat format;
-		void * data; // User data
-		aalULong callb_c; // User callback count
-		Callback * callb; // User callback list
-		
-	};
+	Sample();
+	~Sample();
 	
+	// File I/O
+	aalError load(const std::string & name);
+	
+	// Setup
+	aalError setCallback(aalSampleCallback func, void * data, aalULong time, aalUnit unit = AAL_UNIT_MS);
+	
+	inline const std::string & getName() const { return name; }
+	inline aalULong getLength() const { return length; }
+	inline const aalFormat & getFormat() const { return format; }
+	inline size_t getCallbackCount() const { return callbacks.size(); }
+	inline const Callback & getCallback(size_t i) const { return callbacks[i]; }
+	
+	
+private:
+	
+	std::string name;
+	aalULong length;
+	aalFormat format;
+	
+	// TODO why is this in Sample?
+	std::vector<Callback> callbacks; // User callback list
+	
+};
+
 } // namespace audio
 
 #endif // ARX_AUDIO_SAMPLE_H

@@ -121,7 +121,7 @@ private:
 	
 	aalULong time; // Elapsed 'time'
 	aalULong read;
-	aalULong callb_i; // Next callback index
+	size_t callb_i; // Next callback index
 	
 	ALuint source;
 	
