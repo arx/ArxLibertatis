@@ -40,7 +40,7 @@ OpenALBackend::OpenALBackend() : device(NULL), context(NULL), hasEFX(false), rol
 
 OpenALBackend::~OpenALBackend() {
 	
-	sources.Clean();
+	sources.clear();
 	
 	if(context) {
 		alcDestroyContext(context);
@@ -91,14 +91,14 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	
 	SampleId s_id = getSampleId(sampleId);
 	
-	if(!_sample.IsValid(s_id)) {
+	if(!_sample.isValid(s_id)) {
 		return NULL;
 	}
 	
 	Sample * sample = _sample[s_id];
 	
 	OpenALSource * orig = NULL;
-	for(size_t i = 0; i < sources.Size(); i++) {
+	for(size_t i = 0; i < sources.size(); i++) {
 		if(sources[i] && sources[i]->getSample() == sample) {
 			orig = (OpenALSource*)sources[i];
 			break;
@@ -107,7 +107,7 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	
 	OpenALSource * source = new OpenALSource(sample);
 	
-	size_t index = sources.Add(source);
+	size_t index = sources.add(source);
 	if(index == (size_t)INVALID_ID) {
 		delete source;
 		return NULL;
@@ -115,7 +115,7 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	
 	SourceId id = (index << 16) | s_id;
 	if(orig ? source->init(id, orig, channel) : source->init(id, channel)) {
-		sources.Delete(index);
+		sources.remove(index);
 		return NULL;
 	}
 	
@@ -125,14 +125,14 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 Source * OpenALBackend::getSource(SourceId sourceId) {
 	
 	size_t index = ((sourceId >> 16) & 0x0000ffff);
-	if(!sources.IsValid(index)) {
+	if(!sources.isValid(index)) {
 		return NULL;
 	}
 	
 	Source * source = sources[index];
 	
 	SampleId sample = getSampleId(sourceId);
-	if(!_sample.IsValid(sample) || source->getSample() != _sample[sample]) {
+	if(!_sample.isValid(sample) || source->getSample() != _sample[sample]) {
 		return NULL;
 	}
 	
@@ -161,7 +161,7 @@ aalError OpenALBackend::setUnitFactor(float factor) {
 aalError OpenALBackend::setRolloffFactor(float factor) {
 	
 	rolloffFactor = factor;
-	for(size_t i = 0; i < sources.Size(); i++) {
+	for(size_t i = 0; i < sources.size(); i++) {
 		if(sources[i]) {
 			sources[i]->setRolloffFactor(rolloffFactor);
 		}

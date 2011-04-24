@@ -34,55 +34,55 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 namespace audio {
-	
-	class Backend;
-	class Ambiance;
-	class Environment;
-	class Sample;
-	class Mixer;
-	
-	// Common resource memory management
-	
-	// Internal globals
-	
-	const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY | FLAG_DIRECTION |
-	                                    FLAG_CONE | FLAG_FALLOFF | FLAG_REVERBERATION;
-	
-	// Audio device interface
-	extern Backend * backend;
-	
-	// Global settings
-	extern std::string sample_path;
-	extern std::string ambiance_path;
-	extern std::string environment_path;
-	extern size_t stream_limit_bytes;
-	extern size_t session_time;
-	
-	// Resources
-	extern ResourceList<Mixer> _mixer;
-	extern ResourceList<Sample> _sample;
-	extern ResourceList<Ambiance> _amb;
-	extern ResourceList<Environment> _env;
-	
-	// Internal functions
-	
-	// Random number generator
-	size_t Random();
-	float FRandom();
-	size_t InitSeed();
-	
-	// Conversion
-	size_t UnitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
-	size_t BytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
-	
-	inline float LinearToLogVolume(float volume) {
-		return 0.2F * (float)log10(volume) + 1.0F;
-	}
-	
-	inline float clamp(float v, float min, float max) {
-		return std::min(max, std::max(min, v));
-	}
-	
+
+class Backend;
+class Ambiance;
+class Environment;
+class Sample;
+class Mixer;
+
+// Common resource memory management
+
+// Internal globals
+
+const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY | FLAG_DIRECTION |
+                                    FLAG_CONE | FLAG_FALLOFF | FLAG_REVERBERATION;
+
+// Audio device interface
+extern Backend * backend;
+
+// Global settings
+extern std::string sample_path;
+extern std::string ambiance_path;
+extern std::string environment_path;
+extern size_t stream_limit_bytes;
+extern size_t session_time;
+
+// Resources
+extern ResourceList<Mixer> _mixer;
+extern ResourceList<Sample> _sample;
+extern ResourceList<Ambiance> _amb;
+extern ResourceList<Environment> _env;
+
+// Internal functions
+
+// Random number generator
+size_t Random();
+float FRandom();
+size_t InitSeed();
+
+// Conversion
+size_t UnitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
+size_t BytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
+
+inline float LinearToLogVolume(float volume) {
+	return 0.2F * (float)log10(volume) + 1.0F;
+}
+
+inline float clamp(float v, float min, float max) {
+	return std::min(max, std::max(min, v));
+}
+
 } // namespace audio
 
 #endif // ARX_AUDIO_AUDIOGLOBAL_H

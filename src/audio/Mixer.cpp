@@ -42,9 +42,9 @@ Mixer::Mixer() :
 
 Mixer::~Mixer() {
 	
-	for(size_t i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
-			_mixer.Delete(i);
+			_mixer.remove(i);
 		}
 	}
 	
@@ -53,11 +53,11 @@ Mixer::~Mixer() {
 
 void Mixer::clear(bool force) {
 	
-	for(size_t i = 0; i < _amb.Size(); i++) {
+	for(size_t i = 0; i < _amb.size(); i++) {
 		Ambiance * ambiance = _amb[i];
 		if(ambiance && _mixer[ambiance->getChannel().mixer] == this) {
 			if(force || ambiance->getChannel().flags & FLAG_AUTOFREE) {
-				_amb.Delete(i);
+				_amb.remove(i);
 			} else {
 				ambiance->stop();
 			}
@@ -66,7 +66,7 @@ void Mixer::clear(bool force) {
 	
 	// Delete sources referencing this mixer.
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
-		if(*p && _mixer.IsValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
 			p = backend->deleteSource(p);
 		} else {
 			++p;
@@ -96,14 +96,14 @@ void Mixer::updateVolume() {
 	}
 	finalVolume = vol;
 	
-	for(size_t i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
 			_mixer[i]->updateVolume();
 		}
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.IsValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
 			(*p)->updateVolume();
 		}
 	}
@@ -138,7 +138,7 @@ aalError Mixer::setParent(const Mixer * _mixer) {
 
 aalError Mixer::stop() {
 	
-	for(size_t i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.size(); i++) {
 		Mixer * mixer = _mixer[i];
 		if(mixer && mixer->parent == this) {
 			mixer->stop();
@@ -154,20 +154,20 @@ aalError Mixer::stop() {
 
 aalError Mixer::pause() {
 	
-	for(size_t i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
 			_mixer[i]->pause();
 		}
 	}
 	
-	for(size_t i = 0; i < _amb.Size(); i++) {
+	for(size_t i = 0; i < _amb.size(); i++) {
 		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
 			_amb[i]->pause();
 		}
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.IsValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
 			(*p)->pause();
 		}
 	}
@@ -183,20 +183,20 @@ aalError Mixer::resume() {
 		return AAL_OK;
 	}
 	
-	for(size_t i = 0; i < _mixer.Size(); i++) {
+	for(size_t i = 0; i < _mixer.size(); i++) {
 		if(_mixer[i] && _mixer[i]->parent == this) {
 			_mixer[i]->resume();
 		}
 	}
 	
-	for(size_t i = 0; i < _amb.Size(); i++) {
+	for(size_t i = 0; i < _amb.size(); i++) {
 		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
 			_amb[i]->resume();
 		}
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.IsValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
 			(*p)->resume();
 		}
 	}

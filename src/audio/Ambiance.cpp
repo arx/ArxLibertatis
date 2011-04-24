@@ -216,8 +216,8 @@ struct Ambiance::Track {
 			source->stop();
 		}
 		SampleId sid = Backend::getSampleId(s_id);
-		arx_assert(_sample.IsValid(sid));
-		_sample[sid]->Release();
+		arx_assert(_sample.isValid(sid));
+		_sample[sid]->dereference();
 		delete[] key_l;
 	}
 	
@@ -309,10 +309,10 @@ static SampleId _loadSample(PakFileHandle * file) {
 	
 	Sample * sample = new Sample(text);
 	SampleId id = INVALID_ID;
-	if(sample->load() || (id = _sample.Add(sample)) == INVALID_ID) {
+	if(sample->load() || (id = _sample.add(sample)) == INVALID_ID) {
 		delete sample;
 	} else {
-		sample->Catch();
+		sample->reference();
 	}
 	return id;
 }
@@ -601,7 +601,7 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_inter
 		--track;
 		
 		SampleId s_id = Backend::getSampleId(track->s_id);
-		if(_sample.IsValid(s_id)) {
+		if(_sample.isValid(s_id)) {
 			Sample * sample = _sample[s_id];
 			if(!sample->getCallbackCount()) {
 				sample->setCallback(OnAmbianceSampleStart, track, 0, UNIT_BYTES);
@@ -751,7 +751,7 @@ aalError Ambiance::update() {
 		--track;
 		
 		SampleId s_id = Backend::getSampleId(track->s_id);
-		if(!_sample.IsValid(s_id) || track->flags & Track::MUTED) {
+		if(!_sample.isValid(s_id) || track->flags & Track::MUTED) {
 			continue;
 		}
 		
@@ -804,7 +804,7 @@ static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data) {
 	
 	Source * instance = (Source *)inst;
 	Ambiance::Track * track = (Ambiance::Track*)data;
-	arx_assert(_amb.IsValid(track->a_id));
+	arx_assert(_amb.isValid(track->a_id));
 	TrackKey * key = &track->key_l[track->key_i];
 	
 	if(track->flags & Ambiance::Track::PREFETCHED) {
@@ -853,7 +853,7 @@ static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data) {
 void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
 	
 	Ambiance::Track * track = (Ambiance::Track*)data;
-	arx_assert(_amb.IsValid(track->a_id));
+	arx_assert(_amb.isValid(track->a_id));
 	Ambiance * ambiance = _amb[track->a_id];
 	TrackKey * key = &track->key_l[track->key_i];
 	
@@ -896,7 +896,7 @@ void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
 
 void Ambiance::setId(AmbianceId id) {
 	
-	arx_assert(_amb.IsValid(id) && _amb[id] == this);
+	arx_assert(_amb.isValid(id) && _amb[id] == this);
 	
 	Track * track = &track_l[track_c];
 	while(track > track_l) {

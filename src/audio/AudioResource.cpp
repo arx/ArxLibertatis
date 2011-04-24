@@ -31,7 +31,6 @@ using std::string;
 
 namespace audio {
 
-
 PakFileHandle * OpenResource(const string & name, const string & resource_path) {
 	
 	PakFileHandle * file = NULL;

@@ -31,32 +31,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct PakFileHandle;
 
 namespace audio {
+
+class Stream {
 	
-	class Stream {
-		
-	public:
-		
-		virtual ~Stream() {};
-		
-		// Setup
-		virtual aalError SetStream(PakFileHandle * stream) = 0;
-		virtual aalError SetPosition(size_t position) = 0;
-		
-		// Status
-		virtual aalError GetStream(PakFileHandle *& stream) = 0;
-		virtual aalError GetFormat(PCMFormat & format) = 0;
-		virtual aalError GetLength(size_t & length) = 0;
-		virtual aalError GetPosition(size_t & position) = 0;
-		
-		// File I/O
-		virtual aalError Read(void * buffer, size_t to_read, size_t & read) = 0;
-		
-	};
+public:
 	
-	// Utilities
-	Stream * CreateStream(const std::string & name);
-	aalError DeleteStream(Stream *&stream);
+	virtual ~Stream() {};
 	
+	// Setup
+	virtual aalError SetStream(PakFileHandle * stream) = 0;
+	virtual aalError SetPosition(size_t position) = 0;
+	
+	// Status
+	virtual aalError GetStream(PakFileHandle *& stream) = 0;
+	virtual aalError GetFormat(PCMFormat & format) = 0;
+	virtual aalError GetLength(size_t & length) = 0;
+	virtual aalError GetPosition(size_t & position) = 0;
+	
+	// File I/O
+	virtual aalError Read(void * buffer, size_t to_read, size_t & read) = 0;
+	
+};
+
+// Utilities
+Stream * CreateStream(const std::string & name);
+aalError DeleteStream(Stream *&stream);
+
 } // namespace audio
 
 #endif // ARX_AUDIO_STREAM_H

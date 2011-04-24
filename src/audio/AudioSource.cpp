@@ -6,11 +6,11 @@
 namespace audio {
 
 Source::Source(Sample * _sample) : id(INVALID_ID), sample(_sample), status(Idle) {
-	sample->Catch();
+	sample->reference();
 }
 
 Source::~Source() {
-	sample->Release();
+	sample->dereference();
 }
 
 } // namespace audio

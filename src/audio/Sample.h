@@ -33,8 +33,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-
-
 class Sample : public ResourceHandle {
 	
 public:
@@ -67,7 +65,6 @@ private:
 	size_t length;
 	PCMFormat format;
 	
-	// TODO why is this in Sample?
 	std::vector<Callback> callbacks; // User callback list
 	
 };
