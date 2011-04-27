@@ -73,11 +73,12 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	InitSeed();
 	
 	bool autoBackend = (backendName == "auto");
+	aalError error;
 	
 	if(autoBackend || backendName == "OpenAL") {
 		LogDebug << "initializing OpenAL backend";
 		OpenALBackend * _backend = new OpenALBackend();
-		if(_backend->init(enableEAX) == AAL_OK) {
+		if(!(error = _backend->init(enableEAX))) {
 			backend = _backend;
 		}
 	} else if(backendName != "DirectSound") {
@@ -88,13 +89,14 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	if(!backend && (autoBackend || backendName == "DirectSound")) {
 		LogDebug << "initializing DirectSound backend";
 		DSoundBackend * _backend = new DSoundBackend();
-		if(_backend->init(enableEAX) == AAL_OK) {
+		if(!(error = _backend->init(enableEAX))) {
 			backend = _backend;
 		}
 	}
 	
 	if(!backend) {
-		return AAL_ERROR_SYSTEM;
+		LogError << "no working backend available";
+		return error;
 	}
 	
 	mutex = new Lock();
