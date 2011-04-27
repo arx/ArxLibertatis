@@ -50,32 +50,46 @@ OpenALBackend::~OpenALBackend() {
 		alcCloseDevice(device);
 	}
 	
+	AL_CHECK_ERROR_N("cleanup",)
+	
 }
 
-aalError OpenALBackend::init(bool enableEax) {
+aalError OpenALBackend::init(bool enableEffects) {
 	
 	if(device) {
 		return AAL_ERROR_INIT;
 	}
 	
+	// clear error
+	alGetError();
+	
 	// Create OpenAL interface
 	device = alcOpenDevice(NULL);
 	if(!device) {
+		LogError << "error opening device: " << alcGetError(NULL);
 		return AAL_ERROR_SYSTEM;
 	}
 	
 	context = alcCreateContext(device, NULL);
+	if(!context) {
+		LogError << "error creating OpenAL context: " << alcGetError(device);
+	}
 	alcMakeContextCurrent(context);
 	
-	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
-	
-	hasEFX = enableEax && alcIsExtensionPresent(device, "ALC_EXT_EFX");
+	hasEFX = enableEffects && alcIsExtensionPresent(device, "ALC_EXT_EFX");
+	if(enableEffects && !hasEFX) {
+		LogWarning << "cannot enable effects, missing the EFX extension";
+	}
 	if(hasEFX) {
 		alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
 		alDeleteEffects = (LPALDELETEEFFECTS)alGetProcAddress("alDeleteEffects");
 		alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
 		arx_assert(alGenEffects && alDeleteEffects && alEffectf);
 	}
+	
+	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+	
+	AL_CHECK_ERROR("init")
 	
 	return AAL_OK;
 }

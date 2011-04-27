@@ -648,7 +648,8 @@ void CMenuConfig::DefaultValue()
 	iSFXVolume=10;
 	iSpeechVolume=10;
 	iAmbianceVolume=8;
-	bEAX=false;
+	bEAX = false;
+	audioBackend = "auto";
 	//INPUT
 	bInvertMouse=false;
 	bAutoReadyWeapon=false;
@@ -1098,6 +1099,7 @@ bool CMenuConfig::SaveAll()
 	bOk&=WriteConfigInt("AUDIO","speech_volume",iSpeechVolume);
 	bOk&=WriteConfigInt("AUDIO","ambiance_volume",iAmbianceVolume);
 	bOk&=WriteConfigInt("AUDIO","EAX",(bEAX)?1:0);
+	bOk&=WriteConfigString("AUDIO", "backend", audioBackend);
 	//input
 	bOk&=WriteConfigInt("INPUT","invert_mouse",(bInvertMouse)?1:0);
 	bOk&=WriteConfigInt("INPUT","auto_ready_weapon",(bAutoReadyWeapon)?1:0);
@@ -1450,19 +1452,19 @@ bool CMenuConfig::ReadAll()
 	{
 		iTemp=iAmbianceVolume;
 	}
-
 	iAmbianceVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","EAX",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Audio_GetEAX(bEAX);
+	
+	iTemp = ReadConfigInt("AUDIO","EAX",bOkTemp);
+	bOk &= bOkTemp;
+	if(bOkTemp) {
+		bEAX = (iTemp) ? true : false;
 	}
-	else
-	{
-		bEAX=(iTemp)?true:false;
+	
+	pcText = ReadConfigString("AUDIO", "backend");
+	if(!pcText.empty()) {
+		audioBackend = pcText;
 	}
+	
 
 	//input
 	iTemp=ReadConfigInt("INPUT","invert_mouse",bOkTemp);
@@ -1764,7 +1766,6 @@ bool CMenuConfig::ReadAll()
 	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(iAmbianceVolume);
 
-	pMenuConfig->bEAX=bEAX;
 	ARXMenu_Options_Control_SetInvertMouse(bInvertMouse);
 	ARXMenu_Options_Control_SetAutoReadyWeapon(bAutoReadyWeapon);
 	ARXMenu_Options_Control_SetMouseLookToggleMode(bMouseLookToggle);
@@ -2900,17 +2901,7 @@ bool Menu2_Render()
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, pElementText);
-					bool bEAX = true;
-
-					if (bEAX)
-					{
-						((CMenuCheckButton*)me)->iState=pMenuConfig->bEAX?1:0;
-					}
-					else
-					{
-						me->SetCheckOff();
-						pElementText->lColor=RGB(127,127,127);
-					}
+					((CMenuCheckButton*)me)->iState=pMenuConfig->bEAX?1:0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 

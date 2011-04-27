@@ -60,7 +60,7 @@ namespace audio {
 static Lock * mutex = NULL;
 static const size_t MUTEX_TIMEOUT = 5000;
 
-aalError aalInit(bool enableEAX) {
+aalError aalInit(const string & backendName, bool enableEAX) {
 	
 	//Clean any initialized data
 	aalClean();
@@ -72,11 +72,30 @@ aalError aalInit(bool enableEAX) {
 	//Initialize random number generator
 	InitSeed();
 	
-	OpenALBackend * _backend = new OpenALBackend();
-	if(aalError error = _backend->init(enableEAX)) {
-		return error;
+	bool autoBackend = (backendName == "auto");
+	
+	if(autoBackend || backendName == "OpenAL") {
+		LogDebug << "initializing OpenAL backend";
+		OpenALBackend * _backend = new OpenALBackend();
+		if(_backend->init(enableEAX) == AAL_OK) {
+			backend = _backend;
+		}
+	} else if(backendName != "DirectSound") {
+		LogError << "unknown backend: " << backendName;
+		return AAL_ERROR_SYSTEM;
 	}
-	backend = _backend;
+	
+	if(!backend && (autoBackend || backendName == "DirectSound")) {
+		LogDebug << "initializing DirectSound backend";
+		DSoundBackend * _backend = new DSoundBackend();
+		if(_backend->init(enableEAX) == AAL_OK) {
+			backend = _backend;
+		}
+	}
+	
+	if(!backend) {
+		return AAL_ERROR_SYSTEM;
+	}
 	
 	mutex = new Lock();
 	

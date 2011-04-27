@@ -498,12 +498,6 @@ void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume)
 }
 
 //-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_GetEAX(bool & _bEnable)
-{
-	_bEnable = pMenuConfig->bEAX;
-}
-
-//-----------------------------------------------------------------------------
 bool ARXMenu_Options_Audio_SetEAX(bool _bEnable)
 {
 	int iOldGamma;

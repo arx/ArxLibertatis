@@ -73,20 +73,25 @@ aalError DSoundBackend::init(bool enableEax) {
 		return AAL_ERROR_INIT;
 	}
 	
+	HRESULT h;
+	
 	//Create DirectSound device interface
 	hasEAX = enableEax;
 	if(!enableEax || FAILED(CoCreateInstance(CLSID_EAXDirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void**)&device))) {
-		if(FAILED(CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void**)&device))) {
+		if(FAILED(h = CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void**)&device))) {
+			LogError << "error creating DirectSound instance: " << h;
 			return AAL_ERROR_SYSTEM;
 		}
 		hasEAX = false;
 	}
 	
-	if(FAILED(device->Initialize(NULL))) {
+	if(FAILED(h = device->Initialize(NULL))) {
+		LogError << "error initializing DirectSound: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	if(FAILED(device->SetCooperativeLevel(GetForegroundWindow(), DSSCL_PRIORITY))) {
+	if(FAILED(h = device->SetCooperativeLevel(GetForegroundWindow(), DSSCL_PRIORITY))) {
+		LogError << "error setting cooperative level: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	
@@ -95,10 +100,12 @@ aalError DSoundBackend::init(bool enableEax) {
 	memset(&desc, 0, sizeof(DSBUFFERDESC));
 	desc.dwSize = sizeof(DSBUFFERDESC);
 	desc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_CTRL3D;
-	if(FAILED(device->CreateSoundBuffer(&desc, &primary, NULL))) {
+	if(FAILED(h = device->CreateSoundBuffer(&desc, &primary, NULL))) {
+		LogError << "error creating primary buffer: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
-	if(FAILED(primary->Play(0, 0, DSBPLAY_LOOPING))) {
+	if(FAILED(h = primary->Play(0, 0, DSBPLAY_LOOPING))) {
+		LogError << "error playing primary buffer: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	WAVEFORMATEX formatex;
@@ -109,11 +116,13 @@ aalError DSoundBackend::init(bool enableEax) {
 	formatex.wBitsPerSample = (WORD)(globalFormat.quality);
 	formatex.nBlockAlign = (WORD)(globalFormat.channels * globalFormat.quality / 8);
 	formatex.nAvgBytesPerSec = formatex.nBlockAlign * globalFormat.frequency;
-	if(FAILED(primary->SetFormat(&formatex))) {
+	if(FAILED(h = primary->SetFormat(&formatex))) {
+		LogError << "error setting output format: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	if(FAILED(primary->QueryInterface(IID_IDirectSound3DListener, (void **)&listener))) {
+	if(FAILED(h = primary->QueryInterface(IID_IDirectSound3DListener, (void **)&listener))) {
+		LogError << "error getting listener object: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	

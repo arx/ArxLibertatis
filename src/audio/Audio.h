@@ -32,7 +32,7 @@ namespace audio {
 
 // Global
 
-aalError aalInit(bool enableEAX);
+aalError aalInit(const std::string & backend, bool enableEAX);
 aalError aalClean();
 aalError aalSetStreamLimit(size_t size);
 aalError aalSetSamplePath(const std::string & path);
