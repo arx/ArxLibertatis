@@ -312,8 +312,6 @@ ArxSound SND_SPELL_VISION_START(INVALID_ID);
 ArxSound SND_SPELL_VISION_LOOP(INVALID_ID);
 
 
-bool bForceNoEAX = false;
-
 static void ARX_SOUND_EnvironmentSet(const std::string & name);
 static void ARX_SOUND_CreateEnvironments();
 static void ARX_SOUND_CreateStaticSamples();
@@ -339,7 +337,7 @@ long ARX_SOUND_Init()
 	if (bIsActive) ARX_SOUND_Release();
 
 	const string & backend = pMenuConfig ? pMenuConfig->audioBackend : "auto";
-	bool enableEAX = !((bForceNoEAX) || (pMenuConfig && (!pMenuConfig->bEAX)));
+	bool enableEAX = (!pMenuConfig || pMenuConfig->bEAX);
 	if(aalInit(backend,  enableEAX)) {
 		aalClean();
 		return -1;
