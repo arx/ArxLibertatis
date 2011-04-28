@@ -72,10 +72,6 @@ public:
 	virtual aalError setMixer(MixerId mixer) = 0;
 	virtual aalError setEnvironment(EnvId environment) = 0;
 	
-	//Status
-	virtual aalError getPosition(Vector3f & position) const = 0;
-	virtual aalError getFalloff(SourceFalloff & falloff) const = 0;
-	
 	/*!
 	 * Get the current play position in the sample.
 	 */

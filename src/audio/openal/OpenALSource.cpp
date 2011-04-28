@@ -339,7 +339,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 	
 	arx_assert(inst->sample == sample);
 	
-	if(inst->stream || _channel.flags != inst->channel.flags) {
+	if(inst->stream) {
 		return init(_id, _channel);
 	}
 	
@@ -516,22 +516,6 @@ aalError OpenALSource::setEnvironment(EnvId environment) {
 	return AAL_ERROR_SYSTEM;
 }
 
-aalError OpenALSource::getPosition(Vector3f & position) const {
-	if(!(channel.flags & FLAG_POSITION)) {
-		return AAL_ERROR_INIT;
-	}
-	position = channel.position;
-	return AAL_OK;
-}
-
-aalError OpenALSource::getFalloff(SourceFalloff & falloff) const {
-	if(!(channel.flags & FLAG_FALLOFF)) {
-		return AAL_ERROR_INIT;
-	}
-	falloff = channel.falloff;
-	return AAL_OK;
-}
-
 size_t OpenALSource::getTime(TimeUnit unit) const {
 	return bytesToUnits(time, sample->getFormat(), unit);
 }
@@ -684,6 +668,9 @@ bool OpenALSource::updateCulling() {
 		LogAL("out of range");
 		tooFar = true;
 		sourcePause();
+		if(loadCount <= 1) {
+			stop();
+		}
 		return true;
 		
 	}

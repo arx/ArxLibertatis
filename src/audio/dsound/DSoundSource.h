@@ -59,9 +59,6 @@ public:
 	aalError setMixer(MixerId mixer);
 	aalError setEnvironment(EnvId environment);
 	
-	//Status
-	aalError getPosition(Vector3f & position) const;
-	aalError getFalloff(SourceFalloff & falloff) const;
 	size_t getTime(TimeUnit unit = UNIT_MS) const;
 	
 	// Control
@@ -75,6 +72,7 @@ public:
 	
 private:
 	
+	aalError init();
 	void updateStreaming();
 	bool isTooFar();
 	aalError clean();

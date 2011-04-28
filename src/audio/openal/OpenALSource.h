@@ -44,7 +44,6 @@ public:
 	OpenALSource(Sample * sample);
 	~OpenALSource();
 	
-	// Setup
 	aalError init(SourceId id, const Channel & channel);
 	aalError init(SourceId id, OpenALSource * instance, const Channel & channel);
 	
@@ -60,12 +59,8 @@ public:
 	aalError setMixer(MixerId mixer);
 	aalError setEnvironment(EnvId environment);
 	
-	//Status
-	aalError getPosition(Vector3f & position) const;
-	aalError getFalloff(SourceFalloff & falloff) const;
 	size_t getTime(TimeUnit unit = UNIT_MS) const;
 	
-	// Control
 	aalError play(unsigned playCount = 1);
 	aalError stop();
 	aalError pause();
