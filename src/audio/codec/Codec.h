@@ -31,28 +31,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct PakFileHandle;
 
 namespace audio {
+
+class Codec {
 	
-	class Codec {
-		
-	public:
-		
-		virtual ~Codec() {};
-		
-		// Setup
-		virtual aalError SetHeader(void * header) = 0;
-		virtual aalError SetStream(PakFileHandle * stream) = 0;
-		virtual aalError SetPosition(size_t position) = 0;
-		
-		// Status
-		virtual aalError GetHeader(void *& header) = 0;
-		virtual aalError GetStream(PakFileHandle *& stream) = 0;
-		virtual aalError GetPosition(size_t & position) = 0;
-		
-		// File I/O
-		virtual aalError Read(void * buffer, size_t to_read, size_t & read) = 0;
-		
-	};
+public:
 	
+	virtual ~Codec() {};
+	
+	virtual aalError setHeader(void * header) = 0;
+	virtual void setStream(PakFileHandle * stream) = 0;
+	
+	//! The stream cursor must be at the begining of waveform data
+	virtual aalError setPosition(size_t position) = 0;
+	
+	virtual size_t getPosition() = 0;
+	
+	virtual aalError read(void * buffer, size_t to_read, size_t & read) = 0;
+	
+};
+
 } // namespace audio
 
 #endif // ARX_AUDIO_CODEC_CODEC_H

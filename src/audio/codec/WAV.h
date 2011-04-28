@@ -32,41 +32,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct PakFileHandle;
 
 namespace audio {
+
+class Codec;
+
+class StreamWAV : public Stream {
 	
-	class Codec;
+public:
 	
-	class StreamWAV : public Stream {
-		
-	public:
-		
-		StreamWAV();
-		~StreamWAV();
-		
-		// Setup
-		aalError SetStream(PakFileHandle * stream);
-		aalError SetPosition(size_t position);
-		
-		// Status
-		aalError GetStream(PakFileHandle *&stream);
-		aalError GetFormat(PCMFormat & format);
-		aalError GetLength(size_t & length);
-		aalError GetPosition(size_t & position);
-		
-		// File I/O
-		aalError Read(void * buffer, size_t to_read, size_t & read);
-		
-	private:
-		
-		PakFileHandle * stream;
-		Codec * codec;
-		void * status; // Stream status
-		void * format; // File data format
-		size_t size, outsize; // Compressed and uncompessed data size
-		size_t offset; // Offset of data in file
-		size_t cursor;
-		
-	};
+	StreamWAV();
+	~StreamWAV();
 	
+	aalError setStream(PakFileHandle * stream);
+	aalError setPosition(size_t position);
+	
+	PakFileHandle * getStream();
+	aalError getFormat(PCMFormat & format);
+	size_t getLength();
+	size_t getPosition();
+	
+	aalError read(void * buffer, size_t to_read, size_t & read);
+	
+private:
+	
+	PakFileHandle * stream;
+	Codec * codec;
+	void * header; // File data format
+	size_t size, outsize; // Compressed and uncompessed data size
+	size_t offset; // Offset of data in file
+	size_t cursor;
+	
+};
+
 } // namespace audio
 
 #endif//ARX_AUDIO_CODEC_WAV_H

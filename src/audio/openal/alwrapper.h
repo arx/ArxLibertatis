@@ -3,6 +3,7 @@
 #define ARX_AUDIO_ALWRAPPER_H
 
 #if defined(__WINE__) && defined(_WIN32)
+	// We link to a native OpenAL when building with winelib.
 	#define _OLD_WIN32 1
 	#undef _WIN32
 #endif

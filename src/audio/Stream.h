@@ -38,24 +38,21 @@ public:
 	
 	virtual ~Stream() {};
 	
-	// Setup
-	virtual aalError SetStream(PakFileHandle * stream) = 0;
-	virtual aalError SetPosition(size_t position) = 0;
+	virtual aalError setStream(PakFileHandle * stream) = 0;
+	virtual aalError setPosition(size_t position) = 0;
 	
-	// Status
-	virtual aalError GetStream(PakFileHandle *& stream) = 0;
-	virtual aalError GetFormat(PCMFormat & format) = 0;
-	virtual aalError GetLength(size_t & length) = 0;
-	virtual aalError GetPosition(size_t & position) = 0;
+	virtual PakFileHandle * getStream() = 0;
+	virtual aalError getFormat(PCMFormat & format) = 0;
+	virtual size_t getLength() = 0;
+	virtual size_t getPosition() = 0;
 	
-	// File I/O
-	virtual aalError Read(void * buffer, size_t to_read, size_t & read) = 0;
+	virtual aalError read(void * buffer, size_t to_read, size_t & read) = 0;
 	
 };
 
 // Utilities
-Stream * CreateStream(const std::string & name);
-aalError DeleteStream(Stream *&stream);
+Stream * createStream(const std::string & name);
+void deleteStream(Stream *& stream);
 
 } // namespace audio
 

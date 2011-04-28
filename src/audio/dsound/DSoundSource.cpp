@@ -156,7 +156,7 @@ namespace audio {
 		}
 		else setPan(channel.pan);
 
-		stream = CreateStream(sample->getName());
+		stream = createStream(sample->getName());
 
 		if (!stream) return AAL_ERROR_FILEIO;
 
@@ -166,18 +166,18 @@ namespace audio {
 			DWORD cur0, cur1;
 			void * ptr0, *ptr1;
 
-			if (stream->SetPosition(0)) return AAL_ERROR_SYSTEM;
+			if (stream->setPosition(0)) return AAL_ERROR_SYSTEM;
 
 			if (lpdsb->Lock(0, 0, &ptr0, &cur0, &ptr1, &cur1, DSBLOCK_ENTIREBUFFER)) return AAL_ERROR_SYSTEM;
 
-			stream->Read(ptr0, size, write);
+			stream->read(ptr0, size, write);
 
 			if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
 
 			if (write != size)
 				return AAL_ERROR_SYSTEM;
 
-			DeleteStream(stream);
+			deleteStream(stream);
 		}
 
 		return AAL_OK;
@@ -260,7 +260,7 @@ namespace audio {
 			lpdsb->Release(), lpdsb = NULL;
 		}
 
-		if (stream) DeleteStream(stream);
+		if (stream) deleteStream(stream);
 
 		status = Idle;
 
@@ -474,11 +474,11 @@ aalError DSoundSource::setEnvironment(EnvId environment) {
 			DWORD cur0, cur1;
 			void * ptr0, *ptr1;
 
-			if (stream->SetPosition(0)) return AAL_ERROR;
+			if (stream->setPosition(0)) return AAL_ERROR;
 
 			if (lpdsb->Lock(0, size, &ptr0, &cur0, &ptr1, &cur1, DSBLOCK_ENTIREBUFFER)) return AAL_ERROR_SYSTEM;
 
-			stream->Read(ptr0, size, write);
+			stream->read(ptr0, size, write);
 
 			if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
 
@@ -580,14 +580,14 @@ aalError DSoundSource::setEnvironment(EnvId environment) {
 		{
 			if (ptr0)
 			{
-				stream->Read(ptr0, cur0, count);
+				stream->read(ptr0, cur0, count);
 
 				if (count < cur0)
 				{
 					if (loop)
 					{
-						stream->SetPosition(0);
-						stream->Read((u8*)ptr0 + count, cur0 - count, count);
+						stream->setPosition(0);
+						stream->read((u8*)ptr0 + count, cur0 - count, count);
 					}
 					else
 					{
@@ -598,14 +598,14 @@ aalError DSoundSource::setEnvironment(EnvId environment) {
 
 			if (ptr1)
 			{
-				stream->Read(ptr1, cur1, count);
+				stream->read(ptr1, cur1, count);
 
 				if (count < cur1)
 				{
 					if (loop)
 					{
-						stream->SetPosition(0);
-						stream->Read((u8*)ptr1 + count, cur1 - count, count);
+						stream->setPosition(0);
+						stream->read((u8*)ptr1 + count, cur1 - count, count);
 					}
 					else
 					{

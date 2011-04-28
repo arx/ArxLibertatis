@@ -32,35 +32,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct PakFileHandle;
 
 namespace audio {
+
+class CodecRAW : public Codec {
 	
-	class CodecRAW : public Codec {
-		
-	public:
-		
-		CodecRAW();
-		~CodecRAW();
-		
-		// Setup
-		aalError SetHeader(void * header);
-		aalError SetStream(PakFileHandle * stream);
-		aalError SetPosition(size_t position);
-		
-		// Status
-		aalError GetHeader(void *& header);
-		aalError GetStream(PakFileHandle *& stream);
-		aalError GetPosition(size_t & position);
-		
-		// File I/O
-		aalError Read(void * buffer, size_t to_read, size_t & read);
-		
-	private:
-		
-		void * header;
-		PakFileHandle * stream;
-		size_t cursor;
-		
-	};
+public:
 	
+	CodecRAW();
+	~CodecRAW();
+	
+	aalError setHeader(void * header);
+	void setStream(PakFileHandle * stream);
+	aalError setPosition(size_t position);
+	
+	size_t getPosition();
+	
+	aalError read(void * buffer, size_t to_read, size_t & read);
+	
+private:
+	
+	PakFileHandle * stream;
+	size_t cursor;
+	
+};
+
 } // namespace audio
 
 #endif // ARX_AUDIO_CODEC_RAW_H

@@ -28,59 +28,52 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioTypes.h"
 #include "audio/codec/Codec.h"
+#include "audio/codec/WAVFormat.h"
 
 struct PakFileHandle;
 
-#include <windows.h> // needed by mmreg.h
-#include <mmreg.h> // for ADPCMWAVEFORMAT
-
 namespace audio {
+
+class CodecADPCM : public Codec {
 	
-	class CodecADPCM : public Codec {
-		
-	public:
-		
-		CodecADPCM();
-		~CodecADPCM();
-		
-		// Setup
-		aalError SetHeader(void * header);
-		aalError SetStream(PakFileHandle * stream);
-		aalError SetPosition(size_t position);
-		
-		// Status
-		aalError GetHeader(void *& header);
-		aalError GetStream(PakFileHandle *& stream);
-		aalError GetPosition(size_t & position);
-		
-		// File I/O
-		aalError Read(void * buffer, size_t to_read, size_t & read);
-		
-	private:
-		
-		void GetSample(size_t channel_i, s8 nybble);
-		aalError GetNextBlock();
-		
-		PakFileHandle * stream;
-		ADPCMWAVEFORMAT * header;
-		u32 padding;
-		u32 shift;
-		u32 sample_i;
-		char * predictor;
-		s16 * delta;
-		s16 * samp1;
-		s16 * samp2;
-		s16 * coef1;
-		s16 * coef2;
-		s8 * nybble_l;
-		u32 nybble_c, nybble_i;
-		s8 nybble;
-		bool odd;
-		u8 cache_c, cache_i;
-		void * cache_l;
-		size_t cursor;
-		
-	};
+public:
+	
+	CodecADPCM();
+	~CodecADPCM();
+	
+	aalError setHeader(void * header);
+	void setStream(PakFileHandle * stream);
+	aalError setPosition(size_t position);
+	
+	size_t getPosition();
+	
+	aalError read(void * buffer, size_t to_read, size_t & read);
+	
+private:
+	
+	void getSample(size_t channel_i, s8 nybble);
+	aalError getNextBlock();
+	
+	PakFileHandle * stream;
+	ADPCMHeader * header;
+	u32 padding;
+	u32 shift;
+	u32 sample_i;
+	char * predictor;
+	s16 * delta;
+	s16 * samp1;
+	s16 * samp2;
+	s16 * coef1;
+	s16 * coef2;
+	s8 * nybble_l;
+	u32 nybble_c, nybble_i;
+	s8 nybble;
+	bool odd;
+	u8 cache_c, cache_i;
+	void * cache_l;
+	size_t cursor;
+	
+};
 
 } // namespace audio
 

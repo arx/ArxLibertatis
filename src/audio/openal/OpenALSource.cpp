@@ -153,7 +153,7 @@ OpenALSource::~OpenALSource() {
 	}
 	
 	if(stream) {
-		DeleteStream(stream), stream = NULL;
+		deleteStream(stream), stream = NULL;
 	}
 	
 }
@@ -198,7 +198,7 @@ aalError OpenALSource::init() {
 	LogAL("init: length=" << sample->getLength() << " " << (streaming ? "streaming" : "static") << (buffers[0] ? " (copy)" : ""));
 	
 	if(!streaming && !buffers[0]) {
-		stream = CreateStream(sample->getName());
+		stream = createStream(sample->getName());
 		if(!stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
@@ -252,7 +252,7 @@ aalError OpenALSource::fillAllBuffers() {
 	}
 	
 	if(!stream) {
-		stream = CreateStream(sample->getName());
+		stream = createStream(sample->getName());
 		if(!stream) {
 			ALError << "error creating stream";
 			return AAL_ERROR_FILEIO;
@@ -300,7 +300,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	}
 	
 	size_t read;
-	stream->Read(data, left, read);
+	stream->read(data, left, read);
 	if(read != left) {
 		delete[] data;
 		return AAL_ERROR_SYSTEM;
@@ -310,12 +310,12 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	if(written == sample->getLength()) {
 		written = 0;
 		if(!markAsLoaded()) {
-			DeleteStream(stream);
+			deleteStream(stream);
 			stream = NULL;
 		} else {
-			stream->SetPosition(0);
+			stream->setPosition(0);
 			if(size > left) {
-				stream->Read(data + left, size - left, read);
+				stream->read(data + left, size - left, read);
 				if(read != size - left) {
 					delete[] data;
 					return AAL_ERROR_SYSTEM;

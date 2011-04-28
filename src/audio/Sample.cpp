@@ -56,14 +56,14 @@ aalError Sample::load() {
 		return AAL_ERROR_INIT;
 	}
 	
-	Stream * stream = CreateStream(name);
+	Stream * stream = createStream(name);
 	if(!stream) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	stream->GetFormat(format);
-	stream->GetLength(length);
-	DeleteStream(stream);
+	stream->getFormat(format);
+	length = stream->getLength();
+	deleteStream(stream);
 	
 	return AAL_OK;
 }

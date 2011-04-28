@@ -33,39 +33,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-	Stream * CreateStream(const string & name)
-	{
-		PakFileHandle * file;
-		Stream * stream = NULL;
-
-		file = OpenResource(name.c_str(), sample_path);
-		if(!file) {
-			return NULL;
-		}
-
-		PAK_fseek(file, 0, SEEK_SET);
-		stream = new StreamWAV;
-
-		if(stream->SetStream(file)) {
-			delete stream;
-		}
-		else return stream;
-
-		PAK_fclose(file);
-
+Stream * createStream(const string & name) {
+	
+	PakFileHandle * file = OpenResource(name.c_str(), sample_path);
+	if(!file) {
 		return NULL;
 	}
-
-	aalError DeleteStream(Stream *&stream)
-	{
-		PakFileHandle * file;
-
-		stream->GetStream(file);
-		PAK_fclose(file);
+	
+	PAK_fseek(file, 0, SEEK_SET);
+	
+	Stream * stream = new StreamWAV;
+	
+	if(stream->setStream(file)) {
 		delete stream;
-		stream = NULL;
-
-		return AAL_OK;
+		PAK_fclose(file);
+		return NULL;
 	}
+	
+	return stream;
+}
+
+void deleteStream(Stream *& stream) {
+	PakFileHandle * file = stream->getStream();
+	PAK_fclose(file);
+	delete stream;
+	stream = NULL;
+}
 
 } // namespace audio

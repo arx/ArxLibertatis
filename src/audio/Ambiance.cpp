@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Ambiance.h"
 
-#include <math.h>
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 
@@ -41,135 +41,135 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 
 namespace {
+
+using namespace audio;
+
+// Key settings flags
+enum aalKeySettingFlag {
+	AAL_KEY_SETTING_UNKNOEN          = 0,
+	AAL_KEY_SETTING_FLAG_RANDOM      = 1,
+	AAL_KEY_SETTING_FLAG_INTERPOLATE = 2
+};
+
+struct KeySetting {
 	
-	using namespace audio;
+	aalKeySettingFlag flags; // A set of KeySettingFlag
+	float min, max; // Min and max setting values
+	float from, to, cur; // Current min and max values
+	unsigned interval; // Interval between updates (On Start = 0)
+	int tupdate; // Last update time
 	
-	// Key settings flags
-	enum aalKeySettingFlag {
-		AAL_KEY_SETTING_UNKNOEN          = 0,
-		AAL_KEY_SETTING_FLAG_RANDOM      = 1,
-		AAL_KEY_SETTING_FLAG_INTERPOLATE = 2
-	};
+	KeySetting() : flags(AAL_KEY_SETTING_UNKNOEN),
+	               min(0), max(0), from(0), to(0), cur(0), interval(0), tupdate(0) { }
 	
-	struct KeySetting {
+	bool load(PakFileHandle * file) {
 		
-		aalKeySettingFlag flags; // A set of KeySettingFlag
-		float min, max; // Min and max setting values
-		float from, to, cur; // Current min and max values
-		unsigned interval; // Interval between updates (On Start = 0)
-		int tupdate; // Last update time
-		
-		KeySetting() : flags(AAL_KEY_SETTING_UNKNOEN),
-		               min(0), max(0), from(0), to(0), cur(0), interval(0), tupdate(0) { }
-		
-		bool load(PakFileHandle * file) {
-			
-			f32 _min, _max;
-			u32 _interval, _flags;
-			if(!PAK_fread(&_min, 4, 1, file) ||
-			   !PAK_fread(&_max, 4, 1, file) ||
-			   !PAK_fread(&_interval, 4, 1, file) ||
-			   !PAK_fread(&_flags, 4, 1, file)) {
-				return false;
-			}
-			min = _min, max = _max, interval = _interval;
-			flags = (aalKeySettingFlag)flags; // TODO save/load enum
-			
-			return true;
+		f32 _min, _max;
+		u32 _interval, _flags;
+		if(!PAK_fread(&_min, 4, 1, file) ||
+		   !PAK_fread(&_max, 4, 1, file) ||
+		   !PAK_fread(&_interval, 4, 1, file) ||
+		   !PAK_fread(&_flags, 4, 1, file)) {
+			return false;
 		}
+		min = _min, max = _max, interval = _interval;
+		flags = (aalKeySettingFlag)flags; // TODO save/load enum
 		
-		void reset() {
-			tupdate = 0;
-			if(min != max && flags & AAL_KEY_SETTING_FLAG_RANDOM) {
-				cur = float(min + fmodf((float)(Random()), max - min));
-			} else {
-				cur = min;
-			}
-			from = min;
-			to = max;
+		return true;
+	}
+	
+	void reset() {
+		tupdate = 0;
+		if(min != max && flags & AAL_KEY_SETTING_FLAG_RANDOM) {
+			cur = float(min + fmodf((float)(Random()), max - min));
+		} else {
+			cur = min;
 		}
+		from = min;
+		to = max;
+	}
+	
+	float update(signed timez = 0) {
 		
-		float update(signed timez = 0) {
-			
-			if(min == max) {
-				return cur;
-			}
-			
-			signed elapsed = timez - tupdate;
-			if(elapsed >= (signed)interval) {
-				elapsed = 0;
-				tupdate += interval;
-				if(flags == AAL_KEY_SETTING_FLAG_RANDOM) {
-					from = to;
-					to = min + fmod(FRandom(), max - min);
-				} else {
-					if(from == min) {
-						from = max, to = min;
-					} else {
-						from = min, to = max;
-					}
-				}
-				cur = from;
-			}
-			
-			if(flags == AAL_KEY_SETTING_FLAG_INTERPOLATE) {
-				cur = from + float(elapsed) / interval * (to - from);
-			}
-			
+		if(min == max) {
 			return cur;
 		}
 		
-	};
-	
-	struct TrackKey {
-		
-		size_t start; // Start time (after last key)
-		size_t n_start; // Next time to play sample (when delayed)
-		size_t loop, loopc; // Loop count
-		unsigned delay_min, delay_max; // Min and max delay before each sample loop
-		unsigned delay; // Current delay
-		KeySetting volume; // Volume settings
-		KeySetting pitch; // Pitch settings
-		KeySetting pan; // Pan settings
-		KeySetting x, y, z; // Positon settings
-		
-		TrackKey() : start(0), n_start(0), loop(0), loopc(0),
-		             delay_min(0), delay_max(0), delay(0) {
-		}
-		
-		bool load(PakFileHandle * file) {
-			
-			u32 _start, _loop, _delay_min, _delay_max, _flags;
-			
-			if(!PAK_fread(&_flags, 4, 1, file) ||
-			   !PAK_fread(&_start, 4, 1, file) ||
-			   !PAK_fread(&_loop, 4, 1, file) ||
-			   !PAK_fread(&_delay_min, 4, 1, file) ||
-			   !PAK_fread(&_delay_max, 4, 1, file) ||
-			   !volume.load(file) ||
-			   !pitch.load(file) ||
-			   !pan.load(file) ||
-			   !x.load(file) ||
-			   !y.load(file) ||
-			   !z.load(file)) {
-				return false;
-			}
-			start = _start, loop = _loop, delay_min = _delay_min, delay_max = _delay_max;
-			
-			return true;
-		}
-		
-		void updateSynch() {
-			if(delay_min != delay_max) {
-				delay = delay_max - delay;
-				delay += delay_min + Random() % (delay_max - delay_min);
+		signed elapsed = timez - tupdate;
+		if(elapsed >= (signed)interval) {
+			elapsed = 0;
+			tupdate += interval;
+			if(flags == AAL_KEY_SETTING_FLAG_RANDOM) {
+				from = to;
+				to = min + fmod(FRandom(), max - min);
 			} else {
-				delay = delay_min;
+				if(from == min) {
+					from = max, to = min;
+				} else {
+					from = min, to = max;
+				}
 			}
+			cur = from;
 		}
 		
-	};
+		if(flags == AAL_KEY_SETTING_FLAG_INTERPOLATE) {
+			cur = from + float(elapsed) / interval * (to - from);
+		}
+		
+		return cur;
+	}
 	
+};
+
+struct TrackKey {
+	
+	size_t start; // Start time (after last key)
+	size_t n_start; // Next time to play sample (when delayed)
+	size_t loop, loopc; // Loop count
+	unsigned delay_min, delay_max; // Min and max delay before each sample loop
+	unsigned delay; // Current delay
+	KeySetting volume; // Volume settings
+	KeySetting pitch; // Pitch settings
+	KeySetting pan; // Pan settings
+	KeySetting x, y, z; // Positon settings
+	
+	TrackKey() : start(0), n_start(0), loop(0), loopc(0),
+	             delay_min(0), delay_max(0), delay(0) {
+	}
+	
+	bool load(PakFileHandle * file) {
+		
+		u32 _start, _loop, _delay_min, _delay_max, _flags;
+		
+		if(!PAK_fread(&_flags, 4, 1, file) ||
+		   !PAK_fread(&_start, 4, 1, file) ||
+		   !PAK_fread(&_loop, 4, 1, file) ||
+		   !PAK_fread(&_delay_min, 4, 1, file) ||
+		   !PAK_fread(&_delay_max, 4, 1, file) ||
+		   !volume.load(file) ||
+		   !pitch.load(file) ||
+		   !pan.load(file) ||
+		   !x.load(file) ||
+		   !y.load(file) ||
+		   !z.load(file)) {
+			return false;
+		}
+		start = _start, loop = _loop, delay_min = _delay_min, delay_max = _delay_max;
+		
+		return true;
+	}
+	
+	void updateSynch() {
+		if(delay_min != delay_max) {
+			delay = delay_max - delay;
+			delay += delay_min + Random() % (delay_max - delay_min);
+		} else {
+			delay = delay_min;
+		}
+	}
+	
+};
+
 }
 
 namespace audio {
