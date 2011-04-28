@@ -22,17 +22,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-///////////////////////////////////////////////////////////////////////////////
-//                                                                           //
-// TODO                                                                      //
-//                                                                           //
-// Finish reverb implementation                                              //
-// Keep finished instances a while before deleting in case we need it again  //
-//                                                                           //
-// Ambiance                                                                  //
-// Make sure global 3D localisation and multiple keys / track works properly //
-//                                                                           //
-///////////////////////////////////////////////////////////////////////////////
 
 #include "audio/Audio.h"
 
