@@ -533,7 +533,7 @@ aalError OpenALSource::getFalloff(SourceFalloff & falloff) const {
 }
 
 size_t OpenALSource::getTime(TimeUnit unit) const {
-	return BytesToUnits(time, sample->getFormat(), unit);
+	return bytesToUnits(time, sample->getFormat(), unit);
 }
 
 aalError OpenALSource::play(unsigned play_count) {

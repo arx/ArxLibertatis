@@ -36,87 +36,65 @@ using std::string;
 
 namespace audio {
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Internal globals                                                          //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	// Audio device interface                                                    //
-	Backend * backend = NULL;
+// Audio device interface
+Backend * backend = NULL;
 
-	// Global settings                                                           //
-	string sample_path;
-	string ambiance_path;
-	string environment_path;
-	size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
-	size_t session_time = 0;
+// Global settings
+string sample_path;
+string ambiance_path;
+string environment_path;
+size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
+size_t session_time = 0;
 
-	// Resources                                                                 //
-	ResourceList<Mixer> _mixer;
-	ResourceList<Sample> _sample;
-	ResourceList<Ambiance> _amb;
-	ResourceList<Environment> _env;
+// Resources
+ResourceList<Mixer> _mixer;
+ResourceList<Sample> _sample;
+ResourceList<Ambiance> _amb;
+ResourceList<Environment> _env;
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Internal functions                                                        //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	// Random number generator                                                   //
-	static const size_t SEED = 43;
-	static const size_t MODULO = 2147483647;
-	static const size_t FACTOR = 16807;
-	static const size_t SHIFT = 91;
+// Random number generator
+static const size_t SEED = 43;
+static const size_t MODULO = 2147483647;
+static const size_t FACTOR = 16807;
+static const size_t SHIFT = 91;
 
-	static size_t __current = SEED;
+static size_t __current = SEED;
 
-	size_t Random()
-	{
-		return __current = (__current * FACTOR + SHIFT) % MODULO;
+size_t Random() {
+	return __current = (__current * FACTOR + SHIFT) % MODULO;
+}
+
+float FRandom() {
+	__current = (__current * FACTOR + SHIFT) % MODULO;
+	return float(__current) / float(MODULO);
+}
+
+size_t InitSeed() {
+	__current = (size_t)time(NULL);
+	return Random();
+}
+
+size_t unitsToBytes(size_t v, const PCMFormat & _format, TimeUnit unit) {
+	switch(unit) {
+		case UNIT_MS:
+			return (size_t)(float(v) * 0.001f * _format.frequency * _format.channels * (_format.quality >> 3)) / 1000;
+		case UNIT_SAMPLES:
+			return v * _format.channels * (_format.quality >> 3);
+		default:
+			return v;
 	}
+}
 
-	float FRandom()
-	{
-		__current = (__current * FACTOR + SHIFT) % MODULO;
-		return float(__current) / float(MODULO);
+size_t bytesToUnits(size_t v, const PCMFormat & _format, TimeUnit unit) {
+	switch(unit) {
+		case UNIT_MS      :
+			return (size_t)(float(v) * 1000.f / (_format.frequency * _format.channels * (_format.quality >> 3)));
+		case UNIT_SAMPLES :
+			return v / (_format.frequency * _format.channels * (_format.quality >> 3));
+		
+		default:
+			return v;
 	}
-
-	size_t InitSeed()
-	{
-		__current = (size_t)time(NULL);
-		return Random();
-	}
-
-	// Convert a value from time units to bytes                                  //
-	size_t UnitsToBytes(size_t v, const PCMFormat & _format, TimeUnit unit)
-	{
-		switch (unit)
-		{
-			case UNIT_MS:
-				return (size_t)(float(v) * 0.001F * _format.frequency * _format.channels * (_format.quality >> 3)) / 1000;
-
-			case UNIT_SAMPLES:
-				return v * _format.channels * (_format.quality >> 3);
-			
-			default:
-				return v;
-		}
-	}
-
-	// Convert a value from bytes to time units                                  //
-	size_t BytesToUnits(size_t v, const PCMFormat & _format, TimeUnit unit)
-	{
-		switch (unit)
-		{
-			case UNIT_MS      :
-				return (size_t)(float(v) * 1000.0F / (_format.frequency * _format.channels * (_format.quality >> 3)));
-
-			case UNIT_SAMPLES :
-				return v / (_format.frequency * _format.channels * (_format.quality >> 3));
-			
-			default:
-				return v;
-		}
-	}
+}
 
 } // namespace audio

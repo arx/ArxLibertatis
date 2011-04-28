@@ -74,7 +74,7 @@ aalError Sample::setCallback(aalSampleCallback func, void * _data, size_t time, 
 	
 	callbacks.back().func = func;
 	callbacks.back().data = _data;
-	callbacks.back().time = UnitsToBytes(time, format, unit);
+	callbacks.back().time = unitsToBytes(time, format, unit);
 	if(callbacks.back().time > length) {
 		callbacks.back().time = length;
 	}

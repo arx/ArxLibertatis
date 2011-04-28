@@ -41,10 +41,6 @@ class Environment;
 class Sample;
 class Mixer;
 
-// Common resource memory management
-
-// Internal globals
-
 const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY | FLAG_DIRECTION |
                                     FLAG_CONE | FLAG_FALLOFF | FLAG_REVERBERATION;
 
@@ -64,16 +60,17 @@ extern ResourceList<Sample> _sample;
 extern ResourceList<Ambiance> _amb;
 extern ResourceList<Environment> _env;
 
-// Internal functions
-
 // Random number generator
+// TODO move this into platform!
 size_t Random();
 float FRandom();
 size_t InitSeed();
 
-// Conversion
-size_t UnitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
-size_t BytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
+//! Convert a value from time units to bytes
+size_t unitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
+
+//! Convert a value from bytes to time units
+size_t bytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
 
 inline float LinearToLogVolume(float volume) {
 	return 0.2F * (float)log10(volume) + 1.0F;

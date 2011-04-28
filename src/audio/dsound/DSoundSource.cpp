@@ -447,7 +447,7 @@ aalError DSoundSource::setEnvironment(EnvId environment) {
 	}
 
 	size_t DSoundSource::getTime(TimeUnit unit) const {
-		return BytesToUnits(time, sample->getFormat(), unit);
+		return bytesToUnits(time, sample->getFormat(), unit);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////

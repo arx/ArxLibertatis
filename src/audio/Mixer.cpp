@@ -36,8 +36,7 @@ Mixer::Mixer() :
 	paused(false),
 	volume(DEFAULT_VOLUME),
 	parent(NULL),
-	finalVolume(DEFAULT_VOLUME)
-{
+	finalVolume(DEFAULT_VOLUME) {
 }
 
 Mixer::~Mixer() {

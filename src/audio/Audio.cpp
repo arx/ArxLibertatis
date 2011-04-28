@@ -680,7 +680,7 @@ aalError aalGetSampleLength(SampleId sample_id, size_t & length, TimeUnit unit) 
 	}
 	
 	Sample * sample = _sample[s_id];
-	length = BytesToUnits(sample->getLength(), sample->getFormat(), unit);
+	length = bytesToUnits(sample->getLength(), sample->getFormat(), unit);
 	
 	AAL_EXIT
 	
