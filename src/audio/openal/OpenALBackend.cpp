@@ -210,6 +210,22 @@ Backend::source_iterator OpenALBackend::deleteSource(source_iterator it) {
 	return (source_iterator)sources.remove((ResourceList<OpenALSource>::iterator)it);
 }
 
+aalError OpenALBackend::setUnitFactor(float factor) {
+	
+#ifdef HAVE_OPENAL_EFX
+	if(hasEFX) {
+		alListenerf(AL_METERS_PER_UNIT, factor);
+		AL_CHECK_ERROR("setting unit factor")
+	}
+#endif
+	
+	const float speedOfSoundMetersPerSecond = 343.3f; // Default for OpenAL
+	alSpeedOfSound(speedOfSoundMetersPerSecond / factor);
+	AL_CHECK_ERROR("scaling speed of sound to unit factor")
+	
+	return AAL_OK;
+}
+
 #ifdef HAVE_OPENAL_EFX
 
 aalError OpenALBackend::setReverbEnabled(bool enable) {
@@ -217,14 +233,6 @@ aalError OpenALBackend::setReverbEnabled(bool enable) {
 	ARX_UNUSED(enable);
 	
 	// TODO
-	
-	return AAL_OK;
-}
-
-aalError OpenALBackend::setUnitFactor(float factor) {
-	
-	alListenerf(AL_METERS_PER_UNIT, factor);
-	AL_CHECK_ERROR("setting unit factor")
 	
 	return AAL_OK;
 }
@@ -272,11 +280,6 @@ aalError OpenALBackend::setEffect(ALenum type, float val) {
 
 aalError OpenALBackend::setReverbEnabled(bool enable) {
 	ARX_UNUSED(enable);
-	return AAL_ERROR_SYSTEM;
-}
-
-aalError OpenALBackend::setUnitFactor(float factor) {
-	ARX_UNUSED(factor);
 	return AAL_ERROR_SYSTEM;
 }
 
