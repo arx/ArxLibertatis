@@ -121,6 +121,8 @@ option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" ON)
+option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
+option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
 
 if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
 	unset(CHECK_COMPILER CACHE)
@@ -139,7 +141,9 @@ find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
-find_package(OpenAL 1.12 REQUIRED)
+if(ARX_USE_OPENAL)
+	find_package(OpenAL 1.12 REQUIRED)
+endif()
 find_package(Doxygen)
 find_package(PythonInterp)
 
@@ -150,8 +154,6 @@ mark_as_advanced(IL_LIBRARIES)
 
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-
-include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 
 if(MSVC)
 	# Set optimal options for msvc:
@@ -204,7 +206,9 @@ else(MSVC)
 	check_link_library(DevIL IL_LIBRARIES IL)
 	check_link_library(ZLIB ZLIB_LIBRARIES)
 	check_link_library(Freetype FREETYPE_LIBRARIES)
-	check_link_library(OpenAL OPENAL_LIBRARY)
+	if(ARX_USE_OPENAL)
+		check_link_library(OpenAL OPENAL_LIBRARY)
+	endif()
 	
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
@@ -257,7 +261,35 @@ add_definitions(-D_DEBUG)
 add_definitions(-DNOMINMAX)
 
 #glob sources
-file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
+file(GLOB_RECURSE AI_SOURCES ${SRC_DIR}/ai/*.cpp)
+file(GLOB_RECURSE ANIMATION_SOURCES ${SRC_DIR}/animation/*.cpp)
+file(GLOB AUDIO_SOURCES ${SRC_DIR}/audio/*.cpp ${SRC_DIR}/audio/codec/*.cpp)
+file(GLOB AUDIO_OPENAL_SOURCES ${SRC_DIR}/audio/openal/*.cpp)
+file(GLOB AUDIO_DSOUND_SOURCES ${SRC_DIR}/audio/dsound/*.cpp)
+file(GLOB_RECURSE CORE_SOURCES ${SRC_DIR}/core/*.cpp)
+file(GLOB_RECURSE GAME_SOURCES ${SRC_DIR}/game/*.cpp)
+file(GLOB_RECURSE GRAPHICS_SOURCES ${SRC_DIR}/graphics/*.cpp)
+file(GLOB_RECURSE GUI_SOURCES ${SRC_DIR}/gui/*.cpp)
+file(GLOB_RECURSE IO_SOURCES ${SRC_DIR}/io/*.cpp)
+file(GLOB_RECURSE PHYSICS_SOURCES ${SRC_DIR}/physics/*.cpp)
+file(GLOB_RECURSE PLATFORM_SOURCES ${SRC_DIR}/platform/*.cpp)
+file(GLOB_RECURSE SCENE_SOURCES ${SRC_DIR}/scene/*.cpp)
+file(GLOB_RECURSE SCRIPTING_SOURCES ${SRC_DIR}/scripting/*.cpp)
+file(GLOB_RECURSE WINDOW_SOURCES ${SRC_DIR}/window/*.cpp)
+
+set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${IO_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPTING_SOURCES} ${WINDOW_SOURCES})
+
+include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+
+if(ARX_USE_OPENAL)
+	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_OPENAL_SOURCES})
+	include_directories(${OPENAL_INCLUDE_DIR})
+	add_definitions(-DHAVE_OPENAL)
+endif()
+if(ARX_USE_DSOUND)
+	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_DSOUND_SOURCES})
+	add_definitions(-DHAVE_DSOUND)
+endif()
 
 #enable unity build if requested
 if(ARX_USE_UNITYBUILD)
@@ -270,7 +302,10 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 #link
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
-target_link_libraries(arx ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS} ${OPENAL_LIBRARY})
+target_link_libraries(arx ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS})
+if(ARX_USE_OPENAL)
+	target_link_libraries(arx ${OPENAL_LIBRARY})
+endif()
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core

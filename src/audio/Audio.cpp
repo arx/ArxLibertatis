@@ -34,8 +34,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
 #include "audio/AudioEnvironment.h"
-#include "audio/dsound/DSoundBackend.h"
-#include "audio/openal/OpenALBackend.h"
+#ifdef HAVE_DSOUND
+	#include "audio/dsound/DSoundBackend.h"
+#endif
+#ifdef HAVE_OPENAL
+	#include "audio/openal/OpenALBackend.h"
+#endif
 
 #include "core/Time.h"
 
@@ -63,24 +67,33 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	
 	bool autoBackend = (backendName == "auto");
 	aalError error;
+	bool matched = false;
 	
+#ifdef HAVE_OPENAL
 	if(autoBackend || backendName == "OpenAL") {
+		matched = true;
 		LogDebug << "initializing OpenAL backend";
 		OpenALBackend * _backend = new OpenALBackend();
 		if(!(error = _backend->init(enableEAX))) {
 			backend = _backend;
 		}
-	} else if(backendName != "DirectSound") {
-		LogError << "unknown backend: " << backendName;
-		return AAL_ERROR_SYSTEM;
 	}
+#endif
 	
+#ifdef HAVE_DSOUND
 	if(!backend && (autoBackend || backendName == "DirectSound")) {
+		matched = true;
 		LogDebug << "initializing DirectSound backend";
 		DSoundBackend * _backend = new DSoundBackend();
 		if(!(error = _backend->init(enableEAX))) {
 			backend = _backend;
 		}
+	}
+#endif
+	
+	if(!matched) {
+		LogError << "unknown backend: " << backendName;
+		return AAL_ERROR_SYSTEM;
 	}
 	
 	if(!backend) {
