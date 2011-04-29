@@ -20,15 +20,36 @@ public:
 	
 	virtual ~Backend() {};
 	
+	/*!
+	 * Calculate updated positional data if that has not been done already.
+	 */
 	virtual aalError updateDeferred() = 0;
 	
+	/*!
+	 * Create a new source for the given sample and channel properties.
+	 * The source is managed by the backend and should not be deleted directly.
+	 * Use deleteSource to remove sources.
+	 * @param sampleId The sample to be played by the new source.
+	 */
 	virtual Source * createSource(SampleId sampleId, const Channel & channel) = 0;
 	
+	/*!
+	 * Get the source for the given id.
+	 * @return the source for the given id or NULL if it doesn't exist.
+	 */
 	virtual Source * getSource(SourceId sourceId) = 0;
 	
+	/*!
+	 * Enable or disable effects.
+	 */
 	virtual aalError setReverbEnabled(bool enable) = 0;
 	
+	/*!
+	 * Set a unit factor to scale all other distance or velocity parameters.
+	 * @param factor The unit factor in meters per unit.
+	 */
 	virtual aalError setUnitFactor(float factor) = 0;
+	
 	virtual aalError setRolloffFactor(float factor) = 0;
 	
 	virtual aalError setListenerPosition(const Vector3f & position) = 0;

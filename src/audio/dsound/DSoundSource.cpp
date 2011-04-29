@@ -150,7 +150,7 @@ aalError DSoundSource::init(SourceId _id, DSoundSource * instance, const Channel
 	
 	arx_assert(instance->sample == sample);
 	
-	if(instance->stream || _channel.flags ^ instance->channel.flags) {
+	if(instance->stream || _channel.flags != instance->channel.flags) {
 		return init(id, _channel);
 	}
 	
