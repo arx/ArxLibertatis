@@ -735,7 +735,6 @@ aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned p
 			source->play(play_count);
 		} else if(source->isIdle()) {
 			source->setMixer(channel.mixer);
-			source->setEnvironment(channel.environment);
 			source->setVolume(channel.volume);
 			source->setPitch(channel.pitch);
 			source->setPan(channel.pan);

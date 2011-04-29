@@ -400,15 +400,6 @@ aalError DSoundSource::setMixer(MixerId mixer) {
 	return updateVolume();
 }
 
-aalError DSoundSource::setEnvironment(EnvId environment) {
-	
-	channel.environment = environment;
-	
-	// TODO implement
-	
-	return AAL_OK;
-}
-
 bool DSoundSource::checkPlaying() {
 	
 	DWORD value;

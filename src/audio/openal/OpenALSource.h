@@ -56,7 +56,6 @@ public:
 	aalError setCone(const SourceCone & cone);
 	aalError setFalloff(const SourceFalloff & falloff);
 	aalError setMixer(MixerId mixer);
-	aalError setEnvironment(EnvId environment);
 	
 	size_t getTime(TimeUnit unit = UNIT_MS) const;
 	

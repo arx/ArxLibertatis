@@ -491,15 +491,6 @@ aalError OpenALSource::setMixer(MixerId mixer) {
 	return updateVolume();
 }
 
-aalError OpenALSource::setEnvironment(EnvId environment) {
-	
-	channel.environment = environment;
-	
-	// TODO implement evironments (effects)
-	
-	return AAL_ERROR_SYSTEM;
-}
-
 size_t OpenALSource::getTime(TimeUnit unit) const {
 	return bytesToUnits(time, sample->getFormat(), unit);
 }

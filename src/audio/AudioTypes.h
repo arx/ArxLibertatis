@@ -60,7 +60,7 @@ enum ChannelFlag {
 	FLAG_DIRECTION     = 0x00000080, // Enable orientation control
 	FLAG_CONE          = 0x00000100, // Enable cone control
 	FLAG_FALLOFF       = 0x00000200, // Enable intensity control
-	FLAG_REVERBERATION = 0x00000400, // Enable environment reverberation / reflection
+	FLAG_REVERBERATION = 0x00000400, // Enable environment reverberation
 	FLAG_RELATIVE      = 0x00001000, // Compute position relative to the listener
 	FLAG_AUTOFREE      = 0x00008000, // Free resource when playing is finished
 	FLAG_CALLBACK      = 0x00010000, // Enable sample callback management
@@ -120,7 +120,6 @@ typedef s32 AmbianceId;
 struct Channel {
 	ChannelFlags flags;
 	MixerId mixer;
-	EnvId environment;
 	float volume;
 	float pitch;
 	float pan;

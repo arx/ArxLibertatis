@@ -70,7 +70,6 @@ public:
 	virtual aalError setCone(const SourceCone & cone) = 0;
 	virtual aalError setFalloff(const SourceFalloff & falloff) = 0;
 	virtual aalError setMixer(MixerId mixer) = 0;
-	virtual aalError setEnvironment(EnvId environment) = 0;
 	
 	/*!
 	 * Get the current play position in the sample.
