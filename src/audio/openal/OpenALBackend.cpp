@@ -46,11 +46,16 @@ OpenALBackend::~OpenALBackend() {
 		alcDestroyContext(context);
 	}
 	
-	if(device) {
-		alcCloseDevice(device);
+	ALenum error = alcGetError(device);
+	if(error != AL_NO_ERROR) {
+		LogError << "error destroying OpenAL context: " << error;
 	}
 	
-	AL_CHECK_ERROR_N("cleanup",)
+	if(device) {
+		if(alcCloseDevice(device) == ALC_FALSE) {
+			LogError << "error closing device";
+		}
+	}
 	
 }
 
@@ -89,7 +94,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 	
 	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 	
-	AL_CHECK_ERROR("init")
+	AL_CHECK_ERROR("initializing")
 	
 	return AAL_OK;
 }
