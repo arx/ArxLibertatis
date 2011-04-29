@@ -146,6 +146,8 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 		return NULL;
 	}
 	
+	source->setRolloffFactor(rolloffFactor);
+	
 	return source;
 }
 
@@ -232,7 +234,7 @@ aalError OpenALBackend::setReverbEnabled(bool enable) {
 	
 	ARX_UNUSED(enable);
 	
-	// TODO
+	// TODO implement reverb
 	
 	return AAL_OK;
 }
@@ -254,7 +256,7 @@ aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 		return AAL_ERROR_INIT;
 	}
 	
-	// TODO not all properties are set, some may be wrong
+	// TODO implement reverb - not all properties are set, some may be wrong
 	
 	setEffect(AL_REVERB_DIFFUSION, env.diffusion);
 	setEffect(AL_REVERB_AIR_ABSORPTION_GAINHF, env.absorption * -100.f);
