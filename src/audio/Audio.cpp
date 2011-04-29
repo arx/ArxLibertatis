@@ -76,6 +76,8 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 		OpenALBackend * _backend = new OpenALBackend();
 		if(!(error = _backend->init(enableEAX))) {
 			backend = _backend;
+		} else {
+			delete _backend;
 		}
 	}
 #endif
@@ -87,6 +89,8 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 		DSoundBackend * _backend = new DSoundBackend();
 		if(!(error = _backend->init(enableEAX))) {
 			backend = _backend;
+		} else {
+			delete _backend;
 		}
 	}
 #endif
