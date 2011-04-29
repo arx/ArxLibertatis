@@ -34,7 +34,11 @@ namespace audio {
 #undef ALError
 #define ALError LogError
 
-OpenALBackend::OpenALBackend() : device(NULL), context(NULL), hasEFX(false), rolloffFactor(1.f), effectEnabled(false) {
+OpenALBackend::OpenALBackend() : device(NULL), context(NULL),
+#ifdef HAVE_OPENAL_EFX
+	hasEFX(false), effectEnabled(false),
+#endif
+	rolloffFactor(1.f) {
 	
 }
 
@@ -81,6 +85,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 	}
 	alcMakeContextCurrent(context);
 	
+#ifdef HAVE_OPENAL_EFX
 	hasEFX = enableEffects && alcIsExtensionPresent(device, "ALC_EXT_EFX");
 	if(enableEffects && !hasEFX) {
 		LogWarning << "cannot enable effects, missing the EFX extension";
@@ -91,6 +96,9 @@ aalError OpenALBackend::init(bool enableEffects) {
 		alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
 		arx_assert(alGenEffects && alDeleteEffects && alEffectf);
 	}
+#else
+	ARX_UNUSED(enableEffects);
+#endif
 	
 	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 	
@@ -160,23 +168,6 @@ Source * OpenALBackend::getSource(SourceId sourceId) {
 	return source;
 }
 
-aalError OpenALBackend::setReverbEnabled(bool enable) {
-	
-	ARX_UNUSED(enable);
-	
-	// TODO
-	
-	return AAL_OK;
-}
-
-aalError OpenALBackend::setUnitFactor(float factor) {
-	
-	alListenerf(AL_METERS_PER_UNIT, factor);
-	AL_CHECK_ERROR("setting unit factor")
-	
-	return AAL_OK;
-}
-
 aalError OpenALBackend::setRolloffFactor(float factor) {
 	
 	rolloffFactor = factor;
@@ -206,6 +197,49 @@ aalError OpenALBackend::setListenerOrientation(const Vector3f & front, const Vec
 	return AAL_OK;
 }
 
+Backend::source_iterator OpenALBackend::sourcesBegin() {
+	return (source_iterator)sources.begin();
+}
+
+Backend::source_iterator OpenALBackend::sourcesEnd() {
+	return (source_iterator)sources.end();
+}
+
+Backend::source_iterator OpenALBackend::deleteSource(source_iterator it) {
+	arx_assert(it >= sourcesBegin() && it < sourcesEnd());
+	return (source_iterator)sources.remove((ResourceList<OpenALSource>::iterator)it);
+}
+
+#ifdef HAVE_OPENAL_EFX
+
+aalError OpenALBackend::setReverbEnabled(bool enable) {
+	
+	ARX_UNUSED(enable);
+	
+	// TODO
+	
+	return AAL_OK;
+}
+
+aalError OpenALBackend::setUnitFactor(float factor) {
+	
+	alListenerf(AL_METERS_PER_UNIT, factor);
+	AL_CHECK_ERROR("setting unit factor")
+	
+	return AAL_OK;
+}
+
+aalError OpenALBackend::setRoomRolloffFactor(float factor) {
+	
+	if(!effectEnabled) {
+		return AAL_ERROR_INIT;
+	}
+	
+	float rolloff = clamp(factor, 0.f, 10.f);
+	
+	return setEffect(AL_REVERB_ROOM_ROLLOFF_FACTOR, rolloff);
+}
+
 aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 	
 	if(!effectEnabled) {
@@ -226,30 +260,6 @@ aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 	return AAL_OK;
 }
 
-aalError OpenALBackend::setRoomRolloffFactor(float factor) {
-	
-	if(!effectEnabled) {
-		return AAL_ERROR_INIT;
-	}
-	
-	float rolloff = clamp(factor, 0.f, 10.f);
-	
-	return setEffect(AL_REVERB_ROOM_ROLLOFF_FACTOR, rolloff);
-}
-
-Backend::source_iterator OpenALBackend::sourcesBegin() {
-	return (source_iterator)sources.begin();
-}
-
-Backend::source_iterator OpenALBackend::sourcesEnd() {
-	return (source_iterator)sources.end();
-}
-
-Backend::source_iterator OpenALBackend::deleteSource(source_iterator it) {
-	arx_assert(it >= sourcesBegin() && it < sourcesEnd());
-	return (source_iterator)sources.remove((ResourceList<OpenALSource>::iterator)it);
-}
-
 aalError OpenALBackend::setEffect(ALenum type, float val) {
 	
 	alEffectf(effect, type, val);
@@ -257,5 +267,29 @@ aalError OpenALBackend::setEffect(ALenum type, float val) {
 	
 	return AAL_OK;
 }
+
+#else // HAVE_OPENAL_EFX
+
+aalError OpenALBackend::setReverbEnabled(bool enable) {
+	ARX_UNUSED(enable);
+	return AAL_ERROR_SYSTEM;
+}
+
+aalError OpenALBackend::setUnitFactor(float factor) {
+	ARX_UNUSED(factor);
+	return AAL_ERROR_SYSTEM;
+}
+
+aalError OpenALBackend::setRoomRolloffFactor(float factor) {
+	ARX_UNUSED(factor);
+	return AAL_ERROR_SYSTEM;
+}
+
+aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
+	ARX_UNUSED(env);
+	return AAL_ERROR_SYSTEM;
+}
+
+#endif // HAVE_OPENAL_EFX
 
 } // namespace audio

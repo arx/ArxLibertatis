@@ -10,7 +10,9 @@
 
 #include <al.h>
 #include <alc.h>
-#include <efx.h>
+#ifdef HAVE_OPENAL_EFX
+	#include <efx.h>
+#endif
 
 #ifdef _OLD_WIN32
 	#define _WIN32 1

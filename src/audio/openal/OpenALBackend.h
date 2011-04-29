@@ -44,22 +44,26 @@ public:
 	
 private:
 	
-	aalError setEffect(ALenum type, float val);
-	
 	ALCdevice * device;
 	ALCcontext * context;
+	
+#ifdef HAVE_OPENAL_EFX
+	
+	aalError setEffect(ALenum type, float val);
 	
 	bool hasEFX;
 	LPALGENEFFECTS alGenEffects;
 	LPALDELETEEFFECTS alDeleteEffects;
 	LPALEFFECTF alEffectf;
 	
+	bool effectEnabled;
+	ALuint effect;
+	
+#endif
+	
 	ResourceList<OpenALSource> sources;
 	
 	float rolloffFactor;
-	
-	bool effectEnabled;
-	ALuint effect;
 	
 	friend class OpenALSource;
 };
