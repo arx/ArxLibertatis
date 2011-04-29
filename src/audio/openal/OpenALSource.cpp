@@ -503,7 +503,6 @@ aalError OpenALSource::play(unsigned play_count) {
 		
 		status = Playing;
 		
-		// TODO set these in stop() and init()? (ie: why are these reset when pausing/resuming?)
 		time = read = written = 0;
 		callb_i = channel.flags & FLAG_CALLBACK ? 0 : (size_t)-1;
 		
@@ -533,8 +532,6 @@ aalError OpenALSource::play(unsigned play_count) {
 			markAsLoaded();
 		}
 	}
-	
-	// TODO why is there no culling here?
 	
 	return sourcePlay();
 }

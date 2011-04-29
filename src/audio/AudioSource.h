@@ -98,6 +98,9 @@ public:
 	inline bool isPlaying() const { return status == Playing; }
 	inline bool isIdle() const { return status == Idle; }
 	
+	/*!
+	 * Re-calculate the final volume from the channel and mixer volumes.
+	 */
 	virtual aalError updateVolume() = 0;
 	
 protected:
