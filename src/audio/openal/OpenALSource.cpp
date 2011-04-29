@@ -172,21 +172,32 @@ static ALenum getALFormat(const PCMFormat & format) {
 	}
 }
 
-aalError OpenALSource::init(SourceId _id, const Channel & _channel) {
-	
-	id = _id;
+aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _channel) {
 	
 	arx_assert(!source);
+	
+	id = _id;
 	
 	channel = _channel;
 	if(channel.flags & FLAG_ANY_3D_FX) {
 		channel.flags &= ~FLAG_PAN;
 	}
 	
-	return init();
-}
-
-aalError OpenALSource::init() {
+	if(inst && !inst->streaming) {
+		
+		arx_assert(inst->sample == sample);
+		
+		arx_assert(inst->buffers[0] != 0);
+		buffers[0] = inst->buffers[0];
+		bufferSizes[0] = inst->bufferSizes[0];
+		if(!inst->refcount) {
+			inst->refcount = new unsigned int;
+			*inst->refcount = 1;
+		}
+		refcount = inst->refcount;
+		(*refcount)++;
+		
+	}
 	
 	alGenSources(1, &source);
 	nbsources++;
@@ -333,33 +344,6 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	bufferSizes[i] = size;
 	
 	return AAL_OK;
-}
-
-aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _channel) {
-	
-	arx_assert(inst->sample == sample);
-	
-	if(inst->stream) {
-		return init(_id, _channel);
-	}
-	
-	id = _id;
-	
-	arx_assert(!source);
-	
-	channel = _channel;
-	
-	arx_assert(inst->buffers[0] != 0);
-	buffers[0] = inst->buffers[0];
-	bufferSizes[0] = inst->bufferSizes[0];
-	if(!inst->refcount) {
-		inst->refcount = new unsigned int;
-		*inst->refcount = 1;
-	}
-	refcount = inst->refcount;
-	(*refcount)++;
-	
-	return init();
 }
 
 aalError OpenALSource::setVolume(float v) {

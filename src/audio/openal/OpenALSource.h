@@ -44,7 +44,6 @@ public:
 	OpenALSource(Sample * sample);
 	~OpenALSource();
 	
-	aalError init(SourceId id, const Channel & channel);
 	aalError init(SourceId id, OpenALSource * instance, const Channel & channel);
 	
 	aalError setVolume(float volume);
@@ -83,8 +82,6 @@ private:
 	bool updateCulling();
 	
 	aalError updateBuffers();
-	
-	aalError init();
 	
 	/*!
 	 * Create buffers for all unused entries of the buffers array and fill them.
