@@ -55,7 +55,7 @@ CodecADPCM::~CodecADPCM() {
 		delete[] samp1;
 	}
 	if(samp2) {
-		delete[] samp1;
+		delete[] samp2;
 	}
 	if(coef1) {
 		delete[] coef1;
