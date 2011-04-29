@@ -266,7 +266,7 @@ SampleId aalCreateSample(const string & name) {
 	
 	AAL_EXIT
 	
-	return s_id;
+	return Backend::clearSource(s_id);
 }
 
 AmbianceId aalCreateAmbiance(const string & name) {
@@ -683,7 +683,7 @@ bool aalIsSamplePlaying(SourceId sample_id) {
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
 		AAL_EXIT
-		return AAL_ERROR_HANDLE;
+		return false;
 	}
 	
 	bool ret = source->isPlaying();
@@ -898,7 +898,7 @@ aalError aalGetAmbianceVolume(AmbianceId a_id, float & _volume) {
 
 bool aalIsAmbianceLooped(AmbianceId a_id) {
 	
-	AAL_ENTRY
+	AAL_ENTRY_V(false)
 	
 	if(!_amb.isValid(a_id)) {
 		AAL_EXIT
