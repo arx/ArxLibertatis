@@ -62,9 +62,6 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	
 	stream_limit_bytes = DEFAULT_STREAMLIMIT;
 	
-	//Initialize random number generator
-	InitSeed();
-	
 	bool autoBackend = (backendName == "auto");
 	aalError error;
 	bool matched = false;

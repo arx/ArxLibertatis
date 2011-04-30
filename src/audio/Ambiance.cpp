@@ -39,6 +39,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 #include "platform/Flags.h"
+#include "platform/Random.h"
 
 namespace {
 
@@ -81,7 +82,7 @@ struct KeySetting {
 	void reset() {
 		tupdate = 0;
 		if(min != max && flags & AAL_KEY_SETTING_FLAG_RANDOM) {
-			cur = float(min + fmodf((float)(Random()), max - min));
+			cur = min + Random::getf() * (max - min);
 		} else {
 			cur = min;
 		}
@@ -101,7 +102,7 @@ struct KeySetting {
 			tupdate += interval;
 			if(flags == AAL_KEY_SETTING_FLAG_RANDOM) {
 				from = to;
-				to = min + fmod(FRandom(), max - min);
+				to = min + Random::getf() * (max - min);
 			} else {
 				if(from == min) {
 					from = max, to = min;
@@ -162,7 +163,7 @@ struct TrackKey {
 	void updateSynch() {
 		if(delay_min != delay_max) {
 			delay = delay_max - delay;
-			delay += delay_min + Random() % (delay_max - delay_min);
+			delay += delay_min + Random::get() % (delay_max - delay_min);
 		} else {
 			delay = delay_min;
 		}

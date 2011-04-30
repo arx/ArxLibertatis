@@ -60,12 +60,6 @@ extern ResourceList<Sample> _sample;
 extern ResourceList<Ambiance> _amb;
 extern ResourceList<Environment> _env;
 
-// Random number generator
-// TODO move this into platform!
-size_t Random();
-float FRandom();
-size_t InitSeed();
-
 //! Convert a value from time units to bytes
 size_t unitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
 

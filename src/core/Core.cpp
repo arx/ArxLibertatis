@@ -123,6 +123,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Physics.h"
 
 #include "platform/String.h"
+#include "platform/Random.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -1196,6 +1197,8 @@ int main(int, char**)
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
 		AUTO_FULL_SCREEN=0;
 	}
+	
+	Random::seed();
 
 	CalcFPS(true);
 	HERMES_Memory_Security_On(32000);

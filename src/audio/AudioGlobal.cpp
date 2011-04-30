@@ -52,28 +52,6 @@ ResourceList<Sample> _sample;
 ResourceList<Ambiance> _amb;
 ResourceList<Environment> _env;
 
-// Random number generator
-static const size_t SEED = 43;
-static const size_t MODULO = 2147483647;
-static const size_t FACTOR = 16807;
-static const size_t SHIFT = 91;
-
-static size_t __current = SEED;
-
-size_t Random() {
-	return __current = (__current * FACTOR + SHIFT) % MODULO;
-}
-
-float FRandom() {
-	__current = (__current * FACTOR + SHIFT) % MODULO;
-	return float(__current) / float(MODULO);
-}
-
-size_t InitSeed() {
-	__current = (size_t)time(NULL);
-	return Random();
-}
-
 size_t unitsToBytes(size_t v, const PCMFormat & _format, TimeUnit unit) {
 	switch(unit) {
 		case UNIT_MS:
