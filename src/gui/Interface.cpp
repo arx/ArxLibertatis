@@ -7304,13 +7304,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ITC.Set("current_8", "Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
 		ITC.Set("current_9", "Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
 		ITC.Set("current_10", "Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
-		ITC.Set("heropageleft", "Graph\\Interface\\book\\character_sheet\\Hero_left_X24_Y24.BMP" );
-		ITC.Set("heropageright", "Graph\\Interface\\book\\character_sheet\\Hero_right_X305_Y270.BMP" );
-		ITC.Set("symbol_mega", NULL);
-		ITC.Set("symbol_vista", NULL);
-		ITC.Set("symbol_aam", NULL);
-		ITC.Set("symbol_taar", NULL);
-		ITC.Set("symbol_yok", NULL);
 		
 		ITC.Set("pTexCursorRedist", "Graph\\Interface\\cursors\\add_points.bmp");
 		

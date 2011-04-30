@@ -211,7 +211,6 @@ struct SavedCinematicTrack {
 	f32 fps;
 	s32 nbkey;
 	s32 pause;
-	s32 key;
 };
 
 

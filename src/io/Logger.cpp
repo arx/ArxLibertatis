@@ -9,7 +9,7 @@
 
 using std::cout;
 
-Logger::LogLevel Logger::logLevel = Logger::Debug;
+Logger::LogLevel Logger::logLevel = Logger::Info;
 
 struct LogSetting {
 	string codefile;
@@ -18,31 +18,11 @@ struct LogSetting {
 
 const LogSetting blackList[] = {
 	{ "FTL.cpp", Logger::Warning },
-	{ "Script.cpp", Logger::Info },
-	{ "ScriptEvent.cpp", Logger::Info },
-	{ "LoadLevel.cpp", Logger::Info },
 	{ "PakManager.cpp", Logger::Fatal },
-	{ "PakReader.cpp", Logger::Info },
 	{ "Filesystem.cpp", Logger::Fatal },
 	{ "Audio.cpp", Logger::Error },
-	{ "AudioInstance.cpp", Logger::Info },
 	{ "Object.cpp", Logger::Warning },
 	{ "Speech.cpp", Logger::Error },
-	{ "Text.cpp", Logger::Info },
-	{ "CinematicLoad.cpp", Logger::Info },
-	{ "IO.cpp", Logger::Debug },
-	{ "MenuWidgets.cpp", Logger::Info },
-	{ "Menu.cpp", Logger::Info },
-	{ "MeshManipulation.cpp", Logger::Info },
-	{ "Config.cpp", Logger::Info },
-	{ "Core.cpp", Logger::Info },
-	{ "CinematicTexture.cpp", Logger::Info },
-	{ "CinematicSound.cpp", Logger::Info },
-	{ "Mesh.cpp", Logger::Info },
-	{ "Localization.cpp", Logger::Info },
-	{ "Credits.cpp", Logger::Info },
-	{ "ChangeLevel.cpp", Logger::Info },
-	{ "SaveBlock.cpp", Logger::Info },
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {

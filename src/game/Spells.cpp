@@ -2826,19 +2826,6 @@ void ARX_SPELLS_Init() {
 	
 }
 
-void ARX_SPELLS_CancelAll() {
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].exist) {
-			spells[i].tolive = 0;			
-		}
-	}
-	
-	ARX_SPELLS_Update();
-	ARX_SPELLS_RemoveAllSpellsOn(inter.iobj[0]);
-	inter.iobj[0]->speed_modif = 0;
-}
-
 // Clears All Spells.
 void ARX_SPELLS_ClearAll() {
 	

@@ -58,45 +58,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
-#include <windows.h>
-#include <signal.h>
-#include <fcntl.h>
-
-#include <cstdio>
-#include <ctime>
-
 #include "io/Logger.h"
 
 
-void assertionFailed(const char * _sExpression, const char * _sFile, unsigned int _iLine, const char * _sMessage)
-{
-	char msgbuf[8192];
-	char fn[MAX_PATH + 1], expr[MAX_PATH + 1], iFile[MAX_PATH + 1];
-
-	strcpy(expr, _sExpression);
-	strcpy(iFile, _sFile);
-
-	if (iFile[0] == 0)
-	{
-		strcpy(iFile, "<unknown>");
+void assertionFailed(const char * expr, const char * file, unsigned int line, const char * msg) {
+	
+	if(!file || file[0] == '\0') {
+		file = "<unknown>";
 	}
-
-	if (expr[0] == 0)
-	{
-		strcpy(expr, "?");
+	
+	Logger(file, line, Logger::Error) << "Assertion Failed: " << expr;
+	if(msg) {
+		Logger(file, line, Logger::Error) << "Message: " << msg;
 	}
-
-	fn[MAX_PATH] = 0;
-
-	if (! GetModuleFileNameA(NULL, fn, MAX_PATH))
-	{
-		strcpy(fn, "<unknown>");
-	}
-
-	if(_sMessage == 0)
-		sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s", fn, iFile, _iLine, expr);
-	else
-		sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s\nMessage: %s", fn, iFile, _iLine, expr, _sMessage);
-
-	LogError << msgbuf;
+	
+	// TODO should we exit here?
 }
