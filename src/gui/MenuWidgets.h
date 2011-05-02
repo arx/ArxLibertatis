@@ -867,6 +867,7 @@ class CMenuConfig
 		int			iSpeechVolume;
 		int			iAmbianceVolume;
 		bool		bEAX;
+		std::string audioBackend;
 		//INPUT
 		bool		bInvertMouse;
 		bool		bAutoReadyWeapon;

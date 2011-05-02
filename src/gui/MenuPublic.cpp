@@ -497,12 +497,6 @@ void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume)
 }
 
 //-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_GetEAX(bool & _bEnable)
-{
-	_bEnable = pMenuConfig->bEAX;
-}
-
-//-----------------------------------------------------------------------------
 bool ARXMenu_Options_Audio_SetEAX(bool _bEnable)
 {
 	int iOldGamma;
@@ -515,7 +509,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable)
 	ARX_SOUND_AmbianceSavePlayList(&pAmbiancePlayList, &ulSizeAmbiancePlayList);
 
 	ARX_SOUND_Release();
-	ARX_SOUND_Init(danaeApp.m_hWnd);
+	ARX_SOUND_Init();
 	ARX_SOUND_EnableReverb(_bEnable);
 
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);

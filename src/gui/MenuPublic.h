@@ -72,7 +72,6 @@ void ARXMenu_Options_Audio_GetSpeechVolume(int &);
 void ARXMenu_Options_Audio_SetSpeechVolume(int);
 void ARXMenu_Options_Audio_GetAmbianceVolume(int &);
 void ARXMenu_Options_Audio_SetAmbianceVolume(int);
-void ARXMenu_Options_Audio_GetEAX(bool &);
 bool ARXMenu_Options_Audio_SetEAX(bool);
 
 //-----------------------------------------------------------------------------

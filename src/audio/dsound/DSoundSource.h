@@ -23,33 +23,75 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_AUDIO_CODEC_CODEC_H
-#define ARX_AUDIO_CODEC_CODEC_H
+#ifndef ARX_AUDIO_DSOUND_DSOUNDSOURCE_H
+#define ARX_AUDIO_DSOUND_DSOUNDSOURCE_H
+
+#include "audio/dsound/dsoundfwd.h"
 
 #include "audio/AudioTypes.h"
-
-struct PakFileHandle;
+#include "audio/AudioSource.h"
 
 namespace audio {
 
-class Codec {
+class Stream;
+class Sample;
+class DSoundBackend;
+
+class DSoundSource : public Source {
 	
 public:
 	
-	virtual ~Codec() {};
+	DSoundSource(Sample * Sample, DSoundBackend * backend);
+	~DSoundSource();
 	
-	virtual aalError setHeader(void * header) = 0;
-	virtual void setStream(PakFileHandle * stream) = 0;
+	aalError init(SourceId _id, const Channel & channel);
+	aalError init(SourceId _id, DSoundSource * instance, const Channel & channel);
 	
-	//! The stream cursor must be at the begining of waveform data
-	virtual aalError setPosition(size_t position) = 0;
+	aalError setVolume(float volume);
+	aalError setPitch(float pitch);
+	aalError setPan(float pan);
 	
-	virtual size_t getPosition() = 0;
+	aalError setPosition(const Vector3f & position);
+	aalError setVelocity(const Vector3f & velocity);
+	aalError setDirection(const Vector3f & direction);
+	aalError setCone(const SourceCone & cone);
+	aalError setFalloff(const SourceFalloff & falloff);
+	aalError setMixer(MixerId mixer);
 	
-	virtual aalError read(void * buffer, size_t to_read, size_t & read) = 0;
+	size_t getTime(TimeUnit unit = UNIT_MS) const;
+	
+	// Control
+	aalError play(unsigned playCount = 1);
+	aalError stop();
+	aalError pause();
+	aalError resume();
+	aalError update();
+	
+	aalError updateVolume();
+	
+private:
+	
+	aalError init();
+	void updateStreaming();
+	bool isTooFar();
+	aalError clean();
+	bool checkPlaying();
+	
+	bool tooFar;
+	size_t callb_i; // Next callback index
+	unsigned loop; // Remaining loop count
+	size_t time; // Elapsed 'time'
+	Stream * stream;
+	size_t read, write; // Streaming status
+	size_t size; // Buffer size
+	LPDIRECTSOUNDBUFFER lpdsb;
+	LPDIRECTSOUND3DBUFFER lpds3db;
+	LPKSPROPERTYSET lpeax;
+	
+	DSoundBackend * backend;
 	
 };
 
 } // namespace audio
 
-#endif // ARX_AUDIO_CODEC_CODEC_H
+#endif // ARX_AUDIO_DSOUND_DSOUNDSOURCE_H

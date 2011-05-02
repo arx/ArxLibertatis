@@ -25,217 +25,184 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Mixer.h"
 
-#include <cmath>
-#include <cstdlib>
-#include <cstring>
-
 #include "audio/AudioGlobal.h"
-#include "audio/AudioInstance.h"
+#include "audio/AudioBackend.h"
+#include "audio/AudioSource.h"
+#include "audio/Ambiance.h"
 
-using namespace std;
+namespace audio {
 
-namespace ATHENA
-{
+Mixer::Mixer() :
+	paused(false),
+	volume(DEFAULT_VOLUME),
+	parent(NULL),
+	finalVolume(DEFAULT_VOLUME) {
+}
 
-	const aalULong MIXER_PAUSED = 0x00000001;
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Constrcutor and destructor                                                //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	Mixer::Mixer() :
-		name(NULL), status(0), flags(0),
-		volume(AAL_DEFAULT_VOLUME),
-		pitch(AAL_DEFAULT_PITCH),
-		pan(AAL_DEFAULT_PAN),
-		parent(NULL)
-	{
-	}
-
-	Mixer::~Mixer()
-	{
-		aalULong i;
-
-		for (i = 0; i < _mixer.Size(); i++)
-			if (_mixer[i] && _mixer[i]->parent == this)
-				_mixer.Delete(i);
-
-		for (i = 0; i < _inst.Size(); i++)
-			if (_inst[i] &&
-			        _inst[i]->IsPlaying() &&
-			        _mixer.IsValid(_inst[i]->channel.mixer) &&
-			        _mixer[_inst[i]->channel.mixer] == this)
-				_inst.Delete(i);
-
-		for (i = 0; i < _amb.Size(); i++)
-			if (_amb[i] &&
-			        _amb[i]->IsPlaying() &&
-			        _mixer.IsValid(_amb[i]->channel.mixer) &&
-			        _mixer[_amb[i]->channel.mixer] == this)
-				_amb.Delete(i);
-
-		free(name);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Setup                                                                     //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError Mixer::SetName(const char * _name)
-	{
-		void * ptr;
-
-		if (!_name)
-		{
-			free(name), name = NULL;
-			return AAL_OK;
+Mixer::~Mixer() {
+	
+	for(size_t i = 0; i < _mixer.size(); i++) {
+		if(_mixer[i] && _mixer[i]->parent == this) {
+			_mixer.remove(i);
 		}
-
-		ptr = realloc(name, strlen(_name) + 1);
-
-		if (!ptr) return AAL_ERROR_MEMORY;
-
-		name = (char *)ptr;
-
-		strcpy(name, _name);
-
-		return AAL_OK;
 	}
+	
+	clear(true);
+}
 
-	aalError Mixer::SetVolume(const aalFloat & v)
-	{
-		aalULong i;
-
-		volume = v > 1.0F ? 1.0F : v < 0.0F ? 0.0F : v;
-
-		for (i = 0; i < _mixer.Size(); i++)
-			if (_mixer[i] && _mixer[i]->parent == this)
-				_mixer[i]->SetVolume(_mixer[i]->volume);
-
-		for (i = 0; i < _inst.Size(); i++)
-			if (_inst[i] && _mixer[_inst[i]->channel.mixer] == this)
-				_inst[i]->SetVolume(_inst[i]->channel.volume);
-
-		return AAL_OK;
-	}
-
-	aalError Mixer::SetParent(const Mixer * _mixer)
-	{
-		const Mixer * mixer = _mixer;
-
-		while (mixer)
-		{
-			if (mixer == this) return AAL_ERROR;
-
-			mixer = mixer->parent;
-		}
-
-		parent = _mixer;
-		return AAL_OK;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Status                                                                    //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-
-	aalError Mixer::GetVolume(aalFloat & _volume) const
-	{
-		_volume = volume;
-		return AAL_OK;
-	}
-
-	aalUBool Mixer::IsPaused() const
-	{
-		return status & MIXER_PAUSED ? AAL_UTRUE : AAL_UFALSE;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Control                                                                   //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError Mixer::Stop()
-	{
-		aalULong i;
-
-		for (i = 0; i < _mixer.Size(); i++)
-		{
-			Mixer * mixer = _mixer[i];
-
-			if (mixer && mixer->parent == this)
-				mixer->Stop();
-		}
-
-		for (i = 0; i < _amb.Size(); i++)
-		{
-			Ambiance * ambiance = _amb[i];
-
-			if (ambiance && _mixer[ambiance->channel.mixer] == this)
-			{
-				ambiance->Stop();
-
-				if (ambiance->channel.flags & AAL_FLAG_AUTOFREE)
-					_amb.Delete(i);
+void Mixer::clear(bool force) {
+	
+	for(size_t i = 0; i < _amb.size(); i++) {
+		Ambiance * ambiance = _amb[i];
+		if(ambiance && _mixer[ambiance->getChannel().mixer] == this) {
+			if(force || ambiance->getChannel().flags & FLAG_AUTOFREE) {
+				_amb.remove(i);
+			} else {
+				ambiance->stop();
 			}
 		}
-
-		for (i = 0; i < _inst.Size(); i++)
-		{
-			Instance * instance = _inst[i];
-
-			if (instance && _mixer[instance->channel.mixer] == this)
-				_inst.Delete(i);
+	}
+	
+	// Delete sources referencing this mixer.
+	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+			p = backend->deleteSource(p);
+		} else {
+			++p;
 		}
+	}
+	
+}
 
-		status &= ~MIXER_PAUSED;
-
+aalError Mixer::setVolume(float v) {
+	
+	float vol = clamp(v, 0.f, 1.f);
+	if(volume == vol) {
 		return AAL_OK;
 	}
+	volume = vol;
+	
+	updateVolume();
+	
+	return AAL_OK;
+}
 
-	aalError Mixer::Pause()
-	{
-		aalULong i;
+void Mixer::updateVolume() {
+	
+	float vol = parent ? parent->finalVolume * volume : volume;
+	if(finalVolume == vol) {
+		return;
+	}
+	finalVolume = vol;
+	
+	for(size_t i = 0; i < _mixer.size(); i++) {
+		if(_mixer[i] && _mixer[i]->parent == this) {
+			_mixer[i]->updateVolume();
+		}
+	}
+	
+	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+			(*p)->updateVolume();
+		}
+	}
+	
+}
 
-		for (i = 0; i < _mixer.Size(); i++)
-			if (_mixer[i] && _mixer[i]->parent == this)
-				_mixer[i]->Pause();
-
-		for (i = 0; i < _amb.Size(); i++)
-			if (_amb[i] && _mixer[_amb[i]->channel.mixer] == this)
-				_amb[i]->Pause();
-
-		for (i = 0; i < _inst.Size(); i++)
-			if (_inst[i] && _mixer[_inst[i]->channel.mixer] == this)
-				_inst[i]->Pause();
-
-		status |= MIXER_PAUSED;
+aalError Mixer::setParent(const Mixer * _mixer) {
+	
+	if(parent == _mixer) {
 		return AAL_OK;
 	}
+	
+	// Check for cyles.
+	const Mixer * mixer = _mixer;
+	while(mixer) {
+		if(mixer == this) {
+			return AAL_ERROR;
+		}
+		mixer = mixer->parent;
+	}
+	
+	parent = _mixer;
+	
+	updateVolume();
+	
+	if(parent && !paused && parent->paused) {
+		pause();
+	}
+	
+	return AAL_OK;
+}
 
-	aalError Mixer::Resume()
-	{
-		if (!(status & MIXER_PAUSED)) return AAL_OK;
+aalError Mixer::stop() {
+	
+	for(size_t i = 0; i < _mixer.size(); i++) {
+		Mixer * mixer = _mixer[i];
+		if(mixer && mixer->parent == this) {
+			mixer->stop();
+		}
+	}
+	
+	clear(false);
+	
+	paused = false;
+	
+	return AAL_OK;
+}
 
-		aalULong i;
+aalError Mixer::pause() {
+	
+	for(size_t i = 0; i < _mixer.size(); i++) {
+		if(_mixer[i] && _mixer[i]->parent == this) {
+			_mixer[i]->pause();
+		}
+	}
+	
+	for(size_t i = 0; i < _amb.size(); i++) {
+		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
+			_amb[i]->pause();
+		}
+	}
+	
+	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+			(*p)->pause();
+		}
+	}
+	
+	paused = true;
+	
+	return AAL_OK;
+}
 
-		for (i = 0; i < _mixer.Size(); i++)
-			if (_mixer[i] && _mixer[i]->parent == this)
-				_mixer[i]->Resume();
-
-		for (i = 0; i < _amb.Size(); i++)
-			if (_amb[i] && _mixer[_amb[i]->channel.mixer] == this)
-				_amb[i]->Resume();
-
-		for (i = 0; i < _inst.Size(); i++)
-			if (_inst[i] && _mixer[_inst[i]->channel.mixer] == this)
-				_inst[i]->Resume();
-
-		status &= ~MIXER_PAUSED;
+aalError Mixer::resume() {
+	
+	if(!paused) {
 		return AAL_OK;
 	}
+	
+	for(size_t i = 0; i < _mixer.size(); i++) {
+		if(_mixer[i] && _mixer[i]->parent == this) {
+			_mixer[i]->resume();
+		}
+	}
+	
+	for(size_t i = 0; i < _amb.size(); i++) {
+		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
+			_amb[i]->resume();
+		}
+	}
+	
+	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+			(*p)->resume();
+		}
+	}
+	
+	paused = false;
+	
+	return AAL_OK;
+}
 
-}//ATHENA::
+} // namespace audio

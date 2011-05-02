@@ -123,6 +123,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Attractors.h"
 
 #include "platform/String.h"
+#include "platform/Random.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -1194,6 +1195,8 @@ int main(int, char**)
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
 		AUTO_FULL_SCREEN=0;
 	}
+	
+	Random::seed();
 
 	CalcFPS(true);
 
@@ -1459,8 +1462,9 @@ int main(int, char**)
 	danaeApp.m_pFramework->bitdepth=Project.bits;
 
 	LogDebug << "Sound Init";
-	if (Project.soundmode != 0 && ARX_SOUND_INIT)
-		ARX_SOUND_Init(danaeApp.m_hWnd);
+	if(Project.soundmode != 0 && ARX_SOUND_INIT) {
+		ARX_SOUND_Init();
+	}
 
 	LogInfo << "Sound Init Success";
 	LogDebug << "DInput Init";

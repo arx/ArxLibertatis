@@ -853,7 +853,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 		if (SendIOScriptEvent(io, SM_LOAD) == ACCEPT)
 		{
 			if(io->obj == NULL) {
-				bool pbox = (io->ioflags & IO_ITEM);
+				bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
 				io->obj = loadObject(io->filename, pbox);
 
 				if (io->ioflags & IO_NPC)

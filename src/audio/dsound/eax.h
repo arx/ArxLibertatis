@@ -6,86 +6,51 @@
 *******************************************************************
 */
 
-#ifndef EAX_H_INCLUDED
-#define EAX_H_INCLUDED
+#ifndef ARX_AUDIO_DSOUND_EAX_H
+#define ARX_AUDIO_DSOUND_EAX_H
+
+#include "platform/Platform.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
 
-#define IMPORT // __declspec(dllimport)
+#if ARX_COMPILER_MSVC
+	#define EAX_IMPORT __declspec(dllimport)
+#else
+	#define EAX_IMPORT
+#endif
 
-#ifndef OPENAL
 #include <dsound.h>
-	/*
-	* EAX Wrapper Interface (using Direct X 7) {4FF53B81-1CE0-11d3-AAB8-00A0C95949D5}
-	*/
-	DEFINE_GUID(CLSID_EAXDirectSound,
-	            0x4ff53b81,
-	            0x1ce0,
-	            0x11d3,
-	            0xaa, 0xb8, 0x0, 0xa0, 0xc9, 0x59, 0x49, 0xd5);
 
-	/*
-	* EAX Wrapper Interface (using Direct X 8) {CA503B60-B176-11d4-A094-D0C0BF3A560C}
-	*/
-	DEFINE_GUID(CLSID_EAXDirectSound8,
-	            0xca503b60,
-	            0xb176,
-	            0x11d4,
-	            0xa0, 0x94, 0xd0, 0xc0, 0xbf, 0x3a, 0x56, 0xc);
+/*
+* EAX Wrapper Interface (using Direct X 7) {4FF53B81-1CE0-11d3-AAB8-00A0C95949D5}
+*/
+DEFINE_GUID(CLSID_EAXDirectSound,
+            0x4ff53b81,
+            0x1ce0,
+            0x11d3,
+            0xaa, 0xb8, 0x0, 0xa0, 0xc9, 0x59, 0x49, 0xd5);
 
-#ifdef DIRECTSOUND_VERSION
-#if DIRECTSOUND_VERSION == 0x0800
-	IMPORT HRESULT WINAPI EAXDirectSoundCreate8(GUID *, LPDIRECTSOUND8 *, IUnknown FAR *);
-	typedef HRESULT(FAR PASCAL * LPEAXDIRECTSOUNDCREATE8)(GUID *, LPDIRECTSOUND8 *, IUnknown FAR *);
-#endif
-#endif
-
-	IMPORT HRESULT WINAPI EAXDirectSoundCreate(GUID *, LPDIRECTSOUND *, IUnknown FAR *);
-	typedef HRESULT(FAR PASCAL * LPEAXDIRECTSOUNDCREATE)(GUID *, LPDIRECTSOUND *, IUnknown FAR *);
-
-#else
-#include <al.h>
-
-#ifndef GUID_DEFINED
-#define GUID_DEFINED
-	typedef struct _GUID
-	{
-		unsigned long Data1;
-		unsigned short Data2;
-		unsigned short Data3;
-		unsigned char Data4[8];
-	} GUID;
-#endif // !GUID_DEFINED
-
-#ifndef DEFINE_GUID
-#ifndef INITGUID
-#define DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
-	extern const GUID FAR name
-#else
-#define DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
-	extern const GUID name = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
-#endif // INITGUID
-#endif // DEFINE_GUID
-
-	/*
-	* EAX OpenAL Extension {4FF53B81-1CE0-11d3-AAB8-00A0C95949D5}
-	*/
-	typedef ALenum(*EAXSet)(const GUID *, ALuint, ALuint, ALvoid *, ALuint);
-	typedef ALenum(*EAXGet)(const GUID *, ALuint, ALuint, ALvoid *, ALuint);
-#endif
+/*
+* EAX Wrapper Interface (using Direct X 8) {CA503B60-B176-11d4-A094-D0C0BF3A560C}
+*/
+DEFINE_GUID(CLSID_EAXDirectSound8,
+            0xca503b60,
+            0xb176,
+            0x11d4,
+            0xa0, 0x94, 0xd0, 0xc0, 0xbf, 0x3a, 0x56, 0xc);
 
 #pragma pack(push, 4)
 
-	/*
-	* EAX 2.0 listener property set {0306A6A8-B224-11d2-99E5-0000E8D8C722}
-	*/
-	DEFINE_GUID(DSPROPSETID_EAX20_ListenerProperties,
-	            0x306a6a8,
-	            0xb224,
-	            0x11d2,
-	            0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22);
+/*
+* EAX 2.0 listener property set {0306A6A8-B224-11d2-99E5-0000E8D8C722}
+*/
+DEFINE_GUID(DSPROPSETID_EAX20_ListenerProperties,
+            0x306a6a8,
+            0xb224,
+            0x11d2,
+            0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22);
 
 	// For compatibility with future EAX versions:
 #define DSPROPSETID_EAX_ListenerProperties DSPROPSETID_EAX20_ListenerProperties
@@ -456,4 +421,4 @@ extern "C" {
 }
 #endif // __cplusplus
 
-#endif
+#endif // ARX_AUDIO_DSOUND_EAX_H

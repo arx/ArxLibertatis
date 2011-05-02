@@ -30,36 +30,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct PakFileHandle;
 
-namespace ATHENA {
+namespace audio {
+
+class Stream {
 	
-	class Stream {
-		
-	public:
-		
-		virtual ~Stream() {};
-		
-		// Setup
-		virtual aalError SetStream(PakFileHandle * stream) = 0;
-		virtual aalError SetFormat(const aalFormat & format) = 0;
-		virtual aalError SetLength(const aalULong & length) = 0;
-		virtual aalError SetPosition(const aalULong & position) = 0;
-		
-		// Status
-		virtual aalError GetStream(PakFileHandle *&stream) = 0;
-		virtual aalError GetFormat(aalFormat & format) = 0;
-		virtual aalError GetLength(aalULong & length) = 0;
-		virtual aalError GetPosition(aalULong & position) = 0;
-		
-		// File I/O
-		virtual aalError Read(void * buffer, const aalULong & to_read, aalULong & read) = 0;
-		virtual aalError Write(void * buffer, const aalULong & to_write, aalULong & write) = 0;
-		
-	};
+public:
 	
-	// Utilities
-	Stream * CreateStream(const char * name);
-	aalError DeleteStream(Stream *&stream);
+	virtual ~Stream() {};
 	
-} // namespace ATHENA
+	virtual aalError setStream(PakFileHandle * stream) = 0;
+	virtual aalError setPosition(size_t position) = 0;
+	
+	virtual PakFileHandle * getStream() = 0;
+	virtual aalError getFormat(PCMFormat & format) = 0;
+	virtual size_t getLength() = 0;
+	virtual size_t getPosition() = 0;
+	
+	virtual aalError read(void * buffer, size_t to_read, size_t & read) = 0;
+	
+};
+
+// Utilities
+Stream * createStream(const std::string & name);
+void deleteStream(Stream *& stream);
+
+} // namespace audio
 
 #endif // ARX_AUDIO_STREAM_H

@@ -75,10 +75,10 @@ const std::string arxVersion = "0.1";
 
 #if defined(__PPU__)
 	#define ARX_PLATFORM ARX_PLATFORM_PS3_PPU
-#elif defined(_WIN32)
-	#define ARX_PLATFORM ARX_PLATFORM_WIN32
 #elif defined(__linux)
 	#define ARX_PLATFORM ARX_PLATFORM_LINUX
+#elif defined(_WIN32)
+	#define ARX_PLATFORM ARX_PLATFORM_WIN32
 #endif
 
 #ifndef ARX_PLATFORM
@@ -202,6 +202,9 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 /* ---------------------------------------------------------
                             Define
 ------------------------------------------------------------*/
+
+// Remove asserts about unused but necessary variable (unused params, variables only used for asserts...)
+#define ARX_UNUSED(var)		((void)&var)
 
 #define ARX_CHECK_NOT_NEG( _x )  (arx_assert((_x) >= 0))
 

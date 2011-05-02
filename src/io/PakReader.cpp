@@ -537,7 +537,7 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 int PakReader::fSeek(PakFileHandle * fh, int offset, long whence) {
 	
 	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
-		return 1;
+		return -1;
 	}
 	
 	size_t size;
@@ -552,11 +552,11 @@ int PakReader::fSeek(PakFileHandle * fh, int offset, long whence) {
 		case SEEK_SET:
 			
 			if(offset < 0) {
-				return 1;
+				return -1;
 			}
 			
 			if((size_t)offset > size) {
-				return 1;
+				return -1;
 			}
 			fh->offset = offset;
 			break;
@@ -564,11 +564,11 @@ int PakReader::fSeek(PakFileHandle * fh, int offset, long whence) {
 		case SEEK_END:
 			
 			if(offset < 0) {
-				return 1;
+				return -1;
 			}
 			
 			if((size_t)offset > size) {
-				return 1;
+				return -1;
 			}
 			fh->offset = size - offset;
 			break;
@@ -577,13 +577,13 @@ int PakReader::fSeek(PakFileHandle * fh, int offset, long whence) {
 			
 			int iOffset = fh->offset + offset;
 			if((iOffset < 0) || ((unsigned int)iOffset > size)) {
-				return 1;
+				return -1;
 			}
 			fh->offset = iOffset;
 		
 	}
 	
-	return 0;
+	return fh->offset;
 }
 
 long PakReader::fTell(PakFileHandle * fh) {

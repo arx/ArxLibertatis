@@ -31,45 +31,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct PakFileHandle;
 
-namespace ATHENA {
+namespace audio {
+
+class Codec;
+
+class StreamWAV : public Stream {
 	
-	class Codec;
+public:
 	
-	class StreamWAV : public Stream {
-		
-	public:
-		
-		StreamWAV();
-		~StreamWAV();
-		
-		// Setup
-		aalError SetStream(PakFileHandle * stream);
-		aalError SetFormat(const aalFormat & format);
-		aalError SetLength(const aalULong & length);
-		aalError SetPosition(const aalULong & position);
-		
-		// Status
-		aalError GetStream(PakFileHandle *&stream);
-		aalError GetFormat(aalFormat & format);
-		aalError GetLength(aalULong & length);
-		aalError GetPosition(aalULong & position);
-		
-		// File I/O
-		aalError Read(void * buffer, const aalULong & to_read, aalULong & read);
-		aalError Write(void * buffer, const aalULong & to_write, aalULong & write);
-		
-	private:
-		
-		PakFileHandle * stream;
-		Codec * codec;
-		void * status; // Stream status
-		void * format; // File data format
-		aalULong size, outsize; // Compressed and uncompessed data size
-		aalULong offset; // Offset of data in file
-		aalULong cursor;
-		
-	};
+	StreamWAV();
+	~StreamWAV();
 	
-} // namespace ATHENA
+	aalError setStream(PakFileHandle * stream);
+	aalError setPosition(size_t position);
+	
+	PakFileHandle * getStream();
+	aalError getFormat(PCMFormat & format);
+	size_t getLength();
+	size_t getPosition();
+	
+	aalError read(void * buffer, size_t to_read, size_t & read);
+	
+private:
+	
+	PakFileHandle * stream;
+	Codec * codec;
+	void * header; // File data format
+	size_t size, outsize; // Compressed and uncompessed data size
+	size_t offset; // Offset of data in file
+	size_t cursor;
+	
+};
+
+} // namespace audio
 
 #endif//ARX_AUDIO_CODEC_WAV_H

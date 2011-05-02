@@ -26,145 +26,156 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIORESOURCE_H
 #define ARX_AUDIO_AUDIORESOURCE_H
 
-#include "AudioTypes.h"
+#include <cstdlib>
+#include <cstring>
+
+#include "audio/AudioTypes.h"
+#include "platform/Platform.h"
 
 struct PakFileHandle;
 
-namespace ATHENA {
+namespace audio {
+
+PakFileHandle * OpenResource(const std::string & name, const std::string & resource_path);
+
+class ResourceHandle {
 	
-	const aalULong ALIGNMENT(0x10);
+public:
 	
-	PakFileHandle * OpenResource(const char * name, const char * resource_path);
+	ResourceHandle() {
+		__count = 0;
+	}
+	virtual ~ResourceHandle() {};
 	
-	class ResourceHandle {
-		
-	public:
-		
-		ResourceHandle() {
-			__count = 0;
-		}
-		virtual ~ResourceHandle() {};
-		
-		inline void Catch() {
-			++__count;
-		}
-		inline void Release() {
-			--__count;
-		}
-		inline s32 IsHandled() {
-			return __count;
-		}
-		
-	private:
-		
-		s32 __count;
-		
-	};
-	
-	template <class T>
-	class ResourceList {
-		
-	public:
-		
-		ResourceList();
-		~ResourceList();
-		
-		inline aalUBool IsValid(const aalSLong & index);
-		inline aalUBool IsNotValid(const aalSLong & index);
-		inline T * operator[](const aalSLong & index);
-		inline aalULong Size() {
-			return size;
-		}
-		inline aalSLong Add(T * element);
-		inline void Delete(const aalSLong & index);
-		inline void Clean();
-		
-	private:
-		
-		aalULong size;
-		T ** list;
-		
-	};
-	
-	template <class T>
-	inline ResourceList<T>::ResourceList() : size(0), list(NULL) { }
-	
-	template <class T>
-	inline ResourceList<T>::~ResourceList() {
-		for (aalULong i(0); i < size; i++) if (list[i]) delete list[i];
+	inline void reference() {
+		++__count;
+	}
+	inline void dereference() {
+		arx_assert(__count > 0);
+		--__count;
+	}
+	inline s32 isReferenced() {
+		return __count;
 	}
 	
-	template <class T>
-	inline aalUBool ResourceList<T>::IsValid(const aalSLong & index) {
-		return (aalULong(index) < size && list[index]) ? AAL_UTRUE : AAL_UFALSE;
-	}
+private:
 	
-	template <class T>
-	inline aalUBool ResourceList<T>::IsNotValid(const aalSLong & index) {
-		return (aalULong(index) >= size || !list[index]) ? AAL_UTRUE : AAL_UFALSE;
-	}
+	s32 __count;
 	
-	template <class T>
-	inline T * ResourceList<T>::operator[](const aalSLong & index) {
-		return list[index];
-	}
+};
+
+template <class T>
+class ResourceList {
 	
-	template <class T>
-	inline aalSLong ResourceList<T>::Add(T * element) {
-		
-		void * ptr;
-		aalULong i(0);
-		
-		for(; i < size; i++) {
-			if(!list[i]) {
-				list[i] = element;
-				return i;
-			}
+public:
+	
+	static const size_t ALIGNMENT = 16;
+	
+	typedef T * const * iterator;
+	
+	ResourceList();
+	~ResourceList();
+	
+	inline bool isValid(s32 index) { return ((size_t)index < _size && list[index]); } 
+	inline T * operator[](s32 index) { return list[index]; }
+	inline size_t size() { return _size; }
+	inline s32 add(T * element);
+	inline void remove(s32 index);
+	inline void clear();
+	
+	inline iterator begin() { return list; }
+	inline iterator end() { return list + _size; }
+	inline iterator remove(iterator i);
+	
+private:
+	
+	size_t _size;
+	T ** list;
+	
+};
+
+template <class T>
+inline ResourceList<T>::ResourceList() : _size(0), list(NULL) { }
+
+template <class T>
+inline ResourceList<T>::~ResourceList() {
+	clear();
+}
+
+template <class T>
+inline s32 ResourceList<T>::add(T * element) {
+	
+	size_t i = 0;
+	for(; i < _size; i++) {
+		if(!list[i]) {
+			list[i] = element;
+			return i;
 		}
-		
-		ptr = realloc(list, (size + ALIGNMENT) * sizeof(T *));
-		if(!ptr) {
-			return AAL_SFALSE;
-		}
-		
-		list = (T **)ptr, size += ALIGNMENT;
-		
-		memset(&list[i], 0, ALIGNMENT * sizeof(T *));
-		list[i] = element;
-		
-		return i;
 	}
 	
-	template <class T>
-	inline void ResourceList<T>::Delete(const aalSLong & index) {
-		
-		if(aalULong(index) >= size  || !list[index]) return;
-		
-		delete list[index];
-		list[index] = NULL;
-		
-		if(size <= ALIGNMENT) return;
-		
-		for(aalULong j(size - ALIGNMENT); j < size; j++) {
-			if(list[j])
-				return;
-		}
-		
-		list = (T **)realloc(list, (size -= ALIGNMENT) * sizeof(T *));
+	void * ptr = std::realloc(list, (_size + ALIGNMENT) * sizeof(T *));
+	if(!ptr) {
+		return INVALID_ID;
 	}
 	
-	template <class T>
-	inline void ResourceList<T>::Clean() {
-		
-		for(aalULong i(0); i < size; i++) {
-			if(list[i]) {
-				delete list[i];
-			}
-		}
-			
-		free(list), list = NULL, size = 0;
+	list = (T **)ptr, _size += ALIGNMENT;
+	
+	std::memset(&list[i], 0, ALIGNMENT * sizeof(T *));
+	list[i] = element;
+	
+	return i;
+}
+
+template <class T>
+inline void ResourceList<T>::remove(s32 index) {
+	
+	if((size_t)index >= _size || !list[index]) {
+		return;
 	}
 	
-} // namespace ATHENA
+	T * toDelete = list[index];
+	list[index] = NULL;
+	
+	if(_size <= ALIGNMENT) {
+		delete toDelete;
+		return;
+	}
+	
+	for(size_t j(_size - ALIGNMENT); j < _size; j++) {
+		if(list[j]) {
+			delete toDelete;
+			return;
+		}
+	}
+	
+	list = (T **)std::realloc(list, (_size -= ALIGNMENT) * sizeof(T *));
+	delete toDelete;
+}
+
+template <class T>
+inline void ResourceList<T>::clear() {
+	
+	for(size_t i = 0; i < _size; i++) {
+		if(list[i]) {
+			T * toDelete = list[i];
+			list[i] = NULL;
+			delete toDelete;
+		}
+	}
+	
+	std::free(list), list = NULL, _size = 0;
+}
+
+template <class T>
+inline typename ResourceList<T>::iterator ResourceList<T>::remove(iterator i) {
+	size_t idx = i - begin();
+	remove(idx);
+	if(idx >= _size) {
+		return end();
+	}
+	return begin() + idx + 1;
+}
+
+} // namespace audio
 
 #endif // ARX_AUDIO_AUDIORESOURCE_H
