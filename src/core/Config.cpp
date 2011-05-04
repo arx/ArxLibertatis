@@ -29,6 +29,7 @@
 #include <sstream>
 
 #include "io/IniReader.h"
+#include "io/IniWriter.h"
 #include "io/Logger.h"
 #include "platform/String.h"
 #include "window/Input.h" // for key codes TODO remove
@@ -259,8 +260,7 @@ private:
 	
 public:
 	
-	ConfigReader(ifstream & input) : ini(input) {
-	}
+	ConfigReader(ifstream & input) : ini(input) { }
 	
 	const string & get(const string & section, const string & key, const string & defaultValue) const;
 	int get(const string & section, const string & key, int defaultValue) const;
@@ -270,34 +270,13 @@ public:
 	
 };
 
-class ConfigWriter {
-	
-private:
-	
-	IniReader ini;
-	string section;
-	ostream & output;
+class ConfigWriter : public IniWriter {
 	
 public:
 	
-	ConfigWriter(ostream & _output) : output(_output) {
-	}
+	ConfigWriter(ostream & _output) : IniWriter(_output) { }
 	
-	bool flush() {
-		ini.save_all(output);
-		return !output.flush().bad();
-	}
-	
-	void beginSection(const string & _section) {
-		section = _section;
-	}
-	
-	void writeKey(const string & key, const string & value);
-	void writeKey(const string & key, int value);
-	void writeKey(const string & key, float value);
-	void writeKey(const string & key, bool value);
-	
-	void writeKey(ControlAction index, const ActionKey & value);
+	void writeActionKey(ControlAction index, const ActionKey & value);
 	
 };
 
@@ -646,29 +625,7 @@ bool ConfigReader::get(const string & section, const string & key, bool defaultV
 	return val;
 }
 
-void ConfigWriter::writeKey(const string & key, const string & value) {
-	ini.updateConfigValue(section, key, value);
-}
-
-void ConfigWriter::writeKey(const string & key, int value) {
-	ostringstream oss;
-	oss << value;
-	writeKey(key, oss.str());
-}
-
-void ConfigWriter::writeKey(const string & key, float value) {
-	ostringstream oss;
-	oss << value;
-	writeKey(key, oss.str());
-}
-
-void ConfigWriter::writeKey(const string & key, bool value) {
-	ostringstream oss;
-	oss << boolalpha << value;
-	writeKey(key, oss.str());
-}
-
-void ConfigWriter::writeKey(ControlAction index, const ActionKey & actionKey) {
+void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionKey) {
 	
 	string v1 = getKeyName(actionKey.key[0]);
 	writeKey(Key::actions[index] + "_k0", v1);
@@ -819,7 +776,7 @@ bool Config::save() {
 	// key
 	writer.beginSection(Section::Key);
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
-		writer.writeKey((ControlAction)i, actions[i]);
+		writer.writeActionKey((ControlAction)i, actions[i]);
 	}
 	
 	// misc

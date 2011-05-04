@@ -45,21 +45,13 @@ private:
 	 * @param is The input stream with the configuration info.
 	 */
 	void parse_stream( std::istream& input );
-
-	/**
-	 * Writes a ConfigSection to an output stream
-	 * in a .ini style fashion using "[section]"
-	 * section names and "key = value" key definitions
-	 */
-	void output_section( const IniSection& section, std::ostream& output ) const;
-
+	
 public:
 	
-	IniReader() {}
 	IniReader( std::istream& input );
-
+	
 	bool AddElement( IniSection * _pLoc);
-
+	
 	/**
 	 * Gets the specified configuration value from the map of ConfigSections
 	 * @param section The section to search in
@@ -70,29 +62,11 @@ public:
 	const std::string & getConfigValue( const std::string& section, const std::string& default_value, const std::string& key ) const;
 	
 	const std::string * getConfigValue(const std::string & section, const std::string & key) const;
-
-	/**
-	 * Updates the specified key in the specifified section
-	 * with the value given. If the section or key does not
-	 * exist in the map, it is created.
-	 * @param section The section to update
-	 * @param key The key in the section to update
-	 * @param value The value to update the key with
-	 */
-	void updateConfigValue( const std::string& section, const std::string& key, const std::string value );
-
+	
 	const IniSection* getConfigSection( const std::string& str ) const;
-
+	
 	unsigned long GetKeyCount(const std::string &);
-
-	/**
-	 * Iterates the section map and outputs
-	 * the contents of each map in a format
-	 * fitting the common .ini style section
-	 * and key setup
-	 * @param output The stream to write data to
-	 */
-	void save_all( std::ostream& output ) const;
+	
 };
 
 #endif // ARX_IO_INIREADER_H
