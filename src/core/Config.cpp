@@ -30,889 +30,879 @@
 #include <fstream>
 #include <sstream>
 
-#include "core/Localization.h"
-#include "graphics/data/Texture.h"
-#include "gui/MenuPublic.h"
-#include "gui/MenuWidgets.h"
+#include "core/ConfigHashMap.h"
 #include "io/Logger.h"
 #include "platform/String.h"
-#include "scene/GameSound.h"
-#include "window/Input.h"
+#include "window/Input.h" // for key codes TODO remove
+
+using std::string;
+using std::istream;
+using std::ifstream;
+using std::ostream;
+using std::ofstream;
+using std::istringstream;
+using std::ostringstream;
+using std::boolalpha;
+using std::map;
 
 // To avoid conflicts with potential other classes/namespaces
-namespace
-{
+namespace {
 
-	/* Default values for config */
-	namespace Default
-	{
-		std::string
-			language = "english",
-			resolution = "640x480",
-			modpak = "mod.pak",
-			modsfxpak = "modsfx.pak",
-			speechmodpak = "modspeech.pak",
-			empty_string = "";
+/* Default values for config */
+namespace Default {
 
-		int
-			bpp = 16,
-			texture = 2,
-			mesh_reduction = 0,
-			others_details = 2,
-			fog = 5,
-			gamma = 5,
-			luminosity = 4,
-			contrast = 5,
-			master_volume = 10,
-			effects_volume = 10,
-			speech_volume = 10,
-			ambiance_volume = 10,
-			mouse_sensitivity = 4;
+#undef _LITERALSTR
+#undef _VALSTR
+#define _LITERALSTR(x) # x
+#define _VALSTR(x) _LITERALSTR(x)
 
-		bool
-			first_run = true,
-			full_screen = true,
-			bump = false,
-			show_crosshair = true,
-			antialiasing = false,
-			EAX = false,
-			invert_mouse = false,
-			auto_ready_weapon = false,
-			mouse_look_toggle = false,
-			mouse_smoothing = false,
-			auto_description = true,
-			link_mouse_look_to_use = false,
-			softfog = false,
-			forcenoeax = false,
-			forcezbias = false,
-			forcetoggle = false,
-			fg = true,
-			newcontrol = false;
-	};
+#define DEFAULT_WIDTH 640
+#define DEFAULT_HEIGHT 480
 
-	namespace Section
-	{
-		std::string
-			Language = "LANGUAGE",
-			FirstRun = "FIRSTRUN",
-			Video = "VIDEO",
-			Audio = "AUDIO",
-			Input = "INPUT",
-			Key = "KEY",
-			Misc = "MISC";
-	};
+const std::string
+	language = "english",
+	resolution = _VALSTR(DEFAULT_WIDTH) "x" _VALSTR(DEFAULT_HEIGHT);
 
-	namespace Key
-	{
-		std::string
-			// Language options
-			language_string = "string",
-			// First run options
-			first_run_int = "int",
-			// Video options
-			resolution = "resolution",
-			bpp = "bpp",
-			full_screen = "full_screen",
-			bump = "bump",
-			texture = "texture",
-			mesh_reduction = "mesh_reduction",
-			others_details = "others_details",
-			fog = "fog",
-			gamma = "gamma",
-			luminosity = "luminosity",
-			contrast = "contrast",
-			show_crosshair = "show_crosshair",
-			antialiasing = "antialiasing",
-			// Audio options
-			master_volume = "master_volume",
-			effects_volume = "effects_volume",
-			speech_volume = "speech_volume",
-			ambiance_volume = "ambiance_volume",
-			EAX = "EAX",
-			// Input options
-			invert_mouse = "invert_mouse",
-			auto_ready_weapon = "auto_ready_weapon",
-			mouse_look_toggle = "mouse_look_toggle",
-			mouse_sensitivity = "mouse_sensitivity",
-			mouse_smoothing = "mouse_smoothing",
-			auto_description = "auto_description",
-			link_mouse_look_to_use = "link_mouse_look_to_use",
-			// Input key options
-			jump = "jump",
-			magic_mode = "magic_mode",
-			stealth_mode = "stealth_mode",
-			walk_forward = "walk_forward",
-			walk_backward = "walk_backward",
-			strafe_left = "strafe_left",
-			strafe_right = "strafe_right",
-			lean_left = "lean_left",
-			lean_right = "lean_right",
-			crouch = "crouch",
-			mouselook = "mouselook",
-			action_combine = "action_combine",
-			inventory = "inventory",
-			book = "book",
-			char_sheet = "char_sheet",
-			magic_book = "magic_book",
-			map = "map",
-			quest_book = "quest_book",
-			drink_potion_life = "drink_potion_life",
-			drink_potion_mana = "drink_potion_mana",
-			torch = "torch",
-			cancel_current_spell = "cancel_current_spell",
-			precast_1 = "precast_1",
-			precast_2 = "precast_2",
-			precast_3 = "precast_3",
-			draw_weapon = "draw_weapon",
-			quicksave = "quicksave",
-			quickload = "quickload",
-			turn_left = "turn_left",
-			turn_right = "turn_right",
-			look_up = "look_up",
-			look_down = "look_down",
-			strafe = "strafe",
-			center_view = "center_view",
-			freelook = "freelook",
-			previous = "previous",
-			next = "next",
-			crouch_toggle = "crouch_toggle",
-			unequip_weapon = "unequip_weapon",
-			minimap = "minimap",
+const int
+	bpp = 16,
+	textureSize = 2,
+	meshReduction = 0,
+	levelOfDetail = 2,
+	fogDistance = 5,
+	gamma = 5,
+	luminosity = 4,
+	contrast = 5,
+	volume = 10,
+	sfxVolume = 10,
+	speechVolume = 10,
+	ambianceVolume = 10,
+	mouseSensitivity = 4;
 
-			// Misc options
-			softfog = "softfog",
-			forcenoeax = "forcenoeax",
-			forcezbias = "forcezbias",
-			forcetoggle = "forcetoggle",
-			fg = "fg",
-			modpak = "mod",
-			modsfxpak = "modsfx",
-			modspeechpak = "modspeech",
-			newcontrol = "newcontrol"
-			;
-	};
+const bool
+	first_run = true,
+	fullscreen = true,
+	bumpmap = false,
+	showCrosshair = true,
+	antialiasing = false,
+	eax = false,
+	invertMouse = false,
+	autoReadyWeapon = false,
+	mouseLookToggle = false,
+	mouseSmoothing = false,
+	autoDescription = true,
+	linkMouseLookToUse = false,
+	forceZBias = false,
+	forceToggle = false,
+	gore = true,
+	newControl = false;
 
-	ActionKey sakActionDefaultKey[MAX_ACTION_KEY] =
-	{
-		ActionKey( DIK_SPACE ), // JUMP
-		ActionKey( DIK_LCONTROL, DIK_RCONTROL ), // MAGICMODE
-		ActionKey( DIK_LSHIFT, DIK_RSHIFT ), // STEALTHMODE
-		ActionKey( DIK_W, DIK_UP ), // WALKFORWARD
-		ActionKey( DIK_S, DIK_DOWN ), // WALKBACKWARD
-		ActionKey( DIK_A ), // STRAFELEFT
-		ActionKey( DIK_D ), // STRAFERIGHT
-		ActionKey( DIK_Q ), // LEANLEFT
-		ActionKey( DIK_E ), // LEANRIGHT
-		ActionKey( DIK_X ), // CROUCH
-		ActionKey( DIK_F, DIK_RETURN ), // MOUSELOOK
-		ActionKey( DIK_BUTTON1 ), // ACTION
-		ActionKey( DIK_I, -1, 1 ), // INVENTORY
-		ActionKey( DIK_BACKSPACE, -1, 1 ), // BOOK
-		ActionKey( DIK_F1, -1, 1 ), // BOOKCHARSHEET
-		ActionKey( DIK_F2, -1, 1 ), // BOOKSPELL
-		ActionKey( DIK_F3, -1, 1 ), // BOOKMAP
-		ActionKey( DIK_F4, -1, 1 ), // BOOKQUEST
-		ActionKey( DIK_H, -1, 1 ), // DRINKPOTIONLIFE
-		ActionKey( DIK_G, -1, 1 ), // DRINKPOTIONMANA
-		ActionKey( DIK_T, -1, 1 ), // TORCH
-		ActionKey( DIK_1, -1, 1 ), // PRECAST1
-		ActionKey( DIK_2, -1, 1 ), // PRECAST2
-		ActionKey( DIK_3, -1, 1 ), // PRECAST3
-		ActionKey( DIK_TAB, DIK_NUMPAD0, 1 ), // WEAPON
-		ActionKey( DIK_F9, -1, 1 ), // QUICKLOAD
-		ActionKey( DIK_F5, -1, 1 ), // QUICKSAVE
-		ActionKey( DIK_LEFT ), // TURNLEFT
-		ActionKey( DIK_RIGHT ), // TURNRIGHT
-		ActionKey( DIK_PGUP ), // LOOKUP
-		ActionKey( DIK_PGDN ), // LOOKDOWN
-		ActionKey( DIK_LALT ), // STRAFE
-		ActionKey( DIK_END ), // CENTERVIEW
-		ActionKey( DIK_L, DIK_BUTTON2 ), // FREELOOK
-
-		// TODO Get these intialized const, not through DInput calls
-		ActionKey( -1, -1, 1 ), // PREVIOUS
-		ActionKey( -1, -1, 1 ), // NEXT
-		ActionKey( -1, -1, 1 ), // CROUCHTOGGLE
-
-		ActionKey( DIK_B, -1, 1 ), // UNEQUIPWEAPON
-		ActionKey( DIK_4, -1, 1 ), // CANCELCURSPELL
-		ActionKey( DIK_R, DIK_M, 1 ), // MINIMAP
-	};
+ActionKey actions[NUM_ACTION_KEY] = {
+	ActionKey(DIK_SPACE), // JUMP
+	ActionKey(DIK_LCONTROL, DIK_RCONTROL), // MAGICMODE
+	ActionKey(DIK_LSHIFT, DIK_RSHIFT), // STEALTHMODE
+	ActionKey(DIK_W, DIK_UP), // WALKFORWARD
+	ActionKey(DIK_S, DIK_DOWN), // WALKBACKWARD
+	ActionKey(DIK_A), // STRAFELEFT
+	ActionKey(DIK_D), // STRAFERIGHT
+	ActionKey(DIK_Q), // LEANLEFT
+	ActionKey(DIK_E), // LEANRIGHT
+	ActionKey(DIK_X), // CROUCH
+	ActionKey(DIK_F, DIK_RETURN), // MOUSELOOK
+	ActionKey(DIK_BUTTON1), // ACTION
+	ActionKey(DIK_I), // INVENTORY
+	ActionKey(DIK_BACKSPACE), // BOOK
+	ActionKey(DIK_F1), // BOOKCHARSHEET
+	ActionKey(DIK_F2), // BOOKSPELL
+	ActionKey(DIK_F3), // BOOKMAP
+	ActionKey(DIK_F4), // BOOKQUEST
+	ActionKey(DIK_H), // DRINKPOTIONLIFE
+	ActionKey(DIK_G), // DRINKPOTIONMANA
+	ActionKey(DIK_T), // TORCH
+	ActionKey(DIK_1), // PRECAST1
+	ActionKey(DIK_2), // PRECAST2
+	ActionKey(DIK_3), // PRECAST3
+	ActionKey(DIK_TAB, DIK_NUMPAD0), // WEAPON
+	ActionKey(DIK_F9), // QUICKLOAD
+	ActionKey(DIK_F5), // QUICKSAVE
+	ActionKey(DIK_LEFT), // TURNLEFT
+	ActionKey(DIK_RIGHT), // TURNRIGHT
+	ActionKey(DIK_PGUP), // LOOKUP
+	ActionKey(DIK_PGDN), // LOOKDOWN
+	ActionKey(DIK_LALT), // STRAFE
+	ActionKey(DIK_END), // CENTERVIEW
+	ActionKey(DIK_L, DIK_BUTTON2), // FREELOOK
+	ActionKey(DIK_MINUS), // PREVIOUS
+	ActionKey(DIK_EQUALS), // NEXT
+	ActionKey(DIK_C), // CROUCHTOGGLE
+	ActionKey(DIK_B), // UNEQUIPWEAPON
+	ActionKey(DIK_4), // CANCELCURSPELL
+	ActionKey(DIK_R, DIK_M), // MINIMAP
 };
 
-void ARX_SetAntiAliasing();
+} // namespace Default
 
-	/* Externs */
-extern long INTERNATIONAL_MODE;
-extern CDirectInput * pGetInfoDirectInput;
-extern long GORE_MODE;
-extern long GERMAN_VERSION;
-extern long FRENCH_VERSION;
-extern bool bForceNoEAX;
-extern CMenuState *pMenu;
-extern bool bALLOW_BUMP;
-extern long WILL_RELOAD_ALL_TEXTURES;
+namespace Section {
 
-/* Global variables */
-std::string pStringMod;
-std::string pStringModSfx;
-std::string pStringModSpeech;
-Config *pMenuConfig = 0;
-
-Config::Config()
-{
-	init();
+const string
+	Language = "LANGUAGE",
+	FirstRun = "FIRSTRUN",
+	Video = "VIDEO",
+	Audio = "AUDIO",
+	Input = "INPUT",
+	Key = "KEY",
+	Misc = "MISC";
 }
 
-Config::Config( const std::string& _filename)
-{
-	// if _pName equals exactly "cfg"
-	if ( _filename == "cfg" )
-		pcName = "cfg.ini";
-	else
-		pcName = _filename;
+namespace Key {
 
-	// Load the config file
-	std::ifstream ifs( pcName.c_str() );
-	config_map = ConfigHashMap( ifs );
+// First run options
+const string firstRun = "int";
 
-	init();
-}
+// Language options
+const string language = "string";
 
-Config::~Config()
-{
+// Video options
+const string
+	resolution = "resolution",
+	bpp = "bpp",
+	fullscreen = "full_screen",
+	bumpmap = "bump",
+	textureSize = "texture",
+	meshReduction = "mesh_reduction",
+	levelOfDetail = "others_details",
+	fogDistance = "fog",
+	gamma = "gamma",
+	luminosity = "luminosity",
+	contrast = "contrast",
+	showCrosshair = "show_crosshair",
+	antialiasing = "antialiasing";
 
-}
+// Audio options
+const string
+	volume = "master_volume",
+	sfxVolume = "effects_volume",
+	speechVolume = "speech_volume",
+	ambianceVolume = "ambiance_volume",
+	eax = "EAX";
 
-void Config::init()
-{
+// Input options
+const string
+	invertMouse = "invert_mouse",
+	autoReadyWeapon = "auto_ready_weapon",
+	mouseLookToggle = "mouse_look_toggle",
+	mouseSensitivity = "mouse_sensitivity",
+	mouseSmoothing = "mouse_smoothing",
+	autoDescription = "auto_description",
+	linkMouseLookToUse = "link_mouse_look_to_use";
 
-	// TODO Remove these and constify sakActionDefaultKey
-	sakActionDefaultKey[CONTROLS_CUST_PREVIOUS].iKey[0] = GetDIKWithASCII(")");
-	sakActionDefaultKey[CONTROLS_CUST_PREVIOUS].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_NEXT].iKey[0] = GetDIKWithASCII("=");
-	sakActionDefaultKey[CONTROLS_CUST_NEXT].iPage=1;
+// Input key options
+const string actions[NUM_ACTION_KEY] = {
+	"jump",
+	"magic_mode",
+	"stealth_mode",
+	"walk_forward",
+	"walk_backward",
+	"strafe_left",
+	"strafe_right",
+	"lean_left",
+	"lean_right",
+	"crouch",
+	"mouselook",
+	"action_combine",
+	"inventory",
+	"book",
+	"char_sheet",
+	"magic_book",
+	"map",
+	"quest_book",
+	"drink_potion_life",
+	"drink_potion_mana",
+	"torch",
+	"precast_1",
+	"precast_2",
+	"precast_3",
+	"draw_weapon",
+	"quickload",
+	"quicksave",
+	"turn_left",
+	"turn_right",
+	"look_up",
+	"look_down",
+	"strafe",
+	"center_view",
+	"freelook",
+	"previous",
+	"next",
+	"crouch_toggle",
+	"unequip_weapon",
+	"cancel_current_spell",
+	"minimap"
+};
 
-	sakActionDefaultKey[CONTROLS_CUST_CROUCHTOGGLE].iKey[0] = GetDIKWithASCII("C");
+// Misc options
+const string
+	forceZBias = "forcezbias",
+	forceToggle = "forcetoggle",
+	gore = "fg",
+	newControl = "newcontrol";
 
-	bChangeResolution = false;
-	bChangeTextures = false;
-	bNoReturnToWindows=false;
-	bLinkMouseLookToUse=false;
-	bForceZBias=false;
+} // namespace Key
 
-	SetDefaultKey();
-}
-
-void Config::SetDefaultKey()
-{
-	int iI=MAX_ACTION_KEY;
-
-	while(iI--)
-	{
-		sakActionKey[iI].iKey[0]=sakActionDefaultKey[iI].iKey[0];
-		sakActionKey[iI].iKey[1]=sakActionDefaultKey[iI].iKey[1];
-		sakActionKey[iI].iPage=sakActionDefaultKey[iI].iPage;
+class ConfigReader {
+	
+private:
+	
+	ConfigHashMap ini;
+	mutable map<string, InputKeyId> keyNames;
+	
+	InputKeyId getKeyId(const string & name) const;
+	
+public:
+	
+	ConfigReader(ifstream & input) : ini(input) {
 	}
+	
+	const string & get(const string & section, const string & key, const string & defaultValue) const;
+	int get(const string & section, const string & key, int defaultValue) const;
+	float get(const string & section, const string & key, float defaultValue) const;
+	bool get(const string & section, const string & key, bool defaultValue) const;
+	ActionKey get(const string & section, ControlAction index) const;
+	
+};
 
-	if (!INTERNATIONAL_MODE)
-		bLinkMouseLookToUse=true;
-	else
-		bLinkMouseLookToUse=false;
+class ConfigWriter {
+	
+private:
+	
+	ConfigHashMap ini;
+	string section;
+	ostream & output;
+	
+public:
+	
+	ConfigWriter(ostream & _output) : output(_output) {
+	}
+	
+	bool flush() {
+		ini.save_all(output);
+		return !output.flush().bad();
+	}
+	
+	void beginSection(const string & _section) {
+		section = _section;
+	}
+	
+	void writeKey(const string & key, const string & value);
+	void writeKey(const string & key, int value);
+	void writeKey(const string & key, float value);
+	void writeKey(const string & key, bool value);
+	
+	void writeKey(ControlAction index, const ActionKey & value);
+	
+};
+
+struct KeyDescription {
+	InputKeyId id;
+	std::string name;
+};
+
+// All standard keys, sorted by key ID
+// + should not appear in names as it is used as a separator
+static const KeyDescription keys[] = {
+	{ DIK_ESCAPE, "Escape" },
+	{ DIK_1, "1" },
+	{ DIK_2, "2" },
+	{ DIK_3, "3" },
+	{ DIK_4, "4" },
+	{ DIK_5, "5" },
+	{ DIK_6, "6" },
+	{ DIK_7, "7" },
+	{ DIK_8, "8" },
+	{ DIK_9, "9" },
+	{ DIK_0, "0" },
+	{ DIK_MINUS, "-" },
+	{ DIK_EQUALS, "=" },
+	{ DIK_BACK, "Backspace" },
+	{ DIK_TAB, "Tab" },
+	{ DIK_Q, "Q" },
+	{ DIK_W, "W" },
+	{ DIK_E, "E" },
+	{ DIK_R, "R" },
+	{ DIK_T, "T" },
+	{ DIK_Y, "Y" },
+	{ DIK_U, "U" },
+	{ DIK_I, "I" },
+	{ DIK_O, "O" },
+	{ DIK_P, "P" },
+	{ DIK_LBRACKET, "[" },
+	{ DIK_RBRACKET, "]" },
+	{ DIK_RETURN, "Return" },
+	{ DIK_LCONTROL, "LeftControl" },
+	{ DIK_A, "A" },
+	{ DIK_S, "S" },
+	{ DIK_D, "D" },
+	{ DIK_F, "F" },
+	{ DIK_G, "G" },
+	{ DIK_H, "H" },
+	{ DIK_J, "J" },
+	{ DIK_K, "K" },
+	{ DIK_L, "L" },
+	{ DIK_SEMICOLON, ";" },
+	{ DIK_APOSTROPHE, "'" },
+	{ DIK_GRAVE, "`" },
+	{ DIK_LSHIFT, "LeftShift" },
+	{ DIK_BACKSLASH, "Backslash" },
+	{ DIK_Z, "Z" },
+	{ DIK_X, "X" },
+	{ DIK_C, "C" },
+	{ DIK_V, "V" },
+	{ DIK_B, "B" },
+	{ DIK_N, "N" },
+	{ DIK_M, "M" },
+	{ DIK_COMMA, "," },
+	{ DIK_PERIOD, "." },
+	{ DIK_SLASH, "/" },
+	{ DIK_RSHIFT, "RightShift" },
+	{ DIK_MULTIPLY, "Multiply" },
+	{ DIK_LMENU, "LeftAlt" },
+	{ DIK_SPACE, "Space" },
+	{ DIK_CAPITAL, "Capital" },
+	{ DIK_F1, "F1" },
+	{ DIK_F2, "F2" },
+	{ DIK_F3, "F3" },
+	{ DIK_F4, "F4" },
+	{ DIK_F5, "F5" },
+	{ DIK_F6, "F6" },
+	{ DIK_F7, "F7" },
+	{ DIK_F8, "F8" },
+	{ DIK_F9, "F9" },
+	{ DIK_F10, "F10" },
+	{ DIK_NUMLOCK, "NumLock" },
+	{ DIK_SCROLL, "ScrollLock" },
+	{ DIK_NUMPAD7, "Numpad7" },
+	{ DIK_NUMPAD8, "Numpad8" },
+	{ DIK_NUMPAD9, "Numpad9" },
+	{ DIK_SUBTRACT, "Numpad-" },
+	{ DIK_NUMPAD4, "Numpad4" },
+	{ DIK_NUMPAD5, "Numpad5" },
+	{ DIK_NUMPAD6, "Numpad6" },
+	{ DIK_ADD, "NumpadPlus" },
+	{ DIK_NUMPAD1, "Numpad1" },
+	{ DIK_NUMPAD2, "Numpad2" },
+	{ DIK_NUMPAD3, "Numpad3" },
+	{ DIK_NUMPAD0, "Numpad0" },
+	{ DIK_DECIMAL, "Numpad." },
+	{ DIK_F11, "F11" },
+	{ DIK_F12, "F12" },
+	{ DIK_F13, "F13" },
+	{ DIK_F14, "F14" },
+	{ DIK_F15, "F15" },
+	{ DIK_KANA, "Kana" },
+	{ DIK_CONVERT, "Convert" },
+	{ DIK_NOCONVERT, "NoConvert" },
+	{ DIK_YEN, "Yen" },
+	{ DIK_NUMPADEQUALS, "Numpad=" },
+	{ DIK_CIRCUMFLEX, "Circumflex" },
+	{ DIK_AT, "@" },
+	{ DIK_COLON, ":" },
+	{ DIK_UNDERLINE, "_" },
+	{ DIK_KANJI, "Kanji" },
+	{ DIK_STOP, "Stop" },
+	{ DIK_AX, "Ax" },
+	{ DIK_NUMPADENTER, "NumpadReturn" },
+	{ DIK_RCONTROL, "RightControl" },
+	{ DIK_NUMPADCOMMA, "Numpad," },
+	{ DIK_DIVIDE, "Numpad/" },
+	{ DIK_SYSRQ, "?" },
+	{ DIK_RMENU, "RightAlt" },
+	{ DIK_PAUSE, "Pause" },
+	{ DIK_HOME, "Home" },
+	{ DIK_UP, "Up" },
+	{ DIK_PRIOR, "PageUp" },
+	{ DIK_LEFT, "Left" },
+	{ DIK_RIGHT, "Right" },
+	{ DIK_END, "End" },
+	{ DIK_DOWN, "Down" },
+	{ DIK_NEXT, "PageDown" },
+	{ DIK_INSERT, "Insert" },
+	{ DIK_DELETE, "Delete" },
+	{ DIK_LWIN, "LeftStart" },
+	{ DIK_RWIN, "RightStart" },
+	{ DIK_APPS, "AppMenu" },
+	{ DIK_POWER, "Power" },
+	{ DIK_SLEEP, "Sleep" },
+	{ DIK_WHEELUP, "WheelUp" },
+	{ DIK_WHEELDOWN, "WheelDown" }
+};
+
+static const string PREFIX_KEY = "Key_";
+static const string PREFIX_BUTTON = "Button";
+static const char SEPARATOR = '+';
+static const string KEY_NONE = "---";
+
+static int keyCompare(const void * a, const void * b) {
+	return *((const InputKeyId *)a) - ((const KeyDescription *)b)->id;
 }
 
-int Config::GetDIKWithASCII( const std::string& _pcTouch) const
-{
-	std::string pcT = _pcTouch;
+static string getKeyName(InputKeyId key) {
+	
+	if(key == -1) {
+		return string();
+	}
+	
+	std::string name;
+	
+	std::string modifier;
+	if(key & ~0xC000ffff) {
+		// key combination
+		modifier = getKeyName((key >> 16) & 0x3fff);
+		key &= 0xC000ffff;
+	}
+	
+	arx_assert(DIK_BUTTON32 > DIK_BUTTON1 && DIK_BUTTON32 - DIK_BUTTON1 == 31);
+	if(key >= (InputKeyId)DIK_BUTTON1 && key <= (InputKeyId)DIK_BUTTON32) {
+		
+		ostringstream oss;
+		oss << PREFIX_BUTTON << (int)(key - DIK_BUTTON1 + 1);
+		name = oss.str();
+		
+	} else {
+		
+		const KeyDescription * entity = (const KeyDescription *)bsearch(&key, keys, sizeof(keys) / sizeof(*keys), sizeof(*keys), keyCompare);
+		
+		if(entity != NULL) {
+			arx_assert(entity->id == key);
+			name = entity->name;
+		}
+	}
+	
+	if(name.empty()) {
+		ostringstream oss;
+		oss << PREFIX_KEY << (int)key;
+		name = oss.str();
+	}
+	
+	if(!modifier.empty()) {
+		return modifier + SEPARATOR + name;
+	} else {
+		return name;
+	}
+}
 
+InputKeyId ConfigReader::getKeyId(const string & name) const {
+	
 	// If a noneset key, return -1
-	if( strcasecmp( pcT, "---"  ) == 0 )
+	if(name.empty() || name == KEY_NONE) {
 		return -1;
-
-	for(int iI=0;iI<256;iI++)
-	{
-		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if( !pcT.compare( pcT1 ) )
-			return iI;
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI | (DIK_LSHIFT << 16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_LSHIFT<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RSHIFT<<16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_RSHIFT<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_LCONTROL<<16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_LCONTROL<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RCONTROL<<16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_RCONTROL<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_LALT<<16));
-
-		if( ! pcT.compare( pcT1 ) )
-			return iI|(DIK_LALT<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RALT<<16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_RALT<<16);
 	}
-
-	for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
-	{
-		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if( !pcT.compare( pcT1 ) )
-			return iI;
+	
+	size_t sep = name.find(SEPARATOR);
+	if(sep != string::npos) {
+		InputKeyId modifier = getKeyId(name.substr(0, sep));
+		InputKeyId key = getKeyId(name.substr(sep + 1));
+		if(modifier & key) {
+			// bits overlap, something went wrong
+			return key;
+		}
+		return (modifier << 16 | key);
 	}
-
-	for( unsigned iI=DIK_WHEELUP;iI<=DIK_WHEELDOWN;iI++)
-	{
-		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if( !pcT.compare( pcT1 ) )
-			return iI;
+	
+	if(!name.compare(0, PREFIX_KEY.length(), PREFIX_KEY)) {
+		istringstream iss(name.substr(PREFIX_KEY.length()));
+		int key;
+		iss >> key;
+		if(!iss.bad()) {
+			return key;
+		}
 	}
-
+	
+	arx_assert(DIK_BUTTON32 > DIK_BUTTON1 && DIK_BUTTON32 - DIK_BUTTON1 == 31);
+	if(!name.compare(0, PREFIX_BUTTON.length(), PREFIX_BUTTON)) {
+		istringstream iss(name.substr(PREFIX_BUTTON.length()));
+		int key;
+		iss >> key;
+		key = DIK_BUTTON1 + key - 1;
+		if(!iss.bad() && key >= (int)DIK_BUTTON1 && key <= (int)DIK_BUTTON32) {
+			return key;
+		}
+	}
+	
+	if(keyNames.empty()) {
+		// Initialize the key name -> id map.
+		for(size_t i = 0; i < sizeof(keys)/sizeof(*keys); i++) {
+			keyNames[keys[i].name] = keys[i].id;
+		}
+	}
+	
+	map<string, InputKeyId>::const_iterator it = keyNames.find(name);
+	if(it != keyNames.end()) {
+		return it->second;
+	}
+	
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
-std::string Config::ReadConfig( const std::string& _section, const std::string& _key) const
-{
-	
-	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << config_map.getConfigValue( _section, "", _key );
-	return config_map.getConfigValue( _section, "", _key );
-}
-
-//-----------------------------------------------------------------------------
-
-int Config::ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool &_bOk )
-{
-	std::string pcText=ReadConfig(_pcSection,_pcKey);
-
-	if ( pcText.empty() )
-	{
-		_bOk = false;
-		return 0;
-	}
-
-	std::stringstream ss( pcText );
-
-	int iI;
-	ss >> iI;
-	_bOk=true;
-	return iI;
-}
-
 /**
- * Reads a string from the Config and returns it, returning the default value if an empty string was found
+ * Reads a string from the config and returns it, returning the default value if an empty string was found
  * @param section The section to read from
  * @param key The key in the section to return
  * @param default_value The default value to be returned in the case of an empty string
  */
-std::string Config::ReadConfig( const std::string& section, const std::string& key, const std::string& default_value ) const
-{
-	std::string temp( ReadConfig( section, key ) );
-
-	if ( temp.empty() )
-		return default_value;
-	else
-		return temp;
+const string & ConfigReader::get(const string & section, const string & key, const string & defaultValue) const {
+	
+	const string * temp = ini.getConfigValue(section, key);
+	
+	if(!temp) {
+		LogDebug << "[" << section << "] " << key << " = \"" << defaultValue << "\" [default]";
+		return defaultValue;
+	} else {
+		LogDebug << "[" << section << "] " << key << " = \"" << *temp << "\"";
+		return *temp;
+	}
 }
 
 /**
- * Reads a string from the Config and returns its converted int value,
+ * Reads an int from the config and returns its converted int value,
  * return the default value if an empty string is found.
  * @param section The section to read from
  * @param key The key in the section to return
  * @param default_value The default value to return in the case of an empty string
  */
-int Config::ReadConfig( const std::string& section, const std::string& key, int default_value ) const
-{
-	std::string temp( ReadConfig( section, key ) );
-
-	if ( temp.empty() )
-		return default_value;
-	else
-		return atoi( temp );
+int ConfigReader::get(const string & section, const string & key, int defaultValue) const {
+	
+	const string * temp = ini.getConfigValue(section, key);
+	if(!temp) {
+		LogDebug << "[" << section << "] " << key << " = " << defaultValue << " [default]";
+		return defaultValue;
+	}
+	
+	istringstream iss(*temp);
+	
+	int val;
+	if((iss >> val).bad()) {
+		LogWarning << "bad integer value for [" << section << "] " << key << ": " << *temp << ", resetting to " << defaultValue;
+		return defaultValue;
+	}
+	
+	LogDebug << "[" << section << "] " << key << " = " << val;
+	
+	return val;
 }
 
 /**
- * Reads a string from the Config and returns its converted bool value,
+ * Reads a float from the config and returns its converted int value,
  * return the default value if an empty string is found.
  * @param section The section to read from
  * @param key The key in the section to return
  * @param default_value The default value to return in the case of an empty string
  */
-bool Config::ReadConfig( const std::string& section, const std::string& key, bool default_value ) const
-{
-	std::string temp( ReadConfig( section, key ) );
-
-	if ( temp.empty() )
-		return default_value;
-	else
-		return atob( temp );
-}
-
-//-----------------------------------------------------------------------------
-
-void Config::WriteConfig( const std::string& section, const std::string& key, const std::string& value )
-{
-	LogDebug << "Updating map with Section: " << section << " Key: " << key << " Value: " << value;
-	config_map.updateConfigValue( section, key, value );
-}
-
-void Config::WriteConfig( const std::string& section, const std::string& key, int value )
-{
-	WriteConfig( section, key, itoa( value ) );
+float ConfigReader::get(const string & section, const string & key, float defaultValue) const {
+	
+	const string * temp = ini.getConfigValue(section, key);
+	if(!temp) {
+		LogDebug << "[" << section << "] " << key << " = " << defaultValue << " [default]";
+		return defaultValue;
+	}
+	
+	istringstream iss(*temp);
+	
+	float val;
+	if((iss >> val).bad()) {
+		LogWarning << "bad float value for [" << section << "] " << key << ": " << *temp << ", resetting to " << defaultValue;
+		return defaultValue;
+	}
+	
+	LogDebug << "[" << section << "] " << key << " = " << val;
+	
+	return val;
 }
 
 /**
- * Writes a key to the section map after converting the bool value
- * @param section The section to write to
- * @param key The Key in the section to write
- * @param value The bool value to be written
+ * Reads a bool from the config and returns its converted bool value,
+ * return the default value if an empty string is found.
+ * @param section The section to read from
+ * @param key The key in the section to return
+ * @param default_value The default value to return in the case of an empty string
  */
-void Config::WriteConfig( const std::string& section, const std::string& key, bool value )
-{
-	WriteConfig( section, key, btoa( value ) );
-}
-
-//-----------------------------------------------------------------------------
-
-bool Config::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int data )
-{
-	WriteConfig(_pcSection,_pcKey, itoa( data ) );
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-
-bool Config::WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
-{
-	WriteConfig(_pcSection,_pcKey,_pcDatas);
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-
-bool Config::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
-{
-	if(    (_iAction>=MAX_ACTION_KEY)||
-		(_iActionNum>1) ) return false;
-
-	bool bChange=false;
-	bool bSecondChoice=false;
-	int iOldVirtualKey=sakActionKey[_iAction].iKey[_iActionNum];
-	sakActionKey[_iAction].iKey[_iActionNum]=_iVirtualKey;
-
-	if(_iActionNum)
-	{
-		if(sakActionKey[_iAction].iKey[0]==-1)
-		{
-			sakActionKey[_iAction].iKey[0]=iOldVirtualKey;
-			bSecondChoice=true;
-		}
-
-		if(sakActionKey[_iAction].iKey[0]==_iVirtualKey)
-		{
-			sakActionKey[_iAction].iKey[0]=-1;
-		}
-
-		bChange=true;
+bool ConfigReader::get(const string & section, const string & key, bool defaultValue) const {
+	
+	const string * temp = ini.getConfigValue(section, key);
+	if(!temp) {
+		LogDebug << "[" << section << "] " << key << " = " << boolalpha << defaultValue << " [default]";
+		return defaultValue;
 	}
-	else
-	{
-		if(sakActionKey[_iAction].iKey[1]==-1)
-		{
-			sakActionKey[_iAction].iKey[1]=iOldVirtualKey;
-			bSecondChoice=true;
-		}
-
-		if(sakActionKey[_iAction].iKey[1]==_iVirtualKey)
-		{
-			sakActionKey[_iAction].iKey[1]=-1;
-		}
-		bChange=true;
-	}
-
-	if(bSecondChoice)
-	{
-		bChange=true;
-		iOldVirtualKey=-1;
-	}
-
-	//on remove les doublons de keys
-	int iI=MAX_ACTION_KEY;
-
-	while(iI--)
-	{
-		if(iI==_iAction) continue;
-
-		if(sakActionKey[iI].iPage!=sakActionKey[_iAction].iPage) continue;
-
-		if(sakActionKey[iI].iKey[0]==_iVirtualKey)
-		{
-			sakActionKey[iI].iKey[0]=iOldVirtualKey;
-			bChange=true;
-			break;
-		}
-		else
-		{
-			if(sakActionKey[iI].iKey[1]==_iVirtualKey)
-			{
-				sakActionKey[iI].iKey[1]=iOldVirtualKey;
-				bChange=true;
-				break;
-			}
+	
+	istringstream iss(*temp);
+	
+	bool val;
+	if((iss >> val).bad()) {
+		if((iss >> boolalpha >> val).bad()) {
+			LogWarning << "bad integer value for [" << section << "] " << key << ": " << *temp << ", resetting to " << boolalpha << defaultValue;
 		}
 	}
-
-	return bChange;
+	
+	LogDebug << "[" << section << "] " << key << " = " << boolalpha << val;
+	
+	return val;
 }
 
-void Config::WriteConfig( const std::string& section, const std::string& key, ControlAction index )
-{
-	std::string value;
-
-	value = pGetInfoDirectInput->GetFullNameTouch( sakActionKey[index].iKey[0] );
-
-	if ( value.empty() )
-		value = pGetInfoDirectInput->GetFullNameTouch( sakActionDefaultKey[index].iKey[0] );
-
-	WriteConfig( section, key + "_k0", value );
-
-	value = pGetInfoDirectInput->GetFullNameTouch( sakActionKey[index].iKey[1] );
-
-	if ( value.empty() )
-		value = pGetInfoDirectInput->GetFullNameTouch( sakActionDefaultKey[index].iKey[1] );
-
-	WriteConfig( section, key + "_k1", value );
+void ConfigWriter::writeKey(const string & key, const string & value) {
+	ini.updateConfigValue(section, key, value);
 }
 
-ActionKey Config::ReadConfig( const std::string& section, const std::string& key, ControlAction index ) const
-{
-	ActionKey action_key = sakActionDefaultKey[index];
+void ConfigWriter::writeKey(const string & key, int value) {
+	ostringstream oss;
+	oss << value;
+	writeKey(key, oss.str());
+}
 
-	std::string key_value;
+void ConfigWriter::writeKey(const string & key, float value) {
+	ostringstream oss;
+	oss << value;
+	writeKey(key, oss.str());
+}
 
-	key_value = ReadConfig( section, key + "_k0" );
+void ConfigWriter::writeKey(const string & key, bool value) {
+	ostringstream oss;
+	oss << boolalpha << value;
+	writeKey(key, oss.str());
+}
 
-	if ( !key_value.empty() )
-		action_key.iKey[0] = GetDIKWithASCII( key_value );
+void ConfigWriter::writeKey(ControlAction index, const ActionKey & actionKey) {
+	
+	string v1 = getKeyName(actionKey.key[0]);
+	writeKey(Key::actions[index] + "_k0", v1);
+	
+	string v2 = getKeyName(actionKey.key[1]);
+	writeKey(Key::actions[index] + "_k1", v2);
+}
 
-	key_value = ReadConfig( section, key + "_k1" );
-
-	if ( !key_value.empty() )
-		action_key.iKey[1] = GetDIKWithASCII( key_value );
-
+ActionKey ConfigReader::get(const string & section, ControlAction index) const {
+	
+	const string & key = Key::actions[index];
+	ActionKey action_key = Default::actions[index];
+	
+	const string * k0 = ini.getConfigValue(section, key + "_k0");
+	if(k0) {
+		InputKeyId id = getKeyId(*k0);
+		if(id == -1 && !k0->empty() && *k0 != KEY_NONE) {
+			LogWarning << "error parsing key name for " <<  key << "_k0: \"" << (*k0) << "\", resetting to \"" << getKeyName(action_key.key[0]) << "\"";
+		} else {
+			action_key.key[0] = id;
+		}
+	}
+	
+	const string * k1 = ini.getConfigValue(section, key + "_k1");
+	if(k1) {
+		InputKeyId id = getKeyId(*k1);
+		if(id == -1 && !k1->empty() && *k1 != KEY_NONE) {
+			LogWarning << "error parsing key name for " <<  key << "_k1: \"" << (*k1) << "\", resetting to \"" << getKeyName(action_key.key[1]) << "\"";
+		} else {
+			action_key.key[1] = id;
+		}
+	}
+	
+	LogDebug << "[" << section << "] " << key << " = \"" << getKeyName(action_key.key[0]) << "\", \"" << getKeyName(action_key.key[1]) << "\"";
+	
 	return action_key;
 }
 
-/**
- * Writes all the data in the config to the section map
- * and then saves the data to file
- */
-void Config::SaveAll()
-{
-	/** Update all the relevant sections in the config with current config data **/
+} // anonymous namespace
 
-	//language
-	WriteConfig( Section::Language, Key::language_string, Project.localisationpath );
-	WriteConfig( Section::FirstRun, Key::first_run_int, first_launch );
+Config config;
 
-	//video
-	WriteConfig( Section::Video, Key::resolution, itoa( iWidth ) + 'x' + itoa( iHeight ) );
-	WriteConfig( Section::Video, Key::bpp, bpp);
-	WriteConfig( Section::Video, Key::full_screen, bFullScreen );
-	WriteConfig( Section::Video, Key::bump, bBumpMapping );
-	WriteConfig( Section::Video, Key::texture, iTextureResol);
-	WriteConfig( Section::Video, Key::mesh_reduction, iMeshReduction);
-	WriteConfig( Section::Video, Key::others_details, iLevelOfDetails);
-	WriteConfig( Section::Video, Key::fog, iFogDistance);
-	WriteConfig( Section::Video, Key::gamma, iGamma);
-	WriteConfig( Section::Video, Key::luminosity, iLuminosite);
-	WriteConfig( Section::Video, Key::contrast, iContrast);
-	WriteConfig( Section::Video, Key::show_crosshair, bShowCrossHair );
-	WriteConfig( Section::Video, Key::antialiasing, bAntiAliasing );
-
-	//audio
-	WriteConfig( Section::Audio, Key::master_volume, iMasterVolume );
-	WriteConfig( Section::Audio, Key::effects_volume, iSFXVolume);
-	WriteConfig( Section::Audio, Key::speech_volume, iSpeechVolume);
-	WriteConfig( Section::Audio, Key::ambiance_volume, iAmbianceVolume);
-	WriteConfig( Section::Audio, Key::EAX, bEAX );
-
-	//input
-	WriteConfig( Section::Input, Key::invert_mouse, bInvertMouse );
-	WriteConfig( Section::Input, Key::auto_ready_weapon, bAutoReadyWeapon );
-	WriteConfig( Section::Input, Key::mouse_look_toggle, bMouseLookToggle );
-	WriteConfig( Section::Input, Key::mouse_sensitivity, iMouseSensitivity );
-	WriteConfig( Section::Input, Key::mouse_smoothing, bMouseSmoothing );
-	WriteConfig( Section::Input, Key::auto_description, bAutoDescription );
-	WriteConfigInt( Section::Input, Key::link_mouse_look_to_use, bLinkMouseLookToUse );
-
-	//key
-	WriteConfig( Section::Key, Key::jump, CONTROLS_CUST_JUMP );
-	WriteConfig( Section::Key, Key::magic_mode, CONTROLS_CUST_MAGICMODE );
-	WriteConfig( Section::Key, Key::stealth_mode, CONTROLS_CUST_STEALTHMODE);
-	WriteConfig( Section::Key, Key::walk_forward, CONTROLS_CUST_WALKFORWARD);
-	WriteConfig( Section::Key, Key::walk_backward, CONTROLS_CUST_WALKBACKWARD);
-	WriteConfig( Section::Key, Key::strafe_left, CONTROLS_CUST_STRAFELEFT);
-	WriteConfig( Section::Key, Key::strafe_right, CONTROLS_CUST_STRAFERIGHT);
-	WriteConfig( Section::Key, Key::lean_left, CONTROLS_CUST_LEANLEFT);
-	WriteConfig( Section::Key, Key::lean_right, CONTROLS_CUST_LEANRIGHT);
-	WriteConfig( Section::Key, Key::crouch, CONTROLS_CUST_CROUCH);
-	WriteConfig( Section::Key, Key::mouselook, CONTROLS_CUST_MOUSELOOK);
-	WriteConfig( Section::Key, Key::action_combine, CONTROLS_CUST_ACTION);
-	WriteConfig( Section::Key, Key::inventory, CONTROLS_CUST_INVENTORY);
-	WriteConfig( Section::Key, Key::book, CONTROLS_CUST_BOOK);
-	WriteConfig( Section::Key, Key::char_sheet, CONTROLS_CUST_BOOKCHARSHEET);
-	WriteConfig( Section::Key, Key::magic_book, CONTROLS_CUST_BOOKSPELL);
-	WriteConfig( Section::Key, Key::map, CONTROLS_CUST_BOOKMAP);
-	WriteConfig( Section::Key, Key::quest_book, CONTROLS_CUST_BOOKQUEST);
-	WriteConfig( Section::Key, Key::drink_potion_life, CONTROLS_CUST_DRINKPOTIONLIFE);
-	WriteConfig( Section::Key, Key::drink_potion_mana, CONTROLS_CUST_DRINKPOTIONMANA);
-	WriteConfig( Section::Key, Key::torch, CONTROLS_CUST_TORCH);
-
-	WriteConfig( Section::Key, Key::cancel_current_spell, CONTROLS_CUST_CANCELCURSPELL);
-	WriteConfig( Section::Key, Key::precast_1, CONTROLS_CUST_PRECAST1);
-	WriteConfig( Section::Key, Key::precast_2, CONTROLS_CUST_PRECAST2);
-	WriteConfig( Section::Key, Key::precast_3, CONTROLS_CUST_PRECAST3);
-	WriteConfig( Section::Key, Key::draw_weapon, CONTROLS_CUST_WEAPON);
-	WriteConfig( Section::Key, Key::quicksave, CONTROLS_CUST_QUICKSAVE);
-	WriteConfig( Section::Key, Key::quickload, CONTROLS_CUST_QUICKLOAD);
-
-	WriteConfig( Section::Key, Key::turn_left, CONTROLS_CUST_TURNLEFT);
-	WriteConfig( Section::Key, Key::turn_right, CONTROLS_CUST_TURNRIGHT);
-	WriteConfig( Section::Key, Key::look_up, CONTROLS_CUST_LOOKUP);
-	WriteConfig( Section::Key, Key::look_down, CONTROLS_CUST_LOOKDOWN);
-
-	WriteConfig( Section::Key, Key::strafe, CONTROLS_CUST_STRAFE);
-	WriteConfig( Section::Key, Key::center_view, CONTROLS_CUST_CENTERVIEW);
-
-	WriteConfig( Section::Key, Key::freelook, CONTROLS_CUST_FREELOOK);
-
-	WriteConfig( Section::Key, Key::previous, CONTROLS_CUST_PREVIOUS);
-	WriteConfig( Section::Key, Key::next, CONTROLS_CUST_NEXT);
-
-	WriteConfig( Section::Key, Key::crouch_toggle, CONTROLS_CUST_CROUCHTOGGLE);
-
-	WriteConfig( Section::Key, Key::unequip_weapon, CONTROLS_CUST_UNEQUIPWEAPON);
-
-	WriteConfig( Section::Key, Key::minimap, CONTROLS_CUST_MINIMAP);
-
-	//misc
-	WriteConfig( Section::Misc, Key::softfog, bATI );
-	WriteConfig( Section::Misc, Key::forcenoeax, bForceNoEAX );
-	WriteConfig( Section::Misc, Key::forcezbias, bForceZBias );
-	WriteConfig( Section::Misc, Key::newcontrol, (bool)INTERNATIONAL_MODE );
-	WriteConfig( Section::Misc, Key::forcetoggle, bOneHanded );
-	WriteConfig( Section::Misc, Key::fg, (bool)uiGoreMode );
-
-	// Finally save it all to file/stream
-	std::ofstream out( pcName.c_str() );
-	config_map.save_all( out );
+void Config::setDefaultActionKeys() {
+	
+	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
+		actions[i] = Default::actions[i];
+	}
+	
+	config.input.linkMouseLookToUse = !config.misc.newControl;
 }
 
-extern bool IsNoGore( void );
-
-void Config::ReadAll()
-{
-	bool bWarningGore=false;
-
-	// Check if this is the first run of the game
-	first_launch = ReadConfig( Section::FirstRun, Key::first_run_int, Default::first_run );
-
-	// Get the locale language
-	Project.localisationpath = ReadConfig( Section::Language, Key::language_string, Default::language );
-
-	// TODO Config should have no business calling this function. Is needed since gettings keys from the config will call localization functions
-	Localisation_Init();
-
-	// Get the video settings
-	std::string resolution = ReadConfig( Section::Video, Key::resolution, Default::resolution );
-	iWidth = atoi( resolution.substr( 0, resolution.find( 'x' ) ) );
-	iHeight = atoi( resolution.substr( resolution.find('x') + 1 ) );
-	bpp = ReadConfig( Section::Video, Key::bpp, Default::bpp );
-	bFullScreen = ReadConfig( Section::Video, Key::full_screen, Default::full_screen );
-	bBumpMapping = ReadConfig( Section::Video, Key::bump, Default::bump );
-	iTextureResol = ReadConfig( Section::Video, Key::texture, Default::texture );
-	iMeshReduction = ReadConfig( Section::Video, Key::mesh_reduction, Default::mesh_reduction );
-	iLevelOfDetails = ReadConfig( Section::Video, Key::others_details, Default::others_details );
-	iFogDistance = ReadConfig( Section::Video, Key::fog, Default::fog );
-	iGamma = ReadConfig( Section::Video, Key::gamma, Default::gamma );
-	iLuminosite = ReadConfig( Section::Video, Key::luminosity, Default::luminosity );
-	iContrast = ReadConfig( Section::Video, Key::contrast, Default::contrast );
-	bShowCrossHair = ReadConfig( Section::Video, Key::show_crosshair, Default::show_crosshair );
-	bAntiAliasing = ReadConfig( Section::Video, Key::antialiasing, Default::antialiasing );
-
-	// Get audio settings
-	iMasterVolume = ReadConfig( Section::Audio, Key::master_volume, Default::master_volume );
-	iSFXVolume = ReadConfig( Section::Audio, Key::effects_volume, Default::effects_volume );
-	iSpeechVolume = ReadConfig( Section::Audio, Key::speech_volume, Default::speech_volume );
-	iAmbianceVolume = ReadConfig( Section::Audio, Key::ambiance_volume, Default::ambiance_volume );
-	bEAX = ReadConfig( Section::Audio, Key::EAX, Default::EAX );
-
-	// Get input settings
-	bInvertMouse = ReadConfig( Section::Input, Key::invert_mouse, Default::invert_mouse );
-	bAutoReadyWeapon = ReadConfig( Section::Input, Key::auto_ready_weapon, Default::auto_ready_weapon );
-	bMouseLookToggle = ReadConfig( Section::Input, Key::mouse_look_toggle, Default::mouse_look_toggle );
-	iMouseSensitivity = ReadConfig( Section::Input, Key::mouse_sensitivity, Default::mouse_sensitivity );
-	bMouseSmoothing = ReadConfig( Section::Input, Key::mouse_smoothing, Default::mouse_smoothing );
-	bAutoDescription = ReadConfig( Section::Input, Key::auto_description, Default::auto_description );
-	bLinkMouseLookToUse = ReadConfig( Section::Input, Key::link_mouse_look_to_use, Default::link_mouse_look_to_use );
-
-	// Get action key settings
-	sakActionKey[CONTROLS_CUST_JUMP] = ReadConfig( Section::Key, Key::jump, CONTROLS_CUST_JUMP );
-	sakActionKey[CONTROLS_CUST_MAGICMODE] = ReadConfig( Section::Key, Key::magic_mode, CONTROLS_CUST_MAGICMODE );
-	sakActionKey[CONTROLS_CUST_STEALTHMODE] = ReadConfig( Section::Key, Key::stealth_mode, CONTROLS_CUST_STEALTHMODE );
-	sakActionKey[CONTROLS_CUST_WALKFORWARD] = ReadConfig( Section::Key, Key::walk_forward, CONTROLS_CUST_WALKFORWARD );
-	sakActionKey[CONTROLS_CUST_WALKBACKWARD] = ReadConfig( Section::Key, Key::walk_backward, CONTROLS_CUST_WALKBACKWARD );
-	sakActionKey[CONTROLS_CUST_STRAFELEFT] = ReadConfig( Section::Key, Key::strafe_left, CONTROLS_CUST_STRAFELEFT );
-	sakActionKey[CONTROLS_CUST_STRAFERIGHT] = ReadConfig( Section::Key, Key::strafe_right, CONTROLS_CUST_STRAFERIGHT );
-	sakActionKey[CONTROLS_CUST_LEANLEFT] = ReadConfig( Section::Key, Key::lean_left, CONTROLS_CUST_LEANLEFT );
-	sakActionKey[CONTROLS_CUST_LEANRIGHT] = ReadConfig( Section::Key, Key::lean_right, CONTROLS_CUST_LEANRIGHT );
-	sakActionKey[CONTROLS_CUST_CROUCH] = ReadConfig( Section::Key, Key::crouch, CONTROLS_CUST_CROUCH );
-	sakActionKey[CONTROLS_CUST_MOUSELOOK] = ReadConfig( Section::Key, Key::mouselook, CONTROLS_CUST_MOUSELOOK );
-
-
-	sakActionKey[CONTROLS_CUST_ACTION] = ReadConfig( Section::Key, Key::action_combine, CONTROLS_CUST_ACTION );
-	sakActionKey[CONTROLS_CUST_INVENTORY] = ReadConfig( Section::Key, Key::inventory, CONTROLS_CUST_INVENTORY );
-	sakActionKey[CONTROLS_CUST_BOOK] = ReadConfig( Section::Key, Key::book, CONTROLS_CUST_BOOK );
-	sakActionKey[CONTROLS_CUST_BOOKCHARSHEET] = ReadConfig( Section::Key, Key::char_sheet, CONTROLS_CUST_BOOKCHARSHEET );
-	sakActionKey[CONTROLS_CUST_BOOKSPELL] = ReadConfig( Section::Key, Key::magic_book, CONTROLS_CUST_BOOKSPELL );
-	sakActionKey[CONTROLS_CUST_BOOKMAP] = ReadConfig( Section::Key, Key::map, CONTROLS_CUST_BOOKMAP );
-	sakActionKey[CONTROLS_CUST_BOOKQUEST] = ReadConfig( Section::Key, Key::quest_book, CONTROLS_CUST_BOOKQUEST );
-	sakActionKey[CONTROLS_CUST_DRINKPOTIONLIFE] = ReadConfig( Section::Key, Key::drink_potion_life, CONTROLS_CUST_DRINKPOTIONLIFE );
-	sakActionKey[CONTROLS_CUST_DRINKPOTIONMANA] = ReadConfig( Section::Key, Key::drink_potion_mana, CONTROLS_CUST_DRINKPOTIONMANA );
-	sakActionKey[CONTROLS_CUST_TORCH] = ReadConfig( Section::Key, Key::torch, CONTROLS_CUST_TORCH );
-
-	sakActionKey[CONTROLS_CUST_CANCELCURSPELL] = ReadConfig( Section::Key, Key::cancel_current_spell, CONTROLS_CUST_CANCELCURSPELL );
-	sakActionKey[CONTROLS_CUST_PRECAST1] = ReadConfig( Section::Key, Key::precast_1, CONTROLS_CUST_PRECAST1 );
-	sakActionKey[CONTROLS_CUST_PRECAST2] = ReadConfig( Section::Key, Key::precast_2, CONTROLS_CUST_PRECAST2 );
-	sakActionKey[CONTROLS_CUST_PRECAST3] = ReadConfig( Section::Key, Key::precast_3, CONTROLS_CUST_PRECAST3 );
-	sakActionKey[CONTROLS_CUST_WEAPON] = ReadConfig( Section::Key, Key::draw_weapon, CONTROLS_CUST_WEAPON );
-	sakActionKey[CONTROLS_CUST_QUICKSAVE] = ReadConfig( Section::Key, Key::quicksave, CONTROLS_CUST_QUICKSAVE );
-	sakActionKey[CONTROLS_CUST_QUICKLOAD] = ReadConfig( Section::Key, Key::quickload, CONTROLS_CUST_QUICKLOAD );
-	sakActionKey[CONTROLS_CUST_TURNLEFT] = ReadConfig( Section::Key, Key::turn_left, CONTROLS_CUST_TURNLEFT );
-	sakActionKey[CONTROLS_CUST_TURNRIGHT] = ReadConfig( Section::Key, Key::turn_right, CONTROLS_CUST_TURNRIGHT );
-	sakActionKey[CONTROLS_CUST_LOOKUP] = ReadConfig( Section::Key, Key::look_up, CONTROLS_CUST_LOOKUP );
-	sakActionKey[CONTROLS_CUST_LOOKDOWN] = ReadConfig( Section::Key, Key::look_down, CONTROLS_CUST_LOOKDOWN );
-	sakActionKey[CONTROLS_CUST_STRAFE] = ReadConfig( Section::Key, Key::strafe, CONTROLS_CUST_STRAFE );
-	sakActionKey[CONTROLS_CUST_CENTERVIEW] = ReadConfig( Section::Key, Key::center_view, CONTROLS_CUST_CENTERVIEW );
-	sakActionKey[CONTROLS_CUST_FREELOOK] = ReadConfig( Section::Key, Key::freelook, CONTROLS_CUST_FREELOOK );
-
-	sakActionKey[CONTROLS_CUST_PREVIOUS] = ReadConfig( Section::Key, Key::previous, CONTROLS_CUST_PREVIOUS );
-	sakActionKey[CONTROLS_CUST_NEXT] = ReadConfig( Section::Key, Key::next, CONTROLS_CUST_NEXT );
-	sakActionKey[CONTROLS_CUST_CROUCHTOGGLE] = ReadConfig( Section::Key, Key::crouch_toggle, CONTROLS_CUST_CROUCHTOGGLE );
-
-	sakActionKey[CONTROLS_CUST_UNEQUIPWEAPON] = ReadConfig( Section::Key, Key::unequip_weapon, CONTROLS_CUST_UNEQUIPWEAPON );
-
-	sakActionKey[CONTROLS_CUST_MINIMAP] = ReadConfig( Section::Key, Key::minimap, CONTROLS_CUST_MINIMAP );
-
-	// Get miscellaneous settings
-	bATI = ReadConfig( Section::Misc, Key::softfog, Default::softfog );
-	bForceNoEAX = ReadConfig( Section::Misc, Key::forcenoeax, Default::forcenoeax );
-	bForceZBias = ReadConfig( Section::Misc, Key::forcezbias, Default::forcezbias );
-	bOneHanded = ReadConfig( Section::Misc, Key::forcetoggle, Default::forcetoggle );
-	uiGoreMode = ReadConfig(Section::Misc, Key::fg, Default::fg );
-	pStringMod = ReadConfig( Section::Misc, Key::modpak, Default::modpak );
-	pStringModSfx = ReadConfig(Section::Misc, Key::modsfxpak, Default::modsfxpak );
-	pStringModSpeech = ReadConfig(Section::Misc, Key::modspeechpak, Default::speechmodpak );
-
-	INTERNATIONAL_MODE = ReadConfig(Section::Misc, Key::newcontrol, Default::newcontrol );
-
-	switch(uiGoreMode)
-	{
-	case 0:
-		{
-			if(bWarningGore)
-			{
-				uiGoreMode=0;
-				GORE_MODE=0;
-			}
-			else
-			{
-				uiGoreMode=1;
-				GORE_MODE=1;
+bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
+	
+	if(actionId < 0 || actionId >= NUM_ACTION_KEY || index > 1 || index < 0) {
+		return false;
+	}
+	
+	ActionKey & action = actions[actionId];
+	
+	InputKeyId oldKey = action.key[index];
+	action.key[index] = key;
+	
+	int otherIndex = 1 - index;
+	
+	if(action.key[otherIndex] == -1) {
+		action.key[otherIndex] = oldKey;
+		oldKey = -1;
+	}
+	
+	if(action.key[otherIndex] == key) {
+		action.key[otherIndex] = -1;
+	}
+	
+	// remove double key assignments
+	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
+		
+		if(i == actionId) {
+			continue;
+		}
+		
+		for(int k = 0; i < 2; i++) {
+			if(actions[i].key[k] == key) {
+				actions[i].key[k] = oldKey;
+				oldKey = -1;
 			}
 		}
-		break;
-
-	case 1:
-		GORE_MODE=1;
-		break;
-
-	case 2:
-		GORE_MODE=0;
-		break;
-
-	default:
-		uiGoreMode=0;
-		GORE_MODE=0;
-		break;
+		
 	}
-
-	//on set les options
-
-	ARXMenu_Options_Video_SetFogDistance(iFogDistance);
-	ARXMenu_Options_Video_SetTextureQuality(iTextureResol);
-	ARXMenu_Options_Video_SetBump(bBumpMapping);
-	ARXMenu_Options_Video_SetLODQuality(iMeshReduction);
-	ARXMenu_Options_Video_SetDetailsQuality(iLevelOfDetails);
-	ARXMenu_Options_Video_SetGamma(iGamma);
-	ARX_SetAntiAliasing();
-	ARXMenu_Options_Audio_SetMasterVolume(iMasterVolume);
-	ARXMenu_Options_Audio_SetSfxVolume(iSFXVolume);
-	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
-	ARXMenu_Options_Audio_SetAmbianceVolume(iAmbianceVolume);
-
-	ARXMenu_Options_Control_SetInvertMouse(bInvertMouse);
-	ARXMenu_Options_Control_SetAutoReadyWeapon(bAutoReadyWeapon);
-	ARXMenu_Options_Control_SetMouseLookToggleMode(bMouseLookToggle);
-	ARXMenu_Options_Control_SetMouseSensitivity(iMouseSensitivity);
-	ARXMenu_Options_Control_SetAutoDescription(bAutoDescription);
-
-	if(pMenu)
-	{
-		pMenu->bReInitAll=true;
-	}
-
-	//mixer Game
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenu));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSample, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSample));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSpeech));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance));
-
-	Localisation_Close();
-
-	bALLOW_BUMP=bBumpMapping;
-	WILL_RELOAD_ALL_TEXTURES=1;
-	GORE_MODE = IsNoGore()? 0 : 1;
-	Localisation_Init();
-
-	if(bBumpMapping)
-		EERIE_ActivateBump();
-	else
-		EERIE_DesactivateBump();
-
-	if( iTextureResol==2 ) Project.TextureSize=0;
-
-	if( iTextureResol==1 ) Project.TextureSize=2;
-
-	if( iTextureResol==0 ) Project.TextureSize=64;
+	
+	return true;
 }
 
+bool Config::save() {
+	
+	// Finally save it all to file/stream
+	ofstream out(file.c_str());
+	if(!out.is_open()) {
+		return false;
+	}
+	
+	ConfigWriter writer(out);
+	
+	// firstrun
+	writer.beginSection(Section::FirstRun);
+	writer.writeKey(Key::firstRun, firstRun);
+	
+	// language
+	writer.beginSection(Section::Language);
+	writer.writeKey(Key::language, language);
+	
+	// video
+	writer.beginSection(Section::Video);
+	ostringstream oss;
+	oss << video.width << 'x' << video.height;
+	writer.writeKey(Key::resolution, oss.str());
+	writer.writeKey(Key::bpp, video.bpp);
+	writer.writeKey(Key::fullscreen, video.fullscreen);
+	writer.writeKey(Key::bumpmap, video.bumpmap);
+	writer.writeKey(Key::textureSize, video.textureSize);
+	writer.writeKey(Key::meshReduction, video.meshReduction);
+	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
+	writer.writeKey(Key::fogDistance, video.fogDistance);
+	writer.writeKey(Key::gamma, video.gamma);
+	writer.writeKey(Key::luminosity, video.luminosity);
+	writer.writeKey(Key::contrast, video.contrast);
+	writer.writeKey(Key::showCrosshair, video.showCrosshair);
+	writer.writeKey(Key::antialiasing, video.antialiasing);
+	
+	// audio
+	writer.beginSection(Section::Audio);
+	writer.writeKey(Key::volume, audio.volume);
+	writer.writeKey(Key::sfxVolume, audio.sfxVolume);
+	writer.writeKey(Key::speechVolume, audio.speechVolume);
+	writer.writeKey(Key::ambianceVolume, audio.ambianceVolume);
+	writer.writeKey(Key::eax, audio.eax);
+	
+	// input
+	writer.beginSection(Section::Input);
+	writer.writeKey(Key::invertMouse, input.invertMouse);
+	writer.writeKey(Key::autoReadyWeapon, input.autoReadyWeapon);
+	writer.writeKey(Key::mouseLookToggle, input.mouseLookToggle);
+	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
+	writer.writeKey(Key::mouseSmoothing, input.mouseSmoothing);
+	writer.writeKey(Key::autoDescription, input.autoDescription);
+	writer.writeKey(Key::linkMouseLookToUse, input.linkMouseLookToUse);
+	
+	// key
+	writer.beginSection(Section::Key);
+	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
+		writer.writeKey((ControlAction)i, actions[i]);
+	}
+	
+	// misc
+	writer.beginSection(Section::Misc);
+	writer.writeKey(Key::forceZBias, misc.forceZBias);
+	writer.writeKey(Key::newControl, misc.newControl);
+	writer.writeKey(Key::forceToggle, misc.forceToggle);
+	writer.writeKey(Key::gore, misc.gore);
+	
+	return writer.flush();
+}
+
+bool Config::init(const string & file, const string & defaultFile) {
+	
+	this->file = file;
+	
+	std::ifstream ifs;
+	ifs.open(file.c_str());
+	if(!ifs.is_open()) {
+		ifs.open(defaultFile.c_str());
+	}
+	bool loaded = ifs.is_open();
+	
+	ConfigReader reader(ifs);
+	
+	// Check if this is the first run of the game
+	firstRun = reader.get(Section::FirstRun, Key::firstRun, Default::first_run);
+	
+	// Get locale language
+	language = reader.get(Section::Language, Key::language, Default::language);
+	
+	// Get video settings
+	
+	string resolution = reader.get(Section::Video, Key::resolution, Default::resolution);
+	istringstream iss(resolution);
+	iss >> video.width;
+	char x;
+	iss >> x;
+	iss >> video.height;
+	if(x != 'x' || iss.bad() || video.width <= 0 || video.height <= 0) {
+		LogWarning << "bad resolution string: " << resolution;
+		video.width = DEFAULT_WIDTH;
+		video.height = DEFAULT_HEIGHT;
+	}
+	
+	video.bpp = reader.get(Section::Video, Key::bpp, Default::bpp);
+	video.fullscreen = reader.get(Section::Video, Key::fullscreen, Default::fullscreen);
+	video.bumpmap = reader.get(Section::Video, Key::bumpmap, Default::bumpmap);
+	video.textureSize = reader.get(Section::Video, Key::textureSize, Default::textureSize);
+	video.meshReduction = reader.get(Section::Video, Key::meshReduction, Default::meshReduction);
+	video.levelOfDetail = reader.get(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
+	video.fogDistance = reader.get(Section::Video, Key::fogDistance, Default::fogDistance);
+	video.gamma = reader.get(Section::Video, Key::gamma, Default::gamma);
+	video.luminosity = reader.get(Section::Video, Key::luminosity, Default::luminosity);
+	video.contrast = reader.get(Section::Video, Key::contrast, Default::contrast);
+	video.showCrosshair = reader.get(Section::Video, Key::showCrosshair, Default::showCrosshair);
+	video.antialiasing = reader.get(Section::Video, Key::antialiasing, Default::antialiasing);
+	
+	// Get audio settings
+	audio.volume = reader.get(Section::Audio, Key::volume, Default::volume);
+	audio.sfxVolume = reader.get(Section::Audio, Key::sfxVolume, Default::sfxVolume);
+	audio.speechVolume = reader.get(Section::Audio, Key::speechVolume, Default::speechVolume);
+	audio.ambianceVolume = reader.get(Section::Audio, Key::ambianceVolume, Default::ambianceVolume);
+	audio.eax = reader.get(Section::Audio, Key::eax, Default::eax);
+	
+	// Get input settings
+	input.invertMouse = reader.get(Section::Input, Key::invertMouse, Default::invertMouse);
+	input.autoReadyWeapon = reader.get(Section::Input, Key::autoReadyWeapon, Default::autoReadyWeapon);
+	input.mouseLookToggle = reader.get(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
+	input.mouseSensitivity = reader.get(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
+	input.mouseSmoothing = reader.get(Section::Input, Key::mouseSmoothing, Default::mouseSmoothing);
+	input.autoDescription = reader.get(Section::Input, Key::autoDescription, Default::autoDescription);
+	input.linkMouseLookToUse = reader.get(Section::Input, Key::linkMouseLookToUse, Default::linkMouseLookToUse);
+	
+	// Get action key settings
+	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
+		actions[i] = reader.get(Section::Key, (ControlAction)i);
+	}
+	
+	// Get miscellaneous settings
+	misc.forceZBias = reader.get(Section::Misc, Key::forceZBias, Default::forceZBias);
+	misc.forceToggle = reader.get(Section::Misc, Key::forceToggle, Default::forceToggle);
+	misc.gore = reader.get(Section::Misc, Key::gore, Default::gore);
+	misc.newControl = reader.get(Section::Misc, Key::newControl, Default::newControl);
+	
+	return loaded;
+}

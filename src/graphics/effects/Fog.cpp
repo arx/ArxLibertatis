@@ -182,12 +182,7 @@ void ARX_FOGS_TimeReset()
 }
 void AddPoisonFog(EERIE_3D * pos, float power)
 {
-	int iDiv = 2;
-
-	if (pMenuConfig)
-	{
-		iDiv += 2 - pMenuConfig->iLevelOfDetails;
-	}
+	int iDiv = 4 - config.video.levelOfDetail;
 
 	float flDiv =	ARX_CLEAN_WARN_CAST_FLOAT(1 << iDiv);
 	ARX_CHECK_LONG(FrameDiff / flDiv);
@@ -233,12 +228,7 @@ void ARX_FOGS_Render() {
 	
 	if (ARXPausedTimer) return;
 
-	int iDiv = 2;
-
-	if (pMenuConfig)
-	{
-		iDiv += 2 - pMenuConfig->iLevelOfDetails;
-	}
+	int iDiv = 4 - config.video.levelOfDetail;
 
 	float flDiv = ARX_CLEAN_WARN_CAST_FLOAT(1 << iDiv);
 

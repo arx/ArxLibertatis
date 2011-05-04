@@ -31,6 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "core/ConfigHashMap.h"
 #include "core/Unicode.hpp"
+#include "core/Config.h"
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
@@ -43,9 +44,6 @@ namespace
 	std::string empty_string = "";
 }
 
-extern long GERMAN_VERSION;
-extern long FRENCH_VERSION;
-extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
 extern long FINAL_COMMERCIAL_DEMO;
 
@@ -60,7 +58,7 @@ void Localisation_Init()
 		Localisation_Close();
 
 	// Generate the filename for the localization strings
-	std::string tx = "localisation\\utext_" + Project.localisationpath + ".ini";
+	std::string tx = "localisation\\utext_" + config.language + ".ini";
 	
 	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
@@ -71,8 +69,8 @@ void Localisation_Init()
 	if ( !Localisation )
 	{
 		// Default to english locale
-		Project.localisationpath = "english";
-		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
+		config.language = "english";
+		tx = "localisation\\utext_" + config.language + ".ini";
 
 		// Load the default english locale file
 		Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
@@ -119,14 +117,6 @@ void Localisation_Init()
 	{
 		std::string szMenuText;
 		szMenuText = getLocalized( "unicode" );
-
-		if (!szMenuText.empty()) //warez
-		{
-			if (!szMenuText.compare( "chinese" ) )
-			{
-				CHINESE_VERSION = 1;
-			}
-		}
 	}
 }
 

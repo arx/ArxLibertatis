@@ -133,7 +133,7 @@ bool PlayFile(HWND hWnd, char * file)
 
 		while (!l && !bSkipVideoIntro)
 		{
-			if ( !pMenuConfig->first_launch || EDITMODE)
+			if ( !config.firstRun || EDITMODE)
 			{
 				pGetInfoDirectInput->GetInput();
 

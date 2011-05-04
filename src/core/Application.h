@@ -261,7 +261,6 @@ struct PROJECT {
 	EERIE_RGBB torch;
 	long interpolatemouse;
 	long vsync;
-	std::string localisationpath;
 	
 };
 

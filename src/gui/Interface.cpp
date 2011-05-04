@@ -287,7 +287,6 @@ bool bGCroucheToggle=false;
 
 int iHighLight=0;
 float fHighLightAng=0.f;
-long INTERNATIONAL_MODE=1;
 
 float INTERFACE_RATIO(float a)
 {
@@ -673,12 +672,12 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 		}
 	}
 
-	if ((((player.Interface & INTER_INVENTORYALL)||(TRUE_PLAYER_MOUSELOOK_ON))&&(INTERNATIONAL_MODE))&&(player.Interface & INTER_NOTE))
+	if ((((player.Interface & INTER_INVENTORYALL)||(TRUE_PLAYER_MOUSELOOK_ON))&&(config.misc.newControl))&&(player.Interface & INTER_NOTE))
 	{
 		ARX_INTERFACE_NoteClose();
 	}
 
-	if (!bInventoryClosing && pMenuConfig->bAutoReadyWeapon == false)
+	if (!bInventoryClosing && config.input.autoReadyWeapon == false)
 	{
 		TRUE_PLAYER_MOUSELOOK_ON &= ~1;
 	}
@@ -1532,7 +1531,7 @@ bool DANAE::ManageEditorControls()
 
 	eMouseState = MOUSE_IN_WORLD;
 
-	if (TRUE_PLAYER_MOUSELOOK_ON && (pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle))
+	if (TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle))
 	{
 
 		float fX =  DANAESIZX * 0.5f;
@@ -1669,7 +1668,7 @@ bool DANAE::ManageEditorControls()
 			STARTDRAG.y=DANAEMouse.y;
 			DRAGGING=0;
 
-			if (pMenuConfig->bAutoReadyWeapon == false)
+			if (config.input.autoReadyWeapon == false)
 			{
 				MouseDragX = 0;
 				MouseDragY = 0;
@@ -1678,7 +1677,7 @@ bool DANAE::ManageEditorControls()
 		else
 		{
 			if (((abs(DANAEMouse.x-STARTDRAG.x)>2) && (abs(DANAEMouse.y-STARTDRAG.y)>2))
-			   || ((pMenuConfig->bAutoReadyWeapon == false) && ((abs(MouseDragX) > 2) || (abs(MouseDragY) > 2))))
+			   || ((config.input.autoReadyWeapon == false) && ((abs(MouseDragX) > 2) || (abs(MouseDragY) > 2))))
 			{
 				DRAGGING=1;
 			}
@@ -1915,7 +1914,7 @@ bool DANAE::ManageEditorControls()
 						}
 						else
 						{
-							if (INTERNATIONAL_MODE)
+							if (config.misc.newControl)
 							{
 								bInverseInventory=!bInverseInventory;
 								lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
@@ -1996,7 +1995,7 @@ bool DANAE::ManageEditorControls()
 						{
 							SendIOScriptEvent(ioSteal, SM_STEAL);
 
-							if (INTERNATIONAL_MODE)
+							if (config.misc.newControl)
 							{
 								bForceEscapeFreeLook=true;
 							    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
@@ -2543,7 +2542,7 @@ bool DANAE::ManageEditorControls()
 			(DRAGINTER==NULL)
 			)
 			|| // mode system shock
-			( DRAGGING && (pMenuConfig->bAutoReadyWeapon == false) &&
+			( DRAGGING && (config.input.autoReadyWeapon == false) &&
 			(!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)) &&
 			(DRAGINTER==NULL))
 			)
@@ -3790,7 +3789,7 @@ void ARX_INTERFACE_Combat_Mode(long i)
 		{
 			player.Interface|=INTER_NO_STRIKE;
 
-			if (pMenuConfig->bMouseLookToggle)
+			if (config.input.mouseLookToggle)
 			{
 				TRUE_PLAYER_MOUSELOOK_ON |= 1;
 				SLID_START=(float)ARXTime;
@@ -3850,7 +3849,7 @@ void DANAE::ManagePlayerControls()
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							}
 
-							if (INTERNATIONAL_MODE)
+							if (config.misc.newControl)
 							{
 								if (SecondaryInventory)
 								{
@@ -3875,7 +3874,7 @@ void DANAE::ManagePlayerControls()
 
 					ARX_INVENTORY_OpenClose(t);
 
-					if (INTERNATIONAL_MODE)
+					if (config.misc.newControl)
 					{
 						if (SecondaryInventory)
 						{
@@ -4533,7 +4532,7 @@ void DANAE::ManagePlayerControls()
 				  bGToggleCombatModeWithKey=false;
 				  SPECIAL_DRAW_WEAPON=0;
 				  
-				  if (pMenuConfig->bMouseLookToggle)
+				  if (config.input.mouseLookToggle)
 					  TRUE_PLAYER_MOUSELOOK_ON=MEMO_PLAYER_MOUSELOOK_ON;
 			  }
 			  else
@@ -4552,7 +4551,7 @@ void DANAE::ManagePlayerControls()
 
 	  if(EERIEMouseButton&1) bGToggleCombatModeWithKey=false;
 
-	if( (INTERNATIONAL_MODE)&&
+	if( (config.misc.newControl)&&
 	        (bForceEscapeFreeLook))
 	{
 		TRUE_PLAYER_MOUSELOOK_ON&=~1;
@@ -4566,7 +4565,7 @@ void DANAE::ManagePlayerControls()
 	{
 		if(eMouseState!=MOUSE_IN_INVENTORY_ICON)
 		{
-		if (!pMenuConfig->bMouseLookToggle)
+		if (!config.input.mouseLookToggle)
 		{
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
 			{
@@ -4578,7 +4577,7 @@ void DANAE::ManagePlayerControls()
 			}
 			else
 			{
-				if(INTERNATIONAL_MODE)
+				if(config.misc.newControl)
 				{
 					TRUE_PLAYER_MOUSELOOK_ON &= ~1;
 				}
@@ -4609,7 +4608,7 @@ void DANAE::ManagePlayerControls()
 	if(	(player.Interface&INTER_COMBATMODE)&&
 		(ARX_IMPULSE_NowUnPressed(CONTROLS_CUST_FREELOOK)) )
 	{
-		if(INTERNATIONAL_MODE)
+		if(config.misc.newControl)
 		{
 			ARX_INTERFACE_Combat_Mode(0);
 		}
@@ -4630,12 +4629,12 @@ void DANAE::ManagePlayerControls()
 			  ARX_INTERFACE_Combat_Mode(0);
 		  }
 
-		if (INTERNATIONAL_MODE)
+		if (config.misc.newControl)
 		{
 			  bInverseInventory=!bInverseInventory;
 			  lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
 
-			if (!pMenuConfig->bMouseLookToggle)
+			if (!config.input.mouseLookToggle)
 			{
 				bForceEscapeFreeLook=true;
 			  }
@@ -4660,7 +4659,7 @@ void DANAE::ManagePlayerControls()
 		  &&  (PLAYER_MOUSELOOK_ON)
 		  &&	(DRAGINTER==NULL)
 		  &&	(!InInventoryPos(&DANAEMouse)
-		  && (pMenuConfig->bAutoReadyWeapon))
+		  && (config.input.autoReadyWeapon))
 		  )
 	  {
 		  if (!(LastMouseClick & 1))
@@ -4673,13 +4672,13 @@ void DANAE::ManagePlayerControls()
 			  {
 				  ARX_INTERFACE_Combat_Mode(1);
 
-				  if (! pMenuConfig->bAutoReadyWeapon)
+				  if (! config.input.autoReadyWeapon)
 					  bGToggleCombatModeWithKey=true;
 			  }
 		  }
 	  }
 
-	if (INTERNATIONAL_MODE)
+	if (config.misc.newControl)
 	{
 
 		if	(lOldTruePlayerMouseLook!=TRUE_PLAYER_MOUSELOOK_ON)
@@ -4758,7 +4757,7 @@ void DANAE::ManagePlayerControls()
 						}
 					}
 
-					if(pMenuConfig->bMouseLookToggle)
+					if(config.input.mouseLookToggle)
 					{
 						TRUE_PLAYER_MOUSELOOK_ON |= 1;
 						SLID_START=(float)ARXTime;
@@ -4799,7 +4798,7 @@ void DANAE::ManagePlayerControls()
 						}
 					}
 
-					if(pMenuConfig->bMouseLookToggle)
+					if(config.input.mouseLookToggle)
 					{
 						TRUE_PLAYER_MOUSELOOK_ON |= 1;
 						SLID_START=(float)ARXTime;
@@ -4961,7 +4960,7 @@ void DANAE::ManageKeyMouse()
 				poss.y=MemoMouse.y;
 
 				// mode systemshock
-				if (pMenuConfig->bMouseLookToggle && pMenuConfig->bAutoReadyWeapon == false)
+				if (config.input.mouseLookToggle && config.input.autoReadyWeapon == false)
 				{
 
 					float fX =  DANAESIZX * 0.5f;
@@ -5063,7 +5062,7 @@ void DANAE::ManageKeyMouse()
 							{
 								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE);
 
-								if (!((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle)))
+								if (!((config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle)))
 								{
 									TRUE_PLAYER_MOUSELOOK_ON&=~1;
 								}
@@ -5071,7 +5070,7 @@ void DANAE::ManageKeyMouse()
 						}
 					}
 
-					if ((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle))
+					if ((config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle))
 					{
 						EERIEMouseButton &= ~2;
 					}
@@ -5090,11 +5089,11 @@ void DANAE::ManageKeyMouse()
 			((eMouseState == MOUSE_IN_BOOK) && (!((ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) && (Book_Mode != BOOKMODE_MINIMAP))))
 			)
 		{
-			if (pMenuConfig->bMouseLookToggle)
+			if (config.input.mouseLookToggle)
 			{
 				if (eMouseState != MOUSE_IN_NOTE)
 				{
-					if ((EERIEMouseButton & 2) && !(LastMouseClick & 2)&&(pMenuConfig)&&(pMenuConfig->bLinkMouseLookToUse))
+					if ((EERIEMouseButton & 2) && !(LastMouseClick & 2)&&(config.input.linkMouseLookToUse))
 					{
 						if (!(FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) || DRAGINTER)
 						{
@@ -5113,7 +5112,7 @@ void DANAE::ManageKeyMouse()
 							}
 							else
 							{
-								if (!((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle) && FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)))
+								if (!((config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle) && FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)))
 								{
 									TRUE_PLAYER_MOUSELOOK_ON&=~1;
 									if (player.Interface & INTER_COMBATMODE && !(player.Interface & INTER_NOTE))
@@ -5131,7 +5130,7 @@ void DANAE::ManageKeyMouse()
 					if(	(EERIEMouseButton & 2) &&
 						(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))) &&
 						(!(TRUE_PLAYER_MOUSELOOK_ON & 1) || SPECIAL_DRAW_WEAPON)&&
-					        (pMenuConfig) && (pMenuConfig->bLinkMouseLookToUse))
+					        (config.input.linkMouseLookToUse))
 					{
 						if (SPECIAL_DRAW_WEAPON)
 							SPECIAL_DRAW_WEAPON=0;
@@ -5150,7 +5149,7 @@ void DANAE::ManageKeyMouse()
 							}
 						}
 					}
-					else if ((!(EERIEMouseButton & 2)) && pMenuConfig->bLinkMouseLookToUse && (LastMouseClick & 2))
+					else if ((!(EERIEMouseButton & 2)) && config.input.linkMouseLookToUse && (LastMouseClick & 2))
 					{
 						if (!SPECIAL_DRAW_WEAPON)
 						{
@@ -5175,7 +5174,7 @@ void DANAE::ManageKeyMouse()
 
 		PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
 
-		if ((player.doingmagic==2)&& (pMenuConfig->bMouseLookToggle))
+		if ((player.doingmagic==2)&& (config.input.mouseLookToggle))
 			PLAYER_MOUSELOOK_ON=0;
 	}
 
@@ -5396,7 +5395,7 @@ void DANAE::ManageKeyMouse()
 			}
 			else
 			{
-				if (INTERNATIONAL_MODE)
+				if (config.misc.newControl)
 				{
 					if (bRenderInCursorMode)
 					{
@@ -5458,9 +5457,7 @@ void DANAE::ManageKeyMouse()
 
 				fd = (((float)pGetInfoDirectInput->iSensibility) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 
-				if(	(pMenuConfig)&&
-					(pMenuConfig->bMouseSmoothing) )
-				{
+				if(config.input.mouseSmoothing) {
 					float of=Original_framedelay;
 
 					if (of<=0.f)
@@ -5485,13 +5482,9 @@ void DANAE::ManageKeyMouse()
 				{
 					float ia;
 
-					if(	(pMenuConfig)&&
-						(pMenuConfig->bMouseSmoothing) )
-					{
+					if(config.input.mouseSmoothing) {
 						ia=((float)EERIEMouseYdep*( 1.0f / 60 ))*fd;
-					}
-					else
-					{
+					} else {
 						ia=((float)EERIEMouseYdep*( 1.0f / 5 ))*fd;
 					}
 
@@ -5513,13 +5506,9 @@ void DANAE::ManageKeyMouse()
 				{
 					float ib;
 
-					if(	(pMenuConfig)&&
-						(pMenuConfig->bMouseSmoothing) )
-					{
+					if(config.input.mouseSmoothing) {
 						ib=((float)EERIEMouseXdep*( 1.0f / 50 ))*fd;
-					}
-					else
-					{
+					} else {
 						ib=((float)EERIEMouseXdep*( 1.0f / 5 ))*fd;
 					}
 
@@ -5533,14 +5522,10 @@ void DANAE::ManageKeyMouse()
 						{
 						float ia;
 
-							if(	(pMenuConfig)&&
-								(pMenuConfig->bMouseSmoothing) )
-							{
-								ia=((float)EERIEMouseYdep*( 1.0f / 60 )*fd);
-							}
-							else
-							{
-							ia = ((float)EERIEMouseYdep * ( 1.0f / 5 ) * fd);
+							if(config.input.mouseSmoothing) {
+								ia = ((float)EERIEMouseYdep * ( 1.0f / 60 ) * fd);
+							} else {
+								ia = ((float)EERIEMouseYdep * ( 1.0f / 5 ) * fd);
 							}
 
 							if ((inter.iobj[0]) && EEfabs(ia)>2.f) inter.iobj[0]->lastanimtime=0;
@@ -5565,14 +5550,10 @@ void DANAE::ManageKeyMouse()
 						{
 							float ib;
 
-							if(	(pMenuConfig)&&
-								(pMenuConfig->bMouseSmoothing) )
-							{
-								ib=((float)EERIEMouseXdep*( 1.0f / 50 )*fd);
-							}
-							else
-							{
-							ib = ((float)EERIEMouseXdep * ( 1.0f / 5 ) * fd); 
+							if(config.input.mouseSmoothing) {
+								ib = ((float)EERIEMouseXdep * ( 1.0f / 50 ) * fd);
+							} else {
+								ib = ((float)EERIEMouseXdep * ( 1.0f / 5 ) * fd); 
 							}
 
 							if (ib!=0.f) player.Current_Movement|=PLAYER_ROTATE;
@@ -5647,7 +5628,7 @@ void DANAE::ManageKeyMouse()
 
 						WILLADDSPEECHTIME = ARXTimeUL();
 
-						if (INTERNATIONAL_MODE)
+						if (config.misc.newControl)
 						{
 							bool bAddText = true;
 
@@ -5683,9 +5664,8 @@ void DANAE::ManageKeyMouse()
 					}
 					else
 					{
-						if(	(INTERNATIONAL_MODE)&&
-							(pMenuConfig)&&
-					        (pMenuConfig->bAutoDescription))
+						if(	(config.misc.newControl)&&
+							(config.input.autoDescription))
 					{
 
 								INTERACTIVE_OBJ * temp;
@@ -7021,7 +7001,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									FLYING_OVER=0;
 							}
 
-							if(OLD_FLYING_OVER != FLYING_OVER || INTERNATIONAL_MODE)
+							if(OLD_FLYING_OVER != FLYING_OVER || config.misc.newControl)
 							{
 								OLD_FLYING_OVER = FLYING_OVER;
 								pTextManage->Clear();
@@ -7034,7 +7014,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									1000,
 									0.01f,
 									2,
-									INTERNATIONAL_MODE?0:max(3000, int(70*spellicons[i].description.length())));
+									config.misc.newControl?0:max(3000, int(70*spellicons[i].description.length())));
 							}
 
 							long count = 0;
@@ -8007,7 +7987,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				FLYING_OVER=BOOK_DEFENSE;
 		}
 
-		if(!INTERNATIONAL_MODE) {
+		if(!config.misc.newControl) {
 			for(size_t i = 0; i < MAX_SPEECH; i++) {
 				if (speech[i].timecreation > 0)
 					FLYING_OVER = 0;
@@ -8018,7 +7998,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) //=ARXmenu.mda->flyover[FLYING_OVER];
 		{
 			if( (FLYING_OVER!=OLD_FLYING_OVER)||
-				(INTERNATIONAL_MODE) )
+				(config.misc.newControl) )
 			{
 
 				float fRandom = rnd() * 2;
@@ -8043,7 +8023,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					                                   1000,
 					                                   0.01f,
 					                                   3,
-					                                   INTERNATIONAL_MODE?0:max(3000, int(70*tex.length())));
+					                                   config.misc.newControl?0:max(3000, int(70*tex.length())));
 				}
 				else
 				{
@@ -8056,7 +8036,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:max(3000, int(70*ARXmenu.mda->flyover[FLYING_OVER].length())));
+						config.misc.newControl?0:max(3000, int(70*ARXmenu.mda->flyover[FLYING_OVER].length())));
 				}
 			}
 		}
@@ -9354,7 +9334,7 @@ void DANAE::DrawAllInterface()
 	if (((FlyingOverIO) && !(PLAYER_MOUSELOOK_ON) && !(player.Interface & INTER_COMBATMODE)
 		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)))
 		        || 
-		(((FlyingOverIO) && (pMenuConfig->bAutoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
+		(((FlyingOverIO) && (config.input.autoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
 		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))))
 		)
 	{
@@ -9803,7 +9783,7 @@ void DANAE::DrawAllInterface()
 		//---------------------------------------------------------------------
 		//END BLUE GAUGE
 
-			if (INTERNATIONAL_MODE)
+			if (config.misc.newControl)
 			{
 				if (bRenderInCursorMode)
 				{
@@ -9972,7 +9952,7 @@ long Manage3DCursor(long flags)
 
 				float mx = DANAEMouse.x;
 
-				if (TRUE_PLAYER_MOUSELOOK_ON && (pMenuConfig->bAutoReadyWeapon))
+				if (TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon))
 				{
 					mx = MemoMouse.x;
 				}
@@ -10363,7 +10343,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 			&& (eMouseState != MOUSE_IN_NOTE)
 			&& (FlyingOverIO->ioflags & IO_ITEM)
 			&& (FlyingOverIO->GameFlags & GFLAG_INTERACTIVITY)
-			&& (pMenuConfig->bAutoReadyWeapon == false))
+			&& (config.input.autoReadyWeapon == false))
 			|| ((MAGICMODE==1) && PLAYER_MOUSELOOK_ON))
 		{
 
@@ -10427,7 +10407,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 			{
 				if (((COMBINE!=NULL) && (COMBINE->inv!=NULL)) || COMBINEGOLD)
 				{
-					if (TRUE_PLAYER_MOUSELOOK_ON && (pMenuConfig->bAutoReadyWeapon))
+					if (TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon))
 					{
 						POSX = MemoMouse.x;
 						POSY = MemoMouse.y;
@@ -10655,7 +10635,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						float mx = POSX;
 						float my = POSY;
 
-						if (TRUE_PLAYER_MOUSELOOK_ON && (pMenuConfig->bAutoReadyWeapon))
+						if (TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon))
 						{
 							mx = MemoMouse.x;
 							my = MemoMouse.y;
@@ -10765,7 +10745,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 				iHighLight = 0;
 			}
 
-			if (TRUE_PLAYER_MOUSELOOK_ON && pMenuConfig && pMenuConfig->bShowCrossHair)
+			if (TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair)
 			{
 				if (!(player.Interface & INTER_COMBATMODE))
 				{

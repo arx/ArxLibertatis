@@ -129,7 +129,6 @@ long cur_mega=0;
 float sp_max_start = 0;
 long sp_wep=0;
 
-extern long INTERNATIONAL_MODE;
 extern bool bRenderInCursorMode;
 
 bool bOldLookToggle;
@@ -2634,8 +2633,7 @@ void ARX_SPELLS_ManageMagic()
 			player.doingmagic=0;
 			WILLRETURNTOCOMBATMODE=0;
 
-			if(INTERNATIONAL_MODE)
-			{
+			if(config.misc.newControl) {
 				TRUE_PLAYER_MOUSELOOK_ON|=1;
 				bRenderInCursorMode=false;
 			}
@@ -5501,8 +5499,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			TRUE_PLAYER_MOUSELOOK_ON |= 1;	
 			SLID_START=(float)ARXTime;
-			bOldLookToggle=pMenuConfig->bMouseLookToggle;
-			pMenuConfig->bMouseLookToggle=true;
+			bOldLookToggle=config.input.mouseLookToggle;
+			config.input.mouseLookToggle=true;
 
 			SPELLCAST_Notify(i);
 		}	
@@ -6732,7 +6730,7 @@ void ARX_SPELLS_Kill(long i) {
 				}
 			}
 
-			pMenuConfig->bMouseLookToggle = bOldLookToggle; 
+			config.input.mouseLookToggle = bOldLookToggle; 
 			break;
 		}
 		//----------------------------------------------------------------------------

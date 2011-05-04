@@ -753,4 +753,12 @@ bool ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
 
+extern int newBumpMapping;
+extern int newTextureSize;
+extern int newWidth;
+extern int newHeight;
+extern int newBpp;
+extern bool changeResolution;
+extern bool changeTextures;
+
 #endif

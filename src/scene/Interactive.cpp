@@ -508,7 +508,6 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 				io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 		}
 }
-extern long GORE_MODE;
 
 
 bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)

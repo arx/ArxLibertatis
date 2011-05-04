@@ -89,9 +89,6 @@ Font* hFontInGame	= NULL;
 Font* hFontInGameNote = NULL;
  
 
-extern long CHINESE_VERSION;
-
-
 //-----------------------------------------------------------------------------
 string FontError() {
 	LPVOID lpMsgBuf;

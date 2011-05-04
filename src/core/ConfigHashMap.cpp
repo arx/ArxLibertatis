@@ -73,34 +73,47 @@ unsigned long ConfigHashMap::GetKeyCount(const std::string& _lpszUText)
  * @param key The key to look for in the section
  * @return The value of the key found or the default value otherwise
  */
-const std::string& ConfigHashMap::getConfigValue( const std::string& section, const std::string& default_value, const std::string& key ) const
-{
+const string & ConfigHashMap::getConfigValue(const string & section, const string & default_value, const string & key ) const {
+	
+	const string * value = getConfigValue(section, key);
+	if(value) {
+		return *value;
+	} else {
+		// If the value was not found, return default
+		return default_value;
+	}
+	
+}
+
+const string * ConfigHashMap::getConfigValue(const string & section, const string & key) const {
+	
 	// Look for a section
-	const ConfigSection* config = getConfigSection( section );
-
-	// If the section was not found, return default
-	if ( !config )
-	{
-		return default_value;
+	const ConfigSection * config = getConfigSection(section);
+	
+	// If the section was not found, return NULL
+	if(!config) {
+		return NULL;
 	}
-
-	// If the section has no keys, return default
-	if ( config->_keys.empty() )
-		return default_value;
-
+	
+	// If the section has no keys, return NULL
+	if(config->_keys.empty()) {
+		return NULL;
+	}
+	
 	// If the key is not specified, return the first ones value( to avoid breakage with legacy assets )
-	if ( key.empty() )
-	{
-		return config->_keys[0].value;
+	if(key.empty()) {
+		return &config->_keys[0].value;
 	}
-
+	
 	// Otherwise try to match the key to one in the section
-	for ( size_t i = 0 ; i < config->_keys.size() ; i++ )
-		if ( config->_keys[i].name == key ) // If the key name matches that specified
-			return config->_keys[i].value; // Return the value of the requested key
-
-	// If the key was not found, return default
-	return default_value;
+	for(size_t i = 0; i < config->_keys.size(); i++) {
+		if(config->_keys[i].name == key) { // If the key name matches that specified
+			return &config->_keys[i].value; // Return the value of the requested key
+		}
+	}
+	
+	// If the key was not found, return NULL
+	return NULL;
 }
 
 /**

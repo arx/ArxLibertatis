@@ -972,7 +972,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 
 	// mode systemshock
 	if ((EERIEMouseButton & 1) &&
-	        (pMenuConfig->bAutoReadyWeapon == false))
+	        (config.input.autoReadyWeapon == false))
 	{
 		MouseDragX += EERIEMouseXdep;
 		MouseDragY += EERIEMouseYdep;

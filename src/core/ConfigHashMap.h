@@ -67,7 +67,9 @@ public:
 	 * @param key The key to look for in the section
 	 * @return The value of the key found or the default value otherwise
 	 */
-	const std::string& getConfigValue( const std::string& section, const std::string& default_value, const std::string& key ) const;
+	const std::string & getConfigValue( const std::string& section, const std::string& default_value, const std::string& key ) const;
+	
+	const std::string * getConfigValue(const std::string & section, const std::string & key) const;
 
 	/**
 	 * Updates the specified key in the specifified section

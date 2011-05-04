@@ -309,9 +309,6 @@ ArxSound SND_SPELL_TELEPORTED(AAL_SFALSE);
 ArxSound SND_SPELL_VISION_START(AAL_SFALSE);
 ArxSound SND_SPELL_VISION_LOOP(AAL_SFALSE);
 
-
-bool bForceNoEAX = false;
-
 static void ARX_SOUND_EnvironmentSet(const std::string & name);
 static void ARX_SOUND_CreateEnvironments();
 static void ARX_SOUND_CreateStaticSamples();
@@ -329,15 +326,11 @@ static void ARX_SOUND_KillUpdateThread();
 static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ulFileSize, ParseIniFileCallback lpSectionCallback, ParseIniFileCallback lpStringCallback);
 void ARX_SOUND_PreloadAll();
 
-extern std::string pStringModSfx;
-extern std::string pStringModSpeech;
-
 long ARX_SOUND_Init(HWND hwnd)
 {
 	if (bIsActive) ARX_SOUND_Release();
 
-	if ((bForceNoEAX) ||
-	        (pMenuConfig && (!pMenuConfig->bEAX)))
+	if (config.audio.eax)
 	{
 		if (aalInitForceNoEAX(hwnd) || aalEnable(AAL_FLAG_MULTITHREAD))
 		{
@@ -408,37 +401,6 @@ long ARX_SOUND_Init(HWND hwnd)
 
 	aalSetListenerUnitFactor(ARX_SOUND_UNIT_FACTOR);
 	aalSetListenerRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
-
-	if(FINAL_RELEASE) {
-		
-		if(!pStringModSfx.empty()) {
-			if(!PAK_AddPak(pStringModSfx.c_str())) {
-				printf("Unable to Find Mod SFX Data File\n");
-			}
-		}
-		
-		if (!pStringModSpeech.empty()) {
-			if(!PAK_AddPak(pStringModSpeech.c_str())) {
-				printf("Unable to Find Mod Speech Data File\n");
-			}
-		}
-		
-		const char PAK_SFX[] = "sfx.pak";
-		if(!PAK_AddPak(PAK_SFX)) {
-			printf("Unable to Find SFX Data File\n");
-			exit(0);
-		}
-		
-		const char PAK_SPEECH[] = "speech.pak";
-		if(!PAK_AddPak(PAK_SPEECH)) {
-			const char PAK_SPEECH_DEFAULT[] = "speech_default.pak";
-			if(!PAK_AddPak(PAK_SPEECH_DEFAULT)) {
-				printf("Unable to Find Speech Data File\n");
-				exit(0);
-			}
-		}
-		
-	}
 
 	// Load samples
 	ARX_SOUND_CreateStaticSamples();
@@ -689,7 +651,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 	aalChannel channel;
 	aalSLong sample_id;
 
-	string file_name = "speech\\" + Project.localisationpath + "\\" + name + ".wav";
+	string file_name = "speech\\" + config.language + "\\" + name + ".wav";
 
 	sample_id = aalCreateSample(file_name.c_str());
 

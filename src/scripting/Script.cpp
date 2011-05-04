@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "core/Resource.h"
 #include "core/Core.h"
+#include "core/Config.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -485,7 +486,6 @@ void ARX_SCRIPT_ResetAll(long flags)
 }
 
 extern long PauseScript;
-extern long GORE_MODE;
 //*************************************************************************************
 //*************************************************************************************
 void ARX_SCRIPT_AllowInterScriptExec()
@@ -738,7 +738,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 
 			if (!name.compare("^GORE"))
 			{
-				*lcontent = GORE_MODE;
+				*lcontent = config.misc.gore ? 1 : 0;
 				return TYPE_LONG;
 			}
 

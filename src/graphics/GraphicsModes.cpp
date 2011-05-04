@@ -134,16 +134,9 @@ void ARX_GLOBALMODS_Apply()
 
 	ModeLight &= ~MODE_DEPTHCUEING;
 
-	if (pMenuConfig)
-	{
-		float fZclipp = ((((float)pMenuConfig->iFogDistance) * 1.2f) * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f) + DEFAULT_MINZCLIP;
-		fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
-		SetCameraDepth(min(current.zclip, fZclipp));
-	}
-	else
-	{
-		SetCameraDepth(current.zclip);
-	}
+	float fZclipp = ((((float)config.video.fogDistance) * 1.2f) * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f) + DEFAULT_MINZCLIP;
+	fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
+	SetCameraDepth(min(current.zclip, fZclipp));
 
 	ulBKGColor = D3DRGB(current.depthcolor.r, current.depthcolor.g, current.depthcolor.b);
 	GRenderer->SetFogColor(ulBKGColor);

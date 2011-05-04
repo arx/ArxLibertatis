@@ -1521,8 +1521,6 @@ HRESULT TextureContainer::Use()
 	return S_OK;
 }
 
-extern long GLOBAL_FORCE_MINI_TEXTURE;
-extern long GORE_MODE;
 //-----------------------------------------------------------------------------
 // Name: Restore()
 // Desc: Rebuilds the texture surface using the new device.
@@ -1659,12 +1657,6 @@ HRESULT TextureContainer::Restore()
 
 	if (ddsd.dwHeight > dwMaxHeight)
 		ddsd.dwHeight = dwMaxHeight;
-
-	if (GLOBAL_FORCE_MINI_TEXTURE)
-	{
-		ddsd.dwWidth	= 8;
-		ddsd.dwHeight	= 8;
-	}
 
 	if ( ( tTxt.find("FILLED_GAUGE_BLUE") != std::string::npos ) ||
 	     ( tTxt.find("FILLED_GAUGE_RED") != std::string::npos ) )

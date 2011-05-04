@@ -22,7 +22,10 @@ const LogSetting blackList[] = {
 	{ "Filesystem.cpp", Logger::Fatal },
 	{ "Audio.cpp", Logger::Error },
 	{ "Object.cpp", Logger::Warning },
-	{ "Speech.cpp", Logger::Error },
+	{ "Speech.cpp", Logger::Debug },
+	{ "ConfigHashMap.cpp", Logger::Debug },
+	{ "ConfigSection.cpp", Logger::Debug },
+	{ "Config.cpp", Logger::Debug },
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {

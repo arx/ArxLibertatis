@@ -179,8 +179,8 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 			Xratio = DANAESIZX * ( 1.0f / 640 );
 			Yratio = DANAESIZY * ( 1.0f / 480 );
 
-			ARXMenu_Options_Video_SetGamma(pMenuConfig->iGamma);
-			pMenuConfig->bNoReturnToWindows = true;
+			ARXMenu_Options_Video_SetGamma(config.video.gamma);
+			bNoReturnToWindows = true;
 		}
 	}
 
@@ -205,7 +205,7 @@ void ARXMenu_Options_Video_GetFullscreen(bool & _bEnable)
 void ARXMenu_Options_Video_SetFullscreen(bool _bEnable)
 {
 	DanaeSwitchFullScreen();
-	pMenuConfig->bFullScreen = _bEnable;
+	config.video.fullscreen = _bEnable;
 
 	if (ControlCinematique)
 	{
@@ -216,7 +216,7 @@ void ARXMenu_Options_Video_SetFullscreen(bool _bEnable)
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetFogDistance(int & _iFog)
 {
-	_iFog = pMenuConfig->iFogDistance;
+	_iFog = config.video.fogDistance;
 }
 
 //-----------------------------------------------------------------------------
@@ -226,7 +226,7 @@ void ARXMenu_Options_Video_SetFogDistance(int _iFog)
 
 	if (_iFog < 0) _iFog = 0;
 
-	pMenuConfig->iFogDistance = _iFog;
+	config.video.fogDistance = _iFog;
 }
 
 //-----------------------------------------------------------------------------
@@ -246,38 +246,37 @@ void ARXMenu_Options_Video_SetTextureQuality(int _iQuality)
 
 	if (_iQuality < 0) _iQuality = 0;
 
-	pMenuConfig->iNewTextureResol = _iQuality;
+	newTextureSize = _iQuality;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetBump(bool & _bEnable)
 {
-	_bEnable = pMenuConfig->bBumpMapping;
+	_bEnable = config.video.bumpmap;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_SetBump(bool _bEnable)
 {
-	pMenuConfig->bNewBumpMapping = _bEnable;
+	newBumpMapping = _bEnable;
 }
 
 //-----------------------------------------------------------------------------
 void SetGammaLumContrast()
 {
-	if (!pMenuConfig) return;
 
 	float fGammaMax = (1.f / 6.f);
 	float fGammaMin = 2.f;
 
-	float fPuissance = ((fGammaMax - fGammaMin) / 11.f) * ((float)(pMenuConfig->iGamma + 1)) + fGammaMin;
+	float fPuissance = ((fGammaMax - fGammaMin) / 11.f) * ((float)(config.video.gamma + 1)) + fGammaMin;
 
 	float fLuminosityMin = -.2f;
 	float fLuminosityMax = .2f;
-	float fLuminosity = ((fLuminosityMax - fLuminosityMin) / 11.f) * ((float)(pMenuConfig->iLuminosite + 1)) + fLuminosityMin;
+	float fLuminosity = ((fLuminosityMax - fLuminosityMin) / 11.f) * ((float)(config.video.luminosity + 1)) + fLuminosityMin;
 
 	float fContrastMax = -.3f;
 	float fContrastMin = .3f;
-	float fContrast = ((fContrastMax - fContrastMin) / 11.f) * ((float)(pMenuConfig->iContrast + 1)) + fContrastMin;
+	float fContrast = ((fContrastMax - fContrastMin) / 11.f) * ((float)(config.video.contrast + 1)) + fContrastMin;
 
 	float fRangeMin = 0.f + fContrast;
 	float fRangeMax = 1.f - fContrast;
@@ -318,46 +317,46 @@ void SetGammaLumContrast()
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetGamma(int & _iGamma)
 {
-	_iGamma = pMenuConfig->iGamma;
+	_iGamma = config.video.gamma;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_SetGamma(int _iGamma)
 {
-	pMenuConfig->iGamma = _iGamma;
+	config.video.gamma = _iGamma;
 	SetGammaLumContrast();
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetLuminosity(int & _iLuminosity)
 {
-	_iLuminosity = pMenuConfig->iLuminosite;
+	_iLuminosity = config.video.luminosity;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_SetLuminosity(int _iLuminosity)
 {
-	pMenuConfig->iLuminosite = _iLuminosity;
+	config.video.luminosity = _iLuminosity;
 	SetGammaLumContrast();
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetContrast(int & _iContrast)
 {
-	_iContrast = pMenuConfig->iContrast;
+	_iContrast = config.video.contrast;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_SetContrast(int _iContrast)
 {
-	pMenuConfig->iContrast = _iContrast;
+	config.video.contrast = _iContrast;
 	SetGammaLumContrast();
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetDetailsQuality(int & _iQuality)
 {
-	_iQuality = pMenuConfig->iLevelOfDetails;
+	_iQuality = config.video.levelOfDetail;
 }
 extern long MAX_FRAME_COUNT;
 extern long USEINTERNORM;
@@ -369,9 +368,9 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 
 	if (_iQuality < 0) _iQuality = 0;
 
-	pMenuConfig->iLevelOfDetails = _iQuality;
+	config.video.levelOfDetail = _iQuality;
 
-	switch (pMenuConfig->iLevelOfDetails)
+	switch (config.video.levelOfDetail)
 	{
 		case 0:
 			ZMAPMODE = 0;
@@ -404,10 +403,10 @@ void ARXMenu_Options_Video_GetLODQuality(int & _iQuality)
 	float fForced = FORCED_REDUCTION_VALUE * ( 1.0f / 5000 ) ;
 	ARX_CHECK_INT(fForced);
 
-	pMenuConfig->iMeshReduction = ARX_CLEAN_WARN_CAST_INT(fForced);
+	config.video.meshReduction = ARX_CLEAN_WARN_CAST_INT(fForced);
 
 
-	_iQuality = pMenuConfig->iMeshReduction;
+	_iQuality = config.video.meshReduction;
 }
 
 //-----------------------------------------------------------------------------
@@ -416,7 +415,7 @@ void ARXMenu_Options_Video_SetLODQuality(int _iQuality)
 	if (_iQuality > 2) _iQuality = 2;
 	else if (_iQuality < 0) _iQuality = 0;
 
-	pMenuConfig->iMeshReduction = _iQuality;
+	config.video.meshReduction = _iQuality;
 	FORCED_REDUCTION_VALUE = ARX_CLEAN_WARN_CAST_FLOAT(_iQuality * 5000);
 }
 
@@ -437,7 +436,7 @@ void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume)
 
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenu, fVolume);
-	pMenuConfig->iMasterVolume = _iVolume;
+	config.audio.volume = _iVolume;
 }
 
 //-----------------------------------------------------------------------------
@@ -456,7 +455,7 @@ void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume)
 
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSample, fVolume);
-	pMenuConfig->iSFXVolume = _iVolume;
+	config.audio.sfxVolume = _iVolume;
 }
 
 //-----------------------------------------------------------------------------
@@ -475,7 +474,7 @@ void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume)
 
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSpeech, fVolume);
-	pMenuConfig->iSpeechVolume = _iVolume;
+	config.audio.speechVolume = _iVolume;
 }
 
 //-----------------------------------------------------------------------------
@@ -494,13 +493,13 @@ void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume)
 
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuAmbiance, fVolume);
-	pMenuConfig->iAmbianceVolume = _iVolume;
+	config.audio.ambianceVolume = _iVolume;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Audio_GetEAX(bool & _bEnable)
 {
-	_bEnable = pMenuConfig->bEAX;
+	_bEnable = config.audio.eax;
 }
 
 //-----------------------------------------------------------------------------
@@ -510,7 +509,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable)
 	ARXMenu_Options_Video_GetGamma(iOldGamma);
 	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
 
-	pMenuConfig->bEAX = _bEnable;
+	config.audio.eax = _bEnable;
 
 	ARX_SOUND_PushAnimSamples();
 	ARX_SOUND_AmbianceSavePlayList(&pAmbiancePlayList, &ulSizeAmbiancePlayList);
@@ -522,10 +521,10 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable)
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
 
-	ARXMenu_Options_Audio_SetMasterVolume(pMenuConfig->iMasterVolume);
-	ARXMenu_Options_Audio_SetSfxVolume(pMenuConfig->iSFXVolume);
-	ARXMenu_Options_Audio_SetSpeechVolume(pMenuConfig->iSpeechVolume);
-	ARXMenu_Options_Audio_SetAmbianceVolume(pMenuConfig->iAmbianceVolume);
+	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
+	ARXMenu_Options_Audio_SetSfxVolume(config.audio.sfxVolume);
+	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
+	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
 
 	if (pAmbiancePlayList)
 	{
@@ -537,7 +536,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable)
 
 	ARXMenu_Options_Video_SetGamma(iOldGamma);
 
-	return pMenuConfig->bEAX;
+	return config.audio.eax;
 }
 
 //-----------------------------------------------------------------------------
@@ -550,7 +549,7 @@ void ARXMenu_Options_Control_GetInvertMouse(bool & _bEnable)
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_GetAutoReadyWeapon(bool & _bEnable)
 {
-	if (pMenuConfig->bAutoReadyWeapon == 1) _bEnable = true;
+	if (config.input.autoReadyWeapon == 1) _bEnable = true;
 	else _bEnable = false;
 }
 
@@ -561,33 +560,33 @@ void ARXMenu_Options_Control_SetInvertMouse(bool _bEnable)
 		INVERTMOUSE = 1;
 	else INVERTMOUSE = 0;
 
-	pMenuConfig->bInvertMouse = _bEnable;
+	config.input.invertMouse = _bEnable;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_SetAutoReadyWeapon(bool _bEnable)
 {
 	if (_bEnable)
-		pMenuConfig->bAutoReadyWeapon = 1;
-	else pMenuConfig->bAutoReadyWeapon = 0;
+		config.input.autoReadyWeapon = 1;
+	else config.input.autoReadyWeapon = 0;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_GetMouseLookToggleMode(bool & _bEnable)
 {
-	_bEnable = pMenuConfig->bMouseLookToggle;
+	_bEnable = config.input.mouseLookToggle;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_SetMouseLookToggleMode(bool _bEnable)
 {
-	pMenuConfig->bMouseLookToggle = _bEnable;
+	config.input.mouseLookToggle = _bEnable;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_GetMouseSensitivity(int & _iSensitivity)
 {
-	_iSensitivity = pMenuConfig->iMouseSensitivity;
+	_iSensitivity = config.input.mouseSensitivity;
 }
 
 //-----------------------------------------------------------------------------
@@ -596,34 +595,34 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int _iSensitivity)
 	if (_iSensitivity < 0)_iSensitivity = 0;
 	else if (_iSensitivity > 10)_iSensitivity = 10;
 
-	pMenuConfig->iMouseSensitivity = _iSensitivity;
+	config.input.mouseSensitivity = _iSensitivity;
 	pGetInfoDirectInput->SetSensibility(_iSensitivity);
 
-	danaeApp.fMouseSensibility = ((float)pMenuConfig->iMouseSensitivity) / 10.f;
+	danaeApp.fMouseSensibility = ((float)config.input.mouseSensitivity) / 10.f;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_GetMouseSmoothing(bool & _bSmoothing)
 {
-	_bSmoothing = pMenuConfig->bMouseSmoothing;
+	_bSmoothing = config.input.mouseSmoothing;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_SetMouseSmoothing(bool _bSmoothing)
 {
-	pMenuConfig->bMouseSmoothing = _bSmoothing;
+	config.input.mouseSmoothing = _bSmoothing;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_GetAutoDescription(bool & _bEnable)
 {
-	_bEnable = pMenuConfig->bAutoDescription;
+	_bEnable = config.input.autoDescription;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_SetAutoDescription(bool _bEnable)
 {
-	pMenuConfig->bAutoDescription = _bEnable;
+	config.input.autoDescription = _bEnable;
 }
 
 //-----------------------------------------------------------------------------

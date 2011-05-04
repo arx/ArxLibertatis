@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Time.h"
 #include "core/Core.h"
+#include "core/Config.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -1877,7 +1878,6 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	return;
 
 }
-extern long GORE_MODE;
 
 #define	FLAG_CUT_HEAD	(1)
 #define	FLAG_CUT_TORSO	(1<<1)
@@ -1981,7 +1981,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 	if ((!io) || (!(io->ioflags & IO_NPC)))
 		return 0 ;
 
-	if (!GORE_MODE)
+	if (!config.misc.gore)
 		return 0;
 
 	if (io->_npcdata->cuts == 0)
@@ -2047,7 +2047,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 	if (!(target->ioflags & IO_NPC)) return;
 
-	if	(!GORE_MODE)
+	if	(!config.misc.gore)
 		return; 
 
 	if	(target->GameFlags & GFLAG_NOGORE)

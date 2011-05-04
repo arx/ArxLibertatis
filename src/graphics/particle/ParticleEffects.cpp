@@ -291,7 +291,6 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss, INTERACTIVE_OBJ * io) {
 	}
 }
 
-extern long GORE_MODE;
 //-----------------------------------------------------------------------------
 void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 {
@@ -361,7 +360,7 @@ void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col, long fla
 
 		pd->siz = 3.5f * power + EEsin((float)ARXTime * ( 1.0f / 1000 )); 
 				
-			if (!GORE_MODE)
+			if (!config.misc.gore)
 				pd->siz*=( 1.0f / 6 );
 
 			
@@ -405,11 +404,11 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,EERIE_RGB * col,float size,long flags)
 
 	size*=0.75f;
 
-	if ((!GORE_MODE) && (!(flags & 2)))
+	if ((!config.misc.gore) && (!(flags & 2)))
 		size*=( 1.0f / 5 );
 
 
-	switch (pMenuConfig->iLevelOfDetails)
+	switch (config.video.levelOfDetail)
 	{
 		case 2:
 
@@ -685,7 +684,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTI
 
 		long MAX_GROUND_SPLATS;
 
-		switch (pMenuConfig->iLevelOfDetails)
+		switch (config.video.levelOfDetail)
 		{
 			case 2:
 				MAX_GROUND_SPLATS=10;

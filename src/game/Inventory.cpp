@@ -2164,8 +2164,7 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 			ARX_INTERFACE_Combat_Mode(0);
 		}
 
-		if (pMenuConfig->bAutoReadyWeapon == false)
-		{
+		if(!config.input.autoReadyWeapon) {
 			TRUE_PLAYER_MOUSELOOK_ON &= ~1;
 		}
 

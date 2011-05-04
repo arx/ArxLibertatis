@@ -167,7 +167,6 @@ extern long LAST_PORTALS_COUNT;
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CDirectInput		*pGetInfoDirectInput;
-extern Config		*pMenuConfig;
 extern CMenuState		*pMenu;
 extern SNAPSHOTINFO		snapshotdata;
 extern short uw_mode;
@@ -426,14 +425,9 @@ long GLOBAL_FORCE_PLAYER_IN_FRONT	=1;
 long USE_NEW_SKILLS=1;
 long ARX_SOUND_INIT=1;
 
-long GORE_MODE=0;
 long USE_LIGHT_OPTIM	=1;
-long GLOBAL_FORCE_MINI_TEXTURE=0;
 // set to 0 for dev mode
 long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
-long GERMAN_VERSION = 0;
-long FRENCH_VERSION = 0;
-long CHINESE_VERSION = 0;
 long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
 long USE_OLD_MOUSE_SYSTEM=1;
@@ -712,22 +706,20 @@ void DanaeSwitchFullScreen()
 		KillInterTreeView();
 	}
 
-	if(pMenuConfig)
-	{
 		int nb=danaeApp.m_pDeviceInfo->dwNumModes;
 
 		for(int i=0;i<nb;i++)
 		{
 
-			ARX_CHECK_NOT_NEG( pMenuConfig->bpp );
+			ARX_CHECK_NOT_NEG( config.video.bpp );
 
-			if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( pMenuConfig->bpp ) )
+			if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( config.video.bpp ) )
 			{
-				ARX_CHECK_NOT_NEG( pMenuConfig->iWidth );
-				ARX_CHECK_NOT_NEG( pMenuConfig->iHeight );
+				ARX_CHECK_NOT_NEG( config.video.width );
+				ARX_CHECK_NOT_NEG( config.video.height );
 
-				if( ( danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( pMenuConfig->iWidth ) ) &&
-					( danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( pMenuConfig->iHeight ) ) )
+				if( ( danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( config.video.width ) ) &&
+					( danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( config.video.height ) ) )
 				{
 
 					danaeApp.m_pDeviceInfo->ddsdFullscreenMode=danaeApp.m_pDeviceInfo->pddsdModes[i];
@@ -737,10 +729,9 @@ void DanaeSwitchFullScreen()
 			}
 		}
 
-		pMenuConfig->iNewBpp=pMenuConfig->bpp=danaeApp.m_pFramework->bitdepth=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
-		pMenuConfig->iNewHeight=pMenuConfig->iHeight=danaeApp.m_pFramework->m_dwRenderHeight=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
-		pMenuConfig->iNewWidth=pMenuConfig->iWidth=danaeApp.m_pFramework->m_dwRenderWidth=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
-	}
+		config.video.bpp = danaeApp.m_pFramework->bitdepth = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
+		config.video.height = danaeApp.m_pFramework->m_dwRenderHeight = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
+		config.video.width = danaeApp.m_pFramework->m_dwRenderWidth = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
 
 	if(pMenu)
 	{
@@ -750,10 +741,8 @@ void DanaeSwitchFullScreen()
 	ARX_Text_Close();
 	danaeApp.SwitchFullScreen();
 
-	if(	(danaeApp.m_pFramework->m_bIsFullscreen)&&
-		(pMenuConfig) )
-	{
-		ARXMenu_Options_Video_SetGamma(pMenuConfig->iGamma);
+	if(danaeApp.m_pFramework->m_bIsFullscreen) {
+		ARXMenu_Options_Video_SetGamma(config.video.gamma);
 	}
 
 	DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
@@ -776,24 +765,20 @@ void DanaeSwitchFullScreen()
 	LoadScreen();
 }
 
-//-----------------------------------------------------------------------------------------------
+bool bNoReturnToWindows = false;
 
-void DanaeRestoreFullScreen()
-{
-	if(		pMenuConfig
-		&&	pMenuConfig->bNoReturnToWindows )
-	{
-		pMenuConfig->bNoReturnToWindows=false;
+void DanaeRestoreFullScreen() {
+	
+	if(bNoReturnToWindows) {
+		bNoReturnToWindows=false;
 		return;
 	}
 
 	danaeApp.m_pDeviceInfo->bWindowed=!danaeApp.m_pDeviceInfo->bWindowed;
 	danaeApp.SwitchFullScreen();
 
-	if(		(danaeApp.m_pFramework->m_bIsFullscreen)
-		&&	(pMenuConfig) )
-	{
-		ARXMenu_Options_Video_SetGamma(pMenuConfig->iGamma);
+	if(danaeApp.m_pFramework->m_bIsFullscreen) {
+		ARXMenu_Options_Video_SetGamma(config.video.gamma);
 	}
 
 	DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
@@ -1041,7 +1026,7 @@ void InitializeDanae()
 	if (LaunchDemo) {
 		LogInfo << "Launching Demo";
 
-		if ((FINAL_RELEASE) && (pMenuConfig->bFullScreen || AUTO_FULL_SCREEN )) {
+		if ((FINAL_RELEASE) && (config.video.fullscreen || AUTO_FULL_SCREEN )) {
 			LogDebug << "Switching to Fullscreen";
 			DanaeSwitchFullScreen();
 		}
@@ -1063,10 +1048,6 @@ void InitializeDanae()
 	if ((GAME_EDITOR) && (!MOULINEX))
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
 
-}
-
-bool IsNoGore( void ) {
-	return GERMAN_VERSION? true : false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1151,13 +1132,10 @@ void forInternalPeople(LPSTR strCmdLine) {
 
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
-int main( int argc, char** argv )
-{
-	std::vector<std::string> args;
-
-	for ( int i = 0 ; i < argc ; i++ )
-		args.push_back( argv[i] );
-
+int main(int argc, char ** argv) {
+	
+	(void)argc, (void)argv;
+	
 	LPSTR strCmdLine = GetCommandLine();
 	hInstance = GetModuleHandle(0);
 	
@@ -1203,7 +1181,14 @@ int main( int argc, char** argv )
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
 		AUTO_FULL_SCREEN=0;
 	}
-
+	
+	// Initialize config first, before evrything else.
+	const char RESOURCE_CONFIG[] = "cfg.ini";
+	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
+	if(!config.init(RESOURCE_CONFIG, RESOURCE_CONFIG_DEFAULT)) {
+		LogWarning << "Could not read config files " << RESOURCE_CONFIG << " and " << RESOURCE_CONFIG_DEFAULT;
+	}
+	
 	CalcFPS(true);
 	HERMES_Memory_Security_On(32000);
 
@@ -1231,22 +1216,15 @@ int main( int argc, char** argv )
 	if((!MOULINEX) && FINAL_RELEASE) {
 		
 		LogInfo << "FINAL RELEASE";
-		
-		if(!pStringMod.empty()) {
-			LogDebug << pStringMod;
-			if( PAK_AddPak( pStringMod ) ) {
-				LogDebug << "LoadMode OK";
-			}
-		}
+		NOBUILDMAP=1;
+		NOCHECKSUM=1;
 		
 		const char PAK_DATA[] = "data.pak";
 		LogDebug << PAK_DATA;
-		NOBUILDMAP=1;
-		NOCHECKSUM=1;
 		if(PAK_AddPak(PAK_DATA)) {
 			LogDebug << "LoadMode OK";
 		} else {
-			LogError << "Unable to Find Data File";
+			LogError << "Unable to find main data file " << PAK_DATA;
 			exit(0);
 		}
 		
@@ -1255,7 +1233,7 @@ int main( int argc, char** argv )
 		if(!PAK_AddPak(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
 			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
-				LogError << "Unable to Find Localization File";
+				LogError << "Unable to find localization file " << PAK_LOC << " or " << PAK_LOC_DEFAULT;
 				exit(0);
 			}
 		}
@@ -1263,8 +1241,23 @@ int main( int argc, char** argv )
 		LogDebug << "data2PAK";
 		const char PAK_DATA2[] = "data2.pak";
 		if(!PAK_AddPak(PAK_DATA2)) {
-			LogError << "Unable to Find Aux Data File";
+			LogError << "Unable to find aux data file " << PAK_DATA2;
 			exit(0);
+		}
+		
+		const char PAK_SFX[] = "sfx.pak";
+		if(!PAK_AddPak(PAK_SFX)) {
+			LogError << "Unable to find sfx data file " << PAK_SFX;
+			exit(0);
+		}
+		
+		const char PAK_SPEECH[] = "speech.pak";
+		if(!PAK_AddPak(PAK_SPEECH)) {
+			const char PAK_SPEECH_DEFAULT[] = "speech_default.pak";
+			if(!PAK_AddPak(PAK_SPEECH_DEFAULT)) {
+				LogError << "Unable to find speech data file " << PAK_SPEECH << " or " << PAK_SPEECH_DEFAULT;
+				exit(0);
+			}
 		}
 		
 	} else {
@@ -1479,27 +1472,45 @@ int main( int argc, char** argv )
 	LogDebug << "Sound Init";
 	if (Project.soundmode != 0 && ARX_SOUND_INIT)
 		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
-
 	LogInfo << "Sound Init Success";
+	
 	LogDebug << "DInput Init";
 	pGetInfoDirectInput = new CDirectInput();
-	
-	const char RESOURCE_CONFIG[] = "cfg.ini";
-	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
-	
-	const char * config_path = RESOURCE_CONFIG;
-
-	if(!FileExist(RESOURCE_CONFIG))	{
-		config_path = RESOURCE_CONFIG_DEFAULT;
-	}
-
-	pMenuConfig=new Config(config_path);
-	pMenuConfig->ReadAll();
 	LogInfo << "DInput Init Success";
 
-	if (pMenuConfig->bEAX) {
+	ARX_SetAntiAliasing();
+	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
+	ARXMenu_Options_Video_SetTextureQuality(config.video.textureSize);
+	ARXMenu_Options_Video_SetBump(config.video.bumpmap);
+	ARXMenu_Options_Video_SetLODQuality(config.video.meshReduction);
+	ARXMenu_Options_Video_SetDetailsQuality(config.video.levelOfDetail);
+	ARXMenu_Options_Video_SetGamma(config.video.gamma);
+	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
+	ARXMenu_Options_Audio_SetSfxVolume(config.audio.sfxVolume);
+	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
+	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
+
+	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
+	ARXMenu_Options_Control_SetAutoReadyWeapon(config.input.autoReadyWeapon);
+	ARXMenu_Options_Control_SetMouseLookToggleMode(config.input.mouseLookToggle);
+	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
+	ARXMenu_Options_Control_SetAutoDescription(config.input.autoDescription);
+	bALLOW_BUMP = config.video.bumpmap;
+	
+	if(config.video.textureSize==2)Project.TextureSize=0;
+	if(config.video.textureSize==1)Project.TextureSize=2;
+	if(config.video.textureSize==0)Project.TextureSize=64;
+
+	if(config.video.bumpmap)
+		EERIE_ActivateBump();
+	else
+		EERIE_DesactivateBump();
+	
+	if (config.audio.eax) {
 		ARXMenu_Options_Audio_SetEAX(true);
 	}
+
+	Localisation_Init();
 
 	ARX_MINIMAP_FirstInit();
 	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
@@ -1528,8 +1539,8 @@ int main( int argc, char** argv )
 	LogInfo << "AInput Init Success";
 
 	//read from cfg file
-	if ( Project.localisationpath.length() == 0 ) {
-		Project.localisationpath = "english";
+	if ( config.language.length() == 0 ) {
+		config.language = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
 	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
@@ -1555,7 +1566,7 @@ int main( int argc, char** argv )
 	Project.torch.b = 0.66666f;
 	LogDebug << "InitializeDanae";
 	InitializeDanae();
-
+	
 	LogInfo << "InitializeDanae Success";
 	LogDebug << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
@@ -4677,7 +4688,7 @@ bool DANAE_ManageSplashThings()
 
 	if (SPLASH_THINGS_STAGE>10)
 	{
-		if (EDITMODE || !pMenuConfig->first_launch )
+		if (EDITMODE || !config.firstRun )
 		{
 			for (int i=0; i<256; i++)
 			{
@@ -4821,8 +4832,8 @@ bool DANAE_ManageSplashThings()
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if ( pMenuConfig->first_launch )
-				pMenuConfig->first_launch = false;
+			if ( config.firstRun )
+				config.firstRun = false;
 
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			return true;
@@ -4836,8 +4847,8 @@ bool DANAE_ManageSplashThings()
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if ( pMenuConfig->first_launch )
-				pMenuConfig->first_launch = false;
+			if ( config.firstRun )
+				config.firstRun = false;
 
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			return true;
@@ -4949,7 +4960,7 @@ void ReMappDanaeButton()
 	if(!pGetInfoDirectInput) return;
 
 	bool bNoAction=true;
-	int iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[0];
+	int iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
 
 	if(iButton!=-1)
 	{
@@ -4964,7 +4975,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
 
 		if(iButton!=-1)
 		{
@@ -4978,7 +4989,7 @@ void ReMappDanaeButton()
 	}
 
 	bNoAction=true;
-	iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[0];
+	iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
 
 	if(iButton!=-1)
 	{
@@ -4996,7 +5007,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
 
 		if(iButton!=-1)
 		{
@@ -5012,7 +5023,7 @@ void ReMappDanaeButton()
 	}
 
 	bNoAction=true;
-	iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[0];
+	iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
 
 	if(iButton!=-1)
 	{
@@ -5028,7 +5039,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
 
 		if(iButton!=-1)
 		{
@@ -5043,7 +5054,7 @@ void ReMappDanaeButton()
 	}
 
 	bNoAction=true;
-	iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_MOUSELOOK].iKey[0];
+	iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[0];
 
 	if(iButton!=-1)
 	{
@@ -5057,7 +5068,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_MOUSELOOK].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[1];
 
 		if(iButton!=-1)
 		{
@@ -5070,7 +5081,7 @@ void ReMappDanaeButton()
 	}
 
 	bNoAction=true;
-	iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_MOUSELOOK].iKey[0];
+	iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[0];
 
 	if(iButton!=-1)
 	{
@@ -5084,7 +5095,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_MOUSELOOK].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[1];
 
 		if(iButton!=-1)
 		{
@@ -5323,7 +5334,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 
 	//BUMP
-	if(pMenuConfig->bBumpMapping)
+	if(config.video.bumpmap)
 	{
 		e3dPosBump=player.pos;
 	}
@@ -7358,9 +7369,8 @@ void ShowFPS()
 	danaeApp.OutputText(320,200,tex);
 }
 
-void ARX_SetAntiAliasing()
-{
-	GRenderer->SetAntialiasing(pMenuConfig && pMenuConfig->bAntiAliasing);
+void ARX_SetAntiAliasing() {
+	GRenderer->SetAntialiasing(config.video.antialiasing);
 }
 
 HRESULT DANAE::InitDeviceObjects()
@@ -7930,15 +7940,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_INTEROBJLIST:
 					LaunchInteractiveObjectsApp(this->m_hWnd);
 				break;
-				case DANAE_MENU_LANGUAGE:
-					ARX_TIME_Pause();
-					Pause(true);			
-					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_LANGUAGEDIALOG), this->m_hWnd, LanguageOptionsProc);
-					Localisation_Init();
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
 				case DANAE_MENU_IMPORTSCN:
 					ARX_TIME_Pause();
 					Pause(true);
@@ -8214,11 +8215,7 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 
 	//configuration
-	if(pMenuConfig)	{
-		pMenuConfig->SaveAll();
-		delete pMenuConfig;
-		pMenuConfig=NULL;
-	}
+	config.save();
 
 	//dinput
 	if(pGetInfoDirectInput)	{
@@ -8269,10 +8266,9 @@ void ClearGame() {
 
 	ARX_SCRIPT_Timer_ClearAll();
 
-	if (scr_timer) {
-//		TODO(lubosz): crash
-//		free(scr_timer);
-		scr_timer=NULL;
+	if(scr_timer) {
+		delete[] scr_timer;
+		scr_timer = NULL;
 	}
 
 	//Speech

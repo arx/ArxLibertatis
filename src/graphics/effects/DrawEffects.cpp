@@ -383,8 +383,7 @@ void ARXDRAW_DrawEyeBall()
 //*************************************************************************************
 void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,D3DTLVERTEX *_pOut)
 {
-	if(	(pMenuConfig)&&
-		(pMenuConfig->bForceZBias) )
+	if(config.misc.forceZBias)
 	{
 		float t0=_pPoly->norm.x*_fFactor;
 		float t1=_pPoly->norm.y*_fFactor;

@@ -4433,12 +4433,8 @@ struct COPY3D
 
 vector<COPY3D> vCopy3d;
 
-//-----------------------------------------------------------------------------
-void IncrementPolyWithNormal(EERIEPOLY * _pPoly, float _fFactor)
-{
-	if ((pMenuConfig) &&
-			(pMenuConfig->bForceZBias))
-	{
+void IncrementPolyWithNormal(EERIEPOLY * _pPoly, float _fFactor) {
+	if(config.misc.forceZBias) {
 		_pPoly->v[0].sx += _pPoly->norm.x * _fFactor;
 		_pPoly->v[0].sy += _pPoly->norm.y * _fFactor;
 		_pPoly->v[0].sz += _pPoly->norm.z * _fFactor;
@@ -4448,9 +4444,7 @@ void IncrementPolyWithNormal(EERIEPOLY * _pPoly, float _fFactor)
 		_pPoly->v[2].sx += _pPoly->norm.x * _fFactor;
 		_pPoly->v[2].sy += _pPoly->norm.y * _fFactor;
 		_pPoly->v[2].sz += _pPoly->norm.z * _fFactor;
-
-		if (_pPoly->type & POLY_QUAD)
-		{
+		if(_pPoly->type & POLY_QUAD) {
 			_pPoly->v[3].sx += _pPoly->norm2.x * _fFactor;
 			_pPoly->v[3].sy += _pPoly->norm2.y * _fFactor;
 			_pPoly->v[3].sz += _pPoly->norm2.z * _fFactor;

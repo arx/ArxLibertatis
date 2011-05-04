@@ -29,7 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include <algorithm>
-#include <map>
 #include <sstream>
 
 #ifndef DIRECTINPUT_VERSION
@@ -67,10 +66,13 @@ using std::wistringstream;
 using std::min;
 using std::max;
 
-typedef std::pair<HFONT, const char*> textsize_key;
-typedef std::pair<int, int> textsize_value;
-typedef std::map<textsize_key, textsize_value> textsize_map;
-static textsize_map cache;
+int newBumpMapping;
+int newTextureSize;
+int newWidth;
+int newHeight;
+int newBpp;
+bool changeResolution = false;
+bool changeTextures = false;
 
 extern char* GetVersionString();
 
@@ -112,9 +114,6 @@ extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_COUNT;
 extern float SOFTNEARCLIPPZ;
 
-
-extern long INTERNATIONAL_MODE;
-
 extern long CURRENT_GAME_INSTANCE;
 extern char GameSavePath[];
 void ARX_GAMESAVE_MakePath();
@@ -124,7 +123,6 @@ float INTERFACE_RATIO(float a);
 bool bNoMenu=false;
 
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _bpp );
-void ARX_SetAntiAliasing();
 
 //-----------------------------------------------------------------------------
 
@@ -463,11 +461,11 @@ void Check_Apply()
 {
 	if(pMenuElementApply)
 	{
-		if(    (pMenuConfig->bBumpMapping!=pMenuConfig->bNewBumpMapping)||
-			(pMenuConfig->iTextureResol!=pMenuConfig->iNewTextureResol)||
-			(pMenuConfig->iWidth!=pMenuConfig->iNewWidth)||
-			(pMenuConfig->iHeight!=pMenuConfig->iNewHeight)||
-			(pMenuConfig->bpp!=pMenuConfig->iNewBpp) )
+		if(    (config.video.bumpmap!=newBumpMapping)||
+			(config.video.textureSize!=newTextureSize)||
+			(config.video.width!=newWidth)||
+			(config.video.height!=newHeight)||
+			(config.video.bpp!=newBpp) )
 		{
 			pMenuElementApply->SetCheckOn();
 			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
@@ -1463,14 +1461,7 @@ bool Menu2_Render()
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
-					if (pMenuConfig&&pMenuConfig->bShowCrossHair)
-					{
-						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
-						((CMenuCheckButton*)me)->iState=0;
-					}
+					((CMenuCheckButton*)me)->iState= config.video.showCrosshair ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
@@ -1482,14 +1473,7 @@ bool Menu2_Render()
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
-					if (pMenuConfig&&pMenuConfig->bAntiAliasing)
-					{
-						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
-						((CMenuCheckButton*)me)->iState=0;
-					}
+					((CMenuCheckButton*)me)->iState= config.video.antialiasing ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 					ARX_SetAntiAliasing();
@@ -1574,7 +1558,7 @@ bool Menu2_Render()
 
 					if (bEAX)
 					{
-						((CMenuCheckButton*)me)->iState=pMenuConfig->bEAX?1:0;
+						((CMenuCheckButton*)me)->iState=config.audio.eax?1:0;
 					}
 					else
 					{
@@ -1669,7 +1653,7 @@ bool Menu2_Render()
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					if (INTERNATIONAL_MODE)
+					if (config.misc.newControl)
 					{
 						szMenuText = getLocalized( "system_menus_options_input_mouse_smoothing", "mouse_smoothing" );
 						szMenuText += " ";
@@ -1787,7 +1771,7 @@ bool Menu2_Render()
 
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2);
 
-					if (!INTERNATIONAL_MODE)
+					if (!config.misc.newControl)
 					{
 						szMenuText = getLocalized( "system_menus_options_input_customize_controls_link_use_to_mouselook", "?" );
 						\
@@ -1799,7 +1783,7 @@ bool Menu2_Render()
 						pWindowMenuConsole->AddMenu(me);
 						fControlPosY += ARX_CLEAN_WARN_CAST_LONG(me->GetHeight() + RATIO_Y(3.f));
 
-						if(pMenuConfig->bLinkMouseLookToUse)
+						if(config.input.linkMouseLookToUse)
 						{
 							((CMenuCheckButton*)me)->iState=1;
 						}
@@ -2320,13 +2304,13 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	// MENULOADQUEST
 	case BUTTON_MENUOPTIONSVIDEO_INIT:
 		{
-			pMenuConfig->iNewWidth = pMenuConfig->iWidth;
-			pMenuConfig->iNewHeight = pMenuConfig->iHeight;
-			pMenuConfig->iNewBpp = pMenuConfig->bpp;
-			pMenuConfig->iNewTextureResol = pMenuConfig->iTextureResol;
+			newWidth = config.video.width;
+			newHeight = config.video.height;
+			newBpp = config.video.bpp;
+			newTextureSize = config.video.textureSize;
 
-			pMenuConfig->bChangeResolution = false;
-			pMenuConfig->bChangeTextures = false;
+			changeResolution = false;
+			changeTextures = false;
 		}
 		break;
 	case BUTTON_MENUEDITQUEST_LOAD_INIT:
@@ -2469,11 +2453,11 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
 			//----------BUMP
-			if(pMenuConfig->bNewBumpMapping!=pMenuConfig->bBumpMapping)
+			if(newBumpMapping!=config.video.bumpmap)
 			{
-				pMenuConfig->bBumpMapping=pMenuConfig->bNewBumpMapping;
+				config.video.bumpmap=newBumpMapping;
 
-				if(pMenuConfig->bBumpMapping)
+				if(config.video.bumpmap)
 				{
 					EERIE_ActivateBump();
 				}
@@ -2482,12 +2466,10 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 					EERIE_DesactivateBump();
 				}
 
-				if(pMenuConfig->bBumpMapping!=bALLOW_BUMP)
-				{
+				if(config.video.bumpmap != bALLOW_BUMP) {
 					bForceReInitAllTexture=true;
 				}
-
-				bALLOW_BUMP=pMenuConfig->bBumpMapping;
+				bALLOW_BUMP = config.video.bumpmap;
 
 				pMenuCheckButtonBump->iOldState=-1;
 			}
@@ -2495,15 +2477,15 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			//----------END_BUMP
 
 			//----------CHANGE_TEXTURE
-			if(pMenuConfig->iNewTextureResol!=pMenuConfig->iTextureResol)
+			if(newTextureSize!=config.video.textureSize)
 			{
-				pMenuConfig->iTextureResol=pMenuConfig->iNewTextureResol;
+				config.video.textureSize=newTextureSize;
 
-				if(pMenuConfig->iTextureResol==2)Project.TextureSize=0;
+				if(config.video.textureSize==2)Project.TextureSize=0;
 
-				if(pMenuConfig->iTextureResol==1)Project.TextureSize=2;
+				if(config.video.textureSize==1)Project.TextureSize=2;
 
-				if(pMenuConfig->iTextureResol==0)Project.TextureSize=64;
+				if(config.video.textureSize==0)Project.TextureSize=64;
 
 				WILL_RELOAD_ALL_TEXTURES=1;
 
@@ -2513,24 +2495,24 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			//----------END_CHANGE_TEXTURE
 
 			//----------RESOLUTION
-			if(    (pMenuConfig->iNewWidth!=pMenuConfig->iWidth)||
-				(pMenuConfig->iNewHeight!=pMenuConfig->iHeight)||
-				(pMenuConfig->iNewBpp!=pMenuConfig->bpp) )
+			if(    (newWidth!=config.video.width)||
+				(newHeight!=config.video.height)||
+				(newBpp!=config.video.bpp) )
 			{
-				pMenuConfig->iWidth=pMenuConfig->iNewWidth;
-				pMenuConfig->iHeight=pMenuConfig->iNewHeight;
-				pMenuConfig->bpp=pMenuConfig->iNewBpp;
-				ARXMenu_Private_Options_Video_SetResolution(    pMenuConfig->iWidth,
-																pMenuConfig->iHeight,
-																pMenuConfig->bpp);
+				config.video.width=newWidth;
+				config.video.height=newHeight;
+				config.video.bpp=newBpp;
+				ARXMenu_Private_Options_Video_SetResolution(    config.video.width,
+																config.video.height,
+																config.video.bpp);
 
 				pMenuSliderResol->iOldPos=-1;
 				pMenuSliderBpp->iOldPos=-1;
 			}
 
 			//----------END_RESOLUTION
-			pMenuConfig->bChangeResolution = false;
-			pMenuConfig->bChangeTextures = false;
+			changeResolution = false;
+			changeTextures = false;
 			pMenu->bReInitAll=true;
 		}
 		break;
@@ -2630,8 +2612,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		}break;
 	case BUTTON_MENUOPTIONS_CONTROLS_BACK:
 		{
-			if(pMenuConfig)
-				pMenuConfig->SaveAll();
+			config.save();
 		}
 		break;
 	}
@@ -3295,12 +3276,12 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_CROSSHAIR:
 		{
-			if(pMenuConfig) pMenuConfig->bShowCrossHair=(iState)?true:false;
+			config.video.showCrosshair=(iState)?true:false;
 		}
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING:
 		{
-			if(pMenuConfig) pMenuConfig->bAntiAliasing=(iState)?true:false;
+			config.video.antialiasing=(iState)?true:false;
 
 			ARX_SetAntiAliasing();
 		}
@@ -3337,51 +3318,45 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 		break;
 	case BUTTON_MENUOPTIONS_CONTROLS_LINK:
 		{
-			if(pMenuConfig)
-			{
-				pMenuConfig->bLinkMouseLookToUse=(iState)?true:false;
-			}
+			config.input.linkMouseLookToUse=(iState)?true:false;
 		}
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_BACK:
+	{
+		if(    (pMenuSliderResol)&&
+			(pMenuSliderResol->iOldPos>=0) )
 		{
-			if(pMenuConfig)
-			{
-				if(    (pMenuSliderResol)&&
-					(pMenuSliderResol->iOldPos>=0) )
-				{
-					pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
-					pMenuSliderResol->iOldPos=-1;
-					pMenuConfig->iNewWidth=pMenuConfig->iWidth;
-					pMenuConfig->iNewHeight=pMenuConfig->iHeight;
-				}
-
-				if(    (pMenuSliderBpp)&&
-					(pMenuSliderBpp->iOldPos>=0) )
-				{
-					pMenuSliderBpp->iPos=pMenuSliderBpp->iOldPos;
-					pMenuSliderBpp->iOldPos=-1;
-					pMenuConfig->iNewBpp=pMenuConfig->bpp;
-				}
-
-				if(    (pMenuSliderTexture)&&
-					(pMenuSliderTexture->iOldPos>=0) )
-				{
-					pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
-					pMenuSliderTexture->iOldPos=-1;
-					pMenuConfig->iNewTextureResol=pMenuConfig->iTextureResol;
-				}
-
-				if(    (pMenuCheckButtonBump)&&
-					(pMenuCheckButtonBump->iOldState>=0) )
-				{
-					pMenuCheckButtonBump->iState=pMenuCheckButtonBump->iOldState;
-					pMenuCheckButtonBump->iOldState=-1;
-					pMenuConfig->bNewBumpMapping=pMenuConfig->bBumpMapping;
-				}
-			}
+			pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
+			pMenuSliderResol->iOldPos=-1;
+			newWidth=config.video.width;
+			newHeight=config.video.height;
+		}
+		
+		if(    (pMenuSliderBpp)&&
+			(pMenuSliderBpp->iOldPos>=0) )
+		{
+			pMenuSliderBpp->iPos=pMenuSliderBpp->iOldPos;
+			pMenuSliderBpp->iOldPos=-1;
+			newBpp=config.video.bpp;
+		}
+		
+		if(    (pMenuSliderTexture)&&
+			(pMenuSliderTexture->iOldPos>=0) )
+		{
+			pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
+			pMenuSliderTexture->iOldPos=-1;
+			newTextureSize=config.video.textureSize;
+		}
+		
+		if(    (pMenuCheckButtonBump)&&
+			(pMenuCheckButtonBump->iOldState>=0) )
+		{
+			pMenuCheckButtonBump->iState=pMenuCheckButtonBump->iOldState;
+			pMenuCheckButtonBump->iOldState=-1;
+			newBumpMapping=config.video.bumpmap;
 		}
 		break;
+	}
 
 	}
 
@@ -4262,163 +4237,163 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 		{
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_JUMP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_JUMP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_MAGICMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MAGICMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_STEALTHMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STEALTHMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_WALKFORWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WALKFORWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_WALKBACKWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WALKBACKWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_STRAFELEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFELEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_STRAFERIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFERIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_LEANLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LEANLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_LEANRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LEANRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CROUCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CROUCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_MOUSELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MOUSELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_ACTION,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_ACTION,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_INVENTORY,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_INVENTORY,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKCHARSHEET,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKCHARSHEET,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKQUEST,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKQUEST,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_DRINKPOTIONLIFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONLIFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_DRINKPOTIONMANA,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONMANA,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_TORCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TORCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CANCELCURSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CANCELCURSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PRECAST1,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST1,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PRECAST2,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST2,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PRECAST3,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST3,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_WEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_QUICKLOAD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_QUICKLOAD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_QUICKSAVE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_QUICKSAVE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_TURNLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TURNLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_TURNRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TURNRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_LOOKUP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LOOKUP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_LOOKDOWN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LOOKDOWN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_STRAFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CENTERVIEW,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CENTERVIEW,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_FREELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_FREELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PREVIOUS,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PREVIOUS,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_NEXT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_NEXT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CROUCHTOGGLE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CROUCHTOGGLE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,pGetInfoDirectInput->iKeyId);
 			break;
 		}
 	}
@@ -4569,7 +4544,7 @@ int CWindowMenuConsole::Render()
 
 					if(pmzMenuZone==pZoneClick)
 					{
-						pMenuConfig->SetDefaultKey();
+						config.setDefaultActionKeys();
 						bReInit=true;
 					}
 				}
@@ -4593,7 +4568,7 @@ int CWindowMenuConsole::Render()
 void CWindowMenuConsole::ReInitActionKey()
 {
 	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
-	int iI=MAX_ACTION_KEY;
+	int iI=NUM_ACTION_KEY;
 	bool bOldTouch=pGetInfoDirectInput->bTouch;
 	int iOldVirtualKey=pGetInfoDirectInput->iKeyId;
 	pGetInfoDirectInput->bTouch=true;
@@ -4609,7 +4584,7 @@ void CWindowMenuConsole::ReInitActionKey()
 			if(pmzMenuZone)
 			{
 				pZoneClick = (CMenuElement*)pmzMenuZone;
-				pGetInfoDirectInput->iKeyId = pMenuConfig->sakActionKey[iTab].iKey[0];
+				pGetInfoDirectInput->iKeyId = config.actions[iTab].key[0];
 				GetTouch();
 			}
 
@@ -4618,7 +4593,7 @@ void CWindowMenuConsole::ReInitActionKey()
 			if( pmzMenuZone )
 			{
 				pZoneClick = (CMenuElement*)pmzMenuZone;
-				pGetInfoDirectInput->iKeyId = pMenuConfig->sakActionKey[iTab].iKey[1];
+				pGetInfoDirectInput->iKeyId = config.actions[iTab].key[1];
 				GetTouch();
 			}
 		}
@@ -5210,15 +5185,15 @@ bool CMenuSliderText::OnMouseClick(int)
 		{
 			std::string pcText = (vText.at(iPos))->lpszText;
 			std::stringstream ss( pcText );
-			int iX = pMenuConfig->iWidth;
-			int iY = pMenuConfig->iHeight;
+			int iX = config.video.width;
+			int iY = config.video.height;
 			char tmp;
 			ss >> iX >> tmp >> iY;
 //            pcText, "%dx%d"), &iX, &iY);
 			{
-				pMenuConfig->iNewWidth = iX;
-				pMenuConfig->iNewHeight = iY;
-				pMenuConfig->bChangeResolution = true;
+				newWidth = iX;
+				newHeight = iY;
+				changeResolution = true;
 			}
 		}
 		break;
@@ -5229,15 +5204,15 @@ bool CMenuSliderText::OnMouseClick(int)
 			std::stringstream ss;
 			pcText = vText[iPos]->lpszText;
 			ss << pcText;
-			ss >> pMenuConfig->iNewBpp;
-			pMenuConfig->bChangeResolution = true;
+			ss >> newBpp;
+			changeResolution = true;
 		}
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_TEXTURES:
 		{
 			{
-				pMenuConfig->iNewTextureResol = iPos;
-				pMenuConfig->bChangeTextures = true;
+				newTextureSize = iPos;
+				changeTextures = true;
 			}
 
 		}

@@ -23,113 +23,170 @@
  ===========================================================================
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef ARX_CORE_CONFIG_H
+#define ARX_CORE_CONFIG_H
 
 #include <string>
 
-#include "core/ConfigHashMap.h"
-#include "window/Input.h"
+//! Enum for all the controlling actions
+enum ControlAction {
+	
+	CONTROLS_CUST_JUMP = 0,
+	CONTROLS_CUST_MAGICMODE,
+	CONTROLS_CUST_STEALTHMODE,
+	CONTROLS_CUST_WALKFORWARD,
+	CONTROLS_CUST_WALKBACKWARD,
+	CONTROLS_CUST_STRAFELEFT,
+	CONTROLS_CUST_STRAFERIGHT,
+	CONTROLS_CUST_LEANLEFT,
+	CONTROLS_CUST_LEANRIGHT,
+	CONTROLS_CUST_CROUCH,
+	CONTROLS_CUST_MOUSELOOK,
+	CONTROLS_CUST_ACTION,
+	CONTROLS_CUST_INVENTORY,
+	CONTROLS_CUST_BOOK,
+	CONTROLS_CUST_BOOKCHARSHEET,
+	CONTROLS_CUST_BOOKSPELL,
+	CONTROLS_CUST_BOOKMAP,
+	CONTROLS_CUST_BOOKQUEST,
+	CONTROLS_CUST_DRINKPOTIONLIFE,
+	CONTROLS_CUST_DRINKPOTIONMANA,
+	CONTROLS_CUST_TORCH,
+	
+	CONTROLS_CUST_PRECAST1,
+	CONTROLS_CUST_PRECAST2,
+	CONTROLS_CUST_PRECAST3,
+	CONTROLS_CUST_WEAPON,
+	CONTROLS_CUST_QUICKLOAD,
+	CONTROLS_CUST_QUICKSAVE,
+	
+	CONTROLS_CUST_TURNLEFT,
+	CONTROLS_CUST_TURNRIGHT,
+	CONTROLS_CUST_LOOKUP,
+	CONTROLS_CUST_LOOKDOWN,
+	
+	CONTROLS_CUST_STRAFE,
+	CONTROLS_CUST_CENTERVIEW,
+	
+	CONTROLS_CUST_FREELOOK,
+	
+	CONTROLS_CUST_PREVIOUS,
+	CONTROLS_CUST_NEXT,
+	
+	CONTROLS_CUST_CROUCHTOGGLE,
+	
+	CONTROLS_CUST_UNEQUIPWEAPON,
+	
+	CONTROLS_CUST_CANCELCURSPELL,
+	
+	CONTROLS_CUST_MINIMAP
+	
+};
 
-struct ActionKey
-{
-	ActionKey( int key_0 = -1, int key_1 = -1, int _page = 0 )
-	{
-		iKey[0] = key_0;
-		iKey[1] = key_1;
-		iPage = _page;
+typedef int InputKeyId; // TODO use InputKey from Application.h?
+
+const size_t NUM_ACTION_KEY = CONTROLS_CUST_MINIMAP + 1;
+
+struct ActionKey {
+	
+	ActionKey(InputKeyId key_0 = -1, InputKeyId key_1 = -1) {
+		key[0] = key_0;
+		key[1] = key_1;
 	}
-
-	int	iKey[2];
-	int iPage;
+	
+	InputKeyId key[2];
+	
 };
 
-class Config
-{
-	public:
-		//LANGUAGE
-		std::string pcName;
-		//VIDEO
-		int			iWidth;
-		int			iHeight;
-		int			iNewWidth;
-		int			iNewHeight;
+class Config {
+	
+public:
+	
+	// section FIRSTRUN
+	bool firstRun;
+	
+	// section LANGUAGE
+	std::string language;
+	
+	// section VIDEO
+	struct {
+		
+		int width;
+		int height;
 		int bpp;
-		int			iNewBpp;
-		bool		bFullScreen;
-		bool		bBumpMapping;
-		bool		bNewBumpMapping;
-		bool		bMouseSmoothing;
-		int			iTextureResol;
-		int			iNewTextureResol;
-		int			iMeshReduction;
-		int			iLevelOfDetails;
-		int			iFogDistance;
-		int			iGamma;
-		int			iLuminosite;
-		int			iContrast;
-		bool		bShowCrossHair;
-		bool		bAntiAliasing;
-		bool		bChangeResolution;
-		bool		bChangeTextures;
-		bool		bDebugSetting;
-		//AUDIO
-		int			iMasterVolume;
-		int			iSFXVolume;
-		int			iSpeechVolume;
-		int			iAmbianceVolume;
-		bool		bEAX;
-		//INPUT
-		bool		bInvertMouse;
-		bool		bAutoReadyWeapon;
-		bool		bMouseLookToggle;
-		bool		bAutoDescription;
-		int			iMouseSensitivity;
-		ActionKey sakActionKey[MAX_ACTION_KEY];
-		bool		bLinkMouseLookToUse;
-		//MISC
-		bool		bATI;
-		bool		bForceZBias;
-		bool		bOneHanded;
-		unsigned int uiGoreMode;
-
-		bool first_launch;
-
-		bool		bNoReturnToWindows;
-	private:
-		ConfigHashMap config_map; // Map containing the config file contents
-
-		int GetDIKWithASCII( const std::string& _pcTouch) const;
-
-		void init();
-
-	public:
-		Config();
-		Config( const std::string& );
-		virtual ~Config();
-
-		std::string ReadConfig( const std::string& section, const std::string& key ) const;
-		std::string ReadConfig( const std::string& section, const std::string& key, const std::string& default_value ) const;
-		int ReadConfig( const std::string& section, const std::string& key, int default_value ) const;
-		bool ReadConfig( const std::string& section, const std::string& key, bool default_value ) const;
-		ActionKey ReadConfig( const std::string& section, const std::string& key, ControlAction index ) const;
-		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
-
-		void WriteConfig( const std::string& section, const std::string& key, const std::string& value );
-		void WriteConfig( const std::string& section, const std::string& key, int value );
-		void WriteConfig( const std::string& section, const std::string& key, bool value );
-		void WriteConfig( const std::string& section, const std::string& key, ControlAction index );
-		bool WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int _iDatas);
-		bool WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
-
-		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
-		void ResetActionKey();
-		void SetDefaultKey();
-
-		void SaveAll();
-		void ReadAll();
+		bool fullscreen;
+		bool bumpmap;
+		int textureSize;
+		int meshReduction;
+		int levelOfDetail;
+		float fogDistance;
+		float gamma;
+		float luminosity;
+		float contrast;
+		bool showCrosshair;
+		bool antialiasing;
+	
+	} video;
+	
+	// section AUDIO
+	struct {
+		
+		float volume;
+		float sfxVolume;
+		float speechVolume;
+		float ambianceVolume;
+		
+		bool eax;
+	
+	} audio;
+	
+	// section INPUT
+	struct {
+		
+		bool invertMouse;
+		bool autoReadyWeapon;
+		bool mouseLookToggle;
+		bool autoDescription;
+		int mouseSensitivity;
+		bool mouseSmoothing;
+		bool linkMouseLookToUse;
+		
+	} input;
+	
+	// section KEY
+	ActionKey actions[NUM_ACTION_KEY];
+	
+	// section MISC
+	struct {
+		
+		bool forceZBias; // should be in video? TODO can we remove this?
+		bool forceToggle; // should be in input?
+		bool gore;
+		bool newControl; // what is this?
+		
+	} misc;
+	
+public:
+	
+	bool setActionKey(ControlAction action, int index, InputKeyId key);
+	void setDefaultActionKeys();
+	
+	/*!
+	 * Saves all config entries to a file.
+	 * @return true if the config was saved successfully.
+	 */
+	bool save();
+	
+	bool init(const std::string & file, const std::string & default_file);
+	
+private:
+	
+	std::string file;
+	
+	InputKeyId GetDIKWithASCII( const std::string& _pcTouch) const;
+	
 };
 
-extern Config* pMenuConfig;
+extern Config config;
 
-#endif // CONFIG_H
+#endif // ARX_CORE_CONFIG_H

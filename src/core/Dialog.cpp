@@ -4043,36 +4043,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 extern HWND CDP_SOUNDOptions;
 
 //*************************************************************************************
-//*************************************************************************************
- 
-INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
-{
-	if (WM_COMMAND == uMsg)
-		switch (LOWORD(wParam))
-		{
-			case IDOK:
-
-				if (IsChecked(hWnd, IDC_LANGUAGE1))
-				{
-					Project.localisationpath = "english";
-				}
-
-				if (IsChecked(hWnd, IDC_LANGUAGE2))
-				{
-					Project.localisationpath = "fr";
-				}
-
-				EndDialog(hWnd, true);
-				break;
-			case IDCANCEL:
-				EndDialog(hWnd, true);
-				break;
-		}
-
-	return false;
-}
-
-//*************************************************************************************
 // Creates A Text Box
 //*************************************************************************************
 void TextBox(const char * title, char * text, long size)

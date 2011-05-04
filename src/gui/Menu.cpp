@@ -351,7 +351,7 @@ void ARX_Menu_Resources_Create() {
 	
 	// Load credits.
 	
-	string creditsFile = "localisation\\ucredits_" +  Project.localisationpath + ".txt";
+	string creditsFile = "localisation\\ucredits_" +  config.language + ".txt";
 	
 	size_t creditsSize;
 	u16 * creditsData = (u16*)PAK_FileLoadMalloc(creditsFile, creditsSize);
@@ -386,8 +386,7 @@ void ARX_Menu_Resources_Create() {
 //-----------------------------------------------------------------------------
 void ARX_Menu_Resources_Release(bool _bNoSound)
 {
-	if (pMenuConfig)
-		pMenuConfig->SaveAll();
+	config.save();
 
 	if (ARXmenu.mda == NULL)
 		return;
