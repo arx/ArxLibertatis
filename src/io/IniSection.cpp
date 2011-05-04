@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "core/ConfigSection.h"
+#include "io/IniSection.h"
 
 #include <list>
 #include <sstream>
@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  * characters and setting it as the new section.
  * @param _section The new section for this ConfigSection
  */
-void ConfigSection::SetSection( const std::string& _section )
+void IniSection::SetSection( const std::string& _section )
 {
 	if ( isSection( _section ) )
 		section = CleanSection( _section );
@@ -49,7 +49,7 @@ void ConfigSection::SetSection( const std::string& _section )
  * adding it.
  * @param _key The new key to be added to this ConfigSection
  */
-void ConfigSection::AddKey( const std::string& _key ) {
+void IniSection::AddKey( const std::string& _key ) {
 	_keys.push_back( Key( KeyName( _key ), KeyValue( _key ) ) );
 };
 
@@ -57,7 +57,7 @@ void ConfigSection::AddKey( const std::string& _key ) {
  * Checks a str for square brackets and makes sure they appear
  * left first, right second. This confirms str as a section line.
  *****************************************************************/
-bool ConfigSection::isSection( const std::string& str )
+bool IniSection::isSection( const std::string& str )
 {
 	// Location of square brackets in str
 	size_t first_bracket, last_bracket;
@@ -82,7 +82,7 @@ bool ConfigSection::isSection( const std::string& str )
  * Looks for an alphanumeric key followed by
  * at least one '=' character.
  ****************************************************************/
-bool ConfigSection::isKey( const std::string& str )
+bool IniSection::isKey( const std::string& str )
 {
 	// Iterate through str until alphanumeric characters are found
 	for ( size_t i = 0 ; i < str.length() ; i++ )
@@ -110,7 +110,7 @@ bool ConfigSection::isKey( const std::string& str )
  * proceeding the first ']' in a copy of _str and returns
  * the result.
  *************************************************************/
-std::string ConfigSection::CleanSection( std::string str ) const
+std::string IniSection::CleanSection( std::string str ) const
 {
 	// Find the first cutoff point
 	size_t first_bracket = str.find_first_of('[');
@@ -133,7 +133,7 @@ std::string ConfigSection::CleanSection( std::string str ) const
  * '=' appears and extracting the string between the first two ""
  * marks.
  *******************************************************************/
-std::string ConfigSection::CleanKey( std::string str ) const
+std::string IniSection::CleanKey( std::string str ) const
 {
 	// The equals sign seperates the type identifier from the value
 	size_t equals_loc = str.find_first_of('=');
@@ -160,7 +160,7 @@ std::string ConfigSection::CleanKey( std::string str ) const
  * @param str The string containing the Key name
  * @return The extracted name
  */
-std::string ConfigSection::KeyName( std::string str ) const
+std::string IniSection::KeyName( std::string str ) const
 {
 	// Find the beginning of the name, the first non-whitespace character
 	size_t name_begin = 0;
@@ -197,7 +197,7 @@ std::string ConfigSection::KeyName( std::string str ) const
  * @param str The key string to extract the value from
  * @return The extracted value from the string
  */
-std::string ConfigSection::KeyValue( std::string str ) const
+std::string IniSection::KeyValue( std::string str ) const
 {
 	// The equals sign seperates the name from the value
 	size_t equals_loc = str.find_first_of('=');
@@ -233,7 +233,7 @@ std::string ConfigSection::KeyValue( std::string str ) const
  * not checked for the presence of keys, beware.
  * @return The first Key in the list of Keys
  */
-const ConfigSection::Key& ConfigSection::first_key() const
+const IniSection::Key& IniSection::first_key() const
 {
 	return _keys.front();
 }
@@ -245,7 +245,7 @@ const ConfigSection::Key& ConfigSection::first_key() const
  * @param key The Key to be set
  * @param value The value to be given to the Key
  */
-void ConfigSection::set_key( const std::string& key, const std::string& value )
+void IniSection::set_key( const std::string& key, const std::string& value )
 {
 	// Check if the key already exists
 	std::vector<Key>::iterator iter;

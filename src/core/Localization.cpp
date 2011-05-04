@@ -29,18 +29,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 
 #include "core/Application.h"
-#include "core/ConfigHashMap.h"
 #include "core/Unicode.hpp"
 #include "core/Config.h"
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
+#include "io/IniReader.h"
 
 #include "platform/Platform.h"
 
 namespace
 {
-	ConfigHashMap* pHashLocalisation = 0;
+	IniReader* pHashLocalisation = 0;
 	std::string empty_string = "";
 }
 
@@ -95,7 +95,7 @@ void Localisation_Init()
 	{
 		LogDebug << "Preparing to parse localisation file";
 		std::istringstream iss( out );
-		pHashLocalisation = new ConfigHashMap( iss );
+		pHashLocalisation = new IniReader( iss );
 
 		//LogDebug << "Converting loaded localistation file:";
 		//ParseFile( out );

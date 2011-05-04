@@ -24,25 +24,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 // Code: Didier P�dreno
 
-#ifndef CONFIGSECTION_H
-#define CONFIGSECTION_H
+#ifndef ARX_IO_INISECTION_H
+#define ARX_IO_INISECTION_H
 
 #include <string>
 #include <vector>
 
-class ConfigSection
-{
+class IniSection {
+	
 public:
-
-	struct Key
-	{
+	
+	struct Key {
+		
 		Key() {}
-		Key( const std::string& _name, const std::string& _value )
-		{
+		Key(const std::string & _name, const std::string & _value) {
 			name = _name;
 			value = _value;
 		}
-
+		
 		std::string name;
 		std::string value;
 	};
@@ -53,34 +52,33 @@ public:
 public:
 	
 	void SetSection( const std::string& _section );
-
-/**
- * Sets a key name and pair to the specified values.
- * Will update an existing Key if the name matches
- * one already present.
- * @param key The Key to be set
- * @param value The value to be given to the Key
- */
+	
+	/**
+	 * Sets a key name and pair to the specified values.
+	 * Will update an existing Key if the name matches
+	 * one already present.
+	 * @param key The Key to be set
+	 * @param value The value to be given to the Key
+	 */
 	void set_key( const std::string& key, const std::string& value );
-
+	
 	/**
 	 * Returns the first Key in this ConfigSection
 	 * will probably return an invalid reference if
 	 * not checked for the presence of keys, beware.
 	 * @return The first Key in the list of Keys
 	 */
-	const Key& first_key() const;
-
+	const Key & first_key() const;
+	
 	void AddKey( const std::string& _key );
-
+	
 	static bool isKey( const std::string& str );
 	static bool isSection( const std::string& str );
-
+	
 private:
-
-
+	
 	std::string KeyName( std::string str ) const;
-
+	
 	/**
 	 * Finds the value of the key string given and returns it.
 	 * If no quotation marks surround the value, everything
@@ -91,11 +89,12 @@ private:
 	 * @return The extracted value from the string
 	 */
 	std::string KeyValue( std::string str ) const;
-
+	
 	std::string CleanKey( std::string str ) const;
-
+	
 	std::string CleanSection( std::string str ) const;
+	
 };
 
 
-#endif // CONFIGSECTION_H
+#endif // ARX_IO_INISECTION_H

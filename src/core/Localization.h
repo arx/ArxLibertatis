@@ -22,8 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef LOCALIZATION_H
-#define LOCALIZATION_H
+
+#ifndef ARX_CORE_LOCALIZATION_H
+#define ARX_CORE_LOCALIZATION_H
 
 #include <string>
 
@@ -42,4 +43,4 @@ long HERMES_UNICODE_GetProfileString(const std::string & sectionname, const std:
 
 long MakeLocalised(const std::string & text, std::string & output);
 
-#endif // LOCALIZATION_H
+#endif // ARX_CORE_LOCALIZATION_H

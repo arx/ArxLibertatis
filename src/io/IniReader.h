@@ -24,20 +24,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 // Code: Didier Pédreno
 
-#ifndef CONFIG_HASHMAP_H
-#define CONFIG_HASHMAP_H
+#ifndef ARX_IO_INIREADER_H
+#define ARX_IO_INIREADER_H
 
 #include <iostream>
 #include <map>
 #include <string>
 
-#include "core/ConfigSection.h"
+#include "io/IniSection.h"
 
-class ConfigHashMap
-{
+class IniReader {
+	
 private:
-
-	std::map<std::string, ConfigSection> section_map;
+	
+	std::map<std::string, IniSection> section_map;
 	
 	/**
 	 * Parses an input stream for configuration section and respective keys.
@@ -51,14 +51,14 @@ private:
 	 * in a .ini style fashion using "[section]"
 	 * section names and "key = value" key definitions
 	 */
-	void output_section( const ConfigSection& section, std::ostream& output ) const;
+	void output_section( const IniSection& section, std::ostream& output ) const;
 
 public:
 	
-	ConfigHashMap() {}
-	ConfigHashMap( std::istream& input );
+	IniReader() {}
+	IniReader( std::istream& input );
 
-	bool AddElement( ConfigSection * _pLoc);
+	bool AddElement( IniSection * _pLoc);
 
 	/**
 	 * Gets the specified configuration value from the map of ConfigSections
@@ -81,7 +81,7 @@ public:
 	 */
 	void updateConfigValue( const std::string& section, const std::string& key, const std::string value );
 
-	const ConfigSection* getConfigSection( const std::string& str ) const;
+	const IniSection* getConfigSection( const std::string& str ) const;
 
 	unsigned long GetKeyCount(const std::string &);
 
@@ -95,4 +95,4 @@ public:
 	void save_all( std::ostream& output ) const;
 };
 
-#endif // CONFIG_HASHMAP_H
+#endif // ARX_IO_INIREADER_H

@@ -25,12 +25,10 @@
 
 #include "core/Config.h"
 
-#include <cstdio>
-
 #include <fstream>
 #include <sstream>
 
-#include "core/ConfigHashMap.h"
+#include "io/IniReader.h"
 #include "io/Logger.h"
 #include "platform/String.h"
 #include "window/Input.h" // for key codes TODO remove
@@ -254,7 +252,7 @@ class ConfigReader {
 	
 private:
 	
-	ConfigHashMap ini;
+	IniReader ini;
 	mutable map<string, InputKeyId> keyNames;
 	
 	InputKeyId getKeyId(const string & name) const;
@@ -276,7 +274,7 @@ class ConfigWriter {
 	
 private:
 	
-	ConfigHashMap ini;
+	IniReader ini;
 	string section;
 	ostream & output;
 	

@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Code: Didier Pédreno
 // todo remover les strIcmp
 
-#include "core/ConfigHashMap.h"
+#include "io/IniReader.h"
 
 #include <list>
 #include <sstream>
@@ -34,22 +34,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 
-ConfigHashMap::ConfigHashMap( std::istream& input )
+IniReader::IniReader( std::istream& input )
 {
 	parse_stream( input );
 }
 
-bool ConfigHashMap::AddElement(ConfigSection * _pLoc)
+bool IniReader::AddElement(IniSection * _pLoc)
 {
 	if ( section_map.find( _pLoc->section ) == section_map.end() )
-		section_map.insert( std::pair<std::string, ConfigSection>( _pLoc->section, *_pLoc ) );
+		section_map.insert( std::pair<std::string, IniSection>( _pLoc->section, *_pLoc ) );
 
 	return true;
 }
 
-const ConfigSection* ConfigHashMap::getConfigSection( const std::string& section ) const
+const IniSection* IniReader::getConfigSection( const std::string& section ) const
 {
-	std::map<std::string, ConfigSection>::const_iterator iter = section_map.find( section );
+	std::map<std::string, IniSection>::const_iterator iter = section_map.find( section );
 
 	if ( iter != section_map.end() )
 		return &(iter->second);
@@ -57,9 +57,9 @@ const ConfigSection* ConfigHashMap::getConfigSection( const std::string& section
 		return 0;
 }
 
-unsigned long ConfigHashMap::GetKeyCount(const std::string& _lpszUText)
+unsigned long IniReader::GetKeyCount(const std::string& _lpszUText)
 {
-	const ConfigSection* section = getConfigSection( _lpszUText );
+	const IniSection* section = getConfigSection( _lpszUText );
 	if ( section )
 		return section->_keys.size();
 	else
@@ -73,7 +73,7 @@ unsigned long ConfigHashMap::GetKeyCount(const std::string& _lpszUText)
  * @param key The key to look for in the section
  * @return The value of the key found or the default value otherwise
  */
-const string & ConfigHashMap::getConfigValue(const string & section, const string & default_value, const string & key ) const {
+const string & IniReader::getConfigValue(const string & section, const string & default_value, const string & key ) const {
 	
 	const string * value = getConfigValue(section, key);
 	if(value) {
@@ -85,10 +85,10 @@ const string & ConfigHashMap::getConfigValue(const string & section, const strin
 	
 }
 
-const string * ConfigHashMap::getConfigValue(const string & section, const string & key) const {
+const string * IniReader::getConfigValue(const string & section, const string & key) const {
 	
 	// Look for a section
-	const ConfigSection * config = getConfigSection(section);
+	const IniSection * config = getConfigSection(section);
 	
 	// If the section was not found, return NULL
 	if(!config) {
@@ -121,7 +121,7 @@ const string * ConfigHashMap::getConfigValue(const string & section, const strin
  * Stores them all in a section map as ConfigSection objects.
  * @param is The input stream with the configuration info.
  */
-void ConfigHashMap::parse_stream( std::istream& is )
+void IniReader::parse_stream( std::istream& is )
 {
 	std::list<std::string> input_strings; // Resulting list of lines extracted
 	
@@ -152,10 +152,10 @@ void ConfigHashMap::parse_stream( std::istream& is )
 	while( iter != input_strings.end() )
 	{
 		// If a section string is found, make en entry for it
-		if ( ConfigSection::isSection( *iter ) )
+		if ( IniSection::isSection( *iter ) )
 		{
 			// Create a localisation entry for this section
-			ConfigSection* loc = new ConfigSection();
+			IniSection* loc = new IniSection();
 
 			// Set the section name as the cleaned section string
 			loc->SetSection( *iter );
@@ -164,10 +164,10 @@ void ConfigHashMap::parse_stream( std::istream& is )
 			iter++;
 
 			// Iterate over more strings until a section is encountered or no more strings remain
-			while ( ( iter != input_strings.end() ) && ( !ConfigSection::isSection( *iter ) ) )
+			while ( ( iter != input_strings.end() ) && ( !IniSection::isSection( *iter ) ) )
 			{
 				// If a key is found, add it to the localisation entry
-				if ( ConfigSection::isKey( *iter ) )
+				if ( IniSection::isKey( *iter ) )
 					loc->AddKey( *iter );
 
 				iter++; // Continue looking for more keys
@@ -190,9 +190,9 @@ void ConfigHashMap::parse_stream( std::istream& is )
  * @param key The key in the section to update
  * @param value The value to update the key with
  */
-void ConfigHashMap::updateConfigValue( const std::string& section, const std::string& key, const std::string value )
+void IniReader::updateConfigValue( const std::string& section, const std::string& key, const std::string value )
 {
-	std::map<std::string, ConfigSection>::iterator iter = section_map.find( section );
+	std::map<std::string, IniSection>::iterator iter = section_map.find( section );
 
 	// If the section exists, set the key value
 	if ( iter != section_map.end() )
@@ -204,21 +204,21 @@ void ConfigHashMap::updateConfigValue( const std::string& section, const std::st
 	}
 }
 
-void ConfigHashMap::save_all( std::ostream& out ) const
+void IniReader::save_all( std::ostream& out ) const
 {
 	// Iterate over the sections and output them into the stream
-	std::map<std::string, ConfigSection>::const_iterator iter;
+	std::map<std::string, IniSection>::const_iterator iter;
 	for ( iter = section_map.begin() ; iter != section_map.end() ; iter++ )
 		output_section( iter->second, out );
 }
 
-void ConfigHashMap::output_section( const ConfigSection& section, std::ostream& out ) const
+void IniReader::output_section( const IniSection& section, std::ostream& out ) const
 {
 	// output section name with included surrounding brackets
 	out << '[' << section.section << ']' << std::endl;
 
 	// Iterate over all the keys and output them into the stream
-	std::vector<ConfigSection::Key>::const_iterator iter;
+	std::vector<IniSection::Key>::const_iterator iter;
 	for ( iter = section._keys.begin() ; iter != section._keys.end() ; iter++ )
 		out << iter->name << '=' << '\"' << iter->value << '\"' << std::endl;
 }
