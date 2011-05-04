@@ -29,40 +29,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioTypes.h"
 #include "AudioResource.h"
 
-namespace ATHENA {
+namespace audio {
+
+class Mixer {
 	
-	class Mixer {
-		
-		public:
-		
-		Mixer();
-		~Mixer();
-		
-		// Setup
-		aalError SetName(const char * name);
-		aalError SetVolume(const aalFloat & volume);
-		aalError SetParent(const Mixer * mixer);
-		
-		// Status
-		aalError GetVolume(aalFloat & volume) const;
-		aalError GetParent(Mixer *&mixer) const;
-		aalUBool IsPaused() const;
-		
-		// Control
-		aalError Stop();
-		aalError Pause();
-		aalError Resume();
-		
-		char * name;
-		aalULong status;
-		aalULong flags;
-		aalFloat volume;
-		aalFloat pitch;
-		aalFloat pan;
-		const Mixer * parent;
-		
-	};
+public:
 	
-} // namespace ATHENA
+	Mixer();
+	~Mixer();
+	
+	aalError setVolume(float volume);
+	aalError setParent(const Mixer * mixer);
+	
+	inline float getVolume() const { return volume; }
+	inline bool isPaused() const { return paused; }
+	inline float getFinalVolume() const { return finalVolume; }
+	
+	aalError stop();
+	aalError pause();
+	aalError resume();
+	
+private:
+	
+	void clear(bool force);
+	void updateVolume();
+	
+	bool paused;
+	float volume;
+	const Mixer * parent;
+	float finalVolume;
+	
+};
+
+} // namespace audio
 
 #endif // ARX_AUDIO_MIXER_H

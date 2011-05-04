@@ -61,7 +61,8 @@ namespace Default {
 
 const std::string
 	language = "english",
-	resolution = _VALSTR(DEFAULT_WIDTH) "x" _VALSTR(DEFAULT_HEIGHT);
+	resolution = _VALSTR(DEFAULT_WIDTH) "x" _VALSTR(DEFAULT_HEIGHT),
+	audioBackend = "auto";
 
 const int
 	bpp = 16,
@@ -183,7 +184,8 @@ const string
 	sfxVolume = "effects_volume",
 	speechVolume = "speech_volume",
 	ambianceVolume = "ambiance_volume",
-	eax = "EAX";
+	eax = "EAX",
+	audioBackend = "backend";
 
 // Input options
 const string
@@ -804,6 +806,7 @@ bool Config::save() {
 	writer.writeKey(Key::speechVolume, audio.speechVolume);
 	writer.writeKey(Key::ambianceVolume, audio.ambianceVolume);
 	writer.writeKey(Key::eax, audio.eax);
+	writer.writeKey(Key::audioBackend, audio.backend);
 	
 	// input
 	writer.beginSection(Section::Input);
@@ -883,6 +886,7 @@ bool Config::init(const string & file, const string & defaultFile) {
 	audio.speechVolume = reader.get(Section::Audio, Key::speechVolume, Default::speechVolume);
 	audio.ambianceVolume = reader.get(Section::Audio, Key::ambianceVolume, Default::ambianceVolume);
 	audio.eax = reader.get(Section::Audio, Key::eax, Default::eax);
+	audio.backend = reader.get(Section::Audio, Key::audioBackend, Default::audioBackend);
 	
 	// Get input settings
 	input.invertMouse = reader.get(Section::Input, Key::invertMouse, Default::invertMouse);

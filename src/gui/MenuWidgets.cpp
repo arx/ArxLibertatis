@@ -105,7 +105,6 @@ extern long ARX_DEMO;
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
 
-
 extern long _EERIEMouseXdep;
 extern long _EERIEMouseYdep;
 
@@ -428,8 +427,6 @@ bool MENU_NoActiveWindow()
 
 	return false;
 }
-
-//-----------------------------------------------------------------------------
 
 void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
 {
@@ -1554,17 +1551,7 @@ bool Menu2_Render()
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, pElementText);
-					bool bEAX = true;
-
-					if (bEAX)
-					{
-						((CMenuCheckButton*)me)->iState=config.audio.eax?1:0;
-					}
-					else
-					{
-						me->SetCheckOff();
-						pElementText->lColor=RGB(127,127,127);
-					}
+					((CMenuCheckButton*)me)->iState=config.audio.eax ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 

@@ -126,6 +126,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Physics.h"
 
 #include "platform/String.h"
+#include "platform/Random.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -1182,12 +1183,14 @@ int main(int argc, char ** argv) {
 		AUTO_FULL_SCREEN=0;
 	}
 	
-	// Initialize config first, before evrything else.
+	// Initialize config first, before anything else.
 	const char RESOURCE_CONFIG[] = "cfg.ini";
 	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
 	if(!config.init(RESOURCE_CONFIG, RESOURCE_CONFIG_DEFAULT)) {
 		LogWarning << "Could not read config files " << RESOURCE_CONFIG << " and " << RESOURCE_CONFIG_DEFAULT;
 	}
+	
+	Random::seed();
 	
 	CalcFPS(true);
 	HERMES_Memory_Security_On(32000);
@@ -1470,8 +1473,10 @@ int main(int argc, char ** argv) {
 	}
 
 	LogDebug << "Sound Init";
-	if (Project.soundmode != 0 && ARX_SOUND_INIT)
-		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
+	if(Project.soundmode != 0 && ARX_SOUND_INIT) {
+		ARX_SOUND_Init();
+	}
+	
 	LogInfo << "Sound Init Success";
 	
 	LogDebug << "DInput Init";

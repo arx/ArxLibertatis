@@ -298,7 +298,7 @@ public:
      *  @brief  Randomize this vector.
      *  @return A const reference to this vector, now randomized.
      */
-    const Vector3& Randomize()
+    /*const Vector3& Randomize()
     {
         z = rand( -1.0f, 1.0f );
         T a = rand( 0.0f, PI * 2.0f );
@@ -307,19 +307,19 @@ public:
         y = r * sin(a);
 
         return *this;
-    }
+    } TODO */
 
     /**
      *  Get a random vector.
      *  @return A new random vector.
      */
-    static Vector3 GetRandomVector()
+    /* static Vector3 GetRandomVector()
     {
         T z = rand( -1.0, 1.0 );
         T a = rand( 0.0f, PI * 2.0f );
         T r = sqrt(1.0f - z*z);
         return Vector3(r * cos(a), r * sin(a), z);
-    }
+    } TODO */
 
     /**
      *  Build a vector using 2 angles in the x and y planes.

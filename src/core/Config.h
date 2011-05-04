@@ -137,6 +137,8 @@ public:
 		float ambianceVolume;
 		
 		bool eax;
+		
+		std::string backend;
 	
 	} audio;
 	

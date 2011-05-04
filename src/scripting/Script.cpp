@@ -111,7 +111,7 @@ std::string ShowTextWindowtext;
 INTERACTIVE_OBJ * LASTSPAWNED = NULL;
 INTERACTIVE_OBJ * EVENT_SENDER = NULL;
 SCRIPT_VAR * svar = NULL;
-char var_text[256];
+
 char SSEPARAMS[MAX_SSEPARAMS][64];
 long FORBID_SCRIPT_IO_CREATION = 0;
 long RELOADING = 0;
@@ -1826,6 +1826,7 @@ std::string GETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name)
 //*************************************************************************************
 std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
 {
+	char var_text[256];
 	float t1;
 	long l1;
 
@@ -1838,8 +1839,7 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
-				strcpy(var_text, tv.c_str());
-				return var_text;
+				return tv;
 				break;
 			case TYPE_LONG:
 				sprintf(var_text, "%ld", lv);
@@ -1868,26 +1868,21 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 	else if (temp1[0] == '$')
 	{
-		std::string tempo = GETVarValueText(svar, NB_GLOBALS, temp1);
+		SCRIPT_VAR * var = GetVarAddress(svar, NB_GLOBALS, temp1);
 
-		if (tempo.empty()) strcpy(var_text, "VOID");
-		else strcpy(var_text, tempo.c_str());
-
-		return var_text;
+		if (!var) return "VOID";
+		else return var->text;
 	}
 	else if (temp1[0] == '\xA3')
 	{
-		std::string tempo = GETVarValueText(esss->lvar, esss->nblvar, temp1);
+		SCRIPT_VAR * var = GetVarAddress(esss->lvar, esss->nblvar, temp1);
 
-		if (tempo.empty()) strcpy(var_text, "VOID");
-		else strcpy(var_text, tempo.c_str());
-
-		return var_text;
+		if (!var) return "VOID";
+		else return var->text;
 	}
 	else
 	{
-		strcpy(var_text, temp1.c_str());
-		return var_text;
+		return temp1;
 	}
 
 	sprintf(var_text, "%f", t1);

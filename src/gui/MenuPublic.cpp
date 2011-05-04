@@ -496,31 +496,24 @@ void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume)
 	config.audio.ambianceVolume = _iVolume;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_GetEAX(bool & _bEnable)
-{
-	_bEnable = config.audio.eax;
-}
-
-//-----------------------------------------------------------------------------
-bool ARXMenu_Options_Audio_SetEAX(bool _bEnable)
-{
+bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
+	
 	int iOldGamma;
 	ARXMenu_Options_Video_GetGamma(iOldGamma);
 	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
-
+	
 	config.audio.eax = _bEnable;
-
+	
 	ARX_SOUND_PushAnimSamples();
 	ARX_SOUND_AmbianceSavePlayList(&pAmbiancePlayList, &ulSizeAmbiancePlayList);
-
+	
 	ARX_SOUND_Release();
-	ARX_SOUND_Init(danaeApp.m_hWnd);
+	ARX_SOUND_Init();
 	ARX_SOUND_EnableReverb(_bEnable);
-
+	
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
-
+	
 	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
 	ARXMenu_Options_Audio_SetSfxVolume(config.audio.sfxVolume);
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
