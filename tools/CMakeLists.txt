@@ -7,7 +7,7 @@ if(MSVC)
 else(MSVC)
 	set(CMAKE_CXX_COMPILER g++)
 	set(CMAKE_C_COMPILER gcc)
-	set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-	aliasing -ggdb")
+	set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-aliasing -ggdb")
 endif(MSVC)
 
 include_directories(

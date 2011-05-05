@@ -28,6 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	#include <windows.h>
+#else
+	#include <sys/stat.h>
 #endif
 
 #include <cstdio>
