@@ -179,6 +179,7 @@ bool IniReader::read(istream & is) {
 		if(valueStart == string::npos) {
 			// Empty value.
 			section->addKey(str.substr(start, nameEnd - start), string());
+			continue;
 		}
 		
 		size_t valueEnd;
