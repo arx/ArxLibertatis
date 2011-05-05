@@ -1227,8 +1227,7 @@ int main(int argc, char ** argv) {
 		if(PAK_AddPak(PAK_DATA)) {
 			LogDebug << "LoadMode OK";
 		} else {
-			LogError << "Unable to find main data file " << PAK_DATA;
-			exit(0);
+			LogFatal << "Unable to find main data file " << PAK_DATA;
 		}
 		
 		const char PAK_LOC[] = "loc.pak";
@@ -1236,30 +1235,26 @@ int main(int argc, char ** argv) {
 		if(!PAK_AddPak(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
 			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
-				LogError << "Unable to find localization file " << PAK_LOC << " or " << PAK_LOC_DEFAULT;
-				exit(0);
+				LogFatal << "Unable to find localization file " << PAK_LOC << " or " << PAK_LOC_DEFAULT;
 			}
 		}
 		
 		LogDebug << "data2PAK";
 		const char PAK_DATA2[] = "data2.pak";
 		if(!PAK_AddPak(PAK_DATA2)) {
-			LogError << "Unable to find aux data file " << PAK_DATA2;
-			exit(0);
+			LogFatal << "Unable to find aux data file " << PAK_DATA2;
 		}
 		
 		const char PAK_SFX[] = "sfx.pak";
 		if(!PAK_AddPak(PAK_SFX)) {
-			LogError << "Unable to find sfx data file " << PAK_SFX;
-			exit(0);
+			LogFatal << "Unable to find sfx data file " << PAK_SFX;
 		}
 		
 		const char PAK_SPEECH[] = "speech.pak";
 		if(!PAK_AddPak(PAK_SPEECH)) {
 			const char PAK_SPEECH_DEFAULT[] = "speech_default.pak";
 			if(!PAK_AddPak(PAK_SPEECH_DEFAULT)) {
-				LogError << "Unable to find speech data file " << PAK_SPEECH << " or " << PAK_SPEECH_DEFAULT;
-				exit(0);
+				LogFatal << "Unable to find speech data file " << PAK_SPEECH << " or " << PAK_SPEECH_DEFAULT;
 			}
 		}
 		
