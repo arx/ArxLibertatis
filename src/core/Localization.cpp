@@ -45,11 +45,8 @@ IniReader localisation;
 extern long FINAL_COMMERCIAL_GAME;
 extern long FINAL_COMMERCIAL_DEMO;
 
-/****************************************************************************
- * Initializes the localisation hashmap based on the current chosen locale
- ***************************************************************************/
-void Localisation_Init() 
-{
+void Localisation_Init() {
+	
 	LogDebug << "Starting localization";
 	
 	localisation.clear();

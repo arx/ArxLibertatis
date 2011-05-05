@@ -1263,7 +1263,9 @@ int main(int argc, char ** argv) {
 		//TODO(lubosz): dirty hack to initialize the pak manager
 		PAK_AddPak("");
 	}
-
+	
+	Localisation_Init();
+	
 	//delete current for clean save.........
 	char txttemp[256];
 
@@ -1509,8 +1511,6 @@ int main(int argc, char ** argv) {
 	if (config.audio.eax) {
 		ARXMenu_Options_Audio_SetEAX(true);
 	}
-
-	Localisation_Init();
 
 	ARX_MINIMAP_FirstInit();
 	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
@@ -2966,7 +2966,6 @@ HRESULT DANAE::BeforeRun()
 
 	danaeApp.GetZBufferMax();
 
-	Localisation_Init();
 	return S_OK;
 }
 

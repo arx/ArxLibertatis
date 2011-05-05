@@ -28,9 +28,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+/*!
+ * Initializes the localisation hashmap based on the current chosen locale
+ */
 void Localisation_Init();
 
-/**
+/*!
  * Returns the localized string for the given key name
  * @param name The string to be looked up
  * @return The localized string based on the currently loaded locale file
