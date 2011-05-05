@@ -616,10 +616,13 @@ bool ConfigReader::get(const string & section, const string & key, bool defaultV
 	istringstream iss(*temp);
 	
 	bool val;
-	if((iss >> val).bad()) {
+	int v;
+	if((iss >> v).bad()) {
 		if((iss >> boolalpha >> val).bad()) {
-			LogWarning << "bad integer value for [" << section << "] " << key << ": " << *temp << ", resetting to " << boolalpha << defaultValue;
+			LogWarning << "bad bool value for [" << section << "] " << key << ": " << *temp << ", resetting to " << boolalpha << defaultValue;
 		}
+	} else {
+		val = v;
 	}
 	
 	LogDebug << "[" << section << "] " << key << " = " << boolalpha << val;
