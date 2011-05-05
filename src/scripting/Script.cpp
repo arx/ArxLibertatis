@@ -1830,59 +1830,66 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	float t1;
 	long l1;
 
-	if (temp1[0] == '^')
+	if(!temp1.empty())
 	{
-		long lv;
-		float fv;
-		std::string tv;
-
-		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		if (temp1[0] == '^')
 		{
-			case TYPE_TEXT:
-				return tv;
-				break;
-			case TYPE_LONG:
-				sprintf(var_text, "%ld", lv);
-				return var_text;
-				break;
-			default:
-				sprintf(var_text, "%f", fv);
-				return var_text;
-				break;
+			long lv;
+			float fv;
+			std::string tv;
+
+			switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+			{
+				case TYPE_TEXT:
+					return tv;
+					break;
+				case TYPE_LONG:
+					sprintf(var_text, "%ld", lv);
+					return var_text;
+					break;
+				default:
+					sprintf(var_text, "%f", fv);
+					return var_text;
+					break;
+			}
+
 		}
+		else if (temp1[0] == '#')
+		{
+			l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
+			sprintf(var_text, "%ld", l1);
+			return var_text;
+		}
+		else if (temp1[0] == '\xA7')
+		{
+			l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
+			sprintf(var_text, "%ld", l1);
+			return var_text;
+		}
+		else if (temp1[0] == '&') t1 = GETVarValueFloat(svar, NB_GLOBALS, temp1);
+		else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
+		else if (temp1[0] == '$')
+		{
+			SCRIPT_VAR * var = GetVarAddress(svar, NB_GLOBALS, temp1);
 
-	}
-	else if (temp1[0] == '#')
-	{
-		l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
-		sprintf(var_text, "%ld", l1);
-		return var_text;
-	}
-	else if (temp1[0] == '\xA7')
-	{
-		l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
-		sprintf(var_text, "%ld", l1);
-		return var_text;
-	}
-	else if (temp1[0] == '&') t1 = GETVarValueFloat(svar, NB_GLOBALS, temp1);
-	else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
-	else if (temp1[0] == '$')
-	{
-		SCRIPT_VAR * var = GetVarAddress(svar, NB_GLOBALS, temp1);
+			if (!var) return "VOID";
+			else return var->text;
+		}
+		else if (temp1[0] == '\xA3')
+		{
+			SCRIPT_VAR * var = GetVarAddress(esss->lvar, esss->nblvar, temp1);
 
-		if (!var) return "VOID";
-		else return var->text;
-	}
-	else if (temp1[0] == '\xA3')
-	{
-		SCRIPT_VAR * var = GetVarAddress(esss->lvar, esss->nblvar, temp1);
-
-		if (!var) return "VOID";
-		else return var->text;
+			if (!var) return "VOID";
+			else return var->text;
+		}
+		else
+		{
+			return temp1;
+		}
 	}
 	else
 	{
-		return temp1;
+		return "";
 	}
 
 	sprintf(var_text, "%f", t1);
@@ -2580,9 +2587,11 @@ long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 
 			if (pos < 0) return -1;
 
-			if (temp[0] == '{') brack++;
-
-			if (temp[0] == '}') brack--;
+			if(!temp.empty())
+			{
+				if (temp[0] == '{') brack++;
+				else if (temp[0] == '}') brack--;
+			}
 		}
 	}
 	else pos = GotoNextLine(es, pos);
