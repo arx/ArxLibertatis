@@ -1829,64 +1829,71 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	float t1;
 	long l1;
 
-	if (temp1[0] == '^')
+	if(!temp1.empty())
 	{
-		long lv;
-		float fv;
-		std::string tv;
-
-		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		if (temp1[0] == '^')
 		{
-			case TYPE_TEXT:
-				strcpy(var_text, tv.c_str());
-				return var_text;
-				break;
-			case TYPE_LONG:
-				sprintf(var_text, "%ld", lv);
-				return var_text;
-				break;
-			default:
-				sprintf(var_text, "%f", fv);
-				return var_text;
-				break;
+			long lv;
+			float fv;
+			std::string tv;
+
+			switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+			{
+				case TYPE_TEXT:
+					strcpy(var_text, tv.c_str());
+					return var_text;
+					break;
+				case TYPE_LONG:
+					sprintf(var_text, "%ld", lv);
+					return var_text;
+					break;
+				default:
+					sprintf(var_text, "%f", fv);
+					return var_text;
+					break;
+			}
 		}
+		else if (temp1[0] == '#')
+		{
+			l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
+			sprintf(var_text, "%ld", l1);
+			return var_text;
+		}
+		else if (temp1[0] == '\xA7')
+		{
+			l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
+			sprintf(var_text, "%ld", l1);
+			return var_text;
+		}
+		else if (temp1[0] == '&') t1 = GETVarValueFloat(svar, NB_GLOBALS, temp1);
+		else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
+		else if (temp1[0] == '$')
+		{
+			std::string tempo = GETVarValueText(svar, NB_GLOBALS, temp1);
 
-	}
-	else if (temp1[0] == '#')
-	{
-		l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
-		sprintf(var_text, "%ld", l1);
-		return var_text;
-	}
-	else if (temp1[0] == '\xA7')
-	{
-		l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
-		sprintf(var_text, "%ld", l1);
-		return var_text;
-	}
-	else if (temp1[0] == '&') t1 = GETVarValueFloat(svar, NB_GLOBALS, temp1);
-	else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
-	else if (temp1[0] == '$')
-	{
-		std::string tempo = GETVarValueText(svar, NB_GLOBALS, temp1);
+			if (tempo.empty()) strcpy(var_text, "VOID");
+			else strcpy(var_text, tempo.c_str());
 
-		if (tempo.empty()) strcpy(var_text, "VOID");
-		else strcpy(var_text, tempo.c_str());
+			return var_text;
+		}
+		else if (temp1[0] == '\xA3')
+		{
+			std::string tempo = GETVarValueText(esss->lvar, esss->nblvar, temp1);
 
-		return var_text;
-	}
-	else if (temp1[0] == '\xA3')
-	{
-		std::string tempo = GETVarValueText(esss->lvar, esss->nblvar, temp1);
+			if (tempo.empty()) strcpy(var_text, "VOID");
+			else strcpy(var_text, tempo.c_str());
 
-		if (tempo.empty()) strcpy(var_text, "VOID");
-		else strcpy(var_text, tempo.c_str());
-
-		return var_text;
+			return var_text;
+		}
+		else
+		{
+			strcpy(var_text, temp1.c_str());
+			return var_text;
+		}
 	}
 	else
 	{
-		strcpy(var_text, temp1.c_str());
+		strcpy(var_text, "");
 		return var_text;
 	}
 
@@ -2585,12 +2592,19 @@ long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 
 			if (pos < 0) return -1;
 
-			if (temp[0] == '{') brack++;
-
-			if (temp[0] == '}') brack--;
+			if(!temp.empty())
+			{
+				if (temp[0] == '{')
+					brack++;
+				else if (temp[0] == '}')
+					brack--;
+			}
 		}
 	}
-	else pos = GotoNextLine(es, pos);
+	else
+	{
+		pos = GotoNextLine(es, pos);
+	}
 
 	tpos = GetNextWord(es, pos, temp);
 	MakeUpcase(temp);

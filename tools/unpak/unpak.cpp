@@ -12,6 +12,7 @@ using std::ostringstream;
 #include <algorithm>
 using std::transform;
 
+#include "io/Filesystem.h"
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 //#define TEST_PAK_FREAD
@@ -34,7 +35,7 @@ void dump(PakReader & pak, const PakDirectory * dir, const string  & where = str
 		dirname += "/";
 	}
 	
-	mkdir(dirname.c_str(), 0777);
+	CreateFullPath(dirname);
 	
 	//printf("%s", dirname.c_str());
 	
