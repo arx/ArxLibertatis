@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 #include <sstream>
 
-#include "core/Localization.h"
+#include "core/Localisation.h"
 #include "core/Core.h"
 #include "core/Unicode.hpp"
 
@@ -305,7 +305,7 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 //-----------------------------------------------------------------------------
 void ARX_Allocate_Text( std::string& dest, const std::string& id_string)
 {
-	dest = getLocalized( id_string );
+	dest = getLocalised( id_string );
 }
 
 Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned int fontSize, float scaleFactor = Yratio)
@@ -318,7 +318,7 @@ Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned in
 	ss.clear();
 
 	std::string szUT;
-	szUT = getLocalized( fontProfileName, szFontSize );
+	szUT = getLocalised( fontProfileName, szFontSize );
 	ss << szUT;
 	ss >> fontSize;
 	ss.clear();

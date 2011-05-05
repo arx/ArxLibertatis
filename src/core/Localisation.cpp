@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "core/Localization.h"
+#include "core/Localisation.h"
 
 #include <list>
 #include <sstream>
@@ -45,7 +45,7 @@ IniReader localisation;
 extern long FINAL_COMMERCIAL_GAME;
 extern long FINAL_COMMERCIAL_DEMO;
 
-void Localisation_Init() {
+void LocalisationInit() {
 	
 	LogDebug << "Starting localization";
 	
@@ -108,7 +108,7 @@ void Localisation_Init() {
 	
 }
 
-// TODO replace uses with getLocalized
+// TODO replace uses with getLocalised
 long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
                                       const std::string&  defaultstring,
                                       std::string&        destination )
@@ -119,7 +119,7 @@ long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
 	if ( section[0] == '[' && section[section.length()-1] == ']' )
 		section = section.substr( 0, section.length() - 1 ).substr( 1 );
 
-	destination = getLocalized( section, defaultstring );
+	destination = getLocalised( section, defaultstring );
 	return 0;
 }
 
@@ -132,7 +132,7 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const string & sectionname) {
  * @param name The string to be looked up
  * @return The localized string based on the currently loaded locale file
  */
-string getLocalized(const string & name, const string & default_value) {
+string getLocalised(const string & name, const string & default_value) {
 	return localisation.getKey(name, string(), default_value);
 }
 

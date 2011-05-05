@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include "core/Core.h"
-#include "core/Localization.h"
+#include "core/Localisation.h"
 #include "core/Time.h"
 
 #include "game/Player.h"

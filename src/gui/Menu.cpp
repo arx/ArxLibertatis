@@ -71,7 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Time.h"
 #include "core/Application.h"
-#include "core/Localization.h"
+#include "core/Localisation.h"
 #include "core/Unicode.hpp"
 #include "core/Core.h"
 
@@ -942,13 +942,13 @@ bool ARX_Menu_Render()
 
 		Color = RGB(232, 204, 143);
 
-		szText = getLocalized("system_menus_main_cdnotfound");
+		szText = getLocalised("system_menus_main_cdnotfound");
 		Vector2i textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
-		szText = getLocalized("System_yes");
+		szText = getLocalised("System_yes");
 		textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
@@ -967,7 +967,7 @@ bool ARX_Menu_Render()
 
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
-		szText = getLocalized("System_no");
+		szText = getLocalised("System_no");
 		textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 

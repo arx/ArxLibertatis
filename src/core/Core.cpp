@@ -84,7 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "core/Resource.h"
 #include "core/AVI.h"
-#include "core/Localization.h"
+#include "core/Localisation.h"
 #include "core/Time.h"
 
 #include "game/Missile.h"
@@ -1235,7 +1235,7 @@ int main(int argc, char ** argv) {
 		if(!PAK_AddPak(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
 			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
-				LogFatal << "Unable to find localization file " << PAK_LOC << " or " << PAK_LOC_DEFAULT;
+				LogFatal << "Unable to find localisation file " << PAK_LOC << " or " << PAK_LOC_DEFAULT;
 			}
 		}
 		
@@ -1264,7 +1264,7 @@ int main(int argc, char ** argv) {
 		PAK_AddPak("");
 	}
 	
-	Localisation_Init();
+	LocalisationInit();
 	
 	//delete current for clean save.........
 	char txttemp[256];
@@ -7949,7 +7949,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATELOCALISATION:
 					ARX_TIME_Pause();
 					Pause(true);
-					Localisation_Init();
+					LocalisationInit();
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;

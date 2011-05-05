@@ -23,26 +23,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_CORE_LOCALIZATION_H
-#define ARX_CORE_LOCALIZATION_H
+#ifndef ARX_CORE_LOCALISATION_H
+#define ARX_CORE_LOCALISATION_H
 
 #include <string>
 
 /*!
  * Initializes the localisation hashmap based on the current chosen locale
  */
-void Localisation_Init();
+void LocalisationInit();
 
 /*!
  * Returns the localized string for the given key name
  * @param name The string to be looked up
  * @return The localized string based on the currently loaded locale file
  */
-std::string getLocalized( const std::string& name, const std::string& default_value = "" );
+std::string getLocalised( const std::string& name, const std::string& default_value = "" );
 
 long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string & sectionname);
 long HERMES_UNICODE_GetProfileString(const std::string & sectionname, const std::string & defaultstring, std::string & destination);
 
 long MakeLocalised(const std::string & text, std::string & output);
 
-#endif // ARX_CORE_LOCALIZATION_H
+#endif // ARX_CORE_LOCALISATION_H
