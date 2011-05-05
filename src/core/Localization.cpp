@@ -108,24 +108,7 @@ void Localisation_Init()
 	}
 	
 	free(toFree);
-
-	//CD Check
-	if (FINAL_COMMERCIAL_DEMO)
-	{
-		std::string szMenuText;
-		szMenuText = getLocalized( "system_menus_main_cdnotfound" );
-
-		if (szMenuText.empty()) //warez
-		{
-			Localisation_Init();
-		}
-	}
-
-	if (FINAL_COMMERCIAL_GAME)
-	{
-		std::string szMenuText;
-		szMenuText = getLocalized( "unicode" );
-	}
+	
 }
 
 // TODO replace uses with getLocalized
