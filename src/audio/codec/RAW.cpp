@@ -27,95 +27,41 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakManager.h"
 
-namespace ATHENA
-{
+namespace audio {
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Constructor and destructor                                                //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	CodecRAW::CodecRAW() :
-		header(NULL),
-		stream(NULL),
-		cursor(0)
-	{
+CodecRAW::CodecRAW() : stream(NULL), cursor(0) {
+}
+
+CodecRAW::~CodecRAW() {
+}
+
+aalError CodecRAW::setHeader(void * _header) {
+	ARX_UNUSED(_header);
+	return AAL_OK;
+}
+
+void CodecRAW::setStream(PakFileHandle * _stream) {
+	stream = _stream;
+}
+
+aalError CodecRAW::setPosition(size_t _position) {
+	
+	if(PAK_fseek(stream, _position, SEEK_CUR) == -1) {
+		return AAL_ERROR_FILEIO;
 	}
+	
+	cursor = _position;
+	
+	return AAL_OK;
+}
 
-	CodecRAW::~CodecRAW()
-	{
-	}
+size_t CodecRAW::getPosition() {
+	return cursor;
+}
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Setup                                                                     //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecRAW::SetHeader(void * _header)
-	{
-		header = _header;
+aalError CodecRAW::read(void * buffer, size_t to_read, size_t & read) {
+	read = PAK_fread(buffer, 1, to_read, stream);
+	return AAL_OK;
+}
 
-		return AAL_OK;
-	}
-
-	aalError CodecRAW::SetStream(PakFileHandle * _stream)
-	{
-		stream = _stream;
-
-		return AAL_OK;
-	}
-
-	aalError CodecRAW::SetPosition(const aalULong & _position)
-	{
-		if (PAK_fseek(stream, _position, SEEK_CUR)) return AAL_ERROR_FILEIO;
-
-		cursor = _position;
-
-		return AAL_OK;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Status                                                                    //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecRAW::GetHeader(void *&_header)
-	{
-		_header = header;
-
-		return AAL_OK;
-	}
-
-	aalError CodecRAW::GetStream(PakFileHandle *&_stream)
-	{
-		_stream = stream;
-
-		return AAL_OK;
-	}
-
-	aalError CodecRAW::GetPosition(aalULong & _position)
-	{
-		_position = cursor;
-
-		return AAL_OK;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// File I/O                                                                  //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecRAW::Read(void * buffer, const aalULong & to_read, aalULong & read)
-	{
-		read = PAK_fread(buffer, 1, to_read, stream);
-
-		return AAL_OK;
-	}
-
-	aalError CodecRAW::Write(void *, const aalULong &, aalULong & write)
-	{
-		write = 0;
-
-		return AAL_OK;
-	}
-}//ATHENA::
+} // namespace audio

@@ -25,43 +25,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/PathFinder.h"
 
-#include <ctime>
 #include <cassert>
 
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 
-#include "scene/Interactive.h"
+#include "platform/Random.h"
 
-using std::time;
+#include "scene/Interactive.h"
 
 static const float MIN_RADIUS = 110.0f;
 
-
-class Random {
-	
-	static const unsigned long MODULO = 2147483647;
-	static const unsigned long FACTOR = 16807;
-	static const unsigned long SHIFT = 91;
-	
-	static unsigned long current;
-	
-public:
-	
-	static unsigned long get() {
-		return current = (current * FACTOR + SHIFT) % MODULO;
-	}
-	
-	static void seed() {
-		current = (unsigned long)time(NULL);
-	}
-	
-};
-
-unsigned long Random::current;
-
 #define frnd() (1.0f - 2 * rnd())
-
 
 const float PathFinder::HEURISTIC_MIN = 0.0f;
 const float PathFinder::HEURISTIC_MAX = 0.5f;
@@ -196,7 +171,6 @@ PathFinder::PathFinder(size_t map_size, const _ANCHOR_DATA * map_data,
                        size_t slight_count, const EERIE_LIGHT * const * slight_list)
  : radius(RADIUS_DEFAULT), height(HEIGHT_DEFAULT), heuristic(HEURISTIC_DEFAULT),
    map_s(map_size), map_d(map_data), slight_c(slight_count), slight_l(slight_list) {
-	Random::seed();
 }
 
 void PathFinder::setHeuristic(float _heuristic) {

@@ -20,10 +20,10 @@ const LogSetting blackList[] = {
 	{ "FTL.cpp", Logger::Warning },
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "Filesystem.cpp", Logger::Fatal },
-	{ "Audio.cpp", Logger::Error },
 	{ "Object.cpp", Logger::Warning },
 	{ "Speech.cpp", Logger::Error },
 	{ "IO.cpp", Logger::Debug },
+	{ "audio", Logger::Debug }
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
@@ -41,14 +41,15 @@ Logger::~Logger() {
 	  exit(0);
 }
 
-void Logger::writeInfo(const char* longFile, int line, Logger::LogLevel level) {
+void Logger::writeInfo(const char * longFile, int line, Logger::LogLevel level) {
+
   const char* file = std::strrchr(longFile, '/');
   if(file == 0)
     file = std::strrchr(longFile, '\\');
   ++file;
-
+	
   fatal = false;
-  LogLevel curLevel = getLogLevel(file);
+  LogLevel curLevel = getLogLevel(longFile);
   if(level < curLevel || curLevel == None) {
 	  print = false;
 	  return;
@@ -87,9 +88,9 @@ void Logger::log(int mode, int color, const string & level,
 #endif
 }
 
-Logger::LogLevel Logger::getLogLevel(const std::string& file) {
+Logger::LogLevel Logger::getLogLevel(const string & file) {
 	for (unsigned i=0; i < sizeof(blackList)/sizeof(*blackList); i++) {
-		if (blackList[i].codefile == file)
+		if (file.find(blackList[i].codefile) != string::npos)
 			return blackList[i].logLevel;
 	}
 	return logLevel;

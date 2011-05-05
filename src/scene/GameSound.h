@@ -36,8 +36,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#include <windows.h> // TODO remove, needed for HWND in ARX_SOUND_Init
-
 #include "platform/Platform.h"
 
 struct INTERACTIVE_OBJ;
@@ -207,7 +205,7 @@ extern ArxSound SND_SPELL_VISION_LOOP;
 long ARX_MATERIAL_GetIdByName(const std::string & name);
 bool ARX_MATERIAL_GetNameById(long id, char * name);
 
-long ARX_SOUND_Init(HWND hwnd);
+long ARX_SOUND_Init();
 void ARX_SOUND_Release();
 
 long ARX_SOUND_IsEnabled();

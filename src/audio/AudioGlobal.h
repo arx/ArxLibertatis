@@ -28,104 +28,52 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cmath>
 
-#include "AudioTypes.h"
-#include "AudioResource.h"
-#include "Stream.h"
-#include "Mixer.h"
-#include "AudioEnvironment.h"
-#include "Sample.h"
-#include "Ambient.h"
-#include "AudioInstance.h"
-#include "dsoundfwd.h"
+#include "audio/AudioTypes.h"
+#include "audio/AudioResource.h"
 
-namespace ATHENA {
-	
-	// Common resource memory management
-	
-	// Internal globals
-	
-	const aalULong FLAG_ANY_ENV_FX(AAL_FLAG_OBSTRUCTION |
-	                               AAL_FLAG_REVERBERATION);
-	
-	const aalULong FLAG_ANY_3D_FX(AAL_FLAG_POSITION |
-	                              AAL_FLAG_VELOCITY |
-	                              AAL_FLAG_DIRECTION |
-	                              AAL_FLAG_CONE |
-	                              AAL_FLAG_FALLOFF |
-	                              FLAG_ANY_ENV_FX);
-	
-	// Audio device interface
-	extern LPDIRECTSOUND device;
-	extern LPDIRECTSOUNDBUFFER primary;
-	extern LPDIRECTSOUND3DLISTENER listener;
-	extern LPKSPROPERTYSET environment;
-	extern aalUBool is_reverb_present;
-	extern aalSLong environment_id;
-	
-	// Global settings
-	extern char * sample_path;
-	extern char * ambiance_path;
-	extern char * environment_path;
-	extern aalULong stream_limit_ms;
-	extern aalULong stream_limit_bytes;
-	extern aalULong session_start;
-	extern aalULong session_time;
-	extern aalULong global_status;
-	extern aalFormat global_format;
-	
-	// Resources
-	extern ResourceList<Mixer> _mixer;
-	extern ResourceList<Sample> _sample;
-	extern ResourceList<Ambiance> _amb;
-	extern ResourceList<Environment> _env;
-	extern ResourceList<Instance> _inst;
-	
-	// Internal functions
-	
-	// Random number generator
-	aalULong Random();
-	aalFloat FRandom();
-	aalULong InitSeed();
-	
-	// Conversion
-	aalULong UnitsToBytes(const aalULong & v, const aalFormat & format, const aalUnit & unit = AAL_UNIT_MS);
-	aalULong BytesToUnits(const aalULong & v, const aalFormat & format, const aalUnit & unit = AAL_UNIT_MS);
-	
-	inline aalFloat LinearToLogVolume(const aalFloat & volume) {
-		return 0.2F * (float)log10(volume) + 1.0F;
-	}
-	
-	// Validity
-	inline aalSLong GetSampleID(const aalSLong & id) {
-		return id & 0x0000ffff;
-	}
-	
-	inline aalSLong GetInstanceID(const aalSLong & id) {
-		return ((id >> 16) & 0x0000ffff);
-	}
-	
-	// Vector operators
-	inline aalVector & operator+=(aalVector & dst, const aalVector & src) {
-		dst.x += src.x;
-		dst.y += src.y;
-		dst.z += src.z;
-		return dst;
-	}
-	
-	inline aalVector & operator*=(aalVector & dst, const aalVector & src) {
-		dst.x *= src.x;
-		dst.y *= src.y;
-		dst.z *= src.z;
-		return dst;
-	}
-	
-	inline aalVector & operator*=(aalVector & dst, const aalFloat & factor) {
-		dst.x *= factor;
-		dst.y *= factor;
-		dst.z *= factor;
-		return dst;
-	}
-	
-} // namespace ATHENA
+#include "io/Logger.h"
+
+namespace audio {
+
+class Backend;
+class Ambiance;
+class Environment;
+class Sample;
+class Mixer;
+
+const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY | FLAG_DIRECTION |
+                                    FLAG_CONE | FLAG_FALLOFF | FLAG_REVERBERATION;
+
+// Audio device interface
+extern Backend * backend;
+
+// Global settings
+extern std::string sample_path;
+extern std::string ambiance_path;
+extern std::string environment_path;
+extern size_t stream_limit_bytes;
+extern size_t session_time;
+
+// Resources
+extern ResourceList<Mixer> _mixer;
+extern ResourceList<Sample> _sample;
+extern ResourceList<Ambiance> _amb;
+extern ResourceList<Environment> _env;
+
+//! Convert a value from time units to bytes
+size_t unitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
+
+//! Convert a value from bytes to time units
+size_t bytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
+
+inline float LinearToLogVolume(float volume) {
+	return 0.2F * (float)log10(volume) + 1.0F;
+}
+
+inline float clamp(float v, float min, float max) {
+	return std::min(max, std::max(min, v));
+}
+
+} // namespace audio
 
 #endif // ARX_AUDIO_AUDIOGLOBAL_H
