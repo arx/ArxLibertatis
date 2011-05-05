@@ -27,55 +27,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IniReader.h"
 
-#include <list>
 #include <sstream>
 
 #include "io/Logger.h"
 
-#include "platform/String.h"
+using std::string;
+using std::istream;
+using std::getline;
 
-IniReader::IniReader( std::istream& input )
-{
-	parse_stream( input );
-}
-
-bool IniReader::AddElement(IniSection * _pLoc)
-{
-	if ( section_map.find( _pLoc->section ) == section_map.end() )
-		section_map.insert( std::pair<std::string, IniSection>( _pLoc->section, *_pLoc ) );
-
-	return true;
-}
-
-const IniSection* IniReader::getConfigSection( const std::string& section ) const
-{
-	std::map<std::string, IniSection>::const_iterator iter = section_map.find( section );
-
-	if ( iter != section_map.end() )
-		return &(iter->second);
-	else
-		return 0;
-}
-
-unsigned long IniReader::GetKeyCount(const std::string& _lpszUText)
-{
-	const IniSection* section = getConfigSection( _lpszUText );
-	if ( section )
-		return section->_keys.size();
-	else
-		return 0;
-}
-
-/**
- * Gets the specified configuration value from the map of ConfigSections
- * @param section The section to search in
- * @param default_value The default value to return if anything doesn't match
- * @param key The key to look for in the section
- * @return The value of the key found or the default value otherwise
- */
-const string & IniReader::getConfigValue(const string & section, const string & default_value, const string & key ) const {
+const IniSection* IniReader::getSection( const std::string& section ) const {
 	
-	const string * value = getConfigValue(section, key);
+	std::map<std::string, IniSection>::const_iterator iter = sections.find(section);
+	
+	if(iter != sections.end()) {
+		return &(iter->second);
+	} else {
+		return NULL;
+	}
+}
+
+size_t IniReader::getKeyCount(const string & sectionName) const {
+	
+	const IniSection * section = getSection(sectionName);
+	if(section) {
+		return section->keys.size();
+	} else {
+		return 0;
+	}
+}
+
+const string & IniReader::getKey(const string & section, const string & key, const string & default_value) const {
+	
+	const string * value = getKey(section, key);
 	if(value) {
 		return *value;
 	} else {
@@ -85,10 +68,10 @@ const string & IniReader::getConfigValue(const string & section, const string & 
 	
 }
 
-const string * IniReader::getConfigValue(const string & section, const string & key) const {
+const string * IniReader::getKey(const string & section, const string & key) const {
 	
 	// Look for a section
-	const IniSection * config = getConfigSection(section);
+	const IniSection * config = getSection(section);
 	
 	// If the section was not found, return NULL
 	if(!config) {
@@ -96,19 +79,19 @@ const string * IniReader::getConfigValue(const string & section, const string & 
 	}
 	
 	// If the section has no keys, return NULL
-	if(config->_keys.empty()) {
+	if(config->keys.empty()) {
 		return NULL;
 	}
 	
 	// If the key is not specified, return the first ones value( to avoid breakage with legacy assets )
 	if(key.empty()) {
-		return &config->_keys[0].value;
+		return &config->keys.front().value;
 	}
 	
 	// Otherwise try to match the key to one in the section
-	for(size_t i = 0; i < config->_keys.size(); i++) {
-		if(config->_keys[i].name == key) { // If the key name matches that specified
-			return &config->_keys[i].value; // Return the value of the requested key
+	for(size_t i = 0; i < config->keys.size(); i++) {
+		if(config->keys[i].name == key) { // If the key name matches that specified
+			return &config->keys[i].value; // Return the value of the requested key
 		}
 	}
 	
@@ -116,68 +99,108 @@ const string * IniReader::getConfigValue(const string & section, const string & 
 	return NULL;
 }
 
-/**
- * Parses an input stream for configuration section and respective keys.
- * Stores them all in a section map as ConfigSection objects.
- * @param is The input stream with the configuration info.
- */
-void IniReader::parse_stream( std::istream& is )
-{
-	std::list<std::string> input_strings; // Resulting list of lines extracted
+const string WHITESPACE = " \t\r\n";
+const string ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
+
+bool IniReader::read(istream & is) {
 	
-	while ( is.good() ) // While lines remain to be extracted
-	{
+	// The current section.
+	IniSection * section = NULL;
+	
+	bool ok = true;
+	
+	// While lines remain to be extracted
+	for(size_t line = 1; is.good(); line++) {
+		
 		// Get a line to process
-		std::string str;
-		std::getline( is, str );
-
-		// Remove any commented bits until the line end
-		size_t comment_start = std::string::npos;
-		comment_start = str.find("//");
-
-		// Whole line was commented, no need to do anything with it. Continue getting the next line
-		if ( comment_start == 0 ) continue;
-
-		// Remove any commented bits from the line
-		if ( comment_start != std::string::npos )
-			str = str.substr(0, comment_start );
-
-		if ( str.empty() ) continue;
-		// Push back the line
-		input_strings.push_back( str );
-	}
-
-	// Iterate over all the lines entered into the list earlier
-	std::list<std::string>::iterator iter = input_strings.begin();
-	while( iter != input_strings.end() )
-	{
-		// If a section string is found, make en entry for it
-		if ( IniSection::isSection( *iter ) )
-		{
-			// Create a localisation entry for this section
-			IniSection* loc = new IniSection();
-
-			// Set the section name as the cleaned section string
-			loc->SetSection( *iter );
-
-			// Advance to the line after the section string to start looking for keys
-			iter++;
-
-			// Iterate over more strings until a section is encountered or no more strings remain
-			while ( ( iter != input_strings.end() ) && ( !IniSection::isSection( *iter ) ) )
-			{
-				// If a key is found, add it to the localisation entry
-				if ( IniSection::isKey( *iter ) )
-					loc->AddKey( *iter );
-
-				iter++; // Continue looking for more keys
-			}
-
-			AddElement(loc);
-			continue; // Continue loop, the next section or end of input was encountered
+		string str;
+		getline(is, str);
+		
+		size_t start = str.find_first_not_of(WHITESPACE);
+		if(start == string::npos) {
+			// Empty line (only whitespace).
+			continue;
 		}
-
-		// Only get here if a non-content string managed to escape the earlier culling, advance to the next line
-		iter++;
+		
+		if(str[start] == '#' || (start + 1 < str.length() && str[start] == '/' && str[start+1] == '/')) {
+			// Whole line was commented, no need to do anything with it. Continue getting the next line.
+			continue;
+		}
+		
+		// Section header.
+		if(str[start] == '[') {
+			
+			size_t end = str.find(']', start + 1);
+			if(end == string::npos) {
+				LogWarning << "invalid header @ line " << line << ": " << str;
+				section = NULL;
+				ok = false;
+				continue;
+			}
+			
+			LogDebug << "found section: \"" << str.substr(start + 1, end - start - 1) << "\"";
+			section = &sections[str.substr(start + 1, end - start - 1)];
+			
+			// Ignoring rest of the line, not verifying that it's only whitespace / comment
+			
+			continue;
+		}
+		
+		if(!section) {
+			LogWarning << "ignoring non-empty line " << line << " outside a section: " << str;
+			ok = false;
+			continue;
+		}
+		
+		size_t nameEnd = str.find_first_not_of(ALPHANUM, start);
+		if(nameEnd == string::npos) {
+			ok = false;
+			LogWarning << "missing '=' separator @ line " << line << ": " << str;
+			continue;
+		} else if(nameEnd == start) {
+			ok = false;
+			LogWarning << "empty key name @ line " << line << ": " << str;
+			continue;
+		}
+		
+		size_t separator = str.find_first_not_of(WHITESPACE, nameEnd);
+		if(separator == string::npos || str[separator] != '=') {
+			ok = false;
+			LogWarning << "missing '=' separator @ line " << line << ": " << str;
+			continue;
+		}
+		
+		size_t valueStart = str.find_first_not_of(WHITESPACE, separator + 1);
+		if(valueStart == string::npos) {
+			// Empty value.
+			section->addKey(str.substr(start, nameEnd - start), string());
+		}
+		
+		size_t valueEnd;
+		if(str[valueStart] == '"') {
+			valueStart++;
+			valueEnd = str.find_last_of('"');
+			arx_assert(valueEnd != string::npos);
+			if(valueEnd < valueStart) {
+				// The localisation files are broken (missing ending quote), so ignore this error.
+				LogDebug << "invalid quoted value @ line " << line << ": " << str;
+				valueEnd = str.length();
+			}
+		} else {
+			valueEnd = str.find_last_not_of(WHITESPACE) + 1;
+			arx_assert(valueEnd != string::npos);
+		}
+		arx_assert(valueEnd >= valueStart);
+		
+		section->addKey(str.substr(start, nameEnd - start), str.substr(valueStart, valueEnd - valueStart));
+		
+		// Ignoring rest of the line, not verifying that it's only whitespace / comment
+		
 	}
+	
+	return ok;
+}
+
+void IniReader::clear() {
+	sections.clear();
 }

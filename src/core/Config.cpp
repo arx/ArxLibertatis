@@ -260,7 +260,9 @@ private:
 	
 public:
 	
-	ConfigReader(ifstream & input) : ini(input) { }
+	bool read(ifstream & input) {
+		return ini.read(input);
+	}
 	
 	const string & get(const string & section, const string & key, const string & defaultValue) const;
 	int get(const string & section, const string & key, int defaultValue) const;
@@ -529,7 +531,7 @@ InputKeyId ConfigReader::getKeyId(const string & name) const {
  */
 const string & ConfigReader::get(const string & section, const string & key, const string & defaultValue) const {
 	
-	const string * temp = ini.getConfigValue(section, key);
+	const string * temp = ini.getKey(section, key);
 	
 	if(!temp) {
 		LogDebug << "[" << section << "] " << key << " = \"" << defaultValue << "\" [default]";
@@ -549,7 +551,7 @@ const string & ConfigReader::get(const string & section, const string & key, con
  */
 int ConfigReader::get(const string & section, const string & key, int defaultValue) const {
 	
-	const string * temp = ini.getConfigValue(section, key);
+	const string * temp = ini.getKey(section, key);
 	if(!temp) {
 		LogDebug << "[" << section << "] " << key << " = " << defaultValue << " [default]";
 		return defaultValue;
@@ -577,7 +579,7 @@ int ConfigReader::get(const string & section, const string & key, int defaultVal
  */
 float ConfigReader::get(const string & section, const string & key, float defaultValue) const {
 	
-	const string * temp = ini.getConfigValue(section, key);
+	const string * temp = ini.getKey(section, key);
 	if(!temp) {
 		LogDebug << "[" << section << "] " << key << " = " << defaultValue << " [default]";
 		return defaultValue;
@@ -605,7 +607,7 @@ float ConfigReader::get(const string & section, const string & key, float defaul
  */
 bool ConfigReader::get(const string & section, const string & key, bool defaultValue) const {
 	
-	const string * temp = ini.getConfigValue(section, key);
+	const string * temp = ini.getKey(section, key);
 	if(!temp) {
 		LogDebug << "[" << section << "] " << key << " = " << boolalpha << defaultValue << " [default]";
 		return defaultValue;
@@ -639,7 +641,7 @@ ActionKey ConfigReader::get(const string & section, ControlAction index) const {
 	const string & key = Key::actions[index];
 	ActionKey action_key = Default::actions[index];
 	
-	const string * k0 = ini.getConfigValue(section, key + "_k0");
+	const string * k0 = ini.getKey(section, key + "_k0");
 	if(k0) {
 		InputKeyId id = getKeyId(*k0);
 		if(id == -1 && !k0->empty() && *k0 != KEY_NONE) {
@@ -649,7 +651,7 @@ ActionKey ConfigReader::get(const string & section, ControlAction index) const {
 		}
 	}
 	
-	const string * k1 = ini.getConfigValue(section, key + "_k1");
+	const string * k1 = ini.getKey(section, key + "_k1");
 	if(k1) {
 		InputKeyId id = getKeyId(*k1);
 		if(id == -1 && !k1->empty() && *k1 != KEY_NONE) {
@@ -800,7 +802,11 @@ bool Config::init(const string & file, const string & defaultFile) {
 	}
 	bool loaded = ifs.is_open();
 	
-	ConfigReader reader(ifs);
+	ConfigReader reader;
+	
+	if(!reader.read(ifs)) {
+		LogWarning << "errors while parsing config file";
+	}
 	
 	// Check if this is the first run of the game
 	firstRun = reader.get(Section::FirstRun, Key::firstRun, Default::first_run);

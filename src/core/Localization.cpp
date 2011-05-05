@@ -38,10 +38,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
-namespace
-{
-	IniReader* pHashLocalisation = 0;
-	std::string empty_string = "";
+namespace {
+IniReader localisation;
 }
 
 extern long FINAL_COMMERCIAL_GAME;
@@ -53,9 +51,8 @@ extern long FINAL_COMMERCIAL_DEMO;
 void Localisation_Init() 
 {
 	LogDebug << "Starting localization";
-	// If a locale is already initialized, close it
-	if (pHashLocalisation)
-		Localisation_Close();
+	
+	localisation.clear();
 
 	// Generate the filename for the localization strings
 	std::string tx = "localisation\\utext_" + config.language + ".ini";
@@ -63,7 +60,7 @@ void Localisation_Init()
 	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
 	// Attempt loading the selected locale file
-	u16* Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
+	u16 * Localisation = (u16*)PAK_FileLoadMalloc( tx, loc_file_size );
 
 	// if no file was loaded
 	if ( !Localisation )
@@ -73,15 +70,24 @@ void Localisation_Init()
 		tx = "localisation\\utext_" + config.language + ".ini";
 
 		// Load the default english locale file
-		Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
+		Localisation = (u16*)PAK_FileLoadMalloc( tx, loc_file_size );
 	}
+	
+	u16 * toFree = Localisation;
 
-	LogDebug << "Loaded localisation file " << tx;
 	if ( !Localisation )
 		LogFatal << "Could not load localisation file " << tx;
 	
+	
+	LogDebug << "Loaded localisation file " << tx;
+	
 	// Scale the loaded size to new stride of uint16_t vs char
 	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
+	
+	if(loc_file_size >= 1 && *Localisation == 0xfeff) {
+		// Ignore the byte order mark.
+		loc_file_size--, Localisation++;
+	}
 
 	LogDebug << "Loaded localisation file: " << tx << " of size " << loc_file_size;
 	size_t nchars = GetUTF16Length( Localisation, &Localisation[loc_file_size] );
@@ -95,11 +101,13 @@ void Localisation_Init()
 	{
 		LogDebug << "Preparing to parse localisation file";
 		std::istringstream iss( out );
-		pHashLocalisation = new IniReader( iss );
-
-		//LogDebug << "Converting loaded localistation file:";
-		//ParseFile( out );
+		if(!localisation.read(iss)) {
+			LogWarning << "errors while parsing localisation file " << tx;
+		}
+		
 	}
+	
+	free(toFree);
 
 	//CD Check
 	if (FINAL_COMMERCIAL_DEMO)
@@ -120,20 +128,7 @@ void Localisation_Init()
 	}
 }
 
-/***************************************************************
- * Deinitialize the current locale.
- * Delete the hashmap.
- * ************************************************************/
-void Localisation_Close()
-{
-
-	if ( pHashLocalisation)
-		delete pHashLocalisation;
-
-	pHashLocalisation = NULL;
-}
-
-
+// TODO replace uses with getLocalized
 long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
                                       const std::string&  defaultstring,
                                       std::string&        destination )
@@ -148,13 +143,8 @@ long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
-{
-	if (pHashLocalisation)
-		return pHashLocalisation->GetKeyCount(sectionname);
-
-	return 0;
+long HERMES_UNICODE_GetProfileSectionKeyCount(const string & sectionname) {
+	return localisation.getKeyCount(sectionname);
 }
 
 /**
@@ -162,16 +152,12 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
  * @param name The string to be looked up
  * @return The localized string based on the currently loaded locale file
  */
-std::string getLocalized( const std::string& name, const std::string& default_value )
-{
-	if ( !pHashLocalisation )
-		return default_value;
-
-	return pHashLocalisation->getConfigValue( name, default_value, empty_string );
+string getLocalized(const string & name, const string & default_value) {
+	return localisation.getKey(name, string(), default_value);
 }
 
-long MakeLocalised(const std::string & text, std::string & output)
-{
+// TODO remove
+long MakeLocalised(const std::string & text, std::string & output) {
 	
 	if(text.empty()) {
 		output = "ERROR";

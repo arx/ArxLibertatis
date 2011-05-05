@@ -27,45 +27,51 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_IO_INIREADER_H
 #define ARX_IO_INIREADER_H
 
-#include <iostream>
+#include <istream>
 #include <map>
 #include <string>
 
 #include "io/IniSection.h"
 
+/*!
+ * Reader for .ini files.
+ */
 class IniReader {
 	
 private:
 	
-	std::map<std::string, IniSection> section_map;
-	
-	/**
-	 * Parses an input stream for configuration section and respective keys.
-	 * Stores them all in a section map as ConfigSection objects.
-	 * @param is The input stream with the configuration info.
-	 */
-	void parse_stream( std::istream& input );
+	std::map<std::string, IniSection> sections;
 	
 public:
 	
-	IniReader( std::istream& input );
-	
-	bool AddElement( IniSection * _pLoc);
-	
 	/**
+	 * Parses an input stream for configuration section and respective keys.
+	 * Stores them all in a section map as IniSection objects.
+	 * @param is The input stream with the ini data.
+	 * @return false if there were problems (some data may have been read)
+	 */
+	bool read(std::istream & input);
+	
+	void clear();
+	
+	/*!
 	 * Gets the specified configuration value from the map of ConfigSections
 	 * @param section The section to search in
 	 * @param default_value The default value to return if anything doesn't match
-	 * @param key The key to look for in the section
+	 * @param key The key to look for in the section. Retuns the value of the first key if this is empty.
 	 * @return The value of the key found or the default value otherwise
 	 */
-	const std::string & getConfigValue( const std::string& section, const std::string& default_value, const std::string& key ) const;
+	const std::string & getKey(const std::string & section, const std::string & key, const std::string & default_value) const;
 	
-	const std::string * getConfigValue(const std::string & section, const std::string & key) const;
+	/*!
+	 * Get the value at the specified key in the specified section.
+	 * @return the value string or NULL if no such value is set.
+	 */
+	const std::string * getKey(const std::string & section, const std::string & key) const;
 	
-	const IniSection* getConfigSection( const std::string& str ) const;
+	const IniSection * getSection(const std::string & section) const;
 	
-	unsigned long GetKeyCount(const std::string &);
+	size_t getKeyCount(const std::string & section) const;
 	
 };
 

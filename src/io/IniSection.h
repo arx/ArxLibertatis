@@ -32,7 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class IniSection {
 	
-public:
+private:
 	
 	struct Key {
 		
@@ -46,54 +46,15 @@ public:
 		std::string value;
 	};
 	
-	std::string section;
-	std::vector<Key> _keys;
+	std::vector<Key> keys;
 	
-public:
-	
-	void SetSection( const std::string& _section );
-	
-	/**
-	 * Sets a key name and pair to the specified values.
-	 * Will update an existing Key if the name matches
-	 * one already present.
-	 * @param key The Key to be set
-	 * @param value The value to be given to the Key
+	/*!
+	 * Add a key in the ini format (name=value or name="value")
+	 * All preceding space and trailing space / commens must already be removed.
 	 */
-	void set_key( const std::string& key, const std::string& value );
+	void addKey(const std::string & key, const std::string & value);
 	
-	/**
-	 * Returns the first Key in this ConfigSection
-	 * will probably return an invalid reference if
-	 * not checked for the presence of keys, beware.
-	 * @return The first Key in the list of Keys
-	 */
-	const Key & first_key() const;
-	
-	void AddKey( const std::string& _key );
-	
-	static bool isKey( const std::string& str );
-	static bool isSection( const std::string& str );
-	
-private:
-	
-	std::string KeyName( std::string str ) const;
-	
-	/**
-	 * Finds the value of the key string given and returns it.
-	 * If no quotation marks surround the value, everything
-	 * after the equals sign is considered the value.
-	 * If only one quotation mark is found, it marks the
-	 * beginning of the value until the end of the string.
-	 * @param str The key string to extract the value from
-	 * @return The extracted value from the string
-	 */
-	std::string KeyValue( std::string str ) const;
-	
-	std::string CleanKey( std::string str ) const;
-	
-	std::string CleanSection( std::string str ) const;
-	
+	friend class IniReader;
 };
 
 

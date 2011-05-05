@@ -341,12 +341,9 @@ string getFontFile() {
 	return tx;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_Text_Init()
-{	
+void ARX_Text_Init() {
+	
 	ARX_Text_Close();
-
-	Localisation_Init();
 	
 	std::string strInGameFont = getFontFile();
 	std::string strInMenuFont = strInGameFont;
@@ -385,9 +382,7 @@ void ARX_Text_Init()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Text_Close()
-{
-	Localisation_Close();
+void ARX_Text_Close() {
 
 	delete pTextManage;
 	pTextManage = NULL;

@@ -29,7 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 void Localisation_Init();
-void Localisation_Close();
 
 /**
  * Returns the localized string for the given key name
