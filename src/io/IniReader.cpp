@@ -28,12 +28,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IniReader.h"
 
 #include <sstream>
+#include <algorithm>
 
 #include "io/Logger.h"
 
 using std::string;
 using std::istream;
 using std::getline;
+using std::transform;
 
 const IniSection* IniReader::getSection( const std::string& section ) const {
 	
@@ -99,8 +101,8 @@ const string * IniReader::getKey(const string & section, const string & key) con
 	return NULL;
 }
 
-const string WHITESPACE = " \t\r\n";
-const string ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
+static const string WHITESPACE = " \t\r\n";
+static const string ALPHANUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
 
 bool IniReader::read(istream & is) {
 	
@@ -138,8 +140,11 @@ bool IniReader::read(istream & is) {
 				continue;
 			}
 			
-			LogDebug << "found section: \"" << str.substr(start + 1, end - start - 1) << "\"";
-			section = &sections[str.substr(start + 1, end - start - 1)];
+			string sectionName = str.substr(start + 1, end - start - 1);
+			transform(sectionName.begin(), sectionName.end(), sectionName.begin(), ::tolower);
+			
+			LogDebug << "found section: \"" << sectionName << "\"";
+			section = &sections[sectionName];
 			
 			// Ignoring rest of the line, not verifying that it's only whitespace / comment
 			

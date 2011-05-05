@@ -316,37 +316,37 @@ void ARX_Menu_Resources_Create() {
 	ARXmenu.mda->pTexCredits = MakeTCFromFile("Graph\\Interface\\menus\\Menu_credits.bmp");
 	ARXmenu.mda->BookBackground = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
 
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],              "system_charsheet_strength");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],                  "system_charsheet_intel");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],             "system_charsheet_Dex");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],          "system_charsheet_consti");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],               "system_charsheet_stealth");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],              "system_charsheet_mecanism");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],             "system_charsheet_intuition");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],          "system_charsheet_etheral_link");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],      "system_charsheet_objknoledge");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],               "system_charsheet_casting");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],            "system_charsheet_projectile");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],          "system_charsheet_closecombat");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],               "system_charsheet_defense");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],    "system_charsheet_quickgenerate");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],                "system_charsheet_done");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],                "system_charsheet_skin");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],             "system_charsheet_atributes");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],                 "system_charsheet_skills");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],                 "system_charsheet_status");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],                  "system_charsheet_level");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],                     "system_charsheet_xpoints");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],                     "system_charsheet_hp");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],                   "system_charsheet_mana");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],                     "system_charsheet_AC");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],           "system_charsheet_res_magic");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],          "system_charsheet_res_poison");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],                 "system_charsheet_damage");
+	ARXmenu.mda->flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
+	ARXmenu.mda->flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
+	ARXmenu.mda->flyover[BOOK_DEXTERITY] = getLocalised("system_charsheet_dex");
+	ARXmenu.mda->flyover[BOOK_CONSTITUTION] = getLocalised("system_charsheet_consti");
+	ARXmenu.mda->flyover[BOOK_STEALTH] = getLocalised("system_charsheet_stealth");
+	ARXmenu.mda->flyover[BOOK_MECANISM] = getLocalised("system_charsheet_mecanism");
+	ARXmenu.mda->flyover[BOOK_INTUITION] = getLocalised("system_charsheet_intuition");
+	ARXmenu.mda->flyover[BOOK_ETHERAL_LINK] = getLocalised("system_charsheet_etheral_link");
+	ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE] = getLocalised("system_charsheet_objknoledge");
+	ARXmenu.mda->flyover[BOOK_CASTING] = getLocalised("system_charsheet_casting");
+	ARXmenu.mda->flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
+	ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
+	ARXmenu.mda->flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
+	ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION] = getLocalised("system_charsheet_quickgenerate");
+	ARXmenu.mda->flyover[BUTTON_DONE] = getLocalised("system_charsheet_done");
+	ARXmenu.mda->flyover[BUTTON_SKIN] = getLocalised("system_charsheet_skin");
+	ARXmenu.mda->flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
+	ARXmenu.mda->flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
+	ARXmenu.mda->flyover[WND_STATUS] = getLocalised("system_charsheet_status");
+	ARXmenu.mda->flyover[WND_LEVEL] = getLocalised("system_charsheet_level");
+	ARXmenu.mda->flyover[WND_XP] = getLocalised("system_charsheet_xpoints");
+	ARXmenu.mda->flyover[WND_HP] = getLocalised("system_charsheet_hp");
+	ARXmenu.mda->flyover[WND_MANA] = getLocalised("system_charsheet_mana");
+	ARXmenu.mda->flyover[WND_AC] = getLocalised("system_charsheet_ac");
+	ARXmenu.mda->flyover[WND_RESIST_MAGIC] = getLocalised("system_charsheet_res_magic");
+	ARXmenu.mda->flyover[WND_RESIST_POISON] = getLocalised("system_charsheet_res_poison");
+	ARXmenu.mda->flyover[WND_DAMAGE] = getLocalised("system_charsheet_damage");
 
-	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,                 "system_charsheet_button_quickgen");
-	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
-	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
+	ARXmenu.mda->str_button_quickgen = getLocalised("system_charsheet_button_quickgen");
+	ARXmenu.mda->str_button_skin = getLocalised("system_charsheet_button_skin");
+	ARXmenu.mda->str_button_done = getLocalised("system_charsheet_button_done");
 
 	
 	// Load credits.
@@ -694,8 +694,8 @@ bool ARX_Menu_Render()
 			ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
 			ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
 
-			ARX_Allocate_Text(ITC.Level, "system_charsheet_player_lvl");
-			ARX_Allocate_Text(ITC.Xp, "system_charsheet_player_xp");
+			ITC.Level = getLocalised("system_charsheet_player_lvl");
+			ITC.Xp = getLocalised("system_charsheet_player_xp");
 
 			ANIM_Set(&player.useanim, herowaitbook);
 
@@ -948,7 +948,7 @@ bool ARX_Menu_Render()
 		ePos.y = DANAESIZY * 0.4f;
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
-		szText = getLocalised("System_yes");
+		szText = getLocalised("system_yes");
 		textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
@@ -967,7 +967,7 @@ bool ARX_Menu_Render()
 
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
-		szText = getLocalised("System_no");
+		szText = getLocalised("system_no");
 		textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 

@@ -144,13 +144,13 @@ ActionKey actions[NUM_ACTION_KEY] = {
 namespace Section {
 
 const string
-	Language = "LANGUAGE",
-	FirstRun = "FIRSTRUN",
-	Video = "VIDEO",
-	Audio = "AUDIO",
-	Input = "INPUT",
-	Key = "KEY",
-	Misc = "MISC";
+	Language = "language",
+	FirstRun = "firstrun",
+	Video = "video",
+	Audio = "audio",
+	Input = "input",
+	Key = "key",
+	Misc = "misc";
 }
 
 namespace Key {
@@ -183,7 +183,7 @@ const string
 	sfxVolume = "effects_volume",
 	speechVolume = "speech_volume",
 	ambianceVolume = "ambiance_volume",
-	eax = "EAX",
+	eax = "eax",
 	audioBackend = "backend";
 
 // Input options
@@ -614,20 +614,16 @@ bool ConfigReader::get(const string & section, const string & key, bool defaultV
 	}
 	
 	istringstream iss(*temp);
+	istringstream iss2(*temp);
 	
 	bool val;
 	int v;
-	if((iss >> v).bad()) {
-		if((iss >> boolalpha >> val).bad()) {
-			LogWarning << "bad bool value for [" << section << "] " << key << ": " << *temp << ", resetting to " << boolalpha << defaultValue;
-		}
-	} else {
-		val = v;
-	}
+	iss >> v;
+	iss2 >> boolalpha >> val;
 	
 	LogDebug << "[" << section << "] " << key << " = " << boolalpha << val;
 	
-	return val;
+	return val || v;
 }
 
 void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionKey) {

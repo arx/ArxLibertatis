@@ -302,12 +302,6 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_Allocate_Text( std::string& dest, const std::string& id_string)
-{
-	dest = getLocalised( id_string );
-}
-
 Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned int fontSize, float scaleFactor = Yratio)
 {
 	std::stringstream ss;

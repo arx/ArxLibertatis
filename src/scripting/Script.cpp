@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
+#include <algorithm>
 
 #include "ai/Paths.h"
 
@@ -97,6 +98,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::sprintf;
 using std::min;
 using std::max;
+using std::transform;
 
 //#define NEEDING_DEBUG 1
 #define MAX_SSEPARAMS 5
@@ -2854,13 +2856,14 @@ void MakeStandard( std::string& str)
 //-----------------------------------------------------------------------------
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration)
 {
-	std::string output;
-
-	HERMES_UNICODE_GetProfileString(
-		text,
-		"Not Found",
-		output );
-	return (ARX_SPEECH_Add(io, output, duration));
+	// TODO move to caller
+	std::string section = text;
+	if(!section.empty() && section[0] == '[' && section[section.length() - 1] == ']') {
+		section = section.substr(1, section.length() - 2);
+	}
+	transform(section.begin(), section.end(), section.begin(), ::tolower);
+	std::string output = getLocalised(section, "Not Found");
+	return ARX_SPEECH_Add(io, output, duration);
 }
 
 //*************************************************************************************

@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 #include <sstream>
+#include <algorithm>
 
 #include "core/Application.h"
 #include "core/Unicode.hpp"
@@ -37,6 +38,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IniReader.h"
 
 #include "platform/Platform.h"
+
+using std::string;
+using std::transform;
 
 namespace {
 IniReader localisation;
@@ -108,24 +112,11 @@ void LocalisationInit() {
 	
 }
 
-// TODO replace uses with getLocalised
-long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
-                                      const std::string&  defaultstring,
-                                      std::string&        destination )
-{
-	std::string section = sectionname;
-
-	// if the section name has the qualifying brackets "[]", cut the back one then the front off
-	if ( section[0] == '[' && section[section.length()-1] == ']' )
-		section = section.substr( 0, section.length() - 1 ).substr( 1 );
-
-	destination = getLocalised( section, defaultstring );
-	return 0;
-}
-
-long HERMES_UNICODE_GetProfileSectionKeyCount(const string & sectionname) {
+long getLocalisedKeyCount(const string & sectionname) {
 	return localisation.getKeyCount(sectionname);
 }
+
+static const string UPCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO remove
 
 /**
  * Returns the localized string for the given key name
@@ -133,6 +124,11 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const string & sectionname) {
  * @return The localized string based on the currently loaded locale file
  */
 string getLocalised(const string & name, const string & default_value) {
+	
+	if(name.find_first_of(UPCASE) != string::npos || (!name.empty() && name[0] == '[')) {
+		LogWarning << "upcase char in \"" << name << "\""; // TODO remove
+	}
+	
 	return localisation.getKey(name, string(), default_value);
 }
 
@@ -144,5 +140,16 @@ long MakeLocalised(const std::string & text, std::string & output) {
 		return 0;
 	}
 	
-	return HERMES_UNICODE_GetProfileString(text, "error", output);
+	std::string section = text;
+
+	// if the section name has the qualifying brackets "[]", cut the back one then the front off
+	if(section[0] == '[' && section[section.length() - 1] == ']') {
+		section = section.substr(1, section.length() - 2);
+	}
+
+	transform(section.begin(), section.end(), section.begin(), ::tolower);
+	
+	// TODO move to caller
+	output = getLocalised(section, "error");
+	return 0;
 }

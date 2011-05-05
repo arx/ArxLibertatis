@@ -458,48 +458,49 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 
 	long flg = 0;
 
-	std::string lpszUSection = data;
+	// TODO move to caller
+	std::string section = data;
+	if(!section.empty() && section[0] == '[' && section[section.length() - 1] == ']') {
+		section = section.substr(1, section.length() - 2);
+	}
+	transform(section.begin(), section.end(), section.begin(), ::tolower);
 
 	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
 	{
-		std::string _output;
+		std::string _output = getLocalised(section);
 
-		flg = HERMES_UNICODE_GetProfileString(lpszUSection, "", _output);
-
-		io->lastspeechflag = (short)flg;
+		io->lastspeechflag = 0;
 		aspeech[num].text.clear();
 		aspeech[num].text = _output;
 		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
 	}
-
-	char speech_label[256];
-	char speech_sample[256];
-
-	strcpy(speech_label, data.substr(1).c_str() );
-	speech_label[strlen(speech_label) - 1] = 0;
+	
+	
+	LogDebug << "speech \"" << section << "\" \"" << data << "\"";
 
 	if (flags & ARX_SPEECH_FLAG_NOTEXT)
 	{
 		long count = 0;
 
-		count = HERMES_UNICODE_GetProfileSectionKeyCount(lpszUSection);
+		count = getLocalisedKeyCount(section);
 
-		flg = rnd() * count;
-
-		while ((io->lastspeechflag == flg) && (count > 1)) {
-			flg = rnd() * count;
-		}
+		do {
+			flg = rnd() * count + 1;
+		} while(io->lastspeechflag == flg && count > 1);
 
 		if (flg > count) flg = count;
 		else if (flg <= 0) flg = 1;
+		
+		LogDebug << " -> " << flg << " / " << count;
 
 		io->lastspeechflag = (short)flg;
 	}
 
+	char speech_sample[256];
 	if (flg > 1)
-		sprintf(speech_sample, "%s%ld", speech_label, flg);
+		sprintf(speech_sample, "%s%ld", section.c_str(), flg);
 	else
-		strcpy(speech_sample, speech_label);
+		strcpy(speech_sample, section.c_str());
 
 	if (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)
 		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample);

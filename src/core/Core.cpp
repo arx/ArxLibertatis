@@ -1678,8 +1678,8 @@ void LoadSysTextures()
 
 	// Magic_Sight Level 1
 	current=&spellicons[SPELL_MAGIC_SIGHT];
-	ARX_Allocate_Text(current->name, "system_spell_name_magic_sight");
-	ARX_Allocate_Text(current->description, "system_spell_description_magic_sight");
+	current->name = getLocalised("system_spell_name_magic_sight");
+	current->description = getLocalised("system_spell_description_magic_sight");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_SIGHT;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_magic_sight.bmp");
@@ -1688,8 +1688,8 @@ void LoadSysTextures()
 
 	// Magic_Missile Level 1
 	current=&spellicons[SPELL_MAGIC_MISSILE];	
-	ARX_Allocate_Text(current->name, "system_spell_name_magic_projectile");
-	ARX_Allocate_Text(current->description, "system_spell_description_magic_projectile");
+	current->name = getLocalised("system_spell_name_magic_projectile");
+	current->description = getLocalised("system_spell_description_magic_projectile");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_MISSILE;
 	current->bDuration = false;
@@ -1700,8 +1700,8 @@ void LoadSysTextures()
 
 	// Ignit Level 1
 	current=&spellicons[SPELL_IGNIT];	
-	ARX_Allocate_Text(current->name,"system_spell_name_ignit");
-	ARX_Allocate_Text(current->description,"system_spell_description_ignit");
+	current->name = getLocalised("system_spell_name_ignit");
+	current->description = getLocalised("system_spell_description_ignit");
 	current->level=1;
 	current->spellid=SPELL_IGNIT;
 	current->bDuration = false;
@@ -1711,8 +1711,8 @@ void LoadSysTextures()
 
 	// Douse Level 1
 	current=&spellicons[SPELL_DOUSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_douse");
-	ARX_Allocate_Text(current->description,"system_spell_description_douse");
+	current->name = getLocalised("system_spell_name_douse");
+	current->description = getLocalised("system_spell_description_douse");
 	current->level=1;
 	current->spellid=SPELL_DOUSE;
 	current->bDuration = false;
@@ -1722,8 +1722,8 @@ void LoadSysTextures()
 
 	// Activate_Portal Level 1
 	current=&spellicons[SPELL_ACTIVATE_PORTAL];
-	ARX_Allocate_Text(current->name,"system_spell_name_activate_portal");
-	ARX_Allocate_Text(current->description,"system_spell_description_activate_portal");
+	current->name = getLocalised("system_spell_name_activate_portal");
+	current->description = getLocalised("system_spell_description_activate_portal");
 	current->level=1;
 	current->spellid=SPELL_ACTIVATE_PORTAL;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_activate_portal.bmp");
@@ -1733,8 +1733,8 @@ void LoadSysTextures()
 
 	// Heal Level 2
 	current=&spellicons[SPELL_HEAL];	
-	ARX_Allocate_Text(current->name,"system_spell_name_heal");
-	ARX_Allocate_Text(current->description,"system_spell_description_heal");
+	current->name = getLocalised("system_spell_name_heal");
+	current->description = getLocalised("system_spell_description_heal");
 	current->level=2;
 	current->spellid=SPELL_HEAL;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_heal.bmp");
@@ -1743,8 +1743,8 @@ void LoadSysTextures()
 
 	// Detect_trap Level 2
 	current=&spellicons[SPELL_DETECT_TRAP];	
-	ARX_Allocate_Text(current->name,"system_spell_name_detect_trap");
-	ARX_Allocate_Text(current->description,"system_spell_description_detect_trap");
+	current->name = getLocalised("system_spell_name_detect_trap");
+	current->description = getLocalised("system_spell_description_detect_trap");
 	current->level=2;
 	current->spellid=SPELL_DETECT_TRAP;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_detect_trap.bmp");
@@ -1754,8 +1754,8 @@ void LoadSysTextures()
 
 	// Armor Level 2
 	current=&spellicons[SPELL_ARMOR];	
-	ARX_Allocate_Text(current->name,"system_spell_name_armor");
-	ARX_Allocate_Text(current->description,"system_spell_description_armor");
+	current->name = getLocalised("system_spell_name_armor");
+	current->description = getLocalised("system_spell_description_armor");
 	current->level=2;
 	current->spellid=SPELL_ARMOR;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_armor.bmp");
@@ -1764,8 +1764,8 @@ void LoadSysTextures()
 
 	// Lower Armor Level 2
 	current=&spellicons[SPELL_LOWER_ARMOR];	
-	ARX_Allocate_Text(current->name,"system_spell_name_lower_armor");
-	ARX_Allocate_Text(current->description,"system_spell_description_lower_armor");
+	current->name = getLocalised("system_spell_name_lower_armor");
+	current->description = getLocalised("system_spell_description_lower_armor");
 	current->level=2;
 	current->spellid=SPELL_LOWER_ARMOR;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_lower_armor.bmp");
@@ -1774,8 +1774,8 @@ void LoadSysTextures()
 
 	// Harm Level 2
 	current=&spellicons[SPELL_HARM];	
-	ARX_Allocate_Text(current->name,"system_spell_name_harm");
-	ARX_Allocate_Text(current->description,"system_spell_description_harm");
+	current->name = getLocalised("system_spell_name_harm");
+	current->description = getLocalised("system_spell_description_harm");
 	current->level=2;
 	current->spellid=SPELL_HARM;
 	current->bAudibleAtStart = true;
@@ -1786,8 +1786,8 @@ void LoadSysTextures()
 
 	// Speed Level 3
 	current=&spellicons[SPELL_SPEED];	
-	ARX_Allocate_Text(current->name,"system_spell_name_speed");
-	ARX_Allocate_Text(current->description,"system_spell_description_speed");
+	current->name = getLocalised("system_spell_name_speed");
+	current->description = getLocalised("system_spell_description_speed");
 	current->level=3;
 	current->spellid=SPELL_SPEED;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_speed.bmp");
@@ -1796,8 +1796,8 @@ void LoadSysTextures()
 
 	// Reveal Level 3
 	current=&spellicons[SPELL_DISPELL_ILLUSION];	
-	ARX_Allocate_Text(current->name,"system_spell_name_reveal");
-	ARX_Allocate_Text(current->description,"system_spell_description_reveal");
+	current->name = getLocalised("system_spell_name_reveal");
+	current->description = getLocalised("system_spell_description_reveal");
 	current->level=3;
 	current->spellid=SPELL_DISPELL_ILLUSION;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_reveal.bmp");
@@ -1807,8 +1807,8 @@ void LoadSysTextures()
 
 	// Fireball Level 3
 	current=&spellicons[SPELL_FIREBALL];	
-	ARX_Allocate_Text(current->name,"system_spell_name_fireball");
-	ARX_Allocate_Text(current->description,"system_spell_description_fireball");
+	current->name = getLocalised("system_spell_name_fireball");
+	current->description = getLocalised("system_spell_description_fireball");
 	current->level=3;
 	current->spellid=SPELL_FIREBALL;
 	current->bDuration = false;
@@ -1820,8 +1820,8 @@ void LoadSysTextures()
 
 	// Create Food Level 3
 	current=&spellicons[SPELL_CREATE_FOOD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_create_food");
-	ARX_Allocate_Text(current->description,"system_spell_description_create_food");
+	current->name = getLocalised("system_spell_name_create_food");
+	current->description = getLocalised("system_spell_description_create_food");
 	current->level=3;
 	current->spellid=SPELL_CREATE_FOOD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_create_food.bmp");
@@ -1831,8 +1831,8 @@ void LoadSysTextures()
 
 	// Ice Projectile Level 3
 	current=&spellicons[SPELL_ICE_PROJECTILE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_ice_projectile");
-	ARX_Allocate_Text(current->description,"system_spell_description_ice_projectile");
+	current->name = getLocalised("system_spell_name_ice_projectile");
+	current->description = getLocalised("system_spell_description_ice_projectile");
 	current->level=3;
 	current->spellid=SPELL_ICE_PROJECTILE;
 	current->bDuration = false;
@@ -1845,8 +1845,8 @@ void LoadSysTextures()
 
 	// Bless Level 4
 	current=&spellicons[SPELL_BLESS];	
-	ARX_Allocate_Text(current->name,"system_spell_name_sanctify");
-	ARX_Allocate_Text(current->description,"system_spell_description_sanctify");
+	current->name = getLocalised("system_spell_name_sanctify");
+	current->description = getLocalised("system_spell_description_sanctify");
 	current->level=4;
 	current->spellid=SPELL_BLESS;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_bless.bmp");
@@ -1856,8 +1856,8 @@ void LoadSysTextures()
 
 	// Dispel_Field Level 4
 	current=&spellicons[SPELL_DISPELL_FIELD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_dispell_field");
-	ARX_Allocate_Text(current->description,"system_spell_description_dispell_field");
+	current->name = getLocalised("system_spell_name_dispell_field");
+	current->description = getLocalised("system_spell_description_dispell_field");
 	current->level=4;
 	current->spellid=SPELL_DISPELL_FIELD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_dispell_field.bmp");
@@ -1867,8 +1867,8 @@ void LoadSysTextures()
 
 	// Cold Protection Level 4
 	current=&spellicons[SPELL_COLD_PROTECTION];	
-	ARX_Allocate_Text(current->name,"system_spell_name_cold_protection");
-	ARX_Allocate_Text(current->description,"system_spell_description_cold_protection");
+	current->name = getLocalised("system_spell_name_cold_protection");
+	current->description = getLocalised("system_spell_description_cold_protection");
 	current->level=4;
 	current->spellid=SPELL_COLD_PROTECTION;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_protection_cold.bmp");
@@ -1878,8 +1878,8 @@ void LoadSysTextures()
 
 	// Fire Protection Level 4
 	current=&spellicons[SPELL_FIRE_PROTECTION];	
-	ARX_Allocate_Text(current->name,"system_spell_name_fire_protection");
-	ARX_Allocate_Text(current->description,"system_spell_description_fire_protection");
+	current->name = getLocalised("system_spell_name_fire_protection");
+	current->description = getLocalised("system_spell_description_fire_protection");
 	current->level=4;
 	current->spellid=SPELL_FIRE_PROTECTION;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_protection_fire.bmp");
@@ -1888,8 +1888,8 @@ void LoadSysTextures()
 
 	// Telekinesis Level 4
 	current=&spellicons[SPELL_TELEKINESIS];	
-	ARX_Allocate_Text(current->name,"system_spell_name_telekinesis");
-	ARX_Allocate_Text(current->description,"system_spell_description_telekinesis");
+	current->name = getLocalised("system_spell_name_telekinesis");
+	current->description = getLocalised("system_spell_description_telekinesis");
 	current->level=4;
 	current->spellid=SPELL_TELEKINESIS;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_telekinesis.bmp");
@@ -1898,8 +1898,8 @@ void LoadSysTextures()
 
 	// Curse Level 4
 	current=&spellicons[SPELL_CURSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_curse");
-	ARX_Allocate_Text(current->description,"system_spell_description_curse");
+	current->name = getLocalised("system_spell_name_curse");
+	current->description = getLocalised("system_spell_description_curse");
 	current->level=4;
 	current->spellid=SPELL_CURSE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_curse.bmp");
@@ -1910,8 +1910,8 @@ void LoadSysTextures()
 
 	// Rune of Guarding Level 5
 	current=&spellicons[SPELL_RUNE_OF_GUARDING];	
-	ARX_Allocate_Text(current->name,"system_spell_name_rune_guarding");
-	ARX_Allocate_Text(current->description,"system_spell_description_rune_guarding");
+	current->name = getLocalised("system_spell_name_rune_guarding");
+	current->description = getLocalised("system_spell_description_rune_guarding");
 	current->level=5;
 	current->spellid=SPELL_RUNE_OF_GUARDING;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_rune_guarding.bmp");
@@ -1921,8 +1921,8 @@ void LoadSysTextures()
 
 	// Levitate Level 5
 	current=&spellicons[SPELL_LEVITATE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_levitate");
-	ARX_Allocate_Text(current->description,"system_spell_description_levitate");
+	current->name = getLocalised("system_spell_name_levitate");
+	current->description = getLocalised("system_spell_description_levitate");
 	current->level=5;
 	current->spellid=SPELL_LEVITATE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_levitate.bmp");
@@ -1932,8 +1932,8 @@ void LoadSysTextures()
 
 	// Cure Poison Level 5
 	current=&spellicons[SPELL_CURE_POISON];	
-	ARX_Allocate_Text(current->name,"system_spell_name_cure_poison");
-	ARX_Allocate_Text(current->description,"system_spell_description_cure_poison");
+	current->name = getLocalised("system_spell_name_cure_poison");
+	current->description = getLocalised("system_spell_description_cure_poison");
 	current->level=5;
 	current->spellid=SPELL_CURE_POISON;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_cure_poison.bmp");
@@ -1942,8 +1942,8 @@ void LoadSysTextures()
 
 	// Repel Undead Level 5
 	current=&spellicons[SPELL_REPEL_UNDEAD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_repel_undead");
-	ARX_Allocate_Text(current->description,"system_spell_description_repel_undead");
+	current->name = getLocalised("system_spell_name_repel_undead");
+	current->description = getLocalised("system_spell_description_repel_undead");
 	current->level=5;
 	current->spellid=SPELL_REPEL_UNDEAD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_repel_undead.bmp");
@@ -1952,8 +1952,8 @@ void LoadSysTextures()
 
 	// Poison Projection Level 5
 	current=&spellicons[SPELL_POISON_PROJECTILE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_poison_projection");
-	ARX_Allocate_Text(current->description,"system_spell_description_poison_projection");
+	current->name = getLocalised("system_spell_name_poison_projection");
+	current->description = getLocalised("system_spell_description_poison_projection");
 	current->level=5;
 	current->spellid=SPELL_POISON_PROJECTILE;
 	current->bDuration = false;
@@ -1965,8 +1965,8 @@ void LoadSysTextures()
 
 	// Raise Dead Level 6
 	current=&spellicons[SPELL_RISE_DEAD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_raise_dead");
-	ARX_Allocate_Text(current->description,"system_spell_description_raise_dead");
+	current->name = getLocalised("system_spell_name_raise_dead");
+	current->description = getLocalised("system_spell_description_raise_dead");
 	current->level=6;
 	current->spellid=SPELL_RISE_DEAD;
 	current->bAudibleAtStart = true;
@@ -1977,8 +1977,8 @@ void LoadSysTextures()
 
 	// Paralyse Dead Level 6
 	current=&spellicons[SPELL_PARALYSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_paralyse");
-	ARX_Allocate_Text(current->description,"system_spell_description_paralyse");
+	current->name = getLocalised("system_spell_name_paralyse");
+	current->description = getLocalised("system_spell_description_paralyse");
 	current->level=6;
 	current->spellid=SPELL_PARALYSE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_paralyse.bmp");
@@ -1987,8 +1987,8 @@ void LoadSysTextures()
 
 	// Create Field Dead Level 6
 	current=&spellicons[SPELL_CREATE_FIELD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_create_field");
-	ARX_Allocate_Text(current->description,"system_spell_description_create_field");
+	current->name = getLocalised("system_spell_name_create_field");
+	current->description = getLocalised("system_spell_description_create_field");
 	current->level=6;
 	current->spellid=SPELL_CREATE_FIELD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_create_field.bmp");
@@ -1998,8 +1998,8 @@ void LoadSysTextures()
 
 	// Disarm Trap Level 6
 	current=&spellicons[SPELL_DISARM_TRAP];	
-	ARX_Allocate_Text(current->name,"system_spell_name_disarm_trap");
-	ARX_Allocate_Text(current->description,"system_spell_description_disarm_trap");
+	current->name = getLocalised("system_spell_name_disarm_trap");
+	current->description = getLocalised("system_spell_description_disarm_trap");
 	current->level=6;
 	current->spellid=SPELL_DISARM_TRAP;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_disarm_trap.bmp");
@@ -2009,8 +2009,8 @@ void LoadSysTextures()
 
 	// Slow_Down Level 6 // SECRET SPELL
 	current=&spellicons[SPELL_SLOW_DOWN];	
-	ARX_Allocate_Text(current->name,"system_spell_name_slowdown");
-	ARX_Allocate_Text(current->description,"system_spell_description_slowdown");
+	current->name = getLocalised("system_spell_name_slowdown");
+	current->description = getLocalised("system_spell_description_slowdown");
 	current->level=6;
 	current->spellid=SPELL_SLOW_DOWN;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_slow_down.bmp");
@@ -2020,8 +2020,8 @@ void LoadSysTextures()
 
 	// Flying Eye Level 7
 	current=&spellicons[SPELL_FLYING_EYE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_flying_eye");
-	ARX_Allocate_Text(current->description,"system_spell_description_flying_eye");
+	current->name = getLocalised("system_spell_name_flying_eye");
+	current->description = getLocalised("system_spell_description_flying_eye");
 	current->level=7;
 	current->spellid=SPELL_FLYING_EYE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_flying_eye.bmp");
@@ -2030,8 +2030,8 @@ void LoadSysTextures()
 
 	// Fire Field Eye Level 7
 	current=&spellicons[SPELL_FIRE_FIELD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_fire_field");
-	ARX_Allocate_Text(current->description,"system_spell_description_fire_field");
+	current->name = getLocalised("system_spell_name_fire_field");
+	current->description = getLocalised("system_spell_description_fire_field");
 	current->level=7;
 	current->spellid=SPELL_FIRE_FIELD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_create_fire_field.bmp");
@@ -2041,8 +2041,8 @@ void LoadSysTextures()
 
 	// Ice Field Level 7
 	current=&spellicons[SPELL_ICE_FIELD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_ice_field");
-	ARX_Allocate_Text(current->description,"system_spell_description_ice_field");
+	current->name = getLocalised("system_spell_name_ice_field");
+	current->description = getLocalised("system_spell_description_ice_field");
 	current->level=7;
 	current->spellid=SPELL_ICE_FIELD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_create_cold_field.bmp");
@@ -2053,8 +2053,8 @@ void LoadSysTextures()
 
 	// Lightning Strike Level 7
 	current=&spellicons[SPELL_LIGHTNING_STRIKE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_lightning_strike");
-	ARX_Allocate_Text(current->description,"system_spell_description_lightning_strike");
+	current->name = getLocalised("system_spell_name_lightning_strike");
+	current->description = getLocalised("system_spell_description_lightning_strike");
 	current->level=7;
 	current->spellid=SPELL_LIGHTNING_STRIKE;
 	current->bDuration = false;
@@ -2066,8 +2066,8 @@ void LoadSysTextures()
 
 	// Confusion Level 7
 	current=&spellicons[SPELL_CONFUSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_confuse");
-	ARX_Allocate_Text(current->description,"system_spell_description_confuse");
+	current->name = getLocalised("system_spell_name_confuse");
+	current->description = getLocalised("system_spell_description_confuse");
 	current->level=7;
 	current->spellid=SPELL_CONFUSE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_confuse.bmp");
@@ -2076,8 +2076,8 @@ void LoadSysTextures()
 
 	// Invisibility Level 8
 	current=&spellicons[SPELL_INVISIBILITY];	
-	ARX_Allocate_Text(current->name,"system_spell_name_invisibility");
-	ARX_Allocate_Text(current->description,"system_spell_description_invisibility");
+	current->name = getLocalised("system_spell_name_invisibility");
+	current->description = getLocalised("system_spell_description_invisibility");
 	current->level=8;
 	current->spellid=SPELL_INVISIBILITY;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_invisibility.bmp");
@@ -2086,8 +2086,8 @@ void LoadSysTextures()
 
 	// Mana Drain Level 8
 	current=&spellicons[SPELL_MANA_DRAIN];	
-	ARX_Allocate_Text(current->name,"system_spell_name_mana_drain");
-	ARX_Allocate_Text(current->description,"system_spell_description_mana_drain");
+	current->name = getLocalised("system_spell_name_mana_drain");
+	current->description = getLocalised("system_spell_description_mana_drain");
 	current->level=8;
 	current->spellid=SPELL_MANA_DRAIN;
 	current->bAudibleAtStart = true;
@@ -2097,8 +2097,8 @@ void LoadSysTextures()
 
 	// Explosion Level 8
 	current=&spellicons[SPELL_EXPLOSION];	
-	ARX_Allocate_Text(current->name,"system_spell_name_explosion");
-	ARX_Allocate_Text(current->description,"system_spell_description_explosion");
+	current->name = getLocalised("system_spell_name_explosion");
+	current->description = getLocalised("system_spell_description_explosion");
 	current->level=8;
 	current->spellid=SPELL_EXPLOSION;
 	current->bDuration = false;
@@ -2110,8 +2110,8 @@ void LoadSysTextures()
 
 	// Enchant Weapon Level 8
 	current=&spellicons[SPELL_ENCHANT_WEAPON];	
-	ARX_Allocate_Text(current->name,"system_spell_name_enchant_weapon");
-	ARX_Allocate_Text(current->description,"system_spell_description_enchant_weapon");
+	current->name = getLocalised("system_spell_name_enchant_weapon");
+	current->description = getLocalised("system_spell_description_enchant_weapon");
 	current->level=8;
 	current->spellid=SPELL_ENCHANT_WEAPON;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_enchant_weapon.bmp");
@@ -2121,8 +2121,8 @@ void LoadSysTextures()
 
 	// Life Drain Level 8 // SECRET SPELL
 	current=&spellicons[SPELL_LIFE_DRAIN];	
-	ARX_Allocate_Text(current->name,"system_spell_name_life_drain");
-	ARX_Allocate_Text(current->description,"system_spell_description_life_drain");
+	current->name = getLocalised("system_spell_name_life_drain");
+	current->description = getLocalised("system_spell_description_life_drain");
 	current->level=8;
 	current->spellid=SPELL_LIFE_DRAIN;
 	current->bAudibleAtStart = true;
@@ -2133,8 +2133,8 @@ void LoadSysTextures()
 
 	// Summon Creature Level 9
 	current=&spellicons[SPELL_SUMMON_CREATURE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_summon_creature");
-	ARX_Allocate_Text(current->description,"system_spell_description_summon_creature");
+	current->name = getLocalised("system_spell_name_summon_creature");
+	current->description = getLocalised("system_spell_description_summon_creature");
 	current->level=9;
 	current->spellid=SPELL_SUMMON_CREATURE;
 	current->bAudibleAtStart = true;
@@ -2145,8 +2145,8 @@ void LoadSysTextures()
 
 	// FAKE Summon Creature Level 9
 	current=&spellicons[SPELL_FAKE_SUMMON];	
-	ARX_Allocate_Text(current->name,"system_spell_name_summon_creature");
-	ARX_Allocate_Text(current->description,"system_spell_description_summon_creature");
+	current->name = getLocalised("system_spell_name_summon_creature");
+	current->description = getLocalised("system_spell_description_summon_creature");
 	current->level=9;
 	current->spellid=SPELL_FAKE_SUMMON;
 	current->bAudibleAtStart = true;
@@ -2158,8 +2158,8 @@ void LoadSysTextures()
 
 	// Negate Magic Level 9
 	current=&spellicons[SPELL_NEGATE_MAGIC];	
-	ARX_Allocate_Text(current->name,"system_spell_name_negate_magic");
-	ARX_Allocate_Text(current->description,"system_spell_description_negate_magic");
+	current->name = getLocalised("system_spell_name_negate_magic");
+	current->description = getLocalised("system_spell_description_negate_magic");
 	current->level=9;
 	current->spellid=SPELL_NEGATE_MAGIC;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_negate_magic.bmp");
@@ -2169,8 +2169,8 @@ void LoadSysTextures()
 
 	// Incinerate Level 9
 	current=&spellicons[SPELL_INCINERATE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_incinerate");
-	ARX_Allocate_Text(current->description,"system_spell_description_incinerate");
+	current->name = getLocalised("system_spell_name_incinerate");
+	current->description = getLocalised("system_spell_description_incinerate");
 	current->level=9;
 	current->spellid=SPELL_INCINERATE;
 	current->bDuration = false;
@@ -2182,8 +2182,8 @@ void LoadSysTextures()
 
 	// Mass paralyse Creature Level 9
 	current=&spellicons[SPELL_MASS_PARALYSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_mass_paralyse");
-	ARX_Allocate_Text(current->description,"system_spell_description_mass_paralyse");
+	current->name = getLocalised("system_spell_name_mass_paralyse");
+	current->description = getLocalised("system_spell_description_mass_paralyse");
 	current->level=9;
 	current->spellid=SPELL_MASS_PARALYSE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_mass_paralyse.bmp");
@@ -2193,8 +2193,8 @@ void LoadSysTextures()
 
 	// Mass Lightning Strike Level 10
 	current=&spellicons[SPELL_MASS_LIGHTNING_STRIKE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_mass_lightning_strike");
-	ARX_Allocate_Text(current->description,"system_spell_description_mass_lightning_strike");
+	current->name = getLocalised("system_spell_name_mass_lightning_strike");
+	current->description = getLocalised("system_spell_description_mass_lightning_strike");
 	current->level=10;
 	current->spellid=SPELL_MASS_LIGHTNING_STRIKE;
 	current->bDuration = false;
@@ -2206,8 +2206,8 @@ void LoadSysTextures()
 
 	// Control Target Level 10
 	current=&spellicons[SPELL_CONTROL_TARGET];	
-	ARX_Allocate_Text(current->name,"system_spell_name_control_target");
-	ARX_Allocate_Text(current->description,"system_spell_description_control_target");
+	current->name = getLocalised("system_spell_name_control_target");
+	current->description = getLocalised("system_spell_description_control_target");
 	current->level=10;
 	current->spellid=SPELL_CONTROL_TARGET;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_control_target.bmp");
@@ -2216,8 +2216,8 @@ void LoadSysTextures()
 
 	// Freeze time Level 10
 	current=&spellicons[SPELL_FREEZE_TIME];	
-	ARX_Allocate_Text(current->name,"system_spell_name_freeze_time");
-	ARX_Allocate_Text(current->description,"system_spell_description_freeze_time");
+	current->name = getLocalised("system_spell_name_freeze_time");
+	current->description = getLocalised("system_spell_description_freeze_time");
 	current->level=10;
 	current->spellid=SPELL_FREEZE_TIME;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_freeze_time.bmp");
@@ -2226,8 +2226,8 @@ void LoadSysTextures()
 
 	// Mass incinerate Level 10
 	current=&spellicons[SPELL_MASS_INCINERATE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_mass_incinerate");
-	ARX_Allocate_Text(current->description,"system_spell_description_mass_incinerate");
+	current->name = getLocalised("system_spell_name_mass_incinerate");
+	current->description = getLocalised("system_spell_description_mass_incinerate");
 	current->level=10;
 	current->spellid=SPELL_MASS_INCINERATE;
 	current->bDuration = false;

@@ -816,12 +816,12 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					CMenuPanel *pPanel = new CMenuPanel();
-					szMenuText = getLocalised( "System_yes" ); // getLocalised is case sensitive, fix pak files
+					szMenuText = getLocalised( "system_yes" );
 					szMenuText += "   "; // TODO This space can probably go
 					me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 					me->SetPos(RATIO_X(iWindowConsoleWidth - (me->GetWidth() + 10)),0);
 					pPanel->AddElementNoCenterIn(me);
-					szMenuText = getLocalised( "System_no" );
+					szMenuText = getLocalised( "system_no" );
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
 					me->SetShortCut(DIK_ESCAPE);
 					pPanel->AddElementNoCenterIn(me);
@@ -1892,13 +1892,13 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					CMenuPanel *pPanel = new CMenuPanel();
-					szMenuText = getLocalised( "System_yes" ); // TODO Is case sensitive, fix pak
+					szMenuText = getLocalised( "system_yes" ); // TODO Is case sensitive, fix pak
 
 					me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), 0);
 					pPanel->AddElementNoCenterIn(me);
-					szMenuText = getLocalised( "System_no" ); // TODO Is case sensitive, fix pak
+					szMenuText = getLocalised( "system_no" ); // TODO Is case sensitive, fix pak
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
 					me->SetShortCut(DIK_ESCAPE);
 					pPanel->AddElementNoCenterIn(me);
