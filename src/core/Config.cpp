@@ -35,13 +35,11 @@
 #include "window/Input.h" // for key codes TODO remove
 
 using std::string;
-using std::istream;
 using std::ifstream;
 using std::ostream;
 using std::ofstream;
 using std::istringstream;
 using std::ostringstream;
-using std::boolalpha;
 using std::map;
 
 // To avoid conflicts with potential other classes/namespaces
@@ -249,26 +247,17 @@ const string
 
 } // namespace Key
 
-class ConfigReader {
+class ConfigReader : public IniReader {
 	
 private:
 	
-	IniReader ini;
 	mutable map<string, InputKeyId> keyNames;
 	
 	InputKeyId getKeyId(const string & name) const;
 	
 public:
 	
-	bool read(ifstream & input) {
-		return ini.read(input);
-	}
-	
-	const string & get(const string & section, const string & key, const string & defaultValue) const;
-	int get(const string & section, const string & key, int defaultValue) const;
-	float get(const string & section, const string & key, float defaultValue) const;
-	bool get(const string & section, const string & key, bool defaultValue) const;
-	ActionKey get(const string & section, ControlAction index) const;
+	ActionKey getActionKey(const string & section, ControlAction index) const;
 	
 };
 
@@ -523,113 +512,6 @@ InputKeyId ConfigReader::getKeyId(const string & name) const {
 	return -1;
 }
 
-/**
- * Reads a string from the config and returns it, returning the default value if an empty string was found
- * @param section The section to read from
- * @param key The key in the section to return
- * @param default_value The default value to be returned in the case of an empty string
- */
-const string & ConfigReader::get(const string & section, const string & key, const string & defaultValue) const {
-	
-	const string * temp = ini.getKey(section, key);
-	
-	if(!temp) {
-		LogDebug << "[" << section << "] " << key << " = \"" << defaultValue << "\" [default]";
-		return defaultValue;
-	} else {
-		LogDebug << "[" << section << "] " << key << " = \"" << *temp << "\"";
-		return *temp;
-	}
-}
-
-/**
- * Reads an int from the config and returns its converted int value,
- * return the default value if an empty string is found.
- * @param section The section to read from
- * @param key The key in the section to return
- * @param default_value The default value to return in the case of an empty string
- */
-int ConfigReader::get(const string & section, const string & key, int defaultValue) const {
-	
-	const string * temp = ini.getKey(section, key);
-	if(!temp) {
-		LogDebug << "[" << section << "] " << key << " = " << defaultValue << " [default]";
-		return defaultValue;
-	}
-	
-	istringstream iss(*temp);
-	
-	int val;
-	if((iss >> val).bad()) {
-		LogWarning << "bad integer value for [" << section << "] " << key << ": " << *temp << ", resetting to " << defaultValue;
-		return defaultValue;
-	}
-	
-	LogDebug << "[" << section << "] " << key << " = " << val;
-	
-	return val;
-}
-
-/**
- * Reads a float from the config and returns its converted int value,
- * return the default value if an empty string is found.
- * @param section The section to read from
- * @param key The key in the section to return
- * @param default_value The default value to return in the case of an empty string
- */
-float ConfigReader::get(const string & section, const string & key, float defaultValue) const {
-	
-	const string * temp = ini.getKey(section, key);
-	if(!temp) {
-		LogDebug << "[" << section << "] " << key << " = " << defaultValue << " [default]";
-		return defaultValue;
-	}
-	
-	istringstream iss(*temp);
-	
-	float val;
-	if((iss >> val).bad()) {
-		LogWarning << "bad float value for [" << section << "] " << key << ": " << *temp << ", resetting to " << defaultValue;
-		return defaultValue;
-	}
-	
-	LogDebug << "[" << section << "] " << key << " = " << val;
-	
-	return val;
-}
-
-/**
- * Reads a bool from the config and returns its converted bool value,
- * return the default value if an empty string is found.
- * @param section The section to read from
- * @param key The key in the section to return
- * @param default_value The default value to return in the case of an empty string
- */
-bool ConfigReader::get(const string & section, const string & key, bool defaultValue) const {
-	
-	const string * temp = ini.getKey(section, key);
-	if(!temp) {
-		LogDebug << "[" << section << "] " << key << " = " << boolalpha << defaultValue << " [default]";
-		return defaultValue;
-	}
-	
-	istringstream iss(*temp);
-	istringstream iss2(*temp);
-	
-	bool val = false;
-	int v = 0;
-
-	// Support either boolean specified as strings (true, false) or 0, 1
-	iss >> v;
-	iss2 >> boolalpha >> val;
-
-	val = val || (v != 0);
-	
-	LogDebug << "[" << section << "] " << key << " = " << boolalpha << val;
-	
-	return val;
-}
-
 void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionKey) {
 	
 	string v1 = getKeyName(actionKey.key[0]);
@@ -639,12 +521,12 @@ void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionK
 	writeKey(Key::actions[index] + "_k1", v2);
 }
 
-ActionKey ConfigReader::get(const string & section, ControlAction index) const {
+ActionKey ConfigReader::getActionKey(const string & section, ControlAction index) const {
 	
 	const string & key = Key::actions[index];
 	ActionKey action_key = Default::actions[index];
 	
-	const string * k0 = ini.getKey(section, key + "_k0");
+	const string * k0 = getKey(section, key + "_k0");
 	if(k0) {
 		InputKeyId id = getKeyId(*k0);
 		if(id == -1 && !k0->empty() && *k0 != KEY_NONE) {
@@ -654,7 +536,7 @@ ActionKey ConfigReader::get(const string & section, ControlAction index) const {
 		}
 	}
 	
-	const string * k1 = ini.getKey(section, key + "_k1");
+	const string * k1 = getKey(section, key + "_k1");
 	if(k1) {
 		InputKeyId id = getKeyId(*k1);
 		if(id == -1 && !k1->empty() && *k1 != KEY_NONE) {
@@ -812,14 +694,14 @@ bool Config::init(const string & file, const string & defaultFile) {
 	}
 	
 	// Check if this is the first run of the game
-	firstRun = reader.get(Section::FirstRun, Key::firstRun, Default::first_run);
+	firstRun = reader.getKey(Section::FirstRun, Key::firstRun, Default::first_run);
 	
 	// Get locale language
-	language = reader.get(Section::Language, Key::language, Default::language);
+	language = reader.getKey(Section::Language, Key::language, Default::language);
 	
 	// Get video settings
 	
-	string resolution = reader.get(Section::Video, Key::resolution, Default::resolution);
+	string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
 	istringstream iss(resolution);
 	iss >> video.width;
 	char x;
@@ -831,46 +713,46 @@ bool Config::init(const string & file, const string & defaultFile) {
 		video.height = DEFAULT_HEIGHT;
 	}
 	
-	video.bpp = reader.get(Section::Video, Key::bpp, Default::bpp);
-	video.fullscreen = reader.get(Section::Video, Key::fullscreen, Default::fullscreen);
-	video.bumpmap = reader.get(Section::Video, Key::bumpmap, Default::bumpmap);
-	video.textureSize = reader.get(Section::Video, Key::textureSize, Default::textureSize);
-	video.meshReduction = reader.get(Section::Video, Key::meshReduction, Default::meshReduction);
-	video.levelOfDetail = reader.get(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
-	video.fogDistance = reader.get(Section::Video, Key::fogDistance, Default::fogDistance);
-	video.gamma = reader.get(Section::Video, Key::gamma, Default::gamma);
-	video.luminosity = reader.get(Section::Video, Key::luminosity, Default::luminosity);
-	video.contrast = reader.get(Section::Video, Key::contrast, Default::contrast);
-	video.showCrosshair = reader.get(Section::Video, Key::showCrosshair, Default::showCrosshair);
-	video.antialiasing = reader.get(Section::Video, Key::antialiasing, Default::antialiasing);
+	video.bpp = reader.getKey(Section::Video, Key::bpp, Default::bpp);
+	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
+	video.bumpmap = reader.getKey(Section::Video, Key::bumpmap, Default::bumpmap);
+	video.textureSize = reader.getKey(Section::Video, Key::textureSize, Default::textureSize);
+	video.meshReduction = reader.getKey(Section::Video, Key::meshReduction, Default::meshReduction);
+	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
+	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);
+	video.gamma = reader.getKey(Section::Video, Key::gamma, Default::gamma);
+	video.luminosity = reader.getKey(Section::Video, Key::luminosity, Default::luminosity);
+	video.contrast = reader.getKey(Section::Video, Key::contrast, Default::contrast);
+	video.showCrosshair = reader.getKey(Section::Video, Key::showCrosshair, Default::showCrosshair);
+	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	
 	// Get audio settings
-	audio.volume = reader.get(Section::Audio, Key::volume, Default::volume);
-	audio.sfxVolume = reader.get(Section::Audio, Key::sfxVolume, Default::sfxVolume);
-	audio.speechVolume = reader.get(Section::Audio, Key::speechVolume, Default::speechVolume);
-	audio.ambianceVolume = reader.get(Section::Audio, Key::ambianceVolume, Default::ambianceVolume);
-	audio.eax = reader.get(Section::Audio, Key::eax, Default::eax);
-	audio.backend = reader.get(Section::Audio, Key::audioBackend, Default::audioBackend);
+	audio.volume = reader.getKey(Section::Audio, Key::volume, Default::volume);
+	audio.sfxVolume = reader.getKey(Section::Audio, Key::sfxVolume, Default::sfxVolume);
+	audio.speechVolume = reader.getKey(Section::Audio, Key::speechVolume, Default::speechVolume);
+	audio.ambianceVolume = reader.getKey(Section::Audio, Key::ambianceVolume, Default::ambianceVolume);
+	audio.eax = reader.getKey(Section::Audio, Key::eax, Default::eax);
+	audio.backend = reader.getKey(Section::Audio, Key::audioBackend, Default::audioBackend);
 	
 	// Get input settings
-	input.invertMouse = reader.get(Section::Input, Key::invertMouse, Default::invertMouse);
-	input.autoReadyWeapon = reader.get(Section::Input, Key::autoReadyWeapon, Default::autoReadyWeapon);
-	input.mouseLookToggle = reader.get(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
-	input.mouseSensitivity = reader.get(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
-	input.mouseSmoothing = reader.get(Section::Input, Key::mouseSmoothing, Default::mouseSmoothing);
-	input.autoDescription = reader.get(Section::Input, Key::autoDescription, Default::autoDescription);
-	input.linkMouseLookToUse = reader.get(Section::Input, Key::linkMouseLookToUse, Default::linkMouseLookToUse);
+	input.invertMouse = reader.getKey(Section::Input, Key::invertMouse, Default::invertMouse);
+	input.autoReadyWeapon = reader.getKey(Section::Input, Key::autoReadyWeapon, Default::autoReadyWeapon);
+	input.mouseLookToggle = reader.getKey(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
+	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
+	input.mouseSmoothing = reader.getKey(Section::Input, Key::mouseSmoothing, Default::mouseSmoothing);
+	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
+	input.linkMouseLookToUse = reader.getKey(Section::Input, Key::linkMouseLookToUse, Default::linkMouseLookToUse);
 	
 	// Get action key settings
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
-		actions[i] = reader.get(Section::Key, (ControlAction)i);
+		actions[i] = reader.getActionKey(Section::Key, (ControlAction)i);
 	}
 	
 	// Get miscellaneous settings
-	misc.forceZBias = reader.get(Section::Misc, Key::forceZBias, Default::forceZBias);
-	misc.forceToggle = reader.get(Section::Misc, Key::forceToggle, Default::forceToggle);
-	misc.gore = reader.get(Section::Misc, Key::gore, Default::gore);
-	misc.newControl = reader.get(Section::Misc, Key::newControl, Default::newControl);
+	misc.forceZBias = reader.getKey(Section::Misc, Key::forceZBias, Default::forceZBias);
+	misc.forceToggle = reader.getKey(Section::Misc, Key::forceToggle, Default::forceToggle);
+	misc.gore = reader.getKey(Section::Misc, Key::gore, Default::gore);
+	misc.newControl = reader.getKey(Section::Misc, Key::newControl, Default::newControl);
 	
 	return loaded;
 }

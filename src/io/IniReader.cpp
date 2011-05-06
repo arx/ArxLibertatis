@@ -36,6 +36,8 @@ using std::string;
 using std::istream;
 using std::getline;
 using std::transform;
+using std::istringstream;
+using std::boolalpha;
 
 const IniSection* IniReader::getSection( const std::string& section ) const {
 	
@@ -68,6 +70,63 @@ const string & IniReader::getKey(const string & section, const string & key, con
 		return default_value;
 	}
 	
+}
+
+int IniReader::getKey(const string & section, const string & key, int defaultValue) const {
+	
+	const string * temp = getKey(section, key);
+	if(!temp) {
+		return defaultValue;
+	}
+	
+	istringstream iss(*temp);
+	
+	int val = defaultValue;
+	if((iss >> val).fail()) {
+		return defaultValue;
+	}
+	
+	return val;
+}
+
+float IniReader::getKey(const string & section, const string & key, float defaultValue) const {
+	
+	const string * temp = getKey(section, key);
+	if(!temp) {
+		return defaultValue;
+	}
+	
+	istringstream iss(*temp);
+	
+	float val;
+	if((iss >> val).fail()) {
+		return defaultValue;
+	}
+	
+	return val;
+}
+
+
+bool IniReader::getKey(const string & section, const string & key, bool defaultValue) const {
+	
+	const string * temp = getKey(section, key);
+	if(!temp) {
+		return defaultValue;
+	}
+	
+	// Support either boolean specified as strings (true, false) or 0, 1
+	bool val;
+	istringstream iss(*temp);
+	if((iss >> boolalpha >> val).fail()) {
+		iss.clear();
+		int intVal;
+		if((iss >> intVal).fail()) {
+			return defaultValue;
+		}
+		val = (intVal != 0);
+	}
+	
+	return val;
 }
 
 const string * IniReader::getKey(const string & section, const string & key) const {
