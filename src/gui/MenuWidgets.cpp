@@ -66,7 +66,7 @@ using std::wistringstream;
 using std::min;
 using std::max;
 
-int newBumpMapping;
+bool newBumpMapping;
 int newTextureSize;
 int newWidth;
 int newHeight;
@@ -458,7 +458,7 @@ void Check_Apply()
 {
 	if(pMenuElementApply)
 	{
-		if(    (config.video.bumpmap!=newBumpMapping)||
+		if( (config.video.bumpmap!=newBumpMapping)||
 			(config.video.textureSize!=newTextureSize)||
 			(config.video.width!=newWidth)||
 			(config.video.height!=newHeight)||

@@ -1096,7 +1096,7 @@ long ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string
 
 	if (ambiance_id == INVALID_ID) return INVALID_ID;
 
-	aalMuteAmbianceTrack(ambiance_id, track_name, status);
+	aalMuteAmbianceTrack(ambiance_id, track_name, status != 0);
 
 	return ambiance_id;
 }
@@ -2097,8 +2097,6 @@ LARGE_INTEGER Sstart_chrono, Send_chrono;
 unsigned long BENCH_SOUND = 0;
 LPTHREAD_START_ROUTINE UpdateSoundThread(char *)
 {
-	bExitUpdateThread = false;
-
 	while (!bExitUpdateThread)
 	{
 		Sleep(ARX_SOUND_UPDATE_INTERVAL);
@@ -2118,6 +2116,8 @@ static void ARX_SOUND_LaunchUpdateThread()
 	DWORD id;
 
 	if (hUpdateThread) return;
+
+	bExitUpdateThread = false;
 
 	hUpdateThread = (HANDLE)CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UpdateSoundThread, NULL, 0, &id);
 
