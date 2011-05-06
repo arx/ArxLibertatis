@@ -117,8 +117,6 @@ aalError aalClean() {
 	
 	LogDebug << "Clean";
 	
-	mutex->lock(MUTEX_TIMEOUT);
-	
 	_amb.clear();
 	_sample.clear();
 	_mixer.clear();
@@ -130,7 +128,6 @@ aalError aalClean() {
 	ambiance_path.clear();
 	environment_path.clear();
 	
-	mutex->unlock();
 	delete mutex, mutex = NULL;
 	
 	return AAL_OK;

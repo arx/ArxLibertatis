@@ -32,7 +32,17 @@ namespace audio {
 
 // Global
 
+/*!
+ * Initialize the audio system.
+ * If the audio system was already initialized, it is cleaned first, removing all loaded resources.
+ * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
+ */
 aalError aalInit(const std::string & backend, bool enableEAX);
+
+/*!
+ * Cleanup the audio system.
+ * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
+ */
 aalError aalClean();
 aalError aalSetStreamLimit(size_t size);
 aalError aalSetSamplePath(const std::string & path);
