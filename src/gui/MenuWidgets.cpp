@@ -1503,9 +1503,7 @@ bool Menu2_Render()
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, iPosX2, 0);
-					int iMaster = 0;
-					ARXMenu_Options_Audio_GetMasterVolume(iMaster);
-					((CMenuSlider *)me)->setValue(iMaster);
+					((CMenuSlider *)me)->setValue((int)config.audio.volume); // TODO use float sliders
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1515,9 +1513,7 @@ bool Menu2_Render()
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, iPosX2, 0);
-					int iSfx = 0;
-					ARXMenu_Options_Audio_GetSfxVolume(iSfx);
-					((CMenuSlider *)me)->setValue(iSfx);
+					((CMenuSlider *)me)->setValue((int)config.audio.sfxVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1527,9 +1523,7 @@ bool Menu2_Render()
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, iPosX2, 0);
-					int iSpeech = 0;
-					ARXMenu_Options_Audio_GetSpeechVolume(iSpeech);
-					((CMenuSlider *)me)->setValue(iSpeech);
+					((CMenuSlider *)me)->setValue((int)config.audio.speechVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1539,9 +1533,7 @@ bool Menu2_Render()
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, iPosX2, 0);
-					int iAmbiance = 0;
-					ARXMenu_Options_Audio_GetAmbianceVolume(iAmbiance);
-					((CMenuSlider *)me)->setValue(iAmbiance);
+					((CMenuSlider *)me)->setValue((int)config.audio.ambianceVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1551,7 +1543,7 @@ bool Menu2_Render()
 					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, pElementText);
-					((CMenuCheckButton*)me)->iState=config.audio.eax ? 1 : 0;
+					((CMenuCheckButton*)me)->iState = config.audio.eax ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 

@@ -461,10 +461,6 @@ void ARX_SOUND_MixerResume(ArxMixer mixer_id) {
 
 void ARX_SOUND_MixerSwitch(ArxMixer from, ArxMixer to) {
 	ARX_SOUND_MixerPause(from);
-	// TODO why set the volume three times?
-	ARX_SOUND_MixerSetVolume(to, ARX_SOUND_MixerGetVolume(from));
-	ARX_SOUND_MixerSetVolume(to, ARX_SOUND_MixerGetVolume(from));
-	ARX_SOUND_MixerSetVolume(to, ARX_SOUND_MixerGetVolume(from));
 	ARX_SOUND_MixerResume(to);
 }
 

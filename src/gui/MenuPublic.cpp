@@ -420,55 +420,24 @@ void ARXMenu_Options_Video_SetLODQuality(int _iQuality)
 }
 
 //OPTIONS AUDIO
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_GetMasterVolume(int & _iVolume)
-{
-	float fVolume = 0;
-	fVolume = ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenu);
-	_iVolume = (int)(fVolume * 10.f);
-}
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume)
-{
+void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
 	if (_iVolume > 10) _iVolume = 10;
 	else if (_iVolume < 0) _iVolume = 0;
-
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenu, fVolume);
 	config.audio.volume = _iVolume;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_GetSfxVolume(int & _iVolume)
-{
-	float fVolume = 0;
-	fVolume = ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSample);
-	_iVolume = (int)(fVolume * 10.f);
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume)
-{
+void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume) {
 	if (_iVolume > 10) _iVolume = 10;
 	else if (_iVolume < 0) _iVolume = 0;
-
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSample, fVolume);
 	config.audio.sfxVolume = _iVolume;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_GetSpeechVolume(int & _iVolume)
-{
-	float fVolume = 0;
-	fVolume = ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSpeech);
-	_iVolume = (int)(fVolume * 10.f);
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume)
-{
+void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume) {
 	if (_iVolume > 10) _iVolume = 10;
 	else if (_iVolume < 0) _iVolume = 0;
 
@@ -477,17 +446,7 @@ void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume)
 	config.audio.speechVolume = _iVolume;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_GetAmbianceVolume(int & _iVolume)
-{
-	float fVolume = 0;
-	fVolume = ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance);
-	_iVolume = (int)(fVolume * 10.f);
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume)
-{
+void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume) {
 	if (_iVolume > 10) _iVolume = 10;
 	else if (_iVolume < 0) _iVolume = 0;
 
