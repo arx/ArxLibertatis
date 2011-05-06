@@ -50,8 +50,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
+namespace {
 static Lock * mutex = NULL;
 static const size_t MUTEX_TIMEOUT = 5000;
+}
 
 aalError aalInit(const string & backendName, bool enableEAX) {
 	
