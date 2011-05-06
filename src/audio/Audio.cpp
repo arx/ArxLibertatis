@@ -138,23 +138,19 @@ aalError aalClean() {
 	if(!backend) { \
 		return AAL_ERROR_INIT; \
 	} \
-	mutex->lock();
+	Autolock lock(mutex);
 
 #define AAL_ENTRY_V(value) \
 	if(!backend) { \
 		return (value); \
 	} \
-	mutex->lock();
-
-#define AAL_EXIT mutex->unlock();
+	Autolock lock(mutex);
 
 aalError aalSetStreamLimit(size_t limit) {
 	
 	AAL_ENTRY
 	
 	stream_limit_bytes = limit;
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -165,8 +161,6 @@ aalError aalSetSamplePath(const string & path) {
 	
 	sample_path = path;
 	
-	AAL_EXIT
-	
 	return AAL_OK;
 }
 
@@ -175,8 +169,6 @@ aalError aalSetAmbiancePath(const string & path) {
 	AAL_ENTRY
 	
 	ambiance_path = path;
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -187,8 +179,6 @@ aalError aalSetEnvironmentPath(const string & path) {
 	
 	environment_path = path;
 	
-	AAL_EXIT
-	
 	return AAL_OK;
 }
 
@@ -196,11 +186,7 @@ aalError setReverbEnabled(bool enable) {
 	
 	AAL_ENTRY
 	
-	aalError ret = backend->setReverbEnabled(enable);
-	
-	AAL_EXIT
-	
-	return ret;
+	return backend->setReverbEnabled(enable);
 }
 
 aalError aalUpdate() {
@@ -238,11 +224,7 @@ aalError aalUpdate() {
 		}
 	}
 	
-	aalError ret = backend->updateDeferred();
-	
-	AAL_EXIT
-	
-	return ret;
+	return backend->updateDeferred();
 }
 
 // Resource creation
@@ -257,8 +239,6 @@ MixerId aalCreateMixer() {
 	if(id == INVALID_ID) {
 		delete mixer;
 	}
-	
-	AAL_EXIT
 	
 	return id;
 }
@@ -276,8 +256,6 @@ SampleId aalCreateSample(const string & name) {
 		sample->reference();
 	}
 	
-	AAL_EXIT
-	
 	return Backend::clearSource(s_id);
 }
 
@@ -294,8 +272,6 @@ AmbianceId aalCreateAmbiance(const string & name) {
 		ambiance->setId(a_id);
 	}
 	
-	AAL_EXIT
-	
 	return a_id;
 }
 
@@ -310,8 +286,6 @@ EnvId aalCreateEnvironment(const string & name) {
 		LogError << "Environment " << name << " not found";
 	}
 	
-	AAL_EXIT
-	
 	return e_id;
 }
 
@@ -323,13 +297,10 @@ aalError aalDeleteSample(SampleId sample_id) {
 	
 	SampleId s_id = Backend::getSampleId(sample_id);
 	if(!_sample.isValid(s_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	_sample.remove(s_id);
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -340,8 +311,6 @@ aalError aalDeleteAmbiance(AmbianceId a_id) {
 	
 	_amb.remove(a_id);
 	
-	AAL_EXIT
-	
 	return AAL_OK;
 }
 
@@ -351,12 +320,9 @@ AmbianceId aalGetAmbiance(const string & name) {
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
 		if(_amb[i] && !strcasecmp(name, _amb[i]->getName())) {
-			AAL_EXIT
 			return i;
 		}
 	}
-	
-	AAL_EXIT
 	
 	return INVALID_ID;
 }
@@ -367,12 +333,9 @@ EnvId aalGetEnvironment(const string & name) {
 	
 	for(size_t i = 0; i < _env.size(); i++) {
 		if(_env[i] && !strcasecmp(name, _env[i]->name)) {
-			AAL_EXIT
 			return i;
 		}
 	}
-	
-	AAL_EXIT
 	
 	return INVALID_ID;
 }
@@ -387,12 +350,9 @@ AmbianceId aalGetNextAmbiance(AmbianceId ambiance_id) {
 	
 	for(; i < _amb.size(); i++) {
 		if(_amb[i]) {
-			AAL_EXIT
 			return i;
 		}
 	}
-	
-	AAL_EXIT
 	
 	return INVALID_ID;
 }
@@ -405,11 +365,7 @@ aalError aalSetRoomRolloffFactor(float factor) {
 	
 	LogDebug << "SetRoomRolloffFactor " << factor;
 	
-	aalError ret = backend->setRoomRolloffFactor(factor);
-	
-	AAL_EXIT
-	
-	return ret;
+	return backend->setRoomRolloffFactor(factor);
 }
 
 // Listener settings
@@ -420,11 +376,7 @@ aalError aalSetUnitFactor(float factor) {
 	
 	LogDebug << "SetUnitFactor " << factor;
 	
-	aalError ret = backend->setUnitFactor(factor);
-	
-	AAL_EXIT
-	
-	return ret;
+	return backend->setUnitFactor(factor);
 }
 
 aalError aalSetRolloffFactor(float factor) {
@@ -433,33 +385,21 @@ aalError aalSetRolloffFactor(float factor) {
 	
 	LogDebug << "SetRolloffFactor " << factor;
 	
-	aalError ret = backend->setRolloffFactor(factor);
-	
-	AAL_EXIT
-	
-	return ret;
+	return backend->setRolloffFactor(factor);
 }
 
 aalError aalSetListenerPosition(const Vector3f & position) {
 	
 	AAL_ENTRY
 	
-	aalError ret = backend->setListenerPosition(position);
-	
-	AAL_EXIT
-	
-	return ret;
+	return backend->setListenerPosition(position);
 }
 
 aalError aalSetListenerDirection(const Vector3f & front, const Vector3f & up) {
 	
 	AAL_ENTRY
 	
-	aalError ret = backend->setListenerOrientation(front, up);
-	
-	AAL_EXIT
-	
-	return ret;
+	return backend->setListenerOrientation(front, up);
 }
 
 aalError aalSetListenerEnvironment(EnvId e_id) {
@@ -467,17 +407,12 @@ aalError aalSetListenerEnvironment(EnvId e_id) {
 	AAL_ENTRY
 	
 	if(!_env.isValid(e_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "SetListenerEnvironment " << _env[e_id]->name;
 	
-	aalError ret = backend->setListenerEnvironment(*_env[e_id]);
-	
-	AAL_EXIT
-	
-	return ret;
+	return backend->setListenerEnvironment(*_env[e_id]);
 }
 
 // Mixer setup
@@ -487,17 +422,12 @@ aalError aalSetMixerVolume(MixerId m_id, float volume) {
 	AAL_ENTRY
 	
 	if(!_mixer.isValid(m_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "SetMixerVolume " << m_id << " volume=" << volume;
 	
-	aalError ret = _mixer[m_id]->setVolume(volume);
-	
-	AAL_EXIT
-	
-	return ret;
+	return _mixer[m_id]->setVolume(volume);
 }
 
 aalError aalSetMixerParent(MixerId m_id, MixerId pm_id) {
@@ -505,17 +435,12 @@ aalError aalSetMixerParent(MixerId m_id, MixerId pm_id) {
 	AAL_ENTRY
 	
 	if(m_id == pm_id || !_mixer.isValid(m_id) || !_mixer.isValid(pm_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "SetMixerParent " << m_id << " parent=" << pm_id;
 	
-	aalError ret = _mixer[m_id]->setParent(_mixer[pm_id]);
-	
-	AAL_EXIT
-	
-	return ret;
+	return _mixer[m_id]->setParent(_mixer[pm_id]);
 }
 
 // Mixer status
@@ -527,13 +452,10 @@ aalError aalGetMixerVolume(MixerId m_id, float * volume) {
 	AAL_ENTRY
 	
 	if(!_mixer.isValid(m_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	*volume = _mixer[m_id]->getVolume();
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -545,17 +467,12 @@ aalError aalMixerStop(MixerId m_id) {
 	AAL_ENTRY
 	
 	if(!_mixer.isValid(m_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "MixerStop " << m_id;
 	
-	aalError ret = _mixer[m_id]->stop();
-	
-	AAL_EXIT
-	
-	return ret;
+	return _mixer[m_id]->stop();
 }
 
 aalError aalMixerPause(MixerId m_id) {
@@ -563,17 +480,12 @@ aalError aalMixerPause(MixerId m_id) {
 	AAL_ENTRY;
 	
 	if(!_mixer.isValid(m_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "MixerPause " << m_id;
 	
-	aalError ret = _mixer[m_id]->pause();
-	
-	AAL_EXIT
-	
-	return ret;
+	return _mixer[m_id]->pause();
 }
 
 aalError aalMixerResume(MixerId m_id) {
@@ -581,17 +493,12 @@ aalError aalMixerResume(MixerId m_id) {
 	AAL_ENTRY
 	
 	if(!_mixer.isValid(m_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "MixerResume " << m_id;
 	
-	aalError ret = _mixer[m_id]->resume();
-	
-	AAL_EXIT
-	
-	return ret;
+	return _mixer[m_id]->resume();
 }
 
 // Sample setup
@@ -602,15 +509,10 @@ aalError aalSetSampleVolume(SourceId sample_id, float volume) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
-	aalError ret = source->setVolume(volume);
-	
-	AAL_EXIT
-	
-	return ret;
+	return source->setVolume(volume);
 }
 
 aalError aalSetSamplePitch(SourceId sample_id, float pitch) {
@@ -619,15 +521,10 @@ aalError aalSetSamplePitch(SourceId sample_id, float pitch) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
-	aalError ret = source->setPitch(pitch);
-	
-	AAL_EXIT
-	
-	return ret;
+	return source->setPitch(pitch);
 }
 
 aalError aalSetSamplePosition(SourceId sample_id, const Vector3f & position) {
@@ -636,15 +533,10 @@ aalError aalSetSamplePosition(SourceId sample_id, const Vector3f & position) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
-	aalError ret = source->setPosition(position);
-	
-	AAL_EXIT
-	
-	return ret;
+	return source->setPosition(position);
 }
 
 // Sample status
@@ -657,13 +549,10 @@ aalError aalGetSampleName(SampleId sample_id, string & name) {
 	
 	SampleId s_id = Backend::getSampleId(sample_id);
 	if(!_sample.isValid(s_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	name = _sample[s_id]->getName();
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -676,14 +565,11 @@ aalError aalGetSampleLength(SampleId sample_id, size_t & length, TimeUnit unit) 
 	
 	SampleId s_id = Backend::getSampleId(sample_id);
 	if(!_sample.isValid(s_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	Sample * sample = _sample[s_id];
 	length = bytesToUnits(sample->getLength(), sample->getFormat(), unit);
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -694,13 +580,10 @@ bool aalIsSamplePlaying(SourceId sample_id) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
-		AAL_EXIT
 		return false;
 	}
 	
 	bool ret = source->isPlaying();
-	
-	AAL_EXIT
 	
 	return ret;
 }
@@ -714,7 +597,6 @@ aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned p
 	SampleId s_id = Backend::getSampleId(sample_id);
 	sample_id = Backend::clearSource(sample_id);
 	if(!_sample.isValid(s_id) || !_mixer.isValid(channel.mixer)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
@@ -746,16 +628,14 @@ aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned p
 	if(!source) {
 		source = backend->createSource(s_id, channel);
 		if(!source) {
-			AAL_EXIT
 			return AAL_ERROR_SYSTEM;
 		}
 	}
 	
 	backend->updateDeferred();
 	
-	if(source->play(play_count)) {
-		AAL_EXIT
-		return AAL_ERROR_SYSTEM;
+	if(aalError error = source->play(play_count)) {
+		return error;
 	}
 	
 	sample_id = source->getId();
@@ -763,8 +643,6 @@ aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned p
 	if(channel.flags & FLAG_AUTOFREE) {
 		_sample[s_id]->dereference();
 	}
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -775,19 +653,14 @@ aalError aalSampleStop(SourceId & sample_id) {
 	
 	Source * source = backend->getSource(sample_id);
 	if(!source) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "SampleStop " << source->getSample()->getName();
 	
-	aalError ret = source->stop();
-	
-	AAL_EXIT
-	
 	sample_id = Backend::clearSource(sample_id);
 	
-	return ret;
+	return source->stop();
 }
 
 // Track setup
@@ -797,17 +670,12 @@ aalError aalMuteAmbianceTrack(AmbianceId a_id, const string & track, bool mute) 
 	AAL_ENTRY
 	
 	if(!_amb.isValid(a_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "MuteAmbianceTrack " << _amb[a_id]->getName() << " " << track << " " << mute;
 	
-	aalError ret = _amb[a_id]->muteTrack(track, mute);
-	
-	AAL_EXIT
-	
-	return ret;
+	return _amb[a_id]->muteTrack(track, mute);
 }
 
 // Ambiance setup
@@ -817,15 +685,12 @@ aalError aalSetAmbianceUserData(AmbianceId a_id, void * data) {
 	AAL_ENTRY
 	
 	if(!_amb.isValid(a_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "SetAmbianceUserData " << _amb[a_id]->getName() << " " << data;
 	
 	_amb[a_id]->setUserData(data);
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -835,17 +700,12 @@ aalError aalSetAmbianceVolume(AmbianceId a_id, float volume) {
 	AAL_ENTRY
 	
 	if(!_amb.isValid(a_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "SetAmbianceVolume " << _amb[a_id]->getName() << " " << volume;
 	
-	aalError ret = _amb[a_id]->setVolume(volume);
-	
-	AAL_EXIT
-	
-	return ret;
+	return _amb[a_id]->setVolume(volume);
 }
 
 // Ambiance status
@@ -857,13 +717,10 @@ aalError aalGetAmbianceName(AmbianceId a_id, string & name) {
 	AAL_ENTRY
 	
 	if(!_amb.isValid(a_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	name = _amb[a_id]->getName();
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -873,13 +730,10 @@ aalError aalGetAmbianceUserData(AmbianceId a_id, void ** data) {
 	AAL_ENTRY
 	
 	if(!_amb.isValid(a_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	*data = _amb[a_id]->getUserData();
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -891,18 +745,14 @@ aalError aalGetAmbianceVolume(AmbianceId a_id, float & _volume) {
 	AAL_ENTRY
 	
 	if(!_amb.isValid(a_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	if(!(_amb[a_id]->getChannel().flags & FLAG_VOLUME)) {
-		AAL_EXIT
 		return AAL_ERROR_INIT;
 	}
 	
 	_volume = _amb[a_id]->getChannel().volume;
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }
@@ -912,15 +762,10 @@ bool aalIsAmbianceLooped(AmbianceId a_id) {
 	AAL_ENTRY_V(false)
 	
 	if(!_amb.isValid(a_id)) {
-		AAL_EXIT
 		return false;
 	}
 	
-	bool isLooped = _amb[a_id]->isLooped();
-	
-	AAL_EXIT
-	
-	return isLooped;
+	return _amb[a_id]->isLooped();
 }
 
 // Ambiance control
@@ -930,17 +775,12 @@ aalError aalAmbiancePlay(AmbianceId a_id, const Channel & channel, bool loop, si
 	AAL_ENTRY
 	
 	if(!_amb.isValid(a_id) || !_mixer.isValid(channel.mixer)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "AmbiancePlay " << _amb[a_id]->getName() << " loop=" << loop << " fade=" << fade_interval;
 	
-	aalError ret = _amb[a_id]->play(channel, loop, fade_interval);
-	
-	AAL_EXIT
-	
-	return ret;
+	return _amb[a_id]->play(channel, loop, fade_interval);
 }
 
 aalError aalAmbianceStop(AmbianceId a_id, size_t fade_interval) {
@@ -948,15 +788,12 @@ aalError aalAmbianceStop(AmbianceId a_id, size_t fade_interval) {
 	AAL_ENTRY
 	
 	if(!_amb.isValid(a_id)) {
-		AAL_EXIT
 		return AAL_ERROR_HANDLE;
 	}
 	
 	LogDebug << "AmbianceStop " << _amb[a_id]->getName() << " " << fade_interval;
 	
 	_amb[a_id]->stop(fade_interval);
-	
-	AAL_EXIT
 	
 	return AAL_OK;
 }

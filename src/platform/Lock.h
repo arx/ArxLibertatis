@@ -35,4 +35,22 @@ public:
 	
 };
 
+class Autolock {
+	
+private:
+	
+	Lock * lock;
+	
+public:
+	
+	inline Autolock(Lock * _lock) : lock(_lock) {
+		lock->lock();
+	}
+	
+	inline ~Autolock() {
+		lock->unlock();
+	}
+	
+};
+
 #endif // ARX_AUDIO_LOCK_H
