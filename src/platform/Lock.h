@@ -29,7 +29,7 @@ public:
 	Lock();
 	~Lock();
 	
-	bool lock(long timeout);
+	void lock();
 	
 	void unlock();
 	

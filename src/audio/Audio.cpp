@@ -52,7 +52,6 @@ namespace audio {
 
 namespace {
 static Lock * mutex = NULL;
-static const size_t MUTEX_TIMEOUT = 5000;
 }
 
 aalError aalInit(const string & backendName, bool enableEAX) {
@@ -138,14 +137,14 @@ aalError aalClean() {
 #define AAL_ENTRY \
 	if(!backend) { \
 		return AAL_ERROR_INIT; \
-	} else if(!mutex->lock(MUTEX_TIMEOUT)) { \
-		return AAL_ERROR_TIMEOUT; \
-	}
+	} \
+	mutex->lock();
 
 #define AAL_ENTRY_V(value) \
-	if(!backend || !mutex->lock(MUTEX_TIMEOUT)) { \
+	if(!backend) { \
 		return (value); \
-	}
+	} \
+	mutex->lock();
 
 #define AAL_EXIT mutex->unlock();
 
