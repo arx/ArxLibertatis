@@ -1772,17 +1772,12 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 					if (IsChecked(hWnd, IDC_SOUND))
 					{
-						Project.soundmode &= ~ARX_SOUND_ON;
 						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), false);
 						SetCheck(hWnd, IDC_REVERB, UNCHECK);
 					}
 					else
 					{
-						Project.soundmode |= ARX_SOUND_ON;
 						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), true);
-
-						if (IsChecked(hWnd, IDC_REVERB)) Project.soundmode |= ARX_SOUND_REVERB;
-						else Project.soundmode &= ~ARX_SOUND_REVERB;
 					}
 
 					Project.bits = 32;
@@ -1978,8 +1973,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			if (HERMES_KEEP_MEMORY_TRACE) SetClick(hWnd, IDC_TRACEMEMORY);
 
 			SetClick(hWnd, IDC_OTHERSERVER);
-
-			if (!(Project.soundmode & ARX_SOUND_ON)) SetClick(hWnd, IDC_SOUND);
 
 			SetClick(hWnd, IDC_LOADDEMO);
 
@@ -2219,7 +2212,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SetCheck(hWnd, IDC_DISABLESOUND, CHECK);
 				EnableWindow(GetDlgItem(hWnd, IDC_REVERB), false);
 			}
-			else if (ARX_SOUND_IsReverbEnabled()) SetCheck(hWnd, IDC_REVERB, CHECK);
 
 			return true;
 		}
@@ -2278,8 +2270,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					else
 					{
 						if (!ARX_SOUND_IsEnabled()) ARX_SOUND_Init();
-
-						ARX_SOUND_EnableReverb(IsChecked(hWnd, IDC_REVERB) ? 1 : 0);
 					}
 
 					long restoretex = 0;

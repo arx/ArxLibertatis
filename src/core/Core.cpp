@@ -424,7 +424,6 @@ float GLOBAL_MIPMAP_BIAS		= 0;
 float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 long GLOBAL_FORCE_PLAYER_IN_FRONT	=1;
 long USE_NEW_SKILLS=1;
-long ARX_SOUND_INIT=1;
 
 long USE_LIGHT_OPTIM	=1;
 // set to 0 for dev mode
@@ -1144,19 +1143,16 @@ int main(int argc, char ** argv) {
 	
 	if (FINAL_COMMERCIAL_GAME) {
 		LogDebug << "FINAL_COMMERCIAL_GAME";
-		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=0;
 	} else if (FINAL_COMMERCIAL_DEMO)	{
 		LogDebug << "FINAL_COMMERCIAL_DEMO";
-		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=1;
 	}
 
 	if (FOR_EXTERNAL_PEOPLE) {
 		LogDebug << "FOR_EXTERNAL_PEOPLE";
-		ARX_SOUND_INIT		= 1;
 		ALLOW_CHEATS		= 0;
 		CEDRIC_VERSION		= 0;
 		NO_TEXT_AT_ALL		= 1;
@@ -1353,7 +1349,6 @@ int main(int argc, char ** argv) {
 	lastteleport.y=PLAYER_BASE_HEIGHT;
 	lastteleport.z=0.f;
 
-	Project.soundmode = ARX_SOUND_ON;
 	inter.init=0;
 	InitInter(10);
 
@@ -1469,12 +1464,12 @@ int main(int argc, char ** argv) {
 		GaiaWM=RegisterWindowMessage(texx);
 	}
 
-	LogDebug << "Sound Init";
-	if(Project.soundmode != 0 && ARX_SOUND_INIT) {
-		ARX_SOUND_Init();
+	LogDebug << "Sound init";
+	if(ARX_SOUND_Init()) {
+		LogInfo << "Sound init success";
+	} else {
+		LogWarning << "Sound init failed";
 	}
-	
-	LogInfo << "Sound Init Success";
 	
 	LogDebug << "DInput Init";
 	pGetInfoDirectInput = new CDirectInput();
@@ -1507,10 +1502,6 @@ int main(int argc, char ** argv) {
 		EERIE_ActivateBump();
 	else
 		EERIE_DesactivateBump();
-	
-	if (config.audio.eax) {
-		ARXMenu_Options_Audio_SetEAX(true);
-	}
 
 	ARX_MINIMAP_FirstInit();
 	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);

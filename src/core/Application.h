@@ -226,25 +226,17 @@ struct EERIE_RGBB {
 	float b;
 };
 
-enum SoundModeFlag {
-	ARX_SOUND_ON     = 0x00000001,
-	ARX_SOUND_REVERB = 0x00000002
-};
-DECLARE_FLAGS(SoundModeFlag, SoundMode)
-DECLARE_FLAGS_OPERATORS(SoundMode)
-
 struct PROJECT {
 	
 	PROJECT()
 		:
-		  soundmode(0), compatibility(0), ambient(0),
+		  compatibility(0), ambient(0),
 		  improve(0), detectliving(0), improvespeed(0),
 		  telekinesis(0), multiplayer(0), demo(0),
 		  bits(0), hide(0), TextureSize(0), TextureBits(0), 
 		  interpolatemouse(0), vsync(0) {
 	}
 	
-	SoundMode soundmode;
 	long compatibility;
 	long ambient;
 	long improve;

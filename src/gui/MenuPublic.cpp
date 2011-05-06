@@ -509,7 +509,6 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	
 	ARX_SOUND_Release();
 	ARX_SOUND_Init();
-	ARX_SOUND_EnableReverb(_bEnable);
 	
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);

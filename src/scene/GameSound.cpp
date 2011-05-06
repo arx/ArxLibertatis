@@ -328,13 +328,13 @@ static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ul
 void ARX_SOUND_PreloadAll();
 
 
-long ARX_SOUND_Init()
+bool ARX_SOUND_Init()
 {
 	if (bIsActive) ARX_SOUND_Release();
 
 	if(aalInit(config.audio.backend,  config.audio.eax)) {
 		aalClean();
-		return -1;
+		return false;
 	}
 
 	if (aalSetSamplePath(ARX_SOUND_PATH_SAMPLE) ||
@@ -342,7 +342,7 @@ long ARX_SOUND_Init()
 	        aalSetEnvironmentPath(ARX_SOUND_PATH_ENVIRONMENT))
 	{
 		aalClean();
-		return -1;
+		return false;
 	}
 
 	// Create game mixers
@@ -373,7 +373,7 @@ long ARX_SOUND_Init()
 	        (ARX_SOUND_MixerMenuAmbiance == INVALID_ID))
 	{
 		aalClean();
-		return -1;
+		return false;
 	}
 
 	aalSetStreamLimit(ARX_SOUND_STREAMING_LIMIT);
@@ -390,7 +390,7 @@ long ARX_SOUND_Init()
 	// Load environments, enable environment system and set default one if required
 	ARX_SOUND_CreateEnvironments();
 
-	if(Project.soundmode & ARX_SOUND_REVERB) {
+	if(config.audio.eax) {
 		setReverbEnabled(true);
 		ARX_SOUND_EnvironmentSet("alley.aef");
 	}
@@ -400,7 +400,7 @@ long ARX_SOUND_Init()
 	bIsActive = true;
 	ARX_SOUND_PreloadAll();
 
-	return 0;
+	return true;
 }
  
 void ARX_SOUND_PreloadAll()
@@ -417,38 +417,11 @@ void ARX_SOUND_Release()
 	ARX_SOUND_KillUpdateThread();
 	aalClean();
 	bIsActive = false;
-	Project.soundmode &= ~(ARX_SOUND_ON | ARX_SOUND_REVERB);
 }
 
 long ARX_SOUND_IsEnabled()
 {
 	return bIsActive ? 1 : 0;
-}
-
-void ARX_SOUND_EnableReverb(long status) {
-	
-	if (bIsActive)
-	{
-		if (status)
-		{
-			if (setReverbEnabled(true))
-				Project.soundmode &= ~ARX_SOUND_REVERB;
-			else
-				Project.soundmode |= ARX_SOUND_REVERB;
-		}
-		else
-		{
-			setReverbEnabled(false);
-			Project.soundmode &= ~ARX_SOUND_REVERB;
-		}
-	}
-}
-
-long ARX_SOUND_IsReverbEnabled()
-{
-	if (!bIsActive) return 0;
-
-	return Project.soundmode & ARX_SOUND_REVERB;
 }
 
 void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume) {
