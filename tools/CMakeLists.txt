@@ -3,9 +3,12 @@ cmake_minimum_required(VERSION 2.8)
 
 find_package(ZLIB REQUIRED)
 
-set(CMAKE_CXX_COMPILER g++)
-set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-aliasing -ggdb")
+if(MSVC)
+else(MSVC)
+	set(CMAKE_CXX_COMPILER g++)
+	set(CMAKE_C_COMPILER gcc)
+	set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-aliasing -ggdb")
+endif(MSVC)
 
 include_directories(
 	../src
@@ -13,6 +16,7 @@ include_directories(
 
 add_executable(unpaker 
 	unpak/unpak.cpp
+	savetool/Filesystem_C.cpp
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
 	../src/io/HashMap.cpp

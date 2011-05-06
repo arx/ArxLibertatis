@@ -1,5 +1,5 @@
-
 #ifndef ARX_PLATFORM_RANDOM_H
+#define ARX_PLATFORM_RANDOM_H
 
 #include <stddef.h>
 

@@ -2571,7 +2571,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				else if (!strcmp(word, "SETEQUIP"))
 				{
 					std::string temp2;
-					temp2[0] = 0;
 					std::string temp3;
 					pos = GetNextWord(es, pos, temp3);
 					LogDebug <<  "SET_EQUIP "<< temp3;
@@ -2591,12 +2590,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					{
 						word = temp3;
 						pos = GetNextWord(es, pos, temp2);
-						temp3[0] = 0;
+						temp3.clear();
 					}
 
 					short flag = 0;
 
-					if (temp2[0])
+					if (!temp2.empty())
 					{
 						if (temp2[temp2.length()-1] == '%') flag = 1;
 					}
