@@ -112,6 +112,15 @@ function(force_recheck_library LIBRARY_NAME)
 	unset(CHECK_${LIBRARY_NAME}_LINK CACHE)
 endfunction()
 
+function(create_source_groups)
+	# Source groups
+	set(SOURCE_GROUPS ai animation audio core game graphics gui io physics platform scene scripting window)
+	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
+		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.*)
+		source_group("${SOURCE_GROUP}" FILES ${SOURCES})
+	endforeach(SOURCE_GROUP)
+endfunction()
+
 ##############################################################################
 
 option(ARX_BUILD_TESTS "Build tests" OFF)
@@ -155,9 +164,11 @@ mark_as_advanced(IL_LIBRARIES)
 
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-
 if(MSVC)
 	# Set optimal options for msvc:
+
+	# Remove targets we don't really use (RelWithDebInfo, MinSizeRel)
+	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Using only Debug and Release" FORCE)
 	
 	# Disable deprecation warnings
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -165,25 +176,20 @@ if(MSVC)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 	add_definitions(/wd4995)
 	
-	if(ARX_DEBUG)
-		add_definitions(-D_CRTDBG_MAP_ALLOC)
-	endif()
-	
 	# TEMP - disable warning caused by the F2L removal
 	add_definitions(/wd4244)    # conversion from 'float' to 'long', possible loss of data
+
+	# This is needed to use ZLIB as a DLL
+	add_definitions(-DZLIB_WINAPI)
 	
-	# Source groups
-	set(SOURCE_GROUPS
-		ai animation audio core game graphics gui io physics scene scripting window
-	)
-	
-	file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
-	source_group("inc" FILES ${ALL_INCLUDES})
-	
-	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
-		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.*)
-		source_group("${SOURCE_GROUP}" FILES ${SOURCES})
-	endforeach(SOURCE_GROUP)
+	# Add dx7 include & lib paths
+	if("$ENV{DX7SDK_PATH}" STREQUAL "")
+		message(WARNING "DX7SDK_PATH environment variable not found")
+	else("$ENV{DX7SDK_PATH}" STREQUAL "")
+		message(STATUS "Using DirectX 7 SDK found in " $ENV{DX7SDK_PATH})
+		include_directories("$ENV{DX7SDK_PATH}/include")
+		link_directories("$ENV{DX7SDK_PATH}/lib")
+	endif("$ENV{DX7SDK_PATH}" STREQUAL "")
 	
 else(MSVC)
 	# Set optimal options for gcc:
@@ -222,9 +228,11 @@ else(MSVC)
 	if(ARX_DEBUG)
 		#Debug
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+		add_definitions(-D_DEBUG)
 	else()
 		#Release
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -fno-strict-aliasing -g3") # TODO enable optimizations
+		add_definitions(-D_NDEBUG)
 	endif()
 	
 	if(ARX_DEBUG_EXTRA)
@@ -258,7 +266,6 @@ if(ARX_MINGW)
 endif(ARX_MINGW)
 
 # Preprocessor definitions
-add_definitions(-D_DEBUG)
 add_definitions(-DNOMINMAX)
 
 #glob sources
@@ -277,6 +284,7 @@ file(GLOB_RECURSE PLATFORM_SOURCES ${SRC_DIR}/platform/*.cpp)
 file(GLOB_RECURSE SCENE_SOURCES ${SRC_DIR}/scene/*.cpp)
 file(GLOB_RECURSE SCRIPTING_SOURCES ${SRC_DIR}/scripting/*.cpp)
 file(GLOB_RECURSE WINDOW_SOURCES ${SRC_DIR}/window/*.cpp)
+file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
 set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${IO_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPTING_SOURCES} ${WINDOW_SOURCES})
 
@@ -300,6 +308,9 @@ endif()
 if(ARX_USE_UNITYBUILD)
 	enable_unity_build(arx ALL_SOURCES)
 endif()
+
+#create source groups
+create_source_groups()
 
 #build
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})

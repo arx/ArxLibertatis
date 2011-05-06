@@ -2651,7 +2651,7 @@ void ARX_SPELLS_ManageMagic()
 	{
 		ARX_SPELLS_Analyse();
 
-		if (SpellMoves[0] != 0) 
+		if (!SpellMoves.empty()) 
 		 ARX_SPELLS_AnalyseSYMBOL();
 	
 		ARX_FLARES_broken = 1;

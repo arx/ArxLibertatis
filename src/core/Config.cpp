@@ -616,14 +616,18 @@ bool ConfigReader::get(const string & section, const string & key, bool defaultV
 	istringstream iss(*temp);
 	istringstream iss2(*temp);
 	
-	bool val;
-	int v;
+	bool val = false;
+	int v = 0;
+
+	// Support either boolean specified as strings (true, false) or 0, 1
 	iss >> v;
 	iss2 >> boolalpha >> val;
+
+	val = val || (v != 0);
 	
 	LogDebug << "[" << section << "] " << key << " = " << boolalpha << val;
 	
-	return val || v;
+	return val;
 }
 
 void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionKey) {
