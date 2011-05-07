@@ -180,81 +180,115 @@ int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 	return (a.stime.wMilliseconds > b.stime.wMilliseconds);
 }
 
-//-----------------------------------------------------------------------------
-void CreateSaveGameList()
-{
+bool operator==(const SYSTEMTIME & a, const SYSTEMTIME & b) {
+	return (a.wYear == b.wYear && a.wMonth == b.wMonth && a.wDay == b.wDay && a.wHour == b.wHour && a.wMinute == b.wMinute && a.wSecond == b.wSecond && a.wMilliseconds == b.wMilliseconds);
+}
+
+void CreateSaveGameList() {
+	
 	LogDebug << "CreateSaveGameList";
 	
-	char path[512] = "";
-	HANDLE h;
-
-	sprintf(path, "save%s\\save*", LOCAL_SAVENAME);
+	string path = "save" + string(LOCAL_SAVENAME) + "\\save*";
 	
-	save_l.resize(1);
-
-	save_l[0].name = "New";
-
-	char tTemp[sizeof(WIN32_FIND_DATA)+2];
-	WIN32_FIND_DATA * fdata = (WIN32_FIND_DATA *)tTemp;
-
+	if(save_l.empty()) {
+		save_l.resize(1);
+		save_l[0].name = "New";
+	}
+	
+	size_t oldCount = save_l.size() - 1;
+	bool found[oldCount];
+	for(size_t i = 0; i < oldCount; i++) {
+		found[i] = false;
+	}
+	
+	WIN32_FIND_DATA fdata;
 	LogDebug << "looking for " << path;
 	
-	if ((h = FindFirstFile(path, fdata)) != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
-			{
-				
-				
-				std::stringstream ss;
-				ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
-				
-				string name;
-				float version;
-				long level;
-				
-				unsigned long ignored;
-				if(ARX_CHANGELEVEL_GetInfo(ss.str(), name, version, level, ignored) != -1) {
-					
-					// Make another save game slot at the end
-					save_l.resize(save_l.size() + 1);
-					
-					save_l.back().name = name;
-					save_l.back().version = version;
-					save_l.back().level = level;
-					
-					istringstream num(fdata->cFileName + 4);
-					num >> save_l.back().num;
-					
-					SYSTEMTIME stime;
-					FILETIME fTime;
-					FileTimeToLocalFileTime(&fdata->ftLastWriteTime, &fTime);
-					FileTimeToSystemTime(&fTime, &stime);
-					save_l.back().stime = stime;
-					
-					LogInfo << "found " << fdata->cFileName << ": \""
-					        << name << "\"   v" << version
-					        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
-					        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
-					        << ":" << stime.wMilliseconds;
-					
-				} else {
-					LogWarning << "unable to get save file info for " << ss.str();
-				}
+	HANDLE h;
+	if((h = FindFirstFile(path.c_str(), &fdata)) == INVALID_HANDLE_VALUE) {
+		LogInfo << "no save files found";
+		save_l.resize(1);
+	}
+	
+	bool newSaves = false;
+	
+	do {
+		if(!(fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || fdata.cFileName[0] == '.') {
+			continue;
+		}
+		
+		istringstream iss(fdata.cFileName + 4);
+		long num;
+		iss >> num;
+		
+		SYSTEMTIME stime;
+		FILETIME fTime;
+		FileTimeToLocalFileTime(&fdata.ftLastWriteTime, &fTime);
+		FileTimeToSystemTime(&fTime, &stime);
+		
+		size_t index = (size_t)-1;
+		for(size_t i = 1; i <= oldCount; i++) {
+			if(save_l[i].num == num) {
+				index = i;
 			}
 		}
-		while (FindNextFile(h, fdata));
-		
-		if(save_l.size() > 1) {
-			std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
+		if(index != (size_t)-1 && save_l[index].stime == stime) {
+			found[index - 1] = true;
+			continue;
 		}
-
-		LogDebug << "found " << (save_l.size()-1) << " savegames";
-		FindClose(h);
-	} else {
-		LogInfo << "no save files found";
+		
+		std::stringstream oss;
+		oss << "save" << LOCAL_SAVENAME << "\\" << fdata.cFileName << "\\";
+		
+		string name;
+		float version;
+		long level;
+		unsigned long ignored;
+		if(ARX_CHANGELEVEL_GetInfo(oss.str(), name, version, level, ignored) == -1) {
+			LogWarning << "unable to get save file info for " << oss.str();
+			continue;
+		}
+		
+		newSaves = true;
+		
+		SaveGame * save;
+		if(index == (size_t)-1) {
+			// Make another save game slot at the end
+			save_l.resize(save_l.size() + 1);
+			save = &save_l.back();
+		} else {
+			found[index - 1] = true;
+			save = &save_l[index];
+		}
+		
+		
+		save->name = name;
+		save->version = version;
+		save->level = level;
+		save->stime = stime;
+		save->num = num;
+		
+		LogInfo << "found " << fdata.cFileName << ": \""
+			        << name << "\"   v" << version
+			        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
+			        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
+			        << ":" << stime.wMilliseconds;
+			
+	} while(FindNextFile(h, &fdata));
+	
+	for(size_t i = oldCount; i > 0; i--) {
+		if(!found[i - 1]) {
+			save_l.erase(save_l.begin() + i);
+		}
 	}
+	
+	if(newSaves && save_l.size() > 2) {
+		std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
+	}
+	
+	LogDebug << "found " << (save_l.size()-1) << " savegames";
+	FindClose(h);
+	
 }
 
 //-----------------------------------------------------------------------------
