@@ -3773,6 +3773,7 @@ static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LE
 	// TODO why use a global here?
 	assert(_pSaveBlock == NULL);
 	_pSaveBlock = new SaveBlock(sfile);
+	// TODO don't load the save block again!
 
 	if (!_pSaveBlock->BeginSave()) return false;
 
@@ -3804,30 +3805,17 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	if (!DirectoryExist(path)) return false;
 
 	// Open Save Block
-	char sfile[256];
-	sprintf(sfile, "%sGsave.sav", path.c_str());
-	_pSaveBlock = new SaveBlock(sfile);
-
-	if(!_pSaveBlock->BeginRead()) {
-		LogError << "cannot open savefile to get player level data: " << sfile;
-		return false;
-	}
+	string savefile = path + "Gsave.sav";
 
 	// Get Size
 	std::string loadfile = "pld.sav";
 	
 	size_t size;
-	char * dat = _pSaveBlock->load(loadfile, size);
+	char * dat = SaveBlock::load(savefile, loadfile, size);
 	if(!dat) {
 		LogError << "Unable to open " << loadfile << " for read...";
-		delete _pSaveBlock;
-		_pSaveBlock = 0;
 		return false;
 	}
-
-	// Finishes Read
-	delete _pSaveBlock;
-	_pSaveBlock = 0;
 
 	// Stores Data in pld
 	memcpy(&pld, dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));

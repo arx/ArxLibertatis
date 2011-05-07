@@ -76,7 +76,7 @@ struct SaveBlock::File {
 	ChunkList chunks;
 	Compression comp;
 	
-	File(const string & _name) : name(_name), chunks() { };
+	File(const string & _name = string()) : name(_name), chunks() { };
 	
 	const char * compressionName() const {
 		switch(comp) {
@@ -87,7 +87,145 @@ struct SaveBlock::File {
 		}
 	}
 	
+	bool loadOffsets(FileHandle handle, u32 version);
+	
+	char * loadData(FileHandle handle, size_t & size) const;
+	
 };
+
+bool SaveBlock::File::loadOffsets(FileHandle handle, u32 version) {
+	
+	if(version < SAV_VERSION_CURRENT) {
+		// ignore the size, calculate from chunks
+		FileSeek(handle, 4, SEEK_CUR);
+		uncompressedSize = (size_t)-1;
+	} else {
+		u32 uncompressed;
+		if(FileRead(handle, &uncompressed, 4) != 4) {
+			return false;
+		}
+		uncompressedSize = uncompressed;
+	}
+	
+	u32 nChunks;
+	if(FileRead(handle, &nChunks, 4) != 4) {
+		return false;
+	}
+	if(version < SAV_VERSION_CURRENT && nChunks == 0) {
+		nChunks = 1;
+	}
+	chunks.resize(nChunks);
+	
+	if(version < SAV_VERSION_CURRENT) {
+		// ignored
+		FileSeek(handle, 4, SEEK_CUR);
+		comp = File::ImplodeCrypt;
+	} else {
+		u32 compid;
+		if(FileRead(handle, &compid, 4) != 4) {
+			return false;
+		}
+		switch(compid) {
+			case SAV_COMP_NONE: comp = File::None; break;
+			case SAV_COMP_IMPLODE: comp = File::ImplodeCrypt; break;
+			case SAV_COMP_DEFLATE: comp = File::Deflate; break;
+			default: comp = File::Unknown;
+		}
+	}
+	
+	size_t size = 0;
+	for(size_t i = 0; i < nChunks; i++) {
+		
+		u32 chunkSize;
+		if(FileRead(handle, &chunkSize, 4) != 4) {
+			return false;
+		}
+		size += chunkSize;
+		
+		u32 chunkOffset;
+		if(FileRead(handle, &chunkOffset, 4) != 4) {
+		}
+		
+		chunks[i].size = chunkSize;
+		chunks[i].offset = chunkOffset;
+	}
+	
+	storedSize = size;
+	
+	return true;
+}
+
+char * SaveBlock::File::loadData(FileHandle handle, size_t & size) const {
+	
+	LogDebug << "Loading " << name << " " << storedSize << "b in " << chunks.size() << " chunks, "
+	         << compressionName() << " -> " << (int)uncompressedSize << "b";
+	
+	char * buf = (char*)malloc(storedSize);
+	char * p = buf;
+	
+	for(File::ChunkList::const_iterator chunk = chunks.begin();
+	    chunk != chunks.end(); ++chunk) {
+		FileSeek(handle, chunk->offset + 4, SEEK_SET);
+		FileRead(handle, p, chunk->size);
+		p += chunk->size;
+	}
+	
+	assert(p == buf + storedSize);
+	
+	switch(comp) {
+		
+		case File::None: {
+			assert(uncompressedSize == storedSize);
+			size = uncompressedSize;
+			return buf;
+		}
+		
+		case File::ImplodeCrypt: {
+			unsigned char * crypt = (unsigned char *)buf;
+			for(size_t i = 0; i < storedSize; i += 2) {
+				crypt[i] = ~crypt[i];
+			}
+			char * uncompressed = blastMemAlloc(buf, storedSize, size);
+			free(buf);
+			if(!uncompressed) {
+				LogError << "error decompressing imploded " << name;
+				return NULL;
+			}
+			assert(uncompressedSize == (size_t)-1 || size == uncompressedSize);
+			return uncompressed;
+		}
+		
+		case File::Deflate: {
+			assert(uncompressedSize != (size_t)-1);
+			uLongf decompressedSize = uncompressedSize;
+			char * uncompressed = (char*)malloc(uncompressedSize);
+			int ret = uncompress((Bytef*)uncompressed, &decompressedSize, (const Bytef*)buf, storedSize);
+			if(ret != Z_OK) {
+				LogError << "error decompressing deflated " << name << ": " << ret;
+				free(buf);
+				free(uncompressed);
+				size = 0;
+				return NULL;
+			}
+			if(decompressedSize != uncompressedSize) {
+				LogError << "unexpedect uncompressed size " << decompressedSize << " while loading "
+				         << name << ", expected " << uncompressedSize;
+			}
+			size = decompressedSize;
+			free(buf);
+			return uncompressed;
+		}
+		
+		default: {
+			LogError << "error decompressing " << name << ": unknown format";
+			free(buf);
+			size = 0;
+			return NULL;
+		}
+		
+	}
+}
+
 
 SaveBlock::SaveBlock(const string & _savefile) {
 	
@@ -170,9 +308,9 @@ bool SaveBlock::loadFileTable() {
 	if(FileRead(handle, &nFiles, 4) != 4) {
 		return false;
 	}
-	files.reserve(nFiles);
+	files.resize(version == SAV_VERSION_OLD ? nFiles - 1 : nFiles);
 	
-	while(nFiles--) {
+	for(u32 i = 0; i < nFiles; i++) {
 		
 		// Read the file name.
 		string name;
@@ -187,71 +325,21 @@ bool SaveBlock::loadFileTable() {
 			name.push_back(c);
 		}
 		
-		//LogDebug << "name: " << name;
-		
-		files.push_back(File(name));
-		File & file = files.back();
-		
-		if(version < SAV_VERSION_CURRENT) {
-			// ignore the size, calculate from chunks
-			FileSeek(handle, 4, SEEK_CUR);
-			file.uncompressedSize = (size_t)-1;
-		} else {
-			u32 uncompressedSize;
-			if(FileRead(handle, &uncompressedSize, 4) != 4) {
+		if(!i && version == SAV_VERSION_OLD) {
+			File dummy;
+			if(!dummy.loadOffsets(handle, version)) {
 				return false;
 			}
-			file.uncompressedSize = uncompressedSize;
+			continue;
 		}
 		
-		u32 nChunks;
-		if(FileRead(handle, &nChunks, 4) != 4) {
+		File & file = (version == SAV_VERSION_OLD) ? files[i - 1] : files[i];
+		
+		file.name = name;
+		
+		if(!file.loadOffsets(handle, version)) {
 			return false;
 		}
-		if(version < SAV_VERSION_CURRENT && nChunks == 0) {
-			nChunks = 1;
-		}
-		file.chunks.reserve(nChunks);
-		
-		if(version < SAV_VERSION_CURRENT) {
-			// ignored
-			FileSeek(handle, 4, SEEK_CUR);
-			file.comp = File::ImplodeCrypt;
-		} else {
-			u32 comp;
-			if(FileRead(handle, &comp, 4) != 4) {
-				return false;
-			}
-			switch(comp) {
-				case SAV_COMP_NONE: file.comp = File::None; break;
-				case SAV_COMP_IMPLODE: file.comp = File::ImplodeCrypt; break;
-				case SAV_COMP_DEFLATE: file.comp = File::Deflate; break;
-				default: file.comp = File::Unknown;
-			}
-		}
-		
-		size_t size = 0;
-		while(nChunks--) {
-			
-			u32 chunkSize;
-			if(FileRead(handle, &chunkSize, 4) != 4) {
-				return false;
-			}
-			size += chunkSize;
-			
-			u32 chunkOffset;
-			if(FileRead(handle, &chunkOffset, 4) != 4) {
-			}
-			
-			file.chunks.push_back(FileChunk(chunkSize, chunkOffset));
-			
-		}
-		
-		file.storedSize = size;
-	}
-	
-	if(version == SAV_VERSION_OLD && !files.empty()) {
-		files.erase(files.begin());
 	}
 	
 	return true;
@@ -512,75 +600,7 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 		return NULL;
 	}
 	
-	LogDebug << "Loading " << name << " " << file->storedSize << "b in "
-	         << file->chunks.size() << " chunks, " << file->compressionName()
-	         << " -> " << (int)file->uncompressedSize << "b";
-	
-	char * buf = (char*)malloc(file->storedSize);
-	char * p = buf;
-	
-	for(File::ChunkList::const_iterator chunk = file->chunks.begin();
-	    chunk != file->chunks.end(); ++chunk) {
-		FileSeek(handle, chunk->offset + 4, SEEK_SET);
-		FileRead(handle, p, chunk->size);
-		p += chunk->size;
-	}
-	
-	assert(p == buf + file->storedSize);
-	
-	switch(file->comp) {
-		
-		case File::None: {
-			assert(file->uncompressedSize == file->storedSize);
-			size = file->uncompressedSize;
-			return buf;
-		}
-		
-		case File::ImplodeCrypt: {
-			unsigned char * crypt = (unsigned char *)buf;
-			for(size_t i = 0; i < file->storedSize; i += 2) {
-				crypt[i] = ~crypt[i];
-			}
-			char * uncompressed = blastMemAlloc(buf, file->storedSize, size);
-			free(buf);
-			if(!uncompressed) {
-				LogError << "error decompressing imploded " << name << " in " << savefile;
-				return NULL;
-			}
-			assert(file->uncompressedSize == (size_t)-1 || size == file->uncompressedSize);
-			return uncompressed;
-		}
-		
-		case File::Deflate: {
-			assert(file->uncompressedSize != (size_t)-1);
-			uLongf uncompressedSize = file->uncompressedSize;
-			char * uncompressed = (char*)malloc(uncompressedSize);
-			int ret = uncompress((Bytef*)uncompressed, &uncompressedSize, (const Bytef*)buf,
-			          file->storedSize);
-			if(ret != Z_OK) {
-				LogError << "error decompressing deflated " << name << " in " << savefile << ": " << ret;
-				free(buf);
-				free(uncompressed);
-				size = 0;
-				return NULL;
-			}
-			if(uncompressedSize != file->uncompressedSize) {
-				LogError << "unexpedect uncompressed size " << uncompressedSize << " while loading "
-				         << name << " in " << savefile << ", expected " << file->uncompressedSize;
-			}
-			size = file->uncompressedSize;
-			free(buf);
-			return uncompressed;
-		}
-		
-		default: {
-			LogError << "error decompressing " << name << " in " << savefile << ": unknown format";
-			free(buf);
-			size = 0;
-			return NULL;
-		}
-		
-	}
+	return file->loadData(handle, size);
 }
 
 bool SaveBlock::hasFile(const string & name) const {
@@ -609,4 +629,93 @@ vector<string> SaveBlock::getFiles() const {
 	}
 	
 	return result;
+}
+
+class Autoclose {
+	
+public:
+	
+	Autoclose(FileHandle _handle) : handle(_handle) { }
+	
+	~Autoclose() {
+		FileClose(handle);
+	}
+	
+private:
+	
+	FileHandle handle;
+	
+};
+
+char * SaveBlock::load(const std::string & savefile, const std::string & filename, size_t & size) {
+	
+	LogDebug << "reading savefile " << savefile;
+	
+	size = 0;
+	
+	FileHandle handle = FileOpenRead(savefile);
+	if(!handle) {
+		LogWarning << "cannot open save file " << savefile;
+		return NULL;
+	}
+	
+	Autoclose close(handle);
+	
+	u32 fatOffset;
+	if(FileRead(handle, &fatOffset, 4) != 4) {
+		return NULL;
+	}
+	if((size_t)FileSeek(handle, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
+		LogError << "cannot seek to FAT";
+		return NULL;
+	}
+	
+	u32 version;
+	if(FileRead(handle, &version, 4) != 4) {
+		return NULL;
+	}
+	if(version != SAV_VERSION_CURRENT && version != SAV_VERSION_RELEASE) {
+		LogWarning << "unexpected savegame version: " << version << " for " << savefile;
+	}
+	
+	u32 nFiles;
+	if(FileRead(handle, &nFiles, 4) != 4) {
+		return NULL;
+	}
+	
+	
+	File file;
+	
+	for(u32 i = 0; i < nFiles; i++) {
+		
+		// Read the file name.
+		string name;
+		while(true) {
+			char c;
+			if(FileRead(handle, &c, 1) != 1) {
+				return NULL;
+			}
+			if(c == '\0') {
+				break;
+			}
+			name.push_back(c);
+		}
+		
+		if(!file.loadOffsets(handle, version)) {
+			return NULL;
+		}
+		
+		if(!i && version == SAV_VERSION_OLD) {
+			continue;
+		}
+		
+		if(strcasecmp(name, filename)) {
+			file.chunks.clear();
+			continue;
+		}
+		
+		return file.loadData(handle, size);
+	}
+	
+	return NULL;
 }

@@ -70,6 +70,8 @@ public:
 	
 	std::vector<std::string> getFiles() const;
 	
+	static char * load(const std::string & save, const std::string & name, size_t & size);
+	
 };
 
 #endif // _CLUSTER_SAVE_H_
