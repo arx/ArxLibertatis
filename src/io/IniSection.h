@@ -71,7 +71,7 @@ public:
 	inline iterator begin() const { return keys.begin(); }
 	inline iterator end() const { return keys.end(); }
 	inline bool empty() const { return keys.empty(); }
-	inline bool size() const { return keys.size(); }
+	inline size_t size() const { return keys.size(); }
 	
 	const IniKey * getKey(const std::string & name) const;
 	
