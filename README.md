@@ -36,6 +36,8 @@ Build options:
 * `ARX_DEBUG` (default=ON): Normal debug options
 * `ARX_DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `ARX_FORCE_32BIT` (default=ON): Force a 32-bit build on 64-bit systems
+* `ARX_USE_OPENAL` (default=ON): Build the OpenAL audio backend
+* `ARX_USE_DSOUND` (default=ON): Build the DirectSound audio backend
 
 Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
