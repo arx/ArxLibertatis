@@ -129,7 +129,7 @@ option(ARX_MINGW "Build on MinGW" OFF)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
-option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" ON)
+option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
 
