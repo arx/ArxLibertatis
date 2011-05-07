@@ -53,7 +53,7 @@ Lock::~Lock() {
 }
 
 void Lock::lock() {
-	DWORD rc = WaitForSingleObject(mutex, INFINITE) == WAIT_TIMEOUT ? false : true;
+	DWORD rc = WaitForSingleObject(mutex, INFINITE);
 	arx_assert(rc == WAIT_OBJECT_0);
 }
 
