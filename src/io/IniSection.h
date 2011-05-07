@@ -30,23 +30,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+struct IniKey {
+	
+	inline const std::string & getName() const { return name; }
+	inline const std::string & getValue() const { return value; }
+	
+	int getValue(int defaultValue) const;
+	
+	float getValue(float defaultValue) const;
+	
+	bool getValue(bool defaultValue) const;
+	
+private:
+	
+	std::string name;
+	std::string value;
+	
+	friend class IniSection;
+};
+
 class IniSection {
 	
 private:
 	
-	struct Key {
-		
-		Key() {}
-		Key(const std::string & _name, const std::string & _value) {
-			name = _name;
-			value = _value;
-		}
-		
-		std::string name;
-		std::string value;
-	};
-	
-	std::vector<Key> keys;
+	typedef std::vector<IniKey> Keys;
+	Keys keys;
 	
 	/*!
 	 * Add a key in the ini format (name=value or name="value")
@@ -55,6 +63,18 @@ private:
 	void addKey(const std::string & key, const std::string & value);
 	
 	friend class IniReader;
+	
+public:
+	
+	typedef Keys::const_iterator iterator;
+	
+	inline iterator begin() const { return keys.begin(); }
+	inline iterator end() const { return keys.end(); }
+	inline bool empty() const { return keys.empty(); }
+	inline bool size() const { return keys.size(); }
+	
+	const IniKey * getKey(const std::string & name) const;
+	
 };
 
 

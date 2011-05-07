@@ -7,9 +7,11 @@
 /**
  * Converts a given string into uppercase characters
  * @param A reference to the string being converted
- * @return A copy of the converted string
  */
-std::string MakeUpcase(std::string & str);
+void MakeUpcase(std::string & str);
+
+void makeLowercase(std::string & str);
+std::string toLowercase(const std::string & str);
 
 bool IsIn(const std::string & strin, const std::string & str);
 bool NC_IsIn(std::string strin, std::string str);

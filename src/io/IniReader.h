@@ -40,9 +40,12 @@ class IniReader {
 	
 private:
 	
-	std::map<std::string, IniSection> sections;
+	typedef std::map<std::string, IniSection> Sections;
+	Sections sections;
 	
 public:
+	
+	typedef Sections::const_iterator iterator;
 	
 	/**
 	 * Parses an input stream for configuration section and respective keys.
@@ -94,11 +97,14 @@ public:
 	 * Get the value at the specified key in the specified section.
 	 * @return the value string or NULL if no such value is set.
 	 */
-	const std::string * getKey(const std::string & section, const std::string & key) const;
+	const IniKey * getKey(const std::string & section, const std::string & key) const;
 	
 	const IniSection * getSection(const std::string & section) const;
 	
 	size_t getKeyCount(const std::string & section) const;
+	
+	inline iterator begin() const { return sections.begin(); }
+	inline iterator end() const { return sections.end(); }
 	
 };
 

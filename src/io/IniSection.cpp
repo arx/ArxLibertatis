@@ -25,12 +25,70 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IniSection.h"
 
+#include <sstream>
 #include <algorithm>
 
 #include "io/Logger.h"
 
 using std::string;
 using std::transform;
+using std::istringstream;
+using std::boolalpha;
+
+int IniKey::getValue(int defaultValue) const {
+	
+	istringstream iss(value);
+	
+	int val = defaultValue;
+	if((iss >> val).fail()) {
+		return defaultValue;
+	}
+	
+	return val;
+}
+
+float IniKey::getValue(float defaultValue) const {
+	
+	istringstream iss(value);
+	
+	float val;
+	if((iss >> val).fail()) {
+		return defaultValue;
+	}
+	
+	return val;
+}
+
+bool IniKey::getValue(bool defaultValue) const {
+	
+	istringstream iss(value);
+	
+	// Support either boolean specified as strings (true, false) or 0, 1
+	bool val;
+	if((iss >> boolalpha >> val).fail()) {
+		iss.clear();
+		int intVal;
+		if((iss >> intVal).fail()) {
+			return defaultValue;
+		}
+		val = (intVal != 0);
+	}
+	
+	return val;
+}
+
+const IniKey * IniSection::getKey(const std::string & name) const {
+	
+	// Try to match the key to one in the section
+	for(iterator i = begin(); i != end(); ++i) {
+		if(i->getName() == name) { // If the key name matches that specified
+			return &*i;
+		}
+	}
+	
+	// If the key was not found, return NULL
+	return NULL;
+}
 
 void IniSection::addKey(const string & key, const string & value) {
 	

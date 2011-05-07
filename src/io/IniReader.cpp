@@ -27,7 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IniReader.h"
 
-#include <sstream>
 #include <algorithm>
 
 #include "io/Logger.h"
@@ -36,12 +35,10 @@ using std::string;
 using std::istream;
 using std::getline;
 using std::transform;
-using std::istringstream;
-using std::boolalpha;
 
 const IniSection* IniReader::getSection( const std::string& section ) const {
 	
-	std::map<std::string, IniSection>::const_iterator iter = sections.find(section);
+	iterator iter = sections.find(section);
 	
 	if(iter != sections.end()) {
 		return &(iter->second);
@@ -54,110 +51,74 @@ size_t IniReader::getKeyCount(const string & sectionName) const {
 	
 	const IniSection * section = getSection(sectionName);
 	if(section) {
-		return section->keys.size();
+		return section->size();
 	} else {
 		return 0;
 	}
 }
 
-const string & IniReader::getKey(const string & section, const string & key, const string & default_value) const {
+const string & IniReader::getKey(const string & section, const string & keyName, const string & default_value) const {
 	
-	const string * value = getKey(section, key);
-	if(value) {
-		return *value;
-	} else {
-		// If the value was not found, return default
+	const IniKey * key = getKey(section, keyName);
+	if(!key) {
 		return default_value;
 	}
 	
+	return key->getValue();
 }
 
-int IniReader::getKey(const string & section, const string & key, int defaultValue) const {
+int IniReader::getKey(const string & section, const string & keyName, int defaultValue) const {
 	
-	const string * temp = getKey(section, key);
-	if(!temp) {
+	const IniKey * key = getKey(section, keyName);
+	if(!key) {
 		return defaultValue;
 	}
 	
-	istringstream iss(*temp);
-	
-	int val = defaultValue;
-	if((iss >> val).fail()) {
-		return defaultValue;
-	}
-	
-	return val;
+	return key->getValue(defaultValue);
 }
 
-float IniReader::getKey(const string & section, const string & key, float defaultValue) const {
+float IniReader::getKey(const string & section, const string & keyName, float defaultValue) const {
 	
-	const string * temp = getKey(section, key);
-	if(!temp) {
+	const IniKey * key = getKey(section, keyName);
+	if(!key) {
 		return defaultValue;
 	}
 	
-	istringstream iss(*temp);
-	
-	float val;
-	if((iss >> val).fail()) {
-		return defaultValue;
-	}
-	
-	return val;
+	return key->getValue(defaultValue);
 }
 
 
-bool IniReader::getKey(const string & section, const string & key, bool defaultValue) const {
+bool IniReader::getKey(const string & section, const string & keyName, bool defaultValue) const {
 	
-	const string * temp = getKey(section, key);
-	if(!temp) {
+	const IniKey * key = getKey(section, keyName);
+	if(!key) {
 		return defaultValue;
 	}
 	
-	// Support either boolean specified as strings (true, false) or 0, 1
-	bool val;
-	istringstream iss(*temp);
-	if((iss >> boolalpha >> val).fail()) {
-		iss.clear();
-		int intVal;
-		if((iss >> intVal).fail()) {
-			return defaultValue;
-		}
-		val = (intVal != 0);
-	}
-	
-	return val;
+	return key->getValue(defaultValue);
 }
 
-const string * IniReader::getKey(const string & section, const string & key) const {
+const IniKey * IniReader::getKey(const string & sectionName, const string & key) const {
 	
 	// Look for a section
-	const IniSection * config = getSection(section);
+	const IniSection * section = getSection(sectionName);
 	
 	// If the section was not found, return NULL
-	if(!config) {
+	if(!section) {
 		return NULL;
 	}
 	
 	// If the section has no keys, return NULL
-	if(config->keys.empty()) {
+	if(section->empty()) {
 		return NULL;
 	}
 	
 	// If the key is not specified, return the first ones value( to avoid breakage with legacy assets )
 	if(key.empty()) {
-		return &config->keys.front().value;
+		return &*section->begin();
 	}
 	
-	// Otherwise try to match the key to one in the section
-	for(size_t i = 0; i < config->keys.size(); i++) {
-		if(config->keys[i].name == key) { // If the key name matches that specified
-			return &config->keys[i].value; // Return the value of the requested key
-		}
-	}
-	
-	// If the key was not found, return NULL
-	return NULL;
+	return section->getKey(key);
 }
 
 static const string WHITESPACE = " \t\r\n";

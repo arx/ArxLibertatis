@@ -526,21 +526,21 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 	const string & key = Key::actions[index];
 	ActionKey action_key = Default::actions[index];
 	
-	const string * k0 = getKey(section, key + "_k0");
+	const IniKey * k0 = getKey(section, key + "_k0");
 	if(k0) {
-		InputKeyId id = getKeyId(*k0);
-		if(id == -1 && !k0->empty() && *k0 != KEY_NONE) {
-			LogWarning << "error parsing key name for " <<  key << "_k0: \"" << (*k0) << "\", resetting to \"" << getKeyName(action_key.key[0]) << "\"";
+		InputKeyId id = getKeyId(k0->getValue());
+		if(id == -1 && !k0->getValue().empty() && k0->getValue() != KEY_NONE) {
+			LogWarning << "error parsing key name for " <<  key << "_k0: \"" << k0->getValue() << "\", resetting to \"" << getKeyName(action_key.key[0]) << "\"";
 		} else {
 			action_key.key[0] = id;
 		}
 	}
 	
-	const string * k1 = getKey(section, key + "_k1");
+	const IniKey * k1 = getKey(section, key + "_k1");
 	if(k1) {
-		InputKeyId id = getKeyId(*k1);
-		if(id == -1 && !k1->empty() && *k1 != KEY_NONE) {
-			LogWarning << "error parsing key name for " <<  key << "_k1: \"" << (*k1) << "\", resetting to \"" << getKeyName(action_key.key[1]) << "\"";
+		InputKeyId id = getKeyId(k1->getValue());
+		if(id == -1 && !k1->getValue().empty() && k1->getValue() != KEY_NONE) {
+			LogWarning << "error parsing key name for " <<  key << "_k1: \"" << k1->getValue() << "\", resetting to \"" << getKeyName(action_key.key[1]) << "\"";
 		} else {
 			action_key.key[1] = id;
 		}

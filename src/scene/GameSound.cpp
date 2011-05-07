@@ -33,6 +33,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/GameSound.h"
 
+#include <map>
+#include <vector>
+#include <sstream>
+
 #include "audio/Audio.h"
 
 #include "core/Application.h"
@@ -53,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+#include "io/IniReader.h"
 
 #include "platform/String.h"
 
@@ -61,7 +66,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scripting/Script.h"
 #include <audio/Sample.h>
 
-using namespace std;
+using std::map;
+using std::string;
+using std::istringstream;
+using std::ostringstream;
+using std::vector;
 
 using namespace audio;
 
@@ -69,36 +78,6 @@ extern long FINAL_RELEASE;
 extern long EXTERNALVIEW;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 
-struct ARX_SOUND_Material
-{
-	char * name;
-	unsigned long variant_i;
-	unsigned long variant_c;
-	long * variant_l;
-};
-
-struct ARX_SOUND_CollisionMap
-{
-	char * name;
-	unsigned long material_c;
-	ARX_SOUND_Material * material_l;
-};
-
-struct ARX_SOUND_Presence
-{
-	char * name;
-	long name_size;
-	float factor;
-};
-
-enum ParseIniFileEnum
-{
-	PARSE_INI_FILE_CONTINUE,
-	PARSE_INI_FILE_SKIP,
-	PARSE_INI_FILE_STOP
-};
-
-typedef unsigned long(* ParseIniFileCallback)(const char * lpszText);
 
 enum PlayingAmbianceType {
 	PLAYING_AMBIANCE_MENU,
@@ -126,17 +105,16 @@ static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
 static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
 static const float ARX_SOUND_REFUSE_DISTANCE(2500.0F);
 
-static const char ARX_SOUND_PATH_INI[] = "localisation\\";
+static const string ARX_SOUND_PATH_INI = "localisation\\";
 static const char ARX_SOUND_PATH_SAMPLE[] = "sfx\\";
 static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx\\ambiance\\";
 static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx\\environment\\";
-static const char ARX_SOUND_PRESENCE_NAME[] = "presence";
+static const string ARX_SOUND_PRESENCE_NAME = "presence";
 static const char ARX_SOUND_FILE_EXTENSION_WAV[] = ".wav";
-static const char ARX_SOUND_FILE_EXTENSION_INI[] = ".ini";
+static const string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
 
 static const unsigned long ARX_SOUND_COLLISION_MAP_COUNT = 3;
-static const char * ARX_SOUND_COLLISION_MAP_NAME[] =
-{
+static const string ARX_SOUND_COLLISION_MAP_NAMES[] = {
 	"snd_armor",
 	"snd_step",
 	"snd_weapon"
@@ -151,11 +129,46 @@ static long ambiance_zone(INVALID_ID);
 static long ambiance_menu(INVALID_ID);
 
 static long Inter_Materials[MAX_MATERIALS][MAX_MATERIALS][MAX_VARIANTS];
-static unsigned long collision_map_c(0);
-static ARX_SOUND_CollisionMap * collision_map_l = NULL;
 
-static unsigned long presence_c(0);
-static ARX_SOUND_Presence * presence_l = NULL;
+namespace {
+
+struct SoundMaterial {
+	
+	vector<SampleId> variants;
+	
+	SoundMaterial() : current(0) { }
+	
+	~SoundMaterial() {
+		for(vector<SampleId>::const_iterator i = variants.begin(); i !=  variants.end(); ++i) {
+			aalDeleteSample(*i);
+		}
+	}
+	
+	SampleId next() {
+		arx_assert(current < variants.size());
+		SampleId sample = variants[current];
+		current = (current + 1) % variants.size();
+		return sample;
+	}
+	
+private:
+	
+	size_t current;
+	
+};
+
+typedef map<string, SoundMaterial> CollisionMap;
+typedef map<string, CollisionMap> CollisionMaps;
+static CollisionMaps collisionMaps;
+
+namespace Section {
+static const string presence = "presence";
+}
+
+typedef map<string, float> PresenceFactors;
+static PresenceFactors presence;
+
+}
 
  
 
@@ -316,15 +329,12 @@ static void ARX_SOUND_CreateStaticSamples();
 static void ARX_SOUND_ReleaseStaticSamples();
 static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const char * name);
 static void ARX_SOUND_CreateCollisionMaps();
-static void ARX_SOUND_DeleteCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
 static void ARX_SOUND_CreatePresenceMap();
-static void ARX_SOUND_DeletePresenceMap();
 static float GetSamplePresenceFactor(const string & name);
 LPTHREAD_START_ROUTINE UpdateSoundThread(char *);
 static void ARX_SOUND_LaunchUpdateThread();
 static void ARX_SOUND_KillUpdateThread();
-static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ulFileSize, ParseIniFileCallback lpSectionCallback, ParseIniFileCallback lpStringCallback);
 void ARX_SOUND_PreloadAll();
 
 
@@ -332,6 +342,8 @@ bool ARX_SOUND_Init()
 {
 	if (bIsActive) ARX_SOUND_Release();
 
+	arx_assert(ARX_SOUND_INVALID_RESOURCE == INVALID_ID);
+	
 	if(aalInit(config.audio.backend,  config.audio.eax)) {
 		aalClean();
 		return false;
@@ -412,8 +424,8 @@ void ARX_SOUND_PreloadAll()
 void ARX_SOUND_Release()
 {
 	ARX_SOUND_ReleaseStaticSamples();
-	ARX_SOUND_DeleteCollisionMaps();
-	ARX_SOUND_DeletePresenceMap();
+	collisionMaps.clear();
+	presence.clear();
 	ARX_SOUND_KillUpdateThread();
 	aalClean();
 	bIsActive = false;
@@ -677,13 +689,13 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EE
 	//Launch 'ON HEAR' script event
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
 
-	if (position)
-	{
+	if(position) {
 		channel.position.x = position->x;
 		channel.position.y = position->y;
 		channel.position.z = position->z;
+	} else {
+		ARX_PLAYER_FrontPos((EERIE_3D *)&channel.position);
 	}
-	else ARX_PLAYER_FrontPos((EERIE_3D *)&channel.position);
 
 	channel.pitch = 0.9F + 0.2F * rnd();
 	channel.volume = volume;
@@ -695,76 +707,71 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EE
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source)
-{
-	if (!bIsActive) return 0;
-
-	if ( name1.empty() || name2.empty() ) return 0;
-
-	if (strcasecmp(name2, "WATER") == 0)
-		ARX_PARTICLES_SpawnWaterSplash(position);
-
-
-	for (unsigned long i(0); i < collision_map_c; i++)
-	{
-		ARX_SOUND_CollisionMap * c_map = &collision_map_l[i];
-
-		if (!strcasecmp(name1, c_map->name))
-			for (unsigned long j(0); j < c_map->material_c; j++)
-			{
-				ARX_SOUND_Material * c_material = &c_map->material_l[j];
-
-				if (!strcasecmp(name2, c_material->name))
-				{
-					SampleId sample_id;
-					sample_id = c_material->variant_l[c_material->variant_i];
-
-					if (++c_material->variant_i >= c_material->variant_c) c_material->variant_i = 0;
-
-					if (sample_id == INVALID_ID)
-						return 0;
-
-					Channel channel;
-					channel.mixer = ARX_SOUND_MixerGameSample;
-					float presence;
-
-					channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
-
-					string sample_name;
-					aalGetSampleName(sample_id, sample_name);
-					presence = GetSamplePresenceFactor(sample_name);
-					channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
-					channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
-
-					//Launch 'ON HEAR' script event
-					ARX_NPC_SpawnAudibleSound(position, source, power, presence);
-
-					if (position)
-					{
-						channel.position.x = position->x;
-						channel.position.y = position->y;
-						channel.position.z = position->z;
-
-						if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE)
-							return -1;
-					}
-					else
-						ARX_PLAYER_FrontPos((EERIE_3D *)&channel.position);
-
-
-					channel.pitch = 0.975F + 0.5F * rnd();
-					channel.volume = volume;
-					aalSamplePlay(sample_id, channel);
-
-					size_t length;
-					aalGetSampleLength(sample_id, length);
-
-					return (long)(channel.pitch * length);
-				}
-			}
+long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source) {
+	
+	if(!bIsActive) {
+		return 0;
 	}
-
-	return 0;
+	
+	if( _name1.empty() || _name2.empty()) {
+		return 0;
+	}
+	
+	// TODO move to caller
+	string name1 = toLowercase(_name1);
+	string name2 = toLowercase(_name2);
+	
+	if(name2 == "water") {
+		ARX_PARTICLES_SpawnWaterSplash(position);
+	}
+	
+	CollisionMaps::iterator mi = collisionMaps.find(name1);
+	if(mi == collisionMaps.end()) {
+		return 0;
+	}
+	CollisionMap & map = mi->second;
+	
+	CollisionMap::iterator ci = map.find(name2);
+	if(ci == map.end()) {
+		return 0;
+	}
+	SoundMaterial & mat = ci->second;
+	
+	SampleId sample_id = mat.next();
+	arx_assert(sample_id != INVALID_ID);
+	
+	Channel channel;
+	channel.mixer = ARX_SOUND_MixerGameSample;
+	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
+	
+	string sample_name;
+	aalGetSampleName(sample_id, sample_name);
+	float presence = GetSamplePresenceFactor(sample_name);
+	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
+	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
+	
+	// Launch 'ON HEAR' script event
+	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
+	
+	if(position) {
+		channel.position.x = position->x;
+		channel.position.y = position->y;
+		channel.position.z = position->z;
+		if(ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE) {
+			return -1;
+		}
+	} else {
+		ARX_PLAYER_FrontPos((EERIE_3D *)&channel.position);
+	}
+	
+	channel.pitch = 0.975f + 0.5f * rnd();
+	channel.volume = volume;
+	aalSamplePlay(sample_id, channel);
+	
+	size_t length;
+	aalGetSampleLength(sample_id, length);
+	
+	return (long)(channel.pitch * length);
 }
 
 long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
@@ -969,7 +976,7 @@ ArxSound ARX_SOUND_Load(const string & name) {
 
 void ARX_SOUND_Free(const ArxSound & sample)
 {
-	if (!bIsActive || sample == ARX_SOUND_INVALID_RESOURCE) return;
+	if (!bIsActive || sample == INVALID_ID) return;
 
 	aalDeleteSample(sample);
 }
@@ -1475,7 +1482,7 @@ static void ARX_SOUND_CreateStaticSamples()
 	SND_SPELL_VISION_LOOP              = aalCreateSample("magic_spell_vision.wav");
 }
 
-// Reset each static sample to ARX_SOUND_INVALID_RESOURCE
+// Reset each static sample to INVALID_ID
 // Those samples are freed from memory when Athena is deleted
 static void ARX_SOUND_ReleaseStaticSamples()
 {
@@ -1740,165 +1747,72 @@ static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const 
 	}
 }
 
-unsigned long CollisionMapSectionCallback(const char * lpszSection)
-{
-	void * ptr;
-	unsigned long ulSectionSize(strlen(lpszSection) + 1);
-	ARX_SOUND_CollisionMap * current_map;
-
-	//Resize the collision map list
-	ptr = realloc(collision_map_l, sizeof(ARX_SOUND_CollisionMap) * (collision_map_c + 1));
-
-	if (!ptr) return PARSE_INI_FILE_STOP;
-
-	collision_map_l = (ARX_SOUND_CollisionMap *)ptr;
-	current_map = &collision_map_l[collision_map_c];
-
-
-	//Initialize the current collision map
-	current_map->name = NULL;
-	current_map->name = (char *)malloc(ulSectionSize);
-
-	if (!current_map->name)
-	{
-		collision_map_l = (ARX_SOUND_CollisionMap *)realloc(collision_map_l, sizeof(ARX_SOUND_CollisionMap) * collision_map_c);
-		return PARSE_INI_FILE_STOP;
-	}
-
-	memcpy(current_map->name, lpszSection, ulSectionSize);
-	current_map->material_c = 0;
-	current_map->material_l = NULL;
-
-	collision_map_c++;
-
-	return PARSE_INI_FILE_CONTINUE;
-}
-
-unsigned long CollisionMapStringCallback(const char * lpszString)
-{
-	ARX_SOUND_Material * current_material;
-	unsigned long ulKeySize;
-	const char * lpszValue;
-	void * ptr;
-	ARX_SOUND_CollisionMap * current_map = &collision_map_l[collision_map_c - 1];
-
-	//Find value position in current string and compute key size
-	lpszValue = strchr(lpszString, '=');
-
-	if (!lpszValue) return PARSE_INI_FILE_CONTINUE;
-
-	ulKeySize = ++lpszValue - lpszString;
-
-	if (!strlen(lpszValue)) return PARSE_INI_FILE_CONTINUE;
-
-	//Allocate the material
-	ptr = realloc(current_map->material_l, sizeof(ARX_SOUND_Material) * (current_map->material_c + 1));
-
-	if (!ptr) return PARSE_INI_FILE_STOP;
-
-	current_map->material_l = (ARX_SOUND_Material *)ptr;
-	current_material = &current_map->material_l[current_map->material_c];
-
-	//Initialize it
-	current_material->name = (char *)malloc(ulKeySize);
-
-	if (!current_material->name)
-	{
-		current_map->material_l = (ARX_SOUND_Material *)realloc(current_map->material_l, sizeof(ARX_SOUND_Material) * current_map->material_c);
-		return PARSE_INI_FILE_STOP;
-	}
-
-	memcpy(current_material->name, lpszString, ulKeySize);
-	current_material->name[ulKeySize - 1] = 0;
-	//current_material->name = strdup(lpszString);
-	current_material->variant_c = current_material->variant_i = 0;
-	current_material->variant_l = NULL;
-
-	//Find and create samples for the current material
-	char path[256];
-
-	for (unsigned long i(0); i < MAX_VARIANTS; i++)
-	{
-		long sample_id;
-
-		if (i)
-			sprintf(path, "%s%lu%s", lpszValue, i, ARX_SOUND_FILE_EXTENSION_WAV);
-		else
-			sprintf(path, "%s%s", lpszValue, ARX_SOUND_FILE_EXTENSION_WAV);
-
-		sample_id = aalCreateSample(path);
-
-		if (sample_id == ARX_SOUND_INVALID_RESOURCE)
-		{
-			sprintf(path, "%s_%lu%s", lpszValue, i, ARX_SOUND_FILE_EXTENSION_WAV);
-			sample_id = aalCreateSample(path);
+static void ARX_SOUND_CreateCollisionMaps() {
+	
+	collisionMaps.clear();
+	
+	for(size_t i = 0; i < ARX_SOUND_COLLISION_MAP_COUNT; i++) {
+		
+		string file = ARX_SOUND_PATH_INI + ARX_SOUND_COLLISION_MAP_NAMES[i] + ARX_SOUND_FILE_EXTENSION_INI;
+		
+		size_t fileSize;
+		char * data = (char *)PAK_FileLoadMalloc(file.c_str(), fileSize);
+		if(!data) {
+			LogWarning << "could not find collision map " << file;
+			return;
 		}
-
-		if (sample_id != ARX_SOUND_INVALID_RESOURCE)
-		{
-			ptr = realloc(current_material->variant_l, sizeof(long) * (current_material->variant_c + 1));
-
-			if (!ptr) break;
-
-			current_material->variant_l = (long *)ptr;
-			current_material->variant_l[current_material->variant_c] = sample_id;
-			current_material->variant_c++;
+		
+		istringstream iss(string(data, fileSize));
+		free(data);
+		
+		IniReader reader;
+		if(!reader.read(iss)) {
+			LogWarning << "errors while parsing collision map " << file;
 		}
-	}
-
-	if (!current_material->variant_c)
-	{
-		free(current_material->name);
-		current_map->material_l = (ARX_SOUND_Material *)realloc(current_map->material_l, sizeof(ARX_SOUND_Material) * current_map->material_c);
-	}
-	else current_map->material_c++;
-
-	return PARSE_INI_FILE_CONTINUE;
-}
-
-static void ARX_SOUND_CreateCollisionMaps()
-{
-	char path[256];
-
-	for (unsigned long i = 0; i < ARX_SOUND_COLLISION_MAP_COUNT; i++)
-	{
-		char * lpszFileText;
-		size_t lFileSize;
-
-		sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_COLLISION_MAP_NAME[i], ARX_SOUND_FILE_EXTENSION_INI);
-
-		lpszFileText = (char *)PAK_FileLoadMallocZero(path, lFileSize);
-
-		if (!lpszFileText) return;
-
-		ARX_SOUND_ParseIniFile(lpszFileText, lFileSize, CollisionMapSectionCallback, CollisionMapStringCallback);
-
-		free(lpszFileText);
-	}
-}
-
-static void ARX_SOUND_DeleteCollisionMaps()
-{
-	for (unsigned long i(0); i < collision_map_c; i++)
-	{
-		ARX_SOUND_CollisionMap * current_map = &collision_map_l[i];
-
-		for (unsigned long j(0); j < current_map->material_c; j++)
-		{
-			ARX_SOUND_Material * current_material = &current_map->material_l[j];
-
-			for (unsigned long k(0); k < current_material->variant_c; k++)
-				aalDeleteSample(current_material->variant_l[k]);
-
-			free(current_material->variant_l);
-			free(current_material->name);
+		
+		for(IniReader::iterator si = reader.begin(); si != reader.end(); ++si) {
+			const IniSection & section = si->second;
+			CollisionMap & map = collisionMaps[si->first];
+			
+			for(IniSection::iterator ki = section.begin(); ki != section.end(); ++ki) {
+				const IniKey & key = *ki;
+				SoundMaterial & mat = map[key.getName()];
+				
+				for(size_t mi = 0; mi < MAX_VARIANTS; mi++) {
+					
+					ostringstream oss;
+					oss << key.getValue();
+					if(mi) {
+						oss << mi;
+					}
+					oss << ARX_SOUND_FILE_EXTENSION_WAV;
+					SampleId sample = aalCreateSample(oss.str());
+					
+					if(sample == INVALID_ID) {
+						ostringstream oss2;
+						oss2 << key.getValue() << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
+						sample = aalCreateSample(oss2.str());
+					}
+					
+					if(sample != INVALID_ID) {
+						mat.variants.push_back(sample);
+					}
+				}
+				
+				if(mat.variants.empty()) {
+					map.erase(key.getName());
+				}
+				
+			}
+			
+			if(map.empty()) {
+				collisionMaps.erase(si->first);
+			}
+			
 		}
-
-		free(current_map->material_l);
-		free(current_map->name);
+		
 	}
-
-	free(collision_map_l), collision_map_l = NULL, collision_map_c = 0;
+	
 }
 
 static void ARX_SOUND_CreateMaterials()
@@ -1983,85 +1897,53 @@ static void ARX_SOUND_CreateMaterials()
 	ARX_SOUND_LoadCollision(MATERIAL_STONE,  MATERIAL_STONE,        "STONE_on_STONE");
 }
 
-unsigned long PresenceSectionCallback(const char * lpszText) {
+
+static void ARX_SOUND_CreatePresenceMap() {
 	
-	(void)lpszText;
+	presence.clear();
 	
-	return PARSE_INI_FILE_CONTINUE;
-}
-
-unsigned long PresenceStringCallback(const char * lpszText)
-{
-	unsigned long ulKeySize;
-	const char * lpszValue;
-	void * ptr;
-	ARX_SOUND_Presence * current_presence;
-
-	lpszValue = strchr(lpszText, '=');
-
-	if (!lpszValue) return PARSE_INI_FILE_CONTINUE;
-
-	ulKeySize = lpszValue - lpszText + sizeof(ARX_SOUND_FILE_EXTENSION_WAV);
-
-	if (!strlen(++lpszValue)) return PARSE_INI_FILE_CONTINUE;
-
-	//Allocate the new map entry
-	ptr = realloc(presence_l, sizeof(ARX_SOUND_Presence) * (presence_c + 1));
-
-	if (!ptr) return PARSE_INI_FILE_STOP;
-
-	presence_l = (ARX_SOUND_Presence *)ptr;
-
-	current_presence = &presence_l[presence_c];
-	current_presence->name = (char *)malloc(ulKeySize);
-
-	if (!current_presence->name)
-	{
-		presence_l = (ARX_SOUND_Presence *)realloc(presence_l, sizeof(ARX_SOUND_Presence) * (presence_c));
-		return PARSE_INI_FILE_STOP;
+	string file = ARX_SOUND_PATH_INI + ARX_SOUND_PRESENCE_NAME + ARX_SOUND_FILE_EXTENSION_INI;
+	
+	size_t fileSize;
+	char * data = (char *)PAK_FileLoadMalloc(file.c_str(), fileSize);
+	if(!data) {
+		LogWarning << "could not find presence map " << file;
+		return;
 	}
-
-	memcpy(current_presence->name, lpszText, ulKeySize - sizeof(ARX_SOUND_FILE_EXTENSION_WAV));
-	memcpy(&current_presence->name[ulKeySize - sizeof(ARX_SOUND_FILE_EXTENSION_WAV)], ARX_SOUND_FILE_EXTENSION_WAV, sizeof(ARX_SOUND_FILE_EXTENSION_WAV));
-	current_presence->name_size = ulKeySize;
-	current_presence->factor = (float)atoi(lpszValue) / 100.0F;
-
-	presence_c++;
-
-	return PARSE_INI_FILE_CONTINUE;
+	
+	istringstream iss(string(data, fileSize));
+	free(data);
+	
+	IniReader reader;
+	if(!reader.read(iss)) {
+		LogWarning << "errors while parsing presence map " << file;
+	}
+	
+	const IniSection * section = reader.getSection(Section::presence);
+	if(!section) {
+		LogWarning << "no [" << Section::presence << "] section in presence map " << file;
+	}
+	
+	for(IniSection::iterator i = section->begin(); i != section->end(); ++i) {
+		float factor = i->getValue(100.f) / 100.f;
+		presence[i->getName() + ARX_SOUND_FILE_EXTENSION_WAV] = factor;
+	}
+	
 }
 
-static void ARX_SOUND_CreatePresenceMap()
-{
-	char path[256];
-	char * lpszFileText;
-	size_t lFileSize;
-
-	sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_PRESENCE_NAME, ARX_SOUND_FILE_EXTENSION_INI);
-
-	lpszFileText = (char *)PAK_FileLoadMallocZero(path, lFileSize);
-
-	if (!lpszFileText) return;
-
-	ARX_SOUND_ParseIniFile(lpszFileText, lFileSize, PresenceSectionCallback, PresenceStringCallback);
-
-	free(lpszFileText);
+static float GetSamplePresenceFactor(const string & _name) {
+	
+	// TODO move to caller
+	string name = toLowercase(_name);
+	
+	PresenceFactors::const_iterator it = presence.find(name);
+	if(it != presence.end()) {
+		return it->second;
+	}
+	
+	return 1.f;
 }
 
-static void ARX_SOUND_DeletePresenceMap()
-{
-	for (unsigned long i(0); i < presence_c; i++)
-		free(presence_l[i].name);
-
-	free(presence_l), presence_l = NULL, presence_c = 0;
-}
-
-static float GetSamplePresenceFactor(const string & name) {
-	for (unsigned long i(0); i < presence_c; i++)
-		if (!strncasecmp(presence_l[i].name, name.c_str(), presence_l[i].name_size)) return presence_l[i].factor;
-
-	return 1.0F;
-}
 LARGE_INTEGER Sstart_chrono, Send_chrono;
 unsigned long BENCH_SOUND = 0;
 LPTHREAD_START_ROUTINE UpdateSoundThread(char *)
@@ -2105,219 +1987,4 @@ static void ARX_SOUND_KillUpdateThread()
 		LogError << "Failed while killing audio thread";
 
 	CloseHandle(hUpdateThread), hUpdateThread = NULL;
-}
-
-static bool isSection(char * _lpszText)
-{
-	ULONG i = 0;
-	unsigned long ulTextSize = strlen(_lpszText);
-	bool bFirst = false;
-	bool bLast = false;
-
-	while (i < ulTextSize)
-	{
-		if (_lpszText[i] == '[')
-		{
-			if (bFirst) return false;
-			else bFirst = true;
-		}
-		else if (_lpszText[i] == ']')
-		{
-			if (!bFirst) return false;
-
-			if (bLast) return false;
-			else bLast = true;
-		}
-		else if (isalpha(_lpszText[i]))
-		{
-			if (!bFirst) return false;
-			else if (bFirst && bLast) return false;
-		}
-
-		i++;
-	}
-
-	if (bFirst && bLast) return true;
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-static bool isString(char * _lpszText)
-{
-	ULONG i = 0;
-	unsigned long ulTextSize = strlen(_lpszText);
- 
- 
-	bool bSpace = false;
-	bool bAlpha = false;
-
-	while (i < ulTextSize)
-	{
-		if (_lpszText[i] == '=')
-		{
-			if (bSpace) return false;
-			else bSpace = true;
-		}
-		else if (isalpha(_lpszText[i]) && !bAlpha)
-		{
-			bAlpha = true;
-		}
-
-		i++;
-	}
-
-	if (bSpace && bAlpha) return true;
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-static bool isNotEmpty(char * _lpszText)
-{
-	ULONG i = 0;
-	unsigned long ulTextSize = strlen(_lpszText);
-
-	while (i < ulTextSize)
-	{
-		if (isalpha(_lpszText[i])) return true;
-
-		i++;
-	}
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-static char * CleanSection(const char * _lpszText)
-{
-	unsigned long ulTextSize = strlen(_lpszText);
-	char * lpszText = (char *)malloc((ulTextSize + 1) * sizeof(char));
-
-	ZeroMemory(lpszText, (ulTextSize + 1) * sizeof(char));
-
-	unsigned long ulPos = 0;
-	bool bFirst = false;
-
-	for (unsigned long ul = 0; ul < ulTextSize; ul++)
-	{
-		if (_lpszText[ul] == '[') bFirst = true;
-		else if (_lpszText[ul] == ']') break;
-		else if (bFirst)
-		{
-			lpszText[ulPos] = _lpszText[ul];
-			ulPos ++;
-		}
-	}
-
-	return lpszText;
-}
-
-//-----------------------------------------------------------------------------
-static char * CleanString(const char * _lpszText)
-{
-	unsigned long ulTextSize = strlen(_lpszText);
-	char * lpszText = (char *)malloc((ulTextSize + 1) * sizeof(char));
-
-	ZeroMemory(lpszText, (ulTextSize + 1) * sizeof(char));
-
-	unsigned long ulPos = 0;
- 
- 
-
-	for (unsigned long ul = 0; ul < ulTextSize; ul++)
-		if (_lpszText[ul] == '=' || _lpszText[ul] == '_' || isalnum(_lpszText[ul]))
-		{
-			lpszText[ulPos] = _lpszText[ul];
-			++ulPos;
-		}
-
-	while (ulPos--)
-	{
-		if (isalpha(lpszText[ulPos])) break;
-		else if (lpszText[ulPos] == '"' || lpszText[ulPos] == ' ')
-			lpszText[ulPos] = 0;
-	}
-
-	return lpszText;
-}
-
-static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ulFileSize, ParseIniFileCallback lpSectionCallback, ParseIniFileCallback lpStringCallback)
-{
- 
-	char * pFile = _lpszTextFile;
-
-	if (!lpSectionCallback || !lpStringCallback) return;
-
-	//-------------------------------------------------------------------------
-	//clean up comments
-	for (unsigned long i = 0; i < _ulFileSize; i++)
-		if (pFile[i] == '/' && pFile[i + 1] == '/')
-		{
-			unsigned long j = i;
-
-			while (j < _ulFileSize && pFile[j] != '\r' && pFile[j + 1] != '\n')
-			{
-				pFile[j] = ' ';
-				j++;
-			}
-		}
-
-	//-------------------------------------------------------------------------
-	// get all lines into list
-	vector<char *> lText;
-	char * pLine = strtok(pFile, "\r\n");
-
-	while (pLine)
-	{
-		if (isNotEmpty(pLine)) lText.insert(lText.end(), (pLine));
-
-		pLine = strtok(NULL, "\r\n");
-	}
-
-	vector<char *>::iterator it;
-
-	//-------------------------------------------------------------------------
-	// look up for sections and associated keys
-	it = lText.begin();
-
-	while (it != lText.end())
-	{
-		if (isSection(*it))
-		{
-			unsigned long lResult;
-			char * lpszSection;
-
-			lResult = (*lpSectionCallback)(lpszSection = CleanSection(*it));
-			free(lpszSection);
-
-			if (lResult == PARSE_INI_FILE_SKIP) continue;
-			else if (lResult == PARSE_INI_FILE_STOP) break;
-
-			++it;
-
-			while ((it != lText.end()) && (!isSection(*it)))
-			{
-				if (isString(*it))
-				{
-					char * lpszString = CleanString(*it);
-
-					lResult = (*lpStringCallback)(lpszString);
-					free(lpszString);
-
-					if (lResult == PARSE_INI_FILE_SKIP) continue;
-					else if (lResult == PARSE_INI_FILE_STOP) break;
-
-					++it;
-				}
-				else break;
-			}
-
-			continue;
-		}
-
-		++it;
-	}
-
-	it = it;
 }

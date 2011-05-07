@@ -9,9 +9,18 @@
 using std::string;
 using std::transform;
 
-std::string MakeUpcase( std::string& str ) {
+void MakeUpcase(string & str) {
 	transform(str.begin(), str.end(), str.begin(), ::toupper);
-	return str;
+}
+
+void makeLowercase(string & str) {
+	transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
+string toLowercase(const string & str) {
+	string copy = str;
+	makeLowercase(copy);
+	return copy;
 }
 
 bool NC_IsIn(string t1, string t2) {
