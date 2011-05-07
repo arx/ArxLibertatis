@@ -21,8 +21,6 @@ const LogSetting blackList[] = {
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "Filesystem.cpp", Logger::Fatal },
 	{ "Object.cpp", Logger::Warning },
-	{ "Speech.cpp", Logger::Debug },
-	{ "Config", Logger::Debug },
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
