@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "io/IO.h"
 #include "platform/Thread.h"
+#include "platform/Lock.h"
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
@@ -71,10 +72,7 @@ static const float PATHFINDER_HEURISTIC_RANGE(PATHFINDER_HEURISTIC_MAX - PATHFIN
 static const float PATHFINDER_DISTANCE_MAX(5000.0F);
 
 // Pathfinder Definitions
-static HANDLE PATHFINDER_MUTEX(NULL);
 static unsigned long PATHFINDER_UPDATE_INTERVAL(10);
-static unsigned long PATHFINDER_MUTEX_WAIT(5000);
-static unsigned long PATHFINDER_RELEASE_WAIT(5000);
 
 PATHFINDER_REQUEST pr;
 long PATHFINDER_WORKING(0);
@@ -86,6 +84,7 @@ class PathFinderThread : public StoppableThread {
 };
 
 static PathFinderThread * pathfinder = NULL;
+static Lock * mutex = NULL;
 
 struct PATHFINDER_QUEUE_ELEMENT
 {
@@ -122,8 +121,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 		return false;
 	}
 	
-	if (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_MUTEX_WAIT) == WAIT_TIMEOUT)
-		return false;
+	Autolock lock(mutex);
 
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 
@@ -139,17 +137,13 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 		temp->valid = 0;
 		memcpy(&temp->req, req, sizeof(PATHFINDER_REQUEST));
 		temp->valid = 1;
-
-		ReleaseMutex(PATHFINDER_MUTEX);
 		return true;
 	}
 
 	// Create a New element for the queue
 	temp = (PATHFINDER_QUEUE_ELEMENT *)malloc(sizeof(PATHFINDER_QUEUE_ELEMENT));
 
-	if (!temp)
-	{
-		ReleaseMutex(PATHFINDER_MUTEX);
+	if(!temp) {
 		return false;
 	}
 
@@ -177,7 +171,6 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 		if (!pathfinder_queue_start)
 		{
 			pathfinder_queue_start = temp;
-			ReleaseMutex(PATHFINDER_MUTEX);
 			return true;
 		}
 		else					
@@ -192,50 +185,46 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 		}							
 	}
 
-	ReleaseMutex(PATHFINDER_MUTEX);
 	return true;
 }
 
-long EERIE_PATHFINDER_Get_Queued_Number()
-{
-	if (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_MUTEX_WAIT) == WAIT_TIMEOUT)
-		return -1;
-
+long EERIE_PATHFINDER_Get_Queued_Number() {
+	
+	Autolock lock(mutex);
+	
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 
 	long count = 0;
 
 	while (cur) cur = cur->next, count++;
 
-	ReleaseMutex(PATHFINDER_MUTEX);
-
 	return count;
 }
 
-void EERIE_PATHFINDER_Clear(long flag)
-{
-	if (!flag)
-	{
-		if (PATHFINDER_MUTEX)
-			if (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_MUTEX_WAIT) == WAIT_TIMEOUT)
-				return;
-	}
-
+static void EERIE_PATHFINDER_Clear_Private() {
+	
 	CURPATHFINDIO = NULL;
-
+	
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 	PATHFINDER_QUEUE_ELEMENT * next;
-
-	while (cur)
-	{
+	
+	while(cur) {
 		next = cur->next;
 		free(cur);
 		cur = next;
 	}
-
+	
 	pathfinder_queue_start = NULL;
+	
+}
 
-	if (!flag && PATHFINDER_MUTEX) ReleaseMutex(PATHFINDER_MUTEX);
+
+void EERIE_PATHFINDER_Clear() {
+	
+	Autolock lock(mutex);
+	
+	EERIE_PATHFINDER_Clear_Private();
+	
 }
 
 // Retrieves & Removes next Pathfind request from queue
@@ -275,8 +264,7 @@ void PathFinderThread::run() {
 		
 		QueryPerformanceCounter(&Pstart_chrono);
 
-		if (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_MUTEX_WAIT) == WAIT_TIMEOUT)
-			continue;
+		mutex->lock();
 
 		PATHFINDER_WORKING = 1;
 
@@ -356,10 +344,10 @@ void PathFinderThread::run() {
 
 		PATHFINDER_WORKING = 0;
 
-		ReleaseMutex(PATHFINDER_MUTEX);
+		mutex->unlock();
 		QueryPerformanceCounter(&Pend_chrono);
 		BENCH_PATHFINDER += (unsigned long)(Pend_chrono.QuadPart - Pstart_chrono.QuadPart);
-		Sleep(PATHFINDER_UPDATE_INTERVAL);
+		sleep(PATHFINDER_UPDATE_INTERVAL);
 	}
 
 	//fix leaks memory but freeze characters
@@ -377,15 +365,15 @@ void EERIE_PATHFINDER_Release() {
 	
 	CURPATHFINDIO = NULL;
 	
-	while (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_RELEASE_WAIT) == WAIT_TIMEOUT)
-		Sleep(1);
+	mutex->lock();
 	
-	EERIE_PATHFINDER_Clear(1);
+	EERIE_PATHFINDER_Clear_Private();
 	
 	pathfinder->stop();
 	
 	delete pathfinder, pathfinder = NULL;
-	ReleaseMutex(PATHFINDER_MUTEX), CloseHandle(PATHFINDER_MUTEX), PATHFINDER_MUTEX = NULL;
+	
+	mutex->unlock(), delete mutex, mutex = NULL;
 }
 
 void EERIE_PATHFINDER_Create() {
@@ -394,13 +382,10 @@ void EERIE_PATHFINDER_Create() {
 		EERIE_PATHFINDER_Release();
 	}
 	
-	if(PATHFINDER_MUTEX) {
-		ReleaseMutex(PATHFINDER_MUTEX);
-		CloseHandle(PATHFINDER_MUTEX);
-		PATHFINDER_MUTEX = NULL;
+	if(!mutex) {
+		mutex = new Lock();
 	}
 	
-	PATHFINDER_MUTEX = CreateMutex(NULL, false, NULL);
 	CURPATHFINDIO = NULL;
 	
 	pathfinder = new PathFinderThread();
