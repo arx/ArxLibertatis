@@ -109,7 +109,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 	MakeUpcase(skintochange);
 	
 	string skinname = "Graph\\Obj3D\\Textures\\" + s2 + ".bmp";
-	TextureContainer * tex = D3DTextr_CreateTextureFromFile(skinname);
+	TextureContainer * tex = TextureContainer::Load(skinname);
 
 	if (obj->originaltextures == NULL)
 	{

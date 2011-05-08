@@ -223,9 +223,7 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 ------------------------------------------------------------*/
 
 // Remove asserts about unused but necessary variable (unused params, variables only used for asserts...)
-#define ARX_UNUSED(var)		((void)&var)
-
-#define ARX_CHECK_NOT_NEG( _x )  (arx_assert((_x) >= 0))
+#define ARX_UNUSED(var)			((void)&var)
 
 #define ARX_CAST_LONG( _x )		static_cast<long>( _x )
 #define ARX_CAST_ULONG( _x )	static_cast<unsigned long>( _x )
@@ -235,6 +233,7 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 #define ARX_OPAQUE_WHITE		0xFFFFFFFF
 
 // TODO use assert directly
+#define ARX_CHECK_NOT_NEG( _x ) arx_assert((_x) >= 0)
 #define ARX_CHECK_NO_ENTRY( )	arx_assert(false)
 #define ARX_CHECK( _expr )		arx_assert(_expr)
 
