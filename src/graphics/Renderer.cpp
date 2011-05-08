@@ -1,6 +1,7 @@
 #include "graphics/Renderer.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/Math.h"
+#include "io/Logger.h"
 
 #include <list>
 
@@ -540,13 +541,15 @@ void DX7Texture2D::CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSU
 {
 	DDSURFACEDESC2 descSrc;
 	DDSURFACEDESC2 descDst;
-
+	
+	descSrc.dwSize = descDst.dwSize = sizeof(DDSURFACEDESC2);
+	
 	HRESULT res;
-	res = pddsSrc->Lock(NULL, &descSrc, DDLOCK_WAIT, NULL);
-	arx_assert(res == S_OK);
+	res = pddsSrc->Lock(NULL, &descSrc, DDLOCK_WAIT | DDLOCK_READONLY, NULL);
+	arx_assert_msg(res == S_OK, "res=%08x", res);
 
 	res = pddsDst->Lock(NULL, &descDst, DDLOCK_WAIT, NULL);
-	arx_assert(res == S_OK);
+	arx_assert_msg(res == S_OK, "res=%08x", res);
 
 	arx_assert_msg(descDst.dwWidth == (descSrc.dwWidth >> 1), "src width = %d, dst width = %d (%s)", descSrc.dwWidth, descDst.dwWidth, mFileName.c_str());
 	arx_assert_msg(descDst.dwHeight == (descSrc.dwHeight >> 1), "src height = %d, dst height = %d (%s)", descSrc.dwHeight, descDst.dwHeight, mFileName.c_str());
@@ -554,7 +557,7 @@ void DX7Texture2D::CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSU
 	DWORD pitchIncrementSrc = (descSrc.lPitch >> 2) - descSrc.dwWidth;
 	DWORD pitchIncrementDst = (descDst.lPitch >> 2) - descDst.dwWidth;
 
-	DWORD * pSrc[4];
+	const DWORD * pSrc[4];
 	
 	pSrc[0] = (DWORD *)descSrc.lpSurface;		// Top left pixel
 	pSrc[1] = pSrc[0] + 1;						// Top right pixel
