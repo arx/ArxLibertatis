@@ -455,6 +455,14 @@ void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume) {
 	config.audio.ambianceVolume = _iVolume;
 }
 
+void ARXMenu_Options_Audio_ApplyGameVolumes() {
+	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerMenu, ARX_SOUND_MixerGame);
+	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, config.audio.volume * 0.1f);
+	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSample, config.audio.sfxVolume * 0.1f);
+	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, config.audio.speechVolume * 0.1f);
+	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, config.audio.ambianceVolume * 0.1f);
+}
+
 bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	
 	int iOldGamma;

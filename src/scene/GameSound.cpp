@@ -442,17 +442,6 @@ void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume) {
 	}
 }
 
-float ARX_SOUND_MixerGetVolume(ArxMixer mixer_id) {
-	
-	float volume(0.0F);
-	
-	if(bIsActive) {
-		aalGetMixerVolume(mixer_id, &volume);
-	}
-	
-	return volume;
-}
-
 void ARX_SOUND_MixerStop(ArxMixer mixer_id) {
 	if(bIsActive) {
 		aalMixerStop(mixer_id);

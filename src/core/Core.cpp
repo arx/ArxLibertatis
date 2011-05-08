@@ -1486,6 +1486,7 @@ int main(int argc, char ** argv) {
 	ARXMenu_Options_Audio_SetSfxVolume(config.audio.sfxVolume);
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
+	ARXMenu_Options_Audio_ApplyGameVolumes();
 
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
 	ARXMenu_Options_Control_SetAutoReadyWeapon(config.input.autoReadyWeapon);

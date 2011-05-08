@@ -83,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/ViewImage.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
+#include "gui/MenuPublic.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -442,11 +443,7 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 
 	//Synchronize game mixers with menu mixers and switch between them
 	if(_bNoSound) {
-		ARX_SOUND_MixerSwitch(ARX_SOUND_MixerMenu, ARX_SOUND_MixerGame);
-		ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenu));
-		ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSample, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSample));
-		ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSpeech));
-		ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance));
+		ARXMenu_Options_Audio_ApplyGameVolumes();
 	}
 
 	if (pTextureLoad)

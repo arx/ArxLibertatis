@@ -245,7 +245,6 @@ void ARX_SOUND_AmbianceSavePlayList(void ** play_list, unsigned long * size);
 void ARX_SOUND_AmbianceRestorePlayList(void * play_list, unsigned long size);
 
 void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume);
-float ARX_SOUND_MixerGetVolume(ArxMixer mixer_id);
 void ARX_SOUND_MixerStop(ArxMixer mixer_id);
 void ARX_SOUND_MixerPause(ArxMixer mixer_id);
 void ARX_SOUND_MixerResume(ArxMixer mixer_id);

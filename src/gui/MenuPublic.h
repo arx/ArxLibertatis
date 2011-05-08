@@ -69,6 +69,7 @@ void ARXMenu_Options_Audio_SetSfxVolume(int);
 void ARXMenu_Options_Audio_SetSpeechVolume(int);
 void ARXMenu_Options_Audio_SetAmbianceVolume(int);
 bool ARXMenu_Options_Audio_SetEAX(bool);
+void ARXMenu_Options_Audio_ApplyGameVolumes();
 
 //-----------------------------------------------------------------------------
 //OPTIONS CONTROL
