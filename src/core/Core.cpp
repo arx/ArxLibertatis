@@ -127,6 +127,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 #include "platform/Random.h"
+#include "platform/Thread.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -1511,7 +1512,7 @@ int main(int argc, char ** argv) {
 	LogDebug << "AInput Init";
 
 	while (!ARX_INPUT_Init(hInstance,danaeApp.m_hWnd)) {
-		Sleep(30);
+		Thread::sleep(30);
 		i--;
 
 		if (i==0) {
