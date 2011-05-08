@@ -42,7 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-// ARX_Special.h
+// ARX_Special.CPP
 //////////////////////////////////////////////////////////////////////////////////////
 //
 // Description:
@@ -54,17 +54,102 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_SPECIAL_H
-#define ARX_SPECIAL_H
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
+#include "physics/Attractors.h"
 
-//////////////////////////////// ATTRACTOR Funcs
-void ARX_SPECIAL_ATTRACTORS_Reset();
-void ARX_SPECIAL_ATTRACTORS_Remove(long ionum);
-long ARX_SPECIAL_ATTRACTORS_Exist(long ionum);
-bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius);
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(INTERACTIVE_OBJ * io, EERIE_3D * force);
+#include "graphics/d3dwrapper.h"
+#include "graphics/Math.h"
+#include "scene/Interactive.h"
 
-#endif
+struct ARX_SPECIAL_ATTRACTOR {
+	long	ionum;  // -1 == not defined
+	float	power;
+	float	radius;
+};
+
+static const size_t MAX_ATTRACTORS = 16;
+static ARX_SPECIAL_ATTRACTOR attractors[MAX_ATTRACTORS];
+
+void ARX_SPECIAL_ATTRACTORS_Reset() {
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		attractors[i].ionum = -1;
+	}
+}
+
+static void ARX_SPECIAL_ATTRACTORS_Remove(long ionum) {
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		if(attractors[i].ionum == ionum) {
+			attractors[i].ionum = -1;
+		}
+	}
+}
+
+static long ARX_SPECIAL_ATTRACTORS_Exist(long ionum) {
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		if(attractors[i].ionum == ionum) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius) {
+	
+	if(power == 0.f) {
+		ARX_SPECIAL_ATTRACTORS_Remove(ionum);
+	}
+	
+	long tst;
+	if((tst = ARX_SPECIAL_ATTRACTORS_Exist(ionum)) != -1) {
+		attractors[tst].power = power;
+		attractors[tst].radius = radius;
+		return false;
+	}
+	
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		if(attractors[i].ionum == -1) {
+			attractors[i].ionum = ionum;
+			attractors[i].power = power;
+			attractors[i].radius = radius;
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, EERIE_3D & force) {
+	
+	force.clear();
+	
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		
+		if(attractors[i].ionum == -1 || !ValidIONum(attractors[i].ionum)) {
+			continue;
+		}
+		
+		const INTERACTIVE_OBJ & io = *inter.iobj[attractors[i].ionum];
+		
+		if(io.show != SHOW_FLAG_IN_SCENE || (io.ioflags & IO_NO_COLLISIONS)
+			 || !(io.GameFlags & GFLAG_ISINTREATZONE)) {
+			continue;
+		}
+		
+		float power = attractors[i].power;
+		float dist = EEDistance3D(ioo.pos, io.pos);
+		
+		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || power < 0.f) {
+			
+			float max_radius = attractors[i].radius; 
+			
+			if(dist < max_radius) {
+				float ratio_dist = 1.f - (dist / max_radius);
+				EERIE_3D vect = io.pos - ioo.pos;
+				Vector_Normalize(&vect);
+				power *= ratio_dist * 0.01f;
+				force = vect * power;
+			}
+		}
+		
+	}
+}

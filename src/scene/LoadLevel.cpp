@@ -86,7 +86,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -95,7 +94,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Implode.h"
 
 #include "physics/CollisionShapes.h"
-#include "physics/Actors.h"
 
 #include "platform/String.h"
 
@@ -265,30 +263,30 @@ long DanaeSaveLevel(const string & _fic) {
 	long nb_inter = GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	
-	// Initializing datas
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-	char tx[128];
-	sprintf(tx, "_%02ld_%02ld_%ld__%ldh%ldmn", hdt.months, hdt.days, hdt.years, hdt.hours, hdt.mins);
-	
 	string fic = _fic;
 	SetExt(fic, ".DLF");
 	if(FileExist(fic)) {
-		std::string fic2 = fic;
-		char newtext[128];
-		sprintf(newtext, "Backup_DLF_%s", tx);
-		SetExt(fic2, newtext);
-		FileMove(fic, fic2.c_str());
+		string backupfile = fic;
+		int i = 0;
+		do {
+			std::stringstream s;
+			s << ".dlf_bak_" << i;
+			SetExt(backupfile, s.str());
+		} while(FileExist(backupfile) && (i++, true));
+		FileMove(fic, backupfile);
 	}
-
+	
 	std::string fic2 = fic;
 	SetExt(fic2, ".LLF");
 	if(FileExist(fic2)) {
-		std::string fic3 = fic;
-		char newtext[128];
-		sprintf(newtext, "Backup_LLF_%s", tx);
-		SetExt(fic3, newtext);
-		FileMove(fic2, fic3);
+		string backupfile = fic;
+		int i = 0;
+		do {
+			std::stringstream s;
+			s << ".llf_bak_" << i;
+			SetExt(backupfile, s.str());
+		} while(FileExist(backupfile) && (i++, true));
+		FileMove(fic2, backupfile);
 	}
 	
 	DANAE_LS_HEADER dlh;
@@ -657,7 +655,6 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 	char dfile[256];
 	char temp[256];
 	FILE * fic;
-	HERMES_DATE_TIME hdt;
 
 	if (DirectoryExist(dir))
 	{
@@ -672,9 +669,6 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 			fprintf(fic, "_______________________________\n\n");
 			GetUserName(name, &num);
 			fprintf(fic, "Creator  : %s\n", name);
-			GetDate(&hdt);
-			fprintf(fic, "Date     : %02ld/%02ld/%ld\n", hdt.days, hdt.months, hdt.years);
-			fprintf(fic, "Time     : %ldh%ld\n", hdt.hours, hdt.mins);
 			fprintf(fic, "Level    : %s\n", LastLoadedScene);
 
 			if (LastLoadedDLF[0] != 0)
@@ -897,12 +891,6 @@ long DanaeLoadLevel(const string & fic) {
 	
 	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(fic);
-	
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-	char tstr[128];
-	sprintf(tstr, "%2ldh%02ldm%02ld LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
-	ForceSendConsole(tstr, 1, 0, (HWND)1);
 	
 	string fileDlf = fic;
 	// SetExt(fileDlf, ".DLF");

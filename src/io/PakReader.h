@@ -22,8 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef EVE_LOAD
-#define EVE_LOAD
+
+#ifndef ARX_IO_PAKREADER_H
+#define ARX_IO_PAKREADER_H
 
 class PakFile;
 class PakDirectory;
@@ -36,7 +37,7 @@ typedef void * FileHandle;
 
 #include <string>
 
-#define PACK_MAX_FREAD	(256)
+const size_t PACK_MAX_FREAD = 256;
 
 struct PakFileHandle {
 	
@@ -89,4 +90,4 @@ public:
 	
 }; 
 
-#endif
+#endif // ARX_IO_PAKREADER_H

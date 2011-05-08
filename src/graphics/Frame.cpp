@@ -64,8 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsUtility.h"
 
-#include "io/IO.h"
-
 //-----------------------------------------------------------------------------
 // Name: CD3DFramework7()
 // Desc: The constructor. Clears static variables

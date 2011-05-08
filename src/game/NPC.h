@@ -101,4 +101,6 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io);
 
 void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io);
 
+void ARX_PHYSICS_Apply();
+
 #endif // ARX_GAME_NPC_H

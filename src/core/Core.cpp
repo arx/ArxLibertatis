@@ -94,12 +94,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Levels.h"
 #include "game/Inventory.h"
+#include "game/NPC.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
+#include "gui/TextManager.h"
 
 #include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
@@ -112,7 +114,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
@@ -122,8 +123,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Screenshot.h"
  
 #include "physics/Collisions.h"
-#include "physics/Actors.h"
-#include "physics/Physics.h"
+#include "physics/Attractors.h"
 
 #include "platform/String.h"
 #include "platform/Random.h"
@@ -170,7 +170,6 @@ extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CDirectInput		*pGetInfoDirectInput;
 extern CMenuState		*pMenu;
-extern SNAPSHOTINFO		snapshotdata;
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern HWND		PRECALC;
@@ -444,7 +443,6 @@ long DEBUG_FRUSTRUM		= 0;
 long GAME_EDITOR		= 1;
 long NEED_EDITOR		= 1;
 long USE_CEDRIC_ANIM	= 1;
-extern long NEED_BENCH;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
@@ -1190,7 +1188,6 @@ int main(int argc, char ** argv) {
 	Random::seed();
 	
 	CalcFPS(true);
-	HERMES_Memory_Security_On(32000);
 
 	ARX_MAPMARKER_Init();
 
@@ -1355,7 +1352,6 @@ int main(int argc, char ** argv) {
 
 	memset(&player,0,sizeof(ARXCHARACTER));
 	ARX_PLAYER_InitPlayer();
-	HERMES_InitDebug();
 
 	CleanInventory();
 
@@ -1456,15 +1452,8 @@ int main(int argc, char ** argv) {
 
 	LogInfo << "Application Creation Success";
 	ShowWindow(danaeApp.m_hWnd, SW_HIDE);
-	MAIN_PROGRAM_HANDLE=danaeApp.m_hWnd;
 	danaeApp.m_pFramework->bitdepth=Project.bits;
-
-	if (!MOULINEX && !FINAL_RELEASE) {
-		char texx[64];
-		strcpy(texx,"GaiaMessages");
-		GaiaWM=RegisterWindowMessage(texx);
-	}
-
+	
 	LogDebug << "Sound init";
 	if(ARX_SOUND_Init()) {
 		LogInfo << "Sound init success";
@@ -1506,7 +1495,6 @@ int main(int argc, char ** argv) {
 		EERIE_DesactivateBump();
 
 	ARX_MINIMAP_FirstInit();
-	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
 
 	i = 10;
 	LogDebug << "AInput Init";
@@ -1519,8 +1507,7 @@ int main(int argc, char ** argv) {
 			LogError << "Unable To Initialize ARX INPUT, Leaving...";
 			ARX_INPUT_Release();
 
-			if (MAIN_PROGRAM_HANDLE!=NULL)
-			SendMessage(MAIN_PROGRAM_HANDLE,WM_CLOSE,0,0);
+			SendMessage(danaeApp.m_hWnd, WM_CLOSE, 0, 0);
 
 			exit(0);
 		}
@@ -2358,7 +2345,6 @@ void ClearSysTextures() {
 //*************************************************************************************
 HRESULT DANAE::OneTimeSceneInit()
 {
-	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
 	return S_OK;
 }
 EERIE_3D ePos;
@@ -3069,9 +3055,6 @@ void FirstFrameProc() {
 	}
 
 	ARX_SPELLS_ResetRecognition();
-
-	if (DEBUGCODE)
-		ForceSendConsole("...NEXT...",1,0,(HWND)1);
 	
 	FirstTimeThings();
 
@@ -4559,8 +4542,7 @@ void LaunchMoulinex()
 	if (PROCESS_ONLY_ONE_LEVEL!=-1)
 		lvl=PROCESS_ONLY_ONE_LEVEL;
 
-	sprintf(tx,"Moulinex Lvl %ld",lvl);
-	ForceSendConsole(tx,1,0,NULL);
+	LogDebug << "Moulinex Lvl " << lvl;
 
 	if (LASTMOULINEX!=-1)
 	{
@@ -5108,25 +5090,6 @@ extern long INTERTRANSPOLYSPOS;
 extern long TRANSPOLYSPOS;
 
 extern bool bRenderInterList;
-unsigned long BENCH_STARTUP=0;
-unsigned long BENCH_PLAYER=0;
-unsigned long BENCH_RENDER=0;
-unsigned long BENCH_PARTICLES=0;
-unsigned long BENCH_SPEECH=0;
-unsigned long BENCH_SCRIPT=0;
-
-unsigned long oBENCH_STARTUP=0;
-unsigned long oBENCH_PLAYER=0;
-unsigned long oBENCH_RENDER=0;
-unsigned long oBENCH_PARTICLES=0;
-unsigned long oBENCH_SPEECH=0;
-unsigned long oBENCH_SCRIPT=0;
-
-extern unsigned long BENCH_PATHFINDER;
-unsigned long oBENCH_PATHFINDER=0;
-
-extern unsigned long BENCH_SOUND;
-unsigned long oBENCH_SOUND=0;
 
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
@@ -5282,18 +5245,6 @@ static float _AvgFrameDiff = 150.f;
 	{
 		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
 	}
-
-	if (NEED_BENCH)
-	{
-		BENCH_STARTUP=0;
-		BENCH_PLAYER=0;
-		BENCH_RENDER=0;
-		BENCH_PARTICLES=0;
-		BENCH_SPEECH=0;
-		BENCH_SCRIPT=0;
-	}
-
-	StartBench();
 
 	RenderStartTicks	=	dwARX_TIME_Get();
 
@@ -5666,9 +5617,6 @@ static float _AvgFrameDiff = 150.f;
 		goto renderend;
 	}
 
-	BENCH_STARTUP=EndBench();
-	StartBench();
-
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		if (!PLAYER_PARALYSED)
@@ -5688,8 +5636,6 @@ static float _AvgFrameDiff = 150.f;
 
 	if (FRAME_COUNT<=0)
 		ARX_MINIMAP_ValidatePlayerPos();
-
-	BENCH_PLAYER=EndBench();
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	{
@@ -6391,7 +6337,7 @@ static float _AvgFrameDiff = 150.f;
 			else
 				DebugSphere(pos.x,pos.y,pos.z,2,50,0xFFFF0000);
 
-			if (USE_CINEMATICS_PATH.path->flags & ARX_USEPATH_FLAG_FINISHED)
+			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
 			{
 				USE_CINEMATICS_CAMERA=0;
 				USE_CINEMATICS_PATH.path=NULL;
@@ -6513,7 +6459,6 @@ static float _AvgFrameDiff = 150.f;
 
 	if (FirstFrame==0)
 	{
-		StartBench();
 		PrepareIOTreatZone();
 			ARX_PHYSICS_Apply();
 
@@ -6536,8 +6481,6 @@ static float _AvgFrameDiff = 150.f;
 			ARX_SCENE_Render(1);
 		}
 
-		BENCH_RENDER=EndBench();
-
 	}
 
 	if (EDITION==EDITION_PATHWAYS)
@@ -6548,8 +6491,6 @@ static float _AvgFrameDiff = 150.f;
 	// Begin Particles ***************************************************************************
 	if (!(Project.hide & HIDE_PARTICLES))
 	{
-		StartBench();
-
 		if (pParticleManager)
 		{
 				pParticleManager->Update(ARX_CLEAN_WARN_CAST_LONG(FrameDiff));
@@ -6565,7 +6506,6 @@ static float _AvgFrameDiff = 150.f;
 		UpdateObjFx();
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		BENCH_PARTICLES=EndBench();
 
 	}
 
@@ -6734,10 +6674,8 @@ static float _AvgFrameDiff = 150.f;
 	// Speech Management
 	if (!EDITMODE)
 	{
-		StartBench();
 		ARX_SPEECH_Check();
 		ARX_SPEECH_Update();
-		BENCH_SPEECH = EndBench();
 	}
 
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
@@ -6901,8 +6839,7 @@ static float _AvgFrameDiff = 150.f;
 		LaunchDummyParticle();
 	}
 	}
-	StartBench();
-
+	
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		ARX_SCRIPT_AllowInterScriptExec();
@@ -6915,36 +6852,10 @@ static float _AvgFrameDiff = 150.f;
 			ARX_PATH_UpdateAllZoneInOutInside();
 	}
 
-	BENCH_SCRIPT=EndBench();
-
 	LastFrameTime=FrameTime;
 	LastMouseClick=EERIEMouseButton;
 
-	if (DEBUGCODE) ForceSendConsole("RenderEnd_____________________________", 1, 0, (HWND)1);
-
 		DANAE_DEBUGGER_Update();
-
-	if (NEED_BENCH)
-	{
-		if(danaeApp.DANAEStartRender())
-		{
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			iVPOS=0;
-			ShowValue(&oBENCH_STARTUP,&BENCH_STARTUP,"Startup");
-			ShowValue(&oBENCH_PLAYER,&BENCH_PLAYER,"Player");
-			ShowValue(&oBENCH_RENDER,&BENCH_RENDER,"Render");
-			ShowValue(&oBENCH_PARTICLES,&BENCH_PARTICLES,"Particles");
-			ShowValue(&oBENCH_SPEECH,&BENCH_SPEECH,"Speech");
-			ShowValue(&oBENCH_SCRIPT,&BENCH_SCRIPT,"Script");
-			ShowValue(&oBENCH_PATHFINDER,&BENCH_PATHFINDER,"Pathfinder");
-			BENCH_PATHFINDER=0;
-			ShowValue(&oBENCH_SOUND,&BENCH_SOUND,"Sound Thread");
-			BENCH_SOUND=0;
-
-			danaeApp.DANAEEndRender();
-		}
-	}
 
 	return S_OK;
 }
@@ -7516,16 +7427,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 
 		break;
-		case WM_USER+12: // GAIA Specific Message
-
-			if (	!FINAL_COMMERCIAL_DEMO
-				&& !FINAL_COMMERCIAL_GAME
-				)
-			{
-				char texx[1024];
-				strcpy(texx,HERMES_GaiaCOM_Receive());
-				strcpy(ItemToBeAdded,texx);
-			}
 
 		break;
 		case WM_CLOSE:
@@ -7909,20 +7810,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						LogError << ("No Interactive Object Selected");
 
 				break;
-				case DANAE_MENU_MEMORY:
-				{
-					ShowText = "";
-					unsigned long msize;
-					char temp[512];
-					msize=MakeMemoryText( temp );
-					ShowText = temp;
-					std::stringstream ss;
-					ss << "Allocated Memory " << msize << " bytes " << (msize>>10) << " Kb";
-					ShowTextWindowtext = ss.str();
-					CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
-				}
-				break;
 				case DANAE_MENU_GLOBALLIST:
 					ShowText = "";
 					MakeGlobalText(ShowText);
@@ -8280,7 +8167,6 @@ void ClearGame() {
 
 	//Halo
 	ReleaseHalo();
-	HERMES_Memory_Security_Off();
 	FreeSnapShot();
 	ARX_INPUT_Release();
 }

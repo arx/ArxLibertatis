@@ -195,7 +195,6 @@ private:
  
 TextureContainer * D3DTextr_GetSurfaceContainer(const std::string& strName);
 TextureContainer * GetTextureList();
-extern TextureContainer * LastTextureContainer;
 long CountTextures( std::string& tex, long * memsize, long * memmip);
  
 //-----------------------------------------------------------------------------

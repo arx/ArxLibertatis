@@ -10,9 +10,9 @@
 #include <cassert>
 
 #include "core/Core.h"
-
+#include "core/math/Vector2.h"
 #include "gui/Text.h"
-
+#include "graphics/font/Font.h"
 #include "io/Logger.h"
 
 using std::string;

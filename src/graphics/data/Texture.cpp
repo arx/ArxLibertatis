@@ -66,8 +66,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <sstream>
 
-#include <zlib.h>
-
 #include <IL/il.h>
 
 #include "core/Application.h"
@@ -77,13 +75,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
 #include "platform/Platform.h"
 #include "platform/String.h"
+
+using std::string;
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
@@ -2429,7 +2428,7 @@ void ReleaseAllTCWithFlag(long flag)
 }
 
 extern void MakeUserFlag(TextureContainer * tc);
-TextureContainer * LastTextureContainer = NULL;
+
 //-----------------------------------------------------------------------------
 // Name: D3DTextr_CreateTextureFromFile()
 // Desc: Is passed a filename and creates a local Bitmap from that file.
@@ -2442,32 +2441,16 @@ TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, 
 		DWORD dwFlags, long sysflags)
 {
 	std::string strName = _strName;
-	TextureContainer * ReturnValue = NULL;
-	// Check parameters
-	std::string texx;
 
-	if (DEBUGSYS)
-	{
-		texx = "LoadTextureFF " + strName;
-		ForceSendConsole(texx, 1, 0, (HWND)1);
+	if(strName.empty()) {
+		return NULL;
 	}
-
-	LastTextureContainer = NULL;
-
-	if ( strName.empty() )
-		return ReturnValue;
 
 	// Check first to see if the texture is already loaded
 	MakeUpcase(strName);
 
-	if (NULL != (LastTextureContainer = FindTexture(strName)))
-	{
-		if (DEBUGSYS)
-		{
-			texx = "CreateTex: ALREADY LOADED  - " + strName;
-			SendConsole(texx, 3, 0, (HWND)1);
-		}
-
+	TextureContainer * LastTextureContainer;
+	if(NULL != (LastTextureContainer = FindTexture(strName))) {
 		return LastTextureContainer;
 	}
 
@@ -2475,15 +2458,8 @@ TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, 
 	TextureContainer * ptcTexture = new TextureContainer(strName, dwStage,
 			dwFlags);
 
-	if (NULL == ptcTexture)
-	{
-		if (DEBUGSYS)
-		{
-			texx = "CreateTex: FAILED Out of Memory - " + strName;
-			SendConsole(texx, 3, 0, (HWND)1);
-		}
-
-		return ReturnValue;
+	if(NULL == ptcTexture) {
+		return NULL;
 	}
 
 	ptcTexture->systemflags = sysflags;
@@ -2494,17 +2470,9 @@ TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, 
 		ptcTexture->systemflags &= ~EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 
 	// Create a bitmap and load the texture file into it,
-	if (FAILED(ptcTexture->LoadImageData()))
-	{
+	if(FAILED(ptcTexture->LoadImageData())) {
 		delete ptcTexture;
-
-		if (DEBUGSYS)
-		{
-			texx = "CreateTex: FAILED Unable to Load Image Data - " + strName;
-			SendConsole(texx, 3, 0, (HWND)1);
-		}
-
-		return ReturnValue;
+		return NULL;
 	}
 
 	ptcTexture->m_dwDeviceWidth = 0;
@@ -2532,18 +2500,12 @@ TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, 
 
 	ptcTexture->m_hdy = 0.5f * ptcTexture->m_dy;
 
-	ReturnValue = LastTextureContainer = ptcTexture;
+	TextureContainer * ReturnValue = ptcTexture;
 
 	if (!(dwFlags & D3DTEXTR_NO_REFINEMENT))
 		LookForRefinementMap(ReturnValue);
 
-	ReturnValue = LastTextureContainer = ptcTexture;
-
-	if (DEBUGSYS)
-	{
-		texx = "CreateTex: SUCCESS !!! - " + strName;
-		SendConsole(texx, 3, 0, (HWND)1);
-	}
+	ReturnValue = ptcTexture;
 
 	ptcTexture->Use();
 	MakeUserFlag(ptcTexture);

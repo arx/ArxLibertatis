@@ -41,6 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 #include "platform/Random.h"
 
+using std::string;
+
 namespace {
 
 using namespace audio;

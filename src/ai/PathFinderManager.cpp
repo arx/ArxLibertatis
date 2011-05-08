@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/PathFinder.h"
 #include "graphics/Math.h"
-#include "io/IO.h"
 #include "platform/Thread.h"
 #include "platform/Lock.h"
 #include "scene/Light.h"
@@ -250,8 +249,6 @@ static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request)
 
 	return true;
 }
-LARGE_INTEGER Pstart_chrono, Pend_chrono;
-unsigned long BENCH_PATHFINDER = 0;
 
 // Pathfinder Thread
 void PathFinderThread::run() {
@@ -262,8 +259,6 @@ void PathFinderThread::run() {
 
 	while(!isStopRequested()) {
 		
-		QueryPerformanceCounter(&Pstart_chrono);
-
 		mutex->lock();
 
 		PATHFINDER_WORKING = 1;
@@ -345,8 +340,6 @@ void PathFinderThread::run() {
 		PATHFINDER_WORKING = 0;
 
 		mutex->unlock();
-		QueryPerformanceCounter(&Pend_chrono);
-		BENCH_PATHFINDER += (unsigned long)(Pend_chrono.QuadPart - Pstart_chrono.QuadPart);
 		sleep(PATHFINDER_UPDATE_INTERVAL);
 	}
 

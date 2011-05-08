@@ -34,6 +34,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/String.h"
 #include "scene/GameSound.h"
 
+using std::string;
+
 
 CinematicSound		TabSound[MAX_SOUND];
 int			NbSound;

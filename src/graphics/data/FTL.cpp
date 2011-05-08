@@ -76,9 +76,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Object.h"
 
+using std::string;
+
 extern long NOCHECKSUM;
 
-bool ARX_FTL_Save(const std::string & file, const EERIE_3DOBJ * obj) {
+bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;
 	
@@ -363,16 +365,16 @@ bool ARX_FTL_Save(const std::string & file, const EERIE_3DOBJ * obj) {
 
 // MESH cache structure definition & Globals
 struct MCACHE_DATA {
-	std::string name;
+	string name;
 	char* data;
 	size_t size;
 };
 static vector<MCACHE_DATA> meshCache;
 
 // Checks for Mesh file existence in cache
-static long MCache_Get( const std::string file)
+static long MCache_Get( const string file)
 {
-    std::string fic;
+    string fic;
 
     File_Standardize(file, fic);
 
@@ -383,9 +385,9 @@ static long MCache_Get( const std::string file)
 }
 
 // Pushes a Mesh In Mesh Cache
-static bool MCache_Push( const std::string& file, char * data, size_t size)
+static bool MCache_Push( const string& file, char * data, size_t size)
 {
-	std::string fic;
+	string fic;
 
 	File_Standardize(file, fic);
 
@@ -407,7 +409,7 @@ void MCache_ClearAll(){
 }
 
 // Retreives a Mesh File pointer from cache...
-static char* MCache_Pop( const std::string& file, size_t& size)
+static char* MCache_Pop( const string& file, size_t& size)
 {
 	long num = MCache_Get(file);
 
@@ -417,10 +419,10 @@ static char* MCache_Pop( const std::string& file, size_t& size)
 	return meshCache[num].data;
 }
 
-EERIE_3DOBJ * ARX_FTL_Load(const std::string & file) {
+EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	
 	// Creates FTL file name
-	std::string filename = "Game\\";
+	string filename = "Game\\";
 	filename += file;
 	SetExt(filename, ".FTL");
 	
@@ -567,7 +569,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const std::string & file) {
 			Texture_Container_FTL * tex = reinterpret_cast<Texture_Container_FTL*>(dat + pos);
 			pos += sizeof(Texture_Container_FTL);
 			
-			std::string name;
+			string name;
 			File_Standardize( tex->name, name );
 			
 			// Create the texture and put it in the container list

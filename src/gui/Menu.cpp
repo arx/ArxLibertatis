@@ -80,18 +80,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"
-#include "gui/ViewImage.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
 #include "gui/MenuPublic.h"
+#include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
+#include "graphics/font/Font.h"
 
-#include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
@@ -514,11 +514,6 @@ void ARX_MENU_Clicked_QUIT_GAME()
 		ARX_MENU_Clicked_QUIT();
 	else
 	{
-		if	(FINAL_COMMERCIAL_DEMO)
-		{
-			StartImageDemo();
-		}
-
 		ARX_Menu_Resources_Release();
 		ARXmenu.currentmode = AMCM_OFF;
 		ARX_TIME_UnPause();

@@ -80,7 +80,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FastSceneFormat.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -101,6 +100,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 using std::copy;
+using std::string;
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
@@ -1797,8 +1797,6 @@ void AddAData(_ANCHOR_DATA * ad, long linked)
 
 	ad->linked = (long *)realloc(ad->linked, sizeof(long) * (ad->nblinked + 1));
 
-	if (!ad->linked) HERMES_Memory_Emergency_Out();
-
 	ad->linked[ad->nblinked] = linked;
 	ad->nblinked++;
 }
@@ -1929,8 +1927,6 @@ void ComputeRoomDistance()
 
 	long nb_anchors = NbRoomDistance + (portals->nb_total * 9);
 	_ANCHOR_DATA * ad = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * nb_anchors);
-
-	if (!ad) HERMES_Memory_Emergency_Out();
 
 	memset(ad, 0, sizeof(_ANCHOR_DATA)*nb_anchors);
 
@@ -2147,8 +2143,6 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 	//todo free
 	eb->Backg = (EERIE_BKG_INFO *)malloc(sizeof(EERIE_BKG_INFO) * sx * sz);
 
-	if (!eb->Backg) HERMES_Memory_Emergency_Out();
-
 	memset(eb->Backg, 0, sizeof(EERIE_BKG_INFO)*sx * sz);
 
 	for (int i = 0; i < eb->Xsize * eb->Zsize; i++)
@@ -2169,8 +2163,6 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 
 	//todo free
 	eb->minmax = (EERIE_SMINMAX *)malloc(sizeof(EERIE_SMINMAX) * eb->Zsize);
-
-	if (!eb->minmax) HERMES_Memory_Emergency_Out();
 
 	for (int i = 0; i < eb->Zsize; i++)
 	{
@@ -2401,8 +2393,6 @@ void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep)
 	}
 
 	eg->polyin = (EERIEPOLY **)realloc(eg->polyin, sizeof(EERIEPOLY) * (eg->nbpolyin + 1));
-
-	if (!eg->polyin) HERMES_Memory_Emergency_Out();
 
 	eg->polyin[eg->nbpolyin] = ep;
 	eg->nbpolyin++;
@@ -2870,14 +2860,10 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	if (eg->polydata == NULL)
 	{
 		eg->polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * t);
-
-		if (!eg->polydata) HERMES_Memory_Emergency_Out();
 	}
 	else if (tt != t)
 	{
 		eg->polydata = (EERIEPOLY *)realloc(eg->polydata, sizeof(EERIEPOLY) * t);
-
-		if (!eg->polydata) HERMES_Memory_Emergency_Out();
 	}
 
 	memcpy(&eg->polydata[eg->nbpoly], ep, sizeof(EERIEPOLY));
@@ -3551,9 +3537,6 @@ bool FastSceneLoad(const string & partial_path) {
 			
 			if(fsi->nbpoly > 0) {
 				bkg.polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * fsi->nbpoly);
-				if(!bkg.polydata) {
-					HERMES_Memory_Emergency_Out();
-				}
 			} else {
 				bkg.polydata = NULL;
 			}
@@ -3663,9 +3646,6 @@ bool FastSceneLoad(const string & partial_path) {
 				bkg.ianchors = NULL;
 			} else {
 				bkg.ianchors = (long *)malloc(sizeof(long) * fsi->nbianchors);
-				if(!bkg.ianchors) {
-					HERMES_Memory_Emergency_Out();
-				}
 				memset(bkg.ianchors, 0, sizeof(long)*fsi->nbianchors);
 			}
 			
@@ -3683,9 +3663,6 @@ bool FastSceneLoad(const string & partial_path) {
 	
 	if(fsh->nb_anchors > 0) {
 		ACTIVEBKG->anchors = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * fsh->nb_anchors);
-		if(!ACTIVEBKG->anchors) {
-			HERMES_Memory_Emergency_Out();
-		}
 		memset(ACTIVEBKG->anchors, 0, sizeof(_ANCHOR_DATA)*fsh->nb_anchors);
 	} else {
 		ACTIVEBKG->anchors = NULL;
@@ -3705,9 +3682,6 @@ bool FastSceneLoad(const string & partial_path) {
 		
 		if(fad->nb_linked > 0) {
 			anchor.linked = (long *)malloc(sizeof(long) * fad->nb_linked);
-			if(!ACTIVEBKG->anchors[i].linked) {
-				HERMES_Memory_Emergency_Out();
-			}
 		} else {
 			anchor.linked = NULL;
 		}
@@ -3889,9 +3863,6 @@ bool FastSceneSave(const string & partial_path) {
 	
 	size_t pos = 0;
 	unsigned char * dat = (unsigned char *)malloc(allocsize);
-	if(!dat) {
-		HERMES_Memory_Emergency_Out();
-	}
 	
 	memset(dat, 0, allocsize);
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;

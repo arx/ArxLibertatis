@@ -23,15 +23,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-
-#ifndef ARX_HERMES_FILESYSTEM_H
-#define ARX_HERMES_FILESYSTEM_H
+#ifndef ARX_IO_FILESYSTEM_H
+#define ARX_IO_FILESYSTEM_H
 
 #include <cstddef>
 #include <string>
 
 #define PATH_SEPERATOR_STR "/"
-#define PATH_SEPERATOR_CHR '/'
 
 #define FILE_SEEK_START 0
 #define FILE_SEEK_CURRENT 1
@@ -57,4 +55,4 @@ bool FileDelete(const std::string & file);
 bool FileMove(const std::string & oldname, const std::string & newname);
 bool CreateFullPath(const std::string & path);
 
-#endif // ARX_HERMES_FILESYSTEM_H
+#endif // ARX_IO_FILESYSTEM_H

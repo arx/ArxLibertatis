@@ -2349,7 +2349,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					siz=part->siz+part->scale.x*fd;			
 					sp.radius=siz*10;
 
-					if (CheckAnythingInSphere(&sp,0,1))
+					if (CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL))
 					{
 						EERIE_RGB rgb;
 						rgb.r=part->r;
@@ -2367,10 +2367,10 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 
 				if (part->special & SPLAT_WATER)
 				{
-					siz=part->siz+part->scale.x*fd;			
+					siz=part->siz+part->scale.x*fd;
 					sp.radius=siz*(10 + rnd()*20);
 
-					if (CheckAnythingInSphere(&sp,0,1))
+					if (CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL))
 					{
 						EERIE_RGB rgb;
 						rgb.r=part->r*0.5f;

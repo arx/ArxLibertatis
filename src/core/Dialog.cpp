@@ -124,13 +124,11 @@ extern long POINTINTERPOLATION;
 extern long ForceIODraw;
 extern long NEED_ANCHORS;
 long HIDEANCHORS = 1;
-extern long HERMES_KEEP_MEMORY_TRACE;
 extern const char * GTE_TITLE;
 extern char * GTE_TEXT;
 extern long GTE_SIZE;
 extern float TIMEFACTOR;
 extern long ALLOW_MESH_TWEAKING;
-extern long DEBUG_MOLLESS;
 extern long HIDESPEECH;
 extern HWND MESH_REDUCTION_WINDOW;
 extern HWND PRECALC;
@@ -1873,9 +1871,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 					if (IsChecked(hWnd, IDC_TLEVEL24))	Project.demo = LEVEL24;
 
-					if (IsChecked(hWnd, IDC_TRACEMEMORY)) HERMES_KEEP_MEMORY_TRACE = 1;
-					else HERMES_KEEP_MEMORY_TRACE = 0;
-
 					if (IsChecked(hWnd, IDC_NEED_ANCHOR)) NEED_ANCHORS = 1;
 					else NEED_ANCHORS = 0;
 
@@ -1997,8 +1992,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
 			//SetWindowText(thWnd, Project_workingdir);
 
-			if (HERMES_KEEP_MEMORY_TRACE) SetClick(hWnd, IDC_TRACEMEMORY);
-
 			SetClick(hWnd, IDC_OTHERSERVER);
 
 			SetClick(hWnd, IDC_LOADDEMO);
@@ -2098,10 +2091,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 
 			oml = ModeLight;
-			char tex[64];
-			thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
-			sprintf(tex, "%ld", MOLLESS_Nb_Interpolations);
-			SetWindowText(thWnd, tex);
 
 			if (ARX_DEMO)					SetClick(hWnd, IDC_ARXDEMO);
 
@@ -2136,8 +2125,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (DEBUGSYS)					SetClick(hWnd, IDC_DEBUGSYS);
 
 			if (DEBUGNPCMOVE)				SetClick(hWnd, IDC_DEBUGNPCMOVE);
-
-			if (DEBUG_MOLLESS)				SetClick(hWnd, IDC_DEBUGMOLLESS);
 
 			if (DYNAMIC_NORMALS)			SetClick(hWnd, IDC_DYNAMICNORMALS);
 
@@ -2182,18 +2169,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (USEINTERNORM)				SetClick(hWnd, IDC_INTERNORM);
 
 			if (EXTERNALVIEWING)			SetClick(hWnd, IDC_THIRDPERSON);
-
-			if (DebugLvl[0])				SetClick(hWnd, IDC_LEVELNONE);
-
-			if (DebugLvl[1])				SetClick(hWnd, IDC_LEVEL1);
-
-			if (DebugLvl[2])				SetClick(hWnd, IDC_LEVEL2);
-
-			if (DebugLvl[3])				SetClick(hWnd, IDC_LEVEL3);
-
-			if (DebugLvl[4])				SetClick(hWnd, IDC_LEVEL4);
-
-			if (DebugLvl[5])				SetClick(hWnd, IDC_LEVEL5);
 
 			if (Bilinear == 0)				SetClick(hWnd, IDC_FILTERPOINT);
 			else if (Bilinear == 1)			SetClick(hWnd, IDC_FILTERLINEAR);
@@ -2384,9 +2359,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_DEBUGNPCMOVE)) DEBUGNPCMOVE = 1;
 					else DEBUGNPCMOVE = 0;
 
-					if (IsChecked(hWnd, IDC_DEBUGMOLLESS)) DEBUG_MOLLESS = 1;
-					else DEBUG_MOLLESS = 0;
-
 					if (IsChecked(hWnd, IDC_DYNAMICNORMALS)) DYNAMIC_NORMALS = 1;
 					else DYNAMIC_NORMALS = 0;
 
@@ -2500,32 +2472,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_RAY)) Cross = 1;
 					else Cross = 0;
 
-					if (IsChecked(hWnd, IDC_LEVELNONE))
-					{
-						DebugLvl[0] = 1;
-						DEBUGG = 0;
-					}
-					else
-					{
-						DebugLvl[0] = 0;
-						DEBUGG = 1;
-					}
-
-					if (IsChecked(hWnd, IDC_LEVEL1))  DebugLvl[1] = 1;
-					else DebugLvl[1] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL2))  DebugLvl[2] = 1;
-					else DebugLvl[2] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL3))  DebugLvl[3] = 1;
-					else DebugLvl[3] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL4))  DebugLvl[4] = 1;
-					else DebugLvl[4] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL5))  DebugLvl[5] = 1;
-					else DebugLvl[5] = 0;
-
 					if (IsChecked(hWnd, IDC_MESHTWEAK))  ALLOW_MESH_TWEAKING = 1;
 					else ALLOW_MESH_TWEAKING = 0;
 
@@ -2557,11 +2503,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
 					TIMEFACTOR = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
-
-					thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
-					char tex[64];
-					GetWindowText(thWnd, tex, 63);
-					MOLLESS_Nb_Interpolations = atoi(tex);
 
 					EndDialog(hWnd, true);
 					break;

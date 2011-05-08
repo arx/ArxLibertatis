@@ -34,11 +34,10 @@
 #include "graphics/data/MeshManipulation.h"
 
 #include "io/Logger.h"
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 
-#include "physics/Actors.h"
+#include "physics/Attractors.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
 
@@ -52,6 +51,7 @@
 
 using std::max;
 using std::min;
+using std::string;
 
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;
@@ -4451,19 +4451,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								{
 									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2);
 
-									if (iot->anims[num] == NULL)
-									{
-										char ttmp[512];
-										sprintf(ttmp, "LOADANIM %s %s FAILED", word.c_str(), temp2.c_str());
-										ForceSendConsole(ttmp, 1, 0, (HWND)1);
+									if(iot->anims[num] == NULL) {
+										LogWarning << "LOADANIM " << word << " " << temp2 << " FAILED";
 									}
 								}
-							}
-							else
-							{
-								char ttmp[512];
-								sprintf(ttmp, "LOADANIM %s %s FAILED", word.c_str(), temp2.c_str());
-								ForceSendConsole(ttmp, 1, 0, (HWND)1);
+							} else {
+								LogWarning << "LOADANIM " << word << " " << temp2 << " FAILED";
 							}
 						}
 					}
@@ -4790,7 +4783,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 									if (t == -2) t = GetInterNum(io);
 
-									long flagg	=	ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
+									ObjectType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
 
 									if ((flagg != 0) && (ValidIONum(t)))
 									{

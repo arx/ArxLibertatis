@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "graphics/Math.h"
-#include "io/IO.h"
+#include "physics/Anchors.h"
 #include "scene/Interactive.h"
 
 using std::min;
@@ -71,16 +71,13 @@ using std::max;
 using std::vector;
 
 //-----------------------------------------------------------------------------
-#define MAX_IN_SPHERE 20
-
-//-----------------------------------------------------------------------------
 extern float FrameDiff;
 long ON_PLATFORM=0;
 //-----------------------------------------------------------------------------
-long MAX_IN_SPHERE_Pos=0;
-short EVERYTHING_IN_SPHERE[MAX_IN_SPHERE+1];
-long EXCEPTIONS_LIST_Pos=0;
-short EXCEPTIONS_LIST[MAX_IN_SPHERE+1];
+size_t MAX_IN_SPHERE_Pos = 0;
+short EVERYTHING_IN_SPHERE[MAX_IN_SPHERE + 1];
+size_t EXCEPTIONS_LIST_Pos = 0;
+short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
  
 long POLYIN=0;
 long COLLIDED_CLIMB_POLY=0;
@@ -1041,14 +1038,15 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 	return anything;	
 }
-//-----------------------------------------------------------------------------
-static bool InExceptionList(long val)
-{
-	for (long i=0;i<EXCEPTIONS_LIST_Pos;i++)
-	{
-		if (val==EXCEPTIONS_LIST[i]) return true;
-	}
 
+static bool InExceptionList(long val) {
+	
+	for(size_t i = 0; i < EXCEPTIONS_LIST_Pos; i++) {
+		if(val == EXCEPTIONS_LIST[i]) {
+			return true;
+		}
+	}
+	
 	return false;
 }
 
@@ -1247,7 +1245,7 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 
 //-----------------------------------------------------------------------------
 
-bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * num) //except source...
+bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long * num) //except source...
 {
 	if (num) *num=-1;
 
@@ -1406,9 +1404,9 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 	return false;	
 }
 
-//-----------------------------------------------------------------------------
-bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags) 
-{
+
+bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag) {
+	
 	if (!ValidIONum(target)) return false;
 
 	INTERACTIVE_OBJ * io=inter.iobj[target];
@@ -1416,8 +1414,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 	float sr40 = sphere->radius + 27.f; 
 	float sr180=sphere->radius+500.f;
 
-	if (  			
-			 ((flags & IIS_NO_NOCOL) ||  (!(flags & IIS_NO_NOCOL) && !(io->ioflags & IO_NO_COLLISIONS)))
+	if ((ignoreNoCollisionFlag || !(io->ioflags & IO_NO_COLLISIONS))
 			&& (io->show==SHOW_FLAG_IN_SCENE) 
 	    && (io->GameFlags & GFLAG_ISINTREATZONE)
 			&& (io->obj)

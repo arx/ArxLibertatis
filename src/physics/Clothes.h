@@ -54,17 +54,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////
-#ifndef EERIECLOTHES_H
-#define EERIECLOTHES_H
 
-#include "graphics/GraphicsTypes.h"
+#ifndef ARX_PHYSICS_CLOTHES_H
+#define ARX_PHYSICS_CLOTHES_H
 
-extern long DEBUG_MOLLESS;
-extern long MOLLESS_Nb_Interpolations;
+struct EERIE_3DOBJ;
 
 void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag = 0);
-long MOLLESS_ComputeCollisions(EERIE_3DOBJ * obj, float time);
 void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj);
 void KillClothesData(EERIE_3DOBJ * obj);
 
-#endif
+#endif // ARX_PHYSICS_CLOTHES_H

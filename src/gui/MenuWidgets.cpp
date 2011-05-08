@@ -46,12 +46,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
+#include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Texture.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/font/Font.h"
 
 #include "io/Logger.h"
 
@@ -65,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::wistringstream;
 using std::min;
 using std::max;
+using std::string;
 
 bool newBumpMapping;
 int newTextureSize;
@@ -285,8 +288,7 @@ void ARX_DrawAfterQuickLoad()
 {
 	ARX_CHECK_INT(iTimeToDrawD7 - FrameDiff);
 	iTimeToDrawD7    -= ARX_CLEAN_WARN_CAST_INT(FrameDiff);
-
-		
+	
 	float fColor;
 
 	if(iTimeToDrawD7>0)

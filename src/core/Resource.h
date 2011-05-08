@@ -123,15 +123,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDD_REPLACEALL                  1025
 #define IDC_COMPATIBILITY               1026
 #define IDC_INVERTMOUSE                 1026
-#define IDC_LEVELNONE                   1027
 #define IDC_MULTIPLAYER                 1028
-#define IDC_LEVEL1                      1028
 #define IDC_LOBBYCONNECTCANCEL          1029
-#define IDC_LEVEL2                      1029
 #define IDC_NUM_PLAYERS                 1030
-#define IDC_LEVEL3                      1030
-#define IDC_LEVEL4                      1031
-#define IDC_LEVEL5                      1032
 #define IDC_DEBUG1ST                    1033
 #define IDC_SEND                        1034
 #define IDC_ILLUMNORMAL                 1034
@@ -319,7 +313,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_POINTINTERPOLATION          1126
 #define IDC_FORCEIO                     1126
 #define IDC_NOMIPMAPS                   1127
-#define IDC_TRACEMEMORY                 1127
 #define IDC_MESHTWEAK                   1128
 #define IDC_SYNTAXCHECKING              1128
 #define IDC_MAPFRAME                    1129

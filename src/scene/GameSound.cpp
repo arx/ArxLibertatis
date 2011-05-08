@@ -1932,9 +1932,6 @@ static float GetSamplePresenceFactor(const string & _name) {
 	return 1.f;
 }
 
-unsigned long BENCH_SOUND = 0;
-LARGE_INTEGER Sstart_chrono, Send_chrono;
-
 class SoundUpdateThread : public StoppableThread {
 	
 	void run() {
@@ -1942,11 +1939,8 @@ class SoundUpdateThread : public StoppableThread {
 		while(!isStopRequested()) {
 			
 			sleep(ARX_SOUND_UPDATE_INTERVAL);
-			QueryPerformanceCounter(&Sstart_chrono);
-			aalUpdate();
-			QueryPerformanceCounter(&Send_chrono);
-			BENCH_SOUND = (unsigned long)(Send_chrono.QuadPart - Sstart_chrono.QuadPart);
 			
+			aalUpdate();
 		}
 		
 	}

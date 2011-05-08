@@ -31,6 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
+using std::string;
+
 namespace audio {
 
 Stream * createStream(const string & name) {

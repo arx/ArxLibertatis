@@ -90,7 +90,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
 #include "io/Logger.h"
 
 #include "physics/Physics.h"
@@ -3934,8 +3933,6 @@ else
 
 
 	DRAWLATER_Render();
-
-	if (DEBUGCODE) ForceSendConsole("RenderBackground - Boom",1,0,(HWND)1);	
 
 	if (ACTIVECAM->type!=CAM_TOPVIEW) 
 	{

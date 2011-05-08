@@ -332,7 +332,7 @@ struct IO_NPCDATA
 	long		cut;
 
 	float				moveproblem;
-	long		weapontype;
+	ObjectType weapontype;
 	long		weaponinhand;
 	long		fightdecision;
 	char		weaponname[256];
@@ -824,7 +824,10 @@ EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos);
 EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos);
 
 bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos,float * ret);
+bool IsAnyPolyThere(float x, float z);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
+EERIEPOLY * GetMinPoly(float x, float y, float z);
+EERIEPOLY * GetMaxPoly(float x, float y, float z);
  
 D3DCOLOR GetColorz(float x,float y,float z);
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
@@ -849,7 +852,6 @@ void EE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,EERIE_3D * pos);
 
 long PhysicalDrawBkgVLine(EERIE_3D * orgn,EERIE_3D * dest);
-long AnchorData_GetNearest(EERIE_3D *pos,EERIE_CYLINDER * cyl);
 
 // FAST SAVE LOAD
 bool FastSceneLoad(const std::string & path);
@@ -1013,7 +1015,6 @@ bool RayCollidingPoly(EERIE_3D * orgn,EERIE_3D * dest,EERIEPOLY * ep,EERIE_3D * 
 
 void EERIEPOLY_Compute_PolyIn();
 void F_PrepareCamera(EERIE_CAMERA * cam);
-bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl);
 
 float GetTileMinY(long i,long j);
 float GetTileMaxY(long i,long j);

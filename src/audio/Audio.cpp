@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/String.h"
 #include "platform/Lock.h"
 
+using std::string;
+
 namespace audio {
 
 namespace {

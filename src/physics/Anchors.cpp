@@ -46,7 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "gui/Text.h"
 #include "graphics/Math.h"
-#include "io/IO.h"
 #include "io/Logger.h"
 #include "physics/Physics.h"
 
@@ -57,8 +56,8 @@ using std::sprintf;
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;
 
-EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)
-{
+static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
+	
 	long px, pz;
 	px = x * ACTIVEBKG->Xmul;
 
@@ -123,8 +122,8 @@ EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)
 	return found;
 }
 
-EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z)
-{
+static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
+	
 	long px, pz;
 	px = x * ACTIVEBKG->Xmul;
 
@@ -178,8 +177,8 @@ EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z)
  
 
 extern EERIE_3D vector2D;
-__inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags)
-{
+float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) {
+	
 	if (!(flags & CFLAG_EXTRA_PRECISION))
 	{
 		if (ep->area < 100.f) return 999999.f;
@@ -365,9 +364,9 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, long flags) {
 	anything = anything - cyl->origin.y;
 	return anything;
 }
+
 extern long MOVING_CYLINDER;
-bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags)
-{
+static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags) {
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
 
 	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return true;
@@ -477,9 +476,8 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 }
 
 
-
-bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags)
-{
+static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags) {
+	
 	MOVING_CYLINDER = 1;
 	DIRECT_PATH = true;
 	IO_PHYSICS test;
@@ -643,12 +641,8 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 	return true;
 }
 
-
-//*************************************************************************************
-// Clears all Anchor data from a Background
-//*************************************************************************************
-void AnchorData_ClearAll(EERIE_BACKGROUND * eb)
-{
+void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
+	
 	//	EERIE_PATHFINDER_Release();
 	EERIE_PATHFINDER_Clear();
 	EERIE_BKG_INFO * eg;
@@ -686,8 +680,8 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb)
 #define INC_HEIGHT 20
 #define INC_RADIUS 10
 
-bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl)
-{
+bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
+	
 	float count = 0;
 	float failcount = 0;
 
@@ -723,7 +717,6 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl)
 //*************************************************************************************
 // Adds an Anchor... and tries to generate the best possible cylinder for it
 //*************************************************************************************
-#define MUST_BE_BIG 1
 
 static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos) {
 	
@@ -817,14 +810,10 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 	eg->ianchors = (long *)realloc(eg->ianchors, sizeof(long) * (eg->nbianchors + 1));
 
-	if (!eg->ianchors) HERMES_Memory_Emergency_Out();
-
 	eg->ianchors[eg->nbianchors] = eb->nbanchors;
 	eg->nbianchors++;
 
 	eb->anchors = (_ANCHOR_DATA *)realloc(eb->anchors, sizeof(_ANCHOR_DATA) * (eb->nbanchors + 1));
-
-	if (!eb->anchors) HERMES_Memory_Emergency_Out();
 
 	_ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
 	ad->pos.x = bestcyl.origin.x; 
@@ -838,8 +827,9 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	eb->nbanchors++;
 	return true;
 }
-bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos, long flags)
-{
+
+static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos) {
+	
 	long found = 0;
 	long best = 0;
 	long stop_radius = 0;
@@ -917,11 +907,6 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 
 	if (CylinderAboveInvalidZone(&bestcyl)) return false;
 
-	if (flags == MUST_BE_BIG)
-	{
-		if (bestcyl.radius < 60) return false;
-	}
-
 	// avoid to recreate same anchor twice...
 	if (0)
 		for (long k = 0; k < eb->nbanchors; k++)
@@ -946,14 +931,10 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 
 	eg->ianchors = (long *)realloc(eg->ianchors, sizeof(long) * (eg->nbianchors + 1));
 
-	if (!eg->ianchors) HERMES_Memory_Emergency_Out();
-
 	eg->ianchors[eg->nbianchors] = eb->nbanchors;
 	eg->nbianchors++;
 
 	eb->anchors = (_ANCHOR_DATA *)realloc(eb->anchors, sizeof(_ANCHOR_DATA) * (eb->nbanchors + 1));
-
-	if (!eb->anchors) HERMES_Memory_Emergency_Out();
 
 	_ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
 	ad->pos.x = bestcyl.origin.x; 
@@ -971,16 +952,14 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 //**********************************************************************************************
 // Adds an Anchor Link to an Anchor
 //**********************************************************************************************
-void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked) 
-{
+static void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked) {
+	
 	// Avoid to store Already existing Links
 	for (long i = 0; i < eb->anchors[anchor].nblinked; i++)
 		if (eb->anchors[anchor].linked[i] == linked) return;
 
 	// Realloc & fill data
 	eb->anchors[anchor].linked = (long *)realloc(eb->anchors[anchor].linked, sizeof(long) * (eb->anchors[anchor].nblinked + 1));
-
-	if (!eb->anchors[anchor].linked) HERMES_Memory_Emergency_Out();
 
 	eb->anchors[anchor].linked[eb->anchors[anchor].nblinked] = linked;
 	eb->anchors[anchor].nblinked++;
@@ -990,8 +969,8 @@ void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked)
 // Generates Links between Anchors for a background
 //**********************************************************************************************
 
-void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
-{
+static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
+	
 	EERIE_BKG_INFO * eg;
 	EERIE_BKG_INFO * eg2;
 	long ii, ia, ji, ja;
@@ -1152,8 +1131,8 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 	EERIE_PATHFINDER_Create();
 }
 
-void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
-{
+static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
+	
 	EERIE_BKG_INFO * eg;
 	EERIE_3D pos;
 	float count = 0;
@@ -1261,8 +1240,8 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 
 }
 
-void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
-{
+void AnchorData_Create(EERIE_BACKGROUND * eb) {
+	
 	AnchorData_ClearAll(eb);
 	EERIE_BKG_INFO * eg;
 	EERIEPOLY * ep;
@@ -1387,7 +1366,7 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 								{
 									current_y -= 10.f;
 								}
-								else if (AddAnchor_Original_Method(eb, eg, &currcyl.origin, 0))
+								else if (AddAnchor_Original_Method(eb, eg, &currcyl.origin))
 								{
 									LASTFOUND++;
 									current_y = currcyl.origin.y + currcyl.height;
@@ -1404,209 +1383,4 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 
 	AnchorData_Create_Phase_II_Original_Method(eb);
 	AnchorData_Create_Links_Original_Method(eb);
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-//					ALTERNATIVE METHOD
-void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
-{
-	AnchorData_ClearAll(eb);
-	EERIE_BKG_INFO * eg;
-	EERIEPOLY * ep;
-	EERIE_3D pos;
-	float count = 0;
-
-	long lastper	=	-1;
-	long per;
-	float total		=	ARX_CLEAN_WARN_CAST_FLOAT(eb->Zsize * eb->Xsize * 4);
-
-	for (long j = 0; j < eb->Zsize; j++)
-		for (long i = 0; i < eb->Xsize; i++)
-		{
-			long LASTFOUND = 0;
-
-			for (long divv = 0; divv < 4; divv++)
-			{
-				long divvx, divvy;
-
-				switch (divv)
-				{
-					case 0:
-						divvx = 0;
-						divvy = 0;
-						break;
-					case 1:
-						divvx = 1;
-						divvy = 1;
-						break;
-					case 2:
-						divvx = 0;
-						divvy = 1;
-						break;
-					case 3:
-						divvx = 1;
-						divvy = 0;
-						break;
-				}
-
-				float current_y = 99999999999.f;
-				per = count / total * 100.f;
-
-				if (per != lastper)
-				{
-					LogInfo << "Anchor Generation: %" << per;
-					lastper = per;
-				}
-
-				count += 1.f;
-				danaeApp.WinManageMess();
-
-				if (LASTFOUND) break;
-
-				eg = &eb->Backg[i+j*eb->Xsize];
-				pos.x = (float)((float)((float)i + 0.5f * (float)divvx) * (float)eb->Xdiv);
-				pos.y = 0.f;
-				pos.z = (float)((float)((float)j + 0.5f * (float)divvy) * (float)eb->Zdiv);
-				ep = GetMinPoly(pos.x, pos.y, pos.z);
-				EERIE_CYLINDER currcyl;
-				currcyl.radius = 20 - (4.f * divv);
-				currcyl.height = -120.f;
-				currcyl.origin.x = pos.x;
-				currcyl.origin.y = pos.y;
-				currcyl.origin.z = pos.z;
-
-				if (ep)
-				{
-
-					EERIEPOLY * epmax;
-					epmax = GetMaxPoly(pos.x, pos.y, pos.z);
-					float roof = 9999999.f;
-
-					if (ep) roof = ep->min.y - 300;
-
-					if (epmax) roof = epmax->min.y - 300;
-
-					current_y = ep->max.y;
-
-					while (current_y > roof)
-					{
-						currcyl.origin.y = current_y;
-						EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin.x, currcyl.origin.y - 30.f, currcyl.origin.z);
-
-						if (ep2 && !(ep2->type & POLY_DOUBLESIDED) && (ep2->norm.y > 0.f))
-							ep2 = NULL;
-
-						if ((ep2) && !(ep2->type & POLY_NOPATH))
-						{
-							bool bval = ANCHOR_AttemptValidCylinderPos(&currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION);
-
-							if ((bval)
-							        && (currcyl.origin.y - 10.f <= current_y))
-							{
-								EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin.x, currcyl.origin.y - 38.f, currcyl.origin.z);
-
-								if (ep2 && !(ep2->type & POLY_DOUBLESIDED) && (ep2->norm.y > 0.f))
-								{
-									current_y -= 10.f;
-								}
-								else if ((ep2) && (ep2->type & POLY_NOPATH))
-								{
-									current_y -= 10.f;
-								}
-								else if (AddAnchor_Original_Method(eb, eg, &currcyl.origin, 0))
-								{
-									LASTFOUND++;
-									current_y = currcyl.origin.y + currcyl.height;
-								}
-								else current_y -= 10.f;
-							}
-							else current_y -= 10.f;
-						}
-						else current_y -= 10.f;
-
-					}
-				}
-			}
-		}
-
-	AnchorData_Create_Phase_II_Original_Method(eb);
-	AnchorData_Create_Links_Original_Method(eb);
-
-	/* TO KEEP
-		// Parses Anchors to refine anchor creation...
-		long ii,ia,ji,ja;
-		EERIE_3D p1,p2;
-		EERIE_BKG_INFO * eg2;
-		count=0;
-
-
-		total=eb->Zsize*eb->Xsize;
-		long usable=0;
-		if (0)
-		for (j=0;j<eb->Zsize;j++)
-		for (long i=0;i<eb->Xsize;i++)
-		{
-			F2L((float)count/(float)total*100.f,&per);
-			if (per!=lastper)
-			{
-				LogInfo << "Anchor Generation Pass II: %" << per << " Suitable " << usable;
-				lastper=per;
-			}
-			count++;
-			eg=&eb->Backg[i+j*eb->Xsize];
-			for (long k=0;k<eg->nbianchors;k++)
-			{
-				ii=i-2;
-				ia=i+2;
-				ji=j-2;
-				ja=j+2;
-				FORCERANGE(ii,0,eb->Xsize-1);
-				FORCERANGE(ia,0,eb->Xsize-1);
-				FORCERANGE(ji,0,eb->Zsize-1);
-				FORCERANGE(ja,0,eb->Zsize-1);
-				for (long j2=ji;j2<=ja;j2++)
-				for (long i2=ii;i2<=ia;i2++)
-				{
-					eg2=&eb->Backg[i2+j2*eb->Xsize];
-					for (long k2=0;k2<eg2->nbianchors;k2++)
-					{
-						// don't treat currently treated anchor
-						if (eg->ianchors[k] == eg2->ianchors[k2]) continue;
-						memcpy(&p1,&eb->anchors[eg->ianchors[k]].pos,sizeof(EERIE_3D));
-						memcpy(&p2,&eb->anchors[eg2->ianchors[k2]].pos,sizeof(EERIE_3D));
-						p1.y+=10.f;
-						p2.y+=10.f;
-						float dist=TRUEEEDistance3D(&p1,&p2);
-						if (dist>120.f) continue;
-						if (EEfabs(p1.y-p2.y)>80.f) continue;
-						if ((eb->anchors[eg->ianchors[k]].radius>=40)
-							&& (eb->anchors[eg2->ianchors[k2]].radius>=40)) 
-							continue;
-						{
-							// found 2 usable anchors
-							EERIE_3D pos;
-							pos.x=(p1.x+p2.x)*( 1.0f / 2 );
-							pos.y=(p1.y+p2.y)*( 1.0f / 2 );
-							pos.z=(p1.z+p2.z)*( 1.0f / 2 );
-							if (AddAnchor(eb,eg,&pos,MUST_BE_BIG))
-								usable++;
-						}
-					}
-				}
-			}
-		}*/
-
-}
-long Method = 0;
-void AnchorData_Create(EERIE_BACKGROUND * eb)
-{
-	switch (Method)
-	{
-		case 0:
-			AnchorData_Create_Original_Method(eb);
-			break;
-		case 1:
-			AnchorData_Create_Alternative_Method_I(eb);
-			break;
-	}
 }

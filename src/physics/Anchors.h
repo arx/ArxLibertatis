@@ -35,29 +35,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef  EERIEANCHORS_H
-#define  EERIEANCHORS_H
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
-#include "scene/Object.h"
+#ifndef ARX_PHYSICS_ANCHORS_H
+#define ARX_PHYSICS_ANCHORS_H
 
-//-----------------------------------------------------------------------------
+struct EERIE_BACKGROUND;
+struct EERIE_CYLINDER;
+
+/*!
+ * Clears all Anchor data from a Background
+ */
 void AnchorData_ClearAll(EERIE_BACKGROUND * eb);
 bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl);
 
-#define MUST_BE_BIG 1
-
-bool DirectAddAnchor(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos, long flags);
-bool AddAnchor(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos, long flags);
-void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked);
-void AnchorData_Create_Links(EERIE_BACKGROUND * eb);
-void TOKEEP_AnchorData_Create_Phase_II(EERIE_BACKGROUND * eb);
-void AnchorData_Create_Phase_II(EERIE_BACKGROUND * eb);
 void AnchorData_Create(EERIE_BACKGROUND * eb);
-
-long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl);
-long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl);
-long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long except);
  
-#endif
+#endif // ARX_PHYSICS_ANCHORS_H

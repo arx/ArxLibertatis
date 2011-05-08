@@ -82,8 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
-
 #include "physics/Box.h"
 #include "physics/Anchors.h"
 #include "physics/CollisionShapes.h"
@@ -570,8 +568,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 //*****************************************************************************
 // Checks for nearest VALID anchor for a cylinder from a position
 //*****************************************************************************
-long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl)
-{
+static long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl) {
 	long returnvalue = -1;
 	float distmax = 99999999.f;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -594,8 +591,9 @@ long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl)
 
 	return returnvalue;
 }
-long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl)
-{
+
+static long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl) {
+	
 	EERIE_3D vect;
 	float d = radians(beta);
 	vect.x = -EEsin(d);
@@ -610,8 +608,8 @@ long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl)
 	return AnchorData_GetNearest(&posi, cyl);
 }
 
-long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long except)
-{
+static long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long except) {
+	
 	long returnvalue = -1;
 	float distmax = 99999999.f;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -881,7 +879,7 @@ failure:
 
 	io->_npcdata->pathfind.listnb = -2;
 
-	if (io->_npcdata->pathfind.flags & BEHAVIOUR_NONE) return false;
+	if (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) return false; // TODO was BEHAVIOUR_NONE
 
 	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 	return false;
@@ -3756,7 +3754,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				io->_npcdata->pathfind.listnb = -1;
 				io->_npcdata->pathfind.pathwait = 0;
 
-				if (io->_npcdata->pathfind.list) MemFree(io->_npcdata->pathfind.list);
+				if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 				io->_npcdata->pathfind.list = NULL;
 
@@ -3790,7 +3788,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
 
-					if (io->_npcdata->pathfind.list) MemFree(io->_npcdata->pathfind.list);
+					if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 					io->_npcdata->pathfind.list = NULL;
 					EVENT_SENDER = NULL;

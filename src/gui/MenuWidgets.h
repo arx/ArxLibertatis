@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <string>
+#include "core/math/Vector2.h"
 #include "gui/Text.h"
 #include "window/Input.h"
 

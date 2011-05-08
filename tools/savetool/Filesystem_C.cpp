@@ -48,6 +48,7 @@ using std::remove;
 using std::rename;
 using std::malloc;
 using std::free;
+using std::string;
 
 // File handle 0 is reserved for error.
 #define GETHANDLE(handle)  (FILE*)(handle)

@@ -99,6 +99,7 @@ using std::sprintf;
 using std::min;
 using std::max;
 using std::transform;
+using std::string;
 
 //#define NEEDING_DEBUG 1
 #define MAX_SSEPARAMS 5

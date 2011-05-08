@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 
 using std::vector;
+using std::string;
 
 static const bool PREFER_LOCAL_FILES_OVER_PAK = true;
 

@@ -92,7 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -111,6 +110,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 
 #include "scripting/ScriptEvent.h"
+
+using std::string;
 
 
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
@@ -357,16 +358,6 @@ extern long FINAL_COMMERCIAL_DEMO;
 void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle, long confirm)
 {
 	LogDebug << "ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle << " " << confirm;
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-
-	if (NEED_LOG)
-	{
-		char tex[256];
-		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
-		LogDebug << tex;
-		LogDebug << "level " << level << " target " << target;
-	}
 
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
@@ -619,15 +610,7 @@ static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	ARX_SOUND_AmbianceSavePlayList(&playlist, &asize);
 	allocsize += asize;
 
-retry:
-	;
 	char * dat = new char[allocsize];
-
-	if (!dat)
-	{
-		if (HERMES_Memory_Emergency_Out(allocsize, "ChangeLevel_PushIndex"))
-			goto retry;
-	}
 
 	asi->ambiances_data_size = asize;
 	memcpy(dat, asi, sizeof(ARX_CHANGELEVEL_INDEX));
@@ -709,14 +692,7 @@ static long ARX_CHANGELEVEL_Push_Globals() {
 					 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000
 					 + 48000;
 
-retry:
 	char * dat = new char[allocsize];
-
-	if (!dat)
-	{
-		if (HERMES_Memory_Emergency_Out(allocsize, "ChangeLevel_PushGlobals"))
-			goto retry;
-	}
 
 	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
@@ -822,16 +798,7 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	allocsize += 80 * PlayerQuest.size();
 	allocsize += sizeof(SavedMapMakerData) * Mapmarkers.size();
 
-
-retry:
-	;
 	char * dat = new char[allocsize];
-
-	if(!dat) {
-		if(HERMES_Memory_Emergency_Out(allocsize, "ChangeLevel_PushPlayer")) {
-			goto retry;
-		}
-	}
 
 	asp = (ARX_CHANGELEVEL_PLAYER *)dat;
 
@@ -1354,8 +1321,6 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	char * dat = new char[allocsize];
 	long pos = 0;
 
-	if (!dat) HERMES_Memory_Emergency_Out();
-
 	ais.halo = io->halo_native;
 	ais.Tweak_nb = io->Tweak_nb;
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
@@ -1746,8 +1711,6 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	if (asi->nb_inter)
 	{
 		idx_io = (ARX_CHANGELEVEL_IO_INDEX *) malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
-
-		if (!idx_io) HERMES_Memory_Emergency_Out();
 
 		memcpy(idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
 		pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
@@ -2238,8 +2201,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		long  Gaids_Number = idx;
 		_Gaids[Gaids_Number] = (ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *) malloc(sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 
-		if (!_Gaids[Gaids_Number]) HERMES_Memory_Emergency_Out();
-
 		memset(_Gaids[Gaids_Number], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 
 		io->room_flags = 1;
@@ -2321,8 +2282,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		{
 			io->inventory_skin = (char *) malloc(strlen(ais->inventory_skin) + 1);
 
-			if (!io->inventory_skin) HERMES_Memory_Emergency_Out();
-
 			strcpy(io->inventory_skin, ais->inventory_skin);
 		}
 		else io->stepmaterial = NULL;
@@ -2330,8 +2289,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		if (ais->stepmaterial[0])
 		{
 			io->stepmaterial = (char *) malloc(strlen(ais->stepmaterial) + 1);
-
-			if (!io->stepmaterial) HERMES_Memory_Emergency_Out();
 
 			strcpy(io->stepmaterial, ais->stepmaterial);
 		}
@@ -2341,8 +2298,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		{
 			io->armormaterial = (char *) malloc(strlen(ais->armormaterial) + 1);
 
-			if (!io->armormaterial) HERMES_Memory_Emergency_Out();
-
 			strcpy(io->armormaterial, ais->armormaterial);
 		}
 		else io->armormaterial = NULL;
@@ -2351,8 +2306,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		{
 			io->weaponmaterial = (char *) malloc(strlen(ais->weaponmaterial) + 1);
 
-			if (!io->weaponmaterial) HERMES_Memory_Emergency_Out();
-
 			strcpy(io->weaponmaterial, ais->weaponmaterial);
 		}
 		else io->weaponmaterial = NULL;
@@ -2360,8 +2313,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		if (ais->strikespeech[0])
 		{
 			io->strikespeech = (char *) malloc(strlen(ais->strikespeech) + 1);
-
-			if (!io->strikespeech) HERMES_Memory_Emergency_Out();
 
 			strcpy(io->strikespeech, ais->strikespeech);
 		}
@@ -2482,8 +2433,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		if (ass->nblvar > 0)
 		{
 			io->script.lvar = (SCRIPT_VAR *) malloc(sizeof(SCRIPT_VAR) * ass->nblvar);
-
-			if (!io->script.lvar) HERMES_Memory_Emergency_Out();
 		}
 
 		else io->script.lvar = NULL;
@@ -2512,8 +2461,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					if (io->script.lvar[i].ival)
 					{
 						io->script.lvar[i].text = (char *) malloc(io->script.lvar[i].ival + 1);
-
-						if (!io->script.lvar[i].text) HERMES_Memory_Emergency_Out();
 
 						memset(io->script.lvar[i].text, 0, io->script.lvar[i].ival + 1);
 						memcpy(io->script.lvar[i].text, dat + pos, io->script.lvar[i].ival);
@@ -2594,8 +2541,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		if (ass->nblvar)
 		{
 			io->over_script.lvar = (SCRIPT_VAR *) malloc(sizeof(SCRIPT_VAR) * ass->nblvar);
-
-			if (!io->over_script.lvar) HERMES_Memory_Emergency_Out();
 		}
 		//"Script Var"
 		else io->over_script.lvar = NULL;
@@ -2623,8 +2568,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					if (io->over_script.lvar[i].ival)
 					{
 						io->over_script.lvar[i].text = (char *) malloc(io->over_script.lvar[i].ival + 1);
-
-						if (!io->over_script.lvar[i].text) HERMES_Memory_Emergency_Out();
 
 						memset(io->over_script.lvar[i].text, 0, io->over_script.lvar[i].ival + 1);
 						memcpy(io->over_script.lvar[i].text, dat + pos, io->over_script.lvar[i].ival);
@@ -2722,7 +2665,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					io->_npcdata->tohit = as->tohit;
 					io->_npcdata->weaponinhand = as->weaponinhand;
 					strcpy(io->_npcdata->weaponname, as->weaponname);
-					io->_npcdata->weapontype = as->weapontype;
+					io->_npcdata->weapontype = Flag(as->weapontype); // TODO save/load flags
 					io->_npcdata->xpvalue = as->xpvalue;
 					
 					assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
@@ -2756,8 +2699,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 						if (io->_npcdata->ex_rotate == NULL)
 						{
 							io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *) malloc(sizeof(EERIE_EXTRA_ROTATE));
-
-							if (!io->_npcdata->ex_rotate) HERMES_Memory_Emergency_Out();
 						}
 
 						*io->_npcdata->ex_rotate = as->ex_rotate;
@@ -2820,8 +2761,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 			if (io->inventory == NULL)
 			{
 				io->inventory = (void *) malloc(sizeof(INVENTORY_DATA));
-
-				if (!io->inventory) HERMES_Memory_Emergency_Out();
 			}
 
 			memset(io->inventory, 0, sizeof(INVENTORY_DATA));
@@ -2840,12 +2779,8 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 			if (io->tweakerinfo)
 				free(io->tweakerinfo);
 
-			//{
 			io->tweakerinfo = (IO_TWEAKER_INFO *) malloc(sizeof(IO_TWEAKER_INFO));
 
-			if (!io->tweakerinfo) HERMES_Memory_Emergency_Out();
-
-			//}
 			SavedTweakerInfo sti;
 			memcpy(&sti, dat + pos, sizeof(SavedTweakerInfo));
 			pos += sizeof(SavedTweakerInfo);
@@ -2861,8 +2796,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		{
 			io->iogroups = (IO_GROUP_DATA *) malloc(sizeof(IO_GROUP_DATA) * io->nb_iogroups);
 
-			if (!io->iogroups) HERMES_Memory_Emergency_Out();
-
 			for(long i = 0; i < io->nb_iogroups; i++) {
 				SavedGroupData sgd;
 				memcpy(&sgd, dat + pos, sizeof(SavedGroupData));
@@ -2876,8 +2809,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		if (io->Tweak_nb)
 		{
 			io->Tweaks = (TWEAK_INFO *)malloc(sizeof(TWEAK_INFO) * io->Tweak_nb);
-
-			if (!io->Tweaks) HERMES_Memory_Emergency_Out();
 
 			for(long i = 0; i < io->Tweak_nb; i++) {
 				SavedTweakInfo sti;
@@ -2900,8 +2831,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					free(io->obj->linked);
 
 				io->obj->linked = (EERIE_LINKED *) malloc(sizeof(EERIE_LINKED) * (io->obj->nblinked));
-
-				if (!io->obj->linked) HERMES_Memory_Emergency_Out();
 
 				for (long n = 0; n < ais->nb_linked; n++)
 				{
@@ -2986,8 +2915,6 @@ long ReadTargetInfo(char * info) {
 long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 {
 	unsigned char * treated = (unsigned char *) malloc(sizeof(unsigned char) * MAX_IO_SAVELOAD);
-
-	if (!treated) HERMES_Memory_Emergency_Out();
 
 	memset(treated, 0, sizeof(unsigned char)*MAX_IO_SAVELOAD); 
 	long converted = 1;
@@ -3208,8 +3135,6 @@ static long ARX_CHANGELEVEL_Pop_Globals() {
 	if (acsg->nb_globals > 0)
 	{
 		svar = (SCRIPT_VAR *) malloc(sizeof(SCRIPT_VAR) * acsg->nb_globals);
-
-		if (!svar) HERMES_Memory_Emergency_Out();
 	}
 	else svar = NULL;
 
@@ -3231,8 +3156,6 @@ static long ARX_CHANGELEVEL_Pop_Globals() {
 				{
 					svar[i].text = (char *) malloc(svar[i].ival + 1);
 					memset(svar[i].text, 0, svar[i].ival + 1);
-
-					if (!svar[i].text) HERMES_Memory_Emergency_Out();
 
 					memcpy(svar[i].text, dat + pos + sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE), svar[i].ival);
 
@@ -3305,8 +3228,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	if (_Gaids) ReleaseGaids();
 
 	_Gaids = (ARX_CHANGELEVEL_INVENTORY_DATA_SAVE **) malloc(sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *) * MAX_IO_SAVELOAD);
-
-	if (!_Gaids) HERMES_Memory_Emergency_Out();
 
 	memset(_Gaids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *)*MAX_IO_SAVELOAD);
 
@@ -3781,8 +3702,6 @@ static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LE
 
 	char * dat = new char[sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA)];
 
-	if (!dat) HERMES_Memory_Emergency_Out();
-
 	memcpy(dat, &pld, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
 	long pos = sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA);
 	char savefile[256];
@@ -3839,16 +3758,6 @@ extern long STARTED_A_GAME;
 long ARX_CHANGELEVEL_Load(long instance) {
 	
 	LogDebug << "begin ARX_CHANGELEVEL_Load";
-	
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-	
-	if(NEED_LOG) {
-		LogDebug << "ARX_CHANGELEVEL_Load";
-		char tex[256];
-		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
-		LogDebug << tex;
-	}
 	
 	iTimeToDrawD7 = -3000;
 	
