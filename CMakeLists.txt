@@ -112,6 +112,15 @@ function(force_recheck_library LIBRARY_NAME)
 	unset(CHECK_${LIBRARY_NAME}_LINK CACHE)
 endfunction()
 
+function(create_source_groups)
+	# Source groups
+	set(SOURCE_GROUPS ai animation audio core game graphics gui io physics platform scene scripting window)
+	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
+		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.*)
+		source_group("${SOURCE_GROUP}" FILES ${SOURCES})
+	endforeach(SOURCE_GROUP)
+endfunction()
+
 ##############################################################################
 
 option(ARX_BUILD_TESTS "Build tests" OFF)
@@ -121,6 +130,8 @@ option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" ON)
+option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
+option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
 
 if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
 	unset(CHECK_COMPILER CACHE)
@@ -128,6 +139,7 @@ if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
 	force_recheck_library(ZLIB)
 	force_recheck_library(Freetype)
 	force_recheck_library(Threads)
+	force_recheck_library(OpenAL)
 	set(LAST_ARX_FORCE_32BIT ${ARX_FORCE_32BIT} CACHE INTERNAL "The last ARX_FORCE_32BIT value")
 endif()
 
@@ -138,7 +150,10 @@ find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
-find_package(OpenGL REQUIRED)
+find_package(OpenGL REQUIRED)if(ARX_USE_OPENAL)
+	find_package(OpenAL 1.1 REQUIRED)
+	find_package(OpenALEFX)
+endif()
 find_package(Doxygen)
 find_package(PythonInterp)
 
@@ -149,11 +164,11 @@ mark_as_advanced(IL_LIBRARIES)
 
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-
-include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
-
 if(MSVC)
 	# Set optimal options for msvc:
+
+	# Remove targets we don't really use (RelWithDebInfo, MinSizeRel)
+	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Using only Debug and Release" FORCE)
 	
 	# Disable deprecation warnings
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -161,25 +176,20 @@ if(MSVC)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 	add_definitions(/wd4995)
 	
-	if(ARX_DEBUG)
-		add_definitions(-D_CRTDBG_MAP_ALLOC)
-	endif()
-	
 	# TEMP - disable warning caused by the F2L removal
 	add_definitions(/wd4244)    # conversion from 'float' to 'long', possible loss of data
+
+	# This is needed to use ZLIB as a DLL
+	add_definitions(-DZLIB_WINAPI)
 	
-	# Source groups
-	set(SOURCE_GROUPS
-		ai animation audio core game graphics gui io physics scene scripting window
-	)
-	
-	file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
-	source_group("inc" FILES ${ALL_INCLUDES})
-	
-	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
-		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.*)
-		source_group("${SOURCE_GROUP}" FILES ${SOURCES})
-	endforeach(SOURCE_GROUP)
+	# Add dx7 include & lib paths
+	if("$ENV{DX7SDK_PATH}" STREQUAL "")
+		message(WARNING "DX7SDK_PATH environment variable not found")
+	else("$ENV{DX7SDK_PATH}" STREQUAL "")
+		message(STATUS "Using DirectX 7 SDK found in " $ENV{DX7SDK_PATH})
+		include_directories("$ENV{DX7SDK_PATH}/include")
+		link_directories("$ENV{DX7SDK_PATH}/lib")
+	endif("$ENV{DX7SDK_PATH}" STREQUAL "")
 	
 else(MSVC)
 	# Set optimal options for gcc:
@@ -203,6 +213,9 @@ else(MSVC)
 	check_link_library(DevIL IL_LIBRARIES IL)
 	check_link_library(ZLIB ZLIB_LIBRARIES)
 	check_link_library(Freetype FREETYPE_LIBRARIES)
+	if(ARX_USE_OPENAL)
+		check_link_library(OpenAL OPENAL_LIBRARY)
+	endif()
 	
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
@@ -215,9 +228,11 @@ else(MSVC)
 	if(ARX_DEBUG)
 		#Debug
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+		add_definitions(-D_DEBUG)
 	else()
 		#Release
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -fno-strict-aliasing -g3") # TODO enable optimizations
+		add_definitions(-D_NDEBUG)
 	endif()
 	
 	if(ARX_DEBUG_EXTRA)
@@ -251,16 +266,51 @@ if(ARX_MINGW)
 endif(ARX_MINGW)
 
 # Preprocessor definitions
-add_definitions(-D_DEBUG)
 add_definitions(-DNOMINMAX)
 
 #glob sources
-file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
+file(GLOB_RECURSE AI_SOURCES ${SRC_DIR}/ai/*.cpp)
+file(GLOB_RECURSE ANIMATION_SOURCES ${SRC_DIR}/animation/*.cpp)
+file(GLOB AUDIO_SOURCES ${SRC_DIR}/audio/*.cpp ${SRC_DIR}/audio/codec/*.cpp)
+file(GLOB AUDIO_OPENAL_SOURCES ${SRC_DIR}/audio/openal/*.cpp)
+file(GLOB AUDIO_DSOUND_SOURCES ${SRC_DIR}/audio/dsound/*.cpp)
+file(GLOB_RECURSE CORE_SOURCES ${SRC_DIR}/core/*.cpp)
+file(GLOB_RECURSE GAME_SOURCES ${SRC_DIR}/game/*.cpp)
+file(GLOB_RECURSE GRAPHICS_SOURCES ${SRC_DIR}/graphics/*.cpp)
+file(GLOB_RECURSE GUI_SOURCES ${SRC_DIR}/gui/*.cpp)
+file(GLOB_RECURSE IO_SOURCES ${SRC_DIR}/io/*.cpp)
+file(GLOB_RECURSE PHYSICS_SOURCES ${SRC_DIR}/physics/*.cpp)
+file(GLOB_RECURSE PLATFORM_SOURCES ${SRC_DIR}/platform/*.cpp)
+file(GLOB_RECURSE SCENE_SOURCES ${SRC_DIR}/scene/*.cpp)
+file(GLOB_RECURSE SCRIPTING_SOURCES ${SRC_DIR}/scripting/*.cpp)
+file(GLOB_RECURSE WINDOW_SOURCES ${SRC_DIR}/window/*.cpp)
+file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
+
+set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${IO_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPTING_SOURCES} ${WINDOW_SOURCES})
+
+include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+
+if(ARX_USE_OPENAL)
+	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_OPENAL_SOURCES})
+	include_directories(${OPENAL_INCLUDE_DIR})
+	add_definitions(-DHAVE_OPENAL)
+	if(OPENALEFX_FOUND)
+		include_directories(${OPENAL_EFX_INCLUDE_DIR})
+		add_definitions(-DHAVE_OPENAL_EFX)
+	endif()
+endif()
+if(ARX_USE_DSOUND)
+	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_DSOUND_SOURCES})
+	add_definitions(-DHAVE_DSOUND)
+endif()
 
 #enable unity build if requested
 if(ARX_USE_UNITYBUILD)
 	enable_unity_build(arx ALL_SOURCES)
 endif()
+
+#create source groups
+create_source_groups()
 
 #build
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
@@ -268,8 +318,10 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 #link
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
-set(ARX_SOUND_LIBS dsound)
-target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS} ${OPENGL_LIBRARIES})
+target_link_libraries(arx ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS} ${OPENGL_LIBRARIES})
+if(ARX_USE_OPENAL)
+	target_link_libraries(arx ${OPENAL_LIBRARY})
+endif()
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core

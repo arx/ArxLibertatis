@@ -28,131 +28,89 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "AudioTypes.h"
 
-namespace ATHENA {
-	
-	// Global
-	
-	// Setup
-	aalError aalInit(void * param = NULL);
-	aalError aalInitForceNoEAX(void * param = NULL);
-	aalError aalClean();
-	aalError aalSetStreamLimit(const aalULong & size);
-	aalError aalSetOutputFormat(const aalFormat & format);
-	aalError aalSetSamplePath(const char * path);
-	aalError aalSetAmbiancePath(const char * path);
-	aalError aalSetEnvironmentPath(const char * path);
-	aalError aalEnable(const aalULong & flags);
-	aalError aalDisable(const aalULong & flags);
-	// Status
-	aalError aalGetStreamLimit(aalULong & limit);
-	aalUBool aalIsEnabled(const aalFlag & flag);
-	// Control
-	aalError aalUpdate();
-	
-	// Resource
-	
-	// Creation
-	aalSLong aalCreateMixer(const char * name = NULL);
-	aalSLong aalCreateSample(const char * name = NULL);
-	aalSLong aalCreateAmbiance(const char * name = NULL);
-	aalSLong aalCreateEnvironment(const char * name = NULL);
-	// Destruction
-	aalError aalDeleteSample(const aalSLong & sample_id);
-	aalError aalDeleteAmbiance(const aalSLong & ambiance_id);
-	
-	// Checking
-	aalUBool aalIsEnvironment(const aalSLong & environment_id);
-	// Retrieving by name (If resource_name == NULL, return first found)
-	aalSLong aalGetMixer(const char * mixer_name = NULL);
-	
-	aalSLong aalGetAmbiance(const char * ambiance_name = NULL);
-	aalSLong aalGetEnvironment(const char * environment_name = NULL);
-	// Retrieving by ID (If resource_id == AAL_SFALSE, return first found)
-	aalSLong aalGetNextAmbiance(const aalSLong & ambiance_id = AAL_SFALSE);
-	
-	// Environment
-	
-	// Setup
-	aalError aalSetEnvironmentRolloffFactor(const aalSLong & environment_id, const aalFloat & factor);
-	// Status
-	aalError aalGetEnvironmentSize(const aalSLong & environment_id, aalFloat & size);
-	aalError aalGetEnvironmentRolloffFactor(const aalSLong & environment_id, aalFloat & factor);
-	aalError aalGetEnvironmentDiffusion(const aalSLong & environment_id, aalFloat & diffusion);
-	aalError aalGetEnvironmentAbsorption(const aalSLong & environment_id, aalFloat & absorption);
-	aalError aalGetEnvironmentReflection(const aalSLong & environment_id, aalReflection & reflection);
-	aalError aalGetEnvironmentReverberation(const aalSLong & environment_id, aalReverberation & reverberation);
-	aalError aalGetEnvironmentCallback(const aalSLong & environment_id, aalEnvironmentCallback & callback);
-	
-	// Listener
-	
-	// Setup
-	aalError aalSetListenerName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalSetListenerUnitFactor(const aalFloat & factor);
-	aalError aalSetListenerRolloffFactor(const aalFloat & factor);
-	aalError aalSetListenerPosition(const aalVector & position);
-	aalError aalSetListenerDirection(const aalVector & front, const aalVector & up);
-	aalError aalSetListenerEnvironment(const aalSLong & environment_id);
-	// Status
-	aalError aalGetListenerName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalGetListenerUnitFactor(aalFloat & factor);
-	aalError aalGetListenerDopplerFactor(aalFloat & factor);
-	aalError aalGetListenerRolloffFactor(aalFloat & factor);
-	aalError aalGetListenerPosition(aalVector & position);
-	aalError aalGetListenerDirection(aalVector & front, aalVector * up);
-	aalError aalGetListenerVelocity(aalVector & velocity);
-	aalError aalGetListenerEnvironment(aalSLong & environment_id);
-	
-	// Mixer
-	
-	// Setup
-	aalError aalSetMixerVolume(const aalSLong & mixer_id, const aalFloat & volume);
-	aalError aalSetMixerParent(const aalSLong & mixer_id, const aalSLong & parent_mixer_id);
-	// Status
-	aalError aalGetMixerVolume(const aalSLong & mixer_id, aalFloat * volume);
-	aalUBool IsMixerEnabled(const aalSLong & mixer_id, const aalFlag & flag);
-	aalUBool IsMixerDisabled(const aalSLong & mixer_id, const aalFlag & flag);
-	aalUBool IsMixerPaused(const aalSLong & mixer_id);
-	// Control
-	aalError aalMixerStop(const aalSLong & mixer_id);
-	aalError aalMixerPause(const aalSLong & mixer_id);
-	aalError aalMixerResume(const aalSLong & mixer_id);
-	
-	// Sample
-	
-	// Setup
-	aalError aalSetSampleVolume(const aalSLong & sample_id, const aalFloat & volume);
-	aalError aalSetSamplePitch(const aalSLong & sample_id, const aalFloat & pitch);
-	aalError aalSetSamplePosition(const aalSLong & sample_id, const aalVector & position);
-	// Status
-	aalError aalGetSampleName(const aalSLong & sample_id, char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalGetSampleLength(const aalSLong & sample_id, aalULong & length, const aalUnit & unit = AAL_UNIT_MS);
-	aalError aalGetSamplePan(const aalSLong & sample_id, aalFloat * pan);
-	aalError aalGetSampleCone(const aalSLong & sample_id, aalCone * cone);
-	aalUBool aalIsSamplePlaying(const aalSLong & sample_id);
-	// Control
-	//play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
-	aalError aalSamplePlay(aalSLong & sample_id, const aalChannel & channel, const aalULong & play_count = 1);
-	aalError aalSampleStop(aalSLong & sample_id);
-	
-	// Track setup
-	aalError aalMuteAmbianceTrack(const aalSLong & ambiance_id, const aalSLong & track_id, const aalUBool & mute);
-	
-	// Ambiance
-	
-	// Setup
-	aalError aalSetAmbianceUserData(const aalSLong & ambiance_id, void * data);
-	aalError aalSetAmbianceVolume(const aalSLong & ambiance_id, const aalFloat & volume);
-	// Status
-	aalError aalGetAmbianceName(const aalSLong & ambiance_id, char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-	aalError aalGetAmbianceUserData(const aalSLong & ambiance_id, void ** data);
-	aalError aalGetAmbianceTrackID(const aalSLong & ambiance_id, const char * name, aalSLong & track_id);
-	aalError aalGetAmbianceVolume(const aalSLong & ambiance_id, aalFloat & volume);
-	aalUBool aalIsAmbianceLooped(const aalSLong & ambiance_id);
-	// Control
-	//play_count == 0 -> infinite loop, play_count == 1 -> play once
-	aalError aalAmbiancePlay(const aalSLong & ambiance_id, const aalChannel & channel, const aalULong & play_count = 1, const aalULong & fade_interval = 0);
-	aalError aalAmbianceStop(const aalSLong & ambiance_id, const aalULong & fade_interval = 0);
-	
-} // namespace ATHENA
+namespace audio {
+
+// Global
+
+aalError aalInit(const std::string & backend, bool enableEAX);
+aalError aalClean();
+aalError aalSetStreamLimit(size_t size);
+aalError aalSetSamplePath(const std::string & path);
+aalError aalSetAmbiancePath(const std::string & path);
+aalError aalSetEnvironmentPath(const std::string & path);
+aalError setReverbEnabled(bool enable);
+aalError aalUpdate();
+
+// Resource
+
+MixerId aalCreateMixer();
+SampleId aalCreateSample(const std::string & name);
+AmbianceId aalCreateAmbiance(const std::string & name);
+EnvId aalCreateEnvironment(const std::string & name);
+aalError aalDeleteSample(SampleId sample_id);
+aalError aalDeleteAmbiance(AmbianceId ambiance_id);
+
+AmbianceId aalGetAmbiance(const std::string & ambiance_name);
+EnvId aalGetEnvironment(const std::string & environment_name);
+
+//! Retrieving by ID (If resource_id == INVALID_ID, return first found)
+AmbianceId aalGetNextAmbiance(AmbianceId ambiance_id = INVALID_ID);
+
+// Environment
+
+aalError aalSetRoomRolloffFactor(float factor);
+
+// Listener
+
+aalError aalSetUnitFactor(float factor);
+aalError aalSetRolloffFactor(float factor);
+aalError aalSetListenerPosition(const Vector3f & position);
+aalError aalSetListenerDirection(const Vector3f & front, const Vector3f & up);
+aalError aalSetListenerEnvironment(EnvId environment_id);
+
+// Mixer
+
+aalError aalSetMixerVolume(MixerId mixer_id, float volume);
+aalError aalSetMixerParent(MixerId mixer_id, MixerId parent_mixer_id);
+
+aalError aalGetMixerVolume(MixerId mixer_id, float * volume);
+
+aalError aalMixerStop(MixerId mixer_id);
+aalError aalMixerPause(MixerId mixer_id);
+aalError aalMixerResume(MixerId mixer_id);
+
+// Sample
+
+aalError aalSetSampleVolume(SourceId sample_id, float volume);
+aalError aalSetSamplePitch(SourceId sample_id, float pitch);
+aalError aalSetSamplePosition(SourceId sample_id, const Vector3f & position);
+
+aalError aalGetSampleName(SampleId sample_id, std::string & name);
+aalError aalGetSampleLength(SampleId sample_id, size_t & length, TimeUnit unit = UNIT_MS);
+aalError aalGetSamplePan(SourceId sample_id, float * pan);
+aalError aalGetSampleCone(SourceId sample_id, SourceCone * cone);
+bool aalIsSamplePlaying(SourceId sample_id);
+
+//! play_count == 0 -> infinite loop, play_count > 0 -> play play_count times
+aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned play_count = 1);
+aalError aalSampleStop(SourceId & sample_id);
+
+// Ambiance
+
+aalError aalMuteAmbianceTrack(AmbianceId ambiance_id, const std::string & track, bool mute);
+
+aalError aalSetAmbianceUserData(AmbianceId ambiance_id, void * data);
+aalError aalSetAmbianceVolume(AmbianceId ambiance_id, float volume);
+
+aalError aalGetAmbianceName(AmbianceId ambiance_id, std::string & name);
+aalError aalGetAmbianceUserData(AmbianceId ambiance_id, void ** data);
+aalError aalGetAmbianceVolume(AmbianceId ambiance_id, float & volume);
+bool aalIsAmbianceLooped(AmbianceId ambiance_id);
+
+//! play_count == 0 -> infinite loop, play_count == 1 -> play once
+aalError aalAmbiancePlay(AmbianceId ambiance_id, const Channel & channel, bool loop = false, size_t fade_interval = 0);
+aalError aalAmbianceStop(AmbianceId ambiance_id, size_t fade_interval = 0);
+
+} // namespace audio
 
 #endif // ARX_AUDIO_AUDIO_H

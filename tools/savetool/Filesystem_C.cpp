@@ -24,6 +24,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include "io/Filesystem.h"
+#include "platform/Platform.h"
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	#include <windows.h>
+#else
+	#include <sys/stat.h>
+#endif
 
 #include <cstdio>
 #include <cstdlib>
@@ -151,6 +158,36 @@ void * FileLoadMalloc(const std::string& name, size_t * SizeLoadMalloc)
 	if (SizeLoadMalloc != NULL) *SizeLoadMalloc = size1;
 	
 	return(adr);
+}
+
+bool CreateFullPath(const std::string & path)
+{
+	LogInfo << "CreateFullPath(" << path << ")";
+	
+	size_t start = 0;
+	
+	while(true) {
+		
+		size_t pos = path.find_first_of("/\\", start);
+		if(pos == string::npos) {
+			break;
+		}
+		
+		pos++;
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+		CreateDirectory(path.substr(0, pos).c_str(), NULL);
+#else
+		mkdir(path.substr(0, pos).c_str(), 0777);
+#endif
+		start = pos + 1;
+	}
+	
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	return DirectoryExist(path);
+#else
+	return true;
+#endif
 }
 
 // TODO stub functions

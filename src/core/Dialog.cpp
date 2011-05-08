@@ -2255,7 +2255,7 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_DISABLESOUND)) ARX_SOUND_Release();
 					else
 					{
-						if (!ARX_SOUND_IsEnabled()) ARX_SOUND_Init(danaeApp.m_hWnd);
+						if (!ARX_SOUND_IsEnabled()) ARX_SOUND_Init();
 
 						ARX_SOUND_EnableReverb(IsChecked(hWnd, IDC_REVERB) ? 1 : 0);
 					}

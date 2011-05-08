@@ -27,100 +27,52 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <ctime>
 
-namespace ATHENA
-{
+#include "audio/Mixer.h"
+#include "audio/Sample.h"
+#include "audio/Ambiance.h"
+#include "audio/AudioEnvironment.h"
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Internal globals                                                          //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	// Audio device interface                                                    //
-	LPDIRECTSOUND device(NULL);
-	LPDIRECTSOUNDBUFFER primary(NULL);
-	LPDIRECTSOUND3DLISTENER listener(NULL);
-	LPKSPROPERTYSET environment(NULL);
-	aalUBool is_reverb_present(AAL_UFALSE);
-	aalSLong environment_id(AAL_SFALSE);
+using std::string;
 
-	// Global settings                                                           //
-	char * sample_path = NULL;
-	char * ambiance_path = NULL;
-	char * environment_path = NULL;
-	aalULong stream_limit_ms(AAL_DEFAULT_STREAMLIMIT);
-	aalULong stream_limit_bytes = 0;
-	aalULong session_start(0);
-	aalULong session_time(0);
-	aalULong global_status(0);
-	aalFormat global_format = { 0, 0, 0 };
+namespace audio {
 
-	// Resources                                                                 //
-	ResourceList<Mixer> _mixer;
-	ResourceList<Sample> _sample;
-	ResourceList<Ambiance> _amb;
-	ResourceList<Environment> _env;
-	ResourceList<Instance> _inst;
+// Audio device interface
+Backend * backend = NULL;
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Internal functions                                                        //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	// Random number generator                                                   //
-	static const aalULong SEED = 43;
-	static const aalULong MODULO = 2147483647;
-	static const aalULong FACTOR = 16807;
-	static const aalULong SHIFT = 91;
+// Global settings
+string sample_path;
+string ambiance_path;
+string environment_path;
+size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
+size_t session_time = 0;
 
-	static aalULong __current(SEED);
+// Resources
+ResourceList<Mixer> _mixer;
+ResourceList<Sample> _sample;
+ResourceList<Ambiance> _amb;
+ResourceList<Environment> _env;
 
-	aalULong Random()
-	{
-		return __current = (__current * FACTOR + SHIFT) % MODULO;
+size_t unitsToBytes(size_t v, const PCMFormat & _format, TimeUnit unit) {
+	switch(unit) {
+		case UNIT_MS:
+			return (size_t)(float(v) * 0.001f * _format.frequency * _format.channels * (_format.quality >> 3)) / 1000;
+		case UNIT_SAMPLES:
+			return v * _format.channels * (_format.quality >> 3);
+		default:
+			return v;
 	}
+}
 
-	aalFloat FRandom()
-	{
-		__current = (__current * FACTOR + SHIFT) % MODULO;
-		return aalFloat(__current) / aalFloat(MODULO);
+size_t bytesToUnits(size_t v, const PCMFormat & _format, TimeUnit unit) {
+	switch(unit) {
+		case UNIT_MS      :
+			return (size_t)(float(v) * 1000.f / (_format.frequency * _format.channels * (_format.quality >> 3)));
+		case UNIT_SAMPLES :
+			return v / (_format.frequency * _format.channels * (_format.quality >> 3));
+		
+		default:
+			return v;
 	}
+}
 
-	aalULong InitSeed()
-	{
-		__current = (aalULong)time(NULL);
-		return Random();
-	}
-
-	// Convert a value from time units to bytes                                  //
-	aalULong UnitsToBytes(const aalULong & v, const aalFormat & _format, const aalUnit & unit)
-	{
-		switch (unit)
-		{
-			case AAL_UNIT_MS:
-				return aalULong(aalFloat(v) * 0.001F * _format.frequency * _format.channels * (_format.quality >> 3));
-
-			case AAL_UNIT_SAMPLES:
-				return v * _format.channels * (_format.quality >> 3);
-			
-			default:
-				return v;
-		}
-	}
-
-	// Convert a value from bytes to time units                                  //
-	aalULong BytesToUnits(const aalULong & v, const aalFormat & _format, const aalUnit & unit)
-	{
-		switch (unit)
-		{
-			case AAL_UNIT_MS      :
-				return aalULong(aalFloat(v) * 1000.0F / (_format.frequency * _format.channels * (_format.quality >> 3)));
-
-			case AAL_UNIT_SAMPLES :
-				return v / (_format.frequency * _format.channels * (_format.quality >> 3));
-			
-			default:
-				return v;
-		}
-	}
-
-}//ATHENA::
+} // namespace audio

@@ -23,33 +23,78 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_AUDIO_CODEC_CODEC_H
-#define ARX_AUDIO_CODEC_CODEC_H
+#ifndef ARX_AUDIO_AMBIANCE_H
+#define ARX_AUDIO_AMBIANCE_H
 
-#include "audio/AudioTypes.h"
-
-struct PakFileHandle;
+#include "AudioTypes.h"
 
 namespace audio {
 
-class Codec {
+class Ambiance {
 	
 public:
 	
-	virtual ~Codec() {};
+	Ambiance(const std::string & name);
+	~Ambiance();
 	
-	virtual aalError setHeader(void * header) = 0;
-	virtual void setStream(PakFileHandle * stream) = 0;
+	aalError load();
 	
-	//! The stream cursor must be at the begining of waveform data
-	virtual aalError setPosition(size_t position) = 0;
+	inline void setUserData(void * _data) { data = _data; }
+	inline void * getUserData() const { return data; }
 	
-	virtual size_t getPosition() = 0;
+	const Channel & getChannel() const { return channel; }
+	const std::string & getName() const { return name; }
 	
-	virtual aalError read(void * buffer, size_t to_read, size_t & read) = 0;
+	aalError setVolume(float volume);
+	
+	inline bool isPaused() const { return status == Paused; }
+	inline bool isPlaying() const { return status == Playing; }
+	inline bool isIdle() const { return status == Idle; }
+	inline bool isLooped() const { return loop; }
+	
+	aalError play(const Channel & channel, bool loop = true, size_t fade_interval = 0.f);
+	aalError stop(size_t fade_interval = 0.f);
+	aalError pause();
+	aalError resume();
+	aalError update();
+	
+	aalError muteTrack(const std::string & track, bool mute);
+	
+	void setId(AmbianceId id);
+	
+	struct Track;
+	
+private:
+	
+	static void OnAmbianceSampleEnd(void *, const SourceId &, void * data);
+	
+	enum Fade {
+		None,
+		FadeUp,
+		FadeDown
+	};
+	
+	enum Status {
+		Idle,
+		Playing,
+		Paused
+	};
+	
+	Status status;
+	bool loop;
+	Fade fade;
+	
+	Channel channel;
+	float fade_time, fade_interval, fade_max;
+	s32 start, time;
+	size_t track_c;
+	Track * track_l;
+	std::string name;
+	
+	void * data;
 	
 };
 
 } // namespace audio
 
-#endif // ARX_AUDIO_CODEC_CODEC_H
+#endif // ARX_AUDIO_AMBIANCE_H

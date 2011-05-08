@@ -102,8 +102,6 @@ extern long ARX_DEMO;
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
 
-extern bool bForceNoEAX;
-
 extern long _EERIEMouseXdep;
 extern long _EERIEMouseYdep;
 
@@ -645,7 +643,8 @@ void CMenuConfig::DefaultValue()
 	iSFXVolume=10;
 	iSpeechVolume=10;
 	iAmbianceVolume=8;
-	bEAX=false;
+	bEAX = false;
+	audioBackend = "auto";
 	//INPUT
 	bInvertMouse=false;
 	bAutoReadyWeapon=false;
@@ -1094,6 +1093,7 @@ bool CMenuConfig::SaveAll()
 	bOk&=WriteConfigInt("AUDIO","speech_volume",iSpeechVolume);
 	bOk&=WriteConfigInt("AUDIO","ambiance_volume",iAmbianceVolume);
 	bOk&=WriteConfigInt("AUDIO","EAX",(bEAX)?1:0);
+	bOk&=WriteConfigString("AUDIO", "backend", audioBackend);
 	//input
 	bOk&=WriteConfigInt("INPUT","invert_mouse",(bInvertMouse)?1:0);
 	bOk&=WriteConfigInt("INPUT","auto_ready_weapon",(bAutoReadyWeapon)?1:0);
@@ -1154,7 +1154,6 @@ bool CMenuConfig::SaveAll()
 
 	//misc
 	bOk&=WriteConfigInt("MISC","softfog",(bATI)?1:0);
-	bOk&=WriteConfigInt("MISC","forcenoeax",(bForceNoEAX)?1:0);
 	bOk&=WriteConfigInt("MISC","forcezbias",(bForceZBias)?1:0);
 	bOk&=WriteConfigInt("MISC","newcontrol",(INTERNATIONAL_MODE)?1:0);
 	bOk&=WriteConfigInt("MISC","forcetoggle",(bOneHanded)?1:0);
@@ -1418,19 +1417,19 @@ bool CMenuConfig::ReadAll()
 	{
 		iTemp=iAmbianceVolume;
 	}
-
 	iAmbianceVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","EAX",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Audio_GetEAX(bEAX);
+	
+	iTemp = ReadConfigInt("AUDIO","EAX",bOkTemp);
+	bOk &= bOkTemp;
+	if(bOkTemp) {
+		bEAX = (iTemp) ? true : false;
 	}
-	else
-	{
-		bEAX=(iTemp)?true:false;
+	
+	pcText = ReadConfigString("AUDIO", "backend");
+	if(!pcText.empty()) {
+		audioBackend = pcText;
 	}
+	
 
 	//input
 	iTemp=ReadConfigInt("INPUT","invert_mouse",bOkTemp);
@@ -1590,18 +1589,6 @@ bool CMenuConfig::ReadAll()
 		bATI=(iTemp)?true:false;
 	}
 
-	iTemp=ReadConfigInt("MISC","forcenoeax",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceNoEAX=false;
-	}
-	else
-	{
-		bForceNoEAX=(iTemp)?true:false;
-	}
-
 	iTemp=ReadConfigInt("MISC","forcezbias",bOkTemp);
 	bOk&=bOkTemp;
 
@@ -1731,7 +1718,6 @@ bool CMenuConfig::ReadAll()
 	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(iAmbianceVolume);
 
-	pMenuConfig->bEAX=bEAX;
 	ARXMenu_Options_Control_SetInvertMouse(bInvertMouse);
 	ARXMenu_Options_Control_SetAutoReadyWeapon(bAutoReadyWeapon);
 	ARXMenu_Options_Control_SetMouseLookToggleMode(bMouseLookToggle);
@@ -2846,17 +2832,7 @@ bool Menu2_Render()
 					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, pElementText);
-					bool bEAX = true;
-
-					if (bEAX)
-					{
-						((CMenuCheckButton*)me)->iState=pMenuConfig->bEAX?1:0;
-					}
-					else
-					{
-						me->SetCheckOff();
-						pElementText->lColor=RGB(127,127,127);
-					}
+					((CMenuCheckButton*)me)->iState=pMenuConfig->bEAX?1:0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 

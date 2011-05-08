@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 #include <sstream>
+#include <iterator>
 
 #include "core/LocalizationHash.h"
 #include "core/Unicode.hpp"
