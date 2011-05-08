@@ -103,12 +103,6 @@ inline unsigned long ARXTimeUL() {
 namespace Time
 {
 	/**
-	 * Suspends the execution of the current thread.
-	 * @param sleepMs The time interval for which execution is to be suspended, in milliseconds.
-	 **/
-	inline void SleepMs(u32 sleepMs);
-
-	/**
 	 * Get the number of milliseconds elapsed since some unspecified starting point.
 	 * @return The number of milliseconds elapsed.
 	 **/
@@ -153,12 +147,6 @@ namespace Time
 	//-------------------------------------------------------------------------
 
 #if ARX_PLATFORM == ARX_PLATFORM_LINUX
-	inline void SleepMs(u32 sleepMs) {
-		int ret = usleep(sleepMs*1000);
-		arx_assert_msg(ret == 0, "usleep failed");
-		ARX_UNUSED(ret);
-	}
-
 	inline u32 GetMs() {
 		struct timespec ts;
 		clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -171,10 +159,6 @@ namespace Time
 		return ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
 	}
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
-	inline void SleepMs(u32 sleepMs) {
-		Sleep(sleepMs);
-	}
-
     extern const u64 FREQUENCY_HZ;
 	inline u32 GetMs() {
 		LARGE_INTEGER counter;
