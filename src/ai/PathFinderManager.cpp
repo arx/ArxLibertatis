@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/PathFinder.h"
 #include "graphics/Math.h"
 #include "io/IO.h"
+#include "platform/Thread.h"
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
@@ -70,15 +71,21 @@ static const float PATHFINDER_HEURISTIC_RANGE(PATHFINDER_HEURISTIC_MAX - PATHFIN
 static const float PATHFINDER_DISTANCE_MAX(5000.0F);
 
 // Pathfinder Definitions
-static HANDLE PATHFINDER(NULL);
 static HANDLE PATHFINDER_MUTEX(NULL);
 static unsigned long PATHFINDER_UPDATE_INTERVAL(10);
 static unsigned long PATHFINDER_MUTEX_WAIT(5000);
 static unsigned long PATHFINDER_RELEASE_WAIT(5000);
-static bool bExitPathfinderThread(false);
 
 PATHFINDER_REQUEST pr;
 long PATHFINDER_WORKING(0);
+
+class PathFinderThread : public StoppableThread {
+	
+	void run();
+	
+};
+
+static PathFinderThread * pathfinder = NULL;
 
 struct PATHFINDER_QUEUE_ELEMENT
 {
@@ -109,10 +116,12 @@ static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(INTERACTIVE_OBJ * io)
 INTERACTIVE_OBJ * CURPATHFINDIO = NULL;
 
 // Adds a Pathfinder Search Element to the pathfinder queue.
-bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req)
-{
-	if (!PATHFINDER) return false;
-
+bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
+	
+	if(!pathfinder) {
+		return false;
+	}
+	
 	if (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_MUTEX_WAIT) == WAIT_TIMEOUT)
 		return false;
 
@@ -256,16 +265,14 @@ LARGE_INTEGER Pstart_chrono, Pend_chrono;
 unsigned long BENCH_PATHFINDER = 0;
 
 // Pathfinder Thread
-LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
-{
+void PathFinderThread::run() {
+	
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	PathFinder pathfinder(eb->nbanchors, eb->anchors,
 	                      MAX_LIGHTS, (EERIE_LIGHT **)GLight);
 
-	bExitPathfinderThread = false;
-
-	while (!bExitPathfinderThread)
-	{
+	while(!isStopRequested()) {
+		
 		QueryPerformanceCounter(&Pstart_chrono);
 
 		if (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_MUTEX_WAIT) == WAIT_TIMEOUT)
@@ -359,48 +366,43 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 	//	pathfinder.Clean();
 
 	PATHFINDER_WORKING = 0;
-
-	ExitThread(0);
-
-	return 0;
+	
 }
 
-void EERIE_PATHFINDER_Release()
-{
-	if (!PATHFINDER) return;
-
+void EERIE_PATHFINDER_Release() {
+	
+	if(!pathfinder) {
+		return;
+	}
+	
 	CURPATHFINDIO = NULL;
-
+	
 	while (WaitForSingleObject(PATHFINDER_MUTEX, PATHFINDER_RELEASE_WAIT) == WAIT_TIMEOUT)
 		Sleep(1);
-
+	
 	EERIE_PATHFINDER_Clear(1);
-
-	bExitPathfinderThread = true;
-
-	while (WaitForSingleObject(PATHFINDER, PATHFINDER_RELEASE_WAIT) == WAIT_TIMEOUT)
-		Sleep(1);
-
-	CloseHandle(PATHFINDER), PATHFINDER = NULL;
+	
+	pathfinder->stop();
+	
+	delete pathfinder, pathfinder = NULL;
 	ReleaseMutex(PATHFINDER_MUTEX), CloseHandle(PATHFINDER_MUTEX), PATHFINDER_MUTEX = NULL;
 }
 
 void EERIE_PATHFINDER_Create() {
 	
-	if (PATHFINDER) EERIE_PATHFINDER_Release();
-
-	if (PATHFINDER_MUTEX)
-	{
+	if(pathfinder) {
+		EERIE_PATHFINDER_Release();
+	}
+	
+	if(PATHFINDER_MUTEX) {
 		ReleaseMutex(PATHFINDER_MUTEX);
 		CloseHandle(PATHFINDER_MUTEX);
 		PATHFINDER_MUTEX = NULL;
 	}
-
+	
 	PATHFINDER_MUTEX = CreateMutex(NULL, false, NULL);
 	CURPATHFINDIO = NULL;
-	DWORD id;
-	PATHFINDER = (HANDLE)CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)PATHFINDER_Proc, NULL, 0, (LPDWORD)&id);
-
-	if (PATHFINDER) SetThreadPriority(PATHFINDER, THREAD_PRIORITY_NORMAL); 
+	
+	pathfinder = new PathFinderThread();
+	pathfinder->start();
 }
-
