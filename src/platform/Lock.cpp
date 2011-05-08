@@ -23,11 +23,9 @@ void Lock::lock() {
 	
 	pthread_mutex_lock(&mutex);
 	
-	if(locked) {
-		do {
-			int rc = pthread_cond_wait(&cond, &mutex);
-			arx_assert(rc == 0);
-		} while(locked);
+	while(locked) {
+		int rc = pthread_cond_wait(&cond, &mutex);
+		arx_assert(rc == 0);
 	}
 	
 	locked = true;
@@ -41,7 +39,7 @@ void Lock::unlock() {
 	pthread_mutex_unlock(&mutex);
 }
 
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+#elif defined(__WIN32__)
 
 Lock::Lock() {
 	mutex = CreateMutex(NULL, false, NULL);

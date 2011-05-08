@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IniReader.h"
 
 #include "platform/String.h"
+#include "platform/Thread.h"
 
 #include "scene/Interactive.h"
 
@@ -121,8 +122,6 @@ static const string ARX_SOUND_COLLISION_MAP_NAMES[] = {
 };
 
 static bool bIsActive(false);
-static HANDLE hUpdateThread(NULL);
-static bool bExitUpdateThread(false);
 
 
 static long ambiance_zone(INVALID_ID);
@@ -1933,47 +1932,43 @@ static float GetSamplePresenceFactor(const string & _name) {
 	return 1.f;
 }
 
-LARGE_INTEGER Sstart_chrono, Send_chrono;
 unsigned long BENCH_SOUND = 0;
-LPTHREAD_START_ROUTINE UpdateSoundThread(char *)
-{
-	while (!bExitUpdateThread)
-	{
-		Sleep(ARX_SOUND_UPDATE_INTERVAL);
-		QueryPerformanceCounter(&Sstart_chrono);
-		aalUpdate();
-		QueryPerformanceCounter(&Send_chrono);
-		BENCH_SOUND = (unsigned long)(Send_chrono.QuadPart - Sstart_chrono.QuadPart);
+LARGE_INTEGER Sstart_chrono, Send_chrono;
+
+class SoundUpdateThread : public StoppableThread {
+	
+	void run() {
+		
+		while(!isStopRequested()) {
+			
+			sleep(ARX_SOUND_UPDATE_INTERVAL);
+			QueryPerformanceCounter(&Sstart_chrono);
+			aalUpdate();
+			QueryPerformanceCounter(&Send_chrono);
+			BENCH_SOUND = (unsigned long)(Send_chrono.QuadPart - Sstart_chrono.QuadPart);
+			
+		}
+		
 	}
+	
+};
 
-	ExitThread(0);
+static SoundUpdateThread * updateThread = NULL;
 
-	return 0;
+static void ARX_SOUND_LaunchUpdateThread() {
+	
+	arx_assert(!updateThread);
+	
+	updateThread = new SoundUpdateThread();
+	updateThread->start();
 }
 
-static void ARX_SOUND_LaunchUpdateThread()
-{
-	DWORD id;
-
-	if (hUpdateThread) return;
-
-	bExitUpdateThread = false;
-
-	hUpdateThread = (HANDLE)CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UpdateSoundThread, NULL, 0, &id);
-
-	if (hUpdateThread) SetThreadPriority(hUpdateThread, THREAD_PRIORITY_NORMAL);//_LOWEST);
-}
-
-static void ARX_SOUND_KillUpdateThread()
-{
-	if (!hUpdateThread) return;
-
-	SetThreadPriority(hUpdateThread, THREAD_PRIORITY_HIGHEST);
-
-	bExitUpdateThread = true;
-
-	if (WaitForSingleObject(hUpdateThread, INFINITE) == WAIT_TIMEOUT)
-		LogError << "Failed while killing audio thread";
-
-	CloseHandle(hUpdateThread), hUpdateThread = NULL;
+static void ARX_SOUND_KillUpdateThread() {
+	
+	if(!updateThread) {
+		return;
+	}
+	
+	updateThread->stop();
+	delete updateThread, updateThread = NULL;
 }

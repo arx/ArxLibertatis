@@ -6,7 +6,7 @@
 
 #ifdef HAVE_PTHREADS
 #include <pthread.h>
-#else
+#elif defined(__WIN32__)
 #include <windows.h>
 #endif
 
@@ -18,7 +18,7 @@ private:
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
 	bool locked;
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+#elif defined(__WIN32__)
 	HANDLE mutex;
 #else
 	#warning "locking not supported"
