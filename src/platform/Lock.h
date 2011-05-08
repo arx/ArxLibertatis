@@ -1,6 +1,6 @@
 
-#ifndef ARX_AUDIO_LOCK_H
-#define ARX_AUDIO_LOCK_H
+#ifndef ARX_PLATFORM_LOCK_H
+#define ARX_PLATFORM_LOCK_H
 
 #include "platform/Platform.h"
 
@@ -53,4 +53,4 @@ public:
 	
 };
 
-#endif // ARX_AUDIO_LOCK_H
+#endif // ARX_PLATFORM_LOCK_H
