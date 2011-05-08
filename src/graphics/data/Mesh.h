@@ -988,8 +988,6 @@ float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 void ResetWorlds();
 float GetSWorld(float x,float y,float z);
 
-void LaunchLightThread(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
-
 void EERIE_ANIMMANAGER_Init();
 void EERIE_ANIMMANAGER_PurgeUnused();
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);

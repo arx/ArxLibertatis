@@ -125,4 +125,6 @@ enum LevelNumber {
 void TextBox(const char * title, char * text, long size);
 void launchlightdialog();
 
+void RecalcLightZone(float x, float z, long siz);
+
 #endif // ARX_CORE_DIALOG_H

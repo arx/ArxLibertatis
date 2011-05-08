@@ -101,6 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Clothes.h"
 
 #include "platform/String.h"
+#include "platform/Thread.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
@@ -336,7 +337,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 
 		while ((io->_npcdata->pathfind.pathwait == 1) && count--)
 		{
-			Sleep(1);
+			Thread::sleep(1);
 		}
 
 		if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
