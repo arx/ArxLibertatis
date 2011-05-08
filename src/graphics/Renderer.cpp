@@ -12,43 +12,43 @@ extern LPDIRECT3DDEVICE7 GDevice;
 // ARXToDX7 mapping tables - MOVE THAT SOMEWHERE ELSE!
 ///////////////////////////////////////////////////////////////////////////////
 const D3DTEXTUREOP ARXToDX7TextureOp[] = {
-						D3DTOP_DISABLE,							// OpDisable
+						D3DTOP_DISABLE,						// OpDisable
 						D3DTOP_SELECTARG1,					// OpSelectArg1,
 						D3DTOP_SELECTARG2,					// OpSelectArg2,
-						D3DTOP_MODULATE,						// OpModulate,
+						D3DTOP_MODULATE,					// OpModulate,
 						D3DTOP_MODULATE2X,					// OpModulate2X,
 						D3DTOP_MODULATE4X,					// OpModulate4X,
-						D3DTOP_ADDSIGNED						// OpAddSigned
+						D3DTOP_ADDSIGNED					// OpAddSigned
 									};
 
 const DWORD ARXToDX7TextureArg[] = {
-						D3DTA_DIFFUSE,							// TexArgDiffuse,
-						D3DTA_CURRENT,							// TexArgCurrent,						
-						D3DTA_TEXTURE								// TexArgTexture,
+						D3DTA_DIFFUSE,						// TexArgDiffuse,
+						D3DTA_CURRENT,						// TexArgCurrent,						
+						D3DTA_TEXTURE						// TexArgTexture,
 									};
 
 const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
-						D3DTADDRESS_WRAP,						// WrapRepeat,
+						D3DTADDRESS_WRAP,					// WrapRepeat,
 						D3DTADDRESS_MIRROR,					// WrapMirror,
-						D3DTADDRESS_CLAMP						// WrapClamp,
+						D3DTADDRESS_CLAMP					// WrapClamp,
 									};
 
 D3DTEXTUREMAGFILTER ARXToDX7MagFilter[] = {
-						D3DTFG_POINT,								// FilterNone - Invalid for magnification
-						D3DTFG_POINT,								// FilterNearest,
-						D3DTFG_LINEAR								// FilterLinear
+						D3DTFG_POINT,						// FilterNone - Invalid for magnification
+						D3DTFG_POINT,						// FilterNearest,
+						D3DTFG_LINEAR						// FilterLinear
 									};
 
 D3DTEXTUREMINFILTER ARXToDX7MinFilter[] = {
-						D3DTFN_POINT,								// FilterNone - Invalid for minification
-						D3DTFN_POINT,								// FilterNearest,
-						D3DTFN_LINEAR,							// FilterLinear
+						D3DTFN_POINT,						// FilterNone - Invalid for minification
+						D3DTFN_POINT,						// FilterNearest,
+						D3DTFN_LINEAR,						// FilterLinear
 									};
 
 D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
-						D3DTFP_NONE,								// FilterNone
-						D3DTFP_POINT,								// FilterNearest,
-						D3DTFP_LINEAR								// FilterLinear
+						D3DTFP_NONE,						// FilterNone
+						D3DTFP_POINT,						// FilterNearest,
+						D3DTFP_LINEAR						// FilterLinear
 									};
 
 
@@ -304,8 +304,10 @@ void DX7Texture2D::Upload()
 
 	// Setup the new surface desc
 	DDSURFACEDESC2 ddsd;
+	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize = sizeof(ddsd);
 	m_pddsSurface->GetSurfaceDesc(&ddsd);
+
 	ddsd.dwFlags         = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
 	ddsd.ddsCaps.dwCaps2 = 0L;
@@ -314,13 +316,15 @@ void DX7Texture2D::Upload()
 	LPDIRECTDRAWSURFACE7 pddsTempSurface;
 	HRESULT hr;
 
-	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
+	hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL);
+	if (hr != S_OK)
 	{
 		pDD->Release();
 		return;
 	}
 
-	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
+	hr = pddsTempSurface->Lock(NULL, &ddsd, DDLOCK_WAIT, 0);
+	arx_assert(hr == S_OK);
 
 	DWORD * pDst = (DWORD *)ddsd.lpSurface;
 
@@ -504,8 +508,8 @@ void DX7Texture2D::Upload()
 	// Done with the temp objects
 	pddsTempSurface->Release();
 	pDD->Release();
-
-	if ((ddsd.dwFlags & DDSD_MIPMAPCOUNT) &&  ddsd.dwMipMapCount > 0)
+	
+	if (ddsd.dwMipMapCount > 0)
 	{
 		DDSCAPS2 ddsCaps;
 		ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_MIPMAP;
@@ -537,8 +541,12 @@ void DX7Texture2D::CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSU
 	DDSURFACEDESC2 descSrc;
 	DDSURFACEDESC2 descDst;
 
-	pddsSrc->Lock(NULL, &descSrc, DDLOCK_WAIT, NULL);
-	pddsDst->Lock(NULL, &descDst, DDLOCK_WAIT, NULL);
+	HRESULT res;
+	res = pddsSrc->Lock(NULL, &descSrc, DDLOCK_WAIT, NULL);
+	arx_assert(res == S_OK);
+
+	res = pddsDst->Lock(NULL, &descDst, DDLOCK_WAIT, NULL);
+	arx_assert(res == S_OK);
 
 	arx_assert_msg(descDst.dwWidth == (descSrc.dwWidth >> 1), "src width = %d, dst width = %d (%s)", descSrc.dwWidth, descDst.dwWidth, mFileName.c_str());
 	arx_assert_msg(descDst.dwHeight == (descSrc.dwHeight >> 1), "src height = %d, dst height = %d (%s)", descSrc.dwHeight, descDst.dwHeight, mFileName.c_str());
@@ -618,8 +626,11 @@ void DX7Texture2D::CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSU
 			pSrc[i] += pitchIncrementSrc + (descSrc.lPitch >> 2);
 	}
 
-	pddsDst->Unlock(0);
-	pddsSrc->Unlock(0);
+	res = pddsDst->Unlock(0);
+	arx_assert(res == S_OK);
+
+	res = pddsSrc->Unlock(0);
+	arx_assert(res == S_OK);
 }
 
 void DX7Texture2D::Destroy()
