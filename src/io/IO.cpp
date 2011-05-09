@@ -57,24 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IO.h"
 
-#include <cstring>
 #include <cstdio>
-#include <ctime>
-#include <algorithm>
-#include <iostream>
-#include <algorithm>
 
 #include <shlobj.h>
 #include <windows.h>
 
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-
 #include "platform/Platform.h"
-
-using std::string;
-using std::copy;
-using std::transform;
 
 // TODO(lubosz): temporary include replacement
 #if !ARX_COMPILER_MSVC
