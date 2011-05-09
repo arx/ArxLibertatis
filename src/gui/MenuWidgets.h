@@ -50,11 +50,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <string>
-#include "core/math/Vector2.h"
-#include "gui/Text.h"
-#include "window/Input.h"
 
 #include <windows.h>
+
+#include "gui/Text.h"
+#include "platform/math/Vector2.h"
+#include "window/Input.h"
+
+class TextureContainer;
 
 // Enum for all the buttons in the menu
 enum MenuButton
@@ -425,7 +428,7 @@ class CMenuElementText: public CMenuElement
 		void SetText( const std::string& _pText);
 		void RenderMouseOver();
  
-		Vector2i GetTextSize() const;
+		Vec2i GetTextSize() const;
 
 		bool OnMouseDoubleClick(int);
 };

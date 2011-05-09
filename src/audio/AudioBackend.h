@@ -52,8 +52,8 @@ public:
 	
 	virtual aalError setRolloffFactor(float factor) = 0;
 	
-	virtual aalError setListenerPosition(const Vector3f & position) = 0;
-	virtual aalError setListenerOrientation(const Vector3f & front, const Vector3f & up) = 0;
+	virtual aalError setListenerPosition(const Vec3f & position) = 0;
+	virtual aalError setListenerOrientation(const Vec3f & front, const Vec3f & up) = 0;
 	
 	virtual aalError setListenerEnvironment(const Environment & env) = 0;
 	virtual aalError setRoomRolloffFactor(float factor) = 0;

@@ -64,8 +64,8 @@ bool Font::InsertGlyph( unsigned int character )
 	glyph.rsb_delta		 = m_FTFace->glyph->rsb_delta;
     glyph.draw_offset.x  = m_FTFace->glyph->bitmap_left;
     glyph.draw_offset.y  = m_FTFace->glyph->bitmap_top - m_FTFace->glyph->bitmap.rows;
-	glyph.uv_start       = Vector2f(0,0);
-	glyph.uv_end		 = Vector2f(0,0);
+	glyph.uv_start       = Vec2f(0,0);
+	glyph.uv_end		 = Vec2f(0,0);
 	glyph.texture		 = 0;
 
 	// Some glyphs like spaces have a size of 0...
@@ -201,12 +201,12 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	GRenderer->SetCulling( Renderer::CullCCW );
 }
 
-Vector2i Font::GetTextSize( const std::string& str ) const
+Vec2i Font::GetTextSize( const std::string& str ) const
 {
 	return GetTextSize(str.begin(), str.end());
 }
 
-Vector2i Font::GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const
+Vec2i Font::GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const
 {
 	FT_UInt currentGlyph;
 	FT_UInt previousGlyph = 0;
@@ -256,7 +256,7 @@ Vector2i Font::GetTextSize( std::string::const_iterator itStart, std::string::co
 	int sizeX = endX - startX;
 	int sizeY = m_FTFace->size->metrics.height >> 6;
 	
-    return Vector2i(sizeX, sizeY);
+    return Vec2i(sizeX, sizeY);
 }
 
 int Font::GetLineHeight() const

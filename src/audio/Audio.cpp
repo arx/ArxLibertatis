@@ -390,14 +390,14 @@ aalError aalSetRolloffFactor(float factor) {
 	return backend->setRolloffFactor(factor);
 }
 
-aalError aalSetListenerPosition(const Vector3f & position) {
+aalError aalSetListenerPosition(const Vec3f & position) {
 	
 	AAL_ENTRY
 	
 	return backend->setListenerPosition(position);
 }
 
-aalError aalSetListenerDirection(const Vector3f & front, const Vector3f & up) {
+aalError aalSetListenerDirection(const Vec3f & front, const Vec3f & up) {
 	
 	AAL_ENTRY
 	
@@ -529,7 +529,7 @@ aalError aalSetSamplePitch(SourceId sample_id, float pitch) {
 	return source->setPitch(pitch);
 }
 
-aalError aalSetSamplePosition(SourceId sample_id, const Vector3f & position) {
+aalError aalSetSamplePosition(SourceId sample_id, const Vec3f & position) {
 	
 	AAL_ENTRY
 	

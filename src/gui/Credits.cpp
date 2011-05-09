@@ -37,7 +37,7 @@ struct CreditsTextInformations {
 	
 	string  sText;
 	COLORREF fColors;
-	Vector2i sPos;
+	Vec2i sPos;
 };
 
 
@@ -101,7 +101,7 @@ static void ExtractPhraseColor(string & phrase, CreditsTextInformations &infomat
 static void CalculAverageWidth() {
 	
 	// Calculate the average value
-	Vector2i size = hFontCredits->GetTextSize("aA(");
+	Vec2i size = hFontCredits->GetTextSize("aA(");
 	CreditsData.iFontAverageHeight = size.y;
 }
 

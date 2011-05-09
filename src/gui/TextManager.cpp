@@ -10,7 +10,6 @@
 #include <cassert>
 
 #include "core/Core.h"
-#include "core/math/Vector2.h"
 #include "gui/Text.h"
 #include "graphics/font/Font.h"
 #include "io/Logger.h"
@@ -65,7 +64,7 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & 
 	
 	if(iNbLigneClipp) 
 	{
-		Vector2i sSize = _pFont->GetTextSize(pArxText->lpszUText);
+		Vec2i sSize = _pFont->GetTextSize(pArxText->lpszUText);
 		sSize.y *= iNbLigneClipp;
 	
 		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.y;

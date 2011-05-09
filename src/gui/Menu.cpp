@@ -967,7 +967,7 @@ bool ARX_Menu_Render()
 		Color = RGB(232, 204, 143);
 
 		szText = getLocalised("system_menus_main_cdnotfound");
-		Vector2i textSize = hFontMenu->GetTextSize(szText);
+		Vec2i textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);

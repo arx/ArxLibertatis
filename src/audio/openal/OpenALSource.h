@@ -50,9 +50,9 @@ public:
 	aalError setPitch(float pitch);
 	aalError setPan(float pan);
 	
-	aalError setPosition(const Vector3f & position);
-	aalError setVelocity(const Vector3f & velocity);
-	aalError setDirection(const Vector3f & direction);
+	aalError setPosition(const Vec3f & position);
+	aalError setVelocity(const Vec3f & velocity);
+	aalError setDirection(const Vec3f & direction);
 	aalError setCone(const SourceCone & cone);
 	aalError setFalloff(const SourceFalloff & falloff);
 	aalError setMixer(MixerId mixer);

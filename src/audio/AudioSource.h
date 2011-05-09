@@ -64,9 +64,9 @@ public:
 	 */
 	virtual aalError setPan(float pan) = 0;
 	
-	virtual aalError setPosition(const Vector3f & position) = 0;
-	virtual aalError setVelocity(const Vector3f & velocity) = 0;
-	virtual aalError setDirection(const Vector3f & direction) = 0;
+	virtual aalError setPosition(const Vec3f & position) = 0;
+	virtual aalError setVelocity(const Vec3f & velocity) = 0;
+	virtual aalError setDirection(const Vec3f & direction) = 0;
 	virtual aalError setCone(const SourceCone & cone) = 0;
 	virtual aalError setFalloff(const SourceFalloff & falloff) = 0;
 	virtual aalError setMixer(MixerId mixer) = 0;

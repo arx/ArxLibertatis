@@ -469,8 +469,8 @@ void ARX_SOUND_SetListener(const EERIE_3D * position, const EERIE_3D * front, co
 {
 	if (bIsActive)
 	{
-		aalSetListenerPosition(*(Vector3f *)position);
-		aalSetListenerDirection(*(Vector3f *)front, *(Vector3f *)up);
+		aalSetListenerPosition(*(Vec3f *)position);
+		aalSetListenerDirection(*(Vec3f *)front, *(Vec3f *)up);
 	}
 }
 
@@ -568,7 +568,7 @@ long ARX_SOUND_PlayMenu(ArxSound & sample_id, float pitch, SoundLoopMode loop) {
 }
 
 
-void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vector3f & pos)
+void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vec3f & pos)
 {
 	if (io)
 	{
@@ -918,13 +918,13 @@ void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const EERIE_3D * position)
 	if (bIsActive && sample_id != INVALID_ID)
 	{
 		if (position)
-			aalSetSamplePosition(sample_id, *(Vector3f *)position);
+			aalSetSamplePosition(sample_id, *(Vec3f *)position);
 		else
 		{
 			EERIE_3D pos;
 
 			ARX_PLAYER_FrontPos(&pos);
-			aalSetSamplePosition(sample_id, *(Vector3f *)&pos);
+			aalSetSamplePosition(sample_id, *(Vec3f *)&pos);
 		}
 	}
 }
@@ -933,7 +933,7 @@ void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ
 {
 	if (!bIsActive || !io || sample_id == INVALID_ID) return;
 
-	Vector3f position;
+	Vec3f position;
 
 	if (io)
 	{

@@ -2129,7 +2129,7 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 	ARX_CHECK_LONG(_fPosX);
 	ARX_CHECK_LONG(_fPosY);
 
-	Vector2i textSize = _pFont->GetTextSize(_pText);
+	Vec2i textSize = _pFont->GetTextSize(_pText);
 	rZone.left = ARX_CLEAN_WARN_CAST_LONG(_fPosX);
 	rZone.top = ARX_CLEAN_WARN_CAST_LONG(_fPosY);
 	rZone.right  = rZone.left + textSize.x;
@@ -2158,7 +2158,7 @@ void CMenuElementText::SetText( const std::string& _pText )
 {
 	lpszText = _pText;
 
-	Vector2i textSize = pFont->GetTextSize(_pText);
+	Vec2i textSize = pFont->GetTextSize(_pText);
 
 	rZone.right  = textSize.x + rZone.left;
 	rZone.bottom = textSize.y + rZone.top;
@@ -2755,7 +2755,7 @@ void CMenuElementText::RenderMouseOver()
 
 //-----------------------------------------------------------------------------
 
-Vector2i CMenuElementText::GetTextSize() const
+Vec2i CMenuElementText::GetTextSize() const
 {
 	return pFont->GetTextSize(lpszText);
 }
@@ -3160,7 +3160,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
 	}
 
-	Vector2i textSize(0,0);
+	Vec2i textSize(0,0);
 
 	if ( pText )
 	{
@@ -3948,7 +3948,7 @@ void CWindowMenuConsole::UpdateText()
 
 	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
 	{
-		Vector2i textSize = ((CMenuElementText*)pZoneClick)->pFont->GetTextSize("|");
+		Vec2i textSize = ((CMenuElementText*)pZoneClick)->pFont->GetTextSize("|");
 		pZoneClick->rZone.bottom += textSize.y;
 	}
 
@@ -4855,7 +4855,7 @@ void CMenuButton::AddText( const std::string& _pText)
 	int iSizeXButton=rZone.right-rZone.left;
 	int iSizeYButton=rZone.bottom-rZone.top;
 	
-	Vector2i textSize = pFont->GetTextSize(_pText);
+	Vec2i textSize = pFont->GetTextSize(_pText);
 
 	if(textSize.x>iSizeXButton) iSizeXButton=textSize.x;
 	if(textSize.y>iSizeYButton) iSizeYButton=textSize.y;
@@ -5043,7 +5043,7 @@ void CMenuSliderText::SetWidth(int _iWidth)
 	for(it=vText.begin();it<vText.end();it++)
 	{
 		CMenuElementText *pMenuElementText=*it;
-		Vector2i textSize = pMenuElementText->GetTextSize();
+		Vec2i textSize = pMenuElementText->GetTextSize();
 
 		int dxx=(dx-textSize.x)>>1;
 		pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
@@ -5057,7 +5057,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	_pText->Move(rZone.left + pLeftButton->GetWidth(), rZone.top + 0);
 	vText.insert(vText.end(), _pText);
 
-	Vector2i textSize = _pText->GetTextSize();
+	Vec2i textSize = _pText->GetTextSize();
 
 	rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + textSize.x);
 	rZone.bottom = max(rZone.bottom, rZone.top + textSize.y);

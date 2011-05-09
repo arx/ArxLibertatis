@@ -63,7 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/Localisation.h"
 #include "core/Time.h"
-#include "core/math/Vector2.h"
 
 #include "game/Player.h"
 
@@ -208,7 +207,7 @@ void ARX_SPEECH_Render()
 	char temp[4096];
 	long igrec = 14;
 
-	Vector2i sSize = hFontInBook->GetTextSize("p");
+	Vec2i sSize = hFontInBook->GetTextSize("p");
 	sSize.y *= 3;
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -608,7 +607,7 @@ void ARX_SPEECH_Update() {
 				{
 					if (CINEMA_DECAL >= 100.f)
 					{
-						Vector2i sSize = hFontInBook->GetTextSize(speech->text);
+						Vec2i sSize = hFontInBook->GetTextSize(speech->text);
 						
 						float fZoneClippHeight	=	ARX_CLEAN_WARN_CAST_FLOAT(sSize.y * 3);
 						float fStartYY			=	100 * Yratio;

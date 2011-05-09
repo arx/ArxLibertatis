@@ -32,8 +32,8 @@ public:
 	aalError setUnitFactor(float factor);
 	aalError setRolloffFactor(float factor);
 	
-	aalError setListenerPosition(const Vector3f & position);
-	aalError setListenerOrientation(const Vector3f & front, const Vector3f & up);
+	aalError setListenerPosition(const Vec3f & position);
+	aalError setListenerOrientation(const Vec3f & front, const Vec3f & up);
 	
 	aalError setListenerEnvironment(const Environment & env);
 	aalError setRoomRolloffFactor(float factor);

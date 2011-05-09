@@ -144,7 +144,7 @@ void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, RECT & _
 			}
 
 			// Check length of string up to this point
-			Vector2i size = pFont->GetTextSize(itLastLineBreak, it+1);
+			Vec2i size = pFont->GetTextSize(itLastLineBreak, it+1);
 			if(size.x > maxLineWidth)	// Too long ?
 			{
 				bDrawLine = true;		// Draw a line from the last line break up to the last word break
@@ -265,7 +265,7 @@ void DrawBookTextCenter( Font* font, float x, float y, const std::string& text, 
 
 long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string& str, COLORREF col )
 {
-	Vector2i size = font->GetTextSize(str);
+	Vec2i size = font->GetTextSize(str);
 	int drawX = ((int)x) - (size.x / 2);
 	int drawY = (int)y;
 
