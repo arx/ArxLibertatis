@@ -220,6 +220,10 @@ static void EERIE_PATHFINDER_Clear_Private() {
 
 void EERIE_PATHFINDER_Clear() {
 	
+	if(!pathfinder) {
+		return;
+	}
+	
 	Autolock lock(mutex);
 	
 	EERIE_PATHFINDER_Clear_Private();
