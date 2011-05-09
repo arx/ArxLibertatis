@@ -424,7 +424,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		float vy2 = 4.f * dh * mod_z;
 
 		float _px;
-		RECT boundaries;
+		Rect boundaries;
 		float MOD20, MOD20DIV, divXratio, divYratio;
 
 		boundaries.bottom = boundaries.left = boundaries.right = boundaries.top = 0;
@@ -909,8 +909,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 						if ( !Mapmarkers[i].tstring.empty() )
 						{
-							RECT bRect;
-							SetRect(&bRect, 140, 290, 140 + 205, 358);
+							Rect bRect(140, 290, 140 + 205, 358);
 
 							float fLeft		= (bRect.left) * Xratio ;
 							float fRight	= (bRect.right) * Xratio ;
@@ -931,9 +930,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
 							Page_Buffer[lLengthDraw] = '\0';
 
-							DrawBookTextInRect( hFontInGameNote, ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
-											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right),
-											   Page_Buffer, 0 );
+							DrawBookTextInRect( hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Page_Buffer, 0 );
 						}
 					}
 
