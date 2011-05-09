@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <string>
 
-#include <windows.h>
-
 #include "gui/Text.h"
 #include "platform/math/Vector2.h"
 #include "window/Input.h"
@@ -265,7 +263,7 @@ class CMenuZone
 		bool	bCheck;
 		bool	bTestYDouble;
         CMenuZone *	pRef;
-		RECT	rZone;
+		Rect	rZone;
 		int			iID;
 		long		lData;
 		long	*	pData;
