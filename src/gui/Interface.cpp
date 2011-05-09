@@ -10314,7 +10314,6 @@ void ARX_INTERFACE_RenderCursor(long flag)
 	if (flag || ((!BLOCK_PLAYER_CONTROLS) &&
 		(!PLAYER_INTERFACE_HIDE_COUNT)))
 	{
-		RECT rect;
 
 		if (!SPECIAL_DRAGINTER_RENDER)
 			GRenderer->SetCulling(Renderer::CullNone);
@@ -10463,27 +10462,29 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 						POSY -= 16.f;
 					break;
-				case CURSOR_FIREBALLAIM:
+				case CURSOR_FIREBALLAIM: {
 					surf=ITC.Get("target_on");
 
+					Vec2i size;
 					if (surf)
 					{
-						rect.right	=	surf->m_dwWidth;
-						rect.bottom	=	surf->m_dwHeight;
+						size.x	=	surf->m_dwWidth;
+						size.y	=	surf->m_dwHeight;
 					}
 
 					else
 					{
 						ARX_CHECK_NO_ENTRY();
-						rect.right = 0;
-						rect.bottom = 0;
+						size.x = 0;
+						size.y = 0;
 					}
 
 
 
-					POSX = 320.f - rect.right / 2.f;
-					POSY = 280.f - rect.bottom / 2.f;
+					POSX = 320.f - size.x / 2.f;
+					POSY = 280.f - size.y / 2.f;
 					break;
+				}
 				case CURSOR_INTERACTION_ON:
 
 					ARX_CHECK_LONG( Original_framedelay );
