@@ -59,8 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <climits>
-#include <windows.h> // for COLORREF
 
+#include "graphics/Color.h"
 #include "platform/math/Rectangle.h"
 
 class TextManager;
@@ -75,15 +75,15 @@ extern Font * hFontInBook;
 extern Font * hFontInGame;
 extern Font * hFontInGameNote;
 
-void ARX_TEXT_Draw(Font * ef, float x, float y, const std::string & car, COLORREF colo);
-long ARX_TEXT_DrawRect(Font * ef, float x, float y, float maxx, const std::string & car, COLORREF colo, const Rect * pClipRect = NULL);
-float DrawBookTextInRect(Font * font, float x, float y, float maxx, const std::string & text, COLORREF col);
-void DrawBookTextCenter(Font * font, float x, float y, const std::string & text, COLORREF col);
-long UNICODE_ARXDrawTextCenter(Font * font, float x, float y, const std::string & str, COLORREF col);
+void ARX_TEXT_Draw(Font * ef, float x, float y, const std::string & car, Color colo);
+long ARX_TEXT_DrawRect(Font * ef, float x, float y, float maxx, const std::string & car, Color colo, const Rect * pClipRect = NULL);
+float DrawBookTextInRect(Font * font, float x, float y, float maxx, const std::string & text, Color col);
+void DrawBookTextCenter(Font * font, float x, float y, const std::string & text, Color col);
+long UNICODE_ARXDrawTextCenter(Font * font, float x, float y, const std::string & str, Color col);
  
-long UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str, COLORREF col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
+long UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
 long ARX_UNICODE_ForceFormattingInRect(Font * font, const std::string & text, const Rect & _rRect);
-long ARX_UNICODE_DrawTextInRect(Font * font, float x, float y, float maxx, const std::string & text, COLORREF col, const Rect * pClipRect = NULL);
+long ARX_UNICODE_DrawTextInRect(Font * font, float x, float y, float maxx, const std::string & text, Color col, const Rect * pClipRect = NULL);
 
 void ARX_Text_Init();
 void ARX_Text_Close();

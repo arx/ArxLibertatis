@@ -780,7 +780,7 @@ bool ARX_Menu_Render()
 						12,
 						(DANAECENTERX) * 0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
-						RGB(232 + t, 204 + t, 143 + t),
+						Color(232 + t, 204 + t, 143 + t),
 						0x00FF00FF,
 						1000,
 						0.01f,
@@ -798,7 +798,7 @@ bool ARX_Menu_Render()
 			float fSizeX = 100 * Xratio;
 			float fSizeY = 100 * Yratio;
 
-			COLORREF Color = 0;
+			Color color = 0;
 
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
@@ -832,12 +832,12 @@ bool ARX_Menu_Render()
 
 				}
 
-				Color = RGB(255, 255, 255);
+				color = Color(255, 255, 255);
 			}
 			else
-				Color = RGB(232, 204, 143);
+				color = Color(232, 204, 143);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -876,12 +876,12 @@ bool ARX_Menu_Render()
 					ARX_PLAYER_Restore_Skin();
 				}
 
-				Color = RGB(255, 255, 255);
+				color = Color(255, 255, 255);
 			}
 			else
-				Color = RGB(232, 204, 143);
+				color = Color(232, 204, 143);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -926,24 +926,24 @@ bool ARX_Menu_Render()
 				else
 				{
 					if (DONE)
-						Color = RGB(255, 255, 255);
+						color = Color(255, 255, 255);
 					else
-						Color = RGB(192, 192, 192);
+						color = Color(192, 192, 192);
 				}
 
 			}
 			else
 			{
 				if (DONE)
-					Color = RGB(232, 204, 143);
+					color = Color(232, 204, 143);
 				else
-					Color = RGB(192, 192, 192);
+					color = Color(192, 192, 192);
 			}
 
 			if (SKIN_MOD < 0)
-				Color = RGB(255, 0, 255);
+				color = Color(255, 0, 255);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
 		}
 	}
 
@@ -961,16 +961,16 @@ bool ARX_Menu_Render()
 		}
 
 		EERIE_3D ePos;
-		COLORREF Color = 0;
+		Color color = 0;
 		std::string szText;
 
-		Color = RGB(232, 204, 143);
+		color = Color(232, 204, 143);
 
 		szText = getLocalised("system_menus_main_cdnotfound");
 		Vec2i textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), color);
 
 		szText = getLocalised("system_yes");
 		textSize = hFontMenu->GetTextSize(szText);
@@ -984,12 +984,12 @@ bool ARX_Menu_Render()
 				ARX_MENU_CLICKSOUND();
 			}
 			
-			Color = RGB(255, 255, 255);
+			color = Color(255, 255, 255);
 		} else {
-			Color = RGB(232, 204, 143);
+			color = Color(232, 204, 143);
 		}
 
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), color);
 
 		szText = getLocalised("system_no");
 		textSize = hFontMenu->GetTextSize(szText);
@@ -1002,12 +1002,12 @@ bool ARX_Menu_Render()
 				ARX_MENU_CLICKSOUND();
 			}
 			
-			Color = RGB(255, 255, 255);
+			color = Color(255, 255, 255);
 		} else {
-			Color = RGB(232, 204, 143);
+			color = Color(232, 204, 143);
 		}
 
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), color);
 	}
 
 	

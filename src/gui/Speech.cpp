@@ -626,7 +626,7 @@ void ARX_SPEECH_Update() {
 						                    fDepY + fZoneClippHeight,
 						                    -10.f + (float)DANAESIZX,
 						                    speech->text,
-						                    RGB(255, 255, 255),
+						                    Color(255, 255, 255),
 						                    &clippingRect);
 
 						SETTC( NULL);

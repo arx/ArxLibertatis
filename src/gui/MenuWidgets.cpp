@@ -430,7 +430,7 @@ bool MENU_NoActiveWindow()
 	return false;
 }
 
-void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
+void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, Color _c)
 {
 	if(pTextManage)
 	{
@@ -471,11 +471,11 @@ void Check_Apply()
 		}
 		else
 		{
-			if(((CMenuElementText*)pMenuElementApply)->lColor!=RGB(127,127,127))
+			if(((CMenuElementText*)pMenuElementApply)->lColor!=Color(127,127,127))
 			{
 				pMenuElementApply->SetCheckOff();
 				((CMenuElementText*)pMenuElementApply)->lOldColor=((CMenuElementText*)pMenuElementApply)->lColor;
-				((CMenuElementText*)pMenuElementApply)->lColor=RGB(127,127,127);
+				((CMenuElementText*)pMenuElementApply)->lColor=Color(127,127,127);
 			}
 		}
 	}
@@ -628,7 +628,7 @@ bool Menu2_Render()
 		eM=pMenu->eOldMenuWindowState;
 	}
 
-	long lColor = RGB(232, 204, 142);
+	long lColor = Color(232, 204, 142);
 
 	if(    (!pMenu)|| ((pMenu)&&(pMenu->bReInitAll)) )
 	{
@@ -675,7 +675,7 @@ bool Menu2_Render()
 			else\
 			{\
 				me->SetCheckOff();\
-				me->lColor=RGB(127,127,127);\
+				me->lColor=Color(127,127,127);\
 			}\
 		}\
 		pMenu->AddMenuElement(me);\
@@ -691,7 +691,7 @@ bool Menu2_Render()
 #undef MACRO_MENU_PRINCIPALE
 		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
-		me->lColor=RGB(127,127,127);
+		me->lColor=Color(127,127,127);
 		pMenu->AddMenuElement(me);
 	}
 
@@ -710,7 +710,7 @@ bool Menu2_Render()
 			else
 			{
 				pMenuElementResume->SetCheckOff();
-				((CMenuElementText*)pMenuElementResume)->lColor=RGB(127,127,127);
+				((CMenuElementText*)pMenuElementResume)->lColor=Color(127,127,127);
 			}
 		}
 
@@ -864,7 +864,7 @@ bool Menu2_Render()
 					if (!bBOOL)
 					{
 						me->SetCheckOff();
-						((CMenuElementText*)me)->lColor=RGB(127,127,127);
+						((CMenuElementText*)me)->lColor=Color(127,127,127);
 					}
 
 					pWindowMenuConsole->AddMenuCenter(me);
@@ -996,7 +996,7 @@ bool Menu2_Render()
 						pLoadConfirm=(CMenuElementText*)me;
 						me->SetCheckOff();
 						((CMenuElementText*)me)->lOldColor=((CMenuElementText*)me)->lColor;
-						((CMenuElementText*)me)->lColor=RGB(127,127,127);
+						((CMenuElementText*)me)->lColor=Color(127,127,127);
 
 						pWindowMenuConsole->AddMenu(me);
 						pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
@@ -1077,7 +1077,7 @@ bool Menu2_Render()
 									
 									tex += tex4;
 									
-									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, Color(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 									me->SetCheckOff();
 
 									me->lData=iI;
@@ -1702,7 +1702,7 @@ bool Menu2_Render()
 						if((!b)||(c<0))\
 						{\
 							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
 						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
@@ -1710,7 +1710,7 @@ bool Menu2_Render()
 						if(d<0)\
 						{\
 							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
 						pc->Move(0,fControlPosY);\
@@ -1731,7 +1731,7 @@ bool Menu2_Render()
 						if((!b)||(c<0))\
 						{\
 							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
 						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
@@ -1739,7 +1739,7 @@ bool Menu2_Render()
 						if(d<0)\
 						{\
 							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
 						pc->Move(0,fControlPosY);\
@@ -2136,7 +2136,7 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 	rZone.bottom = rZone.top + textSize.y;
 
 	lColor=_lColor;
-	lColorHighlight=lOldColor=RGB(255, 255, 255);
+	lColorHighlight=lOldColor=Color(255, 255, 255);
 
 	fSize=_fSize;
 	pRef=this;
@@ -2377,13 +2377,13 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			}
 
 			pLoadConfirm->SetCheckOff();
-			pLoadConfirm->lColor=RGB( 127, 127, 127 );
+			pLoadConfirm->lColor=Color( 127, 127, 127 );
 			}
 		}
 		break;
 	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK:
 		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor=RGB(127,127,127);
+		pLoadConfirm->lColor=Color(127,127,127);
 		break;
 	// MENUSAVEQUEST
 	case BUTTON_MENUEDITQUEST_SAVE:
@@ -4450,9 +4450,9 @@ int CWindowMenuConsole::Render()
 		case GETTOUCH_TIME:
 			{
 				if(bFrameOdd)
-					((CMenuElementText*)pZoneClick)->lColorHighlight=RGB(255.f, 0, 0);
+					((CMenuElementText*)pZoneClick)->lColorHighlight=Color(255.f, 0, 0);
 				else
-					((CMenuElementText*)pZoneClick)->lColorHighlight=RGB(50.f, 0, 0);
+					((CMenuElementText*)pZoneClick)->lColorHighlight=Color(50.f, 0, 0);
 
 				bool bOldTouch=pGetInfoDirectInput->bTouch;
 
@@ -4918,7 +4918,7 @@ void CMenuButton::Render()
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
 		
-		FontRenderText(pFont, ePos, &pText, RGB(232, 204, 142));
+		FontRenderText(pFont, ePos, &pText, Color(232, 204, 142));
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
@@ -4974,7 +4974,7 @@ void CMenuButton::RenderMouseOver()
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
 		
-		FontRenderText(pFont, ePos, &pText, RGB(255, 255, 255));
+		FontRenderText(pFont, ePos, &pText, Color(255, 255, 255));
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}

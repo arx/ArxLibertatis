@@ -120,12 +120,12 @@ void Font::WriteToDisk()
 	}
 }
 
-void Font::Draw( int x, int y, const std::string& str, COLORREF color ) const
+void Font::Draw( int x, int y, const std::string& str, Color color ) const
 {
 	Draw( x, y, str.begin(), str.end(), color );
 }
 
-void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string::const_iterator itEnd, COLORREF color ) const
+void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color ) const
 {
     GRenderer->SetRenderState( Renderer::Lighting, false );
     GRenderer->SetRenderState( Renderer::AlphaBlending, true );

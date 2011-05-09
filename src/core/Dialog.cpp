@@ -320,7 +320,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			if (ARX_PATHS_SelectedAP)
 			{
 				D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-				COLORREF rgbResult = ((col >> 16 & 255))
+				Color rgbResult = ((col >> 16 & 255))
 				                     | ((col >> 8 & 255) << 8)
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
@@ -378,7 +378,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			        (ARX_PATHS_SelectedNum != -1))
 			{
 				D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-				COLORREF rgbResult = ((col >> 16 & 255))
+				Color rgbResult = ((col >> 16 & 255))
 				                     | ((col >> 8 & 255) << 8)
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);

@@ -4053,7 +4053,7 @@ void ARX_PLAYER_Reset_Fall()
 
 
 float sp_max_y[64];
-COLORREF sp_max_col[64];
+Color sp_max_col[64];
 char	sp_max_ch[64];
 long sp_max_nb;
 void Manage_sp_max()

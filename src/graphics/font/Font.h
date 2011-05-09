@@ -2,10 +2,10 @@
 #ifndef _FONT_H_
 #define _FONT_H_
 
-#include <windows.h>	// TEMP... needed for COLORREF
 #include <string>
 #include <map>
 
+#include "graphics/Color.h"
 #include "platform/math/Vector2.h"
 
 
@@ -45,8 +45,8 @@ public:
 	const std::string& GetName() const { return m_Info.m_Name; }
 	unsigned int GetSize() const { return m_Info.m_Size; }
 
-	void Draw( int pX, int pY, const std::string& str, COLORREF color ) const;
-	void Draw( int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, COLORREF color ) const;
+	void Draw( int pX, int pY, const std::string& str, Color color ) const;
+	void Draw( int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color ) const;
 
 	Vec2i GetTextSize( const std::string& str ) const;
 	Vec2i GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const;

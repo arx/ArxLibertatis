@@ -1176,7 +1176,7 @@ VOID CD3DApplication::OutputText(DWORD x, DWORD y, const std::string& str)
 {
 	if (m_pddsRenderTarget)
 	{
-		hFontInGame->Draw(x, y, str, RGB(255, 255, 0));
+		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
 	}
 }
 

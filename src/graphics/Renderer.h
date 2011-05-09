@@ -1,7 +1,7 @@
 #ifndef _RENDERER_H_
 #define _RENDERER_H_
 
-
+#include "graphics/Color.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -122,10 +122,10 @@ public:
     void End2DProjection();
 
 	// Render Target
-	void Clear(int bufferFlags, COLORREF clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
+	void Clear(int bufferFlags, Color clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
 
 	// Fog
-	void SetFogColor(COLORREF color);
+	void SetFogColor(Color color);
 	void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
 		
 	// Rasterizer
@@ -143,7 +143,7 @@ public:
 	float GetMaxAnisotropy() const;
 
 	// Utilities...
-	void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, COLORREF color );
+	void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color );
 
 private:
 	std::vector<TextureStage*>	m_TextureStages;

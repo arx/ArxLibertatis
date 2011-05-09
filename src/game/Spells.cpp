@@ -122,7 +122,7 @@ extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern float GLOBAL_SLOWDOWN;
 extern void ARX_SPSound();
 extern float sp_max_y[64];
-extern COLORREF sp_max_col[64];
+extern Color sp_max_col[64];
 extern char	sp_max_ch[64];
 extern long sp_max_nb;
 long cur_mega=0;

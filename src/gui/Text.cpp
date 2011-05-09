@@ -107,7 +107,7 @@ string FontError() {
 }
 
 //-----------------------------------------------------------------------------
-void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect, COLORREF col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
+void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect, Color col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
 {
 	std::string::const_iterator itLastLineBreak = text.begin();
 	std::string::const_iterator itLastWordBreak = text.begin();
@@ -194,7 +194,7 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
                                 float x, float y,
                                 float maxx,
                                 const std::string& _text,
-                                COLORREF col,
+                                Color col,
                                 const Rect * pClipRect
                                )
 {
@@ -228,7 +228,7 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 void ARX_TEXT_Draw(Font* ef,
                    float x, float y,
                    const std::string& car,
-                   COLORREF col) {
+                   Color col) {
 	
 	if (car.empty() || car[0] == 0)
 		return;
@@ -240,26 +240,26 @@ long ARX_TEXT_DrawRect(Font* ef,
                        float x, float y,
                        float maxx,
                        const string & car,
-                       COLORREF col,
+                       Color col,
                        const Rect * pClipRect) {
 	
-	col = RGB((col >> 16) & 255, (col >> 8) & 255, (col) & 255);
+	col = Color((col >> 16) & 255, (col >> 8) & 255, (col) & 255);
 	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, col, pClipRect);
 }
 
-float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col) {
+float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, Color col) {
 	return (float)ARX_TEXT_DrawRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col);
 }
 
 //-----------------------------------------------------------------------------
-void DrawBookTextCenter( Font* font, float x, float y, const std::string& text, COLORREF col )
+void DrawBookTextCenter( Font* font, float x, float y, const std::string& text, Color col )
 {
 	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col);
 }
 
 //-----------------------------------------------------------------------------
 
-long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string& str, COLORREF col )
+long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string& str, Color col )
 {
 	Vec2i size = font->GetTextSize(str);
 	int drawX = ((int)x) - (size.x / 2);
@@ -272,7 +272,7 @@ long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string&
 
 
 
-long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, const std::string& str, COLORREF col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
+long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, const std::string& str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 {
 	ARX_CHECK_LONG(y);
 	ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow

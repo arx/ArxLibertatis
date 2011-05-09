@@ -36,7 +36,7 @@ struct CreditsTextInformations {
 	}
 	
 	string  sText;
-	COLORREF fColors;
+	Color fColors;
 	Vec2i sPos;
 };
 
@@ -90,10 +90,10 @@ static void ExtractPhraseColor(string & phrase, CreditsTextInformations &infomat
 	//Get the good color
 	if(!phrase.empty() && phrase[0] == '~') {
 		phrase[0] = ' ';
-		infomations.fColors = RGB(255,255,255);
+		infomations.fColors = Color(255,255,255);
 	} else {
 		//print in gold color
-		infomations.fColors = RGB(232,204,143);
+		infomations.fColors = Color(232,204,143);
 	}
 }
 

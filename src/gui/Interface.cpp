@@ -5651,7 +5651,7 @@ void DANAE::ManageKeyMouse()
 									Rect rDraw(Rect::Num(120 * Xratio), Rect::Num(14 * Yratio), Rect::Num((120 + 500) * Xratio), Rect::Num((14 + 200) * Yratio));
 
 									pTextManage->Clear();
-								pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,RGB(232,204,143),2000+WILLADDSPEECH.length()*60);
+								pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,Color(232,204,143),2000+WILLADDSPEECH.length()*60);
 								}
 
 								WILLADDSPEECH.clear();
@@ -5726,7 +5726,7 @@ void DANAE::ManageKeyMouse()
 										Rect rDraw(Rect::Num(120 * Xratio), Rect::Num(14 * Yratio), Rect::Num((120 + 500 ) * Xratio), Rect::Num((14 + 200) * Yratio));
 
 										pTextManage->Clear();
-										pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,RGB(232,204,143));
+										pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,Color(232,204,143));
 									}
 
 									WILLADDSPEECH.clear();
@@ -6154,8 +6154,8 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-								float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-								DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
+								float fcolorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
+								DWORD dwcolor		=	ARX_CLEAN_WARN_CAST_DWORD(fcolorPulse);
 
 								EERIEDrawBitmap(
 									px,
@@ -6163,7 +6163,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 								                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 									0.001f,
 									tc,
-									(dwColor<<16)|(dwColor<<8)|dwColor);
+									(dwcolor<<16)|(dwcolor<<8)|dwcolor);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
 						}
@@ -6255,8 +6255,8 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 						{
 							if (io->ioflags & IO_CAN_COMBINE)
 							{
-								float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-								DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
+								float fcolorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
+								DWORD dwcolor		=	ARX_CLEAN_WARN_CAST_DWORD(fcolorPulse);
 
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -6268,7 +6268,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 									INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 
 									0.001f,
-									tc,(dwColor<<16)|(dwColor<<8)|dwColor);
+									tc,(dwcolor<<16)|(dwcolor<<8)|dwcolor);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
 						}
@@ -7002,7 +7002,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									12,
 									(DANAECENTERX)*0.82f,
 									spellicons[i].description,
-									RGB(232,204,143),
+									Color(232,204,143),
 									1000,
 									0.01f,
 									2,
@@ -7807,19 +7807,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 	{
 		FLYING_OVER = 0;
 		std::string tex;
-		COLORREF Color = RGB(0,0,0);
+		Color color(0, 0, 0);
 
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		std::stringstream ss;
 		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
 		tex = ss.str();
-		DrawBookTextCenter( hFontInBook, 398, 74, tex,Color );
+		DrawBookTextCenter(hFontInBook, 398, 74, tex, color);
 
 		std::stringstream ss2;
 		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
 		tex = ss2.str();
-		DrawBookTextCenter( hFontInBook, 510, 74, tex, Color );
+		DrawBookTextCenter(hFontInBook, 510, 74, tex, color);
 
 		if (MouseInBookRect(463, 74, 550, 94))
 			FLYING_OVER = WND_XP;
@@ -8007,7 +8007,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					                                   4,
 					                                   (DANAECENTERX)*0.82f,
 					                                   ss.str(),
-					                                   RGB(232+t,204+t,143+t),
+					                                   Color(232+t,204+t,143+t),
 					                                   1000,
 					                                   0.01f,
 					                                   3,
@@ -8020,7 +8020,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						4,
 						(DANAECENTERX)*0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
-						RGB(232+t,204+t,143+t),
+						Color(232+t,204+t,143+t),
 						1000,
 						0.01f,
 						3,
@@ -8040,71 +8040,71 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Strength<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Attribute_Strength>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Strength == 6)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 391, 129, tex, Color);
+		DrawBookTextCenter(hFontInBook, 391, 129, tex, color);
 		
 		ss3.str(""); // clear the stream
 		ss3 << player.Full_Attribute_Mind;
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Mind<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Attribute_Mind>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Mind == 6)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 440, 129, tex, Color);
+		DrawBookTextCenter(hFontInBook, 440, 129, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Attribute_Dexterity;
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Dexterity<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Attribute_Dexterity>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Dexterity == 6)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 490, 129, tex, Color);
+		DrawBookTextCenter(hFontInBook, 490, 129, tex, color);
 		ss3.str("");
 		ss3 << player.Full_Attribute_Constitution;
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Constitution<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Attribute_Constitution>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Constitution == 6)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 538, 129, tex, Color);
+		DrawBookTextCenter(hFontInBook, 538, 129, tex, color);
 
 		// Player Skills
 		ss3.str("");
@@ -8112,126 +8112,126 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Stealth<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Stealth>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Stealth == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 210, tex, Color);
+		DrawBookTextCenter(hFontInBook, 405, 210, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Mecanism;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Mecanism<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Mecanism>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Mecanism == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 210, tex, Color);
+		DrawBookTextCenter(hFontInBook, 469, 210, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Intuition;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Intuition<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Intuition>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Intuition == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 210, tex, Color);
+		DrawBookTextCenter(hFontInBook, 533, 210, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Etheral_Link;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Etheral_Link<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Etheral_Link>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Etheral_Link == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 265, tex, Color);
+		DrawBookTextCenter(hFontInBook, 405, 265, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Object_Knowledge;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Object_Knowledge<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Object_Knowledge>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Object_Knowledge == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 265, tex, Color);
+		DrawBookTextCenter(hFontInBook, 469, 265, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Casting;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Casting<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Casting>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Casting == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 265, tex, Color);
+		DrawBookTextCenter(hFontInBook, 533, 265, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Close_Combat;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Close_Combat<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Close_Combat>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Close_Combat == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 319, tex, Color);
+		DrawBookTextCenter(hFontInBook, 405, 319, tex, color);
 
 		
 		ss3.str("");
@@ -8239,36 +8239,36 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Projectile<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Projectile>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Projectile == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 319, tex, Color);
+		DrawBookTextCenter(hFontInBook, 469, 319, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Defense;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Defense<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Defense>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Defense == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 319, tex, Color);
+		DrawBookTextCenter(hFontInBook, 533, 319, tex, color);
 
 		// Secondary Attributes
 		std::stringstream ss4;
@@ -8277,36 +8277,36 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if ((player.Mod_maxlife>0.f) || (player.Full_maxlife > player.maxlife))
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter( hFontInBook, 324, 158, tex, Color );
+		DrawBookTextCenter( hFontInBook, 324, 158, tex, color );
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_maxmana);
 		tex = ss4.str();
 
 		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if ((player.Mod_maxmana>0.f) || (player.Full_maxmana > player.maxmana))
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter( hFontInBook, 324, 218, tex, Color );
+		DrawBookTextCenter( hFontInBook, 324, 218, tex, color );
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_damages);
 		tex = ss4.str();
 
 		if (player.Mod_damages<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_damages>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter(hFontInBook, 324, 278, tex, Color);
+		DrawBookTextCenter(hFontInBook, 324, 278, tex, color);
 
 		float ac = player.Full_armor_class;
 		ss4.str("");
@@ -8314,36 +8314,36 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_armor_class<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_armor_class>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 158, tex, Color);
+		DrawBookTextCenter(hFontInBook, 153, 158, tex, color);
 
 		ss4.str("");
 		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.Full_resist_magic );
 		tex = ss4.str();
 
 		if (player.Mod_resist_magic<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_resist_magic>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 218, tex, Color);
+		DrawBookTextCenter(hFontInBook, 153, 218, tex, color);
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp( player.Full_resist_poison );
 		tex = ss4.str();
 
 		if (player.Mod_resist_poison<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_resist_poison>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 278, tex, Color);
+		DrawBookTextCenter(hFontInBook, 153, 278, tex, color);
 	}
 	else if (Book_Mode == BOOKMODE_MINIMAP)
 	{
@@ -9690,14 +9690,14 @@ void DANAE::DrawAllInterface()
 
 		//---------------------------------------------------------------------
 		//RED GAUGE
-		unsigned long ulColor=0xFFFF0000;
+		unsigned long ulcolor=0xFFFF0000;
 			float fSLID_VALUE_neg = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
 
 		if (player.poison>0.f)
 		{
 				float val = min(player.poison, 0.2f) * 255.f * 5.f; 
 			long g = val;
-			ulColor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
+			ulcolor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
 		}
 
 		if ((fInterfaceRatio>1.9f) && ITC.Get("filled_gauge_blue"))
@@ -9706,10 +9706,10 @@ void DANAE::DrawAllInterface()
 			long vvv = vuv;
 				vuv = (float)vvv / ITC.Get("filled_gauge_red")->m_dwHeight; 
 			//ir=
-				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, vuv);
+				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulcolor, vuv);
 		}
 		else
-				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, (1.f - fnl));
+				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9781,11 +9781,11 @@ void DANAE::DrawAllInterface()
 					if (mecanism_tc && (MAGICMODE < 0) && (lNbToDrawMecanismCursor < 3))
 					{
 
-					long lColorMecanism=D3DRGB(1,1,1);
+					long lcolorMecanism=D3DRGB(1,1,1);
 
 					if(lTimeToDrawMecanismCursor>300)
 					{
-						lColorMecanism=0;
+						lcolorMecanism=0;
 
 						if(lTimeToDrawMecanismCursor>400)
 						{
@@ -9801,7 +9801,7 @@ void DANAE::DrawAllInterface()
 									INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
 									0.01f,
 									mecanism_tc,
-									lColorMecanism );
+									lcolorMecanism );
 				}
 
 					if (arrow_left_tc)
@@ -9809,7 +9809,7 @@ void DANAE::DrawAllInterface()
 
 					float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
 					float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-					long lColor=D3DRGB(.5f,.5f,.5f);
+					long lcolor=D3DRGB(.5f,.5f,.5f);
 					static float fArrowMove=0.f;
 					fArrowMove+=.5f*FrameDiff;
 
@@ -9824,7 +9824,7 @@ void DANAE::DrawAllInterface()
 									fSizeY,
 									0.01f,
 									arrow_left_tc,
-									lColor );
+									lcolor );
 
 					EERIEDrawBitmapUVs( DANAESIZX-fSizeX-fMove,		// Right
 										(DANAESIZY-fSizeY)*.5f,
@@ -9832,7 +9832,7 @@ void DANAE::DrawAllInterface()
 										fSizeY,
 										0.01f,
 										arrow_left_tc,
-										lColor,
+										lcolor,
 										1.f,0.f,
 										0.f,0.f,
 										1.f,1.f,
@@ -9844,7 +9844,7 @@ void DANAE::DrawAllInterface()
 										fSizeX,
 										0.01f,
 										arrow_left_tc,
-										lColor,
+										lcolor,
 										0.f,1.f,
 										0.f,0.f,
 										1.f,1.f,
@@ -9856,7 +9856,7 @@ void DANAE::DrawAllInterface()
 										fSizeX,
 										0.01f,
 										arrow_left_tc,
-										lColor,
+										lcolor,
 										1.f,1.f,
 										1.f,0.f,
 										0.f,1.f,

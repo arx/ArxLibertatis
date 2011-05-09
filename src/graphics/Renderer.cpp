@@ -736,7 +736,7 @@ void Renderer::End2DProjection()
 	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &matView);
 }
 
-void Renderer::Clear(int bufferFlags, COLORREF clearColor, float clearDepth, unsigned int rectCount, D3DRECT* pRects)
+void Renderer::Clear(int bufferFlags, Color clearColor, float clearDepth, unsigned int rectCount, D3DRECT* pRects)
 {
 	DWORD clearTargets = 0;
 	clearTargets |= (bufferFlags & ColorBuffer) ? D3DCLEAR_TARGET : 0;
@@ -746,7 +746,7 @@ void Renderer::Clear(int bufferFlags, COLORREF clearColor, float clearDepth, uns
 	GDevice->Clear(rectCount, pRects, clearTargets, clearColor, clearDepth, 0);
 }
 
-void Renderer::SetFogColor(COLORREF color)
+void Renderer::SetFogColor(Color color)
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color);
 }
@@ -805,7 +805,7 @@ float Renderer::GetMaxAnisotropy() const
 	return 8.0f; // TODO-DX7
 }
 
-void Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, float pUStart, float pVStart, float pUEnd, float pVEnd, COLORREF pCol )
+void Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, float pUStart, float pVStart, float pUEnd, float pVEnd, Color pCol )
 {
 	D3DLVERTEX rect[4];
 

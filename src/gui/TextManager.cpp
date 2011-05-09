@@ -24,7 +24,7 @@ struct TextManager::ManagedText {
 	string lpszUText;
 	float fDeltaY;
 	float fSpeedScrollY;
-	long lCol;
+	Color lCol;
 	long lTimeScroll;
 	long lTimeOut;
 };
@@ -36,7 +36,7 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const Rect & _rRect, long _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
+bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const Rect & _rRect, Color _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
 	
 	if(_lpszUText.empty()) {
 		return false;
@@ -75,7 +75,7 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const Rect & 
 	return true;
 }
 
-bool TextManager::AddText( Font* font, const std::string& str, long x, long y, long fgcolor) {
+bool TextManager::AddText( Font* font, const std::string& str, long x, long y, Color fgcolor) {
 	Rect r;
 	r.left = x;
 	r.top = y;
