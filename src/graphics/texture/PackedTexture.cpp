@@ -108,11 +108,11 @@ bool PackedTexture::InsertImage( const Image& pImg, int& pOffsetU, int& pOffsetV
     // Copy texture there
     if( node )
     {
-        mImages[nodeTree]->Copy( pImg, node->mRect.mLeft, node->mRect.mTop );
+        mImages[nodeTree]->Copy( pImg, node->mRect.left, node->mRect.top );
 
         // Copy values back into info structure.
-        pOffsetU = node->mRect.mLeft;
-		pOffsetV = node->mRect.mTop;
+        pOffsetU = node->mRect.left;
+		pOffsetV = node->mRect.top;
 		pTextureIndex = nodeTree;
     }
 
@@ -172,8 +172,8 @@ PackedTexture::TextureTree::Node* PackedTexture::TextureTree::Node::InsertImage(
         return result;
     }
 
-    int diffW = (mRect.mRight-mRect.mLeft+1) - pImg.GetWidth();
-    int diffH = (mRect.mBottom-mRect.mTop+1) - pImg.GetHeight();
+    int diffW = (mRect.width()+1) - pImg.GetWidth();
+    int diffH = (mRect.height()+1) - pImg.GetHeight();
     
     // If we're too small, return.
     if( diffW < 0 || diffH < 0 )
@@ -192,13 +192,13 @@ PackedTexture::TextureTree::Node* PackedTexture::TextureTree::Node::InsertImage(
     
     if( diffW > diffH )
     {
-        mChilds[0]->mRect = Rect( mRect.mLeft, mRect.mTop, mRect.mLeft + pImg.GetWidth() - 1, mRect.mBottom );
-        mChilds[1]->mRect = Rect( mRect.mLeft + pImg.GetWidth(), mRect.mTop, mRect.mRight, mRect.mBottom );
+        mChilds[0]->mRect = Rect( mRect.left, mRect.top, mRect.left + pImg.GetWidth() - 1, mRect.bottom );
+        mChilds[1]->mRect = Rect( mRect.left + pImg.GetWidth(), mRect.top, mRect.right, mRect.bottom );
     }
     else
     {
-        mChilds[0]->mRect = Rect( mRect.mLeft, mRect.mTop, mRect.mRight, mRect.mTop + pImg.GetHeight() - 1 );
-        mChilds[1]->mRect = Rect( mRect.mLeft, mRect.mTop + pImg.GetHeight(), mRect.mRight, mRect.mBottom );
+        mChilds[0]->mRect = Rect( mRect.left, mRect.top, mRect.right, mRect.top + pImg.GetHeight() - 1 );
+        mChilds[1]->mRect = Rect( mRect.left, mRect.top + pImg.GetHeight(), mRect.right, mRect.bottom );
     }
     
     // Insert into first child we created
@@ -207,10 +207,10 @@ PackedTexture::TextureTree::Node* PackedTexture::TextureTree::Node::InsertImage(
 
 PackedTexture::TextureTree::TextureTree( unsigned int pSize )
 {
-    mRoot.mRect.mLeft = 0;
-    mRoot.mRect.mRight = pSize-1;
-    mRoot.mRect.mTop = 0;
-    mRoot.mRect.mBottom = pSize-1;
+    mRoot.mRect.left = 0;
+    mRoot.mRect.right = pSize-1;
+    mRoot.mRect.top = 0;
+    mRoot.mRect.bottom = pSize-1;
 }
 
 PackedTexture::TextureTree::Node* PackedTexture::TextureTree::InsertImage( const Image& pImg )

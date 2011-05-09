@@ -4,15 +4,40 @@
 
 #include "platform/math/Vector2.h"
 
+// TODO name Rectangle is used in windows headers
 template<class T>
-class Rectangle {
+class _Rectangle {
+	
+public:
+	
+	// TODO can be removed for C++0x
+	class DummyVec2 {
+		
+	public:
+		
+		T x;
+		T y;
+		
+		operator Vector2<T>() {
+			return Vector2<T>(x, y);
+		}
+		
+		DummyVec2 & operator=(const Vector2<T> & vec) {
+			x = vec.x, y = vec.y;
+			return *this;
+		}
+		
+	};
+	
+	typedef T Num;
+	typedef std::numeric_limits<T> Limits;
 	
 	union {
 		struct {
 			T left;
 			T top;
 		};
-		Vector2<T> origin;
+		DummyVec2 origin;
 	};
 	
 	union {
@@ -20,27 +45,27 @@ class Rectangle {
 			T right;
 			T bottom;
 		};
-		Vector2<T> end;
+		DummyVec2 end;
 	};
 	
-	Rectangle(const Rectangle & other) : origin(other.origin), end(other.end) { }
+	_Rectangle(const _Rectangle & other) : origin(other.origin), end(other.end) { }
 	
-	Rectangle() { }
+	_Rectangle() { }
 	
-	Rectangle(T _left, T _top, T _right, T _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) { }
+	_Rectangle(T _left, T _top, T _right, T _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) { }
 	
-	Rectangle(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : origin(_origin), right(_origin.x + width), bottom(_origin.y + height) { }
+	_Rectangle(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : origin(_origin), right(_origin.x + width), bottom(_origin.y + height) { }
 	
 	
-	Rectangle(const Vector2<T> & _origin, const Vector2<T> & _end) : origin(_origin), end(_end) { }
+	_Rectangle(const Vector2<T> & _origin, const Vector2<T> & _end) : origin(_origin), end(_end) { }
 	
-	Rectangle(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
+	_Rectangle(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
 	
-	bool operator==(const Rectangle & o) const {
+	bool operator==(const _Rectangle & o) const {
 		return (origin == o.origin && end == o.end);
 	}
 	
-	Rectangle & operator=(const Rectangle & other) {
+	_Rectangle & operator=(const _Rectangle & other) {
 		origin = other.origin, end = other.end;
 		return *this;
 	}
@@ -53,11 +78,11 @@ class Rectangle {
 		return bottom - top;
 	}
 	
-	Rectangle operator+(const Vector2<T> & offset) const {
-		return Rectangle(origin + offset, end + offset);
+	_Rectangle operator+(const Vector2<T> & offset) const {
+		return _Rectangle(origin + offset, end + offset);
 	}
 	
-	Rectangle & operator+=(const Vector2<T> & offset) {
+	_Rectangle & operator+=(const Vector2<T> & offset) {
 		origin += offset, end += offset;
 		return *this;
 	}
@@ -74,11 +99,11 @@ class Rectangle {
 		return (x >= left && x < right && y >= top && y < bottom);
 	}
 	
-	bool contains(const Rectangle & other) const {
+	bool contains(const _Rectangle & other) const {
 		return (other.left >= left && other.right <= right && other.top >= top && other.bottom <= bottom);
 	}
 	
-	bool overlaps(const Rectangle & other) const {
+	bool overlaps(const _Rectangle & other) const {
 		return (left < other.right && other.left < right && top < other.bottom && bottom < other.top);
 	}
 	
@@ -86,8 +111,8 @@ class Rectangle {
 	 * Calculate a rectangle contained in both this rectangle and the other rectange.
 	 * Assumes that both rectangles are valid.
 	 */
-	Rectangle operator&(const Rectangle & other) const {
-		Rectangle result(std::max(left, other.left), std::max(top, other.top), std::min(right, other.right), std::min(bottom, other.bottom));
+	_Rectangle operator&(const _Rectangle & other) const {
+		_Rectangle result(std::max(left, other.left), std::max(top, other.top), std::min(right, other.right), std::min(bottom, other.bottom));
 		if(result.left > result.right) {
 			result.left = result.right = T(0);
 		}
@@ -101,8 +126,8 @@ class Rectangle {
 	 * Calculate a bounding rectangle containing both this rectangle and the other rectangle.
 	 * Assumes that both rectangles are valid.
 	 */
-	Rectangle operator|(const Rectangle & other) const {
-		return Rectangle(std::min(left, other.left), std::min(top, other.top), std::max(right, other.right), std::max(bottom, other.bottom));
+	_Rectangle operator|(const _Rectangle & other) const {
+		return _Rectangle(std::min(left, other.left), std::min(top, other.top), std::max(right, other.right), std::max(bottom, other.bottom));
 	}
 	
 	bool empty() const {
@@ -113,13 +138,13 @@ class Rectangle {
 		return (left <= right && top <= bottom);
 	}
 	
-	static const Rectangle ZERO;
+	static const _Rectangle ZERO;
 	
 };
 
-template<class T> const Rectangle<T> Rectangle<T>::ZERO(T(0), T(0), T(0));
+template<class T> const _Rectangle<T> _Rectangle<T>::ZERO(T(0), T(0), T(0));
 
-typedef Rectangle<s32> Rect;
-typedef Rectangle<float> Rectf;
+typedef _Rectangle<s32> Rect;
+typedef _Rectangle<float> Rectf;
 
 #endif // ARX_PLATFORM_MATH_RECTANGLE_H

@@ -619,7 +619,7 @@ void ARX_SPEECH_Update() {
 						ARX_CHECK_INT(fZoneClippY);
 						ARX_CHECK_INT(fAdd);
 
-						RECT clippingRect = { 0, ARX_CLEAN_WARN_CAST_INT(fZoneClippY), DANAESIZX, ARX_CLEAN_WARN_CAST_INT(fAdd) };
+						Rect clippingRect(0, Rect::Num(fZoneClippY), DANAESIZX, Rect::Num(fAdd));
 						float iTaille = (float)ARX_TEXT_DrawRect(
 						                    hFontInBook,
 						                    10.f,

@@ -543,24 +543,4 @@ inline T Rand( const T& pMin, const T& pMax )
     return pMin + (pMax - pMin) * rand() / (T)RAND_MAX;
 }
 
-struct Rect
-{
-    Rect()
-    {
-    }
-
-    Rect( unsigned int pLeft, unsigned int pTop, unsigned int pRight, unsigned int pBottom )
-        : mLeft(pLeft)
-        , mRight(pRight)
-        , mTop(pTop)
-        , mBottom(pBottom)
-    {
-    }
-
-    unsigned int mLeft;
-    unsigned int mRight;
-    unsigned int mTop;
-    unsigned int mBottom;
-};
-
 #endif

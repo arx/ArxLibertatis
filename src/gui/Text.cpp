@@ -107,13 +107,13 @@ string FontError() {
 }
 
 //-----------------------------------------------------------------------------
-void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, RECT & _rRect, COLORREF col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
+void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect, COLORREF col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
 {
 	std::string::const_iterator itLastLineBreak = text.begin();
 	std::string::const_iterator itLastWordBreak = text.begin();
 	std::string::const_iterator it = text.begin();
 	
-	int maxLineWidth = _rRect.right - _rRect.left;
+	int maxLineWidth = _rRect.width();
 	int penY = _rRect.top;
 
 	if(textHeight)
@@ -181,7 +181,7 @@ void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, RECT & _
 }
 
 //-----------------------------------------------------------------------------
-long ARX_UNICODE_ForceFormattingInRect(Font* pFont, const std::string& text, RECT _rRect)
+long ARX_UNICODE_ForceFormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect)
 {
 	long numChars;
 	ARX_UNICODE_FormattingInRect(pFont, text, _rRect, 0, 0, &numChars, true);
@@ -195,7 +195,7 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
                                 float maxx,
                                 const std::string& _text,
                                 COLORREF col,
-                                RECT* pClipRect
+                                const Rect * pClipRect
                                )
 {
 	Renderer::Viewport previousViewport;
@@ -212,11 +212,7 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 		GRenderer->SetViewport(clippedViewport); 
 	}
 
-	RECT rect;
-	rect.top	= (long)y;
-	rect.left	= (long)x;
-	rect.right	= (long)maxx;
-	rect.bottom	= SHRT_MAX;
+	Rect rect((Rect::Num)x, (Rect::Num)y, (Rect::Num)maxx, Rect::Limits::max());
 
 	long height;
 	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
@@ -245,7 +241,7 @@ long ARX_TEXT_DrawRect(Font* ef,
                        float maxx,
                        const string & car,
                        COLORREF col,
-                       RECT* pClipRect) {
+                       const Rect * pClipRect) {
 	
 	col = RGB((col >> 16) & 255, (col >> 8) & 255, (col) & 255);
 	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, col, pClipRect);
@@ -278,12 +274,9 @@ long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string&
 
 long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, const std::string& str, COLORREF col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 {
-	RECT rRect;
 	ARX_CHECK_LONG(y);
 	ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow
-	rRect.left = ARX_CLEAN_WARN_CAST_LONG(x - x2);
-	rRect.top = ARX_CLEAN_WARN_CAST_LONG(y);
-	rRect.right = ARX_CLEAN_WARN_CAST_LONG(x + x2);
+	Rect rRect(Rect::Num(x - x2), Rect::Num(y), Rect::Num(x + x2), Rect::Limits::max());
 
 	if (pTextManage)
 	{

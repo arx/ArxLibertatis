@@ -19,8 +19,8 @@ using std::vector;
 
 struct TextManager::ManagedText {
 	Font* pFont;
-	RECT rRect;
-	RECT rRectClipp;
+	Rect rRect;
+	Rect rRectClipp;
 	string lpszUText;
 	float fDeltaY;
 	float fSpeedScrollY;
@@ -36,7 +36,7 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & _rRect, long _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
+bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const Rect & _rRect, long _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
 	
 	if(_lpszUText.empty()) {
 		return false;
@@ -75,13 +75,12 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & 
 	return true;
 }
 
-bool TextManager::AddText( Font* font, const std::string& str, long x, long y, long fgcolor)
-{
-	RECT r;
+bool TextManager::AddText( Font* font, const std::string& str, long x, long y, long fgcolor) {
+	Rect r;
 	r.left = x;
 	r.top = y;
-	r.right = SHRT_MAX;
-	r.bottom = SHRT_MAX;
+	r.right = Rect::Limits::max();
+	r.bottom = Rect::Limits::max();
 	return AddText(font, str, r, fgcolor);
 }
 
@@ -129,9 +128,10 @@ void TextManager::Render() {
 		
 		ManagedText * pArxText = *itManage;
 		
-		RECT* pRectClip = NULL;
-		if(pArxText->rRectClipp.right != SHRT_MAX || pArxText->rRectClipp.bottom != SHRT_MAX)
+		Rect * pRectClip = NULL;
+		if(pArxText->rRectClipp.right != Rect::Limits::max() || pArxText->rRectClipp.bottom != Rect::Limits::max()) {
 			pRectClip = &pArxText->rRectClipp;
+		}
 
 		long height = ARX_UNICODE_DrawTextInRect( pArxText->pFont, static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,

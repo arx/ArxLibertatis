@@ -8,9 +8,10 @@
 #ifndef ARX_GUI_TEXTMANAGER_H
 #define ARX_GUI_TEXTMANAGER_H
 
-#include <windows.h> // for RECT
 #include <vector>
 #include <string>
+
+#include "platform/math/Rectangle.h"
 
 class Font;
 
@@ -21,7 +22,7 @@ public:
 	TextManager();
 	~TextManager();
 	
-	bool AddText(Font *, const std::string &, const RECT &, long _lCol = -1,
+	bool AddText(Font *, const std::string &, const Rect &, long _lCol = -1,
 	             long _lTimeOut = 0, long _lTimeScroll = 0,
 	             float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
 	

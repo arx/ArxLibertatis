@@ -909,7 +909,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 						if ( !Mapmarkers[i].tstring.empty() )
 						{
-							RECT rRect, bRect;
+							RECT bRect;
 							SetRect(&bRect, 140, 290, 140 + 205, 358);
 
 							float fLeft		= (bRect.left) * Xratio ;
@@ -922,12 +922,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							ARX_CHECK_INT(fTop);
 							ARX_CHECK_INT(fBottom);
 
-							SetRect(&rRect
-									, ARX_CLEAN_WARN_CAST_INT(fLeft)
-									, ARX_CLEAN_WARN_CAST_INT(fTop)
-									, ARX_CLEAN_WARN_CAST_INT(fRight)
-									, ARX_CLEAN_WARN_CAST_INT(fBottom));
-
+							Rect rRect = Rect(Rect::Num(fLeft), Rect::Num(fTop), Rect::Num(fRight), Rect::Num(fBottom));
 
 							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].tstring, rRect);
 

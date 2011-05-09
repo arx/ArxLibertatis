@@ -765,7 +765,6 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 	long curpage = 1;
 
 	NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-	RECT rRect;
 
 
 	float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
@@ -783,7 +782,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 		ARX_CHECK_INT(fMinx);
 		ARX_CHECK_INT(fMiny);
 
-	SetRect(&rRect, 0, 0, ARX_CLEAN_WARN_CAST_INT(fMinx), ARX_CLEAN_WARN_CAST_INT(fMiny));
+	Rect rRect(0, 0, Rect::Num(fMinx), Rect::Num(fMiny));
 
 	int lLenghtCurr=0;
 
@@ -5649,11 +5648,7 @@ void DANAE::ManageKeyMouse()
 									ARX_CHECK_LONG( ( 120 + 500 ) * Xratio );
 									ARX_CHECK_LONG( ( 14  + 200 ) * Yratio );
 									//------------
-									RECT rDraw	=	{	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ),
-														ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ),
-														ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
-								                    ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
-								             };
+									Rect rDraw(Rect::Num(120 * Xratio), Rect::Num(14 * Yratio), Rect::Num((120 + 500) * Xratio), Rect::Num((14 + 200) * Yratio));
 
 									pTextManage->Clear();
 								pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,RGB(232,204,143),2000+WILLADDSPEECH.length()*60);
@@ -5728,11 +5723,7 @@ void DANAE::ManageKeyMouse()
 										ARX_CHECK_LONG( ( 14 + 200 ) * Yratio );
 										//------------
 
-										RECT rDraw = {	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ),
-														ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ),
-														ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
-								                ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
-								             };
+										Rect rDraw(Rect::Num(120 * Xratio), Rect::Num(14 * Yratio), Rect::Num((120 + 500 ) * Xratio), Rect::Num((14 + 200) * Yratio));
 
 										pTextManage->Clear();
 										pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,RGB(232,204,143));
@@ -7117,11 +7108,7 @@ void QuestBook_Update()
 
 	ARX_CHECK_INT(fMinX);
 	ARX_CHECK_INT(fMinY);
-	RECT rRect;
-	rRect.left = 0;
-	rRect.top = 0;
-	rRect.right = ARX_CLEAN_WARN_CAST_INT(fMinX);
-	rRect.bottom = ARX_CLEAN_WARN_CAST_INT(fMinY);
+	Rect rRect(0, 0, Rect::Num(fMinX), Rect::Num(fMinY));
 
 	int lLenghtCurr = 0;
 	long lLenght = 0;
