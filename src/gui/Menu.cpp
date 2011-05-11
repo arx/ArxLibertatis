@@ -68,6 +68,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 #include <dinput.h>
 
+#include "Configure.h"
+
 #include "core/Config.h"
 #include "core/Time.h"
 #include "core/Application.h"

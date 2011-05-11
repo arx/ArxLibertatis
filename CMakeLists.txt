@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 project(ArxFatalis)
 
+include(CheckSymbolExists)
+include(CheckCXXSourceCompiles)
+
 ##############################################################################
 # enable_unity_build
 function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)  
@@ -133,14 +136,19 @@ option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
 
-if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
+if(ARX_FORCE_32BIT)
+	set(CURRENT_ARX_FORCE_32BIT 1)
+else()
+	set(CURRENT_ARX_FORCE_32BIT 0)
+endif()
+if(NOT LAST_ARX_FORCE_32BIT EQUAL CURRENT_ARX_FORCE_32BIT)
 	unset(CHECK_COMPILER CACHE)
 	force_recheck_library(DevIL IL)
 	force_recheck_library(ZLIB)
 	force_recheck_library(Freetype)
 	force_recheck_library(Threads)
 	force_recheck_library(OpenAL)
-	set(LAST_ARX_FORCE_32BIT ${ARX_FORCE_32BIT} CACHE INTERNAL "The last ARX_FORCE_32BIT value")
+	set(LAST_ARX_FORCE_32BIT "${CURRENT_ARX_FORCE_32BIT}" CACHE INTERNAL "The last ARX_FORCE_32BIT value")
 endif()
 
 # For custom cmake modules.
@@ -191,6 +199,8 @@ if(MSVC)
 		link_directories("$ENV{DX7SDK_PATH}/lib")
 	endif("$ENV{DX7SDK_PATH}" STREQUAL "")
 	
+	set(HAVE_WINAPI 1)
+	
 else(MSVC)
 	# Set optimal options for gcc:
 	
@@ -205,6 +215,8 @@ else(MSVC)
 		set(CMAKE_CXX_FLAGS "-m32 ${CMAKE_CXX_FLAGS}")
 	endif()
 	
+	set(HAVE_WINAPI 1)
+	
 	# since we change the compiler after it was checked by CMake, manually check if it works
 	check_compiler()
 	
@@ -215,6 +227,17 @@ else(MSVC)
 	check_link_library(Freetype FREETYPE_LIBRARIES)
 	if(ARX_USE_OPENAL)
 		check_link_library(OpenAL OPENAL_LIBRARY)
+	endif()
+	
+	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=199309")
+	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
+	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP)
+	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
+	unset(CMAKE_REQUIRED_DEFINITIONS)
+	unset(CMAKE_REQUIRED_LIBRARIES)
+	if(HAVE_NANOSLEEP OR HAVE_CLOCK_GETTIME)
+		set(TIME_LIBRARIES "-lrt")
+		add_definitions(-D_POSIX_C_SOURCE=199309)
 	endif()
 	
 	# Warning level
@@ -251,13 +274,19 @@ else(MSVC)
 	
 endif(MSVC)
 
-#use posix threads
-set(ARX_THREAD_LIBS "${CMAKE_THREAD_LIBS_INIT}")
+check_cxx_source_compiles("#include <stdlib.h>\n int main() { size_t s = rand(); char test[s]; }" HAVE_DYNAMIC_STACK_ALLOCATION)
+
+# Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT)
-	add_definitions(-DHAVE_PTHREADS)
-	set(ARX_THREAD_LIBS "${ARX_THREAD_LIBS} -lrt")
+	set(HAVE_PTHREADS 1)
 elseif(NOT CMAKE_USE_WIN32_THREADS_INIT)
 	message(SEND_ERROR "No supported thread libraries found.")
+endif()
+if(NOT ARX_USE_OPENAL AND NOT ARX_USE_DSOUND)
+	message(WARNING "No audio backend enabled.")
+endif()
+if((NOT HAVE_NANOSLEEP OR NOT HAVE_CLOCK_GETTIME) AND NOT WIN32)
+	message(SEND_ERROR "Need either nanosleep and clock_gettime or WIN32.")
 endif()
 
 if(ARX_MINGW)
@@ -288,20 +317,20 @@ file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
 set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${IO_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPTING_SOURCES} ${WINDOW_SOURCES})
 
-include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR}/${SRC_DIR})
 
 if(ARX_USE_OPENAL)
 	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_OPENAL_SOURCES})
 	include_directories(${OPENAL_INCLUDE_DIR})
-	add_definitions(-DHAVE_OPENAL)
+	set(HAVE_OPENAL 1)
 	if(OPENALEFX_FOUND)
 		include_directories(${OPENAL_EFX_INCLUDE_DIR})
-		add_definitions(-DHAVE_OPENAL_EFX)
+		set(HAVE_OPENAL_EFX 1)
 	endif()
 endif()
 if(ARX_USE_DSOUND)
 	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_DSOUND_SOURCES})
-	add_definitions(-DHAVE_DSOUND)
+	set(HAVE_DSOUND 1)
 endif()
 
 #enable unity build if requested
@@ -312,15 +341,20 @@ endif()
 #create source groups
 create_source_groups()
 
+configure_file(${SRC_DIR}/Configure.h.cmake ${SRC_DIR}/Configure.h)
+
 #build
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
-target_link_libraries(arx ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS})
+target_link_libraries(arx ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 if(ARX_USE_OPENAL)
 	target_link_libraries(arx ${OPENAL_LIBRARY})
+endif()
+if(TIME_LIBRARIES)
+	target_link_libraries(arx ${TIME_LIBRARIES})
 endif()
 
 add_custom_target(remake

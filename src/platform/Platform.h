@@ -81,10 +81,6 @@ const std::string arxVersion = "0.1";
 	#define ARX_PLATFORM ARX_PLATFORM_WIN32
 #endif
 
-#ifdef _WIN32
-	#define HAVE_WINAPI
-#endif
-
 #ifndef ARX_PLATFORM
 	#warning "Unknown target platform"
 	#define ARX_PLATFORM ARX_PLATFORM_UNKNOWN
@@ -100,7 +96,6 @@ const std::string arxVersion = "0.1";
 
 #if defined(__GNUC__)
 	#define ARX_COMPILER ARX_COMPILER_GCC
-	#define HAVE_DYNAMIC_STACK_ALLOCATION
 #elif defined(_MSC_VER)
 	#if _MSC_VER < 1600
 		#define ARX_COMPILER ARX_COMPILER_VC9

@@ -3,10 +3,10 @@
 
 #if defined(HAVE_PTHREADS)
 
-#include <time.h>
 #include <errno.h>
 
 #include "io/Logger.h"
+#include "platform/Platform.h"
 
 Lock::Lock() : locked(false) {
 	const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;

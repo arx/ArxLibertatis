@@ -8,6 +8,8 @@
 	#undef _WIN32
 #endif
 
+#include "Configure.h"
+
 #include <al.h>
 #include <alc.h>
 #ifdef HAVE_OPENAL_EFX

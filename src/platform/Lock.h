@@ -2,7 +2,7 @@
 #ifndef ARX_PLATFORM_LOCK_H
 #define ARX_PLATFORM_LOCK_H
 
-#include "platform/Platform.h"
+#include "Configure.h"
 
 #if defined(HAVE_PTHREADS)
 #include <pthread.h>
