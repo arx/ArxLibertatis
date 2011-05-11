@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/GameTime.h"
 
-#include <windows.h>
+#include "platform/Time.h"
 
 extern float FrameTime, LastFrameTime;	//ARX: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
 
@@ -67,9 +67,6 @@ float ARXTotalPausedTime = 0;
 float ARXTime = 0;
 bool ARXPausedTimer = 0;
 
-//-----------------------------------------------------------------------------
-LARGE_INTEGER	liFrequency;
-LARGE_INTEGER   liInitPerfCounter;        // Nuky - added initial time
 bool			bTimerInit = false;
 float			startupTime = 0;
 
@@ -81,8 +78,6 @@ void _ARX_TIME_Init()
 		return;
 	}
 
-	QueryPerformanceFrequency(&liFrequency);
-	QueryPerformanceCounter(&liInitPerfCounter);
 	bTimerInit = true;
 
 	ARX_TIME_Init();
@@ -90,14 +85,8 @@ void _ARX_TIME_Init()
 	startupTime = _ARX_TIME_GetTime();
 }
 
-float _ARX_TIME_GetTime()
-{
-	LARGE_INTEGER liPerfCounter;
-
-	_ARX_TIME_Init();
-
-	QueryPerformanceCounter(&liPerfCounter);
-	return ARX_CLEAN_WARN_CAST_FLOAT((liPerfCounter.QuadPart / (double)liFrequency.QuadPart) * 1000);
+float _ARX_TIME_GetTime() {
+	return float(Time::getUs()) / 1000;
 }
 
 //-----------------------------------------------------------------------------
