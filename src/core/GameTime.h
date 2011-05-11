@@ -42,7 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-// ARX_Time.CPP
+// ARX_Time.H
 //////////////////////////////////////////////////////////////////////////////////////
 //
 // Description:
@@ -55,119 +55,48 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "core/Time.h"
+#ifndef ARX_CORE_GAMETIME_H
+#define ARX_CORE_GAMETIME_H
 
-#include <cstdio>
+#include "platform/Platform.h"
 
-#include <windows.h>
+extern float ARXPausedTime;
+extern float ARXTotalPausedTime;
+extern float ARXTime;
+extern bool ARXPausedTimer;
 
-extern float FrameTime, LastFrameTime;	//ARX: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
+#define lARXTime (static_cast<long>( ARXTime ))
+#define dwARX_TIME_Get() (static_cast<DWORD>(ARX_TIME_Get()))
 
-/////////////////////// GAMETIME MANAGEMENT /////////////////////////
-float ARXPausedTime = 0;
-float ARXTotalPausedTime = 0;
-float ARXTime = 0;
-bool ARXPausedTimer = 0;
+void ARX_TIME_Pause();
+void ARX_TIME_UnPause();
+void ARX_TIME_Init();
+void ARX_TIME_Force_Time_Restore(float time);
 
-//-----------------------------------------------------------------------------
-LARGE_INTEGER	liFrequency;
-LARGE_INTEGER   liInitPerfCounter;        // Nuky - added initial time
-bool			bTimerInit = false;
-float			startupTime = 0;
+float _ARX_TIME_GetTime();
 
-namespace Time
-{
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	// Avoid costly calls to QueryPerformanceFrequency... cache its result
-    class FrequencyInit
-    {
-    public:
-        FrequencyInit()
-        {
-            QueryPerformanceFrequency(&Frequency);
-        }
-        LARGE_INTEGER Frequency;
-    } ;
-
-    FrequencyInit gFrequencyInit;
-    const u64 FREQUENCY_HZ  = gFrequencyInit.Frequency.QuadPart;
-#endif
-}
-
-
-void _ARX_TIME_Init()
-{
-	if (bTimerInit)
-	{
-		return;
-	}
-
-	QueryPerformanceFrequency(&liFrequency);
-	QueryPerformanceCounter(&liInitPerfCounter);
-	bTimerInit = true;
-
-	ARX_TIME_Init();
-
-	startupTime = _ARX_TIME_GetTime();
-}
-
-float _ARX_TIME_GetTime()
-{
-	LARGE_INTEGER liPerfCounter;
-
-	_ARX_TIME_Init();
-
-	QueryPerformanceCounter(&liPerfCounter);
-	return ARX_CLEAN_WARN_CAST_FLOAT((liPerfCounter.QuadPart / (double)liFrequency.QuadPart) * 1000);
-}
-
-//-----------------------------------------------------------------------------
-void ARX_TIME_Init()
-{
-	_ARX_TIME_Init();
-
+inline float ARX_TIME_Get(bool _bUsePause = true) {
+	
 	float tim = _ARX_TIME_GetTime();
-	ARXTotalPausedTime = tim;
-	ARXTime = 0;
-	ARXPausedTime = 0;
-	ARXPausedTimer = 0;
-
-//ARX_BEGIN: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
-//Currently when ARX_TIME_Init the substract FrameDiff = FrameTime - LastFrameTime is negative because of resetting ARXTotalPausedTime.
-//This solution reinit FrameTime & LastFrameTime to get a min frameDiff = 0 on ARX_TIME_Init.
-	FrameTime = LastFrameTime = ARXTime;
-//ARX_END: jycorbel (2010-07-19)
-}
-
-//-----------------------------------------------------------------------------
-void ARX_TIME_Pause()
-{
-	if (!ARXPausedTimer)
-	{
-		float tim = _ARX_TIME_GetTime();
-		ARXPausedTime = tim;
-		ARXPausedTimer = 1;
+	
+	if(ARXPausedTimer && _bUsePause) {
+		ARXTime = tim - ARXTotalPausedTime - (tim - ARXPausedTime);
+	} else {
+		ARXTime = tim - ARXTotalPausedTime;
 	}
+	
+	return ARXTime;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_TIME_UnPause()
-{
-	if (ARXPausedTimer)
-	{
-		float tim = _ARX_TIME_GetTime();
-		ARXTotalPausedTime += tim - ARXPausedTime;
-		ARXPausedTime = 0;
-		ARXPausedTimer = 0;
-	}
+inline unsigned long ARX_TIME_GetUL(bool _bUsePause = true) {
+	float time = ARX_TIME_Get(_bUsePause);
+	ARX_CHECK_ULONG(time);
+	return static_cast<unsigned long>(time);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_TIME_Force_Time_Restore(float time)
-{
-	float tim = _ARX_TIME_GetTime();
-	ARXTotalPausedTime = tim - time;
-	ARXTime = time;
-	ARXPausedTime = 0;
-	ARXPausedTimer = 0;
+inline unsigned long ARXTimeUL() {
+	ARX_CHECK_ULONG(ARXTime);
+	return static_cast<unsigned long>(ARXTime);
 }
+
+#endif // ARX_CORE_GAMETIME_H

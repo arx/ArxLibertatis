@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "gui/Menu.h"
 #include "gui/Text.h"

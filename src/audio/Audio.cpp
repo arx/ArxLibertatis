@@ -43,12 +43,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	#include "audio/openal/OpenALBackend.h"
 #endif
 
-#include "core/Time.h"
-
 #include "io/Logger.h"
 
 #include "platform/String.h"
 #include "platform/Lock.h"
+#include "platform/Time.h"
 
 using std::string;
 
@@ -109,7 +108,7 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	
 	mutex = new Lock();
 	
-	session_time = Time::GetMs();
+	session_time = Time::getMs();
 	
 	return AAL_OK;
 }
@@ -197,7 +196,7 @@ aalError aalUpdate() {
 	
 	AAL_ENTRY
 	
-	session_time = Time::GetMs();
+	session_time = Time::getMs();
 	
 	// Update sources
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {

@@ -58,13 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include <algorithm>
-#include <cassert>
 
 #include "ai/Paths.h"
 
 #include "core/Config.h"
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Damage.h"
 #include "game/Player.h"
@@ -243,7 +242,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss, INTERACTIVE_OBJ * io) {
 		while ( notok-- )
 		{
 			num = rnd() * io->obj->facelist.size();
-			assert(num < io->obj->facelist.size());
+			arx_assert(num < io->obj->facelist.size());
 
 			if ( io->obj->facelist[num].facetype & POLY_HIDE ) continue;
 

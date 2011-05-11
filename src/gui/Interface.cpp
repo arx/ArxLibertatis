@@ -36,7 +36,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
-#include <cassert>
 
 #include "ai/Paths.h"
 
@@ -46,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/Core.h"
@@ -9159,7 +9158,7 @@ void DANAE::DrawAllInterface()
 				{
 					ARX_INTERFACE_DrawInventory(sActiveInventory);
 
-					assert(ITC.Get("hero_inventory") != NULL);
+					arx_assert(ITC.Get("hero_inventory") != NULL);
 					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 					ARX_CHECK_INT(fCenterX);

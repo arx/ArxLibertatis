@@ -57,12 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "graphics/Math.h"
 
-#include "graphics/effects/SpellEffects.h"
+#include "core/GameTime.h"
 #include "game/Damage.h"
+#include "game/Spells.h"
+#include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells08.h"
 #include "game/Spells.h"
-#include "core/Time.h"
 
 //-----------------------------------------------------------------------------
 CExplosion::~CExplosion()

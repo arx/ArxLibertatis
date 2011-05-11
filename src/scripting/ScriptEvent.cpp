@@ -12,7 +12,7 @@
 
 #include "ai/Paths.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Resource.h"
 #include "core/Core.h"
 

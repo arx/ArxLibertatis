@@ -3,7 +3,6 @@
 
 #if defined(HAVE_PTHREADS)
 
-#include <time.h>
 #include <sched.h>
 
 Thread::Thread() : thread((pthread_t)0) {
@@ -56,15 +55,6 @@ void * Thread::entryPoint(void * param) {
 	return NULL;
 }
 
-void Thread::sleep(unsigned milliseconds) {
-	
-	timespec t;
-	t.tv_sec = milliseconds / 1000;
-	t.tv_nsec = (milliseconds % 1000) * 1000000;
-	
-	nanosleep(&t, NULL);
-}
-
 void Thread::exit() {
 	pthread_exit(NULL);
 }
@@ -107,10 +97,6 @@ DWORD WINAPI Thread::entryPoint(LPVOID param) {
 	return 0;
 }
 
-void Thread::sleep(unsigned milliseconds) {
-	Sleep(milliseconds);
-}
-
 void Thread::exit() {
 	ExitThread(0);
 }
@@ -120,5 +106,27 @@ void Thread::waitForCompletion() {
 	arx_assert(ret == WAIT_OBJECT_0);
 }
 
+#endif
 
+#if defined(HAVE_NANOSLEEP)
+
+#include <time.h>
+
+void Thread::sleep(unsigned milliseconds) {
+	
+	timespec t;
+	t.tv_sec = milliseconds / 1000;
+	t.tv_nsec = (milliseconds % 1000) * 1000000;
+	
+	nanosleep(&t, NULL);
+}
+
+#elif defined(HAVE_WINAPI)
+
+void Thread::sleep(unsigned milliseconds) {
+	Sleep(milliseconds);
+}
+
+#else
+#error "Sleep not supported: need either HAVE_NANOSLEEP or HAVE_WINAPI"
 #endif

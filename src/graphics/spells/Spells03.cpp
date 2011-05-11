@@ -56,11 +56,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells03.h"
 
-#include <cassert>
 #include <climits>
 
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Spells.h"
 #include "game/Damage.h"
@@ -112,7 +111,7 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 	std::list<CParticle *>::iterator i;
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	assert(ulCalc <= LONG_MAX);
+	arx_assert(ulCalc <= LONG_MAX);
 	long ff = static_cast<long>(ulCalc);
 
 
@@ -1142,7 +1141,7 @@ if (ulCurrentTime >= ulDuration)
 //ARX_END: jycorbel (2010-07-20)
 	{
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	assert(ulCalc <= LONG_MAX);
+	arx_assert(ulCalc <= LONG_MAX);
 	long ff =  static_cast<long>(ulCalc);
 
 

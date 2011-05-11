@@ -56,11 +56,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells02.h"
 
-#include <cassert>
 #include <climits>
 
 #include "core/Core.h"
-#include "core/Time.h"
 
 #include "game/Spells.h"
 #include "game/Player.h"
@@ -231,7 +229,7 @@ void CHeal::Update(unsigned long aulTime)
 	}
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	assert(ulCalc <= LONG_MAX);
+	arx_assert(ulCalc <= LONG_MAX);
 	long ff = static_cast<long>(ulCalc);
 
 	if (ff < 1500)

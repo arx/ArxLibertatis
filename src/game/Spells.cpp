@@ -39,6 +39,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Config.h"
 #include "core/Core.h"
+#include "core/GameTime.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -56,7 +57,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "graphics/spells/SpellsGlobal.h"
+#include "graphics/spells/Spells01.h"
+#include "graphics/spells/Spells02.h"
+#include "graphics/spells/Spells03.h"
+#include "graphics/spells/Spells04.h"
+#include "graphics/spells/Spells05.h"
+#include "graphics/spells/Spells06.h"
+#include "graphics/spells/Spells07.h"
+#include "graphics/spells/Spells08.h"
+#include "graphics/spells/Spells09.h"
+#include "graphics/spells/Spells10.h"
 
 #include "io/FilePath.h"
 
