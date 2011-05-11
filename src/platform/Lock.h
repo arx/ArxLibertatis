@@ -6,7 +6,7 @@
 
 #ifdef HAVE_PTHREADS
 #include <pthread.h>
-#elif defined(__WIN32__)
+#elif defined(_WIN32)
 #include <windows.h>
 #endif
 
@@ -18,7 +18,7 @@ private:
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
 	bool locked;
-#elif defined(__WIN32__)
+#elif defined(_WIN32)
 	HANDLE mutex;
 #else
 	#warning "locking not supported"

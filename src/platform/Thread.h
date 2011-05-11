@@ -6,7 +6,7 @@
 
 #ifdef HAVE_PTHREADS
 #include <pthread.h>
-#elif defined(__WIN32__)
+#elif defined(_WIN32)
 #include <windows.h>
 #endif
 
@@ -21,7 +21,7 @@ private:
 	
 	static void * entryPoint(void * param);
 	
-#elif defined(__WIN32__)
+#elif defined(_WIN32)
 	
 	HANDLE thread;
 	

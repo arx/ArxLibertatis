@@ -69,7 +69,7 @@ void Thread::exit() {
 	pthread_exit(NULL);
 }
 
-#elif defined(__WIN32__)
+#elif defined(_WIN32)
 
 Thread::Thread() {
 	thread = CreateThread(NULL, 0, entryPoint, this, CREATE_SUSPENDED, NULL);

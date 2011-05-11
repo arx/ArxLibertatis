@@ -39,7 +39,7 @@ void Lock::unlock() {
 	pthread_mutex_unlock(&mutex);
 }
 
-#elif defined(__WIN32__)
+#elif defined(_WIN32)
 
 Lock::Lock() {
 	mutex = CreateMutex(NULL, false, NULL);
