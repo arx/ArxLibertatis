@@ -132,10 +132,17 @@ void TextManager::Render() {
 		if(pArxText->rRectClipp.right != Rect::Limits::max() || pArxText->rRectClipp.bottom != Rect::Limits::max()) {
 			pRectClip = &pArxText->rRectClipp;
 		}
+		
+		float maxx;
+		if(pArxText->rRect.right == Rect::Limits::max()) {
+			maxx = std::numeric_limits<float>::infinity();
+		} else {
+			maxx = static_cast<float>(pArxText->rRect.right);
+		}
 
-		long height = ARX_UNICODE_DrawTextInRect( pArxText->pFont, static_cast<float>(pArxText->rRect.left),
+		long height = ARX_UNICODE_DrawTextInRect(pArxText->pFont, static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
-		                                         static_cast<float>(pArxText->rRect.right),
+		                                         maxx,
 		                                         pArxText->lpszUText, pArxText->lCol, pRectClip);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;

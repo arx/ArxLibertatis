@@ -113,7 +113,8 @@ void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Re
 	std::string::const_iterator itLastWordBreak = text.begin();
 	std::string::const_iterator it = text.begin();
 	
-	int maxLineWidth = _rRect.width();
+	int maxLineWidth = (_rRect.right == Rect::Limits::max() ? std::numeric_limits<int>::max() : _rRect.width());
+	arx_assert(maxLineWidth > 0);
 	int penY = _rRect.top;
 
 	if(textHeight)
@@ -213,6 +214,9 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	}
 
 	Rect rect((Rect::Num)x, (Rect::Num)y, (Rect::Num)maxx, Rect::Limits::max());
+	if(maxx == std::numeric_limits<float>::infinity()) {
+		rect.right = Rect::Limits::max();
+	}
 
 	long height;
 	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
@@ -233,7 +237,7 @@ void ARX_TEXT_Draw(Font* ef,
 	if (car.empty() || car[0] == 0)
 		return;
 
-	ARX_UNICODE_DrawTextInRect(ef, x, y, 9999.f, car, col);
+	ARX_UNICODE_DrawTextInRect(ef, x, y, std::numeric_limits<float>::infinity(), car, col);
 }
 
 long ARX_TEXT_DrawRect(Font* ef,
