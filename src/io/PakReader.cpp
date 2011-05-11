@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 #include "platform/Platform.h"
+#include <iomanip>
 
 using std::min;
 using std::max;
@@ -113,7 +114,6 @@ bool PakReader::Open(const std::string& name) {
 	FILE * newfile = fopen(name.c_str(), "rb");
 	
 	if(!newfile) {
-		LogError << "Cannot find PAK " << name;
 		return false;
 	}
 	
@@ -121,17 +121,17 @@ bool PakReader::Open(const std::string& name) {
 	u32 fat_offset;
 	u32 fat_size;
 	if(fread(&fat_offset, sizeof(fat_offset), 1, newfile) != 1) {
-		printf("error reading FAT offset\n");
+		LogError << "error reading FAT offset";
 		fclose(newfile);
 		return false;
 	}
 	if(fseek(newfile, fat_offset, SEEK_SET)) {
-		printf("error seeking to FAT offset\n");
+		LogError << "error seeking to FAT offset " << fat_offset;
 		fclose(newfile);
 		return false;
 	}
 	if(fread(&fat_size, sizeof(fat_size), 1, newfile) != 1) {
-		printf("error reading FAT size\n");
+		LogError << "error reading FAT size at offset " << fat_offset;
 		fclose(newfile);
 		return false;
 	}
@@ -139,7 +139,7 @@ bool PakReader::Open(const std::string& name) {
 	// Read the whole FAT.
 	char * newfat = new char[fat_size];
 	if(fread(newfat, fat_size, 1, newfile) != 1) {
-		printf("error reading FAT\n");
+		LogError << "error reading FAT";
 		fclose(newfile);
 		return false;
 	}
@@ -149,7 +149,7 @@ bool PakReader::Open(const std::string& name) {
 	if(key) {
 		pakDecrypt(newfat, fat_size, key);
 	} else {
-		printf("WARNING: unknown PAK key ID 0x%08x, assuming no key\n", *(u32*)newfat);
+		LogWarning << "WARNING: unknown PAK key ID 0x" << std::hex << std::setfill('0') << std::setw(8) << *(u32*)newfat << ", assuming no key";
 	}
 	
 	PakDirectory * newroot = new PakDirectory();
@@ -160,7 +160,7 @@ bool PakReader::Open(const std::string& name) {
 		
 		const char * dirname = safeGetString(pos, fat_size);
 		if(!dirname) {
-			printf("error reading directory name from FAT, wrong key?\n");
+			LogError << "error reading directory name from FAT, wrong key?";
 			goto error;
 		}
 		
@@ -173,7 +173,7 @@ bool PakReader::Open(const std::string& name) {
 		
 		u32 nfiles;
 		if(!safeGet(nfiles, pos, fat_size)) {
-			printf("error reading file count from FAT, wrong key?\n");
+			LogError << "error reading file count from FAT, wrong key?";
 			goto error;
 		}
 		
@@ -193,13 +193,13 @@ bool PakReader::Open(const std::string& name) {
 			
 			const char * filename =  safeGetString(pos, fat_size);
 			if(!filename) {
-				printf("error reading file name from FAT, wrong key?\n");
+				LogError << "error reading file name from FAT, wrong key?";
 				goto error;
 			}
 			
 			PakFile * file = dir->addFile(filename);
 			if(!file) {
-				printf("could not add file while loading PAK\n");
+				LogError << "could not add file while loading PAK";
 				goto error;
 			}
 			
@@ -210,7 +210,7 @@ bool PakReader::Open(const std::string& name) {
 			
 			if(!safeGet(offset, pos, fat_size) || !safeGet(flags, pos, fat_size)
 			   || !safeGet(uncompressedSize, pos, fat_size) || !safeGet(size, pos, fat_size)) {
-				printf("error reading file attributes from FAT, wrong key?\n");
+				LogError << "error reading file attributes from FAT, wrong key?";
 				goto error;
 			}
 			

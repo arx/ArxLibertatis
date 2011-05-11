@@ -96,6 +96,7 @@ const std::string arxVersion = "0.1";
 
 #if defined(__GNUC__)
 	#define ARX_COMPILER ARX_COMPILER_GCC
+	#define HAVE_DYNAMIC_STACK_ALLOCATION
 #elif defined(_MSC_VER)
 	#if _MSC_VER < 1600
 		#define ARX_COMPILER ARX_COMPILER_VC9
