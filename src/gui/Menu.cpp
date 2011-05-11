@@ -197,7 +197,11 @@ void CreateSaveGameList() {
 	}
 	
 	size_t oldCount = save_l.size() - 1;
+#ifdef HAVE_DYNAMIC_STACK_ALLOCATION
 	bool found[oldCount];
+#else
+	bool * found = new bool[oldCount];
+#endif
 	for(size_t i = 0; i < oldCount; i++) {
 		found[i] = false;
 	}
@@ -282,6 +286,10 @@ void CreateSaveGameList() {
 			save_l.erase(save_l.begin() + i);
 		}
 	}
+	
+#ifndef HAVE_DYNAMIC_STACK_ALLOCATION
+	delete[] found;
+#endif
 	
 	if(newSaves && save_l.size() > 2) {
 		std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
