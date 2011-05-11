@@ -4,24 +4,24 @@
 
 #include "platform/Platform.h"
 
-#ifdef HAVE_PTHREADS
+#if defined(HAVE_PTHREADS)
 #include <pthread.h>
-#elif defined(_WIN32)
+#elif defined(HAVE_WINAPI)
 #include <windows.h>
+#else
+#error "Locking not supported: need either HAVE_PTHREADS or HAVE_WINAPI"
 #endif
 
 class Lock {
 	
 private:
 	
-#ifdef HAVE_PTHREADS
+#if defined(HAVE_PTHREADS)
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
 	bool locked;
-#elif defined(_WIN32)
+#elif defined(HAVE_WINAPI)
 	HANDLE mutex;
-#else
-	#warning "locking not supported"
 #endif
 	
 public:

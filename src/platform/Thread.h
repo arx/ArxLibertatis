@@ -4,31 +4,31 @@
 
 #include "platform/Platform.h"
 
-#ifdef HAVE_PTHREADS
+#if defined(HAVE_PTHREADS)
 #include <pthread.h>
-#elif defined(_WIN32)
+#elif defined(HAVE_WINAPI)
 #include <windows.h>
+#else
+#error "Threads not supported: need either HAVE_PTHREADS or HAVE_WINAPI"
 #endif
 
 class Thread {
 	
 private:
 	
-#ifdef HAVE_PTHREADS
+#if defined(HAVE_PTHREADS)
 	
 	pthread_t thread;
 	int priority;
 	
 	static void * entryPoint(void * param);
 	
-#elif defined(_WIN32)
+#elif defined(HAVE_WINAPI)
 	
 	HANDLE thread;
 	
 	static DWORD WINAPI entryPoint(LPVOID param);
 	
-#else
-	#warning "threads not supported"
 #endif
 	
 public:

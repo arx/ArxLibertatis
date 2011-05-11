@@ -1,7 +1,7 @@
 
 #include "platform/Lock.h"
 
-#ifdef HAVE_PTHREADS
+#if defined(HAVE_PTHREADS)
 
 #include <time.h>
 #include <errno.h>
@@ -39,7 +39,7 @@ void Lock::unlock() {
 	pthread_mutex_unlock(&mutex);
 }
 
-#elif defined(_WIN32)
+#elif defined(HAVE_WINAPI)
 
 Lock::Lock() {
 	mutex = CreateMutex(NULL, false, NULL);

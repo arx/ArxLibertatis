@@ -1,7 +1,7 @@
 
 #include "Thread.h"
 
-#ifdef HAVE_PTHREADS
+#if defined(HAVE_PTHREADS)
 
 #include <time.h>
 #include <sched.h>
@@ -69,7 +69,7 @@ void Thread::exit() {
 	pthread_exit(NULL);
 }
 
-#elif defined(_WIN32)
+#elif defined(HAVE_WINAPI)
 
 Thread::Thread() {
 	thread = CreateThread(NULL, 0, entryPoint, this, CREATE_SUSPENDED, NULL);
