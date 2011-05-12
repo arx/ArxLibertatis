@@ -152,29 +152,33 @@ DX7Texture2D::~DX7Texture2D()
 	Destroy();
 }
 
-HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param )
-{
-	if (NULL == pddpf || NULL == param)
+HRESULT CALLBACK DX7Texture2D::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID * param) {
+	
+	if(NULL == pddpf || NULL == param) {
 		return DDENUMRET_OK;
-
+	}
+	
+	DDSURFACEDESC2 * ddsd = (DDSURFACEDESC2*)param;
+	
+	DWORD flags = DDPF_RGB | ((ddsd->dwFlags & DDSD_CKSRCBLT) ? 0 : DDPF_ALPHAPIXELS);
+	
 	// Since we'll get rid of this DX7 renderer as soon as possible, I won't invest any more time figuring out the optimal texture matches
 	// Always use 32 bit RGBA (8-8-8-8)... with no support for DXT (arx doesn't use them yet anyway!
-	if(((pddpf->dwFlags & (DDPF_RGB|DDPF_ALPHAPIXELS)) == (DDPF_RGB|DDPF_ALPHAPIXELS)) && (pddpf->dwRGBBitCount == 32))
-	{
-		DDPIXELFORMAT * destDDPF = (DDPIXELFORMAT*)param;
-
+	if((pddpf->dwFlags & (DDPF_RGB|DDPF_ALPHAPIXELS)) == flags && pddpf->dwRGBBitCount >= 24) {
+		
 		// We found a good match. Copy the current pixel format to our output parameter
-		memcpy( destDDPF, pddpf, sizeof(DDPIXELFORMAT) );
-
+		memcpy(&ddsd->ddpfPixelFormat, pddpf, sizeof(DDPIXELFORMAT));
+		
 		// Return with DDENUMRET_CANCEL to end enumeration.
 		return DDENUMRET_CANCEL;
-	}	
-
+	}
+	
 	return DDENUMRET_OK;
 }
 
 bool DX7Texture2D::Create()
 {
+	
 	arx_assert_msg(m_pddsSurface == 0, "Texture already created!");
 	arx_assert(mWidth != 0);
 	arx_assert(mHeight != 0);
@@ -192,14 +196,17 @@ bool DX7Texture2D::Create()
 	DDSURFACEDESC2 ddsd;
 	ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
 	ddsd.dwSize          = sizeof(DDSURFACEDESC2);
-	ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE|DDSD_CKSRCBLT;
+	ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE;
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;
 	ddsd.dwWidth         = mWidth;
 	ddsd.dwHeight        = mHeight;
 
 	// Specify black as our color key
-	ddsd.ddckCKSrcBlt.dwColorSpaceHighValue = RGB(0, 0, 0);
-	ddsd.ddckCKSrcBlt.dwColorSpaceLowValue = RGB(0, 0, 0);
+	if(!mImage.HasAlpha()) {
+		ddsd.dwFlags |= DDSD_CKSRCBLT;
+		ddsd.ddckCKSrcBlt.dwColorSpaceHighValue = RGB(0, 0, 0);
+		ddsd.ddckCKSrcBlt.dwColorSpaceLowValue = RGB(0, 0, 0);
+	}
 
 	// Turn on texture management for hardware devices
 	if( ddDesc.deviceGUID == IID_IDirect3DHALDevice )
@@ -258,10 +265,11 @@ bool DX7Texture2D::Create()
 			ddsd.dwMipMapCount = mipLevels;
 		}
 	}
+	
 
 	// Enumerate the texture formats, and find the closest device-supported
 	// texture pixel format.
-	GDevice->EnumTextureFormats( TextureSearchCallback, &ddsd.ddpfPixelFormat );
+	GDevice->EnumTextureFormats( TextureSearchCallback, &ddsd);
 	if( 0L == ddsd.ddpfPixelFormat.dwRGBBitCount )
 		return NULL;
 
@@ -535,6 +543,7 @@ void DX7Texture2D::Upload()
 			pddsSrc = pddsDst;
 		}
 	}
+	
 }
 
 void DX7Texture2D::CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSURFACE7 pddsSrc)
