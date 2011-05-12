@@ -19,7 +19,7 @@ struct DANAE_LS_HEADER {
 	char lastuser[256];
 	s32 time;
 	SavedVec3 pos_edit;
-	SavedVec3 angle_edit;
+	SavedAnglef angle_edit;
 	s32 nb_scn;
 	s32 nb_inter;
 	s32 nb_nodes;
@@ -87,7 +87,7 @@ struct DANAE_LS_FOG {
 	s32 special;
 	f32 scale;
 	SavedVec3 move;
-	SavedVec3 angle;
+	SavedAnglef angle;
 	f32 speed;
 	f32 rotatespeed;
 	s32 tolive;
@@ -151,7 +151,7 @@ struct DANAE_LLF_HEADER {
 struct DANAE_LS_INTER {
 	char name[512];
 	SavedVec3 pos;
-	SavedVec3 angle;
+	SavedAnglef angle;
 	s32 ident;
 	s32 flags;
 	s32 pad[14];

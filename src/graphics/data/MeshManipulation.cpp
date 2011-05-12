@@ -420,8 +420,8 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Work will contain the Tweaked object
 	EERIE_3DOBJ * work = new EERIE_3DOBJ();
 	// TODO string breaker
-	memcpy(&work->pos, &obj1->pos, sizeof(EERIE_3D));
-	memcpy(&work->angle, &obj1->angle, sizeof(EERIE_3D));
+	memcpy(&work->pos, &obj1->pos, sizeof(Vec3f));
+	memcpy(&work->angle, &obj1->angle, sizeof(Vec3f));
 
 	// ident will be the same as original object obj1
 	work->ident = obj1->ident;

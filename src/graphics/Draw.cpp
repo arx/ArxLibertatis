@@ -68,14 +68,14 @@ long DBGSETTEXTURE=0;
 
 long ZMAPMODE=1;
 TextureContainer * Zmap;
-EERIE_3D SPRmins;
-EERIE_3D SPRmaxs;
+Vec3f SPRmins;
+Vec3f SPRmaxs;
 
 extern long REFLECTFX;
 extern long WATERFX;
 extern TextureContainer * enviro;
 extern float FrameTime;
-extern EERIE_3D e3dPosBump;
+extern Vec3f e3dPosBump;
 extern bool bALLOW_BUMP;
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -138,7 +138,7 @@ void CopyVertices(EERIEPOLY * ep,long to, long from)
 {
 	memcpy(&ep->v[to],&ep->v[from],sizeof(D3DTLVERTEX));
 	memcpy(&ep->tv[to],&ep->tv[from],sizeof(D3DTLVERTEX));
-	memcpy(&ep->nrml[to],&ep->nrml[from],sizeof(EERIE_3D));
+	memcpy(&ep->nrml[to],&ep->nrml[from],sizeof(Vec3f));
 }
  
 bool NearlyEqual(float a,float b)
@@ -894,7 +894,7 @@ void EERIEDrawFill2DRectDegrad(float x0,float y0,float x1,float y1,float z, D3DC
 
 void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	EERIE_3D from,to;
+	Vec3f from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
@@ -933,7 +933,7 @@ void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col)
 
 void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	EERIE_3D from,to;
+	Vec3f from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
@@ -976,9 +976,9 @@ void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
+void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col)
 {
-	EERIE_3D vect;
+	Vec3f vect;
 	vect.x=dest->x-orgn->x;
 	vect.y=dest->y-orgn->y;
 	vect.z=dest->z-orgn->z;
@@ -990,7 +990,7 @@ void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 	vect.x*=om;
 	vect.y*=om;
 	vect.z*=om;
-	EERIE_3D cpos;
+	Vec3f cpos;
 	cpos.x=orgn->x;
 	cpos.y=orgn->y;
 	cpos.z=orgn->z;
@@ -998,7 +998,7 @@ void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 	while (m>0)
 	{
 		float dep=std::min(m,30.f);
-		EERIE_3D tpos = cpos + (vect * dep);
+		Vec3f tpos = cpos + (vect * dep);
 		EERIEDraw3DLine(&cpos,&tpos,col);
 		cpos = tpos;
 		m-=dep;
@@ -1007,7 +1007,7 @@ void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDraw3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
+void EERIEDraw3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col)
 {
 	D3DTLVERTEX v[2];
 	D3DTLVERTEX in;

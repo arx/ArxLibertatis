@@ -120,8 +120,8 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 
 	{
-		EERIE_3D ppos, pos, to;
-		EERIE_3D from(0.f, 0.f, -90.f);
+		Vec3f ppos, pos, to;
+		Vec3f from(0.f, 0.f, -90.f);
 		Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
 		ppos.x = io->pos.x;
 		pos.x = ppos.x + to.x;
@@ -568,7 +568,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 //*****************************************************************************
 // Checks for nearest VALID anchor for a cylinder from a position
 //*****************************************************************************
-static long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl) {
+static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl) {
 	long returnvalue = -1;
 	float distmax = 99999999.f;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -592,23 +592,23 @@ static long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl) {
 	return returnvalue;
 }
 
-static long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl) {
+static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cyl) {
 	
-	EERIE_3D vect;
+	Vec3f vect;
 	float d = radians(beta);
 	vect.x = -EEsin(d);
 	vect.y = 0;
 	vect.z = EEcos(d);
 	TRUEVector_Normalize(&vect);
 
-	EERIE_3D posi;
+	Vec3f posi;
 	posi.x = pos->x + vect.x * 50.f;
 	posi.y = pos->y;
 	posi.z = pos->z + vect.x * 50.f;
 	return AnchorData_GetNearest(&posi, cyl);
 }
 
-static long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long except) {
+static long AnchorData_GetNearest_Except(Vec3f * pos, EERIE_CYLINDER * cyl, long except) {
 	
 	long returnvalue = -1;
 	float distmax = 99999999.f;
@@ -663,7 +663,7 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		return false;
 	}
 
-	EERIE_3D pos1, pos2;
+	Vec3f pos1, pos2;
 
 	if (io->_npcdata->pathfind.listnb > 0)
 	{
@@ -1131,7 +1131,7 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 //***********************************************************************************************
 static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
 {
-	EERIE_3D ppos;
+	Vec3f ppos;
 	ppos.x = io->pos.x;
 	ppos.y = io->pos.y;
 	ppos.z = io->pos.z;
@@ -1367,7 +1367,7 @@ void ARX_PHYSICS_Apply()
 //*************************************************************************************
 void FaceTarget2(INTERACTIVE_OBJ * io)
 {
-	EERIE_3D tv;
+	Vec3f tv;
 
 	if (!io->show) return;
 
@@ -1408,7 +1408,7 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 
 	if (rot != 0)
 	{
-		EERIE_3D temp;
+		Vec3f temp;
 		temp.x = io->move.x;
 		temp.y = io->move.y;
 		temp.z = io->move.z;
@@ -1432,7 +1432,7 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 		ARX_NPC_CreateExRotateData(io);
 	}
 
-	EERIE_3D tv;
+	Vec3f tv;
 
 	if (!io->show) return;
 
@@ -1845,7 +1845,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	io->obj->pbox->active		=	1;
 	io->obj->pbox->stopcount	=	0;
 
-	EERIE_3D pos, vector;
+	Vec3f pos, vector;
 
 	io->velocity.x				=	0.f;
 	io->velocity.y				=	0.f;
@@ -2038,7 +2038,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 //***********************************************************************************************
 // Attempt to cut something on NPC
 //***********************************************************************************************
-void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
+void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 {
 	//return;
 	if (!target) return;
@@ -2412,7 +2412,7 @@ bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
 {
 	if ((!io) || (!io->anims[animnum])) return false;
 
-	EERIE_3D trans, trans2;
+	Vec3f trans, trans2;
 	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
 	float temp = radians(MAKEANGLE(180.f - io->angle.b));
 	_YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
@@ -2987,7 +2987,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	        &&	(aup->aupflags & ARX_USEPATH_WORM_SPECIFIC))
 	{
 		io->room_flags |= 1;
-		EERIE_3D tv;
+		Vec3f tv;
 
 		if (aup->_curtime - aup->_starttime > 500)
 		{
@@ -3239,7 +3239,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	float dist = FLT_MAX;
 	long CHANGE = 0;
 
-	EERIE_3D ForcedMove;
+	Vec3f ForcedMove;
 	
 	// GetTargetPos MUST be called before FaceTarget2
 	if ((io->_npcdata->pathfind.listnb > 0)
@@ -3501,11 +3501,11 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	
 
-	if ((io->forcedmove.x == 0.f) && (io->forcedmove.y == 0.f) && (io->forcedmove.z == 0.f))
-		ForcedMove.clear();
+	if (io->forcedmove == Vec3f::ZERO)
+		ForcedMove = Vec3f::ZERO;
 	else
 	{
-		EERIE_3D vect = io->forcedmove;
+		Vec3f vect = io->forcedmove;
 		float d = TRUEVector_Normalize(&vect);
 		float dd = min(d, (float)FrameDiff * ( 1.0f / 6 ));
 		ForcedMove = vect * dd;
@@ -3646,7 +3646,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	{
 		if (ValidIONum(io->_npcdata->pathfind.truetarget))
 		{
-			EERIE_3D * p = &inter.iobj[io->_npcdata->pathfind.truetarget]->pos;
+			Vec3f * p = &inter.iobj[io->_npcdata->pathfind.truetarget]->pos;
 			long t = AnchorData_GetNearest(p, &io->physics.cyl); 
 
 			if ((t != -1) && (t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]))
@@ -3952,7 +3952,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 			continue;
 		}
 
-		EERIE_3D orgn, dest;
+		Vec3f orgn, dest;
 
 		float ab = MAKEANGLE(ioo->angle.b);
 
@@ -4004,7 +4004,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 
 			if (grnd_color > 0) 
 			{
-				EERIE_3D ppos;
+				Vec3f ppos;
 				EERIEPOLY * epp = NULL;
 
 				if (IO_Visible(&orgn, &dest, epp, &ppos))
@@ -4104,7 +4104,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 		}
 		else // Make full visibility test
 		{
-			EERIE_3D orgn, dest;
+			Vec3f orgn, dest;
 			// Retreives Head group position for "eye" pos.
 			long grp = io->obj->fastaccess.head_group_origin;
 			if (grp < 0)
@@ -4137,7 +4137,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 				        ||	(dist < 200))
 				{
 					EERIEPOLY * epp = NULL;
-					EERIE_3D ppos;
+					Vec3f ppos;
 
 					// Check for Geometrical Visibility
 					if ((IO_Visible(&orgn, &dest, epp, &ppos))
@@ -4169,7 +4169,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 }
 
 //-------------------------------------------------------------------------
-void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float volume, const float power)
+void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power)
 {
 	char step_material[64] = "Foot_bare";
 	std::string floor_material = "EARTH";
@@ -4207,7 +4207,7 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float vol
 // Sends ON HEAR events to NPCs for audible sounds
 // factor > 1.0F harder to hear, < 0.0F easier to hear
 //***********************************************************************************************
-void ARX_NPC_SpawnAudibleSound(EERIE_3D * pos, INTERACTIVE_OBJ * source, const float factor, const float presence)
+void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const float factor, const float presence)
 {
 	float max_distance;
 
@@ -4310,7 +4310,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 			if ((io) && (io->obj) && !io->obj->facelist.empty())
 			{
-				EERIE_3D	pos;
+				Vec3f	pos;
 				long		notok	=	10;
 				size_t num = 0;
 
@@ -4398,7 +4398,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			return;
 		}
 
-		EERIE_3D pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
+		Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
 
 		for (long nn = 0; nn < 2; nn++)
 		{
@@ -4447,7 +4447,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 			if ((io) && (io->obj) && !io->obj->facelist.empty())
 			{
-				EERIE_3D	pos;
+				Vec3f	pos;
 				long		notok	=	10;
 				size_t num = 0;
 
@@ -4513,7 +4513,7 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 		if (io->ignition > 100.f)
 			io->ignition = 100.f;
 
-		EERIE_3D position;
+		Vec3f position;
 
 		if (io->obj && (io->obj->fastaccess.fire >= 0))
 		{

@@ -273,8 +273,9 @@ HINSTANCE hInstance;
 PROJECT Project;
 
 //-----------------------------------------------------------------------------
-EERIE_3D LASTCAMPOS,LASTCAMANGLE;
-EERIE_3D PUSH_PLAYER_FORCE;
+Vec3f LASTCAMPOS;
+Anglef LASTCAMANGLE;
+Vec3f PUSH_PLAYER_FORCE;
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
 CParticleManager	*pParticleManager = NULL;
 INTERACTIVE_OBJ		*lastCAMERACONTROLLER=NULL;
@@ -317,10 +318,10 @@ SPELL_ICON spellicons[SPELL_COUNT];
 bool bGToggleCombatModeWithKey;
 
 Vec2s DANAEMouse;
-EERIE_3D moveto;
-EERIE_3D Mscenepos;
-EERIE_3D lastteleport;
-EERIE_3D e3dPosBump;
+Vec3f moveto;
+Vec3f Mscenepos;
+Vec3f lastteleport;
+Vec3f e3dPosBump;
 EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
 EERIE_3DOBJ	* arrowobj=NULL;			// 3D Object for arrows
 EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
@@ -933,9 +934,9 @@ void InitializeDanae()
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
 	InitNodes(1);
 
-	player.size.y=subj.size.y=-PLAYER_BASE_HEIGHT;
-	player.size.x=subj.size.x=PLAYER_BASE_RADIUS;
-	player.size.z=subj.size.z=PLAYER_BASE_RADIUS;
+	player.size.y=subj.size.a=-PLAYER_BASE_HEIGHT;
+	player.size.x=subj.size.b=PLAYER_BASE_RADIUS;
+	player.size.z=subj.size.g=PLAYER_BASE_RADIUS;
 	player.desiredangle.a=player.angle.a=subj.angle.a=3.f;
 	player.desiredangle.b=player.angle.b=subj.angle.b=268.f;
 	player.desiredangle.g=player.angle.g=subj.angle.g=0.f;
@@ -1272,7 +1273,7 @@ int main(int argc, char ** argv) {
 
 	ARX_INTERFACE_NoteInit();
 	LogDebug << "Note Init";
-	PUSH_PLAYER_FORCE.clear();
+	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	ARX_SPECIAL_ATTRACTORS_Reset();
 	LogDebug << "Attractors Init";
 	ARX_SPELLS_Precast_Reset();
@@ -2347,7 +2348,7 @@ HRESULT DANAE::OneTimeSceneInit()
 {
 	return S_OK;
 }
-EERIE_3D ePos;
+Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;
 void LaunchWaitingCine()
 {
@@ -2391,11 +2392,11 @@ void LaunchWaitingCine()
 
 	WILL_LAUNCH_CINE[0]=0;
 }
-void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_3D * angle)
+static void PlayerLaunchArrow_Test(float aimratio,float poisonous,Vec3f * pos,Anglef * angle)
 {
-	EERIE_3D position;
-	EERIE_3D vect;
-	EERIE_3D dvect;
+	Vec3f position;
+	Vec3f vect;
+	Vec3f dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	float anglea;
@@ -2410,10 +2411,10 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
-	EERIE_3D upvect(0,0,-1);
+	Vec3f upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
-	upvect = EERIE_3D(0,-1,0);
+	upvect = Vec3f(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
@@ -2422,13 +2423,13 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 
 	if (velocity<0.9f) velocity=0.9f;
 
-	EERIE_3D v1,v2;
-	EERIE_3D vv(0,0,1);
+	Vec3f v1,v2;
+	Vec3f vv(0,0,1);
 	float aa=angle->a;
 	float ab=90-angle->b;
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
-	vv = EERIE_3D(0,-1,0);
+	vv = Vec3f(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
@@ -2458,9 +2459,9 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 extern long sp_max;
 void PlayerLaunchArrow(float aimratio,float poisonous)
 {
-	EERIE_3D position;
-	EERIE_3D vect;
-	EERIE_3D dvect;
+	Vec3f position;
+	Vec3f vect;
+	Vec3f dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	float anglea;
@@ -2485,11 +2486,11 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
 
-	EERIE_3D upvect(0,0,-1);
+	Vec3f upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 
-	upvect = EERIE_3D(0,-1,0);
+	upvect = Vec3f(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
@@ -2499,13 +2500,13 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 
 	if (velocity<0.9f) velocity=0.9f;
 
-	EERIE_3D v1,v2;
-	EERIE_3D vv(0,0,1);
+	Vec3f v1,v2;
+	Vec3f vv(0,0,1);
 	float aa=player.angle.a;
 	float ab=90-player.angle.b;
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
-	vv = EERIE_3D(0,-1,0);
+	vv = Vec3f(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
@@ -2534,8 +2535,8 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 
 	if (sp_max)
 	{
-		EERIE_3D angle;
-		EERIE_3D pos;
+		Anglef angle;
+		Vec3f pos;
 		pos.x=player.pos.x;
 		pos.y=player.pos.y+40.f;
 		pos.z=player.pos.z;
@@ -3098,8 +3099,8 @@ void FirstFrameProc() {
 
 	InitSnapShot(NULL,"snapshot");
 }
-EERIE_3D LastValidPlayerPos;
-EERIE_3D	WILL_RESTORE_PLAYER_POSITION;
+Vec3f LastValidPlayerPos;
+Vec3f	WILL_RESTORE_PLAYER_POSITION;
 long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
 extern long FLAG_ALLOW_CLOTHES;
 
@@ -3108,7 +3109,7 @@ extern long FLAG_ALLOW_CLOTHES;
 long FirstFrameHandling()
 {	
 	LogDebug << "FirstFrameHandling";
-	EERIE_3D trans;
+	Vec3f trans;
 	FirstFrame=-1;
 
 	ARX_PARTICLES_FirstInit();
@@ -4404,7 +4405,7 @@ void DrawMagicSightInterface()
 
 void RenderAllNodes()
 {
-	EERIE_3D angle(0, 0, 0);
+	Anglef angle(Anglef::ZERO);
 	float xx,yy;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -5804,7 +5805,7 @@ static float _AvgFrameDiff = 150.f;
 	else if (EXTERNALVIEW)
 	{
 		float t=radians(player.angle.b);
-		EERIE_3D tt;
+		Vec3f tt;
 
 		for (long l=0;l<250;l+=10)
 		{
@@ -5845,7 +5846,7 @@ static float _AvgFrameDiff = 150.f;
 				subj.pos.y=inter.iobj[0]->obj->vertexlist3[id].v.y;
 				subj.pos.z=inter.iobj[0]->obj->vertexlist3[id].v.z;
 
-				EERIE_3D vect;
+				Vec3f vect;
 				vect.x=subj.pos.x-player.pos.x;
 				vect.y=0;
 				vect.z=subj.pos.z-player.pos.z;
@@ -5927,21 +5928,19 @@ static float _AvgFrameDiff = 150.f;
 			if (rnd()>0.5f)
 			{
 				conversationcamera.size.a=MAKEANGLE(180.f+rnd()*20.f-10.f);
+				conversationcamera.size.b=0.f;
 				conversationcamera.size.g=0.f;
 				conversationcamera.d_angle.g=0.08f;
 				conversationcamera.d_angle.b=0.f;
-					conversationcamera.d_angle.a = 0.f;
-				conversationcamera.size.b=0.f;
+				conversationcamera.d_angle.a = 0.f;
 			}
 		}
 		else
 		{
-			conversationcamera.size.a+=conversationcamera.d_angle.a*FrameDiff;
-			conversationcamera.size.b+=conversationcamera.d_angle.b*FrameDiff;
-			conversationcamera.size.g+=conversationcamera.d_angle.g*FrameDiff;
+			conversationcamera.size += conversationcamera.d_angle * FrameDiff;
 		}
 
-		EERIE_3D sourcepos,targetpos;
+		Vec3f sourcepos,targetpos;
 
 		if (ApplySpeechPos(&conversationcamera,is))
 		{
@@ -5963,7 +5962,7 @@ static float _AvgFrameDiff = 150.f;
 			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
 			}
 
-		EERIE_3D vect,vec2;
+		Vec3f vect,vec2;
 		vect.x=targetpos.x-sourcepos.x;
 		vect.y=targetpos.y-sourcepos.y;
 		vect.z=targetpos.z-sourcepos.z;
@@ -6051,9 +6050,9 @@ static float _AvgFrameDiff = 150.f;
 						subj.pos.x=acs->pos1.x;
 						subj.pos.y=acs->pos1.y;
 						subj.pos.z=acs->pos1.z;
-						subj.angle.a=acs->pos2.a;
-						subj.angle.b=acs->pos2.b;
-						subj.angle.g=acs->pos2.g;
+						subj.angle.a=acs->pos2.x;
+						subj.angle.b=acs->pos2.y;
+						subj.angle.g=acs->pos2.z;
 						EXTERNALVIEW=1;
 						break;
 					}
@@ -6062,7 +6061,7 @@ static float _AvgFrameDiff = 150.f;
 						alpha=acs->startangle.a*itime+acs->endangle.a*rtime;
 						beta=acs->startangle.b*itime+acs->endangle.b*rtime;
 						distance=acs->startpos*itime+acs->endpos*rtime;
-						EERIE_3D targetpos = acs->pos1;
+						Vec3f targetpos = acs->pos1;
 						conversationcamera.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
 						conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
 						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;						
@@ -6082,7 +6081,7 @@ static float _AvgFrameDiff = 150.f;
 						if (ValidIONum(acs->ionum))
 						{
 
-							EERIE_3D from,to,vect,vect2;
+							Vec3f from,to,vect,vect2;
 							from = acs->pos1;
 							to = acs->pos2;
 
@@ -6101,14 +6100,14 @@ static float _AvgFrameDiff = 150.f;
 							distance=acs->f0*itime+acs->f1*rtime;
 							vect2 *= distance;
 							dist=TRUEEEDistance3D(&from,&to);
-							EERIE_3D tfrom,tto;
+							Vec3f tfrom,tto;
 							tfrom.x=from.x+vect.x*acs->startpos*( 1.0f / 100 )*dist;
 							tfrom.y=from.y+vect.y*acs->startpos*( 1.0f / 100 )*dist;
 							tfrom.z=from.z+vect.z*acs->startpos*( 1.0f / 100 )*dist;
 							tto.x=from.x+vect.x*acs->endpos*( 1.0f / 100 )*dist;
 							tto.y=from.y+vect.y*acs->endpos*( 1.0f / 100 )*dist;
 							tto.z=from.z+vect.z*acs->endpos*( 1.0f / 100 )*dist;
-							EERIE_3D targetpos;
+							Vec3f targetpos;
 							targetpos.x=tfrom.x*itime+tto.x*rtime;
 							targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;
 							targetpos.z=tfrom.z*itime+tto.z*rtime;
@@ -6135,7 +6134,7 @@ static float _AvgFrameDiff = 150.f;
 						//need to compute current values
 						if (ValidIONum(acs->ionum))
 						{
-							EERIE_3D targetpos;
+							Vec3f targetpos;
 							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
 								|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
 							{
@@ -6158,14 +6157,14 @@ static float _AvgFrameDiff = 150.f;
 							
 							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );						
 							
-							EERIE_3D vect;
+							Vec3f vect;
 							vect.x=conversationcamera.pos.x-targetpos.x;
 							vect.y=conversationcamera.pos.y-targetpos.y;
 							vect.z=conversationcamera.pos.z-targetpos.z;
-							EERIE_3D vect2;
+							Vec3f vect2;
 							Vector_RotateY(&vect2,&vect,90);
 							TRUEVector_Normalize(&vect2);
-							EERIE_3D vect3 = vect;
+							Vec3f vect3 = vect;
 							TRUEVector_Normalize(&vect3);
 
 							vect.x=vect.x*(distance)+vect3.x*80.f;
@@ -6218,7 +6217,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (DeadCameraDistance>mdist) DeadCameraDistance=mdist;
 
-		EERIE_3D targetpos;
+		Vec3f targetpos;
 
 		targetpos.x = player.pos.x;
 			targetpos.y = player.pos.y;
@@ -6279,7 +6278,7 @@ static float _AvgFrameDiff = 150.f;
 			currentbeta=CAMERACONTROLLER->angle.b;
 		}
 
-			EERIE_3D targetpos;
+			Vec3f targetpos;
 
 		targetpos.x=CAMERACONTROLLER->pos.x;
 		targetpos.y=CAMERACONTROLLER->pos.y+PLAYER_BASE_HEIGHT;
@@ -6310,7 +6309,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if ((USE_CINEMATICS_CAMERA) && (USE_CINEMATICS_PATH.path!=NULL))
 	{
-		EERIE_3D pos,pos2;
+		Vec3f pos,pos2;
 			USE_CINEMATICS_PATH._curtime = ARX_TIME_Get();
 
 		USE_CINEMATICS_PATH._curtime+=50;
@@ -6397,7 +6396,7 @@ static float _AvgFrameDiff = 150.f;
 
 	// Set Listener Position
 	{
-		EERIE_3D front, up;
+		Vec3f front, up;
 		float t;
 		t=radians(MAKEANGLE(ACTIVECAM->angle.b));			
 		front.x=-EEsin(t);
@@ -6928,7 +6927,7 @@ void DANAE::GoFor2DFX()
 						(ltvv.sy<(DANAESIZY-(CINEMA_DECAL*Yratio)))
 						)
 					{
-						EERIE_3D vector;
+						Vec3f vector;
 						vector.x=lv.sx-ACTIVECAM->pos.x;
 						vector.y=lv.sy-ACTIVECAM->pos.y;
 						vector.z=lv.sz-ACTIVECAM->pos.z;
@@ -6944,10 +6943,10 @@ void DANAE::GoFor2DFX()
 
 						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
-						EERIE_3D	hit;
+						Vec3f	hit;
 						EERIEPOLY	*tp=NULL;
 						Vec2s ees2dlv;
-						EERIE_3D ee3dlv;
+						Vec3f ee3dlv;
 						ee3dlv.x = lv.sx;
 						ee3dlv.y = lv.sy;
 						ee3dlv.z = lv.sz;
@@ -7012,7 +7011,7 @@ void DANAE::GoFor2DFX()
 						lv.sy=el->pos.y;
 						lv.sz=el->pos.z;
 						lv.rhw=1.f;
-						specialEE_RT((D3DTLVERTEX *)&lv,(EERIE_3D *)&ltvv);
+						specialEE_RT((D3DTLVERTEX *)&lv,(Vec3f *)&ltvv);
 						float v=el->temp;
 
 						if (FADEDIR)

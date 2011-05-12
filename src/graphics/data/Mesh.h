@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
+
 #ifndef EERIEPOLY_H
 #define EERIEPOLY_H
 
@@ -66,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 
 #include "platform/Flags.h"
+#include "platform/math/Angle.h"
 
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
@@ -102,7 +104,7 @@ struct EERIE_TRANSFORM
 struct EERIE_CAMERA
 {
 	EERIE_TRANSFORM transform;
-	EERIE_3D pos; // 0 4 8
+	Vec3f pos; // 0 4 8
 	float	Ycos; // 12
 	float	Ysin; // 16
 	float	Xcos; // 20
@@ -118,15 +120,15 @@ struct EERIE_CAMERA
 	float	xmod;
 	float	ymod;
 	EERIEMATRIX matrix;
-	EERIE_3D angle;
+	Anglef angle;
 
-	EERIE_3D d_pos;
-	EERIE_3D d_angle;
-	EERIE_3D lasttarget;
-	EERIE_3D lastpos;
-	EERIE_3D translatetarget;
+	Vec3f d_pos;
+	Anglef d_angle;
+	Vec3f lasttarget;
+	Vec3f lastpos;
+	Vec3f translatetarget;
 	BOOL	lastinfovalid;
-	EERIE_3D norm;
+	Vec3f norm;
 	EERIE_RGB	fadecolor;
 	RECT	clip;
 	float	clipz0;
@@ -146,8 +148,8 @@ struct EERIE_CAMERA
 	long	bkgcolor;
 	long	nbdrawn;
 	float	cdepth;
-
-	EERIE_3D	size;
+	
+	Anglef size;
 };
 
 #define ANCHOR_FLAG_GREEN_DRAW	1
@@ -155,7 +157,7 @@ struct EERIE_CAMERA
 
 struct _ANCHOR_DATA
 {
-	EERIE_3D	pos;
+	Vec3f	pos;
 	short		nblinked;
 	short		flags;
 	long	*	linked;
@@ -296,11 +298,10 @@ struct IO_PATHFIND {
 
 #define MAX_EXTRA_ROTATE 4
 
-struct EERIE_EXTRA_ROTATE
-{
-	long		flags;
-	short		group_number[MAX_EXTRA_ROTATE];
-	EERIE_3D	group_rotate[MAX_EXTRA_ROTATE];
+struct EERIE_EXTRA_ROTATE {
+	long flags;
+	short group_number[MAX_EXTRA_ROTATE];
+	Anglef group_rotate[MAX_EXTRA_ROTATE];
 };
 
 #define MAX_STACKED_BEHAVIOR 5
@@ -361,7 +362,7 @@ struct IO_NPCDATA
 
 	short SPLAT_DAMAGES;
 	short SPLAT_TOT_NB;
-	EERIE_3D last_splat_pos;
+	Vec3f last_splat_pos;
 	float vvpos;
 
 	float climb_count;
@@ -401,16 +402,16 @@ struct IO_HALO
 	float			radius;
 	unsigned long	flags;
 	long			dynlight;
-	EERIE_3D		offset;
+	Vec3f		offset;
 };
 
 struct IO_PHYSICS
 {
 	EERIE_CYLINDER	cyl;
-	EERIE_3D		startpos;
-	EERIE_3D		targetpos;
-	EERIE_3D		velocity;
-	EERIE_3D		forces;
+	Vec3f		startpos;
+	Vec3f		targetpos;
+	Vec3f		velocity;
+	Vec3f		forces;
 };
 
 struct IO_TWEAKER_INFO
@@ -447,13 +448,13 @@ struct INTERACTIVE_OBJ
 	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
 
 	long				ioflags;	// IO type
-	EERIE_3D			lastpos;	// IO last position
-	EERIE_3D			pos;		// IO position
-	EERIE_3D			move;
-	EERIE_3D			lastmove;
-	EERIE_3D			forcedmove;
+	Vec3f			lastpos;	// IO last position
+	Vec3f			pos;		// IO position
+	Vec3f			move;
+	Vec3f			lastmove;
+	Vec3f			forcedmove;
 
-	EERIE_3D			angle;		// IO angle
+	Anglef angle;		// IO angle
 	IO_PHYSICS			physics;	// Movement Collision Data
 	short				room;
 	short				room_flags; // 1==need_update
@@ -463,7 +464,7 @@ struct INTERACTIVE_OBJ
 	EERIE_3DOBJ *		obj;		// IO Mesh data
 	ANIM_HANDLE *		anims[MAX_ANIMS];	// Object Animations
 	ANIM_USE			animlayer[MAX_ANIM_LAYERS];
-	EERIE_3D *			lastanimvertex;		// Last Animation Positions of Vertex
+	Vec3f *			lastanimvertex;		// Last Animation Positions of Vertex
 	long				nb_lastanimvertex;
 	unsigned long		lastanimtime;
 
@@ -475,7 +476,7 @@ struct INTERACTIVE_OBJ
 	ArxSound				sound;
 	ObjectType type_flags;			// object type (weapon,goblin...)
 	long				scriptload;			// Is This object Loaded by Script ?
-	EERIE_3D			target;				// Target position
+	Vec3f			target;				// Target position
 	long				targetinfo;			// Target Type/Ident
 
 	long				cstep;
@@ -499,12 +500,12 @@ struct INTERACTIVE_OBJ
 	char				locname[64];		//localisation
 	unsigned short		EditorFlags; // 1 NOTSAVED 2 selected
 	unsigned short		GameFlags; // GFLAGS
-	EERIE_3D			velocity;			// velocity
+	Vec3f			velocity;			// velocity
 	float				fall;
 
 	long				stopped;
-	EERIE_3D			initpos;			// Initial Position
-	EERIE_3D			initangle;			// Initial Angle
+	Vec3f			initpos;			// Initial Position
+	Anglef			initangle;			// Initial Angle
 	char				filename[256];
 	float				scale;
 
@@ -774,7 +775,7 @@ struct INTERACTIVE_OBJ
 extern long EERIEDrawnPolys;
 extern long EERIEInit;
 extern long TRUECLIPPING;
-extern EERIE_3D BBOXMIN,BBOXMAX;
+extern Vec3f BBOXMIN,BBOXMAX;
 extern EERIE_BACKGROUND * ACTIVEBKG;
 extern EERIE_CAMERA * ACTIVECAM;
 extern long USE_FAST_SCENES;
@@ -796,8 +797,8 @@ void SetNextAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * ea,long layer=0,long loop=0)
 
 void AcquireLastAnim(INTERACTIVE_OBJ * io);
 void FinishAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * eanim);
-bool Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit);
-void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
+bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);
+void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
 void FaceTarget(INTERACTIVE_OBJ * io);
 
 void DebugSphere(float x,float y,float z,float siz,long tim,D3DCOLOR color);
@@ -805,7 +806,7 @@ void DebugSphere(float x,float y,float z,float siz,long tim,D3DCOLOR color);
 EERIEPOLY * CheckTopPoly(float x,float y,float z);
 EERIEPOLY * CheckPolyOnTop(float x,float y,float z);
 EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY = NULL);
-EERIEPOLY * EECheckInPoly(const EERIE_3D * pos,float * needY = NULL);
+EERIEPOLY * EECheckInPoly(const Vec3f * pos,float * needY = NULL);
 EERIEPOLY * CheckInPolyIn(float x,float y,float z);
 EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY = NULL);
 
@@ -814,16 +815,16 @@ EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY = NULL);
  * 
  * @return The lowest water polygon pos is under, or NULL if pos is not under water.
  **/
-EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos);
+EERIEPOLY * EEIsUnderWater(const Vec3f * pos);
 
 /**
  * Check if the given condition is under water.
  * 
  * @return Any water polygon pos is under, or NULL if pos is not under water.
  **/
-EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos);
+EERIEPOLY * EEIsUnderWaterFast(const Vec3f * pos);
 
-bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos,float * ret);
+bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos,float * ret);
 bool IsAnyPolyThere(float x, float z);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
 EERIEPOLY * GetMinPoly(float x, float y, float z);
@@ -835,9 +836,9 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
 float Distance2D(float x0, float y0, float x1, float y1);
 float Distance3D(float x0, float y0, float z0, float x1, float y1, float z1);
 
-int EERIELaunchRay2(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * tp, long flag);
-int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * tp, long flag);
-float GetGroundY(EERIE_3D * pos);
+int EERIELaunchRay2(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
+int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
+float GetGroundY(Vec3f * pos);
 void EE_IRTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void EE_RTT(D3DTLVERTEX *in,D3DTLVERTEX *out);
 
@@ -849,9 +850,9 @@ void EE_RotateY(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
 void EE_RotateZ(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
 void EE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 
-void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,EERIE_3D * pos);
+void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos);
 
-long PhysicalDrawBkgVLine(EERIE_3D * orgn,EERIE_3D * dest);
+long PhysicalDrawBkgVLine(Vec3f * orgn,Vec3f * dest);
 
 // FAST SAVE LOAD
 bool FastSceneLoad(const std::string & path);
@@ -862,24 +863,8 @@ bool CreateUniqueIdent(char * pathh);
 //****************************************************************************
 // DRAWING FUNCTIONS START
 
-void DrawEERIEObjEx(		EERIE_3DOBJ * eobj,
-							EERIE_3D * angle,
-							EERIE_3D  * pos,
-							EERIE_3D * scale,
-							EERIE_RGB * col
-						);
-void DrawEERIEObjExEx(	EERIE_3DOBJ * eobj,
-						EERIE_3D * angle,
-						EERIE_3D  * pos,
-						EERIE_3D * scale,
-						int coll
-						);
-void DrawEERIEInter(		EERIE_3DOBJ * eobj,
-							EERIE_3D * angle,
-							EERIE_3D  * pos,
-							INTERACTIVE_OBJ * io,
-							EERIE_MOD_INFO * modinfo=NULL
-						);
+void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * scale, EERIE_RGB * col);
+void DrawEERIEObjExEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * scale, int coll);
 // DRAWING FUNCTIONS END
 //****************************************************************************
 
@@ -943,7 +928,7 @@ __inline void ResetBBox3D(INTERACTIVE_OBJ * io)
 	}
 }
 
-__inline void AddToBBox3D(INTERACTIVE_OBJ * io,EERIE_3D * pos)
+__inline void AddToBBox3D(INTERACTIVE_OBJ * io,Vec3f * pos)
 {
 	if (io)
 	{
@@ -962,7 +947,7 @@ void ApplyLight(EERIEPOLY *ep);
 long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest);
 void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
-void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power);
+void ApplyWaterFXToVertex(Vec3f * odtv,D3DTLVERTEX * dtv,float power);
 int BackFaceCull2D(D3DTLVERTEX * tv);
 void ResetAnim(ANIM_USE * eanim);
 
@@ -971,7 +956,7 @@ void ResetAnim(ANIM_USE * eanim);
 
 long EERIERTPPoly(EERIEPOLY *ep);
 
-void EE_RTP3(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam);
+void EE_RTP3(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam);
 
 void ReleaseAnimFromIO(INTERACTIVE_OBJ * io,long num);
 
@@ -980,7 +965,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
 void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
 void WriteMSEData(char * path,EERIE_MULTI3DSCENE * ms);
 
-bool LittleAngularDiff(EERIE_3D * norm,EERIE_3D * norm2);
+bool LittleAngularDiff(Vec3f * norm,Vec3f * norm2);
 void RecalcLight(EERIE_LIGHT * el);
 void CreatePWorld(long x0,long x1,long z0,long z1);
 void ComputeSworld();
@@ -999,7 +984,7 @@ void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);
 
-long GetVertexPos(INTERACTIVE_OBJ * io,long id,EERIE_3D * pos);
+long GetVertexPos(INTERACTIVE_OBJ * io,long id,Vec3f * pos);
 void PrepareBackgroundNRMLs();
 void DrawInWorld();
 long CountBkgVertex();
@@ -1009,9 +994,9 @@ void SetCameraDepth(float depth);
 
 extern void EERIETreatPoint(D3DTLVERTEX *in,D3DTLVERTEX *out);
 extern void EERIETreatPoint2(D3DTLVERTEX *in,D3DTLVERTEX *out);
-void _YRotatePoint(EERIE_3D *in,EERIE_3D *out,float c, float s);
-void _XRotatePoint(EERIE_3D *in,EERIE_3D *out,float c, float s);
-bool RayCollidingPoly(EERIE_3D * orgn,EERIE_3D * dest,EERIEPOLY * ep,EERIE_3D * hit);
+void _YRotatePoint(Vec3f *in,Vec3f *out,float c, float s);
+void _XRotatePoint(Vec3f *in,Vec3f *out,float c, float s);
+bool RayCollidingPoly(Vec3f * orgn,Vec3f * dest,EERIEPOLY * ep,Vec3f * hit);
 
 void EERIEPOLY_Compute_PolyIn();
 void F_PrepareCamera(EERIE_CAMERA * cam);
@@ -1073,15 +1058,15 @@ extern long NbRoomDraw;
 struct ROOM_DIST_DATA
 {
 	float	distance; // -1 means use truedist
-	EERIE_3D startpos;
-	EERIE_3D endpos;
+	Vec3f startpos;
+	Vec3f endpos;
 };
 
 extern ROOM_DIST_DATA * RoomDistance;
 extern long NbRoomDistance;
 
 void UpdateIORoom(INTERACTIVE_OBJ * io);
-float SP_GetRoomDist(EERIE_3D * pos,EERIE_3D * c_pos,long io_room,long Cam_Room);
+float SP_GetRoomDist(Vec3f * pos,Vec3f * c_pos,long io_room,long Cam_Room);
 float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();

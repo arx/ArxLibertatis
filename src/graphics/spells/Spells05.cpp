@@ -359,7 +359,7 @@ CRuneOfGuarding::~CRuneOfGuarding()
 	}
 }
 //-----------------------------------------------------------------------------
-void CRuneOfGuarding::Create(EERIE_3D _eSrc, float _fBeta)
+void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta)
 {
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
@@ -435,9 +435,9 @@ float CRuneOfGuarding::Render()
 	//	long color = D3DRGB(1,1,1);
 	//	int size = 100;
 	//----------------------------
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	float stiteangleb = (float) ulCurrentTime * fOneOnDuration * 120;
@@ -516,7 +516,7 @@ float CRuneOfGuarding::Render()
 }
 
 //-----------------------------------------------------------------------------
-void LaunchPoisonExplosion(EERIE_3D * aePos)
+void LaunchPoisonExplosion(Vec3f * aePos)
 {
 	// syst�me de partoches pour l'explosion
 	CParticleSystem * pPS = new CParticleSystem();
@@ -623,7 +623,7 @@ CPoisonProjectile::CPoisonProjectile()
 }
 
 //-----------------------------------------------------------------------------
-void CPoisonProjectile::Create(EERIE_3D _eSrc, float _fBeta)
+void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 {
 	int i;
 
@@ -647,7 +647,7 @@ void CPoisonProjectile::Create(EERIE_3D _eSrc, float _fBeta)
 	eMove.y = 0;
 	eMove.z = + fBetaRadCos * 2; 
 
-	EERIE_3D s, e, h;
+	Vec3f s, e, h;
 	s.x = eSrc.x;
 	s.y = eSrc.y;
 	s.z = eSrc.z;
@@ -877,8 +877,8 @@ float CPoisonProjectile::Render()
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 
-	EERIE_3D lastpos, newpos;
-	EERIE_3D v;
+	Vec3f lastpos, newpos;
+	Vec3f v;
 
 	lastpos.x = pathways[0].sx;
 	lastpos.y = pathways[0].sy;
@@ -955,10 +955,10 @@ float CPoisonProjectile::Render()
 		}
 	}
 
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
-	EERIE_3D av;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
+	Vec3f av;
 
 	ARX_CHECK_NOT_NEG(arx_check_init);
 
@@ -1032,7 +1032,7 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 }
 
 //-----------------------------------------------------------------------------
-void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0) {
+void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 	
 	(void)_afBeta;
 
@@ -1255,7 +1255,7 @@ CRepelUndead::~CRepelUndead()
 	}
 }
 //-----------------------------------------------------------------------------
-void CRepelUndead::Create(EERIE_3D aeSrc, float afBeta)
+void CRepelUndead::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -1306,9 +1306,9 @@ float CRepelUndead::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//----------------------------
-	EERIE_3D  eObjAngle;
-	EERIE_3D  eObjPos;
-	EERIE_3D  eObjScale;
+	Anglef  eObjAngle;
+	Vec3f  eObjPos;
+	Vec3f  eObjScale;
 	EERIE_RGB rgbObjColor;
 
 	eObjAngle.b = fBeta;
@@ -1449,11 +1449,11 @@ void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def
 	this->cone[numcone].conenbvertex = def * 2 + 2;
 	this->cone[numcone].conenbfaces = def * 2 + 2;
 	this->cone[numcone].coned3d = (D3DTLVERTEX *)malloc(this->cone[numcone].conenbvertex * sizeof(D3DTLVERTEX));
-	this->cone[numcone].conevertex = (EERIE_3D *)malloc(this->cone[numcone].conenbvertex * sizeof(EERIE_3D));
+	this->cone[numcone].conevertex = (Vec3f *)malloc(this->cone[numcone].conenbvertex * sizeof(Vec3f));
 	this->cone[numcone].coneind = (unsigned short *)malloc(this->cone[numcone].conenbvertex * sizeof(unsigned short));
 
 	float			a, da;
-	EERIE_3D	*	vertex = this->cone[numcone].conevertex;
+	Vec3f	*	vertex = this->cone[numcone].conevertex;
 	unsigned short	* pind = this->cone[numcone].coneind, ind = 0;
 	int				nb;
 	a = 0.f;
@@ -1479,7 +1479,7 @@ void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def
 	}
 }
 /*--------------------------------------------------------------------------*/
-void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, EERIE_3D * pos, unsigned long _ulDuration)
+void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f * pos, unsigned long _ulDuration)
 {
 	SetDuration(_ulDuration);
 
@@ -1514,7 +1514,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, EERIE_3
 	}
 }
 /*--------------------------------------------------------------------------*/
-void CLevitate::AddStone(EERIE_3D * pos)
+void CLevitate::AddStone(Vec3f * pos)
 {
 	if (ARXPausedTimer) return;
 
@@ -1673,7 +1673,7 @@ void CLevitate::Update(unsigned long _ulTime)
 	if (this->timestone <= 0)
 	{
 		this->timestone = 50 + (int)(rnd() * 100.f);
-		EERIE_3D	pos;
+		Vec3f	pos;
 
 		float r = this->rbase * frand2();
 		pos.x = this->pos.x + r; 
@@ -1693,7 +1693,7 @@ float CLevitate::Render()
 
 	//calcul du cone
 	D3DTLVERTEX d3dvs, *d3dv;
-	EERIE_3D	* vertex;
+	Vec3f	* vertex;
 	int			nb, nbc, col;
 	float		ddu = this->ang;
 	float		u = ddu, du = .99999999f / (float)this->def;

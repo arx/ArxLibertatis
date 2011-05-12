@@ -107,7 +107,7 @@ struct SCREEN_SPLATS
 #define MAX_SCREEN_SPLATS 12
 DAMAGE_INFO	damages[MAX_DAMAGES];
 extern long ParticleCount;
-extern EERIE_3D PUSH_PLAYER_FORCE;
+extern Vec3f PUSH_PLAYER_FORCE;
 
 float Blood_Pos = 0.f;
 long Blood_Duration = 0;
@@ -134,7 +134,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Init()
 }
  
 extern TextureContainer * bloodsplat[6];
-void ARX_DAMAGES_SCREEN_SPLATS_Add(EERIE_3D * pos, float dmgs)
+void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 {
 	return;
 	long j = ARX_PARTICLES_GetFree();
@@ -697,7 +697,7 @@ void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
 	{
 		power *= ( 1.0f / 20 );
 		INTERACTIVE_OBJ * io = inter.iobj[source];
-		EERIE_3D vect;
+		Vec3f vect;
 		vect.x = io_target->pos.x - io->pos.x;
 		vect.y = io_target->pos.y - io->pos.y;
 		vect.z = io_target->pos.z - io->pos.z;
@@ -721,7 +721,7 @@ void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
 	}
 }
 
-float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, EERIE_3D * pos)
+float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, Vec3f * pos)
 {
 	if ((!ValidIONum(target))
 	        ||	(!ValidIONum(source)))
@@ -859,7 +859,7 @@ extern unsigned long ulHitFlash;
 //*************************************************************************************
 // flags & 1 == spell damage
 //*************************************************************************************
-float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long flags, EERIE_3D * pos) //,INTERACTIVE_OBJ * source)
+float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long flags, Vec3f * pos) //,INTERACTIVE_OBJ * source)
 {
 	if ((!io)
 	        ||	(!io->show)
@@ -1099,7 +1099,7 @@ long InExceptList(long dmg, long num)
 
 //*************************************************************************************
 //*************************************************************************************
-void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, EERIE_3D * pos, float dmg, INTERACTIVE_OBJ * io)
+void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE_OBJ * io)
 {
 
 	if (di->type & DAMAGE_TYPE_FAKEFIRE)
@@ -1192,7 +1192,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, EERIE_3D * pos, float dmg, INTERACT
 void ARX_DAMAGES_UpdateDamage(long j, float tim)
 {
 	float dmg, dist;
-	EERIE_3D sub;
+	Vec3f sub;
 
 	if (damages[j].exist)
 	{
@@ -1475,7 +1475,7 @@ void ARX_DAMAGES_UpdateAll()
 	for (size_t j = 0; j < MAX_DAMAGES; j++)
 		ARX_DAMAGES_UpdateDamage(j, ARXTime);
 }
-bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
+bool SphereInIO(INTERACTIVE_OBJ * io, Vec3f * pos, float radius)
 {
 	if (io == NULL) return false;
 
@@ -1497,7 +1497,7 @@ bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
 	
 	return false;
 }
-bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source)
+bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source)
 {
 	bool ret = false;
 
@@ -1546,7 +1546,7 @@ bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long sou
 	return ret;
 }
 
-void CheckForIgnition(EERIE_3D * pos, float radius, bool mode, long flag)
+void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag)
 {
 	float dist;
 
@@ -1631,10 +1631,10 @@ void CheckForIgnition(EERIE_3D * pos, float radius, bool mode, long flag)
 
 //*************************************************************************************
 //*************************************************************************************
-bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, DamageArea flags, DamageType typ, long numsource)
+bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, DamageType typ, long numsource)
 {
 	bool damagesdone = false;
-	EERIE_3D sub;
+	Vec3f sub;
 	sub.x = player.pos.x;
 	sub.y = player.pos.y + 90.f;
 	sub.z = player.pos.z;
@@ -1670,7 +1670,7 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, DamageArea flags, 
 					{
 						if (kk != k)
 						{
-							EERIE_3D posi;
+							Vec3f posi;
 							posi.x = (inter.iobj[i]->obj->vertexlist3[k].v.x + inter.iobj[i]->obj->vertexlist3[kk].v.x) * ( 1.0f / 2 );
 							posi.y = (inter.iobj[i]->obj->vertexlist3[k].v.y + inter.iobj[i]->obj->vertexlist3[kk].v.y) * ( 1.0f / 2 );
 							posi.z = (inter.iobj[i]->obj->vertexlist3[k].v.z + inter.iobj[i]->obj->vertexlist3[kk].v.z) * ( 1.0f / 2 );

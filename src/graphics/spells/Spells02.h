@@ -69,7 +69,7 @@ class CParticleSystem;
 class CHeal: public CSpellFx
 {
 	public:
-		EERIE_3D eSrc;
+		Vec3f eSrc;
 		float	fSize;
 		CParticleSystem * pPS;
 		TextureContainer * tex_sol;
@@ -94,7 +94,7 @@ class CHarm: public CSpellFx
 {
 	private:
 		short		key;
-		EERIE_3D	pos;
+		Vec3f	pos;
 		float		rayon;
 		float		fColor[3];
 		TextureContainer * tp;

@@ -109,7 +109,7 @@ extern long		NEED_DEBUGGER_CLEAR;
 extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
 extern long		GLOBAL_MAGIC_MODE;
-extern EERIE_3D	PUSH_PLAYER_FORCE;
+extern Vec3f	PUSH_PLAYER_FORCE;
 extern QUAKE_FX_STRUCT QuakeFx;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
@@ -124,7 +124,7 @@ extern unsigned long LAST_JUMP_ENDTIME;
 #define STEP_DISTANCE	120.f
 
 //-----------------------------------------------------------------------------
-extern EERIE_3D PUSH_PLAYER_FORCE;
+extern Vec3f PUSH_PLAYER_FORCE;
 extern bool bBookHalo;
 extern bool bGoldHalo;
 extern float InventoryX;
@@ -262,7 +262,7 @@ void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io) {
 // FUNCTION/RESULT:
 //   Fills "pos" with player "front pos" for sound purpose
 //*************************************************************************************
-void ARX_PLAYER_FrontPos(EERIE_3D * pos)
+void ARX_PLAYER_FrontPos(Vec3f * pos)
 {
 	pos->x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b))) * 100.f;
 	pos->y = player.pos.y + 100.f; //-100.f;
@@ -2354,7 +2354,7 @@ void ARX_PLAYER_Manage_Visual()
 
 					for (long kk = 0; kk < 2; kk++)
 					{
-						EERIE_3D  target;
+						Vec3f  target;
 						target.x = eobj->vertexlist3[id].v.x;
 						target.y = eobj->vertexlist3[id].v.y;
 						target.z = eobj->vertexlist3[id].v.z;
@@ -2586,7 +2586,7 @@ void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io)
 	if (!io) return;
 
 	EERIE_CAMERA tcam;
-	EERIE_3D target;
+	Vec3f target;
 
 	long id = inter.iobj[0]->obj->fastaccess.view_attach;
 
@@ -2636,7 +2636,7 @@ extern long CURRENT_BASE_FOCAL;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
 
-extern EERIE_3D TVCONTROLEDplayerpos;
+extern Vec3f TVCONTROLEDplayerpos;
 extern long TVCONTROLED;
 extern long FINAL_RELEASE;
 
@@ -2772,7 +2772,7 @@ void ARX_PLAYER_MakeStepNoise()
 			factor += ARX_NPC_AUDIBLE_FACTOR_RANGE * skill_stealth;
 		}
 
-		EERIE_3D pos;
+		Vec3f pos;
 
 		pos.x = player.pos.x;
 		pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
@@ -3120,7 +3120,7 @@ void PlayerMovementIterate(float DeltaTime)
 			FALLING_TIME = 0;
 
 		// Apply Player Impulse Force
-		EERIE_3D mv;
+		Vec3f mv;
 		float TheoricalMove = 230;
 		long time = 1000;
 
@@ -3196,7 +3196,7 @@ void PlayerMovementIterate(float DeltaTime)
 			player.physics.velocity.y = 0;
 		}
 
-		EERIE_3D mv2;
+		Vec3f mv2;
 		mv2.x = moveto.x - player.pos.x;
 		mv2.y = moveto.y - player.pos.y;
 		mv2.z = moveto.z - player.pos.z;
@@ -3244,7 +3244,7 @@ void PlayerMovementIterate(float DeltaTime)
 		player.physics.forces.y += mv2.y;
 		player.physics.forces.z += mv2.z;
 
-		EERIE_3D modifplayermove(0, 0, 0);
+		Vec3f modifplayermove(0, 0, 0);
 
 		// No Vertical Interpolation
 		if (player.jumpphase)
@@ -3258,7 +3258,7 @@ void PlayerMovementIterate(float DeltaTime)
 			else
 				player.physics.forces.y += WORLD_GRAVITY;
 
-			EERIE_3D mod_vect(0, 0, 0);
+			Vec3f mod_vect(0, 0, 0);
 			long mod_vect_count = -1;
 
 			// Check for LAVA Damage !!!
@@ -3276,7 +3276,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
-					EERIE_3D pos;
+					Vec3f pos;
 					pos.x = player.pos.x;
 					pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
 					pos.z = player.pos.z;
@@ -3302,7 +3302,7 @@ void PlayerMovementIterate(float DeltaTime)
 			player.physics.velocity.z = 0;
 
 		// Apply Attraction
-		EERIE_3D attraction;
+		Vec3f attraction;
 		ARX_SPECIAL_ATTRACTORS_ComputeForIO(*inter.iobj[0], attraction);
 		player.physics.forces.x += attraction.x;
 		player.physics.forces.y += attraction.y;
@@ -3352,7 +3352,7 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.velocity.y = 0;
 
 		// Reset Forces
-		memset(&player.physics.forces, 0, sizeof(EERIE_3D));
+		memset(&player.physics.forces, 0, sizeof(Vec3f));
 
 		// Check if player is already on firm ground AND not moving
 		if ((EEfabs(player.physics.velocity.x) < 0.001f) &&
@@ -3497,7 +3497,7 @@ void PlayerMovementIterate(float DeltaTime)
 	{
 		if (!EDITMODE)
 		{
-			EERIE_3D vect;
+			Vec3f vect;
 			vect.x = moveto.x - player.pos.x;
 			vect.y = moveto.y - player.pos.y;
 			vect.z = moveto.z - player.pos.z;
@@ -3984,7 +3984,7 @@ void ARX_GAME_Reset(long type) {
 	ROTATE_START = 0;
 	BLOCK_PLAYER_CONTROLS = 0;
 	HERO_SHOW_1ST = -1;
-	PUSH_PLAYER_FORCE.clear();
+	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	player.jumplastposition = 0;
 	player.jumpstarttime = 0;
 	player.jumpphase = 0;

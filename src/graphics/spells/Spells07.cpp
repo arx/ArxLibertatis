@@ -80,8 +80,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float _framedelay;
 
 struct CLightning::LIGHTNING {
-	EERIE_3D eStart;
-	EERIE_3D eVect;
+	Vec3f eStart;
+	Vec3f eVect;
 	int anb;
 	int anbrec;
 	bool abFollow;
@@ -126,8 +126,8 @@ CLightning::CLightning() :
 
 void CLightning::BuildS(LIGHTNING * pLInfo)
 {
-	EERIE_3D astart = pLInfo->eStart;
-	EERIE_3D avect = pLInfo->eVect;
+	Vec3f astart = pLInfo->eStart;
+	Vec3f avect = pLInfo->eVect;
 
 	if ((pLInfo->anb > 0) && (nbtotal < 2000))
 	{
@@ -146,7 +146,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		float fAngleY = frand2() * (pLInfo->fAngleYMax - pLInfo->fAngleYMin) + pLInfo->fAngleYMin;
 		float fAngleZ = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleZMin) + pLInfo->fAngleZMin;
 
-		EERIE_3D av;
+		Vec3f av;
 		av.x = (float) cos(acos(avect.x) - radians(fAngleX));
 		av.y = (float) sin(asin(avect.y) - radians(fAngleY));
 		av.z = (float) tan(atan(avect.z) - radians(fAngleZ));
@@ -264,11 +264,11 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 	}
 }
 
-void CLightning::SetPosSrc(EERIE_3D aeSrc) {
+void CLightning::SetPosSrc(Vec3f aeSrc) {
 	eSrc = aeSrc;
 }
 
-void CLightning::SetPosDest(EERIE_3D aeDest) {
+void CLightning::SetPosDest(Vec3f aeDest) {
 	eDest = aeDest;
 }
 
@@ -288,7 +288,7 @@ void CLightning::SetColor2(float afR, float afG, float afB) {
 float fTotoro = 0;
 float fMySize = 2;
 
-void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta) {
+void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 	
 	(void)beta; // TODO removing this parameter makes the signature clash with method from superclass
 	
@@ -397,7 +397,7 @@ void CLightning::Update(unsigned long _ulTime)
 	if (fMySize > 0.3f)
 		fMySize -= 0.1f;
 }
-void GetChestPos(long num, EERIE_3D * p)
+void GetChestPos(long num, Vec3f * p)
 {
 	if (num == 0)
 	{
@@ -445,7 +445,7 @@ float CLightning::Render()
 
 	long i;
 
-	EERIE_3D ePos;
+	Vec3f ePos;
 	
 	float fBeta = 0.f;
 	falpha = 0.f;
@@ -509,15 +509,15 @@ float CLightning::Render()
 			if (ValidIONum(io->targetinfo)
 			        &&	(io->targetinfo != spells[spellinstance].caster))
 			{
-				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
-				EERIE_3D p2;
+				Vec3f * p1 = &spells[spellinstance].caster_pos;
+				Vec3f p2;
 				GetChestPos(io->targetinfo, &p2); 
 				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
-				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
-				EERIE_3D p2;
+				Vec3f * p1 = &spells[spellinstance].caster_pos;
+				Vec3f p2;
 				GetChestPos(spells[spellinstance].target, &p2); //
 				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
@@ -554,7 +554,7 @@ float CLightning::Render()
 	{
 		if (i > fTotoro) break;
 
-		EERIE_3D astart;
+		Vec3f astart;
 
 		astart.x = cnodetab[cnodetab[i].parent].x + cnodetab[cnodetab[i].parent].fx;
 		astart.y = cnodetab[cnodetab[i].parent].y + cnodetab[cnodetab[i].parent].fy;
@@ -577,7 +577,7 @@ float CLightning::Render()
 
 		if (lSrc != -1)
 		{
-			EERIE_3D vv1, vv2;
+			Vec3f vv1, vv2;
 			vv1.x = astart.x;
 			vv1.y = astart.y;
 			vv1.z = astart.z;
@@ -807,7 +807,7 @@ CConfuse::CConfuse()
 }
 
 //-----------------------------------------------------------------------------
-void CConfuse::Create(EERIE_3D aeSrc, float afBeta)
+void CConfuse::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -858,9 +858,9 @@ float CConfuse::Render()
 		SETTC(tex_trail);
 	}
 
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	eCurPos.x = inter.iobj[spells[spellinstance].target]->pos.x;
@@ -978,7 +978,7 @@ CFireField::~CFireField()
 }
 
 //-----------------------------------------------------------------------------
-void CFireField::Create(float largeur, EERIE_3D * pos, int _ulDuration)
+void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 {
 	this->key = 0;
 
@@ -1101,7 +1101,7 @@ void CFireField::Create(float largeur, EERIE_3D * pos, int _ulDuration)
 	pPSStream1.SetTexture("graph\\particles\\fire.bmp", 0, 500);
 
 	pPSStream1.fParticleFreq = 150.0f;
-	EERIE_3D ea;
+	Vec3f ea;
 	ea.x = pos->x;
 	ea.z = pos->y + 10; 
 	ea.y = pos->z;
@@ -1195,7 +1195,7 @@ CIceField::CIceField()
 }
 
 //-----------------------------------------------------------------------------
-void CIceField::Create(EERIE_3D aeSrc, float afBeta)
+void CIceField::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -1324,9 +1324,9 @@ float CIceField::Render()
 		if (tSize[i].z > tSizeMax[i].z)
 			tSize[i].z = tSizeMax[i].z;
 
-		EERIE_3D stiteangle;
-		EERIE_3D stitepos;
-		EERIE_3D stitescale;
+		Anglef stiteangle;
+		Vec3f stitepos;
+		Vec3f stitescale;
 		EERIE_RGB stitecolor;
 
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360; 

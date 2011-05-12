@@ -63,15 +63,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CFireBall: public CSpellFx
 {
 	public:
-		EERIE_3D eSrc;
-		EERIE_3D eCurPos;
-		EERIE_3D eMove;
+		Vec3f eSrc;
+		Vec3f eCurPos;
+		Vec3f eMove;
 		bool bExplo;
 		float fLevel;
 		//private:
@@ -88,7 +88,7 @@ class CFireBall: public CSpellFx
 		void	SetTTL(unsigned long);
 
 	public:
-		void	Create(EERIE_3D, float afBeta, float afAlpha,  float);
+		void	Create(Vec3f, float afBeta, float afAlpha,  float);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -111,7 +111,7 @@ class CSpeed: public CSpellFx
 		struct T_RUBAN
 		{
 			int				actif;
-			EERIE_3D		pos;
+			Vec3f		pos;
 			int				next;
 		};
 		T_RUBAN truban[2048];
@@ -163,9 +163,9 @@ class CIceProjectile: public CSpellFx
 		float fSize;
 		float fStep;
 		float fColor;
-		EERIE_3D tPos[MAX_ICE];
-		EERIE_3D tSize[MAX_ICE];
-		EERIE_3D tSizeMax[MAX_ICE];
+		Vec3f tPos[MAX_ICE];
+		Vec3f tSize[MAX_ICE];
+		Vec3f tSizeMax[MAX_ICE];
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 		D3DTLVERTEX tv1a[MAX_ICE];
@@ -176,12 +176,12 @@ class CIceProjectile: public CSpellFx
 
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float);
-		void	Create(EERIE_3D, float, float);
+		void	Create(Vec3f, float);
+		void	Create(Vec3f, float, float);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -195,7 +195,7 @@ class CIceProjectile: public CSpellFx
 class CCreateFood: public CSpellFx
 {
 	public:
-		EERIE_3D eSrc;
+		Vec3f eSrc;
 		float	fSize;
 		CParticleSystem * pPS;
 		TextureContainer * tex_sol;
@@ -214,7 +214,7 @@ class CCreateFood: public CSpellFx
 
 //-----------------------------------------------------------------------------
 
-void LaunchFireballExplosion(EERIE_3D *, float);
-void LaunchFireballExplosion2(EERIE_3D *, float);
+void LaunchFireballExplosion(Vec3f *, float);
+void LaunchFireballExplosion2(Vec3f *, float);
 
 #endif

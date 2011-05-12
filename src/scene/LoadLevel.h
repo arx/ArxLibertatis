@@ -60,8 +60,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "platform/math/Vector3.h"
+#include "platform/math/Angle.h"
+
 struct INTERACTIVE_OBJ;
-struct EERIE_3D;
 struct EERIE_3DOBJ;
 
 // TODO why is this in LoadLevel?
@@ -70,7 +72,7 @@ void LogDirCreation(const std::string & dir);
 
 void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string & dir);
 
-extern EERIE_3D loddpos;
+extern Vec3f loddpos;
 long DanaeSaveLevel(const std::string & file);
 long DanaeLoadLevel(const std::string & file);
 void DanaeClearLevel(long flags = 0);
@@ -80,9 +82,9 @@ void RestoreLastLoadedLightning();
 // TODO editor-specific?
 void CheckIO_NOT_SAVED();
 
-INTERACTIVE_OBJ * LoadInter_Ex(const std::string & name, long ident, const EERIE_3D & pos, const EERIE_3D & angle, const EERIE_3D & trans);
+INTERACTIVE_OBJ * LoadInter_Ex(const std::string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
 
-extern EERIE_3D MSP;
+extern Vec3f MSP;
 
 void BIG_PURGE();
 

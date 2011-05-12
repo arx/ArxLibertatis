@@ -116,7 +116,7 @@ extern QUAKE_FX_STRUCT QuakeFx;
 extern bool bGToggleCombatModeWithKey;
 extern bool bGCroucheToggle;
 
-bool CanPurge(EERIE_3D * pos)
+bool CanPurge(Vec3f * pos)
 {
 	long px, pz;
 	px = pos->x * ACTIVEBKG->Xmul;
@@ -188,7 +188,7 @@ void BIG_PURGE()
 
 		for (int i = nbARXpaths - 1; i >= 0; i--)
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 			pos.x = ARXpaths[i]->initpos.x;
 			pos.y = ARXpaths[i]->initpos.y;
 			pos.z = ARXpaths[i]->initpos.z;
@@ -786,7 +786,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 	}
 }
 
-INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D & pos, const EERIE_3D & angle, const EERIE_3D & trans) {
+INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	char nameident[256];
 	string tmp;
 	size_t FileSize;
@@ -868,8 +868,8 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 }
 long LastLoadedLightningNb = 0;
 D3DCOLOR * LastLoadedLightning = NULL;
-EERIE_3D loddpos;
-EERIE_3D MSP;
+Vec3f loddpos;
+Vec3f MSP;
 extern long DEBUGCODE;
 
 //*************************************************************************************
@@ -984,7 +984,7 @@ long DanaeLoadLevel(const string & fic) {
 		strcpy(LastLoadedScene, ftemp.c_str());
 	}
 	
-	EERIE_3D trans;
+	Vec3f trans;
 	if(FASTmse) {
 		trans = Mscenepos;
 		player.pos = loddpos + trans;
@@ -1168,7 +1168,7 @@ long DanaeLoadLevel(const string & fic) {
 			fd->move.x = 1.f;
 			fd->move.y = 0.f;
 			fd->move.z = 0.f;
-			EERIE_3D out;
+			Vec3f out;
 			float ta = radians(MAKEANGLE(fd->angle.b));
 			_YRotatePoint(&fd->move, &out, EEcos(ta), EEsin(ta));
 			float tb = radians(MAKEANGLE(fd->angle.a));

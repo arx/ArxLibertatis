@@ -713,7 +713,7 @@ struct TVINFO
 #define MAXTVV 5000
 TVINFO * tvv[MAXTVV];
 long TVVcount = 0;
-EERIE_3D TVCONTROLEDplayerpos;
+Vec3f TVCONTROLEDplayerpos;
 long TVCONTROLED = 0;
 HTREEITEM hfix = NULL;
 HTREEITEM hitem = NULL;

@@ -118,9 +118,9 @@ bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius) {
 	return false;
 }
 
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, EERIE_3D & force) {
+void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, Vec3f & force) {
 	
-	force.clear();
+	force = Vec3f::ZERO;
 	
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		
@@ -144,7 +144,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, EERIE_3D &
 			
 			if(dist < max_radius) {
 				float ratio_dist = 1.f - (dist / max_radius);
-				EERIE_3D vect = io.pos - ioo.pos;
+				Vec3f vect = io.pos - ioo.pos;
 				Vector_Normalize(&vect);
 				power *= ratio_dist * 0.01f;
 				force = vect * power;

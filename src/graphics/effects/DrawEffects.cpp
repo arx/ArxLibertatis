@@ -75,8 +75,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // Some external defs needing to be cleaned...
 extern long DANAESIZX;
-extern EERIE_3D SPRmins;
-extern EERIE_3D SPRmaxs;
+extern Vec3f SPRmins;
+extern Vec3f SPRmaxs;
 extern long MOVETYPE;
 extern EERIE_3DOBJ * eyeballobj; 
 extern TextureContainer * Boom;
@@ -288,8 +288,8 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 		else 
 		{
 			EERIEDrawSprite(&in,11.f,lightsource_tc,EERIERGB(el->rgb.r,el->rgb.g,el->rgb.b),2.f);
-			memcpy(&el->mins,&SPRmins,sizeof(EERIE_3D));
-			memcpy(&el->maxs,&SPRmaxs,sizeof(EERIE_3D));
+			memcpy(&el->mins,&SPRmins,sizeof(Vec3f));
+			memcpy(&el->maxs,&SPRmaxs,sizeof(Vec3f));
 
 			if (el->selected)
 			{
@@ -345,9 +345,9 @@ extern long ARX_CONVERSATION;
 
 void ARXDRAW_DrawEyeBall()
 {
-	EERIE_3D angle;
-	EERIE_3D pos;
-	EERIE_3D scale;
+	Anglef angle;
+	Vec3f pos;
+	Vec3f scale;
 	EERIE_RGB rgb;
 	
 	float d;

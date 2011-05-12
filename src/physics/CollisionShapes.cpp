@@ -190,7 +190,7 @@ bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 	return true;
 }
 
-float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * dirvect, long group, float maxi)
+float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect, long group, float maxi)
 {
 	float curradius = 0.f;
 	float maxf = 0.f;
@@ -212,7 +212,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 
 		if ((sel > -1) && (IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)) continue;
 
-		EERIE_3D target;
+		Vec3f target;
 		target.x = obj->vertexlist[obj->grouplist[group].indexes[i]].v.x;
 		target.y = obj->vertexlist[obj->grouplist[group].indexes[i]].v.y;
 		target.z = obj->vertexlist[obj->grouplist[group].indexes[i]].v.z;
@@ -223,7 +223,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 
 		if (distance < maxf) continue;
 
-		EERIE_3D targvect;
+		Vec3f targvect;
 		targvect.x = target.x - center->x;
 		targvect.y = target.y - center->y;
 		targvect.z = target.z - center->z;
@@ -252,7 +252,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 	return (curradius);
 }
 
-long AddVertexToVertexList(EERIE_3DOBJ * obj, EERIE_3D * center, long group)
+long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
 {
 	if (obj->vertexlist.empty()) return -1;
 
@@ -319,15 +319,15 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 
 		if (workon != -1)
 		{
-			EERIE_3D center; // Group origin pos
+			Vec3f center; // Group origin pos
 			center.x = obj->vertexlist[obj->grouplist[k].origin].v.x;
 			center.y = obj->vertexlist[obj->grouplist[k].origin].v.y;
 			center.z = obj->vertexlist[obj->grouplist[k].origin].v.z;
-			EERIE_3D dest;  // Destination Group origin pos
+			Vec3f dest;  // Destination Group origin pos
 			dest.x = obj->vertexlist[obj->grouplist[workon].origin].v.x;
 			dest.y = obj->vertexlist[obj->grouplist[workon].origin].v.y;
 			dest.z = obj->vertexlist[obj->grouplist[workon].origin].v.z;
-			EERIE_3D dirvect; // Direction Vector from Origin Group to Destination Origin Group
+			Vec3f dirvect; // Direction Vector from Origin Group to Destination Origin Group
 			dirvect.x = dest.x - center.x;
 			dirvect.y = dest.y - center.y;
 			dirvect.z = dest.z - center.z;

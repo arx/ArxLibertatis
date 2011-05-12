@@ -261,7 +261,7 @@ long				FLYING_OVER		= 0;
 long				OLD_FLYING_OVER	= 0;
 long				LastRune=-1;
 long				BOOKZOOM=0;
-EERIE_3D			ePlayerAngle;
+Anglef			ePlayerAngle;
 long				CURCURTIME=0;
 long				CURCURDELAY=70;
 long				CURCURPOS=0;
@@ -1526,7 +1526,7 @@ void GetInfosCombine()
 bool DANAE::ManageEditorControls()
 {
 	float val = 0.f;
-	EERIE_3D trans;
+	Vec3f trans;
 
 	eMouseState = MOUSE_IN_WORLD;
 
@@ -2329,7 +2329,7 @@ bool DANAE::ManageEditorControls()
 							float vx=-((float)DANAEMouse.x-(float)subj.centerx);
 
 							vx/=3.f;
-							EERIE_3D pos;
+							Vec3f pos;
 								pos.x = io->pos.x = player.pos.x;
 								pos.z = io->pos.z = player.pos.z;
 							pos.y=io->pos.y=player.pos.y+80.f;
@@ -2339,7 +2339,7 @@ bool DANAE::ManageEditorControls()
 							io->stopped=1;
 							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)DANAESIZY*2;
 							float x_ratio=-(float)((float)DANAEMouse.x-(float)DANAECENTERX)/(float)DANAECENTERX;
-							EERIE_3D viewvector;
+							Vec3f viewvector;
 							viewvector.x=-(float)EEsin(radians(player.angle.b+(x_ratio*30.f)))*EEcos(radians(player.angle.a));
 								viewvector.y = EEsin(radians(player.angle.a)) + y_ratio; 
 							viewvector.z= (float)EEcos(radians(player.angle.b+(x_ratio*30.f)))*EEcos(radians(player.angle.a));
@@ -2362,7 +2362,7 @@ bool DANAE::ManageEditorControls()
 	{
 		if ((!CURRENT_TORCH) || (CURRENT_TORCH && (COMBINE != CURRENT_TORCH)))
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 
 			if (GetItemWorldPosition(COMBINE,&pos))
 			{
@@ -2832,7 +2832,7 @@ bool DANAE::ManageEditorControls()
 
 			if (this->kbd.inkey[INKEY_N])
 			{
-				EERIE_3D pos;
+				Vec3f pos;
 				pos.x=player.pos.x-(float)EEsin(radians(player.angle.b))*150.f;
 				pos.z=player.pos.z+(float)EEcos(radians(player.angle.b))*150.f;
 				pos.y=player.pos.y+80.f;		
@@ -2860,7 +2860,7 @@ bool DANAE::ManageEditorControls()
 				if ((ARX_PATHS_SelectedAP!=NULL) && (ARX_PATHS_SelectedNum!=-1))
 				{
 					long v=ARX_PATHS_AddPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum);
-					EERIE_3D pos;
+					Vec3f pos;
 
 					if (v<=2)
 					{
@@ -3403,7 +3403,7 @@ bool DANAE::ManageEditorControls()
 				fogs[LastSelectedFog].move.x=1.f;
 				fogs[LastSelectedFog].move.y=0.f;
 				fogs[LastSelectedFog].move.z=0.f;
-				EERIE_3D out;
+				Vec3f out;
 				_YRotatePoint(&fogs[LastSelectedFog].move,&out,EEcos(radians(MAKEANGLE(fogs[LastSelectedFog].angle.b))),EEsin(radians(MAKEANGLE(fogs[LastSelectedFog].angle.b))));
 				_XRotatePoint(&out,&fogs[LastSelectedFog].move,EEcos(radians(MAKEANGLE(fogs[LastSelectedFog].angle.a))),EEsin(radians(MAKEANGLE(fogs[LastSelectedFog].angle.a))));
 				
@@ -3514,7 +3514,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD2])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=(float)EEsin(radians(player.angle.b))*val;
 			trans.y=0.f;
 			trans.z=-(float)EEcos(radians(player.angle.b))*val;
@@ -3524,7 +3524,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD6])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 			trans.y=0.f;
 			trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b-90.f)))*val;
@@ -3534,7 +3534,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD4])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 			trans.y=0.f;
 			trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b+90.f)))*val;
@@ -3544,7 +3544,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADADD])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=0.f;
 			trans.y=-val;
 			trans.z=0.f;
@@ -3554,7 +3554,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADMINUS])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=0.f;
 			trans.y=val;
 			trans.z=0.f;
@@ -3609,7 +3609,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD8])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			float ag=GetNearestSnappedAngle(player.angle.b);
 			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
@@ -3621,7 +3621,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD2])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			float ag=GetNearestSnappedAngle(player.angle.b);
 			ag=radians(ag);
 			trans.x=(float)EEsin(ag)*val;
@@ -3633,7 +3633,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD6])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			float ag=GetNearestSnappedAngle(MAKEANGLE(player.angle.b-90.f));
 			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
@@ -3645,7 +3645,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD4])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			float ag=GetNearestSnappedAngle(MAKEANGLE(player.angle.b+90.f));
 			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
@@ -3657,7 +3657,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADADD])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=0.f;
 			trans.y=-val;
 			trans.z=0.f;
@@ -3667,7 +3667,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADMINUS])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=0.f;
 			trans.y=val;
 			trans.z=0.f;
@@ -3688,8 +3688,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADMULTIPLY])
 		{
-			EERIE_3D rot;
-			rot.a=rot.b=rot.g=0.f;
+			Anglef rot = Anglef::ZERO;
 
 			if (ObjectRotAxis==0) rot.b=val;
 			else if (ObjectRotAxis==1) rot.a=val;
@@ -3701,8 +3700,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADDIVIDE])
 		{
-			EERIE_3D rot;
-			rot.a=rot.b=rot.g=0.f;
+			Anglef rot = Anglef::ZERO;
 
 			if (ObjectRotAxis==0) rot.b=-val;
 			else if (ObjectRotAxis==1) rot.a=-val;
@@ -3902,7 +3900,7 @@ void DANAE::ManagePlayerControls()
 	float FD;
 	FD = 1.f;
 
-	EERIE_3D tm;
+	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
 
 	// Checks STEALTH Key Status.
@@ -3920,7 +3918,7 @@ void DANAE::ManagePlayerControls()
 		{
 			FD=18.f;
 
-			EERIE_3D old = eyeball.pos;
+			Vec3f old = eyeball.pos;
 
 			// Checks WALK_FORWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKFORWARD) )
@@ -3995,7 +3993,7 @@ void DANAE::ManagePlayerControls()
 			}
 			else
 			{
-				memcpy(&eyeball.pos,&old,sizeof(EERIE_3D));
+				memcpy(&eyeball.pos,&old,sizeof(Vec3f));
 			}
 		}
 
@@ -5264,7 +5262,7 @@ void DANAE::ManageKeyMouse()
 	}
 
 	ARX_Menu_Manage();
-	EERIE_3D tm;
+	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
 	INTERACTIVE_OBJ * t;
 
@@ -6009,8 +6007,8 @@ void DANAE::ManageKeyMouse()
 								else
 								{
 									ARX_SPELLS_Launch(SPELL_SPEED,0);
-									tm.x+=-(float)EEsin(radians(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
-									tm.z+=+(float)EEcos(radians(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
+									tm.x+=-(float)EEsin(radians(player.pos.y))*(float)FrameDiff*( 1.0f / 3 );
+									tm.z+=+(float)EEcos(radians(player.pos.y))*(float)FrameDiff*( 1.0f / 3 );
 								}
 
 								this->kbd.inkey[INKEY_4]=0;
@@ -6697,8 +6695,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	{
 		if (Book_Mode == BOOKMODE_SPELLS)
 		{
-			EERIE_3D angle;
-			EERIE_3D pos;
+			Anglef angle;
+			Vec3f pos;
 
 			EERIE_LIGHT tl;
 			memcpy(&tl,&DynLight[0],sizeof(EERIE_LIGHT));
@@ -8397,7 +8395,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (ARXmenu.currentmode==AMCM_OFF)
 			BOOKZOOM=0;
 
-		EERIE_3D pos;
+		Vec3f pos;
 		EERIE_LIGHT eLight1;
 		EERIE_LIGHT eLight2;
 		eLight1.pos.x=50.f;
@@ -9602,7 +9600,7 @@ void DANAE::DrawAllInterface()
 		}
 
 		count = (count2>count)?count2:count;
-		EERIE_3D pos;
+		Vec3f pos;
 		pos.x = DANAESIZX - ((count) * INTERFACE_RATIO(32));
 
 		if (CHANGE_LEVEL_ICON>-1) pos.x -= INTERFACE_RATIO(32);
@@ -9900,7 +9898,7 @@ long Manage3DCursor(long flags)
 
 	if (!io) return 0;
 
-	EERIE_3D temp;
+	Anglef temp;
 
 	if (io->ioflags & IO_INVERTED)
 	{
@@ -9914,7 +9912,7 @@ long Manage3DCursor(long flags)
 	}
 
 	temp.g = 0;
-	EERIE_3D pos;
+	Vec3f pos;
 	float angle=radians(MAKEANGLE(player.angle.b));
 	float angle2=radians(MAKEANGLE(player.angle.b-90.f));
 				
@@ -9953,12 +9951,12 @@ long Manage3DCursor(long flags)
 				pos.y=player.pos.y;
 
 				{
-					EERIE_3D objcenter(0, 0, 0);
+					Vec3f objcenter(0, 0, 0);
 					float maxdist= 0.f;
 					float miny=  99999999.f;
 					float maxy= -99999999.f;
-					EERIE_3D minoff;
-					EERIE_3D maxoff;
+					Vec3f minoff;
+					Vec3f maxoff;
 					maxoff.x=minoff.x=io->obj->vertexlist[0].v.x;
 					maxoff.y=minoff.y=io->obj->vertexlist[0].v.y;
 					maxoff.z=minoff.z=io->obj->vertexlist[0].v.z;
@@ -9983,7 +9981,7 @@ long Manage3DCursor(long flags)
 					cyl.height=-50.f;
 					cyl.radius=40.f;
 
-					EERIE_3D orgn,dest,mvectx,mvecty;
+					Vec3f orgn,dest,mvectx,mvecty;
 		mvectx.x = mvecty.x = -(float)EEsin(radians(player.angle.b - 90.f)); 
 		mvectx.y = mvecty.y = 0; 
 		mvectx.z = mvecty.z = +(float)EEcos(radians(player.angle.b - 90.f)); 
@@ -10016,7 +10014,7 @@ long Manage3DCursor(long flags)
 					pos.y=orgn.y;
 					pos.z=orgn.z;
 
-					EERIE_3D movev;
+					Vec3f movev;
 					movev.x=dest.x-orgn.x;
 					movev.y=dest.y-orgn.y;
 					movev.z=dest.z-orgn.z;
@@ -10057,7 +10055,7 @@ long Manage3DCursor(long flags)
 					if ( maxdist > 150.f ) maxdist = 150.f;
 
 		bool			bCollidposNoInit = true;
-					EERIE_3D		collidpos;
+					Vec3f		collidpos;
 					EERIE_CYLINDER	cyl2;
 					float			inc			=	10.f;
 					long			iterating	=	40;
@@ -10139,7 +10137,7 @@ long Manage3DCursor(long flags)
 
 
 
-							EERIE_3D vec;
+							Vec3f vec;
 							vec.x			= collidpos.x - pos.x;
 							vec.y			= collidpos.y - pos.y;
 							vec.z			= collidpos.z - pos.z;
@@ -10187,7 +10185,7 @@ long Manage3DCursor(long flags)
 								float vx=-((float)DANAEMouse.x-(float)subj.centerx);
 
 								vx/=3.f;
-								EERIE_3D pos;
+								Vec3f pos;
 					pos.x = io->pos.x = collidpos.x;
 					pos.z = io->pos.z = collidpos.z;
 								pos.y=io->pos.y=collidpos.y;
@@ -10201,9 +10199,9 @@ long Manage3DCursor(long flags)
 								movev.x*=0.0001f;
 								movev.z*=0.0001f;
 								movev.y=0.1f;
-								EERIE_3D viewvector = movev;
+								Vec3f viewvector = movev;
 
-								EERIE_3D angle;
+								Anglef angle;
 								angle.a=temp.a;
 								angle.b=temp.b;
 								angle.g=temp.g;

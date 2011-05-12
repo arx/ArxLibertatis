@@ -182,7 +182,7 @@ unsigned long CSummonCreature::GetDuration()
 }
 
 //-----------------------------------------------------------------------------
-void CSummonCreature::Create(EERIE_3D aeSrc, float afBeta)
+void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
 	D3DTLVERTEX target;
@@ -306,7 +306,7 @@ void CSummonCreature::RenderFissure()
 	D3DTLVERTEX vr[4];
 	D3DTLVERTEX target;
 
-	EERIE_3D etarget;
+	Vec3f etarget;
 	etarget.x = fBetaRadCos;
 	etarget.y = 0;
 	etarget.z = fBetaRadSin;
@@ -612,14 +612,14 @@ CIncinerate::~CIncinerate()
 }
 
 //-----------------------------------------------------------------------------
-void CIncinerate::Create(EERIE_3D _eSrc, float _fBeta, float _fLevel)
+void CIncinerate::Create(Vec3f _eSrc, float _fBeta, float _fLevel)
 {
 	iMax = (int)(30 + _fLevel * 5.2f);
 	Create(_eSrc, _fBeta);
 }
 
 //-----------------------------------------------------------------------------
-void CIncinerate::Create(EERIE_3D _eSrc, float _fBeta)
+void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 {
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
@@ -636,7 +636,7 @@ void CIncinerate::Create(EERIE_3D _eSrc, float _fBeta)
 
 	int i = 0;
 	iMax = iNumber;
-	EERIE_3D s, e, h;
+	Vec3f s, e, h;
 
 	s.x = eSrc.x;
 	s.y = eSrc.y - 20;
@@ -811,7 +811,7 @@ void CIncinerate::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
 
-	EERIE_3D et;
+	Vec3f et;
 
 	pPSStream.Update(_ulTime);
 	pPSHit.Update(_ulTime);
@@ -842,7 +842,7 @@ float CIncinerate::Render()
 
 	for (i = 0; i < 150 - 1; i++)
 	{
-		EERIE_3D s, d;
+		Vec3f s, d;
 		s.x = tv1a[i].sx;
 		s.y = tv1a[i].sy;
 		s.z = tv1a[i].sz;
@@ -854,9 +854,9 @@ float CIncinerate::Render()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 
 	stiteangle.b = 90 - fBeta;
 	stiteangle.a = 0;
@@ -914,7 +914,7 @@ CNegateMagic::CNegateMagic()
 }
 
 //-----------------------------------------------------------------------------
-void CNegateMagic::Create(EERIE_3D aeSrc, float afBeta)
+void CNegateMagic::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -1022,9 +1022,9 @@ float CNegateMagic::Render()
 		}
 	}
 
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120; 

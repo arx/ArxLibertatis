@@ -47,7 +47,7 @@ struct CinematicGrid {
 	int nbindsmalloc;
 	int nbuvs;
 	int nbuvsmalloc;
-	EERIE_3D * vertexs;
+	Vec3f * vertexs;
 	C_UV * uvs;
 	C_IND * inds;
 	int nbmat;

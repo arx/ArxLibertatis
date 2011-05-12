@@ -103,7 +103,7 @@ inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 
 //-----------------------------------------------------------------------------
 
-float GetMaxManhattanDistance(const EERIE_3D * _e1, const EERIE_3D * _e2)
+float GetMaxManhattanDistance(const Vec3f * _e1, const Vec3f * _e2)
 {
 	return 0;
 
@@ -209,11 +209,11 @@ static	void	Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io, long typ)
 
 
 /* Evaluate main entity translation */
-static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, long typ, EERIE_3D & ftr, EERIE_3D & ftr2)
+static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, long typ, Vec3f & ftr, Vec3f & ftr2)
 {
 	// Resets Frame Translate
-	ftr.clear();
-	ftr2.clear();
+	ftr = Vec3f::ZERO;
+	ftr2 = Vec3f::ZERO;
 
 
 	// Fill frame translate values with multi-layer translate informations...
@@ -289,7 +289,7 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 		// Use calculated value to notify the Movement engine of the translation to do
 		if (io->ioflags & IO_NPC)
 		{
-			ftr.clear();
+			ftr = Vec3f::ZERO;
 			io->move -= io->lastmove;
 		}
 		// Must recover translations for NON-NPC IO
@@ -318,8 +318,8 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 	for (long count = MAX_ANIM_LAYERS - 1; count >= 0; count--)
 	{
 		EERIE_QUAT		t, temp;
-		EERIE_3D		vect;
-		EERIE_3D		scale;
+		Vec3f		vect;
+		Vec3f		scale;
 
 		if (!io)
 		{
@@ -400,7 +400,7 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 
 
 /* Apply transformations on all bones */
-void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * angle, EERIE_3D * pos, EERIE_3D & ftr, float g_scale)
+static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Anglef * angle, Vec3f * pos, Vec3f & ftr, float g_scale)
 {
 	int i;
 
@@ -410,7 +410,6 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 	for (i = 0; i != obj->nb_bones; i++)
 	{
 		EERIE_QUAT	qt2;
-		EERIE_3D	vt1;
 
 		if (obj->bones[i].father >= 0) // Child Bones
 		{
@@ -423,7 +422,7 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			obj->bones[i].transanim = obj->bones[obj->bones[i].father].transanim + obj->bones[i].transanim;
 
 			/* Scale */
-			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + EERIE_3D(1,1,1)) * obj->bones[obj->bones[i].father].scaleanim;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f(1,1,1)) * obj->bones[obj->bones[i].father].scaleanim;
 
 		}
 		else // Root Bone
@@ -432,13 +431,13 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			if ((io) && !(io->ioflags & IO_NPC))
 			{
 				// To correct invalid angle in Animated FIX/ITEMS
-				EERIE_3D ang = *angle;
+				Anglef ang = *angle;
 				ang.a = (360 - ang.a);
 				ang.b = (ang.b);
 				ang.g = (ang.g);
 				EERIEMATRIX mat;
-				EERIE_3D vect(0, 0, 1);
-				EERIE_3D up(0, 1, 0);
+				Vec3f vect(0, 0, 1);
+				Vec3f up(0, 1, 0);
 				VRotateY(&vect, ang.b);
 				VRotateX(&vect, ang.a);
 				VRotateZ(&vect, ang.g);
@@ -451,34 +450,34 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			}
 			else
 			{
-				vt1 = *angle;
-				vt1.x = radians(vt1.x);
-				vt1.y = radians(vt1.y);
-				vt1.z = radians(vt1.z);
+				Anglef vt1 = *angle;
+				vt1.a = radians(vt1.a);
+				vt1.b = radians(vt1.b);
+				vt1.g = radians(vt1.g);
 				QuatFromAngles(&qt2, &vt1);
 				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			}
 
 			// Translation
-			vt1 = obj->bones[i].transinit + ftr;
+			Vec3f	vt1 = obj->bones[i].transinit + ftr;
 			TransformVertexQuat(&qt2, &vt1, &obj->bones[i].transanim);
 			obj->bones[i].transanim *= g_scale;
 			obj->bones[i].transanim = *pos + obj->bones[i].transanim;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + EERIE_3D(1,1,1)) * g_scale;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f(1,1,1)) * g_scale;
 		}
 	}
 }
 
-void EE_RT(D3DTLVERTEX * in, EERIE_3D * out);
-void EE_P(EERIE_3D * in, D3DTLVERTEX * out);
+void EE_RT(D3DTLVERTEX * in, Vec3f * out);
+void EE_P(Vec3f * in, D3DTLVERTEX * out);
 
 extern long INTERPOLATE_BETWEEN_BONES;
 
 /* Transform object vertices  */
 int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
-                          EERIE_3D * pos) {
+                          Vec3f * pos) {
 	int v;
 
 	EERIE_3DPAD * inVert;
@@ -490,7 +489,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 		EERIEMATRIX	 matrix;
 
 		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
-		EERIE_3D vector = obj->bones[i].transanim;
+		Vec3f vector = obj->bones[i].transanim;
 
 		// Apply Scale
 		matrix._11 *= obj->bones[i].scaleanim.x;
@@ -511,7 +510,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 			inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
 			outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
 
-			TransformVertexMatrix(&matrix, (EERIE_3D *)inVert, &outVert->v);
+			TransformVertexMatrix(&matrix, (Vec3f *)inVert, &outVert->v);
 
 			outVert->v += vector;
 			outVert->vert.sx = outVert->v.x;
@@ -583,12 +582,12 @@ extern long ALTERNATE_LIGHTING;
 extern float GLOBAL_LIGHT_FACTOR;
 
 /* Object dynamic lighting */
-bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, long typ)
+bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, long typ)
 {
 	EERIE_RGB		infra;
 	int				i, v, l;
-	EERIE_3D		tv;
-	EERIE_3D		vTLights[32];//MAX_LLIGHTS];				/* Same as above but in bone space (for faster calculation) */
+	Vec3f		tv;
+	Vec3f		vTLights[32];//MAX_LLIGHTS];				/* Same as above but in bone space (for faster calculation) */
 
 
 
@@ -883,17 +882,17 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 			/* Get light value for each vertex */
 			for (v = 0; v != obj->bones[i].nb_idxvertices; v++)
 			{
-				EERIE_3D	*	posVert;
+				Vec3f	*	posVert;
 				float			r, g, b;
 				long	ir, ig, ib;
 
 				if (io)
 				{
-					posVert  = (EERIE_3D *)&io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+					posVert  = (Vec3f *)&io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				}
 				else
 				{
-					posVert  = (EERIE_3D *)&eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+					posVert  = (Vec3f *)&eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				}
 
 				/* Ambient light */
@@ -916,14 +915,14 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 					if (Cur_llights)
 					{
 						// tsu
-						if (!(GetMaxManhattanDistance(&Cur_llights->pos, (EERIE_3D *)&posVert) <= Cur_llights->fallend))
+						if (!(GetMaxManhattanDistance(&Cur_llights->pos, (Vec3f *)&posVert) <= Cur_llights->fallend))
 						{
 							TSU_TEST_NB_LIGHT ++;
 							continue;
 						}
 
 						float	cosangle;
-						float distance = EEDistance3D((EERIE_3D *)posVert, &Cur_llights->pos);
+						float distance = EEDistance3D((Vec3f *)posVert, &Cur_llights->pos);
 
 						/* Evaluate its intensity depending on the distance Light<->Object */
 						if (distance <= Cur_llights->fallstart)
@@ -1022,8 +1021,8 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 					if (Cur_llights)
 					{
 						float	cosangle;
-						EERIE_3D * Cur_vTLights = &vTLights[l];
-						EERIE_3D tl;
+						Vec3f * Cur_vTLights = &vTLights[l];
+						Vec3f tl;
 						tl.x = (Cur_llights->pos.x - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.x);
 						tl.y = (Cur_llights->pos.y - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.y);
 						tl.z = (Cur_llights->pos.z - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.z);
@@ -1112,7 +1111,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 }
 
 void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
-	EERIE_3D cam_vector, t_vector;
+	Vec3f cam_vector, t_vector;
 	cam_vector.x = -EEsin(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
 	cam_vector.y = EEsin(radians(ACTIVECAM->angle.a));
 	cam_vector.z = EEcos(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
@@ -1141,7 +1140,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 //-----------------------------------------------------------------------------
 void ARX_ClippZ(D3DTLVERTEX * _pD3DA, D3DTLVERTEX * _pD3DB, EERIE_VERTEX * _pVertexA, EERIE_VERTEX * _pVertexB, D3DTLVERTEX * _pOut)
 {
-	EERIE_3D e3dTemp;
+	Vec3f e3dTemp;
 
 	float fDenom	=	(SOFTNEARCLIPPZ - _pVertexB->vworld.z) / (_pVertexA->vworld.z - _pVertexB->vworld.z);
 	e3dTemp.x		=	(_pVertexA->vworld.x - _pVertexB->vworld.x) * fDenom + _pVertexB->vworld.x;
@@ -1175,7 +1174,7 @@ void ARX_ClippZ(D3DTLVERTEX * _pD3DA, D3DTLVERTEX * _pD3DB, EERIE_VERTEX * _pVer
 void ARX_DrawPrimitive_ClippZ(D3DTLVERTEX * _pVertexA, D3DTLVERTEX * _pVertexB, D3DTLVERTEX * _pOut, float _fAdd = 0.f);
 void ARX_DrawPrimitive_ClippZ(D3DTLVERTEX * _pVertexA, D3DTLVERTEX * _pVertexB, D3DTLVERTEX * _pOut, float _fAdd)
 {
-	EERIE_3D e3dTemp;
+	Vec3f e3dTemp;
 	float fDenom = ((SOFTNEARCLIPPZ + _fAdd) - _pVertexB->sz) / (_pVertexA->sz - _pVertexB->sz);
 	e3dTemp.x = (_pVertexA->sx - _pVertexB->sx) * fDenom + _pVertexB->sx;
 	e3dTemp.y = (_pVertexA->sy - _pVertexB->sy) * fDenom + _pVertexB->sy;
@@ -1458,7 +1457,7 @@ int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VER
 					if ((todo > 2) && (rnd() > 0.997f))
 					{
 						if (_pioInteractive)
-							SpawnMetalShine((EERIE_3D *)&_pObj->vertexlist3[_pObj->facelist[_iNumFace].vid[0]].vert, r, g, b, GetInterNum(_pioInteractive));
+							SpawnMetalShine((Vec3f *)&_pObj->vertexlist3[_pObj->facelist[_iNumFace].vid[0]].vert, r, g, b, GetInterNum(_pioInteractive));
 					}
 				}
 				else
@@ -1495,7 +1494,7 @@ bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVerte
 	switch (iClipp)
 	{
 		case 0: {
-			EERIE_3D e3dTemp;
+			Vec3f e3dTemp;
 			e3dTemp.x = _pVertex1->sx;
 			e3dTemp.y = _pVertex1->sy;
 			e3dTemp.z = _pVertex1->sz;
@@ -1601,7 +1600,7 @@ long FORCE_FRONT_DRAW = 0;
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 /* Render object */
-void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility) {
+void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
 	float		MAX_ZEDE = 0.f;
 
 	// Sets IO BBox to calculated BBox :)
@@ -1717,15 +1716,15 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				continue;
 
 			//CULL3D
-			EERIE_3D nrm;
+			Vec3f nrm;
 			nrm.x = eobj->vertexlist3[eface->vid[0]].v.x - ACTIVECAM->pos.x;
 			nrm.y = eobj->vertexlist3[eface->vid[0]].v.y - ACTIVECAM->pos.y;
 			nrm.z = eobj->vertexlist3[eface->vid[0]].v.z - ACTIVECAM->pos.z;
 
 			if (!(eface->facetype & POLY_DOUBLESIDED))
 			{
-				EERIE_3D normV10;
-				EERIE_3D normV20;
+				Vec3f normV10;
+				Vec3f normV20;
 				normV10.x = eobj->vertexlist3[eface->vid[1]].v.x - eobj->vertexlist3[eface->vid[0]].v.x;
 				normV10.y = eobj->vertexlist3[eface->vid[1]].v.y - eobj->vertexlist3[eface->vid[0]].v.y;
 				normV10.z = eobj->vertexlist3[eface->vid[1]].v.z - eobj->vertexlist3[eface->vid[0]].v.z;
@@ -1733,7 +1732,7 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				normV20.y = eobj->vertexlist3[eface->vid[2]].v.y - eobj->vertexlist3[eface->vid[0]].v.y;
 				normV20.z = eobj->vertexlist3[eface->vid[2]].v.z - eobj->vertexlist3[eface->vid[0]].v.z;
 
-				EERIE_3D normFace;
+				Vec3f normFace;
 				normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 				normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 				normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
@@ -2040,7 +2039,7 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 						if ((_ffr[first] > 150.f) && (_ffr[second] > 110.f)) 
 						{
-							EERIE_3D		vect1, vect2;
+							Vec3f		vect1, vect2;
 							D3DTLVERTEX *	vert = &LATERDRAWHALO[(HALOCUR << 2)];
 
 							HALOCUR++;
@@ -2184,7 +2183,7 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 
 /* Render object */
-void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility)
+void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility)
 {
 	if (bRenderInterList)
 	{
@@ -2360,7 +2359,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 
 					if ((_ffr[first] > 150.f) && (_ffr[second] > 110.f)) // && (workon[0].sz>0.f) && (workon[3].sz>0.f))
 					{
-						EERIE_3D		vect1, vect2;
+						Vec3f		vect1, vect2;
 						D3DTLVERTEX	* vert = &LATERDRAWHALO[(HALOCUR << 2)];
 
 						HALOCUR++;
@@ -2591,13 +2590,12 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 		{
 			long i = io->_npcdata->ex_rotate->group_number[k];
 
-			if (i >= 0)
-			{
-				EERIE_3D vt1;
+			if(i >= 0) {
+				Anglef vt1;
 				EERIE_QUAT quat1;
-				vt1.x = radians(io->_npcdata->ex_rotate->group_rotate[k].g);
-				vt1.y = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
-				vt1.z = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
+				vt1.a = radians(io->_npcdata->ex_rotate->group_rotate[k].g);
+				vt1.b = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
+				vt1.g = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
 				QuatFromAngles(&quat1, &vt1);
 				Quat_Copy(&obj->c_data->bones[i].quatinit, &quat1);
 			}
@@ -2648,15 +2646,15 @@ extern long EXTERNALVIEW;
 /* Apply animation and draw object */
 void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
                                  ANIM_USE * animuse,
-                                 EERIE_3D * angle,
-                                 EERIE_3D * pos,
+                                 Anglef * angle,
+                                 Vec3f * pos,
                                  INTERACTIVE_OBJ * io,
                                  long typ)
 {
 	float 				invisibility;
 	float 				scale;
 	float				timm;
-	EERIE_3D			ftr, ftr2;
+	Vec3f			ftr, ftr2;
 	EERIE_C_DATA	*	obj;
 
 	
@@ -2797,7 +2795,7 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 					EERIE_QUAT quat;
 					ll = eobj->linked[k].lidx;
-					EERIE_3D * posi = &eobj->vertexlist3[ll].v;
+					Vec3f * posi = &eobj->vertexlist3[ll].v;
 					Quat_Copy(&quat, &eobj->c_data->bones[eobj->linked[k].lgroup].quatanim);
 					
 					EERIEMATRIX	 matrix;
@@ -2818,7 +2816,7 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	}
 }
 
-void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE_3D * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
+void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
 {
 	if ((Project.improve) && (!io))
 	{
@@ -2828,7 +2826,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 	}
 
 	llightsInit();
-	EERIE_3D tv = *pos;
+	Vec3f tv = *pos;
 
 	if ((io) && (io->ioflags & IO_ITEM))
 		tv.y -= 60.f;
@@ -2855,8 +2853,8 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 
 	if ((io) && (io->ioflags & IO_ANGULAR)) return;
 
-	EERIE_3D		vLight;
-	EERIE_3D		vTLights[32];
+	Vec3f		vLight;
+	Vec3f		vTLights[32];
 	EERIE_QUAT		qInvert;
 
 	if (BIGMAT != NULL)
@@ -2872,7 +2870,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 		else
 		{
 			//FIX LIGHT 
-			EERIE_3D	vt1;
+			Anglef vt1;
 
 			if (angle)
 			{
@@ -2886,9 +2884,9 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 					vt1 = eobj->angle;
 			}
 
-			vt1.x = radians(MAKEANGLE(-vt1.z));
-			vt1.y = radians(MAKEANGLE(vt1.y));
-			vt1.z = radians(MAKEANGLE(vt1.x));
+			vt1.a = radians(MAKEANGLE(-vt1.g));
+			vt1.b = radians(MAKEANGLE(vt1.b));
+			vt1.g = radians(MAKEANGLE(vt1.a));
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}
@@ -2911,7 +2909,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 				b = ACTIVEBKG->ambient255.b;
 			}
 
-			EERIE_3D * posVert = &eobj->vertexlist3[i].v;
+			Vec3f * posVert = &eobj->vertexlist3[i].v;
 
 			for (long l = 0 ; l != MAX_LLIGHTS; l++)
 			{
@@ -2927,7 +2925,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 					TRUEVector_Normalize(&vLight);
 
 					TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
-					EERIE_3D * Cur_vLights = &vTLights[l];
+					Vec3f * Cur_vLights = &vTLights[l];
 
 					// Get cos angle between light and vertex norm
 					cosangle = (eobj->vertexlist[i].norm.x * Cur_vLights->x +
@@ -2937,7 +2935,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 					// If light visible
 					if (cosangle > 0.f)
 					{
-						float distance = EEDistance3D((EERIE_3D *)posVert, &Cur_llights->pos);
+						float distance = EEDistance3D((Vec3f *)posVert, &Cur_llights->pos);
 
 						// Evaluate its intensity depending on the distance Light<->Object
 						if (distance <= Cur_llights->fallstart)
@@ -2985,10 +2983,10 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 		}
 }
 
-void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE_3D * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii)
+void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii)
 {
-	EERIE_3D		vLight;
-	EERIE_3D		vTLights[32];
+	Vec3f		vLight;
+	Vec3f		vTLights[32];
 	EERIE_QUAT		qInvert;
 
 	if (BIGMAT != NULL)
@@ -3003,7 +3001,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 		}
 		else
 		{
-			EERIE_3D	vt1;
+			Anglef vt1;
 
 			if (angle)
 			{
@@ -3017,14 +3015,14 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 					vt1 = eobj->angle;
 			}
 
-			vt1.x = radians(vt1.x);
-			vt1.y = radians(vt1.y);
-			vt1.z = radians(vt1.z);
+			vt1.a = radians(vt1.a);
+			vt1.b = radians(vt1.b);
+			vt1.g = radians(vt1.g);
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}
 
-	EERIE_3D tv = *pos;
+	Vec3f tv = *pos;
 
 	if ((io) && (io->ioflags & IO_ITEM))
 		tv.y -= 60.f;
@@ -3068,7 +3066,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 			b = ACTIVEBKG->ambient255.b;
 		}
 
-		EERIE_3D * posVert = &eobj->vertexlist3[paf[i]].v;
+		Vec3f * posVert = &eobj->vertexlist3[paf[i]].v;
 
 		for (int l = 0 ; l != MAX_LLIGHTS; l++)
 		{
@@ -3077,13 +3075,13 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 			if (Cur_llights)
 			{
 				float	cosangle;
-				float		oolength = 1.f / EEDistance3D((EERIE_3D *)posVert, &Cur_llights->pos); //dists[l];
+				float		oolength = 1.f / EEDistance3D((Vec3f *)posVert, &Cur_llights->pos); //dists[l];
 				vLight.x = (llights[l]->pos.x - posVert->x) * oolength;
 				vLight.y = (llights[l]->pos.y - posVert->y) * oolength;
 				vLight.z = (llights[l]->pos.z - posVert->z) * oolength;
 
 				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
-				EERIE_3D * Cur_vLights = &vTLights[l];
+				Vec3f * Cur_vLights = &vTLights[l];
 	
 				cosangle = (eobj->facelist[ii].norm.x * Cur_vLights->x +
 				            eobj->facelist[ii].norm.y * Cur_vLights->y +
@@ -3092,7 +3090,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 				// If light visible
 				if (cosangle > 0.f)
 				{
-					float distance = EEDistance3D((EERIE_3D *)posVert, &Cur_llights->pos);
+					float distance = EEDistance3D((Vec3f *)posVert, &Cur_llights->pos);
 
 					// Evaluate its intensity depending on the distance Light<->Object
 					if (distance <= Cur_llights->fallstart)
@@ -3174,13 +3172,13 @@ void ApplyDynLight(EERIEPOLY * ep)
 	{
 		EERIE_LIGHT * el = PDL[i];
 
-		if (!(GetMaxManhattanDistance(&el->pos, (EERIE_3D *)&ep->center) <= el->fallend + 35.f))
+		if (!(GetMaxManhattanDistance(&el->pos, (Vec3f *)&ep->center) <= el->fallend + 35.f))
 		{
 			TSU_TEST_NB_LIGHT ++;
 			continue;
 		}
 
-		float d = EEDistance3D(&el->pos, (EERIE_3D *)&ep->center);
+		float d = EEDistance3D(&el->pos, (Vec3f *)&ep->center);
 
 		if (d <= el->fallend + 35.f)
 		{
@@ -3198,13 +3196,13 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 			for (j = 0; j < nbvert; j++)
 			{
-				if (!(GetMaxManhattanDistance(&el->pos, (EERIE_3D *)&ep->v[j]) <= el->fallend))
+				if (!(GetMaxManhattanDistance(&el->pos, (Vec3f *)&ep->v[j]) <= el->fallend))
 				{
 					TSU_TEST_NB ++;
 					continue;
 				}
 
-				d = EEDistance3D(&el->pos, (EERIE_3D *)&ep->v[j]);
+				d = EEDistance3D(&el->pos, (Vec3f *)&ep->v[j]);
 
 				if (d <= el->fallend)
 				{
@@ -3213,7 +3211,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 					if (DYNAMIC_NORMALS)
 					{
-						EERIE_3D v1;
+						Vec3f v1;
 						v1.x = (el->pos.x - ep->v[j].sx) * divd;
 						v1.y = (el->pos.y - ep->v[j].sy) * divd;
 						v1.z = (el->pos.z - ep->v[j].sz) * divd;
@@ -3313,7 +3311,7 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 
 		for (j = 0; j < nbvert; j++)
 		{
-			d = EEDistance3D(&el->pos, (EERIE_3D *)&ep->v[j]);
+			d = EEDistance3D(&el->pos, (Vec3f *)&ep->v[j]);
 
 			if (d < el->fallend)
 			{
@@ -3444,7 +3442,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 		for (j = 0; j < nbvert; j++)
 		{
 		
-			d = EEDistance3D(&el->pos, (EERIE_3D *)&ep->v[j]);
+			d = EEDistance3D(&el->pos, (Vec3f *)&ep->v[j]);
 
 			if (d < el->fallend)
 			{

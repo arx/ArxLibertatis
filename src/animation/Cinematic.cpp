@@ -109,7 +109,7 @@ Cinematic::Cinematic(int _w, int _h)
 	m_flIntensityRND = 0.f;
 }
 /*-------------------------------------------------------------------*/
-void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, EERIE_3D * posgrille, float azgrille, float speedtrack)
+void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, Vec3f * posgrille, float azgrille, float speedtrack)
 {
 	KeyTemp.frame = frame;
 	KeyTemp.numbitmap = numbitmap;
@@ -149,11 +149,8 @@ void Cinematic::ReInitMapp(int id)
 }
 
 /* Reinit */
-HRESULT Cinematic::OneTimeSceneReInit()
-{
-	Camera.size.y = 160.f;
-	Camera.size.x = 60.f;
-	Camera.size.z = 60.f;
+HRESULT Cinematic::OneTimeSceneReInit() {
+	Camera.size = Anglef(160.f, 60.f, 60.f);
 	Camera.pos.x = 900.f;
 	Camera.pos.y = -160.f;
 	Camera.pos.z = 4340.f;
@@ -410,19 +407,19 @@ int CalculLight(CinematicLight * light, float x, float y, int col)
 	}
 }
 /*---------------------------------------------------------------*/
-EERIE_3D	LocalPos;
+Vec3f	LocalPos;
 float		LocalSin, LocalCos;
-void TransformLocalVertex(EERIE_3D * vbase, D3DTLVERTEX * d3dv)
+void TransformLocalVertex(Vec3f * vbase, D3DTLVERTEX * d3dv)
 {
 	d3dv->sx = vbase->x * LocalCos + vbase->y * LocalSin + LocalPos.x;
 	d3dv->sy = vbase->x * -LocalSin + vbase->y * LocalCos + LocalPos.y;
 	d3dv->sz = vbase->z + LocalPos.z;
 }
 /*---------------------------------------------------------------*/
-void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, EERIE_3D * posgrille, float angzgrille)
+void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
 {
 	int nb = grille->nbvertexs;
-	EERIE_3D * v = grille->vertexs;
+	Vec3f * v = grille->vertexs;
 	D3DTLVERTEX * d3dv = AllD3DTLVertex;
 
 	LocalPos = *posgrille;
@@ -438,7 +435,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			while (nb--)
 			{
 				D3DTLVERTEX vtemp;
-				EERIE_3D t;
+				Vec3f t;
 				t.x = v->x + *dream++;
 				t.y = v->y + *dream++;
 				t.z = v->z;
@@ -458,7 +455,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			while (nb--)
 			{
 				D3DTLVERTEX vtemp;
-				EERIE_3D t;
+				Vec3f t;
 				t.x = v->x + *dream++;
 				t.y = v->y + *dream++;
 				t.z = v->z;

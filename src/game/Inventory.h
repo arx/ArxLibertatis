@@ -3,10 +3,10 @@
 #define ARX_GAME_INVENTORY_H
 
 #include "platform/math/Vector2.h"
+#include "platform/math/Vector3.h"
 #include "scripting/Script.h"
 
 struct INTERACTIVE_OBJ;
-struct EERIE_3D;
 
 struct INVENTORY_SLOT {
 	INTERACTIVE_OBJ * io;
@@ -33,8 +33,8 @@ extern long InventoryY;
 void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
 bool CanBePutInInventory(INTERACTIVE_OBJ * io);
 
-bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
-bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos);
+bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos);
+bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos);
 
 INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(Vec2s * pos);
 void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old);

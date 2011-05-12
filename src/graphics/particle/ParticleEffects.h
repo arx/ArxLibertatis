@@ -84,7 +84,7 @@ struct FLARES
 //-----------------------------------------------------------------------------
 struct BOOM
 {
-	EERIE_3D		pos;
+	Vec3f		pos;
 	long			exist;
 };
 
@@ -110,10 +110,10 @@ struct PARTICLE_DEF
 {
 	bool		exist;
 	long		type;
-	EERIE_3D	ov;
-	EERIE_3D	move;
-	EERIE_3D	scale;
-	EERIE_3D	oldpos;
+	Vec3f	ov;
+	Vec3f	move;
+	Vec3f	scale;
+	Vec3f	oldpos;
 	float		siz;
 	long		zdec;
 	long		timcreation;
@@ -126,7 +126,7 @@ struct PARTICLE_DEF
 	long		special;
 	float		fparam;
 	long		mask;
-	EERIE_3D  * source;
+	Vec3f  * source;
 	long		sourceionum;
 	short		sval;
 	char		cval1;
@@ -138,18 +138,18 @@ struct FOG_DEF
 {
 	bool		exist;
 	long		selected;
-	EERIE_3D	pos;
+	Vec3f	pos;
 	EERIE_RGB	rgb;
 	float		size;
 	long		special;
 	float		scale;
-	EERIE_3D	move;
-	EERIE_3D	angle;
+	Vec3f	move;
+	Anglef	angle;
 	float		speed;
 	float		rotatespeed;
 	long		tolive;
-	EERIE_3D	bboxmin;
-	EERIE_3D	bboxmax;
+	Vec3f	bboxmin;
+	Vec3f	bboxmax;
 	long		blend;
 	float		frequency;
 	unsigned long lastupdate;
@@ -238,7 +238,7 @@ void TreatBackgroundActions();
 void TreatBackgroundDynlights();
 void MakeBookFX(float posx, float posy, float posz);
 void UpdateObjFx() ;
-void Add3DBoom(EERIE_3D * position);
+void Add3DBoom(Vec3f * position);
 void AddRandomSmoke(INTERACTIVE_OBJ * io, long amount = 1);
 void AddFlare(Vec2s * pos, float sm, short typ, INTERACTIVE_OBJ * io = NULL);
 void AddFlare2(Vec2s * pos, float sm, short typ, INTERACTIVE_OBJ * io);
@@ -247,33 +247,33 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io = NULL);
 void LaunchDummyParticle();
 void ManageTorch();
 
-void ARX_GenereSpheriqueEtincelles(EERIE_3D * pos, float r, TextureContainer * tc, float rr, float g, float b, int mask);
+void ARX_GenereSpheriqueEtincelles(Vec3f * pos, float r, TextureContainer * tc, float rr, float g, float b, int mask);
 void MakePlayerAppearsFX(INTERACTIVE_OBJ * io);
-void MakeCoolFx(EERIE_3D * pos);
+void MakeCoolFx(Vec3f * pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, EERIE_RGB * rgb, float size, long flags);
 
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
 long ARX_PARTICLES_GetFree();
 void ARX_PARTICLES_Render(EERIE_CAMERA * cam);
-void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos, float dmgs, long source);
-void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos, float dmgs, D3DCOLOR col, INTERACTIVE_OBJ * io);
-void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * pos, INTERACTIVE_OBJ * io = NULL);
-void ARX_PARTICLES_Add_Smoke(EERIE_3D * pos, long flags, long amount, EERIE_RGB * rgb = NULL); // flag 1 = randomize pos
-void ARX_PARTICLES_Spawn_Spark(EERIE_3D * pos, float dmgs, long flags);
-void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos, float dmgs, D3DCOLOR col);
-void ARX_PARTICLES_SpawnWaterSplash(EERIE_3D *);
+void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source);
+void ARX_PARTICLES_Spawn_Blood2(Vec3f * pos, float dmgs, D3DCOLOR col, INTERACTIVE_OBJ * io);
+void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, INTERACTIVE_OBJ * io = NULL);
+void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, EERIE_RGB * rgb = NULL); // flag 1 = randomize pos
+void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags);
+void ARX_PARTICLES_Spawn_Splat(Vec3f * pos, float dmgs, D3DCOLOR col);
+void ARX_PARTICLES_SpawnWaterSplash(Vec3f *);
 
 void ARX_BOOMS_ClearAllPolyBooms();
 void ARX_BOOMS_ClearAll();
-void ARX_BOOMS_Add(EERIE_3D * pos, long type = 0);
+void ARX_BOOMS_Add(Vec3f * pos, long type = 0);
 
 void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();
 void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS);
 
-void LaunchFireballBoom(EERIE_3D * poss, float level, EERIE_3D * direction = NULL, EERIE_RGB * rgb = NULL);
-void SpawnFireballTail(EERIE_3D *, EERIE_3D *, float, long);
-void SpawnMetalShine(EERIE_3D * pos, long r, long g, long b, long num);
+void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction = NULL, EERIE_RGB * rgb = NULL);
+void SpawnFireballTail(Vec3f *, Vec3f *, float, long);
+void SpawnMetalShine(Vec3f * pos, long r, long g, long b, long num);
 
 #endif

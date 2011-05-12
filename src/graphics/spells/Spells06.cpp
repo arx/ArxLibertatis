@@ -102,7 +102,7 @@ CCreateField::CCreateField() {
 }
 
 //-----------------------------------------------------------------------------
-void CCreateField::Create(EERIE_3D aeSrc, float afBeta)
+void CCreateField::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -118,7 +118,7 @@ void CCreateField::Create(EERIE_3D aeSrc, float afBeta)
 }
 
 //-----------------------------------------------------------------------------
-void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4, int rec, EERIE_3D norm)
+void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4, int rec, Vec3f norm)
 {
 	D3DTLVERTEX v[5];
 	D3DTLVERTEX v2[5];
@@ -204,7 +204,7 @@ void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3
 //-----------------------------------------------------------------------------
 void CCreateField::RenderSubDivFace(D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2)
 {
-	EERIE_3D norm;
+	Vec3f norm;
 	norm.x = (b[b1].sx + b[b2].sx + t[t1].sx + t[t2].sx) * 0.25f - eSrc.x;
 	norm.y = (b[b1].sy + b[b2].sy + t[t1].sy + t[t2].sy) * 0.25f - eSrc.y;
 	norm.z = (b[b1].sz + b[b2].sz + t[t1].sz + t[t2].sz) * 0.25f - eSrc.z;
@@ -434,7 +434,7 @@ CSlowDown::~CSlowDown()
 	}
 }
 //-----------------------------------------------------------------------------
-void CSlowDown::Create(EERIE_3D aeSrc, float afBeta)
+void CSlowDown::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -495,9 +495,9 @@ float CSlowDown::Render()
 
 	y -= 40;
 	
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 
 	x = player.pos.x;
 	y = player.pos.y + 80;
@@ -671,7 +671,7 @@ void CRiseDead::SetColorRays2(float afRed, float afGreen, float afBlue)
 }
 
 //-----------------------------------------------------------------------------
-void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
+void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
 
@@ -783,7 +783,7 @@ unsigned long CRiseDead::GetDuration()
 	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
 }
 /*--------------------------------------------------------------------------*/
-void CRiseDead::AddStone(EERIE_3D * pos)
+void CRiseDead::AddStone(Vec3f * pos)
 {
 	if (ARXPausedTimer) return;
 
@@ -913,7 +913,7 @@ void CRiseDead::RenderFissure()
 	D3DTLVERTEX vr[4];
 	D3DTLVERTEX target;
 
-	EERIE_3D etarget;
+	Vec3f etarget;
 	etarget.x = fBetaRadCos;
 	etarget.y = 0;
 	etarget.z = fBetaRadSin;
@@ -1266,7 +1266,7 @@ float CRiseDead::Render()
 	if (this->timestone <= 0)
 	{
 		this->timestone = 50 + (int)(rnd() * 100.f);
-		EERIE_3D	pos;
+		Vec3f	pos;
 		float r = 80.f * frand2();
 		pos.x = this->eSrc.x + r;
 		pos.y = this->eSrc.y;
@@ -1343,7 +1343,7 @@ void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ah
 {
 	float		a, da;
 	int			nb;
-	EERIE_3D	* v;
+	Vec3f	* v;
 
 	a = 0.f;
 	da = 360.f / (float)adef;
@@ -1414,8 +1414,8 @@ void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ah
 void CParalyse::CreateLittlePrismTriangleList()
 {
 	float		sc;
-	EERIE_3D	* v, *vd;
-	EERIE_3D	vt;
+	Vec3f	* v, *vd;
+	Vec3f	vt;
 
 	for (int i = 0; i < 50; i++)
 	{
@@ -1469,7 +1469,7 @@ void CParalyse::CreateLittlePrismTriangleList()
 
 //-----------------------------------------------------------------------------
 //!!!!!!! def non impair
-void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur, EERIE_3D * aePos, int aduration)
+void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur, Vec3f * aePos, int aduration)
 {
 	if (adef < 3) return;
 
@@ -1486,12 +1486,12 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	prismnbpt = 1 + (adef << 1);
 	prismnbface = adef + (adef << 1);
 	prismd3d = new D3DTLVERTEX[prismnbpt];
-	prismvertex = new EERIE_3D[prismnbpt];
+	prismvertex = new Vec3f[prismnbpt];
 	prismind = new unsigned short [prismnbface*3];
 
 	for (int i = 0; i < 100; i++)
 	{
-		tabprism[i].vertex = new EERIE_3D[prismnbpt];
+		tabprism[i].vertex = new Vec3f[prismnbpt];
 	}
 
 	tex_prism = MakeTCFromFile("Graph\\Obj3D\\Textures\\(FX)_paralyze.bmp");
@@ -1567,7 +1567,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	pPS->ulParticleSpawn = 0;
 	pPS->SetTexture("graph\\particles\\lil_greypouf.bmp", 0, 200);
 
-	EERIE_3D ep;
+	Vec3f ep;
 	ep.x = aePos->x;
 	ep.y = aePos->y - 80;
 	ep.z = aePos->z;
@@ -1709,7 +1709,7 @@ float CParalyse::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	int			nb;
-	EERIE_3D	* vertex;
+	Vec3f	* vertex;
 	D3DTLVERTEX	* vd3d, d3ds;
 
 	//uv
@@ -2156,7 +2156,7 @@ CDisarmTrap::~CDisarmTrap()
 	}
 }
 //-----------------------------------------------------------------------------
-void CDisarmTrap::Create(EERIE_3D aeSrc, float afBeta)
+void CDisarmTrap::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -2221,9 +2221,9 @@ float CDisarmTrap::Render()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120;

@@ -107,7 +107,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
-extern EERIE_3D ePlayerAngle;
+extern Anglef ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long GAME_EDITOR;
@@ -970,7 +970,7 @@ bool ARX_Menu_Render()
 			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
 		}
 
-		EERIE_3D ePos;
+		Vec3f ePos;
 		Color color = 0;
 		std::string szText;
 

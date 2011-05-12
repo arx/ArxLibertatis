@@ -92,7 +92,7 @@ CBless::CBless()
 }
 
 //-----------------------------------------------------------------------------
-void CBless::Create(EERIE_3D _eSrc, float _fBeta)
+void CBless::Create(Vec3f _eSrc, float _fBeta)
 {
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
@@ -112,7 +112,7 @@ void CBless::Create(EERIE_3D _eSrc, float _fBeta)
 	bDone = true;
 }
 
-void CBless::Set_Angle(EERIE_3D angle)
+void CBless::Set_Angle(const Anglef & angle)
 {
 	fBeta = angle.b;
 }
@@ -236,7 +236,7 @@ float CBless::Render()
 }
 
 //-----------------------------------------------------------------------------
-void CDispellField::Create(EERIE_3D aeSrc, float afBeta)
+void CDispellField::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -304,9 +304,9 @@ float CDispellField::Render()
 	//----------------------------
 	y -= 40;
 	
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	x = player.pos.x;
@@ -434,7 +434,7 @@ CTelekinesis::~CTelekinesis()
  
 
 //-----------------------------------------------------------------------------
-void CTelekinesis::Create(EERIE_3D aeSrc, float afBeta)
+void CTelekinesis::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -601,9 +601,9 @@ float CTelekinesis::Render()
 		DrawBillBoardPoly(x+frand2()*20, y+frand2()*20, z+frand2()*20, 60, tex_p2, D3DRGB(1,1,1));
 		DrawBillBoardPoly(x+frand2()*20, y+frand2()*20, z+frand2()*20, 60, tex_p2, D3DRGB(1,1,1));
 	*/
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	x = player.pos.x;
@@ -689,7 +689,7 @@ CCurse::CCurse()
 }
 
 //-----------------------------------------------------------------------------
-void CCurse::Create(EERIE_3D aeSrc, float afBeta)
+void CCurse::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -719,7 +719,7 @@ void CCurse::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CCurse::Render(EERIE_3D * pos)
+float CCurse::Render(Vec3f * pos)
 {
 	int i = 0;
 
@@ -761,9 +761,9 @@ float CCurse::Render(EERIE_3D * pos)
 	y = pos->y;
 	z = pos->z;
 	//----------------------------
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

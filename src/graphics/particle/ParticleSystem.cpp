@@ -43,7 +43,7 @@ using namespace std;
 
 void CParticleSystem::RecomputeDirection()
 {
-	EERIE_3D eVect;
+	Vec3f eVect;
 	eVect.x = p3ParticleDirection.x;
 	eVect.y = -p3ParticleDirection.y;
 	eVect.z = p3ParticleDirection.z;
@@ -79,7 +79,7 @@ CParticleSystem::CParticleSystem()
 	p3ParticleDirection.x = 0;
 	p3ParticleDirection.y = -1;
 	p3ParticleDirection.z = 0;
-	EERIE_3D eVect;
+	Vec3f eVect;
 	eVect.x = p3ParticleDirection.x;
 	eVect.y = -p3ParticleDirection.y;
 	eVect.z = p3ParticleDirection.z;
@@ -238,7 +238,7 @@ void CParticleSystem::SetParams(CParticleParams & _pp)
 	bParticleEndColorRandomLock = _pp.bEndLock;
 
 	TRUEVector_Normalize(&p3ParticleDirection);
-	EERIE_3D eVect;
+	Vec3f eVect;
 	eVect.x = p3ParticleDirection.x;
 	eVect.y = -p3ParticleDirection.y;
 	eVect.z = p3ParticleDirection.z;
@@ -350,7 +350,7 @@ void CParticleSystem::SpawnParticle(CParticle * pP)
 
 //-----------------------------------------------------------------------------
 
-void VectorRotateY(EERIE_3D & _eIn, EERIE_3D & _eOut, float _fAngle)
+void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle)
 {
 	register float c = EEcos(_fAngle);
 	register float s = EEsin(_fAngle);
@@ -360,7 +360,7 @@ void VectorRotateY(EERIE_3D & _eIn, EERIE_3D & _eOut, float _fAngle)
 }
 
 //-----------------------------------------------------------------------------
-void VectorRotateZ(EERIE_3D & _eIn, EERIE_3D & _eOut, float _fAngle)
+void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle)
 {
 	register float c = EEcos(_fAngle);
 	register float s = EEsin(_fAngle);
@@ -381,7 +381,7 @@ void CParticleSystem::SetParticleParams(CParticle * pP)
 
 	float fAngleX = rnd() * fParticleAngle; //*0.5f;
  
-	EERIE_3D vv1, vvz;
+	Vec3f vv1, vvz;
 	vv1.x = p3ParticleDirection.x;
 	vv1.y = p3ParticleDirection.y;
 	vv1.z = p3ParticleDirection.z;

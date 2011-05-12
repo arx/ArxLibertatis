@@ -117,7 +117,7 @@ using std::string;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;
-extern EERIE_3D	WILL_RESTORE_PLAYER_POSITION;
+extern Vec3f	WILL_RESTORE_PLAYER_POSITION;
 extern long WILL_RESTORE_PLAYER_POSITION_FLAG;
 extern long NO_GMOD_RESET;
 
@@ -150,7 +150,7 @@ extern long CHANGE_LEVEL_ICON;
 extern long FOR_EXTERNAL_PEOPLE;
 extern long TRUE_PLAYER_MOUSELOOK_ON;
 extern int iTimeToDrawD7;
-extern EERIE_3D LastValidPlayerPos;
+extern Vec3f LastValidPlayerPos;
 #define MAX_IO_SAVELOAD	1500
 
 static long ARX_CHANGELEVEL_PushLevel(long num, long newnum);
@@ -407,7 +407,7 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 
 		if (t > 0)
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 
 			if (inter.iobj[t])
 				if (GetItemWorldPosition(inter.iobj[t], &pos))
@@ -443,7 +443,7 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 
 	if (t > 0)
 	{
-		EERIE_3D pos;
+		Vec3f pos;
 
 		if (inter.iobj[t])
 			if (GetItemWorldPosition(inter.iobj[t], &pos))

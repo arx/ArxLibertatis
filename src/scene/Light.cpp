@@ -85,9 +85,9 @@ bool ValidDynLight(long num)
 	return false;
 }
 extern float GLOBAL_LIGHT_FACTOR;
-void PrecalcIOLighting(const EERIE_3D * pos, float radius, long flags)
+void PrecalcIOLighting(const Vec3f * pos, float radius, long flags)
 {
-	static EERIE_3D lastpos;
+	static Vec3f lastpos;
 
 	if (flags & 1)
 	{
@@ -191,7 +191,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	}
 }
 
-void EERIE_LIGHT_TranslateSelected(const EERIE_3D * trans) {
+void EERIE_LIGHT_TranslateSelected(const Vec3f * trans) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i] && GLight[i]->selected) {
 			if(GLight[i]->tl > 0) {
@@ -317,7 +317,7 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 	}
 }
 
-void EERIE_LIGHT_MoveAll(const EERIE_3D * trans) {
+void EERIE_LIGHT_MoveAll(const Vec3f * trans) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i]) {
 			GLight[i]->pos += *trans;
@@ -364,8 +364,8 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
 
-	EERIE_3D orgn, dest;
-	EERIE_3D hit;
+	Vec3f orgn, dest;
+	Vec3f hit;
 
 	orgn.x = light->pos.x;
 	orgn.y = light->pos.y;
@@ -438,8 +438,8 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	int		nbvert;			// number or vertices per face (3 or 4)
 	float	distance[4];	// distance from light to each vertex
 	float	fRes;			// value of light intensity for a given vertex
-	EERIE_3D vLight;		// vector (light to vertex)
-	EERIE_3D vNorm;			// vector (interpolated normal of vertex)
+	Vec3f vLight;		// vector (light to vertex)
+	Vec3f vNorm;			// vector (interpolated normal of vertex)
 
 	if (ep->type & POLY_IGNORE)
 		return;
@@ -449,7 +449,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	// compute light - vertex distance
 	for (i = 0; i < nbvert; i++)
 	{
-		distance[i] = TRUEEEDistance3D(&light->pos, (EERIE_3D *)&ep->v[i]);
+		distance[i] = TRUEEEDistance3D(&light->pos, (Vec3f *)&ep->v[i]);
 	}
 
 	for (i = 0; i < nbvert; i++)
@@ -482,7 +482,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			//---------------------- start MODE_RAYLAUNCH
 			if ((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED))
 			{
-				EERIE_3D orgn, dest, hit;
+				Vec3f orgn, dest, hit;
 				orgn.x = light->pos.x;
 				orgn.y = light->pos.y;
 				orgn.z = light->pos.z;
@@ -597,7 +597,7 @@ void TreatBackgroundDynlights()
 				{
 					DynLight[GLight[i]->tl].exist = 0;
 					GLight[i]->tl = -1;
-					EERIE_3D _pos2;
+					Vec3f _pos2;
 
 					for (long l = 0; l < inter.nbmax; l++)
 					{
@@ -619,7 +619,7 @@ void TreatBackgroundDynlights()
 				// vient de s'allumer
 				if (GLight[i]->tl <= 0)
 				{
-					EERIE_3D _pos2;
+					Vec3f _pos2;
 
 					for (long l = 0; l < inter.nbmax; l++)
 					{

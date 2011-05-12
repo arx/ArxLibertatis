@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define PARTICLE_BORDER	   2
 
 //-----------------------------------------------------------------------------
-typedef EERIE_3D Point3;
+typedef Vec3f Point3;
  
 class CParticle;
 class CParticleParams;

@@ -93,8 +93,8 @@ class CRuneOfGuarding: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
@@ -107,11 +107,11 @@ class CRuneOfGuarding: public CSpellFx
 		~CRuneOfGuarding();
 		// accesseurs
 	public:
-		void	SetPos(EERIE_3D);
+		void	SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -121,7 +121,7 @@ class CRuneOfGuarding: public CSpellFx
 
 //-----------------------------------------------------------------------------
 // LEVITATION
-// Done By : Sébastien Scieux
+// Done By : Sï¿½bastien Scieux
 // Status  :
 //-----------------------------------------------------------------------------
 class CLevitate: public CSpellFx
@@ -129,7 +129,7 @@ class CLevitate: public CSpellFx
 	private:
 		short		key;
 		short		def;
-		EERIE_3D	pos;
+		Vec3f	pos;
 		float		rbase, rhaut, hauteur, scale;
 		float		ang;
 		int			currdurationang;
@@ -140,7 +140,7 @@ class CLevitate: public CSpellFx
 		{
 			int				conenbvertex;
 			int				conenbfaces;
-			EERIE_3D	*	conevertex;
+			Vec3f	*	conevertex;
 			D3DTLVERTEX	*	coned3d;
 			unsigned short	* coneind;
 		};
@@ -153,11 +153,11 @@ class CLevitate: public CSpellFx
 		{
 			short		actif;
 			short		numstone;
-			EERIE_3D	pos;
+			Vec3f	pos;
 			float		yvel;
-			EERIE_3D	ang;
-			EERIE_3D	angvel;
-			EERIE_3D	scale;
+			Anglef	ang;
+			Anglef	angvel;
+			Vec3f	scale;
 			int			time;
 			int			currtime;
 		};
@@ -166,7 +166,7 @@ class CLevitate: public CSpellFx
 		int				nbstone;
 		T_STONE			tstone[256];
 
-		void AddStone(EERIE_3D * pos);
+		void AddStone(Vec3f * pos);
 		void DrawStone();
 
 		void CreateConeStrip(float rout, float rhaut, float hauteur, int def, int numcone);
@@ -174,12 +174,12 @@ class CLevitate: public CSpellFx
 		CLevitate();
 		~CLevitate();
 
-		void ChangePos(EERIE_3D * pos)
+		void ChangePos(Vec3f * pos)
 		{
 			this->pos = *pos;
 		};
 
-		void	Create(int def, float rout, float rhaut, float hauteur, EERIE_3D * pos, unsigned long);
+		void	Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
 		void	Update(unsigned long);
 		float	Render();
  
@@ -188,13 +188,13 @@ class CLevitate: public CSpellFx
 
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CCurePoison: public CSpellFx
 {
 	public:
-		EERIE_3D eSrc;
+		Vec3f eSrc;
 		float	fSize;
 		CParticleSystem * pPS;
 		TextureContainer * tex_sol;
@@ -212,7 +212,7 @@ class CCurePoison: public CSpellFx
 };
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CPoisonProjectile: public CSpellFx
@@ -228,10 +228,10 @@ class CPoisonProjectile: public CSpellFx
 		bool bDone;
 
 
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
-		EERIE_3D eCurPos;
-		EERIE_3D eMove;
+		Vec3f eSrc;
+		Vec3f eTarget;
+		Vec3f eCurPos;
+		Vec3f eMove;
 		D3DTLVERTEX pathways[40];
 		CParticleSystem pPS;
 		CParticleSystem pPSStream;
@@ -241,13 +241,13 @@ class CPoisonProjectile: public CSpellFx
 
 		// accesseurs
 	public:
-		void	SetPos(EERIE_3D);
+		void	SetPos(Vec3f);
 		void	SetColor(float, float, float);
 		void	SetColor1(float, float, float);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -268,7 +268,7 @@ class CMultiPoisonProjectile: public CSpellFx
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float);
+		void	Create(Vec3f, float);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -283,8 +283,8 @@ class CRepelUndead: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 
@@ -296,10 +296,10 @@ class CRepelUndead: public CSpellFx
 		~CRepelUndead();
 
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();

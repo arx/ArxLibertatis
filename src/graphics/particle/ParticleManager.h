@@ -36,7 +36,7 @@ class CParticleSystem;
 
 //-----------------------------------------------------------------------------
 //typedef int EERIE_3D;
-typedef EERIE_3D Point3;
+typedef Vec3f Point3;
  
 
 class CParticle;

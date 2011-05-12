@@ -362,14 +362,14 @@ HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType,
 
 //*************************************************************************************
 //*************************************************************************************
-void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power)
+void ApplyWaterFXToVertex(Vec3f * odtv,D3DTLVERTEX * dtv,float power)
 {
 	power=power*0.05f;
 	dtv->tu+=EEsin((WATEREFFECT+odtv->x))*power;
 	dtv->tv+=EEcos((WATEREFFECT+odtv->z))*power;
 }
 
-static void ApplyLavaGlowToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv, float power) {
+static void ApplyLavaGlowToVertex(Vec3f * odtv,D3DTLVERTEX * dtv, float power) {
 	register float f;
 	register long lr, lg, lb;
 	power = 1.f - (EEsin((WATEREFFECT+odtv->x+odtv->z)) * 0.05f) * power;
@@ -397,14 +397,14 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 			
 			if (ep->type & POLY_LAVA)
 			{
-				ApplyWaterFXToVertex((EERIE_3D *)&ep->v[k], &ep->tv[k], 0.35f); 
-				ApplyLavaGlowToVertex((EERIE_3D *)&ep->v[k],&ep->tv[k],0.6f);
+				ApplyWaterFXToVertex((Vec3f *)&ep->v[k], &ep->tv[k], 0.35f); 
+				ApplyLavaGlowToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.6f);
 
 				if (rnd()>0.995f) 
 				{
 					if (ep->type & POLY_FALL)
 					{
-						EERIE_3D pos;
+						Vec3f pos;
 						pos.x=ep->v[k].sx+ep->norm.x*20.f;
 						pos.y=ep->v[k].sy+ep->norm.y*20.f;
 						pos.z=ep->v[k].sz+ep->norm.z*20.f;
@@ -413,7 +413,7 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 					
 				}
 			}
-			else ApplyWaterFXToVertex((EERIE_3D *)&ep->v[k],&ep->tv[k],0.35f);
+			else ApplyWaterFXToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.35f);
 		}					
 	}	
 
@@ -439,7 +439,7 @@ void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long
 		ep->tv[k].tu=ep->v[k].tu;
 		ep->tv[k].tv=ep->v[k].tv;
 		
-		ApplyWaterFXToVertex((EERIE_3D *)&ep->v[k],&ep->tv[k],0.35f);
+		ApplyWaterFXToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.35f);
 			
 		if(ep->type&POLY_FALL)
 		{
@@ -458,8 +458,8 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 		ep->tv[k].tu=ep->v[k].tu;
 		ep->tv[k].tv=ep->v[k].tv;
 		
-		ApplyWaterFXToVertex((EERIE_3D *)&ep->v[k],&ep->tv[k],0.35f); //0.25f
-		ApplyLavaGlowToVertex((EERIE_3D *)&ep->v[k],&ep->tv[k],0.6f);
+		ApplyWaterFXToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.35f); //0.25f
+		ApplyLavaGlowToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.6f);
 			
 		if(ep->type&POLY_FALL)
 		{
@@ -513,7 +513,7 @@ long EERIERTPPoly2(EERIEPOLY *ep)
 }
 
 
-bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
+bool IsSphereInFrustrum(float radius,Vec3f * point,EERIE_FRUSTRUM * frustrum);
 bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 {
 	float dists=sphere->origin.x*efpPlaneNear.a + sphere->origin.y*efpPlaneNear.b + sphere->origin.z*efpPlaneNear.c + efpPlaneNear.d;
@@ -522,7 +522,7 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 	{	
 		for (long i=0;i<frustrums->nb_frustrums;i++)
 		{
-			if (IsSphereInFrustrum(sphere->radius,(EERIE_3D *)&sphere->origin,&frustrums->frustrums[i]))
+			if (IsSphereInFrustrum(sphere->radius,(Vec3f *)&sphere->origin,&frustrums->frustrums[i]))
 				return false;
 		}
 	}
@@ -532,7 +532,7 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 
 bool VisibleSphere(float x, float y, float z, float radius) {
 	
-	EERIE_3D pos;
+	Vec3f pos;
 	pos.x=x;
 	pos.y=y;
 	pos.z=z;
@@ -556,59 +556,59 @@ bool VisibleSphere(float x, float y, float z, float radius) {
 
 	return true;
 }
-bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
+bool IsInFrustrum(Vec3f * point,EERIE_FRUSTRUM * frustrum);
 bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
 {
-	EERIE_3D point;
+	Vec3f point;
 	point.x=bbox->min.x;
 	point.y=bbox->min.y;
 	point.z=bbox->min.z;
 
 	if (!IsInFrustrum(&point,frustrum))
 	{
-		EERIE_3D point;
+		Vec3f point;
 		point.x=bbox->max.x;
 		point.y=bbox->min.y;
 		point.z=bbox->min.z;
 
 		if (!IsInFrustrum(&point,frustrum))
 		{
-			EERIE_3D point;
+			Vec3f point;
 			point.x=bbox->max.x;
 			point.y=bbox->max.y;
 			point.z=bbox->min.z;
 
 			if (!IsInFrustrum(&point,frustrum))
 			{
-				EERIE_3D point;
+				Vec3f point;
 				point.x=bbox->min.x;
 				point.y=bbox->max.y;
 				point.z=bbox->min.z;
 
 				if (!IsInFrustrum(&point,frustrum))
 				{
-					EERIE_3D point;
+					Vec3f point;
 					point.x=bbox->min.x;
 					point.y=bbox->min.y;
 					point.z=bbox->max.z;
 
 					if (!IsInFrustrum(&point,frustrum))
 					{
-						EERIE_3D point;
+						Vec3f point;
 						point.x=bbox->max.x;
 						point.y=bbox->min.y;
 						point.z=bbox->max.z;
 
 						if (!IsInFrustrum(&point,frustrum))
 						{
-							EERIE_3D point;
+							Vec3f point;
 							point.x=bbox->max.x;
 							point.y=bbox->max.y;
 							point.z=bbox->max.z;
 
 							if (!IsInFrustrum(&point,frustrum))
 							{
-								EERIE_3D point;
+								Vec3f point;
 								point.x=bbox->min.x;
 								point.y=bbox->max.y;
 								point.z=bbox->max.z;
@@ -654,7 +654,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 
 	if (USE_PORTALS && portals)
 	{
-		EERIE_3D posi;
+		Vec3f posi;
 		posi.x=io->pos.x;
 		posi.y=io->pos.y-20;
 		posi.z=io->pos.z;
@@ -743,7 +743,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 //*********************************************************************************************************************
-bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position) {
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, Vec3f * position) {
 	
 	if (EDITMODE) return false;
 
@@ -753,7 +753,7 @@ bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position) {
 
 	if (USE_PORTALS && portals)
 	{
-		EERIE_3D posi;
+		Vec3f posi;
 		posi.x=position->x;
 		posi.y=position->y-60; //20
 		posi.z=position->z;
@@ -863,7 +863,7 @@ bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position) {
 	return false;
 }
 
-long ARX_PORTALS_GetRoomNumForPosition2(EERIE_3D * pos,long flag,float * height)
+long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 {
 	
 	EERIEPOLY * ep; 
@@ -1010,7 +1010,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 	return -1;
 }
 // flag==1 for player
-long ARX_PORTALS_GetRoomNumForPosition(EERIE_3D * pos,long flag)
+long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 {
 	long num;
 	float height;
@@ -1163,7 +1163,7 @@ bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 	return false;
 
 }
-bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
+bool IsInFrustrum(Vec3f * point,EERIE_FRUSTRUM * frustrum)
 {
 	if (	((point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d)>0)
 		&&	((point->x*frustrum->plane[1].a + point->y*frustrum->plane[1].b + point->z*frustrum->plane[1].c + frustrum->plane[1].d)>0)
@@ -1175,7 +1175,7 @@ bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 }
 
 
-bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
+bool IsSphereInFrustrum(float radius,Vec3f * point,EERIE_FRUSTRUM * frustrum)
 {
 	float dists[4];
 	dists[0]=point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d;
@@ -1197,7 +1197,7 @@ bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
 {
 	for (long i=0;i<frustrums->nb_frustrums;i++)
 	{
-		if (IsSphereInFrustrum(ep->v[0].rhw,(EERIE_3D *)&ep->center,&frustrums->frustrums[i]))
+		if (IsSphereInFrustrum(ep->v[0].rhw,(Vec3f *)&ep->center,&frustrums->frustrums[i]))
 			return false;
 			}
 
@@ -1230,7 +1230,7 @@ void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d
 	fr->plane[plane].d=d;
 }
 
-void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,EERIE_3D * orgn,EERIE_3D * pt1,EERIE_3D * pt2)
+void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt1,Vec3f * pt2)
 {
 	register float Ax,Ay,Az,Bx,By,Bz,epnlen;
 	Ax=pt1->x-orgn->x;
@@ -1270,17 +1270,17 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum,EERIEPOLY * ep,long cull)
 
 	if (cull)
 	{
-		CreatePlane(frustrum,0,&ACTIVECAM->pos,(EERIE_3D *)&ep->v[0],(EERIE_3D *)&ep->v[1]);
-		CreatePlane(frustrum,1,&ACTIVECAM->pos,(EERIE_3D *)&ep->v[3],(EERIE_3D *)&ep->v[2]);
-		CreatePlane(frustrum,2,&ACTIVECAM->pos,(EERIE_3D *)&ep->v[1],(EERIE_3D *)&ep->v[3]);
-		CreatePlane(frustrum,3,&ACTIVECAM->pos,(EERIE_3D *)&ep->v[2],(EERIE_3D *)&ep->v[0]);
+		CreatePlane(frustrum,0,&ACTIVECAM->pos,(Vec3f *)&ep->v[0],(Vec3f *)&ep->v[1]);
+		CreatePlane(frustrum,1,&ACTIVECAM->pos,(Vec3f *)&ep->v[3],(Vec3f *)&ep->v[2]);
+		CreatePlane(frustrum,2,&ACTIVECAM->pos,(Vec3f *)&ep->v[1],(Vec3f *)&ep->v[3]);
+		CreatePlane(frustrum,3,&ACTIVECAM->pos,(Vec3f *)&ep->v[2],(Vec3f *)&ep->v[0]);
 	}
 	else
 	{
-		CreatePlane(frustrum,0,&ACTIVECAM->pos,(EERIE_3D *)&ep->v[1],(EERIE_3D *)&ep->v[0]);
-		CreatePlane(frustrum,1,&ACTIVECAM->pos,(EERIE_3D *)&ep->v[2],(EERIE_3D *)&ep->v[3]);
-		CreatePlane(frustrum,2,&ACTIVECAM->pos,(EERIE_3D *)&ep->v[3],(EERIE_3D *)&ep->v[1]);
-		CreatePlane(frustrum,3,&ACTIVECAM->pos,(EERIE_3D *)&ep->v[0],(EERIE_3D *)&ep->v[2]);
+		CreatePlane(frustrum,0,&ACTIVECAM->pos,(Vec3f *)&ep->v[1],(Vec3f *)&ep->v[0]);
+		CreatePlane(frustrum,1,&ACTIVECAM->pos,(Vec3f *)&ep->v[2],(Vec3f *)&ep->v[3]);
+		CreatePlane(frustrum,2,&ACTIVECAM->pos,(Vec3f *)&ep->v[3],(Vec3f *)&ep->v[1]);
+		CreatePlane(frustrum,3,&ACTIVECAM->pos,(Vec3f *)&ep->v[0],(Vec3f *)&ep->v[2]);
 	}
 
 	frustrum->nb=to;
@@ -1291,7 +1291,7 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum)
 
 	D3DVECTOR vEyePt    = D3DVECTOR( ACTIVECAM->pos.x , -ACTIVECAM->pos.y, ACTIVECAM->pos.z );
 
-	EERIE_3D target,tout;
+	Vec3f target,tout;
 	tout.x=0.f;
 	tout.y=0.f;
 	tout.z=10000.f;
@@ -1921,7 +1921,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
-				EERIE_3D nrm;
+				Vec3f nrm;
 				nrm.x=ep->v[2].sx-ACTIVECAM->pos.x;
 				nrm.y=ep->v[2].sy-ACTIVECAM->pos.y;
 				nrm.z=ep->v[2].sz-ACTIVECAM->pos.z;
@@ -2078,7 +2078,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
-				EERIE_3D nrm;
+				Vec3f nrm;
 				nrm.x=ep->v[2].sx-ACTIVECAM->pos.x;
 				nrm.y=ep->v[2].sy-ACTIVECAM->pos.y;
 				nrm.z=ep->v[2].sz-ACTIVECAM->pos.z;
@@ -2352,7 +2352,7 @@ SMY_D3DVERTEX *pMyVertex;
 
 			fDist-=ep->v[0].rhw;
 
-			EERIE_3D nrm;
+			Vec3f nrm;
 			nrm.x=ep->v[2].sx-ACTIVECAM->pos.x;
 			nrm.y=ep->v[2].sy-ACTIVECAM->pos.y;
 			nrm.z=ep->v[2].sz-ACTIVECAM->pos.z;
@@ -2755,7 +2755,7 @@ SMY_D3DVERTEX *pMyVertex;
 							tv[nu]=ep->v[nu].tv*4.f;						
 						}
 
-							float			t		=	max( 10.0f, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
+							float			t		=	max( 10.0f, EEDistance3D(&ACTIVECAM->pos, (Vec3f *)&ep->v[nu]) - 80.f );
 							//if (t < 10.f)	t		=	10.f;
 
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
@@ -3079,9 +3079,9 @@ void ARX_PORTALS_ComputeRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long t
 		EERIEPOLY * epp=&po->poly;
 
 	
-		float dist1=EEDistance3D(&ACTIVECAM->pos,(EERIE_3D *)&epp->v[0]);
-		float dist2=EEDistance3D(&ACTIVECAM->pos,(EERIE_3D *)&epp->v[2]);
-		float distc=EEDistance3D(&ACTIVECAM->pos,(EERIE_3D *)&epp->center);
+		float dist1=EEDistance3D(&ACTIVECAM->pos,(Vec3f *)&epp->v[0]);
+		float dist2=EEDistance3D(&ACTIVECAM->pos,(Vec3f *)&epp->v[2]);
+		float distc=EEDistance3D(&ACTIVECAM->pos,(Vec3f *)&epp->center);
 		float threshold=ACTIVECAM->cdepth*fZFogEnd;
 
 		if (	(dist1 > ACTIVECAM->cdepth-threshold)
@@ -3221,7 +3221,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			continue;
 		}
 
-		EERIE_3D pos;
+		Vec3f pos;
 		pos.x=epp->center.x-ACTIVECAM->pos.x;
 		pos.y=epp->center.y-ACTIVECAM->pos.y;
 		pos.z=epp->center.z-ACTIVECAM->pos.z;
@@ -3288,7 +3288,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			}
 
 		
-bool Clip_Visible(const EERIE_3D * orgn, EERIE_3D * dest)
+bool Clip_Visible(const Vec3f * orgn, Vec3f * dest)
 {
 	register float dx,dy,dz,adx,ady,adz,ix,iy,iz;
 	register float x0,y0,z0;
@@ -3399,10 +3399,10 @@ long curpixel;
 
 
 
-bool spGetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
+bool spGetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret)
 	{
 		
-	EERIE_3D n,s21,s31;
+	Vec3f n,s21,s31;
 
 	s21.x=ep->v[1].sx-ep->v[0].sx;
 	s21.y=ep->v[1].sy-ep->v[0].sy;
@@ -3451,8 +3451,8 @@ void ARX_SCENE_Render(long flag) {
 		return;
 	}
 		
-	static EERIE_3D lastpos;
-	static EERIE_3D lastangle;
+	static Vec3f lastpos;
+	static Anglef lastangle;
 	static float lastfocal;
 	long to;
 	static long x0=0;
@@ -3561,7 +3561,7 @@ void ARX_SCENE_Render(long flag) {
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
 	temp0=0;
-	EERIE_3D nrm;
+	Vec3f nrm;
 
 	long lfr,lfb;
 	long zsnap=ACTIVECAM->Zsnap;

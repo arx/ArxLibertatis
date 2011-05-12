@@ -465,12 +465,12 @@ void ARX_SOUND_MixerSwitch(ArxMixer from, ArxMixer to) {
 }
 
 // Sets the position of the listener
-void ARX_SOUND_SetListener(const EERIE_3D * position, const EERIE_3D * front, const EERIE_3D * up)
+void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Vec3f * up)
 {
 	if (bIsActive)
 	{
-		aalSetListenerPosition(*(Vec3f *)position);
-		aalSetListenerDirection(*(Vec3f *)front, *(Vec3f *)up);
+		aalSetListenerPosition(*position);
+		aalSetListenerDirection(*front, *up);
 	}
 }
 
@@ -485,7 +485,7 @@ void ARX_SOUND_EnvironmentSet(const string & name) {
 	}
 }
 
-long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, float pitch, SoundLoopMode loop) {
+long ARX_SOUND_PlaySFX(ArxSound & sample_id, const Vec3f * position, float pitch, SoundLoopMode loop) {
 	if (!bIsActive || sample_id == INVALID_ID) return INVALID_ID;
 
 	Channel channel;
@@ -640,7 +640,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source)
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source)
 {
 	if (!bIsActive) return 0;
 
@@ -682,7 +682,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EE
 		channel.position.y = position->y;
 		channel.position.z = position->z;
 	} else {
-		ARX_PLAYER_FrontPos((EERIE_3D *)&channel.position);
+		ARX_PLAYER_FrontPos(&channel.position);
 	}
 
 	channel.pitch = 0.9F + 0.2F * rnd();
@@ -695,7 +695,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EE
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source) {
+long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source) {
 	
 	if(!bIsActive) {
 		return 0;
@@ -749,7 +749,7 @@ long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float
 			return -1;
 		}
 	} else {
-		ARX_PLAYER_FrontPos((EERIE_3D *)&channel.position);
+		ARX_PLAYER_FrontPos(&channel.position);
 	}
 	
 	channel.pitch = 0.975f + 0.5f * rnd();
@@ -781,11 +781,11 @@ long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float
 
 	if (io)
 	{
-		GetItemWorldPositionSound(io, (EERIE_3D *)&channel.position); // TODO this cast is wrong
+		GetItemWorldPositionSound(io, &channel.position); // TODO this cast is wrong
 
 		if (loop != ARX_SOUND_PLAY_LOOPED)
 		{
-			EERIE_3D ePos;
+			Vec3f ePos;
 			ePos.x = channel.position.x;
 			ePos.y = channel.position.y;
 			ePos.z = channel.position.z;
@@ -813,7 +813,7 @@ long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float
 	return sample_id;
 }
 
-long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
+long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 {
 	if (!bIsActive || sample_id == INVALID_ID) return INVALID_ID;
 
@@ -865,7 +865,7 @@ long ARX_SOUND_PlayCinematic(const string & name) {
 
 	if (ACTIVECAM)
 	{
-		EERIE_3D front, up;
+		Vec3f front, up;
 		float t;
 		t = radians(MAKEANGLE(ACTIVECAM->angle.b));
 		front.x = -EEsin(t);
@@ -913,18 +913,18 @@ void ARX_SOUND_RefreshPitch(ArxSound & sample_id, float pitch) {
 		aalSetSamplePitch(sample_id, pitch);
 }
 
-void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const EERIE_3D * position)
+void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const Vec3f * position)
 {
 	if (bIsActive && sample_id != INVALID_ID)
 	{
 		if (position)
-			aalSetSamplePosition(sample_id, *(Vec3f *)position);
+			aalSetSamplePosition(sample_id, *position);
 		else
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 
 			ARX_PLAYER_FrontPos(&pos);
-			aalSetSamplePosition(sample_id, *(Vec3f *)&pos);
+			aalSetSamplePosition(sample_id, pos);
 		}
 	}
 }

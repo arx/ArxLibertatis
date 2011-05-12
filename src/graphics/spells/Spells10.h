@@ -64,7 +64,7 @@ class CLightning;
 class CIncinerate;
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CMassLightning: public CSpellFx
@@ -80,7 +80,7 @@ class CMassLightning: public CSpellFx
 		~CMassLightning() {};
 
 	public:
-		void	Create(EERIE_3D, float);
+		void	Create(Vec3f, float);
 		void	Update(unsigned long);
 		float	Render();
  
@@ -95,8 +95,8 @@ class CControlTarget: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_mm;
 		D3DTLVERTEX v1a[40];
 		D3DTLVERTEX pathways[40];
@@ -104,7 +104,7 @@ class CControlTarget: public CSpellFx
 		int end;
 		float fColor[3];
 		float fColor1[3];
-		EERIE_3D eCurPos;
+		Vec3f eCurPos;
 
 		int iMax;
 		float fSize;
@@ -115,11 +115,11 @@ class CControlTarget: public CSpellFx
 
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -160,7 +160,7 @@ class CMassIncinerate: public CSpellFx
 		~CMassIncinerate();
 
 	public:
-		void	Create(EERIE_3D, float);
+		void	Create(Vec3f, float);
 		void	Update(unsigned long);
 		float	Render();
  

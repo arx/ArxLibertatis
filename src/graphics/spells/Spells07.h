@@ -95,8 +95,8 @@ class CLightning: public CSpellFx
 		float	fAngleYMax;
 		float	fAngleZMin;
 		float	fAngleZMax;
-		EERIE_3D eSrc;
-		EERIE_3D eDest;
+		Vec3f eSrc;
+		Vec3f eDest;
 		float	fbeta;
 		TextureContainer * tex_light;
 		int iTTL;
@@ -116,8 +116,8 @@ class CLightning: public CSpellFx
 		// accesseurs
 	public:
 		void SetColor(long, long);
-		void SetPosSrc(EERIE_3D);
-		void SetPosDest(EERIE_3D);
+		void SetPosSrc(Vec3f);
+		void SetPosDest(Vec3f);
 
  
 
@@ -126,7 +126,7 @@ class CLightning: public CSpellFx
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, EERIE_3D, float beta = 0);
+		void	Create(Vec3f, Vec3f, float beta = 0);
 		void	Update(unsigned long);
 		float	Render();
 		void	Kill();
@@ -142,8 +142,8 @@ class CConfuse: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		EERIE_ANIM	* anim_papi;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
@@ -154,7 +154,7 @@ class CConfuse: public CSpellFx
 		int end;
 		float fColor[3];
 		int iElapsedTime;
-		EERIE_3D eCurPos;
+		Vec3f eCurPos;
 
 		int iMax;
 		float fSize;
@@ -165,11 +165,11 @@ class CConfuse: public CSpellFx
 		~CConfuse();
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -184,7 +184,7 @@ class CFireField: public CSpellFx
 {
 	public:
 		short		key;
-		EERIE_3D	pos;
+		Vec3f	pos;
 		float		demilargeur;
 		float		interp;
 		//	TextureContainer *tp,*tp2;
@@ -196,7 +196,7 @@ class CFireField: public CSpellFx
 		~CFireField();
 
 	public:
-		void	Create(float largeur, EERIE_3D * pos, int duration);
+		void	Create(float largeur, Vec3f * pos, int duration);
 		void	Update(unsigned long);
 		float	Render();
  
@@ -211,8 +211,8 @@ class CIceField: public CSpellFx
 {
 	public:
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		//	EERIE_3DOBJ * stite;
 		//	EERIE_3DOBJ * smotte;
 		TextureContainer * tex_p1;
@@ -221,9 +221,9 @@ class CIceField: public CSpellFx
 		int iMax;
 		float fSize;
 		int		 tType[50];
-		EERIE_3D tPos[50];
-		EERIE_3D tSize[50];
-		EERIE_3D tSizeMax[50];
+		Vec3f tPos[50];
+		Vec3f tSize[50];
+		Vec3f tSizeMax[50];
 
 	public:
 		CIceField();
@@ -231,11 +231,11 @@ class CIceField: public CSpellFx
 
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();

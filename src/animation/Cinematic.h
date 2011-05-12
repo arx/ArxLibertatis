@@ -53,7 +53,7 @@ class CinematicLight {
 	
 public:
 	
-	EERIE_3D pos;
+	Vec3f pos;
 	float fallin;
 	float fallout;
 	float r, g, b;
@@ -77,9 +77,9 @@ public:
 class Cinematic {
 	
 public:
-	EERIE_3D pos;
+	Vec3f pos;
 	float angz;
-	EERIE_3D possuiv; // in the case of a non-fade interpolation
+	Vec3f possuiv; // in the case of a non-fade interpolation
 	float angzsuiv;
 	int numbitmap;
 	int numbitmapsuiv;
@@ -104,9 +104,9 @@ public:
 	CinematicLight light;
 	CinematicLight lightchoose;
 	CinematicLight lightd;
-	EERIE_3D posgrille;
+	Vec3f posgrille;
 	float angzgrille;
-	EERIE_3D posgrillesuiv;
+	Vec3f posgrillesuiv;
 	float angzgrillesuiv;
 	float speedtrack;
 	float flTime;
@@ -123,7 +123,7 @@ public:
 	
 };
 
-void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);
-void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, EERIE_3D * posgrille, float angzgrille, float speedtrack);
+void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);
+void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, Vec3f * posgrille, float angzgrille, float speedtrack);
 
 #endif // ARX_ANIMATION_CINEMATIC_H

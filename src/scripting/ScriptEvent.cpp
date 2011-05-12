@@ -56,7 +56,8 @@ using std::string;
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern EERIE_3D LASTCAMPOS, LASTCAMANGLE;
+extern Vec3f LASTCAMPOS;
+extern Anglef LASTCAMANGLE;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern char WILL_LAUNCH_CINE[256];
 extern float InventoryDir;
@@ -294,7 +295,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if (dist > 20000) return false;
 
 	float ab = MAKEANGLE(io->angle.b);
-	EERIE_3D orgn, dest;
+	Vec3f orgn, dest;
 
 	orgn.x = x0;
 	orgn.y = y0 - 90.f;
@@ -1065,8 +1066,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + word + ".teo";
 
 						File_Standardize(tex2, tex);
-						EERIE_3D last_angle;
-						memcpy(&last_angle, &io->angle, sizeof(EERIE_3D));
+						Vec3f last_angle;
+						memcpy(&last_angle, &io->angle, sizeof(Vec3f));
 						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive( tex, -1); //AddItem(tex);
 
 						if (ioo != NULL)
@@ -1119,7 +1120,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								io->show = SHOW_FLAG_KILLED;
 								ReplaceInAllInventories(io, ioo);
 								SendInitScriptEvent(ioo);
-								memcpy(&ioo->angle, &last_angle, sizeof(EERIE_3D));
+								memcpy(&ioo->angle, &last_angle, sizeof(Vec3f));
 								TREATZONE_AddIO(ioo, neww);
 
 								for (int i = 0; i < MAX_EQUIPED; i++)
@@ -1572,7 +1573,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					{
 						if (io->ioflags & IO_CAMERA)
 						{
-							EERIE_3D fo;
+							Vec3f fo;
 							fo.x = GetVarValueInterpretedAsFloat(word, esss, io);
 							fo.y = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fo.z = GetVarValueInterpretedAsFloat(temp3, esss, io);
@@ -1837,9 +1838,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 									acs.pos1.x	=	LASTCAMPOS.x;
 									acs.pos1.y	=	LASTCAMPOS.y;
 									acs.pos1.z	=	LASTCAMPOS.z;
-									acs.pos2.a	=	LASTCAMANGLE.a;
-									acs.pos2.b	=	LASTCAMANGLE.b;
-									acs.pos2.g	=	LASTCAMANGLE.g;
+									acs.pos2.x	=	LASTCAMANGLE.a;
+									acs.pos2.y	=	LASTCAMANGLE.b;
+									acs.pos2.z	=	LASTCAMANGLE.g;
 								}
 
 								if (!strcasecmp(temp2, "ZOOM"))
@@ -2436,7 +2437,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 									if (inter.iobj[t]->ioflags & IO_NPC)
 									{
 										float dist = inter.iobj[t]->physics.cyl.radius + ioo->physics.cyl.radius + 10;
-										EERIE_3D ofs;
+										Vec3f ofs;
 										ofs.x = -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
 										ofs.y = 0.f;
 										ofs.z = EEcos(radians(inter.iobj[t]->angle.b)) * dist;
@@ -2492,7 +2493,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					else if (!strcmp(word, "FIREBALL"))
 					{
 						GetTargetPos(io);
-						EERIE_3D pos;
+						Vec3f pos;
 						pos.x = io->pos.x;
 						pos.y = io->pos.y;
 						pos.z = io->pos.z;
@@ -2966,7 +2967,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					if (radius)   // SEND EVENT TO ALL OBJECTS IN A RADIUS
 					{
-						EERIE_3D _pos, _pos2;
+						Vec3f _pos, _pos2;
 
 						for (long l = 0 ; l < inter.nbmax ; l++)
 						{
@@ -2998,7 +2999,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						if (ap != NULL)
 						{
-							EERIE_3D _pos;
+							Vec3f _pos;
 
 							for (long l = 0; l < inter.nbmax; l++)
 							{
@@ -5748,7 +5749,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								{
 									if (inter.iobj[t] != NULL)
 									{
-										EERIE_3D pos;
+										Vec3f pos;
 
 										if (GetItemWorldPosition(inter.iobj[t], &pos))
 										{
@@ -5782,7 +5783,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							{
 								if (playr)
 								{
-									EERIE_3D pos;
+									Vec3f pos;
 
 									if (GetItemWorldPosition(io, &pos))
 									{

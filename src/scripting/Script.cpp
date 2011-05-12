@@ -866,7 +866,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 								&& ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
 						   )
 						{
-							EERIE_3D pos, pos2;
+							Vec3f pos, pos2;
 							GetItemWorldPosition(io, &pos);
 							GetItemWorldPosition(inter.iobj[t], &pos2);
 
@@ -1064,7 +1064,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 
 			if (!specialstrcmp(name, "^ININITPOS"))
 			{
-				EERIE_3D pos;
+				Vec3f pos;
 
 				if (io
 						&&	GetItemWorldPosition(io, &pos)
@@ -1337,7 +1337,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 								&& ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
 						   )
 						{
-							EERIE_3D pos, pos2;
+							Vec3f pos, pos2;
 							GetItemWorldPosition(io, &pos);
 							GetItemWorldPosition(inter.iobj[t], &pos2);
 							*fcontent = (float)EEDistance3D(&pos, &pos2);
@@ -2779,7 +2779,7 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 
 		ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
 		aup->_curtime += smoothing + 100;
-		EERIE_3D tp;
+		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);
 
 		if (wp < 0)
@@ -2825,7 +2825,7 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 	{
 		if (ValidIONum(io->targetinfo))
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 
 			if (GetItemWorldPosition(inter.iobj[io->targetinfo], &pos))
 			{
@@ -3389,12 +3389,12 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 {
 	INTERACTIVE_OBJ * io = st->io;
 	GetTargetPos(io);
-	EERIE_3D target;
+	Vec3f target;
 	target.x = io->target.x - io->pos.x;
 	target.y = io->target.y - io->pos.y;
 	target.z = io->target.z - io->pos.z;
 	Vector_Normalize(&target);
-	EERIE_3D targ;
+	Vec3f targ;
 	Vector_RotateY(&targ, &target, rnd() * 60.f - 30.f);
 	target.x = io->target.x + targ.x * 100.f;
 	target.y = io->target.y + targ.y * 100.f;
@@ -3403,7 +3403,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	if (ARX_INTERACTIVE_ConvertToValidPosForIO(io, &target))
 	{
 		ARX_INTERACTIVE_Teleport(io, &target);
-		EERIE_3D pos;
+		Vec3f pos;
 		pos.x = io->pos.x;
 		pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
 		pos.z = io->pos.z;

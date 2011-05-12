@@ -430,7 +430,7 @@ bool MENU_NoActiveWindow()
 	return false;
 }
 
-void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, Color _c)
+void FontRenderText(Font* _pFont, Vec3f pos, const std::string& _pText, Color _c)
 {
 	if(pTextManage)
 	{
@@ -2656,7 +2656,7 @@ void CMenuElementText::Render()
 
 	if(bNoMenu) return;
 
-	EERIE_3D ePos;
+	Vec3f ePos;
 	ePos.x = (float) rZone.left;
 	ePos.y = (float) rZone.top;
 	ePos.z = 1;
@@ -2682,7 +2682,7 @@ void CMenuElementText::RenderMouseOver()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	EERIE_3D ePos;
+	Vec3f ePos;
 	ePos.x = (float)rZone.left;
 	ePos.y = (float)rZone.top;
 	ePos.z = 1;
@@ -4913,7 +4913,7 @@ void CMenuButton::Render()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		EERIE_3D ePos;
+		Vec3f ePos;
 		ePos.x = (float)rZone.left;
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
@@ -4969,7 +4969,7 @@ void CMenuButton::RenderMouseOver()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		
-		EERIE_3D ePos;
+		Vec3f ePos;
 		ePos.x = (float)rZone.left;
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;

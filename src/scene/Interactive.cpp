@@ -152,7 +152,7 @@ long INTER_DRAW = 0;
 long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
-static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
+static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos);
 static INTERACTIVE_OBJ * AddCamera(const std::string & file);
 static INTERACTIVE_OBJ * AddMarker(const std::string & file);
 
@@ -365,7 +365,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 				if ((ioo) && ValidIOAddress(ioo))
 				{
 					long ll = eobj->linked[k].lidx;
-					EERIE_3D pos, vector;
+					Vec3f pos, vector;
 					pos.x = io->obj->vertexlist3[ll].v.x;
 					pos.y = io->obj->vertexlist3[ll].v.y;
 					pos.z = io->obj->vertexlist3[ll].v.z;
@@ -649,7 +649,7 @@ extern float fZFogEnd;
 void PrepareIOTreatZone(long flag)
 {
 	static long status = -1;
-	static EERIE_3D lastpos;
+	static Vec3f lastpos;
 
 	if ((flag)
 	        ||	(status == -1))
@@ -764,7 +764,7 @@ void PrepareIOTreatZone(long flag)
 				{
 					if (io->show == SHOW_FLAG_TELEPORTING)
 					{
-						EERIE_3D pos;
+						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
 						dist = EEDistance3D(&ACTIVECAM->pos, &pos);
 					}
@@ -780,7 +780,7 @@ void PrepareIOTreatZone(long flag)
 				{
 					if (io->show == SHOW_FLAG_TELEPORTING)
 					{
-						EERIE_3D pos;
+						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
 						dist = EEDistance3D(&ACTIVECAM->pos, &pos); //&io->pos,&pos);
 					}
@@ -970,7 +970,7 @@ void UnselectAllNodes()
 }
 //*************************************************************************************
 //*************************************************************************************
-void TranslateSelectedNodes(EERIE_3D * trans)
+void TranslateSelectedNodes(Vec3f * trans)
 {
 	for (long i = 0; i < nodes.nbmax; i++)
 	{
@@ -1497,7 +1497,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->halo.dynlight = -1;
 
 		io->level = io->truelevel;
-		io->forcedmove.clear();
+		io->forcedmove = Vec3f::ZERO;
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
@@ -1534,7 +1534,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->invisibility = 0.f;
 		io->rubber = BASE_RUBBER;
 		io->scale = 1.f;
-		io->move.clear();
+		io->move = Vec3f::ZERO;
 		io->type_flags = 0;
 		io->sound = -1;
 		io->soundtime = 0;
@@ -1895,7 +1895,7 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src)
 
 	return dest;
 }
-bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * target)
+bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target)
 {
 	EERIE_CYLINDER phys;
 
@@ -1966,7 +1966,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			inter.iobj[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
 			ARX_PARTICLES_Add_Smoke(&io->pos, 3, 20);
-			EERIE_3D pos;
+			Vec3f pos;
 			pos.x = inter.iobj[t]->pos.x;
 			pos.y = inter.iobj[t]->pos.y + inter.iobj[t]->physics.cyl.height * ( 1.0f / 2 );
 			pos.z = inter.iobj[t]->pos.z;
@@ -2039,14 +2039,14 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 	}
 }
 long FLAG_ALLOW_CLOTHES = 1;
-void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flags)
+void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags)
 {
 
 	if (!io)
 		return;
 
 	FRAME_COUNT = -1;
-	EERIE_3D translate;
+	Vec3f translate;
 	io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->room_flags |= 1;
 	io->room = -1;
@@ -2761,7 +2761,7 @@ void SelectIO(INTERACTIVE_OBJ * io)
 	{
 		io->EditorFlags |= EFLAG_SELECTED;
 		NbIOSelected++;
-		EERIE_3D curpos;
+		Vec3f curpos;
 		GetItemWorldPosition(io, &curpos);
 		LastSelectedIONum = GetInterNum(io);
 		ShowIOPath(io);
@@ -2770,7 +2770,7 @@ void SelectIO(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 // Translate all selected IOs
 //*************************************************************************************
-void TranslateSelectedIO(EERIE_3D * op)
+void TranslateSelectedIO(Vec3f * op)
 {
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -2803,7 +2803,7 @@ void ResetSelectedIORot()
 //*************************************************************************************
 // Rotate all selected IOs
 //*************************************************************************************
-void RotateSelectedIO(EERIE_3D * op)
+void RotateSelectedIO(Anglef * op)
 {
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -2888,7 +2888,7 @@ void GroundSnapSelectedIO()
 		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
 		{
 			INTERACTIVE_OBJ * io = inter.iobj[i];
-			EERIE_3D ppos;
+			Vec3f ppos;
 			ppos.x = io->pos.x;
 			ppos.y = io->pos.y;
 			ppos.z = io->pos.z;
@@ -3385,7 +3385,7 @@ extern long USE_CEDRIC_ANIM;
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
 //*************************************************************************************
-INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, EERIE_3D * _pRef, INTERACTIVE_OBJ ** _pTable, int * _pnNbInTable)
+INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTERACTIVE_OBJ ** _pTable, int * _pnNbInTable)
 {
 	float n;
  
@@ -3588,9 +3588,9 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 //*************************************************************************************
 // Need To upgrade to a more precise collision.
 //*************************************************************************************
-long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size)
+long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
 {
-	EERIE_3D pos;
+	Vec3f pos;
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -3632,7 +3632,7 @@ long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size)
 //*************************************************************************************
 // To upgrade to a more precise collision.
 //*************************************************************************************
-static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos) {
+static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 	
 	long nbv;
 	long idx;
@@ -4090,7 +4090,7 @@ void UpdateCameras()
 
 					if ((io->_camdata->cam.lastinfovalid) && (io->_camdata->cam.smoothing != 0.f))
 					{
-						EERIE_3D smoothtarget;
+						Vec3f smoothtarget;
  
 						float vv = (float)io->_camdata->cam.smoothing;
 
@@ -4098,8 +4098,8 @@ void UpdateCameras()
 
 						vv = (8000 - vv) * ( 1.0f / 4000 );
 						float vll = _framedelay * ( 1.0f / 1000 ) * vv;
-						EERIE_3D oldvector;
-						EERIE_3D newvector;
+						Vec3f oldvector;
+						Vec3f newvector;
 						oldvector.x = io->_camdata->cam.lasttarget.x - io->_camdata->cam.lastpos.x;
 						oldvector.y = io->_camdata->cam.lasttarget.y - io->_camdata->cam.lastpos.y;
 						oldvector.z = io->_camdata->cam.lasttarget.z - io->_camdata->cam.lastpos.z;
@@ -4216,7 +4216,7 @@ void RenderInter(float from, float to) {
 	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 	float val = -0.6f;
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
-	EERIE_3D temp;
+	Anglef temp;
 	EERIEMATRIX mat;
 	INTER_DRAW = 0;
 	INTER_COMPUTE = 0;
@@ -4295,11 +4295,11 @@ void RenderInter(float from, float to) {
 			    &&	(io->obj->pbox)
 			    &&	(io->obj->pbox->active))
 			{
-				EERIE_3D tmp;
+				Vec3f tmp;
 				tmp.x = (io->obj->pbox->vert[14].pos.x - io->obj->pbox->vert[13].pos.x);
 				tmp.y = (io->obj->pbox->vert[14].pos.y - io->obj->pbox->vert[13].pos.y);
 				tmp.z = (io->obj->pbox->vert[14].pos.z - io->obj->pbox->vert[13].pos.z);
-				EERIE_3D up;
+				Vec3f up;
 
 				up.x = io->obj->pbox->vert[2].pos.x - io->obj->pbox->vert[1].pos.x;
 				up.y = io->obj->pbox->vert[2].pos.y - io->obj->pbox->vert[1].pos.y;
@@ -4359,7 +4359,7 @@ void RenderInter(float from, float to) {
 						LOOK_AT_TARGET = 1;
 				}
 
-				EERIE_3D pos = io->pos;
+				Vec3f pos = io->pos;
 
 				if (io->ioflags & IO_NPC)
 				{
@@ -4676,7 +4676,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 
 		io->obj->pbox->active = 1;
 		io->obj->pbox->stopcount = 0;
-		EERIE_3D pos;
+		Vec3f pos;
 		pos.x = io->pos.x;
 		pos.z = io->pos.z;
 		pos.y = io->pos.y;
@@ -4685,7 +4685,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 		io->velocity.z = 0.f;
 
 		io->stopped = 1;
-		EERIE_3D fallvector;
+		Vec3f fallvector;
 		fallvector.x = 0.f;
 		fallvector.z = 0.f;
 		fallvector.y = 0.000001f;

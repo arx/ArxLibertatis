@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/Fog.h"
 
+#include "animation/Animation.h"
+
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -105,7 +107,7 @@ void ARX_FOGS_Clear()
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_FOGS_TranslateSelected(EERIE_3D * trans)
+void ARX_FOGS_TranslateSelected(Vec3f * trans)
 {
 	for (long i = 0; i < MAX_FOG; i++)
 	{
@@ -180,7 +182,7 @@ long ARX_FOGS_Count()
 void ARX_FOGS_TimeReset()
 {
 }
-void AddPoisonFog(EERIE_3D * pos, float power)
+void AddPoisonFog(Vec3f * pos, float power)
 {
 	int iDiv = 4 - config.video.levelOfDetail;
 
@@ -297,7 +299,7 @@ void ARX_FOGS_Render() {
 //*************************************************************************************
 void ARX_FOGS_RenderAll()
 {
-	EERIE_3D angle(0, 0, 0);
+	Anglef angle = Anglef::ZERO;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -313,7 +315,7 @@ void ARX_FOGS_RenderAll()
 
 			if (fogs[i].special & FOG_DIRECTIONAL)
 			{
-				EERIE_3D orgn, dest;
+				Vec3f orgn, dest;
 				orgn.x = fogs[i].pos.x;
 				orgn.y = fogs[i].pos.y;
 				orgn.z = fogs[i].pos.z;

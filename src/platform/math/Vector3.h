@@ -96,6 +96,11 @@ public:
 		return Vector3(x + other.x, y + other.y, z + other.z);
 	}
 	
+
+	Vector3 operator*(const Vector3 & other) const {
+		return Vector3(x * other.x, y * other.y, z * other.z);
+	}
+	
 	/*!
 	 * Substract a vector to this vector.
 	 * @brief Substraction operator.
@@ -134,6 +139,11 @@ public:
 	 */
 	const Vector3 & operator+=(const Vector3 & other) {
 		x += other.x, y += other.y, z += other.z;
+		return *this;
+	}
+	
+	const Vector3 & operator*=(const Vector3 & other) {
+		x *= other.x, y *= other.y, z *= other.z;
 		return *this;
 	}
 	

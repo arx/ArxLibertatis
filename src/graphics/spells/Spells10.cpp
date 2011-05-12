@@ -84,12 +84,12 @@ CMassLightning::CMassLightning(long nbmissiles)
 }
 
 //-----------------------------------------------------------------------------
-void CMassLightning::Create(EERIE_3D aePos, float afBeta = 0) {
+void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 	
 	(void)afBeta;
 	
 	long lMax = 0;
-	EERIE_3D eTarget;
+	Vec3f eTarget;
 	float ft = 360.0f / (float)number;
 
 	for (int i = 0; i < number; i++)
@@ -155,7 +155,7 @@ CControlTarget::CControlTarget()
 	fColor1[2] = 0.2f;
 }
 //-----------------------------------------------------------------------------
-void CControlTarget::Create(EERIE_3D aeSrc, float afBeta)
+void CControlTarget::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
 
@@ -195,7 +195,7 @@ void CControlTarget::Create(EERIE_3D aeSrc, float afBeta)
 	v1a[end].sy = eTarget.y;
 	v1a[end].sz = eTarget.z;
 
-	EERIE_3D s, e, h;
+	Vec3f s, e, h;
 	s.x = v1a[0].sx;
 	s.y = v1a[0].sy;
 	s.z = v1a[0].sz;
@@ -270,8 +270,8 @@ float CControlTarget::Render()
 
 	fTrail = (ulCurrentTime * fOneOnDuration) * 9 * (n + 2);
 
-	EERIE_3D lastpos, newpos;
-	EERIE_3D v;
+	Vec3f lastpos, newpos;
+	Vec3f v;
 
 	int arx_check_init = -1;
 	newpos.x = 0;
@@ -399,10 +399,10 @@ float CControlTarget::Render()
 		}
 	}
 
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
-	EERIE_3D av;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
+	Vec3f av;
 	ARX_CHECK_NOT_NEG(arx_check_init);
 	av.x = lastpos.x - newpos.x;
 	av.y = lastpos.y - newpos.y;
@@ -436,7 +436,7 @@ CMassIncinerate::~CMassIncinerate()
 }
 
 //---------------------------------------------------------------------
-void CMassIncinerate::Create(EERIE_3D aePos, float afBeta = 0) {
+void CMassIncinerate::Create(Vec3f aePos, float afBeta = 0) {
 	
 	(void)afBeta;
 	

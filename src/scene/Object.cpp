@@ -1358,11 +1358,9 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 //-----------------------------------------------------------------------------------------------------
 // Warning Clear3DObj/Clear3DScene don't release Any pointer Just Clears Structures
 void EERIE_3DOBJ::clear() {
-		// TODO Make it possible to use a default
-		// conststructor for these
-		pos.x = pos.y = pos.z = 0;
-		point0 = pos;
-		angle = pos;
+	
+		point0 = pos = Vec3f::ZERO;
+		angle = Anglef::ZERO;
 
 		origin = 0;
 		ident = 0;
@@ -1676,9 +1674,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		// Initialize the bone
 		Quat_Init(&eobj->c_data->bones[0].quatinit);
 		Quat_Init(&eobj->c_data->bones[0].quatanim);
-		eobj->c_data->bones[0].scaleinit.clear();
-		eobj->c_data->bones[0].scaleanim.clear();
-		eobj->c_data->bones[0].transinit.clear();
+		eobj->c_data->bones[0].scaleinit = Vec3f::ZERO;
+		eobj->c_data->bones[0].scaleanim = Vec3f::ZERO;
+		eobj->c_data->bones[0].transinit = Vec3f::ZERO;
 		eobj->c_data->bones[0].transinit_global = eobj->c_data->bones[0].transinit;
 		eobj->c_data->bones[0].original_group = NULL;
 		eobj->c_data->bones[0].father = -1;
@@ -1709,9 +1707,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 
 			Quat_Init(&eobj->c_data->bones[i].quatinit);
 			Quat_Init(&eobj->c_data->bones[i].quatanim);
-			eobj->c_data->bones[i].scaleinit.clear();
-			eobj->c_data->bones[i].scaleanim.clear();
-			eobj->c_data->bones[i].transinit = EERIE_3D(v_origin->v.x, v_origin->v.y, v_origin->v.z);
+			eobj->c_data->bones[i].scaleinit = Vec3f::ZERO;
+			eobj->c_data->bones[i].scaleanim = Vec3f::ZERO;
+			eobj->c_data->bones[i].transinit = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
 			eobj->c_data->bones[i].transinit_global = eobj->c_data->bones[i].transinit;
 			eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
 			eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
@@ -1785,7 +1783,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				/* Translation */
 				obj->bones[i].transanim = obj->bones[i].transinit;
 			}
-			obj->bones[i].scaleanim = EERIE_3D(1.0f, 1.0f, 1.0f);
+			obj->bones[i].scaleanim = Vec3f(1.0f, 1.0f, 1.0f);
 		}
 
 		eobj->vertexlocal = new EERIE_3DPAD[eobj->vertexlist.size()];
@@ -1793,7 +1791,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
 
 		for (long i = 0; i != obj->nb_bones; i++) {
-			EERIE_3D vector = obj->bones[i].transanim;
+			Vec3f vector = obj->bones[i].transanim;
 			
 			for (int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 				
@@ -1801,7 +1799,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];
 				EERIE_3DPAD & outVert = eobj->vertexlocal[idx];
 				
-				EERIE_3D temp = inVert.v - vector;
+				Vec3f temp = inVert.v - vector;
 				TransformInverseVertexQuat(&obj->bones[i].quatanim, &temp, &temp);
 				outVert.x = temp.x, outVert.y = temp.y, outVert.z = temp.z;
 			}
@@ -2007,8 +2005,8 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	eerie->pos.x = eerie->pos.y = eerie->pos.z = 0.f;
 
 	// NORMALS CALCULATIONS
-	EERIE_3D nrml;
-	EERIE_3D nrrr;
+	Vec3f nrml;
+	Vec3f nrrr;
 	float count;
 	long j, j2;
 
@@ -2092,8 +2090,8 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 
 	if ((head_idx >= 0) && (neck_orgn >= 0))
 	{
-		EERIE_3D center(0, 0, 0);
-		EERIE_3D origin = eerie->vertexlist[neck_orgn].v;
+		Vec3f center(0, 0, 0);
+		Vec3f origin = eerie->vertexlist[neck_orgn].v;
 		float count = (float)eerie->grouplist[head_idx].indexes.size();
 
 		if (count > 0.f)
@@ -2126,7 +2124,7 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 				}
 
 				float ifactor = 1.f - factor;
-				EERIE_3D fakenorm;
+				Vec3f fakenorm;
 				fakenorm.x = ev->v.x - center.x;
 				fakenorm.y = ev->v.y - center.y;
 				fakenorm.z = ev->v.z - center.z;
@@ -2262,7 +2260,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 {
 	if (!ret) return;
 
-	EERIE_3D offset = ret->vertexlist[ret->origin].v;
+	Vec3f offset = ret->vertexlist[ret->origin].v;
 
 	if ((offset.x == 0) && (offset.y == 0) && (offset.z == 0))
 		return;

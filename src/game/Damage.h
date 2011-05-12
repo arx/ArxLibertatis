@@ -106,7 +106,7 @@ DECLARE_FLAGS_OPERATORS(DamageFlags)
 struct DAMAGE_INFO {
 	short exist;
 	short active;
-	EERIE_3D pos;
+	Vec3f pos;
 	float damages;
 	float radius;
 	unsigned long start_time;
@@ -132,9 +132,9 @@ extern DAMAGE_INFO damages[MAX_DAMAGES];
  * flag & 1 no lights;
  * flag & 2 Only affects small sources
  */
-void CheckForIgnition(EERIE_3D * pos, float radius, bool mode, long flag = 0);
+void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag = 0);
 
-bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, DamageArea flags, DamageType typ = 0, long numsource = -1);
+bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, DamageType typ = 0, long numsource = -1);
 
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
@@ -144,16 +144,16 @@ long ARX_DAMAGES_GetFree();
 void ARX_DAMAGES_UpdateAll();
 float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source = -1); 
 void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0);
-float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0, EERIE_3D * pos = NULL); 
-bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source); 
+float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0, Vec3f * pos = NULL); 
+bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source); 
 void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer);
 void ARX_DAMAGES_UpdateDamage(long j, float tim);
-float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, EERIE_3D * pos);
+float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, Vec3f * pos);
 
 void ARX_DAMAGES_HealInter(INTERACTIVE_OBJ * io, float dmg);
 
 // ON-SCREEN Blood Splat Management
-void ARX_DAMAGES_SCREEN_SPLATS_Add(EERIE_3D * pos, float dmgs);
+void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs);
 void ARX_DAMAGES_SCREEN_SPLATS_Init();
 void ARX_DAMAGES_DurabilityCheck(INTERACTIVE_OBJ * io, float ratio);
 void ARX_DAMAGES_DurabilityLoss(INTERACTIVE_OBJ * io, float loss);

@@ -58,11 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PHYSICS_ATTRACTORS_H
 #define ARX_PHYSICS_ATTRACTORS_H
 
+#include "platform/math/Vector3.h"
+
 struct INTERACTIVE_OBJ;
-struct EERIE_3D;
 
 void ARX_SPECIAL_ATTRACTORS_Reset();
 bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius);
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & io, EERIE_3D & force);
+void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & io, Vec3f & force);
 
 #endif // ARX_PHYSICS_ATTRACTORS_H

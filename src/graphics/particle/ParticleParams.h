@@ -32,7 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
-typedef EERIE_3D Point3;
+typedef Vec3f Point3;
 
 //-----------------------------------------------------------------------------
 class CParticleParams

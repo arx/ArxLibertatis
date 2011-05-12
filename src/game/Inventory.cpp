@@ -321,7 +321,7 @@ void PutInFrontOfPlayer(INTERACTIVE_OBJ * io)
 
 	if (io->obj && io->obj->pbox)
 	{
-		EERIE_3D pos, vector;
+		Vec3f pos, vector;
 		vector.x = 0.f; 
 		vector.y = 100.f;
 		vector.z = 0.f;
@@ -357,7 +357,7 @@ void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io)
 
 	if (io->obj && io->obj->pbox)
 	{
-		EERIE_3D pos, vector;
+		Vec3f pos, vector;
 		vector.x = 0.f; 
 		vector.y = 100.f;
 		vector.z = 0.f;
@@ -1560,7 +1560,7 @@ INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos)
 //   Put the position in "pos". returns true if position was found
 //   or false if object is invalid, or position not defined.
 //*************************************************************************************
-bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
+bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos)
 {
 	// Valid IO ?
 	if (!io) return false;
@@ -1635,7 +1635,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 // FUNCTION:
 //   Gets real world position for an IO to spawn a sound
 //*************************************************************************************
-bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos)
+bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos)
 {
 	if (!io) return false;
 

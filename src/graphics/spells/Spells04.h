@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleSystem.h"
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CBless: public CSpellFx
@@ -70,8 +70,8 @@ class CBless: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_sol;
 		float fRot;
@@ -91,11 +91,10 @@ class CBless: public CSpellFx
 
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
-		void Set_Angle(EERIE_3D);
+		void Set_Angle(const Anglef &);
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Update(unsigned long);
 		float	Render();
 		void	Kill();
@@ -104,7 +103,7 @@ class CBless: public CSpellFx
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CDispellField: public CSpellFx
@@ -112,8 +111,8 @@ class CDispellField: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 		int iMax;
@@ -122,11 +121,11 @@ class CDispellField: public CSpellFx
 	public:
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -174,8 +173,8 @@ class CTelekinesis: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 
@@ -187,11 +186,11 @@ class CTelekinesis: public CSpellFx
 
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -207,8 +206,8 @@ class CCurse: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 		float fRot;
@@ -219,14 +218,14 @@ class CCurse: public CSpellFx
 		~CCurse();
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(EERIE_3D * pos);
+		float	Render(Vec3f * pos);
 };
 //-----------------------------------------------------------------------------
 

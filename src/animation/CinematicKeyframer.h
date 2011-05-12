@@ -22,14 +22,14 @@ struct C_KEY {
 	int numbitmap;
 	int fx; // associated fx
 	short typeinterp, force;
-	EERIE_3D pos;
+	Vec3f pos;
 	float angz;
 	int color;
 	int colord;
 	int colorf;
 	float speed;
 	CinematicLight light;
-	EERIE_3D posgrille;
+	Vec3f posgrille;
 	float angzgrille;
 	float speedtrack;
 	int idsound[16]; // 16 languages max.

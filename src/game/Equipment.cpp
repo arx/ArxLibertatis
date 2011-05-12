@@ -98,7 +98,7 @@ struct EQUIP_INFO
 
 extern long TRUEFIGHT;
 extern long GAME_EDITOR;
-extern EERIE_3D PUSH_PLAYER_FORCE;
+extern Vec3f PUSH_PLAYER_FORCE;
 extern long HERO_SHOW_1ST;
 extern long EXTERNALVIEW;
 
@@ -674,7 +674,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 }
 //***********************************************************************************************
 //***********************************************************************************************
-float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_target, float ratioaim, EERIE_3D * position)
+float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_target, float ratioaim, Vec3f * position)
 {
 	EVENT_SENDER = io_source;
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
@@ -830,7 +830,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	float dmgs = damages * backstab;
 	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
 
-	EERIE_3D pos;
+	Vec3f pos;
 	pos.x = io_target->pos.x;
 	pos.y = io_target->pos.y;
 	pos.z = io_target->pos.z;
@@ -854,7 +854,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		strcpy(amat, "FLESH");
 		ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &pos, io_source);
 
-		EERIE_3D pos;
+		Vec3f pos;
 		pos.x = io_target->pos.x;
 		pos.y = io_target->pos.y + io_target->physics.cyl.height * ( 1.0f / 2 );
 		pos.z = io_target->pos.z;
@@ -869,14 +869,14 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 			if (io_target == inter.iobj[0])
 			{
-				EERIE_3D ppos;
+				Vec3f ppos;
 				ppos.x = io_source->pos.x - player.pos.x;
 				ppos.y = io_source->pos.y - player.pos.y - PLAYER_BASE_HEIGHT;
 				ppos.z = io_source->pos.z - player.pos.z;
 				Vector_Normalize(&ppos);
 
 				//------- player push START
-				EERIE_3D push = ppos;
+				Vec3f push = ppos;
 				push.x *= -dmgs * ( 1.0f / 11 );
 				push.y *= -dmgs * ( 1.0f / 30 );
 				push.z *= -dmgs * ( 1.0f / 11 );
@@ -896,7 +896,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 			else
 			{
 
-				EERIE_3D ppos;
+				Vec3f ppos;
 				ppos.x = io_source->pos.x - io_target->pos.x;
 				ppos.y = io_source->pos.y - io_target->pos.y;
 				ppos.z = io_source->pos.z - io_target->pos.z;
@@ -906,7 +906,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				Vector_Normalize(&ppos);
 
 				//------- player NPC START
-				EERIE_3D push = ppos;
+				Vec3f push = ppos;
 				push *= -dmgs;
 				io_target->forcedmove += push;
 
@@ -953,7 +953,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 	long weapon = GetInterNum(io_weapon);
 	EERIE_SPHERE sphere;
 
-	EERIE_3D * v0;
+	Vec3f * v0;
 	EXCEPTIONS_LIST_Pos = 0;
 	float rad;
 
@@ -995,12 +995,12 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 					INTERACTIVE_OBJ * target = inter.iobj[EVERYTHING_IN_SPHERE[jj]];
 			
-					EERIE_3D	pos;
+					Vec3f	pos;
 					D3DCOLOR	color		=	ARX_OPAQUE_WHITE;
 					long		hitpoint	=	-1;
 					float		curdist		=	999999.f;
 					
-					EERIE_3D vector;
+					Vec3f vector;
 					vector.x = sphere.origin.x - target->pos.x;
 					vector.y = (sphere.origin.y - target->pos.y) * ( 1.0f / 2 );
 					vector.z = sphere.origin.z - target->pos.z;
@@ -1035,7 +1035,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 					if (!(flags & 1))
 					{
-						EERIE_3D posi;
+						Vec3f posi;
 
 						if (hitpoint >= 0)
 						{
@@ -1090,7 +1090,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 								EERIE_SPHERE sp;
 								float power;
 								power = (dmgs * ( 1.0f / 40 )) + 0.7f;
-								EERIE_3D vect;
+								Vec3f vect;
 								vect.x = target->obj->vertexlist3[hitpoint].v.x - io_source->pos.x;
 								vect.y = 0;
 								vect.z = target->obj->vertexlist3[hitpoint].v.z - io_source->pos.z;

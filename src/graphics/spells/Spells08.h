@@ -58,6 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL08_H
 #define ARX_CSPELLFX_LVL08_H
 
+#include "graphics/effects/SpellEffects.h"
+
 class CSpellFx;
 
 //-----------------------------------------------------------------------------
@@ -68,14 +70,14 @@ class CExplosion: public CSpellFx
 {
 	private:
 		short		key;
-		EERIE_3D	pos;
+		Vec3f	pos;
 		float		rout, rin, scale, puissance;
 		float		ang;
 		TextureContainer * tp, *tp2;
 
 		int				disquenbvertex;
 		int				disquenbfaces;
-		EERIE_3D	*	disquevertex;
+		Vec3f	*	disquevertex;
 		D3DTLVERTEX	*	disqued3d;
 		unsigned short	* disqueind;
 
@@ -84,7 +86,7 @@ class CExplosion: public CSpellFx
 
  
 		void ExplosionAddParticule(int, D3DTLVERTEX *, TextureContainer *);
-		void Collision(int, EERIE_3D *, EERIE_3D *);
+		void Collision(int, Vec3f *, Vec3f *);
 	public:
  
 		~CExplosion();

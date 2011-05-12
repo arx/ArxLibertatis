@@ -92,7 +92,7 @@ using std::max;
 
 //-----------------------------------------------------------------------------
 
-inline bool In3DBBoxTolerance(const EERIE_3D * pos, const EERIE_3D_BBOX * bbox, const float tolerance)
+inline bool In3DBBoxTolerance(const Vec3f * pos, const EERIE_3D_BBOX * bbox, const float tolerance)
 {
 	return ((pos->x >= bbox->min.x - tolerance)
 	        &&	(pos->x <= bbox->max.x + tolerance)
@@ -120,7 +120,7 @@ long F2L_RoundUp(float val);
 void EERIEMathPrecalc();
 void PrecalcATAN();
 void PrecalcSIN();
-bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt);
+bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt);
 bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
@@ -199,19 +199,19 @@ inline float FastRSqrt( float pValue )
 //*************************************************************************************
 // Rotations
 //*************************************************************************************
-inline void _ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
+inline void _ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s)
 {
 	out->x = (in->x * c) + (in->y * s);
 	out->y = (in->y * c) - (in->x * s);
 	out->z = in->z;
 }
-inline void _YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
+inline void _YRotatePoint(Vec3f * in, Vec3f * out, float c, float s)
 {
 	out->x = (in->x * c) + (in->z * s);
 	out->y = in->y;
 	out->z = (in->z * c) - (in->x * s);
 }
-inline void _XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
+inline void _XRotatePoint(Vec3f * in, Vec3f * out, float c, float s)
 {
 	out->x = in->x;
 	out->y = (in->y * c) - (in->z * s);
@@ -227,19 +227,19 @@ inline void _XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
 // Computes Length of a vector
 // WARNING: EEsqrt may use a approximative way of computing sqrt
 //*************************************************************************************
-inline float TRUEVector_Magnitude(const EERIE_3D * v)
+inline float TRUEVector_Magnitude(const Vec3f * v)
 {
 	return (float)TRUEsqrt(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
-inline float Vector_Magnitude(const EERIE_3D * v)
+inline float Vector_Magnitude(const Vec3f * v)
 {
 	return (float)EEsqrt(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 //*************************************************************************************
 // Normalizes a Vector. Returns its length before normalization
 //*************************************************************************************
-inline float Vector_Normalize(EERIE_3D * v)
+inline float Vector_Normalize(Vec3f * v)
 {
 	register float len = Vector_Magnitude(v);
 	register float l2 = 1.f / len;
@@ -248,7 +248,7 @@ inline float Vector_Normalize(EERIE_3D * v)
 	v->z *= l2;
 	return len;
 }
-inline float TRUEVector_Normalize(EERIE_3D * v)
+inline float TRUEVector_Normalize(Vec3f * v)
 {
 	register float len = TRUEVector_Magnitude(v);
 	register float l2 = 1.f / len;
@@ -262,12 +262,12 @@ inline float TRUEVector_Normalize(EERIE_3D * v)
 // Matrix functions
 //*******************************************************************************
 
-void	MatrixSetByVectors(EERIEMATRIX * m, const EERIE_3D * d, const EERIE_3D * u);
+void	MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u);
 void	MatrixReset(EERIEMATRIX * mat);
 VOID    MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b);
-void	VectorMatrixMultiply(EERIE_3D * vDest, const EERIE_3D * vSrc, const EERIEMATRIX * mat);
+void	VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat);
 #define VertexMatrixMultiply(a,b,c) VectorMatrixMultiply(a,b,c)
-void	GenerateMatrixUsingVector(EERIEMATRIX * matrix, const EERIE_3D * vect, const float rollDegrees);
+void	GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const float rollDegrees);
 
 float	ffsqrt(float value);
 long	isqrt(long value);
@@ -276,7 +276,7 @@ long	isqrt(long value);
 //*******************************************************************************
 // Rotation Functions
 //*******************************************************************************
-inline void _YXZRotatePoint(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
+inline void _YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam)
 {
 	register float tempy;
 	out->z = (in->z * cam->Ycos) - (in->x * cam->Ysin);
@@ -289,7 +289,7 @@ inline void _YXZRotatePoint(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
 //*************************************************************************************
 // Fast normal rotation :p
 //*************************************************************************************
-inline void _YXZRotateNorm(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
+inline void _YXZRotateNorm(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam)
 {
 	out->z = (in->y * cam->Xsin) + (((in->z * cam->Ycos) - (in->x * cam->Ysin)) * cam->Xcos);
 }
@@ -319,7 +319,7 @@ inline void Quat_Init(EERIE_QUAT * quat, const float x, const float y, const flo
 }
 
 // Transforms a Vertex by a matrix
-inline void TransformVertexMatrix(EERIEMATRIX * mat, EERIE_3D * vertexin, EERIE_3D * vertexout)
+inline void TransformVertexMatrix(EERIEMATRIX * mat, Vec3f * vertexin, Vec3f * vertexout)
 {
 
 	vertexout->x = vertexin->x * mat->_11 + vertexin->y * mat->_21 + vertexin->z * mat->_31;
@@ -329,7 +329,7 @@ inline void TransformVertexMatrix(EERIEMATRIX * mat, EERIE_3D * vertexin, EERIE_
 }
 
 // Transforms a Vertex by a quaternion
-inline void TransformVertexQuat(EERIE_QUAT * quat, EERIE_3D * vertexin, EERIE_3D * vertexout)
+inline void TransformVertexQuat(EERIE_QUAT * quat, Vec3f * vertexin, Vec3f * vertexout)
 {
 
 	register float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
@@ -342,17 +342,17 @@ inline void TransformVertexQuat(EERIE_QUAT * quat, EERIE_3D * vertexin, EERIE_3D
 	vertexout->z = quat->w * rz + quat->z * rw + quat->x * ry - quat->y * rx;
 }
 
-void TransformVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout);
-void TransformInverseVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout);
-void RotationFromQuat(EERIE_3D * v, float fTheta, const EERIE_QUAT * q);
-void QuatFromRotation(EERIE_QUAT * q, const EERIE_3D * v, const float fTheta);
+void TransformVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin, Vec3f * vertexout);
+void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin, Vec3f * vertexout);
+void RotationFromQuat(Vec3f * v, float fTheta, const EERIE_QUAT * q);
+void QuatFromRotation(EERIE_QUAT * q, const Vec3f * v, const float fTheta);
 void Quat_Init(EERIE_QUAT * quat, const float x = 0, const float y = 0, const float z = 0, const float w = 1);
 void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2);
 void Quat_Multiply(EERIE_QUAT * dest , const EERIE_QUAT * q1, const EERIE_QUAT * q2);
 float Quat_Magnitude(EERIE_QUAT * q);
 
-void Quat_AxisRotate(EERIE_QUAT * quat, EERIE_3D * v, float ang);
-void Quat_Rotate(EERIE_QUAT * quat, EERIE_3D * angle);
+void Quat_AxisRotate(EERIE_QUAT * quat, Vec3f * v, float ang);
+void Quat_Rotate(EERIE_QUAT * quat, Vec3f * angle);
 void Quat_Copy(EERIE_QUAT * q1, const EERIE_QUAT * q2);
 void Quat_Slerp(EERIE_QUAT * result, const EERIE_QUAT * from, EERIE_QUAT * to, float t);
 void Quat_Reverse(EERIE_QUAT * quat);
@@ -361,18 +361,18 @@ void Quat_GetShortestArc(EERIE_QUAT * q1 , EERIE_QUAT * q2);
 //*******************************************************************************
 // VECTORS Functions
 //*******************************************************************************
-float	Vector_Magnitude(const EERIE_3D * v);
-float	Vector_Normalize(EERIE_3D * v);
-float	TRUEVector_Magnitude(const EERIE_3D * v);
-float	TRUEVector_Normalize(EERIE_3D * v);
-void	Vector_CrossProduct(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2);
-float	Vector_DotProduct(const EERIE_3D * v1, const EERIE_3D * v2);
+float	Vector_Magnitude(const Vec3f * v);
+float	Vector_Normalize(Vec3f * v);
+float	TRUEVector_Magnitude(const Vec3f * v);
+float	TRUEVector_Normalize(Vec3f * v);
+void	Vector_CrossProduct(Vec3f * dest, const Vec3f * v1, const Vec3f * v2);
+float	Vector_DotProduct(const Vec3f * v1, const Vec3f * v2);
  
-void	Vector_RotateY(EERIE_3D * dest, const EERIE_3D * src, const float angle);
-void	Vector_RotateZ(EERIE_3D * dest, const EERIE_3D * src, const float angle);
-void	VRotateX(EERIE_3D * v1, const float angle);
-void	VRotateY(EERIE_3D * v1, const float angle);
-void	VRotateZ(EERIE_3D * v1, const float angle);
+void	Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle);
+void	Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle);
+void	VRotateX(Vec3f * v1, const float angle);
+void	VRotateY(Vec3f * v1, const float angle);
+void	VRotateZ(Vec3f * v1, const float angle);
 void	QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat);
 
 #define CROSS(dest,v1,v2) \
@@ -387,7 +387,7 @@ void	QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat);
 	dest[1]=v1[1]-v2[1]; \
 	dest[2]=v1[2]-v2[2];
 
-inline float ScalarProduct(const EERIE_3D * v0, const EERIE_3D * v1) {
+inline float ScalarProduct(const Vec3f * v0, const Vec3f * v1) {
 	return	((v0->x * v1->x) +	(v0->y * v1->y) +	(v0->z * v1->z));
 }
 
@@ -406,8 +406,8 @@ inline float ScalarProduct(const EERIE_3D * v0, const EERIE_3D * v1) {
 	isect1=VV0+(VV2-VV0)*D0/(D0-D2);
  
 void CalcFaceNormal(EERIEPOLY * ep, const D3DTLVERTEX * v);
-void CalcObjFaceNormal(const EERIE_3D * v0, const EERIE_3D * v1, const EERIE_3D * v2, EERIE_FACE * ef);
-void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, EERIE_3D * v0, EERIE_3D * v1, EERIE_3D * v2);
+void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);
+void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, Vec3f * v0, Vec3f * v1, Vec3f * v2);
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
 void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 
@@ -416,7 +416,7 @@ void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 //*******************************************************************************
 #define SquaredDistance2D(x0,y0,x1,y1) (float)( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 #define SquaredDistance3D(x0,y0,z0,x1,y1,z1) (float)( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
-inline float EESquaredDistance3D(const EERIE_3D * from, const EERIE_3D * to)
+inline float EESquaredDistance3D(const Vec3f * from, const Vec3f * to)
 {
 	return (float)(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
 }
@@ -425,7 +425,7 @@ inline float EESquaredDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 #define Distance3D(x0,y0,z0,x1,y1,z1) (float)EEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
 #define TRUEDistance2D(x0,y0,x1,y1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 #define TRUEDistance3D(x0,y0,z0,x1,y1,z1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
-inline float TRUEEEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
+inline float TRUEEEDistance3D(const Vec3f * from, const Vec3f * to)
 {
 	return (float)TRUEsqrt(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
 }
@@ -434,16 +434,16 @@ inline float TRUEEEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 // Compute Distance between two 3D points
 // WARNING: EEsqrt may use an approximative way of computing sqrt !
 //*************************************************************************************
-inline float EEDistance3D(const EERIE_3D & from, const EERIE_3D & to) {
+inline float EEDistance3D(const Vec3f & from, const Vec3f & to) {
 	return (float)EEsqrt(((to.x - from.x) * (to.x - from.x)) + ((to.y - from.y) * (to.y - from.y)) + ((to.z - from.z) * (to.z - from.z)));
 }
 
 // TODO remove once callers are migrated to the reference version
-inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to) {
+inline float EEDistance3D(const Vec3f * from, const Vec3f * to) {
 	return EEDistance3D(*from, *to);
 }
 
-inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
+inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)
 {
     using std::min;
     using std::max;
@@ -459,7 +459,7 @@ inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 	return false;
 }
 
-inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
+inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)
 {
     using std::min;
     using std::max;
@@ -494,11 +494,11 @@ inline float MAKEANGLE(float a)
  
 
 float GetNearestSnappedAngle(float angle);
-void QuatFromAngles(EERIE_QUAT * q, const EERIE_3D * angle);
+void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle);
 
 extern D3DMATRIX ProjectionMatrix;
 
-inline void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
+inline void specialEE_RT(D3DTLVERTEX * in, Vec3f * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->x = in->sx - et->posx;
@@ -511,7 +511,7 @@ inline void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
 	out->y = (out->y * et->xcos) - (temp * et->xsin);
 }
 
-inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
+inline void specialEE_P(Vec3f * in, D3DTLVERTEX * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 

@@ -418,7 +418,7 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 //*************************************************************************************
 // Fill "pos" with "eanim" total translation
 //*************************************************************************************
-void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,EERIE_3D * pos)
+void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
 {
 
 	if (	(!eanim)
@@ -433,7 +433,7 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,EERIE_3D * pos)
 		return;
 	}
 
-	EERIE_3D * e3D=&eanim->anims[alt_idx]->frames[eanim->anims[alt_idx]->nb_key_frames-1].translate;
+	Vec3f * e3D=&eanim->anims[alt_idx]->frames[eanim->anims[alt_idx]->nb_key_frames-1].translate;
 	pos->x=e3D->x;
 	pos->y=e3D->y;
 	pos->z=e3D->z;	
@@ -636,8 +636,8 @@ extern long USE_CEDRIC_ANIM;
 //-----------------------------------------------------------------------------
 void EERIEDrawAnimQuat(	EERIE_3DOBJ * eobj,
 						ANIM_USE * eanim,
-						EERIE_3D * angle,
-						EERIE_3D  * pos,
+						Anglef * angle,
+						Vec3f * pos,
 						unsigned long time,
 						INTERACTIVE_OBJ * io,
 						long typ
@@ -700,7 +700,7 @@ extern float GLOBAL_LIGHT_FACTOR;
 //*************************************************************************************
 
 void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
-					EERIEMATRIX * mat,EERIE_3D  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
+					EERIEMATRIX * mat,Vec3f  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
 {
 	BIGQUAT=NULL;
 	BIGMAT=mat;
@@ -1153,8 +1153,6 @@ void PopOneInterBump(TextureContainer *_pTex)
 }
 
 float INVISIBILITY_OVERRIDE=0.f;
-extern void MakeCLight(INTERACTIVE_OBJ * io,EERIE_RGB * infra,EERIE_3D * angle,EERIE_3D * pos,EERIE_3DOBJ * eobj,EERIEMATRIX * BIGMAT,EERIE_QUAT *BIGQUAT);
-extern void MakeCLight2(INTERACTIVE_OBJ * io,EERIE_RGB * infra,EERIE_3D * angle,EERIE_3D * pos,EERIE_3DOBJ * eobj,EERIEMATRIX * BIGMAT,EERIE_QUAT *BIGQUAT,long i);
 
 //-----------------------------------------------------------------------------
 void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex,D3DTLVERTEX *_pD3DVertex)
@@ -1186,7 +1184,7 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->facelist[lIdList].v[iI]*4.f);
 		}
 
-		float fDist=EEDistance3D(&ACTIVECAM->pos,(EERIE_3D *)&_pobj3dObj->vertexlist3[_piInd[iI]].v)-80.f;
+		float fDist=EEDistance3D(&ACTIVECAM->pos,(Vec3f *)&_pobj3dObj->vertexlist3[_piInd[iI]].v)-80.f;
 
 		if (fDist<10.f) fDist=10.f;
 
@@ -1211,12 +1209,11 @@ int ARX_SoftClippZ(EERIE_VERTEX *_pVertex1,EERIE_VERTEX *_pVertex2,EERIE_VERTEX 
 extern D3DMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 //-----------------------------------------------------------------------------
-void DrawEERIEInter2(EERIE_3DOBJ * eobj,
-					EERIE_3D * angle, EERIE_3D  * poss, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo )
+static void DrawEERIEInter2(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo )
 {
 	if ( !eobj ) return;
 
-	EERIE_3D pos;	
+	Vec3f pos;	
 	// Resets 2D Bounding Box
 	BBOXMIN.y	=	BBOXMIN.x	=	32000;
 	BBOXMAX.y	=	BBOXMAX.x	=	-32000;
@@ -1266,7 +1263,7 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 	long					k;
 	
 	long			lfr, lfg, lfb;		
-	EERIE_3D		temporary3D;
+	Vec3f		temporary3D;
 	EERIE_CAMERA	Ncam;
 	EERIE_RGB		infra;
 	float			invisibility;
@@ -1343,9 +1340,9 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 				}
 
 				if ( BIGQUAT == NULL )
-					VertexMatrixMultiply( (EERIE_3D *)&vert_list_static[1], (EERIE_3D *)&vert_list_static[0], BIGMAT );
+					VertexMatrixMultiply( (Vec3f *)&vert_list_static[1], (Vec3f *)&vert_list_static[0], BIGMAT );
 				else 
-					TransformVertexQuat ( BIGQUAT, (EERIE_3D *)&vert_list_static[0], (EERIE_3D *)&vert_list_static[1] );
+					TransformVertexQuat ( BIGQUAT, (Vec3f *)&vert_list_static[0], (Vec3f *)&vert_list_static[1] );
 
 				eobj->vertexlist3[i].v.x	=	vert_list_static[1].sx	+=	pos.x;
 				eobj->vertexlist3[i].v.y	=	vert_list_static[1].sy	+=	pos.y;
@@ -1356,8 +1353,8 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 			}
 			else
 			{
-				_YRotatePoint( (EERIE_3D *)&vert_list_static[0], (EERIE_3D *)&vert_list_static[1], Ycos, Ysin );
-				_XRotatePoint( (EERIE_3D *)&vert_list_static[1], (EERIE_3D *)&vert_list_static[0], Xcos, Xsin );
+				_YRotatePoint( (Vec3f *)&vert_list_static[0], (Vec3f *)&vert_list_static[1], Ycos, Ysin );
+				_XRotatePoint( (Vec3f *)&vert_list_static[1], (Vec3f *)&vert_list_static[0], Xcos, Xsin );
 
 				// Misc Optim to avoid 1 infrequent rotation around Z
 				if ( Zsin == 0.f ) 
@@ -1371,7 +1368,7 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 				}
 				else 
 				{			
-					_ZRotatePoint( (EERIE_3D *) &vert_list_static[0], (EERIE_3D *)&vert_list_static[1], Zcos, Zsin );
+					_ZRotatePoint( (Vec3f *) &vert_list_static[0], (Vec3f *)&vert_list_static[1], Zcos, Zsin );
 					eobj->vertexlist3[i].v.x	=	vert_list_static[1].sx	+=	pos.x;
 					eobj->vertexlist3[i].v.y	=	vert_list_static[1].sy	+=	pos.y;
 					eobj->vertexlist3[i].v.z	=	vert_list_static[1].sz	+=	pos.z;
@@ -1653,22 +1650,22 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 		paf[2]=eobj->facelist[i].vid[2];
 
 		//CULL3D
-		EERIE_3D nrm;
+		Vec3f nrm;
 		nrm.x=eobj->vertexlist3[paf[0]].v.x-ACTIVECAM->pos.x;
 		nrm.y=eobj->vertexlist3[paf[0]].v.y-ACTIVECAM->pos.y;
 		nrm.z=eobj->vertexlist3[paf[0]].v.z-ACTIVECAM->pos.z;
 
 		if(!(eobj->facelist[i].facetype&POLY_DOUBLESIDED))
 		{
-			EERIE_3D normV10;
-			EERIE_3D normV20;
+			Vec3f normV10;
+			Vec3f normV20;
 			normV10.x=eobj->vertexlist3[paf[1]].v.x-eobj->vertexlist3[paf[0]].v.x;
 			normV10.y=eobj->vertexlist3[paf[1]].v.y-eobj->vertexlist3[paf[0]].v.y;
 			normV10.z=eobj->vertexlist3[paf[1]].v.z-eobj->vertexlist3[paf[0]].v.z;
 			normV20.x=eobj->vertexlist3[paf[2]].v.x-eobj->vertexlist3[paf[0]].v.x;
 			normV20.y=eobj->vertexlist3[paf[2]].v.y-eobj->vertexlist3[paf[0]].v.y;
 			normV20.z=eobj->vertexlist3[paf[2]].v.z-eobj->vertexlist3[paf[0]].v.z;
-			EERIE_3D normFace;
+			Vec3f normFace;
 			normFace.x=(normV10.y*normV20.z)-(normV10.z*normV20.y);
 			normFace.y=(normV10.z*normV20.x)-(normV10.x*normV20.z);
 			normFace.z=(normV10.x*normV20.y)-(normV10.y*normV20.x);
@@ -1773,7 +1770,7 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 			{ 
 				vert_list[k].tu=eobj->facelist[i].u[k];
 				vert_list[k].tv=eobj->facelist[i].v[k];
-				ApplyWaterFXToVertex((EERIE_3D *)&eobj->vertexlist[eobj->facelist[i].vid[k]].v,&vert_list[k],0.3f);
+				ApplyWaterFXToVertex((Vec3f *)&eobj->vertexlist[eobj->facelist[i].vid[k]].v,&vert_list[k],0.3f);
 			}
 		}
 
@@ -1973,7 +1970,7 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 			if ( ( todo > 2 ) && ( rnd() > 0.997f ) )
 			{
 				if ( io )
-					SpawnMetalShine( (EERIE_3D *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
+					SpawnMetalShine( (Vec3f *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
 			}
 		}
 		else
@@ -2002,7 +1999,7 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 		for (long o=0;o<3;o++)
 		{
 			if (BIGMAT!=NULL)
-				VertexMatrixMultiply(&temporary3D, (EERIE_3D *)&eobj->vertexlist[paf[o]].norm, BIGMAT );
+				VertexMatrixMultiply(&temporary3D, (Vec3f *)&eobj->vertexlist[paf[o]].norm, BIGMAT );
 			else 
 				_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm,&temporary3D,&Ncam);
 	
@@ -2069,7 +2066,7 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 
 			if ((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) 
 				{
-					EERIE_3D vect1,vect2;
+					Vec3f vect1,vect2;
 					D3DTLVERTEX * vert=&LATERDRAWHALO[(HALOCUR<<2)];						
 
 					if (HALOCUR<(HALOMAX-1)) HALOCUR++;
@@ -2134,9 +2131,8 @@ finish:
 
 extern bool bRenderInterList;
 //-----------------------------------------------------------------------------
-void DrawEERIEInter(EERIE_3DOBJ * eobj,
-					EERIE_3D * angle,EERIE_3D  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
-{
+void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle,Vec3f  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo) {
+	
 	DESTROYED_DURING_RENDERING=NULL;
 
 	if(bRenderInterList)
@@ -2151,7 +2147,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 
 	if (eobj==NULL) return;
 
-	EERIE_3D pos;	
+	Vec3f pos;	
 	// Resets 2D Bounding Box
 	BBOXMIN.y=BBOXMIN.x=32000;
 	BBOXMAX.y=BBOXMAX.x=-32000;
@@ -2193,7 +2189,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 	
 	long					lfr, lfg, lfb;		
 	float					dd, ffr, ffg, ffb;
-	EERIE_3D				temporary3D;
+	Vec3f				temporary3D;
 	EERIE_CAMERA			Ncam;
 
 	EERIE_RGB				infra;
@@ -2272,9 +2268,9 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 			}
 
 			if (BIGQUAT==NULL)
-				VertexMatrixMultiply( (EERIE_3D *)&vert_list[1], (EERIE_3D *)&vert_list[0], BIGMAT );
+				VertexMatrixMultiply( (Vec3f *)&vert_list[1], (Vec3f *)&vert_list[0], BIGMAT );
 			else 
-				TransformVertexQuat ( BIGQUAT, (EERIE_3D *)&vert_list[0], (EERIE_3D *)&vert_list[1] );
+				TransformVertexQuat ( BIGQUAT, (Vec3f *)&vert_list[0], (Vec3f *)&vert_list[1] );
 
 			eobj->vertexlist3[i].v.x=vert_list[1].sx+=pos.x;
 			eobj->vertexlist3[i].v.y=vert_list[1].sy+=pos.y;
@@ -2283,8 +2279,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 		}
 		else
 		{
-			_YRotatePoint((EERIE_3D *)&vert_list[0],(EERIE_3D *)&vert_list[1],Ycos,Ysin);
-			_XRotatePoint((EERIE_3D *)&vert_list[1],(EERIE_3D *)&vert_list[0],Xcos,Xsin);
+			_YRotatePoint((Vec3f *)&vert_list[0],(Vec3f *)&vert_list[1],Ycos,Ysin);
+			_XRotatePoint((Vec3f *)&vert_list[1],(Vec3f *)&vert_list[0],Xcos,Xsin);
 
 			// Misc Optim to avoid 1 infrequent rotation around Z
 			if (Zsin==0.f) 
@@ -2296,7 +2292,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 			}
 			else 
 			{			
-				_ZRotatePoint((EERIE_3D *)&vert_list[0],(EERIE_3D *)&vert_list[1],Zcos,Zsin);
+				_ZRotatePoint((Vec3f *)&vert_list[0],(Vec3f *)&vert_list[1],Zcos,Zsin);
 				eobj->vertexlist3[i].v.x=vert_list[1].sx+=pos.x;
 				eobj->vertexlist3[i].v.y=vert_list[1].sy+=pos.y;
 				eobj->vertexlist3[i].v.z=vert_list[1].sz+=pos.z;
@@ -2356,14 +2352,14 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 			Insertllight(PDL[i], EEDistance3D(&PDL[i]->pos, &pos)); 
 		}
 
-		EERIE_3D l_pos(pos.x, pos.y - 60.f, pos.z);
+		Vec3f l_pos(pos.x, pos.y - 60.f, pos.z);
 		Preparellights(&l_pos);	
 
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			if ((MIPM) && (!eobj->pdata[i].need_computing)) continue;
 			
 			if (BIGMAT!=NULL)
-				VertexMatrixMultiply( &temporary3D, (EERIE_3D *)&eobj->vertexlist[i].norm, BIGMAT );
+				VertexMatrixMultiply( &temporary3D, (Vec3f *)&eobj->vertexlist[i].norm, BIGMAT );
 			else 
 				_YXZRotatePoint(&eobj->vertexlist[i].norm,&temporary3D,&Ncam);
 		
@@ -2753,7 +2749,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 				for (long o=0;o<3;o++)
 				{
 					if (BIGMAT!=NULL)
-						VertexMatrixMultiply(&temporary3D, (EERIE_3D *)&eobj->vertexlist[paf[o]].norm, BIGMAT );
+						VertexMatrixMultiply(&temporary3D, (Vec3f *)&eobj->vertexlist[paf[o]].norm, BIGMAT );
 					else _YXZRotatePoint(&eobj->vertexlist[paf[o]].norm,&temporary3D,&Ncam);
 		
 					power=255.f-(float)(255.f*(temporary3D.z));
@@ -2815,7 +2811,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 
 				if ((_ffr[first] > 150.f) && (_ffr[second] > 110.f)) 
 					{
-						EERIE_3D vect1,vect2;
+						Vec3f vect1,vect2;
 						D3DTLVERTEX * vert=&LATERDRAWHALO[(HALOCUR<<2)];
 						
 						HALOCUR++;
@@ -2931,7 +2927,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 			{ 
 				vert_list[k].tu=eobj->facelist[i].u[k];
 				vert_list[k].tv=eobj->facelist[i].v[k];
-				ApplyWaterFXToVertex((EERIE_3D *)&eobj->vertexlist[eobj->facelist[i].vid[k]].v,&vert_list[k],0.3f);
+				ApplyWaterFXToVertex((Vec3f *)&eobj->vertexlist[eobj->facelist[i].vid[k]].v,&vert_list[k],0.3f);
 			}
 		}
 
@@ -3014,7 +3010,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 					if ( ( todo > 2 ) && ( rnd() > 0.997f ) )
 					{
 						if ( io )
-							SpawnMetalShine( (EERIE_3D *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
+							SpawnMetalShine( (Vec3f *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
 					}
 
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
@@ -3120,7 +3116,7 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 //*************************************************************************************
 // Precalcs some misc things for lights
 //*************************************************************************************
-void Preparellights(EERIE_3D * pos)
+void Preparellights(Vec3f * pos)
 {
 	for (long i=0;i<MAX_LLIGHTS;i++) 
 	{

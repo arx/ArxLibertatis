@@ -60,8 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "platform/math/Vector3.h"
+
 struct INTERACTIVE_OBJ;
-struct EERIE_3D;
 
 const float ARX_NPC_AUDIBLE_VOLUME_MIN(0.94F);
 const float ARX_NPC_AUDIBLE_VOLUME_MAX(1.0F);
@@ -75,7 +76,7 @@ const float ARX_NPC_AUDIBLE_PRESENCE_DEFAULT(1.0F);
 
 void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flag);
 void ARX_NPC_SetStat( INTERACTIVE_OBJ& io, const std::string& statname, float value );
-void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos);
+void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos);
 bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target);
 bool IsDeadNPC(INTERACTIVE_OBJ * io);
 
@@ -87,10 +88,10 @@ void ARX_NPC_Behaviour_Reset(INTERACTIVE_OBJ * io);
 void ARX_NPC_Behaviour_ResetAll();
 void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, long behavior, long behavior_param);
 void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, long MOVEMODE);
-void ARX_NPC_SpawnAudibleSound(EERIE_3D * pos, INTERACTIVE_OBJ * source,
+void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source,
                                const float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT,
                                const float presence = ARX_NPC_AUDIBLE_PRESENCE_DEFAULT);
-void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos,
+void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos,
                            const float volume = ARX_NPC_AUDIBLE_VOLUME_DEFAULT,
                            const float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT);
 

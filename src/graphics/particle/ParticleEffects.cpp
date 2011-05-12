@@ -96,14 +96,14 @@ extern unsigned long ulBKGColor;
 //-----------------------------------------------------------------------------
 struct OBJFX
 {
-	EERIE_3D	pos;
-	EERIE_3D	move;
-	EERIE_3D	scale;
+	Vec3f	pos;
+	Vec3f	move;
+	Vec3f	scale;
 	EERIE_RGB	fade;
 	EERIE_3DOBJ * obj;
 	long		special;
-	EERIE_3D	spe[8];
-	EERIE_3D	speinc[8];
+	Anglef spe[8];
+	Anglef speinc[8];
 	unsigned long	tim_start;
 	unsigned long	duration;
 	bool		exist;
@@ -151,7 +151,7 @@ long ARX_BOOMS_GetFree()
 }
 
 //-----------------------------------------------------------------------------
-void SpawnMetalShine(EERIE_3D * pos,long r,long g,long b,long num)
+void SpawnMetalShine(Vec3f * pos,long r,long g,long b,long num)
 {
 	return;
 
@@ -225,9 +225,9 @@ void LaunchDummyParticle()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss, INTERACTIVE_OBJ * io) {
+void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, INTERACTIVE_OBJ * io) {
 	
-	EERIE_3D pos;
+	Vec3f pos;
 	pos.x=poss->x;
 	pos.y=poss->y;
 	pos.z=poss->z;
@@ -255,7 +255,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss, INTERACTIVE_OBJ * io) {
 		if ((notok >= 0) && 
 			( notok < 10 ) )
 		{
-			EERIE_3D * v	=	&io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
+			Vec3f * v	=	&io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 			pos.x			=	v->x;
 			pos.y			=	v->y;
 			pos.z			=	v->z;
@@ -291,7 +291,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss, INTERACTIVE_OBJ * io) {
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
+void ARX_PARTICLES_Spawn_Rogue_Blood(Vec3f * pos,float dmgs,D3DCOLOR col)
 {
 	long j = ARX_PARTICLES_GetFree();
 
@@ -336,7 +336,7 @@ void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 	
 }
 
-void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col, long flags) {
+void ARX_PARTICLES_Spawn_Blood3(Vec3f * pos,float dmgs,D3DCOLOR col, long flags) {
 	
 	long j = ARX_PARTICLES_GetFree();
 	
@@ -390,7 +390,7 @@ void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col, long fla
 #define SPLAT_MULTIPLY 1.f
 
 //-----------------------------------------------------------------------------
-void ARX_POLYSPLAT_Add(EERIE_3D * poss,EERIE_RGB * col,float size,long flags)
+void ARX_POLYSPLAT_Add(Vec3f * poss,EERIE_RGB * col,float size,long flags)
 {
 	if (BoomCount > (MAX_POLYBOOM >> 2) - 30) return;
 
@@ -459,7 +459,7 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,EERIE_RGB * col,float size,long flags)
 	TheoricalSplat.v[3].sz=-splatsize*SPLAT_MULTIPLY;
 	TheoricalSplat.type=POLY_QUAD;
 
-	EERIE_3D RealSplatStart;
+	Vec3f RealSplatStart;
 	RealSplatStart.x=-size;
 	RealSplatStart.y=py;
 	RealSplatStart.z=-size;
@@ -656,7 +656,7 @@ void SpawnGroundSplat(EERIE_SPHERE * sp,EERIE_RGB * rgb,float size,long flags)
 long TOTAL_BODY_CHUNKS_COUNT=0;
 	
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTIVE_OBJ * io)
+void ARX_PARTICLES_Spawn_Blood2(Vec3f * pos,float dmgs,D3DCOLOR col,INTERACTIVE_OBJ * io)
 {
 	if (	(io)
 		&&	(io->ioflags & IO_NPC)
@@ -668,7 +668,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTI
 
 		power=((float)(io->_npcdata->SPLAT_DAMAGES)*( 1.0f / 60 ))+0.9f;
 
-		EERIE_3D vect;
+		Vec3f vect;
 		vect.x=pos->x-io->_npcdata->last_splat_pos.x;
 		vect.y=pos->y-io->_npcdata->last_splat_pos.y;
 		vect.z=pos->z-io->_npcdata->last_splat_pos.z;
@@ -699,7 +699,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTI
 
 		for (long k=0;k<nb;k++)
 		{
-			EERIE_3D posi;
+			Vec3f posi;
 			posi.x=io->_npcdata->last_splat_pos.x+vect.x*(float)k*4.f*power;
 			posi.y=io->_npcdata->last_splat_pos.y+vect.y*(float)k*4.f*power;
 			posi.z=io->_npcdata->last_splat_pos.z+vect.z*(float)k*4.f*power;
@@ -732,7 +732,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTI
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos,float dmgs,long source)
+void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
 {
 	if (source<0) return;
 
@@ -796,7 +796,7 @@ long SPARK_COUNT=0;
 // flag & 1 punch failed
 // flag & 2 punch success
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Spark(EERIE_3D * pos,float dmgs,long flags)
+void ARX_PARTICLES_Spawn_Spark(Vec3f * pos,float dmgs,long flags)
 {
 	if (!pos) return;
 
@@ -868,7 +868,7 @@ void ARX_PARTICLES_Spawn_Spark(EERIE_3D * pos,float dmgs,long flags)
 }
 
 //-----------------------------------------------------------------------------
-void MakeCoolFx(EERIE_3D * pos)
+void MakeCoolFx(Vec3f * pos)
 {
 	ARX_BOOMS_Add(pos,1);		
 }
@@ -930,10 +930,10 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 	}
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Add_Smoke(EERIE_3D * pos,long flags,long amount,EERIE_RGB * rgb) // flag 1 = randomize pos
+void ARX_PARTICLES_Add_Smoke(Vec3f * pos,long flags,long amount,EERIE_RGB * rgb) // flag 1 = randomize pos
 {
 
-	EERIE_3D mod;
+	Vec3f mod;
 	mod.x = mod.y = mod.z = 0.f;
 
 	if (flags & 1)
@@ -1263,7 +1263,7 @@ void ARX_BOOMS_ClearAll()
 	for (long i=0;i<MAX_BOOMS;i++) booms[i].exist=0;
 }
 //-----------------------------------------------------------------------------
-void ARX_BOOMS_Add(EERIE_3D * poss,long type)
+void ARX_BOOMS_Add(Vec3f * poss,long type)
 {
 	static TextureContainer * tc1=MakeTCFromFile("Graph\\Particles\\fire_hit.bmp");
 	static TextureContainer * tc2=MakeTCFromFile("Graph\\Particles\\boom.bmp");
@@ -1337,7 +1337,7 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 		}
 	}
 
-	EERIE_3D pos = *poss;
+	Vec3f pos = *poss;
 
 	typ=0;
 	x0 = poss->x * ACTIVEBKG->Xmul;
@@ -1440,16 +1440,16 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 }
 
 //-----------------------------------------------------------------------------
-void Add3DBoom(EERIE_3D * position) {
+void Add3DBoom(Vec3f * position) {
 	
 	float dist=Distance3D(player.pos.x,player.pos.y-160.f,player.pos.z,position->x,position->y,position->z);
-	EERIE_3D poss = *position;
+	Vec3f poss = *position;
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &poss);
 
 	if (dist<300)
 	{
 		float onedist=1.f/dist;
-		EERIE_3D vect;
+		Vec3f vect;
 		vect.x=(player.pos.x-position->x)*onedist; 
 		vect.y=(player.pos.y-160.f-position->y)*onedist; 
 		vect.z=(player.pos.z-position->z)*onedist;
@@ -1479,7 +1479,7 @@ void Add3DBoom(EERIE_3D * position) {
 							inter.iobj[i]->obj->pbox->active=1;
 							inter.iobj[i]->obj->pbox->stopcount=0;
 							float onedist=1.f/dist;
-							EERIE_3D vect;
+							Vec3f vect;
 							vect.x=(inter.iobj[i]->obj->pbox->vert[k].pos.x-position->x)*onedist; 
 							vect.y=(inter.iobj[i]->obj->pbox->vert[k].pos.y-position->y)*onedist; 
 							vect.z=(inter.iobj[i]->obj->pbox->vert[k].pos.z-position->z)*onedist;
@@ -1501,7 +1501,7 @@ void UpdateObjFx() {
 	float val,aa,bb;
 	float t1,t2,t3;
 	long p;
-	EERIE_3D pos;
+	Vec3f pos;
 
 	D3DTLVERTEX v[3];
 	v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 0.f, 0.f);
@@ -1540,8 +1540,8 @@ void UpdateObjFx() {
 			pos.y=objfx[i].pos.y+objfx[i].move.y*val;
 			pos.z=objfx[i].pos.z+objfx[i].move.z*val;
 
-			EERIE_3D angle;
-			EERIE_3D scale;
+			Anglef angle;
+			Vec3f scale;
 			EERIE_RGB color;			
 			scale.x=1.f+objfx[i].scale.x*val;
 			scale.y=1.f+objfx[i].scale.y*val;
@@ -1788,7 +1788,7 @@ void MakeBookFX(float posx,float posy,float posz)
 }
 
 //-----------------------------------------------------------------------------
-int ARX_GenereOneEtincelle(EERIE_3D *pos,EERIE_3D *dir)
+int ARX_GenereOneEtincelle(Vec3f *pos,Vec3f *dir)
 {
 	int	i;
 	
@@ -1814,7 +1814,7 @@ int ARX_GenereOneEtincelle(EERIE_3D *pos,EERIE_3D *dir)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_GenereSpheriqueEtincelles(EERIE_3D *pos,float r,TextureContainer *tc,float rr,float g,float b,int mask)
+void ARX_GenereSpheriqueEtincelles(Vec3f *pos,float r,TextureContainer *tc,float rr,float g,float b,int mask)
 {
 	GTC=tc;
 	ET_R=rr;
@@ -1825,7 +1825,7 @@ void ARX_GenereSpheriqueEtincelles(EERIE_3D *pos,float r,TextureContainer *tc,fl
 
 	while(nb)
 	{
-		EERIE_3D dir;
+		Vec3f dir;
 
 		float a = radians(rnd()*360.f);
 		float b = radians(rnd()*360.f);
@@ -1840,7 +1840,7 @@ void ARX_GenereSpheriqueEtincelles(EERIE_3D *pos,float r,TextureContainer *tc,fl
 
 //-----------------------------------------------------------------------------
 // flags & 1 = spawn_body_chunk
-void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos,float dmgs,D3DCOLOR col) {
+void ARX_PARTICLES_Spawn_Splat(Vec3f * pos,float dmgs,D3DCOLOR col) {
 	
 	float power;
 	power=(dmgs*( 1.0f / 60 ))+0.9f;
@@ -1883,7 +1883,7 @@ void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos,float dmgs,D3DCOLOR col) {
 
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_SpawnWaterSplash(EERIE_3D *_ePos)
+void ARX_PARTICLES_SpawnWaterSplash(Vec3f *_ePos)
 {
 	for (long kk=0;kk<rnd()*15+20;kk++)
 	{
@@ -1928,7 +1928,7 @@ void ARX_PARTICLES_SpawnWaterSplash(EERIE_3D *_ePos)
 }
 
 //-----------------------------------------------------------------------------
-void SpawnFireballTail(EERIE_3D * poss,EERIE_3D * vecto,float level,long flags)
+void SpawnFireballTail(Vec3f * poss,Vec3f * vecto,float level,long flags)
 {
 	if (explo[0]==NULL) return;
 
@@ -1987,7 +1987,7 @@ void SpawnFireballTail(EERIE_3D * poss,EERIE_3D * vecto,float level,long flags)
 }
 
 //-----------------------------------------------------------------------------
-void LaunchFireballBoom(EERIE_3D * poss,float level,EERIE_3D * direction,EERIE_RGB * rgb)
+void LaunchFireballBoom(Vec3f * poss,float level,Vec3f * direction,EERIE_RGB * rgb)
 {
 	level*=1.6f;
 
@@ -2095,7 +2095,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					part->ov.y = part->source->y; 
 					part->ov.z = part->source->z; 
 					INTERACTIVE_OBJ * target=inter.iobj[part->sourceionum];
-					EERIE_3D vector;
+					Vec3f vector;
 					vector.x=part->ov.x-target->pos.x;
 					vector.y=(part->ov.y-target->pos.y)*( 1.0f / 2 );
 					vector.z=part->ov.z-target->pos.z;
@@ -2307,7 +2307,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					}
 
 					GRenderer->SetCulling(Renderer::CullNone);
-					EERIE_3D vect;
+					Vec3f vect;
 					vect.x=part->oldpos.x-in.sx;
 					vect.y=part->oldpos.y-in.sy;
 					vect.z=part->oldpos.z-in.sz;
@@ -2413,7 +2413,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					}
 				}
 				
-				EERIE_3D op=part->oldpos;
+				Vec3f op=part->oldpos;
 
 				if(!ARXPausedTimer)
 				{
@@ -2506,7 +2506,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 				{
 					if(part->type & PARTICLE_ETINCELLE)
 					{
-						EERIE_3D pos,end;
+						Vec3f pos,end;
 						pos.x=in.sx;
 						pos.y=in.sy;
 						pos.z=in.sz;
@@ -2711,7 +2711,7 @@ void TreatBackgroundActions()
 						pd->ov.x=gl->pos.x+gl->ex_radius*sx*rnd();
 						pd->ov.y=gl->pos.y+gl->ex_radius*sy*rnd();
 						pd->ov.z=gl->pos.z+gl->ex_radius*sz*rnd();
-						EERIE_3D vect;
+						Vec3f vect;
 						vect.x=pd->ov.x-gl->pos.x;
 						vect.y=pd->ov.y-gl->pos.y;
 						vect.z=pd->ov.z-gl->pos.z;

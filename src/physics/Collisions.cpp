@@ -84,7 +84,7 @@ long COLLIDED_CLIMB_POLY=0;
 INTERACTIVE_OBJ * PUSHABLE_NPC=NULL;
 long MOVING_CYLINDER=0;
  
-EERIE_3D vector2D;
+Vec3f vector2D;
 bool DIRECT_PATH=true;
 long APPLY_PUSH=0;
 
@@ -147,7 +147,7 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 	
 	long r=to-1;
 	
-	EERIE_3D center;
+	Vec3f center;
 	long n;
 	
 	for (n=0;n<to;n++)
@@ -217,7 +217,7 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 			}
 		}
 
-		if (PointInCylinder(cyl, (EERIE_3D *)&ep->v[n]))
+		if (PointInCylinder(cyl, (Vec3f *)&ep->v[n]))
 		{
 			anything=min(anything,ep->v[n].sy);			
 			POLYIN=1;
@@ -276,7 +276,7 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 	else to=3;
 
 	long r=to-1;
-	EERIE_3D center;
+	Vec3f center;
 
 	for (long n=0;n<to;n++)
 	{
@@ -316,7 +316,7 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 			}
 		}
 
-		if (EEDistance3D(&sph->origin, (EERIE_3D *)&ep->v[n]) < sph->radius) 
+		if (EEDistance3D(&sph->origin, (Vec3f *)&ep->v[n]) < sph->radius) 
 		{	
 			return true;
 		}
@@ -786,7 +786,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 						for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 						{
-							EERIE_3D c(0, 0, 0);
+							Vec3f c(0, 0, 0);
 							float height=io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
 
 							for (long kk=0;kk<3;kk++)
@@ -1179,7 +1179,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 
 						if (ef->facetype & POLY_HIDE) continue;
 
-						EERIE_3D fcenter;
+						Vec3f fcenter;
 						fcenter.x=(vlist[ef->vid[0]].v.x+vlist[ef->vid[1]].v.x+vlist[ef->vid[2]].v.x)*( 1.0f / 3 );
 						fcenter.y=(vlist[ef->vid[0]].v.y+vlist[ef->vid[1]].v.y+vlist[ef->vid[2]].v.y)*( 1.0f / 3 );
 						fcenter.z=(vlist[ef->vid[0]].v.z+vlist[ef->vid[1]].v.z+vlist[ef->vid[2]].v.z)*( 1.0f / 3 );
@@ -1468,7 +1468,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 								{
 									for (float nn=0.2f;nn<1.f;nn+=0.2f)
 									{
-									EERIE_3D posi;
+									Vec3f posi;
 									posi.x=(vlist[ii].v.x*nn+vlist[kk].v.x*(1.f-nn));
 									posi.y=(vlist[ii].v.y*nn+vlist[kk].v.y*(1.f-nn));
 									posi.z=(vlist[ii].v.z*nn+vlist[kk].v.z*(1.f-nn));
@@ -1713,7 +1713,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 	}
 
 	float onedist=1.f/distance;
-	EERIE_3D mvector;
+	Vec3f mvector;
 	mvector.x=(ip->targetpos.x-ip->startpos.x)*onedist;
 	mvector.y=(ip->targetpos.y-ip->startpos.y)*onedist;
 	mvector.z=(ip->targetpos.z-ip->startpos.z)*onedist;
@@ -1770,9 +1770,9 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 			DIRECT_PATH=false;
 			// Must Attempt To Slide along collisions
-			EERIE_3D vecatt;
-			EERIE_3D rpos;
-			EERIE_3D lpos;
+			Vec3f vecatt;
+			Vec3f rpos;
+			Vec3f lpos;
 			long RFOUND=0;
 			long LFOUND=0;
 			long maxRANGLE=90;
@@ -1876,7 +1876,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 }
 
 //-----------------------------------------------------------------------------
-bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
+bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 {
 	
 
@@ -1891,7 +1891,7 @@ bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 	float pas=35.f;
  
 
-	EERIE_3D found_hit;
+	Vec3f found_hit;
 	EERIEPOLY * found_ep=NULL;
 	float iter,t;
 

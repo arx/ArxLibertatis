@@ -136,7 +136,7 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 }
 
 //-----------------------------------------------------------------------------
-void CFireBall::Create(EERIE_3D aeSrc, float afBeta, float afAlpha, float _fLevel)
+void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 {
 	SetDuration(ulDuration);
 	SetAngle(afBeta);
@@ -383,8 +383,8 @@ void CFireBall::Update(unsigned long aulTime)
 
 			if (ValidIONum(io->targetinfo))
 			{
-				EERIE_3D * p1 = &eCurPos;
-				EERIE_3D p2 = inter.iobj[io->targetinfo]->pos;
+				Vec3f * p1 = &eCurPos;
+				Vec3f p2 = inter.iobj[io->targetinfo]->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
@@ -395,7 +395,7 @@ void CFireBall::Update(unsigned long aulTime)
 		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
 		eMove.z = + fBetaRadCos * 100 * cos(radians(MAKEANGLE(afAlpha)));
 
-		EERIE_3D vMove;
+		Vec3f vMove;
 		float f = 1.f / TRUEVector_Magnitude(&eMove);
 		vMove.x = eMove.x * f;
 		vMove.y = eMove.y * f;
@@ -505,7 +505,7 @@ CIceProjectile::CIceProjectile()
 }
 
 //-----------------------------------------------------------------------------
-void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta, float fLevel)
+void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel)
 {
 	iMax = (int)(30 + fLevel * 5.2f);
 
@@ -513,7 +513,7 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta, float fLevel)
 }
 
 //-----------------------------------------------------------------------------
-void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
+void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 	SetAngle(afBeta);
@@ -523,7 +523,7 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 	float xmin, ymin, zmin;
 
 	int i = 0;
-	EERIE_3D s, e, h;
+	Vec3f s, e, h;
 
 	s.x					= aeSrc.x;
 	s.y					= aeSrc.y - 100;
@@ -703,9 +703,9 @@ float CIceProjectile::Render()
 		if (tSize[i].z > tSizeMax[i].z)
 			tSize[i].z = tSizeMax[i].z;
 
-		EERIE_3D stiteangle;
-		EERIE_3D stitepos;
-		EERIE_3D stitescale;
+		Anglef stiteangle;
+		Vec3f stitepos;
+		Vec3f stitescale;
 		EERIE_RGB stitecolor;
 
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360;

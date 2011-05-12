@@ -61,11 +61,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 
 #include "platform/Flags.h"
+#include "platform/math/Vector3.h"
 
 struct IO_PHYSICS;
 struct INTERACTIVE_OBJ;
 struct EERIE_SPHERE;
-struct EERIE_3D;
 struct EERIE_CYLINDER;
 struct EERIEPOLY;
 
@@ -108,7 +108,7 @@ bool IsCollidingIO(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
 bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag = false);
 
 bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags);
-bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit);
+bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit);
 
 void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io, long status);
 void ANCHOR_BLOCK_Clear();
