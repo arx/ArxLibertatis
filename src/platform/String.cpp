@@ -9,9 +9,18 @@
 using std::string;
 using std::transform;
 
-std::string & MakeUpcase( std::string& str ) {
+void MakeUpcase(string & str) {
 	transform(str.begin(), str.end(), str.begin(), ::toupper);
-	return str;
+}
+
+void makeLowercase(string & str) {
+	transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
+string toLowercase(const string & str) {
+	string copy = str;
+	makeLowercase(copy);
+	return copy;
 }
 
 bool NC_IsIn(string t1, string t2) {
@@ -45,6 +54,23 @@ int atoi( const std::string& str )
 }
 
 std::string itoa( int i )
+{
+	std::stringstream ss;
+	ss << i;
+	std::string out;
+	ss >> out;
+	return out;
+}
+
+bool atob( const std::string& str )
+{
+	std::stringstream ss( str );
+	bool out;
+	ss >> out;
+	return out;
+}
+
+std::string btoa( bool i )
 {
 	std::stringstream ss;
 	ss << i;

@@ -7,9 +7,11 @@
 /**
  * Converts a given string into uppercase characters
  * @param A reference to the string being converted
- * @return A copy of the converted string
  */
-std::string & MakeUpcase(std::string & str);
+void MakeUpcase(std::string & str);
+
+void makeLowercase(std::string & str);
+std::string toLowercase(const std::string & str);
 
 bool IsIn(const std::string & strin, const std::string & str);
 bool NC_IsIn(std::string strin, std::string str);
@@ -26,9 +28,23 @@ int atoi( const std::string& str );
 /**
  * Converts a given integer to a string using stringstream
  * @param i The integer to be converted
- * @return The string create by stringstream
+ * @return The string created by stringstream
  */
 std::string itoa( int i );
+
+/**
+ * Converts a given bool value to a string using stringstream
+ * @param b The bool to be converted
+ * @return The string string created by stringstream
+ */
+std::string btoa( bool b );
+
+/**
+ * Converts a given string to a bool using stringstream
+ * @param str The string to be converted
+ * @return The bool created by stringstream
+ */
+bool atob( const std::string& str );
 
 /**
  * Checks if a string (seek) is at the start of another string (text)

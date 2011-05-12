@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 
 #include "core/Application.h"
+#include "core/Config.h"
 
 #include "game/Player.h"
 #include "game/Equipment.h"
@@ -91,7 +92,6 @@ extern float InventoryDir;
 extern long PLAYER_INTERFACE_HIDE_COUNT;
 extern long	DRAGGING;
 
-extern CMenuConfig * pMenuConfig;
 extern long TRUE_PLAYER_MOUSELOOK_ON;
 
 void ARX_INTERFACE_Combat_Mode(long i);
@@ -2164,8 +2164,7 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 			ARX_INTERFACE_Combat_Mode(0);
 		}
 
-		if (pMenuConfig->bAutoReadyWeapon == false)
-		{
+		if(!config.input.autoReadyWeapon) {
 			TRUE_PLAYER_MOUSELOOK_ON &= ~1;
 		}
 

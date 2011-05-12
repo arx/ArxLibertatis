@@ -119,6 +119,7 @@ extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
 extern long DEBUG1ST;
+extern bool bNoReturnToWindows;
 
 struct QUAKE_FX_STRUCT {
 	float intensity;
@@ -166,6 +167,7 @@ void Danae_Registry_WriteValue(const char * string, DWORD value);
 void SendGameReadyMsg();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
+void ARX_SetAntiAliasing();
 
 // TODO move to Script.h?
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

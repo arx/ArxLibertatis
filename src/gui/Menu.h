@@ -64,8 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 #include "window/Input.h"
 
-#include <string>
-//-----------------------------------------------------------------------------
 #define MAX_FLYOVER	32
 struct MENU_DYNAMIC_DATA
 {
@@ -100,14 +98,14 @@ struct ARX_MENU_DATA
 
 extern ARX_MENU_DATA ARXmenu;
 
-struct SaveGame
-{
-	long            num;
-	std::string     name;
-	long            level;
-	float           version;
-	SYSTEMTIME      stime;
-
+struct SaveGame {
+	
+	long num;
+	std::string name;
+	long level;
+	float version;
+	SYSTEMTIME stime;
+	
 	SaveGame()
 	: num(0), level(0), version(0)
 		{}

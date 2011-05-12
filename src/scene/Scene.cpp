@@ -60,6 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <cstdio>
 
+#include "core/Config.h"
+
 #ifndef DIRECTINPUT_VERSION
 	#define DIRECTINPUT_VERSION 0x0700
 #endif
@@ -123,7 +125,6 @@ extern long ZMAPMODE;
 extern bool bRenderInterList;
 extern unsigned long ulBKGColor;
 extern CDirectInput *pGetInfoDirectInput;
-extern CMenuConfig *pMenuConfig;
 //-----------------------------------------------------------------------------
 EERIEPOLY VF_Center;
 EERIEPOLY VF_Top;

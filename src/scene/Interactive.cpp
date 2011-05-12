@@ -503,7 +503,6 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 		}
 	}
 }
-extern long GORE_MODE;
 
 
 bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)

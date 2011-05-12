@@ -29,8 +29,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <algorithm>
 
-#include "core/Time.h"
+#include "core/Config.h"
 #include "core/Core.h"
+#include "core/Time.h"
 
 #include "gui/MenuWidgets.h"
 
@@ -49,7 +50,6 @@ extern long EDITMODE;
 #define DEFAULT_ZCLIP		6400.f 
 #define DEFAULT_MINZCLIP	1200.f 
 
-extern CMenuConfig * pMenuConfig;
 extern float fZFogEnd;
 extern float fZFogStart;
 extern EERIEMATRIX ProjectionMatrix;
@@ -134,16 +134,9 @@ void ARX_GLOBALMODS_Apply()
 
 	ModeLight &= ~MODE_DEPTHCUEING;
 
-	if (pMenuConfig)
-	{
-		float fZclipp = ((((float)pMenuConfig->iFogDistance) * 1.2f) * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f) + DEFAULT_MINZCLIP;
-		fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
-		SetCameraDepth(min(current.zclip, fZclipp));
-	}
-	else
-	{
-		SetCameraDepth(current.zclip);
-	}
+	float fZclipp = ((((float)config.video.fogDistance) * 1.2f) * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f) + DEFAULT_MINZCLIP;
+	fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
+	SetCameraDepth(min(current.zclip, fZclipp));
 
 	ulBKGColor = D3DRGB(current.depthcolor.r, current.depthcolor.g, current.depthcolor.b);
 	GRenderer->SetFogColor(ulBKGColor);

@@ -58,9 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/DrawEffects.h"
 
-#include "core/Time.h"
 #include "core/Application.h"
+#include "core/Config.h"
 #include "core/Core.h"
+#include "core/Time.h"
 
 #include "game/Spells.h"
 #include "gui/MenuWidgets.h"
@@ -83,7 +84,6 @@ extern TextureContainer * Boom;
 POLYBOOM polyboom[MAX_POLYBOOM];
 
 extern unsigned long ulBKGColor;
-extern CMenuConfig *pMenuConfig;
 
 void EE_RT2(D3DTLVERTEX*,D3DTLVERTEX*);
 
@@ -383,8 +383,7 @@ void ARXDRAW_DrawEyeBall()
 //*************************************************************************************
 void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,D3DTLVERTEX *_pOut)
 {
-	if(	(pMenuConfig)&&
-		(pMenuConfig->bForceZBias) )
+	if(config.misc.forceZBias)
 	{
 		float t0=_pPoly->norm.x*_fFactor;
 		float t1=_pPoly->norm.y*_fFactor;

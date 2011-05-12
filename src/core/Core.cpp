@@ -60,9 +60,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
+#include <cassert>
+#include <cstdio>
+
 #include <fstream>
 #include <sstream>
-#include <cassert>
 
 #include <windows.h>
 #include <shellapi.h>
@@ -78,10 +80,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 #include "animation/CinematicKeyframer.h"
 
+#include "core/Config.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
 #include "core/AVI.h"
-#include "core/Localization.h"
+#include "core/Localisation.h"
 #include "core/Time.h"
 
 #include "game/Missile.h"
@@ -165,7 +168,6 @@ extern long LAST_PORTALS_COUNT;
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CDirectInput		*pGetInfoDirectInput;
-extern CMenuConfig		*pMenuConfig;
 extern CMenuState		*pMenu;
 extern SNAPSHOTINFO		snapshotdata;
 extern short uw_mode;
@@ -175,11 +177,10 @@ extern HWND		CDP_LIGHTOptions;
 extern HWND		CDP_FogOptions;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
-extern bool		bGameNotFirstLaunch;
 extern bool		bSkipVideoIntro;
-extern std::string      SCRIPT_SEARCH_TEXT;
-extern std::string      ShowText;
-extern std::string      ShowText2;
+extern std::string SCRIPT_SEARCH_TEXT;
+extern std::string ShowText;
+extern std::string ShowText2;
 extern float Full_Jump_Height;
 extern float	MAX_ALLOWED_PER_SECOND;
 extern float	InventoryX;
@@ -412,15 +413,10 @@ long FINAL_COMMERCIAL_DEMO =0;
 float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 long GLOBAL_FORCE_PLAYER_IN_FRONT	=1;
 long USE_NEW_SKILLS=1;
-long ARX_SOUND_INIT=1;
 
-long GORE_MODE=0;
 long USE_LIGHT_OPTIM	=1;
 // set to 0 for dev mode
 long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
-long GERMAN_VERSION = 0;
-long FRENCH_VERSION = 0;
-long CHINESE_VERSION = 0;
 long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
 long USE_OLD_MOUSE_SYSTEM=1;
@@ -699,22 +695,20 @@ void DanaeSwitchFullScreen()
 		KillInterTreeView();
 	}
 
-	if(pMenuConfig)
-	{
 		int nb=danaeApp.m_pDeviceInfo->dwNumModes;
 
 		for(int i=0;i<nb;i++)
 		{
 
-			ARX_CHECK_NOT_NEG( pMenuConfig->iBpp );
+			ARX_CHECK_NOT_NEG( config.video.bpp );
 
-			if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( pMenuConfig->iBpp ) )
+			if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( config.video.bpp ) )
 			{
-				ARX_CHECK_NOT_NEG( pMenuConfig->iWidth );
-				ARX_CHECK_NOT_NEG( pMenuConfig->iHeight );
+				ARX_CHECK_NOT_NEG( config.video.width );
+				ARX_CHECK_NOT_NEG( config.video.height );
 
-				if( ( danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( pMenuConfig->iWidth ) ) &&
-					( danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( pMenuConfig->iHeight ) ) )
+				if( ( danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( config.video.width ) ) &&
+					( danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( config.video.height ) ) )
 				{
 
 					danaeApp.m_pDeviceInfo->ddsdFullscreenMode=danaeApp.m_pDeviceInfo->pddsdModes[i];
@@ -724,10 +718,9 @@ void DanaeSwitchFullScreen()
 			}
 		}
 
-		pMenuConfig->iNewBpp=pMenuConfig->iBpp=danaeApp.m_pFramework->bitdepth=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
-		pMenuConfig->iNewHeight=pMenuConfig->iHeight=danaeApp.m_pFramework->m_dwRenderHeight=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
-		pMenuConfig->iNewWidth=pMenuConfig->iWidth=danaeApp.m_pFramework->m_dwRenderWidth=danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
-	}
+		config.video.bpp = danaeApp.m_pFramework->bitdepth = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
+		config.video.height = danaeApp.m_pFramework->m_dwRenderHeight = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
+		config.video.width = danaeApp.m_pFramework->m_dwRenderWidth = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
 
 	if(pMenu)
 	{
@@ -737,10 +730,8 @@ void DanaeSwitchFullScreen()
 	ARX_Text_Close();
 	danaeApp.SwitchFullScreen();
 
-	if(	(danaeApp.m_pFramework->m_bIsFullscreen)&&
-		(pMenuConfig) )
-	{
-		ARXMenu_Options_Video_SetGamma(pMenuConfig->iGamma);
+	if(danaeApp.m_pFramework->m_bIsFullscreen) {
+		ARXMenu_Options_Video_SetGamma(config.video.gamma);
 	}
 
 	DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
@@ -763,24 +754,20 @@ void DanaeSwitchFullScreen()
 	LoadScreen();
 }
 
-//-----------------------------------------------------------------------------------------------
+bool bNoReturnToWindows = false;
 
-void DanaeRestoreFullScreen()
-{
-	if(		pMenuConfig
-		&&	pMenuConfig->bNoReturnToWindows )
-	{
-		pMenuConfig->bNoReturnToWindows=false;
+void DanaeRestoreFullScreen() {
+	
+	if(bNoReturnToWindows) {
+		bNoReturnToWindows=false;
 		return;
 	}
 
 	danaeApp.m_pDeviceInfo->bWindowed=!danaeApp.m_pDeviceInfo->bWindowed;
 	danaeApp.SwitchFullScreen();
 
-	if(		(danaeApp.m_pFramework->m_bIsFullscreen)
-		&&	(pMenuConfig) )
-	{
-		ARXMenu_Options_Video_SetGamma(pMenuConfig->iGamma);
+	if(danaeApp.m_pFramework->m_bIsFullscreen) {
+		ARXMenu_Options_Video_SetGamma(config.video.gamma);
 	}
 
 	DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
@@ -1028,7 +1015,7 @@ void InitializeDanae()
 	if (LaunchDemo) {
 		LogInfo << "Launching Demo";
 
-		if ((FINAL_RELEASE) && (pMenuConfig->bFullScreen || AUTO_FULL_SCREEN )) {
+		if ((FINAL_RELEASE) && (config.video.fullscreen || AUTO_FULL_SCREEN )) {
 			LogDebug << "Switching to Fullscreen";
 			DanaeSwitchFullScreen();
 		}
@@ -1050,10 +1037,6 @@ void InitializeDanae()
 	if ((GAME_EDITOR) && (!MOULINEX))
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
 
-}
-
-bool IsNoGore( void ) {
-	return GERMAN_VERSION? true : false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1138,8 +1121,10 @@ void forInternalPeople(LPSTR strCmdLine) {
 
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
-int main(int, char**)
-{
+int main(int argc, char ** argv) {
+	
+	(void)argc, (void)argv;
+	
 	LPSTR strCmdLine = GetCommandLine();
 	hInstance = GetModuleHandle(0);
 	
@@ -1147,19 +1132,16 @@ int main(int, char**)
 	
 	if (FINAL_COMMERCIAL_GAME) {
 		LogDebug << "FINAL_COMMERCIAL_GAME";
-		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=0;
 	} else if (FINAL_COMMERCIAL_DEMO)	{
 		LogDebug << "FINAL_COMMERCIAL_DEMO";
-		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=1;
 	}
 
 	if (FOR_EXTERNAL_PEOPLE) {
 		LogDebug << "FOR_EXTERNAL_PEOPLE";
-		ARX_SOUND_INIT		= 1;
 		ALLOW_CHEATS		= 0;
 		CEDRIC_VERSION		= 0;
 		NO_TEXT_AT_ALL		= 1;
@@ -1186,8 +1168,15 @@ int main(int, char**)
 		AUTO_FULL_SCREEN=0;
 	}
 	
+	// Initialize config first, before anything else.
+	const char RESOURCE_CONFIG[] = "cfg.ini";
+	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
+	if(!config.init(RESOURCE_CONFIG, RESOURCE_CONFIG_DEFAULT)) {
+		LogWarning << "Could not read config files " << RESOURCE_CONFIG << " and " << RESOURCE_CONFIG_DEFAULT;
+	}
+	
 	Random::seed();
-
+	
 	CalcFPS(true);
 	HERMES_Memory_Security_On(32000);
 
@@ -1215,23 +1204,15 @@ int main(int, char**)
 	if((!MOULINEX) && FINAL_RELEASE) {
 		
 		LogInfo << "FINAL RELEASE";
-		
-		if(!pStringMod.empty()) {
-			LogDebug << pStringMod;
-			if( PAK_AddPak( pStringMod ) ) {
-				LogDebug << "LoadMode OK";
-			}
-		}
+		NOBUILDMAP=1;
+		NOCHECKSUM=1;
 		
 		const char PAK_DATA[] = "data.pak";
 		LogDebug << PAK_DATA;
-		NOBUILDMAP=1;
-		NOCHECKSUM=1;
 		if(PAK_AddPak(PAK_DATA)) {
 			LogDebug << "LoadMode OK";
 		} else {
-			LogError << "Unable to Find Data File";
-			exit(0);
+			LogFatal << "Unable to find main data file " << PAK_DATA;
 		}
 		
 		const char PAK_LOC[] = "loc.pak";
@@ -1239,16 +1220,27 @@ int main(int, char**)
 		if(!PAK_AddPak(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
 			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
-				LogError << "Unable to Find Localization File";
-				exit(0);
+				LogFatal << "Unable to find localisation file " << PAK_LOC << " or " << PAK_LOC_DEFAULT;
 			}
 		}
 		
 		LogDebug << "data2PAK";
 		const char PAK_DATA2[] = "data2.pak";
 		if(!PAK_AddPak(PAK_DATA2)) {
-			LogError << "Unable to Find Aux Data File";
-			exit(0);
+			LogFatal << "Unable to find aux data file " << PAK_DATA2;
+		}
+		
+		const char PAK_SFX[] = "sfx.pak";
+		if(!PAK_AddPak(PAK_SFX)) {
+			LogFatal << "Unable to find sfx data file " << PAK_SFX;
+		}
+		
+		const char PAK_SPEECH[] = "speech.pak";
+		if(!PAK_AddPak(PAK_SPEECH)) {
+			const char PAK_SPEECH_DEFAULT[] = "speech_default.pak";
+			if(!PAK_AddPak(PAK_SPEECH_DEFAULT)) {
+				LogFatal << "Unable to find speech data file " << PAK_SPEECH << " or " << PAK_SPEECH_DEFAULT;
+			}
 		}
 		
 	} else {
@@ -1256,7 +1248,9 @@ int main(int, char**)
 		//TODO(lubosz): dirty hack to initialize the pak manager
 		PAK_AddPak("");
 	}
-
+	
+	LocalisationInit();
+	
 	//delete current for clean save.........
 	char txttemp[256];
 
@@ -1344,7 +1338,6 @@ int main(int, char**)
 	lastteleport.y=PLAYER_BASE_HEIGHT;
 	lastteleport.z=0.f;
 
-	Project.soundmode = ARX_SOUND_ON;
 	inter.init=0;
 	InitInter(10);
 
@@ -1460,30 +1453,38 @@ int main(int, char**)
 		GaiaWM=RegisterWindowMessage(texx);
 	}
 
-	LogDebug << "Sound Init";
-	if (Project.soundmode != 0 && ARX_SOUND_INIT)
-		ARX_SOUND_Init();
-
-	LogInfo << "Sound Init Success";
+	LogDebug << "Sound init";
+	if(ARX_SOUND_Init()) {
+		LogInfo << "Sound init success";
+	} else {
+		LogWarning << "Sound init failed";
+	}
+	
 	LogDebug << "DInput Init";
 	pGetInfoDirectInput = new CDirectInput();
-	
-	const char RESOURCE_CONFIG[] = "cfg.ini";
-	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
-	
-	const char * config_path = RESOURCE_CONFIG;
-
-	if(!FileExist(RESOURCE_CONFIG))	{
-		config_path = RESOURCE_CONFIG_DEFAULT;
-	}
-
-	pMenuConfig=new CMenuConfig(config_path);
-	pMenuConfig->ReadAll();
 	LogInfo << "DInput Init Success";
 
-	if (pMenuConfig->bEAX) {
-		ARXMenu_Options_Audio_SetEAX(true);
-	}
+	ARX_SetAntiAliasing();
+	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
+	ARXMenu_Options_Video_SetTextureQuality(config.video.textureSize);
+	ARXMenu_Options_Video_SetLODQuality(config.video.meshReduction);
+	ARXMenu_Options_Video_SetDetailsQuality(config.video.levelOfDetail);
+	ARXMenu_Options_Video_SetGamma(config.video.gamma);
+	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
+	ARXMenu_Options_Audio_SetSfxVolume(config.audio.sfxVolume);
+	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
+	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
+	ARXMenu_Options_Audio_ApplyGameVolumes();
+
+	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
+	ARXMenu_Options_Control_SetAutoReadyWeapon(config.input.autoReadyWeapon);
+	ARXMenu_Options_Control_SetMouseLookToggleMode(config.input.mouseLookToggle);
+	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
+	ARXMenu_Options_Control_SetAutoDescription(config.input.autoDescription);
+	
+	if(config.video.textureSize==2)Project.TextureSize=0;
+	if(config.video.textureSize==1)Project.TextureSize=2;
+	if(config.video.textureSize==0)Project.TextureSize=64;
 
 	ARX_MINIMAP_FirstInit();
 	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
@@ -1512,8 +1513,8 @@ int main(int, char**)
 	LogInfo << "AInput Init Success";
 
 	//read from cfg file
-	if ( Project.localisationpath.length() == 0 ) {
-		Project.localisationpath = "english";
+	if ( config.language.length() == 0 ) {
+		config.language = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
 	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
@@ -1539,7 +1540,7 @@ int main(int, char**)
 	Project.torch.b = 0.66666f;
 	LogDebug << "InitializeDanae";
 	InitializeDanae();
-
+	
 	LogInfo << "InitializeDanae Success";
 	LogDebug << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
@@ -1628,8 +1629,8 @@ void LoadSysTextures()
 
 	// Magic_Sight Level 1
 	current=&spellicons[SPELL_MAGIC_SIGHT];
-	ARX_Allocate_Text(current->name, "system_spell_name_magic_sight");
-	ARX_Allocate_Text(current->description, "system_spell_description_magic_sight");
+	current->name = getLocalised("system_spell_name_magic_sight");
+	current->description = getLocalised("system_spell_description_magic_sight");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_SIGHT;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_magic_sight.bmp");
@@ -1638,8 +1639,8 @@ void LoadSysTextures()
 
 	// Magic_Missile Level 1
 	current=&spellicons[SPELL_MAGIC_MISSILE];	
-	ARX_Allocate_Text(current->name, "system_spell_name_magic_projectile");
-	ARX_Allocate_Text(current->description, "system_spell_description_magic_projectile");
+	current->name = getLocalised("system_spell_name_magic_projectile");
+	current->description = getLocalised("system_spell_description_magic_projectile");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_MISSILE;
 	current->bDuration = false;
@@ -1650,8 +1651,8 @@ void LoadSysTextures()
 
 	// Ignit Level 1
 	current=&spellicons[SPELL_IGNIT];	
-	ARX_Allocate_Text(current->name,"system_spell_name_ignit");
-	ARX_Allocate_Text(current->description,"system_spell_description_ignit");
+	current->name = getLocalised("system_spell_name_ignit");
+	current->description = getLocalised("system_spell_description_ignit");
 	current->level=1;
 	current->spellid=SPELL_IGNIT;
 	current->bDuration = false;
@@ -1661,8 +1662,8 @@ void LoadSysTextures()
 
 	// Douse Level 1
 	current=&spellicons[SPELL_DOUSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_douse");
-	ARX_Allocate_Text(current->description,"system_spell_description_douse");
+	current->name = getLocalised("system_spell_name_douse");
+	current->description = getLocalised("system_spell_description_douse");
 	current->level=1;
 	current->spellid=SPELL_DOUSE;
 	current->bDuration = false;
@@ -1672,8 +1673,8 @@ void LoadSysTextures()
 
 	// Activate_Portal Level 1
 	current=&spellicons[SPELL_ACTIVATE_PORTAL];
-	ARX_Allocate_Text(current->name,"system_spell_name_activate_portal");
-	ARX_Allocate_Text(current->description,"system_spell_description_activate_portal");
+	current->name = getLocalised("system_spell_name_activate_portal");
+	current->description = getLocalised("system_spell_description_activate_portal");
 	current->level=1;
 	current->spellid=SPELL_ACTIVATE_PORTAL;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_activate_portal.bmp");
@@ -1683,8 +1684,8 @@ void LoadSysTextures()
 
 	// Heal Level 2
 	current=&spellicons[SPELL_HEAL];	
-	ARX_Allocate_Text(current->name,"system_spell_name_heal");
-	ARX_Allocate_Text(current->description,"system_spell_description_heal");
+	current->name = getLocalised("system_spell_name_heal");
+	current->description = getLocalised("system_spell_description_heal");
 	current->level=2;
 	current->spellid=SPELL_HEAL;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_heal.bmp");
@@ -1693,8 +1694,8 @@ void LoadSysTextures()
 
 	// Detect_trap Level 2
 	current=&spellicons[SPELL_DETECT_TRAP];	
-	ARX_Allocate_Text(current->name,"system_spell_name_detect_trap");
-	ARX_Allocate_Text(current->description,"system_spell_description_detect_trap");
+	current->name = getLocalised("system_spell_name_detect_trap");
+	current->description = getLocalised("system_spell_description_detect_trap");
 	current->level=2;
 	current->spellid=SPELL_DETECT_TRAP;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_detect_trap.bmp");
@@ -1704,8 +1705,8 @@ void LoadSysTextures()
 
 	// Armor Level 2
 	current=&spellicons[SPELL_ARMOR];	
-	ARX_Allocate_Text(current->name,"system_spell_name_armor");
-	ARX_Allocate_Text(current->description,"system_spell_description_armor");
+	current->name = getLocalised("system_spell_name_armor");
+	current->description = getLocalised("system_spell_description_armor");
 	current->level=2;
 	current->spellid=SPELL_ARMOR;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_armor.bmp");
@@ -1714,8 +1715,8 @@ void LoadSysTextures()
 
 	// Lower Armor Level 2
 	current=&spellicons[SPELL_LOWER_ARMOR];	
-	ARX_Allocate_Text(current->name,"system_spell_name_lower_armor");
-	ARX_Allocate_Text(current->description,"system_spell_description_lower_armor");
+	current->name = getLocalised("system_spell_name_lower_armor");
+	current->description = getLocalised("system_spell_description_lower_armor");
 	current->level=2;
 	current->spellid=SPELL_LOWER_ARMOR;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_lower_armor.bmp");
@@ -1724,8 +1725,8 @@ void LoadSysTextures()
 
 	// Harm Level 2
 	current=&spellicons[SPELL_HARM];	
-	ARX_Allocate_Text(current->name,"system_spell_name_harm");
-	ARX_Allocate_Text(current->description,"system_spell_description_harm");
+	current->name = getLocalised("system_spell_name_harm");
+	current->description = getLocalised("system_spell_description_harm");
 	current->level=2;
 	current->spellid=SPELL_HARM;
 	current->bAudibleAtStart = true;
@@ -1736,8 +1737,8 @@ void LoadSysTextures()
 
 	// Speed Level 3
 	current=&spellicons[SPELL_SPEED];	
-	ARX_Allocate_Text(current->name,"system_spell_name_speed");
-	ARX_Allocate_Text(current->description,"system_spell_description_speed");
+	current->name = getLocalised("system_spell_name_speed");
+	current->description = getLocalised("system_spell_description_speed");
 	current->level=3;
 	current->spellid=SPELL_SPEED;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_speed.bmp");
@@ -1746,8 +1747,8 @@ void LoadSysTextures()
 
 	// Reveal Level 3
 	current=&spellicons[SPELL_DISPELL_ILLUSION];	
-	ARX_Allocate_Text(current->name,"system_spell_name_reveal");
-	ARX_Allocate_Text(current->description,"system_spell_description_reveal");
+	current->name = getLocalised("system_spell_name_reveal");
+	current->description = getLocalised("system_spell_description_reveal");
 	current->level=3;
 	current->spellid=SPELL_DISPELL_ILLUSION;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_reveal.bmp");
@@ -1757,8 +1758,8 @@ void LoadSysTextures()
 
 	// Fireball Level 3
 	current=&spellicons[SPELL_FIREBALL];	
-	ARX_Allocate_Text(current->name,"system_spell_name_fireball");
-	ARX_Allocate_Text(current->description,"system_spell_description_fireball");
+	current->name = getLocalised("system_spell_name_fireball");
+	current->description = getLocalised("system_spell_description_fireball");
 	current->level=3;
 	current->spellid=SPELL_FIREBALL;
 	current->bDuration = false;
@@ -1770,8 +1771,8 @@ void LoadSysTextures()
 
 	// Create Food Level 3
 	current=&spellicons[SPELL_CREATE_FOOD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_create_food");
-	ARX_Allocate_Text(current->description,"system_spell_description_create_food");
+	current->name = getLocalised("system_spell_name_create_food");
+	current->description = getLocalised("system_spell_description_create_food");
 	current->level=3;
 	current->spellid=SPELL_CREATE_FOOD;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_create_food.bmp");
@@ -1781,8 +1782,8 @@ void LoadSysTextures()
 
 	// Ice Projectile Level 3
 	current=&spellicons[SPELL_ICE_PROJECTILE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_ice_projectile");
-	ARX_Allocate_Text(current->description,"system_spell_description_ice_projectile");
+	current->name = getLocalised("system_spell_name_ice_projectile");
+	current->description = getLocalised("system_spell_description_ice_projectile");
 	current->level=3;
 	current->spellid=SPELL_ICE_PROJECTILE;
 	current->bDuration = false;
@@ -1795,8 +1796,8 @@ void LoadSysTextures()
 
 	// Bless Level 4
 	current=&spellicons[SPELL_BLESS];	
-	ARX_Allocate_Text(current->name,"system_spell_name_sanctify");
-	ARX_Allocate_Text(current->description,"system_spell_description_sanctify");
+	current->name = getLocalised("system_spell_name_sanctify");
+	current->description = getLocalised("system_spell_description_sanctify");
 	current->level=4;
 	current->spellid=SPELL_BLESS;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_bless.bmp");
@@ -1806,8 +1807,8 @@ void LoadSysTextures()
 
 	// Dispel_Field Level 4
 	current=&spellicons[SPELL_DISPELL_FIELD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_dispell_field");
-	ARX_Allocate_Text(current->description,"system_spell_description_dispell_field");
+	current->name = getLocalised("system_spell_name_dispell_field");
+	current->description = getLocalised("system_spell_description_dispell_field");
 	current->level=4;
 	current->spellid=SPELL_DISPELL_FIELD;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_dispell_field.bmp");
@@ -1817,8 +1818,8 @@ void LoadSysTextures()
 
 	// Cold Protection Level 4
 	current=&spellicons[SPELL_COLD_PROTECTION];	
-	ARX_Allocate_Text(current->name,"system_spell_name_cold_protection");
-	ARX_Allocate_Text(current->description,"system_spell_description_cold_protection");
+	current->name = getLocalised("system_spell_name_cold_protection");
+	current->description = getLocalised("system_spell_description_cold_protection");
 	current->level=4;
 	current->spellid=SPELL_COLD_PROTECTION;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_protection_cold.bmp");
@@ -1828,8 +1829,8 @@ void LoadSysTextures()
 
 	// Fire Protection Level 4
 	current=&spellicons[SPELL_FIRE_PROTECTION];	
-	ARX_Allocate_Text(current->name,"system_spell_name_fire_protection");
-	ARX_Allocate_Text(current->description,"system_spell_description_fire_protection");
+	current->name = getLocalised("system_spell_name_fire_protection");
+	current->description = getLocalised("system_spell_description_fire_protection");
 	current->level=4;
 	current->spellid=SPELL_FIRE_PROTECTION;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_protection_fire.bmp");
@@ -1838,8 +1839,8 @@ void LoadSysTextures()
 
 	// Telekinesis Level 4
 	current=&spellicons[SPELL_TELEKINESIS];	
-	ARX_Allocate_Text(current->name,"system_spell_name_telekinesis");
-	ARX_Allocate_Text(current->description,"system_spell_description_telekinesis");
+	current->name = getLocalised("system_spell_name_telekinesis");
+	current->description = getLocalised("system_spell_description_telekinesis");
 	current->level=4;
 	current->spellid=SPELL_TELEKINESIS;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_telekinesis.bmp");
@@ -1848,8 +1849,8 @@ void LoadSysTextures()
 
 	// Curse Level 4
 	current=&spellicons[SPELL_CURSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_curse");
-	ARX_Allocate_Text(current->description,"system_spell_description_curse");
+	current->name = getLocalised("system_spell_name_curse");
+	current->description = getLocalised("system_spell_description_curse");
 	current->level=4;
 	current->spellid=SPELL_CURSE;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_curse.bmp");
@@ -1860,8 +1861,8 @@ void LoadSysTextures()
 
 	// Rune of Guarding Level 5
 	current=&spellicons[SPELL_RUNE_OF_GUARDING];	
-	ARX_Allocate_Text(current->name,"system_spell_name_rune_guarding");
-	ARX_Allocate_Text(current->description,"system_spell_description_rune_guarding");
+	current->name = getLocalised("system_spell_name_rune_guarding");
+	current->description = getLocalised("system_spell_description_rune_guarding");
 	current->level=5;
 	current->spellid=SPELL_RUNE_OF_GUARDING;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_rune_guarding.bmp");
@@ -1871,8 +1872,8 @@ void LoadSysTextures()
 
 	// Levitate Level 5
 	current=&spellicons[SPELL_LEVITATE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_levitate");
-	ARX_Allocate_Text(current->description,"system_spell_description_levitate");
+	current->name = getLocalised("system_spell_name_levitate");
+	current->description = getLocalised("system_spell_description_levitate");
 	current->level=5;
 	current->spellid=SPELL_LEVITATE;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_levitate.bmp");
@@ -1882,8 +1883,8 @@ void LoadSysTextures()
 
 	// Cure Poison Level 5
 	current=&spellicons[SPELL_CURE_POISON];	
-	ARX_Allocate_Text(current->name,"system_spell_name_cure_poison");
-	ARX_Allocate_Text(current->description,"system_spell_description_cure_poison");
+	current->name = getLocalised("system_spell_name_cure_poison");
+	current->description = getLocalised("system_spell_description_cure_poison");
 	current->level=5;
 	current->spellid=SPELL_CURE_POISON;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_cure_poison.bmp");
@@ -1892,8 +1893,8 @@ void LoadSysTextures()
 
 	// Repel Undead Level 5
 	current=&spellicons[SPELL_REPEL_UNDEAD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_repel_undead");
-	ARX_Allocate_Text(current->description,"system_spell_description_repel_undead");
+	current->name = getLocalised("system_spell_name_repel_undead");
+	current->description = getLocalised("system_spell_description_repel_undead");
 	current->level=5;
 	current->spellid=SPELL_REPEL_UNDEAD;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_repel_undead.bmp");
@@ -1902,8 +1903,8 @@ void LoadSysTextures()
 
 	// Poison Projection Level 5
 	current=&spellicons[SPELL_POISON_PROJECTILE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_poison_projection");
-	ARX_Allocate_Text(current->description,"system_spell_description_poison_projection");
+	current->name = getLocalised("system_spell_name_poison_projection");
+	current->description = getLocalised("system_spell_description_poison_projection");
 	current->level=5;
 	current->spellid=SPELL_POISON_PROJECTILE;
 	current->bDuration = false;
@@ -1915,8 +1916,8 @@ void LoadSysTextures()
 
 	// Raise Dead Level 6
 	current=&spellicons[SPELL_RISE_DEAD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_raise_dead");
-	ARX_Allocate_Text(current->description,"system_spell_description_raise_dead");
+	current->name = getLocalised("system_spell_name_raise_dead");
+	current->description = getLocalised("system_spell_description_raise_dead");
 	current->level=6;
 	current->spellid=SPELL_RISE_DEAD;
 	current->bAudibleAtStart = true;
@@ -1927,8 +1928,8 @@ void LoadSysTextures()
 
 	// Paralyse Dead Level 6
 	current=&spellicons[SPELL_PARALYSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_paralyse");
-	ARX_Allocate_Text(current->description,"system_spell_description_paralyse");
+	current->name = getLocalised("system_spell_name_paralyse");
+	current->description = getLocalised("system_spell_description_paralyse");
 	current->level=6;
 	current->spellid=SPELL_PARALYSE;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_paralyse.bmp");
@@ -1937,8 +1938,8 @@ void LoadSysTextures()
 
 	// Create Field Dead Level 6
 	current=&spellicons[SPELL_CREATE_FIELD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_create_field");
-	ARX_Allocate_Text(current->description,"system_spell_description_create_field");
+	current->name = getLocalised("system_spell_name_create_field");
+	current->description = getLocalised("system_spell_description_create_field");
 	current->level=6;
 	current->spellid=SPELL_CREATE_FIELD;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_create_field.bmp");
@@ -1948,8 +1949,8 @@ void LoadSysTextures()
 
 	// Disarm Trap Level 6
 	current=&spellicons[SPELL_DISARM_TRAP];	
-	ARX_Allocate_Text(current->name,"system_spell_name_disarm_trap");
-	ARX_Allocate_Text(current->description,"system_spell_description_disarm_trap");
+	current->name = getLocalised("system_spell_name_disarm_trap");
+	current->description = getLocalised("system_spell_description_disarm_trap");
 	current->level=6;
 	current->spellid=SPELL_DISARM_TRAP;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_disarm_trap.bmp");
@@ -1959,8 +1960,8 @@ void LoadSysTextures()
 
 	// Slow_Down Level 6 // SECRET SPELL
 	current=&spellicons[SPELL_SLOW_DOWN];	
-	ARX_Allocate_Text(current->name,"system_spell_name_slowdown");
-	ARX_Allocate_Text(current->description,"system_spell_description_slowdown");
+	current->name = getLocalised("system_spell_name_slowdown");
+	current->description = getLocalised("system_spell_description_slowdown");
 	current->level=6;
 	current->spellid=SPELL_SLOW_DOWN;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_slow_down.bmp");
@@ -1970,8 +1971,8 @@ void LoadSysTextures()
 
 	// Flying Eye Level 7
 	current=&spellicons[SPELL_FLYING_EYE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_flying_eye");
-	ARX_Allocate_Text(current->description,"system_spell_description_flying_eye");
+	current->name = getLocalised("system_spell_name_flying_eye");
+	current->description = getLocalised("system_spell_description_flying_eye");
 	current->level=7;
 	current->spellid=SPELL_FLYING_EYE;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_flying_eye.bmp");
@@ -1980,8 +1981,8 @@ void LoadSysTextures()
 
 	// Fire Field Eye Level 7
 	current=&spellicons[SPELL_FIRE_FIELD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_fire_field");
-	ARX_Allocate_Text(current->description,"system_spell_description_fire_field");
+	current->name = getLocalised("system_spell_name_fire_field");
+	current->description = getLocalised("system_spell_description_fire_field");
 	current->level=7;
 	current->spellid=SPELL_FIRE_FIELD;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_create_fire_field.bmp");
@@ -1991,8 +1992,8 @@ void LoadSysTextures()
 
 	// Ice Field Level 7
 	current=&spellicons[SPELL_ICE_FIELD];	
-	ARX_Allocate_Text(current->name,"system_spell_name_ice_field");
-	ARX_Allocate_Text(current->description,"system_spell_description_ice_field");
+	current->name = getLocalised("system_spell_name_ice_field");
+	current->description = getLocalised("system_spell_description_ice_field");
 	current->level=7;
 	current->spellid=SPELL_ICE_FIELD;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_create_cold_field.bmp");
@@ -2003,8 +2004,8 @@ void LoadSysTextures()
 
 	// Lightning Strike Level 7
 	current=&spellicons[SPELL_LIGHTNING_STRIKE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_lightning_strike");
-	ARX_Allocate_Text(current->description,"system_spell_description_lightning_strike");
+	current->name = getLocalised("system_spell_name_lightning_strike");
+	current->description = getLocalised("system_spell_description_lightning_strike");
 	current->level=7;
 	current->spellid=SPELL_LIGHTNING_STRIKE;
 	current->bDuration = false;
@@ -2016,8 +2017,8 @@ void LoadSysTextures()
 
 	// Confusion Level 7
 	current=&spellicons[SPELL_CONFUSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_confuse");
-	ARX_Allocate_Text(current->description,"system_spell_description_confuse");
+	current->name = getLocalised("system_spell_name_confuse");
+	current->description = getLocalised("system_spell_description_confuse");
 	current->level=7;
 	current->spellid=SPELL_CONFUSE;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_confuse.bmp");
@@ -2026,8 +2027,8 @@ void LoadSysTextures()
 
 	// Invisibility Level 8
 	current=&spellicons[SPELL_INVISIBILITY];	
-	ARX_Allocate_Text(current->name,"system_spell_name_invisibility");
-	ARX_Allocate_Text(current->description,"system_spell_description_invisibility");
+	current->name = getLocalised("system_spell_name_invisibility");
+	current->description = getLocalised("system_spell_description_invisibility");
 	current->level=8;
 	current->spellid=SPELL_INVISIBILITY;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_invisibility.bmp");
@@ -2036,8 +2037,8 @@ void LoadSysTextures()
 
 	// Mana Drain Level 8
 	current=&spellicons[SPELL_MANA_DRAIN];	
-	ARX_Allocate_Text(current->name,"system_spell_name_mana_drain");
-	ARX_Allocate_Text(current->description,"system_spell_description_mana_drain");
+	current->name = getLocalised("system_spell_name_mana_drain");
+	current->description = getLocalised("system_spell_description_mana_drain");
 	current->level=8;
 	current->spellid=SPELL_MANA_DRAIN;
 	current->bAudibleAtStart = true;
@@ -2047,8 +2048,8 @@ void LoadSysTextures()
 
 	// Explosion Level 8
 	current=&spellicons[SPELL_EXPLOSION];	
-	ARX_Allocate_Text(current->name,"system_spell_name_explosion");
-	ARX_Allocate_Text(current->description,"system_spell_description_explosion");
+	current->name = getLocalised("system_spell_name_explosion");
+	current->description = getLocalised("system_spell_description_explosion");
 	current->level=8;
 	current->spellid=SPELL_EXPLOSION;
 	current->bDuration = false;
@@ -2060,8 +2061,8 @@ void LoadSysTextures()
 
 	// Enchant Weapon Level 8
 	current=&spellicons[SPELL_ENCHANT_WEAPON];	
-	ARX_Allocate_Text(current->name,"system_spell_name_enchant_weapon");
-	ARX_Allocate_Text(current->description,"system_spell_description_enchant_weapon");
+	current->name = getLocalised("system_spell_name_enchant_weapon");
+	current->description = getLocalised("system_spell_description_enchant_weapon");
 	current->level=8;
 	current->spellid=SPELL_ENCHANT_WEAPON;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_enchant_weapon.bmp");
@@ -2071,8 +2072,8 @@ void LoadSysTextures()
 
 	// Life Drain Level 8 // SECRET SPELL
 	current=&spellicons[SPELL_LIFE_DRAIN];	
-	ARX_Allocate_Text(current->name,"system_spell_name_life_drain");
-	ARX_Allocate_Text(current->description,"system_spell_description_life_drain");
+	current->name = getLocalised("system_spell_name_life_drain");
+	current->description = getLocalised("system_spell_description_life_drain");
 	current->level=8;
 	current->spellid=SPELL_LIFE_DRAIN;
 	current->bAudibleAtStart = true;
@@ -2083,8 +2084,8 @@ void LoadSysTextures()
 
 	// Summon Creature Level 9
 	current=&spellicons[SPELL_SUMMON_CREATURE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_summon_creature");
-	ARX_Allocate_Text(current->description,"system_spell_description_summon_creature");
+	current->name = getLocalised("system_spell_name_summon_creature");
+	current->description = getLocalised("system_spell_description_summon_creature");
 	current->level=9;
 	current->spellid=SPELL_SUMMON_CREATURE;
 	current->bAudibleAtStart = true;
@@ -2095,8 +2096,8 @@ void LoadSysTextures()
 
 	// FAKE Summon Creature Level 9
 	current=&spellicons[SPELL_FAKE_SUMMON];	
-	ARX_Allocate_Text(current->name,"system_spell_name_summon_creature");
-	ARX_Allocate_Text(current->description,"system_spell_description_summon_creature");
+	current->name = getLocalised("system_spell_name_summon_creature");
+	current->description = getLocalised("system_spell_description_summon_creature");
 	current->level=9;
 	current->spellid=SPELL_FAKE_SUMMON;
 	current->bAudibleAtStart = true;
@@ -2108,8 +2109,8 @@ void LoadSysTextures()
 
 	// Negate Magic Level 9
 	current=&spellicons[SPELL_NEGATE_MAGIC];	
-	ARX_Allocate_Text(current->name,"system_spell_name_negate_magic");
-	ARX_Allocate_Text(current->description,"system_spell_description_negate_magic");
+	current->name = getLocalised("system_spell_name_negate_magic");
+	current->description = getLocalised("system_spell_description_negate_magic");
 	current->level=9;
 	current->spellid=SPELL_NEGATE_MAGIC;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_negate_magic.bmp");
@@ -2119,8 +2120,8 @@ void LoadSysTextures()
 
 	// Incinerate Level 9
 	current=&spellicons[SPELL_INCINERATE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_incinerate");
-	ARX_Allocate_Text(current->description,"system_spell_description_incinerate");
+	current->name = getLocalised("system_spell_name_incinerate");
+	current->description = getLocalised("system_spell_description_incinerate");
 	current->level=9;
 	current->spellid=SPELL_INCINERATE;
 	current->bDuration = false;
@@ -2132,8 +2133,8 @@ void LoadSysTextures()
 
 	// Mass paralyse Creature Level 9
 	current=&spellicons[SPELL_MASS_PARALYSE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_mass_paralyse");
-	ARX_Allocate_Text(current->description,"system_spell_description_mass_paralyse");
+	current->name = getLocalised("system_spell_name_mass_paralyse");
+	current->description = getLocalised("system_spell_description_mass_paralyse");
 	current->level=9;
 	current->spellid=SPELL_MASS_PARALYSE;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_mass_paralyse.bmp");
@@ -2143,8 +2144,8 @@ void LoadSysTextures()
 
 	// Mass Lightning Strike Level 10
 	current=&spellicons[SPELL_MASS_LIGHTNING_STRIKE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_mass_lightning_strike");
-	ARX_Allocate_Text(current->description,"system_spell_description_mass_lightning_strike");
+	current->name = getLocalised("system_spell_name_mass_lightning_strike");
+	current->description = getLocalised("system_spell_description_mass_lightning_strike");
 	current->level=10;
 	current->spellid=SPELL_MASS_LIGHTNING_STRIKE;
 	current->bDuration = false;
@@ -2156,8 +2157,8 @@ void LoadSysTextures()
 
 	// Control Target Level 10
 	current=&spellicons[SPELL_CONTROL_TARGET];	
-	ARX_Allocate_Text(current->name,"system_spell_name_control_target");
-	ARX_Allocate_Text(current->description,"system_spell_description_control_target");
+	current->name = getLocalised("system_spell_name_control_target");
+	current->description = getLocalised("system_spell_description_control_target");
 	current->level=10;
 	current->spellid=SPELL_CONTROL_TARGET;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_control_target.bmp");
@@ -2166,8 +2167,8 @@ void LoadSysTextures()
 
 	// Freeze time Level 10
 	current=&spellicons[SPELL_FREEZE_TIME];	
-	ARX_Allocate_Text(current->name,"system_spell_name_freeze_time");
-	ARX_Allocate_Text(current->description,"system_spell_description_freeze_time");
+	current->name = getLocalised("system_spell_name_freeze_time");
+	current->description = getLocalised("system_spell_description_freeze_time");
 	current->level=10;
 	current->spellid=SPELL_FREEZE_TIME;
 	current->tc=TextureContainer::LoadUI("Graph\\Interface\\Icons\\Spell_freeze_time.bmp");
@@ -2176,8 +2177,8 @@ void LoadSysTextures()
 
 	// Mass incinerate Level 10
 	current=&spellicons[SPELL_MASS_INCINERATE];	
-	ARX_Allocate_Text(current->name,"system_spell_name_mass_incinerate");
-	ARX_Allocate_Text(current->description,"system_spell_description_mass_incinerate");
+	current->name = getLocalised("system_spell_name_mass_incinerate");
+	current->description = getLocalised("system_spell_description_mass_incinerate");
 	current->level=10;
 	current->spellid=SPELL_MASS_INCINERATE;
 	current->bDuration = false;
@@ -2916,7 +2917,6 @@ HRESULT DANAE::BeforeRun()
 
 	danaeApp.GetZBufferMax();
 
-	Localisation_Init();
 	return S_OK;
 }
 
@@ -4599,7 +4599,7 @@ bool DANAE_ManageSplashThings()
 
 	if (SPLASH_THINGS_STAGE>10)
 	{
-		if (EDITMODE || bGameNotFirstLaunch)
+		if (EDITMODE || !config.firstRun )
 		{
 			for (int i=0; i<256; i++)
 			{
@@ -4743,8 +4743,8 @@ bool DANAE_ManageSplashThings()
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if (bGameNotFirstLaunch == false)
-				bGameNotFirstLaunch = true;
+			if ( config.firstRun )
+				config.firstRun = false;
 
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
@@ -4758,8 +4758,8 @@ bool DANAE_ManageSplashThings()
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if (bGameNotFirstLaunch == false)
-				bGameNotFirstLaunch = true;
+			if ( config.firstRun )
+				config.firstRun = false;
 
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
@@ -4871,7 +4871,7 @@ void ReMappDanaeButton()
 	if(!pGetInfoDirectInput) return;
 
 	bool bNoAction=true;
-	int iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[0];
+	int iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
 
 	if(iButton!=-1)
 	{
@@ -4886,7 +4886,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
 
 		if(iButton!=-1)
 		{
@@ -4900,7 +4900,7 @@ void ReMappDanaeButton()
 	}
 
 	bNoAction=true;
-	iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[0];
+	iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
 
 	if(iButton!=-1)
 	{
@@ -4918,7 +4918,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
 
 		if(iButton!=-1)
 		{
@@ -4934,7 +4934,7 @@ void ReMappDanaeButton()
 	}
 
 	bNoAction=true;
-	iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[0];
+	iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
 
 	if(iButton!=-1)
 	{
@@ -4950,7 +4950,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_ACTION].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
 
 		if(iButton!=-1)
 		{
@@ -4965,7 +4965,7 @@ void ReMappDanaeButton()
 	}
 
 	bNoAction=true;
-	iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_MOUSELOOK].iKey[0];
+	iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[0];
 
 	if(iButton!=-1)
 	{
@@ -4979,7 +4979,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_MOUSELOOK].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[1];
 
 		if(iButton!=-1)
 		{
@@ -4992,7 +4992,7 @@ void ReMappDanaeButton()
 	}
 
 	bNoAction=true;
-	iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_MOUSELOOK].iKey[0];
+	iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[0];
 
 	if(iButton!=-1)
 	{
@@ -5006,7 +5006,7 @@ void ReMappDanaeButton()
 
 	if(bNoAction)
 	{
-		iButton=pMenuConfig->sakActionKey[CONTROLS_CUST_MOUSELOOK].iKey[1];
+		iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[1];
 
 		if(iButton!=-1)
 		{
@@ -7255,9 +7255,8 @@ void ShowFPS()
 	danaeApp.OutputText(320,200,tex);
 }
 
-void ARX_SetAntiAliasing()
-{
-	GRenderer->SetAntialiasing(pMenuConfig && pMenuConfig->bAntiAliasing);
+void ARX_SetAntiAliasing() {
+	GRenderer->SetAntialiasing(config.video.antialiasing);
 }
 
 HRESULT DANAE::InitDeviceObjects()
@@ -7807,15 +7806,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_INTEROBJLIST:
 					LaunchInteractiveObjectsApp(this->m_hWnd);
 				break;
-				case DANAE_MENU_LANGUAGE:
-					ARX_TIME_Pause();
-					Pause(true);			
-					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_LANGUAGEDIALOG), this->m_hWnd, LanguageOptionsProc);
-					Localisation_Init();
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
 				case DANAE_MENU_IMPORTSCN:
 					ARX_TIME_Pause();
 					Pause(true);
@@ -7826,7 +7816,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATELOCALISATION:
 					ARX_TIME_Pause();
 					Pause(true);
-					Localisation_Init();
+					LocalisationInit();
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
@@ -8091,11 +8081,7 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 
 	//configuration
-	if(pMenuConfig)	{
-		pMenuConfig->SaveAll();
-		delete pMenuConfig;
-		pMenuConfig=NULL;
-	}
+	config.save();
 
 	//dinput
 	if(pGetInfoDirectInput)	{
@@ -8146,10 +8132,9 @@ void ClearGame() {
 
 	ARX_SCRIPT_Timer_ClearAll();
 
-	if (scr_timer) {
-//		TODO(lubosz): crash
-//		free(scr_timer);
-		scr_timer=NULL;
+	if(scr_timer) {
+		delete[] scr_timer;
+		scr_timer = NULL;
 	}
 
 	//Speech

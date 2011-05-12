@@ -69,6 +69,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 		return AAL_ERROR_INIT;
 	}
 	
+	
 	// clear error
 	alGetError();
 	
@@ -103,6 +104,10 @@ aalError OpenALBackend::init(bool enableEffects) {
 	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 	
 	AL_CHECK_ERROR("initializing")
+	LogInfo << "Using " << alGetString(AL_RENDERER) << " " << alGetString(AL_VERSION) << (hasEFX ? " with" : " without") << " EFX";
+	
+	LogDebug << "AL extensions: " << alGetString(AL_EXTENSIONS);
+	LogDebug << "ALC extensions: " << alcGetString(device, ALC_EXTENSIONS);
 	
 	return AAL_OK;
 }

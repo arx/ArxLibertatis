@@ -126,6 +126,8 @@ aalError DSoundBackend::init(bool enableEax) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
+	LogInfo << "Using DirectSound " << (hasEAX ? "with" : "without") << " EAX";
+	
 	return AAL_OK;
 }
 

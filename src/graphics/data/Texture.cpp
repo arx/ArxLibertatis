@@ -514,39 +514,35 @@ void LoadRefinementMap(const std::string& fileName, std::map<string, string>& re
 	}
 }
 
-void TextureContainer::LookForRefinementMap(TextureContainer::TCFlags flags)
-{
+void TextureContainer::LookForRefinementMap(TextureContainer::TCFlags flags) {
+	
 	std::string str1;
 	std::string str2;
 	
 	TextureRefinement = NULL;
-
+	
 	static bool loadedRefinements = false;
-	if (!loadedRefinements)
-	{
+	if(!loadedRefinements) {
 		const char INI_REFINEMENT_GLOBAL[] = "Graph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini";
 		const char INI_REFINEMENT[] = "Graph\\Obj3D\\Textures\\Refinement\\Refinement.ini";
-
 		LoadRefinementMap(INI_REFINEMENT_GLOBAL, s_GlobalRefine);
 		LoadRefinementMap(INI_REFINEMENT, s_Refine);
-
-        loadedRefinements = true;
+		loadedRefinements = true;
 	}
-
+	
 	std::string name = GetName(m_texName);
-	MakeUpcase( name );
-
+	MakeUpcase(name);
+	
 	RefinementMap::const_iterator it = s_GlobalRefine.find(name);
-	if( it != s_GlobalRefine.end() )
-	{
+	if(it != s_GlobalRefine.end()) {
 		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
 		TextureRefinement = TextureContainer::Load(str2, flags);
 	}
-
+	
 	it = s_Refine.find(name);
-	if( it != s_Refine.end() )
-	{
+	if(it != s_Refine.end()) {
 		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
 		TextureRefinement = TextureContainer::Load(str2, flags);
 	}
+	
 }

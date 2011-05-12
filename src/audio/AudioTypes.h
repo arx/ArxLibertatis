@@ -80,7 +80,6 @@ enum aalError {
 	AAL_OK = 0,
 	AAL_ERROR, // General error
 	AAL_ERROR_INIT, // Not initialized
-	AAL_ERROR_TIMEOUT, // Wait timeout
 	AAL_ERROR_MEMORY, // Not enough memory
 	AAL_ERROR_FILEIO, // File input/output error
 	AAL_ERROR_FORMAT, // Invalid or corrupted file format

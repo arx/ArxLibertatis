@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 #include <sstream>
 
-#include "core/Localization.h"
+#include "core/Localisation.h"
 #include "core/Core.h"
 #include "core/Unicode.hpp"
 
@@ -88,9 +88,6 @@ Font* hFontCredits	= NULL;
 Font* hFontInGame	= NULL;
 Font* hFontInGameNote = NULL;
  
-
-extern long CHINESE_VERSION;
-
 
 //-----------------------------------------------------------------------------
 string FontError() {
@@ -305,13 +302,6 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_Allocate_Text( std::string& dest, const std::string& id_string) {
-	std::string output;
-	PAK_UNICODE_GetPrivateProfileString(id_string, "default", output);
-	dest = output;
-}
-
 Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned int fontSize, float scaleFactor = Yratio)
 {
 	std::stringstream ss;
@@ -322,7 +312,7 @@ Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned in
 	ss.clear();
 
 	std::string szUT;
-	PAK_UNICODE_GetPrivateProfileString(fontProfileName, szFontSize, szUT);
+	szUT = getLocalised( fontProfileName, szFontSize );
 	ss << szUT;
 	ss >> fontSize;
 	ss.clear();
@@ -345,12 +335,9 @@ string getFontFile() {
 	return tx;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_Text_Init()
-{	
+void ARX_Text_Init() {
+	
 	ARX_Text_Close();
-
-	Localisation_Init();
 	
 	std::string strInGameFont = getFontFile();
 	std::string strInMenuFont = strInGameFont;
@@ -389,9 +376,7 @@ void ARX_Text_Init()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Text_Close()
-{
-	Localisation_Close();
+void ARX_Text_Close() {
 
 	delete pTextManage;
 	pTextManage = NULL;

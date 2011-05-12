@@ -22,59 +22,26 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Code: Didier Pédreno
 
-#ifndef ARX_CORE_LOCALIZATIONHASH_H
-#define ARX_CORE_LOCALIZATIONHASH_H
+#ifndef ARX_CORE_LOCALISATION_H
+#define ARX_CORE_LOCALISATION_H
 
 #include <string>
-#include <vector>
 
-class CLocalisation {
-	
-public:
-	
-	std::string lpszUSection;
-	std::vector<std::string> vUKeys;
-	
-public:
-	
-	inline void SetSection(const std::string & _lpszUSection ) {
-		lpszUSection = _lpszUSection;
-	};
-	
-	inline void AddKey(const std::string & _lpszUText) {
-		vUKeys.push_back(_lpszUText);
-	};
-	
-};
+/*!
+ * Initializes the localisation hashmap based on the current chosen locale
+ */
+void LocalisationInit();
 
-class CLocalisationHash {
-	
-private:
-	
-	unsigned long iSize;
-	long iMask;
-	unsigned long iFill;
-	CLocalisation ** pTab;
-	unsigned long iNbCollisions;
-	unsigned long iNbNoInsert;
-	
-	int FuncH1(int);
-	int FuncH2(int);
-	int GetKey(const std::string &);
-	void ReHash();
-	
-public:
-	
-	CLocalisationHash(int _iSize = 1024);
-	~CLocalisationHash();
-	
-	bool AddElement(CLocalisation * _pLoc);
-	
-	std::string * GetPtrWithString(const std::string &);
-	unsigned long GetKeyCount(const std::string &);
-	
-};
+/*!
+ * Returns the localized string for the given key name
+ * @param name The string to be looked up
+ * @return The localized string based on the currently loaded locale file
+ */
+std::string getLocalised( const std::string& name, const std::string& default_value = "" );
 
-#endif // ARX_CORE_LOCALIZATIONHASH_H
+long getLocalisedKeyCount(const std::string & sectionname);
+
+long MakeLocalised(const std::string & text, std::string & output);
+
+#endif // ARX_CORE_LOCALISATION_H

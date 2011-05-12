@@ -22,21 +22,82 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Code: Didier P�dreno
 
-#ifndef ARX_CORE_LOCALIZATION_H
-#define ARX_CORE_LOCALIZATION_H
+#include "io/IniSection.h"
 
-#include <string>
+#include <sstream>
+#include <algorithm>
 
-void Localisation_Init();
-void Localisation_Close();
+#include "io/Logger.h"
 
-bool PAK_UNICODE_GetPrivateProfileString(const std::string & section, const std::string & default_return, std::string & buffer);
+using std::string;
+using std::transform;
+using std::istringstream;
+using std::boolalpha;
 
-long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string & sectionname);
-long HERMES_UNICODE_GetProfileString(const std::string & sectionname, const std::string & defaultstring, std::string & destination);
+int IniKey::getValue(int defaultValue) const {
+	
+	istringstream iss(value);
+	
+	int val = defaultValue;
+	if((iss >> val).fail()) {
+		return defaultValue;
+	}
+	
+	return val;
+}
 
-long MakeLocalised(const std::string & text, std::string & output);
+float IniKey::getValue(float defaultValue) const {
+	
+	istringstream iss(value);
+	
+	float val;
+	if((iss >> val).fail()) {
+		return defaultValue;
+	}
+	
+	return val;
+}
 
-#endif // ARX_CORE_LOCALIZATION_H
+bool IniKey::getValue(bool defaultValue) const {
+	
+	istringstream iss(value);
+	
+	// Support either boolean specified as strings (true, false) or 0, 1
+	bool val;
+	if((iss >> boolalpha >> val).fail()) {
+		iss.clear();
+		int intVal;
+		if((iss >> intVal).fail()) {
+			return defaultValue;
+		}
+		val = (intVal != 0);
+	}
+	
+	return val;
+}
+
+const IniKey * IniSection::getKey(const std::string & name) const {
+	
+	// Try to match the key to one in the section
+	for(iterator i = begin(); i != end(); ++i) {
+		if(i->getName() == name) { // If the key name matches that specified
+			return &*i;
+		}
+	}
+	
+	// If the key was not found, return NULL
+	return NULL;
+}
+
+void IniSection::addKey(const string & key, const string & value) {
+	
+	keys.resize(keys.size() + 1);
+	
+	keys.back().name = key;
+	keys.back().value = value;
+	
+	transform(keys.back().name.begin(), keys.back().name.end(), keys.back().name.begin(), ::tolower);
+	
+	LogDebug << "found key " << key << "=\"" << value << "\"";
+};

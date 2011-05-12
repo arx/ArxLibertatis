@@ -80,7 +80,6 @@ INT_PTR CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

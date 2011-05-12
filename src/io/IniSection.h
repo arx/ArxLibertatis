@@ -22,56 +22,60 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef _CLUSTER_SAVE_H_
-#define _CLUSTER_SAVE_H_
+// Code: Didier P�dreno
 
-#include <cstddef>
+#ifndef ARX_IO_INISECTION_H
+#define ARX_IO_INISECTION_H
+
 #include <string>
 #include <vector>
 
-#include "platform/Platform.h"
-
-
-class HashMap;
-typedef void * FileHandle;
-
-
-class SaveBlock {
+struct IniKey {
+	
+	inline const std::string & getName() const { return name; }
+	inline const std::string & getValue() const { return value; }
+	
+	int getValue(int defaultValue) const;
+	
+	float getValue(float defaultValue) const;
+	
+	bool getValue(bool defaultValue) const;
 	
 private:
 	
-	struct File;
-	typedef std::vector<File> FileList;
+	std::string name;
+	std::string value;
 	
-	FileHandle handle;
-	size_t totalSize;
-	FileList files;
-	bool firstSave;
-	HashMap * hashMap;
-	std::string savefile;
+	friend class IniSection;
+};
+
+class IniSection {
 	
-	File * getFile(const std::string & name);
-	bool defragment();
-	bool loadFileTable();
-	void writeFileTable();
+private:
+	
+	typedef std::vector<IniKey> Keys;
+	Keys keys;
+	
+	/*!
+	 * Add a key in the ini format (name=value or name="value")
+	 * All preceding space and trailing space / commens must already be removed.
+	 */
+	void addKey(const std::string & key, const std::string & value);
+	
+	friend class IniReader;
 	
 public:
 	
-	SaveBlock(const std::string & savefile);
-	~SaveBlock();
+	typedef Keys::const_iterator iterator;
 	
-	bool BeginSave();
-	bool flush();
-	bool save(const std::string & name, const char * data, size_t size);
+	inline iterator begin() const { return keys.begin(); }
+	inline iterator end() const { return keys.end(); }
+	inline bool empty() const { return keys.empty(); }
+	inline size_t size() const { return keys.size(); }
 	
-	bool BeginRead();
-	char * load(const std::string & name, size_t & size) const;
-	bool hasFile(const std::string & name) const;
-	
-	std::vector<std::string> getFiles() const;
-	
-	static char * load(const std::string & save, const std::string & name, size_t & size);
+	const IniKey * getKey(const std::string & name) const;
 	
 };
 
-#endif // _CLUSTER_SAVE_H_
+
+#endif // ARX_IO_INISECTION_H

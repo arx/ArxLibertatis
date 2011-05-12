@@ -6193,7 +6193,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					File_Standardize(tex2, tex);
 
-					if (tex[0] != 0)
+					if (!tex.empty())
 					{
 						if (io->usemesh == NULL)
 							io->usemesh = (char *)malloc(256);

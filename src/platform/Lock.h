@@ -1,6 +1,6 @@
 
-#ifndef ARX_AUDIO_LOCK_H
-#define ARX_AUDIO_LOCK_H
+#ifndef ARX_PLATFORM_LOCK_H
+#define ARX_PLATFORM_LOCK_H
 
 #include "platform/Platform.h"
 
@@ -29,10 +29,28 @@ public:
 	Lock();
 	~Lock();
 	
-	bool lock(long timeout);
+	void lock();
 	
 	void unlock();
 	
 };
 
-#endif // ARX_AUDIO_LOCK_H
+class Autolock {
+	
+private:
+	
+	Lock * lock;
+	
+public:
+	
+	inline Autolock(Lock * _lock) : lock(_lock) {
+		lock->lock();
+	}
+	
+	inline ~Autolock() {
+		lock->unlock();
+	}
+	
+};
+
+#endif // ARX_PLATFORM_LOCK_H

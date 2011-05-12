@@ -205,12 +205,10 @@ extern ArxSound SND_SPELL_VISION_LOOP;
 long ARX_MATERIAL_GetIdByName(const std::string & name);
 bool ARX_MATERIAL_GetNameById(long id, char * name);
 
-long ARX_SOUND_Init();
+bool ARX_SOUND_Init();
 void ARX_SOUND_Release();
 
 long ARX_SOUND_IsEnabled();
-void ARX_SOUND_EnableReverb(long status);
-long ARX_SOUND_IsReverbEnabled();
 
 void ARX_SOUND_SetListener(const EERIE_3D * position, const EERIE_3D * front, const EERIE_3D * up);
 
@@ -247,7 +245,6 @@ void ARX_SOUND_AmbianceSavePlayList(void ** play_list, unsigned long * size);
 void ARX_SOUND_AmbianceRestorePlayList(void * play_list, unsigned long size);
 
 void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume);
-float ARX_SOUND_MixerGetVolume(ArxMixer mixer_id);
 void ARX_SOUND_MixerStop(ArxMixer mixer_id);
 void ARX_SOUND_MixerPause(ArxMixer mixer_id);
 void ARX_SOUND_MixerResume(ArxMixer mixer_id);

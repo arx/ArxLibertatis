@@ -60,8 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
-#include "core/Time.h"
+#include "core/Config.h"
 #include "core/Resource.h"
+#include "core/Time.h"
 
 #include "game/Player.h"
 
@@ -84,7 +85,6 @@ using std::max;
 //-----------------------------------------------------------------------------
 extern long USE_OLD_MOUSE_SYSTEM;
 extern long FINAL_RELEASE;
-extern CMenuConfig * pMenuConfig;
 extern bool bGLOBAL_DINPUT_GAME;
 
 extern long FINAL_COMMERCIAL_DEMO;
@@ -972,7 +972,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 
 	// mode systemshock
 	if ((EERIEMouseButton & 1) &&
-	        (pMenuConfig->bAutoReadyWeapon == false))
+	        (config.input.autoReadyWeapon == false))
 	{
 		MouseDragX += EERIEMouseXdep;
 		MouseDragY += EERIEMouseYdep;

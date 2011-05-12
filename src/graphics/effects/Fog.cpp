@@ -57,8 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/Fog.h"
 
-#include "core/Time.h"
+#include "core/Config.h"
 #include "core/Core.h"
+#include "core/Time.h"
 
 #include "gui/MenuWidgets.h"
 
@@ -69,8 +70,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 EERIE_3DOBJ * fogobj = NULL;
 extern FOG_DEF fogcopy;
 FOG_DEF fogs[MAX_FOG];
-
-extern CMenuConfig * pMenuConfig;
 
 //*************************************************************************************
 // Used to Set 3D Object Visual for Fogs
@@ -183,12 +182,7 @@ void ARX_FOGS_TimeReset()
 }
 void AddPoisonFog(EERIE_3D * pos, float power)
 {
-	int iDiv = 2;
-
-	if (pMenuConfig)
-	{
-		iDiv += 2 - pMenuConfig->iLevelOfDetails;
-	}
+	int iDiv = 4 - config.video.levelOfDetail;
 
 	float flDiv =	ARX_CLEAN_WARN_CAST_FLOAT(1 << iDiv);
 	ARX_CHECK_LONG(FrameDiff / flDiv);
@@ -234,12 +228,7 @@ void ARX_FOGS_Render() {
 	
 	if (ARXPausedTimer) return;
 
-	int iDiv = 2;
-
-	if (pMenuConfig)
-	{
-		iDiv += 2 - pMenuConfig->iLevelOfDetails;
-	}
+	int iDiv = 4 - config.video.levelOfDetail;
 
 	float flDiv = ARX_CLEAN_WARN_CAST_FLOAT(1 << iDiv);
 

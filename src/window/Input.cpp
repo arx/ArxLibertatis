@@ -59,12 +59,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include "core/Config.h"
+
 #include "gui/MenuWidgets.h" //controls
+
 #include "io/Logger.h"
 #include "window/DXInput.h"
 
 extern CDirectInput * pGetInfoDirectInput;
-extern CMenuConfig * pMenuConfig;
 extern long STOP_KEYBOARD_INPUT;
 
 bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd) {
@@ -105,18 +107,18 @@ bool ARX_IMPULSE_NowPressed(long ident)
 		{
 			for (long j = 0; j < 2; j++)
 			{
-				if (pMenuConfig->sakActionKey[ident].iKey[j] != -1)
+				if (config.actions[ident].key[j] != -1)
 				{
-					if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x80000000)
+					if (config.actions[ident].key[j] & 0x80000000)
 					{
-						if (pGetInfoDirectInput->GetMouseButtonNowPressed(pMenuConfig->sakActionKey[ident].iKey[j]&~0x80000000))
+						if (pGetInfoDirectInput->GetMouseButtonNowPressed(config.actions[ident].key[j]&~0x80000000))
 							return true;
 					}
 					else
 					{
-						if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x40000000)
+						if (config.actions[ident].key[j] & 0x40000000)
 						{
-							if (pMenuConfig->sakActionKey[ident].iKey[j] == 0x40000001)
+							if (config.actions[ident].key[j] == 0x40000001)
 							{
 								if (pGetInfoDirectInput->iWheelSens < 0) return true;
 							}
@@ -129,13 +131,13 @@ bool ARX_IMPULSE_NowPressed(long ident)
 						{
 							bool bCombine = true;
 
-							if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x7FFF0000)
+							if (config.actions[ident].key[j] & 0x7FFF0000)
 							{
-								if (!pGetInfoDirectInput->IsVirtualKeyPressed((pMenuConfig->sakActionKey[ident].iKey[j] >> 16) & 0xFFFF))
+								if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 									bCombine = false;
 							}
 
-							if (pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(pMenuConfig->sakActionKey[ident].iKey[j] & 0xFFFF))
+							if (pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(config.actions[ident].key[j] & 0xFFFF))
 								return true & bCombine;
 						}
 					}
@@ -160,22 +162,22 @@ bool ARX_IMPULSE_Pressed(long ident)
 			break;
 		default:
 		{
-			if (pMenuConfig->bOneHanded)
+			if (config.misc.forceToggle)
 			{
 				for (long j = 0; j < 2; j++)
 				{
-					if (pMenuConfig->sakActionKey[ident].iKey[j] != -1)
+					if (config.actions[ident].key[j] != -1)
 					{
-						if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x80000000)
+						if (config.actions[ident].key[j] & 0x80000000)
 						{
-							if (pGetInfoDirectInput->GetMouseButtonRepeat(pMenuConfig->sakActionKey[ident].iKey[j]&~0x80000000))
+							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j]&~0x80000000))
 								return true;
 						}
 						else
 						{
-							if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x40000000)
+							if (config.actions[ident].key[j] & 0x40000000)
 							{
-								if (pMenuConfig->sakActionKey[ident].iKey[j] == 0x40000001)
+								if (config.actions[ident].key[j] == 0x40000001)
 								{
 									if (pGetInfoDirectInput->iWheelSens < 0) return true;
 								}
@@ -188,13 +190,13 @@ bool ARX_IMPULSE_Pressed(long ident)
 							{
 								bool bCombine = true;
 
-								if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x7FFF0000)
+								if (config.actions[ident].key[j] & 0x7FFF0000)
 								{
-									if (!pGetInfoDirectInput->IsVirtualKeyPressed((pMenuConfig->sakActionKey[ident].iKey[j] >> 16) & 0xFFFF))
+									if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 										bCombine = false;
 								}
 
-								if (pGetInfoDirectInput->IsVirtualKeyPressed(pMenuConfig->sakActionKey[ident].iKey[j] & 0xFFFF))
+								if (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
 								{
 									bool bQuit = false;
 
@@ -259,7 +261,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 										case CONTROLS_CUST_MAGICMODE:
 										{
 											if ((!j) &&
-											        (pGetInfoDirectInput->IsVirtualKeyPressed(pMenuConfig->sakActionKey[ident].iKey[j+1] & 0xFFFF)))
+											        (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
 											{
 												continue;
 											}
@@ -280,7 +282,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 										case CONTROLS_CUST_STEALTHMODE:
 										{
 											if ((!j) &&
-											        (pGetInfoDirectInput->IsVirtualKeyPressed(pMenuConfig->sakActionKey[ident].iKey[j+1] & 0xFFFF)))
+											        (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
 											{
 												continue;
 											}
@@ -329,18 +331,18 @@ bool ARX_IMPULSE_Pressed(long ident)
 			{
 				for (long j = 0; j < 2; j++)
 				{
-					if (pMenuConfig->sakActionKey[ident].iKey[j] != -1)
+					if (config.actions[ident].key[j] != -1)
 					{
-						if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x80000000)
+						if (config.actions[ident].key[j] & 0x80000000)
 						{
-							if (pGetInfoDirectInput->GetMouseButtonRepeat(pMenuConfig->sakActionKey[ident].iKey[j]&~0x80000000))
+							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j]&~0x80000000))
 								return true;
 						}
 						else
 						{
-							if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x40000000)
+							if (config.actions[ident].key[j] & 0x40000000)
 							{
-								if (pMenuConfig->sakActionKey[ident].iKey[j] == 0x40000001)
+								if (config.actions[ident].key[j] == 0x40000001)
 								{
 									if (pGetInfoDirectInput->iWheelSens < 0) return true;
 								}
@@ -353,13 +355,13 @@ bool ARX_IMPULSE_Pressed(long ident)
 							{
 								bool bCombine = true;
 
-								if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x7FFF0000)
+								if (config.actions[ident].key[j] & 0x7FFF0000)
 								{
-									if (!pGetInfoDirectInput->IsVirtualKeyPressed((pMenuConfig->sakActionKey[ident].iKey[j] >> 16) & 0xFFFF))
+									if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 										bCombine = false;
 								}
 
-								if (pGetInfoDirectInput->IsVirtualKeyPressed(pMenuConfig->sakActionKey[ident].iKey[j] & 0xFFFF))
+								if (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
 									return true & bCombine;
 							}
 						}
@@ -384,24 +386,24 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 		{
 			for (long j = 0; j < 2; j++)
 			{
-				if (pMenuConfig->sakActionKey[ident].iKey[j] != -1)
+				if (config.actions[ident].key[j] != -1)
 				{
-					if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x80000000)
+					if (config.actions[ident].key[j] & 0x80000000)
 					{
-						if (pGetInfoDirectInput->GetMouseButtonNowUnPressed(pMenuConfig->sakActionKey[ident].iKey[j]&~0x80000000))
+						if (pGetInfoDirectInput->GetMouseButtonNowUnPressed(config.actions[ident].key[j]&~0x80000000))
 							return true;
 					}
 					else
 					{
 						bool bCombine = true;
 
-						if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x7FFF0000)
+						if (config.actions[ident].key[j] & 0x7FFF0000)
 						{
-							if (!pGetInfoDirectInput->IsVirtualKeyPressed((pMenuConfig->sakActionKey[ident].iKey[j] >> 16) & 0xFFFF))
+							if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 								bCombine = false;
 						}
 
-						if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(pMenuConfig->sakActionKey[ident].iKey[j] & 0xFFFF))
+						if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(config.actions[ident].key[j] & 0xFFFF))
 							return true & bCombine;
 					}
 				}

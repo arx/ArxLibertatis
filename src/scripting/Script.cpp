@@ -63,14 +63,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
+#include <algorithm>
 
 #include "ai/Paths.h"
 
 #include "core/Time.h"
-#include "core/Localization.h"
+#include "core/Localisation.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
 #include "core/Core.h"
+#include "core/Config.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -96,6 +98,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::sprintf;
 using std::min;
 using std::max;
+using std::transform;
 
 //#define NEEDING_DEBUG 1
 #define MAX_SSEPARAMS 5
@@ -485,7 +488,6 @@ void ARX_SCRIPT_ResetAll(long flags)
 }
 
 extern long PauseScript;
-extern long GORE_MODE;
 //*************************************************************************************
 //*************************************************************************************
 void ARX_SCRIPT_AllowInterScriptExec()
@@ -738,7 +740,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 
 			if (!name.compare("^GORE"))
 			{
-				*lcontent = GORE_MODE;
+				*lcontent = config.misc.gore ? 1 : 0;
 				return TYPE_LONG;
 			}
 
@@ -2863,13 +2865,14 @@ void MakeStandard( std::string& str)
 //-----------------------------------------------------------------------------
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration)
 {
-	std::string output;
-
-	HERMES_UNICODE_GetProfileString(
-		text,
-		"Not Found",
-		output );
-	return (ARX_SPEECH_Add(io, output, duration));
+	// TODO move to caller
+	std::string section = text;
+	if(!section.empty() && section[0] == '[' && section[section.length() - 1] == ']') {
+		section = section.substr(1, section.length() - 2);
+	}
+	transform(section.begin(), section.end(), section.begin(), ::tolower);
+	std::string output = getLocalised(section, "Not Found");
+	return ARX_SPEECH_Add(io, output, duration);
 }
 
 //*************************************************************************************

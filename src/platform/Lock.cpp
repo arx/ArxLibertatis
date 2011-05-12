@@ -19,28 +19,19 @@ Lock::~Lock() {
 	
 }
 
-bool Lock::lock(long timeout) {
+void Lock::lock() {
 	
 	pthread_mutex_lock(&mutex);
 	
 	if(locked) {
-		struct timespec time;
-		clock_gettime(CLOCK_REALTIME, &time);
-		time.tv_sec += timeout;
-		int rc;
 		do {
-			rc = pthread_cond_timedwait(&cond, &mutex, &time);
-		} while(rc == 0 && locked);
-		if(rc == ETIMEDOUT) {
-			pthread_mutex_unlock(&mutex);
-			LogWarning << "lock timeout " << timeout << " " << time.tv_nsec;
-			return false;
-		}
+			int rc = pthread_cond_wait(&cond, &mutex);
+			arx_assert(rc == 0);
+		} while(locked);
 	}
 	
 	locked = true;
 	pthread_mutex_unlock(&mutex);
-	return true;
 }
 
 void Lock::unlock() {
@@ -61,8 +52,9 @@ Lock::~Lock() {
 	CloseHandle(mutex);
 }
 
-bool Lock::lock(long timeout) {
-	return WaitForSingleObject(mutex, timeout) == WAIT_TIMEOUT ? false : true;
+void Lock::lock() {
+	DWORD rc = WaitForSingleObject(mutex, INFINITE);
+	arx_assert(rc == WAIT_OBJECT_0);
 }
 
 void Lock::unlock() {

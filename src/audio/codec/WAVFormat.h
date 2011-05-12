@@ -30,7 +30,7 @@ struct ADPCMHeader {
 	WaveHeader wfx;
 	u16 samplesPerBlock;
 	u16 coefficientCount;
-	ADPCMCoefficientPair coefficients[0];
+	ADPCMCoefficientPair coefficients[1];
 };
 
 #pragma pack(pop)

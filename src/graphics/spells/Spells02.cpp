@@ -174,6 +174,8 @@ void CHeal::Create()
 	cp.fEndColorRandom[1] = 0;
 	cp.fEndColorRandom[2] = 40;
 	cp.fEndColorRandom[3] = 0;
+	
+	cp.iBlendMode = 0;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;

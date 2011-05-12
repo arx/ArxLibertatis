@@ -68,9 +68,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 #include <dinput.h>
 
+#include "core/Config.h"
 #include "core/Time.h"
 #include "core/Application.h"
-#include "core/Localization.h"
+#include "core/Localisation.h"
 #include "core/Unicode.hpp"
 #include "core/Core.h"
 
@@ -82,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/ViewImage.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
+#include "gui/MenuPublic.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -103,7 +105,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
-extern CMenuConfig * pMenuConfig;
 extern EERIE_3D ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
@@ -180,81 +181,123 @@ int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 	return (a.stime.wMilliseconds > b.stime.wMilliseconds);
 }
 
-//-----------------------------------------------------------------------------
-void CreateSaveGameList()
-{
+bool operator==(const SYSTEMTIME & a, const SYSTEMTIME & b) {
+	return (a.wYear == b.wYear && a.wMonth == b.wMonth && a.wDay == b.wDay && a.wHour == b.wHour && a.wMinute == b.wMinute && a.wSecond == b.wSecond && a.wMilliseconds == b.wMilliseconds);
+}
+
+void CreateSaveGameList() {
+	
 	LogDebug << "CreateSaveGameList";
 	
-	char path[512] = "";
-	HANDLE h;
-
-	sprintf(path, "save%s\\save*", LOCAL_SAVENAME);
+	string path = "save" + string(LOCAL_SAVENAME) + "\\save*";
 	
-	save_l.resize(1);
-
-	save_l[0].name = "New";
-
-	char tTemp[sizeof(WIN32_FIND_DATA)+2];
-	WIN32_FIND_DATA * fdata = (WIN32_FIND_DATA *)tTemp;
-
+	if(save_l.empty()) {
+		save_l.resize(1);
+		save_l[0].name = "New";
+	}
+	
+	size_t oldCount = save_l.size() - 1;
+#ifdef HAVE_DYNAMIC_STACK_ALLOCATION
+	bool found[oldCount];
+#else
+	bool * found = new bool[oldCount];
+#endif
+	for(size_t i = 0; i < oldCount; i++) {
+		found[i] = false;
+	}
+	
+	WIN32_FIND_DATA fdata;
 	LogDebug << "looking for " << path;
 	
-	if ((h = FindFirstFile(path, fdata)) != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
-			{
-				
-				
-				std::stringstream ss;
-				ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
-				
-				string name;
-				float version;
-				long level;
-				
-				unsigned long ignored;
-				if(ARX_CHANGELEVEL_GetInfo(ss.str(), name, version, level, ignored) != -1) {
-					
-					// Make another save game slot at the end
-					save_l.resize(save_l.size() + 1);
-					
-					save_l.back().name = name;
-					save_l.back().version = version;
-					save_l.back().level = level;
-					
-					istringstream num(fdata->cFileName + 4);
-					num >> save_l.back().num;
-					
-					SYSTEMTIME stime;
-					FILETIME fTime;
-					FileTimeToLocalFileTime(&fdata->ftLastWriteTime, &fTime);
-					FileTimeToSystemTime(&fTime, &stime);
-					save_l.back().stime = stime;
-					
-					LogInfo << "found " << fdata->cFileName << ": \""
-					        << name << "\"   v" << version
-					        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
-					        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
-					        << ":" << stime.wMilliseconds;
-					
-				} else {
-					LogWarning << "unable to get save file info for " << ss.str();
-				}
+	HANDLE h;
+	if((h = FindFirstFile(path.c_str(), &fdata)) == INVALID_HANDLE_VALUE) {
+		LogInfo << "no save files found";
+		save_l.resize(1);
+	}
+	
+	bool newSaves = false;
+	
+	do {
+		if(!(fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || fdata.cFileName[0] == '.') {
+			continue;
+		}
+		
+		istringstream iss(fdata.cFileName + 4);
+		long num;
+		iss >> num;
+		
+		SYSTEMTIME stime;
+		FILETIME fTime;
+		FileTimeToLocalFileTime(&fdata.ftLastWriteTime, &fTime);
+		FileTimeToSystemTime(&fTime, &stime);
+		
+		size_t index = (size_t)-1;
+		for(size_t i = 1; i <= oldCount; i++) {
+			if(save_l[i].num == num) {
+				index = i;
 			}
 		}
-		while (FindNextFile(h, fdata));
-		
-		if(save_l.size() > 1) {
-			std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
+		if(index != (size_t)-1 && save_l[index].stime == stime) {
+			found[index - 1] = true;
+			continue;
 		}
-
-		LogDebug << "found " << (save_l.size()-1) << " savegames";
-		FindClose(h);
-	} else {
-		LogInfo << "no save files found";
+		
+		std::stringstream oss;
+		oss << "save" << LOCAL_SAVENAME << "\\" << fdata.cFileName << "\\";
+		
+		string name;
+		float version;
+		long level;
+		unsigned long ignored;
+		if(ARX_CHANGELEVEL_GetInfo(oss.str(), name, version, level, ignored) == -1) {
+			LogWarning << "unable to get save file info for " << oss.str();
+			continue;
+		}
+		
+		newSaves = true;
+		
+		SaveGame * save;
+		if(index == (size_t)-1) {
+			// Make another save game slot at the end
+			save_l.resize(save_l.size() + 1);
+			save = &save_l.back();
+		} else {
+			found[index - 1] = true;
+			save = &save_l[index];
+		}
+		
+		
+		save->name = name;
+		save->version = version;
+		save->level = level;
+		save->stime = stime;
+		save->num = num;
+		
+		LogInfo << "found " << fdata.cFileName << ": \""
+			        << name << "\"   v" << version
+			        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
+			        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
+			        << ":" << stime.wMilliseconds;
+			
+	} while(FindNextFile(h, &fdata));
+	
+	for(size_t i = oldCount; i > 0; i--) {
+		if(!found[i - 1]) {
+			save_l.erase(save_l.begin() + i);
+		}
 	}
+	
+#ifndef HAVE_DYNAMIC_STACK_ALLOCATION
+	delete[] found;
+#endif
+	
+	if(newSaves && save_l.size() > 2) {
+		std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
+	}
+	
+	LogDebug << "found " << (save_l.size()-1) << " savegames";
+	FindClose(h);
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -316,42 +359,42 @@ void ARX_Menu_Resources_Create() {
 	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("Graph\\Interface\\menus\\Menu_credits.bmp");
 	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
 
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],              "system_charsheet_strength");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],                  "system_charsheet_intel");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],             "system_charsheet_Dex");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],          "system_charsheet_consti");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],               "system_charsheet_stealth");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],              "system_charsheet_mecanism");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],             "system_charsheet_intuition");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],          "system_charsheet_etheral_link");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],      "system_charsheet_objknoledge");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],               "system_charsheet_casting");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],            "system_charsheet_projectile");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],          "system_charsheet_closecombat");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],               "system_charsheet_defense");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],    "system_charsheet_quickgenerate");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],                "system_charsheet_done");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],                "system_charsheet_skin");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],             "system_charsheet_atributes");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],                 "system_charsheet_skills");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],                 "system_charsheet_status");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],                  "system_charsheet_level");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],                     "system_charsheet_xpoints");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],                     "system_charsheet_hp");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],                   "system_charsheet_mana");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],                     "system_charsheet_AC");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],           "system_charsheet_res_magic");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],          "system_charsheet_res_poison");
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],                 "system_charsheet_damage");
+	ARXmenu.mda->flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
+	ARXmenu.mda->flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
+	ARXmenu.mda->flyover[BOOK_DEXTERITY] = getLocalised("system_charsheet_dex");
+	ARXmenu.mda->flyover[BOOK_CONSTITUTION] = getLocalised("system_charsheet_consti");
+	ARXmenu.mda->flyover[BOOK_STEALTH] = getLocalised("system_charsheet_stealth");
+	ARXmenu.mda->flyover[BOOK_MECANISM] = getLocalised("system_charsheet_mecanism");
+	ARXmenu.mda->flyover[BOOK_INTUITION] = getLocalised("system_charsheet_intuition");
+	ARXmenu.mda->flyover[BOOK_ETHERAL_LINK] = getLocalised("system_charsheet_etheral_link");
+	ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE] = getLocalised("system_charsheet_objknoledge");
+	ARXmenu.mda->flyover[BOOK_CASTING] = getLocalised("system_charsheet_casting");
+	ARXmenu.mda->flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
+	ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
+	ARXmenu.mda->flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
+	ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION] = getLocalised("system_charsheet_quickgenerate");
+	ARXmenu.mda->flyover[BUTTON_DONE] = getLocalised("system_charsheet_done");
+	ARXmenu.mda->flyover[BUTTON_SKIN] = getLocalised("system_charsheet_skin");
+	ARXmenu.mda->flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
+	ARXmenu.mda->flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
+	ARXmenu.mda->flyover[WND_STATUS] = getLocalised("system_charsheet_status");
+	ARXmenu.mda->flyover[WND_LEVEL] = getLocalised("system_charsheet_level");
+	ARXmenu.mda->flyover[WND_XP] = getLocalised("system_charsheet_xpoints");
+	ARXmenu.mda->flyover[WND_HP] = getLocalised("system_charsheet_hp");
+	ARXmenu.mda->flyover[WND_MANA] = getLocalised("system_charsheet_mana");
+	ARXmenu.mda->flyover[WND_AC] = getLocalised("system_charsheet_ac");
+	ARXmenu.mda->flyover[WND_RESIST_MAGIC] = getLocalised("system_charsheet_res_magic");
+	ARXmenu.mda->flyover[WND_RESIST_POISON] = getLocalised("system_charsheet_res_poison");
+	ARXmenu.mda->flyover[WND_DAMAGE] = getLocalised("system_charsheet_damage");
 
-	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,                 "system_charsheet_button_quickgen");
-	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
-	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
+	ARXmenu.mda->str_button_quickgen = getLocalised("system_charsheet_button_quickgen");
+	ARXmenu.mda->str_button_skin = getLocalised("system_charsheet_button_skin");
+	ARXmenu.mda->str_button_done = getLocalised("system_charsheet_button_done");
 
 	
 	// Load credits.
 	
-	string creditsFile = "localisation\\ucredits_" +  Project.localisationpath + ".txt";
+	string creditsFile = "localisation\\ucredits_" +  config.language + ".txt";
 	
 	size_t creditsSize;
 	u16 * creditsData = (u16*)PAK_FileLoadMalloc(creditsFile, creditsSize);
@@ -386,8 +429,7 @@ void ARX_Menu_Resources_Create() {
 //-----------------------------------------------------------------------------
 void ARX_Menu_Resources_Release(bool _bNoSound)
 {
-	if (pMenuConfig)
-		pMenuConfig->SaveAll();
+	config.save();
 
 	if (ARXmenu.mda == NULL)
 		return;
@@ -408,14 +450,8 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 	ARXmenu.mda = NULL;
 
 	//Synchronize game mixers with menu mixers and switch between them
-	if (_bNoSound)
-	{
-		ARX_SOUND_MixerSwitch(ARX_SOUND_MixerMenu, ARX_SOUND_MixerGame);
-
-		ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenu));
-		ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSample, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSample));
-		ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSpeech));
-		ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance));
+	if(_bNoSound) {
+		ARXMenu_Options_Audio_ApplyGameVolumes();
 	}
 
 	if (pTextureLoad)
@@ -695,8 +731,8 @@ bool ARX_Menu_Render()
 			ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
 			ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
 
-			ARX_Allocate_Text(ITC.Level, "system_charsheet_player_lvl");
-			ARX_Allocate_Text(ITC.Xp, "system_charsheet_player_xp");
+			ITC.Level = getLocalised("system_charsheet_player_lvl");
+			ITC.Xp = getLocalised("system_charsheet_player_xp");
 
 			ANIM_Set(&player.useanim, herowaitbook);
 
@@ -943,13 +979,13 @@ bool ARX_Menu_Render()
 
 		Color = RGB(232, 204, 143);
 
-		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText);
+		szText = getLocalised("system_menus_main_cdnotfound");
 		Vector2i textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
-		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText);
+		szText = getLocalised("system_yes");
 		textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
@@ -968,7 +1004,7 @@ bool ARX_Menu_Render()
 
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
-		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText);
+		szText = getLocalised("system_no");
 		textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 

@@ -29,7 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include <algorithm>
-#include <map>
 #include <sstream>
 
 #ifndef DIRECTINPUT_VERSION
@@ -37,9 +36,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 #include <dinput.h>
 
+#include "core/Config.h"
 #include "core/Core.h"
 #include "core/Time.h"
-#include "core/Localization.h"
+#include "core/Localisation.h"
 
 #include "gui/Menu.h"
 #include "gui/MenuPublic.h"
@@ -66,10 +66,12 @@ using std::wistringstream;
 using std::min;
 using std::max;
 
-typedef std::pair<HFONT, const char*> textsize_key;
-typedef std::pair<int, int> textsize_value;
-typedef std::map<textsize_key, textsize_value> textsize_map;
-static textsize_map cache;
+int newTextureSize;
+int newWidth;
+int newHeight;
+int newBpp;
+bool changeResolution = false;
+bool changeTextures = false;
 
 extern char* GetVersionString();
 
@@ -85,7 +87,6 @@ extern char* GetVersionString();
 // Imported global variables and functions
 extern ARX_MENU_DATA ARXmenu;
 extern TextureContainer * scursor[];
-extern bool bGameNotFirstLaunch;
 extern long DANAESIZX;
 extern long DANAESIZY;
 
@@ -110,22 +111,15 @@ extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_COUNT;
 extern float SOFTNEARCLIPPZ;
 
-extern long GERMAN_VERSION;
-extern long FRENCH_VERSION;
-
-extern long INTERNATIONAL_MODE;
-
 extern long CURRENT_GAME_INSTANCE;
 extern char GameSavePath[];
 void ARX_GAMESAVE_MakePath();
 
-extern long GORE_MODE;
 
 float INTERFACE_RATIO(float a);
 bool bNoMenu=false;
 
-void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _iBpp);
-void ARX_SetAntiAliasing();
+void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _bpp );
 
 //-----------------------------------------------------------------------------
 
@@ -133,7 +127,6 @@ bool bGLOBAL_DINPUT_MENU=true;
 bool bGLOBAL_DINPUT_GAME=true;
 
 CDirectInput *pGetInfoDirectInput=NULL;
-CMenuConfig *pMenuConfig;
 static CWindowMenu *pWindowMenu=NULL;
 CMenuState *pMenu;
 
@@ -165,10 +158,6 @@ static TextureContainer *pTextureLoadRender=NULL;
 #define QUICK_SAVE_ID1 "ARX_QUICK_ARX1"
 
 int iTimeToDrawD7=-3000;
-
-std::string pStringMod;
-std::string pStringModSfx;
-std::string pStringModSpeech;
 
 //-----------------------------------------------------------------------------
 // Local functions
@@ -272,7 +261,6 @@ void ARX_QuickSave()
 		UpdateSaveGame( 0 );
 		ARXMenu_Options_Video_SetGamma( iOldGamma );
 		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
-
 		CopyFile( tcDst, tcSrc, false );
 		DeleteFile( tcDst );
 	}
@@ -295,8 +283,7 @@ void ARX_DrawAfterQuickLoad()
 {
 	ARX_CHECK_INT(iTimeToDrawD7 - FrameDiff);
 	iTimeToDrawD7    -= ARX_CLEAN_WARN_CAST_INT(FrameDiff);
-
-		
+	
 	float fColor;
 
 	if(iTimeToDrawD7>0)
@@ -329,8 +316,6 @@ void ARX_DrawAfterQuickLoad()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
-
-//-----------------------------------------------------------------------------
 
 bool ARX_QuickLoad()
 {
@@ -438,8 +423,6 @@ bool MENU_NoActiveWindow()
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-
 void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
 {
 	if(pTextManage)
@@ -448,212 +431,6 @@ void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLOR
 		ARX_CHECK_LONG( pos.x );
 		pTextManage->AddText( _pFont, _pText, pos.x, pos.y, _c);
 	}
-}
-
-CMenuConfig::CMenuConfig()
-{
-	First();
-}
-
-//-----------------------------------------------------------------------------
-
-void CMenuConfig::First()
-{
-	ResetActionKey();
-
-	sakActionDefaultKey[CONTROLS_CUST_JUMP].iKey[0]=DIK_SPACE;
-	sakActionDefaultKey[CONTROLS_CUST_JUMP].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_MAGICMODE].iKey[0]=DIK_LCONTROL;
-	sakActionDefaultKey[CONTROLS_CUST_MAGICMODE].iKey[1]=DIK_RCONTROL;
-	sakActionDefaultKey[CONTROLS_CUST_STEALTHMODE].iKey[0]=DIK_LSHIFT;
-	sakActionDefaultKey[CONTROLS_CUST_STEALTHMODE].iKey[1]=DIK_RSHIFT;
-	sakActionDefaultKey[CONTROLS_CUST_WALKFORWARD].iKey[0] = DIK_W;
-	sakActionDefaultKey[CONTROLS_CUST_WALKFORWARD].iKey[1]=DIK_UP;
-	sakActionDefaultKey[CONTROLS_CUST_WALKBACKWARD].iKey[0] = DIK_S;
-	sakActionDefaultKey[CONTROLS_CUST_WALKBACKWARD].iKey[1]=DIK_DOWN;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFELEFT].iKey[0] = DIK_A;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFELEFT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFERIGHT].iKey[0] = DIK_D;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFERIGHT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_LEANLEFT].iKey[0] = DIK_Q;
-	sakActionDefaultKey[CONTROLS_CUST_LEANLEFT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_LEANRIGHT].iKey[0] = DIK_E;
-	sakActionDefaultKey[CONTROLS_CUST_LEANRIGHT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_CROUCH].iKey[0] = DIK_X;
-	sakActionDefaultKey[CONTROLS_CUST_CROUCH].iKey[1]=-1;
-
-	if (INTERNATIONAL_MODE)
-	{
-		sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[0]=DIK_F;
-		sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[1]=DIK_RETURN;
-	}
-	else
-	{
-		sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[0]=DIK_BUTTON2;
-		sakActionDefaultKey[CONTROLS_CUST_MOUSELOOK].iKey[1]=-1;
-	}
-
-	sakActionDefaultKey[CONTROLS_CUST_ACTION].iKey[0]=DIK_BUTTON1;
-	sakActionDefaultKey[CONTROLS_CUST_ACTION].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[0] = DIK_I;
-	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOK].iKey[0]=DIK_BACKSPACE;
-	sakActionDefaultKey[CONTROLS_CUST_BOOK].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOK].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKCHARSHEET].iKey[0] = DIK_F1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKCHARSHEET].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKSPELL].iKey[0] = DIK_F2;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKSPELL].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKMAP].iKey[0] = DIK_F3;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKMAP].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKQUEST].iKey[0] = DIK_F4;
-	sakActionDefaultKey[CONTROLS_CUST_BOOKQUEST].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONLIFE].iKey[0] = DIK_H;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONLIFE].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONLIFE].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONMANA].iKey[0] = DIK_G;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONMANA].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_DRINKPOTIONMANA].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_TORCH].iKey[0]=DIK_T;
-	sakActionDefaultKey[CONTROLS_CUST_TORCH].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_TORCH].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_CANCELCURSPELL].iKey[0] = DIK_4;
-	sakActionDefaultKey[CONTROLS_CUST_CANCELCURSPELL].iKey[1] = -1;
-	sakActionDefaultKey[CONTROLS_CUST_CANCELCURSPELL].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST1].iKey[0] = DIK_1;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST1].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST2].iKey[0] = DIK_2;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST2].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST3].iKey[0] = DIK_3;
-	sakActionDefaultKey[CONTROLS_CUST_PRECAST3].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_WEAPON].iKey[0] = DIK_TAB;
-	sakActionDefaultKey[CONTROLS_CUST_WEAPON].iKey[1] = DIK_NUMPAD0;
-	sakActionDefaultKey[CONTROLS_CUST_WEAPON].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_QUICKLOAD].iKey[0] = DIK_F9;
-	sakActionDefaultKey[CONTROLS_CUST_QUICKLOAD].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_QUICKSAVE].iKey[0] = DIK_F5;
-	sakActionDefaultKey[CONTROLS_CUST_QUICKSAVE].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_TURNLEFT].iKey[0]=DIK_LEFT;
-	sakActionDefaultKey[CONTROLS_CUST_TURNLEFT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_TURNRIGHT].iKey[0]=DIK_RIGHT;
-	sakActionDefaultKey[CONTROLS_CUST_TURNRIGHT].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_LOOKUP].iKey[0]=DIK_PGUP;
-	sakActionDefaultKey[CONTROLS_CUST_LOOKUP].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_LOOKDOWN].iKey[0]=DIK_PGDN;
-	sakActionDefaultKey[CONTROLS_CUST_LOOKDOWN].iKey[1]=-1;
-
-	sakActionDefaultKey[CONTROLS_CUST_STRAFE].iKey[0]=DIK_LALT;
-	sakActionDefaultKey[CONTROLS_CUST_STRAFE].iKey[1]=-1;
-	sakActionDefaultKey[CONTROLS_CUST_CENTERVIEW].iKey[0]=DIK_END;
-	sakActionDefaultKey[CONTROLS_CUST_CENTERVIEW].iKey[1]=-1;
-
-	if (INTERNATIONAL_MODE)
-	{
-		sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[0]=DIK_L;
-		sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[1]=DIK_BUTTON2;
-	}
-	else
-	{
-		sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[0]=DIK_L;
-		sakActionDefaultKey[CONTROLS_CUST_FREELOOK].iKey[1]=-1;
-	}
-
-	sakActionDefaultKey[CONTROLS_CUST_PREVIOUS].iKey[0] = GetDIKWithASCII(")");
-	sakActionDefaultKey[CONTROLS_CUST_PREVIOUS].iPage=1;
-	sakActionDefaultKey[CONTROLS_CUST_NEXT].iKey[0] = GetDIKWithASCII("=");
-	sakActionDefaultKey[CONTROLS_CUST_NEXT].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_CROUCHTOGGLE].iKey[0] = GetDIKWithASCII("C");
-
-	sakActionDefaultKey[CONTROLS_CUST_UNEQUIPWEAPON].iKey[0] = DIK_B;
-	sakActionDefaultKey[CONTROLS_CUST_UNEQUIPWEAPON].iKey[1] = -1;
-	sakActionDefaultKey[CONTROLS_CUST_UNEQUIPWEAPON].iPage=1;
-
-	sakActionDefaultKey[CONTROLS_CUST_MINIMAP].iKey[0] = DIK_R;
-	sakActionDefaultKey[CONTROLS_CUST_MINIMAP].iKey[1] = DIK_M;
-	sakActionDefaultKey[CONTROLS_CUST_MINIMAP].iPage=1;
-
-	bChangeResolution = false;
-	bChangeTextures = false;
-	bNoReturnToWindows=false;
-	bLinkMouseLookToUse=false;
-	bForceZBias=false;
-
-	SetDefaultKey();
-	DefaultValue();
-}
-
-//-----------------------------------------------------------------------------
-
-CMenuConfig::CMenuConfig( const std::string& _pName)
-{
-	// if _pName equals exactly "cfg"
-	if ( strcasecmp( _pName.c_str(), "cfg" ) == 0 )
-	{
-		pcName="cfg.ini";
-	}
-	else
-	{
-		pcName = _pName;
-	}
-	
-	// TODO GetPrivateProfileString needs an absolute path
-	if(pcName.length() > 2 && pcName[1] != ':') {
-		
-		char cwd[512];
-		GetCurrentDirectory(512, cwd);
-		if(cwd[strlen(cwd)-1] != '\\' && pcName[0] != '\\') {
-			pcName = cwd + ('\\' + pcName);
-		} else {
-			pcName = cwd + pcName;
-		}
-		
-	}
-
-	First();
-}
-
-//-----------------------------------------------------------------------------
-
-void CMenuConfig::DefaultValue()
-{
-	//VIDEO
-	iWidth=640;
-	iHeight=480;
-	iNewWidth=iWidth;
-	iNewHeight=iHeight;
-	iBpp=16;
-	iNewBpp=iBpp;
-	bFullScreen=true;
-	iTextureResol=2;
-	iNewTextureResol=iTextureResol;
-	iMeshReduction=0;
-	iLevelOfDetails=2;
-	iFogDistance=5;
-	iLuminosite=4;
-	iContrast=5;
-	iGamma=5;
-	bShowCrossHair=true;
-	//AUDIO
-	iMasterVolume=10;
-	iSFXVolume=10;
-	iSpeechVolume=10;
-	iAmbianceVolume=8;
-	bEAX = false;
-	audioBackend = "auto";
-	//INPUT
-	bInvertMouse=false;
-	bAutoReadyWeapon=false;
-	bMouseLookToggle=false;
-	bAutoDescription=true;
-	iMouseSensitivity=4;
-	bMouseSmoothing=false;
-	//MISC
-	INTERNATIONAL_MODE=1;
 }
 
 //-----------------------------------------------------------------------------
@@ -665,1092 +442,21 @@ bool CDirectInput::GetMouseButtonDoubleClick(int _iNumButton,int _iTime)
 
 //-----------------------------------------------------------------------------
 
-CMenuConfig::~CMenuConfig()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void CMenuConfig::SetDefaultKey()
-{
-	int iI=MAX_ACTION_KEY;
-
-	while(iI--)
-	{
-		sakActionKey[iI].iKey[0]=sakActionDefaultKey[iI].iKey[0];
-		sakActionKey[iI].iKey[1]=sakActionDefaultKey[iI].iKey[1];
-		sakActionKey[iI].iPage=sakActionDefaultKey[iI].iPage;
-	}
-
-	if (!INTERNATIONAL_MODE)
-	{
-		bLinkMouseLookToUse=true;
-	}
-	else
-	{
-		bLinkMouseLookToUse=false;
-	}
-}
-
 void to_lower(std::string & str) {
 	std::transform( str.begin(), str.end(), str.begin(), ::tolower );
 }
 
 //-----------------------------------------------------------------------------
 
-int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
-{
-	std::string pcT = _pcTouch;
 	
-
-	if( strcasecmp(pcT.c_str(), "---"  ) == 0 )
-	{
-		return -1;
-	}
-
-	for(int iI=0;iI<256;iI++)
-	{
-		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if( !pcT.compare( pcT1 ) )
-			return iI;
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI | (DIK_LSHIFT << 16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_LSHIFT<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RSHIFT<<16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_RSHIFT<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_LCONTROL<<16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_LCONTROL<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RCONTROL<<16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_RCONTROL<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_LALT<<16));
-
-		if( ! pcT.compare( pcT1 ) )
-			return iI|(DIK_LALT<<16);
-
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RALT<<16));
-
-		if( !pcT.compare( pcT1 ) )
-			return iI|(DIK_RALT<<16);
-	}
-
-	for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
-	{
-		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if( !pcT.compare( pcT1 ) )
-			return iI;
-	}
-
-	for(int iI=DIK_WHEELUP;iI<=DIK_WHEELDOWN;iI++)
-	{
-		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if( !pcT.compare( pcT1 ) )
-			return iI;
-	}
-
-	return -1;
-}
-
-//-----------------------------------------------------------------------------
-std::string CMenuConfig::ReadConfig( const std::string& _section, const std::string& _key) {
-	
-	// TODO unify with localisation loading (and make platform-independent)
-	char text[256];
-	GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
-	
-	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << text;
-
-	return std::string( text );
-}
-
-//-----------------------------------------------------------------------------
-
-int CMenuConfig::ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool &_bOk )
-{
-	std::string pcText=ReadConfig(_pcSection,_pcKey);
-
-	if ( pcText.empty() )
-	{
-		_bOk = false;
-		return 0;
-	}
-
-	std::stringstream ss( pcText );
-
-	int iI;
-	ss >> iI;
-	_bOk=true;
-	return iI;
-}
-
-//-----------------------------------------------------------------------------
-std::string CMenuConfig::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey)
-{
-	std::string temp = ReadConfig( _pcSection,_pcKey);
-	return temp;
-}
-
-//-----------------------------------------------------------------------------
-
-bool CMenuConfig::WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
-{
-	int iErreur=0;
-
-	char tcText[256];
-
-	if(!GetPrivateProfileSection(_pcSection.c_str(),tcText,256,pcName.c_str()))
-	{
-		if(WritePrivateProfileSection(_pcSection.c_str(),"",pcName.c_str())) iErreur++;
-	}
-
-	if(WritePrivateProfileString(_pcSection.c_str(),_pcKey.c_str(),_pcDatas.c_str(),pcName.c_str())) iErreur++;
-
-	return (iErreur==2);
-}
-
-//-----------------------------------------------------------------------------
-
-bool CMenuConfig::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, const int _iDatas)
-{
-	std::stringstream ss;
-	ss << _iDatas;
-	return WriteConfig(_pcSection,_pcKey, ss.str());
-}
-
-//-----------------------------------------------------------------------------
-
-bool CMenuConfig::WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
-{
-	return WriteConfig(_pcSection,_pcKey,_pcDatas);
-}
-
-//-----------------------------------------------------------------------------
-
-void CMenuConfig::ResetActionKey()
-{
-	for (unsigned int iI=0; iI<MAX_ACTION_KEY; iI++)
-	{
-		sakActionKey[iI].iKey[0] = sakActionKey[iI].iKey[1]=-1;
-
-		sakActionDefaultKey[iI].iKey[0] = sakActionDefaultKey[iI].iKey[1]=-1;
-
-		sakActionKey[iI].iPage=0;
-		sakActionDefaultKey[iI].iPage=0;
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-bool CMenuConfig::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
-{
-	if(    (_iAction>=MAX_ACTION_KEY)||
-		(_iActionNum>1) ) return false;
-
-	bool bChange=false;
-	bool bSecondChoice=false;
-	int iOldVirtualKey=sakActionKey[_iAction].iKey[_iActionNum];
-	sakActionKey[_iAction].iKey[_iActionNum]=_iVirtualKey;
-
-	if(_iActionNum)
-	{
-		if(sakActionKey[_iAction].iKey[0]==-1)
-		{
-			sakActionKey[_iAction].iKey[0]=iOldVirtualKey;
-			bSecondChoice=true;
-		}
-
-		if(sakActionKey[_iAction].iKey[0]==_iVirtualKey)
-		{
-			sakActionKey[_iAction].iKey[0]=-1;
-		}
-
-		bChange=true;
-	}
-	else
-	{
-		if(sakActionKey[_iAction].iKey[1]==-1)
-		{
-			sakActionKey[_iAction].iKey[1]=iOldVirtualKey;
-			bSecondChoice=true;
-		}
-
-		if(sakActionKey[_iAction].iKey[1]==_iVirtualKey)
-		{
-			sakActionKey[_iAction].iKey[1]=-1;
-		}
-		bChange=true;
-	}
-
-	if(bSecondChoice)
-	{
-		bChange=true;
-		iOldVirtualKey=-1;
-	}
-
-	//on remove les doublons de keys
-	int iI=MAX_ACTION_KEY;
-
-	while(iI--)
-	{
-		if(iI==_iAction) continue;
-
-		if(sakActionKey[iI].iPage!=sakActionKey[_iAction].iPage) continue;
-
-		if(sakActionKey[iI].iKey[0]==_iVirtualKey)
-		{
-			sakActionKey[iI].iKey[0]=iOldVirtualKey;
-			bChange=true;
-			break;
-		}
-		else
-		{
-			if(sakActionKey[iI].iKey[1]==_iVirtualKey)
-			{
-				sakActionKey[iI].iKey[1]=iOldVirtualKey;
-				bChange=true;
-				break;
-			}
-		}
-	}
-
-	return bChange;
-}
-
-//-----------------------------------------------------------------------------
-
-bool CMenuConfig::WriteConfigKey( const std::string& _pcKey,int _iAction)
-{
-	char tcTxt[256];
-	char tcTxt2[256];
-	std::string pcText;
-	bool bOk=true;
-	std::string pcText1;
-
-	strcpy(tcTxt,_pcKey.c_str());
-
-	pcText1 = pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[0]);
-
-	pcText = pcText1;
-
-	if( !pcText.empty() )
-	{
-		strcpy(tcTxt2,tcTxt);
-		strcat(tcTxt2,"_k0");
-		bOk&=WriteConfigString("KEY",tcTxt2,pcText);
-	}
-
-	pcText1 = pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[1]);
-		
-	pcText = pcText1;
-
-	if( !pcText.empty() )
-	{
-		strcpy(tcTxt2,tcTxt);
-		strcat(tcTxt2,"_k1");
-		bOk&=WriteConfigString("KEY",tcTxt2,pcText);
-	}
-
-	return bOk;
-}
-
-//-----------------------------------------------------------------------------
-
-void CMenuConfig::ReInitActionKey(CWindowMenuConsole *_pwmcWindowMenuConsole)
-{
-	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
-	int iI=MAX_ACTION_KEY;
-	bool bOldTouch=pGetInfoDirectInput->bTouch;
-	int iOldVirtualKey=pGetInfoDirectInput->iKeyId;
-	pGetInfoDirectInput->bTouch=true;
-
-	while(iI--)
-	{
-		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
-
-		CMenuZone *pmzMenuZone = _pwmcWindowMenuConsole->MenuAllZone.GetZoneWithID(iID);
-
-		if (pmzMenuZone)
-		{
-			if(pmzMenuZone)
-			{
-				_pwmcWindowMenuConsole->pZoneClick=(CMenuElement*)pmzMenuZone;
-				pGetInfoDirectInput->iKeyId=sakActionKey[iTab].iKey[0];
-				_pwmcWindowMenuConsole->GetTouch();
-			}
-
-			pmzMenuZone=_pwmcWindowMenuConsole->MenuAllZone.GetZoneWithID(iID+1);
-
-			if(pmzMenuZone)
-			{
-				_pwmcWindowMenuConsole->pZoneClick=(CMenuElement*)pmzMenuZone;
-				pGetInfoDirectInput->iKeyId=sakActionKey[iTab].iKey[1];
-				_pwmcWindowMenuConsole->GetTouch();
-			}
-		}
-
-		iID+=2;
-	}
-
-	pGetInfoDirectInput->bTouch=bOldTouch;
-	pGetInfoDirectInput->iKeyId=iOldVirtualKey;
-}
-
-//-----------------------------------------------------------------------------
-
-bool CMenuConfig::ReadConfigKey( const std::string& _pcKey, int _iAction )
-{
-	char tcTxt[256];
-	char tcTxt2[256];
-	std::string pcText;
-	bool bOk=true;
-	strcpy(tcTxt, _pcKey.c_str());
-
-
-	int iDIK;
-	strcpy(tcTxt2,tcTxt);
-	strcat(tcTxt2,"_k0");
-	pcText = ReadConfigString( "KEY", tcTxt2 );
-
-	if( pcText.empty() )
-		bOk=false;
-	else
-	{
-		iDIK = GetDIKWithASCII( pcText );
-
-		if( iDIK == -1 )
-			sakActionKey[_iAction].iKey[0]=-1;
-		else
-			SetActionKey( _iAction, 0, iDIK) ;
-	}
-
-	strcpy( tcTxt2, tcTxt );
-	strcat( tcTxt2, "_k1" );
-	pcText = ReadConfigString( "KEY", tcTxt2 );
-
-	if( pcText.empty() )
-		bOk = false;
-	else
-	{
-		iDIK = GetDIKWithASCII( pcText );
-
-		if( iDIK == -1 )
-		{
-			sakActionKey[_iAction].iKey[1]=-1;
-		}
-		else
-		{
-			SetActionKey( _iAction, 1, iDIK );
-		}
-	}
-
-	return bOk;
-}
-
-//-----------------------------------------------------------------------------
-
-bool CMenuConfig::SaveAll()
-{
-	char tcTxt[256];
-	bool bOk=true;
-
-	//language
-	strcpy(tcTxt,"\"");
-	strcat(tcTxt,Project.localisationpath.c_str());
-	strcat(tcTxt,"\"");
-	bOk&=WriteConfigString("LANGUAGE","string",tcTxt);
-	bOk&=WriteConfigInt("FIRSTRUN","int", bGameNotFirstLaunch?1:0);
-	//video
-	sprintf(tcTxt,"%dx%d",iWidth,iHeight);
-	bOk&=WriteConfigString("VIDEO","resolution",tcTxt);
-	bOk&=WriteConfigInt("VIDEO","bpp",iBpp);
-	bOk&=WriteConfigInt("VIDEO","full_screen",(bFullScreen)?1:0);
-	bOk&=WriteConfigInt("VIDEO","texture",iTextureResol);
-	bOk&=WriteConfigInt("VIDEO","mesh_reduction",iMeshReduction);
-	bOk&=WriteConfigInt("VIDEO","others_details",iLevelOfDetails);
-	bOk&=WriteConfigInt("VIDEO","fog",iFogDistance);
-	bOk&=WriteConfigInt("VIDEO","gamma",iGamma);
-	bOk&=WriteConfigInt("VIDEO","luminosity",iLuminosite);
-	bOk&=WriteConfigInt("VIDEO","contrast",iContrast);
-	bOk&=WriteConfigInt("VIDEO","show_crosshair",bShowCrossHair?1:0);
-	bOk&=WriteConfigInt("VIDEO","antialiasing",bAntiAliasing?1:0);
-	//audio
-	bOk&=WriteConfigInt("AUDIO","master_volume",iMasterVolume);
-	bOk&=WriteConfigInt("AUDIO","effects_volume",iSFXVolume);
-	bOk&=WriteConfigInt("AUDIO","speech_volume",iSpeechVolume);
-	bOk&=WriteConfigInt("AUDIO","ambiance_volume",iAmbianceVolume);
-	bOk&=WriteConfigInt("AUDIO","EAX",(bEAX)?1:0);
-	bOk&=WriteConfigString("AUDIO", "backend", audioBackend);
-	//input
-	bOk&=WriteConfigInt("INPUT","invert_mouse",(bInvertMouse)?1:0);
-	bOk&=WriteConfigInt("INPUT","auto_ready_weapon",(bAutoReadyWeapon)?1:0);
-	bOk&=WriteConfigInt("INPUT","mouse_look_toggle",(bMouseLookToggle)?1:0);
-	bOk&=WriteConfigInt("INPUT","mouse_sensitivity",iMouseSensitivity);
-	bOk&=WriteConfigInt("INPUT","mouse_smoothing",(bMouseSmoothing)?1:0);
-	bOk&=WriteConfigInt("INPUT","auto_description",(bAutoDescription)?1:0);
-	//key
-	bOk&=WriteConfigKey("jump",CONTROLS_CUST_JUMP);
-	bOk&=WriteConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
-	bOk&=WriteConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
-	bOk&=WriteConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk&=WriteConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
-	bOk&=WriteConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
-	bOk&=WriteConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk&=WriteConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
-	bOk&=WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
-	bOk&=WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);
-	bOk&=WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
-	bOk&=WriteConfigInt("INPUT","link_mouse_look_to_use",(bLinkMouseLookToUse)?1:0);
-	bOk&=WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);
-	bOk&=WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);
-	bOk&=WriteConfigKey("book",CONTROLS_CUST_BOOK);
-	bOk&=WriteConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
-	bOk&=WriteConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
-	bOk&=WriteConfigKey("map",CONTROLS_CUST_BOOKMAP);
-	bOk&=WriteConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
-	bOk&=WriteConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
-	bOk&=WriteConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
-	bOk&=WriteConfigKey("torch",CONTROLS_CUST_TORCH);
-
-	bOk&=WriteConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
-	bOk&=WriteConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
-	bOk&=WriteConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
-	bOk&=WriteConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
-	bOk&=WriteConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
-	bOk&=WriteConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
-	bOk&=WriteConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
-
-	bOk&=WriteConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
-	bOk&=WriteConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
-	bOk&=WriteConfigKey("look_up",CONTROLS_CUST_LOOKUP);
-	bOk&=WriteConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
-
-	bOk&=WriteConfigKey("strafe",CONTROLS_CUST_STRAFE);
-	bOk&=WriteConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
-
-	bOk&=WriteConfigKey("freelook",CONTROLS_CUST_FREELOOK);
-
-	bOk&=WriteConfigKey("previous",CONTROLS_CUST_PREVIOUS);
-	bOk&=WriteConfigKey("next",CONTROLS_CUST_NEXT);
-
-	bOk&=WriteConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
-
-	bOk&=WriteConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
-
-	bOk&=WriteConfigKey("minimap",CONTROLS_CUST_MINIMAP);
-
-	//misc
-	bOk&=WriteConfigInt("MISC","softfog",(bATI)?1:0);
-	bOk&=WriteConfigInt("MISC","forcezbias",(bForceZBias)?1:0);
-	bOk&=WriteConfigInt("MISC","newcontrol",(INTERNATIONAL_MODE)?1:0);
-	bOk&=WriteConfigInt("MISC","forcetoggle",(bOneHanded)?1:0);
-	bOk&=WriteConfigInt("MISC","fg",uiGoreMode);
-	return bOk;
-}
-
-extern bool IsNoGore( void );
-
-//-----------------------------------------------------------------------------
-
-bool CMenuConfig::ReadAll()
-{
-	std::string pcText;
-	bool bOk = false; 
-	bool bOkTemp;
-	int iTemp;
-
-	//language
-	if ( Project.localisationpath.length() == 0 )
-	{
-		if(GERMAN_VERSION)
-		{
-			pcText = "Deutsch";
-		}
-		else
-		{
-			if(FRENCH_VERSION)
-			{
-				pcText = ReadConfigString( "LANGUAGE", "string" );
-
-				if( !pcText.empty() &&
-					(strcasecmp(pcText.c_str(),"francais")&&
-					strcasecmp(pcText.c_str(),"deutsch")) )
-				{
-					pcText = "Francais";
-				}
-				else
-				{
-					if( pcText.empty() )
-					{
-						pcText = "Francais";
-					}
-				}
-			}
-			else
-			{
-				pcText = ReadConfigString("LANGUAGE","string");
-			}
-		}
-
-		if( !pcText.empty() )
-			Project.localisationpath = pcText;
-	}
-
-	bool bWarningGore=false;
-
-	if (!strcasecmp(Project.localisationpath.c_str(), "Deutsch"))
-	{
-		//no gore
-		GERMAN_VERSION=1;
-		uiGoreMode=0;
-		GORE_MODE=0;
-		bWarningGore=true;
-	}
-
-	Localisation_Init();
-
-	bGameNotFirstLaunch = ReadConfigInt("FIRSTRUN","int",bOkTemp)?true:false;
-
-	//video
-	pcText=ReadConfigString("VIDEO","resolution");
-
-	if( !pcText.empty() )
-	{
-		std::string width_string = pcText.substr( 0, pcText.find( 'x' ) );
-		std::string height_string = pcText.substr( pcText.find('x') + 1 );
-
-		// If both width and height are specified
-		if( !( width_string.empty() || height_string.empty() ) )
-		{
-			iWidth = atoi( width_string.c_str() );
-			iHeight = atoi( height_string.c_str() );
-			bOk = true;
-		}
-		else
-		{
-			ARXMenu_Options_Video_GetResolution(iWidth,iHeight,iBpp);
-		}
-	}
-	else
-	{
-		ARXMenu_Options_Video_GetResolution(iWidth,iHeight,iBpp);
-		bOk=false;
-	}
-
-	iNewWidth=iWidth;
-	iNewHeight=iHeight;
-
-	iTemp=ReadConfigInt("VIDEO","bpp",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetBitPlane(iBpp);
-		iTemp=iBpp;
-	}
-
-	iNewBpp=iBpp=iTemp;
-	iTemp=ReadConfigInt("VIDEO","full_screen",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetFullscreen(bFullScreen);
-	}
-	else
-	{
-		bFullScreen=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","texture",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetTextureQuality(iTextureResol);
-		iTemp=iNewTextureResol=iTextureResol;
-	}
-
-	iTextureResol=iNewTextureResol=iTemp;
-
-	if(iTextureResol==2) Project.TextureSize=0;
-
-	if(iTextureResol==1) Project.TextureSize=2;
-
-	if(iTextureResol==0) Project.TextureSize=64;
-
-	iTemp=ReadConfigInt("VIDEO","mesh_reduction",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetLODQuality(iMeshReduction);
-		iMeshReduction=iTemp;
-	}
-
-	iMeshReduction=iTemp;
-	iTemp=ReadConfigInt("VIDEO","others_details",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetDetailsQuality(iLevelOfDetails);
-		iTemp=iLevelOfDetails;
-	}
-
-	iLevelOfDetails=iTemp;
-	iTemp=ReadConfigInt("VIDEO","fog",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetFogDistance(iFogDistance);
-		iTemp=iFogDistance;
-	}
-
-	iFogDistance=iTemp;
-
-	iTemp=ReadConfigInt("VIDEO","gamma",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=5;
-	}
-
-	iGamma=iTemp;
-	iTemp=ReadConfigInt("VIDEO","luminosity",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=4;
-	}
-
-	iLuminosite=iTemp;
-
-	if((iLuminosite<0)||(iLuminosite>10))
-	{
-		iLuminosite=4;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","contrast",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=5;
-	}
-
-	iContrast=iTemp;
-
-	if((iContrast<0)||(iContrast>10))
-	{
-		iContrast=5;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","show_crosshair",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=1;
-	}
-
-	bShowCrossHair = iTemp?true:false;
-
-	iTemp=ReadConfigInt("VIDEO","antialiasing",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=0;
-	}
-
-	bAntiAliasing=iTemp?true:false;
-
-	//audio
-	iTemp=ReadConfigInt("AUDIO","master_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iMasterVolume;
-	}
-
-	iMasterVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","effects_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iSFXVolume;
-	}
-
-	iSFXVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","speech_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iSpeechVolume;
-	}
-
-	iSpeechVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","ambiance_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iAmbianceVolume;
-	}
-	iAmbianceVolume=iTemp;
-	
-	iTemp = ReadConfigInt("AUDIO","EAX",bOkTemp);
-	bOk &= bOkTemp;
-	if(bOkTemp) {
-		bEAX = (iTemp) ? true : false;
-	}
-	
-	pcText = ReadConfigString("AUDIO", "backend");
-	if(!pcText.empty()) {
-		audioBackend = pcText;
-	}
-	
-
-	//input
-	iTemp=ReadConfigInt("INPUT","invert_mouse",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetInvertMouse(bInvertMouse);
-	}
-	else
-	{
-		bInvertMouse=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","auto_ready_weapon",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetAutoReadyWeapon(bAutoReadyWeapon);
-	}
-	else
-	{
-		bAutoReadyWeapon=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","mouse_look_toggle",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bMouseLookToggle=true;
-	}
-	else
-	{
-		bMouseLookToggle=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","mouse_sensitivity",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetMouseSensitivity(iMouseSensitivity);
-		iTemp=iMouseSensitivity;
-	}
-
-	iMouseSensitivity=iTemp;
-
-	iTemp=ReadConfigInt("INPUT","mouse_smoothing",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bMouseSmoothing=false;
-	}
-	else
-	{
-		bMouseSmoothing=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","auto_description",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bAutoDescription=true;
-	}
-	else
-	{
-		bAutoDescription=(iTemp)?true:false;
-	}
-
-	//key
-	bool bOk2=true;
-	bOk2&=ReadConfigKey("jump",CONTROLS_CUST_JUMP);
-	bOk2&=ReadConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
-	bOk2&=ReadConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
-	bOk2&=ReadConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk2&=ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
-	bOk2&=ReadConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
-	bOk2&=ReadConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk2&=ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
-	bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
-	bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);
-	bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
-	iTemp=ReadConfigInt("INPUT","link_mouse_look_to_use",bOkTemp);
-
-	if(!bOkTemp)
-	{
-		bLinkMouseLookToUse=true;
-	}
-	else
-	{
-		bLinkMouseLookToUse=(iTemp)?true:false;
-	}
-
-	bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);
-	bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);
-	bOk2&=ReadConfigKey("book",CONTROLS_CUST_BOOK);
-	bOk2&=ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
-	bOk2&=ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
-	bOk2&=ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);
-	bOk2&=ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
-	bOk2&=ReadConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
-	bOk2&=ReadConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
-	bOk2&=ReadConfigKey("torch",CONTROLS_CUST_TORCH);
-
-	bOk2&=ReadConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
-	bOk2&=ReadConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
-	bOk2&=ReadConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
-	bOk2&=ReadConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
-	bOk2&=ReadConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
-	bOk2&=ReadConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
-	bOk2&=ReadConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
-	bOk2&=ReadConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
-	bOk2&=ReadConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
-	bOk2&=ReadConfigKey("look_up",CONTROLS_CUST_LOOKUP);
-	bOk2&=ReadConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
-	bOk2&=ReadConfigKey("strafe",CONTROLS_CUST_STRAFE);
-	bOk2&=ReadConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
-
-	bOk2&=ReadConfigKey("freelook",CONTROLS_CUST_FREELOOK);
-
-	bOk2&=ReadConfigKey("previous",CONTROLS_CUST_PREVIOUS);
-	bOk2&=ReadConfigKey("next",CONTROLS_CUST_NEXT);
-
-	bOk2&=ReadConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
-
-	bOk2&=ReadConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
-
-	bOk2&=ReadConfigKey("minimap",CONTROLS_CUST_MINIMAP);
-
-	bOk2&=bOk;
-
-	if(!bOk2)
-	{
-		int iI=MAX_ACTION_KEY;
-
-		while(iI--)
-		{
-			sakActionKey[iI].iKey[0]=sakActionDefaultKey[iI].iKey[0];
-			sakActionKey[iI].iKey[1]=sakActionDefaultKey[iI].iKey[1];
-		}
-	}
-
-	//misc
-	iTemp=ReadConfigInt("MISC","softfog",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bATI=false;
-	}
-	else
-	{
-		bATI=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcezbias",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceZBias=false;
-	}
-	else
-	{
-		bForceZBias=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","newcontrol",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		INTERNATIONAL_MODE=1;
-	}
-	else
-	{
-		INTERNATIONAL_MODE=(iTemp)?1:0;
-	}
-
-	if(INTERNATIONAL_MODE)
-	{
-		bLinkMouseLookToUse=false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcetoggle",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bOneHanded=false;
-	}
-	else
-	{
-		bOneHanded=(iTemp)?true:false;
-	}
-
-	std::string pcTextMod = ReadConfigString( "MISC", "mod" );
-
-	if( ( !pcTextMod.empty() ) && ( pcTextMod.length() < 256 ) )
-	{
-		pStringMod = pcTextMod;
-	}
-	else
-	{
-		pStringMod = "mod.pak";
-	}
-
-	pcTextMod = ReadConfigString("MISC","modsfx");
-
-	if( ( !pcTextMod.empty() ) && ( pcTextMod.length() < 256 ) )
-	{
-		pStringModSfx = pcTextMod;
-	}
-	else
-	{
-		pStringModSfx = "modsfx.pak";
-	}
-
-	pcTextMod = ReadConfigString("MISC","modspeech");
-
-	if( ( !pcTextMod.empty() ) && ( pcTextMod.length() < 256 ) )
-	{
-		pStringModSpeech = pcTextMod;
-	}
-	else
-	{
-		pStringModSpeech = "modspeech.pak";
-	}
-
-	uiGoreMode = ReadConfigInt("MISC", "fg", bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		uiGoreMode=bWarningGore?0:1;
-	}
-
-	switch(uiGoreMode)
-	{
-	case 0:
-		{
-			if(bWarningGore)
-			{
-				uiGoreMode=0;
-				GORE_MODE=0;
-			}
-			else
-			{
-				uiGoreMode=1;
-				GORE_MODE=1;
-			}
-		}
-		break;
-	case 1:
-		{
-			GORE_MODE=1;
-		}
-		break;
-	case 2:
-		{
-			GORE_MODE=0;
-		}
-		break;
-	default:
-		{
-			uiGoreMode=0;
-			GORE_MODE=0;
-		}
-		break;
-	}
-
-	//on set les options
-
-	ARXMenu_Options_Video_SetFogDistance(iFogDistance);
-	ARXMenu_Options_Video_SetTextureQuality(iTextureResol);
-	ARXMenu_Options_Video_SetLODQuality(iMeshReduction);
-	ARXMenu_Options_Video_SetDetailsQuality(iLevelOfDetails);
-	ARXMenu_Options_Video_SetGamma(iGamma);
-	ARX_SetAntiAliasing();
-	ARXMenu_Options_Audio_SetMasterVolume(iMasterVolume);
-	ARXMenu_Options_Audio_SetSfxVolume(iSFXVolume);
-	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
-	ARXMenu_Options_Audio_SetAmbianceVolume(iAmbianceVolume);
-
-	ARXMenu_Options_Control_SetInvertMouse(bInvertMouse);
-	ARXMenu_Options_Control_SetAutoReadyWeapon(bAutoReadyWeapon);
-	ARXMenu_Options_Control_SetMouseLookToggleMode(bMouseLookToggle);
-	ARXMenu_Options_Control_SetMouseSensitivity(iMouseSensitivity);
-	ARXMenu_Options_Control_SetAutoDescription(bAutoDescription);
-
-	if(pMenu)
-	{
-		pMenu->bReInitAll=true;
-	}
-
-	//mixer Game
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenu));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSample, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSample));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSpeech));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance));
-
-	Localisation_Close();
-
-	GORE_MODE = IsNoGore()? 0 : 1;
-	return bOk;
-}
-
-
 void Check_Apply()
 {
 	if(pMenuElementApply)
 	{
-		if( (pMenuConfig->iTextureResol!=pMenuConfig->iNewTextureResol)||
-			(pMenuConfig->iWidth!=pMenuConfig->iNewWidth)||
-			(pMenuConfig->iHeight!=pMenuConfig->iNewHeight)||
-			(pMenuConfig->iBpp!=pMenuConfig->iNewBpp) )
-		{
+		if((config.video.textureSize!=newTextureSize)||
+		   (config.video.width!=newWidth)||
+		   (config.video.height!=newHeight)||
+		   (config.video.bpp!=newBpp)) {
 			pMenuElementApply->SetCheckOn();
 			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
 		}
@@ -1947,7 +653,7 @@ bool Menu2_Render()
 	int iPosMenuPrincipaleY=100;
 	int iDecMenuPrincipaleY=50;
 #define MACRO_MENU_PRINCIPALE(MACRO_button,MACRO_menu,MACRO_locate,MACRO_check){\
-		PAK_UNICODE_GetPrivateProfileString( MACRO_locate, "", szMenuText);\
+		szMenuText = getLocalised( MACRO_locate );\
 		me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);\
 		if(MACRO_check)\
 		{\
@@ -2092,23 +798,23 @@ bool Menu2_Render()
 
 					CMenuElement *me = NULL;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,NEW_QUEST);
-					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_confirm", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_main_editquest_confirm" );
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_main_newquest_confirm", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_main_newquest_confirm" );
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					CMenuPanel *pPanel = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_yes", "", szMenuText);
-					szMenuText += "   ";
+					szMenuText = getLocalised( "system_yes" );
+					szMenuText += "   "; // TODO This space can probably go
 					me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 					me->SetPos(RATIO_X(iWindowConsoleWidth - (me->GetWidth() + 10)),0);
 					pPanel->AddElementNoCenterIn(me);
-					PAK_UNICODE_GetPrivateProfileString("system_no", "", szMenuText);
+					szMenuText = getLocalised( "system_no" );
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
 					me->SetShortCut(DIK_ESCAPE);
 					pPanel->AddElementNoCenterIn(me);
@@ -2135,11 +841,11 @@ bool Menu2_Render()
 					std::string szMenuText;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST);
 
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_main_editquest_load", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_main_editquest_load");
 					me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_LOAD);
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_main_editquest_save", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_main_editquest_save");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
 					bool bBOOL;
 					ARXMenu_GetResumeGame(bBOOL);
@@ -2196,7 +902,7 @@ bool Menu2_Render()
 								{
 									if(!iFirst || (b1 && b2)) continue;
 
-									PAK_UNICODE_GetPrivateProfileString( "system_menus_main_quickloadsave", "Quick", tex);
+									tex = getLocalised( "system_menus_main_quickloadsave", "Quick");
 
 									if ( szMenuText.find( tex2) != std::string::npos )
 									{
@@ -2272,7 +978,7 @@ bool Menu2_Render()
 							pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
 						CMenuPanel *pc = new CMenuPanel();
-						PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_load", "", szMenuText);
+						szMenuText = getLocalised("system_menus_main_editquest_load");
 						szMenuText += "   ";
 						me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
 
@@ -2327,7 +1033,7 @@ bool Menu2_Render()
 								{
 									if(!iFirst || (b1 && b2)) continue;
 
-									PAK_UNICODE_GetPrivateProfileString( "system_menus_main_quickloadsave", "Quick", tex);
+									tex = getLocalised( "system_menus_main_quickloadsave", "Quick" );
 
 									if ( szMenuText.find( tex2 ) != std::string::npos )
 									{
@@ -2439,7 +1145,7 @@ bool Menu2_Render()
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 					
-					PAK_UNICODE_GetPrivateProfileString("system_menu_editquest_newsavegame", "---", szMenuText);
+					szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->lData=0;
@@ -2450,7 +1156,7 @@ bool Menu2_Render()
 
 					pPanel = new CMenuPanel();
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_save", "", szMenuText);
+					szMenuText = getLocalised("system_menus_main_editquest_save", "");
 
 					me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
 
@@ -2477,15 +1183,15 @@ bool Menu2_Render()
 
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS);
 
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_video", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_options_video", "");
 					me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
 					pWindowMenuConsole->AddMenuCenter(me);
 					
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_audio", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_options_audio", "");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_AUDIO);
 					pWindowMenuConsole->AddMenuCenter(me);
 					
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_options_input", "");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
 					pWindowMenuConsole->AddMenuCenter(me);
 
@@ -2502,7 +1208,7 @@ bool Menu2_Render()
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_video_resolution", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_options_video_resolution", "");
 					szMenuText += "  ";
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
@@ -2575,18 +1281,18 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					CMenuPanel *pc1 = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_texture");
 					szMenuText += " ";
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc1->AddElement(me);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_TEXTURES, 0, 0);
 					pMenuSliderTexture = (CMenuSliderText*)me;
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_low", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_texture_low");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_med", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_texture_med");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_high", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_texture_high");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
 
 
@@ -2603,7 +1309,7 @@ bool Menu2_Render()
 					((CMenuSliderText *)me)->iPos = iQuality;
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_bpp", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_bpp");
 					szMenuText += " ";
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
@@ -2639,17 +1345,17 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(pc1);
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_detail", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_detail");
 					szMenuText += " ";
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, 0, 0);
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_low", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_texture_low");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_med", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_texture_med");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_high", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_texture_high");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
 
 					
@@ -2669,7 +1375,7 @@ bool Menu2_Render()
 					bool bBOOL = false;
 					
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_brouillard", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_brouillard");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -2682,7 +1388,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_gamma", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_gamma");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -2694,7 +1400,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_luminosity", "luminosity", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_luminosity", "luminosity");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -2706,7 +1412,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_contrast", "contrast", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_contrast", "contrast");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -2717,7 +1423,7 @@ bool Menu2_Render()
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_crosshair", "Show Crosshair", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 					szMenuText += " ";
 					TextureContainer *pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					TextureContainer *pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -2725,18 +1431,11 @@ bool Menu2_Render()
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
-					if (pMenuConfig&&pMenuConfig->bShowCrossHair)
-					{
-						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
-						((CMenuCheckButton*)me)->iState=0;
-					}
+					((CMenuCheckButton*)me)->iState= config.video.showCrosshair ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_antialiasing", "antialiasing", szMenuText);
+					szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 					szMenuText += " ";
 					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -2744,20 +1443,13 @@ bool Menu2_Render()
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
-					if (pMenuConfig&&pMenuConfig->bAntiAliasing)
-					{
-						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
-						((CMenuCheckButton*)me)->iState=0;
-					}
+					((CMenuCheckButton*)me)->iState= config.video.antialiasing ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 					ARX_SetAntiAliasing();
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_video_apply", "", szMenuText);
+					szMenuText = getLocalised("system_menus_video_apply");
 					szMenuText += "   ";
 					pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, fPosApply, 0.f, lColor, 1.f, NOP);
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
@@ -2779,60 +1471,52 @@ bool Menu2_Render()
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_master_volume", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_audio_master_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, iPosX2, 0);
-					int iMaster = 0;
-					ARXMenu_Options_Audio_GetMasterVolume(iMaster);
-					((CMenuSlider *)me)->setValue(iMaster);
+					((CMenuSlider *)me)->setValue((int)config.audio.volume); // TODO use float sliders
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_effects_volume", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_audio_effects_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, iPosX2, 0);
-					int iSfx = 0;
-					ARXMenu_Options_Audio_GetSfxVolume(iSfx);
-					((CMenuSlider *)me)->setValue(iSfx);
+					((CMenuSlider *)me)->setValue((int)config.audio.sfxVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_speech_volume", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_audio_speech_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, iPosX2, 0);
-					int iSpeech = 0;
-					ARXMenu_Options_Audio_GetSpeechVolume(iSpeech);
-					((CMenuSlider *)me)->setValue(iSpeech);
+					((CMenuSlider *)me)->setValue((int)config.audio.speechVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_ambiance_volume", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, iPosX2, 0);
-					int iAmbiance = 0;
-					ARXMenu_Options_Audio_GetAmbianceVolume(iAmbiance);
-					((CMenuSlider *)me)->setValue(iAmbiance);
+					((CMenuSlider *)me)->setValue((int)config.audio.ambianceVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_eax", "EAX", szMenuText);
+					szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 					szMenuText += " ";
 					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, pElementText);
-					((CMenuCheckButton*)me)->iState=pMenuConfig->bEAX?1:0;
+					((CMenuCheckButton*)me)->iState = config.audio.eax ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
@@ -2848,11 +1532,11 @@ bool Menu2_Render()
 					//------------------ START INPUT
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
 					
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_input_customize_controls");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 					pWindowMenuConsole->AddMenuCenterY(me);
 					
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_invert_mouse", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 					szMenuText += " ";
 					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -2871,7 +1555,7 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_auto_ready_weapon", "", szMenuText);
+					szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 					szMenuText += " ";
 					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -2890,7 +1574,7 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_look_toggle", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_options_input_mouse_look_toggle" );
 					szMenuText += " ";
 					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -2910,7 +1594,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(me);
 
 					pc = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_sensitivity", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_options_input_mouse_sensitivity" );
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
@@ -2921,9 +1605,9 @@ bool Menu2_Render()
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					if (INTERNATIONAL_MODE)
+					if (config.misc.newControl)
 					{
-						PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_smoothing", "mouse_smoothing", szMenuText);
+						szMenuText = getLocalised( "system_menus_options_input_mouse_smoothing", "mouse_smoothing" );
 						szMenuText += " ";
 						pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 						pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -2942,7 +1626,7 @@ bool Menu2_Render()
 
 						pWindowMenuConsole->AddMenuCenterY(me);
 
-						PAK_UNICODE_GetPrivateProfileString("system_menus_autodescription", "auto_description", szMenuText);
+						szMenuText = getLocalised( "system_menus_autodescription", "auto_description" );
 						szMenuText += " ";
 						pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 						pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -2980,7 +1664,7 @@ bool Menu2_Render()
 					long fControlPosY    =    ARX_CLEAN_WARN_CAST_LONG(RATIO_Y(8.f));
 				#define CUSTOM_CTRL_FUNC(a,b,c,d){\
 						pc=new CMenuPanel();\
-						PAK_UNICODE_GetPrivateProfileString(a, "?", szMenuText);\
+						szMenuText = getLocalised(a, "?");\
 						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
 						me->SetCheckOff();\
 						pc->AddElement(me);\
@@ -3008,7 +1692,7 @@ bool Menu2_Render()
 
 				#define CUSTOM_CTRL_FUNC2(a,b,c,d){\
 						pc=new CMenuPanel();\
-						PAK_UNICODE_GetPrivateProfileString(a, "?", szMenuText);\
+						szMenuText = getLocalised(a, "?");\
 						szMenuText += "2";\
 						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
 						me->SetCheckOff();\
@@ -3039,9 +1723,9 @@ bool Menu2_Render()
 
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2);
 
-					if (!INTERNATIONAL_MODE)
+					if (!config.misc.newControl)
 					{
-						PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_link_use_to_mouselook", "?", szMenuText);
+						szMenuText = getLocalised( "system_menus_options_input_customize_controls_link_use_to_mouselook", "?" );
 						\
 				pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
 				pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
@@ -3051,7 +1735,7 @@ bool Menu2_Render()
 						pWindowMenuConsole->AddMenu(me);
 						fControlPosY += ARX_CLEAN_WARN_CAST_LONG(me->GetHeight() + RATIO_Y(3.f));
 
-						if(pMenuConfig->bLinkMouseLookToUse)
+						if(config.input.linkMouseLookToUse)
 						{
 							((CMenuCheckButton*)me)->iState=1;
 						}
@@ -3086,7 +1770,7 @@ bool Menu2_Render()
 					me->eMenuState = OPTIONS_INPUT;
 					me->SetShortCut(DIK_ESCAPE);
 					pc->AddElementNoCenterIn(me);
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_default", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
 					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
 					pc->AddElementNoCenterIn(me);
@@ -3099,7 +1783,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenu(pc);
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
-					pMenuConfig->ReInitActionKey(pWindowMenuConsole);
+					pWindowMenuConsole->ReInitActionKey();
 
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
@@ -3137,7 +1821,7 @@ bool Menu2_Render()
 					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 					me->SetShortCut(DIK_ESCAPE);
 					pc->AddElementNoCenterIn(me);
-					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_default", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
 					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
 					pc->AddElementNoCenterIn(me);
@@ -3145,7 +1829,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenu(pc);
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
-					pMenuConfig->ReInitActionKey(pWindowMenuConsole);
+					pWindowMenuConsole->ReInitActionKey();
 					#undef CUSTOM_CTRL_X0
 					#undef CUSTOM_CTRL_X1
 					#undef CUSTOM_CTRL_X2
@@ -3162,24 +1846,24 @@ bool Menu2_Render()
 					std::string szMenuText;
 					CMenuElement *me = NULL;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_main_quit", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_main_quit" );
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					PAK_UNICODE_GetPrivateProfileString( "system_menus_main_editquest_confirm", "", szMenuText);
+					szMenuText = getLocalised( "system_menus_main_editquest_confirm" );
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					CMenuPanel *pPanel = new CMenuPanel();
-					PAK_UNICODE_GetPrivateProfileString( "system_yes", "", szMenuText);
+					szMenuText = getLocalised( "system_yes" ); // TODO Is case sensitive, fix pak
 
 					me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), 0);
 					pPanel->AddElementNoCenterIn(me);
-					PAK_UNICODE_GetPrivateProfileString( "system_no", "", szMenuText);
+					szMenuText = getLocalised( "system_no" ); // TODO Is case sensitive, fix pak
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
 					me->SetShortCut(DIK_ESCAPE);
 					pPanel->AddElementNoCenterIn(me);
@@ -3566,13 +2250,13 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	// MENULOADQUEST
 	case BUTTON_MENUOPTIONSVIDEO_INIT:
 		{
-			pMenuConfig->iNewWidth = pMenuConfig->iWidth;
-			pMenuConfig->iNewHeight = pMenuConfig->iHeight;
-			pMenuConfig->iNewBpp = pMenuConfig->iBpp;
-			pMenuConfig->iNewTextureResol = pMenuConfig->iTextureResol;
+			newWidth = config.video.width;
+			newHeight = config.video.height;
+			newBpp = config.video.bpp;
+			newTextureSize = config.video.textureSize;
 
-			pMenuConfig->bChangeResolution = false;
-			pMenuConfig->bChangeTextures = false;
+			changeResolution = false;
+			changeTextures = false;
 		}
 		break;
 	case BUTTON_MENUEDITQUEST_LOAD_INIT:
@@ -3715,15 +2399,15 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
 			//----------CHANGE_TEXTURE
-			if(pMenuConfig->iNewTextureResol!=pMenuConfig->iTextureResol)
+			if(newTextureSize!=config.video.textureSize)
 			{
-				pMenuConfig->iTextureResol=pMenuConfig->iNewTextureResol;
+				config.video.textureSize=newTextureSize;
 
-				if(pMenuConfig->iTextureResol==2)Project.TextureSize=0;
+				if(config.video.textureSize==2)Project.TextureSize=0;
 
-				if(pMenuConfig->iTextureResol==1)Project.TextureSize=2;
+				if(config.video.textureSize==1)Project.TextureSize=2;
 
-				if(pMenuConfig->iTextureResol==0)Project.TextureSize=64;
+				if(config.video.textureSize==0)Project.TextureSize=64;
 
 				WILL_RELOAD_ALL_TEXTURES=1;
 
@@ -3733,24 +2417,24 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			//----------END_CHANGE_TEXTURE
 
 			//----------RESOLUTION
-			if(    (pMenuConfig->iNewWidth!=pMenuConfig->iWidth)||
-				(pMenuConfig->iNewHeight!=pMenuConfig->iHeight)||
-				(pMenuConfig->iNewBpp!=pMenuConfig->iBpp) )
+			if(    (newWidth!=config.video.width)||
+				(newHeight!=config.video.height)||
+				(newBpp!=config.video.bpp) )
 			{
-				pMenuConfig->iWidth=pMenuConfig->iNewWidth;
-				pMenuConfig->iHeight=pMenuConfig->iNewHeight;
-				pMenuConfig->iBpp=pMenuConfig->iNewBpp;
-				ARXMenu_Private_Options_Video_SetResolution(    pMenuConfig->iWidth,
-																pMenuConfig->iHeight,
-																pMenuConfig->iBpp);
+				config.video.width=newWidth;
+				config.video.height=newHeight;
+				config.video.bpp=newBpp;
+				ARXMenu_Private_Options_Video_SetResolution(    config.video.width,
+																config.video.height,
+																config.video.bpp);
 
 				pMenuSliderResol->iOldPos=-1;
 				pMenuSliderBpp->iOldPos=-1;
 			}
 
 			//----------END_RESOLUTION
-			pMenuConfig->bChangeResolution = false;
-			pMenuConfig->bChangeTextures = false;
+			changeResolution = false;
+			changeTextures = false;
 			pMenu->bReInitAll=true;
 		}
 		break;
@@ -3850,8 +2534,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		}break;
 	case BUTTON_MENUOPTIONS_CONTROLS_BACK:
 		{
-			if(pMenuConfig)
-				pMenuConfig->SaveAll();
+			config.save();
 		}
 		break;
 	}
@@ -3878,7 +2561,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 						szText = save_l[lData].name;
 					else
 					{
-						PAK_UNICODE_GetPrivateProfileString( "system_menu_editquest_newsavegame", "", szText );
+						szText = getLocalised( "system_menu_editquest_newsavegame" );
 					}
 
 					me->SetText( szText );
@@ -4489,12 +3172,12 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_CROSSHAIR:
 		{
-			if(pMenuConfig) pMenuConfig->bShowCrossHair=(iState)?true:false;
+			config.video.showCrosshair=(iState)?true:false;
 		}
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING:
 		{
-			if(pMenuConfig) pMenuConfig->bAntiAliasing=(iState)?true:false;
+			config.video.antialiasing=(iState)?true:false;
 
 			ARX_SetAntiAliasing();
 		}
@@ -4531,43 +3214,37 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 		break;
 	case BUTTON_MENUOPTIONS_CONTROLS_LINK:
 		{
-			if(pMenuConfig)
-			{
-				pMenuConfig->bLinkMouseLookToUse=(iState)?true:false;
-			}
+			config.input.linkMouseLookToUse=(iState)?true:false;
 		}
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_BACK:
+	{
+		if(    (pMenuSliderResol)&&
+			(pMenuSliderResol->iOldPos>=0) )
 		{
-			if(pMenuConfig)
-			{
-				if(    (pMenuSliderResol)&&
-					(pMenuSliderResol->iOldPos>=0) )
-				{
-					pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
-					pMenuSliderResol->iOldPos=-1;
-					pMenuConfig->iNewWidth=pMenuConfig->iWidth;
-					pMenuConfig->iNewHeight=pMenuConfig->iHeight;
-				}
-
-				if(    (pMenuSliderBpp)&&
-					(pMenuSliderBpp->iOldPos>=0) )
-				{
-					pMenuSliderBpp->iPos=pMenuSliderBpp->iOldPos;
-					pMenuSliderBpp->iOldPos=-1;
-					pMenuConfig->iNewBpp=pMenuConfig->iBpp;
-				}
-
-				if(    (pMenuSliderTexture)&&
-					(pMenuSliderTexture->iOldPos>=0) )
-				{
-					pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
-					pMenuSliderTexture->iOldPos=-1;
-					pMenuConfig->iNewTextureResol=pMenuConfig->iTextureResol;
-				}
-			}
+			pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
+			pMenuSliderResol->iOldPos=-1;
+			newWidth=config.video.width;
+			newHeight=config.video.height;
+		}
+		
+		if(    (pMenuSliderBpp)&&
+			(pMenuSliderBpp->iOldPos>=0) )
+		{
+			pMenuSliderBpp->iPos=pMenuSliderBpp->iOldPos;
+			pMenuSliderBpp->iOldPos=-1;
+			newBpp=config.video.bpp;
+		}
+		
+		if(    (pMenuSliderTexture)&&
+			(pMenuSliderTexture->iOldPos>=0) )
+		{
+			pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
+			pMenuSliderTexture->iOldPos=-1;
+			newTextureSize=config.video.textureSize;
 		}
 		break;
+	}
 
 	}
 
@@ -5034,7 +3711,7 @@ void CWindowMenuConsole::UpdateText()
 			if( ((CMenuElementText*)pZoneClick)->lpszText.empty() )
 			{
 				std::string szMenuText;
-				PAK_UNICODE_GetPrivateProfileString("system_menu_editquest_newsavegame", "", szMenuText);
+				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 
 				((CMenuElementText*)pZoneClick)->SetText(szMenuText);
 
@@ -5448,174 +4125,174 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 		{
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_JUMP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_JUMP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_MAGICMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MAGICMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_STEALTHMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STEALTHMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_WALKFORWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WALKFORWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_WALKBACKWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WALKBACKWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_STRAFELEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFELEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_STRAFERIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFERIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_LEANLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LEANLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_LEANRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LEANRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CROUCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CROUCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_MOUSELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MOUSELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_ACTION,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_ACTION,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_INVENTORY,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_INVENTORY,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKCHARSHEET,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKCHARSHEET,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKQUEST,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKQUEST,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_DRINKPOTIONLIFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONLIFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_DRINKPOTIONMANA,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONMANA,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_TORCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TORCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CANCELCURSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CANCELCURSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PRECAST1,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST1,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PRECAST2,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST2,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PRECAST3,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST3,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_WEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_QUICKLOAD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_QUICKLOAD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_QUICKSAVE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_QUICKSAVE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_TURNLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TURNLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_TURNRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TURNRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_LOOKUP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LOOKUP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_LOOKDOWN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LOOKDOWN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_STRAFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CENTERVIEW,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CENTERVIEW,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_FREELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_FREELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2:
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PREVIOUS,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PREVIOUS,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_NEXT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_NEXT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CROUCHTOGGLE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CROUCHTOGGLE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2:    
-			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,pGetInfoDirectInput->iKeyId);
 			break;
 		}
 	}
 
 	return bChange;
-	}
+}
 
-	//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-	int CWindowMenuConsole::Render()
-	{
+int CWindowMenuConsole::Render()
+{
 	if(WILL_RELOAD_ALL_TEXTURES) return 0;
 
 	if(bNoMenu) return 0;
@@ -5629,8 +4306,8 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
-		RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
-		0, pTexBackground, ARX_OPAQUE_WHITE);
+	RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
+	0, pTexBackground, ARX_OPAQUE_WHITE);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -5638,8 +4315,8 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
-		RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
-		0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);
+	RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
+	0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);
 
 	//------------------------------------------------------------------------
 
@@ -5755,7 +4432,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 					if(pmzMenuZone==pZoneClick)
 					{
-						pMenuConfig->SetDefaultKey();
+						config.setDefaultActionKeys();
 						bReInit=true;
 					}
 				}
@@ -5765,7 +4442,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 		if(bReInit)
 		{
-			pMenuConfig->ReInitActionKey(this);
+			ReInitActionKey();
 			bMouseAttack=false;
 		}
 	}
@@ -5774,6 +4451,46 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 	MenuAllZone.DrawZone();
 
 	return iSlider;
+}
+
+void CWindowMenuConsole::ReInitActionKey()
+{
+	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
+	int iI=NUM_ACTION_KEY;
+	bool bOldTouch=pGetInfoDirectInput->bTouch;
+	int iOldVirtualKey=pGetInfoDirectInput->iKeyId;
+	pGetInfoDirectInput->bTouch=true;
+
+	while(iI--)
+	{
+		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
+
+		CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(iID);
+
+		if (pmzMenuZone)
+		{
+			if(pmzMenuZone)
+			{
+				pZoneClick = (CMenuElement*)pmzMenuZone;
+				pGetInfoDirectInput->iKeyId = config.actions[iTab].key[0];
+				GetTouch();
+			}
+
+			pmzMenuZone = MenuAllZone.GetZoneWithID(iID+1);
+
+			if( pmzMenuZone )
+			{
+				pZoneClick = (CMenuElement*)pmzMenuZone;
+				pGetInfoDirectInput->iKeyId = config.actions[iTab].key[1];
+				GetTouch();
+			}
+		}
+
+		iID+=2;
+	}
+
+	pGetInfoDirectInput->bTouch=bOldTouch;
+	pGetInfoDirectInput->iKeyId=iOldVirtualKey;
 }
 
 //-----------------------------------------------------------------------------
@@ -6356,15 +5073,15 @@ bool CMenuSliderText::OnMouseClick(int)
 		{
 			std::string pcText = (vText.at(iPos))->lpszText;
 			std::stringstream ss( pcText );
-			int iX = pMenuConfig->iWidth;
-			int iY = pMenuConfig->iHeight;
+			int iX = config.video.width;
+			int iY = config.video.height;
 			char tmp;
 			ss >> iX >> tmp >> iY;
 //            pcText, "%dx%d"), &iX, &iY);
 			{
-				pMenuConfig->iNewWidth = iX;
-				pMenuConfig->iNewHeight = iY;
-				pMenuConfig->bChangeResolution = true;
+				newWidth = iX;
+				newHeight = iY;
+				changeResolution = true;
 			}
 		}
 		break;
@@ -6375,15 +5092,15 @@ bool CMenuSliderText::OnMouseClick(int)
 			std::stringstream ss;
 			pcText = vText[iPos]->lpszText;
 			ss << pcText;
-			ss >> pMenuConfig->iNewBpp;
-			pMenuConfig->bChangeResolution = true;
+			ss >> newBpp;
+			changeResolution = true;
 		}
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_TEXTURES:
 		{
 			{
-				pMenuConfig->iNewTextureResol = iPos;
-				pMenuConfig->bChangeTextures = true;
+				newTextureSize = iPos;
+				changeTextures = true;
 			}
 
 		}
@@ -7405,22 +6122,22 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
 	
 	switch(_iVirtualKey) {
 	case DIK_HOME:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_home", "---", pText );
+		pText = getLocalised( "system_menus_options_input_customize_controls_home", "---" );
 		break;
 	case DIK_NEXT:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_pagedown", "---", pText );
+		pText = getLocalised( "system_menus_options_input_customize_controls_pagedown", "---" );
 		break;
 	case DIK_END:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_end", "---", pText );
+		pText = getLocalised( "system_menus_options_input_customize_controls_end", "---" );
 		break;
 	case DIK_INSERT:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_insert", "---", pText );
+		pText = getLocalised( "system_menus_options_input_customize_controls_insert", "---" );
 		break;
 	case DIK_DELETE:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_delete", "---", pText );
+		pText = getLocalised( "system_menus_options_input_customize_controls_delete", "---" );
 		break;
 	case DIK_NUMLOCK:
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_numlock", "---", pText );
+		pText = getLocalised( "system_menus_options_input_customize_controls_numlock", "---" );
 		break;
 	case DIK_DIVIDE:
 		pText = "_/_";
@@ -7432,121 +6149,121 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
 		pText = "?";
 		break;
 	case DIK_UP:                  // UpArrow on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_up", "---", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_up", "---");
 		break;
 	case DIK_PRIOR:               // PgUp on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_pageup", "---", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_pageup", "---");
 		break;
 	case DIK_LEFT:                // LeftArrow on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_left", "---");
 		break;
 	case DIK_RIGHT:               // RightArrow on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_right", "---", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_right", "---");
 		break;
 	case DIK_DOWN:                // DownArrow on arrow keypad
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_down", "---", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_down", "---");
 		break;
 	case DIK_BUTTON1:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button0", "b1", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button0", "b1");
 		break;
 	case DIK_BUTTON2:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button1", "b2", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button1", "b2");
 		break;
 	case DIK_BUTTON3:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button2", "b3", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button2", "b3");
 		break;
 	case DIK_BUTTON4:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button3", "b4", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button3", "b4");
 		break;
 	case DIK_BUTTON5:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button4", "b5", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button4", "b5");
 		break;
 	case DIK_BUTTON6:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button5", "b6", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button5", "b6");
 		break;
 	case DIK_BUTTON7:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button6", "b7", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button6", "b7");
 		break;
 	case DIK_BUTTON8:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button7", "b8", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button7", "b8");
 		break;
 	case DIK_BUTTON9:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button8", "b9", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button8", "b9");
 		break;
 	case DIK_BUTTON10:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button9", "b10", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button9", "b10");
 		break;
 	case DIK_BUTTON11:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button10", "b11", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button10", "b11");
 		break;
 	case DIK_BUTTON12:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button11", "b12", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button11", "b12");
 		break;
 	case DIK_BUTTON13:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button12", "b13", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button12", "b13");
 		break;
 	case DIK_BUTTON14:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button13", "b14", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button13", "b14");
 		break;
 	case DIK_BUTTON15:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button14", "b15", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button14", "b15");
 		break;
 	case DIK_BUTTON16:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button15", "b16", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button15", "b16");
 		break;
 	case DIK_BUTTON17:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button16", "b17", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button16", "b17");
 		break;
 	case DIK_BUTTON18:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button17", "b18", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button17", "b18");
 		break;
 	case DIK_BUTTON19:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button18", "b19", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button18", "b19");
 		break;
 	case DIK_BUTTON20:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button19", "b20", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button19", "b20");
 		break;
 	case DIK_BUTTON21:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button20", "b21", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button20", "b21");
 		break;
 	case DIK_BUTTON22:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button21", "b22", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button21", "b22");
 		break;
 	case DIK_BUTTON23:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button22", "b23", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button22", "b23");
 		break;
 	case DIK_BUTTON24:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button23", "b24", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button23", "b24");
 		break;
 	case DIK_BUTTON25:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button24", "b25", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button24", "b25");
 		break;
 	case DIK_BUTTON26:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button25", "b26", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button25", "b26");
 		break;
 	case DIK_BUTTON27:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button26", "b27", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button26", "b27");
 		break;
 	case DIK_BUTTON28:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button27", "b28", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button27", "b28");
 		break;
 	case DIK_BUTTON29:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button28", "b29", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button28", "b29");
 		break;
 	case DIK_BUTTON30:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button29", "b30", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button29", "b30");
 		break;
 	case DIK_BUTTON31:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button30", "b31", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button30", "b31");
 		break;
 	case DIK_BUTTON32:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button31", "b32", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_button31", "b32");
 		break;
 	case DIK_WHEELUP:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_wheelup", "w0", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_wheelup", "w0");
 		break;
 	case DIK_WHEELDOWN:
-		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_wheeldown", "w1", pText);
+		pText = getLocalised("system_menus_options_input_customize_controls_wheeldown", "w1");
 		break;
 	case -1:
 		pText += "---";
@@ -7567,19 +6284,19 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
 			
 			if(_iVirtualKey == DIK_LSHIFT) {
 				std::string tText2;
-				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
+				tText2 = getLocalised( "system_menus_options_input_customize_controls_left", "---");
 				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
 			
 			if(_iVirtualKey == DIK_LCONTROL) {
 				std::string tText2;
-				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
+				tText2 = getLocalised( "system_menus_options_input_customize_controls_left", "---");
 				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
 			
 			if(_iVirtualKey == DIK_LALT) {
 				std::string tText2;
-				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
+				tText2 = getLocalised( "system_menus_options_input_customize_controls_left", "---");
 				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
 			

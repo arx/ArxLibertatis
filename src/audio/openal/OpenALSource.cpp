@@ -608,14 +608,14 @@ bool OpenALSource::updateCulling() {
 	
 	ALfloat max;
 	alGetSourcef(source, AL_MAX_DISTANCE, &max);
-	AL_CHECK_ERROR("getting source max distance")
+	AL_CHECK_ERROR_N("getting source max distance", return tooFar;)
 	
 	Vector3f listener_pos;
 	if(channel.flags & FLAG_RELATIVE) {
 		listener_pos.x = listener_pos.y = listener_pos.z = 0.0F;
 	} else {
 		alGetListener3f(AL_POSITION, &listener_pos.x, &listener_pos.y, &listener_pos.z);
-		AL_CHECK_ERROR("getting listener position")
+		AL_CHECK_ERROR_N("getting listener position", return tooFar;)
 	}
 	
 	float dist =  channel.position.GetDistanceFrom(listener_pos);

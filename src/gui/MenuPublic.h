@@ -62,15 +62,12 @@ bool ARXMenu_Options_Video_SetSoftRender();
 
 //-----------------------------------------------------------------------------
 //OPTIONS AUDIO
-void ARXMenu_Options_Audio_GetMasterVolume(int &);
 void ARXMenu_Options_Audio_SetMasterVolume(int);
-void ARXMenu_Options_Audio_GetSfxVolume(int &);
 void ARXMenu_Options_Audio_SetSfxVolume(int);
-void ARXMenu_Options_Audio_GetSpeechVolume(int &);
 void ARXMenu_Options_Audio_SetSpeechVolume(int);
-void ARXMenu_Options_Audio_GetAmbianceVolume(int &);
 void ARXMenu_Options_Audio_SetAmbianceVolume(int);
 bool ARXMenu_Options_Audio_SetEAX(bool);
+void ARXMenu_Options_Audio_ApplyGameVolumes();
 
 //-----------------------------------------------------------------------------
 //OPTIONS CONTROL
