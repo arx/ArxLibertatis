@@ -468,8 +468,8 @@ struct INTERACTIVE_OBJ
 	unsigned long		lastanimtime;
 
 	EERIE_3D_BBOX		bbox3D;
-	EERIE_S2D			bbox1;		// 2D bounding box1
-	EERIE_S2D			bbox2;		// 2D bounding box2
+	Vec2s			bbox1;		// 2D bounding box1
+	Vec2s			bbox2;		// 2D bounding box2
 	char *				usemesh;	// Alternate Mesh/path
 	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
 	ArxSound				sound;

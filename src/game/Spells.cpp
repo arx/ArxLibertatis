@@ -196,10 +196,10 @@ long cur_bh=0;
 
 static float LASTTELEPORT(0.0F);
 long snip=0;
-EERIE_S2D Lm;
+Vec2s Lm;
 
 static const long MAX_POINTS(200);
-static EERIE_S2D plist[MAX_POINTS];
+static Vec2s plist[MAX_POINTS];
 std::string SpellMoves;
 Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 size_t CurrSpellSymbol=0;
@@ -790,7 +790,7 @@ void ARX_SPELLS_RequestSymbolDraw3(const char *_pcName,char *_pcRes)
 #define OFFSET_Y 6*2//0
 
 //-----------------------------------------------------------------------------
-void GetSymbVector(char c,EERIE_S2D * vec)
+void GetSymbVector(char c,Vec2s * vec)
 {
 	switch (c)
 	{
@@ -1188,7 +1188,7 @@ void ReCenterSequence(char *_pcSequence,int &_iMinX,int &_iMinY,int &_iMaxX,int 
 
 	for(int iI=0;iI<iLenght;iI++)
 	{
-		EERIE_S2D es2dVector;
+		Vec2s es2dVector;
 		GetSymbVector(_pcSequence[iI],&es2dVector);
 		iSizeX+=es2dVector.x;
 		iSizeY+=es2dVector.y;
@@ -1322,7 +1322,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 				if (ti<=0) ti=1;
 
-				EERIE_S2D pos1, vect, old_pos;
+				Vec2s pos1, vect, old_pos;
 				long newtime=tim;
 				long oldtime=sd->lasttim;
 
@@ -1441,7 +1441,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							pos1.y = ARX_CLEAN_WARN_CAST_SHORT(fY);
 
 
-							EERIE_S2D pos;
+							Vec2s pos;
 							pos.x=(short)(pos1.x*Xratio);	
 							pos.y=(short)(pos1.y*Yratio);
 
@@ -2529,7 +2529,7 @@ void ARX_SPELLS_ManageMagic()
 			
 			if (EERIEMouseButton & 1)
 			{
-				EERIE_S2D pos,pos2;
+				Vec2s pos,pos2;
 				pos.x = DANAEMouse.x; 
 				pos.y = DANAEMouse.y;
 				extern long TRUE_PLAYER_MOUSELOOK_ON;
@@ -2742,7 +2742,7 @@ void ARX_SPELLS_ResetRecognition() {
 
 //-----------------------------------------------------------------------------
 // Adds a 2D point to currently drawn spell symbol
-void ARX_SPELLS_AddPoint(const EERIE_S2D & pos) {
+void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 	plist[CurrPoint] = pos;
 	CurrPoint++;
 	if(CurrPoint >= MAX_POINTS) {

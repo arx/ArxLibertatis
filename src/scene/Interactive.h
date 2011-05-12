@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "platform/Flags.h"
+#include "platform/math/Vector2.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
@@ -82,8 +83,8 @@ struct ARX_NODE {
 	long link[MAX_LINKS];
 	char lnames[MAX_LINKS][64];
 	EERIE_3D pos;
-	EERIE_S2D bboxmin;
-	EERIE_S2D bboxmax;
+	Vec2s bboxmin;
+	Vec2s bboxmax;
 };
 
 struct ARX_NODES {
@@ -190,7 +191,7 @@ void FreeAllInter();
 
 void UnlinkAllLinkedObjects();
 long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size);
-INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
+INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag = 0, EERIE_3D * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
 
 /*!
  * Adds an Interactive Object to the Scene
@@ -208,7 +209,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
 void ReleaseInter(INTERACTIVE_OBJ * io);
 void UpdateCameras();
 
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos);
+INTERACTIVE_OBJ * InterClick(Vec2s * pos);
  
 void RenderInter(float from, float to);
 void MakeIOIdent(INTERACTIVE_OBJ * io);

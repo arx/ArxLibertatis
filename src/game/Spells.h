@@ -38,7 +38,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 
 struct INTERACTIVE_OBJ;
-struct EERIE_S2D;
 class CSpellFx;
 
 // Spells symbol list
@@ -240,7 +239,7 @@ extern long CurrPoint;
 
 bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
 void ARX_SPELLS_ResetRecognition();
-void ARX_SPELLS_AddPoint(const EERIE_S2D & pos);
+void ARX_SPELLS_AddPoint(const Vec2s & pos);
 void ARX_SPELLS_AbortSpellSound();
 void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();

@@ -210,8 +210,8 @@ enum ARX_INTERFACE_BOOK_MODE
 
 //-----------------------------------------------------------------------------
 extern INTERFACE_TC ITC;
-extern EERIE_S2D MemoMouse;
-extern EERIE_S2D bookclick;
+extern Vec2s MemoMouse;
+extern Vec2s bookclick;
 
 extern SPELL_ICON spellicons[SPELL_COUNT];
 extern char LOADFROM[256];

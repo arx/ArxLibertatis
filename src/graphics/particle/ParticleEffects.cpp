@@ -2804,7 +2804,7 @@ void ARX_MAGICAL_FLARES_KillAll()
  
 
 //-----------------------------------------------------------------------------
-void AddFlare(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
+void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 {
 	long i;
 	float vx,vy;
@@ -3003,7 +3003,7 @@ void AddFlare(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
-void AddFlare2(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
+void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 {
 	long i;
 	float zz;
@@ -3149,14 +3149,14 @@ void AddFlare2(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------
 void AddLFlare(float x, float y,INTERACTIVE_OBJ * io) 
 {
-	EERIE_S2D pos;
+	Vec2s pos;
 	pos.x=(short)x;
 	pos.y=(short)y;
 	AddFlare(&pos,0.45f,1,io);	
 }
 
 //-----------------------------------------------------------------------------
-void FlareLine(EERIE_S2D * pos0, EERIE_S2D * pos1, INTERACTIVE_OBJ * io) 
+void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io) 
 {
 	float dx,dy,adx,ady,m;
 	long i;

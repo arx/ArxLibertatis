@@ -145,9 +145,4 @@ struct EERIE_SPHERE {
 	float radius;
 };
 
-struct EERIE_S2D {
-	short x;
-	short y;
-};
-
 #endif // ARX_GRAPHICS_BASEGRAPHICSTYPES_H

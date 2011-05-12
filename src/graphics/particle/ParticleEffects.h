@@ -240,10 +240,10 @@ void MakeBookFX(float posx, float posy, float posz);
 void UpdateObjFx() ;
 void Add3DBoom(EERIE_3D * position);
 void AddRandomSmoke(INTERACTIVE_OBJ * io, long amount = 1);
-void AddFlare(EERIE_S2D * pos, float sm, short typ, INTERACTIVE_OBJ * io = NULL);
-void AddFlare2(EERIE_S2D * pos, float sm, short typ, INTERACTIVE_OBJ * io);
+void AddFlare(Vec2s * pos, float sm, short typ, INTERACTIVE_OBJ * io = NULL);
+void AddFlare2(Vec2s * pos, float sm, short typ, INTERACTIVE_OBJ * io);
 void AddLFlare(float x, float y, INTERACTIVE_OBJ * io = NULL) ;
-void FlareLine(EERIE_S2D * pos0, EERIE_S2D * pos1, INTERACTIVE_OBJ * io = NULL);
+void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io = NULL);
 void LaunchDummyParticle();
 void ManageTorch();
 

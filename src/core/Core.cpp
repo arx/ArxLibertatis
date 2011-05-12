@@ -316,7 +316,7 @@ long NEED_TEST_TEXT=0;
 SPELL_ICON spellicons[SPELL_COUNT];
 bool bGToggleCombatModeWithKey;
 
-EERIE_S2D DANAEMouse;
+Vec2s DANAEMouse;
 EERIE_3D moveto;
 EERIE_3D Mscenepos;
 EERIE_3D lastteleport;
@@ -336,7 +336,7 @@ EERIE_CAMERA DynLightCam;
 INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
 std::string WILLADDSPEECH;
 
-EERIE_S2D STARTDRAG;
+Vec2s STARTDRAG;
 INTERACTIVE_OBJ * COMBINE=NULL;
 HWND MESH_REDUCTION_WINDOW=NULL;
 
@@ -1602,7 +1602,7 @@ TextureContainer * _GetTexture_NoRefinement(const char * text)
 //*************************************************************************************
 // Nuky - 01-02-11 - simplified prototype and recoded with new CD3DApplicationScopedLock
 //                   class and recursion
-INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, bool mustlock)
+INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock)
 {
 	INTERACTIVE_OBJ* io = NULL;
 
@@ -6946,7 +6946,7 @@ void DANAE::GoFor2DFX()
 
 						EERIE_3D	hit;
 						EERIEPOLY	*tp=NULL;
-						EERIE_S2D ees2dlv;
+						Vec2s ees2dlv;
 						EERIE_3D ee3dlv;
 						ee3dlv.x = lv.sx;
 						ee3dlv.y = lv.sy;

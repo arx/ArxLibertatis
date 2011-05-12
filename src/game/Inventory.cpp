@@ -168,13 +168,13 @@ void CleanInventory() {
 	sActiveInventory = 0;
 }
 
-extern EERIE_S2D DANAEMouse;
+extern Vec2s DANAEMouse;
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern long DANAECENTERX;
 extern long DANAECENTERY;
 
-static INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos) {
+static INTERACTIVE_OBJ * GetInventoryObj(Vec2s * pos) {
 	
 	long tx, ty;
 
@@ -266,7 +266,7 @@ static INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos) {
 // FUNCTION/RESULT:
 //
 //*************************************************************************************
-INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos)
+INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(Vec2s * pos)
 {
 	INTERACTIVE_OBJ * io = GetFromInventory(pos);
 
@@ -1358,7 +1358,7 @@ bool PutInInventory()
 // FUNCTION/RESULT:
 //   Returns true if xx,yy is a position in secondary inventory
 //*************************************************************************************
-bool InSecondaryInventoryPos(EERIE_S2D * pos)
+bool InSecondaryInventoryPos(Vec2s * pos)
 {
 	if (SecondaryInventory != NULL)
 	{
@@ -1388,7 +1388,7 @@ bool InSecondaryInventoryPos(EERIE_S2D * pos)
 // FUNCTION/RESULT:
 //   Returns true if xx,yy is a position in player inventory
 //*************************************************************************************
-bool InPlayerInventoryPos(EERIE_S2D * pos)
+bool InPlayerInventoryPos(Vec2s * pos)
 {
 	if (PLAYER_INTERFACE_HIDE_COUNT) return false;
 
@@ -1463,7 +1463,7 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 // FUNCTION/RESULT:
 //   Returns true if "pos" is a position in player inventory or in SECONDARY inventory
 //*************************************************************************************
-bool InInventoryPos(EERIE_S2D * pos)
+bool InInventoryPos(Vec2s * pos)
 {
 	if (InSecondaryInventoryPos(pos))
 		return true;
@@ -1477,7 +1477,7 @@ bool InInventoryPos(EERIE_S2D * pos)
 // FUNCTION/RESULT:
 //   returns true if cursor is flying over any inventory
 //*************************************************************************************
-bool IsFlyingOverInventory(EERIE_S2D * pos)
+bool IsFlyingOverInventory(Vec2s * pos)
 {
 	short tx, ty;
 
@@ -1507,7 +1507,7 @@ bool IsFlyingOverInventory(EERIE_S2D * pos)
 //   Returns IO under position xx,yy in any INVENTORY or NULL if no IO
 //   was found
 //*************************************************************************************
-INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos)
+INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos)
 {
 	short tx, ty;
 	INTERACTIVE_OBJ * io;
@@ -1829,7 +1829,7 @@ void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
 // Puts that object in player's "hand" (cursor)
 // returns true if an object was taken false elseway
 //*************************************************************************************
-bool TakeFromInventory(EERIE_S2D * pos)
+bool TakeFromInventory(Vec2s * pos)
 {
 	long i, j;
 	INTERACTIVE_OBJ * io = GetFromInventory(pos);

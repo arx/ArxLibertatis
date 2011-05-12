@@ -3385,7 +3385,7 @@ extern long USE_CEDRIC_ANIM;
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
 //*************************************************************************************
-INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRef, INTERACTIVE_OBJ ** _pTable, int * _pnNbInTable)
+INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, EERIE_3D * _pRef, INTERACTIVE_OBJ ** _pTable, int * _pnNbInTable)
 {
 	float n;
  
@@ -3539,7 +3539,7 @@ bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos) {
+INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 	
 	LASTINTERCLICKNB = -1;
 

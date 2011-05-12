@@ -277,6 +277,7 @@ template<class T> const Vector2<T> Vector2<T>::Y_AXIS(T(0), T(1));
 template<class T> const Vector2<T> Vector2<T>::ZERO(T(0), T(0));
 
 typedef Vector2<int> Vec2i;
+typedef Vector2<short> Vec2s;
 typedef Vector2<float> Vec2f;
 typedef Vector2<double> Vec2d;
 

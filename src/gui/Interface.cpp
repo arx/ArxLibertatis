@@ -162,7 +162,7 @@ extern long ALLOW_CHEATS;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long WILLRETURNTOFREELOOK;
 extern float BOW_FOCAL;
-extern EERIE_S2D DANAEMouse;
+extern Vec2s DANAEMouse;
 extern short sActiveInventory;
 extern unsigned long WILLADDSPEECHTIME;
 extern unsigned long LOOKING_FOR_SPELL_TARGET_TIME;
@@ -193,8 +193,8 @@ TextureContainer *	ThrowObject=NULL;
 ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
 D3DCOLOR			BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
 E_ARX_STATE_MOUSE	eMouseState;
-EERIE_S2D			bookclick;
-EERIE_S2D			MemoMouse;
+Vec2s			bookclick;
+Vec2s			MemoMouse;
 EERIE_LIGHT		 *	CDP_EditLight=NULL;
 FOG_DEF			 *	CDP_EditFog=NULL;
 HWND				CDP_PATHWAYS_Options=NULL;
@@ -4948,7 +4948,7 @@ void DANAE::ManageKeyMouse()
 				pos.x=EERIEMouseX;
 				pos.y=EERIEMouseY;
 
-				EERIE_S2D poss;
+				Vec2s poss;
 
 				ARX_CHECK_SHORT(pos.x);
 				ARX_CHECK_SHORT(pos.y);

@@ -78,10 +78,10 @@ extern EERIE_3D lastteleport;
 extern EERIE_CAMERA bookcam;
 extern HINSTANCE hInstance;
 extern HINSTANCE hInst;
-extern EERIE_S2D DANAEMouse;
+extern Vec2s DANAEMouse;
 extern EERIE_CAMERA subj, mapcam;
 extern EERIE_3D moveto;
-extern EERIE_S2D STARTDRAG;
+extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
 extern EERIE_3DOBJ * nodeobj;
 extern EERIE_3D Mscenepos;
@@ -180,6 +180,6 @@ void ARX_SetAntiAliasing();
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, bool mustlock = false);
+INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock = false);
 
 #endif // ARX_CORE_CORE_H
