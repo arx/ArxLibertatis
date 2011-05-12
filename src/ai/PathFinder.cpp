@@ -89,7 +89,7 @@ class PathFinder::OpenNodeList {
 public:
 	
 	~OpenNodeList() {
-		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); i++) {
+		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
 			delete *i;
 		}
 	}

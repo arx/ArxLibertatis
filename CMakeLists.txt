@@ -247,6 +247,7 @@ else(MSVC)
 	#                -Wmissing-declarations     to catch functions that should be marked as static
 	#                -Wredundant-decls          to catch extern definitions in .cpp files (with UNITYBUILD)
 	#                -Wsuggest-attribute=const  to add missing const qualifiers (only in gcc 4.6)
+	#                -ftrapv (ARX_DEBUG_EXTRA only) to add checks for (undefined) signed integer overflow
 	
 	if(ARX_DEBUG)
 		#Debug
