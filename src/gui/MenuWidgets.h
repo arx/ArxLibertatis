@@ -658,13 +658,6 @@ enum CURSORSTATE
 };
 
 //-----------------------------------------------------------------------------
-struct EERIE_2DI
-{
-	int	x;
-	int	y;
-};
-
-//-----------------------------------------------------------------------------
 class CDirectInput {
 	
 public:
@@ -693,7 +686,7 @@ public:
 		int					iMouseTimeSet[ARX_MAXBUTTON];
 		int					iNbOldCoord;
 		int					iMaxOldCoord;
-		EERIE_2DI			iOldCoord[256];
+		Vec2i iOldCoord[256];
 
 		TextureContainer	* pTex[8];
 		long				lFrameDiff;

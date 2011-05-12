@@ -5934,7 +5934,7 @@ void CDirectInput::GetInput()
 	if(iNbOldCoord>=iMaxOldCoord)
 	{
 		iNbOldCoord=iMaxOldCoord-1;
-		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(EERIE_2DI)*iNbOldCoord);
+		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(Vec2i)*iNbOldCoord);
 	}
 
 }
@@ -6003,9 +6003,9 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 
 //-----------------------------------------------------------------------------
 
-static bool ComputePer(EERIE_2DI *_psPoint1,EERIE_2DI *_psPoint2,D3DTLVERTEX *_psd3dv1,D3DTLVERTEX *_psd3dv2,float _fSize) {
+static bool ComputePer(const Vec2i & _psPoint1, const Vec2i & _psPoint2, D3DTLVERTEX * _psd3dv1, D3DTLVERTEX * _psd3dv2, float _fSize) {
 	
-	Vec2f sTemp((float)(_psPoint2->x-_psPoint1->x), (float)(_psPoint2->y-_psPoint1->y));
+	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
 	float fTemp = sTemp.x;
 	sTemp.x = -sTemp.y;
 	sTemp.y = fTemp;
@@ -6018,18 +6018,18 @@ static bool ComputePer(EERIE_2DI *_psPoint1,EERIE_2DI *_psPoint2,D3DTLVERTEX *_p
 
 	_psd3dv1->sx=(sTemp.x*fMag);
 	_psd3dv1->sy=(sTemp.y*fMag);
-	_psd3dv2->sx=((float)_psPoint1->x)-_psd3dv1->sx;
-	_psd3dv2->sy=((float)_psPoint1->y)-_psd3dv1->sy;
-	_psd3dv1->sx+=((float)_psPoint1->x);
-	_psd3dv1->sy+=((float)_psPoint1->y);
+	_psd3dv2->sx=((float)_psPoint1.x)-_psd3dv1->sx;
+	_psd3dv2->sy=((float)_psPoint1.y)-_psd3dv1->sy;
+	_psd3dv1->sx+=((float)_psPoint1.x);
+	_psd3dv1->sy+=((float)_psPoint1.y);
 
 	return true;
 }
 
 //-----------------------------------------------------------------------------
 
-static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,float _fGreen,float _fBlue)
-{
+static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float _fRed, float _fGreen, float _fBlue) {
+	
 	_iNbPt--;
 
 	if(!_iNbPt) return;
@@ -6052,11 +6052,10 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-	EERIE_2DI *psOldPoint=_psPoint1++;
+	const Vec2i * psOldPoint = _psPoint1++;
 	v[0].color=v[2].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
 
-	if(!ComputePer(psOldPoint,_psPoint1,&v[0],&v[2],fTaille))
-	{
+	if(!ComputePer(*psOldPoint, *_psPoint1, &v[0], &v[2], fTaille)) {
 		v[0].sx=v[2].sx=(float)psOldPoint->x;
 		v[0].sy=v[2].sy=(float)psOldPoint->y;
 	}
@@ -6070,8 +6069,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 		fColorGreen+=fDColorGreen;
 		fColorBlue+=fDColorBlue;
 
-		if(ComputePer(psOldPoint,_psPoint1+1,&v[1],&v[3],fTaille))
-		{
+		if(ComputePer(*psOldPoint, *(_psPoint1 + 1), &v[1], &v[3], fTaille)) {
 			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
 			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 
@@ -6083,7 +6081,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 			v[2].color=v[3].color;
 		}
 
-		psOldPoint=_psPoint1++;
+		psOldPoint = _psPoint1++;
 	}
 
 	fTaille+=fSize;
@@ -6091,8 +6089,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	fColorGreen+=fDColorGreen;
 	fColorBlue+=fDColorBlue;
 
-	if(ComputePer(_psPoint1,psOldPoint,&v[1],&v[3],fTaille)) 
-	{
+	if(ComputePer(*_psPoint1, *psOldPoint, &v[1], &v[3], fTaille)) {
 		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
 		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 	}
