@@ -189,7 +189,7 @@ bool DX7Texture2D::Create()
 	// when using textures
 	D3DDEVICEDESC7 ddDesc;
 	if( FAILED( GDevice->GetCaps( &ddDesc ) ) )
-		return NULL;
+		return false;
 
 	// Setup the new surface desc for the texture. Note how we are using the
 	// texture manage attribute, so Direct3D does alot of dirty work for us
@@ -271,7 +271,7 @@ bool DX7Texture2D::Create()
 	// texture pixel format.
 	GDevice->EnumTextureFormats( TextureSearchCallback, &ddsd);
 	if( 0L == ddsd.ddpfPixelFormat.dwRGBBitCount )
-		return NULL;
+		return false;
 
 	// Get the device's render target, so we can then use the render target to
 	// get a ptr to a DDraw object. We need the DirectDraw interface for
@@ -286,7 +286,7 @@ bool DX7Texture2D::Create()
 	if( FAILED( hr = pDD->CreateSurface( &ddsd, &m_pddsSurface, NULL ) ) )
 	{
 		pDD->Release();
-		return NULL;
+		return false;
 	}
 
 	// Store texture size
