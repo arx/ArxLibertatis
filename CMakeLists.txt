@@ -140,6 +140,7 @@ if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
 	force_recheck_library(Freetype)
 	force_recheck_library(Threads)
 	force_recheck_library(OpenAL)
+	force_recheck_library(OpenGL)
 	set(LAST_ARX_FORCE_32BIT ${ARX_FORCE_32BIT} CACHE INTERNAL "The last ARX_FORCE_32BIT value")
 endif()
 
@@ -217,6 +218,7 @@ else(MSVC)
 	if(ARX_USE_OPENAL)
 		check_link_library(OpenAL OPENAL_LIBRARY)
 	endif()
+	check_link_library(OpenGL OPENGL_gl_LIBRARY)
 	
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
@@ -289,7 +291,7 @@ file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
 set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${IO_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPTING_SOURCES} ${WINDOW_SOURCES})
 
-include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
 
 if(ARX_USE_OPENAL)
 	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_OPENAL_SOURCES})
@@ -319,7 +321,7 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 #link
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
-target_link_libraries(arx ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS} ${OPENGL_LIBRARIES})
+target_link_libraries(arx ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS} ${OPENGL_gl_LIBRARY})
 if(ARX_USE_OPENAL)
 	target_link_libraries(arx ${OPENAL_LIBRARY})
 endif()
