@@ -48,26 +48,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "graphics/d3dwrapper.h"
-
-#include "platform/Platform.h"
-
-class TextureContainer;
-
 #include "graphics/BaseGraphicsTypes.h"
 
+#include "platform/Platform.h"
+#include "platform/math/Vector2.h"
+
+class TextureContainer;
 
 struct EERIE_TRI {
 	EERIE_3D v[3];
 }; // Aligned 1 2 4
 
-struct EERIE_2D_BBOX
-{
-	EERIE_2D min;
-	EERIE_2D max;
-}; // Aligned 1 2 4 8
+struct EERIE_2D_BBOX {
+	Vec2f min;
+	Vec2f max;
+};
 
-struct EERIE_3D_BBOX
-{
+struct EERIE_3D_BBOX {
 	EERIE_3D min;
 	EERIE_3D max;
 }; // Aligned 1 2 4

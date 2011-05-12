@@ -4,7 +4,8 @@
 
 #include <windows.h> // TODO for HBITMAP
 
-#include "graphics/GraphicsTypes.h" // for EERIE_2D and EERIE_3D
+#include "graphics/GraphicsTypes.h" // for EERIE_3D
+#include "platform/math/Vector2.h"
 
 
 #define MAX_WIDTH_AND_HEIGHT 256
@@ -35,7 +36,7 @@ struct C_IND {
 };
 
 struct C_UV {
-	EERIE_2D uv;
+	Vec2f uv;
 	int indvertex;
 };
 

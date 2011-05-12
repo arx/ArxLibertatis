@@ -3694,7 +3694,7 @@ if (USE_PORTALS && portals)
 
 		switch (USE_PORTALS)
 		{
-			case 1:
+			case 1: {
 				EERIE_2D_BBOX bbox;
 				bbox.min.x=0;
 				bbox.min.y=0;
@@ -3705,23 +3705,28 @@ if (USE_PORTALS && portals)
 				ARX_PORTALS_ComputeRoom(room_num,&bbox,lprec,tim);
 				ARX_PORTALS_RenderRooms(lprec,tim);
 				break;
-			case 2:
+			}
+			case 2: {
 				EERIE_FRUSTRUM frustrum;
 				CreateScreenFrustrum(&frustrum);
 				LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
 				ARX_PORTALS_Frustrum_RenderRooms(lprec,tim);
 				break;
-			case 3:
+			}
+			case 3: {
+				EERIE_FRUSTRUM frustrum;
 				CreateScreenFrustrum(&frustrum);
 				LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
 				LogWarning << "unimplemented";
 				break;
-			case 4:
+			}
+			case 4: {
+				EERIE_FRUSTRUM frustrum;
 				CreateScreenFrustrum(&frustrum);
 				LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
 				ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(lprec,tim);
 				break;
-			break;
+			}
 		}
 
 

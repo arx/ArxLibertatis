@@ -15,17 +15,6 @@ struct EERIE_QUAT {
 	float w;
 };
 
-struct EERIE_2D {
-	union {
-		float x;
-		float a;
-	};
-	union {
-		float y;
-		float b;
-	};
-};
-
 struct EERIE_3D {
 	
 	union {

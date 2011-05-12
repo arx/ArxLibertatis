@@ -6003,24 +6003,18 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 
 //-----------------------------------------------------------------------------
 
-static bool ComputePer(EERIE_2DI *_psPoint1,EERIE_2DI *_psPoint2,D3DTLVERTEX *_psd3dv1,D3DTLVERTEX *_psd3dv2,float _fSize)
-{
-	EERIE_2D sTemp;
-	float fTemp;
-
-	sTemp.x=(float)(_psPoint2->x-_psPoint1->x);
-	sTemp.y=(float)(_psPoint2->y-_psPoint1->y);
-	fTemp=sTemp.x;
-	sTemp.x=-sTemp.y;
-	sTemp.y=fTemp;
-	float fMag=(float)sqrt(sTemp.x*sTemp.x+sTemp.y*sTemp.y);
-
-	if(fMag<EEdef_EPSILON)
-	{
+static bool ComputePer(EERIE_2DI *_psPoint1,EERIE_2DI *_psPoint2,D3DTLVERTEX *_psd3dv1,D3DTLVERTEX *_psd3dv2,float _fSize) {
+	
+	Vec2f sTemp((float)(_psPoint2->x-_psPoint1->x), (float)(_psPoint2->y-_psPoint1->y));
+	float fTemp = sTemp.x;
+	sTemp.x = -sTemp.y;
+	sTemp.y = fTemp;
+	float fMag = sTemp.length();
+	if(fMag < EEdef_EPSILON) {
 		return false;
 	}
 
-	fMag=_fSize/fMag;
+	fMag = _fSize / fMag;
 
 	_psd3dv1->sx=(sTemp.x*fMag);
 	_psd3dv1->sy=(sTemp.y*fMag);
