@@ -89,7 +89,11 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/
 // Local list of textures
 //-----------------------------------------------------------------------------
- 
+
+
+const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap | TextureContainer::NoRefinement);
+const TextureContainer::TCFlags TextureContainer::All = Flag(0xffffffff);
+
 TextureContainer * g_ptcTextureList = NULL;
 
 TextureContainer * GetTextureList()

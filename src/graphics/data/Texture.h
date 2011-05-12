@@ -64,11 +64,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIETEXTR_H
 #define EERIETEXTR_H
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/texture/Texture.h"
 #include <vector>
 #include <map>
 #include <string>
+
+#include "graphics/GraphicsTypes.h"
+#include "graphics/texture/Texture.h"
+#include "platform/Flags.h"
 
 using std::vector;
 
@@ -80,22 +82,25 @@ struct DELAYED_PRIM
 };
 
 /** Linked list structure to hold info per texture.
- *	@todo This class is currently an hybrid between a texture class and a render batch... We should create a RenderBatch class for all vertex stuff.
+ * @todo This class is currently an hybrid between a texture class and a render batch... We should create a RenderBatch class for all vertex stuff.
  */
 class TextureContainer
 {
 public:
-	enum TCFlags
-	{
-		None	     = 0x00,
+	
+	enum TCFlag {
+		None         = 0x00,
 		NoMipmap     = 0x01,
 		NoInsert     = 0x02,
 		NoRefinement = 0x04,
-		FakeBorder   = 0x08,		
-		Level        = 0x10,		
-		UI           = (NoMipmap | NoRefinement),
-		All			 = 0xFFFFFFFF
+		FakeBorder   = 0x08,
+		Level        = 0x10
 	};
+	
+	DECLARE_FLAGS(TCFlag, TCFlags)
+	static const TCFlags UI;
+	static const TCFlags All;
+	
 
 public:
 	/** Constructor.
@@ -160,7 +165,7 @@ public:
 
 	TextureContainer *	TextureRefinement;
 	TextureContainer *	m_pNext;         // Linked list ptr
-	long				systemflags;
+	TCFlags systemflags;
 	
 	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
 	DELAYED_PRIM *	delayed;			// delayed_drawing
@@ -198,12 +203,14 @@ public:
 	// END TODO
 
 private:
-	void LookForRefinementMap(TextureContainer::TCFlags flags);
+	void LookForRefinementMap(TCFlags flags);
 
 	typedef std::map<std::string, std::string> RefinementMap;
 	static RefinementMap s_GlobalRefine;
 	static RefinementMap s_Refine;
 };
+
+DECLARE_FLAGS_OPERATORS(TextureContainer::TCFlags)
 
 
 //-----------------------------------------------------------------------------
