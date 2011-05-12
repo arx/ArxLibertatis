@@ -889,8 +889,8 @@ struct SavedRect {
 	s32 right;
 	s32 bottom;
 	
-	inline operator RECT() {
-		RECT a;
+	inline operator Rect() {
+		Rect a;
 		a.left = left;
 		a.top = top;
 		a.right = right;
@@ -898,7 +898,7 @@ struct SavedRect {
 		return a;
 	}
 	
-	inline SavedRect & operator=(const RECT & b) {
+	inline SavedRect & operator=(const Rect & b) {
 		left = b.left;
 		top = b.top;
 		right = b.right;

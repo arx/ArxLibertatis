@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Flags.h"
 #include "platform/math/Angle.h"
+#include "platform/math/Rectangle.h"
 
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
@@ -101,8 +102,8 @@ struct EERIE_TRANSFORM
 	float zmod;
 };
 
-struct EERIE_CAMERA
-{
+struct EERIE_CAMERA {
+	
 	EERIE_TRANSFORM transform;
 	Vec3f pos; // 0 4 8
 	float	Ycos; // 12
@@ -116,40 +117,41 @@ struct EERIE_CAMERA
 	float	Zmul; // 40
 	float posleft;// 44
 	float postop; // 48 do not move/insert before this point !!!
-
-	float	xmod;
-	float	ymod;
+	
+	float xmod;
+	float ymod;
 	EERIEMATRIX matrix;
 	Anglef angle;
-
+	
 	Vec3f d_pos;
 	Anglef d_angle;
 	Vec3f lasttarget;
 	Vec3f lastpos;
 	Vec3f translatetarget;
-	BOOL	lastinfovalid;
+	bool lastinfovalid;
 	Vec3f norm;
 	EERIE_RGB	fadecolor;
-	RECT	clip;
-	float	clipz0;
-	float	clipz1;
-	long	centerx;
-	long	centery;
-
-	float	smoothing;
-	float	AddX;
-	float	AddY;
-	long	Xsnap;
-	long	Zsnap;
-	float	Zdiv;
-
-	long	clip3D;
-	long	type;
-	long	bkgcolor;
-	long	nbdrawn;
-	float	cdepth;
+	Rect clip;
+	float clipz0;
+	float clipz1;
+	long centerx;
+	long centery;
+	
+	float smoothing;
+	float AddX;
+	float AddY;
+	long Xsnap;
+	long Zsnap;
+	float Zdiv;
+	
+	long clip3D;
+	long type;
+	long bkgcolor;
+	long nbdrawn;
+	float cdepth;
 	
 	Anglef size;
+	
 };
 
 #define ANCHOR_FLAG_GREEN_DRAW	1
