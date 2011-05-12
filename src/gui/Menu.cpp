@@ -105,6 +105,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/DXInput.h"
 
+using std::string;
+using std::istringstream;
+
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
 extern Anglef ePlayerAngle;

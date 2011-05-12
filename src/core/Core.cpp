@@ -277,7 +277,7 @@ Vec3f LASTCAMPOS;
 Anglef LASTCAMANGLE;
 Vec3f PUSH_PLAYER_FORCE;
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
-CParticleManager	*pParticleManager = NULL;
+ParticleManager	*pParticleManager = NULL;
 INTERACTIVE_OBJ		*lastCAMERACONTROLLER=NULL;
 TextureContainer *  ombrignon = NULL;
 TextureContainer *  teleportae = NULL;
@@ -3023,7 +3023,7 @@ void FirstFrameProc() {
 	
 	if (pParticleManager == NULL)
 	{
-		pParticleManager = new CParticleManager();
+		pParticleManager = new ParticleManager();
 	}
 
 	if (!NO_GMOD_RESET)

@@ -84,7 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
 
 
 EERIE_3DOBJ * ssol = NULL;
@@ -111,7 +111,7 @@ CCurePoison::CCurePoison()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	pPS = new CParticleSystem();
+	pPS = new ParticleSystem();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +134,7 @@ void CCurePoison::Create()
 	eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
 
 	pPS->SetPos(eSrc);
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
@@ -235,11 +235,11 @@ void CCurePoison::Update(unsigned long aulTime)
 		pPS->p3ParticleGravity.y = 0;
 		pPS->p3ParticleGravity.z = 0;
 
-		std::list<CParticle *>::iterator i;
+		std::list<Particle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)	
 		{
-			CParticle * pP = *i;
+			Particle * pP = *i;
 
 			if (pP->isAlive())
 			{
@@ -519,8 +519,8 @@ float CRuneOfGuarding::Render()
 void LaunchPoisonExplosion(Vec3f * aePos)
 {
 	// syst�me de partoches pour l'explosion
-	CParticleSystem * pPS = new CParticleSystem();
-	CParticleParams cp;
+	ParticleSystem * pPS = new ParticleSystem();
+	ParticleParams cp;
 	cp.iNbMax = 80; 
 	cp.fLife = 1500;
 	cp.fLifeRandom = 500;
@@ -576,11 +576,11 @@ void LaunchPoisonExplosion(Vec3f * aePos)
 	pPS->Update(0);
 	pPS->iParticleNbMax = 0;
 
-	std::list<CParticle *>::iterator i;
+	std::list<Particle *>::iterator i;
 
 	for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 	{
-		CParticle * pP = *i;
+		Particle * pP = *i;
 
 		if (pP->isAlive())
 		{
@@ -693,7 +693,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	//-------------------------------------------------------------------------
 	// système de partoches
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 5;
 	cp.fLife = 2000;
 	cp.fLifeRandom = 1000;
@@ -790,7 +790,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			bOk = !bOk;
 
 			// go
-			CParticleParams cp;
+			ParticleParams cp;
 			cp.iNbMax = 100;
 			cp.fLife = 500;
 			cp.fLifeRandom = 300;

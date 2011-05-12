@@ -22,64 +22,52 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//-----------------------------------------------------------------------------
-// cr�ation du fichier le mardi 22 mai18:32
-//-----------------------------------------------------------------------------
 
+#ifndef ARX_GRAPHICS_PARTICLE_PARTICLEPARAMS_H
+#define ARX_GRAPHICS_PARTICLE_PARTICLEPARAMS_H
 
-#ifndef _ARX_CPARTICLE_PARAMS_H
-#define _ARX_CPARTICLE_PARAMS_H
+#include "platform/math/Vector3.h"
 
-#include "graphics/GraphicsTypes.h"
-
-typedef Vec3f Point3;
-
-//-----------------------------------------------------------------------------
-class CParticleParams
-{
-	public:
-		Point3	p3Pos;
-		Point3	p3Direction;
-		Point3	p3Gravity;
-		int		iNbMax;
-		int		iFreq;
-		bool	bRotationRandomDirection;
-		bool	bRotationRandomStart;
-		float	fLife;
-		float	fLifeRandom;
-		float	fAngle;
-		float	fSpeed;
-		float	fSpeedRandom;
-		float	fFlash;
-		float	fRotation;
-
-	public:
-		bool	bTexInfo;
-		bool	bTexLoop;
-		int		iTexNb;
-		int		iTexTime;
-		int		iBlendMode;
-		char	* lpszTexName;
-
-	public:
-		bool	bStartLock;
-		float	fStartSize;
-		float	fStartSizeRandom;
-		float	fStartColor[4];
-		float	fStartColorRandom[4];
-
-	public:
-		bool	bEndLock;
-		float	fEndSize;
-		float	fEndSizeRandom;
-		float	fEndColor[4];
-		float	fEndColorRandom[4];
-
-	public:
-		CParticleParams()
-		{
-			bTexInfo = false;
-		};
+class ParticleParams {
+	
+public:
+	
+	Vec3f p3Pos;
+	Vec3f p3Direction;
+	Vec3f p3Gravity;
+	int iNbMax;
+	int iFreq;
+	bool bRotationRandomDirection;
+	bool bRotationRandomStart;
+	float fLife;
+	float fLifeRandom;
+	float fAngle;
+	float fSpeed;
+	float fSpeedRandom;
+	float fFlash;
+	float fRotation;
+	
+	bool bTexInfo;
+	bool bTexLoop;
+	int iTexNb;
+	int iTexTime;
+	int iBlendMode;
+	char * lpszTexName;
+	
+	bool bStartLock;
+	float fStartSize;
+	float fStartSizeRandom;
+	float fStartColor[4];
+	float fStartColorRandom[4];
+	
+	bool bEndLock;
+	float fEndSize;
+	float fEndSizeRandom;
+	float fEndColor[4];
+	float fEndColorRandom[4];
+	
+	ParticleParams() : bTexInfo(false) { };
+	
 };
 
-#endif
+#endif // ARX_GRAPHICS_PARTICLE_PARTICLEPARAMS_H

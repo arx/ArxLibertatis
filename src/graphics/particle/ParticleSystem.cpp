@@ -32,16 +32,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/ParticleParams.h"
 #include "graphics/particle/Particle.h"
 
 #include "platform/Platform.h"
 
 #include "scene/Light.h"
 
-using namespace std;
+using std::list;
 
-
-void CParticleSystem::RecomputeDirection()
+void ParticleSystem::RecomputeDirection()
 {
 	Vec3f eVect;
 	eVect.x = p3ParticleDirection.x;
@@ -50,7 +50,7 @@ void CParticleSystem::RecomputeDirection()
 	GenerateMatrixUsingVector(&eMat, &eVect, 0);
 }
 //-----------------------------------------------------------------------------
-CParticleSystem::CParticleSystem()
+ParticleSystem::ParticleSystem()
 {
 	int i;
 
@@ -135,10 +135,10 @@ CParticleSystem::CParticleSystem()
 }
 
 //-----------------------------------------------------------------------------
-CParticleSystem::~CParticleSystem()
+ParticleSystem::~ParticleSystem()
 {
-	list<CParticle *>::iterator i = listParticle.begin();
-	CParticle * pP;
+	list<Particle *>::iterator i = listParticle.begin();
+	Particle * pP;
 
 	while (i != listParticle.end())
 	{
@@ -156,7 +156,7 @@ CParticleSystem::~CParticleSystem()
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::SetPos(Point3 _p3)
+void ParticleSystem::SetPos(const Vec3f & _p3)
 {
 	p3Pos.x = _p3.x;
 	p3Pos.y = _p3.y;
@@ -171,7 +171,7 @@ void CParticleSystem::SetPos(Point3 _p3)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::SetColor(float _fR, float _fG, float _fB)
+void ParticleSystem::SetColor(float _fR, float _fG, float _fB)
 {
 	if (lLightId != -1)
 	{
@@ -182,7 +182,7 @@ void CParticleSystem::SetColor(float _fR, float _fG, float _fB)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::SetParams(CParticleParams & _pp)
+void ParticleSystem::SetParams(const ParticleParams & _pp)
 {
 	iParticleNbMax		= _pp.iNbMax;
 	fParticleLife		= _pp.fLife;
@@ -285,7 +285,7 @@ void CParticleSystem::SetParams(CParticleParams & _pp)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, bool _bLoop)
+void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, bool _bLoop)
 {
 	if (_iNbTex == 0)
 	{
@@ -311,7 +311,7 @@ void CParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, 
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::SpawnParticle(CParticle * pP)
+void ParticleSystem::SpawnParticle(Particle * pP)
 {
 	pP->p3Pos.x = 0;
 	pP->p3Pos.y = 0;
@@ -370,7 +370,7 @@ void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::SetParticleParams(CParticle * pP)
+void ParticleSystem::SetParticleParams(Particle * pP)
 {
 	SpawnParticle(pP);
 
@@ -469,7 +469,7 @@ void CParticleSystem::SetParticleParams(CParticle * pP)
 }
 
 //-----------------------------------------------------------------------------
-bool CParticleSystem::IsAlive()
+bool ParticleSystem::IsAlive()
 {
 	if ((iParticleNbAlive == 0) && (iParticleNbMax == 0))
 		return false;
@@ -478,7 +478,7 @@ bool CParticleSystem::IsAlive()
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::Update(long _lTime)
+void ParticleSystem::Update(long _lTime)
 {
 	if (ARXPausedTimer) return;
 
@@ -486,9 +486,9 @@ void CParticleSystem::Update(long _lTime)
 	int nbtotal = 0;
 	int iNb;
 	float fTimeSec = _lTime * ( 1.0f / 1000 );
-	CParticle * pP;
+	Particle * pP;
 
-	list<CParticle *>::iterator i;
+	list<Particle *>::iterator i;
 	iParticleNbAlive = 0;
 
 	i = listParticle.begin();
@@ -543,7 +543,7 @@ void CParticleSystem::Update(long _lTime)
 
 		for (iNb = 0; iNb < t; iNb++)
 		{
-			CParticle * pP  = new CParticle();
+			Particle * pP  = new Particle();
 			SetParticleParams(pP);
 			pP->Validate();
 			pP->Update(0);
@@ -555,7 +555,7 @@ void CParticleSystem::Update(long _lTime)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::Render() {
+void ParticleSystem::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -564,11 +564,11 @@ void CParticleSystem::Render() {
 
 	int inumtex = 0;
 
-	list<CParticle *>::iterator i;
+	list<Particle *>::iterator i;
 
 	for (i = listParticle.begin(); i != listParticle.end(); ++i)
 	{
-		CParticle * p = *i;
+		Particle * p = *i;
 
 		if (p->isAlive())
 		{

@@ -176,8 +176,8 @@ class CIncinerate: public CSpellFx
 		Vec3f eTarget;
 		TextureContainer * tex_flamme;
 		TextureContainer * tex_pouf_noir;
-		CParticleSystem pPSStream;
-		CParticleSystem pPSHit;
+		ParticleSystem pPSStream;
+		ParticleSystem pPSHit;
 		D3DTLVERTEX tv1a[150+1];
 
 		int iMax;

@@ -80,15 +80,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
  
 extern long cur_mr;
 //-----------------------------------------------------------------------------
 void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = -1)
 {
 	// syst�me de partoches pour l'explosion
-	CParticleSystem * pPS = new CParticleSystem();
-	CParticleParams cp;
+	ParticleSystem * pPS = new ParticleSystem();
+	ParticleParams cp;
 	cp.iNbMax = 100 + t * 50;
 	cp.fLife = 1500;
 	cp.fLifeRandom = 0;

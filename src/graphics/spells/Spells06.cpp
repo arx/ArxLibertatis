@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/Spells05.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/ParticleParams.h"
 
 #include "scene/Light.h"
 #include "scene/Object.h"
@@ -77,7 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
 
 //-----------------------------------------------------------------------------
 // CREATE FIELD
@@ -1519,8 +1520,8 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 
 
 	// syst�me de partoches pour la poussi�re
-	CParticleSystem * pPS = new CParticleSystem();
-	CParticleParams cp;
+	ParticleSystem * pPS = new ParticleSystem();
+	ParticleParams cp;
 	cp.iNbMax = 200;
 	cp.fLife = 500; //2000
 	cp.fLifeRandom = 900;
@@ -1578,10 +1579,12 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	if (pParticleManager)
 	{
 		pParticleManager->AddSystem(pPS);
+	} else {
+		// TODO memory leak (pPS)?
 	}
 
 	// syst�me de partoches pour la poussi�re au sol
-	pPS = new CParticleSystem();
+	pPS = new ParticleSystem();
 	
 	cp.iNbMax = 20;
 	cp.fLife = 1000; //2000
@@ -1637,9 +1640,10 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	pPS->Update(0);
 	pPS->iParticleNbMax = 0;
 
-	if (pParticleManager)
-	{
+	if(pParticleManager) {
 		pParticleManager->AddSystem(pPS);
+	} else {
+		// TODO memory leak (pPS)?
 	}
 }
 

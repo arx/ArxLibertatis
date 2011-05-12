@@ -75,9 +75,9 @@ class CFireBall: public CSpellFx
 		bool bExplo;
 		float fLevel;
 		//private:
-		CParticleSystem pPSFire;
-		CParticleSystem pPSFire2;
-		CParticleSystem pPSSmoke;
+		ParticleSystem pPSFire;
+		ParticleSystem pPSFire2;
+		ParticleSystem pPSSmoke;
 
 	public:
 		CFireBall();
@@ -197,7 +197,7 @@ class CCreateFood: public CSpellFx
 	public:
 		Vec3f eSrc;
 		float	fSize;
-		CParticleSystem * pPS;
+		ParticleSystem * pPS;
 		TextureContainer * tex_sol;
 		TextureContainer * tex_heal;
 

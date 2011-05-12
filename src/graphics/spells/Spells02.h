@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/SpellEffects.h"
 
-class CParticleSystem;
+class ParticleSystem;
 
 //-----------------------------------------------------------------------------
 // Done By : did
@@ -71,7 +71,7 @@ class CHeal: public CSpellFx
 	public:
 		Vec3f eSrc;
 		float	fSize;
-		CParticleSystem * pPS;
+		ParticleSystem * pPS;
 		TextureContainer * tex_sol;
 		TextureContainer * tex_heal;
 

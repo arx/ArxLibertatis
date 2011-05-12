@@ -78,13 +78,13 @@ class CBless: public CSpellFx
 		float fRotPerMSec;
 
 		int iNbPS;
-		CParticleSystem psTab[256];
+		ParticleSystem psTab[256];
 		int iNpcTab[256];
 
 		int iMax;
 		float fSize;
 
-		CParticleSystem		pPS;
+		ParticleSystem		pPS;
 
 	public:
 		CBless();

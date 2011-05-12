@@ -188,8 +188,8 @@ class CFireField: public CSpellFx
 		float		demilargeur;
 		float		interp;
 		//	TextureContainer *tp,*tp2;
-		CParticleSystem pPSStream;
-		CParticleSystem pPSStream1;
+		ParticleSystem pPSStream;
+		ParticleSystem pPSStream1;
 
 	public:
 		CFireField();

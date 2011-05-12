@@ -989,7 +989,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	this->pos = *pos;
 	this->demilargeur = largeur * .5f;
 
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 100;
 	cp.fLife = 2000;
 	cp.fLifeRandom = 1000;

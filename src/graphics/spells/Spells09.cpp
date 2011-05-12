@@ -687,7 +687,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 
 	Split(tv1a, 0, end, 10, 1, 0, 1, 10, 1);
 
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 250; 
 	cp.fLife = 1000;
 	cp.fLifeRandom = 500;

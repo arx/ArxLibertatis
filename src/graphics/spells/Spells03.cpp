@@ -79,7 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/LoadLevel.h"
 
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
 
 //-----------------------------------------------------------------------------
 CFireBall::CFireBall() : CSpellFx()
@@ -108,7 +108,7 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 
-	std::list<CParticle *>::iterator i;
+	std::list<Particle *>::iterator i;
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
 	arx_assert(ulCalc <= LONG_MAX);
@@ -117,7 +117,7 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 
 	for (i = pPSSmoke.listParticle.begin(); i != pPSSmoke.listParticle.end(); ++i)
 	{
-		CParticle * pP = *i;
+		Particle * pP = *i;
 
 		if (pP->isAlive())
 		{
@@ -151,7 +151,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 
 	fLevel = _fLevel;
 
-	CParticleParams cp;
+	ParticleParams cp;
 
 	//FIRE
 	cp.iNbMax = 200;
@@ -1054,7 +1054,7 @@ CCreateFood::CCreateFood()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	pPS = new CParticleSystem();
+	pPS = new ParticleSystem();
 }
 
 //-----------------------------------------------------------------------------
@@ -1070,7 +1070,7 @@ void CCreateFood::Create()
 	eSrc.z = player.pos.z;
 
 	pPS->SetPos(eSrc);
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
@@ -1154,11 +1154,11 @@ if (ulCurrentTime >= ulDuration)
 			pPS->p3ParticleGravity.y = 0;
 			pPS->p3ParticleGravity.z = 0;
 
-		std::list<CParticle *>::iterator i;
+		std::list<Particle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 		{
-			CParticle * pP = *i;
+			Particle * pP = *i;
 
 			if (pP->isAlive())
 			{

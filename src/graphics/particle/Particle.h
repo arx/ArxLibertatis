@@ -22,65 +22,59 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//-----------------------------------------------------------------------------
-#ifndef ARX_CPARTICLE_H
-#define ARX_CPARTICLE_H
 
-#include <list>
-#include "graphics/GraphicsTypes.h"
-using namespace std;
+#ifndef ARX_GRAPHICS_PARTICLE_PARTICLE_H
+#define ARX_GRAPHICS_PARTICLE_PARTICLE_H
 
-//-----------------------------------------------------------------------------
-typedef Vec3f Point3;
+#include "platform/math/Vector3.h"
 
-//-----------------------------------------------------------------------------
-class CParticle
-{
-	public:
-		Point3	p3Pos;
-		Point3	p3OldPos;
-		Point3  p3Velocity;
-
-		// time
-		float	fOneOnTTL;
-		float	fTimeSec;
-		long	ulTime;	// Age
-		long	ulTTL;	// Time to Live
-
-		// size
-		float	fSize;
-		float	fSizeStart;
-		float	fSizeEnd;
-
-		// color
-		float	fColorStart[4];
-		float	fColorEnd[4];
-		float	fColor[4];
-		unsigned long	ulColor;
-
-		// rotation
-		int		iRot;
-		float	fRotStart;
-		float	fRotation;
-
-		// tex infos
-		int		iTexTime;
-		int		iTexNum;
-
-	public:
-		CParticle();
-		~CParticle();
-
-	public:
-		void	Create();
-		void	Create(Point3 _p3Pos, long, unsigned long, float);
-		void	Regen();
-		void	Update(long);
-		bool	isAlive()
-		{
-			return (ulTime < ulTTL);
-		};
-		void	Validate();
+class Particle {
+	
+public:
+	
+	Vec3f p3Pos;
+	Vec3f p3OldPos;
+	Vec3f p3Velocity;
+	
+	// time
+	float fOneOnTTL;
+	float fTimeSec;
+	long ulTime; //!< Age
+	long ulTTL; //!< Time to Live
+	
+	// size
+	float fSize;
+	float fSizeStart;
+	float fSizeEnd;
+	
+	// color
+	float fColorStart[4];
+	float fColorEnd[4];
+	float fColor[4];
+	unsigned long ulColor;
+	
+	// rotation
+	int iRot;
+	float fRotStart;
+	float fRotation;
+	
+	// tex infos
+	int iTexTime;
+	int iTexNum;
+	
+public:
+	
+	Particle();
+	~Particle();
+	
+	void Regen();
+	void Update(long);
+	
+	bool isAlive() {
+		return (ulTime < ulTTL);
+	};
+	void Validate();
+	
 };
 
-#endif
+#endif // ARX_GRAPHICS_PARTICLE_PARTICLE_H

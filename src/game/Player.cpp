@@ -114,7 +114,7 @@ extern QUAKE_FX_STRUCT QuakeFx;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern TextureContainer * iconequip[];
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
 
 extern unsigned long LAST_JUMP_ENDTIME;
 //-----------------------------------------------------------------------------

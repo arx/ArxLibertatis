@@ -22,50 +22,32 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//-----------------------------------------------------------------------------
-#ifndef ARX_CPARTICLES_H
-#define ARX_CPARTICLES_H
+
+#ifndef ARX_GRAPHICS_PARTICLE_PARTICLEMANAGER_H
+#define ARX_GRAPHICS_PARTICLE_PARTICLEMANAGER_H
 
 #include <list>
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/particle/ParticleParams.h"
-#include "graphics/particle/ParticleSystem.h"
+class ParticleSystem;
 
-class CParticleSystem;
-
-//-----------------------------------------------------------------------------
-//typedef int EERIE_3D;
-typedef Vec3f Point3;
- 
-
-class CParticle;
-class CParticleSystem;
-class CParticleParams;
-
-//-----------------------------------------------------------------------------
-class CParticleManager
-{
-	private:
-		//CParticleContainer		ParticleContainer;
-		std::list<CParticleSystem *> listParticleSystem;
-
-	public:
-		CParticleManager();
-		~CParticleManager();
-
-	public:
-		bool	Init();
-		void	Shutdown();
-		void	Clear();
-
-		void	AddSystem(CParticleSystem *);
- 
-		bool	IsAlive(CParticleSystem);
-		void	Update(long alTime);
-		void	Render();
-
-		//flag post prod/genre filtre
+class ParticleManager {
+	
+private:
+	
+	std::list<ParticleSystem *> listParticleSystem;
+	
+public:
+	
+	ParticleManager();
+	~ParticleManager();
+	
+	void Clear();
+	
+	void AddSystem(ParticleSystem *);
+	
+	void Update(long alTime);
+	void Render();
+	
 };
 
-#endif
+#endif // ARX_GRAPHICS_PARTICLE_PARTICLEMANAGER_H

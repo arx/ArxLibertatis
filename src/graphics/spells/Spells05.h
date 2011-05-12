@@ -196,7 +196,7 @@ class CCurePoison: public CSpellFx
 	public:
 		Vec3f eSrc;
 		float	fSize;
-		CParticleSystem * pPS;
+		ParticleSystem * pPS;
 		TextureContainer * tex_sol;
 		TextureContainer * tex_heal;
 
@@ -233,8 +233,8 @@ class CPoisonProjectile: public CSpellFx
 		Vec3f eCurPos;
 		Vec3f eMove;
 		D3DTLVERTEX pathways[40];
-		CParticleSystem pPS;
-		CParticleSystem pPSStream;
+		ParticleSystem pPS;
+		ParticleSystem pPSStream;
 
 	public:
 		CPoisonProjectile();
