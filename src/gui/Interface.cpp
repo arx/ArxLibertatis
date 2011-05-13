@@ -2326,9 +2326,6 @@ bool DANAE::ManageEditorControls()
 							ARX_PLAYER_Remove_Invisibility();
 							io->obj->pbox->active=1;
 							io->obj->pbox->stopcount=0;
-							float vx=-((float)DANAEMouse.x-(float)subj.centerx);
-
-							vx/=3.f;
 							Vec3f pos;
 								pos.x = io->pos.x = player.pos.x;
 								pos.z = io->pos.z = player.pos.z;
@@ -3895,10 +3892,7 @@ void DANAE::ManagePlayerControls()
 		}
 	}
 
-	long NOMOREMOVES=0;
 	float MoveDiv;
-	float FD;
-	FD = 1.f;
 
 	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
@@ -3912,18 +3906,18 @@ void DANAE::ManagePlayerControls()
 	else MoveDiv=0.0333333f;
 
 	{
-		float tr;
+		long NOMOREMOVES=0;
+		float FD = 1.f;
 
 		if (eyeball.exist==2)
 		{
 			FD=18.f;
-
 			Vec3f old = eyeball.pos;
 
 			// Checks WALK_FORWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKFORWARD) )
 			{
-				tr=radians(eyeball.angle.b);
+				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*20.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -3933,7 +3927,7 @@ void DANAE::ManagePlayerControls()
 			// Checks WALK_BACKWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKBACKWARD) )
 			{
-				tr=radians(eyeball.angle.b);
+				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=-(float)EEcos(tr)*20.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -3945,7 +3939,7 @@ void DANAE::ManagePlayerControls()
 				(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNLEFT)))
 				&& !NOMOREMOVES)
 			{
-				tr=radians(MAKEANGLE(eyeball.angle.b+90.f));
+				float tr=radians(MAKEANGLE(eyeball.angle.b+90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*10.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -3957,7 +3951,7 @@ void DANAE::ManagePlayerControls()
 				(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNRIGHT)))
 				&& !NOMOREMOVES)
 			{
-				tr=radians(MAKEANGLE(eyeball.angle.b-90.f));
+				float tr=radians(MAKEANGLE(eyeball.angle.b-90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				//eyeball.pos.y+=FD*0.33f;
 				eyeball.pos.z+=(float)EEcos(tr)*10.f*(float)FD*0.033f;
@@ -7317,14 +7311,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 	else
 	{
 		float x = 0;
-		float y = 0;
-
-		x = 0;
 		
 		if ( ITC.Get("playerbook") )
 		{
 			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
-			y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
+			float y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
 
 			DrawBookInterfaceItem( ITC.Get("playerbook"), x, y );//95.f+2.f,47.f+17.f);
 		}
@@ -10169,9 +10160,6 @@ long Manage3DCursor(long flags)
 								ARX_PLAYER_Remove_Invisibility();
 								io->obj->pbox->active=1;
 								io->obj->pbox->stopcount=0;
-								float vx=-((float)DANAEMouse.x-(float)subj.centerx);
-
-								vx/=3.f;
 								Vec3f pos;
 					pos.x = io->pos.x = collidpos.x;
 					pos.z = io->pos.z = collidpos.z;
@@ -10723,7 +10711,6 @@ void ARX_INTERFACE_RenderCursor(long flag)
 				if (!(player.Interface & INTER_COMBATMODE))
 				{
 					CURCURPOS=0;
-					float POSX, POSY;
 
 						surf = pTCCrossHair;
 
@@ -10737,8 +10724,8 @@ void ARX_INTERFACE_RenderCursor(long flag)
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-							POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
-							POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
+							float POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
+							float POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
 
 							D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
 
