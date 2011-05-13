@@ -1190,7 +1190,6 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 //*************************************************************************************
 void ARX_DAMAGES_UpdateDamage(long j, float tim)
 {
-	float dmg, dist;
 	Vec3f sub;
 
 	if (damages[j].exist)
@@ -1216,6 +1215,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 			}
 		}
 
+		float dmg;
 		if (damages[j].flags & DAMAGE_NOT_FRAME_DEPENDANT)
 			dmg = damages[j].damages;
 		else if (damages[j].duration == -1) dmg = damages[j].damages;
@@ -1263,7 +1263,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 						sub.x = io->pos.x;
 						sub.y = io->pos.y - 60.f;
 						sub.z = io->pos.z;
-						dist = fdist(damages[j].pos, sub);
+						float dist = fdist(damages[j].pos, sub);
 
 						if (damages[j].type & DAMAGE_TYPE_FIELD)
 						{
