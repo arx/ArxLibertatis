@@ -1910,6 +1910,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 	const IniSection * section = reader.getSection(Section::presence);
 	if(!section) {
 		LogWarning << "no [" << Section::presence << "] section in presence map " << file;
+		return;
 	}
 	
 	for(IniSection::iterator i = section->begin(); i != section->end(); ++i) {
