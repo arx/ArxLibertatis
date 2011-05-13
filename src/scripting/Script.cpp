@@ -1831,7 +1831,6 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 {
 	char var_text[256];
 	float t1;
-	long l1;
 
 	if(!temp1.empty())
 	{
@@ -1859,13 +1858,13 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 		}
 		else if (temp1[0] == '#')
 		{
-			l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
+			long l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
 			sprintf(var_text, "%ld", l1);
 			return var_text;
 		}
 		else if (temp1[0] == '\xA7')
 		{
-			l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
+			long l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 			sprintf(var_text, "%ld", l1);
 			return var_text;
 		}
@@ -2578,12 +2577,12 @@ long GotoNextLine(EERIE_SCRIPT * es, long pos)
 long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 {
 	std::string temp;
-	long brack = 1;
 	long tpos;
 	pos = GetNextWord(es, pos, temp);
 
 	if (temp[0] == '{')
 	{
+		long brack = 1;
 		while (brack > 0)
 		{
 			pos = GetNextWord(es, pos, temp);
