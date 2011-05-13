@@ -5834,11 +5834,10 @@ static float _AvgFrameDiff = 150.f;
 		subj.angle.b=player.angle.b;
 		subj.angle.g=player.angle.g;
 		EXTERNALVIEW=0;
-		long id;
 
 		if (inter.iobj[0])
 		{
-				id = inter.iobj[0]->obj->fastaccess.view_attach;
+			long id = inter.iobj[0]->obj->fastaccess.view_attach;
 
 			if (id!=-1)
 			{
