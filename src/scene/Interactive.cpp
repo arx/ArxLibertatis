@@ -1995,7 +1995,6 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 		float diff = io->pos.y - vvp;
 		float fdiff = EEfabs(diff);
 		float eediff = fdiff;
-		float mul = 1.f;
 
 		if (fdiff > 120.f) 
 		{
@@ -2003,7 +2002,7 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 		}
 		else
 		{
-			mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
+			float mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
 
 			if ((eediff < 15.f))
 			{
@@ -3630,9 +3629,6 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
 //*************************************************************************************
 static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 	
-	long nbv;
-	long idx;
-
 	if ((!io)
 	        ||	(!io->obj))
 		return false;
@@ -3640,13 +3636,12 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 	if (Distance3D(pos->x, pos->y, pos->z, io->pos.x, io->pos.y, io->pos.z) < 190.f)
 	{
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
-		nbv = io->obj->vertexlist.size(); // TODO is this event correct?
 
 		if (io->obj->nbgroups > 4)
 		{
 			for (long i = 0; i < io->obj->nbgroups; i++)
 			{
-				idx = io->obj->grouplist[i].origin;
+				long idx = io->obj->grouplist[i].origin;
 
 				if (Distance3D(pos->x, pos->y, pos->z, vlist[idx].v.x, vlist[idx].v.y, vlist[idx].v.z) <= 50.f)
 					return true;
@@ -3654,6 +3649,7 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 		}
 		else
 		{
+			long nbv = io->obj->vertexlist3.size();
 			for (long i = 0; i < nbv; i++)
 			{
 				if (i != io->obj->origin)
