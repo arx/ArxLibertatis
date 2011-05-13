@@ -1059,8 +1059,7 @@ void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex)
 void PopOneInterBump(TextureContainer *_pTex)
 {
 	//BUMP
-	if( _pTex->vPolyInterBump.size() )
-	{
+	if(!_pTex->vPolyInterBump.empty()) {
 		//----------------------------------------------------------------------------------
 		//																		Initializing
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
@@ -1082,9 +1081,9 @@ void PopOneInterBump(TextureContainer *_pTex)
 		{
 			D3DTLVERTEX pVertexS[3];
 
-			pVertexS[0]	=	*iT;	iT++;
-			pVertexS[1]	=	*iT;	iT++;
-			pVertexS[2]	=	*iT;	iT++;
+			pVertexS[0]	=	*iT;	++iT;
+			pVertexS[1]	=	*iT;	++iT;
+			pVertexS[2]	=	*iT;	++iT;
 			
 			if(	!pVertexS[0].color&&
 				!pVertexS[1].color&&
@@ -1888,8 +1887,7 @@ static void DrawEERIEInter2(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, I
 
 	}
 
-	int iNbPointAdd;
-	if(!(iNbPointAdd=ARX_SoftClippZ(	&eobj->vertexlist[paf[0]],
+	if(!(ARX_SoftClippZ(	&eobj->vertexlist[paf[0]],
 						&eobj->vertexlist[paf[1]],
 						&eobj->vertexlist[paf[2]],
 						&vert_list,
