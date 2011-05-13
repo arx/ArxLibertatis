@@ -242,6 +242,10 @@ public:
 		return Vector2(other - *this).length();
 	}
 	
+	T distanceFromSqr(const Vector2 & other) const {
+		return Vector2(other - *this).lengthSqr();
+	}
+	
 	/*!
 	 * Check if two vector are equals using an epsilon.
 	 * @param other The other vector.
@@ -269,6 +273,11 @@ public:
 template<class T>
 T dist(const Vector2<T> & a, const Vector2<T> & b) {
 	return a.distanceFrom(b);
+}
+
+template<class T>
+T distSqr(const Vector2<T> & a, const Vector2<T> & b) {
+	return a.distanceFromSqr(b);
 }
 
 // Constants

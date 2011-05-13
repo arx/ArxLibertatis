@@ -3447,8 +3447,8 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 				{
 					if (flag && _pRef)
 					{
-						float flDistanceToRef = EESquaredDistance3D(&ACTIVECAM->pos, _pRef);
-						float flDistanceToIO = EESquaredDistance3D(&ACTIVECAM->pos, &io->pos);
+						float flDistanceToRef = distSqr(ACTIVECAM->pos, *_pRef);
+						float flDistanceToIO = distSqr(ACTIVECAM->pos, io->pos);
 						bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
 					}
 

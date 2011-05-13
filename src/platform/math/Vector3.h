@@ -301,7 +301,7 @@ public:
 	 * @return The length of this vector.
 	 */
 	T length() const {
-		return std::sqrt(x*x + y*y + z*z);
+		return std::sqrt(lengthSqr());
 	}
 	
 	/*!
@@ -319,6 +319,10 @@ public:
 	 */
 	T distanceFrom(const Vector3 & other) const {
 		return Vector3(other - *this).length();
+	}
+	
+	T distanceFromSqr(const Vector3 & other) const {
+		return Vector3(other - *this).lengthSqr();
 	}
 	
 	/*!
@@ -356,16 +360,21 @@ public:
 	
 };
 
-template<class T>
-T dist(const Vector3<T> & a, const Vector3<T> & b) {
-	return a.distanceFrom(b);
-}
-
 // Constants
 template<class T> const Vector3<T> Vector3<T>::X_AXIS(T(1), T(0), T(0));
 template<class T> const Vector3<T> Vector3<T>::Y_AXIS(T(0), T(1), T(0));
 template<class T> const Vector3<T> Vector3<T>::Z_AXIS(T(0), T(0), T(1));
 template<class T> const Vector3<T> Vector3<T>::ZERO(T(0), T(0), T(0));
+
+template<class T>
+T dist(const Vector3<T> & a, const Vector3<T> & b) {
+	return a.distanceFrom(b);
+}
+
+template<class T>
+T distSqr(const Vector3<T> & a, const Vector3<T> & b) {
+	return a.distanceFromSqr(b);
+}
 
 typedef Vector3<s32> Vec3i;
 typedef Vector3<float> Vec3f;
