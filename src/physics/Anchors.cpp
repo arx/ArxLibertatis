@@ -487,7 +487,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 		return false;
 	}
 
-	float distance = TRUEEEDistance3D(&ip->startpos, &ip->targetpos);
+	float distance = dist(ip->startpos, ip->targetpos);
 
 	if (distance <= 0.f)
 	{
@@ -771,15 +771,15 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 	if (found)
 	{
-		float dist = TRUEEEDistance3D(pos, &currcyl.origin);
+		float d = dist(*pos, currcyl.origin);
 
 		if ((currcyl.radius >= bestcyl.radius))
 		{
-			if (((best_dist > dist) && (currcyl.radius == bestcyl.radius))
+			if (((best_dist > d) && (currcyl.radius == bestcyl.radius))
 			        || (currcyl.radius > bestcyl.radius))
 			{
 				memcpy(&bestcyl, &currcyl, sizeof(EERIE_CYLINDER));
-				best_dist = dist;
+				best_dist = d;
 				best = 1;
 			}
 		}
@@ -793,7 +793,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	{
 		_ANCHOR_DATA * ad = &eb->anchors[k];
 
-		if (TRUEEEDistance3D(&ad->pos, &bestcyl.origin) < 50.f) return false;
+		if (dist(ad->pos, bestcyl.origin) < 50.f) return false;
 
 		if (TRUEDistance2D(ad->pos.x, ad->pos.z, bestcyl.origin.x, bestcyl.origin.z) < 45.f)
 		{
@@ -887,15 +887,15 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 
 			if (found)
 			{
-				float dist = TRUEEEDistance3D(pos, &currcyl.origin);
+				float d = dist(*pos, currcyl.origin);
 
 				if (currcyl.radius >= bestcyl.radius)	
 				{
-					if (((best_dist > dist) && (currcyl.radius == bestcyl.radius))
+					if (((best_dist > d) && (currcyl.radius == bestcyl.radius))
 					        || (currcyl.radius > bestcyl.radius))
 					{
 						memcpy(&bestcyl, &currcyl, sizeof(EERIE_CYLINDER));
-						best_dist = dist;
+						best_dist = d;
 						best = 1;
 					}
 				}
@@ -1046,7 +1046,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 							p2.y += 10.f;
 							long _onetwo = 0;
 							bool treat = true;
-							float dist = TRUEEEDistance3D(&p1, &p2);
+							float _dist = dist(p1, p2);
 							float dd = TRUEDistance2D(p1.x, p1.z, p2.x, p2.z);
 
 							if (dd < 5.f) continue;
@@ -1055,9 +1055,9 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 							if (precise || precise2)
 							{
-								if (dist > 120.f) continue;
+								if (_dist > 120.f) continue;
 							}
-							else	if (dist > 200.f) continue;
+							else	if (_dist > 200.f) continue;
 
 							if (EEfabs(p1.y - p2.y) > dd * 0.9f) continue;
 

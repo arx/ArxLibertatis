@@ -6042,7 +6042,7 @@ static float _AvgFrameDiff = 150.f;
 
 			if ((rtime>=0.f) && (rtime<=1.f) && io)
 			{
-				float alpha,beta,distance,dist;
+				float alpha,beta,distance,_dist;
 
 				switch (acs->type)
 				{
@@ -6098,9 +6098,9 @@ static float _AvgFrameDiff = 150.f;
 
 							distance=acs->f0*itime+acs->f1*rtime;
 							vect2 *= distance;
-							dist=TRUEEEDistance3D(&from,&to);
-							Vec3f tfrom = from + vect * acs->startpos * (1.0f / 100) * dist;
-							Vec3f tto = from + vect * acs->endpos * (1.0f / 100) * dist;
+							_dist = dist(from, to);
+							Vec3f tfrom = from + vect * acs->startpos * (1.0f / 100) * _dist;
+							Vec3f tto = from + vect * acs->endpos * (1.0f / 100) * _dist;
 							Vec3f targetpos;
 							targetpos.x=tfrom.x*itime+tto.x*rtime;
 							targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;

@@ -863,7 +863,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 		if (!(GetMaxManhattanDistance(&IO_PDL[i]->pos, &tv) <= IO_PDL[i]->fallend + 500.f))
 			continue;
 
-		Insertllight(IO_PDL[i], TRUEEEDistance3D(&IO_PDL[i]->pos, &tv));
+		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
 	}
 
 	for (i = 0; i < TOTPDL; i++)
@@ -871,7 +871,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 		if (!(GetMaxManhattanDistance(&PDL[i]->pos, &tv) <= PDL[i]->fallend + 500.f))
 			continue;
 
-		Insertllight(PDL[i], TRUEEEDistance3D(&PDL[i]->pos, &tv));//-PDL[i]->fallstart);
+		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
 	}
 
 	if (!USEINTERNORM)

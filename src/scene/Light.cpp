@@ -438,8 +438,6 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	int		nbvert;			// number or vertices per face (3 or 4)
 	float	distance[4];	// distance from light to each vertex
 	float	fRes;			// value of light intensity for a given vertex
-	Vec3f vLight;		// vector (light to vertex)
-	Vec3f vNorm;			// vector (interpolated normal of vertex)
 
 	if (ep->type & POLY_IGNORE)
 		return;
@@ -449,7 +447,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	// compute light - vertex distance
 	for (i = 0; i < nbvert; i++)
 	{
-		distance[i] = TRUEEEDistance3D(&light->pos, (Vec3f *)&ep->v[i]);
+		distance[i] = dist(light->pos, ep->v[i]);
 	}
 
 	for (i = 0; i < nbvert; i++)
@@ -461,15 +459,13 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			//---------------------- start MODE_NORMALS
 			if (ModeLight & MODE_NORMALS)
 			{
+				Vec3f vLight; // vector (light to vertex)
 				vLight.x = light->pos.x - ep->v[i].sx;
 				vLight.y = light->pos.y - ep->v[i].sy;
 				vLight.z = light->pos.z - ep->v[i].sz;
 				vLight.normalize();
-				vNorm.x = ep->nrml[i].x;
-				vNorm.y = ep->nrml[i].y;
-				vNorm.z = ep->nrml[i].z;
 
-				fRes = vLight dot vNorm;
+				fRes = vLight dot ep->nrml[i];
 
 				if (fRes < 0.0f)
 				{

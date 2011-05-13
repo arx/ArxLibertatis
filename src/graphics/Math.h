@@ -407,9 +407,9 @@ inline float EESquaredDistance3D(const Vec3f * from, const Vec3f * to)
 #define Distance3D(x0,y0,z0,x1,y1,z1) (float)EEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
 #define TRUEDistance2D(x0,y0,x1,y1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 #define TRUEDistance3D(x0,y0,z0,x1,y1,z1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
-inline float TRUEEEDistance3D(const Vec3f * from, const Vec3f * to)
-{
-	return (float)TRUEsqrt(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
+
+inline float dist(const Vec3f & from, const D3DTLVERTEX & dest) {
+	return dist(from, Vec3f(dest.sx, dest.sy, dest.sz));
 }
 
 //*************************************************************************************

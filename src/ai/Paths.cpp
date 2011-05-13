@@ -1465,9 +1465,9 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if (Thrown[i].flags & ATO_EXIST)
 		{
 			// Is Object Visible & Near ?
-			float dist = EEDistance3D(&ACTIVECAM->pos, &Thrown[i].position);
+			float _dist = EEDistance3D(&ACTIVECAM->pos, &Thrown[i].position);
 
-			if (dist > ACTIVECAM->cdepth * fZFogEnd + 50.f) continue;
+			if (_dist > ACTIVECAM->cdepth * fZFogEnd + 50.f) continue;
 
 			long xx, yy;
 			xx = (Thrown[i].position.x)*ACTIVEBKG->Xmul;
@@ -1729,12 +1729,12 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 											{
 												if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
 
-												float dist = TRUEEEDistance3D(&sphere.origin, &target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
+												float d = dist(sphere.origin, target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
 
-												if (dist < curdist)
+												if (d < curdist)
 												{
 													hitpoint	=	target->obj->facelist[ii].vid[0];
-													curdist		=	dist;
+													curdist		=	d;
 												}
 											}
 
@@ -2012,7 +2012,7 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, fl
 	PHYSVERT * pv_l = &phys[l];
 	float Dterm, Hterm;
 
-	float restlength = TRUEEEDistance3D(&pv_k->initpos, &pv_l->initpos);
+	float restlength = dist(pv_k->initpos, pv_l->initpos);
 	//Computes Spring Magnitude
 	deltaP.x = pv_k->pos.x - pv_l->pos.x;		
 	deltaP.y = pv_k->pos.y - pv_l->pos.y;	
@@ -2749,14 +2749,13 @@ void ARX_PrepareBackgroundNRMLs()
 					ep->nrml[k].z = ep->tv[k].sz;
 				}
 
-				float dist = 0.f;
+				float d = 0.f;
 
-				for (long ii = 0; ii < nbvert; ii++)
-				{
-					dist = std::max(dist, TRUEEEDistance3D((Vec3f *)&ep->v[ii], &ep->center));
+				for(long ii = 0; ii < nbvert; ii++) {
+					d = max(d, dist(ep->center, ep->v[ii]));
 				}
 
-				ep->v[0].rhw = dist;
+				ep->v[0].rhw = d;
 			}
 		}
 

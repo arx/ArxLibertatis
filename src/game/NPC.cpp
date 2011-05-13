@@ -757,12 +757,12 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 	}
 
 	io->_npcdata->pathfind.truetarget = target;
-	float dist;
-	dist = EEDistance3D(&pos1, &pos2);
+	float d;
+	d = EEDistance3D(&pos1, &pos2);
 
 	if ((EEDistance3D(&pos1, &ACTIVECAM->pos) < ACTIVECAM->cdepth * ( 1.0f / 2 ))
 	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
-	        && (dist < 520) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
+	        && (d < 520) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_SNEAK))
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 	   )
@@ -783,9 +783,9 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC | CFLAG_NO_HEIGHT_MOD)) ))
 		{
 
-			dist = TRUEEEDistance3D(&phys.cyl.origin, &pos2);
+			d = dist(phys.cyl.origin, pos2);
 
-			if (dist < 100)
+			if (d < 100)
 			{
 				io->_npcdata->pathfind.pathwait = 0;
 				return false;
@@ -1429,8 +1429,6 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 		ARX_NPC_CreateExRotateData(io);
 	}
 
-	Vec3f tv;
-
 	if (!io->show) return;
 
 	if (io->ioflags & IO_NPC)
@@ -1443,11 +1441,9 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	if (io->_npcdata->behavior & BEHAVIOUR_NONE) return;
 
 	GetTargetPos(io);
-	tv.x = io->pos.x;
-	tv.y = io->pos.y;
-	tv.z = io->pos.z;
+	Vec3f tv = io->pos;
 
-	if (TRUEEEDistance3D(&tv, &io->target) <= 20.f) return; // To fix "stupid" rotation near target
+	if (dist(tv, io->target) <= 20.f) return; // To fix "stupid" rotation near target
 
 	if (((io->target.x - tv.x) == 0) && ((io->target.z - tv.z) == 0)) return;
 
@@ -1527,9 +1523,9 @@ float GetTRUETargetDist(INTERACTIVE_OBJ * io)
 	if ((t >= 0) && (t < inter.nbmax) && (inter.iobj[t] != NULL))
 	{
 		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-			return TRUEEEDistance3D(&io->pos, &io->initpos);
+			return dist(io->pos, io->initpos);
 
-		return TRUEEEDistance3D(&io->pos, &inter.iobj[t]->pos);
+		return dist(io->pos, inter.iobj[t]->pos);
 	}
 
 	return 99999999.f;
@@ -1586,8 +1582,8 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	for (size_t i = 0; i < obj->selections[tw].selected.size(); i++)
 	{
-		float d = TRUEEEDistance3D(&obj->vertexlist[obj->selections[tw].selected[i]].v,
-		                           &obj->vertexlist[vert].v);
+		float d = dist(obj->vertexlist[obj->selections[tw].selected[i]].v,
+		               obj->vertexlist[vert].v);
 
 		if (d < 8.f)
 			return i;
@@ -3233,7 +3229,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			return;
 	}
 
-	float dist = FLT_MAX;
+	float _dist = FLT_MAX;
 	long CHANGE = 0;
 
 	Vec3f ForcedMove;
@@ -3262,8 +3258,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	}
 
 	// XS : Moved to top of func
-	dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
-	dis = dist;
+	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
+	dis = _dist;
 
 	if (io->_npcdata->pathfind.listnb > 0)
 		dis = GetTRUETargetDist(io);
@@ -3600,8 +3596,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	APPLY_PUSH = 0;
 
 	// Compute distance 2D to target.
-	dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
-	dis = dist;
+	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
+	dis = _dist;
 
 	if (io->_npcdata->pathfind.listnb > 0)
 		dis = GetTRUETargetDist(io);
@@ -3612,7 +3608,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	// Tries to solve Moveproblems... sort of...
 	if (io->_npcdata->moveproblem > 11) 
 	{
-		if ((dist > TOLERANCE) && (!io->_npcdata->pathfind.pathwait))
+		if ((_dist > TOLERANCE) && (!io->_npcdata->pathfind.pathwait))
 		{
 			long targ;
 
@@ -3645,9 +3641,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 			if ((t != -1) && (t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]))
 			{
-				float dist = TRUEEEDistance3D(&ACTIVEBKG->anchors[t].pos, &ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
+				float d = dist(ACTIVEBKG->anchors[t].pos, ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
 
-				if (dist > 200.f)
+				if (d > 200.f)
 					ARX_NPC_LaunchPathfind(io, io->_npcdata->pathfind.truetarget);
 			}
 		}
@@ -3657,7 +3653,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	// We are still too far from our target...
 	if (io->_npcdata->pathfind.pathwait == 0)
 	{
-		if ((dist > TOLERANCE) && (dis > TOLERANCE2))
+		if ((_dist > TOLERANCE) && (dis > TOLERANCE2))
 		{
 			if ((io->_npcdata->reachedtarget))
 			{

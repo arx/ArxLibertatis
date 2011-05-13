@@ -2043,19 +2043,19 @@ void ComputeRoomDistance()
 
 			if (found)
 			{
-				float dist = 0.f;
+				float d = 0.f;
 
 				for (size_t id = 1; id < rl.size() - 1; id++)
 				{
-					dist += TRUEEEDistance3D(&ad[rl[id-1]].pos, &ad[rl[id]].pos);
+					d += dist(ad[rl[id-1]].pos, ad[rl[id]].pos);
 				}
 
-				if (dist < 0.f) dist = 0.f;
+				if (d < 0.f) d = 0.f;
 
 				float old = GetRoomDistance(i, j, NULL, NULL);
 
-				if (((dist < old) || (old < 0.f)) && rl.size() >= 2)
-					SetRoomDistance(i, j, dist, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
+				if (((d < old) || (old < 0.f)) && rl.size() >= 2)
+					SetRoomDistance(i, j, d, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
 			}
 
 		}
@@ -2352,14 +2352,13 @@ void PrepareBackgroundNRMLs()
 					ep->nrml[k].z = ep->tv[k].sz;
 				}
 
-				float dist = 0.f;
+				float d = 0.f;
 
-				for (long ii = 0; ii < nbvert; ii++)
-				{
-					dist = max(dist, TRUEEEDistance3D((Vec3f *)&ep->v[ii], &ep->center));
+				for(long ii = 0; ii < nbvert; ii++) {
+					d = max(d, dist(ep->center, ep->v[ii]));
 				}
 
-				ep->v[0].rhw = dist;
+				ep->v[0].rhw = d;
 			}
 		}
 
@@ -2645,14 +2644,14 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 		}
 
 		ep->center *= divide;
-		float dist = 0.f;
+		float d = 0.f;
 
 		for (long ii = 0; ii < to; ii++)
 		{
-			dist = max(dist, TRUEEEDistance3D((Vec3f *)&ep->v[ii], &ep->center));
+			d = max(d, dist(ep->center, ep->v[ii]));
 		}
 
-		ep->norm2.x = dist;
+		ep->norm2.x = d;
 
 		for (long nroom = 0; nroom <= portals->nb_rooms; nroom++)
 		{
@@ -2783,9 +2782,8 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long px, lon
 
 		ep->center /= nbvert;
 
-		for (int ii = 0; ii < nbvert; ii++)
-		{
-			float fDist = TRUEEEDistance3D((Vec3f *)&ep->v[ii], &ep->center);
+		for(int ii = 0; ii < nbvert; ii++) {
+			float fDist = dist(ep->center, ep->v[ii]);
 			fDistMin = min(fDistMin, fDist);
 			fDistMax = max(fDistMax, fDist);
 		}

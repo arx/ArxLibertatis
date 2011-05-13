@@ -1698,7 +1698,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 		return false;
 	}
 
-	float distance=TRUEEEDistance3D(&ip->startpos,&ip->targetpos);
+	float distance = dist(ip->startpos, ip->targetpos);
 
 	if (distance < 0.1f) 
 	{

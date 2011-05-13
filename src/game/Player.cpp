@@ -3490,29 +3490,22 @@ void PlayerMovementIterate(float DeltaTime)
 			moveto.x = player.physics.cyl.origin.x;
 			moveto.y = player.physics.cyl.origin.y + PLAYER_BASE_HEIGHT;
 			moveto.z = player.physics.cyl.origin.z;
-			d = (float)(TRUEEEDistance3D(&player.pos, &moveto));
+			d = dist(player.pos, moveto);
 		}
 	}
 	else
 	{
 		if (!EDITMODE)
 		{
-			Vec3f vect;
-			vect.x = moveto.x - player.pos.x;
-			vect.y = moveto.y - player.pos.y;
-			vect.z = moveto.z - player.pos.z;
+			Vec3f vect = moveto - player.pos;
 			float divv = vect.length();
 
 			if (divv > 0.f)
 			{
 				float mul = (float)FrameDiff * ( 1.0f / 1000 ) * 200.f;
 				divv = mul / divv;
-				vect.x *= divv;
-				vect.y *= divv;
-				vect.z *= divv;
-				moveto.x = player.pos.x + vect.x;
-				moveto.y = player.pos.y + vect.y;
-				moveto.z = player.pos.z + vect.z;
+				vect *= divv;
+				moveto = player.pos + vect;
 			}
 		}
 

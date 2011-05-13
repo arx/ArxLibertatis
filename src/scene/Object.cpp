@@ -2110,17 +2110,17 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 			center.x = (center.x + origin.x + origin.x) * ( 1.0f / 3 );
 			center.y = (center.y + origin.y + origin.y) * ( 1.0f / 3 );
 			center.z = (center.z + origin.z + origin.z) * ( 1.0f / 3 );
-			float max_threshold = TRUEEEDistance3D(&origin, &center);
+			float max_threshold = dist(origin, center);
 
 			for (size_t i = 0; i < eerie->grouplist[head_idx].indexes.size(); i++)
 			{
 				EERIE_VERTEX * ev = &eerie->vertexlist[eerie->grouplist[head_idx].indexes[i]];
-				float dist = TRUEEEDistance3D(&ev->v, &origin);
+				float d = dist(ev->v, origin);
 				float factor = 1.f;
 
-				if (dist < max_threshold)
+				if (d < max_threshold)
 				{
-					factor = dist / max_threshold;
+					factor = d / max_threshold;
 				}
 
 				float ifactor = 1.f - factor;

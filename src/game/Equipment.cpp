@@ -1010,12 +1010,12 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					{
 						if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
 
-						float dist = TRUEEEDistance3D(&sphere.origin, &target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
+						float d = dist(sphere.origin, target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
 
-						if (dist < curdist)
+						if (d < curdist)
 						{
 							hitpoint = target->obj->facelist[ii].vid[0];
-							curdist = dist;
+							curdist = d;
 						}
 					}
 

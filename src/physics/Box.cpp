@@ -204,7 +204,7 @@ void ApplySpring(EERIE_3DOBJ * obj, long k, long l, float PHYSICS_constant, floa
 	PHYSVERT * pv_l = &obj->pbox->vert[l];
 	float Dterm, Hterm;
 
-	float restlength = TRUEEEDistance3D(&obj->pbox->vert[k].initpos, &obj->pbox->vert[l].initpos);
+	float restlength = dist(obj->pbox->vert[k].initpos, obj->pbox->vert[l].initpos);
 	//Computes Spring Magnitude
 	deltaP.x = pv_k->pos.x - pv_l->pos.x;		// Vector distance
 	deltaP.y = pv_k->pos.y - pv_l->pos.y;		// Vector distance
@@ -1095,9 +1095,8 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	obj->pbox->radius = 0.f;
 
-	for (int k = 0; k < obj->pbox->nb_physvert; k++)
-	{
-		float distt = TRUEEEDistance3D(&obj->pbox->vert[k].pos, &obj->pbox->vert[0].pos);
+	for(int k = 0; k < obj->pbox->nb_physvert; k++) {
+		float distt = dist(obj->pbox->vert[k].pos, obj->pbox->vert[0].pos);
 
 		if (distt > 20.f)
 		{
@@ -1111,10 +1110,9 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 		memcpy(&obj->pbox->vert[k].initpos, &obj->pbox->vert[k].pos, sizeof(Vec3f));
 
-		if (k != 0)
-		{
-			float dist = TRUEEEDistance3D(&obj->pbox->vert[0].pos, &obj->pbox->vert[k].pos);
-			obj->pbox->radius = max(obj->pbox->radius, dist);
+		if(k != 0) {
+			float d = dist(obj->pbox->vert[0].pos, obj->pbox->vert[k].pos);
+			obj->pbox->radius = max(obj->pbox->radius, d);
 		}
 	}
 }
