@@ -2856,7 +2856,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 	
 				//----------------------------------------------------------------------------------
 				//																				Loop
-				for( vector<EERIEPOLY*>::iterator iT = pTexCurr->vPolyBump.begin() ; iT < pTexCurr->vPolyBump.end() ; iT++ )
+				for( vector<EERIEPOLY*>::iterator iT = pTexCurr->vPolyBump.begin() ; iT < pTexCurr->vPolyBump.end() ; ++iT)
 				{
 					EERIEPOLY *pPoly			=	*iT;
 
@@ -3281,7 +3281,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 bool Clip_Visible(const Vec3f * orgn, Vec3f * dest)
 {
 	register float dx,dy,dz,adx,ady,adz,ix,iy,iz;
-	register float x0,y0,z0;
+	register float x0,z0;
 	register float forr,temp;
  
 	dx=(dest->x-orgn->x);
@@ -3292,7 +3292,6 @@ bool Clip_Visible(const Vec3f * orgn, Vec3f * dest)
 	adz=EEfabs(dz);
 
 	x0=orgn->x;
-	y0=orgn->y;
 	z0=orgn->z;
 
 	if ( (adx>=ady) && (adx>=adz)) 
@@ -3353,7 +3352,6 @@ long curpixel;
 	FAST_BKG_DATA * LAST_eg=NULL;
 	curpixel=2;
 	x0+=ix*2;
-		y0+=iy*2;
 		z0+=iz*2;
 		forr-=PASS*2;		
 
@@ -3379,7 +3377,6 @@ long curpixel;
 		if (v<1.f) v=1.f;
 
 		x0+=ix*v;
-		y0+=iy*v;
 		z0+=iz*v;
 		forr-=PASS*v;		
 	}
@@ -3444,19 +3441,15 @@ void ARX_SCENE_Render(long flag) {
 	static Vec3f lastpos;
 	static Anglef lastangle;
 	static float lastfocal;
-	long to;
+	
 	static long x0=0;
 	static long x1=0;
 	static long z0=0;
 	static long z1=0;
-	long i,j,k;
-	float xx,yy;
-	float fr, fb, ffr; 
+	long i;
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 
-	float dd;
-	long lr;
 	unsigned long tim = ARXTimeUL();
 	
 	WATEREFFECT+=0.0005f*_framedelay;
@@ -3500,8 +3493,8 @@ void ARX_SCENE_Render(long flag) {
 	{
 
 		PrepareActiveCamera();
-		xx=(float)(ACTIVECAM->pos.x*ACTIVEBKG->Xmul);
-		yy=(float)(ACTIVECAM->pos.z*ACTIVEBKG->Zmul);
+		float xx=(float)(ACTIVECAM->pos.x*ACTIVEBKG->Xmul);
+		float yy=(float)(ACTIVECAM->pos.z*ACTIVEBKG->Zmul);
 		
 		ACTIVECAM->Xsnap = xx;
 		ACTIVECAM->Zsnap = yy;
@@ -3553,7 +3546,6 @@ void ARX_SCENE_Render(long flag) {
 	temp0=0;
 	Vec3f nrm;
 
-	long lfr,lfb;
 	long zsnap=ACTIVECAM->Zsnap;
 	zsnap=min((int)zsnap,ACTIVEBKG->Zsize-1);
 	zsnap=max((int)zsnap,1);
@@ -3565,7 +3557,7 @@ void ARX_SCENE_Render(long flag) {
 
 	if (!USE_LIGHT_OPTIM)
 	{
- 		for (j=0;j<ACTIVEBKG->Zsize;j++)
+ 		for (long j=0;j<ACTIVEBKG->Zsize;j++)
 		{
 			feg=&ACTIVEBKG->fastdata[0][j];
 
@@ -3578,7 +3570,7 @@ void ARX_SCENE_Render(long flag) {
 	}
 	else
 	{
-		for (j=z0;j<=z1;j++)
+		for (long j=z0;j<=z1;j++)
 		{			
 			for (i=x0; i<x1; i++)
 			{
@@ -3587,7 +3579,7 @@ void ARX_SCENE_Render(long flag) {
 			}
 		}
 
-		for (j=0;j<ACTIVEBKG->Zsize;j++)
+		for (long j=0;j<ACTIVEBKG->Zsize;j++)
 		for (i=0; i<ACTIVEBKG->Xsize; i++)
 		{
 			if (tilelights[i][j].num)
@@ -3602,7 +3594,7 @@ void ARX_SCENE_Render(long flag) {
 	{
 		temp0+=100.f;
 
-		for (j=zsnap-n;j<=zsnap+n;j++)
+		for (long j=zsnap-n;j<=zsnap+n;j++)
 		{
 			for (i=xsnap-n;i<=xsnap+n;i++)
 			{
@@ -3729,7 +3721,7 @@ else
 	{
 		temp0+=100.f;
 
-	for (j=zsnap-n;j<=zsnap+n;j++)
+	for (long j=zsnap-n;j<=zsnap+n;j++)
 	{
 	for (i=xsnap-n;i<=xsnap+n;i++)
 	{
@@ -3785,6 +3777,7 @@ else
 							if (!EERIERTPPoly(ep)) 
 				continue; 
 
+			long to;
 			if ( ep->type & POLY_QUAD) 
 			{
 				if (FRAME_COUNT<=0) ep->tv[3].color=ep->v[3].color;	
@@ -3857,26 +3850,26 @@ else
 					}
 				
 
-					for (k=0;k<to;k++) 
+					for (long k=0;k<to;k++) 
 					{
-						lr=(ep->tv[k].color>>16) & 255;
-						ffr=(float)(lr);
+						long lr=(ep->tv[k].color>>16) & 255;
+						float ffr=(float)(lr);
 							
-						dd=(ep->tv[k].sz*prec);
+						float dd=(ep->tv[k].sz*prec);
 
 						if (dd>1.f) dd=1.f;
 
 						if (dd<0.f) dd=0.f;
 						
-						fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
-						fr=((0.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);						
+						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
+						float fr=((0.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);						
 
 						if (fr<0.f) fr=0.f;
 						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
-						lfb = fb;
-						lfr = fr;
+						long lfb = fb;
+						long lfr = fr;
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 						//GG component locked at 0x1E
 					}
