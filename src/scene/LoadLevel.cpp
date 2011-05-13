@@ -156,15 +156,16 @@ bool CanPurge(Vec3f * pos)
 	return true;
 }
 
-void BIG_PURGE()
-{
-	long IO_count = 0;
-	long LIGHT_count = 0;
-	long PATH_count = 0;
-	long FOG_count = 0;
-
+void BIG_PURGE() {
+	
 	if (OKBox("Do you really want to PURGE this level ???", "Confirm Box"))
 	{
+		
+		long IO_count = 0;
+		long LIGHT_count = 0;
+		long PATH_count = 0;
+		long FOG_count = 0;
+		
 		for (long i = 1; i < inter.nbmax; i++)
 		{
 			if (inter.iobj[i])
@@ -789,7 +790,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	char nameident[256];
 	string tmp;
-	size_t FileSize;
+	
 	INTERACTIVE_OBJ * io;
 	
 	sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
@@ -830,6 +831,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 						io->over_script.data = NULL;
 					}
 
+					size_t FileSize;
 					io->over_script.data = (char *)PAK_FileLoadMallocZero(tmp, FileSize);
 
 					if (io->over_script.data != NULL)
