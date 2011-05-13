@@ -117,14 +117,14 @@ void TextManager::Update(float _fDiffFrame) {
 			pArxText->lTimeScroll -= _iDiffFrame;
 		}
 		
-		itManage++;
+		++itManage;
 	}
 	
 }
 
 void TextManager::Render() {
 	vector<ManagedText *>::const_iterator itManage = entries.begin();
-	for(; itManage != entries.end(); itManage++) {
+	for(; itManage != entries.end(); ++itManage) {
 		
 		ManagedText * pArxText = *itManage;
 		
@@ -152,7 +152,7 @@ void TextManager::Render() {
 void TextManager::Clear() {
 	
 	vector<ManagedText *>::iterator itManage;
-	for(itManage = entries.begin(); itManage < entries.end(); itManage++) {
+	for(itManage = entries.begin(); itManage < entries.end(); ++itManage) {
 		delete *itManage;
 	}
 	
