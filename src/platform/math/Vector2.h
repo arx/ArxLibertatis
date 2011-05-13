@@ -40,7 +40,7 @@ public:
 	 * @param other A vector to be copied.
 	 * @return Reference to this vector object.
 	 */
-	const Vector2 & operator=(const Vector2 & other) {
+	Vector2 & operator=(const Vector2 & other) {
 		x = other.x, y = other.y;
 		return *this;
 	}
