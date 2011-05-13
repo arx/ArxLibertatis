@@ -216,7 +216,7 @@ void ApplySpring(EERIE_3DOBJ * obj, long k, long l, float PHYSICS_constant, floa
 	deltaV.x = pv_k->velocity.x - pv_l->velocity.x;
 	deltaV.y = pv_k->velocity.y - pv_l->velocity.y;
 	deltaV.z = pv_k->velocity.z - pv_l->velocity.z;		// Delta Velocity Vector
-	Dterm = (Vector_DotProduct(&deltaV, &deltaP) * PHYSICS_Damp) * divdist; // Damping Term
+	Dterm = (deltaV dot deltaP) * PHYSICS_Damp * divdist; // Damping Term
 	Dterm = (-(Hterm + Dterm));
 	divdist *= Dterm;
 	springforce.x = deltaP.x * divdist;	// Normalize Distance Vector

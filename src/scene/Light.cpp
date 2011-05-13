@@ -469,7 +469,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 				vNorm.y = ep->nrml[i].y;
 				vNorm.z = ep->nrml[i].z;
 
-				fRes = Vector_DotProduct(&vLight, &vNorm);
+				fRes = vLight dot vNorm;
 
 				if (fRes < 0.0f)
 				{

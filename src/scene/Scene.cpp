@@ -3225,7 +3225,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		pos.x=epp->center.x-ACTIVECAM->pos.x;
 		pos.y=epp->center.y-ACTIVECAM->pos.y;
 		pos.z=epp->center.z-ACTIVECAM->pos.z;
-		float fRes = Vector_DotProduct(&pos, &epp->norm);
+		float fRes = pos dot epp->norm;
 
 		long ret=1;
 

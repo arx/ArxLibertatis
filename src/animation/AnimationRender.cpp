@@ -3215,7 +3215,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 						v1.x = (el->pos.x - ep->v[j].sx) * divd;
 						v1.y = (el->pos.y - ep->v[j].sy) * divd;
 						v1.z = (el->pos.z - ep->v[j].sz) * divd;
-						nvalue = Vector_DotProduct(&v1, &ep->nrml[j]) * ( 1.0f / 2 );
+						nvalue = (v1 dot ep->nrml[j]) * (1.0f / 2);
 
 						if (nvalue > 1.f) nvalue = 1.f;
 						else if (nvalue < 0.f) nvalue = 0.f;

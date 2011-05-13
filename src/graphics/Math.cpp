@@ -1034,13 +1034,6 @@ void Vector_CrossProduct(Vec3f * dest, const Vec3f * v1, const Vec3f * v2)
 	dest->y = v1->z * v2->x - v1->x * v2->z;
 	dest->z = v1->x * v2->y - v1->y * v2->x;
 }
-//*************************************************************************************
-// Returns Dot Product of 2 vectors
-//*************************************************************************************
-float Vector_DotProduct(const Vec3f * v1, const Vec3f * v2)
-{
-	return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 //TODO(lubosz): empty method
