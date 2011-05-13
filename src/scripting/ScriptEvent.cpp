@@ -623,8 +623,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			case 'B':
 				if (!strcmp(word, "BEHAVIOR"))
 				{
-					unsigned long behavior = 0; //BEHAVIOUR_NONE;
-					float behavior_param = 0.f;
 					pos = GetNextWord(es, pos, word);
 					LogDebug << "BEHAVIOR " << word;
 
@@ -642,6 +640,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
+						unsigned long behavior = 0; //BEHAVIOUR_NONE;
 						if (word[0] == '-')
 						{
 
@@ -678,7 +677,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						}
 
-
+						float behavior_param = 0.f;
 						if (!strcasecmp(word, "GO_HOME"))
 							behavior |= BEHAVIOUR_GO_HOME;
 						else if (!strcasecmp(word, "FRIENDLY"))
@@ -839,7 +838,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "AMBIANCE"))
 				{
-					float volume(1.0F);
 
 					pos = GetNextWord(es, pos, word);
 
@@ -849,6 +847,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					{
 						if (iCharIn(word, 'V'))
 						{
+							float volume = 1.f;
 							pos = GetNextWord(es, pos, word);
 							LogDebug << word;
 							volume = GetVarValueInterpretedAsFloat(word, esss, io);
@@ -1785,19 +1784,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					ARX_CINEMATIC_SPEECH acs;
 					acs.type = ARX_CINE_SPEECH_NONE;
 
-
 					std::string temp2;
-
-					long player		=	0;
-					long voixoff	=	0;
-					long notext		=	0;
 
 					pos = GetNextWord(es, pos, temp2);
 
 					LogDebug <<  "SPEAK "<< temp2;
 
-					long mood			=	ANIM_TALK_NEUTRAL;
-					long unbreakable	=	0;
 					MakeUpcase(temp2);
 
 					if (!strcasecmp(temp2, "KILLALL"))
@@ -1806,6 +1798,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
+						
+						long player		=	0;
+						long voixoff	=	0;
+						long notext		=	0;
+						long mood			=	ANIM_TALK_NEUTRAL;
+						long unbreakable	=	0;
+						
 						if (temp2[0] == '-')
 						{
 							if (iCharIn(temp2, 'T')) notext		=	1;
@@ -1951,7 +1950,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							LogDebug <<  temp2;
 						}
 
-						long speechnum;
 						std::string temp1 = GetVarValueInterpretedAsText(temp2, esss, io);
 
 						if (!strcmp(temp2, "[]"))
@@ -1964,6 +1962,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 							if (!CINEMASCOPE) voixoff |= ARX_SPEECH_FLAG_NOTEXT;
 
+							long speechnum;
 							if (player)
 							{
 								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1, mood, voixoff);
@@ -4066,7 +4065,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				{
 					INTERACTIVE_OBJ * iot = io;
 					std::string temp2;
-					long num;
 					long nu = 0;
 					long loop = 0;
 					long execute = 0;
@@ -4127,7 +4125,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
-						num = GetNumAnim(temp2);
+						long num = GetNumAnim(temp2);
 
 						if (num > -1)
 						{
@@ -5846,8 +5844,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 #endif
 
-						long tw;
-
 						if (!strcasecmp(word, "SKIN"))
 						{
 							std::string temp1;
@@ -5899,7 +5895,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						}
 						else
 						{
-							tw = TWEAK_ERROR;
+							long tw = TWEAK_ERROR;
 
 							if (!strcasecmp(word, "HEAD"))
 							{
@@ -5973,9 +5969,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					std::string temp2;
 					std::string temp3;
 
-					long times = 0;
-					long msecs = 0;
-
 					// Checks if the timer is named by caller of if it needs a default name
 					if (word.length() > 5)
 						strcpy(timername, word.c_str() + 5);
@@ -6008,12 +6001,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
-						long mili = 0;
-						long idle = 0;
 						ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, io);
 
 						if (strcasecmp(temp2, "OFF"))
 						{
+							long mili = 0;
+							long idle = 0;
+							
 							if (temp2[0] == '-')
 							{
 								if (iCharIn(temp2, 'M'))
@@ -6034,7 +6028,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 #endif
 							}
 
-							times = atoi(temp2);
+							long times = atoi(temp2);
 							pos = GetNextWord(es, pos, temp3);
 #ifdef NEEDING_DEBUG
 
@@ -6045,7 +6039,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							}
 
 #endif
-							msecs = atoi(temp3);
+							long msecs = atoi(temp3);
 
 							if (!mili) msecs *= 1000;
 
@@ -6520,9 +6514,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "MAPMARKER"))
 				{
-					float x, y, t;
-					long lvl;
-
 					pos = GetNextWord(es, pos, word);
 
 					if ((!strcasecmp(word, "remove")) || (!strcasecmp(word, "-r")))
@@ -6532,12 +6523,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
-						x = GetVarValueInterpretedAsFloat(word, esss, io);
+						float x = GetVarValueInterpretedAsFloat(word, esss, io);
 						pos = GetNextWord(es, pos, word);
-						y = GetVarValueInterpretedAsFloat(word, esss, io);
+						float y = GetVarValueInterpretedAsFloat(word, esss, io);
 						pos = GetNextWord(es, pos, word);
-						t = GetVarValueInterpretedAsFloat(word, esss, io);
-						lvl = t;
+						float t = GetVarValueInterpretedAsFloat(word, esss, io);
+						long lvl = t;
 						pos = GetNextWord(es, pos, word);
 						ARX_MAPMARKER_Add(x, y, lvl, word);
 					}
