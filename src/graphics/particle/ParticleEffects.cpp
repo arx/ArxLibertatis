@@ -672,7 +672,7 @@ void ARX_PARTICLES_Spawn_Blood2(Vec3f * pos,float dmgs,D3DCOLOR col,INTERACTIVE_
 		vect.x=pos->x-io->_npcdata->last_splat_pos.x;
 		vect.y=pos->y-io->_npcdata->last_splat_pos.y;
 		vect.z=pos->z-io->_npcdata->last_splat_pos.z;
-		float dist=TRUEVector_Magnitude(&vect);
+		float dist = vect.length();
 		float div=1.f/dist;
 		vect.x*=div;
 		vect.y*=div;
@@ -2099,10 +2099,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					vector.x=part->ov.x-target->pos.x;
 					vector.y=(part->ov.y-target->pos.y)*( 1.0f / 2 );
 					vector.z=part->ov.z-target->pos.z;
-					float t=1.f/TRUEVector_Magnitude(&vector);
-					vector.x*=t;
-					vector.y*=t;
-					vector.z*=t;
+					vector.normalize();
 
 					part->move.x = vector.x * 18 + rnd() - 0.5f; 
 					part->move.y = vector.y * 5 + rnd() - 0.5f; 

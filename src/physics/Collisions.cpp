@@ -1603,10 +1603,8 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 					return false;
 				}				
 
-				float dist;
-				dist=max(TRUEVector_Magnitude(&vector2D),1.f);
-				float pente;		
-				pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
+				float dist = max(vector2D.length(),1.f);
+				float pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count+=pente;
 
 				if (io->_npcdata->climb_count>MAX_ALLOWED_PER_SECOND)

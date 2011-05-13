@@ -1004,10 +1004,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					vector.x = sphere.origin.x - target->pos.x;
 					vector.y = (sphere.origin.y - target->pos.y) * ( 1.0f / 2 );
 					vector.z = sphere.origin.z - target->pos.z;
-					float t = 1.f / TRUEVector_Magnitude(&vector);
-					vector.x *= t;
-					vector.y *= t;
-					vector.z *= t;
+					vector.normalize();
 
 					for (size_t ii = 0; ii < target->obj->facelist.size(); ii++)
 					{

@@ -3146,7 +3146,7 @@ void PlayerMovementIterate(float DeltaTime)
 		if (inter.iobj[0]->animlayer[0].cur_anim)
 		{
 			GetAnimTotalTranslate(inter.iobj[0]->animlayer[0].cur_anim, inter.iobj[0]->animlayer[0].altidx_cur, &mv);
-			TheoricalMove = TRUEVector_Magnitude(&mv);
+			TheoricalMove = mv.length();
 
 			time = inter.iobj[0]->animlayer[0].cur_anim->anims[inter.iobj[0]->animlayer[0].altidx_cur]->anim_time;
 
@@ -3211,7 +3211,7 @@ void PlayerMovementIterate(float DeltaTime)
 		}
 		else
 		{
-			float tt = 1.f / TRUEVector_Magnitude(&mv2);
+			float tt = 1.f / mv2.length();
 			tt *= mval * ( 1.0f / 80 );
 
 			mv2.x = mv2.x * tt;
@@ -3501,7 +3501,7 @@ void PlayerMovementIterate(float DeltaTime)
 			vect.x = moveto.x - player.pos.x;
 			vect.y = moveto.y - player.pos.y;
 			vect.z = moveto.z - player.pos.z;
-			float divv = TRUEVector_Magnitude(&vect);
+			float divv = vect.length();
 
 			if (divv > 0.f)
 			{

@@ -227,11 +227,6 @@ inline void _XRotatePoint(Vec3f * in, Vec3f * out, float c, float s)
 // Computes Length of a vector
 // WARNING: EEsqrt may use a approximative way of computing sqrt
 //*************************************************************************************
-inline float TRUEVector_Magnitude(const Vec3f * v)
-{
-	return (float)TRUEsqrt(v->x * v->x + v->y * v->y + v->z * v->z);
-}
-
 inline float Vector_Magnitude(const Vec3f * v)
 {
 	return (float)EEsqrt(v->x * v->x + v->y * v->y + v->z * v->z);
@@ -250,7 +245,7 @@ inline float Vector_Normalize(Vec3f * v)
 }
 inline float TRUEVector_Normalize(Vec3f * v)
 {
-	register float len = TRUEVector_Magnitude(v);
+	register float len = v->length();
 	register float l2 = 1.f / len;
 	v->x *= l2;
 	v->y *= l2;
@@ -363,7 +358,6 @@ void Quat_GetShortestArc(EERIE_QUAT * q1 , EERIE_QUAT * q2);
 //*******************************************************************************
 float	Vector_Magnitude(const Vec3f * v);
 float	Vector_Normalize(Vec3f * v);
-float	TRUEVector_Magnitude(const Vec3f * v);
 float	TRUEVector_Normalize(Vec3f * v);
  
 void	Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle);

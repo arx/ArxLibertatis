@@ -421,8 +421,7 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ
 					return false;
 				}
 
-				float dist;
-				dist = std::max(TRUEVector_Magnitude(&vector2D), 1.f);
+				float dist = std::max(vector2D.length(), 1.f);
 				float pente;
 				pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count += pente;
