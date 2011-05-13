@@ -1143,7 +1143,6 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 	for (long j = 0; j < eb->Zsize; j++)
 		for (long i = 0; i < eb->Xsize; i++)
 		{
-			float current_y = 99999999999.f;
 			per = count / total * 100.f;
 
 			if (per != lastper)
@@ -1184,7 +1183,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 				if (!ok) continue;
 
 				float roof = GetTileMinY(i, j); 
-				current_y = GetTileMaxY(i, j); 
+				float current_y = GetTileMaxY(i, j); 
 
 				while (current_y > roof)
 				{
@@ -1301,7 +1300,6 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 
 				}
 
-				float current_y = 99999999999.f;
 				per = count / total * 100.f;
 
 				if (per != lastper)
@@ -1338,7 +1336,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 
 					if (epmax) roof = epmax->min.y - 300;
 
-					current_y = ep->max.y;
+					float current_y = ep->max.y;
 
 					while (current_y > roof)
 					{
