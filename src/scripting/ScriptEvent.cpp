@@ -207,17 +207,10 @@ void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
 
 		long id = io->obj->fastaccess.view_attach;
 
-		if (id != -1)
-		{
-			acs->pos1.x = io->obj->vertexlist3[id].v.x;
-			acs->pos1.y = io->obj->vertexlist3[id].v.y;
-			acs->pos1.z = io->obj->vertexlist3[id].v.z;
-		}
-		else
-		{
-			acs->pos1.x = io->pos.x;
-			acs->pos1.y = io->pos.y + io->physics.cyl.height;
-			acs->pos1.z = io->pos.z;
+		if(id != -1) {
+			acs->pos1 = io->obj->vertexlist3[id].v;
+		} else {
+			acs->pos1 = io->pos + Vec3f(0.f, io->physics.cyl.height, 0.f);
 		}
 	}
 
@@ -226,17 +219,10 @@ void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
 		INTERACTIVE_OBJ *	ioo =	inter.iobj[ionum];
 		long				id	=	ioo->obj->fastaccess.view_attach;
 
-		if (id != -1)
-		{
-			acs->pos2.x	=	ioo->obj->vertexlist3[id].v.x;
-			acs->pos2.y	=	ioo->obj->vertexlist3[id].v.y;
-			acs->pos2.z	=	ioo->obj->vertexlist3[id].v.z;
-		}
-		else
-		{
-			acs->pos2.x	=	ioo->pos.x;
-			acs->pos2.y	=	ioo->pos.y + ioo->physics.cyl.height;
-			acs->pos2.z	=	ioo->pos.z;
+		if(id != -1) {
+			acs->pos2 = ioo->obj->vertexlist3[id].v;
+		} else {
+			acs->pos2 = ioo->pos + Vec3f(0.f, ioo->physics.cyl.height, 0.f);
 		}
 	}
 }
@@ -280,34 +266,17 @@ bool IsElement( const char * seek, const char * text)
 
 }
 
-bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
-{
-	register float x0, y0, z0;
-	register float x1, y1, z1;
-	x0 = io->pos.x;
-	y0 = io->pos.y;
-	z0 = io->pos.z;
-	x1 = ioo->pos.x;
-	y1 = ioo->pos.y;
-	z1 = ioo->pos.z;
-	float dist = Distance3D(x0, y0, z0, x1, y1, z1);
-
-	if (dist > 20000) return false;
-
+bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+	
+	if(distSqr(io->pos, ioo->pos) > square(20000)) {
+		return false;
+	}
+	
 	float ab = MAKEANGLE(io->angle.b);
-	Vec3f orgn, dest;
-
-	orgn.x = x0;
-	orgn.y = y0 - 90.f;
-	orgn.z = z0;
-	dest.x = x1;
-	dest.y = y1 - 90.f;
-	dest.z = z1;
-	float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
+	float aa = GetAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
 	aa = MAKEANGLE(degrees(aa));
 
-	if ((aa < ab + 90.f) && (aa > ab - 90.f))
-	{
+	if((aa < ab + 90.f) && (aa > ab - 90.f)) {
 		//font
 		ARX_TEXT_Draw(hFontInBook, 300, 320, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
 		return true;
@@ -1072,18 +1041,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						{
 							LASTSPAWNED = ioo;
 							ioo->scriptload = 1;
-							ioo->initpos.x = io->initpos.x;
-							ioo->initpos.y = io->initpos.y;
-							ioo->initpos.z = io->initpos.z;
-							ioo->pos.x = io->pos.x;
-							ioo->pos.y = io->pos.y;
-							ioo->pos.z = io->pos.z;
-							ioo->angle.a = io->angle.a;
-							ioo->angle.b = io->angle.b;
-							ioo->angle.g = io->angle.g;
-							ioo->move.x = io->move.x;
-							ioo->move.y = io->move.y;
-							ioo->move.z = io->move.z;
+							ioo->initpos = io->initpos;
+							ioo->pos = io->pos;
+							ioo->angle = io->angle;
+							ioo->move = io->move;
 							ioo->show = io->show;
 
 							if (io == DRAGINTER)
@@ -1576,9 +1537,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							fo.y = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fo.z = GetVarValueInterpretedAsFloat(temp3, esss, io);
 							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
-							cam->translatetarget.x = fo.x;
-							cam->translatetarget.y = fo.y;
-							cam->translatetarget.z = fo.z;
+							cam->translatetarget = fo;
 						}
 					}
 
@@ -1833,9 +1792,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								if (!strcasecmp(temp2, "KEEP"))
 								{
 									acs.type	=	ARX_CINE_SPEECH_KEEP;
-									acs.pos1.x	=	LASTCAMPOS.x;
-									acs.pos1.y	=	LASTCAMPOS.y;
-									acs.pos1.z	=	LASTCAMPOS.z;
+									acs.pos1 = LASTCAMPOS;
 									acs.pos2.x	=	LASTCAMANGLE.a;
 									acs.pos2.y	=	LASTCAMANGLE.b;
 									acs.pos2.z	=	LASTCAMANGLE.g;
@@ -2422,25 +2379,16 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								{
 									LASTSPAWNED = ioo;
 									ioo->scriptload = 1;
-									ioo->pos.x = inter.iobj[t]->pos.x;
-									ioo->pos.y = inter.iobj[t]->pos.y;
-									ioo->pos.z = inter.iobj[t]->pos.z;
+									ioo->pos = inter.iobj[t]->pos;
 
-									ioo->angle.a = inter.iobj[t]->angle.a;
-									ioo->angle.b = inter.iobj[t]->angle.b;
-									ioo->angle.g = inter.iobj[t]->angle.g;
+									ioo->angle = inter.iobj[t]->angle;
 									MakeTemporaryIOIdent(ioo);
 									SendInitScriptEvent(ioo);
 
-									if (inter.iobj[t]->ioflags & IO_NPC)
-									{
+									if(inter.iobj[t]->ioflags & IO_NPC) {
 										float dist = inter.iobj[t]->physics.cyl.radius + ioo->physics.cyl.radius + 10;
-										Vec3f ofs;
-										ofs.x = -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
-										ofs.y = 0.f;
-										ofs.z = EEcos(radians(inter.iobj[t]->angle.b)) * dist;
-										ioo->pos.x += ofs.x;
-										ioo->pos.z += ofs.z;
+										ioo->pos.x += -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
+										ioo->pos.z += EEcos(radians(inter.iobj[t]->angle.b)) * dist;
 									}
 
 									TREATZONE_AddIO(ioo, GetInterNum(ioo));
@@ -2474,12 +2422,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 									MakeTemporaryIOIdent(ioo);
 									LASTSPAWNED = ioo;
 									ioo->scriptload = 1;
-									ioo->pos.x = inter.iobj[t]->pos.x;
-									ioo->pos.y = inter.iobj[t]->pos.y;
-									ioo->pos.z = inter.iobj[t]->pos.z;
-									ioo->angle.a = inter.iobj[t]->angle.a;
-									ioo->angle.b = inter.iobj[t]->angle.b;
-									ioo->angle.g = inter.iobj[t]->angle.g;
+									ioo->pos = inter.iobj[t]->pos;
+									ioo->angle = inter.iobj[t]->angle;
 									MakeTemporaryIOIdent(ioo);
 									SendInitScriptEvent(ioo);
 								}
@@ -2491,10 +2435,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					else if (!strcmp(word, "FIREBALL"))
 					{
 						GetTargetPos(io);
-						Vec3f pos;
-						pos.x = io->pos.x;
-						pos.y = io->pos.y;
-						pos.z = io->pos.z;
+						Vec3f pos = io->pos;
 
 						if (io->ioflags & IO_NPC) pos.y -= 80.f;
 
@@ -2723,9 +2664,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 								if (followdir) aup->aupflags |= ARX_USEPATH_FOLLOW_DIRECTION;
 
-								aup->initpos.x = io->initpos.x;
-								aup->initpos.y = io->initpos.y;
-								aup->initpos.z = io->initpos.z;
+								aup->initpos = io->initpos;
 								aup->lastWP = -1;
 								aup->path = ap;
 								io->usepath = (void *)aup;
@@ -2794,9 +2733,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						if (io->ioflags & IO_CAMERA)
 						{
 							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
-							cam->translatetarget.x = 0.f;
-							cam->translatetarget.y = 0.f;
-							cam->translatetarget.z = 0.f;
+							cam->translatetarget = Vec3f::ZERO;
 						}
 
 						if (ValidIONum(t))
@@ -4093,13 +4030,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						if (iCharIn(temp2, 'E')) execute = 1;
 
-						if (iCharIn(temp2, 'P'))
-						{
+						if(iCharIn(temp2, 'P')) {
 							iot = inter.iobj[0];
-							iot->move.x = iot->lastmove.x = 0.f;
-							iot->move.y = iot->lastmove.y = 0.f;
-							iot->move.z = iot->lastmove.z = 0.f;
-
+							iot->move = iot->lastmove = Vec3f::ZERO;
 						}
 
 						pos = GetNextWord(es, pos, temp2);
@@ -6475,8 +6408,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						std::string temp2;
 						std::string temp3;
 						float t1, t2, t3;
-
-
 
 						pos = GetNextWord(es, pos, temp1);
 						pos = GetNextWord(es, pos, temp2);
