@@ -154,7 +154,6 @@ void ARX_DAMAGES_HealInter(INTERACTIVE_OBJ * io, float dmg);
 
 // ON-SCREEN Blood Splat Management
 void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs);
-void ARX_DAMAGES_SCREEN_SPLATS_Init();
 void ARX_DAMAGES_DurabilityCheck(INTERACTIVE_OBJ * io, float ratio);
 void ARX_DAMAGES_DurabilityLoss(INTERACTIVE_OBJ * io, float loss);
 void ARX_DAMAGES_DurabilityRestore(INTERACTIVE_OBJ * io, float ratio);

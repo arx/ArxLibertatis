@@ -3875,7 +3875,6 @@ void ARX_GAME_Reset(long type) {
 	}
 
 	// Damages
-	ARX_DAMAGES_SCREEN_SPLATS_Init();
 	ARX_DAMAGE_Reset_Blood_Info();
 	ARX_DAMAGES_Reset();
 

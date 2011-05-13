@@ -92,26 +92,12 @@ using std::max;
 
 extern long REFUSE_GAME_RETURN;
 
-
-struct SCREEN_SPLATS
-{
-	long	exist;
-	float	x;
-	float	y;
-	float	size;
-	TextureContainer * tc;
-	long	duration;
-	unsigned long starttime;
-};
-
-#define MAX_SCREEN_SPLATS 12
 DAMAGE_INFO	damages[MAX_DAMAGES];
 extern long ParticleCount;
 extern Vec3f PUSH_PLAYER_FORCE;
 
 float Blood_Pos = 0.f;
 long Blood_Duration = 0;
-SCREEN_SPLATS ssplat[MAX_SCREEN_SPLATS];
 static void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 {
 	if ((!io)
@@ -126,11 +112,6 @@ static void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 	if (io->ioflags & IO_FIX) io->ignition += dmg * ( 1.0f / 10 );
 	else if (io->ioflags & IO_ITEM) io->ignition += dmg * ( 1.0f / 8 );
 	else if (io->ioflags & IO_NPC) io->ignition += dmg * ( 1.0f / 4 );
-}
-void ARX_DAMAGES_SCREEN_SPLATS_Init()
-{
-	for (long i = 0; i < MAX_SCREEN_SPLATS; i++)
-		ssplat[i].exist = 0;
 }
  
 extern TextureContainer * bloodsplat[6];

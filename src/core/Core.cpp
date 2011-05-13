@@ -1195,7 +1195,6 @@ int main(int argc, char ** argv) {
 	for (i=0;i<8;i++)
 		scursor[i]=NULL;
 
-	ARX_DAMAGES_SCREEN_SPLATS_Init();
 	ARX_SPELLS_CancelSpellTarget();
 
 	for (i=0;i<MAX_EXPLO;i++) explo[i]=NULL;
