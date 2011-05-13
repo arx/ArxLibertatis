@@ -212,10 +212,9 @@ void ARX_MINIMAP_Load_Offsets()
 	{
 		size_t siz = 0;
 		char * dat = (char *)PAK_FileLoadMallocZero(INI_MINI_OFFSETS, siz);
-		size_t pos = 0;
 
-		if (dat)
-		{
+		if(dat) {
+			size_t pos = 0;
 			for (long i = 0; i < 29; i++)
 			{
 				char t[512];
@@ -318,8 +317,6 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 	static const int FL2_BOTTOM = 295;
 	static const float FL2_PLAYERSIZE = 4.f;
 
-	float sstartx, sstarty;
-
 	if (!pTexDetect)
 	{
 		const char tex_flare[] = "Graph\\particles\\flare.bmp";
@@ -336,6 +333,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 	if ((minimap[SHOWLEVEL].tc) && (minimap[SHOWLEVEL].tc->m_pddsSurface))
 	{
+		float sstartx, sstarty;
 		float startx, starty, casex, casey, ratiooo;
 		float mod_x = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
 		float mod_z = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
