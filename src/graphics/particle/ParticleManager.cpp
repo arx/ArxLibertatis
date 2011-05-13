@@ -80,7 +80,7 @@ void ParticleManager::AddSystem(ParticleSystem * _pPS)
 //-----------------------------------------------------------------------------
 void ParticleManager::Update(long _lTime)
 {
-	if (!listParticleSystem.size()) return;
+	if (listParticleSystem.empty()) return;
 
 	list<ParticleSystem *>::iterator i;
 	i = listParticleSystem.begin();
