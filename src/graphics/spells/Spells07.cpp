@@ -283,9 +283,6 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 	
 	(void)beta; // TODO removing this parameter makes the signature clash with method from superclass
 	
-	float fAlpha = 1.f;
-	float fBeta = 0.f;
-	
 	SetDuration(ulDuration);
 	SetPosSrc(aeFrom);
 	SetPosDest(aeTo);
@@ -294,8 +291,8 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 
 	if (nbtotal == 0)
 	{
-		fbeta = fBeta; 
-		falpha = fAlpha; 
+		fbeta = 0.f; 
+		falpha = 1.f; 
 
 		LIGHTNING LInfo;
 		ZeroMemory(&LInfo, sizeof(LIGHTNING));
