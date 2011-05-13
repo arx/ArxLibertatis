@@ -629,10 +629,10 @@ void ParticleSystem::Render() {
 				p3pos.sz += p3Pos.z;
 			}
 
-			float fRot = 0;
 
 			if (fParticleRotation != 0)
 			{
+				float fRot;
 				if (p->iRot == 1)
 					fRot = (fParticleRotation) * p->ulTime + p->fRotStart;
 				else
