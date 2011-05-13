@@ -842,9 +842,11 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 					PROGRESS_COUNT++;
 					ep = &eg->polydata[k];
-					ep->type &= ~POLY_IGNORE;
-
-					if (ep)	EERIE_LIGHT_Apply(ep);
+					
+					if(ep) {
+						ep->type &= ~POLY_IGNORE;
+						EERIE_LIGHT_Apply(ep);
+					}
 				}
 			}
 
