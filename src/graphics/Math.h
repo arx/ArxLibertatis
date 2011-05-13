@@ -404,21 +404,38 @@ void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 #define TRUEDistance2D(x0,y0,x1,y1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 #define TRUEDistance3D(x0,y0,z0,x1,y1,z1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
 
-inline float dist(const Vec3f & from, const D3DTLVERTEX & dest) {
-	return dist(from, Vec3f(dest.sx, dest.sy, dest.sz));
+// TODO don't use D3DTLVERTEX
+
+inline float dist(const Vec3f & from, const D3DTLVERTEX & to) {
+	return dist(from, Vec3f(to.sx, to.sy, to.sz));
 }
 
-//*************************************************************************************
-// Compute Distance between two 3D points
-// WARNING: EEsqrt may use an approximative way of computing sqrt !
-//*************************************************************************************
-inline float EEDistance3D(const Vec3f & from, const Vec3f & to) {
-	return (float)EEsqrt(((to.x - from.x) * (to.x - from.x)) + ((to.y - from.y) * (to.y - from.y)) + ((to.z - from.z) * (to.z - from.z)));
+inline float distSqr(const Vec3f & from, const D3DTLVERTEX & to) {
+	return distSqr(from, Vec3f(to.sx, to.sy, to.sz));
 }
 
-// TODO remove once callers are migrated to the reference version
-inline float EEDistance3D(const Vec3f * from, const Vec3f * to) {
-	return EEDistance3D(*from, *to);
+inline bool closerThan(const Vec3f & from, const D3DTLVERTEX & to, float d) {
+	return closerThan(from, Vec3f(to.sx, to.sy, to.sz), d);
+}
+
+inline bool fartherThan(const Vec3f & from, const D3DTLVERTEX & to, float d) {
+	return fartherThan(from, Vec3f(to.sx, to.sy, to.sz), d);
+}
+
+inline float square(float x) {
+	return x * x;
+}
+
+/*!
+ * Compute (approximate) Distance between two 3D points
+ * may use an approximative way of computing sqrt !
+ */
+inline float fdist(const Vec3f & from, const Vec3f & to) {
+	return ffsqrt(((to.x - from.x) * (to.x - from.x)) + ((to.y - from.y) * (to.y - from.y)) + ((to.z - from.z) * (to.z - from.z)));
+}
+
+inline float fdist(const Vec3f & from, const D3DTLVERTEX & to) {
+	return fdist(from, Vec3f(to.sx, to.sy, to.sz));
 }
 
 inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)

@@ -532,12 +532,8 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 
 bool VisibleSphere(float x, float y, float z, float radius) {
 	
-	Vec3f pos;
-	pos.x=x;
-	pos.y=y;
-	pos.z=z;
-	
-	if(EEDistance3D(pos, ACTIVECAM->pos) - radius>ACTIVECAM->cdepth*0.5f)
+	Vec3f pos(x, y, z);
+	if(distSqr(pos, ACTIVECAM->pos) > square(ACTIVECAM->cdepth*0.5f + radius))
 		return false;
 
 	long room_num = ARX_PORTALS_GetRoomNumForPosition(&pos);
@@ -2755,7 +2751,7 @@ SMY_D3DVERTEX *pMyVertex;
 							tv[nu]=ep->v[nu].tv*4.f;						
 						}
 
-							float			t		=	max( 10.0f, EEDistance3D(&ACTIVECAM->pos, (Vec3f *)&ep->v[nu]) - 80.f );
+							float			t		=	max( 10.0f, fdist(ACTIVECAM->pos, ep->v[nu]) - 80.f );
 							//if (t < 10.f)	t		=	10.f;
 
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
@@ -3077,17 +3073,11 @@ void ARX_PORTALS_ComputeRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long t
 
 		EERIE_PORTALS * po=&portals->portals[portals->room[room_num].portals[lll]];
 		EERIEPOLY * epp=&po->poly;
-
-	
-		float dist1=EEDistance3D(&ACTIVECAM->pos,(Vec3f *)&epp->v[0]);
-		float dist2=EEDistance3D(&ACTIVECAM->pos,(Vec3f *)&epp->v[2]);
-		float distc=EEDistance3D(&ACTIVECAM->pos,(Vec3f *)&epp->center);
-		float threshold=ACTIVECAM->cdepth*fZFogEnd;
-
-		if (	(dist1 > ACTIVECAM->cdepth-threshold)
-			&&	(dist2 > ACTIVECAM->cdepth-threshold) 
-			&&	(distc > ACTIVECAM->cdepth-threshold) )
-		{
+		
+		float threshold = square(ACTIVECAM->cdepth - ACTIVECAM->cdepth * fZFogEnd);
+		if((distSqr(ACTIVECAM->pos, epp->v[0]) > threshold)
+		   && (distSqr(ACTIVECAM->pos, epp->v[2]) > threshold) 
+		   && (distSqr(ACTIVECAM->pos, epp->center) > threshold)) {
 			portals->portals[portals->room[room_num].portals[lll]].useportal=2;
 			continue;
 		}

@@ -782,8 +782,8 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t * poss, 
 		
 		for(long o = 0; o < ptg3011.nb_index; o++) {
 			eerie->grouplist[i].siz = max(eerie->grouplist[i].siz,
-			                              EEDistance3D(&eerie->vertexlist[eerie->grouplist[i].origin].v,
-			                                           &eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
+			                              fdist(eerie->vertexlist[eerie->grouplist[i].origin].v,
+			                                           eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
 		}
 		
 		eerie->grouplist[i].siz = EEsqrt(eerie->grouplist[i].siz) * ( 1.0f / 16 );

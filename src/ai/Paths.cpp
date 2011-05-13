@@ -1249,8 +1249,8 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
-	float				distance		=	EEDistance3D(&Thrown[thrownum].position, &Thrown[thrownum].initial_position);
-	float				distance_modifier =	1.f;
+	float distance = fdist(Thrown[thrownum].position, Thrown[thrownum].initial_position);
+	float distance_modifier =	1.f;
 
 	if (distance < distance_limit * 2.f)
 	{
@@ -1465,9 +1465,9 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if (Thrown[i].flags & ATO_EXIST)
 		{
 			// Is Object Visible & Near ?
-			float _dist = EEDistance3D(&ACTIVECAM->pos, &Thrown[i].position);
-
-			if (_dist > ACTIVECAM->cdepth * fZFogEnd + 50.f) continue;
+			if(fartherThan(ACTIVECAM->pos, Thrown[i].position, ACTIVECAM->cdepth * fZFogEnd + 50.f)) {
+				continue;
+			}
 
 			long xx, yy;
 			xx = (Thrown[i].position.x)*ACTIVEBKG->Xmul;
@@ -2298,7 +2298,7 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 				    &&	(!(ep->type & (POLY_NOCOL)))
 				)
 				{
-					if (EEDistance3D(&ep->center, &obj->pbox->vert[0].pos) > rad + 75.f)
+					if (fartherThan(ep->center, obj->pbox->vert[0].pos, rad + 75.f))
 						continue;
 
 					for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
@@ -2306,10 +2306,10 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 						float radd = 4.f;
 
 						if (
-						    (EEDistance3D(&ep->center, &obj->pbox->vert[kk].pos) <= radd)
-						    ||	(EEDistance3D((Vec3f *)&ep->v[0], &obj->pbox->vert[kk].pos) <= radd)
-						    ||	(EEDistance3D((Vec3f *)&ep->v[1], &obj->pbox->vert[kk].pos) <= radd)
-						    ||	(EEDistance3D((Vec3f *)&ep->v[2], &obj->pbox->vert[kk].pos) <= radd)
+						    !fartherThan(ep->center, obj->pbox->vert[kk].pos, radd)
+						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[0], radd)
+						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[1], radd)
+						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2], radd)
 						    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[1].sz)*( 1.0f / 2 ),
 						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
 						    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[2].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[2].sz + ep->v[1].sz)*( 1.0f / 2 ),
@@ -2342,10 +2342,10 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 								pos.z = (obj->pbox->vert[kk].pos.z + obj->pbox->vert[kl].pos.z) * ( 1.0f / 2 );
 
 								if (
-								    (EEDistance3D(&ep->center, &pos) <= radd)
-								    ||	(EEDistance3D((Vec3f *)&ep->v[0], &pos) <= radd)
-								    ||	(EEDistance3D((Vec3f *)&ep->v[1], &pos) <= radd)
-								    ||	(EEDistance3D((Vec3f *)&ep->v[2], &pos) <= radd)
+								    !fartherThan(ep->center, pos, radd)
+								    || !fartherThan(pos, ep->v[0], radd)
+								    || !fartherThan(pos, ep->v[1], radd)
+								    || !fartherThan(pos, ep->v[2], radd)
 								    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[1].sz)*( 1.0f / 2 ),
 								                    pos.x, pos.y, pos.z) <= radd)
 								    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[2].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[2].sz + ep->v[1].sz)*( 1.0f / 2 ),

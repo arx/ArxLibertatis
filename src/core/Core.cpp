@@ -6846,8 +6846,7 @@ void DANAE::GoFor2DFX()
 
 		if (el->extras & EXTRAS_FLARE)
 		{
-			if ((EEDistance3D(&ACTIVECAM->pos, &el->pos) < 2200))
-			{
+			if(distSqr(ACTIVECAM->pos, el->pos) < square(2200)) {
 				needed=1;
 				break;
 			}

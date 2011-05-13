@@ -514,8 +514,7 @@ void LaunchAntiMagicField(long ident)
 			Vec3f pos; 
 			GetSpellPosition(&pos,n);
 
-			if (EEDistance3D(&pos,&inter.iobj[spells[ident].caster]->pos)<600.f)
-			{
+			if(distSqr(pos, inter.iobj[spells[ident].caster]->pos) < square(600.f)) {
 				if (spells[n].type==SPELL_CREATE_FIELD)
 				{
 					if ((spells[ident].caster==0) && (spells[n].caster==0))				
@@ -2753,13 +2752,13 @@ void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 //-----------------------------------------------------------------------------
 long TemporaryGetSpellTarget(const Vec3f *from)
 {
-	float mindist(99999999.0F);
+	float mindist = FLT_MAX;
 	long found(0);
 
 	for (long i(1); i < inter.nbmax; i++)
 		if (inter.iobj[i] && inter.iobj[i]->ioflags & IO_NPC)
 		{
-			float dist(EEDistance3D(from,&inter.iobj[i]->pos));
+			float dist = distSqr(*from, inter.iobj[i]->pos);
 
 			if (dist < mindist)
 			{
@@ -3447,7 +3446,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	( ioo->_npcdata->life > 0.f )
 					&&	( ioo->show == SHOW_FLAG_IN_SCENE )
 					&&	( IsIOGroup( ioo, "DEMON") )	
-					&&	( EEDistance3D(&ioo->pos,&cpos) < 900.f )
+					&&	( distSqr(ioo->pos, cpos) < square(900.f))
 					)
 				{
 					tcount++;					
@@ -3698,14 +3697,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							|| (GLight[ii]->extras & EXTRAS_SPAWNSMOKE) )
 						&& (!GLight[ii]->status))
 					{
-						float dist=EEDistance3D(&target,&GLight[ii]->pos);
-
-						if (dist<=(pIgnit->GetPerimetre()))								
-						{
-								pIgnit->AddLight(ii);
-							}
+						if(distSqr(target, GLight[ii]->pos) <= square(pIgnit->GetPerimetre())) {
+							pIgnit->AddLight(ii);
 						}
 					}
+				}
 
 				for(size_t n = 0; n < MAX_SPELLS; n++) {
 					if (!spells[n].exist) continue;
@@ -3722,8 +3718,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							sphere.origin.z=pCF->eCurPos.z;
 							sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 
-							if (EEDistance3D(&target,&sphere.origin)<pIgnit->GetPerimetre()+sphere.radius) {
-									spells[n].caster_level += 1; 
+							if(distSqr(target, sphere.origin) < square(pIgnit->GetPerimetre() + sphere.radius)) {
+								spells[n].caster_level += 1; 
 							}
 						}
 					}
@@ -3782,17 +3778,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							|| (GLight[ii]->extras & EXTRAS_SPAWNSMOKE) )
 							&& (GLight[ii]->status))
 					{
-						float dist=EEDistance3D(&target,&GLight[ii]->pos);
-
-						if (dist <= (pDoze->GetPerimetre())) 
-							{
-								pDoze->AddLightDoze(ii);	
-							}
+						if(distSqr(target, GLight[ii]->pos) <= square(pDoze->GetPerimetre())) {
+							pDoze->AddLightDoze(ii);	
 						}
 					}
+				}
 
-				if ((CURRENT_TORCH) && (EEDistance3D(&target,&player.pos)<pDoze->GetPerimetre()))
-				{
+				if((CURRENT_TORCH) && distSqr(target, player.pos) < square(pDoze->GetPerimetre())) {
 					ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
 				}
 
@@ -3816,8 +3808,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							sphere.origin.z=pCF->eCurPos.z;
 							sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 
-							if (EEDistance3D(&target,&sphere.origin)<pDoze->GetPerimetre()+sphere.radius)
-							{
+							if(distSqr(target, sphere.origin) < square(pDoze->GetPerimetre() + sphere.radius)) {
 								spells[n].caster_level-=spells[i].caster_level;
 
 								if (spells[n].caster_level<1)
@@ -3832,10 +3823,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 							if (GetSpellPosition(&pos,n))
 							{
-								if (EEDistance3D(&target,&pos)<pDoze->GetPerimetre()+200)
-								{
+								if(distSqr(target, pos) < square(pDoze->GetPerimetre() + 200)) {
 									spells[n].caster_level-=spells[i].caster_level;
-
 									if (spells[n].caster_level<1)
 										spells[n].tolive=0;
 								}
@@ -4226,7 +4215,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 				if(spells[n].type == SPELL_INVISIBILITY) {
 					if(ValidIONum(spells[n].target) && ValidIONum(spells[i].caster)) {
-						if(EEDistance3D(&inter.iobj[spells[n].target]->pos, &inter.iobj[spells[i].caster]->pos) < 1000) {
+						if(distSqr(inter.iobj[spells[n].target]->pos, inter.iobj[spells[i].caster]->pos) < square(1000.f)) {
 							spells[n].tolive=0;
 						}
 					}
@@ -4489,15 +4478,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							CCreateField *pCreateField = (CCreateField *) pCSpellFX;
 					
 							EERIE_SPHERE sphere;
-							sphere.origin.x=pCreateField->eSrc.x;
-							sphere.origin.y=pCreateField->eSrc.y;
-							sphere.origin.z=pCreateField->eSrc.z;
+							sphere.origin=pCreateField->eSrc;
 							sphere.radius=400.f;
 
 							if ((spells[i].caster!=0) || (spells[n].caster==0))
 							{
-								if (EEDistance3D(&target,&sphere.origin)<sphere.radius)
-								{
+								if(sphere.contains(target)) {
 									valid++;
 
 									if (spells[n].caster_level<=spells[i].caster_level)
@@ -4520,12 +4506,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							CFireField *pFireField = (CFireField *) pCSpellFX;
 					
 							EERIE_SPHERE sphere;
-							sphere.origin.x=pFireField->pos.x;
-							sphere.origin.y=pFireField->pos.y;
-							sphere.origin.z=pFireField->pos.z;
+							sphere.origin=pFireField->pos;
 							sphere.radius=400.f;
 
-							if (EEDistance3D(&target,&sphere.origin)<sphere.radius)
+							if (sphere.contains(target))
 							{
 								valid++;
 
@@ -4553,8 +4537,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							sphere.origin.z=pIceField->eSrc.z;
 							sphere.radius=400.f;
 
-							if (EEDistance3D(&target,&sphere.origin)<sphere.radius)
-							{
+							if(sphere.contains(target)) {
 								valid++;
 
 								if (spells[n].caster_level<=spells[i].caster_level)
@@ -5357,12 +5340,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						if(pCSpellFX) {
 							CRuneOfGuarding * crg=(CRuneOfGuarding *)pCSpellFX;
 							EERIE_SPHERE sphere;
-							sphere.origin.x=crg->eSrc.x;
-							sphere.origin.y=crg->eSrc.y;
-							sphere.origin.z=crg->eSrc.z;
+							sphere.origin=crg->eSrc;
 							sphere.radius=400.f;
 							
-							if(EEDistance3D(&target,&sphere.origin)<sphere.radius) {
+							if(sphere.contains(target)) {
 								spells[n].caster_level-=spells[i].caster_level;
 								if(spells[n].caster_level <= 0) {
 									spells[n].tolive=0;
@@ -6346,7 +6327,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					||	(!(tio->ioflags & IO_NPC))
 					||	(tio->show!=SHOW_FLAG_IN_SCENE)
 					||	(tio->ioflags & IO_FREEZESCRIPT)
-					||	(EEDistance3D(&tio->pos,&inter.iobj[spells[i].caster]->pos)>500.f)	
+					||	(distSqr(tio->pos, inter.iobj[spells[i].caster]->pos) > square(500.f))	
 					)
 					continue;
 
@@ -6471,7 +6452,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	(ioo->_npcdata->life>0.f)
 					&&	(ioo->show==SHOW_FLAG_IN_SCENE)
 					&&	(IsIOGroup(ioo,"DEMON"))	
-					&&	(EEDistance3D(&ioo->pos,&spells[i].caster_pos)<900.f)
+					&&	(distSqr(ioo->pos, spells[i].caster_pos) < square(900.f))
 					)
 				{
 					tcount++;
@@ -6556,7 +6537,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					||	(!(tio->ioflags & IO_NPC))
 					||	((tio->ioflags & IO_NPC) && (tio->_npcdata->life<=0.f))
 					||	(tio->show!=SHOW_FLAG_IN_SCENE)
-					||	(EEDistance3D(&tio->pos,&inter.iobj[spells[i].caster]->pos)>500.f)	)
+					||	(distSqr(tio->pos, inter.iobj[spells[i].caster]->pos) > square(500.f))	)
 					continue;
 
 				tio->sfx_flag|=SFX_TYPE_YLSIDE_DEATH;
@@ -7351,7 +7332,7 @@ void ARX_SPELLS_Update()
 						float dist;
 
 						if (ii==spells[i].caster) dist=0;
-						else dist=EEDistance3D(&ch->eSrc,&inter.iobj[ii]->pos);
+						else dist=fdist(ch->eSrc, inter.iobj[ii]->pos);
 
 						if (dist<300.f)
 						{

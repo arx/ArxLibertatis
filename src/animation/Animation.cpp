@@ -1184,7 +1184,7 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->facelist[lIdList].v[iI]*4.f);
 		}
 
-		float fDist=EEDistance3D(&ACTIVECAM->pos,(Vec3f *)&_pobj3dObj->vertexlist3[_piInd[iI]].v)-80.f;
+		float fDist=fdist(ACTIVECAM->pos, _pobj3dObj->vertexlist3[_piInd[iI]].v)-80.f;
 
 		if (fDist<10.f) fDist=10.f;
 
@@ -1424,7 +1424,7 @@ static void DrawEERIEInter2(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, I
 		&&	(io->halo.flags & HALO_ACTIVE) )
 	{
 		float mdist=ACTIVECAM->cdepth;
-		ddist=mdist-EEDistance3D(&pos,&ACTIVECAM->pos);		
+		ddist=mdist-fdist(pos, ACTIVECAM->pos);
 		ddist=(ddist/mdist);
 		ddist*=ddist*ddist*ddist*ddist*ddist;
 
@@ -1637,7 +1637,7 @@ static void DrawEERIEInter2(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, I
 
 	bool bBumpOnIO;
 	float fDist;
-	fDist=EEDistance3D(&pos,&ACTIVECAM->pos);
+	fDist=fdist(pos, ACTIVECAM->pos);
 	bBumpOnIO=(bALLOW_BUMP)&&(io)&&(io->ioflags&IO_BUMP)&&(fDist<min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),600.f))?true:false;
 
 	float prec;
@@ -2345,11 +2345,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle,Vec3f  * poss,INTERACTIVE
 		}
 
 		for(long i = 0; i < TOTIOPDL; i++) {
-			Insertllight(IO_PDL[i], EEDistance3D(&IO_PDL[i]->pos, &pos)); 
+			Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, pos)); 
 		}
 
 		for(long i = 0; i < TOTPDL; i++) {
-			Insertllight(PDL[i], EEDistance3D(&PDL[i]->pos, &pos)); 
+			Insertllight(PDL[i], fdist(PDL[i]->pos, pos)); 
 		}
 
 		Vec3f l_pos(pos.x, pos.y - 60.f, pos.z);
@@ -2380,7 +2380,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle,Vec3f  * poss,INTERACTIVE
 
 				if (el!=NULL)
 				{
-					dd=EEDistance3D(&el->pos,&eobj->vertexlist3[i].v);
+					dd=fdist(el->pos, eobj->vertexlist3[i].v);
 
 					if (dd<el->fallend) 
 					{

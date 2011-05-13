@@ -636,7 +636,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 			{
 				if (io)
 				{
-					*fcontent = (float)EEDistance3D(&player.pos, &io->pos);
+					*fcontent = fdist(player.pos, io->pos);
 					return TYPE_FLOAT;
 				}
 			}
@@ -648,7 +648,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 			{
 				if (io != NULL)
 				{
-					*lcontent = EEDistance3D(&player.pos, &io->pos);
+					*lcontent = (long)fdist(player.pos, io->pos);
 					return TYPE_LONG;
 				}
 			}
@@ -1340,7 +1340,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 							Vec3f pos, pos2;
 							GetItemWorldPosition(io, &pos);
 							GetItemWorldPosition(inter.iobj[t], &pos2);
-							*fcontent = (float)EEDistance3D(&pos, &pos2);
+							*fcontent = fdist(pos, pos2);
 
 						}
 						else // Out of this world item

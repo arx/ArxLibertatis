@@ -98,8 +98,7 @@ void PrecalcIOLighting(const Vec3f * pos, float radius, long flags)
 	}
 
 	// Lastpos optim
-	if ((EEDistance3D(pos, &lastpos) < 100)) 
-	{
+	if(closerThan(*pos, lastpos, 100.f)) {
 		return;
 	}
 
@@ -576,13 +575,11 @@ void TreatBackgroundDynlights()
 	{
 		if ((GLight[i] != NULL) && (GLight[i]->extras & EXTRAS_SEMIDYNAMIC))
 		{
-			float fDist = EEDistance3D(&GLight[i]->pos, &ACTIVECAM->pos);
 			float fMaxdist = 300;
 
 			if (Project.telekinesis) fMaxdist = 850;
 
-			if (fDist <= fMaxdist)
-			{
+			if(!fartherThan(GLight[i]->pos, ACTIVECAM->pos, fMaxdist)) {
 				ComputeLight2DPos(GLight[i]);
 			}
 
@@ -602,8 +599,7 @@ void TreatBackgroundDynlights()
 						{
 							GetItemWorldPosition(inter.iobj[l], &_pos2);
 
-							if (EEDistance3D(&GLight[i]->pos, &_pos2) <= 300)
-							{
+							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "DOUSE");
 							}
 						}
@@ -624,8 +620,7 @@ void TreatBackgroundDynlights()
 						{
 							GetItemWorldPosition(inter.iobj[l], &_pos2);
 
-							if (EEDistance3D(&GLight[i]->pos, &_pos2) <= 300)
-							{
+							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "FIRE");
 							}
 						}
@@ -694,7 +689,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 		if ((el->exist) && (el->rgb.r >= 0.f))
 		{
 
-			bool bDist = (EEDistance3D(&el->pos, &ACTIVECAM->pos) < ACTIVECAM->cdepth);
+			bool bDist = (distSqr(el->pos, ACTIVECAM->pos) < square(ACTIVECAM->cdepth));
 
 			if ((el->pos.x >= fx0) && (el->pos.x <= fx1)
 			        && (el->pos.z >= fz0) && (el->pos.z <= fz1)

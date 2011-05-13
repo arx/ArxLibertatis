@@ -367,13 +367,23 @@ template<class T> const Vector3<T> Vector3<T>::Z_AXIS(T(0), T(0), T(1));
 template<class T> const Vector3<T> Vector3<T>::ZERO(T(0), T(0), T(0));
 
 template<class T>
-T dist(const Vector3<T> & a, const Vector3<T> & b) {
+inline T dist(const Vector3<T> & a, const Vector3<T> & b) {
 	return a.distanceFrom(b);
 }
 
 template<class T>
-T distSqr(const Vector3<T> & a, const Vector3<T> & b) {
+inline T distSqr(const Vector3<T> & a, const Vector3<T> & b) {
 	return a.distanceFromSqr(b);
+}
+
+template<class T>
+inline bool closerThan(const Vector3<T> & a, const Vector3<T> & b, T d) {
+	return (distSqr(a, b) < (d * d));
+}
+
+template<class T>
+inline bool fartherThan(const Vector3<T> & a, const Vector3<T> & b, T d) {
+	return (distSqr(a, b) > (d * d));
 }
 
 typedef Vector3<s32> Vec3i;

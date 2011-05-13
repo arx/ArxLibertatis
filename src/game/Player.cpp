@@ -2590,40 +2590,25 @@ void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io)
 
 	long id = inter.iobj[0]->obj->fastaccess.view_attach;
 
-	if (id != -1)
-	{
-		tcam.pos.x = inter.iobj[0]->obj->vertexlist3[id].v.x;
-		tcam.pos.y = inter.iobj[0]->obj->vertexlist3[id].v.y;
-		tcam.pos.z = inter.iobj[0]->obj->vertexlist3[id].v.z;
-	}
-	else
-	{
-		tcam.pos.x = player.pos.x;
-		tcam.pos.y = player.pos.y;
-		tcam.pos.z = player.pos.z;
+	if(id != -1) {
+		tcam.pos = inter.iobj[0]->obj->vertexlist3[id].v;
+	} else {
+		tcam.pos = player.pos;
 	}
 
 	id = io->obj->fastaccess.view_attach;
 
-	if (id != -1)
-	{
-		target.x = io->obj->vertexlist3[id].v.x;
-		target.y = io->obj->vertexlist3[id].v.y;
-		target.z = io->obj->vertexlist3[id].v.z;
+	if(id != -1) {
+		target = io->obj->vertexlist3[id].v;
 	}
 	else
 	{
-		target.x = io->pos.x;
-		target.y = io->pos.y;
-		target.z = io->pos.z;
+		target = io->pos;
 	}
 
 	// For the case of not already computed Vlist3... !
-	if (EEDistance3D(&target, &io->pos) > 400.f)
-	{
-		target.x = io->pos.x;
-		target.y = io->pos.y;
-		target.z = io->pos.z;
+	if(fartherThan(target, io->pos, 400.f)) {
+		target = io->pos;
 	}
 
 	SetTargetCamera(&tcam, target.x, target.y, target.z);

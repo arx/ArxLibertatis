@@ -143,7 +143,6 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 
 		long i = io->targetinfo;
-		float dist;
 
 		if (!ValidIONum(i)) return;
 
@@ -169,14 +168,14 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
 								{
-									dist = EEDistance3D(&pos, &inter.iobj[i]->obj->vertexlist3[k].v);
+									float dist = fdist(pos, inter.iobj[i]->obj->vertexlist3[k].v);
 
 									if ((dist <= dist_limit)
 											&&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
 									{
 										count++;
 
-										if (dist < mindist) mindist = dist;
+										if(dist < mindist) mindist = dist;
 									}
 								}
 
@@ -191,12 +190,8 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 									}
 
 								}
-								else
-								{
-									dist = EEDistance3D(&pos, &ioo->pos);
-
-									if (mindist <= 120.f)
-									{
+								else {
+									if(mindist <= 120.f) {
 										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
 									}
 								}
@@ -504,14 +499,14 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 	        ||	(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
 
-	float dist = EEDistance3D(&io->pos, &ACTIVECAM->pos);
+	float dists = distSqr(io->pos, ACTIVECAM->pos);
 
-	if (dist > ACTIVECAM->cdepth * ( 1.0f / 2 ))
+	if (dists > square(ACTIVECAM->cdepth) * square(1.0f / 2))
 		return 0;
 
 	long MAX_TEST;
 
-	if (dist < ACTIVECAM->cdepth * ( 1.0f / 4 ))
+	if (dists < square(ACTIVECAM->cdepth) * square(1.0f / 4))
 		MAX_TEST = 6; //4;
 	else
 		MAX_TEST = 4; //3;
@@ -554,10 +549,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC))))
 		{
-			float dist = EEDistance3D(&phys.cyl.origin, &ACTIVEBKG->anchors[pos].pos); 
-
-			if (dist < 30)
-			{
+			if(distSqr(phys.cyl.origin, ACTIVEBKG->anchors[pos].pos) < square(30.f)) {
 				return l_try;
 			}
 		}
@@ -570,14 +562,14 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 //*****************************************************************************
 static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl) {
 	long returnvalue = -1;
-	float distmax = 99999999.f;
+	float distmax = FLT_MAX;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for (long i = 0; i < eb->nbanchors; i++)
 	{
 		if (eb->anchors[i].nblinked)
 		{
-			float d = EEDistance3D(&eb->anchors[i].pos, pos);
+			float d = distSqr(eb->anchors[i].pos, *pos);
 
 			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
 			        && (eb->anchors[i].radius >= cyl->radius)
@@ -608,7 +600,7 @@ static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cy
 static long AnchorData_GetNearest_Except(Vec3f * pos, EERIE_CYLINDER * cyl, long except) {
 	
 	long returnvalue = -1;
-	float distmax = 99999999.f;
+	float distmax = FLT_MAX;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for (long i = 0; i < eb->nbanchors; i++)
@@ -617,7 +609,7 @@ static long AnchorData_GetNearest_Except(Vec3f * pos, EERIE_CYLINDER * cyl, long
 
 		if (eb->anchors[i].nblinked)
 		{
-			float d = EEDistance3D(&eb->anchors[i].pos, pos);
+			float d = distSqr(eb->anchors[i].pos, *pos);
 
 			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
 			        && (eb->anchors[i].radius >= cyl->radius)
@@ -757,12 +749,10 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 	}
 
 	io->_npcdata->pathfind.truetarget = target;
-	float d;
-	d = EEDistance3D(&pos1, &pos2);
 
-	if ((EEDistance3D(&pos1, &ACTIVECAM->pos) < ACTIVECAM->cdepth * ( 1.0f / 2 ))
+	if ((distSqr(pos1, ACTIVECAM->pos) < square(ACTIVECAM->cdepth) * square(1.0f / 2))
 	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
-	        && (d < 520) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
+	        && (distSqr(pos1, pos2) < square(520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_SNEAK))
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 	   )
@@ -782,11 +772,7 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC | CFLAG_NO_HEIGHT_MOD)) ))
 		{
-
-			d = dist(phys.cyl.origin, pos2);
-
-			if (d < 100)
-			{
+			if(distSqr(phys.cyl.origin, pos2) < square(100.f)) {
 				io->_npcdata->pathfind.pathwait = 0;
 				return false;
 			}
@@ -825,20 +811,17 @@ wander:
 		if ((from == to) && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 			return true;
 
-		float dist1 = EEDistance3D(&pos1, &ACTIVEBKG->anchors[from].pos);
-
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
-		        (dist1 < 200.f))
+		        closerThan(pos1, ACTIVEBKG->anchors[from].pos, 200.f))
 		{
 			if (!(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			{
-				float dist2 = EEDistance3D(&pos2, &ACTIVEBKG->anchors[to].pos);
-				float dist3 = EEDistance3D(&ACTIVEBKG->anchors[from].pos, &ACTIVEBKG->anchors[to].pos);
+				if(closerThan(ACTIVEBKG->anchors[from].pos, ACTIVEBKG->anchors[to].pos, 200.f)) {
+					return false;
+				}
 
-				if (dist3 < 200.f) return false;
-
-				if ((dist2 > 200.f)) 
+				if(fartherThan(pos2, ACTIVEBKG->anchors[to].pos, 200.f))
 					goto failure;
 			}
 
@@ -2044,7 +2027,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	if	(target->GameFlags & GFLAG_NOGORE)
 		return;
 
-	float mindist = 9999.f;
+	float mindistSqr = FLT_MAX;
 	long numsel = -1;
 	long goretex = -1;
 
@@ -2089,11 +2072,11 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 
 			if (out < 3)
 			{
-				float dist = EEDistance3D(pos, &target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
+				float dist = distSqr(*pos, target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
 
-				if (dist < mindist)
+				if (dist < mindistSqr)
 				{
-					mindist = dist;
+					mindistSqr = dist;
 					numsel = i;
 				}
 			}
@@ -2104,7 +2087,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 
 	long hid = 0;
 
-	if (mindist < 60) // can only cut a close part...
+	if (mindistSqr < square(60)) // can only cut a close part...
 	{
 		short fl = GetCutFlag( target->obj->selections[numsel].name );
 
@@ -2455,18 +2438,14 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 	io->_npcdata->strike_time += (short)FrameDiff;
 	ANIM_USE * ause = &io->animlayer[0];
 	ANIM_USE * ause1 = &io->animlayer[1];
-	float tdist = 999999.f;
+	float tdist = FLT_MAX;
 
-	if (ValidIONum(io->targetinfo))
-	{
-		tdist = EEDistance3D(&io->pos, &inter.iobj[io->targetinfo]->pos);
+	if ((io->_npcdata->pathfind.listnb) && (ValidIONum(io->_npcdata->pathfind.truetarget))) {
+		tdist = distSqr(io->pos, inter.iobj[io->_npcdata->pathfind.truetarget]->pos);
+	} else if(ValidIONum(io->targetinfo)) {
+		tdist = distSqr(io->pos, inter.iobj[io->targetinfo]->pos);
 	}
 
-	if ((io->_npcdata->pathfind.listnb)
-	        &&	(ValidIONum(io->_npcdata->pathfind.truetarget)))
-	{
-		tdist = EEDistance3D(&io->pos, &inter.iobj[io->_npcdata->pathfind.truetarget]->pos);
-	}
 
 
 
@@ -2479,8 +2458,8 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 		io->_npcdata->weapontype = 0;
 
 	if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-	        &&	(tdist <= TOLERANCE + 10)
-	        &&	((tdist <= TOLERANCE - 20) || (rnd() > 0.97f)))
+	        &&	(tdist <= square(TOLERANCE + 10))
+	        &&	((tdist <= square(TOLERANCE - 20)) || (rnd() > 0.97f)))
 	{
 		{
 			if ((ause->cur_anim == io->anims[ANIM_FIGHT_WAIT])
@@ -2488,7 +2467,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			{
 				float r = rnd();
 
-				if (tdist < TOLERANCE - 20) r = 0;
+				if (tdist < square(TOLERANCE - 20)) r = 0;
 
 				if (r < 0.1f)
 					TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
@@ -2513,7 +2492,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				FinishAnim(io, ause->cur_anim);
 				float r = rnd();
 
-				if (tdist < 340) r = 0;
+				if (tdist < square(340)) r = 0;
 
 				if (r < 0.33f)
 					TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
@@ -2612,7 +2591,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 		        &&	(ause1->cur_anim))
 		{
 			if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-			        &&	(tdist < STRIKE_DISTANCE)
+			        &&	(tdist < square(STRIKE_DISTANCE))
 			        &&	(io->_npcdata->strike_time > 0))
 			{
 				AcquireLastAnim(io);
@@ -2644,7 +2623,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			         &&	(ause1->cur_anim))
 			{
 				if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
-				        &&	(tdist < STRIKE_DISTANCE))
+				        &&	(tdist < square(STRIKE_DISTANCE)))
 				{
 					AcquireLastAnim(io);
 					FinishAnim(io, ause1->cur_anim);
@@ -2771,7 +2750,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(ause1->cur_anim))
 			{
 				if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-				        &&	(tdist < STRIKE_DISTANCE)
+				        &&	(tdist < square(STRIKE_DISTANCE))
 				        &&	(io->_npcdata->strike_time > 0))
 				{
 					AcquireLastAnim(io);
@@ -2802,7 +2781,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				         &&	(ause1->cur_anim))
 				{
 					if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
-					        &&	(tdist < STRIKE_DISTANCE))
+					        &&	(tdist < square(STRIKE_DISTANCE)))
 					{
 						AcquireLastAnim(io);
 						FinishAnim(io, ause1->cur_anim);
@@ -3142,7 +3121,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	// look around if finished fleeing or being looking around !
 	if ((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
-	        &&	(EEDistance3D(&io->pos, &io->target) > 150.f))
+	        &&	distSqr(io->pos, io->target) > square(150.f))
 	{
 		if (!io->_npcdata->ex_rotate)
 		{
@@ -3907,12 +3886,12 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 	if (!ioo) return NULL;
 
 	// Basic Clipping to avoid performance loss
-	float dist_cam = EEDistance3D(&ACTIVECAM->pos, &ioo->pos);
-
-	if (dist_cam > 2500) return NULL;
+	if(distSqr(ACTIVECAM->pos, ioo->pos) > square(2500)) {
+		return NULL;
+	}
 
 	INTERACTIVE_OBJ * found_io = NULL;
-	float found_dist = 9999999999999.f;
+	float found_dist = FLT_MAX;
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -3925,13 +3904,13 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 		        ||	(io->show != SHOW_FLAG_IN_SCENE))
 			continue;
 
-		float dist_io = EEDistance3D(&io->pos, &ioo->pos);
+		float dist_io = distSqr(io->pos, ioo->pos);
 
 		if ((dist_io > found_dist)
-		        ||	(dist_io > 1800))
+		        ||	(dist_io > square(1800)))
 			continue; // too far
 
-		if (dist_io < 130)
+		if (dist_io < square(130))
 		{
 			if (found_dist > dist_io)
 			{
@@ -3978,7 +3957,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 
 		if (EEfabs(AngularDifference(aa, ab)) < 110.f)
 		{
-			if (dist_io < 200)
+			if (dist_io < square(200))
 			{
 				if (found_dist > dist_io)
 				{
@@ -4007,7 +3986,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 
 					continue;
 				}
-				else if (EEDistance3D(&ppos, &dest) < 25.f)
+				else if (distSqr(ppos, dest) < square(25.f))
 				{
 					if (found_dist > dist_io)
 					{
@@ -4131,7 +4110,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 
 					// Check for Geometrical Visibility
 					if ((IO_Visible(&orgn, &dest, epp, &ppos))
-					        ||	(EEDistance3D(&ppos, &dest) < 25.f))
+					        || distSqr(ppos, dest) < square(25.f))
 						Visible = 1;
 				}
 			}
@@ -4226,7 +4205,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const floa
 		        &&	(inter.iobj[i]->_npcdata->life > 0.f)
 		   )
 		{
-			float distance(EEDistance3D(pos, &inter.iobj[i]->pos));
+			float distance = fdist(*pos, inter.iobj[i]->pos);
 
 			if (distance < max_distance)
 			{

@@ -2985,7 +2985,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 									GetItemWorldPosition(inter.iobj[l], &_pos);
 									GetItemWorldPosition(io, &_pos2);
 
-									if(EEDistance3D(&_pos, &_pos2) <= rad) {
+									if(distSqr(_pos, _pos2) <= square(rad)) {
 										io->stat_sent++;
 										Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, temp3, evt);
 									}

@@ -497,7 +497,7 @@ long ARX_SOUND_PlaySFX(ArxSound & sample_id, const Vec3f * position, float pitch
 
 	if (position)
 	{
-		if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE)
+		if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 	}
 
@@ -617,7 +617,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 			channel.position.z = io->pos.z;
 		}
 
-		if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, &io->pos) > ARX_SOUND_REFUSE_DISTANCE)
+		if (ACTIVECAM && distSqr(ACTIVECAM->pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 
 		if (io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.0F)
@@ -670,7 +670,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 
 	if (position)
 	{
-		if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE)
+		if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 	}
 
@@ -745,7 +745,7 @@ long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float
 		channel.position.x = position->x;
 		channel.position.y = position->y;
 		channel.position.z = position->z;
-		if(ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE) {
+		if(ACTIVECAM && fartherThan(ACTIVECAM->pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
 			return -1;
 		}
 	} else {
@@ -790,7 +790,7 @@ long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float
 			ePos.y = channel.position.y;
 			ePos.z = channel.position.z;
 
-			if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, &ePos) > ARX_SOUND_REFUSE_DISTANCE)
+			if (ACTIVECAM && distSqr(ACTIVECAM->pos, ePos) > square(ARX_SOUND_REFUSE_DISTANCE))
 				return -1;
 		}
 	}
@@ -835,7 +835,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 		channel.position.z = position->z;
 	}
 
-	if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE)
+	if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 		return -1;
 
 	aalSamplePlay(sample_id, channel);

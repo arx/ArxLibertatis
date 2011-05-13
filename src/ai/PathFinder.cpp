@@ -231,7 +231,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 			}
 			
 			// Cost to reach this node.
-			float distance = EEDistance3D(map_d[cid].pos, map_d[nid].pos);
+			float distance = fdist(map_d[cid].pos, map_d[nid].pos);
 			if(stealth) {
 				distance += getIlluminationCost(map_d[cid].pos);
 			}
@@ -239,7 +239,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 			distance += node->getDistance();
 			
 			// Estimated cost to get from this node to the destination.
-			float remaining = (1.0f - heuristic) * EEDistance3D(map_d[cid].pos, map_d[to].pos);
+			float remaining = (1.0f - heuristic) * fdist(map_d[cid].pos, map_d[to].pos);
 			
 			open.add(cid, node, distance, remaining);
 		}
@@ -254,7 +254,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 	
 	static const float FLEE_DISTANCE_COST = 130.0F;
 	
-	if(EEDistance3D(map_d[from].pos, danger) >= safeDist) {
+	if(!closerThan(map_d[from].pos, danger, safeDist)) {
 		rlist.push_back(from);
 		return true;
 	}
@@ -274,7 +274,6 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 		close.add(node);
 		
 		// If it's the goal node then we're done.
-		// was: if(EEDistance3D(map_d[nid].pos, danger) >= safeDist)
 		if(node->getCost() == node->getDistance()) {
 			buildPath(*node, rlist);
 			return true;
@@ -296,13 +295,13 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 			}
 			
 			// Cost to reach this node.
-			float distance = node->getDistance() + EEDistance3D(map_d[cid].pos, map_d[nid].pos);
+			float distance = node->getDistance() + fdist(map_d[cid].pos, map_d[nid].pos);
 			if(stealth) {
 				distance += getIlluminationCost(map_d[cid].pos);
 			}
 			
 			// Estimated cost to get from this node to the destination.
-			float remaining = std::max(0.0f, safeDist - EEDistance3D(map_d[cid].pos, danger));
+			float remaining = std::max(0.0f, safeDist - fdist(map_d[cid].pos, danger));
 			remaining *= FLEE_DISTANCE_COST;
 			
 			open.add(cid, node, distance, remaining);
@@ -376,7 +375,7 @@ PathFinder::NodeId PathFinder::getNearestNode(const Vec3f & pos) const {
 	float distance = FLT_MAX;
 	
 	for(size_t i = 0; i < map_s; i++) {
-		float dist = EEDistance3D(map_d[i].pos, pos);
+		float dist = distSqr(map_d[i].pos, pos);
 		if(dist < distance && map_d[i].nblinked) {
 			best = i;
 			distance = dist;
@@ -454,7 +453,7 @@ float PathFinder::getIlluminationCost(const Vec3f & pos) const {
 		
 		const EERIE_LIGHT & light = *slight_l[i];
 		
-		float dist = EEDistance3D(light.pos, pos);
+		float dist = fdist(light.pos, pos);
 		
 		if(dist <= light.fallend) {
 			

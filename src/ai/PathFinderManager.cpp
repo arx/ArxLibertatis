@@ -292,7 +292,7 @@ void PathFinderThread::run() {
 				if ((curpr.ioid->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 				        || (curpr.ioid->_npcdata->behavior & BEHAVIOUR_GO_HOME))
 				{
-					float distance(EEDistance3D(&ACTIVEBKG->anchors[curpr.from].pos, &ACTIVEBKG->anchors[curpr.to].pos));
+					float distance = fdist(ACTIVEBKG->anchors[curpr.from].pos, ACTIVEBKG->anchors[curpr.to].pos);
 
 					if (distance < PATHFINDER_DISTANCE_MAX)
 						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
@@ -314,13 +314,13 @@ void PathFinderThread::run() {
 						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
 
 					pathfinder.setHeuristic(heuristic);
-					float safedist = curpr.ioid->_npcdata->behavior_param + EEDistance3D(&curpr.ioid->target, &curpr.ioid->pos);
+					float safedist = curpr.ioid->_npcdata->behavior_param + fdist(curpr.ioid->target, curpr.ioid->pos);
 
 					pathfinder.flee(curpr.from, curpr.ioid->target, safedist, result, stealth);
 				}
 				else if (curpr.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR)
 				{
-					float distance(EEDistance3D(&curpr.ioid->pos, &curpr.ioid->target));
+					float distance = fdist(curpr.ioid->pos, curpr.ioid->target);
 
 					if (distance < PATHFINDER_DISTANCE_MAX)
 						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);

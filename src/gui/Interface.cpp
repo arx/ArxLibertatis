@@ -2366,7 +2366,7 @@ bool DANAE::ManageEditorControls()
 
 			if (GetItemWorldPosition(COMBINE,&pos))
 			{
-				if (EEDistance3D(&pos,&player.pos)>300.f)
+				if(fartherThan(pos, player.pos, 300.f))
 					COMBINE=NULL;
 			}
 			else COMBINE=NULL;
@@ -2412,7 +2412,7 @@ bool DANAE::ManageEditorControls()
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {
 				if ((GLight[i]!=NULL) &&
 					(GLight[i]->exist) &&
-					(EEDistance3D(&GLight[i]->pos, &player.pos) <= fMaxdist) &&
+					!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
 					(!(GLight[i]->extras & EXTRAS_NO_IGNIT)))
 				{
 					if (MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y))
@@ -2497,7 +2497,7 @@ bool DANAE::ManageEditorControls()
 			if ((GLight[i]!=NULL) &&
 				(GLight[i]->exist) &&
 
-				(EEDistance3D(&GLight[i]->pos, &player.pos) <= fMaxdist) &&
+				!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
 				(!(GLight[i]->extras & EXTRAS_NO_IGNIT)))
 			{
 				if (MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y))
@@ -10107,7 +10107,7 @@ long Manage3DCursor(long flags)
 						return 0;
 					}
 
-		if ((iterating == -1) && (EEDistance3D(&player.pos, &pos) < 300.f))
+		if ((iterating == -1) && closerThan(player.pos, pos, 300.f))
 					{
 						if ( flags & 1 )
 						{

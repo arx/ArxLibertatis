@@ -136,7 +136,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, Vec3f & fo
 		}
 		
 		float power = attractors[i].power;
-		float dist = EEDistance3D(ioo.pos, io.pos);
+		float dist = fdist(ioo.pos, io.pos);
 		
 		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || power < 0.f) {
 			

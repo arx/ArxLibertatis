@@ -286,8 +286,7 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 			center.y=(ep->v[n].sy+ep->v[r].sy)*( 1.0f / 2 );
 			center.z=(ep->v[n].sz+ep->v[r].sz)*( 1.0f / 2 );
 
-			if (EEDistance3D(&sph->origin, &center) < sph->radius) 
-			{	
+			if(sph->contains(center)) {	
 				return true;
 			}
 
@@ -297,8 +296,7 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 				center.y=(ep->v[n].sy+ep->center.y)*( 1.0f / 2 );
 				center.z=(ep->v[n].sz+ep->center.z)*( 1.0f / 2 );
 
-				if (EEDistance3D(&sph->origin, &center) < sph->radius) 
-				{	
+				if(sph->contains(center)) {	
 					return true;
 				}
 			}
@@ -309,15 +307,15 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 				center.y=(center.y+ep->v[n].sy)*( 1.0f / 2 );
 				center.z=(center.z+ep->v[n].sz)*( 1.0f / 2 );
 
-				if (EEDistance3D(&sph->origin, &center) < sph->radius) 
-				{	
+				if(sph->contains(center)) {
 					return true;
 				}
 			}
 		}
+		
+		Vec3f v(ep->v[n].sx, ep->v[n].sy, ep->v[n].sz);
 
-		if (EEDistance3D(&sph->origin, (Vec3f *)&ep->v[n]) < sph->radius) 
-		{	
+		if(sph->contains(v)) {
 			return true;
 		}
 
@@ -751,7 +749,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 				||	(	(io->show!=SHOW_FLAG_IN_SCENE)
 					||	((io->ioflags & IO_NO_COLLISIONS)  && !(flags & CFLAG_COLLIDE_NOCOL))
 					) 
-				||	(EEDistance3D(&io->pos,&cyl->origin)>1000.f)) continue;
+				||	distSqr(io->pos, cyl->origin) > square(1000.f)) continue;
 	
 			{
 				EERIE_CYLINDER * io_cyl=&io->physics.cyl;
@@ -1148,8 +1146,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 					}
 				}
 
-			if (EEDistance3D(&io->pos,&sphere->origin)< sr180)
-			{
+			if(distSqr(io->pos, sphere->origin) < square(sr180)) {
 			
 				long amount=1;
 				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
@@ -1158,8 +1155,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 				{
 					for (long ii=0;ii<io->obj->nbgroups;ii++)
 					{								
-						if (EEDistance3D(&vlist[io->obj->grouplist[ii].origin].v,&sphere->origin)< sr40)
-						{
+						if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
 							EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos]=(short)ret_idx;
 							MAX_IN_SPHERE_Pos++;
 
@@ -1184,9 +1180,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 						fcenter.y=(vlist[ef->vid[0]].v.y+vlist[ef->vid[1]].v.y+vlist[ef->vid[2]].v.y)*( 1.0f / 3 );
 						fcenter.z=(vlist[ef->vid[0]].v.z+vlist[ef->vid[1]].v.z+vlist[ef->vid[2]].v.z)*( 1.0f / 3 );
 
-						if (	( EEDistance3D(&fcenter,&sphere->origin)< sr30) ||	( EEDistance3D(&vlist[ef->vid[0]].v,&sphere->origin)< sr30)
-							|| (EEDistance3D(&vlist[ef->vid[1]].v,&sphere->origin)< sr30) || (EEDistance3D(&vlist[ef->vid[2]].v,&sphere->origin)< sr30))
-						{
+						if (	distSqr(fcenter, sphere->origin) < square(sr30) ||	distSqr(vlist[ef->vid[0]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[1]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[2]].v, sphere->origin) < square(sr30)) {
 							EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos]=(short)ret_idx;
 							MAX_IN_SPHERE_Pos++;
 
@@ -1364,8 +1358,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 					}
 				}
 
-			if (EEDistance3D(&io->pos,&sphere->origin)< sr180 )
-			{
+			if(distSqr(io->pos, sphere->origin) < square(sr180)) {
 				long amount=1;
 				vector<EERIE_VERTEX> & vlist=io->obj->vertexlist3;
 
@@ -1373,8 +1366,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 				{
 					for (long ii=0;ii<io->obj->nbgroups;ii++)
 					{								
-						if (EEDistance3D(&vlist[io->obj->grouplist[ii].origin].v,&sphere->origin)< sr40)
-						{
+						if (distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
 							if (num) *num=treatio[i].num;
 
 							return true;
@@ -1389,11 +1381,9 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 
 					if (io->obj->facelist[ii].facetype & POLY_HIDE) continue;
 
-					if (( EEDistance3D(&vlist[io->obj->facelist[ii].vid[0]].v,&sphere->origin)< sr30)
-						|| (EEDistance3D(&vlist[io->obj->facelist[ii].vid[1]].v,&sphere->origin)< sr30))
-					{
+					if(distSqr(vlist[io->obj->facelist[ii].vid[0]].v, sphere->origin) < square(sr30)
+					   || distSqr(vlist[io->obj->facelist[ii].vid[1]].v, sphere->origin) < square(sr30)) {
 						if (num) *num=treatio[i].num;
-
 						return true;
 					}
 				}
@@ -1420,8 +1410,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 			&& (io->obj)
 			)
 		{
-			if (EEDistance3D(&io->pos,&sphere->origin)< sr180)
-			{
+			if(distSqr(io->pos, sphere->origin) < square(sr180)) {
 				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 				if (io->obj->nbgroups>10)
@@ -1431,10 +1420,8 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 
 					while (ii)
 					{		
-						if (EEDistance3D(&vlist[io->obj->grouplist[ii].origin].v,&sphere->origin)< sr40)
-						{
+						if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
 							count++;
-
 							if (count>3) return true;
 						}
 
@@ -1453,8 +1440,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 
 					for (size_t ii=0;ii<vlist.size();ii+=step)
 					{
-						if (EEDistance3D(&vlist[ii].v,&sphere->origin)< sr30) 
-						{
+						if(closerThan(vlist[ii].v, sphere->origin, sr30)) {
 							count++;
 
 							if (count>6) return true;
@@ -1472,10 +1458,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 									posi.x=(vlist[ii].v.x*nn+vlist[kk].v.x*(1.f-nn));
 									posi.y=(vlist[ii].v.y*nn+vlist[kk].v.y*(1.f-nn));
 									posi.z=(vlist[ii].v.z*nn+vlist[kk].v.z*(1.f-nn));
-									float dist=EEDistance3D(&sphere->origin,&posi);
-
-									if (dist<=sr30+20)
-									{
+									if(distSqr(sphere->origin, posi) <= square(sr30 + 20)) {
 										count++;
 
 										if (count>3)
@@ -1899,7 +1882,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 	y=orgn->y;
 	z=orgn->z;
 	float distance;
-	float nearest=distance=EEDistance3D( orgn,dest );
+	float nearest = distance = fdist(*orgn, *dest);
 
 	if (distance<pas) pas=distance*( 1.0f / 2 );
 
@@ -1985,7 +1968,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 			{
 				if ( CheckIOInSphere(&sphere,num) )
 				{
-					dd=EEDistance3D(orgn,&sphere.origin);
+					dd = fdist(*orgn, sphere.origin);
 
 					if (dd<nearest)
 					{
@@ -2020,7 +2003,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 				{
 					if (RayCollidingPoly(orgn,dest,ep,hit)) 
 					{
-						dd=EEDistance3D(orgn,hit);
+						dd = fdist(*orgn, *hit);
 
 						if (dd<nearest)
 						{
@@ -2070,7 +2053,7 @@ void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status)
 	{
 		_ANCHOR_DATA * ad=&eb->anchors[k];	
 
-		if (EEDistance3D(&ad->pos,&io->pos)>600.f) continue;
+		if (distSqr(ad->pos, io->pos) > square(600.f)) continue;
 
 		if (Distance2D(io->pos.x,io->pos.z,ad->pos.x,ad->pos.z)<440.f)
 		{

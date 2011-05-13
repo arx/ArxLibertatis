@@ -634,7 +634,7 @@ void CheckSetAnimOutOfTreatZone(INTERACTIVE_OBJ * io, long num)
 	if ((io)
 	        &&	(io->animlayer[num].cur_anim)
 	        &&	!(io->GameFlags & GFLAG_ISINTREATZONE)
-	        &&	(EEDistance3D(&io->pos, &ACTIVECAM->pos) > 2500.f))
+	        &&	distSqr(io->pos, ACTIVECAM->pos) > square(2500.f))
 	{
 
 		ARX_CHECK_LONG(io->animlayer[num].cur_anim->anims[ io->animlayer[num].altidx_cur ]->anim_time - 1);
@@ -655,18 +655,14 @@ void PrepareIOTreatZone(long flag)
 	        ||	(status == -1))
 	{
 		status = 0;
-		lastpos.x = ACTIVECAM->pos.x;
-		lastpos.y = ACTIVECAM->pos.y;
-		lastpos.z = ACTIVECAM->pos.z;
+		lastpos = ACTIVECAM->pos;
 	}
 	else if (status == 3) status = 0;
 
-	if (EEDistance3D(&ACTIVECAM->pos, &lastpos) > 100.f)
+	if (distSqr(ACTIVECAM->pos, lastpos) > square(100.f))
 	{
 		status = 0;
-		lastpos.x = ACTIVECAM->pos.x;
-		lastpos.y = ACTIVECAM->pos.y;
-		lastpos.z = ACTIVECAM->pos.z;
+		lastpos = ACTIVECAM->pos;
 	}
 
 	if (status++) return;
@@ -758,7 +754,7 @@ void PrepareIOTreatZone(long flag)
 			}
 			else
 			{
-				float dist;
+				float dists;
 
 				if (Cam_Room >= 0)
 				{
@@ -766,14 +762,14 @@ void PrepareIOTreatZone(long flag)
 					{
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dist = EEDistance3D(&ACTIVECAM->pos, &pos);
+						dists = distSqr(ACTIVECAM->pos, pos);
 					}
 					else
 					{
 						if (io->room_flags & 1)
 							UpdateIORoom(io);
 
-						dist = SP_GetRoomDist(&io->pos, &ACTIVECAM->pos, io->room, Cam_Room);
+						dists = square(SP_GetRoomDist(&io->pos, &ACTIVECAM->pos, io->room, Cam_Room));
 					}
 				}
 				else
@@ -782,13 +778,13 @@ void PrepareIOTreatZone(long flag)
 					{
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dist = EEDistance3D(&ACTIVECAM->pos, &pos); //&io->pos,&pos);
+						dists = distSqr(ACTIVECAM->pos, pos); //&io->pos,&pos);
 					}
 					else
-						dist = EEDistance3D(&io->pos, &ACTIVECAM->pos);
+						dists = distSqr(io->pos, ACTIVECAM->pos);
 				}
 		
-				if (dist < TREATZONE_LIMIT) treat = 1;
+				if (dists < square(TREATZONE_LIMIT)) treat = 1;
 				else treat = 0;
 				
 			}
@@ -874,7 +870,7 @@ void PrepareIOTreatZone(long flag)
 
 				if (ioo)
 				{
-					if (EEDistance3D(&io->pos, &ioo->pos) < 300.f)
+					if (distSqr(io->pos, ioo->pos) < square(300.f))
 					{
 						toadd = 1;
 						break;
@@ -3389,7 +3385,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 {
 	float n;
  
-	float fdist = 9999999999.f;
+	float _fdist = 9999999999.f;
 	float fdistBB = 9999999999.f;
 	float fMaxDist = flag ? 9999999999.f : 350;
 	INTERACTIVE_OBJ * foundBB = NULL;
@@ -3452,7 +3448,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 						bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
 					}
 
-					float fp = EEDistance3D(&io->pos, &player.pos);
+					float fp = fdist(io->pos, player.pos);
 
 					if ((!flag && (fp <= fMaxDist)) && ((foundBB == NULL) || (fp < fdistBB)))
 					{
@@ -3466,7 +3462,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 						if (bPlayerEquiped)
 							fp = 0.f;
 						else
-							fp = EEDistance3D(&io->pos, &player.pos);
+							fp = fdist(io->pos, player.pos);
 
 						if ((fp < fdistBB) || (foundBB == NULL))
 						{
@@ -3496,12 +3492,12 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 							if (bPlayerEquiped)
 								fp = 0.f;
 							else
-								fp = EEDistance3D(&io->pos, &player.pos);
+								fp = fdist(io->pos, player.pos);
 
-							if ((bPass && (fp <= fMaxDist)) && ((fp < fdist) || (foundPixel == NULL)))
+							if ((bPass && (fp <= fMaxDist)) && ((fp < _fdist) || (foundPixel == NULL)))
 							{
 								{
-									fdist = fp;
+									_fdist = fp;
 									foundPixel = io;
 									INTERNMB = i;
 									goto suite;
@@ -3678,7 +3674,6 @@ void SetYlsideDeath(INTERACTIVE_OBJ * io)
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
 	bool col = false;
-	float dist;
 	long i;
 	long avoid = -1;
 	INTERACTIVE_OBJ * io_source = NULL;
@@ -3705,9 +3700,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 		    && (!io->usepath)
 		)
 		{
-			dist = EEDistance3D(&io->pos, &obj->pbox->vert[0].pos);
-
-			if ((dist < 450.f) && (In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius)))
+			if (distSqr(io->pos, obj->pbox->vert[0].pos) < square(450.f) && (In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius)))
 			{
 				if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
 				{
@@ -3736,12 +3729,9 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 					{
 						if (ii != io->obj->origin)
 						{
-							sp.origin.x = vlist[ii].v.x;
-							sp.origin.y = vlist[ii].v.y;
-							sp.origin.z = vlist[ii].v.z;
+							sp.origin = vlist[ii].v;
 
-							if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
-							{
+							if(sp.contains(obj->pbox->vert[kk].pos)) {
 								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 								{
 									if (ARXTime > io->collide_door_time + 500)
@@ -3770,7 +3760,6 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 {
 	bool col = false;
-	float dist;
 	long i;
 	long avoid = -1;
 	INTERACTIVE_OBJ * io_source = NULL;
@@ -3806,9 +3795,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 			continue;
 
 		
-		dist = EEDistance3D(&io->pos, &obj->pbox->vert[0].pos);
-
-		if ((dist < 600.f) && (In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)))
+		if (distSqr(io->pos, obj->pbox->vert[0].pos) < square(600.f) && (In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)))
 		{
 			if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
 			{
@@ -3901,13 +3888,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						{
 							for (long jii = 1; jii < nbv; jii += step)
 							{
-								sp.origin.x = (vlist[ii].v.x + vlist[jii].v.x) * ( 1.0f / 2 );
-								sp.origin.y = (vlist[ii].v.y + vlist[jii].v.y) * ( 1.0f / 2 );
-								sp.origin.z = (vlist[ii].v.z + vlist[jii].v.z) * ( 1.0f / 2 );
+								sp.origin = (vlist[ii].v + vlist[jii].v) * ( 1.0f / 2 );
 
 								for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-									if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
-									{
+									if(sp.contains(obj->pbox->vert[kk].pos)) {
 										if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 										{
 											if (ARXTime > io->collide_door_time + 500)
@@ -3926,12 +3910,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 							}
 						}
 
-						sp.origin.x = vlist[ii].v.x;
-						sp.origin.y = vlist[ii].v.y;
-						sp.origin.z = vlist[ii].v.z;
+						sp.origin = vlist[ii].v;
 
 						for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-							if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
+							if (sp.contains(obj->pbox->vert[kk].pos))
 							{
 								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 								{
@@ -4050,7 +4032,7 @@ void UpdateCameras()
 						        &&	(ii != i)
 						        &&	(ioo->show == SHOW_FLAG_IN_SCENE)
 						        &&	(ioo->ioflags & IO_NPC)
-						        &&	(EEDistance3D(&io->pos, &ioo->pos) < 600.f))
+						        &&	closerThan(io->pos, ioo->pos, 600.f))
 						{
 							bool Touched = false;
 
@@ -4058,9 +4040,7 @@ void UpdateCameras()
 							{
 								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
 								{
-									if (EEDistance3D(&io->obj->vertexlist3[ri].v,
-									                 &ioo->obj->vertexlist3[rii].v) < 20.f)
-									{
+									if(closerThan(io->obj->vertexlist3[ri].v, ioo->obj->vertexlist3[rii].v, 20.f)) {
 										Touched = true;
 										ri = io->obj->vertexlist.size();
 										break;
@@ -4097,35 +4077,18 @@ void UpdateCameras()
 						if (vv > 8000) vv = 8000;
 
 						vv = (8000 - vv) * ( 1.0f / 4000 );
-						float vll = _framedelay * ( 1.0f / 1000 ) * vv;
-						Vec3f oldvector;
-						Vec3f newvector;
-						oldvector.x = io->_camdata->cam.lasttarget.x - io->_camdata->cam.lastpos.x;
-						oldvector.y = io->_camdata->cam.lasttarget.y - io->_camdata->cam.lastpos.y;
-						oldvector.z = io->_camdata->cam.lasttarget.z - io->_camdata->cam.lastpos.z;
 
-						newvector.x = io->target.x - io->_camdata->cam.pos.x;
-						newvector.y = io->target.y - io->_camdata->cam.pos.y;
-						newvector.z = io->target.z - io->_camdata->cam.pos.z;
-
-						EEDistance3D(&oldvector, &newvector);
-						float f1 = vll; 
+						float f1 = _framedelay * ( 1.0f / 1000 ) * vv; 
 
 						if (f1 > 1.f) f1 = 1.f;
 
 						float f2 = 1.f - f1;
-						smoothtarget.x = io->target.x * f2 + io->_camdata->cam.lasttarget.x * f1;
-						smoothtarget.y = io->target.y * f2 + io->_camdata->cam.lasttarget.y * f1;
-						smoothtarget.z = io->target.z * f2 + io->_camdata->cam.lasttarget.z * f1;
+						smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
 
 						SetTargetCamera(&io->_camdata->cam, smoothtarget.x, smoothtarget.y, smoothtarget.z);
-						io->_camdata->cam.lasttarget.x = smoothtarget.x;
-						io->_camdata->cam.lasttarget.y = smoothtarget.y;
-						io->_camdata->cam.lasttarget.z = smoothtarget.z;
+						io->_camdata->cam.lasttarget = smoothtarget;
 						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
-						io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
-						io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
+						io->_camdata->cam.lastpos = io->_camdata->cam.pos;
 					}
 					else
 					{
@@ -4136,13 +4099,9 @@ void UpdateCameras()
 						}
 						else SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
 
-						io->_camdata->cam.lasttarget.x = io->target.x;
-						io->_camdata->cam.lasttarget.y = io->target.y;
-						io->_camdata->cam.lasttarget.z = io->target.z;
+						io->_camdata->cam.lasttarget = io->target;
 						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
-						io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
-						io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
+						io->_camdata->cam.lastpos = io->_camdata->cam.pos;
 					}
 
 					io->_camdata->cam.angle.b -= 180.f;
@@ -4266,9 +4225,9 @@ void RenderInter(float from, float to) {
 			        (io->obj->pbox) &&
 			        (io->obj->pbox->active))  
 			{
-				dist = EEDistance3D(&ACTIVECAM->pos, &io->obj->pbox->vert[0].pos);
+				dist = fdist(ACTIVECAM->pos, io->obj->pbox->vert[0].pos);
 			}
-			else dist = EEDistance3D(&ACTIVECAM->pos, &io->pos);
+			else dist = fdist(ACTIVECAM->pos, io->pos);
 
 			if ((0) && (inter.iobj[i]->stepmaterial))
 			{

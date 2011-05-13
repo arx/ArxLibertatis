@@ -736,13 +736,13 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
 {
 	if (source<0) return;
 
-	float nearest_dist=999999999.f;
+	float nearest_dist = FLT_MAX;
 	long nearest=-1;
 	long count=inter.iobj[source]->obj->nbgroups;
 
 	for (long i=0;i<count;i+=2)
 	{
-		float dist=EEDistance3D(pos,&inter.iobj[source]->obj->vertexlist3[inter.iobj[source]->obj->grouplist[i].origin].v);
+		float dist = distSqr(*pos, inter.iobj[source]->obj->vertexlist3[inter.iobj[source]->obj->grouplist[i].origin].v);
 
 		if (dist<nearest_dist)
 		{
@@ -1442,7 +1442,7 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 //-----------------------------------------------------------------------------
 void Add3DBoom(Vec3f * position) {
 	
-	float dist=Distance3D(player.pos.x,player.pos.y-160.f,player.pos.z,position->x,position->y,position->z);
+	float dist = fdist(player.pos - Vec3f(0, 160.f, 0.f), *position);
 	Vec3f poss = *position;
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &poss);
 
@@ -1472,7 +1472,7 @@ void Add3DBoom(Vec3f * position) {
 				{
 					for (long k=0;k<inter.iobj[i]->obj->pbox->nb_physvert;k++)
 					{
-						float dist=EEDistance3D( &inter.iobj[i]->obj->pbox->vert[k].pos, position);
+						float dist = fdist(inter.iobj[i]->obj->pbox->vert[k].pos, *position);
 
 						if (dist<300.f)
 						{
@@ -2591,9 +2591,9 @@ void TreatBackgroundActions()
 
 		if (gl==NULL) continue;
 		
-		float dist=EEDistance3D(&gl->pos,	&ACTIVECAM->pos);
+		float dist = distSqr(gl->pos,	ACTIVECAM->pos);
 
-		if ( dist>fZFar ) // Out of Treat Range
+		if(dist > square(fZFar)) // Out of Treat Range
 		{
 			ARX_SOUND_Stop(gl->sample);
 			gl->sample = ARX_SOUND_INVALID_RESOURCE;
@@ -2638,9 +2638,9 @@ void TreatBackgroundActions()
 
 			long count;
 
-				if (dist<ACTIVECAM->cdepth*( 1.0f / 8 )) count=4;
-			else if (dist<ACTIVECAM->cdepth*( 1.0f / 6 )) count=4;
-			else if (dist>ACTIVECAM->cdepth*( 1.0f / 3 )) count=3;
+			if(dist < square(ACTIVECAM->cdepth) * square(1.0f / 8)) count=4;
+			else if(dist < square(ACTIVECAM->cdepth) * square(1.0f / 6)) count=4;
+			else if(dist > square(ACTIVECAM->cdepth) * square(1.0f / 3)) count=3;
 			else count=2;
 
 			for (n=0;n<count;n++)

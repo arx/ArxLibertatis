@@ -31,8 +31,14 @@ struct EERIE_CYLINDER {
 };
 
 struct EERIE_SPHERE {
+	
 	Vec3f origin;
 	float radius;
+	
+	bool contains(const Vec3f & pos) const {
+		return closerThan(pos, origin, radius);
+	}
+	
 };
 
 #endif // ARX_GRAPHICS_BASEGRAPHICSTYPES_H

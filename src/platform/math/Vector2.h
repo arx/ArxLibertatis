@@ -271,13 +271,23 @@ public:
 };
 
 template<class T>
-T dist(const Vector2<T> & a, const Vector2<T> & b) {
+inline T dist(const Vector2<T> & a, const Vector2<T> & b) {
 	return a.distanceFrom(b);
 }
 
 template<class T>
-T distSqr(const Vector2<T> & a, const Vector2<T> & b) {
+inline T distSqr(const Vector2<T> & a, const Vector2<T> & b) {
 	return a.distanceFromSqr(b);
+}
+
+template<class T>
+inline bool closerThan(const Vector2<T> & a, const Vector2<T> & b, T d) {
+	return (distSqr(a, b) < (d * d));
+}
+
+template<class T>
+inline bool fartherThan(const Vector2<T> & a, const Vector2<T> & b, T d) {
+	return (distSqr(a, b) > (d * d));
 }
 
 // Constants

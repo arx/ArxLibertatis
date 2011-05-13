@@ -1015,13 +1015,13 @@ D3DCOLOR GetColorz(float x, float y, float z)
 	for (long i = 0; i < TOTIOPDL; i++)
 	{
 		if ((IO_PDL[i]->fallstart > 10.f) && (IO_PDL[i]->fallend > 100.f))
-			Insertllight(IO_PDL[i], EEDistance3D(&IO_PDL[i]->pos, &pos) - IO_PDL[i]->fallstart);
+			Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, pos) - IO_PDL[i]->fallstart);
 	}
 
 	for (int i = 0; i < TOTPDL; i++)
 	{
 		if ((PDL[i]->fallstart > 10.f) && (PDL[i]->fallend > 100.f))
-			Insertllight(PDL[i], EEDistance3D(&PDL[i]->pos, &pos) - PDL[i]->fallstart);
+			Insertllight(PDL[i], fdist(PDL[i]->pos, pos) - PDL[i]->fallstart);
 	}
 
 	Preparellights(&pos);
@@ -1035,7 +1035,7 @@ D3DCOLOR GetColorz(float x, float y, float z)
 
 		if (el)
 		{
-			dd = EEDistance3D(&el->pos, &pos);
+			dd = fdist(el->pos, pos);
 
 			if (dd < el->fallend)
 			{
@@ -1541,7 +1541,7 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	z	=	orgn->z;
 
 	float			distance;
-	float			nearest		=	distance	=	EEDistance3D(orgn, dest);
+	float			nearest		=	distance	=	fdist(*orgn, *dest);
 
 	if (distance < pas) pas	=	distance * ( 1.0f / 2 );
 
@@ -1636,15 +1636,13 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 							{
 								if (RayCollidingPoly(orgn, dest, ep, hit))
 								{
-									dd = EEDistance3D(orgn, hit);
+									dd = fdist(*orgn, *hit);
 
 									if (dd < nearest)
 									{
 										nearest		=	dd;
 										found_ep	=	ep;
-										found_hit.x	=	hit->x;
-										found_hit.y	=	hit->y;
-										found_hit.z	=	hit->z;
+										found_hit = *hit;
 									}
 								}
 							}
@@ -1847,7 +1845,7 @@ bool GetRoomCenter(long room_num, Vec3f * center)
 	*center = (bbox.max + bbox.min) * ( 1.0f / 2 );
 
 	portals->room[room_num].center = *center;
-	portals->room[room_num].radius = EEDistance3D(center, &bbox.max);
+	portals->room[room_num].radius = fdist(*center, bbox.max);
 	return true;
 }
 
@@ -1883,7 +1881,7 @@ static float GetRoomDistance(long i, long j, Vec3f * p1, Vec3f * p2)
 }
 float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 {
-	float dst = EEDistance3D(pos, c_pos);
+	float dst = fdist(*pos, *c_pos);
 
 	if (dst < 150.f) return dst;
 
@@ -1899,8 +1897,8 @@ float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 
 		if (v > 0.f)
 		{
-			v += EEDistance3D(pos, &p2);
-			v += EEDistance3D(c_pos, &p1);
+			v += fdist(*pos, p2);
+			v += fdist(*c_pos, p1);
 			return v;
 		}
 	}

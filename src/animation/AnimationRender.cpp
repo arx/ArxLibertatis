@@ -549,7 +549,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 	if ((io)
 	        &&	(io->ioflags & IO_NPC)
 	        &&	(io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-	        &&	(EEDistance3D(&io->pos, &player.pos) < 240.f))
+	        &&	(distSqr(io->pos, player.pos) < square(240.f)))
 		return true;
 
 	if ((io != inter.iobj[0])
@@ -915,14 +915,14 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 					if (Cur_llights)
 					{
 						// tsu
-						if (!(GetMaxManhattanDistance(&Cur_llights->pos, (Vec3f *)&posVert) <= Cur_llights->fallend))
+						if (!(GetMaxManhattanDistance(&Cur_llights->pos, posVert) <= Cur_llights->fallend))
 						{
 							TSU_TEST_NB_LIGHT ++;
 							continue;
 						}
 
 						float	cosangle;
-						float distance = EEDistance3D((Vec3f *)posVert, &Cur_llights->pos);
+						float distance = fdist(Cur_llights->pos, *posVert);
 
 						/* Evaluate its intensity depending on the distance Light<->Object */
 						if (distance <= Cur_llights->fallstart)
@@ -1699,7 +1699,7 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 	{
 		bool bBumpOnIO;
-		float fDist		= EEDistance3D(pos, &ACTIVECAM->pos);
+		float fDist		= fdist(*pos, ACTIVECAM->pos);
 		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < min( max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
 
 		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
@@ -2615,7 +2615,7 @@ bool Cedric_IO_Visible(INTERACTIVE_OBJ * io, long typ)
 	    &&	(io)
 	    &&	(!(typ & 1)))
 	{
-		if (EEDistance3D(&io->pos, &ACTIVECAM->pos) > ACTIVECAM->cdepth * 0.6f)
+		if (distSqr(io->pos, ACTIVECAM->pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 			return false;
 
 		long xx, yy;
@@ -2838,7 +2838,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f *
 		if (!(GetMaxManhattanDistance(&IO_PDL[i]->pos, &tv) <= IO_PDL[i]->fallend + 500.f))
 			continue;
 
-		Insertllight(IO_PDL[i], EEDistance3D(&IO_PDL[i]->pos, &tv)); 
+		Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, tv)); 
 	}
 
 	for (int i = 0; i < TOTPDL; i++)
@@ -2846,7 +2846,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f *
 		if (!(GetMaxManhattanDistance(&PDL[i]->pos, &tv) <= PDL[i]->fallend + 500.f))
 			continue;
 
-		Insertllight(PDL[i], EEDistance3D(&PDL[i]->pos, &tv)); 
+		Insertllight(PDL[i], fdist(PDL[i]->pos, tv)); 
 	}
 
 	Preparellights(&tv);
@@ -2932,7 +2932,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f *
 					// If light visible
 					if (cosangle > 0.f)
 					{
-						float distance = EEDistance3D((Vec3f *)posVert, &Cur_llights->pos);
+						float distance = fdist(*posVert, Cur_llights->pos);
 
 						// Evaluate its intensity depending on the distance Light<->Object
 						if (distance <= Cur_llights->fallstart)
@@ -3072,10 +3072,8 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f 
 			if (Cur_llights)
 			{
 				float	cosangle;
-				float		oolength = 1.f / EEDistance3D((Vec3f *)posVert, &Cur_llights->pos); //dists[l];
-				vLight.x = (llights[l]->pos.x - posVert->x) * oolength;
-				vLight.y = (llights[l]->pos.y - posVert->y) * oolength;
-				vLight.z = (llights[l]->pos.z - posVert->z) * oolength;
+				float		oolength = 1.f / fdist(*posVert, Cur_llights->pos);
+				vLight = (llights[l]->pos - *posVert) * oolength;
 
 				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
 				Vec3f * Cur_vLights = &vTLights[l];
@@ -3087,7 +3085,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f 
 				// If light visible
 				if (cosangle > 0.f)
 				{
-					float distance = EEDistance3D((Vec3f *)posVert, &Cur_llights->pos);
+					float distance = fdist(*posVert, Cur_llights->pos);
 
 					// Evaluate its intensity depending on the distance Light<->Object
 					if (distance <= Cur_llights->fallstart)
@@ -3169,15 +3167,13 @@ void ApplyDynLight(EERIEPOLY * ep)
 	{
 		EERIE_LIGHT * el = PDL[i];
 
-		if (!(GetMaxManhattanDistance(&el->pos, (Vec3f *)&ep->center) <= el->fallend + 35.f))
+		if (!(GetMaxManhattanDistance(&el->pos, &ep->center) <= el->fallend + 35.f))
 		{
 			TSU_TEST_NB_LIGHT ++;
 			continue;
 		}
 
-		float d = EEDistance3D(&el->pos, (Vec3f *)&ep->center);
-
-		if (d <= el->fallend + 35.f)
+		if (distSqr(el->pos, ep->center) <= square(el->fallend + 35.f))
 		{
 			if (Project.improve)
 			{
@@ -3193,13 +3189,14 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 			for (j = 0; j < nbvert; j++)
 			{
-				if (!(GetMaxManhattanDistance(&el->pos, (Vec3f *)&ep->v[j]) <= el->fallend))
+				Vec3f v(ep->v[j].sx,ep->v[j].sy, ep->v[j].sz);
+				if (!(GetMaxManhattanDistance(&el->pos, &v) <= el->fallend))
 				{
 					TSU_TEST_NB ++;
 					continue;
 				}
 
-				d = EEDistance3D(&el->pos, (Vec3f *)&ep->v[j]);
+				float d = fdist(el->pos, ep->v[j]);
 
 				if (d <= el->fallend)
 				{
@@ -3281,7 +3278,6 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 	}
 
 	long j;
-	register float d;
 	float epr[4];
 	float epg[4];
 	float epb[4];
@@ -3308,7 +3304,7 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 
 		for (j = 0; j < nbvert; j++)
 		{
-			d = EEDistance3D(&el->pos, (Vec3f *)&ep->v[j]);
+			float d = fdist(el->pos, ep->v[j]);
 
 			if (d < el->fallend)
 			{
@@ -3411,7 +3407,6 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 	}
 
 	long i, j;
-	register float d;
 	float epr[4];
 	float epg[4];
 	float epb[4];
@@ -3439,7 +3434,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 		for (j = 0; j < nbvert; j++)
 		{
 		
-			d = EEDistance3D(&el->pos, (Vec3f *)&ep->v[j]);
+			float d = fdist(el->pos, ep->v[j]);
 
 			if (d < el->fallend)
 			{

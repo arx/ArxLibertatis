@@ -1746,13 +1746,13 @@ float CLevitate::Render()
 
 					float a = radians(360.f * rnd());
 
-					particle[j].ov.x = this->pos.x + this->rbase * EEcos(a);
-					particle[j].ov.y = this->pos.y;
-					particle[j].ov.z = this->pos.z + this->rbase * EEsin(a);
-					float t = EEDistance3D(&particle[j].ov, &this->pos);
-					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - this->pos.x) / t);
+					particle[j].ov.x = pos.x + rbase * EEcos(a);
+					particle[j].ov.y = pos.y;
+					particle[j].ov.z = pos.z + rbase * EEsin(a);
+					float t = fdist(particle[j].ov, pos);
+					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - pos.x) / t);
 					particle[j].move.y = 3.f * rnd();
-					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - this->pos.z) / t);
+					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - pos.z) / t);
 					particle[j].siz = 30.f + 30.f * rnd();
 					particle[j].tolive = 3000;
 					particle[j].scale.x = 1.f;
@@ -1829,13 +1829,13 @@ float CLevitate::Render()
 
 					float a = radians(360.f * rnd());
 
-					particle[j].ov.x = this->pos.x + this->rbase * EEcos(a);
-					particle[j].ov.y = this->pos.y;
-					particle[j].ov.z = this->pos.z + this->rbase * EEsin(a);
-					float t = EEDistance3D(&particle[j].ov, &this->pos);
-					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - this->pos.x) / t);
+					particle[j].ov.x = pos.x + rbase * EEcos(a);
+					particle[j].ov.y = pos.y;
+					particle[j].ov.z = pos.z + rbase * EEsin(a);
+					float t = fdist(particle[j].ov, pos);
+					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - pos.x) / t);
 					particle[j].move.y = 3.f * rnd();
-					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - this->pos.z) / t);
+					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - pos.z) / t);
 					particle[j].siz = 30.f + 30.f * rnd();
 					particle[j].tolive = 3000;
 					particle[j].scale.x = 1.f;
