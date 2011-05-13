@@ -552,7 +552,6 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 /*---------------------------------------------------------------*/
 HRESULT Cinematic::Render(float FDIFF)
 {
-	int col;
 	CinematicBitmap * tb;
 
 	LargeurRender = DANAESIZX;
@@ -595,7 +594,7 @@ HRESULT Cinematic::Render(float FDIFF)
 		tb = &TabBitmap[numbitmap];
 
 		//fx
-		col = 0x00FFFFFF;
+		int col = 0x00FFFFFF;
 
 		switch (fx & 0x000000FF)
 		{
