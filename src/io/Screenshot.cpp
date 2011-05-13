@@ -432,7 +432,7 @@ bool SnapShot::GetSnapShot()
 
 	if (!fFile)
 	{
-		delete pulMemorySnapShot;
+		delete[] pulMemorySnapShot;
 		return false;
 	}
 
@@ -463,7 +463,7 @@ bool SnapShot::GetSnapShot()
 	FileWrite(fFile, pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) << 2);
 
 	FileClose(fFile);
-	delete pulMemorySnapShot;
+	delete[] pulMemorySnapShot;
 	return true;
 }
 
