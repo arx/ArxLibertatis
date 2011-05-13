@@ -1262,7 +1262,7 @@ bool Menu2_Render()
 							bool bExist=false;
 							std::vector<int>::iterator ii;
 
-							for(ii=vBpp.begin();ii!=vBpp.end();ii++)
+							for(ii=vBpp.begin();ii!=vBpp.end();++ii)
 							{
 								if (ARX_CAST_UINT(*ii) == danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount)
 								{
@@ -1328,7 +1328,7 @@ bool Menu2_Render()
 
 					std::vector<int>::iterator ii;
 
-					for(ii=vBpp.begin();ii!=vBpp.end();ii++)
+					for(ii=vBpp.begin();ii!=vBpp.end();++ii)
 					{
 						std::stringstream bpp;
 						bpp << *ii;
@@ -2978,7 +2978,7 @@ CMenuAllZone::CMenuAllZone()
 
 	vector<CMenuZone*>::iterator i;
 
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
+	for(i=vMenuZone.begin();i!=vMenuZone.end();++i)
 	{
 		CMenuZone *zone=*i;
 		delete zone;
@@ -3006,7 +3006,7 @@ CMenuZone * CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
 {
 	std::vector<CMenuZone*>::iterator i;
 
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
+	for(i=vMenuZone.begin();i!=vMenuZone.end();++i)
 	{
 		CMenuZone *zone=*i;
 
@@ -3029,7 +3029,7 @@ CMenuZone * CMenuAllZone::GetZoneNum(int _iNum)
 	vector<CMenuZone*>::iterator i;
 	int iNum=0;
 
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
+	for(i=vMenuZone.begin();i!=vMenuZone.end();++i)
 	{
 		CMenuZone *zone=*i;
 
@@ -3361,7 +3361,7 @@ void CMenuCheckButton::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	if (vTex.size())
+	if (!vTex.empty())
 	{
 		TextureContainer *pTex = vTex[iState];
 
@@ -5040,7 +5040,7 @@ void CMenuSliderText::SetWidth(int _iWidth)
 	//on recentre tout
 	vector<CMenuElementText*>::iterator it;
 
-	for(it=vText.begin();it<vText.end();it++)
+	for(it=vText.begin();it<vText.end();++it)
 	{
 		CMenuElementText *pMenuElementText=*it;
 		Vec2i textSize = pMenuElementText->GetTextSize();
@@ -5069,7 +5069,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	//on recentre tout
 	vector<CMenuElementText*>::iterator it;
 
-	for(it=vText.begin();it<vText.end();it++)
+	for(it=vText.begin();it<vText.end();++it)
 	{
 		CMenuElementText *pMenuElementText=*it;
 		
