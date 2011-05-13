@@ -982,8 +982,6 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 		{
 			for (size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
 			{
-				float dmgs = 0.f;
-
 				if (ValidIONum(EVERYTHING_IN_SPHERE[jj])
 				        && (!(inter.iobj[EVERYTHING_IN_SPHERE[jj]]->ioflags & IO_BODY_CHUNK)))
 				{
@@ -1029,7 +1027,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					}
 					else ARX_CHECK_NO_ENTRY(); 
 					
-
+					float dmgs = 0.f;
 					if (!(flags & 1))
 					{
 						Vec3f posi;
