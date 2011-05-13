@@ -746,13 +746,11 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
 			}
 			else
 			{
-				float rel;
-
 				if (targetwaypoint < ap->nb_pathways)
 				{
 					if (ap->pathways[targetwaypoint]._time == 0)
 						return targetwaypoint - 1;
-					else	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
+					float	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
 
 					float mul = rel;
 					float mull = mul * mul;
@@ -789,13 +787,11 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
 			}
 			else
 			{
-				float rel;
-
 				if (targetwaypoint < ap->nb_pathways)
 				{
 					if (ap->pathways[targetwaypoint]._time == 0)
 						return targetwaypoint - 1;
-					else	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
+					float	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
 
 					pos->x += (ap->pathways[targetwaypoint].rpos.x - pos->x) * rel;
 					pos->y += (ap->pathways[targetwaypoint].rpos.y - pos->y) * rel;
