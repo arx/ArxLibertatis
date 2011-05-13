@@ -288,8 +288,8 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 		else 
 		{
 			EERIEDrawSprite(&in,11.f,lightsource_tc,EERIERGB(el->rgb.r,el->rgb.g,el->rgb.b),2.f);
-			memcpy(&el->mins,&SPRmins,sizeof(Vec3f));
-			memcpy(&el->maxs,&SPRmaxs,sizeof(Vec3f));
+			el->mins = SPRmins;
+			el->maxs = SPRmaxs;
 
 			if (el->selected)
 			{

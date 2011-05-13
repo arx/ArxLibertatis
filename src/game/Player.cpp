@@ -3327,7 +3327,7 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.velocity.y = 0;
 
 		// Reset Forces
-		memset(&player.physics.forces, 0, sizeof(Vec3f));
+		player.physics.forces = Vec3f::ZERO;
 
 		// Check if player is already on firm ground AND not moving
 		if ((EEfabs(player.physics.velocity.x) < 0.001f) &&

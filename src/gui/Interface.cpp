@@ -3987,7 +3987,7 @@ void DANAE::ManagePlayerControls()
 			}
 			else
 			{
-				memcpy(&eyeball.pos,&old,sizeof(Vec3f));
+				eyeball.pos = old;
 			}
 		}
 

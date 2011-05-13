@@ -575,7 +575,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 
 				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
-					memcpy(&rpos, &test.cyl.origin, sizeof(Vec3f));
+					rpos = test.cyl.origin;
 					RFOUND = 1;
 				}
 
@@ -590,7 +590,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 
 				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
-					memcpy(&lpos, &test.cyl.origin, sizeof(Vec3f));
+					lpos = test.cyl.origin;
 					LFOUND = 1;
 				}
 
@@ -605,23 +605,23 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 
 				if (langle < rangle)
 				{
-					memcpy(&ip->cyl.origin, &lpos, sizeof(Vec3f));
+					ip->cyl.origin = lpos;
 					distance -= curmovedist;
 				}
 				else
 				{
-					memcpy(&ip->cyl.origin, &rpos, sizeof(Vec3f));
+					ip->cyl.origin = rpos;
 					distance -= curmovedist;
 				}
 			}
 			else if (LFOUND)
 			{
-				memcpy(&ip->cyl.origin, &lpos, sizeof(Vec3f));
+				ip->cyl.origin = lpos;
 				distance -= curmovedist;
 			}
 			else if (RFOUND)
 			{
-				memcpy(&ip->cyl.origin, &rpos, sizeof(Vec3f));
+				ip->cyl.origin = rpos;
 				distance -= curmovedist;
 			}
 			else  //stopped
@@ -1040,8 +1040,8 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 							// don't treat currently treated anchor
 							if (eg->ianchors[k] == eg2->ianchors[k2]) continue;
 
-							memcpy(&p1, &eb->anchors[eg->ianchors[k]].pos, sizeof(Vec3f));
-							memcpy(&p2, &eb->anchors[eg2->ianchors[k2]].pos, sizeof(Vec3f));
+							p1 = eb->anchors[eg->ianchors[k]].pos;
+							p2 = eb->anchors[eg2->ianchors[k2]].pos;
 							p1.y += 10.f;
 							p2.y += 10.f;
 							long _onetwo = 0;

@@ -134,11 +134,10 @@ struct D3DTLVERTEX2UV
 };
 
 
-void CopyVertices(EERIEPOLY * ep,long to, long from)
-{
-	memcpy(&ep->v[to],&ep->v[from],sizeof(D3DTLVERTEX));
-	memcpy(&ep->tv[to],&ep->tv[from],sizeof(D3DTLVERTEX));
-	memcpy(&ep->nrml[to],&ep->nrml[from],sizeof(Vec3f));
+void CopyVertices(EERIEPOLY * ep,long to, long from) {
+	ep->v[to] = ep->v[from];
+	ep->tv[to] = ep->tv[from];
+	ep->nrml[to] = ep->nrml[from];
 }
  
 bool NearlyEqual(float a,float b)

@@ -108,7 +108,7 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 	if (TotOldPos == NBOLDPOS)
 	{
 		TotOldPos--;
-		memmove(OldPos, OldPos + 1, TotOldPos * sizeof(Vec3f));
+		std::copy(OldPos + 1, OldPos + 1 + TotOldPos, OldPos);
 		memmove(OldAz, OldAz + 1, TotOldPos * 4);
 	}
 

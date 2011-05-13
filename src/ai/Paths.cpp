@@ -1066,7 +1066,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 					if (selected) EERIEDraw3DLine(&lastpos, &newpos,  0xFF00FF00);
 					else EERIEDraw3DLine(&lastpos, &newpos,  0xFFAAAAAA);
 
-					memcpy(&lastpos, &newpos, sizeof(Vec3f));
+					lastpos = newpos;
 				}
 
 				i++;
@@ -1397,7 +1397,7 @@ EERIEPOLY * CheckArrowPolyCollision(Vec3f * start, Vec3f * end)
 				if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 					continue;
 
-				memcpy(&pol2.v[0], &ep->v[0], sizeof(Vec3f));
+				memcpy(&pol2.v[0], &ep->v[0], sizeof(Vec3f)); // TODO wrong size for struct
 				memcpy(&pol2.v[1], &ep->v[1], sizeof(Vec3f));
 				memcpy(&pol2.v[2], &ep->v[2], sizeof(Vec3f));
 
@@ -1405,7 +1405,7 @@ EERIEPOLY * CheckArrowPolyCollision(Vec3f * start, Vec3f * end)
 
 				if (ep->type & POLY_QUAD)
 				{
-					memcpy(&pol2.v[0], &ep->v[1], sizeof(Vec3f));
+					memcpy(&pol2.v[0], &ep->v[1], sizeof(Vec3f)); // TODO wrong size for struct
 					memcpy(&pol2.v[1], &ep->v[3], sizeof(Vec3f));
 					memcpy(&pol2.v[2], &ep->v[2], sizeof(Vec3f));
 

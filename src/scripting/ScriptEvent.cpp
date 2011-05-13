@@ -1065,8 +1065,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + word + ".teo";
 
 						File_Standardize(tex2, tex);
-						Vec3f last_angle;
-						memcpy(&last_angle, &io->angle, sizeof(Vec3f));
+						Anglef last_angle = io->angle;
 						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive( tex, -1); //AddItem(tex);
 
 						if (ioo != NULL)
@@ -1119,7 +1118,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								io->show = SHOW_FLAG_KILLED;
 								ReplaceInAllInventories(io, ioo);
 								SendInitScriptEvent(ioo);
-								memcpy(&ioo->angle, &last_angle, sizeof(Vec3f));
+								ioo->angle = last_angle;
 								TREATZONE_AddIO(ioo, neww);
 
 								for (int i = 0; i < MAX_EQUIPED; i++)

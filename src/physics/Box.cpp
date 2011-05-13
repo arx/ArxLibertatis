@@ -298,7 +298,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 {
 	EERIE_TRI t1, t2;
 	bool ret = false;
-	memcpy(t2.v, verts, sizeof(Vec3f) * 3);
+	std::copy(verts, verts + 2, t2.v);
 
 	PHYSVERT * vert = obj->pbox->vert;
 
@@ -997,8 +997,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		{
 			if (k == (size_t)obj->origin) continue;
 
-			Vec3f curr;
-			memcpy(&curr, &obj->vertexlist[k].v, sizeof(Vec3f));
+			Vec3f curr = obj->vertexlist[k].v;
 			long SEC = 1;
 			obj->pbox->vert[SEC].pos.x = min(obj->pbox->vert[SEC].pos.x, curr.x);
 			obj->pbox->vert[SEC].pos.z = min(obj->pbox->vert[SEC].pos.z, curr.z);
@@ -1050,8 +1049,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		{
 			if (k == (size_t)obj->origin) continue;
 
-			Vec3f curr;
-			memcpy(&curr, &obj->vertexlist[k].v, sizeof(Vec3f));
+			Vec3f curr = obj->vertexlist[k].v;
 			long SEC;
 
 			if (curr.y < ysec1)
@@ -1105,7 +1103,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			                           obj->pbox->vert[0].pos.z;
 		}
 
-		memcpy(&obj->pbox->vert[k].initpos, &obj->pbox->vert[k].pos, sizeof(Vec3f));
+		obj->pbox->vert[k].initpos = obj->pbox->vert[k].pos;
 
 		if(k != 0) {
 			float d = dist(obj->pbox->vert[0].pos, obj->pbox->vert[k].pos);
