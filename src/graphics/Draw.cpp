@@ -296,11 +296,11 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	for (long zz=dz;zz<=fz;zz++)
 	for (long xx=dx;xx<=fx;xx++)
 	{
-		long type,val1,val2;
+		long val1;
 
 		if (COMPUTE_PORTALS)
 		{
-
+			long type, val2;
 			if (!GetNameInfo(eobj->name, type, val1, val2))
 				return false;
 
@@ -731,11 +731,10 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 
 void CalculTriangleBump(const D3DTLVERTEX& v0,const D3DTLVERTEX& v1,const D3DTLVERTEX& v2,float *du,float *dv)
 {
-float duab,duac,dvab,dvac,s1,s2,s3;
+float duab,dvab,dvac,s1,s2,s3;
 
 	duab	=	v1.tu - v0.tu + .3f;
 	dvab	=	v1.tv - v0.tv - .3f;
-	duac	=	v2.tu - v0.tu + .3f;
 	dvac	=	v2.tv - v0.tv - .3f;
 
 	s1		=	( (float)( ( (v0.color >> 16) & 0xFF ) + ( (v0.color >> 8) & 0xFF ) + (v0.color & 0xFF) ) ) * ( .1f / (3.f * 255.f) );
@@ -747,7 +746,6 @@ float duab,duac,dvab,dvac,s1,s2,s3;
 	
 	duab*=s2;
 	dvab*=s2;
-	duac*=s3;
 	dvac*=s3;
 	
 	duab+=dvac;
@@ -1094,8 +1092,6 @@ void EERIEDrawSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR c
 void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos,float rot)
 {
 	D3DTLVERTEX out;
-	register float tt;
-		
 	EERIETreatPoint2(in, &out);
 	
 	if ((out.sz>0.f) && (out.sz<1000.f))
@@ -1131,12 +1127,11 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3D
 
 		SPRmaxs.z = SPRmins.z = out.sz; 
 
-		for (long i=0;i<4;i++)
-		{
-			tt=radians(MAKEANGLE(rot+90.f*i+45+90));
-			v[i].sx=EEsin(tt)*t+out.sx;
-			v[i].sy=EEcos(tt)*t+out.sy;
-		}		
+		for(long i=0;i<4;i++) {
+			float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
+			v[i].sx = EEsin(tt) * t + out.sx;
+			v[i].sy = EEcos(tt) * t + out.sy;
+		}
 
 		SETTC(tex);
 		EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , 
