@@ -576,8 +576,7 @@ void OptmizeInventory(unsigned int _uiNumBag)
 
 		vector<INTERACTIVE_OBJ *>::iterator it;
 
-		for (it = vIO.begin(); it != vIO.end(); it++)
-		{
+		for(it = vIO.begin(); it != vIO.end(); ++it) {
 			FastInsert(*it, _uiNumBag);
 		}
 
@@ -1479,18 +1478,16 @@ bool InInventoryPos(Vec2s * pos)
 //*************************************************************************************
 bool IsFlyingOverInventory(Vec2s * pos)
 {
-	short tx, ty;
-
 	//	if(eMouseState==MOUSE_IN_WORLD) return false;
 
 	if (SecondaryInventory != NULL)
 	{
 
 		ARX_CHECK_SHORT(InventoryX);
-		tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		ty = pos->y - SHORT_INTERFACE_RATIO(13);
-		tx = tx / SHORT_INTERFACE_RATIO(32);
-		ty = ty / SHORT_INTERFACE_RATIO(32);
+		short tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		short ty = pos->y - SHORT_INTERFACE_RATIO(13);
+		tx /= SHORT_INTERFACE_RATIO(32);
+		ty /= SHORT_INTERFACE_RATIO(32);
 
 
 		if ((tx >= 0) && (tx <= SecondaryInventory->sizex) && (ty >= 0) && (ty <= SecondaryInventory->sizey))
@@ -1509,8 +1506,6 @@ bool IsFlyingOverInventory(Vec2s * pos)
 //*************************************************************************************
 INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos)
 {
-	short tx, ty;
-	INTERACTIVE_OBJ * io;
 	HERO_OR_SECONDARY = 0;
 
 	if (!IsFlyingOverInventory(pos))
@@ -1519,8 +1514,8 @@ INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos)
 	if (SecondaryInventory != NULL)
 	{
 		ARX_CHECK_SHORT(InventoryX);
-		tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		ty = pos->y - SHORT_INTERFACE_RATIO(13);
+		short tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		short ty = pos->y - SHORT_INTERFACE_RATIO(13);
 
 		if ((tx >= 0) && (ty >= 0))
 		{
@@ -1536,7 +1531,7 @@ INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos)
 				if (((player.Interface & INTER_STEAL) && (!ARX_PLAYER_CanStealItem(SecondaryInventory->slot[tx][ty].io))))
 					return NULL;
 
-				io = SecondaryInventory->slot[tx][ty].io;
+				INTERACTIVE_OBJ * io = SecondaryInventory->slot[tx][ty].io;
 
 				if (!(io->GameFlags & GFLAG_INTERACTIVITY))
 					return NULL;
