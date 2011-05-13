@@ -977,13 +977,12 @@ void ARX_TEMPORARY_TrySound(float volume)
 
 		if (at > PHYSICS_CURIO->soundtime)
 		{
-			long material;
 
 			PHYSICS_CURIO->soundcount++;
 
 			if (PHYSICS_CURIO->soundcount < 5)
 			{
-
+				long material;
 				if ( EEIsUnderWater( &PHYSICS_CURIO->pos ) ) material = MATERIAL_WATER;
 				else if (PHYSICS_CURIO->material) material = PHYSICS_CURIO->material;
 				else material = MATERIAL_STONE;
@@ -1441,8 +1440,6 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 
 	if ((B < 180) && (B > 90))
 	{
-		rot = rot;
-
 		if (rot > A) rot = A;
 	}
 	else if ((B > 180) && (B < 270)) 
@@ -1452,8 +1449,6 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	}
 	else if (A < 180)
 	{
-		rot = rot;
-
 		if (rot > A) rot = A;
 	}
 	else
@@ -1909,8 +1904,7 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	if ( !tx.empty() )
 	{
 		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
-		for ( iterator iter = io->obj->selections.begin() ; iter != io->obj->selections.end() ; iter++ )
-		{
+		for(iterator iter = io->obj->selections.begin(); iter != io->obj->selections.end(); ++iter) {
 			if ( ( iter->selected.size() > 0 ) && ( !strcasecmp( iter->name, tx)))
 				return iter - io->obj->selections.begin();
 		}
@@ -4212,11 +4206,9 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const floa
 				if (inter.iobj[i]->room_flags & 1)
 					UpdateIORoom(inter.iobj[i]);
 
-				float fdist;
-
 				if ((Source_Room > -1) && (inter.iobj[i]->room > -1))
 				{
-					fdist = SP_GetRoomDist(pos, &inter.iobj[i]->pos, Source_Room, inter.iobj[i]->room);
+					float fdist = SP_GetRoomDist(pos, &inter.iobj[i]->pos, Source_Room, inter.iobj[i]->room);
 
 					if (fdist < max_distance * 1.5f)
 					{
