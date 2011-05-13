@@ -766,7 +766,7 @@ aalError OpenALSource::updateBuffers() {
 	TraceAL("update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	read = newRead;
 	
-	arx_assert(time >= oldTime);
+	arx_assert(time >= oldTime), ARX_UNUSED(oldTime);
 	
 	while(true) {
 		
