@@ -5897,13 +5897,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						{
 							long tw = TWEAK_ERROR;
 
-							if (!strcasecmp(word, "HEAD"))
-							{
-								if (io->ident == 33)
-								{
-									tw = tw;
-								}
-
+							if(!strcasecmp(word, "HEAD")) {
 								tw = TWEAK_HEAD;
 							}
 							else if (!strcasecmp(word, "TORSO"))
