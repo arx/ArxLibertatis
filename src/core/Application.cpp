@@ -176,8 +176,6 @@ extern long FINAL_COMMERCIAL_GAME;
 HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	
 	HRESULT hr;
-	long menu;
-	DWORD flags;
 
 	// Enumerate available D3D devices. The callback is used so the app can
 	// confirm/reject each enumerated device depending on its capabilities.
@@ -240,7 +238,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	RegisterClass(&wndClass);
 
 	// Create the render window
-	flags = 0;
+	DWORD flags = 0;
 
 	if (CreationFlags & WCF_NORESIZE)
 	{
@@ -265,6 +263,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 
 	if (m_dlghWnd == NULL)
 	{
+		long menu;
 		if (FINAL_COMMERCIAL_DEMO || FINAL_COMMERCIAL_GAME)
 			menu = 0;
 		else
