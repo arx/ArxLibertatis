@@ -1489,23 +1489,13 @@ void ARX_PLAYER_LEVEL_UP()
 // FUNCTION/RESULT:
 //   Modify player XP by adding "val" to it
 //*************************************************************************************
-void ARX_PLAYER_Modify_XP(long val)
-{
-
+void ARX_PLAYER_Modify_XP(long val) {
+	
 	player.xp += val;
-
-	for (long i = 1; i < 11; i++)
-	{
-		long lvup = 0;
-
-		if (i > player.level)
-		{
-			if ((player.xp >= GetXPforLevel(i)))
-			{
-				lvup = 1;
-			}
-
-			if (lvup) ARX_PLAYER_LEVEL_UP();
+	
+	for (long i = player.level + 1; i < 11; i++) {
+		if(player.xp >= GetXPforLevel(i)) {
+			ARX_PLAYER_LEVEL_UP();
 		}
 	}
 }
