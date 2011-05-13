@@ -4474,7 +4474,7 @@ void ComputePortalVertexBuffer()
 				SINFO_TEXTURE_VERTEX * pTextureVertex = NULL;
 				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
-				for (it = vTextureVertex.begin(); it < vTextureVertex.end(); it++)
+				for (it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it)
 				{
 					if (((*it)->pTex) == pPoly->tex)
 					{
@@ -4608,8 +4608,7 @@ void ComputePortalVertexBuffer()
 
 				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
-				for (it = vTextureVertex.begin(); it < vTextureVertex.end(); it++)
-				{
+				for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
 					free((void *)*it);
 				}
 
@@ -4671,8 +4670,8 @@ void ComputePortalVertexBuffer()
 			int iStartCull = 0;
 			std::vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
-			for (it = vTextureVertex.begin(); it < vTextureVertex.end(); it++)
-			{
+			for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
+				
 				TextureContainer * pTextureContainer = (*it)->pTex;
 
 				unsigned short iIndiceInVertex = 0;
