@@ -1121,7 +1121,7 @@ struct SavedCamera {
 		a.d_pos = d_pos, a.d_angle = d_angle;
 		a.lasttarget = lasttarget, a.lastpos = lastpos;
 		a.translatetarget = translatetarget;
-		a.lastinfovalid = lastinfovalid;
+		a.lastinfovalid = lastinfovalid != 0;
 		a.norm = norm;
 		a.fadecolor = fadecolor, a.clip = clip;
 		a.clipz0 = clipz0, a.clipz1 = clipz1;
