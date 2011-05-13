@@ -1020,7 +1020,6 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 					if (Cur_llights)
 					{
-						float	cosangle;
 						Vec3f * Cur_vTLights = &vTLights[l];
 						Vec3f tl;
 						tl.x = (Cur_llights->pos.x - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.x);
@@ -1037,7 +1036,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 							VectorMatrixMultiply(Cur_vTLights, &tl, &matrix);
 
-							cosangle = (inVert->x * Cur_vTLights->x +
+							float cosangle = (inVert->x * Cur_vTLights->x +
 							            inVert->y * Cur_vTLights->y +
 							            inVert->z * Cur_vTLights->z);
 
@@ -1856,8 +1855,7 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				tv[2].color = D3DRGB(fTransp, fTransp, fTransp);
 			}
 
-			int iNbPointAdd;
-			if (!(iNbPointAdd = ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
+			if (!(ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
 			                                   &eobj->vertexlist3[paf[1]],
 			                                   &eobj->vertexlist3[paf[2]],
 			                                   &tv,
