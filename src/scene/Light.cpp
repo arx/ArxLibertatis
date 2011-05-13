@@ -464,7 +464,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 				vLight.x = light->pos.x - ep->v[i].sx;
 				vLight.y = light->pos.y - ep->v[i].sy;
 				vLight.z = light->pos.z - ep->v[i].sz;
-				TRUEVector_Normalize(&vLight);
+				vLight.normalize();
 				vNorm.x = ep->nrml[i].x;
 				vNorm.y = ep->nrml[i].y;
 				vNorm.z = ep->nrml[i].z;

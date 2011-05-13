@@ -243,15 +243,6 @@ inline float Vector_Normalize(Vec3f * v)
 	v->z *= l2;
 	return len;
 }
-inline float TRUEVector_Normalize(Vec3f * v)
-{
-	register float len = v->length();
-	register float l2 = 1.f / len;
-	v->x *= l2;
-	v->y *= l2;
-	v->z *= l2;
-	return len;
-}
 
 //*******************************************************************************
 // Matrix functions
@@ -358,7 +349,6 @@ void Quat_GetShortestArc(EERIE_QUAT * q1 , EERIE_QUAT * q2);
 //*******************************************************************************
 float	Vector_Magnitude(const Vec3f * v);
 float	Vector_Normalize(Vec3f * v);
-float	TRUEVector_Normalize(Vec3f * v);
  
 void	Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle);
 void	Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle);

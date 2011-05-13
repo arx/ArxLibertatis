@@ -5973,7 +5973,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					dir.x	=	pos.x - target.x;
 					dir.y	=	0;
 					dir.z	=	pos.z - target.z;
-					TRUEVector_Normalize( &dir );
+					dir.normalize();
 					dir.x	*=	60.f;
 					dir.y	*=	60.f;
 					dir.z	*=	60.f;

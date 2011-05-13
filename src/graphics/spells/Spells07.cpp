@@ -134,12 +134,8 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		nbtotal++;
 		int moi = nbtotal;
 
-		if (pLInfo->abFollow)
-		{
-			avect.x = eDest.x - pLInfo->eStart.x;
-			avect.y = eDest.y - pLInfo->eStart.y;
-			avect.z = eDest.z - pLInfo->eStart.z;
-			TRUEVector_Normalize(&avect);
+		if(pLInfo->abFollow) {
+			avect = (eDest - pLInfo->eStart).getNormalized();
 		}
 
 		float fAngleX = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleXMin) + pLInfo->fAngleXMin;
@@ -150,18 +146,13 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		av.x = (float) cos(acos(avect.x) - radians(fAngleX));
 		av.y = (float) sin(asin(avect.y) - radians(fAngleY));
 		av.z = (float) tan(atan(avect.z) - radians(fAngleZ));
-
-		TRUEVector_Normalize(&av);
+		av.normalize();
 		avect = av;
 
 		float ts = rnd();
-		av.x *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
-		av.y *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
-		av.z *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
+		av *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
 
-		astart.x += av.x;
-		astart.y += av.y;
-		astart.z += av.z;
+		astart += av;
 		pLInfo->eStart = astart;
 
 		cnodetab[nbtotal].x = pLInfo->eStart.x;

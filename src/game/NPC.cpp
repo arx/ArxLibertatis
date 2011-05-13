@@ -594,12 +594,9 @@ static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl) {
 
 static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cyl) {
 	
-	Vec3f vect;
 	float d = radians(beta);
-	vect.x = -EEsin(d);
-	vect.y = 0;
-	vect.z = EEcos(d);
-	TRUEVector_Normalize(&vect);
+	Vec3f vect(-EEsin(d), 0, EEcos(d));
+	vect.normalize();
 
 	Vec3f posi;
 	posi.x = pos->x + vect.x * 50.f;
@@ -3503,12 +3500,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	if (io->forcedmove == Vec3f::ZERO)
 		ForcedMove = Vec3f::ZERO;
-	else
-	{
-		Vec3f vect = io->forcedmove;
-		float d = TRUEVector_Normalize(&vect);
-		float dd = min(d, (float)FrameDiff * ( 1.0f / 6 ));
-		ForcedMove = vect * dd;
+	else {
+		float dd = min(1.f, (float)FrameDiff * ( 1.0f / 6 ) / io->forcedmove.length());
+		ForcedMove = io->forcedmove * dd;
 	}
 
 	// Sets Target position to desired position...

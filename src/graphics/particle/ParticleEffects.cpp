@@ -2708,11 +2708,7 @@ void TreatBackgroundActions()
 						pd->ov.x=gl->pos.x+gl->ex_radius*sx*rnd();
 						pd->ov.y=gl->pos.y+gl->ex_radius*sy*rnd();
 						pd->ov.z=gl->pos.z+gl->ex_radius*sz*rnd();
-						Vec3f vect;
-						vect.x=pd->ov.x-gl->pos.x;
-						vect.y=pd->ov.y-gl->pos.y;
-						vect.z=pd->ov.z-gl->pos.z;
-						TRUEVector_Normalize(&vect);
+						Vec3f vect = (pd->ov - gl->pos).getNormalized();
 
 						if (gl->extras & EXTRAS_FIREPLACE)
 						{

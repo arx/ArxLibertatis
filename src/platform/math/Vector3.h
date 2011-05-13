@@ -241,19 +241,21 @@ public:
 	/*!
 	 * Normalize the vector(divide by its length).
 	 * @brief Normalize the vector.
-	 * @return Reference to the vector.
+	 * @return The old magnitude.
 	 */
-	const Vector3 & normalize() {
+	T normalize() {
 		
-		T scalar = length();
-		if(scalar > 0) {
-			scalar = 1 / scalar;
+		T magnitude = length();
+		T scalar;
+		if(magnitude > 0) {
+			scalar = 1 / magnitude;
 		} else {
 			scalar = 0;
 		}
 		
 		x *= scalar; y *= scalar; z *= scalar;
-		return *this;
+		
+		return magnitude;
 	}
 	
 	/*!

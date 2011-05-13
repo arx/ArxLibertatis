@@ -1096,18 +1096,13 @@ void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 {
 	float t;
 	Vec3f D, U, R;
-	D.x = d->x;
-	D.y = d->y;
-	D.z = d->z;
-	TRUEVector_Normalize(&D);
-	U.x = u->x;
-	U.y = u->y;
-	U.z = u->z;
+	D = d->getNormalized();
+	U = *u;
 	t = U.x * D.x + U.y * D.y + U.z * D.z;
 	U.x -= D.x * t;
 	U.y -= D.y * t;
-	U.z -= D.y * t;
-	TRUEVector_Normalize(&U);
+	U.z -= D.y * t; // TODO is this really supposed to be D.y?
+	U.normalize();
 	R = U cross D;
 	m->_11 = R.x;
 	m->_12 = R.y;
@@ -1124,9 +1119,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const f
 {
 	// Get our direction vector (the Z vector component of the matrix)
 	// and make sure it's normalized into a unit vector
-	Vec3f zAxis;
-	memcpy(&zAxis, vect, sizeof(Vec3f));
-	TRUEVector_Normalize(&zAxis);
+	Vec3f zAxis = vect->getNormalized();
 
 	// Build the Y vector of the matrix (handle the degenerate case
 	// in the way that 3DS does) -- This is not the true vector, only
@@ -1139,12 +1132,10 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const f
 		yAxis = Vec3f(0.f, 1.f, 0.f);
 
 	// Build the X axis vector based on the two existing vectors
-	Vec3f xAxis = yAxis cross zAxis;
-	TRUEVector_Normalize(&xAxis);
+	Vec3f xAxis = (yAxis cross zAxis).getNormalized();
 
 	// Correct the Y reference vector
-	yAxis = xAxis cross zAxis;
-	TRUEVector_Normalize(&yAxis);
+	yAxis = (xAxis cross zAxis).getNormalized();
 	yAxis.x = -yAxis.x;
 	yAxis.y = -yAxis.y;
 	yAxis.z = -yAxis.z;

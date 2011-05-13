@@ -871,7 +871,7 @@ long ARX_SOUND_PlayCinematic(const string & name) {
 		front.x = -EEsin(t);
 		front.y = 0.f;
 		front.z = EEcos(t);
-		TRUEVector_Normalize(&front);
+		front.normalize();
 		up.x = 0.f;
 		up.y = 1.f;
 		up.z = 0.f;

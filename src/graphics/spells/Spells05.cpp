@@ -954,46 +954,19 @@ float CPoisonProjectile::Render()
 			++arx_check_init;
 		}
 	}
-
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	Vec3f av;
-
+	
 	ARX_CHECK_NOT_NEG(arx_check_init);
-
-	av.x = newpos.x - lastpos.x;
-	av.y = newpos.y - lastpos.y;
-	av.z = newpos.z - lastpos.z;
-
-	TRUEVector_Normalize(&av);
-
-	float bubu = GetAngle(av.x, av.z, 0, 0);
-	float bubu1 = GetAngle(av.x, av.y, 0, 0);
-
-	stitepos.x = lastpos.x;
-	stitepos.y = lastpos.y;
-	stitepos.z = lastpos.z;
-	stiteangle.b = -degrees(bubu);
-	stiteangle.a = 0;
-	stiteangle.g = -90 - degrees(bubu1);
-	stitescale.x = 2;
-	stitescale.y = 2;
-	stitescale.z = 2;
-
-	eCurPos.x = lastpos.x;
-	eCurPos.y = lastpos.y;
-	eCurPos.z = lastpos.z;
-
-	if (fTrail >= (i * n))
-	{
+	
+	eCurPos = lastpos;
+	
+	if(fTrail >= (i * n)) {
 		LaunchPoisonExplosion(&lastpos);
 	}
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	return 1;
 }
 

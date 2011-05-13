@@ -6081,13 +6081,12 @@ static float _AvgFrameDiff = 150.f;
 						if (ValidIONum(acs->ionum))
 						{
 
-							Vec3f from,to,vect,vect2;
-							from = acs->pos1;
-							to = acs->pos2;
+							const Vec3f & from = acs->pos1;
+							const Vec3f & to = acs->pos2;
 
-							vect= to - from;
-							TRUEVector_Normalize(&vect);
+							Vec3f vect = (to - from).getNormalized();
 
+							Vec3f vect2;
 							if (acs->type==ARX_CINE_SPEECH_SIDE_LEFT)
 							{
 								Vector_RotateY(&vect2,&vect,-90);
@@ -6100,13 +6099,8 @@ static float _AvgFrameDiff = 150.f;
 							distance=acs->f0*itime+acs->f1*rtime;
 							vect2 *= distance;
 							dist=TRUEEEDistance3D(&from,&to);
-							Vec3f tfrom,tto;
-							tfrom.x=from.x+vect.x*acs->startpos*( 1.0f / 100 )*dist;
-							tfrom.y=from.y+vect.y*acs->startpos*( 1.0f / 100 )*dist;
-							tfrom.z=from.z+vect.z*acs->startpos*( 1.0f / 100 )*dist;
-							tto.x=from.x+vect.x*acs->endpos*( 1.0f / 100 )*dist;
-							tto.y=from.y+vect.y*acs->endpos*( 1.0f / 100 )*dist;
-							tto.z=from.z+vect.z*acs->endpos*( 1.0f / 100 )*dist;
+							Vec3f tfrom = from + vect * acs->startpos * (1.0f / 100) * dist;
+							Vec3f tto = from + vect * acs->endpos * (1.0f / 100) * dist;
 							Vec3f targetpos;
 							targetpos.x=tfrom.x*itime+tto.x*rtime;
 							targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;
@@ -6115,9 +6109,7 @@ static float _AvgFrameDiff = 150.f;
 							conversationcamera.pos.y=targetpos.y+vect2.y+acs->f2;
 							conversationcamera.pos.z=targetpos.z+vect2.z;
 							SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-							subj.pos.x=conversationcamera.pos.x;
-							subj.pos.y=conversationcamera.pos.y;
-							subj.pos.z=conversationcamera.pos.z;
+							subj.pos = conversationcamera.pos;
 							subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 							subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 							subj.angle.g=0.f;
@@ -6163,32 +6155,21 @@ static float _AvgFrameDiff = 150.f;
 							vect.z=conversationcamera.pos.z-targetpos.z;
 							Vec3f vect2;
 							Vector_RotateY(&vect2,&vect,90);
-							TRUEVector_Normalize(&vect2);
-							Vec3f vect3 = vect;
-							TRUEVector_Normalize(&vect3);
+							vect2.normalize();
+							Vec3f vect3 = vect.getNormalized();
 
-							vect.x=vect.x*(distance)+vect3.x*80.f;
-							vect.y=vect.y*(distance)+vect3.y*80.f;
-							vect.z=vect.z*(distance)+vect3.z*80.f;
-							vect2.x*=45.f;
-							vect2.y*=45.f;
-							vect2.z*=45.f;
+							vect = vect * distance + vect3 * 80.f;
+							vect2 *= 45.f;
 
 							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_R)
 								|| (acs->type==ARX_CINE_SPEECH_CCCTALKER_R))
 							{
-								vect2.x=-vect2.x;
-								vect2.y=-vect2.y;
-								vect2.z=-vect2.z;
+								vect2 = -vect2;
 							}
 
-							conversationcamera.pos.x=vect.x+targetpos.x+vect2.x;
-							conversationcamera.pos.y=vect.y+targetpos.y+vect2.y;
-							conversationcamera.pos.z=vect.z+targetpos.z+vect2.z;
+							conversationcamera.pos = vect + targetpos + vect2;
 							SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-							subj.pos.x=conversationcamera.pos.x;
-							subj.pos.y=conversationcamera.pos.y;
-							subj.pos.z=conversationcamera.pos.z;
+							subj.pos = conversationcamera.pos;
 							subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 							subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 							subj.angle.g=0.f;
@@ -6396,16 +6377,10 @@ static float _AvgFrameDiff = 150.f;
 
 	// Set Listener Position
 	{
-		Vec3f front, up;
-		float t;
-		t=radians(MAKEANGLE(ACTIVECAM->angle.b));			
-		front.x=-EEsin(t);
-		front.y=0.f;
-		front.z=EEcos(t);
-		TRUEVector_Normalize(&front);
-		up.x=0.f;
-		up.y=1.f;
-		up.z=0.f;
+		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));			
+		Vec3f front(-EEsin(t), 0.f, EEcos(t));
+		front.normalize();
+		Vec3f up(0.f, 1.f, 0.f);
 		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
 	}
 

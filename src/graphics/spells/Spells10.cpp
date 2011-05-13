@@ -398,35 +398,11 @@ float CControlTarget::Render()
 			}
 		}
 	}
-
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	Vec3f av;
+	
 	ARX_CHECK_NOT_NEG(arx_check_init);
-	av.x = lastpos.x - newpos.x;
-	av.y = lastpos.y - newpos.y;
-	av.z = lastpos.z - newpos.z;
-
-	TRUEVector_Normalize(&av);
-
-	float bubu = GetAngle(av.x, av.z, 0, 0);
-	float bubu1 = GetAngle(av.x, av.y, 0, 0);
-
-	stitepos.x = lastpos.x;
-	stitepos.y = lastpos.y;
-	stitepos.z = lastpos.z;
-	stiteangle.b = 180 - degrees(bubu);
-	stiteangle.a = 0;
-	stiteangle.g = 90 - degrees(bubu1);
-	stitescale.x = 1;
-	stitescale.y = 1;
-	stitescale.z = 1;
-
-	eCurPos.x = lastpos.x;
-	eCurPos.y = lastpos.y;
-	eCurPos.z = lastpos.z;
-
+	
+	eCurPos = lastpos;
+	
 	return 1;
 }
 

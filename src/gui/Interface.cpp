@@ -9981,21 +9981,16 @@ long Manage3DCursor(long flags)
 					cyl.height=-50.f;
 					cyl.radius=40.f;
 
-					Vec3f orgn,dest,mvectx,mvecty;
-		mvectx.x = mvecty.x = -(float)EEsin(radians(player.angle.b - 90.f)); 
-		mvectx.y = mvecty.y = 0; 
-		mvectx.z = mvecty.z = +(float)EEcos(radians(player.angle.b - 90.f)); 
-					TRUEVector_Normalize(&mvectx);
+					Vec3f orgn,dest,mvectx;
+		mvectx.x = -(float)EEsin(radians(player.angle.b - 90.f)); 
+		mvectx.y = 0; 
+		mvectx.z = +(float)EEcos(radians(player.angle.b - 90.f)); 
+					mvectx.normalize();
 
-					float xmod,ymod;
-					xmod=(float)(DANAEMouse.x-DANAECENTERX)/(float)DANAECENTERX*160.f;
-					ymod=(float)(DANAEMouse.y-DANAECENTERY)/(float)DANAECENTERY*220.f;
-					mvectx.x*=xmod;
-					mvectx.y*=xmod;
-					mvectx.z*=xmod;
-		mvecty.x = 0;
-					mvecty.y=ymod;
-		mvecty.z = 0;
+					float xmod=(float)(DANAEMouse.x-DANAECENTERX)/(float)DANAECENTERX*160.f;
+					float ymod=(float)(DANAEMouse.y-DANAECENTERY)/(float)DANAECENTERY*220.f;
+					mvectx *= xmod;
+					Vec3f mvecty(0, ymod, 0);
 
 					orgn.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f
 		         + mvectx.x; 
@@ -10014,11 +10009,7 @@ long Manage3DCursor(long flags)
 					pos.y=orgn.y;
 					pos.z=orgn.z;
 
-					Vec3f movev;
-					movev.x=dest.x-orgn.x;
-					movev.y=dest.y-orgn.y;
-					movev.z=dest.z-orgn.z;
-		TRUEVector_Normalize(&movev);
+					Vec3f movev = (dest - orgn).getNormalized();
 
 					float lastanything = 0.f;
 					float height = -( maxy - miny );
@@ -10137,11 +10128,7 @@ long Manage3DCursor(long flags)
 
 
 
-							Vec3f vec;
-							vec.x			= collidpos.x - pos.x;
-							vec.y			= collidpos.y - pos.y;
-							vec.z			= collidpos.z - pos.z;
-				TRUEVector_Normalize(&vec);
+							Vec3f vec = (collidpos - pos).getNormalized();
 
 							if (SPECIAL_DRAGINTER_RENDER)
 							{

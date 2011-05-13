@@ -2919,10 +2919,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f *
 				{
 					float	cosangle;
 					
-					vLight.x = (llights[l]->pos.x - posVert->x);  
-					vLight.y = (llights[l]->pos.y - posVert->y);  
-					vLight.z = (llights[l]->pos.z - posVert->z);  
-					TRUEVector_Normalize(&vLight);
+					vLight = (llights[l]->pos - *posVert).getNormalized();
 
 					TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
 					Vec3f * Cur_vLights = &vTLights[l];

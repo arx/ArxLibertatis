@@ -2125,14 +2125,10 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 
 				float ifactor = 1.f - factor;
 				Vec3f fakenorm;
-				fakenorm.x = ev->v.x - center.x;
-				fakenorm.y = ev->v.y - center.y;
-				fakenorm.z = ev->v.z - center.z;
-				TRUEVector_Normalize(&fakenorm);
-				ev->norm.x = ev->norm.x * ifactor + fakenorm.x * factor;
-				ev->norm.y = ev->norm.y * ifactor + fakenorm.y * factor;
-				ev->norm.z = ev->norm.z * ifactor + fakenorm.z * factor;
-				TRUEVector_Normalize(&ev->norm);
+				fakenorm = ev->v - center;
+				fakenorm.normalize();
+				ev->norm = ev->norm * ifactor + fakenorm * factor;
+				ev->norm.normalize();
 			}
 		}
 	}
