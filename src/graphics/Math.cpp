@@ -875,14 +875,10 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 	m[3][2] = mat._43;
 	m[3][3] = mat._44;
 	float  tr, s, q[4];
-	int    i, j, k;
-
 
 	int nxt[3] = {1, 2, 0};
 
-
 	tr = m[0][0] + m[1][1] + m[2][2];
-
 
 	// check the diagonal
 	if (tr > 0.0f)
@@ -897,14 +893,14 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 	else
 	{
 		// diagonal is negative
-		i = 0;
+		int i = 0;
 
 		if (m[1][1] > m[0][0]) i = 1;
 
 		if (m[2][2] > m[i][i]) i = 2;
 
-		j = nxt[i];
-		k = nxt[j];
+		int j = nxt[i];
+		int k = nxt[j];
 
 		s = sqrt((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
 
