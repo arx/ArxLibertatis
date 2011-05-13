@@ -716,8 +716,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 			anything=min(anything,tempo);
 	}
 
-	long dealt = 0;
-
 	if (!(flags & CFLAG_NO_INTERCOL))
 	{
 		INTERACTIVE_OBJ * io;
@@ -754,7 +752,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 			{
 				EERIE_CYLINDER * io_cyl=&io->physics.cyl;
 				GetIOCyl(io,io_cyl);
-				dealt=0;
+				float dealt = 0;
 
 				if (	(io->GameFlags & GFLAG_PLATFORM)
 					||	((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))
@@ -880,12 +878,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 				}
 				else if (io->ioflags & IO_FIX)
 				{
-					long idx;
 					EERIE_SPHERE sp;
 
-					float miny,maxy;
-					miny=io->bbox3D.min.y;
-					maxy=io->bbox3D.max.y;
+					float miny = io->bbox3D.min.y;
+					float maxy = io->bbox3D.max.y;
 
 					if (maxy<= cyl->origin.y+cyl->height) goto suivant;
 
@@ -900,7 +896,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 						{
 							for (long ii=0;ii<io->obj->nbgroups;ii++)
 							{
-								idx=io->obj->grouplist[ii].origin;
+								long idx = io->obj->grouplist[ii].origin;
 								sp.origin.x=vlist[idx].v.x;
 								sp.origin.y=vlist[idx].v.y;
 								sp.origin.z=vlist[idx].v.z;
