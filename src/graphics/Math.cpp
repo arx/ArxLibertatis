@@ -1025,16 +1025,6 @@ void Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle)
 	dest->z = src->z;
 }
 
-//*************************************************************************************
-// Computes Cross Product of vectors "v1" & "v2" giving vector "dest"
-//*************************************************************************************
-void Vector_CrossProduct(Vec3f * dest, const Vec3f * v1, const Vec3f * v2)
-{
-	dest->x = v1->y * v2->z - v1->z * v2->y;
-	dest->y = v1->z * v2->x - v1->x * v2->z;
-	dest->z = v1->x * v2->y - v1->y * v2->x;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 //TODO(lubosz): empty method
 void EERIEMathPrecalc()
@@ -1118,7 +1108,7 @@ void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 	U.y -= D.y * t;
 	U.z -= D.y * t;
 	TRUEVector_Normalize(&U);
-	Vector_CrossProduct(&R, &U, &D);
+	R = U cross D;
 	m->_11 = R.x;
 	m->_12 = R.y;
 	m->_21 = U.x;
@@ -1149,12 +1139,11 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const f
 		yAxis = Vec3f(0.f, 1.f, 0.f);
 
 	// Build the X axis vector based on the two existing vectors
-	Vec3f xAxis;
-	Vector_CrossProduct(&xAxis, &yAxis, &zAxis);
+	Vec3f xAxis = yAxis cross zAxis;
 	TRUEVector_Normalize(&xAxis);
 
 	// Correct the Y reference vector
-	Vector_CrossProduct(&yAxis, &xAxis, &zAxis);
+	yAxis = xAxis cross zAxis;
 	TRUEVector_Normalize(&yAxis);
 	yAxis.x = -yAxis.x;
 	yAxis.y = -yAxis.y;

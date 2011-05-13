@@ -365,7 +365,6 @@ float	Vector_Magnitude(const Vec3f * v);
 float	Vector_Normalize(Vec3f * v);
 float	TRUEVector_Magnitude(const Vec3f * v);
 float	TRUEVector_Normalize(Vec3f * v);
-void	Vector_CrossProduct(Vec3f * dest, const Vec3f * v1, const Vec3f * v2);
  
 void	Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle);
 void	Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle);
