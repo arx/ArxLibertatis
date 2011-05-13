@@ -1621,9 +1621,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	long	inpos	= 0;
 	long *	equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
-
 	if(!equival) {
 		delete nouvo;
+		return;
 	}
 
 	for(size_t k = 0; k < from->vertexlist.size(); k++) {
