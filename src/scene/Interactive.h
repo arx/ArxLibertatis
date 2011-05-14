@@ -65,6 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/math/Vector2.h"
 #include "platform/math/Angle.h"
 
+#include "Configure.h"
+
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
@@ -122,7 +124,9 @@ extern ARX_NODES nodes;
 extern INTERACTIVE_OBJECTS inter;
 extern INTERACTIVE_OBJ * CURRENTINTER;
 
+#ifdef BUILD_EDITOR
 extern long NbIOSelected;
+#endif
 
 void ARX_INTERACTIVE_UnfreezeAll();
 void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string & s1);
@@ -179,6 +183,7 @@ void ReleaseNode();
 void RestoreInitialIOStatus();
 long GetInterNum(const INTERACTIVE_OBJ * io);
 
+#ifdef BUILD_EDITOR
 void SelectIO(INTERACTIVE_OBJ * io);
 void UnSelectIO(INTERACTIVE_OBJ * io);
 void RotateSelectedIO(Anglef * op);
@@ -186,6 +191,7 @@ void TranslateSelectedIO(Vec3f * op);
 void GroundSnapSelectedIO();
 void DeleteSelectedIO();
 void ResetSelectedIORot();
+#endif
 
 long GetNumberInterWithOutScriptLoadForLevel(long level);
 void FreeAllInter();

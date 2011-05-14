@@ -130,7 +130,6 @@ extern long SPECIAL_DRAW_INTER_SHADOW;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
 extern long CURRENTLEVEL;
-extern long EDITMODE;
 extern long CYRIL_VERSION;
 extern long FINAL_RELEASE;
 extern long FOR_EXTERNAL_PEOPLE;
@@ -144,8 +143,10 @@ float TREATZONE_LIMIT = 1800.f;
 long HERO_SHOW_1ST = 1;
 long TreatAllIO = 0;
 long INTREATZONECOUNT = 0;
+#ifdef BUILD_EDITOR
 long NbIOSelected = 0;
 long LastSelectedIONum = -1;
+#endif
 long INTERNMB = -1;
 long LASTINTERCLICKNB = -1;
 long INTER_DRAW = 0;
@@ -2170,7 +2171,9 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	if ((MasterCamera.exist & 2) && (MasterCamera.want_io == io))
 		MasterCamera.exist = 0;
 
+#ifdef BUILD_EDITOR
 	InterTreeViewItemRemove(io);
+#endif
 	ARX_INTERACTIVE_DestroyDynamicInfo(io);
 	IO_UnlinkAllLinkedObjects(io);
 
@@ -2575,8 +2578,6 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 
 	io->collision = 1;
 
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
-
 	return io;
 }
 
@@ -2640,8 +2641,6 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 	io->ioflags = IO_CAMERA;
 	io->collision = 0;
 
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
-
 	return io;
 }
 
@@ -2704,8 +2703,6 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
 	io->ioflags = IO_MARKER;
 	io->collision = 0;
 
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
-
 	return io;
 }
 void ShowIOPath(INTERACTIVE_OBJ * io)
@@ -2723,6 +2720,8 @@ void ShowIOPath(INTERACTIVE_OBJ * io)
 			ad->flags |= 1;
 		}
 }
+
+#ifdef BUILD_EDITOR
 
 //*************************************************************************************
 // Unselect an IO
@@ -2900,6 +2899,8 @@ void GroundSnapSelectedIO()
 	}
 }
 
+#endif // BUILD_EDITOR
+
 INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	
     // creates script filename
@@ -3005,8 +3006,6 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	io->infracolor.b = 0.2f;
 	io->collision = 1;
 	io->inv = NULL;
-
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
 
 	ARX_INTERACTIVE_HideGore(io);
 	return io;
@@ -3367,8 +3366,6 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	io->infracolor.g = 0.2f;
 	io->infracolor.b = 1.f;
 	io->collision = 0;
-
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
 
 	return io;
 }

@@ -26,6 +26,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_RESOURCE_H
 #define ARX_CORE_RESOURCE_H
 
+#include "Configure.h"
+
+#define IDI_MAIN                        106
+
+#ifdef BUILD_EDITOR
+
 #define IDSTARTSNAPSHOT                 2
 #define IDPASTE                         3
 #define IDCANCELSNAP                    3
@@ -38,7 +44,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDD_MUTLIPLAYER_GAMES           102
 #define IDD_MAIN_GAME                   103
 #define IDD_MULTIPLAYER_CREATE          104
-#define IDI_MAIN                        106
 #define IDD_LOBBY_WAIT_STATUS           114
 #define IDD_CHANGEDEVICE                144
 #define IDD_DANAEABOUT                  148
@@ -472,5 +477,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDM_ANYPOLY                     40062
 #define DANAE_MENU_UPDATEALLANIMS       40065
 #define IDM_DLF_CHECK                   40066
+
+#endif // BUILD_EDITOR
 
 #endif // ARX_CORE_RESOURCE_H

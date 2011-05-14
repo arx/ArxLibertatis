@@ -26,10 +26,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCIPTING_SCIPTDEBUGGER_H
 #define ARX_SCIPTING_SCIPTDEBUGGER_H
 
+#include "Configure.h"
+
+#ifdef BUILD_EDITOR
+
 #include <windows.h>
 
 void DANAE_DEBUGGER_Launch(HWND hWnd);
 void DANAE_DEBUGGER_Update();
+
+#endif
 
 #endif // ARX_SCIPTING_SCIPTDEBUGGER_H
 

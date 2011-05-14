@@ -41,6 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
 
+#include "Configure.h"
+
 extern float BOOKDECX;
 extern float BOOKDECY;
 extern HWND CDP_PATHWAYS_Options;
@@ -164,6 +166,7 @@ enum ARX_INTERFACE_BOOK_ITEM
 
 };
 
+#ifdef BUILD_EDITOR
 // long "EDITION" values (Danae.cpp)
 enum ARX_INTERFACE_EDITION_MODE
 {
@@ -175,6 +178,7 @@ enum ARX_INTERFACE_EDITION_MODE
 	EDITION_PATHWAYS,
 	EDITION_PARTICLES
 };
+#endif
 
 enum ARX_INTERFACE_FLAG
 {

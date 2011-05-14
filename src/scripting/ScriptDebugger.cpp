@@ -25,6 +25,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scripting/ScriptDebugger.h"
 
+#ifdef BUILD_EDITOR
+
 #include <cstdio>
 #include <cstring>
 
@@ -445,3 +447,5 @@ suite:
 		MODIFFF = 1;
 	}
 }
+
+#endif

@@ -70,7 +70,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 EERIE_3DOBJ * fogobj = NULL;
+
+#ifdef BUILD_EDITOR
 extern FOG_DEF fogcopy;
+#endif
+
 FOG_DEF fogs[MAX_FOG];
 
 //*************************************************************************************
@@ -84,6 +88,7 @@ void ARX_FOGS_Set_Object(EERIE_3DOBJ * _fogobj)
 //*************************************************************************************
 void ARX_FOGS_FirstInit()
 {
+#ifdef BUILD_EDITOR
 	memset(&fogcopy, 0, sizeof(FOG_DEF));
 	fogcopy.frequency = 17.f;
 	fogcopy.rgb.r = 0.3f;
@@ -94,6 +99,7 @@ void ARX_FOGS_FirstInit()
 	fogcopy.size = 80.f;
 	fogcopy.speed = 1.f;
 	fogcopy.tolive = 4500;
+#endif
 	ARX_FOGS_Clear();
 }
 //*************************************************************************************

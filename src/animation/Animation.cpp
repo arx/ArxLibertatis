@@ -105,7 +105,6 @@ extern long FINAL_RELEASE;
 extern EERIE_CAMERA TCAM[32];
 extern QUAKE_FX_STRUCT QuakeFx;
 extern float _framedelay;
-extern float FORCED_REDUCTION_VALUE;
 extern float METALdecal;
 extern long D3DTRANSFORM;
 extern long ForceIODraw;

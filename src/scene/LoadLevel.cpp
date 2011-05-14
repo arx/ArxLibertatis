@@ -156,6 +156,7 @@ bool CanPurge(Vec3f * pos)
 	return true;
 }
 
+#ifdef BUILD_EDITOR
 void BIG_PURGE() {
 	
 	if (OKBox("Do you really want to PURGE this level ???", "Confirm Box"))
@@ -221,6 +222,7 @@ void BIG_PURGE() {
 		LogError << (text);
 	}
 }
+#endif
 
 void ReplaceSpecifics( char* text )
 {
@@ -863,7 +865,9 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 			}
 		}
 
+#ifdef BUILD_EDITOR
 		InterTreeViewItemAdd(io);
+#endif
 	}
 
 	return io;

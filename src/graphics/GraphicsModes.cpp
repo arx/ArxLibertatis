@@ -41,7 +41,6 @@ GLOBAL_MODS current;
 GLOBAL_MODS desired;
 GLOBAL_MODS stacked;
 extern long USE_D3DFOG;
-extern long EDITMODE;
 
 // change the clipping Z max & min
 #define DEFAULT_ZCLIP		6400.f 

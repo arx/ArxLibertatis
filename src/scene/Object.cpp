@@ -2191,6 +2191,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 		free(adr);
 	}
 	
+#ifdef BUILD_EDITOR
 	if(FASTLOADS) {
 		if(ret->pdata) {
 			free(ret->pdata);
@@ -2198,6 +2199,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 		}
 		return ret;
 	}
+#endif
 	
 	CreateNeighbours(ret);
 	EERIEOBJECT_AddClothesData(ret);

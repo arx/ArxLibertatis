@@ -88,6 +88,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
+#include "Configure.h"
+
 using std::min;
 using std::max;
 
@@ -1525,7 +1527,6 @@ void GetInfosCombine()
 //-----------------------------------------------------------------------------
 bool DANAE::ManageEditorControls()
 {
-	float val = 0.f;
 	Vec3f trans;
 
 	eMouseState = MOUSE_IN_WORLD;
@@ -2299,6 +2300,7 @@ bool DANAE::ManageEditorControls()
 				Set_DragInter(NULL);
 			} else if(DRAGINTER!=NULL)
 			{
+#ifdef BUILD_EDITOR
 				if (!EDITMODE) // test for NPC & FIX
 				{
 					if ((DRAGINTER->ioflags & IO_NPC) || (DRAGINTER->ioflags & IO_FIX) )
@@ -2307,6 +2309,7 @@ bool DANAE::ManageEditorControls()
 						goto suivant2;
 					}
 				}
+#endif
 
 				if (!((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count > 1)))
 					if ((DRAGINTER->obj) && (DRAGINTER->obj->pbox))
@@ -2604,9 +2607,13 @@ bool DANAE::ManageEditorControls()
 			}
 			else ARX_PLAYER_Remove_Invisibility();
 		}
-
-}
-
+	
+	}
+	
+#ifdef BUILD_EDITOR
+	
+	float val = 0.f;
+	
 	// Load Level Command
 	if (((EDITMODE)&&((this->kbd.inkey[INKEY_L]) && ((this->kbd.inkey[INKEY_LEFTSHIFT]) || (this->kbd.inkey[INKEY_RIGHTSHIFT])))) || WILLLOADLEVEL)
 	{
@@ -2658,7 +2665,7 @@ bool DANAE::ManageEditorControls()
 		this->kbd.inkey[INKEY_LEFTSHIFT]=0;
 		this->kbd.inkey[INKEY_RIGHTSHIFT]=0;
 	}
-
+	
 	// Save Level Command
 	if (EDITMODE)
 		if (((this->kbd.inkey[INKEY_S]) && ((this->kbd.inkey[INKEY_LEFTSHIFT]) || (this->kbd.inkey[INKEY_RIGHTSHIFT]))) || WILLSAVELEVEL)
@@ -2681,7 +2688,7 @@ bool DANAE::ManageEditorControls()
 				this->kbd.inkey[INKEY_LEFTSHIFT]=0;
 				this->kbd.inkey[INKEY_RIGHTSHIFT]=0;
 		}
-
+	
 		// PATHWAYS edition Sub-Commands
 		if (EDITION==EDITION_PATHWAYS)
 		{
@@ -2884,7 +2891,7 @@ bool DANAE::ManageEditorControls()
 				this->kbd.inkey[INKEY_SPACE]=0;
 			}
 		}
-
+	
 		// LightSources Edition Key/Mouse Management -------------------------------
 	if (EDITION == EDITION_LIGHTS)
 		{
@@ -3077,7 +3084,7 @@ bool DANAE::ManageEditorControls()
 				this->kbd.inkey[INKEY_PADMINUS]=0;
 			}
 	}
-
+	
 	// Particles Edition Key/Mouse Management -------------------------------
 	if ((EDITION==EDITION_PARTICLES) && EDITMODE)
 	{
@@ -3165,7 +3172,7 @@ bool DANAE::ManageEditorControls()
 			this->kbd.inkey[INKEY_PADMINUS]=0;
 		}
 	}
-
+	
 	// NODES Edition Key/Mouse Management -------------------------------
 	if ((EDITION==EDITION_NODES) && (EDITMODE))
 	{
@@ -3352,7 +3359,7 @@ bool DANAE::ManageEditorControls()
 				this->kbd.inkey[INKEY_PADMINUS]=0;
 			}
 	}
-
+	
 	// Fog Key/Mouse Management -------------------------------
 	if ((EDITION==EDITION_FOGS) && (EDITMODE))
 	{
@@ -3559,7 +3566,7 @@ bool DANAE::ManageEditorControls()
 			this->kbd.inkey[INKEY_PADMINUS]=0;
 		}
 	}
-
+	
 	// IO Edition Key/Mouse Management -------------------------------
 	if (EDITMODE)
 	{
@@ -3707,7 +3714,7 @@ bool DANAE::ManageEditorControls()
 			this->kbd.inkey[INKEY_PADDIVIDE]=0;
 		}
 	}
-
+	
 	if (EDITMODE)
 		if ((this->kbd.inkey[INKEY_RETURN])
 			&& (ValidIONum(LastSelectedIONum)))
@@ -3738,8 +3745,10 @@ bool DANAE::ManageEditorControls()
 
 			this->kbd.inkey[INKEY_RETURN]=0;
 		}
-		
-		return false;
+	
+#endif // BUILD_EDITOR
+	
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -4642,7 +4651,9 @@ void DANAE::ManagePlayerControls()
 	  
 	  //	Check For Combat Mode ON/OFF
 	  if (	(EERIEMouseButton & 1)
+#ifdef BUILD_EDITOR
 		  &&	(EDITION==EDITION_IO)
+#endif
 		  &&	(!(player.Interface & INTER_COMBATMODE))
 	        &&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) 
 		  &&	(!EDITMODE)	
@@ -5258,7 +5269,6 @@ void DANAE::ManageKeyMouse()
 	ARX_Menu_Manage();
 	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
-	INTERACTIVE_OBJ * t;
 
 	MOVETYPE=MOVE_WAIT;
 
@@ -5558,12 +5568,12 @@ void DANAE::ManageKeyMouse()
 	}
 
 	{
-
+#ifdef BUILD_EDITOR
 		if (EDITMODE)
 		{
 			if (EERIEMouseButton & 1)
 			{
-				t = FlyingOverIO;
+				INTERACTIVE_OBJ * t = FlyingOverIO;
 
 				if (t!=NULL)
 				{
@@ -5571,9 +5581,9 @@ void DANAE::ManageKeyMouse()
 					EERIEMouseButton&=~1;
 				}
 			}
-		}
-		////////
-		else if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE))
+		} else
+#endif
+		if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE))
 			{
 				if (DRAGINTER == NULL) {
 					if ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4))
@@ -5736,6 +5746,8 @@ void DANAE::ManageKeyMouse()
 					WILLADDSPEECH.clear();
 				}
 
+#ifdef BUILD_EDITOR
+
 				///////
 		if ((EERIEMouseButton & 4) && (EDITMODE))
 				{
@@ -5794,8 +5806,6 @@ void DANAE::ManageKeyMouse()
 
 					this->kbd.inkey[41]=0;
 				}
-
-#ifndef NOEDITOR
 
 				if (!FINAL_COMMERCIAL_DEMO)
 				{
@@ -5871,8 +5881,6 @@ void DANAE::ManageKeyMouse()
 
 						this->kbd.inkey[INKEY_F8]=0;
 					}
-
-#endif
 
 				}
 
@@ -6032,6 +6040,9 @@ void DANAE::ManageKeyMouse()
 						}
 					}
 				}
+		
+#endif // BUILD_EDITOR
+		
 	}
 }
 

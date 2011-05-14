@@ -58,7 +58,6 @@ using std::max;
 
 extern		bool 		MIPM;
 extern		float 		vdist;
-extern 		float 		FORCED_REDUCTION_VALUE;
 extern		unsigned char * grps;
 extern		long 		max_grps;
 extern		long		FORCE_NO_HIDE;

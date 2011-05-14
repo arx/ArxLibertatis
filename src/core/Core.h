@@ -102,8 +102,12 @@ extern long	FADEDURATION;
 extern long	FADEDIR;
 extern float FrameDiff;
 extern long FirstFrame;
+#ifdef BUILD_EDITOR
 extern long EDITMODE;
 extern long EDITION;
+#else
+const long EDITMODE = 0;
+#endif
 extern long DEBUGNPCMOVE;
 extern long DEBUGSYS;
 extern long SHOW_TORCH;
@@ -176,9 +180,11 @@ void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
 void ARX_SetAntiAliasing();
 
+#ifdef BUILD_EDITOR
 // TODO move to Script.h?
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+#endif
 
 INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock = false);
 

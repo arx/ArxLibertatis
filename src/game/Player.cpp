@@ -105,7 +105,9 @@ extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
+#ifdef BUILD_EDITOR
 extern long		NEED_DEBUGGER_CLEAR;
+#endif
 extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
 extern long		GLOBAL_MAGIC_MODE;
@@ -2611,8 +2613,10 @@ extern long CURRENT_BASE_FOCAL;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
 
+#ifdef BUILD_EDITOR
 extern Vec3f TVCONTROLEDplayerpos;
 extern long TVCONTROLED;
+#endif
 extern long FINAL_RELEASE;
 
 
@@ -2634,6 +2638,7 @@ void ARX_PLAYER_Frame_Update()
 		PLAYER_PARALYSED = 0;
 	}
 
+#ifdef BUILD_EDITOR
 	// EDITMODE: Forced Changepos for Player by Treeview Command
 	if (TVCONTROLED)
 	{
@@ -2642,6 +2647,7 @@ void ARX_PLAYER_Frame_Update()
 		player.pos.z = TVCONTROLEDplayerpos.z;
 		TVCONTROLED = 0;
 	}
+#endif
 
 	// Reset player moveto info
 	moveto.x = player.pos.x;
@@ -3998,8 +4004,10 @@ void ARX_GAME_Reset(long type) {
 	// Kill Script Loaded IO
 	CleanScriptLoadedIO();
 
+#ifdef BUILD_EDITOR
 	// ARX Debugger
 	NEED_DEBUGGER_CLEAR = 1;
+#endif
 
 	//Body chunks count
 	TOTAL_BODY_CHUNKS_COUNT = 0;

@@ -58,6 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_DIALOG_H
 #define ARX_CORE_DIALOG_H
 
+#include "Configure.h"
+
+#ifdef BUILD_EDITOR
+
 #include <windows.h>
 
 struct INTERACTIVE_OBJ;
@@ -70,7 +74,6 @@ extern long FASTLOADS;
 void LaunchInteractiveObjectsApp(HWND hwnd);
 void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name = NULL);
 void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name = NULL, long type = 0);
-void SetWindowTitle(HWND hWnd, const char * tex);
 void KillInterTreeView();
 INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
 INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
@@ -85,6 +88,13 @@ INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 void LaunchSnapShotParamApp(HWND hwnd);
+
+void TextBox(const char * title, char * text, long size);
+void launchlightdialog();
+
+void RecalcLightZone(float x, float z, long siz);
+
+#endif // BUILD_EDITOR
 
 enum LevelNumber {
 	LEVEL0     = 0,
@@ -121,10 +131,5 @@ enum LevelNumber {
 	LEVELDEMO4 = 31,
 	NOLEVEL    = 32
 };
- 
-void TextBox(const char * title, char * text, long size);
-void launchlightdialog();
-
-void RecalcLightZone(float x, float z, long siz);
 
 #endif // ARX_CORE_DIALOG_H

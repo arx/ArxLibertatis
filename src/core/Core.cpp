@@ -481,8 +481,10 @@ long NODIRCREATION=0;	// No IO Directory Creation ?
 long LOADEDD=0;			// Is a Level Loaded ?
 long WILLLOADLEVEL=0;	// Is a LoadLevel command waiting ?
 long WILLSAVELEVEL=0;	// Is a SaveLevel command waiting ?
+#ifdef BUILD_EDITOR
 long EDITMODE=0;		// EditMode (1) or GameMode (0) ?
 long EDITION=EDITION_IO;	// Sub-EditMode
+#endif
 long USE_COLLISIONS=1;
 
 long ARX_CONVERSATION=0;
@@ -527,6 +529,8 @@ long USE_PORTALS = 3;
 // Toolbar Buttons Def
 //-----------------------------------------------------------------------------
 
+#ifdef BUILD_EDITOR
+
 // TODO maybe this is a wine-specific bug?
 #define TBBUTTON_INIT {0,0} // was: 0L
 
@@ -557,6 +561,8 @@ TBBUTTON tbButtons [] = {
 {21, DANAE_B016, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 21, 0},
 {0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
 };
+
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -703,7 +709,9 @@ void DanaeSwitchFullScreen()
 {
 	if (danaeApp.m_pDeviceInfo->bWindowed) // switching to fullscreen
 	{
+#ifdef BUILD_EDITOR
 		KillInterTreeView();
+#endif
 	}
 
 		int nb=danaeApp.m_pDeviceInfo->dwNumModes;
@@ -1045,8 +1053,10 @@ void InitializeDanae()
 		strcpy(LastLoadedScene,levelPath);
 	}
 
+#ifdef BUILD_EDITOR
 	if ((GAME_EDITOR) && (!MOULINEX))
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
+#endif
 
 }
 
@@ -1424,6 +1434,7 @@ int main(int argc, char ** argv) {
 		danaeApp.CreationSizeY = 552;
 	}
 
+#ifdef BUILD_EDITOR
 	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
 		GAME_EDITOR=1;
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP | WCF_ACCEPTFILES ;
@@ -1439,6 +1450,7 @@ int main(int argc, char ** argv) {
 		danaeApp.ToolBar->String.clear();
 	}
 	else
+#endif
 	{
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP;
 		if (GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
@@ -1535,8 +1547,9 @@ int main(int argc, char ** argv) {
 	if (MOULINEX)
 		sprintf(tex,"MOULINEX");
 
-	SetWindowTitle(danaeApp.m_hWnd,tex);
-
+	strcat(tex, arxVersion.c_str());
+	SetWindowText(danaeApp.m_hWnd, tex);
+	
 	Project.interfacergb.r = 0.46f;
 	Project.interfacergb.g = 0.46f;
 	Project.interfacergb.b = 1.f;
@@ -2561,6 +2574,8 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 //*************************************************************************************
 HRESULT DANAE::FrameMove()
 {
+	
+#ifdef BUILD_EDITOR
 	// To disable for demo
 	if (	!FINAL_COMMERCIAL_DEMO
 		&& !FINAL_COMMERCIAL_GAME
@@ -2620,6 +2635,7 @@ HRESULT DANAE::FrameMove()
 			}
 		}
 	}
+#endif // BUILD_EDITOR
 
 	if (WILL_LAUNCH_CINE[0]) // Checks if a cinematic is waiting to be played...
 	{
@@ -2646,6 +2662,7 @@ void SetEditMode(long ed, const bool stop_sound)
 
 	EERIEMouseButton=0;
 
+#ifdef BUILD_EDITOR
 	if (ed)
 	{
 		EDITMODE=1;
@@ -2662,8 +2679,11 @@ void SetEditMode(long ed, const bool stop_sound)
 		}
 	}
 	else
+#endif
 	{
+#ifdef BUILD_EDITOR
 		EDITMODE=0;
+#endif
 		USE_OLD_MOUSE_SYSTEM=0;
 	}
 
@@ -4889,6 +4909,8 @@ long DANAE_Manage_Cinematic()
 	LastFrameTicks=FrameTicks;
 	return 0;
 }
+
+#ifdef BUILD_EDITOR
 void DanaeItemAdd()
 {
 	INTERACTIVE_OBJ * tmp=AddInteractive(ItemToBeAdded,0,IO_IMMEDIATELOAD);
@@ -4928,6 +4950,7 @@ void DanaeItemAdd()
 
 	ItemToBeAdded[0]=0;
 }
+#endif
 
 void ReMappDanaeButton()
 {
@@ -6455,10 +6478,12 @@ static float _AvgFrameDiff = 150.f;
 
 	}
 
+#ifdef BUILD_EDITOR
 	if (EDITION==EDITION_PATHWAYS)
 	{
 		ARX_PATHS_RedrawAll();
 	}
+#endif
 
 	// Begin Particles ***************************************************************************
 	if (!(Project.hide & HIDE_PARTICLES))
@@ -6519,6 +6544,7 @@ static float _AvgFrameDiff = 150.f;
 				FRAMETICKS = ARXTimeUL();
 		}
 	}
+#ifdef BUILD_EDITOR
 	else  // EDITMODE == true
 	{
 		if (!(Project.hide & HIDE_NODES))
@@ -6531,11 +6557,12 @@ static float _AvgFrameDiff = 150.f;
 		if (EDITION==EDITION_FOGS)
 			ARX_FOGS_RenderAll();
 	}
-
+	
 	// To remove for Final Release but needed until then !
 	if (ItemToBeAdded[0]!=0)
 		DanaeItemAdd();
-		
+#endif
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
@@ -6827,7 +6854,9 @@ static float _AvgFrameDiff = 150.f;
 	LastFrameTime=FrameTime;
 	LastMouseClick=EERIEMouseButton;
 
+#ifdef BUILD_EDITOR
 		DANAE_DEBUGGER_Update();
+#endif
 
 	return S_OK;
 }
@@ -7124,6 +7153,7 @@ static void ShowInfoText() {
 	sprintf(tex,"%ld",pos);
 	danaeApp.OutputText( 70, 99, tex );
 
+#ifdef BUILD_EDITOR
 	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
 	{
 		io = inter.iobj[LastSelectedIONum];
@@ -7181,6 +7211,7 @@ static void ShowInfoText() {
 		  }
 	  }
 	}
+#endif // BUILD_EDITOR
 
 	long zap=IsAnyPolyThere(player.pos.x,player.pos.z);
 	sprintf(tex,"POLY %ld LASTLOCK %ld",zap,LAST_LOCK_SUCCESSFULL);		
@@ -7308,7 +7339,9 @@ HRESULT DANAE::FinalCleanup()
 	EERIE_PATHFINDER_Release();
 	ARX_INPUT_Release();
 	ARX_SOUND_Release();
+#ifdef BUILD_EDITOR
 	KillInterTreeView();
+#endif
 	return S_OK;
 }
 
@@ -7399,6 +7432,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 		break;
 
+#ifdef BUILD_EDITOR
+
 		break;
 		case WM_CLOSE:
 
@@ -7484,8 +7519,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 				case DANAE_B014:
 
-					#ifndef NOEDITOR //////////////////
-
 					if (EDITION==EDITION_PARTICLES)
 					{
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
@@ -7506,12 +7539,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
-					#endif //////////////////
-
 				break;
 				case DANAE_B011: 
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION==EDITION_PATHWAYS) 
 					{
@@ -7534,12 +7563,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
-					#endif //////////////////
-
 				break;
 				case DANAE_B010: 
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION==EDITION_ZONES) 
 					{
@@ -7561,11 +7586,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
-					#endif //////////////////
 				break;
 				case DANAE_B007:
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION==EDITION_LIGHTS)
 					{
@@ -7587,12 +7609,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
-					#endif //////////////////
-
 				break;
 				case DANAE_B006:
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITMODE==1)
 					{
@@ -7606,13 +7624,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						RestoreAllIOInitPos();
 					}
 
-					#endif //////////////////
-
-					#ifdef NOEDITOR //////////////////
-
 					if (EDITMODE==1) SetEditMode(0);
-
-					#endif //////////////////
 
 				break;
 				case DANAE_B003:
@@ -7622,8 +7634,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				break;
 				case DANAE_B004:
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION==EDITION_NODES)
 					{
@@ -7645,10 +7655,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						EDITION=EDITION_NODES;
 					}
 
-					#endif //////////////////
 				break;
 				case DANAE_B008:
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION == EDITION_FOGS)
 					{
@@ -7669,8 +7677,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
 						EDITION=EDITION_FOGS;
 					}
-
-					#endif //////////////////
 
 				break;
 				case DANAE_MENU_SAVEPATH:
@@ -7974,8 +7980,10 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 			}
 		}
-
 		break;
+
+#endif // BUILD_EDITOR
+
 	}
 
 	return CD3DApplication::MsgProc( hWnd, uMsg, wParam, lParam );

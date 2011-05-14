@@ -63,6 +63,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/math/Vector3.h"
 #include "platform/math/Angle.h"
 
+#include "Configure.h"
+
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
@@ -86,7 +88,9 @@ INTERACTIVE_OBJ * LoadInter_Ex(const std::string & name, long ident, const Vec3f
 
 extern Vec3f MSP;
 
+#ifdef BUILD_EDITOR
 void BIG_PURGE();
+#endif
 
 void ARX_SAVELOAD_CheckDLFs();
 

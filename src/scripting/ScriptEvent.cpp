@@ -3410,8 +3410,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					MakeGlobalText(ShowText);
 					ShowTextWindowtext = "Global Variables";
 
+#ifdef BUILD_EDITOR
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
+#endif
 
 #ifdef NEEDING_DEBUG
 
@@ -3425,8 +3427,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					MakeLocalText(es, ShowText);
 					ShowTextWindowtext = "Local Variables";
 
+#ifdef BUILD_EDITOR
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
+#endif
 
 #ifdef NEEDING_DEBUG
 
@@ -3442,8 +3446,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					MakeLocalText(es, ShowText2);
 					ShowTextWindowtext = "Variables";
 
+#ifdef BUILD_EDITOR
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWVARS, NULL, (DLGPROC)ShowVarsDlg);
+#endif
 
 #ifdef NEEDING_DEBUG
 

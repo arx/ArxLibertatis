@@ -128,6 +128,7 @@ endfunction()
 
 option(ARX_BUILD_TESTS "Build tests" OFF)
 option(ARX_BUILD_TOOLS "Build tools" ON)
+option(ARX_BUILD_EDITOR "Build editor" ON)
 option(ARX_MINGW "Build on MinGW" OFF)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
@@ -248,6 +249,7 @@ else(MSVC)
 	#                -Wredundant-decls          to catch extern definitions in .cpp files (with UNITYBUILD)
 	#                -Wsuggest-attribute=const  to add missing const qualifiers (only in gcc 4.6)
 	#                -ftrapv (ARX_DEBUG_EXTRA only) to add checks for (undefined) signed integer overflow
+	# Use to find unused functions: -ffunction-sections -Wl,--gc-sections
 	
 	if(ARX_DEBUG)
 		#Debug
@@ -332,6 +334,10 @@ endif()
 if(ARX_USE_DSOUND)
 	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_DSOUND_SOURCES})
 	set(HAVE_DSOUND 1)
+endif()
+
+if(ARX_BUILD_EDITOR)
+	set(BUILD_EDITOR 1)
 endif()
 
 #enable unity build if requested

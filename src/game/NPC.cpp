@@ -106,7 +106,9 @@ void CheckNPCEx(INTERACTIVE_OBJ * io);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
 
+#ifdef BUILD_EDITOR
 extern long LastSelectedIONum;
+#endif
 
 extern long APPLY_PUSH;
 void StareAtTarget(INTERACTIVE_OBJ * io);
@@ -1311,9 +1313,10 @@ void ARX_PHYSICS_Apply()
 
 			if (io->_npcdata->pathfind.pathwait) // Waiting For Pathfinder Answer
 			{
+#ifdef BUILD_EDITOR
 				if ((ValidIONum(LastSelectedIONum)) &&
 				        (io == inter.iobj[LastSelectedIONum])) ShowIOPath(io);
-
+#endif
 				if (io->_npcdata->pathfind.listnb == 0) // Not Found
 				{
 					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);

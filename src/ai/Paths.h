@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "platform/Flags.h"
 
+#include "Configure.h"
+
 struct INTERACTIVE_OBJ;
 struct EERIE_CAMERA;
 
@@ -153,13 +155,15 @@ const PathMods ARX_PATH_MOD_ALL = ARX_PATH_MOD_POSITION | ARX_PATH_MOD_FLAGS | A
 extern MASTER_CAMERA_STRUCT MasterCamera;
 extern ARX_USE_PATH USE_CINEMATICS_PATH;
 extern ARX_PATH ** ARXpaths;
+#ifdef BUILD_EDITOR
 extern ARX_PATH * ARX_PATHS_FlyingOverAP;
 extern ARX_PATH * ARX_PATHS_SelectedAP;
 extern long	ARX_PATHS_SelectedNum;
+extern long	ARX_PATHS_FlyingOverNum;
+#endif
 extern PathMods ARX_PATHS_HIERARCHYMOVE;
 extern long USE_CINEMATICS_CAMERA;
 extern long	nbARXpaths;
-extern long	ARX_PATHS_FlyingOverNum;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z);
@@ -169,9 +173,9 @@ ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 
-void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname);
 ARX_PATH * ARX_PATHS_ExistName(char * name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
+#ifdef BUILD_EDITOR
 void ARX_PATHS_RedrawAll();
 ARX_PATH * ARX_PATHS_Create(const char * name, Vec3f * pos);
 ARX_PATH * ARX_PATHS_AddNew(Vec3f * pos);
@@ -179,7 +183,9 @@ void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert);
 void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, Vec3f * pos, PathwayType flags, unsigned long time);
 void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del);
+void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname);
 void ARX_PATHS_DrawPath(ARX_PATH * ap);
+#endif
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos);
 
 enum ThrownObjectFlag {

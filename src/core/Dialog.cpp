@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Dialog.h"
 
+#ifdef BUILD_EDITOR
+
 #include <windows.h>
 #include <commdlg.h>
 
@@ -1255,16 +1257,6 @@ void KillInterTreeView()
 }
 
 extern long FINAL_COMMERCIAL_DEMO;
-
-//*************************************************************************************
-// Sets DANAE Main Window Title
-//*************************************************************************************
-void SetWindowTitle(HWND hWnd, const char * tex) {
-	char texx[512];
-	strcpy(texx, tex);
-	strcat(texx, arxVersion.c_str());
-	SetWindowText(hWnd, texx);
-}
 
 HWND SnapShotDlg = NULL;
 void LaunchSnapShotParamApp(HWND hwnd)
@@ -4043,3 +4035,5 @@ void launchlightdialog()
 		}
 	}
 }
+
+#endif // BUILD_EDITOR

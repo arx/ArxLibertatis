@@ -767,7 +767,9 @@ void EERIE_LIGHT_ChangeLighting()
 
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 extern long LIGHT_THREAD_STATUS;
+#endif
 void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 {
 	EERIEPOLY * ep;
@@ -786,7 +788,9 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	else if (maxz >= ACTIVEBKG->Zsize) maxz = ACTIVEBKG->Zsize - 1;
 
 	{
+#ifdef BUILD_EDITOR
 		if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 		for (size_t i = 0; i < MAX_LIGHTS; i++)
 		{
@@ -812,7 +816,9 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 		PROGRESS_COUNT = PROGRESS_TOTAL = 0;
 
+#ifdef BUILD_EDITOR
 		if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 		for (long j = minz; j <= maxz; j++)
 			for (long i = minx; i <= maxx; i++)
@@ -826,19 +832,25 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 				}
 			}
 
+#ifdef BUILD_EDITOR
 		if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 		for (long j = minz; j <= maxz; j++)
 			for (long i = minx; i <= maxx; i++)
 			{
+#ifdef BUILD_EDITOR
 				if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
 				for (long k = 0; k < eg->nbpoly; k++)
 				{
 
+#ifdef BUILD_EDITOR
 					if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 					PROGRESS_COUNT++;
 					ep = &eg->polydata[k];

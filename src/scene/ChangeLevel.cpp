@@ -1869,14 +1869,18 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 			}
 		}
 
+#ifdef BUILD_EDITOR
 		EDITMODE = 0;
+#endif
 		BLOCK_PLAYER_CONTROLS = 0;
 		ARX_INTERFACE_Reset();
 		EERIE_ANIMMANAGER_PurgeUnused();
 	}
 	else
 	{
+#ifdef BUILD_EDITOR
 		EDITMODE = 0;
+#endif
 		BLOCK_PLAYER_CONTROLS = 0;
 		ARX_INTERFACE_Reset();
 		EERIE_ANIMMANAGER_PurgeUnused();

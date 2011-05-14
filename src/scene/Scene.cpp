@@ -114,7 +114,9 @@ extern long NEED_TEST_TEXT;
 extern long DEBUGCODE;
 extern long VF_CLIP_IO;
 extern long DEBUG_FRUSTRUM;
+#ifdef BUILD_EDITOR
 extern long HIDEANCHORS;
+#endif
 extern long EXTERNALVIEW;
 extern long WATERFX;
 extern long REFLECTFX;
@@ -3588,7 +3590,7 @@ void ARX_SCENE_Render(long flag) {
 			}
 
 	
-
+#ifdef BUILD_EDITOR
 	if ((!HIDEANCHORS) || DEBUG_FRUSTRUM)
 	for (long n=0;n<=lcval;n++)
 	{
@@ -3660,6 +3662,7 @@ void ARX_SCENE_Render(long flag) {
 			}
 		}
 	}
+#endif
 
 if (USE_PORTALS && portals)
 {
@@ -3982,8 +3985,10 @@ if (HALOCUR>0)
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
+#ifdef BUILD_EDITOR
 	if (EDITION==EDITION_LIGHTS)
 		ARXDRAW_DrawAllLights(x0,z0,x1,z1);
+#endif
 
 	if (LIGHTTHREAD)
 		ResumeThread(LIGHTTHREAD);

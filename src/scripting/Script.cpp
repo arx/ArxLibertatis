@@ -282,6 +282,7 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const char * dat) {
 	return ret;
 }
 
+#ifdef BUILD_EDITOR
 void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 {
 	ShowText.clear();
@@ -380,6 +381,7 @@ suite:
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
 }
+#endif
 
 void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent)
 {
@@ -3517,7 +3519,6 @@ long CountBrackets(EERIE_SCRIPT * es)
 	return count;
 }
 HWND LastErrorPopup = NULL;
-extern long SHOWWARNINGS;
 long GetCurrentLine(EERIE_SCRIPT * es, long poss)
 {
 	long pos = 0;
@@ -3589,6 +3590,7 @@ void GetLineAsText(EERIE_SCRIPT * es, long curline, char * tex)
 
 	strcpy(tex, "Internal ERROR...");
 }
+#ifdef BUILD_EDITOR
 extern long SYNTAXCHECKING;
 long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 {
@@ -5123,7 +5125,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 	if (errstring[0] == 0) returnvalue = 1;
 	else returnvalue = 0;
 
-	if ((errors > 0) || ((warnings > 0) && (SHOWWARNINGS)))
+	if ((errors > 0) || ((warnings > 0)))
 	{
 		std::string title;
 
@@ -5139,6 +5141,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 	LogDebug << "Tem" << tem;
 	return returnvalue;
 }
+#endif // BUILD_EDITOR
 
 HWND LastErrorPopupNO1 = NULL;
 HWND LastErrorPopupNO2 = NULL;
@@ -5146,27 +5149,7 @@ HWND LastErrorPopupNO2 = NULL;
 extern HWND CDP_IOOptions;
 extern INTERACTIVE_OBJ * CDP_EditIO;
 
-bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
-{
-	return true;
-
-	if (CheckScriptSyntax(io) != true)
-		if (!CDP_IOOptions)
-		{
-			CDP_EditIO = io;
-
-			ARX_TIME_Pause();
-			danaeApp.Pause(true);
-			DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-					  MAKEINTRESOURCE(IDD_SCRIPTDIALOG), danaeApp.m_hWnd, IOOptionsProc);
-			danaeApp.Pause(false);
-			ARX_TIME_UnPause();
-			LastErrorPopupNO1 = NULL;
-			LastErrorPopupNO2 = NULL;
-		}
-
-	return true;
-}
+#ifdef BUILD_EDITOR
 bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 {
 	if (SYNTAXCHECKING == 0) return true;
@@ -5180,6 +5163,7 @@ bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 
 	return true; // no errors.
 }
+#endif
 
 void ARX_SCRIPT_Init_Event_Stats() {
 	
@@ -5496,6 +5480,7 @@ void InitScript(EERIE_SCRIPT * es)
 	ARX_SCRIPT_ComputeShortcuts(*es);
 }
 
+#ifdef BUILD_EDITOR
 LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	
 	(void)lParam;
@@ -5565,6 +5550,7 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 	return false;
 }
+#endif // BUILD_EDITOR
 
 void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std::string& content)
 {

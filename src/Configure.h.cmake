@@ -19,4 +19,6 @@
 // Compiler features
 #cmakedefine HAVE_DYNAMIC_STACK_ALLOCATION
 
+#cmakedefine BUILD_EDITOR
+
 #endif // ARX_CONFIGURE_H

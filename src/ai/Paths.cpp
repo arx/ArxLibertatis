@@ -94,7 +94,6 @@ using std::min;
 using std::max;
 
 extern long CHANGE_LEVEL_ICON;
-extern long EDITMODE;
 extern float FrameDiff;
 bool IsPointInField(Vec3f * pos);
 ARX_PATH **	ARXpaths = NULL;
@@ -106,6 +105,7 @@ long USE_CINEMATICS_CAMERA = 0;
 
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 ARX_PATH * ARX_PATHS_AddNew(Vec3f * pos)
 {
 	char str[64];
@@ -148,6 +148,7 @@ void ARX_PATHS_RedrawAll()
 	for (long i = 0; i < nbARXpaths; i++)
 		ARX_PATHS_DrawPath(ARXpaths[i]);
 }
+#endif
 
 void ARX_PATH_ComputeBB(ARX_PATH * ap)
 {
@@ -498,6 +499,7 @@ suite:
 	JUST_RELOADED = 0;
 }
 
+#ifdef BUILD_EDITOR
 //*************************************************************************************
 //*************************************************************************************
 ARX_PATH * ARX_PATHS_Create(const char * name, Vec3f * pos)
@@ -514,7 +516,7 @@ ARX_PATH * ARX_PATHS_Create(const char * name, Vec3f * pos)
 	InterTreeViewItemAdd(NULL, name, IOTVTYPE_PATH);
 	return ap;
 }
-
+#endif
 
 //*************************************************************************************
 //*************************************************************************************
@@ -544,6 +546,7 @@ void ARX_PATH_ClearAllControled()
 }
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 {
 	if (ap == NULL) return;
@@ -552,6 +555,7 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 	strcpy(ap->name, newname);
 	InterTreeViewItemAdd(NULL, ap->name, IOTVTYPE_PATH);
 }
+#endif
 //*************************************************************************************
 //*************************************************************************************
 ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name)
@@ -578,7 +582,9 @@ void ARX_PATH_ReleaseAllPath()
 	{
 		if (ARXpaths[i])
 		{
+#ifdef BUILD_EDITOR
 			InterTreeViewItemRemove(NULL, ARXpaths[i]->name);
+#endif
 
 			if (ARXpaths[i]->pathways) free(ARXpaths[i]->pathways);
 
@@ -609,6 +615,7 @@ ARX_PATH * ARX_PATHS_ExistName(char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 void ARX_PATHS_Delete(ARX_PATH * ap)
 {
 	ARX_PATH_ClearAllUsePath();
@@ -649,8 +656,10 @@ void ARX_PATHS_Delete(ARX_PATH * ap)
 	free(ap);
 	ap = NULL;
 }
+#endif
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert)
 {
 	if (ap == NULL) return 0;
@@ -680,6 +689,7 @@ long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert)
 	memset(&ap->pathways[insert], 0, sizeof(ARX_PATHWAY));
 	return insert + 1;
 }
+#endif
 //*************************************************************************************
 //*************************************************************************************
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
@@ -814,6 +824,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
 }
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, Vec3f * pos, PathwayType flags, unsigned long duration)
 {
 	if (ap == NULL) return;
@@ -892,8 +903,10 @@ void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, Vec3f * pos
 
 	ARX_PATH_ComputeBB(ap);
 }
+#endif
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del)
 {
 	if (ap == NULL) return;
@@ -1127,7 +1140,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 		}
 	}
 }
-
+#endif // BUILD_EDITOR
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
