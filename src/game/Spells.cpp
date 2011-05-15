@@ -5371,7 +5371,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			{
 				if (spells[io->spells_on[il]].type == SPELL_SLOW_DOWN)
 				{
-					bOk = false;
 					spells[i].exist = false;
 					return false;
 				}
