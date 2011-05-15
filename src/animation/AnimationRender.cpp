@@ -311,7 +311,6 @@ long Looking_At = -1;
 static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_USE * animuse)
 {
 	int				j, l;
-	EERIE_ANIM 	*	eanim = animuse->cur_anim->anims[animuse->altidx_cur];
 	EERIE_C_DATA	* obj = eobj->c_data;
 
 	for (long count = MAX_ANIM_LAYERS - 1; count >= 0; count--)
@@ -320,26 +319,22 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 		Vec3f		vect;
 		Vec3f		scale;
 
-		if (!io)
-		{
+		if(!io) {
 			count = -1;
-
-			if (animuse->cur_anim == NULL)
-				continue;
-
-			eanim = animuse->cur_anim->anims[animuse->altidx_cur];
-		}
-		else
-		{
+		} else {
 			animuse = &io->animlayer[count];
-
-			if (animuse->cur_anim == NULL) continue;
-
-			eanim = animuse->cur_anim->anims[animuse->altidx_cur];
 		}
-
-		if (!animuse) continue;
-
+		
+		if(!animuse) {
+			continue;
+		}
+		
+		if(!animuse->cur_anim) {
+			continue;
+		}
+		
+		EERIE_ANIM * eanim = animuse->cur_anim->anims[animuse->altidx_cur];
+		
 		if (!eanim) continue;
 
 		if (animuse->fr < 0)
