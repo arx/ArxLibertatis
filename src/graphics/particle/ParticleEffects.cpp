@@ -3171,7 +3171,6 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io)
 			x1 = x0;
 			x0 = z;
 			z = y1;
-			y1 = y0;
 			y0 = z;
 		}
 
@@ -3210,7 +3209,6 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io)
 		if (y0>y1) 
 		{
 			z = x1;
-			x1=x0;
 			x0=z;
 			z = y1;
 			y1=y0;
