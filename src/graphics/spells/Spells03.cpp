@@ -982,8 +982,7 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 {
 	int numsuiv;
 
-	float	dsize = size / (float)(dec + 1);
-	dsize = 0.f;
+	float	dsize = 0.f;
 	int		r1 = ((int)(r * 255.f)) << 16;
 	int		g1 = ((int)(g * 255.f)) << 16;
 	int		b1 = ((int)(b * 255.f)) << 16;
