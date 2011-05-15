@@ -640,7 +640,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 
 	if (!io) return;
 
-	ANIM_HANDLE * anim = io->anims[ANIM_BARE_UNREADY];
+	ANIM_HANDLE * anim;
 	long type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
 	switch (type)
