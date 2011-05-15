@@ -4328,9 +4328,7 @@ void ManageFade()
 
 	if (Visibility>1.f) Visibility=1.f;
 
-	if (Visibility<0.f)
-	{
-		Visibility = 0.f;
+	if(Visibility < 0.f) {
 		FADEDIR = 0;
 		return;
 	}
