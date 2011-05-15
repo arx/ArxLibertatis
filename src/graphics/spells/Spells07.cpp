@@ -1287,11 +1287,6 @@ float CIceField::Render()
 
 	if (iMax > iNumber) iMax = iNumber;
 
- 
-	float x = eSrc.x;
-	float y = eSrc.y;
-	float z = eSrc.z;
-
 	for (i = 0; i < iMax; i++)
 	{
 		if (tSize[i].x < tSizeMax[i].x)
@@ -1321,7 +1316,7 @@ float CIceField::Render()
 		stiteangle.a = 0;
 		stiteangle.g = 0;
 		stitepos.x = tPos[i].x;
-		stitepos.y = y;
+		stitepos.y = eSrc.y;
 		stitepos.z = tPos[i].z;
 
 		float fcol = 1;
@@ -1362,9 +1357,9 @@ float CIceField::Render()
 
 		if (t < 0.01f)
 		{
-			x = tPos[i].x;
-			y = tPos[i].y;
-			z = tPos[i].z;
+			float x = tPos[i].x;
+			float y = tPos[i].y;
+			float z = tPos[i].z;
 
 			int j = ARX_PARTICLES_GetFree();
 
@@ -1396,9 +1391,9 @@ float CIceField::Render()
 		}
 		else if (t > 0.095f)
 		{
-			x = tPos[i].x;
-			y = tPos[i].y - 50;
-			z = tPos[i].z;
+			float x = tPos[i].x;
+			float y = tPos[i].y - 50;
+			float z = tPos[i].z;
 
 			int j = ARX_PARTICLES_GetFree();
 
