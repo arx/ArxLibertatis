@@ -985,8 +985,6 @@ float CNegateMagic::Render()
 		if (t < 0.04f)
 		{
 
-			t = rnd();
-
 			int j = ARX_PARTICLES_GetFree();
 
 			if ((j != -1) && (!ARXPausedTimer))
