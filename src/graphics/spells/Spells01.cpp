@@ -570,8 +570,6 @@ void CMultiMagicMissile::Create(const Vec3f & _aePos, const Anglef & angles)
 	if (pTab)
 	{
 
-		float afAlpha = angles.a;
-		float afBeta = angles.b;
 		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "PRIMARY_ATTACH");
 
 		if (spells[spellinstance].hand_group != -1)
@@ -581,6 +579,7 @@ void CMultiMagicMissile::Create(const Vec3f & _aePos, const Anglef & angles)
 			spells[spellinstance].hand_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
 		}
 
+		float afAlpha, afBeta;
 		if (spells[spellinstance].caster == 0) // player
 		{
 			afBeta = player.angle.b;
