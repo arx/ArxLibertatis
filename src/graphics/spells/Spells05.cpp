@@ -930,16 +930,6 @@ float CPoisonProjectile::Render()
 			newpos.y = v.y;
 			newpos.z = v.z;
 
-			if (!((fTrail - (i * n + toto)) > 70))
-			{
-				float c = 1.0f - ((fTrail - (i * n + toto)) / 70.0f);
-				c += frand2() * 0.1f;
-
-				if (c < 0) c = 0;
-
-				if (c > 1) c = 1;
-			}
-
 			float nx = lastpos.x;
 			float ny = lastpos.y;
 			float nz = lastpos.z;
