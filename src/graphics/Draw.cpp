@@ -1369,21 +1369,20 @@ void EERIEDrawBitmap2(float x,float y,float sx,float sy,float z,TextureContainer
 
 void EERIEDrawBitmap2DecalY(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col,float _fDeltaY)
 {
-	float smu,smv;
+	float smu;
 	float fDepv;
 	float fEndu,fEndv;
 
 	if (tex)
 	{
 		smu=tex->m_hdx;
-		smv=tex->m_hdy;
 		fEndu=tex->m_dx;
 		fEndv=tex->m_dy;
 		fDepv=tex->m_hdy+(tex->m_dy-tex->m_hdy)*_fDeltaY;
 	}
 	else
 	{
-		smu=smv=0.f;
+		smu=0.f;
 		fDepv=0.f;
 		fEndu=fEndv=0.f;
 	}
