@@ -518,7 +518,6 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 
 	float xmin, ymin, zmin;
 
-	int i = 0;
 	Vec3f s, e, h;
 
 	s.x					= aeSrc.x;
@@ -533,7 +532,6 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	e.z = aeSrc.z + fBetaRadCos * fspelldist;
 
 	float fd;
-	i = iMax;
 
 	if (!Visible(&s, &e, NULL, &h))
 	{
@@ -555,10 +553,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	float fDist = (fd / fspelldist) * iMax ;
 	ARX_CHECK_INT(fDist);
 
-	i = ARX_CLEAN_WARN_CAST_INT(fDist);
-
-
-	iNumber = i;
+	iNumber = ARX_CLEAN_WARN_CAST_INT(fDist);
 
 	int end = iNumber / 2;
 	tv1a[0].sx = s.x;
@@ -570,7 +565,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 
 	Split(tv1a, 0, end, 80, 0.5f, 0, 1, 80, 0.5f);
 
-	for (i = 0; i < iNumber; i++)
+	for (int i = 0; i < iNumber; i++)
 	{
 		float t = rnd();
 
