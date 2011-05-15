@@ -2812,24 +2812,16 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	CMenuZone * iR=pMenuAllZone->CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
-	bool bReturn=false;
-
 	if(pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0)) {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
 			pZoneClick->OnMouseClick(1);
-			bReturn=true;
+			return pZoneClick->eMenuState;
 		}
 	} else {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
 		}
-	}
-
-	//GESTION DES TOUCHES
-	if(bReturn)
-	{
-		return pZoneClick->eMenuState;
 	}
 
 	return NOP;
@@ -3184,7 +3176,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, textSize.y) );
 	pRef=this;
 
-	if (_pTex2)
+	if (_pTex2) // TODO should this be _pTex1?
 	{
 		float rZoneR = ( RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f );
 		ARX_CHECK_LONG( rZoneR );
@@ -3734,18 +3726,12 @@ void CWindowMenuConsole::AddMenuCenter( CMenuElement * _pMenuElement )
 		ARX_CHECK( !( 0 < iI ) );
 	}
 
-
-
 	for( int iJ = 0 ; iJ < iI ; iJ++ )
 	{
 		CMenuZone *pZone = MenuAllZone.GetZoneNum( iJ );
-		iDy        =    pZone->rZone.bottom - pZone->rZone.top;
-		iDepY    +=    iDy + iInterligne;
+		iDepY += pZone->rZone.bottom - pZone->rZone.top + iInterligne;
 		pZone->Move( 0, dy );
 	}
-
-	iDx    =    _pMenuElement->rZone.right - _pMenuElement->rZone.left;
-	iDy    =    _pMenuElement->rZone.bottom - _pMenuElement->rZone.top;
 
 	_pMenuElement->Move( dx, iDepY );
 
