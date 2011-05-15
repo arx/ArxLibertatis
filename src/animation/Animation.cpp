@@ -1018,7 +1018,6 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 //-----------------------------------------------------------------------------
 void PopAllTriangleListTransparency()
 {
-	TextureContainer *pTex=GetTextureList();
 
 	D3DMATRIX matbase;
 
@@ -1029,7 +1028,7 @@ void PopAllTriangleListTransparency()
 
 	PopOneTriangleList(&TexSpecialColor);
 
-	pTex=GetTextureList();
+	TextureContainer * pTex = GetTextureList();
 
 	while(pTex)
 	{
