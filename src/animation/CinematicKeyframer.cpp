@@ -588,7 +588,7 @@ consequences on light :
 //ARX_END: jycorbel (2010-07-19)
 			//ARX_END: jycorbel (2010-06-28)
 			c->lightd = k->light;
-			lightnext = lightprec = k;
+			lightprec = k;
 		}
 	}
 
@@ -821,7 +821,7 @@ bool GereTrackNoPlay(Cinematic * c)
 //ARX_END: jycorbel (2010-07-19)
 			//ARX_END: jycorbel (2010-06-28)
 			c->lightd = k->light;
-			lightnext = lightprec = k;
+			lightprec = k;
 		}
 	}
 
