@@ -202,7 +202,6 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z)
 	register int i, j, c = 0;
 
 	x -= ap->pos.x;
-	y -= ap->pos.y;
 	z -= ap->pos.z;
 
 	ARX_PATHWAY * app = ap->pathways;
