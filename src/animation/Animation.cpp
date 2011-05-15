@@ -419,9 +419,12 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 //*************************************************************************************
 void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
 {
+	
+	if(!pos) {
+		return;
+	}
 
 	if (	(!eanim)
-		||	(!pos)
 		||	(!eanim->anims[alt_idx])
 		||	(!eanim->anims[alt_idx]->frames)
 		||	(eanim->anims[alt_idx]->nb_key_frames<=0) )
