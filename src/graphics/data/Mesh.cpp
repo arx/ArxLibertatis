@@ -1505,7 +1505,6 @@ int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, l
 
 									if (ep == epp) return 0;
 
-									epp = ep;
 									return 1;
 								}
 							}
