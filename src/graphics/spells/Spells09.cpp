@@ -634,7 +634,6 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 
 	fSize = 1;
 
-	int i = 0;
 	iMax = iNumber;
 	Vec3f s, e, h;
 
@@ -650,7 +649,6 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	e.z = s.z + fBetaRadCos * 900;
 
 	float fd;
-	i = iMax;
 
 	if (!Visible(&s, &e, NULL, &h))
 	{
@@ -672,10 +670,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	float fCalc = (fd / 900.0f) * iMax ;
 	ARX_CHECK_INT(fCalc);
 
-	i = ARX_CLEAN_WARN_CAST_INT(fCalc);
-
-
-	iNumber = i;
+	iNumber = ARX_CLEAN_WARN_CAST_INT(fCalc);
 
 	int end = 40;
 	tv1a[0].sx = s.x;
