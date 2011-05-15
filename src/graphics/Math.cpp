@@ -371,7 +371,7 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 
 	if (bb > max) max = bb, index = 1;
 
-	if (cc > max) max = cc, index = 2;
+	if (cc > max) index = 2;
 
 	// this is the simplified projection onto L
 	vp0 = V0[index];
