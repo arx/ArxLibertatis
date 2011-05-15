@@ -1610,8 +1610,6 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 	sub.x = player.pos.x;
 	sub.y = player.pos.y + 90.f;
 	sub.z = player.pos.z;
-	float dist;
-	dist = fdist(*pos, sub);
 
 	if (radius <= 0.f) return damagesdone;
 
@@ -1646,7 +1644,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 							posi.x = (inter.iobj[i]->obj->vertexlist3[k].v.x + inter.iobj[i]->obj->vertexlist3[kk].v.x) * ( 1.0f / 2 );
 							posi.y = (inter.iobj[i]->obj->vertexlist3[k].v.y + inter.iobj[i]->obj->vertexlist3[kk].v.y) * ( 1.0f / 2 );
 							posi.z = (inter.iobj[i]->obj->vertexlist3[k].v.z + inter.iobj[i]->obj->vertexlist3[kk].v.z) * ( 1.0f / 2 );
-							dist = fdist(*pos, posi);
+							float dist = fdist(*pos, posi);
 
 							if (dist <= radius)
 							{
@@ -1659,7 +1657,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 				}
 
 				{
-					dist = fdist(*pos, inter.iobj[i]->obj->vertexlist3[k].v);
+					float dist = fdist(*pos, inter.iobj[i]->obj->vertexlist3[k].v);
 
 					if (dist <= radius)
 					{
