@@ -1198,50 +1198,28 @@ void ARX_DrawPrimitive_ClippZ(D3DTLVERTEX * _pVertexA, D3DTLVERTEX * _pVertexB, 
 }
 
 //-----------------------------------------------------------------------------
-D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex)
-{
-	if ((_pFace->facetype & POLY_TRANS) ||
-	        (_fInvisibility > 0.f))
-	{
-		float fTransp;
-
-		if (_fInvisibility > 0.f)
-			fTransp = 2.f - _fInvisibility;
-		else
-			fTransp = _pFace->transval;
-
-		if (fTransp >= 2.f) //MULTIPLICATIVE
-		{
-			fTransp *= ( 1.0f / 2 );
-			fTransp += 0.5f;
-
-			return PushVertexInTableCull_TMultiplicative(_pTex);
-		}
-		else
-		{
-			if (fTransp >= 1.f) //ADDITIVE
-			{
-				fTransp -= 1.f;
-				return PushVertexInTableCull_TAdditive(_pTex);
-			}
-			else
-			{
-				if (fTransp > 0.f) //NORMAL TRANS
-				{
-					fTransp = 1.f - fTransp;
-					return PushVertexInTableCull_TNormalTrans(_pTex);
-				}
-				else  //SUBTRACTIVE
-				{
-					fTransp = 1.f - fTransp;
-					return PushVertexInTableCull_TSubstractive(_pTex);
-				}
-			}
-		}
-	}
-	else
-	{
+D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex) {
+	
+	if(!(_pFace->facetype & POLY_TRANS) && !(_fInvisibility > 0.f)) {
 		return PushVertexInTableCull(_pTex);
+	}
+	
+	float fTransp;
+	
+	if(_fInvisibility > 0.f) {
+		fTransp = 2.f - _fInvisibility;
+	} else {
+		fTransp = _pFace->transval;
+	}
+	
+	if(fTransp >= 2.f) { //MULTIPLICATIVE
+		return PushVertexInTableCull_TMultiplicative(_pTex);
+	} else if(fTransp >= 1.f) { //ADDITIVE
+		return PushVertexInTableCull_TAdditive(_pTex);
+	} else if(fTransp > 0.f) { //NORMAL TRANS
+		return PushVertexInTableCull_TNormalTrans(_pTex);
+	} else { //SUBTRACTIVE
+		return PushVertexInTableCull_TSubstractive(_pTex);
 	}
 }
 
