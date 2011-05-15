@@ -258,7 +258,6 @@ CMagicMissile::~CMagicMissile()
 //-----------------------------------------------------------------------------
 void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 {
-	int i;
 	Vec3f s, e;
 
 	SetDuration(ulDuration);
@@ -274,9 +273,7 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	s = eSrc;
 	e = eSrc;
 
-	i = 0;
-
-	i = 40;
+	int i = 40;
 	e.x -= fBetaRadSin * 50 * i;
 	e.y += sin(radians(MAKEANGLE(this->angles.a))) * 50 * i;
 	e.z += fBetaRadCos * 50 * i;
