@@ -772,7 +772,6 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
 					pos->z += ap->pos.z + ap->pathways[targetwaypoint-2].rpos.z;
 				}
 
-				tim = 0;
 				return targetwaypoint - 1;
 			}
 		}
@@ -807,7 +806,6 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
 					pos->z += (ap->pathways[targetwaypoint].rpos.z - pos->z) * rel;
 				}
 
-				tim = 0;
 				pos->x += ap->pos.x;
 				pos->y += ap->pos.y;
 				pos->z += ap->pos.z;
