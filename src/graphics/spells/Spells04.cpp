@@ -269,11 +269,6 @@ float CDispellField::Render()
 {
 	int i = 0;
 
-	float x = eSrc.x;
-	float y = eSrc.y + 100.0f;
-	float z = eSrc.z;
-
-
 	if (ulCurrentTime >= ulDuration)
 	{
 		return 0.f;
@@ -282,43 +277,22 @@ float CDispellField::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	for (i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			x = inter.iobj[i]->pos.x;
-			y = inter.iobj[i]->pos.y;
-			z = inter.iobj[i]->pos.z;
-		}
-	}
-
-	y -= 40;
-
-	y = eSrc.y + 140;
-
 	if (tex_p2 && tex_p2->m_pddsSurface)
 	{
 		SETTC(tex_p2);
 	}
-
-	//----------------------------
-	y -= 40;
 	
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
-	x = player.pos.x;
-	y = player.pos.y + 80;
-	z = player.pos.z;
-
 	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120;
 	stiteangle.a = 0;
 	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
+	stitepos.x = player.pos.x;
+	stitepos.y = player.pos.y + 80;
+	stitepos.z = player.pos.z;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -340,8 +314,7 @@ float CDispellField::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
-	y = player.pos.y + 20;
-	stitepos.y = y;
+	stitepos.y = player.pos.y + 20;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
