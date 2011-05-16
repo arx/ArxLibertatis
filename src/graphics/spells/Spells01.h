@@ -110,7 +110,7 @@ class CMagicMissile: public CSpellFx
 class CMultiMagicMissile: public CSpellFx
 {
 	private:
-		CSpellFx ** pTab;
+		CMagicMissile ** pTab;
 		unsigned int uiNumber;
 		bool bExplo;
 	public:
@@ -121,7 +121,7 @@ class CMultiMagicMissile: public CSpellFx
 		void	CheckCollision();
 
 	public:
-		void	Create(const Vec3f &, const Anglef &);
+		void	Create();
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();

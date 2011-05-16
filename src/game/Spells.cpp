@@ -3625,7 +3625,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(pCSpellFx != NULL) {
 				pCSpellFx->spellinstance=i;
 				pCSpellFx->SetDuration((unsigned long) (6000));
-				pCSpellFx->Create(Vec3f::ZERO, Anglef::ZERO);
+				static_cast<CMultiMagicMissile*>(pCSpellFx)->Create();
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
 			}				
@@ -3890,7 +3890,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				pCSpellFx->Create();
+				static_cast<CHeal*>(pCSpellFx)->Create();
 				pCSpellFx->SetDuration(spells[i].tolive);
 				
 				spells[i].pSpellFx = pCSpellFx;
@@ -4237,8 +4237,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 20000;
 			
-			CSpellFx *pCSpellFx = NULL;
-			pCSpellFx = new CFireBall();
+			CFireBall * pCSpellFx = new CFireBall();
 
 			if (pCSpellFx != NULL)
 			{
@@ -4263,10 +4262,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			
 				pCSpellFx->SetDuration((unsigned long) (6000));
-				CFireBall * cf=(CFireBall *)pCSpellFx;
 
 				if (spells[i].caster==0)
-					cf->Create(target,MAKEANGLE(player.angle.b),player.angle.a,spells[i].caster_level);
+					pCSpellFx->Create(target,MAKEANGLE(player.angle.b),player.angle.a,spells[i].caster_level);
 				else
 				{
 					float angle;
@@ -4286,7 +4284,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					if ((ValidIONum(spells[i].caster))
 						&& (inter.iobj[spells[i].caster]->ioflags & IO_NPC))
 					{
-						eCurPos.y-=80.f;						
+						eCurPos.y-=80.f;
 					}
 
 					INTERACTIVE_OBJ * _io=inter.iobj[spells[i].caster];
@@ -4295,10 +4293,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					{
 						Vec3f * p1=&eCurPos;
 						Vec3f * p2=&inter.iobj[_io->targetinfo]->pos;
-						angle=(degrees(GetAngle(p1->y,p1->z,p2->y,p2->z+TRUEDistance2D(p2->x,p2->z,p1->x,p1->z))));//alpha entre orgn et dest;				
+						angle=(degrees(GetAngle(p1->y,p1->z,p2->y,p2->z+TRUEDistance2D(p2->x,p2->z,p1->x,p1->z))));//alpha entre orgn et dest;
 					}
 
-					cf->Create(target,MAKEANGLE(inter.iobj[spells[i].caster]->angle.b),angle,spells[i].caster_level);					
+					pCSpellFx->Create(target,MAKEANGLE(inter.iobj[spells[i].caster]->angle.b),angle,spells[i].caster_level);
 				}
 			}
 
@@ -4327,7 +4325,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 					
-			CSpellFx *pCSpellFx = NULL;
+			CCreateFood * pCSpellFx = NULL;
 
 			if ((spells[i].caster==0) || (spells[i].target==0))
 				player.hunger=100;
@@ -4424,12 +4422,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx = NULL;
+			CBless * pCSpellFx = new CBless();
 			
-			pCSpellFx = new CBless();
-
-			
-				
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
@@ -4623,15 +4617,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
 			
-			CSpellFx *pCSpellFx = NULL;
-				
-			pCSpellFx = new CFireProtection();
+			CFireProtection * pCSpellFx = new CFireProtection();
 				
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;		
-				CFireProtection *pFP=(CFireProtection *)pCSpellFx;
-				pFP->Create(spells[i].tolive);
+				pCSpellFx->Create(spells[i].tolive);
 
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
@@ -4690,13 +4681,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx =  new CColdProtection();
+			CColdProtection * pCSpellFx =  new CColdProtection();
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;		
-				CColdProtection *pCP= (CColdProtection *)pCSpellFx;
-				pCP->Create(spells[i].tolive, spells[i].target);
+				pCSpellFx->Create(spells[i].tolive, spells[i].target);
 			
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
@@ -4752,7 +4742,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx = NULL;
+			CCurse * pCSpellFx = NULL;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.5f*spells[i].caster_level;
 					
@@ -4799,7 +4789,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx  = new CRuneOfGuarding();
+			CRuneOfGuarding * pCSpellFx  = new CRuneOfGuarding();
 					
 			if (pCSpellFx != NULL)
 			{
@@ -4841,7 +4831,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx =  new CLevitate();
+			CSpellFx * pCSpellFx =  new CLevitate();
 							
 			if (pCSpellFx != NULL)
 			{
@@ -4917,7 +4907,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 3500;
 					
-			CSpellFx *pCSpellFx = new CCurePoison();
+			CCurePoison * pCSpellFx = new CCurePoison();
 							
 			if (pCSpellFx != NULL)
 			{
@@ -4963,7 +4953,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx =  new CRepelUndead();
+			CRepelUndead *pCSpellFx =  new CRepelUndead();
 			
 			if (pCSpellFx != NULL)
 			{
@@ -4992,10 +4982,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH, &spells[i].caster_pos);
 			spells[i].exist = true;
 			spells[i].tolive = 900000000;
-					
-			CSpellFx *pCSpellFx = NULL;
-
-			ARX_CHECK_LONG(spells[i].caster_level);   
+			
+			ARX_CHECK_LONG(spells[i].caster_level);
+			
+			CMultiPoisonProjectile * pCSpellFx;
 			pCSpellFx = new CMultiPoisonProjectile(std::max(static_cast<long>(spells[i].caster_level), 1L));
 
 
@@ -5078,31 +5068,28 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx = NULL;
-					
-			pCSpellFx = new CRiseDead();
+			CRiseDead * pCSpellFx = new CRiseDead();
 					
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;					
 				{
 					pCSpellFx->Create(target, beta);
-					CRiseDead *pRiseDead = (CRiseDead*) pCSpellFx;
-					pRiseDead->SetDuration(2000, 500, 1800);
-					pRiseDead->SetColorBorder(0.5, 0.5, 0.5);
-					pRiseDead->SetColorRays1(0.83f, 0.73f, 0.63f);
-					pRiseDead->SetColorRays2(0,0,0);
-					pRiseDead->SetColorRays1(0.5, 0.5, 0.5);
-					pRiseDead->SetColorRays2(1, 0, 0);
+					pCSpellFx->SetDuration(2000, 500, 1800);
+					pCSpellFx->SetColorBorder(0.5, 0.5, 0.5);
+					pCSpellFx->SetColorRays1(0.83f, 0.73f, 0.63f);
+					pCSpellFx->SetColorRays2(0,0,0);
+					pCSpellFx->SetColorRays1(0.5, 0.5, 0.5);
+					pCSpellFx->SetColorRays2(1, 0, 0);
 
-					if (pRiseDead->lLightId == -1)
+					if (pCSpellFx->lLightId == -1)
 					{
-						pRiseDead->lLightId = GetFreeDynLight();
+						pCSpellFx->lLightId = GetFreeDynLight();
 					}
 
-					if (pRiseDead->lLightId != -1)
+					if (pCSpellFx->lLightId != -1)
 					{
-						long id=pRiseDead->lLightId;
+						long id=pCSpellFx->lLightId;
 						DynLight[id].exist=1;
 						DynLight[id].intensity = 1.3f;
 						DynLight[id].fallend=450.f;
@@ -5241,7 +5228,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
 
-			CSpellFx * pCSpellFx  = new CCreateField();
+			CCreateField * pCSpellFx  = new CCreateField();
 
 			if (pCSpellFx != NULL)
 			{
@@ -5266,16 +5253,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					MakeTemporaryIOIdent(io);						
 					SendInitScriptEvent(io);
 
-					CCreateField *pCreateField = (CCreateField *) pCSpellFx;
-					
-					pCreateField->Create(target, 0);
+					pCSpellFx->Create(target, 0);
 
-					pCreateField->SetDuration(spells[i].tolive);
-					pCreateField->lLightId = GetFreeDynLight();
+					pCSpellFx->SetDuration(spells[i].tolive);
+					pCSpellFx->lLightId = GetFreeDynLight();
 
-					if (pCreateField->lLightId != -1)
+					if (pCSpellFx->lLightId != -1)
 					{
-						long id=pCreateField->lLightId;
+						long id=pCSpellFx->lLightId;
 						DynLight[id].exist=1;
 						DynLight[id].intensity = 0.7f + 2.3f;
 						DynLight[id].fallend = 500.f;
@@ -5283,9 +5268,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						DynLight[id].rgb.r = 0.8f;
 						DynLight[id].rgb.g = 0.0f;
 						DynLight[id].rgb.b = 1.0f;
-						DynLight[id].pos.x = pCreateField->eSrc.x;
-						DynLight[id].pos.y = pCreateField->eSrc.y-150;
-						DynLight[id].pos.z = pCreateField->eSrc.z;
+						DynLight[id].pos.x = pCSpellFx->eSrc.x;
+						DynLight[id].pos.y = pCSpellFx->eSrc.y-150;
+						DynLight[id].pos.z = pCSpellFx->eSrc.z;
 					}
 
 					spells[i].pSpellFx = pCSpellFx;
@@ -5293,7 +5278,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 					if (flags & SPELLCAST_FLAG_RESTORE)
 					{
-						pCreateField->Update(4000);
+						pCSpellFx->Update(4000);
 					}
 				}
 				else spells[i].tolive=0;
@@ -5315,7 +5300,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 1;
 
-			CSpellFx *pCSpellFx = new CDisarmTrap();
+			CDisarmTrap * pCSpellFx = new CDisarmTrap();
 					
 			if (pCSpellFx != NULL)
 			{
@@ -5392,7 +5377,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].bDuration = true;
 				spells[i].fManaCostPerSecond = 1.2f;
 				
-				CSpellFx *pCSpellFx = new CSlowDown();
+				CSlowDown * pCSpellFx = new CSlowDown();
 				
 				if (pCSpellFx != NULL)
 				{
@@ -5522,12 +5507,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			if ( duration > -1 ) spells[i].tolive = duration;
 			
-			CSpellFx *pCSpellFx = new CFireField();
+			CFireField * pCSpellFx = new CFireField();
 
 			if ( pCSpellFx != NULL )
 			{
 				pCSpellFx->spellinstance	= i;
-				CFireField *pFireField		= (CFireField *)pCSpellFx;
 
 				Vec3f target;
 
@@ -5585,10 +5569,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					damages[spells[i].longinfo].pos.z	= target.z;
 				}
 
-				pFireField->Create( 200.f, &target, spells[i].tolive );
+				pCSpellFx->Create( 200.f, &target, spells[i].tolive );
 
 				spells[i].pSpellFx	= pCSpellFx;
-				spells[i].tolive	= pFireField->GetDuration();
+				spells[i].tolive	= pCSpellFx->GetDuration();
 				spells[i].snd_loop	= ARX_SOUND_PlaySFX( SND_SPELL_FIRE_FIELD_LOOP, &target, 1.0F, ARX_SOUND_PLAY_LOOPED );
 			}
 
@@ -5628,7 +5612,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].tolive = duration;
 			}
 
-			CSpellFx *pCSpellFx = new CIceField();
+			CIceField * pCSpellFx = new CIceField();
 					
 			if ( pCSpellFx != NULL )
 			{
@@ -5708,12 +5692,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			spells[i].exist = true;
 				
-			CSpellFx *pCSpellFx = new CLightning();
+			CLightning * pCSpellFx = new CLightning();
 				
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				CLightning *pL = (CLightning*) pCSpellFx;
 				Vec3f source, target;
 				source.x = 0;
 				source.y = 0;
@@ -5721,9 +5704,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target.x = 0;
 				target.y = 0;
 				target.z = -500;
-				pL->Create(source, target, MAKEANGLE(player.angle.b));
-				pL->SetDuration((long)(500*spells[i].caster_level));
-				pL->lSrc = 0;
+				pCSpellFx->Create(source, target, MAKEANGLE(player.angle.b));
+				pCSpellFx->SetDuration((long)(500*spells[i].caster_level));
+				pCSpellFx->lSrc = 0;
 					
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
@@ -5750,7 +5733,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;	
 
-			CSpellFx *pCSpellFx = new CConfuse();
+			CConfuse * pCSpellFx = new CConfuse();
 
 			if (pCSpellFx)
 			{
@@ -6121,20 +6104,19 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].fdata=0.f;
 
 			spells[i].target_pos = target;
-			CSpellFx *pCSpellFx = new CSummonCreature();
+			CSummonCreature * pCSpellFx = new CSummonCreature();
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				CSummonCreature *pSummon = (CSummonCreature*) pCSpellFx;
 					
-				pSummon->Create(target, MAKEANGLE(player.angle.b));
-					pSummon->SetDuration(2000, 500, 1500);
-					pSummon->SetColorBorder(1, 0, 0);
-					pSummon->SetColorRays1(0.93f, 0.93f, 0.63f);
-					pSummon->SetColorRays2(0,0,0);
-					pSummon->SetColorRays1(1, 0, 0);
-					pSummon->SetColorRays2(0.5f, 0.5f, 0);
+				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
+					pCSpellFx->SetDuration(2000, 500, 1500);
+					pCSpellFx->SetColorBorder(1, 0, 0);
+					pCSpellFx->SetColorRays1(0.93f, 0.93f, 0.63f);
+					pCSpellFx->SetColorRays2(0,0,0);
+					pCSpellFx->SetColorRays1(1, 0, 0);
+					pCSpellFx->SetColorRays2(0.5f, 0.5f, 0);
 					
 					pCSpellFx->lLightId = GetFreeDynLight();
 
@@ -6148,9 +6130,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						DynLight[id].rgb.r = 1.0f;
 						DynLight[id].rgb.g = 0.0f;
 						DynLight[id].rgb.b = 0.0f;
-						DynLight[id].pos.x = pSummon->eSrc.x;
-						DynLight[id].pos.y = pSummon->eSrc.y;
-						DynLight[id].pos.z = pSummon->eSrc.z;
+						DynLight[id].pos = pCSpellFx->eSrc;
 					}
 
 				spells[i].pSpellFx = pCSpellFx;
@@ -6191,20 +6171,19 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			spells[i].target_pos = target;
-			CSpellFx *pCSpellFx = new CSummonCreature();
+			CSummonCreature * pCSpellFx = new CSummonCreature();
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				CSummonCreature *pSummon = (CSummonCreature*) pCSpellFx;
 					
-				pSummon->Create(target, MAKEANGLE(player.angle.b));
-				pSummon->SetDuration(2000, 500, 1500);
-				pSummon->SetColorBorder(1, 0, 0);
-				pSummon->SetColorRays1(0.93f, 0.93f, 0.63f);
-				pSummon->SetColorRays2(0,0,0);
-				pSummon->SetColorRays1(1, 0, 0);
-				pSummon->SetColorRays2(0.5f, 0.5f, 0);
+				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
+				pCSpellFx->SetDuration(2000, 500, 1500);
+				pCSpellFx->SetColorBorder(1, 0, 0);
+				pCSpellFx->SetColorRays1(0.93f, 0.93f, 0.63f);
+				pCSpellFx->SetColorRays2(0,0,0);
+				pCSpellFx->SetColorRays1(1, 0, 0);
+				pCSpellFx->SetColorRays2(0.5f, 0.5f, 0);
 					
 				pCSpellFx->lLightId = GetFreeDynLight();
 
@@ -6218,9 +6197,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					DynLight[id].rgb.r = 1.0f;
 					DynLight[id].rgb.g = 0.0f;
 					DynLight[id].rgb.b = 0.0f;
-					DynLight[id].pos.x = pSummon->eSrc.x;
-					DynLight[id].pos.y = pSummon->eSrc.y;
-					DynLight[id].pos.z = pSummon->eSrc.z;
+					DynLight[id].pos = pCSpellFx->eSrc;
 					
 				}
 
@@ -6249,7 +6226,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			else
 				spells[i].tolive = 1000000;
 
-			CSpellFx *pCSpellFx = new CNegateMagic();
+			CNegateMagic * pCSpellFx = new CNegateMagic();
 			
 			if (pCSpellFx != NULL)
 			{
@@ -6381,10 +6358,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				DynLight[id].pos = spells[i].vsource;
 			}
 
-			CSpellFx *pCSpellFx = NULL;
-					
-
-			ARX_CHECK_LONG(spells[i].caster_level);   
+			ARX_CHECK_LONG(spells[i].caster_level); 
+			CMassLightning * pCSpellFx;
 			pCSpellFx = new CMassLightning(std::max(static_cast<long>(spells[i].caster_level), 1L));
 
 		
@@ -6468,8 +6443,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 1000;
 			
-			CSpellFx *pCSpellFx = NULL;
-			pCSpellFx = new CControlTarget();
+			CControlTarget * pCSpellFx = new CControlTarget();
 
 			if (pCSpellFx != NULL)
 			{

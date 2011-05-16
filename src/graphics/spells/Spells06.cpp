@@ -466,8 +466,6 @@ void CSlowDown::Update(unsigned long _ulTime)
 //---------------------------------------------------------------------
 float CSlowDown::Render()
 {
-	int i = 0;
-
 	if (ulCurrentTime >= ulDuration)
 	{
 		return 0.f;

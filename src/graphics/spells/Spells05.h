@@ -260,7 +260,7 @@ class CMultiPoisonProjectile: public CSpellFx
 		unsigned int uiNumber;
 
 	private:
-		CSpellFx ** pTab;
+		CPoisonProjectile ** pTab;
 
 	public:
 		CMultiPoisonProjectile(long nb);

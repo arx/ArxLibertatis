@@ -95,9 +95,6 @@ class CSpellFx
 		// surcharge
 	public:
 		long			spellinstance;
-		virtual void	Create() { arx_assert(false); };
-		virtual void	Create(const Vec3f &, float) { arx_assert(false); };
-		virtual void	Create(const Vec3f &, const Anglef &) { arx_assert(false);  };
 		virtual void	Update(unsigned long) {};
 		void			Update(float);
 		virtual float	Render()

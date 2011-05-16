@@ -967,7 +967,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 	SetDuration(2000);
 	uiNumber = min(5L, nbmissiles);
 	pTab	 = NULL;
-	pTab	 = new CSpellFx*[uiNumber]();
+	pTab	 = new CPoisonProjectile*[uiNumber]();
 
 	for (UINT i = 0 ; i < uiNumber ; i++)
 	{

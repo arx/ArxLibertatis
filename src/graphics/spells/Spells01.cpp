@@ -526,7 +526,7 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 	SetDuration(2000);
 	uiNumber = nbmissiles;
 	pTab = NULL;
-	pTab = new CSpellFx*[uiNumber]();
+	pTab = new CMagicMissile*[uiNumber]();
 
 
 	if (pTab)
@@ -561,14 +561,14 @@ CMultiMagicMissile::~CMultiMagicMissile()
 }
 
 //-----------------------------------------------------------------------------
-void CMultiMagicMissile::Create(const Vec3f & _aePos, const Anglef & angles)
+void CMultiMagicMissile::Create()
 {
 	
-	Vec3f aePos = _aePos;
 	long lMax = 0;
 
 	if (pTab)
 	{
+		
 
 		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "PRIMARY_ATTACH");
 
@@ -579,6 +579,7 @@ void CMultiMagicMissile::Create(const Vec3f & _aePos, const Anglef & angles)
 			spells[spellinstance].hand_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
 		}
 
+		Vec3f aePos;
 		float afAlpha, afBeta;
 		if (spells[spellinstance].caster == 0) // player
 		{
@@ -591,9 +592,7 @@ void CMultiMagicMissile::Create(const Vec3f & _aePos, const Anglef & angles)
 
 			if (spells[spellinstance].hand_group != -1)
 			{
-				aePos.x = spells[spellinstance].hand_pos.x + vector.x; 
-				aePos.y = spells[spellinstance].hand_pos.y + vector.y; 
-				aePos.z = spells[spellinstance].hand_pos.z + vector.z; 
+				aePos = spells[spellinstance].hand_pos + vector;
 			}
 			else
 			{
@@ -613,15 +612,11 @@ void CMultiMagicMissile::Create(const Vec3f & _aePos, const Anglef & angles)
 
 			if (spells[spellinstance].hand_group != -1)
 			{
-				aePos.x = spells[spellinstance].hand_pos.x + vector.x; 
-				aePos.y = spells[spellinstance].hand_pos.y + vector.y; 
-				aePos.z = spells[spellinstance].hand_pos.z + vector.z; 
+				aePos = spells[spellinstance].hand_pos + vector;
 			}
 			else
 			{
-				aePos.x = inter.iobj[spells[spellinstance].caster]->pos.x + vector.x; 
-				aePos.y = inter.iobj[spells[spellinstance].caster]->pos.y + vector.y; 
-				aePos.z = inter.iobj[spells[spellinstance].caster]->pos.z + vector.z; 
+				aePos = inter.iobj[spells[spellinstance].caster]->pos + vector;
 			}
 
 			INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
@@ -699,9 +694,7 @@ void CMultiMagicMissile::Create(const Vec3f & _aePos, const Anglef & angles)
 						el->rgb.b = 1;
 					}
 
-					el->pos.x	 = pMM->eSrc.x;
-					el->pos.y	 = pMM->eSrc.y;
-					el->pos.z	 = pMM->eSrc.z;
+					el->pos	 = pMM->eSrc;
 					el->duration = 300;
 				}
 
@@ -726,19 +719,14 @@ void CMultiMagicMissile::CheckCollision()
 				if (pMM->bExplo == false)
 				{
 					EERIE_SPHERE sphere;
-					sphere.origin.x = pMM->eCurPos.x;
-					sphere.origin.y = pMM->eCurPos.y;
-					sphere.origin.z = pMM->eCurPos.z;
+					sphere.origin = pMM->eCurPos;
 					sphere.radius	= 10.f;
 
 					if ((spellinstance != -1) && (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)))
 					{
  
 
-						Vec3f eE3D;
-						eE3D.x = pMM->eCurPos.x;
-						eE3D.y = pMM->eCurPos.y;
-						eE3D.z = pMM->eCurPos.z;
+						Vec3f eE3D = pMM->eCurPos;
 						LaunchMagicMissileExplosion(pMM->eCurPos, 0, spellinstance);
 						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, inter.iobj[spells[spellinstance].caster]);
 
@@ -755,9 +743,7 @@ void CMultiMagicMissile::CheckCollision()
 
 						if (ttt != -1)
 						{
-							damages[ttt].pos.x	= pMM->eCurPos.x;
-							damages[ttt].pos.y	= pMM->eCurPos.y;
-							damages[ttt].pos.z	= pMM->eCurPos.z;
+							damages[ttt].pos = pMM->eCurPos;
 							damages[ttt].radius	= 80.f;
 							damages[ttt].damages = (4 + spells[spellinstance].caster_level * ( 1.0f / 5 )) * .8f; 
 							damages[ttt].area	= DAMAGE_FULL;
@@ -815,9 +801,7 @@ float CMultiMagicMissile::Render()
 				{
 					EERIE_LIGHT * el	= &DynLight[pMM->lLightId];
 					el->intensity		= 0.7f + 2.3f * fa;
-					el->pos.x			= pMM->eCurPos.x;
-					el->pos.y			= pMM->eCurPos.y;
-					el->pos.z			= pMM->eCurPos.z;
+					el->pos = pMM->eCurPos;
 					el->time_creation	= ARXTimeUL();
 				}
 
@@ -915,9 +899,7 @@ void CIgnit::AddLight(int aiLight)
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
-	this->tablight[this->nblight].poslight.x = GLight[aiLight]->pos.x;
-	this->tablight[this->nblight].poslight.y = GLight[aiLight]->pos.y;
-	this->tablight[this->nblight].poslight.z = GLight[aiLight]->pos.z;
+	this->tablight[this->nblight].poslight = GLight[aiLight]->pos;
 
 	this->tablight[this->nblight].idl = GetFreeDynLight();
 
@@ -932,9 +914,7 @@ void CIgnit::AddLight(int aiLight)
 		el->rgb.r = this->r;
 		el->rgb.g = this->g;
 		el->rgb.b = this->b;
-		el->pos.x = this->tablight[this->nblight].poslight.x;
-		el->pos.y = this->tablight[this->nblight].poslight.y;
-		el->pos.z = this->tablight[this->nblight].poslight.z;
+		el->pos = this->tablight[this->nblight].poslight;
 	}
 
 	this->nblight++;
@@ -964,18 +944,14 @@ void CIgnit::Update(unsigned long _ulTime)
 			{
 				if (this->tablight[nb].actif)
 				{
-					this->tablight[nb].posfx.x = this->pos.x + a * (this->tablight[nb].poslight.x - this->pos.x);
-					this->tablight[nb].posfx.y = this->pos.y + a * (this->tablight[nb].poslight.y - this->pos.y);
-					this->tablight[nb].posfx.z = this->pos.z + a * (this->tablight[nb].poslight.z - this->pos.z);
+					this->tablight[nb].posfx = this->pos + (this->tablight[nb].poslight - this->pos) * a;
 
 					int id = this->tablight[nb].idl;
 
 					if (id > 0)
 					{
 						DynLight[id].intensity = 0.7f + 2.f * rnd();
-						DynLight[id].pos.x = this->tablight[nb].posfx.x;
-						DynLight[id].pos.y = this->tablight[nb].posfx.y;
-						DynLight[id].pos.z = this->tablight[nb].posfx.z;
+						DynLight[id].pos = this->tablight[nb].posfx;
 					}
 				}
 			}
@@ -994,9 +970,7 @@ void CDoze::AddLightDoze(int aiLight)
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
-	this->tablight[this->nblight].poslight.x = GLight[aiLight]->pos.x;
-	this->tablight[this->nblight].poslight.y = GLight[aiLight]->pos.y;
-	this->tablight[this->nblight].poslight.z = GLight[aiLight]->pos.z;
+	this->tablight[this->nblight].poslight = GLight[aiLight]->pos;
 	this->tablight[this->nblight].idl = -1;
 
 	this->nblight++;
@@ -1058,13 +1032,9 @@ void Split(Vec3f * v, int a, int b, float yo)
 //-----------------------------------------------------------------------------
 void GenereArcElectrique(Vec3f * pos, Vec3f * end, Vec3f * tabdef, int nbseg)
 {
-	tabdef[0].x = pos->x;
-	tabdef[0].y = pos->y;
-	tabdef[0].z = pos->z;
+	tabdef[0] = *pos;
 
-	tabdef[nbseg-1].x = end->x;
-	tabdef[nbseg-1].y = end->y;
-	tabdef[nbseg-1].z = end->z;
+	tabdef[nbseg-1] = *end;
 
 	Split(tabdef, 0, nbseg - 1, 20);
 }
@@ -1096,9 +1066,7 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 	{
 		Vec3f astart;
 
-		astart.x = tabdef[i].x;
-		astart.y = tabdef[i].y;
-		astart.z = tabdef[i].z;
+		astart = tabdef[i];
 
 		zz = 5; // size
 		xx = (float)(5 * cos(radians(fBeta)));
@@ -1266,9 +1234,7 @@ void CPortal::Update(unsigned long _ulTime)
 				this->key++;
 			}
 
-			this->pos.x = this->sphereposdep.x + (this->sphereposend.x - this->sphereposdep.x) * a;
-			this->pos.y = this->sphereposdep.y + (this->sphereposend.y - this->sphereposdep.y) * a;
-			this->pos.z = this->sphereposdep.z + (this->sphereposend.z - this->sphereposdep.z) * a;
+			this->pos = this->sphereposdep + (this->sphereposend - this->sphereposdep) * a;
 			this->spherealpha = a * .5f;
 
 			if (!ARXPausedTimer) this->currduration += _ulTime;
@@ -1292,9 +1258,7 @@ void CPortal::Update(unsigned long _ulTime)
 
 				Vec3f endpos;
 				int	numpt = (int)(rnd() * (float)(this->spherenbpt - 1));
-				endpos.x = this->spherevertex[numpt].x + this->pos.x;
-				endpos.y = this->spherevertex[numpt].y + this->pos.y;
-				endpos.z = this->spherevertex[numpt].z + this->pos.z;
+				endpos = this->spherevertex[numpt] + this->pos;
 
 				this->AddNewEclair(&endpos, 32, (int)(1000.f + 1000.f * rnd()), numpt);
 			}
@@ -1304,9 +1268,7 @@ void CPortal::Update(unsigned long _ulTime)
 
 	if (this->lLightId >= 0)
 	{
-		DynLight[this->lLightId].pos.x = this->pos.x;
-		DynLight[this->lLightId].pos.y = this->pos.y;
-		DynLight[this->lLightId].pos.z = this->pos.z;
+		DynLight[this->lLightId].pos = this->pos;
 		DynLight[this->lLightId].intensity = 0.7f + 2.f * rnd();
 	}
 }

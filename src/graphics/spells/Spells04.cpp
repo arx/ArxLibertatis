@@ -267,8 +267,6 @@ void CDispellField::Update(unsigned long _ulTime)
 //---------------------------------------------------------------------
 float CDispellField::Render()
 {
-	int i = 0;
-
 	if (ulCurrentTime >= ulDuration)
 	{
 		return 0.f;
