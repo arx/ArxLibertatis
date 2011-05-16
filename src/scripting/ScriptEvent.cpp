@@ -345,7 +345,7 @@ long GetVarNum(SCRIPT_VAR * svf, long* nb, const std::string& name)
 	return -1;
 }
 
-bool UNSETVar(SCRIPT_VAR * svf, long* nb, const std::string& name)
+bool UNSETVar(SCRIPT_VAR * & svf, long* nb, const std::string& name)
 {
 	long i = GetVarNum(svf, nb, name);
 
