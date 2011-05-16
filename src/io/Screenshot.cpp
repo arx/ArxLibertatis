@@ -168,10 +168,8 @@ void FlushMemorySnaps(long flag)
 	DWORD dwGMask = danaeApp.ddsd.ddpfPixelFormat.dwGBitMask;
 	DWORD dwBMask = danaeApp.ddsd.ddpfPixelFormat.dwBBitMask;
 	DWORD dwAMask = danaeApp.ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
-	long pitch = danaeApp.ddsd.lPitch ;
 	danaeApp.Unlock();
 
-	pitch = 640;
 	DWORD dwRShiftL = 8, dwRShiftR = 0;
 	DWORD dwGShiftL = 8, dwGShiftR = 0;
 	DWORD dwBShiftL = 8, dwBShiftR = 0;
@@ -218,7 +216,7 @@ void FlushMemorySnaps(long flag)
 
 		for (long yy = 1; yy <= targetsizeY; yy++)
 		{
-			dwOffset = (long)((float)yy * yratio) * pitch; //640;
+			dwOffset = (long)((float)yy * yratio) * 640;
 			long pos = 0;
 
 			for (long xx = 0; xx < targetsizeX; xx++)
