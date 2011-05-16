@@ -602,7 +602,7 @@ void ARX_PATH_ReleaseAllPath()
 //*************************************************************************************
 ARX_PATH * ARX_PATHS_ExistName(char * name)
 {
-	if (ARXpaths == NULL) return false;
+	if (ARXpaths == NULL) return NULL;
 
 	for (long i = 0; i < nbARXpaths; i++)
 	{
