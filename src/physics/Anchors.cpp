@@ -720,9 +720,7 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, Vec3f * pos) {
 	
 	long found = 0;
-	long best = 0;
 	long stop_radius = 0;
-	float best_dist = 99999999999.f;
 
 	EERIE_CYLINDER testcyl;
 	EERIE_CYLINDER currcyl;
@@ -769,23 +767,11 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 	}
 
-	if (found)
-	{
-		float d = dist(*pos, currcyl.origin);
-
-		if ((currcyl.radius >= bestcyl.radius))
-		{
-			if (((best_dist > d) && (currcyl.radius == bestcyl.radius))
-			        || (currcyl.radius > bestcyl.radius))
-			{
-				memcpy(&bestcyl, &currcyl, sizeof(EERIE_CYLINDER));
-				best_dist = d;
-				best = 1;
-			}
-		}
+	if(found && currcyl.radius >= bestcyl.radius) {
+		bestcyl = currcyl;
+	} else {
+		return false;
 	}
-
-	if (!best) return false;
 
 	if (CylinderAboveInvalidZone(&bestcyl)) return false;
 
