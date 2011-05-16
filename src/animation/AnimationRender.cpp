@@ -2705,9 +2705,6 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			// Now we can render Linked Objects
 			for (long k = 0; k < eobj->nblinked; k++)
 			{
-				if (k == 1)
-					k = k;
-
 				if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
 				{
 					eobj->linked[k].modinfo.rot.a = 0;
