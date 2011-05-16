@@ -408,8 +408,8 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 	HWND hwndFullscreenText = GetDlgItem(hDlg, IDC_FULLSCREEN_TEXT);
 
 	// Reset the content in each of the combo boxes
-	ComboBox_ResetContent(hwndDevice);
-	ComboBox_ResetContent(hwndMode);
+	(void)ComboBox_ResetContent(hwndDevice);
+	(void)ComboBox_ResetContent(hwndMode);
 
 	// Don't let non-GDI devices be windowed
 	if (false == pCurrentDevice->bDesktopCompatible)
@@ -427,7 +427,7 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 		if (pDevice == pCurrentDevice)
 		{
 			// Set the combobox selection on the current device
-			ComboBox_SetCurSel(hwndDevice, dwItem);
+			(void)ComboBox_SetCurSel(hwndDevice, dwItem);
 
 			// Enable/set the fullscreen checkbox, as appropriate
 			if (hwndWindowed)
@@ -466,16 +466,16 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 				DWORD dwItem = ComboBox_AddString(hwndMode, strMode);
 
 				// Set the item data to identify this mode
-				ComboBox_SetItemData(hwndMode, dwItem, mode);
+				(void)ComboBox_SetItemData(hwndMode, dwItem, mode);
 
 				// Set the combobox selection on the current mode
 				if (mode == dwCurrentMode)
-					ComboBox_SetCurSel(hwndMode, dwItem);
+					(void)ComboBox_SetCurSel(hwndMode, dwItem);
 
 				// Since not all modes support stereo, select a default mode in
 				// case none was chosen yet.
 				if (bStereo && (CB_ERR == ComboBox_GetCurSel(hwndMode)))
-					ComboBox_SetCurSel(hwndMode, dwItem);
+					(void)ComboBox_SetCurSel(hwndMode, dwItem);
 			}
 		}
 	}
