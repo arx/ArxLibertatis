@@ -5933,9 +5933,7 @@ void DANAE::ManageKeyMouse()
 
 							if (this->kbd.inkey[INKEY_7])
 							{
-								unsigned long tim = ARX_TIME_GetUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
 								RecalcLightZone(player.pos.x, player.pos.z,12);
-								tim=ARX_TIME_GetUL() - tim;//treat warning C4244 conversion from 'float' to 'unsigned long'
 								this->kbd.inkey[INKEY_7]=0;
 							}
 
