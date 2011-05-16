@@ -448,7 +448,7 @@ class CMenuButton: public CMenuElement
 		~CMenuButton();
 
 	public:
-		void SetPos(int, int);
+		void SetPos(float, float);
 		void AddText( const std::string& );
 		CMenuElement * OnShortCut()
 		{

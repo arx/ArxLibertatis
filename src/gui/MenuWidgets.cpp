@@ -4785,9 +4785,9 @@ CMenuButton::~CMenuButton() {
 
 //-----------------------------------------------------------------------------
 
-void CMenuButton::SetPos(int _iX,int _iY)
+void CMenuButton::SetPos(float _iX,float _iY)
 {
-	CMenuZone::SetPos(ARX_CLEAN_WARN_CAST_FLOAT(_iX), ARX_CLEAN_WARN_CAST_FLOAT(_iY));
+	CMenuZone::SetPos(_iX, _iY);
 
 	int iWidth = 0;
 	int iHeight = 0;
@@ -4825,8 +4825,8 @@ void CMenuButton::SetPos(int _iX,int _iY)
 		iHeight2 = ARX_CLEAN_WARN_CAST_INT(fRatioY);
 	}
 
-	rZone.right	= _iX + max(iWidth,iWidth2);
-	rZone.bottom = _iY + max(iHeight,iHeight2);
+	rZone.right = static_cast<int>(_iX) + max(iWidth,iWidth2);
+	rZone.bottom = static_cast<int>(_iY) + max(iHeight,iHeight2);
 }
 
 //-----------------------------------------------------------------------------
