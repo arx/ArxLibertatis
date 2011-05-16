@@ -772,7 +772,6 @@ extern long LIGHT_THREAD_STATUS;
 #endif
 void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 {
-	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
  
 	if (minx < 0) minx = 0;
@@ -827,7 +826,6 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 				for (long k = 0; k < eg->nbpoly; k++)
 				{
-					ep = &eg->polydata[k];
 					PROGRESS_TOTAL++;
 				}
 			}
@@ -853,7 +851,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 #endif
 
 					PROGRESS_COUNT++;
-					ep = &eg->polydata[k];
+					EERIEPOLY * ep = &eg->polydata[k];
 					
 					if(ep) {
 						ep->type &= ~POLY_IGNORE;
@@ -879,7 +877,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 				for (long l = 0; l < eg->nbpoly; l++)
 				{
-					ep = &eg->polydata[l];
+					EERIEPOLY * ep = &eg->polydata[l];
 
 					if (!(ep->type & POLY_IGNORE))
 						for (k = 0; k < 3; k++)
