@@ -738,8 +738,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-			if ((SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)))
-			{
+			if(SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+				
 				// Now Draws Playerpos/angle
 				verts[0].color = 0xFFFF0000;
 				verts[1].color = 0xFFFF0000;
