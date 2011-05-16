@@ -471,7 +471,7 @@ void Check_Apply()
 		}
 		else
 		{
-			if(((CMenuElementText*)pMenuElementApply)->lColor!=Color(127,127,127))
+			if(((CMenuElementText*)pMenuElementApply)->lColor!=(long)Color(127,127,127))
 			{
 				pMenuElementApply->SetCheckOff();
 				((CMenuElementText*)pMenuElementApply)->lOldColor=((CMenuElementText*)pMenuElementApply)->lColor;
