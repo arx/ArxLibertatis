@@ -953,16 +953,11 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 	}
 }
 
-//-----------------------------------------------------------------------------
-void PopAllTriangleList(bool _bUpdate)
-{
-	D3DMATRIX matbase;
-
-	TextureContainer *pTex=GetTextureList();
-	while(pTex)
-	{
-		PopOneTriangleList(pTex,_bUpdate);
-		pTex=pTex->m_pNext;
+void PopAllTriangleList(bool _bUpdate) {
+	TextureContainer * pTex = GetTextureList();
+	while(pTex) {
+		PopOneTriangleList(pTex, _bUpdate);
+		pTex = pTex->m_pNext;
 	}
 }
 
@@ -1016,10 +1011,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 }
 
 //-----------------------------------------------------------------------------
-void PopAllTriangleListTransparency()
-{
-
-	D3DMATRIX matbase;
+void PopAllTriangleListTransparency() {
 
 	GRenderer->SetFogColor(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
