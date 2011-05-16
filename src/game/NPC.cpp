@@ -1231,8 +1231,7 @@ void ARX_PHYSICS_Apply()
 		{
 			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 
-			if ((io->obj->pbox->active == 1))
-			{
+			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
 
 				if (ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)FrameDiff, io->rubber, treatio[i].num))
