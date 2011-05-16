@@ -7573,9 +7573,7 @@ void ARX_SPELLS_Update()
 					
 				if ((spells[i].target>=0) && (inter.iobj[spells[i].target]))
 				{
-					target.x=inter.iobj[spells[i].target]->pos.x;
-					target.y=inter.iobj[spells[i].target]->pos.y;
-					target.z=inter.iobj[spells[i].target]->pos.z;
+					target = inter.iobj[spells[i].target]->pos;
 
 					if (spells[i].target==0) target.y-=200.f;
 					else target.y+=inter.iobj[spells[i].target]->physics.cyl.height-30.f;
@@ -7586,8 +7584,8 @@ void ARX_SPELLS_Update()
 				ARX_CHECK_ULONG(FrameDiff);
 				curse->Update(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
 
-				
-				curse->Render(&target);
+				curse->eTarget = target;
+				curse->Render();
 				GRenderer->SetCulling(Renderer::CullNone);
 			}
 

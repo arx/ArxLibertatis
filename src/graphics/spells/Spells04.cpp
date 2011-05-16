@@ -690,17 +690,17 @@ void CCurse::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CCurse::Render(Vec3f * pos)
-{
+float CCurse::Render()
+{Vec3f * pos = NULL; // TODO
 	int i = 0;
-
+/*
 	float x = eSrc.x;
 	float y = eSrc.y;// + 200.0f;
 	float z = eSrc.z;
 
 	if (ulCurrentTime >= ulDuration)
 	{
-		/*		if (bDone)
+				if (bDone)
 				{
 					EERIE_3D target,source;
 					target.x=player.pos.x;// - EEsin(radians(MAKEANGLE(player.angle.b)))*1000.f;
@@ -722,15 +722,12 @@ float CCurse::Render(Vec3f * pos)
 				{
 					return 0.f;
 				}
-		*/
-	}
+		
+	}*/
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	x = pos->x;
-	y = pos->y;
-	z = pos->z;
 	//----------------------------
 	Anglef stiteangle;
 	Vec3f stitepos;
@@ -742,9 +739,7 @@ float CCurse::Render(Vec3f * pos)
 	stiteangle.b = fRot;
 	stiteangle.a = 0;
 	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
+	stitepos = *pos;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
@@ -765,9 +760,7 @@ float CCurse::Render(Vec3f * pos)
 			PARTICLE_DEF * pd = &particle[j];
 			pd->exist		=	1;
 			pd->zdec		=	0;
-			pd->ov.x		=	x;
-			pd->ov.y		=	y;
-			pd->ov.z		=	z;
+			pd->ov = *pos;
 			pd->move.x		=	2.f * frand2();
 			pd->move.y		=	rnd() * -10.f - 10.f; 
 			pd->move.z		=	2.f * frand2();

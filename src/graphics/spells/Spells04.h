@@ -118,11 +118,6 @@ class CDispellField: public CSpellFx
 		int iMax;
 		float fSize;
 
-	public:
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
-
 		// surcharge
 	public:
 		void	Create(Vec3f, float afBeta = 0);
@@ -184,10 +179,6 @@ class CTelekinesis: public CSpellFx
 	public:
 		~CTelekinesis();
 
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
-
 		// surcharge
 	public:
 		void	Create(Vec3f, float afBeta = 0);
@@ -216,16 +207,13 @@ class CCurse: public CSpellFx
 	public:
 		CCurse();
 		~CCurse();
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
 
 		// surcharge
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(Vec3f * pos);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 
