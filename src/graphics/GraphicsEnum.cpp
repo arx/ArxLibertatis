@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windowsx.h>
 
-#include "graphics/GraphicsUtility.h" // For DEBUG_MSG
+#include "graphics/GraphicsUtility.h"
 #include "io/Logger.h"
 
 #define IDD_CHANGEDEVICE       144 // "Change Device" dialog box
@@ -361,11 +361,9 @@ HRESULT D3DEnum_EnumerateDevices(HRESULT(*AppConfirmFn)(DDCAPS *, D3DDEVICEDESC7
 // D3DEnum_FreeResources()
 // Cleans up any memory allocated during device enumeration
 //************************************************************************************
-VOID D3DEnum_FreeResources()
-{
-	for (DWORD i = 0; i < g_dwNumDevices; i++)
-	{
-		SAFE_DELETE_TAB(g_pDeviceList[i].pddsdModes);
+VOID D3DEnum_FreeResources() {
+	for(DWORD i = 0; i < g_dwNumDevices; i++) {
+		delete[] g_pDeviceList[i].pddsdModes, g_pDeviceList[i].pddsdModes = NULL;
 	}
 }
 

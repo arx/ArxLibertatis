@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef D3DUTIL_H
 #define D3DUTIL_H
 
-#define D3D_OVERLOADS
 #include "graphics/d3dwrapper.h"
 #include "platform/Platform.h"
 
@@ -110,14 +109,5 @@ inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, D3DVECTOR & v)
 //-----------------------------------------------------------------------------
 
 HRESULT _DbgOut(const char *, DWORD, HRESULT, const char *);
-
-#if defined(DEBUG) | defined(_DEBUG)
-#define DEBUG_MSG(str)    _DbgOut( __FILE__, (DWORD)__LINE__, 0, str )
-#define DEBUG_ERR(hr,str) _DbgOut( __FILE__, (DWORD)__LINE__, hr, str )
-#else
-#define DEBUG_MSG(str)    (0L)
-#define DEBUG_ERR(hr,str) (hr)
-#endif
-
 
 #endif // D3DUTIL_H
