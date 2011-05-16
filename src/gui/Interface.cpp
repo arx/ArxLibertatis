@@ -7484,8 +7484,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		// calcul de la page de spells
 		if (Book_Mode == BOOKMODE_SPELLS)
 		{
-			max_onglet = 0;
-
 			for (size_t i = 0; i < SPELL_COUNT; ++i)
 			{
 				if (spellicons[i].bSecret == false)
