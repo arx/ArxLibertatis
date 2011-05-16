@@ -134,7 +134,6 @@ ImplodeResult implode(pkstream * pStr) {
 	unsigned char ch; // Byte from input buffer
 	int nMaxCopyLen; // Length of longest duplicate data in the dictionary
 	unsigned char * pMaxCopyOffs; // Offset to longest duplicate data in the dictionary
-	int nCopyLen; // Length of duplicate data in the dictionary
 	int nCopyOffs = 0; // Offset used in actual compressed data
 	unsigned char * pCopyOffs; // Offset to duplicate data in the dictionary
 	unsigned char * pOldCopyOffs; // Temporarily holds previous value of pCopyOffs
@@ -192,7 +191,6 @@ ImplodeResult implode(pkstream * pStr) {
 			
 			// Initialize offsets and lengths used in search
 			pCopyOffs = pStr->Dict;
-			nCopyLen = 0;
 			pMaxCopyOffs = pCopyOffs;
 			nMaxCopyLen = 0;
 			
@@ -208,7 +206,7 @@ ImplodeResult implode(pkstream * pStr) {
 				// Check for a match with first byte
 				if(ch == *pCopyOffs) {
 					pOldCopyOffs = pCopyOffs;
-					nCopyLen = 0;
+					int nCopyLen = 0;
 					pNewInPos = pStr->pInPos - 1;
 					
 					// If there was a match, check for additional duplicate bytes
