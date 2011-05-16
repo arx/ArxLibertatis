@@ -548,20 +548,16 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	tc->m_pddsSurface->GetSurfaceDesc(&ddsdSurfaceDescSrc);
 	tc2->m_pddsSurface->GetSurfaceDesc(&ddsdSurfaceDescHalo);
 
-	float fDeltaXP=((float)tc2->m_dwWidth/(float)ddsdSurfaceDescHalo.dwWidth)*((float)tc->m_dwWidth/(float)ddsdSurfaceDescSrc.dwWidth);
-	float fDeltaYP=((float)tc2->m_dwHeight/(float)ddsdSurfaceDescHalo.dwHeight)*((float)tc->m_dwHeight/(float)ddsdSurfaceDescSrc.dwHeight);
 	float fDeltaX=(float)tc->m_dwWidth/(float)ddsdSurfaceDescSrc.dwWidth;
 	float fDeltaY=(float)tc->m_dwHeight/(float)ddsdSurfaceDescSrc.dwHeight;
 
 	if(fDeltaX<1.f)
 	{
-		fDeltaXP*=(1.f/fDeltaX);
 		fDeltaX=1.f;
 	}
 
 	if(fDeltaY<1.f)
 	{
-		fDeltaYP*=(1.f/fDeltaY);
 		fDeltaY=1.f;
 	}
 
@@ -574,8 +570,8 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 		fSizeY *= fRatioY;
 		POSX -= (fSizeX - ddsdSurfaceDescHalo.dwWidth)*0.25f;
 		POSY -= (fSizeY - ddsdSurfaceDescHalo.dwHeight)*0.25f;
-		fDeltaXP = 1;
-		fDeltaYP = 1;
+	float fDeltaXP = 1;
+	float fDeltaYP = 1;
 
 	EERIEDrawBitmap((float)(POSX-tc->halodecalX*fDeltaX),(float)(POSY-tc->halodecalY*fDeltaY)
 								,((float)fSizeX)*fDeltaXP
