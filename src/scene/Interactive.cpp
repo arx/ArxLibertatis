@@ -2358,11 +2358,11 @@ INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFla
 // "io".
 //***********************************************************************************
 
-void SetWeapon_On(INTERACTIVE_OBJ * io)
-{
-	if ((!io)
-	        &&	!(io->ioflags & IO_NPC))
+void SetWeapon_On(INTERACTIVE_OBJ * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
+	}
 
 	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
 
