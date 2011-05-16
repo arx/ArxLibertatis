@@ -4180,11 +4180,8 @@ void RenderInter(float from, float to) {
 		ManageIgnition(inter.iobj[0]);
 	}
 
-	for (long i = 1; i < inter.nbmax; i++) // Player isn't rendered here...
-	{
-		if (i == 379)
-			i = i;
-
+	for(long i = 1; i < inter.nbmax; i++) { // Player isn't rendered here...
+		
 		INTERACTIVE_OBJ * io = inter.iobj[i];
 
 		if ((io)
