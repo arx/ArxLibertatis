@@ -1159,10 +1159,9 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 					
 					z = (flare[i].tolive * DIV_MAX_FLARELIFE); 
 
-					if ( (flare[i].type==1)  ) 
+					if(flare[i].type == 1) { 
 						s=flare[i].size*2*z;
-					else if (flare[i].type==4) 
-					{
+					} else if(flare[i].type == 4) {
 						s=flare[i].size*2.f*z+10.f;
 					}
 					else s=flare[i].size;
