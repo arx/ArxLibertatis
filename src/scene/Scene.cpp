@@ -3282,7 +3282,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		
 bool Clip_Visible(const Vec3f * orgn, Vec3f * dest)
 {
-	register float dx,dy,dz,adx,ady,adz,ix,iy,iz;
+	register float dx,dy,dz,adx,ady,adz,ix,iz;
 	register float x0,z0;
 	register float forr,temp;
  
@@ -3309,20 +3309,10 @@ bool Clip_Visible(const Vec3f * orgn, Vec3f * dest)
 
 		forr=adx;
 		temp=1.f/(adx/PASS);
-		iy=dy*temp;
 		iz=dz*temp;
 	}
 	else if ( (ady>=adx) && (ady>=adz)) 
 	{
-		if (ady != dy)
-		{
-			iy = -1.f * PASS;
-		}
-		else
-		{
-			iy = 1.f * PASS;
-		}
-
 		forr=ady;
 		temp=1.f/(ady/PASS);
 		ix=dx*temp;
@@ -3342,7 +3332,6 @@ bool Clip_Visible(const Vec3f * orgn, Vec3f * dest)
 		forr=adz;
 		temp=1.f/(adz/PASS);
 		ix=dx*temp;
-		iy=dy*temp;
 	}
 	
 
