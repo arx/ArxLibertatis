@@ -242,7 +242,7 @@ else(MSVC)
 	endif()
 	
 	# Warning level
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wcast-qual")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wcast-qual -Woverloaded-virtual")
 	if(NOT ARX_USE_CLANG)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op")
 	endif()
