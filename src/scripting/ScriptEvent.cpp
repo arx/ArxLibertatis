@@ -3260,9 +3260,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				else if (!strcmp(word, "SETCOUNT"))
 				{
 					pos = GetNextWord(es, pos, word);
-					float c = (float)atof(word.c_str());
-
-					if (c < 1.f) c = 1.f;
 
 					if ((io != NULL) && (io->ioflags & IO_ITEM))
 					{
