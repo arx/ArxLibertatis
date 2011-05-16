@@ -3956,8 +3956,7 @@ void ManageCombatModeAnimations()
 
 		case WEAPON_BOW: // MISSILE PLAYER MANAGEMENT
 
-			if ((useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]))
-			{
+			if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				if (GLOBAL_SLOWDOWN!=1.f)
 					BOW_FOCAL+=Original_framedelay;
 				else
