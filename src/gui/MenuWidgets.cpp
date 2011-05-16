@@ -5758,7 +5758,7 @@ void CDirectInput::GetInput()
 
 		if(    (!bMouseButton[i])&&(iOldNumClick[i]==iNumUnClick) )
 		{
-			iNumUnClick=iOldNumClick[i]=0;
+			iOldNumClick[i]=0;
 		}
 
 		bOldMouseButton[i]=bMouseButton[i];
