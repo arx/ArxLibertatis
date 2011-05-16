@@ -242,7 +242,10 @@ else(MSVC)
 	endif()
 	
 	# Warning level
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wcast-qual")
+	if(NOT ARX_USE_CLANG)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op")
+	endif()
 	
 	# Consider also: -Wconversion -Wsign-conversion
 	#                -Wmissing-declarations     to catch functions that should be marked as static
@@ -271,7 +274,7 @@ else(MSVC)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-uninitialized")
 	endif()
 	
-	if(ARX_USE_UNITYBUILD)
+	if(ARX_USE_UNITYBUILD AND NOT ARX_USE_CLANG)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwhole-program")
 	endif()
 	
