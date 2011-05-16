@@ -596,7 +596,7 @@ EERIEPOLY * CheckTopPoly(float x, float y, float z) {
 	
 	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
 	if(!feg) {
-		return false;
+		return NULL;
 	}
 	
 	EERIEPOLY * found = NULL;
