@@ -1293,10 +1293,10 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum)
 	tout.x=0.f;
 	tout.y=0.f;
 	tout.z=10000.f;
-	target.y =- (tout.z*ACTIVECAM->Xsin);
-	target.z =-(tout.z*ACTIVECAM->Xcos);
-	target.x= (target.z*ACTIVECAM->Ysin);
-	target.z=-(target.z*ACTIVECAM->Ycos);
+	target.y = -(tout.z*ACTIVECAM->Xsin);
+	target.z = -(tout.z*ACTIVECAM->Xcos);
+	target.x = (target.z*ACTIVECAM->Ysin);
+	target.z = -(target.z*ACTIVECAM->Ycos);
 	target.x+=ACTIVECAM->pos.x;
 	target.y-=ACTIVECAM->pos.y;
 	target.z+=ACTIVECAM->pos.z;

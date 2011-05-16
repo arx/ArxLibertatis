@@ -2892,7 +2892,9 @@ void MakeSSEPARAMS(const char * params)
 		SSEPARAMS[i][0] = 0;
 	}
 
-	if ((params == NULL)) return;
+	if(params == NULL) {
+		return;
+	}
 
 	long pos = 0;
 
