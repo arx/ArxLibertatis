@@ -1183,9 +1183,8 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 					}
 					else 
 					{
-						if ((flare[i].type==1) ) 
-						{
-							if (z<0.6f) z=0.6f;						
+						if(flare[i].type == 1 && z < 0.6f)  {
+							z = 0.6f;
 						}
 
 						g=flare[i].g*z;
