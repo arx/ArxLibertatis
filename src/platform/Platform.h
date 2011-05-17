@@ -210,11 +210,11 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 
 #else // _DEBUG
 	#if ARX_COMPILER_MSVC  // MS compilers support noop which discards everything inside the parens
-		#define arx_assert_msg(_Expression, _Message, ...)	__noop
-		#define arx_assert(_Expression, _Message)			__noop
+		#define arx_assert_msg(_Expression, _Message, ...) __noop
+		#define arx_assert(_Expression) __noop
 	#else
-		#define arx_assert_msg(_Expression, _Message, ...)	((void)0)
-		#define arx_assert(_Expression, _Message)			((void)0)
+		#define arx_assert_msg(_Expression, _Message, ...) ((void)0)
+		#define arx_assert(_Expression) ((void)0)
 	#endif
 #endif // _DEBUG
 
