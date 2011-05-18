@@ -67,8 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 
 // TODO(lubosz): temporary include replacement
-#if !ARX_COMPILER_MSVC
-    #define _MAX_FNAME 512
+#ifndef _MAX_FNAME
+	#define _MAX_FNAME 512
 #endif
 
  
