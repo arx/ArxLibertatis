@@ -4,7 +4,7 @@
 #include "io/PakManager.h"
 
 #include <map>
-#include <IL/il.h>
+#include <il.h>
 
 class DevilLib
 {
