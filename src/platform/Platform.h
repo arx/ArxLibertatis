@@ -94,7 +94,7 @@ const std::string arxVersion = "0.1";
 #define ARX_COMPILER_VC10    2
 #define ARX_COMPILER_GCC     3
 #define ARX_COMPILER_CLANG   4
-#define ARX_COMPILER_MINGW   4
+#define ARX_COMPILER_MINGW   5
 
 #if defined(__clang__)
 	#define ARX_COMPILER ARX_COMPILER_CLANG
