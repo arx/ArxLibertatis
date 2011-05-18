@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include "audio/openal/OpenALUtils.h"
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 #include "audio/Sample.h"

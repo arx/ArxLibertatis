@@ -2,7 +2,13 @@
 #ifndef ARX_AUDIO_OPENAL_OPENALBACKEND_H
 #define ARX_AUDIO_OPENAL_OPENALBACKEND_H
 
-#include "audio/openal/alwrapper.h"
+#include "Configure.h"
+
+#include <al.h>
+#include <alc.h>
+#ifdef HAVE_OPENAL_EFX
+	#include <efx.h>
+#endif
 
 #include "audio/AudioBackend.h"
 #include "audio/AudioTypes.h"
