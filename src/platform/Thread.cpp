@@ -1,5 +1,7 @@
 
-#include "Thread.h"
+#include "platform/Thread.h"
+
+#include "platform/Platform.h"
 
 #if defined(HAVE_PTHREADS)
 

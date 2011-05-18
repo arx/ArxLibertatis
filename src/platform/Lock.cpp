@@ -1,6 +1,8 @@
 
 #include "platform/Lock.h"
 
+#include "platform/Platform.h"
+
 #if defined(HAVE_PTHREADS)
 
 #include <errno.h>
