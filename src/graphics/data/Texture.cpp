@@ -68,7 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <zlib.h>
 
-#include <IL/il.h>
+#include <il.h>
 
 #include "core/Application.h"
 

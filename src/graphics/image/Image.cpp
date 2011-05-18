@@ -3,7 +3,7 @@
 #include "graphics/Math.h"
 
 #include <map>
-#include <IL/il.h>
+#include <il.h>
 
 const unsigned int SIZE_TABLE[Image::Format_Num] =
 {
