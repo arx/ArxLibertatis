@@ -54,7 +54,7 @@ extern EERIE_LIGHT * CDP_EditLight;
 extern INTERACTIVE_OBJ * CDP_EditIO;
 struct FOG_DEF;
 extern FOG_DEF * CDP_EditFog;
-extern LastSelectedLight;
+extern long LastSelectedLight;
 #endif
 
 //-----------------------------------------------------------------------------
