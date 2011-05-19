@@ -2060,7 +2060,6 @@ INT_PTR CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 extern long DBGSETTEXTURE;
 extern long USEINTERNORM;
 long oml;
-extern float BIGLIGHTPOWER;
 extern long DEBUGCODE;
 extern long TRUEFIGHT;
 
@@ -2162,11 +2161,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			thWnd = GetDlgItem(hWnd, IDC_SLIDERDEPTH);
 			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1000, 8000));
 			long t = (long)subj.cdepth;
-			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
-
-			thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
-			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 50));
-			t = (long)(BIGLIGHTPOWER * 100.f);
 			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
@@ -2446,9 +2440,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					SetActiveCamera(&subj);
 					SetCameraDepth((float)t);
 					SetActiveCamera(oldcam);
-
-					thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
-					BIGLIGHTPOWER = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 
 					thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
 					TIMEFACTOR = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );

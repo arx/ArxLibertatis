@@ -324,8 +324,6 @@ void EERIE_LIGHT_MoveAll(const Vec3f * trans) {
 	}
 }
 
-float BIGLIGHTPOWER = 0.f;
-
 //*************************************************************************************
 //*************************************************************************************
 float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT * light)
@@ -523,8 +521,6 @@ extern float GLOBAL_LIGHT_FACTOR;
 long	DYNAMIC_NORMALS = 1;
 
 extern EERIE_CAMERA DynLightCam;
-
-extern float BIGLIGHTPOWER;
 
 //-----------------------------------------------------------------------------
 void ComputeLight2DPos(EERIE_LIGHT * _pL)
