@@ -3516,9 +3516,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	io->forcedmove.y -= ForcedMove.y;
 	io->forcedmove.z -= ForcedMove.z;
 
+#ifdef BUILD_EDITOR
 	// Some visual debug stuff
-	if (DEBUGNPCMOVE)
-	{
+	if(DEBUGNPCMOVE) {
 		EERIE_CYLINDER cyll;
 		cyll.height = GetIOHeight(io); 
 		cyll.radius = GetIORadius(io); 
@@ -3544,6 +3544,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			cyll.height = GetIOHeight(io); 
 		}
 	}
+#endif
 
 	APPLY_PUSH = 0; 
 	DIRECT_PATH = true;
