@@ -144,8 +144,6 @@ extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
 extern float SLID_VALUE;
 
-extern long WILLLOADLEVEL;	// Is a LoadLevel command waiting ?
-extern long WILLSAVELEVEL;	// Is a SaveLevel command waiting ?
 extern long BOOKBUTTON;
 extern long LASTBOOKBUTTON;
 extern long FORCE_NO_HIDE;
