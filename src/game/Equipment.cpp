@@ -98,7 +98,6 @@ struct EQUIP_INFO
 #define SP_SPARKING 1
 #define SP_BLOODY 2
 
-extern long TRUEFIGHT;
 extern Vec3f PUSH_PLAYER_FORCE;
 extern long HERO_SHOW_1ST;
 extern long EXTERNALVIEW;
@@ -950,8 +949,11 @@ static float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val) {
 //***********************************************************************************************
 bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, float ratioaim, long flags, long targ)
 {
+	
+#ifdef BUILD_EDITOR
 	if (TRUEFIGHT) ratioaim = 1.f;
-
+#endif
+	
 	bool ret = false;
 	long source = GetInterNum(io_source);
 	long weapon = GetInterNum(io_weapon);

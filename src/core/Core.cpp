@@ -428,10 +428,6 @@ long FINAL_RELEASE		= 0;
 long AUTO_FULL_SCREEN	= 0;
 long SHOW_INGAME_MINIMAP= 1;
 long DEBUG_FRUSTRUM		= 0;
-#ifdef BUILD_EDTOR
-long GAME_EDITOR = 1;
-static long NEED_EDITOR = 1;
-#endif
 long USE_CEDRIC_ANIM	= 1;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
@@ -439,7 +435,6 @@ long STOP_KEYBOARD_INPUT= 0;
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long NOBUILDMAP			= 0;
-long TRUEFIGHT			= 0;
 long DONT_ERASE_PLAYER	= 0;
 float LastFrameTicks		= 0;
 long SPLASH_THINGS_STAGE= 0;
@@ -479,6 +474,9 @@ static long PROCESS_ALL_THEO = 1;
 static long PROCESS_LEVELS = 1;
 static long PROCESS_NO_POPUP = 0;
 static long PROCESS_ONLY_ONE_LEVEL = -1;
+long GAME_EDITOR = 1;
+static long NEED_EDITOR = 1;
+long TRUEFIGHT = 0;
 #endif
 
 long ARX_CONVERSATION=0;
@@ -1166,8 +1164,8 @@ int main(int argc, char ** argv) {
 #ifdef BUILD_EDITOR
 		GAME_EDITOR = 0;
 		NEED_EDITOR = 0;
+		TRUEFIGHT = 0;
 #endif
-		TRUEFIGHT			= 0;
 	} else if (CEDRIC_VERSION) {
 		LogDebug << "CEDRIC_VERSION";
 		FAST_SPLASHES=1;
