@@ -3919,10 +3919,6 @@ void TextBox(const char * title, char * text, long size)
 	ARX_TIME_UnPause();
 }
 
-extern long LastSelectedLight;
-
-//-----------------------------------------------------------------------------
-
 void launchlightdialog()
 {
 	if ((LastSelectedLight != -1)

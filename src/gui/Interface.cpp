@@ -204,6 +204,9 @@ EERIE_LIGHT * CDP_EditLight = NULL;
 INTERACTIVE_OBJ * CDP_EditIO = NULL;
 FOG_DEF * CDP_EditFog = NULL;
 static long ObjectRotAxis = 0;
+static long LastSelectedNode = -1;
+static long LastSelectedFog = -1;
+long LastSelectedLight = -1;
 #endif
 
 INVENTORY_DATA *	TSecondaryInventory;
@@ -273,9 +276,6 @@ long				INTERFACE_HALO_MAX_NB=0;
 long				SPECIAL_DRAW_INTER_SHADOW=0;
 long				PRECAST_NUM=0;
 long				LastMouseClick=0;
-long				LastSelectedNode=-1;
-long				LastSelectedFog=-1;
-long				LastSelectedLight=-1;
 long				MOVETYPE=MOVE_WAIT;
 
 //used to redist points - attributes and skill
