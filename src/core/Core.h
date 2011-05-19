@@ -106,12 +106,12 @@ extern long FirstFrame;
 extern long EDITMODE;
 extern long EDITION;
 extern long MOULINEX;
+extern long USE_COLLISIONS;
 #else
 const long EDITMODE = 0;
 #endif
 extern long DEBUGNPCMOVE;
 extern long SHOW_TORCH;
-extern long USE_COLLISIONS;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 extern long ADDED_IO_NOT_SAVED;

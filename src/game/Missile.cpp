@@ -187,25 +187,19 @@ void ARX_MISSILES_Update()
 			case MISSILE_FIREBALL: {
 				Vec3f pos;
 
-				pos.x = missiles[i].startpos.x + missiles[i].velocity.x * framediff3;
-				pos.y = missiles[i].startpos.y + missiles[i].velocity.y * framediff3;
-				pos.z = missiles[i].startpos.z + missiles[i].velocity.z * framediff3;
+				pos = missiles[i].startpos + missiles[i].velocity * framediff3;
 
 				if (missiles[i].longinfo != -1)
 				{
-					DynLight[missiles[i].longinfo].pos.x = pos.x;
-					DynLight[missiles[i].longinfo].pos.y = pos.y;
-					DynLight[missiles[i].longinfo].pos.z = pos.z;
+					DynLight[missiles[i].longinfo].pos = pos;
 				}
 
-				if (USE_COLLISIONS) 
+#ifdef BUILD_EDITOR
+				if (USE_COLLISIONS)
+#endif
 				{
-					orgn.x = missiles[i].lastpos.x;
-					orgn.y = missiles[i].lastpos.y;
-					orgn.z = missiles[i].lastpos.z;					
-					dest.x = pos.x;
-					dest.y = pos.y;
-					dest.z = pos.z;					
+					orgn = missiles[i].lastpos;
+					dest = pos;
 					
 					EERIEPOLY *ep;
 					EERIEPOLY *epp;

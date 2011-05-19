@@ -480,8 +480,8 @@ long EDITION=EDITION_IO; // Sub-EditMode
 long MOULINEX = 0;
 long LASTMOULINEX = -1;
 long KILL_AT_MOULINEX_END = 0;
-#endif
 long USE_COLLISIONS=1;
+#endif
 
 long ARX_CONVERSATION=0;
 long CHANGE_LEVEL_ICON=-1;
