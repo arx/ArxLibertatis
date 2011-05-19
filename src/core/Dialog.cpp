@@ -2151,8 +2151,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (ViewMode & VIEWMODE_FLAT)		SetClick(hWnd, IDC_NOTEXTURES);
 
-			if (Cross)						SetClick(hWnd, IDC_RAY);
-
 			if (USEINTERNORM)				SetClick(hWnd, IDC_INTERNORM);
 
 			if (EXTERNALVIEWING)			SetClick(hWnd, IDC_THIRDPERSON);
@@ -2449,9 +2447,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_NOTEXTURES)) ViewMode |= VIEWMODE_FLAT;
 					else ViewMode &= ~VIEWMODE_FLAT;
-
-					if (IsChecked(hWnd, IDC_RAY)) Cross = 1;
-					else Cross = 0;
 
 					if (IsChecked(hWnd, IDC_MESHTWEAK))  ALLOW_MESH_TWEAKING = 1;
 					else ALLOW_MESH_TWEAKING = 0;

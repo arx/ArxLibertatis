@@ -118,7 +118,6 @@ extern long DANAESIZX;
 extern long DANAESIZY;
 extern long DANAECENTERX;
 extern long DANAECENTERY;
-extern short Cross;
 extern unsigned long FADESTART;
 extern unsigned long AimTime;
 extern bool ARXPausedTimer;

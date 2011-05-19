@@ -497,7 +497,6 @@ long DEBUGCODE=0;		// Debug Code to Console
 long DEBUGNPCMOVE=0;	// Debug NPC Movements
 long LaunchDemo=0;
 long FirstFrame=1;
-short Cross=0;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
 unsigned char ARX_FLARES_Block=1;
