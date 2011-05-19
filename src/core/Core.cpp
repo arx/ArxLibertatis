@@ -339,8 +339,6 @@ INTERACTIVE_OBJ * COMBINE=NULL;
 
 QUAKE_FX_STRUCT QuakeFx;
 bool bALLOW_BUMP = false;
-const char * GTE_TITLE;
-char * GTE_TEXT;
 std::string LAST_FAILED_SEQUENCE = "None";
 // START - Information for Player Teleport between/in Levels-------------------------------------
 char TELEPORT_TO_LEVEL[64];
@@ -386,7 +384,6 @@ long DANAECENTERY;
 long CurrFightPos=0;
 long NO_PLAYER_POSITION_RESET=0;
 long CURRENT_BASE_FOCAL=310;
-long GTE_SIZE;
 long CINE_PRELOAD=0;
 long PLAY_LOADED_CINEMATIC=0;
 long PauseScript=0;
@@ -479,6 +476,9 @@ long WILLLOADLEVEL = 0; // Is a LoadLevel command waiting ?
 long WILLSAVELEVEL = 0; // Is a SaveLevel command waiting ?
 long NODIRCREATION = 0; // No IO Directory Creation ?
 HWND MESH_REDUCTION_WINDOW = NULL;
+const char * GTE_TITLE;
+char * GTE_TEXT;
+long GTE_SIZE;
 #endif
 
 long ARX_CONVERSATION=0;

@@ -111,6 +111,9 @@ extern long WILLLOADLEVEL; // Is a LoadLevel command waiting ?
 extern long WILLSAVELEVEL; // Is a SaveLevel command waiting ?
 extern long NODIRCREATION; // No IO Directory Creation ?
 extern HWND MESH_REDUCTION_WINDOW;
+extern const char * GTE_TITLE;
+extern char * GTE_TEXT;
+extern long GTE_SIZE;
 #else
 const long EDITMODE = 0;
 #endif
