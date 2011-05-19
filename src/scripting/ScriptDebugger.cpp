@@ -93,7 +93,6 @@ invalid:
 }
 long NEED_DEBUGGER_CLEAR;
 extern long LastSelectedIONum;
-extern INTERACTIVE_OBJ * IO_DEBUG;
 void DANAE_DEBUGGER_Update()
 {
 	static INTERACTIVE_OBJ * lastio = NULL;
@@ -128,8 +127,6 @@ void DANAE_DEBUGGER_Update()
 	if (ValidIONum(LastSelectedIONum))
 		io = inter.iobj[LastSelectedIONum];
 	else io = NULL;
-
-	IO_DEBUG = io;
 
 	if (lastio != io)
 	{

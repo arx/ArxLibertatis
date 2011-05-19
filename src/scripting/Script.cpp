@@ -5411,12 +5411,6 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 	}
 }
 
-
-INTERACTIVE_OBJ * IO_DEBUG = NULL;
-//*************************************************************************************
-//*************************************************************************************
-
-
 bool InSubStack(EERIE_SCRIPT * es, long pos)
 {
 	for (size_t i = 0; i < MAX_GOSUB; i++)
