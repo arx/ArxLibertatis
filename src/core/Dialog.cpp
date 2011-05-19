@@ -2733,7 +2733,6 @@ INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 EERIE_LIGHT lightparam;
 EERIE_LIGHT lightcopy;
-extern EERIE_LIGHT * CDP_EditLight;
 long CONSTANTUPDATELIGHT = 0;
 
 void LightApply(HWND hWnd)

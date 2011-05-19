@@ -196,13 +196,13 @@ D3DCOLOR			BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
 E_ARX_STATE_MOUSE	eMouseState;
 Vec2s			bookclick;
 Vec2s			MemoMouse;
-EERIE_LIGHT		 *	CDP_EditLight=NULL;
 FOG_DEF			 *	CDP_EditFog=NULL;
 #ifdef BUILD_EDITOR
 HWND CDP_PATHWAYS_Options = NULL;
 HWND CDP_IOOptions = NULL;
 HWND CDP_FogOptions = NULL;
 HWND CDP_LIGHTOptions = NULL;
+EERIE_LIGHT * CDP_EditLight = NULL;
 #endif
 
 INVENTORY_DATA *	TSecondaryInventory;

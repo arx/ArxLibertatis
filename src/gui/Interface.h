@@ -50,6 +50,7 @@ extern HWND CDP_PATHWAYS_Options;
 extern HWND CDP_IOOptions;
 extern HWND CDP_FogOptions;
 extern HWND CDP_LIGHTOptions;
+extern EERIE_LIGHT * CDP_EditLight;
 #endif
 
 //-----------------------------------------------------------------------------
