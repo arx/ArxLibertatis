@@ -112,7 +112,6 @@ extern long LaunchDemo;
 extern long D3DTRANSFORM;
 extern long USE_PLAYERCOLLISIONS;
 extern long A_FLARES;
-extern long MAPUPDATE;
 extern long EXTERNALVIEWING;
 extern long DYNAMIC_NORMALS;
 extern long SHOWSHADOWS;
@@ -2144,8 +2143,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			else if (Bilinear == 1)			SetClick(hWnd, IDC_FILTERLINEAR);
 			else if (Bilinear == 2)			SetClick(hWnd, IDC_FILTERANISOTROPIC);
 
-			if (MAPUPDATE)					SetClick(hWnd, IDC_MAPUPDATE);
-
 			if (BLURTEXTURES) SetClick(hWnd, IDC_BLURTEXTURES);
 
 			if (NOMIPMAPS)    SetClick(hWnd, IDC_NOMIPMAPS);
@@ -2426,9 +2423,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_FILTERLINEAR))		Bilinear = 1;
 
 					if (IsChecked(hWnd, IDC_FILTERPOINT))		Bilinear = 0;
-
-					if (IsChecked(hWnd, IDC_MAPUPDATE)) MAPUPDATE = 1;
-					else MAPUPDATE = 0;
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDERDEPTH);
 					long t = SendMessage(thWnd, TBM_GETPOS, true, 0);

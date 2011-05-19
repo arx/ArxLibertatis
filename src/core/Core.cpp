@@ -368,7 +368,6 @@ float fps2min=0;
 long LASTfpscount=0;
 long Bilinear=1;
 
-long MAPUPDATE=0;
 long EXTERNALVIEW=0;
 long LASTEXTERNALVIEW=1;
 long EXTERNALVIEWING=0;
