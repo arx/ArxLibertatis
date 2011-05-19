@@ -128,7 +128,6 @@ extern long GTE_SIZE;
 extern float TIMEFACTOR;
 extern long ALLOW_MESH_TWEAKING;
 extern long HIDESPEECH;
-extern HWND MESH_REDUCTION_WINDOW;
 extern HWND PRECALC;
 extern HANDLE LIGHTTHREAD;
 extern long PROGRESS_COUNT;

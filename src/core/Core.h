@@ -110,6 +110,7 @@ extern long USE_COLLISIONS;
 extern long WILLLOADLEVEL; // Is a LoadLevel command waiting ?
 extern long WILLSAVELEVEL; // Is a SaveLevel command waiting ?
 extern long NODIRCREATION; // No IO Directory Creation ?
+extern HWND MESH_REDUCTION_WINDOW;
 #else
 const long EDITMODE = 0;
 #endif

@@ -336,7 +336,6 @@ std::string WILLADDSPEECH;
 
 Vec2s STARTDRAG;
 INTERACTIVE_OBJ * COMBINE=NULL;
-HWND MESH_REDUCTION_WINDOW=NULL;
 
 QUAKE_FX_STRUCT QuakeFx;
 bool bALLOW_BUMP = false;
@@ -479,6 +478,7 @@ long USE_COLLISIONS = 1;
 long WILLLOADLEVEL = 0; // Is a LoadLevel command waiting ?
 long WILLSAVELEVEL = 0; // Is a SaveLevel command waiting ?
 long NODIRCREATION = 0; // No IO Directory Creation ?
+HWND MESH_REDUCTION_WINDOW = NULL;
 #endif
 
 long ARX_CONVERSATION=0;
