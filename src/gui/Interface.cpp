@@ -203,6 +203,7 @@ HWND CDP_LIGHTOptions = NULL;
 EERIE_LIGHT * CDP_EditLight = NULL;
 INTERACTIVE_OBJ * CDP_EditIO = NULL;
 FOG_DEF * CDP_EditFog = NULL;
+static long ObjectRotAxis = 0;
 #endif
 
 INVENTORY_DATA *	TSecondaryInventory;
@@ -269,7 +270,6 @@ long				CURCURDELAY=70;
 long				CURCURPOS=0;
 long				INTERFACE_HALO_NB=0;
 long				INTERFACE_HALO_MAX_NB=0;
-long				ObjectRotAxis=0;
 long				SPECIAL_DRAW_INTER_SHADOW=0;
 long				PRECAST_NUM=0;
 long				LastMouseClick=0;
