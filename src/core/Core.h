@@ -116,8 +116,8 @@ extern char * GTE_TEXT;
 extern long GTE_SIZE;
 extern long CHANGE_LEVEL_PROC_RESULT;
 extern long DEBUGNPCMOVE;
-extern long GAME_EDITOR = 1;
-extern long TRUEFIGHT = 0;
+extern long GAME_EDITOR;
+extern long TRUEFIGHT;
 #else
 const long EDITMODE = 0;
 #endif
