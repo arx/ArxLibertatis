@@ -776,7 +776,6 @@ struct INTERACTIVE_OBJ
 
 extern long EERIEDrawnPolys;
 extern long EERIEInit;
-extern long TRUECLIPPING;
 extern Vec3f BBOXMIN,BBOXMAX;
 extern EERIE_BACKGROUND * ACTIVEBKG;
 extern EERIE_CAMERA * ACTIVECAM;

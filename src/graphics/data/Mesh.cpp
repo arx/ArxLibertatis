@@ -3107,8 +3107,6 @@ void SetCameraDepth(float depth)
 
 extern TextureContainer * tflare;
 extern float _framedelay;
-long TRUECLIPPING = 1;
-
 
 //*************************************************************************************
 //*************************************************************************************

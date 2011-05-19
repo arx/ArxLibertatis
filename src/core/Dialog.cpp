@@ -2098,8 +2098,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (Project.vsync)				SetClick(hWnd, IDC_VSYNC);
 
-			if (TRUECLIPPING)				SetClick(hWnd, IDC_TRUECLIPPING);
-
 			if (SHOWSHADOWS)				SetClick(hWnd, IDC_SHOWSHADOWS);
 
 			if (A_FLARES)					SetClick(hWnd, IDC_FLARES);
@@ -2330,9 +2328,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_SHOWSHADOWS)) SHOWSHADOWS = 1;
 					else SHOWSHADOWS = 0;
-
-					if (IsChecked(hWnd, IDC_TRUECLIPPING)) TRUECLIPPING = 1;
-					else TRUECLIPPING = 0;
 
 					if (IsChecked(hWnd, IDC_FULLRENDER16BITS)) Project.bits = 16;
 					else Project.bits = 32;
