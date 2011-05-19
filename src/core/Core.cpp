@@ -1057,7 +1057,6 @@ void InitializeDanae()
 void forInternalPeople(LPSTR strCmdLine) {
 	LogDebug << "not FOR_EXTERNAL_PEOPLE";
 	char * param[10];
-	long parampos=0;
 
 	param[0]=strtok(strCmdLine," ");
 
@@ -1065,6 +1064,7 @@ void forInternalPeople(LPSTR strCmdLine) {
 		param[j]=strtok(NULL," ");
 
 #ifdef BUILD_EDITOR
+	long parampos = 0;
 	if((param[parampos] != NULL)) {
 		LogInfo << "PARAMS";
 		FINAL_RELEASE=0;
