@@ -28,7 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
-#include "audio/openal/alwrapper.h"
+#include <al.h>
+
 #include "audio/AudioTypes.h"
 #include "audio/AudioSource.h"
 
