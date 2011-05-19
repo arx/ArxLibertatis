@@ -3485,7 +3485,6 @@ INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	return false;
 }
 long SHOWWARNINGS = 0;
-extern INTERACTIVE_OBJ * CDP_EditIO;
 #define MAX_SCRIPT_SIZE 128000
 char text1[MAX_SCRIPT_SIZE+1];
 char text2[MAX_SCRIPT_SIZE+1];

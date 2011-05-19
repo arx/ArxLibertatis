@@ -51,6 +51,7 @@ extern HWND CDP_IOOptions;
 extern HWND CDP_FogOptions;
 extern HWND CDP_LIGHTOptions;
 extern EERIE_LIGHT * CDP_EditLight;
+extern INTERACTIVE_OBJ * CDP_EditIO;
 #endif
 
 //-----------------------------------------------------------------------------

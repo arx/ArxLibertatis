@@ -121,7 +121,6 @@ extern long FRAME_COUNT;
 
 #define BASE_RUBBER 1.5f
 
-extern INTERACTIVE_OBJ * CDP_EditIO;
 extern INTERACTIVE_OBJ * FlyingOverIO;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern TextureContainer * Movable;

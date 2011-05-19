@@ -5148,8 +5148,6 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 HWND LastErrorPopupNO1 = NULL;
 HWND LastErrorPopupNO2 = NULL;
 
-extern INTERACTIVE_OBJ * CDP_EditIO;
-
 #ifdef BUILD_EDITOR
 bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 {
