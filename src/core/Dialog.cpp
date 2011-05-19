@@ -2061,7 +2061,6 @@ INT_PTR CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 
 	return false;
 }
-extern long DEBUGSYS;
 extern long DBGSETTEXTURE;
 extern long USEINTERNORM;
 long oml;
@@ -2111,8 +2110,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (Project.bits == 32)			SetClick(hWnd, IDC_FULLRENDER32BITS);
 
 			if (DEBUG1ST)					SetClick(hWnd, IDC_DEBUG1ST);
-
-			if (DEBUGSYS)					SetClick(hWnd, IDC_DEBUGSYS);
 
 			if (DEBUGNPCMOVE)				SetClick(hWnd, IDC_DEBUGNPCMOVE);
 
@@ -2336,9 +2333,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_DEBUG1ST)) DEBUG1ST = 1;
 					else DEBUG1ST = 0;
-
-					if (IsChecked(hWnd, IDC_DEBUGSYS)) DEBUGSYS = 1;
-					else DEBUGSYS = 0;
 
 					if (IsChecked(hWnd, IDC_SETTEXTURE)) DBGSETTEXTURE = 1;
 					else DBGSETTEXTURE = 0;

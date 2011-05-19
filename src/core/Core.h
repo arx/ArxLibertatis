@@ -109,7 +109,6 @@ extern long EDITION;
 const long EDITMODE = 0;
 #endif
 extern long DEBUGNPCMOVE;
-extern long DEBUGSYS;
 extern long SHOW_TORCH;
 extern long USE_COLLISIONS;
 extern long CURRENTLEVEL;

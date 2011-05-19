@@ -2437,8 +2437,6 @@ extern void MakeUserFlag(TextureContainer * tc);
 //       The texture can not be used until it is restored, however.
 //-----------------------------------------------------------------------------
 
-extern long DEBUGSYS;
-
 TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, DWORD dwStage,
 		DWORD dwFlags, long sysflags)
 {
