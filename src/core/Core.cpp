@@ -388,7 +388,6 @@ long PLAY_LOADED_CINEMATIC=0;
 long PauseScript=0;
 long ADDED_IO_NOT_SAVED=0;
 long WILL_RELOAD_ALL_TEXTURES=0;	// Set To 1 if Textures are to be reloaded from disk and restored.
-long CHANGE_LEVEL_PROC_RESULT=-1;
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;
@@ -477,6 +476,7 @@ HWND MESH_REDUCTION_WINDOW = NULL;
 const char * GTE_TITLE;
 char * GTE_TEXT;
 long GTE_SIZE;
+long CHANGE_LEVEL_PROC_RESULT = -1;
 #endif
 
 long ARX_CONVERSATION=0;

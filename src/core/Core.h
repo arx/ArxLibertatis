@@ -114,6 +114,7 @@ extern HWND MESH_REDUCTION_WINDOW;
 extern const char * GTE_TITLE;
 extern char * GTE_TEXT;
 extern long GTE_SIZE;
+extern long CHANGE_LEVEL_PROC_RESULT;
 #else
 const long EDITMODE = 0;
 #endif
