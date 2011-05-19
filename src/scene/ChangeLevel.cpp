@@ -3221,8 +3221,6 @@ void ReleaseGaids()
 	_Gaids = NULL;
 }
 
-extern long NODIRCREATION;
-
 static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	DANAE_ReleaseAllDatasDynamic();

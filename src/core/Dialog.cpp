@@ -112,7 +112,6 @@ extern long LaunchDemo;
 extern long D3DTRANSFORM;
 extern long USE_PLAYERCOLLISIONS;
 extern long A_FLARES;
-extern long NODIRCREATION;
 extern long MAPUPDATE;
 extern long EXTERNALVIEWING;
 extern long DYNAMIC_NORMALS;

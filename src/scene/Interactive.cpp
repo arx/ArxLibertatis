@@ -124,7 +124,6 @@ extern long FRAME_COUNT;
 extern INTERACTIVE_OBJ * FlyingOverIO;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern TextureContainer * Movable;
-extern long NODIRCREATION;
 extern long SPECIAL_DRAW_INTER_SHADOW;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
@@ -3097,9 +3096,16 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 {
 	long t = 1;
 
-	if ( (NODIRCREATION) || !io )
+	if(!io) {
 		return;
-
+	}
+	
+#ifdef BUILD_EDITOR
+	if(NODIRCREATION) {
+		return;
+	}
+#endif
+	
 	while (io->ident == 0)
 	{
 		std::string temp = io->full_name() + '.';

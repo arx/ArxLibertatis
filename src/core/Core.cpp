@@ -470,8 +470,7 @@ long PROCESS_ONLY_ONE_LEVEL=-1;
 //-----------------------------------------------------------------------------
 // Flag used to Launch Moulinex
 long HIPOLY=0;			// Are We Using Poly-Spawning Ray-Casted Shadows ?
-long NODIRCREATION=0;	// No IO Directory Creation ?
-long LOADEDD=0;			// Is a Level Loaded ?
+long LOADEDD = 0; // Is a Level Loaded ?
 #ifdef BUILD_EDITOR
 long EDITMODE = 0; // EditMode (1) or GameMode (0) ?
 long EDITION=EDITION_IO; // Sub-EditMode
@@ -481,6 +480,7 @@ long KILL_AT_MOULINEX_END = 0;
 long USE_COLLISIONS = 1;
 long WILLLOADLEVEL = 0; // Is a LoadLevel command waiting ?
 long WILLSAVELEVEL = 0; // Is a SaveLevel command waiting ?
+long NODIRCREATION = 0; // No IO Directory Creation ?
 #endif
 
 long ARX_CONVERSATION=0;

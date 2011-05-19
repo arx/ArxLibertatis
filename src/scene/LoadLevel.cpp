@@ -257,7 +257,6 @@ void ReplaceSpecifics( char* text )
 	return;
 }
 
-extern long NODIRCREATION;
 extern long ADDED_IO_NOT_SAVED;
 
 
@@ -324,9 +323,11 @@ long DanaeSaveLevel(const string & _fic) {
 	
 	// Preparing HEADER
 	dlh.version = DLH_CURRENT_VERSION;
+#ifdef BUILD_EDITOR
 	if(NODIRCREATION) {
 		dlh.version = 1.004f;
 	}
+#endif
 	
 	strcpy(dlh.ident, "DANAE_FILE");
 	dlh.nb_scn = 1;
@@ -648,7 +649,6 @@ long DanaeSaveLevel(const string & _fic) {
 }
 
 extern char LastLoadedDLF[512];
-extern long LOADEDD;
 
 //*************************************************************************************
 //*************************************************************************************
@@ -816,7 +816,9 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 		io->move.x = io->move.y = io->move.z = 0.f;
 		io->initangle = io->angle = angle;
 
-		if (!NODIRCREATION)
+#ifdef BUILD_EDITOR
+		if(!NODIRCREATION)
+#endif
 		{
 			io->ident = ident;
 			tmp = tmp = io->full_name(); // Get the directory name to check for

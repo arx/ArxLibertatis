@@ -109,6 +109,7 @@ extern long MOULINEX;
 extern long USE_COLLISIONS;
 extern long WILLLOADLEVEL; // Is a LoadLevel command waiting ?
 extern long WILLSAVELEVEL; // Is a SaveLevel command waiting ?
+extern long NODIRCREATION; // No IO Directory Creation ?
 #else
 const long EDITMODE = 0;
 #endif
@@ -126,6 +127,7 @@ extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
 extern bool bNoReturnToWindows;
+extern long LOADEDD;
 
 struct QUAKE_FX_STRUCT {
 	float intensity;
