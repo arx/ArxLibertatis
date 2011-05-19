@@ -2054,7 +2054,6 @@ INT_PTR CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 extern long DBGSETTEXTURE;
 extern long USEINTERNORM;
 long oml;
-extern long DEBUGCODE;
 extern long TRUEFIGHT;
 
 INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -2077,8 +2076,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (SYNTAXCHECKING)				SetClick(hWnd, IDC_SYNTAXCHECK);
 
 			if (ZMAPMODE)					SetClick(hWnd, IDC_ZMAPMODE);
-
-			if (DEBUGCODE)					SetClick(hWnd, IDC_DEBUGCODE);
 
 			if (Project.interpolatemouse)	SetClick(hWnd, IDC_INTERPOLATEMOUSE);
 
@@ -2268,9 +2265,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_TRUEFIGHT)) TRUEFIGHT = 1;
 					else TRUEFIGHT = 0;
-
-					if (IsChecked(hWnd, IDC_DEBUGCODE)) DEBUGCODE = 1;
-					else DEBUGCODE = 0;
 
 					if (IsChecked(hWnd, IDC_ARXDEMO)) ARX_DEMO = 1;
 					else ARX_DEMO = 0;

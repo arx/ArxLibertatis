@@ -111,7 +111,6 @@ extern long USE_LIGHT_OPTIM;
 extern HANDLE LIGHTTHREAD;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
-extern long DEBUGCODE;
 extern long VF_CLIP_IO;
 extern long DEBUG_FRUSTRUM;
 #ifdef BUILD_EDITOR

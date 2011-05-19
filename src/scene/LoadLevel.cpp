@@ -875,7 +875,6 @@ long LastLoadedLightningNb = 0;
 D3DCOLOR * LastLoadedLightning = NULL;
 Vec3f loddpos;
 Vec3f MSP;
-extern long DEBUGCODE;
 
 //*************************************************************************************
 //*************************************************************************************

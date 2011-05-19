@@ -486,7 +486,6 @@ long ARX_MOUSE_OVER=0;
 //-----------------------------------------------------------------------------
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
-long DEBUGCODE=0;		// Debug Code to Console
 long DEBUGNPCMOVE=0;	// Debug NPC Movements
 long LaunchDemo=0;
 long FirstFrame=1;
