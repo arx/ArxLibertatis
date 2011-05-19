@@ -449,7 +449,6 @@ long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
 long BOOKBUTTON			= 0;
 long LASTBOOKBUTTON		= 0;
-long TSU_LIGHTING		= 0; // must be 0 at start !
 
 long FASTmse			= 0;
 long PROCESS_ALL_THEO	= 1;
@@ -478,6 +477,7 @@ char * GTE_TEXT;
 long GTE_SIZE;
 long CHANGE_LEVEL_PROC_RESULT = -1;
 long DEBUGNPCMOVE = 0; // Debug NPC Movements
+long TSU_LIGHTING = 0; // must be 0 at start !
 #endif
 
 long ARX_CONVERSATION=0;
