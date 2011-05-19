@@ -138,6 +138,7 @@ option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
+option(ARX_USE_LTO "Enable link-time optimizations." OFF)
 
 if(ARX_FORCE_32BIT)
 	set(CURRENT_ARX_FORCE_32BIT 1)
@@ -285,6 +286,10 @@ else(MSVC)
 	
 	if(ARX_USE_UNITYBUILD AND NOT ARX_USE_CLANG)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwhole-program")
+	endif()
+	
+	if(ARX_USE_LTO)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 	endif()
 	
 endif(MSVC)
