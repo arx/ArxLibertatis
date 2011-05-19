@@ -3244,8 +3244,6 @@ static INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 
 FOG_DEF fogparam;
 FOG_DEF fogcopy;
-extern HWND CDP_FogOptions;
-extern FOG_DEF * CDP_EditFog;
 
 INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	

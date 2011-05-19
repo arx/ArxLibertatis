@@ -52,6 +52,8 @@ extern HWND CDP_FogOptions;
 extern HWND CDP_LIGHTOptions;
 extern EERIE_LIGHT * CDP_EditLight;
 extern INTERACTIVE_OBJ * CDP_EditIO;
+struct FOG_DEF;
+FOG_DEF * CDP_EditFog = NULL;
 #endif
 
 //-----------------------------------------------------------------------------
