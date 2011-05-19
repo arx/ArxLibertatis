@@ -63,8 +63,6 @@ struct TODRAWLATER
 long curdrawlater=0;
 #define MAX_DRAWLATER 256
 TODRAWLATER tdl[MAX_DRAWLATER];
-long DBGSETTEXTURE=0;
- 
 
 long ZMAPMODE=1;
 TextureContainer * Zmap;

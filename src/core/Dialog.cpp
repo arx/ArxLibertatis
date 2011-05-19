@@ -2051,7 +2051,6 @@ INT_PTR CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 
 	return false;
 }
-extern long DBGSETTEXTURE;
 extern long USEINTERNORM;
 long oml;
 extern long TRUEFIGHT;
@@ -2092,8 +2091,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (DEBUGNPCMOVE)				SetClick(hWnd, IDC_DEBUGNPCMOVE);
 
 			if (DYNAMIC_NORMALS)			SetClick(hWnd, IDC_DYNAMICNORMALS);
-
-			if (DBGSETTEXTURE)				SetClick(hWnd, IDC_SETTEXTURE);
 
 			if (ViewMode & VIEWMODE_WIRE)	SetClick(hWnd, IDC_WIREFRAME);
 
@@ -2285,9 +2282,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					else Project.bits = 32;
 
 					danaeApp.m_pFramework->bitdepth = Project.bits;
-
-					if (IsChecked(hWnd, IDC_SETTEXTURE)) DBGSETTEXTURE = 1;
-					else DBGSETTEXTURE = 0;
 
 					if (IsChecked(hWnd, IDC_DEBUGNPCMOVE)) DEBUGNPCMOVE = 1;
 					else DEBUGNPCMOVE = 0;

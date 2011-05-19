@@ -143,7 +143,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDD_WORD                        1040
 #define IDC_FILTERANISOTROPIC           1041
 #define IDC_SHOWTEXT2                   1041
-#define IDC_SETTEXTURE                  1042
 #define IDC_DYNAMICNORMALS              1043
 #define IDC_HIDEBACKGROUND              1044
 #define IDC_HIDENPC                     1045
