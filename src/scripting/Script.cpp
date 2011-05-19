@@ -3520,7 +3520,6 @@ long CountBrackets(EERIE_SCRIPT * es)
 
 	return count;
 }
-HWND LastErrorPopup = NULL;
 long GetCurrentLine(EERIE_SCRIPT * es, long poss)
 {
 	long pos = 0;
@@ -3593,6 +3592,7 @@ void GetLineAsText(EERIE_SCRIPT * es, long curline, char * tex)
 	strcpy(tex, "Internal ERROR...");
 }
 #ifdef BUILD_EDITOR
+HWND LastErrorPopup = NULL;
 extern long SYNTAXCHECKING;
 long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 {
@@ -5145,10 +5145,9 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 }
 #endif // BUILD_EDITOR
 
+#ifdef BUILD_EDITOR
 HWND LastErrorPopupNO1 = NULL;
 HWND LastErrorPopupNO2 = NULL;
-
-#ifdef BUILD_EDITOR
 bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 {
 	if (SYNTAXCHECKING == 0) return true;
