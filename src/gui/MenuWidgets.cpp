@@ -103,7 +103,6 @@ extern long WILL_RELOAD_ALL_TEXTURES;
 extern long FINAL_RELEASE;
 
 extern long GAME_EDITOR;
-extern long ARX_DEMO;
 
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;

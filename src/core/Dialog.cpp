@@ -103,7 +103,6 @@ long FASTLOADS = 0;
 extern long CURRENTSNAPNUM;
 extern long SnapShotMode;
 
-extern long ARX_DEMO;
 extern long NOCHECKSUM;
 extern long ZMAPMODE;
 extern long TreatAllIO;
@@ -2070,8 +2069,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			oml = ModeLight;
 
-			if (ARX_DEMO)					SetClick(hWnd, IDC_ARXDEMO);
-
 			if (SYNTAXCHECKING)				SetClick(hWnd, IDC_SYNTAXCHECK);
 
 			if (ZMAPMODE)					SetClick(hWnd, IDC_ZMAPMODE);
@@ -2262,9 +2259,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_TRUEFIGHT)) TRUEFIGHT = 1;
 					else TRUEFIGHT = 0;
-
-					if (IsChecked(hWnd, IDC_ARXDEMO)) ARX_DEMO = 1;
-					else ARX_DEMO = 0;
 
 					if (IsChecked(hWnd, IDC_SYNTAXCHECK)) SYNTAXCHECKING = 1;
 					else SYNTAXCHECKING = 0;

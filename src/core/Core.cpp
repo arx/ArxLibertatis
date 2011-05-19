@@ -421,7 +421,6 @@ long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
 long USE_OLD_MOUSE_SYSTEM=1;
 long NO_TEXT_AT_ALL		= 0;
-long ARX_DEMO			= 0;
 long LAST_CONVERSATION	= 0;
 long FAST_SPLASHES		= 0;
 long FORCE_SHOW_FPS		= 0;
@@ -1065,71 +1064,63 @@ void forInternalPeople(LPSTR strCmdLine) {
 	for (long j=1;j<10;j++)
 		param[j]=strtok(NULL," ");
 
-	if ((param[parampos] != NULL)) {
-		if (!strcasecmp(param[parampos],"demo")) {
-			ARX_DEMO=1;
-		}
 #ifdef BUILD_EDITOR
-		else {
-			LogInfo << "PARAMS";
-			FINAL_RELEASE=0;
-			GAME_EDITOR=1;
-
-			if (!strcasecmp(param[parampos],"editor")) {
-				LogInfo << "PARAM EDITOR";
-				NEED_ANCHORS=1;
-			} else {
-				NEED_ANCHORS=1;
-				USE_FAST_SCENES=0;
-				LogInfo << "PARAM MOULINEX";
-
-				if (param[parampos][0]=='-') {
-					long posflags=parampos;
-					PROCESS_NO_POPUP=1;
-					PROCESS_ALL_THEO=0;
-					PROCESS_LEVELS=0;
-					PROCESS_ONLY_ONE_LEVEL=-1;
-
-					if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U"))) {
-						parampos++;
-						PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
-					}
-
-					if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O"))) {
-						PROCESS_ALL_THEO=1;
-					}
-
-					if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F"))) {
-						NEED_ANCHORS=0;
-						USE_FAST_SCENES=1;
-						NOCHECKSUM=1;
-					}
-
-					if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L"))) {
-						PROCESS_LEVELS=1;
-					}
-
-					if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T"))) {
-						TSU_LIGHTING=1;
-					}
-
+	if((param[parampos] != NULL)) {
+		LogInfo << "PARAMS";
+		FINAL_RELEASE=0;
+		GAME_EDITOR=1;
+		
+		if (!strcasecmp(param[parampos],"editor")) {
+			LogInfo << "PARAM EDITOR";
+			NEED_ANCHORS=1;
+		} else {
+			NEED_ANCHORS=1;
+			USE_FAST_SCENES=0;
+			LogInfo << "PARAM MOULINEX";
+			
+			if (param[parampos][0]=='-') {
+				long posflags=parampos;
+				PROCESS_NO_POPUP=1;
+				PROCESS_ALL_THEO=0;
+				PROCESS_LEVELS=0;
+				PROCESS_ONLY_ONE_LEVEL=-1;
+				
+				if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U"))) {
 					parampos++;
-				} else {
+					PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
+				}
+				
+				if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O"))) {
 					PROCESS_ALL_THEO=1;
+				}
+				
+				if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F"))) {
+					NEED_ANCHORS=0;
+					USE_FAST_SCENES=1;
+					NOCHECKSUM=1;
+				}
+				
+				if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L"))) {
 					PROCESS_LEVELS=1;
 				}
-
-				if(!strcasecmp(param[parampos],"moulinex")) {
-					LogInfo << "Launching moulinex";
-					MOULINEX=1;
-					KILL_AT_MOULINEX_END=1;
+				
+				if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T"))) {
+					TSU_LIGHTING=1;
 				}
+				
+				parampos++;
+			} else {
+				PROCESS_ALL_THEO=1;
+				PROCESS_LEVELS=1;
+			}
+			
+			if(!strcasecmp(param[parampos],"moulinex")) {
+				LogInfo << "Launching moulinex";
+				MOULINEX=1;
+				KILL_AT_MOULINEX_END=1;
 			}
 		}
-#endif
-	}
-#ifdef BUILD_EDITOR
-	else {
+	} else {
 		LogInfo << "FRGE";
 		GAME_EDITOR=1;
 		if (FINAL_RELEASE)
@@ -1152,11 +1143,9 @@ int main(int argc, char ** argv) {
 	if (FINAL_COMMERCIAL_GAME) {
 		LogDebug << "FINAL_COMMERCIAL_GAME";
 		FOR_EXTERNAL_PEOPLE=1;
-		ARX_DEMO=0;
 	} else if (FINAL_COMMERCIAL_DEMO)	{
 		LogDebug << "FINAL_COMMERCIAL_DEMO";
 		FOR_EXTERNAL_PEOPLE=1;
-		ARX_DEMO=1;
 	}
 
 	if (FOR_EXTERNAL_PEOPLE) {
@@ -1164,9 +1153,6 @@ int main(int argc, char ** argv) {
 		ALLOW_CHEATS		= 0;
 		CEDRIC_VERSION		= 0;
 		NO_TEXT_AT_ALL		= 1;
-
-		if (!FINAL_COMMERCIAL_DEMO)
-			ARX_DEMO		= 0;
 
 		FAST_SPLASHES		= 0;
 		FORCE_SHOW_FPS		= 0;
@@ -1180,7 +1166,6 @@ int main(int argc, char ** argv) {
 		TRUEFIGHT			= 0;
 	} else if (CEDRIC_VERSION) {
 		LogDebug << "CEDRIC_VERSION";
-		ARX_DEMO=0;
 		FAST_SPLASHES=1;
 		FORCE_SHOW_FPS=1;
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
