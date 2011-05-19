@@ -58,6 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstdlib>
 
+#include "core/Core.h"
+
 #include "game/Equipment.h"
 #include "game/NPC.h"
 #include "game/Damage.h"
@@ -97,7 +99,6 @@ struct EQUIP_INFO
 #define SP_BLOODY 2
 
 extern long TRUEFIGHT;
-extern long GAME_EDITOR;
 extern Vec3f PUSH_PLAYER_FORCE;
 extern long HERO_SHOW_1ST;
 extern long EXTERNALVIEW;
@@ -760,10 +761,13 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		}
 
 		attack = io_source->_npcdata->tohit;
-
-		if (GAME_EDITOR)
+		
+		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
+#ifdef BUILD_EDITOR
+		if(GAME_EDITOR) {
 			damages = io_source->_npcdata->damages * ratioaim;
-		else damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
+		}
+#endif
 
 		long value = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
 

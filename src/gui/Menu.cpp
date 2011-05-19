@@ -113,7 +113,6 @@ extern CDirectInput * pGetInfoDirectInput;
 extern Anglef ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
-extern long GAME_EDITOR;
 extern long START_NEW_QUEST;
 extern long INTRO_NOT_LOADED;
 extern long LASTBOOKBUTTON;
@@ -520,12 +519,13 @@ void ARX_MENU_Clicked_CREDITS()
 extern long FINAL_COMMERCIAL_DEMO;
 bool ARX_IsSteam();
 
-//-----------------------------------------------------------------------------
-void ARX_MENU_Clicked_QUIT_GAME()
-{
-	if (GAME_EDITOR)
+void ARX_MENU_Clicked_QUIT_GAME() {
+	
+#ifdef BUILD_EDITOR
+	if(GAME_EDITOR) {
 		ARX_MENU_Clicked_QUIT();
-	else
+	} else
+#endif
 	{
 		ARX_Menu_Resources_Release();
 		ARXmenu.currentmode = AMCM_OFF;

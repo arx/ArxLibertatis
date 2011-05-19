@@ -116,6 +116,7 @@ extern char * GTE_TEXT;
 extern long GTE_SIZE;
 extern long CHANGE_LEVEL_PROC_RESULT;
 extern long DEBUGNPCMOVE;
+extern long GAME_EDITOR = 1;
 #else
 const long EDITMODE = 0;
 #endif

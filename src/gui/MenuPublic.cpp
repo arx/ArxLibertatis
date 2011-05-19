@@ -62,7 +62,6 @@ extern long DANAESIZX;
 extern long DANAESIZY;
 extern long STARTED_A_GAME;
 extern long WILL_RELOAD_ALL_TEXTURES;
-extern long GAME_EDITOR;
 
 extern long REFUSE_GAME_RETURN;
 extern Cinematic * ControlCinematique;

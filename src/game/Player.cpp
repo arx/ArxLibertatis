@@ -3706,7 +3706,6 @@ void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
 	
 }
 
-extern long GAME_EDITOR;
 void ARX_PLAYER_Start_New_Quest()
 {
 

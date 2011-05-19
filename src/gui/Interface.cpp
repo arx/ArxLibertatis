@@ -147,7 +147,6 @@ extern float SLID_VALUE;
 extern long BOOKBUTTON;
 extern long LASTBOOKBUTTON;
 extern long FORCE_NO_HIDE;
-extern long GAME_EDITOR;
 extern long LastSelectedIONum;
 extern long lSLID_VALUE;
 
@@ -4126,8 +4125,11 @@ void DANAE::ManagePlayerControls()
 	}
 
 	// To remove for FINAL_RELEASE---------------------------------------
-	if (ALLOW_CHEATS || GAME_EDITOR)
-	{
+#ifdef BUILD_EDITOR
+	if(ALLOW_CHEATS || GAME_EDITOR) {
+#else
+	if(ALLOW_CHEATS) {
+#endif
 		if (this->kbd.inkey[INKEY_PAD5])
 		{
 			moveto.y=player.pos.y=FirstPolyPosY(player.pos.x,player.pos.z)-180.f;

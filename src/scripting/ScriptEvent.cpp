@@ -63,7 +63,6 @@ extern char WILL_LAUNCH_CINE[256];
 extern float InventoryDir;
 extern long REFUSE_GAME_RETURN;
 extern long FINAL_RELEASE;
-extern long GAME_EDITOR;
 extern long TELEPORT_TO_CONFIRM;
 extern long CINE_PRELOAD;
 extern long PLAY_LOADED_CINEMATIC;
@@ -5657,7 +5656,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						}
 
-						if (!GAME_EDITOR) TELEPORT_TO_CONFIRM = 0;
+#ifdef BUILD_EDITOR
+						if(!GAME_EDITOR) {
+#endif
+							TELEPORT_TO_CONFIRM = 0;
+#ifdef BUILD_EDITOR
+						}
+#endif
 
 						if (initpos == 0)
 						{

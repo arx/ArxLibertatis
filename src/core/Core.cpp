@@ -428,8 +428,10 @@ long FINAL_RELEASE		= 0;
 long AUTO_FULL_SCREEN	= 0;
 long SHOW_INGAME_MINIMAP= 1;
 long DEBUG_FRUSTRUM		= 0;
-long GAME_EDITOR		= 1;
-long NEED_EDITOR		= 1;
+#ifdef BUILD_EDTOR
+long GAME_EDITOR = 1;
+static long NEED_EDITOR = 1;
+#endif
 long USE_CEDRIC_ANIM	= 1;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
@@ -1161,8 +1163,10 @@ int main(int argc, char ** argv) {
 		AUTO_FULL_SCREEN	= 0;
 #endif
 		DEBUG_FRUSTRUM		= 0;
-		GAME_EDITOR			= 0;
-		NEED_EDITOR			= 0;
+#ifdef BUILD_EDITOR
+		GAME_EDITOR = 0;
+		NEED_EDITOR = 0;
+#endif
 		TRUEFIGHT			= 0;
 	} else if (CEDRIC_VERSION) {
 		LogDebug << "CEDRIC_VERSION";
@@ -1391,11 +1395,13 @@ int main(int argc, char ** argv) {
 	if (LaunchDemo)	{
 		LogInfo << "LaunchDemo";
 
-		if (FINAL_RELEASE) {
+#ifdef BUILD_EDITOR
+		if(FINAL_RELEASE) {
 			GAME_EDITOR=0;
 		} else {
 			GAME_EDITOR=1;
 		}
+#endif
 
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
@@ -1443,7 +1449,9 @@ int main(int argc, char ** argv) {
 #endif
 	{
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP;
-		if (GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
+#ifdef BUILD_EDITOR
+		if(GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
+#endif
 	}
 
 	LogDebug << "Application Creation";
@@ -3248,7 +3256,9 @@ long FirstFrameHandling()
 	FRAME_COUNT=0;
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene);
-
+	
+	iCreateMap=0;
+#ifdef BUILD_EDITOR
 	if ((CURRENTLEVEL>=0) && !(NOBUILDMAP) && GAME_EDITOR)
 	{
 		if (NeedMapCreation())	
@@ -3256,7 +3266,7 @@ long FirstFrameHandling()
 		else
 			iCreateMap=0;
 	}
-	else iCreateMap=0;
+#endif
 
 	if (!NO_TIME_INIT)
 		ARX_TIME_Init();
@@ -6254,8 +6264,10 @@ static float _AvgFrameDiff = 150.f;
 			subj.angle.g = 0;
 		EXTERNALVIEW=1;
 
-		if (!GAME_EDITOR)
+#ifdef BUILD_EDITOR
+		if(!GAME_EDITOR)
 			BLOCK_PLAYER_CONTROLS=1;
+#endif
 	}
 	else
 	{

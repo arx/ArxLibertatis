@@ -102,8 +102,6 @@ extern long WILL_RELOAD_ALL_TEXTURES;
 
 extern long FINAL_RELEASE;
 
-extern long GAME_EDITOR;
-
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
 
@@ -2020,8 +2018,9 @@ bool Menu2_Render()
 			CINEMASCOPE = 0;
 			break;
 		case AMCM_OFF:
-
+#ifdef BUILD_EDITOR
 			GAME_EDITOR = 0;
+#endif
 			ARX_MENU_Clicked_QUIT_GAME();
 			iFadeAction=-1;
 			bFadeInOut=false;
