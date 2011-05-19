@@ -111,7 +111,6 @@ extern long HIDEMAGICDUST;
 extern long LaunchDemo;
 extern long D3DTRANSFORM;
 extern long USE_PLAYERCOLLISIONS;
-extern long A_FLARES;
 extern long EXTERNALVIEWING;
 extern long DYNAMIC_NORMALS;
 extern long SHOWSHADOWS;
@@ -2087,8 +2086,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (SHOWSHADOWS)				SetClick(hWnd, IDC_SHOWSHADOWS);
 
-			if (A_FLARES)					SetClick(hWnd, IDC_FLARES);
-
 			if (INVERTMOUSE)				SetClick(hWnd, IDC_INVERTMOUSE);
 
 			if (Project.bits == 16)			SetClick(hWnd, IDC_FULLRENDER16BITS);
@@ -2377,9 +2374,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_COLLISIONS)) USE_COLLISIONS = 1;
 					else USE_COLLISIONS = 0;
-
-					if (IsChecked(hWnd, IDC_FLARES)) A_FLARES = 1;
-					else A_FLARES = 0;
 
 					if (IsChecked(hWnd, IDC_INVERTMOUSE)) INVERTMOUSE = 1;
 					else INVERTMOUSE = 0;

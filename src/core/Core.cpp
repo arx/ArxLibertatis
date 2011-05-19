@@ -386,7 +386,6 @@ long CURRENT_BASE_FOCAL=310;
 long CINE_PRELOAD=0;
 long PLAY_LOADED_CINEMATIC=0;
 long PauseScript=0;
-long A_FLARES=1;
 long ADDED_IO_NOT_SAVED=0;
 long WILL_RELOAD_ALL_TEXTURES=0;	// Set To 1 if Textures are to be reloaded from disk and restored.
 long CHANGE_LEVEL_PROC_RESULT=-1;

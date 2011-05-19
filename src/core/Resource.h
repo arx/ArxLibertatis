@@ -230,7 +230,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_TLEVEL17                    1088
 #define IDC_STATIC12                    1089
 #define IDC_TLEVEL18                    1089
-#define IDC_FLARES                      1090
 #define IDC_SLIDER14                    1090
 #define IDC_TLEVEL19                    1090
 #define IDC_EDIT1                       1091
@@ -300,7 +299,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_LAUNCHDEMO                  1120
 #define IDC_SLIDER21                    1120
 #define IDC_STATIC33                    1121
-#define IDC_FLARESIZZ                   1121
 #define IDC_EDITPASS                    1122
 #define IDC_STATIC21                    1122
 #define IDC_NO_IGNIT                    1123
