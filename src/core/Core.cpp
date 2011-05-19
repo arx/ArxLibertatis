@@ -451,10 +451,6 @@ long BOOKBUTTON			= 0;
 long LASTBOOKBUTTON		= 0;
 
 long FASTmse			= 0;
-long PROCESS_ALL_THEO	= 1;
-long PROCESS_LEVELS		= 1;
-long PROCESS_NO_POPUP	= 0;
-long PROCESS_ONLY_ONE_LEVEL=-1;
 
 //-----------------------------------------------------------------------------
 // EDITOR FLAGS/Vars
@@ -477,7 +473,11 @@ char * GTE_TEXT;
 long GTE_SIZE;
 long CHANGE_LEVEL_PROC_RESULT = -1;
 long DEBUGNPCMOVE = 0; // Debug NPC Movements
-long TSU_LIGHTING = 0; // must be 0 at start !
+static long TSU_LIGHTING = 0; // must be 0 at start !
+static long PROCESS_ALL_THEO = 1;
+static long PROCESS_LEVELS = 1;
+static long PROCESS_NO_POPUP = 0;
+static long PROCESS_ONLY_ONE_LEVEL = -1;
 #endif
 
 long ARX_CONVERSATION=0;
