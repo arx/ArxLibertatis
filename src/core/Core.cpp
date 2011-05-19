@@ -1409,11 +1409,11 @@ int main(int argc, char ** argv) {
 	danaeApp.d_dlgframe=0;
 
 	if (MOULINEX) {
-		danaeApp.CreationSizeX=800;
+		danaeApp.CreationSizeX = 800;
 		danaeApp.CreationSizeY = 12;
 	} else {
-		danaeApp.CreationSizeX=648;
-		danaeApp.CreationSizeY = 552;
+		danaeApp.CreationSizeX = config.video.width;
+		danaeApp.CreationSizeY = config.video.height;
 	}
 
 	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
@@ -5139,7 +5139,6 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 
 }
 
-extern DWORD RenderStartTicks;
 extern long NEED_INTRO_LAUNCH;
 
 //-----------------------------------------------------------------------------
@@ -5213,8 +5212,6 @@ static float _AvgFrameDiff = 150.f;
 	}
 
 	StartBench();
-
-	RenderStartTicks	=	dwARX_TIME_Get();
 
 	if(	(pGetInfoDirectInput)&&
 		(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F12)))

@@ -123,10 +123,8 @@ CD3DApplication::CD3DApplication()
 {
 	long i;
 	d_dlgframe = 0;
-	b_dlg = false;
 	m_pFramework   = NULL;
 	m_hWnd         = NULL;
-	m_dlghWnd		= NULL;
 	m_pDD          = NULL;
 	m_pD3D         = NULL;
 
@@ -135,7 +133,6 @@ CD3DApplication::CD3DApplication()
 
 	m_bActive         = false;
 	m_bReady          = false;
-	m_bFrameMoving    = true;
 	m_bSingleStep     = false;
 
 	m_strWindowTitle  = "EERIE Application";
@@ -260,34 +257,22 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		flags &= ~WS_THICKFRAME;
 		flags &= ~WS_SYSMENU;
 		flags &= ~WS_OVERLAPPEDWINDOW;
-	}
 
-
-	if (m_dlghWnd == NULL)
-	{
-		if (FINAL_COMMERCIAL_DEMO || FINAL_COMMERCIAL_GAME)
-			menu = 0;
-		else
-			menu = CreationMenu;
-
-		MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
-		                                flags,
-		                                CW_USEDEFAULT, CW_USEDEFAULT, CreationSizeX, CreationSizeY, owner,
-		                                LoadMenu(hInst, MAKEINTRESOURCE(menu)),
-		                                hInst, 0L);
-
-		if (!m_hWnd) return  E_OUTOFMEMORY;
-
-		UpdateWindow(m_hWnd);
+		menu = 0;
 	}
 	else
-	{
-		MSGhwnd = m_hWnd = m_dlghWnd;
-		m_OldProc = (WNDPROC)SetWindowLongPtr(m_hWnd,
-		                                   GWLP_WNDPROC, (LONG_PTR)WndProc);
-		b_dlg = true;
-		m_bActive = true;
-	}
+		menu = CreationMenu;
+
+	MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
+		                            flags,
+									CW_USEDEFAULT, CW_USEDEFAULT, CreationSizeX, CreationSizeY, owner,
+		                            LoadMenu(hInst, MAKEINTRESOURCE(menu)),
+		                            hInst, 0L);
+
+	if (!m_hWnd) return  E_OUTOFMEMORY;
+
+	UpdateWindow(m_hWnd);
+	
 
 	// Nuky - this isnt used for the game, and I can set WIN32_LEAN_AND_MEAN with it commented
 	//// � supprimer au final
@@ -300,11 +285,6 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		Cleanup3DEnvironment();
 		return E_FAIL;
-	}
-
-	if (b_dlg)
-	{
-		m_pFramework->b_dlg = true;
 	}
 
 	// Setup the app so it can support single-stepping
@@ -626,7 +606,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		}
 		break;
 		case WM_PAINT:
-
 			// Handle paint messages when the app is not ready
 			if (m_pFramework && !m_bReady)
 			{
@@ -639,17 +618,8 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 					m_pFramework->FlipToGDISurface(true);
 				}
 			}
-
 			break;
-		case WM_MOVE: break; // TODO hack to prevent wrong m_rcScreenRect in EERIEFrame
-
-			// If in windowed mode, move the Framework's window
-			if (m_pFramework && m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
-			{
-				m_pFramework->Move((SHORT)LOWORD(lParam), (SHORT)HIWORD(lParam));
-			}
-
-			break;
+		
 		case WM_SIZE:
 			RECT rec;
 			m_pFramework->m_bHasMoved = true;
@@ -700,26 +670,14 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			break;
 
 		case WM_SETCURSOR:
-
 			// Prevent a cursor in fullscreen mode
 			if (m_bActive && m_bReady && !m_pDeviceInfo->bWindowed)
 			{
 				SetCursor(NULL);
 				return 1;
 			}
-
 			break;
-		case WM_ENTERSIZEMOVE:
-			// Halt frame movement while the app is sizing or moving
-			if (m_bFrameMoving)
-				m_dwStopTime = dwARX_TIME_Get();
 
-			break;
-		case WM_EXITSIZEMOVE:
-			if (m_bFrameMoving)
-				m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
-
-			break;
 		case WM_NCHITTEST:
 			// Prevent the user from selecting the menu in fullscreen mode
 			if (!m_pDeviceInfo->bWindowed)
@@ -933,15 +891,7 @@ HRESULT CD3DApplication::Change3DEnvironment()
 		SendMessage(m_hWnd, WM_CLOSE, 0, 0);
 		return hr;
 	}
-
-	// If the app is paused, trigger the rendering of the current frame
-	if (false == m_bFrameMoving)
-	{
-		m_bSingleStep = true;
-		m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
-		m_dwStopTime  = dwARX_TIME_Get();
-	}
-
+	
 	GetZBufferMax();
 	return S_OK;
 }
@@ -1001,13 +951,10 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	}
 
 	// Get the relative time, in seconds
-	if (m_bFrameMoving || m_bSingleStep)
-	{
-		if (FAILED(hr = FrameMove()))
-			return hr;
+	if (FAILED(hr = FrameMove()))
+		return hr;
 
-		m_bSingleStep = false;
-	}
+	m_bSingleStep = false;
 
 	// Render the scene as normal
 	if (FAILED(hr = Render()))
@@ -1078,15 +1025,13 @@ VOID CD3DApplication::Pause(bool bPause)
 			m_pFramework->FlipToGDISurface(true);
 
 		// Stop the scene from animating
-		if (m_bFrameMoving)
-			m_dwStopTime = dwARX_TIME_Get();
+		m_dwStopTime = dwARX_TIME_Get();
 	}
 
 	if (0 == dwAppPausedCount)
 	{
 		// Restart the scene
-		if (m_bFrameMoving)
-			m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
+		m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
 	}
 }
 

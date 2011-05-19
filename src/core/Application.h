@@ -278,8 +278,6 @@ extern float FPS;
 extern LPDIRECT3DDEVICE7 GDevice;
 extern LightMode ModeLight;
 
-extern short WINDOWCREATIONSIZEX;
-extern short WINDOWCREATIONSIZEY;
 extern ViewModeFlags ViewMode;
 
 extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
@@ -356,7 +354,6 @@ public:
 	}
 	void OutputText(DWORD x, DWORD y, const std::string& str);
 	
-	bool m_bFrameMoving;
 	bool m_bActive;
 	HRESULT Change3DEnvironment();
 	HRESULT Initialize3DEnvironment();
@@ -365,8 +362,6 @@ public:
 	HWND m_hWnd;
 	HWND m_hWndRender;
 	WNDPROC m_OldProc;
-	HWND m_dlghWnd;
-	bool b_dlg;
 	long d_dlgframe;
 	void EERIEMouseUpdate(short x, short y);
 	
