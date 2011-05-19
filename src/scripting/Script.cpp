@@ -5148,7 +5148,6 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 HWND LastErrorPopupNO1 = NULL;
 HWND LastErrorPopupNO2 = NULL;
 
-extern HWND CDP_IOOptions;
 extern INTERACTIVE_OBJ * CDP_EditIO;
 
 #ifdef BUILD_EDITOR

@@ -47,8 +47,8 @@ extern float BOOKDECX;
 extern float BOOKDECY;
 #ifdef BUILD_EDITOR
 extern HWND CDP_PATHWAYS_Options;
-#endif
 extern HWND CDP_IOOptions;
+#endif
 
 //-----------------------------------------------------------------------------
 class INTERFACE_TC
