@@ -199,7 +199,9 @@ Vec2s			bookclick;
 Vec2s			MemoMouse;
 EERIE_LIGHT		 *	CDP_EditLight=NULL;
 FOG_DEF			 *	CDP_EditFog=NULL;
-HWND				CDP_PATHWAYS_Options=NULL;
+#ifdef BUILD_EDITOR
+HWND CDP_PATHWAYS_Options = NULL;
+#endif
 HWND				CDP_FogOptions=NULL;
 
 HWND				CDP_LIGHTOptions=NULL;
