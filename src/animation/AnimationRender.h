@@ -40,7 +40,6 @@ struct EERIEMATRIX;
 struct EERIE_QUAT;
 class TextureContainer;
 
-extern long LIGHTPOWERUP;
 extern float LPpower;
 
 #define CEDRIC 1

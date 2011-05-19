@@ -109,7 +109,6 @@ extern long ZMAPMODE;
 extern long TreatAllIO;
 extern long HIDEMAGICDUST;
 extern long LaunchDemo;
-extern long LIGHTPOWERUP;
 extern float LPpower;
 extern long D3DTRANSFORM;
 extern long USE_PLAYERCOLLISIONS;
@@ -2101,8 +2100,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (A_FLARES)					SetClick(hWnd, IDC_FLARES);
 
-			if (LIGHTPOWERUP)				SetClick(hWnd, IDC_LIGHTPOWERUP);
-
 			if (INVERTMOUSE)				SetClick(hWnd, IDC_INVERTMOUSE);
 
 			if (Project.bits == 16)			SetClick(hWnd, IDC_FULLRENDER16BITS);
@@ -2315,9 +2312,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_ZMAPMODE)) ZMAPMODE = 1;
 					else ZMAPMODE = 0;
-
-					if (IsChecked(hWnd, IDC_LIGHTPOWERUP)) LIGHTPOWERUP = 1;
-					else LIGHTPOWERUP = 0;
 
 					if (IsChecked(hWnd, IDC_SHOWSHADOWS)) SHOWSHADOWS = 1;
 					else SHOWSHADOWS = 0;

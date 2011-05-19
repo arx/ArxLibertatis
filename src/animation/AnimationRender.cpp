@@ -83,7 +83,6 @@ extern float fZFogStart;
 
 extern CDirectInput * pGetInfoDirectInput;
 
-long LIGHTPOWERUP = 0;
 float LPpower = 3.f;
 
 float SOFTNEARCLIPPZ=1.f;
@@ -3249,14 +3248,6 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 	float epg[4];
 	float epb[4];
 	
-	// To keep...
-	//	register float DVAL;
-	//	if (LIGHTPOWERUP) DVAL=LPpower*100.f;
-	//	else
-	//	DVAL=300.f;
-	//register float nvalue;
-
-
 	for (i = 0; i < nbvert; i++)
 	{
 		long c = ep->v[i].color;
@@ -3378,14 +3369,6 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 	float epg[4];
 	float epb[4];
 	
-	// To keep...
-	//	register float DVAL;
-	//	if (LIGHTPOWERUP) DVAL=LPpower*100.f;
-	//	else
-	//	DVAL=300.f;
-	//register float nvalue;
-
-
 	for (i = 0; i < nbvert; i++)
 	{
 		long c = ep->v[i].color;
