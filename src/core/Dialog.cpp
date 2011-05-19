@@ -2109,8 +2109,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (Project.bits == 32)			SetClick(hWnd, IDC_FULLRENDER32BITS);
 
-			if (DEBUG1ST)					SetClick(hWnd, IDC_DEBUG1ST);
-
 			if (DEBUGNPCMOVE)				SetClick(hWnd, IDC_DEBUGNPCMOVE);
 
 			if (DYNAMIC_NORMALS)			SetClick(hWnd, IDC_DYNAMICNORMALS);
@@ -2328,9 +2326,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					else Project.bits = 32;
 
 					danaeApp.m_pFramework->bitdepth = Project.bits;
-
-					if (IsChecked(hWnd, IDC_DEBUG1ST)) DEBUG1ST = 1;
-					else DEBUG1ST = 0;
 
 					if (IsChecked(hWnd, IDC_SETTEXTURE)) DBGSETTEXTURE = 1;
 					else DBGSETTEXTURE = 0;

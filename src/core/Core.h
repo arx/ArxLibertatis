@@ -122,7 +122,6 @@ extern unsigned long FADESTART;
 extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
-extern long DEBUG1ST;
 extern bool bNoReturnToWindows;
 
 struct QUAKE_FX_STRUCT {
