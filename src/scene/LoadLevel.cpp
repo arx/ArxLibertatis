@@ -257,9 +257,6 @@ void ReplaceSpecifics( char* text )
 	return;
 }
 
-extern long ADDED_IO_NOT_SAVED;
-
-
 long DanaeSaveLevel(const string & _fic) {
 	
 	long nb_inter = GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player

@@ -469,7 +469,6 @@ long PROCESS_ONLY_ONE_LEVEL=-1;
 // EDITOR FLAGS/Vars
 //-----------------------------------------------------------------------------
 // Flag used to Launch Moulinex
-long HIPOLY=0;			// Are We Using Poly-Spawning Ray-Casted Shadows ?
 long LOADEDD = 0; // Is a Level Loaded ?
 #ifdef BUILD_EDITOR
 long EDITMODE = 0; // EditMode (1) or GameMode (0) ?

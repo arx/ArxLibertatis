@@ -116,7 +116,6 @@ extern long MAPUPDATE;
 extern long EXTERNALVIEWING;
 extern long DYNAMIC_NORMALS;
 extern long SHOWSHADOWS;
-extern long HIPOLY;
 extern long BLURTEXTURES;
 extern long NOMIPMAPS;
 extern long POINTINTERPOLATION;
@@ -2088,8 +2087,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (DEBUGCODE)					SetClick(hWnd, IDC_DEBUGCODE);
 
-			if (HIPOLY)						SetClick(hWnd, IDC_HPO);
-
 			if (Project.interpolatemouse)	SetClick(hWnd, IDC_INTERPOLATEMOUSE);
 
 			if (Project.vsync)				SetClick(hWnd, IDC_VSYNC);
@@ -2290,9 +2287,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_DEBUGCODE)) DEBUGCODE = 1;
 					else DEBUGCODE = 0;
-
-					if (IsChecked(hWnd, IDC_HPO)) HIPOLY = 1;
-					else HIPOLY = 0;
 
 					if (IsChecked(hWnd, IDC_ARXDEMO)) ARX_DEMO = 1;
 					else ARX_DEMO = 0;
