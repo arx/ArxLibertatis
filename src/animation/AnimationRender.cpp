@@ -83,8 +83,6 @@ extern float fZFogStart;
 
 extern CDirectInput * pGetInfoDirectInput;
 
-float LPpower = 3.f;
-
 float SOFTNEARCLIPPZ=1.f;
 
 void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out);

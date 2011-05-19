@@ -109,7 +109,6 @@ extern long ZMAPMODE;
 extern long TreatAllIO;
 extern long HIDEMAGICDUST;
 extern long LaunchDemo;
-extern float LPpower;
 extern long D3DTRANSFORM;
 extern long USE_PLAYERCOLLISIONS;
 extern long A_FLARES;
@@ -2169,11 +2168,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			long t = (long)subj.cdepth;
 			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
-			thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER);
-			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 10));
-			t = (long)LPpower;
-			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
-
 			thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
 			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 50));
 			t = (long)(BIGLIGHTPOWER * 100.f);
@@ -2459,9 +2453,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					SetActiveCamera(&subj);
 					SetCameraDepth((float)t);
 					SetActiveCamera(oldcam);
-
-					thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER);
-					LPpower = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
 					BIGLIGHTPOWER = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );

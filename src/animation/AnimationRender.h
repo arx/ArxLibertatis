@@ -40,8 +40,6 @@ struct EERIEMATRIX;
 struct EERIE_QUAT;
 class TextureContainer;
 
-extern float LPpower;
-
 #define CEDRIC 1
 #define REFERENCE_FPS (20.0f)
 #define ANIMQUATTYPE_FIRST_PERSON 2
