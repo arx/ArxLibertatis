@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 
 #include "ai/Paths.h"
+#include "core/Core.h"
 #include "game/NPC.h"
 #include "graphics/Math.h"
 #include "physics/Collisions.h"
@@ -70,10 +71,6 @@ using std::max;
 float VELOCITY_THRESHOLD = 850.f;
 #define FULLTESTS 0
 
-//-----------------------------------------------------------------------------
-extern long DEBUGNPCMOVE;
-
-//-----------------------------------------------------------------------------
 long CUR_COLLISION_MATERIAL = 0;
 
 //*************************************************************************************
@@ -855,9 +852,6 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 // Debug function used to show the physical box of an object
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 	
-	if (DEBUGNPCMOVE)
-	{
-
 		for (long k = 0; k < obj->pbox->nb_physvert; k++)
 		{
 			if (obj->pbox->active == 2)
@@ -888,7 +882,6 @@ void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 				            obj->pbox->vert[k].pos.z,
 				            0.6f, 40, 0xFFFF0000);
 		}
-	}
 }
 
 //-----------------------------------------------------------------------------

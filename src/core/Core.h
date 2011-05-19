@@ -115,10 +115,10 @@ extern const char * GTE_TITLE;
 extern char * GTE_TEXT;
 extern long GTE_SIZE;
 extern long CHANGE_LEVEL_PROC_RESULT;
+extern long DEBUGNPCMOVE;
 #else
 const long EDITMODE = 0;
 #endif
-extern long DEBUGNPCMOVE;
 extern long SHOW_TORCH;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;

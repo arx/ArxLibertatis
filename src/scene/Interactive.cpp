@@ -4240,9 +4240,10 @@ void RenderInter(float from, float to) {
 			io->bbox1.x = 9999;
 			io->bbox2.x = -1;
 
-			if ((io->obj)
-			        &&	(io->obj->pbox))
+#ifdef BUILD_EDITOR
+			if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
 				EERIE_PHYSICS_BOX_Show(io->obj);
+#endif
 
 			if (
 			    (io->obj)

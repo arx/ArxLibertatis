@@ -132,7 +132,11 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 		ppos.z = io->pos.z;
 		pos.z = ppos.z + to.z;
 
-		if (DEBUGNPCMOVE) EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+#ifdef BUILD_EDITOR
+		if(DEBUGNPCMOVE) {
+			EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+		}
+#endif
 
 		float dmg;
 

@@ -477,6 +477,7 @@ const char * GTE_TITLE;
 char * GTE_TEXT;
 long GTE_SIZE;
 long CHANGE_LEVEL_PROC_RESULT = -1;
+long DEBUGNPCMOVE = 0; // Debug NPC Movements
 #endif
 
 long ARX_CONVERSATION=0;
@@ -486,7 +487,6 @@ long ARX_MOUSE_OVER=0;
 //-----------------------------------------------------------------------------
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
-long DEBUGNPCMOVE=0;	// Debug NPC Movements
 long LaunchDemo=0;
 long FirstFrame=1;
 unsigned long WILLADDSPEECHTIME=0;

@@ -3630,8 +3630,7 @@ void ARX_SCENE_Render(long flag) {
 
 					ad->pos.y+=10;
 
-					if (DEBUGNPCMOVE)
-					{
+					if(DEBUGNPCMOVE) {
 						EERIE_CYLINDER cyl;
 						cyl.origin.x=ad->pos.x;
 						cyl.origin.y=ad->pos.y;
