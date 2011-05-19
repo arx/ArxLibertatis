@@ -174,7 +174,6 @@ extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern HWND		PRECALC;
 extern HWND		CDP_LIGHTOptions;
-extern HWND		CDP_FogOptions;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bSkipVideoIntro;
@@ -462,7 +461,6 @@ long LASTBOOKBUTTON		= 0;
 long TSU_LIGHTING		= 0; // must be 0 at start !
 
 long FASTmse			= 0;
-long LASTMOULINEX		=-1;
 long PROCESS_ALL_THEO	= 1;
 long PROCESS_LEVELS		= 1;
 long PROCESS_NO_POPUP	= 0;
@@ -472,16 +470,17 @@ long PROCESS_ONLY_ONE_LEVEL=-1;
 // EDITOR FLAGS/Vars
 //-----------------------------------------------------------------------------
 // Flag used to Launch Moulinex
-long MOULINEX=0;
-long KILL_AT_MOULINEX_END=0;
 long HIPOLY=0;			// Are We Using Poly-Spawning Ray-Casted Shadows ?
 long NODIRCREATION=0;	// No IO Directory Creation ?
 long LOADEDD=0;			// Is a Level Loaded ?
 long WILLLOADLEVEL=0;	// Is a LoadLevel command waiting ?
 long WILLSAVELEVEL=0;	// Is a SaveLevel command waiting ?
 #ifdef BUILD_EDITOR
-long EDITMODE=0;		// EditMode (1) or GameMode (0) ?
-long EDITION=EDITION_IO;	// Sub-EditMode
+long EDITMODE = 0; // EditMode (1) or GameMode (0) ?
+long EDITION=EDITION_IO; // Sub-EditMode
+long MOULINEX = 0;
+long LASTMOULINEX = -1;
+long KILL_AT_MOULINEX_END = 0;
 #endif
 long USE_COLLISIONS=1;
 
@@ -568,7 +567,9 @@ HRESULT DANAEFinalCleanup();
 void ShowFPS();
 void ShowTestText();
 void ManageNONCombatModeAnimations();
+#ifdef BUILD_EDITOR
 void LaunchMoulinex();
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -1051,8 +1052,9 @@ void InitializeDanae()
 	}
 
 #ifdef BUILD_EDITOR
-	if ((GAME_EDITOR) && (!MOULINEX))
+	if(GAME_EDITOR && !MOULINEX) {
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
+	}
 #endif
 
 }
@@ -1072,7 +1074,9 @@ void forInternalPeople(LPSTR strCmdLine) {
 	if ((param[parampos] != NULL)) {
 		if (!strcasecmp(param[parampos],"demo")) {
 			ARX_DEMO=1;
-		} else {
+		}
+#ifdef BUILD_EDITOR
+		else {
 			LogInfo << "PARAMS";
 			FINAL_RELEASE=0;
 			GAME_EDITOR=1;
@@ -1121,20 +1125,23 @@ void forInternalPeople(LPSTR strCmdLine) {
 					PROCESS_LEVELS=1;
 				}
 
-				if (!strcasecmp(param[parampos],"moulinex")) {
+				if(!strcasecmp(param[parampos],"moulinex")) {
 					LogInfo << "Launching moulinex";
 					MOULINEX=1;
 					KILL_AT_MOULINEX_END=1;
 				}
 			}
 		}
-	} else {
+#endif
+	}
+#ifdef BUILD_EDITOR
+	else {
 		LogInfo << "FRGE";
 		GAME_EDITOR=1;
-
 		if (FINAL_RELEASE)
 			GAME_EDITOR=0;
 	}
+#endif
 }
 
 // Let's use main for now on all platforms
@@ -1217,7 +1224,7 @@ int main(int argc, char ** argv) {
 
 	NOCHECKSUM=0;
 
-	if((!MOULINEX) && FINAL_RELEASE) {
+	if(FINAL_RELEASE) {
 		
 		LogInfo << "FINAL RELEASE";
 		NOBUILDMAP=1;
@@ -1387,10 +1394,14 @@ int main(int argc, char ** argv) {
 		Project.ambient=1;
 		Project.multiplayer=0;
 		NOCHECKSUM=1;
-	} else if (!MOULINEX) {
+	}
+#ifdef BUILD_EDITOR
+	else if (!MOULINEX) {
 //		DialogBox( hInstance,MAKEINTRESOURCE(IDD_STARTOPTIONS), NULL, StartProc );
 		LogError << "not MOULINEX ";
-	} else {
+	}
+#endif
+	else {
 		LogInfo << "default LEVELDEMO2";
 		Project.demo=LEVELDEMO2;
 	}
@@ -1423,10 +1434,13 @@ int main(int argc, char ** argv) {
 
 	danaeApp.d_dlgframe=0;
 
-	if (MOULINEX) {
+#ifdef BUILD_EDITOR
+	if(MOULINEX) {
 		danaeApp.CreationSizeX=800;
 		danaeApp.CreationSizeY = 12;
-	} else {
+	} else
+#endif
+	{
 		danaeApp.CreationSizeX=648;
 		danaeApp.CreationSizeY = 552;
 	}
@@ -1536,13 +1550,19 @@ int main(int argc, char ** argv) {
 
 	char tex[512];
 
-	if (GAME_EDITOR)
+#ifdef BUILD_EDITOR
+	if(GAME_EDITOR) {
 		sprintf(tex,"DANAE Project");
-	else 
+	} else
+#endif
+	{
 		sprintf(tex,"ARX Fatalis");
+	}
 
-	if (MOULINEX)
+#ifdef BUILD_EDITOR
+	if(MOULINEX)
 		sprintf(tex,"MOULINEX");
+#endif
 
 	strcat(tex, arxVersion.c_str());
 	SetWindowText(danaeApp.m_hWnd, tex);
@@ -3279,10 +3299,11 @@ long FirstFrameHandling()
 		DONT_WANT_PLAYER_INZONE=0;
 	}
 
-	if (MOULINEX)
-	{
+#ifdef BUILD_EDITOR
+	if(MOULINEX) {
 		LaunchMoulinex();
 	}
+#endif
 
  PROGRESS_BAR_COUNT+=1.f;
  LoadLevelScreen();
@@ -4526,6 +4547,7 @@ void ManageQuakeFX()
 	}
 }
 
+#ifdef BUILD_EDITOR
 void LaunchMoulinex()
 {
 	char tx[256];
@@ -4644,6 +4666,7 @@ void LaunchMoulinex()
 
 	MOULINEX++;
 }
+#endif
 
 void DANAE_StartNewQuest()
 {
@@ -5537,8 +5560,11 @@ static float _AvgFrameDiff = 150.f;
 			}
 		}
 
-		if (MOULINEX)
+#ifdef BUILD_EDITOR
+		if(MOULINEX) {
 			LaunchMoulinex();
+		}
+#endif
 	}
 	else // Manages our first frameS
 	{

@@ -50,8 +50,6 @@ using std::max;
 extern float	PROGRESS_BAR_TOTAL;
 extern float	PROGRESS_BAR_COUNT;
 extern float	OLD_PROGRESS_BAR_COUNT;
-extern long		MOULINEX;
-
 
 //-----------------------------------------------------------------------------
 TextureContainer	* FISHTANK_img = NULL;
@@ -236,11 +234,12 @@ void LoadLevelScreen(long num)
 	}
 
 
-	if (MOULINEX)
-	{
+#ifdef BUILD_EDITOR
+	if(MOULINEX) {
 		Project.vsync = 1;
 		return;
 	}
+#endif
 
 	if ((OLD_PROGRESS_BAR_COUNT <= 0.f) &&
 	        (fFadeColor <= 0.f))

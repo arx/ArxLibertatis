@@ -157,7 +157,6 @@ extern long CHANGE_LEVEL_ICON;
 extern long NO_TEXT_AT_ALL;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
-extern long MOULINEX;
 extern long HALOCUR;
 extern long USE_CEDRIC_ANIM;
 extern long ALLOW_CHEATS;
@@ -202,8 +201,8 @@ FOG_DEF			 *	CDP_EditFog=NULL;
 #ifdef BUILD_EDITOR
 HWND CDP_PATHWAYS_Options = NULL;
 HWND CDP_IOOptions = NULL;
+HWND CDP_FogOptions = NULL;
 #endif
-HWND				CDP_FogOptions=NULL;
 
 HWND				CDP_LIGHTOptions=NULL;
 INVENTORY_DATA *	TSecondaryInventory;

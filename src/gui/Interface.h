@@ -48,6 +48,7 @@ extern float BOOKDECY;
 #ifdef BUILD_EDITOR
 extern HWND CDP_PATHWAYS_Options;
 extern HWND CDP_IOOptions;
+extern HWND CDP_FogOptions;
 #endif
 
 //-----------------------------------------------------------------------------

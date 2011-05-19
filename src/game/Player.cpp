@@ -1712,7 +1712,6 @@ void	ARX_PLAYER_Restore_Skin()
 		tmpTC->Restore();
 	}
 }
-extern void LaunchMoulinex();
 extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 // void ARX_PLAYER_LoadHeroAnimsAndMesh()

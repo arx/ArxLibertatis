@@ -105,6 +105,7 @@ extern long FirstFrame;
 #ifdef BUILD_EDITOR
 extern long EDITMODE;
 extern long EDITION;
+extern long MOULINEX;
 #else
 const long EDITMODE = 0;
 #endif
