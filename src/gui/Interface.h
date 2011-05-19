@@ -49,6 +49,7 @@ extern float BOOKDECY;
 extern HWND CDP_PATHWAYS_Options;
 extern HWND CDP_IOOptions;
 extern HWND CDP_FogOptions;
+extern HWND CDP_LIGHTOptions;
 #endif
 
 //-----------------------------------------------------------------------------

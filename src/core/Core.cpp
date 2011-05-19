@@ -173,7 +173,6 @@ extern CMenuState		*pMenu;
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern HWND		PRECALC;
-extern HWND		CDP_LIGHTOptions;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bSkipVideoIntro;
