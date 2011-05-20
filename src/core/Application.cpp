@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Config.h"
 #include "core/Resource.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Player.h"
 
@@ -72,11 +72,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Frame.h"
 #include "graphics/GraphicsEnum.h"
-#include "graphics/data/Mesh.h"
 #include "graphics/GraphicsUtility.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/font/Font.h"
 
 #include "io/FilePath.h"
-#include "io/Registry.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
@@ -173,8 +173,6 @@ extern long FINAL_COMMERCIAL_GAME;
 HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	
 	HRESULT hr;
-	long menu;
-	DWORD flags;
 
 	// Enumerate available D3D devices. The callback is used so the app can
 	// confirm/reject each enumerated device depending on its capabilities.
@@ -237,7 +235,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	RegisterClass(&wndClass);
 
 	// Create the render window
-	flags = 0;
+	DWORD flags = 0;
 
 	if (CreationFlags & WCF_NORESIZE)
 	{
@@ -250,6 +248,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	else if (!(CreationFlags & WCF_CHILD)) flags |= WS_OVERLAPPEDWINDOW;
 	else flags |= WS_CHILD;
 
+	long menu;
 	if (FINAL_COMMERCIAL_DEMO || FINAL_COMMERCIAL_GAME)
 	{
 		flags &= ~WS_CAPTION;
@@ -1107,7 +1106,7 @@ VOID CD3DApplication::OutputText(DWORD x, DWORD y, const std::string& str)
 {
 	if (m_pddsRenderTarget)
 	{
-		hFontInGame->Draw(x, y, str, RGB(255, 255, 0));
+		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
 	}
 }
 

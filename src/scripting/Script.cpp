@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Localisation.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
@@ -99,6 +99,7 @@ using std::sprintf;
 using std::min;
 using std::max;
 using std::transform;
+using std::string;
 
 //#define NEEDING_DEBUG 1
 #define MAX_SSEPARAMS 5
@@ -281,6 +282,7 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const char * dat) {
 	return ret;
 }
 
+#ifdef BUILD_EDITOR
 void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 {
 	ShowText.clear();
@@ -379,6 +381,7 @@ suite:
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
 }
+#endif
 
 void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent)
 {
@@ -635,7 +638,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 			{
 				if (io)
 				{
-					*fcontent = (float)EEDistance3D(&player.pos, &io->pos);
+					*fcontent = fdist(player.pos, io->pos);
 					return TYPE_FLOAT;
 				}
 			}
@@ -647,7 +650,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 			{
 				if (io != NULL)
 				{
-					*lcontent = EEDistance3D(&player.pos, &io->pos);
+					*lcontent = (long)fdist(player.pos, io->pos);
 					return TYPE_LONG;
 				}
 			}
@@ -865,7 +868,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 								&& ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
 						   )
 						{
-							EERIE_3D pos, pos2;
+							Vec3f pos, pos2;
 							GetItemWorldPosition(io, &pos);
 							GetItemWorldPosition(inter.iobj[t], &pos2);
 
@@ -1063,7 +1066,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 
 			if (!specialstrcmp(name, "^ININITPOS"))
 			{
-				EERIE_3D pos;
+				Vec3f pos;
 
 				if (io
 						&&	GetItemWorldPosition(io, &pos)
@@ -1336,10 +1339,10 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 								&& ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
 						   )
 						{
-							EERIE_3D pos, pos2;
+							Vec3f pos, pos2;
 							GetItemWorldPosition(io, &pos);
 							GetItemWorldPosition(inter.iobj[t], &pos2);
-							*fcontent = (float)EEDistance3D(&pos, &pos2);
+							*fcontent = fdist(pos, pos2);
 
 						}
 						else // Out of this world item
@@ -1830,7 +1833,6 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 {
 	char var_text[256];
 	float t1;
-	long l1;
 
 	if(!temp1.empty())
 	{
@@ -1858,13 +1860,13 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 		}
 		else if (temp1[0] == '#')
 		{
-			l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
+			long l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
 			sprintf(var_text, "%ld", l1);
 			return var_text;
 		}
 		else if (temp1[0] == '\xA7')
 		{
-			l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
+			long l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 			sprintf(var_text, "%ld", l1);
 			return var_text;
 		}
@@ -2577,12 +2579,12 @@ long GotoNextLine(EERIE_SCRIPT * es, long pos)
 long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 {
 	std::string temp;
-	long brack = 1;
 	long tpos;
 	pos = GetNextWord(es, pos, temp);
 
 	if (temp[0] == '{')
 	{
+		long brack = 1;
 		while (brack > 0)
 		{
 			pos = GetNextWord(es, pos, temp);
@@ -2778,7 +2780,7 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 
 		ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
 		aup->_curtime += smoothing + 100;
-		EERIE_3D tp;
+		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);
 
 		if (wp < 0)
@@ -2824,7 +2826,7 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 	{
 		if (ValidIONum(io->targetinfo))
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 
 			if (GetItemWorldPosition(inter.iobj[io->targetinfo], &pos))
 			{
@@ -2890,7 +2892,9 @@ void MakeSSEPARAMS(const char * params)
 		SSEPARAMS[i][0] = 0;
 	}
 
-	if ((params == NULL)) return;
+	if(params == NULL) {
+		return;
+	}
 
 	long pos = 0;
 
@@ -3388,12 +3392,12 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 {
 	INTERACTIVE_OBJ * io = st->io;
 	GetTargetPos(io);
-	EERIE_3D target;
+	Vec3f target;
 	target.x = io->target.x - io->pos.x;
 	target.y = io->target.y - io->pos.y;
 	target.z = io->target.z - io->pos.z;
 	Vector_Normalize(&target);
-	EERIE_3D targ;
+	Vec3f targ;
 	Vector_RotateY(&targ, &target, rnd() * 60.f - 30.f);
 	target.x = io->target.x + targ.x * 100.f;
 	target.y = io->target.y + targ.y * 100.f;
@@ -3402,7 +3406,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	if (ARX_INTERACTIVE_ConvertToValidPosForIO(io, &target))
 	{
 		ARX_INTERACTIVE_Teleport(io, &target);
-		EERIE_3D pos;
+		Vec3f pos;
 		pos.x = io->pos.x;
 		pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
 		pos.z = io->pos.z;
@@ -3516,8 +3520,6 @@ long CountBrackets(EERIE_SCRIPT * es)
 
 	return count;
 }
-HWND LastErrorPopup = NULL;
-extern long SHOWWARNINGS;
 long GetCurrentLine(EERIE_SCRIPT * es, long poss)
 {
 	long pos = 0;
@@ -3589,6 +3591,8 @@ void GetLineAsText(EERIE_SCRIPT * es, long curline, char * tex)
 
 	strcpy(tex, "Internal ERROR...");
 }
+#ifdef BUILD_EDITOR
+HWND LastErrorPopup = NULL;
 extern long SYNTAXCHECKING;
 long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 {
@@ -5123,7 +5127,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 	if (errstring[0] == 0) returnvalue = 1;
 	else returnvalue = 0;
 
-	if ((errors > 0) || ((warnings > 0) && (SHOWWARNINGS)))
+	if ((errors > 0) || ((warnings > 0)))
 	{
 		std::string title;
 
@@ -5139,34 +5143,11 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 	LogDebug << "Tem" << tem;
 	return returnvalue;
 }
+#endif // BUILD_EDITOR
 
+#ifdef BUILD_EDITOR
 HWND LastErrorPopupNO1 = NULL;
 HWND LastErrorPopupNO2 = NULL;
-
-extern HWND CDP_IOOptions;
-extern INTERACTIVE_OBJ * CDP_EditIO;
-
-bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
-{
-	return true;
-
-	if (CheckScriptSyntax(io) != true)
-		if (!CDP_IOOptions)
-		{
-			CDP_EditIO = io;
-
-			ARX_TIME_Pause();
-			danaeApp.Pause(true);
-			DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-					  MAKEINTRESOURCE(IDD_SCRIPTDIALOG), danaeApp.m_hWnd, IOOptionsProc);
-			danaeApp.Pause(false);
-			ARX_TIME_UnPause();
-			LastErrorPopupNO1 = NULL;
-			LastErrorPopupNO2 = NULL;
-		}
-
-	return true;
-}
 bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 {
 	if (SYNTAXCHECKING == 0) return true;
@@ -5180,6 +5161,7 @@ bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 
 	return true; // no errors.
 }
+#endif
 
 void ARX_SCRIPT_Init_Event_Stats() {
 	
@@ -5429,12 +5411,6 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 	}
 }
 
-
-INTERACTIVE_OBJ * IO_DEBUG = NULL;
-//*************************************************************************************
-//*************************************************************************************
-
-
 bool InSubStack(EERIE_SCRIPT * es, long pos)
 {
 	for (size_t i = 0; i < MAX_GOSUB; i++)
@@ -5496,6 +5472,7 @@ void InitScript(EERIE_SCRIPT * es)
 	ARX_SCRIPT_ComputeShortcuts(*es);
 }
 
+#ifdef BUILD_EDITOR
 LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	
 	(void)lParam;
@@ -5565,6 +5542,7 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 	return false;
 }
+#endif // BUILD_EDITOR
 
 void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std::string& content)
 {

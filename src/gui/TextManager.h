@@ -5,34 +5,39 @@
  *      Author: bmonkey
  */
 
-#ifndef TEXTMANAGER_H_
-#define TEXTMANAGER_H_
+#ifndef ARX_GUI_TEXTMANAGER_H
+#define ARX_GUI_TEXTMANAGER_H
 
-#include <windows.h> // for RECT
 #include <vector>
 #include <string>
 
+#include "graphics/Color.h"
+#include "platform/math/Rectangle.h"
+
 class Font;
 
-class TextManager
-{
+class TextManager {
+	
 public:
+	
 	TextManager();
 	~TextManager();
-
-	bool AddText(Font*, const std::string &, const RECT &, long _lCol = -1,
-				 long _lTimeOut = 0, long _lTimeScroll = 0,
+	
+	bool AddText(Font *, const std::string &, const Rect &, Color _lCol = -1,
+	             long _lTimeOut = 0, long _lTimeScroll = 0,
 	             float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
-
-	bool AddText(Font*, const std::string&, long x, long y, long fgcolor );
+	
+	bool AddText(Font* , const std::string &, long x, long y, Color fgcolor);
 	void Update(float);
 	void Render();
 	void Clear();
 	bool Empty() const;
 	
 private:
+	
 	struct ManagedText;
-	std::vector<ManagedText *> entries;	
+	std::vector<ManagedText *> entries;
+	
 };
 
-#endif /* TEXTMANAGER_H_ */
+#endif // ARX_GUI_TEXTMANAGER_H

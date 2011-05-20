@@ -25,12 +25,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scripting/ScriptDebugger.h"
 
+#ifdef BUILD_EDITOR
+
 #include <cstdio>
 #include <cstring>
 
 #include <windows.h>
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "graphics/data/Mesh.h"
 #include "io/FilePath.h"
 #include "io/Logger.h"
@@ -91,7 +93,6 @@ invalid:
 }
 long NEED_DEBUGGER_CLEAR;
 extern long LastSelectedIONum;
-extern INTERACTIVE_OBJ * IO_DEBUG;
 void DANAE_DEBUGGER_Update()
 {
 	static INTERACTIVE_OBJ * lastio = NULL;
@@ -126,8 +127,6 @@ void DANAE_DEBUGGER_Update()
 	if (ValidIONum(LastSelectedIONum))
 		io = inter.iobj[LastSelectedIONum];
 	else io = NULL;
-
-	IO_DEBUG = io;
 
 	if (lastio != io)
 	{
@@ -445,3 +444,5 @@ suite:
 		MODIFFF = 1;
 	}
 }
+
+#endif

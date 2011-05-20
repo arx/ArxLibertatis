@@ -339,7 +339,6 @@ void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 		SendMessage(iInfo.hEvents, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
 	}
 
-	int i;
 	SendMessage(iInfo.hObjName, WM_SETTEXT, 0, (LPARAM) _s.lpszObjName);
 	SendMessage(iInfo.hObjPos[0], WM_SETTEXT, 0, (LPARAM) _s.p3ObjPos[0]);
 	SendMessage(iInfo.hObjPos[1], WM_SETTEXT, 0, (LPARAM) _s.p3ObjPos[1]);
@@ -354,7 +353,7 @@ void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 	if (sdu.bVariables)
 	{
 		// Global Vars
-		for (i = 0; i < _s.iNbGlobals; i++)
+		for (int k = 0; k < _s.iNbGlobals; k++)
 		{
 			int t = -1;
 			char buf[256];
@@ -363,7 +362,7 @@ void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 			{
 				ListView_GetItemText(iInfo.hGlobals, j, 0, buf, 256);
 
-				if (strcmp(buf, _s.pGlobalVars[i].lpszVarName) == 0)
+				if (strcmp(buf, _s.pGlobalVars[k].lpszVarName) == 0)
 				{
 					t = j;
 				}
@@ -371,12 +370,12 @@ void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 
 			if (t != -1)
 			{
-				ListView_SetItemText(iInfo.hGlobals, t, 0, _s.pGlobalVars[i].lpszVarName);
-				ListView_SetItemText(iInfo.hGlobals, t, 1, _s.pGlobalVars[i].lpszVarValue);
+				ListView_SetItemText(iInfo.hGlobals, t, 0, _s.pGlobalVars[k].lpszVarName);
+				ListView_SetItemText(iInfo.hGlobals, t, 1, _s.pGlobalVars[k].lpszVarValue);
 			}
 			else
 			{
-				InsertItem(iInfo.hGlobals, _s.pGlobalVars[i].lpszVarName, _s.pGlobalVars[i].lpszVarValue);
+				InsertItem(iInfo.hGlobals, _s.pGlobalVars[k].lpszVarName, _s.pGlobalVars[k].lpszVarValue);
 				(void)ListView_SortItems(iInfo.hGlobals, MyCompareFunc, 0);
 			}
 
@@ -385,7 +384,7 @@ void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 		// Local Vars
 		if (_s.iNbLocals == 0) SendMessage(iInfo.hLocals, LVM_DELETEALLITEMS, 0, 0);
 
-		for (i = 0; i < _s.iNbLocals; i++)
+		for (int i = 0; i < _s.iNbLocals; i++)
 		{
 			int t = -1;
 			char buf[256];

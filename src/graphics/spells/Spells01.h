@@ -81,9 +81,9 @@ class CMagicMissile: public CSpellFx
 		float fTrail;
 		float fOneOnLength;
 		float fOneOnBezierPrecision;
-		EERIE_3D eSrc;
-		EERIE_3D eCurPos;
-		EERIE_3D angles;
+		Vec3f eSrc;
+		Vec3f eCurPos;
+		Anglef angles;
 		TextureContainer * tex_mm;
 		D3DTLVERTEX pathways[6];
 		ArxSound snd_loop;
@@ -94,13 +94,13 @@ class CMagicMissile: public CSpellFx
 		// accesseurs
 	public:
 		void SetTTL(unsigned long);
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 		void SetColor(float, float, float);
 		void SetColor1(float, float, float);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, EERIE_3D);
+		void	Create(const Vec3f &, const Anglef &);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -110,7 +110,7 @@ class CMagicMissile: public CSpellFx
 class CMultiMagicMissile: public CSpellFx
 {
 	private:
-		CSpellFx ** pTab;
+		CMagicMissile ** pTab;
 		unsigned int uiNumber;
 		bool bExplo;
 	public:
@@ -121,7 +121,7 @@ class CMultiMagicMissile: public CSpellFx
 		void	CheckCollision();
 
 	public:
-		void	Create(EERIE_3D, EERIE_3D);
+		void	Create();
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -134,7 +134,7 @@ class CMultiMagicMissile: public CSpellFx
 class CIgnit: public CSpellFx
 {
 	private:
-		EERIE_3D	pos;
+		Vec3f	pos;
 		float		perimetre;
 		short		key;
 		int			duration;
@@ -147,8 +147,8 @@ class CIgnit: public CSpellFx
 
 		struct T_LINKLIGHTTOFX
 		{
-			EERIE_3D	poslight;
-			EERIE_3D	posfx;
+			Vec3f	poslight;
+			Vec3f	posfx;
 			int			actif;
 			int			idl;
 			int			iLightNum;
@@ -167,7 +167,7 @@ class CIgnit: public CSpellFx
 			return this->duration;
 		};
 
-		void	Create(EERIE_3D * posc, float perim, int speed);
+		void	Create(Vec3f * posc, float perim, int speed);
 		void	Update(unsigned long);
 		float	Render();
 		void	Kill();
@@ -197,7 +197,7 @@ class CIgnit: public CSpellFx
 class CDoze: public CIgnit
 {
 	public:
-		void CreateDoze(EERIE_3D * posc, float perim, int speed)
+		void CreateDoze(Vec3f * posc, float perim, int speed)
 		{
 			this->Create(posc, perim, speed);
 			this->ChangeTexture(TextureContainer::Load("Graph\\Particles\\doze_hit.bmp"));
@@ -216,7 +216,7 @@ class CPortal: public CSpellFx
 		short		key;
 		int			duration;
 		int			currduration, currframe;
-		EERIE_3D	pos;
+		Vec3f	pos;
 		float		r;
 		TextureContainer	* tp, *te;
 
@@ -226,7 +226,7 @@ class CPortal: public CSpellFx
 			int				duration;
 			int				currduration;
 			int				numpt;
-			EERIE_3D	*	seg;
+			Vec3f	*	seg;
 		};
 
 		int			timeneweclair;
@@ -234,10 +234,10 @@ class CPortal: public CSpellFx
 		T_ECLAIR	tabeclair[256];
 
 		TextureContainer	* spheretc;		//sphere
-		EERIE_3D			sphereposdep;
-		EERIE_3D			sphereposend;
+		Vec3f			sphereposdep;
+		Vec3f			sphereposend;
 		float				spherescale;
-		EERIE_3D		*	spherevertex;
+		Vec3f		*	spherevertex;
 		unsigned short	*	sphereind;
 		int					spherenbpt;
 		int					spherenbfaces;
@@ -254,7 +254,7 @@ class CPortal: public CSpellFx
 			return this->duration;
 		};
 
-		void	AddNewEclair(EERIE_3D * endpos, int nbseg, int duration, int numpt);
+		void	AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt);
 		void	DrawAllEclair();
 		void	Update(unsigned long);
 		float	Render();

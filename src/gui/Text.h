@@ -54,39 +54,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_TEXT_H
-#define ARX_TEXT_H
+#ifndef ARX_GUI_TEXT_H
+#define ARX_GUI_TEXT_H
 
-#include <climits>
 #include <string>
+#include <climits>
 
-#include "gui/TextManager.h"
-#include "core/Application.h"
-#include "graphics/GraphicsTypes.h"
-#include "graphics/font/FontCache.h"
+#include "graphics/Color.h"
+#include "platform/math/Rectangle.h"
+
+class TextManager;
+class Font;
 
 extern TextManager * pTextManage;
-extern Font* hFontMainMenu;
-extern Font* hFontMenu;
-extern Font* hFontControls;
-extern Font* hFontCredits;
-extern Font* hFontInBook;
-extern Font* hFontRedist;
-extern Font* hFontInGame;
-extern Font* hFontInGameNote;
+extern Font * hFontMainMenu;
+extern Font * hFontMenu;
+extern Font * hFontControls;
+extern Font * hFontCredits;
+extern Font * hFontInBook;
+extern Font * hFontInGame;
+extern Font * hFontInGameNote;
 
-void ARX_TEXT_Draw(Font* ef, float x, float y, const std::string & car, COLORREF colo);
-long ARX_TEXT_DrawRect(Font* ef, float x, float y, float maxx, const std::string& car, COLORREF colo, RECT* pClipRect = NULL);
-float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col);
-void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, COLORREF col);
-long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, COLORREF col);
+void ARX_TEXT_Draw(Font * ef, float x, float y, const std::string & car, Color colo);
+long ARX_TEXT_DrawRect(Font * ef, float x, float y, float maxx, const std::string & car, Color colo, const Rect * pClipRect = NULL);
+float DrawBookTextInRect(Font * font, float x, float y, float maxx, const std::string & text, Color col);
+void DrawBookTextCenter(Font * font, float x, float y, const std::string & text, Color col);
+long UNICODE_ARXDrawTextCenter(Font * font, float x, float y, const std::string & str, Color col);
  
-long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, const std::string& str, COLORREF col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
-long ARX_UNICODE_ForceFormattingInRect(Font* font, const std::string& text, RECT _rRect);
-long ARX_UNICODE_DrawTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, RECT* pClipRect = NULL);
+long UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
+long ARX_UNICODE_ForceFormattingInRect(Font * font, const std::string & text, const Rect & _rRect);
+long ARX_UNICODE_DrawTextInRect(Font * font, float x, float y, float maxx, const std::string & text, Color col, const Rect * pClipRect = NULL);
 
 void ARX_Text_Init();
 void ARX_Text_Close();
-void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c);
 
-#endif
+#endif // ARX_GUI_TEXT_H

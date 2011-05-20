@@ -54,29 +54,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_PHYSICS_H
-#define ARX_PHYSICS_H
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
+#ifndef ARX_PHYSICS_PHYSICS_H
+#define ARX_PHYSICS_PHYSICS_H
 
-//-----------------------------------------------------------------------------
-extern bool FALLING;
+struct EERIEPOLY;
 
-//-----------------------------------------------------------------------------
-EERIEPOLY * BCCheckInPoly(float x, float y, float z);
-EERIEPOLY * GetMinPoly(float x, float y, float z);
-EERIEPOLY * GetMaxPoly(float x, float y, float z);
-
-long CorrectedMove(float ox, float oy, float oz,
-                   float tx, float ty, float tz, EERIE_3D * size, EERIE_3D * mt);
-long PhysicsCorrectedMove(float ox, float oy, float oz,
-                          float tx, float ty, float tz, float siz, EERIE_3D * mt);
-void CorrectMove(float ox, float oy, float oz,
-                 float tx, float ty, float tz, EERIE_3D * mt);
-void ARX_PHYSICS_Apply();
-float GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos);
-bool IsAnyPolyThere(float x, float z);
 EERIEPOLY * BCCheckInPoly(float x, float y, float z);
 
-#endif
+#endif // ARX_PHYSICS_PHYSICS_H

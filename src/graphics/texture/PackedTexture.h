@@ -1,11 +1,11 @@
 #ifndef     _PACKED_TEXTURE_H_
 #define     _PACKED_TEXTURE_H_
 
-
-#include "graphics/image/Image.h"
-#include "graphics/Math.h"
-
 #include <vector>
+
+#include "graphics/Math.h"
+#include "graphics/image/Image.h"
+#include "platform/math/Rectangle.h"
 
 
 class Texture2D;

@@ -22,114 +22,108 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//-----------------------------------------------------------------------------
-#ifndef ARX_CPARTICLESYSTEM_H
-#define ARX_CPARTICLESYSTEM_H
+
+#ifndef ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H
+#define ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H
 
 #include <list>
-#include <vector>
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Renderer.h"
-
-#define PARTICLE_CIRCULAR  1
-#define PARTICLE_BORDER	   2
-
-//-----------------------------------------------------------------------------
-typedef EERIE_3D Point3;
+#include "platform/Flags.h"
  
-class CParticle;
-class CParticleParams;
+class Particle;
+class ParticleParams;
 
-//-----------------------------------------------------------------------------
-class CParticleSystem
-{
-	public:
-		std::list<CParticle *> listParticle;
+enum ParticleSpawnFlag {
+	PARTICLE_CIRCULAR = (1<<0),
+	PARTICLE_BORDER   = (1<<1)
+};
+DECLARE_FLAGS(ParticleSpawnFlag, ParticleSpawn)
+DECLARE_FLAGS_OPERATORS(ParticleSpawn)
 
-	public:
-		Point3	p3Pos;
-
-		unsigned int uMaxParticles;
-		unsigned int uParticlesPerSec;
-
-		int		iParticleNbAlive;
-
-		TextureContainer * tex_tab[20];
-		int		iNbTex;
-		int		iTexTime;
-		bool	bTexLoop;
-
-		EERIEMATRIX eMat;
-
-
-		unsigned long ulTime;
-		unsigned long ulNbParticleGen;
-
-		// these are used for the particles it creates
-		Point3	p3ParticlePos;
-		int		iParticleNbMax;
-		float	fParticleFreq;
-
-		float	fParticleFlash;
-		float	fParticleRotation;
-		bool	bParticleRotationRandomDirection;
-		bool	bParticleRotationRandomStart;
-
-		unsigned long ulParticleSpawn;
-
-		Point3	p3ParticleDirection;
-		Point3	p3ParticleGravity;
-		float	fParticleLife;
-		float	fParticleLifeRandom;
-		float	fParticleAngle;
-		float	fParticleSpeed;
-		float	fParticleSpeedRandom;
-
-		bool	bParticleStartColorRandomLock;
-		float	fParticleStartSize;
-		float	fParticleStartSizeRandom;
-		float	fParticleStartColor[4];
-		float	fParticleStartColorRandom[4];
-
-		bool	bParticleEndColorRandomLock;
-		float	fParticleEndSize;
-		float	fParticleEndSizeRandom;
-		float	fParticleEndColor[4];
-		float	fParticleEndColorRandom[4];
-
-		Renderer::PixelBlendingFactor iSrcBlend;
-		Renderer::PixelBlendingFactor iDstBlend;
-
-		bool	bParticleFollow;
-
-		long	lLightId;
-
-		// editor
-		float	fMinx, fMaxx, fMiny, fMaxy;
-
-	public:
-		CParticleSystem();
-		~CParticleSystem();
-
-	private:
-		void	SpawnParticle(CParticle *);
-		void	SetParticleParams(CParticle *);
-
-	public:
-		void	SetParams(CParticleParams & app);
- 
-		void	SetTexture(const char *, int, int, bool _bLoop = true);
-		void	SetPos(Point3 ap3);
-		void	SetColor(float, float, float);
- 
-
-
-	public:
-		void	Render();
-		bool	IsAlive();
-		void	Update(long);
-		void	RecomputeDirection();
+class ParticleSystem {
+	
+public:
+	
+	std::list<Particle *> listParticle;
+	
+	Vec3f p3Pos;
+	
+	unsigned int uMaxParticles;
+	unsigned int uParticlesPerSec;
+	
+	int iParticleNbAlive;
+	
+	TextureContainer * tex_tab[20];
+	int iNbTex;
+	int iTexTime;
+	bool bTexLoop;
+	
+	EERIEMATRIX eMat;
+	
+	unsigned long ulTime;
+	unsigned long ulNbParticleGen;
+	
+	// these are used for the particles it creates
+	Vec3f p3ParticlePos;
+	int iParticleNbMax;
+	float fParticleFreq;
+	
+	float fParticleFlash;
+	float fParticleRotation;
+	bool bParticleRotationRandomDirection;
+	bool bParticleRotationRandomStart;
+	
+	ParticleSpawn ulParticleSpawn;
+	
+	Vec3f p3ParticleDirection;
+	Vec3f p3ParticleGravity;
+	float fParticleLife;
+	float fParticleLifeRandom;
+	float fParticleAngle;
+	float fParticleSpeed;
+	float fParticleSpeedRandom;
+	
+	bool bParticleStartColorRandomLock;
+	float fParticleStartSize;
+	float fParticleStartSizeRandom;
+	float fParticleStartColor[4];
+	float fParticleStartColorRandom[4];
+	
+	bool bParticleEndColorRandomLock;
+	float fParticleEndSize;
+	float fParticleEndSizeRandom;
+	float fParticleEndColor[4];
+	float fParticleEndColorRandom[4];
+	
+	Renderer::PixelBlendingFactor iSrcBlend;
+	Renderer::PixelBlendingFactor iDstBlend;
+	
+	bool bParticleFollow;
+	
+	long lLightId;
+	
+	// editor
+	float fMinx, fMaxx, fMiny, fMaxy;
+	
+	ParticleSystem();
+	~ParticleSystem();
+	
+	void SpawnParticle(Particle *);
+	void SetParticleParams(Particle *);
+	
+	void SetParams(const ParticleParams & app);
+	
+	void SetTexture(const char *, int, int, bool _bLoop = true);
+	void SetPos(const Vec3f & ap3);
+	void SetColor(float, float, float);
+	
+	void Render();
+	bool IsAlive();
+	void Update(long);
+	void RecomputeDirection();
+	
 };
 
-#endif
+#endif // ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H

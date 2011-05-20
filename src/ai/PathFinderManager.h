@@ -74,7 +74,7 @@ extern PATHFINDER_REQUEST pr;
 
 bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * request);
 long EERIE_PATHFINDER_Get_Queued_Number();
-void EERIE_PATHFINDER_Clear(long i = 0);
+void EERIE_PATHFINDER_Clear();
 void EERIE_PATHFINDER_Create();
 void EERIE_PATHFINDER_Release();
 

@@ -30,6 +30,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
 
+using std::string;
+
 namespace audio {
 
 Sample::Sample(const string & _name) : ResourceHandle(), name(_name), length(0) {

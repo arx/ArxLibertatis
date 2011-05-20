@@ -55,80 +55,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-// Desc: HERMES main functionalities
-#ifndef  HERMESMAIN_H
-#define  HERMESMAIN_H
+#ifndef ARX_IO_IO_H
+#define ARX_IO_IO_H
 
-#define HERMES_PATH_SIZE	512
-
+#include <stddef.h>
 #include <string>
-
-
 #include <windows.h>
 
-#include <cstddef>
-
-typedef struct {
-	long	secs;
-	long	mins;
-	long	hours;
-	long	days;
-	long	months;
-	long	years;
-}HERMES_DATE_TIME;
-
-///////////////////// PACKING
-//Always on for now...
-typedef struct PassedParam
-{
-	const char * pSource;                   /* Pointer to source buffer           */
-	char * pDestination;              /* Pointer to destination buffer      */
-	std::size_t SourceOffset;      /* Offset into the source buffer      */
-	std::size_t DestinationOffset; /* Offset into the destination buffer */
-	std::size_t CompressedSize;    /* Need this for extracting!          */
-	std::size_t UnCompressedSize;  /* Size of uncompressed data file     */
-	std::size_t BufferSize;
-	unsigned long Crc;               /* Calculated CRC value               */
-	unsigned long OrigCrc;           /* Original CRC value of data         */
-} PARAM;
-
-
-extern HWND		MAIN_PROGRAM_HANDLE;
-extern long DEBUGG;
-extern long DebugLvl[6];
-extern unsigned int			GaiaWM;
-
-char * HERMES_GaiaCOM_Receive();
-
-void HERMES_InitDebug();
-
-void GetDate(HERMES_DATE_TIME * hdt);
-void SendConsole( const std::string& dat,long level,long flag,HWND source);
-void ForceSendConsole( const std::string& dat,long level,long flag,HWND source);
-
-void MemFree(void * adr);
-unsigned long MakeMemoryText(char * text);
-
-// Strings Funcs
 bool HERMESFolderSelector(char * file_name, const char * title);
 
-int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
-int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
 
 /**
- * Create a hash of the file. TODO can this be removed?
+ * Create a hash of the file.
  * @param name Name of the file to hash. Must be on the local filesystem and not in a PAK.
  * @param scheck The destination buffer to which the hash is written.
  * @param size The size of the destination buffer scheck.
  * @param id An ID that contributes to the hash.
  * @return false if the hash was created, true if the file could not be read
  **/
-bool HERMES_CreateFileCheck(const char *name, char *scheck, size_t size, float id);
-void HERMES_Memory_Security_On(long size);
-void HERMES_Memory_Security_Off();
-long HERMES_Memory_Emergency_Out( long size = 0, const std::string& info = "" );
-void StartBench();
-unsigned long EndBench();
-extern long NEED_BENCH;
+bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, float id);
 
-#endif // HERMESMAIN_H
+#endif // ARX_IO_IO_H

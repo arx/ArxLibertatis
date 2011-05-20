@@ -55,123 +55,100 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "physics/Actors.h"
+#include "physics/Attractors.h"
 
 #include "graphics/Math.h"
 #include "scene/Interactive.h"
 
-struct ARX_SPECIAL_ATTRACTOR
-{
+struct ARX_SPECIAL_ATTRACTOR {
 	long	ionum;  // -1 == not defined
 	float	power;
 	float	radius;
 };
-#define MAX_ATTRACTORS 16
 
-ARX_SPECIAL_ATTRACTOR attractors[MAX_ATTRACTORS];
+static const size_t MAX_ATTRACTORS = 16;
+static ARX_SPECIAL_ATTRACTOR attractors[MAX_ATTRACTORS];
 
-void ARX_SPECIAL_ATTRACTORS_Reset()
-{
-	for (long i = 0; i < MAX_ATTRACTORS; i++)
-	{
+void ARX_SPECIAL_ATTRACTORS_Reset() {
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		attractors[i].ionum = -1;
 	}
 }
 
-void ARX_SPECIAL_ATTRACTORS_Remove(long ionum)
-{
-	for (long i = 0; i < MAX_ATTRACTORS; i++)
-	{
-		if (attractors[i].ionum == ionum)
+static void ARX_SPECIAL_ATTRACTORS_Remove(long ionum) {
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		if(attractors[i].ionum == ionum) {
 			attractors[i].ionum = -1;
+		}
 	}
 }
 
-long ARX_SPECIAL_ATTRACTORS_Exist(long ionum)
-{
-	for (long i = 0; i < MAX_ATTRACTORS; i++)
-	{
-		if (attractors[i].ionum == ionum)
+static long ARX_SPECIAL_ATTRACTORS_Exist(long ionum) {
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		if(attractors[i].ionum == ionum) {
 			return i;
+		}
 	}
-
 	return -1;
 }
 
-bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius)
-{
-	if (power == 0.f) ARX_SPECIAL_ATTRACTORS_Remove(ionum);
-
+bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius) {
+	
+	if(power == 0.f) {
+		ARX_SPECIAL_ATTRACTORS_Remove(ionum);
+	}
+	
 	long tst;
-
-	if ((tst = ARX_SPECIAL_ATTRACTORS_Exist(ionum)) != -1)
-	{
+	if((tst = ARX_SPECIAL_ATTRACTORS_Exist(ionum)) != -1) {
 		attractors[tst].power = power;
 		attractors[tst].radius = radius;
 		return false;
 	}
-
-	for (long i = 0; i < MAX_ATTRACTORS; i++)
-	{
-		if (attractors[i].ionum == -1)
-		{
+	
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		if(attractors[i].ionum == -1) {
 			attractors[i].ionum = ionum;
 			attractors[i].power = power;
 			attractors[i].radius = radius;
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(INTERACTIVE_OBJ * ioo, EERIE_3D * force)
-{
-	force->x = 0;
-	force->y = 0;
-	force->z = 0;
-
-	for (long i = 0; i < MAX_ATTRACTORS; i++)
-	{
-		if (attractors[i].ionum != -1)
-		{
-			if (ValidIONum(attractors[i].ionum))
-			{
-				INTERACTIVE_OBJ * io = inter.iobj[attractors[i].ionum];
-
-				if ((io->show == SHOW_FLAG_IN_SCENE)
-				        && !(io->ioflags & IO_NO_COLLISIONS)
-				        && (io->GameFlags & GFLAG_ISINTREATZONE))
-				{
-					float power = attractors[i].power;
-					EERIE_3D pos;
-					pos.x = ioo->pos.x;
-					pos.y = ioo->pos.y;
-					pos.z = ioo->pos.z;
-					float dist = EEDistance3D(&pos, &io->pos);
-
-					if ((dist > ioo->physics.cyl.radius + io->physics.cyl.radius + 10.f)
-					        || (power < 0.f))
-					{
-						float max_radius = attractors[i].radius; 
-
-						if (dist < max_radius)
-						{
-							float ratio_dist = 1.f - (dist / max_radius);
-							EERIE_3D vect;
-							vect.x = io->pos.x - pos.x;
-							vect.y = io->pos.y - pos.y;
-							vect.z = io->pos.z - pos.z;
-							Vector_Normalize(&vect);
-							power *= ratio_dist * 0.01f;
-							force->x = vect.x * power;
-							force->y = vect.y * power;
-							force->z = vect.z * power;
-						}
-					}
-				}
+void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, Vec3f & force) {
+	
+	force = Vec3f::ZERO;
+	
+	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
+		
+		if(attractors[i].ionum == -1 || !ValidIONum(attractors[i].ionum)) {
+			continue;
+		}
+		
+		const INTERACTIVE_OBJ & io = *inter.iobj[attractors[i].ionum];
+		
+		if(io.show != SHOW_FLAG_IN_SCENE || (io.ioflags & IO_NO_COLLISIONS)
+			 || !(io.GameFlags & GFLAG_ISINTREATZONE)) {
+			continue;
+		}
+		
+		float power = attractors[i].power;
+		float dist = fdist(ioo.pos, io.pos);
+		
+		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || power < 0.f) {
+			
+			float max_radius = attractors[i].radius; 
+			
+			if(dist < max_radius) {
+				float ratio_dist = 1.f - (dist / max_radius);
+				Vec3f vect = io.pos - ioo.pos;
+				Vector_Normalize(&vect);
+				power *= ratio_dist * 0.01f;
+				force = vect * power;
 			}
 		}
+		
 	}
 }
-

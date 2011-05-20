@@ -1,12 +1,12 @@
+
 #ifndef _FONT_H_
 #define _FONT_H_
 
-#include "core/math/Vector2.h"
-
-#include <windows.h>	// TEMP... needed for COLORREF
 #include <string>
 #include <map>
 
+#include "graphics/Color.h"
+#include "platform/math/Vector2.h"
 
 
 class Font
@@ -28,14 +28,14 @@ public:
 	//! Representation of a glyph.
     struct Glyph
     {
-        Vector2i		size;           //!< Size of the glyph.
-        Vector2i		draw_offset;    //!< Offset to use when drawing.
-        Vector2f		advance;        //!< Pen advance after write this glyph.
+        Vec2i		size;           //!< Size of the glyph.
+        Vec2i		draw_offset;    //!< Offset to use when drawing.
+        Vec2f		advance;        //!< Pen advance after write this glyph.
 		int				lsb_delta;		//!< The difference between hinted and unhinted left side bearing while autohinting is active. Zero otherwise.
 		int				rsb_delta;		//!< The difference between hinted and unhinted right side bearing while autohinting is active. Zero otherwise.
 
-        Vector2f		uv_start;       //!< UV coordinates.
-        Vector2f		uv_end;         //!< UV coordinates.
+        Vec2f		uv_start;       //!< UV coordinates.
+        Vec2f		uv_end;         //!< UV coordinates.
 
 		unsigned int	texture;        //!< Texture page on which the glyph can be found.
     };
@@ -45,11 +45,11 @@ public:
 	const std::string& GetName() const { return m_Info.m_Name; }
 	unsigned int GetSize() const { return m_Info.m_Size; }
 
-	void Draw( int pX, int pY, const std::string& str, COLORREF color ) const;
-	void Draw( int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, COLORREF color ) const;
+	void Draw( int pX, int pY, const std::string& str, Color color ) const;
+	void Draw( int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color ) const;
 
-	Vector2i GetTextSize( const std::string& str ) const;
-	Vector2i GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const;
+	Vec2i GetTextSize( const std::string& str ) const;
+	Vec2i GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const;
 
 	int	GetLineHeight() const;
 

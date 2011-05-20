@@ -168,7 +168,7 @@ static void DXI_ReleaseDevice(INPUT_INFO & info) {
 
 void DXI_Release() {
 	
-	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		DXI_ReleaseDevice(*i);
 	}
 	DI_InputInfo.clear();
@@ -181,7 +181,7 @@ void DXI_Release() {
 
 void DXI_RestoreAllDevices() {
 	
-	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		if(i->active) {
 			i->inputdevice7->Acquire();
 		}
@@ -190,7 +190,7 @@ void DXI_RestoreAllDevices() {
 
 void DXI_SleepAllDevices() {
 	
-	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		if(i->active) {
 			i->inputdevice7->Unacquire();
 		}
@@ -296,7 +296,7 @@ bool DXI_GetKeyboardInputDevice(HWND hwnd, DXIMode mode) {
 		DI_KeyBoardBuffer = NULL;
 	}
 	
-	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		
 		if(GET_DIDEVICE_TYPE(i->type) != DIDEVTYPE_KEYBOARD || i->active) {
 			continue;
@@ -318,7 +318,7 @@ bool DXI_GetMouseInputDevice(HWND hwnd, DXIMode mode, int minbutton, int minaxe)
 		DI_MouseState = NULL;
 	}
 	
-	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		
 		if(GET_DIDEVICE_TYPE(i->type) != DIDEVTYPE_MOUSE || i->active) {
 			continue;
@@ -340,7 +340,7 @@ bool DXI_GetMouseInputDevice(HWND hwnd, DXIMode mode, int minbutton, int minaxe)
 bool DXI_ExecuteAllDevices() {
 	
 	bool success = true;
-	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		
 		if(!i->active) {
 			continue;

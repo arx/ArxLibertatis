@@ -2,6 +2,8 @@
 #ifndef ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 #define ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 
+#include "platform/math/Vector3.h"
+
 struct EERIE_RGB {
 	float r;
 	float g;
@@ -20,136 +22,6 @@ struct EERIE_QUAT {
 	float w;
 };
 
-struct EERIE_2D {
-	union {
-		float x;
-		float a;
-		float u;
-	};
-	union {
-		float y;
-		float b;
-		float v;
-	};
-};
-
-struct EERIE_3D {
-	
-	union {
-		float x;
-		float a;
-		float yaw;
-	};
-	union {
-		float y;
-		float b;
-		float pitch;
-	};
-	union {
-		float z;
-		float g;
-		float roll;
-	};
-	
-	inline EERIE_3D() {
-		// TODO initialize?
-	}
-	
-	inline EERIE_3D(const EERIE_3D & o) {
-		x = o.x, y = o.y, z = o.z;
-	}
-	
-	inline EERIE_3D(float _x, float _y, float _z) {
-		x = _x, y = _y, z = _z;
-	}
-	
-	inline void clear() {
-		x = y = z = 0.f;
-	}
-	
-	inline EERIE_3D operator-() const {
-		return EERIE_3D(-x, -y, -z);
-	}
-	
-	inline EERIE_3D & operator+=(const EERIE_3D & o) {
-		x += o.x, y += o.y, z += o.z;
-		return *this;
-	}
-	
-	inline EERIE_3D & operator-=(const EERIE_3D & o) {
-		x -= o.x, y -= o.y, z -= o.z;
-		return *this;
-	}
-	
-	inline EERIE_3D & operator*=(const EERIE_3D & o) {
-		x *= o.x, y *= o.y, z *= o.z;
-		return *this;
-	}
-	
-	inline EERIE_3D & operator+=(const float v) {
-		x += v, y += v, z += v;
-		return *this;
-	}
-	
-	inline EERIE_3D & operator-=(const float v) {
-		x -= v, y -= v, z -= v;
-		return *this;
-	}
-	
-	inline EERIE_3D & operator*=(const float v) {
-		x *= v, y *= v, z *= v;
-		return *this;
-	}
-	
-	inline EERIE_3D & operator/=(const float v) {
-		x /= v, y /= v, z /= v;
-		return *this;
-	}
-	
-	inline EERIE_3D operator+(const EERIE_3D & o) const {
-		return EERIE_3D(x + o.x, y + o.y, z + o.z);
-	}
-	
-	inline EERIE_3D operator-(const EERIE_3D & o) const {
-		return EERIE_3D(x - o.x, y - o.y, z - o.z);
-	}
-	
-	inline EERIE_3D operator*(const EERIE_3D & o) const {
-		return EERIE_3D(x * o.x, y * o.y, z * o.z);
-	}
-	
-	inline EERIE_3D operator+(const float v) const {
-		return EERIE_3D(x + v, y + v, z + v);
-	}
-	
-	inline EERIE_3D operator-(const float v) const {
-		return EERIE_3D(x - v, y - v, z - v);
-	}
-	
-	inline EERIE_3D operator*(const float v) const {
-		return EERIE_3D(x * v, y * v, z * v);
-	}
-	
-	inline EERIE_3D operator/(const float v) const {
-		return EERIE_3D(x / v, y / v, z / v);
-	}
-	
-	inline EERIE_3D & operator=(const EERIE_3D & o) {
-		x = o.x, y = o.y, z = o.z;
-		return *this;
-	}
-	
-	inline bool operator==(const EERIE_3D & o) {
-		return (x == o.x && y == o.y && z == o.z);
-	}
-	
-};
-
-struct EERIE_4D : EERIE_3D
-{
-	float w;
-};
-
 struct EERIEMATRIX {
 	float _11, _12, _13, _14;
 	float _21, _22, _23, _24;
@@ -158,19 +30,20 @@ struct EERIEMATRIX {
 };
 
 struct EERIE_CYLINDER {
-	EERIE_3D origin;
+	Vec3f origin;
 	float radius;
 	float height;
 };
 
 struct EERIE_SPHERE {
-	EERIE_3D origin;
+	
+	Vec3f origin;
 	float radius;
-};
-
-struct EERIE_S2D {
-	short x;
-	short y;
+	
+	bool contains(const Vec3f & pos) const {
+		return closerThan(pos, origin, radius);
+	}
+	
 };
 
 #endif // ARX_GRAPHICS_BASEGRAPHICSTYPES_H

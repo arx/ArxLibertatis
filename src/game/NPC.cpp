@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Core.h"
 #include "core/Config.h"
 
@@ -80,8 +80,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
-
-#include "io/IO.h"
 
 #include "physics/Box.h"
 #include "physics/Anchors.h"
@@ -107,7 +105,9 @@ void CheckNPCEx(INTERACTIVE_OBJ * io);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
 
+#ifdef BUILD_EDITOR
 extern long LastSelectedIONum;
+#endif
 
 extern long APPLY_PUSH;
 void StareAtTarget(INTERACTIVE_OBJ * io);
@@ -121,8 +121,8 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 
 	{
-		EERIE_3D ppos, pos, to;
-		EERIE_3D from(0.f, 0.f, -90.f);
+		Vec3f ppos, pos, to;
+		Vec3f from(0.f, 0.f, -90.f);
 		Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
 		ppos.x = io->pos.x;
 		pos.x = ppos.x + to.x;
@@ -131,7 +131,11 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 		ppos.z = io->pos.z;
 		pos.z = ppos.z + to.z;
 
-		if (DEBUGNPCMOVE) EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+#ifdef BUILD_EDITOR
+		if(DEBUGNPCMOVE) {
+			EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+		}
+#endif
 
 		float dmg;
 
@@ -144,7 +148,6 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 
 		long i = io->targetinfo;
-		float dist;
 
 		if (!ValidIONum(i)) return;
 
@@ -170,14 +173,14 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
 								{
-									dist = EEDistance3D(&pos, &inter.iobj[i]->obj->vertexlist3[k].v);
+									float dist = fdist(pos, inter.iobj[i]->obj->vertexlist3[k].v);
 
 									if ((dist <= dist_limit)
 											&&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
 									{
 										count++;
 
-										if (dist < mindist) mindist = dist;
+										if(dist < mindist) mindist = dist;
 									}
 								}
 
@@ -192,12 +195,8 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 									}
 
 								}
-								else
-								{
-									dist = EEDistance3D(&pos, &ioo->pos);
-
-									if (mindist <= 120.f)
-									{
+								else {
+									if(mindist <= 120.f) {
 										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
 									}
 								}
@@ -505,14 +504,14 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 	        ||	(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
 
-	float dist = EEDistance3D(&io->pos, &ACTIVECAM->pos);
+	float dists = distSqr(io->pos, ACTIVECAM->pos);
 
-	if (dist > ACTIVECAM->cdepth * ( 1.0f / 2 ))
+	if (dists > square(ACTIVECAM->cdepth) * square(1.0f / 2))
 		return 0;
 
 	long MAX_TEST;
 
-	if (dist < ACTIVECAM->cdepth * ( 1.0f / 4 ))
+	if (dists < square(ACTIVECAM->cdepth) * square(1.0f / 4))
 		MAX_TEST = 6; //4;
 	else
 		MAX_TEST = 4; //3;
@@ -555,10 +554,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC))))
 		{
-			float dist = EEDistance3D(&phys.cyl.origin, &ACTIVEBKG->anchors[pos].pos); 
-
-			if (dist < 30)
-			{
+			if(distSqr(phys.cyl.origin, ACTIVEBKG->anchors[pos].pos) < square(30.f)) {
 				return l_try;
 			}
 		}
@@ -569,17 +565,16 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 //*****************************************************************************
 // Checks for nearest VALID anchor for a cylinder from a position
 //*****************************************************************************
-long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl)
-{
+static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl) {
 	long returnvalue = -1;
-	float distmax = 99999999.f;
+	float distmax = FLT_MAX;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for (long i = 0; i < eb->nbanchors; i++)
 	{
 		if (eb->anchors[i].nblinked)
 		{
-			float d = EEDistance3D(&eb->anchors[i].pos, pos);
+			float d = distSqr(eb->anchors[i].pos, *pos);
 
 			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
 			        && (eb->anchors[i].radius >= cyl->radius)
@@ -593,26 +588,24 @@ long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl)
 
 	return returnvalue;
 }
-long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl)
-{
-	EERIE_3D vect;
-	float d = radians(beta);
-	vect.x = -EEsin(d);
-	vect.y = 0;
-	vect.z = EEcos(d);
-	TRUEVector_Normalize(&vect);
 
-	EERIE_3D posi;
+static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cyl) {
+	
+	float d = radians(beta);
+	Vec3f vect(-EEsin(d), 0, EEcos(d));
+	vect.normalize();
+
+	Vec3f posi;
 	posi.x = pos->x + vect.x * 50.f;
 	posi.y = pos->y;
 	posi.z = pos->z + vect.x * 50.f;
 	return AnchorData_GetNearest(&posi, cyl);
 }
 
-long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long except)
-{
+static long AnchorData_GetNearest_Except(Vec3f * pos, EERIE_CYLINDER * cyl, long except) {
+	
 	long returnvalue = -1;
-	float distmax = 99999999.f;
+	float distmax = FLT_MAX;
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for (long i = 0; i < eb->nbanchors; i++)
@@ -621,7 +614,7 @@ long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long exc
 
 		if (eb->anchors[i].nblinked)
 		{
-			float d = EEDistance3D(&eb->anchors[i].pos, pos);
+			float d = distSqr(eb->anchors[i].pos, *pos);
 
 			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
 			        && (eb->anchors[i].radius >= cyl->radius)
@@ -664,7 +657,7 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		return false;
 	}
 
-	EERIE_3D pos1, pos2;
+	Vec3f pos1, pos2;
 
 	if (io->_npcdata->pathfind.listnb > 0)
 	{
@@ -761,12 +754,10 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 	}
 
 	io->_npcdata->pathfind.truetarget = target;
-	float dist;
-	dist = EEDistance3D(&pos1, &pos2);
 
-	if ((EEDistance3D(&pos1, &ACTIVECAM->pos) < ACTIVECAM->cdepth * ( 1.0f / 2 ))
+	if ((distSqr(pos1, ACTIVECAM->pos) < square(ACTIVECAM->cdepth) * square(1.0f / 2))
 	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
-	        && (dist < 520) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
+	        && (distSqr(pos1, pos2) < square(520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_SNEAK))
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 	   )
@@ -786,11 +777,7 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC | CFLAG_NO_HEIGHT_MOD)) ))
 		{
-
-			dist = TRUEEEDistance3D(&phys.cyl.origin, &pos2);
-
-			if (dist < 100)
-			{
+			if(distSqr(phys.cyl.origin, pos2) < square(100.f)) {
 				io->_npcdata->pathfind.pathwait = 0;
 				return false;
 			}
@@ -829,20 +816,17 @@ wander:
 		if ((from == to) && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 			return true;
 
-		float dist1 = EEDistance3D(&pos1, &ACTIVEBKG->anchors[from].pos);
-
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
-		        (dist1 < 200.f))
+		        closerThan(pos1, ACTIVEBKG->anchors[from].pos, 200.f))
 		{
 			if (!(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			{
-				float dist2 = EEDistance3D(&pos2, &ACTIVEBKG->anchors[to].pos);
-				float dist3 = EEDistance3D(&ACTIVEBKG->anchors[from].pos, &ACTIVEBKG->anchors[to].pos);
+				if(closerThan(ACTIVEBKG->anchors[from].pos, ACTIVEBKG->anchors[to].pos, 200.f)) {
+					return false;
+				}
 
-				if (dist3 < 200.f) return false;
-
-				if ((dist2 > 200.f)) 
+				if(fartherThan(pos2, ACTIVEBKG->anchors[to].pos, 200.f))
 					goto failure;
 			}
 
@@ -880,7 +864,7 @@ failure:
 
 	io->_npcdata->pathfind.listnb = -2;
 
-	if (io->_npcdata->pathfind.flags & BEHAVIOUR_NONE) return false;
+	if (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) return false; // TODO was BEHAVIOUR_NONE
 
 	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 	return false;
@@ -998,13 +982,12 @@ void ARX_TEMPORARY_TrySound(float volume)
 
 		if (at > PHYSICS_CURIO->soundtime)
 		{
-			long material;
 
 			PHYSICS_CURIO->soundcount++;
 
 			if (PHYSICS_CURIO->soundcount < 5)
 			{
-
+				long material;
 				if ( EEIsUnderWater( &PHYSICS_CURIO->pos ) ) material = MATERIAL_WATER;
 				else if (PHYSICS_CURIO->material) material = PHYSICS_CURIO->material;
 				else material = MATERIAL_STONE;
@@ -1132,7 +1115,7 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 //***********************************************************************************************
 static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
 {
-	EERIE_3D ppos;
+	Vec3f ppos;
 	ppos.x = io->pos.x;
 	ppos.y = io->pos.y;
 	ppos.z = io->pos.z;
@@ -1251,8 +1234,7 @@ void ARX_PHYSICS_Apply()
 		{
 			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 
-			if ((io->obj->pbox->active == 1))
-			{
+			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
 
 				if (ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)FrameDiff, io->rubber, treatio[i].num))
@@ -1333,9 +1315,10 @@ void ARX_PHYSICS_Apply()
 
 			if (io->_npcdata->pathfind.pathwait) // Waiting For Pathfinder Answer
 			{
+#ifdef BUILD_EDITOR
 				if ((ValidIONum(LastSelectedIONum)) &&
 				        (io == inter.iobj[LastSelectedIONum])) ShowIOPath(io);
-
+#endif
 				if (io->_npcdata->pathfind.listnb == 0) // Not Found
 				{
 					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
@@ -1368,7 +1351,7 @@ void ARX_PHYSICS_Apply()
 //*************************************************************************************
 void FaceTarget2(INTERACTIVE_OBJ * io)
 {
-	EERIE_3D tv;
+	Vec3f tv;
 
 	if (!io->show) return;
 
@@ -1409,7 +1392,7 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 
 	if (rot != 0)
 	{
-		EERIE_3D temp;
+		Vec3f temp;
 		temp.x = io->move.x;
 		temp.y = io->move.y;
 		temp.z = io->move.z;
@@ -1433,8 +1416,6 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 		ARX_NPC_CreateExRotateData(io);
 	}
 
-	EERIE_3D tv;
-
 	if (!io->show) return;
 
 	if (io->ioflags & IO_NPC)
@@ -1447,11 +1428,9 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	if (io->_npcdata->behavior & BEHAVIOUR_NONE) return;
 
 	GetTargetPos(io);
-	tv.x = io->pos.x;
-	tv.y = io->pos.y;
-	tv.z = io->pos.z;
+	Vec3f tv = io->pos;
 
-	if (TRUEEEDistance3D(&tv, &io->target) <= 20.f) return; // To fix "stupid" rotation near target
+	if (dist(tv, io->target) <= 20.f) return; // To fix "stupid" rotation near target
 
 	if (((io->target.x - tv.x) == 0) && ((io->target.z - tv.z) == 0)) return;
 
@@ -1466,8 +1445,6 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 
 	if ((B < 180) && (B > 90))
 	{
-		rot = rot;
-
 		if (rot > A) rot = A;
 	}
 	else if ((B > 180) && (B < 270)) 
@@ -1477,8 +1454,6 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	}
 	else if (A < 180)
 	{
-		rot = rot;
-
 		if (rot > A) rot = A;
 	}
 	else
@@ -1531,9 +1506,9 @@ float GetTRUETargetDist(INTERACTIVE_OBJ * io)
 	if ((t >= 0) && (t < inter.nbmax) && (inter.iobj[t] != NULL))
 	{
 		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-			return TRUEEEDistance3D(&io->pos, &io->initpos);
+			return dist(io->pos, io->initpos);
 
-		return TRUEEEDistance3D(&io->pos, &inter.iobj[t]->pos);
+		return dist(io->pos, inter.iobj[t]->pos);
 	}
 
 	return 99999999.f;
@@ -1590,8 +1565,8 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	for (size_t i = 0; i < obj->selections[tw].selected.size(); i++)
 	{
-		float d = TRUEEEDistance3D(&obj->vertexlist[obj->selections[tw].selected[i]].v,
-		                           &obj->vertexlist[vert].v);
+		float d = dist(obj->vertexlist[obj->selections[tw].selected[i]].v,
+		               obj->vertexlist[vert].v);
 
 		if (d < 8.f)
 			return i;
@@ -1646,9 +1621,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	long	inpos	= 0;
 	long *	equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
-
 	if(!equival) {
 		delete nouvo;
+		return;
 	}
 
 	for(size_t k = 0; k < from->vertexlist.size(); k++) {
@@ -1846,7 +1821,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	io->obj->pbox->active		=	1;
 	io->obj->pbox->stopcount	=	0;
 
-	EERIE_3D pos, vector;
+	Vec3f pos, vector;
 
 	io->velocity.x				=	0.f;
 	io->velocity.y				=	0.f;
@@ -1934,8 +1909,7 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	if ( !tx.empty() )
 	{
 		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
-		for ( iterator iter = io->obj->selections.begin() ; iter != io->obj->selections.end() ; iter++ )
-		{
+		for(iterator iter = io->obj->selections.begin(); iter != io->obj->selections.end(); ++iter) {
 			if ( ( iter->selected.size() > 0 ) && ( !strcasecmp( iter->name, tx)))
 				return iter - io->obj->selections.begin();
 		}
@@ -2039,7 +2013,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 //***********************************************************************************************
 // Attempt to cut something on NPC
 //***********************************************************************************************
-void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
+void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 {
 	//return;
 	if (!target) return;
@@ -2052,7 +2026,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 	if	(target->GameFlags & GFLAG_NOGORE)
 		return;
 
-	float mindist = 9999.f;
+	float mindistSqr = FLT_MAX;
 	long numsel = -1;
 	long goretex = -1;
 
@@ -2097,11 +2071,11 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 			if (out < 3)
 			{
-				float dist = EEDistance3D(pos, &target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
+				float dist = distSqr(*pos, target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
 
-				if (dist < mindist)
+				if (dist < mindistSqr)
 				{
-					mindist = dist;
+					mindistSqr = dist;
 					numsel = i;
 				}
 			}
@@ -2112,7 +2086,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 	long hid = 0;
 
-	if (mindist < 60) // can only cut a close part...
+	if (mindistSqr < square(60)) // can only cut a close part...
 	{
 		short fl = GetCutFlag( target->obj->selections[numsel].name );
 
@@ -2413,7 +2387,7 @@ bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
 {
 	if ((!io) || (!io->anims[animnum])) return false;
 
-	EERIE_3D trans, trans2;
+	Vec3f trans, trans2;
 	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
 	float temp = radians(MAKEANGLE(180.f - io->angle.b));
 	_YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
@@ -2463,18 +2437,14 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 	io->_npcdata->strike_time += (short)FrameDiff;
 	ANIM_USE * ause = &io->animlayer[0];
 	ANIM_USE * ause1 = &io->animlayer[1];
-	float tdist = 999999.f;
+	float tdist = FLT_MAX;
 
-	if (ValidIONum(io->targetinfo))
-	{
-		tdist = EEDistance3D(&io->pos, &inter.iobj[io->targetinfo]->pos);
+	if ((io->_npcdata->pathfind.listnb) && (ValidIONum(io->_npcdata->pathfind.truetarget))) {
+		tdist = distSqr(io->pos, inter.iobj[io->_npcdata->pathfind.truetarget]->pos);
+	} else if(ValidIONum(io->targetinfo)) {
+		tdist = distSqr(io->pos, inter.iobj[io->targetinfo]->pos);
 	}
 
-	if ((io->_npcdata->pathfind.listnb)
-	        &&	(ValidIONum(io->_npcdata->pathfind.truetarget)))
-	{
-		tdist = EEDistance3D(&io->pos, &inter.iobj[io->_npcdata->pathfind.truetarget]->pos);
-	}
 
 
 
@@ -2487,8 +2457,8 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 		io->_npcdata->weapontype = 0;
 
 	if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-	        &&	(tdist <= TOLERANCE + 10)
-	        &&	((tdist <= TOLERANCE - 20) || (rnd() > 0.97f)))
+	        &&	(tdist <= square(TOLERANCE + 10))
+	        &&	((tdist <= square(TOLERANCE - 20)) || (rnd() > 0.97f)))
 	{
 		{
 			if ((ause->cur_anim == io->anims[ANIM_FIGHT_WAIT])
@@ -2496,7 +2466,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			{
 				float r = rnd();
 
-				if (tdist < TOLERANCE - 20) r = 0;
+				if (tdist < square(TOLERANCE - 20)) r = 0;
 
 				if (r < 0.1f)
 					TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
@@ -2521,7 +2491,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				FinishAnim(io, ause->cur_anim);
 				float r = rnd();
 
-				if (tdist < 340) r = 0;
+				if (tdist < square(340)) r = 0;
 
 				if (r < 0.33f)
 					TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
@@ -2620,7 +2590,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 		        &&	(ause1->cur_anim))
 		{
 			if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-			        &&	(tdist < STRIKE_DISTANCE)
+			        &&	(tdist < square(STRIKE_DISTANCE))
 			        &&	(io->_npcdata->strike_time > 0))
 			{
 				AcquireLastAnim(io);
@@ -2652,7 +2622,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			         &&	(ause1->cur_anim))
 			{
 				if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
-				        &&	(tdist < STRIKE_DISTANCE))
+				        &&	(tdist < square(STRIKE_DISTANCE)))
 				{
 					AcquireLastAnim(io);
 					FinishAnim(io, ause1->cur_anim);
@@ -2779,7 +2749,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(ause1->cur_anim))
 			{
 				if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-				        &&	(tdist < STRIKE_DISTANCE)
+				        &&	(tdist < square(STRIKE_DISTANCE))
 				        &&	(io->_npcdata->strike_time > 0))
 				{
 					AcquireLastAnim(io);
@@ -2810,7 +2780,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				         &&	(ause1->cur_anim))
 				{
 					if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
-					        &&	(tdist < STRIKE_DISTANCE))
+					        &&	(tdist < square(STRIKE_DISTANCE)))
 					{
 						AcquireLastAnim(io);
 						FinishAnim(io, ause1->cur_anim);
@@ -2988,7 +2958,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	        &&	(aup->aupflags & ARX_USEPATH_WORM_SPECIFIC))
 	{
 		io->room_flags |= 1;
-		EERIE_3D tv;
+		Vec3f tv;
 
 		if (aup->_curtime - aup->_starttime > 500)
 		{
@@ -3150,7 +3120,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	// look around if finished fleeing or being looking around !
 	if ((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
-	        &&	(EEDistance3D(&io->pos, &io->target) > 150.f))
+	        &&	distSqr(io->pos, io->target) > square(150.f))
 	{
 		if (!io->_npcdata->ex_rotate)
 		{
@@ -3237,10 +3207,10 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			return;
 	}
 
-	float dist = FLT_MAX;
+	float _dist = FLT_MAX;
 	long CHANGE = 0;
 
-	EERIE_3D ForcedMove;
+	Vec3f ForcedMove;
 	
 	// GetTargetPos MUST be called before FaceTarget2
 	if ((io->_npcdata->pathfind.listnb > 0)
@@ -3266,8 +3236,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	}
 
 	// XS : Moved to top of func
-	dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
-	dis = dist;
+	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
+	dis = _dist;
 
 	if (io->_npcdata->pathfind.listnb > 0)
 		dis = GetTRUETargetDist(io);
@@ -3502,14 +3472,11 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	
 
-	if ((io->forcedmove.x == 0.f) && (io->forcedmove.y == 0.f) && (io->forcedmove.z == 0.f))
-		ForcedMove.clear();
-	else
-	{
-		EERIE_3D vect = io->forcedmove;
-		float d = TRUEVector_Normalize(&vect);
-		float dd = min(d, (float)FrameDiff * ( 1.0f / 6 ));
-		ForcedMove = vect * dd;
+	if (io->forcedmove == Vec3f::ZERO)
+		ForcedMove = Vec3f::ZERO;
+	else {
+		float dd = min(1.f, (float)FrameDiff * ( 1.0f / 6 ) / io->forcedmove.length());
+		ForcedMove = io->forcedmove * dd;
 	}
 
 	// Sets Target position to desired position...
@@ -3548,9 +3515,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	io->forcedmove.y -= ForcedMove.y;
 	io->forcedmove.z -= ForcedMove.z;
 
+#ifdef BUILD_EDITOR
 	// Some visual debug stuff
-	if (DEBUGNPCMOVE)
-	{
+	if(DEBUGNPCMOVE) {
 		EERIE_CYLINDER cyll;
 		cyll.height = GetIOHeight(io); 
 		cyll.radius = GetIORadius(io); 
@@ -3576,6 +3543,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			cyll.height = GetIOHeight(io); 
 		}
 	}
+#endif
 
 	APPLY_PUSH = 0; 
 	DIRECT_PATH = true;
@@ -3607,8 +3575,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	APPLY_PUSH = 0;
 
 	// Compute distance 2D to target.
-	dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
-	dis = dist;
+	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
+	dis = _dist;
 
 	if (io->_npcdata->pathfind.listnb > 0)
 		dis = GetTRUETargetDist(io);
@@ -3619,7 +3587,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	// Tries to solve Moveproblems... sort of...
 	if (io->_npcdata->moveproblem > 11) 
 	{
-		if ((dist > TOLERANCE) && (!io->_npcdata->pathfind.pathwait))
+		if ((_dist > TOLERANCE) && (!io->_npcdata->pathfind.pathwait))
 		{
 			long targ;
 
@@ -3647,14 +3615,14 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	{
 		if (ValidIONum(io->_npcdata->pathfind.truetarget))
 		{
-			EERIE_3D * p = &inter.iobj[io->_npcdata->pathfind.truetarget]->pos;
+			Vec3f * p = &inter.iobj[io->_npcdata->pathfind.truetarget]->pos;
 			long t = AnchorData_GetNearest(p, &io->physics.cyl); 
 
 			if ((t != -1) && (t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]))
 			{
-				float dist = TRUEEEDistance3D(&ACTIVEBKG->anchors[t].pos, &ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
+				float d = dist(ACTIVEBKG->anchors[t].pos, ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
 
-				if (dist > 200.f)
+				if (d > 200.f)
 					ARX_NPC_LaunchPathfind(io, io->_npcdata->pathfind.truetarget);
 			}
 		}
@@ -3664,7 +3632,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	// We are still too far from our target...
 	if (io->_npcdata->pathfind.pathwait == 0)
 	{
-		if ((dist > TOLERANCE) && (dis > TOLERANCE2))
+		if ((_dist > TOLERANCE) && (dis > TOLERANCE2))
 		{
 			if ((io->_npcdata->reachedtarget))
 			{
@@ -3755,7 +3723,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				io->_npcdata->pathfind.listnb = -1;
 				io->_npcdata->pathfind.pathwait = 0;
 
-				if (io->_npcdata->pathfind.list) MemFree(io->_npcdata->pathfind.list);
+				if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 				io->_npcdata->pathfind.list = NULL;
 
@@ -3789,7 +3757,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
 
-					if (io->_npcdata->pathfind.list) MemFree(io->_npcdata->pathfind.list);
+					if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 					io->_npcdata->pathfind.list = NULL;
 					EVENT_SENDER = NULL;
@@ -3918,12 +3886,12 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 	if (!ioo) return NULL;
 
 	// Basic Clipping to avoid performance loss
-	float dist_cam = EEDistance3D(&ACTIVECAM->pos, &ioo->pos);
-
-	if (dist_cam > 2500) return NULL;
+	if(distSqr(ACTIVECAM->pos, ioo->pos) > square(2500)) {
+		return NULL;
+	}
 
 	INTERACTIVE_OBJ * found_io = NULL;
-	float found_dist = 9999999999999.f;
+	float found_dist = FLT_MAX;
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -3936,13 +3904,13 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 		        ||	(io->show != SHOW_FLAG_IN_SCENE))
 			continue;
 
-		float dist_io = EEDistance3D(&io->pos, &ioo->pos);
+		float dist_io = distSqr(io->pos, ioo->pos);
 
 		if ((dist_io > found_dist)
-		        ||	(dist_io > 1800))
+		        ||	(dist_io > square(1800)))
 			continue; // too far
 
-		if (dist_io < 130)
+		if (dist_io < square(130))
 		{
 			if (found_dist > dist_io)
 			{
@@ -3953,7 +3921,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 			continue;
 		}
 
-		EERIE_3D orgn, dest;
+		Vec3f orgn, dest;
 
 		float ab = MAKEANGLE(ioo->angle.b);
 
@@ -3989,7 +3957,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 
 		if (EEfabs(AngularDifference(aa, ab)) < 110.f)
 		{
-			if (dist_io < 200)
+			if (dist_io < square(200))
 			{
 				if (found_dist > dist_io)
 				{
@@ -4005,7 +3973,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 
 			if (grnd_color > 0) 
 			{
-				EERIE_3D ppos;
+				Vec3f ppos;
 				EERIEPOLY * epp = NULL;
 
 				if (IO_Visible(&orgn, &dest, epp, &ppos))
@@ -4018,7 +3986,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 
 					continue;
 				}
-				else if (EEDistance3D(&ppos, &dest) < 25.f)
+				else if (distSqr(ppos, dest) < square(25.f))
 				{
 					if (found_dist > dist_io)
 					{
@@ -4105,7 +4073,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 		}
 		else // Make full visibility test
 		{
-			EERIE_3D orgn, dest;
+			Vec3f orgn, dest;
 			// Retreives Head group position for "eye" pos.
 			long grp = io->obj->fastaccess.head_group_origin;
 			if (grp < 0)
@@ -4138,11 +4106,11 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 				        ||	(dist < 200))
 				{
 					EERIEPOLY * epp = NULL;
-					EERIE_3D ppos;
+					Vec3f ppos;
 
 					// Check for Geometrical Visibility
 					if ((IO_Visible(&orgn, &dest, epp, &ppos))
-					        ||	(EEDistance3D(&ppos, &dest) < 25.f))
+					        || distSqr(ppos, dest) < square(25.f))
 						Visible = 1;
 				}
 			}
@@ -4170,7 +4138,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 }
 
 //-------------------------------------------------------------------------
-void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float volume, const float power)
+void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power)
 {
 	char step_material[64] = "Foot_bare";
 	std::string floor_material = "EARTH";
@@ -4208,7 +4176,7 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float vol
 // Sends ON HEAR events to NPCs for audible sounds
 // factor > 1.0F harder to hear, < 0.0F easier to hear
 //***********************************************************************************************
-void ARX_NPC_SpawnAudibleSound(EERIE_3D * pos, INTERACTIVE_OBJ * source, const float factor, const float presence)
+void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const float factor, const float presence)
 {
 	float max_distance;
 
@@ -4237,18 +4205,16 @@ void ARX_NPC_SpawnAudibleSound(EERIE_3D * pos, INTERACTIVE_OBJ * source, const f
 		        &&	(inter.iobj[i]->_npcdata->life > 0.f)
 		   )
 		{
-			float distance(EEDistance3D(pos, &inter.iobj[i]->pos));
+			float distance = fdist(*pos, inter.iobj[i]->pos);
 
 			if (distance < max_distance)
 			{
 				if (inter.iobj[i]->room_flags & 1)
 					UpdateIORoom(inter.iobj[i]);
 
-				float fdist;
-
 				if ((Source_Room > -1) && (inter.iobj[i]->room > -1))
 				{
-					fdist = SP_GetRoomDist(pos, &inter.iobj[i]->pos, Source_Room, inter.iobj[i]->room);
+					float fdist = SP_GetRoomDist(pos, &inter.iobj[i]->pos, Source_Room, inter.iobj[i]->room);
 
 					if (fdist < max_distance * 1.5f)
 					{
@@ -4311,7 +4277,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 			if ((io) && (io->obj) && !io->obj->facelist.empty())
 			{
-				EERIE_3D	pos;
+				Vec3f	pos;
 				long		notok	=	10;
 				size_t num = 0;
 
@@ -4399,7 +4365,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			return;
 		}
 
-		EERIE_3D pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
+		Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
 
 		for (long nn = 0; nn < 2; nn++)
 		{
@@ -4448,7 +4414,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 			if ((io) && (io->obj) && !io->obj->facelist.empty())
 			{
-				EERIE_3D	pos;
+				Vec3f	pos;
 				long		notok	=	10;
 				size_t num = 0;
 
@@ -4514,7 +4480,7 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 		if (io->ignition > 100.f)
 			io->ignition = 100.f;
 
-		EERIE_3D position;
+		Vec3f position;
 
 		if (io->obj && (io->obj->fastaccess.fire >= 0))
 		{

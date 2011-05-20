@@ -2,12 +2,14 @@
 #include "io/Logger.h"
 
 #include <cstdlib>
+#include <cstring>
 
 #include "platform/Platform.h"
 
 #define BASH_COLOR !ARX_COMPILER_MSVC
 
 using std::cout;
+using std::string;
 
 Logger::LogLevel Logger::logLevel = Logger::Info;
 

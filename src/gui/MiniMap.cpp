@@ -69,7 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 
-#include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
@@ -211,10 +210,9 @@ void ARX_MINIMAP_Load_Offsets()
 	{
 		size_t siz = 0;
 		char * dat = (char *)PAK_FileLoadMallocZero(INI_MINI_OFFSETS, siz);
-		size_t pos = 0;
 
-		if (dat)
-		{
+		if(dat) {
+			size_t pos = 0;
 			for (long i = 0; i < 29; i++)
 			{
 				char t[512];
@@ -317,8 +315,6 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 	static const int FL2_BOTTOM = 295;
 	static const float FL2_PLAYERSIZE = 4.f;
 
-	float sstartx, sstarty;
-
 	if (!pTexDetect)
 		pTexDetect = TextureContainer::Load("Graph\\particles\\flare.bmp");
 
@@ -331,6 +327,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 	if (minimap[SHOWLEVEL].tc)
 	{
+		float sstartx, sstarty;
 		float startx, starty, casex, casey, ratiooo;
 		float mod_x = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
 		float mod_z = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
@@ -419,7 +416,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		float vy2 = 4.f * dh * mod_z;
 
 		float _px;
-		RECT boundaries;
+		Rect boundaries;
 		float MOD20, MOD20DIV, divXratio, divYratio;
 
 		boundaries.bottom = boundaries.left = boundaries.right = boundaries.top = 0;
@@ -735,8 +732,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-			if ((SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)))
-			{
+			if(SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+				
 				// Now Draws Playerpos/angle
 				verts[0].color = 0xFFFF0000;
 				verts[1].color = 0xFFFF0000;
@@ -904,8 +901,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 						if ( !Mapmarkers[i].tstring.empty() )
 						{
-							RECT rRect, bRect;
-							SetRect(&bRect, 140, 290, 140 + 205, 358);
+							Rect bRect(140, 290, 140 + 205, 358);
 
 							float fLeft		= (bRect.left) * Xratio ;
 							float fRight	= (bRect.right) * Xratio ;
@@ -917,12 +913,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							ARX_CHECK_INT(fTop);
 							ARX_CHECK_INT(fBottom);
 
-							SetRect(&rRect
-									, ARX_CLEAN_WARN_CAST_INT(fLeft)
-									, ARX_CLEAN_WARN_CAST_INT(fTop)
-									, ARX_CLEAN_WARN_CAST_INT(fRight)
-									, ARX_CLEAN_WARN_CAST_INT(fBottom));
-
+							Rect rRect = Rect(Rect::Num(fLeft), Rect::Num(fTop), Rect::Num(fRight), Rect::Num(fBottom));
 
 							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].tstring, rRect);
 
@@ -931,9 +922,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
 							Page_Buffer[lLengthDraw] = '\0';
 
-							DrawBookTextInRect( hFontInGameNote, ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
-											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right),
-											   Page_Buffer, 0 );
+							DrawBookTextInRect( hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Page_Buffer, 0 );
 						}
 					}
 

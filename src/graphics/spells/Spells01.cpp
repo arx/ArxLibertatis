@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells01.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Spells.h"
 #include "game/NPC.h"
@@ -80,15 +80,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
  
 extern long cur_mr;
 //-----------------------------------------------------------------------------
-void LaunchMagicMissileExplosion(EERIE_3D & _ePos, int t = 0, long spellinstance = -1)
+void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = -1)
 {
 	// syst�me de partoches pour l'explosion
-	CParticleSystem * pPS = new CParticleSystem();
-	CParticleParams cp;
+	ParticleSystem * pPS = new ParticleSystem();
+	ParticleParams cp;
 	cp.iNbMax = 100 + t * 50;
 	cp.fLife = 1500;
 	cp.fLifeRandom = 0;
@@ -161,7 +161,7 @@ void LaunchMagicMissileExplosion(EERIE_3D & _ePos, int t = 0, long spellinstance
 	pPS->ulParticleSpawn = 0;
 
 
-	EERIE_3D eP;
+	Vec3f eP;
 	eP.x = _ePos.x;
 	eP.y = _ePos.y;
 	eP.z = _ePos.z;
@@ -254,10 +254,9 @@ CMagicMissile::~CMagicMissile()
 }
 
 //-----------------------------------------------------------------------------
-void CMagicMissile::Create(EERIE_3D aeSrc, EERIE_3D angles)
+void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 {
-	int i;
-	EERIE_3D s, e;
+	Vec3f s, e;
 
 	SetDuration(ulDuration);
 	SetAngle(angles.b);
@@ -272,9 +271,7 @@ void CMagicMissile::Create(EERIE_3D aeSrc, EERIE_3D angles)
 	s = eSrc;
 	e = eSrc;
 
-	i = 0;
-
-	i = 40;
+	int i = 40;
 	e.x -= fBetaRadSin * 50 * i;
 	e.y += sin(radians(MAKEANGLE(this->angles.a))) * 50 * i;
 	e.z += fBetaRadCos * 50 * i;
@@ -354,13 +351,13 @@ float CMagicMissile::Render()
 {
 	int i = 0;
  
-	EERIE_3D lastpos, newpos;
-	EERIE_3D v;
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Vec3f lastpos, newpos;
+	Vec3f v;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
-	EERIE_3D av;
+	Vec3f av;
 
 	if (ulCurrentTime >= ulDuration)
 	{
@@ -468,7 +465,7 @@ float CMagicMissile::Render()
 				Draw3DLineTex(lastpos, newpos, color, fs, fe);
 			}
 
-			EERIE_3D temp_vector = lastpos;
+			Vec3f temp_vector = lastpos;
 			lastpos = newpos;
 			newpos = temp_vector;
 		}
@@ -509,7 +506,7 @@ float CMagicMissile::Render()
 		stitecolor.b = 0.5f;
 	}
 
-	stitescale = EERIE_3D(1, 1, 1);
+	stitescale = Vec3f(1, 1, 1);
 	{
 		if ((smissile))
 			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);
@@ -527,7 +524,7 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 	SetDuration(2000);
 	uiNumber = nbmissiles;
 	pTab = NULL;
-	pTab = new CSpellFx*[uiNumber]();
+	pTab = new CMagicMissile*[uiNumber]();
 
 
 	if (pTab)
@@ -562,15 +559,15 @@ CMultiMagicMissile::~CMultiMagicMissile()
 }
 
 //-----------------------------------------------------------------------------
-void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
+void CMultiMagicMissile::Create()
 {
+	
 	long lMax = 0;
 
 	if (pTab)
 	{
+		
 
-		float afAlpha = angles.a;
-		float afBeta = angles.b;
 		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "PRIMARY_ATTACH");
 
 		if (spells[spellinstance].hand_group != -1)
@@ -580,20 +577,20 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 			spells[spellinstance].hand_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
 		}
 
+		Vec3f aePos;
+		float afAlpha, afBeta;
 		if (spells[spellinstance].caster == 0) // player
 		{
 			afBeta = player.angle.b;
 			afAlpha = player.angle.a;
-			EERIE_3D vector;
+			Vec3f vector;
 			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
 			vector.y = EEsin(radians(afAlpha)) * 60.f;
 			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
 
 			if (spells[spellinstance].hand_group != -1)
 			{
-				aePos.x = spells[spellinstance].hand_pos.x + vector.x; 
-				aePos.y = spells[spellinstance].hand_pos.y + vector.y; 
-				aePos.z = spells[spellinstance].hand_pos.z + vector.z; 
+				aePos = spells[spellinstance].hand_pos + vector;
 			}
 			else
 			{
@@ -606,36 +603,32 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 		{
 			afAlpha = 0;
 			afBeta = inter.iobj[spells[spellinstance].caster]->angle.b;
-			EERIE_3D vector;
+			Vec3f vector;
 			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
 			vector.y = EEsin(radians(afAlpha)) * 60;
 			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
 
 			if (spells[spellinstance].hand_group != -1)
 			{
-				aePos.x = spells[spellinstance].hand_pos.x + vector.x; 
-				aePos.y = spells[spellinstance].hand_pos.y + vector.y; 
-				aePos.z = spells[spellinstance].hand_pos.z + vector.z; 
+				aePos = spells[spellinstance].hand_pos + vector;
 			}
 			else
 			{
-				aePos.x = inter.iobj[spells[spellinstance].caster]->pos.x + vector.x; 
-				aePos.y = inter.iobj[spells[spellinstance].caster]->pos.y + vector.y; 
-				aePos.z = inter.iobj[spells[spellinstance].caster]->pos.z + vector.z; 
+				aePos = inter.iobj[spells[spellinstance].caster]->pos + vector;
 			}
 
 			INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo))
 			{
-				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
-				EERIE_3D * p2 = &inter.iobj[io->targetinfo]->pos;
+				Vec3f * p1 = &spells[spellinstance].caster_pos;
+				Vec3f * p2 = &inter.iobj[io->targetinfo]->pos;
 				afAlpha = -(degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + TRUEDistance2D(p2->x, p2->z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
-				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
-				EERIE_3D * p2 = &inter.iobj[spells[spellinstance].target]->pos;
+				Vec3f * p1 = &spells[spellinstance].caster_pos;
+				Vec3f * p2 = &inter.iobj[spells[spellinstance].target]->pos;
 				afAlpha = -(degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + TRUEDistance2D(p2->x, p2->z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 		}
@@ -644,10 +637,7 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 		{
 			if (pTab[i])
 			{
-				EERIE_3D angles;
-				angles.a = afAlpha;
-				angles.b = afBeta;
-				angles.g = 0;
+				Anglef angles(afAlpha, afBeta, 0.f);
 
 				if (i > 0)
 				{
@@ -702,9 +692,7 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 						el->rgb.b = 1;
 					}
 
-					el->pos.x	 = pMM->eSrc.x;
-					el->pos.y	 = pMM->eSrc.y;
-					el->pos.z	 = pMM->eSrc.z;
+					el->pos	 = pMM->eSrc;
 					el->duration = 300;
 				}
 
@@ -729,19 +717,14 @@ void CMultiMagicMissile::CheckCollision()
 				if (pMM->bExplo == false)
 				{
 					EERIE_SPHERE sphere;
-					sphere.origin.x = pMM->eCurPos.x;
-					sphere.origin.y = pMM->eCurPos.y;
-					sphere.origin.z = pMM->eCurPos.z;
+					sphere.origin = pMM->eCurPos;
 					sphere.radius	= 10.f;
 
 					if ((spellinstance != -1) && (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)))
 					{
  
 
-						EERIE_3D eE3D;
-						eE3D.x = pMM->eCurPos.x;
-						eE3D.y = pMM->eCurPos.y;
-						eE3D.z = pMM->eCurPos.z;
+						Vec3f eE3D = pMM->eCurPos;
 						LaunchMagicMissileExplosion(pMM->eCurPos, 0, spellinstance);
 						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, inter.iobj[spells[spellinstance].caster]);
 
@@ -758,9 +741,7 @@ void CMultiMagicMissile::CheckCollision()
 
 						if (ttt != -1)
 						{
-							damages[ttt].pos.x	= pMM->eCurPos.x;
-							damages[ttt].pos.y	= pMM->eCurPos.y;
-							damages[ttt].pos.z	= pMM->eCurPos.z;
+							damages[ttt].pos = pMM->eCurPos;
 							damages[ttt].radius	= 80.f;
 							damages[ttt].damages = (4 + spells[spellinstance].caster_level * ( 1.0f / 5 )) * .8f; 
 							damages[ttt].area	= DAMAGE_FULL;
@@ -818,9 +799,7 @@ float CMultiMagicMissile::Render()
 				{
 					EERIE_LIGHT * el	= &DynLight[pMM->lLightId];
 					el->intensity		= 0.7f + 2.3f * fa;
-					el->pos.x			= pMM->eCurPos.x;
-					el->pos.y			= pMM->eCurPos.y;
-					el->pos.z			= pMM->eCurPos.z;
+					el->pos = pMM->eCurPos;
 					el->time_creation	= ARXTimeUL();
 				}
 
@@ -866,7 +845,7 @@ void CIgnit::Kill(void)
 }
 
 //-----------------------------------------------------------------------------
-void CIgnit::Create(EERIE_3D * posc, float perim, int speed)
+void CIgnit::Create(Vec3f * posc, float perim, int speed)
 {
 	this->pos = *posc;
 	this->perimetre = perim;
@@ -918,9 +897,7 @@ void CIgnit::AddLight(int aiLight)
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
-	this->tablight[this->nblight].poslight.x = GLight[aiLight]->pos.x;
-	this->tablight[this->nblight].poslight.y = GLight[aiLight]->pos.y;
-	this->tablight[this->nblight].poslight.z = GLight[aiLight]->pos.z;
+	this->tablight[this->nblight].poslight = GLight[aiLight]->pos;
 
 	this->tablight[this->nblight].idl = GetFreeDynLight();
 
@@ -935,9 +912,7 @@ void CIgnit::AddLight(int aiLight)
 		el->rgb.r = this->r;
 		el->rgb.g = this->g;
 		el->rgb.b = this->b;
-		el->pos.x = this->tablight[this->nblight].poslight.x;
-		el->pos.y = this->tablight[this->nblight].poslight.y;
-		el->pos.z = this->tablight[this->nblight].poslight.z;
+		el->pos = this->tablight[this->nblight].poslight;
 	}
 
 	this->nblight++;
@@ -967,18 +942,14 @@ void CIgnit::Update(unsigned long _ulTime)
 			{
 				if (this->tablight[nb].actif)
 				{
-					this->tablight[nb].posfx.x = this->pos.x + a * (this->tablight[nb].poslight.x - this->pos.x);
-					this->tablight[nb].posfx.y = this->pos.y + a * (this->tablight[nb].poslight.y - this->pos.y);
-					this->tablight[nb].posfx.z = this->pos.z + a * (this->tablight[nb].poslight.z - this->pos.z);
+					this->tablight[nb].posfx = this->pos + (this->tablight[nb].poslight - this->pos) * a;
 
 					int id = this->tablight[nb].idl;
 
 					if (id > 0)
 					{
 						DynLight[id].intensity = 0.7f + 2.f * rnd();
-						DynLight[id].pos.x = this->tablight[nb].posfx.x;
-						DynLight[id].pos.y = this->tablight[nb].posfx.y;
-						DynLight[id].pos.z = this->tablight[nb].posfx.z;
+						DynLight[id].pos = this->tablight[nb].posfx;
 					}
 				}
 			}
@@ -997,9 +968,7 @@ void CDoze::AddLightDoze(int aiLight)
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
-	this->tablight[this->nblight].poslight.x = GLight[aiLight]->pos.x;
-	this->tablight[this->nblight].poslight.y = GLight[aiLight]->pos.y;
-	this->tablight[this->nblight].poslight.z = GLight[aiLight]->pos.z;
+	this->tablight[this->nblight].poslight = GLight[aiLight]->pos;
 	this->tablight[this->nblight].idl = -1;
 
 	this->nblight++;
@@ -1041,7 +1010,7 @@ float CIgnit::Render() {
 //-----------------------------------------------------------------------------
 //							PORTALS
 //-----------------------------------------------------------------------------
-void Split(EERIE_3D * v, int a, int b, float yo)
+void Split(Vec3f * v, int a, int b, float yo)
 {
 	if (a != b)
 	{
@@ -1059,21 +1028,17 @@ void Split(EERIE_3D * v, int a, int b, float yo)
 }
 
 //-----------------------------------------------------------------------------
-void GenereArcElectrique(EERIE_3D * pos, EERIE_3D * end, EERIE_3D * tabdef, int nbseg)
+void GenereArcElectrique(Vec3f * pos, Vec3f * end, Vec3f * tabdef, int nbseg)
 {
-	tabdef[0].x = pos->x;
-	tabdef[0].y = pos->y;
-	tabdef[0].z = pos->z;
+	tabdef[0] = *pos;
 
-	tabdef[nbseg-1].x = end->x;
-	tabdef[nbseg-1].y = end->y;
-	tabdef[nbseg-1].z = end->z;
+	tabdef[nbseg-1] = *end;
 
 	Split(tabdef, 0, nbseg - 1, 20);
 }
 
 //-----------------------------------------------------------------------------
-void DrawArcElectrique(EERIE_3D * tabdef, int nbseg, TextureContainer * tex, float fBeta, int tsp)
+void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float fBeta, int tsp)
 {
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v2[4];
@@ -1094,11 +1059,9 @@ void DrawArcElectrique(EERIE_3D * tabdef, int nbseg, TextureContainer * tex, flo
 
 	for (i = 0; i < nbseg - 2; i++)
 	{
-		EERIE_3D astart;
+		Vec3f astart;
 
-		astart.x = tabdef[i].x;
-		astart.y = tabdef[i].y;
-		astart.z = tabdef[i].z;
+		astart = tabdef[i];
 
 		zz = 5; // size
 		xx = (float)(5 * cos(radians(fBeta)));
@@ -1193,7 +1156,7 @@ CPortal::~CPortal()
 }
 
 //-----------------------------------------------------------------------------
-void CPortal::AddNewEclair(EERIE_3D * endpos, int nbseg, int duration, int numpt)
+void CPortal::AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt)
 {
 	if (ARXPausedTimer) return;
 
@@ -1266,9 +1229,7 @@ void CPortal::Update(unsigned long _ulTime)
 				this->key++;
 			}
 
-			this->pos.x = this->sphereposdep.x + (this->sphereposend.x - this->sphereposdep.x) * a;
-			this->pos.y = this->sphereposdep.y + (this->sphereposend.y - this->sphereposdep.y) * a;
-			this->pos.z = this->sphereposdep.z + (this->sphereposend.z - this->sphereposdep.z) * a;
+			this->pos = this->sphereposdep + (this->sphereposend - this->sphereposdep) * a;
 			this->spherealpha = a * .5f;
 
 			if (!ARXPausedTimer) this->currduration += _ulTime;
@@ -1290,11 +1251,9 @@ void CPortal::Update(unsigned long _ulTime)
 			{
 				this->timeneweclair = (int)(100.f + rnd() * 200.f);
 
-				EERIE_3D endpos;
+				Vec3f endpos;
 				int	numpt = (int)(rnd() * (float)(this->spherenbpt - 1));
-				endpos.x = this->spherevertex[numpt].x + this->pos.x;
-				endpos.y = this->spherevertex[numpt].y + this->pos.y;
-				endpos.z = this->spherevertex[numpt].z + this->pos.z;
+				endpos = this->spherevertex[numpt] + this->pos;
 
 				this->AddNewEclair(&endpos, 32, (int)(1000.f + 1000.f * rnd()), numpt);
 			}
@@ -1304,9 +1263,7 @@ void CPortal::Update(unsigned long _ulTime)
 
 	if (this->lLightId >= 0)
 	{
-		DynLight[this->lLightId].pos.x = this->pos.x;
-		DynLight[this->lLightId].pos.y = this->pos.y;
-		DynLight[this->lLightId].pos.z = this->pos.z;
+		DynLight[this->lLightId].pos = this->pos;
 		DynLight[this->lLightId].intensity = 0.7f + 2.f * rnd();
 	}
 }
@@ -1320,7 +1277,7 @@ float CPortal::Render()
 	//calcul sphere
 	int			nb = this->spherenbpt;
 	D3DTLVERTEX * v = this->sphered3d, d3dvs;
-	EERIE_3D	* pt = this->spherevertex;
+	Vec3f	* pt = this->spherevertex;
 	int col = RGBA_MAKE(0, (int)(200.f * this->spherealpha), (int)(255.f * this->spherealpha), 255);
 
 	while (nb)

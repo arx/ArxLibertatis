@@ -10,9 +10,8 @@
 #include <cassert>
 
 #include "core/Core.h"
-
 #include "gui/Text.h"
-
+#include "graphics/font/Font.h"
 #include "io/Logger.h"
 
 using std::string;
@@ -20,12 +19,12 @@ using std::vector;
 
 struct TextManager::ManagedText {
 	Font* pFont;
-	RECT rRect;
-	RECT rRectClipp;
+	Rect rRect;
+	Rect rRectClipp;
 	string lpszUText;
 	float fDeltaY;
 	float fSpeedScrollY;
-	long lCol;
+	Color lCol;
 	long lTimeScroll;
 	long lTimeOut;
 };
@@ -37,7 +36,7 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & _rRect, long _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
+bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const Rect & _rRect, Color _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
 	
 	if(_lpszUText.empty()) {
 		return false;
@@ -65,7 +64,7 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & 
 	
 	if(iNbLigneClipp) 
 	{
-		Vector2i sSize = _pFont->GetTextSize(pArxText->lpszUText);
+		Vec2i sSize = _pFont->GetTextSize(pArxText->lpszUText);
 		sSize.y *= iNbLigneClipp;
 	
 		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.y;
@@ -76,13 +75,12 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & 
 	return true;
 }
 
-bool TextManager::AddText( Font* font, const std::string& str, long x, long y, long fgcolor)
-{
-	RECT r;
+bool TextManager::AddText( Font* font, const std::string& str, long x, long y, Color fgcolor) {
+	Rect r;
 	r.left = x;
 	r.top = y;
-	r.right = SHRT_MAX;
-	r.bottom = SHRT_MAX;
+	r.right = Rect::Limits::max();
+	r.bottom = Rect::Limits::max();
 	return AddText(font, str, r, fgcolor);
 }
 
@@ -119,24 +117,32 @@ void TextManager::Update(float _fDiffFrame) {
 			pArxText->lTimeScroll -= _iDiffFrame;
 		}
 		
-		itManage++;
+		++itManage;
 	}
 	
 }
 
 void TextManager::Render() {
 	vector<ManagedText *>::const_iterator itManage = entries.begin();
-	for(; itManage != entries.end(); itManage++) {
+	for(; itManage != entries.end(); ++itManage) {
 		
 		ManagedText * pArxText = *itManage;
 		
-		RECT* pRectClip = NULL;
-		if(pArxText->rRectClipp.right != SHRT_MAX || pArxText->rRectClipp.bottom != SHRT_MAX)
+		Rect * pRectClip = NULL;
+		if(pArxText->rRectClipp.right != Rect::Limits::max() || pArxText->rRectClipp.bottom != Rect::Limits::max()) {
 			pRectClip = &pArxText->rRectClipp;
+		}
+		
+		float maxx;
+		if(pArxText->rRect.right == Rect::Limits::max()) {
+			maxx = std::numeric_limits<float>::infinity();
+		} else {
+			maxx = static_cast<float>(pArxText->rRect.right);
+		}
 
-		long height = ARX_UNICODE_DrawTextInRect( pArxText->pFont, static_cast<float>(pArxText->rRect.left),
+		long height = ARX_UNICODE_DrawTextInRect(pArxText->pFont, static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
-		                                         static_cast<float>(pArxText->rRect.right),
+		                                         maxx,
 		                                         pArxText->lpszUText, pArxText->lCol, pRectClip);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;
@@ -146,7 +152,7 @@ void TextManager::Render() {
 void TextManager::Clear() {
 	
 	vector<ManagedText *>::iterator itManage;
-	for(itManage = entries.begin(); itManage < entries.end(); itManage++) {
+	for(itManage = entries.begin(); itManage < entries.end(); ++itManage) {
 		delete *itManage;
 	}
 	

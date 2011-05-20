@@ -344,7 +344,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	f32 poison;
 	f32 hunger;
 	SavedVec3 pos;
-	SavedVec3 angle;
+	SavedAnglef angle;
 	SavedVec3 size;
 	
 	char inzone[SIZE_ID];
@@ -438,7 +438,7 @@ struct SavedModInfo {
 	s32 link_origin;
 	SavedVec3 link_position;
 	SavedVec3 scale;
-	SavedVec3 rot;
+	SavedAnglef rot;
 	u32 flags;
 	
 	inline operator EERIE_MOD_INFO() {
@@ -595,8 +595,8 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	SavedVec3 lastpos;
 	SavedVec3 move;
 	SavedVec3 lastmove;
-	SavedVec3 angle;
-	SavedVec3 initangle;
+	SavedAnglef angle;
+	SavedAnglef initangle;
 	f32 scale;
 	u32 savetime;
 	f32 weight;
@@ -738,7 +738,7 @@ struct SavedExtraRotate {
 	
 	s32 flags;
 	s16 group_number[SAVED_MAX_EXTRA_ROTATE];
-	SavedVec3 group_rotate[SAVED_MAX_EXTRA_ROTATE];
+	SavedAnglef group_rotate[SAVED_MAX_EXTRA_ROTATE];
 	
 	inline operator EERIE_EXTRA_ROTATE() {
 		EERIE_EXTRA_ROTATE a;
@@ -889,8 +889,8 @@ struct SavedRect {
 	s32 right;
 	s32 bottom;
 	
-	inline operator RECT() {
-		RECT a;
+	inline operator Rect() {
+		Rect a;
 		a.left = left;
 		a.top = top;
 		a.right = right;
@@ -898,7 +898,7 @@ struct SavedRect {
 		return a;
 	}
 	
-	inline SavedRect & operator=(const RECT & b) {
+	inline SavedRect & operator=(const Rect & b) {
 		left = b.left;
 		top = b.top;
 		right = b.right;
@@ -1070,10 +1070,10 @@ struct SavedCamera {
 	f32 xmod;
 	f32 ymod;
 	SavedMatrix matrix;
-	SavedVec3 angle;
+	SavedAnglef angle;
 	
 	SavedVec3 d_pos;
-	SavedVec3 d_angle;
+	SavedAnglef d_angle;
 	SavedVec3 lasttarget;
 	SavedVec3 lastpos;
 	SavedVec3 translatetarget;
@@ -1099,7 +1099,7 @@ struct SavedCamera {
 	s32 nbdrawn;
 	f32 cdepth;
 	
-	SavedVec3 size;
+	SavedAnglef size;
 	
 	inline operator EERIE_CAMERA() {
 		
@@ -1121,7 +1121,7 @@ struct SavedCamera {
 		a.d_pos = d_pos, a.d_angle = d_angle;
 		a.lasttarget = lasttarget, a.lastpos = lastpos;
 		a.translatetarget = translatetarget;
-		a.lastinfovalid = lastinfovalid;
+		a.lastinfovalid = lastinfovalid != 0;
 		a.norm = norm;
 		a.fadecolor = fadecolor, a.clip = clip;
 		a.clipz0 = clipz0, a.clipz1 = clipz1;

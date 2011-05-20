@@ -25,11 +25,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Stream.h"
 
+#include <cstdio>
+
 #include "audio/AudioGlobal.h"
 #include "audio/codec/WAV.h"
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+using std::string;
 
 namespace audio {
 

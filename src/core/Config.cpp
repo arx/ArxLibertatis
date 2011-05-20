@@ -32,6 +32,7 @@
 #include "io/IniWriter.h"
 #include "io/Logger.h"
 #include "platform/String.h"
+#include "platform/Platform.h"
 #include "window/Input.h" // for key codes TODO remove
 
 using std::string;
@@ -491,9 +492,8 @@ InputKeyId ConfigReader::getKeyId(const string & name) const {
 		istringstream iss(name.substr(PREFIX_BUTTON.length()));
 		int key;
 		iss >> key;
-		key = DIK_BUTTON1 + key - 1;
-		if(!iss.bad() && key >= (int)DIK_BUTTON1 && key <= (int)DIK_BUTTON32) {
-			return key;
+		if(!iss.bad() && key >= 0 && key <= (int)(DIK_BUTTON32 - DIK_BUTTON1)) {
+			return DIK_BUTTON1 + key - 1;
 		}
 	}
 	
@@ -566,7 +566,7 @@ void Config::setDefaultActionKeys() {
 
 bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
 	
-	if(actionId < 0 || actionId >= NUM_ACTION_KEY || index > 1 || index < 0) {
+	if(actionId < 0 || (size_t)actionId >= NUM_ACTION_KEY || index > 1 || index < 0) {
 		return false;
 	}
 	
@@ -589,7 +589,7 @@ bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
 	// remove double key assignments
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
 		
-		if(i == actionId) {
+		if(i == (size_t)actionId) {
 			continue;
 		}
 		

@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IniReader.h"
 
 #include "platform/String.h"
+#include "platform/Thread.h"
 
 #include "scene/Interactive.h"
 
@@ -121,8 +122,6 @@ static const string ARX_SOUND_COLLISION_MAP_NAMES[] = {
 };
 
 static bool bIsActive(false);
-static HANDLE hUpdateThread(NULL);
-static bool bExitUpdateThread(false);
 
 
 static long ambiance_zone(INVALID_ID);
@@ -466,12 +465,12 @@ void ARX_SOUND_MixerSwitch(ArxMixer from, ArxMixer to) {
 }
 
 // Sets the position of the listener
-void ARX_SOUND_SetListener(const EERIE_3D * position, const EERIE_3D * front, const EERIE_3D * up)
+void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Vec3f * up)
 {
 	if (bIsActive)
 	{
-		aalSetListenerPosition(*(Vector3f *)position);
-		aalSetListenerDirection(*(Vector3f *)front, *(Vector3f *)up);
+		aalSetListenerPosition(*position);
+		aalSetListenerDirection(*front, *up);
 	}
 }
 
@@ -486,7 +485,7 @@ void ARX_SOUND_EnvironmentSet(const string & name) {
 	}
 }
 
-long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, float pitch, SoundLoopMode loop) {
+long ARX_SOUND_PlaySFX(ArxSound & sample_id, const Vec3f * position, float pitch, SoundLoopMode loop) {
 	if (!bIsActive || sample_id == INVALID_ID) return INVALID_ID;
 
 	Channel channel;
@@ -498,7 +497,7 @@ long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, float pi
 
 	if (position)
 	{
-		if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE)
+		if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 	}
 
@@ -569,7 +568,7 @@ long ARX_SOUND_PlayMenu(ArxSound & sample_id, float pitch, SoundLoopMode loop) {
 }
 
 
-void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vector3f & pos)
+void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vec3f & pos)
 {
 	if (io)
 	{
@@ -618,7 +617,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 			channel.position.z = io->pos.z;
 		}
 
-		if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, &io->pos) > ARX_SOUND_REFUSE_DISTANCE)
+		if (ACTIVECAM && distSqr(ACTIVECAM->pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 
 		if (io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.0F)
@@ -641,7 +640,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source)
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source)
 {
 	if (!bIsActive) return 0;
 
@@ -671,7 +670,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EE
 
 	if (position)
 	{
-		if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE)
+		if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 	}
 
@@ -683,7 +682,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EE
 		channel.position.y = position->y;
 		channel.position.z = position->z;
 	} else {
-		ARX_PLAYER_FrontPos((EERIE_3D *)&channel.position);
+		ARX_PLAYER_FrontPos(&channel.position);
 	}
 
 	channel.pitch = 0.9F + 0.2F * rnd();
@@ -696,7 +695,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EE
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source) {
+long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source) {
 	
 	if(!bIsActive) {
 		return 0;
@@ -746,11 +745,11 @@ long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float
 		channel.position.x = position->x;
 		channel.position.y = position->y;
 		channel.position.z = position->z;
-		if(ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE) {
+		if(ACTIVECAM && fartherThan(ACTIVECAM->pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
 			return -1;
 		}
 	} else {
-		ARX_PLAYER_FrontPos((EERIE_3D *)&channel.position);
+		ARX_PLAYER_FrontPos(&channel.position);
 	}
 	
 	channel.pitch = 0.975f + 0.5f * rnd();
@@ -782,16 +781,16 @@ long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float
 
 	if (io)
 	{
-		GetItemWorldPositionSound(io, (EERIE_3D *)&channel.position); // TODO this cast is wrong
+		GetItemWorldPositionSound(io, &channel.position); // TODO this cast is wrong
 
 		if (loop != ARX_SOUND_PLAY_LOOPED)
 		{
-			EERIE_3D ePos;
+			Vec3f ePos;
 			ePos.x = channel.position.x;
 			ePos.y = channel.position.y;
 			ePos.z = channel.position.z;
 
-			if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, &ePos) > ARX_SOUND_REFUSE_DISTANCE)
+			if (ACTIVECAM && distSqr(ACTIVECAM->pos, ePos) > square(ARX_SOUND_REFUSE_DISTANCE))
 				return -1;
 		}
 	}
@@ -814,7 +813,7 @@ long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float
 	return sample_id;
 }
 
-long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
+long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 {
 	if (!bIsActive || sample_id == INVALID_ID) return INVALID_ID;
 
@@ -836,7 +835,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
 		channel.position.z = position->z;
 	}
 
-	if (ACTIVECAM && EEDistance3D(&ACTIVECAM->pos, position) > ARX_SOUND_REFUSE_DISTANCE)
+	if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 		return -1;
 
 	aalSamplePlay(sample_id, channel);
@@ -866,13 +865,13 @@ long ARX_SOUND_PlayCinematic(const string & name) {
 
 	if (ACTIVECAM)
 	{
-		EERIE_3D front, up;
+		Vec3f front, up;
 		float t;
 		t = radians(MAKEANGLE(ACTIVECAM->angle.b));
 		front.x = -EEsin(t);
 		front.y = 0.f;
 		front.z = EEcos(t);
-		TRUEVector_Normalize(&front);
+		front.normalize();
 		up.x = 0.f;
 		up.y = 1.f;
 		up.z = 0.f;
@@ -914,18 +913,18 @@ void ARX_SOUND_RefreshPitch(ArxSound & sample_id, float pitch) {
 		aalSetSamplePitch(sample_id, pitch);
 }
 
-void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const EERIE_3D * position)
+void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const Vec3f * position)
 {
 	if (bIsActive && sample_id != INVALID_ID)
 	{
 		if (position)
-			aalSetSamplePosition(sample_id, *(Vector3f *)position);
+			aalSetSamplePosition(sample_id, *position);
 		else
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 
 			ARX_PLAYER_FrontPos(&pos);
-			aalSetSamplePosition(sample_id, *(Vector3f *)&pos);
+			aalSetSamplePosition(sample_id, pos);
 		}
 	}
 }
@@ -934,7 +933,7 @@ void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ
 {
 	if (!bIsActive || !io || sample_id == INVALID_ID) return;
 
-	Vector3f position;
+	Vec3f position;
 
 	if (io)
 	{
@@ -1911,6 +1910,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 	const IniSection * section = reader.getSection(Section::presence);
 	if(!section) {
 		LogWarning << "no [" << Section::presence << "] section in presence map " << file;
+		return;
 	}
 	
 	for(IniSection::iterator i = section->begin(); i != section->end(); ++i) {
@@ -1933,47 +1933,37 @@ static float GetSamplePresenceFactor(const string & _name) {
 	return 1.f;
 }
 
-LARGE_INTEGER Sstart_chrono, Send_chrono;
-unsigned long BENCH_SOUND = 0;
-LPTHREAD_START_ROUTINE UpdateSoundThread(char *)
-{
-	while (!bExitUpdateThread)
-	{
-		Sleep(ARX_SOUND_UPDATE_INTERVAL);
-		QueryPerformanceCounter(&Sstart_chrono);
-		aalUpdate();
-		QueryPerformanceCounter(&Send_chrono);
-		BENCH_SOUND = (unsigned long)(Send_chrono.QuadPart - Sstart_chrono.QuadPart);
+class SoundUpdateThread : public StoppableThread {
+	
+	void run() {
+		
+		while(!isStopRequested()) {
+			
+			sleep(ARX_SOUND_UPDATE_INTERVAL);
+			
+			aalUpdate();
+		}
+		
 	}
+	
+};
 
-	ExitThread(0);
+static SoundUpdateThread * updateThread = NULL;
 
-	return 0;
+static void ARX_SOUND_LaunchUpdateThread() {
+	
+	arx_assert(!updateThread);
+	
+	updateThread = new SoundUpdateThread();
+	updateThread->start();
 }
 
-static void ARX_SOUND_LaunchUpdateThread()
-{
-	DWORD id;
-
-	if (hUpdateThread) return;
-
-	bExitUpdateThread = false;
-
-	hUpdateThread = (HANDLE)CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UpdateSoundThread, NULL, 0, &id);
-
-	if (hUpdateThread) SetThreadPriority(hUpdateThread, THREAD_PRIORITY_NORMAL);//_LOWEST);
-}
-
-static void ARX_SOUND_KillUpdateThread()
-{
-	if (!hUpdateThread) return;
-
-	SetThreadPriority(hUpdateThread, THREAD_PRIORITY_HIGHEST);
-
-	bExitUpdateThread = true;
-
-	if (WaitForSingleObject(hUpdateThread, INFINITE) == WAIT_TIMEOUT)
-		LogError << "Failed while killing audio thread";
-
-	CloseHandle(hUpdateThread), hUpdateThread = NULL;
+static void ARX_SOUND_KillUpdateThread() {
+	
+	if(!updateThread) {
+		return;
+	}
+	
+	updateThread->stop();
+	delete updateThread, updateThread = NULL;
 }

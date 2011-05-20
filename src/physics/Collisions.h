@@ -54,48 +54,66 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_COLLISIONS_H
-#define ARX_COLLISIONS_H
 
-#include "graphics/data/Mesh.h"
+#ifndef ARX_PHYSICS_COLLISIONS_H
+#define ARX_PHYSICS_COLLISIONS_H
 
-//-----------------------------------------------------------------------------
-#define MAX_IN_SPHERE 20
+#include <stddef.h>
 
-//-----------------------------------------------------------------------------
-extern long MAX_IN_SPHERE_Pos;
-extern short EVERYTHING_IN_SPHERE[MAX_IN_SPHERE+1];
-extern long EXCEPTIONS_LIST_Pos;
-extern short EXCEPTIONS_LIST[MAX_IN_SPHERE+1];
+#include "platform/Flags.h"
+#include "platform/math/Vector3.h"
+
+struct IO_PHYSICS;
+struct INTERACTIVE_OBJ;
+struct EERIE_SPHERE;
+struct EERIE_CYLINDER;
+struct EERIEPOLY;
+
+const size_t MAX_IN_SPHERE = 20;
+
+extern size_t MAX_IN_SPHERE_Pos;
+extern short EVERYTHING_IN_SPHERE[MAX_IN_SPHERE + 1];
+extern size_t EXCEPTIONS_LIST_Pos;
+extern short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 extern bool DIRECT_PATH;
 
-//-----------------------------------------------------------------------------
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags=0);
-float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long flags=0);
-// CheckIOInSphere Flags START -------------------------------------------
-#define CAS_NO_NPC_COL			1
-#define CAS_NO_SAME_GROUP		2
-#define CAS_NO_BACKGROUND_COL	4
-#define CAS_NO_ITEM_COL			8
-#define CAS_NO_FIX_COL			16
-#define CAS_NO_DEAD_COL			32
-// CheckIOInSphere Flags END ---------------------------------------------
-bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags=0,long *num=NULL); //except source...
-bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ=-1); //except source...
-EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere); //except source...
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags = 0);
+float CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo, long flags = 0);
+
+enum CheckAnythingInSphereFlag {
+	 CAS_NO_NPC_COL        = (1<<0),
+	 CAS_NO_SAME_GROUP     = (1<<1),
+	 CAS_NO_BACKGROUND_COL = (1<<2),
+	 CAS_NO_ITEM_COL       = (1<<3),
+	 CAS_NO_FIX_COL        = (1<<4),
+	 CAS_NO_DEAD_COL       = (1<<5)
+};
+DECLARE_FLAGS(CheckAnythingInSphereFlag, CASFlags)
+DECLARE_FLAGS_OPERATORS(CASFlags)
+
+//except source...
+bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags = 0, long * num = NULL);
+
+//except source...
+bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ = -1);
+
+//except source...
+EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere);
  
-bool IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo);
-// CheckIOInSphere Flags START -------------------------------------------
-#define IIS_NO_NOCOL	1
-// CheckIOInSphere Flags END ---------------------------------------------
-bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags=0);
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags);
-bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit);
+bool IsCollidingIO(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
 
-void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status);
+/*!
+ * @param ignoreNoCollisionFlag true if the IO_NO_COLLISIONS on the interactive object should be ignored
+ */
+bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag = false);
+
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags);
+bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit);
+
+void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io, long status);
 void ANCHOR_BLOCK_Clear();
-float CylinderPlatformCollide(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io);
+float CylinderPlatformCollide(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io);
 bool IsAnyNPCInPlatform(INTERACTIVE_OBJ * pfrm);
-void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec);
+void PushIO_ON_Top(INTERACTIVE_OBJ * ioo, float ydec);
 
-#endif
+#endif // ARX_PHYSICS_COLLISIONS_H

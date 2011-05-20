@@ -22,11 +22,14 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef HACHAGE_H
-#define HACHAGE_H
+
+#ifndef ARX_IO_HASHMAP_H
+#define ARX_IO_HASHMAP_H
 
 #include <stddef.h>
 #include <string>
+
+// TODO replace / make typesafe
 
 class HashMap {
 	
@@ -34,7 +37,7 @@ private:
 	
 	struct Entry {
 		std::string name;
-		void * value;
+		void* value;
 	};
 	
 	size_t size;
@@ -45,18 +48,19 @@ private:
 	
 private:
 	
-	size_t FuncH1( size_t );
-	size_t FuncH2( size_t );
-	size_t getHash( const std::string& );
+	static size_t FuncH1(size_t);
+	static size_t FuncH2(size_t);
+	static size_t getHash(const std::string &);
 	
 public:
 	
-	HashMap(size_t size = 256);
+	HashMap(size_t _size = 256);
 	~HashMap();
 	
-	bool add( const std::string& name, void * value = NULL );
+	bool add(const std::string & name, void * value);
 	
-	void* get( const std::string& name );
+	void * get(const std::string & name) const;
+	
 };
 
-#endif
+#endif // ARX_IO_HASHMAP_H

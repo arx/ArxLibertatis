@@ -85,7 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Resource.h"
 #include "core/AVI.h"
 #include "core/Localisation.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Missile.h"
 #include "game/Damage.h"
@@ -94,12 +94,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Levels.h"
 #include "game/Inventory.h"
+#include "game/NPC.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
+#include "gui/TextManager.h"
 
 #include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
@@ -112,7 +114,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
@@ -122,11 +123,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Screenshot.h"
  
 #include "physics/Collisions.h"
-#include "physics/Actors.h"
-#include "physics/Physics.h"
+#include "physics/Attractors.h"
 
 #include "platform/String.h"
 #include "platform/Random.h"
+#include "platform/Thread.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -169,12 +170,9 @@ extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CDirectInput		*pGetInfoDirectInput;
 extern CMenuState		*pMenu;
-extern SNAPSHOTINFO		snapshotdata;
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern HWND		PRECALC;
-extern HWND		CDP_LIGHTOptions;
-extern HWND		CDP_FogOptions;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bSkipVideoIntro;
@@ -189,7 +187,6 @@ extern float	PROGRESS_BAR_TOTAL;
 extern float	vdist;
 extern float	FLOATTEST;
 extern float	_MAX_CLIP_DIST;
-extern float	BIGLIGHTPOWER;
 extern long		LastSelectedIONum;
 extern long		FistParticles;
 extern long		INTER_DRAW;
@@ -270,10 +267,11 @@ HINSTANCE hInstance;
 PROJECT Project;
 
 //-----------------------------------------------------------------------------
-EERIE_3D LASTCAMPOS,LASTCAMANGLE;
-EERIE_3D PUSH_PLAYER_FORCE;
+Vec3f LASTCAMPOS;
+Anglef LASTCAMANGLE;
+Vec3f PUSH_PLAYER_FORCE;
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
-CParticleManager	*pParticleManager = NULL;
+ParticleManager	*pParticleManager = NULL;
 INTERACTIVE_OBJ		*lastCAMERACONTROLLER=NULL;
 TextureContainer *  ombrignon = NULL;
 TextureContainer *  teleportae = NULL;
@@ -313,10 +311,10 @@ long NEED_TEST_TEXT=0;
 SPELL_ICON spellicons[SPELL_COUNT];
 bool bGToggleCombatModeWithKey;
 
-EERIE_S2D DANAEMouse;
-EERIE_3D moveto;
-EERIE_3D Mscenepos;
-EERIE_3D lastteleport;
+Vec2s DANAEMouse;
+Vec3f moveto;
+Vec3f Mscenepos;
+Vec3f lastteleport;
 EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
 EERIE_3DOBJ	* arrowobj=NULL;			// 3D Object for arrows
 EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
@@ -332,13 +330,10 @@ EERIE_CAMERA DynLightCam;
 INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
 std::string WILLADDSPEECH;
 
-EERIE_S2D STARTDRAG;
+Vec2s STARTDRAG;
 INTERACTIVE_OBJ * COMBINE=NULL;
-HWND MESH_REDUCTION_WINDOW=NULL;
 
 QUAKE_FX_STRUCT QuakeFx;
-const char * GTE_TITLE;
-char * GTE_TEXT;
 std::string LAST_FAILED_SEQUENCE = "None";
 // START - Information for Player Teleport between/in Levels-------------------------------------
 char TELEPORT_TO_LEVEL[64];
@@ -366,8 +361,7 @@ float LASTfps2=0;
 float fps2=0;
 float fps2min=0;
 long LASTfpscount=0;
-long DEBUG1ST=0;
-long MAPUPDATE=0;
+
 long EXTERNALVIEW=0;
 long LASTEXTERNALVIEW=1;
 long EXTERNALVIEWING=0;
@@ -382,14 +376,11 @@ long DANAECENTERY;
 long CurrFightPos=0;
 long NO_PLAYER_POSITION_RESET=0;
 long CURRENT_BASE_FOCAL=310;
-long GTE_SIZE;
 long CINE_PRELOAD=0;
 long PLAY_LOADED_CINEMATIC=0;
 long PauseScript=0;
-long A_FLARES=1;
 long ADDED_IO_NOT_SAVED=0;
 long WILL_RELOAD_ALL_TEXTURES=0;	// Set To 1 if Textures are to be reloaded from disk and restored.
-long CHANGE_LEVEL_PROC_RESULT=-1;
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;
@@ -421,7 +412,6 @@ long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
 long USE_OLD_MOUSE_SYSTEM=1;
 long NO_TEXT_AT_ALL		= 0;
-long ARX_DEMO			= 0;
 long LAST_CONVERSATION	= 0;
 long FAST_SPLASHES		= 0;
 long FORCE_SHOW_FPS		= 0;
@@ -429,17 +419,13 @@ long FINAL_RELEASE		= 0;
 long AUTO_FULL_SCREEN	= 0;
 long SHOW_INGAME_MINIMAP= 1;
 long DEBUG_FRUSTRUM		= 0;
-long GAME_EDITOR		= 1;
-long NEED_EDITOR		= 1;
 long USE_CEDRIC_ANIM	= 1;
-extern long NEED_BENCH;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long NOBUILDMAP			= 0;
-long TRUEFIGHT			= 0;
 long DONT_ERASE_PLAYER	= 0;
 float LastFrameTicks		= 0;
 long SPLASH_THINGS_STAGE= 0;
@@ -450,29 +436,39 @@ long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
 long BOOKBUTTON			= 0;
 long LASTBOOKBUTTON		= 0;
-long TSU_LIGHTING		= 0; // must be 0 at start !
 
 long FASTmse			= 0;
-long LASTMOULINEX		=-1;
-long PROCESS_ALL_THEO	= 1;
-long PROCESS_LEVELS		= 1;
-long PROCESS_NO_POPUP	= 0;
-long PROCESS_ONLY_ONE_LEVEL=-1;
 
 //-----------------------------------------------------------------------------
 // EDITOR FLAGS/Vars
 //-----------------------------------------------------------------------------
 // Flag used to Launch Moulinex
-long MOULINEX=0;
-long KILL_AT_MOULINEX_END=0;
-long HIPOLY=0;			// Are We Using Poly-Spawning Ray-Casted Shadows ?
-long NODIRCREATION=0;	// No IO Directory Creation ?
-long LOADEDD=0;			// Is a Level Loaded ?
-long WILLLOADLEVEL=0;	// Is a LoadLevel command waiting ?
-long WILLSAVELEVEL=0;	// Is a SaveLevel command waiting ?
-long EDITMODE=0;		// EditMode (1) or GameMode (0) ?
-long EDITION=EDITION_IO;	// Sub-EditMode
-long USE_COLLISIONS=1;
+long LOADEDD = 0; // Is a Level Loaded ?
+#ifdef BUILD_EDITOR
+long EDITMODE = 0; // EditMode (1) or GameMode (0) ?
+long EDITION=EDITION_IO; // Sub-EditMode
+long MOULINEX = 0;
+long LASTMOULINEX = -1;
+long KILL_AT_MOULINEX_END = 0;
+long USE_COLLISIONS = 1;
+long WILLLOADLEVEL = 0; // Is a LoadLevel command waiting ?
+long WILLSAVELEVEL = 0; // Is a SaveLevel command waiting ?
+long NODIRCREATION = 0; // No IO Directory Creation ?
+HWND MESH_REDUCTION_WINDOW = NULL;
+const char * GTE_TITLE;
+char * GTE_TEXT;
+long GTE_SIZE;
+long CHANGE_LEVEL_PROC_RESULT = -1;
+long DEBUGNPCMOVE = 0; // Debug NPC Movements
+static long TSU_LIGHTING = 0; // must be 0 at start !
+static long PROCESS_ALL_THEO = 1;
+static long PROCESS_LEVELS = 1;
+static long PROCESS_NO_POPUP = 0;
+static long PROCESS_ONLY_ONE_LEVEL = -1;
+long GAME_EDITOR = 1;
+static long NEED_EDITOR = 1;
+long TRUEFIGHT = 0;
+#endif
 
 long ARX_CONVERSATION=0;
 long CHANGE_LEVEL_ICON=-1;
@@ -481,11 +477,8 @@ long ARX_MOUSE_OVER=0;
 //-----------------------------------------------------------------------------
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
-long DEBUGCODE=0;		// Debug Code to Console
-long DEBUGNPCMOVE=0;	// Debug NPC Movements
 long LaunchDemo=0;
 long FirstFrame=1;
-short Cross=0;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
 unsigned char ARX_FLARES_Block=1;
@@ -515,6 +508,8 @@ long USE_PORTALS = 3;
 //-----------------------------------------------------------------------------
 // Toolbar Buttons Def
 //-----------------------------------------------------------------------------
+
+#ifdef BUILD_EDITOR
 
 // TODO maybe this is a wine-specific bug?
 #define TBBUTTON_INIT {0,0} // was: 0L
@@ -547,6 +542,8 @@ TBBUTTON tbButtons [] = {
 {0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
 };
 
+#endif
+
 //-----------------------------------------------------------------------------
 
 void LoadSysTextures();
@@ -554,7 +551,9 @@ HRESULT DANAEFinalCleanup();
 void ShowFPS();
 void ShowTestText();
 void ManageNONCombatModeAnimations();
+#ifdef BUILD_EDITOR
 void LaunchMoulinex();
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -692,7 +691,9 @@ void DanaeSwitchFullScreen()
 {
 	if (danaeApp.m_pDeviceInfo->bWindowed) // switching to fullscreen
 	{
+#ifdef BUILD_EDITOR
 		KillInterTreeView();
+#endif
 	}
 
 		int nb=danaeApp.m_pDeviceInfo->dwNumModes;
@@ -923,9 +924,9 @@ void InitializeDanae()
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
 	InitNodes(1);
 
-	player.size.y=subj.size.y=-PLAYER_BASE_HEIGHT;
-	player.size.x=subj.size.x=PLAYER_BASE_RADIUS;
-	player.size.z=subj.size.z=PLAYER_BASE_RADIUS;
+	player.size.y=subj.size.a=-PLAYER_BASE_HEIGHT;
+	player.size.x=subj.size.b=PLAYER_BASE_RADIUS;
+	player.size.z=subj.size.g=PLAYER_BASE_RADIUS;
 	player.desiredangle.a=player.angle.a=subj.angle.a=3.f;
 	player.desiredangle.b=player.angle.b=subj.angle.b=268.f;
 	player.desiredangle.g=player.angle.g=subj.angle.g=0.f;
@@ -1034,8 +1035,11 @@ void InitializeDanae()
 		strcpy(LastLoadedScene,levelPath);
 	}
 
-	if ((GAME_EDITOR) && (!MOULINEX))
+#ifdef BUILD_EDITOR
+	if(GAME_EDITOR && !MOULINEX) {
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
+	}
+#endif
 
 }
 
@@ -1044,79 +1048,76 @@ void InitializeDanae()
 void forInternalPeople(LPSTR strCmdLine) {
 	LogDebug << "not FOR_EXTERNAL_PEOPLE";
 	char * param[10];
-	long parampos=0;
 
 	param[0]=strtok(strCmdLine," ");
 
 	for (long j=1;j<10;j++)
 		param[j]=strtok(NULL," ");
 
-	if ((param[parampos] != NULL)) {
-		if (!strcasecmp(param[parampos],"demo")) {
-			ARX_DEMO=1;
+#ifdef BUILD_EDITOR
+	long parampos = 0;
+	if((param[parampos] != NULL)) {
+		LogInfo << "PARAMS";
+		FINAL_RELEASE=0;
+		GAME_EDITOR=1;
+		
+		if (!strcasecmp(param[parampos],"editor")) {
+			LogInfo << "PARAM EDITOR";
+			NEED_ANCHORS=1;
 		} else {
-			LogInfo << "PARAMS";
-			FINAL_RELEASE=0;
-			GAME_EDITOR=1;
-
-			if (!strcasecmp(param[parampos],"editor")) {
-				LogInfo << "PARAM EDITOR";
-				NEED_ANCHORS=1;
-			} else {
-				NEED_ANCHORS=1;
-				USE_FAST_SCENES=0;
-				LogInfo << "PARAM MOULINEX";
-
-				if (param[parampos][0]=='-') {
-					long posflags=parampos;
-					PROCESS_NO_POPUP=1;
-					PROCESS_ALL_THEO=0;
-					PROCESS_LEVELS=0;
-					PROCESS_ONLY_ONE_LEVEL=-1;
-
-					if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U"))) {
-						parampos++;
-						PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
-					}
-
-					if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O"))) {
-						PROCESS_ALL_THEO=1;
-					}
-
-					if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F"))) {
-						NEED_ANCHORS=0;
-						USE_FAST_SCENES=1;
-						NOCHECKSUM=1;
-					}
-
-					if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L"))) {
-						PROCESS_LEVELS=1;
-					}
-
-					if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T"))) {
-						TSU_LIGHTING=1;
-					}
-
+			NEED_ANCHORS=1;
+			USE_FAST_SCENES=0;
+			LogInfo << "PARAM MOULINEX";
+			
+			if (param[parampos][0]=='-') {
+				long posflags=parampos;
+				PROCESS_NO_POPUP=1;
+				PROCESS_ALL_THEO=0;
+				PROCESS_LEVELS=0;
+				PROCESS_ONLY_ONE_LEVEL=-1;
+				
+				if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U"))) {
 					parampos++;
-				} else {
+					PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
+				}
+				
+				if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O"))) {
 					PROCESS_ALL_THEO=1;
+				}
+				
+				if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F"))) {
+					NEED_ANCHORS=0;
+					USE_FAST_SCENES=1;
+					NOCHECKSUM=1;
+				}
+				
+				if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L"))) {
 					PROCESS_LEVELS=1;
 				}
-
-				if (!strcasecmp(param[parampos],"moulinex")) {
-					LogInfo << "Launching moulinex";
-					MOULINEX=1;
-					KILL_AT_MOULINEX_END=1;
+				
+				if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T"))) {
+					TSU_LIGHTING=1;
 				}
+				
+				parampos++;
+			} else {
+				PROCESS_ALL_THEO=1;
+				PROCESS_LEVELS=1;
+			}
+			
+			if(!strcasecmp(param[parampos],"moulinex")) {
+				LogInfo << "Launching moulinex";
+				MOULINEX=1;
+				KILL_AT_MOULINEX_END=1;
 			}
 		}
 	} else {
 		LogInfo << "FRGE";
 		GAME_EDITOR=1;
-
 		if (FINAL_RELEASE)
 			GAME_EDITOR=0;
 	}
+#endif
 }
 
 // Let's use main for now on all platforms
@@ -1133,11 +1134,9 @@ int main(int argc, char ** argv) {
 	if (FINAL_COMMERCIAL_GAME) {
 		LogDebug << "FINAL_COMMERCIAL_GAME";
 		FOR_EXTERNAL_PEOPLE=1;
-		ARX_DEMO=0;
 	} else if (FINAL_COMMERCIAL_DEMO)	{
 		LogDebug << "FINAL_COMMERCIAL_DEMO";
 		FOR_EXTERNAL_PEOPLE=1;
-		ARX_DEMO=1;
 	}
 
 	if (FOR_EXTERNAL_PEOPLE) {
@@ -1146,9 +1145,6 @@ int main(int argc, char ** argv) {
 		CEDRIC_VERSION		= 0;
 		NO_TEXT_AT_ALL		= 1;
 
-		if (!FINAL_COMMERCIAL_DEMO)
-			ARX_DEMO		= 0;
-
 		FAST_SPLASHES		= 0;
 		FORCE_SHOW_FPS		= 0;
 		FINAL_RELEASE		= 1;
@@ -1156,12 +1152,13 @@ int main(int argc, char ** argv) {
 		AUTO_FULL_SCREEN	= 0;
 #endif
 		DEBUG_FRUSTRUM		= 0;
-		GAME_EDITOR			= 0;
-		NEED_EDITOR			= 0;
-		TRUEFIGHT			= 0;
+#ifdef BUILD_EDITOR
+		GAME_EDITOR = 0;
+		NEED_EDITOR = 0;
+		TRUEFIGHT = 0;
+#endif
 	} else if (CEDRIC_VERSION) {
 		LogDebug << "CEDRIC_VERSION";
-		ARX_DEMO=0;
 		FAST_SPLASHES=1;
 		FORCE_SHOW_FPS=1;
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
@@ -1178,14 +1175,12 @@ int main(int argc, char ** argv) {
 	Random::seed();
 	
 	CalcFPS(true);
-	HERMES_Memory_Security_On(32000);
 
 	ARX_MAPMARKER_Init();
 
 	for (i=0;i<8;i++)
 		scursor[i]=NULL;
 
-	ARX_DAMAGES_SCREEN_SPLATS_Init();
 	ARX_SPELLS_CancelSpellTarget();
 
 	for (i=0;i<MAX_EXPLO;i++) explo[i]=NULL;
@@ -1201,7 +1196,7 @@ int main(int argc, char ** argv) {
 
 	NOCHECKSUM=0;
 
-	if((!MOULINEX) && FINAL_RELEASE) {
+	if(FINAL_RELEASE) {
 		
 		LogInfo << "FINAL RELEASE";
 		NOBUILDMAP=1;
@@ -1263,7 +1258,7 @@ int main(int argc, char ** argv) {
 
 	ARX_INTERFACE_NoteInit();
 	LogDebug << "Note Init";
-	PUSH_PLAYER_FORCE.clear();
+	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	ARX_SPECIAL_ATTRACTORS_Reset();
 	LogDebug << "Attractors Init";
 	ARX_SPELLS_Precast_Reset();
@@ -1343,7 +1338,6 @@ int main(int argc, char ** argv) {
 
 	memset(&player,0,sizeof(ARXCHARACTER));
 	ARX_PLAYER_InitPlayer();
-	HERMES_InitDebug();
 
 	CleanInventory();
 
@@ -1372,10 +1366,14 @@ int main(int argc, char ** argv) {
 		Project.ambient=1;
 		Project.multiplayer=0;
 		NOCHECKSUM=1;
-	} else if (!MOULINEX) {
+	}
+#ifdef BUILD_EDITOR
+	else if (!MOULINEX) {
 //		DialogBox( hInstance,MAKEINTRESOURCE(IDD_STARTOPTIONS), NULL, StartProc );
 		LogError << "not MOULINEX ";
-	} else {
+	}
+#endif
+	else {
 		LogInfo << "default LEVELDEMO2";
 		Project.demo=LEVELDEMO2;
 	}
@@ -1386,11 +1384,13 @@ int main(int argc, char ** argv) {
 	if (LaunchDemo)	{
 		LogInfo << "LaunchDemo";
 
-		if (FINAL_RELEASE) {
+#ifdef BUILD_EDITOR
+		if(FINAL_RELEASE) {
 			GAME_EDITOR=0;
 		} else {
 			GAME_EDITOR=1;
 		}
+#endif
 
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
@@ -1408,14 +1408,18 @@ int main(int argc, char ** argv) {
 
 	danaeApp.d_dlgframe=0;
 
-	if (MOULINEX) {
+#ifdef BUILD_EDITOR
+	if(MOULINEX) {
 		danaeApp.CreationSizeX = 800;
 		danaeApp.CreationSizeY = 12;
-	} else {
+	} else
+#endif
+	{
 		danaeApp.CreationSizeX = config.video.width;
 		danaeApp.CreationSizeY = config.video.height;
 	}
 
+#ifdef BUILD_EDITOR
 	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
 		GAME_EDITOR=1;
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP | WCF_ACCEPTFILES ;
@@ -1431,9 +1435,12 @@ int main(int argc, char ** argv) {
 		danaeApp.ToolBar->String.clear();
 	}
 	else
+#endif
 	{
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP;
-		if (GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
+#ifdef BUILD_EDITOR
+		if(GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
+#endif
 	}
 
 	LogDebug << "Application Creation";
@@ -1444,15 +1451,8 @@ int main(int argc, char ** argv) {
 
 	LogInfo << "Application Creation Success";
 	ShowWindow(danaeApp.m_hWnd, SW_HIDE);
-	MAIN_PROGRAM_HANDLE=danaeApp.m_hWnd;
 	danaeApp.m_pFramework->bitdepth=Project.bits;
-
-	if (!MOULINEX && !FINAL_RELEASE) {
-		char texx[64];
-		strcpy(texx,"GaiaMessages");
-		GaiaWM=RegisterWindowMessage(texx);
-	}
-
+	
 	LogDebug << "Sound init";
 	if(ARX_SOUND_Init()) {
 		LogInfo << "Sound init success";
@@ -1487,21 +1487,19 @@ int main(int argc, char ** argv) {
 	if(config.video.textureSize==0)Project.TextureSize=64;
 
 	ARX_MINIMAP_FirstInit();
-	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
 
 	i = 10;
 	LogDebug << "AInput Init";
 
 	while (!ARX_INPUT_Init(hInstance,danaeApp.m_hWnd)) {
-		Sleep(30);
+		Thread::sleep(30);
 		i--;
 
 		if (i==0) {
 			LogError << "Unable To Initialize ARX INPUT, Leaving...";
 			ARX_INPUT_Release();
 
-			if (MAIN_PROGRAM_HANDLE!=NULL)
-			SendMessage(MAIN_PROGRAM_HANDLE,WM_CLOSE,0,0);
+			SendMessage(danaeApp.m_hWnd, WM_CLOSE, 0, 0);
 
 			exit(0);
 		}
@@ -1521,16 +1519,23 @@ int main(int argc, char ** argv) {
 
 	char tex[512];
 
-	if (GAME_EDITOR)
+#ifdef BUILD_EDITOR
+	if(GAME_EDITOR) {
 		sprintf(tex,"DANAE Project");
-	else 
+	} else
+#endif
+	{
 		sprintf(tex,"ARX Fatalis");
+	}
 
-	if (MOULINEX)
+#ifdef BUILD_EDITOR
+	if(MOULINEX)
 		sprintf(tex,"MOULINEX");
+#endif
 
-	SetWindowTitle(danaeApp.m_hWnd,tex);
-
+	strcat(tex, arxVersion.c_str());
+	SetWindowText(danaeApp.m_hWnd, tex);
+	
 	Project.interfacergb.r = 0.46f;
 	Project.interfacergb.g = 0.46f;
 	Project.interfacergb.b = 1.f;
@@ -1573,7 +1578,7 @@ DANAE::DANAE() : CD3DApplication()
 //*************************************************************************************
 // Nuky - 01-02-11 - simplified prototype and recoded with new CD3DApplicationScopedLock
 //                   class and recursion
-INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, bool mustlock)
+INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock)
 {
 	INTERACTIVE_OBJ* io = NULL;
 
@@ -2316,10 +2321,9 @@ void ClearSysTextures() {
 //*************************************************************************************
 HRESULT DANAE::OneTimeSceneInit()
 {
-	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
 	return S_OK;
 }
-EERIE_3D ePos;
+Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;
 void LaunchWaitingCine()
 {
@@ -2363,11 +2367,11 @@ void LaunchWaitingCine()
 
 	WILL_LAUNCH_CINE[0]=0;
 }
-void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_3D * angle)
+static void PlayerLaunchArrow_Test(float aimratio,float poisonous,Vec3f * pos,Anglef * angle)
 {
-	EERIE_3D position;
-	EERIE_3D vect;
-	EERIE_3D dvect;
+	Vec3f position;
+	Vec3f vect;
+	Vec3f dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	float anglea;
@@ -2382,10 +2386,10 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
-	EERIE_3D upvect(0,0,-1);
+	Vec3f upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
-	upvect = EERIE_3D(0,-1,0);
+	upvect = Vec3f(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
@@ -2394,13 +2398,13 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 
 	if (velocity<0.9f) velocity=0.9f;
 
-	EERIE_3D v1,v2;
-	EERIE_3D vv(0,0,1);
+	Vec3f v1,v2;
+	Vec3f vv(0,0,1);
 	float aa=angle->a;
 	float ab=90-angle->b;
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
-	vv = EERIE_3D(0,-1,0);
+	vv = Vec3f(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
@@ -2430,9 +2434,9 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 extern long sp_max;
 void PlayerLaunchArrow(float aimratio,float poisonous)
 {
-	EERIE_3D position;
-	EERIE_3D vect;
-	EERIE_3D dvect;
+	Vec3f position;
+	Vec3f vect;
+	Vec3f dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	float anglea;
@@ -2457,11 +2461,11 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
 
-	EERIE_3D upvect(0,0,-1);
+	Vec3f upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 
-	upvect = EERIE_3D(0,-1,0);
+	upvect = Vec3f(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
@@ -2471,13 +2475,13 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 
 	if (velocity<0.9f) velocity=0.9f;
 
-	EERIE_3D v1,v2;
-	EERIE_3D vv(0,0,1);
+	Vec3f v1,v2;
+	Vec3f vv(0,0,1);
 	float aa=player.angle.a;
 	float ab=90-player.angle.b;
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
-	vv = EERIE_3D(0,-1,0);
+	vv = Vec3f(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
@@ -2506,8 +2510,8 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 
 	if (sp_max)
 	{
-		EERIE_3D angle;
-		EERIE_3D pos;
+		Anglef angle;
+		Vec3f pos;
 		pos.x=player.pos.x;
 		pos.y=player.pos.y+40.f;
 		pos.z=player.pos.z;
@@ -2533,6 +2537,8 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 //*************************************************************************************
 HRESULT DANAE::FrameMove()
 {
+	
+#ifdef BUILD_EDITOR
 	// To disable for demo
 	if (	!FINAL_COMMERCIAL_DEMO
 		&& !FINAL_COMMERCIAL_GAME
@@ -2592,6 +2598,7 @@ HRESULT DANAE::FrameMove()
 			}
 		}
 	}
+#endif // BUILD_EDITOR
 
 	if (WILL_LAUNCH_CINE[0]) // Checks if a cinematic is waiting to be played...
 	{
@@ -2618,6 +2625,7 @@ void SetEditMode(long ed, const bool stop_sound)
 
 	EERIEMouseButton=0;
 
+#ifdef BUILD_EDITOR
 	if (ed)
 	{
 		EDITMODE=1;
@@ -2634,8 +2642,11 @@ void SetEditMode(long ed, const bool stop_sound)
 		}
 	}
 	else
+#endif
 	{
+#ifdef BUILD_EDITOR
 		EDITMODE=0;
+#endif
 		USE_OLD_MOUSE_SYSTEM=0;
 	}
 
@@ -2961,7 +2972,7 @@ void FirstFrameProc() {
 	
 	if (pParticleManager == NULL)
 	{
-		pParticleManager = new CParticleManager();
+		pParticleManager = new ParticleManager();
 	}
 
 	if (!NO_GMOD_RESET)
@@ -2994,9 +3005,6 @@ void FirstFrameProc() {
 	}
 
 	ARX_SPELLS_ResetRecognition();
-
-	if (DEBUGCODE)
-		ForceSendConsole("...NEXT...",1,0,(HWND)1);
 	
 	FirstTimeThings();
 
@@ -3040,8 +3048,8 @@ void FirstFrameProc() {
 
 	InitSnapShot(NULL,"snapshot");
 }
-EERIE_3D LastValidPlayerPos;
-EERIE_3D	WILL_RESTORE_PLAYER_POSITION;
+Vec3f LastValidPlayerPos;
+Vec3f	WILL_RESTORE_PLAYER_POSITION;
 long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
 extern long FLAG_ALLOW_CLOTHES;
 
@@ -3050,7 +3058,7 @@ extern long FLAG_ALLOW_CLOTHES;
 long FirstFrameHandling()
 {	
 	LogDebug << "FirstFrameHandling";
-	EERIE_3D trans;
+	Vec3f trans;
 	FirstFrame=-1;
 
 	ARX_PARTICLES_FirstInit();
@@ -3173,7 +3181,9 @@ long FirstFrameHandling()
 	FRAME_COUNT=0;
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene);
-
+	
+	iCreateMap=0;
+#ifdef BUILD_EDITOR
 	if ((CURRENTLEVEL>=0) && !(NOBUILDMAP) && GAME_EDITOR)
 	{
 		if (NeedMapCreation())	
@@ -3181,7 +3191,7 @@ long FirstFrameHandling()
 		else
 			iCreateMap=0;
 	}
-	else iCreateMap=0;
+#endif
 
 	if (!NO_TIME_INIT)
 		ARX_TIME_Init();
@@ -3203,10 +3213,11 @@ long FirstFrameHandling()
 		DONT_WANT_PLAYER_INZONE=0;
 	}
 
-	if (MOULINEX)
-	{
+#ifdef BUILD_EDITOR
+	if(MOULINEX) {
 		LaunchMoulinex();
 	}
+#endif
 
  PROGRESS_BAR_COUNT+=1.f;
  LoadLevelScreen();
@@ -3877,8 +3888,7 @@ void ManageCombatModeAnimations()
 
 		case WEAPON_BOW: // MISSILE PLAYER MANAGEMENT
 
-			if ((useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]))
-			{
+			if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				if (GLOBAL_SLOWDOWN!=1.f)
 					BOW_FOCAL+=Original_framedelay;
 				else
@@ -4249,9 +4259,7 @@ void ManageFade()
 
 	if (Visibility>1.f) Visibility=1.f;
 
-	if (Visibility<0.f)
-	{
-		Visibility = 0.f;
+	if(Visibility < 0.f) {
 		FADEDIR = 0;
 		return;
 	}
@@ -4342,7 +4350,7 @@ void DrawMagicSightInterface()
 
 void RenderAllNodes()
 {
-	EERIE_3D angle(0, 0, 0);
+	Anglef angle(Anglef::ZERO);
 	float xx,yy;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -4450,6 +4458,7 @@ void ManageQuakeFX()
 	}
 }
 
+#ifdef BUILD_EDITOR
 void LaunchMoulinex()
 {
 	char tx[256];
@@ -4480,8 +4489,7 @@ void LaunchMoulinex()
 	if (PROCESS_ONLY_ONE_LEVEL!=-1)
 		lvl=PROCESS_ONLY_ONE_LEVEL;
 
-	sprintf(tx,"Moulinex Lvl %ld",lvl);
-	ForceSendConsole(tx,1,0,NULL);
+	LogDebug << "Moulinex Lvl " << lvl;
 
 	if (LASTMOULINEX!=-1)
 	{
@@ -4569,6 +4577,7 @@ void LaunchMoulinex()
 
 	MOULINEX++;
 }
+#endif
 
 void DANAE_StartNewQuest()
 {
@@ -4826,6 +4835,8 @@ long DANAE_Manage_Cinematic()
 	LastFrameTicks=FrameTicks;
 	return 0;
 }
+
+#ifdef BUILD_EDITOR
 void DanaeItemAdd()
 {
 	INTERACTIVE_OBJ * tmp=AddInteractive(ItemToBeAdded,0,IO_IMMEDIATELOAD);
@@ -4865,6 +4876,7 @@ void DanaeItemAdd()
 
 	ItemToBeAdded[0]=0;
 }
+#endif
 
 void ReMappDanaeButton()
 {
@@ -5027,25 +5039,6 @@ extern long INTERTRANSPOLYSPOS;
 extern long TRANSPOLYSPOS;
 
 extern bool bRenderInterList;
-unsigned long BENCH_STARTUP=0;
-unsigned long BENCH_PLAYER=0;
-unsigned long BENCH_RENDER=0;
-unsigned long BENCH_PARTICLES=0;
-unsigned long BENCH_SPEECH=0;
-unsigned long BENCH_SCRIPT=0;
-
-unsigned long oBENCH_STARTUP=0;
-unsigned long oBENCH_PLAYER=0;
-unsigned long oBENCH_RENDER=0;
-unsigned long oBENCH_PARTICLES=0;
-unsigned long oBENCH_SPEECH=0;
-unsigned long oBENCH_SCRIPT=0;
-
-extern unsigned long BENCH_PATHFINDER;
-unsigned long oBENCH_PATHFINDER=0;
-
-extern unsigned long BENCH_SOUND;
-unsigned long oBENCH_SOUND=0;
 
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
@@ -5200,18 +5193,6 @@ static float _AvgFrameDiff = 150.f;
 	{
 		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
 	}
-
-	if (NEED_BENCH)
-	{
-		BENCH_STARTUP=0;
-		BENCH_PLAYER=0;
-		BENCH_RENDER=0;
-		BENCH_PARTICLES=0;
-		BENCH_SPEECH=0;
-		BENCH_SCRIPT=0;
-	}
-
-	StartBench();
 
 	if(	(pGetInfoDirectInput)&&
 		(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F12)))
@@ -5472,8 +5453,11 @@ static float _AvgFrameDiff = 150.f;
 			}
 		}
 
-		if (MOULINEX)
+#ifdef BUILD_EDITOR
+		if(MOULINEX) {
 			LaunchMoulinex();
+		}
+#endif
 	}
 	else // Manages our first frameS
 	{
@@ -5569,9 +5553,6 @@ static float _AvgFrameDiff = 150.f;
 		goto renderend;
 	}
 
-	BENCH_STARTUP=EndBench();
-	StartBench();
-
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		if (!PLAYER_PARALYSED)
@@ -5591,8 +5572,6 @@ static float _AvgFrameDiff = 150.f;
 
 	if (FRAME_COUNT<=0)
 		ARX_MINIMAP_ValidatePlayerPos();
-
-	BENCH_PLAYER=EndBench();
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	{
@@ -5761,7 +5740,7 @@ static float _AvgFrameDiff = 150.f;
 	else if (EXTERNALVIEW)
 	{
 		float t=radians(player.angle.b);
-		EERIE_3D tt;
+		Vec3f tt;
 
 		for (long l=0;l<250;l+=10)
 		{
@@ -5790,11 +5769,10 @@ static float _AvgFrameDiff = 150.f;
 		subj.angle.b=player.angle.b;
 		subj.angle.g=player.angle.g;
 		EXTERNALVIEW=0;
-		long id;
 
 		if (inter.iobj[0])
 		{
-				id = inter.iobj[0]->obj->fastaccess.view_attach;
+			long id = inter.iobj[0]->obj->fastaccess.view_attach;
 
 			if (id!=-1)
 			{
@@ -5802,7 +5780,7 @@ static float _AvgFrameDiff = 150.f;
 				subj.pos.y=inter.iobj[0]->obj->vertexlist3[id].v.y;
 				subj.pos.z=inter.iobj[0]->obj->vertexlist3[id].v.z;
 
-				EERIE_3D vect;
+				Vec3f vect;
 				vect.x=subj.pos.x-player.pos.x;
 				vect.y=0;
 				vect.z=subj.pos.z-player.pos.z;
@@ -5884,21 +5862,19 @@ static float _AvgFrameDiff = 150.f;
 			if (rnd()>0.5f)
 			{
 				conversationcamera.size.a=MAKEANGLE(180.f+rnd()*20.f-10.f);
+				conversationcamera.size.b=0.f;
 				conversationcamera.size.g=0.f;
 				conversationcamera.d_angle.g=0.08f;
 				conversationcamera.d_angle.b=0.f;
-					conversationcamera.d_angle.a = 0.f;
-				conversationcamera.size.b=0.f;
+				conversationcamera.d_angle.a = 0.f;
 			}
 		}
 		else
 		{
-			conversationcamera.size.a+=conversationcamera.d_angle.a*FrameDiff;
-			conversationcamera.size.b+=conversationcamera.d_angle.b*FrameDiff;
-			conversationcamera.size.g+=conversationcamera.d_angle.g*FrameDiff;
+			conversationcamera.size += conversationcamera.d_angle * FrameDiff;
 		}
 
-		EERIE_3D sourcepos,targetpos;
+		Vec3f sourcepos,targetpos;
 
 		if (ApplySpeechPos(&conversationcamera,is))
 		{
@@ -5920,7 +5896,7 @@ static float _AvgFrameDiff = 150.f;
 			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
 			}
 
-		EERIE_3D vect,vec2;
+		Vec3f vect,vec2;
 		vect.x=targetpos.x-sourcepos.x;
 		vect.y=targetpos.y-sourcepos.y;
 		vect.z=targetpos.z-sourcepos.z;
@@ -6000,7 +5976,7 @@ static float _AvgFrameDiff = 150.f;
 
 			if ((rtime>=0.f) && (rtime<=1.f) && io)
 			{
-				float alpha,beta,distance,dist;
+				float alpha,beta,distance,_dist;
 
 				switch (acs->type)
 				{
@@ -6008,9 +5984,9 @@ static float _AvgFrameDiff = 150.f;
 						subj.pos.x=acs->pos1.x;
 						subj.pos.y=acs->pos1.y;
 						subj.pos.z=acs->pos1.z;
-						subj.angle.a=acs->pos2.a;
-						subj.angle.b=acs->pos2.b;
-						subj.angle.g=acs->pos2.g;
+						subj.angle.a=acs->pos2.x;
+						subj.angle.b=acs->pos2.y;
+						subj.angle.g=acs->pos2.z;
 						EXTERNALVIEW=1;
 						break;
 					}
@@ -6019,7 +5995,7 @@ static float _AvgFrameDiff = 150.f;
 						alpha=acs->startangle.a*itime+acs->endangle.a*rtime;
 						beta=acs->startangle.b*itime+acs->endangle.b*rtime;
 						distance=acs->startpos*itime+acs->endpos*rtime;
-						EERIE_3D targetpos = acs->pos1;
+						Vec3f targetpos = acs->pos1;
 						conversationcamera.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
 						conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
 						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;						
@@ -6039,13 +6015,12 @@ static float _AvgFrameDiff = 150.f;
 						if (ValidIONum(acs->ionum))
 						{
 
-							EERIE_3D from,to,vect,vect2;
-							from = acs->pos1;
-							to = acs->pos2;
+							const Vec3f & from = acs->pos1;
+							const Vec3f & to = acs->pos2;
 
-							vect= to - from;
-							TRUEVector_Normalize(&vect);
+							Vec3f vect = (to - from).getNormalized();
 
+							Vec3f vect2;
 							if (acs->type==ARX_CINE_SPEECH_SIDE_LEFT)
 							{
 								Vector_RotateY(&vect2,&vect,-90);
@@ -6057,15 +6032,10 @@ static float _AvgFrameDiff = 150.f;
 
 							distance=acs->f0*itime+acs->f1*rtime;
 							vect2 *= distance;
-							dist=TRUEEEDistance3D(&from,&to);
-							EERIE_3D tfrom,tto;
-							tfrom.x=from.x+vect.x*acs->startpos*( 1.0f / 100 )*dist;
-							tfrom.y=from.y+vect.y*acs->startpos*( 1.0f / 100 )*dist;
-							tfrom.z=from.z+vect.z*acs->startpos*( 1.0f / 100 )*dist;
-							tto.x=from.x+vect.x*acs->endpos*( 1.0f / 100 )*dist;
-							tto.y=from.y+vect.y*acs->endpos*( 1.0f / 100 )*dist;
-							tto.z=from.z+vect.z*acs->endpos*( 1.0f / 100 )*dist;
-							EERIE_3D targetpos;
+							_dist = dist(from, to);
+							Vec3f tfrom = from + vect * acs->startpos * (1.0f / 100) * _dist;
+							Vec3f tto = from + vect * acs->endpos * (1.0f / 100) * _dist;
+							Vec3f targetpos;
 							targetpos.x=tfrom.x*itime+tto.x*rtime;
 							targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;
 							targetpos.z=tfrom.z*itime+tto.z*rtime;
@@ -6073,9 +6043,7 @@ static float _AvgFrameDiff = 150.f;
 							conversationcamera.pos.y=targetpos.y+vect2.y+acs->f2;
 							conversationcamera.pos.z=targetpos.z+vect2.z;
 							SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-							subj.pos.x=conversationcamera.pos.x;
-							subj.pos.y=conversationcamera.pos.y;
-							subj.pos.z=conversationcamera.pos.z;
+							subj.pos = conversationcamera.pos;
 							subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 							subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 							subj.angle.g=0.f;
@@ -6092,7 +6060,7 @@ static float _AvgFrameDiff = 150.f;
 						//need to compute current values
 						if (ValidIONum(acs->ionum))
 						{
-							EERIE_3D targetpos;
+							Vec3f targetpos;
 							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
 								|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
 							{
@@ -6115,38 +6083,27 @@ static float _AvgFrameDiff = 150.f;
 							
 							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );						
 							
-							EERIE_3D vect;
+							Vec3f vect;
 							vect.x=conversationcamera.pos.x-targetpos.x;
 							vect.y=conversationcamera.pos.y-targetpos.y;
 							vect.z=conversationcamera.pos.z-targetpos.z;
-							EERIE_3D vect2;
+							Vec3f vect2;
 							Vector_RotateY(&vect2,&vect,90);
-							TRUEVector_Normalize(&vect2);
-							EERIE_3D vect3 = vect;
-							TRUEVector_Normalize(&vect3);
+							vect2.normalize();
+							Vec3f vect3 = vect.getNormalized();
 
-							vect.x=vect.x*(distance)+vect3.x*80.f;
-							vect.y=vect.y*(distance)+vect3.y*80.f;
-							vect.z=vect.z*(distance)+vect3.z*80.f;
-							vect2.x*=45.f;
-							vect2.y*=45.f;
-							vect2.z*=45.f;
+							vect = vect * distance + vect3 * 80.f;
+							vect2 *= 45.f;
 
 							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_R)
 								|| (acs->type==ARX_CINE_SPEECH_CCCTALKER_R))
 							{
-								vect2.x=-vect2.x;
-								vect2.y=-vect2.y;
-								vect2.z=-vect2.z;
+								vect2 = -vect2;
 							}
 
-							conversationcamera.pos.x=vect.x+targetpos.x+vect2.x;
-							conversationcamera.pos.y=vect.y+targetpos.y+vect2.y;
-							conversationcamera.pos.z=vect.z+targetpos.z+vect2.z;
+							conversationcamera.pos = vect + targetpos + vect2;
 							SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-							subj.pos.x=conversationcamera.pos.x;
-							subj.pos.y=conversationcamera.pos.y;
-							subj.pos.z=conversationcamera.pos.z;
+							subj.pos = conversationcamera.pos;
 							subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 							subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 							subj.angle.g=0.f;
@@ -6175,7 +6132,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (DeadCameraDistance>mdist) DeadCameraDistance=mdist;
 
-		EERIE_3D targetpos;
+		Vec3f targetpos;
 
 		targetpos.x = player.pos.x;
 			targetpos.y = player.pos.y;
@@ -6211,8 +6168,10 @@ static float _AvgFrameDiff = 150.f;
 			subj.angle.g = 0;
 		EXTERNALVIEW=1;
 
-		if (!GAME_EDITOR)
+#ifdef BUILD_EDITOR
+		if(!GAME_EDITOR)
 			BLOCK_PLAYER_CONTROLS=1;
+#endif
 	}
 	else
 	{
@@ -6236,7 +6195,7 @@ static float _AvgFrameDiff = 150.f;
 			currentbeta=CAMERACONTROLLER->angle.b;
 		}
 
-			EERIE_3D targetpos;
+			Vec3f targetpos;
 
 		targetpos.x=CAMERACONTROLLER->pos.x;
 		targetpos.y=CAMERACONTROLLER->pos.y+PLAYER_BASE_HEIGHT;
@@ -6267,7 +6226,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if ((USE_CINEMATICS_CAMERA) && (USE_CINEMATICS_PATH.path!=NULL))
 	{
-		EERIE_3D pos,pos2;
+		Vec3f pos,pos2;
 			USE_CINEMATICS_PATH._curtime = ARX_TIME_Get();
 
 		USE_CINEMATICS_PATH._curtime+=50;
@@ -6294,7 +6253,7 @@ static float _AvgFrameDiff = 150.f;
 			else
 				DebugSphere(pos.x,pos.y,pos.z,2,50,0xFFFF0000);
 
-			if (USE_CINEMATICS_PATH.path->flags & ARX_USEPATH_FLAG_FINISHED)
+			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
 			{
 				USE_CINEMATICS_CAMERA=0;
 				USE_CINEMATICS_PATH.path=NULL;
@@ -6354,16 +6313,10 @@ static float _AvgFrameDiff = 150.f;
 
 	// Set Listener Position
 	{
-		EERIE_3D front, up;
-		float t;
-		t=radians(MAKEANGLE(ACTIVECAM->angle.b));			
-		front.x=-EEsin(t);
-		front.y=0.f;
-		front.z=EEcos(t);
-		TRUEVector_Normalize(&front);
-		up.x=0.f;
-		up.y=1.f;
-		up.z=0.f;
+		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));			
+		Vec3f front(-EEsin(t), 0.f, EEcos(t));
+		front.normalize();
+		Vec3f up(0.f, 1.f, 0.f);
 		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
 	}
 
@@ -6413,7 +6366,6 @@ static float _AvgFrameDiff = 150.f;
 
 	if (FirstFrame==0)
 	{
-		StartBench();
 		PrepareIOTreatZone();
 			ARX_PHYSICS_Apply();
 
@@ -6436,20 +6388,18 @@ static float _AvgFrameDiff = 150.f;
 			ARX_SCENE_Render(1);
 		}
 
-		BENCH_RENDER=EndBench();
-
 	}
 
+#ifdef BUILD_EDITOR
 	if (EDITION==EDITION_PATHWAYS)
 	{
 		ARX_PATHS_RedrawAll();
 	}
+#endif
 
 	// Begin Particles ***************************************************************************
 	if (!(Project.hide & HIDE_PARTICLES))
 	{
-		StartBench();
-
 		if (pParticleManager)
 		{
 				pParticleManager->Update(ARX_CLEAN_WARN_CAST_LONG(FrameDiff));
@@ -6465,7 +6415,6 @@ static float _AvgFrameDiff = 150.f;
 		UpdateObjFx();
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		BENCH_PARTICLES=EndBench();
 
 	}
 
@@ -6507,6 +6456,7 @@ static float _AvgFrameDiff = 150.f;
 				FRAMETICKS = ARXTimeUL();
 		}
 	}
+#ifdef BUILD_EDITOR
 	else  // EDITMODE == true
 	{
 		if (!(Project.hide & HIDE_NODES))
@@ -6519,11 +6469,12 @@ static float _AvgFrameDiff = 150.f;
 		if (EDITION==EDITION_FOGS)
 			ARX_FOGS_RenderAll();
 	}
-
+	
 	// To remove for Final Release but needed until then !
 	if (ItemToBeAdded[0]!=0)
 		DanaeItemAdd();
-		
+#endif
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
@@ -6634,10 +6585,8 @@ static float _AvgFrameDiff = 150.f;
 	// Speech Management
 	if (!EDITMODE)
 	{
-		StartBench();
 		ARX_SPEECH_Check();
 		ARX_SPEECH_Update();
-		BENCH_SPEECH = EndBench();
 	}
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
@@ -6792,8 +6741,7 @@ static float _AvgFrameDiff = 150.f;
 		LaunchDummyParticle();
 	}
 	}
-	StartBench();
-
+	
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		ARX_SCRIPT_AllowInterScriptExec();
@@ -6806,36 +6754,12 @@ static float _AvgFrameDiff = 150.f;
 			ARX_PATH_UpdateAllZoneInOutInside();
 	}
 
-	BENCH_SCRIPT=EndBench();
-
 	LastFrameTime=FrameTime;
 	LastMouseClick=EERIEMouseButton;
 
-	if (DEBUGCODE) ForceSendConsole("RenderEnd_____________________________", 1, 0, (HWND)1);
-
+#ifdef BUILD_EDITOR
 		DANAE_DEBUGGER_Update();
-
-	if (NEED_BENCH)
-	{
-		if(GRenderer->BeginScene())
-		{
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			iVPOS=0;
-			ShowValue(&oBENCH_STARTUP,&BENCH_STARTUP,"Startup");
-			ShowValue(&oBENCH_PLAYER,&BENCH_PLAYER,"Player");
-			ShowValue(&oBENCH_RENDER,&BENCH_RENDER,"Render");
-			ShowValue(&oBENCH_PARTICLES,&BENCH_PARTICLES,"Particles");
-			ShowValue(&oBENCH_SPEECH,&BENCH_SPEECH,"Speech");
-			ShowValue(&oBENCH_SCRIPT,&BENCH_SCRIPT,"Script");
-			ShowValue(&oBENCH_PATHFINDER,&BENCH_PATHFINDER,"Pathfinder");
-			BENCH_PATHFINDER=0;
-			ShowValue(&oBENCH_SOUND,&BENCH_SOUND,"Sound Thread");
-			BENCH_SOUND=0;
-
-			GRenderer->EndScene();
-		}
-	}
+#endif
 
 	return S_OK;
 }
@@ -6852,8 +6776,7 @@ void DANAE::GoFor2DFX()
 
 		if (el->extras & EXTRAS_FLARE)
 		{
-			if ((EEDistance3D(&ACTIVECAM->pos, &el->pos) < 2200))
-			{
+			if(distSqr(ACTIVECAM->pos, el->pos) < square(2200)) {
 				needed=1;
 				break;
 			}
@@ -6908,7 +6831,7 @@ void DANAE::GoFor2DFX()
 						(ltvv.sy<(DANAESIZY-(CINEMA_DECAL*Yratio)))
 						)
 					{
-						EERIE_3D vector;
+						Vec3f vector;
 						vector.x=lv.sx-ACTIVECAM->pos.x;
 						vector.y=lv.sy-ACTIVECAM->pos.y;
 						vector.z=lv.sz-ACTIVECAM->pos.z;
@@ -6924,10 +6847,10 @@ void DANAE::GoFor2DFX()
 
 						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
-						EERIE_3D	hit;
+						Vec3f	hit;
 						EERIEPOLY	*tp=NULL;
-						EERIE_S2D ees2dlv;
-						EERIE_3D ee3dlv;
+						Vec2s ees2dlv;
+						Vec3f ee3dlv;
 						ee3dlv.x = lv.sx;
 						ee3dlv.y = lv.sy;
 						ee3dlv.z = lv.sz;
@@ -6992,7 +6915,7 @@ void DANAE::GoFor2DFX()
 						lv.sy=el->pos.y;
 						lv.sz=el->pos.z;
 						lv.rhw=1.f;
-						specialEE_RT((D3DTLVERTEX *)&lv,(EERIE_3D *)&ltvv);
+						specialEE_RT((D3DTLVERTEX *)&lv,(Vec3f *)&ltvv);
 						float v=el->temp;
 
 						if (FADEDIR)
@@ -7133,6 +7056,7 @@ static void ShowInfoText() {
 	sprintf(tex,"%ld",pos);
 	danaeApp.OutputText( 70, 99, tex );
 
+#ifdef BUILD_EDITOR
 	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
 	{
 		io = inter.iobj[LastSelectedIONum];
@@ -7190,6 +7114,7 @@ static void ShowInfoText() {
 		  }
 	  }
 	}
+#endif // BUILD_EDITOR
 
 	long zap=IsAnyPolyThere(player.pos.x,player.pos.z);
 	sprintf(tex,"POLY %ld LASTLOCK %ld",zap,LAST_LOCK_SUCCESSFULL);		
@@ -7309,7 +7234,9 @@ HRESULT DANAE::FinalCleanup()
 	EERIE_PATHFINDER_Release();
 	ARX_INPUT_Release();
 	ARX_SOUND_Release();
+#ifdef BUILD_EDITOR
 	KillInterTreeView();
+#endif
 	return S_OK;
 }
 
@@ -7387,16 +7314,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 
 		break;
-		case WM_USER+12: // GAIA Specific Message
 
-			if (	!FINAL_COMMERCIAL_DEMO
-				&& !FINAL_COMMERCIAL_GAME
-				)
-			{
-				char texx[1024];
-				strcpy(texx,HERMES_GaiaCOM_Receive());
-				strcpy(ItemToBeAdded,texx);
-			}
+#ifdef BUILD_EDITOR
 
 		break;
 		case WM_CLOSE:
@@ -7483,8 +7402,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 				case DANAE_B014:
 
-					#ifndef NOEDITOR //////////////////
-
 					if (EDITION==EDITION_PARTICLES)
 					{
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
@@ -7505,12 +7422,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
-					#endif //////////////////
-
 				break;
 				case DANAE_B011: 
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION==EDITION_PATHWAYS) 
 					{
@@ -7533,12 +7446,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
-					#endif //////////////////
-
 				break;
 				case DANAE_B010: 
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION==EDITION_ZONES) 
 					{
@@ -7560,11 +7469,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
-					#endif //////////////////
 				break;
 				case DANAE_B007:
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION==EDITION_LIGHTS)
 					{
@@ -7586,12 +7492,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
-					#endif //////////////////
-
 				break;
 				case DANAE_B006:
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITMODE==1)
 					{
@@ -7605,13 +7507,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						RestoreAllIOInitPos();
 					}
 
-					#endif //////////////////
-
-					#ifdef NOEDITOR //////////////////
-
 					if (EDITMODE==1) SetEditMode(0);
-
-					#endif //////////////////
 
 				break;
 				case DANAE_B003:
@@ -7621,8 +7517,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				break;
 				case DANAE_B004:
-
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION==EDITION_NODES)
 					{
@@ -7644,10 +7538,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						EDITION=EDITION_NODES;
 					}
 
-					#endif //////////////////
 				break;
 				case DANAE_B008:
-					#ifndef NOEDITOR //////////////////
 
 					if (EDITION == EDITION_FOGS)
 					{
@@ -7668,8 +7560,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
 						EDITION=EDITION_FOGS;
 					}
-
-					#endif //////////////////
 
 				break;
 				case DANAE_MENU_SAVEPATH:
@@ -7779,20 +7669,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					else  
 						LogError << ("No Interactive Object Selected");
 
-				break;
-				case DANAE_MENU_MEMORY:
-				{
-					ShowText = "";
-					unsigned long msize;
-					char temp[512];
-					msize=MakeMemoryText( temp );
-					ShowText = temp;
-					std::stringstream ss;
-					ss << "Allocated Memory " << msize << " bytes " << (msize>>10) << " Kb";
-					ShowTextWindowtext = ss.str();
-					CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
-				}
 				break;
 				case DANAE_MENU_GLOBALLIST:
 					ShowText = "";
@@ -7987,8 +7863,10 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 			}
 		}
-
 		break;
+
+#endif // BUILD_EDITOR
+
 	}
 
 	return CD3DApplication::MsgProc( hWnd, uMsg, wParam, lParam );
@@ -8151,7 +8029,6 @@ void ClearGame() {
 
 	//Halo
 	ReleaseHalo();
-	HERMES_Memory_Security_Off();
 	FreeSnapShot();
 	ARX_INPUT_Release();
 }

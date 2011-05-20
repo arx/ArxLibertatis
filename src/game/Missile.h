@@ -34,15 +34,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_MISSILE_H
 #define ARX_GAME_MISSILE_H
 
+#include "platform/math/Vector3.h"
+
 struct INTERACTIVE_OBJ;
-struct EERIE_3D;
 
 enum ARX_SPELLS_MISSILE_TYPE {
 	MISSILE_NONE = 0,
 	MISSILE_FIREBALL = 1
 };
 
-void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, ARX_SPELLS_MISSILE_TYPE type, const EERIE_3D * startpos, const EERIE_3D * targetpos);
+void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f * startpos, const Vec3f * targetpos);
 void ARX_MISSILES_Update();
 void ARX_MISSILES_ClearAll();
 

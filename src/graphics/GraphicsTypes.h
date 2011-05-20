@@ -48,28 +48,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "graphics/d3dwrapper.h"
+#include "graphics/BaseGraphicsTypes.h"
 
 #include "platform/Platform.h"
+#include "platform/math/Vector2.h"
+#include "platform/math/Angle.h"
 
 class TextureContainer;
 
-#include "graphics/BaseGraphicsTypes.h"
-
-
 struct EERIE_TRI {
-	EERIE_3D v[3];
+	Vec3f v[3];
 }; // Aligned 1 2 4
 
-struct EERIE_2D_BBOX
-{
-	EERIE_2D min;
-	EERIE_2D max;
-}; // Aligned 1 2 4 8
+struct EERIE_2D_BBOX {
+	Vec2f min;
+	Vec2f max;
+};
 
-struct EERIE_3D_BBOX
-{
-	EERIE_3D min;
-	EERIE_3D max;
+struct EERIE_3D_BBOX {
+	Vec3f min;
+	Vec3f max;
 }; // Aligned 1 2 4
 
 typedef s32 ArxSound;
@@ -82,7 +80,7 @@ struct EERIE_LIGHT
 	char		selected;
 	short		extras;
 	short		status; // on/off 1/0
-	EERIE_3D	pos;
+	Vec3f	pos;
 	float		fallstart;
 	float		fallend;
 	float		falldiff;
@@ -92,8 +90,8 @@ struct EERIE_LIGHT
 	float		intensity;
 	EERIE_RGB	rgb;
 	float		i;
-	EERIE_3D	mins;
-	EERIE_3D	maxs;
+	Vec3f	mins;
+	Vec3f	maxs;
 	float		temp;
 	long		ltemp;
 	EERIE_RGB	ex_flicker;
@@ -131,26 +129,25 @@ enum EERIE_TYPES_EXTRAS_MODE
 // EERIE Types
 //*************************************************************************************
 
-struct EERIE_TLVERTEX
-{
-	EERIE_3D vert;
+struct EERIE_TLVERTEX {
+	Vec3f vert;
 	EERIE_RGBA color;
 	EERIE_RGBA specular;
-	EERIE_2D tex;
+	Vec2f tex;
 };
 
 struct EERIEPOLY
 {
 	long 			type;	// at least 16 bits
-	EERIE_3D		min;
-	EERIE_3D		max;
-	EERIE_3D		norm;
-	EERIE_3D		norm2;
+	Vec3f		min;
+	Vec3f		max;
+	Vec3f		norm;
+	Vec3f		norm2;
 	D3DTLVERTEX		v[4];
 	D3DTLVERTEX		tv[4];
-	EERIE_3D		nrml[4];
+	Vec3f		nrml[4];
 	TextureContainer * tex;
-	EERIE_3D		center;
+	Vec3f		center;
 	float			transval;
 	float			area;
 	short			room;
@@ -158,14 +155,13 @@ struct EERIEPOLY
 	unsigned short	uslInd[4];
 }; // Aligned 1 2 4
 
-struct EERIE_VERTEX
-{
+struct EERIE_VERTEX {
 	EERIE_TLVERTEX tlvert;
 	D3DTLVERTEX vert;
-	EERIE_3D	v;
-	EERIE_3D	norm;
-	EERIE_3D	vworld;
-}; // Aligned 1 2 4
+	Vec3f v;
+	Vec3f norm;
+	Vec3f vworld;
+};
 
 #define MATERIAL_NONE		0
 #define MATERIAL_WEAPON		1
@@ -227,8 +223,8 @@ struct EERIE_FACE
 	float		v[IOPOLYVERT];
 
 	float		transval;
-	EERIE_3D	norm;
-	EERIE_3D	nrmls[IOPOLYVERT];
+	Vec3f	norm;
+	Vec3f	nrmls[IOPOLYVERT];
 	float		temp;
 
 	short		ou[IOPOLYVERT];
@@ -291,16 +287,16 @@ struct CLOTHESVERTEX {
 	short idx;
 	unsigned char flags;
 	char coll;
-	EERIE_3D pos;
-	EERIE_3D velocity;
-	EERIE_3D force;
+	Vec3f pos;
+	Vec3f velocity;
+	Vec3f force;
 	float mass; // 1.f/mass
 	
-	EERIE_3D t_pos;
-	EERIE_3D t_velocity;
-	EERIE_3D t_force;
+	Vec3f t_pos;
+	Vec3f t_velocity;
+	Vec3f t_force;
 	
-	EERIE_3D lastpos;
+	Vec3f lastpos;
 	
 };
 
@@ -326,12 +322,12 @@ struct COLLISION_SPHERES_DATA {
 
 struct PHYSVERT
 {
-	EERIE_3D	initpos;
-	EERIE_3D	temp;
-	EERIE_3D	pos;
-	EERIE_3D	velocity;
-	EERIE_3D	force;
-	EERIE_3D	inertia;
+	Vec3f	initpos;
+	Vec3f	temp;
+	Vec3f	pos;
+	Vec3f	velocity;
+	Vec3f	force;
+	Vec3f	inertia;
 	float		mass;
 }; // Aligned 1 2 4
 
@@ -374,14 +370,13 @@ struct CUB3D
 	float	zmax;
 }; // Aligned 1 2 4
 
-struct EERIE_MOD_INFO
-{
-	long			link_origin;
-	EERIE_3D		link_position;
-	EERIE_3D		scale;
-	EERIE_3D		rot;
+struct EERIE_MOD_INFO {
+	long link_origin;
+	Vec3f link_position;
+	Vec3f scale;
+	Anglef rot;
 	unsigned long	flags;
-}; // Aligned 1 2 4
+};
 
 struct EERIE_LINKED
 {
@@ -439,15 +434,15 @@ struct EERIE_BONE
 	EERIE_GROUPLIST *	original_group;
 	long				father;
 	EERIE_QUAT			quatanim;
-	EERIE_3D			transanim;
-	EERIE_3D			scaleanim;
+	Vec3f			transanim;
+	Vec3f			scaleanim;
 	EERIE_QUAT			quatlast;
-	EERIE_3D			translast;
-	EERIE_3D			scalelast;
+	Vec3f			translast;
+	Vec3f			scalelast;
 	EERIE_QUAT			quatinit;
-	EERIE_3D			transinit;
-	EERIE_3D			scaleinit;
-	EERIE_3D			transinit_global;
+	Vec3f			transinit;
+	Vec3f			scaleinit;
+	Vec3f			transinit_global;
 };
 
 struct EERIE_C_DATA
@@ -468,11 +463,8 @@ struct EERIE_3DOBJ
 {
 	EERIE_3DOBJ()
 	{
-		// TODO Make it possible to use a default
-		// conststructor for these
-		pos.x = pos.y = pos.z = 0;
-		point0 = pos;
-		angle = pos;
+		point0 = pos = Vec3f::ZERO;
+		angle = Anglef::ZERO;
 
 		origin = 0;
 		ident = 0;
@@ -534,9 +526,9 @@ struct EERIE_3DOBJ
 	
 	std::string name;
 	std::string file;
-	EERIE_3D pos;
-	EERIE_3D point0;
-	EERIE_3D angle;
+	Vec3f pos;
+	Vec3f point0;
+	Anglef angle;
 	long origin;
 	long ident;
 	long nbpfaces;
@@ -574,8 +566,8 @@ struct EERIE_3DOBJ
 struct EERIE_3DSCENE {
 	long			nbobj;
 	EERIE_3DOBJ **	objs;
-	EERIE_3D		pos;
-	EERIE_3D		point0;
+	Vec3f		pos;
+	Vec3f		point0;
 	long			nbtex;
 	TextureContainer ** texturecontainer;
 	long			nblight;
@@ -593,8 +585,8 @@ struct EERIE_MULTI3DSCENE
 	long	nb_scenes;
 	EERIE_3DSCENE * scenes[MAX_SCENES];
 	CUB3D			cub;
-	EERIE_3D		pos;
-	EERIE_3D		point0;
+	Vec3f		pos;
+	Vec3f		point0;
 }; // Aligned 1 2 4
 
 struct EERIE_FRAME
@@ -605,7 +597,7 @@ struct EERIE_FRAME
 	short		f_translate; //int
 	short		f_rotate; //int
 	float		time;
-	EERIE_3D	translate;
+	Vec3f	translate;
 	EERIE_QUAT	quat;
 	ArxSound	sample;
 }; // Aligned 1 2 4
@@ -613,9 +605,9 @@ struct EERIE_FRAME
 struct EERIE_GROUP
 {
 	int		key;
-	EERIE_3D	translate;
+	Vec3f	translate;
 	EERIE_QUAT	quat;
-	EERIE_3D	zoom;
+	Vec3f	zoom;
 }; // Aligned 1 2 4
 
 // Animation playing flags
@@ -663,7 +655,7 @@ struct EERIE_ROOM_DATA
 	long * portals;
 	long nb_polys;
 	EP_DATA * epdata;
-	EERIE_3D	center;
+	Vec3f	center;
 	float		radius;
 	unsigned short		*		pussIndice;
 	LPDIRECT3DVERTEXBUFFER7		pVertexBuffer;

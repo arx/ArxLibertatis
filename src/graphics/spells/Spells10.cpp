@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "game/Spells.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells07.h"
@@ -84,12 +84,12 @@ CMassLightning::CMassLightning(long nbmissiles)
 }
 
 //-----------------------------------------------------------------------------
-void CMassLightning::Create(EERIE_3D aePos, float afBeta = 0) {
+void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 	
 	(void)afBeta;
 	
 	long lMax = 0;
-	EERIE_3D eTarget;
+	Vec3f eTarget;
 	float ft = 360.0f / (float)number;
 
 	for (int i = 0; i < number; i++)
@@ -155,7 +155,7 @@ CControlTarget::CControlTarget()
 	fColor1[2] = 0.2f;
 }
 //-----------------------------------------------------------------------------
-void CControlTarget::Create(EERIE_3D aeSrc, float afBeta)
+void CControlTarget::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
 
@@ -195,7 +195,7 @@ void CControlTarget::Create(EERIE_3D aeSrc, float afBeta)
 	v1a[end].sy = eTarget.y;
 	v1a[end].sz = eTarget.z;
 
-	EERIE_3D s, e, h;
+	Vec3f s, e, h;
 	s.x = v1a[0].sx;
 	s.y = v1a[0].sy;
 	s.z = v1a[0].sz;
@@ -266,8 +266,8 @@ float CControlTarget::Render()
 
 	fTrail = (ulCurrentTime * fOneOnDuration) * 9 * (n + 2);
 
-	EERIE_3D lastpos, newpos;
-	EERIE_3D v;
+	Vec3f lastpos, newpos;
+	Vec3f v;
 
 	int arx_check_init = -1;
 	newpos.x = 0;
@@ -394,35 +394,11 @@ float CControlTarget::Render()
 			}
 		}
 	}
-
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
-	EERIE_3D av;
+	
 	ARX_CHECK_NOT_NEG(arx_check_init);
-	av.x = lastpos.x - newpos.x;
-	av.y = lastpos.y - newpos.y;
-	av.z = lastpos.z - newpos.z;
-
-	TRUEVector_Normalize(&av);
-
-	float bubu = GetAngle(av.x, av.z, 0, 0);
-	float bubu1 = GetAngle(av.x, av.y, 0, 0);
-
-	stitepos.x = lastpos.x;
-	stitepos.y = lastpos.y;
-	stitepos.z = lastpos.z;
-	stiteangle.b = 180 - degrees(bubu);
-	stiteangle.a = 0;
-	stiteangle.g = 90 - degrees(bubu1);
-	stitescale.x = 1;
-	stitescale.y = 1;
-	stitescale.z = 1;
-
-	eCurPos.x = lastpos.x;
-	eCurPos.y = lastpos.y;
-	eCurPos.z = lastpos.z;
-
+	
+	eCurPos = lastpos;
+	
 	return 1;
 }
 
@@ -432,7 +408,7 @@ CMassIncinerate::~CMassIncinerate()
 }
 
 //---------------------------------------------------------------------
-void CMassIncinerate::Create(EERIE_3D aePos, float afBeta = 0) {
+void CMassIncinerate::Create(Vec3f aePos, float afBeta = 0) {
 	
 	(void)afBeta;
 	

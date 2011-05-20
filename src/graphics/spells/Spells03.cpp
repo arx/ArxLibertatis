@@ -56,11 +56,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells03.h"
 
-#include <cassert>
 #include <climits>
 
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Spells.h"
 #include "game/Damage.h"
@@ -80,7 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/LoadLevel.h"
 
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
 
 //-----------------------------------------------------------------------------
 CFireBall::CFireBall() : CSpellFx()
@@ -109,16 +108,16 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 
-	std::list<CParticle *>::iterator i;
+	std::list<Particle *>::iterator i;
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	assert(ulCalc <= LONG_MAX);
+	arx_assert(ulCalc <= LONG_MAX);
 	long ff = static_cast<long>(ulCalc);
 
 
 	for (i = pPSSmoke.listParticle.begin(); i != pPSSmoke.listParticle.end(); ++i)
 	{
-		CParticle * pP = *i;
+		Particle * pP = *i;
 
 		if (pP->isAlive())
 		{
@@ -137,7 +136,7 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 }
 
 //-----------------------------------------------------------------------------
-void CFireBall::Create(EERIE_3D aeSrc, float afBeta, float afAlpha, float _fLevel)
+void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 {
 	SetDuration(ulDuration);
 	SetAngle(afBeta);
@@ -152,7 +151,7 @@ void CFireBall::Create(EERIE_3D aeSrc, float afBeta, float afAlpha, float _fLeve
 
 	fLevel = _fLevel;
 
-	CParticleParams cp;
+	ParticleParams cp;
 
 	//FIRE
 	cp.iNbMax = 200;
@@ -384,8 +383,8 @@ void CFireBall::Update(unsigned long aulTime)
 
 			if (ValidIONum(io->targetinfo))
 			{
-				EERIE_3D * p1 = &eCurPos;
-				EERIE_3D p2 = inter.iobj[io->targetinfo]->pos;
+				Vec3f * p1 = &eCurPos;
+				Vec3f p2 = inter.iobj[io->targetinfo]->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
@@ -396,11 +395,7 @@ void CFireBall::Update(unsigned long aulTime)
 		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
 		eMove.z = + fBetaRadCos * 100 * cos(radians(MAKEANGLE(afAlpha)));
 
-		EERIE_3D vMove;
-		float f = 1.f / TRUEVector_Magnitude(&eMove);
-		vMove.x = eMove.x * f;
-		vMove.y = eMove.y * f;
-		vMove.z = eMove.z * f;
+		Vec3f vMove = eMove.getNormalized();
 
 		// smoke en retard
 		pPSSmoke.p3ParticleDirection.x = -vMove.x;
@@ -504,7 +499,7 @@ CIceProjectile::CIceProjectile()
 }
 
 //-----------------------------------------------------------------------------
-void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta, float fLevel)
+void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel)
 {
 	iMax = (int)(30 + fLevel * 5.2f);
 
@@ -512,7 +507,7 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta, float fLevel)
 }
 
 //-----------------------------------------------------------------------------
-void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
+void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 	SetAngle(afBeta);
@@ -521,8 +516,7 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 
 	float xmin, ymin, zmin;
 
-	int i = 0;
-	EERIE_3D s, e, h;
+	Vec3f s, e, h;
 
 	s.x					= aeSrc.x;
 	s.y					= aeSrc.y - 100;
@@ -536,7 +530,6 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 	e.z = aeSrc.z + fBetaRadCos * fspelldist;
 
 	float fd;
-	i = iMax;
 
 	if (!Visible(&s, &e, NULL, &h))
 	{
@@ -558,10 +551,7 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 	float fDist = (fd / fspelldist) * iMax ;
 	ARX_CHECK_INT(fDist);
 
-	i = ARX_CLEAN_WARN_CAST_INT(fDist);
-
-
-	iNumber = i;
+	iNumber = ARX_CLEAN_WARN_CAST_INT(fDist);
 
 	int end = iNumber / 2;
 	tv1a[0].sx = s.x;
@@ -573,7 +563,7 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 
 	Split(tv1a, 0, end, 80, 0.5f, 0, 1, 80, 0.5f);
 
-	for (i = 0; i < iNumber; i++)
+	for (int i = 0; i < iNumber; i++)
 	{
 		float t = rnd();
 
@@ -702,9 +692,9 @@ float CIceProjectile::Render()
 		if (tSize[i].z > tSizeMax[i].z)
 			tSize[i].z = tSizeMax[i].z;
 
-		EERIE_3D stiteangle;
-		EERIE_3D stitepos;
-		EERIE_3D stitescale;
+		Anglef stiteangle;
+		Vec3f stitepos;
+		Vec3f stitescale;
 		EERIE_RGB stitecolor;
 
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360;
@@ -990,8 +980,7 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 {
 	int numsuiv;
 
-	float	dsize = size / (float)(dec + 1);
-	dsize = 0.f;
+	float	dsize = 0.f;
 	int		r1 = ((int)(r * 255.f)) << 16;
 	int		g1 = ((int)(g * 255.f)) << 16;
 	int		b1 = ((int)(b * 255.f)) << 16;
@@ -1053,7 +1042,7 @@ CCreateFood::CCreateFood()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	pPS = new CParticleSystem();
+	pPS = new ParticleSystem();
 }
 
 //-----------------------------------------------------------------------------
@@ -1069,7 +1058,7 @@ void CCreateFood::Create()
 	eSrc.z = player.pos.z;
 
 	pPS->SetPos(eSrc);
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
@@ -1140,7 +1129,7 @@ if (ulCurrentTime >= ulDuration)
 //ARX_END: jycorbel (2010-07-20)
 	{
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	assert(ulCalc <= LONG_MAX);
+	arx_assert(ulCalc <= LONG_MAX);
 	long ff =  static_cast<long>(ulCalc);
 
 
@@ -1153,11 +1142,11 @@ if (ulCurrentTime >= ulDuration)
 			pPS->p3ParticleGravity.y = 0;
 			pPS->p3ParticleGravity.z = 0;
 
-		std::list<CParticle *>::iterator i;
+		std::list<Particle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 		{
-			CParticle * pP = *i;
+			Particle * pP = *i;
 
 			if (pP->isAlive())
 			{

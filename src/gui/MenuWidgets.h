@@ -50,10 +50,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <string>
+
 #include "gui/Text.h"
+#include "platform/math/Vector2.h"
 #include "window/Input.h"
 
-#include <windows.h>
+class TextureContainer;
 
 // Enum for all the buttons in the menu
 enum MenuButton {
@@ -259,7 +261,7 @@ class CMenuZone
 		bool	bCheck;
 		bool	bTestYDouble;
         CMenuZone *	pRef;
-		RECT	rZone;
+		Rect	rZone;
 		int			iID;
 		long		lData;
 		long	*	pData;
@@ -422,7 +424,7 @@ class CMenuElementText: public CMenuElement
 		void SetText( const std::string& _pText);
 		void RenderMouseOver();
  
-		Vector2i GetTextSize() const;
+		Vec2i GetTextSize() const;
 
 		bool OnMouseDoubleClick(int);
 };
@@ -444,7 +446,7 @@ class CMenuButton: public CMenuElement
 		~CMenuButton();
 
 	public:
-		void SetPos(int, int);
+		void SetPos(float, float);
 		void AddText( const std::string& );
 		CMenuElement * OnShortCut()
 		{
@@ -654,13 +656,6 @@ enum CURSORSTATE
 };
 
 //-----------------------------------------------------------------------------
-struct EERIE_2DI
-{
-	int	x;
-	int	y;
-};
-
-//-----------------------------------------------------------------------------
 class CDirectInput {
 	
 public:
@@ -689,7 +684,7 @@ public:
 		int					iMouseTimeSet[ARX_MAXBUTTON];
 		int					iNbOldCoord;
 		int					iMaxOldCoord;
-		EERIE_2DI			iOldCoord[256];
+		Vec2i iOldCoord[256];
 
 		TextureContainer	* pTex[8];
 		long				lFrameDiff;

@@ -68,11 +68,11 @@ enum ActionType {
 };
 
 struct ACTIONSTRUCT {
-    EERIE_LIGHT	light;
-    EERIE_3D	pos;
-    long		dl;
+	EERIE_LIGHT light;
+	Vec3f pos;
+	long dl;
 	ActionType type;
-    short		exist;
+	short exist;
 };
 
 const size_t MAX_ACTIONS = 100;

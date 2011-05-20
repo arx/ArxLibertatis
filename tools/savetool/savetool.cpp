@@ -27,6 +27,7 @@ using std::transform;
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "platform/String.h"
+#include "platform/Platform.h"
 
 // TODO use structs form SaveFormat.h, but that pulls in d3d dependencies
 

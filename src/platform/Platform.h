@@ -93,10 +93,15 @@ const std::string arxVersion = "0.1";
 #define ARX_COMPILER_VC9     1
 #define ARX_COMPILER_VC10    2
 #define ARX_COMPILER_GCC     3
+#define ARX_COMPILER_CLANG   4
+#define ARX_COMPILER_MINGW   5
 
-#if defined(__GNUC__)
+#if defined(__clang__)
+	#define ARX_COMPILER ARX_COMPILER_CLANG
+#elif defined(__MINGW32__)
+	#define ARX_COMPILER ARX_COMPILER_MINGW
+#elif defined(__GNUC__)
 	#define ARX_COMPILER ARX_COMPILER_GCC
-	#define HAVE_DYNAMIC_STACK_ALLOCATION
 #elif defined(_MSC_VER)
 	#if _MSC_VER < 1600
 		#define ARX_COMPILER ARX_COMPILER_VC9
@@ -121,9 +126,10 @@ const std::string arxVersion = "0.1";
 	inline int chdir(const char* path) { return _chdir(path); }
 #endif
 
-#if ARX_COMPILER_MSVC
+// TODO check for these in CMakeLists.txt
+#if ARX_COMPILER_MSVC || ARX_COMPILER == ARX_COMPILER_MINGW
 	#define PRINT_SIZE_T "%Iu"
-#elif ARX_COMPILER == ARX_COMPILER_GCC
+#elif ARX_COMPILER == ARX_COMPILER_GCC || ARX_COMPILER == ARX_COMPILER_CLANG
 	#define PRINT_SIZE_T "%zu"
 #else
 	#define PRINT_SIZE_T "%lu"
@@ -175,10 +181,10 @@ typedef double f64; // 64 bits double float
 
 #if ARX_COMPILER_MSVC
 	#define ARX_DEBUG_BREAK() __debugbreak()
-#elif ARX_COMPILER == ARX_COMPILER_GCC
+#elif ARX_COMPILER == ARX_COMPILER_GCC || ARX_COMPILER == ARX_COMPILER_CLANG || ARX_COMPILER == ARX_COMPILER_MINGW
 	#define ARX_DEBUG_BREAK() __builtin_trap()
 #else
-	// TODO we should check for existence of these functions in CMakeLists.txt
+	// TODO we should check for existence of these functions in CMakeLists.txt and provide a fallback (divide by zero...)
 	#define ARX_DEBUG_BREAK() ((void)0)
 #endif
 
@@ -230,10 +236,10 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 
 #define ARX_OPAQUE_WHITE		0xFFFFFFFF
 
-// TODO use assert directly
+// TODO use arx_assert directly
 #define ARX_CHECK_NOT_NEG( _x ) arx_assert((_x) >= 0)
-#define ARX_CHECK_NO_ENTRY( )	arx_assert(false)
-#define ARX_CHECK( _expr )		arx_assert(_expr)
+#define ARX_CHECK_NO_ENTRY( )   arx_assert(false)
+#define ARX_CHECK( _expr )      arx_assert(_expr)
 
 /* ---------------------------------------------------------
                            Pragma

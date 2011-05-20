@@ -38,7 +38,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 
 struct INTERACTIVE_OBJ;
-struct EERIE_S2D;
 class CSpellFx;
 
 // Spells symbol list
@@ -183,9 +182,9 @@ void ARX_SPELLS_Precast_Check();
 
 struct EYEBALL_DEF {
 	long exist;
-	EERIE_3D pos;
-	EERIE_3D angle;
-	EERIE_3D size;
+	Vec3f pos;
+	Anglef angle;
+	Vec3f size;
 	float floating;
 };
 
@@ -203,17 +202,17 @@ struct SPELL {
 	float caster_level; //!< Level of Magic 1-10
 	
 	long hand_group;
-	EERIE_3D hand_pos; //!< Only valid if hand_group>=0
-	EERIE_3D caster_pos;
-	EERIE_3D target_pos;
+	Vec3f hand_pos; //!< Only valid if hand_group>=0
+	Vec3f caster_pos;
+	Vec3f target_pos;
 	
 	float fdata; //!< Specific use for each spell
 	
 	Spell type;
-	EERIE_3D vsource; // TODO this is used but never set
+	Vec3f vsource; // TODO this is used but never set
 	
-	EERIE_3D move;
-	EERIE_3D scale;
+	Vec3f move;
+	Vec3f scale;
 	float siz;
 	unsigned long timcreation;
 	unsigned long lastupdate;
@@ -240,7 +239,7 @@ extern long CurrPoint;
 
 bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
 void ARX_SPELLS_ResetRecognition();
-void ARX_SPELLS_AddPoint(const EERIE_S2D & pos);
+void ARX_SPELLS_AddPoint(const Vec2s & pos);
 void ARX_SPELLS_AbortSpellSound();
 void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();

@@ -65,11 +65,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 const unsigned int MAX_SPEECH = 9;
 
 //-----------------------------------------------------------------------------
-struct ARX_CINEMATIC_SPEECH
-{
+struct ARX_CINEMATIC_SPEECH {
 	long				type;
-	EERIE_3D			startangle;
-	EERIE_3D			endangle;
+	Anglef startangle;
+	Anglef endangle;
 	float				startpos;
 	float				endpos;
 	float				f0;
@@ -77,22 +76,21 @@ struct ARX_CINEMATIC_SPEECH
 	float				f2;
 	float				f3;
 	long				ionum;
-	EERIE_3D			pos1;
-	EERIE_3D			pos2;
+	Vec3f			pos1;
+	Vec3f			pos2;
 
-	void clear()
-	{
+	void clear() {
 		type = 0;
-		startangle.clear();
-		endangle.clear();
+		startangle = Anglef::ZERO;
+		endangle = Anglef::ZERO;
 		startpos = 0;
 		endpos = 0;
 		f0 = 0;
 		f1 = 0;
 		f3 = 0;
 		ionum = 0;
-		pos1.clear();
-		pos2.clear();
+		pos1 = Vec3f::ZERO;
+		pos2 = Vec3f::ZERO;
 	}
 };
 

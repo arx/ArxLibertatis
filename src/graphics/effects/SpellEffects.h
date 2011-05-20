@@ -95,9 +95,6 @@ class CSpellFx
 		// surcharge
 	public:
 		long			spellinstance;
-		virtual void	Create() {};
-		virtual void	Create(EERIE_3D, float) {};
-		virtual void	Create(EERIE_3D, EERIE_3D) {};
 		virtual void	Update(unsigned long) {};
 		void			Update(float);
 		virtual float	Render()
@@ -109,8 +106,8 @@ class CSpellFx
 //-----------------------------------------------------------------------------
 #define frand2() (1.0f - (2.0f * rnd()))
 
-void Draw3DLineTex2(EERIE_3D s, EERIE_3D e, float fSize, int color, int color2);
-void Draw3DLineTex(EERIE_3D, EERIE_3D, int, float, float);
+void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, int color, int color2);
+void Draw3DLineTex(Vec3f, Vec3f, int, float, float);
 
 //-----------------------------------------------------------------------------
 void Split(D3DTLVERTEX * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);

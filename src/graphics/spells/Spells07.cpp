@@ -56,17 +56,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells07.h"
 
-#include "graphics/Draw.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
-
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Spells.h"
 #include "game/Damage.h"
 #include "game/Player.h"
 
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
@@ -74,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
+#include "scene/Object.h"
 #include "scene/Interactive.h"
 #include "scene/LoadLevel.h"
 #include "scene/Light.h"
@@ -81,8 +80,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float _framedelay;
 
 struct CLightning::LIGHTNING {
-	EERIE_3D eStart;
-	EERIE_3D eVect;
+	Vec3f eStart;
+	Vec3f eVect;
 	int anb;
 	int anbrec;
 	bool abFollow;
@@ -127,42 +126,33 @@ CLightning::CLightning() :
 
 void CLightning::BuildS(LIGHTNING * pLInfo)
 {
-	EERIE_3D astart = pLInfo->eStart;
-	EERIE_3D avect = pLInfo->eVect;
+	Vec3f astart = pLInfo->eStart;
+	Vec3f avect = pLInfo->eVect;
 
 	if ((pLInfo->anb > 0) && (nbtotal < 2000))
 	{
 		nbtotal++;
 		int moi = nbtotal;
 
-		if (pLInfo->abFollow)
-		{
-			avect.x = eDest.x - pLInfo->eStart.x;
-			avect.y = eDest.y - pLInfo->eStart.y;
-			avect.z = eDest.z - pLInfo->eStart.z;
-			TRUEVector_Normalize(&avect);
+		if(pLInfo->abFollow) {
+			avect = (eDest - pLInfo->eStart).getNormalized();
 		}
 
 		float fAngleX = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleXMin) + pLInfo->fAngleXMin;
 		float fAngleY = frand2() * (pLInfo->fAngleYMax - pLInfo->fAngleYMin) + pLInfo->fAngleYMin;
 		float fAngleZ = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleZMin) + pLInfo->fAngleZMin;
 
-		EERIE_3D av;
+		Vec3f av;
 		av.x = (float) cos(acos(avect.x) - radians(fAngleX));
 		av.y = (float) sin(asin(avect.y) - radians(fAngleY));
 		av.z = (float) tan(atan(avect.z) - radians(fAngleZ));
-
-		TRUEVector_Normalize(&av);
+		av.normalize();
 		avect = av;
 
 		float ts = rnd();
-		av.x *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
-		av.y *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
-		av.z *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
+		av *= ts * (fLengthMax - fLengthMin) * pLInfo->anb * invNbSegments + fLengthMin;
 
-		astart.x += av.x;
-		astart.y += av.y;
-		astart.z += av.z;
+		astart += av;
 		pLInfo->eStart = astart;
 
 		cnodetab[nbtotal].x = pLInfo->eStart.x;
@@ -265,11 +255,11 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 	}
 }
 
-void CLightning::SetPosSrc(EERIE_3D aeSrc) {
+void CLightning::SetPosSrc(Vec3f aeSrc) {
 	eSrc = aeSrc;
 }
 
-void CLightning::SetPosDest(EERIE_3D aeDest) {
+void CLightning::SetPosDest(Vec3f aeDest) {
 	eDest = aeDest;
 }
 
@@ -289,12 +279,9 @@ void CLightning::SetColor2(float afR, float afG, float afB) {
 float fTotoro = 0;
 float fMySize = 2;
 
-void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta) {
+void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 	
 	(void)beta; // TODO removing this parameter makes the signature clash with method from superclass
-	
-	float fAlpha = 1.f;
-	float fBeta = 0.f;
 	
 	SetDuration(ulDuration);
 	SetPosSrc(aeFrom);
@@ -304,8 +291,8 @@ void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta) {
 
 	if (nbtotal == 0)
 	{
-		fbeta = fBeta; 
-		falpha = fAlpha; 
+		fbeta = 0.f; 
+		falpha = 1.f; 
 
 		LIGHTNING LInfo;
 		ZeroMemory(&LInfo, sizeof(LIGHTNING));
@@ -398,7 +385,7 @@ void CLightning::Update(unsigned long _ulTime)
 	if (fMySize > 0.3f)
 		fMySize -= 0.1f;
 }
-void GetChestPos(long num, EERIE_3D * p)
+void GetChestPos(long num, Vec3f * p)
 {
 	if (num == 0)
 	{
@@ -446,7 +433,7 @@ float CLightning::Render()
 
 	long i;
 
-	EERIE_3D ePos;
+	Vec3f ePos;
 	
 	float fBeta = 0.f;
 	falpha = 0.f;
@@ -510,15 +497,15 @@ float CLightning::Render()
 			if (ValidIONum(io->targetinfo)
 			        &&	(io->targetinfo != spells[spellinstance].caster))
 			{
-				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
-				EERIE_3D p2;
+				Vec3f * p1 = &spells[spellinstance].caster_pos;
+				Vec3f p2;
 				GetChestPos(io->targetinfo, &p2); 
 				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
-				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
-				EERIE_3D p2;
+				Vec3f * p1 = &spells[spellinstance].caster_pos;
+				Vec3f p2;
 				GetChestPos(spells[spellinstance].target, &p2); //
 				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
@@ -555,7 +542,7 @@ float CLightning::Render()
 	{
 		if (i > fTotoro) break;
 
-		EERIE_3D astart;
+		Vec3f astart;
 
 		astart.x = cnodetab[cnodetab[i].parent].x + cnodetab[cnodetab[i].parent].fx;
 		astart.y = cnodetab[cnodetab[i].parent].y + cnodetab[cnodetab[i].parent].fy;
@@ -578,7 +565,7 @@ float CLightning::Render()
 
 		if (lSrc != -1)
 		{
-			EERIE_3D vv1, vv2;
+			Vec3f vv1, vv2;
 			vv1.x = astart.x;
 			vv1.y = astart.y;
 			vv1.z = astart.z;
@@ -806,7 +793,7 @@ CConfuse::CConfuse()
 }
 
 //-----------------------------------------------------------------------------
-void CConfuse::Create(EERIE_3D aeSrc, float afBeta)
+void CConfuse::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -852,9 +839,9 @@ float CConfuse::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetTexture(0, tex_trail);
 
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	eCurPos.x = inter.iobj[spells[spellinstance].target]->pos.x;
@@ -972,7 +959,7 @@ CFireField::~CFireField()
 }
 
 //-----------------------------------------------------------------------------
-void CFireField::Create(float largeur, EERIE_3D * pos, int _ulDuration)
+void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 {
 	this->key = 0;
 
@@ -983,7 +970,7 @@ void CFireField::Create(float largeur, EERIE_3D * pos, int _ulDuration)
 	this->pos = *pos;
 	this->demilargeur = largeur * .5f;
 
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 100;
 	cp.fLife = 2000;
 	cp.fLifeRandom = 1000;
@@ -1095,7 +1082,7 @@ void CFireField::Create(float largeur, EERIE_3D * pos, int _ulDuration)
 	pPSStream1.SetTexture("graph\\particles\\fire.bmp", 0, 500);
 
 	pPSStream1.fParticleFreq = 150.0f;
-	EERIE_3D ea;
+	Vec3f ea;
 	ea.x = pos->x;
 	ea.z = pos->y + 10; 
 	ea.y = pos->z;
@@ -1187,7 +1174,7 @@ CIceField::CIceField()
 }
 
 //-----------------------------------------------------------------------------
-void CIceField::Create(EERIE_3D aeSrc, float afBeta)
+void CIceField::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -1291,11 +1278,6 @@ float CIceField::Render()
 
 	if (iMax > iNumber) iMax = iNumber;
 
- 
-	float x = eSrc.x;
-	float y = eSrc.y;
-	float z = eSrc.z;
-
 	for (i = 0; i < iMax; i++)
 	{
 		if (tSize[i].x < tSizeMax[i].x)
@@ -1316,16 +1298,16 @@ float CIceField::Render()
 		if (tSize[i].z > tSizeMax[i].z)
 			tSize[i].z = tSizeMax[i].z;
 
-		EERIE_3D stiteangle;
-		EERIE_3D stitepos;
-		EERIE_3D stitescale;
+		Anglef stiteangle;
+		Vec3f stitepos;
+		Vec3f stitescale;
 		EERIE_RGB stitecolor;
 
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360; 
 		stiteangle.a = 0;
 		stiteangle.g = 0;
 		stitepos.x = tPos[i].x;
-		stitepos.y = y;
+		stitepos.y = eSrc.y;
 		stitepos.z = tPos[i].z;
 
 		float fcol = 1;
@@ -1366,9 +1348,9 @@ float CIceField::Render()
 
 		if (t < 0.01f)
 		{
-			x = tPos[i].x;
-			y = tPos[i].y;
-			z = tPos[i].z;
+			float x = tPos[i].x;
+			float y = tPos[i].y;
+			float z = tPos[i].z;
 
 			int j = ARX_PARTICLES_GetFree();
 
@@ -1400,9 +1382,9 @@ float CIceField::Render()
 		}
 		else if (t > 0.095f)
 		{
-			x = tPos[i].x;
-			y = tPos[i].y - 50;
-			z = tPos[i].z;
+			float x = tPos[i].x;
+			float y = tPos[i].y - 50;
+			float z = tPos[i].z;
 
 			int j = ARX_PARTICLES_GetFree();
 

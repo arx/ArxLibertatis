@@ -2,8 +2,9 @@
 #ifndef ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
 #define ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
 
-#include "graphics/GraphicsTypes.h" // for EERIE_2D and EERIE_3D
 #include "graphics/texture/Texture.h" // For Texture2D
+#include "platform/math/Vector2.h"
+#include "platform/math/Vector3.h"
 
 class TextureContainer;
 class Cinematic;
@@ -15,7 +16,7 @@ struct C_INDEXED {
 	int bitmapw;
 	int bitmaph;
 	int nbvertexs;
-	Texture2D* tex;
+	Texture2D * tex;
 	int startind;
 	int nbind;
 };
@@ -28,7 +29,7 @@ struct C_IND {
 };
 
 struct C_UV {
-	EERIE_2D uv;
+	Vec2f uv;
 	int indvertex;
 };
 
@@ -39,7 +40,7 @@ struct CinematicGrid {
 	int nbindsmalloc;
 	int nbuvs;
 	int nbuvsmalloc;
-	EERIE_3D * vertexs;
+	Vec3f * vertexs;
 	C_UV * uvs;
 	C_IND * inds;
 	std::vector<C_INDEXED> mats;

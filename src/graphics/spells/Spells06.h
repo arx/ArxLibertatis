@@ -70,7 +70,7 @@ class CParalyse : public CSpellFx
 		short	key;
 		int		duration;
 		int		currduration;
-		EERIE_3D	pos;
+		Vec3f	pos;
 		float		scale;
 		float		r;
 
@@ -79,7 +79,7 @@ class CParalyse : public CSpellFx
 		float		prismrd, prismgd, prismbd;
 		float		prismre, prismge, prismbe;
 
-		EERIE_3D		*	prismvertex;
+		Vec3f		*	prismvertex;
 		D3DTLVERTEX		*	prismd3d;
 		unsigned short	*	prismind;
 		int					prismnbpt;
@@ -90,9 +90,9 @@ class CParalyse : public CSpellFx
 
 		struct T_PRISM
 		{
-			EERIE_3D	pos;
-			EERIE_3D	offset;
-			EERIE_3D	* vertex;
+			Vec3f	pos;
+			Vec3f	offset;
+			Vec3f	* vertex;
 		};
 
 		T_PRISM		tabprism[100];
@@ -135,7 +135,7 @@ class CParalyse : public CSpellFx
 		};
 
 
-		void	Create(int, float, float, float, EERIE_3D *, int);
+		void	Create(int, float, float, float, Vec3f *, int);
 		void	Update(unsigned long);
 		float	Render();
 		void	Kill();
@@ -144,13 +144,13 @@ class CParalyse : public CSpellFx
 
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CCreateField: public CSpellFx
 {
 	public:
-		EERIE_3D eSrc;
+		Vec3f eSrc;
 
 	private:
 		TextureContainer * tex_jelly;
@@ -172,15 +172,15 @@ class CCreateField: public CSpellFx
 		CCreateField();
 
 	private:
-		void RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4,  int rec, EERIE_3D);
+		void RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4,  int rec, Vec3f);
 		void RenderSubDivFace(D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2);
 
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 		void SetSize(float);
 
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -195,8 +195,8 @@ class CDisarmTrap: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
@@ -209,10 +209,10 @@ class CDisarmTrap: public CSpellFx
 		~CDisarmTrap();
 
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -228,8 +228,8 @@ class CSlowDown: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 
@@ -242,11 +242,11 @@ class CSlowDown: public CSpellFx
 
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -254,13 +254,13 @@ class CSlowDown: public CSpellFx
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CRiseDead: public CSpellFx
 {
 	public:
-		EERIE_3D eSrc;
+		Vec3f eSrc;
 		float	fColorRays1[3];
 
 	private:
@@ -294,11 +294,11 @@ class CRiseDead: public CSpellFx
 		{
 			short		actif;
 			short		numstone;
-			EERIE_3D	pos;
+			Vec3f	pos;
 			float		yvel;
-			EERIE_3D	ang;
-			EERIE_3D	angvel;
-			EERIE_3D	scale;
+			Anglef ang;
+			Anglef angvel;
+			Vec3f	scale;
 			int			time;
 			int			currtime;
 		};
@@ -308,7 +308,7 @@ class CRiseDead: public CSpellFx
 		int				nbstone;
 		T_STONE			tstone[256];
 
-		void AddStone(EERIE_3D * pos);
+		void AddStone(Vec3f * pos);
 		void DrawStone();
 	public:
 		CRiseDead();
@@ -323,7 +323,7 @@ class CRiseDead: public CSpellFx
 		void SetDuration(const unsigned long duration);
 		void SetDuration(unsigned long, unsigned long, unsigned long);
  
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
  
 		void SetColorBorder(float, float, float);
 		void SetColorRays1(float, float, float);
@@ -332,7 +332,7 @@ class CRiseDead: public CSpellFx
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();

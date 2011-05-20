@@ -74,8 +74,8 @@ aalError aalSetRoomRolloffFactor(float factor);
 
 aalError aalSetUnitFactor(float factor);
 aalError aalSetRolloffFactor(float factor);
-aalError aalSetListenerPosition(const Vector3f & position);
-aalError aalSetListenerDirection(const Vector3f & front, const Vector3f & up);
+aalError aalSetListenerPosition(const Vec3f & position);
+aalError aalSetListenerDirection(const Vec3f & front, const Vec3f & up);
 aalError aalSetListenerEnvironment(EnvId environment_id);
 
 // Mixer
@@ -93,7 +93,7 @@ aalError aalMixerResume(MixerId mixer_id);
 
 aalError aalSetSampleVolume(SourceId sample_id, float volume);
 aalError aalSetSamplePitch(SourceId sample_id, float pitch);
-aalError aalSetSamplePosition(SourceId sample_id, const Vector3f & position);
+aalError aalSetSamplePosition(SourceId sample_id, const Vec3f & position);
 
 aalError aalGetSampleName(SampleId sample_id, std::string & name);
 aalError aalGetSampleLength(SampleId sample_id, size_t & length, TimeUnit unit = UNIT_MS);

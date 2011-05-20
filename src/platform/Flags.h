@@ -6,6 +6,10 @@
 
 // Based on QFlags from Qt
 
+/*!
+ * An intermediary to initialize Flags from arbitray integer values.
+ * TODO should this be removed?
+ */
 class Flag {
 	
 	u32 value;
@@ -22,6 +26,8 @@ public:
 
 /*!
  * A typesafe way to define flags as a combination of enum values.
+ * 
+ * This type should not be used directly, only through DECLARE_FLAGS.
  */
 template <typename _Enum>
 class Flags {
@@ -150,6 +156,9 @@ public:
 	
 };
 
+/*!
+ * Helper class used by DECLARE_FLAGS_OPERATORS to prevent some automatic casts.
+ */
 class IncompatibleFlag {
 	
 	u32 value;
@@ -160,8 +169,18 @@ public:
 	
 };
 
+/*!
+ * Declare a flag type using values from a given enum.
+ * This should always be used instead of using Flags&lt;Enum&gt; directly.
+ * 
+ * @param Enum should be an enum with values that have exactly one bit set.
+ * @param Flagname is the name for the flag type to be defined.
+ */
 #define DECLARE_FLAGS(Enum, Flagname) typedef Flags<Enum> Flagname;
 
+/*!
+ * Declare overloaded operators for a given flag type.
+ */
 #define DECLARE_FLAGS_OPERATORS(Flagname) \
 	inline Flagname operator|(Flagname::Enum a, Flagname::Enum b) { \
 		return Flagname(a) | b; \
@@ -170,7 +189,16 @@ public:
 		return b | a; \
 	} \
 	inline IncompatibleFlag operator|(Flagname::Enum a, u32 b) { \
-		return IncompatibleFlag(u32(b) | a); \
+		return IncompatibleFlag(u32(a) | b); \
+	} \
+	inline IncompatibleFlag operator|(u32 a, Flagname::Enum b) { \
+		return IncompatibleFlag(a | u32(b)); \
+	} \
+	inline IncompatibleFlag operator&(Flagname a, u32 b) { \
+		return IncompatibleFlag(u32(a) & b); \
+	} \
+	inline IncompatibleFlag operator&(u32 a, Flagname b) { \
+		return IncompatibleFlag(a & u32(b)); \
 	} \
 	inline Flagname operator~(Flagname::Enum a) { \
 		return ~Flagname(a); \

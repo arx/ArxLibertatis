@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Dialog.h"
 #include "core/Core.h"
 
@@ -90,10 +90,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Progressive.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+#include "io/Logger.h"
 
 #include "physics/Collisions.h"
 #include "physics/CollisionShapes.h"
@@ -101,6 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Clothes.h"
 
 #include "platform/String.h"
+#include "platform/Thread.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
@@ -120,15 +121,12 @@ extern long FRAME_COUNT;
 
 #define BASE_RUBBER 1.5f
 
-extern INTERACTIVE_OBJ * CDP_EditIO;
 extern INTERACTIVE_OBJ * FlyingOverIO;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern TextureContainer * Movable;
-extern long NODIRCREATION;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
 extern long CURRENTLEVEL;
-extern long EDITMODE;
 extern long CYRIL_VERSION;
 extern long FINAL_RELEASE;
 extern long FOR_EXTERNAL_PEOPLE;
@@ -142,15 +140,17 @@ float TREATZONE_LIMIT = 1800.f;
 long HERO_SHOW_1ST = 1;
 long TreatAllIO = 0;
 long INTREATZONECOUNT = 0;
+#ifdef BUILD_EDITOR
 long NbIOSelected = 0;
 long LastSelectedIONum = -1;
+#endif
 long INTERNMB = -1;
 long LASTINTERCLICKNB = -1;
 long INTER_DRAW = 0;
 long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
-static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
+static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos);
 static INTERACTIVE_OBJ * AddCamera(const std::string & file);
 static INTERACTIVE_OBJ * AddMarker(const std::string & file);
 
@@ -335,7 +335,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 
 		while ((io->_npcdata->pathfind.pathwait == 1) && count--)
 		{
-			Sleep(1);
+			Thread::sleep(1);
 		}
 
 		if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
@@ -363,7 +363,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 				if ((ioo) && ValidIOAddress(ioo))
 				{
 					long ll = eobj->linked[k].lidx;
-					EERIE_3D pos, vector;
+					Vec3f pos, vector;
 					pos.x = io->obj->vertexlist3[ll].v.x;
 					pos.y = io->obj->vertexlist3[ll].v.y;
 					pos.z = io->obj->vertexlist3[ll].v.z;
@@ -628,7 +628,7 @@ void CheckSetAnimOutOfTreatZone(INTERACTIVE_OBJ * io, long num)
 	if ((io)
 	        &&	(io->animlayer[num].cur_anim)
 	        &&	!(io->GameFlags & GFLAG_ISINTREATZONE)
-	        &&	(EEDistance3D(&io->pos, &ACTIVECAM->pos) > 2500.f))
+	        &&	distSqr(io->pos, ACTIVECAM->pos) > square(2500.f))
 	{
 
 		ARX_CHECK_LONG(io->animlayer[num].cur_anim->anims[ io->animlayer[num].altidx_cur ]->anim_time - 1);
@@ -643,24 +643,20 @@ extern float fZFogEnd;
 void PrepareIOTreatZone(long flag)
 {
 	static long status = -1;
-	static EERIE_3D lastpos;
+	static Vec3f lastpos;
 
 	if ((flag)
 	        ||	(status == -1))
 	{
 		status = 0;
-		lastpos.x = ACTIVECAM->pos.x;
-		lastpos.y = ACTIVECAM->pos.y;
-		lastpos.z = ACTIVECAM->pos.z;
+		lastpos = ACTIVECAM->pos;
 	}
 	else if (status == 3) status = 0;
 
-	if (EEDistance3D(&ACTIVECAM->pos, &lastpos) > 100.f)
+	if (distSqr(ACTIVECAM->pos, lastpos) > square(100.f))
 	{
 		status = 0;
-		lastpos.x = ACTIVECAM->pos.x;
-		lastpos.y = ACTIVECAM->pos.y;
-		lastpos.z = ACTIVECAM->pos.z;
+		lastpos = ACTIVECAM->pos;
 	}
 
 	if (status++) return;
@@ -752,37 +748,37 @@ void PrepareIOTreatZone(long flag)
 			}
 			else
 			{
-				float dist;
+				float dists;
 
 				if (Cam_Room >= 0)
 				{
 					if (io->show == SHOW_FLAG_TELEPORTING)
 					{
-						EERIE_3D pos;
+						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dist = EEDistance3D(&ACTIVECAM->pos, &pos);
+						dists = distSqr(ACTIVECAM->pos, pos);
 					}
 					else
 					{
 						if (io->room_flags & 1)
 							UpdateIORoom(io);
 
-						dist = SP_GetRoomDist(&io->pos, &ACTIVECAM->pos, io->room, Cam_Room);
+						dists = square(SP_GetRoomDist(&io->pos, &ACTIVECAM->pos, io->room, Cam_Room));
 					}
 				}
 				else
 				{
 					if (io->show == SHOW_FLAG_TELEPORTING)
 					{
-						EERIE_3D pos;
+						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dist = EEDistance3D(&ACTIVECAM->pos, &pos); //&io->pos,&pos);
+						dists = distSqr(ACTIVECAM->pos, pos); //&io->pos,&pos);
 					}
 					else
-						dist = EEDistance3D(&io->pos, &ACTIVECAM->pos);
+						dists = distSqr(io->pos, ACTIVECAM->pos);
 				}
 		
-				if (dist < TREATZONE_LIMIT) treat = 1;
+				if (dists < square(TREATZONE_LIMIT)) treat = 1;
 				else treat = 0;
 				
 			}
@@ -868,7 +864,7 @@ void PrepareIOTreatZone(long flag)
 
 				if (ioo)
 				{
-					if (EEDistance3D(&io->pos, &ioo->pos) < 300.f)
+					if (distSqr(io->pos, ioo->pos) < square(300.f))
 					{
 						toadd = 1;
 						break;
@@ -964,7 +960,7 @@ void UnselectAllNodes()
 }
 //*************************************************************************************
 //*************************************************************************************
-void TranslateSelectedNodes(EERIE_3D * trans)
+void TranslateSelectedNodes(Vec3f * trans)
 {
 	for (long i = 0; i < nodes.nbmax; i++)
 	{
@@ -1491,7 +1487,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->halo.dynlight = -1;
 
 		io->level = io->truelevel;
-		io->forcedmove.clear();
+		io->forcedmove = Vec3f::ZERO;
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
@@ -1528,7 +1524,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->invisibility = 0.f;
 		io->rubber = BASE_RUBBER;
 		io->scale = 1.f;
-		io->move.clear();
+		io->move = Vec3f::ZERO;
 		io->type_flags = 0;
 		io->sound = -1;
 		io->soundtime = 0;
@@ -1761,15 +1757,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 		INTERACTIVE_OBJ * io;
 		//todo free
 
-	retry_allocation:
-		;
 		inter.iobj[i] = (INTERACTIVE_OBJ *)malloc(sizeof(INTERACTIVE_OBJ)); 
-
-		if (!inter.iobj[i])
-		{
-			if (HERMES_Memory_Emergency_Out(sizeof(INTERACTIVE_OBJ), "Interactive_Object_Alloc"))
-				goto retry_allocation;
-		}
 
 		memset(inter.iobj[i], 0, sizeof(INTERACTIVE_OBJ));
 		io = inter.iobj[i];
@@ -1886,7 +1874,7 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src)
 
 	return dest;
 }
-bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * target)
+bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target)
 {
 	EERIE_CYLINDER phys;
 
@@ -1957,7 +1945,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			inter.iobj[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
 			ARX_PARTICLES_Add_Smoke(&io->pos, 3, 20);
-			EERIE_3D pos;
+			Vec3f pos;
 			pos.x = inter.iobj[t]->pos.x;
 			pos.y = inter.iobj[t]->pos.y + inter.iobj[t]->physics.cyl.height * ( 1.0f / 2 );
 			pos.z = inter.iobj[t]->pos.z;
@@ -1990,7 +1978,6 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 		float diff = io->pos.y - vvp;
 		float fdiff = EEfabs(diff);
 		float eediff = fdiff;
-		float mul = 1.f;
 
 		if (fdiff > 120.f) 
 		{
@@ -1998,7 +1985,7 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 		}
 		else
 		{
-			mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
+			float mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
 
 			if ((eediff < 15.f))
 			{
@@ -2030,14 +2017,14 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 	}
 }
 long FLAG_ALLOW_CLOTHES = 1;
-void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flags)
+void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags)
 {
 
 	if (!io)
 		return;
 
 	FRAME_COUNT = -1;
-	EERIE_3D translate;
+	Vec3f translate;
 	io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->room_flags |= 1;
 	io->room = -1;
@@ -2166,7 +2153,9 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	if ((MasterCamera.exist & 2) && (MasterCamera.want_io == io))
 		MasterCamera.exist = 0;
 
+#ifdef BUILD_EDITOR
 	InterTreeViewItemRemove(io);
+#endif
 	ARX_INTERACTIVE_DestroyDynamicInfo(io);
 	IO_UnlinkAllLinkedObjects(io);
 
@@ -2351,11 +2340,11 @@ INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFla
 // "io".
 //***********************************************************************************
 
-void SetWeapon_On(INTERACTIVE_OBJ * io)
-{
-	if ((!io)
-	        &&	!(io->ioflags & IO_NPC))
+void SetWeapon_On(INTERACTIVE_OBJ * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
+	}
 
 	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
 
@@ -2482,9 +2471,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		return NULL;
 	}
 
-	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddFix - %s", file.c_str());
-	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
+	LogDebug << "AddFix " << file;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 
@@ -2571,8 +2558,6 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 
 	io->collision = 1;
 
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
-
 	return io;
 }
 
@@ -2594,9 +2579,7 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 		return NULL;
 	}
 
-	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddCamera - %s", file.c_str());
-	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
+	LogDebug << "AddCamera " << file;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -2638,8 +2621,6 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 	io->ioflags = IO_CAMERA;
 	io->collision = 0;
 
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
-
 	return io;
 }
 
@@ -2662,9 +2643,7 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
 		return NULL;
 	}
 
-	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddMarker - %s", file.c_str());
-	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
+	LogDebug << "AddMarker " << file;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -2704,8 +2683,6 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
 	io->ioflags = IO_MARKER;
 	io->collision = 0;
 
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
-
 	return io;
 }
 void ShowIOPath(INTERACTIVE_OBJ * io)
@@ -2723,6 +2700,8 @@ void ShowIOPath(INTERACTIVE_OBJ * io)
 			ad->flags |= 1;
 		}
 }
+
+#ifdef BUILD_EDITOR
 
 //*************************************************************************************
 // Unselect an IO
@@ -2756,7 +2735,7 @@ void SelectIO(INTERACTIVE_OBJ * io)
 	{
 		io->EditorFlags |= EFLAG_SELECTED;
 		NbIOSelected++;
-		EERIE_3D curpos;
+		Vec3f curpos;
 		GetItemWorldPosition(io, &curpos);
 		LastSelectedIONum = GetInterNum(io);
 		ShowIOPath(io);
@@ -2765,7 +2744,7 @@ void SelectIO(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 // Translate all selected IOs
 //*************************************************************************************
-void TranslateSelectedIO(EERIE_3D * op)
+void TranslateSelectedIO(Vec3f * op)
 {
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -2798,7 +2777,7 @@ void ResetSelectedIORot()
 //*************************************************************************************
 // Rotate all selected IOs
 //*************************************************************************************
-void RotateSelectedIO(EERIE_3D * op)
+void RotateSelectedIO(Anglef * op)
 {
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -2883,7 +2862,7 @@ void GroundSnapSelectedIO()
 		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
 		{
 			INTERACTIVE_OBJ * io = inter.iobj[i];
-			EERIE_3D ppos;
+			Vec3f ppos;
 			ppos.x = io->pos.x;
 			ppos.y = io->pos.y;
 			ppos.z = io->pos.z;
@@ -2899,6 +2878,8 @@ void GroundSnapSelectedIO()
 		}
 	}
 }
+
+#endif // BUILD_EDITOR
 
 INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	
@@ -2918,9 +2899,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	if ( ( !PAK_FileExist(file2) ) && ( !PAK_FileExist(file) ) )
 		return NULL;
 
-	char texx[HERMES_PATH_SIZE];
-	sprintf(texx, "AddNPC - %s", file.c_str());
-	SendConsole(texx, 2, 0, (HWND)g_pD3DApp->m_hWnd);
+	LogDebug << "AddNPC " << file;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -3007,8 +2986,6 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	io->infracolor.b = 0.2f;
 	io->collision = 1;
 	io->inv = NULL;
-
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
 
 	ARX_INTERACTIVE_HideGore(io);
 	return io;
@@ -3101,9 +3078,16 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 {
 	long t = 1;
 
-	if ( (NODIRCREATION) || !io )
+	if(!io) {
 		return;
-
+	}
+	
+#ifdef BUILD_EDITOR
+	if(NODIRCREATION) {
+		return;
+	}
+#endif
+	
 	while (io->ident == 0)
 	{
 		std::string temp = io->full_name() + '.';
@@ -3359,8 +3343,6 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	io->infracolor.b = 1.f;
 	io->collision = 0;
 
-	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
-
 	return io;
 }
 
@@ -3371,11 +3353,11 @@ extern long USE_CEDRIC_ANIM;
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
 //*************************************************************************************
-INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRef, INTERACTIVE_OBJ ** _pTable, int * _pnNbInTable)
+INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTERACTIVE_OBJ ** _pTable, int * _pnNbInTable)
 {
 	float n;
  
-	float fdist = 9999999999.f;
+	float _fdist = 9999999999.f;
 	float fdistBB = 9999999999.f;
 	float fMaxDist = flag ? 9999999999.f : 350;
 	INTERACTIVE_OBJ * foundBB = NULL;
@@ -3433,12 +3415,12 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 				{
 					if (flag && _pRef)
 					{
-						float flDistanceToRef = EESquaredDistance3D(&ACTIVECAM->pos, _pRef);
-						float flDistanceToIO = EESquaredDistance3D(&ACTIVECAM->pos, &io->pos);
+						float flDistanceToRef = distSqr(ACTIVECAM->pos, *_pRef);
+						float flDistanceToIO = distSqr(ACTIVECAM->pos, io->pos);
 						bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
 					}
 
-					float fp = EEDistance3D(&io->pos, &player.pos);
+					float fp = fdist(io->pos, player.pos);
 
 					if ((!flag && (fp <= fMaxDist)) && ((foundBB == NULL) || (fp < fdistBB)))
 					{
@@ -3452,7 +3434,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 						if (bPlayerEquiped)
 							fp = 0.f;
 						else
-							fp = EEDistance3D(&io->pos, &player.pos);
+							fp = fdist(io->pos, player.pos);
 
 						if ((fp < fdistBB) || (foundBB == NULL))
 						{
@@ -3482,12 +3464,12 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 							if (bPlayerEquiped)
 								fp = 0.f;
 							else
-								fp = EEDistance3D(&io->pos, &player.pos);
+								fp = fdist(io->pos, player.pos);
 
-							if ((bPass && (fp <= fMaxDist)) && ((fp < fdist) || (foundPixel == NULL)))
+							if ((bPass && (fp <= fMaxDist)) && ((fp < _fdist) || (foundPixel == NULL)))
 							{
 								{
-									fdist = fp;
+									_fdist = fp;
 									foundPixel = io;
 									INTERNMB = i;
 									goto suite;
@@ -3525,7 +3507,7 @@ bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos) {
+INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 	
 	LASTINTERCLICKNB = -1;
 
@@ -3574,9 +3556,9 @@ INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos) {
 //*************************************************************************************
 // Need To upgrade to a more precise collision.
 //*************************************************************************************
-long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size)
+long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
 {
-	EERIE_3D pos;
+	Vec3f pos;
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -3618,11 +3600,8 @@ long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size)
 //*************************************************************************************
 // To upgrade to a more precise collision.
 //*************************************************************************************
-static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos) {
+static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 	
-	long nbv;
-	long idx;
-
 	if ((!io)
 	        ||	(!io->obj))
 		return false;
@@ -3630,13 +3609,12 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos) {
 	if (Distance3D(pos->x, pos->y, pos->z, io->pos.x, io->pos.y, io->pos.z) < 190.f)
 	{
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
-		nbv = io->obj->vertexlist.size(); // TODO is this event correct?
 
 		if (io->obj->nbgroups > 4)
 		{
 			for (long i = 0; i < io->obj->nbgroups; i++)
 			{
-				idx = io->obj->grouplist[i].origin;
+				long idx = io->obj->grouplist[i].origin;
 
 				if (Distance3D(pos->x, pos->y, pos->z, vlist[idx].v.x, vlist[idx].v.y, vlist[idx].v.z) <= 50.f)
 					return true;
@@ -3644,6 +3622,7 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos) {
 		}
 		else
 		{
+			long nbv = io->obj->vertexlist3.size();
 			for (long i = 0; i < nbv; i++)
 			{
 				if (i != io->obj->origin)
@@ -3664,7 +3643,6 @@ void SetYlsideDeath(INTERACTIVE_OBJ * io)
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
 	bool col = false;
-	float dist;
 	long i;
 	long avoid = -1;
 	INTERACTIVE_OBJ * io_source = NULL;
@@ -3691,9 +3669,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 		    && (!io->usepath)
 		)
 		{
-			dist = EEDistance3D(&io->pos, &obj->pbox->vert[0].pos);
-
-			if ((dist < 450.f) && (In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius)))
+			if (distSqr(io->pos, obj->pbox->vert[0].pos) < square(450.f) && (In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius)))
 			{
 				if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
 				{
@@ -3722,12 +3698,9 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 					{
 						if (ii != io->obj->origin)
 						{
-							sp.origin.x = vlist[ii].v.x;
-							sp.origin.y = vlist[ii].v.y;
-							sp.origin.z = vlist[ii].v.z;
+							sp.origin = vlist[ii].v;
 
-							if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
-							{
+							if(sp.contains(obj->pbox->vert[kk].pos)) {
 								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 								{
 									if (ARXTime > io->collide_door_time + 500)
@@ -3756,7 +3729,6 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 {
 	bool col = false;
-	float dist;
 	long i;
 	long avoid = -1;
 	INTERACTIVE_OBJ * io_source = NULL;
@@ -3792,9 +3764,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 			continue;
 
 		
-		dist = EEDistance3D(&io->pos, &obj->pbox->vert[0].pos);
-
-		if ((dist < 600.f) && (In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)))
+		if (distSqr(io->pos, obj->pbox->vert[0].pos) < square(600.f) && (In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)))
 		{
 			if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
 			{
@@ -3887,13 +3857,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						{
 							for (long jii = 1; jii < nbv; jii += step)
 							{
-								sp.origin.x = (vlist[ii].v.x + vlist[jii].v.x) * ( 1.0f / 2 );
-								sp.origin.y = (vlist[ii].v.y + vlist[jii].v.y) * ( 1.0f / 2 );
-								sp.origin.z = (vlist[ii].v.z + vlist[jii].v.z) * ( 1.0f / 2 );
+								sp.origin = (vlist[ii].v + vlist[jii].v) * ( 1.0f / 2 );
 
 								for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-									if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
-									{
+									if(sp.contains(obj->pbox->vert[kk].pos)) {
 										if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 										{
 											if (ARXTime > io->collide_door_time + 500)
@@ -3912,12 +3879,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 							}
 						}
 
-						sp.origin.x = vlist[ii].v.x;
-						sp.origin.y = vlist[ii].v.y;
-						sp.origin.z = vlist[ii].v.z;
+						sp.origin = vlist[ii].v;
 
 						for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-							if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
+							if (sp.contains(obj->pbox->vert[kk].pos))
 							{
 								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 								{
@@ -4036,7 +4001,7 @@ void UpdateCameras()
 						        &&	(ii != i)
 						        &&	(ioo->show == SHOW_FLAG_IN_SCENE)
 						        &&	(ioo->ioflags & IO_NPC)
-						        &&	(EEDistance3D(&io->pos, &ioo->pos) < 600.f))
+						        &&	closerThan(io->pos, ioo->pos, 600.f))
 						{
 							bool Touched = false;
 
@@ -4044,9 +4009,7 @@ void UpdateCameras()
 							{
 								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
 								{
-									if (EEDistance3D(&io->obj->vertexlist3[ri].v,
-									                 &ioo->obj->vertexlist3[rii].v) < 20.f)
-									{
+									if(closerThan(io->obj->vertexlist3[ri].v, ioo->obj->vertexlist3[rii].v, 20.f)) {
 										Touched = true;
 										ri = io->obj->vertexlist.size();
 										break;
@@ -4076,42 +4039,25 @@ void UpdateCameras()
 
 					if ((io->_camdata->cam.lastinfovalid) && (io->_camdata->cam.smoothing != 0.f))
 					{
-						EERIE_3D smoothtarget;
+						Vec3f smoothtarget;
  
 						float vv = (float)io->_camdata->cam.smoothing;
 
 						if (vv > 8000) vv = 8000;
 
 						vv = (8000 - vv) * ( 1.0f / 4000 );
-						float vll = _framedelay * ( 1.0f / 1000 ) * vv;
-						EERIE_3D oldvector;
-						EERIE_3D newvector;
-						oldvector.x = io->_camdata->cam.lasttarget.x - io->_camdata->cam.lastpos.x;
-						oldvector.y = io->_camdata->cam.lasttarget.y - io->_camdata->cam.lastpos.y;
-						oldvector.z = io->_camdata->cam.lasttarget.z - io->_camdata->cam.lastpos.z;
 
-						newvector.x = io->target.x - io->_camdata->cam.pos.x;
-						newvector.y = io->target.y - io->_camdata->cam.pos.y;
-						newvector.z = io->target.z - io->_camdata->cam.pos.z;
-
-						EEDistance3D(&oldvector, &newvector);
-						float f1 = vll; 
+						float f1 = _framedelay * ( 1.0f / 1000 ) * vv; 
 
 						if (f1 > 1.f) f1 = 1.f;
 
 						float f2 = 1.f - f1;
-						smoothtarget.x = io->target.x * f2 + io->_camdata->cam.lasttarget.x * f1;
-						smoothtarget.y = io->target.y * f2 + io->_camdata->cam.lasttarget.y * f1;
-						smoothtarget.z = io->target.z * f2 + io->_camdata->cam.lasttarget.z * f1;
+						smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
 
 						SetTargetCamera(&io->_camdata->cam, smoothtarget.x, smoothtarget.y, smoothtarget.z);
-						io->_camdata->cam.lasttarget.x = smoothtarget.x;
-						io->_camdata->cam.lasttarget.y = smoothtarget.y;
-						io->_camdata->cam.lasttarget.z = smoothtarget.z;
+						io->_camdata->cam.lasttarget = smoothtarget;
 						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
-						io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
-						io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
+						io->_camdata->cam.lastpos = io->_camdata->cam.pos;
 					}
 					else
 					{
@@ -4122,13 +4068,9 @@ void UpdateCameras()
 						}
 						else SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
 
-						io->_camdata->cam.lasttarget.x = io->target.x;
-						io->_camdata->cam.lasttarget.y = io->target.y;
-						io->_camdata->cam.lasttarget.z = io->target.z;
+						io->_camdata->cam.lasttarget = io->target;
 						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
-						io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
-						io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
+						io->_camdata->cam.lastpos = io->_camdata->cam.pos;
 					}
 
 					io->_camdata->cam.angle.b -= 180.f;
@@ -4202,7 +4144,7 @@ void RenderInter(float from, float to) {
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	float val = -0.6f;
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-	EERIE_3D temp;
+	Anglef temp;
 	EERIEMATRIX mat;
 	INTER_DRAW = 0;
 	INTER_COMPUTE = 0;
@@ -4214,8 +4156,8 @@ void RenderInter(float from, float to) {
 		ManageIgnition(inter.iobj[0]);
 	}
 
-	for (long i = 1; i < inter.nbmax; i++) // Player isn't rendered here...
-	{
+	for(long i = 1; i < inter.nbmax; i++) { // Player isn't rendered here...
+		
 		INTERACTIVE_OBJ * io = inter.iobj[i];
 
 		if ((io)
@@ -4249,9 +4191,9 @@ void RenderInter(float from, float to) {
 			        (io->obj->pbox) &&
 			        (io->obj->pbox->active))  
 			{
-				dist = EEDistance3D(&ACTIVECAM->pos, &io->obj->pbox->vert[0].pos);
+				dist = fdist(ACTIVECAM->pos, io->obj->pbox->vert[0].pos);
 			}
-			else dist = EEDistance3D(&ACTIVECAM->pos, &io->pos);
+			else dist = fdist(ACTIVECAM->pos, io->pos);
 
 			if ((0) && (inter.iobj[i]->stepmaterial))
 			{
@@ -4269,20 +4211,21 @@ void RenderInter(float from, float to) {
 			io->bbox1.x = 9999;
 			io->bbox2.x = -1;
 
-			if ((io->obj)
-			        &&	(io->obj->pbox))
+#ifdef BUILD_EDITOR
+			if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
 				EERIE_PHYSICS_BOX_Show(io->obj);
+#endif
 
 			if (
 			    (io->obj)
 			    &&	(io->obj->pbox)
 			    &&	(io->obj->pbox->active))
 			{
-				EERIE_3D tmp;
+				Vec3f tmp;
 				tmp.x = (io->obj->pbox->vert[14].pos.x - io->obj->pbox->vert[13].pos.x);
 				tmp.y = (io->obj->pbox->vert[14].pos.y - io->obj->pbox->vert[13].pos.y);
 				tmp.z = (io->obj->pbox->vert[14].pos.z - io->obj->pbox->vert[13].pos.z);
-				EERIE_3D up;
+				Vec3f up;
 
 				up.x = io->obj->pbox->vert[2].pos.x - io->obj->pbox->vert[1].pos.x;
 				up.y = io->obj->pbox->vert[2].pos.y - io->obj->pbox->vert[1].pos.y;
@@ -4342,7 +4285,7 @@ void RenderInter(float from, float to) {
 						LOOK_AT_TARGET = 1;
 				}
 
-				EERIE_3D pos = io->pos;
+				Vec3f pos = io->pos;
 
 				if (io->ioflags & IO_NPC)
 				{
@@ -4659,7 +4602,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 
 		io->obj->pbox->active = 1;
 		io->obj->pbox->stopcount = 0;
-		EERIE_3D pos;
+		Vec3f pos;
 		pos.x = io->pos.x;
 		pos.z = io->pos.z;
 		pos.y = io->pos.y;
@@ -4668,7 +4611,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 		io->velocity.z = 0.f;
 
 		io->stopped = 1;
-		EERIE_3D fallvector;
+		Vec3f fallvector;
 		fallvector.x = 0.f;
 		fallvector.z = 0.f;
 		fallvector.y = 0.000001f;

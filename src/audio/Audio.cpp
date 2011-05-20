@@ -25,6 +25,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Audio.h"
 
+#include "Configure.h"
+
 #include "audio/AudioResource.h"
 #include "audio/Mixer.h"
 #include "audio/Sample.h"
@@ -41,12 +43,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	#include "audio/openal/OpenALBackend.h"
 #endif
 
-#include "core/Time.h"
-
 #include "io/Logger.h"
 
 #include "platform/String.h"
 #include "platform/Lock.h"
+#include "platform/Time.h"
+
+using std::string;
 
 namespace audio {
 
@@ -105,7 +108,7 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	
 	mutex = new Lock();
 	
-	session_time = Time::GetMs();
+	session_time = Time::getMs();
 	
 	return AAL_OK;
 }
@@ -193,7 +196,7 @@ aalError aalUpdate() {
 	
 	AAL_ENTRY
 	
-	session_time = Time::GetMs();
+	session_time = Time::getMs();
 	
 	// Update sources
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
@@ -388,14 +391,14 @@ aalError aalSetRolloffFactor(float factor) {
 	return backend->setRolloffFactor(factor);
 }
 
-aalError aalSetListenerPosition(const Vector3f & position) {
+aalError aalSetListenerPosition(const Vec3f & position) {
 	
 	AAL_ENTRY
 	
 	return backend->setListenerPosition(position);
 }
 
-aalError aalSetListenerDirection(const Vector3f & front, const Vector3f & up) {
+aalError aalSetListenerDirection(const Vec3f & front, const Vec3f & up) {
 	
 	AAL_ENTRY
 	
@@ -527,7 +530,7 @@ aalError aalSetSamplePitch(SourceId sample_id, float pitch) {
 	return source->setPitch(pitch);
 }
 
-aalError aalSetSamplePosition(SourceId sample_id, const Vector3f & position) {
+aalError aalSetSamplePosition(SourceId sample_id, const Vec3f & position) {
 	
 	AAL_ENTRY
 	

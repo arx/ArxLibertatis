@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 
 #include "ai/Paths.h"
+#include "core/Core.h"
 #include "game/NPC.h"
 #include "graphics/Math.h"
 #include "physics/Collisions.h"
@@ -70,16 +71,12 @@ using std::max;
 float VELOCITY_THRESHOLD = 850.f;
 #define FULLTESTS 0
 
-//-----------------------------------------------------------------------------
-extern long DEBUGNPCMOVE;
-
-//-----------------------------------------------------------------------------
 long CUR_COLLISION_MATERIAL = 0;
 
 //*************************************************************************************
 // Used to launch an object into the physical world...
 //*************************************************************************************
-void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect, long flag, EERIE_3D * angle)
+void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flag, Anglef * angle)
 {
 	if ((!obj) || !(obj->pbox)) return;
 
@@ -154,7 +151,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect
 
 //*************************************************************************************
 //*************************************************************************************
-bool IsValidPos3(EERIE_3D * pos)
+bool IsValidPos3(Vec3f * pos)
 {
 	long px, pz;
 	px = pos->x * ACTIVEBKG->Xmul;
@@ -199,12 +196,12 @@ bool IsValidPos3(EERIE_3D * pos)
 //*************************************************************************************
 void ApplySpring(EERIE_3DOBJ * obj, long k, long l, float PHYSICS_constant, float PHYSICS_Damp)
 {
-	EERIE_3D deltaP, deltaV, springforce;
+	Vec3f deltaP, deltaV, springforce;
 	PHYSVERT * pv_k = &obj->pbox->vert[k];
 	PHYSVERT * pv_l = &obj->pbox->vert[l];
 	float Dterm, Hterm;
 
-	float restlength = TRUEEEDistance3D(&obj->pbox->vert[k].initpos, &obj->pbox->vert[l].initpos);
+	float restlength = dist(obj->pbox->vert[k].initpos, obj->pbox->vert[l].initpos);
 	//Computes Spring Magnitude
 	deltaP.x = pv_k->pos.x - pv_l->pos.x;		// Vector distance
 	deltaP.y = pv_k->pos.y - pv_l->pos.y;		// Vector distance
@@ -216,7 +213,7 @@ void ApplySpring(EERIE_3DOBJ * obj, long k, long l, float PHYSICS_constant, floa
 	deltaV.x = pv_k->velocity.x - pv_l->velocity.x;
 	deltaV.y = pv_k->velocity.y - pv_l->velocity.y;
 	deltaV.z = pv_k->velocity.z - pv_l->velocity.z;		// Delta Velocity Vector
-	Dterm = (Vector_DotProduct(&deltaV, &deltaP) * PHYSICS_Damp) * divdist; // Damping Term
+	Dterm = (deltaV dot deltaP) * PHYSICS_Damp * divdist; // Damping Term
 	Dterm = (-(Hterm + Dterm));
 	divdist *= Dterm;
 	springforce.x = deltaP.x * divdist;	// Normalize Distance Vector
@@ -238,7 +235,7 @@ void ApplySpring(EERIE_3DOBJ * obj, long k, long l, float PHYSICS_constant, floa
 
 void EERIE_PHYSICS_BOX_ComputeForces(EERIE_3DOBJ * obj)
 {
-	EERIE_3D PHYSICS_Gravity;
+	Vec3f PHYSICS_Gravity;
 	PHYSICS_Gravity.x = 0.f;
 	PHYSICS_Gravity.y = -20.f;
 	PHYSICS_Gravity.z = 0.f;
@@ -294,19 +291,16 @@ long PHYS_COLLIDER = -1;
 //*************************************************************************************
 // Checks is a triangle of a physical object is colliding a triangle
 //*************************************************************************************
-bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k, long * validd)
+bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, long * validd)
 {
 	EERIE_TRI t1, t2;
 	bool ret = false;
-	memcpy(t2.v, verts, sizeof(EERIE_3D) * 3);
+	std::copy(verts, verts + 2, t2.v);
 
 	PHYSVERT * vert = obj->pbox->vert;
 
-	EERIE_3D center;
-	center.x = (verts[0].x + verts[1].x + verts[2].x) * ( 1.0f / 3 );
-	center.y = (verts[0].y + verts[1].y + verts[2].y) * ( 1.0f / 3 );
-	center.z = (verts[0].z + verts[1].z + verts[2].z) * ( 1.0f / 3 );
-	float rad = EEDistance3D(&center, &verts[0]);
+	Vec3f center = (verts[0] + verts[1] + verts[2]) * ( 1.0f / 3 );
+	float rad = fdist(center, verts[0]);
 
 	if (k == -1)
 	{
@@ -314,7 +308,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 		for (; nn < obj->pbox->nb_physvert; nn++)
 		{
-			if (EEDistance3D(&center, &vert[nn].pos) <= max(60.0f, rad + 25))
+			if (distSqr(center, vert[nn].pos) <= max(square(60.0f), square(rad + 25)))
 			{
 				nn = 1000;
 			}
@@ -325,7 +319,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	}
 	else
 	{
-		if (EEDistance3D(&center, &vert[k].pos) > rad + 25)
+		if (distSqr(center, vert[k].pos) > square(rad + 25))
 			return false;
 	}
 
@@ -781,7 +775,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	return ret;
 }
 
-static void copy(EERIE_3D & dest, const D3DTLVERTEX & src) {
+static void copy(Vec3f & dest, const D3DTLVERTEX & src) {
 	dest.x = src.sx;
 	dest.y = src.sy;
 	dest.z = src.sz;
@@ -791,7 +785,7 @@ static void copy(EERIE_3D & dest, const D3DTLVERTEX & src) {
 //*************************************************************************************
 bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
-	EERIE_3D pol[3];
+	Vec3f pol[3];
 	copy(pol[0], ep->v[0]);
 	copy(pol[1], ep->v[1]);
 	copy(pol[2], ep->v[2]);
@@ -829,7 +823,7 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 
 	if (!back_ep)
 	{
-		EERIE_3D posi = obj->pbox->vert[kk].pos;
+		Vec3f posi = obj->pbox->vert[kk].pos;
 		posi.y -= 30.f;
 
 		CUR_COLLISION_MATERIAL = MATERIAL_STONE;
@@ -839,7 +833,7 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 	if (!(flags & 1))
 	{
 		EERIE_SPHERE sphere;
-		EERIE_3D * pos = &obj->pbox->vert[kk].pos;
+		Vec3f * pos = &obj->pbox->vert[kk].pos;
 		sphere.origin.x = pos->x;
 		sphere.origin.y = pos->y;
 		sphere.origin.z = pos->z;
@@ -858,9 +852,6 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 // Debug function used to show the physical box of an object
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 	
-	if (DEBUGNPCMOVE)
-	{
-
 		for (long k = 0; k < obj->pbox->nb_physvert; k++)
 		{
 			if (obj->pbox->active == 2)
@@ -891,7 +882,6 @@ void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 				            obj->pbox->vert[k].pos.z,
 				            0.6f, 40, 0xFFFF0000);
 		}
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -931,7 +921,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	                    malloc(sizeof(PHYSVERT) * obj->pbox->nb_physvert);
 	memset(obj->pbox->vert, 0, sizeof(PHYSVERT)*obj->pbox->nb_physvert);
 
-	EERIE_3D cubmin, cubmax;
+	Vec3f cubmin, cubmax;
 	cubmin.x = FLT_MAX;
 	cubmin.y = FLT_MAX;
 	cubmin.z = FLT_MAX;
@@ -1000,8 +990,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		{
 			if (k == (size_t)obj->origin) continue;
 
-			EERIE_3D curr;
-			memcpy(&curr, &obj->vertexlist[k].v, sizeof(EERIE_3D));
+			Vec3f curr = obj->vertexlist[k].v;
 			long SEC = 1;
 			obj->pbox->vert[SEC].pos.x = min(obj->pbox->vert[SEC].pos.x, curr.x);
 			obj->pbox->vert[SEC].pos.z = min(obj->pbox->vert[SEC].pos.z, curr.z);
@@ -1053,8 +1042,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		{
 			if (k == (size_t)obj->origin) continue;
 
-			EERIE_3D curr;
-			memcpy(&curr, &obj->vertexlist[k].v, sizeof(EERIE_3D));
+			Vec3f curr = obj->vertexlist[k].v;
 			long SEC;
 
 			if (curr.y < ysec1)
@@ -1095,9 +1083,8 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	obj->pbox->radius = 0.f;
 
-	for (int k = 0; k < obj->pbox->nb_physvert; k++)
-	{
-		float distt = TRUEEEDistance3D(&obj->pbox->vert[k].pos, &obj->pbox->vert[0].pos);
+	for(int k = 0; k < obj->pbox->nb_physvert; k++) {
+		float distt = dist(obj->pbox->vert[k].pos, obj->pbox->vert[0].pos);
 
 		if (distt > 20.f)
 		{
@@ -1109,12 +1096,11 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			                           obj->pbox->vert[0].pos.z;
 		}
 
-		memcpy(&obj->pbox->vert[k].initpos, &obj->pbox->vert[k].pos, sizeof(EERIE_3D));
+		obj->pbox->vert[k].initpos = obj->pbox->vert[k].pos;
 
-		if (k != 0)
-		{
-			float dist = TRUEEEDistance3D(&obj->pbox->vert[0].pos, &obj->pbox->vert[k].pos);
-			obj->pbox->radius = max(obj->pbox->radius, dist);
+		if(k != 0) {
+			float d = dist(obj->pbox->vert[0].pos, obj->pbox->vert[k].pos);
+			obj->pbox->radius = max(obj->pbox->radius, d);
 		}
 	}
 }

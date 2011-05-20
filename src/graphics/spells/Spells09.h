@@ -64,13 +64,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CParalyse;
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CSummonCreature: public CSpellFx
 {
 	public:
-		EERIE_3D eSrc;
+		Vec3f eSrc;
 		float	fColorRays1[3];
 
 	private:
@@ -110,7 +110,7 @@ class CSummonCreature: public CSpellFx
 	public:
 		void SetDuration(const unsigned long duration);
 		void SetDuration(unsigned long, unsigned long, unsigned long);
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
  
 		void SetColorBorder(float, float, float);
 		void SetColorRays1(float, float, float);
@@ -120,7 +120,7 @@ class CSummonCreature: public CSpellFx
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -129,7 +129,7 @@ class CSummonCreature: public CSpellFx
 
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CNegateMagic: public CSpellFx
@@ -137,8 +137,8 @@ class CNegateMagic: public CSpellFx
 	public:
 		bool bDone;
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 		TextureContainer * tex_sol;
@@ -152,11 +152,11 @@ class CNegateMagic: public CSpellFx
 
 		// accesseurs
 	public:
-		void SetPos(EERIE_3D);
+		void SetPos(Vec3f);
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
+		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -172,12 +172,12 @@ class CIncinerate: public CSpellFx
 {
 	public:
 		int iNumber;
-		EERIE_3D eSrc;
-		EERIE_3D eTarget;
+		Vec3f eSrc;
+		Vec3f eTarget;
 		TextureContainer * tex_flamme;
 		TextureContainer * tex_pouf_noir;
-		CParticleSystem pPSStream;
-		CParticleSystem pPSHit;
+		ParticleSystem pPSStream;
+		ParticleSystem pPSHit;
 		D3DTLVERTEX tv1a[150+1];
 
 		int iMax;
@@ -188,13 +188,13 @@ class CIncinerate: public CSpellFx
 
 		// accesseurs
 	public:
-		void	SetPos(EERIE_3D);
+		void	SetPos(Vec3f);
  
 
 		// surcharge
 	public:
-		void	Create(EERIE_3D, float afBeta = 0);
-		void	Create(EERIE_3D, float, float);
+		void	Create(Vec3f, float afBeta = 0);
+		void	Create(Vec3f, float, float);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
@@ -207,7 +207,7 @@ class CIncinerate: public CSpellFx
 class CMassParalyse: public CSpellFx
 {
 	private:
-		EERIE_3D	ePos;
+		Vec3f	ePos;
 		float		fRayon;
 		int			iNbParalyse;
 

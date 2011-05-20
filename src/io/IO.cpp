@@ -57,280 +57,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IO.h"
 
-#include <cstring>
 #include <cstdio>
-#include <ctime>
-#include <algorithm>
-#include <iostream>
-#include <algorithm>
 
 #include <shlobj.h>
 #include <windows.h>
 
-#include "io/Registry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-
 #include "platform/Platform.h"
 
-using std::string;
-using std::copy;
-using std::transform;
-
 // TODO(lubosz): temporary include replacement
-#if !ARX_COMPILER_MSVC
-    #define _MAX_EXT 3
-    #define _MAX_FNAME 512
-    #define _MAX_DRIVE 1
-    #define _MAX_DIR _MAX_FNAME
+#ifndef _MAX_FNAME
+	#define _MAX_FNAME 512
 #endif
 
-UINT GaiaWM = 0;
-HWND MAIN_PROGRAM_HANDLE = NULL;
-long DEBUGG = 1;
-
-void GetDate(HERMES_DATE_TIME * hdt)
-{
-	struct tm * newtime;
- 
-	time_t long_time;
-
-	time(&long_time);                  // Get time as long integer.
-	newtime = localtime(&long_time);   // Convert to local time.
-
-	if (newtime)
-	{
-		hdt->secs = newtime->tm_sec;
-		hdt->mins = newtime->tm_min;
-		hdt->hours = newtime->tm_hour;
-		hdt->months = newtime->tm_mon + 1;
-		hdt->days = newtime->tm_mday;
-		hdt->years = newtime->tm_year + 1900;
-	}
-	else
-	{
-		hdt->secs = 0;
-		hdt->mins = 0;
-		hdt->hours = 0;
-		hdt->months = 5;
-		hdt->days = 32;
-		hdt->years = 2002;
-	}
-}
-
-long DebugLvl[6];
-void HERMES_InitDebug()
-{
-	DebugLvl[0] = 1;
-	DebugLvl[1] = 1;
-	DebugLvl[2] = 1;
-	DebugLvl[3] = 1;
-	DebugLvl[4] = 1;
-	DebugLvl[5] = 1;
-	DEBUGG = 0;
-}
-
-HKEY    ConsoleKey = NULL;
-#define CONSOLEKEY_KEY     TEXT("Software\\Arkane_Studios\\ASMODEE")
-
-void ConsoleSend( const std::string& dat, long level, HWND source, long flag)
-{
-	printf("ConsoleSend: %s %ld %p %ld\n", dat.c_str(), level, source, flag);
-	RegCreateKeyEx(HKEY_CURRENT_USER, CONSOLEKEY_KEY, 0, NULL,
-				   REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
-				   &ConsoleKey, NULL);
-	WriteRegKey(ConsoleKey, "ConsInfo", dat.c_str() );
-	WriteRegKeyValue(ConsoleKey, "ConsHwnd", (ULONG_PTR)source);
-	WriteRegKeyValue(ConsoleKey, "ConsLevel", (DWORD)level);
-	WriteRegKeyValue(ConsoleKey, "ConsFlag", (DWORD)flag);
-	RegCloseKey(ConsoleKey);
-}
-
-void SendConsole( const std::string& dat, long level, long flag, HWND source) {
-	if (GaiaWM != 0)
-	{
-		if (DebugLvl[0]) return;
-
-		if (level < 1) return;
-
-		if (level > 5) return;
-
-		if (DebugLvl[level])
-		{
-			ConsoleSend(dat, level, source, flag);
-			SendMessage(HWND_BROADCAST, GaiaWM, 33, 33);
-		}
-	}
-}
-
-long FINAL_COMMERCIAL_DEMO_bis = 1;
-
-void ForceSendConsole( const std::string& dat, long level, long flag, HWND source)
-{
-	if (!FINAL_COMMERCIAL_DEMO_bis)
-	{
-		if (GaiaWM != 0)
-		{
-			ConsoleSend(dat, level, source, flag);
-			SendMessage(HWND_BROADCAST, GaiaWM, 33, 33);
-		}
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////
-HKEY    ComKey = NULL;
-#define COMKEY_KEY     TEXT("Software\\Arkane_Studios\\GaiaCom")
-char * HERMES_GaiaCOM_Receive()
-{
-	static char dat[1024];
-	RegCreateKeyEx(HKEY_CURRENT_USER, COMKEY_KEY, 0, NULL,
-				   REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
-				   &ComKey, NULL);
-	ReadRegKey(ComKey, "ComInfo",
-			   dat, 512, "");
-	RegCloseKey(ComKey);
-	return dat;
-}
-
-//******************************************************************************
-// MEMORY MANAGEMENT
-//******************************************************************************
-#ifdef _DEBUG
-long HERMES_KEEP_MEMORY_TRACE = 0;
-#else
-long HERMES_KEEP_MEMORY_TRACE = 0;
-#endif
-#define SIZE_STRING_MEMO_TRACE 24
-struct MEMO_TRACE
-{
-	void 	*		ptr;
-	char			string1[SIZE_STRING_MEMO_TRACE];
-	unsigned long	size;
-};
-
-MEMO_TRACE * MemoTraces = NULL;
-long nb_MemoTraces = 0;
- 
-void HERMES_UnRegister_Memory(void * adr)
-{
-	long pos = -1;
-
-	for (long i = 0; i < nb_MemoTraces; i++)
-	{
-		if (MemoTraces[i].ptr == adr)
-		{
-			pos = i;
-			break;
-		}
-	}
-
-	if (pos == -1) return;
-
-	if (nb_MemoTraces == 1)
-	{
-		free(MemoTraces);
-		MemoTraces = NULL;
-		nb_MemoTraces = 0;
-		return;
-	}
-
-	MEMO_TRACE * tempo = (MEMO_TRACE *)malloc(sizeof(MEMO_TRACE) * (nb_MemoTraces - 1));
-
-	if (tempo == NULL)
-	{
-		HERMES_KEEP_MEMORY_TRACE = 0;
-		free(MemoTraces);
-		return;
-	}
-
-	for (int i = 0; i < nb_MemoTraces - 1; i++)
-	{
-		if (i >= pos)
-		{
-			memcpy(&MemoTraces[i], &MemoTraces[i+1], sizeof(MEMO_TRACE));
-		}
-	}
-
-	memcpy(tempo, MemoTraces, sizeof(MEMO_TRACE)*(nb_MemoTraces - 1));
-	free(MemoTraces);
-	MemoTraces = (MEMO_TRACE *)tempo;
-	nb_MemoTraces--;
-}
-
-unsigned long MakeMemoryText(char * text)
-{
-	if (HERMES_KEEP_MEMORY_TRACE == 0)
-	{
-		strcpy(text, "Memory Tracing OFF.");
-		return 0;
-	}
-
-	bool * ignore;
-	unsigned long TotMemory = 0;
-	unsigned long TOTTotMemory = 0;
-	char header[128];
-	char theader[128];
-
-	if (nb_MemoTraces == 0)
-	{
-		text[0] = 0;
-		return 0;
-	}
-
-	ignore = (bool *)malloc(sizeof(bool) * nb_MemoTraces);
-
-	for (long i = 0; i < nb_MemoTraces; i++) ignore[i] = false;
-
-	strcpy(text, "");
-
-	for (int i = 0; i < nb_MemoTraces; i++)
-	{
-		if (!ignore[i])
-		{
-			TotMemory = MemoTraces[i].size;
-
-			if (MemoTraces[i].string1[0] != 0)
-				strcpy(header, MemoTraces[i].string1);
-			else strcpy(header, "<Unknown>");
-
-			for (long j = i + 1; j < nb_MemoTraces; j++)
-			{
-				if (!ignore[j])
-				{
-					if (MemoTraces[j].string1[0] != 0)
-						strcpy(theader, MemoTraces[j].string1);
-					else strcpy(theader, "<Unknown>");
-
-					if (!strcmp(header, theader))
-					{
-						ignore[j] = true;
-						TotMemory += MemoTraces[j].size;
-					}
-				}
-			}
-
-			sprintf(theader, "%12lu %s\r\n", TotMemory, header);
-
-			if (strlen(text) + strlen(theader) + 4 < 64000)
-			{
-				strcat(text, theader);
-			}
-
-			TOTTotMemory += TotMemory;
-		}
-	}
-
-	free(ignore);
-	return TOTTotMemory;
-}
-
-void MemFree(void * adr)
-{
-	if (HERMES_KEEP_MEMORY_TRACE)
-		HERMES_UnRegister_Memory(adr);
-
-	free(adr);
-}
  
 bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const float id)
 {
@@ -394,10 +134,10 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 //******************************************************************************
 // OPEN/SAVE FILES DIALOGS
 //******************************************************************************
-char	LastFolder[MAX_PATH];		// Last Folder used
+char	LastFolder[MAX_PATH]; // Last Folder used
 static OPENFILENAME ofn;
 
-bool HERMESFolderBrowse(const char * str)
+static bool HERMESFolderBrowse(const char * str)
 {
 	BROWSEINFO		bi;
 	LPITEMIDLIST	liil;
@@ -423,20 +163,17 @@ bool HERMESFolderBrowse(const char * str)
 }
 
 
-bool HERMESFolderSelector(char * file_name, const char * title)
-{
-	if (HERMESFolderBrowse(title))
-	{
+bool HERMESFolderSelector(char * file_name, const char * title) {
+	if(HERMESFolderBrowse(title)) {
 		sprintf(file_name, "%s\\", LastFolder);
 		return true;
-	}
-	else
-	{
+	} else {
 		strcpy(file_name, " ");
 		return false;
 	}
 }
-bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, const char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+
+static bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, const char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	BOOL	value;
 	char	cwd[MAX_PATH];
@@ -479,77 +216,10 @@ bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleNa
 	return value == TRUE;
 }
 
-int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd)
-{
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd) {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_HIDEREADONLY | OFN_CREATEPROMPT, 1, MAX_PATH, hWnd);
 }
  
-int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd)
-{
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd) {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }
- 
-//-------------------------------------------------------------------------------------
-// SP funcs
-#define hrnd()  (((float)rand() ) * 0.00003051850947599f)
-
-//-------------------------------------------------------------------------------------
-// Error Logging Funcs...
-char * HERMES_MEMORY_SECURITY = NULL;
-void HERMES_Memory_Security_On(long size)
-{
-	if (size < 128000) size = 128000;
-
-	HERMES_MEMORY_SECURITY = (char *)malloc(size);
-}
-void HERMES_Memory_Security_Off()
-{
-	if (HERMES_MEMORY_SECURITY)
-		free(HERMES_MEMORY_SECURITY);
-
-	HERMES_MEMORY_SECURITY = NULL;
-}
-
-long HERMES_Memory_Emergency_Out( long size, const std::string& info )
-{
-	/* TODO Is HERMES_MEMORY_SECURITY still useful? */
-	if (HERMES_MEMORY_SECURITY) 
-		free(HERMES_MEMORY_SECURITY);
-
-	HERMES_MEMORY_SECURITY = NULL;
-
-	if ( size > 0 )
-	{
-		LogError << "FATAL ERROR: Unable to To Allocate " << size << " bytes..." << info;
-		return 1;
-	}
-	else
-	{
-		LogError << "FATAL ERROR: Unable to To Allocate Memory..." << info;
-		exit(0);
-		return 0; // Never reached
-	}
-}
-
-LARGE_INTEGER	start_chrono;
-long NEED_BENCH = 0;
-void StartBench()
-{
-	if (NEED_BENCH)
-	{
-		QueryPerformanceCounter(&start_chrono);
-	}
-}
-unsigned long EndBench()
-{
-	if (NEED_BENCH)
-	{
-		LARGE_INTEGER	end_chrono;
-		QueryPerformanceCounter(&end_chrono);
-		unsigned long ret = (unsigned long)(end_chrono.QuadPart - start_chrono.QuadPart);
-		return ret;
-	}
-
-	return 0;
-}
-

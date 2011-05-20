@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 
 #include "core/Localisation.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Core.h"
 
 #include "game/Damage.h"
@@ -90,7 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 #include "physics/Collisions.h"
-#include "physics/Actors.h"
+#include "physics/Attractors.h"
 
 #include "platform/String.h"
 
@@ -105,16 +105,18 @@ extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
+#ifdef BUILD_EDITOR
 extern long		NEED_DEBUGGER_CLEAR;
+#endif
 extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
 extern long		GLOBAL_MAGIC_MODE;
-extern EERIE_3D	PUSH_PLAYER_FORCE;
+extern Vec3f	PUSH_PLAYER_FORCE;
 extern QUAKE_FX_STRUCT QuakeFx;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern TextureContainer * iconequip[];
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
 
 extern unsigned long LAST_JUMP_ENDTIME;
 //-----------------------------------------------------------------------------
@@ -124,7 +126,7 @@ extern unsigned long LAST_JUMP_ENDTIME;
 #define STEP_DISTANCE	120.f
 
 //-----------------------------------------------------------------------------
-extern EERIE_3D PUSH_PLAYER_FORCE;
+extern Vec3f PUSH_PLAYER_FORCE;
 extern bool bBookHalo;
 extern bool bGoldHalo;
 extern float InventoryX;
@@ -262,7 +264,7 @@ void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io) {
 // FUNCTION/RESULT:
 //   Fills "pos" with player "front pos" for sound purpose
 //*************************************************************************************
-void ARX_PLAYER_FrontPos(EERIE_3D * pos)
+void ARX_PLAYER_FrontPos(Vec3f * pos)
 {
 	pos->x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b))) * 100.f;
 	pos->y = player.pos.y + 100.f; //-100.f;
@@ -459,7 +461,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 
 			while ((j < 4) && (spellicons[i].symbols[j] != 255))
 			{
-				if (!(player.rune_flags & (1 << spellicons[i].symbols[j])))
+				if (!(player.rune_flags & (RuneFlag)(1 << spellicons[i].symbols[j])))
 				{
 					bOk = false;
 				}
@@ -485,7 +487,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 
 			while ((j < 4) && (spellicons[i].symbols[j] != 255))
 			{
-				if (!(player.rune_flags & (1 << spellicons[i].symbols[j])))
+				if (!(player.rune_flags & (RuneFlag)(1 << spellicons[i].symbols[j])))
 				{
 					bOk = false;
 				}
@@ -1489,23 +1491,13 @@ void ARX_PLAYER_LEVEL_UP()
 // FUNCTION/RESULT:
 //   Modify player XP by adding "val" to it
 //*************************************************************************************
-void ARX_PLAYER_Modify_XP(long val)
-{
-
+void ARX_PLAYER_Modify_XP(long val) {
+	
 	player.xp += val;
-
-	for (long i = 1; i < 11; i++)
-	{
-		long lvup = 0;
-
-		if (i > player.level)
-		{
-			if ((player.xp >= GetXPforLevel(i)))
-			{
-				lvup = 1;
-			}
-
-			if (lvup) ARX_PLAYER_LEVEL_UP();
+	
+	for (long i = player.level + 1; i < 11; i++) {
+		if(player.xp >= GetXPforLevel(i)) {
+			ARX_PLAYER_LEVEL_UP();
 		}
 	}
 }
@@ -1688,7 +1680,6 @@ void ARX_PLAYER_Restore_Skin()
 	if (tmpTC && !tx4.empty())
 		tmpTC->LoadFile(tx4);
 }
-extern void LaunchMoulinex();
 extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 // void ARX_PLAYER_LoadHeroAnimsAndMesh()
@@ -2322,7 +2313,7 @@ void ARX_PLAYER_Manage_Visual()
 
 					for (long kk = 0; kk < 2; kk++)
 					{
-						EERIE_3D  target;
+						Vec3f  target;
 						target.x = eobj->vertexlist3[id].v.x;
 						target.y = eobj->vertexlist3[id].v.y;
 						target.z = eobj->vertexlist3[id].v.z;
@@ -2554,44 +2545,29 @@ void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io)
 	if (!io) return;
 
 	EERIE_CAMERA tcam;
-	EERIE_3D target;
+	Vec3f target;
 
 	long id = inter.iobj[0]->obj->fastaccess.view_attach;
 
-	if (id != -1)
-	{
-		tcam.pos.x = inter.iobj[0]->obj->vertexlist3[id].v.x;
-		tcam.pos.y = inter.iobj[0]->obj->vertexlist3[id].v.y;
-		tcam.pos.z = inter.iobj[0]->obj->vertexlist3[id].v.z;
-	}
-	else
-	{
-		tcam.pos.x = player.pos.x;
-		tcam.pos.y = player.pos.y;
-		tcam.pos.z = player.pos.z;
+	if(id != -1) {
+		tcam.pos = inter.iobj[0]->obj->vertexlist3[id].v;
+	} else {
+		tcam.pos = player.pos;
 	}
 
 	id = io->obj->fastaccess.view_attach;
 
-	if (id != -1)
-	{
-		target.x = io->obj->vertexlist3[id].v.x;
-		target.y = io->obj->vertexlist3[id].v.y;
-		target.z = io->obj->vertexlist3[id].v.z;
+	if(id != -1) {
+		target = io->obj->vertexlist3[id].v;
 	}
 	else
 	{
-		target.x = io->pos.x;
-		target.y = io->pos.y;
-		target.z = io->pos.z;
+		target = io->pos;
 	}
 
 	// For the case of not already computed Vlist3... !
-	if (EEDistance3D(&target, &io->pos) > 400.f)
-	{
-		target.x = io->pos.x;
-		target.y = io->pos.y;
-		target.z = io->pos.z;
+	if(fartherThan(target, io->pos, 400.f)) {
+		target = io->pos;
 	}
 
 	SetTargetCamera(&tcam, target.x, target.y, target.z);
@@ -2604,8 +2580,10 @@ extern long CURRENT_BASE_FOCAL;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
 
-extern EERIE_3D TVCONTROLEDplayerpos;
+#ifdef BUILD_EDITOR
+extern Vec3f TVCONTROLEDplayerpos;
 extern long TVCONTROLED;
+#endif
 extern long FINAL_RELEASE;
 
 
@@ -2627,6 +2605,7 @@ void ARX_PLAYER_Frame_Update()
 		PLAYER_PARALYSED = 0;
 	}
 
+#ifdef BUILD_EDITOR
 	// EDITMODE: Forced Changepos for Player by Treeview Command
 	if (TVCONTROLED)
 	{
@@ -2635,6 +2614,7 @@ void ARX_PLAYER_Frame_Update()
 		player.pos.z = TVCONTROLEDplayerpos.z;
 		TVCONTROLED = 0;
 	}
+#endif
 
 	// Reset player moveto info
 	moveto.x = player.pos.x;
@@ -2740,7 +2720,7 @@ void ARX_PLAYER_MakeStepNoise()
 			factor += ARX_NPC_AUDIBLE_FACTOR_RANGE * skill_stealth;
 		}
 
-		EERIE_3D pos;
+		Vec3f pos;
 
 		pos.x = player.pos.x;
 		pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
@@ -3088,7 +3068,7 @@ void PlayerMovementIterate(float DeltaTime)
 			FALLING_TIME = 0;
 
 		// Apply Player Impulse Force
-		EERIE_3D mv;
+		Vec3f mv;
 		float TheoricalMove = 230;
 		long time = 1000;
 
@@ -3114,7 +3094,7 @@ void PlayerMovementIterate(float DeltaTime)
 		if (inter.iobj[0]->animlayer[0].cur_anim)
 		{
 			GetAnimTotalTranslate(inter.iobj[0]->animlayer[0].cur_anim, inter.iobj[0]->animlayer[0].altidx_cur, &mv);
-			TheoricalMove = TRUEVector_Magnitude(&mv);
+			TheoricalMove = mv.length();
 
 			time = inter.iobj[0]->animlayer[0].cur_anim->anims[inter.iobj[0]->animlayer[0].altidx_cur]->anim_time;
 
@@ -3164,7 +3144,7 @@ void PlayerMovementIterate(float DeltaTime)
 			player.physics.velocity.y = 0;
 		}
 
-		EERIE_3D mv2;
+		Vec3f mv2;
 		mv2.x = moveto.x - player.pos.x;
 		mv2.y = moveto.y - player.pos.y;
 		mv2.z = moveto.z - player.pos.z;
@@ -3179,7 +3159,7 @@ void PlayerMovementIterate(float DeltaTime)
 		}
 		else
 		{
-			float tt = 1.f / TRUEVector_Magnitude(&mv2);
+			float tt = 1.f / mv2.length();
 			tt *= mval * ( 1.0f / 80 );
 
 			mv2.x = mv2.x * tt;
@@ -3212,7 +3192,7 @@ void PlayerMovementIterate(float DeltaTime)
 		player.physics.forces.y += mv2.y;
 		player.physics.forces.z += mv2.z;
 
-		EERIE_3D modifplayermove(0, 0, 0);
+		Vec3f modifplayermove(0, 0, 0);
 
 		// No Vertical Interpolation
 		if (player.jumpphase)
@@ -3226,7 +3206,7 @@ void PlayerMovementIterate(float DeltaTime)
 			else
 				player.physics.forces.y += WORLD_GRAVITY;
 
-			EERIE_3D mod_vect(0, 0, 0);
+			Vec3f mod_vect(0, 0, 0);
 			long mod_vect_count = -1;
 
 			// Check for LAVA Damage !!!
@@ -3244,7 +3224,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
-					EERIE_3D pos;
+					Vec3f pos;
 					pos.x = player.pos.x;
 					pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
 					pos.z = player.pos.z;
@@ -3270,8 +3250,8 @@ void PlayerMovementIterate(float DeltaTime)
 			player.physics.velocity.z = 0;
 
 		// Apply Attraction
-		EERIE_3D attraction;
-		ARX_SPECIAL_ATTRACTORS_ComputeForIO(inter.iobj[0], &attraction);
+		Vec3f attraction;
+		ARX_SPECIAL_ATTRACTORS_ComputeForIO(*inter.iobj[0], attraction);
 		player.physics.forces.x += attraction.x;
 		player.physics.forces.y += attraction.y;
 		player.physics.forces.z += attraction.z;
@@ -3320,7 +3300,7 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.velocity.y = 0;
 
 		// Reset Forces
-		memset(&player.physics.forces, 0, sizeof(EERIE_3D));
+		player.physics.forces = Vec3f::ZERO;
 
 		// Check if player is already on firm ground AND not moving
 		if ((EEfabs(player.physics.velocity.x) < 0.001f) &&
@@ -3458,29 +3438,22 @@ void PlayerMovementIterate(float DeltaTime)
 			moveto.x = player.physics.cyl.origin.x;
 			moveto.y = player.physics.cyl.origin.y + PLAYER_BASE_HEIGHT;
 			moveto.z = player.physics.cyl.origin.z;
-			d = (float)(TRUEEEDistance3D(&player.pos, &moveto));
+			d = dist(player.pos, moveto);
 		}
 	}
 	else
 	{
 		if (!EDITMODE)
 		{
-			EERIE_3D vect;
-			vect.x = moveto.x - player.pos.x;
-			vect.y = moveto.y - player.pos.y;
-			vect.z = moveto.z - player.pos.z;
-			float divv = TRUEVector_Magnitude(&vect);
+			Vec3f vect = moveto - player.pos;
+			float divv = vect.length();
 
 			if (divv > 0.f)
 			{
 				float mul = (float)FrameDiff * ( 1.0f / 1000 ) * 200.f;
 				divv = mul / divv;
-				vect.x *= divv;
-				vect.y *= divv;
-				vect.z *= divv;
-				moveto.x = player.pos.x + vect.x;
-				moveto.y = player.pos.y + vect.y;
-				moveto.z = player.pos.z + vect.z;
+				vect *= divv;
+				moveto = player.pos + vect;
 			}
 		}
 
@@ -3701,7 +3674,6 @@ void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
 	
 }
 
-extern long GAME_EDITOR;
 void ARX_PLAYER_Start_New_Quest()
 {
 
@@ -3865,7 +3837,6 @@ void ARX_GAME_Reset(long type) {
 	}
 
 	// Damages
-	ARX_DAMAGES_SCREEN_SPLATS_Init();
 	ARX_DAMAGE_Reset_Blood_Info();
 	ARX_DAMAGES_Reset();
 
@@ -3952,7 +3923,7 @@ void ARX_GAME_Reset(long type) {
 	ROTATE_START = 0;
 	BLOCK_PLAYER_CONTROLS = 0;
 	HERO_SHOW_1ST = -1;
-	PUSH_PLAYER_FORCE.clear();
+	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	player.jumplastposition = 0;
 	player.jumpstarttime = 0;
 	player.jumpphase = 0;
@@ -3999,8 +3970,10 @@ void ARX_GAME_Reset(long type) {
 	// Kill Script Loaded IO
 	CleanScriptLoadedIO();
 
+#ifdef BUILD_EDITOR
 	// ARX Debugger
 	NEED_DEBUGGER_CLEAR = 1;
+#endif
 
 	//Body chunks count
 	TOTAL_BODY_CHUNKS_COUNT = 0;
@@ -4021,7 +3994,7 @@ void ARX_PLAYER_Reset_Fall()
 
 
 float sp_max_y[64];
-COLORREF sp_max_col[64];
+Color sp_max_col[64];
 char	sp_max_ch[64];
 long sp_max_nb;
 void Manage_sp_max()

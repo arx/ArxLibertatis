@@ -41,6 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 #include "platform/Random.h"
 
+using std::string;
+
 namespace {
 
 using namespace audio;
@@ -785,7 +787,7 @@ aalError Ambiance::update() {
 			source->setPitch(key->pitch.update(time));
 		}
 		if(track->flags & Track::POSITION) {
-			Vector3f position;
+			Vec3f position;
 			position.x = key->x.interval ? key->x.update(time) : key->x.cur;
 			position.y = key->y.interval ? key->y.update(time) : key->y.cur;
 			position.z = key->z.interval ? key->z.update(time) : key->z.cur;
@@ -838,7 +840,7 @@ static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data) {
 	instance->setPitch(key->pitch.update());
 	
 	if(instance->getChannel().flags & FLAG_POSITION) {
-		Vector3f position;
+		Vec3f position;
 		position.x = key->x.update();
 		position.y = key->y.update();
 		position.z = key->z.update();

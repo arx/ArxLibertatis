@@ -69,24 +69,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define MOLLESS_COLLISION_PENETRATING	1
 #define MOLLESS_COLLISION_COLLIDING		2
 
-long MOLLESS_Nb_Interpolations = 1;
-extern EERIE_3D SP_EC_POS;
- 
- 
-long DEBUG_MOLLESS = 0;
-long MOLLESS_ComputeCollisionsII(EERIE_3DOBJ * obj, float deltaTime);
-
- 
-
-extern long USE_CEDRIC_ANIM;
-
-
-void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag)
-{
-	if ((obj) && (obj->cdata))
-	{
-		for (long i = 0; i < obj->cdata->nb_cvert; i++)
-		{
+void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag) {
+	
+	if ((obj) && (obj->cdata)) {
+		for (long i = 0; i < obj->cdata->nb_cvert; i++) {
+			
 			CLOTHESVERTEX * cv = &obj->cdata->cvert[i];
 			cv->velocity.x = 0.f;
 			cv->velocity.y = 0.f;
@@ -94,19 +81,12 @@ void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag)
 			cv->force.x = 0.f;
 			cv->force.y = 0.f;
 			cv->force.z = 0.f;
-
-			if (!(flag & 1))
-			{
+			
+			if(!(flag & 1)) {
 				cv->coll = -1;
-				cv->pos.x = cv->t_pos.x = obj->vertexlist[cv->idx].v.x;
-				cv->pos.y = cv->t_pos.y = obj->vertexlist[cv->idx].v.y;
-				cv->pos.z = cv->t_pos.z = obj->vertexlist[cv->idx].v.z;
-			}
-			else
-			{
-				cv->t_pos.x = cv->pos.x;
-				cv->t_pos.y = cv->pos.y;
-				cv->t_pos.z = cv->pos.z;
+				cv->t_pos = cv->pos = obj->vertexlist[cv->idx].v;
+			} else {
+				cv->t_pos = cv->pos;
 			}
 		}
 	}
@@ -241,8 +221,8 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 				if (IsInSelection(obj, vert, sel) >= 0)
 				{
-					float distance = EEDistance3D(&obj->vertexlist[obj->cdata->cvert[i].idx].v,
-					                              &obj->vertexlist[vert].v) * 1.2f;
+					float distance = distSqr(obj->vertexlist[obj->cdata->cvert[i].idx].v,
+					                         obj->vertexlist[vert].v) * square(1.2f);
 
 					// We springed it in the previous part of code
 					for (long k = 0; k < obj->ndata[vert].nb_Nvertex; k++)
@@ -252,8 +232,8 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 						if (IsInSelection(obj, ver, sel) >= 0) // This time we have one !
 						{
 							if (ver == obj->cdata->cvert[i].idx) continue;
-							float distance2 = EEDistance3D(&obj->vertexlist[obj->cdata->cvert[i].idx].v,
-							                               &obj->vertexlist[ver].v);
+							float distance2 = distSqr(obj->vertexlist[obj->cdata->cvert[i].idx].v,
+							                          obj->vertexlist[ver].v);
 
 							if (distance2 < distance)
 							{
@@ -283,8 +263,8 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 						if (IsInSelection(obj, ver, sel) >= 0) // This time we have one !
 						{
-							float distance = EEDistance3D(&obj->vertexlist[obj->cdata->cvert[i].idx].v,
-							                              &obj->vertexlist[ver].v) * 1.2f;
+							float distance = distSqr(obj->vertexlist[obj->cdata->cvert[i].idx].v,
+							                         obj->vertexlist[ver].v) * square(1.2f);
 
 							for (long k2 = 0; k2 < obj->ndata[ver].nb_Nvertex; k2++)
 							{
@@ -296,10 +276,10 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 								{
 									if (obj->cdata->cvert[(short)GetIDXVert(obj, ve)].flags & CLOTHES_FLAG_FIX) continue;
 
-									float distance2 = EEDistance3D(&obj->vertexlist[obj->cdata->cvert[i].idx].v,
-									                               &obj->vertexlist[ve].v);
+									float distance2 = distSqr(obj->vertexlist[obj->cdata->cvert[i].idx].v,
+									                          obj->vertexlist[ve].v);
 
-									if ((distance2 > distance) && (distance2 < distance * 2.f)) 
+									if ((distance2 > distance) && (distance2 < distance * square(2.f))) 
 									{
 										AddSpring(obj, (short)i, (short)GetIDXVert(obj, ve), 2.2f, 0.9f, 2);
 									}

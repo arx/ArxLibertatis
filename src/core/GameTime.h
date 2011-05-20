@@ -42,11 +42,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-// ARX_Special.h
+// ARX_Time.H
 //////////////////////////////////////////////////////////////////////////////////////
 //
 // Description:
-//		ARX Special ...
+//		ARX Time Management
 //
 // Updates: (date) (person) (update)
 //
@@ -54,17 +54,49 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_SPECIAL_H
-#define ARX_SPECIAL_H
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
+#ifndef ARX_CORE_GAMETIME_H
+#define ARX_CORE_GAMETIME_H
 
-//////////////////////////////// ATTRACTOR Funcs
-void ARX_SPECIAL_ATTRACTORS_Reset();
-void ARX_SPECIAL_ATTRACTORS_Remove(long ionum);
-long ARX_SPECIAL_ATTRACTORS_Exist(long ionum);
-bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius);
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(INTERACTIVE_OBJ * io, EERIE_3D * force);
+#include "platform/Platform.h"
 
-#endif
+extern float ARXPausedTime;
+extern float ARXTotalPausedTime;
+extern float ARXTime;
+extern bool ARXPausedTimer;
+
+#define lARXTime (static_cast<long>( ARXTime ))
+#define dwARX_TIME_Get() (static_cast<DWORD>(ARX_TIME_Get()))
+
+void ARX_TIME_Pause();
+void ARX_TIME_UnPause();
+void ARX_TIME_Init();
+void ARX_TIME_Force_Time_Restore(float time);
+
+float _ARX_TIME_GetTime();
+
+inline float ARX_TIME_Get(bool _bUsePause = true) {
+	
+	float tim = _ARX_TIME_GetTime();
+	
+	if(ARXPausedTimer && _bUsePause) {
+		ARXTime = tim - ARXTotalPausedTime - (tim - ARXPausedTime);
+	} else {
+		ARXTime = tim - ARXTotalPausedTime;
+	}
+	
+	return ARXTime;
+}
+
+inline unsigned long ARX_TIME_GetUL(bool _bUsePause = true) {
+	float time = ARX_TIME_Get(_bUsePause);
+	ARX_CHECK_ULONG(time);
+	return static_cast<unsigned long>(time);
+}
+
+inline unsigned long ARXTimeUL() {
+	ARX_CHECK_ULONG(ARXTime);
+	return static_cast<unsigned long>(ARXTime);
+}
+
+#endif // ARX_CORE_GAMETIME_H

@@ -33,14 +33,33 @@ struct SavedVec3 {
 	f32 y;
 	f32 z;
 	
-	inline operator EERIE_3D() {
-		EERIE_3D a;
+	inline operator Vec3f() {
+		Vec3f a;
 		a.x = x, a.y = y, a.z = z;
 		return a;
 	}
 	
-	inline SavedVec3 & operator=(const EERIE_3D & b) {
+	inline SavedVec3 & operator=(const Vec3f & b) {
 		x = b.x, y = b.y, z = b.z;
+		return *this;
+	}
+	
+};
+
+struct SavedAnglef {
+	
+	f32 a;
+	f32 b;
+	f32 g;
+	
+	inline operator Anglef() {
+		Anglef r;
+		r.a = a, r.b = b, r.g  =g;
+		return r;
+	}
+	
+	inline SavedAnglef & operator=(const Anglef & o) {
+		a = o.a, b = o.b, g = o.g;
 		return *this;
 	}
 	

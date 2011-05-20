@@ -42,15 +42,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////                                                                                     
 
-#ifndef HERMESNET_H
-#define HERMESNET_H
-#define GAIA_NETWORK
-
+#ifndef ARX_IO_REGISTRY_H
+#define ARX_IO_REGISTRY_H
 
 #include <windows.h>
-HRESULT WriteRegKey( HKEY hKey, const char * strName, const char * strValue );
-HRESULT WriteRegKeyValue( HKEY hKey, const char * strName, DWORD val );
-HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val );
-HRESULT ReadRegKey( HKEY hKey, const char * strName, char* strValue, DWORD dwLength, const char * strDefault );
 
-#endif
+// TODO remove - these are mostly used by the editor
+
+HRESULT WriteRegKey(HKEY hKey, const char * strName, const char * strValue);
+HRESULT WriteRegKeyValue(HKEY hKey, const char * strName, DWORD val);
+HRESULT ReadRegKeyValue(HKEY hKey, const char * strName, long * val);
+HRESULT ReadRegKey(HKEY hKey, const char * strName, char* strValue, DWORD dwLength, const char * strDefault);
+
+#endif // ARX_IO_REGISTRY_H

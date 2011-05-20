@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 
 #include "core/Dialog.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Core.h"
 
 #include "game/NPC.h"
@@ -94,9 +94,8 @@ using std::min;
 using std::max;
 
 extern long CHANGE_LEVEL_ICON;
-extern long EDITMODE;
 extern float FrameDiff;
-bool IsPointInField(EERIE_3D * pos);
+bool IsPointInField(Vec3f * pos);
 ARX_PATH **	ARXpaths = NULL;
 ARX_USE_PATH USE_CINEMATICS_PATH;
 MASTER_CAMERA_STRUCT MasterCamera;
@@ -106,7 +105,8 @@ long USE_CINEMATICS_CAMERA = 0;
 
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATHS_AddNew(EERIE_3D * pos)
+#ifdef BUILD_EDITOR
+ARX_PATH * ARX_PATHS_AddNew(Vec3f * pos)
 {
 	char str[64];
 	char tex[64];
@@ -148,6 +148,7 @@ void ARX_PATHS_RedrawAll()
 	for (long i = 0; i < nbARXpaths; i++)
 		ARX_PATHS_DrawPath(ARXpaths[i]);
 }
+#endif
 
 void ARX_PATH_ComputeBB(ARX_PATH * ap)
 {
@@ -201,15 +202,14 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z)
 	register int i, j, c = 0;
 
 	x -= ap->pos.x;
-	y -= ap->pos.y;
 	z -= ap->pos.z;
 
 	ARX_PATHWAY * app = ap->pathways;
 
 	for (i = 0, j = ap->nb_pathways - 1; i < ap->nb_pathways; j = i++)
 	{
-		EERIE_3D * pi = &app[i].rpos;
-		EERIE_3D * pj = &app[j].rpos;
+		Vec3f * pi = &app[i].rpos;
+		Vec3f * pj = &app[j].rpos;
 
 		if ((((pi->z <= z) && (z < pj->z)) ||
 		        ((pj->z <= z) && (z < pi->z))) &&
@@ -223,7 +223,7 @@ ARX_PATH * ARX_PATH_CheckInZone(INTERACTIVE_OBJ * io)
 {
 	if (ARXpaths)
 	{
-		EERIE_3D curpos;
+		Vec3f curpos;
 		GetItemWorldPosition(io, &curpos);
 
 		for (long i = 0; i < nbARXpaths; i++)
@@ -498,9 +498,10 @@ suite:
 	JUST_RELOADED = 0;
 }
 
+#ifdef BUILD_EDITOR
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATHS_Create(const char * name, EERIE_3D * pos)
+ARX_PATH * ARX_PATHS_Create(const char * name, Vec3f * pos)
 {
 	ARX_PATH * ap = (ARX_PATH *)malloc(sizeof(ARX_PATH)); 
 
@@ -514,7 +515,7 @@ ARX_PATH * ARX_PATHS_Create(const char * name, EERIE_3D * pos)
 	InterTreeViewItemAdd(NULL, name, IOTVTYPE_PATH);
 	return ap;
 }
-
+#endif
 
 //*************************************************************************************
 //*************************************************************************************
@@ -544,6 +545,7 @@ void ARX_PATH_ClearAllControled()
 }
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 {
 	if (ap == NULL) return;
@@ -552,6 +554,7 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 	strcpy(ap->name, newname);
 	InterTreeViewItemAdd(NULL, ap->name, IOTVTYPE_PATH);
 }
+#endif
 //*************************************************************************************
 //*************************************************************************************
 ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name)
@@ -578,7 +581,9 @@ void ARX_PATH_ReleaseAllPath()
 	{
 		if (ARXpaths[i])
 		{
+#ifdef BUILD_EDITOR
 			InterTreeViewItemRemove(NULL, ARXpaths[i]->name);
+#endif
 
 			if (ARXpaths[i]->pathways) free(ARXpaths[i]->pathways);
 
@@ -597,7 +602,7 @@ void ARX_PATH_ReleaseAllPath()
 //*************************************************************************************
 ARX_PATH * ARX_PATHS_ExistName(char * name)
 {
-	if (ARXpaths == NULL) return false;
+	if (ARXpaths == NULL) return NULL;
 
 	for (long i = 0; i < nbARXpaths; i++)
 	{
@@ -609,6 +614,7 @@ ARX_PATH * ARX_PATHS_ExistName(char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 void ARX_PATHS_Delete(ARX_PATH * ap)
 {
 	ARX_PATH_ClearAllUsePath();
@@ -649,8 +655,10 @@ void ARX_PATHS_Delete(ARX_PATH * ap)
 	free(ap);
 	ap = NULL;
 }
+#endif
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert)
 {
 	if (ap == NULL) return 0;
@@ -680,9 +688,10 @@ long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert)
 	memset(&ap->pathways[insert], 0, sizeof(ARX_PATHWAY));
 	return insert + 1;
 }
+#endif
 //*************************************************************************************
 //*************************************************************************************
-long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
+long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
 {
 	ARX_PATH * ap = aup->path;
 
@@ -746,13 +755,11 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
 			}
 			else
 			{
-				float rel;
-
 				if (targetwaypoint < ap->nb_pathways)
 				{
 					if (ap->pathways[targetwaypoint]._time == 0)
 						return targetwaypoint - 1;
-					else	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
+					float	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
 
 					float mul = rel;
 					float mull = mul * mul;
@@ -765,7 +772,6 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
 					pos->z += ap->pos.z + ap->pathways[targetwaypoint-2].rpos.z;
 				}
 
-				tim = 0;
 				return targetwaypoint - 1;
 			}
 		}
@@ -789,20 +795,17 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
 			}
 			else
 			{
-				float rel;
-
 				if (targetwaypoint < ap->nb_pathways)
 				{
 					if (ap->pathways[targetwaypoint]._time == 0)
 						return targetwaypoint - 1;
-					else	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
+					float	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
 
 					pos->x += (ap->pathways[targetwaypoint].rpos.x - pos->x) * rel;
 					pos->y += (ap->pathways[targetwaypoint].rpos.y - pos->y) * rel;
 					pos->z += (ap->pathways[targetwaypoint].rpos.z - pos->z) * rel;
 				}
 
-				tim = 0;
 				pos->x += ap->pos.x;
 				pos->y += ap->pos.y;
 				pos->z += ap->pos.z;
@@ -818,7 +821,8 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, EERIE_3D * pos, PathwayType flags, unsigned long duration)
+#ifdef BUILD_EDITOR
+void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, Vec3f * pos, PathwayType flags, unsigned long duration)
 {
 	if (ap == NULL) return;
 
@@ -896,8 +900,10 @@ void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, EERIE_3D * 
 
 	ARX_PATH_ComputeBB(ap);
 }
+#endif
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del)
 {
 	if (ap == NULL) return;
@@ -934,7 +940,7 @@ void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_PATHS_DrawPathWay(EERIE_3D * pos, float siz, D3DCOLOR color, long height)
+void ARX_PATHS_DrawPathWay(Vec3f * pos, float siz, D3DCOLOR color, long height)
 {
 	D3DTLVERTEX vert;
 	vert.sx = pos->x;
@@ -955,7 +961,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 {
 	if (ap == NULL) return;
 
-	EERIE_3D from, to; 
+	Vec3f from, to; 
 	long selected;
 
 	if (ap == ARX_PATHS_SelectedAP) selected = 1;
@@ -1049,7 +1055,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 				break;
 			case PATHWAY_BEZIER: {
 				#define BEZIERPrecision 32
-				EERIE_3D lastpos, newpos;
+				Vec3f lastpos, newpos;
 				lastpos.x = ap->pos.x + ap->pathways[i].rpos.x;
 				lastpos.y = ap->pos.y + ap->pathways[i].rpos.y;
 				lastpos.z = ap->pos.z + ap->pathways[i].rpos.z;
@@ -1070,7 +1076,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 					if (selected) EERIEDraw3DLine(&lastpos, &newpos,  0xFF00FF00);
 					else EERIEDraw3DLine(&lastpos, &newpos,  0xFFAAAAAA);
 
-					memcpy(&lastpos, &newpos, sizeof(EERIE_3D));
+					lastpos = newpos;
 				}
 
 				i++;
@@ -1131,7 +1137,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 		}
 	}
 }
-
+#endif // BUILD_EDITOR
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
@@ -1198,7 +1204,7 @@ long ARX_THROWN_OBJECT_GetFree()
 	return -1;
 }
 extern EERIE_3DOBJ * arrowobj;
-long ARX_THROWN_OBJECT_Throw(long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poison)
+long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f * upvect, EERIE_QUAT * quat, float velocity, float damages, float poison)
 {
 	long num = ARX_THROWN_OBJECT_GetFree();
 
@@ -1249,8 +1255,8 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
-	float				distance		=	EEDistance3D(&Thrown[thrownum].position, &Thrown[thrownum].initial_position);
-	float				distance_modifier =	1.f;
+	float distance = fdist(Thrown[thrownum].position, Thrown[thrownum].initial_position);
+	float distance_modifier =	1.f;
 
 	if (distance < distance_limit * 2.f)
 	{
@@ -1365,7 +1371,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	return 0.f;
 }
 
-EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
+EERIEPOLY * CheckArrowPolyCollision(Vec3f * start, Vec3f * end)
 {
 	EERIE_TRI pol;
 	EERIE_TRI pol2;
@@ -1401,17 +1407,17 @@ EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
 				if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 					continue;
 
-				memcpy(&pol2.v[0], &ep->v[0], sizeof(EERIE_3D));
-				memcpy(&pol2.v[1], &ep->v[1], sizeof(EERIE_3D));
-				memcpy(&pol2.v[2], &ep->v[2], sizeof(EERIE_3D));
+				memcpy(&pol2.v[0], &ep->v[0], sizeof(Vec3f)); // TODO wrong size for struct
+				memcpy(&pol2.v[1], &ep->v[1], sizeof(Vec3f));
+				memcpy(&pol2.v[2], &ep->v[2], sizeof(Vec3f));
 
 				if (Triangles_Intersect(&pol2, &pol)) return ep;
 
 				if (ep->type & POLY_QUAD)
 				{
-					memcpy(&pol2.v[0], &ep->v[1], sizeof(EERIE_3D));
-					memcpy(&pol2.v[1], &ep->v[3], sizeof(EERIE_3D));
-					memcpy(&pol2.v[2], &ep->v[2], sizeof(EERIE_3D));
+					memcpy(&pol2.v[0], &ep->v[1], sizeof(Vec3f)); // TODO wrong size for struct
+					memcpy(&pol2.v[1], &ep->v[3], sizeof(Vec3f));
+					memcpy(&pol2.v[2], &ep->v[2], sizeof(Vec3f));
 
 					if (Triangles_Intersect(&pol2, &pol)) return ep;
 				}
@@ -1465,9 +1471,9 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if (Thrown[i].flags & ATO_EXIST)
 		{
 			// Is Object Visible & Near ?
-			float dist = EEDistance3D(&ACTIVECAM->pos, &Thrown[i].position);
-
-			if (dist > ACTIVECAM->cdepth * fZFogEnd + 50.f) continue;
+			if(fartherThan(ACTIVECAM->pos, Thrown[i].position, ACTIVECAM->cdepth * fZFogEnd + 50.f)) {
+				continue;
+			}
 
 			long xx, yy;
 			xx = (Thrown[i].position.x)*ACTIVEBKG->Xmul;
@@ -1532,7 +1538,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 					if (Thrown[i].obj)
 					{
-						EERIE_3D	pos;
+						Vec3f	pos;
 						long		notok	=	10;
 						size_t num = 0;
 
@@ -1595,7 +1601,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			}
 
 			FRAME_COUNT = ccount;
-			EERIE_3D original_pos;
+			Vec3f original_pos;
 
 			if (Thrown[i].flags & ATO_MOVING)
 			{
@@ -1613,7 +1619,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 				CheckForIgnition(&original_pos, 10.f, 0, 2);
 
-				EERIE_3D wpos = Thrown[i].position;
+				Vec3f wpos = Thrown[i].position;
 				wpos.y += 20.f;
 				EERIEPOLY * ep = EEIsUnderWater(&wpos);
 
@@ -1642,9 +1648,9 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 					if (rad == -1) continue;
 
-					EERIE_3D * v0;
+					Vec3f * v0;
 					v0 = &Thrown[i].obj->vertexlist3[Thrown[i].obj->actionlist[j].idx].v;
-					EERIE_3D orgn, dest;
+					Vec3f orgn, dest;
 					dest.x = original_pos.x + Thrown[i].vector.x * 95.f;
 					dest.y = original_pos.y + Thrown[i].vector.y * 95.f;
 					dest.z = original_pos.z + Thrown[i].vector.z * 95.f;
@@ -1707,7 +1713,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 	
 							if (CheckEverythingInSphere(&sphere, Thrown[i].source, -1))
 							{
-								for (long jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
+								for (size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
 								{
  
  
@@ -1720,7 +1726,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 										if (target->ioflags & IO_NPC)
 										{
-											EERIE_3D	pos;
+											Vec3f	pos;
 											D3DCOLOR	color		=	0x00000000;
 											long		hitpoint	=	-1;
 											float		curdist		=	999999.f;
@@ -1729,12 +1735,12 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 											{
 												if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
 
-												float dist = TRUEEEDistance3D(&sphere.origin, &target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
+												float d = dist(sphere.origin, target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
 
-												if (dist < curdist)
+												if (d < curdist)
 												{
 													hitpoint	=	target->obj->facelist[ii].vid[0];
-													curdist		=	dist;
+													curdist		=	d;
 												}
 											}
 
@@ -1995,7 +2001,7 @@ float CRuban::Render()
 
 	return 0;
 }
-extern bool IsValidPos3(EERIE_3D * pos);
+extern bool IsValidPos3(Vec3f * pos);
 
 #define FORCE_THRESHOLD 290.f
 extern long PHYS_COLLIDER;
@@ -2007,12 +2013,12 @@ extern float VELOCITY_THRESHOLD;
 
 void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, float PHYSICS_Damp)
 {
-	EERIE_3D deltaP, deltaV, springforce;
+	Vec3f deltaP, deltaV, springforce;
 	PHYSVERT * pv_k = &phys[k];
 	PHYSVERT * pv_l = &phys[l];
 	float Dterm, Hterm;
 
-	float restlength = TRUEEEDistance3D(&pv_k->initpos, &pv_l->initpos);
+	float restlength = dist(pv_k->initpos, pv_l->initpos);
 	//Computes Spring Magnitude
 	deltaP.x = pv_k->pos.x - pv_l->pos.x;		
 	deltaP.y = pv_k->pos.y - pv_l->pos.y;	
@@ -2024,7 +2030,7 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, fl
 	deltaV.x = pv_k->velocity.x - pv_l->velocity.x;
 	deltaV.y = pv_k->velocity.y - pv_l->velocity.y;
 	deltaV.z = pv_k->velocity.z - pv_l->velocity.z;		// Delta Velocity Vector
-	Dterm = (Vector_DotProduct(&deltaV, &deltaP) * PHYSICS_Damp) * divdist; // Damping Term
+	Dterm = (deltaV dot deltaP) * PHYSICS_Damp * divdist; // Damping Term
 	Dterm = (-(Hterm + Dterm));
 	divdist *= Dterm;
 	springforce.x = deltaP.x * divdist;	// Normalize Distance Vector
@@ -2042,7 +2048,7 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, fl
 
 void ComputeForces(PHYSVERT * phys, long nb)
 {
-	EERIE_3D PHYSICS_Gravity;
+	Vec3f PHYSICS_Gravity;
 	PHYSICS_Gravity.x = 0.f;
 	PHYSICS_Gravity.y = 65.f; 
 	PHYSICS_Gravity.z = 0.f;
@@ -2169,7 +2175,7 @@ void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime)
 	}
 
 }
-bool IsPointInField(EERIE_3D * pos)
+bool IsPointInField(Vec3f * pos)
 {
 	for (size_t i = 0; i < MAX_SPELLS; i++)
 	{
@@ -2227,7 +2233,7 @@ bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long
 
 bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
-	EERIE_3D pol[3];
+	Vec3f pol[3];
 	pol[0].x = ep->v[0].sx;
 	pol[0].y = ep->v[0].sy;
 	pol[0].z = ep->v[0].sz;
@@ -2298,7 +2304,7 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 				    &&	(!(ep->type & (POLY_NOCOL)))
 				)
 				{
-					if (EEDistance3D(&ep->center, &obj->pbox->vert[0].pos) > rad + 75.f)
+					if (fartherThan(ep->center, obj->pbox->vert[0].pos, rad + 75.f))
 						continue;
 
 					for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
@@ -2306,10 +2312,10 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 						float radd = 4.f;
 
 						if (
-						    (EEDistance3D(&ep->center, &obj->pbox->vert[kk].pos) <= radd)
-						    ||	(EEDistance3D((EERIE_3D *)&ep->v[0], &obj->pbox->vert[kk].pos) <= radd)
-						    ||	(EEDistance3D((EERIE_3D *)&ep->v[1], &obj->pbox->vert[kk].pos) <= radd)
-						    ||	(EEDistance3D((EERIE_3D *)&ep->v[2], &obj->pbox->vert[kk].pos) <= radd)
+						    !fartherThan(ep->center, obj->pbox->vert[kk].pos, radd)
+						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[0], radd)
+						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[1], radd)
+						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2], radd)
 						    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[1].sz)*( 1.0f / 2 ),
 						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
 						    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[2].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[2].sz + ep->v[1].sz)*( 1.0f / 2 ),
@@ -2336,16 +2342,16 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 						{
 							if (kl != kk)
 							{
-								EERIE_3D pos;
+								Vec3f pos;
 								pos.x = (obj->pbox->vert[kk].pos.x + obj->pbox->vert[kl].pos.x) * ( 1.0f / 2 );
 								pos.y = (obj->pbox->vert[kk].pos.y + obj->pbox->vert[kl].pos.y) * ( 1.0f / 2 );
 								pos.z = (obj->pbox->vert[kk].pos.z + obj->pbox->vert[kl].pos.z) * ( 1.0f / 2 );
 
 								if (
-								    (EEDistance3D(&ep->center, &pos) <= radd)
-								    ||	(EEDistance3D((EERIE_3D *)&ep->v[0], &pos) <= radd)
-								    ||	(EEDistance3D((EERIE_3D *)&ep->v[1], &pos) <= radd)
-								    ||	(EEDistance3D((EERIE_3D *)&ep->v[2], &pos) <= radd)
+								    !fartherThan(ep->center, pos, radd)
+								    || !fartherThan(pos, ep->v[0], radd)
+								    || !fartherThan(pos, ep->v[1], radd)
+								    || !fartherThan(pos, ep->v[2], radd)
 								    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[1].sz)*( 1.0f / 2 ),
 								                    pos.x, pos.y, pos.z) <= radd)
 								    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[2].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[2].sz + ep->v[1].sz)*( 1.0f / 2 ),
@@ -2396,7 +2402,7 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source) {
 	
 	PHYSVERT * pv;
-	EERIE_3D oldpos[32];
+	Vec3f oldpos[32];
 	long COUNT = 0;
 	COUNT++;
 
@@ -2591,8 +2597,8 @@ void ARX_PrepareBackgroundNRMLs()
 	EERIE_BKG_INFO * eg2;
 	EERIEPOLY * ep;
 	EERIEPOLY * ep2;
-	EERIE_3D nrml;
-	EERIE_3D cur_nrml;
+	Vec3f nrml;
+	Vec3f cur_nrml;
 	float count;
 	long nbvert;
 	long nbvert2;
@@ -2690,7 +2696,7 @@ void ARX_PrepareBackgroundNRMLs()
 											}
 											else if ((k2 > 0) && (nbvert2 > 3))
 											{
-												EERIE_3D tnrml;
+												Vec3f tnrml;
 												tnrml.x = (ep2->norm.x + ep2->norm2.x) * ( 1.0f / 2 );
 												tnrml.y = (ep2->norm.y + ep2->norm2.y) * ( 1.0f / 2 );
 												tnrml.z = (ep2->norm.z + ep2->norm2.z) * ( 1.0f / 2 );
@@ -2749,20 +2755,19 @@ void ARX_PrepareBackgroundNRMLs()
 					ep->nrml[k].z = ep->tv[k].sz;
 				}
 
-				float dist = 0.f;
+				float d = 0.f;
 
-				for (long ii = 0; ii < nbvert; ii++)
-				{
-					dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+				for(long ii = 0; ii < nbvert; ii++) {
+					d = max(d, dist(ep->center, ep->v[ii]));
 				}
 
-				ep->v[0].rhw = dist;
+				ep->v[0].rhw = d;
 			}
 		}
 
 }
 
-void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect, long flags, EERIE_3D * angle)
+void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags, Anglef * angle)
 {
 	io->GameFlags |= GFLAG_NO_PHYS_IO_COL;
 	EERIE_PHYSICS_BOX_Launch(obj, pos, vect, flags, angle);

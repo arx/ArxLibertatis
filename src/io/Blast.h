@@ -24,7 +24,7 @@
 #ifndef ARX_IO_BLAST_H
 #define ARX_IO_BLAST_H
 
-#include <cstddef>
+#include <stddef.h>
 
 /*
  * blast() decompresses the PKWare Data Compression Library (DCL) compressed
@@ -37,8 +37,8 @@
 /* Definitions for input/output functions passed to blast().  See below for
  * what the provided functions need to do.
  */
-typedef std::size_t (*blast_in)(void *how, const unsigned char **buf);
-typedef int (*blast_out)(void *how, unsigned char *buf, std::size_t len);
+typedef size_t (*blast_in)(void *how, const unsigned char **buf);
+typedef int (*blast_out)(void *how, unsigned char *buf, size_t len);
 
 enum BlastResult {
 	BLAST_TRUNCATED_INPUT = 2, // ran out of input before completing decompression

@@ -62,6 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Flags.h"
 
+#include "Configure.h"
+
 struct INTERACTIVE_OBJ;
 struct ANIM_HANDLE;
 
@@ -442,7 +444,9 @@ void ARX_SCRIPT_EventStackExecute();
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();
 void ARX_SCRIPT_EventStackClear(bool check_exist = true);
+#ifdef BUILD_EDITOR
 void ARX_SCRIPT_LaunchScriptSearch(std::string & search);
+#endif
 void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags);
 void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags);
 long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string & name);
@@ -454,7 +458,6 @@ void ARX_SCRIPT_ResetAll(long flags);
 void ARX_SCRIPT_EventStackClearForIo(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events();
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent();
-bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io);
 bool CheckScriptSyntax(INTERACTIVE_OBJ * io);
 
 void ManageCasseDArme(INTERACTIVE_OBJ * io);
