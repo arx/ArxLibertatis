@@ -138,8 +138,6 @@ long HALOCUR=0;
 long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
 //-----------------------------------------------------------------------------
-int iNbD3DTLVERTEXTab;
-SMY_D3DVERTEX3_T tD3DTLVERTEXTab[4000];
 D3DTLVERTEX tD3DTLVERTEXTab2[4000];
 
 extern long EXTERNALVIEW;

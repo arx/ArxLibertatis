@@ -136,7 +136,6 @@ CMenuElementText *pLoadConfirm=NULL;
 CMenuSliderText *pMenuSliderResol=NULL;
 CMenuSliderText *pMenuSliderBpp=NULL;
 CMenuSliderText *pMenuSliderTexture=NULL;
-CMenuCheckButton *pMenuCheckButtonBump=NULL;
 
 float ARXTimeMenu;
 float ARXOldTimeMenu;
