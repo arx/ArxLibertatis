@@ -45,8 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEDRAW_H
 #define EERIEDRAW_H
 
-#define D3D_OVERLOADS
-
 #define EERIE_NOCOUNT	0x4000	// do not incr EERIEDrawnPolys for EERIEDRAWPRIM
 
 #include "graphics/d3dwrapper.h"
@@ -56,8 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 
 extern long ARX_ALTERNATE_3D;
-extern EERIE_3D SPRmins;
-extern EERIE_3D SPRmaxs;
+extern Vec3f SPRmins;
+extern Vec3f SPRmaxs;
 
 void MDL_AddMetalDrawLater(D3DTLVERTEX * tv);
 void MDL_FlushAll();
@@ -86,8 +84,8 @@ void DRAWLATER_Render();
 
 void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col);
 void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col);
-void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
-void EERIEDraw3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
+void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
+void EERIEDraw3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float _fDeltaY);
 
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);

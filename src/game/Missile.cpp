@@ -33,7 +33,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Missile.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Core.h"
 
 #include "game/Damage.h"
@@ -52,9 +52,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct ARX_MISSILE
 {
 	ARX_SPELLS_MISSILE_TYPE type;
-	EERIE_3D startpos;
-	EERIE_3D velocity;
-	EERIE_3D lastpos;
+	Vec3f startpos;
+	Vec3f velocity;
+	Vec3f lastpos;
 	unsigned long timecreation;
 	unsigned long lastupdate;
 	unsigned long tolive;
@@ -106,7 +106,7 @@ void ARX_MISSILES_ClearAll() {
 
 //-----------------------------------------------------------------------------
 // Spawns a Projectile using type, starting position/TargetPosition
-void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, ARX_SPELLS_MISSILE_TYPE type, const EERIE_3D *startpos, const EERIE_3D *targetpos)
+void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f *startpos, const Vec3f *targetpos)
 {
 	long i(ARX_MISSILES_GetFree());
 
@@ -162,7 +162,7 @@ void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, ARX_SPELLS_MISSILE_TYPE type, const
 void ARX_MISSILES_Update()
 {
 	long framediff, framediff3;
-	EERIE_3D orgn, dest, hit;
+	Vec3f orgn, dest, hit;
 	TextureContainer * tc = TC_fire; 
 	EERIEPOLY *tp = NULL;
 	unsigned long tim = ARXTimeUL();
@@ -185,31 +185,25 @@ void ARX_MISSILES_Update()
 		{
 			case MISSILE_NONE: break;
 			case MISSILE_FIREBALL: {
-				EERIE_3D pos;
+				Vec3f pos;
 
-				pos.x = missiles[i].startpos.x + missiles[i].velocity.x * framediff3;
-				pos.y = missiles[i].startpos.y + missiles[i].velocity.y * framediff3;
-				pos.z = missiles[i].startpos.z + missiles[i].velocity.z * framediff3;
+				pos = missiles[i].startpos + missiles[i].velocity * framediff3;
 
 				if (missiles[i].longinfo != -1)
 				{
-					DynLight[missiles[i].longinfo].pos.x = pos.x;
-					DynLight[missiles[i].longinfo].pos.y = pos.y;
-					DynLight[missiles[i].longinfo].pos.z = pos.z;
+					DynLight[missiles[i].longinfo].pos = pos;
 				}
 
-				if (USE_COLLISIONS) 
+#ifdef BUILD_EDITOR
+				if (USE_COLLISIONS)
+#endif
 				{
-					orgn.x = missiles[i].lastpos.x;
-					orgn.y = missiles[i].lastpos.y;
-					orgn.z = missiles[i].lastpos.z;					
-					dest.x = pos.x;
-					dest.y = pos.y;
-					dest.z = pos.z;					
+					orgn = missiles[i].lastpos;
+					dest = pos;
 					
 					EERIEPOLY *ep;
 					EERIEPOLY *epp;
-					EERIE_3D tro;
+					Vec3f tro;
 					tro.x = 70.0F;
 					tro.y = 70.0F;
 					tro.z = 70.0F;

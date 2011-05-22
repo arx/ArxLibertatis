@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "platform/Flags.h"
 
+#include "Configure.h"
+
 struct INTERACTIVE_OBJ;
 struct EERIE_CAMERA;
 
@@ -71,7 +73,7 @@ enum PathwayType {
 };
 
 struct ARX_PATHWAY {
-	EERIE_3D rpos; //relative pos
+	Vec3f rpos; //relative pos
 	PathwayType flag;
 	float _time;
 };
@@ -91,8 +93,8 @@ struct ARX_PATH {
 	char name[64];
 	short idx;
 	PathFlags flags;
-	EERIE_3D initpos;
-	EERIE_3D pos;
+	Vec3f initpos;
+	Vec3f pos;
 	long nb_pathways;
 	ARX_PATHWAY * pathways;
 	long height; // 0 NOT A ZONE
@@ -103,8 +105,8 @@ struct ARX_PATH {
 	float farclip;
 	float reverb;
 	float amb_max_vol;
-	EERIE_3D bbmin;
-	EERIE_3D bbmax;
+	Vec3f bbmin;
+	Vec3f bbmax;
 };
 
 enum UsePathFlag {
@@ -124,7 +126,7 @@ struct ARX_USE_PATH {
 	float _starttime;
 	float _curtime;
 	UsePathFlags aupflags;
-	EERIE_3D initpos;
+	Vec3f initpos;
 	long lastWP;
 };
 
@@ -153,13 +155,15 @@ const PathMods ARX_PATH_MOD_ALL = ARX_PATH_MOD_POSITION | ARX_PATH_MOD_FLAGS | A
 extern MASTER_CAMERA_STRUCT MasterCamera;
 extern ARX_USE_PATH USE_CINEMATICS_PATH;
 extern ARX_PATH ** ARXpaths;
+#ifdef BUILD_EDITOR
 extern ARX_PATH * ARX_PATHS_FlyingOverAP;
 extern ARX_PATH * ARX_PATHS_SelectedAP;
 extern long	ARX_PATHS_SelectedNum;
+extern long	ARX_PATHS_FlyingOverNum;
+#endif
 extern PathMods ARX_PATHS_HIERARCHYMOVE;
 extern long USE_CINEMATICS_CAMERA;
 extern long	nbARXpaths;
-extern long	ARX_PATHS_FlyingOverNum;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z);
@@ -169,18 +173,20 @@ ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 
-void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname);
 ARX_PATH * ARX_PATHS_ExistName(char * name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
+#ifdef BUILD_EDITOR
 void ARX_PATHS_RedrawAll();
-ARX_PATH * ARX_PATHS_Create(const char * name, EERIE_3D * pos);
-ARX_PATH * ARX_PATHS_AddNew(EERIE_3D * pos);
+ARX_PATH * ARX_PATHS_Create(const char * name, Vec3f * pos);
+ARX_PATH * ARX_PATHS_AddNew(Vec3f * pos);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert);
-void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, EERIE_3D * pos, PathwayType flags, unsigned long time);
+void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, Vec3f * pos, PathwayType flags, unsigned long time);
 void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del);
+void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname);
 void ARX_PATHS_DrawPath(ARX_PATH * ap);
-long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos);
+#endif
+long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos);
 
 enum ThrownObjectFlag {
 	ATO_EXIST      = (1<<0),
@@ -193,12 +199,12 @@ DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
 
 struct ARX_THROWN_OBJECT {
 	ThrownObjectFlags flags;
-	EERIE_3D vector;
-	EERIE_3D upvect;
+	Vec3f vector;
+	Vec3f upvect;
 	EERIE_QUAT quat;
-	EERIE_3D initial_position;
+	Vec3f initial_position;
 	float velocity;
-	EERIE_3D position;
+	Vec3f position;
 	float damages;
 	EERIE_3DOBJ * obj;
 	long source;
@@ -224,7 +230,7 @@ private:
 	
 	struct T_RUBAN {
 		int actif;
-		EERIE_3D pos;
+		Vec3f pos;
 		int next;
 	};
 	T_RUBAN truban[2048];
@@ -256,10 +262,10 @@ public:
 };
 
 long ARX_THROWN_OBJECT_GetFree();
-long ARX_THROWN_OBJECT_Throw(long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
+long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f * upvect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
-void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect, long flags = 0, EERIE_3D * angle = NULL);
+void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags = 0, Anglef * angle = NULL);
 
 bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source);
 

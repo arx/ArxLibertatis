@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Damage.h"
 #include "game/Spells.h"
@@ -84,7 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
 
 
 EERIE_3DOBJ * ssol = NULL;
@@ -111,7 +111,7 @@ CCurePoison::CCurePoison()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	pPS = new CParticleSystem();
+	pPS = new ParticleSystem();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +134,7 @@ void CCurePoison::Create()
 	eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
 
 	pPS->SetPos(eSrc);
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
@@ -235,11 +235,11 @@ void CCurePoison::Update(unsigned long aulTime)
 		pPS->p3ParticleGravity.y = 0;
 		pPS->p3ParticleGravity.z = 0;
 
-		std::list<CParticle *>::iterator i;
+		std::list<Particle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)	
 		{
-			CParticle * pP = *i;
+			Particle * pP = *i;
 
 			if (pP->isAlive())
 			{
@@ -353,7 +353,7 @@ CRuneOfGuarding::~CRuneOfGuarding()
 	}
 }
 //-----------------------------------------------------------------------------
-void CRuneOfGuarding::Create(EERIE_3D _eSrc, float _fBeta)
+void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta)
 {
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
@@ -429,9 +429,9 @@ float CRuneOfGuarding::Render()
 	//	long color = D3DRGB(1,1,1);
 	//	int size = 100;
 	//----------------------------
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	float stiteangleb = (float) ulCurrentTime * fOneOnDuration * 120;
@@ -510,11 +510,11 @@ float CRuneOfGuarding::Render()
 }
 
 //-----------------------------------------------------------------------------
-void LaunchPoisonExplosion(EERIE_3D * aePos)
+void LaunchPoisonExplosion(Vec3f * aePos)
 {
 	// syst�me de partoches pour l'explosion
-	CParticleSystem * pPS = new CParticleSystem();
-	CParticleParams cp;
+	ParticleSystem * pPS = new ParticleSystem();
+	ParticleParams cp;
 	cp.iNbMax = 80; 
 	cp.fLife = 1500;
 	cp.fLifeRandom = 500;
@@ -570,11 +570,11 @@ void LaunchPoisonExplosion(EERIE_3D * aePos)
 	pPS->Update(0);
 	pPS->iParticleNbMax = 0;
 
-	std::list<CParticle *>::iterator i;
+	std::list<Particle *>::iterator i;
 
 	for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 	{
-		CParticle * pP = *i;
+		Particle * pP = *i;
 
 		if (pP->isAlive())
 		{
@@ -617,7 +617,7 @@ CPoisonProjectile::CPoisonProjectile()
 }
 
 //-----------------------------------------------------------------------------
-void CPoisonProjectile::Create(EERIE_3D _eSrc, float _fBeta)
+void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 {
 	int i;
 
@@ -641,7 +641,7 @@ void CPoisonProjectile::Create(EERIE_3D _eSrc, float _fBeta)
 	eMove.y = 0;
 	eMove.z = + fBetaRadCos * 2; 
 
-	EERIE_3D s, e, h;
+	Vec3f s, e, h;
 	s.x = eSrc.x;
 	s.y = eSrc.y;
 	s.z = eSrc.z;
@@ -687,7 +687,7 @@ void CPoisonProjectile::Create(EERIE_3D _eSrc, float _fBeta)
 
 	//-------------------------------------------------------------------------
 	// système de partoches
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 5;
 	cp.fLife = 2000;
 	cp.fLifeRandom = 1000;
@@ -784,7 +784,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			bOk = !bOk;
 
 			// go
-			CParticleParams cp;
+			ParticleParams cp;
 			cp.iNbMax = 100;
 			cp.fLife = 500;
 			cp.fLifeRandom = 300;
@@ -871,8 +871,8 @@ float CPoisonProjectile::Render()
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 
-	EERIE_3D lastpos, newpos;
-	EERIE_3D v;
+	Vec3f lastpos, newpos;
+	Vec3f v;
 
 	lastpos.x = pathways[0].sx;
 	lastpos.y = pathways[0].sy;
@@ -924,16 +924,6 @@ float CPoisonProjectile::Render()
 			newpos.y = v.y;
 			newpos.z = v.z;
 
-			if (!((fTrail - (i * n + toto)) > 70))
-			{
-				float c = 1.0f - ((fTrail - (i * n + toto)) / 70.0f);
-				c += frand2() * 0.1f;
-
-				if (c < 0) c = 0;
-
-				if (c > 1) c = 1;
-			}
-
 			float nx = lastpos.x;
 			float ny = lastpos.y;
 			float nz = lastpos.z;
@@ -948,46 +938,19 @@ float CPoisonProjectile::Render()
 			++arx_check_init;
 		}
 	}
-
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
-	EERIE_3D av;
-
+	
 	ARX_CHECK_NOT_NEG(arx_check_init);
-
-	av.x = newpos.x - lastpos.x;
-	av.y = newpos.y - lastpos.y;
-	av.z = newpos.z - lastpos.z;
-
-	TRUEVector_Normalize(&av);
-
-	float bubu = GetAngle(av.x, av.z, 0, 0);
-	float bubu1 = GetAngle(av.x, av.y, 0, 0);
-
-	stitepos.x = lastpos.x;
-	stitepos.y = lastpos.y;
-	stitepos.z = lastpos.z;
-	stiteangle.b = -degrees(bubu);
-	stiteangle.a = 0;
-	stiteangle.g = -90 - degrees(bubu1);
-	stitescale.x = 2;
-	stitescale.y = 2;
-	stitescale.z = 2;
-
-	eCurPos.x = lastpos.x;
-	eCurPos.y = lastpos.y;
-	eCurPos.z = lastpos.z;
-
-	if (fTrail >= (i * n))
-	{
+	
+	eCurPos = lastpos;
+	
+	if(fTrail >= (i * n)) {
 		LaunchPoisonExplosion(&lastpos);
 	}
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	return 1;
 }
 
@@ -998,7 +961,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 	SetDuration(2000);
 	uiNumber = min(5L, nbmissiles);
 	pTab	 = NULL;
-	pTab	 = new CSpellFx*[uiNumber]();
+	pTab	 = new CPoisonProjectile*[uiNumber]();
 
 	for (UINT i = 0 ; i < uiNumber ; i++)
 	{
@@ -1026,7 +989,7 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 }
 
 //-----------------------------------------------------------------------------
-void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0) {
+void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 	
 	(void)_afBeta;
 
@@ -1241,7 +1204,7 @@ CRepelUndead::~CRepelUndead()
 	}
 }
 //-----------------------------------------------------------------------------
-void CRepelUndead::Create(EERIE_3D aeSrc, float afBeta)
+void CRepelUndead::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -1292,9 +1255,9 @@ float CRepelUndead::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//----------------------------
-	EERIE_3D  eObjAngle;
-	EERIE_3D  eObjPos;
-	EERIE_3D  eObjScale;
+	Anglef  eObjAngle;
+	Vec3f  eObjPos;
+	Vec3f  eObjScale;
 	EERIE_RGB rgbObjColor;
 
 	eObjAngle.b = fBeta;
@@ -1435,11 +1398,11 @@ void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def
 	this->cone[numcone].conenbvertex = def * 2 + 2;
 	this->cone[numcone].conenbfaces = def * 2 + 2;
 	this->cone[numcone].coned3d = (D3DTLVERTEX *)malloc(this->cone[numcone].conenbvertex * sizeof(D3DTLVERTEX));
-	this->cone[numcone].conevertex = (EERIE_3D *)malloc(this->cone[numcone].conenbvertex * sizeof(EERIE_3D));
+	this->cone[numcone].conevertex = (Vec3f *)malloc(this->cone[numcone].conenbvertex * sizeof(Vec3f));
 	this->cone[numcone].coneind = (unsigned short *)malloc(this->cone[numcone].conenbvertex * sizeof(unsigned short));
 
 	float			a, da;
-	EERIE_3D	*	vertex = this->cone[numcone].conevertex;
+	Vec3f	*	vertex = this->cone[numcone].conevertex;
 	unsigned short	* pind = this->cone[numcone].coneind, ind = 0;
 	int				nb;
 	a = 0.f;
@@ -1465,7 +1428,7 @@ void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def
 	}
 }
 /*--------------------------------------------------------------------------*/
-void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, EERIE_3D * pos, unsigned long _ulDuration)
+void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f * pos, unsigned long _ulDuration)
 {
 	SetDuration(_ulDuration);
 
@@ -1500,7 +1463,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, EERIE_3
 	}
 }
 /*--------------------------------------------------------------------------*/
-void CLevitate::AddStone(EERIE_3D * pos)
+void CLevitate::AddStone(Vec3f * pos)
 {
 	if (ARXPausedTimer) return;
 
@@ -1659,7 +1622,7 @@ void CLevitate::Update(unsigned long _ulTime)
 	if (this->timestone <= 0)
 	{
 		this->timestone = 50 + (int)(rnd() * 100.f);
-		EERIE_3D	pos;
+		Vec3f	pos;
 
 		float r = this->rbase * frand2();
 		pos.x = this->pos.x + r; 
@@ -1679,7 +1642,7 @@ float CLevitate::Render()
 
 	//calcul du cone
 	D3DTLVERTEX d3dvs, *d3dv;
-	EERIE_3D	* vertex;
+	Vec3f	* vertex;
 	int			nb, nbc, col;
 	float		ddu = this->ang;
 	float		u = ddu, du = .99999999f / (float)this->def;
@@ -1759,13 +1722,13 @@ float CLevitate::Render()
 
 					float a = radians(360.f * rnd());
 
-					particle[j].ov.x = this->pos.x + this->rbase * EEcos(a);
-					particle[j].ov.y = this->pos.y;
-					particle[j].ov.z = this->pos.z + this->rbase * EEsin(a);
-					float t = EEDistance3D(&particle[j].ov, &this->pos);
-					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - this->pos.x) / t);
+					particle[j].ov.x = pos.x + rbase * EEcos(a);
+					particle[j].ov.y = pos.y;
+					particle[j].ov.z = pos.z + rbase * EEsin(a);
+					float t = fdist(particle[j].ov, pos);
+					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - pos.x) / t);
 					particle[j].move.y = 3.f * rnd();
-					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - this->pos.z) / t);
+					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - pos.z) / t);
 					particle[j].siz = 30.f + 30.f * rnd();
 					particle[j].tolive = 3000;
 					particle[j].scale.x = 1.f;
@@ -1842,13 +1805,13 @@ float CLevitate::Render()
 
 					float a = radians(360.f * rnd());
 
-					particle[j].ov.x = this->pos.x + this->rbase * EEcos(a);
-					particle[j].ov.y = this->pos.y;
-					particle[j].ov.z = this->pos.z + this->rbase * EEsin(a);
-					float t = EEDistance3D(&particle[j].ov, &this->pos);
-					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - this->pos.x) / t);
+					particle[j].ov.x = pos.x + rbase * EEcos(a);
+					particle[j].ov.y = pos.y;
+					particle[j].ov.z = pos.z + rbase * EEsin(a);
+					float t = fdist(particle[j].ov, pos);
+					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - pos.x) / t);
 					particle[j].move.y = 3.f * rnd();
-					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - this->pos.z) / t);
+					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - pos.z) / t);
 					particle[j].siz = 30.f + 30.f * rnd();
 					particle[j].tolive = 3000;
 					particle[j].scale.x = 1.f;

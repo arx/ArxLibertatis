@@ -37,9 +37,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "platform/Platform.h"
+#include "platform/math/Vector3.h"
 
 struct INTERACTIVE_OBJ;
-struct EERIE_3D;
 
 enum SoundLoopMode {
 	ARX_SOUND_PLAY_LOOPED = 0,
@@ -210,27 +210,27 @@ void ARX_SOUND_Release();
 
 long ARX_SOUND_IsEnabled();
 
-void ARX_SOUND_SetListener(const EERIE_3D * position, const EERIE_3D * front, const EERIE_3D * up);
+void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Vec3f * up);
 
 ArxSound ARX_SOUND_Load(const std::string & name);
 void ARX_SOUND_Free(const ArxSound & sample);
 
-long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position = NULL, float pitch = 1.0F, const SoundLoopMode = ARX_SOUND_PLAY_ONCE);
+long ARX_SOUND_PlaySFX(ArxSound & sample_id, const Vec3f * position = NULL, float pitch = 1.0F, const SoundLoopMode = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayInterface(ArxSound & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
 long ARX_SOUND_PlaySpeech(const std::string & name, const INTERACTIVE_OBJ * io = NULL);
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, EERIE_3D * position, INTERACTIVE_OBJ * source);
-long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, float volume, float power, EERIE_3D* position, INTERACTIVE_OBJ* source);
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source);
+long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, float volume, float power, Vec3f* position, INTERACTIVE_OBJ* source);
 
 long ARX_SOUND_PlayScript(const std::string & name, const INTERACTIVE_OBJ * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
-long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position = NULL);
+long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position = NULL);
 long ARX_SOUND_PlayCinematic(const std::string & name);
 long ARX_SOUND_PlayMenu(ArxSound & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_IsPlaying(ArxSound & sample_id);
 float ARX_SOUND_GetDuration(ArxSound & sample_id);
 
 void ARX_SOUND_RefreshVolume(ArxSound & sample_id, float volume);
-void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const EERIE_3D * position = NULL);
+void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const Vec3f * position = NULL);
 void ARX_SOUND_RefreshPitch(ArxSound & sample_id, float pitch);
 void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ * io = NULL);
 

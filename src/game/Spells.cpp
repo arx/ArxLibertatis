@@ -39,6 +39,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Config.h"
 #include "core/Core.h"
+#include "core/GameTime.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -56,7 +57,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "graphics/spells/SpellsGlobal.h"
+#include "graphics/spells/Spells01.h"
+#include "graphics/spells/Spells02.h"
+#include "graphics/spells/Spells03.h"
+#include "graphics/spells/Spells04.h"
+#include "graphics/spells/Spells05.h"
+#include "graphics/spells/Spells06.h"
+#include "graphics/spells/Spells07.h"
+#include "graphics/spells/Spells08.h"
+#include "graphics/spells/Spells09.h"
+#include "graphics/spells/Spells10.h"
 
 #include "io/FilePath.h"
 
@@ -122,7 +132,7 @@ extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern float GLOBAL_SLOWDOWN;
 extern void ARX_SPSound();
 extern float sp_max_y[64];
-extern COLORREF sp_max_col[64];
+extern Color sp_max_col[64];
 extern char	sp_max_ch[64];
 extern long sp_max_nb;
 long cur_mega=0;
@@ -155,7 +165,7 @@ struct Scan {
 
 struct SYMBOL_DRAW {
 	unsigned long	starttime;
-	EERIE_3D		lastpos;
+	Vec3f		lastpos;
 	short			lasttim;
 	short			duration;
 	char			sequence[32];
@@ -186,10 +196,10 @@ long cur_bh=0;
 
 static float LASTTELEPORT(0.0F);
 long snip=0;
-EERIE_S2D Lm;
+Vec2s Lm;
 
 static const long MAX_POINTS(200);
-static EERIE_S2D plist[MAX_POINTS];
+static Vec2s plist[MAX_POINTS];
 std::string SpellMoves;
 Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 size_t CurrSpellSymbol=0;
@@ -201,7 +211,7 @@ long lMaxSymbolDrawSizeY;
 
 unsigned char ucFlick=0;
 
-bool GetSpellPosition(EERIE_3D * pos,long i)
+bool GetSpellPosition(Vec3f * pos,long i)
 {
  
 
@@ -501,11 +511,10 @@ void LaunchAntiMagicField(long ident)
 			&&	(spells[ident].caster_level >= spells[n].caster_level)
 			&&	((long)n != ident))
 		{
-			EERIE_3D pos; 
+			Vec3f pos; 
 			GetSpellPosition(&pos,n);
 
-			if (EEDistance3D(&pos,&inter.iobj[spells[ident].caster]->pos)<600.f)
-			{
+			if(distSqr(pos, inter.iobj[spells[ident].caster]->pos) < square(600.f)) {
 				if (spells[n].type==SPELL_CREATE_FIELD)
 				{
 					if ((spells[ident].caster==0) && (spells[n].caster==0))				
@@ -780,7 +789,7 @@ void ARX_SPELLS_RequestSymbolDraw3(const char *_pcName,char *_pcRes)
 #define OFFSET_Y 6*2//0
 
 //-----------------------------------------------------------------------------
-void GetSymbVector(char c,EERIE_S2D * vec)
+void GetSymbVector(char c,Vec2s * vec)
 {
 	switch (c)
 	{
@@ -1178,7 +1187,7 @@ void ReCenterSequence(char *_pcSequence,int &_iMinX,int &_iMinY,int &_iMaxX,int 
 
 	for(int iI=0;iI<iLenght;iI++)
 	{
-		EERIE_S2D es2dVector;
+		Vec2s es2dVector;
 		GetSymbVector(_pcSequence[iI],&es2dVector);
 		iSizeX+=es2dVector.x;
 		iSizeY+=es2dVector.y;
@@ -1312,7 +1321,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 				if (ti<=0) ti=1;
 
-				EERIE_S2D pos1, vect, old_pos;
+				Vec2s pos1, vect, old_pos;
 				long newtime=tim;
 				long oldtime=sd->lasttim;
 
@@ -1431,7 +1440,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							pos1.y = ARX_CLEAN_WARN_CAST_SHORT(fY);
 
 
-							EERIE_S2D pos;
+							Vec2s pos;
 							pos.x=(short)(pos1.x*Xratio);	
 							pos.y=(short)(pos1.y*Yratio);
 
@@ -2519,7 +2528,7 @@ void ARX_SPELLS_ManageMagic()
 			
 			if (EERIEMouseButton & 1)
 			{
-				EERIE_S2D pos,pos2;
+				Vec2s pos,pos2;
 				pos.x = DANAEMouse.x; 
 				pos.y = DANAEMouse.y;
 				extern long TRUE_PLAYER_MOUSELOOK_ON;
@@ -2732,7 +2741,7 @@ void ARX_SPELLS_ResetRecognition() {
 
 //-----------------------------------------------------------------------------
 // Adds a 2D point to currently drawn spell symbol
-void ARX_SPELLS_AddPoint(const EERIE_S2D & pos) {
+void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 	plist[CurrPoint] = pos;
 	CurrPoint++;
 	if(CurrPoint >= MAX_POINTS) {
@@ -2741,15 +2750,15 @@ void ARX_SPELLS_AddPoint(const EERIE_S2D & pos) {
 }
 
 //-----------------------------------------------------------------------------
-long TemporaryGetSpellTarget(const EERIE_3D *from)
+long TemporaryGetSpellTarget(const Vec3f *from)
 {
-	float mindist(99999999.0F);
+	float mindist = FLT_MAX;
 	long found(0);
 
 	for (long i(1); i < inter.nbmax; i++)
 		if (inter.iobj[i] && inter.iobj[i]->ioflags & IO_NPC)
 		{
-			float dist(EEDistance3D(from,&inter.iobj[i]->pos));
+			float dist = distSqr(*from, inter.iobj[i]->pos);
 
 			if (dist < mindist)
 			{
@@ -3316,7 +3325,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		for (size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
 			if ( SpellSymbol[i] != RUNE_NONE )
 			{
-				if ( !( player.rune_flags & ( 1 << SpellSymbol[i] ) ) )
+				if ( !( player.rune_flags & (RuneFlag)( 1 << SpellSymbol[i] ) ) )
 				{
 					ARX_SOUND_PlaySpeech( "player_cantcast" );
 					CurrSpellSymbol = 0;
@@ -3426,7 +3435,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if ( !ValidIONum( source ) )
 				return false;
 
-			EERIE_3D cpos = inter.iobj[source]->pos;
+			Vec3f cpos = inter.iobj[source]->pos;
 
 			for ( long ii = 1 ; ii < inter.nbmax ; ii++ )
 			{
@@ -3437,7 +3446,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	( ioo->_npcdata->life > 0.f )
 					&&	( ioo->show == SHOW_FLAG_IN_SCENE )
 					&&	( IsIOGroup( ioo, "DEMON") )	
-					&&	( EEDistance3D(&ioo->pos,&cpos) < 900.f )
+					&&	( distSqr(ioo->pos, cpos) < square(900.f))
 					)
 				{
 					tcount++;					
@@ -3613,13 +3622,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			pCSpellFx = new CMultiMagicMissile(number);			
 
-			if (pCSpellFx != NULL)
-			{
-				EERIE_3D source_position(0, 0, 0);
-				EERIE_3D vector(0, 0, 0);
+			if(pCSpellFx != NULL) {
 				pCSpellFx->spellinstance=i;
 				pCSpellFx->SetDuration((unsigned long) (6000));
-				pCSpellFx->Create(source_position, vector);
+				static_cast<CMultiMagicMissile*>(pCSpellFx)->Create();
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
 			}				
@@ -3647,7 +3653,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 
 				if(spells[i].hand_group!=-1) {
 					target = spells[i].hand_pos;
@@ -3691,14 +3697,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							|| (GLight[ii]->extras & EXTRAS_SPAWNSMOKE) )
 						&& (!GLight[ii]->status))
 					{
-						float dist=EEDistance3D(&target,&GLight[ii]->pos);
-
-						if (dist<=(pIgnit->GetPerimetre()))								
-						{
-								pIgnit->AddLight(ii);
-							}
+						if(distSqr(target, GLight[ii]->pos) <= square(pIgnit->GetPerimetre())) {
+							pIgnit->AddLight(ii);
 						}
 					}
+				}
 
 				for(size_t n = 0; n < MAX_SPELLS; n++) {
 					if (!spells[n].exist) continue;
@@ -3715,8 +3718,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							sphere.origin.z=pCF->eCurPos.z;
 							sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 
-							if (EEDistance3D(&target,&sphere.origin)<pIgnit->GetPerimetre()+sphere.radius) {
-									spells[n].caster_level += 1; 
+							if(distSqr(target, sphere.origin) < square(pIgnit->GetPerimetre() + sphere.radius)) {
+								spells[n].caster_level += 1; 
 							}
 						}
 					}
@@ -3752,7 +3755,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 
 				if(spells[i].hand_group>=0) {
 					target = spells[i].hand_pos;
@@ -3775,17 +3778,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							|| (GLight[ii]->extras & EXTRAS_SPAWNSMOKE) )
 							&& (GLight[ii]->status))
 					{
-						float dist=EEDistance3D(&target,&GLight[ii]->pos);
-
-						if (dist <= (pDoze->GetPerimetre())) 
-							{
-								pDoze->AddLightDoze(ii);	
-							}
+						if(distSqr(target, GLight[ii]->pos) <= square(pDoze->GetPerimetre())) {
+							pDoze->AddLightDoze(ii);	
 						}
 					}
+				}
 
-				if ((CURRENT_TORCH) && (EEDistance3D(&target,&player.pos)<pDoze->GetPerimetre()))
-				{
+				if((CURRENT_TORCH) && distSqr(target, player.pos) < square(pDoze->GetPerimetre())) {
 					ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
 				}
 
@@ -3809,8 +3808,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							sphere.origin.z=pCF->eCurPos.z;
 							sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 
-							if (EEDistance3D(&target,&sphere.origin)<pDoze->GetPerimetre()+sphere.radius)
-							{
+							if(distSqr(target, sphere.origin) < square(pDoze->GetPerimetre() + sphere.radius)) {
 								spells[n].caster_level-=spells[i].caster_level;
 
 								if (spells[n].caster_level<1)
@@ -3821,14 +3819,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						break;
 						case SPELL_FIRE_FIELD:
 						{					
-							EERIE_3D pos;
+							Vec3f pos;
 
 							if (GetSpellPosition(&pos,n))
 							{
-								if (EEDistance3D(&target,&pos)<pDoze->GetPerimetre()+200)
-								{
+								if(distSqr(target, pos) < square(pDoze->GetPerimetre() + 200)) {
 									spells[n].caster_level-=spells[i].caster_level;
-
 									if (spells[n].caster_level<1)
 										spells[n].tolive=0;
 								}
@@ -3894,7 +3890,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				pCSpellFx->Create();
+				static_cast<CHeal*>(pCSpellFx)->Create();
 				pCSpellFx->SetDuration(spells[i].tolive);
 				
 				spells[i].pSpellFx = pCSpellFx;
@@ -4219,7 +4215,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 				if(spells[n].type == SPELL_INVISIBILITY) {
 					if(ValidIONum(spells[n].target) && ValidIONum(spells[i].caster)) {
-						if(EEDistance3D(&inter.iobj[spells[n].target]->pos, &inter.iobj[spells[i].caster]->pos) < 1000) {
+						if(distSqr(inter.iobj[spells[n].target]->pos, inter.iobj[spells[i].caster]->pos) < square(1000.f)) {
 							spells[n].tolive=0;
 						}
 					}
@@ -4241,13 +4237,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 20000;
 			
-			CSpellFx *pCSpellFx = NULL;
-			pCSpellFx = new CFireBall();
+			CFireBall * pCSpellFx = new CFireBall();
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 
 				if (spells[i].caster!=0)
 					spells[i].hand_group=-1;
@@ -4267,10 +4262,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			
 				pCSpellFx->SetDuration((unsigned long) (6000));
-				CFireBall * cf=(CFireBall *)pCSpellFx;
 
 				if (spells[i].caster==0)
-					cf->Create(target,MAKEANGLE(player.angle.b),player.angle.a,spells[i].caster_level);
+					pCSpellFx->Create(target,MAKEANGLE(player.angle.b),player.angle.a,spells[i].caster_level);
 				else
 				{
 					float angle;
@@ -4281,7 +4275,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					}
 					else angle=0;
 
-					EERIE_3D eCurPos;
+					Vec3f eCurPos;
 
 					eCurPos.x = inter.iobj[spells[i].caster]->pos.x ;
 					eCurPos.y = inter.iobj[spells[i].caster]->pos.y;
@@ -4290,19 +4284,19 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					if ((ValidIONum(spells[i].caster))
 						&& (inter.iobj[spells[i].caster]->ioflags & IO_NPC))
 					{
-						eCurPos.y-=80.f;						
+						eCurPos.y-=80.f;
 					}
 
 					INTERACTIVE_OBJ * _io=inter.iobj[spells[i].caster];
 
 					if (ValidIONum(_io->targetinfo))
 					{
-						EERIE_3D * p1=&eCurPos;
-						EERIE_3D * p2=&inter.iobj[_io->targetinfo]->pos;
-						angle=(degrees(GetAngle(p1->y,p1->z,p2->y,p2->z+TRUEDistance2D(p2->x,p2->z,p1->x,p1->z))));//alpha entre orgn et dest;				
+						Vec3f * p1=&eCurPos;
+						Vec3f * p2=&inter.iobj[_io->targetinfo]->pos;
+						angle=(degrees(GetAngle(p1->y,p1->z,p2->y,p2->z+TRUEDistance2D(p2->x,p2->z,p1->x,p1->z))));//alpha entre orgn et dest;
 					}
 
-					cf->Create(target,MAKEANGLE(inter.iobj[spells[i].caster]->angle.b),angle,spells[i].caster_level);					
+					pCSpellFx->Create(target,MAKEANGLE(inter.iobj[spells[i].caster]->angle.b),angle,spells[i].caster_level);
 				}
 			}
 
@@ -4331,7 +4325,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 					
-			CSpellFx *pCSpellFx = NULL;
+			CCreateFood * pCSpellFx = NULL;
 
 			if ((spells[i].caster==0) || (spells[i].target==0))
 				player.hunger=100;
@@ -4369,7 +4363,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 
 				if (spells[i].caster==0)
 				{
@@ -4428,16 +4422,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx = NULL;
+			CBless * pCSpellFx = new CBless();
 			
-			pCSpellFx = new CBless();
-
-			
-				
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 				target.x = inter.iobj[spells[i].caster]->pos.x;
 				target.y = inter.iobj[spells[i].caster]->pos.y;
 				target.z = inter.iobj[spells[i].caster]->pos.z;
@@ -4461,7 +4451,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			SPELLCAST_Notify(i);
 			spells[i].tolive = 10;
-			EERIE_3D target;
+			Vec3f target;
 			target.x = inter.iobj[spells[i].caster]->pos.x;
 			target.y = inter.iobj[spells[i].caster]->pos.y;
 			target.z = inter.iobj[spells[i].caster]->pos.z;
@@ -4482,15 +4472,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							CCreateField *pCreateField = (CCreateField *) pCSpellFX;
 					
 							EERIE_SPHERE sphere;
-							sphere.origin.x=pCreateField->eSrc.x;
-							sphere.origin.y=pCreateField->eSrc.y;
-							sphere.origin.z=pCreateField->eSrc.z;
+							sphere.origin=pCreateField->eSrc;
 							sphere.radius=400.f;
 
 							if ((spells[i].caster!=0) || (spells[n].caster==0))
 							{
-								if (EEDistance3D(&target,&sphere.origin)<sphere.radius)
-								{
+								if(sphere.contains(target)) {
 									valid++;
 
 									if (spells[n].caster_level<=spells[i].caster_level)
@@ -4513,12 +4500,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							CFireField *pFireField = (CFireField *) pCSpellFX;
 					
 							EERIE_SPHERE sphere;
-							sphere.origin.x=pFireField->pos.x;
-							sphere.origin.y=pFireField->pos.y;
-							sphere.origin.z=pFireField->pos.z;
+							sphere.origin=pFireField->pos;
 							sphere.radius=400.f;
 
-							if (EEDistance3D(&target,&sphere.origin)<sphere.radius)
+							if (sphere.contains(target))
 							{
 								valid++;
 
@@ -4546,8 +4531,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 							sphere.origin.z=pIceField->eSrc.z;
 							sphere.radius=400.f;
 
-							if (EEDistance3D(&target,&sphere.origin)<sphere.radius)
-							{
+							if(sphere.contains(target)) {
 								valid++;
 
 								if (spells[n].caster_level<=spells[i].caster_level)
@@ -4633,15 +4617,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
 			
-			CSpellFx *pCSpellFx = NULL;
-				
-			pCSpellFx = new CFireProtection();
+			CFireProtection * pCSpellFx = new CFireProtection();
 				
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;		
-				CFireProtection *pFP=(CFireProtection *)pCSpellFx;
-				pFP->Create(spells[i].tolive);
+				pCSpellFx->Create(spells[i].tolive);
 
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
@@ -4700,13 +4681,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx =  new CColdProtection();
+			CColdProtection * pCSpellFx =  new CColdProtection();
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;		
-				CColdProtection *pCP= (CColdProtection *)pCSpellFx;
-				pCP->Create(spells[i].tolive, spells[i].target);
+				pCSpellFx->Create(spells[i].tolive, spells[i].target);
 			
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
@@ -4762,7 +4742,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx = NULL;
+			CCurse * pCSpellFx = NULL;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.5f*spells[i].caster_level;
 					
@@ -4771,7 +4751,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target = spells[i].target_pos;
+				Vec3f target = spells[i].target_pos;
 				if ((spells[i].target>=0) && (inter.iobj[spells[i].target])) {
 					if (spells[i].target==0) target.y-=200.f;
 					else target.y+=inter.iobj[spells[i].target]->physics.cyl.height-50.f;
@@ -4809,12 +4789,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx  = new CRuneOfGuarding();
+			CRuneOfGuarding * pCSpellFx  = new CRuneOfGuarding();
 					
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;				
+				Vec3f target;				
 				target.x = inter.iobj[spells[i].caster]->pos.x;
 				target.y = inter.iobj[spells[i].caster]->pos.y;
 				target.z = inter.iobj[spells[i].caster]->pos.z;
@@ -4851,13 +4831,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx =  new CLevitate();
+			CSpellFx * pCSpellFx =  new CLevitate();
 							
 			if (pCSpellFx != NULL)
 			{
 				CLevitate *pLevitate=(CLevitate *)pCSpellFx;
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 
 				if (	(spells[i].caster==0)
 					||	(spells[i].target==0)	)
@@ -4927,7 +4907,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 3500;
 					
-			CSpellFx *pCSpellFx = new CCurePoison();
+			CCurePoison * pCSpellFx = new CCurePoison();
 							
 			if (pCSpellFx != NULL)
 			{
@@ -4973,11 +4953,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx =  new CRepelUndead();
+			CRepelUndead *pCSpellFx =  new CRepelUndead();
 			
 			if (pCSpellFx != NULL)
 			{
-				EERIE_3D target;
+				Vec3f target;
 				target.x=player.pos.x;
 				target.y=player.pos.y;
 				target.z=player.pos.z;
@@ -5002,17 +4982,17 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH, &spells[i].caster_pos);
 			spells[i].exist = true;
 			spells[i].tolive = 900000000;
-					
-			CSpellFx *pCSpellFx = NULL;
-
-			ARX_CHECK_LONG(spells[i].caster_level);   
+			
+			ARX_CHECK_LONG(spells[i].caster_level);
+			
+			CMultiPoisonProjectile * pCSpellFx;
 			pCSpellFx = new CMultiPoisonProjectile(std::max(static_cast<long>(spells[i].caster_level), 1L));
 
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target(0, 0, 0);
+				Vec3f target(0, 0, 0);
 				pCSpellFx->SetDuration((unsigned long) (8000));
 				float ang;
 
@@ -5044,7 +5024,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			float beta;
-			EERIE_3D target;
+			Vec3f target;
 
 			if (spells[i].caster==0)
 			{
@@ -5088,31 +5068,28 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx = NULL;
-					
-			pCSpellFx = new CRiseDead();
+			CRiseDead * pCSpellFx = new CRiseDead();
 					
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;					
 				{
 					pCSpellFx->Create(target, beta);
-					CRiseDead *pRiseDead = (CRiseDead*) pCSpellFx;
-					pRiseDead->SetDuration(2000, 500, 1800);
-					pRiseDead->SetColorBorder(0.5, 0.5, 0.5);
-					pRiseDead->SetColorRays1(0.83f, 0.73f, 0.63f);
-					pRiseDead->SetColorRays2(0,0,0);
-					pRiseDead->SetColorRays1(0.5, 0.5, 0.5);
-					pRiseDead->SetColorRays2(1, 0, 0);
+					pCSpellFx->SetDuration(2000, 500, 1800);
+					pCSpellFx->SetColorBorder(0.5, 0.5, 0.5);
+					pCSpellFx->SetColorRays1(0.83f, 0.73f, 0.63f);
+					pCSpellFx->SetColorRays2(0,0,0);
+					pCSpellFx->SetColorRays1(0.5, 0.5, 0.5);
+					pCSpellFx->SetColorRays2(1, 0, 0);
 
-					if (pRiseDead->lLightId == -1)
+					if (pCSpellFx->lLightId == -1)
 					{
-						pRiseDead->lLightId = GetFreeDynLight();
+						pCSpellFx->lLightId = GetFreeDynLight();
 					}
 
-					if (pRiseDead->lLightId != -1)
+					if (pCSpellFx->lLightId != -1)
 					{
-						long id=pRiseDead->lLightId;
+						long id=pCSpellFx->lLightId;
 						DynLight[id].exist=1;
 						DynLight[id].intensity = 1.3f;
 						DynLight[id].fallend=450.f;
@@ -5220,7 +5197,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if (duration>-1) spells[i].tolive=duration;
 
 
-			EERIE_3D target;
+			Vec3f target;
 
 			if (spells[i].caster==0)
 			{
@@ -5251,7 +5228,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
 
-			CSpellFx * pCSpellFx  = new CCreateField();
+			CCreateField * pCSpellFx  = new CCreateField();
 
 			if (pCSpellFx != NULL)
 			{
@@ -5276,16 +5253,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					MakeTemporaryIOIdent(io);						
 					SendInitScriptEvent(io);
 
-					CCreateField *pCreateField = (CCreateField *) pCSpellFx;
-					
-					pCreateField->Create(target, 0);
+					pCSpellFx->Create(target, 0);
 
-					pCreateField->SetDuration(spells[i].tolive);
-					pCreateField->lLightId = GetFreeDynLight();
+					pCSpellFx->SetDuration(spells[i].tolive);
+					pCSpellFx->lLightId = GetFreeDynLight();
 
-					if (pCreateField->lLightId != -1)
+					if (pCSpellFx->lLightId != -1)
 					{
-						long id=pCreateField->lLightId;
+						long id=pCSpellFx->lLightId;
 						DynLight[id].exist=1;
 						DynLight[id].intensity = 0.7f + 2.3f;
 						DynLight[id].fallend = 500.f;
@@ -5293,9 +5268,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						DynLight[id].rgb.r = 0.8f;
 						DynLight[id].rgb.g = 0.0f;
 						DynLight[id].rgb.b = 1.0f;
-						DynLight[id].pos.x = pCreateField->eSrc.x;
-						DynLight[id].pos.y = pCreateField->eSrc.y-150;
-						DynLight[id].pos.z = pCreateField->eSrc.z;
+						DynLight[id].pos.x = pCSpellFx->eSrc.x;
+						DynLight[id].pos.y = pCSpellFx->eSrc.y-150;
+						DynLight[id].pos.z = pCSpellFx->eSrc.z;
 					}
 
 					spells[i].pSpellFx = pCSpellFx;
@@ -5303,7 +5278,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 					if (flags & SPELLCAST_FLAG_RESTORE)
 					{
-						pCreateField->Update(4000);
+						pCSpellFx->Update(4000);
 					}
 				}
 				else spells[i].tolive=0;
@@ -5325,12 +5300,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 1;
 
-			CSpellFx *pCSpellFx = new CDisarmTrap();
+			CDisarmTrap * pCSpellFx = new CDisarmTrap();
 					
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 				target.x=player.pos.x;
 				target.y=player.pos.y;
 				target.z=player.pos.z;
@@ -5350,12 +5325,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						if(pCSpellFX) {
 							CRuneOfGuarding * crg=(CRuneOfGuarding *)pCSpellFX;
 							EERIE_SPHERE sphere;
-							sphere.origin.x=crg->eSrc.x;
-							sphere.origin.y=crg->eSrc.y;
-							sphere.origin.z=crg->eSrc.z;
+							sphere.origin=crg->eSrc;
 							sphere.radius=400.f;
 							
-							if(EEDistance3D(&target,&sphere.origin)<sphere.radius) {
+							if(sphere.contains(target)) {
 								spells[n].caster_level-=spells[i].caster_level;
 								if(spells[n].caster_level <= 0) {
 									spells[n].tolive=0;
@@ -5383,7 +5356,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			{
 				if (spells[io->spells_on[il]].type == SPELL_SLOW_DOWN)
 				{
-					bOk = false;
 					spells[i].exist = false;
 					return false;
 				}
@@ -5405,12 +5377,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].bDuration = true;
 				spells[i].fManaCostPerSecond = 1.2f;
 				
-				CSpellFx *pCSpellFx = new CSlowDown();
+				CSlowDown * pCSpellFx = new CSlowDown();
 				
 				if (pCSpellFx != NULL)
 				{
 					pCSpellFx->spellinstance=i;
-					EERIE_3D target;
+					Vec3f target;
 					target = spells[i].target_pos;
 					pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
 					pCSpellFx->SetDuration(spells[i].tolive);
@@ -5535,14 +5507,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			if ( duration > -1 ) spells[i].tolive = duration;
 			
-			CSpellFx *pCSpellFx = new CFireField();
+			CFireField * pCSpellFx = new CFireField();
 
 			if ( pCSpellFx != NULL )
 			{
 				pCSpellFx->spellinstance	= i;
-				CFireField *pFireField		= (CFireField *)pCSpellFx;
 
-				EERIE_3D target;
+				Vec3f target;
 
 				if ( spells[i].caster == 0 )
 				{					
@@ -5598,10 +5569,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					damages[spells[i].longinfo].pos.z	= target.z;
 				}
 
-				pFireField->Create( 200.f, &target, spells[i].tolive );
+				pCSpellFx->Create( 200.f, &target, spells[i].tolive );
 
 				spells[i].pSpellFx	= pCSpellFx;
-				spells[i].tolive	= pFireField->GetDuration();
+				spells[i].tolive	= pCSpellFx->GetDuration();
 				spells[i].snd_loop	= ARX_SOUND_PlaySFX( SND_SPELL_FIRE_FIELD_LOOP, &target, 1.0F, ARX_SOUND_PLAY_LOOPED );
 			}
 
@@ -5641,12 +5612,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].tolive = duration;
 			}
 
-			CSpellFx *pCSpellFx = new CIceField();
+			CIceField * pCSpellFx = new CIceField();
 					
 			if ( pCSpellFx != NULL )
 			{
 				pCSpellFx->spellinstance = i;
-				EERIE_3D target;
+				Vec3f target;
 
 				if ( spells[i].caster == 0 )						
 				{
@@ -5721,22 +5692,21 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			spells[i].exist = true;
 				
-			CSpellFx *pCSpellFx = new CLightning();
+			CLightning * pCSpellFx = new CLightning();
 				
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				CLightning *pL = (CLightning*) pCSpellFx;
-				EERIE_3D source, target;
+				Vec3f source, target;
 				source.x = 0;
 				source.y = 0;
 				source.z = 0;
 				target.x = 0;
 				target.y = 0;
 				target.z = -500;
-				pL->Create(source, target, MAKEANGLE(player.angle.b));
-				pL->SetDuration((long)(500*spells[i].caster_level));
-				pL->lSrc = 0;
+				pCSpellFx->Create(source, target, MAKEANGLE(player.angle.b));
+				pCSpellFx->SetDuration((long)(500*spells[i].caster_level));
+				pCSpellFx->lSrc = 0;
 					
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
@@ -5763,12 +5733,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (duration>-1) spells[i].tolive=duration;	
 
-			CSpellFx *pCSpellFx = new CConfuse();
+			CConfuse * pCSpellFx = new CConfuse();
 
 			if (pCSpellFx)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 				target.x=player.pos.x;
 				target.y=player.pos.y;
 				target.z=player.pos.z;
@@ -5908,7 +5878,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = 2000;
 			
 			spells[i].longinfo=ARX_DAMAGES_GetFree();
-			EERIE_3D target;
+			Vec3f target;
 			target.x=inter.iobj[spells[i].caster]->pos.x;
 			target.y=inter.iobj[spells[i].caster]->pos.y-60.f;
 
@@ -5957,7 +5927,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				for ( long j = -100 ; j < 100 ; j += 50 )
 				{	
 					float		rr;
-					EERIE_3D	pos,	dir;
+					Vec3f	pos,	dir;
 
 					rr		=	radians( (float) i_angle );
 					pos.x	=	target.x - EEsin(rr) * 360.f;  
@@ -5966,7 +5936,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					dir.x	=	pos.x - target.x;
 					dir.y	=	0;
 					dir.z	=	pos.z - target.z;
-					TRUEVector_Normalize( &dir );
+					dir.normalize();
 					dir.x	*=	60.f;
 					dir.y	*=	60.f;
 					dir.z	*=	60.f;
@@ -5976,7 +5946,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					rgb.g	=	0.1f + rnd() * ( 1.0f / 3 );
 					rgb.b	=	0.8f + rnd() * ( 1.0f / 5 );
 
-					EERIE_3D posi;
+					Vec3f posi;
 					posi.x	=	target.x;
 					posi.y	=	target.y + j * 2;
 					posi.z	=	target.z;
@@ -6097,7 +6067,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			else
 				spells[i].tolive = 2000000;
 			
-			EERIE_3D target;
+			Vec3f target;
 
 			if (spells[i].caster==0)
 			{
@@ -6134,20 +6104,19 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].fdata=0.f;
 
 			spells[i].target_pos = target;
-			CSpellFx *pCSpellFx = new CSummonCreature();
+			CSummonCreature * pCSpellFx = new CSummonCreature();
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				CSummonCreature *pSummon = (CSummonCreature*) pCSpellFx;
 					
-				pSummon->Create(target, MAKEANGLE(player.angle.b));
-					pSummon->SetDuration(2000, 500, 1500);
-					pSummon->SetColorBorder(1, 0, 0);
-					pSummon->SetColorRays1(0.93f, 0.93f, 0.63f);
-					pSummon->SetColorRays2(0,0,0);
-					pSummon->SetColorRays1(1, 0, 0);
-					pSummon->SetColorRays2(0.5f, 0.5f, 0);
+				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
+					pCSpellFx->SetDuration(2000, 500, 1500);
+					pCSpellFx->SetColorBorder(1, 0, 0);
+					pCSpellFx->SetColorRays1(0.93f, 0.93f, 0.63f);
+					pCSpellFx->SetColorRays2(0,0,0);
+					pCSpellFx->SetColorRays1(1, 0, 0);
+					pCSpellFx->SetColorRays2(0.5f, 0.5f, 0);
 					
 					pCSpellFx->lLightId = GetFreeDynLight();
 
@@ -6161,9 +6130,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						DynLight[id].rgb.r = 1.0f;
 						DynLight[id].rgb.g = 0.0f;
 						DynLight[id].rgb.b = 0.0f;
-						DynLight[id].pos.x = pSummon->eSrc.x;
-						DynLight[id].pos.y = pSummon->eSrc.y;
-						DynLight[id].pos.z = pSummon->eSrc.z;
+						DynLight[id].pos = pCSpellFx->eSrc;
 					}
 
 				spells[i].pSpellFx = pCSpellFx;
@@ -6198,26 +6165,25 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			else
 				spells[i].tolive = 4000;
 			
-			EERIE_3D target = inter.iobj[spells[i].target]->pos;			
+			Vec3f target = inter.iobj[spells[i].target]->pos;			
 			if(spells[i].target != 0) {
 				target.y -= 170.f;
 			}
 			
 			spells[i].target_pos = target;
-			CSpellFx *pCSpellFx = new CSummonCreature();
+			CSummonCreature * pCSpellFx = new CSummonCreature();
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				CSummonCreature *pSummon = (CSummonCreature*) pCSpellFx;
 					
-				pSummon->Create(target, MAKEANGLE(player.angle.b));
-				pSummon->SetDuration(2000, 500, 1500);
-				pSummon->SetColorBorder(1, 0, 0);
-				pSummon->SetColorRays1(0.93f, 0.93f, 0.63f);
-				pSummon->SetColorRays2(0,0,0);
-				pSummon->SetColorRays1(1, 0, 0);
-				pSummon->SetColorRays2(0.5f, 0.5f, 0);
+				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
+				pCSpellFx->SetDuration(2000, 500, 1500);
+				pCSpellFx->SetColorBorder(1, 0, 0);
+				pCSpellFx->SetColorRays1(0.93f, 0.93f, 0.63f);
+				pCSpellFx->SetColorRays2(0,0,0);
+				pCSpellFx->SetColorRays1(1, 0, 0);
+				pCSpellFx->SetColorRays2(0.5f, 0.5f, 0);
 					
 				pCSpellFx->lLightId = GetFreeDynLight();
 
@@ -6231,9 +6197,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					DynLight[id].rgb.r = 1.0f;
 					DynLight[id].rgb.g = 0.0f;
 					DynLight[id].rgb.b = 0.0f;
-					DynLight[id].pos.x = pSummon->eSrc.x;
-					DynLight[id].pos.y = pSummon->eSrc.y;
-					DynLight[id].pos.z = pSummon->eSrc.z;
+					DynLight[id].pos = pCSpellFx->eSrc;
 					
 				}
 
@@ -6262,12 +6226,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			else
 				spells[i].tolive = 1000000;
 
-			CSpellFx *pCSpellFx = new CNegateMagic();
+			CNegateMagic * pCSpellFx = new CNegateMagic();
 			
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 				target.x=player.pos.x;
 				target.y=player.pos.y;
 				target.z=player.pos.z;
@@ -6339,7 +6303,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					||	(!(tio->ioflags & IO_NPC))
 					||	(tio->show!=SHOW_FLAG_IN_SCENE)
 					||	(tio->ioflags & IO_FREEZESCRIPT)
-					||	(EEDistance3D(&tio->pos,&inter.iobj[spells[i].caster]->pos)>500.f)	
+					||	(distSqr(tio->pos, inter.iobj[spells[i].caster]->pos) > square(500.f))	
 					)
 					continue;
 
@@ -6394,17 +6358,15 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				DynLight[id].pos = spells[i].vsource;
 			}
 
-			CSpellFx *pCSpellFx = NULL;
-					
-
-			ARX_CHECK_LONG(spells[i].caster_level);   
+			ARX_CHECK_LONG(spells[i].caster_level); 
+			CMassLightning * pCSpellFx;
 			pCSpellFx = new CMassLightning(std::max(static_cast<long>(spells[i].caster_level), 1L));
 
 		
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 
 				if (spells[i].caster==0)
 				{
@@ -6464,7 +6426,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	(ioo->_npcdata->life>0.f)
 					&&	(ioo->show==SHOW_FLAG_IN_SCENE)
 					&&	(IsIOGroup(ioo,"DEMON"))	
-					&&	(EEDistance3D(&ioo->pos,&spells[i].caster_pos)<900.f)
+					&&	(distSqr(ioo->pos, spells[i].caster_pos) < square(900.f))
 					)
 				{
 					tcount++;
@@ -6481,13 +6443,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 1000;
 			
-			CSpellFx *pCSpellFx = NULL;
-			pCSpellFx = new CControlTarget();
+			CControlTarget * pCSpellFx = new CControlTarget();
 
 			if (pCSpellFx != NULL)
 			{
 				pCSpellFx->spellinstance=i;
-				EERIE_3D target;
+				Vec3f target;
 				target.x=player.pos.x;
 				target.y=player.pos.y;
 				target.z=player.pos.z;
@@ -6549,7 +6510,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					||	(!(tio->ioflags & IO_NPC))
 					||	((tio->ioflags & IO_NPC) && (tio->_npcdata->life<=0.f))
 					||	(tio->show!=SHOW_FLAG_IN_SCENE)
-					||	(EEDistance3D(&tio->pos,&inter.iobj[spells[i].caster]->pos)>500.f)	)
+					||	(distSqr(tio->pos, inter.iobj[spells[i].caster]->pos) > square(500.f))	)
 					continue;
 
 				tio->sfx_flag|=SFX_TYPE_YLSIDE_DEATH;
@@ -6719,7 +6680,7 @@ void ARX_SPELLS_Kill(long i) {
 					pd->move.z=2.f-4.f*rnd();
 					pd->siz=28.f;
 					pd->tolive=2000+(unsigned long)(float)(rnd()*4000.f);
-					pd->scale = EERIE_3D(12.f, 12.f, 12.f);
+					pd->scale = Vec3f(12.f, 12.f, 12.f);
 					pd->timcreation=spells[i].lastupdate;
 					pd->tc=tc4;
 					pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
@@ -6797,7 +6758,7 @@ void ARX_SPELLS_Kill(long i) {
 					&&	(inter.iobj[spells[i].longinfo2]->ioflags & IO_NOSAVE)	)
 				{
 					AddRandomSmoke(inter.iobj[spells[i].longinfo2],100);
-					EERIE_3D posi;
+					Vec3f posi;
 					posi = inter.iobj[spells[i].longinfo2]->pos;
 					posi.y-=100.f;
 					MakeCoolFx(&posi);
@@ -6852,9 +6813,9 @@ void ARX_SPELLS_Kill(long i) {
 
 EYEBALL_DEF eyeball;
 
-EERIE_3D cabalangle;
-EERIE_3D cabalpos;
-EERIE_3D cabalscale;
+Anglef cabalangle;
+Vec3f cabalpos;
+Vec3f cabalscale;
 EERIE_RGB cabalcolor;
 
 
@@ -7105,7 +7066,7 @@ void ARX_SPELLS_Update()
 							&&	(inter.iobj[spells[i].longinfo]->ioflags & IO_NOSAVE)	)
 						{
 							AddRandomSmoke(inter.iobj[spells[i].longinfo],100);
-							EERIE_3D posi = inter.iobj[spells[i].longinfo]->pos;
+							Vec3f posi = inter.iobj[spells[i].longinfo]->pos;
 							posi.y-=100.f;
 							MakeCoolFx(&posi);
 							long nn=GetFreeDynLight();
@@ -7349,7 +7310,7 @@ void ARX_SPELLS_Update()
 						float dist;
 
 						if (ii==spells[i].caster) dist=0;
-						else dist=EEDistance3D(&ch->eSrc,&inter.iobj[ii]->pos);
+						else dist=fdist(ch->eSrc, inter.iobj[ii]->pos);
 
 						if (dist<300.f)
 						{
@@ -7516,7 +7477,7 @@ void ARX_SPELLS_Update()
 						{
 							if (rnd()<0.9f)
 							{
-								EERIE_3D move(0, 0, 0);
+								Vec3f move(0, 0, 0);
 								float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
 
 								if (dd>spells[i].caster_level) dd=spells[i].caster_level;
@@ -7591,7 +7552,7 @@ void ARX_SPELLS_Update()
 						if (ValidIONum(spells[i].target))
 						{
 							pBless->eSrc = inter.iobj[spells[i].target]->pos;
-							EERIE_3D angle(0, 0, 0);
+							Anglef angle = Anglef::ZERO;
 
 							if (spells[i].target==0)
 								angle.b=player.angle.b;	
@@ -7613,13 +7574,11 @@ void ARX_SPELLS_Update()
 			if (spells[i].pSpellFx)
 			{
 				CCurse * curse=(CCurse *)spells[i].pSpellFx;
-				EERIE_3D target(0, 0, 0);
+				Vec3f target(0, 0, 0);
 					
 				if ((spells[i].target>=0) && (inter.iobj[spells[i].target]))
 				{
-					target.x=inter.iobj[spells[i].target]->pos.x;
-					target.y=inter.iobj[spells[i].target]->pos.y;
-					target.z=inter.iobj[spells[i].target]->pos.z;
+					target = inter.iobj[spells[i].target]->pos;
 
 					if (spells[i].target==0) target.y-=200.f;
 					else target.y+=inter.iobj[spells[i].target]->physics.cyl.height-30.f;
@@ -7630,8 +7589,8 @@ void ARX_SPELLS_Update()
 				ARX_CHECK_ULONG(FrameDiff);
 				curse->Update(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
 
-				
-				curse->Render(&target);
+				curse->eTarget = target;
+				curse->Render();
 				GRenderer->SetCulling(Renderer::CullNone);
 			}
 
@@ -7714,7 +7673,7 @@ void ARX_SPELLS_Update()
 			case SPELL_LEVITATE:
 			{
 				CLevitate *pLevitate=(CLevitate *)spells[i].pSpellFx;
-				EERIE_3D target;
+				Vec3f target;
 
 				if (spells[i].target==0)
 				{
@@ -7825,7 +7784,7 @@ void ARX_SPELLS_Update()
 
 									SendIOScriptEvent(io,SM_SUMMONED);
 										
-									EERIE_3D pos;
+									Vec3f pos;
 										{
 											pos.x=prise->eSrc.x+rnd()*100.f-50.f;
 											pos.y=prise->eSrc.y+100+rnd()*100.f-50.f;
@@ -7850,7 +7809,7 @@ void ARX_SPELLS_Update()
 						  if (rnd()>0.95f) 
 							{
 								CRiseDead *pRD = (CRiseDead*)pCSpellFX;
-								EERIE_3D pos;
+								Vec3f pos;
 								pos.x = pRD->eSrc.x;
 								pos.y = pRD->eSrc.y;
 								pos.z = pRD->eSrc.z;
@@ -8095,7 +8054,7 @@ void ARX_SPELLS_Update()
 				
 					long lvl;
 					float rr,r2;
-					EERIE_3D pos;
+					Vec3f pos;
 
 					if (rnd()>0.8f)
 					{					
@@ -8149,7 +8108,7 @@ void ARX_SPELLS_Update()
 					{
 						if (rnd()>0.7f) 
 						{
-							EERIE_3D pos;
+							Vec3f pos;
 							CSummonCreature *pSummon;
 							pSummon= (CSummonCreature *)spells[i].pSpellFx;
 
@@ -8291,7 +8250,7 @@ void ARX_SPELLS_Update()
 
 								SendIOScriptEvent(io,SM_SUMMONED);
 								
-											EERIE_3D pos;
+											Vec3f pos;
 								
 								for (long j=0;j<3;j++)
 								{
@@ -8321,7 +8280,7 @@ void ARX_SPELLS_Update()
 					if (!ARXPausedTimer)
 						if (rnd()>0.7f) 
 						{
-							EERIE_3D pos;
+							Vec3f pos;
 							CSummonCreature *pSummon;
 							pSummon= (CSummonCreature *)spells[i].pSpellFx;
 
@@ -8407,13 +8366,13 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Render();
 				}
 				
-						EERIE_3D _source = spells[i].vsource;
+						Vec3f _source = spells[i].vsource;
 						float _fx;
 						_fx = 0.5f;
 						unsigned long _gct;
 						_gct = 0;
 
-				EERIE_3D position;
+				Vec3f position;
 
 				spells[i].lastupdate=tim;
 
@@ -8469,7 +8428,7 @@ void ARX_SPELLS_Update()
 
 					if ((LASTTELEPORT<0.5f) && (TELEPORT>=0.5f))
 					{
-						EERIE_3D pos;
+						Vec3f pos;
 						
 						pos.x=lastteleport.x;
 						pos.y=lastteleport.y;

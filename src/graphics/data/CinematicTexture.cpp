@@ -44,10 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 const int	MaxW = 256;
 const int	MaxH = 256;
 
-/*-----------------------------------------------------------*/
-extern HWND HwndPere;
-extern char DirectoryChoose[];
-
+using std::string;
 
 void FreeGrille(CinematicGrid * grille);
 
@@ -77,7 +74,7 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 	grille->nbuvsmalloc = grille->nbvertexs = (nbx + 1) * (nby + 1);
 	grille->nbfaces = (nbx * nby) << 1;
 	grille->nbindsmalloc = grille->nbfaces;
-	grille->vertexs = (EERIE_3D *)malloc(grille->nbvertexs * sizeof(EERIE_3D));
+	grille->vertexs = (Vec3f *)malloc(grille->nbvertexs * sizeof(Vec3f));
 	grille->uvs = (C_UV *)malloc(grille->nbvertexs * sizeof(C_UV));
 	grille->inds = (C_IND *)malloc(grille->nbindsmalloc * sizeof(C_IND));
 
@@ -89,7 +86,7 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 	float depx = -tx;
 	float depy = -ty;
  
-	EERIE_3D * v = grille->vertexs;
+	Vec3f * v = grille->vertexs;
 	float olddyy = olddy;
 
 	while (oldnby--)

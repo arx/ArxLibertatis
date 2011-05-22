@@ -69,10 +69,10 @@ void ARX_FOGS_KillSelected();
 void ARX_FOGS_KillByIndex(long num);
 void ARX_FOGS_Select(long n);
 void ARX_FOGS_UnselectAll();
-void ARX_FOGS_TranslateSelected(EERIE_3D * trans);
+void ARX_FOGS_TranslateSelected(Vec3f * trans);
 void ARX_FOGS_Clear();
 void ARX_FOGS_FirstInit();
 void ARX_FOGS_TimeReset();
-void AddPoisonFog(EERIE_3D * pos, float power);
+void AddPoisonFog(Vec3f * pos, float power);
 
 #endif

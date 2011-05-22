@@ -59,12 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
-#include "core/Time.h"
 #include "core/Application.h"
-
 #include "graphics/GraphicsUtility.h"
-
-#include "io/IO.h"
+#include "io/Logger.h"
 
 //-----------------------------------------------------------------------------
 // Name: CD3DFramework7()
@@ -119,7 +116,7 @@ HRESULT CD3DFramework7::DestroyObjects()
 	if (GDevice)
 	{
 		if (0 < (nD3D = GDevice->Release()))
-			DEBUG_MSG("Error: D3DDevice object is still referenced!");
+			LogWarning << "D3DDevice object is still referenced: " << nD3D;
 
 		GDevice = NULL;
 	}
@@ -134,7 +131,7 @@ HRESULT CD3DFramework7::DestroyObjects()
 	{
 		// Do a safe check for releasing DDRAW. RefCount must be zero.
 		if (0 < (nDD = m_pDD->Release()))
-			DEBUG_MSG("Error: DDraw object is still referenced!");
+			LogWarning << "DDraw object is still referenced: " << nDD;
 	}
 
 	m_pDD = NULL;
@@ -276,7 +273,7 @@ HRESULT CD3DFramework7::CreateDirectDraw(GUID * pDriverGUID, DWORD dwFlags)
 	if (FAILED(DirectDrawCreateEx(pDriverGUID, (VOID **)&m_pDD,
 	                              IID_IDirectDraw7, NULL)))
 	{
-		DEBUG_MSG("Could not create DirectDraw");
+		LogWarning << "Could not create DirectDraw";
 		return D3DFWERR_NODIRECTDRAW;
 	}
 
@@ -292,7 +289,7 @@ HRESULT CD3DFramework7::CreateDirectDraw(GUID * pDriverGUID, DWORD dwFlags)
 
 	if (FAILED(m_pDD->SetCooperativeLevel(m_hWnd, dwCoopFlags)))
 	{
-		DEBUG_MSG("Couldn't set cooperative level");
+		LogWarning << "Couldn't set cooperative level";
 		return D3DFWERR_COULDNTSETCOOPLEVEL;
 	}
 
@@ -335,7 +332,7 @@ HRESULT CD3DFramework7::CreateFullscreenBuffers(DDSURFACEDESC2 * pddsd)
 	                                 pddsd->ddpfPixelFormat.dwRGBBitCount,
 	                                 pddsd->dwRefreshRate, dwModeFlags)))
 	{
-		DEBUG_MSG("Unable to set display mode");
+		LogWarning << "Unable to set display mode";
 		return D3DFWERR_BADDISPLAYMODE;
 	}
 
@@ -359,12 +356,12 @@ HRESULT CD3DFramework7::CreateFullscreenBuffers(DDSURFACEDESC2 * pddsd)
 	// Create the primary surface
 	if (FAILED(hr = m_pDD->CreateSurface(&ddsd, &m_pddsFrontBuffer, NULL)))
 	{
-		DEBUG_MSG("Error: Can't create primary surface");
+		LogWarning << "Can't create primary surface";
 
 		if (hr != DDERR_OUTOFVIDEOMEMORY)
 			return D3DFWERR_NOPRIMARY;
 
-		DEBUG_MSG("Error: Out of video memory");
+		LogWarning << "Out of video memory";
 		return DDERR_OUTOFVIDEOMEMORY;
 	}
 
@@ -374,7 +371,7 @@ HRESULT CD3DFramework7::CreateFullscreenBuffers(DDSURFACEDESC2 * pddsd)
 	if (FAILED(hr = m_pddsFrontBuffer->GetAttachedSurface(&ddscaps,
 	                &m_pddsBackBuffer)))
 	{
-		DEBUG_ERR(hr, "Error: Can't get the backbuffer");
+		LogError << "Error: Can't get the backbuffer " << hr;
 		return D3DFWERR_NOBACKBUFFER;
 	}
 
@@ -390,7 +387,7 @@ HRESULT CD3DFramework7::CreateFullscreenBuffers(DDSURFACEDESC2 * pddsd)
 		if (FAILED(hr = m_pddsBackBuffer->GetAttachedSurface(&ddscaps,
 		                &m_pddsBackBufferLeft)))
 		{
-			DEBUG_ERR(hr, "Error: Can't get the left backbuffer");
+			LogError << "Can't get the left backbuffer" << hr;
 			return D3DFWERR_NOBACKBUFFER;
 		}
 
@@ -430,12 +427,12 @@ HRESULT CD3DFramework7::CreateWindowedBuffers()
 
 	if (FAILED(hr = m_pDD->CreateSurface(&ddsd, &m_pddsFrontBuffer, NULL)))
 	{
-		DEBUG_MSG("Error: Unable to create primary surface");
+		LogWarning << "Unable to create primary surface: " << hr;
 
 		if (hr != DDERR_OUTOFVIDEOMEMORY)
 			return D3DFWERR_NOPRIMARY;
 
-		DEBUG_MSG("Error: Out of video memory");
+		LogWarning << "Out of video memory";
 		return DDERR_OUTOFVIDEOMEMORY;
 	}
 
@@ -444,7 +441,7 @@ HRESULT CD3DFramework7::CreateWindowedBuffers()
 
 	if (FAILED(hr = m_pDD->CreateClipper(0, &pcClipper, NULL)))
 	{
-		DEBUG_MSG("Error: Unable to create clipper");
+		LogWarning << "Unable to create clipper";
 		return D3DFWERR_NOCLIPPER;
 	}
 
@@ -463,12 +460,12 @@ HRESULT CD3DFramework7::CreateWindowedBuffers()
 
 	if (FAILED(hr = m_pDD->CreateSurface(&ddsd, &m_pddsBackBuffer, NULL)))
 	{
-		DEBUG_ERR(hr, "Error: Unable to create the backbuffer");
+		LogError << "Unable to create the backbuffer: " << hr;
 
 		if (hr != DDERR_OUTOFVIDEOMEMORY)
 			return D3DFWERR_NOBACKBUFFER;
 
-		DEBUG_MSG("Error: Out of video memory");
+		LogWarning << "Out of video memory";
 		return DDERR_OUTOFVIDEOMEMORY;
 	}
 
@@ -491,7 +488,7 @@ HRESULT CD3DFramework7::CreateDirect3D(GUID * pDeviceGUID)
 	// Query DirectDraw for access to Direct3D
 	if (FAILED(m_pDD->QueryInterface(IID_IDirect3D7, (VOID **)&m_pD3D)))
 	{
-		DEBUG_MSG("Unable to Access Direct3D interface");
+		LogWarning << "Unable to Access Direct3D interface";
 		return D3DFWERR_NODIRECT3D;
 	}
 
@@ -499,7 +496,7 @@ HRESULT CD3DFramework7::CreateDirect3D(GUID * pDeviceGUID)
 	if (FAILED(m_pD3D->CreateDevice(*pDeviceGUID, m_pddsBackBuffer,
 	                                &GDevice)))
 	{
-		DEBUG_MSG("Unable to create D3DDevice");
+		LogWarning << "Unable to create D3DDevice";
 		return D3DFWERR_NO3DDEVICE;
 	}
 
@@ -603,7 +600,7 @@ HRESULT CD3DFramework7::CreateZBuffer(GUID * pDeviceGUID)
 	}
 
 	free((void *)zbiZBufferInfo.pddpfPixelFormat);
-	DEBUG_MSG("Error: SetRenderTarget() failed after attaching zbuffer!");
+	LogWarning << "SetRenderTarget() failed after attaching zbuffer!";
 	return D3DFWERR_NOZBUFFER;
 }
 

@@ -74,17 +74,17 @@ extern TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS];
 extern EERIE_3DOBJ * cabal;
 extern EERIE_3DOBJ * cameraobj;
 extern EERIE_3DOBJ * markerobj;
-extern EERIE_3D lastteleport;
+extern Vec3f lastteleport;
 extern EERIE_CAMERA bookcam;
 extern HINSTANCE hInstance;
 extern HINSTANCE hInst;
-extern EERIE_S2D DANAEMouse;
+extern Vec2s DANAEMouse;
 extern EERIE_CAMERA subj, mapcam;
-extern EERIE_3D moveto;
-extern EERIE_S2D STARTDRAG;
+extern Vec3f moveto;
+extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
 extern EERIE_3DOBJ * nodeobj;
-extern EERIE_3D Mscenepos;
+extern Vec3f Mscenepos;
 extern EERIE_MULTI3DSCENE * mse;
 extern EERIE_CAMERA * Kam;
 extern EERIE_BACKGROUND DefaultBkg;
@@ -101,11 +101,26 @@ extern long	FADEDURATION;
 extern long	FADEDIR;
 extern float FrameDiff;
 extern long FirstFrame;
+#ifdef BUILD_EDITOR
 extern long EDITMODE;
 extern long EDITION;
-extern long DEBUGNPCMOVE;
-extern long SHOW_TORCH;
+extern long MOULINEX;
 extern long USE_COLLISIONS;
+extern long WILLLOADLEVEL; // Is a LoadLevel command waiting ?
+extern long WILLSAVELEVEL; // Is a SaveLevel command waiting ?
+extern long NODIRCREATION; // No IO Directory Creation ?
+extern HWND MESH_REDUCTION_WINDOW;
+extern const char * GTE_TITLE;
+extern char * GTE_TEXT;
+extern long GTE_SIZE;
+extern long CHANGE_LEVEL_PROC_RESULT;
+extern long DEBUGNPCMOVE;
+extern long GAME_EDITOR;
+extern long TRUEFIGHT;
+#else
+const long EDITMODE = 0;
+#endif
+extern long SHOW_TORCH;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 extern long ADDED_IO_NOT_SAVED;
@@ -113,12 +128,11 @@ extern long DANAESIZX;
 extern long DANAESIZY;
 extern long DANAECENTERX;
 extern long DANAECENTERY;
-extern short Cross;
 extern unsigned long FADESTART;
 extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
-extern long DEBUG1ST;
+extern long LOADEDD;
 
 struct QUAKE_FX_STRUCT {
 	float intensity;
@@ -169,10 +183,12 @@ void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
 void ARX_SetAntiAliasing();
 
+#ifdef BUILD_EDITOR
 // TODO move to Script.h?
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+#endif
 
-INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, bool mustlock = false);
+INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock = false);
 
 #endif // ARX_CORE_CORE_H

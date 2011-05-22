@@ -309,7 +309,7 @@ aalError DSoundSource::setPan(float p) {
 	return AAL_OK;
 }
 
-aalError DSoundSource::setPosition(const Vector3f & position) {
+aalError DSoundSource::setPosition(const Vec3f & position) {
 	
 	if(!lpds3db || !(channel.flags & FLAG_POSITION)) {
 		return AAL_ERROR_INIT;
@@ -324,7 +324,7 @@ aalError DSoundSource::setPosition(const Vector3f & position) {
 	return AAL_OK;
 }
 
-aalError DSoundSource::setVelocity(const Vector3f & velocity) {
+aalError DSoundSource::setVelocity(const Vec3f & velocity) {
 	
 	if(!lpds3db || !(channel.flags & FLAG_VELOCITY)) {
 		return AAL_ERROR_INIT;
@@ -339,7 +339,7 @@ aalError DSoundSource::setVelocity(const Vector3f & velocity) {
 	return AAL_OK;
 }
 
-aalError DSoundSource::setDirection(const Vector3f & direction) {
+aalError DSoundSource::setDirection(const Vec3f & direction) {
 	
 	if(!lpds3db || !(channel.flags & FLAG_DIRECTION)) {
 		return AAL_ERROR_INIT;
@@ -521,7 +521,7 @@ bool DSoundSource::isTooFar() {
 	float max;
 	lpds3db->GetMaxDistance(&max);
 	
-	Vector3f listener_pos;
+	Vec3f listener_pos;
 	if(channel.flags & FLAG_RELATIVE) {
 		listener_pos.x = listener_pos.y = listener_pos.z = 0.0F;
 	} else {
@@ -530,17 +530,17 @@ bool DSoundSource::isTooFar() {
 		listener_pos.x = pos.x, listener_pos.y = pos.y, listener_pos.z = pos.z;
 	}
 	
-	float dist = channel.position.GetDistanceFrom(listener_pos);
+	float d = dist(channel.position, listener_pos);
 	
 	if(tooFar) {
-		if(dist > max) {
+		if(d > max) {
 			return true;
 		}
 		tooFar = false;
 		lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
 		return false;
 	} else {
-		if(dist <= max) {
+		if(d <= max) {
 			return false;
 		}
 		tooFar = true;

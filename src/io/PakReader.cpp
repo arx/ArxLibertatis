@@ -140,6 +140,7 @@ bool PakReader::Open(const std::string& name) {
 	char * newfat = new char[fat_size];
 	if(fread(newfat, fat_size, 1, newfile) != 1) {
 		LogError << "error reading FAT";
+		delete[] newfat;
 		fclose(newfile);
 		return false;
 	}

@@ -53,16 +53,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "graphics/Draw.h"
-#include "scene/Light.h"
-#include "graphics/Math.h"
 
-#include "graphics/effects/SpellEffects.h"
+#include "graphics/spells/Spells08.h"
+
+#include "core/GameTime.h"
+
 #include "game/Damage.h"
+#include "game/Spells.h"
+#include "game/Spells.h"
+
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells08.h"
-#include "game/Spells.h"
-#include "core/Time.h"
+
+#include "scene/Light.h"
 
 //-----------------------------------------------------------------------------
 CExplosion::~CExplosion()
@@ -153,9 +159,9 @@ void CExplosion::Update(unsigned long _ulTime)
 //-----------------------------------------------------------------------------
 void CExplosion::ExplosionAddParticule(int num, D3DTLVERTEX * v, TextureContainer * tp)
 {
-	if (DoSphericDamage((EERIE_3D *)v, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
+	if (DoSphericDamage((Vec3f *)v, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
 	{
-		EERIE_3D hit;
+		Vec3f hit;
 		hit.x = v->sx;
 		hit.y = v->sy;
 		hit.z = v->sz;
@@ -198,9 +204,9 @@ void CExplosion::ExplosionAddParticule(int num, D3DTLVERTEX * v, TextureContaine
 }
 
 //-----------------------------------------------------------------------------
-void CExplosion::Collision(int num, EERIE_3D * v, EERIE_3D * dir)
+void CExplosion::Collision(int num, Vec3f * v, Vec3f * dir)
 {
-	EERIE_3D	hit;
+	Vec3f	hit;
 	EERIEPOLY	* tp = NULL;
 
 	if (EERIELaunchRay3(v, dir, &hit, tp, 1) != 0)	//@seb: ray cast more accurate
@@ -223,7 +229,7 @@ float CExplosion::Render()
 
 	//calcul du disque
 	D3DTLVERTEX d3dvs, *d3dv;
-	EERIE_3D	* vertex;
+	Vec3f	* vertex;
 	int			nb, col, col2;
 	float		rin;
 
@@ -380,7 +386,7 @@ float CExplosion::Render()
 
 				if (tactif[nb] >= 0)
 				{
-					EERIE_3D pos, dir;
+					Vec3f pos, dir;
 					pos.x = d3dvs2.sx;
 					pos.y = d3dvs2.sy;
 					pos.z = d3dvs2.sz;

@@ -38,7 +38,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Config.h"
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Localisation.h"
 
 #include "gui/Menu.h"
@@ -46,12 +46,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
+#include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Texture.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/font/Font.h"
 
 #include "io/Logger.h"
 
@@ -65,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::wistringstream;
 using std::min;
 using std::max;
+using std::string;
 
 int newTextureSize;
 int newWidth;
@@ -96,9 +99,6 @@ extern bool bForceReInitAllTexture;
 extern long WILL_RELOAD_ALL_TEXTURES;
 
 extern long FINAL_RELEASE;
-
-extern long GAME_EDITOR;
-extern long ARX_DEMO;
 
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
@@ -136,7 +136,6 @@ CMenuElementText *pLoadConfirm=NULL;
 CMenuSliderText *pMenuSliderResol=NULL;
 CMenuSliderText *pMenuSliderBpp=NULL;
 CMenuSliderText *pMenuSliderTexture=NULL;
-CMenuCheckButton *pMenuCheckButtonBump=NULL;
 
 float ARXTimeMenu;
 float ARXOldTimeMenu;
@@ -423,7 +422,7 @@ bool MENU_NoActiveWindow()
 	return false;
 }
 
-void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
+void FontRenderText(Font* _pFont, Vec3f pos, const std::string& _pText, Color _c)
 {
 	if(pTextManage)
 	{
@@ -462,11 +461,11 @@ void Check_Apply()
 		}
 		else
 		{
-			if(((CMenuElementText*)pMenuElementApply)->lColor!=RGB(127,127,127))
+			if(((CMenuElementText*)pMenuElementApply)->lColor!=(long)Color(127,127,127))
 			{
 				pMenuElementApply->SetCheckOff();
 				((CMenuElementText*)pMenuElementApply)->lOldColor=((CMenuElementText*)pMenuElementApply)->lColor;
-				((CMenuElementText*)pMenuElementApply)->lColor=RGB(127,127,127);
+				((CMenuElementText*)pMenuElementApply)->lColor=Color(127,127,127);
 			}
 		}
 	}
@@ -619,7 +618,7 @@ bool Menu2_Render()
 		eM=pMenu->eOldMenuWindowState;
 	}
 
-	long lColor = RGB(232, 204, 142);
+	long lColor = Color(232, 204, 142);
 
 	if(    (!pMenu)|| ((pMenu)&&(pMenu->bReInitAll)) )
 	{
@@ -666,7 +665,7 @@ bool Menu2_Render()
 			else\
 			{\
 				me->SetCheckOff();\
-				me->lColor=RGB(127,127,127);\
+				me->lColor=Color(127,127,127);\
 			}\
 		}\
 		pMenu->AddMenuElement(me);\
@@ -682,7 +681,7 @@ bool Menu2_Render()
 #undef MACRO_MENU_PRINCIPALE
 		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
-		me->lColor=RGB(127,127,127);
+		me->lColor=Color(127,127,127);
 		pMenu->AddMenuElement(me);
 	}
 
@@ -701,7 +700,7 @@ bool Menu2_Render()
 			else
 			{
 				pMenuElementResume->SetCheckOff();
-				((CMenuElementText*)pMenuElementResume)->lColor=RGB(127,127,127);
+				((CMenuElementText*)pMenuElementResume)->lColor=Color(127,127,127);
 			}
 		}
 
@@ -855,7 +854,7 @@ bool Menu2_Render()
 					if (!bBOOL)
 					{
 						me->SetCheckOff();
-						((CMenuElementText*)me)->lColor=RGB(127,127,127);
+						((CMenuElementText*)me)->lColor=Color(127,127,127);
 					}
 
 					pWindowMenuConsole->AddMenuCenter(me);
@@ -987,7 +986,7 @@ bool Menu2_Render()
 						pLoadConfirm=(CMenuElementText*)me;
 						me->SetCheckOff();
 						((CMenuElementText*)me)->lOldColor=((CMenuElementText*)me)->lColor;
-						((CMenuElementText*)me)->lColor=RGB(127,127,127);
+						((CMenuElementText*)me)->lColor=Color(127,127,127);
 
 						pWindowMenuConsole->AddMenu(me);
 						pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
@@ -1068,7 +1067,7 @@ bool Menu2_Render()
 									
 									tex += tex4;
 									
-									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, Color(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 									me->SetCheckOff();
 
 									me->lData=iI;
@@ -1253,7 +1252,7 @@ bool Menu2_Render()
 							bool bExist=false;
 							std::vector<int>::iterator ii;
 
-							for(ii=vBpp.begin();ii!=vBpp.end();ii++)
+							for(ii=vBpp.begin();ii!=vBpp.end();++ii)
 							{
 								if (ARX_CAST_UINT(*ii) == danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount)
 								{
@@ -1319,7 +1318,7 @@ bool Menu2_Render()
 
 					std::vector<int>::iterator ii;
 
-					for(ii=vBpp.begin();ii!=vBpp.end();ii++)
+					for(ii=vBpp.begin();ii!=vBpp.end();++ii)
 					{
 						std::stringstream bpp;
 						bpp << *ii;
@@ -1673,7 +1672,7 @@ bool Menu2_Render()
 						if((!b)||(c<0))\
 						{\
 							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
 						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
@@ -1681,7 +1680,7 @@ bool Menu2_Render()
 						if(d<0)\
 						{\
 							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
 						pc->Move(0,fControlPosY);\
@@ -1702,7 +1701,7 @@ bool Menu2_Render()
 						if((!b)||(c<0))\
 						{\
 							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
 						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
@@ -1710,7 +1709,7 @@ bool Menu2_Render()
 						if(d<0)\
 						{\
 							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
 						pc->Move(0,fControlPosY);\
@@ -1992,8 +1991,9 @@ bool Menu2_Render()
 			CINEMASCOPE = 0;
 			break;
 		case AMCM_OFF:
-
+#ifdef BUILD_EDITOR
 			GAME_EDITOR = 0;
+#endif
 			ARX_MENU_Clicked_QUIT_GAME();
 			iFadeAction=-1;
 			bFadeInOut=false;
@@ -2094,14 +2094,14 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 	ARX_CHECK_LONG(_fPosX);
 	ARX_CHECK_LONG(_fPosY);
 
-	Vector2i textSize = _pFont->GetTextSize(_pText);
+	Vec2i textSize = _pFont->GetTextSize(_pText);
 	rZone.left = ARX_CLEAN_WARN_CAST_LONG(_fPosX);
 	rZone.top = ARX_CLEAN_WARN_CAST_LONG(_fPosY);
 	rZone.right  = rZone.left + textSize.x;
 	rZone.bottom = rZone.top + textSize.y;
 
 	lColor=_lColor;
-	lColorHighlight=lOldColor=RGB(255, 255, 255);
+	lColorHighlight=lOldColor=Color(255, 255, 255);
 
 	fSize=_fSize;
 	pRef=this;
@@ -2123,7 +2123,7 @@ void CMenuElementText::SetText( const std::string& _pText )
 {
 	lpszText = _pText;
 
-	Vector2i textSize = pFont->GetTextSize(_pText);
+	Vec2i textSize = pFont->GetTextSize(_pText);
 
 	rZone.right  = textSize.x + rZone.left;
 	rZone.bottom = textSize.y + rZone.top;
@@ -2342,13 +2342,13 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			}
 
 			pLoadConfirm->SetCheckOff();
-			pLoadConfirm->lColor=RGB( 127, 127, 127 );
+			pLoadConfirm->lColor=Color( 127, 127, 127 );
 			}
 		}
 		break;
 	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK:
 		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor=RGB(127,127,127);
+		pLoadConfirm->lColor=Color(127,127,127);
 		break;
 	// MENUSAVEQUEST
 	case BUTTON_MENUEDITQUEST_SAVE:
@@ -2597,7 +2597,7 @@ void CMenuElementText::Render()
 
 	if(bNoMenu) return;
 
-	EERIE_3D ePos;
+	Vec3f ePos;
 	ePos.x = (float) rZone.left;
 	ePos.y = (float) rZone.top;
 	ePos.z = 1;
@@ -2623,7 +2623,7 @@ void CMenuElementText::RenderMouseOver()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	EERIE_3D ePos;
+	Vec3f ePos;
 	ePos.x = (float)rZone.left;
 	ePos.y = (float)rZone.top;
 	ePos.z = 1;
@@ -2680,7 +2680,7 @@ void CMenuElementText::RenderMouseOver()
 
 //-----------------------------------------------------------------------------
 
-Vector2i CMenuElementText::GetTextSize() const
+Vec2i CMenuElementText::GetTextSize() const
 {
 	return pFont->GetTextSize(lpszText);
 }
@@ -2737,24 +2737,16 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	CMenuZone * iR=pMenuAllZone->CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
-	bool bReturn=false;
-
 	if(pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0)) {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
 			pZoneClick->OnMouseClick(1);
-			bReturn=true;
+			return pZoneClick->eMenuState;
 		}
 	} else {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
 		}
-	}
-
-	//GESTION DES TOUCHES
-	if(bReturn)
-	{
-		return pZoneClick->eMenuState;
 	}
 
 	return NOP;
@@ -2898,7 +2890,7 @@ CMenuAllZone::CMenuAllZone()
 
 	vector<CMenuZone*>::iterator i;
 
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
+	for(i=vMenuZone.begin();i!=vMenuZone.end();++i)
 	{
 		CMenuZone *zone=*i;
 		delete zone;
@@ -2926,7 +2918,7 @@ CMenuZone * CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
 {
 	std::vector<CMenuZone*>::iterator i;
 
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
+	for(i=vMenuZone.begin();i!=vMenuZone.end();++i)
 	{
 		CMenuZone *zone=*i;
 
@@ -2949,7 +2941,7 @@ CMenuZone * CMenuAllZone::GetZoneNum(int _iNum)
 	vector<CMenuZone*>::iterator i;
 	int iNum=0;
 
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
+	for(i=vMenuZone.begin();i!=vMenuZone.end();++i)
 	{
 		CMenuZone *zone=*i;
 
@@ -3080,7 +3072,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
 	}
 
-	Vector2i textSize(0,0);
+	Vec2i textSize(0,0);
 
 	if ( pText )
 	{
@@ -3104,7 +3096,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, textSize.y) );
 	pRef=this;
 
-	if (_pTex2)
+	if (_pTex2) // TODO should this be _pTex1?
 	{
 		float rZoneR = ( RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f );
 		ARX_CHECK_LONG( rZoneR );
@@ -3268,7 +3260,7 @@ void CMenuCheckButton::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	if (vTex.size())
+	if (!vTex.empty())
 	{
 		TextureContainer *pTex = vTex[iState];
 
@@ -3641,18 +3633,12 @@ void CWindowMenuConsole::AddMenuCenter( CMenuElement * _pMenuElement )
 		ARX_CHECK( !( 0 < iI ) );
 	}
 
-
-
 	for( int iJ = 0 ; iJ < iI ; iJ++ )
 	{
 		CMenuZone *pZone = MenuAllZone.GetZoneNum( iJ );
-		iDy        =    pZone->rZone.bottom - pZone->rZone.top;
-		iDepY    +=    iDy + iInterligne;
+		iDepY += pZone->rZone.bottom - pZone->rZone.top + iInterligne;
 		pZone->Move( 0, dy );
 	}
-
-	iDx    =    _pMenuElement->rZone.right - _pMenuElement->rZone.left;
-	iDy    =    _pMenuElement->rZone.bottom - _pMenuElement->rZone.top;
 
 	_pMenuElement->Move( dx, iDepY );
 
@@ -3855,7 +3841,7 @@ void CWindowMenuConsole::UpdateText()
 
 	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
 	{
-		Vector2i textSize = ((CMenuElementText*)pZoneClick)->pFont->GetTextSize("|");
+		Vec2i textSize = ((CMenuElementText*)pZoneClick)->pFont->GetTextSize("|");
 		pZoneClick->rZone.bottom += textSize.y;
 	}
 
@@ -4357,9 +4343,9 @@ int CWindowMenuConsole::Render()
 		case GETTOUCH_TIME:
 			{
 				if(bFrameOdd)
-					((CMenuElementText*)pZoneClick)->lColorHighlight=RGB(255.f, 0, 0);
+					((CMenuElementText*)pZoneClick)->lColorHighlight=Color(255.f, 0, 0);
 				else
-					((CMenuElementText*)pZoneClick)->lColorHighlight=RGB(50.f, 0, 0);
+					((CMenuElementText*)pZoneClick)->lColorHighlight=Color(50.f, 0, 0);
 
 				bool bOldTouch=pGetInfoDirectInput->bTouch;
 
@@ -4706,9 +4692,9 @@ CMenuButton::~CMenuButton() {
 
 //-----------------------------------------------------------------------------
 
-void CMenuButton::SetPos(int _iX,int _iY)
+void CMenuButton::SetPos(float _iX,float _iY)
 {
-	CMenuZone::SetPos(ARX_CLEAN_WARN_CAST_FLOAT(_iX), ARX_CLEAN_WARN_CAST_FLOAT(_iY));
+	CMenuZone::SetPos(_iX, _iY);
 
 	int iWidth = 0;
 	int iHeight = 0;
@@ -4746,8 +4732,8 @@ void CMenuButton::SetPos(int _iX,int _iY)
 		iHeight2 = ARX_CLEAN_WARN_CAST_INT(fRatioY);
 	}
 
-	rZone.right	= _iX + max(iWidth,iWidth2);
-	rZone.bottom = _iY + max(iHeight,iHeight2);
+	rZone.right = static_cast<int>(_iX) + max(iWidth,iWidth2);
+	rZone.bottom = static_cast<int>(_iY) + max(iHeight,iHeight2);
 }
 
 //-----------------------------------------------------------------------------
@@ -4762,7 +4748,7 @@ void CMenuButton::AddText( const std::string& _pText)
 	int iSizeXButton=rZone.right-rZone.left;
 	int iSizeYButton=rZone.bottom-rZone.top;
 	
-	Vector2i textSize = pFont->GetTextSize(_pText);
+	Vec2i textSize = pFont->GetTextSize(_pText);
 
 	if(textSize.x>iSizeXButton) iSizeXButton=textSize.x;
 	if(textSize.y>iSizeYButton) iSizeYButton=textSize.y;
@@ -4820,12 +4806,12 @@ void CMenuButton::Render()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		EERIE_3D ePos;
+		Vec3f ePos;
 		ePos.x = (float)rZone.left;
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
 		
-		FontRenderText(pFont, ePos, &pText, RGB(232, 204, 142));
+		FontRenderText(pFont, ePos, &pText, Color(232, 204, 142));
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
@@ -4876,12 +4862,12 @@ void CMenuButton::RenderMouseOver()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		
-		EERIE_3D ePos;
+		Vec3f ePos;
 		ePos.x = (float)rZone.left;
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
 		
-		FontRenderText(pFont, ePos, &pText, RGB(255, 255, 255));
+		FontRenderText(pFont, ePos, &pText, Color(255, 255, 255));
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
@@ -4947,10 +4933,10 @@ void CMenuSliderText::SetWidth(int _iWidth)
 	//on recentre tout
 	vector<CMenuElementText*>::iterator it;
 
-	for(it=vText.begin();it<vText.end();it++)
+	for(it=vText.begin();it<vText.end();++it)
 	{
 		CMenuElementText *pMenuElementText=*it;
-		Vector2i textSize = pMenuElementText->GetTextSize();
+		Vec2i textSize = pMenuElementText->GetTextSize();
 
 		int dxx=(dx-textSize.x)>>1;
 		pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
@@ -4964,7 +4950,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	_pText->Move(rZone.left + pLeftButton->GetWidth(), rZone.top + 0);
 	vText.insert(vText.end(), _pText);
 
-	Vector2i textSize = _pText->GetTextSize();
+	Vec2i textSize = _pText->GetTextSize();
 
 	rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + textSize.x);
 	rZone.bottom = max(rZone.bottom, rZone.top + textSize.y);
@@ -4976,7 +4962,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	//on recentre tout
 	vector<CMenuElementText*>::iterator it;
 
-	for(it=vText.begin();it<vText.end();it++)
+	for(it=vText.begin();it<vText.end();++it)
 	{
 		CMenuElementText *pMenuElementText=*it;
 		
@@ -5679,7 +5665,7 @@ void CDirectInput::GetInput()
 
 		if(    (!bMouseButton[i])&&(iOldNumClick[i]==iNumUnClick) )
 		{
-			iNumUnClick=iOldNumClick[i]=0;
+			iOldNumClick[i]=0;
 		}
 
 		bOldMouseButton[i]=bMouseButton[i];
@@ -5841,7 +5827,7 @@ void CDirectInput::GetInput()
 	if(iNbOldCoord>=iMaxOldCoord)
 	{
 		iNbOldCoord=iMaxOldCoord-1;
-		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(EERIE_2DI)*iNbOldCoord);
+		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(Vec2i)*iNbOldCoord);
 	}
 
 }
@@ -5910,39 +5896,33 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 
 //-----------------------------------------------------------------------------
 
-static bool ComputePer(EERIE_2DI *_psPoint1,EERIE_2DI *_psPoint2,D3DTLVERTEX *_psd3dv1,D3DTLVERTEX *_psd3dv2,float _fSize)
-{
-	EERIE_2D sTemp;
-	float fTemp;
-
-	sTemp.x=(float)(_psPoint2->x-_psPoint1->x);
-	sTemp.y=(float)(_psPoint2->y-_psPoint1->y);
-	fTemp=sTemp.x;
-	sTemp.x=-sTemp.y;
-	sTemp.y=fTemp;
-	float fMag=(float)sqrt(sTemp.x*sTemp.x+sTemp.y*sTemp.y);
-
-	if(fMag<EEdef_EPSILON)
-	{
+static bool ComputePer(const Vec2i & _psPoint1, const Vec2i & _psPoint2, D3DTLVERTEX * _psd3dv1, D3DTLVERTEX * _psd3dv2, float _fSize) {
+	
+	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
+	float fTemp = sTemp.x;
+	sTemp.x = -sTemp.y;
+	sTemp.y = fTemp;
+	float fMag = sTemp.length();
+	if(fMag < EEdef_EPSILON) {
 		return false;
 	}
 
-	fMag=_fSize/fMag;
+	fMag = _fSize / fMag;
 
 	_psd3dv1->sx=(sTemp.x*fMag);
 	_psd3dv1->sy=(sTemp.y*fMag);
-	_psd3dv2->sx=((float)_psPoint1->x)-_psd3dv1->sx;
-	_psd3dv2->sy=((float)_psPoint1->y)-_psd3dv1->sy;
-	_psd3dv1->sx+=((float)_psPoint1->x);
-	_psd3dv1->sy+=((float)_psPoint1->y);
+	_psd3dv2->sx=((float)_psPoint1.x)-_psd3dv1->sx;
+	_psd3dv2->sy=((float)_psPoint1.y)-_psd3dv1->sy;
+	_psd3dv1->sx+=((float)_psPoint1.x);
+	_psd3dv1->sy+=((float)_psPoint1.y);
 
 	return true;
 }
 
 //-----------------------------------------------------------------------------
 
-static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,float _fGreen,float _fBlue)
-{
+static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float _fRed, float _fGreen, float _fBlue) {
+	
 	_iNbPt--;
 
 	if(!_iNbPt) return;
@@ -5965,11 +5945,10 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-	EERIE_2DI *psOldPoint=_psPoint1++;
+	const Vec2i * psOldPoint = _psPoint1++;
 	v[0].color=v[2].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
 
-	if(!ComputePer(psOldPoint,_psPoint1,&v[0],&v[2],fTaille))
-	{
+	if(!ComputePer(*psOldPoint, *_psPoint1, &v[0], &v[2], fTaille)) {
 		v[0].sx=v[2].sx=(float)psOldPoint->x;
 		v[0].sy=v[2].sy=(float)psOldPoint->y;
 	}
@@ -5983,8 +5962,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 		fColorGreen+=fDColorGreen;
 		fColorBlue+=fDColorBlue;
 
-		if(ComputePer(psOldPoint,_psPoint1+1,&v[1],&v[3],fTaille))
-		{
+		if(ComputePer(*psOldPoint, *(_psPoint1 + 1), &v[1], &v[3], fTaille)) {
 			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
 			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
 
@@ -5996,7 +5974,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 			v[2].color=v[3].color;
 		}
 
-		psOldPoint=_psPoint1++;
+		psOldPoint = _psPoint1++;
 	}
 
 	fTaille+=fSize;
@@ -6004,8 +5982,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	fColorGreen+=fDColorGreen;
 	fColorBlue+=fDColorBlue;
 
-	if(ComputePer(_psPoint1,psOldPoint,&v[1],&v[3],fTaille)) 
-	{
+	if(ComputePer(*_psPoint1, *psOldPoint, &v[1], &v[3], fTaille)) {
 		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
 		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
 	}

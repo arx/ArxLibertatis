@@ -26,6 +26,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_RESOURCE_H
 #define ARX_CORE_RESOURCE_H
 
+#include "Configure.h"
+
+#define IDI_MAIN                        106
+
+#ifdef BUILD_EDITOR
+
 #define IDSTARTSNAPSHOT                 2
 #define IDPASTE                         3
 #define IDCANCELSNAP                    3
@@ -38,7 +44,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDD_MUTLIPLAYER_GAMES           102
 #define IDD_MAIN_GAME                   103
 #define IDD_MULTIPLAYER_CREATE          104
-#define IDI_MAIN                        106
 #define IDD_LOBBY_WAIT_STATUS           114
 #define IDD_CHANGEDEVICE                144
 #define IDD_DANAEABOUT                  148
@@ -114,7 +119,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_SHOWDEPTH                   1020
 #define IDC_ARKANESERVER                1020
 #define IDC_INFOTEXT                    1021
-#define IDC_RAY                         1022
 #define IDC_TORCHHALO2                  1023
 #define IDC_COLLISIONS                  1024
 #define IDD_REPLACE                     1024
@@ -123,16 +127,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDD_REPLACEALL                  1025
 #define IDC_COMPATIBILITY               1026
 #define IDC_INVERTMOUSE                 1026
-#define IDC_LEVELNONE                   1027
 #define IDC_MULTIPLAYER                 1028
-#define IDC_LEVEL1                      1028
 #define IDC_LOBBYCONNECTCANCEL          1029
-#define IDC_LEVEL2                      1029
 #define IDC_NUM_PLAYERS                 1030
-#define IDC_LEVEL3                      1030
-#define IDC_LEVEL4                      1031
-#define IDC_LEVEL5                      1032
-#define IDC_DEBUG1ST                    1033
 #define IDC_SEND                        1034
 #define IDC_ILLUMNORMAL                 1034
 #define IDC_WAIT_TEXT                   1035
@@ -146,10 +143,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDD_WORD                        1040
 #define IDC_FILTERANISOTROPIC           1041
 #define IDC_SHOWTEXT2                   1041
-#define IDC_SETTEXTURE                  1042
 #define IDC_DYNAMICNORMALS              1043
 #define IDC_HIDEBACKGROUND              1044
-#define IDC_DEBUGCODE                   1044
 #define IDC_HIDENPC                     1045
 #define IDC_DEBUGMOLLESS                1045
 #define IDC_HIDEFIXINTER                1046
@@ -169,16 +164,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_HIDEMAGICDUST               1053
 #define IDC_HIDESPEECH                  1054
 #define IDC_DEPTHDEFAULT                1055
-#define IDC_TRUECLIPPING                1056
 #define IDD_UP                          1056
 #define IDD_DOWN                        1057
 #define IDC_TEXTEDIT                    1058
-#define IDC_LIGHTPOWERUP                1059
-#define IDC_POWERSLIDER                 1060
 #define IDC_INTERNORM                   1062
 #define IDC_SLIDER_ROTATIONSPEED        1062
 #define IDC_TLEVEL1                     1062
-#define IDC_POWERSLIDER2                1063
 #define IDC_BUTTON_COLOR                1063
 #define IDC_TLEVEL2                     1063
 #define IDC_SLIDER_MOVESPEED            1064
@@ -236,12 +227,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_TLEVEL17                    1088
 #define IDC_STATIC12                    1089
 #define IDC_TLEVEL18                    1089
-#define IDC_FLARES                      1090
 #define IDC_SLIDER14                    1090
 #define IDC_TLEVEL19                    1090
 #define IDC_EDIT1                       1091
 #define IDC_STATIC14                    1091
-#define IDC_MAPUPDATE                   1091
 #define IDC_TLEVEL20                    1091
 #define IDC_EDIT2                       1092
 #define IDC_HOTSPOT5                    1092
@@ -291,7 +280,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_SHOWSHADOWS                 1112
 #define IDC_SLIDER19                    1113
 #define IDC_LANGUAGE6                   1113
-#define IDC_HPO                         1113
 #define IDC_HOTSPOT10                   1114
 #define IDC_LANGUAGE7                   1114
 #define IDC_PROGRESS                    1114
@@ -308,7 +296,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_LAUNCHDEMO                  1120
 #define IDC_SLIDER21                    1120
 #define IDC_STATIC33                    1121
-#define IDC_FLARESIZZ                   1121
 #define IDC_EDITPASS                    1122
 #define IDC_STATIC21                    1122
 #define IDC_NO_IGNIT                    1123
@@ -316,7 +303,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDC_BLURTEXTURES                1125
 #define IDC_POINTINTERPOLATION          1126
 #define IDC_FORCEIO                     1126
-#define IDC_TRACEMEMORY                 1127
 #define IDC_MESHTWEAK                   1128
 #define IDC_SYNTAXCHECKING              1128
 #define IDC_MAPFRAME                    1129
@@ -476,5 +462,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IDM_ANYPOLY                     40062
 #define DANAE_MENU_UPDATEALLANIMS       40065
 #define IDM_DLF_CHECK                   40066
+
+#endif // BUILD_EDITOR
 
 #endif // ARX_CORE_RESOURCE_H

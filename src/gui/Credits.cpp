@@ -4,13 +4,14 @@
 #include <sstream>
 
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "gui/Menu.h"
 #include "gui/Text.h"
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
+#include "graphics/font/Font.h"
 
 #include "io/Logger.h"
 
@@ -35,8 +36,8 @@ struct CreditsTextInformations {
 	}
 	
 	string  sText;
-	COLORREF fColors;
-	Vector2i sPos;
+	Color fColors;
+	Vec2i sPos;
 };
 
 
@@ -89,10 +90,10 @@ static void ExtractPhraseColor(string & phrase, CreditsTextInformations &infomat
 	//Get the good color
 	if(!phrase.empty() && phrase[0] == '~') {
 		phrase[0] = ' ';
-		infomations.fColors = RGB(255,255,255);
+		infomations.fColors = Color(255,255,255);
 	} else {
 		//print in gold color
-		infomations.fColors = RGB(232,204,143);
+		infomations.fColors = Color(232,204,143);
 	}
 }
 
@@ -100,7 +101,7 @@ static void ExtractPhraseColor(string & phrase, CreditsTextInformations &infomat
 static void CalculAverageWidth() {
 	
 	// Calculate the average value
-	Vector2i size = hFontCredits->GetTextSize("aA(");
+	Vec2i size = hFontCredits->GetTextSize("aA(");
 	CreditsData.iFontAverageHeight = size.y;
 }
 

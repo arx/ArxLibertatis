@@ -54,15 +54,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef EERIEPHYSICSBOX_H
-#define EERIEPHYSICSBOX_H
 
-#include "graphics/GraphicsTypes.h"
+#ifndef ARX_PHYSICS_BOX_H
+#define ARX_PHYSICS_BOX_H
+
+#include <cstdlib>
+
+#include "platform/math/Vector3.h"
+#include "platform/math/Angle.h"
+
+struct EERIE_3DOBJ;
 
 void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj);
-void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect, long flags = 0, EERIE_3D * angle = NULL);
-bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k, long * validd);
+void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags = 0, Anglef * angle = NULL);
+bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, long * validd);
 
-#endif
+#endif // ARX_PHYSICS_BOX_H

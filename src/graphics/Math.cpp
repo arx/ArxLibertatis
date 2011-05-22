@@ -371,7 +371,7 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 
 	if (bb > max) max = bb, index = 1;
 
-	if (cc > max) max = cc, index = 2;
+	if (cc > max) index = 2;
 
 	// this is the simplified projection onto L
 	vp0 = V0[index];
@@ -549,10 +549,6 @@ float InterpolateAngle(float a1, float a2, const float pour)
 	{
 		i = ft1 * pour;
 
-		if (a1 < a2)
-			a1 = a2 - i;
-		else a1 = a2 + i;
-
 		return MAKEANGLE(a2);
 	}
 
@@ -570,10 +566,6 @@ float InterpolateAngle(float a1, float a2, const float pour)
 	if (t == ft3)
 	{
 		i = ft3 * pour;
-
-		if (a1 < a2)
-			a1 = a2 - i;
-		else a1 = a2 + i;
 
 		return MAKEANGLE(a2);
 	}
@@ -717,7 +709,7 @@ void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2
 //*************************************************************************************
 // Invert-Transform of vertex by a quaternion
 //*************************************************************************************
-void TransformInverseVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout)
+void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin, Vec3f * vertexout)
 {
 	EERIE_QUAT rev_quat;
 
@@ -791,7 +783,7 @@ void Quat_Reverse(EERIE_QUAT * q)
 //*************************************************************************************
 // Converts euler angles to a unit quaternion.
 //*************************************************************************************
-void QuatFromAngles(EERIE_QUAT * q, const EERIE_3D * angle)
+void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle)
 
 {
 	float A, B;
@@ -875,14 +867,10 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 	m[3][2] = mat._43;
 	m[3][3] = mat._44;
 	float  tr, s, q[4];
-	int    i, j, k;
-
 
 	int nxt[3] = {1, 2, 0};
 
-
 	tr = m[0][0] + m[1][1] + m[2][2];
-
 
 	// check the diagonal
 	if (tr > 0.0f)
@@ -897,14 +885,14 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 	else
 	{
 		// diagonal is negative
-		i = 0;
+		int i = 0;
 
 		if (m[1][1] > m[0][0]) i = 1;
 
 		if (m[2][2] > m[i][i]) i = 2;
 
-		j = nxt[i];
-		k = nxt[j];
+		int j = nxt[i];
+		int k = nxt[j];
 
 		s = sqrt((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
 
@@ -953,9 +941,9 @@ float AngleDifference(const float d, const float e)
 //*************************************************************************************
 // Rotates a Vector around X. angle is given in degrees
 //*************************************************************************************
-void VRotateX(EERIE_3D * out, const float angle)
+void VRotateX(Vec3f * out, const float angle)
 {
-	EERIE_3D in;
+	Vec3f in;
 	in.x = out->x;
 	in.y = out->y;
 	in.z = out->z;
@@ -970,9 +958,9 @@ void VRotateX(EERIE_3D * out, const float angle)
 //*************************************************************************************
 // Rotates a Vector around Y. angle is given in degrees
 //*************************************************************************************
-void VRotateY(EERIE_3D * out, const float angle)
+void VRotateY(Vec3f * out, const float angle)
 {
-	EERIE_3D in;
+	Vec3f in;
 	in.x = out->x;
 	in.y = out->y;
 	in.z = out->z;
@@ -986,9 +974,9 @@ void VRotateY(EERIE_3D * out, const float angle)
 //*************************************************************************************
 // Rotates a Vector around Z. angle is given in degrees
 //*************************************************************************************
-void VRotateZ(EERIE_3D * out, const float angle)
+void VRotateZ(Vec3f * out, const float angle)
 {
-	EERIE_3D in;
+	Vec3f in;
 	in.x = out->x;
 	in.y = out->y;
 	in.z = out->z;
@@ -1003,7 +991,7 @@ void VRotateZ(EERIE_3D * out, const float angle)
 //*************************************************************************************
 // Rotates a Vector around Y. angle is given in degrees
 //*************************************************************************************
-void Vector_RotateY(EERIE_3D * dest, const EERIE_3D * src, const float angle)
+void Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle)
 {
 	register float s = radians(angle);
 	register float c = EEcos(s);
@@ -1015,7 +1003,7 @@ void Vector_RotateY(EERIE_3D * dest, const EERIE_3D * src, const float angle)
 //*************************************************************************************
 // Rotates a Vector around Z. angle is given in degrees
 //*************************************************************************************
-void Vector_RotateZ(EERIE_3D * dest, const EERIE_3D * src, const float angle)
+void Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle)
 {
 	register float s = radians(angle);
 	register float c = EEcos(s);
@@ -1023,23 +1011,6 @@ void Vector_RotateZ(EERIE_3D * dest, const EERIE_3D * src, const float angle)
 	dest->x = (src->x * c) + (src->y * s);
 	dest->y = (src->y * c) - (src->x * s);
 	dest->z = src->z;
-}
-
-//*************************************************************************************
-// Computes Cross Product of vectors "v1" & "v2" giving vector "dest"
-//*************************************************************************************
-void Vector_CrossProduct(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2)
-{
-	dest->x = v1->y * v2->z - v1->z * v2->y;
-	dest->y = v1->z * v2->x - v1->x * v2->z;
-	dest->z = v1->x * v2->y - v1->y * v2->x;
-}
-//*************************************************************************************
-// Returns Dot Product of 2 vectors
-//*************************************************************************************
-float Vector_DotProduct(const EERIE_3D * v1, const EERIE_3D * v2)
-{
-	return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1083,7 +1054,7 @@ void CalcFaceNormal(EERIEPOLY * ep, const D3DTLVERTEX * v)
 	ep->norm.z *= epnlen;
 }
 
-void CalcObjFaceNormal(const EERIE_3D * v0, const EERIE_3D * v1, const EERIE_3D * v2, EERIE_FACE * ef)
+void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef)
 {
 	register float Ax, Ay, Az, Bx, By, Bz, epnlen;
 	Ax = v1->x - v0->x;
@@ -1109,23 +1080,18 @@ void MatrixReset(EERIEMATRIX * mat)
 	memset(mat, 0, sizeof(EERIEMATRIX));
 }
 
-void MatrixSetByVectors(EERIEMATRIX * m, const EERIE_3D * d, const EERIE_3D * u)
+void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 {
 	float t;
-	EERIE_3D D, U, R;
-	D.x = d->x;
-	D.y = d->y;
-	D.z = d->z;
-	TRUEVector_Normalize(&D);
-	U.x = u->x;
-	U.y = u->y;
-	U.z = u->z;
+	Vec3f D, U, R;
+	D = d->getNormalized();
+	U = *u;
 	t = U.x * D.x + U.y * D.y + U.z * D.z;
 	U.x -= D.x * t;
 	U.y -= D.y * t;
-	U.z -= D.y * t;
-	TRUEVector_Normalize(&U);
-	Vector_CrossProduct(&R, &U, &D);
+	U.z -= D.y * t; // TODO is this really supposed to be D.y?
+	U.normalize();
+	R = U cross D;
 	m->_11 = R.x;
 	m->_12 = R.y;
 	m->_21 = U.x;
@@ -1137,32 +1103,27 @@ void MatrixSetByVectors(EERIEMATRIX * m, const EERIE_3D * d, const EERIE_3D * u)
 	m->_23 = U.z;
 }
 
-void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const EERIE_3D * vect, const float rollDegrees)
+void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const float rollDegrees)
 {
 	// Get our direction vector (the Z vector component of the matrix)
 	// and make sure it's normalized into a unit vector
-	EERIE_3D zAxis;
-	memcpy(&zAxis, vect, sizeof(EERIE_3D));
-	TRUEVector_Normalize(&zAxis);
+	Vec3f zAxis = vect->getNormalized();
 
 	// Build the Y vector of the matrix (handle the degenerate case
 	// in the way that 3DS does) -- This is not the true vector, only
 	// a reference vector.
-	EERIE_3D yAxis;
+	Vec3f yAxis;
 
 	if (!zAxis.x && !zAxis.z)
-		yAxis = EERIE_3D(-zAxis.y, 0.f, 0.f);
+		yAxis = Vec3f(-zAxis.y, 0.f, 0.f);
 	else
-		yAxis = EERIE_3D(0.f, 1.f, 0.f);
+		yAxis = Vec3f(0.f, 1.f, 0.f);
 
 	// Build the X axis vector based on the two existing vectors
-	EERIE_3D xAxis;
-	Vector_CrossProduct(&xAxis, &yAxis, &zAxis);
-	TRUEVector_Normalize(&xAxis);
+	Vec3f xAxis = (yAxis cross zAxis).getNormalized();
 
 	// Correct the Y reference vector
-	Vector_CrossProduct(&yAxis, &xAxis, &zAxis);
-	TRUEVector_Normalize(&yAxis);
+	yAxis = (xAxis cross zAxis).getNormalized();
 	yAxis.x = -yAxis.x;
 	yAxis.y = -yAxis.y;
 	yAxis.z = -yAxis.z;
@@ -1226,7 +1187,7 @@ VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 // Name: D3DMath_VectorMatrixMultiply()
 // Desc: Multiplies a vector by a matrix
 //-----------------------------------------------------------------------------
-void VectorMatrixMultiply(EERIE_3D * vDest, const EERIE_3D * vSrc,
+void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc,
                           const EERIEMATRIX * mat)
 {
 	float x = vSrc->x * mat->_11 + vSrc->y * mat->_21 + vSrc->z * mat->_31 + mat->_41;

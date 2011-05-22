@@ -1,9 +1,9 @@
 #ifndef _RENDERER_H_
 #define _RENDERER_H_
 
-
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/data/Texture.h"
+#include "graphics/Color.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -106,7 +106,7 @@ public:
 
     // Matrices
 	virtual void SetViewMatrix(const EERIEMATRIX& matView);
-	virtual void SetViewMatrix(const EERIE_3D& vPosition, const EERIE_3D& vDir, const EERIE_3D& vUp);
+	virtual void SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp);
 	virtual void GetViewMatrix(EERIEMATRIX& matView) const;
 	virtual void SetProjectionMatrix(const EERIEMATRIX& matProj);
 	virtual void GetProjectionMatrix(EERIEMATRIX& matProj) const;
@@ -134,10 +134,10 @@ public:
 	virtual void End2DProjection();
 
 	// Render Target
-	virtual void Clear(int bufferFlags, COLORREF clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
+	virtual void Clear(int bufferFlags, Color clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
 
 	// Fog
-	virtual void SetFogColor(COLORREF color);
+	virtual void SetFogColor(Color color);
 	virtual void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
 		
 	// Rasterizer
@@ -156,7 +156,7 @@ public:
 	virtual float GetMaxAnisotropy() const;
 
 	// Utilities...
-	virtual void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, COLORREF color );
+	virtual void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color );
 
 private:
 	std::vector<TextureStage*>	m_TextureStages;

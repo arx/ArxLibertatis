@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Dialog.h"
 
+#ifdef BUILD_EDITOR
+
 #include <windows.h>
 #include <commdlg.h>
 
@@ -64,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Resource.h"
 #include "core/Core.h"
 
@@ -101,34 +103,21 @@ long FASTLOADS = 0;
 extern long CURRENTSNAPNUM;
 extern long SnapShotMode;
 
-extern long ARX_DEMO;
 extern long NOCHECKSUM;
 extern long ZMAPMODE;
 extern long TreatAllIO;
 extern long HIDEMAGICDUST;
 extern long LaunchDemo;
-extern long LIGHTPOWERUP;
-extern float LPpower;
 extern long USE_PLAYERCOLLISIONS;
-extern long A_FLARES;
-extern long NODIRCREATION;
-extern long MAPUPDATE;
 extern long EXTERNALVIEWING;
 extern long DYNAMIC_NORMALS;
 extern long SHOWSHADOWS;
-extern long HIPOLY;
 extern long ForceIODraw;
 extern long NEED_ANCHORS;
 long HIDEANCHORS = 1;
-extern long HERMES_KEEP_MEMORY_TRACE;
-extern const char * GTE_TITLE;
-extern char * GTE_TEXT;
-extern long GTE_SIZE;
 extern float TIMEFACTOR;
 extern long ALLOW_MESH_TWEAKING;
-extern long DEBUG_MOLLESS;
 extern long HIDESPEECH;
-extern HWND MESH_REDUCTION_WINDOW;
 extern HWND PRECALC;
 extern HANDLE LIGHTTHREAD;
 extern long PROGRESS_COUNT;
@@ -318,7 +307,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			if (ARX_PATHS_SelectedAP)
 			{
 				D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-				COLORREF rgbResult = ((col >> 16 & 255))
+				Color rgbResult = ((col >> 16 & 255))
 				                     | ((col >> 8 & 255) << 8)
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
@@ -376,7 +365,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			        (ARX_PATHS_SelectedNum != -1))
 			{
 				D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-				COLORREF rgbResult = ((col >> 16 & 255))
+				Color rgbResult = ((col >> 16 & 255))
 				                     | ((col >> 8 & 255) << 8)
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
@@ -711,7 +700,7 @@ struct TVINFO
 #define MAXTVV 5000
 TVINFO * tvv[MAXTVV];
 long TVVcount = 0;
-EERIE_3D TVCONTROLEDplayerpos;
+Vec3f TVCONTROLEDplayerpos;
 long TVCONTROLED = 0;
 HTREEITEM hfix = NULL;
 HTREEITEM hitem = NULL;
@@ -1254,16 +1243,6 @@ void KillInterTreeView()
 
 extern long FINAL_COMMERCIAL_DEMO;
 
-//*************************************************************************************
-// Sets DANAE Main Window Title
-//*************************************************************************************
-void SetWindowTitle(HWND hWnd, const char * tex) {
-	char texx[512];
-	strcpy(texx, tex);
-	strcat(texx, arxVersion.c_str());
-	SetWindowText(hWnd, texx);
-}
-
 HWND SnapShotDlg = NULL;
 void LaunchSnapShotParamApp(HWND hwnd)
 {
@@ -1566,6 +1545,33 @@ void LaunchLightThread(long minx, long minz, long maxx, long maxz)
 
 }
 
+void RecalcLightZone(float x, float z, long siz) {
+	
+	long i, j, x0, x1, z0, z1;
+	
+	i = x * ACTIVEBKG->Xmul;
+	j = z * ACTIVEBKG->Zmul;
+	
+	x0 = i - siz;
+	x1 = i + siz;
+	z0 = j - siz;
+	z1 = j + siz;
+	
+	if (x0 < 2) x0 = 2;
+	else if (x0 >= ACTIVEBKG->Xsize - 2) x0 = ACTIVEBKG->Xsize - 3;
+	
+	if (x1 < 2) x1 = 0;
+	else if (x1 >= ACTIVEBKG->Xsize - 2) x1 = ACTIVEBKG->Xsize - 3;
+
+	if (z0 < 2) z0 = 0;
+	else if (z0 >= ACTIVEBKG->Zsize - 2) z0 = ACTIVEBKG->Zsize - 3;
+	
+	if (z1 < 2) z1 = 0;
+	else if (z1 >= ACTIVEBKG->Zsize - 2) z1 = ACTIVEBKG->Zsize - 3;
+	
+	LaunchLightThread(x0, z0, x1, z1);
+}
+
 long SYNTAXCHECKING = 0;
 
 INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -1842,9 +1848,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 					if (IsChecked(hWnd, IDC_TLEVEL24))	Project.demo = LEVEL24;
 
-					if (IsChecked(hWnd, IDC_TRACEMEMORY)) HERMES_KEEP_MEMORY_TRACE = 1;
-					else HERMES_KEEP_MEMORY_TRACE = 0;
-
 					if (IsChecked(hWnd, IDC_NEED_ANCHOR)) NEED_ANCHORS = 1;
 					else NEED_ANCHORS = 0;
 
@@ -1966,8 +1969,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
 			//SetWindowText(thWnd, Project_workingdir);
 
-			if (HERMES_KEEP_MEMORY_TRACE) SetClick(hWnd, IDC_TRACEMEMORY);
-
 			SetClick(hWnd, IDC_OTHERSERVER);
 
 			SetClick(hWnd, IDC_LOADDEMO);
@@ -2045,11 +2046,8 @@ INT_PTR CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 
 	return false;
 }
-extern long DBGSETTEXTURE;
 extern long USEINTERNORM;
 long oml;
-extern float BIGLIGHTPOWER;
-extern long DEBUGCODE;
 extern long TRUEFIGHT;
 
 INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -2066,32 +2064,16 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 
 			oml = ModeLight;
-			char tex[64];
-			thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
-			sprintf(tex, "%ld", MOLLESS_Nb_Interpolations);
-			SetWindowText(thWnd, tex);
-
-			if (ARX_DEMO)					SetClick(hWnd, IDC_ARXDEMO);
 
 			if (SYNTAXCHECKING)				SetClick(hWnd, IDC_SYNTAXCHECK);
 
 			if (ZMAPMODE)					SetClick(hWnd, IDC_ZMAPMODE);
 
-			if (DEBUGCODE)					SetClick(hWnd, IDC_DEBUGCODE);
-
-			if (HIPOLY)						SetClick(hWnd, IDC_HPO);
-
 			if (Project.interpolatemouse)	SetClick(hWnd, IDC_INTERPOLATEMOUSE);
 
 			if (Project.vsync)				SetClick(hWnd, IDC_VSYNC);
 
-			if (TRUECLIPPING)				SetClick(hWnd, IDC_TRUECLIPPING);
-
 			if (SHOWSHADOWS)				SetClick(hWnd, IDC_SHOWSHADOWS);
-
-			if (A_FLARES)					SetClick(hWnd, IDC_FLARES);
-
-			if (LIGHTPOWERUP)				SetClick(hWnd, IDC_LIGHTPOWERUP);
 
 			if (INVERTMOUSE)				SetClick(hWnd, IDC_INVERTMOUSE);
 
@@ -2099,15 +2081,9 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (Project.bits == 32)			SetClick(hWnd, IDC_FULLRENDER32BITS);
 
-			if (DEBUG1ST)					SetClick(hWnd, IDC_DEBUG1ST);
-
 			if (DEBUGNPCMOVE)				SetClick(hWnd, IDC_DEBUGNPCMOVE);
 
-			if (DEBUG_MOLLESS)				SetClick(hWnd, IDC_DEBUGMOLLESS);
-
 			if (DYNAMIC_NORMALS)			SetClick(hWnd, IDC_DYNAMICNORMALS);
-
-			if (DBGSETTEXTURE)				SetClick(hWnd, IDC_SETTEXTURE);
 
 			if (ViewMode & VIEWMODE_WIRE)	SetClick(hWnd, IDC_WIREFRAME);
 
@@ -2143,41 +2119,15 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (ViewMode & VIEWMODE_FLAT)		SetClick(hWnd, IDC_NOTEXTURES);
 
-			if (Cross)						SetClick(hWnd, IDC_RAY);
-
 			if (USEINTERNORM)				SetClick(hWnd, IDC_INTERNORM);
 
 			if (EXTERNALVIEWING)			SetClick(hWnd, IDC_THIRDPERSON);
-
-			if (DebugLvl[0])				SetClick(hWnd, IDC_LEVELNONE);
-
-			if (DebugLvl[1])				SetClick(hWnd, IDC_LEVEL1);
-
-			if (DebugLvl[2])				SetClick(hWnd, IDC_LEVEL2);
-
-			if (DebugLvl[3])				SetClick(hWnd, IDC_LEVEL3);
-
-			if (DebugLvl[4])				SetClick(hWnd, IDC_LEVEL4);
-
-			if (DebugLvl[5])				SetClick(hWnd, IDC_LEVEL5);
-
-			if (MAPUPDATE)					SetClick(hWnd, IDC_MAPUPDATE);
 
 			if (ALLOW_MESH_TWEAKING) SetClick(hWnd, IDC_MESHTWEAK);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDERDEPTH);
 			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1000, 8000));
 			long t = (long)subj.cdepth;
-			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
-
-			thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER);
-			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 10));
-			t = (long)LPpower;
-			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
-
-			thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
-			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 50));
-			t = (long)(BIGLIGHTPOWER * 100.f);
 			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
@@ -2256,15 +2206,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_TRUEFIGHT)) TRUEFIGHT = 1;
 					else TRUEFIGHT = 0;
 
-					if (IsChecked(hWnd, IDC_DEBUGCODE)) DEBUGCODE = 1;
-					else DEBUGCODE = 0;
-
-					if (IsChecked(hWnd, IDC_HPO)) HIPOLY = 1;
-					else HIPOLY = 0;
-
-					if (IsChecked(hWnd, IDC_ARXDEMO)) ARX_DEMO = 1;
-					else ARX_DEMO = 0;
-
 					if (IsChecked(hWnd, IDC_SYNTAXCHECK)) SYNTAXCHECKING = 1;
 					else SYNTAXCHECKING = 0;
 
@@ -2274,31 +2215,16 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_ZMAPMODE)) ZMAPMODE = 1;
 					else ZMAPMODE = 0;
 
-					if (IsChecked(hWnd, IDC_LIGHTPOWERUP)) LIGHTPOWERUP = 1;
-					else LIGHTPOWERUP = 0;
-
 					if (IsChecked(hWnd, IDC_SHOWSHADOWS)) SHOWSHADOWS = 1;
 					else SHOWSHADOWS = 0;
-
-					if (IsChecked(hWnd, IDC_TRUECLIPPING)) TRUECLIPPING = 1;
-					else TRUECLIPPING = 0;
 
 					if (IsChecked(hWnd, IDC_FULLRENDER16BITS)) Project.bits = 16;
 					else Project.bits = 32;
 
 					danaeApp.m_pFramework->bitdepth = Project.bits;
 
-					if (IsChecked(hWnd, IDC_DEBUG1ST)) DEBUG1ST = 1;
-					else DEBUG1ST = 0;
-
-					if (IsChecked(hWnd, IDC_SETTEXTURE)) DBGSETTEXTURE = 1;
-					else DBGSETTEXTURE = 0;
-
 					if (IsChecked(hWnd, IDC_DEBUGNPCMOVE)) DEBUGNPCMOVE = 1;
 					else DEBUGNPCMOVE = 0;
-
-					if (IsChecked(hWnd, IDC_DEBUGMOLLESS)) DEBUG_MOLLESS = 1;
-					else DEBUG_MOLLESS = 0;
 
 					if (IsChecked(hWnd, IDC_DYNAMICNORMALS)) DYNAMIC_NORMALS = 1;
 					else DYNAMIC_NORMALS = 0;
@@ -2377,9 +2303,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_COLLISIONS)) USE_COLLISIONS = 1;
 					else USE_COLLISIONS = 0;
 
-					if (IsChecked(hWnd, IDC_FLARES)) A_FLARES = 1;
-					else A_FLARES = 0;
-
 					if (IsChecked(hWnd, IDC_INVERTMOUSE)) INVERTMOUSE = 1;
 					else INVERTMOUSE = 0;
 
@@ -2410,40 +2333,8 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_NOTEXTURES)) ViewMode |= VIEWMODE_FLAT;
 					else ViewMode &= ~VIEWMODE_FLAT;
 
-					if (IsChecked(hWnd, IDC_RAY)) Cross = 1;
-					else Cross = 0;
-
-					if (IsChecked(hWnd, IDC_LEVELNONE))
-					{
-						DebugLvl[0] = 1;
-						DEBUGG = 0;
-					}
-					else
-					{
-						DebugLvl[0] = 0;
-						DEBUGG = 1;
-					}
-
-					if (IsChecked(hWnd, IDC_LEVEL1))  DebugLvl[1] = 1;
-					else DebugLvl[1] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL2))  DebugLvl[2] = 1;
-					else DebugLvl[2] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL3))  DebugLvl[3] = 1;
-					else DebugLvl[3] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL4))  DebugLvl[4] = 1;
-					else DebugLvl[4] = 0;
-
-					if (IsChecked(hWnd, IDC_LEVEL5))  DebugLvl[5] = 1;
-					else DebugLvl[5] = 0;
-
 					if (IsChecked(hWnd, IDC_MESHTWEAK))  ALLOW_MESH_TWEAKING = 1;
 					else ALLOW_MESH_TWEAKING = 0;
-
-					if (IsChecked(hWnd, IDC_MAPUPDATE)) MAPUPDATE = 1;
-					else MAPUPDATE = 0;
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDERDEPTH);
 					long t = SendMessage(thWnd, TBM_GETPOS, true, 0);
@@ -2452,19 +2343,8 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					SetCameraDepth((float)t);
 					SetActiveCamera(oldcam);
 
-					thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER);
-					LPpower = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
-
-					thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
-					BIGLIGHTPOWER = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
-
 					thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
 					TIMEFACTOR = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
-
-					thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
-					char tex[64];
-					GetWindowText(thWnd, tex, 63);
-					MOLLESS_Nb_Interpolations = atoi(tex);
 
 					EndDialog(hWnd, true);
 					break;
@@ -2650,7 +2530,6 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 	// TODO Nuky - unreachable code
 	return WM_INITDIALOG == uMsg ? true : false;
 }
-extern long CHANGE_LEVEL_PROC_RESULT;
 
 INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	
@@ -2739,8 +2618,6 @@ INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 EERIE_LIGHT lightparam;
 EERIE_LIGHT lightcopy;
-extern HWND CDP_LIGHTOptions;
-extern EERIE_LIGHT * CDP_EditLight;
 long CONSTANTUPDATELIGHT = 0;
 
 void LightApply(HWND hWnd)
@@ -3252,8 +3129,6 @@ static INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 
 FOG_DEF fogparam;
 FOG_DEF fogcopy;
-extern HWND CDP_FogOptions;
-extern FOG_DEF * CDP_EditFog;
 
 INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	
@@ -3493,7 +3368,6 @@ INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	return false;
 }
 long SHOWWARNINGS = 0;
-extern INTERACTIVE_OBJ * CDP_EditIO;
 #define MAX_SCRIPT_SIZE 128000
 char text1[MAX_SCRIPT_SIZE+1];
 char text2[MAX_SCRIPT_SIZE+1];
@@ -3865,8 +3739,7 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				// Isis Athena
 				char temp[256];
 				thWnd = GetDlgItem(hWnd, IDC_OBJNAME);
-				strcpy(temp, GetName(CDP_EditIO->filename).c_str());
-				sprintf(temp, "%s_%04ld", temp, CDP_EditIO->ident);
+				sprintf(temp, "%s_%04ld", GetName(CDP_EditIO->filename).c_str(), CDP_EditIO->ident);
 				SetWindowText(thWnd, temp);
 
 				thWnd = GetDlgItem(hWnd, IDC_EDIT1);
@@ -3976,10 +3849,6 @@ void TextBox(const char * title, char * text, long size)
 	ARX_TIME_UnPause();
 }
 
-extern long LastSelectedLight;
-
-//-----------------------------------------------------------------------------
-
 void launchlightdialog()
 {
 	if ((LastSelectedLight != -1)
@@ -4006,3 +3875,5 @@ void launchlightdialog()
 		}
 	}
 }
+
+#endif // BUILD_EDITOR

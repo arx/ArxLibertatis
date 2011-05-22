@@ -60,8 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include "platform/math/Vector3.h"
+
 struct EERIE_LIGHT;
-struct EERIE_3D;
 struct EERIEPOLY;
 
 const size_t MAX_LIGHTS = 1200;
@@ -74,10 +75,10 @@ extern EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 extern long TOTPDL;
 extern long TOTIOPDL;
 
-void PrecalcIOLighting(const EERIE_3D * pos, float radius, long flags = 0);
+void PrecalcIOLighting(const Vec3f * pos, float radius, long flags = 0);
 
 void EERIE_LIGHT_Apply(EERIEPOLY * ep);
-void EERIE_LIGHT_TranslateSelected(const EERIE_3D * trans);
+void EERIE_LIGHT_TranslateSelected(const Vec3f * trans);
 void EERIE_LIGHT_UnselectAll();
 void EERIE_LIGHT_ClearAll();
 void EERIE_LIGHT_ClearSelected();
@@ -86,11 +87,10 @@ void EERIE_LIGHT_GlobalInit();
 long EERIE_LIGHT_GetFree();
 long EERIE_LIGHT_Count();
 void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
-void EERIE_LIGHT_MoveAll(const EERIE_3D * trans);
+void EERIE_LIGHT_MoveAll(const Vec3f * trans);
 long EERIE_LIGHT_Create();
 
 void _RecalcLightZone(float x, float z, long siz);
-void RecalcLightZone(float x, float z, long siz);
  
 bool ValidDynLight(long num);
 

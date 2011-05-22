@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Light.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Core.h"
 #include "game/Inventory.h"
 #include "graphics/Math.h"
@@ -85,9 +85,9 @@ bool ValidDynLight(long num)
 	return false;
 }
 extern float GLOBAL_LIGHT_FACTOR;
-void PrecalcIOLighting(const EERIE_3D * pos, float radius, long flags)
+void PrecalcIOLighting(const Vec3f * pos, float radius, long flags)
 {
-	static EERIE_3D lastpos;
+	static Vec3f lastpos;
 
 	if (flags & 1)
 	{
@@ -98,8 +98,7 @@ void PrecalcIOLighting(const EERIE_3D * pos, float radius, long flags)
 	}
 
 	// Lastpos optim
-	if ((EEDistance3D(pos, &lastpos) < 100)) 
-	{
+	if(closerThan(*pos, lastpos, 100.f)) {
 		return;
 	}
 
@@ -191,7 +190,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	}
 }
 
-void EERIE_LIGHT_TranslateSelected(const EERIE_3D * trans) {
+void EERIE_LIGHT_TranslateSelected(const Vec3f * trans) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i] && GLight[i]->selected) {
 			if(GLight[i]->tl > 0) {
@@ -317,16 +316,13 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 	}
 }
 
-void EERIE_LIGHT_MoveAll(const EERIE_3D * trans) {
+void EERIE_LIGHT_MoveAll(const Vec3f * trans) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i]) {
 			GLight[i]->pos += *trans;
 		}
 	}
 }
-
-float BIGLIGHTPOWER = 0.f;
-extern long HIPOLY;
 
 //*************************************************************************************
 //*************************************************************************************
@@ -364,8 +360,8 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
 
-	EERIE_3D orgn, dest;
-	EERIE_3D hit;
+	Vec3f orgn, dest;
+	Vec3f hit;
 
 	orgn.x = light->pos.x;
 	orgn.y = light->pos.y;
@@ -438,8 +434,6 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	int		nbvert;			// number or vertices per face (3 or 4)
 	float	distance[4];	// distance from light to each vertex
 	float	fRes;			// value of light intensity for a given vertex
-	EERIE_3D vLight;		// vector (light to vertex)
-	EERIE_3D vNorm;			// vector (interpolated normal of vertex)
 
 	if (ep->type & POLY_IGNORE)
 		return;
@@ -449,7 +443,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	// compute light - vertex distance
 	for (i = 0; i < nbvert; i++)
 	{
-		distance[i] = TRUEEEDistance3D(&light->pos, (EERIE_3D *)&ep->v[i]);
+		distance[i] = dist(light->pos, ep->v[i]);
 	}
 
 	for (i = 0; i < nbvert; i++)
@@ -461,15 +455,13 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			//---------------------- start MODE_NORMALS
 			if (ModeLight & MODE_NORMALS)
 			{
+				Vec3f vLight; // vector (light to vertex)
 				vLight.x = light->pos.x - ep->v[i].sx;
 				vLight.y = light->pos.y - ep->v[i].sy;
 				vLight.z = light->pos.z - ep->v[i].sz;
-				TRUEVector_Normalize(&vLight);
-				vNorm.x = ep->nrml[i].x;
-				vNorm.y = ep->nrml[i].y;
-				vNorm.z = ep->nrml[i].z;
+				vLight.normalize();
 
-				fRes = Vector_DotProduct(&vLight, &vNorm);
+				fRes = vLight dot ep->nrml[i];
 
 				if (fRes < 0.0f)
 				{
@@ -482,7 +474,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			//---------------------- start MODE_RAYLAUNCH
 			if ((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED))
 			{
-				EERIE_3D orgn, dest, hit;
+				Vec3f orgn, dest, hit;
 				orgn.x = light->pos.x;
 				orgn.y = light->pos.y;
 				orgn.z = light->pos.z;
@@ -529,8 +521,6 @@ extern float GLOBAL_LIGHT_FACTOR;
 long	DYNAMIC_NORMALS = 1;
 
 extern EERIE_CAMERA DynLightCam;
-
-extern float BIGLIGHTPOWER;
 
 //-----------------------------------------------------------------------------
 void ComputeLight2DPos(EERIE_LIGHT * _pL)
@@ -580,13 +570,11 @@ void TreatBackgroundDynlights()
 	{
 		if ((GLight[i] != NULL) && (GLight[i]->extras & EXTRAS_SEMIDYNAMIC))
 		{
-			float fDist = EEDistance3D(&GLight[i]->pos, &ACTIVECAM->pos);
 			float fMaxdist = 300;
 
 			if (Project.telekinesis) fMaxdist = 850;
 
-			if (fDist <= fMaxdist)
-			{
+			if(!fartherThan(GLight[i]->pos, ACTIVECAM->pos, fMaxdist)) {
 				ComputeLight2DPos(GLight[i]);
 			}
 
@@ -597,7 +585,7 @@ void TreatBackgroundDynlights()
 				{
 					DynLight[GLight[i]->tl].exist = 0;
 					GLight[i]->tl = -1;
-					EERIE_3D _pos2;
+					Vec3f _pos2;
 
 					for (long l = 0; l < inter.nbmax; l++)
 					{
@@ -606,8 +594,7 @@ void TreatBackgroundDynlights()
 						{
 							GetItemWorldPosition(inter.iobj[l], &_pos2);
 
-							if (EEDistance3D(&GLight[i]->pos, &_pos2) <= 300)
-							{
+							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "DOUSE");
 							}
 						}
@@ -619,7 +606,7 @@ void TreatBackgroundDynlights()
 				// vient de s'allumer
 				if (GLight[i]->tl <= 0)
 				{
-					EERIE_3D _pos2;
+					Vec3f _pos2;
 
 					for (long l = 0; l < inter.nbmax; l++)
 					{
@@ -628,8 +615,7 @@ void TreatBackgroundDynlights()
 						{
 							GetItemWorldPosition(inter.iobj[l], &_pos2);
 
-							if (EEDistance3D(&GLight[i]->pos, &_pos2) <= 300)
-							{
+							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "FIRE");
 							}
 						}
@@ -698,7 +684,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 		if ((el->exist) && (el->rgb.r >= 0.f))
 		{
 
-			bool bDist = (EEDistance3D(&el->pos, &ACTIVECAM->pos) < ACTIVECAM->cdepth);
+			bool bDist = (distSqr(el->pos, ACTIVECAM->pos) < square(ACTIVECAM->cdepth));
 
 			if ((el->pos.x >= fx0) && (el->pos.x <= fx1)
 			        && (el->pos.z >= fz0) && (el->pos.z <= fz1)
@@ -776,11 +762,11 @@ void EERIE_LIGHT_ChangeLighting()
 
 //*************************************************************************************
 //*************************************************************************************
+#ifdef BUILD_EDITOR
 extern long LIGHT_THREAD_STATUS;
-extern long PAUSED_PRECALC;
+#endif
 void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 {
-	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
  
 	if (minx < 0) minx = 0;
@@ -796,7 +782,9 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	else if (maxz >= ACTIVEBKG->Zsize) maxz = ACTIVEBKG->Zsize - 1;
 
 	{
+#ifdef BUILD_EDITOR
 		if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 		for (size_t i = 0; i < MAX_LIGHTS; i++)
 		{
@@ -822,7 +810,9 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 		PROGRESS_COUNT = PROGRESS_TOTAL = 0;
 
+#ifdef BUILD_EDITOR
 		if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 		for (long j = minz; j <= maxz; j++)
 			for (long i = minx; i <= maxx; i++)
@@ -831,32 +821,37 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 				for (long k = 0; k < eg->nbpoly; k++)
 				{
-					ep = &eg->polydata[k];
 					PROGRESS_TOTAL++;
 				}
 			}
 
+#ifdef BUILD_EDITOR
 		if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 		for (long j = minz; j <= maxz; j++)
 			for (long i = minx; i <= maxx; i++)
 			{
+#ifdef BUILD_EDITOR
 				if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-				while (PAUSED_PRECALC) Sleep(1000);
 
 				for (long k = 0; k < eg->nbpoly; k++)
 				{
 
+#ifdef BUILD_EDITOR
 					if (LIGHT_THREAD_STATUS == 3) return;
+#endif
 
 					PROGRESS_COUNT++;
-					ep = &eg->polydata[k];
-					ep->type &= ~POLY_IGNORE;
-
-					if (ep)	EERIE_LIGHT_Apply(ep);
+					EERIEPOLY * ep = &eg->polydata[k];
+					
+					if(ep) {
+						ep->type &= ~POLY_IGNORE;
+						EERIE_LIGHT_Apply(ep);
+					}
 				}
 			}
 
@@ -877,7 +872,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 				for (long l = 0; l < eg->nbpoly; l++)
 				{
-					ep = &eg->polydata[l];
+					EERIEPOLY * ep = &eg->polydata[l];
 
 					if (!(ep->type & POLY_IGNORE))
 						for (k = 0; k < 3; k++)
@@ -968,33 +963,6 @@ void _RecalcLightZone(float x, float z, long siz) {
 	ModeLight &= ~MODE_RAYLAUNCH;
 	EERIEPrecalcLights(x0, z0, x1, z1);
 	ModeLight = oldml;
-}
-
-void RecalcLightZone(float x, float z, long siz) {
-	
-	long i, j, x0, x1, z0, z1;
-	
-	i = x * ACTIVEBKG->Xmul;
-	j = z * ACTIVEBKG->Zmul;
-	
-	x0 = i - siz;
-	x1 = i + siz;
-	z0 = j - siz;
-	z1 = j + siz;
-	
-	if (x0 < 2) x0 = 2;
-	else if (x0 >= ACTIVEBKG->Xsize - 2) x0 = ACTIVEBKG->Xsize - 3;
-	
-	if (x1 < 2) x1 = 0;
-	else if (x1 >= ACTIVEBKG->Xsize - 2) x1 = ACTIVEBKG->Xsize - 3;
-
-	if (z0 < 2) z0 = 0;
-	else if (z0 >= ACTIVEBKG->Zsize - 2) z0 = ACTIVEBKG->Zsize - 3;
-	
-	if (z1 < 2) z1 = 0;
-	else if (z1 >= ACTIVEBKG->Zsize - 2) z1 = ACTIVEBKG->Zsize - 3;
-	
-	LaunchLightThread(x0, z0, x1, z1);
 }
 
 void EERIERemovePrecalcLights() {

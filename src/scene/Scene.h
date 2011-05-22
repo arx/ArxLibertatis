@@ -58,13 +58,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_SCENE_H
 #define ARX_SCENE_SCENE_H
 
-struct EERIE_3D;
+#include "platform/math/Vector3.h"
+
 struct INTERACTIVE_OBJ;
 
-long ARX_PORTALS_GetRoomNumForPosition(EERIE_3D * pos, long flag = 0);
+long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos, long flag = 0);
 
 void ARX_SCENE_Render(long flag);
-bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position);
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, Vec3f * position);
 void RoomDrawRelease();
 bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io);
 

@@ -36,7 +36,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
-#include <cassert>
 
 #include "ai/Paths.h"
 
@@ -46,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/Core.h"
@@ -62,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
+#include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
@@ -87,6 +87,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+
+#include "Configure.h"
 
 using std::min;
 using std::max;
@@ -142,12 +144,9 @@ extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
 extern float SLID_VALUE;
 
-extern long WILLLOADLEVEL;	// Is a LoadLevel command waiting ?
-extern long WILLSAVELEVEL;	// Is a SaveLevel command waiting ?
 extern long BOOKBUTTON;
 extern long LASTBOOKBUTTON;
 extern long FORCE_NO_HIDE;
-extern long GAME_EDITOR;
 extern long LastSelectedIONum;
 extern long lSLID_VALUE;
 
@@ -155,14 +154,13 @@ extern long CHANGE_LEVEL_ICON;
 extern long NO_TEXT_AT_ALL;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
-extern long MOULINEX;
 extern long HALOCUR;
 extern long USE_CEDRIC_ANIM;
 extern long ALLOW_CHEATS;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long WILLRETURNTOFREELOOK;
 extern float BOW_FOCAL;
-extern EERIE_S2D DANAEMouse;
+extern Vec2s DANAEMouse;
 extern short sActiveInventory;
 extern unsigned long WILLADDSPEECHTIME;
 extern unsigned long LOOKING_FOR_SPELL_TARGET_TIME;
@@ -193,18 +191,25 @@ TextureContainer *	ThrowObject=NULL;
 ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
 D3DCOLOR			BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
 E_ARX_STATE_MOUSE	eMouseState;
-EERIE_S2D			bookclick;
-EERIE_S2D			MemoMouse;
-EERIE_LIGHT		 *	CDP_EditLight=NULL;
-FOG_DEF			 *	CDP_EditFog=NULL;
-HWND				CDP_PATHWAYS_Options=NULL;
-HWND				CDP_FogOptions=NULL;
+Vec2s			bookclick;
+Vec2s			MemoMouse;
 
-HWND				CDP_LIGHTOptions=NULL;
-HWND				CDP_IOOptions=NULL;
+#ifdef BUILD_EDITOR
+HWND CDP_PATHWAYS_Options = NULL;
+HWND CDP_IOOptions = NULL;
+HWND CDP_FogOptions = NULL;
+HWND CDP_LIGHTOptions = NULL;
+EERIE_LIGHT * CDP_EditLight = NULL;
+INTERACTIVE_OBJ * CDP_EditIO = NULL;
+FOG_DEF * CDP_EditFog = NULL;
+static long ObjectRotAxis = 0;
+static long LastSelectedNode = -1;
+static long LastSelectedFog = -1;
+long LastSelectedLight = -1;
+#endif
+
 INVENTORY_DATA *	TSecondaryInventory;
-INTERACTIVE_OBJ *	CDP_EditIO=NULL;
-INTERACTIVE_OBJ *	FlyingOverIO=NULL;
+INTERACTIVE_OBJ * FlyingOverIO=NULL;
 INTERACTIVE_OBJ *	STARTED_ACTION_ON_IO=NULL;
 INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
@@ -261,18 +266,14 @@ long				FLYING_OVER		= 0;
 long				OLD_FLYING_OVER	= 0;
 long				LastRune=-1;
 long				BOOKZOOM=0;
-EERIE_3D			ePlayerAngle;
+Anglef			ePlayerAngle;
 long				CURCURTIME=0;
 long				CURCURDELAY=70;
 long				CURCURPOS=0;
 long				INTERFACE_HALO_NB=0;
 long				INTERFACE_HALO_MAX_NB=0;
-long				ObjectRotAxis=0;
 long				PRECAST_NUM=0;
 long				LastMouseClick=0;
-long				LastSelectedNode=-1;
-long				LastSelectedFog=-1;
-long				LastSelectedLight=-1;
 long				MOVETYPE=MOVE_WAIT;
 
 //used to redist points - attributes and skill
@@ -708,9 +709,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 	long length = Note.text.length();
 	long curpage = 1;
 
-	NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
-	RECT rRect;
-
+	NoteTexture = TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
 
 	float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
 	float fHeight	= NoteTexture->m_dwHeight-40.f ; 
@@ -727,7 +726,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 		ARX_CHECK_INT(fMinx);
 		ARX_CHECK_INT(fMiny);
 
-	SetRect(&rRect, 0, 0, ARX_CLEAN_WARN_CAST_INT(fMinx), ARX_CLEAN_WARN_CAST_INT(fMiny));
+	Rect rRect(0, 0, Rect::Num(fMinx), Rect::Num(fMiny));
 
 	int lLenghtCurr=0;
 
@@ -1471,8 +1470,7 @@ void GetInfosCombine()
 //-----------------------------------------------------------------------------
 bool DANAE::ManageEditorControls()
 {
-	float val = 0.f;
-	EERIE_3D trans;
+	Vec3f trans;
 
 	eMouseState = MOUSE_IN_WORLD;
 
@@ -2245,6 +2243,7 @@ bool DANAE::ManageEditorControls()
 				Set_DragInter(NULL);
 			} else if(DRAGINTER!=NULL)
 			{
+#ifdef BUILD_EDITOR
 				if (!EDITMODE) // test for NPC & FIX
 				{
 					if ((DRAGINTER->ioflags & IO_NPC) || (DRAGINTER->ioflags & IO_FIX) )
@@ -2253,6 +2252,7 @@ bool DANAE::ManageEditorControls()
 						goto suivant2;
 					}
 				}
+#endif
 
 				if (!((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count > 1)))
 					if ((DRAGINTER->obj) && (DRAGINTER->obj->pbox))
@@ -2272,10 +2272,7 @@ bool DANAE::ManageEditorControls()
 							ARX_PLAYER_Remove_Invisibility();
 							io->obj->pbox->active=1;
 							io->obj->pbox->stopcount=0;
-							float vx=-((float)DANAEMouse.x-(float)subj.centerx);
-
-							vx/=3.f;
-							EERIE_3D pos;
+							Vec3f pos;
 								pos.x = io->pos.x = player.pos.x;
 								pos.z = io->pos.z = player.pos.z;
 							pos.y=io->pos.y=player.pos.y+80.f;
@@ -2285,7 +2282,7 @@ bool DANAE::ManageEditorControls()
 							io->stopped=1;
 							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)DANAESIZY*2;
 							float x_ratio=-(float)((float)DANAEMouse.x-(float)DANAECENTERX)/(float)DANAECENTERX;
-							EERIE_3D viewvector;
+							Vec3f viewvector;
 							viewvector.x=-(float)EEsin(radians(player.angle.b+(x_ratio*30.f)))*EEcos(radians(player.angle.a));
 								viewvector.y = EEsin(radians(player.angle.a)) + y_ratio; 
 							viewvector.z= (float)EEcos(radians(player.angle.b+(x_ratio*30.f)))*EEcos(radians(player.angle.a));
@@ -2308,11 +2305,11 @@ bool DANAE::ManageEditorControls()
 	{
 		if ((!CURRENT_TORCH) || (CURRENT_TORCH && (COMBINE != CURRENT_TORCH)))
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 
 			if (GetItemWorldPosition(COMBINE,&pos))
 			{
-				if (EEDistance3D(&pos,&player.pos)>300.f)
+				if(fartherThan(pos, player.pos, 300.f))
 					COMBINE=NULL;
 			}
 			else COMBINE=NULL;
@@ -2358,7 +2355,7 @@ bool DANAE::ManageEditorControls()
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {
 				if ((GLight[i]!=NULL) &&
 					(GLight[i]->exist) &&
-					(EEDistance3D(&GLight[i]->pos, &player.pos) <= fMaxdist) &&
+					!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
 					(!(GLight[i]->extras & EXTRAS_NO_IGNIT)))
 				{
 					if (MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y))
@@ -2443,7 +2440,7 @@ bool DANAE::ManageEditorControls()
 			if ((GLight[i]!=NULL) &&
 				(GLight[i]->exist) &&
 
-				(EEDistance3D(&GLight[i]->pos, &player.pos) <= fMaxdist) &&
+				!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
 				(!(GLight[i]->extras & EXTRAS_NO_IGNIT)))
 			{
 				if (MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y))
@@ -2553,9 +2550,13 @@ bool DANAE::ManageEditorControls()
 			}
 			else ARX_PLAYER_Remove_Invisibility();
 		}
-
-}
-
+	
+	}
+	
+#ifdef BUILD_EDITOR
+	
+	float val = 0.f;
+	
 	// Load Level Command
 	if (((EDITMODE)&&((this->kbd.inkey[INKEY_L]) && ((this->kbd.inkey[INKEY_LEFTSHIFT]) || (this->kbd.inkey[INKEY_RIGHTSHIFT])))) || WILLLOADLEVEL)
 	{
@@ -2607,7 +2608,7 @@ bool DANAE::ManageEditorControls()
 		this->kbd.inkey[INKEY_LEFTSHIFT]=0;
 		this->kbd.inkey[INKEY_RIGHTSHIFT]=0;
 	}
-
+	
 	// Save Level Command
 	if (EDITMODE)
 		if (((this->kbd.inkey[INKEY_S]) && ((this->kbd.inkey[INKEY_LEFTSHIFT]) || (this->kbd.inkey[INKEY_RIGHTSHIFT]))) || WILLSAVELEVEL)
@@ -2630,7 +2631,7 @@ bool DANAE::ManageEditorControls()
 				this->kbd.inkey[INKEY_LEFTSHIFT]=0;
 				this->kbd.inkey[INKEY_RIGHTSHIFT]=0;
 		}
-
+	
 		// PATHWAYS edition Sub-Commands
 		if (EDITION==EDITION_PATHWAYS)
 		{
@@ -2778,7 +2779,7 @@ bool DANAE::ManageEditorControls()
 
 			if (this->kbd.inkey[INKEY_N])
 			{
-				EERIE_3D pos;
+				Vec3f pos;
 				pos.x=player.pos.x-(float)EEsin(radians(player.angle.b))*150.f;
 				pos.z=player.pos.z+(float)EEcos(radians(player.angle.b))*150.f;
 				pos.y=player.pos.y+80.f;		
@@ -2806,7 +2807,7 @@ bool DANAE::ManageEditorControls()
 				if ((ARX_PATHS_SelectedAP!=NULL) && (ARX_PATHS_SelectedNum!=-1))
 				{
 					long v=ARX_PATHS_AddPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum);
-					EERIE_3D pos;
+					Vec3f pos;
 
 					if (v<=2)
 					{
@@ -2833,7 +2834,7 @@ bool DANAE::ManageEditorControls()
 				this->kbd.inkey[INKEY_SPACE]=0;
 			}
 		}
-
+	
 		// LightSources Edition Key/Mouse Management -------------------------------
 	if (EDITION == EDITION_LIGHTS)
 		{
@@ -3026,7 +3027,7 @@ bool DANAE::ManageEditorControls()
 				this->kbd.inkey[INKEY_PADMINUS]=0;
 			}
 	}
-
+	
 	// Particles Edition Key/Mouse Management -------------------------------
 	if ((EDITION==EDITION_PARTICLES) && EDITMODE)
 	{
@@ -3114,7 +3115,7 @@ bool DANAE::ManageEditorControls()
 			this->kbd.inkey[INKEY_PADMINUS]=0;
 		}
 	}
-
+	
 	// NODES Edition Key/Mouse Management -------------------------------
 	if ((EDITION==EDITION_NODES) && (EDITMODE))
 	{
@@ -3301,7 +3302,7 @@ bool DANAE::ManageEditorControls()
 				this->kbd.inkey[INKEY_PADMINUS]=0;
 			}
 	}
-
+	
 	// Fog Key/Mouse Management -------------------------------
 	if ((EDITION==EDITION_FOGS) && (EDITMODE))
 	{
@@ -3349,7 +3350,7 @@ bool DANAE::ManageEditorControls()
 				fogs[LastSelectedFog].move.x=1.f;
 				fogs[LastSelectedFog].move.y=0.f;
 				fogs[LastSelectedFog].move.z=0.f;
-				EERIE_3D out;
+				Vec3f out;
 				_YRotatePoint(&fogs[LastSelectedFog].move,&out,EEcos(radians(MAKEANGLE(fogs[LastSelectedFog].angle.b))),EEsin(radians(MAKEANGLE(fogs[LastSelectedFog].angle.b))));
 				_XRotatePoint(&out,&fogs[LastSelectedFog].move,EEcos(radians(MAKEANGLE(fogs[LastSelectedFog].angle.a))),EEsin(radians(MAKEANGLE(fogs[LastSelectedFog].angle.a))));
 				
@@ -3460,7 +3461,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD2])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=(float)EEsin(radians(player.angle.b))*val;
 			trans.y=0.f;
 			trans.z=-(float)EEcos(radians(player.angle.b))*val;
@@ -3470,7 +3471,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD6])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 			trans.y=0.f;
 			trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b-90.f)))*val;
@@ -3480,7 +3481,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD4])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 			trans.y=0.f;
 			trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b+90.f)))*val;
@@ -3490,7 +3491,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADADD])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=0.f;
 			trans.y=-val;
 			trans.z=0.f;
@@ -3500,7 +3501,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADMINUS])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=0.f;
 			trans.y=val;
 			trans.z=0.f;
@@ -3508,7 +3509,7 @@ bool DANAE::ManageEditorControls()
 			this->kbd.inkey[INKEY_PADMINUS]=0;
 		}
 	}
-
+	
 	// IO Edition Key/Mouse Management -------------------------------
 	if (EDITMODE)
 	{
@@ -3555,7 +3556,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD8])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			float ag=GetNearestSnappedAngle(player.angle.b);
 			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
@@ -3567,7 +3568,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD2])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			float ag=GetNearestSnappedAngle(player.angle.b);
 			ag=radians(ag);
 			trans.x=(float)EEsin(ag)*val;
@@ -3579,7 +3580,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD6])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			float ag=GetNearestSnappedAngle(MAKEANGLE(player.angle.b-90.f));
 			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
@@ -3591,7 +3592,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PAD4])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			float ag=GetNearestSnappedAngle(MAKEANGLE(player.angle.b+90.f));
 			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
@@ -3603,7 +3604,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADADD])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=0.f;
 			trans.y=-val;
 			trans.z=0.f;
@@ -3613,7 +3614,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADMINUS])
 		{
-			EERIE_3D trans;
+			Vec3f trans;
 			trans.x=0.f;
 			trans.y=val;
 			trans.z=0.f;
@@ -3634,8 +3635,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADMULTIPLY])
 		{
-			EERIE_3D rot;
-			rot.a=rot.b=rot.g=0.f;
+			Anglef rot = Anglef::ZERO;
 
 			if (ObjectRotAxis==0) rot.b=val;
 			else if (ObjectRotAxis==1) rot.a=val;
@@ -3647,8 +3647,7 @@ bool DANAE::ManageEditorControls()
 
 		if (this->kbd.inkey[INKEY_PADDIVIDE])
 		{
-			EERIE_3D rot;
-			rot.a=rot.b=rot.g=0.f;
+			Anglef rot = Anglef::ZERO;
 
 			if (ObjectRotAxis==0) rot.b=-val;
 			else if (ObjectRotAxis==1) rot.a=-val;
@@ -3658,7 +3657,7 @@ bool DANAE::ManageEditorControls()
 			this->kbd.inkey[INKEY_PADDIVIDE]=0;
 		}
 	}
-
+	
 	if (EDITMODE)
 		if ((this->kbd.inkey[INKEY_RETURN])
 			&& (ValidIONum(LastSelectedIONum)))
@@ -3689,8 +3688,10 @@ bool DANAE::ManageEditorControls()
 
 			this->kbd.inkey[INKEY_RETURN]=0;
 		}
-		
-		return false;
+	
+#endif // BUILD_EDITOR
+	
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -3843,12 +3844,9 @@ void DANAE::ManagePlayerControls()
 		}
 	}
 
-	long NOMOREMOVES=0;
 	float MoveDiv;
-	float FD;
-	FD = 1.f;
 
-	EERIE_3D tm;
+	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
 
 	// Checks STEALTH Key Status.
@@ -3860,18 +3858,18 @@ void DANAE::ManagePlayerControls()
 	else MoveDiv=0.0333333f;
 
 	{
-		float tr;
+		long NOMOREMOVES=0;
+		float FD = 1.f;
 
 		if (eyeball.exist==2)
 		{
 			FD=18.f;
-
-			EERIE_3D old = eyeball.pos;
+			Vec3f old = eyeball.pos;
 
 			// Checks WALK_FORWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKFORWARD) )
 			{
-				tr=radians(eyeball.angle.b);
+				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*20.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -3881,7 +3879,7 @@ void DANAE::ManagePlayerControls()
 			// Checks WALK_BACKWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKBACKWARD) )
 			{
-				tr=radians(eyeball.angle.b);
+				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=-(float)EEcos(tr)*20.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -3893,7 +3891,7 @@ void DANAE::ManagePlayerControls()
 				(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNLEFT)))
 				&& !NOMOREMOVES)
 			{
-				tr=radians(MAKEANGLE(eyeball.angle.b+90.f));
+				float tr=radians(MAKEANGLE(eyeball.angle.b+90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*10.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -3905,7 +3903,7 @@ void DANAE::ManagePlayerControls()
 				(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNRIGHT)))
 				&& !NOMOREMOVES)
 			{
-				tr=radians(MAKEANGLE(eyeball.angle.b-90.f));
+				float tr=radians(MAKEANGLE(eyeball.angle.b-90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				//eyeball.pos.y+=FD*0.33f;
 				eyeball.pos.z+=(float)EEcos(tr)*10.f*(float)FD*0.033f;
@@ -3941,7 +3939,7 @@ void DANAE::ManagePlayerControls()
 			}
 			else
 			{
-				memcpy(&eyeball.pos,&old,sizeof(EERIE_3D));
+				eyeball.pos = old;
 			}
 		}
 
@@ -4075,8 +4073,11 @@ void DANAE::ManagePlayerControls()
 	}
 
 	// To remove for FINAL_RELEASE---------------------------------------
-	if (ALLOW_CHEATS || GAME_EDITOR)
-	{
+#ifdef BUILD_EDITOR
+	if(ALLOW_CHEATS || GAME_EDITOR) {
+#else
+	if(ALLOW_CHEATS) {
+#endif
 		if (this->kbd.inkey[INKEY_PAD5])
 		{
 			moveto.y=player.pos.y=FirstPolyPosY(player.pos.x,player.pos.z)-180.f;
@@ -4596,7 +4597,9 @@ void DANAE::ManagePlayerControls()
 	  
 	  //	Check For Combat Mode ON/OFF
 	  if (	(EERIEMouseButton & 1)
+#ifdef BUILD_EDITOR
 		  &&	(EDITION==EDITION_IO)
+#endif
 		  &&	(!(player.Interface & INTER_COMBATMODE))
 	        &&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) 
 		  &&	(!EDITMODE)	
@@ -4894,7 +4897,7 @@ void DANAE::ManageKeyMouse()
 				pos.x=EERIEMouseX;
 				pos.y=EERIEMouseY;
 
-				EERIE_S2D poss;
+				Vec2s poss;
 
 				ARX_CHECK_SHORT(pos.x);
 				ARX_CHECK_SHORT(pos.y);
@@ -5210,9 +5213,8 @@ void DANAE::ManageKeyMouse()
 	}
 
 	ARX_Menu_Manage();
-	EERIE_3D tm;
+	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
-	INTERACTIVE_OBJ * t;
 
 	MOVETYPE=MOVE_WAIT;
 
@@ -5512,12 +5514,12 @@ void DANAE::ManageKeyMouse()
 	}
 
 	{
-
+#ifdef BUILD_EDITOR
 		if (EDITMODE)
 		{
 			if (EERIEMouseButton & 1)
 			{
-				t = FlyingOverIO;
+				INTERACTIVE_OBJ * t = FlyingOverIO;
 
 				if (t!=NULL)
 				{
@@ -5525,9 +5527,9 @@ void DANAE::ManageKeyMouse()
 					EERIEMouseButton&=~1;
 				}
 			}
-		}
-		////////
-		else if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE))
+		} else
+#endif
+		if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE))
 			{
 				if (DRAGINTER == NULL) {
 					if ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4))
@@ -5593,14 +5595,10 @@ void DANAE::ManageKeyMouse()
 									ARX_CHECK_LONG( ( 120 + 500 ) * Xratio );
 									ARX_CHECK_LONG( ( 14  + 200 ) * Yratio );
 									//------------
-									RECT rDraw	=	{	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ),
-														ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ),
-														ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
-								                    ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
-								             };
+									Rect rDraw(Rect::Num(120 * Xratio), Rect::Num(14 * Yratio), Rect::Num((120 + 500) * Xratio), Rect::Num((14 + 200) * Yratio));
 
 									pTextManage->Clear();
-								pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,RGB(232,204,143),2000+WILLADDSPEECH.length()*60);
+								pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,Color(232,204,143),2000+WILLADDSPEECH.length()*60);
 								}
 
 								WILLADDSPEECH.clear();
@@ -5672,14 +5670,10 @@ void DANAE::ManageKeyMouse()
 										ARX_CHECK_LONG( ( 14 + 200 ) * Yratio );
 										//------------
 
-										RECT rDraw = {	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ),
-														ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ),
-														ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
-								                ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
-								             };
+										Rect rDraw(Rect::Num(120 * Xratio), Rect::Num(14 * Yratio), Rect::Num((120 + 500 ) * Xratio), Rect::Num((14 + 200) * Yratio));
 
 										pTextManage->Clear();
-										pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,RGB(232,204,143));
+										pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,Color(232,204,143));
 									}
 
 									WILLADDSPEECH.clear();
@@ -5697,6 +5691,8 @@ void DANAE::ManageKeyMouse()
 					ARX_SPEECH_Add(NULL, WILLADDSPEECH);
 					WILLADDSPEECH.clear();
 				}
+
+#ifdef BUILD_EDITOR
 
 				///////
 		if ((EERIEMouseButton & 4) && (EDITMODE))
@@ -5756,8 +5752,6 @@ void DANAE::ManageKeyMouse()
 
 					this->kbd.inkey[41]=0;
 				}
-
-#ifndef NOEDITOR
 
 				if (!FINAL_COMMERCIAL_DEMO)
 				{
@@ -5834,8 +5828,6 @@ void DANAE::ManageKeyMouse()
 						this->kbd.inkey[INKEY_F8]=0;
 					}
 
-#endif
-
 				}
 
 				if (GAME_EDITOR)
@@ -5885,9 +5877,7 @@ void DANAE::ManageKeyMouse()
 
 							if (this->kbd.inkey[INKEY_7])
 							{
-								unsigned long tim = ARX_TIME_GetUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
 								RecalcLightZone(player.pos.x, player.pos.z,12);
-								tim=ARX_TIME_GetUL() - tim;//treat warning C4244 conversion from 'float' to 'unsigned long'
 								this->kbd.inkey[INKEY_7]=0;
 							}
 
@@ -5957,8 +5947,8 @@ void DANAE::ManageKeyMouse()
 								else
 								{
 									ARX_SPELLS_Launch(SPELL_SPEED,0);
-									tm.x+=-(float)EEsin(radians(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
-									tm.z+=+(float)EEcos(radians(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
+									tm.x+=-(float)EEsin(radians(player.pos.y))*(float)FrameDiff*( 1.0f / 3 );
+									tm.z+=+(float)EEcos(radians(player.pos.y))*(float)FrameDiff*( 1.0f / 3 );
 								}
 
 								this->kbd.inkey[INKEY_4]=0;
@@ -5988,6 +5978,9 @@ void DANAE::ManageKeyMouse()
 						}
 					}
 				}
+		
+#endif // BUILD_EDITOR
+		
 	}
 }
 
@@ -6092,25 +6085,18 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 							D3DCOLORWHITE);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
-					else
-					{
-						if (!bItemSteal && (io->ioflags & IO_CAN_COMBINE))
-						{
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-							float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-							DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
-
-							EERIEDrawBitmap(
-								px,
-								py,
-							                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-								0.001f,
-								tc,
-								(dwColor<<16)|(dwColor<<8)|dwColor);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
+					else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						
+						float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
+						DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
+						
+						EERIEDrawBitmap(
+							px,
+							py,
+							INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, (dwColor<<16)|(dwColor<<8)|dwColor);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
 					if (tc2!=NULL)
@@ -6205,10 +6191,8 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 							EERIEDrawBitmap(
 								px,
 								py,
-
 								INTERFACE_RATIO_DWORD(tc->m_dwWidth),
 								INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-
 								0.001f,
 								tc,(dwColor<<16)|(dwColor<<8)|dwColor);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -6632,8 +6616,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	{
 		if (Book_Mode == BOOKMODE_SPELLS)
 		{
-			EERIE_3D angle;
-			EERIE_3D pos;
+			Anglef angle;
+			Vec3f pos;
 
 			EERIE_LIGHT tl;
 			memcpy(&tl,&DynLight[0],sizeof(EERIE_LIGHT));
@@ -6692,7 +6676,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					// First draw the lace
 					angle.b=0.f;
 
-					if (player.rune_flags & (1<<i))
+					if (player.rune_flags & (RuneFlag)(1<<i))
 					{
 						DrawEERIEInter(necklace.lacet,&angle,&pos,NULL);
 
@@ -6900,7 +6884,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 					while ((j < 4) && (spellicons[i].symbols[j] != RUNE_NONE))
 					{
-						if (!(player.rune_flags & (1<<spellicons[i].symbols[j])))
+						if (!(player.rune_flags & (RuneFlag)(1<<spellicons[i].symbols[j])))
 						{
 							bOk = false;
 						}
@@ -6936,7 +6920,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									12,
 									(DANAECENTERX)*0.82f,
 									spellicons[i].description,
-									RGB(232,204,143),
+									Color(232,204,143),
 									1000,
 									0.01f,
 									2,
@@ -7042,11 +7026,7 @@ void QuestBook_Update()
 
 	ARX_CHECK_INT(fMinX);
 	ARX_CHECK_INT(fMinY);
-	RECT rRect;
-	rRect.left = 0;
-	rRect.top = 0;
-	rRect.right = ARX_CLEAN_WARN_CAST_INT(fMinX);
-	rRect.bottom = ARX_CLEAN_WARN_CAST_INT(fMinY);
+	Rect rRect(0, 0, Rect::Num(fMinX), Rect::Num(fMinY));
 
 	int lLenghtCurr = 0;
 	long lLenght = 0;
@@ -7256,14 +7236,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 	else
 	{
 		float x = 0;
-		float y = 0;
-
-		x = 0;
 		
 		if ( ITC.Get("playerbook") )
 		{
 			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
-			y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
+			float y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
 
 			DrawBookInterfaceItem( ITC.Get("playerbook"), x, y );//95.f+2.f,47.f+17.f);
 		}
@@ -7427,8 +7404,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		// calcul de la page de spells
 		if (Book_Mode == BOOKMODE_SPELLS)
 		{
-			max_onglet = 0;
-
 			for (size_t i = 0; i < SPELL_COUNT; ++i)
 			{
 				if (spellicons[i].bSecret == false)
@@ -7436,7 +7411,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					bool bOk = true;
 
 					for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
-						if(!(player.rune_flags & (1<<spellicons[i].symbols[j])))
+						if(!(player.rune_flags & (RuneFlag)(1<<spellicons[i].symbols[j])))
 							bOk = false;
 					}
 
@@ -7743,19 +7718,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 	{
 		FLYING_OVER = 0;
 		std::string tex;
-		COLORREF Color = RGB(0,0,0);
+		Color color(0, 0, 0);
 
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		std::stringstream ss;
 		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
 		tex = ss.str();
-		DrawBookTextCenter( hFontInBook, 398, 74, tex,Color );
+		DrawBookTextCenter(hFontInBook, 398, 74, tex, color);
 
 		std::stringstream ss2;
 		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
 		tex = ss2.str();
-		DrawBookTextCenter( hFontInBook, 510, 74, tex, Color );
+		DrawBookTextCenter(hFontInBook, 510, 74, tex, color);
 
 		if (MouseInBookRect(463, 74, 550, 94))
 			FLYING_OVER = WND_XP;
@@ -7943,7 +7918,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					                                   4,
 					                                   (DANAECENTERX)*0.82f,
 					                                   ss.str(),
-					                                   RGB(232+t,204+t,143+t),
+					                                   Color(232+t,204+t,143+t),
 					                                   1000,
 					                                   0.01f,
 					                                   3,
@@ -7956,7 +7931,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						4,
 						(DANAECENTERX)*0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
-						RGB(232+t,204+t,143+t),
+						Color(232+t,204+t,143+t),
 						1000,
 						0.01f,
 						3,
@@ -7976,71 +7951,71 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Strength<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Attribute_Strength>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Strength == 6)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 391, 129, tex, Color);
+		DrawBookTextCenter(hFontInBook, 391, 129, tex, color);
 		
 		ss3.str(""); // clear the stream
 		ss3 << player.Full_Attribute_Mind;
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Mind<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Attribute_Mind>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Mind == 6)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 440, 129, tex, Color);
+		DrawBookTextCenter(hFontInBook, 440, 129, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Attribute_Dexterity;
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Dexterity<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Attribute_Dexterity>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Dexterity == 6)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 490, 129, tex, Color);
+		DrawBookTextCenter(hFontInBook, 490, 129, tex, color);
 		ss3.str("");
 		ss3 << player.Full_Attribute_Constitution;
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Constitution<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Attribute_Constitution>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Constitution == 6)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 538, 129, tex, Color);
+		DrawBookTextCenter(hFontInBook, 538, 129, tex, color);
 
 		// Player Skills
 		ss3.str("");
@@ -8048,126 +8023,126 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Stealth<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Stealth>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Stealth == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 210, tex, Color);
+		DrawBookTextCenter(hFontInBook, 405, 210, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Mecanism;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Mecanism<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Mecanism>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Mecanism == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 210, tex, Color);
+		DrawBookTextCenter(hFontInBook, 469, 210, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Intuition;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Intuition<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Intuition>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Intuition == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 210, tex, Color);
+		DrawBookTextCenter(hFontInBook, 533, 210, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Etheral_Link;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Etheral_Link<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Etheral_Link>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Etheral_Link == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 265, tex, Color);
+		DrawBookTextCenter(hFontInBook, 405, 265, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Object_Knowledge;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Object_Knowledge<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Object_Knowledge>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Object_Knowledge == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 265, tex, Color);
+		DrawBookTextCenter(hFontInBook, 469, 265, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Casting;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Casting<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Casting>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Casting == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 265, tex, Color);
+		DrawBookTextCenter(hFontInBook, 533, 265, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Close_Combat;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Close_Combat<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Close_Combat>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Close_Combat == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 319, tex, Color);
+		DrawBookTextCenter(hFontInBook, 405, 319, tex, color);
 
 		
 		ss3.str("");
@@ -8175,36 +8150,36 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Projectile<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Projectile>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Projectile == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 319, tex, Color);
+		DrawBookTextCenter(hFontInBook, 469, 319, tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Defense;
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Defense<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_Skill_Defense>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Defense == 0)
-				Color = 0x000000FF;
+				color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 319, tex, Color);
+		DrawBookTextCenter(hFontInBook, 533, 319, tex, color);
 
 		// Secondary Attributes
 		std::stringstream ss4;
@@ -8213,36 +8188,36 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if ((player.Mod_maxlife>0.f) || (player.Full_maxlife > player.maxlife))
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter( hFontInBook, 324, 158, tex, Color );
+		DrawBookTextCenter( hFontInBook, 324, 158, tex, color );
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_maxmana);
 		tex = ss4.str();
 
 		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if ((player.Mod_maxmana>0.f) || (player.Full_maxmana > player.maxmana))
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter( hFontInBook, 324, 218, tex, Color );
+		DrawBookTextCenter( hFontInBook, 324, 218, tex, color );
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_damages);
 		tex = ss4.str();
 
 		if (player.Mod_damages<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_damages>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter(hFontInBook, 324, 278, tex, Color);
+		DrawBookTextCenter(hFontInBook, 324, 278, tex, color);
 
 		float ac = player.Full_armor_class;
 		ss4.str("");
@@ -8250,36 +8225,36 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_armor_class<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_armor_class>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 158, tex, Color);
+		DrawBookTextCenter(hFontInBook, 153, 158, tex, color);
 
 		ss4.str("");
 		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.Full_resist_magic );
 		tex = ss4.str();
 
 		if (player.Mod_resist_magic<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_resist_magic>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 218, tex, Color);
+		DrawBookTextCenter(hFontInBook, 153, 218, tex, color);
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp( player.Full_resist_poison );
 		tex = ss4.str();
 
 		if (player.Mod_resist_poison<0.f)
-			Color = 0x000000FF;
+			color = 0x000000FF;
 		else if (player.Mod_resist_poison>0.f)
-			Color = 0x00FF0000;
-		else Color = 0;
+			color = 0x00FF0000;
+		else color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 278, tex, Color);
+		DrawBookTextCenter(hFontInBook, 153, 278, tex, color);
 	}
 	else if (Book_Mode == BOOKMODE_MINIMAP)
 	{
@@ -8341,7 +8316,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (ARXmenu.currentmode==AMCM_OFF)
 			BOOKZOOM=0;
 
-		EERIE_3D pos;
+		Vec3f pos;
 		EERIE_LIGHT eLight1;
 		EERIE_LIGHT eLight2;
 		eLight1.pos.x=50.f;
@@ -9088,7 +9063,7 @@ void DANAE::DrawAllInterface()
 				{
 					ARX_INTERFACE_DrawInventory(sActiveInventory);
 
-					assert(ITC.Get("hero_inventory") != NULL);
+					arx_assert(ITC.Get("hero_inventory") != NULL);
 					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 					ARX_CHECK_INT(fCenterX);
@@ -9532,7 +9507,7 @@ void DANAE::DrawAllInterface()
 		}
 
 		count = (count2>count)?count2:count;
-		EERIE_3D pos;
+		Vec3f pos;
 		pos.x = DANAESIZX - ((count) * INTERFACE_RATIO(32));
 
 		if (CHANGE_LEVEL_ICON>-1) pos.x -= INTERFACE_RATIO(32);
@@ -9578,7 +9553,7 @@ void DANAE::DrawAllInterface()
 					ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, tc, tc2, pos.x, pos.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 				}
 
-				if (!(player.rune_flags & (1<<player.SpellToMemorize.iSpellSymbols[i])))
+				if (!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i])))
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -9619,17 +9594,17 @@ void DANAE::DrawAllInterface()
 
 		//---------------------------------------------------------------------
 		//RED GAUGE
-		unsigned long ulColor=0xFFFF0000;
-			float fSLID_VALUE_neg = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
+		unsigned long ulcolor=0xFFFF0000;
+		float fSLID_VALUE_neg = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
 
 		if (player.poison>0.f)
 		{
-				float val = min(player.poison, 0.2f) * 255.f * 5.f; 
+			float val = min(player.poison, 0.2f) * 255.f * 5.f; 
 			long g = val;
-			ulColor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
+			ulcolor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
 		}
 
-		EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, (1.f - fnl));
+		EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9691,11 +9666,11 @@ void DANAE::DrawAllInterface()
 					if (mecanism_tc && (MAGICMODE < 0) && (lNbToDrawMecanismCursor < 3))
 					{
 
-					long lColorMecanism=D3DRGB(1,1,1);
+					long lcolorMecanism=D3DRGB(1,1,1);
 
 					if(lTimeToDrawMecanismCursor>300)
 					{
-						lColorMecanism=0;
+						lcolorMecanism=0;
 
 						if(lTimeToDrawMecanismCursor>400)
 						{
@@ -9711,7 +9686,7 @@ void DANAE::DrawAllInterface()
 									INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
 									0.01f,
 									mecanism_tc,
-									lColorMecanism );
+									lcolorMecanism );
 				}
 
 					if (arrow_left_tc)
@@ -9719,7 +9694,7 @@ void DANAE::DrawAllInterface()
 
 					float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
 					float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-					long lColor=D3DRGB(.5f,.5f,.5f);
+					long lcolor=D3DRGB(.5f,.5f,.5f);
 					static float fArrowMove=0.f;
 					fArrowMove+=.5f*FrameDiff;
 
@@ -9734,7 +9709,7 @@ void DANAE::DrawAllInterface()
 									fSizeY,
 									0.01f,
 									arrow_left_tc,
-									lColor );
+									lcolor );
 
 					EERIEDrawBitmapUVs( DANAESIZX-fSizeX-fMove,		// Right
 										(DANAESIZY-fSizeY)*.5f,
@@ -9742,7 +9717,7 @@ void DANAE::DrawAllInterface()
 										fSizeY,
 										0.01f,
 										arrow_left_tc,
-										lColor,
+										lcolor,
 										1.f,0.f,
 										0.f,0.f,
 										1.f,1.f,
@@ -9754,7 +9729,7 @@ void DANAE::DrawAllInterface()
 										fSizeX,
 										0.01f,
 										arrow_left_tc,
-										lColor,
+										lcolor,
 										0.f,1.f,
 										0.f,0.f,
 										1.f,1.f,
@@ -9766,7 +9741,7 @@ void DANAE::DrawAllInterface()
 										fSizeX,
 										0.01f,
 										arrow_left_tc,
-										lColor,
+										lcolor,
 										1.f,1.f,
 										1.f,0.f,
 										0.f,1.f,
@@ -9809,7 +9784,7 @@ long Manage3DCursor(long flags)
 
 	if (!io) return 0;
 
-	EERIE_3D temp;
+	Anglef temp;
 
 	if (io->ioflags & IO_INVERTED)
 	{
@@ -9823,7 +9798,7 @@ long Manage3DCursor(long flags)
 	}
 
 	temp.g = 0;
-	EERIE_3D pos;
+	Vec3f pos;
 	float angle=radians(MAKEANGLE(player.angle.b));
 	float angle2=radians(MAKEANGLE(player.angle.b-90.f));
 				
@@ -9862,12 +9837,12 @@ long Manage3DCursor(long flags)
 				pos.y=player.pos.y;
 
 				{
-					EERIE_3D objcenter(0, 0, 0);
+					Vec3f objcenter(0, 0, 0);
 					float maxdist= 0.f;
 					float miny=  99999999.f;
 					float maxy= -99999999.f;
-					EERIE_3D minoff;
-					EERIE_3D maxoff;
+					Vec3f minoff;
+					Vec3f maxoff;
 					maxoff.x=minoff.x=io->obj->vertexlist[0].v.x;
 					maxoff.y=minoff.y=io->obj->vertexlist[0].v.y;
 					maxoff.z=minoff.z=io->obj->vertexlist[0].v.z;
@@ -9892,21 +9867,16 @@ long Manage3DCursor(long flags)
 					cyl.height=-50.f;
 					cyl.radius=40.f;
 
-					EERIE_3D orgn,dest,mvectx,mvecty;
-		mvectx.x = mvecty.x = -(float)EEsin(radians(player.angle.b - 90.f)); 
-		mvectx.y = mvecty.y = 0; 
-		mvectx.z = mvecty.z = +(float)EEcos(radians(player.angle.b - 90.f)); 
-					TRUEVector_Normalize(&mvectx);
+					Vec3f orgn,dest,mvectx;
+		mvectx.x = -(float)EEsin(radians(player.angle.b - 90.f)); 
+		mvectx.y = 0; 
+		mvectx.z = +(float)EEcos(radians(player.angle.b - 90.f)); 
+					mvectx.normalize();
 
-					float xmod,ymod;
-					xmod=(float)(DANAEMouse.x-DANAECENTERX)/(float)DANAECENTERX*160.f;
-					ymod=(float)(DANAEMouse.y-DANAECENTERY)/(float)DANAECENTERY*220.f;
-					mvectx.x*=xmod;
-					mvectx.y*=xmod;
-					mvectx.z*=xmod;
-		mvecty.x = 0;
-					mvecty.y=ymod;
-		mvecty.z = 0;
+					float xmod=(float)(DANAEMouse.x-DANAECENTERX)/(float)DANAECENTERX*160.f;
+					float ymod=(float)(DANAEMouse.y-DANAECENTERY)/(float)DANAECENTERY*220.f;
+					mvectx *= xmod;
+					Vec3f mvecty(0, ymod, 0);
 
 					orgn.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f
 		         + mvectx.x; 
@@ -9925,11 +9895,7 @@ long Manage3DCursor(long flags)
 					pos.y=orgn.y;
 					pos.z=orgn.z;
 
-					EERIE_3D movev;
-					movev.x=dest.x-orgn.x;
-					movev.y=dest.y-orgn.y;
-					movev.z=dest.z-orgn.z;
-		TRUEVector_Normalize(&movev);
+					Vec3f movev = (dest - orgn).getNormalized();
 
 					float lastanything = 0.f;
 					float height = -( maxy - miny );
@@ -9966,7 +9932,7 @@ long Manage3DCursor(long flags)
 					if ( maxdist > 150.f ) maxdist = 150.f;
 
 		bool			bCollidposNoInit = true;
-					EERIE_3D		collidpos;
+					Vec3f		collidpos;
 					EERIE_CYLINDER	cyl2;
 					float			inc			=	10.f;
 					long			iterating	=	40;
@@ -10027,7 +9993,7 @@ long Manage3DCursor(long flags)
 						return 0;
 					}
 
-		if ((iterating == -1) && (EEDistance3D(&player.pos, &pos) < 300.f))
+		if ((iterating == -1) && closerThan(player.pos, pos, 300.f))
 					{
 						if ( flags & 1 )
 						{
@@ -10048,11 +10014,7 @@ long Manage3DCursor(long flags)
 
 
 
-							EERIE_3D vec;
-							vec.x			= collidpos.x - pos.x;
-							vec.y			= collidpos.y - pos.y;
-							vec.z			= collidpos.z - pos.z;
-				TRUEVector_Normalize(&vec);
+							Vec3f vec = (collidpos - pos).getNormalized();
 
 							if (SPECIAL_DRAGINTER_RENDER)
 							{
@@ -10093,10 +10055,7 @@ long Manage3DCursor(long flags)
 								ARX_PLAYER_Remove_Invisibility();
 								io->obj->pbox->active=1;
 								io->obj->pbox->stopcount=0;
-								float vx=-((float)DANAEMouse.x-(float)subj.centerx);
-
-								vx/=3.f;
-								EERIE_3D pos;
+								Vec3f pos;
 					pos.x = io->pos.x = collidpos.x;
 					pos.z = io->pos.z = collidpos.z;
 								pos.y=io->pos.y=collidpos.y;
@@ -10110,9 +10069,9 @@ long Manage3DCursor(long flags)
 								movev.x*=0.0001f;
 								movev.z*=0.0001f;
 								movev.y=0.1f;
-								EERIE_3D viewvector = movev;
+								Vec3f viewvector = movev;
 
-								EERIE_3D angle;
+								Anglef angle;
 								angle.a=temp.a;
 								angle.b=temp.b;
 								angle.g=temp.g;
@@ -10221,7 +10180,6 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 	if (flag || ((!BLOCK_PLAYER_CONTROLS) &&
 		(!PLAYER_INTERFACE_HIDE_COUNT)))
 	{
-		RECT rect;
 
 		if (!SPECIAL_DRAGINTER_RENDER)
 			GRenderer->SetCulling(Renderer::CullNone);
@@ -10365,27 +10323,29 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 						POSY -= 16.f;
 					break;
-				case CURSOR_FIREBALLAIM:
+				case CURSOR_FIREBALLAIM: {
 					surf=ITC.Get("target_on");
 
+					Vec2i size;
 					if (surf)
 					{
-						rect.right	=	surf->m_dwWidth;
-						rect.bottom	=	surf->m_dwHeight;
+						size.x	=	surf->m_dwWidth;
+						size.y	=	surf->m_dwHeight;
 					}
 
 					else
 					{
 						ARX_CHECK_NO_ENTRY();
-						rect.right = 0;
-						rect.bottom = 0;
+						size.x = 0;
+						size.y = 0;
 					}
 
 
 
-					POSX = 320.f - rect.right / 2.f;
-					POSY = 280.f - rect.bottom / 2.f;
+					POSX = 320.f - size.x / 2.f;
+					POSY = 280.f - size.y / 2.f;
 					break;
+				}
 				case CURSOR_INTERACTION_ON:
 
 					ARX_CHECK_LONG( Original_framedelay );
@@ -10635,7 +10595,6 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				if (!(player.Interface & INTER_COMBATMODE))
 				{
 					CURCURPOS=0;
-					float POSX, POSY;
 
 					surf = pTCCrossHair;
 
@@ -10649,8 +10608,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-						POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
-						POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
+						float POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
+						float POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
 
 						D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
 

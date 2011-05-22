@@ -49,8 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Mesh.h"
 
-#include "io/IO.h"
-
 using std::min;
 using std::max;
 
@@ -65,13 +63,11 @@ struct TODRAWLATER
 long curdrawlater=0;
 #define MAX_DRAWLATER 256
 TODRAWLATER tdl[MAX_DRAWLATER];
-long DBGSETTEXTURE=0;
- 
 
 long ZMAPMODE=1;
 TextureContainer * Zmap;
-EERIE_3D SPRmins;
-EERIE_3D SPRmaxs;
+Vec3f SPRmins;
+Vec3f SPRmaxs;
 
 extern long REFLECTFX;
 extern long WATERFX;
@@ -134,11 +130,10 @@ struct D3DTLVERTEX2UV
 };
 
 
-void CopyVertices(EERIEPOLY * ep,long to, long from)
-{
-	memcpy(&ep->v[to],&ep->v[from],sizeof(D3DTLVERTEX));
-	memcpy(&ep->tv[to],&ep->tv[from],sizeof(D3DTLVERTEX));
-	memcpy(&ep->nrml[to],&ep->nrml[from],sizeof(EERIE_3D));
+void CopyVertices(EERIEPOLY * ep,long to, long from) {
+	ep->v[to] = ep->v[from];
+	ep->tv[to] = ep->tv[from];
+	ep->nrml[to] = ep->nrml[from];
 }
  
 bool NearlyEqual(float a,float b)
@@ -177,7 +172,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 	CalcFaceNormal(ep,ep->v);
 
-	if (EEfabs(Vector_DotProduct(&ep->norm,&ep2->norm))<1.f-tolerance) return false;
+	if (EEfabs(ep->norm dot ep2->norm) < 1.f - tolerance) return false;
 	
 	for (long i=0;i<3;i++)
 	{
@@ -296,11 +291,11 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	for (long zz=dz;zz<=fz;zz++)
 	for (long xx=dx;xx<=fx;xx++)
 	{
-		long type,val1,val2;
+		long val1;
 
 		if (COMPUTE_PORTALS)
 		{
-
+			long type, val2;
 			if (!GetNameInfo(eobj->name, type, val1, val2))
 				return false;
 
@@ -663,19 +658,7 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 
 	if (tc->delayed_nb>=tc->delayed_max)
 	{
-		while(true)
-		{
-			tc->delayed=(DELAYED_PRIM *)realloc(tc->delayed,sizeof(DELAYED_PRIM)*(tc->delayed_nb+1));
-
-			if (!tc->delayed) 
-			{
-				if (HERMES_Memory_Emergency_Out(sizeof(DELAYED_PRIM)*(tc->delayed_nb+1),"tc->delayed"))
-					continue; // Try again
-
-					break; // Got the memory we wanted, break out
-			}
-		}
-
+		tc->delayed=(DELAYED_PRIM *)realloc(tc->delayed,sizeof(DELAYED_PRIM)*(tc->delayed_nb+1));
 		tc->delayed_max=tc->delayed_nb+1;
 	}
 
@@ -683,9 +666,6 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 	del[tc->delayed_nb].data=ep;
 	tc->delayed_nb++;
 }
-
-//*************************************************************************************
-//*************************************************************************************
 
 void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 {
@@ -701,9 +681,6 @@ void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 	EERIEDRAWPRIM(D3DPT_LINELIST ,	D3DFVF_TLVERTEX,tv, 2,  0  );	
 
 }
-
-//*************************************************************************************
-//*************************************************************************************
 
 void EERIEDraw2DLine(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
@@ -759,7 +736,7 @@ void EERIEDrawFill2DRectDegrad(float x0,float y0,float x1,float y1,float z, D3DC
 
 void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	EERIE_3D from,to;
+	Vec3f from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
@@ -798,7 +775,7 @@ void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col)
 
 void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	EERIE_3D from,to;
+	Vec3f from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
@@ -841,9 +818,9 @@ void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
+void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col)
 {
-	EERIE_3D vect;
+	Vec3f vect;
 	vect.x=dest->x-orgn->x;
 	vect.y=dest->y-orgn->y;
 	vect.z=dest->z-orgn->z;
@@ -855,7 +832,7 @@ void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 	vect.x*=om;
 	vect.y*=om;
 	vect.z*=om;
-	EERIE_3D cpos;
+	Vec3f cpos;
 	cpos.x=orgn->x;
 	cpos.y=orgn->y;
 	cpos.z=orgn->z;
@@ -863,7 +840,7 @@ void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 	while (m>0)
 	{
 		float dep=std::min(m,30.f);
-		EERIE_3D tpos = cpos + (vect * dep);
+		Vec3f tpos = cpos + (vect * dep);
 		EERIEDraw3DLine(&cpos,&tpos,col);
 		cpos = tpos;
 		m-=dep;
@@ -872,7 +849,7 @@ void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDraw3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col)
+void EERIEDraw3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col)
 {
 	D3DTLVERTEX v[2];
 	D3DTLVERTEX in;
@@ -959,8 +936,6 @@ void EERIEDrawSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR c
 void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos,float rot)
 {
 	D3DTLVERTEX out;
-	register float tt;
-		
 	EERIETreatPoint2(in, &out);
 	
 	if ((out.sz>0.f) && (out.sz<1000.f))
@@ -996,12 +971,11 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3D
 
 		SPRmaxs.z = SPRmins.z = out.sz; 
 
-		for (long i=0;i<4;i++)
-		{
-			tt=radians(MAKEANGLE(rot+90.f*i+45+90));
-			v[i].sx=EEsin(tt)*t+out.sx;
-			v[i].sy=EEcos(tt)*t+out.sy;
-		}		
+		for(long i=0;i<4;i++) {
+			float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
+			v[i].sx = EEsin(tt) * t + out.sx;
+			v[i].sy = EEcos(tt) * t + out.sy;
+		}
 
 		GRenderer->SetTexture(0, tex);
 		EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, 
@@ -1232,21 +1206,20 @@ void EERIEDrawBitmap2(float x,float y,float sx,float sy,float z,TextureContainer
 
 void EERIEDrawBitmap2DecalY(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col,float _fDeltaY)
 {
-	float smu,smv;
+	float smu;
 	float fDepv;
 	float fEndu,fEndv;
 
 	if (tex)
 	{
 		smu=tex->m_hdx;
-		smv=tex->m_hdy;
 		fEndu=tex->m_dx;
 		fEndv=tex->m_dy;
 		fDepv=tex->m_hdy+(tex->m_dy-tex->m_hdy)*_fDeltaY;
 	}
 	else
 	{
-		smu=smv=0.f;
+		smu=0.f;
 		fDepv=0.f;
 		fEndu=fEndv=0.f;
 	}

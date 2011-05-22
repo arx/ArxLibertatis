@@ -410,7 +410,7 @@ aalError OpenALSource::setPan(float p) {
 	return AAL_OK;
 }
 
-aalError OpenALSource::setPosition(const Vector3f & position) {
+aalError OpenALSource::setPosition(const Vec3f & position) {
 	
 	if(!alIsSource(source) || !(channel.flags & FLAG_POSITION)) {
 		return AAL_ERROR_INIT;
@@ -424,7 +424,7 @@ aalError OpenALSource::setPosition(const Vector3f & position) {
 	return AAL_OK;
 }
 
-aalError OpenALSource::setVelocity(const Vector3f & velocity) {
+aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 	
 	if(!alIsSource(source) || !(channel.flags & FLAG_VELOCITY)) {
 		return AAL_ERROR_INIT;
@@ -438,7 +438,7 @@ aalError OpenALSource::setVelocity(const Vector3f & velocity) {
 	return AAL_OK;
 }
 
-aalError OpenALSource::setDirection(const Vector3f & direction) {
+aalError OpenALSource::setDirection(const Vec3f & direction) {
 	
 	if(!alIsSource(source) || !(channel.flags & FLAG_DIRECTION)) {
 		return AAL_ERROR_INIT;
@@ -611,7 +611,7 @@ bool OpenALSource::updateCulling() {
 	alGetSourcef(source, AL_MAX_DISTANCE, &max);
 	AL_CHECK_ERROR_N("getting source max distance", return tooFar;)
 	
-	Vector3f listener_pos;
+	Vec3f listener_pos;
 	if(channel.flags & FLAG_RELATIVE) {
 		listener_pos.x = listener_pos.y = listener_pos.z = 0.0F;
 	} else {
@@ -619,11 +619,11 @@ bool OpenALSource::updateCulling() {
 		AL_CHECK_ERROR_N("getting listener position", return tooFar;)
 	}
 	
-	float dist =  channel.position.GetDistanceFrom(listener_pos);
+	float d = dist(channel.position, listener_pos);
 	
 	if(tooFar) {
 		
-		if(dist > max) {
+		if(d > max) {
 			return true;
 		}
 		
@@ -634,7 +634,7 @@ bool OpenALSource::updateCulling() {
 		
 	} else {
 		
-		if(dist <= max) {
+		if(d <= max) {
 			return false;
 		}
 		
@@ -768,6 +768,7 @@ aalError OpenALSource::updateBuffers() {
 	read = newRead;
 	
 	arx_assert(time >= oldTime);
+	ARX_UNUSED(oldTime);
 	
 	while(true) {
 		

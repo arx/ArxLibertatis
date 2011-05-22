@@ -29,9 +29,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <vector>
 
+#include "platform/math/Vector3.h"
+
 struct _ANCHOR_DATA;
 struct EERIE_LIGHT;
-struct EERIE_3D;
 
 
 class PathFinder {
@@ -90,7 +91,7 @@ public:
 	 * @param stealth True if the path should avoid light sources.
 	 * @return true if a path was found.
 	 */
-	bool flee(NodeId from, const EERIE_3D & danger, float safeDistance, Result & rlist, bool stealth = false) const;
+	bool flee(NodeId from, const Vec3f & danger, float safeDistance, Result & rlist, bool stealth = false) const;
 	
 	/**
 	 * Wander around and then return to the start node.
@@ -111,7 +112,7 @@ public:
 	 * @param stealth True if the path should avoid light sources.
 	 * @return true if a path was found.
 	 **/
-	bool lookFor(NodeId from, const EERIE_3D & pos, float radius, Result & rlist, bool stealth = false) const;
+	bool lookFor(NodeId from, const Vec3f & pos, float radius, Result & rlist, bool stealth = false) const;
 	
 private:
 	
@@ -123,8 +124,8 @@ private:
 	 * @return the best node (lowest cost) from open list or NULL if the list is empty
 	 **/
 	static void buildPath(const Node & node, Result & rlist);
-	float getIlluminationCost(const EERIE_3D & pos) const;
-	NodeId getNearestNode(const EERIE_3D & pos) const;
+	float getIlluminationCost(const Vec3f & pos) const;
+	NodeId getNearestNode(const Vec3f & pos) const;
 	
 	float radius;
 	float height;

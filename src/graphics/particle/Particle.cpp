@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using namespace std;
 
 //-----------------------------------------------------------------------------
-CParticle::CParticle()
+Particle::Particle()
 {
 	p3Pos.x = frand2() * 5;
 	p3Pos.y = frand2() * 5;
@@ -68,13 +68,13 @@ CParticle::CParticle()
 }
 
 //-----------------------------------------------------------------------------
-CParticle::~CParticle()
+Particle::~Particle()
 {
  
 }
 
 //-----------------------------------------------------------------------------
-void CParticle::Regen()
+void Particle::Regen()
 {
 	p3OldPos.x = p3Pos.x = 0;
 	p3OldPos.y = p3Pos.y = 0;
@@ -87,7 +87,7 @@ void CParticle::Regen()
 }
 
 //-----------------------------------------------------------------------------
-void CParticle::Validate()
+void Particle::Validate()
 {
 	if (fSize < 1)
 		fSize = 1;
@@ -121,7 +121,7 @@ void CParticle::Validate()
 }
 
 //-----------------------------------------------------------------------------
-void CParticle::Update(long _lTime)
+void Particle::Update(long _lTime)
 {
 	ulTime += _lTime;
 	iTexTime += _lTime;

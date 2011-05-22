@@ -57,9 +57,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/Fog.h"
 
+#include "animation/Animation.h"
+
 #include "core/Config.h"
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "gui/MenuWidgets.h"
 
@@ -68,7 +70,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 EERIE_3DOBJ * fogobj = NULL;
+
+#ifdef BUILD_EDITOR
 extern FOG_DEF fogcopy;
+#endif
+
 FOG_DEF fogs[MAX_FOG];
 
 //*************************************************************************************
@@ -82,6 +88,7 @@ void ARX_FOGS_Set_Object(EERIE_3DOBJ * _fogobj)
 //*************************************************************************************
 void ARX_FOGS_FirstInit()
 {
+#ifdef BUILD_EDITOR
 	memset(&fogcopy, 0, sizeof(FOG_DEF));
 	fogcopy.frequency = 17.f;
 	fogcopy.rgb.r = 0.3f;
@@ -92,6 +99,7 @@ void ARX_FOGS_FirstInit()
 	fogcopy.size = 80.f;
 	fogcopy.speed = 1.f;
 	fogcopy.tolive = 4500;
+#endif
 	ARX_FOGS_Clear();
 }
 //*************************************************************************************
@@ -105,7 +113,7 @@ void ARX_FOGS_Clear()
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_FOGS_TranslateSelected(EERIE_3D * trans)
+void ARX_FOGS_TranslateSelected(Vec3f * trans)
 {
 	for (long i = 0; i < MAX_FOG; i++)
 	{
@@ -180,7 +188,7 @@ long ARX_FOGS_Count()
 void ARX_FOGS_TimeReset()
 {
 }
-void AddPoisonFog(EERIE_3D * pos, float power)
+void AddPoisonFog(Vec3f * pos, float power)
 {
 	int iDiv = 4 - config.video.levelOfDetail;
 
@@ -297,7 +305,7 @@ void ARX_FOGS_Render() {
 //*************************************************************************************
 void ARX_FOGS_RenderAll()
 {
-	EERIE_3D angle(0, 0, 0);
+	Anglef angle = Anglef::ZERO;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -313,7 +321,7 @@ void ARX_FOGS_RenderAll()
 
 			if (fogs[i].special & FOG_DIRECTIONAL)
 			{
-				EERIE_3D orgn, dest;
+				Vec3f orgn, dest;
 				orgn.x = fogs[i].pos.x;
 				orgn.y = fogs[i].pos.y;
 				orgn.z = fogs[i].pos.z;

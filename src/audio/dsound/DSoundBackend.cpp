@@ -296,7 +296,7 @@ aalError DSoundBackend::setRolloffFactor(float factor) {
 	return AAL_OK;
 }
 
-aalError DSoundBackend::setListenerPosition(const Vector3f & position) {
+aalError DSoundBackend::setListenerPosition(const Vec3f & position) {
 	
 	if(FAILED(listener->SetPosition(position.x, position.y, position.z, DS3D_DEFERRED))) {
 		return AAL_ERROR_SYSTEM;
@@ -305,7 +305,7 @@ aalError DSoundBackend::setListenerPosition(const Vector3f & position) {
 	return AAL_OK;
 }
 
-aalError DSoundBackend::setListenerOrientation(const Vector3f & front, const Vector3f & up) {
+aalError DSoundBackend::setListenerOrientation(const Vec3f & front, const Vec3f & up) {
 	
 	if(FAILED(listener->SetOrientation(front.x, front.y, front.z, up.x, up.y, up.z, DS3D_DEFERRED))) {
 		return AAL_ERROR_SYSTEM;

@@ -56,11 +56,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells02.h"
 
-#include <cassert>
 #include <climits>
 
 #include "core/Core.h"
-#include "core/Time.h"
 
 #include "game/Spells.h"
 #include "game/Player.h"
@@ -71,18 +69,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleParams.h"
+#include "graphics/particle/ParticleSystem.h"
 
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
-extern CParticleManager * pParticleManager;
+extern ParticleManager * pParticleManager;
 
 CHeal::CHeal()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	pPS = new CParticleSystem();
+	pPS = new ParticleSystem();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +133,7 @@ void CHeal::Create()
 	}
 
 	pPS->SetPos(eSrc);
-	CParticleParams cp;
+	ParticleParams cp;
 	cp.iNbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
@@ -231,7 +230,7 @@ void CHeal::Update(unsigned long aulTime)
 	}
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	assert(ulCalc <= LONG_MAX);
+	arx_assert(ulCalc <= LONG_MAX);
 	long ff = static_cast<long>(ulCalc);
 
 	if (ff < 1500)
@@ -242,11 +241,11 @@ void CHeal::Update(unsigned long aulTime)
 		pPS->p3ParticleGravity.y = 0;
 		pPS->p3ParticleGravity.z = 0;
 
-		std::list<CParticle *>::iterator i;
+		std::list<Particle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 		{
-			CParticle * pP = *i;
+			Particle * pP = *i;
 
 			if (pP->isAlive())
 			{

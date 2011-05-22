@@ -2,11 +2,11 @@
 #ifndef ARX_GAME_INVENTORY_H
 #define ARX_GAME_INVENTORY_H
 
+#include "platform/math/Vector2.h"
+#include "platform/math/Vector3.h"
 #include "scripting/Script.h"
 
 struct INTERACTIVE_OBJ;
-struct EERIE_3D;
-struct EERIE_S2D;
 
 struct INVENTORY_SLOT {
 	INTERACTIVE_OBJ * io;
@@ -33,26 +33,26 @@ extern long InventoryY;
 void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
 bool CanBePutInInventory(INTERACTIVE_OBJ * io);
 
-bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
-bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos);
+bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos);
+bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos);
 
-INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos);
+INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(Vec2s * pos);
 void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old);
 
-bool InSecondaryInventoryPos(EERIE_S2D * pos);
-bool InPlayerInventoryPos(EERIE_S2D * pos);
+bool InSecondaryInventoryPos(Vec2s * pos);
+bool InPlayerInventoryPos(Vec2s * pos);
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy);
 
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
 bool PutInInventory();
-bool TakeFromInventory(EERIE_S2D * pos);
-INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos);
-bool IsFlyingOverInventory(EERIE_S2D * pos);
+bool TakeFromInventory(Vec2s * pos);
+INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos);
+bool IsFlyingOverInventory(Vec2s * pos);
 void ForcePlayerInventoryObjectLevel(long level);
 bool IsInPlayerInventory(INTERACTIVE_OBJ * io);
 bool IsInSecondaryInventory(INTERACTIVE_OBJ * io);
-bool InInventoryPos(EERIE_S2D * pos);
+bool InInventoryPos(Vec2s * pos);
 void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
 void RemoveFromAllInventories(const INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability();

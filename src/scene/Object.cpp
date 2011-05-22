@@ -71,7 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 #include "graphics/data/Texture.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/PakEntry.h"
@@ -284,36 +283,16 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 	return time;
 }
 
-static void * safeAlloc(size_t size, const std::string& desc) {
-	void * result;
-	do {
-		result = malloc(size); 
-		if(!result) {
-			HERMES_Memory_Emergency_Out(size, desc);
-		}
-	} while(!result);
-	return result;
-}
-
-static void * safeAllocZero(size_t size, const std::string& desc) {
-	void * result = safeAlloc(size, desc);
-	memset(result, 0, size);
+template <class T>
+static T * allocStructZero(size_t n = 1) {
+	T * result = (T*)malloc(n * sizeof(T));
+	memset(result, 0, n * sizeof(T));
 	return result;
 }
 
 template <class T>
-static T * allocStruct(const std::string& desc, size_t n = 1) {
-	return (T*)safeAlloc(n * sizeof(T), desc);
-}
-
-template <class T>
-static T * allocStructZero(const std::string& desc, size_t n = 1) {
-	return (T*)safeAllocZero(n * sizeof(T), desc);
-}
-
-template <class T>
-static T * copyStruct(const T * src, const std::string& desc, size_t n = 1) {
-	T * result = allocStruct<T>(desc, n);
+static T * copyStruct(const T * src, size_t n = 1) {
+	T * result = (T*)malloc(n * sizeof(T));
 	memcpy(result, src, sizeof(T) * n);
 	return result;
 }
@@ -326,7 +305,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	
 	size_t pos = 0;
 	
-	EERIE_ANIM * eerie = allocStructZero<EERIE_ANIM>("EEAnim");
+	EERIE_ANIM * eerie = allocStructZero<EERIE_ANIM>();
 	
 	THEA_HEADER th;
 	memcpy(&th, adr + pos, sizeof(THEA_HEADER));
@@ -345,9 +324,9 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	eerie->nb_groups = th.nb_groups;
 	eerie->nb_key_frames = th.nb_key_frames;
 	
-	eerie->frames = allocStructZero<EERIE_FRAME>("EEAnimFrames", th.nb_key_frames);
-	eerie->groups = allocStructZero<EERIE_GROUP>("EEAnimGroups", th.nb_key_frames * th.nb_groups);
-	eerie->voidgroups = allocStructZero<unsigned char>("EEAnimVoidGroups", th.nb_groups);
+	eerie->frames = allocStructZero<EERIE_FRAME>(th.nb_key_frames);
+	eerie->groups = allocStructZero<EERIE_GROUP>(th.nb_key_frames * th.nb_groups);
+	eerie->voidgroups = allocStructZero<unsigned char>(th.nb_groups);
 	
 	eerie->anim_time = 0.f;
 	
@@ -803,8 +782,8 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t * poss, 
 		
 		for(long o = 0; o < ptg3011.nb_index; o++) {
 			eerie->grouplist[i].siz = max(eerie->grouplist[i].siz,
-			                              EEDistance3D(&eerie->vertexlist[eerie->grouplist[i].origin].v,
-			                                           &eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
+			                              fdist(eerie->vertexlist[eerie->grouplist[i].origin].v,
+			                                           eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
 		}
 		
 		eerie->grouplist[i].siz = EEsqrt(eerie->grouplist[i].siz) * ( 1.0f / 16 );
@@ -987,7 +966,7 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const string & dirr) {
 	EERIE_MULTI3DSCENE * es;
 	char pathh[512];
 
-	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMultiScn");
+	es = allocStructZero<EERIE_MULTI3DSCENE>();
 
 	strcpy(LastLoadedScene, dirr.c_str());
 	sprintf(pathh, "%s*.scn", dirr.c_str());
@@ -1067,7 +1046,7 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 	
 	EERIE_MULTI3DSCENE * es;
 	
-	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMulti3DScn");
+	es = allocStructZero<EERIE_MULTI3DSCENE>();
 
 	strcpy(LastLoadedScene, dirr.c_str());
 
@@ -1165,7 +1144,7 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 	
 	size_t pos = 0;
 	
-	EERIE_3DSCENE * seerie = allocStructZero<EERIE_3DSCENE>("Scn2EE");
+	EERIE_3DSCENE * seerie = allocStructZero<EERIE_3DSCENE>();
 	Clear3DScene(seerie);
 	
 	TSCN_HEADER psth;
@@ -1187,7 +1166,7 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 	
 	if(psth.type_write == 0) {
 		
-		seerie->texturecontainer = allocStructZero<TextureContainer *>("SEETc", psth.nb_maps); 
+		seerie->texturecontainer = allocStructZero<TextureContainer *>(psth.nb_maps); 
 		
 		for(long i = 0; i < psth.nb_maps; i++) {
 			
@@ -1203,7 +1182,7 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 		
 		if((psth.type_write & SAVE_MAP_BMP) || (psth.type_write & SAVE_MAP_TGA)) {
 			
-			seerie->texturecontainer = allocStructZero<TextureContainer *>("SEETc", psth.nb_maps);
+			seerie->texturecontainer = allocStructZero<TextureContainer *>(psth.nb_maps);
 			
 			for(long i = 0; i < psth.nb_maps; i++) {
 				
@@ -1243,7 +1222,7 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 	pos += sizeof(s32);
 	
 	seerie->nbobj = nbo;
-	seerie->objs = allocStructZero<EERIE_3DOBJ *>("SceneObjectList", nbo); 
+	seerie->objs = allocStructZero<EERIE_3DOBJ *>(nbo); 
 	
 	seerie->point0.x = -999999999999.f;
 	seerie->point0.y = -999999999999.f;
@@ -1377,11 +1356,9 @@ EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string 
 //-----------------------------------------------------------------------------------------------------
 // Warning Clear3DObj/Clear3DScene don't release Any pointer Just Clears Structures
 void EERIE_3DOBJ::clear() {
-		// TODO Make it possible to use a default
-		// conststructor for these
-		pos.x = pos.y = pos.z = 0;
-		point0 = pos;
-		angle = pos;
+	
+		point0 = pos = Vec3f::ZERO;
+		angle = Anglef::ZERO;
 
 		origin = 0;
 		ident = 0;
@@ -1556,7 +1533,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 	if (obj->ndata)
 	{
-		nouvo->ndata = copyStruct(obj->ndata, "EECopyNdata", obj->vertexlist.size());
+		nouvo->ndata = copyStruct(obj->ndata, obj->vertexlist.size());
 	}
 	else nouvo->ndata = NULL;
 
@@ -1580,12 +1557,12 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 	if (obj->pbox)
 	{
-		nouvo->pbox = allocStructZero<PHYSICS_BOX_DATA>("Physics Data");
+		nouvo->pbox = allocStructZero<PHYSICS_BOX_DATA>();
 		nouvo->pbox->nb_physvert = obj->pbox->nb_physvert;
 		nouvo->pbox->stopcount = 0;
 		nouvo->pbox->radius = obj->pbox->radius;
 		
-		nouvo->pbox->vert = copyStruct(obj->pbox->vert, "PhysVerts", obj->pbox->nb_physvert);
+		nouvo->pbox->vert = copyStruct(obj->pbox->vert, obj->pbox->nb_physvert);
 	}
 
 	nouvo->linked = NULL;
@@ -1695,9 +1672,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		// Initialize the bone
 		Quat_Init(&eobj->c_data->bones[0].quatinit);
 		Quat_Init(&eobj->c_data->bones[0].quatanim);
-		eobj->c_data->bones[0].scaleinit.clear();
-		eobj->c_data->bones[0].scaleanim.clear();
-		eobj->c_data->bones[0].transinit.clear();
+		eobj->c_data->bones[0].scaleinit = Vec3f::ZERO;
+		eobj->c_data->bones[0].scaleanim = Vec3f::ZERO;
+		eobj->c_data->bones[0].transinit = Vec3f::ZERO;
 		eobj->c_data->bones[0].transinit_global = eobj->c_data->bones[0].transinit;
 		eobj->c_data->bones[0].original_group = NULL;
 		eobj->c_data->bones[0].father = -1;
@@ -1728,9 +1705,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 
 			Quat_Init(&eobj->c_data->bones[i].quatinit);
 			Quat_Init(&eobj->c_data->bones[i].quatanim);
-			eobj->c_data->bones[i].scaleinit.clear();
-			eobj->c_data->bones[i].scaleanim.clear();
-			eobj->c_data->bones[i].transinit = EERIE_3D(v_origin->v.x, v_origin->v.y, v_origin->v.z);
+			eobj->c_data->bones[i].scaleinit = Vec3f::ZERO;
+			eobj->c_data->bones[i].scaleanim = Vec3f::ZERO;
+			eobj->c_data->bones[i].transinit = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
 			eobj->c_data->bones[i].transinit_global = eobj->c_data->bones[i].transinit;
 			eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
 			eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
@@ -1804,7 +1781,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				/* Translation */
 				obj->bones[i].transanim = obj->bones[i].transinit;
 			}
-			obj->bones[i].scaleanim = EERIE_3D(1.0f, 1.0f, 1.0f);
+			obj->bones[i].scaleanim = Vec3f(1.0f, 1.0f, 1.0f);
 		}
 
 		eobj->vertexlocal = new EERIE_3DPAD[eobj->vertexlist.size()];
@@ -1812,7 +1789,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
 
 		for (long i = 0; i != obj->nb_bones; i++) {
-			EERIE_3D vector = obj->bones[i].transanim;
+			Vec3f vector = obj->bones[i].transanim;
 			
 			for (int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 				
@@ -1820,7 +1797,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];
 				EERIE_3DPAD & outVert = eobj->vertexlocal[idx];
 				
-				EERIE_3D temp = inVert.v - vector;
+				Vec3f temp = inVert.v - vector;
 				TransformInverseVertexQuat(&obj->bones[i].quatanim, &temp, &temp);
 				outVert.x = temp.x, outVert.y = temp.y, outVert.z = temp.z;
 			}
@@ -2021,8 +1998,8 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	eerie->pos.x = eerie->pos.y = eerie->pos.z = 0.f;
 
 	// NORMALS CALCULATIONS
-	EERIE_3D nrml;
-	EERIE_3D nrrr;
+	Vec3f nrml;
+	Vec3f nrrr;
 	float count;
 	long j, j2;
 
@@ -2106,8 +2083,8 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 
 	if ((head_idx >= 0) && (neck_orgn >= 0))
 	{
-		EERIE_3D center(0, 0, 0);
-		EERIE_3D origin = eerie->vertexlist[neck_orgn].v;
+		Vec3f center(0, 0, 0);
+		Vec3f origin = eerie->vertexlist[neck_orgn].v;
 		float count = (float)eerie->grouplist[head_idx].indexes.size();
 
 		if (count > 0.f)
@@ -2126,29 +2103,25 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 			center.x = (center.x + origin.x + origin.x) * ( 1.0f / 3 );
 			center.y = (center.y + origin.y + origin.y) * ( 1.0f / 3 );
 			center.z = (center.z + origin.z + origin.z) * ( 1.0f / 3 );
-			float max_threshold = TRUEEEDistance3D(&origin, &center);
+			float max_threshold = dist(origin, center);
 
 			for (size_t i = 0; i < eerie->grouplist[head_idx].indexes.size(); i++)
 			{
 				EERIE_VERTEX * ev = &eerie->vertexlist[eerie->grouplist[head_idx].indexes[i]];
-				float dist = TRUEEEDistance3D(&ev->v, &origin);
+				float d = dist(ev->v, origin);
 				float factor = 1.f;
 
-				if (dist < max_threshold)
+				if (d < max_threshold)
 				{
-					factor = dist / max_threshold;
+					factor = d / max_threshold;
 				}
 
 				float ifactor = 1.f - factor;
-				EERIE_3D fakenorm;
-				fakenorm.x = ev->v.x - center.x;
-				fakenorm.y = ev->v.y - center.y;
-				fakenorm.z = ev->v.z - center.z;
-				TRUEVector_Normalize(&fakenorm);
-				ev->norm.x = ev->norm.x * ifactor + fakenorm.x * factor;
-				ev->norm.y = ev->norm.y * ifactor + fakenorm.y * factor;
-				ev->norm.z = ev->norm.z * ifactor + fakenorm.z * factor;
-				TRUEVector_Normalize(&ev->norm);
+				Vec3f fakenorm;
+				fakenorm = ev->v - center;
+				fakenorm.normalize();
+				ev->norm = ev->norm * ifactor + fakenorm * factor;
+				ev->norm.normalize();
 			}
 		}
 	}
@@ -2211,6 +2184,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 		free(adr);
 	}
 	
+#ifdef BUILD_EDITOR
 	if(FASTLOADS) {
 		if(ret->pdata) {
 			free(ret->pdata);
@@ -2218,6 +2192,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 		}
 		return ret;
 	}
+#endif
 	
 	CreateNeighbours(ret);
 	EERIEOBJECT_AddClothesData(ret);
@@ -2262,7 +2237,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 {
 	if (!ret) return;
 
-	EERIE_3D offset = ret->vertexlist[ret->origin].v;
+	Vec3f offset = ret->vertexlist[ret->origin].v;
 
 	if ((offset.x == 0) && (offset.y == 0) && (offset.z == 0))
 		return;

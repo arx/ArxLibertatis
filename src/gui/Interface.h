@@ -41,10 +41,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
 
+#include "Configure.h"
+
 extern float BOOKDECX;
 extern float BOOKDECY;
+#ifdef BUILD_EDITOR
 extern HWND CDP_PATHWAYS_Options;
 extern HWND CDP_IOOptions;
+extern HWND CDP_FogOptions;
+extern HWND CDP_LIGHTOptions;
+extern EERIE_LIGHT * CDP_EditLight;
+extern INTERACTIVE_OBJ * CDP_EditIO;
+struct FOG_DEF;
+extern FOG_DEF * CDP_EditFog;
+extern long LastSelectedLight;
+#endif
 
 //-----------------------------------------------------------------------------
 class INTERFACE_TC
@@ -164,6 +175,7 @@ enum ARX_INTERFACE_BOOK_ITEM
 
 };
 
+#ifdef BUILD_EDITOR
 // long "EDITION" values (Danae.cpp)
 enum ARX_INTERFACE_EDITION_MODE
 {
@@ -175,6 +187,7 @@ enum ARX_INTERFACE_EDITION_MODE
 	EDITION_PATHWAYS,
 	EDITION_PARTICLES
 };
+#endif
 
 enum ARX_INTERFACE_FLAG
 {
@@ -210,8 +223,8 @@ enum ARX_INTERFACE_BOOK_MODE
 
 //-----------------------------------------------------------------------------
 extern INTERFACE_TC ITC;
-extern EERIE_S2D MemoMouse;
-extern EERIE_S2D bookclick;
+extern Vec2s MemoMouse;
+extern Vec2s bookclick;
 
 extern SPELL_ICON spellicons[SPELL_COUNT];
 extern char LOADFROM[256];

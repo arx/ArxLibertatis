@@ -41,7 +41,7 @@ extern EERIE_CAMERA	Camera;
 float		SpecialFadeDx;
 float		FlashAlpha;
 int			TotOldPos;
-EERIE_3D	OldPos[NBOLDPOS];
+Vec3f	OldPos[NBOLDPOS];
 float		OldAz[NBOLDPOS];
  
 /*---------------------------------------------------------------------------------*/
@@ -98,7 +98,7 @@ float LastTime;
 bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 {
 	int			nb;
-	EERIE_3D	* pos;
+	Vec3f	* pos;
 	float	*	az;
 	float		alpha, dalpha;
 	int			col;
@@ -109,7 +109,7 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 	if (TotOldPos == NBOLDPOS)
 	{
 		TotOldPos--;
-		memmove(OldPos, OldPos + 1, TotOldPos * sizeof(EERIE_3D));
+		std::copy(OldPos + 1, OldPos + 1 + TotOldPos, OldPos);
 		memmove(OldAz, OldAz + 1, TotOldPos * 4);
 	}
 

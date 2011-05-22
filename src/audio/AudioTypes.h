@@ -26,10 +26,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOTYPES_H
 #define ARX_AUDIO_AUDIOTYPES_H
 
-#include "core/math/Vector3.h"
-
 #include "platform/Platform.h"
 #include "platform/Flags.h"
+#include "platform/math/Vector3.h"
 
 namespace audio {
 
@@ -122,9 +121,9 @@ struct Channel {
 	float volume;
 	float pitch;
 	float pan;
-	Vector3f position;
-	Vector3f velocity;
-	Vector3f direction;
+	Vec3f position;
+	Vec3f velocity;
+	Vec3f direction;
 	SourceCone cone;
 	SourceFalloff falloff;
 };

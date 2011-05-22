@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/Core.h"
@@ -86,7 +86,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -95,7 +94,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Implode.h"
 
 #include "physics/CollisionShapes.h"
-#include "physics/Actors.h"
 
 #include "platform/String.h"
 
@@ -118,7 +116,7 @@ extern QUAKE_FX_STRUCT QuakeFx;
 extern bool bGToggleCombatModeWithKey;
 extern bool bGCroucheToggle;
 
-bool CanPurge(EERIE_3D * pos)
+bool CanPurge(Vec3f * pos)
 {
 	long px, pz;
 	px = pos->x * ACTIVEBKG->Xmul;
@@ -158,15 +156,17 @@ bool CanPurge(EERIE_3D * pos)
 	return true;
 }
 
-void BIG_PURGE()
-{
-	long IO_count = 0;
-	long LIGHT_count = 0;
-	long PATH_count = 0;
-	long FOG_count = 0;
-
+#ifdef BUILD_EDITOR
+void BIG_PURGE() {
+	
 	if (OKBox("Do you really want to PURGE this level ???", "Confirm Box"))
 	{
+		
+		long IO_count = 0;
+		long LIGHT_count = 0;
+		long PATH_count = 0;
+		long FOG_count = 0;
+		
 		for (long i = 1; i < inter.nbmax; i++)
 		{
 			if (inter.iobj[i])
@@ -190,7 +190,7 @@ void BIG_PURGE()
 
 		for (int i = nbARXpaths - 1; i >= 0; i--)
 		{
-			EERIE_3D pos;
+			Vec3f pos;
 			pos.x = ARXpaths[i]->initpos.x;
 			pos.y = ARXpaths[i]->initpos.y;
 			pos.z = ARXpaths[i]->initpos.z;
@@ -222,6 +222,7 @@ void BIG_PURGE()
 		LogError << (text);
 	}
 }
+#endif
 
 void ReplaceSpecifics( char* text )
 {
@@ -256,39 +257,35 @@ void ReplaceSpecifics( char* text )
 	return;
 }
 
-extern long NODIRCREATION;
-extern long ADDED_IO_NOT_SAVED;
-
-
 long DanaeSaveLevel(const string & _fic) {
 	
 	long nb_inter = GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	
-	// Initializing datas
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-	char tx[128];
-	sprintf(tx, "_%02ld_%02ld_%ld__%ldh%ldmn", hdt.months, hdt.days, hdt.years, hdt.hours, hdt.mins);
-	
 	string fic = _fic;
 	SetExt(fic, ".DLF");
 	if(FileExist(fic)) {
-		std::string fic2 = fic;
-		char newtext[128];
-		sprintf(newtext, "Backup_DLF_%s", tx);
-		SetExt(fic2, newtext);
-		FileMove(fic, fic2.c_str());
+		string backupfile = fic;
+		int i = 0;
+		do {
+			std::stringstream s;
+			s << ".dlf_bak_" << i;
+			SetExt(backupfile, s.str());
+		} while(FileExist(backupfile) && (i++, true));
+		FileMove(fic, backupfile);
 	}
-
+	
 	std::string fic2 = fic;
 	SetExt(fic2, ".LLF");
 	if(FileExist(fic2)) {
-		std::string fic3 = fic;
-		char newtext[128];
-		sprintf(newtext, "Backup_LLF_%s", tx);
-		SetExt(fic3, newtext);
-		FileMove(fic2, fic3);
+		string backupfile = fic;
+		int i = 0;
+		do {
+			std::stringstream s;
+			s << ".llf_bak_" << i;
+			SetExt(backupfile, s.str());
+		} while(FileExist(backupfile) && (i++, true));
+		FileMove(fic2, backupfile);
 	}
 	
 	DANAE_LS_HEADER dlh;
@@ -323,9 +320,11 @@ long DanaeSaveLevel(const string & _fic) {
 	
 	// Preparing HEADER
 	dlh.version = DLH_CURRENT_VERSION;
+#ifdef BUILD_EDITOR
 	if(NODIRCREATION) {
 		dlh.version = 1.004f;
 	}
+#endif
 	
 	strcpy(dlh.ident, "DANAE_FILE");
 	dlh.nb_scn = 1;
@@ -647,7 +646,6 @@ long DanaeSaveLevel(const string & _fic) {
 }
 
 extern char LastLoadedDLF[512];
-extern long LOADEDD;
 
 //*************************************************************************************
 //*************************************************************************************
@@ -657,7 +655,6 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 	char dfile[256];
 	char temp[256];
 	FILE * fic;
-	HERMES_DATE_TIME hdt;
 
 	if (DirectoryExist(dir))
 	{
@@ -672,9 +669,6 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 			fprintf(fic, "_______________________________\n\n");
 			GetUserName(name, &num);
 			fprintf(fic, "Creator  : %s\n", name);
-			GetDate(&hdt);
-			fprintf(fic, "Date     : %02ld/%02ld/%ld\n", hdt.days, hdt.months, hdt.years);
-			fprintf(fic, "Time     : %ldh%ld\n", hdt.hours, hdt.mins);
 			fprintf(fic, "Level    : %s\n", LastLoadedScene);
 
 			if (LastLoadedDLF[0] != 0)
@@ -792,10 +786,10 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 	}
 }
 
-INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D & pos, const EERIE_3D & angle, const EERIE_3D & trans) {
+INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	char nameident[256];
 	string tmp;
-	size_t FileSize;
+	
 	INTERACTIVE_OBJ * io;
 	
 	sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
@@ -819,7 +813,9 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 		io->move.x = io->move.y = io->move.z = 0.f;
 		io->initangle = io->angle = angle;
 
-		if (!NODIRCREATION)
+#ifdef BUILD_EDITOR
+		if(!NODIRCREATION)
+#endif
 		{
 			io->ident = ident;
 			tmp = tmp = io->full_name(); // Get the directory name to check for
@@ -836,6 +832,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 						io->over_script.data = NULL;
 					}
 
+					size_t FileSize;
 					io->over_script.data = (char *)PAK_FileLoadMallocZero(tmp, FileSize);
 
 					if (io->over_script.data != NULL)
@@ -867,16 +864,17 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D &
 			}
 		}
 
+#ifdef BUILD_EDITOR
 		InterTreeViewItemAdd(io);
+#endif
 	}
 
 	return io;
 }
 long LastLoadedLightningNb = 0;
 D3DCOLOR * LastLoadedLightning = NULL;
-EERIE_3D loddpos;
-EERIE_3D MSP;
-extern long DEBUGCODE;
+Vec3f loddpos;
+Vec3f MSP;
 
 //*************************************************************************************
 //*************************************************************************************
@@ -897,12 +895,6 @@ long DanaeLoadLevel(const string & fic) {
 	
 	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(fic);
-	
-	HERMES_DATE_TIME hdt;
-	GetDate(&hdt);
-	char tstr[128];
-	sprintf(tstr, "%2ldh%02ldm%02ld LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
-	ForceSendConsole(tstr, 1, 0, (HWND)1);
 	
 	string fileDlf = fic;
 	// SetExt(fileDlf, ".DLF");
@@ -996,7 +988,7 @@ long DanaeLoadLevel(const string & fic) {
 		strcpy(LastLoadedScene, ftemp.c_str());
 	}
 	
-	EERIE_3D trans;
+	Vec3f trans;
 	if(FASTmse) {
 		trans = Mscenepos;
 		player.pos = loddpos + trans;
@@ -1180,7 +1172,7 @@ long DanaeLoadLevel(const string & fic) {
 			fd->move.x = 1.f;
 			fd->move.y = 0.f;
 			fd->move.z = 0.f;
-			EERIE_3D out;
+			Vec3f out;
 			float ta = radians(MAKEANGLE(fd->angle.b));
 			_YRotatePoint(&fd->move, &out, EEcos(ta), EEsin(ta));
 			float tb = radians(MAKEANGLE(fd->angle.a));
@@ -1592,8 +1584,6 @@ void DanaeClearAll()
 	DanaeClearLevel();
 	ARX_SOUND_PreloadAll();
 }
-
-extern long MOULINEX;
 
 //*************************************************************************************
 //*************************************************************************************

@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/Spells04.h"
 
 #include "core/Core.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Spells.h"
 #include "game/Player.h"
@@ -92,7 +92,7 @@ CBless::CBless()
 }
 
 //-----------------------------------------------------------------------------
-void CBless::Create(EERIE_3D _eSrc, float _fBeta)
+void CBless::Create(Vec3f _eSrc, float _fBeta)
 {
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
@@ -112,7 +112,7 @@ void CBless::Create(EERIE_3D _eSrc, float _fBeta)
 	bDone = true;
 }
 
-void CBless::Set_Angle(EERIE_3D angle)
+void CBless::Set_Angle(const Anglef & angle)
 {
 	fBeta = angle.b;
 }
@@ -233,7 +233,7 @@ float CBless::Render()
 }
 
 //-----------------------------------------------------------------------------
-void CDispellField::Create(EERIE_3D aeSrc, float afBeta)
+void CDispellField::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -264,13 +264,6 @@ void CDispellField::Update(unsigned long _ulTime)
 //---------------------------------------------------------------------
 float CDispellField::Render()
 {
-	int i = 0;
-
-	float x = eSrc.x;
-	float y = eSrc.y + 100.0f;
-	float z = eSrc.z;
-
-
 	if (ulCurrentTime >= ulDuration)
 	{
 		return 0.f;
@@ -279,40 +272,19 @@ float CDispellField::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	for (i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			x = inter.iobj[i]->pos.x;
-			y = inter.iobj[i]->pos.y;
-			z = inter.iobj[i]->pos.z;
-		}
-	}
-
-	y -= 40;
-
-	y = eSrc.y + 140;
-
 	GRenderer->SetTexture(0, tex_p2);
-
-	//----------------------------
-	y -= 40;
 	
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
-
-	x = player.pos.x;
-	y = player.pos.y + 80;
-	z = player.pos.z;
 
 	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120;
 	stiteangle.a = 0;
 	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
+	stitepos.x = player.pos.x;
+	stitepos.y = player.pos.y + 80;
+	stitepos.z = player.pos.z;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -334,8 +306,7 @@ float CDispellField::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
-	y = player.pos.y + 20;
-	stitepos.y = y;
+	stitepos.y = player.pos.y + 20;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
@@ -428,7 +399,7 @@ CTelekinesis::~CTelekinesis()
  
 
 //-----------------------------------------------------------------------------
-void CTelekinesis::Create(EERIE_3D aeSrc, float afBeta)
+void CTelekinesis::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -493,10 +464,9 @@ float CTelekinesis::Render()
 
 	//----------------------------
 	y -= 40;
-	
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 
 	x = player.pos.x;
@@ -578,7 +548,7 @@ CCurse::CCurse()
 }
 
 //-----------------------------------------------------------------------------
-void CCurse::Create(EERIE_3D aeSrc, float afBeta)
+void CCurse::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 
@@ -608,17 +578,17 @@ void CCurse::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CCurse::Render(EERIE_3D * pos)
-{
+float CCurse::Render()
+{Vec3f * pos = NULL; // TODO
 	int i = 0;
-
+/*
 	float x = eSrc.x;
 	float y = eSrc.y;// + 200.0f;
 	float z = eSrc.z;
 
 	if (ulCurrentTime >= ulDuration)
 	{
-		/*		if (bDone)
+				if (bDone)
 				{
 					EERIE_3D target,source;
 					target.x=player.pos.x;// - EEsin(radians(MAKEANGLE(player.angle.b)))*1000.f;
@@ -640,19 +610,16 @@ float CCurse::Render(EERIE_3D * pos)
 				{
 					return 0.f;
 				}
-		*/
-	}
+		
+	}*/
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	x = pos->x;
-	y = pos->y;
-	z = pos->z;
 	//----------------------------
-	EERIE_3D stiteangle;
-	EERIE_3D stitepos;
-	EERIE_3D stitescale;
+	Anglef stiteangle;
+	Vec3f stitepos;
+	Vec3f stitescale;
 	EERIE_RGB stitecolor;
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -660,9 +627,7 @@ float CCurse::Render(EERIE_3D * pos)
 	stiteangle.b = fRot;
 	stiteangle.a = 0;
 	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
+	stitepos = *pos;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
@@ -683,9 +648,7 @@ float CCurse::Render(EERIE_3D * pos)
 			PARTICLE_DEF * pd = &particle[j];
 			pd->exist		=	1;
 			pd->zdec		=	0;
-			pd->ov.x		=	x;
-			pd->ov.y		=	y;
-			pd->ov.z		=	z;
+			pd->ov = *pos;
 			pd->move.x		=	2.f * frand2();
 			pd->move.y		=	rnd() * -10.f - 10.f; 
 			pd->move.z		=	2.f * frand2();

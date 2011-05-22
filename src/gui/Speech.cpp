@@ -62,14 +62,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 #include "core/Localisation.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 
 #include "game/Player.h"
 
 #include "gui/Interface.h"
 #include "gui/Text.h"
+#include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
+#include "graphics/font/Font.h"
 
 #include "io/FilePath.h"
 #include "io/Logger.h"
@@ -205,7 +207,7 @@ void ARX_SPEECH_Render()
 	char temp[4096];
 	long igrec = 14;
 
-	Vector2i sSize = hFontInBook->GetTextSize("p");
+	Vec2i sSize = hFontInBook->GetTextSize("p");
 	sSize.y *= 3;
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -605,7 +607,7 @@ void ARX_SPEECH_Update() {
 				{
 					if (CINEMA_DECAL >= 100.f)
 					{
-						Vector2i sSize = hFontInBook->GetTextSize(speech->text);
+						Vec2i sSize = hFontInBook->GetTextSize(speech->text);
 						
 						float fZoneClippHeight	=	ARX_CLEAN_WARN_CAST_FLOAT(sSize.y * 3);
 						float fStartYY			=	100 * Yratio;
@@ -617,14 +619,14 @@ void ARX_SPEECH_Update() {
 						ARX_CHECK_INT(fZoneClippY);
 						ARX_CHECK_INT(fAdd);
 
-						RECT clippingRect = { 0, ARX_CLEAN_WARN_CAST_INT(fZoneClippY), DANAESIZX, ARX_CLEAN_WARN_CAST_INT(fAdd) };
+						Rect clippingRect(0, Rect::Num(fZoneClippY), DANAESIZX, Rect::Num(fAdd));
 						float iTaille = (float)ARX_TEXT_DrawRect(
 						                    hFontInBook,
 						                    10.f,
 						                    fDepY + fZoneClippHeight,
 						                    -10.f + (float)DANAESIZX,
 						                    speech->text,
-						                    RGB(255, 255, 255),
+						                    Color(255, 255, 255),
 						                    &clippingRect);
 
 						GRenderer->ResetTexture(0);

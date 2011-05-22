@@ -98,7 +98,7 @@ bool HashMap::add(const std::string& name, void* value) {
 	return false;
 }
 
-void * HashMap::get(const std::string& name) {
+void * HashMap::get(const std::string& name) const {
 	
 	string lname = name;
 	transform(lname.begin(), lname.end(), lname.begin(), (int (*)(int))tolower);

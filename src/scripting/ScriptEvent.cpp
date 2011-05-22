@@ -12,7 +12,7 @@
 
 #include "ai/Paths.h"
 
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Resource.h"
 #include "core/Core.h"
 
@@ -34,11 +34,10 @@
 #include "graphics/data/MeshManipulation.h"
 
 #include "io/Logger.h"
-#include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 
-#include "physics/Actors.h"
+#include "physics/Attractors.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
 
@@ -52,17 +51,18 @@
 
 using std::max;
 using std::min;
+using std::string;
 
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern EERIE_3D LASTCAMPOS, LASTCAMANGLE;
+extern Vec3f LASTCAMPOS;
+extern Anglef LASTCAMANGLE;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern char WILL_LAUNCH_CINE[256];
 extern float InventoryDir;
 extern long REFUSE_GAME_RETURN;
 extern long FINAL_RELEASE;
-extern long GAME_EDITOR;
 extern long TELEPORT_TO_CONFIRM;
 extern long CINE_PRELOAD;
 extern long PLAY_LOADED_CINEMATIC;
@@ -206,17 +206,10 @@ void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
 
 		long id = io->obj->fastaccess.view_attach;
 
-		if (id != -1)
-		{
-			acs->pos1.x = io->obj->vertexlist3[id].v.x;
-			acs->pos1.y = io->obj->vertexlist3[id].v.y;
-			acs->pos1.z = io->obj->vertexlist3[id].v.z;
-		}
-		else
-		{
-			acs->pos1.x = io->pos.x;
-			acs->pos1.y = io->pos.y + io->physics.cyl.height;
-			acs->pos1.z = io->pos.z;
+		if(id != -1) {
+			acs->pos1 = io->obj->vertexlist3[id].v;
+		} else {
+			acs->pos1 = io->pos + Vec3f(0.f, io->physics.cyl.height, 0.f);
 		}
 	}
 
@@ -225,17 +218,10 @@ void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
 		INTERACTIVE_OBJ *	ioo =	inter.iobj[ionum];
 		long				id	=	ioo->obj->fastaccess.view_attach;
 
-		if (id != -1)
-		{
-			acs->pos2.x	=	ioo->obj->vertexlist3[id].v.x;
-			acs->pos2.y	=	ioo->obj->vertexlist3[id].v.y;
-			acs->pos2.z	=	ioo->obj->vertexlist3[id].v.z;
-		}
-		else
-		{
-			acs->pos2.x	=	ioo->pos.x;
-			acs->pos2.y	=	ioo->pos.y + ioo->physics.cyl.height;
-			acs->pos2.z	=	ioo->pos.z;
+		if(id != -1) {
+			acs->pos2 = ioo->obj->vertexlist3[id].v;
+		} else {
+			acs->pos2 = ioo->pos + Vec3f(0.f, ioo->physics.cyl.height, 0.f);
 		}
 	}
 }
@@ -279,34 +265,17 @@ bool IsElement( const char * seek, const char * text)
 
 }
 
-bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
-{
-	register float x0, y0, z0;
-	register float x1, y1, z1;
-	x0 = io->pos.x;
-	y0 = io->pos.y;
-	z0 = io->pos.z;
-	x1 = ioo->pos.x;
-	y1 = ioo->pos.y;
-	z1 = ioo->pos.z;
-	float dist = Distance3D(x0, y0, z0, x1, y1, z1);
-
-	if (dist > 20000) return false;
-
+bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+	
+	if(distSqr(io->pos, ioo->pos) > square(20000)) {
+		return false;
+	}
+	
 	float ab = MAKEANGLE(io->angle.b);
-	EERIE_3D orgn, dest;
-
-	orgn.x = x0;
-	orgn.y = y0 - 90.f;
-	orgn.z = z0;
-	dest.x = x1;
-	dest.y = y1 - 90.f;
-	dest.z = z1;
-	float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
+	float aa = GetAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
 	aa = MAKEANGLE(degrees(aa));
 
-	if ((aa < ab + 90.f) && (aa > ab - 90.f))
-	{
+	if((aa < ab + 90.f) && (aa > ab - 90.f)) {
 		//font
 		ARX_TEXT_Draw(hFontInBook, 300, 320, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
 		return true;
@@ -375,7 +344,7 @@ long GetVarNum(SCRIPT_VAR * svf, long* nb, const std::string& name)
 	return -1;
 }
 
-bool UNSETVar(SCRIPT_VAR * svf, long* nb, const std::string& name)
+bool UNSETVar(SCRIPT_VAR * & svf, long* nb, const std::string& name)
 {
 	long i = GetVarNum(svf, nb, name);
 
@@ -622,8 +591,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			case 'B':
 				if (!strcmp(word, "BEHAVIOR"))
 				{
-					unsigned long behavior = 0; //BEHAVIOUR_NONE;
-					float behavior_param = 0.f;
 					pos = GetNextWord(es, pos, word);
 					LogDebug << "BEHAVIOR " << word;
 
@@ -641,6 +608,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
+						unsigned long behavior = 0; //BEHAVIOUR_NONE;
 						if (word[0] == '-')
 						{
 
@@ -677,7 +645,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						}
 
-
+						float behavior_param = 0.f;
 						if (!strcasecmp(word, "GO_HOME"))
 							behavior |= BEHAVIOUR_GO_HOME;
 						else if (!strcasecmp(word, "FRIENDLY"))
@@ -838,7 +806,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "AMBIANCE"))
 				{
-					float volume(1.0F);
 
 					pos = GetNextWord(es, pos, word);
 
@@ -848,6 +815,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					{
 						if (iCharIn(word, 'V'))
 						{
+							float volume = 1.f;
 							pos = GetNextWord(es, pos, word);
 							LogDebug << word;
 							volume = GetVarValueInterpretedAsFloat(word, esss, io);
@@ -1065,26 +1033,17 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + word + ".teo";
 
 						File_Standardize(tex2, tex);
-						EERIE_3D last_angle;
-						memcpy(&last_angle, &io->angle, sizeof(EERIE_3D));
+						Anglef last_angle = io->angle;
 						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive( tex, -1); //AddItem(tex);
 
 						if (ioo != NULL)
 						{
 							LASTSPAWNED = ioo;
 							ioo->scriptload = 1;
-							ioo->initpos.x = io->initpos.x;
-							ioo->initpos.y = io->initpos.y;
-							ioo->initpos.z = io->initpos.z;
-							ioo->pos.x = io->pos.x;
-							ioo->pos.y = io->pos.y;
-							ioo->pos.z = io->pos.z;
-							ioo->angle.a = io->angle.a;
-							ioo->angle.b = io->angle.b;
-							ioo->angle.g = io->angle.g;
-							ioo->move.x = io->move.x;
-							ioo->move.y = io->move.y;
-							ioo->move.z = io->move.z;
+							ioo->initpos = io->initpos;
+							ioo->pos = io->pos;
+							ioo->angle = io->angle;
+							ioo->move = io->move;
 							ioo->show = io->show;
 
 							if (io == DRAGINTER)
@@ -1119,7 +1078,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								io->show = SHOW_FLAG_KILLED;
 								ReplaceInAllInventories(io, ioo);
 								SendInitScriptEvent(ioo);
-								memcpy(&ioo->angle, &last_angle, sizeof(EERIE_3D));
+								ioo->angle = last_angle;
 								TREATZONE_AddIO(ioo, neww);
 
 								for (int i = 0; i < MAX_EQUIPED; i++)
@@ -1572,14 +1531,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					{
 						if (io->ioflags & IO_CAMERA)
 						{
-							EERIE_3D fo;
+							Vec3f fo;
 							fo.x = GetVarValueInterpretedAsFloat(word, esss, io);
 							fo.y = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fo.z = GetVarValueInterpretedAsFloat(temp3, esss, io);
 							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
-							cam->translatetarget.x = fo.x;
-							cam->translatetarget.y = fo.y;
-							cam->translatetarget.z = fo.z;
+							cam->translatetarget = fo;
 						}
 					}
 
@@ -1784,19 +1741,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					ARX_CINEMATIC_SPEECH acs;
 					acs.type = ARX_CINE_SPEECH_NONE;
 
-
 					std::string temp2;
-
-					long player		=	0;
-					long voixoff	=	0;
-					long notext		=	0;
 
 					pos = GetNextWord(es, pos, temp2);
 
 					LogDebug <<  "SPEAK "<< temp2;
 
-					long mood			=	ANIM_TALK_NEUTRAL;
-					long unbreakable	=	0;
 					MakeUpcase(temp2);
 
 					if (!strcasecmp(temp2, "KILLALL"))
@@ -1805,6 +1755,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
+						
+						long player		=	0;
+						long voixoff	=	0;
+						long notext		=	0;
+						long mood			=	ANIM_TALK_NEUTRAL;
+						long unbreakable	=	0;
+						
 						if (temp2[0] == '-')
 						{
 							if (iCharIn(temp2, 'T')) notext		=	1;
@@ -1834,12 +1791,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								if (!strcasecmp(temp2, "KEEP"))
 								{
 									acs.type	=	ARX_CINE_SPEECH_KEEP;
-									acs.pos1.x	=	LASTCAMPOS.x;
-									acs.pos1.y	=	LASTCAMPOS.y;
-									acs.pos1.z	=	LASTCAMPOS.z;
-									acs.pos2.a	=	LASTCAMANGLE.a;
-									acs.pos2.b	=	LASTCAMANGLE.b;
-									acs.pos2.g	=	LASTCAMANGLE.g;
+									acs.pos1 = LASTCAMPOS;
+									acs.pos2.x	=	LASTCAMANGLE.a;
+									acs.pos2.y	=	LASTCAMANGLE.b;
+									acs.pos2.z	=	LASTCAMANGLE.g;
 								}
 
 								if (!strcasecmp(temp2, "ZOOM"))
@@ -1950,7 +1905,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							LogDebug <<  temp2;
 						}
 
-						long speechnum;
 						std::string temp1 = GetVarValueInterpretedAsText(temp2, esss, io);
 
 						if (!strcmp(temp2, "[]"))
@@ -1963,6 +1917,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 							if (!CINEMASCOPE) voixoff |= ARX_SPEECH_FLAG_NOTEXT;
 
+							long speechnum;
 							if (player)
 							{
 								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1, mood, voixoff);
@@ -2423,25 +2378,16 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								{
 									LASTSPAWNED = ioo;
 									ioo->scriptload = 1;
-									ioo->pos.x = inter.iobj[t]->pos.x;
-									ioo->pos.y = inter.iobj[t]->pos.y;
-									ioo->pos.z = inter.iobj[t]->pos.z;
+									ioo->pos = inter.iobj[t]->pos;
 
-									ioo->angle.a = inter.iobj[t]->angle.a;
-									ioo->angle.b = inter.iobj[t]->angle.b;
-									ioo->angle.g = inter.iobj[t]->angle.g;
+									ioo->angle = inter.iobj[t]->angle;
 									MakeTemporaryIOIdent(ioo);
 									SendInitScriptEvent(ioo);
 
-									if (inter.iobj[t]->ioflags & IO_NPC)
-									{
+									if(inter.iobj[t]->ioflags & IO_NPC) {
 										float dist = inter.iobj[t]->physics.cyl.radius + ioo->physics.cyl.radius + 10;
-										EERIE_3D ofs;
-										ofs.x = -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
-										ofs.y = 0.f;
-										ofs.z = EEcos(radians(inter.iobj[t]->angle.b)) * dist;
-										ioo->pos.x += ofs.x;
-										ioo->pos.z += ofs.z;
+										ioo->pos.x += -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
+										ioo->pos.z += EEcos(radians(inter.iobj[t]->angle.b)) * dist;
 									}
 
 									TREATZONE_AddIO(ioo, GetInterNum(ioo));
@@ -2475,12 +2421,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 									MakeTemporaryIOIdent(ioo);
 									LASTSPAWNED = ioo;
 									ioo->scriptload = 1;
-									ioo->pos.x = inter.iobj[t]->pos.x;
-									ioo->pos.y = inter.iobj[t]->pos.y;
-									ioo->pos.z = inter.iobj[t]->pos.z;
-									ioo->angle.a = inter.iobj[t]->angle.a;
-									ioo->angle.b = inter.iobj[t]->angle.b;
-									ioo->angle.g = inter.iobj[t]->angle.g;
+									ioo->pos = inter.iobj[t]->pos;
+									ioo->angle = inter.iobj[t]->angle;
 									MakeTemporaryIOIdent(ioo);
 									SendInitScriptEvent(ioo);
 								}
@@ -2492,10 +2434,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					else if (!strcmp(word, "FIREBALL"))
 					{
 						GetTargetPos(io);
-						EERIE_3D pos;
-						pos.x = io->pos.x;
-						pos.y = io->pos.y;
-						pos.z = io->pos.z;
+						Vec3f pos = io->pos;
 
 						if (io->ioflags & IO_NPC) pos.y -= 80.f;
 
@@ -2724,9 +2663,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 								if (followdir) aup->aupflags |= ARX_USEPATH_FOLLOW_DIRECTION;
 
-								aup->initpos.x = io->initpos.x;
-								aup->initpos.y = io->initpos.y;
-								aup->initpos.z = io->initpos.z;
+								aup->initpos = io->initpos;
 								aup->lastWP = -1;
 								aup->path = ap;
 								io->usepath = (void *)aup;
@@ -2795,9 +2732,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						if (io->ioflags & IO_CAMERA)
 						{
 							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
-							cam->translatetarget.x = 0.f;
-							cam->translatetarget.y = 0.f;
-							cam->translatetarget.z = 0.f;
+							cam->translatetarget = Vec3f::ZERO;
 						}
 
 						if (ValidIONum(t))
@@ -2966,7 +2901,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					if (radius)   // SEND EVENT TO ALL OBJECTS IN A RADIUS
 					{
-						EERIE_3D _pos, _pos2;
+						Vec3f _pos, _pos2;
 
 						for (long l = 0 ; l < inter.nbmax ; l++)
 						{
@@ -2984,7 +2919,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 									GetItemWorldPosition(inter.iobj[l], &_pos);
 									GetItemWorldPosition(io, &_pos2);
 
-									if(EEDistance3D(&_pos, &_pos2) <= rad) {
+									if(distSqr(_pos, _pos2) <= square(rad)) {
 										io->stat_sent++;
 										Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, temp3, evt);
 									}
@@ -2998,7 +2933,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						if (ap != NULL)
 						{
-							EERIE_3D _pos;
+							Vec3f _pos;
 
 							for (long l = 0; l < inter.nbmax; l++)
 							{
@@ -3324,9 +3259,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				else if (!strcmp(word, "SETCOUNT"))
 				{
 					pos = GetNextWord(es, pos, word);
-					float c = (float)atof(word.c_str());
-
-					if (c < 1.f) c = 1.f;
 
 					if ((io != NULL) && (io->ioflags & IO_ITEM))
 					{
@@ -3474,8 +3406,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					MakeGlobalText(ShowText);
 					ShowTextWindowtext = "Global Variables";
 
+#ifdef BUILD_EDITOR
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
+#endif
 
 #ifdef NEEDING_DEBUG
 
@@ -3489,8 +3423,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					MakeLocalText(es, ShowText);
 					ShowTextWindowtext = "Local Variables";
 
+#ifdef BUILD_EDITOR
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
+#endif
 
 #ifdef NEEDING_DEBUG
 
@@ -3506,8 +3442,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					MakeLocalText(es, ShowText2);
 					ShowTextWindowtext = "Variables";
 
+#ifdef BUILD_EDITOR
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWVARS, NULL, (DLGPROC)ShowVarsDlg);
+#endif
 
 #ifdef NEEDING_DEBUG
 
@@ -4065,7 +4003,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				{
 					INTERACTIVE_OBJ * iot = io;
 					std::string temp2;
-					long num;
 					long nu = 0;
 					long loop = 0;
 					long execute = 0;
@@ -4095,13 +4032,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						if (iCharIn(temp2, 'E')) execute = 1;
 
-						if (iCharIn(temp2, 'P'))
-						{
+						if(iCharIn(temp2, 'P')) {
 							iot = inter.iobj[0];
-							iot->move.x = iot->lastmove.x = 0.f;
-							iot->move.y = iot->lastmove.y = 0.f;
-							iot->move.z = iot->lastmove.z = 0.f;
-
+							iot->move = iot->lastmove = Vec3f::ZERO;
 						}
 
 						pos = GetNextWord(es, pos, temp2);
@@ -4126,7 +4059,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
-						num = GetNumAnim(temp2);
+						long num = GetNumAnim(temp2);
 
 						if (num > -1)
 						{
@@ -4451,19 +4384,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								{
 									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2);
 
-									if (iot->anims[num] == NULL)
-									{
-										char ttmp[512];
-										sprintf(ttmp, "LOADANIM %s %s FAILED", word.c_str(), temp2.c_str());
-										ForceSendConsole(ttmp, 1, 0, (HWND)1);
+									if(iot->anims[num] == NULL) {
+										LogWarning << "LOADANIM " << word << " " << temp2 << " FAILED";
 									}
 								}
-							}
-							else
-							{
-								char ttmp[512];
-								sprintf(ttmp, "LOADANIM %s %s FAILED", word.c_str(), temp2.c_str());
-								ForceSendConsole(ttmp, 1, 0, (HWND)1);
+							} else {
+								LogWarning << "LOADANIM " << word << " " << temp2 << " FAILED";
 							}
 						}
 					}
@@ -4790,7 +4716,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 									if (t == -2) t = GetInterNum(io);
 
-									long flagg	=	ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
+									ObjectType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
 
 									if ((flagg != 0) && (ValidIONum(t)))
 									{
@@ -5730,7 +5656,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 						}
 
-						if (!GAME_EDITOR) TELEPORT_TO_CONFIRM = 0;
+#ifdef BUILD_EDITOR
+						if(!GAME_EDITOR) {
+#endif
+							TELEPORT_TO_CONFIRM = 0;
+#ifdef BUILD_EDITOR
+						}
+#endif
 
 						if (initpos == 0)
 						{
@@ -5755,7 +5687,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								{
 									if (inter.iobj[t] != NULL)
 									{
-										EERIE_3D pos;
+										Vec3f pos;
 
 										if (GetItemWorldPosition(inter.iobj[t], &pos))
 										{
@@ -5789,7 +5721,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							{
 								if (playr)
 								{
-									EERIE_3D pos;
+									Vec3f pos;
 
 									if (GetItemWorldPosition(io, &pos))
 									{
@@ -5852,8 +5784,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 #endif
 
-						long tw;
-
 						if (!strcasecmp(word, "SKIN"))
 						{
 							std::string temp1;
@@ -5905,22 +5835,23 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						}
 						else
 						{
-							tw = TWEAK_ERROR;
-
-							if (!strcasecmp(word, "HEAD"))
+							
+							long tw = TWEAK_ERROR;
+							if(!strcasecmp(word, "HEAD")) {
 								tw = TWEAK_HEAD;
-							else if (!strcasecmp(word, "TORSO"))
+							} else if (!strcasecmp(word, "TORSO")) {
 								tw = TWEAK_TORSO;
-							else if (!strcasecmp(word, "LEGS"))
+							} else if (!strcasecmp(word, "LEGS")) {
 								tw = TWEAK_LEGS;
-							else if (!strcasecmp(word, "ALL"))
+							} else if (!strcasecmp(word, "ALL")) {
 								tw = TWEAK_ALL;
-							else if (!strcasecmp(word, "UPPER"))
+							} else if (!strcasecmp(word, "UPPER")) {
 								tw = TWEAK_UPPER;
-							else if (!strcasecmp(word, "LOWER"))
+							} else if (!strcasecmp(word, "LOWER")) {
 								tw = TWEAK_LOWER;
-							else if (!strcasecmp(word, "UP_LO"))
+							} else if (!strcasecmp(word, "UP_LO")) {
 								tw = TWEAK_UP_LO;
+							}
 
 							if (!strcasecmp(word, "REMOVE"))
 							{
@@ -5972,9 +5903,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					std::string temp2;
 					std::string temp3;
 
-					long times = 0;
-					long msecs = 0;
-
 					// Checks if the timer is named by caller of if it needs a default name
 					if (word.length() > 5)
 						strcpy(timername, word.c_str() + 5);
@@ -6007,12 +5935,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
-						long mili = 0;
-						long idle = 0;
 						ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, io);
 
 						if (strcasecmp(temp2, "OFF"))
 						{
+							long mili = 0;
+							long idle = 0;
+							
 							if (temp2[0] == '-')
 							{
 								if (iCharIn(temp2, 'M'))
@@ -6033,7 +5962,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 #endif
 							}
 
-							times = atoi(temp2);
+							long times = atoi(temp2);
 							pos = GetNextWord(es, pos, temp3);
 #ifdef NEEDING_DEBUG
 
@@ -6044,7 +5973,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							}
 
 #endif
-							msecs = atoi(temp3);
+							long msecs = atoi(temp3);
 
 							if (!mili) msecs *= 1000;
 
@@ -6488,8 +6417,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						std::string temp3;
 						float t1, t2, t3;
 
-
-
 						pos = GetNextWord(es, pos, temp1);
 						pos = GetNextWord(es, pos, temp2);
 						pos = GetNextWord(es, pos, temp3);
@@ -6519,9 +6446,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "MAPMARKER"))
 				{
-					float x, y, t;
-					long lvl;
-
 					pos = GetNextWord(es, pos, word);
 
 					if ((!strcasecmp(word, "remove")) || (!strcasecmp(word, "-r")))
@@ -6531,12 +6455,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					}
 					else
 					{
-						x = GetVarValueInterpretedAsFloat(word, esss, io);
+						float x = GetVarValueInterpretedAsFloat(word, esss, io);
 						pos = GetNextWord(es, pos, word);
-						y = GetVarValueInterpretedAsFloat(word, esss, io);
+						float y = GetVarValueInterpretedAsFloat(word, esss, io);
 						pos = GetNextWord(es, pos, word);
-						t = GetVarValueInterpretedAsFloat(word, esss, io);
-						lvl = t;
+						float t = GetVarValueInterpretedAsFloat(word, esss, io);
+						long lvl = t;
 						pos = GetNextWord(es, pos, word);
 						ARX_MAPMARKER_Add(x, y, lvl, word);
 					}

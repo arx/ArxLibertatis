@@ -40,10 +40,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "graphics/d3dwrapper.h"
+#include "platform/math/Vector3.h"
+#include "platform/math/Angle.h"
 
 class TextureContainer;
 struct INTERACTIVE_OBJ;
-struct EERIE_3D;
 struct EERIE_3DOBJ;
 struct EERIE_LIGHT;
 struct ANIM_USE;
@@ -61,7 +62,7 @@ extern EERIE_LIGHT * llights[32];
 long EERIE_ANIMMANAGER_Count(std::string & tex, long * memsize);
 void EERIE_ANIMMANAGER_ClearAll();
 void llightsInit();
-void Preparellights(EERIE_3D * pos);
+void Preparellights(Vec3f * pos);
 void Insertllight(EERIE_LIGHT * el, float dist);
 
 void PopAllTriangleList(bool);
@@ -78,8 +79,10 @@ D3DTLVERTEX * PushVertexInTableCull_TMetal(TextureContainer *);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, D3DTLVERTEX * _pD3DVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj, ANIM_USE * eanim, EERIE_3D * angle, EERIE_3D  * pos, unsigned long time, INTERACTIVE_OBJ * io, long typ = 0);
+void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj, ANIM_USE * eanim, Anglef * angle, Vec3f  * pos, unsigned long time, INTERACTIVE_OBJ * io, long typ = 0);
 
-void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, EERIE_3D  * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
+void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
+
+void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
 
 #endif // ARX_ANIMATION_ANIMATION_H

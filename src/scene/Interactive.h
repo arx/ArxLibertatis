@@ -62,6 +62,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "platform/Flags.h"
+#include "platform/math/Vector2.h"
+#include "platform/math/Angle.h"
+
+#include "Configure.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
@@ -81,9 +85,9 @@ struct ARX_NODE {
 	char name[64];
 	long link[MAX_LINKS];
 	char lnames[MAX_LINKS][64];
-	EERIE_3D pos;
-	EERIE_S2D bboxmin;
-	EERIE_S2D bboxmax;
+	Vec3f pos;
+	Vec2s bboxmin;
+	Vec2s bboxmax;
 };
 
 struct ARX_NODES {
@@ -120,7 +124,9 @@ extern ARX_NODES nodes;
 extern INTERACTIVE_OBJECTS inter;
 extern INTERACTIVE_OBJ * CURRENTINTER;
 
+#ifdef BUILD_EDITOR
 extern long NbIOSelected;
+#endif
 
 void ARX_INTERACTIVE_UnfreezeAll();
 void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string & s1);
@@ -132,14 +138,14 @@ void ARX_INTERACTIVE_Detach(long n_source, long n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state);
 
 void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io);
-bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * target);
+bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target);
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
 void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string & param1, const std::string& param2);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string & temp);
-void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flags = 0);
+void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags = 0);
 
 bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io);
 void CleanScriptLoadedIO();
@@ -165,7 +171,7 @@ long GetFreeNode();
 void UnselectAllNodes();
 void SelectNode(long i);
 void MakeNodeName(long i);
-void TranslateSelectedNodes(EERIE_3D * trans);
+void TranslateSelectedNodes(Vec3f * trans);
 void ClearSelectedNodes();
 bool ExistNodeName(char * name);
 void LinkNodeToNode(long i, long j);
@@ -177,20 +183,22 @@ void ReleaseNode();
 void RestoreInitialIOStatus();
 long GetInterNum(const INTERACTIVE_OBJ * io);
 
+#ifdef BUILD_EDITOR
 void SelectIO(INTERACTIVE_OBJ * io);
 void UnSelectIO(INTERACTIVE_OBJ * io);
-void RotateSelectedIO(EERIE_3D * op);
-void TranslateSelectedIO(EERIE_3D * op);
+void RotateSelectedIO(Anglef * op);
+void TranslateSelectedIO(Vec3f * op);
 void GroundSnapSelectedIO();
 void DeleteSelectedIO();
 void ResetSelectedIORot();
+#endif
 
 long GetNumberInterWithOutScriptLoadForLevel(long level);
 void FreeAllInter();
 
 void UnlinkAllLinkedObjects();
-long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size);
-INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
+long IsCollidingAnyInter(float x, float y, float z, Vec3f * size);
+INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
 
 /*!
  * Adds an Interactive Object to the Scene
@@ -208,7 +216,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
 void ReleaseInter(INTERACTIVE_OBJ * io);
 void UpdateCameras();
 
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos);
+INTERACTIVE_OBJ * InterClick(Vec2s * pos);
  
 void RenderInter(float from, float to);
 void MakeIOIdent(INTERACTIVE_OBJ * io);

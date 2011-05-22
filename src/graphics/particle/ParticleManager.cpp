@@ -22,57 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-/*
-  vendredi 23 novembre
-    màj update (check if size > 0)
-  vendredi 15 juin 2001
-	amélorations, rajouts de trucs genre blend (nouvel alpha pour blood par ex)
-	insertion dans l'éditeur de Danae
-	affichage dans l'éditeur
-	mise à jour avec la dll
-	calcul du point pour selection souris
-  jeudi 31 mai code cosmetics + optims
-  mercredi 30 mai nettoyage + préparations des VB + optims draw sprite + rotated
-			-> passage de trianglefan à loop
-  mardi 29 mai optims diverses + fix spawn
-  lundi 28 mai fix des upates par la dll + random color lock + fix speed (slider -> edit)
-			+ fix set params deg2rad angle � faire en amont
-			+ blend + flash + texture loop
-  vendredi 25 mai DLL dans danae
-  mercredi 23 mai 2001 interface revue + stuff added
-			life + rand2 -> life + rnd
-			size + rand2 -> size + rnd
-			color + rand2 -> color + rnd
-			alpha + rand2 -> alpha + rnd
-			changement des slideurs -> rand2 -> rnd (genre min max)
-  lundi 21 mai 2001 code cosmetics + fire and forget particles + texture loop on/off
-			  + interface revue
-  semaine e3 sens rotation + cone revu
-  lundi 07 mai 2001 time textures animées + spray cone plus ou moins + alpha
-			  + rotation
-  04 mai 2001 textures animées + fix random velocity
-				base size
-  03 mai 2001 interface (random) + intégration danae ok
-  02 mai 2001 classes + interface (base) + début intégration danae
-  30 avril 2001 classes
-
-todo:
-	keys
-	freq
-	cf eeriedrawsprite pour la taille
-	add & forget
-	swpan type
-	freq
-	toto random tex start (qd multi)
-	bounding box
-*/
-
-//TODO(lubosz): remove Version history
 
 #include "graphics/particle/ParticleManager.h"
-
-#include <algorithm>
-#include <vector>
 
 #include "core/Core.h"
 
@@ -81,28 +32,29 @@ todo:
 
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleParams.h"
+#include "graphics/particle/ParticleSystem.h"
 
-using namespace std;
+using std::list;
 
 //-----------------------------------------------------------------------------
-CParticleManager::CParticleManager()
+ParticleManager::ParticleManager()
 {
 	listParticleSystem.clear();
 }
 
 //-----------------------------------------------------------------------------
-CParticleManager::~CParticleManager()
+ParticleManager::~ParticleManager()
 {
 	Clear();
 }
 
 //-----------------------------------------------------------------------------
-void CParticleManager::Clear()
+void ParticleManager::Clear()
 {
-	list<CParticleSystem *>::iterator i;
+	list<ParticleSystem *>::iterator i;
 
 	i = listParticleSystem.begin();
-	CParticleSystem * pP;
+	ParticleSystem * pP;
 
 	while (i != listParticleSystem.end())
 	{
@@ -120,22 +72,22 @@ void CParticleManager::Clear()
 }
 
 //-----------------------------------------------------------------------------
-void CParticleManager::AddSystem(CParticleSystem * _pPS)
+void ParticleManager::AddSystem(ParticleSystem * _pPS)
 {
 	listParticleSystem.insert(listParticleSystem.end(), _pPS);
 }
 
 //-----------------------------------------------------------------------------
-void CParticleManager::Update(long _lTime)
+void ParticleManager::Update(long _lTime)
 {
-	if (!listParticleSystem.size()) return;
+	if (listParticleSystem.empty()) return;
 
-	list<CParticleSystem *>::iterator i;
+	list<ParticleSystem *>::iterator i;
 	i = listParticleSystem.begin();
 
 	while (i != listParticleSystem.end())
 	{
-		CParticleSystem * p = *i;
+		ParticleSystem * p = *i;
 		++i;
 
 		if (!p->IsAlive())
@@ -152,14 +104,14 @@ void CParticleManager::Update(long _lTime)
 
 //-----------------------------------------------------------------------------
 
-void CParticleManager::Render()
+void ParticleManager::Render()
 {
 	int ilekel = 0;
-	list<CParticleSystem *>::iterator i;
+	list<ParticleSystem *>::iterator i;
 
 	for (i = listParticleSystem.begin(); i != listParticleSystem.end(); ++i)
 	{
-		CParticleSystem * p = *i;
+		ParticleSystem * p = *i;
 		p->Render();
 		ilekel++;
 	}

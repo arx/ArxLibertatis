@@ -188,7 +188,7 @@ aalError OpenALBackend::setRolloffFactor(float factor) {
 	return AAL_OK;
 }
 
-aalError OpenALBackend::setListenerPosition(const Vector3f & position) {
+aalError OpenALBackend::setListenerPosition(const Vec3f & position) {
 	
 	alListener3f(AL_POSITION, position.x, position.y, position.z);
 	AL_CHECK_ERROR("setting listener posiotion")
@@ -196,7 +196,7 @@ aalError OpenALBackend::setListenerPosition(const Vector3f & position) {
 	return AAL_OK;
 }
 
-aalError OpenALBackend::setListenerOrientation(const Vector3f & front, const Vector3f & up) {
+aalError OpenALBackend::setListenerOrientation(const Vec3f & front, const Vec3f & up) {
 	
 	ALfloat orientation[] = {front.x, front.y, front.z, -up.x, -up.y, -up.z};
 	alListenerfv(AL_ORIENTATION, orientation);

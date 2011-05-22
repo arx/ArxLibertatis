@@ -42,11 +42,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-// ARX_Time.CPP
+// ARX_Special.h
 //////////////////////////////////////////////////////////////////////////////////////
 //
 // Description:
-//		ARX Time Management
+//		ARX Special ...
 //
 // Updates: (date) (person) (update)
 //
@@ -55,119 +55,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "core/Time.h"
+#ifndef ARX_PHYSICS_ATTRACTORS_H
+#define ARX_PHYSICS_ATTRACTORS_H
 
-#include <cstdio>
+#include "platform/math/Vector3.h"
 
-#include <windows.h>
+struct INTERACTIVE_OBJ;
 
-extern float FrameTime, LastFrameTime;	//ARX: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
+void ARX_SPECIAL_ATTRACTORS_Reset();
+bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius);
+void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & io, Vec3f & force);
 
-/////////////////////// GAMETIME MANAGEMENT /////////////////////////
-float ARXPausedTime = 0;
-float ARXTotalPausedTime = 0;
-float ARXTime = 0;
-bool ARXPausedTimer = 0;
-
-//-----------------------------------------------------------------------------
-LARGE_INTEGER	liFrequency;
-LARGE_INTEGER   liInitPerfCounter;        // Nuky - added initial time
-bool			bTimerInit = false;
-float			startupTime = 0;
-
-namespace Time
-{
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	// Avoid costly calls to QueryPerformanceFrequency... cache its result
-    class FrequencyInit
-    {
-    public:
-        FrequencyInit()
-        {
-            QueryPerformanceFrequency(&Frequency);
-        }
-        LARGE_INTEGER Frequency;
-    } ;
-
-    FrequencyInit gFrequencyInit;
-    const u64 FREQUENCY_HZ  = gFrequencyInit.Frequency.QuadPart;
-#endif
-}
-
-
-void _ARX_TIME_Init()
-{
-	if (bTimerInit)
-	{
-		return;
-	}
-
-	QueryPerformanceFrequency(&liFrequency);
-	QueryPerformanceCounter(&liInitPerfCounter);
-	bTimerInit = true;
-
-	ARX_TIME_Init();
-
-	startupTime = _ARX_TIME_GetTime();
-}
-
-float _ARX_TIME_GetTime()
-{
-	LARGE_INTEGER liPerfCounter;
-
-	_ARX_TIME_Init();
-
-	QueryPerformanceCounter(&liPerfCounter);
-	return ARX_CLEAN_WARN_CAST_FLOAT((liPerfCounter.QuadPart / (double)liFrequency.QuadPart) * 1000);
-}
-
-//-----------------------------------------------------------------------------
-void ARX_TIME_Init()
-{
-	_ARX_TIME_Init();
-
-	float tim = _ARX_TIME_GetTime();
-	ARXTotalPausedTime = tim;
-	ARXTime = 0;
-	ARXPausedTime = 0;
-	ARXPausedTimer = 0;
-
-//ARX_BEGIN: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
-//Currently when ARX_TIME_Init the substract FrameDiff = FrameTime - LastFrameTime is negative because of resetting ARXTotalPausedTime.
-//This solution reinit FrameTime & LastFrameTime to get a min frameDiff = 0 on ARX_TIME_Init.
-	FrameTime = LastFrameTime = ARXTime;
-//ARX_END: jycorbel (2010-07-19)
-}
-
-//-----------------------------------------------------------------------------
-void ARX_TIME_Pause()
-{
-	if (!ARXPausedTimer)
-	{
-		float tim = _ARX_TIME_GetTime();
-		ARXPausedTime = tim;
-		ARXPausedTimer = 1;
-	}
-}
-
-//-----------------------------------------------------------------------------
-void ARX_TIME_UnPause()
-{
-	if (ARXPausedTimer)
-	{
-		float tim = _ARX_TIME_GetTime();
-		ARXTotalPausedTime += tim - ARXPausedTime;
-		ARXPausedTime = 0;
-		ARXPausedTimer = 0;
-	}
-}
-
-//-----------------------------------------------------------------------------
-void ARX_TIME_Force_Time_Restore(float time)
-{
-	float tim = _ARX_TIME_GetTime();
-	ARXTotalPausedTime = tim - time;
-	ARXTime = time;
-	ARXPausedTime = 0;
-	ARXPausedTimer = 0;
-}
+#endif // ARX_PHYSICS_ATTRACTORS_H

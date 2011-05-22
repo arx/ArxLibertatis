@@ -402,6 +402,7 @@ public:
 	float GetZBufferMax();
 	float zbuffer_max;
 	float zbuffer_max_div;
+	int menu;
 	
 	// Class constructor
 	CD3DApplication();

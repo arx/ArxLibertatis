@@ -68,8 +68,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 #include <dinput.h>
 
+#include "Configure.h"
+
 #include "core/Config.h"
-#include "core/Time.h"
+#include "core/GameTime.h"
 #include "core/Application.h"
 #include "core/Localisation.h"
 #include "core/Unicode.hpp"
@@ -80,18 +82,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"
-#include "gui/ViewImage.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
 #include "gui/MenuPublic.h"
+#include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
+#include "graphics/font/Font.h"
 
-#include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
@@ -103,12 +105,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/DXInput.h"
 
+using std::string;
+using std::istringstream;
+
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
-extern EERIE_3D ePlayerAngle;
+extern Anglef ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
-extern long GAME_EDITOR;
 extern long START_NEW_QUEST;
 extern long INTRO_NOT_LOADED;
 extern long LASTBOOKBUTTON;
@@ -515,18 +519,14 @@ void ARX_MENU_Clicked_CREDITS()
 extern long FINAL_COMMERCIAL_DEMO;
 bool ARX_IsSteam();
 
-//-----------------------------------------------------------------------------
-void ARX_MENU_Clicked_QUIT_GAME()
-{
-	if (GAME_EDITOR)
+void ARX_MENU_Clicked_QUIT_GAME() {
+	
+#ifdef BUILD_EDITOR
+	if(GAME_EDITOR) {
 		ARX_MENU_Clicked_QUIT();
-	else
+	} else
+#endif
 	{
-		if	(FINAL_COMMERCIAL_DEMO)
-		{
-			StartImageDemo();
-		}
-
 		ARX_Menu_Resources_Release();
 		ARXmenu.currentmode = AMCM_OFF;
 		ARX_TIME_UnPause();
@@ -793,7 +793,7 @@ bool ARX_Menu_Render()
 						12,
 						(DANAECENTERX) * 0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
-						RGB(232 + t, 204 + t, 143 + t),
+						Color(232 + t, 204 + t, 143 + t),
 						0x00FF00FF,
 						1000,
 						0.01f,
@@ -811,7 +811,7 @@ bool ARX_Menu_Render()
 			float fSizeX = 100 * Xratio;
 			float fSizeY = 100 * Yratio;
 
-			COLORREF Color = 0;
+			Color color = 0;
 
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
@@ -845,12 +845,12 @@ bool ARX_Menu_Render()
 
 				}
 
-				Color = RGB(255, 255, 255);
+				color = Color(255, 255, 255);
 			}
 			else
-				Color = RGB(232, 204, 143);
+				color = Color(232, 204, 143);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -889,12 +889,12 @@ bool ARX_Menu_Render()
 					ARX_PLAYER_Restore_Skin();
 				}
 
-				Color = RGB(255, 255, 255);
+				color = Color(255, 255, 255);
 			}
 			else
-				Color = RGB(232, 204, 143);
+				color = Color(232, 204, 143);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -939,24 +939,24 @@ bool ARX_Menu_Render()
 				else
 				{
 					if (DONE)
-						Color = RGB(255, 255, 255);
+						color = Color(255, 255, 255);
 					else
-						Color = RGB(192, 192, 192);
+						color = Color(192, 192, 192);
 				}
 
 			}
 			else
 			{
 				if (DONE)
-					Color = RGB(232, 204, 143);
+					color = Color(232, 204, 143);
 				else
-					Color = RGB(192, 192, 192);
+					color = Color(192, 192, 192);
 			}
 
 			if (SKIN_MOD < 0)
-				Color = RGB(255, 0, 255);
+				color = Color(255, 0, 255);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
 		}
 	}
 
@@ -973,17 +973,17 @@ bool ARX_Menu_Render()
 			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
 		}
 
-		EERIE_3D ePos;
-		COLORREF Color = 0;
+		Vec3f ePos;
+		Color color = 0;
 		std::string szText;
 
-		Color = RGB(232, 204, 143);
+		color = Color(232, 204, 143);
 
 		szText = getLocalised("system_menus_main_cdnotfound");
-		Vector2i textSize = hFontMenu->GetTextSize(szText);
+		Vec2i textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), color);
 
 		szText = getLocalised("system_yes");
 		textSize = hFontMenu->GetTextSize(szText);
@@ -997,12 +997,12 @@ bool ARX_Menu_Render()
 				ARX_MENU_CLICKSOUND();
 			}
 			
-			Color = RGB(255, 255, 255);
+			color = Color(255, 255, 255);
 		} else {
-			Color = RGB(232, 204, 143);
+			color = Color(232, 204, 143);
 		}
 
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), color);
 
 		szText = getLocalised("system_no");
 		textSize = hFontMenu->GetTextSize(szText);
@@ -1015,12 +1015,12 @@ bool ARX_Menu_Render()
 				ARX_MENU_CLICKSOUND();
 			}
 			
-			Color = RGB(255, 255, 255);
+			color = Color(255, 255, 255);
 		} else {
-			Color = RGB(232, 204, 143);
+			color = Color(232, 204, 143);
 		}
 
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), color);
 	}
 
 	
