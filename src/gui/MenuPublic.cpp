@@ -97,8 +97,6 @@ void ARXMenu_Options_Video_GetBitPlane(int & _iBpp)
 	_iBpp		= danaeApp.m_pFramework->bitdepth;
 }
 
-extern float fInterfaceRatio;
-
 //-----------------------------------------------------------------------------
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int _iBpp)
 {
@@ -111,80 +109,57 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 
 	ARX_Text_Close();
 
-	fInterfaceRatio = 1;
-
 	HRESULT hr;
 	Project.bits = _iBpp;
 	danaeApp.m_pFramework->bitdepth = _iBpp;
 	danaeApp.m_pFramework->m_dwRenderHeight = _iHeight;
 	danaeApp.m_pFramework->m_dwRenderWidth = _iWidth;
 
+	if (danaeApp.m_pDeviceInfo->bWindowed)
 	{
-		if (danaeApp.m_pDeviceInfo->bWindowed)
-		{
-			RECT rRect;
-			RECT rRect2;
-			GetClientRect(danaeApp.m_hWnd, &rRect);
-			GetWindowRect(danaeApp.m_hWnd, &rRect2);
-			int dx = (rRect2.right - rRect2.left) - (rRect.right - rRect.left);
-			int dy = (rRect2.bottom - rRect2.top) - (rRect.bottom - rRect.top);
-			SetWindowPos(danaeApp.m_hWnd,
-			             HWND_TOP,
-			             rRect2.left,
-			             rRect2.top,
-			             _iWidth + dx,
-			             _iHeight + dy,
-			             SWP_SHOWWINDOW);
-		}
-		else
-		{
-			int nb = danaeApp.m_pDeviceInfo->dwNumModes;
+		RECT rRect;
+		RECT rRect2;
+		GetClientRect(danaeApp.m_hWnd, &rRect);
+		GetWindowRect(danaeApp.m_hWnd, &rRect2);
+		int dx = (rRect2.right - rRect2.left) - (rRect.right - rRect.left);
+		int dy = (rRect2.bottom - rRect2.top) - (rRect.bottom - rRect.top);
+		SetWindowPos(danaeApp.m_hWnd,
+			            HWND_TOP,
+			            rRect2.left,
+			            rRect2.top,
+			            _iWidth + dx,
+			            _iHeight + dy,
+			            SWP_SHOWWINDOW);
+	}
+	else
+	{
+		int nb = danaeApp.m_pDeviceInfo->dwNumModes;
 
-			for (int i = 0; i < nb; i++)
+		for (int i = 0; i < nb; i++)
+		{
+
+			ARX_CHECK_NOT_NEG(_iBpp);
+
+			if (danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT(_iBpp))
 			{
+				ARX_CHECK_NOT_NEG(_iWidth);
+				ARX_CHECK_NOT_NEG(_iHeight);
 
-				ARX_CHECK_NOT_NEG(_iBpp);
-
-				if (danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT(_iBpp))
+				if ((danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT(_iWidth)) &&
+					    (danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT(_iHeight)))
 				{
-					ARX_CHECK_NOT_NEG(_iWidth);
-					ARX_CHECK_NOT_NEG(_iHeight);
 
-					if ((danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT(_iWidth)) &&
-					        (danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT(_iHeight)))
-					{
-
-						danaeApp.m_pDeviceInfo->ddsdFullscreenMode = danaeApp.m_pDeviceInfo->pddsdModes[i];
-						danaeApp.m_pDeviceInfo->dwCurrentMode = i;
-					}
+					danaeApp.m_pDeviceInfo->ddsdFullscreenMode = danaeApp.m_pDeviceInfo->pddsdModes[i];
+					danaeApp.m_pDeviceInfo->dwCurrentMode = i;
 				}
 			}
 		}
-
-		if (FAILED(hr = danaeApp.Change3DEnvironment()))
-		{
-			LogError << "Error Changing Environment";
-		}
-		else
-		{
-			DANAESIZX = danaeApp.m_pFramework->m_dwRenderWidth;
-			DANAESIZY = danaeApp.m_pFramework->m_dwRenderHeight;
-
-			if (danaeApp.m_pDeviceInfo->bWindowed)
-				DANAESIZY -= danaeApp.m_pFramework->Ystart;
-
-			DANAECENTERX = DANAESIZX >> 1;
-			DANAECENTERY = DANAESIZY >> 1;
-
-			Xratio = DANAESIZX * ( 1.0f / 640 );
-			Yratio = DANAESIZY * ( 1.0f / 480 );
-
-			ARXMenu_Options_Video_SetGamma(config.video.gamma);
-			bNoReturnToWindows = true;
-		}
 	}
 
-	ARX_Text_Init();
+	if (FAILED(hr = danaeApp.Change3DEnvironment()))
+		LogError << "Error Changing Environment";
+
+	AdjustUI();
 
 	GRenderer->BeginScene();
 }

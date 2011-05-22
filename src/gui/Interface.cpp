@@ -278,7 +278,6 @@ long				MOVETYPE=MOVE_WAIT;
 //used to redist points - attributes and skill
 long				lCursorRedistValue = 0;
 long				lFadeMapTime = 0;
-float				fInterfaceRatio = 1;
 
 unsigned long		COMBAT_MODE_ON_START_TIME = 0;
 long SPECIAL_DRAW_WEAPON=0;
@@ -289,7 +288,7 @@ float fHighLightAng=0.f;
 
 float INTERFACE_RATIO(float a)
 {
-	return a * fInterfaceRatio;
+	return a;
 }
 float INTERFACE_RATIO_LONG(const long a)
 {
@@ -9630,16 +9629,7 @@ void DANAE::DrawAllInterface()
 			ulColor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
 		}
 
-		if ((fInterfaceRatio>1.9f) && ITC.Get("filled_gauge_blue"))
-		{
-			float vuv=(1.f-fnl)*ITC.Get("filled_gauge_red")->m_dwHeight;
-			long vvv = vuv;
-				vuv = (float)vvv / ITC.Get("filled_gauge_red")->m_dwHeight; 
-			//ir=
-				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, vuv);
-		}
-		else
-				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, (1.f - fnl));
+		EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, (1.f - fnl));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9671,17 +9661,7 @@ void DANAE::DrawAllInterface()
 		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
 		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
 
-
-		if ((fInterfaceRatio>1.9f) && ITC.Get("filled_gauge_blue"))
-		{
-			float vuv=(1.f-fnm)*ITC.Get("filled_gauge_blue")->m_dwHeight;
-			long vvv = vuv;
-				vuv = (float)vvv / ITC.Get("filled_gauge_blue")->m_dwHeight; 
-			//ir=
-				EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, vuv);
-		}
-		else
-				EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
+		EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{

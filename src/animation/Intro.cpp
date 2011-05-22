@@ -85,16 +85,6 @@ void ARX_INTERFACE_KillARKANE()
 //-----------------------------------------------------------------------------
 void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f)
 {
-	DANAESIZX = danaeApp.m_pFramework->m_dwRenderWidth;
-	DANAESIZY = danaeApp.m_pFramework->m_dwRenderHeight;
-
-	if (danaeApp.m_pDeviceInfo->bWindowed)
-		DANAESIZY -= danaeApp.m_pFramework->Ystart;
-
-	DANAECENTERX = DANAESIZX >> 1;
-	DANAECENTERY = DANAESIZY >> 1;
-
-
 	if (_bRatio)
 	{
 		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f)*Xratio,
@@ -111,8 +101,6 @@ void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade 
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwHeight)),
 		                 0.001f, tc, D3DRGB(_fFade, _fFade, _fFade));
 	}
-
-
 }
 
 //-----------------------------------------------------------------------------

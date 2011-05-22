@@ -730,55 +730,40 @@ void DanaeSwitchFullScreen()
 	ARX_Text_Close();
 	danaeApp.SwitchFullScreen();
 
-	if(danaeApp.m_pFramework->m_bIsFullscreen) {
-		ARXMenu_Options_Video_SetGamma(config.video.gamma);
-	}
-
-	DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
-	DANAESIZY=danaeApp.m_pFramework->m_dwRenderHeight;
-
-	if (danaeApp.m_pDeviceInfo->bWindowed)
-		DANAESIZY-=danaeApp.m_pFramework->Ystart;
-
-	DANAECENTERX=DANAESIZX>>1;
-	DANAECENTERY=DANAESIZY>>1;
-
-	Xratio=DANAESIZX*( 1.0f / 640 ); 
-	Yratio=DANAESIZY*( 1.0f / 480 ); 
-
-	ARX_Text_Init();
-
-	extern float fInterfaceRatio;
-	fInterfaceRatio = 1;
+	AdjustUI();
 
 	LoadScreen();
 }
 
-bool bNoReturnToWindows = false;
+void AdjustUI()
+{
+	// Sets Danae Screen size depending on windowed/full-screen state
+	DANAESIZX = danaeApp.m_pFramework->m_dwRenderWidth;
+	DANAESIZY = danaeApp.m_pFramework->m_dwRenderHeight;
+
+	if (danaeApp.m_pDeviceInfo->bWindowed)
+		DANAESIZY -= danaeApp.m_pFramework->Ystart;
+
+	// Now computes screen center
+	DANAECENTERX = DANAESIZX>>1;
+	DANAECENTERY = DANAESIZY>>1;
+
+	// Computes X & Y screen ratios compared to a standard 640x480 screen
+	Xratio = DANAESIZX * ( 1.0f / 640 );
+	Yratio = DANAESIZY * ( 1.0f / 480 );
+
+	ARX_Text_Init();
+
+	if(pMenu)
+		pMenu->bReInitAll=true;
+}
 
 void DanaeRestoreFullScreen() {
-	
-	if(bNoReturnToWindows) {
-		bNoReturnToWindows=false;
-		return;
-	}
 
 	danaeApp.m_pDeviceInfo->bWindowed=!danaeApp.m_pDeviceInfo->bWindowed;
 	danaeApp.SwitchFullScreen();
 
-	if(danaeApp.m_pFramework->m_bIsFullscreen) {
-		ARXMenu_Options_Video_SetGamma(config.video.gamma);
-	}
-
-	DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
-	DANAESIZY=danaeApp.m_pFramework->m_dwRenderHeight;
-	DANAECENTERX=DANAESIZX>>1;
-	DANAECENTERY=DANAESIZY>>1;
-
-	Xratio=DANAESIZX*( 1.0f / 640 ); 
-	Yratio=DANAESIZY*( 1.0f / 480 ); 
-
-	ARX_Text_Init();
+	AdjustUI();
 
 	LoadScreen();
 }
@@ -1004,8 +989,6 @@ void InitializeDanae()
 	ACTIVEBKG->ambient255.r=ACTIVEBKG->ambient.r*255.f;
 	ACTIVEBKG->ambient255.g=ACTIVEBKG->ambient.g*255.f;
 	ACTIVEBKG->ambient255.b=ACTIVEBKG->ambient.b*255.f;
-
-	ARX_Text_Init();
 
 	LoadSysTextures();
 	CreateInterfaceTextureContainers();
@@ -1409,11 +1392,12 @@ int main(int argc, char ** argv) {
 	danaeApp.d_dlgframe=0;
 
 	if (MOULINEX) {
-		danaeApp.CreationSizeX = 800;
-		danaeApp.CreationSizeY = 12;
+		danaeApp.WndSizeX = 800;
+		danaeApp.WndSizeY = 12;
 	} else {
-		danaeApp.CreationSizeX = config.video.width;
-		danaeApp.CreationSizeY = config.video.height;
+		danaeApp.WndSizeX = config.video.width;
+		danaeApp.WndSizeY = config.video.height;
+		danaeApp.Fullscreen = config.video.fullscreen;
 	}
 
 	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
@@ -1442,8 +1426,10 @@ int main(int argc, char ** argv) {
 	if( FAILED( danaeApp.Create( hInstance ) ) )
 		return 0;
 
+	AdjustUI();
+
 	LogInfo << "Application Creation Success";
-	ShowWindow(danaeApp.m_hWnd, SW_HIDE);
+
 	MAIN_PROGRAM_HANDLE=danaeApp.m_hWnd;
 	danaeApp.m_pFramework->bitdepth=Project.bits;
 
@@ -1517,7 +1503,6 @@ int main(int argc, char ** argv) {
 		config.language = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
-	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
 
 	char tex[512];
 
@@ -5248,22 +5233,7 @@ static float _AvgFrameDiff = 150.f;
 
 		this->m_pFramework->m_bHasMoved=false;
 
-		if(pMenu)
-		{
-			pMenu->bReInitAll=true;
-		}
-
-		DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
-		DANAESIZY=danaeApp.m_pFramework->m_dwRenderHeight;
-
-		if (danaeApp.m_pDeviceInfo->bWindowed)
-			DANAESIZY-=danaeApp.m_pFramework->Ystart;
-
-		DANAECENTERX=DANAESIZX>>1;
-		DANAECENTERY=DANAESIZY>>1;
-		
-		Xratio=DANAESIZX*( 1.0f / 640 ); 
-		Yratio=DANAESIZY*( 1.0f / 480 ); 
+		AdjustUI();
 	}
 
 	// Get DirectInput Infos
@@ -5368,30 +5338,14 @@ static float _AvgFrameDiff = 150.f;
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 		return false;
 	}
-
-	// Sets Danae Screen size depending on windowed/full-screen state
-	DANAESIZX=this->m_pFramework->m_dwRenderWidth;
-	DANAESIZY=this->m_pFramework->m_dwRenderHeight;
-
-	if ((m_pDeviceInfo->bWindowed) && (!FINAL_RELEASE))
-		DANAESIZY-=this->m_pFramework->Ystart;
-
-	// Now computes screen center
-
+		
 	//Setting long from long
-	subj.centerx = DANAECENTERX = DANAESIZX>>1;
-	subj.centery = DANAECENTERY = DANAESIZY>>1;
+	subj.centerx = DANAECENTERX;
+	subj.centery = DANAECENTERY;
+
 	//Casting long to float
 	subj.posleft = subj.transform.xmod = ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERX );
 	subj.postop	 = subj.transform.ymod = ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERY );
-
-
-	// Computes X & Y screen ratios compared to a standard 640x480 screen
-	if (DANAESIZX == 640) Xratio = 1.f;
-	else Xratio = DANAESIZX * ( 1.0f / 640 );
-
-	if (DANAESIZY == 480) Yratio = 1.f;
-	else Yratio = DANAESIZY * ( 1.0f / 480 );
 
 	// Finally computes current focal
 	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));

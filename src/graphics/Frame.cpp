@@ -85,6 +85,7 @@ CD3DFramework7::CD3DFramework7()
 	m_pDD             = NULL;
 	m_pD3D            = NULL;
 	m_dwDeviceMemType = 0;
+	m_bHasMoved = false;
 	Ystart = 0;
 	Xstart = 0;
 }
@@ -661,7 +662,9 @@ HRESULT CD3DFramework7::ShowFrame()
 	{
 		// We are in windowed mode, so perform a blit.
 		RECT rect;
-		GetWindowRect(m_hWnd, &rect);
+		GetClientRect(m_hWnd, &rect);
+		ClientToScreen(m_hWnd, (LPPOINT)&rect.left);
+		ClientToScreen(m_hWnd, (LPPOINT)&rect.right);
 
 		return m_pddsFrontBuffer->Blt(&rect, m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
 	}

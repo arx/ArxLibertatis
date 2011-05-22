@@ -119,7 +119,6 @@ extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
 extern long DEBUG1ST;
-extern bool bNoReturnToWindows;
 
 struct QUAKE_FX_STRUCT {
 	float intensity;
@@ -165,6 +164,7 @@ void Danae_Registry_ReadValue(const char * string, long * value, long defaultval
 void Danae_Registry_Write(const char * string, const char * text);
 void Danae_Registry_WriteValue(const char * string, DWORD value);
 void SendGameReadyMsg();
+void AdjustUI();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
 void ARX_SetAntiAliasing();

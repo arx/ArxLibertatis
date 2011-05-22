@@ -376,8 +376,9 @@ public:
 	KEYBOARD_MNG kbd;
 	
 	char StatusText[512];
-	short CreationSizeX;
-	short CreationSizeY;
+	short WndSizeX;
+	short WndSizeY;
+	bool  Fullscreen;
 	WindowCreationFlags CreationFlags;
 	long CreationMenu;
 	EERIETOOLBAR * ToolBar;

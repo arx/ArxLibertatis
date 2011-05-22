@@ -140,8 +140,9 @@ CD3DApplication::CD3DApplication()
 	m_bAppUseStereo   = false;
 	m_bShowStats      = false;
 	m_fnConfirmDevice = NULL;
-	CreationSizeX = 640;
-	CreationSizeY = 480;
+	WndSizeX = 640;
+	WndSizeY = 480;
+	Fullscreen = 0;
 	CreationFlags = 0;
 	owner = 0L;
 	CreationMenu = 0;
@@ -237,41 +238,48 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	RegisterClass(&wndClass);
 
 	// Create the render window
-	flags = 0;
+	flags = WS_OVERLAPPEDWINDOW;
 
 	if (CreationFlags & WCF_NORESIZE)
 	{
-		flags |= (WS_OVERLAPPEDWINDOW | WS_DLGFRAME | WS_MINIMIZEBOX);
+		flags |= (WS_DLGFRAME | WS_MINIMIZEBOX);
 		flags &= ~WS_CAPTION;
 		flags &= ~WS_MAXIMIZEBOX;
 		flags &= ~WS_THICKFRAME;
 	}
+	else if (CreationFlags & WCF_CHILD)
+	{
+        flags &= ~WS_OVERLAPPEDWINDOW;
+		flags |= WS_CHILD;
+	}
 
-	else if (!(CreationFlags & WCF_CHILD)) flags |= WS_OVERLAPPEDWINDOW;
-	else flags |= WS_CHILD;
-
-	if (FINAL_COMMERCIAL_DEMO || FINAL_COMMERCIAL_GAME)
+	if( Fullscreen )
 	{
 		flags &= ~WS_CAPTION;
 		flags &= ~WS_MAXIMIZEBOX;
 		flags &= ~WS_THICKFRAME;
 		flags &= ~WS_SYSMENU;
 		flags &= ~WS_OVERLAPPEDWINDOW;
-
 		menu = 0;
 	}
 	else
+	{
 		menu = CreationMenu;
+	}
+
+	RECT rcWnd = { 0, 0, WndSizeX, WndSizeY };
+	AdjustWindowRectEx(&rcWnd, flags, menu != 0, 0);
 
 	MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
 		                            flags,
-									CW_USEDEFAULT, CW_USEDEFAULT, CreationSizeX, CreationSizeY, owner,
+									CW_USEDEFAULT, CW_USEDEFAULT, rcWnd.right - rcWnd.left, rcWnd.bottom - rcWnd.top, owner,
 		                            LoadMenu(hInst, MAKEINTRESOURCE(menu)),
 		                            hInst, 0L);
 
 	if (!m_hWnd) return  E_OUTOFMEMORY;
 
 	UpdateWindow(m_hWnd);
+	ShowWindow(m_hWnd, SW_SHOW);
 	
 
 	// Nuky - this isnt used for the game, and I can set WIN32_LEAN_AND_MEAN with it commented
@@ -503,7 +511,6 @@ LRESULT CD3DApplication::SwitchFullScreen()
 LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                  LPARAM lParam)
 {
-	HRESULT hr;
 	long iii, ij;
 
 	switch (uMsg)
@@ -621,42 +628,21 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			break;
 		
 		case WM_SIZE:
-			RECT rec;
-			m_pFramework->m_bHasMoved = true;
-
 			// Check to see if we are losing our window...
 			if (SIZE_MAXHIDE == wParam || SIZE_MINIMIZED == wParam)
 				m_bActive = false;
-			else m_bActive = true;
-
-
+			else 
+				m_bActive = true;
+			
 			// A new window size will require a new backbuffer
 			// size, so the 3D structures must be changed accordingly.
 			if (m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
 			{
-
+				RECT rec;
 				rec.right = LOWORD(lParam);
 				rec.bottom = HIWORD(lParam);
 
-				if (((LOWORD(lParam) < 320) || (HIWORD(lParam) < 320))
-				        && (SIZE_MINIMIZED != wParam)
-				        && (SIZE_RESTORED != wParam))
-				{
-
-					if (LOWORD(lParam) < 320) rec.right = 320;
-
-					if (HIWORD(lParam) < 200) rec.bottom = 200;
-
-					SetWindowPos(hWnd, HWND_TOP, 0, 0, rec.right, rec.bottom, SWP_NOZORDER | SWP_NOMOVE);
-				}
-				else
-				{
-					m_bReady = false;
-
-					if (FAILED(hr = Change3DEnvironment()))   return 0;
-
-					m_bReady = true;
-				}
+				m_pFramework->m_bHasMoved = true;
 
 				if (ToolBar && ToolBar->hWnd)
 				{
@@ -779,8 +765,6 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 		m_ddsdRenderTarget.dwSize = sizeof(m_ddsdRenderTarget);
 		m_pddsRenderTarget->GetSurfaceDesc(&m_ddsdRenderTarget);
 
-		// Let the app run its startup code which creates the 3d scene.
-
 		if (this->m_pFramework->m_pddsFrontBuffer)
 		{
 			this->m_pFramework->m_pddsFrontBuffer->QueryInterface(IID_IDirectDrawGammaControl, (void **)&lpDDGammaControl);
@@ -835,8 +819,11 @@ HRESULT CD3DApplication::Change3DEnvironment()
 	static DWORD dwSavedStyle;
 	static RECT  rcSaved;
 
+	DDGAMMARAMP DDGammaPrevious;
+
 	if (lpDDGammaControl)
 	{
+		lpDDGammaControl->GetGammaRamp(0, &DDGammaPrevious);
 		lpDDGammaControl->SetGammaRamp(0, &DDGammaOld);
 		lpDDGammaControl->Release();
 		lpDDGammaControl = NULL;
@@ -891,11 +878,17 @@ HRESULT CD3DApplication::Change3DEnvironment()
 		SendMessage(m_hWnd, WM_CLOSE, 0, 0);
 		return hr;
 	}
+
+	// Restore gamma ramp...
+	if (lpDDGammaControl)
+	{
+		lpDDGammaControl->SetGammaRamp(0, &DDGammaPrevious);
+		lpDDGammaControl->GetGammaRamp(0, &DDGammaRamp);
+	}
 	
 	GetZBufferMax();
 	return S_OK;
 }
-
 
 HRESULT CD3DApplication::UpdateGamma()
 {
