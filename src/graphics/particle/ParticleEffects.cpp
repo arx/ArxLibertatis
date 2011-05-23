@@ -1335,8 +1335,6 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 		}
 	}
 
-	Vec3f pos = *poss;
-
 	typ=0;
 	x0 = poss->x * ACTIVEBKG->Xmul;
 	z0 = poss->z * ACTIVEBKG->Zmul;

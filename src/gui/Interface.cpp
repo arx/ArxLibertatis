@@ -10012,10 +10012,6 @@ long Manage3DCursor(long flags)
 					ARX_CHECK_NO_ENTRY();
 							}
 
-
-
-							Vec3f vec = (collidpos - pos).getNormalized();
-
 							if (SPECIAL_DRAGINTER_RENDER)
 							{
 

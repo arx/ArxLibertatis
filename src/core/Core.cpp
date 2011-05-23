@@ -1029,15 +1029,19 @@ void InitializeDanae()
 //-----------------------------------------------------------------------------
 
 void forInternalPeople(LPSTR strCmdLine) {
+	
 	LogDebug << "not FOR_EXTERNAL_PEOPLE";
-	char * param[10];
-
-	param[0]=strtok(strCmdLine," ");
-
-	for (long j=1;j<10;j++)
-		param[j]=strtok(NULL," ");
-
+	
 #ifdef BUILD_EDITOR
+	
+	char * param[10];
+	
+	param[0] = strtok(strCmdLine, " ");
+	
+	for(long j = 1; j < 10; j++) {
+		param[j] = strtok(NULL," ");
+	}
+	
 	long parampos = 0;
 	if((param[parampos] != NULL)) {
 		LogInfo << "PARAMS";
@@ -1100,6 +1104,9 @@ void forInternalPeople(LPSTR strCmdLine) {
 		if (FINAL_RELEASE)
 			GAME_EDITOR=0;
 	}
+	
+#else
+	ARX_UNUSED(strCmdLine);
 #endif
 }
 

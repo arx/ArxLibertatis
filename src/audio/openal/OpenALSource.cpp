@@ -666,14 +666,20 @@ aalError OpenALSource::updateBuffers() {
 	
 	// Stream data / queue buffers.
 	
-	ALint nbuffers;
-	alGetSourcei(source, AL_BUFFERS_PROCESSED, &nbuffers);
+	// We need to get the source state before the number op processed buffers to prevent a race condition with the source reaching the end of the last buffer.
+	ALint sourceState;
+	alGetSourcei(source, AL_SOURCE_STATE, &sourceState);
+	AL_CHECK_ERROR("getting source state")
+	arx_assert(sourceState != AL_INITIAL && sourceState != AL_PAUSED);
+	
+	ALint nbuffersProcessed;
+	alGetSourcei(source, AL_BUFFERS_PROCESSED, &nbuffersProcessed);
 	AL_CHECK_ERROR("getting processed buffer count")
-	arx_assert(nbuffers >= 0);
+	arx_assert(nbuffersProcessed >= 0);
 	
 	ALint maxbuffers = (streaming ? (ALint)NBUFFERS : MAXLOOPBUFFERS);
-	arx_assert(nbuffers <= maxbuffers);
-	if(loadCount && nbuffers == maxbuffers) {
+	arx_assert(nbuffersProcessed <= maxbuffers);
+	if(loadCount && nbuffersProcessed == maxbuffers) {
 		ALWarning << "buffer underrun detected";
 	}
 	
@@ -681,7 +687,7 @@ aalError OpenALSource::updateBuffers() {
 	
 	size_t oldTime = time;
 	
-	for(ALint c = 0; c < nbuffers; c++) {
+	for(ALint c = 0; c < nbuffersProcessed; c++) {
 		
 		ALuint buffer;
 		alSourceUnqueueBuffers(source, 1, &buffer);
@@ -739,18 +745,14 @@ aalError OpenALSource::updateBuffers() {
 	}
 	
 	if(status == Playing) {
-		ALint val;
-		alGetSourcei(source, AL_SOURCE_STATE, &val);
-		AL_CHECK_ERROR("getting source state")
-		arx_assert(val != AL_INITIAL && val != AL_PAUSED);
-		if(val == AL_STOPPED) {
-			if(nbuffers != maxbuffers) {
+		if(sourceState == AL_STOPPED) {
+			if(nbuffersProcessed != maxbuffers) {
 				ALError << "buffer underrun detected";
 			}
 			alSourcePlay(source);
 			AL_CHECK_ERROR("playing source")
-		} else if(val != AL_PLAYING) {
-			ALError << "unexpected source state: " << val;
+		} else if(sourceState != AL_PLAYING) {
+			ALError << "unexpected source state: " << sourceState;
 			ret = AAL_ERROR;
 		}
 	}
