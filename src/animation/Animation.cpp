@@ -1507,9 +1507,6 @@ static void DrawEERIEInter2(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, I
 		}
 	}
 
-	float fDist;
-	fDist = fdist(pos, ACTIVECAM->pos);
-
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
 
