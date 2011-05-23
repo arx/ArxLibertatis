@@ -18,7 +18,11 @@ u32 getMs() {
 u64 getUs() {
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
-	return ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
+
+	u64 timeUs = ts.tv_sec * 1000000ULL;	// Convert seconds to microseconds (in 64 bit to avoid overflow)
+	timeUs += ts.tv_nsec / 1000;			// Convert nanoseconds to microseconds...
+
+	return timeUs;
 }
 
 #elif defined(HAVE_WINAPI)
