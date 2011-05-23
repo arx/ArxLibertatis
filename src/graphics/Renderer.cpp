@@ -785,17 +785,12 @@ void DX7TextureStage::SetMipFilter(FilterMode filterMode)
 	GDevice->SetTextureStageState(mStage, D3DTSS_MIPFILTER, mipFilter);
 }
 
-void DX7TextureStage::SetMipMapLODBias(float bias)
-{
-	HRESULT hRet;
-	if(GetKeyState(VK_F12) != 0)
-	{
+void DX7TextureStage::SetMipMapLODBias(float bias) {
+	if(GetKeyState(VK_F12) != 0) { // TODO what kind of hack is this?
 		float val = 0;
-		hRet = GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
-	}
-	else
-	{
-		hRet = GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&bias)));
+		GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+	} else {
+		GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&bias)));
 	}
 }
 
