@@ -402,23 +402,22 @@ TextureContainer * TextureContainer::LoadUI(const std::string& strName, TextureC
 	return Load(strName, (TextureContainer::TCFlags)(flags | TextureContainer::UI));
 }
 
-TextureContainer * TextureContainer::Find(const std::string& strTextureName)
-{
+TextureContainer * TextureContainer::Find(const std::string& strTextureName) {
+	
 	TextureContainer * ptcTexture = g_ptcTextureList;
-	TextureContainer * ptcLast;
-
+	
 	std::string strTexNameUpper = strTextureName;
 	MakeUpcase(strTexNameUpper);
-
-	while (ptcTexture)
-	{
-		if ( strTexNameUpper.find(ptcTexture->m_texName) != std::string::npos )
+	
+	while(ptcTexture) {
+		
+		if(strTexNameUpper.find(ptcTexture->m_texName) != std::string::npos) {
 			return ptcTexture;
-
-		ptcLast = ptcTexture;
+		}
+		
 		ptcTexture = ptcTexture->m_pNext;
 	}
-
+	
 	return NULL;
 }
 
