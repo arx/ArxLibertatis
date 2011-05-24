@@ -4434,9 +4434,9 @@ int CWindowMenuConsole::Render()
 		case GETTOUCH_TIME:
 			{
 				if(bFrameOdd)
-					((CMenuElementText*)pZoneClick)->lColorHighlight=Color(255.f, 0, 0);
+					((CMenuElementText*)pZoneClick)->lColorHighlight = Color(255, 0, 0);
 				else
-					((CMenuElementText*)pZoneClick)->lColorHighlight=Color(50.f, 0, 0);
+					((CMenuElementText*)pZoneClick)->lColorHighlight = Color(50, 0, 0);
 
 				bool bOldTouch=pGetInfoDirectInput->bTouch;
 

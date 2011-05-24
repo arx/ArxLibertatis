@@ -794,7 +794,6 @@ bool ARX_Menu_Render()
 						(DANAECENTERX) * 0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
 						Color(232 + t, 204 + t, 143 + t),
-						0x00FF00FF,
 						1000,
 						0.01f,
 						2);
