@@ -41,16 +41,57 @@ function(check_compiler)
 	if(NOT CHECK_COMPILER)
 		message(STATUS "Checking compiler: ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
 		
-		# See if we can link a simple 32-bit program with the library.
+		# See if we can compile a simple program.
 		set(compile_test_file ${CMAKE_CURRENT_BINARY_DIR}/compile_test.cpp)
 		file(WRITE ${compile_test_file} "int main(){}\n")
-		try_compile(CHECK_COMPILER ${CMAKE_BINARY_DIR} ${compile_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" OUTPUT_VARIABLE ERRORLOG)
+		try_compile(CHECK_COMPILER ${CMAKE_BINARY_DIR} ${compile_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}" OUTPUT_VARIABLE ERRORLOG)
 		
 		if(NOT CHECK_COMPILER)
 			message(FATAL_ERROR "\n${ERRORLOG}\n\n!! Compiler does not work, tried ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}\n")
 		endif()
 	endif()
 endfunction(check_compiler)
+
+function(check_compiler_flag RESULT FLAG)
+	
+	if(DEFINED CHECK_COMPILER_FLAG_${FLAG})
+		if(CHECK_COMPILER_FLAG_${FLAG})
+			set(${RESULT} "${FLAG}" PARENT_SCOPE)
+		else()
+			set(${RESULT} "" PARENT_SCOPE)
+		endif()
+		return()
+	endif()
+	
+	set(compile_test_file ${CMAKE_CURRENT_BINARY_DIR}/compile_flag_test.cpp)
+	file(WRITE ${compile_test_file} "__attribute__((const)) int main(){ return 0; }\n")
+	try_compile(CHECK_COMPILER_FLAG ${CMAKE_BINARY_DIR} ${compile_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}" COMPILE_DEFINITIONS "${FLAG}" OUTPUT_VARIABLE ERRORLOG)
+	
+	string(REGEX MATCH "warning:" HAS_WARNING "${ERRORLOG}")
+	
+	if(NOT CHECK_COMPILER_FLAG)
+		message(STATUS "Checking compiler flag: ${FLAG} - unsupported")
+		set(${RESULT} "" PARENT_SCOPE)
+		set("CHECK_COMPILER_FLAG_${FLAG}" 0 CACHE INTERNAL "...")
+	elseif(NOT HAS_WARNING STREQUAL "")
+		message(STATUS "Checking compiler flag: ${FLAG} - unsupported (warning)")
+		set(${RESULT} "" PARENT_SCOPE)
+		set("CHECK_COMPILER_FLAG_${FLAG}" 0 CACHE INTERNAL "...")
+	else()
+		message(STATUS "Checking compiler flag: ${FLAG}")
+		set(${RESULT} "${FLAG}" PARENT_SCOPE)
+		set("CHECK_COMPILER_FLAG_${FLAG}" 1 CACHE INTERNAL "...")
+	endif()
+	
+endfunction(check_compiler_flag)
+
+function(add_cxxflag FLAG)
+	
+	check_compiler_flag(RESULT "${FLAG}")
+	
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RESULT}" PARENT_SCOPE)
+	
+endfunction(add_cxxflag)
 
 function(try_link_library LIBRARY_NAME LIBRARY_FILE ERROR_VAR)
 	# See if we can link a simple program with the library using the configured c++ compiler.
@@ -59,7 +100,7 @@ function(try_link_library LIBRARY_NAME LIBRARY_FILE ERROR_VAR)
 	if(CMAKE_THREAD_LIBS_INIT)
 		set(LIBRARY_FILE "${CMAKE_THREAD_LIBS_INIT} ${LIBRARY_FILE}")
 	endif()
-	try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}" "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}" "-DLINK_LIBRARIES=${LIBRARY_FILE}" OUTPUT_VARIABLE ERRORLOG)
+	try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}" "-DLINK_LIBRARIES=${LIBRARY_FILE}" OUTPUT_VARIABLE ERRORLOG)
 	set(${ERROR_VAR} "${ERRORLOG}" PARENT_SCOPE)
 endfunction(try_link_library)
 
@@ -138,7 +179,6 @@ option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
-option(ARX_USE_LTO "Enable link-time optimizations." OFF)
 
 if(ARX_FORCE_32BIT)
 	set(CURRENT_ARX_FORCE_32BIT 1)
@@ -255,17 +295,23 @@ else(MSVC)
 	endif()
 	
 	# Warning level
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wcast-qual -Woverloaded-virtual")
-	if(NOT ARX_USE_CLANG)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op")
-	endif()
+	add_cxxflag("-Wall")
+	add_cxxflag("-Wextra")
+	add_cxxflag("-Wformat=2")
+	add_cxxflag("-Wundef")
+	add_cxxflag("-Wpointer-arith")
+	add_cxxflag("-Wcast-qual")
+	add_cxxflag("-Woverloaded-virtual")
+	add_cxxflag("-Wlogical-op")
 	
-	# Consider also: -Wconversion -Wsign-conversion
-	#                -Wmissing-declarations     to catch functions that should be marked as static
-	#                -Wredundant-decls          to catch extern definitions in .cpp files (with UNITYBUILD)
-	#                -Wsuggest-attribute=const  to add missing const qualifiers (only in gcc 4.6)
-	#                -ftrapv (ARX_DEBUG_EXTRA only) to add checks for (undefined) signed integer overflow
-	# Use to find unused functions: -ffunction-sections -Wl,--gc-sections
+	add_cxxflag("-Wliteral-conversion")
+	add_cxxflag("-Wshift-overflow")
+	
+	# TODO enable: 
+	# add_cxxflag("-Wconversion") # very noisy
+	# add_cxxflag("-Wsign-conversion") # very noisy
+	# add_cxxflag("-Wmissing-declarations") # to catch functions that should be marked as static
+	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
 	if(ARX_DEBUG)
 		#Debug
@@ -273,23 +319,24 @@ else(MSVC)
 		add_definitions(-D_DEBUG)
 	else()
 		#Release
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -fno-strict-aliasing -g3") # TODO fix strict aliasing
+		add_cxxflag("-fno-strict-aliasing")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g3") # TODO fix strict aliasing
 		add_definitions(-D_NDEBUG)
 	endif()
 	
 	if(ARX_DEBUG_EXTRA)
 		add_definitions(-D_GLIBCXX_DEBUG) # Runtime checks for STL containers.
+		# add_cxxflag("-Wsuggest-attribute=const")
+		# add_cxxflag("-Wsuggest-attribute=pure")
+		# add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
+		# add_cxxflag("-fcatch-undefined-behavior") # (clang)
 	else()
 		# -Wuninitialized causes too many false positives
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-uninitialized")
+		add_cxxflag("-Wno-uninitialized")
 	endif()
 	
-	if(ARX_USE_UNITYBUILD AND NOT ARX_USE_CLANG)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwhole-program")
-	endif()
-	
-	if(ARX_USE_LTO)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+	if(ARX_USE_UNITYBUILD)
+		add_cxxflag("-fwhole-program")
 	endif()
 	
 endif(MSVC)
