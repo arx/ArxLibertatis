@@ -331,8 +331,8 @@ else(MSVC)
 		add_definitions(-D_GLIBCXX_DEBUG) # Runtime checks for STL containers.
 		# add_cxxflag("-Wsuggest-attribute=const")
 		# add_cxxflag("-Wsuggest-attribute=pure")
-		# add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
-		# add_cxxflag("-fcatch-undefined-behavior") # (clang)
+		add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
+		add_cxxflag("-fcatch-undefined-behavior") # (clang)
 	else()
 		# -Wuninitialized causes too many false positives
 		add_cxxflag("-Wno-uninitialized")
