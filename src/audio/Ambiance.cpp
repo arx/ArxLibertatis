@@ -123,8 +123,6 @@ struct KeySetting {
 	
 };
 
-DECLARE_FLAGS_OPERATORS(KeySetting::KeyFlags);
-
 struct TrackKey {
 	
 	size_t start; // Start time (after last key)
