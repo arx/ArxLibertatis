@@ -134,9 +134,8 @@ function(check_link_library LIBRARY_NAME LIBRARY_VARIABLE)
 	endif()
 	
 	# Check if the linker is smarter than cmake and try to link with only the library name.
-	string(REGEX REPLACE "^.*/lib" "-l" LIBRARY_FILE ${lib_current})
-	string(REGEX REPLACE ".so$" "" LIBRARY_FILE ${LIBRARY_FILE})
-	try_link_library(${LIBRARY_NAME} ${LIBRARY_FILE} ERRORLOG2)
+	string(REGEX REPLACE "(^|;)[^;]*/lib([^;/]*)\\.so" "\\1-l\\2" LIBRARY_FILE "${lib_current}")
+	try_link_library(${LIBRARY_NAME} "${LIBRARY_FILE}" ERRORLOG2)
 	
 	if(CHECK_${LIBRARY_NAME}_LINK)
 		message(STATUS " -> using ${LIBRARY_FILE} instead")
