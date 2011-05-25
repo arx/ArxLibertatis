@@ -48,21 +48,21 @@ namespace {
 using namespace audio;
 
 // Key settings flags
-enum aalKeySettingFlag {
-	AAL_KEY_SETTING_UNKNOEN          = 0,
-	AAL_KEY_SETTING_FLAG_RANDOM      = 1,
-	AAL_KEY_SETTING_FLAG_INTERPOLATE = 2
+enum KeySettingFlag {
+	KEY_SETTING_UNKNOWN          = 0,
+	KEY_SETTING_FLAG_RANDOM      = 1,
+	KEY_SETTING_FLAG_INTERPOLATE = 2
 };
 
 struct KeySetting {
 	
-	aalKeySettingFlag flags; // A set of KeySettingFlag
+	KeySettingFlag flags; // A set of KeySettingFlag
 	float min, max; // Min and max setting values
 	float from, to, cur; // Current min and max values
 	unsigned interval; // Interval between updates (On Start = 0)
 	int tupdate; // Last update time
 	
-	KeySetting() : flags(AAL_KEY_SETTING_UNKNOEN),
+	KeySetting() : flags(KEY_SETTING_UNKNOWN),
 	               min(0), max(0), from(0), to(0), cur(0), interval(0), tupdate(0) { }
 	
 	bool load(PakFileHandle * file) {
@@ -76,14 +76,14 @@ struct KeySetting {
 			return false;
 		}
 		min = _min, max = _max, interval = _interval;
-		flags = (aalKeySettingFlag)flags; // TODO save/load enum
+		flags = (KeySettingFlag)flags; // TODO save/load enum
 		
 		return true;
 	}
 	
 	void reset() {
 		tupdate = 0;
-		if(min != max && flags & AAL_KEY_SETTING_FLAG_RANDOM) {
+		if(min != max && flags & KEY_SETTING_FLAG_RANDOM) {
 			cur = min + Random::getf() * (max - min);
 		} else {
 			cur = min;
@@ -102,7 +102,7 @@ struct KeySetting {
 		if(elapsed >= (signed)interval) {
 			elapsed = 0;
 			tupdate += interval;
-			if(flags == AAL_KEY_SETTING_FLAG_RANDOM) {
+			if(flags == KEY_SETTING_FLAG_RANDOM) {
 				from = to;
 				to = min + Random::getf() * (max - min);
 			} else {
@@ -115,7 +115,7 @@ struct KeySetting {
 			cur = from;
 		}
 		
-		if(flags == AAL_KEY_SETTING_FLAG_INTERPOLATE) {
+		if(flags == KEY_SETTING_FLAG_INTERPOLATE) {
 			cur = from + float(elapsed) / interval * (to - from);
 		}
 		
@@ -173,7 +173,7 @@ struct TrackKey {
 	
 };
 
-}
+} // anonymous namespace
 
 namespace audio {
 
