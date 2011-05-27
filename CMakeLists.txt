@@ -306,6 +306,8 @@ else(MSVC)
 	
 	add_cxxflag("-Wliteral-conversion")
 	add_cxxflag("-Wshift-overflow")
+	add_cxxflag("-Woverflow")
+	add_cxxflag("-Wbool-conversions")
 	
 	# TODO enable: 
 	# add_cxxflag("-Wconversion") # very noisy
@@ -330,6 +332,7 @@ else(MSVC)
 		# add_cxxflag("-Wsuggest-attribute=pure")
 		add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
 		add_cxxflag("-fcatch-undefined-behavior") # (clang)
+		add_cxxflag("-fbounds-checking")
 	else()
 		# -Wuninitialized causes too many false positives
 		add_cxxflag("-Wno-uninitialized")
