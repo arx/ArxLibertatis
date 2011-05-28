@@ -61,12 +61,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include <windows.h>
-#include <commctrl.h>
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/Renderer.h"
 
 #include "platform/Flags.h"
+
+#include "Configure.h"
 
 struct D3DEnum_DeviceInfo;
 class CD3DFramework7;
@@ -114,11 +115,6 @@ enum WindowCreationFlag {
 };
 DECLARE_FLAGS(WindowCreationFlag, WindowCreationFlags);
 DECLARE_FLAGS_OPERATORS(WindowCreationFlags);
-
-enum ToolbarPosition {
-	EERIE_TOOLBAR_TOP,
-	EERIE_TOOLBAR_LEFT
-};
 
 enum InputKey {
 	
@@ -256,6 +252,15 @@ struct PROJECT {
 	
 };
 
+#ifdef BUILD_EDITOR
+
+#include <commctrl.h>
+
+enum ToolbarPosition {
+	EERIE_TOOLBAR_TOP,
+	EERIE_TOOLBAR_LEFT
+};
+
 struct EERIETOOLBAR {
 	HWND hWnd;
 	long CreationToolBar;
@@ -265,6 +270,8 @@ struct EERIETOOLBAR {
 	std::string		String;
 	long Type;
 };
+
+#endif
 
 struct KEYBOARD_MNG {
 	short nbkeydown;
@@ -306,7 +313,10 @@ protected:
 	bool m_bAppUseStereo;
 	bool m_bShowStats;
 	HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
+	
+#ifdef BUILD_EDITOR
 	HWND CreateToolBar(HWND hWndParent, HINSTANCE hInst);
+#endif
 	
 	// Overridable functions for the 3D scene created by the app
 	virtual HRESULT OneTimeSceneInit() {
@@ -381,7 +391,9 @@ public:
 	bool  Fullscreen;
 	WindowCreationFlags CreationFlags;
 	long CreationMenu;
+#ifdef BUILD_EDITOR
 	EERIETOOLBAR * ToolBar;
+#endif
 	HWND owner;
 	
 	void * logical;

@@ -146,7 +146,9 @@ CD3DApplication::CD3DApplication()
 	CreationFlags = 0;
 	owner = 0L;
 	CreationMenu = 0;
+#ifdef BUILD_EDITOR
 	ToolBar = NULL;
+#endif
 	strcpy(StatusText, "");
 	memset(&Project, 0, sizeof(PROJECT));
 	Project.TextureSize = 0;
@@ -206,6 +208,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	}
 
 	//	DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+#ifdef BUILD_EDITOR
 	if (ToolBar != NULL)
 	{
 		if (this->ToolBar->Type == EERIE_TOOLBAR_TOP)
@@ -220,6 +223,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		}
 	}
 	else
+#endif
 	{
 		this->m_pFramework->Ystart = 0;
 		this->m_pFramework->Xstart = 0;
@@ -300,18 +304,19 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	// The app is ready to go
 	m_bReady = true;
 
+#ifdef BUILD_EDITOR
 	if (ToolBar != NULL)
 	{
 		ToolBar->hWnd = CreateToolBar(m_hWnd, hInst);
 	}
+#endif
 
 	this->m_pFramework->ShowFrame();
 	GetZBufferMax();
 	return S_OK;
 }
 
-//*************************************************************************************
-//*************************************************************************************
+#ifdef BUILD_EDITOR
 HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 	
 	HWND hWndToolbar;
@@ -337,6 +342,7 @@ HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 
 	return hWndToolbar;
 }
+#endif
 
 //*************************************************************************************
 // Run()
@@ -486,11 +492,13 @@ LRESULT CD3DApplication::SwitchFullScreen()
 	m_bReady = false;
 	m_pDeviceInfo->bWindowed = !m_pDeviceInfo->bWindowed;
 
+#ifdef BUILD_EDITOR
 	if (this->ToolBar != NULL)
 	{
 		if (m_pDeviceInfo->bWindowed)  ShowWindow(ToolBar->hWnd, SW_SHOW);
 		else ShowWindow(ToolBar->hWnd, SW_HIDE);
 	}
+#endif
 
 	if (FAILED(Change3DEnvironment()))
 	{
@@ -643,12 +651,13 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				m_pFramework->m_bHasMoved = true;
 
-				if (ToolBar && ToolBar->hWnd)
-				{
+#ifdef BUILD_EDITOR
+				if(ToolBar && ToolBar->hWnd) {
 					RECT rectt;
 					GetWindowRect(ToolBar->hWnd, &rectt);
 					SetWindowPos(ToolBar->hWnd, HWND_TOP, 0, 0, rec.right, rectt.bottom, SWP_NOZORDER | SWP_NOREPOSITION | SWP_NOMOVE | SWP_SHOWWINDOW);
 				}
+#endif
 
 			}
 

@@ -7947,10 +7947,12 @@ void ClearGame() {
 	ReleaseDanaeBeforeRun();
 	PAK_Close();
 
+#ifdef BUILD_EDITOR
 	if (danaeApp.ToolBar) {
 		free(danaeApp.ToolBar);
 		danaeApp.ToolBar=NULL;
 	}
+#endif
 
 	ReleaseNode();
 
