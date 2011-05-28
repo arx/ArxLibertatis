@@ -4635,48 +4635,7 @@ bool DANAE_ManageSplashThings()
 
 		if (SPLASH_THINGS_STAGE==11)
 		{
-			// Playing the videos in startupvids.txt
-			// TODO The file doesn't exist, OK
-			char startupvidsPath[256];
-			sprintf(startupvidsPath,"misc\\startupvids.txt");
-
-			if ((FileExist(startupvidsPath)) && (SPLASH_START == 0))
-			{
-				std::ifstream stStartupVids;
-				stStartupVids.open(startupvidsPath);
-				char vidToPlay[64];
-				char vidToPlayPath[256];
-
-				while(stStartupVids.good())
-				{
-					stStartupVids.getline(vidToPlay,64);					
-					sprintf(vidToPlayPath,"misc\\%s",vidToPlay);					
-					bSkipVideoIntro = false; // We need to reset this else we'll skip all vids w/ one key pressed
-
-					if (FileExist(vidToPlayPath))
-					{
-						LaunchAVI(danaeApp.m_hWnd,vidToPlayPath);
-						pGetInfoDirectInput->ResetAll(); // We need to reset all input else we'll skip all vids w/ one key pressed
-					}
-				}
-
-				if (bSkipVideoIntro)
-				{
-					REFUSE_GAME_RETURN=1;
-					FORBID_SAVE=0;
-					FirstFrame=1;
-					SPLASH_THINGS_STAGE=0;
-					INTRO_NOT_LOADED=0;
-					ARXmenu.currentmode=AMCM_MAIN;
-					ARX_MENU_Launch();
-				}
-
-				SPLASH_START=0;
-				SPLASH_THINGS_STAGE++;
-				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-				return true;
-			}
-
+			
 			if (SPLASH_START==0) //firsttime
 				SPLASH_START = ARX_TIME_GetUL();
 
