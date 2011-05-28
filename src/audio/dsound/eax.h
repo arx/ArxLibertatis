@@ -21,6 +21,8 @@ extern "C" {
 	#define EAX_IMPORT
 #endif
 
+#include <windows.h>
+#include <mmsystem.h>
 #include <dsound.h>
 
 /*

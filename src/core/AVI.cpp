@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/AVI.h"
 
 #include <windows.h>
+#include <objbase.h>
 #include <amstream.h>
 #include <control.h>
 #include <uuids.h>
