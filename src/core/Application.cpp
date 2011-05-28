@@ -645,13 +645,13 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			// size, so the 3D structures must be changed accordingly.
 			if (m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
 			{
-				RECT rec;
-				rec.right = LOWORD(lParam);
-				rec.bottom = HIWORD(lParam);
 
 				m_pFramework->m_bHasMoved = true;
 
 #ifdef BUILD_EDITOR
+				RECT rec;
+				rec.right = LOWORD(lParam);
+				rec.bottom = HIWORD(lParam);
 				if(ToolBar && ToolBar->hWnd) {
 					RECT rectt;
 					GetWindowRect(ToolBar->hWnd, &rectt);
