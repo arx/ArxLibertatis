@@ -142,7 +142,8 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 }
 
 /* Reinit */
-HRESULT Cinematic::OneTimeSceneReInit() {
+void Cinematic::OneTimeSceneReInit() {
+	
 	Camera.size = Anglef(160.f, 60.f, 60.f);
 	Camera.pos.x = 900.f;
 	Camera.pos.y = -160.f;
@@ -166,37 +167,37 @@ HRESULT Cinematic::OneTimeSceneReInit() {
 	Camera.clip3D = 60;
 	Camera.type = CAM_SUBJVIEW;
 	Camera.bkgcolor = 0x00000000;
-
+	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
 	fx = -1;
 	changekey = true;
 	idsound = -1;
 	key = NULL;
-
+	
 	projectload = false;
 	InsertKey = 0;
 	KeyCopy = NULL;
-
+	
 	LeftButton = RightButton = false;
-
+	
 	DeleteAllBitmap();
 	DeleteAllSound();
-
+	
 	InitSound();
 	DeleteTrack();
-
+	
 	FlashBlancEnCours = false;
 	SpecialFadeEnCours = false;
-
+	
 	LSoundChoose = C_KEY::English << 8;
-
+	
 	m_flIntensityRND = 0.f;
-
-	return S_OK;
+	
 }
-HRESULT Cinematic::New()
-{
+
+void Cinematic::New() {
+	
 	projectload = false;
 
 	numbitmap = -1;
@@ -231,8 +232,7 @@ HRESULT Cinematic::New()
 	ProjectModif = false;
 
 	LSoundChoose = C_KEY::English << 8;
-
-	return S_OK;
+	
 }
 
 void Cinematic::DeleteAllBitmap()
@@ -249,24 +249,22 @@ void Cinematic::DeleteAllBitmap()
 // InitDeviceObjects()
 // Sets RenderStates
 //*************************************************************************************
-HRESULT Cinematic::InitDeviceObjects()
-{
+void Cinematic::InitDeviceObjects() {
+	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
-    GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	EditLight = false;
-
-	return S_OK;
 }
 
-HRESULT Cinematic::DeleteDeviceObjects()
-{
+void Cinematic::DeleteDeviceObjects() {
+	
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
@@ -278,8 +276,7 @@ HRESULT Cinematic::DeleteDeviceObjects()
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-
-	return S_OK;
+	
 }
 
 float LightRND;
@@ -457,8 +454,8 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 	}
 }
 /*---------------------------------------------------------------*/
-HRESULT Cinematic::Render(float FDIFF)
-{
+void Cinematic::Render(float FDIFF) {
+	
 	CinematicBitmap * tb;
 
 	LargeurRender = DANAESIZX;
@@ -687,6 +684,5 @@ HRESULT Cinematic::Render(float FDIFF)
 		CalcFPS();
 		InRender = false;
 	}
-
-	return S_OK;
+	
 }

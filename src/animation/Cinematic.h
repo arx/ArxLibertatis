@@ -26,9 +26,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_ANIMATION_CINEMATIC_H
 #define ARX_ANIMATION_CINEMATIC_H
 
-#include <windows.h> // for HRESULT
+#include <vector>
 
-#include "graphics/GraphicsTypes.h" // for EERIE_3D
+#include "platform/math/Vector3.h"
 
 // TODO macros
 //fx
@@ -116,11 +116,11 @@ public:
 	Cinematic(int, int);
 	~Cinematic();
 
-	HRESULT InitDeviceObjects();
-	HRESULT OneTimeSceneReInit();
-	HRESULT Render(float framediff);
-	HRESULT New();
-	HRESULT DeleteDeviceObjects();
+	void InitDeviceObjects();
+	void OneTimeSceneReInit();
+	void Render(float framediff);
+	void New();
+	void DeleteDeviceObjects();
 
 	void DeleteAllBitmap();
 };

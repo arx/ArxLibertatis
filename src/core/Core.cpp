@@ -4754,8 +4754,7 @@ long DANAE_Manage_Cinematic()
 	ControlCinematique->InitDeviceObjects();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	if(ControlCinematique->Render(FrameTicks-LastFrameTicks)==E_FAIL)
-		return 1;
+	ControlCinematique->Render(FrameTicks-LastFrameTicks);
 
 	//fin de l'anim
 	if ((!ControlCinematique->key)
