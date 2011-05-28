@@ -67,6 +67,9 @@ DSoundBackend::~DSoundBackend() {
 	
 }
 
+// TODO
+extern HWND mainWindow;
+
 aalError DSoundBackend::init(bool enableEax) {
 	
 	if(device) {
@@ -90,7 +93,7 @@ aalError DSoundBackend::init(bool enableEax) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	if(FAILED(h = device->SetCooperativeLevel(GetForegroundWindow(), DSSCL_PRIORITY))) {
+	if(FAILED(h = device->SetCooperativeLevel(mainWindow, DSSCL_PRIORITY))) {
 		LogError << "error setting cooperative level: " << h;
 		return AAL_ERROR_SYSTEM;
 	}

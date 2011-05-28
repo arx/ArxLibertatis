@@ -153,7 +153,7 @@ enum InputButton
 	DIK_WHEELDOWN = 0x40000000 | 1,
 };
 
-bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd);
+bool ARX_INPUT_Init();
 void ARX_INPUT_Release();
 
 bool ARX_IMPULSE_NowPressed(long ident);

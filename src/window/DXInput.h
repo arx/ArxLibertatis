@@ -26,8 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_WINDOW_DXINPUT_H
 #define ARX_WINDOW_DXINPUT_H
 
-#include <windows.h> // for HINSTANCE
-
 enum DXIMode {
 	DXI_MODE_EXCLUSIF_ALLMSG = 0,
 	DXI_MODE_EXCLUSIF_OURMSG = 1,
@@ -70,12 +68,12 @@ enum DXIButton {
 	DXI_BUTTON31 = 31
 };
 
-bool DXI_Init(HINSTANCE h);
+bool DXI_Init();
 void DXI_Release();
 bool DXI_GetAxeMouseXYZ(int & mx, int & my, int & mz);
 bool DXI_ExecuteAllDevices();
-bool DXI_GetKeyboardInputDevice(HWND hwnd, DXIMode mode);
-bool DXI_GetMouseInputDevice(HWND hwnd, DXIMode mode, int minbutton, int minaxe);
+bool DXI_GetKeyboardInputDevice(DXIMode mode);
+bool DXI_GetMouseInputDevice(DXIMode mode, int minbutton, int minaxe);
 bool DXI_KeyPressed(int dikkey);
 int DXI_GetKeyIDPressed();
 void DXI_RestoreAllDevices();

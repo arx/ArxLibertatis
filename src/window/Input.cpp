@@ -69,16 +69,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern CDirectInput * pGetInfoDirectInput;
 extern long STOP_KEYBOARD_INPUT;
 
-bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd) {
+bool ARX_INPUT_Init() {
 	
-	DXI_Init(hInst);
+	DXI_Init();
 	
-	if(!DXI_GetKeyboardInputDevice(hWnd, DXI_MODE_NONEXCLUSIF_OURMSG)) {
+	if(!DXI_GetKeyboardInputDevice(DXI_MODE_NONEXCLUSIF_OURMSG)) {
 		LogWarning << "could not grab the keyboeard";
 		return false;
 	}
 	
-	if(!DXI_GetMouseInputDevice(hWnd, DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2)) {
+	if(!DXI_GetMouseInputDevice(DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2)) {
 		LogWarning << "could not grab the mouse";
 		return false;
 	}
