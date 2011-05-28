@@ -1909,6 +1909,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 		return -1;
 	}
 	
+	if(size < sizeof(ARX_CHANGELEVEL_PLAYER)) {
+		LogError << "truncated data";
+		return -1;
+	}
 	memcpy(&asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
 	
 	player.AimTime = asp.AimTime;
@@ -2065,31 +2069,46 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	
 	size_t pos = sizeof(ARX_CHANGELEVEL_PLAYER);
 	
+	if(size < pos + (asp.nb_PlayerQuest * 80)) {
+		LogError << "truncated data";
+		return -1;
+	}
 	ARX_PLAYER_Quest_Init();
 	for(int i = 0; i < asp.nb_PlayerQuest; i++) {
-		ARX_PLAYER_Quest_Add((char *)(dat + pos), true);
+		dat[pos + 80 - 1] = '\0';
+		ARX_PLAYER_Quest_Add(dat + pos, true);
 		pos += 80;
 	}
 	
+	if(size < pos + (asp.keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
+		LogError << "truncated data";
+		return -1;
+	}
 	ARX_KEYRING_Init();
 	LogDebug << asp.keyring_nb;
 	for(int i = 0; i < asp.keyring_nb; i++) {
-		ARX_KEYRING_Add((char *)(dat + pos));
+		dat[pos + SAVED_KEYRING_SLOT_SIZE - 1] = '\0';
+		ARX_KEYRING_Add(dat + pos);
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
+	if(size < pos + (asp.Nb_Mapmarkers * sizeof(SavedMapMakerData))) {
+		LogError << "truncated data";
+		return -1;
+	}
 	ARX_MAPMARKER_Init();
 	Mapmarkers.resize(asp.Nb_Mapmarkers);
 	for(int i = 0; i < asp.Nb_Mapmarkers; i++) {
 		SavedMapMakerData acmd;
 		memcpy(&acmd, dat + pos, sizeof(SavedMapMakerData));
 		pos += sizeof(SavedMapMakerData);
+		acmd.string[SavedMapMakerData::STRING_SIZE - 1] = '\0';
 		ARX_MAPMARKER_Add(acmd.x, acmd.y, acmd.lvl, acmd.string);
 	}
 	
 	ARX_PLAYER_Restore_Skin();
 	
-	ARX_PLAYER_Modify_XP(0);	 
+	ARX_PLAYER_Modify_XP(0);
 	
 	free(dat);
 	
