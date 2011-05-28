@@ -59,26 +59,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
-#include <shlobj.h>
 #include <windows.h>
-#include <commdlg.h>
 
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "platform/Platform.h"
-
-// TODO(lubosz): temporary include replacement
-#ifndef _MAX_FNAME
-	#define _MAX_FNAME 512
-#endif
-
  
 bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const float id)
 {
-	LogWarning << "partially unimplemented HERMES_CreateFileCheck";
+	LogWarning << "partially unimplemented HERMES_CreateFileCheck " << name;
 	
-	
-	printf("HERMES_CreateFileCheck(%s, ...)\n", name);
 	WIN32_FILE_ATTRIBUTE_DATA attrib;
 	FileHandle file;
 	long length(size >> 2), i = 7 * 4;
@@ -131,6 +121,15 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 
 	return false;
 }
+
+#ifdef BUILD_EDITOR
+
+#include <shlobj.h>
+#include <commdlg.h>
+// TODO(lubosz): temporary include replacement
+#ifndef _MAX_FNAME
+	#define _MAX_FNAME 512
+#endif
 
 //******************************************************************************
 // OPEN/SAVE FILES DIALOGS
@@ -224,3 +223,5 @@ int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd) {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }
+
+#endif
