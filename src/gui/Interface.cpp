@@ -381,19 +381,18 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 	
 	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.0000001f;
 
-	if (inventory_font)
-	{
+	if(inventory_font) {
+		
 		char tx[7];
 		long tt;
 		float ttx;
 		float divideX = 1.f/((float) inventory_font->m_dwWidth);
 		float divideY = 1.f/((float) inventory_font->m_dwHeight);
-
-		sprintf(tx, "%*ld", _iNb, num);
+		
+		sprintf(tx, "%*ld", _iNb, num); // TODO use a safe string function.
 		long removezero=1;
 
-		for (long i=0;i<6;i++)
-		{
+		for(long i = 0; i < 6 && tx[i] != '\0'; i++) {
 
 			tt=tx[i]-'0';
 
