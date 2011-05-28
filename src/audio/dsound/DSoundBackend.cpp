@@ -33,6 +33,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioEnvironment.h"
 #include "audio/AudioGlobal.h"
 
+// TODO
+extern HWND mainWindow;
+
 namespace audio {
 
 static const PCMFormat globalFormat = { 22050, 16, 2 };
@@ -67,8 +70,6 @@ DSoundBackend::~DSoundBackend() {
 	
 }
 
-// TODO
-extern HWND mainWindow;
 
 aalError DSoundBackend::init(bool enableEax) {
 	
