@@ -45,6 +45,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_IO_REGISTRY_H
 #define ARX_IO_REGISTRY_H
 
+#include "Configure.h"
+
+#ifdef BUILD_EDITOR
+
 #include <windows.h>
 
 // TODO remove - these are mostly used by the editor
@@ -53,5 +57,7 @@ HRESULT WriteRegKey(HKEY hKey, const char * strName, const char * strValue);
 HRESULT WriteRegKeyValue(HKEY hKey, const char * strName, DWORD val);
 HRESULT ReadRegKeyValue(HKEY hKey, const char * strName, long * val);
 HRESULT ReadRegKey(HKEY hKey, const char * strName, char* strValue, DWORD dwLength, const char * strDefault);
+
+#endif
 
 #endif // ARX_IO_REGISTRY_H

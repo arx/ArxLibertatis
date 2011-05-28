@@ -83,7 +83,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
-#include "core/AVI.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
 
@@ -577,6 +576,8 @@ void DANAE_KillCinematic()
 	}
 }
 
+#ifdef BUILD_EDITOR
+
 // START - DANAE Registery Funcs ****************************************************************
 
 //-----------------------------------------------------------------------------------------------
@@ -686,6 +687,8 @@ void Danae_Registry_ReadValue(const char * string, long * value, long defaultval
 
 // END - DANAE Registery Funcs ******************************************************************
 //-----------------------------------------------------------------------------------------------
+#endif // BUILD_EDITOR
+
 
 void DanaeSwitchFullScreen()
 {
@@ -1277,6 +1280,7 @@ int main(int argc, char ** argv) {
 	LogDebug << "AEQ Init";
 	memset(_CURRENTLOAD_,0,256);
 
+#ifdef BUILD_EDITOR
 	char temp[256];
 
 	Danae_Registry_Read("LastWorkingDir",temp,"");
@@ -1292,6 +1296,7 @@ int main(int argc, char ** argv) {
 	}
 
 	Danae_Registry_Read("LOCAL_SAVENAME",LOCAL_SAVENAME,"",16);
+#endif
 
 	if (!FOR_EXTERNAL_PEOPLE) {
 		char stemp[256];

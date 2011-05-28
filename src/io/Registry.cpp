@@ -44,6 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Registry.h"
 
+#ifdef BUILD_EDITOR
+
 #include <windows.h>
 
 //-----------------------------------------------------------------------------
@@ -100,3 +102,6 @@ HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val) {
 
 	return S_OK;
 }
+
+#endif
+
