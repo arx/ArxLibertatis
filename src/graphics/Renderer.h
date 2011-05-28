@@ -8,7 +8,6 @@
 #include "graphics/texture/TextureStage.h"
 
 // TEMP - move back to .cpp once types are all abstracted
-#include <windows.h>
 #include "graphics/d3dwrapper.h"
 
 class Renderer
