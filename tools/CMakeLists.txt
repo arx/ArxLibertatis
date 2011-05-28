@@ -3,12 +3,11 @@ cmake_minimum_required(VERSION 2.8)
 
 find_package(ZLIB REQUIRED)
 
-if(MSVC)
-else(MSVC)
+if(NOT MSVC AND NOT CMAKE_TOOLCHAIN_FILE)
 	set(CMAKE_CXX_COMPILER g++)
 	set(CMAKE_C_COMPILER gcc)
 	set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-aliasing -ggdb")
-endif(MSVC)
+endif()
 
 include_directories(
 	../src
