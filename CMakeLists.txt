@@ -361,6 +361,7 @@ endif()
 
 # Preprocessor definitions
 add_definitions(-DNOMINMAX)
+add_definitions(-DWIN32_LEAN_AND_MEAN)
 
 #glob sources
 file(GLOB_RECURSE AI_SOURCES ${SRC_DIR}/ai/*.cpp)
