@@ -167,7 +167,11 @@ bool Image::LoadFromFile( const std::string& filename )
 	if(!pData) 
 		return false;
 	
-	return LoadFromMemory(pData, size);
+	bool ret = LoadFromMemory(pData, size);
+	
+	free(pData);
+	
+	return ret;
 }
 
 Image::Format GetImageFormat( ILint pImgTextureFormat, ILint pBPP )
