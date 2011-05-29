@@ -207,6 +207,13 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 		free((void *)ptcTexture->pVertexListCull_TMetal);
 		ptcTexture->pVertexListCull_TMetal = NULL;
 	}
+	
+	// TODO(dscharrer): Why does removing thus cause crashes (and not just leak memory)?
+	// Does this indicate that the texture object is being used after it has been deleted?
+	if(ptcTexture->tMatRoom) {
+		free(ptcTexture->tMatRoom);
+		ptcTexture->tMatRoom = NULL;
+	}
 }
 
 //-----------------------------------------------------------------------------
