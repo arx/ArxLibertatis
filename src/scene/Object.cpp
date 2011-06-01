@@ -101,7 +101,6 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
 
-static void ReCreateUVs(EERIE_3DOBJ * eerie);
 void Clear3DScene(EERIE_3DSCENE	* eerie);
 
 long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
@@ -300,7 +299,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	
 	(void)size; // TODO use size
 	
-	LogInfo << "Loading animation file " << file;
+	LogDebug << "Loading animation file " << file;
 	
 	size_t pos = 0;
 	
@@ -539,7 +538,74 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	return eerie;
 }
 
-void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t * poss, long version) {
+void MakeUserFlag(TextureContainer * tc) {
+	
+	if(tc == NULL) {
+		return;
+	}
+	
+	if(NC_IsIn(tc->m_texName, "NPC_")) {
+		tc->userflags |= POLY_LATE_MIP;
+	}
+	
+	if(NC_IsIn(tc->m_texName, "nocol")) {
+		tc->userflags |= POLY_NOCOL;
+	}
+	
+	if(NC_IsIn(tc->m_texName, "climb")) {
+		tc->userflags |= POLY_CLIMB;
+	}
+	
+	if(NC_IsIn(tc->m_texName, "fall")) {
+		tc->userflags |= POLY_FALL;
+	}
+	
+	if(NC_IsIn(tc->m_texName, "lava")) {
+		tc->userflags |= POLY_LAVA;
+	}
+	
+	if (NC_IsIn(tc->m_texName, "water") || NC_IsIn(tc->m_texName, "spider_web")) {
+		tc->userflags |= POLY_WATER;
+		tc->userflags |= POLY_TRANS;
+	} else if(NC_IsIn(tc->m_texName, "[metal]")) {
+		tc->userflags |= POLY_METAL;
+	}
+	
+}
+
+#ifdef BUILD_EDIT_LOADSAVE
+
+static void ReCreateUVs(EERIE_3DOBJ * eerie) {
+	
+	if(eerie->texturecontainer.empty()) return;
+
+	float sxx, syy;
+
+	for (size_t i = 0; i < eerie->facelist.size(); i++)
+	{
+		if (eerie->facelist[i].texid == -1) continue;
+
+		if (eerie->texturecontainer[eerie->facelist[i].texid])
+		{
+			sxx = eerie->texturecontainer[eerie->facelist[i].texid]->m_odx;
+			syy = eerie->texturecontainer[eerie->facelist[i].texid]->m_ody;
+		}
+		else
+		{
+			sxx = ( 1.0f / 256 );
+			syy = ( 1.0f / 256 );
+		}
+
+		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * sxx; 
+		eerie->facelist[i].u[1] = (float)eerie->facelist[i].ou[1] * sxx; 
+		eerie->facelist[i].u[2] = (float)eerie->facelist[i].ou[2] * sxx; 
+		eerie->facelist[i].v[0] = (float)eerie->facelist[i].ov[0] * syy; 
+		eerie->facelist[i].v[1] = (float)eerie->facelist[i].ov[1] * syy; 
+		eerie->facelist[i].v[2] = (float)eerie->facelist[i].ov[2] * syy; 
+	}
+}
+
+static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t * poss, long version) {
 	
 	LogWarning << "_THEObjLoad";
 	
@@ -877,48 +943,11 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t * poss, 
 	EERIE_Object_Precompute_Fast_Access(eerie);
 }
 
-void MakeUserFlag(TextureContainer * tc) {
-	
-	if(tc == NULL) {
-		return;
-	}
-	
-	if(NC_IsIn(tc->m_texName, "NPC_")) {
-		tc->userflags |= POLY_LATE_MIP;
-	}
-	
-	if(NC_IsIn(tc->m_texName, "nocol")) {
-		tc->userflags |= POLY_NOCOL;
-	}
-	
-	if(NC_IsIn(tc->m_texName, "climb")) {
-		tc->userflags |= POLY_CLIMB;
-	}
-	
-	if(NC_IsIn(tc->m_texName, "fall")) {
-		tc->userflags |= POLY_FALL;
-	}
-	
-	if(NC_IsIn(tc->m_texName, "lava")) {
-		tc->userflags |= POLY_LAVA;
-	}
-	
-	if (NC_IsIn(tc->m_texName, "water") || NC_IsIn(tc->m_texName, "spider_web")) {
-		tc->userflags |= POLY_WATER;
-		tc->userflags |= POLY_TRANS;
-	} else if(NC_IsIn(tc->m_texName, "[metal]")) {
-		tc->userflags |= POLY_METAL;
-	}
-	
-}
-
-#ifdef BUILD_EDIT_LOADSAVE
-
 static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string & fic) {
 	
 	(void)size; // TODO use size
 	
-	LogInfo << "Loading Scene " << fic;
+	LogDebug << "Loading Scene " << fic;
 	
 	if(!adr) {
 		return NULL;
@@ -1338,7 +1367,7 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 
 EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const string & dirr) {
 	
-	LogInfo << "Loading Multiscene " << dirr;
+	LogDebug << "Loading Multiscene " << dirr;
 	
 	EERIE_MULTI3DSCENE * em = NULL;
 
@@ -1462,36 +1491,6 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 	if(nblinked && linked) {
 		free(linked);
 		linked = NULL;
-	}
-}
-
-static void ReCreateUVs(EERIE_3DOBJ * eerie) {
-	
-	if(eerie->texturecontainer.empty()) return;
-
-	float sxx, syy;
-
-	for (size_t i = 0; i < eerie->facelist.size(); i++)
-	{
-		if (eerie->facelist[i].texid == -1) continue;
-
-		if (eerie->texturecontainer[eerie->facelist[i].texid])
-		{
-			sxx = eerie->texturecontainer[eerie->facelist[i].texid]->m_odx;
-			syy = eerie->texturecontainer[eerie->facelist[i].texid]->m_ody;
-		}
-		else
-		{
-			sxx = ( 1.0f / 256 );
-			syy = ( 1.0f / 256 );
-		}
-
-		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * sxx; 
-		eerie->facelist[i].u[1] = (float)eerie->facelist[i].ou[1] * sxx; 
-		eerie->facelist[i].u[2] = (float)eerie->facelist[i].ou[2] * sxx; 
-		eerie->facelist[i].v[0] = (float)eerie->facelist[i].ov[0] * syy; 
-		eerie->facelist[i].v[1] = (float)eerie->facelist[i].ov[1] * syy; 
-		eerie->facelist[i].v[2] = (float)eerie->facelist[i].ov[2] * syy; 
 	}
 }
 
@@ -1911,6 +1910,8 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 		EERIEOBJECT_AddFace(eobj, &eobj->facelist[i], i);
 }
 
+#ifdef BUILD_EDIT_LOADSAVE
+
 // Converts a Theo Object to an EERIE object
 static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath, const string & fic) {
 	
@@ -2154,6 +2155,8 @@ static EERIE_3DOBJ * GetExistingEerie(const string & file) {
 	return NULL;
 }
 
+#endif
+
 static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & file, bool pbox) {
 	
 	EERIE_3DOBJ * ret = ARX_FTL_Load(file);
@@ -2163,6 +2166,10 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 		}
 		return ret;
 	}
+	
+#ifndef BUILD_EDIT_LOADSAVE
+	ARX_UNUSED(texpath);
+#else
 	
 	ret = GetExistingEerie(file);
 	if(ret) {
@@ -2211,6 +2218,8 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 	}
 	
 	ARX_FTL_Save(file, ret);
+	
+#endif // BUILD_EDIT_LOADSAVE
 	
 	return ret;
 }
