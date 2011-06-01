@@ -172,6 +172,7 @@ endfunction()
 option(ARX_BUILD_TESTS "Build tests" OFF)
 option(ARX_BUILD_TOOLS "Build tools" ON)
 option(ARX_BUILD_EDITOR "Build editor" ON)
+option(ARX_BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
@@ -404,6 +405,9 @@ endif()
 
 if(ARX_BUILD_EDITOR)
 	set(BUILD_EDITOR 1)
+endif()
+if(ARX_BUILD_EDIT_LOADSAVE)
+	set(BUILD_EDIT_LOADSAVE 1)
 endif()
 
 #enable unity build if requested

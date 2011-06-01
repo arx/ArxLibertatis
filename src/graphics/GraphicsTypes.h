@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/math/Vector2.h"
 #include "platform/math/Angle.h"
 
+#include "Configure.h"
+
 class TextureContainer;
 
 struct EERIE_TRI {
@@ -579,15 +581,16 @@ struct EERIE_3DSCENE {
 }; // Aligned 1 2 4
 
 
-#define MAX_SCENES 64
-struct EERIE_MULTI3DSCENE
-{
-	long	nb_scenes;
+#ifdef BUILD_EDIT_LOADSAVE
+const size_t MAX_SCENES = 64;
+struct EERIE_MULTI3DSCENE {
+	long nb_scenes;
 	EERIE_3DSCENE * scenes[MAX_SCENES];
-	CUB3D			cub;
-	Vec3f		pos;
-	Vec3f		point0;
-}; // Aligned 1 2 4
+	CUB3D cub;
+	Vec3f pos;
+	Vec3f point0;
+};
+#endif
 
 struct EERIE_FRAME
 {

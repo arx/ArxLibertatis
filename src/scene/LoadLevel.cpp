@@ -977,11 +977,15 @@ long DanaeLoadLevel(const string & fic) {
 			LogDebug << "done loading scene";
 			FASTmse = 1;
 		} else {
+#ifdef BUILD_EDIT_LOADSAVE
 			LogDebug << "fast loading scene failed";
 			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
 			mse = PAK_MultiSceneToEerie(ftemp);
 			PROGRESS_BAR_COUNT += 20.f;
 			LoadLevelScreen();
+#else
+			LogError << "fast loading scene failed";
+#endif
 		}
 		
 		EERIEPOLY_Compute_PolyIn();
@@ -992,7 +996,9 @@ long DanaeLoadLevel(const string & fic) {
 	if(FASTmse) {
 		trans = Mscenepos;
 		player.pos = loddpos + trans;
-	} else if(mse != NULL) {
+	}
+#ifdef BUILD_EDIT_LOADSAVE
+	else if(mse != NULL) {
 		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * ( 1.0f / 2 );
 		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * ( 1.0f / 2 );
 		float t1 = (float)(long)(mse->point0.x / BKG_SIZX);
@@ -1010,7 +1016,9 @@ long DanaeLoadLevel(const string & fic) {
 		lastteleport.y -= 180.f;
 		player.pos.y = subj.pos.y -= 180.f;
 		trans = mse->pos;
-	} else {
+	}
+#endif // BUILD_EDIT_LOADSAVE
+	else {
 		lastteleport.x = 0.f;
 		lastteleport.y = PLAYER_BASE_HEIGHT;
 		lastteleport.z = 0.f;
@@ -1542,11 +1550,12 @@ void DanaeClearLevel(long flag)
 	RemoveAllBackgroundActions();
 	ClearNodes();
 
-	if (mse != NULL)
-	{
+#ifdef BUILD_EDIT_LOADSAVE
+	if(mse != NULL) {
 		ReleaseMultiScene(mse);
 		mse = NULL;
 	}
+#endif
 
 	EERIE_LIGHT_GlobalInit();
 	ARX_FOGS_Clear();

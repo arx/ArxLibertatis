@@ -303,7 +303,10 @@ TextureContainer *	Boom=NULL;
 //TextureContainer *	zbtex=NULL;
 TextureContainer *	mecanism_tc=NULL;
 TextureContainer *	arrow_left_tc=NULL;
-EERIE_MULTI3DSCENE * mse=NULL;
+
+#ifdef BUILD_EDIT_LOADSAVE
+EERIE_MULTI3DSCENE * mse = NULL;
+#endif
 
 long NEED_TEST_TEXT=0;
 
@@ -1010,12 +1013,15 @@ void InitializeDanae()
 		SPLASH_THINGS_STAGE=11;
 	} else if (levelPath[0]!=0)	{
 		LogInfo << "Launching Level " << levelPath;
-
 		if (FastSceneLoad(levelPath)) {
-			FASTmse=1;
+			FASTmse = 1;
 		} else {
+#ifdef BUILD_EDIT_LOADSAVE
 			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-			mse=PAK_MultiSceneToEerie(levelPath);
+			mse = PAK_MultiSceneToEerie(levelPath);
+#else
+			LogError << "FastSceneLoad failed";
+#endif
 		}
 		EERIEPOLY_Compute_PolyIn();
 		strcpy(LastLoadedScene,levelPath);
@@ -3084,8 +3090,8 @@ long FirstFrameHandling()
 		PROGRESS_BAR_COUNT+=4.f;
 		LoadLevelScreen();
 	}
-	else if (mse)
-	{
+#ifdef BUILD_EDIT_LOADSAVE
+	else if(mse) {
 		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*( 1.0f / 2 )+((float)ACTIVEBKG->Xsize*(float)ACTIVEBKG->Xdiv)*( 1.0f / 2 );
 		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*( 1.0f / 2 )+((float)ACTIVEBKG->Zsize*(float)ACTIVEBKG->Zdiv)*( 1.0f / 2 );
 		float t1=(float)(long)(mse->point0.x/BKG_SIZX);
@@ -3133,8 +3139,8 @@ long FirstFrameHandling()
 		PROGRESS_BAR_COUNT+=1.f;
 		LoadLevelScreen();
 	}
-	else
-	{
+#endif // BUILD_EDIT_LOADSAVE
+	else {
 		PROGRESS_BAR_COUNT+=4.f;
 		LoadLevelScreen();
 	}
