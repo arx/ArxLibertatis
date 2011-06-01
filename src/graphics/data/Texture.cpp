@@ -84,6 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/String.h"
 
 using std::string;
+using std::map;
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
@@ -431,84 +432,78 @@ void TextureContainer::DeleteAll(TCFlags flag)
 TextureContainer::RefinementMap TextureContainer::s_GlobalRefine;
 TextureContainer::RefinementMap TextureContainer::s_Refine;
 
-void ConvertData( std::string& dat)
-{
+static void ConvertData(string & dat) {
+	
 	size_t substrStart = 0;
-	size_t substrLen = std::string::npos;
-
+	size_t substrLen = string::npos;
+	
 	size_t posStart = dat.find_first_of('"');
-	if( posStart != std::string::npos )
+	if(posStart != string::npos) {
 		substrStart = posStart + 1;
-
-	size_t posEnd = dat.find_last_of('"');
-	if( posEnd != std::string::npos )
-		substrLen = posEnd - substrStart;
-
+		
+		size_t posEnd = dat.find_last_of('"');
+		arx_assert(posEnd != string::npos);
+		
+		if(posEnd != posStart) {
+			substrLen = posEnd - substrStart;
+		}
+	}
+	
 	dat = dat.substr(substrStart, substrLen);
 }
 
-void LoadRefinementMap(const std::string& fileName, std::map<string, string>& refinementMap)
-{
-	char * fileContent = NULL;
-	size_t fileSize = 0;
+static void LoadRefinementMap(const string & fileName, map<string, string> & refinementMap) {
 	
-	if (PAK_FileExist(fileName))
-		fileContent = (char *)PAK_FileLoadMallocZero(fileName, fileSize);
-
-	if (fileContent)
-	{
-		unsigned char * from = (unsigned char *)fileContent;
-		u32 fromSize = fileSize;
-		std::string data;
-		u32 pos = 0;
-		long count = 0;	
-
-		std::string str1;
-		
-		while (pos < fileSize)
-		{
-			data.resize(0);
-
-			while ((from[pos] != '\n') && (pos < fromSize))
-			{
-				data += from[pos++];
-
-				if (pos >= fileSize) break;
-			}
-
-			while ((pos < fromSize) && (from[pos] < 32)) pos++;
-
-			if (count == 2)
-			{
-				count = 0;
-				continue;
-			}
-
-			ConvertData(data);
-
-			if (count == 0)
-				str1 = data;
-			
-			if (count == 1)
-			{
-				MakeUpcase( str1 );
-				MakeUpcase( data );
-
-				if( data.compare( "NONE" ) != 0 ) // If the string does not contain "NONE"
-					refinementMap[str1] = data;
-			}
-
-			count++;
-		}
-
-		free(fileContent);
+	size_t fileSize = 0;
+	char * from = (char *)PAK_FileLoadMalloc(fileName, fileSize);
+	if(!from) {
+		return;
 	}
+	
+	size_t pos = 0;
+	long count = 0;
+	
+	std::string name;
+	
+	while(pos < fileSize) {
+		
+		string data;
+		
+		while(pos < fileSize && from[pos] != '\r' && from[pos] != '\n') {
+			data += from[pos++];
+		}
+		while(pos < fileSize && (from[pos] == '\r' || from[pos] == '\n')) {
+			pos++;
+		}
+		
+		if(count == 2) {
+			count = 0;
+			continue;
+		}
+		
+		ConvertData(data);
+		
+		if(count == 0) {
+			name = data;
+		} else if(count == 1) {
+			
+			MakeUpcase(name);
+			MakeUpcase(data);
+			
+			if(data != "NONE") {
+				refinementMap[name] = data;
+			} else {
+				refinementMap[name].clear();
+			}
+		}
+		
+		count++;
+	}
+	
+	free(from);
 }
 
 void TextureContainer::LookForRefinementMap(TCFlags flags) {
-	
-	std::string str1;
-	std::string str2;
 	
 	TextureRefinement = NULL;
 	
@@ -524,16 +519,20 @@ void TextureContainer::LookForRefinementMap(TCFlags flags) {
 	std::string name = GetName(m_texName);
 	MakeUpcase(name);
 	
-	RefinementMap::const_iterator it = s_GlobalRefine.find(name);
-	if(it != s_GlobalRefine.end()) {
-		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
-		TextureRefinement = Load(str2, flags);
+	RefinementMap::const_iterator it = s_Refine.find(name);
+	if(it != s_Refine.end()) {
+		if(!it->second.empty()) {
+			string file = "Graph\\Obj3D\\Textures\\Refinement\\" + it->second + ".bmp";
+			TextureRefinement = Load(file, flags);
+		}
+		return;
 	}
 	
-	it = s_Refine.find(name);
-	if(it != s_Refine.end()) {
-		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
-		TextureRefinement = Load(str2, flags);
+	it = s_GlobalRefine.find(name);
+	if(it != s_GlobalRefine.end() && !it->second.empty()) {
+		string file = "Graph\\Obj3D\\Textures\\Refinement\\" + it->second + ".bmp";
+		TextureRefinement = Load(file, flags);
 	}
+	
 	
 }
