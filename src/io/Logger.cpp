@@ -23,7 +23,6 @@ struct LogSetting {
 const LogSetting blackList[] = {
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "Filesystem.cpp", Logger::Fatal },
-	{ "Object.cpp", Logger::Warning },
 };
 
 };
