@@ -7869,18 +7869,16 @@ void ReleaseSystemObjects() {
 void ClearGame() {
 	
 	ARX_Menu_Resources_Release();
-	ARXmenu.currentmode = AMCM_OFF;
 	ARX_TIME_UnPause();
 	
-	danaeApp.Cleanup3DEnvironment();
+	ShowWindow(danaeApp.m_hWnd, SW_MINIMIZE | SW_HIDE);
 	
-	ShowWindow(danaeApp.m_hWnd,SW_MINIMIZE|SW_HIDE);
-
 	ARX_MINIMAP_PurgeTC();
-
-	if (DURING_LOCK)
+	
+	if(DURING_LOCK) {
 		danaeApp.Unlock();
-
+	}
+	
 	KillInterfaceTextureContainers();
 	Menu2_Close();
 	DanaeClearLevel(2);
@@ -7890,8 +7888,6 @@ void ClearGame() {
 		delete ControlCinematique;
 		ControlCinematique=NULL;
 	}
-	
-	ARX_Menu_Resources_Release();
 	
 	//configuration
 	config.save();
@@ -7953,24 +7949,26 @@ void ClearGame() {
 	//Speech
 	ARX_SPEECH_ClearAll();
 	ARX_Text_Close();
-
+	
 	//object loaders from beforerun
 	ReleaseDanaeBeforeRun();
 	PAK_Close();
-
+	
 #ifdef BUILD_EDITOR
 	if (danaeApp.ToolBar) {
 		free(danaeApp.ToolBar);
 		danaeApp.ToolBar=NULL;
 	}
 #endif
-
+	
 	ReleaseNode();
-
+	
 	//Halo
 	ReleaseHalo();
 	FreeSnapShot();
 	ARX_INPUT_Release();
+	
+	danaeApp.Cleanup3DEnvironment();
 	
 	LogInfo << "Clean shutdown";
 }

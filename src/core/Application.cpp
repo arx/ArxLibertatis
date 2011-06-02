@@ -742,7 +742,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			return 0;
 
 		case WM_DESTROY:
-			Cleanup3DEnvironment();
 			PostQuitMessage(0);
 			return 0;
 	}

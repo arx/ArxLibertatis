@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 
 extern CDirectInput * pGetInfoDirectInput;
-extern LPDIRECT3DDEVICE7 GDevice;
 extern bool bQuickGenFirstClick;
 #ifdef BUILD_EDITOR
 extern float FORCED_REDUCTION_VALUE;
