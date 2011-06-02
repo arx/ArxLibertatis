@@ -244,24 +244,17 @@ PakDirectory * PakDirectory::getDirectory(const std::string& sname)
 //#############################################################################
 PakFile * PakDirectory::addFile(const std::string& name) {
 	
-	PakFile * f = files;
-	while(f) {
-		if( !strcasecmp(f->name.c_str(), name.c_str() ) ) {
-			// File already exists.
-			return NULL;
-		}
-		f = f->next;
-	}
+	PakFile * f;
 	
 	f = new PakFile(name);
 	if(!f) {
 		return NULL;
 	}
-	
+			
 	// Add file to hash map.
 	if(filesMap) {
-		if(!filesMap->add( name, (void *)f)) {
-			delete f;
+		if(!filesMap->add(name, (void *)f)) {
+			delete f;	// Probably already inserted in map...
 			return NULL;
 		}
 	} else {
