@@ -108,7 +108,6 @@ extern bool ARXPausedTimer;
 
 static void EERIE_PORTAL_Release();
 
-long NEED_ANCHORS = 1;
 float Xratio = 1.f;
 float Yratio = 1.f;
 extern long CYRIL_VERSION;
@@ -3647,6 +3646,8 @@ struct SINFO_TEXTURE_VERTEX
 };
 
 #ifdef BUILD_EDIT_LOADSAVE
+
+long NEED_ANCHORS = 1;
 
 static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py, long idx) {
 	

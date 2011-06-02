@@ -191,7 +191,6 @@ extern long		FistParticles;
 extern long		INTER_DRAW;
 extern long		INTER_COMPUTE;
 extern long		USEINTERNORM;
-extern long		NEED_ANCHORS;
 extern long		FAKE_DIR;
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		DeadTime;
@@ -305,6 +304,7 @@ TextureContainer *	mecanism_tc=NULL;
 TextureContainer *	arrow_left_tc=NULL;
 
 #ifdef BUILD_EDIT_LOADSAVE
+extern long NEED_ANCHORS;
 EERIE_MULTI3DSCENE * mse = NULL;
 #endif
 
