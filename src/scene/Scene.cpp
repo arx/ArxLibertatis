@@ -2416,7 +2416,6 @@ SMY_D3DVERTEX *pMyVertex;
 				{
 					*pNumIndices+=3;
 				}
-
 				pMyVertexCurr=&pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
 		
 
@@ -2790,7 +2789,6 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 		while(iNbTex--) {
 			
 			TextureContainer * pTexCurr = *ppTexCurr;
-			
 			GRenderer->SetTexture(0, pTexCurr);
 
 			//NORMAL TRANS

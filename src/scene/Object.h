@@ -80,10 +80,12 @@ const size_t MAX_ACTIONS = 100;
 extern D3DTLVERTEX	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
-EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const std::string& dir);
-
+#ifdef BUILD_EDIT_LOADSAVE
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const std::string & dir);
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
-void MakeUserFlag(TextureContainer	* tc);
+#endif
+
+void MakeUserFlag(TextureContainer * tc);
 long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
 long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string& selname);
  

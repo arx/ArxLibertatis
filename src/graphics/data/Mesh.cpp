@@ -105,7 +105,9 @@ using std::string;
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
 extern bool ARXPausedTimer;
-void EERIE_PORTAL_Release();
+
+static void EERIE_PORTAL_Release();
+
 long NEED_ANCHORS = 1;
 float Xratio = 1.f;
 float Yratio = 1.f;
@@ -2112,8 +2114,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 
 	if (eb == NULL) return 0;
 
-	if (eb->exist)
-	{
+	if(eb->exist) {
 		EERIE_PORTAL_Release();
 		ClearBackground(eb);
 	}
@@ -2659,22 +2660,8 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 	}
 }
 
-void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py, long idx)
-{
-	ARX_CHECK_SHORT(idx);
-	ARX_CHECK_SHORT(px);
-	ARX_CHECK_SHORT(py);
-	ARX_CHECK_SHORT(nr);
-
-	portals->room[nr].epdata = (EP_DATA *)realloc(portals->room[nr].epdata, sizeof(EP_DATA) * (portals->room[nr].nb_polys + 1));
-	portals->room[nr].epdata[portals->room[nr].nb_polys].idx = ARX_CLEAN_WARN_CAST_SHORT(idx);
-	portals->room[nr].epdata[portals->room[nr].nb_polys].px = ARX_CLEAN_WARN_CAST_SHORT(px);
-	portals->room[nr].epdata[portals->room[nr].nb_polys].py = ARX_CLEAN_WARN_CAST_SHORT(py);
-	ep->room = ARX_CLEAN_WARN_CAST_SHORT(nr);
-	portals->room[nr].nb_polys++;
-}
-void EERIE_PORTAL_Release()
-{
+static void EERIE_PORTAL_Release() {
+	
 	if (portals)
 	{
 		if (portals->portals)
@@ -2726,202 +2713,6 @@ void EERIE_PORTAL_Release()
 		free(portals);
 		portals = NULL;
 	}
-}
-
-extern long COMPUTE_PORTALS;
-
-void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long px, long py, long idx)
-{
-	if (!COMPUTE_PORTALS) return;
-
-	long type, val1, val2;
-
-	if (!GetNameInfo(name, type, val1, val2)) return;
-
-	if (portals == NULL)
-	{
-		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
-
-		if (!portals) return;
-
-		portals->nb_rooms = 0;
-		portals->room = NULL;
-		portals->nb_total = 0;
-		portals->portals = NULL;
-		USE_PORTALS = 4;
-	}
-
-	if (type == TYPE_PORTAL) //portal_def
-	{
-		portals->portals = (EERIE_PORTALS *)realloc(portals->portals, sizeof(EERIE_PORTALS) * (portals->nb_total + 1));
-		portals->portals[portals->nb_total].room_1 = val1;
-		portals->portals[portals->nb_total].room_2 = val2;
-		memcpy(&portals->portals[portals->nb_total].poly, ep, sizeof(EERIEPOLY));
-
-		float fDistMin = FLT_MAX;
-		float fDistMax = FLT_MIN;
-		int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-		ep->center.x = ep->v[0].sx;
-		ep->center.y = ep->v[0].sy;
-		ep->center.z = ep->v[0].sz;
-
-		for (long ii = 1; ii < nbvert; ii++)
-		{
-			ep->center.x += ep->v[ii].sx;
-			ep->center.y += ep->v[ii].sy;
-			ep->center.z += ep->v[ii].sz;
-		}
-
-		ep->center /= nbvert;
-
-		for(int ii = 0; ii < nbvert; ii++) {
-			float fDist = dist(ep->center, ep->v[ii]);
-			fDistMin = min(fDistMin, fDist);
-			fDistMax = max(fDistMax, fDist);
-		}
-
-		fDistMin = (fDistMax + fDistMin) * .5f;
-		portals->portals[portals->nb_total].poly.v[0].rhw = fDistMin;
-
-		portals->nb_total++;
-	}
-	else if (type == TYPE_ROOM)
-	{
-		if (val1 > portals->nb_rooms)
-		{
-			portals->room = (EERIE_ROOM_DATA *)realloc(portals->room, sizeof(EERIE_ROOM_DATA) * (val1 + 1));
-
-			if (portals->nb_rooms == 0)
-			{
-				memset(portals->room, 0, sizeof(EERIE_ROOM_DATA)*(val1 + 1));
-			}
-			else for (long i = portals->nb_rooms + 1; i <= val1; i++)
-				{
-					memset(&portals->room[i], 0, sizeof(EERIE_ROOM_DATA));
-				}
-
-			portals->nb_rooms = val1;
-		}
-
-		EERIE_PORTAL_Room_Poly_Add(ep, val1, px, py, idx);
-	}
-}
-
-int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
-{
-	long j, posx, posz, posy;
-	float cx, cy, cz;
-	EERIE_BKG_INFO * eg;
-	long type, val1;
-	type = -1;
-	val1 = -1;
-
-	if (TryToQuadify(ep, eobj)) return 0;
-
-	cx = (ep->v[0].sx + ep->v[1].sx + ep->v[2].sx);
-	cy = (ep->v[0].sy + ep->v[1].sy + ep->v[2].sy);
-	cz = (ep->v[0].sz + ep->v[1].sz + ep->v[2].sz);
-	posx = (long)(float)(cx * ( 1.0f / 3 ) * ACTIVEBKG->Xmul); 
-	posz = (long)(float)(cz * ( 1.0f / 3 ) * ACTIVEBKG->Zmul); 
-	posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * ( 1.0f / 2 )); 
-
-	if (posy < 0) return 0;
-	else if (posy >= ACTIVEBKG->Xsize) return 0;
-
-	if (posx < 0) return 0;
-	else if (posx >= ACTIVEBKG->Xsize) return 0;
-
-	if (posz < 0) return 0;
-	else if (posz >= ACTIVEBKG->Zsize) return 0;
-
-	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
-
-	DeclareEGInfo(cx * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
-	DeclareEGInfo(ep->v[0].sx, ep->v[0].sz);
-	DeclareEGInfo(ep->v[1].sx, ep->v[1].sz);
-	DeclareEGInfo(ep->v[2].sx, ep->v[2].sz);
-
-	cx *= ( 1.0f / 3 );
-	cy *= ( 1.0f / 3 );
-	cz *= ( 1.0f / 3 );
-	long t = (((eg->nbpoly) >> 1) << 1) + 2; 
-	long tt = (((eg->nbpoly - 1) >> 1) << 1) + 2; 
-
-	if (eg->polydata == NULL)
-	{
-		eg->polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * t);
-	}
-	else if (tt != t)
-	{
-		eg->polydata = (EERIEPOLY *)realloc(eg->polydata, sizeof(EERIEPOLY) * t);
-	}
-
-	memcpy(&eg->polydata[eg->nbpoly], ep, sizeof(EERIEPOLY));
-
-	EERIEPOLY * epp = (EERIEPOLY *)&eg->polydata[eg->nbpoly];
-
-	for (j = 0; j < 3; j++)
-	{
-		epp->tv[j].tu	= epp->v[j].tu;
-		epp->tv[j].tv	= epp->v[j].tv;
-		epp->tv[j].color = epp->v[j].color;
-		epp->tv[j].rhw	= 1.f;
-	}
-
-	epp->center.x = cx; 
-	epp->center.y = cy; 
-	epp->center.z = cz; 
-	epp->max.x = max(epp->v[0].sx, epp->v[1].sx);
-	epp->max.x = max(epp->max.x, epp->v[2].sx);
-	epp->min.x = min(epp->v[0].sx, epp->v[1].sx);
-	epp->min.x = min(epp->min.x, epp->v[2].sx);
-
-	epp->max.y = max(epp->v[0].sy, epp->v[1].sy);
-	epp->max.y = max(epp->max.y, epp->v[2].sy);
-	epp->min.y = min(epp->v[0].sy, epp->v[1].sy);
-	epp->min.y = min(epp->min.y, epp->v[2].sy);
-
-	epp->max.z = max(epp->v[0].sz, epp->v[1].sz);
-	epp->max.z = max(epp->max.z, epp->v[2].sz);
-	epp->min.z = min(epp->v[0].sz, epp->v[1].sz);
-	epp->min.z = min(epp->min.z, epp->v[2].sz);
-	epp->type = ep->type;
-	epp->type &= ~POLY_QUAD;
-
-	CalcFaceNormal(epp, epp->v);
-	epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * ( 1.0f / 2 ),
-	                       (epp->v[0].sy + epp->v[1].sy) * ( 1.0f / 2 ),
-	                       (epp->v[0].sz + epp->v[1].sz) * ( 1.0f / 2 ),
-	                       epp->v[2].sx, epp->v[2].sy, epp->v[2].sz)
-	            * Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
-	                         epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * ( 1.0f / 2 );
-	
-	ARX_CHECK_SHORT(val1);
-
-	if (type == TYPE_ROOM)
-		epp->room = ARX_CLEAN_WARN_CAST_SHORT(val1);
-	else
-		epp->room = -1;
-
-	eg->nbpoly++;
-
-	eg->treat = 0;
-
-	if (ep != NULL)
-		if (ep->tex != NULL)
-			if ( !ep->tex->m_texName.empty() )
-			{
-				if ( ep->tex->m_texName.find("STONE") != std::string::npos )         ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("PIERRE") != std::string::npos )   ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("WOOD") != std::string::npos )     ep->type |= POLY_WOOD;
-				else if ( ep->tex->m_texName.find("BOIS") != std::string::npos )     ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("GAVIER") != std::string::npos )   ep->type |= POLY_GRAVEL;
-				else if ( ep->tex->m_texName.find("EARTH") != std::string::npos )    ep->type |= POLY_EARTH;
-			}
-
-	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -3684,9 +3475,7 @@ bool FastSceneLoad(const string & partial_path) {
 	
 	if(fsh->nb_rooms > 0) {
 		
-		if(portals != NULL) {
-			EERIE_PORTAL_Release();
-		}
+		EERIE_PORTAL_Release();
 		
 		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
 		portals->nb_rooms = fsh->nb_rooms;
@@ -3802,11 +3591,401 @@ bool FastSceneLoad(const string & partial_path) {
 
 #define checkalloc if(pos >= allocsize - 100000) { free(dat); return false; }
 
+void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
+{
+	long missing = -1;
+
+	for (long i = 0; i < 3; i++)
+	{
+		long same = 0;
+
+		for (long j = 0; j < 3; j++)
+		{
+			if	((po->v[j].sx == ep->v[i].sx)
+					&&	(po->v[j].sy == ep->v[i].sy)
+					&&	(po->v[j].sz == ep->v[i].sz))
+				same = 1;
+		}
+
+		if (!same) missing = i;
+	}
+
+	if (missing >= 0)
+	{
+		Vec3f temp;
+		temp.x = po->v[2].sx;
+		temp.y = po->v[2].sy;
+		temp.z = po->v[2].sz;
+
+		po->v[2].sx = ep->v[missing].sx;
+		po->v[2].sy = ep->v[missing].sy;
+		po->v[2].sz = ep->v[missing].sz;
+
+		po->v[3].sx = temp.x;
+		po->v[3].sy = temp.y;
+		po->v[3].sz = temp.z;
+		po->type |= POLY_QUAD;
+	}
+}
+
+struct SINFO_TEXTURE_VERTEX
+{
+	int					iNbVertex;
+	int					iNbIndiceCull;
+	int					iNbIndiceNoCull;
+	int					iNbIndiceCull_TMultiplicative;
+	int					iNbIndiceNoCull_TMultiplicative;
+	int					iNbIndiceCull_TAdditive;
+	int					iNbIndiceNoCull_TAdditive;
+	int					iNbIndiceCull_TNormalTrans;
+	int					iNbIndiceNoCull_TNormalTrans;
+	int					iNbIndiceCull_TSubstractive;
+	int					iNbIndiceNoCull_TSubstractive;
+	TextureContainer	* pTex;
+	int					iMin;
+	int					iMax;
+};
+
+#ifdef BUILD_EDIT_LOADSAVE
+
+static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py, long idx) {
+	
+	ARX_CHECK_SHORT(idx);
+	ARX_CHECK_SHORT(px);
+	ARX_CHECK_SHORT(py);
+	ARX_CHECK_SHORT(nr);
+	
+	portals->room[nr].epdata = (EP_DATA *)realloc(portals->room[nr].epdata, sizeof(EP_DATA) * (portals->room[nr].nb_polys + 1));
+	portals->room[nr].epdata[portals->room[nr].nb_polys].idx = ARX_CLEAN_WARN_CAST_SHORT(idx);
+	portals->room[nr].epdata[portals->room[nr].nb_polys].px = ARX_CLEAN_WARN_CAST_SHORT(px);
+	portals->room[nr].epdata[portals->room[nr].nb_polys].py = ARX_CLEAN_WARN_CAST_SHORT(py);
+	ep->room = ARX_CLEAN_WARN_CAST_SHORT(nr);
+	portals->room[nr].nb_polys++;
+}
+
+static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long px, long py, long idx) {
+	
+	if (!COMPUTE_PORTALS) return;
+
+	long type, val1, val2;
+
+	if (!GetNameInfo(name, type, val1, val2)) return;
+
+	if (portals == NULL)
+	{
+		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
+
+		if (!portals) return;
+
+		portals->nb_rooms = 0;
+		portals->room = NULL;
+		portals->nb_total = 0;
+		portals->portals = NULL;
+		USE_PORTALS = 4;
+	}
+
+	if (type == TYPE_PORTAL) //portal_def
+	{
+		portals->portals = (EERIE_PORTALS *)realloc(portals->portals, sizeof(EERIE_PORTALS) * (portals->nb_total + 1));
+		portals->portals[portals->nb_total].room_1 = val1;
+		portals->portals[portals->nb_total].room_2 = val2;
+		memcpy(&portals->portals[portals->nb_total].poly, ep, sizeof(EERIEPOLY));
+
+		float fDistMin = FLT_MAX;
+		float fDistMax = FLT_MIN;
+		int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+
+		ep->center.x = ep->v[0].sx;
+		ep->center.y = ep->v[0].sy;
+		ep->center.z = ep->v[0].sz;
+
+		for (long ii = 1; ii < nbvert; ii++)
+		{
+			ep->center.x += ep->v[ii].sx;
+			ep->center.y += ep->v[ii].sy;
+			ep->center.z += ep->v[ii].sz;
+		}
+
+		ep->center /= nbvert;
+
+		for(int ii = 0; ii < nbvert; ii++) {
+			float fDist = dist(ep->center, ep->v[ii]);
+			fDistMin = min(fDistMin, fDist);
+			fDistMax = max(fDistMax, fDist);
+		}
+
+		fDistMin = (fDistMax + fDistMin) * .5f;
+		portals->portals[portals->nb_total].poly.v[0].rhw = fDistMin;
+
+		portals->nb_total++;
+	}
+	else if (type == TYPE_ROOM)
+	{
+		if (val1 > portals->nb_rooms)
+		{
+			portals->room = (EERIE_ROOM_DATA *)realloc(portals->room, sizeof(EERIE_ROOM_DATA) * (val1 + 1));
+
+			if (portals->nb_rooms == 0)
+			{
+				memset(portals->room, 0, sizeof(EERIE_ROOM_DATA)*(val1 + 1));
+			}
+			else for (long i = portals->nb_rooms + 1; i <= val1; i++)
+				{
+					memset(&portals->room[i], 0, sizeof(EERIE_ROOM_DATA));
+				}
+
+			portals->nb_rooms = val1;
+		}
+
+		EERIE_PORTAL_Room_Poly_Add(ep, val1, px, py, idx);
+	}
+}
+
+static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
+	
+	long j, posx, posz, posy;
+	float cx, cy, cz;
+	EERIE_BKG_INFO * eg;
+	long type, val1;
+	type = -1;
+	val1 = -1;
+
+	if (TryToQuadify(ep, eobj)) return 0;
+
+	cx = (ep->v[0].sx + ep->v[1].sx + ep->v[2].sx);
+	cy = (ep->v[0].sy + ep->v[1].sy + ep->v[2].sy);
+	cz = (ep->v[0].sz + ep->v[1].sz + ep->v[2].sz);
+	posx = (long)(float)(cx * ( 1.0f / 3 ) * ACTIVEBKG->Xmul); 
+	posz = (long)(float)(cz * ( 1.0f / 3 ) * ACTIVEBKG->Zmul); 
+	posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * ( 1.0f / 2 )); 
+
+	if (posy < 0) return 0;
+	else if (posy >= ACTIVEBKG->Xsize) return 0;
+
+	if (posx < 0) return 0;
+	else if (posx >= ACTIVEBKG->Xsize) return 0;
+
+	if (posz < 0) return 0;
+	else if (posz >= ACTIVEBKG->Zsize) return 0;
+
+	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
+
+	DeclareEGInfo(cx * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
+	DeclareEGInfo(ep->v[0].sx, ep->v[0].sz);
+	DeclareEGInfo(ep->v[1].sx, ep->v[1].sz);
+	DeclareEGInfo(ep->v[2].sx, ep->v[2].sz);
+
+	cx *= ( 1.0f / 3 );
+	cy *= ( 1.0f / 3 );
+	cz *= ( 1.0f / 3 );
+	long t = (((eg->nbpoly) >> 1) << 1) + 2; 
+	long tt = (((eg->nbpoly - 1) >> 1) << 1) + 2; 
+
+	if (eg->polydata == NULL)
+	{
+		eg->polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * t);
+	}
+	else if (tt != t)
+	{
+		eg->polydata = (EERIEPOLY *)realloc(eg->polydata, sizeof(EERIEPOLY) * t);
+	}
+
+	memcpy(&eg->polydata[eg->nbpoly], ep, sizeof(EERIEPOLY));
+
+	EERIEPOLY * epp = (EERIEPOLY *)&eg->polydata[eg->nbpoly];
+
+	for (j = 0; j < 3; j++)
+	{
+		epp->tv[j].tu	= epp->v[j].tu;
+		epp->tv[j].tv	= epp->v[j].tv;
+		epp->tv[j].color = epp->v[j].color;
+		epp->tv[j].rhw	= 1.f;
+	}
+
+	epp->center.x = cx; 
+	epp->center.y = cy; 
+	epp->center.z = cz; 
+	epp->max.x = max(epp->v[0].sx, epp->v[1].sx);
+	epp->max.x = max(epp->max.x, epp->v[2].sx);
+	epp->min.x = min(epp->v[0].sx, epp->v[1].sx);
+	epp->min.x = min(epp->min.x, epp->v[2].sx);
+
+	epp->max.y = max(epp->v[0].sy, epp->v[1].sy);
+	epp->max.y = max(epp->max.y, epp->v[2].sy);
+	epp->min.y = min(epp->v[0].sy, epp->v[1].sy);
+	epp->min.y = min(epp->min.y, epp->v[2].sy);
+
+	epp->max.z = max(epp->v[0].sz, epp->v[1].sz);
+	epp->max.z = max(epp->max.z, epp->v[2].sz);
+	epp->min.z = min(epp->v[0].sz, epp->v[1].sz);
+	epp->min.z = min(epp->min.z, epp->v[2].sz);
+	epp->type = ep->type;
+	epp->type &= ~POLY_QUAD;
+
+	CalcFaceNormal(epp, epp->v);
+	epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * ( 1.0f / 2 ),
+	                       (epp->v[0].sy + epp->v[1].sy) * ( 1.0f / 2 ),
+	                       (epp->v[0].sz + epp->v[1].sz) * ( 1.0f / 2 ),
+	                       epp->v[2].sx, epp->v[2].sy, epp->v[2].sz)
+	            * Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
+	                         epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * ( 1.0f / 2 );
+	
+	ARX_CHECK_SHORT(val1);
+
+	if (type == TYPE_ROOM)
+		epp->room = ARX_CLEAN_WARN_CAST_SHORT(val1);
+	else
+		epp->room = -1;
+
+	eg->nbpoly++;
+
+	eg->treat = 0;
+
+	if (ep != NULL)
+		if (ep->tex != NULL)
+			if ( !ep->tex->m_texName.empty() )
+			{
+				if ( ep->tex->m_texName.find("STONE") != std::string::npos )         ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("PIERRE") != std::string::npos )   ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("WOOD") != std::string::npos )     ep->type |= POLY_WOOD;
+				else if ( ep->tex->m_texName.find("BOIS") != std::string::npos )     ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("GAVIER") != std::string::npos )   ep->type |= POLY_GRAVEL;
+				else if ( ep->tex->m_texName.find("EARTH") != std::string::npos )    ep->type |= POLY_EARTH;
+			}
+
+	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
+	return 1;
+}
+
+static void EERIEAddPolyToBackground(D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval, EERIE_3DOBJ * eobj) {
+	
+	EERIEPOLY ep;
+	
+	memset(ep.tv, 0, sizeof(D3DTLVERTEX) * 3);
+	
+	if(vert2 != NULL) {
+		memcpy(ep.v, vert2, sizeof(D3DTLVERTEX) * 3);
+	} else {
+		memset(ep.tv, 0, sizeof(D3DTLVERTEX) * 3);
+	}
+	
+	ep.type = render;
+	ep.tex = tex;
+	ep.transval = transval;
+	BkgAddPoly(&ep, eobj);
+}
+
+static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
+	
+	float       Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
+	Vec3f      p, rp;
+
+	D3DTLVERTEX vlist[3];
+	Zsin = radians(eobj->angle.a);
+	Xcos = (float)EEcos(Zsin);
+	Xsin = (float)EEsin(Zsin);
+	Zsin = radians(eobj->angle.b);
+	Ycos = (float)EEcos(Zsin);
+	Ysin = (float)EEsin(Zsin);
+	Zsin = radians(eobj->angle.g);
+	Zcos = (float)EEcos(Zsin);
+	Zsin = (float)EEsin(Zsin);
+
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
+	{
+		//Local Transform
+		p = eobj->vertexlist[i].v - eobj->point0;
+		_YRotatePoint(&p, &rp, Ycos, Ysin);
+		_XRotatePoint(&rp, &p, Xcos, Xsin);
+		_ZRotatePoint(&p, &rp, Zcos, Zsin);
+		eobj->vertexlist[i].vert.sx = rp.x + eobj->pos.x + eobj->point0.x;
+		eobj->vertexlist[i].vert.sy = rp.y + eobj->pos.y + eobj->point0.y;
+		eobj->vertexlist[i].vert.sz = rp.z + eobj->pos.z + eobj->point0.z;
+	}
+
+	long type, val1, val2;
+
+	if (COMPUTE_PORTALS)
+	{
+		if (GetNameInfo(eobj->name, type, val1, val2))
+		{
+			if (type == TYPE_PORTAL)
+			{
+				EERIEPOLY ep;
+				EERIEPOLY epp;
+
+				for (size_t i = 0; i < eobj->facelist.size(); i++)
+				{
+					for (long kk = 0; kk < 3; kk++)
+					{
+						memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(D3DTLVERTEX));
+					}
+
+					if (i == 0)
+					{
+						memcpy(&epp, &ep, sizeof(EERIEPOLY));
+						epp.type = 0;
+					}
+					else if (i == 1)
+					{
+						EERIEPOLY_FillMissingVertex(&epp, &ep);
+					}
+					else break;
+				}
+
+				if(!eobj->facelist.empty()) {
+					EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
+				}
+
+				return;
+			}
+		}
+	}
+	else
+	{
+		if (GetNameInfo(eobj->name, type, val1, val2))
+		{
+			if (type == TYPE_PORTAL)
+			{
+				return;
+			}
+		}
+	}
+
+	for (size_t i = 0; i < eobj->facelist.size(); i++)
+	{
+		vlist[0] = eobj->vertexlist[eobj->facelist[i].vid[0]].vert;
+		vlist[1] = eobj->vertexlist[eobj->facelist[i].vid[1]].vert;
+		vlist[2] = eobj->vertexlist[eobj->facelist[i].vid[2]].vert;
+
+		if (eobj->facelist[i].facetype & 1)
+		{
+			vlist[0].color = vlist[1].color = vlist[2].color = D3DCOLORWHITE;
+			vlist[0].tu = eobj->facelist[i].u[0];
+			vlist[0].tv = eobj->facelist[i].v[0];
+			vlist[1].tu = eobj->facelist[i].u[1];
+			vlist[1].tv = eobj->facelist[i].v[1];
+			vlist[2].tu = eobj->facelist[i].u[2];
+			vlist[2].tv = eobj->facelist[i].v[2];
+
+			if (eobj->facelist[i].texid >= 0)
+				EERIEAddPolyToBackground(vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
+		}
+		else
+		{
+			vlist[0].color = 0xFFFFFFFF;
+			vlist[1].color = 0xFFFFFFFF;
+			vlist[2].color = 0xFFFFFFFF;
+			EERIEAddPolyToBackground(vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
+		}
+	}
+}
+
 /*!
  * Save the currently loaded scene.
  * @param partal_path Where to save the scene to.
  */
-bool FastSceneSave(const string & partial_path) {
+static bool FastSceneSave(const string & partial_path) {
 	
 	string path = "Game\\" + partial_path;
 	
@@ -4163,186 +4342,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 	
 }
 
-//*************************************************************************************
-//*************************************************************************************
-static void EERIEAddPolyToBackground(D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval, EERIE_3DOBJ * eobj)
-{
-	EERIEPOLY ep;
-
-	memset(ep.tv, 0, sizeof(D3DTLVERTEX) * 3);
-
-	if (vert2 != NULL)
-	{
-		memcpy(ep.v, vert2, sizeof(D3DTLVERTEX) * 3);
-	}
-	else memset(ep.tv, 0, sizeof(D3DTLVERTEX) * 3);
-
-	ep.type = render;
-	ep.tex = tex;
-	ep.transval = transval;
-	BkgAddPoly(&ep, eobj);
-}
-void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
-{
-	long missing = -1;
-
-	for (long i = 0; i < 3; i++)
-	{
-		long same = 0;
-
-		for (long j = 0; j < 3; j++)
-		{
-			if	((po->v[j].sx == ep->v[i].sx)
-					&&	(po->v[j].sy == ep->v[i].sy)
-					&&	(po->v[j].sz == ep->v[i].sz))
-				same = 1;
-		}
-
-		if (!same) missing = i;
-	}
-
-	if (missing >= 0)
-	{
-		Vec3f temp;
-		temp.x = po->v[2].sx;
-		temp.y = po->v[2].sy;
-		temp.z = po->v[2].sz;
-
-		po->v[2].sx = ep->v[missing].sx;
-		po->v[2].sy = ep->v[missing].sy;
-		po->v[2].sz = ep->v[missing].sz;
-
-		po->v[3].sx = temp.x;
-		po->v[3].sy = temp.y;
-		po->v[3].sz = temp.z;
-		po->type |= POLY_QUAD;
-	}
-}
-
-struct SINFO_TEXTURE_VERTEX
-{
-	int					iNbVertex;
-	int					iNbIndiceCull;
-	int					iNbIndiceNoCull;
-	int					iNbIndiceCull_TMultiplicative;
-	int					iNbIndiceNoCull_TMultiplicative;
-	int					iNbIndiceCull_TAdditive;
-	int					iNbIndiceNoCull_TAdditive;
-	int					iNbIndiceCull_TNormalTrans;
-	int					iNbIndiceNoCull_TNormalTrans;
-	int					iNbIndiceCull_TSubstractive;
-	int					iNbIndiceNoCull_TSubstractive;
-	TextureContainer	* pTex;
-	int					iMin;
-	int					iMax;
-};
-
-void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
-{
-	float       Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	Vec3f      p, rp;
-
-	D3DTLVERTEX vlist[3];
-	Zsin = radians(eobj->angle.a);
-	Xcos = (float)EEcos(Zsin);
-	Xsin = (float)EEsin(Zsin);
-	Zsin = radians(eobj->angle.b);
-	Ycos = (float)EEcos(Zsin);
-	Ysin = (float)EEsin(Zsin);
-	Zsin = radians(eobj->angle.g);
-	Zcos = (float)EEcos(Zsin);
-	Zsin = (float)EEsin(Zsin);
-
-	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
-	{
-		//Local Transform
-		p = eobj->vertexlist[i].v - eobj->point0;
-		_YRotatePoint(&p, &rp, Ycos, Ysin);
-		_XRotatePoint(&rp, &p, Xcos, Xsin);
-		_ZRotatePoint(&p, &rp, Zcos, Zsin);
-		eobj->vertexlist[i].vert.sx = rp.x + eobj->pos.x + eobj->point0.x;
-		eobj->vertexlist[i].vert.sy = rp.y + eobj->pos.y + eobj->point0.y;
-		eobj->vertexlist[i].vert.sz = rp.z + eobj->pos.z + eobj->point0.z;
-	}
-
-	long type, val1, val2;
-
-	if (COMPUTE_PORTALS)
-	{
-		if (GetNameInfo(eobj->name, type, val1, val2))
-		{
-			if (type == TYPE_PORTAL)
-			{
-				EERIEPOLY ep;
-				EERIEPOLY epp;
-
-				for (size_t i = 0; i < eobj->facelist.size(); i++)
-				{
-					for (long kk = 0; kk < 3; kk++)
-					{
-						memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(D3DTLVERTEX));
-					}
-
-					if (i == 0)
-					{
-						memcpy(&epp, &ep, sizeof(EERIEPOLY));
-						epp.type = 0;
-					}
-					else if (i == 1)
-					{
-						EERIEPOLY_FillMissingVertex(&epp, &ep);
-					}
-					else break;
-				}
-
-				if(!eobj->facelist.empty()) {
-					EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
-				}
-
-				return;
-			}
-		}
-	}
-	else
-	{
-		if (GetNameInfo(eobj->name, type, val1, val2))
-		{
-			if (type == TYPE_PORTAL)
-			{
-				return;
-			}
-		}
-	}
-
-	for (size_t i = 0; i < eobj->facelist.size(); i++)
-	{
-		vlist[0] = eobj->vertexlist[eobj->facelist[i].vid[0]].vert;
-		vlist[1] = eobj->vertexlist[eobj->facelist[i].vid[1]].vert;
-		vlist[2] = eobj->vertexlist[eobj->facelist[i].vid[2]].vert;
-
-		if (eobj->facelist[i].facetype & 1)
-		{
-			vlist[0].color = vlist[1].color = vlist[2].color = D3DCOLORWHITE;
-			vlist[0].tu = eobj->facelist[i].u[0];
-			vlist[0].tv = eobj->facelist[i].v[0];
-			vlist[1].tu = eobj->facelist[i].u[1];
-			vlist[1].tv = eobj->facelist[i].v[1];
-			vlist[2].tu = eobj->facelist[i].u[2];
-			vlist[2].tv = eobj->facelist[i].v[2];
-
-			if (eobj->facelist[i].texid >= 0)
-				EERIEAddPolyToBackground(vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
-		}
-		else
-		{
-			vlist[0].color = 0xFFFFFFFF;
-			vlist[1].color = 0xFFFFFFFF;
-			vlist[2].color = 0xFFFFFFFF;
-			EERIEAddPolyToBackground(vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
-		}
-	}
-}
-
+#endif // BUILD_EDIT_LOADSAVE
 
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
 {
@@ -4408,6 +4408,7 @@ void IncrementPolyWithNormal(EERIEPOLY * _pPoly, float _fFactor) {
 		}
 	}
 }
+
 //-----------------------------------------------------------------------------
 void ComputePortalVertexBuffer()
 {
@@ -4456,8 +4457,7 @@ void ComputePortalVertexBuffer()
 						(pPoly->type & POLY_HIDE) ||
 						(!pPoly->tex)) continue;
 
-				if (!pPoly->tex->tMatRoom)
-				{
+				if(!pPoly->tex->tMatRoom) {
 					pPoly->tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT) * (iMaxRoom + 1));
 				}
 
@@ -4590,11 +4590,8 @@ void ComputePortalVertexBuffer()
 				iNbIndiceForRoom += iNbIndice;
 			}
 
-			if (!iNbVertexForRoom)
-			{
-				char tTxt[256];
-				sprintf(tTxt, "portals %d - Zero Vertex", iNb);
-				LogError << tTxt<< " Error Portals";
+			if(!iNbVertexForRoom) {
+				LogError << "portals " << iNb << " - Zero Vertex" << " Error Portals";
 
 				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
@@ -4765,11 +4762,8 @@ void ComputePortalVertexBuffer()
 						((*it)->iNbIndiceCull_TAdditive > 65535) ||
 						((*it)->iNbIndiceNoCull_TAdditive > 65535) ||
 						((*it)->iNbIndiceCull_TSubstractive > 65535) ||
-						((*it)->iNbIndiceNoCull_TSubstractive > 65535))
-				{
-					char tTxt[256];
-					sprintf(tTxt, "CreateVertexBuffer - Indices>65535");
-					LogError << tTxt<<" Error TransForm";
+						((*it)->iNbIndiceNoCull_TSubstractive > 65535)) {
+					LogError << "CreateVertexBuffer - Indices>65535" << " Error TransForm";
 				}
 
 				iStartCull +=	(*it)->iNbIndiceCull +

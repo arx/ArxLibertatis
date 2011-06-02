@@ -56,13 +56,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "Configure.h"
+
 struct EERIE_3DOBJ;
+
+#ifdef BUILD_EDIT_LOADSAVE
 
 /*!
  * Save a FTL File
  * Must pass the original name of the theo file
  */
 bool ARX_FTL_Save(const std::string & file, const EERIE_3DOBJ * obj);
+
+#endif
 
 /*!
  * Load a FTL file

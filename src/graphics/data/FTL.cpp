@@ -80,6 +80,8 @@ using std::string;
 
 extern long NOCHECKSUM;
 
+#ifdef BUILD_EDIT_LOADSAVE
+
 bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;
@@ -362,6 +364,7 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	
 }
 
+#endif // BUILD_EDIT_LOADSAVE
 
 // MESH cache structure definition & Globals
 struct MCACHE_DATA {
@@ -694,7 +697,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	// Now we can release our cool FTL file
 	EERIE_Object_Precompute_Fast_Access(obj);
 	
-	LogInfo << "ARX_FTL_Load: loaded object " << filename;
+	LogDebug << "ARX_FTL_Load: loaded object " << filename;
 	
 	return obj;
 }

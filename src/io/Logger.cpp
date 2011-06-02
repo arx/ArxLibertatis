@@ -13,16 +13,18 @@ using std::string;
 
 Logger::LogLevel Logger::logLevel = Logger::Info;
 
+namespace {
+
 struct LogSetting {
 	string codefile;
 	Logger::LogLevel logLevel;
 };
 
 const LogSetting blackList[] = {
-	{ "FTL.cpp", Logger::Warning },
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "Filesystem.cpp", Logger::Fatal },
-	{ "Object.cpp", Logger::Warning },
+};
+
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {

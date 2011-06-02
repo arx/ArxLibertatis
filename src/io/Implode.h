@@ -21,6 +21,10 @@
 #ifndef ARX_IO_IMPLODE_H
 #define ARX_IO_IMPLODE_H
 
+#include "Configure.h"
+
+#ifdef BUILD_EDIT_LOADSAVE
+
 #include <stddef.h>
 
 enum ImplodeLiteralSize {
@@ -66,5 +70,7 @@ struct pkstream {
 ImplodeResult implode(pkstream * pStr);
 
 char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize);
+
+#endif // BUILD_EDIT_LOADSAVE
 
 #endif // ARX_IO_IMPLODE_H

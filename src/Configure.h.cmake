@@ -21,4 +21,6 @@
 
 #cmakedefine BUILD_EDITOR
 
+#cmakedefine BUILD_EDIT_LOADSAVE
+
 #endif // ARX_CONFIGURE_H

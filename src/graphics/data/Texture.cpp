@@ -84,6 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/String.h"
 
 using std::string;
+using std::map;
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
@@ -208,8 +209,6 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 		ptcTexture->pVertexListCull_TMetal = NULL;
 	}
 	
-	// TODO(dscharrer): Why does removing thus cause crashes (and not just leak memory)?
-	// Does this indicate that the texture object is being used after it has been deleted?
 	if(ptcTexture->tMatRoom) {
 		free(ptcTexture->tMatRoom);
 		ptcTexture->tMatRoom = NULL;
@@ -220,8 +219,8 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 // Name: TextureContainer()
 // Desc: Constructor for a texture object
 //-----------------------------------------------------------------------------
-TextureContainer::TextureContainer(const std::string& strName, TextureContainer::TCFlags flags)
-{
+TextureContainer::TextureContainer(const std::string& strName, TCFlags flags) {
+	
 	m_texName = strName;
 	MakeUpcase( m_texName );
 
@@ -237,8 +236,7 @@ TextureContainer::TextureContainer(const std::string& strName, TextureContainer:
 	TextureHalo = NULL;
 
 	// Add the texture to the head of the global texture list
-	if (!(flags & TextureContainer::NoInsert))
-	{
+	if(!(flags & NoInsert)) {
 		m_pNext = g_ptcTextureList;
 		g_ptcTextureList = this;
 	}
@@ -271,8 +269,8 @@ TextureContainer::TextureContainer(const std::string& strName, TextureContainer:
 
 	ulMaxVertexListCull_TMetal = 0;
 	ulNbVertexListCull_TMetal = 0;
-	pVertexListCull_TMetal = NULL; 
-
+	pVertexListCull_TMetal = NULL;
+	
 	tMatRoom = NULL;
 
 	vPolyInterZMap.clear();
@@ -356,57 +354,44 @@ bool TextureContainer::LoadFile(const std::string& strPathname)
 
 extern void MakeUserFlag(TextureContainer * tc);
 
-TextureContainer * TextureContainer::Load(const std::string& _strName, TextureContainer::TCFlags flags)
-{
-	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-
-	TextureContainer * newTexture;
-
-	std::string strName = _strName;
-
-	// Check parameters
-	std::string texx;
-
-	if ( strName.empty() )
-		return NULL;
-
+TextureContainer * TextureContainer::Load(const string & name, TCFlags flags) {
+	
 	// Check first to see if the texture is already loaded
-	newTexture = Find(strName);
-	if (newTexture)
+	TextureContainer * newTexture = Find(name);
+	if(newTexture) {
+		// TODO don't we need to check the texture's systemflags?
 		return newTexture;
-
+	}
+	
 	// Allocate and add the texture to the linked list of textures;
-	newTexture = new TextureContainer(strName, flags);
-	if (!newTexture)
+	newTexture = new TextureContainer(name, flags);
+	if(!newTexture) {
 		return NULL;
-
+	}
+	
 	newTexture->systemflags = flags;
-
-	if (GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE == 1)
-		newTexture->systemflags |= TextureContainer::Level;
-	else if (GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE == -1)
-		newTexture->systemflags &= ~TextureContainer::Level;
-
+	
+	if(GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE == -1) {
+		newTexture->systemflags &= ~Level;
+	}
+	
 	// Create a bitmap and load the texture file into it,
-	if (!newTexture->LoadFile(strName))
-	{
+	if(!newTexture->LoadFile(name)) {
 		delete newTexture;
 		return NULL;
 	}
-
-	if (!(flags & TextureContainer::NoRefinement))
+	
+	if(!(flags & NoRefinement)) {
 		newTexture->LookForRefinementMap(flags);
-
+	}
+	
 	MakeUserFlag(newTexture);
 	
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 	return newTexture;
 }
 
-TextureContainer * TextureContainer::LoadUI(const std::string& strName, TextureContainer::TCFlags flags)
-{
-	return Load(strName, (TextureContainer::TCFlags)(flags | TextureContainer::UI));
+TextureContainer * TextureContainer::LoadUI(const string & strName, TCFlags flags) {
+	return Load(strName, flags | UI);
 }
 
 TextureContainer * TextureContainer::Find(const std::string& strTextureName) {
@@ -428,7 +413,7 @@ TextureContainer * TextureContainer::Find(const std::string& strTextureName) {
 	return NULL;
 }
 
-void TextureContainer::DeleteAll(TextureContainer::TCFlags flag)
+void TextureContainer::DeleteAll(TCFlags flag)
 {
 	TextureContainer * pCurrentTexture = g_ptcTextureList;
 	TextureContainer * pNextTexture = NULL;
@@ -447,84 +432,78 @@ void TextureContainer::DeleteAll(TextureContainer::TCFlags flag)
 TextureContainer::RefinementMap TextureContainer::s_GlobalRefine;
 TextureContainer::RefinementMap TextureContainer::s_Refine;
 
-void ConvertData( std::string& dat)
-{
+static void ConvertData(string & dat) {
+	
 	size_t substrStart = 0;
-	size_t substrLen = std::string::npos;
-
+	size_t substrLen = string::npos;
+	
 	size_t posStart = dat.find_first_of('"');
-	if( posStart != std::string::npos )
+	if(posStart != string::npos) {
 		substrStart = posStart + 1;
-
-	size_t posEnd = dat.find_last_of('"');
-	if( posEnd != std::string::npos )
-		substrLen = posEnd - substrStart;
-
+		
+		size_t posEnd = dat.find_last_of('"');
+		arx_assert(posEnd != string::npos);
+		
+		if(posEnd != posStart) {
+			substrLen = posEnd - substrStart;
+		}
+	}
+	
 	dat = dat.substr(substrStart, substrLen);
 }
 
-void LoadRefinementMap(const std::string& fileName, std::map<string, string>& refinementMap)
-{
-	char * fileContent = NULL;
-	size_t fileSize = 0;
+static void LoadRefinementMap(const string & fileName, map<string, string> & refinementMap) {
 	
-	if (PAK_FileExist(fileName))
-		fileContent = (char *)PAK_FileLoadMallocZero(fileName, fileSize);
-
-	if (fileContent)
-	{
-		unsigned char * from = (unsigned char *)fileContent;
-		u32 fromSize = fileSize;
-		std::string data;
-		u32 pos = 0;
-		long count = 0;	
-
-		std::string str1;
-		
-		while (pos < fileSize)
-		{
-			data.resize(0);
-
-			while ((from[pos] != '\n') && (pos < fromSize))
-			{
-				data += from[pos++];
-
-				if (pos >= fileSize) break;
-			}
-
-			while ((pos < fromSize) && (from[pos] < 32)) pos++;
-
-			if (count == 2)
-			{
-				count = 0;
-				continue;
-			}
-
-			ConvertData(data);
-
-			if (count == 0)
-				str1 = data;
-			
-			if (count == 1)
-			{
-				MakeUpcase( str1 );
-				MakeUpcase( data );
-
-				if( data.compare( "NONE" ) != 0 ) // If the string does not contain "NONE"
-					refinementMap[str1] = data;
-			}
-
-			count++;
-		}
-
-		free(fileContent);
+	size_t fileSize = 0;
+	char * from = (char *)PAK_FileLoadMalloc(fileName, fileSize);
+	if(!from) {
+		return;
 	}
+	
+	size_t pos = 0;
+	long count = 0;
+	
+	std::string name;
+	
+	while(pos < fileSize) {
+		
+		string data;
+		
+		while(pos < fileSize && from[pos] != '\r' && from[pos] != '\n') {
+			data += from[pos++];
+		}
+		while(pos < fileSize && (from[pos] == '\r' || from[pos] == '\n')) {
+			pos++;
+		}
+		
+		if(count == 2) {
+			count = 0;
+			continue;
+		}
+		
+		ConvertData(data);
+		
+		if(count == 0) {
+			name = data;
+		} else if(count == 1) {
+			
+			MakeUpcase(name);
+			MakeUpcase(data);
+			
+			if(data != "NONE") {
+				refinementMap[name] = data;
+			} else {
+				refinementMap[name].clear();
+			}
+		}
+		
+		count++;
+	}
+	
+	free(from);
 }
 
-void TextureContainer::LookForRefinementMap(TextureContainer::TCFlags flags) {
-	
-	std::string str1;
-	std::string str2;
+void TextureContainer::LookForRefinementMap(TCFlags flags) {
 	
 	TextureRefinement = NULL;
 	
@@ -540,16 +519,20 @@ void TextureContainer::LookForRefinementMap(TextureContainer::TCFlags flags) {
 	std::string name = GetName(m_texName);
 	MakeUpcase(name);
 	
-	RefinementMap::const_iterator it = s_GlobalRefine.find(name);
-	if(it != s_GlobalRefine.end()) {
-		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
-		TextureRefinement = TextureContainer::Load(str2, flags);
+	RefinementMap::const_iterator it = s_Refine.find(name);
+	if(it != s_Refine.end()) {
+		if(!it->second.empty()) {
+			string file = "Graph\\Obj3D\\Textures\\Refinement\\" + it->second + ".bmp";
+			TextureRefinement = Load(file, flags);
+		}
+		return;
 	}
 	
-	it = s_Refine.find(name);
-	if(it != s_Refine.end()) {
-		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
-		TextureRefinement = TextureContainer::Load(str2, flags);
+	it = s_GlobalRefine.find(name);
+	if(it != s_GlobalRefine.end() && !it->second.empty()) {
+		string file = "Graph\\Obj3D\\Textures\\Refinement\\" + it->second + ".bmp";
+		TextureRefinement = Load(file, flags);
 	}
+	
 	
 }

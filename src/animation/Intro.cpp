@@ -245,47 +245,38 @@ void LoadLevelScreen(long num)
 
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-		if (GRenderer->BeginScene())
-		{
+		if(GRenderer->BeginScene()) {
+			
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::Fog, false);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-			long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-
-			if (num == 10)
-				pbar = TextureContainer::LoadUI("Graph\\interface\\menus\\load_full.bmp");
-			else
-				pbar = TextureContainer::LoadUI("Graph\\interface\\menus\\load_full_level.bmp");
-
-			nopbar = 1;
-			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 			
-			if (num != lastloadednum)
-			{
-				long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-				GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-
-				if (tc)
-				{
+			if(num == 10) {
+				pbar = TextureContainer::LoadUI("Graph\\interface\\menus\\load_full.bmp");
+			} else {
+				pbar = TextureContainer::LoadUI("Graph\\interface\\menus\\load_full_level.bmp");
+			}
+			
+			nopbar = 1;
+			
+			if(num != lastloadednum) {
+				
+				if(tc) {
 					delete tc;
 					tc = NULL;
 				}
-
+				
 				lastloadednum = num;
 				char temp[256];
 				char tx[256];
 				GetLevelNameByNum(num, tx);
 				sprintf(temp, "Graph\\Levels\\Level%s\\loading.bmp", tx);
 				tc = TextureContainer::LoadUI(temp);
-				GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 			}
-
-			if (tc)
-			{
+			
+			if(tc) {
 				GRenderer->SetRenderState(Renderer::ColorKey, false);
 				DrawCenteredImage(tc, true, fFadeColor);
 				GRenderer->SetRenderState(Renderer::ColorKey, true);

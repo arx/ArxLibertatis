@@ -875,12 +875,13 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * s
 long BKG_CountPolys(EERIE_BACKGROUND * eb);
 long BKG_CountChildPolys(EERIE_BACKGROUND * eb);
 long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb);
-void SceneAddObjToBackground(EERIE_3DOBJ * eobj);
 
+#ifdef BUILD_EDIT_LOADSAVE
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms);
+#endif
+
 void ClearBackground(EERIE_BACKGROUND * eb);
 int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv);
-int BkgAddPoly(EERIEPOLY * ep);
 
 void EERIEAddPoly(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval);
 // BACKGROUND MANAGEMENT FUNCTIONS END
@@ -957,7 +958,6 @@ void ReleaseAnimFromIO(INTERACTIVE_OBJ * io,long num);
 void ShadowPolys_ClearZone(EERIE_BACKGROUND * eb,long x0, long y0, long x1, long y1);
 short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
 void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
-void WriteMSEData(char * path,EERIE_MULTI3DSCENE * ms);
 
 bool LittleAngularDiff(Vec3f * norm,Vec3f * norm2);
 void RecalcLight(EERIE_LIGHT * el);
