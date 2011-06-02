@@ -461,8 +461,7 @@ void CreateInterfaceTextureContainers()
 
 //-----------------------------------------------------------------------------
 
-void KillInterfaceTextureContainers()
-{
+void KillInterfaceTextureContainers() {
 	ITC.Reset();
 }
 
@@ -470,9 +469,15 @@ INTERFACE_TC::INTERFACE_TC()
 {
 }
 
-INTERFACE_TC::~INTERFACE_TC()
-{
-	Reset();
+INTERFACE_TC::~INTERFACE_TC() {
+	
+	arx_assert(m_Textures.empty());
+	
+	/*
+	 * Because this is the destructor of a global object we cannot cleanup textures here.
+	 * Doing so would mean accessing other global objects who'se destrcutors could be called before this one.
+	 */
+	
 }
 
 void INTERFACE_TC::Set(const std::string& textureName, TextureContainer* pTexture)

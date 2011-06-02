@@ -143,7 +143,6 @@ extern float ARXDiffTimeMenu;
 extern TextureContainer * pTextureLoad;
 
 bool MENU_NoActiveWindow();
-void ClearGameDEVICE();
 void GetTextSize(HFONT _hFont, const char* _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------
@@ -157,10 +156,6 @@ unsigned long ARXmenu_starttick = 0;
 
 extern bool bRenderInterList;
 long SP_HEAD = 0;
-//-----------------------------------------------------------------------------
-bool MENU_NoActiveWindow();
-void ClearGame();
-void ClearGameDEVICE();
 
 //-----------------------------------------------------------------------------
 #define ARX_MENU_SIZE_Y 24
@@ -524,18 +519,11 @@ void ARX_MENU_Clicked_QUIT_GAME() {
 #ifdef BUILD_EDITOR
 	if(GAME_EDITOR) {
 		ARX_MENU_Clicked_QUIT();
-	} else
-#endif
-	{
-		ARX_Menu_Resources_Release();
-		ARXmenu.currentmode = AMCM_OFF;
-		ARX_TIME_UnPause();
-
-		ClearGameDEVICE();
-
-		danaeApp.Cleanup3DEnvironment();
-		exit(0);
+		return;
 	}
+#endif
+	
+	exit(0);
 }
 
 void ARX_MENU_Launch() {

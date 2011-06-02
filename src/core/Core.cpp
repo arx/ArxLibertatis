@@ -7866,7 +7866,14 @@ void ReleaseSystemObjects() {
 	}
 }
 
-void ClearGameDEVICE() {
+void ClearGame() {
+	
+	ARX_Menu_Resources_Release();
+	ARXmenu.currentmode = AMCM_OFF;
+	ARX_TIME_UnPause();
+	
+	danaeApp.Cleanup3DEnvironment();
+	
 	ShowWindow(danaeApp.m_hWnd,SW_MINIMIZE|SW_HIDE);
 
 	ARX_MINIMAP_PurgeTC();
@@ -7883,14 +7890,12 @@ void ClearGameDEVICE() {
 		delete ControlCinematique;
 		ControlCinematique=NULL;
 	}
-}
-
-void ClearGame() {
+	
 	ARX_Menu_Resources_Release();
-
+	
 	//configuration
 	config.save();
-
+	
 	//dinput
 	if(pGetInfoDirectInput)	{
 		delete pGetInfoDirectInput;
@@ -7966,4 +7971,6 @@ void ClearGame() {
 	ReleaseHalo();
 	FreeSnapShot();
 	ARX_INPUT_Release();
+	
+	LogInfo << "Clean shutdown";
 }
