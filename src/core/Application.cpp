@@ -270,12 +270,26 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		menu = CreationMenu;
 	}
 
+	// We want the client rectangle (3d display) to be a certain size, adjust the window size accordingly
 	RECT rcWnd = { 0, 0, WndSizeX, WndSizeY };
 	AdjustWindowRectEx(&rcWnd, flags, menu != 0, 0);
 
+	// Bound the window size to fit the desktop
+	HWND hWndDesktop = GetDesktopWindow();
+	RECT rcDesktop;
+	GetWindowRect(hWndDesktop, &rcDesktop);
+
+	LONG wndWidth = rcWnd.right - rcWnd.left;
+	LONG wndHeight = rcWnd.bottom - rcWnd.top;
+	LONG maxWidth = rcDesktop.right - rcDesktop.left;
+	LONG maxHeight = rcDesktop.bottom - rcDesktop.top;
+	
+	wndWidth = std::min(wndWidth, maxWidth);
+	wndHeight = std::min(wndHeight, maxHeight);
+
 	MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
 		                            flags,
-									CW_USEDEFAULT, CW_USEDEFAULT, rcWnd.right - rcWnd.left, rcWnd.bottom - rcWnd.top, owner,
+									CW_USEDEFAULT, CW_USEDEFAULT, wndWidth, wndHeight, owner,
 		                            LoadMenu(hInst, MAKEINTRESOURCE(menu)),
 		                            hInst, 0L);
 
