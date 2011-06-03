@@ -154,7 +154,6 @@ long ARXmenu_lastmode = -1;
 long REFUSE_GAME_RETURN = 0;
 unsigned long ARXmenu_starttick = 0;
 
-extern bool bRenderInterList;
 long SP_HEAD = 0;
 
 //-----------------------------------------------------------------------------

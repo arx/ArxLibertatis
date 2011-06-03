@@ -122,7 +122,6 @@ long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
-extern bool bRenderInterList;
 extern unsigned long ulBKGColor;
 extern CDirectInput *pGetInfoDirectInput;
 //-----------------------------------------------------------------------------
@@ -3702,9 +3701,6 @@ else
 
 		if (BoomCount) 
 			ARXDRAW_DrawPolyBoom();
-
-		if (INTERTRANSPOLYSPOS&&(!bRenderInterList))
-			ARXDRAW_DrawAllInterTransPolyPos();
 
 		PopAllTriangleListTransparency();
 		

@@ -5002,8 +5002,6 @@ extern long INTERTRANSPOLYSPOS;
 
 extern long TRANSPOLYSPOS;
 
-extern bool bRenderInterList;
-
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
 
@@ -6501,14 +6499,11 @@ static float _AvgFrameDiff = 150.f;
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-	if(bRenderInterList)
-	{
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList(true);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		PopAllTriangleListTransparency();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	}
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	PopAllTriangleList(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	PopAllTriangleListTransparency();
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::Fog, true);
 		this->GoFor2DFX();
@@ -6548,14 +6543,11 @@ static float _AvgFrameDiff = 150.f;
 	{
 		ARX_INTERFACE_RenderCursor();
 
-		if(bRenderInterList)
-		{
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			PopAllTriangleList(true);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			PopAllTriangleListTransparency();
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		}
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		PopAllTriangleList(true);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		PopAllTriangleListTransparency();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 		ARX_INTERFACE_HALO_Flush();
 	}
@@ -6617,11 +6609,6 @@ static float _AvgFrameDiff = 150.f;
 			}
 
 			danaeApp.OutputText( 320, 240, tex );
-
-			if (bRenderInterList)
-			{
-				danaeApp.OutputText( 320, 257, "Seb" );
-			}
 		}
 
 		if((NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))

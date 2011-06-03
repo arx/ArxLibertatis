@@ -170,7 +170,6 @@ extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
 
 extern Cinematic *ControlCinematique;
-extern bool bRenderInterList;
 extern bool bGToggleCombatModeWithKey;
 extern long PlayerWeaponBlocked;
 extern unsigned char ucFlick;
@@ -6722,10 +6721,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						// Now draw the rune
 						DrawEERIEInter(necklace.runes[i],&angle,&pos,NULL);
 
-						if(bRenderInterList)
-						{
-							PopAllTriangleList(true);
-						}
+						PopAllTriangleList(true);
 
 						xpos++;
 
@@ -6760,10 +6756,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 								necklace.runes[i]->angle.b+=_framedelay*2.f;
 
-								if(bRenderInterList)
-								{
-									PopAllTriangleList(true);
-								}
+								PopAllTriangleList(true);
 								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -8446,18 +8439,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 		INVISIBILITY_OVERRIDE=0;
 		IN_BOOK_DRAW=0;
 
-		if(ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if(bRenderInterList)
-			{
-				GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				PopAllTriangleList(true);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				PopAllTriangleListTransparency();
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterLinear);
-			}
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			PopAllTriangleList(true);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			PopAllTriangleListTransparency();
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterLinear);
 		}
 
 		PDL[0]=SavePDL[0];
