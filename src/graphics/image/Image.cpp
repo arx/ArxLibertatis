@@ -6,6 +6,8 @@
 #include <map>
 #include <il.h>
 
+using std::string;
+
 class DevilLib
 {
 public:
@@ -174,9 +176,9 @@ bool Image::LoadFromFile( const std::string& filename )
 	return ret;
 }
 
-Image::Format GetImageFormat( ILint pImgTextureFormat, ILint pBPP )
-{
+Image::Format GetImageFormat( ILint pImgTextureFormat, ILint pBPP ) {
     // Convert DevIL image format to our internal format.
+    // TODO shouldn't the IL format be enough?
     switch( pBPP )
     {
     case 1:
@@ -742,34 +744,37 @@ void Flip3dc(unsigned char* data, unsigned int count)
 	}
 }
 
-ILenum ARXImageToILFormat[] = 
-	{
-		IL_LUMINANCE,		// Format_L8
-        IL_ALPHA,			// Format_A8
-        IL_LUMINANCE_ALPHA, // Format_L8A8
-        IL_RGB,				// Format_R8G8B8
-        IL_RGBA,			// Format_R8G8B8A8
-		IL_DXT1,			// Format_DXT1
-        IL_DXT3,			// Format_DXT3
-        IL_DXT5,			// Format_DXT5
-	};
+ILenum ARXImageToILFormat[] = {
+	IL_LUMINANCE,       // Format_L8
+	IL_ALPHA,           // Format_A8
+	IL_LUMINANCE_ALPHA, // Format_L8A8
+	IL_RGB,             // Format_R8G8B8
+	IL_BGR,             // Format_B8G8R8
+	IL_RGBA,            // Format_R8G8B8A8
+	IL_BGRA,            // Format_B8G8R8A8
+	IL_DXT1,            // Format_DXT1
+	IL_DXT3,            // Format_DXT3
+	IL_DXT5,            // Format_DXT5
+};
 
-void Image::Dump( const std::string& pFilename ) const
-{
+void Image::Dump(const string & pFilename) const {
+	
 	ILuint imageName;
-    ilGenImages(1, &imageName);
-    ilBindImage(imageName);
-
-	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(), ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
-	if(ret)
-	{
-		ret = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-
-		ilEnable(IL_FILE_OVERWRITE);
-
-		ret = ilSaveImage(pFilename.c_str());
-		arx_assert(ret);
+	ilGenImages(1, &imageName);
+	ilBindImage(imageName);
+	
+	// TODO static assert
+	arx_assert(sizeof(ARXImageToILFormat)/sizeof(*ARXImageToILFormat) == Format_Unknown);
+	if(mFormat < 0 || mFormat >= Format_Unknown) {
+		return;
 	}
-
+		
+	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(), ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
+	if(ret) {
+		ilEnable(IL_FILE_OVERWRITE);
+		ret = ilSaveImage(pFilename.c_str());
+		arx_assert_msg(ret, "ilSaveImage failed: %d", ilGetError());
+	}
+	
 	 ilDeleteImages(1, &imageName);
 }
