@@ -15,7 +15,6 @@ using std::transform;
 #include "io/Filesystem.h"
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
-//#define TEST_PAK_FREAD
 
 void dump(PakReader & pak, const PakDirectory * dir, const string  & where = string()) {
 	
@@ -37,14 +36,8 @@ void dump(PakReader & pak, const PakDirectory * dir, const string  & where = str
 	
 	CreateFullPath(dirname);
 	
-	//printf("%s", dirname.c_str());
-	
 	PakFile * file = dir->files;
 	while(file != NULL) {
-		
-		if(file->name.empty()) {
-			
-		}
 		
 		string fn = file->name;
 		transform(fn.begin(), fn.end(), fn.begin(), tolower);
@@ -65,25 +58,10 @@ void dump(PakReader & pak, const PakDirectory * dir, const string  & where = str
 			assert(data != NULL);
 			
 			if(fwrite(data, size, 1, f) != 1) {
-				printf("error writing to file for writing: %s\n", filename.c_str());
+				printf("error writing to file: %s\n", filename.c_str());
 				fclose(f);
 				exit(1);
 			}
-			
-#ifdef TEST_PAK_FREAD
-			string fdata;
-			PakFileHandle * pfh = pak.fOpen(filename.c_str());
-			assert(pfh != NULL);
-			char buf[10];
-			size_t s;
-			while((s = pak.fRead(buf, 10, 1, pfh))) {
-				fdata.append(buf, s);
-			}
-			pak.fClose(pfh);
-			
-			assert(size == fdata.size());
-			assert(fdata == string(data, size));
-#endif // TEST_PAK_FREAD
 			
 			free(data);
 			
@@ -99,7 +77,6 @@ void dump(PakReader & pak, const PakDirectory * dir, const string  & where = str
 	dump(pak, dir->next, where);
 	
 }
-
 
 int main(int argc, char ** argv) {
 	
