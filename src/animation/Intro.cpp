@@ -293,7 +293,7 @@ void LoadLevelScreen(long num)
 					py = ipy * Yratio;
 					px2 = (ratio * pbar->m_dwWidth) * Xratio;
 					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv( px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
 				}
 				else
 				{
@@ -306,7 +306,7 @@ void LoadLevelScreen(long num)
 					py = ipy * Yratio;
 					px2 = (ratio * pbar->m_dwWidth) * Xratio;
 					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv( px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1);
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
 				}
 			}
 

@@ -1106,8 +1106,8 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0  );	
 }
 
-void EERIEDrawBitmap_uv(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col,float u0,float v0,float u1,float v1)
-{
+void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, float u0, float v0, float u1, float v1) {
+	
 	float smu,smv;
 	float fEndu,fEndv;
 	float fDecalU,fDecalV;
@@ -1128,6 +1128,7 @@ void EERIEDrawBitmap_uv(float x,float y,float sx,float sy,float z,TextureContain
 		fDecalU=fDecalV=0.f;
 	}
 
+	D3DCOLOR col = color.toBGRA();
 	D3DTLVERTEX v[4];
 	u0=smu+(fEndu-smu+fDecalU)*u0;
 	u1=smu+(fEndu-smu+fDecalU)*u1;
