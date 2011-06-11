@@ -461,7 +461,7 @@ void Check_Apply()
 		}
 		else
 		{
-			if(((CMenuElementText*)pMenuElementApply)->lColor!=(long)Color(127,127,127))
+			if(((CMenuElementText*)pMenuElementApply)->lColor!=Color(127,127,127))
 			{
 				pMenuElementApply->SetCheckOff();
 				((CMenuElementText*)pMenuElementApply)->lOldColor=((CMenuElementText*)pMenuElementApply)->lColor;
@@ -618,7 +618,7 @@ bool Menu2_Render()
 		eM=pMenu->eOldMenuWindowState;
 	}
 
-	long lColor = Color(232, 204, 142);
+	Color lColor = Color(232, 204, 142);
 
 	if(    (!pMenu)|| ((pMenu)&&(pMenu->bReInitAll)) )
 	{
@@ -2078,7 +2078,7 @@ CMenuElement* CMenuElement::OnShortCut()
 
 //-----------------------------------------------------------------------------
 
-CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
+CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText,float _fPosX,float _fPosY,Color _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
 {
 	iID = _iID;
 

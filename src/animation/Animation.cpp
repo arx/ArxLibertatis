@@ -104,7 +104,7 @@ extern long ForceIODraw;
 extern long INTER_DRAW;
 extern long INTER_COMPUTE;
 extern long FRAME_COUNT;
-extern unsigned long ulBKGColor;
+extern Color ulBKGColor;
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;	// VB using TLVERTEX format.
@@ -966,7 +966,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 //-----------------------------------------------------------------------------
 void PopAllTriangleListTransparency() {
 
-	GRenderer->SetFogColor(0);
+	GRenderer->SetFogColor(Color::none);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
@@ -1042,8 +1042,6 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 	}
 }
 
-//-----------------------------------------------------------------------------
-int ARX_SoftClippZ(EERIE_VERTEX *_pVertex1,EERIE_VERTEX *_pVertex2,EERIE_VERTEX *_pVertex3,D3DTLVERTEX **_ptV,EERIE_FACE *_pFace,float _fInvibility,TextureContainer *_pTex,bool _bZMapp,EERIE_3DOBJ *_pObj,int _iNumFace,long *_pInd,INTERACTIVE_OBJ *_pioInteractive,bool _bNPC,long _lSpecialColorFlag,EERIE_RGB *_pRGB);
 extern EERIEMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 
@@ -1107,7 +1105,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 	long			lfr, lfg, lfb;		
 	Vec3f		temporary3D;
 	EERIE_CAMERA	Ncam;
-	EERIE_RGB		infra;
+	Color3f infra;
 	float			invisibility;
 	float			scale;
 
@@ -1276,10 +1274,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		need_halo=1;
 	}
 	
+	{
 	long		special_color_flag;
 				special_color_flag	=	0;
-	EERIE_RGB	special_color;
-				special_color.r		=	special_color.g		=	special_color.b		=	0; 
+	Color3f special_color = Color3f::black;
 
 	if ( io ) 
 	{
@@ -1420,11 +1418,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 						{
 							MakePlayerAppearsFX(io);
 							AddRandomSmoke(io,50);
-							EERIE_RGB rgb;
-							unsigned long color=io->_npcdata->blood_color;
-							rgb.r=(float)((long)((color>>16) & 255))*( 1.0f / 255 );
-							rgb.g=(float)((long)((color>>8) & 255))*( 1.0f / 255 );
-							rgb.b=(float)((long)((color) & 255))*( 1.0f / 255 );
+							Color3f rgb = Color3f::fromBGR(io->_npcdata->blood_color);
 							EERIE_SPHERE sp;
 							sp.origin.x=io->pos.x;
 							sp.origin.y=io->pos.y;
@@ -1948,7 +1942,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 // HALO HANDLING END
 ////////////////////////////////////////////////////////////////////////
-
+	}
 finish:
 
 	// storing 2D Bounding Box info

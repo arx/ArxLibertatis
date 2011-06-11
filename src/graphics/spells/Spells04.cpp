@@ -277,7 +277,7 @@ float CDispellField::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 
 	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120;
 	stiteangle.a = 0;
@@ -442,7 +442,7 @@ float CTelekinesis::Render() {
 	
 	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
 	
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
@@ -565,7 +565,7 @@ float CCurse::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 

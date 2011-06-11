@@ -122,7 +122,7 @@ long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
-extern unsigned long ulBKGColor;
+extern Color ulBKGColor;
 extern CDirectInput *pGetInfoDirectInput;
 //-----------------------------------------------------------------------------
 EERIEPOLY VF_Center;
@@ -1400,7 +1400,7 @@ void ARX_PORTALS_Frustrum_RenderRooms(long prec,long tim)
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
 void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 {
-	GRenderer->SetFogColor(0);
+	GRenderer->SetFogColor(Color::none);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetCulling(Renderer::CullNone);

@@ -234,7 +234,7 @@ void ARX_SPEECH_Render()
 								D3DCOLORWHITE);
 
 				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
-										   temp, speech[i].color, NULL);
+										   temp, Color::fromBGRA(speech[i].color), NULL);
 				if(igrec > iEnd && !CheckLastSpeech(i)) {
 					ARX_SPEECH_MoveUp();
 					break;
@@ -626,7 +626,7 @@ void ARX_SPEECH_Update() {
 						                    fDepY + fZoneClippHeight,
 						                    -10.f + (float)DANAESIZX,
 						                    speech->text,
-						                    Color(255, 255, 255),
+						                    Color::white,
 						                    &clippingRect);
 
 						GRenderer->ResetTexture(0);

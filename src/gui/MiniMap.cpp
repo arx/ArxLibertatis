@@ -922,7 +922,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
 							Page_Buffer[lLengthDraw] = '\0';
 
-							DrawBookTextInRect( hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Page_Buffer, 0 );
+							DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Page_Buffer, Color::none);
 						}
 					}
 

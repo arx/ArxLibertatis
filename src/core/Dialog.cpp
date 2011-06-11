@@ -304,17 +304,13 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 			if (ARX_PATHS_SelectedAP)
 			{
-				D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-				Color rgbResult = ((col >> 16 & 255))
-				                     | ((col >> 8 & 255) << 8)
-				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 				InvalidateRect(thWnd, NULL, true);
 
 				if(HDC dc = GetDC(thWnd)) {
 					RECT rect;
 					GetClientRect(thWnd, &rect);
-					HBRUSH brush = CreateSolidBrush(rgbResult);
+					HBRUSH brush = CreateSolidBrush(ARX_PATHS_SelectedAP->rgb.toRGB());
 					SelectObject(dc, brush);
 					FillRect(dc, &rect, brush);
 					DeleteObject(brush);
@@ -362,17 +358,13 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			if ((ARX_PATHS_SelectedAP != NULL) &&
 			        (ARX_PATHS_SelectedNum != -1))
 			{
-				D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-				Color rgbResult = ((col >> 16 & 255))
-				                     | ((col >> 8 & 255) << 8)
-				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 				InvalidateRect(thWnd, NULL, true);
 
 				if(HDC dc = GetDC(thWnd)) {
 					RECT rect;
 					GetClientRect(thWnd, &rect);
-					HBRUSH brush = CreateSolidBrush(rgbResult);
+					HBRUSH brush = CreateSolidBrush(ARX_PATHS_SelectedAP->rgb.toRGB());
 					SelectObject(dc, brush);
 					FillRect(dc, &rect, brush);
 					DeleteObject(brush);
@@ -2162,15 +2154,11 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					cc.lStructSize = sizeof(CHOOSECOLOR);
 					cc.hwndOwner = hWnd;
 					cc.hInstance = 0; //Ignored
-					cc.rgbResult = ((subj.bkgcolor >> 16 & 255))
-					               | ((subj.bkgcolor >> 8 & 255) << 8)
-					               | ((subj.bkgcolor & 255) << 16);
+					cc.rgbResult = subj.bkgcolor.toRGB(0);
 					cc.lpCustColors = custcr;
 					cc.Flags = CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT;
 					ChooseColor(&cc);
-					subj.bkgcolor = ((cc.rgbResult >> 16 & 255))
-					                | ((cc.rgbResult >> 8 & 255) << 8)
-					                | ((cc.rgbResult & 255) << 16);
+					subj.bkgcolor = Color::fromRGB(cc.rgbResult, 0);
 					break;
 				}
 

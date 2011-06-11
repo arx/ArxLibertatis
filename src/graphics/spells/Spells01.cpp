@@ -356,7 +356,7 @@ float CMagicMissile::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 	Vec3f av;
 
 	if (ulCurrentTime >= ulDuration)
@@ -750,10 +750,7 @@ void CMultiMagicMissile::CheckCollision()
 							damages[ttt].exist	= true;
 						}
 
-						EERIE_RGB rgb;
-						rgb.r = 0.3f;
-						rgb.g = 0.3f;
-						rgb.b = 0.45f;
+						Color3f rgb(.3f, .3f, .45f);
 						ARX_PARTICLES_Add_Smoke(&pMM->eCurPos, 0, 6, &rgb);
 					}
 				}

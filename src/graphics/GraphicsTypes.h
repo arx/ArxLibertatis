@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 
 #include "math/Vector2.h"
 #include "math/Angle.h"
@@ -59,7 +60,7 @@ class TextureContainer;
 
 struct EERIE_TRI {
 	Vec3f v[3];
-}; // Aligned 1 2 4
+};
 
 struct EERIE_2D_BBOX {
 	Vec2f min;
@@ -69,43 +70,42 @@ struct EERIE_2D_BBOX {
 struct EERIE_3D_BBOX {
 	Vec3f min;
 	Vec3f max;
-}; // Aligned 1 2 4
+};
 
 typedef s32 ArxSound;
 
-struct EERIE_LIGHT
-{
-	char		exist;
-	char		type;
-	char		treat;
-	char		selected;
-	short		extras;
-	short		status; // on/off 1/0
-	Vec3f	pos;
-	float		fallstart;
-	float		fallend;
-	float		falldiff;
-	float		falldiffmul;
-	float		precalc;
-	EERIE_RGB	rgb255;
-	float		intensity;
-	EERIE_RGB	rgb;
-	float		i;
-	Vec3f	mins;
-	Vec3f	maxs;
-	float		temp;
-	long		ltemp;
-	EERIE_RGB	ex_flicker;
-	float		ex_radius;
-	float		ex_frequency;
-	float		ex_size;
-	float		ex_speed;
-	float		ex_flaresize;
-	long		tl;
-	unsigned long	time_creation;
-	long		duration; // will start to fade before the end of duration...
+struct EERIE_LIGHT {
+	char exist;
+	char type;
+	char treat;
+	char selected;
+	short extras;
+	short status; // on/off 1/0
+	Vec3f pos;
+	float fallstart;
+	float fallend;
+	float falldiff;
+	float falldiffmul;
+	float precalc;
+	Color3f rgb255;
+	float intensity;
+	Color3f rgb;
+	float i;
+	Vec3f mins;
+	Vec3f maxs;
+	float temp;
+	long ltemp;
+	Color3f ex_flicker;
+	float ex_radius;
+	float ex_frequency;
+	float ex_size;
+	float ex_speed;
+	float ex_flaresize;
+	long tl;
+	unsigned long time_creation;
+	long duration; // will start to fade before the end of duration...
 	ArxSound sample;
-}; // Aligned 1 2 4
+};
 
 enum EERIE_TYPES_EXTRAS_MODE
 {
@@ -132,8 +132,8 @@ enum EERIE_TYPES_EXTRAS_MODE
 
 struct EERIE_TLVERTEX {
 	Vec3f vert;
-	EERIE_RGBA color;
-	EERIE_RGBA specular;
+	Color4f color;
+	Color4f specular;
 	Vec2f tex;
 };
 
@@ -154,7 +154,7 @@ struct EERIEPOLY
 	short			room;
 	short			misc;
 	unsigned short	uslInd[4];
-}; // Aligned 1 2 4
+};
 
 struct EERIE_VERTEX {
 	EERIE_TLVERTEX tlvert;
@@ -232,7 +232,7 @@ struct EERIE_FACE
 	short		ov[IOPOLYVERT];
 	D3DCOLOR	color[IOPOLYVERT];
 
-}; // Aligned 1 2 4
+};
 
 #define MAX_PFACE 16
 struct EERIE_PFACE
@@ -330,7 +330,7 @@ struct PHYSVERT
 	Vec3f	force;
 	Vec3f	inertia;
 	float		mass;
-}; // Aligned 1 2 4
+};
 
 struct PHYSICS_BOX_DATA
 {
@@ -340,7 +340,7 @@ struct PHYSICS_BOX_DATA
 	short	stopcount;
 	float	radius; //radius around vert[0].pos for spherical collision
 	float	storedtiming;
-}; // Aligned 1 2 4
+};
 
 
 struct EERIE_GROUPLIST {
@@ -369,7 +369,7 @@ struct CUB3D
 	float	ymax;
 	float	zmin;
 	float	zmax;
-}; // Aligned 1 2 4
+};
 
 struct EERIE_MOD_INFO {
 	long link_origin;
@@ -387,7 +387,7 @@ struct EERIE_LINKED
 	void *	obj;
 	EERIE_MOD_INFO	modinfo;
 	void * io;
-}; // Aligned 1 2 4
+};
 
 
 struct EERIE_SELECTIONS {
@@ -561,7 +561,7 @@ struct EERIE_3DOBJ
 	EERIE_FASTACCESS fastaccess;
 	EERIE_C_DATA * c_data;
 	
-}; // Aligned 1 2 4
+};
 
 
 struct EERIE_3DSCENE {
@@ -577,7 +577,7 @@ struct EERIE_3DSCENE {
 	float			ambient_g;
 	float			ambient_b;
 	CUB3D			cub;
-}; // Aligned 1 2 4
+};
 
 
 #ifdef BUILD_EDIT_LOADSAVE
@@ -602,7 +602,7 @@ struct EERIE_FRAME
 	Vec3f	translate;
 	EERIE_QUAT	quat;
 	ArxSound	sample;
-}; // Aligned 1 2 4
+};
 
 struct EERIE_GROUP
 {
@@ -610,7 +610,7 @@ struct EERIE_GROUP
 	Vec3f	translate;
 	EERIE_QUAT	quat;
 	Vec3f	zoom;
-}; // Aligned 1 2 4
+};
 
 // Animation playing flags
 #define EA_LOOP			1	// Must be looped at end (indefinitely...)
@@ -630,7 +630,7 @@ struct EERIE_ANIM
 	EERIE_FRAME *	frames;
 	EERIE_GROUP  *  groups;
 	unsigned char *	voidgroups;
-}; // Aligned 1 2 4
+};
 
 //-------------------------------------------------------------------------
 //Portal Data;

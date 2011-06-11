@@ -133,7 +133,7 @@ public:
 	virtual void End2DProjection();
 
 	// Render Target
-	virtual void Clear(int bufferFlags, Color clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
+	virtual void Clear(int bufferFlags, Color clearColor = Color::none, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
 
 	// Fog
 	virtual void SetFogColor(Color color);

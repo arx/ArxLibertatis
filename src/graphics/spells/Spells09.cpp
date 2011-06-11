@@ -1005,36 +1005,19 @@ float CNegateMagic::Render()
 			}
 		}
 	}
-
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	EERIE_RGB stitecolor;
-
-	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120; 
-	stiteangle.a = 0;
-	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
-
+	
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	stiteangle.b = -stiteangle.b;
-	stitecolor.r = 0.4f;
-	stitecolor.g = 0.4f;
-	stitecolor.b = 0.4f;
-	stitescale.x = 3.f;
-	stitescale.y = 3.f;
-	stitescale.z = 3.f;
+	
+	Anglef stiteangle(0.f, -(float) ulCurrentTime * fOneOnDuration * 120, 0.f);
+	Vec3f stitepos(x, y, z);
+	
+	Color3f stitecolor(.4f, .4f, .4f);
+	Vec3f stitescale(3.f, 3.f, 3.f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	stitecolor.r = 0.5f;
-	stitecolor.g = 0.f;
-	stitecolor.b = 0.5f;
-	stitescale.x = 3.1f;
-	stitescale.y = 3.1f;
-	stitescale.z = 3.1f;
+	stitecolor = Color3f(.5f, 0.f, .5f);
+	stitescale = Vec3f(3.1f, 3.1f, 3.1f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	return 1;

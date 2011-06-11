@@ -125,7 +125,7 @@ struct EERIE_CAMERA {
 	Vec3f translatetarget;
 	bool lastinfovalid;
 	Vec3f norm;
-	EERIE_RGB	fadecolor;
+	Color3f fadecolor;
 	Rect clip;
 	float clipz0;
 	float clipz1;
@@ -141,7 +141,7 @@ struct EERIE_CAMERA {
 	
 	long clip3D;
 	long type;
-	long bkgcolor;
+	Color bkgcolor; // TODO was BGR!
 	long nbdrawn;
 	float cdepth;
 	
@@ -219,8 +219,8 @@ struct EERIE_BACKGROUND
 	float		Xmul;
 	float		Zmul;
 	EERIE_BKG_INFO * Backg;
-	EERIE_RGB	ambient;
-	EERIE_RGB	ambient255;
+	Color3f ambient;
+	Color3f ambient255;
 	EERIE_SMINMAX *	minmax;
 	long		  nbanchors;
 	_ANCHOR_DATA * anchors;
@@ -388,18 +388,16 @@ struct IO_FIXDATA
 };
 
 
-struct IO_CAMDATA
-{
-	EERIE_CAMERA		cam;
+struct IO_CAMDATA {
+	EERIE_CAMERA cam;
 };
 
-struct IO_HALO
-{
-	EERIE_RGB		color;
-	float			radius;
-	unsigned long	flags;
-	long			dynlight;
-	Vec3f		offset;
+struct IO_HALO {
+	Color3f color;
+	float radius;
+	unsigned long flags;
+	long dynlight;
+	Vec3f offset;
 };
 
 struct IO_PHYSICS
@@ -489,7 +487,7 @@ struct INTERACTIVE_OBJ
 	short				show;				// Show Status (In Scene, In Inventory...)
 	short				collision;			// collision type
 	char 				mainevent[64];
-	EERIE_RGB			infracolor;			// Improve Vision Color (Heat)
+	Color3f infracolor; // Improve Vision Color (Heat)
 	long				changeanim;
 
 	long				ident;				// Ident num
@@ -628,6 +626,7 @@ struct INTERACTIVE_OBJ
 #define MAX_TRANSPOL 512
 #define MAX_INTERTRANSPOL 512
 
+// TODO remove once not used anymore
 #define EERIECOLOR_RED		0xFFFF0000
 #define EERIECOLOR_GREEN	0xFF00FF00
 #define EERIECOLOR_BLUE		0xFF0000FF
@@ -859,7 +858,7 @@ bool CreateUniqueIdent(char * pathh);
 //****************************************************************************
 // DRAWING FUNCTIONS START
 
-void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * scale, EERIE_RGB * col);
+void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * scale, Color3f * col);
 void DrawEERIEObjExEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * scale, int coll);
 // DRAWING FUNCTIONS END
 //****************************************************************************

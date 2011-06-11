@@ -695,7 +695,7 @@ float CIceProjectile::Render()
 		Anglef stiteangle;
 		Vec3f stitepos;
 		Vec3f stitescale;
-		EERIE_RGB stitecolor;
+		Color3f stitecolor;
 
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360;
 		stiteangle.a = 0;

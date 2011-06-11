@@ -797,7 +797,7 @@ bool ARX_Menu_Render()
 			float fSizeX = 100 * Xratio;
 			float fSizeY = 100 * Yratio;
 
-			Color color = 0;
+			Color color = Color::none;
 
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
@@ -960,7 +960,7 @@ bool ARX_Menu_Render()
 		}
 
 		Vec3f ePos;
-		Color color = 0;
+		Color color = Color::none;
 		std::string szText;
 
 		color = Color(232, 204, 143);

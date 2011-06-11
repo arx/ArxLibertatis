@@ -83,7 +83,7 @@ extern TextureContainer * Boom;
 
 POLYBOOM polyboom[MAX_POLYBOOM];
 
-extern unsigned long ulBKGColor;
+extern Color ulBKGColor;
 
 void EE_RT2(D3DTLVERTEX*,D3DTLVERTEX*);
 
@@ -97,7 +97,7 @@ bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _
 //***********************************************************************************************
 void ARXDRAW_DrawInterShadows()
 {	
-	GRenderer->SetFogColor(0);
+	GRenderer->SetFogColor(Color::none);
 	SetZBias(1);
 
 	long first=1;
@@ -348,7 +348,6 @@ void ARXDRAW_DrawEyeBall()
 	Anglef angle;
 	Vec3f pos;
 	Vec3f scale;
-	EERIE_RGB rgb;
 	
 	float d;
 
@@ -372,9 +371,8 @@ void ARXDRAW_DrawEyeBall()
 	scale.x=d;
 	scale.y=d;
 	scale.z=d;
-	rgb.r=d;
-	rgb.g=d;
-	rgb.b=d;
+	
+	Color3f rgb(d, d, d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(eyeballobj,&angle,&pos,&scale,&rgb);	
@@ -438,8 +436,8 @@ void ARXDRAW_DrawPolyBoom()
 	float tt;
 
 	SetZBias(8);
-	GRenderer->SetFogColor(0);
-	unsigned long tim = ARXTimeUL(); 	
+	GRenderer->SetFogColor(Color::none);
+	unsigned long tim = ARXTimeUL();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for ( i = 0 ; i < MAX_POLYBOOM ; i++ )

@@ -246,7 +246,7 @@ extern long svoodoo_count;
 
 extern INTERACTIVE_OBJ * FlyingOverIO;
 
-extern unsigned long ulBKGColor;
+extern Color ulBKGColor;
 long LAST_LOCK_SUCCESSFULL=0;
 extern EERIEMATRIX ProjectionMatrix;
 
@@ -490,7 +490,7 @@ unsigned long FRAMETICKS=0;
 unsigned long SPLASH_START=0;
 //-----------------------------------------------------------------------------
 extern float sp_max_start;
-EERIE_RGB	FADECOLOR;
+Color3f FADECOLOR;
 
 long DURING_LOCK=0;
 long START_NEW_QUEST=0;
@@ -938,7 +938,7 @@ void InitializeDanae()
 	subj.Zmul=1.f/subj.Zdiv;
 	subj.clip3D=60;
 	subj.type=CAM_SUBJVIEW;
-	subj.bkgcolor=0x00000000;
+	subj.bkgcolor = Color::none;
 
 	SetActiveCamera(&subj);
 	SetCameraDepth(2100.f);
@@ -981,7 +981,7 @@ void InitializeDanae()
 	mapcam.Zmul=1.f/mapcam.Zdiv;
 	mapcam.clip3D=1000;
 	mapcam.type=CAM_TOPVIEW;
-	mapcam.bkgcolor=0x001F1F55;
+	mapcam.bkgcolor = Color::fromBGRA(0x001F1F55);
 	SetActiveCamera(&mapcam);
 	SetCameraDepth(10000.f);
 	danaeApp.MustRefresh=true;
@@ -4376,7 +4376,7 @@ void RenderAllNodes()
 			{
 				xx=nodeobj->vertexlist[nodeobj->origin].vert.sx-40.f;
 				yy=nodeobj->vertexlist[nodeobj->origin].vert.sy-40.f;
-				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, EERIECOLOR_YELLOW); //font
+				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
 			}
 
 			if (nodes.nodes[i].selected)
@@ -5030,7 +5030,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 	iVPOS+=1;
 	CorrectValue(cur,dest);
 	D3DCOLOR col;
-	EERIE_RGB rgb;
+	Color3f rgb;
 
 	switch (iVPOS)
 	{
@@ -5086,7 +5086,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 			break;
 	}
 
-	col=EERIERGB(rgb.r,rgb.g,rgb.b);
+	col = rgb.toRGB();
 	float width=(float)(*cur)*( 1.0f / 500 );
 	EERIEDrawBitmap(0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, col);
 	danaeApp.OutputText(ARX_CLEAN_WARN_CAST_DWORD(width), iVPOS * 16 - 2, str);
@@ -5505,10 +5505,8 @@ static float _AvgFrameDiff = 150.f;
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	{
 		// Clear screen & Z buffers
-		if (desired.flags & GMOD_DCOLOR)
-		{
-			long DCOLOR=EERIERGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b);
-			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, DCOLOR);
+		if(desired.flags & GMOD_DCOLOR) {
+			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, current.depthcolor.to<u8>());
 		}
 		else
 		{
@@ -5530,7 +5528,7 @@ static float _AvgFrameDiff = 150.f;
 			rectz[0].y2 		= lMulResult;
 			rectz[1].y1 		= DANAESIZY - lMulResult;
 			rectz[1].y2 = DANAESIZY;
-			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, 0, 0.0f, 2, rectz);
+			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
 		}
 		//-------------------------------------------------------------------------------
 
@@ -6380,7 +6378,7 @@ static float _AvgFrameDiff = 150.f;
 
 		std::stringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
-		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), EERIECOLOR_YELLOW);
+		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
 	
 		if (EDITION==EDITION_FOGS)
 			ARX_FOGS_RenderAll();
@@ -6804,7 +6802,7 @@ void DANAE::GoFor2DFX()
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			GRenderer->SetFogColor(0);
+			GRenderer->SetFogColor(Color::none);
 
 			for (int i=0;i<TOTPDL;i++)
 			{
@@ -7108,7 +7106,7 @@ HRESULT DANAE::InitDeviceObjects()
 	float fogEnd = 0.48f;
 	float fogStart = fogEnd * 0.65f;
 	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
-	GRenderer->SetFogColor(D3DRGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b));
+	GRenderer->SetFogColor(current.depthcolor.to<u8>());
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	
 	SetZBias(0);

@@ -91,23 +91,21 @@ using std::max;
 
 //TODO(lubosz): extern globals :(
 extern float fZFogEnd;
-extern unsigned long ulBKGColor;
+extern Color ulBKGColor;
 
-//-----------------------------------------------------------------------------
-struct OBJFX
-{
-	Vec3f	pos;
-	Vec3f	move;
-	Vec3f	scale;
-	EERIE_RGB	fade;
+struct OBJFX {
+	Vec3f pos;
+	Vec3f move;
+	Vec3f scale;
+	Color3f fade;
 	EERIE_3DOBJ * obj;
-	long		special;
+	long special;
 	Anglef spe[8];
 	Anglef speinc[8];
-	unsigned long	tim_start;
-	unsigned long	duration;
-	bool		exist;
-	long		dynlight;
+	unsigned long tim_start;
+	unsigned long duration;
+	bool exist;
+	long dynlight;
 };
 
 FLARETC			flaretc;
@@ -389,9 +387,8 @@ void ARX_PARTICLES_Spawn_Blood3(Vec3f * pos,float dmgs,D3DCOLOR col, long flags)
 }
 #define SPLAT_MULTIPLY 1.f
 
-//-----------------------------------------------------------------------------
-void ARX_POLYSPLAT_Add(Vec3f * poss,EERIE_RGB * col,float size,long flags)
-{
+void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
+	
 	if (BoomCount > (MAX_POLYBOOM >> 2) - 30) return;
 
 	if ((BoomCount>250.f) 
@@ -646,10 +643,8 @@ void ARX_POLYSPLAT_Add(Vec3f * poss,EERIE_RGB * col,float size,long flags)
 	}	
 }
 
-//-----------------------------------------------------------------------------
-void SpawnGroundSplat(EERIE_SPHERE * sp,EERIE_RGB * rgb,float size,long flags)
-{
-		ARX_POLYSPLAT_Add(&sp->origin,rgb,size,flags);
+void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags) {
+	ARX_POLYSPLAT_Add(&sp->origin, rgb, size, flags);
 }
 
 
@@ -929,9 +924,8 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 		}
 	}
 
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Add_Smoke(Vec3f * pos,long flags,long amount,EERIE_RGB * rgb) // flag 1 = randomize pos
-{
+// flag 1 = randomize pos
+void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb) {
 
 	Vec3f mod;
 	mod.x = mod.y = mod.z = 0.f;
@@ -1538,7 +1532,7 @@ void UpdateObjFx() {
 
 			Anglef angle;
 			Vec3f scale;
-			EERIE_RGB color;			
+			Color3f color;
 			scale.x=1.f+objfx[i].scale.x*val;
 			scale.y=1.f+objfx[i].scale.y*val;
 			scale.z=1.f+objfx[i].scale.z*val;
@@ -1982,9 +1976,8 @@ void SpawnFireballTail(Vec3f * poss,Vec3f * vecto,float level,long flags)
 	}
 }
 
-//-----------------------------------------------------------------------------
-void LaunchFireballBoom(Vec3f * poss,float level,Vec3f * direction,EERIE_RGB * rgb)
-{
+void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * rgb) {
+	
 	level*=1.6f;
 
 	if (explo[0]==NULL) return;
@@ -2065,7 +2058,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 
-	GRenderer->SetFogColor(0);
+	GRenderer->SetFogColor(Color::none);
 
 	TextureContainer * tc=NULL;
 	long pcc=ParticleCount;
@@ -2341,12 +2334,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					siz=part->siz+part->scale.x*fd;			
 					sp.radius=siz*10;
 
-					if (CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL))
-					{
-						EERIE_RGB rgb;
-						rgb.r=part->r;
-						rgb.g=part->g;
-						rgb.b=part->b;
+					if(CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL)) {
+						
+						Color3f rgb(part->r, part->g, part->b);
 
 						if (rnd()<0.9f)
 							SpawnGroundSplat(&sp,&rgb,sp.radius,0);
@@ -2364,10 +2354,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 
 					if (CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL))
 					{
-						EERIE_RGB rgb;
-						rgb.r=part->r*0.5f;
-						rgb.g=part->g*0.5f;
-						rgb.b=part->b*0.5f;
+						Color3f rgb(part->r*0.5f, part->g*0.5f, part->b*0.5f);
 
 						if (rnd()<0.9f)
 							SpawnGroundSplat(&sp,&rgb,sp.radius,2);

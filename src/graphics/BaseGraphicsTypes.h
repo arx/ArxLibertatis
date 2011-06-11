@@ -4,17 +4,6 @@
 
 #include "math/Vector3.h"
 
-struct EERIE_RGB {
-	float r;
-	float g;
-	float b;
-};
-
-struct EERIE_RGBA : EERIE_RGB
-{
-	float a;
-};
-
 struct EERIE_QUAT {
 	float x;
 	float y;

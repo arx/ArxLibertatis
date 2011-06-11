@@ -1066,12 +1066,12 @@ void Renderer::Clear(int bufferFlags, Color clearColor, float clearDepth, unsign
 	clearTargets |= (bufferFlags & DepthBuffer) ?  D3DCLEAR_ZBUFFER : 0;
 	clearTargets |= (bufferFlags & StencilBuffer) ? D3DCLEAR_STENCIL : 0;
 
-	GDevice->Clear(rectCount, pRects, clearTargets, clearColor, clearDepth, 0);
+	GDevice->Clear(rectCount, pRects, clearTargets, clearColor.toBGRA(), clearDepth, 0);
 }
 
 void Renderer::SetFogColor(Color color)
 {
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color);
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color.toBGRA());
 }
 
 void Renderer::SetFogParams(Renderer::FogMode fogMode, float fogStart, float fogEnd, float fogDensity)
@@ -1143,7 +1143,7 @@ void Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, float p
 	pX -= 0.5f;
 	pY -= 0.5f;
 
-	const D3DCOLOR DIFFUSE  = RGBA_MAKE(GetRValue(pCol), GetGValue(pCol), GetBValue(pCol), 0xFF);
+	const D3DCOLOR DIFFUSE  = pCol.toBGR();
 	const D3DCOLOR SPECULAR = 0;
 
 	rect[0].x = pX;

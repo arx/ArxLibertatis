@@ -2972,14 +2972,11 @@ long CountBkgVertex()
 }
 
 
-
-
-//*************************************************************************************
-//*************************************************************************************
-void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
-					Anglef * angle, Vec3f  * pos, Vec3f * scale, EERIE_RGB * col)
-{
-	if (eobj == NULL) return;
+void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * scale, Color3f * col) {
+	
+	if(eobj == NULL) {
+		return;
+	}
 
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
 	D3DTLVERTEX v;
@@ -3015,7 +3012,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 	}
 
-	D3DCOLOR coll = EERIERGB(col->r, col->g, col->b);
+	D3DCOLOR coll = col->toBGR();
 
 	for (size_t i = 0; i < eobj->facelist.size(); i++)
 	{

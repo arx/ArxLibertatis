@@ -538,7 +538,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 }
 extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
 long special_color_flag = 0;
-EERIE_RGB special_color;
+Color3f special_color;
 extern long DEBUG_PATHFAIL;
 extern long FINAL_RELEASE;
 extern long TRAP_DETECT;
@@ -551,12 +551,11 @@ extern float GLOBAL_LIGHT_FACTOR;
 /* Object dynamic lighting */
 static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos) {
 	
-	EERIE_RGB		infra;
+	Color3f infra = Color3f::black;
 	int				i, v, l;
 	Vec3f		tv;
-	Vec3f		vTLights[32];//MAX_LLIGHTS];				/* Same as above but in bone space (for faster calculation) */
+	Vec3f		vTLights[32]; /* Same as above but in bone space (for faster calculation) */
 
-	ZeroMemory(&infra, sizeof(EERIE_RGB));
 
 
 	special_color_flag = 0;
@@ -698,11 +697,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 						{
 							MakePlayerAppearsFX(io);
 							AddRandomSmoke(io, 50);
-							EERIE_RGB rgb;
-							unsigned long color = io->_npcdata->blood_color;
-							rgb.r = (float)((long)((color >> 16) & 255)) * ( 1.0f / 255 );
-							rgb.g = (float)((long)((color >> 8) & 255)) * ( 1.0f / 255 );
-							rgb.b = (float)((long)((color) & 255)) * ( 1.0f / 255 );
+							Color3f rgb = Color3f::fromBGR(io->_npcdata->blood_color);
 							EERIE_SPHERE sp;
 							sp.origin.x = io->pos.x;
 							sp.origin.y = io->pos.y;
@@ -1187,8 +1182,8 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 	}
 }
 
-int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB)
-{
+int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, Color3f * _pRGB) {
+	
 	int iPointAdd = 3;
 	int iClipp = 0;
 
@@ -2364,7 +2359,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	}
 }
 
-void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
+void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
 {
 	if ((Project.improve) && (!io))
 	{
@@ -2528,11 +2523,11 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f *
 		}
 }
 
-void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii)
-{
-	Vec3f		vLight;
-	Vec3f		vTLights[32];
-	EERIE_QUAT		qInvert;
+void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii) {
+	
+	Vec3f vLight;
+	Vec3f vTLights[32];
+	EERIE_QUAT qInvert;
 
 	if (BIGMAT != NULL)
 	{
@@ -2696,7 +2691,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 		return;
 	}
 
-	EERIE_RGB rgb;
+	Color3f rgb;
 	long j;
 
 	float epr[4];

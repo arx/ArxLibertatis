@@ -406,16 +406,16 @@ class CMenuElementText: public CMenuElement
 	public:
 		std::string lpszText;
 		Font*	pFont;
-		long	lColor;
-		long	lOldColor;
-		long	lColorHighlight;
+		Color lColor;
+		Color lOldColor;
+		Color lColorHighlight;
 		float	fSize;
 		bool	bSelected;
 		int		iPosCursor;
 
 	public:
 
-		CMenuElementText(int, Font*, const std::string&, float, float, long, float, MENUSTATE); 
+		CMenuElementText(int, Font*, const std::string&, float, float, Color, float, MENUSTATE); 
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();

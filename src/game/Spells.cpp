@@ -5861,41 +5861,21 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			AddQuakeFX(300,2000,400,1);
 
-			for ( long i_angle = 0 ; i_angle < 360 ; i_angle += 12 )
-			{
-				for ( long j = -100 ; j < 100 ; j += 50 )
-				{	
-					float		rr;
-					Vec3f	pos,	dir;
-
-					rr		=	radians( (float) i_angle );
-					pos.x	=	target.x - EEsin(rr) * 360.f;  
-					pos.y	=	target.y;
-					pos.z	=	target.z + EEcos(rr) * 360.f;  
-					dir.x	=	pos.x - target.x;
-					dir.y	=	0;
-					dir.z	=	pos.z - target.z;
-					dir.normalize();
-					dir.x	*=	60.f;
-					dir.y	*=	60.f;
-					dir.z	*=	60.f;
-
-					EERIE_RGB	rgb; 
-					rgb.r	=	0.1f + rnd() * ( 1.0f / 3 );
-					rgb.g	=	0.1f + rnd() * ( 1.0f / 3 );
-					rgb.b	=	0.8f + rnd() * ( 1.0f / 5 );
-
-					Vec3f posi;
-					posi.x	=	target.x;
-					posi.y	=	target.y + j * 2;
-					posi.z	=	target.z;
+			for(long i_angle = 0 ; i_angle < 360 ; i_angle += 12) {
+				for(long j = -100 ; j < 100 ; j += 50) {
 					
-					LaunchFireballBoom( &posi, 16, &dir, &rgb );
+					float rr = radians((float) i_angle);
+					Vec3f pos(target.x - EEsin(rr) * 360.f, target.y, target.z + EEcos(rr) * 360.f);
+					Vec3f dir = Vec3f(pos.x - target.x, 0.f, pos.z - target.z).getNormalized() * 60.f;
+					
+					Color3f rgb(0.1f + rnd() * (1.f/3), 0.1f + rnd() * (1.f/3), 0.8f + rnd() * (1.f/5));
+					
+					Vec3f posi = target + Vec3f(0.f, j * 2, 0.f);
+					
+					LaunchFireballBoom(&posi, 16, &dir, &rgb);
 				}
 			}
-
-
-
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
 			SPELLCAST_Notify(i);
 		}	
@@ -6755,7 +6735,7 @@ EYEBALL_DEF eyeball;
 Anglef cabalangle;
 Vec3f cabalpos;
 Vec3f cabalscale;
-EERIE_RGB cabalcolor;
+Color3f cabalcolor;
 
 
 float ARX_SPELLS_ApplyFireProtection(INTERACTIVE_OBJ * io,float damages)
@@ -8002,10 +7982,7 @@ void ARX_SPELLS_Update()
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
 						pos.z=DynLight[id].pos.z+EEcos(rr)*260;
-						EERIE_RGB rgb; 
-						rgb.r=0.1f+rnd()*( 1.0f / 3 );
-						rgb.g=0.1f+rnd()*( 1.0f / 3 );
-						rgb.b=0.8f+rnd()*( 1.0f / 5 );
+						Color3f rgb(0.1f + rnd()*(1.f/3), 0.1f + rnd()*(1.0f/3), 0.8f + rnd()*(1.0f/5));
 						LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
 					} else if(choice > .6f) {
 						rr=radians(rnd()*360.f);
@@ -8723,39 +8700,26 @@ void MakeSpCol()
 		sp_max_y[i]=0;
 	}
 
-	sp_max_col[0]=0x00FF0000;
-	sp_max_col[1]=0x0000FF00;
-	sp_max_col[2]=0x000000FF;
-	sp_max_col[3]=0x00FFFF00;
-	sp_max_col[4]=0x00FF00FF;
-	sp_max_col[5]=0x0000FFFF;
-	sp_max_col[6]=0x00FF0000;
-	sp_max_col[7]=0x0000FF00;
-	sp_max_col[8]=0x000000FF;
-	sp_max_col[9]=0x00FFFF00;
-	sp_max_col[10]=0x00FF00FF;
-	sp_max_col[11]=0x0000FFFF;
-	sp_max_col[12]=0x00FF0000;
-	sp_max_col[13]=0x0000FF00;
-	sp_max_col[14]=0x000000FF;
-	sp_max_col[15]=0x00FFFF00;
-	sp_max_col[16]=0x00FF00FF;
-	sp_max_col[17]=0x0000FFFF;
-	sp_max_col[18]=0x00FF0000;
-	sp_max_col[19]=0x0000FF00;
-	sp_max_col[20]=0x000000FF;
-	sp_max_col[21]=0x00FFFF00;
-	sp_max_col[22]=0x00FF00FF;
-	sp_max_col[23]=0x0000FFFF;
-	sp_max_col[24]=0x00FFFF00;
-	sp_max_col[25]=0x00FF00FF;
-	sp_max_col[26]=0x0000FFFF;
-	sp_max_col[27]=0x00FF0000;
-	sp_max_col[28]=0x0000FF00;
-	sp_max_col[29]=0x000000FF;
-	sp_max_col[30]=0x00FFFF00;
-	sp_max_col[31]=0x00FF00FF;
-	sp_max_col[32]=0x0000FFFF;
+	sp_max_col[0] = Color::fromRGBA(0x00FF0000);
+	sp_max_col[1] = Color::fromRGBA(0x0000FF00);
+	sp_max_col[2] = Color::fromRGBA(0x000000FF);
+	
+	sp_max_col[3] = Color::fromRGBA(0x00FFFF00);
+	sp_max_col[4] = Color::fromRGBA(0x00FF00FF);
+	sp_max_col[5] = Color::fromRGBA(0x0000FFFF);
+	
+	for(size_t i = 6; i < 24; i++) {
+		sp_max_col[i] = sp_max_col[i - 6];
+	}
+	
+	for(size_t i = 24; i < 27; i++) {
+		sp_max_col[i] = sp_max_col[i - 3];
+	}
+	
+	for(size_t i = 27; i < 33; i++) {
+		sp_max_col[i] = sp_max_col[i - 9];
+	}
+	
 }
 
 static void ApplyCurSOS() {

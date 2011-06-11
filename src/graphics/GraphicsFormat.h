@@ -14,13 +14,13 @@ struct SavedColor {
 	f32 g;
 	f32 b;
 	
-	inline SavedColor & operator=(const EERIE_RGB & o) {
+	inline SavedColor & operator=(const Color3f & o) {
 		r = o.r, g = o.g, b = o.b;
 		return *this;
 	}
 	
-	inline operator EERIE_RGB() {
-		EERIE_RGB a;
+	inline operator Color3f() {
+		Color3f a;
 		a.r = r, a.g = g, a.b = b;
 		return a;
 	}

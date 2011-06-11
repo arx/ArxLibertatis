@@ -23,7 +23,7 @@ public:
 	TextManager();
 	~TextManager();
 	
-	bool AddText(Font *, const std::string &, const Rect &, Color _lCol = -1,
+	bool AddText(Font *, const std::string &, const Rect &, Color _lCol = Color::white,
 	             long _lTimeOut = 0, long _lTimeScroll = 0,
 	             float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
 	

@@ -32,7 +32,7 @@ struct CreditsTextInformations {
 	CreditsTextInformations() {
 		sPos.x = 0;
 		sPos.y = 0;
-		fColors = 0;
+		fColors = Color::none;
 	}
 	
 	string  sText;

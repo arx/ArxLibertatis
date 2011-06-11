@@ -1133,7 +1133,7 @@ struct SavedCamera {
 		
 		a.clip3D = clip3D;
 		a.type = type;
-		a.bkgcolor = bkgcolor;
+		a.bkgcolor = Color::fromBGRA(bkgcolor);
 		a.nbdrawn = nbdrawn;
 		a.cdepth = cdepth;
 		
@@ -1172,7 +1172,7 @@ struct SavedCamera {
 		
 		clip3D = b.clip3D;
 		type = b.type;
-		bkgcolor = b.bkgcolor;
+		bkgcolor = b.bkgcolor.toBGRA();
 		nbdrawn = b.nbdrawn;
 		cdepth = b.cdepth;
 		

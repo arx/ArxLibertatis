@@ -277,7 +277,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
 
 	if((aa < ab + 90.f) && (aa > ab - 90.f)) {
 		//font
-		ARX_TEXT_Draw(hFontInBook, 300, 320, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
+		ARX_TEXT_Draw(hFontInBook, 300, 320, "VISIBLE", Color::red);
 		return true;
 	}
 

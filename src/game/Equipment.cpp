@@ -1094,12 +1094,8 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 								sp.origin.z = target->obj->vertexlist3[hitpoint].v.z + vect.z * 30.f;
 								sp.radius = 3.5f * power * 20;
 
-								if (CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL))
-								{
-									EERIE_RGB rgb;
-									rgb.r = (float)((long)((color >> 16) & 255)) * ( 1.0f / 255 );
-									rgb.g = (float)((long)((color >> 8) & 255)) * ( 1.0f / 255 );
-									rgb.b = (float)((long)((color) & 255)) * ( 1.0f / 255 );
+								if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+									Color3f rgb = Color3f::fromBGR(color);
 									SpawnGroundSplat(&sp, &rgb, 30, 1);
 								}
 							}

@@ -432,7 +432,7 @@ float CRuneOfGuarding::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 
 	float stiteangleb = (float) ulCurrentTime * fOneOnDuration * 120;
 	stiteangle.a = 0;
@@ -1258,7 +1258,7 @@ float CRepelUndead::Render()
 	Anglef  eObjAngle;
 	Vec3f  eObjPos;
 	Vec3f  eObjScale;
-	EERIE_RGB rgbObjColor;
+	Color3f rgbObjColor;
 
 	eObjAngle.b = fBeta;
 	eObjAngle.a = 0;

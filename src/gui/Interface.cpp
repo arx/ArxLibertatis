@@ -938,12 +938,12 @@ void ARX_INTERFACE_NoteManage()
 					if(Note.pages[Note.curpage+1]>0)
 					{
 						Page_Buffer = Note.text.substr( Note.pages[Note.curpage], Note.pages[Note.curpage+1] - Note.pages[Note.curpage] );
-						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0);
+						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
 
 						if(Note.pages[Note.curpage+2]>0)
 						{
 							Page_Buffer = Note.text.substr( Note.pages[Note.curpage+1], Note.pages[Note.curpage+2] - Note.pages[Note.curpage+1] );
-							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer, 0);
+							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer, Color::none);
 						}
 					}
 					else
@@ -951,7 +951,7 @@ void ARX_INTERFACE_NoteManage()
 						if(Note.pages[Note.curpage]>=0)
 						{
 							Page_Buffer = Note.text.substr(Note.pages[Note.curpage]);
-							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer,0);
+							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
 						}
 					}
 				}
@@ -960,7 +960,7 @@ void ARX_INTERFACE_NoteManage()
 			}
 			else
 			{
-				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text,0);
+				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text, Color::none);
 			}
 		}
 
@@ -6900,7 +6900,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							flyingover = 1;
 
 							SpecialCursor=CURSOR_INTERACTION_ON;
-							DrawBookTextCenter(hFontInBook, 208, 90, spellicons[i].name, 0);
+							DrawBookTextCenter(hFontInBook, 208, 90, spellicons[i].name, Color::none);
 
 							for(size_t si = 0; si < MAX_SPEECH; si++) {
 								if(speech[si].timecreation > 0)
@@ -7116,12 +7116,12 @@ void QuestBook_Render()
 		if (QuestBook.pages[QuestBook.curpage+1] > 0)
 		{
 			Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage] );
-			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, Page_Buffer, 0);
+			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, Page_Buffer, Color::none);
 
 			if (QuestBook.pages[QuestBook.curpage+2]>0)
 			{
 				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1] );
-				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, Page_Buffer, 0);
+				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, Page_Buffer, Color::none);
 			}
 		}
 		else
@@ -7129,7 +7129,7 @@ void QuestBook_Render()
 			if (QuestBook.pages[QuestBook.curpage]>=0)
 			{
 				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage] );
-				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0);
+				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
 			}
 		}
 	}
@@ -7947,15 +7947,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Strength<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Attribute_Strength>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Strength == 6)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 391, 129, tex, color);
@@ -7965,15 +7965,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Mind<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Attribute_Mind>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Mind == 6)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 440, 129, tex, color);
@@ -7983,15 +7983,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Dexterity<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Attribute_Dexterity>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Dexterity == 6)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 490, 129, tex, color);
@@ -8000,15 +8000,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Constitution<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Attribute_Constitution>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Constitution == 6)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 538, 129, tex, color);
@@ -8019,15 +8019,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Stealth<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Stealth>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Stealth == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 405, 210, tex, color);
@@ -8037,15 +8037,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Mecanism<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Mecanism>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Mecanism == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 210, tex, color);
@@ -8055,15 +8055,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Intuition<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Intuition>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Intuition == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 533, 210, tex, color);
@@ -8073,15 +8073,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Etheral_Link<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Etheral_Link>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Etheral_Link == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 405, 265, tex, color);
@@ -8091,15 +8091,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Object_Knowledge<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Object_Knowledge>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Object_Knowledge == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 265, tex, color);
@@ -8109,15 +8109,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Casting<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Casting>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Casting == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 533, 265, tex, color);
@@ -8127,15 +8127,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Close_Combat<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Close_Combat>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Close_Combat == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 405, 319, tex, color);
@@ -8146,15 +8146,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Projectile<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Projectile>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Projectile == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 319, tex, color);
@@ -8164,15 +8164,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Defense<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Defense>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Defense == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 533, 319, tex, color);
@@ -8184,10 +8184,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
-			color = 0x000000FF;
+			color = Color::red;
 		else if ((player.Mod_maxlife>0.f) || (player.Full_maxlife > player.maxlife))
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter( hFontInBook, 324, 158, tex, color );
 		
@@ -8196,10 +8196,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
-			color = 0x000000FF;
+			color = Color::red;
 		else if ((player.Mod_maxmana>0.f) || (player.Full_maxmana > player.maxmana))
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter( hFontInBook, 324, 218, tex, color );
 		
@@ -8208,10 +8208,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_damages<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_damages>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter(hFontInBook, 324, 278, tex, color);
 
@@ -8221,10 +8221,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_armor_class<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_armor_class>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter(hFontInBook, 153, 158, tex, color);
 
@@ -8233,10 +8233,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_resist_magic<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_resist_magic>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter(hFontInBook, 153, 218, tex, color);
 		
@@ -8245,10 +8245,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_resist_poison<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_resist_poison>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter(hFontInBook, 153, 278, tex, color);
 	}
@@ -8287,7 +8287,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			rec.x2 = (280.f + BOOKDECY) * Xratio;
 			rec.y2 = (310.f + BOOKDECY) * Yratio;
 
-			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
+			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1, 1, &rec);
 
 			if (ARXmenu.currentmode!=AMCM_OFF)
 			{
@@ -8304,7 +8304,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			rec.x2 = (300.f + 50 + BOOKDECX) * Xratio;
 			rec.y2 = (338.f + BOOKDECY) * Yratio;
 			
-			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
+			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1, 1, &rec);
 
 			rec.x2 -= 50;
 		}
@@ -10381,7 +10381,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
-						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), D3DCOLORBLACK);
+						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), Color::black);
 					}
 					else
 					{
