@@ -80,23 +80,20 @@ void ARX_INTERFACE_KillARKANE()
 	ARKANE_img = NULL;
 }
 //-----------------------------------------------------------------------------
-void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f)
-{
-	if (_bRatio)
-	{
+void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f) {
+	
+	if(_bRatio) {
 		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f)*Xratio,
 		                 DANAECENTERY - (tc->m_dwHeight * 0.5f)*Yratio,
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwWidth * Xratio)),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwHeight * Yratio)),
-		                 0.001f, tc, D3DRGB(_fFade, _fFade, _fFade));
-	}
-	else
-	{
+		                 0.001f, tc, Color::gray(_fFade));
+	} else {
 		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f),
 		                 DANAECENTERY - (tc->m_dwHeight * 0.5f),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwWidth)),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwHeight)),
-		                 0.001f, tc, D3DRGB(_fFade, _fFade, _fFade));
+		                 0.001f, tc, Color::gray(_fFade));
 	}
 }
 

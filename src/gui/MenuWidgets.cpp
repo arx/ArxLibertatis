@@ -305,13 +305,8 @@ void ARX_DrawAfterQuickLoad()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	EERIEDrawBitmap2(	0,
-						0,
-						INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
-						INTERFACE_RATIO_DWORD(pTex->m_dwHeight),
-						0.f,
-						pTex,
-						D3DRGB(fColor,fColor,fColor) );
+	EERIEDrawBitmap2(0, 0, INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
+	                 INTERFACE_RATIO_DWORD(pTex->m_dwHeight), 0.f, pTex, Color::gray(fColor));
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
@@ -2759,7 +2754,7 @@ void CMenuState::Render()
 	if(bNoMenu) return;
 
 	if (pTexBackGround)
-		EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
+		EERIEDrawBitmap2(0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, Color::white);
 
 	//------------------------------------------------------------------------
 
@@ -3263,12 +3258,7 @@ void CMenuCheckButton::Render()
 		TextureContainer *pTex = vTex[iState];
 
 		D3DTLVERTEX v[4];
-		unsigned long color;
-
-		if(bCheck)
-			color = ARX_OPAQUE_WHITE;
-		else
-			color=0xFF3F3F3F;    
+		Color color = (bCheck) ? Color::white : Color::fromBGRA(0xFF3F3F3F);
 
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
@@ -3282,7 +3272,7 @@ void CMenuCheckButton::Render()
 		}
 		
 		//carre
-		EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
+		EERIEDrawBitmap2(static_cast<float>(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
 	}
 
 	if (pText)
@@ -3322,7 +3312,7 @@ void CMenuCheckButton::RenderMouseOver()
 
 	//carre
 
-	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, ARX_OPAQUE_WHITE); 
+	EERIEDrawBitmap2(static_cast<float>(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, Color::white); 
 
 
 	//tick
@@ -4289,18 +4279,18 @@ int CWindowMenuConsole::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
-	RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
-	0, pTexBackground, ARX_OPAQUE_WHITE);
+	EERIEDrawBitmap2(static_cast<float>(iPosX), static_cast<float>(iSavePosY),
+	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
+	                 0, pTexBackground, Color::white);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
-	RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
-	0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);
+	EERIEDrawBitmap2(static_cast<float>(iPosX), static_cast<float>(iSavePosY),
+	                 RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
+	                 0, pTexBackgroundBorder, Color::white);
 
 	//------------------------------------------------------------------------
 
@@ -4786,14 +4776,9 @@ void CMenuButton::Render()
 	if(bNoMenu) return;
 
 	//affichage de la texture
-	if (pTex)
-	{
-		EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.left), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top),
-			RATIO_X(pTex->m_dwWidth),
-			RATIO_Y(pTex->m_dwHeight),
-			0,
-			pTex,
-			ARX_OPAQUE_WHITE);
+	if(pTex) {
+		EERIEDrawBitmap2(static_cast<float>(rZone.left), static_cast<float>(rZone.top),
+		                 RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
 	}
 
 	//affichage de la font
@@ -5387,12 +5372,7 @@ void CMenuSlider::Render()
 			}
 		}
 
-		EERIEDrawBitmap2( iX, iY, 
-			RATIO_X(pTex->m_dwWidth),
-			RATIO_Y(pTex->m_dwHeight),
-			0,
-			pTex,
-			ARX_OPAQUE_WHITE);
+		EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
 
 		iX += iTexW;
 	}
@@ -5879,14 +5859,10 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
-	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
-
-					INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
-					INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
-
-					0.00000001f,
-					scursor[iNumCursor],D3DCOLORWHITE);
+	EERIEDrawBitmap2(static_cast<float>(_iPosX), static_cast<float>(_iPosY),
+	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
+	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
+	                 0.00000001f, scursor[iNumCursor], Color::white);
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);

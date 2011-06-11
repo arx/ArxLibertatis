@@ -1171,10 +1171,8 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0  );	
 }
 
-//-----------------------------------------------------------------------------
-
-void EERIEDrawBitmap2(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col)
-{
+void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
+	
 	float smu,smv;
 	float fEndu,fEndv;
 
@@ -1191,8 +1189,8 @@ void EERIEDrawBitmap2(float x,float y,float sx,float sy,float z,TextureContainer
 		fEndu=fEndv=0.f;
 	}
 
+	D3DCOLOR col = color.toBGRA();
 	D3DTLVERTEX v[4];
-
 	float fZMinus=1.f-z;
 	v[0]= D3DTLVERTEX( D3DVECTOR( x, y, z ), fZMinus, col, 0xFF000000, smu, smv);
 	v[1]= D3DTLVERTEX( D3DVECTOR( x+sx, y, z ), fZMinus, col, 0xFF000000, fEndu, smv);
@@ -1203,10 +1201,9 @@ void EERIEDrawBitmap2(float x,float y,float sx,float sy,float z,TextureContainer
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0  );	
 }
 
-//-----------------------------------------------------------------------------
-
-void EERIEDrawBitmap2DecalY(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col,float _fDeltaY)
-{
+void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
+                            Color color, float _fDeltaY) {
+	
 	float smu;
 	float fDepv;
 	float fEndu,fEndv;
@@ -1225,6 +1222,7 @@ void EERIEDrawBitmap2DecalY(float x,float y,float sx,float sy,float z,TextureCon
 		fEndu=fEndv=0.f;
 	}
 
+	D3DCOLOR col = color.toBGRA();
 	D3DTLVERTEX v[4];
 	float fDy=_fDeltaY*sy;
 

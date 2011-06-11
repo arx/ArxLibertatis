@@ -86,7 +86,8 @@ void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col);
 void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col);
 void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
 void EERIEDraw3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
-void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float _fDeltaY);
+void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
+                            Color col, float _fDeltaY);
 
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
 void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
@@ -100,7 +101,7 @@ void EERIEPOLY_DrawNormals(EERIEPOLY * ep);
 extern TextureContainer * EERIE_DRAW_sphere_particle;
 extern TextureContainer * EERIE_DRAW_square_particle;
 
-void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
+void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
 void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,
                         float u0, float v0, float u1, float v1);
 void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,

@@ -739,7 +739,7 @@ bool ARX_Menu_Render()
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
+			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 
 		BOOKZOOM = 1;
@@ -956,7 +956,7 @@ bool ARX_Menu_Render()
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
+			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 
 		Vec3f ePos;

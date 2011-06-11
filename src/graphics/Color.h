@@ -76,7 +76,7 @@ public:
 		return O(val * (Color3<O>::max / max));
 	}
 	
-	inline static Color3 gray(u8 val) {
+	inline static Color3 grayb(u8 val) {
 		T v = T(val * T(max / Color3<float>::max));
 		return Color3(v, v, v);
 	}
