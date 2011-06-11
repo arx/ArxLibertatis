@@ -1269,7 +1269,6 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	float attack, dmgs, backstab, critical, ac;
 
-	dmgs		=	0;
 	backstab	=	1.f;
 	critical	=	false;
 
@@ -1296,11 +1295,11 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	}
 	else
 	{
-		// treat NPC !!!
+		// TODO treat NPC !!!
 
 		ARX_CHECK_NO_ENTRY();
-		attack	=	0;
-
+		attack = 0;
+		dmgs = 0;
 
 	}
 
