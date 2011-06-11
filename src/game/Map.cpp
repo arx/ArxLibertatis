@@ -522,9 +522,6 @@ float oldposx,oldposz;
 
 	this->surfacetemp->Unlock(NULL);
 
-	//sauvegarde
-	nby=0;
-
 	FileHandle f = FileOpenWrite(name);
 	FileWrite(f, &bm, sizeof(BITMAPFILEHEADER));
 	FileWrite(f, &bi, sizeof(BITMAPINFO) - 4);
