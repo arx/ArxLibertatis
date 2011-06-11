@@ -879,8 +879,8 @@ void EERIEDraw3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col)
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos)
-{
+void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color color, float Zpos) {
+	
 	D3DTLVERTEX out;
 	
 	EERIETreatPoint2(in,&out);
@@ -915,9 +915,10 @@ void EERIEDrawSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR c
 
 		SPRmaxs.x=out.sx+t;
 		SPRmins.x=out.sx-t;
-		SPRmaxs.y=out.sy+t;			
+		SPRmaxs.y=out.sy+t;
 		SPRmins.y=out.sy-t;
 
+		D3DCOLOR col = color.toBGRA();
 		D3DTLVERTEX v[4];
 		v[0]= D3DTLVERTEX( D3DVECTOR( SPRmins.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 0.f, 0.f);
 		v[1]= D3DTLVERTEX( D3DVECTOR( SPRmaxs.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 1.f, 0.f);

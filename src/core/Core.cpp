@@ -6827,7 +6827,7 @@ void DANAE::GoFor2DFX()
 						else
 							siz=-el->ex_flaresize;
 
-						EERIEDrawSprite(&lv, siz ,tflare,EERIERGB(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b),ltvv.sz);
+						EERIEDrawSprite(&lv, siz, tflare, Color3f(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b).to<u8>(), ltvv.sz);
 
 					}
 				}

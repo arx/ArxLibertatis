@@ -92,7 +92,7 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
 void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
 
-void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos);
+void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color col, float Zpos);
 void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
 
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color col = Color::none);

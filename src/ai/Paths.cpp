@@ -938,18 +938,15 @@ void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del)
 	ap->pathways = (ARX_PATHWAY *)realloc(ap->pathways, sizeof(ARX_PATHWAY) * (ap->nb_pathways - 1));
 	ap->nb_pathways--;
 }
-//*************************************************************************************
-//*************************************************************************************
-void ARX_PATHS_DrawPathWay(Vec3f * pos, float siz, D3DCOLOR color, long height)
-{
+
+static void ARX_PATHS_DrawPathWay(Vec3f * pos, float siz, Color color) {
+	
 	D3DTLVERTEX vert;
 	vert.sx = pos->x;
 	vert.sy = pos->y;
 	vert.sz = pos->z;
-
-	if (height == 0)
-		EERIEDrawSprite(&vert, siz, EERIE_DRAW_sphere_particle, color, 2.f);
-	else EERIEDrawSprite(&vert, siz, EERIE_DRAW_square_particle, color, 2.f);
+	
+	EERIEDrawSprite(&vert, siz, EERIE_DRAW_square_particle, color, 2.f);
 }
 ARX_PATH *	ARX_PATHS_FlyingOverAP = NULL;
 long		ARX_PATHS_FlyingOverNum = -1;
@@ -1104,26 +1101,26 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 		}
 
 		if ((ARX_PATHS_SelectedNum == (i + 1)) &&
-		        (ap == ARX_PATHS_SelectedAP)) ARX_PATHS_DrawPathWay(&from, 4.f, 0xFF0000FF, ap->height);
+		        (ap == ARX_PATHS_SelectedAP)) ARX_PATHS_DrawPathWay(&from, 4.f, Color::blue);
 
 		if (i == 0)
 		{
-			if (selected) ARX_PATHS_DrawPathWay(&from, 3.f, 0xFFFF0000, ap->height);
-			else ARX_PATHS_DrawPathWay(&from, 3.f, 0xFFAA0000, ap->height);
+			if (selected) ARX_PATHS_DrawPathWay(&from, 3.f, Color::red);
+			else ARX_PATHS_DrawPathWay(&from, 3.f, Color::fromBGRA(0xFFAA0000));
 		}
 		else
 			switch (ap->pathways[i].flag)
 			{
 				case PATHWAY_STANDARD:
 
-					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFFFFF00, ap->height);
-					else ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFAAAAAA, ap->height);
+					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, Color::cyan);
+					else ARX_PATHS_DrawPathWay(&from, 2.4f, Color::grayb(0xaa));
 
 					break;
 				case PATHWAY_BEZIER:
 
-					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFF00FF00, ap->height);
-					else ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFAAAAAA, ap->height);
+					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, Color::green);
+					else ARX_PATHS_DrawPathWay(&from, 2.4f, Color::gray(0xaa));
 
 					break;
 				case PATHWAY_BEZIER_CONTROLPOINT: break;

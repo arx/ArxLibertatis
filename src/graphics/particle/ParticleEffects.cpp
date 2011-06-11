@@ -1221,7 +1221,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 						}
 						else
 						{
-							EERIEDrawSprite(&flare[i].v,(float)s*0.025f+1.f, surf,flare[i].tv.color,2.f);
+							EERIEDrawSprite(&flare[i].v,(float)s*0.025f+1.f, surf, Color::fromBGRA(flare[i].tv.color), 2.f);
 						}
 					}
 				}
@@ -2496,7 +2496,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						end.z=pos.z-(pos.z-op.z)*2.5f;
 						Draw3DLineTex2(end,pos,2.f,color1 & part->mask,color1);
 						
-						EERIEDrawSprite(&in,.7f,tc,color1,2.f);				
+						EERIEDrawSprite(&in,.7f,tc,Color::fromBGRA(color1),2.f);				
 						
 					}
 					else
@@ -2511,12 +2511,12 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 							D3DTLVERTEX in2;
 							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							EERIEDrawSprite(&in,siz,tc,color.toBGRA(),temp);				
+							EERIEDrawSprite(&in,siz,tc,color,temp);				
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-							EERIEDrawSprite(&in2,siz,tc,0xFFFFFFFF,temp);				
+							EERIEDrawSprite(&in2,siz,tc,Color::white,temp);				
 						}
 						else 
-							EERIEDrawSprite(&in,siz,tc,color.toBGRA(),temp);				
+							EERIEDrawSprite(&in,siz,tc,color,temp);				
 					}
 				}
 			}

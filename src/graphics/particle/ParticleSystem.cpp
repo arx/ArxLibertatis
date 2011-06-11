@@ -644,7 +644,7 @@ void ParticleSystem::Render() {
 			else
 			{
 				if (tex_tab[inumtex])
-					EERIEDrawSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor.toBGRA(), 2);
+					EERIEDrawSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
 			}
 		}
 	}

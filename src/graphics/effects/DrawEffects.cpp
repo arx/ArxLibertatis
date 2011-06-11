@@ -283,11 +283,9 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 		in.sy=el->pos.y;
 		in.sz=el->pos.z;
 
-		if (ACTIVECAM->type==CAM_TOPVIEW)
-			EERIEDrawSprite(&in,11.f,lightsource_tc,EERIERGB(el->rgb.r,el->rgb.g,el->rgb.b),2.f);
-		else 
-		{
-			EERIEDrawSprite(&in,11.f,lightsource_tc,EERIERGB(el->rgb.r,el->rgb.g,el->rgb.b),2.f);
+		EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
+		if(ACTIVECAM->type != CAM_TOPVIEW) {
+			
 			el->mins = SPRmins;
 			el->maxs = SPRmaxs;
 
