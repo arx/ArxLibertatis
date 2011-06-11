@@ -959,13 +959,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "REVIVE"))
 				{
-					long tmp = GetNextWord(es, pos, word);
+					GetNextWord(es, pos, word);
 					long init = 0;
 
-					if (word[0] == '-')
-					{
-						pos = tmp;
-
+					if(word[0] == '-') {
 						if ((iCharIn(word, 'I'))) init = 1;
 					}
 
@@ -6883,7 +6880,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					long ppos = pos;
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
-					pos = GetNextWord(es, pos, temp4);
+					GetNextWord(es, pos, temp4);
 					sprintf(cmd, "Script Error for token #%ld '%s' (%s|%s|%s) in file %s_%04ld",
 							ppos,word.c_str(),temp2.c_str(), temp3.c_str(), temp4.c_str(),GetName(io->filename).c_str(),io->ident);
 					LogError << cmd;
