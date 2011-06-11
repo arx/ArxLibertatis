@@ -1407,6 +1407,8 @@ long DanaeLoadLevel(const string & fic) {
 		}
 	}
 	
+	arx_assert(pos <= FileSize);
+	
 	ModeLight = Flag(dll->ModeLight); // TODO save/load flags
 	ViewMode = Flag(dll->ViewMode); // TODO save/load flags
 	ViewMode &= ~VIEWMODE_WIRE;
