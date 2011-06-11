@@ -1758,7 +1758,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 
 	}
 
-#if CEDRIC
 	/* Build proper mesh */
 	{
 		EERIE_C_DATA* obj = eobj->c_data;
@@ -1806,7 +1805,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			}
 		}
 	}
-#endif
 }
 
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj)

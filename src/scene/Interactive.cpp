@@ -3348,7 +3348,6 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 
 extern float LAST_FZPOS;
 extern float LAST_FZSCREEN;
-extern long USE_CEDRIC_ANIM;
 
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
@@ -3447,17 +3446,13 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 						goto suite;
 					}
 
-					for (size_t j = 0; j < io->obj->facelist.size(); j++)
-					{
-						if (io->animlayer[0].cur_anim != NULL)
-						{
-							if (USE_CEDRIC_ANIM)
-								n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
-							else
-								n = -1; 
-						}
-						else
+					for(size_t j = 0; j < io->obj->facelist.size(); j++) {
+						
+						if(io->animlayer[0].cur_anim != NULL) {
+							n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+						} else {
 							n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+						}
 
 						if (n > 0.f) 
 						{
@@ -4292,16 +4287,9 @@ void RenderInter(float from, float to) {
 					pos.y = io->_npcdata->vvpos;
 				}
 
-				long flgs;
+				bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
 
-				if (!(EDITMODE) &&
-				        (ARX_SCENE_PORTAL_Basic_ClipIO(io)))
-					flgs = 4;
-				else flgs = 0;
-
-				EERIEDrawAnimQuat(	io->obj,
-				                  &io->animlayer[0],
-				                  &temp, &pos, diff, io, flgs);
+				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
 				LOOK_AT_TARGET = 0;
 
 				if (DESTROYED_DURING_RENDERING)

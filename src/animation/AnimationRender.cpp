@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-#if	CEDRIC
-
 extern		bool 		MIPM;
 extern		float 		vdist;
 extern		unsigned char * grps;
@@ -171,39 +169,31 @@ static	void	Cedric_GetScale(float & scale, float & invisibility, INTERACTIVE_OBJ
 	}
 }
 
-
-static	void	Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io, long typ)
-{
-	if ((io) && (!(typ & ANIMQUATTYPE_FIRST_PERSON)))
-	{
-		if (io->nb_lastanimvertex)
-		{
-			timm = (FrameTime - io->lastanimtime) + 0.0001f;
-
-			if (timm >= 300.f)
-			{
-				timm = 0.f;
-				io->nb_lastanimvertex = 0;
-			}
-			else
-			{
-				timm *= ( 1.0f / 300 );
-
-				if (timm >= 1.f) timm = 0.f;
-				else if (timm < 0.f) timm = 0.f;
-			}
-		}
-		else timm = 0.f;
+static void Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io) {
+	
+	if(!io || !io->nb_lastanimvertex) {
+		timm = 0.f;
+		return;
 	}
-	else timm = 0.f;
+	
+	timm = (FrameTime - io->lastanimtime) + 0.0001f;
+	
+	if(timm >= 300.f) {
+		timm = 0.f;
+		io->nb_lastanimvertex = 0;
+	} else {
+		timm *= ( 1.0f / 300 );
+		if(timm >= 1.f) {
+			timm = 0.f;
+		} else if(timm < 0.f) {
+			timm = 0.f;
+		}
+	}
 }
 
 
-#define ANIMQUATTYPE_NO_COMPUTATIONS	8
-
-
 /* Evaluate main entity translation */
-static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, long typ, Vec3f & ftr, Vec3f & ftr2)
+static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, bool render, Vec3f & ftr, Vec3f & ftr2)
 {
 	// Resets Frame Translate
 	ftr = Vec3f::ZERO;
@@ -254,15 +244,11 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 			EERIE_FRAME * eFrame = &eanim->frames[animuse->fr+1];
 
 			// Linear interpolation of object translation (MOVE)
-			ftr.x = sFrame->translate.x + (eFrame->translate.x - sFrame->translate.x) * animuse->pour;
-			ftr.y = sFrame->translate.y + (eFrame->translate.y - sFrame->translate.y) * animuse->pour;
-			ftr.z = sFrame->translate.z + (eFrame->translate.z - sFrame->translate.z) * animuse->pour;
+			ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
 
-			if ((io) && !(typ & ANIMQUATTYPE_NO_RENDER))
-			{
-				ftr.x *= scale;
-				ftr.y *= scale;
-				ftr.z *= scale;
+			if(io && render) {
+				
+				ftr *= scale;
 
 				float temp = radians(MAKEANGLE(180.f - io->angle.b));
 
@@ -271,30 +257,22 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 				_YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
 				// stores Translations for a later use
-				io->move.x = ftr2.x;
-				io->move.y = ftr2.y;
-				io->move.z = ftr2.z;
+				io->move = ftr2;
 			}
 		}
 	}
-
-	if ((io) && (io->animlayer[0].cur_anim) && !(typ & ANIMQUATTYPE_NO_RENDER))
-	{
+	
+	if(io && (io->animlayer[0].cur_anim) && render) {
+		
 		// Use calculated value to notify the Movement engine of the translation to do
-		if (io->ioflags & IO_NPC)
-		{
+		if(io->ioflags & IO_NPC) {
 			ftr = Vec3f::ZERO;
 			io->move -= io->lastmove;
+		} else if (io->GameFlags & GFLAG_ELEVATOR) {
+			// Must recover translations for NON-NPC IO
+			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
 		}
-		// Must recover translations for NON-NPC IO
-		else
-		{
-			if (io->GameFlags & GFLAG_ELEVATOR)
-			{
-				PushIO_ON_Top(io, io->move.y - io->lastmove.y);
-			}
-		}
-
+		
 		io->lastmove = ftr2;
 	}
 }
@@ -571,14 +549,12 @@ extern long ALTERNATE_LIGHTING;
 extern float GLOBAL_LIGHT_FACTOR;
 
 /* Object dynamic lighting */
-static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, long typ) {
+static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos) {
 	
 	EERIE_RGB		infra;
 	int				i, v, l;
 	Vec3f		tv;
 	Vec3f		vTLights[32];//MAX_LLIGHTS];				/* Same as above but in bone space (for faster calculation) */
-
-
 
 	ZeroMemory(&infra, sizeof(EERIE_RGB));
 
@@ -831,13 +807,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 	/* Get nearest lights */
 	tv = *pos;
-
-	if (typ & ANIMQUATTYPE_FIRST_PERSON)
-	{
-		tv.x = subj.pos.x;
-		tv.y = subj.pos.y;
-		tv.z = subj.pos.z;
-	}
 
 	if ((io) && (io->obj->fastaccess.view_attach >= 0) && (io->obj->fastaccess.head_group_origin != -1))
 	{
@@ -1562,7 +1531,7 @@ long FORCE_FRONT_DRAW = 0;
 extern long IN_BOOK_DRAW;
 
 /* Render object */
-void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
 	
 	float MAX_ZEDE = 0.f;
 
@@ -1994,9 +1963,9 @@ void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 							Vec3f		vect1, vect2;
 							D3DTLVERTEX *	vert = &LATERDRAWHALO[(HALOCUR << 2)];
 
-							HALOCUR++;
-
-							if (HALOCUR >= HALOMAX) HALOCUR--;
+							if(HALOCUR < ((long)HALOMAX) - 1) {
+								HALOCUR++;
+							}
 
 							memcpy(&vert[0], &workon[first], sizeof(D3DTLVERTEX));
 							memcpy(&vert[1], &workon[first], sizeof(D3DTLVERTEX));
@@ -2191,15 +2160,11 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 extern long LOOK_AT_TARGET;
 
 extern long ForceIODraw;
-bool Cedric_IO_Visible(INTERACTIVE_OBJ * io, long typ)
-{
+static bool Cedric_IO_Visible(INTERACTIVE_OBJ * io) {
 	if (io == inter.iobj[0]) return true;
 
-	if ((!ForceIODraw)
-	    &&	(ACTIVEBKG != NULL)
-	    &&	(io)
-	    &&	(!(typ & 1)))
-	{
+	if(!ForceIODraw && ACTIVEBKG && io) {
+		
 		if (distSqr(io->pos, ACTIVECAM->pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 			return false;
 
@@ -2229,13 +2194,13 @@ extern long __MUST_DRAW;
 extern long EXTERNALVIEW;
 
 /* Apply animation and draw object */
-void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
-                                 ANIM_USE * animuse,
-                                 Anglef * angle,
-                                 Vec3f * pos,
-                                 INTERACTIVE_OBJ * io,
-                                 long typ)
-{
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
+                              ANIM_USE * animuse,
+                              Anglef * angle,
+                              Vec3f * pos,
+                              INTERACTIVE_OBJ * io,
+                              bool render) {
+	
 	float 				invisibility;
 	float 				scale;
 	float				timm;
@@ -2253,7 +2218,7 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	//Cedric_FlagLinkedObjects(eobj); ???
 
 	// Is There any Between-Animations Interpolation to make ? timm>0.f
-	Cedric_GetTime(timm, io, typ);
+	Cedric_GetTime(timm, io);
 
 
 	// Buffer size check
@@ -2266,11 +2231,9 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 	memset(grps, 0, eobj->nbgroups);
 
+	Cedric_AnimCalcTranslation(io, animuse, scale, render, ftr, ftr2);
 
-	Cedric_AnimCalcTranslation(io, animuse, scale, typ, ftr, ftr2);
-
-	if (Cedric_IO_Visible(io, typ))
-	{
+	if(Cedric_IO_Visible(io)) {
 
 		// Manage Extra Rotations in Local Space
 		Cedric_ManageExtraRotationsFirst(io, eobj);
@@ -2301,11 +2264,13 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			return;
 
 
-		if ((Cedric_TransformVerts(io, eobj, obj, pos)) && (!(typ & ANIMQUATTYPE_NO_RENDER)))
-		{
+		if(Cedric_TransformVerts(io, eobj, obj, pos) && render) {
+			
 			INTER_DRAW++;
 
-			if (!Cedric_ApplyLighting(eobj, obj, io, pos, typ)) return;
+			if(!Cedric_ApplyLighting(eobj, obj, io, pos)) {
+				return;
+			}
 
 			Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
 
@@ -2318,6 +2283,7 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			}
 
 			// Now we can render Linked Objects
+			
 			for (long k = 0; k < eobj->nblinked; k++)
 			{
 				if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
@@ -3075,5 +3041,3 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 	}
 
 }
-
-#endif

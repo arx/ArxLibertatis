@@ -3683,7 +3683,7 @@ else
 		SPECIAL_DRAGINTER_RENDER=0;
 	}
 
-	PopAllTriangleList(true);
+	PopAllTriangleList();
 	
 					}
 

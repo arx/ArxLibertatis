@@ -3141,7 +3141,6 @@ extern float FLOATTEST;
 
 Vec3f BBOXMIN, BBOXMAX;
 
-extern long USE_CEDRIC_ANIM;
 //*************************************************************************************
 // Memorizes information for animation to animation smoothing interpolation
 //*************************************************************************************

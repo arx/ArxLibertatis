@@ -110,10 +110,9 @@ extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;	// VB using TLVERTEX format.
 extern long ZMAPMODE;
 extern float fZFogStart;
-//-----------------------------------------------------------------------------
 ANIM_HANDLE animations[MAX_ANIMATIONS];
 bool MIPM;
-D3DTLVERTEX LATERDRAWHALO[HALOMAX*4];
+D3DTLVERTEX LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 EERIE_QUAT * BIGQUAT;
 EERIEMATRIX * BIGMAT;
@@ -124,13 +123,8 @@ long __MUST_DRAW=0;
 long FORCE_NO_HIDE=0;
 long DEBUG_PATHFAIL=1;
 long LOOK_AT_TARGET=0;
-#if !CEDRIC
-	static unsigned char * grps=NULL;
-	static long max_grps=0;	
-#else
-	unsigned char * grps=NULL;
-	long max_grps=0;	
-#endif
+unsigned char * grps = NULL;
+long max_grps = 0;
 long TRAP_DETECT=-1;
 long TRAP_SECRET=-1;
 long USEINTERNORM=1;
@@ -225,18 +219,14 @@ void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim)
 	au->flags&=~EA_FORCEPLAY;	
 }
 
-//-----------------------------------------------------------------------------
-void EERIE_ANIMMANAGER_Init()
-{
-	memset(animations,0,sizeof(ANIM_HANDLE)*MAX_ANIMATIONS);
+void EERIE_ANIMMANAGER_Init() {
+	memset(animations, 0, sizeof(ANIM_HANDLE) * MAX_ANIMATIONS);
 }
 
-//-----------------------------------------------------------------------------
-
-void EERIE_ANIMMANAGER_PurgeUnused()
-{
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
+void EERIE_ANIMMANAGER_PurgeUnused() {
+	
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		
 		if (	(animations[i].path[0]!=0)
 			&&	(animations[i].locks==0)	)
 		{
@@ -271,17 +261,14 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 	}
 }
 
-//-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path)
-{
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
-		if (!strcasecmp(animations[i].path,path))
-		{
+ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path) {
+	
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		if(!strcasecmp(animations[i].path, path)) {
 			return &animations[i];
 		}
 	}
-
+	
 	return NULL;
 }
 
@@ -330,8 +317,8 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 	char path2[256];
 	int pathcount = 2;
 
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		
 		if (animations[i].path[0]==0)
 		{				
 			if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,FileSize))!=NULL)
@@ -378,8 +365,8 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 	long count=0;
 	*memsize=0;
 
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		
 		if (animations[i].path[0]!=0)
 		{
 			count++;
@@ -619,18 +606,16 @@ suite:
 		}	
 	}
 }
-INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING=NULL;							
-extern long USE_CEDRIC_ANIM;
-//-----------------------------------------------------------------------------
-void EERIEDrawAnimQuat(	EERIE_3DOBJ * eobj,
-						ANIM_USE * eanim,
-						Anglef * angle,
-						Vec3f * pos,
-						unsigned long time,
-						INTERACTIVE_OBJ * io,
-						long typ
-						)
-{
+INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING=NULL;
+
+void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
+                       ANIM_USE * eanim,
+                       Anglef * angle,
+                       Vec3f * pos,
+                       unsigned long time,
+                       INTERACTIVE_OBJ * io,
+                       bool render) {
+	
 	if (	(io)
 		&&	(io!=inter.iobj[0])	)
 	{
@@ -673,20 +658,15 @@ suite:
 
 	DESTROYED_DURING_RENDERING=NULL;
 
-	if (USE_CEDRIC_ANIM)
-		Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, typ);
+	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, render);
 }
 
-#define ANIMQUATTYPE_FIRST_PERSON	2
-#define ANIMQUATTYPE_NO_RENDER		4
-#define ANIMQUATTYPE_NO_COMPUTATIONS	8
 extern float GLOBAL_LIGHT_FACTOR;
 
 
 //*************************************************************************************
 // Procedure for drawing Interactive Objects (Not Animated)
 //*************************************************************************************
-
 void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
 					EERIEMATRIX * mat,Vec3f  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
 {
@@ -811,49 +791,35 @@ ARX_D3DVERTEX * PushVertexInTableCull_TMetal(TextureContainer *pTex)
 	return &pTex->pVertexListCull_TMetal[pTex->ulNbVertexListCull_TMetal-3];
 }
 
-void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex);
-
-
-//-----------------------------------------------------------------------------
-void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
-{
-	if(	!_pTex->ulNbVertexListCull )
-	{
+static void PopOneTriangleList(TextureContainer *_pTex) {
+	
+	if(!_pTex->ulNbVertexListCull) {
 		return;
 	}
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetTexture(0, _pTex);
-
-	if (_pTex->userflags & POLY_LATE_MIP)
-	{
+	
+	if(_pTex->userflags & POLY_LATE_MIP) {
 		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
 	}
 	
-	if( _pTex->ulNbVertexListCull )
-	{
-		EERIEDRAWPRIM(	D3DPT_TRIANGLELIST,
-						D3DFVF_TLVERTEX,
-						_pTex->pVertexListCull,
-						_pTex->ulNbVertexListCull,
-						0, 
-						0 );
-
-		if(_bUpdate) 
-			_pTex->ulNbVertexListCull = 0;
-	}
 	
-	if (_pTex->userflags & POLY_LATE_MIP)
-	{
+	EERIEDRAWPRIM(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, _pTex->pVertexListCull,
+	              _pTex->ulNbVertexListCull, 0, 0);
+	
+	_pTex->ulNbVertexListCull = 0;
+	
+	if(_pTex->userflags & POLY_LATE_MIP) {
 		float biasResetVal = 0;
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(biasResetVal);
 	}
+	
 }
 
-//-----------------------------------------------------------------------------
-void PopOneTriangleListTransparency(TextureContainer *_pTex)
-{
+static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
+	
 	if(	!_pTex->ulNbVertexListCull_TNormalTrans&&
 		!_pTex->ulNbVertexListCull_TAdditive&&
 		!_pTex->ulNbVertexListCull_TSubstractive&&
@@ -940,10 +906,10 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 	}
 }
 
-void PopAllTriangleList(bool _bUpdate) {
+void PopAllTriangleList() {
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
-		PopOneTriangleList(pTex, _bUpdate);
+		PopOneTriangleList(pTex);
 		pTex = pTex->m_pNext;
 	}
 }
@@ -1931,14 +1897,16 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			if ((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) 
 				{
 					Vec3f vect1,vect2;
-					D3DTLVERTEX * vert=&LATERDRAWHALO[(HALOCUR<<2)];						
+					D3DTLVERTEX * vert=&LATERDRAWHALO[(HALOCUR<<2)];
 
-					if (HALOCUR<(HALOMAX-1)) HALOCUR++;
+					if(HALOCUR < ((long)HALOMAX) - 1) {
+						HALOCUR++;
+					}
 
 					memcpy(&vert[0],&workon[first],sizeof(D3DTLVERTEX));
 					memcpy(&vert[1],&workon[first],sizeof(D3DTLVERTEX));
 					memcpy(&vert[2],&workon[second],sizeof(D3DTLVERTEX));
-					memcpy(&vert[3],&workon[second],sizeof(D3DTLVERTEX));						
+					memcpy(&vert[3],&workon[second],sizeof(D3DTLVERTEX));
 
 					float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 10 )+0.7f))*0.6f;
 					vect1.x=workon[first].sx-workon[third].sx;
@@ -2105,23 +2073,20 @@ void EERIE_ANIMMANAGER_Clear(long i)
 	animations[i].sizes=NULL;
 	animations[i].path[0]=0;
 }
-//-----------------------------------------------------------------------------
-void EERIE_ANIMMANAGER_ClearAll()
-{
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
-		if (animations[i].path[0]!=0)
-		{
-			EERIE_ANIMMANAGER_Clear(i);			
+
+void EERIE_ANIMMANAGER_ClearAll() {
+	
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		if(animations[i].path[0] != '\0') {
+			EERIE_ANIMMANAGER_Clear(i);
 		}
 	}
-
-	if (grps)
-	{
-		free (grps);
+	
+	if(grps) {
+		free(grps);
 		grps = NULL;
 	}
-
+	
 }
 void EERIE_ANIMMANAGER_ReloadAll()
 {
@@ -2145,11 +2110,9 @@ void EERIE_ANIMMANAGER_ReloadAll()
 			}
 		}
 	}
-		
-	for ( int i=0;i<MAX_ANIMATIONS;i++)
-	{
-		if (animations[i].path[0]!=0)
-		{
+	
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		if(animations[i].path[0] != '\0') {
 			char pathhh[256];
 			strcpy(pathhh,animations[i].path);
 			EERIE_ANIMMANAGER_Clear(i);

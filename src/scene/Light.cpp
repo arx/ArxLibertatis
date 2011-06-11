@@ -84,7 +84,7 @@ bool ValidDynLight(long num)
 
 	return false;
 }
-extern float GLOBAL_LIGHT_FACTOR;
+
 void PrecalcIOLighting(const Vec3f * pos, float radius, long flags)
 {
 	static Vec3f lastpos;
@@ -515,9 +515,6 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	}
 }
 
-//*************************************************************************************
-extern float GLOBAL_LIGHT_FACTOR;
-//*************************************************************************************
 long	DYNAMIC_NORMALS = 1;
 
 extern EERIE_CAMERA DynLightCam;

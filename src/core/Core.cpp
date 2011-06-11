@@ -421,7 +421,6 @@ long FINAL_RELEASE		= 0;
 long AUTO_FULL_SCREEN	= 0;
 long SHOW_INGAME_MINIMAP= 1;
 long DEBUG_FRUSTRUM		= 0;
-long USE_CEDRIC_ANIM	= 1;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
@@ -5096,9 +5095,8 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 
 extern long NEED_INTRO_LAUNCH;
 
-//-----------------------------------------------------------------------------
-HRESULT DANAE::Render()
-{
+HRESULT DANAE::Render() {
+	
 	FrameTime = ARX_TIME_Get();
 
 	if (GLOBAL_SLOWDOWN!=1.f)
@@ -5257,7 +5255,7 @@ static float _AvgFrameDiff = 150.f;
 	if (WILL_RELOAD_ALL_TEXTURES)
 	{
 		LogDebug << "reload all textures";
-		//ReloadAllTextures();
+		//ReloadAllTextures(); TODO is this needed for changing resolutions in-game?
 		WILL_RELOAD_ALL_TEXTURES=0;
 	}
 
@@ -5582,12 +5580,8 @@ static float _AvgFrameDiff = 150.f;
 				ARX_CHECK_ULONG(iCalc);
 
 				assert(inter.iobj[0]->obj != NULL);
-				EERIEDrawAnimQuat(inter.iobj[0]->obj,
-					&inter.iobj[0]->animlayer[0],
-					&inter.iobj[0]->angle,&inter.iobj[0]->pos,
-					ARX_CLEAN_WARN_CAST_ULONG(iCalc)
-
-									  , inter.iobj[0], 4);
+				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+				                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(iCalc), inter.iobj[0], false);
 
 					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
@@ -5615,18 +5609,9 @@ static float _AvgFrameDiff = 150.f;
 
 			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
-			// TODO remove
-			if(!inter.iobj[0]->obj)
-				LogError << "missing " << inter.iobj[0]->filename;
-
 			assert(inter.iobj[0]->obj != NULL);
-			EERIEDrawAnimQuat(inter.iobj[0]->obj,
-					&inter.iobj[0]->animlayer[0],
-					&inter.iobj[0]->angle,
-					&inter.iobj[0]->pos,
-					ARX_CLEAN_WARN_CAST_ULONG(val),
-					inter.iobj[0],
-					4);
+			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+			                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(val), inter.iobj[0], false);
 
 
 				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
@@ -6284,9 +6269,9 @@ static float _AvgFrameDiff = 150.f;
 		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
 
 		assert(inter.iobj[0]->obj != NULL);
-		EERIEDrawAnimQuat(inter.iobj[0]->obj,
-				&inter.iobj[0]->animlayer[0],
-				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],8);
+		EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+		                  &inter.iobj[0]->pos, 0, inter.iobj[0]);
+		
 		ACTIVECAM->use_focal=restore;
 		FORCE_FRONT_DRAW=0;
 	}
@@ -6500,7 +6485,7 @@ static float _AvgFrameDiff = 150.f;
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	PopAllTriangleList(true);
+	PopAllTriangleList();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	PopAllTriangleListTransparency();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -6544,7 +6529,7 @@ static float _AvgFrameDiff = 150.f;
 		ARX_INTERFACE_RenderCursor();
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList(true);
+		PopAllTriangleList();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		PopAllTriangleListTransparency();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);

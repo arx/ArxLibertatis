@@ -155,7 +155,6 @@ extern long NO_TEXT_AT_ALL;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
 extern long HALOCUR;
-extern long USE_CEDRIC_ANIM;
 extern long ALLOW_CHEATS;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long WILLRETURNTOFREELOOK;
@@ -6721,7 +6720,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						// Now draw the rune
 						DrawEERIEInter(necklace.runes[i],&angle,&pos,NULL);
 
-						PopAllTriangleList(true);
+						PopAllTriangleList();
 
 						xpos++;
 
@@ -6756,7 +6755,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 								necklace.runes[i]->angle.b+=_framedelay*2.f;
 
-								PopAllTriangleList(true);
+								PopAllTriangleList();
 								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -8422,18 +8421,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 		IN_BOOK_DRAW=1;
 		vector<EERIE_VERTEX> vertexlist = inter.iobj[0]->obj->vertexlist3;
 
-		if (player.useanim.cur_anim != NULL)
-		{
-
+		if(player.useanim.cur_anim != NULL) {
 			ARX_CHECK_ULONG(Original_framedelay);
-			EERIEDrawAnimQuat(inter.iobj[0]->obj, &player.useanim,&ePlayerAngle,&pos,
-				ARX_CLEAN_WARN_CAST_ULONG(Original_framedelay),
-				NULL, 0);
-
-		}
-		else
-		{
-			DrawEERIEInter(inter.iobj[0]->obj,&ePlayerAngle,&pos,NULL);
+			EERIEDrawAnimQuat(inter.iobj[0]->obj, &player.useanim, &ePlayerAngle, &pos,
+			                  static_cast<unsigned long>(Original_framedelay), NULL);
+		} else {
+			DrawEERIEInter(inter.iobj[0]->obj, &ePlayerAngle, &pos, NULL);
 		}
 
 		INVISIBILITY_OVERRIDE=0;
@@ -8442,7 +8435,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			PopAllTriangleList(true);
+			PopAllTriangleList();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			PopAllTriangleListTransparency();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
