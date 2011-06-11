@@ -2,7 +2,7 @@
 #ifndef ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 #define ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 
-#include "platform/math/Vector3.h"
+#include "math/Vector3.h"
 
 struct EERIE_RGB {
 	float r;

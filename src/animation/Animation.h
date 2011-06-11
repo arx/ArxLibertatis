@@ -40,8 +40,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "graphics/d3dwrapper.h"
-#include "platform/math/Vector3.h"
-#include "platform/math/Angle.h"
+#include "math/MathFwd.h"
 
 class TextureContainer;
 struct INTERACTIVE_OBJ;

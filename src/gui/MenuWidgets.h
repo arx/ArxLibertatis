@@ -52,7 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "gui/Text.h"
-#include "platform/math/Vector2.h"
+#include "math/Vector2.h"
+#include "math/Rectangle.h"
 #include "window/Input.h"
 
 class TextureContainer;

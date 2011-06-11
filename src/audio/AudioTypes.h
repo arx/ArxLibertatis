@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 #include "platform/Flags.h"
-#include "platform/math/Vector3.h"
+#include "math/Vector3.h"
 
 namespace audio {
 

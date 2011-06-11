@@ -50,9 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/d3dwrapper.h"
 #include "graphics/BaseGraphicsTypes.h"
 
-#include "platform/Platform.h"
-#include "platform/math/Vector2.h"
-#include "platform/math/Angle.h"
+#include "math/Vector2.h"
+#include "math/Angle.h"
 
 #include "Configure.h"
 

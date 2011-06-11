@@ -1,8 +1,8 @@
 
-#ifndef ARX_PLATFORM_MATH_RECTANGLE_H
-#define ARX_PLATFORM_MATH_RECTANGLE_H
+#ifndef ARX_MATH_RECTANGLE_H
+#define ARX_MATH_RECTANGLE_H
 
-#include "platform/math/Vector2.h"
+#include "math/Vector2.h"
 
 // TODO name Rectangle is used in windows headers
 template<class T>
@@ -144,7 +144,4 @@ public:
 
 template<class T> const _Rectangle<T> _Rectangle<T>::ZERO(T(0), T(0), T(0));
 
-typedef _Rectangle<s32> Rect;
-typedef _Rectangle<float> Rectf;
-
-#endif // ARX_PLATFORM_MATH_RECTANGLE_H
+#endif // ARX_MATH_RECTANGLE_H

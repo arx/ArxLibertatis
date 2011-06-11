@@ -12,7 +12,7 @@
 #include <string>
 
 #include "graphics/Color.h"
-#include "platform/math/Rectangle.h"
+#include "math/MathFwd.h"
 
 class Font;
 

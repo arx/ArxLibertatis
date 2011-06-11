@@ -5,7 +5,7 @@
 
 #include "graphics/Math.h"
 #include "graphics/image/Image.h"
-#include "platform/math/Rectangle.h"
+#include "math/Rectangle.h"
 
 
 class Texture2D;

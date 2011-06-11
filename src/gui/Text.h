@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <climits>
 
 #include "graphics/Color.h"
-#include "platform/math/Rectangle.h"
+#include "math/MathFwd.h"
 
 class TextManager;
 class Font;

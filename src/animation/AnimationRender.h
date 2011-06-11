@@ -27,8 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_ANIMATION_ANIMATIONRENDER_H
 
 #include "graphics/d3dwrapper.h"
-#include "platform/math/Vector3.h"
-#include "platform/math/Angle.h"
+#include "math/MathFwd.h"
 
 struct EERIE_3DOBJ;
 struct ANIM_USE;

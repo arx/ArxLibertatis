@@ -58,18 +58,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEPOLY_H
 #define EERIEPOLY_H
 
-
 #include "graphics/GraphicsTypes.h"
-
 // TODO move INTERCATIVE_OBJ somewhere else / move flags here
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Spells.h"
-
+#include "math/Rectangle.h"
 #include "platform/Flags.h"
-#include "platform/math/Angle.h"
-#include "platform/math/Rectangle.h"
-
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
 
