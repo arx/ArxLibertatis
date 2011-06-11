@@ -143,11 +143,11 @@ long CountTextures( std::string& tex, long * memsize, long * memmip)
 		}
 
 		*memsize += (long)(ptcTexture->m_dwWidth * ptcTexture->m_dwHeight * ptcTexture->m_dwBPP) >> 3;
-		tex = temp;
+		tex += temp;
+		
+		ptcTexture = ptcTexture->m_pNext;
 	}
-
-	ptcTexture = ptcTexture->m_pNext;
-
+	
 	return count;
 }
 
