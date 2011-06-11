@@ -96,8 +96,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/LoadLevel.h"
 
-#define _ARX_CEDITOR_  0
-
 long FASTLOADS = 0;
 
 extern long CURRENTSNAPNUM;
@@ -1965,9 +1963,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			thWnd = GetDlgItem(hWnd, IDC_VERSION);
 			sprintf(tex, "Ver.%2.3f", DANAE_VERSION);
 			SetWindowText(thWnd, tex);
-			//Danae_Registry_Read("LastWorkingDir", Project_workingdir, "c:\\arx\\", 256);
-			thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
-			//SetWindowText(thWnd, Project_workingdir);
 
 			SetClick(hWnd, IDC_OTHERSERVER);
 
@@ -3385,14 +3380,6 @@ long IOScript_Y = -1;
 long IOScript_XX = -1;
 long IOScript_YY = -1;
 
-#if _ARX_CEDITOR_
-CEditor * edit1 = NULL;
-CEditor * edit2 = NULL;
-
-long edit_lin1 = 0;
-long edit_lin2 = 0;
-#endif // _ARX_CEDITOR_
-
 INTERACTIVE_OBJ * edit_io = NULL;
 
 //*************************************************************************************
@@ -3468,7 +3455,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
-			px += rec.right + 5;
 
 			// Secondary win
 			px = rec2.left;
@@ -3506,7 +3492,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
-			px += rec.right + 5;
 
 
 			UpdateWindow(hWnd);
@@ -3515,18 +3500,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 		case WM_CLOSE:
 			KillLightThread();
 
-#if _ARX_CEDITOR_
-			if ((CDP_EditIO) && edit1 && edit2)
-			{
-				edit_io = CDP_EditIO;
-				edit_lin1 = LOWORD(edit1->GetCurrentPos());
-				edit_lin2 = LOWORD(edit2->GetCurrentPos());
-			}
-
-			CDP_IOOptions = NULL;
-			SAFE_DELETE(edit1);
-			SAFE_DELETE(edit2);
-#endif
 			CDP_IOOptions = NULL;
 			RECT _wndrect;
 			GetWindowRect(hWnd, &_wndrect);
@@ -3580,12 +3553,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 					if (IsChecked(hWnd, IDC_FREEZESCRIPT))	CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
 					else CDP_EditIO->ioflags &= ~IO_FREEZESCRIPT;
 
-#if _ARX_CEDITOR_
-					edit_lin1 = LOWORD(edit1->GetCurrentPos());
-					edit_lin2 = LOWORD(edit2->GetCurrentPos());
-					edit1->GetText(text1, MAX_SCRIPT_SIZE);
-					edit2->GetText(text2, MAX_SCRIPT_SIZE);
-#endif
 					long i = 0;
 
 					if (CDP_EditIO->script.data != NULL)
@@ -3691,10 +3658,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				}
 
 				CDP_IOOptions = NULL;
-#if _ARX_CEDITOR_
-				SAFE_DELETE(edit1);
-				SAFE_DELETE(edit2);
-#endif			
 				RECT _wndrect;
 				GetWindowRect(hWnd, &_wndrect);
 				IOScript_X = _wndrect.left;
@@ -3706,18 +3669,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			if (IDCANCEL == LOWORD(wParam))
 			{
-
-			#if _ARX_CEDITOR_
-				if ((CDP_EditIO) && (edit1) && (edit2))
-				{
-					edit_io = CDP_EditIO;
-					edit_lin1 = LOWORD(edit1->GetCurrentPos());
-					edit_lin2 = LOWORD(edit2->GetCurrentPos());
-				}
-
-				SAFE_DELETE(edit1);
-				SAFE_DELETE(edit2);		
-			#endif
 			
 				CDP_IOOptions = NULL;
 				RECT _wndrect;
@@ -3743,64 +3694,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				SetWindowText(thWnd, temp);
 
 				thWnd = GetDlgItem(hWnd, IDC_EDIT1);
-
-#if _ARX_CEDITOR_
-				edit1 = new CEditor(thWnd, SW_SHOW);
-
-				if (CDP_EditIO->script.data)
-				{
-					memcpy(text1, CDP_EditIO->script.data, CDP_EditIO->script.size);
-					text1[CDP_EditIO->script.size] = 0;
-
-					for (long k = CDP_EditIO->script.size; k > 0; k--)
-					{
-						if (text1[k] <= 32) text1[k] = 0;
-						else break;
-					}
-				}
-				else strcpy(text1, "");
-
-				edit1->SetText(text1);
-				edit1->SetBackgroundColor(0x00FFFFFF);
-				HWND h1, h2;
-				h1 = GetDlgItem(hWnd, IDC_LINE1);
-				h2 = GetDlgItem(hWnd, IDC_COL1);
-				edit1->SetHwndWindowPos(h1, h2);
-
-				thWnd = GetDlgItem(hWnd, IDC_EDIT2);
-				edit2 = new CEditor(thWnd, SW_SHOW);
-
-				if (CDP_EditIO->over_script.data)
-				{
-					memcpy(text2, CDP_EditIO->over_script.data, CDP_EditIO->over_script.size);
-					text2[CDP_EditIO->over_script.size] = 0;
-
-					for (long k = CDP_EditIO->over_script.size; k > 0; k--)
-					{
-						if (text2[k] <= 32) text2[k] = 0;
-						else break;
-					}
-				}
-				else strcpy(text2, "");
-
-				edit2->SetText(text2);
-
-				if (CDP_EditIO->ident == -1)
-					edit2->SetBackgroundColor(0x000000FF);
-				else
-					edit2->SetBackgroundColor(0x00FFFFFF);
-
-				h1 = GetDlgItem(hWnd, IDC_LINE2);
-				h2 = GetDlgItem(hWnd, IDC_COL2);
-				edit2->SetHwndWindowPos(h1, h2);
-
-				if ((edit_io == CDP_EditIO) && (edit_io != NULL))
-				{
-					edit1->SetCurrentLinePos(edit_lin1);
-					edit2->SetCurrentLinePos(edit_lin2);
-				}
-
-#endif
 
 				if (CDP_EditIO->ioflags & IO_FREEZESCRIPT) SetCheck(hWnd, IDC_FREEZESCRIPT, CHECK);
 
