@@ -1688,7 +1688,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 
 static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
-	long pos = 0;
+	size_t pos = 0;
 	std::string loadfile;
 	std::stringstream ss;
 
@@ -1707,27 +1707,25 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 
-	if (asi->nb_inter)
-	{
-		idx_io = (ARX_CHANGELEVEL_IO_INDEX *) malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
-
+	if(asi->nb_inter) {
+		idx_io = (ARX_CHANGELEVEL_IO_INDEX *)malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
 		memcpy(idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
 		pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
+	} else {
+		idx_io = NULL;
 	}
-	else idx_io = NULL;
-
+	
 	// Skip Path info (used later !)
 	pos += sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths;
-
+	
 	// Restore Ambiances
-	if (asi->ambiances_data_size)
-	{
-		void * playlist = (void *)(dat + pos);
+	if(asi->ambiances_data_size) {
+		ARX_SOUND_AmbianceRestorePlayList(dat + pos, asi->ambiances_data_size);
 		pos += asi->ambiances_data_size;
-
-		ARX_SOUND_AmbianceRestorePlayList(playlist, asi->ambiances_data_size);
 	}
-
+	
+	arx_assert(pos <= size);
+	
 	free(dat);
 	return 1;
 }
@@ -2460,7 +2458,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		else io->script.lvar = NULL;
 
 		io->script.nblvar = ass->nblvar;
-		long ERRCOUNT = 0;
 
 		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 
@@ -2538,7 +2535,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					io->script.lvar[i].fval = 0;
 					io->script.lvar[i].ival = 0;
 					io->script.lvar[i].type = TYPE_L_LONG;
-					ERRCOUNT++;
 					ass->nblvar = i;
 
 					goto corrupted;
@@ -2574,79 +2570,69 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		for (int i = 0; i < ass->nblvar; i++)
 		{
 			ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
-			memset(&io->over_script.lvar[i], 0, sizeof(SCRIPT_VAR)); 
-		retry2:
-			;
-
-			switch (avs->type)
-			{
-				case TYPE_L_TEXT:
+			memset(&io->over_script.lvar[i], 0, sizeof(SCRIPT_VAR));
+			
+			s32 type = avs->type;
+			if(type != TYPE_L_TEXT && type != TYPE_L_LONG && type != TYPE_L_FLOAT) {
+				if(avs->name[0] == '$' || avs->name[0] == '\xA3') {
+					avs->type = TYPE_L_TEXT;
+				} else if(avs->name[0] == '#' || avs->name[0] == 's') {
+					avs->type = TYPE_L_LONG;
+				} else if(avs->name[0] == '&' || avs->name[0] == '@') {
+					avs->type = TYPE_L_FLOAT;
+				}
+			}
+			
+			switch (type) {
+				
+				case TYPE_L_TEXT: {
+					
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
 					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_TEXT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-
-					if (io->over_script.lvar[i].ival)
-					{
+					
+					if(io->over_script.lvar[i].ival) {
 						io->over_script.lvar[i].text = (char *) malloc(io->over_script.lvar[i].ival + 1);
-
 						memset(io->over_script.lvar[i].text, 0, io->over_script.lvar[i].ival + 1);
 						memcpy(io->over_script.lvar[i].text, dat + pos, io->over_script.lvar[i].ival);
 						pos += io->over_script.lvar[i].ival;
 						io->over_script.lvar[i].ival = strlen(io->over_script.lvar[i].text) + 1;
-					}
-					else
-					{
+					} else {
 						io->over_script.lvar[i].text = NULL;
 						io->over_script.lvar[i].ival = 0;
 					}
-
-					break;
 					
-				case TYPE_L_LONG:
+					break;
+				}
+				
+				case TYPE_L_LONG: {
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
 					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_LONG;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
-				case TYPE_L_FLOAT:
+				}
+				
+				case TYPE_L_FLOAT: {
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
 					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_FLOAT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
-				default:
-
-				if ((avs->name[0] == '$') || (avs->name[0] == '\xA3'))
-				{
-					avs->type = TYPE_L_TEXT;
-						goto retry2;
-					}
-
-					if ((avs->name[0] == '#') || (avs->name[0] == 's'))
-					{
-						avs->type = TYPE_L_LONG;
-						goto retry2;
-					}
-
-					if ((avs->name[0] == '&') || (avs->name[0] == '@'))
-					{
-						avs->type = TYPE_L_FLOAT;
-						goto retry2;
-					}
-
-					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+				}
+				
+				default: {
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = 0;
 					io->script.lvar[i].ival = 0;
 					io->script.lvar[i].type = TYPE_L_LONG;
-					ERRCOUNT++;
-					ass->nblvar = i;
 					goto corrupted;
 					break;
+				}
 			}
 		}
 
