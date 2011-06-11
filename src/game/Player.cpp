@@ -2378,13 +2378,11 @@ void ARX_PLAYER_Manage_Visual()
 					Full_Jump_Height = 0;
 					player.jumpphase = 2;
 					ChangeMoveAnim = alist[ANIM_JUMP_UP];
-					ChangeMA_Stopend = 1;
 					player.jumpstarttime = ARXTimeUL();
 					player.jumplastposition = -1.f;
 					break;
 				case 2: // Moving Up
 					ChangeMoveAnim = alist[ANIM_JUMP_UP];
-					ChangeMA_Stopend = 1;
 
 					if (player.jumplastposition >= 1.f)
 					{
@@ -2394,7 +2392,6 @@ void ARX_PLAYER_Manage_Visual()
 					}
 					break;
 				case 4: // Post-synch
-					ChangeMA_Stopend = 1;
 					LAST_JUMP_ENDTIME = ARXTimeUL();
 
 					if (((ause0->cur_anim == alist[ANIM_JUMP_END])
