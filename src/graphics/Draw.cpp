@@ -987,8 +987,8 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3D
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEPOLY_DrawWired(EERIEPOLY *ep,long col)
-{
+void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
+	
 	D3DTLVERTEX ltv[5];
 	ltv[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
 	ltv[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 0.f);
@@ -1018,6 +1018,7 @@ void EERIEPOLY_DrawWired(EERIEPOLY *ep,long col)
 
 	GRenderer->ResetTexture(0);
 
+	D3DCOLOR col = color.toBGRA();
 	if (col)
 	 ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=col;
 	else if (to==4)

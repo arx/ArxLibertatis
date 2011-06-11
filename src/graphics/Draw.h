@@ -95,7 +95,7 @@ void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
 void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos);
 void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos, float rot);
 
-void EERIEPOLY_DrawWired(EERIEPOLY * ep, long col = 0);
+void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color col = Color::none);
 void EERIEPOLY_DrawNormals(EERIEPOLY * ep);
 
 extern TextureContainer * EERIE_DRAW_sphere_particle;

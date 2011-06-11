@@ -2939,9 +2939,9 @@ void ARX_PORTALS_ComputeRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long t
 			continue;
 
 		if (Cull)
-			EERIEPOLY_DrawWired(epp,0xFFFF0000);
+			EERIEPOLY_DrawWired(epp, Color::red);
 		else
-			EERIEPOLY_DrawWired(epp,0xFF00FF00);
+			EERIEPOLY_DrawWired(epp, Color::green);
 		
 		n_bbox.min.x=max(n_bbox.min.x,bbox->min.x);
 		n_bbox.min.y=max(n_bbox.min.y,bbox->min.y);
@@ -3050,7 +3050,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			EERIERTPPoly2(epp);
 
 			if (NEED_TEST_TEXT)
-				EERIEPOLY_DrawWired(epp,0xFFFF00FF);
+				EERIEPOLY_DrawWired(epp, Color::magenta);
 
 			continue;
 		}
@@ -3071,9 +3071,9 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		if (NEED_TEST_TEXT)
 		{
 			if (Cull)
-				EERIEPOLY_DrawWired(epp,0xFFFF0000);
+				EERIEPOLY_DrawWired(epp, Color::red);
 			else
-				EERIEPOLY_DrawWired(epp,0xFF00FF00);
+				EERIEPOLY_DrawWired(epp, Color::blue);
 		}
 		
 
