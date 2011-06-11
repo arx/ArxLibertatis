@@ -224,14 +224,10 @@ void ARX_SPEECH_Render()
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
 					sprintf(temp, "%s > %s", speech[i].name, speech[i].lpszUText.c_str());
 				else
-					sprintf(temp, " %s", speech[i].lpszUText.c_str());//>
+					sprintf(temp, " %s", speech[i].lpszUText.c_str());
 
-				EERIEDrawBitmap(
-								120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
-								16 * Xratio, 16 * Xratio,
-								0.00001f,
-								arx_logo_tc,
-								D3DCOLORWHITE);
+				EERIEDrawBitmap(120 * Xratio - 16 * Xratio, static_cast<float>(igrec),
+				                16 * Xratio, 16 * Xratio, .00001f, arx_logo_tc, Color::white);
 
 				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
 										   temp, Color::fromBGRA(speech[i].color), NULL);

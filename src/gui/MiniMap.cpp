@@ -843,8 +843,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 										fpx *= Xratio;
 										fpy *= Yratio;
-										EERIEDrawBitmap( fpx, fpy,
-														5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect, D3DRGB(col, 0, 0));
+										EERIEDrawBitmap(fpx, fpy, 5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect,
+										                Color3f(col, 0, 0).to<u8>());
 
 										if (!fl2)
 											GRenderer->SetRenderState(Renderer::AlphaBlending, false);

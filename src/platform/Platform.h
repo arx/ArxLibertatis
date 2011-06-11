@@ -234,6 +234,7 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 #define ARX_CAST_UINT( _x )		static_cast<unsigned int>( _x )
 #define ARX_CAST_USHORT( _x )	static_cast<unsigned short>( _x )
 
+// TODO remove when not used anymore
 #define ARX_OPAQUE_WHITE		0xFFFFFFFF
 
 // TODO use arx_assert directly

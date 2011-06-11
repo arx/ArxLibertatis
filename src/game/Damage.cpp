@@ -189,7 +189,7 @@ void ARX_DAMAGE_Reset_Blood_Info()
 
 void ARX_DAMAGE_Show_Hit_Blood()
 {
-	D3DCOLOR color;
+	Color color;
 	static float Last_Blood_Pos = 0.f;
 	static long duration;
 
@@ -205,9 +205,9 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		if (player.poison > 1.f)
-			color = D3DRGB(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f);
+			color = Color3f(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f).to<u8>();
 		else
-			color = D3DRGB(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f);
+			color = Color3f(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f).to<u8>();
 
 		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -220,9 +220,9 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		if (player.poison > 1.f)
-			color = D3DRGB(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos);
+			color = Color3f(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos).to<u8>();
 		else
-			color = D3DRGB(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos);
+			color = Color3f(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos).to<u8>();
 
 		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);

@@ -361,11 +361,10 @@ bool ARX_INTERFACE_MouseInBook()
 	else return false;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawItem(TextureContainer *tc, const float x, const float y, const float z, const D3DCOLOR col)
-{
-	if (tc)
+static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, float z = 0.001f, Color col = Color::white) {
+	if(tc) {
 		EERIEDrawBitmap(x, y, INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), z, tc, col);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -6060,44 +6059,26 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 					float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
 					float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
 
-					D3DCOLOR color;
-
-					if ((io->poisonous) && (io->poisonous_count!=0))
-						color=0xFF00FF00;
-					else color=D3DCOLORWHITE;
-
-					EERIEDrawBitmap(
-						px,
-						py,
-					                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-						0.001f,
-						tc,color);
+					Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
+					EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+					                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
 
 					if (!bItemSteal && (io==FlyingOverIO))
 					{
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-						EERIEDrawBitmap(
-							px,
-							py,
-						                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-							0.001f,
-							tc,
-							D3DCOLORWHITE);
+						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 					else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						
-						float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-						DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
-						
-						EERIEDrawBitmap(
-							px,
-							py,
-							INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, (dwColor<<16)|(dwColor<<8)|dwColor);
+						float fColorPulse = fabs(cos(radians(fDecPulse)));
+						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc,
+						                Color::gray(fColorPulse));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
@@ -6145,60 +6126,29 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 				if (NeedHalo(io))
 					tc2 = io->inv->TextureHalo;
 
-				if (tc!=NULL)
-				{
+				if(tc != NULL) {
+					
 					float px = fPosX + i*INTERFACE_RATIO(32) + INTERFACE_RATIO(7);
 					float py = fPosY + j*INTERFACE_RATIO(32) + INTERFACE_RATIO(6);
-
-					D3DCOLOR color;
-
-					if ((io->poisonous) && (io->poisonous_count!=0))
-						color=0xFF00FF00;
-					else color=D3DCOLORWHITE;
-
-					EERIEDrawBitmap(
-						px,
-						py,
-
-						INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-						INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-
-						0.001f,
-						tc,color);
-
-					if (io==FlyingOverIO)
-					{
+					
+					Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
+					EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+					                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
+					
+					if(io == FlyingOverIO) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						EERIEDrawBitmap(
-							px,
-							py,
-
-							INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-							INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-
-							0.001f,
-							tc,D3DCOLORWHITE);
+						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-					else
-					{
-						if (io->ioflags & IO_CAN_COMBINE)
-						{
-							float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-							DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
-
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							EERIEDrawBitmap(
-								px,
-								py,
-								INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-								INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-								0.001f,
-								tc,(dwColor<<16)|(dwColor<<8)|dwColor);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
+					} else if(io->ioflags & IO_CAN_COMBINE) {
+						float fColorPulse = fabs(cos(radians(fDecPulse)));
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, 
+						                Color::gray(fColorPulse));
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
 					if (tc2)
@@ -6241,15 +6191,12 @@ void ARX_INTERFACE_Draw_Stealth_Gauge()
 			if (t>=15) v=1.f;
 			else v=(t*( 1.0f / 15 ))*0.9f+0.1f;
 
-			D3DCOLOR col=_EERIERGB(v);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			EERIEDrawBitmap(
-			                px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth), INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
-				stealth_gauge_tc,col);
-
+			EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth),
+			                INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
+			                stealth_gauge_tc, Color::gray(v));
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
@@ -6480,12 +6427,10 @@ bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float
 	return rval;
 }
 
-//#######################################################################################################
 //AFFICHAGE ICONE DE SPELLS DE DURATION
-//#######################################################################################################
-//---------------------------------------------------------------------------
-void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long flag,long i)
-{
+
+static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
+	
 	TextureContainer * tc;
 
 	if (tcc==NULL)
@@ -6499,15 +6444,12 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 
 	if (tc)
 	{
-		EERIEDrawBitmap( posx, posy, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.01f, tc, color);
+		EERIEDrawBitmap(posx, posy, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.01f, tc, color);
 
-		if (flag & 2)
-		{
+		if(flag & 2) {
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
-
-			EERIEDrawBitmap(posx-1,posy-1,INTERFACE_RATIO_DWORD(tc->m_dwWidth)*0.5f,INTERFACE_RATIO_DWORD(tc->m_dwHeight)*0.5f,0.0001f, tc,color);
-			EERIEDrawBitmap(posx+1,posy+1,INTERFACE_RATIO_DWORD(tc->m_dwWidth)*0.5f,INTERFACE_RATIO_DWORD(tc->m_dwHeight)*0.5f,0.0001f, tc,color);
-
+			EERIEDrawBitmap(posx - 1, posy - 1, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.0001f, tc, color);
+			EERIEDrawBitmap(posx + 1, posy + 1, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.0001f, tc, color);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		}
 
@@ -6558,29 +6500,24 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 void ManageSpellIcon(long i,float rrr,long flag)
 {
 	float POSX = DANAESIZX-INTERFACE_RATIO(35);
-	D3DCOLOR color;
+	Color color;
 	float posx = POSX+lSLID_VALUE;
 	float posy = (float)currpos;
 	Spell typ=spells[i].type;
 
-	if (flag & 1)
-	{
-		color=D3DRGB(rrr,0,0);
-	}
-	else if (flag & 2)
-	{
-		color=D3DRGB(0,rrr*( 1.0f / 2 ),rrr);
+	if(flag & 1) {
+		color = Color3f(rrr, 0, 0).to<u8>();
+	} else if(flag & 2) {
+		color = Color3f(0, rrr * (1.0f/2), rrr).to<u8>();
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-
-		if (px < INTERFACE_RATIO(10)) px = INTERFACE_RATIO(10);
-
+		if(px < INTERFACE_RATIO(10)) {
+			px = INTERFACE_RATIO(10);
+		}
 		posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
-		posy =DANAESIZY - INTERFACE_RATIO(126+32); // niveau du stealth
+		posy = DANAESIZY - INTERFACE_RATIO(126+32); // niveau du stealth
 		typ = (Spell)i; // TODO ugh
-	}
-	else
-	{
-		color=D3DRGB(rrr,rrr,rrr);
+	} else {
+		color = Color::gray(rrr);
 	}
 
 	bool bOk=true;
@@ -8804,12 +8741,9 @@ void ARX_INTERFACE_DrawCurrentTorch()
 	py = DANAESIZY - INTERFACE_RATIO(158+32);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-	EERIEDrawBitmap(
-		px, py,
-	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth), INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
-		0.001f,
-		CURRENT_TORCH->inv,D3DCOLORWHITE);
+	EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth),
+	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
+	                0.001f, CURRENT_TORCH->inv, Color::white);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	if ( rnd() > 0.2f )
@@ -8889,28 +8823,17 @@ void DANAE::DrawAllInterface()
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(j,j,j));
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(1,1,1));
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
 			
-			if (bHitFlash)
-			{
-				if (player.Full_Skill_Etheral_Link >= 40)
-				{
-					float j = 1.0f - fHitFlash;
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					long col = 0;
-
-					if (j < 0.5f)
-						col = D3DRGB(j*2.0f,1,0);
-					else
-						col = D3DRGB(1,fHitFlash,0);
-
-					ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), DANAESIZY + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
+			if(bHitFlash && player.Full_Skill_Etheral_Link >= 40){
+				float j = 1.0f - fHitFlash;
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
+				ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), DANAESIZY + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
 
@@ -9451,7 +9374,7 @@ void DANAE::DrawAllInterface()
 		if ( vv < 0.f ) vv = 0;
 		else if ( vv > 1.f ) vv = 1.f;
 
-		ARX_INTERFACE_DrawItem( ChangeLevel, px, py, 0.0001f, D3DRGB( vv, vv, vv ) );
+		ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 			if (MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
@@ -9652,27 +9575,17 @@ void DANAE::DrawAllInterface()
 					if (mecanism_tc && (MAGICMODE < 0) && (lNbToDrawMecanismCursor < 3))
 					{
 
-					long lcolorMecanism=D3DRGB(1,1,1);
-
-					if(lTimeToDrawMecanismCursor>300)
-					{
-						lcolorMecanism=0;
-
-						if(lTimeToDrawMecanismCursor>400)
-						{
+					Color lcolorMecanism = Color::white;
+					if(lTimeToDrawMecanismCursor > 300) {
+						lcolorMecanism = Color::black;
+						if(lTimeToDrawMecanismCursor > 400) {
 							lTimeToDrawMecanismCursor=0;
 							lNbToDrawMecanismCursor++;
 						}
 					}
 
-						lTimeToDrawMecanismCursor += ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
-
-					EERIEDrawBitmap(0,0,
-									INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth),
-									INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
-									0.01f,
-									mecanism_tc,
-									lcolorMecanism );
+					lTimeToDrawMecanismCursor += static_cast<long>(FrameDiff);
+					EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
 				}
 
 					if (arrow_left_tc)
@@ -9680,7 +9593,7 @@ void DANAE::DrawAllInterface()
 
 					float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
 					float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-					long lcolor=D3DRGB(.5f,.5f,.5f);
+					Color lcolor = Color::gray(.5f);
 					static float fArrowMove=0.f;
 					fArrowMove+=.5f*FrameDiff;
 
@@ -9689,13 +9602,9 @@ void DANAE::DrawAllInterface()
 
 					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 					
-					EERIEDrawBitmap(0+fMove,						// Left
-									(DANAESIZY-fSizeY)*.5f,
-									fSizeX,
-									fSizeY,
-									0.01f,
-									arrow_left_tc,
-									lcolor );
+					// Left
+					EERIEDrawBitmap(0 + fMove, (DANAESIZY-fSizeY) * .5f, fSizeX, fSizeY, 0.01f,
+					               arrow_left_tc, lcolor);
 
 					EERIEDrawBitmapUVs( DANAESIZX-fSizeX-fMove,		// Right
 										(DANAESIZY-fSizeY)*.5f,
@@ -9703,7 +9612,7 @@ void DANAE::DrawAllInterface()
 										fSizeY,
 										0.01f,
 										arrow_left_tc,
-										lcolor,
+										lcolor.toBGRA(),
 										1.f,0.f,
 										0.f,0.f,
 										1.f,1.f,
@@ -9715,7 +9624,7 @@ void DANAE::DrawAllInterface()
 										fSizeX,
 										0.01f,
 										arrow_left_tc,
-										lcolor,
+										lcolor.toBGRA(),
 										0.f,1.f,
 										0.f,0.f,
 										1.f,1.f,
@@ -9727,7 +9636,7 @@ void DANAE::DrawAllInterface()
 										fSizeX,
 										0.01f,
 										arrow_left_tc,
-										lcolor,
+										lcolor.toBGRA(),
 										1.f,1.f,
 										1.f,0.f,
 										0.f,1.f,
@@ -10151,9 +10060,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 			float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-			EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
-				fTexSizeX, fTexSizeY, 0.f,
-				surf,D3DCOLORWHITE);
+			EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)), (float)(POSY-(surf->m_dwHeight*0.5f)), fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
 
 			return;
 		}
@@ -10262,10 +10169,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 					if (SpecialCursor==CURSOR_COMBINEON)
 					{
-						EERIEDrawBitmap((float)POSX+MODIF,(float)POSY+MODIF
-							,(float)fTexSizeX
-							,(float)fTexSizeY,0.00001f
-							,tc,0xFFFFFFFF);
+						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, .00001f, tc, Color::white);
 
 						if ((FlyingOverIO!=NULL) && (FlyingOverIO->ioflags & IO_BLACKSMITH))
 						{
@@ -10279,10 +10183,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						}
 					}
 					else
-						EERIEDrawBitmap((float)POSX+MODIF,(float)POSY+MODIF
-						,(float)fTexSizeX
-						,(float)fTexSizeY,0.00001f
-						,tc,0xFFFFAA66);
+						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
 				}
 
 				switch (SpecialCursor)
@@ -10373,11 +10274,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 					if (SpecialCursor == CURSOR_REDIST)
 					{
-						EERIEDrawBitmap((float)POSX,(float)POSY,
-							surf->m_dwWidth * Xratio,
-							surf->m_dwHeight * Yratio,
-							0.f,
-							surf,D3DCOLORWHITE);
+						EERIEDrawBitmap(POSX, POSY, surf->m_dwWidth * Xratio, surf->m_dwHeight * Yratio,
+						                0.f, surf, Color::white);
 						
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
@@ -10389,9 +10287,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 						float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-						EERIEDrawBitmap((float)POSX,(float)POSY,
-							fTexSizeX, fTexSizeY, 0.f,
-							surf,D3DCOLORWHITE);
+						EERIEDrawBitmap(POSX, POSY, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
 					}
 				}
 
@@ -10429,13 +10325,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
 
-					EERIEDrawBitmap((float)(POSX - (fTexSizeX*0.5f)),
-									(float)(POSY - (fTexSizeY*0.5f)),
-									(float)fTexSizeX,
-									(float)fTexSizeY,
-									0.f,
-									surf,
-									D3DCOLORWHITE);
+					EERIEDrawBitmap(POSX - (fTexSizeX*0.5f), POSY - (fTexSizeY*0.5f), fTexSizeX, fTexSizeY,
+					                0.f, surf, Color::white);
 				}
 				else
 				{
@@ -10453,11 +10344,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 						if (NeedHalo(DRAGINTER)) tc2=DRAGINTER->inv->TextureHalo;//>_itemdata->halo_tc;
 
-						D3DCOLOR color;
-
-						if ((DRAGINTER->poisonous) && (DRAGINTER->poisonous_count!=0))
-							color=0xFF00FF00;
-						else color=D3DCOLORWHITE;
+						Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 
 						float mx = POSX;
 						float my = POSY;
@@ -10474,10 +10361,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 						if (!(DRAGINTER->ioflags & IO_MOVABLE))
 						{
-							EERIEDrawBitmap((float)mx,(float)my
-								,(float)fTexSizeX
-								,(float)fTexSizeY,0.00001f
-								,tc,color);
+							EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 
 							if ((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count!=1))
 								ARX_INTERFACE_DrawNumber(mx+2.f,my+13.f,
@@ -10486,13 +10370,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						else
 						{
 							if ((InInventoryPos(&DANAEMouse) || InSecondaryInventoryPos(&DANAEMouse))
-								||
-								(CANNOT_PUT_IT_HERE != -1))
-							{
-								EERIEDrawBitmap((float)mx,(float)my
-									,(float)fTexSizeX
-									,(float)fTexSizeY,0.00001f
-									,tc,color);
+								|| (CANNOT_PUT_IT_HERE != -1)) {
+								EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 							}
 						}
 
@@ -10507,12 +10386,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 									tcc=ThrowObject;
 
 								if ((tcc) && (tcc!=tc)) // to avoid movable double red cross...
-									EERIEDrawBitmap((float)mx+16,(float)my
-
-									,INTERFACE_RATIO_DWORD(tcc->m_dwWidth)
-									,INTERFACE_RATIO_DWORD(tcc->m_dwHeight),0.00001f
-
-									,tcc,D3DCOLORWHITE);
+									EERIEDrawBitmap(mx + 16, my, INTERFACE_RATIO_DWORD(tcc->m_dwWidth),
+									                INTERFACE_RATIO_DWORD(tcc->m_dwHeight), 0.00001f, tcc, Color::white);
 							}
 						}
 
@@ -10543,9 +10418,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 						if (surf)
 						{
-							EERIEDrawBitmap((float)POSX,(float)POSY,
-							                INTERFACE_RATIO_DWORD(surf->m_dwWidth), INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f,
-								surf,D3DCOLORWHITE);
+							EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
+							                INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::white);
 						}
 					}
 				}
@@ -10593,15 +10467,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						float POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
 						float POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
 
-						D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
-
-						EERIEDrawBitmap((float)POSX,(float)POSY,
-
-							INTERFACE_RATIO_DWORD(surf->m_dwWidth),
-							INTERFACE_RATIO_DWORD(surf->m_dwHeight),
-
-							0.f,
-							surf, col);
+						EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 				}

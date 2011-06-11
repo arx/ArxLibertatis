@@ -1954,13 +1954,11 @@ bool Menu2_Render()
 
 		}
 
-		EERIEDrawBitmap(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
-						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
-						(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-						(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
-						0.001f,
-						pTextureLoad,
-						ARX_OPAQUE_WHITE);
+		EERIEDrawBitmap(static_cast<float>(DANAEMouse.x + iOffsetX),
+		                static_cast<float>(DANAEMouse.y + iOffsetY),
+		                (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+		                (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+		                0.001f, pTextureLoad, Color::white);
 
 		GRenderer->ResetTexture(0);
 		EERIEDraw2DRect(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),

@@ -1217,7 +1217,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 						if(flare[i].bDrawBitmap)
 						{
 							s*=2.f;
-							EERIEDrawBitmap(flare[i].v.sx,flare[i].v.sy,s,s,flare[i].v.sz,surf,flare[i].tv.color);
+							EERIEDrawBitmap(flare[i].v.sx, flare[i].v.sy, s, s, flare[i].v.sz, surf, Color::fromBGRA(flare[i].tv.color));
 						}
 						else
 						{
@@ -2048,7 +2048,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	long framediff2;
 	long t;
 	D3DTLVERTEX in,inn,out;
-	D3DCOLOR color;
+	Color color;
 	float siz,siz2,r;
 	float val;
 	float fd;
@@ -2416,11 +2416,11 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					}
 				}
 
-				if (Project.improve) 
-				{
-					color=D3DRGB(part->r*r,0.f,part->b*r);
+				if(Project.improve) {
+					color = Color3f(part->r*r, 0.f, part->b*r).to<u8>();
+				} else {
+					color = Color3f(part->r*r, part->g*r, part->b*r).to<u8>();
 				}
-				else	color=D3DRGB(part->r*r,part->g*r,part->b*r);
 
 				tc=part->tc;
 
@@ -2458,12 +2458,12 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 							D3DTLVERTEX in2;
 							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
-							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
+							EERIEDrawRotatedSprite(&in,siz,tc,color.toBGRA(),temp,rott);
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
 							EERIEDrawRotatedSprite(&in2,siz,tc,0xFFFFFFFF,temp,rott);
 						}
 						else
-							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
+							EERIEDrawRotatedSprite(&in,siz,tc,color.toBGRA(),temp,rott);
 					}					
 				}
 				else if (part->type & PARTICLE_2D) 
@@ -2475,12 +2475,12 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						D3DTLVERTEX in2;
 						memcpy(&in2,&in,sizeof(D3DTLVERTEX));
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
-						EERIEDrawBitmap(in.sx,in.sy,siz,siz2,in.sz,tc,color);
+						EERIEDrawBitmap(in.sx, in.sy, siz, siz2, in.sz, tc, color);
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
-						EERIEDrawBitmap(in2.sx,in.sy,siz,siz2,in.sz,tc,0xFFFFFFFF);
+						EERIEDrawBitmap(in2.sx, in.sy, siz, siz2, in.sz, tc, Color::white);
 					}
 					else
-						EERIEDrawBitmap(in.sx,in.sy,siz,siz2,in.sz,tc,color);
+						EERIEDrawBitmap(in.sx, in.sy, siz, siz2, in.sz, tc,color);
 				}
 				else 
 				{
@@ -2511,12 +2511,12 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 							D3DTLVERTEX in2;
 							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							EERIEDrawSprite(&in,siz,tc,color,temp);				
+							EERIEDrawSprite(&in,siz,tc,color.toBGRA(),temp);				
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 							EERIEDrawSprite(&in2,siz,tc,0xFFFFFFFF,temp);				
 						}
 						else 
-							EERIEDrawSprite(&in,siz,tc,color,temp);				
+							EERIEDrawSprite(&in,siz,tc,color.toBGRA(),temp);				
 					}
 				}
 			}

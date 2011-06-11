@@ -75,7 +75,7 @@ HRESULT EERIEDRAWPRIM(D3DPRIMITIVETYPE dptPrimitiveType,
 void EERIEDrawLine(float x, float y, float x1, float y1, float z, D3DCOLOR col);
 void EERIEDrawCircle(float x0, float y0, float r, D3DCOLOR col, float z);
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
-void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
+void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
 void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, D3DCOLOR cold, D3DCOLOR cole);
 

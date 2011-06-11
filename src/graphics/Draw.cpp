@@ -1077,8 +1077,8 @@ void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 
 //-----------------------------------------------------------------------------
 
-void EERIEDrawBitmap(float x,float y,float sx,float sy,float z,TextureContainer * tex,D3DCOLOR col)
-{
+void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
+	
 	register float smu,smv;
 	float fEndu,fEndv;
 
@@ -1095,6 +1095,7 @@ void EERIEDrawBitmap(float x,float y,float sx,float sy,float z,TextureContainer 
 		fEndu=fEndv=0.f;
 	}
 
+	D3DCOLOR col = color.toBGRA();
 	D3DTLVERTEX v[4];
 	v[0]= D3DTLVERTEX( D3DVECTOR( x,	y,		z ), 1.f, col, 0xFF000000, smu,		smv);
 	v[1]= D3DTLVERTEX( D3DVECTOR( x+sx, y,		z ), 1.f, col, 0xFF000000, fEndu,	smv);

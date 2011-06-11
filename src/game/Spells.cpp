@@ -6316,7 +6316,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			float val = 1.f; 
 
-			EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.00009f,NULL,D3DRGB(0.5f+val*( 1.0f / 2 ),val,val));
+			EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, Color3f(0.5f + val * (1.0f/2), val, val).to<u8>());
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}	
 		break;

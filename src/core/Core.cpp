@@ -4270,17 +4270,16 @@ void ManageFade()
 	}
 
 	LAST_FADEVALUE=Visibility;
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);										
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-			NULL,_EERIERGB(Visibility));
+	EERIEDrawBitmap(0.f,0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(Visibility));
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	float col=Visibility;
 	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-			NULL,EERIERGB(col*FADECOLOR.r,col*FADECOLOR.g,col*FADECOLOR.b));		
+	                NULL, Color(col * FADECOLOR.r, col * FADECOLOR.g, col * FADECOLOR.b));
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
@@ -4294,8 +4293,8 @@ void CheckMr()
 	{
 		if (GDevice && Mr_tc)
 		{
-			EERIEDrawBitmap(DANAESIZX-(128.f*Xratio),0.f,(float)128*Xratio,(float)128*Yratio,0.0001f,
-				Mr_tc,_EERIERGB(0.5f+PULSATE*( 1.0f / 10 )));		
+			EERIEDrawBitmap(DANAESIZX-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
+			                Mr_tc, Color::gray(0.5f + PULSATE * (1.0f/10)));
 		}
 		else
 		{
@@ -4308,7 +4307,7 @@ void DrawImproveVisionInterface()
 	if(ombrignon)
 	{
 		float mod = 0.6f + PULSATE * 0.35f;
-		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f, ombrignon,EERIERGB((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f));
+		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
 	}
 }
 
@@ -4333,14 +4332,12 @@ void DrawMagicSightInterface()
 			col = 1.f - eyeball.size.x;
 		}
 
-		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-			Flying_Eye,_EERIERGB(col));
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, Flying_Eye, Color::gray(col));
 
 		if (MagicSightFader>0.f)
 		{
 			col=MagicSightFader;
-			EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-				NULL,_EERIERGB(col));		
+			EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(col));
 			MagicSightFader-=Original_framedelay*( 1.0f / 400 );
 
 			if (MagicSightFader<0.f)
@@ -5029,7 +5026,6 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 {
 	iVPOS+=1;
 	CorrectValue(cur,dest);
-	D3DCOLOR col;
 	Color3f rgb;
 
 	switch (iVPOS)
@@ -5086,9 +5082,8 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 			break;
 	}
 
-	col = rgb.toRGB();
 	float width=(float)(*cur)*( 1.0f / 500 );
-	EERIEDrawBitmap(0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, col);
+	EERIEDrawBitmap(0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, rgb.to<u8>());
 	danaeApp.OutputText(ARX_CLEAN_WARN_CAST_DWORD(width), iVPOS * 16 - 2, str);
 
 }
@@ -6419,8 +6414,7 @@ static float _AvgFrameDiff = 150.f;
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-				NULL,EERIERGB(0.2f,0.2f,1.f));		
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color(71, 71, 255));
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
