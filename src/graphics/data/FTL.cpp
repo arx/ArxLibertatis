@@ -638,7 +638,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		
 		// Cast to header
 		ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
-		pos = afsh->offset_collision_spheres;
+		size_t pos = afsh->offset_collision_spheres;
 		afcsdh = reinterpret_cast<ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + pos);
 		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
 		
@@ -657,9 +657,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	if(afsh->offset_progressive_data != -1) {
 		ARX_FTL_PROGRESSIVE_DATA_HEADER *	afpdh;
 		afpdh = (ARX_FTL_PROGRESSIVE_DATA_HEADER *)(dat + afsh->offset_progressive_data);
-		pos = afsh->offset_progressive_data;
-		pos += sizeof(ARX_FTL_PROGRESSIVE_DATA_HEADER);
-		pos += sizeof(PROGRESSIVE_DATA) * afpdh->nb_vertex;
 	}
 	
 	// Alloc'n'Copy Clothes DATA
@@ -671,7 +668,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		afcdh = reinterpret_cast<ARX_FTL_CLOTHES_DATA_HEADER*>(dat + afsh->offset_clothes_data);
 		obj->cdata->nb_cvert = (short)afcdh->nb_cvert;
 		obj->cdata->springs.resize(afcdh->nb_springs);
-		pos = afsh->offset_clothes_data;
+		size_t pos = afsh->offset_clothes_data;
 		pos += sizeof(ARX_FTL_CLOTHES_DATA_HEADER);
 		
 		// now load cvert
