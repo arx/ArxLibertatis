@@ -2465,81 +2465,69 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		{
 			ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
 			memset(&io->script.lvar[i], 0, sizeof(SCRIPT_VAR)); 
-		retry:
-			;
-
-			switch (avs->type)
-			{
-				case TYPE_L_TEXT:
+			
+			s32 type = avs->type;
+			if(type != TYPE_L_TEXT && type != TYPE_L_LONG && type != TYPE_L_FLOAT) {
+				if(avs->name[0] == '$' || avs->name[0] == '\xA3') {
+					avs->type = TYPE_L_TEXT;
+				} else if(avs->name[0] == '#' || avs->name[0] == 's') {
+					avs->type = TYPE_L_LONG;
+				} else if(avs->name[0] == '&' || avs->name[0] == '@') {
+					avs->type = TYPE_L_FLOAT;
+				}
+			}
+			
+			switch (type) {
+				
+				case TYPE_L_TEXT: {
+					
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
 					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_TEXT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-
-					if (io->script.lvar[i].ival)
-					{
+					
+					if(io->script.lvar[i].ival) {
 						io->script.lvar[i].text = (char *) malloc(io->script.lvar[i].ival + 1);
-
 						memset(io->script.lvar[i].text, 0, io->script.lvar[i].ival + 1);
 						memcpy(io->script.lvar[i].text, dat + pos, io->script.lvar[i].ival);
 						pos += io->script.lvar[i].ival;
 						io->script.lvar[i].ival = strlen(io->script.lvar[i].text) + 1;
-
-						if (io->script.lvar[i].text[0] == '\xCC')
+						if(io->script.lvar[i].text[0] == '\xCC') {
 							io->script.lvar[i].text[0] = 0;
-					}
-					else
-					{
+						}
+					} else {
 						io->script.lvar[i].text = NULL;
 						io->script.lvar[i].ival = 0;
 					}
-
 					break;
-				case TYPE_L_LONG:
+				}
+				
+				case TYPE_L_LONG: {
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
 					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_LONG;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
-				case TYPE_L_FLOAT:
+				}
+				
+				case TYPE_L_FLOAT: {
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
 					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_FLOAT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
-				default:
-
-					if ((avs->name[0] == '$') || (avs->name[0] == '\xA3'))
-					{
-						avs->type = TYPE_L_TEXT;
-						goto retry;
-					}
-
-		if ((avs->name[0] == '#') || (avs->name[0] == '\xA7'))
-					{
-						avs->type = TYPE_L_LONG;
-						goto retry;
-					}
-
-					if ((avs->name[0] == '&') || (avs->name[0] == '@'))
-					{
-						avs->type = TYPE_L_FLOAT;
-						goto retry;
-					}
-
-					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+				}
+				
+				default: {
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = 0;
 					io->script.lvar[i].ival = 0;
 					io->script.lvar[i].type = TYPE_L_LONG;
-					ass->nblvar = i;
-
 					goto corrupted;
-				
-					break;
+				}
 			}
 		}
 
