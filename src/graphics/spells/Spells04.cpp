@@ -427,90 +427,35 @@ void CTelekinesis::Update(unsigned long _ulTime)
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CTelekinesis::Render()
-{
-	int i = 0;
-
-	float x = eSrc.x;
-	float y = eSrc.y + 100.0f;
-	float z = eSrc.z;
-
-	if (ulCurrentTime >= ulDuration)
-	{
+float CTelekinesis::Render() {
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	//	register INTERACTIVE_OBJ * io;
-	for (i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			x = inter.iobj[i]->pos.x;
-			y = inter.iobj[i]->pos.y;
-			z = inter.iobj[i]->pos.z;
-		}
-	}
 	
-	y -= 40;
-	y = eSrc.y + 140;
-
-	//----------------------------
- 
- 	GRenderer->SetTexture(0, tex_p2);
-
-	//----------------------------
-	y -= 40;
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
+	GRenderer->SetTexture(0, tex_p2);
+	
+	Anglef stiteangle((float) ulCurrentTime * fOneOnDuration * 120, 0.f, 0.f);
+	
+	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
+	
 	EERIE_RGB stitecolor;
-
-	x = player.pos.x;
-	y = player.pos.y + 80;
-	z = player.pos.z;
-
-	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120; //+=(float)FrameDiff*0.1f;
-	stiteangle.a = 0;//abs(cos (radians(tPos[i].x)))*10;
-	stiteangle.g = 0;//cos (radians(tPos[i].x))*360;
-	stitepos.x = x;//tPos[i].x;//player.pos.x;//-(float)EEsin(radians(player.angle.b))*(100.f) ;
-	stitepos.y = y;//player.pos.y+60.f-mov;
-	stitepos.z = z;//tPos[i].z;//player.pos.z;//+(float)EEcos(radians(player.angle.b))*(100.f) ;
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	stiteangle.b = -stiteangle.b * 1.5f;
-	stitecolor.r = 0.7f;
-	stitecolor.g = 0.7f;
-	stitecolor.b = 0.7f;
-	stitescale.x = 1;
-	stitescale.y = -0.1f;
-	stitescale.z = 1;
-	//	DrawEERIEObjEx(slight,&stiteangle,&stitepos,&stitescale,&stitecolor);
-
-	stiteangle.b = -stiteangle.b;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
-	stitescale.x = 2;
-	stitescale.y = 2;
-	stitescale.z = 2;
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	Vec3f stitescale(2.f, 2.f, 2.f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
-	y = player.pos.y + 20;
-	stitepos.y = y;//player.pos.y+60.f-mov;
+	
+	stitepos.y = player.pos.y + 20;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
-	stitescale.z = 1.8f;
-	stitescale.y = 1.8f;
-	stitescale.x = 1.8f;
+	stitescale = Vec3f(1.8f, 1.8f, 1.8f);
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
+	
 	return 1;
 }
 
