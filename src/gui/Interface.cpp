@@ -9603,44 +9603,20 @@ void DANAE::DrawAllInterface()
 					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 					
 					// Left
-					EERIEDrawBitmap(0 + fMove, (DANAESIZY-fSizeY) * .5f, fSizeX, fSizeY, 0.01f,
+					EERIEDrawBitmap(0 + fMove, (DANAESIZY - fSizeY) * .5f, fSizeX, fSizeY, 0.01f,
 					               arrow_left_tc, lcolor);
-
-					EERIEDrawBitmapUVs( DANAESIZX-fSizeX-fMove,		// Right
-										(DANAESIZY-fSizeY)*.5f,
-										fSizeX,
-										fSizeY,
-										0.01f,
-										arrow_left_tc,
-										lcolor.toBGRA(),
-										1.f,0.f,
-										0.f,0.f,
-										1.f,1.f,
-										0.f,1.f);
-
-					EERIEDrawBitmapUVs((DANAESIZX-fSizeY)*.5f,		// Up
-										0.f+fMove,
-										fSizeY,
-										fSizeX,
-										0.01f,
-										arrow_left_tc,
-										lcolor.toBGRA(),
-										0.f,1.f,
-										0.f,0.f,
-										1.f,1.f,
-										1.f,0.f);
-
-					EERIEDrawBitmapUVs(	(DANAESIZX-fSizeY)*.5f,		// Down
-										(DANAESIZY-fSizeX)-fMove,
-										fSizeY,
-										fSizeX,
-										0.01f,
-										arrow_left_tc,
-										lcolor.toBGRA(),
-										1.f,1.f,
-										1.f,0.f,
-										0.f,1.f,
-										0.f,0.f);
+					
+					// Right
+					EERIEDrawBitmapUVs(DANAESIZX - fSizeX - fMove, (DANAESIZY - fSizeY)*.5f, fSizeX, fSizeY,
+					                   .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+					
+					// Up
+					EERIEDrawBitmapUVs((DANAESIZX - fSizeY)*.5f, 0.f + fMove, fSizeY, fSizeX, .01f,
+					                   arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+					
+					// Down
+					EERIEDrawBitmapUVs((DANAESIZX - fSizeY)*.5f, (DANAESIZY - fSizeX) - fMove, fSizeY, fSizeX,
+					                    .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 				}
 
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);

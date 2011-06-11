@@ -101,13 +101,10 @@ extern TextureContainer * EERIE_DRAW_sphere_particle;
 extern TextureContainer * EERIE_DRAW_square_particle;
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
-void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1);
-void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col
-                        , float u0, float v0
-                        , float u1, float v1
-                        , float u2, float v2
-                        , float u3, float v3
-                       );
+void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,
+                        float u0, float v0, float u1, float v1);
+void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,
+                        float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
 
 bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *);
 bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd);
