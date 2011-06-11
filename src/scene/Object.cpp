@@ -617,7 +617,6 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 	
 	THEO_NB tn;
 	memcpy(&tn, adr + pos, sizeof(THEO_NB));
-	pos += sizeof(THEO_NB);
 	
 	LogDebug << "Nb Vertex " << tn.nb_vertex << " Nb Action Points " << tn.nb_action_point
 	         << " Nb Lines " << tn.nb_lines;
