@@ -7991,43 +7991,36 @@ void ARX_SPELLS_Update()
 					DynLight[id].rgb.b = 0.8f+rnd()*( 1.0f / 5 );;
 					DynLight[id].duration=200;
 				
-					long lvl;
 					float rr,r2;
 					Vec3f pos;
-
-					if (rnd()>0.8f)
-					{					
-						lvl = rnd() * 9.f + 4.f;
+					
+					float choice = rnd();
+					if(choice > .8f) {
+						long lvl = rnd() * 9.f + 4.f;
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*260;						
+						pos.z=DynLight[id].pos.z+EEcos(rr)*260;
 						EERIE_RGB rgb; 
 						rgb.r=0.1f+rnd()*( 1.0f / 3 );
 						rgb.g=0.1f+rnd()*( 1.0f / 3 );
 						rgb.b=0.8f+rnd()*( 1.0f / 5 );
-								LaunchFireballBoom(&pos, ARX_CLEAN_WARN_CAST_FLOAT(lvl), NULL, &rgb);
-					}
-					else if (rnd()>0.76f)
-					{					
-						lvl = rnd() * 9.f + 4.f;
+						LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
+					} else if(choice > .6f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*260;						
-						MakeCoolFx(&pos);		
-					}
-					else if (rnd()>0.66f)
-					{					
-						lvl = rnd() * 9.f + 4.f;
+						pos.z=DynLight[id].pos.z+EEcos(rr)*260;
+						MakeCoolFx(&pos);
+					} else if(choice > 0.4f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*160;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*160;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*160;						
-						ARX_PARTICLES_Add_Smoke(&pos,2,20); // flag 1 = randomize pos
+						pos.z=DynLight[id].pos.z+EEcos(rr)*160;
+						ARX_PARTICLES_Add_Smoke(&pos, 2, 20); // flag 1 = randomize pos
 					}
 				}
 			}
@@ -8365,30 +8358,15 @@ void ARX_SPELLS_Update()
 				{
 					float TELEPORT = (float)(((float)tim-(float)spells[i].timcreation)/(float)spells[i].tolive);
 
-					if ((LASTTELEPORT<0.5f) && (TELEPORT>=0.5f))
-					{
-						Vec3f pos;
-						
-						pos.x=lastteleport.x;
-						pos.y=lastteleport.y;
-						pos.z=lastteleport.z;							
-						lastteleport.x=player.pos.x;
-						lastteleport.y=player.pos.y;
-						lastteleport.z=player.pos.z;
-						player.pos.x=pos.x;
-						player.pos.y=pos.y;
-						player.pos.z=pos.z;
-						LASTTELEPORT=32.f;
+					if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
+						Vec3f pos = lastteleport;
+						lastteleport = player.pos;
+						player.pos = pos;
+						LASTTELEPORT = 32.f;
 						ARX_SOUND_PlaySFX(SND_SPELL_TELEPORTED, &player.pos);
+					} else {
+						LASTTELEPORT = TELEPORT;
 					}
-					else LASTTELEPORT=TELEPORT;
-
-					if (TELEPORT>=0.5f) 
-					{
-						TELEPORT=1.f-(TELEPORT-0.5f)*2.f;
-					}
-					else TELEPORT*=2.f;
-					
 				}
 				break;				
 				//-----------------------------------------------------------------------------------------
