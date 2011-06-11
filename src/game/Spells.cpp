@@ -2282,129 +2282,68 @@ extern long PLAYER_PARALYSED;
 
 
 static void ARX_SPELLS_Analyse() {
+	
+	unsigned char dirs[MAX_POINTS];
+	unsigned char lastdir = 255;
+	long cdir = 0;
 
-	long			x		= 0,
-					xx		= 0,
-					y		= 0,
-					yy		= 0,
-					dx		= 0,
-					dy		= 0;
-	long			i		= 0;
-	float			pente	= 0,
-					a		= 0,
-					b		= 0;
-
-	unsigned char	dirs[MAX_POINTS];
-	unsigned char	lastdir			= 255;
-	long			cdir			= 0;
-	long			cx				= 0,
-					cy				= 0;
-
-	for ( i = 0 ; i < CurrPoint ; i++ )
-	{
-		x = plist[i].x;
-		y = plist[i].y;
-
-		if ( i > 0 ) 
-		{
-			dx = ( xx + cx ) - x;			
-			dy = ( yy + cy ) - y;
-
-			if ( Distance2D( (float)xx, (float)yy, (float)x, (float)y ) > 10 ) 
-			{
-				xx = xx + cx;
-				yy = yy + cy;
-				a = (float)( abs( dx ) );
-				b = (float)( abs( dy ) );
-
-				if ( b != 0.f )
-				{
-					pente = a / b;
-
-					if ( ( pente > 0.4f ) && ( pente < 2.5f ) ) //une diagonale
-					{
-						if ( ( dx < 0 ) && ( dy < 0 ) ) //on a boug� vers droite/bas
-						{
-							if ( lastdir != ADOWNRIGHT ) 
-							{
-								lastdir = dirs[cdir] = ADOWNRIGHT;
-								cdir++;
-							}
-						}
-						else if ( ( dx > 0 ) && ( dy < 0 ) ) //on a boug� vers gauche/bas
-						{
-							if ( lastdir != ADOWNLEFT ) 
-							{
-								lastdir = dirs[cdir] = ADOWNLEFT;
-								cdir++;
-							}
-						}
-						else if ( ( dx < 0 ) && ( dy > 0 ) ) //on a boug� vers droite/haut
-						{
-							if ( lastdir != AUPRIGHT ) 
-							{
-								lastdir = dirs[cdir] = AUPRIGHT;
-								cdir++;
-							}
-						}
-						else if ( ( dx > 0 ) && ( dy > 0 ) ) //on a boug� vers gauche/haut
-						{
-							if ( lastdir != AUPLEFT ) 
-							{
-								lastdir = dirs[cdir] = AUPLEFT;
-								cdir++;
-							}
-						}
-
-						goto lasuite;
+	for(long i = 1; i < CurrPoint ; i++) {
+		
+		Vec2s d = plist[i-1] - plist[i];
+		
+		if(d.lengthSqr() > 100) {
+			
+			float a = (float)abs(d.x);
+			float b = (float)abs(d.y);
+			
+			if(b != 0.f && a / b > 0.4f && a / b < 2.5f) {
+				// Diagonal movemement.
+				
+				if(d.x < 0 && d.y < 0) {
+					if(lastdir != ADOWNRIGHT) {
+						lastdir = dirs[cdir++] = ADOWNRIGHT;
+					}
+				} else if(d.x > 0 && d.y < 0) {
+					if(lastdir != ADOWNLEFT) {
+						lastdir = dirs[cdir++] = ADOWNLEFT;
+					}
+				} else if(d.x < 0 && d.y > 0) {
+					if(lastdir != AUPRIGHT) {
+						lastdir = dirs[cdir++] = AUPRIGHT;
+					}
+				} else if(d.x > 0 && d.y > 0) {
+					if(lastdir != AUPLEFT) {
+						lastdir = dirs[cdir++] = AUPLEFT;
 					}
 				}
-
-				if ( abs( dx ) > abs( dy ) ) //mouvement lat�ral plus important
-				{
-					if ( dx < 0 ) //on a boug� vers la droite
-					{
-						if ( lastdir != ARIGHT ) 
-						{
-							lastdir = dirs[cdir] = ARIGHT;
-							cdir++;
-						}
+				
+			} else if(a > b) {
+				// Horizontal movement.
+				
+				if(d.x < 0) {
+					if(lastdir != ARIGHT) {
+						lastdir = dirs[cdir++] = ARIGHT;
 					}
-					else //on a boug� vers la gauche
-					{
-						if ( lastdir != ALEFT ) 
-						{
-							lastdir = dirs[cdir] = ALEFT;
-							cdir++;
-						}
+				} else {
+					if(lastdir != ALEFT) {
+						lastdir = dirs[cdir++] = ALEFT;
 					}
 				}
-				else //mouvement vertical plus significatif
-				{
-					if ( dy < 0 ) //on a boug� vers le bas
-					{
-						if ( lastdir != ADOWN ) 
-						{
-							lastdir = dirs[cdir] = ADOWN;
-							cdir++;
-						}
+				
+			} else {
+				// Vertical movement.
+				
+				if(d.y < 0) {
+					if(lastdir != ADOWN) {
+						lastdir = dirs[cdir++] = ADOWN;
 					}
-					else //on a boug� vers le haut
-					{
-						if ( lastdir != AUP ) 
-						{
-							lastdir = dirs[cdir] = AUP;
-							cdir++;
-						}
+				} else {
+					if(lastdir != AUP) {
+						lastdir = dirs[cdir++] = AUP;
 					}
-				}			
+				}
 			}
 		}
-
-	lasuite:
-		;
-		xx = x;
-		yy = y;
 	}
 
 	SpellMoves.clear();
@@ -2412,7 +2351,7 @@ static void ARX_SPELLS_Analyse() {
 	if ( cdir > 0 )
 	{
 
-		for ( i = 0 ; i < cdir ; i++ )
+		for (long i = 0 ; i < cdir ; i++ )
 		{
 			switch ( dirs[i] )
 			{
