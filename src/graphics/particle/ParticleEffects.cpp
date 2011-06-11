@@ -2458,12 +2458,12 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 							D3DTLVERTEX in2;
 							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
-							EERIEDrawRotatedSprite(&in,siz,tc,color.toBGRA(),temp,rott);
+							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
-							EERIEDrawRotatedSprite(&in2,siz,tc,0xFFFFFFFF,temp,rott);
+							EERIEDrawRotatedSprite(&in2,siz,tc,Color::white,temp,rott);
 						}
 						else
-							EERIEDrawRotatedSprite(&in,siz,tc,color.toBGRA(),temp,rott);
+							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
 					}					
 				}
 				else if (part->type & PARTICLE_2D) 

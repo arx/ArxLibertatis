@@ -176,7 +176,12 @@ public:
 	
 	template<class O>
 	inline Color4<O> to() const {
-		return C3::to(C3::scale(a));
+		return C3::to(scale<O>(a));
+	}
+	
+	template<class O>
+	inline static O scale(T val) {
+		return O(val * (Color3<O>::max / C3::max));
 	}
 	
 };

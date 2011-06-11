@@ -933,8 +933,9 @@ void EERIEDrawSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR c
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos,float rot)
-{
+void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color color,
+                            float Zpos, float rot) {
+	
 	D3DTLVERTEX out;
 	EERIETreatPoint2(in, &out);
 	
@@ -956,6 +957,7 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3D
 			out.rhw*=(1.f/3000.f);
 		}
 
+		D3DCOLOR col = color.toBGRA();
 		D3DTLVERTEX v[4];
 		v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 0.f);
 		v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 0.f);

@@ -147,6 +147,6 @@ void Particle::Update(long _lTime)
 		fColor[2] = fColorStart[2] + (fColorEnd[2] - fColorStart[2]) * ft;
 		fColor[3] = fColorStart[3] + (fColorEnd[3] - fColorStart[3]) * ft;
 
-		ulColor = D3DRGBA(fColor[0], fColor[1], fColor[2], fColor[3]);
+		ulColor = Color4f(fColor[0], fColor[1], fColor[2], fColor[3]).to<u8>();
 	}
 }
