@@ -842,7 +842,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 							if ((!dealt) && ((ioo->damager_damages>0) || (io->damager_damages>0)))
 							{
-								dealt=1;
 
 								if (ioo->damager_damages>0)
 									ARX_DAMAGES_DealDamages(i,ioo->damager_damages,GetInterNum(ioo),ioo->damager_type,&io->pos);
