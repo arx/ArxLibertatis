@@ -542,19 +542,13 @@ float InterpolateAngle(float a1, float a2, const float pour)
 	float t = min(ft1, ft2);
 	t = min(t, ft3);
 	t = min(t, ft4);
-
-	float i;
-
-	if (t == ft1)
-	{
-		i = ft1 * pour;
-
+	
+	if(t == ft1) {
 		return MAKEANGLE(a2);
 	}
 
-	if (t == ft2)
-	{
-		i = ft2 * pour;
+	if(t == ft2) {
+		float i = ft2 * pour;
 
 		if (a2 < a1)
 			a2 = a1 - i;
@@ -563,15 +557,10 @@ float InterpolateAngle(float a1, float a2, const float pour)
 		return MAKEANGLE(a2);
 	}
 
-	if (t == ft3)
-	{
-		i = ft3 * pour;
-
+	if(t == ft3) {
 		return MAKEANGLE(a2);
-	}
-	else
-	{
-		i = ft4 * pour;
+	} else {
+		float i = ft4 * pour;
 
 		if (a2 < a1)
 			a2 = a1 + i;
