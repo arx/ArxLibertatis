@@ -555,21 +555,20 @@ void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col)
 	EERIEDRAWPRIM(D3DPT_LINESTRIP, D3DFVF_TLVERTEX, v, 5, 0);
 }
 
-void EERIEDrawFill2DRectDegrad(float x0,float y0,float x1,float y1,float z, D3DCOLOR cold, D3DCOLOR cole)
-{
+void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole) {
+	
 	D3DTLVERTEX v[4];
-
+	v[0].sx = v[2].sx = x0;
+	v[0].sy = v[1].sy = y0;
+	v[1].sx = v[3].sx = x1;
+	v[2].sy = v[3].sy = y1;
+	v[0].color = v[1].color = cold.toBGRA();
+	v[2].color = v[3].color = cole.toBGRA();
+	v[0].sz = v[1].sz = v[2].sz = v[3].sz = z;
+	v[3].rhw = v[2].rhw = v[1].rhw = v[0].rhw = 1.f;
+	
 	GRenderer->ResetTexture(0);
-	v[0].sx=v[2].sx=x0;
-	v[0].sy=v[1].sy=y0;
-	v[1].sx=v[3].sx=x1;
-	v[2].sy=v[3].sy=y1;
-	v[0].color=v[1].color=cold;
-	v[2].color=v[3].color=cole;
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=z;
-	v[3].rhw=v[2].rhw=v[1].rhw=v[0].rhw=1.f;
-	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4,  0  );	
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
 }
 
 void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col) {

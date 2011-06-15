@@ -624,35 +624,19 @@ void ARX_SPEECH_Update() {
 						                    speech->text,
 						                    Color::white,
 						                    &clippingRect);
-
-						GRenderer->ResetTexture(0);
+						
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthTest, false);
-						EERIEDrawFill2DRectDegrad(
-												  0.f,
-												  fZoneClippY - 1.f, 
-												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-												  fZoneClippY + (sSize.y * 3 / 4),
-												  0.f,
-												  RGBA_MAKE(255, 255, 255, 255),
-												  RGBA_MAKE(0, 0, 0, 255));
-
-						EERIEDrawFill2DRectDegrad(
-												  0.f,
-												  fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
-												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-												  fZoneClippY + fZoneClippHeight,
-												  0.f,
-												  RGBA_MAKE(0, 0, 0, 255),
-												  RGBA_MAKE(255, 255, 255, 255));
-
+						EERIEDrawFill2DRectDegrad(0.f, fZoneClippY - 1.f,  static_cast<float>(DANAESIZX),
+						                          fZoneClippY + (sSize.y * 3 / 4), 0.f, Color::white, Color::black);
+						EERIEDrawFill2DRectDegrad(0.f, fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
+						                          static_cast<float>(DANAESIZX), fZoneClippY + fZoneClippHeight,
+						                          0.f, Color::black, Color::white);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
-
 						GRenderer->SetRenderState(Renderer::DepthTest, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-
+						
 						iTaille += (int)fZoneClippHeight;
 
 						if (((int)speech->fDeltaY) <= iTaille)
