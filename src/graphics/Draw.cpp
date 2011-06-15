@@ -74,62 +74,6 @@ extern long WATERFX;
 extern TextureContainer * enviro;
 extern float FrameTime;
 
-/*---------------------------------------------------------------------------------------------------------*/
-struct D3DTLVERTEX2UV
-{
-	union
-	{
-		D3DVALUE sx; 
-		D3DVALUE dvSX;     
-	};    
-	union
-	{
-		D3DVALUE sy; 
-		D3DVALUE dvSY;
-	};
-	union
-	{
-		D3DVALUE sz; 
-		D3DVALUE dvSZ; 
-    };
-	union
-	{
-        D3DVALUE rhw; 
-		D3DVALUE dvRHW; 
-    }; 
-	union
-	{
-		D3DCOLOR color; 
-		D3DCOLOR dcColor;
-	}; 
-	union
-	{
-		D3DCOLOR specular; 
-		D3DCOLOR dcSpecular; 
-    };
-	union
-	{
-        D3DVALUE tu1; 
-		D3DVALUE dvTU1;
-	};
-	union
-	{
-		D3DVALUE tv1; 
-		D3DVALUE dvTV1; 
-    };
-	union
-	{
-        D3DVALUE tu2; 
-		D3DVALUE dvTU2;
-	};
-	union
-	{
-		D3DVALUE tv2; 
-		D3DVALUE dvTV2; 
-    };
-};
-
-
 void CopyVertices(EERIEPOLY * ep,long to, long from) {
 	ep->v[to] = ep->v[from];
 	ep->tv[to] = ep->tv[from];
