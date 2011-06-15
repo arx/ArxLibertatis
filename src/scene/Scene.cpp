@@ -3400,9 +3400,11 @@ void ARX_SCENE_Render(long flag) {
 						_ANCHOR_DATA * ad2=&ACTIVEBKG->anchors[ad->linked[k]];
 						ad2->pos.y-=10;
 
-						if ((ad->flags & 1) && (ad2->flags & 1))
-							EERIEDrawTrue3DLine(&ad->pos,&ad2->pos,0xFF00FF00);
-						else EERIEDrawTrue3DLine(&ad->pos,&ad2->pos,0xFFFF0000);
+						if((ad->flags & 1) && (ad2->flags & 1)) {
+							EERIEDrawTrue3DLine(ad->pos, ad2->pos, Color::green);
+						} else {
+							EERIEDrawTrue3DLine(ad->pos, ad2->pos, Color::red);
+						}
 
 						ad2->pos.y+=10;
 					}
@@ -3411,12 +3413,10 @@ void ARX_SCENE_Render(long flag) {
 
 					if(DEBUGNPCMOVE) {
 						EERIE_CYLINDER cyl;
-						cyl.origin.x=ad->pos.x;
-						cyl.origin.y=ad->pos.y;
-						cyl.origin.z=ad->pos.z;
-						cyl.radius=ad->radius;
-						cyl.height=ad->height;			
-						EERIEDraw3DCylinderBase(&cyl,0xFFFFFF00);  
+						cyl.origin = ad->pos;
+						cyl.radius = ad->radius;
+						cyl.height = ad->height;
+						EERIEDraw3DCylinderBase(cyl, Color::yellow);
 					}
 				}
 

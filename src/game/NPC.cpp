@@ -133,7 +133,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 #ifdef BUILD_EDITOR
 		if(DEBUGNPCMOVE) {
-			EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+			EERIEDrawTrue3DLine(ppos, pos, Color::red);
 		}
 #endif
 
@@ -3519,24 +3519,20 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	// Some visual debug stuff
 	if(DEBUGNPCMOVE) {
 		EERIE_CYLINDER cyll;
-		cyll.height = GetIOHeight(io); 
-		cyll.radius = GetIORadius(io); 
-		cyll.origin.x = phys.startpos.x;
-		cyll.origin.y = phys.startpos.y;
-		cyll.origin.z = phys.startpos.z;
-		EERIEDraw3DCylinder( &cyll, 0xFF00FF00);
+		cyll.height = GetIOHeight(io);
+		cyll.radius = GetIORadius(io);
+		cyll.origin = phys.startpos;
+		EERIEDraw3DCylinder(cyll, Color::green);
 
 		if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
 		{
 			cyll.height = -40.f;
-			EERIEDraw3DCylinder( &cyll, 0xFF0000FF);
+			EERIEDraw3DCylinder(cyll, Color::blue);
 			cyll.height = GetIOHeight(io); 
 		}
 
-		cyll.origin.x = io->physics.targetpos.x;
-		cyll.origin.y = io->physics.targetpos.y;
-		cyll.origin.z = io->physics.targetpos.z;
-		EERIEDraw3DCylinder( &cyll, 0xFFFF0000);
+		cyll.origin = io->physics.targetpos;
+		EERIEDraw3DCylinder(cyll, Color::red);
 
 		if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
 		{

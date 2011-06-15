@@ -79,10 +79,10 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, D3DCOLOR cold, D3DCOLOR cole);
 
-void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col);
-void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col);
-void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
-void EERIEDraw3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
+void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col);
+void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col);
+void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
+void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
                             Color col, float _fDeltaY);
 

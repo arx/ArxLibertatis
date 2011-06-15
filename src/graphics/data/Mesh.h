@@ -793,7 +793,6 @@ void SetNextAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * ea,long layer=0,long loop=0)
 void AcquireLastAnim(INTERACTIVE_OBJ * io);
 void FinishAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * eanim);
 bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);
-void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
 void FaceTarget(INTERACTIVE_OBJ * io);
 
 void DebugSphere(float x,float y,float z,float siz,long tim,D3DCOLOR color);

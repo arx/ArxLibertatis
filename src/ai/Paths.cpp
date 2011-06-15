@@ -973,37 +973,33 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 		switch (flagg)
 		{
 			case PATHWAY_STANDARD:
-				from.x = ap->pos.x + ap->pathways[i].rpos.x;
-				from.y = ap->pos.y + ap->pathways[i].rpos.y;
-				from.z = ap->pos.z + ap->pathways[i].rpos.z;
-				to.x = ap->pos.x + ap->pathways[i+1].rpos.x;
-				to.y = ap->pos.y + ap->pathways[i+1].rpos.y;
-				to.z = ap->pos.z + ap->pathways[i+1].rpos.z;
+				from = ap->pos + ap->pathways[i].rpos;
+				to = ap->pos + ap->pathways[i + 1].rpos;
 
 				if (ap->height != 0)
 				{
 					if (selected)
 					{
-						EERIEDraw3DLine(&from, &to,  0xFFFFFFFF);
+						EERIEDraw3DLine(from, to, Color::white);
 
 						if (ap->height > 0)
 						{
 							to.y -= ap->height;
 							from.y -= ap->height;
-							EERIEDraw3DLine(&from, &to,  0xFFFFFFFF);
+							EERIEDraw3DLine(from, to, Color::white);
 							to.y += ap->height;
 							from.y += ap->height;
 						}
 					}
 					else
 					{
-						EERIEDraw3DLine(&from, &to,  0xFFCCCCCC);
+						EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFCCCCCC));
 
 						if (ap->height > 0)
 						{
 							to.y -= ap->height;
 							from.y -= ap->height;
-							EERIEDraw3DLine(&from, &to,  0xFFCCCCCC);
+							EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFCCCCCC));
 							to.y += ap->height;
 							from.y += ap->height;
 						}
@@ -1017,26 +1013,26 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 
 						if (selected)
 						{
-							EERIEDraw3DLine(&from, &to,  0xFFDDDDDD);
+							EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFDDDDDD));
 
 							if (ap->height > 0)
 							{
 								to.y -= ap->height;
 								from.y -= ap->height;
-								EERIEDraw3DLine(&from, &to,  0xFFDDDDDD);
+								EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFDDDDDD));
 								to.y += ap->height;
 								from.y += ap->height;
 							}
 						}
 						else
 						{
-							EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
+							EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFAAAAAA));
 
 							if (ap->height > 0)
 							{
 								to.y -= ap->height;
 								from.y -= ap->height;
-								EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
+								EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFAAAAAA));
 								to.y += ap->height;
 								from.y += ap->height;
 							}
@@ -1045,8 +1041,8 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 				}
 				else
 				{
-					if (selected) EERIEDraw3DLine(&from, &to,  0xFFFFFF00);
-					else EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
+					if (selected) EERIEDraw3DLine(from, to, Color::yellow);
+					else EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFAAAAAA));
 				}
 
 				break;
@@ -1070,8 +1066,8 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 					newpos.y += ap->pos.y + ap->pathways[i].rpos.y;
 					newpos.z += ap->pos.z + ap->pathways[i].rpos.z;
 
-					if (selected) EERIEDraw3DLine(&lastpos, &newpos,  0xFF00FF00);
-					else EERIEDraw3DLine(&lastpos, &newpos,  0xFFAAAAAA);
+					if (selected) EERIEDraw3DLine(lastpos, newpos, Color::green);
+					else EERIEDraw3DLine(lastpos, newpos, Color::fromBGRA(0xFFAAAAAA));
 
 					lastpos = newpos;
 				}
@@ -1097,7 +1093,7 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 			to.x = from.x;
 			to.y = from.y - ap->height;
 			to.z = from.z;
-			EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
+			EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFAAAAAA));
 		}
 
 		if ((ARX_PATHS_SelectedNum == (i + 1)) &&

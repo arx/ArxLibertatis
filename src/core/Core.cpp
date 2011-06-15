@@ -4386,7 +4386,7 @@ void RenderAllNodes()
 
 			for(size_t j = 0; j < MAX_LINKS; j++) {
 				if(nodes.nodes[i].link[j]!=-1) {
-					EERIEDrawTrue3DLine(&nodes.nodes[i].pos, &nodes.nodes[nodes.nodes[i].link[j]].pos, EERIECOLOR_GREEN);
+					EERIEDrawTrue3DLine(nodes.nodes[i].pos, nodes.nodes[nodes.nodes[i].link[j]].pos, Color::green);
 				}
 			}
 		}

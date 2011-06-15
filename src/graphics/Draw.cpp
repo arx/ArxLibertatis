@@ -592,65 +592,40 @@ void EERIEDrawFill2DRectDegrad(float x0,float y0,float x1,float y1,float z, D3DC
 	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4,  0  );	
 }
 
-void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col)
-{
-	Vec3f from,to;
+void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col) {
+	
 	#define STEPCYL 16
-
-	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
-	{
-		float es =EEsin(radians(MAKEANGLE((float)i)))*cyl->radius;
-		float ec =EEcos(radians(MAKEANGLE((float)i)))*cyl->radius;
-		float es2=EEsin(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
-		float ec2=EEcos(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
+	for(long i = 0; i < 360 - STEPCYL; i += STEPCYL) {
+		
+		float es = sin(radians(MAKEANGLE((float)i))) * cyl.radius;
+		float ec = cos(radians(MAKEANGLE((float)i))) * cyl.radius;
+		float es2 = sin(radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
+		float ec2 = cos(radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
 		
 		// Draw low pos
-		from.x=cyl->origin.x+es;
-		from.y=cyl->origin.y;
-		from.z=cyl->origin.z+ec;
-		to.x=cyl->origin.x+es2;
-		to.y=cyl->origin.y;
-		to.z=cyl->origin.z+ec2;
-		EERIEDraw3DLine(&from, &to,  col);
+		EERIEDraw3DLine(cyl.origin + Vec3f(es, 0.f, ec), cyl.origin + Vec3f(es2, 0.f, ec2),  col);
 		// Draw vertical 
-		from.x=cyl->origin.x+es;
-		from.y=cyl->origin.y;
-		from.z=cyl->origin.z+ec;
-		to.x=from.x;
-		to.y=from.y+cyl->height;
-		to.z=from.z;
-		EERIEDraw3DLine(&from, &to,  col);
+		Vec3f from = cyl.origin + Vec3f(es, 0.f, ec);
+		EERIEDraw3DLine(from, from + Vec3f(0.f, cyl.height, 0.f),  col);
 		// Draw high pos
-		from.x=cyl->origin.x+es;
-		from.y=cyl->origin.y+cyl->height;
-		from.z=cyl->origin.z+ec;
-		to.x=cyl->origin.x+es2;
-		to.y=from.y;
-		to.z=cyl->origin.z+ec2;
-		EERIEDraw3DLine(&from, &to,  col);
+		Vec3f from2 = cyl.origin + Vec3f(es, cyl.height, ec);
+		Vec3f to = cyl.origin + Vec3f(es2, cyl.height, ec2);
+		EERIEDraw3DLine(from, to,  col);
 	}
 }
 
-void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col)
-{
-	Vec3f from,to;
+void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col) {
+	
 	#define STEPCYL 16
-
-	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
-	{
-		float es =EEsin(radians(MAKEANGLE((float)i)))*cyl->radius;
-		float ec =EEcos(radians(MAKEANGLE((float)i)))*cyl->radius;
-		float es2=EEsin(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
-		float ec2=EEcos(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
+	for(long i = 0; i < 360 - STEPCYL; i += STEPCYL) {
+		
+		float es = sin(radians(MAKEANGLE((float)i))) * cyl.radius;
+		float ec = cos(radians(MAKEANGLE((float)i))) * cyl.radius;
+		float es2 = sin(radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
+		float ec2 = cos(radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
 		
 		// Draw low pos
-		from.x=cyl->origin.x+es;
-		from.y=cyl->origin.y;
-		from.z=cyl->origin.z+ec;
-		to.x=cyl->origin.x+es2;
-		to.y=cyl->origin.y;
-		to.z=cyl->origin.z+ec2;
-		EERIEDraw3DLine(&from, &to,  col);	
+		EERIEDraw3DLine(cyl.origin + Vec3f(es, 0.f, ec), cyl.origin + Vec3f(es2, 0.f, ec2),  col);
 	}
 }
 
@@ -676,30 +651,22 @@ void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col)
-{
-	Vec3f vect;
-	vect.x=dest->x-orgn->x;
-	vect.y=dest->y-orgn->y;
-	vect.z=dest->z-orgn->z;
+void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
+	
+	Vec3f vect = dest - orgn;
 	float m=Vector_Magnitude(&vect);
 
 	if (m<=0) return;
 
 	float om=1.f/m;
-	vect.x*=om;
-	vect.y*=om;
-	vect.z*=om;
-	Vec3f cpos;
-	cpos.x=orgn->x;
-	cpos.y=orgn->y;
-	cpos.z=orgn->z;
+	vect *= om;
+	Vec3f cpos = orgn;
 
 	while (m>0)
 	{
 		float dep=std::min(m,30.f);
 		Vec3f tpos = cpos + (vect * dep);
-		EERIEDraw3DLine(&cpos,&tpos,col);
+		EERIEDraw3DLine(cpos, tpos, col);
 		cpos = tpos;
 		m-=dep;
 	}
@@ -707,31 +674,31 @@ void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col)
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDraw3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col)
-{
+void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
+	
 	D3DTLVERTEX v[2];
 	D3DTLVERTEX in;
-
-	in.sx=orgn->x;
-	in.sy=orgn->y;
-	in.sz=orgn->z;
-
-	EE_RTP(&in,&v[0]);
-
-	if (v[0].sz<0.f) return;
-
-	in.sx=dest->x;
-	in.sy=dest->y;
-	in.sz=dest->z;
-
-	EE_RTP(&in,&v[1]);
-
-	if (v[1].sz<0.f) return;
-
-	GRenderer->ResetTexture(0);
-	v[1].color=v[0].color=col;
 	
-	EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX,v, 2,  0  );	
+	in.sx = orgn.x;
+	in.sy = orgn.y;
+	in.sz = orgn.z;
+	EE_RTP(&in,&v[0]);
+	if(v[0].sz < 0.f) {
+		return;
+	}
+	
+	in.sx = dest.x;
+	in.sy = dest.y;
+	in.sz = dest.z;
+	EE_RTP(&in,&v[1]);
+	if(v[1].sz<0.f) {
+		return;
+	}
+	
+	GRenderer->ResetTexture(0);
+	v[1].color = v[0].color = col.toBGRA();
+	
+	EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX,v, 2,  0);
 }
 #define BASICFOCAL 350.f
 //*************************************************************************************

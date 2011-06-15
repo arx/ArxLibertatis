@@ -319,16 +319,8 @@ void ARX_FOGS_RenderAll()
 			fogs[i].bboxmin = BBOXMIN;
 			fogs[i].bboxmax = BBOXMAX;
 
-			if (fogs[i].special & FOG_DIRECTIONAL)
-			{
-				Vec3f orgn, dest;
-				orgn.x = fogs[i].pos.x;
-				orgn.y = fogs[i].pos.y;
-				orgn.z = fogs[i].pos.z;
-				dest.x = orgn.x + fogs[i].move.x * 50.f;
-				dest.y = orgn.y + fogs[i].move.y * 50.f;
-				dest.z = orgn.z + fogs[i].move.z * 50.f;
-				EERIEDraw3DLine(&orgn, &dest, EERIECOLOR_WHITE); 
+			if(fogs[i].special & FOG_DIRECTIONAL) {
+				EERIEDraw3DLine(fogs[i].pos, fogs[i].pos + fogs[i].move * 50.f, Color::white); 
 			}
 
 			if (fogs[i].selected)

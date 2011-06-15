@@ -840,7 +840,7 @@ float CIncinerate::Render()
 		d.x = tv1a[i+1].sx;
 		d.y = tv1a[i+1].sy;
 		d.z = tv1a[i+1].sz;
-		EERIEDraw3DLine(&s, &d, 0xFFFF0000);
+		EERIEDraw3DLine(s, d, Color::red);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
