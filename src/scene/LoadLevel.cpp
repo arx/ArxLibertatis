@@ -878,7 +878,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 	return io;
 }
 long LastLoadedLightningNb = 0;
-D3DCOLOR * LastLoadedLightning = NULL;
+u32 * LastLoadedLightning = NULL;
 Vec3f loddpos;
 Vec3f MSP;
 
@@ -1073,7 +1073,7 @@ long DanaeLoadLevel(const string & fic) {
 			}
 			
 			//DANAE_LS_VLIGHTING
-			D3DCOLOR * ll = LastLoadedLightning = (D3DCOLOR *)malloc(sizeof(D3DCOLOR) * bcount);
+			u32 * ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
 			
 			if(dlh.version > 1.001f) {
 				std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
@@ -1391,11 +1391,11 @@ long DanaeLoadLevel(const string & fic) {
 	}
 	
 	//DANAE_LS_VLIGHTING
-	D3DCOLOR * ll;
-	ll = LastLoadedLightning = (D3DCOLOR *)malloc(sizeof(D3DCOLOR) * bcount);
+	u32 * ll;
+	ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
 	if(dlh.version > 1.001f) {
 		std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
-		pos += sizeof(D3DCOLOR) * bcount;
+		pos += sizeof(u32) * bcount;
 	} else {
 		while(bcount) {
 			DANAE_LS_VLIGHTING dlv;
@@ -1607,7 +1607,6 @@ void DanaeClearAll()
 
 void RestoreLastLoadedLightning()
 {
-	D3DCOLOR dc;
 	long pos = 0;
 	long bcount = CountBkgVertex();
 
@@ -1646,7 +1645,7 @@ void RestoreLastLoadedLightning()
 
 				for (long k = 0; k < nbvert; k++)
 				{
-					memcpy(&dc, LastLoadedLightning + pos, sizeof(D3DCOLOR));
+					u32 dc = LastLoadedLightning[pos];
 					pos++;
 					dc = dc | 0xFF000000;
 					ep->tv[k].color = ep->v[k].color = dc;
