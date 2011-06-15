@@ -1587,7 +1587,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 			io->_npcdata->cut = 0;
 			io->_npcdata->cuts = 0;
 			io->_npcdata->poisonned = 0.f;
-			io->_npcdata->blood_color = 0xFFFF0000;
+			io->_npcdata->blood_color = Color::red;
 			io->_npcdata->stare_factor = 1.f;
 
 			io->_npcdata->weapon = NULL;
@@ -2927,7 +2927,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	io->_npcdata->aiming_start = 0;
 	io->_npcdata->npcflags = 0;
 	io->_npcdata->backstab_skill = 0;
-	io->_npcdata->blood_color = 0xFFFF0000;
+	io->_npcdata->blood_color = Color::red;
 	io->_npcdata->stare_factor = 1.f;
 
 	if (!(flags & NO_ON_LOAD))

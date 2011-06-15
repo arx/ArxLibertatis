@@ -439,9 +439,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 			if (p->flags & PATH_RGB)
 			{
 				desired.flags |= GMOD_DCOLOR;
-				desired.depthcolor.r = p->rgb.r;
-				desired.depthcolor.g = p->rgb.g;
-				desired.depthcolor.b = p->rgb.b;
+				desired.depthcolor = p->rgb;
 			}
 
 			if (p->controled[0] != 0)
@@ -1719,7 +1717,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 										if (target->ioflags & IO_NPC)
 										{
 											Vec3f	pos;
-											D3DCOLOR	color		=	0x00000000;
+											Color color = Color::none;
 											long		hitpoint	=	-1;
 											float		curdist		=	999999.f;
 
@@ -1738,7 +1736,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 											if (hitpoint >= 0)
 											{
-												color	=	target->_npcdata->blood_color;
+												color = target->_npcdata->blood_color;
 												pos = target->obj->vertexlist3[hitpoint].v;
 											}
 
@@ -1753,10 +1751,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 													if (target->ioflags & IO_NPC)
 													{
 														target->_npcdata->SPLAT_TOT_NB = 0;
-														ARX_PARTICLES_Spawn_Blood2(&original_pos, damages, color, target);
+														ARX_PARTICLES_Spawn_Blood2(&original_pos, damages, color.toBGRA(), target);
 													}
 
-													ARX_PARTICLES_Spawn_Blood2(&pos, damages, color, target);
+													ARX_PARTICLES_Spawn_Blood2(&pos, damages, color.toBGRA(), target);
 													ARX_DAMAGES_DamageNPC(target, damages, Thrown[i].source, 0, &pos);
 
 													if (rnd() * 100.f > target->_npcdata->resist_poison)

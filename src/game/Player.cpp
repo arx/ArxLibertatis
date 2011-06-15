@@ -1713,7 +1713,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	//todo free
 	io->_npcdata = (IO_NPCDATA *)malloc(sizeof(IO_NPCDATA));
 	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
-	io->_npcdata->blood_color = 0xFFFF0000;
+	io->_npcdata->blood_color = Color::red;
 	io->ioflags = IO_NPC;
 	io->_npcdata->maxlife = io->_npcdata->life = 10;
 	io->_npcdata->vvpos = -99999.f;

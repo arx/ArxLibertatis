@@ -1418,7 +1418,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 						{
 							MakePlayerAppearsFX(io);
 							AddRandomSmoke(io,50);
-							Color3f rgb = Color3f::fromBGR(io->_npcdata->blood_color);
+							Color3f rgb = io->_npcdata->blood_color.to<float>();
 							EERIE_SPHERE sp;
 							sp.origin.x=io->pos.x;
 							sp.origin.y=io->pos.y;
@@ -1431,7 +1431,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 								SpawnGroundSplat(&sp,&rgb,rnd()*30.f+30.f,1);
 								sp.origin.y-=rnd()*150.f;
 
-								ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color);
+								ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color.toBGRA());
 
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;

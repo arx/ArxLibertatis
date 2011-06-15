@@ -1585,7 +1585,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 				as->ex_rotate = *io->_npcdata->ex_rotate;
 			}
 
-			as->blood_color = io->_npcdata->blood_color;
+			as->blood_color = io->_npcdata->blood_color.toBGRA();
 			as->fDetect = io->_npcdata->fDetect;
 			as->cuts = io->_npcdata->cuts;
 			pos += struct_size;
@@ -2700,7 +2700,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 						*io->_npcdata->ex_rotate = as->ex_rotate;
 					}
 
-					io->_npcdata->blood_color = as->blood_color;
+					io->_npcdata->blood_color.fromBGRA(as->blood_color);
 				}
 				pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 				break;

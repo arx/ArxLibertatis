@@ -122,7 +122,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 
 	if ((j != -1) && (!ARXPausedTimer))
 	{
-		D3DCOLOR col = inter.iobj[0]->_npcdata->blood_color;
+		Color3f col = inter.iobj[0]->_npcdata->blood_color.to<float>();
 		D3DTLVERTEX in, out;
 		in.sx = pos->x;
 		in.sy = pos->y;
@@ -147,10 +147,6 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 
 		float power;
 		power = (dmgs * ( 1.0f / 60 )) + 0.9f;
-		float r, g, b;
-		r = (float)((long)((col >> 16) & 255)) * ( 1.0f / 255 );
-		g = (float)((long)((col >> 8) & 255)) * ( 1.0f / 255 );
-		b = (float)((long)((col) & 255)) * ( 1.0f / 255 );
 		ParticleCount++;
 		PARTICLE_DEF * pd = &particle[j];
 		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
@@ -173,9 +169,9 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		else if (num > 5) num = 5;
 
 		pd->tc = bloodsplat[num];
-		pd->r = r;
-		pd->g = g;
-		pd->b = b;
+		pd->r = col.r;
+		pd->g = col.g;
+		pd->b = col.b;
 		pd->siz = 3.5f * power * 40 * Xratio;
 		pd->type = PARTICLE_2D;
 	}

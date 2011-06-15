@@ -993,7 +993,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					INTERACTIVE_OBJ * target = inter.iobj[EVERYTHING_IN_SPHERE[jj]];
 			
 					Vec3f	pos;
-					D3DCOLOR	color		=	ARX_OPAQUE_WHITE;
+					Color color = Color::white;
 					long		hitpoint	=	-1;
 					float		curdist		=	999999.f;
 					
@@ -1016,12 +1016,8 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 						}
 					}
 
-					if (hitpoint >= 0)
-					{
-						if (target->ioflags & IO_NPC)
-							color = target->_npcdata->blood_color;
-						else color = 0xFFFFFFFF;
-
+					if(hitpoint >= 0) {
+						color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
 						pos = target->obj->vertexlist3[hitpoint].v;
 					}
 					else ARX_CHECK_NO_ENTRY(); 
@@ -1079,7 +1075,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 							if (!(flags & 1))
 							{
-								ARX_PARTICLES_Spawn_Splat(&pos, dmgs, color);
+								ARX_PARTICLES_Spawn_Splat(&pos, dmgs, color.toBGRA());
 
 								EERIE_SPHERE sp;
 								float power;
@@ -1095,7 +1091,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 								sp.radius = 3.5f * power * 20;
 
 								if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
-									Color3f rgb = Color3f::fromBGR(color);
+									Color3f rgb = color.to<float>();
 									SpawnGroundSplat(&sp, &rgb, 30, 1);
 								}
 							}
@@ -1103,7 +1099,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							if (target == inter.iobj[0])
 								ARX_DAMAGES_SCREEN_SPLATS_Add(&pos, dmgs);
 
-							ARX_PARTICLES_Spawn_Blood2(&pos, dmgs, color, target);
+							ARX_PARTICLES_Spawn_Blood2(&pos, dmgs, color.toBGRA(), target);
 
 							if (!ValidIONum(weapon)) io_weapon = NULL;
 						}

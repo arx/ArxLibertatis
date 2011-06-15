@@ -354,8 +354,8 @@ struct IO_NPCDATA
 	long		aiming_start;
 	long		npcflags;
 	IO_PATHFIND pathfind;
-	EERIE_EXTRA_ROTATE *	ex_rotate;
-	D3DCOLOR	blood_color;
+	EERIE_EXTRA_ROTATE * ex_rotate;
+	Color blood_color;
 
 	short SPLAT_DAMAGES;
 	short SPLAT_TOT_NB;

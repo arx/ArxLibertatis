@@ -2148,9 +2148,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					pos = GetNextWord(es, pos, word);
 					float b = GetVarValueInterpretedAsFloat(word, esss, io);
 
-					if (io->ioflags & IO_NPC)
-					{
-						io->_npcdata->blood_color = D3DRGB(r, g, b);
+					if(io->ioflags & IO_NPC) {
+						io->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
 					}
 				}
 				else if (!strcmp(word, "SETMATERIAL"))
