@@ -655,8 +655,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	
 	// Alloc'n'Copy Progressive DATA
 	if(afsh->offset_progressive_data != -1) {
-		ARX_FTL_PROGRESSIVE_DATA_HEADER *	afpdh;
-		afpdh = (ARX_FTL_PROGRESSIVE_DATA_HEADER *)(dat + afsh->offset_progressive_data);
+		// Progressive data ignored.
 	}
 	
 	// Alloc'n'Copy Clothes DATA
