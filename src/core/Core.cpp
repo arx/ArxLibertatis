@@ -4376,12 +4376,11 @@ void RenderAllNodes()
 				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
 			}
 
-			if (nodes.nodes[i].selected)
-			{
-				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmin.y,nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmax.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
+			if(nodes.nodes[i].selected) {
+				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
 			}
 
 			for(size_t j = 0; j < MAX_LINKS; j++) {

@@ -4374,17 +4374,9 @@ void RenderInter(float from, float to) {
 			if ((io->ignition > 0.f) || (io->ioflags & IO_FIERY))
 				ManageIgnition(io);
 
-			if ((NEED_TEST_TEXT || EDITMODE) && (!FOR_EXTERNAL_PEOPLE))
-			{
-				D3DCOLOR color;
-
-				if ((EDITMODE && (io->EditorFlags & EFLAG_SELECTED))) 
-					color = 0xFFFFFF00;
-				else
-					color = 0xFF0000FF;
-
-				if ((io->bbox1.x != io->bbox2.x) && (io->bbox1.x < DANAESIZX))
-				{
+			if((NEED_TEST_TEXT || EDITMODE) && !FOR_EXTERNAL_PEOPLE) {
+				Color color = (EDITMODE && (io->EditorFlags & EFLAG_SELECTED)) ? Color::yellow : Color::blue;
+				if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
 					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
 					EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
 					EERIEDraw2DLine(io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);

@@ -525,37 +525,19 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 	tc->delayed_nb++;
 }
 
-void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
-{
-	D3DTLVERTEX tv[2];
-	tv[0].sx=x;
-	tv[0].sy=y;
-	tv[1].sz=tv[0].sz=z;
-	tv[1].color=tv[0].color=col;
-	tv[1].rhw=tv[0].rhw=1.f;
-	tv[1].sx=x1;
-	tv[1].sy=y1;	
-	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(D3DPT_LINELIST ,	D3DFVF_TLVERTEX,tv, 2,  0  );	
-
-}
-
-void EERIEDraw2DLine(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
-{
+void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col) {
+	
 	D3DTLVERTEX v[2];
-
+	v[0].sx = x0;
+	v[0].sy = y0;
+	v[0].sz = v[1].sz = z;
+	v[1].sx = x1;
+	v[1].sy = y1;
+	v[1].color = v[0].color = col.toBGRA();
+	v[1].rhw = v[0].rhw = 1.f;
+	
 	GRenderer->ResetTexture(0);
-	v[0].sx=x0;
-	v[0].sy=y0;
-	v[0].sz=v[1].sz=z;
-	v[1].sx=x1;
-	v[1].sy=y1;
-	v[1].color=v[0].color=col;
-	v[1].rhw=v[0].rhw=1.f;
-
-	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM( D3DPT_LINELIST, D3DFVF_TLVERTEX, 
-					 v, 2,  0  );	
+	EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, v, 2, 0);
 }
 
 void EERIEDraw2DRect(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
@@ -629,23 +611,20 @@ void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col) {
 	}
 }
 
-void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
-{
-	register float x,y;
-	register float lx=x0;
-	register float ly=y0+r;
-	register float t;
-	GRenderer->ResetTexture(0);	
-
-	for (long i=0;i<361;i+=10)
-	{
-		t=radians((float)i);
-		x=x0-EEsin(t)*r;
-		y=y0+EEcos(t)*r;
-		EERIEDrawLine(lx,ly,x,y,z,col);
+void EERIEDrawCircle(float x0, float y0, float r, Color col, float z) {
+	
+	register float lx = x0;
+	register float ly = y0 + r;
+	GRenderer->ResetTexture(0);
+	
+	for(long i = 0; i < 361; i += 10) {
+		float t = radians((float)i);
+		float x = x0 - sin(t) * r;
+		float y = y0 + cos(t) * r;
+		EERIEDraw2DLine(lx, ly, x, y, z, col);
 		lx = x;
 		ly = y;
-		}
+	}
 }
 
 //*************************************************************************************

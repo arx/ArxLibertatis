@@ -549,10 +549,10 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL)
 				if ((_pL->mins.y >= -200.f) && (_pL->mins.y <= 1000.f))
 				{
 
-					EERIEDraw2DLine( _pL->mins.x, _pL->mins.y, _pL->maxs.x, _pL->mins.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine( _pL->maxs.x, _pL->mins.y, _pL->maxs.x, _pL->maxs.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine( _pL->maxs.x, _pL->maxs.y, _pL->mins.x, _pL->maxs.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine( _pL->mins.x, _pL->maxs.y, _pL->mins.x, _pL->mins.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
+					EERIEDraw2DLine(_pL->mins.x, _pL->mins.y, _pL->maxs.x, _pL->mins.y, 0.00001f, Color::white);
+					EERIEDraw2DLine(_pL->maxs.x, _pL->mins.y, _pL->maxs.x, _pL->maxs.y, 0.00001f, Color::white);
+					EERIEDraw2DLine(_pL->maxs.x, _pL->maxs.y, _pL->mins.x, _pL->maxs.y, 0.00001f, Color::white);
+					EERIEDraw2DLine(_pL->mins.x, _pL->maxs.y, _pL->mins.x, _pL->mins.y, 0.00001f, Color::white);
 				}
 	}
 }

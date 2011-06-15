@@ -303,11 +303,11 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 					{
 						float t=(1.f-center.sz)*ACTIVECAM->use_focal*( 1.0f / 3000 );
 						float rad=el->fallstart*t;
-						EERIEDrawCircle(center.sx,center.sy,rad,0xFFFFFF00,0.0001f);
+						EERIEDrawCircle(center.sx, center.sy, rad, Color::yellow, 0.0001f);
 						rad=el->fallend*t;
-						EERIEDrawCircle(center.sx,center.sy,rad,0xFFFF0000,0.0001f);
+						EERIEDrawCircle(center.sx, center.sy, rad, Color::red, 0.0001f);
 						rad=el->intensity*200.f*t;
-						EERIEDrawCircle(center.sx,center.sy,rad,0xFF00FF00,0.0001f);
+						EERIEDrawCircle(center.sx, center.sy, rad, Color::green, 0.0001f);
 					}
 				}
 			}			
