@@ -378,7 +378,7 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 			for (long k=0;k<animations[i].alt_nb;k++)
 				totsize+=animations[i].sizes[k];
 
-			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
+			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,(long)i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
 			memsize+=totsize;
 			tex += temp;
 		}
