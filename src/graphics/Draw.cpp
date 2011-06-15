@@ -55,15 +55,6 @@ using std::max;
 TextureContainer * EERIE_DRAW_sphere_particle=NULL;
 TextureContainer * EERIE_DRAW_square_particle=NULL;
 
-struct TODRAWLATER
-{
-	EERIEPOLY * ep;
-};
-
-long curdrawlater=0;
-#define MAX_DRAWLATER 256
-TODRAWLATER tdl[MAX_DRAWLATER];
-
 long ZMAPMODE=1;
 TextureContainer * Zmap;
 Vec3f SPRmins;
@@ -275,86 +266,9 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	return false;
 }
 
-
-void DRAWLATER_ReInit()
-{
-	curdrawlater=0;
-}
-
 void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
 {
 	Zmap=Z_map;
-}
-void DRAWLATER_Render()
-{
-	if (curdrawlater==0) return;
-
-		D3DTLVERTEX verts[4];
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
-		GRenderer->SetRenderState(Renderer::DepthWrite, false); 
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
-		GRenderer->SetCulling(Renderer::CullNone);
-		long to;
-
-		for (long j=0;j<curdrawlater;j++)
-		{
-			if (tdl[j].ep->tex==NULL) continue;
-			if (tdl[j].ep->tex->TextureRefinement==NULL) continue;
-			
-			if (tdl[j].ep->type & POLY_QUAD) to=4;
-			else to=3;
-
-			long tmp;
-			long i=0;
-
-			for (;i<to;i++)
-			{
-				verts[i].tu=tdl[j].ep->tv[i].tu;
-				verts[i].tv=tdl[j].ep->tv[i].tv;
-				verts[i].color=tdl[j].ep->tv[i].color;
-				verts[i].sz=tdl[j].ep->tv[i].sz;
-				tdl[j].ep->tv[i].tu*=4.f;
-				tdl[j].ep->tv[i].tv*=4.f;
-
-				float val = (0.048f - tdl[j].ep->tv[i].sz); 
-				if (val<=0.f) 
-				{
-					tdl[j].ep->tv[i].color=0xFF000000;
-				}
-				else 
-				{
-					if (val>0.0175) 
-					{
-					tdl[j].ep->tv[i].color = 0xFFB2B2B2; 
-					}
-					else 
-					{
-						tmp = val*10200;
-						tdl[j].ep->tv[i].color=0xFF000000 | (tmp<<16) | (tmp<<8) | tmp;
-					}
-
-				}				
-			}
-
-			tdl[j].ep->tv[i].sz-=0.001f;
-
-			GRenderer->SetTexture(0, tdl[j].ep->tex->TextureRefinement);
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, tdl[j].ep, to, 0, EERIE_NOCOUNT );
-
-			for (int i=0;i<to;i++)
-			{
-				tdl[j].ep->tv[i].tu=verts[i].tu;
-				tdl[j].ep->tv[i].tv=verts[i].tv;
-				tdl[j].ep->tv[i].color=verts[i].color;	
-				tdl[j].ep->tv[i].sz=verts[i].sz;
-			}
-		}
-
-		EERIEDrawnPolys+=curdrawlater;
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
-		GRenderer->SetRenderState(Renderer::DepthWrite, true); 
-
-	GRenderer->ResetTexture(0);
 }
 
 //------------------------------------------------------------------------------

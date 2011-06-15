@@ -3295,8 +3295,6 @@ void ARX_SCENE_Render(long flag) {
 			
 
 	long lll;
-
-	DRAWLATER_ReInit();
 	
 	// Temporary Hack...
 	long LAST_FC=FRAME_COUNT;
@@ -3686,9 +3684,6 @@ else
 	PopAllTriangleList();
 	
 					}
-
-
-	DRAWLATER_Render();
 
 	if (ACTIVECAM->type!=CAM_TOPVIEW) 
 	{
