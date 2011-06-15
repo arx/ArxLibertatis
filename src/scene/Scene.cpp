@@ -1872,7 +1872,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 	
 	if (RoomDraw[room_num].count)
 	{
-		EERIEDraw2DRect( bbox->min.x,bbox->min.y,bbox->max.x,bbox->max.y,0.0001f, 0xFF0000FF);
+		EERIEDraw2DRect(bbox->min.x, bbox->min.y ,bbox->max.x, bbox->max.y, 0.0001f, Color::blue);
 
 	for (long  lll=0;lll<portals->room[room_num].nb_polys;lll++)
 	{

@@ -540,21 +540,19 @@ void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col)
 	EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, v, 2, 0);
 }
 
-void EERIEDraw2DRect(float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
-{
+void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col) {
+	
 	D3DTLVERTEX v[5];
-
+	v[4].sx = v[3].sx = v[0].sx = x0;
+	v[4].sy = v[1].sy = v[0].sy = y0;
+	v[2].sx = v[1].sx = x1;
+	v[3].sy = v[2].sy = y1;
+	v[4].sz = v[3].sz = v[2].sz = v[1].sz = v[0].sz = z;
+	v[4].color = v[3].color = v[2].color = v[1].color = v[0].color = col.toBGRA();
+	v[4].rhw = v[3].rhw = v[2].rhw = v[1].rhw = v[0].rhw = 1.f;
+	
 	GRenderer->ResetTexture(0);
-	v[4].sx=v[3].sx=v[0].sx=x0;
-	v[4].sy=v[1].sy=v[0].sy=y0;
-	v[2].sx=v[1].sx=x1;
-	v[3].sy=v[2].sy=y1;
-	v[4].sz=v[3].sz=v[2].sz=v[1].sz=v[0].sz=z;
-	v[4].color=v[3].color=v[2].color=v[1].color=v[0].color=col;
-	v[4].rhw=v[3].rhw=v[2].rhw=v[1].rhw=v[0].rhw=1.f;
-
-	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(D3DPT_LINESTRIP, D3DFVF_TLVERTEX, v, 5,  0  );	
+	EERIEDRAWPRIM(D3DPT_LINESTRIP, D3DFVF_TLVERTEX, v, 5, 0);
 }
 
 void EERIEDrawFill2DRectDegrad(float x0,float y0,float x1,float y1,float z, D3DCOLOR cold, D3DCOLOR cole)

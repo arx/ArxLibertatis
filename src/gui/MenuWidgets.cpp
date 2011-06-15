@@ -1956,12 +1956,11 @@ bool Menu2_Render()
 		                0.001f, pTextureLoad, Color::white);
 
 		GRenderer->ResetTexture(0);
-		EERIEDraw2DRect(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
-						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
-						DANAEMouse.x+iOffsetX+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-						DANAEMouse.y+iOffsetY+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
-						0.01f,
-						ARX_OPAQUE_WHITE);
+		EERIEDraw2DRect(static_cast<float>(DANAEMouse.x + iOffsetX),
+		                static_cast<float>(DANAEMouse.y + iOffsetY),
+		                DANAEMouse.x + iOffsetX + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+		                DANAEMouse.y + iOffsetY + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+		                0.01f, Color::white);
 
 		pTextureLoadRender=NULL;
 	}
