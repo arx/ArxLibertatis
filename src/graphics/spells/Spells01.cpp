@@ -218,7 +218,7 @@ CMagicMissile::CMagicMissile() : CSpellFx()
 	tex_mm = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
 	if (!smissile)
-		smissile = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo", NULL);
+		smissile = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo");
 
 	smissile_count++;
 

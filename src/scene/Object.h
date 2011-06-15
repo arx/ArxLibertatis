@@ -103,7 +103,7 @@ EERIE_3DOBJ * loadObject(const std::string & file, bool pbox = true);
 /*!
  * @param texpath texture path relative to file
  */
-EERIE_3DOBJ * _LoadTheObj(const std::string & file, const std::string & texpath);
+EERIE_3DOBJ * _LoadTheObj(const std::string & file, const std::string & texpath = std::string());
 
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const std::string & fic);
 
