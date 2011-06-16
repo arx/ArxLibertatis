@@ -455,7 +455,7 @@ float CMagicMissile::Render()
 				if (c < 0) c = 0;
 				else if (c > 1) c = 1;
 
-				int color = D3DRGB(c * fColor[0] * alpha, c * fColor[1] * alpha, c * fColor[2] * alpha);
+				Color color = Color3f(c * fColor[0] * alpha, c * fColor[1] * alpha, c * fColor[2] * alpha).to<u8>();
 
 				if (fsize < 0.5f)
 					fsize = fsize * 2 * 3;

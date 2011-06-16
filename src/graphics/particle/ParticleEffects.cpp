@@ -2420,7 +2420,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						end.x=pos.x-(pos.x-op.x)*2.5f;
 						end.y=pos.y-(pos.y-op.y)*2.5f;
 						end.z=pos.z-(pos.z-op.z)*2.5f;
-						Draw3DLineTex2(end,pos,2.f,col.toBGRA() & part->mask, col.toBGRA());
+						Draw3DLineTex2(end,pos,2.f, Color::fromBGRA(col.toBGRA() & part->mask), col);
 						
 						EERIEDrawSprite(&in, .7f, tc, col, 2.f);
 						

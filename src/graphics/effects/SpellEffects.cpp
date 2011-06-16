@@ -277,7 +277,7 @@ void CSpellFx::Update(float _fParam)
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex(Vec3f s, Vec3f e, D3DCOLOR color, float fStartSize, float fEndSize) {
+void Draw3DLineTex(Vec3f s, Vec3f e, Color color, float fStartSize, float fEndSize) {
 	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float xxs = (float)(fStartSize * cos(radians(fBeta)));
@@ -288,7 +288,7 @@ void Draw3DLineTex(Vec3f s, Vec3f e, D3DCOLOR color, float fStartSize, float fEn
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v2[4];
 
-	v2[0].color = v2[1].color = v2[2].color = v2[3].color = color;
+	v2[0].color = v2[1].color = v2[2].color = v2[3].color = color.toBGRA();
 
 	// version 2 faces
 	v2[0].tu = 0;
@@ -359,7 +359,7 @@ void Draw3DLineTex(Vec3f s, Vec3f e, D3DCOLOR color, float fStartSize, float fEn
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, D3DCOLOR color, D3DCOLOR color2) {
+void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
 	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float zz = fSize; 
@@ -368,8 +368,8 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, D3DCOLOR color, D3DCOLOR colo
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v2[4];
 
-	v2[0].color = v2[1].color = color;
-	v2[2].color = v2[3].color = color2;
+	v2[0].color = v2[1].color = color.toBGRA();
+	v2[2].color = v2[3].color = color2.toBGRA();
 
 	// version 2 faces
 	v2[0].tu = 0;
