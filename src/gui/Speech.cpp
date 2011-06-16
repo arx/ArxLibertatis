@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 #include <cstdio>
+#include <algorithm>
 
 #include "core/Core.h"
 #include "core/Localisation.h"
@@ -87,6 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 using std::string;
+using std::transform;
 
 extern TextureContainer *	arx_logo_tc;
 extern long ARX_CONVERSATION;

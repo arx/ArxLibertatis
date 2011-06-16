@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakReader.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <algorithm>
 #include <cassert>

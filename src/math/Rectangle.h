@@ -2,6 +2,8 @@
 #ifndef ARX_MATH_RECTANGLE_H
 #define ARX_MATH_RECTANGLE_H
 
+#include <algorithm>
+
 #include "math/Vector2.h"
 
 // TODO name Rectangle is used in windows headers

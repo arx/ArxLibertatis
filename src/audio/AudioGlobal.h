@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_AUDIO_AUDIOGLOBAL_H
 
 #include <cmath>
+#include <algorithm>
 
 #include "audio/AudioTypes.h"
 #include "audio/AudioResource.h"
