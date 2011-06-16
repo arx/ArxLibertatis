@@ -995,15 +995,13 @@ extern float GLOBAL_LIGHT_FACTOR;
 //*************************************************************************************
 //*************************************************************************************
 
-D3DCOLOR GetColorz(float x, float y, float z)
-{
+float GetColorz(float x, float y, float z) {
+	
 	Vec3f pos(x, y, z);
 	llightsInit();
 	float ffr, ffg, ffb;
-	long lfr, lfg, lfb;
 	float dd, dc;
 	float p;
-	D3DCOLOR color;
 
 	for (long i = 0; i < TOTIOPDL; i++)
 	{
@@ -1097,17 +1095,8 @@ D3DCOLOR GetColorz(float x, float y, float z)
 		ffg = ffg * ratio2 + _ffg * ratio;
 		ffb = ffb * ratio2 + _ffb * ratio;
 	}
-
-	ffr = min(ffr, 255.f);
-	lfr = ffr;
-
-	ffg = min(ffg, 255.f);
-	lfg = ffg;
-
-	ffb = min(ffb, 255.f);
-	lfb = ffb;
-	color = (0xFF000000L | ((lfr & 255) << 16) |	((lfg & 255) << 8) | (lfb & 255));
-	return color;
+	
+	return (min(ffr, 255.f) + min(ffg, 255.f) + min(ffb, 255.f)) * (1.f/3);
 }
 
 //*************************************************************************************

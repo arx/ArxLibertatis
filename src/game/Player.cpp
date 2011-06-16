@@ -3477,11 +3477,7 @@ lasuite:
 	;
 
 	// Get Player position color
-	unsigned long col = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z);
-	player.grnd_color = (float)(long)(col & 255);
-	player.grnd_color += (float)(long)((col >> 8) & 255);
-	player.grnd_color += (float)(long)((col >> 16) & 255);
-	player.grnd_color *= ( 1.0f / 3 );
+	player.grnd_color = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z);
 	player.grnd_color -= 15.f; 
 	if (CURRENT_PLAYER_COLOR < player.grnd_color)
 	{

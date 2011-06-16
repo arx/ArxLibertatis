@@ -824,7 +824,7 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
 EERIEPOLY * GetMinPoly(float x, float y, float z);
 EERIEPOLY * GetMaxPoly(float x, float y, float z);
  
-D3DCOLOR GetColorz(float x,float y,float z);
+float GetColorz(float x, float y, float z);
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
 
 float Distance2D(float x0, float y0, float x1, float y1);
