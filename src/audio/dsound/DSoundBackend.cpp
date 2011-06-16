@@ -33,6 +33,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioEnvironment.h"
 #include "audio/AudioGlobal.h"
 
+// TODO
+extern HWND mainWindow;
+
 namespace audio {
 
 static const PCMFormat globalFormat = { 22050, 16, 2 };
@@ -67,6 +70,7 @@ DSoundBackend::~DSoundBackend() {
 	
 }
 
+
 aalError DSoundBackend::init(bool enableEax) {
 	
 	if(device) {
@@ -90,7 +94,7 @@ aalError DSoundBackend::init(bool enableEax) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	if(FAILED(h = device->SetCooperativeLevel(GetForegroundWindow(), DSSCL_PRIORITY))) {
+	if(FAILED(h = device->SetCooperativeLevel(mainWindow, DSSCL_PRIORITY))) {
 		LogError << "error setting cooperative level: " << h;
 		return AAL_ERROR_SYSTEM;
 	}

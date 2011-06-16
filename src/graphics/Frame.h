@@ -112,10 +112,7 @@ class CD3DFramework7
 		bool				m_bIsFullscreen;      // Fullscreen vs. windowed
 
 		// Access functions for DirectX objects
-		bool				b_dlg;
 		long				bitdepth;
-
-		RECT				m_rcScreenRect;       // Screen rect for window
 		bool				m_bHasMoved;
 		short				Ystart;
 		short				Xstart;
@@ -126,18 +123,10 @@ class CD3DFramework7
 		DWORD                m_dwRenderWidth;      // Dimensions of the render target
 		DWORD                m_dwRenderHeight;
 
-		RECT	ClipWin;
-		VOID	ClipWindow(long x0, long y0, long x1, long y1);
- 
-
 	public:
 		CD3DFramework7();
 		~CD3DFramework7();
-		unsigned short	usBeginEndSceneCount;
 
-		bool StartRender();
-		bool EndRender();
-		bool RenderError();
 		void SetZBias(int);
 
 		LPDIRECTDRAW7        GetDirectDraw()
@@ -161,8 +150,6 @@ class CD3DFramework7
 		HRESULT RestoreSurfaces();
 		HRESULT ShowFrame();
 		HRESULT FlipToGDISurface(bool bDrawFrame = false);
-
-		VOID    Move(INT x, INT y);
 
 		// Creates the Framework
 		HRESULT Initialize(HWND, GUID *, GUID *, DDSURFACEDESC2 *, DWORD);

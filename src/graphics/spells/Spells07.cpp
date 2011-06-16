@@ -528,7 +528,7 @@ float CLightning::Render()
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = D3DRGB(1, 1, 1);
 
@@ -764,13 +764,11 @@ CConfuse::CConfuse()
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_trail = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_trail = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
-	if(!spapi) {
-		spapi = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo");
-		EERIE_3DOBJ_RestoreTextures(spapi);
-	}
+	if (!spapi)
+		spapi = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo", NULL);
 
 	spapi_count++;
 
@@ -839,12 +837,7 @@ float CConfuse::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	//-------------------------------------------------------------------------
-	if (tex_trail && tex_trail->m_pddsSurface)
-	{
-		SETTC(tex_trail);
-	}
+	GRenderer->SetTexture(0, tex_trail);
 
 	Anglef stiteangle;
 	Vec3f stitepos;
@@ -1166,19 +1159,17 @@ CIceField::CIceField()
 
 	iNumber = 50;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
-	if(!stite) {
-		stite = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
-		EERIE_3DOBJ_RestoreTextures(stite);
-	}
+	if (!stite)
+		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+		
 	stite_count++;
 
-	if(!smotte) {
-		smotte = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
-		EERIE_3DOBJ_RestoreTextures(smotte);
-	}
+	if (!smotte)
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+
 	smotte_count++;
 }
 

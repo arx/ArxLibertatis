@@ -200,7 +200,7 @@ class CDoze: public CIgnit
 		void CreateDoze(Vec3f * posc, float perim, int speed)
 		{
 			this->Create(posc, perim, speed);
-			this->ChangeTexture(MakeTCFromFile("Graph\\Particles\\doze_hit.bmp"));
+			this->ChangeTexture(TextureContainer::Load("Graph\\Particles\\doze_hit.bmp"));
 			this->ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
 		};
 		void	AddLightDoze(int iLight);

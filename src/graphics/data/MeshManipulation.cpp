@@ -109,7 +109,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 	MakeUpcase(skintochange);
 	
 	string skinname = "Graph\\Obj3D\\Textures\\" + s2 + ".bmp";
-	TextureContainer * tex = D3DTextr_CreateTextureFromFile(skinname);
+	TextureContainer * tex = TextureContainer::Load(skinname);
 
 	if (obj->originaltextures == NULL)
 	{
@@ -135,14 +135,15 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 			}
 		}
 
-		tex->Restore();
-		TextureContainer * tex2 = FindTexture(skintochange);
-
+		TextureContainer * tex2 = TextureContainer::Find(skintochange);
 		if (tex2)
+		{
 			for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 			{
-				if (obj->texturecontainer[i] == tex2)  obj->texturecontainer[i] = tex;
+				if (obj->texturecontainer[i] == tex2)
+					obj->texturecontainer[i] = tex;
 			}
+		}
 	}
 }
 
@@ -776,12 +777,6 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		}
 	}
 
-	// Look for Vertices Without Group...
-	for (size_t i = 0; i < work->texturecontainer.size(); i++)
-	{
-		work->texturecontainer[i]->Restore();
-	}
-
 	work->vertexlist3 = work->vertexlist;
 
 	return work;
@@ -841,20 +836,10 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 		{
 			case TWEAK_ALL:
 
-				if (!io->tweaky) io->tweaky = io->obj;
-				else delete io->obj;
-
-				for (size_t i = 0; i < tobj->facelist.size(); i++)
-				{
-					if ((tobj->facelist[i].texid >= 0)
-					        &&	(tobj->texturecontainer[tobj->facelist[i].texid]))
-					{
-						TextureContainer * tc = tobj->texturecontainer[tobj->facelist[i].texid];
-
-						if (!tc->m_pddsSurface)
-							tc->Restore();
-					}
-				}
+				if (!io->tweaky)
+					io->tweaky = io->obj;
+				else delete
+					io->obj;
 
 				io->obj = tobj;
 				return;

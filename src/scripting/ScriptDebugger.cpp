@@ -445,4 +445,4 @@ suite:
 	}
 }
 
-#endif
+#endif // BUILD_EDITOR

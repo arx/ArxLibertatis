@@ -41,120 +41,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 
+const int	MaxW = 256;
+const int	MaxH = 256;
+
 using std::string;
-
-CinematicBitmap	TabBitmap[MAX_BITMAP];
-int			MaxW, MaxH;
-int			NbBitmap;
-bool		Restore;
-/*-----------------------------------------------------------*/
-extern HWND HwndPere;
-extern char DirectoryChoose[];
-
 
 void FreeGrille(CinematicGrid * grille);
 
-static void ReajustUV(int id);
+static void ReajustUV(CinematicBitmap* bi);
 
-void InitMapLoad() {
-	
-	CinematicBitmap	* tb;
-	int			nb;
-
-	MaxW = MAX_WIDTH_AND_HEIGHT;
-	MaxH = MAX_WIDTH_AND_HEIGHT;
-
-	if (MaxW > 256) MaxW = 256;
-
-	if (MaxH > 256) MaxH = 256;
-
-	tb = TabBitmap;
-	nb = MAX_BITMAP;
-
-	while (nb)
-	{
-		memset((void *)tb, 0, sizeof(CinematicBitmap));
-		tb++;
-		nb--;
-	}
-
-	NbBitmap = 0;
-	Restore = true;
-}
 /*-----------------------------------------------------------*/
-CinematicBitmap * GetFreeBitmap(int * num)
+CinematicBitmap::~CinematicBitmap()
 {
-	CinematicBitmap	* tb;
-	int			nb;
-
-	tb = TabBitmap;
-	nb = MAX_BITMAP;
-
-	while (nb)
-	{
-		if (!tb->actif)
-		{
-			*num = MAX_BITMAP - nb;
-			return tb;
-		}
-
-		tb++;
-		nb--;
-	}
-
-	return NULL;
+	FreeGrille(&grid);
 }
-/*-----------------------------------------------------------*/
-bool DeleteFreeBitmap(int num)
-{
-	CinematicBitmap	* cb;
 
-	cb = &TabBitmap[num];
-
-	if (!cb->actif) return false;
-
-	DeleteObject(cb->hbitmap);
-	free((void *)cb->dir);
-	free((void *)cb->name);
-	FreeGrille(&cb->grid);
-	memset((void *)cb, 0, sizeof(CinematicBitmap));
-
-	NbBitmap--;
-
-	return true;
-}
-/*-----------------------------------------------------------*/
-static bool KillTexture(int num)
-{
-	CinematicBitmap	* cb;
-
-	cb = &TabBitmap[num];
-
-	if (!cb->actif) return false;
-
-	int nb = cb->grid.nbmat;
-
-	while (nb--)
-	{
-		D3DTextr_KillTexture(cb->grid.mats[nb].tex);
-	}
-
-	return true;
-}
-/*-----------------------------------------------------------*/
-void DeleteAllBitmap()
-{
-	int			nb;
-
-	nb = MAX_BITMAP;
-
-	while (nb)
-	{
-		KillTexture(MAX_BITMAP - nb);
-		DeleteFreeBitmap(MAX_BITMAP - nb);
-		nb--;
-	}
-}
 /*-----------------------------------------------------------*/
 bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
 {
@@ -176,8 +77,6 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 	grille->vertexs = (Vec3f *)malloc(grille->nbvertexs * sizeof(Vec3f));
 	grille->uvs = (C_UV *)malloc(grille->nbvertexs * sizeof(C_UV));
 	grille->inds = (C_IND *)malloc(grille->nbindsmalloc * sizeof(C_IND));
-	grille->nbmat = 0;
-	grille->mats = NULL;
 
 	//vertexs
 	grille->nbx = nbx;
@@ -245,28 +144,22 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 	return true;
 }
 /*-----------------------------------------------------------*/
-int AddMaterial(CinematicGrid * grille, TextureContainer * tex)
+int AddMaterial(CinematicGrid * grille, Texture2D* tex)
 {
-	if (!grille->nbmat)
-	{
-		grille->mats = (C_INDEXED *)malloc(sizeof(C_INDEXED));
-	}
-	else
-	{
-		grille->mats = (C_INDEXED *)realloc(grille->mats, sizeof(C_INDEXED) * (grille->nbmat + 1));
-	}
+	int matIdx = grille->mats.size();
+	grille->mats.resize(matIdx + 1);
 
 	int deb;
-
-	if (!grille->nbmat) deb = 0;
+	if (matIdx == 0) 
+		deb = 0;
 	else
-		deb = grille->mats[grille->nbmat-1].startind + grille->mats[grille->nbmat-1].nbind;
+		deb = grille->mats[matIdx-1].startind + grille->mats[matIdx-1].nbind;
 
-	grille->mats[grille->nbmat].tex = tex;
-	grille->mats[grille->nbmat].startind = deb;
-	grille->mats[grille->nbmat].nbind = 0;
+	grille->mats[matIdx].tex = tex;
+	grille->mats[matIdx].startind = deb;
+	grille->mats[matIdx].nbind = 0;
 
-	return grille->nbmat++;
+	return matIdx;
 }
 /*-----------------------------------------------------------*/
 void FreeGrille(CinematicGrid * grille)
@@ -289,11 +182,15 @@ void FreeGrille(CinematicGrid * grille)
 		grille->inds = NULL;
 	}
 
-	if (grille->mats)
+	for(std::vector<C_INDEXED>::iterator it = grille->mats.begin(); it != grille->mats.end(); ++it)
 	{
-		free((void *)grille->mats);
-		grille->mats = NULL;
+		C_INDEXED* mat = &(*it);
+
+		if (mat->tex)
+			delete mat->tex;
 	}
+
+	grille->mats.clear();
 }
 /*-----------------------------------------------------------*/
 void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, int * i3, int * i4)
@@ -304,9 +201,8 @@ void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, i
 	*i4 = *i3 + 1;
 }
 /*-----------------------------------------------------------*/
-void AddPoly(CinematicGrid * grille, int nummat, int i0, int i1, int i2)
+void AddPoly(CinematicGrid * grille, int matIdx, int i0, int i1, int i2)
 {
-
 	ARX_CHECK_USHORT(i0);
 	ARX_CHECK_USHORT(i1);
 	ARX_CHECK_USHORT(i2);
@@ -321,18 +217,18 @@ void AddPoly(CinematicGrid * grille, int nummat, int i0, int i1, int i2)
 	grille->inds[grille->nbinds].i1 = ARX_CLEAN_WARN_CAST_USHORT(i0);
 	grille->inds[grille->nbinds].i2 = ARX_CLEAN_WARN_CAST_USHORT(i1);
 	grille->inds[grille->nbinds++].i3 = ARX_CLEAN_WARN_CAST_USHORT(i2);
-	grille->mats[nummat].nbind += 3;
+	grille->mats[matIdx].nbind += 3;
 
 }
 /*-----------------------------------------------------------*/
-void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, TextureContainer * tex)
+void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D* tex)
 {
-	int nummat = AddMaterial(grille, tex);
-	grille->mats[nummat].bitmapdepx = bitmapposx;
-	grille->mats[nummat].bitmapdepy = bitmapposy;
-	grille->mats[nummat].bitmapw = bitmapwx;
-	grille->mats[nummat].bitmaph = bitmapwy;
-	grille->mats[nummat].nbvertexs = (tcx + 1) * (tcy + 1);
+	int matIdx = AddMaterial(grille, tex);
+	grille->mats[matIdx].bitmapdepx = bitmapposx;
+	grille->mats[matIdx].bitmapdepy = bitmapposy;
+	grille->mats[matIdx].bitmapw = bitmapwx;
+	grille->mats[matIdx].bitmaph = bitmapwy;
+	grille->mats[matIdx].nbvertexs = (tcx + 1) * (tcy + 1);
 
 	if ((grille->nbuvs + (4 *(tcx * tcy))) > grille->nbuvsmalloc)
 	{
@@ -384,8 +280,8 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 			int i0, i1, i2, i3;
 			GetIndNumCube(grille, depcxx, depcy, &i0, &i1, &i2, &i3);
 
-			AddPoly(grille, nummat, i0, i1, i2);
-			AddPoly(grille, nummat, i1, i2, i3);
+			AddPoly(grille, matIdx, i0, i1, i2);
+			AddPoly(grille, matIdx, i1, i2, i3);
 			depcxx++;
 		}
 
@@ -393,356 +289,69 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 	}
 }
 
-/*-----------------------------------------------------------*/
-HBITMAP LoadTargaFile( const char * strPathname)
-{
-	if (!PAK_FileExist(strPathname)) return NULL;
+CinematicBitmap* CreateCinematicBitmap(const string & path, int scale) {
 
-	size_t size = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, size);
-	// TODO size ignored
-
-	if (NULL == dat) return NULL;
-
-#pragma pack(push,1)
-	struct TargaHeader
-	{
-		BYTE IDLength;
-		BYTE ColormapType;
-		BYTE ImageType;
- 		BYTE ColormapSpecification[5];
-		WORD XOrigin;
-		WORD YOrigin;
-		WORD ImageWidth;
-		WORD ImageHeight;
-		BYTE PixelDepth;
-		BYTE ImageDescriptor;
-	} tga;
-#pragma pack(pop)
-
-	long pos = 0;
-	memcpy(&tga, dat + pos, sizeof(TargaHeader));
-	pos += sizeof(TargaHeader);
-
-	// Only true color, non-mapped images are supported
-	if ((0 != tga.ColormapType) ||
-	        (tga.ImageType != 10 && tga.ImageType != 2))
-	{
-		free(dat);
-		return NULL;
-	}
-
-	// Skip the ID field. The first byte of the header is the length of this field
-	if (tga.IDLength)
-		pos += tga.IDLength;
-
-	DWORD m_dwWidth   = tga.ImageWidth;
-	DWORD m_dwHeight  = tga.ImageHeight;
-	DWORD m_dwBPP     = tga.PixelDepth;
-	DWORD * m_pRGBAData = NULL;
-
-	if ((m_dwBPP == 8) ||
-	        (m_dwBPP == 32))
-	{
-		free(dat);
-		return NULL;
-	}
-
-	HDC hdc = CreateCompatibleDC(NULL);
-	BITMAPINFO bi;
-	memset((void *)&bi.bmiHeader, 0, sizeof(BITMAPINFOHEADER));
-	bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bi.bmiHeader.biWidth = m_dwWidth;
-	bi.bmiHeader.biHeight = m_dwHeight;
-	bi.bmiHeader.biPlanes = 1;
-	bi.bmiHeader.biBitCount = 32;
-	bi.bmiHeader.biCompression = BI_RGB;
-	HBITMAP hbitmap = CreateDIBSection(hdc,
-	                                   &bi,
-	                                   DIB_RGB_COLORS,
-	                                   (void **)&m_pRGBAData,
-	                                   NULL,
-	                                   0);
-
-	if (!hbitmap)
-	{
-		free(dat);
-		return NULL;
-	}
-
-	DeleteDC(hdc);
-
-	if (m_pRGBAData == NULL)
-	{
-		free(dat);
-		return NULL;
-	}
-
-	for (DWORD y = 0; y < m_dwHeight; y++)
-	{
-		DWORD dwOffset;
-
-		if (0 == (tga.ImageDescriptor & 0x0010))
-			dwOffset = y * m_dwWidth;
-		else
-			dwOffset = (m_dwHeight - y - 1) * m_dwWidth;
-
-		for (DWORD x = 0; x < m_dwWidth; x++)
-		{
-			BYTE b;
-			BYTE g;
-			BYTE r;
-
-			if (m_dwBPP == 16)
-			{
-				int a, bb;
-				a = dat[pos++];
-				bb = dat[pos++];
-				SHORT w = (a & 0xFF) | ((bb & 0xFF) << 8);
-
-
-				int iR = (w & 0x7C00) >> 7 ;
-				int iG = (w & 0x03E0) >> 2 ;
-				int iB = (w & 0x001F) << 3 ;
-				ARX_CHECK_BYTE(iR);
-				ARX_CHECK_BYTE(iG);
-				ARX_CHECK_BYTE(iB);
-
-
-				r	= ARX_CLEAN_WARN_CAST_BYTE(iR);
-				g	= ARX_CLEAN_WARN_CAST_BYTE(iG);
-				b	= ARX_CLEAN_WARN_CAST_BYTE(iB);
-
-
-			}
-			else
-			{
-				b = dat[pos++];
-				g = dat[pos++];
-				r = dat[pos++];
-			}
-
-			m_pRGBAData[dwOffset+x] = RGBA_MAKE(r, g, b, 255);
-		}
-	}
-
-	free(dat);
-	return hbitmap;
-}
-
-HBITMAP LoadBMPImage( const char * strPathname)
-{
-	HBITMAP m_hbmBitmap = NULL;
-
-	if (!PAK_FileExist(strPathname)) return NULL;
-
-	size_t siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
-	// TODO siz ignored
-
-	if (!dat) return NULL;
-
-	// TODO packing of BITMAPINFOHEADER?
-	BITMAPINFOHEADER sBitmapH = *((BITMAPINFOHEADER *)(dat + sizeof(BITMAPFILEHEADER)));
-	HDC hHDC = CreateCompatibleDC(NULL);
-
-	if (!hHDC)
-	{
-		free((void *)dat);
-		return NULL;
-	}
-
-	char * mem = NULL;
-	int iUsage;
-
-	if (sBitmapH.biBitCount < 8)
-	{
-		free((void *)dat);
-		DeleteDC(hHDC);
-		return NULL;
-	}
-
-	if (sBitmapH.biBitCount == 8)
-	{
-		iUsage = DIB_PAL_COLORS;
-	}
-	else
-	{
-		iUsage = DIB_RGB_COLORS;
-	}
-
-	sBitmapH.biSize = sizeof(sBitmapH);
-	m_hbmBitmap = CreateDIBSection(hHDC, (BITMAPINFO *)&sBitmapH, iUsage, (void **)&mem, NULL, 0);
-
-	if (SelectObject(hHDC, m_hbmBitmap) == NULL)
-	{
-		DeleteDC(hHDC);
-		return NULL;
-	}
-
-	if (!mem)
-	{
-		free((void *)dat);
-		return NULL;
-	}
-
-	if (!m_hbmBitmap)
-	{
-		DeleteDC(hHDC);
-		free((void *)dat);
-		return NULL;
-	}
-
-
-	BITMAPFILEHEADER bh;
-
-	if (iUsage == DIB_PAL_COLORS)
-	{
-		RGBQUAD col[256];
-		memcpy(col, dat + sizeof(BITMAPINFOHEADER) + sizeof(BITMAPFILEHEADER), sizeof(RGBQUAD) * 256); //sBitmapH.biSize
-		SetDIBColorTable(hHDC,
-		                 0,      // color table index of first entry
-		                 256,         // number of color table entries
-		                 col // array of color table entries
-		                );
-	}
-
-	bh = *((BITMAPFILEHEADER *)(dat));
-	long size = sBitmapH.biSizeImage;
-
-	if (size == 0) size = sBitmapH.biHeight * sBitmapH.biWidth * sBitmapH.biBitCount >> 3;
-
-	memcpy(mem, dat + bh.bfOffBits, size);
-
-	if (sBitmapH.biCompression != BI_RGB)
-	{
-		memset(mem, 64, size);
-	}
-
-	DeleteDC(hHDC);
-	free(dat);
-	return m_hbmBitmap;
-
-}
-
-int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
-	
-	int n = -1;
-	
-	int nbx, nby, w, h, num, id;
+	int nbx, nby, w, h, num;
 	CinematicBitmap	* bi;
 	
 	string name = GetName(path);
 	if(name.empty()) {
-		return -1;
+		return 0;
 	}
 	
-	if (n >= 0)
-	{
-		bi = &TabBitmap[n];
+	bi = new CinematicBitmap();
+	if (!bi) 
+		return 0;
 
-		if (!bi->actif) return -1;
-
-		bi->load = 0;
-
-		if (bi->name) free((void *)bi->name);
-
-		if (bi->dir) free((void *)bi->dir);
-
-		DeleteObject(bi->hbitmap);
-		KillTexture(n);
-		FreeGrille(&bi->grid);
-		NbBitmap--;
-
-		h = 0;
-		id = n;
-	}
-	else
-	{
-		bi = GetFreeBitmap(&id);
-
-		if (!bi) return -1;
-	}
-	
-	string dir = path;
-	RemoveName(dir);
-	if(!dir.empty()) {
-		bi->dir = strdup(dir.c_str());
-		if(!bi->dir) {
-			return -1;
-		}
-	} else {
-		bi->dir = NULL;
-	}
-	
-	bi->name = strdup(name.c_str());
-	if(!bi->name) {
-		free(bi->dir);
-		return -1;
-	}
-	
 	LogDebug << "loading cinematic texture " << path;
+
+	char * data = 0;
+	size_t size = 0;
 	
 	string filename = path;
 	SetExt(filename, ".bmp");
 	if (PAK_FileExist(filename))
 	{
-		bi->hbitmap = (HBITMAP)LoadBMPImage(filename.c_str());
-
-		if (!bi->hbitmap)
-		{
-			LogError << "error loading " << path;
-			h = 0;
-
-			bi->actif = 1;
-			NbBitmap++;
-			return id;
-		}
+		data = (char*)PAK_FileLoadMalloc(filename, size);
 	}
 	else
 	{
 		SetExt(filename, ".tga");
-
 		if (PAK_FileExist(filename))
 		{
-			bi->hbitmap = LoadTargaFile(filename.c_str());
-
-			if (!bi->hbitmap)
-			{
-				LogError << "error loading " << path;
-				h = 0;
-
-				bi->actif = 1;
-				NbBitmap++;
-				return id;
+			data = (char*)PAK_FileLoadMalloc(filename, size);
 			}
 		}
-		else
+
+	if(!data)
 		{
 			LogError << path << " not found";
-			return -1;
+		return 0;
 		}
-	}
 
-	BITMAP bm;
-	GetObject(bi->hbitmap, sizeof(BITMAP), &bm);
+	Image cinematicImage;
+	cinematicImage.LoadFromMemory(data, size);
 
-	nbx = (bm.bmWidth / MaxW);
-	nby = (bm.bmHeight / MaxH);
+	free(data);
 
-	if (bm.bmWidth % MaxW) nbx++;
+	unsigned int width = cinematicImage.GetWidth();
+	unsigned int height = cinematicImage.GetHeight();
+	nbx = width / MaxW;
+	nby = height / MaxH;
 
-	if (bm.bmHeight % MaxH) nby++;
+	if (width % MaxW) 
+		nbx++;
 
-	bi->w = bm.bmWidth;
-	bi->h = bm.bmHeight;
+	if (height % MaxH)
+		nby++;
 
-	bi->load = 1;
+	bi->w = width;
+	bi->h = height;
 
 	bi->nbx = nbx;
 	bi->nby = nby;
 
-	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), 1);
+	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), scale);
 
 	num = 0;
 	h = bi->h;
@@ -762,24 +371,14 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 
 		while (nbxx)
 		{
-			int w2;
+			int w2 = (w - MaxW) < 0 ? w : MaxW;
 
-			if ((w - MaxW) < 0) w2 = w;
-			else w2 = MaxW;
+			Texture2D* tex = GRenderer->CreateTexture2D();
+			tex->Init(w2, h2, cinematicImage.GetFormat());
+			tex->GetImage().Copy(cinematicImage, 0, 0, bi->w - w, bi->h - h, w2, h2);
+			tex->Upload();
 
-			std::stringstream ss;
-			ss << name << '_' << std::setw(4) << num;
-			std::string texname = ss.str();
-			//AllTxt, "%s_%4d", name, num);
-			MakeUpcase(texname);
-
-			if (FAILED(D3DTextr_CreateEmptyTexture(texname, w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
-			{
-				LogError<< "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
-			}
-
-			TextureContainer * t = FindTexture(texname);
-			AddQuadUVs(&bi->grid, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
+			AddQuadUVs(&bi->grid, (bi->nbx - nbxx) * scale, (bi->nby - nby) * scale, scale, scale, bi->w - w, bi->h - h, w2, h2, tex);
 
 			dx += (float)w2;
 			w -= MaxW;
@@ -793,161 +392,31 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 		nby--;
 	}
 
-	bi->actif = 1;
-	NbBitmap++;
+	bi->grid.echelle = scale;
 
-	if (n >= 0)
-	{
-		h = 0;
-	}
-	else
-	{
-		h = 0;
-	}
+	ReajustUV(bi);
 
-	c->ActiveTexture(id);
-	ReajustUV(id);
-
-	return id;
+	return bi;
 }
 
-bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c) {
-	
-	int			nbx, nby, w, h, num;
-	CinematicBitmap	* bi;
-
-	if (!c) return false;
-
-	bi = &TabBitmap[id];
-
-	if (!bi->actif) return false;
-
-	FreeGrille(&bi->grid);
-
-	nbx = (bi->w / MaxW);
-	nby = (bi->h / MaxH);
-
-	if (bi->w % MaxW) nbx++;
-
-	if (bi->h % MaxH) nby++;
-
-	bi->nbx = nbx;
-	bi->nby = nby;
-
-	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), nmax);
-
-	num = 0;
-	h = bi->h;
-	float dy = -(float)(bi->h >> 1);
-
-	while (nby)
-	{
-		float dx = -(float)(bi->w >> 1);
-
-		int h2;
-
-		if ((h - MaxH) < 0) h2 = h;
-		else h2 = MaxH;
-
-		w = bi->w;
-		int nbxx = nbx;
-
-		while (nbxx)
-		{
-			int w2;
-
-			if ((w - MaxW) < 0) w2 = w;
-			else w2 = MaxW;
-
-			std::stringstream ss;
-			ss << bi->name << '_' << std::setw(4) << num;
-			std::string texname = ss.str();
-			//sprintf(AllTxt, "%s_%4d", bi->name, num);
-			MakeUpcase(texname);
-
-			TextureContainer * t = FindTexture(texname);
-			AddQuadUVs(&bi->grid, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
-
-			dx += (float)w2;
-			w -= MaxW;
-
-			num++;
-			nbxx--;
-		}
-
-		dy += (float)h2;
-		h -= MaxH;
-		nby--;
-	}
-
-	ReajustUV(id);
-
-	return true;
-}
 /*-----------------------------------------------------------*/
-bool Cinematic::ActiveTexture(int id)
-{
+static void ReajustUV(CinematicBitmap* cb) {
 
-	TextureContainer	* tc;
-	CinematicBitmap		*	cb;
-	int					nb;
+	C_UV* uvs = cb->grid.uvs;
 
-	if (id >= MAX_BITMAP) return false;
-
-	if (id < 0)			return false;
-
-	cb = &TabBitmap[id];
-
-	if (!cb->actif) return false;
-
-	C_INDEXED	* mat = cb->grid.mats;
- 
-	nb = cb->grid.nbmat;
-
-	while (nb--)
+	for(std::vector<C_INDEXED>::iterator mat = cb->grid.mats.begin(); mat != cb->grid.mats.end(); ++mat)
 	{
-		tc = mat->tex;
+		Texture2D* tex = mat->tex;
 
-		if (!tc) return false;
-
-		if (tc->Restore() != S_OK) return false;	
-
-		if (tc->CopyBitmapToSurface(cb->hbitmap, mat->bitmapdepx, mat->bitmapdepy, mat->bitmapw, mat->bitmaph) != S_OK) return false;
-
-		mat++;
-	}
-
-	return true;
-}
-
-static void ReajustUV(int id) {
-	
-	TextureContainer	* tc;
-	CinematicBitmap		*	cb;
-	int					nb;
-
-	cb = &TabBitmap[id];
-
-	if (!cb->actif) return;
-
-	C_INDEXED	* mat = cb->grid.mats;
-	C_UV	*	uvs = cb->grid.uvs;
-
-	nb = cb->grid.nbmat;
-
-	while (nb--)
-	{
-		tc = mat->tex;
-
-		if (!tc) return;
+		if (!tex)
+			return;
 
 		int w, h;
 
-		w = tc->m_dwWidth;
-		h = tc->m_dwHeight;
+		w = tex->GetWidth();
+		h = tex->GetHeight();
 
-		if ((w != (int)mat->bitmapw) ||
-		        (h != (int)mat->bitmaph))
+		if ((w != (int)mat->bitmapw) || (h != (int)mat->bitmaph))
 		{
 			float dx = (.999999f * (float)mat->bitmapw) / ((float)w);
 			float dy = (.999999f * (float)mat->bitmaph) / ((float)h);
@@ -965,30 +434,5 @@ static void ReajustUV(int id) {
 		{
 			uvs += mat->nbvertexs;
 		}
-
-		mat++;
 	}
-}
-/*-----------------------------------------------------------*/
-bool ActiveAllTexture(Cinematic * c)
-{
-	int			nb;
-	CinematicBitmap	* cb;
-	bool		flag = false;
-
-	cb = TabBitmap;
-	nb = MAX_BITMAP;
-
-	while (nb)
-	{
-		if (cb->actif)
-		{
-			flag |= !c->ActiveTexture(MAX_BITMAP - nb);
-		}
-
-		cb++;
-		nb--;
-	}
-
-	return !flag;
 }

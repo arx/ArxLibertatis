@@ -58,10 +58,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
+#include <stdio.h>
+#include <cstdio>
+#include <cstdarg>
+
 #include "io/Logger.h"
 
+using std::va_list;
 
-void assertionFailed(const char * expr, const char * file, unsigned int line, const char * msg) {
+void assertionFailed(const char * expr, const char * file, unsigned int line, const char * msg, ...) {
 	
 	if(!file || file[0] == '\0') {
 		file = "<unknown>";
@@ -69,7 +74,12 @@ void assertionFailed(const char * expr, const char * file, unsigned int line, co
 	
 	Logger(file, line, Logger::Error) << "Assertion Failed: " << expr;
 	if(msg) {
-		Logger(file, line, Logger::Error) << "Message: " << msg;
+		char formattedmsgbuf[4096];
+		va_list args;
+		va_start(args, msg);
+		vsnprintf(formattedmsgbuf, sizeof(formattedmsgbuf) - 1, msg, args);
+		va_end(args);
+		Logger(file, line, Logger::Error) << "Message: " << formattedmsgbuf;
 	}
 	
 	// TODO should we exit here?

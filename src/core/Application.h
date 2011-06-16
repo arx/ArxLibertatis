@@ -61,12 +61,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include <windows.h>
-#include <commctrl.h>
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/Renderer.h"
 
 #include "platform/Flags.h"
+
+#include "Configure.h"
 
 struct D3DEnum_DeviceInfo;
 class CD3DFramework7;
@@ -114,11 +115,6 @@ enum WindowCreationFlag {
 };
 DECLARE_FLAGS(WindowCreationFlag, WindowCreationFlags);
 DECLARE_FLAGS_OPERATORS(WindowCreationFlags);
-
-enum ToolbarPosition {
-	EERIE_TOOLBAR_TOP,
-	EERIE_TOOLBAR_LEFT
-};
 
 enum InputKey {
 	
@@ -256,6 +252,15 @@ struct PROJECT {
 	
 };
 
+#ifdef BUILD_EDITOR
+
+#include <commctrl.h>
+
+enum ToolbarPosition {
+	EERIE_TOOLBAR_TOP,
+	EERIE_TOOLBAR_LEFT
+};
+
 struct EERIETOOLBAR {
 	HWND hWnd;
 	long CreationToolBar;
@@ -265,6 +270,8 @@ struct EERIETOOLBAR {
 	std::string		String;
 	long Type;
 };
+
+#endif
 
 struct KEYBOARD_MNG {
 	short nbkeydown;
@@ -278,8 +285,6 @@ extern float FPS;
 extern LPDIRECT3DDEVICE7 GDevice;
 extern LightMode ModeLight;
 
-extern short WINDOWCREATIONSIZEX;
-extern short WINDOWCREATIONSIZEY;
 extern ViewModeFlags ViewMode;
 
 extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
@@ -308,7 +313,10 @@ protected:
 	bool m_bAppUseStereo;
 	bool m_bShowStats;
 	HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
+	
+#ifdef BUILD_EDITOR
 	HWND CreateToolBar(HWND hWndParent, HINSTANCE hInst);
+#endif
 	
 	// Overridable functions for the 3D scene created by the app
 	virtual HRESULT OneTimeSceneInit() {
@@ -356,9 +364,6 @@ public:
 	}
 	void OutputText(DWORD x, DWORD y, const std::string& str);
 	
-	HRESULT SetClipping(float x1, float y1, float x2, float y2);
-	
-	bool m_bFrameMoving;
 	bool m_bActive;
 	HRESULT Change3DEnvironment();
 	HRESULT Initialize3DEnvironment();
@@ -367,8 +372,6 @@ public:
 	HWND m_hWnd;
 	HWND m_hWndRender;
 	WNDPROC m_OldProc;
-	HWND m_dlghWnd;
-	bool b_dlg;
 	long d_dlgframe;
 	void EERIEMouseUpdate(short x, short y);
 	
@@ -383,11 +386,14 @@ public:
 	KEYBOARD_MNG kbd;
 	
 	char StatusText[512];
-	short CreationSizeX;
-	short CreationSizeY;
+	short WndSizeX;
+	short WndSizeY;
+	bool  Fullscreen;
 	WindowCreationFlags CreationFlags;
 	long CreationMenu;
+#ifdef BUILD_EDITOR
 	EERIETOOLBAR * ToolBar;
+#endif
 	HWND owner;
 	
 	void * logical;
@@ -408,6 +414,7 @@ public:
 	float GetZBufferMax();
 	float zbuffer_max;
 	float zbuffer_max_div;
+	int menu;
 	
 	// Class constructor
 	CD3DApplication();

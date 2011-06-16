@@ -75,7 +75,11 @@ void LogDirCreation(const std::string & dir);
 void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string & dir);
 
 extern Vec3f loddpos;
+
+#ifdef BUILD_EDIT_LOADSAVE
 long DanaeSaveLevel(const std::string & file);
+#endif
+
 long DanaeLoadLevel(const std::string & file);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
@@ -90,8 +94,7 @@ extern Vec3f MSP;
 
 #ifdef BUILD_EDITOR
 void BIG_PURGE();
-#endif
-
 void ARX_SAVELOAD_CheckDLFs();
+#endif
 
 #endif // ARX_SCENE_LOADLEVEL_H

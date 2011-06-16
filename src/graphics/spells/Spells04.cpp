@@ -87,8 +87,8 @@ CBless::CBless()
 	SetDuration(4000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_sol = MakeTCFromFile("Graph\\particles\\(Fx)_pentagram_bless.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_sol = TextureContainer::Load("Graph\\particles\\(Fx)_pentagram_bless.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -169,10 +169,7 @@ float CBless::Render()
 	v3[2].color = color;
 	v3[3].color = color;
 
-	if (tex_sol && tex_sol->m_pddsSurface)
-	{
-		SETTC(tex_sol);
-	}
+	GRenderer->SetTexture(0, tex_sol);
 
 	v3[0].tu = 0;
 	v3[0].tv = 0;
@@ -275,10 +272,7 @@ float CDispellField::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	if (tex_p2 && tex_p2->m_pddsSurface)
-	{
-		SETTC(tex_p2);
-	}
+	GRenderer->SetTexture(0, tex_p2);
 	
 	Anglef stiteangle;
 	Vec3f stitepos;
@@ -445,39 +439,10 @@ float CTelekinesis::Render()
 	if (ulCurrentTime >= ulDuration)
 	{
 		return 0.f;
-		/*		if (bDone)
-				{
-					EERIE_3D target,source;
-					target.x=player.pos.x;// - EEsin(radians(MAKEANGLE(player.angle.b)))*1000.f;
-					target.y=player.pos.y;//+30.f;
-					target.z=player.pos.z;// + EEcos(radians(MAKEANGLE(player.angle.b)))*1000.f;
-					source.x = x;
-					source.y = y;
-					source.z = z;
-					if (pIncinerate)
-					{
-						pIncinerate->Create(source, MAKEANGLE(player.angle.b));
-						pIncinerate->SetDuration(2000);
-					}
-					//DebugSphere(source.x,source.y,source.z,20,8000,0xFFFF0000);
-					//DebugSphere(target.x,target.y,target.z,20,8000,0xFFFF0000);
-					bDone = false;
-				}
-				else
-				{
-					return 0.f;
-				}
-		*/
 	}
-
-	//DumpMap();
-
-	//SETTC(NULL);
-	//GRenderer->SetCulling(Renderer::CullNone);
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	//GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
 
 	//	register INTERACTIVE_OBJ * io;
 	for (i = 0; i < inter.nbmax; i++)
@@ -489,89 +454,16 @@ float CTelekinesis::Render()
 			z = inter.iobj[i]->pos.z;
 		}
 	}
-
-
-	//----------------
-	//	if (tex_p2 && tex_p2->m_pddsSurface)
-	{
-		//		SETTC(tex_p2->m_pddsSurface);
-	}
-	//for (long n=0; n<12; n++)
-
-	/*	if (bGo)
-		for (i=0; i<360; i++)
-		{
-			x = eSrc.x;
-			y = eSrc.y;
-			z = eSrc.z;
-
-			float t = rnd();
-			if (t<0.01f)
-			{
-
-				t = rnd();
-				//if (t>0.5f)
-					//y -= 240;
-
-				int j=ARX_PARTICLES_GetFree();
-				if ((j!=-1) && (!ARXPausedTimer))
-				{
-					ParticleCount++;
-					particle[j].exist=1;
-					particle[j].zdec=0;
-
-					//float randd=radians((float)j*10.f);
-					particle[j].ov.x = x + 5.f - rnd()*10.f;
-					particle[j].ov.y = y + 5.f - rnd()*10.f;
-					particle[j].ov.z = z + 5.f - rnd()*10.f;
-					particle[j].move.x = 2.f - 4.f*rnd();
-					particle[j].move.y = 2.f - 4.f*rnd();
-					particle[j].move.z = 2.f - 4.f*rnd();
-					particle[j].siz = 20.f;
-					particle[j].tolive=2000+(unsigned long)(float)(rnd()*4000.f);
-					particle[j].scale.x=1.f;
-					particle[j].scale.y=1.f;
-					particle[j].scale.z=1.f;
-					particle[j].timcreation=ARXTime;//spells[i].lastupdate;
-					particle[j].tc = tex_p2;
-					particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam=0.0000001f;
-					particle[j].r=0.7f;
-					particle[j].g=0.3f;
-					particle[j].b=0.f;
-				}
-			}
-		}
-	*/
+	
 	y -= 40;
-
 	y = eSrc.y + 140;
 
 	//----------------------------
  
- 
-
- 
- 
-
-	if (tex_p2 && tex_p2->m_pddsSurface)
-	{
-		SETTC(tex_p2);
-	}
-
-	//SETTC(NULL);
-
+ 	GRenderer->SetTexture(0, tex_p2);
 
 	//----------------------------
 	y -= 40;
-	/*	DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(x+frand2()*20, y+frand2()*20, z+frand2()*20, 60, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(x+frand2()*20, y+frand2()*20, z+frand2()*20, 60, tex_p2, D3DRGB(1,1,1));
-	*/
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
@@ -608,8 +500,6 @@ float CTelekinesis::Render()
 	stitescale.z = 2;
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
- 
 
 	y = player.pos.y + 20;
 	stitepos.y = y;//player.pos.y+60.f-mov;
@@ -649,14 +539,12 @@ CCurse::CCurse()
 	SetDuration(3000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
-	if(!svoodoo) {
-		svoodoo = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_voodoodoll\\fx_voodoodoll.teo");
-		EERIE_3DOBJ_RestoreTextures(svoodoo);
-	}
+	if (!svoodoo)
+		svoodoo = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_voodoodoll\\fx_voodoodoll.teo", NULL);
+
 	svoodoo_count++;
-	
 }
 
 //-----------------------------------------------------------------------------

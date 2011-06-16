@@ -673,7 +673,7 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 		}
 		
 		if((size_t)FileWrite(h, data, size) != size) {
-			printf("error writing %s\n", file->c_str());
+			printf("error writing to %s\n", file->c_str());
 		}
 		
 		FileClose(h);

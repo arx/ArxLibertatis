@@ -76,7 +76,6 @@ D3DTLVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *);
 D3DTLVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *);
 D3DTLVERTEX * PushVertexInTableCull_TMetal(TextureContainer *);
 
-void PushInterBump(TextureContainer *, D3DTLVERTEX *);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, D3DTLVERTEX * _pD3DVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
 

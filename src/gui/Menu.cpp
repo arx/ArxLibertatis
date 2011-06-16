@@ -143,7 +143,6 @@ extern float ARXDiffTimeMenu;
 extern TextureContainer * pTextureLoad;
 
 bool MENU_NoActiveWindow();
-void ClearGameDEVICE();
 void GetTextSize(HFONT _hFont, const char* _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------
@@ -155,12 +154,7 @@ long ARXmenu_lastmode = -1;
 long REFUSE_GAME_RETURN = 0;
 unsigned long ARXmenu_starttick = 0;
 
-extern bool bRenderInterList;
 long SP_HEAD = 0;
-//-----------------------------------------------------------------------------
-bool MENU_NoActiveWindow();
-void ClearGame();
-void ClearGameDEVICE();
 
 //-----------------------------------------------------------------------------
 #define ARX_MENU_SIZE_Y 24
@@ -360,8 +354,8 @@ void ARX_Menu_Resources_Create() {
 	}
 
 	ARXmenu.mda = new MENU_DYNAMIC_DATA();
-	ARXmenu.mda->pTexCredits = MakeTCFromFile("Graph\\Interface\\menus\\Menu_credits.bmp");
-	ARXmenu.mda->BookBackground = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
+	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("Graph\\Interface\\menus\\Menu_credits.bmp");
+	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
 
 	ARXmenu.mda->flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
 	ARXmenu.mda->flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
@@ -440,13 +434,13 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 
 	if (ARXmenu.mda->Background != NULL)
 	{
-		D3DTextr_KillTexture(ARXmenu.mda->Background);
+		delete ARXmenu.mda->Background;
 		ARXmenu.mda->Background = NULL;
 	}
 
 	if (ARXmenu.mda->BookBackground != NULL)
 	{
-		D3DTextr_KillTexture(ARXmenu.mda->BookBackground);
+		delete ARXmenu.mda->BookBackground;
 		ARXmenu.mda->BookBackground = NULL;
 	}
 	
@@ -460,7 +454,7 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 
 	if (pTextureLoad)
 	{
-		D3DTextr_KillTexture(pTextureLoad);
+		delete pTextureLoad;
 		pTextureLoad = NULL;
 	}
 }
@@ -524,18 +518,11 @@ void ARX_MENU_Clicked_QUIT_GAME() {
 #ifdef BUILD_EDITOR
 	if(GAME_EDITOR) {
 		ARX_MENU_Clicked_QUIT();
-	} else
-#endif
-	{
-		ARX_Menu_Resources_Release();
-		ARXmenu.currentmode = AMCM_OFF;
-		ARX_TIME_UnPause();
-
-		ClearGameDEVICE();
-
-		danaeApp.Cleanup3DEnvironment();
-		exit(0);
+		return;
 	}
+#endif
+	
+	exit(0);
 }
 
 void ARX_MENU_Launch() {
@@ -665,7 +652,7 @@ bool ARX_Menu_Render()
 		EERIEMouseButton = 0;
 	}
 
-	if (!danaeApp.DANAEStartRender())
+	if (!GRenderer->BeginScene())
 	{
 		return true;
 	}
@@ -1057,6 +1044,6 @@ bool ARX_Menu_Render()
 		}
 	}
 
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 	return true;
 }

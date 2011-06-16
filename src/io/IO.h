@@ -59,13 +59,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_IO_IO_H
 
 #include <stddef.h>
-#include <string>
+
+#include "Configure.h"
+
+#ifdef BUILD_EDITOR
+
 #include <windows.h>
 
 bool HERMESFolderSelector(char * file_name, const char * title);
 
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
+
+#endif
 
 /**
  * Create a hash of the file.

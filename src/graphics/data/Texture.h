@@ -64,63 +64,116 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIETEXTR_H
 #define EERIETEXTR_H
 
-#include "graphics/GraphicsTypes.h"
 #include <vector>
+#include <map>
+#include <string>
+
+#include "graphics/GraphicsTypes.h"
+#include "graphics/texture/Texture.h"
+#include "platform/Flags.h"
 
 using std::vector;
 
-extern bool EERIE_USES_BUMP_MAP;
-#define MAX_MIPS 2
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-void ReleaseAllTCWithFlag(long flag);
-#define EERIETEXTUREFLAG_PERMANENT			1
-#define EERIETEXTUREFLAG_LOADSCENE_RELEASE	2
 
 struct DELAYED_PRIM
 {
 	EERIEPOLY * data;
 };
 
-//-----------------------------------------------------------------------------
-// Name: TextureContainer
-// Desc: Linked list structure to hold info per texture
-//-----------------------------------------------------------------------------
-
+/** Linked list structure to hold info per texture.
+ * @todo This class is currently an hybrid between a texture class and a render batch... We should create a RenderBatch class for all vertex stuff.
+ */
 class TextureContainer
 {
 public:
-	TextureContainer * m_pNext;         // Linked list ptr
+	
+	enum TCFlag {
+		None         = 0x00,
+		NoMipmap     = 0x01,
+		NoInsert     = 0x02,
+		NoRefinement = 0x04,
+		FakeBorder   = 0x08,
+		Level        = 0x10
+	};
+	
+	DECLARE_FLAGS(TCFlag, TCFlags)
+	static const TCFlags UI;
+	static const TCFlags All;
+	
 
-	std::string m_strName;              // Image filename
+public:
+	/** Constructor.
+	 *	Only TextureContainer::Load() is allowed to create TextureContainer, but pieces of code still depend on this constructor being public.
+	 *	@param  
+	 *	@todo Make this constructor private.
+	 */ 
+	TextureContainer(const std::string& strName, TCFlags flags);
+
+	/** Destructor
+	 */
+	~TextureContainer();
+
+	/**	Load an image into a TextureContainer
+	 *
+	 *
+	 */
+	static TextureContainer * Load(const std::string& strName, TCFlags flags = None);
+
+	/**	Load an image into a TextureContainer
+	 *
+	 *
+	 */
+	static TextureContainer * LoadUI(const std::string& strName, TCFlags flags = None);
+
+	/** Find a TextureContainer by its name.
+	 *	Searches the internal list of textures for a texture specified by
+	 *	its name. Returns the structure associated with that texture.
+	 *	@param strTextureName Name of the texture to find.
+	 *  @return A pointer to a TextureContainer if this texture was already loaded, NULL otherwise.
+	 **/
+	static TextureContainer * Find(const std::string& strTextureName);
+
+	static void DeleteAll(TCFlags flag = All);
+
+	/**	Create a texture to display a glowing halo around a transparent texture
+	 *	@todo Rewrite this feature using shaders instead of hacking a texture effect
+	 */
+	bool CreateHalo() { return false; }
+	TextureContainer * TextureHalo;
+
+	bool LoadFile(const std::string& strPathname);
+
 	std::string m_texName;              // Name of texture
 	DWORD   m_dwWidth;
 	DWORD   m_dwHeight;
-	DWORD	m_dwOriginalWidth;
-	DWORD	m_dwOriginalHeight;
 	DWORD	m_dwDeviceWidth;
 	DWORD	m_dwDeviceHeight;
-	DWORD   m_dwStage;					// Texture stage (for multitexture devices)
 	DWORD   m_dwBPP;
-	DWORD   m_dwFlags;
-	bool    m_bHasAlpha;
+	TCFlags m_dwFlags;
 	DWORD	userflags;
-	bool	bColorKey;
-	bool	bColorKey2D;
 
-	LPDIRECTDRAWSURFACE7 m_pddsSurface;	// Surface of the texture
-	LPDIRECTDRAWSURFACE7 m_pddsBumpMap;	// Surface of BumpMap
-	HBITMAP m_hbmBitmap;				// Bitmap containing texture image
-	DWORD * m_pRGBAData;
+	Texture2D* m_pTexture;				// Diffuse
 
-public:
+	// Precalculated values
+	float	m_dx;						// 1.f / width
+	float	m_dy;						// 1.f / height
+	float	m_hdx;						// 0.5f / width
+	float	m_hdy;						// 0.5f / height
+	float	m_odx;						// 1.f / width
+	float	m_ody;						// 1.f / height
+
+	TextureContainer *	TextureRefinement;
+	TextureContainer *	m_pNext;         // Linked list ptr
+	TCFlags systemflags;
+	
+	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
 	DELAYED_PRIM *	delayed;			// delayed_drawing
 	long	delayed_nb;
 	long	delayed_max;
-
-	vector<EERIEPOLY *> vPolyZMap;
-	vector<EERIEPOLY *> vPolyBump;
-	vector<D3DTLVERTEX> vPolyInterBump;
-	vector<SMY_ZMAPPINFO> vPolyInterZMap;
+	
+	std::vector<EERIEPOLY *> vPolyZMap;
+	std::vector<SMY_ZMAPPINFO> vPolyInterZMap;
 
 	SMY_ARXMAT * tMatRoom;
 
@@ -147,44 +200,17 @@ public:
 	unsigned long	ulMaxVertexListCull_TMetal;
 	unsigned long	ulNbVertexListCull_TMetal;
 	ARX_D3DVERTEX	* pVertexListCull_TMetal;
-
-	float	m_dx;						// precalculated 1.f/width
-	float	m_dy;						// precalculated 1.f/height
-	float	m_hdx;						// precalculated 0.5f/width
-	float	m_hdy;						// precalculated 0.5f/height
-	float	m_odx;						// precalculated 1.f/width
-	float	m_ody;						// precalculated 1.f/height
-
-	HRESULT LoadImageData();
-
-	HRESULT LoadFile(const std::string& strPathname);
-	
-	HRESULT Restore();
-
-	HRESULT CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface);
-	HRESULT CopyBitmapToSurface(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur);
-	HRESULT Use();
-
-	TextureContainer * TextureRefinement;
-	TextureContainer( const std::string& strName, DWORD dwStage, DWORD dwFlags);
-	~TextureContainer();
-
-	long locks;
-	long systemflags;
-
-	bool CreateHalo();
-	TextureContainer * AddHalo(int _iNbCouche, float _fR, float _fG, float _fB, float & _iDecalX, float & _iDecalY);
-	float halodecalX;
-	float halodecalY;
-	TextureContainer * TextureHalo;
-	int iHaloNbCouche;
-	float fHaloRed;
-	float fHaloGreen;
-	float fHaloBlue;
+	// END TODO
 
 private:
-	void RemoveFakeBlack();
+	void LookForRefinementMap(TCFlags flags);
+
+	typedef std::map<std::string, std::string> RefinementMap;
+	static RefinementMap s_GlobalRefine;
+	static RefinementMap s_Refine;
 };
+
+DECLARE_FLAGS_OPERATORS(TextureContainer::TCFlags)
 
 
 //-----------------------------------------------------------------------------
@@ -193,57 +219,16 @@ private:
 // ASCII name.
 //-----------------------------------------------------------------------------
  
-TextureContainer * D3DTextr_GetSurfaceContainer(const std::string& strName);
 TextureContainer * GetTextureList();
 long CountTextures( std::string& tex, long * memsize, long * memmip);
  
-//-----------------------------------------------------------------------------
-// Texture invalidation and restoration functions
-//-----------------------------------------------------------------------------
- 
-HRESULT D3DTextr_Restore( const std::string& strName);
-HRESULT D3DTextr_InvalidateAllTextures();
-HRESULT D3DTextr_RestoreAllTextures();
-HRESULT D3DTextr_TESTRestoreAllTextures();
-void ReloadAllTextures();
-void ReloadTexture(TextureContainer * tc);
 #define D3DCOLORWHITE 0xFFFFFFFF
 #define D3DCOLORBLACK 0xFF000000
 
 //-----------------------------------------------------------------------------
 // Texture creation and deletion functions
 //-----------------------------------------------------------------------------
-#define D3DTEXTR_TRANSPARENTWHITE 0x00000001
-#define D3DTEXTR_TRANSPARENTBLACK 0x00000002
-#define D3DTEXTR_32BITSPERPIXEL   0x00000004
-#define D3DTEXTR_16BITSPERPIXEL   0x00000008
-#define D3DTEXTR_CREATEWITHALPHA  0x00000010
-#define D3DTEXTR_NO_MIPMAP		  (1<<5)
-#define D3DTEXTR_FAKE_BORDER	  (1<<6)
-#define D3DTEXTR_NO_REFINEMENT	  (1<<7)
-#define D3DTEXTR_NO_INSERT		  0x80000000
-
-TextureContainer  * D3DTextr_CreateTextureFromFile( const std::string& strName, DWORD dwStage = 0L,
-		DWORD dwFlags = 0L , long sysflags = 0);
-HRESULT D3DTextr_CreateEmptyTexture(const std::string& strName, DWORD dwWidth,
-									DWORD dwHeight, DWORD dwStage,
-									DWORD dwFlags, DWORD flags = 0);
- 
-HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture);
 
 TextureContainer * GetAnyTexture();
-TextureContainer * MakeTCFromFile( const std::string& tex, long flag = 0);
-TextureContainer * MakeTCFromFile_NoRefinement( const std::string& tex, long flag = 0);
-TextureContainer * GetTextureFile( const std::string& tex, long flag = 0);
-TextureContainer * GetTextureFile_NoRefinement( const std::string& tex, long flag = 0);
 
-void EERIE_ActivateBump();
-void EERIE_DesactivateBump();
-void D3DTextr_KillTexture(TextureContainer * tex); 
-void D3DTextr_KillAllTextures();	
-void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long y0);
-
-TextureContainer * FindTexture(const std::string& strTextureName);
-
-bool TextureContainer_Exist(TextureContainer * tc);
 #endif

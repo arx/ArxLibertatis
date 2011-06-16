@@ -27,7 +27,8 @@ void Lock::lock() {
 	
 	while(locked) {
 		int rc = pthread_cond_wait(&cond, &mutex);
-		arx_assert(rc == 0), ARX_UNUSED(rc);
+		arx_assert(rc == 0);
+		ARX_UNUSED(rc);
 	}
 	
 	locked = true;
@@ -54,7 +55,8 @@ Lock::~Lock() {
 
 void Lock::lock() {
 	DWORD rc = WaitForSingleObject(mutex, INFINITE);
-	arx_assert(rc == WAIT_OBJECT_0), ARX_UNUSED(rc);
+	arx_assert(rc == WAIT_OBJECT_0);
+	ARX_UNUSED(rc);
 }
 
 void Lock::unlock() {

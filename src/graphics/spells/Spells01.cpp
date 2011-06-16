@@ -215,12 +215,10 @@ CMagicMissile::CMagicMissile() : CSpellFx()
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_mm = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
+	tex_mm = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
-	if(!smissile) {
-		smissile = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo");
-		EERIE_3DOBJ_RestoreTextures(smissile);
-	}
+	if (!smissile)
+		smissile = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo", NULL);
 
 	smissile_count++;
 
@@ -373,12 +371,12 @@ float CMagicMissile::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	// Set Texture ------------------------------------------------------------
-	if (tex_mm && tex_mm->m_pddsSurface)
+	if (tex_mm)
 	{
 		if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-			SETTC(NULL);
+			GRenderer->ResetTexture(0);
 		else
-			SETTC(tex_mm);
+			GRenderer->SetTexture(0, tex_mm);
 	}
 
 	// ------------------------------------------------------------------------
@@ -862,7 +860,7 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 		this->tablight[nb].idl = -1;
 	}
 
-	this->ChangeTexture(MakeTCFromFile("Graph\\Particles\\fire_hit.bmp"));
+	this->ChangeTexture(TextureContainer::Load("Graph\\Particles\\fire_hit.bmp"));
 	this->ChangeRGBMask(1.f, 1.f, 1.f, RGBA_MAKE(255, 200, 0, 255));
 }
 
@@ -1047,14 +1045,11 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 
 	//-------------------------------------------------------------------------
 	// rendu
-	//	SETTC(NULL);
+	//	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
 
-	if (tex && tex->m_pddsSurface)
-	{
-		SETTC(tex);
-	}
-
+	GRenderer->SetTexture(0, tex);
+	
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = RGBA_MAKE(tsp, tsp, tsp, 255);
 
 	float xx;
@@ -1333,7 +1328,7 @@ float CPortal::Render()
 
 	//affichage de la sphere back
 	GRenderer->SetCulling(Renderer::CullCW);
-	GDevice->SetTexture(0, NULL);
+	GRenderer->ResetTexture(0);
 	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
 
 	//affichage eclair
@@ -1377,7 +1372,7 @@ float CPortal::Render()
 
 	//affichage de la sphere front
 	GRenderer->SetCulling(Renderer::CullCCW);
-	GDevice->SetTexture(0, NULL);
+	GRenderer->ResetTexture(0);
 	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);

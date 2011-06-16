@@ -98,7 +98,7 @@ CSummonCreature::CSummonCreature()
 	fColorRays2[1] = 0;
 	fColorRays2[2] = 0;
 
-	tex_light = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
+	tex_light = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
 }
 
 void CSummonCreature::SetDuration(const unsigned long alDuration)
@@ -433,12 +433,8 @@ void CSummonCreature::RenderFissure()
 	// smooth sur les cot�s ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	if (tex_light && tex_light->m_pddsSurface)
-	{
-		SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
-		SETTC(tex_light);
-	}
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
+	GRenderer->SetTexture(0, tex_light);
 
 	target.sx = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
 	target.sy = eSrc.y;
@@ -540,11 +536,11 @@ float CSummonCreature::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -591,7 +587,7 @@ float CSummonCreature::Render()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	return (fSizeIntro / end);
 }
@@ -897,13 +893,12 @@ CNegateMagic::CNegateMagic()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
-	tex_sol = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_negate_magic.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_sol = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_negate_magic.bmp");
 
-	if(!ssol) {
-		ssol = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
-		EERIE_3DOBJ_RestoreTextures(ssol);
-	}
+	if (!ssol)
+		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+		
 	ssol_count++;
 	
 }
@@ -966,11 +961,7 @@ float CNegateMagic::Render()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	if (tex_sol && tex_sol->m_pddsSurface)
-	{
-		SETTC(tex_sol);
-	}
+	GRenderer->SetTexture(0, tex_sol);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);

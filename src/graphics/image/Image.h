@@ -12,7 +12,9 @@ public:
         Format_A8,
         Format_L8A8, 
         Format_R8G8B8,
+		Format_B8G8R8,
         Format_R8G8B8A8,
+		Format_B8G8R8A8,
         Format_DXT1,
         Format_DXT3,
         Format_DXT5,
@@ -28,20 +30,26 @@ public:
 
     const Image& operator = ( const Image& pOther );
 
-    void Create( unsigned int pWidth, unsigned int pHeight, Format pFormat, unsigned int pNumMipmaps = 1, unsigned int pDepth = 1 );
+	bool LoadFromFile( const std::string& filename );
+	bool LoadFromMemory( void* pData, unsigned int size );
+
+    void Create( unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1 );
 	
 	void Clear();
-
-    unsigned int GetWidth() const         { return mWidth;      }
-    unsigned int GetHeight() const        { return mHeight;     }
-    unsigned int GetDepth() const         { return mDepth;      }
-    unsigned int GetNumMipmaps() const    { return mNumMipmaps; }
-    Format		 GetFormat() const		  { return mFormat;     }
-    unsigned int GetDataSize() const      { return mDataSize;   }
+	void Reset();
+	
+	bool IsValid() const					{ return mData != NULL; }
+    unsigned int GetWidth() const			{ return mWidth;      }
+    unsigned int GetHeight() const			{ return mHeight;     }
+    unsigned int GetDepth() const			{ return mDepth;      }
+    unsigned int GetNumMipmaps() const		{ return mNumMipmaps; }
+    Format		 GetFormat() const			{ return mFormat;     }
+    unsigned int GetDataSize() const		{ return mDataSize;   }
     
-    unsigned int  GetNumChannels() const  { return Image::GetNumChannels( mFormat ); }  
-    bool IsCompressed() const    { return Image::IsCompressed( mFormat ); }
-    bool IsVolume() const        { return mDepth > 1;  }
+    unsigned int  GetNumChannels() const	{ return Image::GetNumChannels( mFormat ); }  
+    bool IsCompressed() const				{ return Image::IsCompressed( mFormat ); }
+    bool IsVolume() const					{ return mDepth > 1;  }
+	bool HasAlpha() const					{ return mFormat == Format_A8 || mFormat == Format_L8A8 || mFormat == Format_R8G8B8A8 || mFormat == Format_B8G8R8A8 || mFormat == Format_DXT3 || mFormat == Format_DXT5; }
 
     //! Access to internal data.
     const unsigned char* GetData() const;
@@ -51,7 +59,8 @@ public:
 
     //! Copy an image into this image's buffer.
     //! Works only with uncompressed formats
-    bool Copy( const Image& pImage, unsigned int pX, unsigned int pY );
+    bool Copy( const Image& srcImage, unsigned int dstX, unsigned int dstY );
+	bool Copy( const Image& srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height );
 
     void ChangeGamma( float pGamma );
     

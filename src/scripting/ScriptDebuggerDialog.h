@@ -26,6 +26,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCRIPTING_SCRIPTDEBUGGERDIALOG_H
 #define ARX_SCRIPTING_SCRIPTDEBUGGERDIALOG_H
 
+#include "Configure.h"
+
+#ifdef BUILD_EDITOR
+
 #include <windows.h>
 
 struct Vars {
@@ -80,5 +84,7 @@ void SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate &);
 bool SCRIPT_DEBUGGER_WindowOpened();
 
 void SCRIPT_DEBUGGER_Destroy();
+
+#endif // BUILD_EDITOR
 
 #endif // ARX_SCRIPTING_SCRIPTDEBUGGERDIALOG_H

@@ -80,6 +80,8 @@ using std::string;
 
 extern long NOCHECKSUM;
 
+#ifdef BUILD_EDIT_LOADSAVE
+
 bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;
@@ -362,6 +364,7 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	
 }
 
+#endif // BUILD_EDIT_LOADSAVE
 
 // MESH cache structure definition & Globals
 struct MCACHE_DATA {
@@ -573,14 +576,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 			File_Standardize( tex->name, name );
 			
 			// Create the texture and put it in the container list
-			obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile( name, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-			
-			if(obj->texturecontainer[i] && !obj->texturecontainer[i]->m_pddsSurface) {
-				obj->texturecontainer[i]->Restore();
-			}
-			
-			MakeUserFlag(obj->texturecontainer[i]);
-			
+			obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);
 		}
 	}
 	
@@ -701,7 +697,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	// Now we can release our cool FTL file
 	EERIE_Object_Precompute_Fast_Access(obj);
 	
-	LogInfo << "ARX_FTL_Load: loaded object " << filename;
+	LogDebug << "ARX_FTL_Load: loaded object " << filename;
 	
 	return obj;
 }

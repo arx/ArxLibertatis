@@ -1,9 +1,32 @@
 #include "Image.h"
 
 #include "graphics/Math.h"
+#include "io/PakManager.h"
 
 #include <map>
 #include <il.h>
+
+using std::string;
+
+class DevilLib
+{
+public:
+    DevilLib()
+    {
+        ilInit();
+
+		// Set the origin to be used when loading all images, 
+		// so that any image with a different origin will be
+		// flipped to have the set origin
+		ilOriginFunc( IL_ORIGIN_UPPER_LEFT );
+		ilEnable( IL_ORIGIN_SET );
+    }
+
+    ~DevilLib()
+    {
+        ilShutDown();
+    }
+} gDevilLib;
 
 const unsigned int SIZE_TABLE[Image::Format_Num] =
 {
@@ -11,7 +34,9 @@ const unsigned int SIZE_TABLE[Image::Format_Num] =
         1,          // Format_A8,
         2,          // Format_L8A8,
         3,          // Format_R8G8B8,
+		3,          // Format_B8G8R8,
         4,          // Format_R8G8B8A8,
+		4,			// Format_B8G8R8A8,
         8,          // Format_DXT1,
         16,         // Format_DXT3,
         16,         // Format_DXT5,
@@ -19,15 +44,9 @@ const unsigned int SIZE_TABLE[Image::Format_Num] =
 };
 
 
-Image::Image()
-    : mWidth(0)
-    , mHeight(0)
-    , mDepth(0)
-    , mNumMipmaps(0)
-    , mFormat(Format_Unknown)
-    , mData(NULL)
-    , mDataSize(0)
+Image::Image() : mData(0)
 {
+	Reset();
 }
 
 Image::Image( const Image& pOther )
@@ -40,6 +59,20 @@ Image::~Image()
 {
     if( mData )
         delete[] mData;
+}
+
+void Image::Reset()
+{
+	if( mData )
+        delete[] mData;
+
+	mWidth = 0;
+    mHeight = 0;
+    mDepth = 0;
+    mNumMipmaps = 0;
+    mFormat = Format_Unknown;
+    mData = NULL;
+    mDataSize = 0;
 }
 
 const Image& Image::operator = ( const Image& pOther )
@@ -111,17 +144,142 @@ unsigned int Image::GetNumChannels( Image::Format pFormat )
         case Format_A8:         return 1;
         case Format_L8A8:       return 2;
         case Format_R8G8B8:     return 3;
+		case Format_B8G8R8:     return 3;
         case Format_R8G8B8A8:   return 4;
+		case Format_B8G8R8A8:   return 4;
         case Format_DXT1:       return 3;
         case Format_DXT3:       return 4;
         case Format_DXT5:       return 4;
-        default:                return 0;
+        default:                arx_assert_msg(0, "Invalid image format");
     }
+
+	return 0;
 }
 
 bool Image::IsCompressed( Image::Format pFormat )
 {
     return pFormat >= Format_DXT1 && pFormat <= Format_DXT5;
+}
+
+bool Image::LoadFromFile( const std::string& filename )
+{
+	size_t size = 0;
+	void* pData = PAK_FileLoadMalloc(filename, size);
+	
+	if(!pData) 
+		return false;
+	
+	bool ret = LoadFromMemory(pData, size);
+	
+	free(pData);
+	
+	return ret;
+}
+
+Image::Format GetImageFormat( ILint pImgTextureFormat, ILint pBPP ) {
+    // Convert DevIL image format to our internal format.
+    // TODO shouldn't the IL format be enough?
+    switch( pBPP )
+    {
+    case 1:
+        return Image::Format_L8;
+        break;
+            
+    case 2:
+        switch( pImgTextureFormat )
+        {
+        case IL_LUMINANCE_ALPHA:
+			return Image::Format_L8A8;
+        }
+        break;
+    case 3:
+        switch( pImgTextureFormat )
+        {
+        case IL_RGB:
+			return Image::Format_R8G8B8;
+		case IL_BGR:
+			return Image::Format_B8G8R8;
+        }
+        break;
+    case 4:
+        switch( pImgTextureFormat )
+        {
+        case IL_RGBA:  
+			return Image::Format_R8G8B8A8;
+		case IL_BGRA:  
+			return Image::Format_B8G8R8A8;
+        }
+        break;
+    }
+
+    return Image::Format_Unknown;
+}
+
+bool Image::LoadFromMemory(void* pData, unsigned int size)
+{
+	if(!pData) 
+		return false;
+
+	ILuint imageName;
+    ilGenImages( 1, &imageName );
+    ilBindImage( imageName );    
+
+	ILboolean bLoaded = ilLoadL(IL_TYPE_UNKNOWN, pData, size);
+	if(!bLoaded)
+		return false;
+		
+	mWidth  = ilGetInteger( IL_IMAGE_WIDTH );
+    mHeight = ilGetInteger( IL_IMAGE_HEIGHT );
+    mDepth  = 1;
+	mNumMipmaps = 1;
+
+    ILint imgFormat       = ilGetInteger( IL_IMAGE_FORMAT );
+	ILint bytesPerPixel   = ilGetInteger( IL_IMAGE_BYTES_PER_PIXEL );
+    
+	// We do not support palettized texture currently, so un-palettize them!
+    if( imgFormat == IL_COLOR_INDEX )
+    {
+        switch( ilGetInteger( IL_PALETTE_TYPE ) )
+        {
+            case IL_PAL_RGB24:
+            case IL_PAL_RGB32:  imgFormat = IL_RGB;  break;        
+            case IL_PAL_BGR24:
+            case IL_PAL_BGR32:  imgFormat = IL_BGR;  break;
+            case IL_PAL_RGBA32: imgFormat = IL_RGBA; break;
+            case IL_PAL_BGRA32: imgFormat = IL_BGRA; break;
+            default:            arx_assert_msg(0, "Invalid palette type");
+        }
+     
+        ilConvertImage( imgFormat, IL_UNSIGNED_BYTE );
+        bytesPerPixel = ilGetInteger( IL_IMAGE_BYTES_PER_PIXEL );
+        imgFormat     = ilGetInteger( IL_IMAGE_FORMAT );
+    }
+
+    mFormat = GetImageFormat( imgFormat, bytesPerPixel );
+	unsigned int dataSize = Image::GetSizeWithMipmaps( mFormat, mWidth, mHeight, mDepth, mNumMipmaps );
+	
+	// Delete previous buffer if size don't match
+	if( mData && mDataSize != dataSize )
+	{
+        delete[] mData;
+		mData = NULL;
+	}
+	
+	// Create a new buffer if needed
+	if( mData == NULL )
+		mData = new unsigned char[dataSize];
+
+	// Copy image data to our buffer
+	if( mData != NULL )
+	{
+		mDataSize = dataSize;
+		memcpy(mData, ilGetData(), mDataSize);
+	}
+		   
+	// Release resources
+    ilDeleteImages( 1, &imageName );
+
+	return mData != NULL;
 }
 
 void Image::Create( unsigned int pWidth, unsigned int pHeight, Image::Format pFormat, unsigned int pNumMipmaps, unsigned int pDepth )
@@ -160,33 +318,44 @@ unsigned char* Image::GetData()
     return mData;
 }
 
-bool Image::Copy( const Image& pImage, unsigned int pX, unsigned int pY )
+bool Image::Copy( const Image& srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height )
 {
-    arx_assert_msg( !IsCompressed(), "[Image::Copy] Copy of compressed images not supported yet!" );
+	arx_assert_msg( !IsCompressed(), "[Image::Copy] Copy of compressed images not supported yet!" );
     arx_assert_msg( !IsVolume(), "[Image::Copy] Copy of volume images not supported yet!" );
 
     unsigned int bpp = SIZE_TABLE[mFormat];
 
     // Format must match.
-    if( pImage.GetFormat() != mFormat )
+    if( srcImage.GetFormat() != mFormat )
         return false;
 
     // Must fit inside boundaries
-    if( pX + pImage.GetWidth() > mWidth || pY + pImage.GetHeight() > mHeight )
+    if( dstX + width > mWidth || dstY + height > mHeight )
         return false;
 
-    // Copy scanline by scanline
-    unsigned char* dst = &mData[pY * mWidth * bpp];
-    const unsigned char* src = pImage.GetData();
-    for( unsigned int i = 0; i < pImage.GetHeight(); i++ )
-    {
-        memcpy( &dst[pX * bpp], src, pImage.GetWidth() * bpp );
+	// Must fit inside boundaries
+	if( srcX + width > srcImage.GetWidth() || srcY + height > srcImage.GetHeight() )
+        return false;
 
+    // Copy line by line
+    unsigned char* dst = &mData[dstY * mWidth * bpp];
+    const unsigned char* src = &srcImage.GetData()[srcY * srcImage.GetWidth() * bpp];
+    for( unsigned int i = 0; i < height; i++ )
+    {
+		// Copy line
+        memcpy( &dst[dstX * bpp], &src[srcX * bpp], width * bpp );
+
+		// Advance to next line
         dst += mWidth * bpp;
-        src += pImage.GetWidth() * bpp;
+        src += srcImage.GetWidth() * bpp;
     }
 
     return true;
+}
+
+bool Image::Copy( const Image& srcImage, unsigned int destX, unsigned int destY )
+{
+	return Copy(srcImage, destX, destY, 0, 0, srcImage.GetWidth(), srcImage.GetHeight());
 }
 
 void Image::ChangeGamma( float pGamma )
@@ -575,34 +744,37 @@ void Flip3dc(unsigned char* data, unsigned int count)
 	}
 }
 
-ILenum ARXImageToILFormat[] = 
-	{
-		IL_LUMINANCE,		// Format_L8
-        IL_ALPHA,			// Format_A8
-        IL_LUMINANCE_ALPHA, // Format_L8A8
-        IL_RGB,				// Format_R8G8B8
-        IL_RGBA,			// Format_R8G8B8A8
-		IL_DXT1,			// Format_DXT1
-        IL_DXT3,			// Format_DXT3
-        IL_DXT5,			// Format_DXT5
-	};
+ILenum ARXImageToILFormat[] = {
+	IL_LUMINANCE,       // Format_L8
+	IL_ALPHA,           // Format_A8
+	IL_LUMINANCE_ALPHA, // Format_L8A8
+	IL_RGB,             // Format_R8G8B8
+	IL_BGR,             // Format_B8G8R8
+	IL_RGBA,            // Format_R8G8B8A8
+	IL_BGRA,            // Format_B8G8R8A8
+	IL_DXT1,            // Format_DXT1
+	IL_DXT3,            // Format_DXT3
+	IL_DXT5,            // Format_DXT5
+};
 
-void Image::Dump( const std::string& pFilename ) const
-{
+void Image::Dump(const string & pFilename) const {
+	
 	ILuint imageName;
-    ilGenImages(1, &imageName);
-    ilBindImage(imageName);
-
-	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(), ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
-	if(ret)
-	{
-		ret = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-
-		ilEnable(IL_FILE_OVERWRITE);
-
-		ret = ilSaveImage(pFilename.c_str());
-		arx_assert(ret);
+	ilGenImages(1, &imageName);
+	ilBindImage(imageName);
+	
+	// TODO static assert
+	arx_assert(sizeof(ARXImageToILFormat)/sizeof(*ARXImageToILFormat) == Format_Unknown);
+	if(mFormat < 0 || mFormat >= Format_Unknown) {
+		return;
 	}
-
+		
+	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(), ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
+	if(ret) {
+		ilEnable(IL_FILE_OVERWRITE);
+		ret = ilSaveImage(pFilename.c_str());
+		arx_assert_msg(ret, "ilSaveImage failed: %d", ilGetError());
+	}
+	
 	 ilDeleteImages(1, &imageName);
 }

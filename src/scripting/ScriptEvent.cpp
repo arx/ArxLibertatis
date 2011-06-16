@@ -5835,23 +5835,23 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						}
 						else
 						{
+							
 							long tw = TWEAK_ERROR;
-
 							if(!strcasecmp(word, "HEAD")) {
 								tw = TWEAK_HEAD;
-							}
-							else if (!strcasecmp(word, "TORSO"))
+							} else if (!strcasecmp(word, "TORSO")) {
 								tw = TWEAK_TORSO;
-							else if (!strcasecmp(word, "LEGS"))
+							} else if (!strcasecmp(word, "LEGS")) {
 								tw = TWEAK_LEGS;
-							else if (!strcasecmp(word, "ALL"))
+							} else if (!strcasecmp(word, "ALL")) {
 								tw = TWEAK_ALL;
-							else if (!strcasecmp(word, "UPPER"))
+							} else if (!strcasecmp(word, "UPPER")) {
 								tw = TWEAK_UPPER;
-							else if (!strcasecmp(word, "LOWER"))
+							} else if (!strcasecmp(word, "LOWER")) {
 								tw = TWEAK_LOWER;
-							else if (!strcasecmp(word, "UP_LO"))
+							} else if (!strcasecmp(word, "UP_LO")) {
 								tw = TWEAK_UP_LO;
+							}
 
 							if (!strcasecmp(word, "REMOVE"))
 							{

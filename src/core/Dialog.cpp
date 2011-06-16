@@ -108,14 +108,10 @@ extern long ZMAPMODE;
 extern long TreatAllIO;
 extern long HIDEMAGICDUST;
 extern long LaunchDemo;
-extern long D3DTRANSFORM;
 extern long USE_PLAYERCOLLISIONS;
 extern long EXTERNALVIEWING;
 extern long DYNAMIC_NORMALS;
 extern long SHOWSHADOWS;
-extern long BLURTEXTURES;
-extern long NOMIPMAPS;
-extern long POINTINTERPOLATION;
 extern long ForceIODraw;
 extern long NEED_ANCHORS;
 long HIDEANCHORS = 1;
@@ -2127,16 +2123,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (EXTERNALVIEWING)			SetClick(hWnd, IDC_THIRDPERSON);
 
-			if (Bilinear == 0)				SetClick(hWnd, IDC_FILTERPOINT);
-			else if (Bilinear == 1)			SetClick(hWnd, IDC_FILTERLINEAR);
-			else if (Bilinear == 2)			SetClick(hWnd, IDC_FILTERANISOTROPIC);
-
-			if (BLURTEXTURES) SetClick(hWnd, IDC_BLURTEXTURES);
-
-			if (NOMIPMAPS)    SetClick(hWnd, IDC_NOMIPMAPS);
-
-			if (POINTINTERPOLATION) SetClick(hWnd, IDC_POINTINTERPOLATION);
-
 			if (ALLOW_MESH_TWEAKING) SetClick(hWnd, IDC_MESHTWEAK);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDERDEPTH);
@@ -2148,11 +2134,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 200));
 			t = (long)(TIMEFACTOR * 100.f);
 			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
-
-
-			thWnd = GetDlgItem(hWnd, IDC_D3DTRANSFORM);
-
-			if (D3DTRANSFORM) SendMessage(thWnd, BM_CLICK, 0, 0);
 
 			if (!ARX_SOUND_IsEnabled())
 			{
@@ -2218,41 +2199,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					{
 						if (!ARX_SOUND_IsEnabled()) ARX_SOUND_Init();
 					}
-
-					long restoretex = 0;
-
-					if (IsChecked(hWnd, IDC_BLURTEXTURES))
-					{
-						if (BLURTEXTURES != 1)
-						{
-							BLURTEXTURES = 1;
-							restoretex = 1;
-						}
-					}
-					else if (BLURTEXTURES != 0)
-					{
-						BLURTEXTURES = 0;
-						restoretex = 1;
-					}
-
-					if (IsChecked(hWnd, IDC_NOMIPMAPS))
-					{
-						if (NOMIPMAPS != 1)
-						{
-							NOMIPMAPS = 1;
-							restoretex = 1;
-						}
-					}
-					else if (NOMIPMAPS != 0)
-					{
-						NOMIPMAPS = 0;
-						restoretex = 1;
-					}
-
-					if (restoretex) D3DTextr_RestoreAllTextures();
-
-					if (IsChecked(hWnd, IDC_POINTINTERPOLATION)) POINTINTERPOLATION = 1;
-					else POINTINTERPOLATION = 0;
 
 					if (IsChecked(hWnd, IDC_INTERPOLATEMOUSE)) Project.interpolatemouse = 1;
 					else Project.interpolatemouse = 0;
@@ -2389,16 +2335,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_MESHTWEAK))  ALLOW_MESH_TWEAKING = 1;
 					else ALLOW_MESH_TWEAKING = 0;
-
-
-					if (IsChecked(hWnd, IDC_D3DTRANSFORM)) D3DTRANSFORM = 1;
-					else D3DTRANSFORM = 0;
-
-					if (IsChecked(hWnd, IDC_FILTERANISOTROPIC))	Bilinear = 2;
-
-					if (IsChecked(hWnd, IDC_FILTERLINEAR))		Bilinear = 1;
-
-					if (IsChecked(hWnd, IDC_FILTERPOINT))		Bilinear = 0;
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDERDEPTH);
 					long t = SendMessage(thWnd, TBM_GETPOS, true, 0);

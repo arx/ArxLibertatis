@@ -286,7 +286,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, b
 {
 	if (_iNbTex == 0)
 	{
-		tex_tab[0] = MakeTCFromFile(_pszTex);
+		tex_tab[0] = TextureContainer::Load(_pszTex);
 		iNbTex = 0;
 	}
 	else
@@ -298,7 +298,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, b
 		{
 			ZeroMemory(cBuf, 256);
 			sprintf(cBuf, "%s_%04d.bmp", _pszTex, i + 1);
-			tex_tab[i] = MakeTCFromFile(cBuf);
+			tex_tab[i] = TextureContainer::Load(cBuf);
 		}
 
 		iNbTex = _iNbTex;
@@ -638,12 +638,12 @@ void ParticleSystem::Render() {
 				else
 					fRot = (-fParticleRotation) * p->ulTime + p->fRotStart;
 
-				if ((tex_tab[inumtex] && tex_tab[inumtex]->m_pddsSurface))
+				if (tex_tab[inumtex])
 					EERIEDrawRotatedSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
 			}
 			else
 			{
-				if ((tex_tab[inumtex] && tex_tab[inumtex]->m_pddsSurface))
+				if (tex_tab[inumtex])
 					EERIEDrawSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
 			}
 		}

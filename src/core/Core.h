@@ -85,7 +85,9 @@ extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
 extern EERIE_3DOBJ * nodeobj;
 extern Vec3f Mscenepos;
+#ifdef BUILD_EDIT_LOADSAVE
 extern EERIE_MULTI3DSCENE * mse;
+#endif
 extern EERIE_CAMERA * Kam;
 extern EERIE_BACKGROUND DefaultBkg;
 extern INTERACTIVE_OBJ * COMBINE;
@@ -97,7 +99,6 @@ extern float _framedelay;
 extern float BASE_FOCAL;
 extern float Xratio;
 extern float Yratio;
-extern long Bilinear;
 extern long	FADEDURATION;
 extern long	FADEDIR;
 extern float FrameDiff;
@@ -133,7 +134,6 @@ extern unsigned long FADESTART;
 extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
-extern bool bNoReturnToWindows;
 extern long LOADEDD;
 
 struct QUAKE_FX_STRUCT {
@@ -169,27 +169,26 @@ public:
 	LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	DANAE();
 	long MustRefresh;
-	
-	bool DANAEStartRender();
-	bool DANAEEndRender();
-	
 };
 
 extern DANAE danaeApp;
 
 void SetEditMode(long ed, const bool stop_sound = true);
 void AddQuakeFX(float intensity, float duration, float period, long flags);
-void Danae_Registry_Read(const char * string, char * text, const char * defaultstr = "", long maxsize = 256);
-void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue = 0);
-void Danae_Registry_Write(const char * string, const char * text);
-void Danae_Registry_WriteValue(const char * string, DWORD value);
-void SetFilteringMode(long mode);
+
 void SendGameReadyMsg();
+void AdjustUI();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
 void ARX_SetAntiAliasing();
 
 #ifdef BUILD_EDITOR
+
+void Danae_Registry_Read(const char * string, char * text, const char * defaultstr = "", long maxsize = 256);
+void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue = 0);
+void Danae_Registry_Write(const char * string, const char * text);
+void Danae_Registry_WriteValue(const char * string, DWORD value);
+
 // TODO move to Script.h?
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

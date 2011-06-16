@@ -2,8 +2,11 @@
 #ifndef ARX_IO_LOGGER_H
 #define ARX_IO_LOGGER_H
 
+#include <sstream>
 #include <iostream>
 #include <string>
+
+#include "platform/Platform.h"
 
 #define LogDebug    Logger(__FILE__,__LINE__, Logger::Debug)
 #define LogError    Logger(__FILE__,__LINE__, Logger::Error)
@@ -27,12 +30,17 @@ public:
 	Logger(const char * file, int line, LogLevel level);
 	Logger(const std::string & file, int line, LogLevel level);
 	
-	~Logger();
+	virtual ~Logger();
 	
 	template<class T>
 	Logger & operator<<(const T & i) {
 		if(print) {
 			std::cout << i;
+#if ARX_COMPILER_MSVC
+			std::stringstream ss;
+			ss << i;
+			OutputDebugString(ss.str().c_str());
+#endif
 		}
 		return *this;
 	}

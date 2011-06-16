@@ -147,7 +147,8 @@ bool C_ARX_Carte::Render(void)
 	CalcFPS();
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-	if(!danaeApp.DANAEStartRender()) return false;
+	if(!GRenderer->BeginScene())
+		return false;
 
 	int depx = (int)(this->posx * this->background->Xmul);
 
@@ -216,9 +217,9 @@ bool C_ARX_Carte::Render(void)
 					}
 
 					if(ep->tex)
-						GDevice->SetTexture(0,ep->tex->m_pddsSurface);
+						GRenderer->SetTexture(0, ep->tex);
 					else
-						GDevice->SetTexture(0,NULL);
+						GRenderer->ResetTexture(0);
 
 					EERIEDRAWPRIM(	D3DPT_TRIANGLESTRIP,
 									D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,
@@ -369,7 +370,7 @@ float oldposx,oldposz;
 		while(nbxx--)
 		{
 			this->Render();
-			danaeApp.DANAEEndRender();
+			GRenderer->EndScene();
 
 			int dw=0;
 

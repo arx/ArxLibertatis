@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/math/Vector2.h"
 #include "platform/math/Angle.h"
 
+#include "Configure.h"
+
 class TextureContainer;
 
 struct EERIE_TRI {
@@ -129,6 +131,13 @@ enum EERIE_TYPES_EXTRAS_MODE
 // EERIE Types
 //*************************************************************************************
 
+struct EERIE_TLVERTEX {
+	Vec3f vert;
+	EERIE_RGBA color;
+	EERIE_RGBA specular;
+	Vec2f tex;
+};
+
 struct EERIEPOLY
 {
 	long 			type;	// at least 16 bits
@@ -145,11 +154,11 @@ struct EERIEPOLY
 	float			area;
 	short			room;
 	short			misc;
-	float			distbump;
 	unsigned short	uslInd[4];
 }; // Aligned 1 2 4
 
 struct EERIE_VERTEX {
+	EERIE_TLVERTEX tlvert;
 	D3DTLVERTEX vert;
 	Vec3f v;
 	Vec3f norm;
@@ -572,15 +581,16 @@ struct EERIE_3DSCENE {
 }; // Aligned 1 2 4
 
 
-#define MAX_SCENES 64
-struct EERIE_MULTI3DSCENE
-{
-	long	nb_scenes;
+#ifdef BUILD_EDIT_LOADSAVE
+const size_t MAX_SCENES = 64;
+struct EERIE_MULTI3DSCENE {
+	long nb_scenes;
 	EERIE_3DSCENE * scenes[MAX_SCENES];
-	CUB3D			cub;
-	Vec3f		pos;
-	Vec3f		point0;
-}; // Aligned 1 2 4
+	CUB3D cub;
+	Vec3f pos;
+	Vec3f point0;
+};
+#endif
 
 struct EERIE_FRAME
 {
@@ -750,12 +760,7 @@ class CMY_DYNAMIC_VERTEXBUFFER
 };
 
 #define FVF_D3DVERTEX	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
-#define FVF_D3DVERTEX2	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX2|D3DFVF_TEXTUREFORMAT2)
 #define FVF_D3DVERTEX3	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX3|D3DFVF_TEXTUREFORMAT2)
-
-#define FVF_D3DVERTEX_T		(D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
-#define FVF_D3DVERTEX2_T	(D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX2|D3DFVF_TEXTUREFORMAT2)
-#define FVF_D3DVERTEX3_T	(D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX3|D3DFVF_TEXTUREFORMAT2)
 
 extern long USE_PORTALS;
 extern EERIE_PORTAL_DATA * portals;

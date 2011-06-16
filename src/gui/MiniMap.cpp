@@ -103,17 +103,15 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 		GetLevelNameByNum(SHOWLEVEL, name);
 
 		sprintf(LevelMap, "Graph\\Levels\\Level%s\\map.bmp", name);
-		minimap[SHOWLEVEL].tc = MakeTCFromFile(LevelMap);
+		minimap[SHOWLEVEL].tc = TextureContainer::Load(LevelMap);
 
 		if (minimap[SHOWLEVEL].tc) // 4 pix/meter
 		{
-			minimap[SHOWLEVEL].tc->Restore();
-			SpecialBorderSurface(minimap[SHOWLEVEL].tc, minimap[SHOWLEVEL].tc->m_dwOriginalWidth, minimap[SHOWLEVEL].tc->m_dwOriginalHeight);
-
+			//TODO-RENDERING: SpecialBorderSurface...
+			//SpecialBorderSurface(minimap[SHOWLEVEL].tc, minimap[SHOWLEVEL].tc->m_dwWidth, minimap[SHOWLEVEL].tc->m_dwHeight);
 
 			minimap[SHOWLEVEL].height = ARX_CLEAN_WARN_CAST_FLOAT(minimap[SHOWLEVEL].tc->m_dwHeight); 
 			minimap[SHOWLEVEL].width = ARX_CLEAN_WARN_CAST_FLOAT(minimap[SHOWLEVEL].tc->m_dwWidth);
-
 
 			float minx = FLT_MAX;
 			float maxx = FLT_MIN;
@@ -173,7 +171,7 @@ void ARX_MINIMAP_ValidatePos() {
 			ARX_MINIMAP_GetData(CURRENTLEVEL);
 		}
 
-		if ((minimap[SHOWLEVEL].tc) && (minimap[SHOWLEVEL].tc->m_pddsSurface))
+		if (minimap[SHOWLEVEL].tc)
 		{
 			ARX_MINIMAP_Show( ARX_LEVELS_GetRealNum(CURRENTLEVEL), 2);
 		}
@@ -277,7 +275,7 @@ void ARX_MINIMAP_Reset()
 	{
 		if (minimap[i].tc)
 		{
-			D3DTextr_KillTexture(minimap[i].tc);
+			delete minimap[i].tc;
 			minimap[i].tc = NULL;
 		}
 	}
@@ -292,7 +290,7 @@ void ARX_MINIMAP_PurgeTC()
 	{
 		if (minimap[i].tc)
 		{
-			D3DTextr_KillTexture(minimap[i].tc);
+			delete minimap[i].tc;
 			minimap[i].tc = NULL;
 		}
 	}
@@ -318,11 +316,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 	static const float FL2_PLAYERSIZE = 4.f;
 
 	if (!pTexDetect)
-	{
-		const char tex_flare[] = "Graph\\particles\\flare.bmp";
-		GetTextureFile(tex_flare); // TODO why discard the return? leak!?
-		pTexDetect = D3DTextr_GetSurfaceContainer(tex_flare);
-	}
+		pTexDetect = TextureContainer::Load("Graph\\particles\\flare.bmp");
 
 	//	SHOWLEVEL=8;
 	// First Load Minimap TC & DATA if needed
@@ -331,7 +325,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		ARX_MINIMAP_GetData(SHOWLEVEL);
 	}
 
-	if ((minimap[SHOWLEVEL].tc) && (minimap[SHOWLEVEL].tc->m_pddsSurface))
+	if (minimap[SHOWLEVEL].tc)
 	{
 		float sstartx, sstarty;
 		float startx, starty, casex, casey, ratiooo;
@@ -404,7 +398,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 
 		D3DTLVERTEX verts[4];
-		SETTC(minimap[SHOWLEVEL].tc);
+		GRenderer->SetTexture(0, minimap[SHOWLEVEL].tc);
 
 		for (long k = 0; k < 4; k++)
 		{
@@ -415,8 +409,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 		float div = ( 1.0f / 25 );
 		TextureContainer * tc = minimap[SHOWLEVEL].tc;
-		float dw = 1.f / (float)max(tc->m_dwDeviceWidth, tc->m_dwOriginalWidth); 
-		float dh = 1.f / (float)max(tc->m_dwDeviceHeight, tc->m_dwOriginalHeight);
+		float dw = 1.f / tc->m_dwDeviceWidth; 
+		float dh = 1.f / tc->m_dwDeviceHeight;
 		
 		float vx2 = 4.f * dw * mod_x;
 		float vy2 = 4.f * dh * mod_z;
@@ -467,7 +461,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 			if (fl2)
 			{
@@ -725,7 +719,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 								verts[3].sy += DECALY * Yratio;
 							}
 
-							EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
+							EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 4, 0);
 						}
 					}
 				}
@@ -734,7 +728,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 		if (flag != 2)
 		{
-			GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -769,7 +763,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 				verts[2].sx = (px + rx3 * ca + ry3 * sa) * Xratio;
 				verts[2].sy = (py + ry3 * ca - rx3 * sa) * Yratio;
 
-				SETTC( NULL);
+				GRenderer->ResetTexture(0);
 
 				if (fl2)
 				{
@@ -782,7 +776,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					verts[2].sy += DECALY * Yratio;
 				}
 
-				EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 3, 0);
+				EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 3, 0);
 
 				if (fl2) GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
@@ -933,9 +927,9 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					}
 
 					if (MapMarkerTc == NULL)
-						MapMarkerTc = MakeTCFromFile("Graph\\interface\\icons\\mapmarker.bmp");
+						MapMarkerTc = TextureContainer::Load("Graph\\interface\\icons\\mapmarker.bmp");
 
-					SETTC( MapMarkerTc);
+					GRenderer->SetTexture(0, MapMarkerTc);
 
 					if (fl2)
 					{
@@ -949,7 +943,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						verts[3].sy += DECALY * Yratio;
 					}
 
-					EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
+					EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 4, 0);
 				}
 			}
 	}

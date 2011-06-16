@@ -124,7 +124,6 @@ extern long FRAME_COUNT;
 extern INTERACTIVE_OBJ * FlyingOverIO;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern TextureContainer * Movable;
-extern long SPECIAL_DRAW_INTER_SHADOW;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
 extern long CURRENTLEVEL;
@@ -443,18 +442,14 @@ void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state)
 
 void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 {
-	if ((!io)
-	        ||	(!io->obj)
-	        ||	io->obj->texturecontainer.empty())
+	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
 
 	long gorenum = -1;
 
 	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
-		if (io->obj->texturecontainer[nn]
-		        &&	TextureContainer_Exist(io->obj->texturecontainer[nn])
-		        &&	( io->obj->texturecontainer[nn]->m_strName.find("GORE") != std::string::npos ) )
+		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.find("GORE") != std::string::npos ) )
 		{
 			gorenum = nn;
 			break;
@@ -462,6 +457,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 	}
 
 	if (gorenum > -1)
+	{
 		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 		{
 			if (io->obj->facelist[nn].texid == gorenum)
@@ -470,6 +466,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 				io->obj->facelist[nn].texid = -1;
 			}
 		}
+	}
 }
 
 
@@ -477,9 +474,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 // TODO very simmilar to ARX_INTERACTIVE_RemoveGoreOnIO
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 {
-	if ((!io)
-	        ||	(!io->obj)
-	        ||	io->obj->texturecontainer.empty())
+	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
 
 	if ((io == inter.iobj[0]) && (!flag & 1))
@@ -489,9 +484,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 
 	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
-		if (io->obj->texturecontainer[nn]
-		        && TextureContainer_Exist(io->obj->texturecontainer[nn])
-		        && strstr(io->obj->texturecontainer[nn]->m_strName.c_str(), "GORE"))
+		if (io->obj->texturecontainer[nn] && strstr(io->obj->texturecontainer[nn]->m_texName.c_str(), "GORE"))
 		{
 			gorenum = nn;
 			break;
@@ -499,6 +492,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 	}
 
 	if (gorenum > -1)
+	{
 		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 		{
 			//Hide Gore Polys...
@@ -507,6 +501,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 			else if (!flag & 1)
 				io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 		}
+	}
 }
 
 
@@ -1662,20 +1657,9 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
 	icontochange += s1;
 	SetExt(icontochange, ".bmp");
 
-	D3DTextr_CreateTextureFromFile(icontochange, 0, D3DTEXTR_NO_REFINEMENT, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-	D3DTextr_Restore(icontochange);
-
-	TextureContainer * tc;
-	tc = D3DTextr_GetSurfaceContainer(icontochange);
-
+	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
 	if (tc == NULL)
-	{
-		icontochange = "Graph\\Interface\\misc\\Default[Icon].bmp";
-		D3DTextr_CreateTextureFromFile(icontochange, 0, D3DTEXTR_NO_REFINEMENT);
-		D3DTextr_Restore(icontochange);
-
-		tc = D3DTextr_GetSurfaceContainer(icontochange);
-	}
+		tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp");
 
 	if (tc != NULL)
 	{
@@ -2550,12 +2534,10 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	io->infracolor.g = 0.f;
 	io->infracolor.b = 1.f;
 	TextureContainer * tc;
-	tc = MakeTCFromFile_NoRefinement("Graph\\Interface\\misc\\Default[Icon].bmp"); 
+	tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp"); 
 
 	if (tc)
 	{
-		if (!tc->m_pddsSurface) tc->Restore();
-
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
 
@@ -3323,24 +3305,13 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	else if (io->ioflags & IO_GOLD)
 		tc = GoldCoinsTC[0];
 	else
-	{
-		D3DTextr_CreateTextureFromFile(tex2, 0, D3DTEXTR_NO_REFINEMENT , EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-		tc = D3DTextr_GetSurfaceContainer(tex2);
-	}
+		tc = TextureContainer::LoadUI(tex2, TextureContainer::Level);
 
 	if (tc == NULL)
-	{
-		tex2 = "Graph\\Interface\\misc\\Default[Icon].bmp"; // TODO copy can be avoided
-		D3DTextr_CreateTextureFromFile(tex2, 0, D3DTEXTR_NO_REFINEMENT);
-		D3DTextr_Restore(tex2);
-		tc = D3DTextr_GetSurfaceContainer(tex2);
-	}
+		tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp");
 
 	if (tc)
 	{
-		if (!tc->m_pddsSurface)
-			tc->Restore();
-
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
 
@@ -4167,12 +4138,11 @@ extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
 extern CDirectInput * pGetInfoDirectInput;
 extern TextureContainer TexMetal;
 extern long FINAL_COMMERCIAL_DEMO;
-bool bRenderInterList = true; //false;
 void RenderInter(float from, float to) {
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	float val = -0.6f;
-	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 	Anglef temp;
 	EERIEMATRIX mat;
 	INTER_DRAW = 0;
@@ -4437,9 +4407,9 @@ void RenderInter(float from, float to) {
 	}
 
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	val = -0.3f;
-	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 }
 
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)

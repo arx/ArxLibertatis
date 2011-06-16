@@ -157,6 +157,7 @@ bool CanPurge(Vec3f * pos)
 }
 
 #ifdef BUILD_EDITOR
+
 void BIG_PURGE() {
 	
 	if (OKBox("Do you really want to PURGE this level ???", "Confirm Box"))
@@ -222,7 +223,8 @@ void BIG_PURGE() {
 		LogError << (text);
 	}
 }
-#endif
+
+#endif // BUILD_EDITOR
 
 void ReplaceSpecifics( char* text )
 {
@@ -256,6 +258,8 @@ void ReplaceSpecifics( char* text )
 
 	return;
 }
+
+#ifdef BUILD_EDIT_LOADSAVE
 
 long DanaeSaveLevel(const string & _fic) {
 	
@@ -645,6 +649,8 @@ long DanaeSaveLevel(const string & _fic) {
 	return 1;
 }
 
+#endif // BUILD_EDIT_LOADSAVE
+
 extern char LastLoadedDLF[512];
 
 //*************************************************************************************
@@ -977,11 +983,15 @@ long DanaeLoadLevel(const string & fic) {
 			LogDebug << "done loading scene";
 			FASTmse = 1;
 		} else {
+#ifdef BUILD_EDIT_LOADSAVE
 			LogDebug << "fast loading scene failed";
 			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
 			mse = PAK_MultiSceneToEerie(ftemp);
 			PROGRESS_BAR_COUNT += 20.f;
 			LoadLevelScreen();
+#else
+			LogError << "fast loading scene failed";
+#endif
 		}
 		
 		EERIEPOLY_Compute_PolyIn();
@@ -992,7 +1002,9 @@ long DanaeLoadLevel(const string & fic) {
 	if(FASTmse) {
 		trans = Mscenepos;
 		player.pos = loddpos + trans;
-	} else if(mse != NULL) {
+	}
+#ifdef BUILD_EDIT_LOADSAVE
+	else if(mse != NULL) {
 		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * ( 1.0f / 2 );
 		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * ( 1.0f / 2 );
 		float t1 = (float)(long)(mse->point0.x / BKG_SIZX);
@@ -1010,7 +1022,9 @@ long DanaeLoadLevel(const string & fic) {
 		lastteleport.y -= 180.f;
 		player.pos.y = subj.pos.y -= 180.f;
 		trans = mse->pos;
-	} else {
+	}
+#endif // BUILD_EDIT_LOADSAVE
+	else {
 		lastteleport.x = 0.f;
 		lastteleport.y = PLAYER_BASE_HEIGHT;
 		lastteleport.z = 0.f;
@@ -1542,11 +1556,12 @@ void DanaeClearLevel(long flag)
 	RemoveAllBackgroundActions();
 	ClearNodes();
 
-	if (mse != NULL)
-	{
+#ifdef BUILD_EDIT_LOADSAVE
+	if(mse != NULL) {
 		ReleaseMultiScene(mse);
 		mse = NULL;
 	}
+#endif
 
 	EERIE_LIGHT_GlobalInit();
 	ARX_FOGS_Clear();
@@ -1557,7 +1572,7 @@ void DanaeClearLevel(long flag)
 	FreeAllInter();
 
 	ReleaseAllSpellResources();
-	ReleaseAllTCWithFlag(EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+	TextureContainer::DeleteAll(TextureContainer::Level);
 	danaeApp.EvictManagedTextures();
 	MapMarkerTc = NULL;
 	ARX_TIME_Init();
@@ -1722,6 +1737,8 @@ void AddIdent( std::string& ident, long num)
 	}
 }
 
+#ifdef BUILD_EDITOR
+
 static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	
 	std::string fic("Graph\\Levels\\Level");
@@ -1798,8 +1815,8 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	free(dat);
 }
 
-void ARX_SAVELOAD_CheckDLFs()
-{
+void ARX_SAVELOAD_CheckDLFs() {
+	
 	ARX_SAVELOAD_DLFCheckInit();
 
 	for (long n = 0; n < 24; n++)
@@ -1822,3 +1839,5 @@ void ARX_SAVELOAD_CheckDLFs()
 
 	ARX_SAVELOAD_DLFCheckInit();
 }
+
+#endif // BUILD_EDITOR

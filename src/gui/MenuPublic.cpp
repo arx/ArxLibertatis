@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 
 extern CDirectInput * pGetInfoDirectInput;
-extern LPDIRECT3DDEVICE7 GDevice;
 extern bool bQuickGenFirstClick;
 #ifdef BUILD_EDITOR
 extern float FORCED_REDUCTION_VALUE;
@@ -97,21 +96,17 @@ void ARXMenu_Options_Video_GetBitPlane(int & _iBpp)
 	_iBpp		= danaeApp.m_pFramework->bitdepth;
 }
 
-extern float fInterfaceRatio;
-
 //-----------------------------------------------------------------------------
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int _iBpp)
 {
 	if (!GDevice) return;
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 
 	danaeApp.m_pFramework->ShowFrame();
 
 	ARX_Text_Close();
-
-	fInterfaceRatio = 1;
 
 	HRESULT hr;
 	Project.bits = _iBpp;
@@ -119,79 +114,53 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 	danaeApp.m_pFramework->m_dwRenderHeight = _iHeight;
 	danaeApp.m_pFramework->m_dwRenderWidth = _iWidth;
 
+	if (danaeApp.m_pDeviceInfo->bWindowed)
 	{
-		if (danaeApp.m_pDeviceInfo->bWindowed)
-		{
-			RECT rRect;
-			RECT rRect2;
-			GetClientRect(danaeApp.m_hWnd, &rRect);
-			GetWindowRect(danaeApp.m_hWnd, &rRect2);
-			int dx = (rRect2.right - rRect2.left) - (rRect.right - rRect.left);
-			int dy = (rRect2.bottom - rRect2.top) - (rRect.bottom - rRect.top);
-			SetWindowPos(danaeApp.m_hWnd,
-			             HWND_TOP,
-			             rRect2.left,
-			             rRect2.top,
-			             _iWidth + dx,
-			             _iHeight + dy,
-			             SWP_SHOWWINDOW);
-		}
-		else
-		{
-			int nb = danaeApp.m_pDeviceInfo->dwNumModes;
+		RECT rRect;
+		RECT rRect2;
+		GetClientRect(danaeApp.m_hWnd, &rRect);
+		GetWindowRect(danaeApp.m_hWnd, &rRect2);
+		int dx = (rRect2.right - rRect2.left) - (rRect.right - rRect.left);
+		int dy = (rRect2.bottom - rRect2.top) - (rRect.bottom - rRect.top);
+		SetWindowPos(danaeApp.m_hWnd,
+			            HWND_TOP,
+			            rRect2.left,
+			            rRect2.top,
+			            _iWidth + dx,
+			            _iHeight + dy,
+			            SWP_SHOWWINDOW);
+	}
+	else
+	{
+		int nb = danaeApp.m_pDeviceInfo->dwNumModes;
 
-			for (int i = 0; i < nb; i++)
+		for (int i = 0; i < nb; i++)
+		{
+
+			ARX_CHECK_NOT_NEG(_iBpp);
+
+			if (danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT(_iBpp))
 			{
+				ARX_CHECK_NOT_NEG(_iWidth);
+				ARX_CHECK_NOT_NEG(_iHeight);
 
-				ARX_CHECK_NOT_NEG(_iBpp);
-
-				if (danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT(_iBpp))
+				if ((danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT(_iWidth)) &&
+					    (danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT(_iHeight)))
 				{
-					ARX_CHECK_NOT_NEG(_iWidth);
-					ARX_CHECK_NOT_NEG(_iHeight);
 
-					if ((danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT(_iWidth)) &&
-					        (danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT(_iHeight)))
-					{
-
-						danaeApp.m_pDeviceInfo->ddsdFullscreenMode = danaeApp.m_pDeviceInfo->pddsdModes[i];
-						danaeApp.m_pDeviceInfo->dwCurrentMode = i;
-					}
+					danaeApp.m_pDeviceInfo->ddsdFullscreenMode = danaeApp.m_pDeviceInfo->pddsdModes[i];
+					danaeApp.m_pDeviceInfo->dwCurrentMode = i;
 				}
 			}
 		}
-
-		if (FAILED(hr = danaeApp.Change3DEnvironment()))
-		{
-			LogError << "Error Changing Environment";
-		}
-		else
-		{
-			DANAESIZX = danaeApp.m_pFramework->m_dwRenderWidth;
-			DANAESIZY = danaeApp.m_pFramework->m_dwRenderHeight;
-
-			if (danaeApp.m_pDeviceInfo->bWindowed)
-				DANAESIZY -= danaeApp.m_pFramework->Ystart;
-
-			DANAECENTERX = DANAESIZX >> 1;
-			DANAECENTERY = DANAESIZY >> 1;
-
-			Xratio = DANAESIZX * ( 1.0f / 640 );
-			Yratio = DANAESIZY * ( 1.0f / 480 );
-
-			ARXMenu_Options_Video_SetGamma(config.video.gamma);
-			bNoReturnToWindows = true;
-		}
 	}
 
-	ARX_Text_Init();
+	if (FAILED(hr = danaeApp.Change3DEnvironment()))
+		LogError << "Error Changing Environment";
 
-	if (ControlCinematique)
-	{
-		ActiveAllTexture(ControlCinematique);
-	}
+	AdjustUI();
 
-	danaeApp.DANAEStartRender();
+	GRenderer->BeginScene();
 }
 
 //-----------------------------------------------------------------------------
@@ -202,15 +171,9 @@ void ARXMenu_Options_Video_GetFullscreen(bool & _bEnable)
 }
 
 //-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetFullscreen(bool _bEnable)
-{
+void ARXMenu_Options_Video_SetFullscreen(bool _bEnable) {
 	DanaeSwitchFullScreen();
 	config.video.fullscreen = _bEnable;
-
-	if (ControlCinematique)
-	{
-		ActiveAllTexture(ControlCinematique);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -249,19 +212,6 @@ void ARXMenu_Options_Video_SetTextureQuality(int _iQuality)
 	newTextureSize = _iQuality;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetBump(bool & _bEnable)
-{
-	_bEnable = config.video.bumpmap;
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetBump(bool _bEnable)
-{
-	newBumpMapping = _bEnable;
-}
-
-//-----------------------------------------------------------------------------
 void SetGammaLumContrast()
 {
 
@@ -623,11 +573,11 @@ void ARXMenu_NewQuest()
 void ARXMenu_LoadQuest(long num)
 {
 	CAN_REPLAY_INTRO = 0;
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	LoadSaveGame(num); 
-	danaeApp.DANAEStartRender();
+	GRenderer->BeginScene();
 }
 
 //-----------------------------------------------------------------------------

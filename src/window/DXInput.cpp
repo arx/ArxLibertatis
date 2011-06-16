@@ -112,8 +112,9 @@ static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvR
 	return DIENUM_CONTINUE;
 }
 
-bool DXI_Init(HINSTANCE h) {
+bool DXI_Init() {
 	
+	HINSTANCE h = GetModuleHandle(0);
 	if(!h) {
 		return false;
 	}
@@ -289,7 +290,10 @@ static bool DXI_ChooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 	return true;
 }
 
-bool DXI_GetKeyboardInputDevice(HWND hwnd, DXIMode mode) {
+// TODO
+extern HWND mainWindow;
+
+bool DXI_GetKeyboardInputDevice(DXIMode mode) {
 	
 	if(DI_KeyBoardBuffer) {
 		DXI_ReleaseDevice(*DI_KeyBoardBuffer);
@@ -302,7 +306,7 @@ bool DXI_GetKeyboardInputDevice(HWND hwnd, DXIMode mode) {
 			continue;
 		}
 		
-		if(DXI_ChooseInputDevice(hwnd, *i, mode)) {
+		if(DXI_ChooseInputDevice(mainWindow, *i, mode)) {
 			return true;
 		}
 		
@@ -311,7 +315,7 @@ bool DXI_GetKeyboardInputDevice(HWND hwnd, DXIMode mode) {
 	return false;
 }
 
-bool DXI_GetMouseInputDevice(HWND hwnd, DXIMode mode, int minbutton, int minaxe) {
+bool DXI_GetMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 	
 	if(DI_MouseState) {
 		DXI_ReleaseDevice(*DI_MouseState);
@@ -324,7 +328,7 @@ bool DXI_GetMouseInputDevice(HWND hwnd, DXIMode mode, int minbutton, int minaxe)
 			continue;
 		}
 		
-		if(DXI_ChooseInputDevice(hwnd, *i, mode)) {
+		if(DXI_ChooseInputDevice(mainWindow, *i, mode)) {
 			if(i->nbbuttons >= minbutton && i->nbaxes >= minaxe) {
 				return true;
 			} else {

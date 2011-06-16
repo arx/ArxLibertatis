@@ -481,19 +481,17 @@ CIceProjectile::CIceProjectile()
 
 	iNumber = MAX_ICE;
 
-	tex_p1 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
-	if(!stite) {
-		stite = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo");
-		EERIE_3DOBJ_RestoreTextures(stite);
-	}
+	if (!stite)
+		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo", NULL);
+
 	stite_count++;
 
-	if(!smotte) {
-		smotte = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
-		EERIE_3DOBJ_RestoreTextures(smotte);
-	}
+	if (!smotte)
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+
 	smotte_count++;
 
 	iMax = MAX_ICE;
@@ -856,7 +854,7 @@ void CSpeed::Create(int numinteractive, int duration)
 		grouplist += 2;
 	}
 
-	this->tp = MakeTCFromFile("Graph\\Particles\\fire.bmp");
+	this->tp = TextureContainer::Load("Graph\\Particles\\fire.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -1021,7 +1019,7 @@ float CSpeed::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	
 	for (int i = 0; i < nbrubandef; i++)
 	{

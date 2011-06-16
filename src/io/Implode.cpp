@@ -29,6 +29,8 @@
 
 #include "io/Implode.h"
 
+#ifdef BUILD_EDIT_LOADSAVE
+
 #include <cstring>
 
 #include "io/Logger.h"
@@ -463,3 +465,5 @@ char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize) {
 	outSize = strm.nOutSize;
 	return outBuf;
 }
+
+#endif // BUILD_EDIT_LOADSAVE

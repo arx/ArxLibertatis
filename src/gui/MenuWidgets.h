@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class TextureContainer;
 
 // Enum for all the buttons in the menu
-enum MenuButton
-{
+enum MenuButton {
+	
 	BUTTON_MENUMAIN_RESUMEGAME = 1,
 	BUTTON_MENUMAIN_NEWQUEST,
 	BUTTON_MENUMAIN_LOADQUEST,
@@ -77,13 +77,11 @@ enum MenuButton
 	BUTTON_MENUEDITQUEST_SAVE,
 	BUTTON_MENUEDITQUEST_DELETE,
 
-
 	BUTTON_MENUOPTIONSVIDEO_INIT,
 	BUTTON_MENUOPTIONSVIDEO_RESOLUTION,
 	BUTTON_MENUOPTIONSVIDEO_BPP,
 	BUTTON_MENUOPTIONSVIDEO_FULLSCREEN,
 	BUTTON_MENUOPTIONSVIDEO_APPLY,
-	BUTTON_MENUOPTIONSVIDEO_BUMP,
 	BUTTON_MENUOPTIONSVIDEO_TEXTURES,
 	BUTTON_MENUOPTIONSVIDEO_LOD,
 	BUTTON_MENUOPTIONSVIDEO_FOG,
@@ -745,7 +743,6 @@ bool ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
 
-extern bool newBumpMapping;
 extern int newTextureSize;
 extern int newWidth;
 extern int newHeight;

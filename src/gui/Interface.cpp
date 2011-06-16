@@ -170,7 +170,6 @@ extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
 
 extern Cinematic *ControlCinematique;
-extern bool bRenderInterList;
 extern bool bGToggleCombatModeWithKey;
 extern long PlayerWeaponBlocked;
 extern unsigned char ucFlick;
@@ -272,7 +271,6 @@ long				CURCURDELAY=70;
 long				CURCURPOS=0;
 long				INTERFACE_HALO_NB=0;
 long				INTERFACE_HALO_MAX_NB=0;
-long				SPECIAL_DRAW_INTER_SHADOW=0;
 long				PRECAST_NUM=0;
 long				LastMouseClick=0;
 long				MOVETYPE=MOVE_WAIT;
@@ -280,7 +278,6 @@ long				MOVETYPE=MOVE_WAIT;
 //used to redist points - attributes and skill
 long				lCursorRedistValue = 0;
 long				lFadeMapTime = 0;
-float				fInterfaceRatio = 1;
 
 unsigned long		COMBAT_MODE_ON_START_TIME = 0;
 long SPECIAL_DRAW_WEAPON=0;
@@ -291,7 +288,7 @@ float fHighLightAng=0.f;
 
 float INTERFACE_RATIO(float a)
 {
-	return a * fInterfaceRatio;
+	return a;
 }
 float INTERFACE_RATIO_LONG(const long a)
 {
@@ -368,13 +365,8 @@ bool ARX_INTERFACE_MouseInBook()
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_DrawItem(TextureContainer *tc, const float x, const float y, const float z, const D3DCOLOR col)
 {
-	if ((tc) && (tc->m_pddsSurface))
-		EERIEDrawBitmap(
-		x, y,
-		                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-		z,
-		tc,
-		col);
+	if (tc)
+		EERIEDrawBitmap(x, y, INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), z, tc, col);
 }
 
 //-----------------------------------------------------------------------------
@@ -388,19 +380,18 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 	
 	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.0000001f;
 
-	if (inventory_font)
-	{
+	if(inventory_font) {
+		
 		char tx[7];
 		long tt;
 		float ttx;
 		float divideX = 1.f/((float) inventory_font->m_dwWidth);
 		float divideY = 1.f/((float) inventory_font->m_dwHeight);
-
-		sprintf(tx, "%*ld", _iNb, num);
+		
+		sprintf(tx, "%*ld", _iNb, num); // TODO use a safe string function.
 		long removezero=1;
 
-		for (long i=0;i<6;i++)
-		{
+		for(long i = 0; i < 6 && tx[i] != '\0'; i++) {
 
 			tt=tx[i]-'0';
 
@@ -422,9 +413,9 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 				ttx=0.5f*divideY;
 				v[1].tv = v[0].tv = divideY + ttx;
 				v[2].tv = v[3].tv = divideY * 12;
-				SETTC(inventory_font);
+				GRenderer->SetTexture(0, inventory_font);
 
-				EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE| D3DFVF_SPECULAR ,v, 4, 0 );
+				EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX,v, 4, 0 );
 			}
 		}
 	}
@@ -448,29 +439,28 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("inventory_close", "Graph\\Interface\\Inventory\\inv_close.bmp");
 	ITC.Set("Icon_Lvl_Up", "Graph\\Interface\\Icons\\lvl_up.bmp");
 
-	ITC.Set("backpack", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Backpack.bmp"));
-	ITC.Set("gold", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Inventory\\Gold.bmp"));
-	ITC.Set("book", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Book.bmp"));
-	ITC.Set("steal", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Steal.bmp"));
-	ITC.Set("item_cant_steal", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\cant_steal_item.bmp"));
-	ITC.Set("empty_gauge_red", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Red.bmp"));
-	ITC.Set("empty_gauge_blue", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Blue.bmp"));
-	ITC.Set("filled_gauge_red", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Red.bmp"));
-	ITC.Set("filled_gauge_blue", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Blue.bmp"));
-	ITC.Set("target_on", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_on.bmp"));
-	ITC.Set("target_off", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_off.bmp"));
-	ITC.Set("interaction_on", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_on.bmp"));
-	ITC.Set("interaction_off", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_off.bmp"));
-	ITC.Set("magic", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\magic.bmp"));
+	ITC.Set("backpack", "Graph\\Interface\\Icons\\Backpack.bmp");
+	ITC.Set("gold", "Graph\\Interface\\Inventory\\Gold.bmp");
+	ITC.Set("book", "Graph\\Interface\\Icons\\Book.bmp");
+	ITC.Set("steal", "Graph\\Interface\\Icons\\Steal.bmp");
+	ITC.Set("item_cant_steal", "Graph\\Interface\\Icons\\cant_steal_item.bmp");
+	ITC.Set("empty_gauge_red", "Graph\\interface\\bars\\Empty_gauge_Red.bmp");
+	ITC.Set("empty_gauge_blue", "Graph\\interface\\bars\\Empty_gauge_Blue.bmp");
+	ITC.Set("filled_gauge_red", "Graph\\interface\\bars\\Filled_gauge_Red.bmp");
+	ITC.Set("filled_gauge_blue", "Graph\\interface\\bars\\Filled_gauge_Blue.bmp");
+	ITC.Set("target_on", "Graph\\Interface\\cursors\\target_on.bmp");
+	ITC.Set("target_off", "Graph\\Interface\\cursors\\target_off.bmp");
+	ITC.Set("interaction_on", "Graph\\Interface\\cursors\\interaction_on.bmp");
+	ITC.Set("interaction_off", "Graph\\Interface\\cursors\\interaction_off.bmp");
+	ITC.Set("magic", "Graph\\Interface\\cursors\\magic.bmp");
 	
-	BasicInventorySkin = MakeTCFromFile("Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
-	ThrowObject = D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\throw.bmp");
+	BasicInventorySkin = TextureContainer::LoadUI("Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
+	ThrowObject = TextureContainer::LoadUI("Graph\\Interface\\cursors\\throw.bmp");
 }
 
 //-----------------------------------------------------------------------------
 
-void KillInterfaceTextureContainers()
-{
+void KillInterfaceTextureContainers() {
 	ITC.Reset();
 }
 
@@ -478,9 +468,15 @@ INTERFACE_TC::INTERFACE_TC()
 {
 }
 
-INTERFACE_TC::~INTERFACE_TC()
-{
-	Reset();
+INTERFACE_TC::~INTERFACE_TC() {
+	
+	arx_assert(m_Textures.empty());
+	
+	/*
+	 * Because this is the destructor of a global object we cannot cleanup textures here.
+	 * Doing so would mean accessing other global objects who'se destrcutors could be called before this one.
+	 */
+	
 }
 
 void INTERFACE_TC::Set(const std::string& textureName, TextureContainer* pTexture)
@@ -490,7 +486,7 @@ void INTERFACE_TC::Set(const std::string& textureName, TextureContainer* pTextur
 
 void INTERFACE_TC::Set(const std::string& textureName, const std::string& fileName)
 {
-	m_Textures[textureName] = MakeTCFromFile(fileName.c_str());
+	m_Textures[textureName] = TextureContainer::LoadUI(fileName.c_str());
 }
 
 TextureContainer* INTERFACE_TC::Get(const std::string& name)
@@ -505,7 +501,7 @@ void INTERFACE_TC::Reset()
 	for(TextureDictionary::iterator it = m_Textures.begin(); it != m_Textures.end(); ++it)
 	{
 		// Free the textures...
-		D3DTextr_KillTexture((*it).second);
+		delete (*it).second;
 	}
 
 	m_Textures.clear();
@@ -521,62 +517,18 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 							   TextureContainer * tc2,
 							   float POSX, float POSY, float fRatioX = 1, float fRatioY = 1)
 {
-	float power=0.9f-EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 10 )+rnd()*( 1.0f / 10 );
+	ARX_UNUSED(_fR);
+	ARX_UNUSED(_fG);
+	ARX_UNUSED(_fB);
+	ARX_UNUSED(_lHaloType);
+	ARX_UNUSED(tc);
+	ARX_UNUSED(tc2);
+	ARX_UNUSED(POSX);
+	ARX_UNUSED(POSY);
+	ARX_UNUSED(fRatioX);
+	ARX_UNUSED(fRatioY);
 
-	if (power>1.f) power=1.f;
-
-	_fR *= power;
-	_fG *= power;
-	_fB *= power;
-	D3DCOLOR col=D3DRGB(_fR,_fG,_fB);
-
-	if (_lHaloType & HALO_NEGATIVE)
-	{
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	}
-	else
-	{
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DDSURFACEDESC2 ddsdSurfaceDescSrc;
-	DDSURFACEDESC2 ddsdSurfaceDescHalo;
-	ddsdSurfaceDescSrc.dwSize=sizeof(DDSURFACEDESC2);
-	ddsdSurfaceDescHalo.dwSize=sizeof(DDSURFACEDESC2);
-	tc->m_pddsSurface->GetSurfaceDesc(&ddsdSurfaceDescSrc);
-	tc2->m_pddsSurface->GetSurfaceDesc(&ddsdSurfaceDescHalo);
-
-	float fDeltaX=(float)tc->m_dwWidth/(float)ddsdSurfaceDescSrc.dwWidth;
-	float fDeltaY=(float)tc->m_dwHeight/(float)ddsdSurfaceDescSrc.dwHeight;
-
-	if(fDeltaX<1.f)
-	{
-		fDeltaX=1.f;
-	}
-
-	if(fDeltaY<1.f)
-	{
-		fDeltaY=1.f;
-	}
-
-
-	float fSizeX = ARX_CLEAN_WARN_CAST_FLOAT(ddsdSurfaceDescHalo.dwWidth);
-	float fSizeY = ARX_CLEAN_WARN_CAST_FLOAT(ddsdSurfaceDescHalo.dwHeight);
-
-
-		fSizeX *= fRatioX;
-		fSizeY *= fRatioY;
-		POSX -= (fSizeX - ddsdSurfaceDescHalo.dwWidth)*0.25f;
-		POSY -= (fSizeY - ddsdSurfaceDescHalo.dwHeight)*0.25f;
-	float fDeltaXP = 1;
-	float fDeltaYP = 1;
-
-	EERIEDrawBitmap((float)(POSX-tc->halodecalX*fDeltaX),(float)(POSY-tc->halodecalY*fDeltaY)
-								,((float)fSizeX)*fDeltaXP
-								,((float)fSizeY)*fDeltaYP,0.00001f
-								,tc2,col);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	// TODO: Draw halo effect somehow...
 }
 
 void ARX_INTERFACE_HALO_Draw(INTERACTIVE_OBJ * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1) {
@@ -702,19 +654,19 @@ void ARX_INTERFACE_NoteClear()
 
 	if (NoteTexture)
 	{
-		D3DTextr_KillTexture(NoteTexture);
+		delete NoteTexture;
 		NoteTexture=NULL;
 	}
 
 	if (NoteTextureLeft)
 	{
-		D3DTextr_KillTexture(NoteTextureLeft);
+		delete NoteTextureLeft;
 		NoteTextureLeft=NULL;
 	}
 
 	if (NoteTextureRight)
 	{
-		D3DTextr_KillTexture(NoteTextureRight);
+		delete NoteTextureRight;
 		NoteTextureRight=NULL;
 	}
 }
@@ -738,19 +690,19 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 
 	if (NoteTexture)
 	{
-		D3DTextr_KillTexture(NoteTexture);
+		delete NoteTexture;
 		NoteTexture=NULL;
 	}
 
 	if (NoteTextureLeft)
 	{
-		D3DTextr_KillTexture(NoteTextureLeft);
+		delete NoteTextureLeft;
 		NoteTextureLeft=NULL;
 	}
 
 	if (NoteTextureRight)
 	{
-		D3DTextr_KillTexture(NoteTextureRight);
+		delete NoteTextureRight;
 		NoteTextureRight=NULL;
 	}
 	
@@ -760,8 +712,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 	long length = Note.text.length();
 	long curpage = 1;
 
-	NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-
+	NoteTexture = TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
 
 	float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
 	float fHeight	= NoteTexture->m_dwHeight-40.f ; 
@@ -860,7 +811,7 @@ void ARX_INTERFACE_NoteManage()
 			switch (Note.type)
 			{
 			case NOTE_TYPE_NOTE:
-				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\BigNote.bmp");
+				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\BigNote.bmp");
 
 				if (NoteTexture)
 				{
@@ -874,7 +825,7 @@ void ARX_INTERFACE_NoteManage()
 
 				break;
 			case NOTE_TYPE_NOTICE:
-				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Notice.bmp");
+				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Notice.bmp");
 
 				if (NoteTexture)
 				{
@@ -892,15 +843,15 @@ void ARX_INTERFACE_NoteManage()
 
 				if (Note.type == NOTE_TYPE_BIGNOTE)
 				{
-					NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Very_BigNote.bmp");
-					NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
-					NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+					NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Very_BigNote.bmp");
+					NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
+					NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
 				}
 				else
 				{
-					NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-					NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
-					NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+					NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
+					NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
+					NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
 				}
 
 				if (NoteTexture)
@@ -921,7 +872,7 @@ void ARX_INTERFACE_NoteManage()
 
 		if (NoteTexture)
 		{
-			SETTEXTUREWRAPMODE( D3DTADDRESS_CLAMP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 			DrawBookInterfaceItem( NoteTexture, NotePosX, NotePosY);
 
 			if (Note.type==NOTE_TYPE_BOOK || Note.type == NOTE_TYPE_BIGNOTE)
@@ -1006,7 +957,7 @@ void ARX_INTERFACE_NoteManage()
 					}
 				}
 
-				SETTEXTUREWRAPMODE( D3DTADDRESS_WRAP);
+				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			}
 			else
 			{
@@ -2029,7 +1980,7 @@ bool DANAE::ManageEditorControls()
 		switch (Note.type)
 		{
 		case NOTE_TYPE_NOTE:
-			NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\BigNote.bmp");
+			NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\BigNote.bmp");
 
 			if (NoteTexture)
 			{
@@ -2043,7 +1994,7 @@ bool DANAE::ManageEditorControls()
 
 			break;
 		case NOTE_TYPE_NOTICE:
-			NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Notice.bmp");
+			NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Notice.bmp");
 
 			if (NoteTexture)
 			{
@@ -2061,15 +2012,15 @@ bool DANAE::ManageEditorControls()
 
 			if (Note.type ==NOTE_TYPE_BIGNOTE)
 			{
-				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Very_BigNote.bmp");
-				NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
-				NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Very_BigNote.bmp");
+				NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
+				NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
 			}
 			else
 			{
-				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-				NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
-				NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
+				NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
+				NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
 			}
 
 			if (NoteTexture)
@@ -5899,13 +5850,7 @@ void DANAE::ManageKeyMouse()
 						CDP_FogOptions=NULL;
 						ARX_TIME_Pause();
 						DanaeSwitchFullScreen();
-						ReloadAllTextures();
-
-						if(ControlCinematique)
-						{
-							ActiveAllTexture(ControlCinematique);
-						}
-
+						//ReloadAllTextures();
 						ARX_TIME_UnPause();
 						LaunchDummyParticle();
 						this->kbd.inkey[INKEY_F1]=0;
@@ -6051,7 +5996,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 	{
 		char temp[256];
 		sprintf(temp,"Graph\\Interface\\Inventory\\%s.bmp",TSecondaryInventory->io->inventory_skin);
-		TextureContainer * tc=MakeTCFromFile(temp);
+		TextureContainer * tc=TextureContainer::LoadUI(temp);
 
 		if (tc)
 			ITC.Set("ingame_inventory", tc);
@@ -6113,69 +6058,59 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 						io->inv=GoldCoinsTC[num];
 					}
 
-					if (tc->m_pddsSurface)
+					float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
+					float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
+
+					D3DCOLOR color;
+
+					if ((io->poisonous) && (io->poisonous_count!=0))
+						color=0xFF00FF00;
+					else color=D3DCOLORWHITE;
+
+					EERIEDrawBitmap(
+						px,
+						py,
+					                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
+						0.001f,
+						tc,color);
+
+					if (!bItemSteal && (io==FlyingOverIO))
 					{
-						float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
-						float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
-
-						D3DCOLOR color;
-
-						if ((io->poisonous) && (io->poisonous_count!=0))
-							color=0xFF00FF00;
-						else color=D3DCOLORWHITE;
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 						EERIEDrawBitmap(
 							px,
 							py,
 						                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 							0.001f,
-							tc,color);
-
-						if (!bItemSteal && (io==FlyingOverIO))
-						{
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-							EERIEDrawBitmap(
-								px,
-								py,
-							                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-								0.001f,
-								tc,
-								D3DCOLORWHITE);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
-						else
-						{
-							if (!bItemSteal && (io->ioflags & IO_CAN_COMBINE))
-							{
-								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-								float fcolorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-								DWORD dwcolor		=	ARX_CLEAN_WARN_CAST_DWORD(fcolorPulse);
-
-								EERIEDrawBitmap(
-									px,
-									py,
-								                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-									0.001f,
-									tc,
-									(dwcolor<<16)|(dwcolor<<8)|dwcolor);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							}
-						}
-
-						if (tc2!=NULL)
-						{
-							ARX_INTERFACE_HALO_Draw(io,tc,tc2,
-								px,
-								py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-						}
-
-						if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
-							ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, D3DCOLORWHITE);
+							tc,
+							D3DCOLORWHITE);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
+					else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						
+						float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
+						DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
+						
+						EERIEDrawBitmap(
+							px,
+							py,
+							INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, (dwColor<<16)|(dwColor<<8)|dwColor);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					}
+
+					if (tc2!=NULL)
+					{
+						ARX_INTERFACE_HALO_Draw(io,tc,tc2,
+							px,
+							py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					}
+
+					if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
+						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, D3DCOLORWHITE);
 				}
 			}
 		}
@@ -6216,14 +6151,26 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 					float px = fPosX + i*INTERFACE_RATIO(32) + INTERFACE_RATIO(7);
 					float py = fPosY + j*INTERFACE_RATIO(32) + INTERFACE_RATIO(6);
 
-					if (tc->m_pddsSurface)
+					D3DCOLOR color;
+
+					if ((io->poisonous) && (io->poisonous_count!=0))
+						color=0xFF00FF00;
+					else color=D3DCOLORWHITE;
+
+					EERIEDrawBitmap(
+						px,
+						py,
+
+						INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						INTERFACE_RATIO_DWORD(tc->m_dwHeight),
+
+						0.001f,
+						tc,color);
+
+					if (io==FlyingOverIO)
 					{
-						D3DCOLOR color;
-
-						if ((io->poisonous) && (io->poisonous_count!=0))
-							color=0xFF00FF00;
-						else color=D3DCOLORWHITE;
-
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						EERIEDrawBitmap(
 							px,
 							py,
@@ -6232,43 +6179,26 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 							INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 
 							0.001f,
-							tc,color);
-
-						if (io==FlyingOverIO)
+							tc,D3DCOLORWHITE);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					}
+					else
+					{
+						if (io->ioflags & IO_CAN_COMBINE)
 						{
+							float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
+							DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
+
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							EERIEDrawBitmap(
 								px,
 								py,
-
 								INTERFACE_RATIO_DWORD(tc->m_dwWidth),
 								INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-
 								0.001f,
-								tc,D3DCOLORWHITE);
+								tc,(dwColor<<16)|(dwColor<<8)|dwColor);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
-						else
-						{
-							if (io->ioflags & IO_CAN_COMBINE)
-							{
-								float fcolorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-								DWORD dwcolor		=	ARX_CLEAN_WARN_CAST_DWORD(fcolorPulse);
-
-								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								EERIEDrawBitmap(
-									px,
-									py,
-
-									INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-									INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-
-									0.001f,
-									tc,(dwcolor<<16)|(dwcolor<<8)|dwcolor);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							}
 						}
 					}
 
@@ -6442,15 +6372,8 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 //-----------------------------------------------------------------------------
 void DrawBookInterfaceItem(TextureContainer *tc,float x,float y,float z)
 {
-	if ((tc) && (tc->m_pddsSurface))
-	{
-		EERIEDrawBitmap2(
-			(x+BOOKDECX)*Xratio,
-			(y+BOOKDECY)*Yratio,
-			(float)(tc->m_dwWidth)*Xratio,
-			(float)(tc->m_dwHeight)*Yratio,
-			z, tc, BOOKINTERFACEITEMCOLOR);
-	}
+	if (tc)
+		EERIEDrawBitmap2((x+BOOKDECX)*Xratio, (y+BOOKDECY)*Yratio, (float)(tc->m_dwWidth)*Xratio, (float)(tc->m_dwHeight)*Yratio, z, tc, BOOKINTERFACEITEMCOLOR);
 }
 
 //-----------------------------------------------------------------------------
@@ -6569,7 +6492,7 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 	if (tcc==NULL)
 	{
 		if (ITC.Get("unknown")==NULL)
-			ITC.Set("unknown", MakeTCFromFile("Graph\\interface\\icons\\spell_unknown.bmp"));
+			ITC.Set("unknown", TextureContainer::Load("Graph\\interface\\icons\\spell_unknown.bmp"));
 
 		tc=ITC.Get("unknown");
 	}
@@ -6798,10 +6721,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						// Now draw the rune
 						DrawEERIEInter(necklace.runes[i],&angle,&pos,NULL);
 
-						if(bRenderInterList)
-						{
-							PopAllTriangleList(true);
-						}
+						PopAllTriangleList(true);
 
 						xpos++;
 
@@ -6836,10 +6756,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 								necklace.runes[i]->angle.b+=_framedelay*2.f;
 
-								if(bRenderInterList)
-								{
-									PopAllTriangleList(true);
-								}
+								PopAllTriangleList(true);
 								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -7289,8 +7206,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 	BOOKDECX = 0;
 	BOOKDECY = 0;
-	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
 
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
 	{
@@ -8363,7 +8278,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
-		SetFilteringMode(1);
+
 		D3DRECT rec;
 
 		if (BOOKZOOM) {
@@ -8376,7 +8291,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
 
 			if (ARXmenu.currentmode!=AMCM_OFF)
-				danaeApp.SetClipping(139.f*Xratio,0,139.f*Xratio,310.f*Yratio);
+			{
+				Renderer::Viewport vp;
+				vp.x = 139.f*Xratio;
+				vp.y = 0;
+				vp.width = 139.f*Xratio;
+				vp.height = 310.f*Yratio;
+				GRenderer->SetViewport(vp);
+			}
 		} else {
 			rec.x1 = (118.F + BOOKDECX) * Xratio;
 			rec.y1 = (69.f + BOOKDECY) * Yratio;
@@ -8444,28 +8366,22 @@ void ARX_INTERFACE_ManageOpenedBook()
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 
-		D3DVIEWPORT7 vp;
-
+		Renderer::Viewport vp;
 		if (BOOKZOOM)
 		{
-
-			vp.dwX		=	ARX_CLEAN_WARN_CAST_DWORD( rec.x1 + 52.f * Xratio );
-			vp.dwY		=	rec.y1;
-			vp.dwWidth	=	ARX_CLEAN_WARN_CAST_DWORD( rec.x2 - rec.x1 - 73.f * Xratio );
-			vp.dwHeight	=	ARX_CLEAN_WARN_CAST_DWORD( rec.y2 - rec.y1 - 17.f * Yratio );
-
+			vp.x		=	ARX_CLEAN_WARN_CAST_DWORD( rec.x1 + 52.f * Xratio );
+			vp.y		=	rec.y1;
+			vp.width	=	ARX_CLEAN_WARN_CAST_DWORD( rec.x2 - rec.x1 - 73.f * Xratio );
+			vp.height	=	ARX_CLEAN_WARN_CAST_DWORD( rec.y2 - rec.y1 - 17.f * Yratio );
 		}
 		else
 		{
-			vp.dwX		=	rec.x1;
-			vp.dwY		=	rec.y1;
-			vp.dwWidth	=	rec.x2 - rec.x1;
-			vp.dwHeight	=	rec.y2 - rec.y1;
+			vp.x		=	rec.x1;
+			vp.y		=	rec.y1;
+			vp.width	=	rec.x2 - rec.x1;
+			vp.height	=	rec.y2 - rec.y1;
 		}
-
-		vp.dvMinZ	=	0.f;
-		vp.dvMaxZ	=	1.f;
-		GDevice->SetViewport(&vp);
+		GRenderer->SetViewport(vp);
 
 		ePlayerAngle.a=0.f;
 		ePlayerAngle.g=0.f;
@@ -8523,18 +8439,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 		INVISIBILITY_OVERRIDE=0;
 		IN_BOOK_DRAW=0;
 
-		if(ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if(bRenderInterList)
-			{
-				GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_NONE);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				PopAllTriangleList(true);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				PopAllTriangleListTransparency();
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_POINT);
-			}
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			PopAllTriangleList(true);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			PopAllTriangleListTransparency();
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterLinear);
 		}
 
 		PDL[0]=SavePDL[0];
@@ -8546,19 +8458,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 		FORCE_NO_HIDE=0;
 		Project.improve=ti;
 
-		vp.dwX		=	0;
-		vp.dwY		=	0;
-
-		vp.dwWidth	=	DANAESIZX;
-		vp.dwHeight	=	DANAESIZY;
-		vp.dvMinZ	=	0.f;
-		vp.dvMaxZ	=	1.f;
-		GDevice->SetViewport(&vp);
-
-		if (ARXmenu.currentmode!=AMCM_OFF)
-		{
-			danaeApp.SetClipping(0,0,(float)DANAESIZX,(float)DANAESIZY);
-		}
+		vp.x		=	0;
+		vp.y		=	0;
+		vp.width	=	DANAESIZX;
+		vp.height	=	DANAESIZY;
+		GRenderer->SetViewport(vp);
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetCulling(Renderer::CullNone);
@@ -8809,7 +8713,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
 			if (HALOCUR>0)
 			{
-				SETTC(NULL);
+				GRenderer->ResetTexture(0);
 				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 				GRenderer->SetCulling(Renderer::CullNone);
@@ -8823,10 +8727,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						vert[2].color =0xFF000000;
-						EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+						EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 						GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 					}
-					else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+					else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 				}
 
 				HALOCUR=0;
@@ -8952,9 +8856,9 @@ extern long SPLASH_THINGS_STAGE;
 //-----------------------------------------------------------------------------
 void DANAE::DrawAllInterface()
 {
-	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
-	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	if (!EDITMODE)
 	{
@@ -9684,25 +9588,16 @@ void DANAE::DrawAllInterface()
 		//---------------------------------------------------------------------
 		//RED GAUGE
 		unsigned long ulcolor=0xFFFF0000;
-			float fSLID_VALUE_neg = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
+		float fSLID_VALUE_neg = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
 
 		if (player.poison>0.f)
 		{
-				float val = min(player.poison, 0.2f) * 255.f * 5.f; 
+			float val = min(player.poison, 0.2f) * 255.f * 5.f; 
 			long g = val;
 			ulcolor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
 		}
 
-		if ((fInterfaceRatio>1.9f) && ITC.Get("filled_gauge_blue"))
-		{
-			float vuv=(1.f-fnl)*ITC.Get("filled_gauge_red")->m_dwHeight;
-			long vvv = vuv;
-				vuv = (float)vvv / ITC.Get("filled_gauge_red")->m_dwHeight; 
-			//ir=
-				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulcolor, vuv);
-		}
-		else
-				EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
+		EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9734,17 +9629,7 @@ void DANAE::DrawAllInterface()
 		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
 		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
 
-
-		if ((fInterfaceRatio>1.9f) && ITC.Get("filled_gauge_blue"))
-		{
-			float vuv=(1.f-fnm)*ITC.Get("filled_gauge_blue")->m_dwHeight;
-			long vvv = vuv;
-				vuv = (float)vvv / ITC.Get("filled_gauge_blue")->m_dwHeight; 
-			//ir=
-				EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, vuv);
-		}
-		else
-				EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
+		EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9863,9 +9748,9 @@ void DANAE::DrawAllInterface()
 	}
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
-	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
 
 extern long FRAME_COUNT;
@@ -9887,8 +9772,6 @@ long Manage3DCursor(long flags)
 
 	if ((DANAEMouse.y<drop_miny) && (!EDITMODE))
 		return 0;
-
-	SetFilteringMode(Bilinear);
 
 	INTERACTIVE_OBJ * io=DRAGINTER;
 
@@ -10218,71 +10101,70 @@ long Manage3DCursor(long flags)
 
 }
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_RenderCursor(long flag)
+void ARX_INTERFACE_RenderCursorInternal(long flag)
 {
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
 		ManageIgnition_2(DRAGINTER);
-		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
-		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-		SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	}
 
 	TextureContainer * surf;
 
 	if (!SPECIAL_DRAGINTER_RENDER)
-	if (LOOKING_FOR_SPELL_TARGET)
 	{
-		if (ARXTime>LOOKING_FOR_SPELL_TARGET_TIME+7000)
+		if (LOOKING_FOR_SPELL_TARGET)
 		{
-			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
-			ARX_SPELLS_CancelSpellTarget();
-		}
-
-		if (	(FlyingOverIO)
-			&&	(	((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
-			|| ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM))	)	)
-		{
-			surf=ITC.Get("target_on");
-
-			if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-			{
-				ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
-			}
-		}
-		else
-		{
-			surf=ITC.Get("target_off");
-
-			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+			if (ARXTime>LOOKING_FOR_SPELL_TARGET_TIME+7000)
 			{
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 				ARX_SPELLS_CancelSpellTarget();
 			}
+
+			if (	(FlyingOverIO)
+				&&	(	((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
+				|| ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM))	)	)
+			{
+				surf=ITC.Get("target_on");
+
+				if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+				{
+					ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
+				}
+			}
+			else
+			{
+				surf=ITC.Get("target_off");
+
+				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+				{
+					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
+					ARX_SPELLS_CancelSpellTarget();
+				}
+			}
+
+			float POSX=DANAEMouse.x;
+			float POSY=DANAEMouse.y;
+
+			if (TRUE_PLAYER_MOUSELOOK_ON)
+			{
+				POSX = MemoMouse.x;
+				POSY = MemoMouse.y;
+			}
+
+
+			float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
+			float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
+
+			EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
+				fTexSizeX, fTexSizeY, 0.f,
+				surf,D3DCOLORWHITE);
+
+			return;
 		}
-
-		float POSX=DANAEMouse.x;
-		float POSY=DANAEMouse.y;
-
-		if (TRUE_PLAYER_MOUSELOOK_ON)
-		{
-			POSX = MemoMouse.x;
-			POSY = MemoMouse.y;
-		}
-
-
-		float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
-		float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
-
-		EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
-			fTexSizeX, fTexSizeY, 0.f,
-			surf,D3DCOLORWHITE);
-
-		SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
-		return;
 	}
-
-	SPECIAL_DRAW_INTER_SHADOW = 0;
 
 	if (flag || ((!BLOCK_PLAYER_CONTROLS) &&
 		(!PLAYER_INTERFACE_HIDE_COUNT)))
@@ -10377,11 +10259,6 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 					if (COMBINEGOLD) tc=GoldCoinsTC[5];
 					else tc=COMBINE->inv;
-
-					if (tc->m_pddsSurface==NULL)
-					{
-						D3DTextr_Restore(tc->m_strName);
-					}
 
 					float MODIF=0.f;
 
@@ -10583,11 +10460,6 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 						if (NeedHalo(DRAGINTER)) tc2=DRAGINTER->inv->TextureHalo;//>_itemdata->halo_tc;
 
-						if (tc->m_pddsSurface==NULL)
-						{
-							tc->Restore();
-						}
-
 						D3DCOLOR color;
 
 						if ((DRAGINTER->poisonous) && (DRAGINTER->poisonous_count!=0))
@@ -10713,38 +10585,47 @@ void ARX_INTERFACE_RenderCursor(long flag)
 				{
 					CURCURPOS=0;
 
-						surf = pTCCrossHair;
+					surf = pTCCrossHair;
 
-						if (!surf)
-						{
-							surf=ITC.Get("target_off");
-						}
+					if (!surf)
+					{
+						surf=ITC.Get("target_off");
+					}
 
-						if (surf)
-						{
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					if (surf)
+					{
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-							float POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
-							float POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
+						float POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
+						float POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
 
-							D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
+						D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
 
-							EERIEDrawBitmap((float)POSX,(float)POSY,
+						EERIEDrawBitmap((float)POSX,(float)POSY,
 
-								INTERFACE_RATIO_DWORD(surf->m_dwWidth),
-								INTERFACE_RATIO_DWORD(surf->m_dwHeight),
+							INTERFACE_RATIO_DWORD(surf->m_dwWidth),
+							INTERFACE_RATIO_DWORD(surf->m_dwHeight),
 
-								0.f,
-								surf, col);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
+							0.f,
+							surf, col);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 				}
 			}
+		}
+	}
+}
 
-		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
-		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
-		SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+void ARX_INTERFACE_RenderCursor(long flag)
+{
+	ARX_INTERFACE_RenderCursorInternal(flag);
+
+	// Ensure filtering settings are restored in all cases
+	if (!SPECIAL_DRAGINTER_RENDER)
+	{
+		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	}
 }

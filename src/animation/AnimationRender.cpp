@@ -65,11 +65,9 @@ extern		long		USEINTERNORM;
 extern 		long 		INTER_DRAW;
 
 extern		float		dists[];
-extern bool bALLOW_BUMP;
 extern long BH_MODE;
 extern int iHighLight;
 
-extern bool bRenderInterList;
 extern TextureContainer TexSpecialColor;
 
  
@@ -78,7 +76,7 @@ extern long FLAG_ALLOW_CLOTHES;
 long TSU_TEST = 0;
 extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
-extern D3DMATRIX ProjectionMatrix;
+extern EERIEMATRIX ProjectionMatrix;
 extern float fZFogStart;
 
 extern CDirectInput * pGetInfoDirectInput;
@@ -573,8 +571,8 @@ extern long ALTERNATE_LIGHTING;
 extern float GLOBAL_LIGHT_FACTOR;
 
 /* Object dynamic lighting */
-bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, long typ)
-{
+static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, long typ) {
+	
 	EERIE_RGB		infra;
 	int				i, v, l;
 	Vec3f		tv;
@@ -1220,7 +1218,7 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 	}
 }
 
-int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bBump, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB)
+int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB)
 {
 	int iPointAdd = 3;
 	int iClipp = 0;
@@ -1316,11 +1314,6 @@ int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VER
 	if (pD3DPointAdd)
 	{
 		*_ptV = ptV;
-
-		if (_bBump)
-		{
-			PushInterBump(_pTex, pD3DPointAdd);
-		}
 
 		if (_bZMapp)
 		{
@@ -1567,9 +1560,11 @@ long FORCE_FRONT_DRAW = 0;
 
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
+
 /* Render object */
-void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
-	float		MAX_ZEDE = 0.f;
+void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
+	
+	float MAX_ZEDE = 0.f;
 
 	// Sets IO BBox to calculated BBox :)
 	if (io)
@@ -1666,10 +1661,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 	}
 
 	{
-		bool bBumpOnIO;
-		float fDist		= fdist(*pos, ACTIVECAM->pos);
-		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < min( max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
-
 		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
 		{
 			ARX_D3DVERTEX	* tv			= NULL;
@@ -1831,7 +1822,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 			                                   eface,
 			                                   invisibility,
 			                                   pTex,
-			                                   bBumpOnIO,
 			                                   (io) && (io->ioflags & IO_ZMAP),
 			                                   eobj,
 			                                   i,
@@ -1843,11 +1833,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 			{
 				*pNb -= 3;
 				continue;
-			}
-
-			if (bBumpOnIO)
-			{
-				PushInterBump(pTex, tv);
 			}
 
 			if ((io) && (io->ioflags & IO_ZMAP))
@@ -2147,373 +2132,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 		}
 	}
 }
-
-
-/* Render object */
-void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility)
-{
-	if (bRenderInterList)
-	{
-		Cedric_RenderObject2(eobj,
-		                     obj,
-		                     io,
-		                     pos,
-		                     ftr,
-		                     invisibility);
-		return;
-	}
-
-	// Finally we can draw polys !!!
-	GRenderer->SetCulling(Renderer::CullNone);
-
-	// Sets IO BBox to calculated BBox :)
-	if (io)
-	{
-		io->bbox1.x = (short)BBOXMIN.x;
-		io->bbox2.x = (short)BBOXMAX.x;
-		io->bbox1.y = (short)BBOXMIN.y;
-		io->bbox2.y = (short)BBOXMAX.y;
-	}
-
-	if (invisibility == 1.f)
-		return;
-
-	float ddist = 0;
-	long need_halo;
-	need_halo = 0;
-
-	if ((io) && (io->halo.flags & HALO_ACTIVE))
-	{
-		ddist = 500.f - Distance3D(pos->x + ftr.x, pos->y + ftr.y, pos->z + ftr.z, ACTIVECAM->pos.x, ACTIVECAM->pos.y, ACTIVECAM->pos.z);
-
-		if (ddist > 0.f)
-		{
-			ddist = (ddist * ( 1.0f / 500 ));
-		}
-		else if (ddist < 0.f)
-		{
-			ddist = 0.f;
-		}
-
-		else if (ddist > 1.f)
-		{
-			ddist = 1.f;
-		}
-
-		if ((io) && (io->halo.flags & HALO_ACTIVE) && (ddist > 0.01f))
-		{
-			Cedric_PrepareHalo(eobj, obj);
-			need_halo = 1;
-		}
-	}
-
-
-	{
-		for (size_t i = 0; i < eobj->facelist.size(); i++)
-		{
-			D3DTLVERTEX tv[3];
- 
-			EERIE_FACE 	 *  eface;
-			long 			paf[3];
-
-			eface = &eobj->facelist[i];
-
-			if ((eface->facetype & POLY_HIDE) && (!FORCE_NO_HIDE))
-				continue;
-
-			if ((eobj->vertexlist3[eface->vid[0]].vert.rhw < 0)
-			        &&	(eobj->vertexlist3[eface->vid[1]].vert.rhw < 0)
-			        &&	(eobj->vertexlist3[eface->vid[2]].vert.rhw < 0))
-				continue; // To avoid reverse-flip draw.
-
-			long OUTSIDE = 0;
-
-			for (long n = 0; n < 3; n++)
-			{
-				paf[n] = eface->vid[n];
-				tv[n].sx = eobj->vertexlist3[paf[n]].vert.sx;
-				tv[n].sy = eobj->vertexlist3[paf[n]].vert.sy;
-				tv[n].sz = eobj->vertexlist3[paf[n]].vert.sz;
-
-				if (tv[n].sz <= 0.f)
-					OUTSIDE++;
-
-				tv[n].rhw = eobj->vertexlist3[paf[n]].vert.rhw;
-				tv[n].tu = eface->u[n];
-				tv[n].tv = eface->v[n];
-				tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
-			}
-
-			if (OUTSIDE == 3) continue;
-
-			////////////////////////////////////////////////////////////////////////
-			// HALO HANDLING START
-			if (need_halo)
-			{
-				long lfr, lfg, lfb;
-				float ffr, ffg, ffb;
-				float tot = 0;
-				float _ffr[3];
-
-				D3DTLVERTEX * workon = tv;
-
-				for (long o = 0; o < 3; o++)
-				{
-					float tttz = eobj->vertexlist3[paf[o]].norm.z;
-
-					if (tttz < 0.f) tttz *= -0.5f;
-					else tttz *= 0.5f;
-
-					float power = 255.f - (float)(255.f * tttz);
-					power *= (1.f - invisibility);
-
-					if (power > 255.f) power = 255.f;
-					else if (power < 0.f) power = 0.f;
-
-					ffr = io->halo.color.r * power;
-					ffg = io->halo.color.g * power;
-					ffb = io->halo.color.b * power;
-					tot += power;
-					_ffr[o] = power;
-					lfr = ffr;
-					lfg = ffg;
-					lfb = ffb;
-					tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) | (((lfg) & 255) << 8) | ((lfb) & 255);
-				}
-
-				if (tot > 260.f)
-				{
-					long first;
-					long second;
-					long third;
-
-					if ((_ffr[0] >= _ffr[1]) && (_ffr[1] >= _ffr[2]))
-					{
-						first = 0;
-						second = 1;
-						third = 2;
-					}
-					else if ((_ffr[0] >= _ffr[2]) && (_ffr[2] >= _ffr[1]))
-					{
-						first = 0;
-						second = 2;
-						third = 1;
-					}
-					else if ((_ffr[1] >= _ffr[0]) && (_ffr[0] >= _ffr[2]))
-					{
-						first = 1;
-						second = 0;
-						third = 2;
-					}
-					else if ((_ffr[1] >= _ffr[2]) && (_ffr[2] >= _ffr[0]))
-					{
-						first = 1;
-						second = 2;
-						third = 0;
-					}
-					else if ((_ffr[2] >= _ffr[0]) && (_ffr[0] >= _ffr[1]))
-					{
-						first = 2;
-						second = 0;
-						third = 1;
-					}
-					else
-					{
-						first = 2;
-						second = 1;
-						third = 0;
-					}
-
-					if ((_ffr[first] > 150.f) && (_ffr[second] > 110.f)) // && (workon[0].sz>0.f) && (workon[3].sz>0.f))
-					{
-						Vec3f		vect1, vect2;
-						D3DTLVERTEX	* vert = &LATERDRAWHALO[(HALOCUR << 2)];
-
-						HALOCUR++;
-
-						if (HALOCUR >= HALOMAX) HALOCUR--;
-
-						memcpy(&vert[0], &workon[first], sizeof(D3DTLVERTEX));
-						memcpy(&vert[1], &workon[first], sizeof(D3DTLVERTEX));
-						memcpy(&vert[2], &workon[second], sizeof(D3DTLVERTEX));
-						memcpy(&vert[3], &workon[second], sizeof(D3DTLVERTEX));
-
-						float siz = ddist * (io->halo.radius * (EEsin((float)(FrameTime + i) * ( 1.0f / 100 )) * ( 1.0f / 50 ) + 1.f));
-
-						vect1.x = workon[first].sx - workon[third].sx;
-						vect1.y = workon[first].sy - workon[third].sy;
-						float len1 = 1.f / EEsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
-						vect1.x *= len1;
-						vect1.y *= len1;
-						vect2.x = workon[second].sx - workon[third].sx;
-						vect2.y = workon[second].sy - workon[third].sy;
-						float len2 = 1.f / EEsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
-						vect2.x *= len2;
-						vect2.y *= len2;
-						vert[1].sx += (vect1.x + 0.2f - rnd() * 0.1f) * siz; //+len1;
-						vert[1].sy += (vect1.y + 0.2f - rnd() * 0.1f) * siz; //+len2;
-						vert[1].color = 0xFF000000;
-
-						float valll; 
-						valll = (EEfabs(workon[first].sz - workon[third].sz)
-						         + EEfabs(workon[second].sz - workon[third].sz)) * 1.8f;
-						valll = 0.01f + valll;
-
-						if (valll < 0.f) valll = 0.f;
-
-						vert[1].sz += valll;
-						vert[2].sz += valll;
-						vert[0].sz += 0.0001f;
-						vert[3].sz += 0.0001f; //*( 1.0f / 2 );
-						
-						vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz; //+len2;
-						vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz; //+len1;
-
-						if (io->halo.flags & HALO_NEGATIVE) vert[2].color = 0x00000000;
-						else vert[2].color = 0xFF000000;
-					}
-				}
-
-				for (long n = 0; n < 3; n++)
-				{
-					paf[n] = eface->vid[n];
-					tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
-				}
-			}
-
-			if (special_color_flag)
-			{
-				if (special_color_flag & 1)
-				{
-					for (long j = 0; j < 3; j++)
-					{
-						tv[j].color = 0xFF000000L
-						               | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
-						               | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
-						               | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
-					}
-				}
-				else if (special_color_flag & 2)
-				{
-					for (long j = 0; j < 3; j++)
-					{
-						tv[j].color = 0xFFFF0000;
-					}
-				}
-			}
-
-			// HALO HANDLING END
-			////////////////////////////////////////////////////////////////////////
-
-			// Backface culling if required
-			if (eface->facetype & POLY_DOUBLESIDED)
-				GRenderer->SetCulling(Renderer::CullNone);
-			else
-				GRenderer->SetCulling(Renderer::CullCW);
-
-			// Is Transparent?
-			if (eface->facetype & POLY_TRANS)
-			{
-				memcpy(&InterTransPol[INTERTRANSPOLYSPOS], &tv, sizeof(D3DTLVERTEX) * 3);
-				InterTransFace[INTERTRANSPOLYSPOS] = eface;
-				InterTransTC[INTERTRANSPOLYSPOS] = eobj->texturecontainer[eface->texid];
-				INTERTRANSPOLYSPOS++;
-
-				if (INTERTRANSPOLYSPOS >= MAX_INTERTRANSPOL)
-					INTERTRANSPOLYSPOS = MAX_INTERTRANSPOL - 1;
-
-				continue;
-			}
-
-			// Set texture
-			if ((eface->texid == -1) || (eobj->texturecontainer[eface->texid] == NULL))
-				SETTC(NULL);
-			else
-				SETTC(eobj->texturecontainer[eface->texid]);
-
-			if (invisibility > 0.f)
-			{
-				memcpy(&InterTransPol[INTERTRANSPOLYSPOS], &tv, sizeof(D3DTLVERTEX) * 3);
-				InterTransFace[INTERTRANSPOLYSPOS] = eface;
-				InterTransFace[INTERTRANSPOLYSPOS]->transval = 2.f - invisibility;
-				InterTransTC[INTERTRANSPOLYSPOS] = eobj->texturecontainer[eface->texid];
-				INTERTRANSPOLYSPOS++;
-
-				if (INTERTRANSPOLYSPOS >= MAX_INTERTRANSPOL)
-					INTERTRANSPOLYSPOS = MAX_INTERTRANSPOL - 1;
-
-				continue;
-			}
-
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
-
-			if (special_color_flag & 2)
-			{
-				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				GRenderer->SetRenderState(Renderer::DepthWrite, false);
-				SETTC(NULL);
-				unsigned long v = _EERIERGB(special_color.r);
-
-				for (long j = 0; j < 3; j++)
-				{
-					tv[j].color = v;
-				}
-				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
-				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );//duplicate ???? @TBR ?
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			}
-
-		// Add a little bit of Fake Metal Specular if needed
-			if ((eface->facetype & POLY_METAL)
-			        || ((eobj->texturecontainer[eface->texid]) && (eobj->texturecontainer[eface->texid]->userflags & POLY_METAL)))
-			{
-				long r, g, b;
-				long todo = 0;
-
-				for (long j = 0; j < 3; j++)
-				{
-					r = (tv[j].color >> 16) & 255;
-					g = (tv[j].color >> 8) & 255;
-					b = tv[j].color & 255;
-
-					if (r > 192 || g > 192 || b > 192)
-					{
-						todo++;
-					}
-
-					r -= 192;
-
-					if (r < 0.f) r = 0;
-
-					g -= 192;
-
-					if (g < 0.f) g = 0;
-
-					b -= 192;
-
-					if (b < 0.f) b = 0;
-
-					tv[j].color = 0xFF000000 | (r << 18) | (g << 10) | (b << 2);
-				}
-
-				if (todo)
-				{
-					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					GRenderer->SetRenderState(Renderer::DepthWrite, false);
-					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, &tv, 3, 0, 0 );
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					GRenderer->SetRenderState(Renderer::DepthWrite, true);
-				}
-			}
-		}
-	}
-}
-
-
-
 
 void Cedric_BlendAnimation(EERIE_3DOBJ * eobj, float timm) {
 	for (long i = 0; i < eobj->c_data->nb_bones; i++)

@@ -144,7 +144,7 @@ CControlTarget::CControlTarget()
 	SetDuration(8000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_mm = MakeTCFromFile("Graph\\Obj3D\\textures\\(fx)_ctrl_target.bmp");
+	tex_mm = TextureContainer::Load("Graph\\Obj3D\\textures\\(fx)_ctrl_target.bmp");
 
 	fColor[0] = 1;
 	fColor[1] = 1;
@@ -254,11 +254,7 @@ float CControlTarget::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-	if (tex_mm && tex_mm->m_pddsSurface)
-	{
-		SETTC(tex_mm);
-	}
+	GRenderer->SetTexture(0, tex_mm);
 
 	// -------------------
 	fTrail += 1;

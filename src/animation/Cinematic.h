@@ -26,10 +26,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_ANIMATION_CINEMATIC_H
 #define ARX_ANIMATION_CINEMATIC_H
 
-#include <windows.h> // for HRESULT
+#include <vector>
 
-#include "graphics/d3dwrapper.h"
-#include "graphics/GraphicsTypes.h" // for EERIE_3D
+#include "platform/math/Vector3.h"
 
 // TODO macros
 //fx
@@ -48,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct C_KEY;
 struct CinematicGrid;
+class CinematicBitmap;
 
 class CinematicLight {
 	
@@ -111,16 +111,18 @@ public:
 	float speedtrack;
 	float flTime;
 	float m_flIntensityRND;
+	std::vector<CinematicBitmap*>	m_bitmaps;
 	
 	Cinematic(int, int);
-	bool ActiveTexture(int id);
-	HRESULT InitDeviceObjects();
-	HRESULT OneTimeSceneReInit();
-	HRESULT Render(float framediff);
-	HRESULT New();
-	void ReInitMapp(int id);
-	HRESULT DeleteDeviceObjects();
-	
+	~Cinematic();
+
+	void InitDeviceObjects();
+	void OneTimeSceneReInit();
+	void Render(float framediff);
+	void New();
+	void DeleteDeviceObjects();
+
+	void DeleteAllBitmap();
 };
 
 void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);

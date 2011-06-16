@@ -71,7 +71,8 @@ Thread::Thread() {
 
 void Thread::start() {
 	DWORD ret = ResumeThread(thread);
-	arx_assert(ret != (DWORD)-1), ARX_UNUSED(ret);
+	arx_assert(ret != (DWORD)-1);
+	ARX_UNUSED(ret);
 }
 
 static const int windowsThreadPriorities[] = {
@@ -87,7 +88,8 @@ void Thread::setPriority(Priority priority) {
 	arx_assert(priority >= Lowest && priority <= Highest);
 	
 	BOOL ret = SetThreadPriority(thread, windowsThreadPriorities[priority - Lowest]);
-	arx_assert(ret), ARX_UNUSED(ret);
+	arx_assert(ret);
+	ARX_UNUSED(ret);
 }
 
 Thread::~Thread() {
@@ -105,7 +107,8 @@ void Thread::exit() {
 
 void Thread::waitForCompletion() {
 	DWORD ret = WaitForSingleObject(thread, INFINITE);
-	arx_assert(ret == WAIT_OBJECT_0), ARX_UNUSED(ret);
+	arx_assert(ret == WAIT_OBJECT_0);
+	ARX_UNUSED(ret);
 }
 
 #endif

@@ -49,7 +49,6 @@ using std::search;
 using std::string;
 using std::copy;
 
-extern CinematicBitmap TabBitmap[];
 extern CinematicTrack * CKTrack;
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
@@ -115,7 +114,6 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name) {
 	
 	LogInfo << "loading cinematic " << dir << name;
 	
-	InitMapLoad();
 	InitSound();
 	
 	string projectfile = dir;
@@ -142,52 +140,55 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	const char * cinematicId = safeGetString(data, size);
 	if(!cinematicId) {
-		LogDebug << "error parsing file magic number";
+		LogError << "error parsing file magic number";
 		return false;
 	}
 	
 	if(strcmp(cinematicId, "KFA")) {
-		LogDebug << "wrong magic number";
+		LogError << "wrong magic number";
 		return false;
 	}
 	
 	s32 version;
 	if(!safeGet(version, data, size)) {
-		LogDebug << "error reading file version";
+		LogError << "error reading file version";
 		return false;
 	}
 	LogDebug << "version " << version;
 	
-	if(version > CINEMATIC_FILE_VERSION) {
-		LogDebug << "wrong version " << version << " expected max " << CINEMATIC_FILE_VERSION;
+	if(version < CINEMATIC_VERSION_1_75) {
+		LogError << "too old version " << version << " expected at least " << CINEMATIC_VERSION_1_75;
+	}
+	
+	if(version > CINEMATIC_VERSION_1_76) {
+		LogError << "wrong version " << version << " expected max " << CINEMATIC_VERSION_1_76;
 		return false;
 	}
 	
-	if(version >= ((1 << 16) | 61)) {
-		// Ignore a string.
-		safeGetString(data, size);
-	}
+	// Ignore a string.
+	safeGetString(data, size);
 	
 	// Load bitmaps.
 	s32 nbitmaps;
 	if(!safeGet(nbitmaps, data, size)) {
-		LogDebug << "error reading bitmap count";
+		LogError << "error reading bitmap count";
 		return false;
 	}
 	LogDebug << "nbitmaps " << nbitmaps;
+	
+	c->m_bitmaps.reserve(nbitmaps);
+	
 	for(int i = 0; i < nbitmaps; i++) {
 		
 		s32 scale = 0;
-		if(version >= ((1 << 16) | 71)) {
-			if(!safeGet(scale, data, size)) {
-				LogDebug << "error reading bitmap scale";
-				return false;
-			}
+		if(!safeGet(scale, data, size)) {
+			LogError << "error reading bitmap scale";
+			return false;
 		}
 		
 		const char * str = safeGetString(data, size);
 		if(!str) {
-			LogDebug << "error bitmap path";
+			LogError << "error reading bitmap path";
 			return false;
 		}
 		string path = str;
@@ -196,60 +197,48 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		
 		LogDebug << "adding bitmap " << i << ": " << path;
 		
-		int id = CreateAllMapsForBitmap(path, c);
-		
-		if(TabBitmap[id].load) {
-			if(scale > 1) {
-				TabBitmap[id].grid.echelle = scale;
-				c->ReInitMapp(id);
-			} else {
-				TabBitmap[id].grid.echelle = 1;
-			}
-		} else {
-			TabBitmap[id].grid.echelle = 1;
+		CinematicBitmap * newBitmap = CreateCinematicBitmap(path, scale);
+		if(newBitmap) {
+			c->m_bitmaps.push_back(newBitmap);
 		}
-		
 	}
 	
 	// Load sounds.
 	LSoundChoose = C_KEY::French;
-	if(version >= ((1 << 16) | 60)) {
-		
-		s32 nsounds;
-		if(!safeGet(nsounds, data, size)) {
-			LogDebug << "error reading sound count";
-			return false;
-		}
-		
-		LogDebug << "nsounds " << nsounds;
-		for(int i = 0; i < nsounds; i++) {
 			
-			if(version >= ((1 << 16) | 76)) {
-				s16 il;
-				if(!safeGet(il, data, size)) {
-					LogDebug << "error reading sound id";
-					return false;
-				}
-				LSoundChoose = il;
-			}
-			
-			const char * str = safeGetString(data, size);
-			if(!str) {
-				LogDebug << "error reading sound path";
+	s32 nsounds;
+	if(!safeGet(nsounds, data, size)) {
+		LogError << "error reading sound count";
+		return false;
+	}
+	
+	LogDebug << "nsounds " << nsounds;
+	for(int i = 0; i < nsounds; i++) {
+		
+		if(version >= CINEMATIC_VERSION_1_76) {
+			s16 il;
+			if(!safeGet(il, data, size)) {
+				LogError << "error reading sound id";
 				return false;
 			}
-			string path = str;
-			
-			LogDebug << "raw sound path " << i << ": " << path;
-			
-			fixSoundPath(path);
-			
-			LogDebug << "adding sound " << i << ": " << path;
-			
-			if(AddSoundToList(path) < 0) {
-				LogError << "AddSoundToList failed for " << path;
-			}
-			
+			LSoundChoose = il;
+		}
+		
+		const char * str = safeGetString(data, size);
+		if(!str) {
+			LogError << "error reading sound path";
+			return false;
+		}
+		string path = str;
+		
+		LogDebug << "raw sound path " << i << ": " << path;
+		
+		fixSoundPath(path);
+		
+		LogDebug << "adding sound " << i << ": " << path;
+		
+		if(AddSoundToList(path) < 0) {
+			LogError << "AddSoundToList failed for " << path;
 		}
 	}
 	
@@ -257,7 +246,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	SavedCinematicTrack t;
 	if(!safeGet(t, data, size)) {
-		LogDebug << "error reading track";
+		LogError << "error reading track";
 		return false;
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
@@ -268,175 +257,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		C_KEY k;
 		
 		LogDebug << "loading key " << i << " " << size;
-		
-		if(version <= ((1 << 16) | 59)) {
-			
-			C_KEY_1_59 k159;
-			if(!safeGet(k159, data, size)) {
-				LogDebug << "error reading key v1.59";
-				return false;
-			}
-			
-			k.angz = k159.angz;
-			k.color = k159.color;
-			k.colord = k159.colord;
-			k.colorf = k159.colorf;
-			k.frame = k159.frame;
-			k.fx = k159.fx;
-			k.numbitmap = k159.numbitmap;
-			k.pos = k159.pos;
-			k.speed = k159.speed;
-
-			ARX_CHECK_SHORT(k159.typeinterp);
-			k.typeinterp = ARX_CLEAN_WARN_CAST_SHORT(k159.typeinterp);
-			k.force = 1;
-			k.idsound[C_KEY::French] = -1;
-			k.light.intensity = -1.f;
-			k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
-			k.angzgrille = 0.f;
-			k.speedtrack = 1.f;
-			
-		} else if(version <= ((1 << 16) | 65)) {
-			
-			C_KEY_1_65 k165;
-			if(!safeGet(k165, data, size)) {
-				LogDebug << "error reading key v1.65";
-				return false;
-			}
-			
-			k.angz = k165.angz;
-			k.color = k165.color;
-			k.colord = k165.colord;
-			k.colorf = k165.colorf;
-			k.frame = k165.frame;
-			k.fx = k165.fx;
-			k.numbitmap = k165.numbitmap;
-			k.pos = k165.pos;
-			k.speed = k165.speed;
-			
-			ARX_CHECK_SHORT(k165.typeinterp);
-			k.typeinterp = ARX_CLEAN_WARN_CAST_SHORT(k165.typeinterp);
-			k.force = 1;
-			k.idsound[C_KEY::French] = k165.idsound;
-			k.light.intensity = -1.f;
-			k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
-			k.angzgrille = 0.f;
-			k.speedtrack = 1.f;
-			
-		} else if(version <= ((1 << 16) | 70)) {
-			
-			C_KEY_1_70 k170;
-			if(!safeGet(k170, data, size)) {
-				LogDebug << "error reading key v1.70";
-				return false;
-			}
-			
-			k.angz = k170.angz;
-			k.color = k170.color;
-			k.colord = k170.colord;
-			k.colorf = k170.colorf;
-			k.frame = k170.frame;
-			k.fx = k170.fx;
-			k.numbitmap = k170.numbitmap;
-			k.pos = k170.pos;
-			k.speed = k170.speed;
-			k.typeinterp = k170.typeinterp;
-			k.force = k170.force;
-			k.idsound[C_KEY::French] = k170.idsound;
-			k.light.intensity = -1.f;
-			k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
-			k.angzgrille = 0.f;
-			k.speedtrack = 1.f;
-			
-		} else if(version <= ((1 << 16) | 71)) {
-			
-			C_KEY_1_71 k171;
-			if(!safeGet(k171, data, size)) {
-				LogDebug << "error reading key v1.71";
-				return false;
-			}
-			
-			k.angz = k171.angz;
-			k.color = k171.color;
-			k.colord = k171.colord;
-			k.colorf = k171.colorf;
-			k.frame = k171.frame;
-			k.fx = k171.fx;
-			k.numbitmap = k171.numbitmap;
-			k.pos = k171.pos;
-			k.speed = k171.speed;
-			k.typeinterp = k171.typeinterp;
-			k.force = k171.force;
-			k.idsound[C_KEY::French] = k171.idsound;
-			k.light = k171.light;
-			
-			if((k.fx & 0xFF000000) != FX_LIGHT) {
-				k.light.intensity = -1.f;
-			}
-			
-			k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
-			k.angzgrille = 0.f;
-			k.speedtrack = 1.f;
-			
-		} else if(version <= ((1 << 16) | 72)) {
-			
-			C_KEY_1_72 k172;
-			if(!safeGet(k172, data, size)) {
-				LogDebug << "error reading key v1.72";
-				return false;
-			}
-			
-			k.angz = k172.angz;
-			k.color = k172.color;
-			k.colord = k172.colord;
-			k.colorf = k172.colorf;
-			k.frame = k172.frame;
-			k.fx = k172.fx;
-			k.numbitmap = k172.numbitmap;
-			k.pos = k172.pos;
-			k.speed = k172.speed;
-			k.typeinterp = k172.typeinterp;
-			k.force = k172.force;
-			k.idsound[C_KEY::French] = k172.idsound;
-			k.light = k172.light;
-			k.posgrille = k172.posgrille;
-			k.angzgrille = k172.angzgrille;
-			k.speedtrack = 1.f;
-			
-			if((k.fx & 0xFF000000) != FX_LIGHT) {
-				k.light.intensity = -1.f;
-			}
-			
-		} else if(version <= ((1 << 16) | 74)) {
-			
-			C_KEY_1_74 k174;
-			if(!safeGet(k174, data, size)) {
-				LogDebug << "error reading key v1.74";
-				return false;
-			}
-			
-			k.angz = k174.angz;
-			k.color = k174.color;
-			k.colord = k174.colord;
-			k.colorf = k174.colorf;
-			k.frame = k174.frame;
-			k.fx = k174.fx;
-			k.numbitmap = k174.numbitmap;
-			k.pos = k174.pos;
-			k.speed = k174.speed;
-			k.typeinterp = k174.typeinterp;
-			k.force = k174.force;
-			k.idsound[C_KEY::French] = k174.idsound;
-			k.light = k174.light;
-			k.posgrille = k174.posgrille;
-			k.angzgrille = k174.angzgrille;
-			k.speedtrack = 1.f;
-			
-		} else if(version <= ((1 << 16) | 75)) {
+				
+		if(version <= CINEMATIC_VERSION_1_75) {
 			
 			C_KEY_1_75 k175;
 			if(!safeGet(k175, data, size)) {
-				LogDebug << "error reading key v1.75";
+				LogError << "error reading key v1.75";
 				return false;
 			}
 			
@@ -451,7 +277,10 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.speed = k175.speed;
 			k.typeinterp = k175.typeinterp;
 			k.force = k175.force;
-			k.idsound[C_KEY::French] = k175.idsound;
+			k.idsound[0] = k175.idsound;
+			for(size_t i = 1; i < 16; i++) {
+				k.idsound[i] = -1;
+			}
 			k.light = k175.light;
 			k.posgrille = k175.posgrille;
 			k.angzgrille = k175.angzgrille;
@@ -461,7 +290,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			
 			C_KEY_1_76 k176;
 			if(!safeGet(k176, data, size)) {
-				LogDebug << "error reading key v1.76";
+				LogError << "error reading key v1.76";
 				return false;
 			}
 			
@@ -482,21 +311,6 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.speedtrack = k176.speedtrack;
 			copy(k176.idsound, k176.idsound + 16, k.idsound);
 			
-		}
-		
-		if(version <= ((1 << 16) | 67)) {
-			if(k.typeinterp == INTERP_NO_FADE) {
-				k.typeinterp = INTERP_NO;
-				k.force = 1;
-			}
-		}
-		
-		if(version <= ((1 << 16) | 73)) {
-			k.light.pos.x = k.light.pos.y = k.light.pos.z = 0.f;
-		}
-		
-		if(version <= ((1 << 16) | 75)) {
-			for (int i = 1; i < 16; i++) k.idsound[i] = -1;
 		}
 		
 		if(k.force < 0) {
@@ -529,25 +343,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	UpDateAllKeyLight();
 	
-	ActiveAllTexture(c);
-	
 	SetCurrFrame(0);
 	
 	GereTrackNoPlay(c);
 	c->projectload = true;
 	
 	InitUndo();
-	
-	// precalc
-	if(version < ((1 << 16) | 71)) {
-		C_KEY * kk = CKTrack->key;
-		for(int i = 0; i < CKTrack->nbkey; i++, kk++) {
-			if((kk->fx & 0x0000FF00) == FX_DREAM) {
-				TabBitmap[kk->numbitmap].grid.echelle = 4;
-				c->ReInitMapp(kk->numbitmap);
-			}
-		}
-	}
 	
 	LSoundChoose = C_KEY::English << 8;
 	

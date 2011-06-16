@@ -123,10 +123,8 @@ CD3DApplication::CD3DApplication()
 {
 	long i;
 	d_dlgframe = 0;
-	b_dlg = false;
 	m_pFramework   = NULL;
 	m_hWnd         = NULL;
-	m_dlghWnd		= NULL;
 	m_pDD          = NULL;
 	m_pD3D         = NULL;
 
@@ -135,7 +133,6 @@ CD3DApplication::CD3DApplication()
 
 	m_bActive         = false;
 	m_bReady          = false;
-	m_bFrameMoving    = true;
 	m_bSingleStep     = false;
 
 	m_strWindowTitle  = "EERIE Application";
@@ -143,12 +140,15 @@ CD3DApplication::CD3DApplication()
 	m_bAppUseStereo   = false;
 	m_bShowStats      = false;
 	m_fnConfirmDevice = NULL;
-	CreationSizeX = 640;
-	CreationSizeY = 480;
+	WndSizeX = 640;
+	WndSizeY = 480;
+	Fullscreen = 0;
 	CreationFlags = 0;
 	owner = 0L;
 	CreationMenu = 0;
+#ifdef BUILD_EDITOR
 	ToolBar = NULL;
+#endif
 	strcpy(StatusText, "");
 	memset(&Project, 0, sizeof(PROJECT));
 	Project.TextureSize = 0;
@@ -208,6 +208,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	}
 
 	//	DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+#ifdef BUILD_EDITOR
 	if (ToolBar != NULL)
 	{
 		if (this->ToolBar->Type == EERIE_TOOLBAR_TOP)
@@ -222,6 +223,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		}
 	}
 	else
+#endif
 	{
 		this->m_pFramework->Ystart = 0;
 		this->m_pFramework->Xstart = 0;
@@ -238,55 +240,64 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	RegisterClass(&wndClass);
 
 	// Create the render window
-	DWORD flags = 0;
+	DWORD flags = WS_OVERLAPPEDWINDOW;
 
 	if (CreationFlags & WCF_NORESIZE)
 	{
-		flags |= (WS_OVERLAPPEDWINDOW | WS_DLGFRAME | WS_MINIMIZEBOX);
+		flags |= (WS_DLGFRAME | WS_MINIMIZEBOX);
 		flags &= ~WS_CAPTION;
 		flags &= ~WS_MAXIMIZEBOX;
 		flags &= ~WS_THICKFRAME;
 	}
+	else if (CreationFlags & WCF_CHILD)
+	{
+        flags &= ~WS_OVERLAPPEDWINDOW;
+		flags |= WS_CHILD;
+	}
 
-	else if (!(CreationFlags & WCF_CHILD)) flags |= WS_OVERLAPPEDWINDOW;
-	else flags |= WS_CHILD;
-
-	if (FINAL_COMMERCIAL_DEMO || FINAL_COMMERCIAL_GAME)
+    long menu;
+	if( Fullscreen )
 	{
 		flags &= ~WS_CAPTION;
 		flags &= ~WS_MAXIMIZEBOX;
 		flags &= ~WS_THICKFRAME;
 		flags &= ~WS_SYSMENU;
 		flags &= ~WS_OVERLAPPEDWINDOW;
-	}
-
-
-	if (m_dlghWnd == NULL)
-	{
-		long menu;
-		if (FINAL_COMMERCIAL_DEMO || FINAL_COMMERCIAL_GAME)
-			menu = 0;
-		else
-			menu = CreationMenu;
-
-		MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
-		                                flags,
-		                                CW_USEDEFAULT, CW_USEDEFAULT, CreationSizeX, CreationSizeY, owner,
-		                                LoadMenu(hInst, MAKEINTRESOURCE(menu)),
-		                                hInst, 0L);
-
-		if (!m_hWnd) return  E_OUTOFMEMORY;
-
-		UpdateWindow(m_hWnd);
+		menu = 0;
 	}
 	else
 	{
-		MSGhwnd = m_hWnd = m_dlghWnd;
-		m_OldProc = (WNDPROC)SetWindowLongPtr(m_hWnd,
-		                                   GWLP_WNDPROC, (LONG_PTR)WndProc);
-		b_dlg = true;
-		m_bActive = true;
+		menu = CreationMenu;
 	}
+
+	// We want the client rectangle (3d display) to be a certain size, adjust the window size accordingly
+	RECT rcWnd = { 0, 0, WndSizeX, WndSizeY };
+	AdjustWindowRectEx(&rcWnd, flags, menu != 0, 0);
+
+	// Bound the window size to fit the desktop
+	HWND hWndDesktop = GetDesktopWindow();
+	RECT rcDesktop;
+	GetWindowRect(hWndDesktop, &rcDesktop);
+
+	LONG wndWidth = rcWnd.right - rcWnd.left;
+	LONG wndHeight = rcWnd.bottom - rcWnd.top;
+	LONG maxWidth = rcDesktop.right - rcDesktop.left;
+	LONG maxHeight = rcDesktop.bottom - rcDesktop.top;
+	
+	wndWidth = std::min(wndWidth, maxWidth);
+	wndHeight = std::min(wndHeight, maxHeight);
+
+	MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
+		                            flags,
+									CW_USEDEFAULT, CW_USEDEFAULT, wndWidth, wndHeight, owner,
+		                            LoadMenu(hInst, MAKEINTRESOURCE(menu)),
+		                            hInst, 0L);
+
+	if (!m_hWnd) return  E_OUTOFMEMORY;
+
+	UpdateWindow(m_hWnd);
+	ShowWindow(m_hWnd, SW_SHOW);
+	
 
 	// Nuky - this isnt used for the game, and I can set WIN32_LEAN_AND_MEAN with it commented
 	//// � supprimer au final
@@ -301,29 +312,25 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		return E_FAIL;
 	}
 
-	if (b_dlg)
-	{
-		m_pFramework->b_dlg = true;
-	}
-
 	// Setup the app so it can support single-stepping
 	m_dwBaseTime = dwARX_TIME_Get();
 
 	// The app is ready to go
 	m_bReady = true;
 
+#ifdef BUILD_EDITOR
 	if (ToolBar != NULL)
 	{
 		ToolBar->hWnd = CreateToolBar(m_hWnd, hInst);
 	}
+#endif
 
 	this->m_pFramework->ShowFrame();
 	GetZBufferMax();
 	return S_OK;
 }
 
-//*************************************************************************************
-//*************************************************************************************
+#ifdef BUILD_EDITOR
 HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 	
 	HWND hWndToolbar;
@@ -349,6 +356,7 @@ HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 
 	return hWndToolbar;
 }
+#endif
 
 //*************************************************************************************
 // Run()
@@ -498,11 +506,13 @@ LRESULT CD3DApplication::SwitchFullScreen()
 	m_bReady = false;
 	m_pDeviceInfo->bWindowed = !m_pDeviceInfo->bWindowed;
 
+#ifdef BUILD_EDITOR
 	if (this->ToolBar != NULL)
 	{
 		if (m_pDeviceInfo->bWindowed)  ShowWindow(ToolBar->hWnd, SW_SHOW);
 		else ShowWindow(ToolBar->hWnd, SW_HIDE);
 	}
+#endif
 
 	if (FAILED(Change3DEnvironment()))
 	{
@@ -522,7 +532,6 @@ LRESULT CD3DApplication::SwitchFullScreen()
 LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                  LPARAM lParam)
 {
-	HRESULT hr;
 	long iii, ij;
 
 	switch (uMsg)
@@ -625,7 +634,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		}
 		break;
 		case WM_PAINT:
-
 			// Handle paint messages when the app is not ready
 			if (m_pFramework && !m_bReady)
 			{
@@ -638,87 +646,46 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 					m_pFramework->FlipToGDISurface(true);
 				}
 			}
-
 			break;
-		case WM_MOVE: break; // TODO hack to prevent wrong m_rcScreenRect in EERIEFrame
-
-			// If in windowed mode, move the Framework's window
-			if (m_pFramework && m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
-			{
-				m_pFramework->Move((SHORT)LOWORD(lParam), (SHORT)HIWORD(lParam));
-			}
-
-			break;
+		
 		case WM_SIZE:
-			RECT rec;
-			m_pFramework->m_bHasMoved = true;
-
 			// Check to see if we are losing our window...
 			if (SIZE_MAXHIDE == wParam || SIZE_MINIMIZED == wParam)
 				m_bActive = false;
-			else m_bActive = true;
-
-
+			else 
+				m_bActive = true;
+			
 			// A new window size will require a new backbuffer
 			// size, so the 3D structures must be changed accordingly.
 			if (m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
 			{
 
+				m_pFramework->m_bHasMoved = true;
+
+#ifdef BUILD_EDITOR
+				RECT rec;
 				rec.right = LOWORD(lParam);
 				rec.bottom = HIWORD(lParam);
-
-				if (((LOWORD(lParam) < 320) || (HIWORD(lParam) < 320))
-				        && (SIZE_MINIMIZED != wParam)
-				        && (SIZE_RESTORED != wParam))
-				{
-
-					if (LOWORD(lParam) < 320) rec.right = 320;
-
-					if (HIWORD(lParam) < 200) rec.bottom = 200;
-
-					SetWindowPos(hWnd, HWND_TOP, 0, 0, rec.right, rec.bottom, SWP_NOZORDER | SWP_NOMOVE);
-				}
-				else
-				{
-					m_bReady = false;
-
-					if (FAILED(hr = Change3DEnvironment()))   return 0;
-
-					m_bReady = true;
-				}
-
-				if (ToolBar && ToolBar->hWnd)
-				{
+				if(ToolBar && ToolBar->hWnd) {
 					RECT rectt;
 					GetWindowRect(ToolBar->hWnd, &rectt);
 					SetWindowPos(ToolBar->hWnd, HWND_TOP, 0, 0, rec.right, rectt.bottom, SWP_NOZORDER | SWP_NOREPOSITION | SWP_NOMOVE | SWP_SHOWWINDOW);
 				}
+#endif
 
 			}
 
 			break;
 
 		case WM_SETCURSOR:
-
 			// Prevent a cursor in fullscreen mode
 			if (m_bActive && m_bReady && !m_pDeviceInfo->bWindowed)
 			{
 				SetCursor(NULL);
 				return 1;
 			}
-
 			break;
-		case WM_ENTERSIZEMOVE:
-			// Halt frame movement while the app is sizing or moving
-			if (m_bFrameMoving)
-				m_dwStopTime = dwARX_TIME_Get();
 
-			break;
-		case WM_EXITSIZEMOVE:
-			if (m_bFrameMoving)
-				m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
-
-			break;
 		case WM_NCHITTEST:
 			// Prevent the user from selecting the menu in fullscreen mode
 			if (!m_pDeviceInfo->bWindowed)
@@ -775,7 +742,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			return 0;
 
 		case WM_DESTROY:
-			Cleanup3DEnvironment();
 			PostQuitMessage(0);
 			return 0;
 	}
@@ -819,8 +785,6 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 
 		m_ddsdRenderTarget.dwSize = sizeof(m_ddsdRenderTarget);
 		m_pddsRenderTarget->GetSurfaceDesc(&m_ddsdRenderTarget);
-
-		// Let the app run its startup code which creates the 3d scene.
 
 		if (this->m_pFramework->m_pddsFrontBuffer)
 		{
@@ -876,8 +840,11 @@ HRESULT CD3DApplication::Change3DEnvironment()
 	static DWORD dwSavedStyle;
 	static RECT  rcSaved;
 
+	DDGAMMARAMP DDGammaPrevious;
+
 	if (lpDDGammaControl)
 	{
+		lpDDGammaControl->GetGammaRamp(0, &DDGammaPrevious);
 		lpDDGammaControl->SetGammaRamp(0, &DDGammaOld);
 		lpDDGammaControl->Release();
 		lpDDGammaControl = NULL;
@@ -933,18 +900,16 @@ HRESULT CD3DApplication::Change3DEnvironment()
 		return hr;
 	}
 
-	// If the app is paused, trigger the rendering of the current frame
-	if (false == m_bFrameMoving)
+	// Restore gamma ramp...
+	if (lpDDGammaControl)
 	{
-		m_bSingleStep = true;
-		m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
-		m_dwStopTime  = dwARX_TIME_Get();
+		lpDDGammaControl->SetGammaRamp(0, &DDGammaPrevious);
+		lpDDGammaControl->GetGammaRamp(0, &DDGammaRamp);
 	}
-
+	
 	GetZBufferMax();
 	return S_OK;
 }
-
 
 HRESULT CD3DApplication::UpdateGamma()
 {
@@ -1000,13 +965,10 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	}
 
 	// Get the relative time, in seconds
-	if (m_bFrameMoving || m_bSingleStep)
-	{
-		if (FAILED(hr = FrameMove()))
-			return hr;
+	if (FAILED(hr = FrameMove()))
+		return hr;
 
-		m_bSingleStep = false;
-	}
+	m_bSingleStep = false;
 
 	// Render the scene as normal
 	if (FAILED(hr = Render()))
@@ -1077,15 +1039,13 @@ VOID CD3DApplication::Pause(bool bPause)
 			m_pFramework->FlipToGDISurface(true);
 
 		// Stop the scene from animating
-		if (m_bFrameMoving)
-			m_dwStopTime = dwARX_TIME_Get();
+		m_dwStopTime = dwARX_TIME_Get();
 	}
 
 	if (0 == dwAppPausedCount)
 	{
 		// Restart the scene
-		if (m_bFrameMoving)
-			m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
+		m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
 	}
 }
 
@@ -1151,20 +1111,6 @@ VOID CalcFPS(bool reset)
 			dwFrames  = 0L;
 		}
 	}
-}
-
-//*************************************************************************************
-// ShowStats()
-// Shows frame rate and dimensions of the rendering device.
-//*************************************************************************************
-
-HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
-{
-	D3DVIEWPORT7 vp = {(unsigned long)x1, (unsigned long)y1, (unsigned long)x2, (unsigned long)y2, 0.f, 1.f};
-
-	if (FAILED(GDevice->SetViewport(&vp))) return D3DFWERR_NOVIEWPORT;
-
-	return S_OK;
 }
 
 //*************************************************************************************

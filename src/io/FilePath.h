@@ -28,8 +28,9 @@ std::string GetName(const std::string & str);
  * Set the extension of the given path.
  * Replaces any existing extension.
  * @param new_ext The extension to set or an empty string to remove the extension.
+ * @return the string with a new extension
  **/
-void SetExt(std::string & str, const std::string & new_ext);
+const std::string & SetExt(std::string & str, const std::string & new_ext);
 
 /**
  * Get the file extension of the given path.

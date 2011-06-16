@@ -69,7 +69,6 @@ using std::min;
 using std::max;
 using std::string;
 
-bool newBumpMapping;
 int newTextureSize;
 int newWidth;
 int newHeight;
@@ -97,7 +96,6 @@ extern long DANAESIZY;
 extern long LastEERIEMouseButton;
 
 extern bool bForceReInitAllTexture;
-extern bool bALLOW_BUMP;
 extern long WILL_RELOAD_ALL_TEXTURES;
 
 extern long FINAL_RELEASE;
@@ -138,7 +136,6 @@ CMenuElementText *pLoadConfirm=NULL;
 CMenuSliderText *pMenuSliderResol=NULL;
 CMenuSliderText *pMenuSliderBpp=NULL;
 CMenuSliderText *pMenuSliderTexture=NULL;
-CMenuCheckButton *pMenuCheckButtonBump=NULL;
 
 float ARXTimeMenu;
 float ARXOldTimeMenu;
@@ -301,7 +298,7 @@ void ARX_DrawAfterQuickLoad()
 		fColor=1.f-(((float)iFade)/1000.f);
 	}
 
-	TextureContainer *pTex = MakeTCFromFile("\\Graph\\interface\\icons\\Menu_main_save.bmp");
+	TextureContainer *pTex = TextureContainer::Load("\\Graph\\interface\\icons\\Menu_main_save.bmp");
 
 	if(!pTex) return;
 
@@ -318,8 +315,6 @@ void ARX_DrawAfterQuickLoad()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
-
-//-----------------------------------------------------------------------------
 
 bool ARX_QuickLoad()
 {
@@ -457,12 +452,10 @@ void Check_Apply()
 {
 	if(pMenuElementApply)
 	{
-		if( (config.video.bumpmap!=newBumpMapping)||
-			(config.video.textureSize!=newTextureSize)||
-			(config.video.width!=newWidth)||
-			(config.video.height!=newHeight)||
-			(config.video.bpp!=newBpp) )
-		{
+		if((config.video.textureSize!=newTextureSize)||
+		   (config.video.width!=newWidth)||
+		   (config.video.height!=newHeight)||
+		   (config.video.bpp!=newBpp)) {
 			pMenuElementApply->SetCheckOn();
 			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
 		}
@@ -509,7 +502,7 @@ static void FadeInOut(float _fVal)
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
@@ -517,7 +510,7 @@ static void FadeInOut(float _fVal)
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 
-	EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
+	EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, d3dvertex, 4, 0, EERIE_NOCOUNT );
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -569,8 +562,8 @@ bool Menu2_Render()
 	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reset
 		ARXDiffTimeMenu = 0 ;
 
-	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 
 	if ((AMCM_NEWQUEST==ARXmenu.currentmode)
 		|| (AMCM_CREDITS==ARXmenu.currentmode)
@@ -596,7 +589,7 @@ bool Menu2_Render()
 		return false;
 	}
 
-	if(!danaeApp.DANAEStartRender())
+	if(!GRenderer->BeginScene())
 	{
 		return true;
 	}
@@ -606,7 +599,7 @@ bool Menu2_Render()
 		pTextManage->Clear();
 	}
 
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -653,7 +646,7 @@ bool Menu2_Render()
 		pMenu = new CMenuState(MAIN);
 		pMenu->eOldMenuWindowState=eM;
 
-		pMenu->pTexBackGround = MakeTCFromFile("Graph\\Interface\\menus\\menu_main_background.bmp");
+		pMenu->pTexBackGround = TextureContainer::LoadUI("Graph\\Interface\\menus\\menu_main_background.bmp");
 
 		int iPosMenuPrincipaleX = 370;
 	int iPosMenuPrincipaleY=100;
@@ -742,10 +735,10 @@ bool Menu2_Render()
 			}
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
-			danaeApp.DANAEEndRender();
+			GRenderer->EndScene();
 
 			return true;
 		}
@@ -866,7 +859,7 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = MAIN;
 					me->SetShortCut(DIK_ESCAPE);
@@ -879,7 +872,7 @@ bool Menu2_Render()
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY-(40),iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_LOAD);
 					pWindowMenuConsole->iInterligne = 5;
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\icons\\Menu_main_Load.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\icons\\Menu_main_Load.bmp");
 					me = new CMenuCheckButton(-1, 0, 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
@@ -996,7 +989,7 @@ bool Menu2_Render()
 						((CMenuElementText*)me)->lColor=Color(127,127,127);
 
 						pWindowMenuConsole->AddMenu(me);
-						pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+						pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 						me = new CMenuCheckButton(-1, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 						me->eMenuState = EDIT_QUEST;
 						me->SetShortCut(DIK_ESCAPE);
@@ -1010,7 +1003,7 @@ bool Menu2_Render()
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40), iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE);
 					pWindowMenuConsole->iInterligne = 5;
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\icons\\Menu_main_save.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\icons\\Menu_main_save.bmp");
 					me = new CMenuCheckButton(-1, fPosBack-(pTex?(pTex->m_dwDeviceWidth-pTex->m_dwWidth):0), 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
@@ -1115,7 +1108,7 @@ bool Menu2_Render()
 						iFirst--;
 					}
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\Icons\\Arx_logo_08.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\Icons\\Arx_logo_08.bmp");
 
 					for(int iI=save_l.size(); iI<=15; iI++)
 					{
@@ -1134,7 +1127,7 @@ bool Menu2_Render()
 					me01->SetCheckOff();
 					pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 
 					me->eMenuState = EDIT_QUEST;
@@ -1146,7 +1139,7 @@ bool Menu2_Render()
 					// SAVE CONFIRM--------------------------------------------
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE_CONFIRM);
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\icons\\Menu_main_save.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\icons\\Menu_main_save.bmp");
 					me = new CMenuCheckButton(-1, 0, 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
@@ -1169,7 +1162,7 @@ bool Menu2_Render()
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY);
 					pPanel->AddElementNoCenterIn(me);
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = EDIT_QUEST_SAVE;
 					me->SetShortCut(DIK_ESCAPE);
@@ -1201,7 +1194,7 @@ bool Menu2_Render()
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = MAIN;
 					me->SetShortCut(DIK_ESCAPE);
@@ -1378,28 +1371,8 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					szMenuText = getLocalised("system_menus_options_video_bump");
-					szMenuText += " ";
-					TextureContainer *pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					TextureContainer *pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
-					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					metemp->SetCheckOff();
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BUMP, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
-					pMenuCheckButtonBump=(CMenuCheckButton*)me;
 					bool bBOOL = false;
-					ARXMenu_Options_Video_GetBump(bBOOL);
-
-					if (bBOOL)
-					{
-						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
-						((CMenuCheckButton*)me)->iState=0;
-					}
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
+					
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_video_brouillard");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
@@ -1451,9 +1424,9 @@ bool Menu2_Render()
 
 					szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 					szMenuText += " ";
-					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
-					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					TextureContainer *pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					TextureContainer *pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
@@ -1463,8 +1436,8 @@ bool Menu2_Render()
 
 					szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 					szMenuText += " ";
-					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
@@ -1482,7 +1455,7 @@ bool Menu2_Render()
 					me->SetCheckOff();
 					pc->AddElementNoCenterIn(me);
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BACK, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
 					me->SetShortCut(DIK_ESCAPE);
@@ -1538,15 +1511,15 @@ bool Menu2_Render()
 
 					szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 					szMenuText += " ";
-					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, pElementText);
 					((CMenuCheckButton*)me)->iState = config.audio.eax ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
 					me->SetShortCut(DIK_ESCAPE);
@@ -1564,8 +1537,8 @@ bool Menu2_Render()
 					
 					szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 					szMenuText += " ";
-					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
 					bBOOL = false;
 					ARXMenu_Options_Control_GetInvertMouse(bBOOL);
@@ -1583,8 +1556,8 @@ bool Menu2_Render()
 
 					szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 					szMenuText += " ";
-					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
 					bBOOL = false;
 					ARXMenu_Options_Control_GetAutoReadyWeapon(bBOOL);
@@ -1602,8 +1575,8 @@ bool Menu2_Render()
 
 					szMenuText = getLocalised( "system_menus_options_input_mouse_look_toggle" );
 					szMenuText += " ";
-					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
 					bBOOL = false;
 					ARXMenu_Options_Control_GetMouseLookToggleMode(bBOOL);
@@ -1635,8 +1608,8 @@ bool Menu2_Render()
 					{
 						szMenuText = getLocalised( "system_menus_options_input_mouse_smoothing", "mouse_smoothing" );
 						szMenuText += " ";
-						pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-						pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+						pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+						pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSE_SMOOTHING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
 						bBOOL = false;
 						ARXMenu_Options_Control_GetMouseSmoothing(bBOOL);
@@ -1654,8 +1627,8 @@ bool Menu2_Render()
 
 						szMenuText = getLocalised( "system_menus_autodescription", "auto_description" );
 						szMenuText += " ";
-						pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-						pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+						pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+						pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
 						bBOOL = false;
 						ARXMenu_Options_Control_GetAutoDescription(bBOOL);
@@ -1672,7 +1645,7 @@ bool Menu2_Render()
 						pWindowMenuConsole->AddMenuCenterY(me);
 					}
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
 					me->SetShortCut(DIK_ESCAPE);
@@ -1753,8 +1726,8 @@ bool Menu2_Render()
 					{
 						szMenuText = getLocalised( "system_menus_options_input_customize_controls_link_use_to_mouselook", "?" );
 						\
-				pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-				pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+				pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+				pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
 				pElementText= new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);
 				me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_LINK, 0, 0, pTex1->m_dwWidth>>1, pTex1, pTex2, pElementText);
 				me->Move(0,fControlPosY);
@@ -1791,7 +1764,7 @@ bool Menu2_Render()
 
 					pc=new CMenuPanel();
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS_INPUT;
 					me->SetShortCut(DIK_ESCAPE);
@@ -1800,7 +1773,7 @@ bool Menu2_Render()
 					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
 					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
 					pc->AddElementNoCenterIn(me);
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\next.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\next.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosNext, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
 					me->SetShortCut(DIK_ESCAPE);
@@ -1842,7 +1815,7 @@ bool Menu2_Render()
 
 					pc=new CMenuPanel();
 
-					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 					me->SetShortCut(DIK_ESCAPE);
@@ -1945,7 +1918,7 @@ bool Menu2_Render()
 		pTextManage->Render();
 	}
 
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1959,7 +1932,7 @@ bool Menu2_Render()
 
 		if(bForceReInitAllTexture)
 		{
-			D3DTextr_RestoreAllTextures();
+			GRenderer->RestoreAllTextures();
 			bForceReInitAllTexture=false;
 		}
 	}
@@ -1989,7 +1962,7 @@ bool Menu2_Render()
 						pTextureLoad,
 						ARX_OPAQUE_WHITE);
 
-		SETTC(NULL);
+		GRenderer->ResetTexture(0);
 		EERIEDraw2DRect(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
 						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
 						DANAEMouse.x+iOffsetX+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
@@ -2030,16 +2003,16 @@ bool Menu2_Render()
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
 
-	danaeApp.DANAEEndRender();
+	GRenderer->EndScene();
 	return true;
 }
 
@@ -2086,12 +2059,6 @@ CMenuElement::~CMenuElement()
 	{
 		pMenuSliderTexture = NULL;
 	}
-
-	if( this == pMenuCheckButtonBump )
-	{
-		pMenuCheckButtonBump = NULL;
-	}
-
 }
 
 //-----------------------------------------------------------------------------
@@ -2431,30 +2398,6 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
-			//----------BUMP
-			if(newBumpMapping!=config.video.bumpmap)
-			{
-				config.video.bumpmap=newBumpMapping;
-
-				if(config.video.bumpmap)
-				{
-					EERIE_ActivateBump();
-				}
-				else
-				{
-					EERIE_DesactivateBump();
-				}
-
-				if(config.video.bumpmap != bALLOW_BUMP) {
-					bForceReInitAllTexture=true;
-				}
-				bALLOW_BUMP = config.video.bumpmap;
-
-				pMenuCheckButtonBump->iOldState=-1;
-			}
-
-			//----------END_BUMP
-
 			//----------CHANGE_TEXTURE
 			if(newTextureSize!=config.video.textureSize)
 			{
@@ -2697,22 +2640,14 @@ void CMenuElementText::RenderMouseOver()
 			ARX_GAMESAVE_MakePath();
 			char tTxt[256];
 			sprintf(tTxt,"%sGSAVE.BMP",GameSavePath);
-			TextureContainer *pTextureTemp=GetTextureFile_NoRefinement(tTxt);
+			TextureContainer *pTextureTemp=TextureContainer::LoadUI(tTxt);
 
 			if (pTextureTemp != pTextureLoad)
 			{
 				if (pTextureLoad)
-				{
-					D3DTextr_KillTexture(pTextureLoad);
-				}
+					delete pTextureLoad;
 
 				pTextureLoad=pTextureTemp;
-
-				if (pTextureLoad)
-				{
-					pTextureLoad->Restore();
-					pTextureLoad->bColorKey=false;
-				}
 			}
 
 			pTextureLoadRender=pTextureLoad;
@@ -2724,22 +2659,14 @@ void CMenuElementText::RenderMouseOver()
 			ARX_GAMESAVE_MakePath();
 			char tTxt[256];
 			sprintf(tTxt,"%sGSAVE.BMP",GameSavePath);
-			TextureContainer *pTextureTemp=GetTextureFile_NoRefinement(tTxt);
+			TextureContainer *pTextureTemp=TextureContainer::LoadUI(tTxt);
 
 			if (pTextureTemp != pTextureLoad)
 			{
 				if (pTextureLoad)
-				{
-					D3DTextr_KillTexture(pTextureLoad);
-				}
+					delete pTextureLoad;
 
 				pTextureLoad=pTextureTemp;
-
-				if (pTextureLoad)
-				{
-					pTextureLoad->Restore();
-					pTextureLoad->bColorKey=false;
-				}
 			}
 
 			pTextureLoadRender=pTextureLoad;
@@ -2782,13 +2709,13 @@ CMenuState::~CMenuState()
 
 	if (pTexBackGround)
 	{
-		D3DTextr_KillTexture(pTexBackGround);
+		delete pTexBackGround;
 		pTexBackGround = NULL;
 	}
 
 	if (pTexBackGround1)
 	{
-		D3DTextr_KillTexture(pTexBackGround1);
+		delete pTexBackGround1;
 		pTexBackGround1 = NULL;
 	}
 }
@@ -2834,12 +2761,7 @@ void CMenuState::Render()
 	if(bNoMenu) return;
 
 	if (pTexBackGround)
-	{
-		if (pTexBackGround->m_pddsSurface)
-		{
-			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
-	}
-		}
+		EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
 
 	//------------------------------------------------------------------------
 
@@ -2864,7 +2786,7 @@ void CMenuState::Render()
 	}
 
 	//DEBUG ZONE
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	pMenuAllZone->DrawZone();
 }
 
@@ -3070,7 +2992,7 @@ void CMenuAllZone::DrawZone()
 
 	vector<CMenuZone*>::iterator i;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 
 	for(std::vector<CMenuZone*>::const_iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
 	{
@@ -3097,8 +3019,8 @@ void CMenuAllZone::DrawZone()
 			v1[0].sz=v1[1].sz=v1[2].sz=v2[0].sz=v2[1].sz=v2[2].sz=0.f;    
 			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;    
 			
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v1,3,0);
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v2,3,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v1,3,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v2,3,0);
 		}
 	}
 
@@ -3240,11 +3162,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			pMenu->bReInitAll=true;
 		}
 		break;
-	case BUTTON_MENUOPTIONSVIDEO_BUMP:
-		{
-			ARXMenu_Options_Video_SetBump((iState)?true:false);
-		}
-		break;
 	case BUTTON_MENUOPTIONSVIDEO_CROSSHAIR:
 		{
 			config.video.showCrosshair=(iState)?true:false;
@@ -3317,14 +3234,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
 			pMenuSliderTexture->iOldPos=-1;
 			newTextureSize=config.video.textureSize;
-		}
-		
-		if(    (pMenuCheckButtonBump)&&
-			(pMenuCheckButtonBump->iOldState>=0) )
-		{
-			pMenuCheckButtonBump->iState=pMenuCheckButtonBump->iOldState;
-			pMenuCheckButtonBump->iOldState=-1;
-			newBumpMapping=config.video.bumpmap;
 		}
 		break;
 	}
@@ -3400,8 +3309,8 @@ void CMenuCheckButton::RenderMouseOver()
 
 	TextureContainer *pTex = vTex[iState];
 
-	if(pTex) SETTC( pTex);
-	else SETTC(NULL);
+	if(pTex) GRenderer->SetTexture(0, pTex);
+	else GRenderer->ResetTexture(0);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
@@ -3461,14 +3370,14 @@ CWindowMenu::CWindowMenu(int _iPosX,int _iPosY,int _iTailleX,int _iTailleY,int _
 	iTailleY=(int)RATIO_Y(_iTailleY);
 	iNbButton=_iNbButton;
 
-	pTexButton=MakeTCFromFile("Graph\\interface\\menus\\menu_left_1button.bmp",0);
-	pTexButton2=MakeTCFromFile("Graph\\interface\\menus\\menu_left_2button.bmp",0);
-	pTexButton3=MakeTCFromFile("Graph\\interface\\menus\\menu_left_3button.bmp",0);
+	pTexButton=TextureContainer::LoadUI("Graph\\interface\\menus\\menu_left_1button.bmp");
+	pTexButton2=TextureContainer::LoadUI("Graph\\interface\\menus\\menu_left_2button.bmp");
+	pTexButton3=TextureContainer::LoadUI("Graph\\interface\\menus\\menu_left_3button.bmp");
 
-	pTexMain=MakeTCFromFile("Graph\\interface\\menus\\menu_left_main.bmp",0);
+	pTexMain=TextureContainer::LoadUI("Graph\\interface\\menus\\menu_left_main.bmp");
 
-	pTexGlissiere=MakeTCFromFile("Graph\\interface\\menus\\menu_left_main_glissiere.bmp",0);
-	pTexGlissiereButton=MakeTCFromFile("Graph\\interface\\menus\\menu_left_main_glissiere_button.bmp",0);
+	pTexGlissiere=TextureContainer::LoadUI("Graph\\interface\\menus\\menu_left_main_glissiere.bmp");
+	pTexGlissiereButton=TextureContainer::LoadUI("Graph\\interface\\menus\\menu_left_main_glissiere_button.bmp");
 
 	vWindowConsoleElement.clear();
 
@@ -3603,8 +3512,8 @@ CWindowMenuConsole::CWindowMenuConsole(int _iPosX,int _iPosY,int _iWidth,int _iH
 
 	eMenuState=_eMenuState;
 
-	pTexBackground = MakeTCFromFile("Graph\\interface\\menus\\menu_console_background.bmp",0);
-	pTexBackgroundBorder = MakeTCFromFile("Graph\\interface\\menus\\menu_console_background_border.bmp",0);
+	pTexBackground = TextureContainer::LoadUI("Graph\\interface\\menus\\menu_console_background.bmp");
+	pTexBackgroundBorder = TextureContainer::LoadUI("Graph\\interface\\menus\\menu_console_background_border.bmp");
 
 	bFrameOdd=false;
 
@@ -3938,7 +3847,7 @@ void CWindowMenuConsole::UpdateText()
 
 	//DRAW CURSOR
 	D3DTLVERTEX v[4];
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	float col=.5f+rnd()*.5f;
 	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
@@ -3952,7 +3861,7 @@ void CWindowMenuConsole::UpdateText()
 	v[2].sy = (float)pZoneClick->rZone.bottom;
 	v[3].sx = v[1].sx;
 	v[3].sy = v[2].sy;
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
 }
 
 //-----------------------------------------------------------------------------
@@ -4926,7 +4835,7 @@ void CMenuButton::RenderMouseOver()
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-		SETTC(pTexOver);
+		GRenderer->SetTexture(0, pTexOver);
 		v[0].sx = (float)rZone.left;
 		v[0].sy = (float)rZone.top;
 		v[0].tu = 0.f;
@@ -4943,7 +4852,7 @@ void CMenuButton::RenderMouseOver()
 		v[3].sy = v[2].sy;
 		v[3].tu = 0.999999f;
 		v[3].tv = 0.999999f;
-		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
 	}
 
 	if( vText.size() )
@@ -4970,9 +4879,9 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 	: CMenuElement(NOP)
 {
 	iID = _iID;
-	TextureContainer *pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
+	TextureContainer *pTex = TextureContainer::Load("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
 	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
-	pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
+	pTex = TextureContainer::Load("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
 	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
 
 	vText.clear();
@@ -5273,12 +5182,12 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 {
 	iID = _iID;
 
-	TextureContainer *pTexL = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
-	TextureContainer *pTexR = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
+	TextureContainer *pTexL = TextureContainer::Load("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
+	TextureContainer *pTexR = TextureContainer::Load("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
 	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1);
 	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1);
-	pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_on.bmp");
-	pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_off.bmp");
+	pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_slider_on.bmp");
+	pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_slider_off.bmp");
 
 	iPos = 0;
 
@@ -5536,14 +5445,14 @@ void CMenuSlider::RenderMouseOver()
 
 CDirectInput::CDirectInput()
 {
-	pTex[0]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor00.bmp");
-	pTex[1]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor01.bmp");
-	pTex[2]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor02.bmp");
-	pTex[3]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor03.bmp");
-	pTex[4]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor04.bmp");
-	pTex[5]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor05.bmp");
-	pTex[6]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor06.bmp");
-	pTex[7]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor07.bmp");
+	pTex[0]=TextureContainer::Find("graph\\interface\\cursors\\cursor00.bmp");
+	pTex[1]=TextureContainer::Find("graph\\interface\\cursors\\cursor01.bmp");
+	pTex[2]=TextureContainer::Find("graph\\interface\\cursors\\cursor02.bmp");
+	pTex[3]=TextureContainer::Find("graph\\interface\\cursors\\cursor03.bmp");
+	pTex[4]=TextureContainer::Find("graph\\interface\\cursors\\cursor04.bmp");
+	pTex[5]=TextureContainer::Find("graph\\interface\\cursors\\cursor05.bmp");
+	pTex[6]=TextureContainer::Find("graph\\interface\\cursors\\cursor06.bmp");
+	pTex[7]=TextureContainer::Find("graph\\interface\\cursors\\cursor07.bmp");
 
 	SetCursorOff();
 	SetSensibility(2);
@@ -5969,9 +5878,9 @@ bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey)
 
 void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 	
-	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
-	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
 
@@ -5980,9 +5889,9 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 
 					0.00000001f,
 					scursor[iNumCursor],D3DCOLORWHITE);
-	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
 
 //-----------------------------------------------------------------------------
@@ -6029,7 +5938,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 	float fColorBlue=fDColorBlue;
 
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendInvDstColor);
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	D3DTLVERTEX v[4];
@@ -6055,7 +5964,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 
 		if(ComputePer(*psOldPoint, *(_psPoint1 + 1), &v[1], &v[3], fTaille)) {
 			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
 
 			v[0].sx=v[1].sx;
 			v[0].sy=v[1].sy;
@@ -6075,7 +5984,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 
 	if(ComputePer(*_psPoint1, *psOldPoint, &v[1], &v[3], fTaille)) {
 		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -6090,8 +5999,8 @@ void CDirectInput::DrawCursor()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
 
-	if(pTex[iNumCursor]) SETTC( pTex[iNumCursor]);
-	else SETTC(NULL);
+	if(pTex[iNumCursor]) GRenderer->SetTexture(0, pTex[iNumCursor]);
+	else GRenderer->ResetTexture(0);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

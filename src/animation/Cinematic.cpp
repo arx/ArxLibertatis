@@ -61,7 +61,6 @@ extern float DreamTable[];
 
 C_KEY			KeyTemp;
 bool			EditLight;
-bool			DrawLine;
 bool			ShiftKey;
 bool			AltKey;
 
@@ -76,12 +75,10 @@ int				LSoundChoose;
 /*---------------------------------------------------------------------------------*/
  
 /*---------------------------------------------------------------------------------*/
-extern CinematicBitmap	TabBitmap[];
 extern float	FlashAlpha;
 extern char FileNameDirLoad[];
 extern char FileNameDirSave[];
 extern int UndoPile;
-extern int NbBitmap;
 extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
@@ -108,6 +105,13 @@ Cinematic::Cinematic(int _w, int _h)
 
 	m_flIntensityRND = 0.f;
 }
+
+/*-------------------------------------------------------------------*/
+Cinematic::~Cinematic()
+{
+	DeleteAllBitmap();
+}
+
 /*-------------------------------------------------------------------*/
 void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, Vec3f * posgrille, float azgrille, float speedtrack)
 {
@@ -137,19 +141,9 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 	}
 }
 
-/* Recreation d'une mapp */
-void Cinematic::ReInitMapp(int id)
-{
-	if (id < 0) return;
-
-	if (TabBitmap[id].actif)
-	{
-		ReCreateAllMapsForBitmap(id, TabBitmap[id].grid.echelle, this);
-	}
-}
-
 /* Reinit */
-HRESULT Cinematic::OneTimeSceneReInit() {
+void Cinematic::OneTimeSceneReInit() {
+	
 	Camera.size = Anglef(160.f, 60.f, 60.f);
 	Camera.pos.x = 900.f;
 	Camera.pos.y = -160.f;
@@ -173,38 +167,37 @@ HRESULT Cinematic::OneTimeSceneReInit() {
 	Camera.clip3D = 60;
 	Camera.type = CAM_SUBJVIEW;
 	Camera.bkgcolor = 0x00000000;
-
+	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
 	fx = -1;
 	changekey = true;
 	idsound = -1;
 	key = NULL;
-
+	
 	projectload = false;
 	InsertKey = 0;
 	KeyCopy = NULL;
-
+	
 	LeftButton = RightButton = false;
-
+	
 	DeleteAllBitmap();
 	DeleteAllSound();
-
-	InitMapLoad();
+	
 	InitSound();
 	DeleteTrack();
-
+	
 	FlashBlancEnCours = false;
 	SpecialFadeEnCours = false;
-
+	
 	LSoundChoose = C_KEY::English << 8;
-
+	
 	m_flIntensityRND = 0.f;
-
-	return S_OK;
+	
 }
-HRESULT Cinematic::New()
-{
+
+void Cinematic::New() {
+	
 	projectload = false;
 
 	numbitmap = -1;
@@ -226,7 +219,6 @@ HRESULT Cinematic::New()
 	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
 
-	InitMapLoad();
 	InitSound();
 	InitUndo();
 
@@ -240,123 +232,51 @@ HRESULT Cinematic::New()
 	ProjectModif = false;
 
 	LSoundChoose = C_KEY::English << 8;
-
-	return S_OK;
+	
 }
+
+void Cinematic::DeleteAllBitmap()
+{
+	for(std::vector<CinematicBitmap*>::iterator it = m_bitmaps.begin(); it != m_bitmaps.end(); ++it)
+	{
+		delete *it;
+	}
+
+	m_bitmaps.clear();
+}
+
 //*************************************************************************************
 // InitDeviceObjects()
 // Sets RenderStates
 //*************************************************************************************
-HRESULT Cinematic::InitDeviceObjects()
-{
+void Cinematic::InitDeviceObjects() {
+	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(Renderer::CullNone);
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
-	D3DDEVICEDESC7 devicedesc;
-	GDevice->GetCaps(&devicedesc);
-	DWORD f;
-	bool bAnisotropicOk = false;
-
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC)
-	{
-		f = D3DTFG_ANISOTROPIC;
-		bAnisotropicOk = true;
-	}
-	else
-	{
-		if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR)
-		{
-			f = D3DTFG_LINEAR;
-		}
-		else
-		{
-			f = D3DTFG_POINT;
-		}
-	}
-
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, f);
-
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC)
-	{
-		f = D3DTFG_ANISOTROPIC;
-		bAnisotropicOk = true;
-	}
-	else
-	{
-		if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
-		{
-			f = D3DTFG_LINEAR;
-		}
-		else
-		{
-			f = D3DTFG_POINT;
-		}
-	}
-
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, f);
-
-	if (bAnisotropicOk)
-	{
-		GDevice->SetTextureStageState(0, D3DTSS_MAXANISOTROPY, 0);
-	}
-
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFG_LINEAR);
-	GDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	EditLight = false;
-
-	return S_OK;
 }
 
-HRESULT Cinematic::DeleteDeviceObjects()
-{
+void Cinematic::DeleteDeviceObjects() {
+	
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
-
-	D3DDEVICEDESC7 devicedesc;
-	GDevice->GetCaps(&devicedesc);
-	DWORD f;
-
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR)
-	{
-		f = D3DTFG_LINEAR;
-	}
-	else
-	{
-		f = D3DTFG_POINT;
-	}
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	
-	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, f);
-
-	if (devicedesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
-	{
-		f = D3DTFG_LINEAR;
-	}
-	else
-	{
-		f = D3DTFG_POINT;
-	}
-	
-	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, f);
-	GDevice->SetTextureStageState(0, D3DTSS_MAXANISOTROPY, 1);
-
-	GDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
-	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
-
+    GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-
-	return S_OK;
+	
 }
 
 float LightRND;
@@ -501,16 +421,16 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		}
 	}
 
-	C_INDEXED	* mat = grille->mats;
-	C_UV	*	uvs = grille->uvs;
-	nb = grille->nbmat;
+	C_UV* uvs = grille->uvs;
 
-	while (nb--)
+	for(std::vector<C_INDEXED>::iterator it = grille->mats.begin(); it != grille->mats.end(); ++it)
 	{
+		C_INDEXED* mat = &(*it);
+
 		if (mat->tex)
-			SETTC(mat->tex);
+			GRenderer->SetTexture(0, mat->tex);
 		else
-			SETTC(NULL);
+			GRenderer->ResetTexture(0);
 
 		int	nb2 = mat->nbvertexs;
 
@@ -531,27 +451,11 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		{
 			ARX_DEAD_CODE();
 		}
-
-		if (DrawLine)
-		{
-			SETTC(NULL);
-			GRenderer->SetFillMode(Renderer::FillWireframe);
-			GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-			                             D3DFVF_TLVERTEX,
-			                             AllD3DTLVertex,
-			                             grille->nbvertexs,
-			                             ((unsigned short *)grille->inds) + mat->startind,
-			                             mat->nbind,
-			                             0);
-			GRenderer->SetFillMode(Renderer::FillSolid);
-		}
-
-		mat++;
 	}
 }
 /*---------------------------------------------------------------*/
-HRESULT Cinematic::Render(float FDIFF)
-{
+void Cinematic::Render(float FDIFF) {
+	
 	CinematicBitmap * tb;
 
 	LargeurRender = DANAESIZX;
@@ -560,10 +464,10 @@ HRESULT Cinematic::Render(float FDIFF)
 	if (projectload)
 	{
 		GRenderer->Clear(Renderer::ColorBuffer);
-		danaeApp.DANAEStartRender();
+		GRenderer->BeginScene();
 		InRender = true;
 
-		if (InsertKey && NbBitmap)
+		if (InsertKey && m_bitmaps.size() > 0)
 		{
 			FillKeyTemp(&pos, angz, GetCurrentFrame(), numbitmap, fx, ti, colorchoose, colorchoosed, colorflashchoose, speedchoose, idsound, force, &light, &posgrille, angzgrille, speedtrack);
 			AddDiffKey(this, &KeyTemp, true, true, true);
@@ -591,7 +495,7 @@ HRESULT Cinematic::Render(float FDIFF)
 		GRenderer->GetTextureStage(1)->DisableAlpha();
 		
 		//image key
-		tb = &TabBitmap[numbitmap];
+		tb = m_bitmaps[numbitmap];
 
 		//fx
 		int col = 0x00FFFFFF;
@@ -688,7 +592,7 @@ HRESULT Cinematic::Render(float FDIFF)
 					break;
 			}
 
-			tb = &TabBitmap[numbitmapsuiv];
+			tb = m_bitmaps[numbitmapsuiv];
 
 			alpha = 0xFF000000 - alpha;
 			col &= 0x00FFFFFF;
@@ -780,6 +684,5 @@ HRESULT Cinematic::Render(float FDIFF)
 		CalcFPS();
 		InRender = false;
 	}
-
-	return S_OK;
+	
 }

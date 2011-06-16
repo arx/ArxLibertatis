@@ -45,8 +45,6 @@ void ARXMenu_Options_Video_GetFogDistance(int &);
 void ARXMenu_Options_Video_SetFogDistance(int);
 void ARXMenu_Options_Video_GetTextureQuality(int &);
 void ARXMenu_Options_Video_SetTextureQuality(int);
-void ARXMenu_Options_Video_GetBump(bool &);
-void ARXMenu_Options_Video_SetBump(bool);
 void ARXMenu_Options_Video_GetMeshReduction(int &);
 void ARXMenu_Options_Video_SetMeshReduction(int);
 void ARXMenu_Options_Video_GetGamma(int &);

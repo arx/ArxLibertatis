@@ -10,6 +10,11 @@ struct EERIE_RGB {
 	float b;
 };
 
+struct EERIE_RGBA : EERIE_RGB
+{
+	float a;
+};
+
 struct EERIE_QUAT {
 	float x;
 	float y;

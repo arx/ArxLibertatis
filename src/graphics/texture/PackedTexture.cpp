@@ -56,14 +56,8 @@ void PackedTexture::EndPacking()
     for( unsigned int i = 0; i < mTextures.size(); i++ )
     {
         mTextures[i] = GRenderer->CreateTexture2D();
-        mTextures[i]->Create( *mImages[i], false );
-        mTextures[i]->Init();        
-                
-        mTextures[i]->SetWrapMode( Texture::Wrap_S, Texture::Wrap_Clamp );
-        mTextures[i]->SetWrapMode( Texture::Wrap_T, Texture::Wrap_Clamp );
-        mTextures[i]->SetMinFilter( Texture::MinFilter_Linear );
-        mTextures[i]->SetMagFilter( Texture::MagFilter_Linear );
-        
+        mTextures[i]->Init( *mImages[i], false );
+
         // Images are not needed anymore.
         delete mImages[i];
     }

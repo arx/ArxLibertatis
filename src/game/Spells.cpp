@@ -3392,7 +3392,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		Player_Magic_Level = ARX_CLEAN_WARN_CAST_FLOAT(level);
 	}
 
-	static TextureContainer * tc4 = MakeTCFromFile("Graph\\Particles\\smoke.bmp");
+	static TextureContainer * tc4 = TextureContainer::Load("Graph\\Particles\\smoke.bmp");
 
 
 	if ((target < 0)
@@ -6558,7 +6558,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 //*************************************************************************************
 void ARX_SPELLS_Kill(long i) {
 	
-	static TextureContainer * tc4=MakeTCFromFile("Graph\\Particles\\smoke.bmp");
+	static TextureContainer * tc4=TextureContainer::Load("Graph\\Particles\\smoke.bmp");
 
 	if (!spells[i].exist) return;
 
@@ -7154,10 +7154,15 @@ void ARX_SPELLS_Update()
 				case SPELL_EXPLOSION:					
 				break;
 				//----------------------------------------------------------------------------
-				case SPELL_INVISIBILITY:											
-					inter.iobj[spells[i].target]->GameFlags&=~GFLAG_INVISIBILITY;											
-					ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &inter.iobj[spells[i].target]->pos);					
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+				case SPELL_INVISIBILITY:	
+					{
+						if (ValidIONum(spells[i].target))
+						{
+							inter.iobj[spells[i].target]->GameFlags&=~GFLAG_INVISIBILITY;											
+							ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &inter.iobj[spells[i].target]->pos);					
+							ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+						}
+					}
 				break;
 				//----------------------------------------------------------------------------------
 				//**********************************************************************************
@@ -8932,22 +8937,17 @@ static void ApplySPArm() {
 	sp_arm++;
 }
 
-extern long SPECIAL_PNUX;
+long SPECIAL_PNUX;
 static void ApplyCurPNux() {
 	
 	MakeSpCol();
 	strcpy(sp_max_ch,"! PhilNux & Gluonne !");
 	sp_max_nb=strlen(sp_max_ch);
 	
-	if(SPECIAL_PNUX<3) {
-		SPECIAL_PNUX++;
-	} else {
-		SPECIAL_PNUX=0;
-	}
+	SPECIAL_PNUX = (SPECIAL_PNUX + 1) % 3;
 	
-	D3DTextr_InvalidateAllTextures();
-	D3DTextr_RestoreAllTextures();
-	ARX_PLAYER_Restore_Skin();
+	// TODO-RENDERING: Create a post-processing effect for that cheat... see original source...
+	
 	cur_pnux=0;
 	sp_max_start=ARX_TIME_Get();
 }
@@ -9021,14 +9021,14 @@ static void ApplySPMax() {
 	}
 	else
 	{
-		TextureContainer * tcm=MakeTCFromFile("Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp");
+		TextureContainer * tcm=TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp");
 
 		if (tcm)
 		{
-			D3DTextr_KillTexture(tcm);
-			player.heads[0]=MakeTCFromFile("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");	
-			player.heads[1]=MakeTCFromFile("Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp");	
-			player.heads[2]=MakeTCFromFile("Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp");	
+			delete tcm;
+			player.heads[0]=TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");	
+			player.heads[1]=TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp");	
+			player.heads[2]=TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp");	
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 		}
 	}	

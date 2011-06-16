@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Attractors.h"
 
-#include "graphics/d3dwrapper.h"
 #include "graphics/Math.h"
 #include "scene/Interactive.h"
 

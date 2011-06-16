@@ -85,7 +85,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/Math.h"
-#include "graphics/d3dwrapper.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -111,7 +110,6 @@ extern long USE_LIGHT_OPTIM;
 extern HANDLE LIGHTTHREAD;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
-extern long VF_CLIP_IO;
 extern long DEBUG_FRUSTRUM;
 #ifdef BUILD_EDITOR
 extern long HIDEANCHORS;
@@ -124,8 +122,6 @@ long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
-extern bool bRenderInterList;
-extern bool bALLOW_BUMP;
 extern unsigned long ulBKGColor;
 extern CDirectInput *pGetInfoDirectInput;
 //-----------------------------------------------------------------------------
@@ -145,7 +141,6 @@ float WATEREFFECT=0.f;
 long INTERTRANSPOLYSPOS=0;
 
 long TRANSPOLYSPOS=0;
-long D3DTRANSFORM=0;
 long SHOWSHADOWS=1;
 long TESTMODE=1;
 long FRAME_COUNT=0;
@@ -159,10 +154,8 @@ long iTotPoly;
 unsigned long FrameCount;
 
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
-CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferBump;			// VB based on pDynamicVertexBuffer (for BUMP only).
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;	// VB using TLVERTEX format.
-CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_D3DVERTEX3_T;// VB using D3DVERTEX3_T format (for BUMP).
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
 EERIE_FRUSTRUM_PLANE efpPlaneFar;
@@ -345,13 +338,6 @@ HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType,
 													_dwFlags,
 													pDynamicVertexBuffer);
 			break;
-		case FVF_D3DVERTEX3_T:
-			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
-													(SMY_D3DVERTEX3_T*) _pVertex,
-													_piNbVertex,
-													_dwFlags,
-													pDynamicVertexBuffer_D3DVERTEX3_T);
-			break;
 		default:
 			printf("FVF is not supported by ARX_DrawPrimitiveVB\n");
 			ARX_CHECK(false && "FVF is not supported by ARX_DrawPrimitiveVB");
@@ -474,7 +460,7 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 
 
 
-extern D3DMATRIX ProjectionMatrix;
+extern EERIEMATRIX ProjectionMatrix;
 void specialEE_RTP2(D3DTLVERTEX *in,D3DTLVERTEX *out)
 {
 	register EERIE_TRANSFORM * et=(EERIE_TRANSFORM *)&ACTIVECAM->transform;
@@ -1117,20 +1103,6 @@ void ARX_PORTALS_InitDrawnRooms()
 		pDynamicVertexBuffer_TLVERTEX->UnLock();
 		pDynamicVertexBuffer_TLVERTEX->ussNbVertex=0;
 	}
-
-	if (pDynamicVertexBufferBump)
-	{
-		pDynamicVertexBufferBump->Lock(DDLOCK_DISCARDCONTENTS);
-		pDynamicVertexBufferBump->UnLock();
-		pDynamicVertexBufferBump->ussNbVertex=0;
-}
-
-	if (pDynamicVertexBuffer_D3DVERTEX3_T)
-	{
-		pDynamicVertexBuffer_D3DVERTEX3_T->Lock(DDLOCK_DISCARDCONTENTS);
-		pDynamicVertexBuffer_D3DVERTEX3_T->UnLock();
-		pDynamicVertexBuffer_D3DVERTEX3_T->ussNbVertex=0;
-	}
 }
 bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 {
@@ -1283,34 +1255,33 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum,EERIEPOLY * ep,long cull)
 	frustrum->nb=to;
 }
 
-void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum)
-{
-
-	D3DVECTOR vEyePt    = D3DVECTOR( ACTIVECAM->pos.x , -ACTIVECAM->pos.y, ACTIVECAM->pos.z );
-
-	Vec3f target,tout;
-	tout.x=0.f;
-	tout.y=0.f;
-	tout.z=10000.f;
-	target.y = -(tout.z*ACTIVECAM->Xsin);
-	target.z = -(tout.z*ACTIVECAM->Xcos);
-	target.x = (target.z*ACTIVECAM->Ysin);
-	target.z = -(target.z*ACTIVECAM->Ycos);
-	target.x+=ACTIVECAM->pos.x;
-	target.y-=ACTIVECAM->pos.y;
-	target.z+=ACTIVECAM->pos.z;
-
-	D3DVECTOR vLookatPt = D3DVECTOR(target.x,target.y,target.z);
-	D3DVECTOR vUpVec    = D3DVECTOR( 0.f, 1.f, 0.f );
-
+void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
+	
+	Vec3f vEyePt(ACTIVECAM->pos.x, -ACTIVECAM->pos.y, ACTIVECAM->pos.z);
+	Vec3f vTout(0.0f, 0.0f, 10000.0f);
+	
+	Vec3f vTarget;
+	vTarget.y = -(vTout.z * ACTIVECAM->Xsin);
+	vTarget.z = -(vTout.z * ACTIVECAM->Xcos);
+	vTarget.x =  (vTarget.z * ACTIVECAM->Ysin);
+	vTarget.z = -(vTarget.z * ACTIVECAM->Ycos);
+	vTarget.x += ACTIVECAM->pos.x;
+	vTarget.y -= ACTIVECAM->pos.y;
+	vTarget.z += ACTIVECAM->pos.z;
+	
+	Vec3f vUpVec(0.f, 1.f, 0.f);
+	
 	// Set the app view matrix for normal viewing
-	D3DMATRIX matView,matProj;
-	D3DUtil_SetViewMatrix( matView, vEyePt, vLookatPt, vUpVec );
-	GDevice->SetTransform( D3DTRANSFORMSTATE_VIEW, &matView );
-
-	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION,&matProj);
-	D3DMATRIX matres;
-	MatrixMultiply((EERIEMATRIX *)&matres,(EERIEMATRIX *)&matView,(EERIEMATRIX *)&matProj);
+	GRenderer->SetViewMatrix(vEyePt, vTarget, vUpVec);
+	
+	EERIEMATRIX matProj;
+	GRenderer->GetProjectionMatrix(matProj);
+	
+	EERIEMATRIX matView;
+	GRenderer->GetViewMatrix(matView);
+	
+	EERIEMATRIX matres;
+	MatrixMultiply(&matres, &matView, &matProj);
 
 	float a,b,c,d,n;
 	a=matres._14-matres._11;
@@ -1469,9 +1440,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		pVertex+=iOldNbVertex;
 		
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-		SETTC(enviro);
+		GRenderer->SetTexture(0, enviro);
 
-		GDevice->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
+		GRenderer->SetTexture(2, enviro);
 		
 
 		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
@@ -1491,11 +1462,11 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 				if(pDynamicVertexBuffer->ussNbIndice)
 				{
-					GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 					GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 					GRenderer->GetTextureStage(1)->DisableAlpha();
 										
-					GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 					GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 					GRenderer->GetTextureStage(2)->DisableAlpha();
 					
@@ -1507,9 +1478,10 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 						pDynamicVertexBuffer->ussNbIndice,
 						0 );
 						
-					GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
 					GRenderer->GetTextureStage(1)->DisableColor();
+					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 					GRenderer->GetTextureStage(2)->DisableColor();
+					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 				}
 
 				pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
@@ -1644,11 +1616,11 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		pDynamicVertexBuffer->UnLock();
 		if(pDynamicVertexBuffer->ussNbIndice)
 		{
-			GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 			GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 			GRenderer->GetTextureStage(1)->DisableAlpha();
 			
-			GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 			GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 			GRenderer->GetTextureStage(2)->DisableAlpha();
 
@@ -1661,9 +1633,10 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 												0 );				
 
 			GRenderer->GetTextureStage(1)->DisableColor();
-			GRenderer->GetTextureStage(2)->DisableColor();
-			
-			GDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
+			GRenderer->GetTextureStage(2)->DisableColor();			
+			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
+
 		}
 
 		vPolyWater.clear();
@@ -1681,9 +1654,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		pVertex+=iOldNbVertex;
 		
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-		SETTC(enviro);
+		GRenderer->SetTexture(0, enviro);
 
-		GDevice->SetTexture(2, enviro ? enviro->m_pddsSurface ? enviro->m_pddsSurface : NULL : NULL);
+		GRenderer->SetTexture(2, enviro);
 		
 		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 
@@ -1705,11 +1678,11 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 				if(pDynamicVertexBuffer->ussNbIndice)
 				{
-					GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 					GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 					GRenderer->GetTextureStage(1)->DisableAlpha();
 					
-					GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 					GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 					GRenderer->GetTextureStage(2)->DisableAlpha();
 					
@@ -1733,8 +1706,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 						0 );
 						
 					GRenderer->GetTextureStage(1)->DisableColor();
+					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 					GRenderer->GetTextureStage(2)->DisableColor();
-					GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
+					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 				}
 
 				pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
@@ -1841,11 +1815,11 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
 			
-			GDevice->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,1);
+			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 			GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 			GRenderer->GetTextureStage(1)->DisableAlpha();
 		
-			GDevice->SetTextureStageState(2,D3DTSS_TEXCOORDINDEX,2);
+			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 			GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 			GRenderer->GetTextureStage(2)->DisableAlpha();
 
@@ -1868,8 +1842,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 												0 );
 
 			GRenderer->GetTextureStage(1)->DisableColor();
+			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 			GRenderer->GetTextureStage(2)->DisableColor();
-			GDevice->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
+			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 		}
 
 		vPolyLava.clear();
@@ -2286,8 +2261,6 @@ SMY_D3DVERTEX *pMyVertex;
 		EERIEPOLY * ep;
 		EP_DATA *pEPDATA = &portals->room[room_num].epdata[0];
 
-		float fDistBump=min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),MAX_DIST_BUMP);
-
 		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++)
 		{
 
@@ -2339,7 +2312,7 @@ SMY_D3DVERTEX *pMyVertex;
 				continue;
 			}
 
-			//Clipp ZNear + Distance pour les ZMapps et Bump!!!
+			//Clipp ZNear + Distance pour les ZMapps!!!
 			float fDist=(ep->center.x*efpPlaneNear.a + ep->center.y*efpPlaneNear.b + ep->center.z*efpPlaneNear.c + efpPlaneNear.d);
 
 			if(ep->v[0].rhw<-fDist)
@@ -2442,7 +2415,6 @@ SMY_D3DVERTEX *pMyVertex;
 				{
 					*pNumIndices+=3;
 				}
-
 				pMyVertexCurr=&pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
 		
 
@@ -2607,14 +2579,6 @@ SMY_D3DVERTEX *pMyVertex;
 					}
 				}
 			}
-
-			if( bALLOW_BUMP )
-			{
-				if( ( fDist < fDistBump ) && ( ep->tex->m_pddsBumpMap ) )
-				{
-					ep->tex->vPolyBump.push_back(ep);
-				}
-			}
 		}
 
 		portals->room[room_num].pVertexBuffer->Unlock();
@@ -2629,9 +2593,9 @@ SMY_D3DVERTEX *pMyVertex;
 			TextureContainer *pTexCurr=*ppTexCurr;
 
 			if (ViewMode & VIEWMODE_FLAT) 
-				SETTC(NULL);
+				GRenderer->ResetTexture(0);
 			else
-				SETTC(pTexCurr);
+				GRenderer->SetTexture(0, pTexCurr);
 
 			if(pTexCurr->userflags&POLY_METAL)
 			{
@@ -2682,7 +2646,7 @@ SMY_D3DVERTEX *pMyVertex;
 				SMY_D3DVERTEX3 *pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_NOOVERWRITE);
 				pVertex+=iOldNbVertex;
 				
-				SETTC(pTexCurr->TextureRefinement);
+				GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
 				
 				unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 				unsigned short iNbIndice = 0;
@@ -2811,8 +2775,6 @@ SMY_D3DVERTEX *pMyVertex;
 	}
 }
 
-void CalculTriangleBump( const D3DTLVERTEX& v0, const D3DTLVERTEX& v1, const D3DTLVERTEX& v2, float *du, float *dv );
-
 //-----------------------------------------------------------------------------
 
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
@@ -2823,152 +2785,10 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 		int iNbTex=portals->room[room_num].usNbTextures;
 		TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
 
-		while(iNbTex--)
-		{
-			TextureContainer *pTexCurr=*ppTexCurr;
-
-			//BUMP
-			if( ( bALLOW_BUMP ) && ( pTexCurr->vPolyBump.size() ) )
-			{
-				//----------------------------------------------------------------------------------
-				//																		Initializing
-				CMY_DYNAMIC_VERTEXBUFFER* pDVB	=	pDynamicVertexBufferBump;
-				SetZBias( 0 );
-	
-				int				iOldNbVertex	=	pDVB->ussNbVertex;
-				pDVB->ussNbIndice				=	0;
-				SMY_D3DVERTEX3*	pVertex			=	(SMY_D3DVERTEX3*)pDVB->Lock( DDLOCK_NOOVERWRITE );
-				pVertex							+=	iOldNbVertex;
-				
-				unsigned short *pussInd			=	pDVB->pussIndice;
-				unsigned short iNbIndice = 0;
-				
-				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
-				
-				GDevice->SetTexture( 0, pTexCurr->m_pddsBumpMap );
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgTexture);
-
-				GDevice->SetTexture( 1, pTexCurr->m_pddsBumpMap );
-				GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
-				GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpAddSigned, (TextureStage::TextureArg)(TextureStage::ArgTexture|TextureStage::ArgComplement), TextureStage::ArgCurrent);
-				GRenderer->GetTextureStage(1)->DisableAlpha();
-
-                GRenderer->GetTextureStage(2)->DisableColor();
-	
-				//----------------------------------------------------------------------------------
-				//																				Loop
-				for( vector<EERIEPOLY*>::iterator iT = pTexCurr->vPolyBump.begin() ; iT < pTexCurr->vPolyBump.end() ; ++iT)
-				{
-					EERIEPOLY *pPoly			=	*iT;
-
-					if(	!pPoly->tv[0].color &&
-						!pPoly->tv[1].color &&
-						!pPoly->tv[2].color) continue;
-
-					float fDu,fDv;
-					EERIERTPPoly(pPoly);
-
-					CalculTriangleBump( pPoly->tv[0], pPoly->tv[1], pPoly->tv[2], &fDu, &fDv );
-					
-					fDu							*=	.8f;
-					fDv							*=	.8f;
-					const unsigned short iNbVertex	=	( pPoly->type & POLY_QUAD )?4:3;
-					pDVB->ussNbVertex			+=	iNbVertex;
-					
-					//----------------------------------------------------------------------------------
-					//																			Flushing
-					if( pDVB->ussNbVertex > pDVB->ussMaxVertex )
-					{
-						pDVB->UnLock();
-						pDVB->ussNbVertex		-=	iNbVertex;
-						
-						if( pDVB->ussNbIndice )
-						{
-							GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-																pDVB->pVertexBuffer,
-																iOldNbVertex,
-																pDVB->ussNbVertex-iOldNbVertex,
-																pDVB->pussIndice,
-																pDVB->ussNbIndice,
-																0 );
-						}
-
-						pVertex				=	(SMY_D3DVERTEX3*)pDVB->Lock(DDLOCK_DISCARDCONTENTS);
-						pDVB->ussNbVertex	=	iNbVertex;
-						iOldNbVertex		=	iNbIndice			=	pDVB->ussNbIndice	=	0;
-						pussInd				=	pDVB->pussIndice;
-
-						ARX_CHECK( pDVB->ussNbVertex <= pDVB->ussMaxVertex );
-					}
-					
-					//----------------------------------------------------------------------------------
-					//																		  Filling VB
-					//Add 3 Vertices
-					for( short int idx = 0 ; idx < 3 ; ++idx )
-					{
-						pVertex->x			=	pPoly->v[idx].sx;
-						pVertex->y			=	-pPoly->v[idx].sy;
-						pVertex->z			=	pPoly->v[idx].sz;
-						pVertex->color		=	ARX_OPAQUE_WHITE;
-						pVertex->tu			=	pPoly->v[idx].tu;
-						pVertex->tv			=	pPoly->v[idx].tv;
-						pVertex->tu2		=	pPoly->v[idx].tu + fDu;
-						pVertex->tv2		=	pPoly->v[idx].tv + fDv;
-						pVertex++;
-					}
-					//Add Triangle 0-1-2 in Indices Tab
-					*pussInd++				=	iNbIndice++;
-					*pussInd++				=	iNbIndice++;
-					*pussInd++				=	iNbIndice++;
-					pDVB->ussNbIndice		+=	3;
-					
-					if(iNbVertex&4)
-					{
-						//Add vertex
-						pVertex->x			=	pPoly->v[3].sx;
-						pVertex->y			=	-pPoly->v[3].sy;
-						pVertex->z			=	pPoly->v[3].sz;
-						pVertex->color		=	ARX_OPAQUE_WHITE;//pPoly->tv[3].color;
-						pVertex->tu			=	pPoly->v[3].tu;
-						pVertex->tv			=	pPoly->v[3].tv;
-						pVertex->tu2		=	pPoly->v[3].tu + fDu;
-						pVertex->tv2		=	pPoly->v[3].tv + fDv;
-						pVertex++;
-						
-						//Add 2nd triangle 1-2-3
-						*pussInd++=iNbIndice++;
-						*pussInd++=iNbIndice-2;
-						*pussInd++=iNbIndice-3;
-						pDVB->ussNbIndice	+=	3;
-					}
-				}
-		
-				//----------------------------------------------------------------------------------
-				//																			 Drawing
-				pDVB->UnLock();
-				if( pDVB->ussNbIndice )
-				{
-					GDevice->DrawIndexedPrimitiveVB(D3DPT_TRIANGLELIST,
-													pDVB->pVertexBuffer,
-													iOldNbVertex,
-													pDVB->ussNbVertex-iOldNbVertex,
-													pDVB->pussIndice,
-													pDVB->ussNbIndice,
-													0 );
-				}
-
-				//----------------------------------------------------------------------------------
-				//																			  Ending
-				GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-				GRenderer->GetTextureStage(1)->DisableColor();
-
-				//Flushing vector
-				pTexCurr->vPolyBump.clear();
-
-			} // END BUMP
-
-			SETTC(pTexCurr);
+		while(iNbTex--) {
+			
+			TextureContainer * pTexCurr = *ppTexCurr;
+			GRenderer->SetTexture(0, pTexCurr);
 
 			//NORMAL TRANS
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans)
@@ -3422,16 +3242,7 @@ void ARX_SCENE_Render(long flag) {
 
 	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE))) 
 		FRAME_COUNT=0;
-
-	if (D3DTRANSFORM) 
-	{
-		return;
-	}
 		
-	static Vec3f lastpos;
-	static Anglef lastangle;
-	static float lastfocal;
-	
 	static long x0=0;
 	static long x1=0;
 	static long z0=0;
@@ -3444,32 +3255,9 @@ void ARX_SCENE_Render(long flag) {
 	
 	WATEREFFECT+=0.0005f*_framedelay;
 
-	// First if scene camera hasn't moved we set MODIF to 0
-	// This allows us not to Clip/Rotate/Translate/Project again the scene
-
 	if (flag == 3)
-	{
-		lastpos.x = 0.f;
 		return;
-	}
 
-	if (	(lastpos.x == ACTIVECAM->pos.x) &&
-			(lastpos.y == ACTIVECAM->pos.y) &&
-			(lastpos.z == ACTIVECAM->pos.z) &&
-			(lastangle.a == ACTIVECAM->angle.a) &&
-			(lastangle.b == ACTIVECAM->angle.b) &&
-			(lastangle.g == ACTIVECAM->angle.g) &&
-			(lastfocal == ACTIVECAM->focal ) ) {
-	} else {
-		lastpos.x = ACTIVECAM->pos.x;
-		lastpos.y = ACTIVECAM->pos.y;
-		lastpos.z = ACTIVECAM->pos.z;
-		lastangle.a = ACTIVECAM->angle.a;
-		lastangle.b = ACTIVECAM->angle.b;
-		lastangle.g = ACTIVECAM->angle.g;
-		lastfocal = ACTIVECAM->focal;
-	}
-    
 	// If LightThread is running we suspend it to avoid too much performance
 	// decrease and eventual interference 
 	if (LIGHTTHREAD) 
@@ -3507,13 +3295,6 @@ void ARX_SCENE_Render(long flag) {
 			
 
 	long lll;
-	#ifdef USE_RTS
-	{
-		ResetWorlds();
-		CreatePWorld(x0,x1,z0,z1);
-		ComputeSworld();
-	}
-	#endif
 
 	DRAWLATER_ReInit();
 	
@@ -3888,10 +3669,7 @@ else
 		ARX_CHECK_ULONG(FrameDiff);
 		ARX_THROWN_OBJECT_Manage(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
 		
-		VF_CLIP_IO=1;
 		RenderInter(0.f, 3200.f);
-		
-		VF_CLIP_IO=0;
 		
 
 	if (DRAGINTER) // To render Dragged objs
@@ -3924,9 +3702,6 @@ else
 		if (BoomCount) 
 			ARXDRAW_DrawPolyBoom();
 
-		if (INTERTRANSPOLYSPOS&&(!bRenderInterList))
-			ARXDRAW_DrawAllInterTransPolyPos();
-
 		PopAllTriangleListTransparency();
 		
 		if(	(USE_PORTALS>2)&&
@@ -3943,7 +3718,7 @@ else
 
 if (HALOCUR>0)
 {
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -3958,10 +3733,10 @@ if (HALOCUR>0)
 		{
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);									
 			vert[2].color =0xFF000000;
-			EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
+			EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 );
 			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
 		}
-		else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
+		else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 );
 	}
 
 		 HALOCUR = 0; 

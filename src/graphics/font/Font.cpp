@@ -143,6 +143,10 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
 
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+    GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+    GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+
     float penX = x;
     float penY = y;
 
@@ -182,7 +186,7 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 		prevRsbDelta = glyph.rsb_delta;        
 
 		// Draw
-		GRenderer->SetTexture( 0, m_Textures->GetTexture(glyph.texture) );
+		GRenderer->SetTexture( 0, &m_Textures->GetTexture(glyph.texture) );
         GRenderer->DrawTexturedRect( ((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y, glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x, glyph.uv_start.y, color );
 
 		// Advance
@@ -193,6 +197,10 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
+
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+    GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	
     GRenderer->End2DProjection();
     GRenderer->SetRenderState( Renderer::AlphaBlending, false );

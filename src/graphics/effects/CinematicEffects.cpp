@@ -103,7 +103,8 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 	float		alpha, dalpha;
 	int			col;
 
-	if (c->numbitmap < 0 || !tb->actif) return false;
+	if (c->numbitmap < 0 || tb == 0)
+		return false;
 
 	if (TotOldPos == NBOLDPOS)
 	{
@@ -191,7 +192,7 @@ bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float cu
 
 	FlashAlpha -= speed * fps / currfps;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
 
 	return true;
 }
@@ -213,10 +214,9 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 	GRenderer->GetTextureStage(0)->DisableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendZero);
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-	//SETTC(mask->m_pddsSurface);
-	SETTC(mask);
+	GRenderer->SetTexture(0, mask);
 
 	v[0].sx = SpecialFadeDx - w;
 	v[0].sy = 0;
@@ -247,13 +247,13 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 	v[3].tu = 0.999999f;
 	v[3].tv = dv;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->DisableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 
 	v[0].sx = w - 1.f + SpecialFadeDx - w;
 	v[0].sy = 0;
@@ -276,7 +276,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 	v[3].rhw = 1.f;
 	v[3].color = 0xFF000000;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
 
 	if (fpscurr > 1.f)
 	{
@@ -288,7 +288,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 		SpecialFadeDx = -1.f;
 	}
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	return true;
 }
@@ -310,9 +310,9 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendZero);
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-	SETTC(mask);
+	GRenderer->SetTexture(0, mask);
 
 	v[0].sx = ws + 1.f - SpecialFadeDx + w;
 	v[0].sy = 0;
@@ -343,13 +343,13 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 	v[3].tu = 0.9999999f;
 	v[3].tv = dv;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->DisableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 
 	v[0].sx = 0.f;
 	v[0].sy = 0;
@@ -372,7 +372,7 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 	v[3].rhw = 1.f;
 	v[3].color = 0xFF000000;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
 
 	if (fpscurr > 1.f)
 	{
@@ -384,7 +384,7 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 		SpecialFadeDx = -1.f;
 	}
 
-	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 	return true;
 }

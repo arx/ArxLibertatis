@@ -74,7 +74,6 @@ CD3DFramework7::CD3DFramework7()
 	m_bIsStereo      = false;
 	m_dwRenderWidth  = 0L;
 	m_dwRenderHeight = 0L;
-	b_dlg = false;
 	m_pddsFrontBuffer    = NULL;
 	m_pddsBackBuffer     = NULL;
 	m_pddsBackBufferLeft = NULL;
@@ -83,14 +82,9 @@ CD3DFramework7::CD3DFramework7()
 	m_pDD             = NULL;
 	m_pD3D            = NULL;
 	m_dwDeviceMemType = 0;
+	m_bHasMoved = false;
 	Ystart = 0;
 	Xstart = 0;
-	ClipWin.top = 0;
-	ClipWin.bottom = 0;
-	ClipWin.right = 0;
-	ClipWin.left = 0;
-
-	usBeginEndSceneCount = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -230,8 +224,8 @@ HRESULT CD3DFramework7::CreateEnvironment(GUID * pDriverGUID, GUID * pDeviceGUID
 	if (FAILED(hr))
 		return hr;
 
-	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-
+	GRenderer->Initialize();
+	
 	return S_OK;
 }
 
@@ -323,11 +317,8 @@ HRESULT CD3DFramework7::CreateFullscreenBuffers(DDSURFACEDESC2 * pddsd)
 {
 	HRESULT hr;
 
-	// Get the dimensions of the screen bounds
-	// Store the rectangle which contains the renderer
-	SetRect(&m_rcScreenRect, 0, 0, pddsd->dwWidth, pddsd->dwHeight); 
-	m_dwRenderWidth  = m_rcScreenRect.right  - m_rcScreenRect.left;
-	m_dwRenderHeight = m_rcScreenRect.bottom - m_rcScreenRect.top;
+	m_dwRenderWidth  = pddsd->dwWidth;
+	m_dwRenderHeight = pddsd->dwHeight;
 
 	// Set the display mode to the requested dimensions. Check for
 	// 640x480x16 modes, and set flag to avoid using ModeX
@@ -420,12 +411,11 @@ HRESULT CD3DFramework7::CreateWindowedBuffers()
 	HRESULT hr;
 
 	// Get the dimensions of the viewport and screen bounds
-	GetClientRect(m_hWnd, &m_rcScreenRect);
+	RECT clientRect;
+	GetClientRect(m_hWnd, &clientRect);
 
-	ClientToScreen(m_hWnd, (POINT *)&m_rcScreenRect.left);
-	ClientToScreen(m_hWnd, (POINT *)&m_rcScreenRect.right);
-	m_dwRenderWidth  = m_rcScreenRect.right  - m_rcScreenRect.left;
-	m_dwRenderHeight = m_rcScreenRect.bottom - m_rcScreenRect.top;
+	m_dwRenderWidth  = clientRect.right;
+	m_dwRenderHeight = clientRect.bottom;
 
 	// Create the primary surface
 	DDSURFACEDESC2 ddsd;
@@ -511,14 +501,13 @@ HRESULT CD3DFramework7::CreateDirect3D(GUID * pDeviceGUID)
 	}
 
 	// Finally, set the viewport for the newly created device
-	D3DVIEWPORT7 vp = { 0, 0, m_dwRenderWidth, m_dwRenderHeight, 0.f, 1.f };
-
-	if (FAILED(GDevice->SetViewport(&vp)))
-	{
-		LogWarning << "Unable to set current viewport to device";
-		return D3DFWERR_NOVIEWPORT;
-	}
-
+	Renderer::Viewport vp;
+	vp.x = 0;
+	vp.y = 0;
+	vp.width = m_dwRenderWidth;
+	vp.height = m_dwRenderHeight;
+	GRenderer->SetViewport(vp);
+	
 	return S_OK;
 }
 
@@ -629,66 +618,6 @@ HRESULT CD3DFramework7::RestoreSurfaces()
 }
 
 //-----------------------------------------------------------------------------
-// Name: Move()
-// Desc: Moves the screen rect for windowed renderers
-//-----------------------------------------------------------------------------
-VOID CD3DFramework7::Move(INT x, INT y)
-{
-	if (true == m_bIsFullscreen)
-		return;
-
-	if (true == b_dlg)
-	{
-		POINT pt;
-		m_bHasMoved = true;
-		GetClientRect(m_hWnd, &m_rcScreenRect);
-		pt.x = 0;
-		pt.y = 0;
-		ClientToScreen(m_hWnd, &pt);
-		m_rcScreenRect.top += pt.y;
-		m_rcScreenRect.left += pt.x;
-		m_rcScreenRect.bottom += pt.y;
-		m_rcScreenRect.right += pt.x;
-		ClipWindow(0, 0, m_dwRenderWidth, m_dwRenderHeight);
-	}
-	else
-	{
-		m_bHasMoved = true;
-		SetRect(&m_rcScreenRect, x, y, x + m_dwRenderWidth, y + m_dwRenderHeight);
-		ClipWindow(0, 0, m_dwRenderWidth, m_dwRenderHeight);
-	}
-}
-
- 
-VOID CD3DFramework7::ClipWindow(long x0, long y0, long x1, long y1)
-{
-	long height, width;
-	height = m_rcScreenRect.bottom - m_rcScreenRect.top;
-	width = m_rcScreenRect.right - m_rcScreenRect.left;
-
-	this->ClipWin.top = y0;
-	this->ClipWin.bottom = y1;
-	this->ClipWin.left = x0;
-	this->ClipWin.right = x1;
-
-	if (this->ClipWin.top < 0) this->ClipWin.top = 0;
-	else if (this->ClipWin.top > height) this->ClipWin.top = height;
-
-	if (this->ClipWin.bottom < 0) this->ClipWin.bottom = 0;
-	else if (this->ClipWin.bottom > height) this->ClipWin.bottom = height - 1;
-
-	if (this->ClipWin.left < 0) this->ClipWin.left = 0;
-	else if (this->ClipWin.left > width) this->ClipWin.left = width - 1;
-
-	if (this->ClipWin.right < 0) this->ClipWin.right = 0;
-	else if (this->ClipWin.right > width) this->ClipWin.right = width - 1;
-
-	if (this->ClipWin.top > this->ClipWin.bottom) this->ClipWin.top = this->ClipWin.bottom;
-
-	if (this->ClipWin.left > this->ClipWin.right) this->ClipWin.left = this->ClipWin.right;
-}
-
-//-----------------------------------------------------------------------------
 // Name: FlipToGDISurface()
 // Desc: Puts the GDI surface in front of the primary, so that dialog
 //       boxes and other windows drawing funcs may happen.
@@ -710,75 +639,30 @@ HRESULT CD3DFramework7::FlipToGDISurface(bool bDrawFrame)
 }
 
 //-----------------------------------------------------------------------------
-bool CD3DFramework7::RenderError()
-{
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-
-bool CD3DFramework7::StartRender()
-{
-	if (FAILED(GDevice->BeginScene()))
-	{
-		return false;
-	}
-
-	usBeginEndSceneCount++;
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-bool CD3DFramework7::EndRender()
-{
-	if (FAILED(GDevice->EndScene()))
-	{
-		return false;
-	}
-
-	usBeginEndSceneCount--;
-	return true;
-}
-DWORD RenderStartTicks = 0;
-
-//-----------------------------------------------------------------------------
 // Name: ShowFrame()
 // Desc: Show the frame on the primary surface, via a blt or a flip.
 //-----------------------------------------------------------------------------
 HRESULT CD3DFramework7::ShowFrame()
 {
-	RECT rc, screct;
-
 	if (NULL == m_pddsFrontBuffer)
 		return D3DFWERR_NOTINITIALIZED;
-
-	RenderError();
 
 	if (m_bIsFullscreen)
 	{
 		if (Project.vsync)
-		{
 			return m_pddsFrontBuffer->Flip(NULL, DDFLIP_WAIT); 
-		}
 
-		rc.top = 0;
-		rc.left = 0;
-		rc.right = m_rcScreenRect.right - m_rcScreenRect.left;
-		rc.bottom = m_rcScreenRect.bottom - m_rcScreenRect.top;
-		return m_pddsFrontBuffer->Blt(&m_rcScreenRect, m_pddsBackBuffer,
-		                              &rc, DDBLT_WAIT   , NULL);
+		RECT rect = { 0, 0, m_dwRenderWidth, m_dwRenderHeight };
+		return m_pddsFrontBuffer->Blt(&rect, m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
 	}
 	else
 	{
 		// We are in windowed mode, so perform a blit.
-		rc.top = 0;
-		rc.left = 0;
-		rc.right = m_rcScreenRect.right - m_rcScreenRect.left - this->Xstart;
-		rc.bottom = m_rcScreenRect.bottom - m_rcScreenRect.top - this->Ystart;
-		screct.left = m_rcScreenRect.left + this->Xstart;
-		screct.right = m_rcScreenRect.right;
-		screct.top = m_rcScreenRect.top + this->Ystart;
-		screct.bottom = m_rcScreenRect.bottom;
-		return m_pddsFrontBuffer->Blt(&screct , m_pddsBackBuffer, &rc, DDBLT_WAIT, NULL);
+		RECT rect;
+		GetClientRect(m_hWnd, &rect);
+		ClientToScreen(m_hWnd, (LPPOINT)&rect.left);
+		ClientToScreen(m_hWnd, (LPPOINT)&rect.right);
+
+		return m_pddsFrontBuffer->Blt(&rect, m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
 	}
 }

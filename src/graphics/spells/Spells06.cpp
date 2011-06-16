@@ -99,7 +99,7 @@ CCreateField::CCreateField() {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_jelly = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu3.bmp");
+	tex_jelly = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu3.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -230,7 +230,7 @@ float CCreateField::Render()
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -330,12 +330,8 @@ float CCreateField::Render()
 		fwrap = 360;
 	}
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
-
-	if (tex_jelly && tex_jelly->m_pddsSurface)
-	{
-		SETTC(tex_jelly);
-	}
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->SetTexture(0, tex_jelly);
 
 	RenderSubDivFace(b, b, 0, 1, 2, 3);
 	RenderSubDivFace(t, t, 0, 3, 2, 1);
@@ -381,26 +377,21 @@ CSlowDown::CSlowDown()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
-	if(!ssol) {
-		// Pentacle
-		ssol = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
-		EERIE_3DOBJ_RestoreTextures(ssol);
-	}
+	if (!ssol) // Pentacle
+		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+
 	ssol_count++;
-	
-	if(!slight) {
-		// Twirl
-		slight = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
-		EERIE_3DOBJ_RestoreTextures(slight);
-	}
-	slight_count++;
-	
-	if(!srune) {
-		srune = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
-		EERIE_3DOBJ_RestoreTextures(srune);
-	}
+
+	if (!slight) // Twirl
+		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
+
+	slight_count++; //runes
+
+	if (!srune)
+		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+
 	srune_count++;
 	
 }
@@ -564,9 +555,8 @@ CRiseDead::CRiseDead()
 		stone1 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo");
 	}
 	stone1_count++;
-	
-	tex_light = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
-	
+
+	tex_light = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -1014,12 +1004,8 @@ void CRiseDead::RenderFissure()
 	// smooth sur les cot�s ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	if (tex_light && tex_light->m_pddsSurface)
-	{
-		SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
-		SETTC(tex_light);
-	}
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
+	GRenderer->SetTexture(0, tex_light);
 
 	target.sx = eSrc.x ;
 	target.sy = eSrc.y + 1.5f * sizeF; 
@@ -1188,11 +1174,11 @@ float CRiseDead::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
 
-	SETTC(NULL);
+	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -1252,7 +1238,7 @@ float CRiseDead::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 	this->DrawStone();
-	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -1468,10 +1454,10 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		tabprism[i].vertex = new Vec3f[prismnbpt];
 	}
 
-	tex_prism = MakeTCFromFile("Graph\\Obj3D\\Textures\\(FX)_paralyze.bmp");
-	tex_p	  = MakeTCFromFile("Graph\\Particles\\missile.bmp");
-	tex_p1	  = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2	  = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_prism = TextureContainer::Load("Graph\\Obj3D\\Textures\\(FX)_paralyze.bmp");
+	tex_p	  = TextureContainer::Load("Graph\\Particles\\missile.bmp");
+	tex_p1	  = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2	  = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
 	CreatePrismTriangleList(arayon, ahcapuchon, ahauteur, adef);
 	CreateLittlePrismTriangleList();
@@ -1714,8 +1700,7 @@ float CParalyse::Render()
 		nb--;
 	}
 
-	if (tex_prism) GDevice->SetTexture(0, tex_prism->m_pddsSurface);
-	else GDevice->SetTexture(0, NULL);
+	GRenderer->SetTexture(0, tex_prism);
 
 	int	nb2 = 50;
 
@@ -2079,28 +2064,21 @@ CDisarmTrap::CDisarmTrap()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 	
-	if(!smotte) {
-		smotte = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
-		EERIE_3DOBJ_RestoreTextures(smotte);
-	}
+	if (!smotte)
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
 
 	smotte_count++;
 
-	if(!slight) {
-		slight = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
-		EERIE_3DOBJ_RestoreTextures(slight);
-	}
-
+	if (!slight)
+		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
+	
 	slight_count++; 
 
 	if (!srune)
-	{
-		srune = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
-		EERIE_3DOBJ_RestoreTextures(srune);
-	}
-
+		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+	
 	srune_count++;
 }
 CDisarmTrap::~CDisarmTrap()
@@ -2191,11 +2169,7 @@ float CDisarmTrap::Render()
 	}
 
 	//-------------------------------------------------------------------------
-	if (tex_p2 && tex_p2->m_pddsSurface)
-	{
-		SETTC(tex_p2);
-	}
-
+	GRenderer->SetTexture(0, tex_p2);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	Anglef stiteangle;
