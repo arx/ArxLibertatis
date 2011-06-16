@@ -384,12 +384,8 @@ void ForcePlayerInventoryObjectLevel(long level) {
 
 //-----------------------------------------------------------------------------
 
-struct ATRIMAXSIZE : public std::greater<INTERACTIVE_OBJ *>
-{
-
+struct ATRIMAXSIZE {
 	bool operator()(const INTERACTIVE_OBJ * x, const INTERACTIVE_OBJ * y) const;
-
-
 };
 
 bool ATRIMAXSIZE::operator()(const INTERACTIVE_OBJ * x, const INTERACTIVE_OBJ * y) const
