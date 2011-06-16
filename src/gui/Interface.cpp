@@ -366,9 +366,8 @@ static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, floa
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, const int _iNb, const D3DCOLOR col)
-{
+static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, const int _iNb, const Color color) {
+	D3DCOLOR col = color.toBGRA();
 	D3DTLVERTEX v[4];
 	v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 0.f);
 	v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 0.f);
@@ -6095,7 +6094,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 					}
 
 					if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
-						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, D3DCOLORWHITE);
+						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
 				}
 			}
 		}
@@ -6167,7 +6166,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 					}
 
 					if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
-						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, D3DCOLORWHITE);
+						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
 				}
 			}
 		}
@@ -9076,9 +9075,9 @@ void DANAE::DrawAllInterface()
 
 
 						if ( amount <= player.gold )
-							ARX_INTERFACE_DrawNumber(px,py,amount,6,D3DRGB(0,1,0));
+							ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 						else
-							ARX_INTERFACE_DrawNumber(px,py,amount,6,D3DRGB(1,0,0));
+							ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
 					}
 					else if (InPlayerInventoryPos(&DANAEMouse))
 					{
@@ -9093,9 +9092,9 @@ void DANAE::DrawAllInterface()
 						{
 							if ((!(temp->shop_category)) ||
 								((temp->shop_category) && (IsIOGroup(FlyingOverIO,temp->shop_category))))
-								ARX_INTERFACE_DrawNumber(px,py,amount,6,D3DRGB(0,1,0));
+								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 							else
-								ARX_INTERFACE_DrawNumber(px,py,amount,6,D3DRGB(1,0,0));
+								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
 						}
 					}
 				}
@@ -9215,7 +9214,7 @@ void DANAE::DrawAllInterface()
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					ARX_INTERFACE_DrawNumber(px-INTERFACE_RATIO(30),py + INTERFACE_RATIO(10-25), player.gold, 6, D3DRGB(1,1,1));
+					ARX_INTERFACE_DrawNumber(px - INTERFACE_RATIO(30), py + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
 				}
 			}
 
@@ -10073,7 +10072,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 							if (v>0.f)
 							{								
 								long t = v;
-								ARX_INTERFACE_DrawNumber(POSX+MODIF-16,POSY+MODIF-10,t,6,0xFF00FFFF);
+								ARX_INTERFACE_DrawNumber(POSX + MODIF - 16, POSY + MODIF - 10, t, 6, Color::cyan);
 							}
 						}
 					}
@@ -10259,8 +10258,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 							EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 
 							if ((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count!=1))
-								ARX_INTERFACE_DrawNumber(mx+2.f,my+13.f,
-								DRAGINTER->_itemdata->count, 3, D3DCOLORWHITE);
+								ARX_INTERFACE_DrawNumber(mx + 2.f, my + 13.f, DRAGINTER->_itemdata->count, 3, Color::white);
 						}
 						else
 						{
