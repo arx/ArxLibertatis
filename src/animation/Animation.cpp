@@ -1719,26 +1719,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 	}
 
-	if(!(ARX_SoftClippZ(	&eobj->vertexlist[paf[0]],
-						&eobj->vertexlist[paf[1]],
-						&eobj->vertexlist[paf[2]],
-						&vert_list,
-						&eobj->facelist[i],
-						invisibility,
-						pTex,
-						(io)&&(io->ioflags&IO_ZMAP),
-						eobj,
-						i,
-						paf,
-						io,
-						false,
-						0,
-						NULL)))
-	{
-		*pNbVertexPush-=3;
-		continue;
-	}
-
 	if((io)&&(io->ioflags&IO_ZMAP))
 	{
 		CalculateInterZMapp(eobj,i,paf,pTex,vert_list);

@@ -103,8 +103,7 @@ void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureCo
 void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,
                         float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
 
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *);
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd);
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd = 0.f);
 
 #endif
 
