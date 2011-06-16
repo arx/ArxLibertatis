@@ -178,7 +178,8 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duratio
 				strcpy(speech[i].name, GetName(io->filename).c_str());
 			}
 
-			speech[i].color = D3DRGB(1.f, 1.f, 1.f);
+			speech[i].color = Color::white;
+			
 			// Successfull allocation
 			return speech[i].duration;
 		}
@@ -230,7 +231,7 @@ void ARX_SPEECH_Render()
 				                16 * Xratio, 16 * Xratio, .00001f, arx_logo_tc, Color::white);
 
 				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
-										   temp, Color::fromBGRA(speech[i].color), NULL);
+										   temp, speech[i].color, NULL);
 				if(igrec > iEnd && !CheckLastSpeech(i)) {
 					ARX_SPEECH_MoveUp();
 					break;

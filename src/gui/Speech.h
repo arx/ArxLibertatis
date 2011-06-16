@@ -101,24 +101,24 @@ struct ARX_CONVERSATION_STRUCT
 	long				current;
 };
 
-struct STRUCT_SPEECH
-{
-	unsigned long       timecreation;
-	unsigned long       duration;
-	D3DCOLOR            color;
-	char                name[64];
-	std::string         lpszUText;
-	INTERACTIVE_OBJ*    io;
-
-	void clear()
-	{
+struct STRUCT_SPEECH {
+	
+	unsigned long timecreation;
+	unsigned long duration;
+	Color color;
+	char name[64];
+	std::string lpszUText;
+	INTERACTIVE_OBJ * io;
+	
+	void clear() {
 		timecreation = 0;
 		duration = 0;
-		color = 0;
+		color = Color::none;
 		name[0] = 0;
 		lpszUText.clear();
 		io = NULL;
 	}
+	
 };
 
 struct ARX_SPEECH
