@@ -58,12 +58,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/DrawEffects.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
 
 #include "game/Spells.h"
+
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
@@ -183,16 +186,9 @@ void ARXDRAW_DrawInterShadows()
 							in.sx-=s1;
 							EE_RT2(&in,&ltv[3]);
 
-							if ((ltv[0].sz>0.f) && (ltv[1].sz>0.f) && (ltv[2].sz>0.f))
-							{
-								ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
-															&ltv[1],
-															&ltv[2],
-															50.f);
-								ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
-															&ltv[2],
-															&ltv[3],
-															50.f);
+							if(ltv[0].sz > 0.f && ltv[1].sz > 0.f && ltv[2].sz > 0.f) {
+								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+								ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
 							}
 						}
 					}	
@@ -238,14 +234,8 @@ void ARXDRAW_DrawInterShadows()
 							EE_RT2(&in,&ltv[2]);
 							in.sx-=s1;
 							EE_RT2(&in,&ltv[3]);
-							ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
-															&ltv[1],
-															&ltv[2],
-															50.f);
-							ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
-															&ltv[2],
-															&ltv[3],
-															50.f);
+							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
 						}
 					}
 				}
@@ -503,14 +493,14 @@ void ARXDRAW_DrawPolyBoom()
 						}
 
 						GRenderer->SetTexture(0, Boom);
-						ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
+						ARX_DrawPrimitive(	&ltv[0],
 														&ltv[1],
 														&ltv[2]);
 
 						if(polyboom[i].nbvert&4)
 						{
 							EE_RT2(&ltv[3],&ltv[3]);
-							ARX_DrawPrimitive_SoftClippZ(	&ltv[1],
+							ARX_DrawPrimitive(	&ltv[1],
 															&ltv[2],
 															&ltv[3]);
 						}
@@ -551,13 +541,13 @@ void ARXDRAW_DrawPolyBoom()
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetTexture(0, polyboom[i].tc); 
 
- 									ARX_DrawPrimitive_SoftClippZ(		&ltv[0],
+ 									ARX_DrawPrimitive(		&ltv[0],
  																		&ltv[1],
  																		&ltv[2]);
 
  									if(polyboom[i].nbvert&4)
  									{
-  										ARX_DrawPrimitive_SoftClippZ(	&ltv[1],
+  										ARX_DrawPrimitive(	&ltv[1],
   																		&ltv[2],
  																		&ltv[3]);
 									}
@@ -568,13 +558,13 @@ void ARXDRAW_DrawPolyBoom()
 								
 								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
-									ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
+									ARX_DrawPrimitive(	&ltv[0],
 																	&ltv[1],
 																	&ltv[2]);
 
 									if(polyboom[i].nbvert&4)
 									{
-										ARX_DrawPrimitive_SoftClippZ(	&ltv[1],
+										ARX_DrawPrimitive(	&ltv[1],
 																		&ltv[2],
 																		&ltv[3]);
 									}
@@ -637,14 +627,14 @@ void ARXDRAW_DrawPolyBoom()
 								GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 						GRenderer->SetTexture(0, polyboom[i].tc); 
 				
-								ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
+								ARX_DrawPrimitive(	&ltv[0],
 																&ltv[1],
 																&ltv[2]);
 
 								if(polyboom[i].nbvert&4)
 								{
 									EE_RT2(&ltv[3],&ltv[3]);
-									ARX_DrawPrimitive_SoftClippZ(	&ltv[1],
+									ARX_DrawPrimitive(	&ltv[1],
 																	&ltv[2],
 																	&ltv[3]);
 								}

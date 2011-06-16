@@ -216,6 +216,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <climits>
 
+#include "animation/AnimationRender.h"
 #include "core/Core.h"
 #include "game/Player.h"
 #include "graphics/Draw.h"
@@ -319,10 +320,10 @@ void Draw3DLineTex(Vec3f s, Vec3f e, D3DCOLOR color, float fStartSize, float fEn
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[1],
 	                             &v2[2]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[2],
 	                             &v2[3]);
 
@@ -349,10 +350,10 @@ void Draw3DLineTex(Vec3f s, Vec3f e, D3DCOLOR color, float fStartSize, float fEn
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[1],
 	                             &v2[2]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[2],
 	                             &v2[3]);
 }
@@ -400,10 +401,10 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, D3DCOLOR color, D3DCOLOR colo
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[1],
 	                             &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[1],
+	ARX_DrawPrimitive(&v2[1],
 	                             &v2[2],
 	                             &v2[3]);
 
@@ -430,10 +431,10 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, D3DCOLOR color, D3DCOLOR colo
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[1],
 	                             &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[1],
+	ARX_DrawPrimitive(&v2[1],
 	                             &v2[2],
 	                             &v2[3]);
 }

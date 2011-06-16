@@ -79,8 +79,6 @@ extern float fZFogStart;
 
 extern CDirectInput * pGetInfoDirectInput;
 
-float SOFTNEARCLIPPZ=1.f;
-
 void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out);
 
 /* Init bounding box */
@@ -1089,37 +1087,6 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	}
 }
 
-void ARX_DrawPrimitive_ClippZ(D3DTLVERTEX * _pVertexA, D3DTLVERTEX * _pVertexB, D3DTLVERTEX * _pOut, float _fAdd = 0.f) {
-	Vec3f e3dTemp;
-	float fDenom = ((SOFTNEARCLIPPZ + _fAdd) - _pVertexB->sz) / (_pVertexA->sz - _pVertexB->sz);
-	e3dTemp.x = (_pVertexA->sx - _pVertexB->sx) * fDenom + _pVertexB->sx;
-	e3dTemp.y = (_pVertexA->sy - _pVertexB->sy) * fDenom + _pVertexB->sy;
-	e3dTemp.z = SOFTNEARCLIPPZ + _fAdd;
-
-	float fRA, fGA, fBA;
-	float fRB, fGB, fBB;
-
-
-	fRA = ARX_CLEAN_WARN_CAST_FLOAT((_pVertexA->color >> 16) & 255);
-	fGA = ARX_CLEAN_WARN_CAST_FLOAT((_pVertexA->color >> 8) & 255);
-	fBA = ARX_CLEAN_WARN_CAST_FLOAT(_pVertexA->color & 255);
-	fRB = ARX_CLEAN_WARN_CAST_FLOAT((_pVertexB->color >> 16) & 255);
-	fGB = ARX_CLEAN_WARN_CAST_FLOAT((_pVertexB->color >> 8) & 255);
-	fBB = ARX_CLEAN_WARN_CAST_FLOAT(_pVertexB->color & 255);
-
-
-	float fRC, fGC, fBC;
-	fRC = (fRA - fRB) * fDenom + fRB;
-	fGC = (fGA - fGB) * fDenom + fGB;
-	fBC = (fBA - fBB) * fDenom + fBB;
-
-	_pOut->color	= (((int) fRC) << 16) | (((int)fGC) << 8) | ((int) fBC);
-	_pOut->tu		= (_pVertexA->tu - _pVertexB->tu) * fDenom + _pVertexB->tu;
-	_pOut->tv		= (_pVertexA->tv - _pVertexB->tv) * fDenom + _pVertexB->tv;
-
-	EE_P(&e3dTemp, _pOut);
-}
-
 //-----------------------------------------------------------------------------
 D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex) {
 	
@@ -1148,124 +1115,39 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 
 extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
 
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3, float _fAddZ) {
+void ARX_DrawPrimitive(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3) {
 	
-	int iClipp = 0;
-
-	if (_pVertex1->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 1;
-
-	if (_pVertex2->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 2;
-
-	if (_pVertex3->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 4;
-
-	D3DTLVERTEX D3DClippZ1, D3DClippZ2;
-	D3DTLVERTEX pD3DPointAdd[6];
-	int			iNbTotVertex = 3;
-
-	switch (iClipp)
-	{
-		case 0: {
-			Vec3f e3dTemp;
-			e3dTemp.x = _pVertex1->sx;
-			e3dTemp.y = _pVertex1->sy;
-			e3dTemp.z = _pVertex1->sz;
-			EE_P(&e3dTemp, &pD3DPointAdd[0]);
-			e3dTemp.x = _pVertex2->sx;
-			e3dTemp.y = _pVertex2->sy;
-			e3dTemp.z = _pVertex2->sz;
-			EE_P(&e3dTemp, &pD3DPointAdd[1]);
-			e3dTemp.x = _pVertex3->sx;
-			e3dTemp.y = _pVertex3->sy;
-			e3dTemp.z = _pVertex3->sz;
-			EE_P(&e3dTemp, &pD3DPointAdd[2]);
-			pD3DPointAdd[0].color = _pVertex1->color;
-			pD3DPointAdd[0].specular = _pVertex1->specular;
-			pD3DPointAdd[0].tu = _pVertex1->tu;
-			pD3DPointAdd[0].tv = _pVertex1->tv;
-			pD3DPointAdd[1].color = _pVertex2->color;
-			pD3DPointAdd[1].specular = _pVertex2->specular;
-			pD3DPointAdd[1].tu = _pVertex2->tu;
-			pD3DPointAdd[1].tv = _pVertex2->tv;
-			pD3DPointAdd[2].color = _pVertex3->color;
-			pD3DPointAdd[2].specular = _pVertex3->specular;
-			pD3DPointAdd[2].tu = _pVertex3->tu;
-			pD3DPointAdd[2].tv = _pVertex3->tv;
-			break;
-		}
-		case 1:						//pt1 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex2, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex3, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = D3DClippZ2;
-			pD3DPointAdd[1] = *_pVertex2;
-			EE_P2(&pD3DPointAdd[1], &pD3DPointAdd[1]);
-			pD3DPointAdd[2] = *_pVertex3;
-			EE_P2(&pD3DPointAdd[2], &pD3DPointAdd[2]);
-			pD3DPointAdd[3] = D3DClippZ1;
-			pD3DPointAdd[4] = pD3DPointAdd[1];
-			pD3DPointAdd[5] = D3DClippZ2;
-			iNbTotVertex = 6;
-			break;
-		case 2:						//pt2 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex3, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex1, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = *_pVertex1;
-			EE_P2(&pD3DPointAdd[0], &pD3DPointAdd[0]);
-			pD3DPointAdd[1] = D3DClippZ2;
-			pD3DPointAdd[2] = *_pVertex3;
-			EE_P2(&pD3DPointAdd[2], &pD3DPointAdd[2]);
-			pD3DPointAdd[3] = pD3DPointAdd[2];
-			pD3DPointAdd[4] = D3DClippZ1;
-			pD3DPointAdd[5] = D3DClippZ2;
-			iNbTotVertex = 6;
-			break;
-		case 4:						//pt3 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex1, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex2, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = *_pVertex1;
-			EE_P2(&pD3DPointAdd[0], &pD3DPointAdd[0]);
-			pD3DPointAdd[1] = *_pVertex2;
-			EE_P2(&pD3DPointAdd[1], &pD3DPointAdd[1]);
-			pD3DPointAdd[2] = D3DClippZ2;
-			pD3DPointAdd[3] = pD3DPointAdd[0];
-			pD3DPointAdd[4] = D3DClippZ2;
-			pD3DPointAdd[5] = D3DClippZ1;
-			iNbTotVertex = 6;
-			break;
-		case 3:						//pt1_2 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex3, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex3, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = D3DClippZ1;
-			pD3DPointAdd[1] = D3DClippZ2;
-			pD3DPointAdd[2] = *_pVertex3;
-			EE_P2(&pD3DPointAdd[2], &pD3DPointAdd[2]);
-			break;
-		case 5:						//pt1_3 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex2, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex2, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = D3DClippZ1;
-			pD3DPointAdd[1] = *_pVertex2;
-			EE_P2(&pD3DPointAdd[1], &pD3DPointAdd[1]);
-			pD3DPointAdd[2] = D3DClippZ2;
-			break;
-		case 6:						//pt2_3 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex1, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex1, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = *_pVertex1;
-			EE_P2(&pD3DPointAdd[0], &pD3DPointAdd[0]);
-			pD3DPointAdd[1] = D3DClippZ1;
-			pD3DPointAdd[2] = D3DClippZ2;
-			break;
-		case 7:
-			return false;
-	}
-
-	EERIEDRAWPRIM(D3DPT_TRIANGLELIST,
-	              D3DFVF_TLVERTEX,
-	              pD3DPointAdd,
-				  iNbTotVertex,
-				  0, 0 );
-	return true;
+	D3DTLVERTEX pD3DPointAdd[3];
+	
+	Vec3f e3dTemp;
+	e3dTemp.x = _pVertex1->sx;
+	e3dTemp.y = _pVertex1->sy;
+	e3dTemp.z = _pVertex1->sz;
+	EE_P(&e3dTemp, &pD3DPointAdd[0]);
+	e3dTemp.x = _pVertex2->sx;
+	e3dTemp.y = _pVertex2->sy;
+	e3dTemp.z = _pVertex2->sz;
+	EE_P(&e3dTemp, &pD3DPointAdd[1]);
+	e3dTemp.x = _pVertex3->sx;
+	e3dTemp.y = _pVertex3->sy;
+	e3dTemp.z = _pVertex3->sz;
+	EE_P(&e3dTemp, &pD3DPointAdd[2]);
+	pD3DPointAdd[0].color = _pVertex1->color;
+	pD3DPointAdd[0].specular = _pVertex1->specular;
+	pD3DPointAdd[0].tu = _pVertex1->tu;
+	pD3DPointAdd[0].tv = _pVertex1->tv;
+	pD3DPointAdd[1].color = _pVertex2->color;
+	pD3DPointAdd[1].specular = _pVertex2->specular;
+	pD3DPointAdd[1].tu = _pVertex2->tu;
+	pD3DPointAdd[1].tv = _pVertex2->tv;
+	pD3DPointAdd[2].color = _pVertex3->color;
+	pD3DPointAdd[2].specular = _pVertex3->specular;
+	pD3DPointAdd[2].tu = _pVertex3->tu;
+	pD3DPointAdd[2].tv = _pVertex3->tv;
+	
+	EERIEDRAWPRIM(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, pD3DPointAdd, 3, 0, 0 );
 }
+
 long FORCE_FRONT_DRAW = 0;
 
 //-----------------------------------------------------------------------------

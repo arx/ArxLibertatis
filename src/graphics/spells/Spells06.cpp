@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells06.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -193,10 +195,10 @@ void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3
 		EE_RT2(&p2, &v2[1]);
 		EE_RT2(&p3, &v2[2]);
 		EE_RT2(&p4, &v2[3]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[3]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[1],
+		ARX_DrawPrimitive(&v2[1],
 		                             &v2[2],
 		                             &v2[3]);
 	}
@@ -925,10 +927,10 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&v1b[i], &vr[1]);
 			EE_RT2(&v1a[i+1], &vr[2]);
 			EE_RT2(&v1b[i+1], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 
@@ -942,10 +944,10 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vb[i], &vr[1]);
 			EE_RT2(&va[i+1], &vr[2]);
 			EE_RT2(&vb[i+1], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -970,10 +972,10 @@ void CRiseDead::RenderFissure()
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&va[i+1], &vr[2]);
 		EE_RT2(&va[i], &vr[3]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[0],
+		ARX_DrawPrimitive(&vr[0],
 		                             &vr[1],
 		                             &vr[2]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[1],
+		ARX_DrawPrimitive(&vr[1],
 		                             &vr[2],
 		                             &vr[3]);
 
@@ -988,10 +990,10 @@ void CRiseDead::RenderFissure()
 		EE_RT2(&vb[i+1], &vr[2]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&vt[3], &vr[0]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[0],
+		ARX_DrawPrimitive(&vr[0],
 		                             &vr[1],
 		                             &vr[2]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[1],
+		ARX_DrawPrimitive(&vr[1],
 		                             &vr[2],
 		                             &vr[3]);
 	}
@@ -1114,10 +1116,10 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vt[1], &vr[1]);
 			EE_RT2(&vt[2], &vr[2]);
 			EE_RT2(&vt[3], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -1146,10 +1148,10 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vt[1], &vr[1]);
 			EE_RT2(&vt[2], &vr[2]);
 			EE_RT2(&vt[3], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}

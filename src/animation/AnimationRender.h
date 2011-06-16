@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_ANIMATION_ANIMATIONRENDER_H
 #define ARX_ANIMATION_ANIMATIONRENDER_H
 
-#include "graphics/d3dwrapper.h"
+#include "graphics/d3dwrapper.h" // for D3DTLVERTEX
 #include "graphics/Color.h"
 #include "math/MathFwd.h"
 
@@ -40,6 +40,8 @@ struct EERIE_QUAT;
 class TextureContainer;
 
 void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, INTERACTIVE_OBJ * io, bool render);
+
+void ARX_DrawPrimitive(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *);
 
 void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT);
 void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long i);

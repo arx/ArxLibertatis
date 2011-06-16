@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells07.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -653,10 +655,10 @@ float CLightning::Render()
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 
@@ -679,10 +681,10 @@ float CLightning::Render()
 	
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 
@@ -704,10 +706,10 @@ float CLightning::Render()
 		
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 
@@ -726,10 +728,10 @@ float CLightning::Render()
 
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 	}

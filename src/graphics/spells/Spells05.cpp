@@ -59,10 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 #include <climits>
 
-#include "graphics/Draw.h"
-#include "graphics/Math.h"
-#include "scene/Light.h"
-#include "scene/Object.h"
+#include "animation/AnimationRender.h"
 
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -71,6 +68,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "game/Player.h"
 
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -81,6 +80,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
 
 #include <list>
 
@@ -1833,7 +1834,7 @@ float CLevitate::Render()
 
 	while (i--)
 	{
-		ARX_DrawPrimitive_SoftClippZ(&cone[1].coned3d[j],
+		ARX_DrawPrimitive(&cone[1].coned3d[j],
 		                             &cone[1].coned3d[j+1],
 		                             &cone[1].coned3d[j+2]);
 		j++;
@@ -1844,7 +1845,7 @@ float CLevitate::Render()
 
 	while (i--)
 	{
-		ARX_DrawPrimitive_SoftClippZ(&cone[0].coned3d[j],
+		ARX_DrawPrimitive(&cone[0].coned3d[j],
 		                             &cone[0].coned3d[j+1],
 		                             &cone[0].coned3d[j+2]);
 		j++;
@@ -1858,7 +1859,7 @@ float CLevitate::Render()
 
 	while (i--)
 	{
-		ARX_DrawPrimitive_SoftClippZ(&cone[1].coned3d[j],
+		ARX_DrawPrimitive(&cone[1].coned3d[j],
 		                             &cone[1].coned3d[j+1],
 		                             &cone[1].coned3d[j+2]);
 		j++;
@@ -1869,7 +1870,7 @@ float CLevitate::Render()
 
 	while (i--)
 	{
-		ARX_DrawPrimitive_SoftClippZ(&cone[0].coned3d[j],
+		ARX_DrawPrimitive(&cone[0].coned3d[j],
 		                             &cone[0].coned3d[j+1],
 		                             &cone[0].coned3d[j+2]);
 		j++;

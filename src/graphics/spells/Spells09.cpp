@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells09.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -356,10 +358,10 @@ void CSummonCreature::RenderFissure()
 			EE_RT2(&v1b[i], &vr[1]);
 			EE_RT2(&v1a[i+1], &vr[2]);
 			EE_RT2(&v1b[i+1], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -372,10 +374,10 @@ void CSummonCreature::RenderFissure()
 			EE_RT2(&vb[i], &vr[1]);
 			EE_RT2(&va[i+1], &vr[2]);
 			EE_RT2(&vb[i+1], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -400,10 +402,10 @@ void CSummonCreature::RenderFissure()
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&va[i+1], &vr[2]);
 		EE_RT2(&va[i], &vr[3]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[0],
+		ARX_DrawPrimitive(&vr[0],
 		                             &vr[1],
 		                             &vr[2]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[1],
+		ARX_DrawPrimitive(&vr[1],
 		                             &vr[2],
 		                             &vr[3]);
 
@@ -418,10 +420,10 @@ void CSummonCreature::RenderFissure()
 		EE_RT2(&vb[i+1], &vr[2]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&vt[3], &vr[0]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[0],
+		ARX_DrawPrimitive(&vr[0],
 		                             &vr[1],
 		                             &vr[2]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[1],
+		ARX_DrawPrimitive(&vr[1],
 		                             &vr[2],
 		                             &vr[3]);
 
@@ -481,10 +483,10 @@ void CSummonCreature::RenderFissure()
 			EE_RT2(&vt[1], &vr[2]);
 			EE_RT2(&vt[2], &vr[1]);
 			EE_RT2(&vt[3], &vr[0]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -513,10 +515,10 @@ void CSummonCreature::RenderFissure()
 			EE_RT2(&vt[1], &vr[2]);
 			EE_RT2(&vt[2], &vr[1]);
 			EE_RT2(&vt[3], &vr[0]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}

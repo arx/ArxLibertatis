@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/PathFinderManager.h"
 
 #include "animation/Animation.h"
+#include "animation/AnimationRender.h"
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -3042,7 +3043,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 			GRenderer->SetCulling(Renderer::CullNone);
 		else GRenderer->SetCulling(Renderer::CullCW);
 
-		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
+		ARX_DrawPrimitive(&vert_list[0],
 									 &vert_list[1],
 									 &vert_list[2]);
 	}
@@ -3123,7 +3124,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 			GRenderer->SetCulling(Renderer::CullNone);
 		else GRenderer->SetCulling(Renderer::CullCW);
 
-		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
+		ARX_DrawPrimitive(&vert_list[0],
 									 &vert_list[1],
 									 &vert_list[2]);
 	}

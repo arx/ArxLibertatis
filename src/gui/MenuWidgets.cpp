@@ -109,7 +109,6 @@ extern long _EERIEMouseYdep;
 extern float PROGRESS_BAR_TOTAL;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_COUNT;
-extern float SOFTNEARCLIPPZ;
 
 extern long CURRENT_GAME_INSTANCE;
 extern char GameSavePath[];

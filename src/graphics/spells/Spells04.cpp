@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells04.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -184,10 +186,10 @@ float CBless::Render()
 	EE_RT2(&v[1], &v3[1]);
 	EE_RT2(&v[2], &v3[2]);
 	EE_RT2(&v[3], &v3[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v3[0],
+	ARX_DrawPrimitive(&v3[0],
 	                             &v3[1],
 	                             &v3[2]);
-	ARX_DrawPrimitive_SoftClippZ(&v3[1],
+	ARX_DrawPrimitive(&v3[1],
 	                             &v3[2],
 	                             &v3[3]);
 	
