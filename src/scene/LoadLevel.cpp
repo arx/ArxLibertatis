@@ -1093,8 +1093,8 @@ long DanaeLoadLevel(const string & fic) {
 			pos += sizeof(u32) * bcount;
 		}
 		
-		ModeLight = Flag(dll->ModeLight); // TODO save/load flags
-		ViewMode = Flag(dll->ViewMode); // TODO save/load flags
+		ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
+		ViewMode = ViewModeFlags::load(dll->ViewMode); // TODO save/load flags
 		ViewMode &= ~VIEWMODE_WIRE;
 	}
 	
@@ -1242,7 +1242,7 @@ long DanaeLoadLevel(const string & fic) {
 		DANAE_LS_PATH * dlp = (DANAE_LS_PATH *)(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
 		
-		ap->flags = Flag(dlp->flags); // TODO save/load flags
+		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
 		ap->idx = dlp->idx;
 		ap->initpos.x = dlp->initpos.x + trans.x;
 		ap->initpos.y = dlp->initpos.y + trans.y;
@@ -1409,8 +1409,8 @@ long DanaeLoadLevel(const string & fic) {
 	
 	arx_assert(pos <= FileSize);
 	
-	ModeLight = Flag(dll->ModeLight); // TODO save/load flags
-	ViewMode = Flag(dll->ViewMode); // TODO save/load flags
+	ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
+	ViewMode = ViewModeFlags::load(dll->ViewMode); // TODO save/load flags
 	ViewMode &= ~VIEWMODE_WIRE;
 	
 	free(dat);

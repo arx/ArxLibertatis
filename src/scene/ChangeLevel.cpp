@@ -1925,10 +1925,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Mind = asp.Attribute_Mind;
 	player.Attribute_Strength = asp.Attribute_Strength;
 	player.Critical_Hit = asp.Critical_Hit;
-	player.Current_Movement = Flag(asp.Current_Movement); // TODO save/load flags
+	player.Current_Movement = PlayerMovement::load(asp.Current_Movement); // TODO save/load flags
 	player.damages = asp.damages;
 	player.doingmagic = asp.doingmagic;
-	player.playerflags = Flag(asp.playerflags); // TODO save/load flags
+	player.playerflags = PlayerFlags::load(asp.playerflags); // TODO save/load flags
 	
 	if(asp.TELEPORT_TO_LEVEL[0]) {
 		strcpy(TELEPORT_TO_LEVEL, asp.TELEPORT_TO_LEVEL);
@@ -1955,7 +1955,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.inzone = ARX_PATH_GetAddressByName(asp.inzone);;
 	player.jumpphase = asp.jumpphase;
 	player.jumpstarttime = asp.jumpstarttime;
-	player.Last_Movement = Flag(asp.Last_Movement); // TODO save/load flags
+	player.Last_Movement = PlayerMovement::load(asp.Last_Movement); // TODO save/load flags
 	
 	ARX_CHECK_UCHAR(asp.level);
 	player.level = static_cast<unsigned char>(asp.level);
@@ -2020,7 +2020,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Redistribute = static_cast<unsigned char>(asp.Attribute_Redistribute);
 	player.Skill_Redistribute = static_cast<unsigned char>(asp.Skill_Redistribute);
 	
-	player.rune_flags = Flag(asp.rune_flags); // TODO save/load flags
+	player.rune_flags = RuneFlags::load(asp.rune_flags); // TODO save/load flags
 	player.size = asp.size;
 	player.Skill_Stealth = asp.Skill_Stealth;
 	player.Skill_Mecanism = asp.Skill_Mecanism;
@@ -2265,8 +2265,8 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		io->head_rot = ais->head_rot;
 		io->damager_damages = ais->damager_damages;
 		io->nb_iogroups = ais->nb_iogroups;
-		io->damager_type = Flag(ais->damager_type); // TODO save/load flags
-		io->type_flags = Flag(ais->type_flags); // TODO save/load flags
+		io->damager_type = DamageType::load(ais->damager_type); // TODO save/load flags
+		io->type_flags = ItemType::load(ais->type_flags); // TODO save/load flags
 		io->secretvalue = ais->secretvalue;
 		io->shop_multiply = ais->shop_multiply;
 		io->aflags = ais->aflags;
@@ -2279,7 +2279,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 			io->usepath = (void *)malloc(sizeof(ARX_USE_PATH));
 			ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
 
-			aup->aupflags = Flag(ais->usepath_aupflags); // TODO save/load flags
+			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
 			aup->_curtime = ARX_CLEAN_WARN_CAST_FLOAT(ais->usepath_curtime);
 			aup->initpos = ais->usepath_initpos;
 			aup->lastWP = ais->usepath_lastWP;
@@ -2441,7 +2441,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		//////////////////
 		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 
-		io->script.allowevents = Flag(ass->allowevents); // TODO save/load flags
+		io->script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 		io->script.nblvar = 0;
 
 		if (io->script.lvar)
@@ -2534,7 +2534,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 		ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 
-		io->over_script.allowevents = Flag(ass->allowevents); // TODO save/load flags
+		io->over_script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 
 		io->over_script.nblvar = 0; 
 
@@ -2661,7 +2661,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					io->_npcdata->tohit = as->tohit;
 					io->_npcdata->weaponinhand = as->weaponinhand;
 					strcpy(io->_npcdata->weaponname, as->weaponname);
-					io->_npcdata->weapontype = Flag(as->weapontype); // TODO save/load flags
+					io->_npcdata->weapontype = ItemType::load(as->weapontype); // TODO save/load flags
 					io->_npcdata->xpvalue = as->xpvalue;
 					
 					assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);

@@ -4712,7 +4712,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 									if (t == -2) t = GetInterNum(io);
 
-									ObjectType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
+									ItemType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
 
 									if ((flagg != 0) && (ValidIONum(t)))
 									{

@@ -330,7 +330,7 @@ struct IO_NPCDATA
 	long		cut;
 
 	float				moveproblem;
-	ObjectType weapontype;
+	ItemType weapontype;
 	long		weaponinhand;
 	long		fightdecision;
 	char		weaponname[256];
@@ -469,7 +469,7 @@ struct INTERACTIVE_OBJ
 	char *				usemesh;	// Alternate Mesh/path
 	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
 	ArxSound				sound;
-	ObjectType type_flags;			// object type (weapon,goblin...)
+	ItemType type_flags;			// object type (weapon,goblin...)
 	long				scriptload;			// Is This object Loaded by Script ?
 	Vec3f			target;				// Target position
 	long				targetinfo;			// Target Type/Ident

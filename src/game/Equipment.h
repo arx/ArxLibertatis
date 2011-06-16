@@ -73,7 +73,7 @@ enum WeaponType {
 	WEAPON_BOW = 4
 };
 
-enum ObjectTypeFlag {
+enum ItemTypeFlag {
 	OBJECT_TYPE_WEAPON   = (1<<0),
 	OBJECT_TYPE_DAGGER   = (1<<1),
 	OBJECT_TYPE_1H       = (1<<2),
@@ -87,8 +87,8 @@ enum ObjectTypeFlag {
 	OBJECT_TYPE_RING     = (1<<10),
 	OBJECT_TYPE_LEGGINGS = (1<<11)
 };
-DECLARE_FLAGS(ObjectTypeFlag, ObjectType)
-DECLARE_FLAGS_OPERATORS(ObjectType)
+DECLARE_FLAGS(ItemTypeFlag, ItemType)
+DECLARE_FLAGS_OPERATORS(ItemType)
 
 enum EquipmentSlot {
 	EQUIP_SLOT_RING_LEFT = 0,
@@ -105,7 +105,7 @@ void ARX_EQUIPMENT_Init();
 void ARX_EQUIPMENT_Remove_All_Special(INTERACTIVE_OBJ * io);
 void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, const std::string& param2, float val, short flags);
 void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, long val);
-ObjectType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string& temp);
+ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string& temp);
 void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip);
 void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip, long flags = 0);
 void ARX_EQUIPMENT_ReleaseAll(INTERACTIVE_OBJ * io);

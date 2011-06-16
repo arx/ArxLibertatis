@@ -99,7 +99,6 @@ public:
 	
 	DECLARE_FLAGS(TCFlag, TCFlags)
 	static const TCFlags UI;
-	static const TCFlags All;
 	
 
 public:
@@ -134,7 +133,7 @@ public:
 	 **/
 	static TextureContainer * Find(const std::string& strTextureName);
 
-	static void DeleteAll(TCFlags flag = All);
+	static void DeleteAll(TCFlags flag = TCFlags::all());
 
 	/**	Create a texture to display a glowing halo around a transparent texture
 	 *	@todo Rewrite this feature using shaders instead of hacking a texture effect
