@@ -121,27 +121,25 @@ struct STRUCT_SPEECH {
 	
 };
 
-struct ARX_SPEECH
-{
-	long                    exist;
-	ArxSound                sample;
-	long                    mood;
-	long                    flags; 
-	unsigned long           time_creation;
-	unsigned long           duration;
-	float                   fDeltaY;
-	int                     iTimeScroll;
-	float                   fPixelScroll;
-	D3DCOLOR                color;
-	std::string             text;
-	INTERACTIVE_OBJ*        io;
-	INTERACTIVE_OBJ*        ioscript;
-	ARX_CINEMATIC_SPEECH    cine;
-	EERIE_SCRIPT*           es;
-	long                    scrpos;
-
-	void clear()
-	{
+struct ARX_SPEECH {
+	
+	long exist;
+	ArxSound sample;
+	long mood;
+	long flags;
+	unsigned long time_creation;
+	unsigned long duration;
+	float fDeltaY;
+	int iTimeScroll;
+	float fPixelScroll;
+	std::string text;
+	INTERACTIVE_OBJ * io;
+	INTERACTIVE_OBJ * ioscript;
+	ARX_CINEMATIC_SPEECH cine;
+	EERIE_SCRIPT * es;
+	long scrpos;
+	
+	void clear() {
 		exist = 0;
 		sample = 0;
 		mood = 0;
@@ -151,7 +149,6 @@ struct ARX_SPEECH
 		fDeltaY = 0;
 		iTimeScroll = 0;
 		fPixelScroll = 0;
-		color = 0;
 		text.clear();
 		io = NULL;
 		ioscript = NULL;
@@ -159,9 +156,10 @@ struct ARX_SPEECH
 		es = NULL;
 		scrpos = 0;
 	}
+	
 };
 
-#define MAX_ASPEECH						100
+#define MAX_ASPEECH 100
 
 enum ARX_CINE_SPEECH_MODE
 {

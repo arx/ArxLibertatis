@@ -452,7 +452,6 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 	aspeech[num].fDeltaY = 0.f;
 	aspeech[num].iTimeScroll = 0;
 	aspeech[num].fPixelScroll = 0.f;
-	aspeech[num].color = 0xFFFFFFFF;
 	aspeech[num].mood = mood;
 
 	long flg = 0;
