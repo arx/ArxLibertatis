@@ -139,7 +139,7 @@ extern CDirectInput *pGetInfoDirectInput;
 extern D3DTLVERTEX LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern STRUCT_SPEECH speech[];
+extern Notification speech[];
 extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
 extern float SLID_VALUE;
@@ -5693,7 +5693,7 @@ void DANAE::ManageKeyMouse()
 			if (!WILLADDSPEECH.empty())
 				if (WILLADDSPEECHTIME+300<FrameTime)
 				{
-					ARX_SPEECH_Add(NULL, WILLADDSPEECH);
+					ARX_SPEECH_Add(WILLADDSPEECH);
 					WILLADDSPEECH.clear();
 				}
 
@@ -9442,7 +9442,7 @@ void DANAE::DrawAllInterface()
 
 					std::stringstream ss;
 					ss << (int)player.life;
-					ARX_SPEECH_Add( NULL, ss.str() );
+					ARX_SPEECH_Add(ss.str());
 				}
 			}
 		}
@@ -9475,7 +9475,7 @@ void DANAE::DrawAllInterface()
 					ARX_CHECK_INT(player.mana);
 					std::stringstream ss;
 					ss << (int)player.mana;
-					ARX_SPEECH_Add( NULL, ss.str() );
+					ARX_SPEECH_Add(ss.str());
 				}
 			}
 		}

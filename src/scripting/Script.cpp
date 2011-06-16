@@ -2864,17 +2864,17 @@ void MakeStandard( std::string& str)
 	}
 }
 
-//-----------------------------------------------------------------------------
-long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration)
-{
+long ARX_SPEECH_AddLocalised(const std::string& text, long duration) {
+	
 	// TODO move to caller
 	std::string section = text;
 	if(!section.empty() && section[0] == '[' && section[section.length() - 1] == ']') {
 		section = section.substr(1, section.length() - 2);
 	}
 	transform(section.begin(), section.end(), section.begin(), ::tolower);
+	
 	std::string output = getLocalised(section, "Not Found");
-	return ARX_SPEECH_Add(io, output, duration);
+	return ARX_SPEECH_Add(output, duration);
 }
 
 //*************************************************************************************

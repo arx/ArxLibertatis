@@ -197,7 +197,7 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 	}
 }
 
-void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
+void ComputeACSPos(CinematicSpeech * acs, INTERACTIVE_OBJ * io, long ionum)
 {
 	if (!acs) return;
 
@@ -1735,7 +1735,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "SPEAK")) // speak say_ident actions
 				{
-					ARX_CINEMATIC_SPEECH acs;
+					CinematicSpeech acs;
 					acs.type = ARX_CINE_SPEECH_NONE;
 
 					std::string temp2;
@@ -1754,7 +1754,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					{
 						
 						long player		=	0;
-						long voixoff	=	0;
+						SpeechFlags voixoff = 0;
 						long notext		=	0;
 						long mood			=	ANIM_TALK_NEUTRAL;
 						long unbreakable	=	0;
@@ -1771,10 +1771,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 							if (iCharIn(temp2, 'A')) mood		=	ANIM_TALK_ANGRY;
 
-							if (iCharIn(temp2, 'O'))
-							{
-								voixoff	=	2;
-
+							if(iCharIn(temp2, 'O')) {
+								voixoff = ARX_SPEECH_FLAG_OFFVOICE;
 								//Crash when we set speak pitch to 1,
 								//Variable use for a division, 0 is not possible
 								//To find
@@ -1937,7 +1935,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 								if (unbreakable) aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
 
-								memcpy(&aspeech[speechnum].cine, &acs, sizeof(ARX_CINEMATIC_SPEECH));
+								memcpy(&aspeech[speechnum].cine, &acs, sizeof(CinematicSpeech));
 								pos = GotoNextLine(es, pos);
 							}
 
@@ -5461,12 +5459,11 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					strcpy(tempp, GetVarValueInterpretedAsText(word, esss, io).c_str());
 
-					if (tempp[0] == '[')
-					{
-						ARX_SPEECH_AddLocalised(NULL, tempp);
+					if(tempp[0] == '[') {
+						ARX_SPEECH_AddLocalised(tempp);
+					} else {
+						ARX_SPEECH_Add(tempp);
 					}
-					else
-						ARX_SPEECH_Add(NULL, tempp);
 
 				nodraw:
 					;

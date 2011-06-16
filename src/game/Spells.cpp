@@ -2099,7 +2099,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			if (!NO_TEXT_AT_ALL) 
 			{
 				tex = "Unknown Symbol - " + SpellMoves;
-				ARX_SPEECH_Add(NULL, tex);
+				ARX_SPEECH_Add(tex);
 			}
 		}
 	}
@@ -2631,12 +2631,9 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 		{
 			ARX_SPELLS_FizzleNoMana(num);
 
-			if (_bSound)
-			{
-				ARX_SPEECH_AddLocalised(NULL, "[player_cantcast]");
-				ARX_SPEECH_AddSpeech(	inter.iobj[0],
-					"[player_cantcast]",
-					ANIM_TALK_NEUTRAL);
+			if(_bSound) {
+				ARX_SPEECH_AddLocalised("[player_cantcast]");
+				ARX_SPEECH_AddSpeech(inter.iobj[0], "[player_cantcast]", ANIM_TALK_NEUTRAL);
 			}
 
 			return 0;
@@ -2901,12 +2898,9 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 	
 	ARX_SPELLS_FizzleNoMana(num);
 
-	if (_bSound)
-	{
-		ARX_SPEECH_AddLocalised(NULL, "[player_cantcast]");
-		ARX_SPEECH_AddSpeech(	inter.iobj[0],
-			"[player_cantcast]",
-			ANIM_TALK_NEUTRAL);
+	if(_bSound) {
+		ARX_SPEECH_AddLocalised("[player_cantcast]");
+		ARX_SPEECH_AddSpeech(inter.iobj[0], "[player_cantcast]", ANIM_TALK_NEUTRAL);
 	}
 
 	return 0;
@@ -8889,7 +8883,7 @@ static void ApplySPMax() {
 		
 		ARX_PLAYER_Rune_Add_All();
 		std::string text = "!!!!!!! FanTomAciE !!!!!!!";
-		ARX_SPEECH_Add(NULL, text);
+		ARX_SPEECH_Add(text);
 		player.Attribute_Redistribute+=10;
 		player.Skill_Redistribute+=50;
 		player.level=std::max((int)player.level,10);

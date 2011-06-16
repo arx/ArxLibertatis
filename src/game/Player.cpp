@@ -1551,10 +1551,8 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 				{
 					bool bOk = true;
 
-					for (long i = 0; i < MAX_ASPEECH; i++)
-					{
-						if (aspeech[i].exist && (aspeech[i].io == inter.iobj[0]))
-						{
+					for(size_t i = 0; i < MAX_ASPEECH; i++) {
+						if(aspeech[i].exist && (aspeech[i].io == inter.iobj[0])) {
 							bOk = false;
 						}
 					}

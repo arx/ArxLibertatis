@@ -5732,8 +5732,7 @@ static float _AvgFrameDiff = 150.f;
 		{
 			if (main_conversation.actors[j]>=0)
 			{
-				for (long k=0;k<MAX_ASPEECH;k++)
-				{
+				for(size_t k = 0 ; k < MAX_ASPEECH; k++) {
 					if (aspeech[k].exist)
 						if (aspeech[k].io==inter.iobj[main_conversation.actors[j]])
 						{
@@ -5861,8 +5860,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 		long valid=-1;
 
-		for (long i=0;i<MAX_ASPEECH;i++)
-		{
+		for(size_t i = 0; i < MAX_ASPEECH; i++) {
 			if ((aspeech[i].exist) && (aspeech[i].cine.type>0))
 			{
 				valid=i;
@@ -5872,7 +5870,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (valid>=0)
 		{
-			ARX_CINEMATIC_SPEECH * acs=&aspeech[valid].cine;
+			CinematicSpeech * acs=&aspeech[valid].cine;
 			INTERACTIVE_OBJ * io=aspeech[valid].io;
 			float rtime=(float)(ARX_TIME_Get()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
@@ -6020,6 +6018,7 @@ static float _AvgFrameDiff = 150.f;
 
 						break;
 					}
+					case ARX_CINE_SPEECH_NONE: break;
 				}
 
 				LASTCAMPOS.x=subj.pos.x;

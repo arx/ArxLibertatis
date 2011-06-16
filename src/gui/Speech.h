@@ -54,79 +54,96 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_SPEECH_H
-#define ARX_SPEECH_H
 
-#include "core/Application.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/GraphicsTypes.h"
+#ifndef ARX_GUI_SPEECH_H
+#define ARX_GUI_SPEECH_H
 
-#define MAX_ACTORS 10
-const unsigned int MAX_SPEECH = 9;
+#include "audio/AudioTypes.h"
+#include "math/Angle.h"
 
-//-----------------------------------------------------------------------------
-struct ARX_CINEMATIC_SPEECH {
-	long				type;
+struct INTERACTIVE_OBJ;
+struct EERIE_CAMERA;
+struct EERIE_SCRIPT;
+
+const size_t MAX_SPEECH = 9;
+
+enum CinematicSpeechMode {
+	ARX_CINE_SPEECH_NONE,
+	ARX_CINE_SPEECH_ZOOM, // uses start/endangle alpha & beta, startpos & endpos
+	ARX_CINE_SPEECH_CCCTALKER_L,
+	ARX_CINE_SPEECH_CCCTALKER_R,
+	ARX_CINE_SPEECH_CCCLISTENER_L,
+	ARX_CINE_SPEECH_CCCLISTENER_R,
+	ARX_CINE_SPEECH_SIDE,
+	ARX_CINE_SPEECH_KEEP,
+	ARX_CINE_SPEECH_SIDE_LEFT
+};
+
+struct CinematicSpeech {
+	
+	CinematicSpeechMode type;
 	Anglef startangle;
 	Anglef endangle;
-	float				startpos;
-	float				endpos;
-	float				f0;
-	float				f1;
-	float				f2;
-	float				f3;
-	long				ionum;
-	Vec3f			pos1;
-	Vec3f			pos2;
-
+	float startpos;
+	float endpos;
+	float f0;
+	float f1;
+	float f2;
+	long ionum;
+	Vec3f pos1;
+	Vec3f pos2;
+	
 	void clear() {
-		type = 0;
+		type = ARX_CINE_SPEECH_NONE;
 		startangle = Anglef::ZERO;
 		endangle = Anglef::ZERO;
 		startpos = 0;
 		endpos = 0;
 		f0 = 0;
 		f1 = 0;
-		f3 = 0;
 		ionum = 0;
 		pos1 = Vec3f::ZERO;
 		pos2 = Vec3f::ZERO;
 	}
+	
 };
 
-struct ARX_CONVERSATION_STRUCT
-{
-	long				actors_nb;
-	long				actors[MAX_ACTORS];
-	long				current;
+const size_t MAX_ACTORS = 10;
+struct ARX_CONVERSATION_STRUCT {
+	long actors_nb;
+	long actors[MAX_ACTORS];
+	long current;
 };
 
-struct STRUCT_SPEECH {
+struct Notification {
 	
 	unsigned long timecreation;
 	unsigned long duration;
-	Color color;
-	char name[64];
-	std::string lpszUText;
-	INTERACTIVE_OBJ * io;
+	std::string text;
 	
 	void clear() {
 		timecreation = 0;
 		duration = 0;
-		color = Color::none;
-		name[0] = 0;
-		lpszUText.clear();
-		io = NULL;
+		text.clear();
 	}
 	
 };
 
+enum SpeechFlag {
+	ARX_SPEECH_FLAG_UNBREAKABLE = (1<<0),
+	ARX_SPEECH_FLAG_OFFVOICE    = (1<<1),
+	ARX_SPEECH_FLAG_NOTEXT      = (1<<2),
+	ARX_SPEECH_FLAG_DIRECT_TEXT = (1<<3)
+};
+DECLARE_FLAGS(SpeechFlag, SpeechFlags);
+DECLARE_FLAGS_OPERATORS(SpeechFlags);
+
 struct ARX_SPEECH {
 	
 	long exist;
-	ArxSound sample;
+	audio::SampleId sample;
 	long mood;
-	long flags;
+	SpeechFlags flags;
 	unsigned long time_creation;
 	unsigned long duration;
 	float fDeltaY;
@@ -135,7 +152,7 @@ struct ARX_SPEECH {
 	std::string text;
 	INTERACTIVE_OBJ * io;
 	INTERACTIVE_OBJ * ioscript;
-	ARX_CINEMATIC_SPEECH cine;
+	CinematicSpeech cine;
 	EERIE_SCRIPT * es;
 	long scrpos;
 	
@@ -159,33 +176,10 @@ struct ARX_SPEECH {
 	
 };
 
-#define MAX_ASPEECH 100
-
-enum ARX_CINE_SPEECH_MODE
-{
-	ARX_CINE_SPEECH_NONE,
-	ARX_CINE_SPEECH_ZOOM,         // uses start/endangle alpha & beta, startpos & endpos
-	ARX_CINE_SPEECH_CCCTALKER_L,
-	ARX_CINE_SPEECH_CCCTALKER_R,
-	ARX_CINE_SPEECH_CCCLISTENER_L,
-	ARX_CINE_SPEECH_CCCLISTENER_R,
-	ARX_CINE_SPEECH_SIDE,
-	ARX_CINE_SPEECH_KEEP,
-	ARX_CINE_SPEECH_SIDE_LEFT
-};
-
-enum ARX_SPEECH_FLAG
-{
-	ARX_SPEECH_FLAG_UNBREAKABLE = 0x00000001,
-	ARX_SPEECH_FLAG_OFFVOICE    = 0x00000002,
-	ARX_SPEECH_FLAG_NOTEXT      = 0x00000004,
-	ARX_SPEECH_FLAG_DIRECT_TEXT	= 0x00000008
-};
-
+const size_t MAX_ASPEECH = 100;
 extern ARX_SPEECH aspeech[MAX_ASPEECH];
 extern ARX_CONVERSATION_STRUCT main_conversation;
 
-//-----------------------------------------------------------------------------
 void ARX_CONVERSATION_FirstInit();
 void ARX_CONVERSATION_Reset();
 
@@ -194,15 +188,17 @@ void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update();
 void ARX_SPEECH_Init();
 void ARX_SPEECH_Check();
-long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _lpszUText, long duration = -1);
+long ARX_SPEECH_Add(const std::string & text, long duration = -1);
 void ARX_SPEECH_ClearAll();
-// data can be either a direct text or a localised string
-// a localised string will be used to look for the duration of the sample
-// & will play the sample.
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mood, long flags = 0);
+
+/*! data can be either a direct text or a localised string
+ * a localised string will be used to look for the duration of the sample
+ * & will play the sample.
+ */
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string & data, long mood, SpeechFlags flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io);
 void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io);
-void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io_source, long mood = 0);
+void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & string, INTERACTIVE_OBJ * io_source, long mood = 0);
 bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is);
 
-#endif
+#endif // ARX_GUI_SPEECH_H
