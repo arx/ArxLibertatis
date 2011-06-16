@@ -69,9 +69,7 @@ struct FLARES {
 	float x;
 	float y;
 	float tolive;
-	float r;
-	float g;
-	float b;
+	Color3f rgb;
 	float size;
 	long dynlight;
 	long move;
@@ -112,9 +110,7 @@ struct PARTICLE_DEF {
 	unsigned long tolive;
 	unsigned long delay;
 	TextureContainer * tc;
-	float r;
-	float g;
-	float b;
+	Color3f rgb;
 	long special;
 	float fparam;
 	long mask;

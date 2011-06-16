@@ -795,7 +795,7 @@ void FinishAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * eanim);
 bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);
 void FaceTarget(INTERACTIVE_OBJ * io);
 
-void DebugSphere(float x,float y,float z,float siz,long tim,D3DCOLOR color);
+void DebugSphere(float x, float y, float z, float siz, long tim, Color color);
 
 EERIEPOLY * CheckTopPoly(float x,float y,float z);
 EERIEPOLY * CheckPolyOnTop(float x,float y,float z);

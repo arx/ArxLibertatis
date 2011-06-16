@@ -219,9 +219,7 @@ float CBless::Render()
 			particle[j].tc			=	tex_p1;
 			particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			particle[j].fparam		=	0.0000001f;
-			particle[j].r			=	0.7f;
-			particle[j].g			=	0.6f;
-			particle[j].b			=	0.2f;
+			particle[j].rgb = Color3f(.7f, .6f, .2f);
 		}
 	}
 
@@ -526,37 +524,6 @@ void CCurse::Update(unsigned long _ulTime)
 float CCurse::Render()
 {Vec3f * pos = NULL; // TODO
 	int i = 0;
-/*
-	float x = eSrc.x;
-	float y = eSrc.y;// + 200.0f;
-	float z = eSrc.z;
-
-	if (ulCurrentTime >= ulDuration)
-	{
-				if (bDone)
-				{
-					EERIE_3D target,source;
-					target.x=player.pos.x;// - EEsin(radians(MAKEANGLE(player.angle.b)))*1000.f;
-					target.y=player.pos.y;//+30.f;
-					target.z=player.pos.z;// + EEcos(radians(MAKEANGLE(player.angle.b)))*1000.f;
-					source.x = x;
-					source.y = y;
-					source.z = z;
-					if (pIncinerate)
-					{
-						pIncinerate->Create(source, MAKEANGLE(player.angle.b));
-						pIncinerate->SetDuration(2000);
-					}
-					//DebugSphere(source.x,source.y,source.z,20,8000,0xFFFF0000);
-					//DebugSphere(target.x,target.y,target.z,20,8000,0xFFFF0000);
-					bDone = false;
-				}
-				else
-				{
-					return 0.f;
-				}
-		
-	}*/
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -572,7 +539,7 @@ float CCurse::Render()
 	stiteangle.b = fRot;
 	stiteangle.a = 0;
 	stiteangle.g = 0;
-	stitepos = *pos;
+	stitepos = Vec3f::ZERO; //*pos; TODO null pointer dereference
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
@@ -606,9 +573,7 @@ float CCurse::Render()
 			pd->tc			=	tex_p1;
 			pd->special		=	ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
 			pd->fparam		=	0.0000001f;
-			pd->r			=	1.f;
-			pd->g			=	1.f;
-			pd->b			=	1.f;
+			pd->rgb = Color3f::white;
 		}
 	}
 

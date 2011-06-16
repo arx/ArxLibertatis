@@ -1361,9 +1361,7 @@ float CPortal::Render()
 			particle[j].tc		=	tp;
 			particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			particle[j].fparam	=	0.0000001f;
-			particle[j].r		=	1.f;
-			particle[j].g		=	1.f;
-			particle[j].b		=	1.f;
+			particle[j].rgb = Color3f::white;
 		}
 	}
 

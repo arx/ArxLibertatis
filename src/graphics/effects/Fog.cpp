@@ -223,9 +223,7 @@ void AddPoisonFog(Vec3f * pos, float power)
 			particle[j].tolive		=	4500 + (unsigned long)(rnd() * 4500);
 			particle[j].tc			=	TC_smoke;
 			particle[j].siz			=	(80 + rnd() * 80 * 2.f) * ( 1.0f / 3 );
-			particle[j].r			=	rnd() * ( 1.0f / 3 );
-			particle[j].g			=	1.f;
-			particle[j].b			=	rnd() * ( 1.0f / 10 );
+			particle[j].rgb = Color3f(rnd() * (1.f/3), 1.f, rnd() * (1.f/10));
 			particle[j].fparam		=	0.001f;
 		}
 	}
@@ -290,9 +288,7 @@ void ARX_FOGS_Render() {
 					particle[j].tolive		=	fogs[i].tolive + (unsigned long)(rnd() * fogs[i].tolive);
 					particle[j].tc			=	TC_smoke;
 					particle[j].siz			=	(fogs[i].size + rnd() * fogs[i].size * 2.f) * ( 1.0f / 3 );
-					particle[j].r			=	fogs[i].rgb.r;
-					particle[j].g			=	fogs[i].rgb.g;
-					particle[j].b			=	fogs[i].rgb.b;
+					particle[j].rgb = fogs[i].rgb;
 					particle[j].fparam		=	fogs[i].rotatespeed;
 				}
 

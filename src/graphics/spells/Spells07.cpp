@@ -916,9 +916,7 @@ float CConfuse::Render()
 				t3 = rnd() * 0.4f + 0.4f;
 			}
 
-			particle[j].r = t1 * 0.8f;
-			particle[j].g = t2 * 0.8f;
-			particle[j].b = t3 * 0.8f;
+			particle[j].rgb = Color3f(t1 * 0.8f, t2 * 0.8f, t3 * 0.8f);
 		}
 	}
 
@@ -1375,9 +1373,7 @@ float CIceField::Render()
 				particle[j].tc			=	tex_p2;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	0.7f;
-				particle[j].g			=	0.7f;
-				particle[j].b			=	1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 		else if (t > 0.095f)
@@ -1409,9 +1405,7 @@ float CIceField::Render()
 				particle[j].tc			=	tex_p1;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	0.7f;
-				particle[j].g			=	0.7f;
-				particle[j].b			=	1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 	}

@@ -110,9 +110,9 @@ const Color3<T> Color3<T>::green(T(0), ColorLimits<T>::max(), T(0));
 template<class T>
 const Color3<T> Color3<T>::yellow(ColorLimits<T>::max(), ColorLimits<T>::max(), T(0));
 template<class T>
-const Color3<T> Color3<T>::cyan(ColorLimits<T>::max(), T(0), ColorLimits<T>::max());
+const Color3<T> Color3<T>::magenta(ColorLimits<T>::max(), T(0), ColorLimits<T>::max());
 template<class T>
-const Color3<T> Color3<T>::magenta(T(0), ColorLimits<T>::max(), ColorLimits<T>::max());
+const Color3<T> Color3<T>::cyan(T(0), ColorLimits<T>::max(), ColorLimits<T>::max());
 
 /*!
  * A color with red, blue, green and alpha components.

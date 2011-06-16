@@ -4316,9 +4316,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							pd->scale.y			=	-8.f;
 							pd->scale.z			=	-8.f;
 							pd->timcreation		=	lARXTime;
-							pd->r				=	0.71f;
-							pd->g				=	0.43f;
-							pd->b				=	0.29f;
+							pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 							//pd->delay=nn*180;
 						}
 					}
@@ -4386,10 +4384,8 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				pd->scale.y		=	-8.f;
 				pd->scale.z		=	-8.f;
 				pd->timcreation	=	lARXTime;
-				pd->r			=	0.71f;
-				pd->g			=	0.43f;
-				pd->b			=	0.29f;
-				pd->delay		=	nn * 2;
+				pd->rgb = Color3f(.71f, .43f, .29f);
+				pd->delay = nn * 2;
 			}
 		}
 	}
@@ -4452,9 +4448,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							pd->scale.y			=	-8.f;
 							pd->scale.z			=	-8.f;
 							pd->timcreation		=	lARXTime;
-							pd->r				=	0.71f;
-							pd->g				=	0.43f;
-							pd->b				=	0.29f;
+							pd->rgb = Color3f(.71f, .43f, .29f);
 							pd->delay			=	nn * 180;
 						}
 					}

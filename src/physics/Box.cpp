@@ -852,36 +852,24 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 // Debug function used to show the physical box of an object
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 	
-		for (long k = 0; k < obj->pbox->nb_physvert; k++)
-		{
-			if (obj->pbox->active == 2)
-			{
-				DebugSphere(obj->pbox->vert[k].pos.x,
-				            obj->pbox->vert[k].pos.y,
-				            obj->pbox->vert[k].pos.z,
-				            0.6f, 40, 0xFF00FF00);
-			}
-			else if ((k == 0) || (k == 14) || (k == 13))
-				DebugSphere(obj->pbox->vert[k].pos.x,
-				            obj->pbox->vert[k].pos.y,
-				            obj->pbox->vert[k].pos.z,
-				            0.6f, 40, 0xFFFFFF00);
-			else if ((k > 0) && (k < 5))
-				DebugSphere(obj->pbox->vert[k].pos.x,
-				            obj->pbox->vert[k].pos.y,
-				            obj->pbox->vert[k].pos.z,
-				            0.6f, 40, 0xFF00FF00);
-			else if ((k > 4) && (k < 9))
-				DebugSphere(obj->pbox->vert[k].pos.x,
-				            obj->pbox->vert[k].pos.y,
-				            obj->pbox->vert[k].pos.z,
-				            0.6f, 40, 0xFF0000FF);
-			else
-				DebugSphere(obj->pbox->vert[k].pos.x,
-				            obj->pbox->vert[k].pos.y,
-				            obj->pbox->vert[k].pos.z,
-				            0.6f, 40, 0xFFFF0000);
+	for (long k = 0; k < obj->pbox->nb_physvert; k++) {
+		if(obj->pbox->active == 2) {
+			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y,  obj->pbox->vert[k].pos.z,
+			            0.6f, 40, Color::green);
+		} else if(k == 0 || k == 14 || k == 13) {
+			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y, obj->pbox->vert[k].pos.z,
+			            0.6f, 40, Color::yellow);
+		} else if ((k > 0) && (k < 5)) {
+			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y, obj->pbox->vert[k].pos.z,
+			            0.6f, 40, Color::green);
+		} else if ((k > 4) && (k < 9)) {
+			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y, obj->pbox->vert[k].pos.z,
+			            0.6f, 40, Color::blue);
+		} else {
+			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y, obj->pbox->vert[k].pos.z,
+			            0.6f, 40, Color::red);
 		}
+	}
 }
 
 //-----------------------------------------------------------------------------

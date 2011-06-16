@@ -6144,22 +6144,14 @@ static float _AvgFrameDiff = 150.f;
 
 		if ((pouet!=-1) && (pouet2!=-1))
 		{
-			if (USE_CINEMATICS_CAMERA==2)
-			{
-				subj.pos.x=pos.x;
-				subj.pos.y=pos.y;
-				subj.pos.z=pos.z;		
-
-				subj.d_angle.a=subj.angle.a;
-				subj.d_angle.b=subj.angle.b;
-				subj.d_angle.g=subj.angle.g;
-				pos2.x=(pos2.x+pos.x)*( 1.0f / 2 );
-				pos2.y=(pos2.y+pos.y)*( 1.0f / 2 );
-				pos2.z=(pos2.z+pos.z)*( 1.0f / 2 );
-				SetTargetCamera(&subj,pos2.x,pos2.y,pos2.z);
+			if(USE_CINEMATICS_CAMERA == 2) {
+				subj.pos = pos;
+				subj.d_angle = subj.angle;
+				pos2 = (pos2 + pos) * (1.0f/2);
+				SetTargetCamera(&subj, pos2.x, pos2.y, pos2.z);
+			} else {
+				DebugSphere(pos.x, pos.y, pos.z, 2, 50, Color::red);
 			}
-			else
-				DebugSphere(pos.x,pos.y,pos.z,2,50,0xFFFF0000);
 
 			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
 			{

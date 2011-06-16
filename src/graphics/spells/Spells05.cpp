@@ -500,9 +500,7 @@ float CRuneOfGuarding::Render()
 			particle[j].tolive		=	2600 + (unsigned long)(rnd() * 600.f);
 			particle[j].tc			=	tex_p2;
 			particle[j].siz			=	0.3f;
-			particle[j].r			=	0.4f;
-			particle[j].g			=	0.4f;
-			particle[j].b			=	0.6f;
+			particle[j].rgb = Color3f(.4f, .4f, .6f);
 		}
 	}
 
@@ -1305,9 +1303,7 @@ float CRepelUndead::Render()
 			particle[j].tolive		=	2600 + (unsigned long)(rnd() * 600.f);
 			particle[j].tc			=	tex_p2;
 			particle[j].siz			=	0.3f;
-			particle[j].r			=	0.4f;
-			particle[j].g			=	0.4f;
-			particle[j].b			=	0.6f;
+			particle[j].rgb = Color3f(.4f, .4f, .6f);
 		}
 	}
 
@@ -1543,9 +1539,7 @@ void CLevitate::DrawStone()
 				particle[j].tc = NULL;
 				particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
-				particle[j].r = 1.f;
-				particle[j].g = 1.f;
-				particle[j].b = 1.f;
+				particle[j].rgb = Color3f::white;
 			}
 
 
@@ -1738,9 +1732,7 @@ float CLevitate::Render()
 					particle[j].tc = NULL;
 					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam = 0.0000001f;
-					particle[j].r = 1.f;
-					particle[j].g = 1.f;
-					particle[j].b = 1.f;
+					particle[j].rgb = Color3f::white;
 				}
 			}
 			break;
@@ -1821,9 +1813,7 @@ float CLevitate::Render()
 					particle[j].tc = NULL;
 					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam = 0.0000001f;
-					particle[j].r = 1.f;
-					particle[j].g = 1.f;
-					particle[j].b = 1.f;
+					particle[j].rgb = Color3f::white;
 				}
 			}
 

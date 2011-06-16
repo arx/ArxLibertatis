@@ -999,9 +999,7 @@ float CNegateMagic::Render()
 				particle[j].tc			=	tex_p2;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	1.0f;
-				particle[j].g			=	1.0f;
-				particle[j].b			=	1.0f;
+				particle[j].rgb = Color3f::white;
 			}
 		}
 	}

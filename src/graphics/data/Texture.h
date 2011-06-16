@@ -221,7 +221,8 @@ DECLARE_FLAGS_OPERATORS(TextureContainer::TCFlags)
  
 TextureContainer * GetTextureList();
 long CountTextures( std::string& tex, long * memsize, long * memmip);
- 
+
+// TODO remove when not used anymore
 #define D3DCOLORWHITE 0xFFFFFFFF
 #define D3DCOLORBLACK 0xFF000000
 

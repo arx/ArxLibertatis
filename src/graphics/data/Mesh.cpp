@@ -139,14 +139,11 @@ void ReleaseAnimFromIO(INTERACTIVE_OBJ * io, long num)
 	io->anims[num] = NULL;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void DebugSphere(float x, float y, float z, float siz, long tim, D3DCOLOR color)
-{
-	long	j = ARX_PARTICLES_GetFree();
-
-	if ((j != -1) && (!ARXPausedTimer))
-	{
+void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
+	
+	long j = ARX_PARTICLES_GetFree();
+	
+	if(j != -1 && !ARXPausedTimer) {
 		ParticleCount++;
 		particle[j].exist		=	true;
 		particle[j].zdec		=	0;
@@ -165,9 +162,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, D3DCOLOR color)
 		particle[j].tolive		=	tim;
 		particle[j].tc			=	EERIE_DRAW_sphere_particle;
 		particle[j].siz			=	siz;
-		particle[j].r			=	(float)((color >> 16) & 255) * ( 1.0f / 255 );
-		particle[j].g			=	(float)((color >> 8)  & 255) * ( 1.0f / 255 );
-		particle[j].b			=	(float)((color) & 255) * ( 1.0f / 255 );
+		particle[j].rgb = color.to<float>();
 	}
 }
 

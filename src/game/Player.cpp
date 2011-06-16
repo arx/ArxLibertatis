@@ -2343,18 +2343,11 @@ void ARX_PLAYER_Manage_Visual()
 							particle[j].source	=	&eobj->vertexlist3[id].v;
 							particle[j].fparam	=	0.0000001f;
 
-							if (FistParticles & 2)
-							{
+							if(FistParticles & 2) {
 								particle[j].move.y *= 2.f;
-								particle[j].r = 1.f - rnd() * 0.1f;
-								particle[j].g = 0.3f + rnd() * 0.1f;
-								particle[j].b = 0.2f - rnd() * 0.1f;
-							}
-							else
-							{
-								particle[j].r = 0.7f - rnd() * 0.1f;
-								particle[j].g = 0.3f - rnd() * 0.1f;
-								particle[j].b = 1.f - rnd() * 0.1f;
+								particle[j].rgb = Color3f(1.f - rnd() * .1f, .3f + rnd() * .1f, .2f - rnd() * .1f);
+							} else {
+								particle[j].rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
 							}
 						}
 					}

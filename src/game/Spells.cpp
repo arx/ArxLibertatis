@@ -5402,9 +5402,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					pd->tc=tc4;
 					pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam=0.0000001f;
-					pd->r=0.7f;
-					pd->g=0.7f;
-					pd->b=1.f;
+					pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 				}
 			}
 
@@ -6604,9 +6602,7 @@ void ARX_SPELLS_Kill(long i) {
 					pd->tc=tc4;
 					pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam=0.0000001f;
-					pd->r=0.7f;
-					pd->g=0.7f;
-					pd->b=1.f;
+					pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 				}
 			}
 
@@ -7875,7 +7871,7 @@ void ARX_SPELLS_Update()
 								pd->scale.y		=	-8.f;
 								pd->scale.z		=	-8.f;
 										pd->timcreation	=	lARXTime;
-								pd->r			=	pd->g	=	pd->b	=	1.f;
+								pd->rgb = Color3f::white;
 								long j2			=	ARX_PARTICLES_GetFree();
 
 								if (j2!=-1)

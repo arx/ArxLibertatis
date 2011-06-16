@@ -3384,14 +3384,14 @@ void ARX_SCENE_Render(long flag) {
 					_ANCHOR_DATA * ad=&ACTIVEBKG->anchors[feg->ianchors[lll]];
 					ad->pos.y-=10;			
 
-					if (ad->nblinked==0) DebugSphere(ad->pos.x,ad->pos.y,ad->pos.z,3.f,90,0xFF00FF00);
-					else 
-					{
-						if (ad->flags & ANCHOR_FLAG_BLOCKED)
-							DebugSphere(ad->pos.x,ad->pos.y,ad->pos.z,3.f,90,0xFF00FFFF);
-						else if (ad->flags & 1)
-							DebugSphere(ad->pos.x,ad->pos.y,ad->pos.z,3.f,90,0xFF00FF00);
-						else DebugSphere(ad->pos.x,ad->pos.y,ad->pos.z,3.f,90,0xFFFF0000);
+					if(ad->nblinked == 0) {
+						DebugSphere(ad->pos.x, ad->pos.y, ad->pos.z, 3.f, 90, Color::green);
+					} else if (ad->flags & ANCHOR_FLAG_BLOCKED) {
+						DebugSphere(ad->pos.x, ad->pos.y, ad->pos.z, 3.f, 90, Color::cyan);
+					} else if (ad->flags & 1) {
+						DebugSphere(ad->pos.x, ad->pos.y, ad->pos.z, 3.f, 90, Color::green);
+					} else {
+						DebugSphere(ad->pos.x, ad->pos.y, ad->pos.z, 3.f, 90, Color::red);
 					}
 
 					for (long k=0;k<ad->nblinked;k++)
@@ -3420,10 +3420,9 @@ void ARX_SCENE_Render(long flag) {
 					}
 				}
 
-				if (DEBUG_FRUSTRUM)
-				{
-					DebugSphere(i*ACTIVEBKG->Xdiv+50.f,feg->frustrum_maxy,j*ACTIVEBKG->Zdiv+50.f,3.f,90,0xFFFF00FF);
-					DebugSphere(i*ACTIVEBKG->Xdiv+50.f,feg->frustrum_miny,j*ACTIVEBKG->Zdiv+50.f,3.f,90,0xFFFFFF00);
+				if(DEBUG_FRUSTRUM) {
+					DebugSphere(i * ACTIVEBKG->Xdiv + 50.f, feg->frustrum_maxy, j * ACTIVEBKG->Zdiv + 50.f, 3.f, 90, Color::magenta);
+					DebugSphere(i * ACTIVEBKG->Xdiv + 50.f, feg->frustrum_miny, j * ACTIVEBKG->Zdiv + 50.f, 3.f, 90, Color::yellow);
 				}
 			}
 		}

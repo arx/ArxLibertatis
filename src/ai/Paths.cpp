@@ -1569,9 +1569,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									pd->scale.y	=	-8.f;
 									pd->scale.z	=	-8.f;
 									pd->timcreation	=	lARXTime;
-									pd->r		=	0.71f;
-									pd->g		=	0.43f;
-									pd->b		=	0.29f;
+									pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 									pd->delay	=	nn * 180;
 								}
 							}

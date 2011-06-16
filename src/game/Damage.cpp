@@ -122,7 +122,6 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 
 	if ((j != -1) && (!ARXPausedTimer))
 	{
-		Color3f col = inter.iobj[0]->_npcdata->blood_color.to<float>();
 		D3DTLVERTEX in, out;
 		in.sx = pos->x;
 		in.sy = pos->y;
@@ -169,9 +168,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		else if (num > 5) num = 5;
 
 		pd->tc = bloodsplat[num];
-		pd->r = col.r;
-		pd->g = col.g;
-		pd->b = col.b;
+		pd->rgb = inter.iobj[0]->_npcdata->blood_color.to<float>();
 		pd->siz = 3.5f * power * 40 * Xratio;
 		pd->type = PARTICLE_2D;
 	}
@@ -1135,23 +1132,16 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 				particle[j].special		   |= FIRE_TO_SMOKE;
 				particle[j].tolive			= 500 + (unsigned long)(rnd() * 400.f);
 
-				if (di->type & DAMAGE_TYPE_MAGICAL)
-				{
+				if(di->type & DAMAGE_TYPE_MAGICAL) {
 					particle[j].move.x	= 1.f - 2.f * rnd();
 					particle[j].move.y	= 2.f - 16.f * rnd();
 					particle[j].move.z	= 1.f - 2.f * rnd();
-					particle[j].r		= 0.3f;
-					particle[j].g		= 0.3f;
-					particle[j].b		= 0.8f;
-				}
-				else
-				{
+					particle[j].rgb = Color3f(.3f, .3f, .8f);
+				} else {
 					particle[j].move.x	= 1.f - 2.f * rnd();
 					particle[j].move.y	= 2.f - 16.f * rnd();
 					particle[j].move.z	= 1.f - 2.f * rnd();
-					particle[j].r		= 0.5f;
-					particle[j].g		= 0.5f;
-					particle[j].b		= 0.5f;
+					particle[j].rgb = Color3f::gray(.5f);
 				}
 
 				particle[j].tc		= TC_fire2;

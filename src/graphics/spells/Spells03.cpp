@@ -768,9 +768,7 @@ float CIceProjectile::Render()
 				particle[j].tc = tex_p2;
 				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
-				particle[j].r = 0.7f;
-				particle[j].g = 0.7f;
-				particle[j].b = 1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 		else if (t > 0.095f)
@@ -809,9 +807,7 @@ float CIceProjectile::Render()
 				particle[j].tc 			=	tex_p1;
 				particle[j].special 	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	0.7f;
-				particle[j].g			=	0.7f;
-				particle[j].b			=	1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 	}

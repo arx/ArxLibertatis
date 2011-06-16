@@ -276,7 +276,7 @@ void CSpellFx::Update(float _fParam)
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex(Vec3f s, Vec3f e, int color, float fStartSize, float fEndSize) {
+void Draw3DLineTex(Vec3f s, Vec3f e, D3DCOLOR color, float fStartSize, float fEndSize) {
 	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float xxs = (float)(fStartSize * cos(radians(fBeta)));
@@ -358,7 +358,7 @@ void Draw3DLineTex(Vec3f s, Vec3f e, int color, float fStartSize, float fEndSize
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, int color, int color2) {
+void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, D3DCOLOR color, D3DCOLOR color2) {
 	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float zz = fSize; 

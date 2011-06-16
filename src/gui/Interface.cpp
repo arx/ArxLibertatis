@@ -8763,9 +8763,7 @@ void ARX_INTERFACE_DrawCurrentTorch()
 			pd->timcreation		=	lARXTime;
 			pd->tolive			=	500+(unsigned long)(rnd()*400.f);
 			pd->tc				=	fire2;
-			pd->r				=	1.f;
-			pd->g				=	0.6f;
-			pd->b				=	0.5f;
+			pd->rgb = Color3f(1.f, .6f, .5f);
 			pd->siz				=	INTERFACE_RATIO(14.f);
 			pd->type			=	PARTICLE_2D;
 		}
