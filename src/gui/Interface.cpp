@@ -187,7 +187,6 @@ TextureContainer *	NoteTextureRight=NULL;
 TextureContainer *	BasicInventorySkin=NULL;
 TextureContainer *	ThrowObject=NULL;
 ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
-static Color BOOKINTERFACEITEMCOLOR = Color::white;
 E_ARX_STATE_MOUSE	eMouseState;
 Vec2s			bookclick;
 Vec2s			MemoMouse;
@@ -506,6 +505,12 @@ void INTERFACE_TC::Reset()
 
 	ITC.Level.clear();
 	ITC.Xp.clear();
+}
+
+static void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, Color color = Color::white, float z = 0.000001f) {
+	if(tc) {
+		EERIEDrawBitmap2((x+BOOKDECX)*Xratio, (y+BOOKDECY)*Yratio, (float)(tc->m_dwWidth)*Xratio, (float)(tc->m_dwHeight)*Yratio, z, tc, color);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -871,7 +876,7 @@ void ARX_INTERFACE_NoteManage()
 		if (NoteTexture)
 		{
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-			DrawBookInterfaceItem( NoteTexture, NotePosX, NotePosY);
+			DrawBookInterfaceItem(NoteTexture, NotePosX, NotePosY);
 
 			if (Note.type==NOTE_TYPE_BOOK || Note.type == NOTE_TYPE_BIGNOTE)
 			{
@@ -888,7 +893,7 @@ void ARX_INTERFACE_NoteManage()
 						float fWidth = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureRight->m_dwWidth);
 						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureRight->m_dwHeight);
 
-						DrawBookInterfaceItem( NoteTextureRight,x0, y0);
+						DrawBookInterfaceItem(NoteTextureRight, x0, y0);
 
 						if (MouseInBookRect(x0, y0, fWidth, fHeight))
 						{
@@ -915,7 +920,7 @@ void ARX_INTERFACE_NoteManage()
 						float fWidth  = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureLeft->m_dwWidth);
 						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureLeft->m_dwHeight);
 
-						DrawBookInterfaceItem( NoteTextureLeft, x0, y0);
+						DrawBookInterfaceItem(NoteTextureLeft, x0, y0);
 
 						if ( MouseInBookRect( x0, y0, fWidth, fHeight) )
 
@@ -6310,12 +6315,6 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 	}
 }
 
-void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, float z) {
-	if(tc) {
-		EERIEDrawBitmap2((x+BOOKDECX)*Xratio, (y+BOOKDECY)*Yratio, (float)(tc->m_dwWidth)*Xratio, (float)(tc->m_dwHeight)*Yratio, z, tc, BOOKINTERFACEITEMCOLOR);
-	}
-}
-
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_RELEASESOUND()
 {
@@ -6340,7 +6339,7 @@ bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 		rval=true;
 
 		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
-			DrawBookInterfaceItem(tc,x,y);
+			DrawBookInterfaceItem(tc, x, y);
 
 		if (!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1))
 		{
@@ -6387,7 +6386,7 @@ bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float
 		rval=true;
 
 		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
-			DrawBookInterfaceItem(tc,x,y);
+			DrawBookInterfaceItem(tc, x, y);
 
 		if (!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1))
 		{
@@ -6865,7 +6864,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								{
 									pos.x = (240-(count*32)*( 1.0f / 2 )+j*32);
 									pos.y = (306);
-									DrawBookInterfaceItem( necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
+									DrawBookInterfaceItem(necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
 								}
 						}
 
@@ -6873,10 +6872,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						{
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-							if (flyingover)
-							{
-								BOOKINTERFACEITEMCOLOR = Color::white;
+							
+							Color color;
+							if(flyingover) {
+								color = Color::white;
 
 								if ((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
 								{
@@ -6889,12 +6888,12 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 									player.SpellToMemorize.lTimeCreation = ARXTimeUL();
 								}
+							} else {
+								color = Color::fromBGRA(0xFFa8d0df);
 							}
-							else BOOKINTERFACEITEMCOLOR = Color::fromBGRA(0xFFa8d0df);
 
-							DrawBookInterfaceItem( spellicons[i].tc, fPosX, fPosY);
+							DrawBookInterfaceItem(spellicons[i].tc, fPosX, fPosY, color);
 
-							BOOKINTERFACEITEMCOLOR = Color::white;
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
 
@@ -7007,7 +7006,7 @@ void QuestBook_Render()
 		float x0 =   8 + NotePosX;
 		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerLeft")->m_dwHeight;
 
-		DrawBookInterfaceItem( ITC.Get("pTexCornerLeft"), x0, y0);
+		DrawBookInterfaceItem(ITC.Get("pTexCornerLeft"), x0, y0);
 
 		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerLeft")->m_dwWidth, y0 + ITC.Get("pTexCornerLeft")->m_dwHeight))
 		{
@@ -7027,7 +7026,7 @@ void QuestBook_Render()
 		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("pTexCornerRight")->m_dwWidth;
 		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerRight")->m_dwHeight;
 
-		DrawBookInterfaceItem( ITC.Get("pTexCornerRight"), x0, y0);
+		DrawBookInterfaceItem(ITC.Get("pTexCornerRight"), x0, y0);
 
 		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerRight")->m_dwWidth, y0 + ITC.Get("pTexCornerRight")->m_dwHeight))
 		{
@@ -7137,27 +7136,17 @@ void ARX_INTERFACE_ManageOpenedBook()
 	BOOKDECX = 0;
 	BOOKDECY = 0;
 
-	if (ARXmenu.currentmode != AMCM_NEWQUEST)
-	{
+	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-		if (Book_Mode == BOOKMODE_STATS)
-		{
-			DrawBookInterfaceItem( ITC.Get("playerbook"), 97, 64, 0.9999f); 
+		if(Book_Mode == BOOKMODE_STATS) {
+			DrawBookInterfaceItem(ITC.Get("playerbook"), 97, 64, Color::white, 0.9999f); 
+		} else if(Book_Mode == BOOKMODE_SPELLS) {
+			DrawBookInterfaceItem(ITC.Get("pTexSpellBook"), 97, 64, Color::white, 0.9999f);
+		} else if (Book_Mode == 2) {
+			DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
+		} else {
+			DrawBookInterfaceItem(ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
 		}
-		else if (Book_Mode == BOOKMODE_SPELLS)
-		{
-			DrawBookInterfaceItem( ITC.Get("pTexSpellBook"), 97, 64, 0.9999f);
-		}
-		else if (Book_Mode == 2)
-		{
-			DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, 0.9999f);
-		}
-		else
-		{
-			DrawBookInterfaceItem(ITC.Get("questbook"), 97, 64, 0.9999f);
-		}
-
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 	else
@@ -7169,7 +7158,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
 			float y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
 
-			DrawBookInterfaceItem( ITC.Get("playerbook"), x, y );//95.f+2.f,47.f+17.f);
+			DrawBookInterfaceItem(ITC.Get("playerbook"), x, y);
 		}
 
 		BOOKDECX = x - 97;
@@ -7191,19 +7180,17 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float px=BOOKMARKS_POS_X;
 			float py=BOOKMARKS_POS_Y;
 			TextureContainer* tcBookmarkChar = ITC.Get("bookmark_char");
-			DrawBookInterfaceItem(tcBookmarkChar,px,py);
+			DrawBookInterfaceItem(tcBookmarkChar, px, py);
 
 			// Check for cursor on charcter sheet bookmark
 			if (	tcBookmarkChar
 				&&	MouseInBookRect(px,py,px+tcBookmarkChar->m_dwWidth,py+tcBookmarkChar->m_dwHeight))
 			{
 				// Draw highlighted Character sheet icon
-				BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(tcBookmarkChar,px,py);
+				DrawBookInterfaceItem(tcBookmarkChar, px, py, Color::grayb(0x55));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				BOOKINTERFACEITEMCOLOR = Color::white;
 
 				// Set cursor to interacting
 				SpecialCursor=CURSOR_INTERACTION_ON;
@@ -7224,7 +7211,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				float px=BOOKMARKS_POS_X+32;
 				float py=BOOKMARKS_POS_Y;
-				DrawBookInterfaceItem(ITC.Get("bookmark_magic"),px,py);
+				DrawBookInterfaceItem(ITC.Get("bookmark_magic"), px, py);
 
 				//////////////// TO BE REDONE/REMOVED - START
 				if (NewSpell==1)
@@ -7236,16 +7223,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 				//////////////// TO BE REDONE/REMOVED - END
 				if (	ITC.Get("bookmark_magic") 
-					&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_magic")->m_dwWidth,py+ITC.Get("bookmark_magic")->m_dwHeight))				
+					&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_magic")->m_dwWidth,py+ITC.Get("bookmark_magic")->m_dwHeight))
 				{
 					// Draw highlighted Magic sheet icon
-					BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.Get("bookmark_magic"),px,py);
+					DrawBookInterfaceItem(ITC.Get("bookmark_magic"), px, py, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					BOOKINTERFACEITEMCOLOR = Color::white;
 
 					// Set cursor to interacting
 					SpecialCursor=CURSOR_INTERACTION_ON;
@@ -7266,17 +7250,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float px=BOOKMARKS_POS_X+64;
 			float py=BOOKMARKS_POS_Y;
 
-			DrawBookInterfaceItem(ITC.Get("bookmark_map"),px,py);			
+			DrawBookInterfaceItem(ITC.Get("bookmark_map"), px, py);
 
 			if (	ITC.Get("bookmark_map")
-				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_map")->m_dwWidth,py+ITC.Get("bookmark_map")->m_dwHeight))				
+				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_map")->m_dwWidth,py+ITC.Get("bookmark_map")->m_dwHeight))
 			{
-				BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.Get("bookmark_map"),px,py);			
+				DrawBookInterfaceItem(ITC.Get("bookmark_map"), px, py, Color::grayb(0x55));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				BOOKINTERFACEITEMCOLOR = Color::white;
 
 				// Set cursor to interacting
 				SpecialCursor=CURSOR_INTERACTION_ON;
@@ -7295,17 +7277,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			float px=BOOKMARKS_POS_X+96;
 			float py=BOOKMARKS_POS_Y;
-			DrawBookInterfaceItem(ITC.Get("bookmark_quest"),px,py);
+			DrawBookInterfaceItem(ITC.Get("bookmark_quest"), px, py);
 
 			if (	ITC.Get("bookmark_quest")
-				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_quest")->m_dwWidth,py+ITC.Get("bookmark_quest")->m_dwHeight))				
+				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_quest")->m_dwWidth,py+ITC.Get("bookmark_quest")->m_dwHeight))
 			{
-				BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.Get("bookmark_quest"),px,py);
+				DrawBookInterfaceItem(ITC.Get("bookmark_quest"), px, py, Color::grayb(0x55));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				BOOKINTERFACEITEMCOLOR = Color::white;
 
 				// Set cursor to interacting
 				SpecialCursor=CURSOR_INTERACTION_ON;
@@ -7360,16 +7340,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=100.f;
 					float py=82.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_1"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_1"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_1"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_1"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
 						if (bookclick.x!=-1)
@@ -7379,7 +7356,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_1"),102.f,82.f);
+				else DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
 			}
 
 			if (bOnglet[2])
@@ -7388,16 +7365,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=98.f;
 					float py=112.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_2"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_2"), px, py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_2"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_2"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
 						if (bookclick.x!=-1)
@@ -7407,7 +7382,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_2"),100.f,114.f);
+				else DrawBookInterfaceItem(ITC.Get("current_2"), 100.f, 114.f);
 			}
 
 			if (bOnglet[3])
@@ -7416,26 +7391,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=97.f;
 					float py=143.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_3"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_3"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_3"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_3"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=3;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_3"),101.f,141.f);
+				else DrawBookInterfaceItem(ITC.Get("current_3"), 101.f, 141.f);
 			}
 
 			if (bOnglet[4])
@@ -7444,26 +7414,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=95.f;
 					float py=170.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_4"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_4"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_4"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_4"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=4;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_4"),100.f,170.f);
+				else DrawBookInterfaceItem(ITC.Get("current_4"), 100.f, 170.f);
 			}
 
 			if (bOnglet[5])
@@ -7472,26 +7437,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=95.f;
 					float py=200.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_5"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_5"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_5"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_5"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=5;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_5"),97.f,199.f);
+				else DrawBookInterfaceItem(ITC.Get("current_5"), 97.f, 199.f);
 			}
 
 			if (bOnglet[6])
@@ -7500,26 +7460,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=94.f;
 					float py=229.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_6"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_6"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_6"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_6"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=6;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_6"),103.f,226.f);
+				else DrawBookInterfaceItem(ITC.Get("current_6"), 103.f, 226.f);
 			}
 
 			if (bOnglet[7])
@@ -7528,26 +7483,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=94.f;
 					float py=259.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_7"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_7"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_7"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_7"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=7;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_7"),101.f,255.f);
+				else DrawBookInterfaceItem(ITC.Get("current_7"), 101.f, 255.f);
 			}
 
 			if (bOnglet[8])
@@ -7556,26 +7506,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=92.f;
 					float py=282.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_8"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_8"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_8"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_8"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=8;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_8"),99.f,283.f);
+				else DrawBookInterfaceItem(ITC.Get("current_8"), 99.f, 283.f);
 			}
 
 			if (bOnglet[9])
@@ -7584,26 +7529,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=90.f;
 					float py=308.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_9"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_9"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_9"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_9"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=9;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_9"),99.f,307.f);
+				else DrawBookInterfaceItem(ITC.Get("current_9"), 99.f, 307.f);
 			}
 
 			if (bOnglet[10])
@@ -7612,26 +7552,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=97.f;
 					float py=331.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_10"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_10"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR = Color::grayb(0x55);
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_10"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_10"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR = Color::white;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=10;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_10"),104.f,331.f);
+				else DrawBookInterfaceItem(ITC.Get("current_10"), 104.f, 331.f);
 			}		
 
 			if (Book_Mode==1) Book_SpellPage=Book_Page;
@@ -8529,13 +8464,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox1.x=146;
 					todraw->bbox1.y=312;
 
-					if ((todraw->poisonous) && (todraw->poisonous_count!=0))
-						BOOKINTERFACEITEMCOLOR = Color::green;
-					else BOOKINTERFACEITEMCOLOR = Color::white;
-
-					DrawBookInterfaceItem(tc,todraw->bbox1.x,todraw->bbox1.y,0);
-
-					BOOKINTERFACEITEMCOLOR = Color::white;
+					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
+					DrawBookInterfaceItem(tc, todraw->bbox1.x, todraw->bbox1.y, color, 0);
 
 					if (tc2!=NULL)
 					{
@@ -8586,13 +8516,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox1.x=296;
 					todraw->bbox1.y=312;
 
-					if ((todraw->poisonous) && (todraw->poisonous_count!=0))
-						BOOKINTERFACEITEMCOLOR = Color::green;
-					else BOOKINTERFACEITEMCOLOR = Color::white;
-
-					DrawBookInterfaceItem(tc,todraw->bbox1.x,todraw->bbox1.y,0);
-
-					BOOKINTERFACEITEMCOLOR = Color::white;
+					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
+					DrawBookInterfaceItem(tc, todraw->bbox1.x, todraw->bbox1.y, color, 0);
 
 					if (tc2!=NULL)
 					{

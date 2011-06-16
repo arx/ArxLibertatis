@@ -250,7 +250,6 @@ short SHORT_INTERFACE_RATIO(const float);
 bool MouseInCam(EERIE_CAMERA * cam);
 bool MouseInRect(float x0, float y0, float x1, float y1);
 long GetMainSpeakingIO();
-void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, float z = 0.000001f);
 bool ARX_INTERFACE_MouseInBook();
 void ARX_INTERFACE_PlayerInterfaceModify(long showhide, long smooth);
 void ARX_INTERFACE_Reset();
