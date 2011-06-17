@@ -589,7 +589,7 @@ void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col) {
 		// Draw high pos
 		Vec3f from2 = cyl.origin + Vec3f(es, cyl.height, ec);
 		Vec3f to = cyl.origin + Vec3f(es2, cyl.height, ec2);
-		EERIEDraw3DLine(from, to,  col);
+		EERIEDraw3DLine(from2, to,  col);
 	}
 }
 
