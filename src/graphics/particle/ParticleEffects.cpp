@@ -286,97 +286,65 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, INTERACTIVE_OBJ * io) {
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Rogue_Blood(Vec3f * pos,float dmgs,D3DCOLOR col)
-{
+static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color col) {
+	
 	long j = ARX_PARTICLES_GetFree();
 
-	if (	(j!=-1)
-		&&	(!ARXPausedTimer)	)
-	{
-		float power;
-		power=(dmgs*( 1.0f / 60 ))+0.9f;
-		float r,g,b;
-		r=(float)((long)((col>>16) & 255))*( 1.0f / 255 );
-		g=(float)((long)((col>>8) & 255))*( 1.0f / 255 );
-		b=(float)((long)((col) & 255))*( 1.0f / 255 );
-		ParticleCount++;
-		PARTICLE_DEF * pd=&particle[j];
-		pd->exist=true;
-		pd->zdec=0;
-		pd->ov.x=pos->x;
-		pd->ov.y=pos->y;
-		pd->ov.z=pos->z;
-			
-		pd->siz			=	3.1f*power;
-		pd->scale.z		=	pd->scale.y		=	pd->scale.x		=	-pd->siz*( 1.0f / 4 );			
-		pd->timcreation	=	lARXTime;
-		pd->special		=	PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION;
-		pd->special		|=	SPLAT_GROUND;
-		pd->tolive		=	1600;
-		pd->delay		=	0;
-		pd->move.x		=	rnd()*60.f-30.f;
-		pd->move.y		=	rnd()*-10.f-15.f;
-		pd->move.z		=	rnd()*60.f-30.f;
-		pd->rgb = Color3f(r, g, b);
-		long num = rnd()*6.f;
-
-		if (num<0) num=0;
-		else if (num>5) num=5;
-
-		pd->tc=bloodsplat[num];
-		pd->fparam=rnd()*( 1.0f / 10 )-0.05f;
+	if(j == -1 || ARXPausedTimer) {
+		return;
 	}
+	
+	float power = (dmgs * (1.f/60)) + .9f;
+	
+	ParticleCount++;
+	PARTICLE_DEF * pd = &particle[j];
+	pd->exist = true;
+	pd->zdec = 0;
+	pd->ov = pos;
+	pd->siz = 3.1f * power;
+	pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/4);
+	pd->timcreation = lARXTime;
+	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | SPLAT_GROUND;
+	pd->tolive = 1600;
+	pd->delay = 0;
+	pd->move = Vec3f(rnd() * 60.f - 30.f, rnd() * -10.f - 15.f, rnd() * 60.f - 30.f);
+	pd->rgb = col.to<float>();
+	long num = clamp((long)(rnd() * 6.f), 0l, 5l);
+	pd->tc = bloodsplat[num];
+	pd->fparam = rnd() * (1.f/10) - .05f;
 	
 }
 
-void ARX_PARTICLES_Spawn_Blood3(Vec3f * pos,float dmgs,D3DCOLOR col, long flags) {
+static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col, long flags = 0) {
 	
 	long j = ARX_PARTICLES_GetFree();
 	
-		if (	(j!=-1)
-			&&	(!ARXPausedTimer)	)
-		{
-			float power;
-			power=(dmgs*( 1.0f / 60 ))+0.9f;
-			float r,g,b;
-			r=(float)((long)((col>>16) & 255))*( 1.0f / 255 );
-			g=(float)((long)((col>>8) & 255))*( 1.0f / 255 );
-			b=(float)((long)((col) & 255))*( 1.0f / 255 );
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=true;
-			pd->zdec=0;
-		pd->ov.x = pos->x - EEsin((float)ARXTime * ( 1.0f / 1000 )) * 30.f; 
-		pd->ov.y = pos->y + EEsin((float)ARXTime * ( 1.0f / 1000 )) * 30.f; 
-		pd->ov.z = pos->z + EEcos((float)ARXTime * ( 1.0f / 1000 )) * 30.f; 
-
-		pd->siz = 3.5f * power + EEsin((float)ARXTime * ( 1.0f / 1000 )); 
-				
-			if (!config.misc.gore)
-				pd->siz*=( 1.0f / 6 );
-
-			
-		pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * ( 1.0f / 2 ); 
-				
-				
-		pd->timcreation	=	lARXTime;
-		pd->special		=	PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION;
-
-			if (flags & 1) 
-				pd->special|=SPLAT_GROUND;
-
-		pd->tolive = 1100; 
-			pd->delay=0;
-			pd->move.x=0;
-			pd->move.y=0;
-			pd->move.z=0;
-			pd->rgb = Color3f(r, g, b);
-			pd->tc=bloodsplatter;
-			pd->fparam=rnd()*( 1.0f / 10 )-0.05f;
+	if(j != -1 && !ARXPausedTimer) {
+		
+		float power = (dmgs * (1.f/60)) + .9f;
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[j];
+		pd->exist = true;
+		pd->zdec = 0;
+		pd->ov = pos + Vec3f(-sin(ARXTime * (1.f/1000)), sin(ARXTime * (1.f/1000)), cos(ARXTime * (1.f/1000))) * 30.f;
+		pd->siz = 3.5f * power + sin(ARXTime * (1.f/1000));
+		if(!config.misc.gore) {
+			pd->siz *= (1.f/6);
 		}
-
-		if (rnd()>0.90f) ARX_PARTICLES_Spawn_Rogue_Blood(pos,dmgs,col);
+		pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/2); 
+		pd->timcreation	=	lARXTime;
+		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | flags;
+		pd->tolive = 1100;
+		pd->delay=0;
+		pd->move = Vec3f::ZERO;
+		pd->rgb = col.to<float>();
+		pd->tc = bloodsplatter;
+		pd->fparam = rnd() * (1.f/10) - .05f;
+	}
+	
+	if(rnd() > .90f) {
+		ARX_PARTICLES_Spawn_Rogue_Blood(pos, dmgs, col);
+	}
 	
 }
 #define SPLAT_MULTIPLY 1.f
@@ -641,81 +609,63 @@ void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags) 
 
 
 long TOTAL_BODY_CHUNKS_COUNT=0;
+
+void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, INTERACTIVE_OBJ * io) {
 	
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood2(Vec3f * pos,float dmgs,D3DCOLOR col,INTERACTIVE_OBJ * io)
-{
-	if (	(io)
-		&&	(io->ioflags & IO_NPC)
-		&&	(io->_npcdata->SPLAT_TOT_NB)	)
-	{
-		if (io->_npcdata->SPLAT_DAMAGES<3) return;
-
-		float power;
-
-		power=((float)(io->_npcdata->SPLAT_DAMAGES)*( 1.0f / 60 ))+0.9f;
-
-		Vec3f vect;
-		vect.x=pos->x-io->_npcdata->last_splat_pos.x;
-		vect.y=pos->y-io->_npcdata->last_splat_pos.y;
-		vect.z=pos->z-io->_npcdata->last_splat_pos.z;
-		float dist = vect.length();
-		float div=1.f/dist;
-		vect.x*=div;
-		vect.y*=div;
-		vect.z*=div;
-		long nb = dist/4.f*power;
-
-		if (nb==0) nb=1;
-
+	bool isNpc = io && (io->ioflags & IO_NPC);
+	
+	if(isNpc && io->_npcdata->SPLAT_TOT_NB) {
+		
+		if(io->_npcdata->SPLAT_DAMAGES < 3) {
+			return;
+		}
+		
+		float power = (io->_npcdata->SPLAT_DAMAGES * (1.f/60)) + .9f;
+		
+		Vec3f vect = pos - io->_npcdata->last_splat_pos;
+		float dist = vect.normalize();
+		long nb = long(dist / 4.f * power);
+		if(nb == 0) {
+			nb = 1;
+		}
+		
 		long MAX_GROUND_SPLATS;
-
-		switch (config.video.levelOfDetail)
-		{
+		switch(config.video.levelOfDetail) {
 			case 2:
-				MAX_GROUND_SPLATS=10;
+				MAX_GROUND_SPLATS = 10;
 			break;
 			case 1:
-				MAX_GROUND_SPLATS=5;
+				MAX_GROUND_SPLATS = 5;
 			break;
 			default:
-				MAX_GROUND_SPLATS=1;
+				MAX_GROUND_SPLATS = 1;
 			break;
 		}
-
-
-		for (long k=0;k<nb;k++)
-		{
-			Vec3f posi;
-			posi.x=io->_npcdata->last_splat_pos.x+vect.x*(float)k*4.f*power;
-			posi.y=io->_npcdata->last_splat_pos.y+vect.y*(float)k*4.f*power;
-			posi.z=io->_npcdata->last_splat_pos.z+vect.z*(float)k*4.f*power;
+		
+		for(long k = 0; k < nb; k++) {
+			Vec3f posi = io->_npcdata->last_splat_pos + vect * k * 4.f * power;
 			io->_npcdata->SPLAT_TOT_NB++;
-
-			if (io->_npcdata->SPLAT_TOT_NB>MAX_GROUND_SPLATS)
-			{
-				ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,1);	
+			if(io->_npcdata->SPLAT_TOT_NB > MAX_GROUND_SPLATS) {
+				ARX_PARTICLES_Spawn_Blood3(posi, io->_npcdata->SPLAT_DAMAGES, col, SPLAT_GROUND);
 				io->_npcdata->SPLAT_TOT_NB=1;
+			} else {
+				ARX_PARTICLES_Spawn_Blood3(posi, io->_npcdata->SPLAT_DAMAGES, col);
 			}
-			else ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,0);	
+		}
+		
+	} else {
+		if(isNpc) {
+			io->_npcdata->SPLAT_DAMAGES = (short)dmgs;
+		}
+		ARX_PARTICLES_Spawn_Blood3(pos, dmgs, col, SPLAT_GROUND);
+		if(isNpc) {
+			io->_npcdata->SPLAT_TOT_NB = 1;
 		}
 	}
-	else 
-	{
-		if (	(io)
-			&&	(io->ioflags & IO_NPC)	)
-			io->_npcdata->SPLAT_DAMAGES=(short)dmgs;
-
-		ARX_PARTICLES_Spawn_Blood3(pos,dmgs,col,1);			
-
-		if (	(io)
-			&&	(io->ioflags & IO_NPC)	)
-			io->_npcdata->SPLAT_TOT_NB=1;
+	
+	if(isNpc) {
+		io->_npcdata->last_splat_pos = pos;
 	}
-
-	if (	(io)
-		&&	(io->ioflags & IO_NPC)	)
-		io->_npcdata->last_splat_pos = *pos;
 }
 
 //-----------------------------------------------------------------------------

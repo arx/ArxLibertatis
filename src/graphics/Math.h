@@ -554,4 +554,9 @@ inline T Rand( const T& pMin, const T& pMax )
     return pMin + (pMax - pMin) * rand() / (T)RAND_MAX;
 }
 
+template <class T>
+inline T clamp(T value, T min, T max) {
+	return (value <= min) ? min : ((value >= max) ? max : value);
+}
+
 #endif

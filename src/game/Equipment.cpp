@@ -1099,7 +1099,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							if (target == inter.iobj[0])
 								ARX_DAMAGES_SCREEN_SPLATS_Add(&pos, dmgs);
 
-							ARX_PARTICLES_Spawn_Blood2(&pos, dmgs, color.toBGRA(), target);
+							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 
 							if (!ValidIONum(weapon)) io_weapon = NULL;
 						}

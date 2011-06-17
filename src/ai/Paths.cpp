@@ -1749,10 +1749,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 													if (target->ioflags & IO_NPC)
 													{
 														target->_npcdata->SPLAT_TOT_NB = 0;
-														ARX_PARTICLES_Spawn_Blood2(&original_pos, damages, color.toBGRA(), target);
+														ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, target);
 													}
 
-													ARX_PARTICLES_Spawn_Blood2(&pos, damages, color.toBGRA(), target);
+													ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
 													ARX_DAMAGES_DamageNPC(target, damages, Thrown[i].source, 0, &pos);
 
 													if (rnd() * 100.f > target->_npcdata->resist_poison)
