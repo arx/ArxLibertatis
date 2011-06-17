@@ -1522,7 +1522,7 @@ void UpdateObjFx() {
 					}
 
 					GRenderer->ResetTexture(0);
-					EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, v2, 3,  0, 0 );
+					EERIEDRAWPRIM(Renderer::TriangleFan, v2);
 				}
 			}
 		}
@@ -2177,7 +2177,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					EERIETreatPoint(&temp,&tv[2]);
 					GRenderer->ResetTexture(0);
 
-					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, tv, 3, 0, 0);
+					EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
 					if(!ARXPausedTimer)
 					{
 						part->oldpos.x=in.sx;

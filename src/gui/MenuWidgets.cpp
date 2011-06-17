@@ -504,7 +504,7 @@ static void FadeInOut(float _fVal)
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 
-	EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, d3dvertex, 4, 0, EERIE_NOCOUNT );
+	EERIEDRAWPRIM(Renderer::TriangleStrip, d3dvertex, 4, true);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -3008,8 +3008,8 @@ void CMenuAllZone::DrawZone()
 			v1[0].sz=v1[1].sz=v1[2].sz=v2[0].sz=v2[1].sz=v2[2].sz=0.f;    
 			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;    
 			
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v1,3,0);
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v2,3,0);
+			EERIEDRAWPRIM(Renderer::TriangleStrip, v1);
+			EERIEDRAWPRIM(Renderer::TriangleStrip, v2);
 		}
 	}
 
@@ -3845,7 +3845,7 @@ void CWindowMenuConsole::UpdateText()
 	v[2].sy = (float)pZoneClick->rZone.bottom;
 	v[3].sx = v[1].sx;
 	v[3].sy = v[2].sy;
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
 //-----------------------------------------------------------------------------
@@ -4831,7 +4831,7 @@ void CMenuButton::RenderMouseOver()
 		v[3].sy = v[2].sy;
 		v[3].tu = 0.999999f;
 		v[3].tv = 0.999999f;
-		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
+		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 
 	if( vText.size() )
@@ -5934,7 +5934,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 
 		if(ComputePer(*psOldPoint, *(_psPoint1 + 1), &v[1], &v[3], fTaille)) {
 			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
+			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
 			v[0].sx=v[1].sx;
 			v[0].sy=v[1].sy;
@@ -5954,7 +5954,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 
 	if(ComputePer(*_psPoint1, *psOldPoint, &v[1], &v[3], fTaille)) {
 		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
+		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

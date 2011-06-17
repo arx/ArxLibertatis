@@ -243,12 +243,12 @@ bool CMY_DYNAMIC_VERTEXBUFFER::UnLock()
  ************************************************************************/
 template<class VERTEX_TYPE>
 HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE			_dptPrimitiveType, 
-								VERTEX_TYPE*				_pVertex, 
+								const VERTEX_TYPE*				_pVertex, 
 								int*						_piNbVertex, 
 								DWORD						_dwFlags,
 								CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB)
 {
-	VERTEX_TYPE*				pD3DVertex	=	_pVertex;
+	const VERTEX_TYPE*				pD3DVertex	=	_pVertex;
 	HRESULT						h_result	=	S_OK;
 	CMY_DYNAMIC_VERTEXBUFFER*	pDVB		=	_pDynamicVB;
 
@@ -307,7 +307,7 @@ HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE			_dptPrimitiveType,
  ************************************************************************/
 HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType, 
 								DWORD				_dwVertexTypeDesc,
-								LPVOID				_pVertex, 
+								const void *				_pVertex, 
 								int*				_piNbVertex, 
 								DWORD				_dwFlags )
 {
@@ -3727,10 +3727,10 @@ if (HALOCUR>0)
 		{
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);									
 			vert[2].color =0xFF000000;
-			EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 );
+			EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
 			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
 		}
-		else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 );
+		else EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
 	}
 
 		 HALOCUR = 0; 

@@ -276,29 +276,33 @@ void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
 //Draw primitive using vertex buffer
 HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType, 
 								DWORD				_dwVertexTypeDesc,	// Vertex Format
-								LPVOID				_pD3DTLVertex,		// don't specify _pD3DTLVertex type.
+								const void *				_pD3DTLVertex,		// don't specify _pD3DTLVertex type.
 								int *				_piNbVertex, 
 								DWORD				_dwFlags );
 
 //------------------------------------------------------------------------------
 
-HRESULT EERIEDRAWPRIM(	D3DPRIMITIVETYPE dptPrimitiveType,  
-						DWORD  dwVertexTypeDesc,            
-						LPVOID lpvVertices,                 
-						DWORD  dwVertexCount,               
-						DWORD  dwFlags,
-						long flags) {
-	
-	if( !( EERIE_NOCOUNT & flags ) )
-		EERIEDrawnPolys++;
+// TODO move to renderer
+D3DPRIMITIVETYPE ARXToDX7PrimitiveType[] = {
+	D3DPT_TRIANGLELIST,
+	D3DPT_TRIANGLESTRIP,
+	D3DPT_TRIANGLESTRIP,
+	D3DPT_LINELIST,
+	D3DPT_LINESTRIP
+};
 
-	return ARX_DrawPrimitiveVB(dptPrimitiveType,dwVertexTypeDesc,lpvVertices,(int*)&dwVertexCount,dwFlags);
-	//return GDevice->DrawPrimitive(dptPrimitiveType,dwVertexTypeDesc,lpvVertices,dwVertexCount,dwFlags);	
+void EERIEDRAWPRIM(Renderer::Primitive primitive, const D3DTLVERTEX * vertices, size_t count, bool nocount) {
+	
+	if(!nocount) {
+		EERIEDrawnPolys++;
+	}
+	
+	int iCount = count;
+	ARX_DrawPrimitiveVB(ARXToDX7PrimitiveType[primitive], D3DFVF_TLVERTEX, vertices, &iCount, 0);
+	//GDevice->DrawPrimitive(ARXToDX7PrimitiveType[primitive], D3DFVF_TLVERTEX, vertices, count, 0);
 }
-		
-void Delayed_FlushAll()
-{
-	int flg_NOCOUNT_USEVB = EERIE_NOCOUNT;
+
+void Delayed_FlushAll() {
 
 	TextureContainer* ptcTexture = GetTextureList();
 
@@ -328,18 +332,15 @@ void Delayed_FlushAll()
 					to=4;
 				else to=3;
 
-				EERIEDRAWPRIM(	D3DPT_TRIANGLESTRIP,
-								D3DFVF_TLVERTEX| D3DFVF_DIFFUSE,
-								ep->tv,	to,	0 , flg_NOCOUNT_USEVB );
+				EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to, true);
 					
 				if ( ptcTexture->userflags & POLY_METAL)
 				{
-					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
+					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					GRenderer->ResetTexture(0); 
 
-					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, ep->tv,	to,	0, flg_NOCOUNT_USEVB );
-					EERIEDrawnPolys++;	
+					EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to);
 				}
 
 				if ( (ep->type & POLY_LAVA) || (ep->type & POLY_WATER) )
@@ -373,7 +374,7 @@ void Delayed_FlushAll()
 						}
 					}
 
-					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, flg_NOCOUNT_USEVB );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 					if (ep->type & POLY_WATER)
 					{
@@ -388,8 +389,7 @@ void Delayed_FlushAll()
 							}
 						}	
 
-						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, flg_NOCOUNT_USEVB );
-						EERIEDrawnPolys++;
+						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to);
 					}
 
 					if (ep->type & POLY_LAVA)
@@ -399,7 +399,7 @@ void Delayed_FlushAll()
 							verts[i].tu=ep->v[i].sx*( 1.0f / 1000 )+EEsin((ep->v[i].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 							verts[i].tv=ep->v[i].sz*( 1.0f / 1000 )+EEcos((ep->v[i].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 						}	
-						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, flg_NOCOUNT_USEVB );
+						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to);
 						for ( int i=0;i<to;i++)
 						{
 							verts[i].tu=ep->v[i].sx*( 1.0f / 600 )+EEsin((ep->v[i].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
@@ -408,8 +408,7 @@ void Delayed_FlushAll()
 						}	
 
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, flg_NOCOUNT_USEVB );
-						EERIEDrawnPolys+=2;
+						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to);
 					}
 				}
 					
@@ -491,7 +490,7 @@ void Delayed_FlushAll()
 							}				
 						}
 
-						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, flg_NOCOUNT_USEVB );
+						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 					}
 				}
 
@@ -537,7 +536,7 @@ void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col)
 	v[1].rhw = v[0].rhw = 1.f;
 	
 	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, v, 2, 0);
+	EERIEDRAWPRIM(Renderer::LineList, v, 2);
 }
 
 void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col) {
@@ -552,7 +551,7 @@ void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col)
 	v[4].rhw = v[3].rhw = v[2].rhw = v[1].rhw = v[0].rhw = 1.f;
 	
 	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(D3DPT_LINESTRIP, D3DFVF_TLVERTEX, v, 5, 0);
+	EERIEDRAWPRIM(Renderer::LineStrip, v, 5);
 }
 
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole) {
@@ -568,7 +567,7 @@ void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, 
 	v[3].rhw = v[2].rhw = v[1].rhw = v[0].rhw = 1.f;
 	
 	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
 void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col) {
@@ -674,7 +673,7 @@ void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	GRenderer->ResetTexture(0);
 	v[1].color = v[0].color = col.toBGRA();
 	
-	EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX,v, 2,  0);
+	EERIEDRAWPRIM(Renderer::LineList, v, 2);
 }
 #define BASICFOCAL 350.f
 //*************************************************************************************
@@ -727,7 +726,7 @@ void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color 
 		v[3]= D3DTLVERTEX( D3DVECTOR( SPRmaxs.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 1.f, 1.f);
 
 		GRenderer->SetTexture(0, tex);
-		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4,  0  );		
+		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 	else SPRmaxs.x=-1;
 }
@@ -782,8 +781,7 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex,
 		}
 
 		GRenderer->SetTexture(0, tex);
-		EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, 
-				 v, 4,  0  );		
+		EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
 	}
 	else SPRmaxs.x=-1;
 }
@@ -828,8 +826,8 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	else if (to==4)
 			ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=0xFF00FF00;
 	else ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFFFFFF00;
-							
-	EERIEDRAWPRIM(D3DPT_LINESTRIP, D3DFVF_TLVERTEX, ltv, to+1,  0  );
+	
+	EERIEDRAWPRIM(Renderer::LineStrip, ltv, to + 1);
 }
 					
 void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
@@ -859,7 +857,7 @@ void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 	ltv[1].color=ltv[0].color=0xFFFF0000;
 
 	if ((ltv[1].sz>0.f) && (ltv[0].sz>0.f))
-		EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, ltv, 3,  0  );
+		EERIEDRAWPRIM(Renderer::LineList, ltv, 3);
 
 	for (long h=0;h<to;h++)
 	{
@@ -875,7 +873,7 @@ void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 		ltv[1].color=ltv[0].color=Color::yellow.toBGR();
 
 		if ((ltv[1].sz>0.f) &&  (ltv[0].sz>0.f))
-			EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, ltv, 3,  0  );
+			EERIEDRAWPRIM(Renderer::LineList, ltv, 3);
 	}
 }
 
@@ -908,7 +906,7 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, fEndu,	fEndv);
 	
 	GRenderer->SetTexture(0, tex);
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0  );	
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
 void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex,
@@ -946,7 +944,7 @@ void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureCo
 	v[3]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), 1.f, col, 0xFF000000, u0, v1);
 
 	GRenderer->SetTexture(0, tex);
-	EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, v, 4, 0  );	
+	EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
 }
 
 void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex,
@@ -973,7 +971,7 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u3,	smv+v3);
 	
 	GRenderer->SetTexture(0, tex);
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0  );	
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);	
 }
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
@@ -1003,7 +1001,7 @@ void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureCont
 	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), fZMinus, col, 0xFF000000, fEndu, fEndv);
 
 	GRenderer->SetTexture(0, tex);
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0  );	
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
@@ -1048,5 +1046,5 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
 	}
 
 	GRenderer->SetTexture(0, tex);
-	EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, v, 4, 0  );	
+	EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);	
 }

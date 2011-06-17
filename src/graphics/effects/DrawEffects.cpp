@@ -704,7 +704,7 @@ void ARXDRAW_DrawAllInterTransPolyPos()
 			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
 		}
 
-		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, InterTransPol[i], 3,  0, EERIE_NOCOUNT );
+		EERIEDRAWPRIM(Renderer::TriangleStrip, InterTransPol[i], 3, true);
 	}
 
 	INTERTRANSPOLYSPOS=0;
@@ -767,7 +767,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
 			}
 
-			EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, ep->tv, to,  0, 0  );
+			EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to);
 
 				if (ep->type & POLY_LAVA)
 				{
@@ -789,14 +789,14 @@ void ARXDRAW_DrawAllTransPolysPos() {
 						verts[j].tv		= ep->v[j].sz * ( 1.0f / 1000 ) + EEcos( (ep->v[j].sz) * ( 1.0f / 200 ) + (float) FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
 					}	
 
-					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 					for ( i = 0 ; i < to ; i++ )
 					{
 						verts[i].tu = ep->v[i].sx * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].sx ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
 						verts[i].tv = ep->v[i].sz * ( 1.0f / 1000 ) + EEcos( ( ep->v[i].sz ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
 					}	
-					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 					
 					for ( i = 0 ; i < to ; i++ )
 					{
@@ -806,7 +806,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					}	
 
 					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 				}
 			}
 
@@ -835,7 +835,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					if ( ep->type & POLY_FALL ) verts[j].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}
 
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 				for ( i = 0 ; i < to ; i++ )
 				{
@@ -845,7 +845,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}
 
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 				for ( i = 0 ; i < to ; i++ )
 				{
@@ -854,7 +854,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}	
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 		}
 	}
 

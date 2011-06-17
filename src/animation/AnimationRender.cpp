@@ -1145,7 +1145,7 @@ void ARX_DrawPrimitive(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVE
 	pD3DPointAdd[2].tu = _pVertex3->tu;
 	pD3DPointAdd[2].tv = _pVertex3->tv;
 	
-	EERIEDRAWPRIM(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, pD3DPointAdd, 3, 0, 0 );
+	EERIEDRAWPRIM(Renderer::TriangleList, pD3DPointAdd);
 }
 
 long FORCE_FRONT_DRAW = 0;

@@ -805,8 +805,7 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 	}
 	
 	
-	EERIEDRAWPRIM(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, _pTex->pVertexListCull,
-	              _pTex->ulNbVertexListCull, 0, 0);
+	EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull, _pTex->ulNbVertexListCull);
 	
 	_pTex->ulNbVertexListCull = 0;
 	
@@ -829,77 +828,47 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetTexture(0, _pTex);
 
-	if(	_pTex->ulNbVertexListCull_TNormalTrans )
-	{
+	if(_pTex->ulNbVertexListCull_TNormalTrans) {
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-
-		if(_pTex->ulNbVertexListCull_TNormalTrans)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TNormalTrans,
-				_pTex->ulNbVertexListCull_TNormalTrans,
-				0, 0 );
+		if(_pTex->ulNbVertexListCull_TNormalTrans) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TNormalTrans,
+			              _pTex->ulNbVertexListCull_TNormalTrans);
 			_pTex->ulNbVertexListCull_TNormalTrans=0;
 		}
 	}
 	
-	if(	_pTex->ulNbVertexListCull_TAdditive )
-	{
+	if(_pTex->ulNbVertexListCull_TAdditive) {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		if(_pTex->ulNbVertexListCull_TAdditive)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TAdditive,
-				_pTex->ulNbVertexListCull_TAdditive,
-				0, 0 );
+		if(_pTex->ulNbVertexListCull_TAdditive) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TAdditive,
+			              _pTex->ulNbVertexListCull_TAdditive);
 			_pTex->ulNbVertexListCull_TAdditive=0;
 		}
 	}
-
-	if (_pTex->ulNbVertexListCull_TSubstractive)
-	{
+	
+	if(_pTex->ulNbVertexListCull_TSubstractive) {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
-
-		if(_pTex->ulNbVertexListCull_TSubstractive)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TSubstractive,
-				_pTex->ulNbVertexListCull_TSubstractive,
-				0, 0 );
+		if(_pTex->ulNbVertexListCull_TSubstractive) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TSubstractive,
+			              _pTex->ulNbVertexListCull_TSubstractive);
 			_pTex->ulNbVertexListCull_TSubstractive=0;
 		}
 	}
-
-	if (_pTex->ulNbVertexListCull_TMultiplicative)
-	{
+	
+	if(_pTex->ulNbVertexListCull_TMultiplicative) {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		if(_pTex->ulNbVertexListCull_TMultiplicative)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TMultiplicative,
-				_pTex->ulNbVertexListCull_TMultiplicative,
-				0, 0 );
-			_pTex->ulNbVertexListCull_TMultiplicative=0;
+		if(_pTex->ulNbVertexListCull_TMultiplicative) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TMultiplicative,
+			              _pTex->ulNbVertexListCull_TMultiplicative);
+			_pTex->ulNbVertexListCull_TMultiplicative = 0;
 		}
 	}
-
-	if(	_pTex->ulNbVertexListCull_TMetal )
-	{
+	
+	if(_pTex->ulNbVertexListCull_TMetal) {
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-
-		if(_pTex->ulNbVertexListCull_TMetal)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TMetal,
-				_pTex->ulNbVertexListCull_TMetal,
-				0, 0 );
+		if(_pTex->ulNbVertexListCull_TMetal) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TMetal,
+			              _pTex->ulNbVertexListCull_TMetal);
 			_pTex->ulNbVertexListCull_TMetal=0;
 		}
 	}
@@ -952,11 +921,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[5];
 		}
 
-		EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
-						D3DFVF_TLVERTEX,
-						tD3DTLVERTEXTab2,
-						iPos,
-						0, 0 );
+		EERIEDRAWPRIM(Renderer::TriangleList, tD3DTLVERTEXTab2, iPos);
 
 		_pTex->TextureRefinement->vPolyInterZMap.clear();
 	}

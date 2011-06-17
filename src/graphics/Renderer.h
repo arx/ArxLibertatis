@@ -82,6 +82,14 @@ public:
 		StencilBuffer = (1<<2)
 	};
 	DECLARE_FLAGS(BufferType, BufferFlags);
+	
+	enum Primitive {
+		TriangleList,
+		TriangleStrip,
+		TriangleFan,
+		LineList,
+		LineStrip
+	};
 
 	Renderer();
 	virtual ~Renderer();

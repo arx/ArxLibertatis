@@ -45,8 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEDRAW_H
 #define EERIEDRAW_H
 
-#define EERIE_NOCOUNT	0x4000	// do not incr EERIEDrawnPolys for EERIEDRAWPRIM
-
 #include "graphics/d3dwrapper.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
@@ -64,13 +62,7 @@ void MDL_FlushAll();
 void Delayed_EERIEDRAWPRIM(EERIEPOLY * ep);
 void Delayed_FlushAll();
 
-HRESULT EERIEDRAWPRIM(D3DPRIMITIVETYPE dptPrimitiveType,
-                      DWORD  dwVertexTypeDesc,
-                      LPVOID lpvVertices,
-                      DWORD  dwVertexCount,
-                      DWORD  dwFlags,					//d3d flag
-                      long flags = 0					//eerie flag
-                     );
+void EERIEDRAWPRIM(Renderer::Primitive primitive, const D3DTLVERTEX * vertices, size_t count = 3, bool nocount = false);
 
 void EERIEDrawCircle(float x0, float y0, float r, Color col, float z);
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col);

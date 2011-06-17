@@ -221,11 +221,7 @@ bool C_ARX_Carte::Render(void)
 					else
 						GRenderer->ResetTexture(0);
 
-					EERIEDRAWPRIM(	D3DPT_TRIANGLESTRIP,
-									D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,
-									ep->tv,
-									nb,
-									0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, nb, true);
 				}
 
 			}
