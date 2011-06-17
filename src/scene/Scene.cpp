@@ -156,6 +156,75 @@ unsigned long FrameCount;
 
 CircularVertexBuffer<SMY_D3DVERTEX3> * pDynamicVertexBuffer;
 
+namespace {
+
+struct DynamicVertexBuffer {
+	
+private:
+	
+	SMY_D3DVERTEX3 * vertices;
+	size_t start;
+	
+public:
+	
+	size_t nbindices;
+	unsigned short * indices; // TODO not all users of this class need this
+	
+	DynamicVertexBuffer() : nbindices(0), indices(NULL) { }
+	
+	void alloc() {
+		if(!indices) {
+			indices = new unsigned short[4 * pDynamicVertexBuffer->vb->capacity()];
+		}
+		if(!vertices) {
+			vertices = new SMY_D3DVERTEX3[pDynamicVertexBuffer->vb->capacity()];
+			start = 0;
+		}
+	}
+	
+	SMY_D3DVERTEX3 * append(size_t nbvertices) {
+		
+		if(pDynamicVertexBuffer->pos + nbvertices > pDynamicVertexBuffer->vb->capacity()) {
+			return NULL;
+		}
+		
+		SMY_D3DVERTEX3 * pos = vertices + pDynamicVertexBuffer->pos;
+		
+		pDynamicVertexBuffer->pos += nbvertices;
+		
+		return pos;
+	}
+	
+	void upload() {
+		BufferFlags flags = (start == 0) ? DiscardContents : NoOverwrite;
+		pDynamicVertexBuffer->vb->setData(vertices + start, pDynamicVertexBuffer->pos - start, start, flags);
+	}
+	
+	void draw(Renderer::Primitive primitive) {
+		pDynamicVertexBuffer->vb->drawIndexed(primitive, pDynamicVertexBuffer->pos - start, start, indices, nbindices);
+	}
+	
+	void done() {
+		start = pDynamicVertexBuffer->pos;
+		nbindices = 0;
+	}
+	
+	void reset() {
+		start = pDynamicVertexBuffer->pos = 0;
+		nbindices = 0;
+	}
+	
+	~DynamicVertexBuffer() {
+		if(indices) {
+			delete[] indices;
+		}
+		
+	}
+	
+} dynamicVertices;
+
+}
+
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
 EERIE_FRUSTRUM_PLANE efpPlaneFar;
 
@@ -906,7 +975,7 @@ void ARX_PORTALS_InitDrawnRooms()
 
 	if(pDynamicVertexBuffer) {
 		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardContents);
-		pDynamicVertexBuffer->pos = 0;
+		dynamicVertices.reset();
 	}
 	
 }
@@ -1203,11 +1272,13 @@ void ARX_PORTALS_Frustrum_RenderRooms(long prec,long tim)
 	NbRoomDrawList=0;
 }
 
-static void RenderWaterBatch(size_t pos) {
+static void RenderWaterBatch() {
 	
-	if(!pDynamicVertexBuffer->nbindices) {
+	if(!dynamicVertices.nbindices) {
 		return;
 	}
+	
+	dynamicVertices.upload();
 	
 	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
@@ -1217,7 +1288,7 @@ static void RenderWaterBatch(size_t pos) {
 	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(2)->DisableAlpha();
 	
-	pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - pos, pos, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->GetTextureStage(1)->DisableColor();
 	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
@@ -1235,30 +1306,26 @@ static void RenderWater() {
 	size_t iNbIndice = 0;
 	int iNb = vPolyWater.size();
 	
-	size_t start = pDynamicVertexBuffer->pos;
-	pDynamicVertexBuffer->nbindices = 0;
-
+	dynamicVertices.alloc();
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(2, enviro);
 	
-	unsigned short * indices = pDynamicVertexBuffer->indices;
+	unsigned short * indices = dynamicVertices.indices;
 	
 	while(iNb--) {
 		EERIEPOLY * ep = vPolyWater[iNb];
 		
-		SMY_D3DVERTEX3 vertices[4];
-		SMY_D3DVERTEX3 * pVertex = vertices;
-		
 		unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
+		SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 		
-		if(pDynamicVertexBuffer->pos + iNbVertex > pDynamicVertexBuffer->vb->capacity()) {
-			RenderWaterBatch(start);
-			pDynamicVertexBuffer->pos = start = iNbIndice = pDynamicVertexBuffer->nbindices = 0;
-			indices = pDynamicVertexBuffer->indices;
-			// iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
-			ARX_CHECK(pDynamicVertexBuffer->pos <= pDynamicVertexBuffer->vb->capacity());
+		if(!pVertex) {
+			RenderWaterBatch();
+			dynamicVertices.reset();
+			iNbIndice = 0;
+			indices = dynamicVertices.indices;
+			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
 		pVertex->x = ep->v[0].sx;
@@ -1344,7 +1411,7 @@ static void RenderWater() {
 		*indices++ = iNbIndice++; 
 		*indices++ = iNbIndice++; 
 		*indices++ = iNbIndice++; 
-		pDynamicVertexBuffer->nbindices+=3;
+		dynamicVertices.nbindices += 3;
 		
 		if(iNbVertex == 4)
 		{
@@ -1378,29 +1445,28 @@ static void RenderWater() {
 			*indices++ = iNbIndice++; 
 			*indices++ = iNbIndice - 2; 
 			*indices++ = iNbIndice - 3; 
-			pDynamicVertexBuffer->nbindices+=3;
+			dynamicVertices.nbindices += 3;
 		}
-		
-		BufferFlags flags = pDynamicVertexBuffer->pos ? NoOverwrite : DiscardContents;
-		pDynamicVertexBuffer->vb->setData(vertices, iNbVertex, pDynamicVertexBuffer->pos, flags);
-		pDynamicVertexBuffer->pos += iNbVertex;
 		
 	}
 	
-	RenderWaterBatch(start);
+	RenderWaterBatch();
+	dynamicVertices.done();
 	
 	vPolyWater.clear();
 	
 }
 
-void RenderLavaBatch(size_t pos) {
+void RenderLavaBatch() {
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	
-	if(!pDynamicVertexBuffer->nbindices) {
+	if(!dynamicVertices.nbindices) {
 		return;
 	}
+	
+	dynamicVertices.upload();
 	
 	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
@@ -1410,12 +1476,12 @@ void RenderLavaBatch(size_t pos) {
 	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(2)->DisableAlpha();
 	
-	pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - pos, pos, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
 	
-	pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - pos, pos, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->GetTextureStage(1)->DisableColor();
 	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
@@ -1433,29 +1499,26 @@ void RenderLava() {
 	size_t iNbIndice = 0;
 	int iNb=vPolyLava.size();
 	
-	size_t start = pDynamicVertexBuffer->pos;
-	pDynamicVertexBuffer->nbindices = 0;
+	dynamicVertices.alloc();
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(2, enviro);
 	
-	unsigned short * indices = pDynamicVertexBuffer->indices;
+	unsigned short * indices = dynamicVertices.indices;
 	
 	while(iNb--) {
 		EERIEPOLY * ep = vPolyLava[iNb];
 		
-		SMY_D3DVERTEX3 vertices[4];
-		SMY_D3DVERTEX3 * pVertex = vertices;
-		
 		unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
+		SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 		
-		if(pDynamicVertexBuffer->pos + iNbVertex > pDynamicVertexBuffer->vb->capacity()) {
-			RenderLavaBatch(start);
-			pDynamicVertexBuffer->pos = start = iNbIndice = pDynamicVertexBuffer->nbindices = 0;
-			indices = pDynamicVertexBuffer->indices;
-			// iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
-			ARX_CHECK(pDynamicVertexBuffer->pos <= pDynamicVertexBuffer->vb->capacity());
+		if(!pVertex) {
+			RenderLavaBatch();
+			dynamicVertices.reset();
+			iNbIndice = 0;
+			indices = dynamicVertices.indices;
+			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
 		pVertex->x=ep->v[0].sx;
@@ -1516,7 +1579,7 @@ void RenderLava() {
 		*indices++ = iNbIndice++; 
 		*indices++ = iNbIndice++; 
 		*indices++ = iNbIndice++; 
-		pDynamicVertexBuffer->nbindices+=3;
+		dynamicVertices.nbindices += 3;
 		
 		if(iNbVertex&4)
 		{
@@ -1542,16 +1605,13 @@ void RenderLava() {
 			*indices++ = iNbIndice++; 
 			*indices++ = iNbIndice - 2; 
 			*indices++ = iNbIndice - 3; 
-			pDynamicVertexBuffer->nbindices+=3;
+			dynamicVertices.nbindices += 3;
 		}
-		
-		BufferFlags flags = pDynamicVertexBuffer->pos ? NoOverwrite : DiscardContents;
-		pDynamicVertexBuffer->vb->setData(vertices, iNbVertex, pDynamicVertexBuffer->pos, flags);
-		pDynamicVertexBuffer->pos += iNbVertex;
 		
 	}
 	
-	RenderLavaBatch(start);
+	RenderLavaBatch();
+	dynamicVertices.done();
 	
 	vPolyLava.clear();
 	
@@ -2372,6 +2432,8 @@ SMY_D3DVERTEX *pMyVertex;
 		iNbTex=portals->room[room_num].usNbTextures;
 		ppTexCurr=portals->room[room_num].ppTextureContainer;
 
+		dynamicVertices.alloc();
+		
 		while ( iNbTex-- ) //For each tex in portals->room[room_num]
 		{
 			TextureContainer * pTexCurr	= *ppTexCurr;
@@ -2380,12 +2442,10 @@ SMY_D3DVERTEX *pMyVertex;
 			{
 					//---------------------------------------------------------------------------
 					//																		 INIT
-				size_t start = pDynamicVertexBuffer->pos;
-				pDynamicVertexBuffer->nbindices = 0;
 				
 				GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
 				
-				unsigned short * pussInd = pDynamicVertexBuffer->indices;
+				unsigned short * pussInd = dynamicVertices.indices;
 				unsigned short iNbIndice = 0;
 
 				vector<EERIEPOLY *>::iterator it		=	pTexCurr->TextureRefinement->vPolyZMap.begin();
@@ -2398,19 +2458,18 @@ SMY_D3DVERTEX *pMyVertex;
 				{
 					EERIEPOLY * ep = *it;
 					
-					SMY_D3DVERTEX3 vertices[4];
-					SMY_D3DVERTEX3 * pVertex = vertices;
-					
 					unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
+					SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 					
-					if(pDynamicVertexBuffer->pos + iNbVertex > pDynamicVertexBuffer->vb->capacity()) {
-						if(pDynamicVertexBuffer->nbindices) {
-							pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - start, start, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+					if(!pVertex) {
+						if(dynamicVertices.nbindices) {
+							dynamicVertices.upload();
+							dynamicVertices.draw(Renderer::TriangleList);
 						}
-						pDynamicVertexBuffer->pos = start = iNbIndice = pDynamicVertexBuffer->nbindices = 0;
-						pussInd = pDynamicVertexBuffer->indices;
-						// iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
-						ARX_CHECK(pDynamicVertexBuffer->pos <= pDynamicVertexBuffer->vb->capacity());
+						dynamicVertices.reset();
+						iNbIndice = 0;
+						pussInd = dynamicVertices.indices;
+						pVertex = dynamicVertices.append(iNbVertex);
 					}
 					
 					//-----------------------------------------------------------------------
@@ -2462,28 +2521,26 @@ SMY_D3DVERTEX *pMyVertex;
 						pVertex++;
 						
 						*pussInd++				=	iNbIndice++;
-						pDynamicVertexBuffer->nbindices++;
+						dynamicVertices.nbindices++;
 					}
 					
-					if(iNbVertex&4)
-					{
+					if(iNbVertex&4) {
 						*pussInd++=iNbIndice-2;
 						*pussInd++=iNbIndice-3;
-						pDynamicVertexBuffer->nbindices	+=	2;//3;
+						dynamicVertices.nbindices += 2;
 					}
 					
-					BufferFlags flags = pDynamicVertexBuffer->pos ? NoOverwrite : DiscardContents;
-					pDynamicVertexBuffer->vb->setData(vertices, iNbVertex, pDynamicVertexBuffer->pos, flags);
-					pDynamicVertexBuffer->pos += iNbVertex;
 				}
 
 					//---------------------------------------------------------------------------
 					//														   CLEAR CURRENT ZMAP
 				pTexCurr->TextureRefinement->vPolyZMap.clear();
 				
-				if(pDynamicVertexBuffer->nbindices) {
-					pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - start, start, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+				if(dynamicVertices.nbindices) {
+					dynamicVertices.upload();
+					dynamicVertices.draw(Renderer::TriangleList);
 				}
+				dynamicVertices.done();
 			}
 			
 			ppTexCurr++;

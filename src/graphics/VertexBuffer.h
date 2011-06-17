@@ -45,14 +45,9 @@ public:
 	
 	size_t pos;
 	
-	size_t nbindices;
-	unsigned short * const indices; // TODO not all users of this class need this
-	
-	CircularVertexBuffer(VertexBuffer<Vertex> * _vb) : vb(_vb), pos(0), nbindices(0), indices(new unsigned short[4 * _vb->capacity()]) { }
+	CircularVertexBuffer(VertexBuffer<Vertex> * _vb) : vb(_vb), pos(0) { }
 	
 	void draw(Renderer::Primitive primitive, const Vertex * vertices, size_t count) {
-		
-		nbindices = 0;
 		
 		while(count) {
 			
@@ -71,7 +66,6 @@ public:
 	
 	~CircularVertexBuffer() {
 		delete vb;
-		delete[] indices;
 	}
 	
 };

@@ -95,30 +95,12 @@ static IDirectInput7A * DI_DInput7;
 static INPUT_INFO * DI_KeyBoardBuffer;
 static INPUT_INFO * DI_MouseState;
 
-static void fuwine(vector<byte> & test) {
-	
-	test.resize(test.size() + 1);
-	
-	LogInfo << DI_InputInfo.size() << '/' << DI_InputInfo.capacity() << '|' << test.size() << '/' << test.capacity();
-	
-	DI_InputInfo.resize(DI_InputInfo.size() + 1);
-	
-}
-
 // must be BOOL to be passed to DX
 static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef) {
 	
 	(void)pvRef;
 	
-	LogInfo << "hello";
-	
-	vector<byte> test;
-	
-	LogInfo << DI_InputInfo.size() << '/' << DI_InputInfo.capacity() << '|' << test.size() << '/' << test.capacity();
-	
-	fuwine(test);
-	
-	LogInfo << DI_InputInfo.size() << '/' << DI_InputInfo.capacity() << '|' << test.size() << '/' << test.capacity();
+	DI_InputInfo.resize(DI_InputInfo.size() + 1);
 	
 	INPUT_INFO & info = DI_InputInfo.back();
 	memset(&info,0,sizeof(INPUT_INFO));
