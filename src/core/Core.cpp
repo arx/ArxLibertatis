@@ -387,7 +387,6 @@ float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;
 float FrameDiff=0;
-long CEDRIC_VERSION=1;
 long CYRIL_VERSION=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
@@ -1139,10 +1138,9 @@ int main(int argc, char ** argv) {
 		FOR_EXTERNAL_PEOPLE=1;
 	}
 
-	if (FOR_EXTERNAL_PEOPLE) {
+	if(FOR_EXTERNAL_PEOPLE) {
 		LogDebug << "FOR_EXTERNAL_PEOPLE";
 		ALLOW_CHEATS		= 0;
-		CEDRIC_VERSION		= 0;
 		NO_TEXT_AT_ALL		= 1;
 
 		FAST_SPLASHES		= 0;
@@ -1157,12 +1155,6 @@ int main(int argc, char ** argv) {
 		NEED_EDITOR = 0;
 		TRUEFIGHT = 0;
 #endif
-	} else if (CEDRIC_VERSION) {
-		LogDebug << "CEDRIC_VERSION";
-		FAST_SPLASHES=1;
-		FORCE_SHOW_FPS=1;
-		FINAL_RELEASE=1; // 1 with pack or 0 without pack
-		AUTO_FULL_SCREEN=0;
 	}
 	
 	// Initialize config first, before anything else.
@@ -4692,19 +4684,11 @@ bool DANAE_ManageSplashThings()
 			ARX_INTERFACE_KillARKANE();
 			char loadfrom[256];
 
-			if (CEDRIC_VERSION)
-			{
-				sprintf(loadfrom,"Graph\\Levels\\LevelDemo2\\levelDemo2.dlf");
-				LoadLevelScreen(29);	
-			}
-			else
-			{
-				REFUSE_GAME_RETURN=1;
-				sprintf(loadfrom,"Graph\\Levels\\Level10\\level10.dlf");
-				OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
-				PROGRESS_BAR_TOTAL = 108;
-				LoadLevelScreen(10);	
-			}
+			REFUSE_GAME_RETURN=1;
+			sprintf(loadfrom,"Graph\\Levels\\Level10\\level10.dlf");
+			OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
+			PROGRESS_BAR_TOTAL = 108;
+			LoadLevelScreen(10);	
 
 			DanaeLoadLevel(loadfrom);
 			FORBID_SAVE=0;
