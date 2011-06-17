@@ -79,12 +79,12 @@ public:
 	};
 
 	//! Target surface
-	enum BufferType
-	{
-		ColorBuffer     = 0x00000001,
-		DepthBuffer     = 0x00000002,
-		StencilBuffer   = 0x00000004
+	enum BufferType {
+		ColorBuffer   = (1<<0),
+		DepthBuffer   = (1<<1),
+		StencilBuffer = (1<<2)
 	};
+	DECLARE_FLAGS(BufferType, BufferFlags);
 
 	struct Viewport
 	{
@@ -133,7 +133,7 @@ public:
 	virtual void End2DProjection();
 
 	// Render Target
-	virtual void Clear(int bufferFlags, Color clearColor = Color::none, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
+	virtual void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f, size_t nrects = 0, Rect * rect = 0);
 
 	// Fog
 	virtual void SetFogColor(Color color);
@@ -160,6 +160,8 @@ public:
 private:
 	std::vector<TextureStage*>	m_TextureStages;
 };
+
+DECLARE_FLAGS_OPERATORS(Renderer::BufferFlags)
 
 extern Renderer* GRenderer;
 

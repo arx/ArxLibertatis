@@ -1059,14 +1059,24 @@ void Renderer::End2DProjection()
 	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
 }
 
-void Renderer::Clear(int bufferFlags, Color clearColor, float clearDepth, unsigned int rectCount, D3DRECT* pRects)
-{
+void Renderer::Clear(BufferFlags bufferFlags, Color clearColor, float clearDepth, size_t nrects, Rect * rects) {
+	
 	DWORD clearTargets = 0;
 	clearTargets |= (bufferFlags & ColorBuffer) ? D3DCLEAR_TARGET : 0;
 	clearTargets |= (bufferFlags & DepthBuffer) ?  D3DCLEAR_ZBUFFER : 0;
 	clearTargets |= (bufferFlags & StencilBuffer) ? D3DCLEAR_STENCIL : 0;
-
-	GDevice->Clear(rectCount, pRects, clearTargets, clearColor.toBGRA(), clearDepth, 0);
+	
+	// TODO check that struct layout is the same using static assert and just cast?
+	static D3DRECT d3drects[2];
+	arx_assert(nrects <= 2);
+	for(size_t i = 0; i < nrects; i++) {
+		d3drects[i].x1 = rects[i].left;
+		d3drects[i].y1 = rects[i].top;
+		d3drects[i].x2 = rects[i].right;
+		d3drects[i].y2 = rects[i].bottom;
+	}
+	
+	GDevice->Clear(DWORD(nrects), d3drects, clearTargets, clearColor.toBGRA(), clearDepth, 0);
 }
 
 void Renderer::SetFogColor(Color color)

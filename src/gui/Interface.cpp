@@ -8143,16 +8143,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-		D3DRECT rec;
-
+		Rect rec;
 		if (BOOKZOOM) {
- 
-			rec.x1 = (118.F + BOOKDECX) * Xratio;
-			rec.y1 = (69.f + BOOKDECY) * Yratio;
-			rec.x2 = (280.f + BOOKDECY) * Xratio;
-			rec.y2 = (310.f + BOOKDECY) * Yratio;
-
-			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1, 1, &rec);
+			
+			rec = Rect(s32((118.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
+			           s32((280.f + BOOKDECY) * Xratio), s32((310.f + BOOKDECY) * Yratio));
+			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
 			if (ARXmenu.currentmode!=AMCM_OFF)
 			{
@@ -8164,14 +8160,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 				GRenderer->SetViewport(vp);
 			}
 		} else {
-			rec.x1 = (118.F + BOOKDECX) * Xratio;
-			rec.y1 = (69.f + BOOKDECY) * Yratio;
-			rec.x2 = (300.f + 50 + BOOKDECX) * Xratio;
-			rec.y2 = (338.f + BOOKDECY) * Yratio;
 			
-			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1, 1, &rec);
+			rec = Rect(s32((118.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
+			          s32((350.f + BOOKDECX) * Xratio), s32((338.f + BOOKDECY) * Yratio));
+			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
-			rec.x2 -= 50;
+			rec.right -= 50;
 		}
 
 		if (ARXmenu.currentmode==AMCM_OFF)
@@ -8225,25 +8219,22 @@ void ARX_INTERFACE_ManageOpenedBook()
 		TOTPDL = 2;
 
 		EERIE_CAMERA * oldcam=ACTIVECAM;
-		bookcam.centerx=(rec.x2-rec.x1)/2+rec.x1;
-		bookcam.centery=(rec.y2-rec.y1)/2+rec.y1;
+		bookcam.centerx = rec.center().x;
+		bookcam.centery = rec.center().y;
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 
 		Renderer::Viewport vp;
-		if (BOOKZOOM)
-		{
-			vp.x		=	ARX_CLEAN_WARN_CAST_DWORD( rec.x1 + 52.f * Xratio );
-			vp.y		=	rec.y1;
-			vp.width	=	ARX_CLEAN_WARN_CAST_DWORD( rec.x2 - rec.x1 - 73.f * Xratio );
-			vp.height	=	ARX_CLEAN_WARN_CAST_DWORD( rec.y2 - rec.y1 - 17.f * Yratio );
-		}
-		else
-		{
-			vp.x		=	rec.x1;
-			vp.y		=	rec.y1;
-			vp.width	=	rec.x2 - rec.x1;
-			vp.height	=	rec.y2 - rec.y1;
+		if(BOOKZOOM) {
+			vp.x = static_cast<int>(rec.left + 52.f * Xratio);
+			vp.y = rec.top;
+			vp.width = static_cast<int>(rec.right - rec.left - 73.f * Xratio);
+			vp.height = static_cast<int>(rec.bottom - rec.top - 17.f * Yratio);
+		} else {
+			vp.x = rec.left;
+			vp.y = rec.top;
+			vp.width = rec.width();
+			vp.height = rec.height();
 		}
 		GRenderer->SetViewport(vp);
 

@@ -140,6 +140,10 @@ public:
 		return (left <= right && top <= bottom);
 	}
 	
+	Vector2<T> center() const {
+		return Vector2<T>(left + (right - left) / 2, top + (bottom - top) / 2);
+	}
+	
 	static const _Rectangle ZERO;
 	
 };

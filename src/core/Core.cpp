@@ -5510,18 +5510,16 @@ static float _AvgFrameDiff = 150.f;
 
 		//-------------------------------------------------------------------------------
 		//															DRAW CINEMASCOPE 16/9
-		if (CINEMA_DECAL!=0.f)
-		{
-			D3DRECT rectz[2];
-			rectz[0].x1 = rectz[1].x1 = 0;
-			rectz[0].x2			=	rectz[1].x2	=	DANAESIZX;
-			rectz[0].y1 = 0;
-
-			ARX_CHECK_LONG( CINEMA_DECAL * Yratio );
-			long	lMulResult	=	ARX_CLEAN_WARN_CAST_LONG( CINEMA_DECAL * Yratio );
-			rectz[0].y2 		= lMulResult;
-			rectz[1].y1 		= DANAESIZY - lMulResult;
-			rectz[1].y2 = DANAESIZY;
+		if(CINEMA_DECAL != 0.f) {
+			Rect rectz[2];
+			rectz[0].left = rectz[1].left = 0;
+			rectz[0].right = rectz[1].right	=	DANAESIZX;
+			rectz[0].top = 0;
+			ARX_CHECK_LONG(CINEMA_DECAL * Yratio);
+			long lMulResult = static_cast<long>(CINEMA_DECAL * Yratio);
+			rectz[0].bottom = lMulResult;
+			rectz[1].top = DANAESIZY - lMulResult;
+			rectz[1].bottom = DANAESIZY;
 			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
 		}
 		//-------------------------------------------------------------------------------
