@@ -1817,8 +1817,8 @@ void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj)
 	eobj->nbpfaces = 0;
 }
 
-bool Is_Svert(EERIE_PFACE * epf, long epi, EERIE_FACE * ef, long ei)
-{
+static bool Is_Svert(EERIE_PFACE * epf, long epi, EERIE_FACE * ef, long ei) {
+	
 	if ((epf->vid[epi] == ef->vid[ei])
 	        &&	(epf->u[epi] == ef->u[ei])
 	        &&	(epf->v[epi] == ef->v[ei])) 
@@ -1827,8 +1827,8 @@ bool Is_Svert(EERIE_PFACE * epf, long epi, EERIE_FACE * ef, long ei)
 	return false;
 }
 
-long Strippable(EERIE_PFACE * epf, EERIE_FACE * ef)
-{
+static long Strippable(EERIE_PFACE * epf, EERIE_FACE * ef) {
+	
 	if ((Is_Svert(epf, epf->nbvert - 1, ef, 0))
 	        &&	(Is_Svert(epf, epf->nbvert - 2, ef, 1))) return 2;
 
@@ -1858,7 +1858,6 @@ static bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face) {
 
 		if ((r = Strippable(epf, face)) >= 0)
 		{
-			epf->color[epf->nbvert] = face->color[r];
 			epf->u[epf->nbvert] = face->u[r];
 			epf->v[epf->nbvert] = face->v[r];
 			epf->vid[epf->nbvert] = face->vid[r];
@@ -1870,7 +1869,7 @@ static bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face) {
 	return false;
 }
 
-void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
+static void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 {
 	if (EERIEOBJECT_AddFaceToPFace(eobj, face)) return;
 
@@ -1879,7 +1878,6 @@ void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 	epf->facetype = face->facetype;
 	epf->nbvert = 3;
 	epf->texid = face->texid;
-	epf->transval = face->transval;
 
 	ARX_CHECK_SHORT(faceidx);
 	short sfaceIdx = static_cast<short>(faceidx);
@@ -1887,7 +1885,6 @@ void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 	for (long i = 0; i < 3; i++)
 	{
 		epf->faceidx[i] = sfaceIdx;
-		epf->color[i] = face->color[i];
 		epf->u[i] = face->u[i];
 		epf->v[i] = face->v[i];
 		epf->vid[i] = face->vid[i];

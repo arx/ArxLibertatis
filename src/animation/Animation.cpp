@@ -1702,11 +1702,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 	}			
 
 	if (FRAME_COUNT!=0)
-	for (long j=0;j<3;j++)		
-		vert_list[j].color=eobj->facelist[i].color[j];		
+	for (long j=0;j<3;j++)
+		vert_list[j].color = eobj->facelist[i].color[j].toBGRA();
 	else 
-	for (long j=0;j<3;j++)		
-		eobj->facelist[i].color[j]=vert_list[j].color;		
+	for (long j=0;j<3;j++)
+		eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
 
 	// Transparent poly: storing info to draw later
 	if ((eobj->facelist[i].facetype & POLY_TRANS) 

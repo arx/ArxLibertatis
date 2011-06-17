@@ -214,38 +214,34 @@ struct EERIE_VERTEX {
 #define POLY_LATE_MIP		(1<<27)
 #define IOPOLYVERT 3
 
-struct EERIE_FACE
-{
-	long		facetype;	// 0 = flat  1 = text
-							// 2 = Double-Side
-	short		texid;
-	unsigned short		vid[IOPOLYVERT];
-	float		u[IOPOLYVERT];
-	float		v[IOPOLYVERT];
-
-	float		transval;
-	Vec3f	norm;
-	Vec3f	nrmls[IOPOLYVERT];
-	float		temp;
-
-	short		ou[IOPOLYVERT];
-	short		ov[IOPOLYVERT];
-	D3DCOLOR	color[IOPOLYVERT];
-
+struct EERIE_FACE {
+	
+	long facetype; // 0 = flat  1 = text  2 = Double-Side
+	short texid;
+	unsigned short vid[IOPOLYVERT];
+	float u[IOPOLYVERT];
+	float v[IOPOLYVERT];
+	
+	float transval;
+	Vec3f norm;
+	Vec3f nrmls[IOPOLYVERT];
+	float temp;
+	
+	short ou[IOPOLYVERT];
+	short ov[IOPOLYVERT];
+	Color color[IOPOLYVERT];
+	
 };
 
 #define MAX_PFACE 16
-struct EERIE_PFACE
-{
-	short		faceidx[MAX_PFACE];
-	long		facetype;
-	short		texid;  //long
-	short		nbvert;
-	float		transval;
-	unsigned short		vid[MAX_PFACE];
-	float		u[MAX_PFACE];
-	float		v[MAX_PFACE];
-	D3DCOLOR	color[MAX_PFACE];
+struct EERIE_PFACE {
+	short faceidx[MAX_PFACE];
+	long facetype;
+	short texid; //long
+	short nbvert;
+	unsigned short vid[MAX_PFACE]; // TODO probably not needed, only read in Is_Svert
+	float u[MAX_PFACE]; // same
+	float v[MAX_PFACE]; // same
 };
 
 
