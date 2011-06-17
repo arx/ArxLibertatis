@@ -661,30 +661,18 @@ struct EERIE_PORTAL_DATA
 typedef D3DTLVERTEX ARX_D3DVERTEX;
 
 
-struct SMY_D3DVERTEX
-{
-	float	x, y, z;
-	int		color;
-	float	tu, tv;
+struct SMY_D3DVERTEX {
+	float x, y, z;
+	int color;
+	float tu, tv;
 };
 
-struct SMY_D3DVERTEX3
-{
-	float	x, y, z;
-	int		color;
-	float	tu, tv;
-	float	tu2, tv2;
-	float	tu3, tv3;
-};
-
-struct SMY_D3DVERTEX3_T
-{
-	float	x, y, z;
-	float	rhw;
-	int		color;
-	float	tu, tv;
-	float	tu2, tv2;
-	float	tu3, tv3;
+struct SMY_D3DVERTEX3 {
+	float x, y, z;
+	int color;
+	float tu, tv;
+	float tu2, tv2;
+	float tu3, tv3;
 };
 
 struct SMY_ZMAPPINFO
