@@ -114,7 +114,6 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * obj);
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj);
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret);
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj);
-void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void RemoveAllBackgroundActions();
 
 #endif // ARX_SCENE_OBJECT_H

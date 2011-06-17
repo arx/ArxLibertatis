@@ -689,7 +689,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	
 	EERIE_OBJECT_CenterObjectCoordinates(obj);
 	EERIE_CreateCedricData(obj);
-	EERIEOBJECT_CreatePFaces(obj);
 	// Now we can release our cool FTL file
 	EERIE_Object_Precompute_Fast_Access(obj);
 	

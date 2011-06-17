@@ -233,17 +233,6 @@ struct EERIE_FACE {
 	
 };
 
-#define MAX_PFACE 16
-struct EERIE_PFACE {
-	short faceidx[MAX_PFACE];
-	long facetype;
-	short texid; //long
-	short nbvert;
-	unsigned short vid[MAX_PFACE]; // TODO probably not needed, only read in Is_Svert
-	float u[MAX_PFACE]; // same
-	float v[MAX_PFACE]; // same
-};
-
 
 //***********************************************************************
 //*		BEGIN EERIE OBJECT STRUCTURES									*
@@ -465,13 +454,11 @@ struct EERIE_3DOBJ
 
 		origin = 0;
 		ident = 0;
-		nbpfaces = 0;
 		nbgroups = 0;
 		drawflags = 0;
 
 		vertexlocal = NULL;
 
-		pfacelist = NULL;
 		grouplist = NULL;
 
 		originaltextures = NULL;
@@ -528,7 +515,6 @@ struct EERIE_3DOBJ
 	Anglef angle;
 	long origin;
 	long ident;
-	long nbpfaces;
 	long nbgroups;
 	unsigned long drawflags;
 	EERIE_3DPAD * vertexlocal;
@@ -536,7 +522,6 @@ struct EERIE_3DOBJ
 	std::vector<EERIE_VERTEX> vertexlist3;
 
 	std::vector<EERIE_FACE> facelist;
-	EERIE_PFACE * pfacelist;
 	EERIE_GROUPLIST * grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
