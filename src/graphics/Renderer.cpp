@@ -964,24 +964,17 @@ void Renderer::SetBlendFunc(Renderer::PixelBlendingFactor srcFactor, Renderer::P
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, ARXToDXPixelBlendingFactor[dstFactor]);
 }
 
-void Renderer::SetViewport(const Renderer::Viewport& viewport)
-{
-	D3DVIEWPORT7 tmpViewport = { viewport.x, viewport.y, viewport.width, viewport.height, 0.f, 1.f };
+void Renderer::SetViewport(const Rect & viewport) {
+	D3DVIEWPORT7 tmpViewport = { viewport.left, viewport.top, viewport.width(), viewport.height(), 0.f, 1.f };
 	GDevice->SetViewport(&tmpViewport);
 }
 
-Renderer::Viewport Renderer::GetViewport()
-{
+Rect Renderer::GetViewport() {
+	
 	D3DVIEWPORT7 tmpViewport;
 	GDevice->GetViewport(&tmpViewport);
 	
-	Viewport viewport;
-	viewport.x = tmpViewport.dwX;
-	viewport.y = tmpViewport.dwY;
-	viewport.width = tmpViewport.dwWidth;
-	viewport.height = tmpViewport.dwHeight;	
-
-	return viewport;
+	return Rect(Vec2i(tmpViewport.dwX, tmpViewport.dwY), tmpViewport.dwWidth, tmpViewport.dwHeight);
 }
 
 void Renderer::SetCulling(Renderer::CullingMode mode)

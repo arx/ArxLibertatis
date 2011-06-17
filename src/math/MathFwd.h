@@ -17,7 +17,7 @@ typedef _Rectangle<float> Rectf;
 
 template <class T>
 class Vector2;
-typedef Vector2<int> Vec2i;
+typedef Vector2<s32> Vec2i;
 typedef Vector2<short> Vec2s;
 typedef Vector2<float> Vec2f;
 typedef Vector2<double> Vec2d;

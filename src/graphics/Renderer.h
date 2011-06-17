@@ -7,9 +7,6 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
-// TEMP - move back to .cpp once types are all abstracted
-#include "graphics/d3dwrapper.h"
-
 class Renderer
 {
 public:
@@ -86,14 +83,6 @@ public:
 	};
 	DECLARE_FLAGS(BufferType, BufferFlags);
 
-	struct Viewport
-	{
-		int x;
-		int y;
-		int width;
-		int height;
-	};
-
 	Renderer();
 	virtual ~Renderer();
 
@@ -125,8 +114,8 @@ public:
 	virtual void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
 
 	// Viewport
-	virtual void SetViewport(const Viewport& viewport);
-	virtual Viewport GetViewport();
+	virtual void SetViewport(const Rect & viewport);
+	virtual Rect GetViewport();
 
 	// Projection
 	virtual void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
@@ -155,7 +144,7 @@ public:
 	virtual float GetMaxAnisotropy() const;
 
 	// Utilities...
-	virtual void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color );
+	virtual void DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color);
 
 private:
 	std::vector<TextureStage*>	m_TextureStages;

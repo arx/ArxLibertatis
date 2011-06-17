@@ -136,8 +136,8 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	GRenderer->SetCulling( Renderer::CullNone );
 
 	// 2D projection setup... Put origin (0,0) in the top left corner like GDI... 
-	Renderer::Viewport viewport = GRenderer->GetViewport();
-	GRenderer->Begin2DProjection( viewport.x, viewport.x + viewport.width, viewport.y + viewport.height, viewport.y, -1, 1 );
+	Rect viewport = GRenderer->GetViewport();
+	GRenderer->Begin2DProjection(viewport.left, viewport.right, viewport.bottom, viewport.top, -1.f, 1.f);
 
 	// Fixed pipeline texture stage operation
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);

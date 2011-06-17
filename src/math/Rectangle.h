@@ -56,10 +56,9 @@ public:
 	
 	_Rectangle(T _left, T _top, T _right, T _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) { }
 	
-	_Rectangle(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : origin(_origin), right(_origin.x + width), bottom(_origin.y + height) { }
+	_Rectangle(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
 	
-	
-	_Rectangle(const Vector2<T> & _origin, const Vector2<T> & _end) : origin(_origin), end(_end) { }
+	_Rectangle(const Vector2<T> & _origin, const Vector2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
 	
 	_Rectangle(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
 	

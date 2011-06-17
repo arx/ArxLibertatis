@@ -8150,13 +8150,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 			           s32((280.f + BOOKDECY) * Xratio), s32((310.f + BOOKDECY) * Yratio));
 			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
-			if (ARXmenu.currentmode!=AMCM_OFF)
-			{
-				Renderer::Viewport vp;
-				vp.x = 139.f*Xratio;
-				vp.y = 0;
-				vp.width = 139.f*Xratio;
-				vp.height = 310.f*Yratio;
+			if(ARXmenu.currentmode != AMCM_OFF) {
+				Rect vp = Rect(Vec2i(s32(139.f * Xratio), 0), s32(139.f * Xratio), s32(310.f * Yratio));
 				GRenderer->SetViewport(vp);
 			}
 		} else {
@@ -8224,19 +8219,16 @@ void ARX_INTERFACE_ManageOpenedBook()
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 
-		Renderer::Viewport vp;
 		if(BOOKZOOM) {
-			vp.x = static_cast<int>(rec.left + 52.f * Xratio);
-			vp.y = rec.top;
-			vp.width = static_cast<int>(rec.right - rec.left - 73.f * Xratio);
-			vp.height = static_cast<int>(rec.bottom - rec.top - 17.f * Yratio);
+			Rect vp;
+			vp.left = static_cast<int>(rec.left + 52.f * Xratio);
+			vp.top = rec.top;
+			vp.right = static_cast<int>(rec.right - 21.f * Xratio);
+			vp.bottom = static_cast<int>(rec.bottom - 17.f * Yratio);
+			GRenderer->SetViewport(vp);
 		} else {
-			vp.x = rec.left;
-			vp.y = rec.top;
-			vp.width = rec.width();
-			vp.height = rec.height();
+			GRenderer->SetViewport(rec);
 		}
-		GRenderer->SetViewport(vp);
 
 		ePlayerAngle.a=0.f;
 		ePlayerAngle.g=0.f;
@@ -8307,11 +8299,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		FORCE_NO_HIDE=0;
 		Project.improve=ti;
 
-		vp.x		=	0;
-		vp.y		=	0;
-		vp.width	=	DANAESIZX;
-		vp.height	=	DANAESIZY;
-		GRenderer->SetViewport(vp);
+		GRenderer->SetViewport(Rect(DANAESIZX, DANAESIZY));
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetCulling(Renderer::CullNone);
