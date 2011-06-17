@@ -4,6 +4,10 @@
 #include <cstdlib>
 #include <cstring>
 
+#if ARX_COMPILER_MSVC
+#include <windows.h>
+#endif
+
 #include "platform/Platform.h"
 
 #define BASH_COLOR !ARX_COMPILER_MSVC
@@ -37,12 +41,8 @@ Logger::Logger(const char* file, int line, Logger::LogLevel level) {
 
 Logger::~Logger() {
   if (print)
-  {
-    std::cout<<std::endl;
-#if ARX_COMPILER_MSVC
-	OutputDebugString("\n");
-#endif
-  }
+	  log("\n");
+  
   if (fatal)
 	  exit(0);
 }
@@ -86,16 +86,23 @@ void Logger::writeInfo(const char * longFile, int line, Logger::LogLevel level) 
 
 void Logger::log(int mode, int color, const string & level,
 		const string & file, int line) {
+	std::stringstream ss;
+
 #if BASH_COLOR
-	cout<<"[\e["<< mode <<";"<< color <<"m" << level << "\e[m]  "
-			<<"\e[0;35m"<<file<<"\e[m:\e[0;33m"<<line<<"\e[m"<<"  ";
+	ss << "[\e[" << mode << ";" << color << "m" << level << "\e[m]  "
+	   << "\e[0;35m" << file << "\e[m:\e[0;33m" << line << "\e[m" << "  ";
 #else
-	stringstream ss;
-	ss <<"["<< level << "]  "<<file<<":"<<line<<"  ";
-	cout << ss.str();
-#if ARX_COMPILER_MSVC
-	OutputDebugString(ss.str().c_str());
+	ss << "[" << level << "]  " << file << ":" << line << "  ";
 #endif
+
+	log(ss.str());
+}
+
+void Logger::log(const string& str) {
+	std::cout << str;
+#if ARX_COMPILER_MSVC
+	if(IsDebuggerPresent())
+		OutputDebugString(str.c_str());
 #endif
 }
 
