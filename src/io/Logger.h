@@ -35,12 +35,9 @@ public:
 	template<class T>
 	Logger & operator<<(const T & i) {
 		if(print) {
-			std::cout << i;
-#if ARX_COMPILER_MSVC
 			std::stringstream ss;
 			ss << i;
-			OutputDebugString(ss.str().c_str());
-#endif
+			log(ss.str());
 		}
 		return *this;
 	}
@@ -65,6 +62,7 @@ private:
 	void writeInfo(const char * file, int line, LogLevel level);
 	LogLevel getLogLevel(const std::string & file);
 	void log(int mode, int color, const std::string & level, const std::string & file, int line);
+	void log(const std::string& str);
 	
 };
 

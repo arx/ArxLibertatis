@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <sstream>
 #include <cstdio>
+#include <iterator>
 
 #include <windows.h>
 

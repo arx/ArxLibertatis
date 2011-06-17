@@ -52,8 +52,6 @@ static size_t nbbuffers = 0;
 // How often to queue the buffer when looping but not streaming.
 #define MAXLOOPBUFFERS std::max(NBUFFERS, NBUFFERS * (size_t)stream_limit_bytes / (size_t)sample->getLength())
 
-const size_t OpenALSource::NBUFFERS;
-
 aalError OpenALSource::sourcePlay() {
 	
 	ALint val;
