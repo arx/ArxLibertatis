@@ -1203,11 +1203,11 @@ void Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, float p
 }
 
 template <class Vertex>
-class D3D7VertexBuffer : public VertexBuffer<Vertex> {
+class DX7VertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
-	D3D7VertexBuffer(DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity) {
+	DX7VertexBuffer(DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity) {
 		
 		D3DVERTEXBUFFERDESC d3dvbufferdesc;
 		d3dvbufferdesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
@@ -1262,7 +1262,7 @@ public:
 		ARX_UNUSED(hr);
 	}
 	
-	~D3D7VertexBuffer() {
+	~DX7VertexBuffer() {
 		vb->Release();
 	};
 	
@@ -1273,8 +1273,6 @@ private:
 };
 
 VertexBuffer<D3DTLVERTEX> * Renderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	
 	ARX_UNUSED(usage);
-	
-	return new D3D7VertexBuffer<D3DTLVERTEX>(D3DFVF_TLVERTEX, capacity);
+	return new DX7VertexBuffer<D3DTLVERTEX>(D3DFVF_TLVERTEX, capacity);
 }

@@ -253,7 +253,6 @@ extern EERIEMATRIX ProjectionMatrix;
 
 extern CircularVertexBuffer<D3DTLVERTEX> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
-extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
 extern std::string pStringMod;
 
@@ -7080,7 +7079,6 @@ HRESULT DANAE::InitDeviceObjects()
 
 	ComputePortalVertexBuffer();
 	pDynamicVertexBuffer				=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);
-	pDynamicVertexBufferTransform		=	new CMY_DYNAMIC_VERTEXBUFFER(4000, FVF_D3DVERTEX );
 	
 	VertexBuffer<D3DTLVERTEX> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<D3DTLVERTEX>(vb);
@@ -7117,29 +7115,22 @@ HRESULT DANAE::FinalCleanup()
 //  Called when the app is exitting, or the device is being changed,
 //  this function deletes any device dependant objects.
 //*************************************************************************************
-HRESULT DANAE::DeleteDeviceObjects()
-{
+HRESULT DANAE::DeleteDeviceObjects() {
+	
 	GRenderer->ReleaseAllTextures();
-
-	if(pDynamicVertexBufferTransform)
-	{
-		delete pDynamicVertexBufferTransform;
-		pDynamicVertexBufferTransform=NULL;
-	}
-
+	
 	if(pDynamicVertexBuffer_TLVERTEX) {
 		delete pDynamicVertexBuffer_TLVERTEX;
 		pDynamicVertexBuffer_TLVERTEX = NULL;
 	}
-
-	if(pDynamicVertexBuffer)
-	{
+	
+	if(pDynamicVertexBuffer) {
 		delete pDynamicVertexBuffer;
-		pDynamicVertexBuffer=NULL;
+		pDynamicVertexBuffer = NULL;
 	}
-
+	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
-
+	
 	return S_OK;
 }
 

@@ -155,7 +155,6 @@ long iTotPoly;
 unsigned long FrameCount;
 
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
-CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
 EERIE_FRUSTRUM_PLANE efpPlaneFar;
@@ -970,13 +969,6 @@ void ARX_PORTALS_InitDrawnRooms()
 		pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
 		pDynamicVertexBuffer->UnLock();
 		pDynamicVertexBuffer->ussNbVertex=0;
-	}
-
-	if (pDynamicVertexBufferTransform)
-	{
-		pDynamicVertexBufferTransform->Lock(DDLOCK_DISCARDCONTENTS);
-		pDynamicVertexBufferTransform->UnLock();
-		pDynamicVertexBufferTransform->ussNbVertex=0;
 	}
 	
 }
