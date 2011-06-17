@@ -72,7 +72,6 @@ extern bool	bFadeInOut;
 extern int iFadeAction;
 
 extern long ZMAPMODE;
-extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern long MAX_LLIGHTS;
 extern long FRAME_COUNT;
 

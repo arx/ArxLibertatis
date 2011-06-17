@@ -154,7 +154,7 @@ float fZFogEnd=.5f;
 long iTotPoly;
 unsigned long FrameCount;
 
-CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
+CircularVertexBuffer<SMY_D3DVERTEX3> * pDynamicVertexBuffer;
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
 EERIE_FRUSTRUM_PLANE efpPlaneFar;
@@ -964,11 +964,9 @@ void ARX_PORTALS_InitDrawnRooms()
 
 	iTotPoly=0;
 
-	if (pDynamicVertexBuffer)
-	{
-		pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
-		pDynamicVertexBuffer->UnLock();
-		pDynamicVertexBuffer->ussNbVertex=0;
+	if(pDynamicVertexBuffer) {
+		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardContents);
+		pDynamicVertexBuffer->pos = 0;
 	}
 	
 }
@@ -1265,9 +1263,363 @@ void ARX_PORTALS_Frustrum_RenderRooms(long prec,long tim)
 	NbRoomDrawList=0;
 }
 
+static void RenderWaterBatch(size_t pos) {
+	
+	if(!pDynamicVertexBuffer->nbindices) {
+		return;
+	}
+	
+	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
+	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(1)->DisableAlpha();
+	
+	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
+	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(2)->DisableAlpha();
+	
+	pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - pos, pos, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+	
+	GRenderer->GetTextureStage(1)->DisableColor();
+	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
+	GRenderer->GetTextureStage(2)->DisableColor();
+	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
+	
+}
+
+static void RenderWater() {
+	
+	if(vPolyWater.empty()) {
+		return;
+	}
+	
+	size_t iNbIndice = 0;
+	int iNb = vPolyWater.size();
+	
+	size_t start = pDynamicVertexBuffer->pos;
+	pDynamicVertexBuffer->nbindices = 0;
+
+	
+	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+	GRenderer->SetTexture(0, enviro);
+	GRenderer->SetTexture(2, enviro);
+	
+	unsigned short * indices = pDynamicVertexBuffer->indices;
+	
+	while(iNb--) {
+		EERIEPOLY * ep = vPolyWater[iNb];
+		
+		SMY_D3DVERTEX3 vertices[4];
+		SMY_D3DVERTEX3 * pVertex = vertices;
+		
+		unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
+		
+		if(pDynamicVertexBuffer->pos + iNbVertex > pDynamicVertexBuffer->vb->capacity()) {
+			RenderWaterBatch(start);
+			pDynamicVertexBuffer->pos = start = iNbIndice = pDynamicVertexBuffer->nbindices = 0;
+			indices = pDynamicVertexBuffer->indices;
+			// iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
+			ARX_CHECK(pDynamicVertexBuffer->pos <= pDynamicVertexBuffer->vb->capacity());
+		}
+		
+		pVertex->x = ep->v[0].sx;
+		pVertex->y = -ep->v[0].sy;
+		pVertex->z = ep->v[0].sz;
+		pVertex->color = 0xFF505050;
+		float fTu = ep->v[0].sx*(1.f/1000) + sin(ep->v[0].sx*(1.f/200) + FrameTime*(1.f/1000)) * (1.f/32);
+		float fTv = ep->v[0].sz*(1.f/1000) + cos(ep->v[0].sz*(1.f/200) + FrameTime*(1.f/1000)) * (1.f/32);
+		if(ep->type & POLY_FALL) {
+			fTv += FrameTime * (1.f/4000);
+		}
+		pVertex->tu = fTu;
+		pVertex->tv = fTv;
+		fTu = (ep->v[0].sx + 30.f)*(1.f/1000) + sin((ep->v[0].sx + 30)*(1.f/200) + FrameTime*(1.f/1000))*(1.f/28);
+		fTv = (ep->v[0].sz + 30.f)*(1.f/1000) - cos((ep->v[0].sz + 30)*(1.f/200) + FrameTime*(1.f/1000))*(1.f/28);
+		if (ep->type & POLY_FALL) {
+			fTv += FrameTime * (1.f/4000);
+		}
+		pVertex->tu2=fTu;
+		pVertex->tv2=fTv;
+		fTu=(ep->v[0].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[0].sx+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTv=(ep->v[0].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[0].sz+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		
+		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		
+		pVertex->tu3=fTu;
+		pVertex->tv3=fTv;
+		
+		pVertex++;
+		pVertex->x=ep->v[1].sx;
+		pVertex->y=-ep->v[1].sy;
+		pVertex->z=ep->v[1].sz;
+		pVertex->color=0xFF505050;
+		fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+		fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+		
+		if(ep->type&POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		
+		pVertex->tu=fTu;
+		pVertex->tv=fTv;
+		fTu=(ep->v[1].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[1].sx+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+		fTv=(ep->v[1].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[1].sz+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+		
+		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		
+		pVertex->tu2=fTu;
+		pVertex->tv2=fTv;
+		fTu=(ep->v[1].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[1].sx+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTv=(ep->v[1].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[1].sz+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		
+		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		
+		pVertex->tu3=fTu;
+		pVertex->tv3=fTv;
+		pVertex++;
+		pVertex->x=ep->v[2].sx;
+		pVertex->y=-ep->v[2].sy;
+		pVertex->z=ep->v[2].sz;
+		pVertex->color=0xFF505050;
+		fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+		fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+		
+		if(ep->type&POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		
+		pVertex->tu=fTu;
+		pVertex->tv=fTv;
+		fTu=(ep->v[2].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[2].sx+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+		fTv=(ep->v[2].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[2].sz+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+		
+		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		
+		pVertex->tu2=fTu;
+		pVertex->tv2=fTv;
+		fTu=(ep->v[2].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[2].sx+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTv=(ep->v[2].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[2].sz+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		
+		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		
+		pVertex->tu3=fTu;
+		pVertex->tv3=fTv;
+		pVertex++;
+		
+		*indices++ = iNbIndice++; 
+		*indices++ = iNbIndice++; 
+		*indices++ = iNbIndice++; 
+		pDynamicVertexBuffer->nbindices+=3;
+		
+		if(iNbVertex == 4)
+		{
+			pVertex->x=ep->v[3].sx;
+			pVertex->y=-ep->v[3].sy;
+			pVertex->z=ep->v[3].sz;
+			pVertex->color=0xFF505050;
+			fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+			fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+			
+			if(ep->type&POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+			
+			pVertex->tu=fTu;
+			pVertex->tv=fTv;
+			fTu=(ep->v[3].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[3].sx+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+			fTv=(ep->v[3].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[3].sz+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+			
+			if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+			
+			pVertex->tu2=fTu;
+			pVertex->tv2=fTv;
+			fTu=(ep->v[3].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[3].sx+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+			fTv=(ep->v[3].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[3].sz+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+			
+			if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+			
+			pVertex->tu3=fTu;
+			pVertex->tv3=fTv;
+			pVertex++;
+			
+			*indices++ = iNbIndice++; 
+			*indices++ = iNbIndice - 2; 
+			*indices++ = iNbIndice - 3; 
+			pDynamicVertexBuffer->nbindices+=3;
+		}
+		
+		BufferFlags flags = pDynamicVertexBuffer->pos ? NoOverwrite : DiscardContents;
+		pDynamicVertexBuffer->vb->setData(vertices, iNbVertex, pDynamicVertexBuffer->pos, flags);
+		pDynamicVertexBuffer->pos += iNbVertex;
+		
+	}
+	
+	RenderWaterBatch(start);
+	
+	vPolyWater.clear();
+	
+}
+
+void RenderLavaBatch(size_t pos) {
+	
+	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	
+	if(!pDynamicVertexBuffer->nbindices) {
+		return;
+	}
+	
+	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
+	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(1)->DisableAlpha();
+	
+	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
+	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(2)->DisableAlpha();
+	
+	pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - pos, pos, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+	
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+	
+	pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - pos, pos, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+	
+	GRenderer->GetTextureStage(1)->DisableColor();
+	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
+	GRenderer->GetTextureStage(2)->DisableColor();
+	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
+	
+}
+
+void RenderLava() {
+	
+	if(vPolyLava.empty()) {
+		return;
+	}
+	
+	size_t iNbIndice = 0;
+	int iNb=vPolyLava.size();
+	
+	size_t start = pDynamicVertexBuffer->pos;
+	pDynamicVertexBuffer->nbindices = 0;
+	
+	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+	GRenderer->SetTexture(0, enviro);
+	GRenderer->SetTexture(2, enviro);
+	
+	unsigned short * indices = pDynamicVertexBuffer->indices;
+	
+	while(iNb--) {
+		EERIEPOLY * ep = vPolyLava[iNb];
+		
+		SMY_D3DVERTEX3 vertices[4];
+		SMY_D3DVERTEX3 * pVertex = vertices;
+		
+		unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
+		
+		if(pDynamicVertexBuffer->pos + iNbVertex > pDynamicVertexBuffer->vb->capacity()) {
+			RenderLavaBatch(start);
+			pDynamicVertexBuffer->pos = start = iNbIndice = pDynamicVertexBuffer->nbindices = 0;
+			indices = pDynamicVertexBuffer->indices;
+			// iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
+			ARX_CHECK(pDynamicVertexBuffer->pos <= pDynamicVertexBuffer->vb->capacity());
+		}
+		
+		pVertex->x=ep->v[0].sx;
+		pVertex->y=-ep->v[0].sy;
+		pVertex->z=ep->v[0].sz;
+		pVertex->color=0xFF666666;
+		float fTu=ep->v[0].sx*( 1.0f / 1000 )+EEsin((ep->v[0].sx)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		float fTv=ep->v[0].sz*( 1.0f / 1000 )+EEcos((ep->v[0].sz)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		pVertex->tu=fTu;
+		pVertex->tv=fTv;
+		fTu=ep->v[0].sx*( 1.0f / 1000 )+EEsin((ep->v[0].sx)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTv=ep->v[0].sz*( 1.0f / 1000 )+EEcos((ep->v[0].sz)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		pVertex->tu2=fTu;
+		pVertex->tv2=fTv;
+		fTu=ep->v[0].sx*( 1.0f / 600 )+EEsin((ep->v[0].sx)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTv=ep->v[0].sz*( 1.0f / 600 )+EEcos((ep->v[0].sz)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		
+		pVertex->tu3=fTu;
+		pVertex->tv3=fTv;
+		pVertex++;
+		pVertex->x=ep->v[1].sx;
+		pVertex->y=-ep->v[1].sy;
+		pVertex->z=ep->v[1].sz;
+		pVertex->color=0xFF666666;
+		fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		pVertex->tu=fTu;
+		pVertex->tv=fTv;
+		fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		pVertex->tu2=fTu;
+		pVertex->tv2=fTv;
+		fTu=ep->v[1].sx*( 1.0f / 600 )+EEsin((ep->v[1].sx)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTv=ep->v[1].sz*( 1.0f / 600 )+EEcos((ep->v[1].sz)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		
+		pVertex->tu3=fTu;
+		pVertex->tv3=fTv;
+		pVertex++;
+		pVertex->x=ep->v[2].sx;
+		pVertex->y=-ep->v[2].sy;
+		pVertex->z=ep->v[2].sz;
+		pVertex->color=0xFF666666;
+		fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		pVertex->tu=fTu;
+		pVertex->tv=fTv;
+		fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		pVertex->tu2=fTu;
+		pVertex->tv2=fTv;
+		fTu=ep->v[2].sx*( 1.0f / 600 )+EEsin((ep->v[2].sx)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTv=ep->v[2].sz*( 1.0f / 600 )+EEcos((ep->v[2].sz)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		
+		pVertex->tu3=fTu;
+		pVertex->tv3=fTv;
+		pVertex++;
+		
+		*indices++ = iNbIndice++; 
+		*indices++ = iNbIndice++; 
+		*indices++ = iNbIndice++; 
+		pDynamicVertexBuffer->nbindices+=3;
+		
+		if(iNbVertex&4)
+		{
+			pVertex->x=ep->v[3].sx;
+			pVertex->y=-ep->v[3].sy;
+			pVertex->z=ep->v[3].sz;
+			pVertex->color=0xFF666666;
+			fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+			fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+			pVertex->tu=fTu;
+			pVertex->tv=fTv;
+			fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+			fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+			pVertex->tu2=fTu;
+			pVertex->tv2=fTv;
+			fTu=ep->v[3].sx*( 1.0f / 600 )+EEsin((ep->v[3].sx)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+			fTv=ep->v[3].sz*( 1.0f / 600 )+EEcos((ep->v[3].sz)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+			
+			pVertex->tu3=fTu;
+			pVertex->tv3=fTv;
+			pVertex++;
+			
+			*indices++ = iNbIndice++; 
+			*indices++ = iNbIndice - 2; 
+			*indices++ = iNbIndice - 3; 
+			pDynamicVertexBuffer->nbindices+=3;
+		}
+		
+		BufferFlags flags = pDynamicVertexBuffer->pos ? NoOverwrite : DiscardContents;
+		pDynamicVertexBuffer->vb->setData(vertices, iNbVertex, pDynamicVertexBuffer->pos, flags);
+		pDynamicVertexBuffer->pos += iNbVertex;
+		
+	}
+	
+	RenderLavaBatch(start);
+	
+	vPolyLava.clear();
+	
+}
+
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
-void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
-{
+void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
+	
 	GRenderer->SetFogColor(Color::none);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1295,430 +1647,10 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 	//render all fx!!
 	GRenderer->SetCulling(Renderer::CullCW);
-
-	unsigned short iNbIndice = 0;
-	int iNb=vPolyWater.size();
-
-	if(iNb)
-	{
-		int iOldNbVertex=pDynamicVertexBuffer->ussNbVertex;
-		pDynamicVertexBuffer->ussNbIndice=0;
-
-		SMY_D3DVERTEX3 *pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_NOOVERWRITE);
-		pVertex+=iOldNbVertex;
-		
-		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-		GRenderer->SetTexture(0, enviro);
-
-		GRenderer->SetTexture(2, enviro);
-		
-
-		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
-
-		while(iNb--)
-		{
-			EERIEPOLY *ep=vPolyWater[iNb];
-			
-			unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
-
-			pDynamicVertexBuffer->ussNbVertex		+=	iNbVertex;
-
-			if( pDynamicVertexBuffer->ussNbVertex > pDynamicVertexBuffer->ussMaxVertex )
-			{
-				pDynamicVertexBuffer->UnLock();
-				pDynamicVertexBuffer->ussNbVertex-=iNbVertex;
-
-				if(pDynamicVertexBuffer->ussNbIndice)
-				{
-					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
-					GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-					GRenderer->GetTextureStage(1)->DisableAlpha();
-										
-					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
-					GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-					GRenderer->GetTextureStage(2)->DisableAlpha();
-					
-					GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-						pDynamicVertexBuffer->pVertexBuffer,
-						iOldNbVertex,
-						pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-						pDynamicVertexBuffer->pussIndice,
-						pDynamicVertexBuffer->ussNbIndice,
-						0 );
-						
-					GRenderer->GetTextureStage(1)->DisableColor();
-					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
-					GRenderer->GetTextureStage(2)->DisableColor();
-					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
-				}
-
-				pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
-				pDynamicVertexBuffer->ussNbVertex=iNbVertex;
-				iOldNbVertex = iNbIndice = pDynamicVertexBuffer->ussNbIndice = 0;
-				pussInd=pDynamicVertexBuffer->pussIndice;
-
-				//iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
-				ARX_CHECK( pDynamicVertexBuffer->ussNbVertex <= pDynamicVertexBuffer->ussMaxVertex );
-			}
-			
-			pVertex->x=ep->v[0].sx;
-			pVertex->y=-ep->v[0].sy;
-			pVertex->z=ep->v[0].sz;
-			pVertex->color=0xFF505050;
-			float fTu=ep->v[0].sx*( 1.0f / 1000 )+EEsin((ep->v[0].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-			float fTv=ep->v[0].sz*( 1.0f / 1000 )+EEcos((ep->v[0].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-
-			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu=fTu;
-			pVertex->tv=fTv;
-			fTu=(ep->v[0].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[0].sx+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-			fTv=(ep->v[0].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[0].sz+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu2=fTu;
-			pVertex->tv2=fTv;
-			fTu=(ep->v[0].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[0].sx+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-			fTv=(ep->v[0].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[0].sz+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu3=fTu;
-			pVertex->tv3=fTv;
-			pVertex++;
-			pVertex->x=ep->v[1].sx;
-			pVertex->y=-ep->v[1].sy;
-			pVertex->z=ep->v[1].sz;
-			pVertex->color=0xFF505050;
-			fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-			fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-
-			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu=fTu;
-			pVertex->tv=fTv;
-			fTu=(ep->v[1].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[1].sx+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-			fTv=(ep->v[1].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[1].sz+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu2=fTu;
-			pVertex->tv2=fTv;
-			fTu=(ep->v[1].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[1].sx+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-			fTv=(ep->v[1].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[1].sz+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu3=fTu;
-			pVertex->tv3=fTv;
-			pVertex++;
-			pVertex->x=ep->v[2].sx;
-			pVertex->y=-ep->v[2].sy;
-			pVertex->z=ep->v[2].sz;
-			pVertex->color=0xFF505050;
-			fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-			fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-
-			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu=fTu;
-			pVertex->tv=fTv;
-			fTu=(ep->v[2].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[2].sx+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-			fTv=(ep->v[2].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[2].sz+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu2=fTu;
-			pVertex->tv2=fTv;
-			fTu=(ep->v[2].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[2].sx+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-			fTv=(ep->v[2].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[2].sz+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-			pVertex->tu3=fTu;
-			pVertex->tv3=fTv;
-			pVertex++;
-
-			*pussInd++ = iNbIndice++; 
-			*pussInd++ = iNbIndice++; 
-			*pussInd++ = iNbIndice++; 
-			pDynamicVertexBuffer->ussNbIndice+=3;
-
-			if(iNbVertex&4)
-			{
-				pVertex->x=ep->v[3].sx;
-				pVertex->y=-ep->v[3].sy;
-				pVertex->z=ep->v[3].sz;
-				pVertex->color=0xFF505050;
-				fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-				fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-
-				if(ep->type&POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-				pVertex->tu=fTu;
-				pVertex->tv=fTv;
-				fTu=(ep->v[3].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[3].sx+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-				fTv=(ep->v[3].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[3].sz+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-
-				if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-				pVertex->tu2=fTu;
-				pVertex->tv2=fTv;
-				fTu=(ep->v[3].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[3].sx+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-				fTv=(ep->v[3].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[3].sz+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-
-				if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
-
-				pVertex->tu3=fTu;
-				pVertex->tv3=fTv;
-				pVertex++;
-
-				*pussInd++ = iNbIndice++; 
-				*pussInd++ = iNbIndice - 2; 
-				*pussInd++ = iNbIndice - 3; 
-				pDynamicVertexBuffer->ussNbIndice+=3;
-			}
-		}
-		
-		pDynamicVertexBuffer->UnLock();
-		if(pDynamicVertexBuffer->ussNbIndice)
-		{
-			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
-			GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-			GRenderer->GetTextureStage(1)->DisableAlpha();
-			
-			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
-			GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-			GRenderer->GetTextureStage(2)->DisableAlpha();
-
-			GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-												pDynamicVertexBuffer->pVertexBuffer,
-												iOldNbVertex,
-												pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-												pDynamicVertexBuffer->pussIndice,
-												pDynamicVertexBuffer->ussNbIndice,
-												0 );				
-
-			GRenderer->GetTextureStage(1)->DisableColor();
-			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
-			GRenderer->GetTextureStage(2)->DisableColor();			
-			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
-
-		}
-
-		vPolyWater.clear();
-	}
-
-	iNbIndice=0;
-	iNb=vPolyLava.size();
-
-	if(iNb)
-	{
-		int iOldNbVertex=pDynamicVertexBuffer->ussNbVertex;
-		pDynamicVertexBuffer->ussNbIndice=0;
-
-		SMY_D3DVERTEX3 *pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_NOOVERWRITE);
-		pVertex+=iOldNbVertex;
-		
-		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-		GRenderer->SetTexture(0, enviro);
-
-		GRenderer->SetTexture(2, enviro);
-		
-		unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
-
-		while(iNb--)
-		{
-			EERIEPOLY *ep=vPolyLava[iNb];
-			
-			unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
-
-			pDynamicVertexBuffer->ussNbVertex+=iNbVertex;
-
-			if(pDynamicVertexBuffer->ussNbVertex>pDynamicVertexBuffer->ussMaxVertex)
-			{
-				pDynamicVertexBuffer->UnLock();
-				pDynamicVertexBuffer->ussNbVertex-=iNbVertex;
-
-				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-
-				if(pDynamicVertexBuffer->ussNbIndice)
-				{
-					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
-					GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-					GRenderer->GetTextureStage(1)->DisableAlpha();
-					
-					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
-					GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-					GRenderer->GetTextureStage(2)->DisableAlpha();
-					
-					GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-						pDynamicVertexBuffer->pVertexBuffer,
-						iOldNbVertex,
-						pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-						pDynamicVertexBuffer->pussIndice,
-						pDynamicVertexBuffer->ussNbIndice,
-						0 );
-					
-					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
-
-					GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-						pDynamicVertexBuffer->pVertexBuffer,
-						iOldNbVertex,
-						pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-						pDynamicVertexBuffer->pussIndice,
-						pDynamicVertexBuffer->ussNbIndice,
-						0 );
-						
-					GRenderer->GetTextureStage(1)->DisableColor();
-					GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
-					GRenderer->GetTextureStage(2)->DisableColor();
-					GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
-				}
-
-				pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
-				pDynamicVertexBuffer->ussNbVertex=iNbVertex;
-				iOldNbVertex = iNbIndice = pDynamicVertexBuffer->ussNbIndice = 0;
-				pussInd=pDynamicVertexBuffer->pussIndice;
-
-				//iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
-				ARX_CHECK( pDynamicVertexBuffer->ussNbVertex <= pDynamicVertexBuffer->ussMaxVertex );
-			}
-			
-			pVertex->x=ep->v[0].sx;
-			pVertex->y=-ep->v[0].sy;
-			pVertex->z=ep->v[0].sz;
-			pVertex->color=0xFF666666;
-			float fTu=ep->v[0].sx*( 1.0f / 1000 )+EEsin((ep->v[0].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-			float fTv=ep->v[0].sz*( 1.0f / 1000 )+EEcos((ep->v[0].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-			pVertex->tu=fTu;
-			pVertex->tv=fTv;
-			fTu=ep->v[0].sx*( 1.0f / 1000 )+EEsin((ep->v[0].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-			fTv=ep->v[0].sz*( 1.0f / 1000 )+EEcos((ep->v[0].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-			pVertex->tu2=fTu;
-			pVertex->tv2=fTv;
-			fTu=ep->v[0].sx*( 1.0f / 600 )+EEsin((ep->v[0].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-			fTv=ep->v[0].sz*( 1.0f / 600 )+EEcos((ep->v[0].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-
-			pVertex->tu3=fTu;
-			pVertex->tv3=fTv;
-			pVertex++;
-			pVertex->x=ep->v[1].sx;
-			pVertex->y=-ep->v[1].sy;
-			pVertex->z=ep->v[1].sz;
-			pVertex->color=0xFF666666;
-			fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-			fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-			pVertex->tu=fTu;
-			pVertex->tv=fTv;
-			fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-			fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-			pVertex->tu2=fTu;
-			pVertex->tv2=fTv;
-			fTu=ep->v[1].sx*( 1.0f / 600 )+EEsin((ep->v[1].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-			fTv=ep->v[1].sz*( 1.0f / 600 )+EEcos((ep->v[1].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-
-			pVertex->tu3=fTu;
-			pVertex->tv3=fTv;
-			pVertex++;
-			pVertex->x=ep->v[2].sx;
-			pVertex->y=-ep->v[2].sy;
-			pVertex->z=ep->v[2].sz;
-			pVertex->color=0xFF666666;
-			fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-			fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-			pVertex->tu=fTu;
-			pVertex->tv=fTv;
-			fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-			fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-			pVertex->tu2=fTu;
-			pVertex->tv2=fTv;
-			fTu=ep->v[2].sx*( 1.0f / 600 )+EEsin((ep->v[2].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-			fTv=ep->v[2].sz*( 1.0f / 600 )+EEcos((ep->v[2].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
 	
-			pVertex->tu3=fTu;
-			pVertex->tv3=fTv;
-			pVertex++;
-
-			*pussInd++ = iNbIndice++; 
-			*pussInd++ = iNbIndice++; 
-			*pussInd++ = iNbIndice++; 
-			pDynamicVertexBuffer->ussNbIndice+=3;
-
-			if(iNbVertex&4)
-			{
-				pVertex->x=ep->v[3].sx;
-				pVertex->y=-ep->v[3].sy;
-				pVertex->z=ep->v[3].sz;
-				pVertex->color=0xFF666666;
-				fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-				fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-				pVertex->tu=fTu;
-				pVertex->tv=fTv;
-				fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-				fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-				pVertex->tu2=fTu;
-				pVertex->tv2=fTv;
-				fTu=ep->v[3].sx*( 1.0f / 600 )+EEsin((ep->v[3].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-				fTv=ep->v[3].sz*( 1.0f / 600 )+EEcos((ep->v[3].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-		
-				pVertex->tu3=fTu;
-				pVertex->tv3=fTv;
-				pVertex++;
-
-				*pussInd++ = iNbIndice++; 
-				*pussInd++ = iNbIndice - 2; 
-				*pussInd++ = iNbIndice - 3; 
-				pDynamicVertexBuffer->ussNbIndice+=3;
-			}
-		}
-		
-		pDynamicVertexBuffer->UnLock();
-
-		if(pDynamicVertexBuffer->ussNbIndice)
-		{
-			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
-			
-			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
-			GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-			GRenderer->GetTextureStage(1)->DisableAlpha();
-		
-			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
-			GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-			GRenderer->GetTextureStage(2)->DisableAlpha();
-
-			GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-												pDynamicVertexBuffer->pVertexBuffer,
-												iOldNbVertex,
-												pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-												pDynamicVertexBuffer->pussIndice,
-												pDynamicVertexBuffer->ussNbIndice,
-												0 );
-
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
-			GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-												pDynamicVertexBuffer->pVertexBuffer,
-												iOldNbVertex,
-												pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-												pDynamicVertexBuffer->pussIndice,
-												pDynamicVertexBuffer->ussNbIndice,
-												0 );
-
-			GRenderer->GetTextureStage(1)->DisableColor();
-			GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
-			GRenderer->GetTextureStage(2)->DisableColor();
-			GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
-		}
-
-		vPolyLava.clear();
-	}
-
-
+	RenderWater();
+	RenderLava();
+	
 	SetZBias(0);
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
@@ -2508,69 +2440,52 @@ SMY_D3DVERTEX *pMyVertex;
 			{
 					//---------------------------------------------------------------------------
 					//																		 INIT
-				int iOldNbVertex=pDynamicVertexBuffer->ussNbVertex;
-				pDynamicVertexBuffer->ussNbIndice=0;
-				
-				SMY_D3DVERTEX3 *pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_NOOVERWRITE);
-				pVertex+=iOldNbVertex;
+				size_t start = pDynamicVertexBuffer->pos;
+				pDynamicVertexBuffer->nbindices = 0;
 				
 				GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
 				
-				unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
+				unsigned short * pussInd = pDynamicVertexBuffer->indices;
 				unsigned short iNbIndice = 0;
 
 				vector<EERIEPOLY *>::iterator it		=	pTexCurr->TextureRefinement->vPolyZMap.begin();
+	
+
 				
-					//---------------------------------------------------------------------------
-					//																		 LOOP
+				//---------------------------------------------------------------------------
+				//																		 LOOP
 				for (; it != pTexCurr->TextureRefinement->vPolyZMap.end(); ++it)
 				{
 					EERIEPOLY * ep = *it;
+					
+					SMY_D3DVERTEX3 vertices[4];
+					SMY_D3DVERTEX3 * pVertex = vertices;
+					
 					unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
 					
-					pDynamicVertexBuffer->ussNbVertex+=iNbVertex;
-					
-						//-----------------------------------------------------------------------
-						//																	FLUSH
-					if(pDynamicVertexBuffer->ussNbVertex>pDynamicVertexBuffer->ussMaxVertex)
-					{
-						pDynamicVertexBuffer->UnLock();
-						pDynamicVertexBuffer->ussNbVertex-=iNbVertex;
-						
-						if(pDynamicVertexBuffer->ussNbIndice)
-						{
-							GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-																pDynamicVertexBuffer->pVertexBuffer,
-																iOldNbVertex,
-																pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-																pDynamicVertexBuffer->pussIndice,
-																pDynamicVertexBuffer->ussNbIndice,
-																0 );
+					if(pDynamicVertexBuffer->pos + iNbVertex > pDynamicVertexBuffer->vb->capacity()) {
+						if(pDynamicVertexBuffer->nbindices) {
+							pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - start, start, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
 						}
-						
-							//INIT --------------------------------------------------------------
-						pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_DISCARDCONTENTS);
-						pDynamicVertexBuffer->ussNbVertex=iNbVertex;
-						iOldNbVertex = iNbIndice = pDynamicVertexBuffer->ussNbIndice = 0;
-						pussInd=pDynamicVertexBuffer->pussIndice;
-
-							//iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
-						ARX_CHECK( pDynamicVertexBuffer->ussNbVertex <= pDynamicVertexBuffer->ussMaxVertex );
+						pDynamicVertexBuffer->pos = start = iNbIndice = pDynamicVertexBuffer->nbindices = 0;
+						pussInd = pDynamicVertexBuffer->indices;
+						// iNbVertex = 3 or 4 but be sure to Assert in Debug if overflow
+						ARX_CHECK(pDynamicVertexBuffer->pos <= pDynamicVertexBuffer->vb->capacity());
 					}
 					
-						//-----------------------------------------------------------------------
-						//																PRECALCUL
+					//-----------------------------------------------------------------------
+					//																PRECALCUL
 					float tu[4];
 					float tv[4];
 					float _fTransp[4];
 					unsigned short nu;
 					long nrm=0;
-
+					
 					if	(	(EEfabs(ep->nrml[0].y)>=0.9f)
 						||	(EEfabs(ep->nrml[1].y)>=0.9f)
 						||	(EEfabs(ep->nrml[2].y)>=0.9f)	)
 						nrm=1;
-
+					
 					for (nu=0;nu<iNbVertex;nu++)
 					{
 						if (nrm)
@@ -2583,56 +2498,52 @@ SMY_D3DVERTEX *pMyVertex;
 							tu[nu]=ep->v[nu].tu*4.f;
 							tv[nu]=ep->v[nu].tv*4.f;						
 						}
-
-							float			t		=	max( 10.0f, fdist(ACTIVECAM->pos, ep->v[nu]) - 80.f );
-							//if (t < 10.f)	t		=	10.f;
-
+						
+						float			t		=	max( 10.0f, fdist(ACTIVECAM->pos, ep->v[nu]) - 80.f );
+						//if (t < 10.f)	t		=	10.f;
+						
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
-
-							if (_fTransp[nu] < 0.f)
-								_fTransp[nu]		=	0.f;
-							// t cannot be greater than 1.f (b should be negative for that)
+						
+						if (_fTransp[nu] < 0.f)
+							_fTransp[nu]		=	0.f;
+						// t cannot be greater than 1.f (b should be negative for that)
 					}
 					
-						//-----------------------------------------------------------------------
-						//																FILL DATA
-						for ( int idx = 0  ; idx < iNbVertex ; ++idx )
-						{
-							pVertex->x				=	ep->v[idx].sx;
-							pVertex->y				=	- ep->v[idx].sy;
-							pVertex->z				=	ep->v[idx].sz;
-							pVertex->color			=	D3DRGB( _fTransp[idx], _fTransp[idx], _fTransp[idx]);
-							pVertex->tu				=	tu[idx]; 
-							pVertex->tv				=	tv[idx]; 
-							pVertex++;
-				
-							*pussInd++				=	iNbIndice++;
-							pDynamicVertexBuffer->ussNbIndice++;
-						}
+					//-----------------------------------------------------------------------
+					//																FILL DATA
+					for ( int idx = 0  ; idx < iNbVertex ; ++idx )
+					{
+						pVertex->x				=	ep->v[idx].sx;
+						pVertex->y				=	- ep->v[idx].sy;
+						pVertex->z				=	ep->v[idx].sz;
+						pVertex->color			=	D3DRGB( _fTransp[idx], _fTransp[idx], _fTransp[idx]);
+						pVertex->tu				=	tu[idx]; 
+						pVertex->tv				=	tv[idx]; 
+						pVertex++;
+						
+						*pussInd++				=	iNbIndice++;
+						pDynamicVertexBuffer->nbindices++;
+					}
 					
 					if(iNbVertex&4)
 					{
 						*pussInd++=iNbIndice-2;
 						*pussInd++=iNbIndice-3;
-							pDynamicVertexBuffer->ussNbIndice	+=	2;//3;
+						pDynamicVertexBuffer->nbindices	+=	2;//3;
 					}
+					
+					BufferFlags flags = pDynamicVertexBuffer->pos ? NoOverwrite : DiscardContents;
+					pDynamicVertexBuffer->vb->setData(vertices, iNbVertex, pDynamicVertexBuffer->pos, flags);
+					pDynamicVertexBuffer->pos += iNbVertex;
 				}
 
 					//---------------------------------------------------------------------------
 					//														   CLEAR CURRENT ZMAP
 				pTexCurr->TextureRefinement->vPolyZMap.clear();
-					pDynamicVertexBuffer->UnLock();
-
-				if(pDynamicVertexBuffer->ussNbIndice)
-				{
-					GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-						pDynamicVertexBuffer->pVertexBuffer,
-						iOldNbVertex,
-						pDynamicVertexBuffer->ussNbVertex-iOldNbVertex,
-						pDynamicVertexBuffer->pussIndice,
-						pDynamicVertexBuffer->ussNbIndice,
-						0 );
-				}	
+				
+				if(pDynamicVertexBuffer->nbindices) {
+					pDynamicVertexBuffer->vb->drawIndexed(Renderer::TriangleList, pDynamicVertexBuffer->pos - start, start, pDynamicVertexBuffer->indices, pDynamicVertexBuffer->nbindices);
+				}
 			}
 			
 			ppTexCurr++;

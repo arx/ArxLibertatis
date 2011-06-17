@@ -164,6 +164,8 @@ public:
 	virtual void DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color);
 	
 	virtual VertexBuffer<D3DTLVERTEX> * createVertexBufferTL(size_t capacity, BufferUsage usage);
+	virtual VertexBuffer<SMY_D3DVERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage);
+	virtual VertexBuffer<SMY_D3DVERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage);
 	
 private:
 	std::vector<TextureStage*>	m_TextureStages;

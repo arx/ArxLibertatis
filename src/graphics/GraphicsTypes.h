@@ -657,19 +657,17 @@ struct EERIE_PORTAL_DATA
 	EERIE_PORTALS * portals;
 };
 
-
 typedef D3DTLVERTEX ARX_D3DVERTEX;
-
 
 struct SMY_D3DVERTEX {
 	float x, y, z;
-	int color;
+	D3DCOLOR color;
 	float tu, tv;
 };
 
 struct SMY_D3DVERTEX3 {
 	float x, y, z;
-	int color;
+	D3DCOLOR color;
 	float tu, tv;
 	float tu2, tv2;
 	float tu3, tv3;
@@ -730,8 +728,8 @@ class CMY_DYNAMIC_VERTEXBUFFER
 		bool UnLock();
 };
 
+// TODO REMOVE
 #define FVF_D3DVERTEX	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
-#define FVF_D3DVERTEX3	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX3|D3DFVF_TEXTUREFORMAT2)
 
 extern long USE_PORTALS;
 extern EERIE_PORTAL_DATA * portals;
