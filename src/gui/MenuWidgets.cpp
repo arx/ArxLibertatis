@@ -2990,8 +2990,6 @@ void CMenuAllZone::DrawZone()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	vector<CMenuZone*>::iterator i;
-
 	GRenderer->ResetTexture(0);
 
 	for(std::vector<CMenuZone*>::const_iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
