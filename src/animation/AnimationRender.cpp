@@ -1297,56 +1297,31 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			        (!(pTex = eobj->texturecontainer[eobj->facelist[i].texid]))) continue;
 
 			float			fTransp = 0;
-			unsigned long	* pNb;
 
-			if ((eobj->facelist[i].facetype & POLY_TRANS) ||
-			        (invisibility > 0.f))
-			{
-				if (invisibility > 0.f)
-					fTransp = 2.f - invisibility;
-				else
-					fTransp = eobj->facelist[i].transval;
-
-				if (fTransp >= 2.f)    //MULTIPLICATIVE
-				{
-					fTransp *= ( 1.0f / 2 );
-					fTransp += 0.5f;
-
-					tv	= PushVertexInTableCull_TMultiplicative(pTex);
-					pNb	= &pTex->ulNbVertexListCull_TMultiplicative;
+			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+				
+				fTransp = (invisibility > 0.f) ? 2.f - invisibility : eobj->facelist[i].transval;
+				
+				if(fTransp >= 2.f) {
+					//MULTIPLICATIVE
+					fTransp *= (1.f/2);
+					fTransp += .5f;
+					tv = PushVertexInTableCull_TMultiplicative(pTex);
+				} else if(fTransp >= 1.f) {
+					//ADDITIVE
+					fTransp -= 1.f;
+					tv = PushVertexInTableCull_TAdditive(pTex);
+				} else if(fTransp > 0.f) {
+					//NORMAL TRANS
+					fTransp = 1.f - fTransp;
+					tv = PushVertexInTableCull_TNormalTrans(pTex);
+				} else {
+					//SUBTRACTIVE
+					fTransp = 1.f - fTransp;
+					tv = PushVertexInTableCull_TSubstractive(pTex);
 				}
-				else
-				{
-					if (fTransp >= 1.f)  //ADDITIVE
-					{
-						fTransp -= 1.f;
-
-						tv		 = PushVertexInTableCull_TAdditive(pTex);
-						pNb		 = &pTex->ulNbVertexListCull_TAdditive;
-					}
-					else
-					{
-						if (fTransp > 0.f)   //NORMAL TRANS
-						{
-							fTransp = 1.f - fTransp;
-
-							tv		= PushVertexInTableCull_TNormalTrans(pTex);
-							pNb		= &pTex->ulNbVertexListCull_TNormalTrans;
-						}
-						else  //SUBTRACTIVE
-						{
-							fTransp	= 1.f - fTransp;
-
-							tv		= PushVertexInTableCull_TSubstractive(pTex);
-							pNb		= &pTex->ulNbVertexListCull_TSubstractive;
-						}
-					}
-				}
-			}
-			else
-			{
-				tv	= PushVertexInTableCull(pTex);
-				pNb	= &pTex->ulNbVertexListCull;
+			} else {
+				tv = PushVertexInTableCull(pTex);
 			}
 
 			for (long n = 0 ; n < 3 ; n++)
