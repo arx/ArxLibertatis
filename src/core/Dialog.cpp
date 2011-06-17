@@ -501,16 +501,11 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						cc.lStructSize = sizeof(CHOOSECOLOR);
 						cc.hwndOwner = hWnd;
 						cc.hInstance = 0; //Ignored
-						D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-						cc.rgbResult = ((col >> 16 & 255))
-						               | ((col >> 8 & 255) << 8)
-						               | ((col & 255) << 16);
+						cc.rgbResult = ARX_PATHS_SelectedAP->rgb.toRGB();
 						cc.lpCustColors = custcr;
 						cc.Flags = CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT;
 						ChooseColor(&cc);
-						ARX_PATHS_SelectedAP->rgb.r = (float)((long)(cc.rgbResult & 255)) * ( 1.0f / 255 );
-						ARX_PATHS_SelectedAP->rgb.g = (float)((long)((cc.rgbResult >> 8) & 255)) * ( 1.0f / 255 );
-						ARX_PATHS_SelectedAP->rgb.b = (float)((long)((cc.rgbResult >> 16) & 255)) * ( 1.0f / 255 );
+						ARX_PATHS_SelectedAP->rgb = Color3f::fromRGB(cc.rgbResult);
 						thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 						InvalidateRect(thWnd, NULL, true);
 

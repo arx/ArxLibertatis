@@ -424,7 +424,6 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
 //  EERIE_3D  * pos					Object Position
 //  unsigned long time				Time increment to current animation in Ms
 //  INTERACTIVE_OBJ * io			Referrence to Interactive Object (NULL if no IO)
-//  D3DCOLOR col					Color
 //  long typ						Misc Type 0=World View 1=1st Person View
 //*************************************************************************************
 
