@@ -7,6 +7,9 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
+template <class Vertex>
+class VertexBuffer;
+
 class Renderer
 {
 public:
@@ -90,6 +93,12 @@ public:
 		LineList,
 		LineStrip
 	};
+	
+	enum BufferUsage {
+		Static,
+		Dynamic,
+		Stream
+	};
 
 	Renderer();
 	virtual ~Renderer();
@@ -153,7 +162,9 @@ public:
 
 	// Utilities...
 	virtual void DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color);
-
+	
+	virtual VertexBuffer<D3DTLVERTEX> * createVertexBufferTL(size_t capacity, BufferUsage usage);
+	
 private:
 	std::vector<TextureStage*>	m_TextureStages;
 };

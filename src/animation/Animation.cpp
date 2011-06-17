@@ -105,9 +105,6 @@ extern long INTER_DRAW;
 extern long INTER_COMPUTE;
 extern long FRAME_COUNT;
 extern Color ulBKGColor;
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;	// VB using TLVERTEX format.
 extern long ZMAPMODE;
 extern float fZFogStart;
 ANIM_HANDLE animations[MAX_ANIMATIONS];

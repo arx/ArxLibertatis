@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 
+#include "graphics/VertexBuffer.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Mesh.h"
 
@@ -271,25 +272,7 @@ void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
 	Zmap=Z_map;
 }
 
-//------------------------------------------------------------------------------
-
-//Draw primitive using vertex buffer
-HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType, 
-								DWORD				_dwVertexTypeDesc,	// Vertex Format
-								const void *				_pD3DTLVertex,		// don't specify _pD3DTLVertex type.
-								int *				_piNbVertex, 
-								DWORD				_dwFlags );
-
-//------------------------------------------------------------------------------
-
-// TODO move to renderer
-D3DPRIMITIVETYPE ARXToDX7PrimitiveType[] = {
-	D3DPT_TRIANGLELIST,
-	D3DPT_TRIANGLESTRIP,
-	D3DPT_TRIANGLESTRIP,
-	D3DPT_LINELIST,
-	D3DPT_LINESTRIP
-};
+CircularVertexBuffer<D3DTLVERTEX> * pDynamicVertexBuffer_TLVERTEX;
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const D3DTLVERTEX * vertices, size_t count, bool nocount) {
 	
@@ -297,9 +280,7 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const D3DTLVERTEX * vertices, 
 		EERIEDrawnPolys++;
 	}
 	
-	int iCount = count;
-	ARX_DrawPrimitiveVB(ARXToDX7PrimitiveType[primitive], D3DFVF_TLVERTEX, vertices, &iCount, 0);
-	//GDevice->DrawPrimitive(ARXToDX7PrimitiveType[primitive], D3DFVF_TLVERTEX, vertices, count, 0);
+	pDynamicVertexBuffer_TLVERTEX->draw(primitive, vertices, count);
 }
 
 void Delayed_FlushAll() {

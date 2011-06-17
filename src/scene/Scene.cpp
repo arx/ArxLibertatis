@@ -81,6 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
 
+#include "graphics/VertexBuffer.h"
 #include "graphics/Frame.h"
 #include "graphics/Draw.h"
 #include "graphics/GraphicsUtility.h"
@@ -155,7 +156,6 @@ unsigned long FrameCount;
 
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
 CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
-CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;	// VB using TLVERTEX format.
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
 EERIE_FRUSTRUM_PLANE efpPlaneFar;
@@ -227,124 +227,6 @@ bool CMY_DYNAMIC_VERTEXBUFFER::UnLock()
 {
 	pVertexBuffer->Unlock();
 	return true;
-}
-
-//------------------------------------------------------------------------------
-//	This function will use appropriate VB depending on vertex format. (using template)
-/************************************************************************/
-/*  HRESULT ARX_DrawPrimitiveVB(	
- *	D3DPRIMITIVETYPE	_dptPrimitiveType,	: primitive type to draw
- *	_LPVERTEX_			_pVertex,			: pointer to the first vertex to render
- *	int*				_piNbVertex,		: number of vertices to render (must be positive)
- *	DWORD				_dwFlags            : optionally flag for DrawPrimitiveVB.
- *	CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB	: mandatory : dynamicVertexBuffer to use for rendering.
- *	
- *	@return S_OK if function exit correctly.
- ************************************************************************/
-template<class VERTEX_TYPE>
-HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE			_dptPrimitiveType, 
-								const VERTEX_TYPE*				_pVertex, 
-								int*						_piNbVertex, 
-								DWORD						_dwFlags,
-								CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB)
-{
-	const VERTEX_TYPE*				pD3DVertex	=	_pVertex;
-	HRESULT						h_result	=	S_OK;
-	CMY_DYNAMIC_VERTEXBUFFER*	pDVB		=	_pDynamicVB;
-
-	ARX_CHECK( pDVB );
-
-	while( *_piNbVertex )
-	{
-		VERTEX_TYPE*	pVertex			=	NULL;
-		int				iOldNbVertex	=	pDVB->ussNbVertex;
-		pDVB->ussNbIndice				=	0;
-		unsigned short iNbVertex		=	(unsigned short) min( *_piNbVertex, (int)pDVB->ussMaxVertex ); //don't overload VB
-
-		pDVB->ussNbVertex				+=	iNbVertex;
-
-		if( pDVB->ussNbVertex >= pDVB->ussMaxVertex )
-		{
-			pVertex						=	(VERTEX_TYPE*)pDVB->Lock( DDLOCK_DISCARDCONTENTS );
-			pDVB->ussNbVertex			=	iNbVertex;
-			iOldNbVertex				=	0;
-		} 
-		else
-		{
-			pVertex						=	(VERTEX_TYPE*)pDVB->Lock( DDLOCK_NOOVERWRITE );
-			pVertex						+=	iOldNbVertex;
-		}
-
-		*_piNbVertex					-=	iNbVertex;
-
-		memcpy(pVertex, pD3DVertex, iNbVertex*sizeof(VERTEX_TYPE));
-
-		pDVB->UnLock();
-
-		HRESULT	h_resultDPVB = GDevice->DrawPrimitiveVB(_dptPrimitiveType,
-														pDVB->pVertexBuffer,
-														iOldNbVertex,
-														pDVB->ussNbVertex - iOldNbVertex,
-														_dwFlags );
-		if( h_resultDPVB != S_OK )
-			h_result = h_resultDPVB; //Getting last error for return in case of bad DrawPrimitiveVB result
-	}
-
-	return h_result;
-}
-
-//------------------------------------------------------------------------------
-// Add function manager to call template-function.
-/************************************************************************/
-/*  HRESULT ARX_DrawPrimitiveVB(	
- *	D3DPRIMITIVETYPE	_dptPrimitiveType,	: primitive type to draw
- *	DWORD				_dwVertexTypeDesc	: vertex format.
- *	LPVOID				_pVertex,			: pointer to the first vertex to render
- *	int*				_piNbVertex,		: number of vertices to render (must be positive)
- *	DWORD				_dwFlags )          : optionally flag for DrawPrimitiveVB.
- *	
- *	@return S_OK if function exit correctly.
- ************************************************************************/
-HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType, 
-								DWORD				_dwVertexTypeDesc,
-								const void *				_pVertex, 
-								int*				_piNbVertex, 
-								DWORD				_dwFlags )
-{
-	HRESULT h_result = S_FALSE;
-
-	if( _pVertex )
-	{
-		switch( _dwVertexTypeDesc )
-		{
-		case FVF_D3DVERTEX:
-			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
-													(SMY_D3DVERTEX*) _pVertex,
-													_piNbVertex,
-													_dwFlags,
-													pDynamicVertexBufferTransform);
-			break;
-		case D3DFVF_TLVERTEX:
-			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
-													(D3DTLVERTEX*) _pVertex,
-													_piNbVertex,
-													_dwFlags,
-													pDynamicVertexBuffer_TLVERTEX);
-			break;
-		case FVF_D3DVERTEX3:
-			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
-													(SMY_D3DVERTEX3*) _pVertex,
-													_piNbVertex,
-													_dwFlags,
-													pDynamicVertexBuffer);
-			break;
-		default:
-			printf("FVF is not supported by ARX_DrawPrimitiveVB\n");
-			ARX_CHECK(false && "FVF is not supported by ARX_DrawPrimitiveVB");
-		}
-	}
-
-	return h_result;
 }
 
 //*************************************************************************************
@@ -1096,13 +978,7 @@ void ARX_PORTALS_InitDrawnRooms()
 		pDynamicVertexBufferTransform->UnLock();
 		pDynamicVertexBufferTransform->ussNbVertex=0;
 	}
-
-	if (pDynamicVertexBuffer_TLVERTEX)
-	{
-		pDynamicVertexBuffer_TLVERTEX->Lock(DDLOCK_DISCARDCONTENTS);
-		pDynamicVertexBuffer_TLVERTEX->UnLock();
-		pDynamicVertexBuffer_TLVERTEX->ussNbVertex=0;
-	}
+	
 }
 bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 {

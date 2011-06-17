@@ -102,6 +102,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/TextManager.h"
 
+#include "graphics/VertexBuffer.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/GraphicsModes.h"
@@ -250,7 +251,7 @@ extern Color ulBKGColor;
 long LAST_LOCK_SUCCESSFULL=0;
 extern EERIEMATRIX ProjectionMatrix;
 
-extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer_TLVERTEX;		// VB using TLVERTEX format.
+extern CircularVertexBuffer<D3DTLVERTEX> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
@@ -7080,7 +7081,9 @@ HRESULT DANAE::InitDeviceObjects()
 	ComputePortalVertexBuffer();
 	pDynamicVertexBuffer				=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);
 	pDynamicVertexBufferTransform		=	new CMY_DYNAMIC_VERTEXBUFFER(4000, FVF_D3DVERTEX );
-	pDynamicVertexBuffer_TLVERTEX		=	new CMY_DYNAMIC_VERTEXBUFFER(4000, D3DFVF_TLVERTEX );	// VB using TLVERTEX format (creating).
+	
+	VertexBuffer<D3DTLVERTEX> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
+	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<D3DTLVERTEX>(vb);
 
 	if(pMenu)
 	{
@@ -7124,10 +7127,9 @@ HRESULT DANAE::DeleteDeviceObjects()
 		pDynamicVertexBufferTransform=NULL;
 	}
 
-	if(pDynamicVertexBuffer_TLVERTEX)
-	{
+	if(pDynamicVertexBuffer_TLVERTEX) {
 		delete pDynamicVertexBuffer_TLVERTEX;
-		pDynamicVertexBuffer_TLVERTEX=NULL;
+		pDynamicVertexBuffer_TLVERTEX = NULL;
 	}
 
 	if(pDynamicVertexBuffer)

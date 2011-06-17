@@ -1,5 +1,9 @@
+
+#include "core/Core.h" // TODO remove once init has been moved here
+#include "graphics/VertexBuffer.h"
 #include "graphics/Renderer.h"
 #include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/Math.h"
 #include "io/Logger.h"
 
@@ -107,6 +111,20 @@ const D3DFOGMODE ARXToDXFogMode[] = {
 						D3DFOG_LINEAR						// FogLinear
 									};
 
+static const D3DPRIMITIVETYPE ARXToDXPrimitiveType[] = {
+	D3DPT_TRIANGLELIST,  // TriangleList
+	D3DPT_TRIANGLESTRIP, // TriangleStrip
+	D3DPT_TRIANGLEFAN,   // TriangleFan
+	D3DPT_LINELIST,      // LineList
+	D3DPT_LINESTRIP      // LineStrip
+};
+
+static const DWORD ARXToDXBufferFlags[] = {
+	0, // none
+	DDLOCK_DISCARDCONTENTS,                     // DiscardContents
+	DDLOCK_NOOVERWRITE,                         // NoOverwrite
+	DDLOCK_DISCARDCONTENTS | DDLOCK_NOOVERWRITE // DiscardContents | NoOverwrite
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 // DX7Texture2D - MOVE THAT SOMEWHERE ELSE!
@@ -1182,4 +1200,81 @@ void Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, float p
 	rect[3].specular = SPECULAR;
 	
 	GDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &rect, 4, 0);
+}
+
+template <class Vertex>
+class D3D7VertexBuffer : public VertexBuffer<Vertex> {
+	
+public:
+	
+	D3D7VertexBuffer(DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity) {
+		
+		D3DVERTEXBUFFERDESC d3dvbufferdesc;
+		d3dvbufferdesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
+		
+		d3dvbufferdesc.dwCaps = D3DVBCAPS_WRITEONLY;
+		if(!(danaeApp.m_pDeviceInfo->ddDeviceDesc.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)) {
+			d3dvbufferdesc.dwCaps |= D3DVBCAPS_SYSTEMMEMORY;
+		}
+		
+		d3dvbufferdesc.dwFVF = format;
+		d3dvbufferdesc.dwNumVertices = capacity;
+		
+		HRESULT hr = danaeApp.m_pD3D->CreateVertexBuffer(&d3dvbufferdesc, &vb, 0);
+		arx_assert_msg(SUCCEEDED(hr), "error creating vertex buffer: %08x", hr);
+		ARX_UNUSED(hr);
+		
+	}
+	
+	void setData(const Vertex * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) {
+		
+		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		Vertex * dest;
+		
+		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDXBufferFlags[flags], (LPVOID*)&dest, NULL);
+		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
+		ARX_UNUSED(hr);
+		
+		memcpy(dest + offset, vertices, count * sizeof(Vertex));
+		
+		vb->Unlock();
+	}
+	
+	void draw(Renderer::Primitive primitive, size_t count, size_t offset = 0) const {
+		
+		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		
+		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
+		HRESULT hr = GDevice->DrawPrimitiveVB(type, vb, offset, count, 0);
+		arx_assert_msg(SUCCEEDED(hr), "DrawPrimitiveVB failed: %08x", hr);
+		ARX_UNUSED(hr);
+	}
+	
+	
+	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
+		
+		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		arx_assert(indices != NULL);
+		
+		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
+		HRESULT hr = GDevice->DrawIndexedPrimitiveVB(type, vb, offset, count, indices, nbindices, 0);
+		arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveVB failed: %08x", hr);
+		ARX_UNUSED(hr);
+	}
+	
+	~D3D7VertexBuffer() {
+		vb->Release();
+	};
+	
+private:
+	
+	LPDIRECT3DVERTEXBUFFER7 vb;
+	
+};
+
+VertexBuffer<D3DTLVERTEX> * Renderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
+	
+	ARX_UNUSED(usage);
+	
+	return new D3D7VertexBuffer<D3DTLVERTEX>(D3DFVF_TLVERTEX, capacity);
 }
