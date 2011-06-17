@@ -1512,7 +1512,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		if ((io) && (io->ioflags & IO_ANGULAR))
 			MakeCLight2(io,&infra,angle,&pos,eobj,BIGMAT,BIGQUAT,i);
 
-		unsigned long*	pNbVertexPush;
 		float			fTransp = 0.f;
 
 		if(	(eobj->facelist[i].facetype&POLY_TRANS) ||
@@ -1530,7 +1529,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 				
 				{
 					vert_list=PushVertexInTableCull_TMultiplicative(pTex);
-					pNbVertexPush=&pTex->ulNbVertexListCull_TMultiplicative;
 				}
 			}
 			else
@@ -1541,7 +1539,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 					{
 						vert_list=PushVertexInTableCull_TAdditive(pTex);
-						pNbVertexPush=&pTex->ulNbVertexListCull_TAdditive;
 					}
 				}
 				else
@@ -1552,7 +1549,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 						{
 							vert_list=PushVertexInTableCull_TNormalTrans(pTex);
-							pNbVertexPush=&pTex->ulNbVertexListCull_TNormalTrans;
 						}
 					}
 					else  //SUBTRACTIVE
@@ -1561,7 +1557,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		
 						{
 							vert_list=PushVertexInTableCull_TSubstractive(pTex);
-							pNbVertexPush=&pTex->ulNbVertexListCull_TSubstractive;
 						}
 					}
 				}				
@@ -1571,7 +1566,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		{
 			{
 				vert_list=PushVertexInTableCull(pTex);
-				pNbVertexPush=&pTex->ulNbVertexListCull;
 			}
 		}
 
