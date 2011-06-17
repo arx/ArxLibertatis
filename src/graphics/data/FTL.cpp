@@ -543,7 +543,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 			EERIE_FACE_FTL * eff = reinterpret_cast<EERIE_FACE_FTL*>(dat + pos);
 			pos += sizeof(EERIE_FACE_FTL); 
 			
-			obj->facelist[ii].facetype = eff->facetype;
+			obj->facelist[ii].facetype = PolyType::load(eff->facetype);
 			obj->facelist[ii].texid = eff->texid;
 			obj->facelist[ii].transval = eff->transval;
 			obj->facelist[ii].temp = eff->temp;

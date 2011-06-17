@@ -706,7 +706,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 		
 		if(ptf3006.ismap) {
 			eerie->facelist[i].texid = (short)ptf3006.num_map;
-			eerie->facelist[i].facetype = 1;
+			eerie->facelist[i].facetype = POLY_NO_SHADOW;
 			
 			if(ptf3006.num_map >= 0 && eerie->texturecontainer[ptf3006.num_map] && (eerie->texturecontainer[ptf3006.num_map]->userflags & POLY_NOCOL)) {
 				eerie->facelist[i].facetype |= POLY_NOCOL;

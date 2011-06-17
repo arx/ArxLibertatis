@@ -3324,7 +3324,7 @@ bool FastSceneLoad(const string & partial_path) {
 				}
 				
 				ep2->transval = ep->transval;
-				ep2->type = ep->type;
+				ep2->type = PolyType::load(ep->type);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->v[kk].color = 0xFFFFFFFF;
@@ -3475,7 +3475,7 @@ bool FastSceneLoad(const string & partial_path) {
 			portal.useportal = epo->useportal;
 			portal.paddy = epo->paddy;
 			portal.poly.area = epo->poly.area;
-			portal.poly.type = epo->poly.type;
+			portal.poly.type = PolyType::load(epo->poly.type);
 			portal.poly.transval = epo->poly.transval;
 			portal.poly.room = epo->poly.room;
 			portal.poly.misc = epo->poly.misc;
@@ -3838,7 +3838,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	return 1;
 }
 
-static void EERIEAddPolyToBackground(D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval, EERIE_3DOBJ * eobj) {
+static void EERIEAddPolyToBackground(D3DTLVERTEX * vert2, TextureContainer * tex, PolyType render, float transval, EERIE_3DOBJ * eobj) {
 	
 	EERIEPOLY ep;
 	
@@ -3939,7 +3939,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 		vlist[1] = eobj->vertexlist[eobj->facelist[i].vid[1]].vert;
 		vlist[2] = eobj->vertexlist[eobj->facelist[i].vid[2]].vert;
 
-		if (eobj->facelist[i].facetype & 1)
+		if (eobj->facelist[i].facetype & POLY_NO_SHADOW)
 		{
 			vlist[0].color = vlist[1].color = vlist[2].color = D3DCOLORWHITE;
 			vlist[0].tu = eobj->facelist[i].u[0];

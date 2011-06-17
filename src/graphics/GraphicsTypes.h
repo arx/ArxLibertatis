@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector2.h"
 #include "math/Angle.h"
 
+#include "platform/Flags.h"
+
 #include "Configure.h"
 
 class TextureContainer;
@@ -137,9 +139,41 @@ struct EERIE_TLVERTEX {
 	Vec2f tex;
 };
 
-struct EERIEPOLY
-{
-	long 			type;	// at least 16 bits
+enum PolyTypeFlag {
+	POLY_NO_SHADOW    = (1<<0),
+	POLY_DOUBLESIDED  = (1<<1),
+	POLY_TRANS        = (1<<2),
+	POLY_WATER        = (1<<3),
+	POLY_GLOW         = (1<<4),
+	POLY_IGNORE       = (1<<5),
+	POLY_QUAD         = (1<<6),
+	POLY_TILED        = (1<<7),
+	POLY_METAL        = (1<<8),
+	POLY_HIDE         = (1<<9),
+	POLY_STONE        = (1<<10),
+	POLY_WOOD         = (1<<11),
+	POLY_GRAVEL       = (1<<12),
+	POLY_EARTH        = (1<<13),
+	POLY_NOCOL        = (1<<14),
+	POLY_LAVA         = (1<<15),
+	POLY_CLIMB        = (1<<16),
+	POLY_FALL         = (1<<17),
+	POLY_NOPATH       = (1<<18),
+	POLY_NODRAW       = (1<<19),
+	POLY_PRECISE_PATH = (1<<20),
+	POLY_NO_CLIMB     = (1<<21),
+	POLY_ANGULAR      = (1<<22),
+	POLY_ANGULAR_IDX0 = (1<<23),
+	POLY_ANGULAR_IDX1 = (1<<24),
+	POLY_ANGULAR_IDX2 = (1<<25),
+	POLY_ANGULAR_IDX3 = (1<<26),
+	POLY_LATE_MIP     = (1<<27)
+};
+DECLARE_FLAGS(PolyTypeFlag, PolyType);
+DECLARE_FLAGS_OPERATORS(PolyType);
+
+struct EERIEPOLY {
+	PolyType type;
 	Vec3f		min;
 	Vec3f		max;
 	Vec3f		norm;
@@ -182,42 +216,11 @@ struct EERIE_VERTEX {
 #define MATERIAL_FOOT_METAL	15
 #define MATERIAL_FOOT_STEALTH	16
 
-#define POLY_NO_SHADOW		1
-#define POLY_DOUBLESIDED	(1<<1)
-#define POLY_TRANS			(1<<2)
-#define POLY_WATER			(1<<3)
-#define POLY_GLOW			(1<<4)
-
-#define POLY_IGNORE			(1<<5)
-#define POLY_QUAD			(1<<6)
-#define POLY_TILED			(1<<7)
-#define POLY_METAL			(1<<8)
-#define POLY_HIDE			(1<<9)
-
-#define POLY_STONE			(1<<10)
-#define POLY_WOOD			(1<<11)
-#define POLY_GRAVEL			(1<<12)
-#define POLY_EARTH			(1<<13)
-#define POLY_NOCOL			(1<<14)
-#define POLY_LAVA			(1<<15)
-#define POLY_CLIMB			(1<<16)
-#define POLY_FALL			(1<<17)
-#define POLY_NOPATH			(1<<18)
-#define POLY_NODRAW			(1<<19)
-#define POLY_PRECISE_PATH	(1<<20)
-#define POLY_NO_CLIMB		(1<<21)
-#define POLY_ANGULAR		(1<<22)
-#define POLY_ANGULAR_IDX0	(1<<23)
-#define POLY_ANGULAR_IDX1	(1<<24)
-#define POLY_ANGULAR_IDX2	(1<<25)
-#define POLY_ANGULAR_IDX3	(1<<26)
-#define POLY_LATE_MIP		(1<<27)
 #define IOPOLYVERT 3
-
 struct EERIE_FACE {
 	
-	long facetype; // 0 = flat  1 = text  2 = Double-Side
-	short texid;
+	PolyType facetype;
+	short texid; //!< index into the objects texture list
 	unsigned short vid[IOPOLYVERT];
 	float u[IOPOLYVERT];
 	float v[IOPOLYVERT];
