@@ -1286,5 +1286,5 @@ VertexBuffer<SMY_D3DVERTEX> * Renderer::createVertexBuffer(size_t capacity, Buff
 VertexBuffer<SMY_D3DVERTEX3> * Renderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
 	const DWORD format = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX3 | D3DFVF_TEXTUREFORMAT2;
-	return new DX7VertexBuffer<SMY_D3DVERTEX3>(D3DFVF_TLVERTEX, capacity);
+	return new DX7VertexBuffer<SMY_D3DVERTEX3>(format, capacity);
 }

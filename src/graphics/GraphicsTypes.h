@@ -711,23 +711,6 @@ struct SMY_ARXMAT
 	unsigned long uslNbIndiceNoCull_TSubstractive;
 };
 
-class CMY_DYNAMIC_VERTEXBUFFER
-{
-	public:
-		unsigned long			uslFormat;
-		unsigned short			ussMaxVertex;
-		unsigned short			ussNbVertex;
-		unsigned short			ussNbIndice;
-		LPDIRECT3DVERTEXBUFFER7	pVertexBuffer;
-		unsigned short		*	pussIndice;
-	public:
-		CMY_DYNAMIC_VERTEXBUFFER(unsigned short, unsigned long);
-		~CMY_DYNAMIC_VERTEXBUFFER();
-
-		void * Lock(unsigned int);
-		bool UnLock();
-};
-
 // TODO REMOVE
 #define FVF_D3DVERTEX	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
 

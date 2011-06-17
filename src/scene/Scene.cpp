@@ -168,66 +168,6 @@ void PopAllTriangleListTransparency();
 
 extern long TSU_TEST;
 
-//-----------------------------------------------------------------------------
-CMY_DYNAMIC_VERTEXBUFFER::CMY_DYNAMIC_VERTEXBUFFER(unsigned short _ussMaxVertex,unsigned long _uslFormat)
-{
-	uslFormat=_uslFormat;
-	ussMaxVertex=_ussMaxVertex;
-	ussNbVertex=0;
-	ussNbIndice=0;
-
-	D3DVERTEXBUFFERDESC d3dvbufferdesc;
-	d3dvbufferdesc.dwSize=sizeof(D3DVERTEXBUFFERDESC);
-
-	int iFlag=D3DVBCAPS_WRITEONLY;
-
-	if(!(danaeApp.m_pDeviceInfo->ddDeviceDesc.dwDevCaps&D3DDEVCAPS_HWTRANSFORMANDLIGHT))
-	{
-		iFlag|=D3DVBCAPS_SYSTEMMEMORY;
-	}
-
-	d3dvbufferdesc.dwCaps=iFlag;
-	d3dvbufferdesc.dwFVF=uslFormat;
-	d3dvbufferdesc.dwNumVertices=ussMaxVertex;
-	
-	pVertexBuffer=NULL;
-	danaeApp.m_pD3D->CreateVertexBuffer(	&d3dvbufferdesc,
-											&pVertexBuffer,
-											0);
-
-	pussIndice=(unsigned short*)malloc(ussMaxVertex*4*2);
-}
-
-//-----------------------------------------------------------------------------
-CMY_DYNAMIC_VERTEXBUFFER::~CMY_DYNAMIC_VERTEXBUFFER()
-{
-	if(pVertexBuffer) pVertexBuffer->Release();
-
-	if(pussIndice) free((void*)pussIndice);
-}
-
-//-----------------------------------------------------------------------------
-void* CMY_DYNAMIC_VERTEXBUFFER::Lock(unsigned int uiFlag)
-{
-	void		*pVertex;
-
-	if(FAILED(pVertexBuffer->Lock(	DDLOCK_WRITEONLY|uiFlag,
-												&pVertex				,
-												NULL					) ) )
-	{
-		return NULL;
-	}
-
-	return pVertex;
-}
-
-//-----------------------------------------------------------------------------
-bool CMY_DYNAMIC_VERTEXBUFFER::UnLock()
-{
-	pVertexBuffer->Unlock();
-	return true;
-}
-
 //*************************************************************************************
 //*************************************************************************************
 void ApplyWaterFXToVertex(Vec3f * odtv,D3DTLVERTEX * dtv,float power)
