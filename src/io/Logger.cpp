@@ -3,7 +3,10 @@
 
 #include <cstdlib>
 #include <cstring>
+
+#if ARX_COMPILER_MSVC
 #include <windows.h>
+#endif
 
 #include "platform/Platform.h"
 
