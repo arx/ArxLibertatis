@@ -111,7 +111,7 @@ struct PARTICLE_DEF {
 	unsigned long delay;
 	TextureContainer * tc;
 	Color3f rgb;
-	long special;
+	long special; // TODO ARX_PARTICLES_TYPE_FLAG
 	float fparam;
 	long mask;
 	Vec3f * source;
@@ -249,7 +249,7 @@ void ARX_PARTICLES_Spawn_Blood2(Vec3f * pos, float dmgs, D3DCOLOR col, INTERACTI
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, INTERACTIVE_OBJ * io = NULL);
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos
 void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags);
-void ARX_PARTICLES_Spawn_Splat(Vec3f * pos, float dmgs, D3DCOLOR col);
+void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
 void ARX_PARTICLES_SpawnWaterSplash(Vec3f *);
 
 void ARX_BOOMS_ClearAllPolyBooms();

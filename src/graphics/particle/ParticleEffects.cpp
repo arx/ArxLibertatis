@@ -1770,49 +1770,31 @@ void ARX_GenereSpheriqueEtincelles(Vec3f *pos,float r,TextureContainer *tc,float
 	}
 }
 
-//-----------------------------------------------------------------------------
-// flags & 1 = spawn_body_chunk
-void ARX_PARTICLES_Spawn_Splat(Vec3f * pos,float dmgs,D3DCOLOR col) {
+void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 	
-	float power;
-	power=(dmgs*( 1.0f / 60 ))+0.9f;
-
-	float r,g,b;
-	r=(float)((long)((col>>16) & 255))*( 1.0f / 255 );
-	g=(float)((long)((col>>8) & 255))*( 1.0f / 255 );
-	b=(float)((long)((col) & 255))*( 1.0f / 255 );
-
-	for (long kk=0;kk<20;kk++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
+	float power = (dmgs * (1.f/60)) + .9f;
+	
+	for(long kk = 0; kk < 20; kk++) {
+		
+		long j = ARX_PARTICLES_GetFree();
+		if(j != -1) {
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
-			pd->special		=	PARTICLE_SUB2 | SUBSTRACT | GRAVITY;
-			pd->exist		=	true;
-			pd->ov.x		=	pos->x;
-			pd->ov.y		=	pos->y;
-			pd->ov.z		=	pos->z;
-			pd->move.x		=	(rnd()*10-5.f)*2.3f;
-			pd->move.y		=	(rnd()*10-5.f)*2.3f;
-			pd->move.z		=	(rnd()*10-5.f)*2.3f;
-			pd->timcreation	=	lARXTime;
-			pd->tolive		=	(unsigned long)(1000+dmgs*3);
-			pd->tc			=	blood_splat;
-			pd->siz			=	(float)0.3f+0.01f*power;
-			pd->scale.x		=	0.2f+(float)0.3f*power;
-			pd->scale.y		=	0.2f+(float)0.3f*power;
-			pd->scale.z		=	0.2f+(float)0.3f*power;
-			pd->zdec		=	1;	
-			pd->rgb = Color3f(r, g, b);
+			pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY;
+			pd->exist = true;
+			pd->ov = pos;
+			pd->move = Vec3f((rnd() * 10 - 5.f) * 2.3f, (rnd() * 10 - 5.f) * 2.3f, (rnd() * 10 - 5.f) * 2.3f);
+			pd->timcreation = lARXTime;
+			pd->tolive = (unsigned long)(1000 + dmgs*3);
+			pd->tc = blood_splat;
+			pd->siz = .3f + .01f*power;
+			pd->scale = Vec3f(.2f + .3f*power, .2f + .3f*power, .2f + .3f*power);
+			pd->zdec = 1;
+			pd->rgb = col.to<float>();
 		}
 	}
 }
 
-
-//-----------------------------------------------------------------------------
 void ARX_PARTICLES_SpawnWaterSplash(Vec3f *_ePos)
 {
 	for (long kk=0;kk<rnd()*15+20;kk++)

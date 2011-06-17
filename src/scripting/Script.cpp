@@ -1183,7 +1183,7 @@ ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string
 			{
 				if (io)
 				{
-					for (long i = 0; i < MAX_ASPEECH; i++)
+					for (size_t i = 0; i < MAX_ASPEECH; i++)
 					{
 						if (aspeech[i].exist)
 						{

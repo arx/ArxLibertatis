@@ -1431,7 +1431,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 								SpawnGroundSplat(&sp,&rgb,rnd()*30.f+30.f,1);
 								sp.origin.y-=rnd()*150.f;
 
-								ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color.toBGRA());
+								ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);
 
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;

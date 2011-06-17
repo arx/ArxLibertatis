@@ -1205,8 +1205,8 @@ void ARX_PHYSICS_Apply()
 
 				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
 
-				ARX_PARTICLES_Spawn_Splat(&io->obj->vertexlist3[idx].v, 20, 0xFFFF0000);
-				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20, GetInterNum(io));
+				ARX_PARTICLES_Spawn_Splat(io->obj->vertexlist3[idx].v, 20.f, Color::red);
+				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20.f, GetInterNum(io));
 			}
 
 			ARX_INTERACTIVE_DestroyIO(io);
