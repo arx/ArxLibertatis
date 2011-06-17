@@ -978,7 +978,7 @@ void EERIERemovePrecalcLights() {
 			
 			for (long k = 0; k < eg->nbpoly; k++) {
 				ep = &eg->polydata[k];
-				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = D3DCOLORWHITE;
+				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = Color::white.toBGR();
 			}
 		}
 	}

@@ -3299,7 +3299,7 @@ void CMenuCheckButton::RenderMouseOver()
 	else GRenderer->ResetTexture(0);
 
 	D3DTLVERTEX v[4];
-	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -3437,7 +3437,7 @@ MENUSTATE CWindowMenu::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	D3DTLVERTEX v[4];
-	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -4812,7 +4812,7 @@ void CMenuButton::RenderMouseOver()
 	if(pTexOver)
 	{
 		D3DTLVERTEX v[4];
-		v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
+		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -5343,7 +5343,7 @@ void CMenuSlider::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	D3DTLVERTEX v[4];
-	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 

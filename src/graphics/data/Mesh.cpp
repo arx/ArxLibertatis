@@ -3939,9 +3939,9 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 		vlist[1] = eobj->vertexlist[eobj->facelist[i].vid[1]].vert;
 		vlist[2] = eobj->vertexlist[eobj->facelist[i].vid[2]].vert;
 
+		vlist[0].color = vlist[1].color = vlist[2].color = Color::white.toBGR();
 		if (eobj->facelist[i].facetype & POLY_NO_SHADOW)
 		{
-			vlist[0].color = vlist[1].color = vlist[2].color = D3DCOLORWHITE;
 			vlist[0].tu = eobj->facelist[i].u[0];
 			vlist[0].tv = eobj->facelist[i].v[0];
 			vlist[1].tu = eobj->facelist[i].u[1];
@@ -3951,12 +3951,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 
 			if (eobj->facelist[i].texid >= 0)
 				EERIEAddPolyToBackground(vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
-		}
-		else
-		{
-			vlist[0].color = 0xFFFFFFFF;
-			vlist[1].color = 0xFFFFFFFF;
-			vlist[2].color = 0xFFFFFFFF;
+		} else {
 			EERIEAddPolyToBackground(vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
 		}
 	}

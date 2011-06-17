@@ -1685,7 +1685,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			}
 			else // using default white
 			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=EERIECOLOR_WHITE;
+				vert_list[0].color=vert_list[1].color=vert_list[2].color=Color::white.toBGR();
 			}
 		}
 

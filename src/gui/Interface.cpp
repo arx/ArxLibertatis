@@ -9401,10 +9401,10 @@ void DANAE::DrawAllInterface()
 	{
 		D3DTLVERTEX v[4];
 		float px, py;
-		v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 0.f, 0.f);
-		v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 1.f, 0.f);
-		v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 1.f, 1.f);
-		v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 0.f, 1.f);
+		v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
+		v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
+		v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
+		v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 1.f);
 
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;

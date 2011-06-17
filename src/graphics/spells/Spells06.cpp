@@ -1804,7 +1804,7 @@ float CParalyse::Render()
 				d3ds.sy = this->pos.y + vertex->y * this->scale;
 				d3ds.sz = this->pos.z + vertex->z * this->scale;
 				EE_RTP(&d3ds, vd3d);
-				vd3d->color = ARX_OPAQUE_WHITE;
+				vd3d->color = Color::white.toBGR();
 				vertex++;
 				vd3d++;
 				nb--;

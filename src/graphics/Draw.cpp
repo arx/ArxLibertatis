@@ -171,7 +171,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 		ep2->v[3].sz=ep->v[ep_notcommon].sz;
 		ep2->tv[3].tu=ep2->v[3].tu=ep->v[ep_notcommon].tu;
 		ep2->tv[3].tv=ep2->v[3].tv=ep->v[ep_notcommon].tv;
-		ep2->tv[3].color=ep2->v[3].color=EERIECOLOR_WHITE;
+		ep2->tv[3].color=ep2->v[3].color=Color::white.toBGR();
 		ep2->tv[3].rhw=ep2->v[3].rhw=1.f;
 
 	DeclareEGInfo(ep->v[3].sx, ep->v[3].sz);
@@ -859,7 +859,7 @@ void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 	ltv[1].color=ltv[0].color=0xFFFF0000;
 
 	if ((ltv[1].sz>0.f) && (ltv[0].sz>0.f))
-		EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, ltv, 3,  0  );								
+		EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, ltv, 3,  0  );
 
 	for (long h=0;h<to;h++)
 	{
@@ -870,12 +870,12 @@ void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 		lv.sx+=ep->nrml[h].x*10.f;
 		lv.sy+=ep->nrml[h].y*10.f;
 		lv.sz+=ep->nrml[h].z*10.f;
-		EE_RTP(&lv,&ltv[1]);					
+		EE_RTP(&lv,&ltv[1]);
 		GRenderer->ResetTexture(0);
-		ltv[1].color=ltv[0].color=EERIECOLOR_YELLOW;
+		ltv[1].color=ltv[0].color=Color::yellow.toBGR();
 
 		if ((ltv[1].sz>0.f) &&  (ltv[0].sz>0.f))
-			EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, ltv, 3,  0  );									
+			EERIEDRAWPRIM(D3DPT_LINELIST, D3DFVF_TLVERTEX, ltv, 3,  0  );
 	}
 }
 
