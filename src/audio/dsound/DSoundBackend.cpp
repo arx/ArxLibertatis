@@ -27,14 +27,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
+#include "core/Core.h"
 #include "audio/dsound/DSoundSource.h"
 #include "audio/dsound/eax.h"
 
 #include "audio/AudioEnvironment.h"
 #include "audio/AudioGlobal.h"
-
-// TODO
-extern HWND mainWindow;
 
 namespace audio {
 
@@ -94,7 +92,7 @@ aalError DSoundBackend::init(bool enableEax) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	if(FAILED(h = device->SetCooperativeLevel(mainWindow, DSSCL_PRIORITY))) {
+	if(FAILED(h = device->SetCooperativeLevel( danaeApp.m_hWnd, DSSCL_PRIORITY))) {
 		LogError << "error setting cooperative level: " << h;
 		return AAL_ERROR_SYSTEM;
 	}

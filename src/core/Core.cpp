@@ -1119,8 +1119,6 @@ void forInternalPeople(LPSTR strCmdLine) {
 #endif
 }
 
-HWND mainWindow = 0;
-
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
 int main(int argc, char ** argv) {
@@ -1452,7 +1450,6 @@ int main(int argc, char ** argv) {
 
 	if( FAILED( danaeApp.Create( hInstance ) ) )
 		return 0;
-	mainWindow = danaeApp.m_hWnd;
 	
 	AdjustUI();
 
