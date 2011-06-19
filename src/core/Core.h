@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_CORE_H
 #define ARX_CORE_CORE_H
 
-#include "core/Application.h"
+#include "core/Win32Application.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
@@ -145,33 +145,6 @@ struct QUAKE_FX_STRUCT {
 };
 extern QUAKE_FX_STRUCT QuakeFx;
 
-class Win32Application : public Application {
-	
-protected:
-
-	bool OneTimeSceneInit();
-	bool DeleteDeviceObjects();
-	bool Render();
-	bool FrameMove();
-	void ManageKeyMouse();
-	bool ManageEditorControls();
-	void ManagePlayerControls();
-	void DrawAllInterface();
-	void DrawAllInterfaceFinish();
-	void GoFor2DFX();
-	bool BeforeRun();
-	
-public:
-	
-	virtual bool Create();
-	virtual int Run();
-	bool InitDeviceObjects();
-	bool FinalCleanup();
-	
-	LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	Win32Application();
-	long MustRefresh;
-};
 
 extern Win32Application danaeApp;
 
