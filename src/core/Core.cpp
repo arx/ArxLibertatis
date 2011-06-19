@@ -259,7 +259,7 @@ static const float INC_FOCAL = 75.0f;
 
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
-DANAE danaeApp;
+Win32Application danaeApp;
 HINSTANCE hInstance;
 PROJECT Project;
 
@@ -567,8 +567,8 @@ namespace
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (g_pD3DApp)
-		// Cast is fine, will always be a DANAE* if set up for Windows
-		return dynamic_cast<DANAE*>(g_pD3DApp)->MsgProc(hWnd, uMsg, wParam, lParam);
+		// Cast is fine, will always be a Win32Application* if set up for Windows
+		return dynamic_cast<Win32Application*>(g_pD3DApp)->MsgProc(hWnd, uMsg, wParam, lParam);
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
@@ -1462,7 +1462,7 @@ int main(int argc, char ** argv) {
 // DANAE()
 //  Application constructor. Sets attributes for the app.
 //*************************************************************************************
-DANAE::DANAE() : CD3DApplication()
+Win32Application::Win32Application() : Application()
 {
 	m_strWindowTitle  = TEXT("ARX Fatalis");
 	m_bAppUseZBuffer  = true;
@@ -1475,7 +1475,7 @@ DANAE::DANAE() : CD3DApplication()
 //*************************************************************************************
 // Create()
 //*************************************************************************************
-bool DANAE::Create() {
+bool Win32Application::Create() {
 	
 	HINSTANCE hInst = GetModuleHandle(0);
 
@@ -1633,6 +1633,55 @@ bool DANAE::Create() {
 	GetZBufferMax();
 	return true;
 }
+
+//*************************************************************************************
+// Run()
+// Message-processing loop. Idle time is used to render the scene.
+//*************************************************************************************
+int Win32Application::Run()
+{
+	BeforeRun();
+	
+	// Load keyboard accelerators
+	HACCEL hAccel = NULL;
+
+	// Now we're ready to recieve and process Windows messages.
+	BOOL bGotMsg;
+	MSG  msg;
+	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
+
+	while (WM_QUIT != msg.message)
+	{
+		// Use PeekMessage() if the app is active, so we can use idle time to
+		// render the scene. Else, use GetMessage() to avoid eating CPU time.
+		if (m_bActive)
+			bGotMsg = PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE);
+		else
+			bGotMsg = GetMessage(&msg, NULL, 0U, 0U);
+
+		if (bGotMsg)
+		{
+			// Translate and dispatch the message
+			if (0 == TranslateAccelerator(m_hWnd, hAccel, &msg))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+		else
+		{
+			// Render a frame during idle time (no messages are waiting)
+			if (m_bActive && m_bReady)
+			{
+				if (FAILED(Render3DEnvironment()))
+					DestroyWindow(m_hWnd);
+			}
+		}
+	}
+
+	return msg.wParam;
+}
+
 //*************************************************************************************
 // INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
@@ -2383,7 +2432,7 @@ void ClearSysTextures() {
 // OneTimeSceneInit()
 //  Called Once during initial app startup
 //*************************************************************************************
-bool DANAE::OneTimeSceneInit()
+bool Win32Application::OneTimeSceneInit()
 {
 	return true;
 }
@@ -2599,7 +2648,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 // FrameMove()
 //  Called once per frame.
 //*************************************************************************************
-bool DANAE::FrameMove()
+bool Win32Application::FrameMove()
 {
 	
 #ifdef BUILD_EDITOR
@@ -2889,7 +2938,7 @@ void ReleaseDanaeBeforeRun()
 
 }
 
-bool DANAE::BeforeRun()
+bool Win32Application::BeforeRun()
 {
 
 	LogDebug << "Before Run...";
@@ -5155,7 +5204,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 extern long NEED_INTRO_LAUNCH;
 
 //-----------------------------------------------------------------------------
-bool DANAE::Render()
+bool Win32Application::Render()
 {
 	FrameTime = ARX_TIME_Get();
 
@@ -6742,7 +6791,7 @@ static float _AvgFrameDiff = 150.f;
 	return true;
 }
 
-void DANAE::GoFor2DFX()
+void Win32Application::GoFor2DFX()
 {
 	D3DTLVERTEX lv,ltvv;
 
@@ -7159,7 +7208,7 @@ void ARX_SetAntiAliasing() {
 	GRenderer->SetAntialiasing(config.video.antialiasing);
 }
 
-bool DANAE::InitDeviceObjects()
+bool Win32Application::InitDeviceObjects()
 {
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
@@ -7207,7 +7256,7 @@ bool DANAE::InitDeviceObjects()
 // FinalCleanup()
 // Called before the app exits
 //*************************************************************************************
-bool DANAE::FinalCleanup()
+bool Win32Application::FinalCleanup()
 {
 	EERIE_PATHFINDER_Release();
 	ARX_INPUT_Release();
@@ -7223,7 +7272,7 @@ bool DANAE::FinalCleanup()
 //  Called when the app is exitting, or the device is being changed,
 //  this function deletes any device dependant objects.
 //*************************************************************************************
-bool DANAE::DeleteDeviceObjects()
+bool Win32Application::DeleteDeviceObjects()
 {
 	GRenderer->ReleaseAllTextures();
 
@@ -7254,7 +7303,7 @@ bool DANAE::DeleteDeviceObjects()
 // MsgProc()
 //   Overrides StdMsgProc
 //*************************************************************************************
-LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
+LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 									LPARAM lParam )
 {
 	switch (uMsg)

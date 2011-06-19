@@ -97,7 +97,7 @@ long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
 long MouseDragX, MouseDragY;
 
-CD3DApplication		* g_pD3DApp = NULL;
+Application		* g_pD3DApp = NULL;
 EERIE_CAMERA		* Kam;
 LPDIRECT3DDEVICE7	GDevice;
 HWND				MSGhwnd = NULL;
@@ -110,10 +110,10 @@ static int iCurrZBias;
 
 
 //*************************************************************************************
-// CD3DApplication()
+// Application()
 // Constructor
 //*************************************************************************************
-CD3DApplication::CD3DApplication()
+Application::Application()
 {
 	long i;
 	d_dlgframe = 0;
@@ -166,7 +166,7 @@ extern long FINAL_COMMERCIAL_GAME;
 
 
 #ifdef BUILD_EDITOR
-HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
+HWND Application::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 	
 	HWND hWndToolbar;
 	long flags;
@@ -193,56 +193,8 @@ HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 }
 #endif
 
-//*************************************************************************************
-// Run()
-// Message-processing loop. Idle time is used to render the scene.
-//*************************************************************************************
-int CD3DApplication::Run()
-{
-	BeforeRun();
-	
-	// Load keyboard accelerators
-	HACCEL hAccel = NULL;
 
-	// Now we're ready to recieve and process Windows messages.
-	BOOL bGotMsg;
-	MSG  msg;
-	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
-
-	while (WM_QUIT != msg.message)
-	{
-		// Use PeekMessage() if the app is active, so we can use idle time to
-		// render the scene. Else, use GetMessage() to avoid eating CPU time.
-		if (m_bActive)
-			bGotMsg = PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE);
-		else
-			bGotMsg = GetMessage(&msg, NULL, 0U, 0U);
-
-		if (bGotMsg)
-		{
-			// Translate and dispatch the message
-			if (0 == TranslateAccelerator(m_hWnd, hAccel, &msg))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-		else
-		{
-			// Render a frame during idle time (no messages are waiting)
-			if (m_bActive && m_bReady)
-			{
-				if (FAILED(Render3DEnvironment()))
-					DestroyWindow(m_hWnd);
-			}
-		}
-	}
-
-	return msg.wParam;
-
-}
-
-void CD3DApplication::EvictManagedTextures()
+void Application::EvictManagedTextures()
 {
 	if (this->m_pD3D)
 	{
@@ -250,7 +202,7 @@ void CD3DApplication::EvictManagedTextures()
 	}
 }
 
-int CD3DApplication::WinManageMess()
+int Application::WinManageMess()
 {
 	BOOL bGotMsg = true;
 	MSG  msg;
@@ -279,7 +231,7 @@ int CD3DApplication::WinManageMess()
 //*************************************************************************************
 // Callback for WM_MOUSEMOUVE
 //*************************************************************************************
-void CD3DApplication::EERIEMouseUpdate(short x, short y)
+void Application::EERIEMouseUpdate(short x, short y)
 {
 	if ((m_pFramework) &&
 	        (m_pFramework->m_bIsFullscreen) &&
@@ -324,7 +276,7 @@ void CD3DApplication::EERIEMouseUpdate(short x, short y)
 
 //*************************************************************************************
 //*************************************************************************************
-LRESULT CD3DApplication::SwitchFullScreen()
+LRESULT Application::SwitchFullScreen()
 {
 
 	m_bReady = false;
@@ -356,7 +308,7 @@ LRESULT CD3DApplication::SwitchFullScreen()
 // to initialize device specific objects. This code is structured to
 // handled any errors that may occur during initialization
 //*************************************************************************************
-HRESULT CD3DApplication::Initialize3DEnvironment()
+HRESULT Application::Initialize3DEnvironment()
 {
 	HRESULT hr;
 	DWORD   dwFrameworkFlags = 0L;
@@ -431,7 +383,7 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 // Change3DEnvironment()
 // Handles driver, device, and/or mode changes for the app.
 //*************************************************************************************
-HRESULT CD3DApplication::Change3DEnvironment()
+HRESULT Application::Change3DEnvironment()
 {
 	HRESULT hr;
 	static bool  bOldWindowedState = true;
@@ -509,7 +461,7 @@ HRESULT CD3DApplication::Change3DEnvironment()
 	return S_OK;
 }
 
-HRESULT CD3DApplication::UpdateGamma()
+HRESULT Application::UpdateGamma()
 {
 	if (lpDDGammaControl)
 	{
@@ -524,7 +476,7 @@ HRESULT CD3DApplication::UpdateGamma()
 // Render3DEnvironment()
 // Draws the scene.
 //*************************************************************************************
-HRESULT CD3DApplication::Render3DEnvironment()
+HRESULT Application::Render3DEnvironment()
 {
 	HRESULT hr;
 	EERIEMouseXdep = _EERIEMouseXdep;
@@ -592,7 +544,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 // Cleanup3DEnvironment()
 // Cleanup scene objects
 //*************************************************************************************
-VOID CD3DApplication::Cleanup3DEnvironment()
+VOID Application::Cleanup3DEnvironment()
 {
 	m_bActive = false;
 	m_bReady  = false;
@@ -622,7 +574,7 @@ VOID CD3DApplication::Cleanup3DEnvironment()
 // brings the GDI surface to the front of the display, so drawing
 // output like message boxes and menus may be displayed.
 //*************************************************************************************
-VOID CD3DApplication::Pause(bool bPause)
+VOID Application::Pause(bool bPause)
 {
 	static DWORD dwAppPausedCount = 0L;
 
@@ -654,7 +606,7 @@ VOID CD3DApplication::Pause(bool bPause)
 // save any data for open network connections, files, etc.., and prepare
 // to go into a suspended mode.
 //*************************************************************************************
-LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags) {
+LRESULT Application::OnQuerySuspend(DWORD dwFlags) {
 	
 	(void)dwFlags;
 	
@@ -669,7 +621,7 @@ LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags) {
 // the app should recover any data, network connections, files, etc..,
 // and resume running from when the app was suspended.
 //*************************************************************************************
-LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData) {
+LRESULT Application::OnResumeSuspend(DWORD dwData) {
 	
 	(void)dwData;
 	
@@ -715,7 +667,7 @@ VOID CalcFPS(bool reset)
 // OutputText()
 // Draws text on the window.
 //*************************************************************************************
-VOID CD3DApplication::OutputText(DWORD x, DWORD y, const std::string& str)
+VOID Application::OutputText(DWORD x, DWORD y, const std::string& str)
 {
 	if (m_pddsRenderTarget)
 	{
@@ -727,7 +679,7 @@ VOID CD3DApplication::OutputText(DWORD x, DWORD y, const std::string& str)
 // DisplayFrameworkError()
 // Displays error messages in a message box
 //*************************************************************************************
-VOID CD3DApplication::DisplayFrameworkError(HRESULT hr, DWORD dwType) {
+VOID Application::DisplayFrameworkError(HRESULT hr, DWORD dwType) {
 	switch (hr)	{
 		case D3DENUMERR_NODIRECTDRAW:
 			LogError << "Unable to create DirectDraw";
@@ -805,7 +757,7 @@ VOID CD3DApplication::DisplayFrameworkError(HRESULT hr, DWORD dwType) {
 	}
 }
  
-float CD3DApplication::GetZBufferMax()
+float Application::GetZBufferMax()
 {
 	Lock();
 	Unlock();
@@ -817,7 +769,7 @@ float CD3DApplication::GetZBufferMax()
 }
 //*************************************************************************************
 //*************************************************************************************
-void * CD3DApplication::Lock()
+void * Application::Lock()
 {
 
 	memset((void *)&ddsd, 0, sizeof(ddsd));	
@@ -861,7 +813,7 @@ void * CD3DApplication::Lock()
 
 //*************************************************************************************
 //*************************************************************************************
-bool CD3DApplication::Unlock()
+bool Application::Unlock()
 {
 	if (zbuf)
 	{
@@ -890,9 +842,6 @@ bool OKBox(const std::string& text, const std::string& title)
 
 	return true;
 }
-
-extern void ExitProc();
-
 
 void SetZBias(int _iZBias)
 {

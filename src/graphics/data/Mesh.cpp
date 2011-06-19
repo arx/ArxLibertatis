@@ -4380,7 +4380,7 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
 	}
 }
 
-extern DANAE danaeApp;
+extern Win32Application danaeApp;
 
 struct COPY3D
 {

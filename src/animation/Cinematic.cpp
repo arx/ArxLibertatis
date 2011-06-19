@@ -82,7 +82,7 @@ extern int UndoPile;
 extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
-extern DANAE danaeApp;
+extern Win32Application danaeApp;
 
 /*---------------------------------------------------------------------------------*/
 Cinematic::Cinematic(int _w, int _h)

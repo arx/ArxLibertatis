@@ -298,7 +298,7 @@ extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel
 extern long EERIEMouseButton, EERIEMouseGrab;
 extern HWND MSGhwnd;
 
-class CD3DApplication {
+class Application {
 	
 	// Internal variables and member functions
 	bool m_bSingleStep;
@@ -347,7 +347,7 @@ protected:
 	virtual LRESULT OnQuerySuspend(DWORD dwFlags);
 	virtual LRESULT OnResumeSuspend(DWORD dwData);
 	virtual bool BeforeRun() {
-		return 0;
+		return true;
 	}
 	
 	//zbuffer
@@ -388,7 +388,10 @@ public:
 		return true;
 	}
 
-	virtual int Run();
+	virtual int Run() {
+		return true;
+	}
+
 	virtual void Pause(bool bPause);
 	LRESULT SwitchFullScreen() ;
 	
@@ -427,23 +430,23 @@ public:
 	int menu;
 	
 	// Class constructor
-	CD3DApplication();
+	Application();
 	
 };
 
-extern CD3DApplication * g_pD3DApp;
+extern Application * g_pD3DApp;
 
 /**
- * RAII for Lock() Unlock() on CD3DApplication class
+ * RAII for Lock() Unlock() on Application class
  * Can be used in conditions to test whether the lock was successfully acquired
  **/
 class CD3DApplicationScopedLock {
 public:
-	explicit CD3DApplicationScopedLock(CD3DApplication& app) : instance_(&app) { if (!instance_->Lock()) instance_ = NULL; }
+	explicit CD3DApplicationScopedLock(Application& app) : instance_(&app) { if (!instance_->Lock()) instance_ = NULL; }
 	~CD3DApplicationScopedLock() { if (instance_) instance_->Unlock(); }
 	operator void*() const { return instance_; }
 private:
-	CD3DApplication* instance_;
+	Application* instance_;
 	// Prevent instances from being copied.
 	CD3DApplicationScopedLock(const CD3DApplicationScopedLock&);
 	CD3DApplicationScopedLock& operator=(const CD3DApplicationScopedLock&);

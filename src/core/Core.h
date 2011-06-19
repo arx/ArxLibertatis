@@ -145,7 +145,7 @@ struct QUAKE_FX_STRUCT {
 };
 extern QUAKE_FX_STRUCT QuakeFx;
 
-class DANAE : public CD3DApplication {
+class Win32Application : public Application {
 	
 protected:
 
@@ -164,15 +164,16 @@ protected:
 public:
 	
 	virtual bool Create();
+	virtual int Run();
 	bool InitDeviceObjects();
 	bool FinalCleanup();
 	
 	LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	DANAE();
+	Win32Application();
 	long MustRefresh;
 };
 
-extern DANAE danaeApp;
+extern Win32Application danaeApp;
 
 void SetEditMode(long ed, const bool stop_sound = true);
 void AddQuakeFX(float intensity, float duration, float period, long flags);

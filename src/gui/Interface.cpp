@@ -1471,7 +1471,7 @@ void GetInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
-bool DANAE::ManageEditorControls()
+bool Win32Application::ManageEditorControls()
 {
 	Vec3f trans;
 
@@ -3755,7 +3755,7 @@ long MOVE_PRECEDENCE=0;
 extern long DISABLE_JUMP;
 extern unsigned long REQUEST_JUMP;
 //-----------------------------------------------------------------------------
-void DANAE::ManagePlayerControls()
+void Win32Application::ManagePlayerControls()
 {
 	if (((EERIEMouseButton & 4) && (!EDITMODE) && !(player.Interface & INTER_COMBATMODE))
 		&& (!player.doingmagic)
@@ -4884,7 +4884,7 @@ void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
 }
 extern void ARX_PrepareBackgroundNRMLs();
 //-----------------------------------------------------------------------------
-void DANAE::ManageKeyMouse()
+void Win32Application::ManageKeyMouse()
 {
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
@@ -8742,7 +8742,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 
 //-----------------------------------------------------------------------------
-void DANAE::DrawAllInterfaceFinish()
+void Win32Application::DrawAllInterfaceFinish()
 {
 	currpos = ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(50.f));
 	float rrr;
@@ -8854,7 +8854,7 @@ void ARX_INTERFACE_DrawCurrentTorch()
 extern float GLOBAL_SLOWDOWN;
 extern long SPLASH_THINGS_STAGE;
 //-----------------------------------------------------------------------------
-void DANAE::DrawAllInterface()
+void Win32Application::DrawAllInterface()
 {
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
