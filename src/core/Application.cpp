@@ -95,7 +95,7 @@ long EERIEMouseButton = 0;
 long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
 
-Application		* g_pD3DApp = NULL;
+Application* mainApp = 0;
 EERIE_CAMERA		* Kam;
 LPDIRECT3DDEVICE7	GDevice;
 HWND				MSGhwnd = NULL;
@@ -427,9 +427,9 @@ bool OKBox(const std::string& text, const std::string& title)
 
 {
 	int i;
-	g_pD3DApp->Pause(true);
-	i = MessageBox(g_pD3DApp->m_hWnd, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
-	g_pD3DApp->Pause(false);
+	mainApp->Pause(true);
+	i = MessageBox(mainApp->m_hWnd, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
+	mainApp->Pause(false);
 
 	if (i == IDCANCEL) return false;
 

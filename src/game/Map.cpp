@@ -563,12 +563,12 @@ void DANAE_Manage_CreateMap()
 
 	if (iCreateMap==1)
 	{			
-		ARXCarte=new C_ARX_Carte(ACTIVEBKG,4,g_pD3DApp->m_pFramework->m_dwRenderWidth,g_pD3DApp->m_pFramework->m_dwRenderHeight);			
+		ARXCarte=new C_ARX_Carte(ACTIVEBKG,4,mainApp->m_pFramework->m_dwRenderWidth,mainApp->m_pFramework->m_dwRenderHeight);			
 	}
 
 	if (iCreateMap==2)
 	{
-		ARXCarte->BuildMap( g_pD3DApp->m_pFramework,ThisLevelMap);
+		ARXCarte->BuildMap( mainApp->m_pFramework,ThisLevelMap);
 	}
 
 	if (iCreateMap==3)

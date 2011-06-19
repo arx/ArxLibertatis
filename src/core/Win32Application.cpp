@@ -69,9 +69,9 @@ namespace
 	//*************************************************************************************
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		if (g_pD3DApp)
+		if (mainApp)
 			// Cast is fine, will always be a Win32Application* if set up for Windows
-			return dynamic_cast<Win32Application*>(g_pD3DApp)->MsgProc(hWnd, uMsg, wParam, lParam);
+			return dynamic_cast<Win32Application*>(mainApp)->MsgProc(hWnd, uMsg, wParam, lParam);
 
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}

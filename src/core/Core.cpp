@@ -1295,7 +1295,7 @@ int main(int argc, char ** argv) {
 	Project.improve=0;
 	Project.interpolatemouse = 0;
 
-	g_pD3DApp = &danaeApp;
+	mainApp = &danaeApp;
 
 	danaeApp.d_dlgframe=0;
 

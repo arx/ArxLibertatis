@@ -424,7 +424,7 @@ public:
 	
 };
 
-extern Application * g_pD3DApp;
+extern Application * mainApp;
 
 /**
  * RAII for Lock() Unlock() on Application class

@@ -5787,10 +5787,10 @@ void CDirectInput::GetInput()
 
 		if(bGLOBAL_DINPUT_GAME)
 		{
-			g_pD3DApp->_EERIEMouseXdep=(int)fDX;
-			g_pD3DApp->_EERIEMouseYdep=(int)fDY;
-			g_pD3DApp->EERIEMouseX=iMouseAX;
-			g_pD3DApp->EERIEMouseY=iMouseAY;
+			mainApp->_EERIEMouseXdep=(int)fDX;
+			mainApp->_EERIEMouseYdep=(int)fDY;
+			mainApp->EERIEMouseX=iMouseAX;
+			mainApp->EERIEMouseY=iMouseAY;
 		}
 	}
 	else
