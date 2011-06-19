@@ -560,20 +560,21 @@ void LaunchMoulinex();
 namespace
 {
 
-//*************************************************************************************
-// WndProc()
-//  Static msg handler which passes messages to the application class.
-//*************************************************************************************
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	if (g_pD3DApp)
-		// Cast is fine, will always be a Win32Application* if set up for Windows
-		return dynamic_cast<Win32Application*>(g_pD3DApp)->MsgProc(hWnd, uMsg, wParam, lParam);
+	//*************************************************************************************
+	// WndProc()
+	//  Static msg handler which passes messages to the application class.
+	//*************************************************************************************
+	LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		if (g_pD3DApp)
+			// Cast is fine, will always be a Win32Application* if set up for Windows
+			return dynamic_cast<Win32Application*>(g_pD3DApp)->MsgProc(hWnd, uMsg, wParam, lParam);
 
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	}
+
 }
 
-}
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
 {
