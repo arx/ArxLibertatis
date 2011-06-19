@@ -3407,7 +3407,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					ShowTextWindowtext = "Global Variables";
 
 #ifdef BUILD_EDITOR
-					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
+					if (!(mainApp->kbd.inkey[INKEY_LEFTSHIFT]) && !(mainApp->kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
 #endif
 
@@ -3424,7 +3424,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					ShowTextWindowtext = "Local Variables";
 
 #ifdef BUILD_EDITOR
-					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
+					if (!(mainApp->kbd.inkey[INKEY_LEFTSHIFT]) && !(mainApp->kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
 #endif
 
@@ -3443,7 +3443,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					ShowTextWindowtext = "Variables";
 
 #ifdef BUILD_EDITOR
-					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
+					if (!(mainApp->kbd.inkey[INKEY_LEFTSHIFT]) && !(mainApp->kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWVARS, NULL, (DLGPROC)ShowVarsDlg);
 #endif
 
@@ -4250,7 +4250,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				{
 					pos = GetNextWord(es, pos, word);
 
-					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
+					if (!(mainApp->kbd.inkey[INKEY_LEFTSHIFT]) && !(mainApp->kbd.inkey[INKEY_RIGHTSHIFT]))
 					{
 						ARX_TIME_Pause();
 						LogError << word;

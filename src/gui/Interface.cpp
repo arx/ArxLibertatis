@@ -2764,7 +2764,7 @@ bool Win32Application::ManageEditorControls()
 
 			if (this->kbd.inkey[INKEY_RETURN])
 			{
-				if (danaeApp.m_pFramework->m_bIsFullscreen)
+				if (mainApp->m_pFramework->m_bIsFullscreen)
 				{
 					ARX_TIME_Pause();
 					Pause(true);
@@ -3369,7 +3369,7 @@ bool Win32Application::ManageEditorControls()
 				memcpy(&fogparam,&fogs[LastSelectedFog],sizeof(FOG_DEF));
 				CDP_EditFog=&fogs[LastSelectedFog];
 
-				if (danaeApp.m_pFramework->m_bIsFullscreen)
+				if (mainApp->m_pFramework->m_bIsFullscreen)
 				{
 					ARX_TIME_Pause();
 					Pause(true);
@@ -3675,7 +3675,7 @@ bool Win32Application::ManageEditorControls()
 			{
 				CDP_EditIO=inter.iobj[LastSelectedIONum];
 
-				if (danaeApp.m_pFramework->m_bIsFullscreen)
+				if (mainApp->m_pFramework->m_bIsFullscreen)
 				{
 					ARX_TIME_Pause();
 					Pause(true);
@@ -5161,7 +5161,7 @@ void Win32Application::ManageKeyMouse()
 		DANAEMouse.x=MemoMouse.x;
 		DANAEMouse.y=MemoMouse.y;
 
-		if(	(danaeApp.m_pFramework->m_bIsFullscreen)&&
+		if(	(mainApp->m_pFramework->m_bIsFullscreen)&&
 			(bGLOBAL_DINPUT_GAME) )
 		{
 			if(pGetInfoDirectInput)
@@ -5397,7 +5397,7 @@ void Win32Application::ManageKeyMouse()
 			float fd;
 
 			if(	0
-				&&	(danaeApp.m_pFramework->m_bIsFullscreen)
+				&&	(mainApp->m_pFramework->m_bIsFullscreen)
 				&&	(bGLOBAL_DINPUT_GAME) )
 			{
 				fd = (Original_framedelay) * .3f * (640.f / (float)DANAESIZX); 
@@ -5718,7 +5718,7 @@ void Win32Application::ManageKeyMouse()
 						{
 							CDP_EditIO=inter.iobj[LastSelectedIONum];
 
-							if (danaeApp.m_pFramework->m_bIsFullscreen)
+							if (mainApp->m_pFramework->m_bIsFullscreen)
 							{
 								ARX_TIME_Pause();
 								Pause(true);
@@ -5786,18 +5786,18 @@ void Win32Application::ManageKeyMouse()
 					{
 						if (EDITION==EDITION_LIGHTS)
 						{
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs				
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs				
 							EDITION=EDITION_IO;
 						}
 						else
 						{
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,true); //Lights
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs				
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,true); //Lights
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs				
 							EDITION=EDITION_LIGHTS;
 						}
 
@@ -5808,14 +5808,14 @@ void Win32Application::ManageKeyMouse()
 					{
 						if (EDITMODE)
 						{
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B006,false);
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B006,false);
 							SetEditMode(0);							
 							ARX_TIME_Get();
 							SendGameReadyMsg();
 						}
 						else
 						{
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B006,true);
+							SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B006,true);
 							SetEditMode(1);			
 							RestoreAllIOInitPos();
 						}

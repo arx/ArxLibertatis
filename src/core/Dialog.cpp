@@ -258,19 +258,19 @@ HWND ShowErrorPopup( const char * title, const char * tex)
 	strcpy(ERRORTITLE, title);
 	strcpy(ERRORSTRING, tex);
 
-	if (danaeApp.m_pFramework->m_bIsFullscreen)
+	if (mainApp->m_pFramework->m_bIsFullscreen)
 	{
 		ARX_TIME_Pause();
-		danaeApp.Pause(true);
-		DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-		          MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc);
-		danaeApp.Pause(false);
+		mainApp->Pause(true);
+		DialogBox((HINSTANCE)GetWindowLongPtr(mainApp->m_hWnd, GWLP_HINSTANCE),
+		          MAKEINTRESOURCE(IDD_SCRIPTERROR), mainApp->m_hWnd, IDDErrorLogProc);
+		mainApp->Pause(false);
 		ARX_TIME_UnPause();
 		return NULL;
 	}
 
-	HWND hdl = CreateDialogParam((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc, 0);
+	HWND hdl = CreateDialogParam((HINSTANCE)GetWindowLongPtr(mainApp->m_hWnd, GWLP_HINSTANCE),
+	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), mainApp->m_hWnd, IDDErrorLogProc, 0);
 	return hdl;
 }
 
@@ -818,10 +818,10 @@ INT_PTR CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	{
 		case WM_MOVE:
 
-			if ((danaeApp.m_pDeviceInfo->bWindowed) && (danaeApp.m_hWnd != NULL))
+			if ((mainApp->m_pDeviceInfo->bWindowed) && (mainApp->m_hWnd != NULL))
 			{
 				RECT rect1, rect2;
-				GetWindowRect(danaeApp.m_hWnd, &rect1);
+				GetWindowRect(mainApp->m_hWnd, &rect1);
 				GetWindowRect(hWnd, &rect2);
 				long posx = rect2.left - rect1.left;
 				long posy = rect2.top - rect1.top;
@@ -835,7 +835,7 @@ INT_PTR CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			return false;
 		case WM_INITDIALOG:
 
-			if ((danaeApp.m_pDeviceInfo->bWindowed) && (danaeApp.m_hWnd != NULL))
+			if ((mainApp->m_pDeviceInfo->bWindowed) && (mainApp->m_hWnd != NULL))
 			{
 				long posx, posy;
 				Danae_Registry_ReadValue("WND_IO_DlgProc_POSX", &posx, 0);
@@ -847,7 +847,7 @@ INT_PTR CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				   )
 				{
 					RECT rect1;
-					GetWindowRect(danaeApp.m_hWnd, &rect1);
+					GetWindowRect(mainApp->m_hWnd, &rect1);
 					posx = rect1.left + posx;
 					posy = rect1.left + posy;
 
@@ -1206,7 +1206,7 @@ void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name, long type)
 
 void LaunchInteractiveObjectsApp(HWND hwnd)
 {
-	if (!danaeApp.m_pDeviceInfo->bWindowed)
+	if (!mainApp->m_pDeviceInfo->bWindowed)
 		return;
 
 	if (InterObjDlg) return;
@@ -1516,18 +1516,18 @@ void LaunchLightThread(long minx, long minz, long maxx, long maxz)
 
 	if (PRECALC == NULL)
 	{
-		if (danaeApp.m_pFramework->m_bIsFullscreen)
+		if (mainApp->m_pFramework->m_bIsFullscreen)
 		{
 
 			ARX_TIME_Pause();
-			DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-			          MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc);
+			DialogBox((HINSTANCE)GetWindowLongPtr(mainApp->m_hWnd, GWLP_HINSTANCE),
+			          MAKEINTRESOURCE(IDD_PRECALC), mainApp->m_hWnd, PrecalcProc);
 			ARX_TIME_UnPause();
 		}
 
 		else
-			PRECALC = (CreateDialogParam((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-			                             MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc, 0));
+			PRECALC = (CreateDialogParam((HINSTANCE)GetWindowLongPtr(mainApp->m_hWnd, GWLP_HINSTANCE),
+			                             MAKEINTRESOURCE(IDD_PRECALC), mainApp->m_hWnd, PrecalcProc, 0));
 	}
 
 	THREAD_MINX = minx;
@@ -1585,10 +1585,10 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		case WM_MOVE:
 
-			if (danaeApp.m_pDeviceInfo->bWindowed)
+			if (mainApp->m_pDeviceInfo->bWindowed)
 			{
 				RECT rect1, rect2;
-				GetWindowRect(danaeApp.m_hWnd, &rect1);
+				GetWindowRect(mainApp->m_hWnd, &rect1);
 				GetWindowRect(hWnd, &rect2);
 				long posx = rect2.left - rect1.left;
 				long posy = rect2.top - rect1.top;
@@ -1620,7 +1620,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				PROGRESS_COUNT = PROGRESS_TOTAL;
 				SendMessage(thWnd, PBM_SETPOS , 1000, 0);
 
-				if (danaeApp.m_pFramework->m_bIsFullscreen)
+				if (mainApp->m_pFramework->m_bIsFullscreen)
 				{
 					PRECALC = NULL;
 					KillTimer(hWnd, 1);
@@ -1676,7 +1676,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 		case WM_INITDIALOG:
 
-			if (danaeApp.m_pDeviceInfo->bWindowed)
+			if (mainApp->m_pDeviceInfo->bWindowed)
 			{
 				long posx, posy;
 				Danae_Registry_ReadValue("WND_LightPrecalc_POSX", &posx, 0);
@@ -1688,7 +1688,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				   )
 				{
 					RECT rect1;
-					GetWindowRect(danaeApp.m_hWnd, &rect1);
+					GetWindowRect(mainApp->m_hWnd, &rect1);
 					posx = rect1.left + posx;
 					posy = rect1.left + posy;
 
@@ -2222,7 +2222,7 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_FULLRENDER16BITS)) Project.bits = 16;
 					else Project.bits = 32;
 
-					danaeApp.m_pFramework->bitdepth = Project.bits;
+					mainApp->m_pFramework->bitdepth = Project.bits;
 
 					if (IsChecked(hWnd, IDC_DEBUGNPCMOVE)) DEBUGNPCMOVE = 1;
 					else DEBUGNPCMOVE = 0;
@@ -2377,13 +2377,13 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 		if (IDC_MODE  == LOWORD(wParam))
 		{
-			if (!danaeApp.m_pDeviceInfo->bWindowed)
+			if (!mainApp->m_pDeviceInfo->bWindowed)
 			{
-				if (SUCCEEDED(D3DEnum_UserChangeDevice(&danaeApp.m_pDeviceInfo)))
+				if (SUCCEEDED(D3DEnum_UserChangeDevice(&mainApp->m_pDeviceInfo)))
 				{
 					ARX_Text_Close();
 
-					if (FAILED(hr = danaeApp.Change3DEnvironment()))
+					if (FAILED(hr = mainApp->Change3DEnvironment()))
 					{
 						LogError << ("Error Changing Environment");
 						return 0;
@@ -2399,7 +2399,7 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 		{
 			CHOOSECOLOR cc;
 			cc.lStructSize = sizeof(CHOOSECOLOR);
-			cc.hwndOwner = danaeApp.m_hWnd;
+			cc.hwndOwner = mainApp->m_hWnd;
 			cc.hInstance = 0; //Ignored
 			cc.rgbResult = (((long)(float)(Project.interfacergb.r * 255.f) & 255))
 			               | (((long)(float)(Project.interfacergb.g * 255.f) & 255) << 8)
@@ -2419,7 +2419,7 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 		{
 			CHOOSECOLOR cc;
 			cc.lStructSize = sizeof(CHOOSECOLOR);
-			cc.hwndOwner = danaeApp.m_hWnd;
+			cc.hwndOwner = mainApp->m_hWnd;
 			cc.hInstance = 0; //Ignored
 			cc.rgbResult = (((long)(float)(Project.torch.r * 255.f) & 255))
 			               | (((long)(float)(Project.torch.g * 255.f) & 255) << 8)
@@ -2722,10 +2722,10 @@ static INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 	{
 		case WM_MOVE:
 
-			if (danaeApp.m_pDeviceInfo->bWindowed)
+			if (mainApp->m_pDeviceInfo->bWindowed)
 			{
 				RECT rect1, rect2;
-				GetWindowRect(danaeApp.m_hWnd, &rect1);
+				GetWindowRect(mainApp->m_hWnd, &rect1);
 				GetWindowRect(hWnd, &rect2);
 				long posx = rect2.left - rect1.left;
 				long posy = rect2.top - rect1.top;
@@ -2785,7 +2785,7 @@ static INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 					PrecalcIOLighting(NULL, 0, 1);
 					CHOOSECOLOR cc;
 					cc.lStructSize = sizeof(CHOOSECOLOR);
-					cc.hwndOwner = danaeApp.m_hWnd;
+					cc.hwndOwner = mainApp->m_hWnd;
 					cc.hInstance = 0; //Ignored
 					cc.rgbResult = (((long)(float)(lightparam.rgb.r * 255.f) & 255))
 					               | (((long)(float)(lightparam.rgb.g * 255.f) & 255) << 8)
@@ -2902,7 +2902,7 @@ static INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 		break;
 		case WM_INITDIALOG:
 
-			if (danaeApp.m_pDeviceInfo->bWindowed)
+			if (mainApp->m_pDeviceInfo->bWindowed)
 			{
 				long posx, posy;
 				Danae_Registry_ReadValue("WND_LightOptions_POSX", &posx, 0);
@@ -2914,7 +2914,7 @@ static INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 				   )
 				{
 					RECT rect1;
-					GetWindowRect(danaeApp.m_hWnd, &rect1);
+					GetWindowRect(mainApp->m_hWnd, &rect1);
 					posx = rect1.left + posx;
 					posy = rect1.left + posy;
 
@@ -3146,7 +3146,7 @@ INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			{
 				CHOOSECOLOR cc;
 				cc.lStructSize = sizeof(CHOOSECOLOR);
-				cc.hwndOwner = danaeApp.m_hWnd;
+				cc.hwndOwner = mainApp->m_hWnd;
 				cc.hInstance = 0; //Ignored
 				cc.rgbResult = (((long)(float)(fogparam.rgb.r * 255.f) & 255))
 				               | (((long)(float)(fogparam.rgb.g * 255.f) & 255) << 8)
@@ -3845,8 +3845,8 @@ void TextBox(const char * title, char * text, long size)
 	GTE_TITLE = title;
 	GTE_TEXT = text;
 	GTE_SIZE = size;
-	DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-	          MAKEINTRESOURCE(IDD_GAIATEXTEDIT), danaeApp.m_hWnd, GaiaTextEdit);
+	DialogBox((HINSTANCE)GetWindowLongPtr(mainApp->m_hWnd, GWLP_HINSTANCE),
+	          MAKEINTRESOURCE(IDD_GAIATEXTEDIT), mainApp->m_hWnd, GaiaTextEdit);
 	ARX_TIME_UnPause();
 }
 
@@ -3861,18 +3861,18 @@ void launchlightdialog()
 			memcpy(&lightparam, GLight[LastSelectedLight], sizeof(EERIE_LIGHT));
 			CDP_EditLight = GLight[LastSelectedLight];
 
-			if (danaeApp.m_pFramework->m_bIsFullscreen)
+			if (mainApp->m_pFramework->m_bIsFullscreen)
 			{
 				ARX_TIME_Pause();
-				danaeApp.Pause(true);
-				DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-				          MAKEINTRESOURCE(IDD_LIGHTDIALOG), danaeApp.m_hWnd, LightOptionsProc);
-				danaeApp.Pause(false);
+				mainApp->Pause(true);
+				DialogBox((HINSTANCE)GetWindowLongPtr(mainApp->m_hWnd, GWLP_HINSTANCE),
+				          MAKEINTRESOURCE(IDD_LIGHTDIALOG), mainApp->m_hWnd, LightOptionsProc);
+				mainApp->Pause(false);
 				ARX_TIME_UnPause();
 			}
 			else
-				CDP_LIGHTOptions = (CreateDialogParam((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
-				                                      MAKEINTRESOURCE(IDD_LIGHTDIALOG), danaeApp.m_hWnd, LightOptionsProc, 0));
+				CDP_LIGHTOptions = (CreateDialogParam((HINSTANCE)GetWindowLongPtr(mainApp->m_hWnd, GWLP_HINSTANCE),
+				                                      MAKEINTRESOURCE(IDD_LIGHTDIALOG), mainApp->m_hWnd, LightOptionsProc, 0));
 		}
 	}
 }

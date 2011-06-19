@@ -163,12 +163,12 @@ void FlushMemorySnaps(long flag)
 	tga.ImageDescriptor =  32;
 
 
-	danaeApp.Lock();
-	DWORD dwRMask = danaeApp.ddsd.ddpfPixelFormat.dwRBitMask;
-	DWORD dwGMask = danaeApp.ddsd.ddpfPixelFormat.dwGBitMask;
-	DWORD dwBMask = danaeApp.ddsd.ddpfPixelFormat.dwBBitMask;
-	DWORD dwAMask = danaeApp.ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
-	danaeApp.Unlock();
+	mainApp->Lock();
+	DWORD dwRMask = mainApp->ddsd.ddpfPixelFormat.dwRBitMask;
+	DWORD dwGMask = mainApp->ddsd.ddpfPixelFormat.dwGBitMask;
+	DWORD dwBMask = mainApp->ddsd.ddpfPixelFormat.dwBBitMask;
+	DWORD dwAMask = mainApp->ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
+	mainApp->Unlock();
 
 	DWORD dwRShiftL = 8, dwRShiftR = 0;
 	DWORD dwGShiftL = 8, dwGShiftR = 0;
@@ -323,7 +323,7 @@ bool SnapShot::GetSnapShot()
 	memset((void *)&ddsd2, 0, sizeof(ddsd2));
 	ddsd2.dwSize = sizeof(ddsd2);
 
-	if (danaeApp.m_pFramework->m_pddsBackBuffer->Lock(NULL, &ddsd2, DDLOCK_SURFACEMEMORYPTR, 0) != DD_OK)
+	if (mainApp->m_pFramework->m_pddsBackBuffer->Lock(NULL, &ddsd2, DDLOCK_SURFACEMEMORYPTR, 0) != DD_OK)
 	{
 		return false;
 	}
@@ -332,7 +332,7 @@ bool SnapShot::GetSnapShot()
 
 	if (!pulMemorySnapShot)
 	{
-		danaeApp.m_pFramework->m_pddsBackBuffer->Unlock(NULL);
+		mainApp->m_pFramework->m_pddsBackBuffer->Unlock(NULL);
 		return false;
 	}
 
@@ -421,7 +421,7 @@ bool SnapShot::GetSnapShot()
 		break;
 	}
 
-	danaeApp.m_pFramework->m_pddsBackBuffer->Unlock(NULL);
+	mainApp->m_pFramework->m_pddsBackBuffer->Unlock(NULL);
 
 	//sauvegarde bmp
 	char tTxt[256];
@@ -473,7 +473,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 	memset((void *)&ddsd2, 0, sizeof(ddsd2));
 	ddsd2.dwSize = sizeof(ddsd2);
 
-	danaeApp.m_pFramework->m_pddsBackBuffer->GetSurfaceDesc(&ddsd2);
+	mainApp->m_pFramework->m_pddsBackBuffer->GetSurfaceDesc(&ddsd2);
 
 	LPDIRECTDRAW7        pDD;
 	LPDIRECTDRAWSURFACE7 pddsRender;
@@ -491,7 +491,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 
 	pDD->Release();
 
-	m_pddsSurface->Blt(NULL, danaeApp.m_pFramework->m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
+	m_pddsSurface->Blt(NULL, mainApp->m_pFramework->m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
 	memset((void *)&ddsd2, 0, sizeof(ddsd2));
 	ddsd2.dwSize = sizeof(ddsd2);
 	m_pddsSurface->GetSurfaceDesc(&ddsd2);
@@ -505,7 +505,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 
 	if (!pulMemorySnapShot)
 	{
-		danaeApp.m_pFramework->m_pddsBackBuffer->Unlock(NULL);
+		mainApp->m_pFramework->m_pddsBackBuffer->Unlock(NULL);
 		return false;
 	}
 

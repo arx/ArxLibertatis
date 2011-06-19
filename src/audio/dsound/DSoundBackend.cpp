@@ -92,7 +92,7 @@ aalError DSoundBackend::init(bool enableEax) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	if(FAILED(h = device->SetCooperativeLevel( danaeApp.m_hWnd, DSSCL_PRIORITY))) {
+	if(FAILED(h = device->SetCooperativeLevel( mainApp->m_hWnd, DSSCL_PRIORITY))) {
 		LogError << "error setting cooperative level: " << h;
 		return AAL_ERROR_SYSTEM;
 	}

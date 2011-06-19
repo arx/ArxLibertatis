@@ -335,9 +335,6 @@ protected:
 	virtual bool RestoreSurfaces() {
 		return true;
 	}
-	virtual bool FinalCleanup() {
-		return true;
-	}
 	
 	virtual bool BeforeRun() {
 		return true;
@@ -362,6 +359,11 @@ public:
 	virtual bool InitDeviceObjects() {
 		return true;
 	}
+
+	virtual bool FinalCleanup() {
+		return true;
+	}
+
 	void OutputText(DWORD x, DWORD y, const std::string& str);
 	
 	bool m_bActive;
@@ -387,6 +389,18 @@ public:
 	virtual void Pause(bool bPause);
 	
 	CD3DFramework7 * m_pFramework;
+
+	
+	virtual bool Change3DEnvironment() {
+		return true;
+	}
+
+	virtual void Cleanup3DEnvironment() {}
+
+	virtual bool SwitchFullScreen() {
+		return true;
+	}
+
 	KEYBOARD_MNG kbd;
 	
 	char StatusText[512];
@@ -395,6 +409,7 @@ public:
 	bool  Fullscreen;
 	WindowCreationFlags CreationFlags;
 	long CreationMenu;
+	long MustRefresh;
 #ifdef BUILD_EDITOR
 	EERIETOOLBAR * ToolBar;
 #endif
@@ -413,6 +428,10 @@ public:
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
 	DDGAMMARAMP DDGammaRamp; // modified ramp value
 	DDGAMMARAMP DDGammaOld; // backup gamma values
+
+	virtual bool UpdateGamma() {
+		return true;
+	}
 	
 	float GetZBufferMax();
 	float zbuffer_max;

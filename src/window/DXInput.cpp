@@ -304,7 +304,7 @@ bool DXI_GetKeyboardInputDevice(DXIMode mode) {
 			continue;
 		}
 		
-		if(DXI_ChooseInputDevice( danaeApp.m_hWnd, *i, mode)) {
+		if(DXI_ChooseInputDevice( mainApp->m_hWnd, *i, mode)) {
 			return true;
 		}
 		
@@ -326,7 +326,7 @@ bool DXI_GetMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 			continue;
 		}
 		
-		if(DXI_ChooseInputDevice( danaeApp.m_hWnd, *i, mode)) {
+		if(DXI_ChooseInputDevice( mainApp->m_hWnd, *i, mode)) {
 			if(i->nbbuttons >= minbutton && i->nbaxes >= minaxe) {
 				return true;
 			} else {

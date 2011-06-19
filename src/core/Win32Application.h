@@ -57,16 +57,15 @@ protected:
 
 public:
 	
+	Win32Application();
 	virtual bool Create();
 	virtual int Run();
 	bool InitDeviceObjects();
 	bool FinalCleanup();
-	LRESULT SwitchFullScreen() ;
-	void Cleanup3DEnvironment();
-	HRESULT Change3DEnvironment();
+	virtual bool SwitchFullScreen();
+	virtual void Cleanup3DEnvironment();
+	virtual bool Change3DEnvironment();
 	
-	HRESULT UpdateGamma();
-	LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	Win32Application();
-	long MustRefresh;
+	virtual bool UpdateGamma();
+	virtual LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };

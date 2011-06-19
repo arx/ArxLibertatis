@@ -62,7 +62,7 @@ void LoadScreen()
 	if (GRenderer->BeginScene())
 	{
 		GRenderer->EndScene();
-		danaeApp.m_pFramework->ShowFrame();
+		mainApp->m_pFramework->ShowFrame();
 	}
 }
 
@@ -120,7 +120,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 		}
 
 		GRenderer->EndScene();
-		danaeApp.m_pFramework->ShowFrame();
+		mainApp->m_pFramework->ShowFrame();
 	}
 
 	Project.vsync = 1;
@@ -154,7 +154,7 @@ void ARX_INTERFACE_ShowARKANE()
 		}
 
 		GRenderer->EndScene();
-		danaeApp.m_pFramework->ShowFrame();
+		mainApp->m_pFramework->ShowFrame();
 	}
 
 	Project.vsync = 1;
@@ -311,7 +311,7 @@ void LoadLevelScreen(long num)
 			}
 
 			GRenderer->EndScene();
-			danaeApp.m_pFramework->ShowFrame();
+			mainApp->m_pFramework->ShowFrame();
 		}
 
 		if (fFadeSens > 0.f)

@@ -87,13 +87,13 @@ void ARXMenu_Options_Video_GetResolution(int & _iWidth, int & _iHeight, int & _i
 {
 	_iWidth		= DANAESIZX;
 	_iHeight	= DANAESIZY;
-	_iBpp		= danaeApp.m_pFramework->bitdepth;
+	_iBpp		= mainApp->m_pFramework->bitdepth;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetBitPlane(int & _iBpp)
 {
-	_iBpp		= danaeApp.m_pFramework->bitdepth;
+	_iBpp		= mainApp->m_pFramework->bitdepth;
 }
 
 //-----------------------------------------------------------------------------
@@ -104,25 +104,25 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	GRenderer->EndScene();
 
-	danaeApp.m_pFramework->ShowFrame();
+	mainApp->m_pFramework->ShowFrame();
 
 	ARX_Text_Close();
 
 	HRESULT hr;
 	Project.bits = _iBpp;
-	danaeApp.m_pFramework->bitdepth = _iBpp;
-	danaeApp.m_pFramework->m_dwRenderHeight = _iHeight;
-	danaeApp.m_pFramework->m_dwRenderWidth = _iWidth;
+	mainApp->m_pFramework->bitdepth = _iBpp;
+	mainApp->m_pFramework->m_dwRenderHeight = _iHeight;
+	mainApp->m_pFramework->m_dwRenderWidth = _iWidth;
 
-	if (danaeApp.m_pDeviceInfo->bWindowed)
+	if (mainApp->m_pDeviceInfo->bWindowed)
 	{
 		RECT rRect;
 		RECT rRect2;
-		GetClientRect(danaeApp.m_hWnd, &rRect);
-		GetWindowRect(danaeApp.m_hWnd, &rRect2);
+		GetClientRect(mainApp->m_hWnd, &rRect);
+		GetWindowRect(mainApp->m_hWnd, &rRect2);
 		int dx = (rRect2.right - rRect2.left) - (rRect.right - rRect.left);
 		int dy = (rRect2.bottom - rRect2.top) - (rRect.bottom - rRect.top);
-		SetWindowPos(danaeApp.m_hWnd,
+		SetWindowPos(mainApp->m_hWnd,
 			            HWND_TOP,
 			            rRect2.left,
 			            rRect2.top,
@@ -132,30 +132,30 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 	}
 	else
 	{
-		int nb = danaeApp.m_pDeviceInfo->dwNumModes;
+		int nb = mainApp->m_pDeviceInfo->dwNumModes;
 
 		for (int i = 0; i < nb; i++)
 		{
 
 			ARX_CHECK_NOT_NEG(_iBpp);
 
-			if (danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT(_iBpp))
+			if (mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT(_iBpp))
 			{
 				ARX_CHECK_NOT_NEG(_iWidth);
 				ARX_CHECK_NOT_NEG(_iHeight);
 
-				if ((danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT(_iWidth)) &&
-					    (danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT(_iHeight)))
+				if ((mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT(_iWidth)) &&
+					    (mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT(_iHeight)))
 				{
 
-					danaeApp.m_pDeviceInfo->ddsdFullscreenMode = danaeApp.m_pDeviceInfo->pddsdModes[i];
-					danaeApp.m_pDeviceInfo->dwCurrentMode = i;
+					mainApp->m_pDeviceInfo->ddsdFullscreenMode = mainApp->m_pDeviceInfo->pddsdModes[i];
+					mainApp->m_pDeviceInfo->dwCurrentMode = i;
 				}
 			}
 		}
 	}
 
-	if (FAILED(hr = danaeApp.Change3DEnvironment()))
+	if (FAILED(hr = mainApp->Change3DEnvironment()))
 		LogError << "Error Changing Environment";
 
 	AdjustUI();
@@ -166,7 +166,7 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetFullscreen(bool & _bEnable)
 {
-	if (danaeApp.m_pDeviceInfo->bWindowed) _bEnable = false;
+	if (mainApp->m_pDeviceInfo->bWindowed) _bEnable = false;
 	else _bEnable = true;
 }
 
@@ -253,15 +253,15 @@ void SetGammaLumContrast()
 		ARX_CHECK_WORD(iColor);
 		WORD wColor = ARX_CLEAN_WARN_CAST_WORD(iColor);
 
-		danaeApp.DDGammaRamp.red[iI] = wColor;
-		danaeApp.DDGammaRamp.green[iI] = wColor;
-		danaeApp.DDGammaRamp.blue[iI] = wColor;
+		mainApp->DDGammaRamp.red[iI] = wColor;
+		mainApp->DDGammaRamp.green[iI] = wColor;
+		mainApp->DDGammaRamp.blue[iI] = wColor;
 
 
 		fVal += fdVal;
 	}
 
-	danaeApp.UpdateGamma();
+	mainApp->UpdateGamma();
 }
 
 //-----------------------------------------------------------------------------
@@ -510,7 +510,7 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int _iSensitivity)
 	config.input.mouseSensitivity = _iSensitivity;
 	pGetInfoDirectInput->SetSensibility(_iSensitivity);
 
-	danaeApp.fMouseSensibility = ((float)config.input.mouseSensitivity) / 10.f;
+	mainApp->fMouseSensibility = ((float)config.input.mouseSensitivity) / 10.f;
 }
 
 //-----------------------------------------------------------------------------

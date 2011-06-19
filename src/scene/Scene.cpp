@@ -182,7 +182,7 @@ CMY_DYNAMIC_VERTEXBUFFER::CMY_DYNAMIC_VERTEXBUFFER(unsigned short _ussMaxVertex,
 
 	int iFlag=D3DVBCAPS_WRITEONLY;
 
-	if(!(danaeApp.m_pDeviceInfo->ddDeviceDesc.dwDevCaps&D3DDEVCAPS_HWTRANSFORMANDLIGHT))
+	if(!(mainApp->m_pDeviceInfo->ddDeviceDesc.dwDevCaps&D3DDEVCAPS_HWTRANSFORMANDLIGHT))
 	{
 		iFlag|=D3DVBCAPS_SYSTEMMEMORY;
 	}
@@ -192,7 +192,7 @@ CMY_DYNAMIC_VERTEXBUFFER::CMY_DYNAMIC_VERTEXBUFFER(unsigned short _ussMaxVertex,
 	d3dvbufferdesc.dwNumVertices=ussMaxVertex;
 	
 	pVertexBuffer=NULL;
-	danaeApp.m_pD3D->CreateVertexBuffer(	&d3dvbufferdesc,
+	mainApp->m_pD3D->CreateVertexBuffer(	&d3dvbufferdesc,
 											&pVertexBuffer,
 											0);
 
@@ -2842,7 +2842,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			//SUBSTRACTIVE
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive)
 			{
-				if(danaeApp.m_pFramework->bitdepth==16)
+				if(mainApp->m_pFramework->bitdepth==16)
 					SetZBias(1);
 				else
 					SetZBias(8);

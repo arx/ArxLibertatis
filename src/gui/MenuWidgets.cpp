@@ -1213,7 +1213,7 @@ bool Menu2_Render()
 					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
 					pMenuSliderResol =(CMenuSliderText*)me;
-					int nb=danaeApp.m_pDeviceInfo->dwNumModes;
+					int nb=mainApp->m_pDeviceInfo->dwNumModes;
 					std::vector<int> vBpp;
 					vBpp.clear();
 					int i=0;
@@ -1222,26 +1222,26 @@ bool Menu2_Render()
 					{
 						{
 							std::stringstream ss;
-							ss << danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth << 'x' << danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight;
+							ss << mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth << 'x' << mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight;
 							szMenuText = ss.str();
 
 
 							ARX_CHECK_NOT_NEG( iModeBpp );
 
-							if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( iModeBpp ) )
+							if( mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( iModeBpp ) )
 							{
 								((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, (MENUSTATE)(OPTIONS_VIDEO_RESOLUTION_0+i)));
 
 								ARX_CHECK_NOT_NEG( iModeX );
 								ARX_CHECK_NOT_NEG( iModeY );
 
-								if( ( danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( iModeX ) ) &&
-									( danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( iModeY ) ) )
+								if( ( mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( iModeX ) ) &&
+									( mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( iModeY ) ) )
 								{
 
 									((CMenuSliderText*)me)->iPos = ((CMenuSliderText *)me)->vText.size()-1;
-									danaeApp.m_pDeviceInfo->ddsdFullscreenMode=danaeApp.m_pDeviceInfo->pddsdModes[i];
-									danaeApp.m_pDeviceInfo->dwCurrentMode=i;
+									mainApp->m_pDeviceInfo->ddsdFullscreenMode=mainApp->m_pDeviceInfo->pddsdModes[i];
+									mainApp->m_pDeviceInfo->dwCurrentMode=i;
 								}
 							}
 
@@ -1251,7 +1251,7 @@ bool Menu2_Render()
 
 							for(ii=vBpp.begin();ii!=vBpp.end();++ii)
 							{
-								if (ARX_CAST_UINT(*ii) == danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount)
+								if (ARX_CAST_UINT(*ii) == mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount)
 								{
 									bExist=true;
 									break;
@@ -1260,7 +1260,7 @@ bool Menu2_Render()
 
 							if(!bExist)
 							{
-								vBpp.insert(vBpp.end(),danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount);
+								vBpp.insert(vBpp.end(),mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount);
 							}
 						}
 					}
@@ -5718,7 +5718,7 @@ void CDirectInput::GetInput()
 
 	iWheelSens=pGetInfoDirectInput->GetWheelSens();
 
-	if(    ( danaeApp.m_pFramework->m_bIsFullscreen ) &&
+	if(    ( mainApp->m_pFramework->m_bIsFullscreen ) &&
 		( bGLOBAL_DINPUT_MENU ) )
 	{
 		float fDX = 0.f;
@@ -5753,10 +5753,10 @@ void CDirectInput::GetInput()
 
 			ARX_CHECK_NOT_NEG( iMouseAX );
 
-			if( ARX_CAST_ULONG( iMouseAX ) >= danaeApp.m_pFramework->m_dwRenderWidth )
+			if( ARX_CAST_ULONG( iMouseAX ) >= mainApp->m_pFramework->m_dwRenderWidth )
 			{
 
-				iMouseAX = danaeApp.m_pFramework->m_dwRenderWidth - 1;
+				iMouseAX = mainApp->m_pFramework->m_dwRenderWidth - 1;
 				fMouseAXTemp = ARX_CLEAN_WARN_CAST_FLOAT( iMouseAX );
 			}
 
@@ -5769,10 +5769,10 @@ void CDirectInput::GetInput()
 
 			ARX_CHECK_NOT_NEG( iMouseAY );
 
-			if( ARX_CAST_ULONG( iMouseAY ) >= danaeApp.m_pFramework->m_dwRenderHeight )
+			if( ARX_CAST_ULONG( iMouseAY ) >= mainApp->m_pFramework->m_dwRenderHeight )
 			{
 
-				iMouseAY        = danaeApp.m_pFramework->m_dwRenderHeight - 1;
+				iMouseAY        = mainApp->m_pFramework->m_dwRenderHeight - 1;
 				fMouseAYTemp    = ARX_CLEAN_WARN_CAST_FLOAT( iMouseAY ); 
 			}
 

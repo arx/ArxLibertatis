@@ -4380,8 +4380,6 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
 	}
 }
 
-extern Win32Application danaeApp;
-
 struct COPY3D
 {
 	float	x, y, z;
@@ -4606,7 +4604,7 @@ void ComputePortalVertexBuffer()
 			pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
 			int iFlag = D3DVBCAPS_WRITEONLY;
 
-			if (!(danaeApp.m_pDeviceInfo->ddDeviceDesc.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT))
+			if (!( mainApp->m_pDeviceInfo->ddDeviceDesc.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT))
 			{
 				iFlag |= D3DVBCAPS_SYSTEMMEMORY;
 			}
@@ -4619,7 +4617,7 @@ void ComputePortalVertexBuffer()
 
 			pRoom->pVertexBuffer = NULL;
 
-			if (FAILED(danaeApp.m_pD3D->CreateVertexBuffer(&d3dvbufferdesc,
+			if (FAILED( mainApp->m_pD3D->CreateVertexBuffer(&d3dvbufferdesc,
 					   &pRoom->pVertexBuffer,
 					   0)))
 			{

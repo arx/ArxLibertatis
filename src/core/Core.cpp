@@ -583,39 +583,39 @@ void DANAE_KillCinematic()
 
 void DanaeSwitchFullScreen()
 {
-	if (danaeApp.m_pDeviceInfo->bWindowed) // switching to fullscreen
+	if (mainApp->m_pDeviceInfo->bWindowed) // switching to fullscreen
 	{
 #ifdef BUILD_EDITOR
 		KillInterTreeView();
 #endif
 	}
 
-		int nb=danaeApp.m_pDeviceInfo->dwNumModes;
+		int nb=mainApp->m_pDeviceInfo->dwNumModes;
 
 		for(int i=0;i<nb;i++)
 		{
 
 			ARX_CHECK_NOT_NEG( config.video.bpp );
 
-			if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( config.video.bpp ) )
+			if( mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( config.video.bpp ) )
 			{
 				ARX_CHECK_NOT_NEG( config.video.width );
 				ARX_CHECK_NOT_NEG( config.video.height );
 
-				if( ( danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( config.video.width ) ) &&
-					( danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( config.video.height ) ) )
+				if( ( mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( config.video.width ) ) &&
+					( mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( config.video.height ) ) )
 				{
 
-					danaeApp.m_pDeviceInfo->ddsdFullscreenMode=danaeApp.m_pDeviceInfo->pddsdModes[i];
-					danaeApp.m_pDeviceInfo->dwCurrentMode=i;
+					mainApp->m_pDeviceInfo->ddsdFullscreenMode=mainApp->m_pDeviceInfo->pddsdModes[i];
+					mainApp->m_pDeviceInfo->dwCurrentMode=i;
 					break;
 				}
 			}
 		}
 
-		config.video.bpp = danaeApp.m_pFramework->bitdepth = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
-		config.video.height = danaeApp.m_pFramework->m_dwRenderHeight = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
-		config.video.width = danaeApp.m_pFramework->m_dwRenderWidth = danaeApp.m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
+		config.video.bpp = mainApp->m_pFramework->bitdepth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
+		config.video.height = mainApp->m_pFramework->m_dwRenderHeight = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
+		config.video.width = mainApp->m_pFramework->m_dwRenderWidth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
 
 	if(pMenu)
 	{
@@ -623,7 +623,7 @@ void DanaeSwitchFullScreen()
 	}
 
 	ARX_Text_Close();
-	danaeApp.SwitchFullScreen();
+	mainApp->SwitchFullScreen();
 
 	AdjustUI();
 
@@ -633,11 +633,11 @@ void DanaeSwitchFullScreen()
 void AdjustUI()
 {
 	// Sets Danae Screen size depending on windowed/full-screen state
-	DANAESIZX = danaeApp.m_pFramework->m_dwRenderWidth;
-	DANAESIZY = danaeApp.m_pFramework->m_dwRenderHeight;
+	DANAESIZX = mainApp->m_pFramework->m_dwRenderWidth;
+	DANAESIZY = mainApp->m_pFramework->m_dwRenderHeight;
 
-	if (danaeApp.m_pDeviceInfo->bWindowed)
-		DANAESIZY -= danaeApp.m_pFramework->Ystart;
+	if (mainApp->m_pDeviceInfo->bWindowed)
+		DANAESIZY -= mainApp->m_pFramework->Ystart;
 
 	// Now computes screen center
 	DANAECENTERX = DANAESIZX>>1;
@@ -655,8 +655,8 @@ void AdjustUI()
 
 void DanaeRestoreFullScreen() {
 
-	danaeApp.m_pDeviceInfo->bWindowed=!danaeApp.m_pDeviceInfo->bWindowed;
-	danaeApp.SwitchFullScreen();
+	mainApp->m_pDeviceInfo->bWindowed=!mainApp->m_pDeviceInfo->bWindowed;
+	mainApp->SwitchFullScreen();
 
 	AdjustUI();
 
@@ -873,7 +873,7 @@ void InitializeDanae()
 	mapcam.bkgcolor=0x001F1F55;
 	SetActiveCamera(&mapcam);
 	SetCameraDepth(10000.f);
-	danaeApp.MustRefresh=true;
+	mainApp->MustRefresh=true;
 
 	for (long i=0;i<32;i++)
 		memcpy(&TCAM[i],&subj,sizeof(EERIE_CAMERA));
@@ -917,7 +917,7 @@ void InitializeDanae()
 
 #ifdef BUILD_EDITOR
 	if(GAME_EDITOR && !MOULINEX) {
-		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
+		LaunchInteractiveObjectsApp( mainApp->m_hWnd);
 	}
 #endif
 
@@ -1297,54 +1297,54 @@ int main(int argc, char ** argv) {
 
 	mainApp = &danaeApp;
 
-	danaeApp.d_dlgframe=0;
+	mainApp->d_dlgframe=0;
 
 #ifdef BUILD_EDITOR
 	if(MOULINEX) {
-		danaeApp.WndSizeX = 800;
-		danaeApp.WndSizeY = 12;
+		mainApp->WndSizeX = 800;
+		mainApp->WndSizeY = 12;
 	} else
 #endif
 	{
-		danaeApp.WndSizeX = config.video.width;
-		danaeApp.WndSizeY = config.video.height;
-		danaeApp.Fullscreen = config.video.fullscreen;
+		mainApp->WndSizeX = config.video.width;
+		mainApp->WndSizeY = config.video.height;
+		mainApp->Fullscreen = config.video.fullscreen;
 	}
 
 #ifdef BUILD_EDITOR
 	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
 		GAME_EDITOR=1;
-		danaeApp.CreationFlags= WCF_NOSTDPOPUP | WCF_ACCEPTFILES ;
-		danaeApp.CreationMenu=IDR_DANAEMENU;
+		mainApp->CreationFlags= WCF_NOSTDPOPUP | WCF_ACCEPTFILES ;
+		mainApp->CreationMenu=IDR_DANAEMENU;
 
 		//todo free
-		danaeApp.ToolBar=(EERIETOOLBAR *)malloc(sizeof(EERIETOOLBAR));
-		danaeApp.ToolBar->CreationToolBar = IDR_DANAETOOLS;
-		danaeApp.ToolBar->Bitmap = IDB_DANAETB;
-		danaeApp.ToolBar->Buttons=tbButtons;
-		danaeApp.ToolBar->ToolBarNb=23;
-		danaeApp.ToolBar->Type=EERIE_TOOLBAR_TOP;
-		danaeApp.ToolBar->String.clear();
+		mainApp->ToolBar=(EERIETOOLBAR *)malloc(sizeof(EERIETOOLBAR));
+		mainApp->ToolBar->CreationToolBar = IDR_DANAETOOLS;
+		mainApp->ToolBar->Bitmap = IDB_DANAETB;
+		mainApp->ToolBar->Buttons=tbButtons;
+		mainApp->ToolBar->ToolBarNb=23;
+		mainApp->ToolBar->Type=EERIE_TOOLBAR_TOP;
+		mainApp->ToolBar->String.clear();
 	}
 	else
 #endif
 	{
-		danaeApp.CreationFlags= WCF_NOSTDPOPUP;
+		mainApp->CreationFlags= WCF_NOSTDPOPUP;
 #ifdef BUILD_EDITOR
-		if(GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
+		if(GAME_EDITOR) mainApp->CreationFlags|= WCF_ACCEPTFILES;
 #endif
 	}
 
 	LogDebug << "Application Creation";
 
-	if( !danaeApp.Create() )
+	if( !mainApp->Create() )
 		return 0;
 	
 	AdjustUI();
 
 	LogInfo << "Application Creation Success";
 
-	danaeApp.m_pFramework->bitdepth=Project.bits;
+	mainApp->m_pFramework->bitdepth=Project.bits;
 	
 	LogDebug << "Sound init";
 	if(ARX_SOUND_Init()) {
@@ -1392,13 +1392,13 @@ int main(int argc, char ** argv) {
 			LogError << "Unable To Initialize ARX INPUT, Leaving...";
 			ARX_INPUT_Release();
 
-			SendMessage(danaeApp.m_hWnd, WM_CLOSE, 0, 0);
+			SendMessage(mainApp->m_hWnd, WM_CLOSE, 0, 0);
 
 			exit(0);
 		}
 
-		SetActiveWindow(danaeApp.m_hWnd);
-		SetWindowPos(danaeApp.m_hWnd,HWND_TOP,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+		SetActiveWindow(mainApp->m_hWnd);
+		SetWindowPos(mainApp->m_hWnd,HWND_TOP,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
 	}
 
 	LogInfo << "AInput Init Success";
@@ -1426,7 +1426,7 @@ int main(int argc, char ** argv) {
 #endif
 
 	strcat(tex, arxVersion.c_str());
-	SetWindowText(danaeApp.m_hWnd, tex);
+	SetWindowText(mainApp->m_hWnd, tex);
 	
 	Project.interfacergb.r = 0.46f;
 	Project.interfacergb.g = 0.46f;
@@ -1440,10 +1440,10 @@ int main(int argc, char ** argv) {
 	
 	LogInfo << "InitializeDanae Success";
 	LogDebug << "DanaeApp RUN";
-	danaeApp.m_bReady = true;
+	mainApp->m_bReady = true;
 
 	// Init all done, start the main loop
-	return danaeApp.Run();
+	return mainApp->Run();
 }
 
 //*************************************************************************************
@@ -1461,7 +1461,7 @@ INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock)
 
 	if (mustlock)
 	{
-		CD3DApplicationScopedLock lock(danaeApp);
+		CD3DApplicationScopedLock lock( *mainApp );
 		if (lock)
 			return FlyingOverObject(pos, false);
 	}
@@ -2378,8 +2378,8 @@ void SetEditMode(long ed, const bool stop_sound)
 	{
 		EDITMODE=1;
 
-		if(	((danaeApp.m_pFramework)&&
-			(danaeApp.m_pFramework->m_bIsFullscreen))||
+		if(	((mainApp->m_pFramework)&&
+			(mainApp->m_pFramework->m_bIsFullscreen))||
 			(FINAL_COMMERCIAL_GAME) )
 		{
 			USE_OLD_MOUSE_SYSTEM=0;
@@ -2578,8 +2578,8 @@ bool Win32Application::BeforeRun()
 
 	LogDebug << "Before Run...";
 
-	ControlCinematique = new Cinematic(danaeApp.m_pFramework->m_dwRenderWidth, danaeApp.m_pFramework->m_dwRenderHeight);
-	LogDebug << "Initializing ControlCinematique " << danaeApp.m_pFramework->m_dwRenderWidth << "x" << danaeApp.m_pFramework->m_dwRenderHeight;
+	ControlCinematique = new Cinematic(mainApp->m_pFramework->m_dwRenderWidth, mainApp->m_pFramework->m_dwRenderHeight);
+	LogDebug << "Initializing ControlCinematique " << mainApp->m_pFramework->m_dwRenderWidth << "x" << mainApp->m_pFramework->m_dwRenderHeight;
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=-1;
@@ -2674,7 +2674,7 @@ bool Win32Application::BeforeRun()
 	if (iCreateMap)
 		DANAE_Manage_CreateMap();
 
-	danaeApp.GetZBufferMax();
+	mainApp->GetZBufferMax();
 
 	return true;
 }
@@ -2706,8 +2706,8 @@ void FirstTimeThings() {
 
 void ExitProc()
 {
-	if (danaeApp.m_hWnd!=NULL)
-		SendMessage( danaeApp.m_hWnd, WM_QUIT, 0, 0 );
+	if (mainApp->m_hWnd!=NULL)
+		SendMessage( mainApp->m_hWnd, WM_QUIT, 0, 0 );
 
 	exit(0);
 }
@@ -4224,7 +4224,7 @@ void LaunchMoulinex()
 
 		if (KILL_AT_MOULINEX_END)
 		{
-			danaeApp.FinalCleanup();
+			mainApp->FinalCleanup();
 			exit(0);
 		}
 		else LogError << ("Moulinex Successfull");
@@ -4267,7 +4267,7 @@ void LaunchMoulinex()
 
 		if (PROCESS_ONLY_ONE_LEVEL!=-1)
 		{
-			danaeApp.FinalCleanup();
+			mainApp->FinalCleanup();
 			exit(0);
 		}
 	}
@@ -4279,7 +4279,7 @@ void LaunchMoulinex()
 
 		if (KILL_AT_MOULINEX_END)
 		{
-			danaeApp.FinalCleanup();
+			mainApp->FinalCleanup();
 			exit(0);
 		}
 		else LogError << ("Moulinex Successfull");
@@ -4876,7 +4876,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 	col=EERIERGB(rgb.r,rgb.g,rgb.b);
 	float width=(float)(*cur)*( 1.0f / 500 );
 	EERIEDrawBitmap(0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, col);
-	danaeApp.OutputText(ARX_CLEAN_WARN_CAST_DWORD(width), iVPOS * 16 - 2, str);
+	mainApp->OutputText(ARX_CLEAN_WARN_CAST_DWORD(width), iVPOS * 16 - 2, str);
 
 }
 
@@ -6237,7 +6237,7 @@ static float _AvgFrameDiff = 150.f;
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	
 	// Reset Last Key
-	danaeApp.kbd.lastkey=-1;
+	mainApp->kbd.lastkey=-1;
 
 	// Red screen fade for damages.
 	ARX_DAMAGE_Show_Hit_Blood();
@@ -6394,18 +6394,18 @@ static float _AvgFrameDiff = 150.f;
 				break;
 			}
 
-			danaeApp.OutputText( 320, 240, tex );
+			mainApp->OutputText( 320, 240, tex );
 		}
 
 		if((NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
 		{
 			if(bOLD_CLIPP)
 			{
-				danaeApp.OutputText(0, 240, "New Clipp" );
+				mainApp->OutputText(0, 240, "New Clipp" );
 			}
 			else
 			{
-				danaeApp.OutputText(0,274,"New Clipp");
+				mainApp->OutputText(0,274,"New Clipp");
 			}
 		}
 	}
@@ -6658,16 +6658,16 @@ void ShowTestText()
 	else
 		sprintf(tex,"Version : Demo  1.01 - Build n%02.3f",DANAE_VERSION);
 
-	danaeApp.OutputText( 0, 16, tex );
+	mainApp->OutputText( 0, 16, tex );
 
 	sprintf(tex,"Level : %s",LastLoadedScene);
-	danaeApp.OutputText( 0, 32, tex );
+	mainApp->OutputText( 0, 32, tex );
 
 	sprintf(tex,"Position : %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
-	danaeApp.OutputText( 0, 48, tex );
+	mainApp->OutputText( 0, 48, tex );
 
 	sprintf( tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE.c_str() );
-	danaeApp.OutputText( 0, 64, tex );
+	mainApp->OutputText( 0, 64, tex );
 }
 extern float CURRENT_PLAYER_COLOR;
 extern int TSU_TEST_COLLISIONS;
@@ -6700,7 +6700,7 @@ static void ShowInfoText() {
 	}
 
 	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld MIPMESH %d [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, _framedelay, INTER_DRAW, INTER_COMPUTE, 0, vdist);
-	danaeApp.OutputText( 70, 32, tex );
+	mainApp->OutputText( 70, 32, tex );
 
 	float poss=-666.66f;
 	EERIEPOLY * ep=CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z);
@@ -6710,15 +6710,15 @@ static void ShowInfoText() {
 		poss=tempo;
 
 	sprintf(tex,"Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",player.pos.x,player.pos.y+player.size.y,poss,player.pos.z,player.angle.a,player.angle.b,ACTIVECAM->focal);
-	danaeApp.OutputText( 70, 48, tex );
+	mainApp->OutputText( 70, 48, tex );
 	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d  Lkey %d SSM %ld",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
-		,GAT,ParticleCount,player.doingmagic,danaeApp.kbd.lastkey,SnapShotMode);
-	danaeApp.OutputText( 70, 64, tex );
+		,GAT,ParticleCount,player.doingmagic,mainApp->kbd.lastkey,SnapShotMode);
+	mainApp->OutputText( 70, 64, tex );
 
-	if (player.onfirmground==0) danaeApp.OutputText( 200, 280, "OFFGRND" );
+	if (player.onfirmground==0) mainApp->OutputText( 200, 280, "OFFGRND" );
 
 	sprintf(tex,"Jump %f cinema %f %d %d - Pathfind %ld(%s)",player.jumplastposition,CINEMA_DECAL,DANAEMouse.x,DANAEMouse.y,EERIE_PATHFINDER_Get_Queued_Number(), PATHFINDER_WORKING ? "Working" : "Idled");
-	danaeApp.OutputText( 70, 80, tex );
+	mainApp->OutputText( 70, 80, tex );
 	INTERACTIVE_OBJ * io=ARX_SCRIPT_Get_IO_Max_Events();
 
 	char temp[256];
@@ -6731,7 +6731,7 @@ static void ShowInfoText() {
 		sprintf(tex,"Events %ld (IOmax %s_%04ld %d) Timers %ld",ScriptEvent::totalCount,temp,io->ident,io->stat_count,ARX_SCRIPT_CountTimers());
 	}
 
-	danaeApp.OutputText( 70, 94, tex );
+	mainApp->OutputText( 70, 94, tex );
 
 	io=ARX_SCRIPT_Get_IO_Max_Events_Sent();
 
@@ -6739,7 +6739,7 @@ static void ShowInfoText() {
 	{
 		strcpy(temp,GetName(io->filename).c_str());	
 		sprintf(tex,"Max SENDER %s_%04ld %d)",temp,io->ident,io->stat_sent);
-		danaeApp.OutputText( 70, 114, tex );
+		mainApp->OutputText( 70, 114, tex );
 	}
 
 	float slope=0.f;
@@ -6751,16 +6751,16 @@ static void ShowInfoText() {
 	}
 
 	sprintf(tex,"Velocity %3.0f %3.0f %3.0f Slope %3.3f",player.physics.velocity.x,player.physics.velocity.y,player.physics.velocity.z,slope);
-	danaeApp.OutputText( 70, 128, tex );
+	mainApp->OutputText( 70, 128, tex );
 
 	sprintf(tex, "TSU_TEST %ld - nblights %ld - nb %ld", TSU_TEST, TSU_TEST_NB_LIGHT, TSU_TEST_NB);
-	danaeApp.OutputText( 100, 208, tex );
+	mainApp->OutputText( 100, 208, tex );
 	TSU_TEST_NB = 0;
 	TSU_TEST_NB_LIGHT = 0;
 
 	long pos=DXI_GetKeyIDPressed();
 	sprintf(tex,"%ld",pos);
-	danaeApp.OutputText( 70, 99, tex );
+	mainApp->OutputText( 70, 99, tex );
 
 #ifdef BUILD_EDITOR
 	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
@@ -6775,10 +6775,10 @@ static void ShowInfoText() {
 					io->pos.y,io->pos.z,io->move.x,
 					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
 					io->_npcdata->pathfind.truetarget,io->_npcdata->behavior);
-				danaeApp.OutputText( 170, 420, tex );
+				mainApp->OutputText( 170, 420, tex );
 			sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",player.life,player.maxlife,
 					player.mana,player.maxmana,player.poison,player.hunger);
-				danaeApp.OutputText( 170, 320, tex );
+				mainApp->OutputText( 170, 320, tex );
 
 		  }
 		  else
@@ -6790,32 +6790,32 @@ static void ShowInfoText() {
 					io->pos.y,io->pos.z,io->move.x,
 					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
 					io->_npcdata->pathfind.truetarget,io->_npcdata->behavior);
-				danaeApp.OutputText( 170, 420, tex );
+				mainApp->OutputText( 170, 420, tex );
 				sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",io->_npcdata->life,io->_npcdata->maxlife,
 					io->_npcdata->mana,io->_npcdata->maxmana,io->_npcdata->poisonned);
-				danaeApp.OutputText( 170, 320, tex );
+				mainApp->OutputText( 170, 320, tex );
 				sprintf(tex,"AC %3.0f Absorb %3.0f",ARX_INTERACTIVE_GetArmorClass(io),io->_npcdata->absorb);
-				danaeApp.OutputText( 170, 335, tex );
+				mainApp->OutputText( 170, 335, tex );
 
 				if (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS)
-					danaeApp.OutputText( 170, 360, "PF_ALWAYS" );
+					mainApp->OutputText( 170, 360, "PF_ALWAYS" );
 				else
 				{
 					sprintf(tex,"PF_%ld", (long)io->_npcdata->pathfind.flags);
-					danaeApp.OutputText( 170, 360, tex); 
+					mainApp->OutputText( 170, 360, tex); 
 				}
 			  }
 
 			  if (io->ioflags & IO_FIX)
 			  {
 				sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
-				danaeApp.OutputText( 170, 320, tex );
+				mainApp->OutputText( 170, 320, tex );
 			  }
 
 			  if (io->ioflags & IO_ITEM)
 			  {
 				sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
-				danaeApp.OutputText( 170, 320, tex );
+				mainApp->OutputText( 170, 320, tex );
 			  }
 		  }
 	  }
@@ -6824,10 +6824,10 @@ static void ShowInfoText() {
 
 	long zap=IsAnyPolyThere(player.pos.x,player.pos.z);
 	sprintf(tex,"POLY %ld LASTLOCK %ld",zap,LAST_LOCK_SUCCESSFULL);		
-	danaeApp.OutputText( 270, 220, tex );
+	mainApp->OutputText( 270, 220, tex );
 
 	sprintf(tex,"COLOR %3.0f Stealth %3.0f",CURRENT_PLAYER_COLOR,GetPlayerStealth());
-	danaeApp.OutputText( 270, 200, tex );
+	mainApp->OutputText( 270, 200, tex );
 
 	ARX_SCRIPT_Init_Event_Stats();
 }
@@ -6867,7 +6867,7 @@ void ShowFPS()
 
 	sprintf(tex,"%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld INTREAT:%ld"
 	        , EERIEDrawnPolys, FPS, fps2min, fps2, _framedelay, INTER_DRAW, INTER_COMPUTE, INTREATZONECOUNT);
-	danaeApp.OutputText( 70, DANAESIZY-100+32, tex );
+	mainApp->OutputText( 70, DANAESIZY-100+32, tex );
 
 	TOTAL_CHRONO=0;
 //	TODO(lubosz): Don't get this by extern global
@@ -6877,10 +6877,10 @@ void ShowFPS()
 	if (LAST_LLIGHT_COUNT>MAX_LLIGHTS)
 		strcat(tex," EXCEEDING LIMIT !!!");
 
-	danaeApp.OutputText(70,DANAESIZY-170-144,tex);
+	mainApp->OutputText(70,DANAESIZY-170-144,tex);
 	sprintf(tex,"Pos %10.3f Screen %10.3f"
 		,LAST_FZPOS,LAST_FZSCREEN);
-	danaeApp.OutputText(320,200,tex);
+	mainApp->OutputText(320,200,tex);
 }
 
 void ARX_SetAntiAliasing() {
@@ -7089,13 +7089,13 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				break;
 				case DANAE_B016:
-					DANAE_DEBUGGER_Launch(danaeApp.m_hWnd);
+					DANAE_DEBUGGER_Launch(mainApp->m_hWnd);
 				break;
 				case DANAE_B015:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_SEARCH), danaeApp.m_hWnd, ScriptSearchProc);
+					DialogBox( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
+							MAKEINTRESOURCE(IDD_SEARCH), mainApp->m_hWnd, ScriptSearchProc);
 
 					if (SCRIPT_SEARCH_TEXT[0])
 						ARX_SCRIPT_LaunchScriptSearch(SCRIPT_SEARCH_TEXT);
@@ -7110,22 +7110,22 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (EDITION==EDITION_PARTICLES)
 					{
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 						EDITION=EDITION_IO;
 					}
 					else 
 					{
 						EDITION=EDITION_PARTICLES;
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
 				break;
@@ -7133,23 +7133,23 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (EDITION==EDITION_PATHWAYS) 
 					{
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 						EDITION=EDITION_IO;
 					}
 					else
 					{
 						EDITION=EDITION_PATHWAYS;
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						//SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						//SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
 				break;
@@ -7157,22 +7157,22 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (EDITION==EDITION_ZONES) 
 					{
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 						EDITION=EDITION_IO;
 					}
 					else 
 					{
 						EDITION=EDITION_ZONES;
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
 				break;
@@ -7180,22 +7180,22 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (EDITION==EDITION_LIGHTS)
 					{
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 						EDITION=EDITION_IO;
 					}
 					else
 					{
 						EDITION=EDITION_LIGHTS;
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 					}
 
 				break;
@@ -7226,21 +7226,21 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (EDITION==EDITION_NODES)
 					{
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 						EDITION=EDITION_IO;
 					}
 					else
 					{
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 						EDITION=EDITION_NODES;
 					}
 
@@ -7249,21 +7249,21 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (EDITION == EDITION_FOGS)
 					{
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
 						EDITION=EDITION_IO;
 					}
 					else
 					{
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
 						EDITION=EDITION_FOGS;
 					}
 
@@ -7278,18 +7278,18 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (MESH_REDUCTION_WINDOW==NULL)
 					{
-						if (danaeApp.m_pFramework->m_bIsFullscreen)
+						if (mainApp->m_pFramework->m_bIsFullscreen)
 						{
 							ARX_TIME_Pause();
 							Pause(true);
-							DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
-								MAKEINTRESOURCE(IDD_MESHREDUCTION), danaeApp.m_hWnd, MeshReductionProc);
+							DialogBox( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
+								MAKEINTRESOURCE(IDD_MESHREDUCTION), mainApp->m_hWnd, MeshReductionProc);
 							Pause(false);
 							ARX_TIME_UnPause();				
 						}
 						else
-						MESH_REDUCTION_WINDOW=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_MESHREDUCTION), danaeApp.m_hWnd, MeshReductionProc,0 ));
+						MESH_REDUCTION_WINDOW=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
+							MAKEINTRESOURCE(IDD_MESHREDUCTION), mainApp->m_hWnd, MeshReductionProc,0 ));
 					}
 
 				break;
@@ -7343,18 +7343,18 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (PRECALC==NULL)
 					{
-						if (danaeApp.m_pFramework->m_bIsFullscreen)
+						if (mainApp->m_pFramework->m_bIsFullscreen)
 						{
 							ARX_TIME_Pause();
 							Pause(true);
-							DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
-								MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc);
+							DialogBox( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
+								MAKEINTRESOURCE(IDD_PRECALC), mainApp->m_hWnd, PrecalcProc);
 							Pause(false);
 							ARX_TIME_UnPause();				
 						}
 						else
-						PRECALC=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc,0 ));
+						PRECALC=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
+							MAKEINTRESOURCE(IDD_PRECALC), mainApp->m_hWnd, PrecalcProc,0 ));
 					}
 
 				break;
@@ -7859,12 +7859,12 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 	ARX_TIME_UnPause();
 	
-	ShowWindow(danaeApp.m_hWnd, SW_MINIMIZE | SW_HIDE);
+	ShowWindow(mainApp->m_hWnd, SW_MINIMIZE | SW_HIDE);
 	
 	ARX_MINIMAP_PurgeTC();
 	
 	if(DURING_LOCK) {
-		danaeApp.Unlock();
+		mainApp->Unlock();
 	}
 	
 	KillInterfaceTextureContainers();
@@ -7943,9 +7943,9 @@ void ClearGame() {
 	PAK_Close();
 	
 #ifdef BUILD_EDITOR
-	if (danaeApp.ToolBar) {
-		free(danaeApp.ToolBar);
-		danaeApp.ToolBar=NULL;
+	if (mainApp->ToolBar) {
+		free(mainApp->ToolBar);
+		mainApp->ToolBar=NULL;
 	}
 #endif
 	
@@ -7956,7 +7956,7 @@ void ClearGame() {
 	FreeSnapShot();
 	ARX_INPUT_Release();
 	
-	danaeApp.Cleanup3DEnvironment();
+	mainApp->Cleanup3DEnvironment();
 	
 	LogInfo << "Clean shutdown";
 }

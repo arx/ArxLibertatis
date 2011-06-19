@@ -600,7 +600,7 @@ VOID Win32Application::Cleanup3DEnvironment()
 // Change3DEnvironment()
 // Handles driver, device, and/or mode changes for the app.
 //*************************************************************************************
-HRESULT Win32Application::Change3DEnvironment()
+bool Win32Application::Change3DEnvironment()
 {
 	HRESULT hr;
 	static bool  bOldWindowedState = true;
@@ -625,7 +625,7 @@ HRESULT Win32Application::Change3DEnvironment()
 	{
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		SendMessage(m_hWnd, WM_CLOSE, 0, 0);
-		return hr;
+		return false;
 	}
 
 	// Check if going from fullscreen to windowed mode, or vice versa.
@@ -664,7 +664,7 @@ HRESULT Win32Application::Change3DEnvironment()
 	{
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		SendMessage(m_hWnd, WM_CLOSE, 0, 0);
-		return hr;
+		return false;
 	}
 
 	// Restore gamma ramp...
@@ -675,18 +675,18 @@ HRESULT Win32Application::Change3DEnvironment()
 	}
 	
 	GetZBufferMax();
-	return S_OK;
+	return true;
 }
 
-HRESULT Win32Application::UpdateGamma()
+bool Win32Application::UpdateGamma()
 {
 	if (lpDDGammaControl)
 	{
 		lpDDGammaControl->SetGammaRamp(0, &DDGammaRamp);
-		return S_OK;
+		return true;
 	}
 
-	return 0;
+	return false;
 }
 
 //*************************************************************************************
@@ -765,7 +765,7 @@ HRESULT Win32Application::Initialize3DEnvironment()
 
 //*************************************************************************************
 //*************************************************************************************
-LRESULT Win32Application::SwitchFullScreen()
+bool Win32Application::SwitchFullScreen()
 {
 
 	m_bReady = false;
@@ -782,12 +782,12 @@ LRESULT Win32Application::SwitchFullScreen()
 	if (FAILED(Change3DEnvironment()))
 	{
 		LogError << ("ChangeEnvironement Failed");
-		return 0;
+		return true;
 	}
 
 	m_bReady = true;
 	m_pFramework->m_bHasMoved = true;
 
-	return 0;
+	return true;
 }
 

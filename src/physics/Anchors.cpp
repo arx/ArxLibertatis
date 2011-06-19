@@ -976,7 +976,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 				lastper = per;
 			}
 
-			danaeApp.WinManageMess();
+			mainApp->WinManageMess();
 			count++;
 			eg = &eb->Backg[i+j*eb->Xsize];
 			long precise = 0;
@@ -1138,7 +1138,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 			}
 
 			count += 1.f;
-			danaeApp.WinManageMess();
+			mainApp->WinManageMess();
 
 			eg = &eb->Backg[i+j*eb->Xsize];
 			pos.x = (float)((float)((float)i) * (float)eb->Xdiv);
@@ -1295,7 +1295,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 				}
 
 				count += 1.f;
-				danaeApp.WinManageMess();
+				mainApp->WinManageMess();
 
 				if (LASTFOUND) break;
 

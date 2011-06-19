@@ -1573,7 +1573,7 @@ void DanaeClearLevel(long flag)
 
 	ReleaseAllSpellResources();
 	TextureContainer::DeleteAll(TextureContainer::Level);
-	danaeApp.EvictManagedTextures();
+	mainApp->EvictManagedTextures();
 	MapMarkerTc = NULL;
 	ARX_TIME_Init();
 

@@ -379,7 +379,7 @@ suite:
 	ss << "Search Results for " << search << '(' << foundnb << " occurences)";
 	ShowTextWindowtext = ss.str();
 
-	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
+	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, mainApp->m_hWnd, (DLGPROC)ShowTextDlg);
 }
 #endif
 
