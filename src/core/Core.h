@@ -145,9 +145,6 @@ struct QUAKE_FX_STRUCT {
 };
 extern QUAKE_FX_STRUCT QuakeFx;
 
-
-extern Win32Application danaeApp;
-
 void SetEditMode(long ed, const bool stop_sound = true);
 void AddQuakeFX(float intensity, float duration, float period, long flags);
 

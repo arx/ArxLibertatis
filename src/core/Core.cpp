@@ -259,7 +259,6 @@ static const float INC_FOCAL = 75.0f;
 
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
-Win32Application danaeApp;
 HINSTANCE hInstance;
 PROJECT Project;
 
@@ -1295,7 +1294,7 @@ int main(int argc, char ** argv) {
 	Project.improve=0;
 	Project.interpolatemouse = 0;
 
-	mainApp = &danaeApp;
+	mainApp = new Win32Application;
 
 	mainApp->d_dlgframe=0;
 
