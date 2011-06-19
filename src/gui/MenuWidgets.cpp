@@ -103,9 +103,6 @@ extern long FINAL_RELEASE;
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
 
-extern long _EERIEMouseXdep;
-extern long _EERIEMouseYdep;
-
 extern float PROGRESS_BAR_TOTAL;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_COUNT;
@@ -5790,10 +5787,10 @@ void CDirectInput::GetInput()
 
 		if(bGLOBAL_DINPUT_GAME)
 		{
-			_EERIEMouseXdep=(int)fDX;
-			_EERIEMouseYdep=(int)fDY;
-			EERIEMouseX=iMouseAX;
-			EERIEMouseY=iMouseAY;
+			g_pD3DApp->_EERIEMouseXdep=(int)fDX;
+			g_pD3DApp->_EERIEMouseYdep=(int)fDY;
+			g_pD3DApp->EERIEMouseX=iMouseAX;
+			g_pD3DApp->EERIEMouseY=iMouseAY;
 		}
 	}
 	else

@@ -1295,6 +1295,8 @@ int main(int argc, char ** argv) {
 	Project.improve=0;
 	Project.interpolatemouse = 0;
 
+	g_pD3DApp = &danaeApp;
+
 	danaeApp.d_dlgframe=0;
 
 #ifdef BUILD_EDITOR
@@ -1334,7 +1336,6 @@ int main(int argc, char ** argv) {
 	}
 
 	LogDebug << "Application Creation";
-	g_pD3DApp = &danaeApp;
 
 	if( !danaeApp.Create() )
 		return 0;

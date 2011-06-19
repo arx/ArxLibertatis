@@ -301,7 +301,6 @@ extern HWND MSGhwnd;
 class Application {
 	
 	// Internal variables and member functions
-	bool m_bSingleStep;
 	
 	
 public:
@@ -317,15 +316,12 @@ protected:
 	bool m_bAppUseZBuffer;
 	bool m_bAppUseStereo;
 	bool m_bShowStats;
-	HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
+	bool m_bSingleStep;
 	
 #ifdef BUILD_EDITOR
 	HWND CreateToolBar(HWND hWndParent, HINSTANCE hInst);
 #endif
 
-	void DisplayFrameworkError(HRESULT, DWORD);
-	HRESULT Render3DEnvironment();
-	
 	// Overridable functions for the 3D scene created by the app
 	virtual bool OneTimeSceneInit() {
 		return true;
@@ -343,9 +339,6 @@ protected:
 		return true;
 	}
 	
-	// Overridable power management (APM) functions
-	virtual LRESULT OnQuerySuspend(DWORD dwFlags);
-	virtual LRESULT OnResumeSuspend(DWORD dwData);
 	virtual bool BeforeRun() {
 		return true;
 	}
@@ -363,7 +356,6 @@ public:
 	LPDIRECTDRAWSURFACE7 m_pddsRenderTargetLeft;	// For stereo modes
 	DDSURFACEDESC2 m_ddsdRenderTarget;
 	int WinManageMess();
-	void Cleanup3DEnvironment();
 	LPDIRECT3D7 m_pD3D;
 	void EvictManagedTextures();
 	virtual bool Render() = 0;
@@ -373,14 +365,14 @@ public:
 	void OutputText(DWORD x, DWORD y, const std::string& str);
 	
 	bool m_bActive;
-	HRESULT Change3DEnvironment();
-	HRESULT Initialize3DEnvironment();
 	bool m_bReady;
 	D3DEnum_DeviceInfo * m_pDeviceInfo;
 	HWND m_hWnd;
 	HWND m_hWndRender;
 	WNDPROC m_OldProc;
 	long d_dlgframe;
+	long MouseDragX, MouseDragY;
+	long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
 	void EERIEMouseUpdate(short x, short y);
 	
 	// Functions to create, run, pause, and clean up the application
@@ -393,7 +385,6 @@ public:
 	}
 
 	virtual void Pause(bool bPause);
-	LRESULT SwitchFullScreen() ;
 	
 	CD3DFramework7 * m_pFramework;
 	KEYBOARD_MNG kbd;
@@ -422,7 +413,6 @@ public:
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
 	DDGAMMARAMP DDGammaRamp; // modified ramp value
 	DDGAMMARAMP DDGammaOld; // backup gamma values
-	HRESULT UpdateGamma();
 	
 	float GetZBufferMax();
 	float zbuffer_max;

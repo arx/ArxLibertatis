@@ -27,9 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "windows.h"
 
-#include "graphics/Frame.h"
-#include "graphics/GraphicsEnum.h"
-
 class Win32Application : public Application {
 	
 protected:
@@ -46,13 +43,29 @@ protected:
 	void GoFor2DFX();
 	bool BeforeRun();
 	
+	HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
+
+	// Overridable power management (APM) functions
+	LRESULT OnQuerySuspend(DWORD dwFlags);
+	LRESULT OnResumeSuspend(DWORD dwData);
+
+	// 3D Framework functions
+	void DisplayFrameworkError(HRESULT, DWORD);
+	HRESULT Initialize3DEnvironment();
+	HRESULT Render3DEnvironment();
+
+
 public:
 	
 	virtual bool Create();
 	virtual int Run();
 	bool InitDeviceObjects();
 	bool FinalCleanup();
+	LRESULT SwitchFullScreen() ;
+	void Cleanup3DEnvironment();
+	HRESULT Change3DEnvironment();
 	
+	HRESULT UpdateGamma();
 	LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	Win32Application();
 	long MustRefresh;
