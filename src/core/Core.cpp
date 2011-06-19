@@ -158,7 +158,6 @@ extern INTERACTIVE_OBJ * CURPATHFINDIO;
 
 //-----------------------------------------------------------------------------
 
-HRESULT DANAEFinalCleanup();
 void ClearGame();
 static void ShowInfoText();
 
@@ -549,7 +548,6 @@ TBBUTTON tbButtons [] = {
 //-----------------------------------------------------------------------------
 
 void LoadSysTextures();
-HRESULT DANAEFinalCleanup();
 void ShowFPS();
 void ShowTestText();
 void ManageNONCombatModeAnimations();
@@ -1335,7 +1333,7 @@ int main(int argc, char ** argv) {
 	LogDebug << "Application Creation";
 	g_pD3DApp = &danaeApp;
 
-	if( FAILED( danaeApp.Create( hInstance ) ) )
+	if( !danaeApp.Create( hInstance ) )
 		return 0;
 	
 	AdjustUI();
@@ -1440,9 +1438,8 @@ int main(int argc, char ** argv) {
 	LogDebug << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
 
-	HRESULT hr=danaeApp.Run();
-
-	return hr;
+	// Init all done, start the main loop
+	return danaeApp.Run();
 }
 
 //*************************************************************************************
@@ -2209,9 +2206,9 @@ void ClearSysTextures() {
 // OneTimeSceneInit()
 //  Called Once during initial app startup
 //*************************************************************************************
-HRESULT DANAE::OneTimeSceneInit()
+bool DANAE::OneTimeSceneInit()
 {
-	return S_OK;
+	return true;
 }
 Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;
@@ -2425,7 +2422,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 // FrameMove()
 //  Called once per frame.
 //*************************************************************************************
-HRESULT DANAE::FrameMove()
+bool DANAE::FrameMove()
 {
 	
 #ifdef BUILD_EDITOR
@@ -2495,7 +2492,7 @@ HRESULT DANAE::FrameMove()
 		LaunchWaitingCine();
 	}
 
-	return S_OK;
+	return true;
 }
 
 extern unsigned long LAST_JUMP_ENDTIME;
@@ -6985,7 +6982,7 @@ void ARX_SetAntiAliasing() {
 	GRenderer->SetAntialiasing(config.video.antialiasing);
 }
 
-HRESULT DANAE::InitDeviceObjects()
+bool DANAE::InitDeviceObjects()
 {
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
@@ -7026,14 +7023,14 @@ HRESULT DANAE::InitDeviceObjects()
 
 	m_pD3D->EvictManagedTextures();
 
-	return S_OK;
+	return true;
 }
 
 //*************************************************************************************
 // FinalCleanup()
 // Called before the app exits
 //*************************************************************************************
-HRESULT DANAE::FinalCleanup()
+bool DANAE::FinalCleanup()
 {
 	EERIE_PATHFINDER_Release();
 	ARX_INPUT_Release();
@@ -7041,7 +7038,7 @@ HRESULT DANAE::FinalCleanup()
 #ifdef BUILD_EDITOR
 	KillInterTreeView();
 #endif
-	return S_OK;
+	return true;
 }
 
 //*************************************************************************************
@@ -7049,7 +7046,7 @@ HRESULT DANAE::FinalCleanup()
 //  Called when the app is exitting, or the device is being changed,
 //  this function deletes any device dependant objects.
 //*************************************************************************************
-HRESULT DANAE::DeleteDeviceObjects()
+bool DANAE::DeleteDeviceObjects()
 {
 	GRenderer->ReleaseAllTextures();
 
@@ -7073,7 +7070,7 @@ HRESULT DANAE::DeleteDeviceObjects()
 
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 
-	return S_OK;
+	return true;
 }
 
 //*************************************************************************************

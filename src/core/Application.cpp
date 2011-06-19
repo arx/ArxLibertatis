@@ -173,7 +173,7 @@ extern long FINAL_COMMERCIAL_GAME;
 //*************************************************************************************
 // Create()
 //*************************************************************************************
-HRESULT CD3DApplication::Create(HINSTANCE hInst) {
+bool CD3DApplication::Create(HINSTANCE hInst) {
 	
 	HRESULT hr;
 
@@ -182,21 +182,21 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	if (FAILED(hr = D3DEnum_EnumerateDevices(m_fnConfirmDevice)))
 	{
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
-		return hr;
+		return false;
 	}
 
 	// Select a device. Ask for a hardware device that renders in a window.
 	if (FAILED(hr = D3DEnum_SelectDefaultDevice(&m_pDeviceInfo)))
 	{
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
-		return hr;
+		return false;
 	}
 
 	// Initialize the app's custom scene stuff
 	if (FAILED(hr = OneTimeSceneInit()))
 	{
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
-		return hr;
+		return false;
 	}
 
 	// Create a new CD3DFramework class. This class does all of our D3D
@@ -204,7 +204,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	if (NULL == (m_pFramework = new CD3DFramework7()))
 	{
 		DisplayFrameworkError(E_OUTOFMEMORY, MSGERR_APPMUSTEXIT);
-		return E_OUTOFMEMORY;
+		return false;
 	}
 
 	//	DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
@@ -293,7 +293,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		                            LoadMenu(hInst, MAKEINTRESOURCE(menu)),
 		                            hInst, 0L);
 
-	if (!m_hWnd) return  E_OUTOFMEMORY;
+	if (!m_hWnd) return  false;
 
 	UpdateWindow(m_hWnd);
 	ShowWindow(m_hWnd, SW_SHOW);
@@ -309,7 +309,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	{
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		Cleanup3DEnvironment();
-		return E_FAIL;
+		return false;
 	}
 
 	// Setup the app so it can support single-stepping
@@ -327,7 +327,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 
 	this->m_pFramework->ShowFrame();
 	GetZBufferMax();
-	return S_OK;
+	return true;
 }
 
 #ifdef BUILD_EDITOR
@@ -362,7 +362,7 @@ HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 // Run()
 // Message-processing loop. Idle time is used to render the scene.
 //*************************************************************************************
-INT CD3DApplication::Run()
+int CD3DApplication::Run()
 {
 	BeforeRun();
 	

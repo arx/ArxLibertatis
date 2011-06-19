@@ -149,10 +149,10 @@ class DANAE : public CD3DApplication {
 	
 protected:
 	
-	HRESULT OneTimeSceneInit();
-	HRESULT DeleteDeviceObjects();
+	bool OneTimeSceneInit();
+	bool DeleteDeviceObjects();
 	HRESULT Render();
-	HRESULT FrameMove();
+	bool FrameMove();
 	void ManageKeyMouse();
 	bool ManageEditorControls();
 	void ManagePlayerControls();
@@ -163,8 +163,8 @@ protected:
 	
 public:
 	
-	HRESULT InitDeviceObjects();
-	HRESULT FinalCleanup();
+	bool InitDeviceObjects();
+	bool FinalCleanup();
 	
 	LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	DANAE();

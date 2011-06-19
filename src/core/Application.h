@@ -319,20 +319,20 @@ protected:
 #endif
 	
 	// Overridable functions for the 3D scene created by the app
-	virtual HRESULT OneTimeSceneInit() {
-		return S_OK;
+	virtual bool OneTimeSceneInit() {
+		return true;
 	}
-	virtual HRESULT DeleteDeviceObjects() {
-		return S_OK;
+	virtual bool DeleteDeviceObjects() {
+		return true;
 	}
-	virtual HRESULT FrameMove() {
-		return S_OK;
+	virtual bool FrameMove() {
+		return true;
 	}
-	virtual HRESULT RestoreSurfaces() {
-		return S_OK;
+	virtual bool RestoreSurfaces() {
+		return true;
 	}
-	virtual HRESULT FinalCleanup() {
-		return S_OK;
+	virtual bool FinalCleanup() {
+		return true;
 	}
 	
 	// Overridable power management (APM) functions
@@ -359,8 +359,8 @@ public:
 	LPDIRECT3D7 m_pD3D;
 	void EvictManagedTextures();
 	virtual HRESULT Render() = 0;
-	virtual HRESULT InitDeviceObjects() {
-		return S_OK;
+	virtual bool InitDeviceObjects() {
+		return true;
 	}
 	void OutputText(DWORD x, DWORD y, const std::string& str);
 	
@@ -376,8 +376,8 @@ public:
 	void EERIEMouseUpdate(short x, short y);
 	
 	// Functions to create, run, pause, and clean up the application
-	virtual HRESULT Create(HINSTANCE);
-	virtual INT Run();
+	virtual bool Create(HINSTANCE);
+	virtual int Run();
 	virtual LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual void Pause(bool bPause);
 	LRESULT SwitchFullScreen() ;
