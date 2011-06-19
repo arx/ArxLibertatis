@@ -184,11 +184,6 @@ void ARX_SetAntiAliasing();
 
 #ifdef BUILD_EDITOR
 
-void Danae_Registry_Read(const char * string, char * text, const char * defaultstr = "", long maxsize = 256);
-void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue = 0);
-void Danae_Registry_Write(const char * string, const char * text);
-void Danae_Registry_WriteValue(const char * string, DWORD value);
-
 // TODO move to Script.h?
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

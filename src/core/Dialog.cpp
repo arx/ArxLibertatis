@@ -87,6 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/Logger.h"
+#include "io/Registry.h"
 
 #include "physics/Clothes.h"
 #include "physics/Physics.h"

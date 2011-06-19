@@ -44,9 +44,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Registry.h"
 
+#include <algorithm>
+
 #ifdef BUILD_EDITOR
 
-#include <windows.h>
+/* Declare registry access functions */
+HRESULT WriteRegKey(HKEY hKey, const char * strName, const char * strValue);
+HRESULT WriteRegKeyValue(HKEY hKey, const char * strName, DWORD val);
+HRESULT ReadRegKeyValue(HKEY hKey, const char * strName, long * val);
+HRESULT ReadRegKey(HKEY hKey, const char * strName, char* strValue, DWORD dwLength, const char * strDefault);
 
 //-----------------------------------------------------------------------------
 // Name: WriteRegKey()
@@ -103,5 +109,92 @@ HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val) {
 	return S_OK;
 }
 
-#endif
+// START - DANAE Registery Funcs ****************************************************************
+
+//-----------------------------------------------------------------------------------------------
+HKEY    DanaeKey= NULL;
+#define DANAEKEY_KEY     TEXT("Software\\Arkane_Studios\\DANAE")
+//-----------------------------------------------------------------------------------------------
+
+void Danae_Registry_Open()
+{
+	RegCreateKeyEx( HKEY_CURRENT_USER, DANAEKEY_KEY, 0, NULL,
+	                REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
+	                &DanaeKey, NULL );
+}
+
+//-----------------------------------------------------------------------------------------------
+
+void Danae_Registry_Close()
+{
+	RegCloseKey(DanaeKey);
+	DanaeKey=NULL;
+}
+
+//-----------------------------------------------------------------------------------------------
+
+void Danae_Registry_WriteValue(const char * string, DWORD value)
+{
+	if (DanaeKey == NULL) Danae_Registry_Open();
+
+	if (DanaeKey != NULL)
+	{
+		WriteRegKeyValue( DanaeKey, string, value);
+		Danae_Registry_Close();
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+
+void Danae_Registry_Write(const char * string, const char * text)
+{
+	if ( DanaeKey == NULL ) Danae_Registry_Open();
+
+	if ( DanaeKey != NULL )
+	{
+		WriteRegKey( DanaeKey, string, text);
+		Danae_Registry_Close();
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+
+void Danae_Registry_Read(const char * string, char * text, const char * defaultstr,long maxsize)
+{
+	if (DanaeKey==NULL) Danae_Registry_Open();
+
+	if (DanaeKey!=NULL)
+	{
+		ReadRegKey( DanaeKey, string, text,maxsize,defaultstr);
+		Danae_Registry_Close();
+	}
+	else
+	{
+		if ((defaultstr) && (defaultstr[0]!=0))
+		{
+			memcpy(text,defaultstr,std::min(maxsize+1,(long)strlen(defaultstr)+1));
+			text[std::min(maxsize,(long)strlen(defaultstr))]=0;
+		}
+		else text[0]=0;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+
+void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue)
+{
+	if (DanaeKey==NULL) Danae_Registry_Open();
+
+	if (DanaeKey!=NULL)
+	{
+		ReadRegKeyValue( DanaeKey, string, value);
+		Danae_Registry_Close();
+	}
+	else 
+		*value = defaultvalue;
+}
+
+// END - DANAE Registery Funcs ******************************************************************
+//-----------------------------------------------------------------------------------------------
+#endif // BUILD_EDITOR
 

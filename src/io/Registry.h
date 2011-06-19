@@ -51,12 +51,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
-// TODO remove - these are mostly used by the editor
-
-HRESULT WriteRegKey(HKEY hKey, const char * strName, const char * strValue);
-HRESULT WriteRegKeyValue(HKEY hKey, const char * strName, DWORD val);
-HRESULT ReadRegKeyValue(HKEY hKey, const char * strName, long * val);
-HRESULT ReadRegKey(HKEY hKey, const char * strName, char* strValue, DWORD dwLength, const char * strDefault);
+void Danae_Registry_Read(const char * string, char * text, const char * defaultstr = "", long maxsize = 256);
+void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue = 0);
+void Danae_Registry_Write(const char * string, const char * text);
+void Danae_Registry_WriteValue(const char * string, DWORD value);
 
 #endif
 
