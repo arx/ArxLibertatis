@@ -148,10 +148,10 @@ extern QUAKE_FX_STRUCT QuakeFx;
 class DANAE : public CD3DApplication {
 	
 protected:
-	
+
 	bool OneTimeSceneInit();
 	bool DeleteDeviceObjects();
-	HRESULT Render();
+	bool Render();
 	bool FrameMove();
 	void ManageKeyMouse();
 	bool ManageEditorControls();
@@ -159,10 +159,11 @@ protected:
 	void DrawAllInterface();
 	void DrawAllInterfaceFinish();
 	void GoFor2DFX();
-	HRESULT BeforeRun();
+	bool BeforeRun();
 	
 public:
 	
+	virtual bool Create();
 	bool InitDeviceObjects();
 	bool FinalCleanup();
 	

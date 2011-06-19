@@ -557,6 +557,23 @@ void LaunchMoulinex();
 
 //-----------------------------------------------------------------------------
 
+namespace
+{
+
+//*************************************************************************************
+// WndProc()
+//  Static msg handler which passes messages to the application class.
+//*************************************************************************************
+LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (g_pD3DApp)
+		// Cast is fine, will always be a DANAE* if set up for Windows
+		return dynamic_cast<DANAE*>(g_pD3DApp)->MsgProc(hWnd, uMsg, wParam, lParam);
+
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+}
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
 {
@@ -576,7 +593,6 @@ void DANAE_KillCinematic()
 		CINE_PRELOAD=0;
 	}
 }
-
 
 void DanaeSwitchFullScreen()
 {
@@ -1333,7 +1349,7 @@ int main(int argc, char ** argv) {
 	LogDebug << "Application Creation";
 	g_pD3DApp = &danaeApp;
 
-	if( !danaeApp.Create( hInstance ) )
+	if( !danaeApp.Create() )
 		return 0;
 	
 	AdjustUI();
@@ -1456,6 +1472,167 @@ DANAE::DANAE() : CD3DApplication()
 	m_hWnd=NULL;
 }
 
+//*************************************************************************************
+// Create()
+//*************************************************************************************
+bool DANAE::Create() {
+	
+	HINSTANCE hInst = GetModuleHandle(0);
+
+	HRESULT hr;
+
+	// Enumerate available D3D devices. The callback is used so the app can
+	// confirm/reject each enumerated device depending on its capabilities.
+	if (FAILED(hr = D3DEnum_EnumerateDevices(m_fnConfirmDevice)))
+	{
+		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
+		return false;
+	}
+
+	// Select a device. Ask for a hardware device that renders in a window.
+	if (FAILED(hr = D3DEnum_SelectDefaultDevice(&m_pDeviceInfo)))
+	{
+		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
+		return false;
+	}
+
+	// Initialize the app's custom scene stuff
+	if (FAILED(hr = OneTimeSceneInit()))
+	{
+		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
+		return false;
+	}
+
+	// Create a new CD3DFramework class. This class does all of our D3D
+	// initialization and manages the common D3D objects.
+	if (NULL == (m_pFramework = new CD3DFramework7()))
+	{
+		DisplayFrameworkError(E_OUTOFMEMORY, MSGERR_APPMUSTEXIT);
+		return false;
+	}
+
+	//	DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+#ifdef BUILD_EDITOR
+	if (ToolBar != NULL)
+	{
+		if (this->ToolBar->Type == EERIE_TOOLBAR_TOP)
+		{
+			this->m_pFramework->Ystart = 26;
+			this->m_pFramework->Xstart = 0;
+		}
+		else
+		{
+			this->m_pFramework->Ystart = 0;
+			this->m_pFramework->Xstart = 98;
+		}
+	}
+	else
+#endif
+	{
+		this->m_pFramework->Ystart = 0;
+		this->m_pFramework->Xstart = 0;
+	}
+
+
+	// Register the window class
+	WNDCLASS wndClass = { CS_DBLCLKS, WndProc, 0, 0, hInst,
+	                      LoadIcon(hInst, MAKEINTRESOURCE(IDI_MAIN)),
+	                      LoadCursor(NULL, IDC_ARROW),
+	                      (HBRUSH)GetStockObject(BLACK_BRUSH),
+	                      NULL, "D3D Window"
+	                    };
+	RegisterClass(&wndClass);
+
+	// Create the render window
+	DWORD flags = WS_OVERLAPPEDWINDOW;
+
+	if (CreationFlags & WCF_NORESIZE)
+	{
+		flags |= (WS_DLGFRAME | WS_MINIMIZEBOX);
+		flags &= ~WS_CAPTION;
+		flags &= ~WS_MAXIMIZEBOX;
+		flags &= ~WS_THICKFRAME;
+	}
+	else if (CreationFlags & WCF_CHILD)
+	{
+        flags &= ~WS_OVERLAPPEDWINDOW;
+		flags |= WS_CHILD;
+	}
+
+    long menu;
+	if( Fullscreen )
+	{
+		flags &= ~WS_CAPTION;
+		flags &= ~WS_MAXIMIZEBOX;
+		flags &= ~WS_THICKFRAME;
+		flags &= ~WS_SYSMENU;
+		flags &= ~WS_OVERLAPPEDWINDOW;
+		menu = 0;
+	}
+	else
+	{
+		menu = CreationMenu;
+	}
+
+	// We want the client rectangle (3d display) to be a certain size, adjust the window size accordingly
+	RECT rcWnd = { 0, 0, WndSizeX, WndSizeY };
+	AdjustWindowRectEx(&rcWnd, flags, menu != 0, 0);
+
+	// Bound the window size to fit the desktop
+	HWND hWndDesktop = GetDesktopWindow();
+	RECT rcDesktop;
+	GetWindowRect(hWndDesktop, &rcDesktop);
+
+	LONG wndWidth = rcWnd.right - rcWnd.left;
+	LONG wndHeight = rcWnd.bottom - rcWnd.top;
+	LONG maxWidth = rcDesktop.right - rcDesktop.left;
+	LONG maxHeight = rcDesktop.bottom - rcDesktop.top;
+	
+	wndWidth = std::min(wndWidth, maxWidth);
+	wndHeight = std::min(wndHeight, maxHeight);
+
+	MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
+		                            flags,
+									CW_USEDEFAULT, CW_USEDEFAULT, wndWidth, wndHeight, owner,
+		                            LoadMenu(hInst, MAKEINTRESOURCE(menu)),
+		                            hInst, 0L);
+
+	if (!m_hWnd) return  false;
+
+	UpdateWindow(m_hWnd);
+	ShowWindow(m_hWnd, SW_SHOW);
+	
+
+	// Nuky - this isnt used for the game, and I can set WIN32_LEAN_AND_MEAN with it commented
+	//// � supprimer au final
+	//if (CreationFlags & WCF_ACCEPTFILES)
+	//	DragAcceptFiles(m_hWnd, true);
+
+	// Initialize the 3D environment for the app
+	if (FAILED(hr = Initialize3DEnvironment()))
+	{
+		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
+		Cleanup3DEnvironment();
+		return false;
+	}
+
+	// Setup the app so it can support single-stepping
+	m_dwBaseTime = dwARX_TIME_Get();
+
+	// The app is ready to go
+	m_bReady = true;
+
+#ifdef BUILD_EDITOR
+	if (ToolBar != NULL)
+	{
+		ToolBar->hWnd = CreateToolBar(m_hWnd, hInst);
+	}
+#endif
+
+	this->m_pFramework->ShowFrame();
+	GetZBufferMax();
+	return true;
+}
 //*************************************************************************************
 // INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
@@ -2712,7 +2889,7 @@ void ReleaseDanaeBeforeRun()
 
 }
 
-HRESULT DANAE::BeforeRun()
+bool DANAE::BeforeRun()
 {
 
 	LogDebug << "Before Run...";
@@ -2815,7 +2992,7 @@ HRESULT DANAE::BeforeRun()
 
 	danaeApp.GetZBufferMax();
 
-	return S_OK;
+	return true;
 }
 
 //*************************************************************************************
@@ -4978,7 +5155,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 extern long NEED_INTRO_LAUNCH;
 
 //-----------------------------------------------------------------------------
-HRESULT DANAE::Render()
+bool DANAE::Render()
 {
 	FrameTime = ARX_TIME_Get();
 
@@ -5277,7 +5454,7 @@ static float _AvgFrameDiff = 150.f;
 		ARX_TIME_Get();
 		long ffh=FirstFrameHandling();
 
-		if (ffh== FFH_S_OK) return S_OK;
+		if (ffh== FFH_S_OK) return true;
 
 		if (ffh== FFH_GOTO_FINISH) goto norenderend;
 	}
@@ -5419,7 +5596,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if(!GRenderer->BeginScene())
 	{
-		return E_FAIL;
+		return false;
 	}
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -6562,7 +6739,7 @@ static float _AvgFrameDiff = 150.f;
 		DANAE_DEBUGGER_Update();
 #endif
 
-	return S_OK;
+	return true;
 }
 
 void DANAE::GoFor2DFX()
@@ -7670,8 +7847,223 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 	}
 
-	return CD3DApplication::MsgProc( hWnd, uMsg, wParam, lParam );
+	long iii, ij;
+
+	switch (uMsg)
+	{
+		case WM_KEYDOWN:
+			this->kbd.nbkeydown++;
+			iii = (lParam >> 16) & 255;
+			ij = (lParam >> 24) & 1;
+
+			if (ij)
+			{
+				iii += 100;
+				this->kbd.inkey[iii] = 1;
+			}
+			else this->kbd.inkey[iii] = 1;;
+
+			this->kbd.lastkey = (short)iii;
+
+			if (iii == 18)
+			{
+				if (this->kbd._CAPS) this->kbd._CAPS = 0;
+				else this->kbd._CAPS = 1;
+			}
+
+			break;
+		case WM_KEYUP:
+			this->kbd.nbkeydown--;
+			iii = (lParam >> 16) & 255;
+			ij = (lParam >> 24) & 1;
+
+			if (ij)
+			{
+				iii += 100;
+				this->kbd.inkey[iii] = 0;
+			}
+			else this->kbd.inkey[iii] = 0;;
+
+			break;
+
+		case WM_LBUTTONDBLCLK:
+
+			if (USE_OLD_MOUSE_SYSTEM)
+			{
+				LastEERIEMouseButton = EERIEMouseButton;
+				EERIEMouseButton |= 4;
+				EERIEMouseButton &= ~1;
+			}
+
+			break;
+		case WM_LBUTTONDOWN:
+
+			if (USE_OLD_MOUSE_SYSTEM)
+			{
+				LastEERIEMouseButton = EERIEMouseButton;
+				EERIEMouseButton |= 1;
+
+				if (EERIEMouseButton & 4) EERIEMouseButton &= ~1;
+			}
+
+			break;
+		case WM_LBUTTONUP:
+
+			if (USE_OLD_MOUSE_SYSTEM)
+			{
+				LastEERIEMouseButton = EERIEMouseButton;
+				EERIEMouseButton &= ~1;
+				EERIEMouseButton &= ~4;
+			}
+
+			break;
+		case WM_RBUTTONDOWN:
+
+			if (USE_OLD_MOUSE_SYSTEM)
+			{
+				EERIEMouseButton |= 2;
+			}
+
+			break;
+		case WM_RBUTTONUP:
+
+			if (USE_OLD_MOUSE_SYSTEM)
+			{
+				EERIEMouseButton &= ~2;
+			}
+
+			break;
+
+			//-------------------------------------------
+			//warning "macro redefinition" - as we haven't redefined WM_MOUSEWHEEL, WM_MOUSEWHEEL is equal to 0x020A
+		case WM_MOUSEWHEEL:
+			EERIEWheel = (short) HIWORD(wParam);
+			break;
+		case WM_MOUSEMOVE:
+			EERIEMouseUpdate(LOWORD(lParam), HIWORD(lParam));
+			break;
+
+		case WM_ERASEBKGND:
+		{
+			return 1;
+		}
+		break;
+		case WM_PAINT:
+			// Handle paint messages when the app is not ready
+			if (m_pFramework && !m_bReady)
+			{
+				if (m_pDeviceInfo->bWindowed)
+				{
+					m_pFramework->ShowFrame();
+				}
+				else
+				{
+					m_pFramework->FlipToGDISurface(true);
+				}
+			}
+			break;
+		
+		case WM_SIZE:
+			// Check to see if we are losing our window...
+			if (SIZE_MAXHIDE == wParam || SIZE_MINIMIZED == wParam)
+				m_bActive = false;
+			else 
+				m_bActive = true;
+			
+			// A new window size will require a new backbuffer
+			// size, so the 3D structures must be changed accordingly.
+			if (m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
+			{
+
+				m_pFramework->m_bHasMoved = true;
+
+#ifdef BUILD_EDITOR
+				RECT rec;
+				rec.right = LOWORD(lParam);
+				rec.bottom = HIWORD(lParam);
+				if(ToolBar && ToolBar->hWnd) {
+					RECT rectt;
+					GetWindowRect(ToolBar->hWnd, &rectt);
+					SetWindowPos(ToolBar->hWnd, HWND_TOP, 0, 0, rec.right, rectt.bottom, SWP_NOZORDER | SWP_NOREPOSITION | SWP_NOMOVE | SWP_SHOWWINDOW);
+				}
+#endif
+
+			}
+
+			break;
+
+		case WM_SETCURSOR:
+			// Prevent a cursor in fullscreen mode
+			if (m_bActive && m_bReady && !m_pDeviceInfo->bWindowed)
+			{
+				SetCursor(NULL);
+				return 1;
+			}
+			break;
+
+		case WM_NCHITTEST:
+			// Prevent the user from selecting the menu in fullscreen mode
+			if (!m_pDeviceInfo->bWindowed)
+				return HTCLIENT;
+			break;
+
+		case WM_POWERBROADCAST:
+
+			switch (wParam)
+			{
+				case PBT_APMQUERYSUSPEND:
+					// At this point, the app should save any data for open
+					// network connections, files, etc.., and prepare to go into
+					// a suspended mode.
+					return OnQuerySuspend((DWORD)lParam);
+
+				case PBT_APMRESUMESUSPEND:
+					// At this point, the app should recover any data, network
+					// connections, files, etc.., and resume running from when
+					// the app was suspended.
+					return OnResumeSuspend((DWORD)lParam);
+			}
+
+			break;
+
+		case WM_SYSCOMMAND:
+
+			// Prevent moving/sizing and power loss in fullscreen mode
+			switch (wParam)
+			{
+				case SC_MOVE:
+				case SC_SIZE:
+				case SC_MAXIMIZE:
+					// To Avoid Screensaver Problems
+				case SC_SCREENSAVE:
+				case SC_MONITORPOWER:
+					return 0;
+					break;
+				default:
+					break;
+			}
+
+			break;
+
+	case WM_COMMAND:
+	break;
+		case WM_GETMINMAXINFO:
+			((MINMAXINFO *)lParam)->ptMinTrackSize.x = 100;
+			((MINMAXINFO *)lParam)->ptMinTrackSize.y = 100;
+			break;
+
+		case WM_CLOSE:
+			DestroyWindow(hWnd);
+			return 0;
+
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			return 0;
+	}
+
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
+
 
 void ReleaseSystemObjects() {
 	

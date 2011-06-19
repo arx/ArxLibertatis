@@ -72,6 +72,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct D3DEnum_DeviceInfo;
 class CD3DFramework7;
 
+enum APPMSGTYPE
+{
+	MSG_NONE,
+	MSGERR_APPMUSTEXIT,
+	MSGWARN_SWITCHEDTOSOFTWARE
+};
+
 enum HideFlag {
 	HIDE_BACKGROUND = (1<<0),
 	HIDE_NPC        = (1<<1),
@@ -295,11 +302,7 @@ class CD3DApplication {
 	
 	// Internal variables and member functions
 	bool m_bSingleStep;
-	DWORD m_dwBaseTime;
-	DWORD m_dwStopTime;
 	
-	HRESULT Render3DEnvironment();
-	void DisplayFrameworkError(HRESULT, DWORD);
 	
 public:
 	
@@ -308,6 +311,8 @@ public:
 protected:
 	
 	// Overridable variables for the app
+	DWORD m_dwBaseTime;
+	DWORD m_dwStopTime;
 		std::string m_strWindowTitle;
 	bool m_bAppUseZBuffer;
 	bool m_bAppUseStereo;
@@ -317,6 +322,9 @@ protected:
 #ifdef BUILD_EDITOR
 	HWND CreateToolBar(HWND hWndParent, HINSTANCE hInst);
 #endif
+
+	void DisplayFrameworkError(HRESULT, DWORD);
+	HRESULT Render3DEnvironment();
 	
 	// Overridable functions for the 3D scene created by the app
 	virtual bool OneTimeSceneInit() {
@@ -338,8 +346,8 @@ protected:
 	// Overridable power management (APM) functions
 	virtual LRESULT OnQuerySuspend(DWORD dwFlags);
 	virtual LRESULT OnResumeSuspend(DWORD dwData);
-	virtual HRESULT BeforeRun() {
-		return S_OK;
+	virtual bool BeforeRun() {
+		return 0;
 	}
 	
 	//zbuffer
@@ -358,7 +366,7 @@ public:
 	void Cleanup3DEnvironment();
 	LPDIRECT3D7 m_pD3D;
 	void EvictManagedTextures();
-	virtual HRESULT Render() = 0;
+	virtual bool Render() = 0;
 	virtual bool InitDeviceObjects() {
 		return true;
 	}
@@ -376,9 +384,11 @@ public:
 	void EERIEMouseUpdate(short x, short y);
 	
 	// Functions to create, run, pause, and clean up the application
-	virtual bool Create(HINSTANCE);
+	virtual bool Create() {
+		return true;
+	}
+
 	virtual int Run();
-	virtual LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual void Pause(bool bPause);
 	LRESULT SwitchFullScreen() ;
 	
