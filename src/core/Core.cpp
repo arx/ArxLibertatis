@@ -1294,6 +1294,7 @@ int main(int argc, char ** argv) {
 	Project.improve=0;
 	Project.interpolatemouse = 0;
 
+	// Create the Application instance
 	mainApp = new Win32Application;
 
 	mainApp->d_dlgframe=0;
