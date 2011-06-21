@@ -299,16 +299,8 @@ extern long EERIEMouseButton, EERIEMouseGrab;
 extern HWND MSGhwnd;
 
 class Application {
-	
-	// Internal variables and member functions
-	
-	
-public:
-	
-	float fMouseSensibility;
-	
+
 protected:
-	
 	// Overridable variables for the app
 	DWORD m_dwBaseTime;
 	DWORD m_dwStopTime;
@@ -322,23 +314,12 @@ protected:
 	HWND CreateToolBar(HWND hWndParent, HINSTANCE hInst);
 #endif
 
-	// Overridable functions for the 3D scene created by the app
-	virtual bool OneTimeSceneInit() {
-		return true;
-	}
-	virtual bool DeleteDeviceObjects() {
-		return true;
-	}
-	virtual bool FrameMove() {
-		return true;
-	}
-	virtual bool RestoreSurfaces() {
-		return true;
-	}
-	
-	virtual bool BeforeRun() {
-		return true;
-	}
+	/* Virtual functions to be overriden for the 3D scene in the Application */
+	virtual bool OneTimeSceneInit() { return true; }
+	virtual bool DeleteDeviceObjects() { return true; }
+	virtual bool FrameMove() { return true; }
+	virtual bool RestoreSurfaces() { return true; }
+	virtual bool BeforeRun() { return true; }
 	
 	//zbuffer
 	short w_zdecal;
@@ -347,20 +328,60 @@ protected:
 	long dw_zXmodulo;
 	
 public:
-	
+	/* TODO Find out which of these can be privatized */
+	bool m_bActive;
+	bool m_bReady;
+	long d_dlgframe;
+	long MouseDragX, MouseDragY;
+	long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
+	KEYBOARD_MNG kbd;
+	char StatusText[512];
+	short WndSizeX;
+	short WndSizeY;
+	bool  Fullscreen;
+	long CreationMenu;
+	long MustRefresh;
+	void * logical;
+	void * zbuf;
+	long zbits;
+	long nbbits;
+	float GetZBufferMax();
+	float zbuffer_max;
+	float zbuffer_max_div;
+	int menu;
+	float fMouseSensibility;
+#ifdef BUILD_EDITOR
+	EERIETOOLBAR * ToolBar;
+#endif
+	/* TODO Should all be privatized eventually */
+	DDSURFACEDESC2 ddsd;
+	DDSURFACEDESC2 ddsd2;
+	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
+	DDGAMMARAMP DDGammaRamp; // modified ramp value
+	DDGAMMARAMP DDGammaOld; // backup gamma values
 	LPDIRECTDRAW7 m_pDD;
 	LPDIRECTDRAWSURFACE7 m_pddsRenderTarget;
 	LPDIRECTDRAWSURFACE7 m_pddsRenderTargetLeft;	// For stereo modes
 	DDSURFACEDESC2 m_ddsdRenderTarget;
-	int WinManageMess();
 	LPDIRECT3D7 m_pD3D;
-	void EvictManagedTextures();
-	virtual bool Render() = 0;
-	virtual bool InitDeviceObjects() {
-		return true;
-	}
+	CD3DFramework7 * m_pFramework;
+	HWND owner;
+	WindowCreationFlags CreationFlags;
+	D3DEnum_DeviceInfo * m_pDeviceInfo;
+	HWND m_hWnd;
+	HWND m_hWndRender;
 
-	virtual bool FinalCleanup() { return true; }
+	// Class constructor
+	Application();
+
+	int WinManageMess();
+	void EvictManagedTextures();
+	void EERIEMouseUpdate(short x, short y);
+
+	void * Lock();
+	bool Unlock();
+
+	/* Virtual functions which may be overridden for specific implementations */
 
 	/**
 	 * Writes text to the window
@@ -370,81 +391,17 @@ public:
 	*/
 	virtual void OutputText( int, int, const std::string& ) {}
 	
-	bool m_bActive;
-	bool m_bReady;
-	D3DEnum_DeviceInfo * m_pDeviceInfo;
-	HWND m_hWnd;
-	HWND m_hWndRender;
-	WNDPROC m_OldProc;
-	long d_dlgframe;
-	long MouseDragX, MouseDragY;
-	long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
-	void EERIEMouseUpdate(short x, short y);
-	
-	// Functions to create, run, pause, and clean up the application
-	virtual bool Create() {
-		return true;
-	}
 
-	virtual int Run() {
-		return true;
-	}
-
+	virtual bool Create() { return true; }
+	virtual int Run() { return 0; }
 	virtual void Pause(bool bPause);
-	
-	CD3DFramework7 * m_pFramework;
-
-	
-	virtual bool Change3DEnvironment() {
-		return true;
-	}
-
+	virtual bool Render() { return true; }
+	virtual bool InitDeviceObjects() { return true; }
+	virtual bool FinalCleanup() { return true; }
+	virtual bool Change3DEnvironment() { return true; }
 	virtual void Cleanup3DEnvironment() {}
-
-	virtual bool SwitchFullScreen() {
-		return true;
-	}
-
-	KEYBOARD_MNG kbd;
-	
-	char StatusText[512];
-	short WndSizeX;
-	short WndSizeY;
-	bool  Fullscreen;
-	WindowCreationFlags CreationFlags;
-	long CreationMenu;
-	long MustRefresh;
-#ifdef BUILD_EDITOR
-	EERIETOOLBAR * ToolBar;
-#endif
-	HWND owner;
-	
-	void * logical;
-	void * zbuf;
-	long zbits;
-	long nbbits;
-	
-	void * Lock();
-	bool Unlock();
-	DDSURFACEDESC2 ddsd;
-	DDSURFACEDESC2 ddsd2;
-	
-	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
-	DDGAMMARAMP DDGammaRamp; // modified ramp value
-	DDGAMMARAMP DDGammaOld; // backup gamma values
-
-	virtual bool UpdateGamma() {
-		return true;
-	}
-	
-	float GetZBufferMax();
-	float zbuffer_max;
-	float zbuffer_max_div;
-	int menu;
-	
-	// Class constructor
-	Application();
-	
+	virtual bool SwitchFullScreen() { return true; }
+	virtual bool UpdateGamma() { return true; }
 };
 
 extern Application * mainApp;
@@ -466,9 +423,7 @@ private:
 };
 
 bool OKBox(const std::string& text, const std::string& title);
-
 void CalcFPS(bool reset = false);
-
 void SetZBias(int);
 
 #endif // ARX_CORE_APPLICATION_H
