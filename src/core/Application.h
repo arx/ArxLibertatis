@@ -360,11 +360,15 @@ public:
 		return true;
 	}
 
-	virtual bool FinalCleanup() {
-		return true;
-	}
+	virtual bool FinalCleanup() { return true; }
 
-	void OutputText(DWORD x, DWORD y, const std::string& str);
+	/**
+	 * Writes text to the window
+	 * @param x The x coordinate for the text
+	 * @param y The y coordinate for the text
+	 * @param str The string of text to be written
+	*/
+	virtual void OutputText( int, int, const std::string& ) {}
 	
 	bool m_bActive;
 	bool m_bReady;

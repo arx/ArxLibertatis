@@ -37,10 +37,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Levels.h"
 #include "game/Player.h"
 
-#include "graphics/data/Mesh.h"
 #include "graphics/Frame.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/GraphicsUtility.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/font/Font.h"
+
+#include "gui/Text.h"
 
 #include "io/CinematicLoad.h"
 #include "io/Logger.h"
@@ -791,3 +794,25 @@ bool Win32Application::SwitchFullScreen()
 	return true;
 }
 
+//*************************************************************************************
+// OutputText()
+// Draws text on the window.
+//*************************************************************************************
+void Win32Application::OutputText( int x, int y, const std::string& str)
+{
+	if (m_pddsRenderTarget)
+	{
+		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
+	}
+}
+
+float Application::GetZBufferMax()
+{
+	Lock();
+	Unlock();
+	float ret = (float)(((unsigned long)dw_zmask) >> w_zdecal);
+
+	this->zbuffer_max = ret;
+	this->zbuffer_max_div = 1.f / this->zbuffer_max;
+	return this->zbuffer_max;
+}

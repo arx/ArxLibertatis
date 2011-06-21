@@ -70,6 +70,15 @@ public:
 	virtual bool Change3DEnvironment();
 	
 	virtual bool UpdateGamma();
+
+	/**
+	 * Writes text to the window
+	 * @param x The x coordinate for the text
+	 * @param y The y coordinate for the text
+	 * @param str The string of text to be written
+	*/
+	virtual void OutputText( int x, int y, const std::string& str );
+
 	virtual LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 

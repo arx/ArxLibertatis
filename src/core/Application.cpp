@@ -74,7 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsEnum.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/data/Mesh.h"
-#include "graphics/font/Font.h"
 
 #include "io/FilePath.h"
 #include "io/PakManager.h"
@@ -338,28 +337,6 @@ VOID CalcFPS(bool reset)
 	}
 }
 
-//*************************************************************************************
-// OutputText()
-// Draws text on the window.
-//*************************************************************************************
-VOID Application::OutputText(DWORD x, DWORD y, const std::string& str)
-{
-	if (m_pddsRenderTarget)
-	{
-		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
-	}
-}
-
-float Application::GetZBufferMax()
-{
-	Lock();
-	Unlock();
-	float ret = (float)(((unsigned long)dw_zmask) >> w_zdecal);
-
-	this->zbuffer_max = ret;
-	this->zbuffer_max_div = 1.f / this->zbuffer_max;
-	return this->zbuffer_max;
-}
 //*************************************************************************************
 //*************************************************************************************
 void * Application::Lock()
