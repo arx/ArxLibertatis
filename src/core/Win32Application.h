@@ -23,6 +23,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#ifndef WIN32APPLICATION_H
+#define WIN32APPLICATION_H
+
 #include "Application.h"
 
 #include "windows.h"
@@ -69,3 +72,6 @@ public:
 	virtual bool UpdateGamma();
 	virtual LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
+
+#endif // WIN32APPLICATION_H
+
