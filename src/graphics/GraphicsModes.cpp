@@ -134,7 +134,7 @@ void ARX_GLOBALMODS_Apply()
 	fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
 	SetCameraDepth(min(current.zclip, fZclipp));
 
-	ulBKGColor = Color(current.depthcolor.r, current.depthcolor.g, current.depthcolor.b);
+	ulBKGColor = current.depthcolor.to<u8>();
 	GRenderer->SetFogColor(ulBKGColor);
 	
 	float fogEnd = fZFogEnd;
