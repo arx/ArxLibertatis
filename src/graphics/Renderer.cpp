@@ -1288,3 +1288,14 @@ VertexBuffer<SMY_D3DVERTEX3> * Renderer::createVertexBuffer3(size_t capacity, Bu
 	const DWORD format = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX3 | D3DFVF_TEXTUREFORMAT2;
 	return new DX7VertexBuffer<SMY_D3DVERTEX3>(format, capacity);
 }
+
+void Renderer::drawIndexed(Primitive primitive, const D3DTLVERTEX * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {
+	
+	arx_assert(vertices != NULL && indices != NULL);
+	
+	D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
+	HRESULT hr = GDevice->DrawIndexedPrimitive(type, D3DFVF_TLVERTEX, (LPVOID)vertices, (DWORD)nvertices, (LPWORD)indices, (DWORD)nindices, 0);
+	arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitive failed: %08x", hr);
+	ARX_UNUSED(hr);
+	
+}

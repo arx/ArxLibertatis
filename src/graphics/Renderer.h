@@ -167,6 +167,8 @@ public:
 	virtual VertexBuffer<SMY_D3DVERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage);
 	virtual VertexBuffer<SMY_D3DVERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage);
 	
+	virtual void drawIndexed(Primitive primitive, const D3DTLVERTEX * vertices, size_t nvertices, unsigned short * indices, size_t nindices);
+	
 private:
 	std::vector<TextureStage*>	m_TextureStages;
 };
