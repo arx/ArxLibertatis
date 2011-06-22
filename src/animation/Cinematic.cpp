@@ -441,16 +441,8 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			uvs++;
 		}
 
-		if (FAILED(GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-		                                        D3DFVF_TLVERTEX,
-		                                        AllD3DTLVertex,
-		                                        grille->nbvertexs,
-		                                        ((unsigned short *)grille->inds) + mat->startind,
-		                                        mat->nbind,
-		                                        0)))
-		{
-			ARX_DEAD_CODE();
-		}
+		GRenderer->drawIndexed(Renderer::TriangleList, AllD3DTLVertex, grille->nbvertexs,
+		                       ((unsigned short *)grille->inds) + mat->startind, mat->nbind);
 	}
 }
 /*---------------------------------------------------------------*/
