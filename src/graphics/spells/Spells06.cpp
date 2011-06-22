@@ -1729,9 +1729,9 @@ float CParalyse::Render()
 				}
 
 				GRenderer->SetCulling(Renderer::CullCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 				GRenderer->SetCulling(Renderer::CullCCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 
 				vertex = this->tabprism[nb2].vertex;
 				int j;
@@ -1789,9 +1789,9 @@ float CParalyse::Render()
 				}
 
 				GRenderer->SetCulling(Renderer::CullCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 				GRenderer->SetCulling(Renderer::CullCCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 			}
 
 			vertex = this->prismvertex;
@@ -1912,9 +1912,9 @@ float CParalyse::Render()
 				}
 
 				GRenderer->SetCulling(Renderer::CullCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 				GRenderer->SetCulling(Renderer::CullCCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 			}
 
 			col = RGBA_MAKE((int)(this->prismrd + (this->prismre - this->prismrd) * this->prisminterpcol),
@@ -1942,9 +1942,9 @@ float CParalyse::Render()
 	}
 
 	GRenderer->SetCulling(Renderer::CullCW);
-	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+	GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 	GRenderer->SetCulling(Renderer::CullCCW);
-	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+	GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 
 
 	for (int i = 0; i < 20; i++)
