@@ -68,7 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
 
-void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
+void specialEE_RTP(TexturedVertex*,TexturedVertex*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
 
 
@@ -769,7 +769,7 @@ extern float Xratio;
 extern float Yratio;
 extern long INTERTRANSPOLYSPOS;
 
-extern D3DTLVERTEX InterTransPol[MAX_INTERTRANSPOL][4];
+extern TexturedVertex InterTransPol[MAX_INTERTRANSPOL][4];
 extern EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
 extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 
@@ -823,16 +823,16 @@ float Distance3D(float x0, float y0, float z0, float x1, float y1, float z1);
 int EERIELaunchRay2(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
 int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
 float GetGroundY(Vec3f * pos);
-void EE_IRTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
-void EE_RTT(D3DTLVERTEX *in,D3DTLVERTEX *out);
+void EE_IRTP(TexturedVertex *in,TexturedVertex *out);
+void EE_RTT(TexturedVertex *in,TexturedVertex *out);
 
-void extEE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
+void extEE_RTP(TexturedVertex *in,TexturedVertex *out);
 void MakeColorz(INTERACTIVE_OBJ * io);
 
-void EE_RotateX(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
-void EE_RotateY(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
-void EE_RotateZ(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
-void EE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
+void EE_RotateX(TexturedVertex *in,TexturedVertex *out,float c, float s);
+void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s);
+void EE_RotateZ(TexturedVertex *in,TexturedVertex *out,float c, float s);
+void EE_RTP(TexturedVertex *in,TexturedVertex *out);
 
 void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos);
 
@@ -866,7 +866,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms);
 void ClearBackground(EERIE_BACKGROUND * eb);
 int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv);
 
-void EERIEAddPoly(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval);
+void EERIEAddPoly(TexturedVertex * vert, TexturedVertex * vert2, TextureContainer * tex, long render, float transval);
 // BACKGROUND MANAGEMENT FUNCTIONS END
 //****************************************************************************
 
@@ -925,8 +925,8 @@ void ApplyLight(EERIEPOLY *ep);
 long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest);
 void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
-void ApplyWaterFXToVertex(Vec3f * odtv,D3DTLVERTEX * dtv,float power);
-int BackFaceCull2D(D3DTLVERTEX * tv);
+void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power);
+int BackFaceCull2D(TexturedVertex * tv);
 void ResetAnim(ANIM_USE * eanim);
 
 //*************************************************************************************
@@ -969,8 +969,8 @@ void CreateInWorld();
 void EERIE_LIGHT_ChangeLighting();
 void SetCameraDepth(float depth);
 
-extern void EERIETreatPoint(D3DTLVERTEX *in,D3DTLVERTEX *out);
-extern void EERIETreatPoint2(D3DTLVERTEX *in,D3DTLVERTEX *out);
+extern void EERIETreatPoint(TexturedVertex *in,TexturedVertex *out);
+extern void EERIETreatPoint2(TexturedVertex *in,TexturedVertex *out);
 void _YRotatePoint(Vec3f *in,Vec3f *out,float c, float s);
 void _XRotatePoint(Vec3f *in,Vec3f *out,float c, float s);
 bool RayCollidingPoly(Vec3f * orgn,Vec3f * dest,EERIEPOLY * ep,Vec3f * hit);

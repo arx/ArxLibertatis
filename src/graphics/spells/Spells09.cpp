@@ -187,7 +187,7 @@ unsigned long CSummonCreature::GetDuration()
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
-	D3DTLVERTEX target;
+	TexturedVertex target;
 
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
@@ -282,7 +282,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 }
 
 //-----------------------------------------------------------------------------
-void CSummonCreature::Split(D3DTLVERTEX * v, int a, int b, float yo)
+void CSummonCreature::Split(TexturedVertex * v, int a, int b, float yo)
 {
 	if (a != b)
 	{
@@ -304,9 +304,9 @@ void CSummonCreature::RenderFissure()
 {
 	int i;
 	float ff;
-	D3DTLVERTEX vt[4];
-	D3DTLVERTEX vr[4];
-	D3DTLVERTEX target;
+	TexturedVertex vt[4];
+	TexturedVertex vr[4];
+	TexturedVertex target;
 
 	Vec3f etarget;
 	etarget.x = fBetaRadCos;

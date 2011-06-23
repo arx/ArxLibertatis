@@ -74,8 +74,8 @@ struct SavedD3DTLVertex {
 	f32 tu;
 	f32 tv;
 	
-	inline operator D3DTLVERTEX() {
-		D3DTLVERTEX a;
+	inline operator TexturedVertex() {
+		TexturedVertex a;
 		a.sx = pos.x, a.sy = pos.y, a.sz = pos.z;
 		a.rhw = rhw;
 		a.color = color;
@@ -85,7 +85,7 @@ struct SavedD3DTLVertex {
 		return a;
 	}
 	
-	inline SavedD3DTLVertex & operator=(const D3DTLVERTEX & b) {
+	inline SavedD3DTLVertex & operator=(const TexturedVertex & b) {
 		pos.x = b.sx, pos.y = b.sy, pos.z = b.sz;
 		rhw = b.rhw;
 		color = b.color;

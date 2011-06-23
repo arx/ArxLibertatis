@@ -84,7 +84,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/VertexBuffer.h"
 #include "graphics/Frame.h"
 #include "graphics/Draw.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/Math.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/effects/DrawEffects.h"
@@ -132,7 +131,7 @@ EERIEPOLY VF_Bottom;
 EERIEPOLY VF_Front;
 
 EERIEPOLY * TransPol[MAX_TRANSPOL];
-D3DTLVERTEX InterTransPol[MAX_INTERTRANSPOL][4];
+TexturedVertex InterTransPol[MAX_INTERTRANSPOL][4];
 EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
 TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 
@@ -249,14 +248,14 @@ extern long TSU_TEST;
 
 //*************************************************************************************
 //*************************************************************************************
-void ApplyWaterFXToVertex(Vec3f * odtv,D3DTLVERTEX * dtv,float power)
+void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power)
 {
 	power=power*0.05f;
 	dtv->tu+=EEsin((WATEREFFECT+odtv->x))*power;
 	dtv->tv+=EEcos((WATEREFFECT+odtv->z))*power;
 }
 
-static void ApplyLavaGlowToVertex(Vec3f * odtv,D3DTLVERTEX * dtv, float power) {
+static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power) {
 	register float f;
 	register long lr, lg, lb;
 	power = 1.f - (EEsin((WATEREFFECT+odtv->x+odtv->z)) * 0.05f) * power;
@@ -361,7 +360,7 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 
 
 extern EERIEMATRIX ProjectionMatrix;
-void specialEE_RTP2(D3DTLVERTEX *in,D3DTLVERTEX *out)
+void specialEE_RTP2(TexturedVertex *in,TexturedVertex *out)
 {
 	register EERIE_TRANSFORM * et=(EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->sx = in->sx - et->posx;	
@@ -3484,7 +3483,7 @@ if (HALOCUR>0)
 	for (i=0;i<HALOCUR;i++)
 	{
 		//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
-		D3DTLVERTEX * vert=&LATERDRAWHALO[(i<<2)];
+		TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
 
 		if (vert[2].color == 0)
 		{

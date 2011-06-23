@@ -88,7 +88,7 @@ POLYBOOM polyboom[MAX_POLYBOOM];
 
 extern Color ulBKGColor;
 
-void EE_RT2(D3DTLVERTEX*,D3DTLVERTEX*);
+void EE_RT2(TexturedVertex*,TexturedVertex*);
 
 //***********************************************************************************************
 // hum... to be checked again for performance and result quality.
@@ -136,13 +136,13 @@ void ARXDRAW_DrawInterShadows()
 			if ( !(io->ioflags & IO_GOLD) ) 
 			{
 				register EERIEPOLY * ep;
-				D3DTLVERTEX in;			
+				TexturedVertex in;			
 				
-				D3DTLVERTEX ltv[4];
-				ltv[0]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.3f) ;
-				ltv[1]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.7f, 0.3f) ;
-				ltv[2]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.7f, 0.7f) ;		
-				ltv[3]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.7f) ;
+				TexturedVertex ltv[4];
+				ltv[0]=	TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.3f) ;
+				ltv[1]=	TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, 0, 1, 0.7f, 0.3f) ;
+				ltv[2]=	TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, 0, 1, 0.7f, 0.7f) ;		
+				ltv[3]=	TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.7f) ;
 				
 				float s1=16.f*io->scale;
 				float s2=s1 * ( 1.0f / 2 );	
@@ -258,8 +258,8 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 {
 //	long i;
  
-	D3DTLVERTEX in;
-	D3DTLVERTEX center;
+	TexturedVertex in;
+	TexturedVertex center;
 	GRenderer->SetCulling(Renderer::CullNone);
 	
 	if (el!=NULL)
@@ -364,7 +364,7 @@ void ARXDRAW_DrawEyeBall()
 }
 //*************************************************************************************
 //*************************************************************************************
-void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,D3DTLVERTEX *_pOut)
+void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,TexturedVertex *_pOut)
 {
 	if(config.misc.forceZBias)
 	{
@@ -412,10 +412,10 @@ void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,D3DTLVERTEX 
 	}
 }
 extern float FrameDiff;
-void EE_P2(D3DTLVERTEX *in,D3DTLVERTEX *out);
+void EE_P2(TexturedVertex *in,TexturedVertex *out);
 void ARXDRAW_DrawPolyBoom()
 {
-	D3DTLVERTEX ltv[4];
+	TexturedVertex ltv[4];
 
 	long i,k;
 	float tt;
@@ -655,7 +655,7 @@ extern long TRANSPOLYSPOS;
 extern EERIEPOLY * TransPol[MAX_TRANSPOL];
 
 extern long INTERTRANSPOLYSPOS;
-extern D3DTLVERTEX InterTransPol[MAX_INTERTRANSPOL][4];
+extern TexturedVertex InterTransPol[MAX_INTERTRANSPOL][4];
 extern EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
 extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 
@@ -773,7 +773,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
-					D3DTLVERTEX verts[4];
+					TexturedVertex verts[4];
 					GRenderer->SetTexture(0, enviro );
 
 				ARX_CHECK(to > 0);
@@ -816,7 +816,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 				
-				D3DTLVERTEX verts[4];
+				TexturedVertex verts[4];
 
 				GRenderer->SetTexture(0, enviro );
 

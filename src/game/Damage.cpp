@@ -122,7 +122,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 
 	if ((j != -1) && (!ARXPausedTimer))
 	{
-		D3DTLVERTEX in, out;
+		TexturedVertex in, out;
 		in.sx = pos->x;
 		in.sy = pos->y;
 		in.sz = pos->z;
@@ -132,7 +132,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		if (out.sx < 0)
 			out.sx = 0;
 		else if (out.sx > DANAESIZX)
-			out.sx = ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
+			out.sx = static_cast<float>(DANAESIZX);
 
 
 
@@ -140,7 +140,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		if (out.sy < 0)
 			out.sy = 0;
 		else if (out.sy > DANAESIZY)
-			out.sy = ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
+			out.sy = static_cast<float>(DANAESIZY);
 
 
 

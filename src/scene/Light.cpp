@@ -522,7 +522,7 @@ extern EERIE_CAMERA DynLightCam;
 //-----------------------------------------------------------------------------
 void ComputeLight2DPos(EERIE_LIGHT * _pL)
 {
-	D3DTLVERTEX in, out;
+	TexturedVertex in, out;
 	in.sx = _pL->pos.x;
 	in.sy = _pL->pos.y;
 	in.sz = _pL->pos.z;

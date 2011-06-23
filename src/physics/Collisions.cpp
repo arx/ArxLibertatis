@@ -540,7 +540,7 @@ extern int TSU_TEST_COLLISIONS;
 	
 extern void GetIOCyl(INTERACTIVE_OBJ * io,EERIE_CYLINDER * cyl);
 
-inline void EE_RotateY(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s)
+inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
 {
 	out->sx = (in->sx*c) + (in->sz*s);
 	out->sy = in->sy;

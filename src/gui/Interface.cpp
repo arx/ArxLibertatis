@@ -136,7 +136,7 @@ extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
 extern FOG_DEF fogparam;
 extern CDirectInput *pGetInfoDirectInput;
-extern D3DTLVERTEX LATERDRAWHALO[];
+extern TexturedVertex LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern Notification speech[];
@@ -292,7 +292,7 @@ float INTERFACE_RATIO_LONG(const long a)
 {
 	return INTERFACE_RATIO(ARX_CLEAN_WARN_CAST_FLOAT(a));
 }
-float INTERFACE_RATIO_DWORD(const DWORD a)
+float INTERFACE_RATIO_DWORD(const u32 a)
 {
 	return INTERFACE_RATIO(ARX_CLEAN_WARN_CAST_FLOAT(a));
 }
@@ -368,11 +368,11 @@ static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, floa
 
 static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, const int _iNb, const Color color) {
 	D3DCOLOR col = color.toBGRA();
-	D3DTLVERTEX v[4];
-	v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 0.f);
-	v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 0.f);
-	v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 1.f);
-	v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 1.f);
+	TexturedVertex v[4];
+	v[0]= TexturedVertex( Vec3f( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 0.f);
+	v[1]= TexturedVertex( Vec3f( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 0.f);
+	v[2]= TexturedVertex( Vec3f( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 1.f);
+	v[3]= TexturedVertex( Vec3f( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 1.f);
 	
 	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.0000001f;
 
@@ -8548,7 +8548,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 				for (int i=0;i<HALOCUR;i++)
 				{
-					D3DTLVERTEX * vert=&LATERDRAWHALO[(i<<2)];
+					TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
 
 					if (vert[2].color == 0)
 					{
@@ -9378,12 +9378,12 @@ void DANAE::DrawAllInterface()
 
 	if (player.Interface & INTER_LIFE_MANA)
 	{
-		D3DTLVERTEX v[4];
+		TexturedVertex v[4];
 		float px, py;
-		v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
-		v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
-		v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
-		v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 1.f);
+		v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
+		v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
+		v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
+		v[3]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 1.f);
 
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;

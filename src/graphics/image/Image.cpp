@@ -1,12 +1,16 @@
+
 #include "Image.h"
+
+#include <cstring>
+#include <map>
+#include <il.h>
 
 #include "graphics/Math.h"
 #include "io/PakManager.h"
 
-#include <map>
-#include <il.h>
-
 using std::string;
+using std::memcpy;
+using std::memset;
 
 class DevilLib
 {

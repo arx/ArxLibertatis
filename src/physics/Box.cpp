@@ -94,10 +94,10 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long
 	for (size_t i = 0; i < obj->facelist.size(); i++)
 	{
 
-		D3DTLVERTEX * ev[3];
-		ev[0] = (D3DTLVERTEX *)&obj->vertexlist[obj->facelist[i].vid[0]].v;
-		ev[1] = (D3DTLVERTEX *)&obj->vertexlist[obj->facelist[i].vid[1]].v;
-		ev[2] = (D3DTLVERTEX *)&obj->vertexlist[obj->facelist[i].vid[2]].v;
+		TexturedVertex * ev[3];
+		ev[0] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[0]].v;
+		ev[1] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[1]].v;
+		ev[2] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[2]].v;
 		surface += TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
 		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
 		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),
@@ -775,7 +775,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 	return ret;
 }
 
-static void copy(Vec3f & dest, const D3DTLVERTEX & src) {
+static void copy(Vec3f & dest, const TexturedVertex & src) {
 	dest.x = src.sx;
 	dest.y = src.sy;
 	dest.z = src.sz;

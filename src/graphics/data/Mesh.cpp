@@ -76,7 +76,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/VertexBuffer.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Texture.h"
 #include "graphics/data/FastSceneFormat.h"
@@ -220,7 +219,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 
-void specialEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void specialEE_RTP(TexturedVertex * in, TexturedVertex * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->sx = in->sx - et->posx;
@@ -785,7 +784,7 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 
 //*************************************************************************************
 //*************************************************************************************
-void EERIETreatPoint(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out)
 {
 	out->sx = in->sx - ACTIVECAM->pos.x;
 	out->sy = in->sy - ACTIVECAM->pos.y;
@@ -813,7 +812,7 @@ void EERIETreatPoint(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-void EERIETreatPoint2(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
 {
 	out->sx = in->sx - ACTIVECAM->pos.x;
 	out->sy = in->sy - ACTIVECAM->pos.y;
@@ -844,7 +843,7 @@ void EERIETreatPoint2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 
 //*************************************************************************************
 //*************************************************************************************
-void EE_RT(D3DTLVERTEX * in, Vec3f * out)
+void EE_RT(TexturedVertex * in, Vec3f * out)
 {
 	out->x = in->sx - ACTIVECAM->pos.x;
 	out->y = in->sy - ACTIVECAM->pos.y;
@@ -863,7 +862,7 @@ void EE_RT(D3DTLVERTEX * in, Vec3f * out)
 	out->y = temp;
 }
 
-void EE_RT2(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_RT2(TexturedVertex * in, TexturedVertex * out)
 {
 
 	out->sx = in->sx - ACTIVECAM->pos.x;
@@ -883,7 +882,7 @@ void EE_RT2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->sy = temp;
 }
 
-void EE_P(Vec3f * in, D3DTLVERTEX * out)
+void EE_P(Vec3f * in, TexturedVertex * out)
 {
 	float fZTemp;
 	fZTemp = 1.f / in->z;
@@ -893,7 +892,7 @@ void EE_P(Vec3f * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_P2(TexturedVertex * in, TexturedVertex * out)
 {
 	float fZTemp;
 	fZTemp = 1.f / in->sz;
@@ -903,7 +902,7 @@ void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_RTP(TexturedVertex * in, TexturedVertex * out)
 {
 	//register float rhw;
 	out->sx = in->sx - ACTIVECAM->pos.x;
@@ -931,9 +930,9 @@ void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
 }
 //*************************************************************************************
 //*************************************************************************************
-__inline void camEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out, EERIE_CAMERA * cam)
+__inline void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam)
 {
-	D3DTLVERTEX tout;
+	TexturedVertex tout;
 	out->sx = in->sx - cam->pos.x;
 	out->sy = in->sy - cam->pos.y;
 	out->sz = in->sz - cam->pos.z;
@@ -971,7 +970,7 @@ __inline void camEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out, EERIE_CAMERA * cam)
 
 //*************************************************************************************
 //*************************************************************************************
-void EE_RTT(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_RTT(TexturedVertex * in, TexturedVertex * out)
 {
 	specialEE_RTP(in, out);
 }
@@ -1233,7 +1232,7 @@ void SetTargetCamera(EERIE_CAMERA * cam, float x, float y, float z)
 //*************************************************************************************
 //*************************************************************************************
 
-int BackFaceCull2D(D3DTLVERTEX * tv)
+int BackFaceCull2D(TexturedVertex * tv)
 {
 
 	if ((tv[0].sx - tv[1].sx)*(tv[2].sy - tv[1].sy) - (tv[0].sy - tv[1].sy)*(tv[2].sx - tv[1].sx) > 0.f)
@@ -2958,9 +2957,9 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 	}
 
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	D3DTLVERTEX v;
-	D3DTLVERTEX rv;
-	D3DTLVERTEX vert_list[4];
+	TexturedVertex v;
+	TexturedVertex rv;
+	TexturedVertex vert_list[4];
 
 
 	Zsin = radians(angle->a);
@@ -3040,9 +3039,9 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 	if (eobj == NULL) return;
 
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	D3DTLVERTEX v;
-	D3DTLVERTEX rv;
-	D3DTLVERTEX vert_list[4];
+	TexturedVertex v;
+	TexturedVertex rv;
+	TexturedVertex vert_list[4];
 
 
 	Zsin = radians(angle->a);
@@ -3332,7 +3331,7 @@ bool FastSceneLoad(const string & partial_path) {
 					ep2->v[kk].tv = ep->v[kk].stv;
 				}
 				
-				memcpy(ep2->tv, ep2->v, sizeof(D3DTLVERTEX) * 4);
+				memcpy(ep2->tv, ep2->v, sizeof(TexturedVertex) * 4);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->tv[kk].color = 0xFF000000;
@@ -3833,16 +3832,16 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	return 1;
 }
 
-static void EERIEAddPolyToBackground(D3DTLVERTEX * vert2, TextureContainer * tex, PolyType render, float transval, EERIE_3DOBJ * eobj) {
+static void EERIEAddPolyToBackground(TexturedVertex * vert2, TextureContainer * tex, PolyType render, float transval, EERIE_3DOBJ * eobj) {
 	
 	EERIEPOLY ep;
 	
-	memset(ep.tv, 0, sizeof(D3DTLVERTEX) * 3);
+	memset(ep.tv, 0, sizeof(TexturedVertex) * 3);
 	
 	if(vert2 != NULL) {
-		memcpy(ep.v, vert2, sizeof(D3DTLVERTEX) * 3);
+		memcpy(ep.v, vert2, sizeof(TexturedVertex) * 3);
 	} else {
-		memset(ep.tv, 0, sizeof(D3DTLVERTEX) * 3);
+		memset(ep.tv, 0, sizeof(TexturedVertex) * 3);
 	}
 	
 	ep.type = render;
@@ -3856,7 +3855,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	float       Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
 	Vec3f      p, rp;
 
-	D3DTLVERTEX vlist[3];
+	TexturedVertex vlist[3];
 	Zsin = radians(eobj->angle.a);
 	Xcos = (float)EEcos(Zsin);
 	Xsin = (float)EEsin(Zsin);
@@ -3894,7 +3893,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 				{
 					for (long kk = 0; kk < 3; kk++)
 					{
-						memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(D3DTLVERTEX));
+						memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(TexturedVertex));
 					}
 
 					if (i == 0)

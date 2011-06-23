@@ -77,7 +77,7 @@ struct ACTIONSTRUCT {
 
 const size_t MAX_ACTIONS = 100;
 
-extern D3DTLVERTEX	vert_list[4];
+extern TexturedVertex	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 #ifdef BUILD_EDIT_LOADSAVE

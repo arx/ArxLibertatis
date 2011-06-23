@@ -250,7 +250,7 @@ void SetGammaLumContrast()
 
 
 		ARX_CHECK_WORD(iColor);
-		WORD wColor = ARX_CLEAN_WARN_CAST_WORD(iColor);
+		WORD wColor = static_cast<u16>(iColor);
 
 		danaeApp.DDGammaRamp.red[iI] = wColor;
 		danaeApp.DDGammaRamp.green[iI] = wColor;

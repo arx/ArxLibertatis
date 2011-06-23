@@ -79,7 +79,7 @@ extern float fZFogStart;
 
 extern CDirectInput * pGetInfoDirectInput;
 
-void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out);
+void EE_P2(TexturedVertex * in, TexturedVertex * out);
 
 /* Init bounding box */
 inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
@@ -435,8 +435,8 @@ static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Angle
 	}
 }
 
-void EE_RT(D3DTLVERTEX * in, Vec3f * out);
-void EE_P(Vec3f * in, D3DTLVERTEX * out);
+void EE_RT(TexturedVertex * in, Vec3f * out);
+void EE_P(Vec3f * in, TexturedVertex * out);
 
 extern long INTERPOLATE_BETWEEN_BONES;
 
@@ -1088,7 +1088,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 }
 
 //-----------------------------------------------------------------------------
-D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex) {
+TexturedVertex * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex) {
 	
 	if(!(_pFace->facetype & POLY_TRANS) && !(_fInvisibility > 0.f)) {
 		return PushVertexInTableCull(_pTex);
@@ -1115,9 +1115,9 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 
 extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
 
-void ARX_DrawPrimitive(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3) {
+void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
 	
-	D3DTLVERTEX pD3DPointAdd[3];
+	TexturedVertex pD3DPointAdd[3];
 	
 	Vec3f e3dTemp;
 	e3dTemp.x = _pVertex1->sx;
@@ -1255,7 +1255,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 	{
 		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
 		{
-			ARX_D3DVERTEX	* tv			= NULL;
+			TexturedVertex	* tv			= NULL;
 
  
 			EERIE_FACE	*	eface;
@@ -1466,7 +1466,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 					ARX_CHECK(curhaloInitialized > 0);
 
-					D3DTLVERTEX * workon;
+					TexturedVertex * workon;
 					workon	= tv;
 
 					long o;
@@ -1539,16 +1539,16 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 						if ((_ffr[first] > 150.f) && (_ffr[second] > 110.f)) 
 						{
 							Vec3f		vect1, vect2;
-							D3DTLVERTEX *	vert = &LATERDRAWHALO[(HALOCUR << 2)];
+							TexturedVertex *	vert = &LATERDRAWHALO[(HALOCUR << 2)];
 
 							if(HALOCUR < ((long)HALOMAX) - 1) {
 								HALOCUR++;
 							}
 
-							memcpy(&vert[0], &workon[first], sizeof(D3DTLVERTEX));
-							memcpy(&vert[1], &workon[first], sizeof(D3DTLVERTEX));
-							memcpy(&vert[2], &workon[second], sizeof(D3DTLVERTEX));
-							memcpy(&vert[3], &workon[second], sizeof(D3DTLVERTEX));
+							memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
+							memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
+							memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
+							memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
 
 							float siz = ddist * (curhalo.radius * (EEsin((float)(FrameTime + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
 
@@ -1619,11 +1619,11 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 			if (special_color_flag & 2)
 			{
-				D3DTLVERTEX * tv2;
+				TexturedVertex * tv2;
 				{
 					tv2 = PushVertexInTableCull(&TexSpecialColor);
 				}
-				memcpy((void *) tv2, (void *)tv, sizeof(D3DTLVERTEX) * 3);
+				memcpy((void *) tv2, (void *)tv, sizeof(TexturedVertex) * 3);
 
 				unsigned long v = _EERIERGB(special_color.r);
 				tv2[0].color	= v;
@@ -1635,12 +1635,12 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			if ((eface->facetype & POLY_METAL)
 			        || ((pTex) && (pTex->userflags & POLY_METAL)))
 			{
-				D3DTLVERTEX	* tv2;
+				TexturedVertex	* tv2;
 				unsigned long	* pulNbVertexList_TMetal;
 
 				tv2						=	PushVertexInTableCull_TMetal(pTex);
 				pulNbVertexList_TMetal	=	&pTex->ulNbVertexListCull_TMetal;
-				memcpy((void *)tv2, (void *)tv, sizeof(D3DTLVERTEX) * 3);
+				memcpy((void *)tv2, (void *)tv, sizeof(TexturedVertex) * 3);
 				
 				long r, g, b;
 				long todo = 0;

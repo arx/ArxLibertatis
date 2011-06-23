@@ -141,7 +141,7 @@ class CLevitate: public CSpellFx
 			int				conenbvertex;
 			int				conenbfaces;
 			Vec3f	*	conevertex;
-			D3DTLVERTEX	*	coned3d;
+			TexturedVertex	*	coned3d;
 			unsigned short	* coneind;
 		};
 
@@ -232,7 +232,7 @@ class CPoisonProjectile: public CSpellFx
 		Vec3f eTarget;
 		Vec3f eCurPos;
 		Vec3f eMove;
-		D3DTLVERTEX pathways[40];
+		TexturedVertex pathways[40];
 		ParticleSystem pPS;
 		ParticleSystem pPSStream;
 

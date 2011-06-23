@@ -64,8 +64,8 @@ struct FLARES {
 	unsigned char exist;
 	char type;
 	short flags;
-	D3DTLVERTEX v;
-	D3DTLVERTEX tv;
+	TexturedVertex v;
+	TexturedVertex tv;
 	float x;
 	float y;
 	float tolive;

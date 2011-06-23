@@ -45,7 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEDRAW_H
 #define EERIEDRAW_H
 
-#include "graphics/d3dwrapper.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
 #include "graphics/Math.h"
@@ -55,14 +54,14 @@ extern long ARX_ALTERNATE_3D;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
 
-void MDL_AddMetalDrawLater(D3DTLVERTEX * tv);
+void MDL_AddMetalDrawLater(TexturedVertex * tv);
 void MDL_FlushAll();
 
 
 void Delayed_EERIEDRAWPRIM(EERIEPOLY * ep);
 void Delayed_FlushAll();
 
-void EERIEDRAWPRIM(Renderer::Primitive primitive, const D3DTLVERTEX * vertices, size_t count = 3, bool nocount = false);
+void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
 void EERIEDrawCircle(float x0, float y0, float r, Color col, float z);
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col);
@@ -80,8 +79,8 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
 void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
 
-void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color col, float Zpos);
-void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
+void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
+void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
 
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color col = Color::none);
 void EERIEPOLY_DrawNormals(EERIEPOLY * ep);

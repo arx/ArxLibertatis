@@ -47,9 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <vector>
 
-#include "graphics/d3dwrapper.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
+#include "graphics/Vertex.h"
 
 #include "math/Vector2.h"
 #include "math/Angle.h"
@@ -57,9 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 
 #include "Configure.h"
-
-template <class Vertex>
-class VertexBuffer;
 
 class TextureContainer;
 
@@ -174,8 +171,8 @@ struct EERIEPOLY {
 	Vec3f		max;
 	Vec3f		norm;
 	Vec3f		norm2;
-	D3DTLVERTEX		v[4];
-	D3DTLVERTEX		tv[4];
+	TexturedVertex		v[4];
+	TexturedVertex		tv[4];
 	Vec3f		nrml[4];
 	TextureContainer * tex;
 	Vec3f		center;
@@ -184,13 +181,6 @@ struct EERIEPOLY {
 	short			room;
 	short			misc;
 	unsigned short	uslInd[4];
-};
-
-struct EERIE_VERTEX {
-	D3DTLVERTEX vert;
-	Vec3f v;
-	Vec3f norm;
-	Vec3f vworld;
 };
 
 #define MATERIAL_NONE		0
@@ -630,20 +620,6 @@ struct EP_DATA {
 	short padd;
 };
 
-struct SMY_D3DVERTEX {
-	float x, y, z;
-	D3DCOLOR color;
-	float tu, tv;
-};
-
-struct SMY_D3DVERTEX3 {
-	float x, y, z;
-	D3DCOLOR color;
-	float tu, tv;
-	float tu2, tv2;
-	float tu3, tv3;
-};
-
 struct EERIE_ROOM_DATA {
 	long nb_portals;
 	long * portals;
@@ -665,11 +641,9 @@ struct EERIE_PORTAL_DATA
 	EERIE_PORTALS * portals;
 };
 
-typedef D3DTLVERTEX ARX_D3DVERTEX;
-
 struct SMY_ZMAPPINFO
 {
-	D3DTLVERTEX pD3DVertex[3];
+	TexturedVertex pD3DVertex[3];
 	float		uv[6];
 	float		color[3];
 };

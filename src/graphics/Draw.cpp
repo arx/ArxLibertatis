@@ -272,9 +272,9 @@ void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
 	Zmap=Z_map;
 }
 
-CircularVertexBuffer<D3DTLVERTEX> * pDynamicVertexBuffer_TLVERTEX;
+CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX;
 
-void EERIEDRAWPRIM(Renderer::Primitive primitive, const D3DTLVERTEX * vertices, size_t count, bool nocount) {
+void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count, bool nocount) {
 	
 	if(!nocount) {
 		EERIEDrawnPolys++;
@@ -328,7 +328,7 @@ void Delayed_FlushAll() {
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
-					D3DTLVERTEX verts[4];
+					TexturedVertex verts[4];
 					GRenderer->SetTexture(0, enviro);
 
 					for (long i=0;i<to;i++)
@@ -407,7 +407,7 @@ void Delayed_FlushAll() {
 					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 					GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
-					D3DTLVERTEX verts[4];
+					TexturedVertex verts[4];
 					GRenderer->SetTexture(0, ptcTexture->TextureRefinement); 
 
 					for (long i=0;i<ptcTexture->delayed_nb;i++)
@@ -507,7 +507,7 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col) {
 	
-	D3DTLVERTEX v[2];
+	TexturedVertex v[2];
 	v[0].sx = x0;
 	v[0].sy = y0;
 	v[0].sz = v[1].sz = z;
@@ -522,7 +522,7 @@ void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col)
 
 void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col) {
 	
-	D3DTLVERTEX v[5];
+	TexturedVertex v[5];
 	v[4].sx = v[3].sx = v[0].sx = x0;
 	v[4].sy = v[1].sy = v[0].sy = y0;
 	v[2].sx = v[1].sx = x1;
@@ -537,7 +537,7 @@ void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col)
 
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole) {
 	
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	v[0].sx = v[2].sx = x0;
 	v[0].sy = v[1].sy = y0;
 	v[1].sx = v[3].sx = x1;
@@ -632,8 +632,8 @@ void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 
 void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	
-	D3DTLVERTEX v[2];
-	D3DTLVERTEX in;
+	TexturedVertex v[2];
+	TexturedVertex in;
 	
 	in.sx = orgn.x;
 	in.sy = orgn.y;
@@ -660,9 +660,9 @@ void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color color, float Zpos) {
+void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos) {
 	
-	D3DTLVERTEX out;
+	TexturedVertex out;
 	
 	EERIETreatPoint2(in,&out);
 
@@ -700,11 +700,11 @@ void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color 
 		SPRmins.y=out.sy-t;
 
 		D3DCOLOR col = color.toBGRA();
-		D3DTLVERTEX v[4];
-		v[0]= D3DTLVERTEX( D3DVECTOR( SPRmins.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 0.f, 0.f);
-		v[1]= D3DTLVERTEX( D3DVECTOR( SPRmaxs.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 1.f, 0.f);
-		v[2]= D3DTLVERTEX( D3DVECTOR( SPRmins.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 0.f, 1.f);
-		v[3]= D3DTLVERTEX( D3DVECTOR( SPRmaxs.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 1.f, 1.f);
+		TexturedVertex v[4];
+		v[0]= TexturedVertex( Vec3f( SPRmins.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 0.f, 0.f);
+		v[1]= TexturedVertex( Vec3f( SPRmaxs.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 1.f, 0.f);
+		v[2]= TexturedVertex( Vec3f( SPRmins.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 0.f, 1.f);
+		v[3]= TexturedVertex( Vec3f( SPRmaxs.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 1.f, 1.f);
 
 		GRenderer->SetTexture(0, tex);
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
@@ -715,10 +715,10 @@ void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color 
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, Color color,
+void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color,
                             float Zpos, float rot) {
 	
-	D3DTLVERTEX out;
+	TexturedVertex out;
 	EERIETreatPoint2(in, &out);
 	
 	if ((out.sz>0.f) && (out.sz<1000.f))
@@ -740,11 +740,11 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex,
 		}
 
 		D3DCOLOR col = color.toBGRA();
-		D3DTLVERTEX v[4];
-		v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 0.f);
-		v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 0.f);
-		v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 1.f);
-		v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 1.f);
+		TexturedVertex v[4];
+		v[0]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 0.f);
+		v[1]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 0.f);
+		v[2]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 1.f);
+		v[3]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 1.f);
 		
 		
 		SPRmaxs.x=out.sx+t;
@@ -772,19 +772,19 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex,
 
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	
-	D3DTLVERTEX ltv[5];
-	ltv[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
-	ltv[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 0.f);
-	ltv[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 1.f);
-	ltv[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
-	ltv[4]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
+	TexturedVertex ltv[5];
+	ltv[0]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
+	ltv[1]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 0.f);
+	ltv[2]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 1.f);
+	ltv[3]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
+	ltv[4]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
 	
 	long to;
 
 	if (ep->type & POLY_QUAD) to=4;
 	else to=3;
 
-	memcpy(ltv,ep->tv,sizeof(D3DTLVERTEX)*to);							
+	memcpy(ltv,ep->tv,sizeof(TexturedVertex)*to);							
 	ltv[0].sz-=0.0002f;
 	ltv[1].sz-=0.0002f;
 	ltv[2].sz-=0.0002f;
@@ -792,12 +792,12 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 
 	if (to==4) 
 	{
-		memcpy(&ltv[2],&ep->tv[3],sizeof(D3DTLVERTEX));
-		memcpy(&ltv[3],&ep->tv[2],sizeof(D3DTLVERTEX));
-		memcpy(&ltv[4],&ep->tv[0],sizeof(D3DTLVERTEX));
+		memcpy(&ltv[2],&ep->tv[3],sizeof(TexturedVertex));
+		memcpy(&ltv[3],&ep->tv[2],sizeof(TexturedVertex));
+		memcpy(&ltv[4],&ep->tv[0],sizeof(TexturedVertex));
 		ltv[4].sz-=0.0002f;
 	}
-	else memcpy(&ltv[to],&ltv[0],sizeof(D3DTLVERTEX));
+	else memcpy(&ltv[to],&ltv[0],sizeof(TexturedVertex));
 
 	GRenderer->ResetTexture(0);
 
@@ -813,14 +813,14 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 					
 void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 {
-	D3DTLVERTEX ltv[5];
-	ltv[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
-	ltv[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 0.f);
-	ltv[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 1.f);
-	ltv[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
-	ltv[4]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
+	TexturedVertex ltv[5];
+	ltv[0]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
+	ltv[1]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 0.f);
+	ltv[2]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 1.f);
+	ltv[3]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
+	ltv[4]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
 	
-	D3DTLVERTEX lv;
+	TexturedVertex lv;
 	long to;
 
 	if (ep->type & POLY_QUAD) to=4;
@@ -880,11 +880,11 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 	}
 
 	D3DCOLOR col = color.toBGRA();
-	D3DTLVERTEX v[4];
-	v[0]= D3DTLVERTEX( D3DVECTOR( x,	y,		z ), 1.f, col, 0xFF000000, smu,		smv);
-	v[1]= D3DTLVERTEX( D3DVECTOR( x+sx, y,		z ), 1.f, col, 0xFF000000, fEndu,	smv);
-	v[2]= D3DTLVERTEX( D3DVECTOR( x,	y+sy,	z ), 1.f, col, 0xFF000000, smu,		fEndv);
-	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, fEndu,	fEndv);
+	TexturedVertex v[4];
+	v[0]= TexturedVertex( Vec3f( x,	y,		z ), 1.f, col, 0xFF000000, smu,		smv);
+	v[1]= TexturedVertex( Vec3f( x+sx, y,		z ), 1.f, col, 0xFF000000, fEndu,	smv);
+	v[2]= TexturedVertex( Vec3f( x,	y+sy,	z ), 1.f, col, 0xFF000000, smu,		fEndv);
+	v[3]= TexturedVertex( Vec3f( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, fEndu,	fEndv);
 	
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
@@ -914,15 +914,15 @@ void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureCo
 	}
 
 	D3DCOLOR col = color.toBGRA();
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	u0=smu+(fEndu-smu+fDecalU)*u0;
 	u1=smu+(fEndu-smu+fDecalU)*u1;
 	v0=smv+(fEndv-smv+fDecalV)*v0;
 	v1=smv+(fEndv-smv+fDecalV)*v1;
-	v[0]= D3DTLVERTEX( D3DVECTOR( x, y, z ), 1.f, col, 0xFF000000, u0, v0);
-	v[1]= D3DTLVERTEX( D3DVECTOR( x+sx, y, z ), 1.f, col, 0xFF000000, u1, v0);
-	v[2]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), 1.f, col, 0xFF000000, u1, v1);
-	v[3]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), 1.f, col, 0xFF000000, u0, v1);
+	v[0]= TexturedVertex( Vec3f( x, y, z ), 1.f, col, 0xFF000000, u0, v0);
+	v[1]= TexturedVertex( Vec3f( x+sx, y, z ), 1.f, col, 0xFF000000, u1, v0);
+	v[2]= TexturedVertex( Vec3f( x+sx, y+sy, z ), 1.f, col, 0xFF000000, u1, v1);
+	v[3]= TexturedVertex( Vec3f( x, y+sy, z ), 1.f, col, 0xFF000000, u0, v1);
 
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
@@ -945,11 +945,11 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 	}
 
 	D3DCOLOR col = color.toBGRA();
-	D3DTLVERTEX v[4];
-	v[0]= D3DTLVERTEX( D3DVECTOR( x,	y,		z ), 1.f, col, 0xFF000000, smu+u0,	smv+v0);
-	v[1]= D3DTLVERTEX( D3DVECTOR( x+sx, y,		z ), 1.f, col, 0xFF000000, smu+u1,	smv+v1);
-	v[2]= D3DTLVERTEX( D3DVECTOR( x,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u2,	smv+v2);
-	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u3,	smv+v3);
+	TexturedVertex v[4];
+	v[0]= TexturedVertex( Vec3f( x,	y,		z ), 1.f, col, 0xFF000000, smu+u0,	smv+v0);
+	v[1]= TexturedVertex( Vec3f( x+sx, y,		z ), 1.f, col, 0xFF000000, smu+u1,	smv+v1);
+	v[2]= TexturedVertex( Vec3f( x,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u2,	smv+v2);
+	v[3]= TexturedVertex( Vec3f( x+sx,	y+sy,	z ), 1.f, col, 0xFF000000, smu+u3,	smv+v3);
 	
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);	
@@ -974,12 +974,12 @@ void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureCont
 	}
 
 	D3DCOLOR col = color.toBGRA();
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	float fZMinus=1.f-z;
-	v[0]= D3DTLVERTEX( D3DVECTOR( x, y, z ), fZMinus, col, 0xFF000000, smu, smv);
-	v[1]= D3DTLVERTEX( D3DVECTOR( x+sx, y, z ), fZMinus, col, 0xFF000000, fEndu, smv);
-	v[2]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), fZMinus, col, 0xFF000000, smu, fEndv);
-	v[3]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), fZMinus, col, 0xFF000000, fEndu, fEndv);
+	v[0]= TexturedVertex( Vec3f( x, y, z ), fZMinus, col, 0xFF000000, smu, smv);
+	v[1]= TexturedVertex( Vec3f( x+sx, y, z ), fZMinus, col, 0xFF000000, fEndu, smv);
+	v[2]= TexturedVertex( Vec3f( x, y+sy, z ), fZMinus, col, 0xFF000000, smu, fEndv);
+	v[3]= TexturedVertex( Vec3f( x+sx, y+sy, z ), fZMinus, col, 0xFF000000, fEndu, fEndv);
 
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
@@ -1007,23 +1007,23 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
 	}
 
 	D3DCOLOR col = color.toBGRA();
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	float fDy=_fDeltaY*sy;
 
 	if(sx<0)
 	{
 		sx=-sx;
-		v[0]= D3DTLVERTEX( D3DVECTOR( x, y+fDy, z ), 1.f, col, 0xFF000000, fEndu, fDepv);
-		v[1]= D3DTLVERTEX( D3DVECTOR( x+sx, y+fDy, z ), 1.f, col, 0xFF000000,smu, fDepv);
-		v[2]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), 1.f, col, 0xFF000000, smu, fEndv);
-		v[3]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), 1.f, col, 0xFF000000, fEndu, fEndv);
+		v[0]= TexturedVertex( Vec3f( x, y+fDy, z ), 1.f, col, 0xFF000000, fEndu, fDepv);
+		v[1]= TexturedVertex( Vec3f( x+sx, y+fDy, z ), 1.f, col, 0xFF000000,smu, fDepv);
+		v[2]= TexturedVertex( Vec3f( x+sx, y+sy, z ), 1.f, col, 0xFF000000, smu, fEndv);
+		v[3]= TexturedVertex( Vec3f( x, y+sy, z ), 1.f, col, 0xFF000000, fEndu, fEndv);
 	}
 	else
 	{
-		v[0]= D3DTLVERTEX( D3DVECTOR( x, y+fDy, z ), 1.f, col, 0xFF000000, smu, fDepv);
-		v[1]= D3DTLVERTEX( D3DVECTOR( x+sx, y+fDy, z ), 1.f, col, 0xFF000000, fEndu, fDepv);
-		v[2]= D3DTLVERTEX( D3DVECTOR( x+sx, y+sy, z ), 1.f, col, 0xFF000000, fEndu, fEndv);
-		v[3]= D3DTLVERTEX( D3DVECTOR( x, y+sy, z ), 1.f, col, 0xFF000000, smu, fEndv);
+		v[0]= TexturedVertex( Vec3f( x, y+fDy, z ), 1.f, col, 0xFF000000, smu, fDepv);
+		v[1]= TexturedVertex( Vec3f( x+sx, y+fDy, z ), 1.f, col, 0xFF000000, fEndu, fDepv);
+		v[2]= TexturedVertex( Vec3f( x+sx, y+sy, z ), 1.f, col, 0xFF000000, fEndu, fEndv);
+		v[3]= TexturedVertex( Vec3f( x, y+sy, z ), 1.f, col, 0xFF000000, smu, fEndv);
 	}
 
 	GRenderer->SetTexture(0, tex);

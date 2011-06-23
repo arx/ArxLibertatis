@@ -1901,10 +1901,10 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	//Compute Faces Areas
 	for (size_t i = 0; i < eerie->facelist.size(); i++)
 	{
-		D3DTLVERTEX * ev[3];
-		ev[0] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
-		ev[1] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
-		ev[2] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
+		TexturedVertex * ev[3];
+		ev[0] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
+		ev[1] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
+		ev[2] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
 		eerie->facelist[i].temp = TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
 		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
 		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),

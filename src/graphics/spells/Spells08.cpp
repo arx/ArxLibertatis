@@ -157,7 +157,7 @@ void CExplosion::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-void CExplosion::ExplosionAddParticule(int num, D3DTLVERTEX * v, TextureContainer * tp)
+void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureContainer * tp)
 {
 	if (DoSphericDamage((Vec3f *)v, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
 	{
@@ -226,7 +226,7 @@ float CExplosion::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	//calcul du disque
-	D3DTLVERTEX d3dvs, *d3dv;
+	TexturedVertex d3dvs, *d3dv;
 	Vec3f	* vertex;
 	int			nb, col, col2;
 	float		rin;
@@ -356,7 +356,7 @@ float CExplosion::Render()
 
 			break;
 		case 1:
-			D3DTLVERTEX d3dvs2;
+			TexturedVertex d3dvs2;
 			rin = 1.f + (puissance * scale);
 			vertex = disquevertex;
 			d3dv = disqued3d;

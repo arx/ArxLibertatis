@@ -285,8 +285,8 @@ void Draw3DLineTex(Vec3f s, Vec3f e, Color color, float fStartSize, float fEndSi
 	float zzs = fStartSize;
 	float zze = fEndSize;
 
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
+	TexturedVertex v[4];
+	TexturedVertex v2[4];
 
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = color.toBGRA();
 
@@ -365,8 +365,8 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
 	float zz = fSize; 
 	float xx = (float)(fSize * cos(radians(fBeta)));
 
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
+	TexturedVertex v[4];
+	TexturedVertex v2[4];
 
 	v2[0].color = v2[1].color = color.toBGRA();
 	v2[2].color = v2[3].color = color2.toBGRA();
@@ -440,7 +440,7 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
 }
 
 //-----------------------------------------------------------------------------
-void Split(D3DTLVERTEX * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ)
+void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ)
 {
 	if (a != b)
 	{
@@ -458,7 +458,7 @@ void Split(D3DTLVERTEX * v, int a, int b, float fX, float fMulX, float fY, float
 }
 
 //-----------------------------------------------------------------------------
-void Split(D3DTLVERTEX * v, int a, int b, float yo, float fMul)
+void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 {
 	if (a != b)
 	{

@@ -1021,7 +1021,7 @@ long F2L_RoundUp(float val)
 }
 
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
-void CalcFaceNormal(EERIEPOLY * ep, const D3DTLVERTEX * v)
+void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v)
 {
 	register float Ax, Ay, Az, Bx, By, Bz, epnlen;
 	Ax = v[1].sx - v[0].sx;

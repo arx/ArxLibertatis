@@ -397,7 +397,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		}
 
 
-		D3DTLVERTEX verts[4];
+		TexturedVertex verts[4];
 		GRenderer->SetTexture(0, minimap[SHOWLEVEL].tc);
 
 		for (long k = 0; k < 4; k++)

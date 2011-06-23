@@ -94,16 +94,16 @@ class CSummonCreature: public CSpellFx
 		unsigned long ulDurationIntro;
 		unsigned long ulDurationRender;
 		unsigned long ulDurationOuttro;
-		D3DTLVERTEX va[40];
-		D3DTLVERTEX vb[40];
-		D3DTLVERTEX v1a[40];
-		D3DTLVERTEX v1b[40];
+		TexturedVertex va[40];
+		TexturedVertex vb[40];
+		TexturedVertex v1a[40];
+		TexturedVertex v1b[40];
 
 	public:
 		CSummonCreature();
 
 	private:
-		void Split(D3DTLVERTEX * v, int a, int b, float yo);
+		void Split(TexturedVertex * v, int a, int b, float yo);
 		void RenderFissure();
 
 		// accesseurs
@@ -178,7 +178,7 @@ class CIncinerate: public CSpellFx
 		TextureContainer * tex_pouf_noir;
 		ParticleSystem pPSStream;
 		ParticleSystem pPSHit;
-		D3DTLVERTEX tv1a[150+1];
+		TexturedVertex tv1a[150+1];
 
 		int iMax;
 		float fSize;

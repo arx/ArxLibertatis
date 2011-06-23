@@ -939,7 +939,7 @@ void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del)
 
 static void ARX_PATHS_DrawPathWay(Vec3f * pos, float siz, Color color) {
 	
-	D3DTLVERTEX vert;
+	TexturedVertex vert;
 	vert.sx = pos->x;
 	vert.sy = pos->y;
 	vert.sz = pos->z;

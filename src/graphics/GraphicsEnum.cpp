@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windowsx.h>
 
-#include "graphics/GraphicsUtility.h"
 #include "io/Logger.h"
 
 #define IDD_CHANGEDEVICE       144 // "Change Device" dialog box

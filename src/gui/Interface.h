@@ -37,6 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <map>
 
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
@@ -46,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float BOOKDECX;
 extern float BOOKDECY;
 #ifdef BUILD_EDITOR
+#include <windows.h>
 extern HWND CDP_PATHWAYS_Options;
 extern HWND CDP_IOOptions;
 extern HWND CDP_FogOptions;
@@ -244,7 +246,7 @@ extern long CONSTANTUPDATELIGHT;
 //-----------------------------------------------------------------------------
 float INTERFACE_RATIO(const float);
 float INTERFACE_RATIO_LONG(const long);
-float INTERFACE_RATIO_DWORD(const DWORD);
+float INTERFACE_RATIO_DWORD(const u32);
 short SHORT_INTERFACE_RATIO(const float);
 
 bool MouseInCam(EERIE_CAMERA * cam);

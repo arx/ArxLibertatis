@@ -1037,8 +1037,8 @@ void GenereArcElectrique(Vec3f * pos, Vec3f * end, Vec3f * tabdef, int nbseg)
 //-----------------------------------------------------------------------------
 void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float fBeta, int tsp)
 {
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
+	TexturedVertex v[4];
+	TexturedVertex v2[4];
 
 	long i;
 
@@ -1273,7 +1273,7 @@ float CPortal::Render()
 
 	//calcul sphere
 	int			nb = this->spherenbpt;
-	D3DTLVERTEX * v = this->sphered3d, d3dvs;
+	TexturedVertex * v = this->sphered3d, d3dvs;
 	Vec3f	* pt = this->spherevertex;
 	int col = RGBA_MAKE(0, (int)(200.f * this->spherealpha), (int)(255.f * this->spherealpha), 255);
 

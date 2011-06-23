@@ -31,7 +31,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/data/CinematicTexture.h"
 #include "graphics/effects/CinematicEffects.h"
 
@@ -55,7 +54,7 @@ bool			InRender;
 bool			ProjectModif;
 
 //vertex
-D3DTLVERTEX		AllD3DTLVertex[40000];
+TexturedVertex		AllD3DTLVertex[40000];
 
 extern float DreamTable[];
 
@@ -329,7 +328,7 @@ int CalculLight(CinematicLight * light, float x, float y, int col)
 /*---------------------------------------------------------------*/
 Vec3f	LocalPos;
 float		LocalSin, LocalCos;
-void TransformLocalVertex(Vec3f * vbase, D3DTLVERTEX * d3dv)
+void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv)
 {
 	d3dv->sx = vbase->x * LocalCos + vbase->y * LocalSin + LocalPos.x;
 	d3dv->sy = vbase->x * -LocalSin + vbase->y * LocalCos + LocalPos.y;
@@ -340,7 +339,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 {
 	int nb = grille->nbvertexs;
 	Vec3f * v = grille->vertexs;
-	D3DTLVERTEX * d3dv = AllD3DTLVertex;
+	TexturedVertex * d3dv = AllD3DTLVertex;
 
 	LocalPos = *posgrille;
 	LocalSin = (float)sin(radians(angzgrille));
@@ -354,7 +353,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 
 			while (nb--)
 			{
-				D3DTLVERTEX vtemp;
+				TexturedVertex vtemp;
 				Vec3f t;
 				t.x = v->x + *dream++;
 				t.y = v->y + *dream++;
@@ -374,7 +373,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 
 			while (nb--)
 			{
-				D3DTLVERTEX vtemp;
+				TexturedVertex vtemp;
 				Vec3f t;
 				t.x = v->x + *dream++;
 				t.y = v->y + *dream++;
@@ -395,7 +394,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		{
 			while (nb--)
 			{
-				D3DTLVERTEX vtemp;
+				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
 				EE_RTP(&vtemp, d3dv);
 				d3dv->color = CalculLight(light, d3dv->sx, d3dv->sy, col);
@@ -409,7 +408,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		{
 			while (nb--)
 			{
-				D3DTLVERTEX vtemp;
+				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
 				EE_RTP(&vtemp, d3dv);
 				d3dv->sx = ADJUSTX(d3dv->sx);

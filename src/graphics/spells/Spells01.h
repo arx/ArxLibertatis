@@ -85,7 +85,7 @@ class CMagicMissile: public CSpellFx
 		Vec3f eCurPos;
 		Anglef angles;
 		TextureContainer * tex_mm;
-		D3DTLVERTEX pathways[6];
+		TexturedVertex pathways[6];
 		ArxSound snd_loop;
 	public:
 		CMagicMissile();
@@ -242,7 +242,7 @@ class CPortal: public CSpellFx
 		int					spherenbpt;
 		int					spherenbfaces;
 		float				spherealpha;
-		D3DTLVERTEX		*	sphered3d;
+		TexturedVertex		*	sphered3d;
 
  
 	public:

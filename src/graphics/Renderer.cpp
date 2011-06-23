@@ -901,35 +901,31 @@ bool Renderer::EndScene()
 	return GDevice->EndScene() == D3D_OK;
 }
 
-void Renderer::SetViewMatrix(const EERIEMATRIX& matView)
-{
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, (D3DMATRIX*)&matView);
+void Renderer::SetViewMatrix(const EERIEMATRIX & matView) {
+	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
 void Renderer::SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp) {
 	
-	D3DMATRIX matView;
-	D3DVECTOR pos(vPosition.x, vPosition.y, vPosition.z);
-	D3DVECTOR at(vDir.x, vDir.y, vDir.z);
-	D3DVECTOR up(vUp.x, vUp.y, vUp.z);
+	EERIEMATRIX matView;
+	Vec3f pos(vPosition.x, vPosition.y, vPosition.z);
+	Vec3f at(vDir.x, vDir.y, vDir.z);
+	Vec3f up(vUp.x, vUp.y, vUp.z);
 	
 	D3DUtil_SetViewMatrix(matView, pos, at, up);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &matView);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
-void Renderer::GetViewMatrix(EERIEMATRIX& matView) const
-{
-	GDevice->GetTransform(D3DTRANSFORMSTATE_VIEW, (D3DMATRIX*)&matView);
+void Renderer::GetViewMatrix(EERIEMATRIX & matView) const {
+	GDevice->GetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
-void Renderer::SetProjectionMatrix(const EERIEMATRIX& matProj)
-{
-	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (D3DMATRIX*)&matProj);
+void Renderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
+	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
 }
 
-void Renderer::GetProjectionMatrix(EERIEMATRIX& matProj) const
-{
-	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION, (D3DMATRIX*)&matProj);
+void Renderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
+	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
 }
 
 Renderer::~Renderer()
@@ -1030,7 +1026,7 @@ void DX7MatrixIdentity(D3DMATRIX *pout)
 	pout->_44 = 1;
 }
 
-D3DMATRIX* DX7MatrixOrthoOffCenterLH(D3DMATRIX *pout, float l, float r, float b, float t, float zn, float zf)
+D3DMATRIX * DX7MatrixOrthoOffCenterLH(D3DMATRIX * pout, float l, float r, float b, float t, float zn, float zf)
 {
 	DX7MatrixIdentity(pout);
 	pout->_11 = 2.0f / (r - l);
@@ -1287,9 +1283,9 @@ private:
 	
 };
 
-VertexBuffer<D3DTLVERTEX> * Renderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
+VertexBuffer<TexturedVertex> * Renderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
-	return new DX7VertexBuffer<D3DTLVERTEX>(D3DFVF_TLVERTEX, capacity);
+	return new DX7VertexBuffer<TexturedVertex>(D3DFVF_TLVERTEX, capacity);
 }
 
 VertexBuffer<SMY_D3DVERTEX> * Renderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
@@ -1304,7 +1300,7 @@ VertexBuffer<SMY_D3DVERTEX3> * Renderer::createVertexBuffer3(size_t capacity, Bu
 	return new DX7VertexBuffer<SMY_D3DVERTEX3>(format, capacity);
 }
 
-void Renderer::drawIndexed(Primitive primitive, const D3DTLVERTEX * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {
+void Renderer::drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {
 	
 	arx_assert(vertices != NULL && indices != NULL);
 	

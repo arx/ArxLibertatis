@@ -57,11 +57,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/CollisionShapes.h"
 
+#include <cstring>
+
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
+#include "platform/String.h"
 
 using std::max;
 using std::vector;
+using std::memset;
 
 void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 {
@@ -199,7 +203,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 
 	for (size_t i = 0; i < obj->selections.size(); i++)
 	{ // TODO iterator
-		if (!strcasecmp(obj->selections[i].name.c_str(), "mou"))
+		if (!strcasecmp(obj->selections[i].name, "mou"))
 		{
 			sel = i;
 			break;

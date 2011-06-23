@@ -469,7 +469,7 @@ void Check_Apply()
 
 static void FadeInOut(float _fVal)
 {
-	D3DTLVERTEX d3dvertex[4];
+	TexturedVertex d3dvertex[4];
 
 	int iColor=D3DRGBA(_fVal,_fVal,_fVal,1.f);
 	d3dvertex[0].sx=0;
@@ -478,20 +478,20 @@ static void FadeInOut(float _fVal)
 	d3dvertex[0].rhw=0.999999f;
 	d3dvertex[0].color=iColor;
 
-	d3dvertex[1].sx=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
+	d3dvertex[1].sx=static_cast<float>(DANAESIZX);
 	d3dvertex[1].sy=0;
 	d3dvertex[1].sz=0.f;
 	d3dvertex[1].rhw=0.999999f;
 	d3dvertex[1].color=iColor;
 
 	d3dvertex[2].sx=0;
-	d3dvertex[2].sy=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
+	d3dvertex[2].sy=static_cast<float>(DANAESIZY);
 	d3dvertex[2].sz=0.f;
 	d3dvertex[2].rhw=0.999999f;
 	d3dvertex[2].color=iColor;
 
-	d3dvertex[3].sx=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
-	d3dvertex[3].sy=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
+	d3dvertex[3].sx=static_cast<float>(DANAESIZX);
+	d3dvertex[3].sy=static_cast<float>(DANAESIZY);
 	d3dvertex[3].sz=0.f;
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
@@ -2989,7 +2989,7 @@ void CMenuAllZone::DrawZone()
 
 		if(zone->bActif)
 		{
-			D3DTLVERTEX v1[3],v2[3];
+			TexturedVertex v1[3],v2[3];
 			v1[0].sx = (float)zone->rZone.left;
 			v1[0].sy = (float)zone->rZone.top;
 			v1[1].sx = (float)zone->rZone.left;
@@ -3253,7 +3253,7 @@ void CMenuCheckButton::Render()
 	{
 		TextureContainer *pTex = vTex[iState];
 
-		D3DTLVERTEX v[4];
+		TexturedVertex v[4];
 		Color color = (bCheck) ? Color::white : Color::fromBGRA(0xFF3F3F3F);
 
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
@@ -3296,7 +3296,7 @@ void CMenuCheckButton::RenderMouseOver()
 	if(pTex) GRenderer->SetTexture(0, pTex);
 	else GRenderer->ResetTexture(0);
 
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
@@ -3434,7 +3434,7 @@ MENUSTATE CWindowMenu::Render()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
@@ -3830,7 +3830,7 @@ void CWindowMenuConsole::UpdateText()
 	}
 
 	//DRAW CURSOR
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	GRenderer->ResetTexture(0);
 	float col=.5f+rnd()*.5f;
 	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
@@ -4809,7 +4809,7 @@ void CMenuButton::RenderMouseOver()
 	//affichage de la texture
 	if(pTexOver)
 	{
-		D3DTLVERTEX v[4];
+		TexturedVertex v[4];
 		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
@@ -5340,7 +5340,7 @@ void CMenuSlider::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
@@ -5866,7 +5866,7 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 
 //-----------------------------------------------------------------------------
 
-static bool ComputePer(const Vec2i & _psPoint1, const Vec2i & _psPoint2, D3DTLVERTEX * _psd3dv1, D3DTLVERTEX * _psd3dv2, float _fSize) {
+static bool ComputePer(const Vec2i & _psPoint1, const Vec2i & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
 	
 	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
 	float fTemp = sTemp.x;
@@ -5911,7 +5911,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 

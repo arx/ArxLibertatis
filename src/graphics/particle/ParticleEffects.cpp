@@ -112,7 +112,7 @@ FLARETC			flaretc;
 PARTICLE_DEF	particle[MAX_PARTICLES];
 BOOM			booms[MAX_BOOMS];
 FLARES			flare[MAX_FLARES];
-D3DTLVERTEX		g_Lumignon[4];
+TexturedVertex		g_Lumignon[4];
 TextureContainer *bloodsplat[6];
 TextureContainer *water_splat[3];
 TextureContainer *water_drop[3];
@@ -1395,16 +1395,16 @@ void UpdateObjFx() {
 	long p;
 	Vec3f pos;
 
-	D3DTLVERTEX v[3];
-	v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 0.f, 0.f);
-	v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 0.f);
-	v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 1.f);
+	TexturedVertex v[3];
+	v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 0.f, 0.f);
+	v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 0.f);
+	v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 1.f);
 	
 
-	D3DTLVERTEX v2[3];
-	v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 0.f, 0.f);
-	v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 0.f);
-	v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 1.f);
+	TexturedVertex v2[3];
+	v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 0.f, 0.f);
+	v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 0.f);
+	v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 1.f);
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1912,7 +1912,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	long framediff;
 	long framediff2;
 	long t;
-	D3DTLVERTEX in,inn,out;
+	TexturedVertex in,inn,out;
 	Color color;
 	float siz,siz2,r;
 	float val;
@@ -2157,7 +2157,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					vect.y=part->oldpos.y-in.sy;
 					vect.z=part->oldpos.z-in.sz;
 					Vector_Normalize(&vect);
-					D3DTLVERTEX tv[3];
+					TexturedVertex tv[3];
 					tv[0].color = part->rgb.toBGR();
 					tv[1].color=0xFF666666;
 					tv[2].color = 0xFF000000; 
@@ -2165,7 +2165,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					tv[0].sy=out.sy;
 					tv[0].sz=out.sz;
 					tv[0].rhw=out.rhw;
-					D3DTLVERTEX temp;
+					TexturedVertex temp;
 					temp.sx=in.sx+rnd()*0.5f;
 					temp.sy=in.sy+0.8f;
 					temp.sz=in.sz+rnd()*0.5f;
@@ -2313,8 +2313,8 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						
 						if (part->special & PARTICLE_SUB2) 
 						{
-							D3DTLVERTEX in2;
-							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
+							TexturedVertex in2;
+							memcpy(&in2,&in,sizeof(TexturedVertex));
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
 							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
@@ -2330,8 +2330,8 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					
 					if (part->special & PARTICLE_SUB2) 
 					{
-						D3DTLVERTEX in2;
-						memcpy(&in2,&in,sizeof(D3DTLVERTEX));
+						TexturedVertex in2;
+						memcpy(&in2,&in,sizeof(TexturedVertex));
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
 						EERIEDrawBitmap(in.sx, in.sy, siz, siz2, in.sz, tc, color);
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
@@ -2366,8 +2366,8 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						
 						if (part->special & PARTICLE_SUB2) 
 						{
-							D3DTLVERTEX in2;
-							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
+							TexturedVertex in2;
+							memcpy(&in2,&in,sizeof(TexturedVertex));
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							EERIEDrawSprite(&in,siz,tc,color,temp);				
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
@@ -2594,10 +2594,10 @@ void ARX_MAGICAL_FLARES_FirstInit()
 
 	for(long i=0;i<MAX_FLARES;i++) flare[i].exist=0; 
 
-	g_Lumignon[0] = D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 0, 1 );
-    g_Lumignon[1] = D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 0, 0 );
-    g_Lumignon[2] = D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 1, 1 );
-    g_Lumignon[3] = D3DTLVERTEX( D3DVECTOR( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 1, 0 );	
+	g_Lumignon[0] = TexturedVertex( Vec3f( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 0, 1 );
+    g_Lumignon[1] = TexturedVertex( Vec3f( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 0, 0 );
+    g_Lumignon[2] = TexturedVertex( Vec3f( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 1, 1 );
+    g_Lumignon[3] = TexturedVertex( Vec3f( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 1, 0 );	
 }
 void ARX_MAGICAL_FLARES_KillAll()
 {

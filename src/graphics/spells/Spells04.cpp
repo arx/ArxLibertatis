@@ -144,8 +144,8 @@ float CBless::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v3[4];
+	TexturedVertex v[4];
+	TexturedVertex v3[4];
 
 	float ff = ((float)spells[spellinstance].caster_level + 10) * 6.f;
 	float fBetaRadCos = (float) cos(radians(MAKEANGLE(player.angle.b))) * ff;

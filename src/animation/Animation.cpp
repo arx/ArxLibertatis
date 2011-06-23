@@ -109,7 +109,7 @@ extern long ZMAPMODE;
 extern float fZFogStart;
 ANIM_HANDLE animations[MAX_ANIMATIONS];
 bool MIPM;
-D3DTLVERTEX LATERDRAWHALO[HALOMAX * 4];
+TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 EERIE_QUAT * BIGQUAT;
 EERIEMATRIX * BIGMAT;
@@ -129,7 +129,7 @@ long HALOCUR=0;
 long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
 //-----------------------------------------------------------------------------
-D3DTLVERTEX tD3DTLVERTEXTab2[4000];
+TexturedVertex tTexturedVertexTab2[4000];
 
 extern long EXTERNALVIEW;
 void EERIE_ANIM_Get_Scale_Invisibility(INTERACTIVE_OBJ * io,float &invisibility,float &scale)
@@ -676,18 +676,18 @@ void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
 }
 // List of TO-TREAT vertex for MIPMESHING
 
-void specialEE_P(D3DTLVERTEX *in,D3DTLVERTEX *out);
+void specialEE_P(TexturedVertex *in,TexturedVertex *out);
 
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private 
 TextureContainer TexSpecialColor("SPECIALCOLOR_LIST", TextureContainer::NoInsert);
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull+3)>pTex->ulMaxVertexListCull)
 	{
 		pTex->ulMaxVertexListCull+=10*3;
-		pTex->pVertexListCull=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull,pTex->ulMaxVertexListCull*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull=(TexturedVertex*)realloc(pTex->pVertexListCull,pTex->ulMaxVertexListCull*sizeof(TexturedVertex));
 	}
 
 	pTex->ulNbVertexListCull+=3;
@@ -695,12 +695,12 @@ ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TNormalTrans+3)>pTex->ulMaxVertexListCull_TNormalTrans)
 	{
 		pTex->ulMaxVertexListCull_TNormalTrans+=20*3;
-		pTex->pVertexListCull_TNormalTrans=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TNormalTrans,pTex->ulMaxVertexListCull_TNormalTrans*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TNormalTrans=(TexturedVertex*)realloc(pTex->pVertexListCull_TNormalTrans,pTex->ulMaxVertexListCull_TNormalTrans*sizeof(TexturedVertex));
 
 		if (!pTex->pVertexListCull_TNormalTrans)
 		{
@@ -715,12 +715,12 @@ ARX_D3DVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TAdditive+3)>pTex->ulMaxVertexListCull_TAdditive)
 	{
 		pTex->ulMaxVertexListCull_TAdditive+=20*3;
-		pTex->pVertexListCull_TAdditive=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TAdditive,pTex->ulMaxVertexListCull_TAdditive*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TAdditive=(TexturedVertex*)realloc(pTex->pVertexListCull_TAdditive,pTex->ulMaxVertexListCull_TAdditive*sizeof(TexturedVertex));
 
 		if (!pTex->pVertexListCull_TAdditive)
 		{
@@ -735,12 +735,12 @@ ARX_D3DVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TSubstractive+3)>pTex->ulMaxVertexListCull_TSubstractive)
 	{
 		pTex->ulMaxVertexListCull_TSubstractive+=20*3;
-		pTex->pVertexListCull_TSubstractive=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TSubstractive,pTex->ulMaxVertexListCull_TSubstractive*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TSubstractive=(TexturedVertex*)realloc(pTex->pVertexListCull_TSubstractive,pTex->ulMaxVertexListCull_TSubstractive*sizeof(TexturedVertex));
 
 		if (!pTex->pVertexListCull_TSubstractive)
 		{
@@ -755,12 +755,12 @@ ARX_D3DVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TMultiplicative+3)>pTex->ulMaxVertexListCull_TMultiplicative)
 	{
 		pTex->ulMaxVertexListCull_TMultiplicative+=20*3;
-		pTex->pVertexListCull_TMultiplicative=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TMultiplicative,pTex->ulMaxVertexListCull_TMultiplicative*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TMultiplicative=(TexturedVertex*)realloc(pTex->pVertexListCull_TMultiplicative,pTex->ulMaxVertexListCull_TMultiplicative*sizeof(TexturedVertex));
 
 		if (!pTex->pVertexListCull_TMultiplicative)
 		{
@@ -775,12 +775,12 @@ ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TMetal(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TMetal+3)>pTex->ulMaxVertexListCull_TMetal)
 	{
 		pTex->ulMaxVertexListCull_TMetal+=20*3;
-		pTex->pVertexListCull_TMetal=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TMetal,pTex->ulMaxVertexListCull_TMetal*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TMetal=(TexturedVertex*)realloc(pTex->pVertexListCull_TMetal,pTex->ulMaxVertexListCull_TMetal*sizeof(TexturedVertex));
 	}
 
 	pTex->ulNbVertexListCull_TMetal+=3;
@@ -901,24 +901,24 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 			SMY_ZMAPPINFO *pSMY = &(*it);
 			float fColor;
 			
-			tD3DTLVERTEXTab2[iPos]			= pSMY->pD3DVertex[0];
+			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[0];
 			fColor							= pSMY->color[0];
-			tD3DTLVERTEXTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
-			tD3DTLVERTEXTab2[iPos].tu		= pSMY->uv[0];
-			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[1];
-			tD3DTLVERTEXTab2[iPos]			= pSMY->pD3DVertex[1];
+			tTexturedVertexTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
+			tTexturedVertexTab2[iPos].tu		= pSMY->uv[0];
+			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[1];
+			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[1];
 			fColor							= pSMY->color[1];
-			tD3DTLVERTEXTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
-			tD3DTLVERTEXTab2[iPos].tu		= pSMY->uv[2];
-			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[3];
-			tD3DTLVERTEXTab2[iPos]			= pSMY->pD3DVertex[2];
+			tTexturedVertexTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
+			tTexturedVertexTab2[iPos].tu		= pSMY->uv[2];
+			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[3];
+			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[2];
 			fColor							= pSMY->color[2];
-			tD3DTLVERTEXTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
-			tD3DTLVERTEXTab2[iPos].tu		= pSMY->uv[4];
-			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[5];
+			tTexturedVertexTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
+			tTexturedVertexTab2[iPos].tu		= pSMY->uv[4];
+			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[5];
 		}
 
-		EERIEDRAWPRIM(Renderer::TriangleList, tD3DTLVERTEXTab2, iPos);
+		EERIEDRAWPRIM(Renderer::TriangleList, tTexturedVertexTab2, iPos);
 
 		_pTex->TextureRefinement->vPolyInterZMap.clear();
 	}
@@ -954,7 +954,7 @@ void PopAllTriangleListTransparency() {
 float INVISIBILITY_OVERRIDE=0.f;
 
 //-----------------------------------------------------------------------------
-void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex,D3DTLVERTEX *_pD3DVertex)
+void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex,TexturedVertex *_pD3DVertex)
 {
     SMY_ZMAPPINFO sZMappInfo;
 
@@ -1060,7 +1060,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 	}
 
 	float					Xcos = 0, Ycos = 0, Zcos = 0, Xsin = 0, Ysin = 0, Zsin = 0;
-	D3DTLVERTEX vert_list_static[4];
+	TexturedVertex vert_list_static[4];
 	long					k;
 	
 	long			lfr, lfg, lfb;		
@@ -1465,7 +1465,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			if((DOTPRODUCT( normFace , nrm )>0.f) ) continue;
 		}
 
-		ARX_D3DVERTEX		*vert_list;
+		TexturedVertex		*vert_list;
 		TextureContainer	*pTex;
 
 		if(	(eobj->facelist[i].texid<0)|| 
@@ -1683,7 +1683,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 	if ((eobj->facelist[i].facetype & POLY_METAL)
 		|| ((pTex) && (pTex->userflags & POLY_METAL)) )				
 	{
-		ARX_D3DVERTEX *vert_list_metal;
+		TexturedVertex *vert_list_metal;
 
 		unsigned long *pulNbVertexList_TMetal;
 		{
@@ -1691,8 +1691,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			pulNbVertexList_TMetal=&pTex->ulNbVertexListCull_TMetal;
 		}
 
-		memcpy((void*)vert_list_metal,(void*)vert_list,sizeof(D3DTLVERTEX)*3);
-		D3DTLVERTEX * tl=vert_list_metal;
+		memcpy((void*)vert_list_metal,(void*)vert_list,sizeof(TexturedVertex)*3);
+		TexturedVertex * tl=vert_list_metal;
 
 		long r = 0, g = 0, b = 0;
 		long todo	=	0;
@@ -1753,7 +1753,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		float tot=0;
 		float _ffr[3];
 			
-		ARX_D3DVERTEX * workon=vert_list;
+		TexturedVertex * workon=vert_list;
 
 		for (long o=0;o<3;o++)
 		{
@@ -1826,16 +1826,16 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			if ((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) 
 				{
 					Vec3f vect1,vect2;
-					D3DTLVERTEX * vert=&LATERDRAWHALO[(HALOCUR<<2)];
+					TexturedVertex * vert=&LATERDRAWHALO[(HALOCUR<<2)];
 
 					if(HALOCUR < ((long)HALOMAX) - 1) {
 						HALOCUR++;
 					}
 
-					memcpy(&vert[0],&workon[first],sizeof(D3DTLVERTEX));
-					memcpy(&vert[1],&workon[first],sizeof(D3DTLVERTEX));
-					memcpy(&vert[2],&workon[second],sizeof(D3DTLVERTEX));
-					memcpy(&vert[3],&workon[second],sizeof(D3DTLVERTEX));
+					memcpy(&vert[0],&workon[first],sizeof(TexturedVertex));
+					memcpy(&vert[1],&workon[first],sizeof(TexturedVertex));
+					memcpy(&vert[2],&workon[second],sizeof(TexturedVertex));
+					memcpy(&vert[3],&workon[second],sizeof(TexturedVertex));
 
 					float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 10 )+0.7f))*0.6f;
 					vect1.x=workon[first].sx-workon[third].sx;

@@ -58,7 +58,7 @@ const int BEZIERPrecision = 32;
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Draw.h"
 
-void EE_RT2(D3DTLVERTEX * in, D3DTLVERTEX * out);
+void EE_RT2(TexturedVertex * in, TexturedVertex * out);
 
 //-----------------------------------------------------------------------------
 class CSpellFx
@@ -110,8 +110,8 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2);
 void Draw3DLineTex(Vec3f, Vec3f, Color, float, float);
 
 //-----------------------------------------------------------------------------
-void Split(D3DTLVERTEX * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);
-void Split(D3DTLVERTEX * v, int a, int b, float yo, float fMul = 0.5f);
+void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);
+void Split(TexturedVertex * v, int a, int b, float yo, float fMul = 0.5f);
 
 
 #endif

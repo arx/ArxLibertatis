@@ -103,7 +103,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 
 #include "graphics/VertexBuffer.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/Frame.h"
@@ -251,7 +250,7 @@ extern Color ulBKGColor;
 long LAST_LOCK_SUCCESSFULL=0;
 extern EERIEMATRIX ProjectionMatrix;
 
-extern CircularVertexBuffer<D3DTLVERTEX> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
+extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CircularVertexBuffer<SMY_D3DVERTEX3> * pDynamicVertexBuffer;
 
 extern std::string pStringMod;
@@ -5059,7 +5058,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 
 	float width=(float)(*cur)*( 1.0f / 500 );
 	EERIEDrawBitmap(0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, rgb.to<u8>());
-	danaeApp.OutputText(ARX_CLEAN_WARN_CAST_DWORD(width), iVPOS * 16 - 2, str);
+	danaeApp.OutputText(static_cast<u32>(width), iVPOS * 16 - 2, str);
 
 }
 
@@ -6622,7 +6621,7 @@ static float _AvgFrameDiff = 150.f;
 
 void DANAE::GoFor2DFX()
 {
-	D3DTLVERTEX lv,ltvv;
+	TexturedVertex lv,ltvv;
 
 	long needed = 0;
 
@@ -6695,7 +6694,7 @@ void DANAE::GoFor2DFX()
 						vector.x*=fNorm;
 						vector.y*=fNorm;
 						vector.z*=fNorm;
-						D3DTLVERTEX ltvv2;
+						TexturedVertex ltvv2;
 						lv.sx-=vector.x;
 						lv.sy-=vector.y;
 						lv.sz-=vector.z;
@@ -6771,7 +6770,7 @@ void DANAE::GoFor2DFX()
 						lv.sy=el->pos.y;
 						lv.sz=el->pos.z;
 						lv.rhw=1.f;
-						specialEE_RT((D3DTLVERTEX *)&lv,(Vec3f *)&ltvv);
+						specialEE_RT((TexturedVertex *)&lv,(Vec3f *)&ltvv);
 						float v=el->temp;
 
 						if (FADEDIR)
@@ -7068,8 +7067,8 @@ HRESULT DANAE::InitDeviceObjects()
 	VertexBuffer<SMY_D3DVERTEX3> * vb3 = GRenderer->createVertexBuffer3(4000, Renderer::Stream);
 	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_D3DVERTEX3>(vb3);
 	
-	VertexBuffer<D3DTLVERTEX> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
-	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<D3DTLVERTEX>(vb);
+	VertexBuffer<TexturedVertex> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
+	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
 
 	if(pMenu)
 	{

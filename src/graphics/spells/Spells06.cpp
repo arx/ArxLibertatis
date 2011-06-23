@@ -121,10 +121,10 @@ void CCreateField::Create(Vec3f aeSrc, float afBeta)
 }
 
 //-----------------------------------------------------------------------------
-void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4, int rec, Vec3f norm)
+void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVertex p3, TexturedVertex p4, int rec, Vec3f norm)
 {
-	D3DTLVERTEX v[5];
-	D3DTLVERTEX v2[5];
+	TexturedVertex v[5];
+	TexturedVertex v2[5];
 
  
 
@@ -205,7 +205,7 @@ void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3
 }
 
 //-----------------------------------------------------------------------------
-void CCreateField::RenderSubDivFace(D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2)
+void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2)
 {
 	Vec3f norm;
 	norm.x = (b[b1].sx + b[b2].sx + t[t1].sx + t[t2].sx) * 0.25f - eSrc.x;
@@ -851,7 +851,7 @@ void CRiseDead::DrawStone()
 }
 
 //-----------------------------------------------------------------------------
-void CRiseDead::Split(D3DTLVERTEX * v, int a, int b, float yo)
+void CRiseDead::Split(TexturedVertex * v, int a, int b, float yo)
 {
 	if (a != b)
 	{
@@ -873,9 +873,9 @@ void CRiseDead::RenderFissure()
 {
 	int i;
 	float ff;
-	D3DTLVERTEX vt[4];
-	D3DTLVERTEX vr[4];
-	D3DTLVERTEX target;
+	TexturedVertex vt[4];
+	TexturedVertex vr[4];
+	TexturedVertex target;
 
 	Vec3f etarget;
 	etarget.x = fBetaRadCos;
@@ -1445,7 +1445,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 
 	prismnbpt = 1 + (adef << 1);
 	prismnbface = adef + (adef << 1);
-	prismd3d = new D3DTLVERTEX[prismnbpt];
+	prismd3d = new TexturedVertex[prismnbpt];
 	prismvertex = new Vec3f[prismnbpt];
 	prismind = new unsigned short [prismnbface*3];
 
@@ -1673,7 +1673,7 @@ float CParalyse::Render()
 
 	int			nb;
 	Vec3f	* vertex;
-	D3DTLVERTEX	* vd3d, d3ds;
+	TexturedVertex	* vd3d, d3ds;
 
 	//uv
 	vd3d = this->prismd3d;

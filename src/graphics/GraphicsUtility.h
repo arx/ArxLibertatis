@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define D3DUTIL_H
 
 #include "graphics/d3dwrapper.h"
+#include "graphics/GraphicsTypes.h"
 #include "platform/Platform.h"
 
 //-----------------------------------------------------------------------------
@@ -80,17 +81,17 @@ VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags = 0,
 //-----------------------------------------------------------------------------
 // D3D Matrix functions. For performance reasons, some functions are inline.
 //-----------------------------------------------------------------------------
-HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
-                              D3DVECTOR & vAt, D3DVECTOR & vUp);
+HRESULT D3DUtil_SetViewMatrix(EERIEMATRIX & mat, Vec3f & vFrom,
+                              Vec3f & vAt, Vec3f & vUp);
 
-inline VOID D3DUtil_SetIdentityMatrix(D3DMATRIX & m)
+inline VOID D3DUtil_SetIdentityMatrix(EERIEMATRIX & m)
 {
 	m._12 = m._13 = m._14 = m._21 = m._23 = m._24 = 0.0f;
 	m._31 = m._32 = m._34 = m._41 = m._42 = m._43 = 0.0f;
 	m._11 = m._22 = m._33 = m._44 = 1.0f;
 }
 
-inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, float tx, float ty,
+inline VOID D3DUtil_SetTranslateMatrix(EERIEMATRIX & m, float tx, float ty,
                                        float tz)
 {
 	D3DUtil_SetIdentityMatrix(m);
@@ -99,7 +100,7 @@ inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, float tx, float ty,
 	m._43 = tz;
 }
 
-inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, D3DVECTOR & v)
+inline VOID D3DUtil_SetTranslateMatrix(EERIEMATRIX & m, const Vec3f & v)
 {
 	D3DUtil_SetTranslateMatrix(m, v.x, v.y, v.z);
 }

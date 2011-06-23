@@ -415,8 +415,8 @@ void GetChestPos(long num, Vec3f * p)
 //------------------------------------------------------------------------------
 float CLightning::Render()
 {
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
+	TexturedVertex v[4];
+	TexturedVertex v2[4];
 
 	if (ulCurrentTime >= ulDuration) return 0.f;
 

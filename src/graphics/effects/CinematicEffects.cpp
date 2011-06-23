@@ -151,7 +151,7 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 /*---------------------------------------------------------------------------------*/
 bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float currfps)
 {
-	D3DTLVERTEX	v[4];
+	TexturedVertex	v[4];
 	int			col;
 
 	if (FlashAlpha < 0.f)
@@ -199,7 +199,7 @@ bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float cu
 /*---------------------------------------------------------------------------------*/
 bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
-	D3DTLVERTEX	v[4];
+	TexturedVertex	v[4];
 	float		w, dv;
 
 	w = (float)(mask->m_dwWidth) * 5.f;
@@ -295,7 +295,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 /*---------------------------------------------------------------------------------*/
 bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
-	D3DTLVERTEX	v[4];
+	TexturedVertex	v[4];
 	float		w, dv;
 
 	w = (float)(mask->m_dwWidth) * 5.f;
