@@ -1,6 +1,5 @@
 
 #include "core/Core.h" // TODO remove once init has been moved here
-#include "graphics/Frame.h" // TODO remove once init has been moved here
 #include "graphics/VertexBuffer.h"
 #include "graphics/Renderer.h"
 #include "graphics/GraphicsUtility.h"
@@ -1408,7 +1407,7 @@ bool Renderer::getSnapshot(Image & image) {
 		return false;
 	}
 	
-	bool ret = downloadSurface(danaeApp.m_pFramework->m_pddsBackBuffer, image);
+	bool ret = downloadSurface(pddsRender, image);
 	
 	pddsRender->Release();
 	
@@ -1416,11 +1415,6 @@ bool Renderer::getSnapshot(Image & image) {
 }
 
 bool Renderer::getSnapshot(Image& image, size_t width, size_t height) {
-	
-	Image img;
-	getSnapshot(img);
-	img.save("test.png");
-	
 	
 	LPDIRECTDRAWSURFACE7 pddsRender;
 	HRESULT hr = GDevice->GetRenderTarget(&pddsRender);
@@ -1450,7 +1444,7 @@ bool Renderer::getSnapshot(Image& image, size_t width, size_t height) {
 		return false;
 	}
 	
-	tempSurface->Blt(NULL, danaeApp.m_pFramework->m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
+	tempSurface->Blt(NULL, pddsRender, NULL, DDBLT_WAIT, NULL);
 	pddsRender->Release();
 	
 	bool ret = downloadSurface(tempSurface, image);
