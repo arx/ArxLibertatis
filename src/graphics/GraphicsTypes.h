@@ -58,6 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
+template <class Vertex>
+class VertexBuffer;
+
 class TextureContainer;
 
 struct EERIE_TRI {
@@ -635,30 +638,6 @@ struct EP_DATA {
 	short padd;
 };
 
-struct EERIE_ROOM_DATA
-{
-	long nb_portals;
-	long * portals;
-	long nb_polys;
-	EP_DATA * epdata;
-	Vec3f	center;
-	float		radius;
-	unsigned short		*		pussIndice;
-	LPDIRECT3DVERTEXBUFFER7		pVertexBuffer;
-	unsigned long				usNbTextures;
-	TextureContainer		**	ppTextureContainer;
-};
-
-struct EERIE_PORTAL_DATA
-{
-	long nb_rooms;
-	EERIE_ROOM_DATA * room;
-	long nb_total;	// of portals
-	EERIE_PORTALS * portals;
-};
-
-typedef D3DTLVERTEX ARX_D3DVERTEX;
-
 struct SMY_D3DVERTEX {
 	float x, y, z;
 	D3DCOLOR color;
@@ -672,6 +651,29 @@ struct SMY_D3DVERTEX3 {
 	float tu2, tv2;
 	float tu3, tv3;
 };
+
+struct EERIE_ROOM_DATA {
+	long nb_portals;
+	long * portals;
+	long nb_polys;
+	EP_DATA * epdata;
+	Vec3f center;
+	float radius;
+	unsigned short * pussIndice;
+	VertexBuffer<SMY_D3DVERTEX> * pVertexBuffer;
+	unsigned long usNbTextures;
+	TextureContainer ** ppTextureContainer;
+};
+
+struct EERIE_PORTAL_DATA
+{
+	long nb_rooms;
+	EERIE_ROOM_DATA * room;
+	long nb_total; // of portals
+	EERIE_PORTALS * portals;
+};
+
+typedef D3DTLVERTEX ARX_D3DVERTEX;
 
 struct SMY_ZMAPPINFO
 {
@@ -710,9 +712,6 @@ struct SMY_ARXMAT
 	unsigned long uslStartNoCull_TSubstractive;
 	unsigned long uslNbIndiceNoCull_TSubstractive;
 };
-
-// TODO REMOVE
-#define FVF_D3DVERTEX	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
 
 extern long USE_PORTALS;
 extern EERIE_PORTAL_DATA * portals;

@@ -7,9 +7,6 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
-template <class Vertex>
-class VertexBuffer;
-
 class Renderer
 {
 public:

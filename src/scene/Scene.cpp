@@ -2035,7 +2035,7 @@ void ClearTileLights()
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim)
 {
-SMY_D3DVERTEX *pMyVertex;
+
 	
 	if (RoomDraw[room_num].count)
 	{
@@ -2047,13 +2047,7 @@ SMY_D3DVERTEX *pMyVertex;
 			return;
 		}
 		
-		if( FAILED( portals->room[room_num].pVertexBuffer->Lock(	DDLOCK_WRITEONLY|DDLOCK_NOOVERWRITE/*|DDLOCK_WAIT*/	,
-																	(void**)&pMyVertex									,
-																	NULL												) ) ) 
-		{
-			printf("ARX_PORTALS_Frustrum_RenderRoomTCullSoft Render Error : Cannot Lock Buffer.\n");
-			return;
-		}
+		SMY_D3DVERTEX * pMyVertex = portals->room[room_num].pVertexBuffer->lock(NoOverwrite);
 		
 		unsigned short *pIndices=portals->room[room_num].pussIndice;
 
@@ -2381,7 +2375,7 @@ SMY_D3DVERTEX *pMyVertex;
 			}
 		}
 
-		portals->room[room_num].pVertexBuffer->Unlock();
+		portals->room[room_num].pVertexBuffer->unlock();
 	
 		//render opaque
 		GRenderer->SetCulling(Renderer::CullNone);
@@ -2408,13 +2402,10 @@ SMY_D3DVERTEX *pMyVertex;
 			
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull)
 			{
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-					portals->room[room_num].pVertexBuffer,
-					pTexCurr->tMatRoom[room_num].uslStartVertex,
-					pTexCurr->tMatRoom[room_num].uslNbVertex,
+				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex,
 					&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull],
-					pTexCurr->tMatRoom[room_num].uslNbIndiceCull,
-					0 );
+					pTexCurr->tMatRoom[room_num].uslNbIndiceCull);
+				
 				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull;
 				pTexCurr->tMatRoom[room_num].uslNbIndiceCull=0;
 						}
@@ -2572,13 +2563,8 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 				SetZBias(2);
 				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
 			
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													portals->room[room_num].pVertexBuffer,
-													pTexCurr->tMatRoom[room_num].uslStartVertex,
-													pTexCurr->tMatRoom[room_num].uslNbVertex,
-													&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TNormalTrans],
-													pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans,
-													0 );
+				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TNormalTrans], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans);
+				
 				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
 				pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans=0;
 			}
@@ -2588,13 +2574,9 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			{
 				SetZBias(2);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													portals->room[room_num].pVertexBuffer,
-													pTexCurr->tMatRoom[room_num].uslStartVertex,
-													pTexCurr->tMatRoom[room_num].uslNbVertex,
-													&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TMultiplicative],
-													pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative,
-													0 );
+				
+				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TMultiplicative], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative);
+				
 				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
 				pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative=0;
 			}
@@ -2604,13 +2586,9 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			{
 				SetZBias(2);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													portals->room[room_num].pVertexBuffer,
-													pTexCurr->tMatRoom[room_num].uslStartVertex,
-													pTexCurr->tMatRoom[room_num].uslNbVertex,
-													&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TAdditive],
-													pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive,
-													0 );
+				
+				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TAdditive], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive);
+				
 				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
 				pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive=0;
 			}
@@ -2623,14 +2601,10 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 				else
 					SetZBias(8);
 
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
-				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
-													portals->room[room_num].pVertexBuffer,
-													pTexCurr->tMatRoom[room_num].uslStartVertex,
-													pTexCurr->tMatRoom[room_num].uslNbVertex,
-													&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TSubstractive],
-													pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive,
-													0 );
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				
+				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TSubstractive], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive);
+				
 				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
 				pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive=0;
 			}

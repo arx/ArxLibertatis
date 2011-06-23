@@ -75,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
+#include "graphics/VertexBuffer.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Texture.h"
@@ -2663,9 +2664,8 @@ static void EERIE_PORTAL_Release() {
 					portals->room[nn].epdata = NULL;
 					portals->room[nn].portals = NULL;
 
-					if (portals->room[nn].pVertexBuffer)
-					{
-						portals->room[nn].pVertexBuffer->Release();
+					if(portals->room[nn].pVertexBuffer) {
+						delete portals->room[nn].pVertexBuffer;
 						portals->room[nn].pVertexBuffer = NULL;
 					}
 
@@ -4327,9 +4327,8 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
 				{
 					portals->room[nn].usNbTextures = 0;
 
-					if (portals->room[nn].pVertexBuffer)
-					{
-						portals->room[nn].pVertexBuffer->Release();
+					if(portals->room[nn].pVertexBuffer) {
+						delete portals->room[nn].pVertexBuffer;
 						portals->room[nn].pVertexBuffer = NULL;
 					}
 
@@ -4580,49 +4579,11 @@ void ComputePortalVertexBuffer()
 			{
 				iFlag |= D3DVBCAPS_SYSTEMMEMORY;
 			}
+			
+			// TODO should be static, but is updated for dynamic lighting
+			pRoom->pVertexBuffer = GRenderer->createVertexBuffer(iNbVertexForRoom, Renderer::Dynamic);
 
-			D3DVERTEXBUFFERDESC d3dvbufferdesc;
-			d3dvbufferdesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
-			d3dvbufferdesc.dwCaps = iFlag;
-			d3dvbufferdesc.dwFVF = FVF_D3DVERTEX;
-			d3dvbufferdesc.dwNumVertices = iNbVertexForRoom;
-
-			pRoom->pVertexBuffer = NULL;
-
-			if (FAILED(danaeApp.m_pD3D->CreateVertexBuffer(&d3dvbufferdesc,
-					   &pRoom->pVertexBuffer,
-					   0)))
-			{
-				if (pRoom->pussIndice)
-				{
-					free((void *)pRoom->pussIndice);
-					pRoom->pussIndice = NULL;
-				}
-
-				char tTxt[256];
-				sprintf(tTxt, "CreateVertexBuffer - NbVertexs %d", iNbVertexForRoom);
-				LogError << tTxt<< " Error TransForm";
-				return;
-			}
-
-
-			SMY_D3DVERTEX * pVertex;
-
-			if (FAILED(pRoom->pVertexBuffer->Lock(DDLOCK_WRITEONLY | DDLOCK_NOOVERWRITE,
-												  (void **)&pVertex,
-												  NULL)))
-			{
-				pRoom->pVertexBuffer->Release();
-				pRoom->pVertexBuffer = NULL;
-
-				if (pRoom->pussIndice)
-				{
-					free((void *)pRoom->pussIndice);
-					pRoom->pussIndice = NULL;
-				}
-
-				return;
-			}
+			SMY_D3DVERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
 
 			int iStartVertex = 0;
 			int iStartCull = 0;
@@ -4752,18 +4713,8 @@ void ComputePortalVertexBuffer()
 
 				free((void *)(*it));
 			}
-
-			if (FAILED(pRoom->pVertexBuffer->Unlock()))
-			{
-				pRoom->pVertexBuffer->Release();
-				pRoom->pVertexBuffer = NULL;
-
-				if (pRoom->pussIndice)
-				{
-					free((void *)pRoom->pussIndice);
-					pRoom->pussIndice = NULL;
-				}
-			}
+			
+			pRoom->pVertexBuffer->unlock();
 		}
 
 		vTextureVertex.clear();
