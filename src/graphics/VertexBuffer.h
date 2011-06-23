@@ -23,6 +23,9 @@ public:
 	
 	virtual void setData(const Vertex * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
 	
+	virtual Vertex * lock(BufferFlags flags = 0) = 0;
+	virtual void unlock() = 0;
+	
 	virtual void draw(Renderer::Primitive primitive, size_t count, size_t offset = 0) const = 0;
 	virtual void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const = 0;
 	

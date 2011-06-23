@@ -1240,6 +1240,21 @@ public:
 		vb->Unlock();
 	}
 	
+	Vertex * lock(BufferFlags flags = 0) {
+		
+		Vertex * dest;
+		
+		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDXBufferFlags[flags], (LPVOID*)&dest, NULL);
+		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
+		ARX_UNUSED(hr);
+		
+		return dest;
+	}
+	
+	void unlock() {
+		vb->Unlock();
+	}
+	
 	void draw(Renderer::Primitive primitive, size_t count, size_t offset = 0) const {
 		
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
