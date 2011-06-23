@@ -135,13 +135,6 @@ enum EERIE_TYPES_EXTRAS_MODE
 // EERIE Types
 //*************************************************************************************
 
-struct EERIE_TLVERTEX {
-	Vec3f vert;
-	Color4f color;
-	Color4f specular;
-	Vec2f tex;
-};
-
 enum PolyTypeFlag {
 	POLY_NO_SHADOW    = (1<<0),
 	POLY_DOUBLESIDED  = (1<<1),
@@ -194,7 +187,6 @@ struct EERIEPOLY {
 };
 
 struct EERIE_VERTEX {
-	EERIE_TLVERTEX tlvert;
 	D3DTLVERTEX vert;
 	Vec3f v;
 	Vec3f norm;
