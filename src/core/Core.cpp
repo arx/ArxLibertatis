@@ -7885,9 +7885,9 @@ void ClearGame() {
 	FreeSnapShot();
 	ARX_INPUT_Release();
 	
-	delete GRenderer;
-	
 	danaeApp.Cleanup3DEnvironment();
+	
+	delete GRenderer;
 	
 	LogInfo << "Clean shutdown";
 }
