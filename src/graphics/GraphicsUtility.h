@@ -58,9 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef D3DUTIL_H
 #define D3DUTIL_H
 
-#include "graphics/d3dwrapper.h"
 #include "graphics/GraphicsTypes.h"
-#include "platform/Platform.h"
 
 //-----------------------------------------------------------------------------
 // Miscellaneous helper functions
@@ -72,43 +70,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 
 //-----------------------------------------------------------------------------
-// Short cut functions for creating and using DX structures
-//-----------------------------------------------------------------------------
-VOID D3DUtil_InitDeviceDesc(D3DDEVICEDESC7 & ddDevDesc);
-VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags = 0,
-                             DWORD dwCaps = 0);
-
-//-----------------------------------------------------------------------------
 // D3D Matrix functions. For performance reasons, some functions are inline.
 //-----------------------------------------------------------------------------
-HRESULT D3DUtil_SetViewMatrix(EERIEMATRIX & mat, Vec3f & vFrom,
-                              Vec3f & vAt, Vec3f & vUp);
+bool D3DUtil_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom, const Vec3f & vAt, const Vec3f & vUp);
 
-inline VOID D3DUtil_SetIdentityMatrix(EERIEMATRIX & m)
-{
+inline void D3DUtil_SetIdentityMatrix(EERIEMATRIX & m) {
 	m._12 = m._13 = m._14 = m._21 = m._23 = m._24 = 0.0f;
 	m._31 = m._32 = m._34 = m._41 = m._42 = m._43 = 0.0f;
 	m._11 = m._22 = m._33 = m._44 = 1.0f;
 }
-
-inline VOID D3DUtil_SetTranslateMatrix(EERIEMATRIX & m, float tx, float ty,
-                                       float tz)
-{
-	D3DUtil_SetIdentityMatrix(m);
-	m._41 = tx;
-	m._42 = ty;
-	m._43 = tz;
-}
-
-inline VOID D3DUtil_SetTranslateMatrix(EERIEMATRIX & m, const Vec3f & v)
-{
-	D3DUtil_SetTranslateMatrix(m, v.x, v.y, v.z);
-}
-
-//-----------------------------------------------------------------------------
-// Debug printing support
-//-----------------------------------------------------------------------------
-
-HRESULT _DbgOut(const char *, DWORD, HRESULT, const char *);
 
 #endif // D3DUTIL_H

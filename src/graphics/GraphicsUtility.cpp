@@ -57,28 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsUtility.h"
 
 //-----------------------------------------------------------------------------
-// Name: D3DUtil_InitSurfaceDesc()
-// Desc: Helper function called to build a DDSURFACEDESC2 structure,
-//       typically before calling CreateSurface() or GetSurfaceDesc()
-//-----------------------------------------------------------------------------
-VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags,
-                             DWORD dwCaps)
-{
-	ZeroMemory(&ddsd, sizeof(ddsd));
-	ddsd.dwSize                 = sizeof(ddsd);
-	ddsd.dwFlags                = dwFlags;
-	ddsd.ddsCaps.dwCaps         = dwCaps;
-	ddsd.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-}
-
-//-----------------------------------------------------------------------------
 // Name: D3DUtil_SetViewMatrix()
 // Desc: Given an eye point, a lookat point, and an up vector, this
 //       function builds a 4x4 view matrix.
 //-----------------------------------------------------------------------------
-HRESULT D3DUtil_SetViewMatrix(EERIEMATRIX & mat, Vec3f & vFrom,
-                              Vec3f & vAt, Vec3f & vWorldUp)
-{
+bool D3DUtil_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
+                           const Vec3f & vAt, const Vec3f & vWorldUp) {
+	
 	// Get the z basis vector, which points straight ahead. This is the
 	// difference from the eyepoint to the lookat point.
 	Vec3f vView = vAt - vFrom;
@@ -87,7 +72,7 @@ HRESULT D3DUtil_SetViewMatrix(EERIEMATRIX & mat, Vec3f & vFrom,
 	float fLength = vView.normalize();
 
 	if (fLength < 1e-6f)
-		return E_INVALIDARG;
+		return false;
 
 	// Get the dot product, and calculate the projection of the z basis
 	// vector onto the up vector. The projection is the y basis vector.
@@ -107,7 +92,7 @@ HRESULT D3DUtil_SetViewMatrix(EERIEMATRIX & mat, Vec3f & vFrom,
 			vUp = Vec3f::Z_AXIS - vView * vView.z;
 
 			if (1e-6f > (fLength = vUp.length()))
-				return E_INVALIDARG;
+				return false;
 		}
 	}
 
@@ -136,28 +121,5 @@ HRESULT D3DUtil_SetViewMatrix(EERIEMATRIX & mat, Vec3f & vFrom,
 	mat._42 = - vFrom dot vUp;
 	mat._43 = - vFrom dot vView;
 
-	return S_OK;
+	return true;
 }
-
-//-----------------------------------------------------------------------------
-// Name: _DbgOut()
-// Desc: Outputs a message to the debug stream
-//-----------------------------------------------------------------------------
-HRESULT _DbgOut(const char * strFile, DWORD dwLine, HRESULT hr, const char * strMsg)
-{
-	char buffer[256];
-	wsprintf(buffer, "%s(%ld): ", strFile, dwLine);
-	OutputDebugString(buffer);
-	OutputDebugString(strMsg);
-
-	if (hr)
-	{
-		wsprintf(buffer, "(hr=%08lx)\n", hr);
-		OutputDebugString(buffer);
-	}
-
-	OutputDebugString("\n");
-
-	return hr;
-}
-
