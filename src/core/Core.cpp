@@ -431,7 +431,6 @@ float LastFrameTicks		= 0;
 long SPLASH_THINGS_STAGE= 0;
 long STARTED_A_GAME		= 0;
 long INTRO_NOT_LOADED	= 1;
-long SnapShotMode		= 0;
 long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
 long BOOKBUTTON			= 0;
@@ -782,13 +781,6 @@ extern void InitTileLights();
 void InitializeDanae()
 {
 	InitTileLights();
-	snapshotdata.bits=16;
-	strcpy(snapshotdata.filenames,"snap");
-	strcpy(snapshotdata.path,"c:\\");
-	snapshotdata.imgsec=25;
-	snapshotdata.xsize=640;
-	snapshotdata.ysize=480;
-	snapshotdata.flag=1;
 	
 	char levelPath[512];
 	EERIEMathPrecalc();
@@ -5285,11 +5277,6 @@ static float _AvgFrameDiff = 150.f;
 	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
-	if (	(SnapShotMode)
-		&&	(!ARXPausedTime)	)
-	{
-		ARXTotalPausedTime+=ARXTime-(LastFrameTime+(1000/snapshotdata.imgsec));
-	}
 
 	PULSATE=EEsin(FrameTime / 800);
 	METALdecal=EEsin(FrameTime / 50) / 200 ;
@@ -6874,8 +6861,8 @@ static void ShowInfoText() {
 
 	sprintf(tex,"Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",player.pos.x,player.pos.y+player.size.y,poss,player.pos.z,player.angle.a,player.angle.b,ACTIVECAM->focal);
 	danaeApp.OutputText( 70, 48, tex );
-	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d  Lkey %d SSM %ld",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
-		,GAT,ParticleCount,player.doingmagic,danaeApp.kbd.lastkey,SnapShotMode);
+	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d  Lkey %d",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
+		,GAT,ParticleCount,player.doingmagic,danaeApp.kbd.lastkey);
 	danaeApp.OutputText( 70, 64, tex );
 
 	if (player.onfirmground==0) danaeApp.OutputText( 200, 280, "OFFGRND" );
@@ -7258,10 +7245,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						ARX_SCRIPT_LaunchScriptSearch(SCRIPT_SEARCH_TEXT);
 
 					Pause(false);
-					ARX_TIME_UnPause();				
-				break;
-				case DANAE_B012:
-					LaunchSnapShotParamApp(this->m_hWnd);
+					ARX_TIME_UnPause();
 				break;
 				case DANAE_B014:
 
