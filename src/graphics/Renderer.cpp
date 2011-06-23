@@ -1346,8 +1346,6 @@ static bool downloadSurface(LPDIRECTDRAWSURFACE7 surface, Image & image) {
 	
 	size_t offset = desc.lPitch * (desc.dwHeight - 1);
 	
-	LogInfo << format << ' ' << dwRMask << ' ' << dwGMask << ' ' << dwBMask << ' ' << desc.ddpfPixelFormat.dwRGBBitCount;
-	
 	if(format == Image::Format_L8) {
 		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
 			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
