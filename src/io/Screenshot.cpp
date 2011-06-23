@@ -61,12 +61,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <cassert>
 #include <climits>
+#include <sstream>
 
 #include "core/Core.h"
 
-#include "graphics/Frame.h"
-
 #include "io/Filesystem.h"
+
+using std::ostringstream;
 
 
 SnapShot * pSnapShot;
@@ -317,357 +318,37 @@ SnapShot::~SnapShot()
 
 //-----------------------------------------------------------------------------
 //Sauvegarde en BMP 32bits
-bool SnapShot::GetSnapShot()
-{
-	DDSURFACEDESC2 ddsd2;
-	memset((void *)&ddsd2, 0, sizeof(ddsd2));
-	ddsd2.dwSize = sizeof(ddsd2);
-
-	if (danaeApp.m_pFramework->m_pddsBackBuffer->Lock(NULL, &ddsd2, DDLOCK_SURFACEMEMORYPTR, 0) != DD_OK)
-	{
+bool SnapShot::GetSnapShot() {
+	
+	Image image;
+	
+	if(!GRenderer->getSnapshot(image)) {
 		return false;
 	}
-
-	unsigned long * pulMemorySnapShot = new unsigned long[ddsd2.dwWidth*ddsd2.dwHeight];
-
-	if (!pulMemorySnapShot)
-	{
-		danaeApp.m_pFramework->m_pddsBackBuffer->Unlock(NULL);
-		return false;
-	}
-
-	unsigned long * pulMemorySnapShotClone = pulMemorySnapShot;
-
-	unsigned char * pMemoryBase = (unsigned char *)ddsd2.lpSurface;
-	int iPitch = ddsd2.lPitch * (ddsd2.dwHeight - 1);
- 
-
-	switch (ddsd2.ddpfPixelFormat.dwRGBBitCount)
-	{
-		case 16:
-			{
-			    int iDecalR = 0;
-			    int iDecalG = 0;
-			    int iDecalB = 0;
-			    int iDec;
-			    iDec = ddsd2.ddpfPixelFormat.dwRBitMask;
-
-			    while (!(iDec & 0x800000))
-		{
-			iDecalR++;
-			iDec <<= 1;
-		}
-
-	iDec = ddsd2.ddpfPixelFormat.dwGBitMask;
-
-	while (!(iDec & 0x8000))
-	{
-		iDec <<= 1;
-		iDecalG++;
-	}
-
-	iDec = ddsd2.ddpfPixelFormat.dwBBitMask;
-
-	while (!(iDec & 0x80))
-	{
-		iDec <<= 1;
-		iDecalB++;
-	}
-
-	for (unsigned int iY = 0; iY < ddsd2.dwHeight; iY++)
-	{
-		unsigned short * pMemory = (unsigned short *)(pMemoryBase + iPitch);
-
-			for (unsigned int iX = 0; iX < ddsd2.dwWidth; iX++)
-			{
-				int iR = (pMemory[iX] & ddsd2.ddpfPixelFormat.dwRBitMask) << iDecalR;
-				int iG = (pMemory[iX] & ddsd2.ddpfPixelFormat.dwGBitMask) << iDecalG;
-				int iB = (pMemory[iX] & ddsd2.ddpfPixelFormat.dwBBitMask) << iDecalB;
-				*pulMemorySnapShotClone++ = iR | iG | iB;
-			}
-
-			iPitch -= ddsd2.lPitch;
-		}
-	}
-		break;
-		case 24:
-			{
-			    for (unsigned int iY = 0; iY < ddsd2.dwHeight; iY++)
-		{
-			unsigned char * pMemory = (unsigned char *)(pMemoryBase + iPitch);
-
-				for (unsigned int iX = 0; iX < ddsd2.dwWidth; iX++)
-				{
-					int iR = *pMemory++;
-					int iG = *pMemory++;
-					int iB = *pMemory++;
-					*pulMemorySnapShotClone++ = (iR << 16) | (iG << 8) | iB;
-				}
-
-				iPitch -= ddsd2.lPitch;
-			}
-	}
-		break;
-		case 32:
-			{
-			    for (unsigned int iY = 0; iY < ddsd2.dwHeight; iY++)
-		{
-			unsigned long * pMemory = (unsigned long *)(pMemoryBase + iPitch);
-				memcpy(pulMemorySnapShotClone, pMemory, ddsd2.dwWidth << 2);
-				pulMemorySnapShotClone += ddsd2.dwWidth;
-				iPitch -= ddsd2.lPitch;
-			}
-	}
-		break;
-	}
-
-	danaeApp.m_pFramework->m_pddsBackBuffer->Unlock(NULL);
-
-	//sauvegarde bmp
-	char tTxt[256];
-	sprintf(tTxt, "%s_%ld.bmp", pName, ulNum);
-	FileHandle fFile = FileOpenWrite(tTxt);
-
-	if (!fFile)
-	{
-		delete[] pulMemorySnapShot;
-		return false;
-	}
-
-	ulNum++;
-
-	// TODO replace with DevIL code
-	BITMAPFILEHEADER bfhBitmapFileHeader;
-	bfhBitmapFileHeader.bfType = ('M' << 8) | ('B');
-	bfhBitmapFileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + ((ddsd2.dwWidth * ddsd2.dwHeight) << 2);
-	bfhBitmapFileHeader.bfReserved1 = bfhBitmapFileHeader.bfReserved2 = 0;
-	bfhBitmapFileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-	FileWrite(fFile, &bfhBitmapFileHeader, sizeof(BITMAPFILEHEADER));
-
-	BITMAPINFOHEADER bihBitmapInfoHeader;
-	bihBitmapInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bihBitmapInfoHeader.biWidth = ddsd2.dwWidth;
-	bihBitmapInfoHeader.biHeight = ddsd2.dwHeight;
-	bihBitmapInfoHeader.biPlanes = 1;
-	bihBitmapInfoHeader.biBitCount = 32;
-	bihBitmapInfoHeader.biCompression = BI_RGB;
-	bihBitmapInfoHeader.biSizeImage = 0;
-	bihBitmapInfoHeader.biXPelsPerMeter = 0;
-	bihBitmapInfoHeader.biYPelsPerMeter = 0;
-	bihBitmapInfoHeader.biClrUsed = 0;
-	bihBitmapInfoHeader.biClrImportant = 0;
-	FileWrite(fFile, &bihBitmapInfoHeader, sizeof(BITMAPINFOHEADER));
-
-	FileWrite(fFile, pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) << 2);
-
-	FileClose(fFile);
-	delete[] pulMemorySnapShot;
+	
+	ostringstream oss;
+	oss << pName << '_' << ulNum << ".bmp";
+	
+	image.save(oss.str());
+	
 	return true;
 }
 
 //-----------------------------------------------------------------------------
 //Sauvegarde en BMP 24bits
-bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
-{
-	DDSURFACEDESC2 ddsd2;
-	memset((void *)&ddsd2, 0, sizeof(ddsd2));
-	ddsd2.dwSize = sizeof(ddsd2);
-
-	danaeApp.m_pFramework->m_pddsBackBuffer->GetSurfaceDesc(&ddsd2);
-
-	LPDIRECTDRAW7        pDD;
-	LPDIRECTDRAWSURFACE7 pddsRender;
-	GDevice->GetRenderTarget(&pddsRender);
-	pddsRender->GetDDInterface((VOID **)&pDD);
-	pddsRender->Release();
-
-	LPDIRECTDRAWSURFACE7 m_pddsSurface = NULL;
-	ddsd2.dwSize = sizeof(ddsd2);
-	ddsd2.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
-	ddsd2.dwWidth = _iWith;
-	ddsd2.dwHeight = _iHeight;
-	ddsd2.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-	pDD->CreateSurface(&ddsd2, &m_pddsSurface, NULL);
-
-	pDD->Release();
-
-	m_pddsSurface->Blt(NULL, danaeApp.m_pFramework->m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
-	memset((void *)&ddsd2, 0, sizeof(ddsd2));
-	ddsd2.dwSize = sizeof(ddsd2);
-	m_pddsSurface->GetSurfaceDesc(&ddsd2);
-
-	if (m_pddsSurface->Lock(NULL, &ddsd2, DDLOCK_SURFACEMEMORYPTR, 0) != DD_OK)
-	{
+bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight) {
+	
+	Image image;
+	
+	if(!GRenderer->getSnapshot(image, _iWith, _iHeight)) {
 		return false;
 	}
-
-	unsigned char * pulMemorySnapShot = new unsigned char[ddsd2.dwWidth*ddsd2.dwHeight*3];
-
-	if (!pulMemorySnapShot)
-	{
-		danaeApp.m_pFramework->m_pddsBackBuffer->Unlock(NULL);
-		return false;
-	}
-
-	unsigned char * pulMemorySnapShotClone = pulMemorySnapShot;
-
-	unsigned char * pMemoryBase = (unsigned char *)ddsd2.lpSurface;
-	int iPitch = ddsd2.lPitch * (ddsd2.dwHeight - 1);
- 
-
-	switch (ddsd2.ddpfPixelFormat.dwRGBBitCount)
-	{
-		case 16:
-			{
-			    int iDecalR = 0;
-			    int iDecalG = 0;
-			    int iDecalB = 0;
-			    int iDec;
-			    iDec = ddsd2.ddpfPixelFormat.dwRBitMask;
-
-			    while (!(iDec & 0x800000))
-		{
-			iDecalR++;
-			iDec <<= 1;
-		}
-
-	iDec = ddsd2.ddpfPixelFormat.dwGBitMask;
-
-	while (!(iDec & 0x8000))
-	{
-		iDec <<= 1;
-		iDecalG++;
-	}
-
-	iDec = ddsd2.ddpfPixelFormat.dwBBitMask;
-
-	while (!(iDec & 0x80))
-	{
-		iDec <<= 1;
-		iDecalB++;
-	}
-
-	for (unsigned int iY = 0; iY < ddsd2.dwHeight; iY++)
-	{
-		unsigned short * pMemory = (unsigned short *)(pMemoryBase + iPitch);
-
-			for (unsigned int iX = 0; iX < ddsd2.dwWidth; iX++)
-			{
-				unsigned int iColor = pMemory[iX];
-				int iR = (iColor & ddsd2.ddpfPixelFormat.dwRBitMask) << iDecalR;
-				int iG = (iColor & ddsd2.ddpfPixelFormat.dwGBitMask) << iDecalG;
-				int iB = (iColor & ddsd2.ddpfPixelFormat.dwBBitMask) << iDecalB;
-
-
-				ARX_CHECK_UCHAR(iB);
-				*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iB);
-				ARX_CHECK_UCHAR(iG >> 8);
-				*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iG >> 8);
-				ARX_CHECK_UCHAR(iR >> 16);
-				*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iR >> 16);
-
-			}
-
-			iPitch -= ddsd2.lPitch;
-		}
-	}
-		break;
-		case 24:
-			{
-			    for (unsigned int iY = 0; iY < ddsd2.dwHeight; iY++)
-		{
-			unsigned char * pMemory = (unsigned char *)(pMemoryBase + iPitch);
-
-				for (unsigned int iX = 0; iX < ddsd2.dwWidth; iX++)
-				{
-					int iR = *pMemory++;
-					int iG = *pMemory++;
-					int iB = *pMemory++;
-
-
-					ARX_CHECK_UCHAR(iR);
-					*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iR);
-					ARX_CHECK_UCHAR(iG);
-					*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iG);
-					ARX_CHECK_UCHAR(iB);
-					*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iB);
-
-				}
-
-				iPitch -= ddsd2.lPitch;
-			}
-	}
-		break;
-		case 32:
-			{
-			    for (unsigned int iY = 0; iY < ddsd2.dwHeight; iY++)
-		{
-			unsigned char * pMemory = (unsigned char *)(pMemoryBase + iPitch);
-
-				for (unsigned int iX = 0; iX < ddsd2.dwWidth; iX++)
-				{
-					int iR = *pMemory++;
-					int iG = *pMemory++;
-					int iB = *pMemory++;
-					pMemory++;
-
-
-					ARX_CHECK_UCHAR(iR);
-					*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iR);
-					ARX_CHECK_UCHAR(iG);
-					*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iG);
-					ARX_CHECK_UCHAR(iB);
-					*pulMemorySnapShotClone++ = ARX_CLEAN_WARN_CAST_UCHAR(iB);
-
-				}
-
-				iPitch -= ddsd2.lPitch;
-			}
-	}
-		break;
-	}
-
-	m_pddsSurface->Unlock(NULL);
-	m_pddsSurface->Release();
-
-	//sauvegarde bmp
-	char tTxt[256];
-	sprintf(tTxt, "%s_%ld.bmp", pName, ulNum);
-	FileHandle fFile = FileOpenWrite(tTxt);
-
-	if (!fFile)
-	{
-		delete[] pulMemorySnapShot;
-		return false;
-	}
-
-	ulNum++;
-
-	BITMAPFILEHEADER bfhBitmapFileHeader;
-	bfhBitmapFileHeader.bfType = ('M' << 8) | ('B');
-	bfhBitmapFileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + ((ddsd2.dwWidth * ddsd2.dwHeight) * 3);
-	bfhBitmapFileHeader.bfReserved1 = bfhBitmapFileHeader.bfReserved2 = 0;
-	bfhBitmapFileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-	FileWrite(fFile, &bfhBitmapFileHeader, sizeof(BITMAPFILEHEADER));
-
-	BITMAPINFOHEADER bihBitmapInfoHeader;
-	bihBitmapInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bihBitmapInfoHeader.biWidth = ddsd2.dwWidth;
-	bihBitmapInfoHeader.biHeight = ddsd2.dwHeight;
-	bihBitmapInfoHeader.biPlanes = 1;
-	bihBitmapInfoHeader.biBitCount = 24;
-	bihBitmapInfoHeader.biCompression = BI_RGB;
-	bihBitmapInfoHeader.biSizeImage = ((ddsd2.dwWidth * ddsd2.dwHeight) * 3);
-	bihBitmapInfoHeader.biXPelsPerMeter = 0;
-	bihBitmapInfoHeader.biYPelsPerMeter = 0;
-	bihBitmapInfoHeader.biClrUsed = 0;
-	bihBitmapInfoHeader.biClrImportant = 0;
-	FileWrite(fFile, &bihBitmapInfoHeader, sizeof(BITMAPINFOHEADER));
-
-	FileWrite(fFile, pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) * 3);
-
-	FileClose(fFile);
-	delete[] pulMemorySnapShot;
+	
+	ostringstream oss;
+	oss << pName << '_' << ulNum << ".bmp";
+	
+	image.save(oss.str());
+	
 	return true;
 }
 

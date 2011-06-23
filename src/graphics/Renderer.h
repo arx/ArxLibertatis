@@ -169,6 +169,9 @@ public:
 	
 	virtual void drawIndexed(Primitive primitive, const D3DTLVERTEX * vertices, size_t nvertices, unsigned short * indices, size_t nindices);
 	
+	virtual bool getSnapshot(Image & image);
+	virtual bool getSnapshot(Image & image, size_t width, size_t height);
+	
 private:
 	std::vector<TextureStage*>	m_TextureStages;
 };

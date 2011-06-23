@@ -116,7 +116,7 @@ void Font::WriteToDisk()
 		ss << i;
 		ss << ".png";
 
-		tex.GetImage().Dump(ss.str());
+		tex.GetImage().save(ss.str());
 	}
 }
 

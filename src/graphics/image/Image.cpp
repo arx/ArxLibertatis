@@ -762,7 +762,7 @@ ILenum ARXImageToILFormat[] = {
 	IL_DXT5,            // Format_DXT5
 };
 
-void Image::Dump(const string & pFilename) const {
+void Image::save(const string & pFilename) const {
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);

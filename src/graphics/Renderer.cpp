@@ -1,5 +1,6 @@
 
 #include "core/Core.h" // TODO remove once init has been moved here
+#include "graphics/Frame.h" // TODO remove once init has been moved here
 #include "graphics/VertexBuffer.h"
 #include "graphics/Renderer.h"
 #include "graphics/GraphicsUtility.h"
@@ -1299,3 +1300,163 @@ void Renderer::drawIndexed(Primitive primitive, const D3DTLVERTEX * vertices, si
 	ARX_UNUSED(hr);
 	
 }
+
+static bool downloadSurface(LPDIRECTDRAWSURFACE7 surface, Image & image) {
+	
+	DDSURFACEDESC2 desc;
+	memset((void *)&desc, 0, sizeof(desc));
+	desc.dwSize = sizeof(desc);
+	
+	if(surface->Lock(NULL, &desc, DDLOCK_SURFACEMEMORYPTR | DDLOCK_READONLY, 0) != DD_OK) {
+		return false;
+	}
+	
+	Image::Format format;
+	if(desc.ddpfPixelFormat.dwRBitMask || desc.ddpfPixelFormat.dwGBitMask || desc.ddpfPixelFormat.dwBBitMask) {
+		format = (desc.ddpfPixelFormat.dwRGBAlphaBitMask) ? Image::Format_R8G8B8A8 : Image::Format_R8G8B8;
+	} else if(desc.ddpfPixelFormat.dwLuminanceBitMask || desc.ddpfPixelFormat.dwZBitMask) {
+		format = (desc.ddpfPixelFormat.dwLuminanceAlphaBitMask) ? Image::Format_L8A8 : Image::Format_L8;
+	} else if(desc.ddpfPixelFormat.dwRGBAlphaBitMask) {
+		format = Image::Format_A8;
+	} else {
+		surface->Unlock(NULL);
+		return false;
+	}
+	
+	image.Create(desc.dwWidth, desc.dwHeight, format);
+	
+	DWORD dwRMask = desc.ddpfPixelFormat.dwRBitMask;
+	DWORD dwGMask = desc.ddpfPixelFormat.dwGBitMask;
+	DWORD dwBMask = desc.ddpfPixelFormat.dwBBitMask;
+	DWORD dwAMask = desc.ddpfPixelFormat.dwRGBAlphaBitMask | desc.ddpfPixelFormat.dwLuminanceAlphaBitMask;
+	DWORD dwLMask = desc.ddpfPixelFormat.dwLuminanceBitMask | desc.ddpfPixelFormat.dwZBitMask;
+	
+	DWORD dwRShiftR = 0;
+	DWORD dwGShiftR = 0;
+	DWORD dwBShiftR = 0;
+	DWORD dwAShiftR = 0;
+	DWORD dwLShiftR = 0;
+	
+	for(DWORD dwMask = dwRMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwRShiftR++;
+	for(DWORD dwMask = dwGMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwGShiftR++;
+	for(DWORD dwMask = dwBMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwBShiftR++;
+	for(DWORD dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
+	for(DWORD dwMask = dwLMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwLShiftR++;
+	
+	unsigned char * data = image.GetData();
+	
+	size_t offset = desc.lPitch * (desc.dwHeight - 1);
+	
+	LogInfo << format << ' ' << dwRMask << ' ' << dwGMask << ' ' << dwBMask << ' ' << desc.ddpfPixelFormat.dwRGBBitCount;
+	
+	if(format == Image::Format_L8) {
+		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
+			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
+				*data++ = (unsigned char)(((*src)&dwLMask) >> dwLShiftR);
+			}
+		}
+	} else if(format == Image::Format_A8) {
+		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
+			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
+				*data++ = (unsigned char)(((*src)&dwAMask) >> dwAShiftR);
+			}
+		}
+	} else if(format == Image::Format_L8A8) {
+		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
+			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
+				*data++ = (unsigned char)(((*src)&dwLMask) >> dwLShiftR);
+				*data++ = (unsigned char)(((*src)&dwAMask) >> dwAShiftR);
+			}
+		}
+	} else if(format == Image::Format_R8G8B8) {
+		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
+			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
+				*data++ = (unsigned char)(((*src)&dwRMask) >> dwRShiftR);
+				*data++ = (unsigned char)(((*src)&dwGMask) >> dwGShiftR);
+				*data++ = (unsigned char)(((*src)&dwBMask) >> dwBShiftR);
+			}
+		}
+	} else if(format == Image::Format_R8G8B8A8) {
+		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
+			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
+				*data++ = (unsigned char)(((*src)&dwRMask) >> dwRShiftR);
+				*data++ = (unsigned char)(((*src)&dwGMask) >> dwGShiftR);
+				*data++ = (unsigned char)(((*src)&dwBMask) >> dwBShiftR);
+				*data++ = (unsigned char)(((*src)&dwAMask) >> dwAShiftR);
+			}
+		}
+	} else {
+		arx_assert(false);
+	}
+	
+	surface->Unlock(NULL);
+	
+	return true;
+}
+
+bool Renderer::getSnapshot(Image & image) {
+	
+	LPDIRECTDRAWSURFACE7 pddsRender;
+	HRESULT hr = GDevice->GetRenderTarget(&pddsRender);
+	if(FAILED(hr)) {
+		LogError << "GetRenderTarget failed: " << hr;
+		return false;
+	}
+	
+	bool ret = downloadSurface(danaeApp.m_pFramework->m_pddsBackBuffer, image);
+	
+	pddsRender->Release();
+	
+	return ret;
+}
+
+bool Renderer::getSnapshot(Image& image, size_t width, size_t height) {
+	
+	Image img;
+	getSnapshot(img);
+	img.save("test.png");
+	
+	
+	LPDIRECTDRAWSURFACE7 pddsRender;
+	HRESULT hr = GDevice->GetRenderTarget(&pddsRender);
+	if(FAILED(hr)) {
+		LogError << "GetRenderTarget failed: " << hr;
+		return false;
+	}
+	
+	DDSURFACEDESC2 desc;
+	memset((void *)&desc, 0, sizeof(desc));
+	desc.dwSize = sizeof(desc);
+	pddsRender->GetSurfaceDesc(&desc);
+	
+	LPDIRECTDRAWSURFACE7 tempSurface = NULL;
+	desc.dwSize = sizeof(desc);
+	desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
+	desc.dwWidth = width;
+	desc.dwHeight = height;
+	desc.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	
+	LPDIRECTDRAW7 pDD;
+	pddsRender->GetDDInterface((VOID **)&pDD);
+	hr = pDD->CreateSurface(&desc, &tempSurface, NULL);
+	pDD->Release();
+	if(FAILED(hr)) {
+		pddsRender->Release();
+		return false;
+	}
+	
+	tempSurface->Blt(NULL, danaeApp.m_pFramework->m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
+	pddsRender->Release();
+	
+	bool ret = downloadSurface(tempSurface, image);
+	
+	tempSurface->Release();
+	
+	return ret;
+}
+
