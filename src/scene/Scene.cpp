@@ -168,21 +168,28 @@ private:
 public:
 	
 	size_t nbindices;
-	unsigned short * indices; // TODO not all users of this class need this
+	unsigned short * indices;
 	
-	DynamicVertexBuffer() : nbindices(0), indices(NULL) { }
+	DynamicVertexBuffer() : vertices(NULL), nbindices(0), indices(NULL) { }
 	
-	void alloc() {
+	void lock() {
+		
+		arx_assert(!vertices);
+		
 		if(!indices) {
 			indices = new unsigned short[4 * pDynamicVertexBuffer->vb->capacity()];
-		}
-		if(!vertices) {
-			vertices = new SMY_D3DVERTEX3[pDynamicVertexBuffer->vb->capacity()];
 			start = 0;
 		}
+		
+		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardContents : NoOverwrite;
+		
+		vertices =  pDynamicVertexBuffer->vb->lock();
+		
 	}
 	
 	SMY_D3DVERTEX3 * append(size_t nbvertices) {
+		
+		arx_assert(vertices);
 		
 		if(pDynamicVertexBuffer->pos + nbvertices > pDynamicVertexBuffer->vb->capacity()) {
 			return NULL;
@@ -195,21 +202,24 @@ public:
 		return pos;
 	}
 	
-	void upload() {
-		BufferFlags flags = (start == 0) ? DiscardContents : NoOverwrite;
-		pDynamicVertexBuffer->vb->setData(vertices + start, pDynamicVertexBuffer->pos - start, start, flags);
+	void unlock() {
+		arx_assert(vertices);
+		pDynamicVertexBuffer->vb->unlock(), vertices = NULL;
 	}
 	
 	void draw(Renderer::Primitive primitive) {
+		arx_assert(!vertices);
 		pDynamicVertexBuffer->vb->drawIndexed(primitive, pDynamicVertexBuffer->pos - start, start, indices, nbindices);
 	}
 	
 	void done() {
+		arx_assert(!vertices);
 		start = pDynamicVertexBuffer->pos;
 		nbindices = 0;
 	}
 	
 	void reset() {
+		arx_assert(!vertices);
 		start = pDynamicVertexBuffer->pos = 0;
 		nbindices = 0;
 	}
@@ -1278,8 +1288,6 @@ static void RenderWaterBatch() {
 		return;
 	}
 	
-	dynamicVertices.upload();
-	
 	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(1)->DisableAlpha();
@@ -1306,7 +1314,7 @@ static void RenderWater() {
 	size_t iNbIndice = 0;
 	int iNb = vPolyWater.size();
 	
-	dynamicVertices.alloc();
+	dynamicVertices.lock();
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->SetTexture(0, enviro);
@@ -1321,8 +1329,10 @@ static void RenderWater() {
 		SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 		
 		if(!pVertex) {
+			dynamicVertices.unlock();
 			RenderWaterBatch();
 			dynamicVertices.reset();
+			dynamicVertices.lock();
 			iNbIndice = 0;
 			indices = dynamicVertices.indices;
 			pVertex = dynamicVertices.append(iNbVertex);
@@ -1450,6 +1460,7 @@ static void RenderWater() {
 		
 	}
 	
+	dynamicVertices.unlock();
 	RenderWaterBatch();
 	dynamicVertices.done();
 	
@@ -1465,8 +1476,6 @@ void RenderLavaBatch() {
 	if(!dynamicVertices.nbindices) {
 		return;
 	}
-	
-	dynamicVertices.upload();
 	
 	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
@@ -1499,7 +1508,7 @@ void RenderLava() {
 	size_t iNbIndice = 0;
 	int iNb=vPolyLava.size();
 	
-	dynamicVertices.alloc();
+	dynamicVertices.lock();
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->SetTexture(0, enviro);
@@ -1514,8 +1523,10 @@ void RenderLava() {
 		SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 		
 		if(!pVertex) {
+			dynamicVertices.unlock();
 			RenderLavaBatch();
 			dynamicVertices.reset();
+			dynamicVertices.lock();
 			iNbIndice = 0;
 			indices = dynamicVertices.indices;
 			pVertex = dynamicVertices.append(iNbVertex);
@@ -1610,6 +1621,7 @@ void RenderLava() {
 		
 	}
 	
+	dynamicVertices.unlock();
 	RenderLavaBatch();
 	dynamicVertices.done();
 	
@@ -2422,8 +2434,6 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 		iNbTex=portals->room[room_num].usNbTextures;
 		ppTexCurr=portals->room[room_num].ppTextureContainer;
-
-		dynamicVertices.alloc();
 		
 		while ( iNbTex-- ) //For each tex in portals->room[room_num]
 		{
@@ -2436,6 +2446,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 				
 				GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
 				
+				dynamicVertices.lock();
 				unsigned short * pussInd = dynamicVertices.indices;
 				unsigned short iNbIndice = 0;
 
@@ -2453,11 +2464,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 					SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 					
 					if(!pVertex) {
+						dynamicVertices.unlock();
 						if(dynamicVertices.nbindices) {
-							dynamicVertices.upload();
 							dynamicVertices.draw(Renderer::TriangleList);
 						}
 						dynamicVertices.reset();
+						dynamicVertices.lock();
 						iNbIndice = 0;
 						pussInd = dynamicVertices.indices;
 						pVertex = dynamicVertices.append(iNbVertex);
@@ -2527,11 +2539,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 					//														   CLEAR CURRENT ZMAP
 				pTexCurr->TextureRefinement->vPolyZMap.clear();
 				
+				dynamicVertices.unlock();
 				if(dynamicVertices.nbindices) {
-					dynamicVertices.upload();
 					dynamicVertices.draw(Renderer::TriangleList);
 				}
 				dynamicVertices.done();
+				
 			}
 			
 			ppTexCurr++;
