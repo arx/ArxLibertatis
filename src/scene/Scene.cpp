@@ -183,7 +183,7 @@ public:
 		
 		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardContents : NoOverwrite;
 		
-		vertices =  pDynamicVertexBuffer->vb->lock();
+		vertices =  pDynamicVertexBuffer->vb->lock(flags);
 		
 	}
 	
