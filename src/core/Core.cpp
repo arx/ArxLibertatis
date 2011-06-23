@@ -112,6 +112,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
+#include "graphics/direct3d/Direct3DRenderer.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "io/FilePath.h"
 #include "io/Registry.h"
@@ -1226,6 +1228,8 @@ int main(int argc, char ** argv) {
 		//TODO(lubosz): dirty hack to initialize the pak manager
 		PAK_AddPak("");
 	}
+	
+	GRenderer = new Direct3DRenderer();
 	
 	LocalisationInit();
 	
@@ -7880,6 +7884,8 @@ void ClearGame() {
 	ReleaseHalo();
 	FreeSnapShot();
 	ARX_INPUT_Release();
+	
+	delete GRenderer;
 	
 	danaeApp.Cleanup3DEnvironment();
 	

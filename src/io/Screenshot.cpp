@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 
 #include "core/Core.h"
-
+#include "graphics/image/Image.h"
 #include "io/Filesystem.h"
 
 using std::ostringstream;

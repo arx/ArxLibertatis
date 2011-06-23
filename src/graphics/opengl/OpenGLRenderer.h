@@ -1,110 +1,15 @@
 
-#ifndef ARX_GRAPHICS_RENDERER_H
-#define ARX_GRAPHICS_RENDERER_H
+#ifndef ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
+#define ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 
-#include <vector>
+#include "graphics/Renderer.h"
 
-#include "platform/Flags.h"
-#include "math/MathFwd.h"
-#include "graphics/Color.h"
-
-struct EERIEMATRIX;
-struct TexturedVertex;
-struct SMY_D3DVERTEX;
-struct SMY_D3DVERTEX3;
-class TextureContainer;
-class TextureStage;
-class Image;
-class Texture;
-class Texture2D;
-template <class Vertex> class VertexBuffer;
-
-class Renderer {
+class OpenGLRenderer : Renderer {
 	
-public:
+	OpenGLRenderer() { };
+	~OpenGLRenderer() { };
 	
-	//! Render states
-	enum RenderState {
-		AlphaBlending,
-		ColorKey,
-		DepthTest,
-		DepthWrite,
-		Fog,
-		Lighting,
-		ZBias
-	};
-	
-	//! Pixel comparison functions
-	enum PixelCompareFunc {
-		CmpNever,               //!< Never
-		CmpLess,                //!< Less
-		CmpEqual,               //!< Equal
-		CmpLessEqual,           //!< Less Equal
-		CmpGreater,             //!< Greater
-		CmpNotEqual,            //!< Not Equal
-		CmpGreaterEqual,        //!< Greater Equal
-		CmpAlways               //!< Always
-	};
-	
-	//! Pixel blending factor
-	enum PixelBlendingFactor {
-		BlendZero,              //!< Zero
-		BlendOne,               //!< One
-		BlendSrcColor,          //!< Source color
-		BlendSrcAlpha,          //!< Source alpha
-		BlendInvSrcColor,       //!< Inverse source color
-		BlendInvSrcAlpha,       //!< Inverse source alpha
-		BlendSrcAlphaSaturate,  //!< Source alpha saturate
-		BlendDstColor,          //!< Destination color
-		BlendDstAlpha,          //!< Destination alpha
-		BlendInvDstColor,       //!< Inverse destination color
-		BlendInvDstAlpha        //!< Inverse destination alpha
-	};
-	
-	//! Culling 
-	enum CullingMode {
-		CullNone,
-		CullCW,
-		CullCCW
-	};
-	
-	enum FillMode {
-		FillPoint,
-		FillWireframe,
-		FillSolid
-	};
-	
-	//! Fog
-	enum FogMode {
-		FogNone,
-		FogExp,
-		FogExp2,
-		FogLinear
-	};
-	
-	//! Target surface
-	enum BufferType {
-		ColorBuffer   = (1<<0),
-		DepthBuffer   = (1<<1),
-		StencilBuffer = (1<<2)
-	};
-	DECLARE_FLAGS(BufferType, BufferFlags);
-	
-	enum Primitive {
-		TriangleList,
-		TriangleStrip,
-		TriangleFan,
-		LineList,
-		LineStrip
-	};
-	
-	enum BufferUsage {
-		Static,
-		Dynamic,
-		Stream
-	};
-	
-	virtual ~Renderer() { };
+	// TODO implement
 	
 	virtual void Initialize() = 0;
 	
@@ -127,7 +32,7 @@ public:
 	virtual Texture2D * CreateTexture2D() = 0;
 	
 	// Render states
-	virtual void SetRenderState(RenderState renderState, bool enable) = 0;
+	void SetRenderState(RenderState renderState, bool enable);
 	
 	// Alphablending & Transparency
 	virtual void SetAlphaFunc(PixelCompareFunc func, float fef) = 0; // Ref = [0.0f, 1.0f]
@@ -175,14 +80,6 @@ public:
 	virtual bool getSnapshot(Image & image) = 0;
 	virtual bool getSnapshot(Image & image, size_t width, size_t height) = 0;
 	
-protected:
-	
-	std::vector<TextureStage*> m_TextureStages;
-	
 };
 
-DECLARE_FLAGS_OPERATORS(Renderer::BufferFlags)
-
-extern Renderer * GRenderer;
-
-#endif // ARX_GRAPHICS_RENDERER_H
+#endif // ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H

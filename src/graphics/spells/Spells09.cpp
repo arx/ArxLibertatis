@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/Spells05.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "scene/Object.h"
 #include "scene/LoadLevel.h"

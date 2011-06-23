@@ -3,6 +3,7 @@
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/PackedTexture.h"
+#include "graphics/texture/TextureStage.h"
 
 #include <sstream>
 #include <ft2build.h>
