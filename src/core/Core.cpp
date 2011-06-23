@@ -2914,9 +2914,11 @@ HRESULT DANAE::BeforeRun()
 
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=old;
 
+#ifdef BUILD_EDITOR
 	// Need to create Map
 	if (iCreateMap)
 		DANAE_Manage_CreateMap();
+#endif
 
 	danaeApp.GetZBufferMax();
 
@@ -3174,8 +3176,8 @@ long FirstFrameHandling()
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene);
 	
-	iCreateMap=0;
 #ifdef BUILD_EDITOR
+	iCreateMap=0;
 	if ((CURRENTLEVEL>=0) && !(NOBUILDMAP) && GAME_EDITOR)
 	{
 		if (NeedMapCreation())	
