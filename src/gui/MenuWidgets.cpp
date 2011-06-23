@@ -472,7 +472,7 @@ static void FadeInOut(float _fVal)
 {
 	TexturedVertex d3dvertex[4];
 
-	int iColor=D3DRGBA(_fVal,_fVal,_fVal,1.f);
+	u32 iColor = Color::gray(_fVal).toBGR();
 	d3dvertex[0].sx=0;
 	d3dvertex[0].sy=0;
 	d3dvertex[0].sz=0.f;
@@ -3834,7 +3834,7 @@ void CWindowMenuConsole::UpdateText()
 	TexturedVertex v[4];
 	GRenderer->ResetTexture(0);
 	float col=.5f+rnd()*.5f;
-	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::gray(col).toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -5917,7 +5917,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	const Vec2i * psOldPoint = _psPoint1++;
-	v[0].color=v[2].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
+	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 
 	if(!ComputePer(*psOldPoint, *_psPoint1, &v[0], &v[2], fTaille)) {
 		v[0].sx=v[2].sx=(float)psOldPoint->x;
@@ -5934,7 +5934,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 		fColorBlue+=fDColorBlue;
 
 		if(ComputePer(*psOldPoint, *(_psPoint1 + 1), &v[1], &v[3], fTaille)) {
-			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
+			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
 			v[0].sx=v[1].sx;
@@ -5954,7 +5954,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 	fColorBlue+=fDColorBlue;
 
 	if(ComputePer(*_psPoint1, *psOldPoint, &v[1], &v[3], fTaille)) {
-		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
+		v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 
