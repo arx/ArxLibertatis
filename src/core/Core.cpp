@@ -115,7 +115,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/FilePath.h"
 #include "io/Registry.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/CinematicLoad.h"
@@ -1196,6 +1196,8 @@ int main(int argc, char ** argv) {
 		forInternalPeople(strCmdLine);
 
 	NOCHECKSUM=0;
+	
+	resources = new PakReader();
 
 	if(FINAL_RELEASE) {
 		
@@ -1205,7 +1207,7 @@ int main(int argc, char ** argv) {
 		
 		const char PAK_DATA[] = "data.pak";
 		LogDebug << PAK_DATA;
-		if(PAK_AddPak(PAK_DATA)) {
+		if(resources->addArchive(PAK_DATA)) {
 			LogDebug << "LoadMode OK";
 		} else {
 			LogFatal << "Unable to find main data file " << PAK_DATA;
@@ -1213,37 +1215,35 @@ int main(int argc, char ** argv) {
 		
 		const char PAK_LOC[] = "loc.pak";
 		LogDebug << "LocPAK";
-		if(!PAK_AddPak(PAK_LOC)) {
+		if(!resources->addArchive(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
-			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
+			if(!resources->addArchive(PAK_LOC_DEFAULT)) {
 				LogFatal << "Unable to find localisation file " << PAK_LOC << " or " << PAK_LOC_DEFAULT;
 			}
 		}
 		
 		LogDebug << "data2PAK";
 		const char PAK_DATA2[] = "data2.pak";
-		if(!PAK_AddPak(PAK_DATA2)) {
+		if(!resources->addArchive(PAK_DATA2)) {
 			LogFatal << "Unable to find aux data file " << PAK_DATA2;
 		}
 		
 		const char PAK_SFX[] = "sfx.pak";
-		if(!PAK_AddPak(PAK_SFX)) {
+		if(!resources->addArchive(PAK_SFX)) {
 			LogFatal << "Unable to find sfx data file " << PAK_SFX;
 		}
 		
 		const char PAK_SPEECH[] = "speech.pak";
-		if(!PAK_AddPak(PAK_SPEECH)) {
+		if(!resources->addArchive(PAK_SPEECH)) {
 			const char PAK_SPEECH_DEFAULT[] = "speech_default.pak";
-			if(!PAK_AddPak(PAK_SPEECH_DEFAULT)) {
+			if(!resources->addArchive(PAK_SPEECH_DEFAULT)) {
 				LogFatal << "Unable to find speech data file " << PAK_SPEECH << " or " << PAK_SPEECH_DEFAULT;
 			}
 		}
 		
-	} else {
-		LogInfo << "TRUEFILE LM";
-		//TODO(lubosz): dirty hack to initialize the pak manager
-		PAK_AddPak("");
 	}
+	
+	resources->addFiles(".");
 	
 	LocalisationInit();
 	
@@ -2350,7 +2350,7 @@ void LaunchWaitingCine()
 	strcpy(temp2,RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS);
 	strcat(temp2,WILL_LAUNCH_CINE);
 
-	if (PAK_FileExist(temp2))
+	if (resources->getFile(temp2))
 	{
 		ControlCinematique->OneTimeSceneReInit();
 
@@ -2863,26 +2863,26 @@ HRESULT DANAE::BeforeRun()
 	necklace.runes[RUNE_VITAE] =       loadObject("Graph\\Interface\\book\\runes\\runes_vitae.teo");
 	necklace.runes[RUNE_YOK] =         loadObject("Graph\\Interface\\book\\runes\\runes_yok.teo");
 
-	necklace.pTexTab[RUNE_AAM]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_Aam[icon].BMP");
-	necklace.pTexTab[RUNE_CETRIUS]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cetrius[icon].BMP");
-	necklace.pTexTab[RUNE_COMUNICATUM]	= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_comunicatum[icon].BMP");
-	necklace.pTexTab[RUNE_COSUM]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cosum[icon].BMP");
-	necklace.pTexTab[RUNE_FOLGORA]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_folgora[icon].BMP");
-	necklace.pTexTab[RUNE_FRIDD]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_fridd[icon].BMP");
-	necklace.pTexTab[RUNE_KAOM]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_kaom[icon].BMP");
-	necklace.pTexTab[RUNE_MEGA]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_mega[icon].BMP");
-	necklace.pTexTab[RUNE_MORTE]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_morte[icon].BMP");
-	necklace.pTexTab[RUNE_MOVIS]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_movis[icon].BMP");
-	necklace.pTexTab[RUNE_NHI]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_nhi[icon].BMP");
-	necklace.pTexTab[RUNE_RHAA]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_rhaa[icon].BMP");
-	necklace.pTexTab[RUNE_SPACIUM]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_spacium[icon].BMP");
-	necklace.pTexTab[RUNE_STREGUM]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_stregum[icon].BMP");
-	necklace.pTexTab[RUNE_TAAR]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_taar[icon].BMP");
-	necklace.pTexTab[RUNE_TEMPUS]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_tempus[icon].BMP");
-	necklace.pTexTab[RUNE_TERA]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_tera[icon].BMP");
-	necklace.pTexTab[RUNE_VISTA]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vista[icon].BMP");
-	necklace.pTexTab[RUNE_VITAE]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vitae[icon].BMP");
-	necklace.pTexTab[RUNE_YOK]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_yok[icon].BMP");
+	necklace.pTexTab[RUNE_AAM]			= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_Aam[icon].BMP");
+	necklace.pTexTab[RUNE_CETRIUS]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cetrius[icon].BMP");
+	necklace.pTexTab[RUNE_COMUNICATUM]	= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_comunicatum[icon].BMP");
+	necklace.pTexTab[RUNE_COSUM]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cosum[icon].BMP");
+	necklace.pTexTab[RUNE_FOLGORA]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_folgora[icon].BMP");
+	necklace.pTexTab[RUNE_FRIDD]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_fridd[icon].BMP");
+	necklace.pTexTab[RUNE_KAOM]			= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_kaom[icon].BMP");
+	necklace.pTexTab[RUNE_MEGA]			= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_mega[icon].BMP");
+	necklace.pTexTab[RUNE_MORTE]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_morte[icon].BMP");
+	necklace.pTexTab[RUNE_MOVIS]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_movis[icon].BMP");
+	necklace.pTexTab[RUNE_NHI]			= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_nhi[icon].BMP");
+	necklace.pTexTab[RUNE_RHAA]			= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_rhaa[icon].BMP");
+	necklace.pTexTab[RUNE_SPACIUM]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_spacium[icon].BMP");
+	necklace.pTexTab[RUNE_STREGUM]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_stregum[icon].BMP");
+	necklace.pTexTab[RUNE_TAAR]			= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_taar[icon].BMP");
+	necklace.pTexTab[RUNE_TEMPUS]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_tempus[icon].BMP");
+	necklace.pTexTab[RUNE_TERA]			= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_tera[icon].BMP");
+	necklace.pTexTab[RUNE_VISTA]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vista[icon].BMP");
+	necklace.pTexTab[RUNE_VITAE]		= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vitae[icon].BMP");
+	necklace.pTexTab[RUNE_YOK]			= TextureContainer::LoadUI("Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_yok[icon].BMP");
 
 	for(size_t i = 0; i<RUNE_COUNT-1; i++) { // TODO why -1?
 		if(necklace.pTexTab[i]) {
@@ -7939,7 +7939,8 @@ void ClearGame() {
 	
 	//object loaders from beforerun
 	ReleaseDanaeBeforeRun();
-	PAK_Close();
+	
+	delete resources;
 	
 #ifdef BUILD_EDITOR
 	if (danaeApp.ToolBar) {

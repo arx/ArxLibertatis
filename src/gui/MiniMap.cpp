@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "physics/Box.h"
@@ -205,32 +205,28 @@ void ARX_MINIMAP_ValidatePlayerPos()
 void ARX_MINIMAP_Load_Offsets()
 {
 	const char INI_MINI_OFFSETS[] = "Graph\\Levels\\mini_offsets.ini";
-
-	if (PAK_FileExist(INI_MINI_OFFSETS))
-	{
-		size_t siz = 0;
-		char * dat = (char *)PAK_FileLoadMallocZero(INI_MINI_OFFSETS, siz);
-
-		if(dat) {
-			size_t pos = 0;
-			for (long i = 0; i < 29; i++)
-			{
-				char t[512];
-				int nRead = sscanf(dat + pos, "%s %f %f", t, &mini_offset_x[i], &mini_offset_y[i]);
-				if(nRead != 3) {
-					LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
-				}
-
-				while ((pos < siz) && (dat[pos] != '\n')) pos++;
-
-				pos++;
-
-				if (pos >= siz) break;
+	
+	size_t siz = 0;
+	char * dat = resources->readAlloc(INI_MINI_OFFSETS, siz);
+	
+	if(dat) {
+		size_t pos = 0;
+		for (long i = 0; i < 29; i++)
+		{
+			char t[512];
+			int nRead = sscanf(dat + pos, "%s %f %f", t, &mini_offset_x[i], &mini_offset_y[i]);
+			if(nRead != 3) {
+				LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
 			}
-
-			free(dat);
+			
+			while ((pos < siz) && (dat[pos] != '\n')) pos++;
+						 
+						 pos++;
+			
+			if (pos >= siz) break;
 		}
-
+		
+		free(dat);
 	}
 
 	mini_offset_x[0] = 0;

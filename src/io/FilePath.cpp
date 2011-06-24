@@ -6,9 +6,6 @@
 using std::string;
 using std::copy;
 
-const char EXT_OR_DIR_SEP[] = "./\\";
-const char DIR_SEP[] = "/\\";
-
 static inline bool isDirSeperator(char c) {
 	return (c == '\\' || c == '/');
 }
@@ -76,9 +73,9 @@ void AddToName(string & str, const string & cat) {
  * Return the string up until and including the
  * last directory separator or the whole string
  */
-std::string GetDirectory( const std::string& str )
-{
-	return str.substr( 0, str.find_last_of(DIR_SEP) + 1 );
+string GetDirectory(const string & str) {
+	size_t pos = str.find_last_of(DIR_SEP);
+	return (pos == string::npos) ? string() : str.substr(0, pos + 1);
 }
 
 void RemoveName(string & str) {

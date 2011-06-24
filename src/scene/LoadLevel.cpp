@@ -87,7 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
@@ -794,7 +794,6 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 
 INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	char nameident[256];
-	string tmp;
 	
 	INTERACTIVE_OBJ * io;
 	
@@ -824,33 +823,24 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 #endif
 		{
 			io->ident = ident;
-			tmp = tmp = io->full_name(); // Get the directory name to check for
+			string tmp = toLowercase(io->full_name()); // Get the directory name to check for
+			string id = toLowercase(io->short_name()); // TODO(case-sensitive) remove toLowercase
 
-			if (PAK_DirectoryExist(tmp))
-			{
-				tmp += '\\' + io->short_name() + ".asl"; // Create the filename to be loaded
-
-				if (PAK_FileExist(tmp))
-				{
-					if (io->over_script.data)
-					{
+			if(PakDirectory * dir = resources->getDirectory(tmp)) {
+				if(PakFile * file = dir->getFile(id + ".asl")) {
+					if(io->over_script.data) {
 						free(io->over_script.data);
 						io->over_script.data = NULL;
 					}
-
-					size_t FileSize;
-					io->over_script.data = (char *)PAK_FileLoadMallocZero(tmp, FileSize);
-
-					if (io->over_script.data != NULL)
-					{
-						LogDebug << "Loaded overscript " << tmp << " for IO " << io->filename;
-						io->over_script.size = FileSize;
+					
+					io->over_script.data = file->readAlloc();
+					io->over_script.size = file->size();
+					if(io->over_script.data) {
+						LogDebug << "Loaded overscript " << tmp << '\\' + id + ".asl for IO " << io->filename;
 						InitScript(&io->over_script);
 					}
-
-					if (io->script.data != NULL)
-						io->over_script.master = &io->script;
-					else io->over_script.master = NULL;
+					
+					io->over_script.master = (io->script.data != NULL) ? &io->script : NULL;
 				}
 			} else {
 				CreateFullPath(tmp);
@@ -902,23 +892,24 @@ long DanaeLoadLevel(const string & fic) {
 	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(fic);
 	
-	string fileDlf = fic;
-	// SetExt(fileDlf, ".DLF");
 	string fic2 = fic;
 	SetExt(fic2, ".LLF");
 
 	LogDebug << "fic2 " << fic2;
-	LogDebug << "fileDlf " << fileDlf;
+	LogDebug << "fileDlf " << fic;
 
-	if(!PAK_FileExist(fileDlf)) {
-		LogError << "Unable to find " << fileDlf;
+	size_t FileSize = 0;
+	char * dat = resources->readAlloc(fic, FileSize);
+	
+	if(!dat) {
+		LogError << "Unable to find " << fic;
 		return -1;
 	}
 	
+	PakFile * llfFile = resources->getFile(fic2);
+	
 	strcpy(LastLoadedDLF, fic.c_str());
 	
-	size_t FileSize = 0;
-	char * dat = (char*)PAK_FileLoadMalloc(fic, FileSize);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
@@ -944,7 +935,7 @@ long DanaeLoadLevel(const string & fic) {
 		free(torelease);
 		pos = 0;
 		if(!dat) {
-			LogError << "STD_Explode did not return anything " << fileDlf;
+			LogError << "STD_Explode did not return anything " << fic;
 			return -1;
 		}
 	}
@@ -953,7 +944,7 @@ long DanaeLoadLevel(const string & fic) {
 	player.desiredangle = player.angle = subj.angle = dlh.angle_edit;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE")) {
-		LogError << "Not a valid file "<< fileDlf;
+		LogError << "Not a valid file "<< fic;
 		return -1;
 	}
 	
@@ -1064,7 +1055,7 @@ long DanaeLoadLevel(const string & fic) {
 		pos += sizeof(DANAE_LS_LIGHTINGHEADER);
 		long bcount = dll->nb_values;
 		
-		if(!PAK_FileExist(fic2)) {
+		if(!llfFile) {
 			
 			LastLoadedLightningNb = bcount;
 			if(LastLoadedLightning != NULL) {
@@ -1105,7 +1096,7 @@ long DanaeLoadLevel(const string & fic) {
 		dlh.nb_lights = 0;
 	}
 	
-	if(!PAK_FileExist(fic2)) {
+	if(!llfFile) {
 		
 		if(dlh.nb_lights != 0) {
 			EERIE_LIGHT_GlobalInit();
@@ -1289,19 +1280,19 @@ long DanaeLoadLevel(const string & fic) {
 	pos = 0;
 	dat = NULL;
 	
-	if(PAK_FileExist(fic2)) {
+	if(llfFile) {
 		
 		ClearCurLoadInfo();
 		LogDebug << "Loading LLF Info";
 		
 		// using compression
 		if(dlh.version >= 1.44f) {
-			size_t size;
-			char * compressed = (char *)PAK_FileLoadMalloc(fic2, size);
-			dat = (char*)blastMemAlloc(compressed, size, FileSize);
+			char * compressed = llfFile->readAlloc();
+			dat = (char*)blastMemAlloc(compressed, llfFile->size(), FileSize);
 			free(compressed);
 		} else {
-			dat = (char*)PAK_FileLoadMalloc(fic2, FileSize);
+			dat = llfFile->readAlloc();
+			FileSize = llfFile->size();
 		}
 	}
 	// TODO size ignored
@@ -1754,13 +1745,11 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	size_t FileSize = 0;
 
 	SetExt(fic, ".DLF");
-
-	if (!PAK_FileExist(fic))
-	{
+	
+	dat = (unsigned char *)resources->readAlloc(fic, FileSize);
+	if(!dat) {
 		return;
 	}
-
-	dat = (unsigned char *)PAK_FileLoadMalloc(fic, FileSize);
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
 

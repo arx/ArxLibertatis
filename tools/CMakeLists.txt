@@ -18,9 +18,10 @@ add_executable(unpaker
 	savetool/Filesystem_C.cpp
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
-	../src/io/HashMap.cpp
 	../src/io/Logger.cpp
 	../src/io/Blast.cpp
+	../src/platform/String.cpp
+	../src/platform/Platform.cpp
 )
 
 add_executable(savetool
@@ -33,8 +34,8 @@ add_executable(savetool
 	../src/io/FilePath.cpp
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
-	../src/io/PakManager.cpp
 	../src/platform/String.cpp
+	../src/platform/Platform.cpp
 )
 
 target_link_libraries(savetool ${ZLIB_LIBRARIES})

@@ -35,7 +35,7 @@
 
 #include "io/Logger.h"
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 
 #include "physics/Attractors.h"
 #include "physics/CollisionShapes.h"
@@ -1302,7 +1302,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							strcat(temp2, ".cin");
 							word += ".cin";
 
-							if (PAK_FileExist(temp2))
+							if (resources->getFile(temp2))
 							{
 								strcpy(WILL_LAUNCH_CINE, word.c_str());
 								CINE_PRELOAD = preload;
@@ -4380,7 +4380,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								SetExt(tex3, ".tea");
 								File_Standardize(tex3, tex2);
 
-								if (PAK_FileExist(tex2))
+								if (resources->getFile(tex2))
 								{
 									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2);
 

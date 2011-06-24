@@ -16,32 +16,15 @@ using std::transform;
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 
-void dump(PakReader & pak, const PakDirectory * dir, const string  & where = string()) {
-	
-	if(!dir) {
-		return;
-	}
-	
-	string dirname = where;
-	if(dir->name) {
-		string n = dir->name;
-		transform(n.begin(), n.end(), n.begin(), tolower);
-		if(!n.empty() && *n.rbegin() == '\\') {
-			dirname += n.substr(0, n.size() - 1);
-		} else {
-			dirname += n;
-		}
-		dirname += "/";
-	}
+void dump(PakDirectory & dir, const string  & dirname = string()) {
 	
 	CreateFullPath(dirname);
 	
-	PakFile * file = dir->files;
-	while(file != NULL) {
+	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
 		
-		string fn = file->name;
-		transform(fn.begin(), fn.end(), fn.begin(), tolower);
-		string filename = dirname + fn;
+		string filename = dirname + i->first;
+		
+		PakFile * file = i->second;
 		
 		printf("%s\n", filename.c_str());
 		
@@ -51,13 +34,12 @@ void dump(PakReader & pak, const PakDirectory * dir, const string  & where = str
 			exit(1);
 		}
 		
-		if(file->size && (!(file->flags & PAK_FILE_COMPRESSED) || file->uncompressedSize)) {
+		if(file->size() > 0) {
 			
-			size_t size;
-			char * data = (char*)pak.ReadAlloc(filename, size);
+			char * data = (char*)file->readAlloc();
 			assert(data != NULL);
 			
-			if(fwrite(data, size, 1, f) != 1) {
+			if(fwrite(data, file->size(), 1, f) != 1) {
 				printf("error writing to file: %s\n", filename.c_str());
 				fclose(f);
 				exit(1);
@@ -68,13 +50,11 @@ void dump(PakReader & pak, const PakDirectory * dir, const string  & where = str
 		}
 		
 		fclose(f);
-		
-		file = file->next;
 	}
 	
-	dump(pak, dir->children, dirname);
-	
-	dump(pak, dir->next, where);
+	for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
+		dump(i->second, dirname + i->first + '/');
+	}
 	
 }
 
@@ -88,12 +68,12 @@ int main(int argc, char ** argv) {
 	for(int i = 1; i < argc; i++) {
 		
 		PakReader pak;
-		if(!pak.Open(argv[i])) {
+		if(!pak.addArchive(argv[i])) {
 			printf("error opening PAK file\n");
 			return 1;
 		}
 		
-		dump(pak, pak.root);
+		dump(pak);
 		
 	}
 	

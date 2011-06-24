@@ -52,9 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
 #include "io/PakReader.h"
-#include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/IniReader.h"
@@ -1274,52 +1272,16 @@ void ARX_SOUND_AmbianceRestorePlayList(void * _play_list, unsigned long size)
 	}
 }
 
-// PâBôMéJèMçA
-extern PakManager * pPakManager;
-static void ARX_SOUND_CreateEnvironments()
-{
-	if (FINAL_RELEASE)
-	{
-		const char PAK_SFX[] = "sfx.pak";
-		
-		if (!pPakManager) pPakManager = new PakManager;
-
-		if (!pPakManager->AddPak(PAK_SFX)) return;
-
-		vector<PakDirectory*> directories;
-		pPakManager->GetDirectories(ARX_SOUND_PATH_ENVIRONMENT, directories);
-
-		vector<PakDirectory *>::iterator iv;
-		for (iv = directories.begin(); iv < directories.end(); ++iv)
-		{
-			int nb = (*iv)->nbfiles;
-			PakFile * et = (*iv)->files;
-
-			while (nb--)
-			{
-				aalCreateEnvironment(et->name);
-				et = et->next;
-			}
-		}
+static void ARX_SOUND_CreateEnvironments() {
+	
+	PakDirectory * dir = resources->getDirectory(ARX_SOUND_PATH_ENVIRONMENT);
+	
+	if(!dir) {
+		return;
 	}
-	else
-	{
-		char path[512] = "";
-		WIN32_FIND_DATA fdata;
-		HANDLE fhandle;
-
-		sprintf(path, "sfx\\environment\\*.aef");
-
-		if ((fhandle = FindFirstFile(path, &fdata)) != INVALID_HANDLE_VALUE)
-		{
-			do
-			{
-				aalCreateEnvironment(fdata.cFileName);
-			}
-			while (FindNextFile(fhandle, &fdata));
-
-			FindClose(fhandle);
-		}
+	
+	for(PakDirectory::files_iterator i = dir->files_begin(); i != dir->files_end(); i++) {
+		aalCreateEnvironment(i->first);
 	}
 }
 
@@ -1744,7 +1706,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 		string file = ARX_SOUND_PATH_INI + ARX_SOUND_COLLISION_MAP_NAMES[i] + ARX_SOUND_FILE_EXTENSION_INI;
 		
 		size_t fileSize;
-		char * data = (char *)PAK_FileLoadMalloc(file.c_str(), fileSize);
+		char * data = resources->readAlloc(file, fileSize);
 		if(!data) {
 			LogWarning << "could not find collision map " << file;
 			return;
@@ -1893,7 +1855,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 	string file = ARX_SOUND_PATH_INI + ARX_SOUND_PRESENCE_NAME + ARX_SOUND_FILE_EXTENSION_INI;
 	
 	size_t fileSize;
-	char * data = (char *)PAK_FileLoadMalloc(file.c_str(), fileSize);
+	char * data = resources->readAlloc(file, fileSize);
 	if(!data) {
 		LogWarning << "could not find presence map " << file;
 		return;

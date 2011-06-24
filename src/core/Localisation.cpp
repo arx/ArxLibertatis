@@ -34,7 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Unicode.hpp"
 #include "core/Config.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 #include "io/IniReader.h"
 
@@ -62,7 +62,7 @@ void LocalisationInit() {
 	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
 	// Attempt loading the selected locale file
-	u16 * Localisation = (u16*)PAK_FileLoadMalloc( tx, loc_file_size );
+	u16 * Localisation = (u16*)resources->readAlloc(tx, loc_file_size);
 
 	// if no file was loaded
 	if ( !Localisation )
@@ -72,7 +72,7 @@ void LocalisationInit() {
 		tx = "localisation\\utext_" + config.language + ".ini";
 
 		// Load the default english locale file
-		Localisation = (u16*)PAK_FileLoadMalloc( tx, loc_file_size );
+		Localisation = (u16*)resources->readAlloc(tx, loc_file_size);
 	}
 	
 	u16 * toFree = Localisation;

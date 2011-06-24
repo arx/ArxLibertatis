@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioSource.h"
 #include "audio/Mixer.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 
 #include "platform/String.h"
 #include "platform/Flags.h"
@@ -68,10 +68,10 @@ struct KeySetting {
 		
 		f32 _min, _max;
 		u32 _interval, _flags;
-		if(!PAK_fread(&_min, 4, 1, file) ||
-		   !PAK_fread(&_max, 4, 1, file) ||
-		   !PAK_fread(&_interval, 4, 1, file) ||
-		   !PAK_fread(&_flags, 4, 1, file)) {
+		if(!file->read(&_min, 4) ||
+		   !file->read(&_max, 4) ||
+		   !file->read(&_interval, 4) ||
+		   !file->read(&_flags, 4)) {
 			return false;
 		}
 		min = _min, max = _max, interval = _interval;
@@ -119,7 +119,7 @@ struct KeySetting {
 		}
 		
 		return cur;
-	}
+	};
 	
 };
 
@@ -143,11 +143,11 @@ struct TrackKey {
 		
 		u32 _start, _loop, _delay_min, _delay_max, _flags;
 		
-		if(!PAK_fread(&_flags, 4, 1, file) ||
-		   !PAK_fread(&_start, 4, 1, file) ||
-		   !PAK_fread(&_loop, 4, 1, file) ||
-		   !PAK_fread(&_delay_min, 4, 1, file) ||
-		   !PAK_fread(&_delay_max, 4, 1, file) ||
+		if(!file->read(&_flags, 4) ||
+		   !file->read(&_start, 4) ||
+		   !file->read(&_loop, 4) ||
+		   !file->read(&_delay_min, 4) ||
+		   !file->read(&_delay_max, 4) ||
 		   !volume.load(file) ||
 		   !pitch.load(file) ||
 		   !pan.load(file) ||
@@ -304,7 +304,7 @@ static SampleId _loadSample(PakFileHandle * file) {
 	char text[256];
 	size_t k = 0;
 	do {
-		if(!PAK_fread(&text[k], 1, 1, file)) {
+		if(!file->read(&text[k], 1)) {
 			return AAL_ERROR_FILEIO;
 		}
 	} while (text[k++]);
@@ -332,7 +332,7 @@ static aalError _LoadAmbiance_1001(PakFileHandle * file, size_t track_c, Ambianc
 		// Read flags and key count
 		u32 flags;
 		u32 key_c;
-		if(!PAK_fread(&flags, 4, 1, file) || !PAK_fread(&key_c, 4, 1, file)) {
+		if(!file->read(&flags, 4) || !file->read(&key_c, 4)) {
 				return AAL_ERROR_FILEIO;
 		}
 		track->key_c = key_c;
@@ -371,7 +371,7 @@ static aalError _LoadAmbiance_1002(PakFileHandle * file, size_t track_c, Ambianc
 		size_t k = 0;
 		char text[256];
 		do {
-			if(!PAK_fread(&text[k], 1, 1, file)) return AAL_ERROR_FILEIO;
+			if(!file->read(&text[k], 1)) return AAL_ERROR_FILEIO;
 		}
 		while(text[k++]);
 		if(k > 1) {
@@ -381,7 +381,7 @@ static aalError _LoadAmbiance_1002(PakFileHandle * file, size_t track_c, Ambianc
 		// Read flags and key count
 		u32 flags;
 		u32 key_c;
-		if(!PAK_fread(&flags, 4, 1, file) || !PAK_fread(&key_c, 4, 1, file)) {
+		if(!file->read(&flags, 4) || !file->read(&key_c, 4)) {
 				return AAL_ERROR_FILEIO;
 		}
 		track->key_c = key_c;
@@ -422,7 +422,7 @@ static aalError _LoadAmbiance_1003(PakFileHandle * file, size_t track_c, Ambianc
 		size_t k = 0;
 		char text[256];
 		do {
-			if(!PAK_fread(&text[k], 1, 1, file)) {
+			if(!file->read(&text[k], 1)) {
 				return AAL_ERROR_FILEIO;
 			}
 		} while(text[k++]);
@@ -433,7 +433,7 @@ static aalError _LoadAmbiance_1003(PakFileHandle * file, size_t track_c, Ambianc
 		// Read flags and key count
 		u32 flags;
 		u32 key_c;
-		if(!PAK_fread(&flags, 4, 1, file) || !PAK_fread(&key_c, 4, 1, file)) {
+		if(!file->read(&flags, 4) || !file->read(&key_c, 4)) {
 				return AAL_ERROR_FILEIO;
 		}
 		track->key_c = key_c;
@@ -474,22 +474,22 @@ aalError Ambiance::load() {
 	
 	// Read file signature and version
 	u32 sign, version;
-	if(!PAK_fread(&sign, 4, 1, file) || !PAK_fread(&version, 4, 1, file)) {
-		PAK_fclose(file);
+	if(!file->read(&sign, 4) || !file->read(&version, 4)) {
+		delete file;
 		return AAL_ERROR_FILEIO;
 	}
 	
 	// Check file signature
 	if(sign != AMBIANCE_FILE_SIGNATURE || version > AMBIANCE_FILE_VERSION) {
-		PAK_fclose(file);
+		delete file;
 		return AAL_ERROR_FORMAT;
 	}
 	
 	// Read track count and initialize track structures
-	PAK_fread(&track_c, 4, 1, file);
+	file->read(&track_c, 4);
 	track_l = new Track[track_c];
 	if(!track_l) {
-		PAK_fclose(file);
+		delete file;
 		return AAL_ERROR_MEMORY;
 	}
 	
@@ -508,7 +508,7 @@ aalError Ambiance::load() {
 			error = AAL_ERROR;
 	}
 	
-	PAK_fclose(file);
+	delete file;
 	
 	return error;
 }

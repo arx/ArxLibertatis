@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioResource.h"
 #include "audio/AudioGlobal.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 
 using std::string;
 
@@ -53,20 +53,20 @@ aalError Environment::load() {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!PAK_fread(&size, 4, 1, file)
-	   || !PAK_fread(&diffusion, 4, 1, file)
-	   || !PAK_fread(&absorption, 4, 1, file)
-	   || !PAK_fread(&reflect_volume, 4, 1, file)
-	   || !PAK_fread(&reflect_delay, 4, 1, file)
-	   || !PAK_fread(&reverb_volume, 4, 1, file)
-	   || !PAK_fread(&reverb_delay, 4, 1, file)
-	   || !PAK_fread(&reverb_decay, 4, 1, file)
-	   || !PAK_fread(&reverb_hf_decay, 4, 1, file)) {
-		PAK_fclose(file);
+	if(!file->read(&size, 4)
+	   || !file->read(&diffusion, 4)
+	   || !file->read(&absorption, 4)
+	   || !file->read(&reflect_volume, 4)
+	   || !file->read(&reflect_delay, 4)
+	   || !file->read(&reverb_volume, 4)
+	   || !file->read(&reverb_delay, 4)
+	   || !file->read(&reverb_decay, 4)
+	   || !file->read(&reverb_hf_decay, 4)) {
+		delete file;
 		return AAL_ERROR_FILEIO;
 	}
 	
-	PAK_fclose(file);
+	delete file;
 	
 	return AAL_OK;
 }

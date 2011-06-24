@@ -36,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "platform/String.h"
@@ -305,23 +305,15 @@ CinematicBitmap* CreateCinematicBitmap(const string & path, int scale) {
 
 	LogDebug << "loading cinematic texture " << path;
 
-	char * data = 0;
 	size_t size = 0;
 	
 	string filename = path;
 	SetExt(filename, ".bmp");
-	if (PAK_FileExist(filename))
-	{
-		data = (char*)PAK_FileLoadMalloc(filename, size);
-	}
-	else
-	{
+	char * data = resources->readAlloc(filename, size);
+	if(!data) {
 		SetExt(filename, ".tga");
-		if (PAK_FileExist(filename))
-		{
-			data = (char*)PAK_FileLoadMalloc(filename, size);
-			}
-		}
+		data = resources->readAlloc(filename, size);
+	}
 
 	if(!data)
 		{

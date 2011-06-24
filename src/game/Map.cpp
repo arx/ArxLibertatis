@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Frame.h"
 #include "graphics/data/Texture.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
@@ -540,15 +540,11 @@ float oldposx,oldposz;
 }
 
 //-----------------------------------------------------------------------------
-bool NeedMapCreation()
-{
+bool NeedMapCreation() {
 	char name[256];
-	GetLevelNameByNum(CURRENTLEVEL,name);	
-	sprintf(ThisLevelMap,"\\Graph\\Levels\\Level%s\\map.bmp",name);
-
-	if (PAK_FileExist(ThisLevelMap)) return false;
-
-	return true;
+	GetLevelNameByNum(CURRENTLEVEL, name);	
+	sprintf(ThisLevelMap, "\\Graph\\Levels\\Level%s\\map.bmp", name);
+	return (resources->getFile(ThisLevelMap) == NULL);
 }
 
 //***********************************************************************************************

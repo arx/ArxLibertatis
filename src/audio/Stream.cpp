@@ -30,7 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioGlobal.h"
 #include "audio/codec/WAV.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 using std::string;
@@ -44,13 +44,13 @@ Stream * createStream(const string & name) {
 		return NULL;
 	}
 	
-	PAK_fseek(file, 0, SEEK_SET);
+	file->seek(SeekSet, 0);
 	
 	Stream * stream = new StreamWAV;
 	
 	if(stream->setStream(file)) {
 		delete stream;
-		PAK_fclose(file);
+		delete file;
 		return NULL;
 	}
 	
@@ -59,7 +59,7 @@ Stream * createStream(const string & name) {
 
 void deleteStream(Stream *& stream) {
 	PakFileHandle * file = stream->getStream();
-	PAK_fclose(file);
+	delete file;
 	delete stream;
 	stream = NULL;
 }

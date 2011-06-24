@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "physics/Clothes.h"
@@ -293,7 +293,7 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
 	}
 	
 	size_t FileSize;
-	unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc( path, FileSize );
+	unsigned char * adr = (unsigned char *)resources->readAlloc(path, FileSize);
 	if(!adr) {
 		return 0;
 	}
@@ -334,7 +334,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 	{
 		if (animations[i].path[0]==0)
 		{				
-			if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,FileSize))!=NULL)
+			if ((adr=(unsigned char *)resources->readAlloc(path,FileSize))!=NULL)
 			{
 				animations[i].anims=(EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
 				animations[i].sizes=(long *)malloc(sizeof(long));

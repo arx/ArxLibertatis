@@ -72,8 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
-#include "io/PakEntry.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
@@ -95,7 +94,6 @@ using std::max;
 using std::string;
 
 extern char LastLoadedScene[256];
-extern PakManager * pPakManager;
 
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
@@ -1213,120 +1211,30 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms) {
 	free(ms);
 }
 
-static EERIE_MULTI3DSCENE * MultiSceneToEerie(const string & dirr) {
-	
-	EERIE_MULTI3DSCENE * es;
-	char pathh[512];
-
-	es = allocStructZero<EERIE_MULTI3DSCENE>();
-
-	strcpy(LastLoadedScene, dirr.c_str());
-	sprintf(pathh, "%s*.scn", dirr.c_str());
-
-	LogWarning << "partially unimplemented MultiSceneToEerie";
-//	TODO: finddata
-//	long idx;
-//	struct _finddata_t fd;
-//	if ((idx = _findfirst(pathh, &fd)) != -1)
-//	{
-//		do
-//		{
-//			if (!(fd.attrib & _A_SUBDIR))
-//			{
-//				char * tex = GetExt(fd.name);
-//
-//				if (!strcasecmp(tex, ".SCN"))
-//				{
-//					char path[512];
-//					sprintf(path, "%s%s", dirr, fd.name);
-//					size_t SizeAlloc = 0;
-//
-//					unsigned char * adr;
-//					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
-//					{
-//						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path);
-//						es->nb_scenes++;
-//						free(adr);
-//					}
-//				}
-//			}
-//		}
-//		while (!(_findnext(idx, &fd)));
-//
-//		_findclose(idx);
-//	}
-
-	es->cub.xmax = -9999999999.f;
-	es->cub.xmin = 9999999999.f;
-	es->cub.ymax = -9999999999.f;
-	es->cub.ymin = 9999999999.f;
-	es->cub.zmax = -9999999999.f;
-	es->cub.zmin = 9999999999.f;
-
-	for (long i = 0; i < es->nb_scenes; i++)
-	{
-		es->cub.xmax = max(es->cub.xmax, es->scenes[i]->cub.xmax);
-		es->cub.xmin = min(es->cub.xmin, es->scenes[i]->cub.xmin);
-		es->cub.ymax = max(es->cub.ymax, es->scenes[i]->cub.ymax);
-		es->cub.ymin = min(es->cub.ymin, es->scenes[i]->cub.ymin);
-		es->cub.zmax = max(es->cub.zmax, es->scenes[i]->cub.zmax);
-		es->cub.zmin = min(es->cub.zmin, es->scenes[i]->cub.zmin);
-		es->pos.x = es->scenes[i]->pos.x;
-		es->pos.y = es->scenes[i]->pos.y;
-		es->pos.z = es->scenes[i]->pos.z;
-
-		if ((es->scenes[i]->point0.x != -999999999999.f) &&
-		        (es->scenes[i]->point0.y != -999999999999.f) &&
-		        (es->scenes[i]->point0.z != -999999999999.f))
-		{
-			es->point0.x = es->scenes[i]->point0.x;
-			es->point0.y = es->scenes[i]->point0.y;
-			es->point0.z = es->scenes[i]->point0.z;
-		}
-	}
-
-	if (es->nb_scenes == 0)
-	{
-		free(es);
-		return NULL;
-	}
-
-	return es;
-}
-
 static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 	
 	EERIE_MULTI3DSCENE * es;
 	
 	es = allocStructZero<EERIE_MULTI3DSCENE>();
-
+	
 	strcpy(LastLoadedScene, dirr.c_str());
-
+	
 	string path = dirr;
 	RemoveName(path);
-
-	vector<PakDirectory *> directories;
-	pPakManager->GetDirectories(path, directories);
-
-	vector<PakDirectory *>::iterator it;
-	for(it = directories.begin(); it < directories.end(); ++it) {
-		int nb = (*it)->nbfiles;
-		PakFile * et;
-		et = (*it)->files;
-		
-		while(nb--) {
-			if(!strcasecmp(GetExt( et->name), ".scn")) {
-				
-				size_t SizeAlloc;
-				unsigned char * adr = (unsigned char*)PAK_FileLoadMalloc(dirr + et->name, SizeAlloc);
-				if(adr) {
-					es->scenes[es->nb_scenes] = ScnToEerie(adr, SizeAlloc, path);
-					es->nb_scenes++;
-					free(adr);
-				}
+	
+	PakDirectory * dir = resources->getDirectory(toLowercase(path)); // TODO(case-sensitive) remove toLowercase
+	if(dir) {
+		for(PakDirectory::files_iterator i = dir->files_begin(); i != dir->files_end(); i++) {
+			if(GetExt(i->first) != ".scn") {
+				continue;
 			}
 			
-			et = et->next;
+			unsigned char * adr = (unsigned char*)i->second->readAlloc();
+			if(adr) {
+				es->scenes[es->nb_scenes] = ScnToEerie(adr, i->second->size(), path);
+				es->nb_scenes++;
+				free(adr);
+			}
 		}
 	}
 	
@@ -1370,15 +1278,8 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const string & dirr) {
 	LogDebug << "Loading Multiscene " << dirr;
 	
 	EERIE_MULTI3DSCENE * em = NULL;
-
-// TODO create unified implementation for both pak and non-pak
-// TODO is this even used?
 	
 	em = _PAK_MultiSceneToEerie(dirr);
-
-	if(!em)
-		em = MultiSceneToEerie(dirr);
-
 
 	EERIEPOLY_Compute_PolyIn();
 	return em;
@@ -2179,7 +2080,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 	if(!ret) {
 		
 		size_t size = 0;
-		unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(file, size);
+		unsigned char * adr = (unsigned char *)resources->readAlloc(file, size);
 		
 		if(!adr) {
 			return NULL;

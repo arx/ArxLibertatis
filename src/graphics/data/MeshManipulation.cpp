@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "platform/String.h"
@@ -800,7 +800,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 	SetExt(filet, ".FTL");
 	File_Standardize(filet, file2);
 
-	if ((!PAK_FileExist(file2)) && (!PAK_FileExist(path))) return;
+	if ((!resources->getFile(file2)) && (!resources->getFile(path))) return;
 
 	if (tw == TWEAK_ERROR) return;
 
@@ -826,7 +826,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 	EERIE_3DOBJ * result = NULL;
 	EERIE_3DOBJ * result2 = NULL;
 
-	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
+	if ((resources->getFile(file2)) || (resources->getFile(path)))
 	{
 		tobj = loadObject(path);
 

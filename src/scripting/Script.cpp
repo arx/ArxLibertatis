@@ -5446,8 +5446,8 @@ long GetSubStack(EERIE_SCRIPT * es)
 	return -1;
 }
 
-void InitScript(EERIE_SCRIPT * es)
-{
+void InitScript(EERIE_SCRIPT * es) {
+	
 	for (size_t i = 0; i < MAX_GOSUB; i++)
 	{
 		es->sub[i] = -1;

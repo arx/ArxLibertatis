@@ -1,7 +1,7 @@
 #include "Image.h"
 
 #include "graphics/Math.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 
 #include <map>
 #include <il.h>
@@ -164,7 +164,7 @@ bool Image::IsCompressed( Image::Format pFormat )
 bool Image::LoadFromFile( const std::string& filename )
 {
 	size_t size = 0;
-	void* pData = PAK_FileLoadMalloc(filename, size);
+	void * pData = resources->readAlloc(filename, size);
 	
 	if(!pData) 
 		return false;

@@ -77,7 +77,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/font/Font.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
 #include "io/Logger.h"
 
 using std::max;

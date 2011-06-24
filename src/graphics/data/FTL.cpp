@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
@@ -430,7 +430,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	SetExt(filename, ".FTL");
 	
 	// Checks for FTL file existence
-	if(!PAK_FileExist(filename.c_str())) {
+	PakFile * pf = resources->getFile(filename);
+	if(!pf) {
 		LogError << "ARX_FTL_Load: not found in PAK " << filename;
 		return NULL;
 	}
@@ -441,7 +442,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	
 	bool NOrelease = true;
 	if(!compressedData) {
-		compressedData = (char *)PAK_FileLoadMalloc(filename, compressedSize);
+		compressedData = pf->readAlloc();
+		compressedSize = pf->size();
 		NOrelease = MCache_Push(filename, compressedData, compressedSize) ? 1 : 0;
 	}
 	
@@ -451,7 +453,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	}
 	
 	size_t allocsize; // The size of the data
-	char * dat = blastMemAlloc(compressedData, compressedSize, allocsize);//pos,&cpr_pos);
+	char * dat = blastMemAlloc(compressedData, compressedSize, allocsize);
 	// TODO size ignored
 	
 	if(!dat) {

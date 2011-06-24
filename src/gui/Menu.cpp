@@ -95,7 +95,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/font/Font.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "scene/LoadLevel.h"
@@ -396,7 +396,7 @@ void ARX_Menu_Resources_Create() {
 	string creditsFile = "localisation\\ucredits_" +  config.language + ".txt";
 	
 	size_t creditsSize;
-	u16 * creditsData = (u16*)PAK_FileLoadMalloc(creditsFile, creditsSize);
+	u16 * creditsData = (u16*)resources->readAlloc(creditsFile, creditsSize);
 	
 	if(!creditsData) {
 		LogWarning << "unable to read credits file " << creditsFile;

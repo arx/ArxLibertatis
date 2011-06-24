@@ -81,7 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
@@ -3217,7 +3217,7 @@ bool FastSceneLoad(const string & partial_path) {
 	string file = path + "fast.fts";
 	
 	size_t size;
-	char * dat = (char *)PAK_FileLoadMalloc(file, size);
+	char * dat = resources->readAlloc(file, size);
 	if(!dat) {
 		LogError << "FastSceneLoad: could not find " << file;
 	}

@@ -285,9 +285,10 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 
 // TODO move into a separate header
 
-template <class STYPE>
-inline const char * safeGetString(const char * & pos, STYPE & size) {	
-	const char * begin = pos;
+template <class CTYPE, class STYPE>
+inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {	
+	
+	CTYPE * begin = pos;
 	
 	for(size_t i = 0; i < size; i++) {
 		if(pos[i] == 0) {
@@ -300,8 +301,9 @@ inline const char * safeGetString(const char * & pos, STYPE & size) {
 	return NULL;
 }
 
-template <class T, class STYPE>
-inline bool safeGet(T & data, const char * & pos, STYPE & size) {
+template <class T, class CTYPE, class STYPE>
+inline bool safeGet(T & data, CTYPE * & pos, STYPE & size) {
+	
 	if(size < sizeof(T)) {
 		return false;
 	}

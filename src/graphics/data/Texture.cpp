@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Renderer.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "platform/Platform.h"
@@ -308,11 +308,11 @@ bool TextureContainer::LoadFile(const std::string& strPathname)
 	MakeUpcase( m_texName );
 	
 	std::string tempPath = m_texName;
-	bool foundPath = PAK_FileExist(SetExt(tempPath, ".png"));
-	foundPath = foundPath || PAK_FileExist(SetExt(tempPath, ".jpg"));
-	foundPath = foundPath || PAK_FileExist(SetExt(tempPath, ".jpeg"));
-	foundPath = foundPath || PAK_FileExist(SetExt(tempPath, ".bmp"));
-	foundPath = foundPath || PAK_FileExist(SetExt(tempPath, ".tga"));
+	bool foundPath = resources->getFile(SetExt(tempPath, ".png"));
+	foundPath = foundPath || resources->getFile(SetExt(tempPath, ".jpg"));
+	foundPath = foundPath || resources->getFile(SetExt(tempPath, ".jpeg"));
+	foundPath = foundPath || resources->getFile(SetExt(tempPath, ".bmp"));
+	foundPath = foundPath || resources->getFile(SetExt(tempPath, ".tga"));
 
 	if(!foundPath)
 	{
@@ -455,7 +455,7 @@ static void ConvertData(string & dat) {
 static void LoadRefinementMap(const string & fileName, map<string, string> & refinementMap) {
 	
 	size_t fileSize = 0;
-	char * from = (char *)PAK_FileLoadMalloc(fileName, fileSize);
+	char * from = resources->readAlloc(fileName, fileSize);
 	if(!from) {
 		return;
 	}

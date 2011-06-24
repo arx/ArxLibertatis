@@ -85,7 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
@@ -1725,21 +1725,9 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	std::string texscript = io->filename;
 	SetExt(texscript, ".asl");
 
-	if ( PAK_FileExist(texscript) )
-	{
-		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMalloc(texscript, FileSize);
-
-		if (io->script.data != NULL)
-		{
-			io->script.size = FileSize;
-			InitScript(&io->script);
-		}
-	}
-	else
-	{
-		io->script.size = 0;
-		io->script.data = NULL;
+	io->script.data = resources->readAlloc(texscript, io->script.size);
+	if(io->script.data) {
+		InitScript(&io->script);
 	}
 
 

@@ -91,7 +91,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
@@ -179,8 +179,7 @@ std::string INTERACTIVE_OBJ::long_name() const
  * directory portion of the filename member is combined
  * with the the result of long_name()
  */
-std::string INTERACTIVE_OBJ::full_name() const
-{
+std::string INTERACTIVE_OBJ::full_name() const {
 	return GetDirectory( filename ) + long_name();
 }
 
@@ -2420,23 +2419,12 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	}
 }
 
-void GetIOScript( INTERACTIVE_OBJ * io, const std::string& texscript )
-{
-	if (PAK_FileExist(texscript))
-	{
-		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
-
-		if (io->script.data)
-		{
-			io->script.size = FileSize;
-			InitScript(&io->script);
-		}
-	}
-	else
-	{
-		io->script.size = 0;
-		io->script.data = NULL;
+void GetIOScript(INTERACTIVE_OBJ * io, const std::string & texscript) {
+	
+	io->script.data = resources->readAlloc(texscript, io->script.size);
+	
+	if(io->script.data) {
+		InitScript(&io->script);
 	}
 }
 
@@ -2465,9 +2453,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	file2 += file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
-	   && !PAK_FileExist(file))
-	{
+	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
 	}
 
@@ -2573,9 +2559,7 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
     file2 += file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
-	        && !PAK_FileExist(file))
-	{
+	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
 	}
 
@@ -2637,9 +2621,7 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
     file2 += file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
-	        &&	!PAK_FileExist(file))
-	{
+	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
 	}
 
@@ -2896,8 +2878,9 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
     file2 += file;
     SetExt(file2, ".FTL");
 
-	if ( ( !PAK_FileExist(file2) ) && ( !PAK_FileExist(file) ) )
+	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
+	}
 
 	LogDebug << "AddNPC " << file;
 
@@ -3002,41 +2985,16 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	if ( PAK_FileExist(texscript) )
-	{
-		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
-
-		if (io->script.data != NULL)
-		{
-			io->script.size = FileSize;
-			InitScript(&io->script);
-		}
-	}
-	else
-	{
-		io->script.size = 0;
-		io->script.data = NULL;
+	io->script.data = resources->readAlloc(texscript, io->script.size);
+	if(io->script.data) {
+		InitScript(&io->script);
 	}
 
 	texscript = io->full_name() + '\\' + io->short_name() + ".asl";
 
-	if (PAK_FileExist(texscript))
-	{
-		size_t FileSize = 0;
-		io->over_script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
-
-		if (io->over_script.data != NULL)
-		{
-			io->over_script.size = FileSize;
-			InitScript(&io->over_script);
-			io->over_script.master = (void *)&io->script;
-		}
-	}
-	else
-	{
-		io->over_script.size = 0;
-		io->over_script.data = NULL;
+	io->over_script.data = resources->readAlloc(texscript, io->over_script.size);
+	if(io->over_script.data) {
+		InitScript(&io->over_script);
 	}
 
 	long num = GetInterNum(io);
@@ -3140,8 +3098,9 @@ static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 	std::string file2 = io->filename;
 	RemoveName(file2);
 	file2 += ident;
+	makeLowercase(file2); // TODO(case-sensitive) remove
 
-	if (PAK_DirectoryExist(file2))
+	if(resources->getDirectory(file2))
 		return true;
 
 	if (LAST_CHINSTANCE != -1)
@@ -3222,11 +3181,13 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	file2 = "GAME\\" + file;
 	SetExt(file2, ".FTL");
 
-	if ( !PAK_FileExist(file2) && !PAK_FileExist(file) )
+	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
+	}
 
-	if (!PAK_FileExist(tex2))
+	if(!resources->getFile(tex2)) {
 		return NULL;
+	}
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 

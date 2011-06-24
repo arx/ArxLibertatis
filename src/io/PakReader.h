@@ -26,68 +26,56 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_IO_PAKREADER_H
 #define ARX_IO_PAKREADER_H
 
-class PakFile;
-class PakDirectory;
-class PakReader;
+#include <vector>
+#include <cstdio>
 
-typedef void * FileHandle;
+#include "io/PakEntry.h"
 
-#include <stddef.h>
-#include <cstdio> // for FILE
+enum Whence {
+	SeekSet,
+	SeekCur,
+	SeekEnd
+};
 
-#include <string>
-
-const size_t PACK_MAX_FREAD = 256;
-
-struct PakFileHandle {
+class PakFileHandle {
 	
-	PakReader * reader;
+public:
 	
-	bool active;
-	void * iID;
-	int offset;
-	PakFile * file;
+	virtual size_t read(void * buf, size_t size) = 0;
 	
-	FileHandle truefile;
+	virtual int seek(Whence whence, int offset) = 0;
+	
+	virtual size_t tell() const = 0;
+	
+	virtual ~PakFileHandle() { };
 	
 };
 
-class PakReader {
+class PakReader : public PakDirectory {
 	
 private:
 	
-	const char * fat;
-	FILE * file;
-	PakFileHandle tPackFile[PACK_MAX_FREAD];
+	std::vector<FILE *> paks;
 	
-public:
-	std::string pakname;
-	PakDirectory * root;
-	
-private:
-	
-	int ReadFAT_int();
-	char* ReadFAT_string();
+	bool addFiles(PakDirectory * dir, const std::string & path);
 	
 public:
 	
-	PakReader();
 	~PakReader();
 	
-	PakFile * getFile(const std::string& name);
+	PakFile * getFile(const std::string & path); // TODO remove
 	
-	bool Open(const std::string& pakfile);
-	void Close();
-	bool Read(const std::string& name, void * buf);
-	void * ReadAlloc(const std::string& name , size_t& size);
-	int GetSize(const std::string& name);
+	bool addFiles(const std::string & path);
+	bool addArchive(const std::string & pakfile);
+	void clear();
 	
-	PakFileHandle * fOpen(const std::string& name );
-	int fClose(PakFileHandle * h);
-	size_t fRead(void * buf, size_t size, size_t n, PakFileHandle * h);
-	int fSeek(PakFileHandle * h, int off, long whence);
-	long fTell(PakFileHandle * h);
+	bool read(const std::string & name, void * buf);
+	char * readAlloc(const std::string & name , size_t & size);
 	
-}; 
+	PakFileHandle * open(const std::string & name );
+	
+};
+
+extern PakReader * resources;
 
 #endif // ARX_IO_PAKREADER_H

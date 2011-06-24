@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 
 namespace audio {
 
@@ -48,7 +48,7 @@ void CodecRAW::setStream(PakFileHandle * _stream) {
 
 aalError CodecRAW::setPosition(size_t _position) {
 	
-	if(PAK_fseek(stream, _position, SEEK_CUR) == -1) {
+	if(stream->seek(SeekCur, _position) == -1) {
 		return AAL_ERROR_FILEIO;
 	}
 	
@@ -62,7 +62,7 @@ size_t CodecRAW::getPosition() {
 }
 
 aalError CodecRAW::read(void * buffer, size_t to_read, size_t & read) {
-	read = PAK_fread(buffer, 1, to_read, stream);
+	read = stream->read(buffer, to_read);
 	return AAL_OK;
 }
 

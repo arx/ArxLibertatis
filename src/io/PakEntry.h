@@ -26,67 +26,74 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_IO_PAKENTRY_H
 #define ARX_IO_PAKENTRY_H
 
-class HashMap;
+#include <map>
 
-#include <stddef.h>
-#include <string>
+#include "platform/String.h"
 
-#define PAK_FILE_COMPRESSED 1
+class PakFileHandle;
 
 class PakFile {
 	
+private:
+	
+	size_t _size;
+	
+	PakFile * _alternative;
+	
+protected:
+	
+	inline PakFile(size_t size) :  _size(size), _alternative(NULL) { };
+	
+	virtual ~PakFile();
+	
+	friend class PakReader;
+	friend class PakDirectory;
+	
 public:
 	
-	std::string name;
-	size_t size;
-	PakFile * prev;
-	PakFile * next;
-	size_t offset;
-	unsigned int flags;
-	size_t uncompressedSize;
+	inline size_t size() const { return _size; }
+	inline PakFile * alternative() const { return _alternative; }
 	
-public:
+	virtual void read(void * buf) const = 0;
+	char * readAlloc() const;
 	
-	PakFile( const std::string& n );
-	~PakFile();
+	virtual PakFileHandle * open() const = 0;
 	
 };
 
 class PakDirectory {
 	
-public:
+private:
 	
-	const char* name;
-	unsigned int nbsousreps;
-	unsigned int nbfiles;
-	PakDirectory * parent;
-	PakDirectory * children;
-	PakDirectory * prev;
-	PakDirectory * next;
+	std::map<std::string, PakFile *> files;
+	std::map<std::string, PakDirectory> dirs;
 	
-	PakFile * files;
+	PakDirectory * addDirectory(strref path);
 	
-	HashMap * filesMap;
+	void addFile(const std::string & name, PakFile * file);
 	
-public:
-	
-	PakDirectory( PakDirectory * p = 0, const std::string& n = "" );
+	PakDirectory();
 	~PakDirectory();
 	
-	PakDirectory * addDirectory(const std::string& sname);
+	friend class PakReader;
+	friend class std::map<std::string, PakDirectory>;
+	friend class std::pair<const std::string, PakDirectory>;
 	
-	bool removeDirectory(const std::string& dirname);
+public:
 	
-	PakFile * addFile(const std::string& filename);
+	typedef std::map<std::string, PakDirectory>::iterator dirs_iterator;
+	typedef std::map<std::string, PakFile *>::const_iterator files_iterator;
 	
-	PakDirectory * getDirectory(const std::string& dirname);
+	PakDirectory * getDirectory(strref path);
 	
-	PakFile * getFile(const std::string& dirplusfilename);
+	PakFile * getFile(const std::string & path);
 	
-	friend void kill(PakDirectory * r);
+	inline dirs_iterator dirs_begin() { return dirs.begin(); }
+	inline dirs_iterator dirs_end() { return dirs.end(); }
+	
+	inline files_iterator files_begin() { return files.begin(); }
+	inline files_iterator files_end() { return files.end(); }
 	
 };
-
-char * EVEF_GetDirName(const char * dirplusname);
 
 #endif // ARX_IO_PAKENTRY_H

@@ -36,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/CinematicTexture.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
 #include "io/CinematicFormat.h"
@@ -120,7 +120,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name) {
 	projectfile += name;
 	
 	size_t size;
-	char * data = (char*)PAK_FileLoadMalloc(projectfile, size);
+	char * data = resources->readAlloc(projectfile, size);
 	if(!data) {
 		LogError << "cinematic " << dir << name << " not found";
 		return false;

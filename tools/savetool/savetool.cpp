@@ -25,7 +25,7 @@ using std::transform;
 #include "io/SaveBlock.h"
 #include "io/Filesystem.h"
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "platform/String.h"
 #include "platform/Platform.h"
 
@@ -866,7 +866,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 		RemoveName(file);
 		file += ident;
 		
-		if(PAK_DirectoryExist(file)) {
+		if(resources->getDirectory(file)) {
 			continue;
 		}
 		
@@ -1120,7 +1120,9 @@ static int main_fix(SaveBlock & save, int argc, char ** argv) {
 		return 1;
 	}
 	
-	if(!PAK_AddPak("data.pak") || !PAK_AddPak("data2.pak")) {
+	resources = new PakReader();
+	
+	if(!resources->addArchive("data.pak") || !resources->addArchive("data2.pak") || !resources->addFiles(".")) {
 		printf("could not open pak files, run 'savetool fix' from the game directory\n");
 		return 3;
 	}

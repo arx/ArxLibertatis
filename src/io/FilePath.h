@@ -2,7 +2,10 @@
 #ifndef ARX_IO_FILEPATH_H
 #define ARX_IO_FILEPATH_H
 
-#include <string>
+#include "platform/String.h"
+
+const char EXT_OR_DIR_SEP[] = "./\\";
+const char DIR_SEP[] = "/\\";
 
 /**
  * Get the directory bit of a path, up until the last
@@ -10,7 +13,7 @@
  * @param path The path to get the directory from
  * @return The string before and including the last slash or an empty string
  */
-std::string GetDirectory( const std::string& path );
+std::string GetDirectory(const std::string & path);
 
 /**
  * Remove the filename and file extension from the given path,

@@ -92,7 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/SaveBlock.h"
@@ -1834,8 +1834,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	sprintf(tex, "LEVEL%s", lev);
 	sprintf(ftemp, "Graph\\Levels\\%s\\%s.DLF", tex, tex);
 
-	if (!PAK_FileExist(ftemp))
-	{
+	if(!resources->getFile(ftemp)) {
 		LogError << "Unable To Find " << ftemp;
 		return 0;
 	}
