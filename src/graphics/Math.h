@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define EERIEMATH_H
 
 #include <algorithm>
+#include <cstdlib>
 
 using std::min;
 using std::max;
@@ -549,7 +550,7 @@ inline float degrees(float radians){
 template <class T>
 inline T Rand( const T& pMin, const T& pMax )
 {
-    return pMin + (pMax - pMin) * rand() / (T)RAND_MAX;
+    return pMin + (pMax - pMin) * std::rand() / (T)RAND_MAX;
 }
 
 template <class T>
