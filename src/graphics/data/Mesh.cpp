@@ -3213,7 +3213,7 @@ bool FastSceneLoad(const string & partial_path) {
 		return false;
 	}
 	
-	string path = "Game\\" + partial_path;
+	string path = "game\\" + partial_path;
 	string file = path + "fast.fts";
 	
 	size_t size;
@@ -3223,10 +3223,10 @@ bool FastSceneLoad(const string & partial_path) {
 	}
 	
 	size_t pos = 0;
-	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
+	const UNIQUE_HEADER * uh = reinterpret_cast<const UNIQUE_HEADER *>(dat + pos);
 	pos += sizeof(UNIQUE_HEADER);
 	
-	if(!NOCHECKSUM && strcasecmp(uh->path, path)) {
+	if(!NOCHECKSUM && strcasecmp(uh->path, path.c_str())) {
 		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
 		free(dat);
 		return false;
@@ -3267,7 +3267,7 @@ bool FastSceneLoad(const string & partial_path) {
 	LoadLevelScreen();
 	pos = 0;
 	
-	FAST_SCENE_HEADER * fsh = (FAST_SCENE_HEADER *)(rawdata + pos);
+	const FAST_SCENE_HEADER * fsh = reinterpret_cast<const FAST_SCENE_HEADER *>(rawdata + pos);
 	pos += sizeof(FAST_SCENE_HEADER);
 	
 	if(fsh->version != FTS_VERSION) {
@@ -3289,8 +3289,9 @@ bool FastSceneLoad(const string & partial_path) {
 	typedef std::map<s32, TextureContainer *> TextureContainerMap;
 	TextureContainerMap textures;
 	for(long k = 0; k < fsh->nb_textures; k++) {
-		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(rawdata + pos);
-		TextureContainer * tmpTC = TextureContainer::Load(ftc->fic, TextureContainer::Level);
+		const FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<const FAST_TEXTURE_CONTAINER *>(rawdata + pos);
+		string file = toLowercase(safestring(ftc->fic));
+		TextureContainer * tmpTC = TextureContainer::Load(file, TextureContainer::Level);
 		if(tmpTC) {
 			textures[ftc->tc] = tmpTC;
 		}
@@ -3303,7 +3304,7 @@ bool FastSceneLoad(const string & partial_path) {
 	for(long j = 0; j < fsh->sizez; j++) {
 		for(long i = 0; i < fsh->sizex; i++) {
 			
-			FAST_SCENE_INFO * fsi = (FAST_SCENE_INFO *)(rawdata + pos);
+			const FAST_SCENE_INFO * fsi = reinterpret_cast<const FAST_SCENE_INFO *>(rawdata + pos);
 			pos += sizeof(FAST_SCENE_INFO);
 			
 			EERIE_BKG_INFO & bkg = ACTIVEBKG->Backg[i + (j * fsh->sizex)];
@@ -3325,7 +3326,7 @@ bool FastSceneLoad(const string & partial_path) {
 			
 			for(long k = 0; k < fsi->nbpoly; k++) {
 				
-				FAST_EERIEPOLY * ep = (FAST_EERIEPOLY *)(rawdata + pos);
+				const FAST_EERIEPOLY * ep = reinterpret_cast<const FAST_EERIEPOLY *>(rawdata + pos);
 				pos += sizeof(FAST_EERIEPOLY);
 				
 				EERIEPOLY * ep2 = &bkg.polydata[k];
@@ -3426,7 +3427,7 @@ bool FastSceneLoad(const string & partial_path) {
 			}
 			
 			for(long k = 0; k < fsi->nbianchors; k++) {
-				s32 * ianch = (s32 *)(rawdata + pos);
+				const s32 * ianch = reinterpret_cast<const s32 *>(rawdata + pos);
 				pos += sizeof(s32);
 				ACTIVEBKG->Backg[i+j * fsh->sizex].ianchors[k] = *ianch;
 			}
@@ -3446,7 +3447,7 @@ bool FastSceneLoad(const string & partial_path) {
 	
 	for(long i = 0; i < fsh->nb_anchors; i++) {
 		
-		FAST_ANCHOR_DATA * fad = (FAST_ANCHOR_DATA *)(rawdata + pos);
+		const FAST_ANCHOR_DATA * fad = reinterpret_cast<const FAST_ANCHOR_DATA *>(rawdata + pos);
 		pos += sizeof(FAST_ANCHOR_DATA);
 		
 		_ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
@@ -3463,7 +3464,7 @@ bool FastSceneLoad(const string & partial_path) {
 		}
 		
 		for(long kk = 0; kk < fad->nb_linked; kk++) {
-			s32 * lng = (s32 *)(rawdata + pos);
+			const s32 * lng = reinterpret_cast<const s32 *>(rawdata + pos);
 			pos += sizeof(s32);
 			anchor.linked[kk] = *lng;
 		}
@@ -3484,7 +3485,7 @@ bool FastSceneLoad(const string & partial_path) {
 		
 		for(long i = 0; i < portals->nb_total; i++) {
 			
-			EERIE_SAVE_PORTALS * epo = (EERIE_SAVE_PORTALS *)(rawdata + pos);
+			const EERIE_SAVE_PORTALS * epo = reinterpret_cast<const EERIE_SAVE_PORTALS *>(rawdata + pos);
 			pos += sizeof(EERIE_SAVE_PORTALS);
 			
 			EERIE_PORTALS & portal = portals->portals[i];
@@ -3512,7 +3513,7 @@ bool FastSceneLoad(const string & partial_path) {
 		
 		for(long i = 0; i < portals->nb_rooms + 1; i++) {
 			
-			EERIE_SAVE_ROOM_DATA * erd = (EERIE_SAVE_ROOM_DATA *)(rawdata + pos);
+			const EERIE_SAVE_ROOM_DATA * erd = reinterpret_cast<const EERIE_SAVE_ROOM_DATA *>(rawdata + pos);
 			pos += sizeof(EERIE_SAVE_ROOM_DATA);
 			
 			EERIE_ROOM_DATA & room = portals->room[i];
@@ -3523,18 +3524,18 @@ bool FastSceneLoad(const string & partial_path) {
 			
 			if(room.nb_portals) {
 				room.portals = (long *)malloc(sizeof(long) * room.nb_portals);
-				s32 * start = (s32 *)(rawdata + pos);
+				const s32 * start = reinterpret_cast<const s32 *>(rawdata + pos);
 				pos += sizeof(s32) * portals->room[i].nb_portals;
-				copy(start, (s32 *)(rawdata + pos), room.portals);
+				copy(start, reinterpret_cast<const s32 *>(rawdata + pos), room.portals);
 			} else {
 				room.portals = NULL;
 			}
 			
 			if(room.nb_polys) {
 				room.epdata = (EP_DATA *)malloc(sizeof(EP_DATA) * room.nb_polys);
-				FAST_EP_DATA * ed = (FAST_EP_DATA *)(rawdata + pos);
+				const FAST_EP_DATA * ed = reinterpret_cast<const FAST_EP_DATA *>(rawdata + pos);
 				pos += sizeof(FAST_EP_DATA) * portals->room[i].nb_polys;
-				copy(ed, (FAST_EP_DATA *)(rawdata + pos), room.epdata);
+				copy(ed, reinterpret_cast<const FAST_EP_DATA *>(rawdata + pos), room.epdata);
 			} else {
 				portals->room[i].epdata = NULL;
 			}
@@ -3557,7 +3558,7 @@ bool FastSceneLoad(const string & partial_path) {
 		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
 		for(long n = 0; n < NbRoomDistance; n++) {
 			for(long m = 0; m < NbRoomDistance; m++) {
-				ROOM_DIST_DATA_SAVE * rdds = (ROOM_DIST_DATA_SAVE *)(rawdata + pos);
+				const ROOM_DIST_DATA_SAVE * rdds = reinterpret_cast<const ROOM_DIST_DATA_SAVE *>(rawdata + pos);
 				pos += sizeof(ROOM_DIST_DATA_SAVE);
 				Vec3f start = rdds->startpos;
 				Vec3f end = rdds->endpos;
