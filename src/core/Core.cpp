@@ -145,6 +145,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::string;
+using std::ostringstream;
 
 void DemoFileCheck();
 
@@ -175,9 +177,9 @@ extern HWND		PRECALC;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bSkipVideoIntro;
-extern std::string SCRIPT_SEARCH_TEXT;
-extern std::string ShowText;
-extern std::string ShowText2;
+extern string SCRIPT_SEARCH_TEXT;
+extern string ShowText;
+extern string ShowText2;
 extern float Full_Jump_Height;
 extern float	MAX_ALLOWED_PER_SECOND;
 extern float	InventoryX;
@@ -254,8 +256,6 @@ extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer_TLVERTEX;		// VB using TL
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
-extern std::string pStringMod;
-
 static const float INC_FOCAL = 75.0f;
 
 //-----------------------------------------------------------------------------
@@ -330,13 +330,13 @@ EERIE_CAMERA subj,mapcam,bookcam,raycam,conversationcamera;
 EERIE_CAMERA DynLightCam;
 
 INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
-std::string WILLADDSPEECH;
+string WILLADDSPEECH;
 
 Vec2s STARTDRAG;
 INTERACTIVE_OBJ * COMBINE=NULL;
 
 QUAKE_FX_STRUCT QuakeFx;
-std::string LAST_FAILED_SEQUENCE = "None";
+string LAST_FAILED_SEQUENCE = "None";
 // START - Information for Player Teleport between/in Levels-------------------------------------
 char TELEPORT_TO_LEVEL[64];
 char TELEPORT_TO_POSITION[64];
@@ -2341,36 +2341,34 @@ void LaunchWaitingCine()
 		ePos.y = ACTIVECAM->pos.y;
 		ePos.z = ACTIVECAM->pos.z;
 	}
-
+	
 	DANAE_KillCinematic();
 	
 	const char RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS[] = "Graph\\interface\\illustrations\\";
 	
-	char temp2[256];
-	strcpy(temp2,RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS);
-	strcat(temp2,WILL_LAUNCH_CINE);
-
-	if (resources->getFile(temp2))
-	{
+	string cinematic = RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS;
+	cinematic += RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS;
+	
+	if(resources->getFile(cinematic)) {
+		
 		ControlCinematique->OneTimeSceneReInit();
-
-		if (LoadProject(ControlCinematique,RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS,WILL_LAUNCH_CINE))
-		{				
-
-			if (CINE_PRELOAD) {
+		
+		if(loadCinematic(ControlCinematique, cinematic)) {
+			
+			if(CINE_PRELOAD) {
 				LogDebug << "only preloaded cinematic";
-				PLAY_LOADED_CINEMATIC=0;
+				PLAY_LOADED_CINEMATIC = 0;
 			} else {
 				LogDebug << "starting cinematic";
-				PLAY_LOADED_CINEMATIC=1;
+				PLAY_LOADED_CINEMATIC = 1;
 				ARX_TIME_Pause();
 			}
-
+			
 			strcpy(LAST_LAUNCHED_CINE,WILL_LAUNCH_CINE);
 		}
-
+		
 	}
-
+	
 	WILL_LAUNCH_CINE[0]=0;
 }
 static void PlayerLaunchArrow_Test(float aimratio,float poisonous,Vec3f * pos,Anglef * angle)
@@ -6393,7 +6391,7 @@ static float _AvgFrameDiff = 150.f;
 		if (!(Project.hide & HIDE_NODES))
 				RenderAllNodes();
 
-		std::stringstream ss("EDIT MODE - Selected ");
+		ostringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
 		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), EERIECOLOR_YELLOW);
 	
@@ -7679,7 +7677,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					ARX_TIME_Pause();
 					Pause(true);
 					tr=EERIE_ANIMMANAGER_Count(ShowText,&memsize);
-					std::stringstream ss;
+					ostringstream ss;
 					ss << "Animations " << tr << ' ' << (memsize>>10) << " Ko";
 					ShowTextWindowtext = ss.str();
 					//sprintf(ShowTextWindowtext,"Animations %d %d Ko",tr,memsize>>10);
@@ -7696,7 +7694,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					ARX_TIME_Pause();
 					Pause(true);
 					_tr=CountTextures(ShowText,&_memsize,&_memmip);
-					std::stringstream ss;
+					ostringstream ss;
 					ss << "Textures " << _tr << ' ' << (_memsize>>10) << " Ko MIPsize " << (_memmip>>10) << " Ko";
 					ShowTextWindowtext = ss.str();
 					//sprintf(ShowTextWindowtext,"Textures %d %d Ko MIPsize %d Ko",_tr,_memsize>>10,_memmip>>10);
