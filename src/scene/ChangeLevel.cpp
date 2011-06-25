@@ -112,7 +112,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;
@@ -122,20 +121,10 @@ extern long NO_GMOD_RESET;
 
 void DANAE_ReleaseAllDatasDynamic();
 
-//-----------------------------------------------------------------------------
-#define TYPE_NPC	1
-#define TYPE_ITEM	2
-#define TYPE_FIX	3
-#define TYPE_CAMERA	4
-#define TYPE_MARKER	5
-//-----------------------------------------------------------------------------
-extern long ARX_CONVERSATION;
-extern HANDLE LIGHTTHREAD;
 extern float PROGRESS_BAR_COUNT;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
 extern long NO_PLAYER_POSITION_RESET;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern float InventoryDir;
 extern char LOCAL_SAVENAME[64];
 extern long HERO_SHOW_1ST;
@@ -144,13 +133,11 @@ extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_INTERS;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
-extern long RELOADING;
 extern long CHANGE_LEVEL_ICON;
-extern long FOR_EXTERNAL_PEOPLE;
 extern long TRUE_PLAYER_MOUSELOOK_ON;
 extern int iTimeToDrawD7;
 extern Vec3f LastValidPlayerPos;
-#define MAX_IO_SAVELOAD	1500
+#define MAX_IO_SAVELOAD 1500
 
 static long ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static long ARX_CHANGELEVEL_PopLevel(long num, long reloadflag = 0);
@@ -171,21 +158,13 @@ long FORBID_SAVE = 0;
 long _FIRSTTIME = 0;
 SaveBlock * _pSaveBlock = NULL;
 
-
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 long idx_io_nb = 0;
-ARX_CHANGELEVEL_VARIABLE_SAVE 	*	index_variable = NULL;
  
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
 
-
-extern long ARX_CONVERSATION;
-extern HANDLE LIGHTTHREAD;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
-extern EERIE_BACKGROUND bkrgnd;
 long CURRENT_GAME_INSTANCE = -1;
 char GameSavePath[256];
-extern char LOCAL_SAVENAME[64];
 
 static void ARX_GAMESAVE_CreateNewInstance() {
 	char basepath[256];
@@ -1801,7 +1780,6 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 	return 1;
 }
 extern long NO_GMOD_RESET;
-extern long FOR_EXTERNAL_PEOPLE;
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long FirstTime)
 {
@@ -3240,7 +3218,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	{
 		LogError << "Cannot Load this game: Directory Not Found: " << CurGamePath;
 
-		RELOADING = 0;
 		ReleaseGaids();
 		return -1;
 	}
@@ -3312,12 +3289,7 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			idx_io = NULL;
 
-			if (index_variable)
-				free(index_variable);
-
-			index_variable = NULL;
 			idx_io_nb = 0;
-			RELOADING = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
 			return -1;
@@ -3335,12 +3307,7 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			idx_io = NULL;
 
-			if (index_variable)
-				free(index_variable);
-
-			index_variable = NULL;
 			idx_io_nb = 0;
-			RELOADING = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
 			return -1;
@@ -3370,12 +3337,7 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 		idx_io = NULL;
 
-		if (index_variable)
-			free(index_variable);
-
-		index_variable = NULL;
 		idx_io_nb = 0;
-		RELOADING = 0;
 		ReleaseGaids();
 		FORBID_SCRIPT_IO_CREATION = 0;
 		return -1;
@@ -3422,12 +3384,7 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			idx_io = NULL;
 
-			if (index_variable)
-				free(index_variable);
-
-			index_variable = NULL;
 			idx_io_nb = 0;
-			RELOADING = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
 			return -1;
@@ -3451,12 +3408,7 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 		idx_io = NULL;
 
-		if (index_variable)
-			free(index_variable);
-
-		index_variable = NULL;
 		idx_io_nb = 0;
-		RELOADING = 0;
 		ReleaseGaids();
 		FORBID_SCRIPT_IO_CREATION = 0;
 		return -1;
@@ -3502,12 +3454,7 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 	idx_io = NULL;
 
-	if (index_variable)
-		free(index_variable);
-
-	index_variable = NULL;
 	idx_io_nb = 0;
-	RELOADING = 0;
 	
 	FORBID_SCRIPT_IO_CREATION = 0;
 
@@ -3522,13 +3469,11 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LogDebug << "Before Final Inits";
 	HERO_SHOW_1ST = -1;
 
-	if (EXTERNALVIEW)
-	{
+	if(EXTERNALVIEW) {
 		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0], 0);
 	}
-
-	if (!EXTERNALVIEW)
-	{
+	
+	if(!EXTERNALVIEW) {
 		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0], 1);
 	}
 

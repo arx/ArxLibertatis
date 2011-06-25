@@ -110,7 +110,6 @@ using std::string;
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
 extern long DONT_ERASE_PLAYER;
-extern EERIE_BACKGROUND bkrgnd;
 
 extern QUAKE_FX_STRUCT QuakeFx;
 extern bool bGToggleCombatModeWithKey;

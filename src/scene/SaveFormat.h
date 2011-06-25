@@ -14,6 +14,14 @@
 const s32 SAVEFLAGS_EXTRA_ROTATE = 1;
 const float ARX_GAMESAVE_VERSION = 1.005f;
 
+enum SavedIOType {
+	TYPE_NPC = 1,
+	TYPE_ITEM = 2,
+	TYPE_FIX = 3,
+	TYPE_CAMERA = 4,
+	TYPE_MARKER = 5
+};
+
 enum SystemFlag {
 	SYSTEM_FLAG_TWEAKER_INFO  = (1<<0),
 	SYSTEM_FLAG_INVENTORY     = (1<<1),

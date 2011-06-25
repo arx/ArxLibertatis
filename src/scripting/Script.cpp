@@ -117,7 +117,6 @@ SCRIPT_VAR * svar = NULL;
 
 char SSEPARAMS[MAX_SSEPARAMS][64];
 long FORBID_SCRIPT_IO_CREATION = 0;
-long RELOADING = 0;
 long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;

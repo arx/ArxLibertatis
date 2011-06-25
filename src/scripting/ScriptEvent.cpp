@@ -420,7 +420,6 @@ static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, Scri
 extern long LINEEND; // set by GetNextWord
 extern INTERACTIVE_OBJ * LASTSPAWNED;
 extern long PauseScript;
-extern long RELOADING;
 
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
 	
@@ -5106,7 +5105,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 #endif
 
-							if (!RELOADING)
 							{
 								long t = GetTargetByNameTarget(temp2);
 
@@ -5140,23 +5138,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 #endif
 
-								if (RELOADING)
-								{
-									if (!strcmp(word, "PLAYERADDMULTI"))
-									{
-										pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-										if (NEED_DEBUG)
-										{
-											strcat(cmd, " ");
-											strcat(cmd, temp2);
-										}
-
-#endif
-									}
-								}
-								else
 								{
 									std::string tex2;
 									tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp2 + ".teo";
@@ -5227,7 +5208,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 #endif
 
-							if (!RELOADING)
 							{
 								long t = GetTargetByNameTarget(temp2);
 
@@ -5281,14 +5261,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 #endif
 
-								if (RELOADING)
-								{
-									if (!strcmp(word, "ADDMULTI"))
-									{
-										pos = GetNextWord(es, pos, temp2);
-									}
-								}
-								else
 								{
 									std::string tex2;
 									tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp2 + ".teo";
