@@ -1208,8 +1208,12 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 				es->scenes[es->nb_scenes] = ScnToEerie(adr, i->second->size(), path);
 				es->nb_scenes++;
 				free(adr);
+			} else {
+				LogError << "could not read scene " << path << '/' << i->first;
 			}
 		}
+	} else {
+		LogWarning << "Multiscene not found: " << path;
 	}
 	
 	es->cub.xmax = -9999999999.f;
@@ -2051,8 +2055,8 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 		
 		size_t size = 0;
 		char * adr = resources->readAlloc(file, size);
-		
 		if(!adr) {
+			LogWarning << "Object not found: " << file;
 			return NULL;
 		}
 		
