@@ -1685,8 +1685,7 @@ bool DANAE::ManageEditorControls()
 
 								if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 								{
-									std::string Text;
-									MakeLocalised("[Description_Poisoned]",Text);
+									std::string Text = getLocalised("description_poisoned", "error");
 									std::stringstream ss;
 									ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
 									WILLADDSPEECH = ss.str();
@@ -1694,8 +1693,7 @@ bool DANAE::ManageEditorControls()
 
 								if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 								{
-									std::string Text;
-									MakeLocalised("[Description_Durability]",Text);
+									std::string Text = getLocalised("description_durability", "error");
 									std::stringstream ss;
 									ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
 									WILLADDSPEECH = ss.str();
@@ -5560,8 +5558,7 @@ void DANAE::ManageKeyMouse()
 
 							if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 							{
-								std::string Text;
-								MakeLocalised("[Description_Poisoned]",Text);
+								std::string Text = getLocalised("description_poisoned", "error");
 								std::stringstream ss;
 								ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
 								WILLADDSPEECH = ss.str();
@@ -5569,8 +5566,7 @@ void DANAE::ManageKeyMouse()
 
 							if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 							{
-								std::string Text;
-								MakeLocalised("[Description_Durability]",Text);
+								std::string Text = getLocalised("description_durability", "error");
 								std::stringstream ss;
 								ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
 								WILLADDSPEECH = ss.str();
@@ -5637,8 +5633,7 @@ void DANAE::ManageKeyMouse()
 
 									if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 									{
-										std::string Text;
-										MakeLocalised("[Description_Poisoned]",Text);
+										std::string Text = getLocalised("description_poisoned", "error");
 										std::stringstream ss;
 										ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
 										WILLADDSPEECH = ss.str();
@@ -5646,8 +5641,7 @@ void DANAE::ManageKeyMouse()
 
 									if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 									{
-										std::string Text;
-										MakeLocalised("[Description_Durability]",Text);
+										std::string Text = getLocalised("description_durability", "error");
 										std::stringstream ss;
 										ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
 										WILLADDSPEECH = ss.str();
