@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(ArxFatalis)
 
+include(CheckTypeSize)
 include(CheckSymbolExists)
 include(CheckCXXSourceCompiles)
 
@@ -346,6 +347,11 @@ else(MSVC)
 	endif()
 	
 endif(MSVC)
+
+check_type_size(char CHAR_SIZE)
+if(NOT CHAR_SIZE EQUAL 1)
+	message(SEND_ERROR "Unexpected char size: ${CHAR_SIZE}")
+endif()
 
 check_cxx_source_compiles("#include <stdlib.h>\n int main() { size_t s = rand(); char test[s]; }" HAVE_DYNAMIC_STACK_ALLOCATION)
 
