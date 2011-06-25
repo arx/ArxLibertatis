@@ -130,6 +130,7 @@ void UncompressedFile::read(void * buf) const {
 	size_t nread = fread(buf, size(), 1, archive);
 	
 	arx_assert(nread == 1);
+	ARX_UNUSED(nread);
 }
 
 PakFileHandle * UncompressedFile::open() const {
@@ -401,6 +402,7 @@ void PlainFile::read(void * buf) const {
 	
 	size_t nread = fread(buf, size(), 1, handle);
 	arx_assert(nread == 1);
+	ARX_UNUSED(nread);
 	
 	fclose(handle);
 }
