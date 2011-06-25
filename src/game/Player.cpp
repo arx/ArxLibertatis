@@ -3847,7 +3847,8 @@ void ARX_GAME_Reset(long type) {
 
 	// Particles
 	ARX_PARTICLES_ClearAll();
-	pParticleManager->Clear();
+	if(pParticleManager)
+		pParticleManager->Clear();
 
 	// Fogs
 	ARX_FOGS_TimeReset();
