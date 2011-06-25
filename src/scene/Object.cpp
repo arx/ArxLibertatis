@@ -603,122 +603,118 @@ static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	}
 }
 
-static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t * poss, long version) {
+static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, long version) {
 	
 	LogWarning << "_THEObjLoad";
 	
 	size_t pos = *poss;
 	
-	THEO_OFFSETS to;
-	memcpy(&to, adr + pos, sizeof(THEO_OFFSETS));
+	const THEO_OFFSETS * to = reinterpret_cast<const THEO_OFFSETS *>(adr + pos);
 	pos += sizeof(THEO_OFFSETS);
 	
-	THEO_NB tn;
-	memcpy(&tn, adr + pos, sizeof(THEO_NB));
+	const THEO_NB * tn = reinterpret_cast<const THEO_NB *>(adr + pos);
 	pos += sizeof(THEO_NB);
 	
-	LogDebug << "Nb Vertex " << tn.nb_vertex << " Nb Action Points " << tn.nb_action_point
-	         << " Nb Lines " << tn.nb_lines;
-	LogDebug << "Nb Faces " << tn.nb_faces << " Nb Groups " << tn.nb_groups;
+	LogDebug << "Nb Vertex " << tn->nb_vertex << " Nb Action Points " << tn->nb_action_point
+	         << " Nb Lines " << tn->nb_lines;
+	LogDebug << "Nb Faces " << tn->nb_faces << " Nb Groups " << tn->nb_groups;
 	
-	eerie->vertexlist.resize(tn.nb_vertex);
-	eerie->facelist.resize(tn.nb_faces);
-	eerie->nbgroups = tn.nb_groups;
-	eerie->actionlist.resize(tn.nb_action_point);
+	eerie->vertexlist.resize(tn->nb_vertex);
+	eerie->facelist.resize(tn->nb_faces);
+	eerie->nbgroups = tn->nb_groups;
+	eerie->actionlist.resize(tn->nb_action_point);
 	
 	eerie->ndata = NULL;
 	eerie->pdata = NULL;
 	eerie->cdata = NULL;
 	eerie->sdata = NULL;
 	
-	eerie->vertexlist3.resize(tn.nb_vertex);
+	eerie->vertexlist3.resize(tn->nb_vertex);
 	
-	if(tn.nb_groups == 0) {
+	if(tn->nb_groups == 0) {
 		eerie->grouplist = NULL;
 	} else {
-		eerie->grouplist = new EERIE_GROUPLIST[tn.nb_groups]; 
+		eerie->grouplist = new EERIE_GROUPLIST[tn->nb_groups]; 
 	}
 	
 	// read vertices
 	
-	pos = to.vertex_seek;
+	pos = to->vertex_seek;
 	
-	if(tn.nb_vertex > 65535) {
+	if(tn->nb_vertex > 65535) {
 		LogError << ("Warning Vertex Number Too High...");
 	}
 	
-	for(long i = 0; i < tn.nb_vertex; i++) {
-		THEO_VERTEX ptv;
-		memcpy(&ptv, adr + pos, sizeof(THEO_VERTEX));
+	for(long i = 0; i < tn->nb_vertex; i++) {
+		const THEO_VERTEX * ptv = reinterpret_cast<const THEO_VERTEX *>(adr + pos);
 		pos += sizeof(THEO_VERTEX);
-		eerie->vertexlist[i].v = ptv.pos;
-		eerie->cub.xmin = min(eerie->cub.xmin, ptv.pos.x);
-		eerie->cub.xmax = max(eerie->cub.xmax, ptv.pos.x);
-		eerie->cub.ymin = min(eerie->cub.ymin, ptv.pos.y);
-		eerie->cub.ymax = max(eerie->cub.ymax, ptv.pos.y);
-		eerie->cub.zmin = min(eerie->cub.zmin, ptv.pos.z);
-		eerie->cub.zmax = max(eerie->cub.zmax, ptv.pos.z);
+		eerie->vertexlist[i].v = ptv->pos;
+		eerie->cub.xmin = min(eerie->cub.xmin, ptv->pos.x);
+		eerie->cub.xmax = max(eerie->cub.xmax, ptv->pos.x);
+		eerie->cub.ymin = min(eerie->cub.ymin, ptv->pos.y);
+		eerie->cub.ymax = max(eerie->cub.ymax, ptv->pos.y);
+		eerie->cub.zmin = min(eerie->cub.zmin, ptv->pos.z);
+		eerie->cub.zmax = max(eerie->cub.zmax, ptv->pos.z);
 	}
 
 	// Lecture des FACES THEO
-	pos = to.faces_seek;
+	pos = to->faces_seek;
 
-	for(long i = 0; i < tn.nb_faces; i++) {
+	for(long i = 0; i < tn->nb_faces; i++) {
 		
-		THEO_FACES_3006 ptf3006;
+		THEO_FACES_3006 tf3006;
+		const THEO_FACES_3006 * ptf3006;
 		if(version >= 3006) {
-			memcpy(&ptf3006, adr + pos, sizeof(THEO_FACES_3006));
+			ptf3006 = reinterpret_cast<const THEO_FACES_3006 *>(adr + pos);
 			pos += sizeof(THEO_FACES_3006);
 		} else {
-			memset(&ptf3006, 0, sizeof(THEO_FACES_3006));
-			THEO_FACES ptf;
-			memcpy(&ptf, adr + pos, sizeof(THEO_FACES));
+			memset(&tf3006, 0, sizeof(THEO_FACES_3006));
+			const THEO_FACES * ptf = reinterpret_cast<const THEO_FACES *>(adr + pos);
 			pos += sizeof(THEO_FACES);
-			ptf3006.color = ptf.color;
-			ptf3006.index1 = ptf.index1;
-			ptf3006.index2 = ptf.index2;
-			ptf3006.index3 = ptf.index3;
-			ptf3006.ismap = ptf.ismap;
-			ptf3006.liste_uv = ptf.liste_uv;
-			ptf3006.element_uv = ptf.element_uv;
-			ptf3006.num_map = ptf.num_map;
-			ptf3006.tile_x = ptf.tile_x;
-			ptf3006.tile_y = ptf.tile_y;
-			ptf3006.user_tile_x = ptf.user_tile_x;
-			ptf3006.user_tile_y = ptf.user_tile_y;
-			ptf3006.flag = ptf.flag;
-			ptf3006.collision_type = ptf.collision_type;
-			ptf3006.rgb = ptf.rgb;
-			ptf3006.rgb1 = ptf.rgb1;
-			ptf3006.rgb2 = ptf.rgb2;
-			ptf3006.rgb3 = ptf.rgb3;
-			ptf3006.double_side = ptf.double_side;
-			ptf3006.transparency = ptf.transparency;
-			ptf3006.trans = ptf.trans;
+			tf3006.color = ptf->color;
+			tf3006.index1 = ptf->index1;
+			tf3006.index2 = ptf->index2;
+			tf3006.index3 = ptf->index3;
+			tf3006.ismap = ptf->ismap;
+			tf3006.liste_uv = ptf->liste_uv;
+			tf3006.element_uv = ptf->element_uv;
+			tf3006.num_map = ptf->num_map;
+			tf3006.tile_x = ptf->tile_x;
+			tf3006.tile_y = ptf->tile_y;
+			tf3006.user_tile_x = ptf->user_tile_x;
+			tf3006.user_tile_y = ptf->user_tile_y;
+			tf3006.flag = ptf->flag;
+			tf3006.collision_type = ptf->collision_type;
+			tf3006.rgb = ptf->rgb;
+			tf3006.rgb1 = ptf->rgb1;
+			tf3006.rgb2 = ptf->rgb2;
+			tf3006.rgb3 = ptf->rgb3;
+			tf3006.double_side = ptf->double_side;
+			tf3006.transparency = ptf->transparency;
+			tf3006.trans = ptf->trans;
+			ptf3006 = &tf3006;
 		}
 		
-		eerie->facelist[i].vid[0] = (unsigned short)ptf3006.index1;
-		eerie->facelist[i].vid[1] = (unsigned short)ptf3006.index2;
-		eerie->facelist[i].vid[2] = (unsigned short)ptf3006.index3;
+		eerie->facelist[i].vid[0] = (unsigned short)ptf3006->index1;
+		eerie->facelist[i].vid[1] = (unsigned short)ptf3006->index2;
+		eerie->facelist[i].vid[2] = (unsigned short)ptf3006->index3;
 		
-		if((size_t)ptf3006.num_map >= eerie->texturecontainer.size()) {
-			ptf3006.num_map = -1;
-		}
+		s32 num_map = ((size_t)ptf3006->num_map >= eerie->texturecontainer.size()) ? -1 : ptf3006->num_map;
 		
-		if(ptf3006.ismap) {
-			eerie->facelist[i].texid = (short)ptf3006.num_map;
+		if(ptf3006->ismap) {
+			eerie->facelist[i].texid = (short)num_map;
 			eerie->facelist[i].facetype = 1;
 			
-			if(ptf3006.num_map >= 0 && eerie->texturecontainer[ptf3006.num_map] && (eerie->texturecontainer[ptf3006.num_map]->userflags & POLY_NOCOL)) {
+			if(num_map >= 0 && eerie->texturecontainer[num_map] && (eerie->texturecontainer[num_map]->userflags & POLY_NOCOL)) {
 				eerie->facelist[i].facetype |= POLY_NOCOL;
 			}
-		} else if(ptf3006.rgb) {
+		} else if(ptf3006->rgb) {
 			eerie->facelist[i].texid = -1;
 		} else {
 			eerie->facelist[i].texid = -1;
 		}
 		
-		switch(ptf3006.flag) {
+		switch(ptf3006->flag) {
 			case 0:
 				eerie->facelist[i].facetype |= POLY_GLOW;
 				break;
@@ -748,39 +744,39 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 				break;
 		}
 		
-		eerie->facelist[i].ou[0] = (short)ptf3006.liste_uv.u1;
-		eerie->facelist[i].ov[0] = (short)ptf3006.liste_uv.v1;
-		eerie->facelist[i].ou[1] = (short)ptf3006.liste_uv.u2;
-		eerie->facelist[i].ov[1] = (short)ptf3006.liste_uv.v2;
-		eerie->facelist[i].ou[2] = (short)ptf3006.liste_uv.u3;
-		eerie->facelist[i].ov[2] = (short)ptf3006.liste_uv.v3;
+		eerie->facelist[i].ou[0] = (short)ptf3006->liste_uv.u1;
+		eerie->facelist[i].ov[0] = (short)ptf3006->liste_uv.v1;
+		eerie->facelist[i].ou[1] = (short)ptf3006->liste_uv.u2;
+		eerie->facelist[i].ov[1] = (short)ptf3006->liste_uv.v2;
+		eerie->facelist[i].ou[2] = (short)ptf3006->liste_uv.u3;
+		eerie->facelist[i].ov[2] = (short)ptf3006->liste_uv.v3;
 		
-		if(ptf3006.double_side) {
+		if(ptf3006->double_side) {
 			eerie->facelist[i].facetype |= POLY_DOUBLESIDED;
 		}
 		
-		if(ptf3006.transparency > 0) {
-			if(ptf3006.transparency == 2) {
+		if(ptf3006->transparency > 0) {
+			if(ptf3006->transparency == 2) {
 				// NORMAL TRANS 0.00001 to 0.999999
-				if(ptf3006.trans < 1.f) {
+				if(ptf3006->trans < 1.f) {
 					eerie->facelist[i].facetype |= POLY_TRANS;
-					eerie->facelist[i].transval = ptf3006.trans;
+					eerie->facelist[i].transval = ptf3006->trans;
 				}
 			}
-			else if (ptf3006.transparency == 1) {
-				if(ptf3006.trans < 0.f) {
+			else if (ptf3006->transparency == 1) {
+				if(ptf3006->trans < 0.f) {
 					// SUBTRACTIVE -0.000001 to -0.999999
 					eerie->facelist[i].facetype |= POLY_TRANS;
-					eerie->facelist[i].transval = ptf3006.trans;
+					eerie->facelist[i].transval = ptf3006->trans;
 				} else {
 					// ADDITIVE 1.000001 to 1.9999999
 					eerie->facelist[i].facetype |= POLY_TRANS;
-					eerie->facelist[i].transval = ptf3006.trans + 1.f;
+					eerie->facelist[i].transval = ptf3006->trans + 1.f;
 				}
 			} else {
 				// MULTIPLICATIVE 2.000001 to 2.9999999
 				eerie->facelist[i].facetype |= POLY_TRANS;
-				eerie->facelist[i].transval = ptf3006.trans + 2.f;
+				eerie->facelist[i].transval = ptf3006->trans + 2.f;
 			}
 		}
 		
@@ -789,7 +785,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 			if(eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_TRANS) {
 				if(!(eerie->facelist[i].facetype & POLY_TRANS)) {
 					eerie->facelist[i].facetype |= POLY_TRANS;
-					eerie->facelist[i].transval = ptf3006.trans;
+					eerie->facelist[i].transval = ptf3006->trans;
 				}
 			}
 			
@@ -813,37 +809,35 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 	}
 	
 	// Groups Data
-	pos = to.groups_seek;
+	pos = to->groups_seek;
 	
-	for(long i = 0; i < tn.nb_groups; i++) {
+	for(long i = 0; i < tn->nb_groups; i++) {
 		
-		THEO_GROUPS_3011 ptg3011;
+		THEO_GROUPS_3011 tg3011;
+		const THEO_GROUPS_3011 * ptg3011;
 		if(version >= 3011) {
-			memcpy(&ptg3011, adr + pos, sizeof(THEO_GROUPS_3011));
+			ptg3011 = reinterpret_cast<const THEO_GROUPS_3011 *>(adr + pos);
 			pos += sizeof(THEO_GROUPS_3011);
 		} else {
-			THEO_GROUPS ltg;
-			memcpy(&ltg, adr + pos, sizeof(THEO_GROUPS));
+			const THEO_GROUPS * ltg = reinterpret_cast<const THEO_GROUPS *>(adr + pos);
 			pos += sizeof(THEO_GROUPS);
-			memset(&ptg3011, 0, sizeof(THEO_GROUPS_3011));
-			ptg3011.origin = ltg.origin;
-			ptg3011.nb_index = ltg.nb_index;
+			memset(&tg3011, 0, sizeof(THEO_GROUPS_3011));
+			tg3011.origin = ltg->origin;
+			tg3011.nb_index = ltg->nb_index;
+			ptg3011 = &tg3011;
 		}
 		
-		eerie->grouplist[i].origin = ptg3011.origin;
-		eerie->grouplist[i].indexes.resize(ptg3011.nb_index);
+		eerie->grouplist[i].origin = ptg3011->origin;
+		eerie->grouplist[i].indexes.resize(ptg3011->nb_index);
 		
-		std::copy((long*)(adr + pos), (long*)(adr + pos) + ptg3011.nb_index, eerie->grouplist[i].indexes.begin());
-		pos += ptg3011.nb_index * sizeof(long);
+		std::copy((long*)(adr + pos), (long*)(adr + pos) + ptg3011->nb_index, eerie->grouplist[i].indexes.begin());
+		pos += ptg3011->nb_index * sizeof(long);
 		
-		char groupname[256];
-		memcpy(groupname, adr + pos, 256);
+		eerie->grouplist[i].name = toLowercase(safestring(adr + pos, 256));
 		pos += 256;
-		
-		eerie->grouplist[i].name = groupname;
 		eerie->grouplist[i].siz = 0.f;
 		
-		for(long o = 0; o < ptg3011.nb_index; o++) {
+		for(long o = 0; o < ptg3011->nb_index; o++) {
 			eerie->grouplist[i].siz = max(eerie->grouplist[i].siz,
 			                              fdist(eerie->vertexlist[eerie->grouplist[i].origin].v,
 			                                           eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
@@ -854,43 +848,40 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 	}
 
 	// SELECTIONS
-	s32	THEO_nb_selected;
-	memcpy(&THEO_nb_selected, adr + pos, sizeof(s32));
+	s32 THEO_nb_selected = *reinterpret_cast<const s32 *>(adr + pos);
 	pos += sizeof(s32);
 	
 	eerie->selections.resize(THEO_nb_selected);
 	for(long i = 0; i < THEO_nb_selected; i++) {
 		
-		THEO_SELECTED pts;
-		memcpy(&pts, adr + pos, sizeof(THEO_SELECTED));
+		const THEO_SELECTED * pts = reinterpret_cast<const THEO_SELECTED *>(adr + pos);
 		pos += sizeof(THEO_SELECTED);
 		
-		if(strlen(pts.name) > 63) {
-			pts.name[63] = 0;
+		eerie->selections[i].name = toLowercase(safestring(pts->name));
+		if(eerie->selections[i].name.length() > 63) {
+			// TODO why? was this just for a now-remove storage limitation in EERIE_SELECTIONS::name?
+			eerie->selections[i].name.resize(63);
 		}
+		eerie->selections[i].selected.resize(pts->nb_index);
 		
-		eerie->selections[i].name = pts.name;
-		eerie->selections[i].selected.resize(pts.nb_index);
-		
-		if(pts.nb_index > 0) {
-			std::copy((long*)(adr + pos), (long*)(adr + pos) + pts.nb_index, eerie->selections[i].selected.begin());
-			pos += sizeof(long) * pts.nb_index;
+		if(pts->nb_index > 0) {
+			std::copy((long*)(adr + pos), (long*)(adr + pos) + pts->nb_index, eerie->selections[i].selected.begin());
+			pos += sizeof(long) * pts->nb_index;
 		}
 	}
 	
 	// Theo Action Points Read
-	pos = to.action_point_seek;
+	pos = to->action_point_seek;
 
-	for(long i = 0; i < tn.nb_action_point; i++) {
+	for(long i = 0; i < tn->nb_action_point; i++) {
 		
-		THEO_ACTION_POINT ptap;
-		memcpy(&ptap, adr + pos, sizeof(THEO_ACTION_POINT));
+		const THEO_ACTION_POINT * ptap = reinterpret_cast<const THEO_ACTION_POINT *>(adr + pos);
 		pos += sizeof(THEO_ACTION_POINT);
 		
-		eerie->actionlist[i].act = ptap.action;
-		eerie->actionlist[i].sfx = ptap.num_sfx;
-		eerie->actionlist[i].idx = ptap.vert_index;
-		eerie->actionlist[i].name = ptap.name;
+		eerie->actionlist[i].act = ptap->action;
+		eerie->actionlist[i].sfx = ptap->num_sfx;
+		eerie->actionlist[i].idx = ptap->vert_index;
+		eerie->actionlist[i].name = toLowercase(safestring(ptap->name));
 		MakeUpcase(eerie->actionlist[i].name);
 	}
 	
@@ -898,39 +889,37 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 	eerie->pos.z = eerie->pos.y = eerie->pos.x = 0.f;
 	
 	// Now Interpret Extra Data chunk
-	pos = to.extras_seek + 4;
+	pos = to->extras_seek + 4;
 	
 	if(version >= 3005) {
 		
-		THEO_EXTRA_DATA_3005 pted3005;
-		memcpy(&pted3005, adr + pos, sizeof(THEO_EXTRA_DATA_3005));
+		const THEO_EXTRA_DATA_3005 * pted3005 = reinterpret_cast<const THEO_EXTRA_DATA_3005 *>(adr + pos);
 		pos += sizeof(THEO_EXTRA_DATA_3005);
 		
-		eerie->pos = pted3005.pos;
+		eerie->pos = pted3005->pos;
 		
-		eerie->angle.a = (float)(pted3005.angle.alpha & 0xfff) * THEO_ROTCONVERT;
-		eerie->angle.b = (float)(pted3005.angle.beta & 0xfff) * THEO_ROTCONVERT;
-		eerie->angle.g = (float)(pted3005.angle.gamma & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.a = (float)(pted3005->angle.alpha & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.b = (float)(pted3005->angle.beta & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.g = (float)(pted3005->angle.gamma & 0xfff) * THEO_ROTCONVERT;
 		
-		eerie->point0 = eerie->vertexlist[pted3005.origin_index].v;
-		eerie->origin = pted3005.origin_index;
+		eerie->point0 = eerie->vertexlist[pted3005->origin_index].v;
+		eerie->origin = pted3005->origin_index;
 		
-		eerie->quat = pted3005.quat;
+		eerie->quat = pted3005->quat;
 	
 	} else {
 		
-		THEO_EXTRA_DATA pted;
-		memcpy(&pted, adr + pos, sizeof(THEO_EXTRA_DATA));
+		const THEO_EXTRA_DATA * pted = reinterpret_cast<const THEO_EXTRA_DATA *>(adr + pos);
 		pos += sizeof(THEO_EXTRA_DATA);
 		
-		eerie->pos = pted.pos;
+		eerie->pos = pted->pos;
 		
-		eerie->angle.a = (float)(pted.angle.alpha & 0xfff) * THEO_ROTCONVERT;
-		eerie->angle.b = (float)(pted.angle.beta & 0xfff) * THEO_ROTCONVERT;
-		eerie->angle.g = (float)(pted.angle.gamma & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.a = (float)(pted->angle.alpha & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.b = (float)(pted->angle.beta & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.g = (float)(pted->angle.gamma & 0xfff) * THEO_ROTCONVERT;
 		
-		eerie->point0 = eerie->vertexlist[pted.origin_index].v;
-		eerie->origin = pted.origin_index;
+		eerie->point0 = eerie->vertexlist[pted->origin_index].v;
+		eerie->origin = pted->origin_index;
 		
 	}
 	
@@ -941,77 +930,72 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 	EERIE_Object_Precompute_Fast_Access(eerie);
 }
 
-static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const string & fic) {
+static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & fic) {
 	
 	(void)size; // TODO use size
 	
 	LogDebug << "Loading Scene " << fic;
-	
-	if(!adr) {
-		return NULL;
-	}
 	
 	size_t pos = 0;
 	
 	EERIE_3DSCENE * seerie = allocStructZero<EERIE_3DSCENE>();
 	Clear3DScene(seerie);
 	
-	TSCN_HEADER psth;
-	memcpy(&psth, adr + pos, sizeof(TSCN_HEADER));
+	const TSCN_HEADER * psth = reinterpret_cast<const TSCN_HEADER *>(adr + pos);
 	pos += sizeof(TSCN_HEADER);
 	
-	LogDebug << "SCNtoEERIE " << fic << " Version " << psth.version << " Nb Textures " << psth.nb_maps;
+	LogDebug << "SCNtoEERIE " << fic << " Version " << psth->version << " Nb Textures " << psth->nb_maps;
 	
-	if(psth.version < 3008 || psth.version > 3024) {
-		LogError << "ScnToEerie: invalid version in " << fic << ": found " << psth.version
+	if(psth->version < 3008 || psth->version > 3024) {
+		LogError << "ScnToEerie: invalid version in " << fic << ": found " << psth->version
 		         << " expected 3008 to 3024";
 		free(seerie);
 		return NULL;
 	}
 	
-	seerie->nbtex = psth.nb_maps;
+	seerie->nbtex = psth->nb_maps;
 	
 	const string temp = "Graph\\Obj3D\\Textures\\";
 	
-	if(psth.type_write == 0) {
+	if(psth->type_write == 0) {
 		
-		seerie->texturecontainer = allocStructZero<TextureContainer *>(psth.nb_maps); 
+		seerie->texturecontainer = allocStructZero<TextureContainer *>(psth->nb_maps); 
 		
-		for(long i = 0; i < psth.nb_maps; i++) {
+		for(long i = 0; i < psth->nb_maps; i++) {
 			
-			THEO_TEXTURE tt;
-			memcpy(&tt, adr + pos, sizeof(THEO_TEXTURE));
+			const THEO_TEXTURE * tt = reinterpret_cast<const THEO_TEXTURE *>(adr + pos);
 			pos += sizeof(THEO_TEXTURE);
 			
-			string mapsname = temp + tt.texture_name + ".bmp";
+			// TODO what is the point in adding adding the extension when it is ignored later anyway
+			string mapsname = temp + toLowercase(safestring(tt->texture_name)) + ".bmp";
 			seerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
 		}
 		
 	} else {
 		
-		if((psth.type_write & SAVE_MAP_BMP) || (psth.type_write & SAVE_MAP_TGA)) {
+		if((psth->type_write & SAVE_MAP_BMP) || (psth->type_write & SAVE_MAP_TGA)) {
 			
-			seerie->texturecontainer = allocStructZero<TextureContainer *>(psth.nb_maps);
+			seerie->texturecontainer = allocStructZero<TextureContainer *>(psth->nb_maps);
 			
-			for(long i = 0; i < psth.nb_maps; i++) {
+			for(long i = 0; i < psth->nb_maps; i++) {
 				
 				string name;
-				if(psth.version >= 3019) {
-					THEO_SAVE_MAPS_IN_3019 tsmi3019;
-					memcpy(&tsmi3019, adr + pos, sizeof(THEO_SAVE_MAPS_IN_3019));
+				if(psth->version >= 3019) {
+					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = tsmi3019.texture_name;
+					name = safestring(tsmi3019->texture_name);
 				} else {
-					THEO_SAVE_MAPS_IN tsmi;
-					memcpy(&tsmi, adr + pos, sizeof(THEO_SAVE_MAPS_IN));
+					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = tsmi.texture_name;
+					name = safestring(tsmi->texture_name);
 				}
+				makeLowercase(name);
 				
 				if(!name.empty()) {
 					
 					string mapsname = temp + name;
-					if(psth.type_write & SAVE_MAP_BMP) {
+					// TODO what is the point in adding the extension?
+					if(psth->type_write & SAVE_MAP_BMP) {
 						mapsname += ".bmp";
 					} else {
 						mapsname += ".tga";
@@ -1024,10 +1008,9 @@ static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const 
 	}
 	
 	// read objects
-	pos = psth.object_seek;
+	pos = psth->object_seek;
 	
-	s32 nbo;
-	memcpy(&nbo, adr + pos, sizeof(s32));
+	s32 nbo = *reinterpret_cast<const s32 *>(adr + pos);
 	pos += sizeof(s32);
 	
 	seerie->nbobj = nbo;
@@ -1040,10 +1023,8 @@ static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const 
 	long id = 0;
 	
 	for(long i = 0; i < nbo; i++) {
-		// TODO is this even used?
 		
-		TSCN_OBJHEADER ptoh;
-		memcpy(&ptoh, adr + pos, sizeof(TSCN_OBJHEADER));
+		const TSCN_OBJHEADER * ptoh = reinterpret_cast<const TSCN_OBJHEADER *>(adr + pos);
 		pos += sizeof(TSCN_OBJHEADER);
 		
 		seerie->objs[id] = new EERIE_3DOBJ(); 
@@ -1054,13 +1035,13 @@ static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const 
 		std::copy(seerie->texturecontainer, seerie->texturecontainer + seerie->nbtex, seerie->objs[id]->texturecontainer.begin());
 		
 		long objVersion;
-		if(psth.version < 3013) {
+		if(psth->version < 3013) {
 			objVersion = 3004;
-		} else if(psth.version < 3015) {
+		} else if(psth->version < 3015) {
 			objVersion = 3005;
-		} else if(psth.version < 3019) {
+		} else if(psth->version < 3019) {
 			objVersion = 3006;
-		} else if(psth.version < 3023) {
+		} else if(psth->version < 3023) {
 			objVersion = 3008;
 		} else {
 			objVersion = 3011;
@@ -1074,7 +1055,8 @@ static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const 
 		seerie->cub.zmin = min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
 		seerie->cub.zmax = max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
 		
-		if(!strcmp(ptoh.object_name, "map_origin")) {
+		string name = toLowercase(safestring(ptoh->object_name));
+		if(name == "map_origin") {
 			seerie->point0.x = seerie->objs[id]->point0.x + seerie->objs[id]->pos.x;
 			seerie->point0.y = seerie->objs[id]->point0.y + seerie->objs[id]->pos.y;
 			seerie->point0.z = seerie->objs[id]->point0.z + seerie->objs[id]->pos.z;
@@ -1082,24 +1064,23 @@ static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const 
 			seerie->nbobj--;
 			id--;
 		} else {
-			seerie->objs[id]->name = ptoh.object_name;
+			seerie->objs[id]->name = name;
 		}
 		
 		id++;
 		
-		pos = ptoh.next_obj;
+		pos = ptoh->next_obj;
 	}
 	
-	pos = psth.light_seek; // ambient
-	memcpy(&seerie->ambient_r, adr + pos, sizeof(f32));
+	pos = psth->light_seek; // ambient
+	seerie->ambient_r = *reinterpret_cast<const f32 *>(adr + pos);
 	pos += sizeof(f32);
-	memcpy(&seerie->ambient_g, adr + pos, sizeof(f32));
+	seerie->ambient_g = *reinterpret_cast<const f32 *>(adr + pos);
 	pos += sizeof(f32);
-	memcpy(&seerie->ambient_b, adr + pos, sizeof(f32));
+	seerie->ambient_b = *reinterpret_cast<const f32 *>(adr + pos);
 	pos += sizeof(f32);
 	
-	s32 nbl;
-	memcpy(&nbl, adr + pos, sizeof(s32));
+	s32 nbl = *reinterpret_cast<const s32 *>(adr + pos);
 	pos += sizeof(s32);
 	
 	seerie->light = NULL; 
@@ -1107,52 +1088,53 @@ static EERIE_3DSCENE * ScnToEerie(const unsigned char * adr, size_t size, const 
 	
 	for(long i = 0; i < nbl; i++) {
 		
-		TSCN_LIGHT_3024 tsl3024;
+		TSCN_LIGHT_3024 sl3024;
+		const TSCN_LIGHT_3024 * tsl3024;
 		
-		if(psth.version >= 3024) {
-			memcpy(&tsl3024, adr + pos, sizeof(TSCN_LIGHT_3024));
+		if(psth->version >= 3024) {
+			tsl3024 = reinterpret_cast<const TSCN_LIGHT_3024 *>(adr + pos);
 			pos += sizeof(TSCN_LIGHT_3024);
-		} else if(psth.version >= 3019) {
-			TSCN_LIGHT_3019 tsl3019;
-			memcpy(&tsl3019, adr + pos, sizeof(TSCN_LIGHT_3019));
+		} else if(psth->version >= 3019) {
+			const TSCN_LIGHT_3019 * tsl3019 = reinterpret_cast<const TSCN_LIGHT_3019 *>(adr + pos);
 			pos += sizeof(TSCN_LIGHT_3019);
-			memset(&tsl3024, 0, sizeof(TSCN_LIGHT_3024));
-			tsl3024.red = tsl3019.red;
-			tsl3024.green = tsl3019.green;
-			tsl3024.blue = tsl3019.blue;
-			tsl3024.pos = tsl3019.pos;
-			tsl3024.hotspot = tsl3019.hotspot;
-			tsl3024.falloff = tsl3019.falloff;
-			tsl3024.intensity = tsl3019.intensity;
+			memset(&sl3024, 0, sizeof(TSCN_LIGHT_3024));
+			sl3024.red = tsl3019->red;
+			sl3024.green = tsl3019->green;
+			sl3024.blue = tsl3019->blue;
+			sl3024.pos = tsl3019->pos;
+			sl3024.hotspot = tsl3019->hotspot;
+			sl3024.falloff = tsl3019->falloff;
+			sl3024.intensity = tsl3019->intensity;
+			tsl3024 = &sl3024;
 		} else {
-			TSCN_LIGHT tsl;
-			memcpy(&tsl, adr + pos, sizeof(TSCN_LIGHT));
+			const TSCN_LIGHT * tsl = reinterpret_cast<const TSCN_LIGHT *>(adr + pos);
 			pos += sizeof(TSCN_LIGHT);
-			memset(&tsl3024, 0, sizeof(TSCN_LIGHT_3024));
-			tsl3024.red = tsl.red;
-			tsl3024.green = tsl.green;
-			tsl3024.blue = tsl.blue;
-			tsl3024.pos = tsl.pos;
-			tsl3024.hotspot = tsl.hotspot;
-			tsl3024.falloff = tsl.falloff;
-			tsl3024.intensity = tsl.intensity;
+			memset(&sl3024, 0, sizeof(TSCN_LIGHT_3024));
+			sl3024.red = tsl->red;
+			sl3024.green = tsl->green;
+			sl3024.blue = tsl->blue;
+			sl3024.pos = tsl->pos;
+			sl3024.hotspot = tsl->hotspot;
+			sl3024.falloff = tsl->falloff;
+			sl3024.intensity = tsl->intensity;
+			tsl3024 = &sl3024;
 		}
 		
 		EERIE_LIGHT light;
 		
-		light.rgb.r = (float)tsl3024.red * ( 1.0f / 255 );
-		light.rgb.g = (float)tsl3024.green * ( 1.0f / 255 );
-		light.rgb.b = (float)tsl3024.blue * ( 1.0f / 255 );
-		light.pos = tsl3024.pos;
-		light.fallstart = (float)tsl3024.hotspot;
-		light.fallend = (float)tsl3024.falloff;
+		light.rgb.r = (float)tsl3024->red * ( 1.0f / 255 );
+		light.rgb.g = (float)tsl3024->green * ( 1.0f / 255 );
+		light.rgb.b = (float)tsl3024->blue * ( 1.0f / 255 );
+		light.pos = tsl3024->pos;
+		light.fallstart = (float)tsl3024->hotspot;
+		light.fallend = (float)tsl3024->falloff;
 		
 		float t = light.fallend - light.fallstart;
 		if(t < 150.f) {
 			light.fallend += 150.f - t;
 		}
 		
-		light.intensity = (float)tsl3024.intensity;
+		light.intensity = (float)tsl3024->intensity;
 		light.exist = 1;
 		light.treat = 1;
 		light.selected = 0;
@@ -1229,7 +1211,7 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 				continue;
 			}
 			
-			unsigned char * adr = (unsigned char*)i->second->readAlloc();
+			char * adr = i->second->readAlloc();
 			if(adr) {
 				es->scenes[es->nb_scenes] = ScnToEerie(adr, i->second->size(), path);
 				es->nb_scenes++;
@@ -1814,7 +1796,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 #ifdef BUILD_EDIT_LOADSAVE
 
 // Converts a Theo Object to an EERIE object
-static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & texpath, const string & fic) {
+static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const string & texpath, const string & fic) {
 	
 	LogWarning << "TheoToEerie " << fic;
 	
@@ -1824,7 +1806,7 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	
 	string txpath;
 	if(texpath.empty()) {
-		txpath = "Graph\\Obj3D\\Textures\\";
+		txpath = "graph\\obj3d\\textures\\";
 	} else {
 		txpath = texpath;
 	}
@@ -1835,12 +1817,11 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	
 	size_t pos = 0;
 	
-	THEO_HEADER pth;
-	memcpy(&pth, adr + pos, sizeof(THEO_HEADER));
+	const THEO_HEADER * pth = reinterpret_cast<const THEO_HEADER *>(adr + pos);
 	pos += sizeof(THEO_HEADER);
 	
-	if (pth.version < 3003 || pth.version > 3011) {
-		LogError << "TheoToEerie: invalid version in " << fic << ": found " << pth.version
+	if (pth->version < 3003 || pth->version > 3011) {
+		LogError << "TheoToEerie: invalid version in " << fic << ": found " << pth->version
 		         << " expected 3004 to 3011";
 		return NULL;
 	}
@@ -1850,43 +1831,40 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	
 	eerie->file = fic;
 	
-	if(pth.type_write == 0) {
+	if(pth->type_write == 0) {
 		// read the texture
 		
 		LogError <<  "WARNING object " << fic << " SAVE MAP IN OBJECT = INVALID... Using Dummy Textures...";
 		
-		eerie->texturecontainer.resize(pth.nb_maps);
-		for(long i = 0; i < pth.nb_maps; i++) {
-			THEO_TEXTURE tt;
-			memcpy(&tt, adr + pos, sizeof(THEO_TEXTURE));
+		eerie->texturecontainer.resize(pth->nb_maps);
+		for(long i = 0; i < pth->nb_maps; i++) {
 			pos += sizeof(THEO_TEXTURE);
 			eerie->texturecontainer[i] = GetAnyTexture();
 		}
 		
 	} else {
 		
-		if((pth.type_write & SAVE_MAP_BMP) || (pth.type_write & SAVE_MAP_TGA)) {
+		if((pth->type_write & SAVE_MAP_BMP) || (pth->type_write & SAVE_MAP_TGA)) {
 			
-			eerie->texturecontainer.resize(pth.nb_maps);
-			for(long i = 0; i < pth.nb_maps; i++) {
+			eerie->texturecontainer.resize(pth->nb_maps);
+			for(long i = 0; i < pth->nb_maps; i++) {
 				
 				string name;
-				if(pth.version >= 3008) {
-					THEO_SAVE_MAPS_IN_3019 tsmi3019;
-					memcpy(&tsmi3019, adr + pos, sizeof(THEO_SAVE_MAPS_IN_3019));
+				if(pth->version >= 3008) {
+					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = tsmi3019.texture_name;
+					name = toLowercase(safestring(tsmi3019->texture_name));
 				} else {
-					THEO_SAVE_MAPS_IN tsmi;
-					memcpy(&tsmi, adr + pos, sizeof(THEO_SAVE_MAPS_IN));
+					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = tsmi.texture_name;
+					name = toLowercase(safestring(tsmi->texture_name));
 				}
 				
 				if(!name.empty()) {
 					
 					string mapsname = txpath + name;
-					if(pth.type_write & SAVE_MAP_BMP) {
+					// TODO isn't it pointless to add the extension since TextureContainer::Load ignores it?
+					if(pth->type_write & SAVE_MAP_BMP) {
 						mapsname += ".bmp";
 					} else {
 						mapsname += ".tga";
@@ -1898,8 +1876,8 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 		}
 	}
 	
-	pos = pth.object_seek;
-	_THEObjLoad(eerie, adr, &pos, pth.version);
+	pos = pth->object_seek;
+	_THEObjLoad(eerie, adr, &pos, pth->version);
 	eerie->angle.a = eerie->angle.b = eerie->angle.g = 0.f;
 	eerie->pos.x = eerie->pos.y = eerie->pos.z = 0.f;
 
@@ -2080,7 +2058,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 	if(!ret) {
 		
 		size_t size = 0;
-		unsigned char * adr = (unsigned char *)resources->readAlloc(file, size);
+		char * adr = resources->readAlloc(file, size);
 		
 		if(!adr) {
 			return NULL;

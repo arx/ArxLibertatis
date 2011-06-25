@@ -14,6 +14,16 @@ void MakeUpcase(std::string & str);
 void makeLowercase(std::string & str);
 std::string toLowercase(const std::string & str);
 
+/**
+ * Load an std::string from a const char * that may not be null-terminated.
+ */
+std::string safestring(const char * data, size_t maxLength);
+
+template <size_t N>
+std::string safestring(const char (&data)[N]) {
+	return safestring(data, N);
+}
+
 bool IsIn(const std::string & strin, const std::string & str);
 bool NC_IsIn(std::string strin, std::string str);
 int strcasecmp(const std::string & str1, const std::string & str2);

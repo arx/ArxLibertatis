@@ -566,19 +566,19 @@ struct EERIE_3DOBJ
 
 
 struct EERIE_3DSCENE {
-	long			nbobj;
-	EERIE_3DOBJ **	objs;
-	Vec3f		pos;
-	Vec3f		point0;
-	long			nbtex;
+	long nbobj;
+	EERIE_3DOBJ ** objs;
+	Vec3f pos;
+	Vec3f point0;
+	long nbtex;
 	TextureContainer ** texturecontainer;
-	long			nblight;
-	EERIE_LIGHT  ** light;
-	float			ambient_r;
-	float			ambient_g;
-	float			ambient_b;
-	CUB3D			cub;
-}; // Aligned 1 2 4
+	long nblight;
+	EERIE_LIGHT ** light;
+	float ambient_r;
+	float ambient_g;
+	float ambient_b;
+	CUB3D cub;
+};
 
 
 #ifdef BUILD_EDIT_LOADSAVE
