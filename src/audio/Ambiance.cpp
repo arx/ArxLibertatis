@@ -309,7 +309,7 @@ static SampleId _loadSample(PakFileHandle * file) {
 		}
 	} while (text[k++]);
 	
-	Sample * sample = new Sample(text);
+	Sample * sample = new Sample(toLowercase(text));
 	SampleId id = INVALID_ID;
 	if(sample->load() || (id = _sample.add(sample)) == INVALID_ID) {
 		delete sample;
@@ -375,7 +375,7 @@ static aalError _LoadAmbiance_1002(PakFileHandle * file, size_t track_c, Ambianc
 		}
 		while(text[k++]);
 		if(k > 1) {
-			track->name = text;
+			track->name = toLowercase(text);
 		}
 		
 		// Read flags and key count
@@ -427,7 +427,7 @@ static aalError _LoadAmbiance_1003(PakFileHandle * file, size_t track_c, Ambianc
 			}
 		} while(text[k++]);
 		if(k > 1) {
-			track->name = text;
+			track->name = toLowercase(text);
 		}
 		
 		// Read flags and key count
