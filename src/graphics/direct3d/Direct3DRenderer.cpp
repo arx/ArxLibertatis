@@ -332,7 +332,7 @@ void Direct3DRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float cl
 		d3drects[i].y2 = rects[i].bottom;
 	}
 	
-	GDevice->Clear(DWORD(nrects), d3drects, clearTargets, clearColor.toBGRA(), clearDepth, 0);
+	GDevice->Clear(DWORD(nrects), nrects != 0 ? d3drects : 0, clearTargets, clearColor.toBGRA(), clearDepth, 0);
 }
 
 void Direct3DRenderer::SetFogColor(Color color) {
