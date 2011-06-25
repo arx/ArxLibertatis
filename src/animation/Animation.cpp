@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cassert>
 #include <climits>
+#include <sstream>
 
 #include "animation/AnimationRender.h"
 
@@ -91,6 +92,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::string;
+using std::ostringstream;
 
 extern float IN_FRONT_DIVIDER_ITEMS;
 long MAX_LLIGHTS=18;
@@ -271,102 +274,98 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 	}
 }
 
-//-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path)
-{
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
-		if (!strcasecmp(animations[i].path,path))
-		{
+static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const string & path) {
+	
+	for(long i = 0; i < MAX_ANIMATIONS; i++) {
+		if(!strcasecmp(animations[i].path, path)) {
 			return &animations[i];
 		}
 	}
-
+	
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
-long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
+static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const string & path) {
 	
 	if(!ah || !ah->path[0]) {
-		return 0;
+		return false;
 	}
 	
 	size_t FileSize;
-	unsigned char * adr = (unsigned char *)resources->readAlloc(path, FileSize);
+	char * adr = resources->readAlloc(path, FileSize);
 	if(!adr) {
-		return 0;
+		return false;
 	}
 	
-	EERIE_ANIM * temp = TheaToEerie(adr,FileSize,path);
+	EERIE_ANIM * temp = TheaToEerie(adr, FileSize, path);
 	free(adr);
 	if(!temp) {
-		return 0;
+		return false;
 	}
 	
 	ah->alt_nb++;
-	ah->anims=(EERIE_ANIM **)realloc(ah->anims,sizeof(EERIE_ANIM *)*ah->alt_nb);
-	ah->sizes=(long *)realloc(ah->sizes,sizeof(long)*ah->alt_nb);
-	ah->anims[ah->alt_nb-1]=temp;
-	ah->sizes[ah->alt_nb-1]=FileSize;		
-	return 1;
+	ah->anims = (EERIE_ANIM **)realloc(ah->anims, sizeof(EERIE_ANIM *) * ah->alt_nb);
+	ah->sizes = (long *)realloc(ah->sizes, sizeof(long) * ah->alt_nb);
+	ah->anims[ah->alt_nb - 1] = temp;
+	ah->sizes[ah->alt_nb - 1] = FileSize;
+	
+	return true;
 }
 
-//-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
-{
-	std::string path = _path;
-
-	ANIM_HANDLE * handl=EERIE_ANIMMANAGER_GetHandle(path.c_str());
-
-	if (handl) 
-	{
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & _path) {
+	
+	string path = _path;
+	
+	ANIM_HANDLE * handl = EERIE_ANIMMANAGER_GetHandle(path);
+	if(handl) {
 		handl->locks++;
 		return handl;
 	}
-
-	unsigned char * adr;
-	size_t FileSize;
-	char path2[256];
-	int pathcount = 2;
-
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
-		if (animations[i].path[0]==0)
-		{				
-			if ((adr=(unsigned char *)resources->readAlloc(path,FileSize))!=NULL)
-			{
-				animations[i].anims=(EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
-				animations[i].sizes=(long *)malloc(sizeof(long));
-
-				animations[i].anims[0]=TheaToEerie(adr,FileSize,path.c_str());
-				animations[i].sizes[0]=FileSize;
-				animations[i].alt_nb=1;
-				free(adr);
-
-				if (animations[i].anims[0]==NULL) return NULL;			
-
-				strcpy(animations[i].path,path.c_str());				
-				animations[i].locks=1;
-
-				//remove extension
-				path = path.substr(0, path.size()-4);
-
-				sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
-
-				while (EERIE_ANIMMANAGER_AddAltAnim(&animations[i],path2))
-				{
-					pathcount++;
-					sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
-				}
-
-				return &animations[i];
-			}				
-			
+	
+	for(long i = 0; i < MAX_ANIMATIONS; i++) {
+		
+		if(animations[i].path[0] != '\0') {
+			continue;
+		}
+		
+		size_t FileSize;
+		char * adr = resources->readAlloc(path, FileSize);
+		if(!adr) {
+			LogWarning << "Animation not found: " << path;
 			return NULL;
 		}
+		
+		animations[i].anims = (EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
+		animations[i].sizes = (long *)malloc(sizeof(long));
+		animations[i].anims[0] = TheaToEerie(adr, FileSize, path);
+		animations[i].sizes[0] = FileSize;
+		animations[i].alt_nb = 1;
+		
+		free(adr);
+		
+		if(!animations[i].anims[0]) {
+			return NULL;
+		}
+		
+		strcpy(animations[i].path, path.c_str());
+		animations[i].locks = 1;
+		
+		// remove extension
+		SetExt(path, std::string());
+		
+		path.resize(path.size() - 4);
+		
+		int pathcount = 2;
+		string path2;
+		do {
+			ostringstream oss;
+			oss << path << pathcount << ".tea";
+			path2 = oss.str();
+		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], path2));
+		
+		return &animations[i];
 	}
-
+	
 	return NULL;
 }
 

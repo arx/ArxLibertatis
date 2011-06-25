@@ -293,7 +293,7 @@ static T * copyStruct(const T * src, size_t n = 1) {
 	return result;
 }
 
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) {
+EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const string & file) {
 	
 	(void)size; // TODO use size
 	
@@ -303,144 +303,139 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 	
 	EERIE_ANIM * eerie = allocStructZero<EERIE_ANIM>();
 	
-	THEA_HEADER th;
-	memcpy(&th, adr + pos, sizeof(THEA_HEADER));
-	if(th.version < 2014) {
-		LogError << "Invalid TEA Version " << th.version << " in " << file;
+	const THEA_HEADER * th = reinterpret_cast<const THEA_HEADER *>(adr + pos);
+	if(th->version < 2014) {
+		LogError << "Invalid TEA Version " << th->version << " in " << file;
 		free(eerie);
 		return NULL;
 	}
 	pos += sizeof(THEA_HEADER);
 	
 	LogDebug << "TEA header size: " << sizeof(THEA_HEADER);
-	LogDebug << "Identity " << th.identity;
-	LogDebug << "Version - " << th.version << "  Frames " << th.nb_frames
-	         << "  Groups " << th.nb_groups << "  KeyFrames " << th.nb_key_frames;
+	LogDebug << "Identity " << th->identity;
+	LogDebug << "Version - " << th->version << "  Frames " << th->nb_frames
+	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames;
 	
-	eerie->nb_groups = th.nb_groups;
-	eerie->nb_key_frames = th.nb_key_frames;
+	eerie->nb_groups = th->nb_groups;
+	eerie->nb_key_frames = th->nb_key_frames;
 	
-	eerie->frames = allocStructZero<EERIE_FRAME>(th.nb_key_frames);
-	eerie->groups = allocStructZero<EERIE_GROUP>(th.nb_key_frames * th.nb_groups);
-	eerie->voidgroups = allocStructZero<unsigned char>(th.nb_groups);
+	eerie->frames = allocStructZero<EERIE_FRAME>(th->nb_key_frames);
+	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
+	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
 	
 	eerie->anim_time = 0.f;
 	
 	// Go For Keyframes read
-	for(long i = 0; i < th.nb_key_frames; i++) {
+	for(long i = 0; i < th->nb_key_frames; i++) {
 		LogDebug << "Loading keyframe " << i;
 		
-		THEA_KEYFRAME_2015 tkf2015;
-		if(th.version >= 2015) {
+		THEA_KEYFRAME_2015 kf2015;
+		const THEA_KEYFRAME_2015 * tkf2015;
+		if(th->version >= 2015) {
 			LogDebug << " New keyframe version THEA_KEYFRAME_2015:" << sizeof(THEA_KEYFRAME_2015);
-			memcpy(&tkf2015, adr + pos, sizeof(THEA_KEYFRAME_2015));
+			tkf2015 = reinterpret_cast<const THEA_KEYFRAME_2015 *>(adr + pos);
 			pos += sizeof(THEA_KEYFRAME_2015);
 		} else {
 			LogDebug << " Old keyframe version THEA_KEYFRAME:" << sizeof(THEA_KEYFRAME);
-			THEA_KEYFRAME tkf;
-			memcpy(&tkf, adr + pos, sizeof(THEA_KEYFRAME));
+			const THEA_KEYFRAME * tkf = reinterpret_cast<const THEA_KEYFRAME *>(adr + pos);
 			pos += sizeof(THEA_KEYFRAME);
-			memset(&tkf2015, 0, sizeof(THEA_KEYFRAME_2015));
-			tkf2015.num_frame = tkf.num_frame;
-			tkf2015.flag_frame = tkf.flag_frame;
-			tkf2015.master_key_frame = tkf.master_key_frame;
-			tkf2015.key_frame = tkf.key_frame;
-			tkf2015.key_move = tkf.key_move;
-			tkf2015.key_orient = tkf.key_orient;
-			tkf2015.key_morph = tkf.key_morph;
-			tkf2015.time_frame = tkf.time_frame;
+			memset(&kf2015, 0, sizeof(THEA_KEYFRAME_2015));
+			kf2015.num_frame = tkf->num_frame;
+			kf2015.flag_frame = tkf->flag_frame;
+			kf2015.master_key_frame = tkf->master_key_frame;
+			kf2015.key_frame = tkf->key_frame;
+			kf2015.key_move = tkf->key_move;
+			kf2015.key_orient = tkf->key_orient;
+			kf2015.key_morph = tkf->key_morph;
+			kf2015.time_frame = tkf->time_frame;
+			tkf2015 = &kf2015;
 		}
 		
-		eerie->frames[i].master_key_frame = tkf2015.master_key_frame;
-		eerie->frames[i].num_frame = tkf2015.num_frame;
+		eerie->frames[i].master_key_frame = tkf2015->master_key_frame;
+		eerie->frames[i].num_frame = tkf2015->num_frame;
 		
-		long lKeyOrient = tkf2015.key_orient ;
-		long lKeyMove = tkf2015.key_move ;
-		ARX_CHECK_SHORT(tkf2015.key_orient);
-		ARX_CHECK_SHORT(tkf2015.key_move);
-		eerie->frames[i].f_rotate = ARX_CLEAN_WARN_CAST_SHORT(lKeyOrient);
-		eerie->frames[i].f_translate = ARX_CLEAN_WARN_CAST_SHORT(lKeyMove);
+		long lKeyOrient = tkf2015->key_orient;
+		long lKeyMove = tkf2015->key_move;
+		ARX_CHECK_SHORT(lKeyOrient);
+		ARX_CHECK_SHORT(lKeyMove);
+		eerie->frames[i].f_rotate = static_cast<short>(lKeyOrient);
+		eerie->frames[i].f_translate = static_cast<short>(lKeyMove);
 		
-		tkf2015.time_frame = tkf2015.num_frame * 1000;
-		eerie->frames[i].time = tkf2015.time_frame * ( 1.0f / 24 );
-		eerie->anim_time += tkf2015.time_frame;
-		eerie->frames[i].flag = tkf2015.flag_frame;
+		s32 time_frame = tkf2015->num_frame * 1000;
+		eerie->frames[i].time = time_frame * (1.f/24);
+		eerie->anim_time += time_frame;
+		eerie->frames[i].flag = tkf2015->flag_frame;
 		
 		LogDebug << " pos " << pos << " - NumFr " << eerie->frames[i].num_frame
-		         << " MKF " << tkf2015.master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME)
-		         << " TIME " << (float)(eerie->frames[i].time / 1000.f) << "s -Move " << tkf2015.key_move
-		         << " Orient " << tkf2015.key_orient << " Morph " << tkf2015.key_morph;
+		         << " MKF " << tkf2015->master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME)
+		         << " TIME " << (float)(eerie->frames[i].time / 1000.f) << "s -Move " << tkf2015->key_move
+		         << " Orient " << tkf2015->key_orient << " Morph " << tkf2015->key_morph;
 		
 		// Is There a Global translation ?
-		if(tkf2015.key_move != 0) {
+		if(tkf2015->key_move != 0) {
 			
-			THEA_KEYMOVE tkm;
-			memcpy(&tkm, adr + pos, sizeof(THEA_KEYMOVE));
+			const THEA_KEYMOVE * tkm = reinterpret_cast<const THEA_KEYMOVE *>(adr + pos);
 			pos += sizeof(THEA_KEYMOVE);
 			
-			LogDebug << " -> move x " << tkm.x << " y " << tkm.y << " z " << tkm.z
+			LogDebug << " -> move x " << tkm->x << " y " << tkm->y << " z " << tkm->z
 			         << " THEA_KEYMOVE:" << sizeof(THEA_KEYMOVE);
 			
-			eerie->frames[i].translate = tkm;
+			eerie->frames[i].translate = *tkm;
 		}
 		
 		// Is There a Global Rotation ?
-		if(tkf2015.key_orient != 0) {
+		if(tkf2015->key_orient != 0) {
 			pos += 8; // THEO_ANGLE
 			
-			ArxQuat quat;
-			memcpy(&quat, adr + pos, sizeof(ArxQuat));
+			const ArxQuat * quat = reinterpret_cast<const ArxQuat *>(adr + pos);
 			pos += sizeof(ArxQuat);
 			
-			LogDebug << " -> rotate x " << quat.x << " y " << quat.y << " z " << quat.z
-			         << " w " << quat.w << " ArxQuat:" << sizeof(ArxQuat);
+			LogDebug << " -> rotate x " << quat->x << " y " << quat->y << " z " << quat->z
+			         << " w " << quat->w << " ArxQuat:" << sizeof(ArxQuat);
 			
-			eerie->frames[i].quat = quat;
+			eerie->frames[i].quat = *quat;
 		}
 		
 		// Is There a Global Morph ? (IGNORED!)
-		if(tkf2015.key_morph != 0) {
+		if(tkf2015->key_morph != 0) {
 			pos += 16; // THEA_MORPH
 		}
 		
 		// Now go for Group Rotations/Translations/scaling for each GROUP
-		for(long j = 0; j < th.nb_groups; j++) {
+		for(long j = 0; j < th->nb_groups; j++) {
 			
-			THEO_GROUPANIM tga;
-			memcpy(&tga, adr + pos, sizeof(THEO_GROUPANIM));
+			const THEO_GROUPANIM * tga = reinterpret_cast<const THEO_GROUPANIM *>(adr + pos);
 			pos += sizeof(THEO_GROUPANIM);
 			
-			EERIE_GROUP * eg = &eerie->groups[j + i * th.nb_groups];
-			eg->key = tga.key_group;
-			eg->quat = tga.Quaternion;
-			eg->translate = tga.translate;
-			eg->zoom = tga.zoom;
+			EERIE_GROUP * eg = &eerie->groups[j + i * th->nb_groups];
+			eg->key = tga->key_group;
+			eg->quat = tga->Quaternion;
+			eg->translate = tga->translate;
+			eg->zoom = tga->zoom;
 		}
 		
 		// Now Read Sound Data included in this frame
-		s32 num_sample;
-		memcpy(&num_sample, adr + pos, sizeof(s32));
+		s32 num_sample = *reinterpret_cast<const s32 *>(adr + pos);
 		pos += sizeof(s32);
 		LogDebug << " -> num_sample " << num_sample << " s32:" << sizeof(s32);
 		
 		eerie->frames[i].sample = -1;
 		if(num_sample != -1) {
 			
-			THEA_SAMPLE ts;
-			memcpy(&ts, adr + pos, sizeof(THEA_SAMPLE));
+			const THEA_SAMPLE * ts = reinterpret_cast<const THEA_SAMPLE *>(adr + pos);
 			pos += sizeof(THEA_SAMPLE);
-			pos += ts.sample_size;
+			pos += ts->sample_size;
 			
-			LogDebug << " -> sample " << ts.sample_name << " size " << ts.sample_size
+			LogDebug << " -> sample " << ts->sample_name << " size " << ts->sample_size
 			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE);
 			
-			eerie->frames[i].sample = ARX_SOUND_Load(ts.sample_name);
+			eerie->frames[i].sample = ARX_SOUND_Load(toLowercase(safestring(ts->sample_name)));
 		}
 		
 		pos += 4; // num_sfx
 	}
 	
-	for(long i = 0; i < th.nb_key_frames; i++) {
+	for(long i = 0; i < th->nb_key_frames; i++) {
 		
 		if(!eerie->frames[i].f_translate) {
 			
@@ -450,20 +445,17 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 			}
 			
 			long j = i;
-			while((j < th.nb_key_frames) && (!eerie->frames[j].f_translate)) {
+			while((j < th->nb_key_frames) && (!eerie->frames[j].f_translate)) {
 				j++;
 			}
 			
-			if((j < th.nb_key_frames) && (k >= 0)) {
+			if((j < th->nb_key_frames) && (k >= 0)) {
 				float r1 = GetTimeBetweenKeyFrames(eerie, k, i);
 				float r2 = GetTimeBetweenKeyFrames(eerie, i, j);
 				float tot = 1.f / (r1 + r2);
 				r1 *= tot;
 				r2 *= tot;
-				// TODO use overloaded operators
-				eerie->frames[i].translate.x = eerie->frames[j].translate.x * r1 + eerie->frames[k].translate.x * r2;
-				eerie->frames[i].translate.y = eerie->frames[j].translate.y * r1 + eerie->frames[k].translate.y * r2;
-				eerie->frames[i].translate.z = eerie->frames[j].translate.z * r1 + eerie->frames[k].translate.z * r2;
+				eerie->frames[i].translate = eerie->frames[j].translate * r1 + eerie->frames[k].translate * r2;
 			}
 		}
 		
@@ -475,11 +467,11 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 			}
 			
 			long j = i;
-			while ((j < th.nb_key_frames) && (!eerie->frames[j].f_rotate)) {
+			while ((j < th->nb_key_frames) && (!eerie->frames[j].f_rotate)) {
 				j++;
 			}
 			
-			if ((j < th.nb_key_frames) && (k >= 0)) {
+			if ((j < th->nb_key_frames) && (k >= 0)) {
 				float r1 = GetTimeBetweenKeyFrames(eerie, k, i);
 				float r2 = GetTimeBetweenKeyFrames(eerie, i, j);
 				float tot = 1.f / (r1 + r2);
@@ -494,7 +486,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 		}
 	}
 	
-	for(long i = 0; i < th.nb_key_frames; i++) {
+	for(long i = 0; i < th->nb_key_frames; i++) {
 		eerie->frames[i].f_translate = true;
 		eerie->frames[i].f_rotate = true;
 	}
@@ -526,7 +518,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const string & file) 
 		}
 	}
 	
-	eerie->anim_time = (float)th.nb_frames * 1000.f * ( 1.0f / 24 );
+	eerie->anim_time = th->nb_frames * 1000.f * (1.f/24);
 	if(eerie->anim_time < 1) {
 		eerie->anim_time = 1;
 	}

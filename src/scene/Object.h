@@ -105,7 +105,7 @@ EERIE_3DOBJ * loadObject(const std::string & file, bool pbox = true);
  */
 EERIE_3DOBJ * _LoadTheObj(const std::string & file, const std::string & texpath);
 
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const std::string & fic);
+EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const std::string & fic);
 
 void ReleaseAnim(EERIE_ANIM * ea);
 

@@ -972,7 +972,6 @@ float GetSWorld(float x,float y,float z);
 void EERIE_ANIMMANAGER_Init();
 void EERIE_ANIMMANAGER_PurgeUnused();
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path);
 ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const std::string& path);
 void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
