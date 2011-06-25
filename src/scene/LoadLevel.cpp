@@ -885,99 +885,94 @@ extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
 
-long DanaeLoadLevel(const string & fic) {
+long DanaeLoadLevel(const string & file) {
 	
-	LogInfo << "Loading Level " << fic;
+	LogInfo << "Loading Level " << file;
 	
 	ClearCurLoadInfo();
-	CURRENTLEVEL = GetLevelNumByName(fic);
+	CURRENTLEVEL = GetLevelNumByName(file);
 	
-	string fic2 = fic;
-	SetExt(fic2, ".LLF");
+	string lightingFileName = file;
+	SetExt(lightingFileName, ".LLF");
 
-	LogDebug << "fic2 " << fic2;
-	LogDebug << "fileDlf " << fic;
+	LogDebug << "fic2 " << lightingFileName;
+	LogDebug << "fileDlf " << file;
 
 	size_t FileSize = 0;
-	char * dat = resources->readAlloc(fic, FileSize);
+	char * dat = resources->readAlloc(file, FileSize);
 	
 	if(!dat) {
-		LogError << "Unable to find " << fic;
+		LogError << "Unable to find " << file;
 		return -1;
 	}
 	
-	PakFile * llfFile = resources->getFile(fic2);
+	PakFile * lightingFile = resources->getFile(lightingFileName);
 	
-	strcpy(LastLoadedDLF, fic.c_str());
+	strcpy(LastLoadedDLF, file.c_str());
 	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
 	size_t pos = 0;
 	
-	DANAE_LS_HEADER dlh;
-	memcpy(&dlh, dat + pos, sizeof(DANAE_LS_HEADER));
+	const DANAE_LS_HEADER * dlh = reinterpret_cast<const DANAE_LS_HEADER *>(dat + pos);
 	pos += sizeof(DANAE_LS_HEADER);
 	
-	LogDebug << "dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER);
+	LogDebug << "dlh.version " << dlh->version << " header size " << sizeof(DANAE_LS_HEADER);
 	
-	if(dlh.version > DLH_CURRENT_VERSION) {
-		LogError << "DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...";
+	if(dlh->version > DLH_CURRENT_VERSION) {
+		LogError << "Unexpected level file version: " << dlh->version << " for " << file;
 		free(dat);
 		dat = NULL;
 		return -1;
 	}
 	
 	// using compression
-	if(dlh.version >= 1.44f) {
+	if(dlh->version >= 1.44f) {
 		char * torelease = dat;
 		dat = blastMemAlloc(dat + pos, FileSize - pos, FileSize);
 		free(torelease);
 		pos = 0;
 		if(!dat) {
-			LogError << "STD_Explode did not return anything " << fic;
+			LogError << "STD_Explode did not return anything " << file;
 			return -1;
 		}
 	}
 	
-	loddpos = subj.pos = dlh.pos_edit;
-	player.desiredangle = player.angle = subj.angle = dlh.angle_edit;
+	loddpos = subj.pos = dlh->pos_edit;
+	player.desiredangle = player.angle = subj.angle = dlh->angle_edit;
 	
-	if(strcmp(dlh.ident, "DANAE_FILE")) {
-		LogError << "Not a valid file "<< fic;
+	if(strcmp(dlh->ident, "DANAE_FILE")) {
+		LogError << "Not a valid file "<< file;
 		return -1;
-	}
-	
-	if(dlh.version < 1.001f) {
-		dlh.nb_nodes = 0;
 	}
 	
 	LogDebug << "Loading Scene";
 	
 	// Loading Scene
-	if(dlh.nb_scn >= 1) {
+	if(dlh->nb_scn > 0) {
 		
-		DANAE_LS_SCENE * dls = (DANAE_LS_SCENE*)(dat + pos);
+		const DANAE_LS_SCENE * dls = reinterpret_cast<const DANAE_LS_SCENE *>(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
 		
-		string ftemp;
+		string scene;
 		if(FAKE_DIR) {
-			ftemp = fic;
-			RemoveName(ftemp);
+			scene = file;
+			RemoveName(scene);
 			FAKE_DIR = 0;
 		} else {
-			ftemp = dls->name;
-			RemoveName(ftemp);
+			scene = toLowercase(safestring(dls->name));
+			RemoveName(scene);
 		}
 		
-		if(FastSceneLoad(ftemp)) {
+		if(FastSceneLoad(scene)) {
 			LogDebug << "done loading scene";
 			FASTmse = 1;
 		} else {
 #ifdef BUILD_EDIT_LOADSAVE
 			LogDebug << "fast loading scene failed";
 			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-			mse = PAK_MultiSceneToEerie(ftemp);
+			mse = PAK_MultiSceneToEerie(scene);
 			PROGRESS_BAR_COUNT += 20.f;
 			LoadLevelScreen();
 #else
@@ -986,7 +981,7 @@ long DanaeLoadLevel(const string & fic) {
 		}
 		
 		EERIEPOLY_Compute_PolyIn();
-		strcpy(LastLoadedScene, ftemp.c_str());
+		strcpy(LastLoadedScene, scene.c_str());
 	}
 	
 	Vec3f trans;
@@ -1030,32 +1025,32 @@ long DanaeLoadLevel(const string & fic) {
 	ClearCurLoadInfo();
 	
 	float increment = 0;
-	if(dlh.nb_inter > 0) {
-		increment = (60.f / (float)dlh.nb_inter);
+	if(dlh->nb_inter > 0) {
+		increment = (60.f / (float)dlh->nb_inter);
 	} else {
 		PROGRESS_BAR_COUNT += 60;
 		LoadLevelScreen();
 	}
 	
-	for(long i = 0 ; i < dlh.nb_inter ; i++) {
+	for(long i = 0 ; i < dlh->nb_inter ; i++) {
 		
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
 		
-		DANAE_LS_INTER * dli = (DANAE_LS_INTER *)(dat + pos);
+		const DANAE_LS_INTER * dli = reinterpret_cast<const DANAE_LS_INTER *>(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
 		if(!DONT_LOAD_INTERS) {
-			LoadInter_Ex(dli->name, dli->ident, dli->pos, dli->angle, trans);
+			LoadInter_Ex(toLowercase(safestring(dli->name)), dli->ident, dli->pos, dli->angle, trans);
 		}
 	}
 	
-	if(dlh.lighting) {
+	if(dlh->lighting) {
 		
-		DANAE_LS_LIGHTINGHEADER * dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
+		const DANAE_LS_LIGHTINGHEADER * dll = reinterpret_cast<const DANAE_LS_LIGHTINGHEADER *>(dat + pos);
 		pos += sizeof(DANAE_LS_LIGHTINGHEADER);
 		long bcount = dll->nb_values;
 		
-		if(!llfFile) {
+		if(!lightingFile) {
 			
 			LastLoadedLightningNb = bcount;
 			if(LastLoadedLightning != NULL) {
@@ -1066,15 +1061,14 @@ long DanaeLoadLevel(const string & fic) {
 			//DANAE_LS_VLIGHTING
 			D3DCOLOR * ll = LastLoadedLightning = (D3DCOLOR *)malloc(sizeof(D3DCOLOR) * bcount);
 			
-			if(dlh.version > 1.001f) {
+			if(dlh->version > 1.001f) {
 				std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
 				pos += sizeof(u32) * bcount;
 			} else {
 				while(bcount) {
-					DANAE_LS_VLIGHTING dlv;
-					memcpy(&dlv, dat + pos, sizeof(DANAE_LS_VLIGHTING));
+					const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
 					pos += sizeof(DANAE_LS_VLIGHTING);
-					*ll = 0xff000000L | ((dlv.r & 255) << 16) | ((dlv.g & 255) << 8) | (dlv.b & 255);
+					*ll = 0xff000000L | ((dlv->r & 255) << 16) | ((dlv->g & 255) << 8) | (dlv->b & 255);
 					ll++;
 					bcount--;
 				}
@@ -1092,19 +1086,17 @@ long DanaeLoadLevel(const string & fic) {
 	PROGRESS_BAR_COUNT += 1;
 	LoadLevelScreen();
 	
-	if(dlh.version < 1.003f) {
-		dlh.nb_lights = 0;
-	}
+	long nb_lights = (dlh->version < 1.003f) ? 0 : dlh->nb_lights;
 	
-	if(!llfFile) {
+	if(!lightingFile) {
 		
-		if(dlh.nb_lights != 0) {
+		if(nb_lights != 0) {
 			EERIE_LIGHT_GlobalInit();
 		}
 		
-		for(long i = 0; i < dlh.nb_lights; i++) {
+		for(long i = 0; i < nb_lights; i++) {
 			
-			DANAE_LS_LIGHT * dlight = (DANAE_LS_LIGHT*)(dat + pos);
+			const DANAE_LS_LIGHT * dlight = reinterpret_cast<const DANAE_LS_LIGHT *>(dat + pos);
 			pos += sizeof(DANAE_LS_LIGHT);
 			
 			long j = EERIE_LIGHT_Create();
@@ -1144,16 +1136,16 @@ long DanaeLoadLevel(const string & fic) {
 		}
 		
 	} else {
-		pos += sizeof(DANAE_LS_LIGHT) * dlh.nb_lights;
+		pos += sizeof(DANAE_LS_LIGHT) * nb_lights;
 	}
 	
 	ClearCurLoadInfo();
 	LogDebug << "Loading FOGS";
 	ARX_FOGS_Clear();
 	
-	for(long i = 0; i < dlh.nb_fogs; i++) {
+	for(long i = 0; i < dlh->nb_fogs; i++) {
 		
-		DANAE_LS_FOG * dlf = (DANAE_LS_FOG *)(dat + pos);
+		const DANAE_LS_FOG * dlf = reinterpret_cast<const DANAE_LS_FOG *>(dat + pos);
 		pos += sizeof(DANAE_LS_FOG);
 		
 		long n = ARX_FOGS_GetFree();
@@ -1192,25 +1184,22 @@ long DanaeLoadLevel(const string & fic) {
 	LogDebug << "Loading Nodes";
 	ClearNodes();
 	
-	for(long i = 0; i < dlh.nb_nodes; i++) {
+	long nb_nodes = (dlh->version < 1.001f) ? 0 : dlh->nb_nodes;
+	for(long i = 0; i < nb_nodes; i++) {
 		
 		nodes.nodes[i].exist = 1;
 		nodes.nodes[i].selected = 0;
-		DANAE_LS_NODE * dln = (DANAE_LS_NODE*)(dat + pos);
+		const DANAE_LS_NODE * dln = reinterpret_cast<const DANAE_LS_NODE *>(dat + pos);
 		pos += sizeof(DANAE_LS_NODE);
 		
-		strcpy(nodes.nodes[i].name, dln->name);
-		nodes.nodes[i].pos.x = dln->pos.x + trans.x;
-		nodes.nodes[i].pos.y = dln->pos.y + trans.y;
-		nodes.nodes[i].pos.z = dln->pos.z + trans.z;
+		strncpy(nodes.nodes[i].name, dln->name, sizeof(dln->name));
+		nodes.nodes[i].pos = (Vec3f)dln->pos + trans;
 		
-		for(long j = 0; j < dlh.nb_nodeslinks; j++) {
-			char name[64];
-			memcpy(name, dat + pos, 64);
-			pos += 64;
-			if(name[0] != 0) {
-				strcpy(nodes.nodes[i].lnames[j], name);
+		for(long j = 0; j < dlh->nb_nodeslinks; j++) {
+			if(dat[pos] != '\0') {
+				strncpy(nodes.nodes[i].lnames[j], dat + pos, 64);
 			}
+			pos += 64;
 		}
 	}
 	
@@ -1220,17 +1209,17 @@ long DanaeLoadLevel(const string & fic) {
 	LogDebug << "Loading Paths";
 	ARX_PATH_ReleaseAllPath();
 	
-	if(dlh.nb_paths) {
-		ARXpaths = (ARX_PATH **)malloc(sizeof(ARX_PATH *) * dlh.nb_paths);
-		nbARXpaths = dlh.nb_paths;
+	if(dlh->nb_paths) {
+		ARXpaths = (ARX_PATH **)malloc(sizeof(ARX_PATH *) * dlh->nb_paths);
+		nbARXpaths = dlh->nb_paths;
 	}
 	
-	for(long i = 0; i < dlh.nb_paths; i++) {
+	for(long i = 0; i < dlh->nb_paths; i++) {
 		
 		ARX_PATH * ap = ARXpaths[i] = (ARX_PATH *)malloc(sizeof(ARX_PATH));
 		memset(ap, 0, sizeof(ARX_PATH));
 		
-		DANAE_LS_PATH * dlp = (DANAE_LS_PATH *)(dat + pos);
+		const DANAE_LS_PATH * dlp = reinterpret_cast<const DANAE_LS_PATH *>(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
 		
 		ap->flags = Flag(dlp->flags); // TODO save/load flags
@@ -1241,10 +1230,10 @@ long DanaeLoadLevel(const string & fic) {
 		ap->pos.x = dlp->pos.x + trans.x;
 		ap->pos.y = dlp->pos.y + trans.y;
 		ap->pos.z = dlp->pos.z + trans.z;
-		strcpy(ap->name, dlp->name);
+		strcpy(ap->name, toLowercase(safestring(dlp->name)).c_str());
 		ap->nb_pathways = dlp->nb_pathways;
 		ap->height = dlp->height;
-		strcpy(ap->ambiance, dlp->ambiance);
+		strcpy(ap->ambiance, toLowercase(safestring(dlp->ambiance)).c_str());
 		ap->amb_max_vol = dlp->amb_max_vol;
 		
 		if(ap->amb_max_vol <= 1.f) {
@@ -1260,7 +1249,7 @@ long DanaeLoadLevel(const string & fic) {
 		
 		for(long j = 0; j < dlp->nb_pathways; j++) {
 			
-			DANAE_LS_PATHWAYS  * dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
+			const DANAE_LS_PATHWAYS  * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
 			pos += sizeof(DANAE_LS_PATHWAYS);
 			
 			app[j].flag = (PathwayType)dlpw->flag; // save/load enum
@@ -1280,19 +1269,19 @@ long DanaeLoadLevel(const string & fic) {
 	pos = 0;
 	dat = NULL;
 	
-	if(llfFile) {
+	if(lightingFile) {
 		
 		ClearCurLoadInfo();
 		LogDebug << "Loading LLF Info";
 		
 		// using compression
-		if(dlh.version >= 1.44f) {
-			char * compressed = llfFile->readAlloc();
-			dat = (char*)blastMemAlloc(compressed, llfFile->size(), FileSize);
+		if(dlh->version >= 1.44f) {
+			char * compressed = lightingFile->readAlloc();
+			dat = (char*)blastMemAlloc(compressed, lightingFile->size(), FileSize);
 			free(compressed);
 		} else {
-			dat = llfFile->readAlloc();
-			FileSize = llfFile->size();
+			dat = lightingFile->readAlloc();
+			FileSize = lightingFile->size();
 		}
 	}
 	// TODO size ignored
@@ -1305,7 +1294,7 @@ long DanaeLoadLevel(const string & fic) {
 		return 1;
 	}
 	
-	DANAE_LLF_HEADER * llh = (DANAE_LLF_HEADER *)(dat);
+	const DANAE_LLF_HEADER * llh = reinterpret_cast<DANAE_LLF_HEADER *>(dat + pos);
 	pos += sizeof(DANAE_LLF_HEADER);
 	
 	PROGRESS_BAR_COUNT += 4.f;
@@ -1317,7 +1306,7 @@ long DanaeLoadLevel(const string & fic) {
 	
 	for(int i = 0; i < llh->nb_lights; i++) {
 		
-		DANAE_LS_LIGHT * dlight = (DANAE_LS_LIGHT *)(dat + pos);
+		const DANAE_LS_LIGHT * dlight = reinterpret_cast<const DANAE_LS_LIGHT *>(dat + pos);
 		pos += sizeof(DANAE_LS_LIGHT);
 		
 		long j = EERIE_LIGHT_Create();
@@ -1371,7 +1360,7 @@ long DanaeLoadLevel(const string & fic) {
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
 	
-	DANAE_LS_LIGHTINGHEADER * dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
+	const DANAE_LS_LIGHTINGHEADER * dll = reinterpret_cast<const DANAE_LS_LIGHTINGHEADER *>(dat + pos);
 	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
 	
 	long bcount = dll->nb_values;
@@ -1384,15 +1373,14 @@ long DanaeLoadLevel(const string & fic) {
 	//DANAE_LS_VLIGHTING
 	D3DCOLOR * ll;
 	ll = LastLoadedLightning = (D3DCOLOR *)malloc(sizeof(D3DCOLOR) * bcount);
-	if(dlh.version > 1.001f) {
+	if(dlh->version > 1.001f) {
 		std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
 		pos += sizeof(D3DCOLOR) * bcount;
 	} else {
 		while(bcount) {
-			DANAE_LS_VLIGHTING dlv;
-			memcpy(&dlv, dat + pos, sizeof(DANAE_LS_VLIGHTING));
+			const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
 			pos += sizeof(DANAE_LS_VLIGHTING);
-			*ll = 0xff000000L | ((dlv.r & 255) << 16) | ((dlv.g & 255) << 8) | (dlv.b & 255);
+			*ll = 0xff000000L | ((dlv->r & 255) << 16) | ((dlv->g & 255) << 8) | (dlv->b & 255);
 			ll++;
 			bcount--;
 		}
