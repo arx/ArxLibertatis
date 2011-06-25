@@ -161,14 +161,6 @@ static long ARX_CHANGELEVEL_Push_AllIO();
 static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io);
 static long ARX_CHANGELEVEL_Pop_IO(const string & ident);
 
-//-----------------------------------------------------------------------------
-struct TEMP_IO
-{
-  char ident[64];
-};
-TEMP_IO * tio = NULL;
-
-long nb_tio = 0;
 long NEW_LEVEL = -1;
 long LAST_CHINSTANCE = 1; // temporary MUST return to -1;
 char CurGamePath[256];
@@ -2138,17 +2130,6 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-void ReleaseTio()
-{
-	if (tio)
-	{
-		free(tio);
-		tio = NULL;
-	}
-
-	nb_tio = 0;
-}
 extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 
 //-----------------------------------------------------------------------------
@@ -3336,7 +3317,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			index_variable = NULL;
 			idx_io_nb = 0;
-			ReleaseTio();
 			RELOADING = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
@@ -3360,7 +3340,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			index_variable = NULL;
 			idx_io_nb = 0;
-			ReleaseTio();
 			RELOADING = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
@@ -3396,7 +3375,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 		index_variable = NULL;
 		idx_io_nb = 0;
-		ReleaseTio();
 		RELOADING = 0;
 		ReleaseGaids();
 		FORBID_SCRIPT_IO_CREATION = 0;
@@ -3449,7 +3427,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			index_variable = NULL;
 			idx_io_nb = 0;
-			ReleaseTio();
 			RELOADING = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
@@ -3479,7 +3456,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 		index_variable = NULL;
 		idx_io_nb = 0;
-		ReleaseTio();
 		RELOADING = 0;
 		ReleaseGaids();
 		FORBID_SCRIPT_IO_CREATION = 0;
@@ -3513,7 +3489,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 
-	ReleaseTio();
 	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
 
 	NO_TIME_INIT = 1;
