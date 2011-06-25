@@ -3068,7 +3068,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	{
 		textSize = pText->pFont->GetTextSize(pText->lpszText); 
 
-		_iTaille = max (_iTaille, textSize.y);
+		_iTaille = std::max<int>(_iTaille, textSize.y);
 		textSize.x += pText->rZone.left;
 		pText->Move(iPosX, iPosY + (_iTaille - textSize.y) / 2);
 	}
@@ -3078,12 +3078,12 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	ARX_CHECK_LONG( _fPosX );
 	ARX_CHECK_LONG( _fPosY );
 	ARX_CHECK_LONG( _fPosX + _iTaille + textSize.x );
-	ARX_CHECK_LONG( _fPosY + max(_iTaille, textSize.y) );
+	ARX_CHECK_LONG( _fPosY + std::max<int>(_iTaille, textSize.y) );
 	//CAST
-	rZone.left        = ARX_CLEAN_WARN_CAST_LONG( _fPosX );
-	rZone.top        = ARX_CLEAN_WARN_CAST_LONG( _fPosY );
-	rZone.right        = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + textSize.x );
-	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, textSize.y) );
+	rZone.left = ARX_CLEAN_WARN_CAST_LONG( _fPosX );
+	rZone.top = ARX_CLEAN_WARN_CAST_LONG( _fPosY );
+	rZone.right = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + textSize.x );
+	rZone.bottom = ARX_CLEAN_WARN_CAST_LONG( _fPosY + std::max<int>(_iTaille, textSize.y) );
 	pRef=this;
 
 	if (_pTex2) // TODO should this be _pTex1?
