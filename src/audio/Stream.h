@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "AudioTypes.h"
 
-struct PakFileHandle;
+class PakFileHandle;
 
 namespace audio {
 

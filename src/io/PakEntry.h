@@ -65,6 +65,7 @@ class PakDirectory {
 	
 private:
 	
+	// TODO hash maps might be a better fit
 	std::map<std::string, PakFile *> files;
 	std::map<std::string, PakDirectory> dirs;
 	
@@ -77,7 +78,7 @@ private:
 	
 	friend class PakReader;
 	friend class std::map<std::string, PakDirectory>;
-	friend class std::pair<const std::string, PakDirectory>;
+	friend struct std::pair<const std::string, PakDirectory>;
 	
 public:
 	
