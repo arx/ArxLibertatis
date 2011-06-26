@@ -29,6 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <climits>
 #include <cstring>
+#include <cstdlib>
 
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
@@ -50,6 +51,7 @@ using std::search;
 using std::string;
 using std::copy;
 using std::strcmp;
+using std::free;
 
 extern CinematicTrack * CKTrack;
 extern C_KEY KeyTemp;
