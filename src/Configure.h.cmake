@@ -16,6 +16,8 @@
 #cmakedefine HAVE_OPENAL_EFX
 #cmakedefine HAVE_DSOUND
 
+#cmakedefine HAVE_OPENGL
+
 // Compiler features
 #cmakedefine HAVE_DYNAMIC_STACK_ALLOCATION
 
