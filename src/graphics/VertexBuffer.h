@@ -8,8 +8,8 @@
 #include "graphics/Renderer.h"
 
 enum BufferFlag {
-	DiscardContents,
-	NoOverwrite
+	DiscardContents = (1<<0),
+	NoOverwrite     = (1<<1)
 };
 DECLARE_FLAGS(BufferFlag, BufferFlags);
 DECLARE_FLAGS_OPERATORS(BufferFlags);
