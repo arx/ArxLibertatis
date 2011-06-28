@@ -1,11 +1,11 @@
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
+#ifdef HAVE_OPENGL
+
 #include <GL/gl.h>
 
 #include "io/Logger.h"
-
-//OpenGLRenderer instance;
 
 void OpenGLRenderer::SetRenderState(Renderer::RenderState state, bool enable) {
 	
@@ -61,3 +61,5 @@ void OpenGLRenderer::SetRenderState(Renderer::RenderState state, bool enable) {
 			LogWarning << "unsupported render state: " << state;
 	}
 }
+
+#endif // HAVE_OPENGL

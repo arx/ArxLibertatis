@@ -3,6 +3,9 @@
 #define ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 
 #include "graphics/Renderer.h"
+#include "Configure.h"
+
+#ifdef HAVE_OPENGL
 
 class OpenGLRenderer : Renderer {
 	
@@ -81,5 +84,7 @@ class OpenGLRenderer : Renderer {
 	virtual bool getSnapshot(Image & image, size_t width, size_t height) = 0;
 	
 };
+
+#endif // HAVE_OPENGL
 
 #endif // ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
