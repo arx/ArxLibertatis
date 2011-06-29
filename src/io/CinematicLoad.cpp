@@ -169,7 +169,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading bitmap path";
 			return false;
 		}
-		string path = toLowercase(str);
+		string path = loadPath(str);
 		
 		clearAbsDirectory(path, "arx\\");
 		
@@ -207,7 +207,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading sound path";
 			return false;
 		}
-		string path = toLowercase(str);
+		string path = loadPath(str);
 		
 		LogDebug << "raw sound path " << i << ": " << path;
 		
