@@ -36,6 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Mixer.h"
 
 #include "io/PakReader.h"
+#include "io/FilePath.h"
 
 #include "platform/String.h"
 #include "platform/Flags.h"
@@ -309,7 +310,7 @@ static SampleId _loadSample(PakFileHandle * file) {
 		}
 	} while (text[k++]);
 	
-	Sample * sample = new Sample(toLowercase(text));
+	Sample * sample = new Sample(loadPath(text));
 	SampleId id = INVALID_ID;
 	if(sample->load() || (id = _sample.add(sample)) == INVALID_ID) {
 		delete sample;
