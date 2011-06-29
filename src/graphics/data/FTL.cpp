@@ -451,10 +451,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		return NULL;
 	}
 	
-	size_t allocsize; // The size of the data
+	size_t allocsize; // The size of the data TODO size ignored
 	char * dat = blastMemAlloc(compressedData, compressedSize, allocsize);
-	// TODO size ignored
-	
 	if(!dat) {
 		LogError << "ARX_FTL_Load: error decompressing " << filename;
 		return NULL;
@@ -512,7 +510,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	obj->actionlist.resize(af3Ddh->nb_action);
 	obj->selections.resize(af3Ddh->nb_selections);
 	obj->origin = af3Ddh->origin;
-	obj->file = toLowercase(safestring(af3Ddh->name));
+	obj->file = loadPath(safestring(af3Ddh->name));
 	
 	// Alloc'n'Copy vertices
 	if(!obj->vertexlist.empty()) {
@@ -528,9 +526,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		}
 		
 		// Set the origin point of the mesh
-		obj->point0.x = obj->vertexlist[obj->origin].v.x;
-		obj->point0.y = obj->vertexlist[obj->origin].v.y;
-		obj->point0.z = obj->vertexlist[obj->origin].v.z;
+		obj->point0 = obj->vertexlist[obj->origin].v;
 		
 		obj->vertexlist3 = obj->vertexlist;
 	}
@@ -574,7 +570,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 			pos += sizeof(Texture_Container_FTL);
 			
 			string name;
-			File_Standardize(toLowercase(safestring(tex->name)), name);
+			File_Standardize(loadPath(safestring(tex->name)), name);
 			
 			// Create the texture and put it in the container list
 			obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);
