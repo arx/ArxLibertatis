@@ -204,10 +204,19 @@ void ARX_MINIMAP_ValidatePlayerPos()
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_Load_Offsets()
 {
-	const char INI_MINI_OFFSETS[] = "Graph\\Levels\\mini_offsets.ini";
+	const char INI_MINI_OFFSETS[] = "graph\\levels\\mini_offsets.ini";
 	
-	size_t siz = 0;
-	char * dat = resources->readAlloc(INI_MINI_OFFSETS, siz);
+	PakFile * file = resources->getFile(INI_MINI_OFFSETS);
+	if(!file) {
+		LogError << "missing " << INI_MINI_OFFSETS;
+		return;
+	}
+	
+	size_t siz = file->size();
+	char * dat = new char[siz + 2];
+	dat[siz] = dat[siz + 1] = '\0'; // TODO(case-sensitive) remove
+	
+	file->read(dat);
 	
 	if(dat) {
 		size_t pos = 0;
@@ -226,7 +235,7 @@ void ARX_MINIMAP_Load_Offsets()
 			if (pos >= siz) break;
 		}
 		
-		free(dat);
+		delete[] dat;
 	}
 
 	mini_offset_x[0] = 0;
