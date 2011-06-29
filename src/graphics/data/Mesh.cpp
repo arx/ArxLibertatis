@@ -3290,7 +3290,7 @@ bool FastSceneLoad(const string & partial_path) {
 	TextureContainerMap textures;
 	for(long k = 0; k < fsh->nb_textures; k++) {
 		const FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<const FAST_TEXTURE_CONTAINER *>(rawdata + pos);
-		string file = toLowercase(safestring(ftc->fic));
+		string file = loadPath(safestring(ftc->fic));
 		TextureContainer * tmpTC = TextureContainer::Load(file, TextureContainer::Level);
 		if(tmpTC) {
 			textures[ftc->tc] = tmpTC;
