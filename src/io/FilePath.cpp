@@ -165,3 +165,7 @@ void File_Standardize(const string & from, string & to) {
 	
 	to = temp;
 }
+
+std::string loadPath(const std::string & path) {
+	return toLowercase(path); // TODO also replace slashes
+}
