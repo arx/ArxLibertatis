@@ -2655,109 +2655,91 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 }
 
 extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
-//-----------------------------------------------------------------------------
 
-long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
-{
-	unsigned char * treated = (unsigned char *) malloc(sizeof(unsigned char) * MAX_IO_SAVELOAD);
-
-	memset(treated, 0, sizeof(unsigned char)*MAX_IO_SAVELOAD); 
+static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
+	
+	bool * treated = new bool[MAX_IO_SAVELOAD];
+	memset(treated, 0, sizeof(unsigned char)*MAX_IO_SAVELOAD);
+	
 	long converted = 1;
-
-	while (converted)
-	{
+	while(converted) {
 		converted = 0;
-
-		for (long it = 1; it < MAX_IO_SAVELOAD; it++)
-		{
-			if (it < inter.nbmax)
-			{
-				INTERACTIVE_OBJ * io = inter.iobj[it];
-
-				if ((io) && (treated[it] == 0))
-				{
-					treated[it] = 1;
-					ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids = _Gaids[it];
-
-					if (_Gaids[it])
-					{
-						if (io->inventory)
-						{
-							INVENTORY_DATA * inv = io->inventory;
-							inv->io = ConvertToValidIO(aids->io);
+		
+		for(long it = 1; it < MAX_IO_SAVELOAD && it < inter.nbmax; it++) {
+			INTERACTIVE_OBJ * io = inter.iobj[it];
+			
+			if(!io || treated[it]) {
+				continue;
+			}
+			
+			treated[it] = true;
+			
+			const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids = _Gaids[it];
+			if(!aids) {
+				continue;
+			}
+			
+			if(io->inventory) {
+				
+				INVENTORY_DATA * inv = io->inventory;
+				inv->io = ConvertToValidIO(aids->io);
+				converted += CONVERT_CREATED;
+				
+				inv->sizex = 3;
+				inv->sizey = 11;
+				if(aids->sizex != 3 || aids->sizey != 11) {
+					for(long m = 0; m < inv->sizex; m++) {
+						for(long n = 0; n < inv->sizey; n++) {
+							inv->slot[m][n].io = NULL;
+							inv->slot[m][n].show = 0;
+						}
+					}
+				} else {
+					for(long m = 0; m < inv->sizex; m++) {
+						for(long n = 0; n < inv->sizey; n++) {
+							inv->slot[m][n].io = ConvertToValidIO(aids->slot_io[m][n]);
 							converted += CONVERT_CREATED;
-
-							if ((aids->sizex != 3)
-									||	(aids->sizey != 11))
-							{
-								inv->sizex = 3;
-								inv->sizey = 11;
-
-								for (long m = 0; m < inv->sizex; m++)
-									for (long n = 0; n < inv->sizey; n++)
-									{
-										inv->slot[m][n].io = NULL;
-										inv->slot[m][n].show = 0;
-									}
-							}
-							else
-							{
-								inv->sizex = aids->sizex;
-								inv->sizey = aids->sizey;
-
-								for (long m = 0; m < inv->sizex; m++)
-									for (long n = 0; n < inv->sizey; n++)
-									{
-										inv->slot[m][n].io = ConvertToValidIO(aids->slot_io[m][n]);
-										converted += CONVERT_CREATED;
-										inv->slot[m][n].show = aids->slot_show[m][n];
-									}
-							}
+							inv->slot[m][n].show = aids->slot_show[m][n];
 						}
-
-						if ((io->obj) && (io->obj->nblinked))
-						{
-							for (long n = 0; n < io->obj->nblinked; n++)
-							{
-								INTERACTIVE_OBJ * iooo = ConvertToValidIO(aids->linked_id[n]);
-
-								if (iooo)
-								{
-									io->obj->linked[n].io = iooo;
-									io->obj->linked[n].obj = iooo->obj;
-								}
-							}
-						}
-
-						if (io->ioflags & IO_NPC)
-						{
-							io->_npcdata->weapon = ConvertToValidIO(aids->weapon);
-							converted += CONVERT_CREATED;
-
-							if (io->_npcdata->weaponinhand == 1)
-								SetWeapon_On(io);
-							else SetWeapon_Back(io);
-						}
-
-						io->targetinfo = ReadTargetInfo(aids->targetinfo);
-
-						if (io->ioflags & IO_NPC)
-						{
-							for (long iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++) {
-								io->_npcdata->stacked[iii].target = ReadTargetInfo(aids->stackedtarget[iii]);
-							}
-						}
-
-						if (io->ioflags & IO_NPC)
-							if (io->_npcdata->behavior == BEHAVIOUR_NONE)
-								io->targetinfo = -1;
 					}
 				}
 			}
+			
+			if(io->obj && io->obj->nblinked) {
+				for(long n = 0; n < io->obj->nblinked; n++) {
+					INTERACTIVE_OBJ * iooo = ConvertToValidIO(aids->linked_id[n]);
+					if(iooo) {
+						io->obj->linked[n].io = iooo;
+						io->obj->linked[n].obj = iooo->obj;
+					}
+				}
+			}
+			
+			if(io->ioflags & IO_NPC) {
+				io->_npcdata->weapon = ConvertToValidIO(aids->weapon);
+				converted += CONVERT_CREATED;
+				if(io->_npcdata->weaponinhand == 1) {
+					SetWeapon_On(io);
+				} else {
+					SetWeapon_Back(io);
+				}
+			}
+			
+			io->targetinfo = ReadTargetInfo(aids->targetinfo);
+			if((io->ioflags & IO_NPC) && io->_npcdata->behavior == BEHAVIOUR_NONE) {
+				io->targetinfo = -1;
+			}
+			
+			if(io->ioflags & IO_NPC) {
+				for(long iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++) {
+					io->_npcdata->stacked[iii].target = ReadTargetInfo(aids->stackedtarget[iii]);
+				}
+			}
+			
 		}
 	}
-
-	free(treated);
+	
+	delete[] treated;
 
 	if (reloadflag)
 	{
@@ -2847,7 +2829,6 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 		}
 	}
 
-	return 1;
 }
 
 static long ARX_CHANGELEVEL_Pop_Globals() {
