@@ -188,7 +188,7 @@ void CreateSaveGameList() {
 	
 	LogDebug << "CreateSaveGameList";
 	
-	string path = "save" + string(LOCAL_SAVENAME) + "\\save*";
+	string path = "save\\save*";
 	
 	if(save_l.empty()) {
 		save_l.resize(1);
@@ -242,7 +242,7 @@ void CreateSaveGameList() {
 		}
 		
 		std::stringstream oss;
-		oss << "save" << LOCAL_SAVENAME << "\\" << fdata.cFileName << "\\";
+		oss << "save\\" << fdata.cFileName << "\\";
 		
 		string name;
 		float version;

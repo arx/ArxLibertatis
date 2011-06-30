@@ -126,7 +126,6 @@ extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
 extern long NO_PLAYER_POSITION_RESET;
 extern float InventoryDir;
-extern char LOCAL_SAVENAME[64];
 extern long HERO_SHOW_1ST;
 extern long EXTERNALVIEW;
 extern long LOAD_N_DONT_ERASE;
@@ -167,14 +166,12 @@ long CURRENT_GAME_INSTANCE = -1;
 char GameSavePath[256];
 
 static void ARX_GAMESAVE_CreateNewInstance() {
-	char basepath[256];
 	char testpath[256];
 	long num = 1;
-	sprintf(basepath, "Save%s\\", LOCAL_SAVENAME);
 
 	for (;;)
 	{
-		sprintf(testpath, "%sSave%04ld", basepath, num);
+		sprintf(testpath, "save\\save%04ld", num);
 
 		if (!DirectoryExist(testpath))
 		{
@@ -244,26 +241,24 @@ long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim)
 }
 //--------------------------------------------------------------------------------------------
 void ARX_CHANGELEVEL_MakePath() {
-	sprintf(CurGamePath, "Save%s\\Cur%04ld\\", LOCAL_SAVENAME, LAST_CHINSTANCE);
+	sprintf(CurGamePath, "save\\cur%04ld\\", LAST_CHINSTANCE);
 	CreateFullPath(CurGamePath);
 }
 
 void ARX_GAMESAVE_MakePath() {
-	sprintf(GameSavePath, "Save%s\\Save%04ld\\", LOCAL_SAVENAME, CURRENT_GAME_INSTANCE);
+	sprintf(GameSavePath, "save\\save%04ld\\", CURRENT_GAME_INSTANCE);
 	CreateFullPath(GameSavePath);
 }
 
 //--------------------------------------------------------------------------------------------
 void ARX_CHANGELEVEL_CreateNewInstance()
 {
-	char basepath[256];
 	char testpath[256];
 	long num = 1;
-	sprintf(basepath, "Save%s\\", LOCAL_SAVENAME);
 
 	for (;;)
 	{
-		sprintf(testpath, "%sCur%04ld", basepath, num);
+		sprintf(testpath, "save\\cur%04ld", num);
 
 		if (!DirectoryExist(testpath))
 		{

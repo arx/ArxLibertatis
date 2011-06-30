@@ -346,7 +346,6 @@ long TELEPORT_TO_CONFIRM=1;
 char LastLoadedDLF[512];
 char ItemToBeAdded[1024];
 char WILL_LAUNCH_CINE[256];
-char LOCAL_SAVENAME[64];
 char _CURRENTLOAD_[256];
 char LastLoadedScene[256];
 char LAST_LAUNCHED_CINE[256];
@@ -1251,10 +1250,10 @@ int main(int argc, char ** argv) {
 	char txttemp[256];
 
 	for(unsigned uiNum=0; uiNum < 20; ++uiNum) {
-		sprintf(txttemp,"Save%s\\Cur%04d\\",LOCAL_SAVENAME,uiNum);
-
-		if (DirectoryExist(txttemp))
+		sprintf(txttemp,"save\\cur%04d\\",uiNum);
+		if(DirectoryExist(txttemp)) {
 			KillAllDirectory(txttemp);
+		}
 	}
 
 	ARX_INTERFACE_NoteInit();
@@ -1270,8 +1269,6 @@ int main(int argc, char ** argv) {
 		GoldCoinsTC[t]=NULL;
 	}
 
-	LogDebug << "GC Init";
-	memset(LOCAL_SAVENAME,0,60);
 	LogDebug << "LSV Init";
 	ModeLight=MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
 
@@ -1302,8 +1299,6 @@ int main(int argc, char ** argv) {
 		Danae_Registry_WriteValue("WND_LightOptions_POSY",0);
 		LogDebug << "RegData Read";
 	}
-
-	Danae_Registry_Read("LOCAL_SAVENAME",LOCAL_SAVENAME,"",16);
 #endif
 
 	if (!FOR_EXTERNAL_PEOPLE) {
@@ -7479,12 +7474,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						EDITION=EDITION_FOGS;
 					}
 
-				break;
-				case DANAE_MENU_SAVEPATH:
-					TextBox("Enter SavePath",LOCAL_SAVENAME,16);
-					strcpy(LOCAL_SAVENAME,GTE_TEXT);
-					Danae_Registry_Write("LOCAL_SAVENAME",LOCAL_SAVENAME);
-					ARX_CHANGELEVEL_MakePath();
 				break;
 				case DANAE_MENU_MESH_REDUCTION:
 
