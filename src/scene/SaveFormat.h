@@ -912,19 +912,6 @@ struct SavedTweakerInfo {
 	char skintochange[NAME_SIZE];
 	char skinchangeto[NAME_SIZE];
 	
-	inline operator IO_TWEAKER_INFO() {
-		IO_TWEAKER_INFO a;
-		assert(array_size(a.filename) == NAME_SIZE);
-		std::copy(filename, filename + NAME_SIZE, a.filename);
-		assert(array_size(a.skintochange) == NAME_SIZE);
-		std::copy(skintochange, skintochange + NAME_SIZE, a.skintochange);
-		assert(array_size(a.skinchangeto) == NAME_SIZE);
-		std::copy(skinchangeto, skinchangeto + NAME_SIZE, a.skinchangeto);
-		return a;
-	}
-	
-	inline SavedTweakerInfo() { }
-	
 	inline SavedTweakerInfo(const IO_TWEAKER_INFO & b) {
 		assert(array_size(b.filename) == NAME_SIZE);
 		std::copy(b.filename, b.filename + NAME_SIZE, filename);

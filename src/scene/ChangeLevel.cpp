@@ -2751,18 +2751,25 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 			}
 		}
 
-		if (ais->system_flags & SYSTEM_FLAG_TWEAKER_INFO)
-		{
-			if (io->tweakerinfo)
+		if(ais->system_flags & SYSTEM_FLAG_TWEAKER_INFO) {
+			
+			if(io->tweakerinfo) {
 				free(io->tweakerinfo);
-
-			io->tweakerinfo = (IO_TWEAKER_INFO *) malloc(sizeof(IO_TWEAKER_INFO));
-
-			SavedTweakerInfo sti;
-			memcpy(&sti, dat + pos, sizeof(SavedTweakerInfo));
+			}
+			
+			io->tweakerinfo = (IO_TWEAKER_INFO *)malloc(sizeof(IO_TWEAKER_INFO));
+			
+			const SavedTweakerInfo * sti = reinterpret_cast<const SavedTweakerInfo *>(dat + pos);
 			pos += sizeof(SavedTweakerInfo);
-			*io->tweakerinfo = sti;
-
+			
+			assert(array_size(io->tweakerinfo->filename) >= array_size(sti->filename));
+			strcpy(io->tweakerinfo->filename, loadPath(safestring(sti->filename)).c_str());
+			
+			assert(array_size(io->tweakerinfo->skintochange) >= array_size(sti->skintochange));
+			strcpy(io->tweakerinfo->skintochange, loadPath(safestring(sti->skintochange)).c_str());
+			
+			assert(array_size(io->tweakerinfo->skinchangeto) >= array_size(sti->skinchangeto));
+			strcpy(io->tweakerinfo->skinchangeto, loadPath(safestring(sti->skinchangeto)).c_str());
 		}
 
 		if (io->iogroups) free(io->iogroups);
