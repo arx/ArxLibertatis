@@ -2813,104 +2813,47 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 
 static long ARX_CHANGELEVEL_Pop_Globals() {
 	
-	ARX_CHANGELEVEL_SAVE_GLOBALS * acsg;
-	
-	long pos = 0;
-	std::string loadfile = "Globals.sav";
-	
-
 	ARX_SCRIPT_Free_All_Global_Variables();
 	
 	size_t size;
-	char * dat = _pSaveBlock->load(loadfile, size);
+	char * dat = _pSaveBlock->load("globals.sav", size);
 	if(!dat) {
-		LogError << "Unable to Open " << loadfile << " for Read...";
+		LogError << "Unable to Open globals for Read...";
 		return -1;
 	}
 	
-	acsg = (ARX_CHANGELEVEL_SAVE_GLOBALS *)(dat);
+	size_t pos = 0;
+	
+	const ARX_CHANGELEVEL_SAVE_GLOBALS * acsg;
+	acsg = reinterpret_cast<const ARX_CHANGELEVEL_SAVE_GLOBALS *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
-
-	if (acsg->version != ARX_GAMESAVE_VERSION)
-	{
+	
+	if(acsg->version != ARX_GAMESAVE_VERSION) {
 		free(dat);
-		LogError << "Invalid version: " << loadfile;
+		LogError << "Invalid version: globals";
 		return -1;
 	}
-
-	if (acsg->nb_globals > 0)
-	{
-		svar = (SCRIPT_VAR *) malloc(sizeof(SCRIPT_VAR) * acsg->nb_globals);
+	
+	arx_assert(!svar);
+	if(acsg->nb_globals > 0) {
+		svar = (SCRIPT_VAR *)malloc(sizeof(SCRIPT_VAR) * acsg->nb_globals);
+		memset(svar, 0, sizeof(SCRIPT_VAR)* acsg->nb_globals);
 	}
-	else svar = NULL;
-
+	
 	NB_GLOBALS = acsg->nb_globals;
-
-	for (int i = 0; i < NB_GLOBALS; i++)
-	{
-		ARX_CHANGELEVEL_VARIABLE_SAVE * av = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
-
-		switch (av->type)
-		{
-			case TYPE_G_TEXT:
-				strcpy(svar[i].name, av->name);
-				svar[i].fval = av->fval;
-				svar[i].ival = av->fval;
-				svar[i].type = TYPE_G_TEXT;
-
-				if (svar[i].ival)
-				{
-					svar[i].text = (char *) malloc(svar[i].ival + 1);
-					memset(svar[i].text, 0, svar[i].ival + 1);
-
-					memcpy(svar[i].text, dat + pos + sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE), svar[i].ival);
-
-					if (svar[i].text[0] == '\xCC')
-						svar[i].text[0] = 0;
-				}
-				else
-					svar[i].text = NULL;
-
-				pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-
-				if (svar[i].text)
-					svar[i].ival = strlen(svar[i].text) + 1;
-				else
-					svar[i].ival = 0;
-
-				pos += (long)av->fval; 
-				break;
-			case TYPE_G_LONG:
-				strcpy(svar[i].name, av->name);
-				svar[i].ival = av->fval;
-				svar[i].fval = av->fval;
-				svar[i].text = NULL;
-				svar[i].type = TYPE_G_LONG;
-				pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-				break;
-			case TYPE_G_FLOAT:
-				strcpy(svar[i].name, av->name);
-				svar[i].ival = av->fval;
-				svar[i].fval = av->fval;
-				svar[i].text = NULL;
-				svar[i].type = TYPE_G_FLOAT;
-				pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-				break;
-			default:
-			{
-				//at this level is strange
-				svar[i].fval = 0.f;
-				svar[i].text = NULL;
-				svar[i].type = TYPE_G_TEXT;
-			}
-			break;
-		}
-	}
-
+	
+	bool ret = loadScriptVariables(svar, NB_GLOBALS, dat, pos, TYPE_G_TEXT, TYPE_G_LONG, TYPE_G_FLOAT);
+	
 	free(dat);
+	
+	if(!ret) {
+		LogError << "error loading globals";
+		return -1;
+	}
+	
 	return 1;
 }
-//-----------------------------------------------------------------------------
+
 void ReleaseGaids()
 {
 	for (long i = 0; i < inter.nbmax; i++)
