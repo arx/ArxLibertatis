@@ -2261,48 +2261,32 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->halo_native.dynlight = -1;
 		io->halo.dynlight = -1;
 		ARX_HALO_SetToNative(io);
-
-		if (ais->inventory_skin[0])
-		{
-			io->inventory_skin = (char *) malloc(strlen(ais->inventory_skin) + 1);
-
-			strcpy(io->inventory_skin, ais->inventory_skin);
+		
+		arx_assert(!io->inventory_skin);
+		if(ais->inventory_skin[0]) {
+			io->inventory_skin = strdup(loadPath(safestring(ais->inventory_skin)).c_str());
 		}
-		else io->stepmaterial = NULL;
-
-		if (ais->stepmaterial[0])
-		{
-			io->stepmaterial = (char *) malloc(strlen(ais->stepmaterial) + 1);
-
-			strcpy(io->stepmaterial, ais->stepmaterial);
+		
+		arx_assert(!io->stepmaterial);
+		if(ais->stepmaterial[0]) {
+			io->stepmaterial = strdup(toLowercase(safestring(ais->stepmaterial)).c_str());
 		}
-		else io->stepmaterial = NULL;
-
-		if (ais->armormaterial[0])
-		{
-			io->armormaterial = (char *) malloc(strlen(ais->armormaterial) + 1);
-
-			strcpy(io->armormaterial, ais->armormaterial);
+		
+		arx_assert(!io->armormaterial);
+		if(ais->armormaterial[0]) {
+			io->armormaterial = strdup(toLowercase(safestring(ais->armormaterial)).c_str());
 		}
-		else io->armormaterial = NULL;
-
-		if (ais->weaponmaterial[0])
-		{
-			io->weaponmaterial = (char *) malloc(strlen(ais->weaponmaterial) + 1);
-
-			strcpy(io->weaponmaterial, ais->weaponmaterial);
+		
+		arx_assert(!io->weaponmaterial);
+		if(ais->weaponmaterial[0]) {
+			io->weaponmaterial = strdup(toLowercase(safestring(ais->weaponmaterial)).c_str());
 		}
-		else io->weaponmaterial = NULL;
-
-		if (ais->strikespeech[0])
-		{
-			io->strikespeech = (char *) malloc(strlen(ais->strikespeech) + 1);
-
-			strcpy(io->strikespeech, ais->strikespeech);
+		
+		arx_assert(!io->strikespeech);
+		if(ais->strikespeech[0]) {
+			io->strikespeech = strdup(loadPath(safestring(ais->strikespeech)).c_str());
 		}
-		else io->strikespeech = NULL;
-
-
+		
 		for (long i = 0; i < MAX_ANIMS; i++)
 		{
 			if (io->anims[i] != NULL)
