@@ -145,7 +145,7 @@ static long ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player();
 static long ARX_CHANGELEVEL_Push_AllIO();
 static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io);
-static long ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
+static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 long LAST_CHINSTANCE = 1; // temporary MUST return to -1;
@@ -211,30 +211,29 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 	
 	long t = GetTargetByNameTarget(ident);
 	
-	if(t < 0) {
+	if(t > 0) {
 		
-		LogDebug << "Call to ConvertToValidIO(" << ident << ")";
+		arx_assert_msg(ValidIONum(t), "got invalid IO num %d", t);
 		
-		size_t pos = ident.find_last_of('_');
-		if(pos == string::npos || pos == ident.length() - 1) {
-			return NULL;
-		}
-		pos = ident.find_first_not_of('0', pos + 1);
-		if(pos == string::npos) {
-			return NULL;
-		}
-		
-		t = ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
-		
-		if (t < 0) {
-			return NULL;
-		}
+		inter.iobj[t]->level = (short)NEW_LEVEL; // Not really needed anymore...
+		return inter.iobj[t];
 	}
 	
-	arx_assert_msg(ValidIONum(t), "got invalid IO num %d", t);
+	LogDebug << "Call to ConvertToValidIO(" << ident << ")";
 	
-	inter.iobj[t]->level = (short)NEW_LEVEL; // Not really needed anymore...
-	return inter.iobj[t];
+	size_t pos = ident.find_last_of('_');
+	if(pos == string::npos || pos == ident.length() - 1) {
+		return NULL;
+	}
+	pos = ident.find_first_not_of('0', pos + 1);
+	if(pos == string::npos) {
+		return NULL;
+	}
+	
+	INTERACTIVE_OBJ * io = ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
+	io->level = (short)NEW_LEVEL;
+	
+	return io;
 }
 
 template <size_t N>
@@ -2077,65 +2076,116 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	return 1;
 }
 
-extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
-
-static long ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
+static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
 	
-	if(!strcasecmp(ident, "NONE")) {
-		return -1;
+	for(long i = 0; i < n; i++) {
+		
+		const ARX_CHANGELEVEL_VARIABLE_SAVE * avs;
+		avs = reinterpret_cast<const ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
+		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+		
+		string name = toLowercase(safestring(avs->name));
+		strcpy(var[i].name, name.c_str());
+		
+		if(name.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789", 1) != string::npos) {
+			LogWarning << "unexpected variable name \"" << name.substr(1) << '"';
+		}
+		
+		VariableType type;
+		if(avs->type == ttext || avs->type == tlong || avs->type == tfloat) {
+			type = (VariableType)avs->type;
+		} else if(avs->name[0] == '$' || avs->name[0] == '\xA3') {
+			type = ttext;
+		} else if(avs->name[0] == '&' || avs->name[0] == '@') {
+			type = tfloat;
+		} else if(avs->name[0] == '#' || avs->name[0] == 's') {
+			type = tlong;
+		} else {
+			LogError << "unknown script variable type: " << avs->type;
+			n = i;
+			return false;
+		}
+		
+		var[i].fval = avs->fval;
+		var[i].ival = (long)avs->fval;
+		var[i].type = type;
+		
+		if(type == ttext) {
+			if(var[i].ival) {
+				var[i].text = strdup(safestring(dat + pos, var[i].ival).c_str());
+				pos += var[i].ival;
+				if(var[i].text[0] == '\xCC') {
+					var[i].text[0] = 0;
+				}
+				var[i].ival = strlen(var[i].text) + 1;
+			}
+		}
+		
+		LogDebug << ((type & (TYPE_G_TEXT|TYPE_G_LONG|TYPE_G_FLOAT)) ? "global " : "local ") << ((type & (TYPE_L_TEXT|TYPE_G_TEXT)) ? "text" : (type & (TYPE_L_LONG|TYPE_G_LONG)) ? "long" : (type & (TYPE_L_FLOAT|TYPE_G_FLOAT)) ? "float" : "unknown") << " \"" << safestring(var[i].name).substr(1) << "\" = " << var[i].fval << ' ' << Logger::nullstr(var[i].text);
+		
 	}
 	
-	char loadfile[256];
-	ARX_CHANGELEVEL_IO_SAVE * ais;
-	long pos = 0;
+	return true;
+}
+
+static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos) {
 	
-	sprintf(loadfile, "%s.sav", ident.c_str());
+	const ARX_CHANGELEVEL_SCRIPT_SAVE * ass;
+	ass = reinterpret_cast<const ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
+	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
+	
+	script.allowevents = Flag(ass->allowevents); // TODO save/load flags
+	script.nblvar = ass->nblvar;
+	
+	if(script.lvar) {
+		free(script.lvar);
+		script.lvar = NULL;
+	}
+	
+	if(ass->nblvar > 0) {
+		script.lvar = (SCRIPT_VAR *)malloc(sizeof(SCRIPT_VAR) * script.nblvar);
+		memset(script.lvar, 0, sizeof(SCRIPT_VAR)* script.nblvar);
+	} else {
+		script.lvar = NULL;
+	}
+	
+	return loadScriptVariables(script.lvar, script.nblvar, dat, pos, TYPE_L_TEXT, TYPE_L_LONG, TYPE_L_FLOAT);
+}
 
-	long t = GetTargetByNameTarget(ident);
-
-	if (ValidIONum(t))
-		return t;
-
-	LogDebug << "--> Before ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
-
-	size_t size = 0;
-	char * dat = _pSaveBlock->load(loadfile, size);
+static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
+	
+	LogDebug << "--> loading interactive object " << ident;
+	
+	size_t size = 0; // TODO size not used
+	char * dat = _pSaveBlock->load(ident + ".sav", size);
 	if(!dat) {
-		LogError << "Unable to Open " << loadfile << " for Read...";
-		return -1;
+		LogError << "Unable to Open " << ident << " for Read...";
+		return NULL;
 	}
 	
+	size_t pos = 0;
 	
-	// TODO size not used
-
-	ais = (ARX_CHANGELEVEL_IO_SAVE *)dat;
-
-	if (ais->version != ARX_GAMESAVE_VERSION)
-	{
-		free(dat);
-
-		LogError << "Invalid PopIO version";
-
-		return -1;
-	}
-
+	const ARX_CHANGELEVEL_IO_SAVE * ais = reinterpret_cast<const ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
-
-	if ((ais->show == SHOW_FLAG_DESTROYED)
-			||	(ais->ioflags & IO_NOSAVE))
-	{
+	
+	if(ais->version != ARX_GAMESAVE_VERSION) {
+		LogError << "Invalid PopIO version " << ais->version;
 		free(dat);
-		return -1;
+		return NULL;
 	}
-
-	INTERACTIVE_OBJ * tmp = LoadInter_Ex(ais->filename, num, ais->pos, ais->angle, MSP);
-	long idx = -1;
-	INTERACTIVE_OBJ * io = NULL;
-
-	if (tmp)
-	{
-		io = tmp;
-		idx = GetInterNum(io);
+	
+	if(ais->show == SHOW_FLAG_DESTROYED || (ais->ioflags & IO_NOSAVE)) {
+		free(dat);
+		return NULL;
+	}
+	
+	INTERACTIVE_OBJ * io = LoadInter_Ex(loadPath(safestring(ais->filename)), num, ais->pos, ais->angle, MSP);
+	
+	if(!io) {
+		LogError << "CHANGELEVEL Error: Unable to load " << ident;
+	} else {
+		
+		long idx = GetInterNum(io);
 
 		long  Gaids_Number = idx;
 		_Gaids[Gaids_Number] = (ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *) malloc(sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
@@ -2813,16 +2863,12 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		ARX_INTERACTIVE_HideGore(io, hidegore);
 
 	}
-	else
-	{
-		LogError << "CHANGELEVEL Error: Unable to load " << ident;
-	}
 
 
 	free(dat);
 	CONVERT_CREATED = 1;
 
-	return GetInterNum(tmp);
+	return io;
 corrupted:
 	LogError << "Save File Is Corrupted, Trying to Fix " << ident;
 
@@ -2831,7 +2877,7 @@ corrupted:
 	RestoreInitialIOStatusOfIO(io);
 	SendInitScriptEvent(io);
 
-	return idx;
+	return io;
 }
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
@@ -2848,8 +2894,10 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
 		char tempo[256];
-		sprintf(tempo, "%s_%04d", GetName(idx_io[i].filename).c_str(), idx_io[i].ident);
-		ARX_CHANGELEVEL_Pop_IO(tempo, idx_io[i].ident);
+		sprintf(tempo, "%s_%04d", toLowercase(GetName(idx_io[i].filename)).c_str(), idx_io[i].ident);
+		if(!ValidIONum(GetTargetByNameTarget(tempo))) {
+			ARX_CHANGELEVEL_Pop_IO(tempo, idx_io[i].ident);
+		}
 	}
 	
 	return 1;
