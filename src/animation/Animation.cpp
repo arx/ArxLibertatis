@@ -351,7 +351,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & _path) {
 		string path2;
 		do {
 			ostringstream oss;
-			oss << path << pathcount << ".tea";
+			oss << path << pathcount++ << ".tea";
 			path2 = oss.str();
 		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], path2));
 		
