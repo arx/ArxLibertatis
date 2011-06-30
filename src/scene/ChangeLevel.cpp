@@ -2320,84 +2320,77 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->physics = ais->physics;
 		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
 		std::copy(ais->animlayer, ais->animlayer + SAVED_MAX_ANIM_LAYERS, io->animlayer);
-
-		for (long k = 0; k < MAX_ANIM_LAYERS; k++)
-		{
+		
+		for(long k = 0; k < MAX_ANIM_LAYERS; k++) {
+			
 			long nn = (long)ais->animlayer[k].cur_anim;
-
 			if(nn == -1) {
 				io->animlayer[k].cur_anim = NULL;
 			} else {
-				io->animlayer[k].cur_anim = (ANIM_HANDLE *)io->anims[nn];
+				io->animlayer[k].cur_anim = io->anims[nn];
 				if(io->animlayer[k].cur_anim && io->animlayer[k].altidx_cur >= io->animlayer[k].cur_anim->alt_nb) {
 					LogWarning << "out of bounds animation alternative index " << io->animlayer[k].altidx_cur << " for " << io->animlayer[k].cur_anim->path << ", resetting to 0";
 					io->animlayer[k].altidx_cur = 0;
 				}
 			}
-
+			
 			nn = (long)ais->animlayer[k].next_anim;
-
 			if(nn == -1) {
 				io->animlayer[k].next_anim = NULL;
 			} else {
-				io->animlayer[k].next_anim = (ANIM_HANDLE *)io->anims[nn];
+				io->animlayer[k].next_anim = io->anims[nn];
 				if(io->animlayer[k].next_anim && io->animlayer[k].altidx_next >= io->animlayer[k].next_anim->alt_nb) {
 					LogWarning << "out of bounds animation alternative index " << io->animlayer[k].altidx_next << " for " << io->animlayer[k].next_anim->path << ", resetting to 0";
 					io->animlayer[k].altidx_next = 0;
 				}
 			}
 		}
-
+		
 		// Target Info
-		strcpy(_Gaids[Gaids_Number]->targetinfo, ais->id_targetinfo);
-
+		arx_assert(array_size(_Gaids[Gaids_Number]->targetinfo) >= array_size(ais->id_targetinfo));
+		strncpy(_Gaids[Gaids_Number]->targetinfo, ais->id_targetinfo, array_size(ais->id_targetinfo));
+		
 		ARX_SCRIPT_Timer_Clear_By_IO(io);
-
-		for (int i = 0; i < ais->nbtimers; i++)
-		{
-			ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
-
-			ARX_CHECK_SHORT(ats->flags);
-			short sFlags = ARX_CLEAN_WARN_CAST_SHORT(ats->flags);
-
-
-			long num = ARX_SCRIPT_Timer_GetFree();
-
-			if (num != -1)
-			{
-				ActiveTimers++;
-
-				if (ats->script)
-					scr_timer[num].es = &io->over_script;
-				else
-					scr_timer[num].es = &io->script;
-
-				scr_timer[num].flags = sFlags;
-				scr_timer[num].exist = 1;
-				scr_timer[num].io = io;
-				scr_timer[num].msecs = ats->msecs;
-				scr_timer[num].name = ats->name;
-				scr_timer[num].pos = ats->pos;
-
-
-				float tt = ARX_CHANGELEVEL_DesiredTime + ats->tim;
-
-				if (tt < 0) scr_timer[num].tim = 0; //;
-				else
-				{
-					ARX_CHECK_ULONG(tt);
-					scr_timer[num].tim = ARX_CLEAN_WARN_CAST_ULONG(tt) ;
-				}
-
-				scr_timer[num].times = ats->times;
-
-			}
-
+		
+		for(int i = 0; i < ais->nbtimers; i++) {
+			
+			const ARX_CHANGELEVEL_TIMERS_SAVE * ats;
+			ats = reinterpret_cast<const ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
+			
+			ARX_CHECK_SHORT(ats->flags);
+			short sFlags = static_cast<short>(ats->flags);
+			
+			long num = ARX_SCRIPT_Timer_GetFree();
+			if(num == -1) {
+				continue;
+			}
+			
+			ActiveTimers++;
+			
+			if(ats->script) {
+				scr_timer[num].es = &io->over_script;
+			} else {
+				scr_timer[num].es = &io->script;
+			}
+			
+			scr_timer[num].flags = sFlags;
+			scr_timer[num].exist = 1;
+			scr_timer[num].io = io;
+			scr_timer[num].msecs = ats->msecs;
+			scr_timer[num].name = toLowercase(safestring(ats->name));
+			scr_timer[num].pos = ats->pos;
+			
+			float tt = ARX_CHANGELEVEL_DesiredTime + ats->tim;
+			if(tt < 0) {
+				scr_timer[num].tim = 0;
+			} else {
+				ARX_CHECK_ULONG(tt);
+				scr_timer[num].tim = static_cast<unsigned long>(tt);
+			}
+			
+			scr_timer[num].times = ats->times;
 		}
-
-
-
 
 		//////////////////
 		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
