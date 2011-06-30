@@ -1838,8 +1838,6 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 
 static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	
-	ARX_CHANGELEVEL_PLAYER asp;
-	
 	const string & loadfile = "player.sav";
 	
 	size_t size;
@@ -1853,80 +1851,84 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 		LogError << "truncated data";
 		return -1;
 	}
-	memcpy(&asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
 	
-	player.AimTime = asp.AimTime;
-	player.angle = asp.angle;
+	size_t pos = 0;
+	
+	const ARX_CHANGELEVEL_PLAYER * asp = reinterpret_cast<const ARX_CHANGELEVEL_PLAYER *>(dat + pos);
+	pos += sizeof(ARX_CHANGELEVEL_PLAYER);
+	
+	player.AimTime = asp->AimTime;
+	player.angle = asp->angle;
 	player.desiredangle.a = player.angle.a;
 	player.desiredangle.b = player.angle.b;
 	
-	ARX_CHECK_UCHAR(asp.armor_class);
-	player.armor_class = static_cast<unsigned char>(asp.armor_class);
+	ARX_CHECK_UCHAR(asp->armor_class);
+	player.armor_class = static_cast<unsigned char>(asp->armor_class);
 	
-	player.Attribute_Constitution = asp.Attribute_Constitution;
-	player.Attribute_Dexterity = asp.Attribute_Dexterity;
-	player.Attribute_Mind = asp.Attribute_Mind;
-	player.Attribute_Strength = asp.Attribute_Strength;
-	player.Critical_Hit = asp.Critical_Hit;
-	player.Current_Movement = Flag(asp.Current_Movement); // TODO save/load flags
-	player.damages = asp.damages;
-	player.doingmagic = asp.doingmagic;
-	player.playerflags = Flag(asp.playerflags); // TODO save/load flags
+	player.Attribute_Constitution = asp->Attribute_Constitution;
+	player.Attribute_Dexterity = asp->Attribute_Dexterity;
+	player.Attribute_Mind = asp->Attribute_Mind;
+	player.Attribute_Strength = asp->Attribute_Strength;
+	player.Critical_Hit = asp->Critical_Hit;
+	player.Current_Movement = Flag(asp->Current_Movement); // TODO save/load flags
+	player.damages = asp->damages;
+	player.doingmagic = asp->doingmagic;
+	player.playerflags = Flag(asp->playerflags); // TODO save/load flags
 	
-	if(asp.TELEPORT_TO_LEVEL[0]) {
-		strcpy(TELEPORT_TO_LEVEL, asp.TELEPORT_TO_LEVEL);
+	if(asp->TELEPORT_TO_LEVEL[0]) {
+		strcpy(TELEPORT_TO_LEVEL, toLowercase(safestring(asp->TELEPORT_TO_LEVEL)).c_str());
 	} else {
 		memset(TELEPORT_TO_LEVEL, 0, 64);
 	}
 	
-	if(asp.TELEPORT_TO_POSITION[0]) {
-		strcpy(TELEPORT_TO_POSITION, asp.TELEPORT_TO_POSITION);
+	if(asp->TELEPORT_TO_POSITION[0]) {
+		strcpy(TELEPORT_TO_POSITION, toLowercase(safestring(asp->TELEPORT_TO_POSITION)).c_str());
 	} else {
 		memset(TELEPORT_TO_POSITION, 0, 64);
 	}
 	
-	TELEPORT_TO_ANGLE = asp.TELEPORT_TO_ANGLE;
-	CHANGE_LEVEL_ICON = asp.CHANGE_LEVEL_ICON;
-	player.bag = asp.bag;
+	TELEPORT_TO_ANGLE = asp->TELEPORT_TO_ANGLE;
+	CHANGE_LEVEL_ICON = asp->CHANGE_LEVEL_ICON;
+	player.bag = asp->bag;
 	assert(SAVED_MAX_PRECAST == MAX_PRECAST);
-	std::copy(asp.precast, asp.precast + SAVED_MAX_PRECAST, Precast);
-	player.Interface = asp.Interface;
+	std::copy(asp->precast, asp->precast + SAVED_MAX_PRECAST, Precast);
+	player.Interface = asp->Interface;
 	player.Interface &= ~INTER_MAP;
-	player.falling = asp.falling;
-	player.gold = asp.gold;
-	inter.iobj[0]->invisibility = asp.invisibility;
-	player.inzone = ARX_PATH_GetAddressByName(asp.inzone);;
-	player.jumpphase = asp.jumpphase;
-	player.jumpstarttime = asp.jumpstarttime;
-	player.Last_Movement = Flag(asp.Last_Movement); // TODO save/load flags
+	player.falling = asp->falling;
+	player.gold = asp->gold;
+	inter.iobj[0]->invisibility = asp->invisibility;
+	player.inzone = ARX_PATH_GetAddressByName(asp->inzone);;
+	player.jumpphase = asp->jumpphase;
+	player.jumpstarttime = asp->jumpstarttime;
+	player.Last_Movement = Flag(asp->Last_Movement); // TODO save/load flags
 	
-	ARX_CHECK_UCHAR(asp.level);
-	player.level = static_cast<unsigned char>(asp.level);
+	ARX_CHECK_UCHAR(asp->level);
+	player.level = static_cast<unsigned char>(asp->level);
 	
-	player.life = asp.life;
-	player.mana = asp.mana;
-	player.maxlife = asp.maxlife;
-	player.maxmana = asp.maxmana;
+	player.life = asp->life;
+	player.mana = asp->mana;
+	player.maxlife = asp->maxlife;
+	player.maxmana = asp->maxmana;
 	
-	player.onfirmground = (asp.misc_flags & 1) ? 1 : 0;
-	WILLRETURNTOCOMBATMODE = (asp.misc_flags & 2) ? 1 : 0;
+	player.onfirmground = (asp->misc_flags & 1) ? 1 : 0;
+	WILLRETURNTOCOMBATMODE = (asp->misc_flags & 2) ? 1 : 0;
 	
-	player.physics = asp.physics;
-	player.poison = asp.poison;
-	player.hunger = asp.hunger;
-	player.pos = asp.pos;
+	player.physics = asp->physics;
+	player.poison = asp->poison;
+	player.hunger = asp->hunger;
+	player.pos = asp->pos;
 	
-	if(asp.sp_flags & SP_ARM1) {
+	if(asp->sp_flags & SP_ARM1) {
 		sp_arm = 1;
-	} else if(asp.sp_flags & SP_ARM2) {
+	} else if(asp->sp_flags & SP_ARM2) {
 		sp_arm = 2;
-	} else if(asp.sp_flags & SP_ARM3) {
+	} else if(asp->sp_flags & SP_ARM3) {
 		sp_arm = 3;
 	} else {
 		sp_arm = 0;
 	}
 	
-	if(asp.sp_flags & SP_MAX) {
+	if(asp->sp_flags & SP_MAX) {
 		cur_mx = 3;
 		sp_max = 1;
 	} else {
@@ -1934,10 +1936,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 		sp_max = 0;
 	}
 	
-	cur_mr = (asp.sp_flags & SP_MR) ? 3 : 0;
-	cur_rf = (asp.sp_flags & SP_RF) ? 3 : 0;
+	cur_mr = (asp->sp_flags & SP_MR) ? 3 : 0;
+	cur_rf = (asp->sp_flags & SP_RF) ? 3 : 0;
 	
-	if(asp.sp_flags & SP_WEP) {
+	if(asp->sp_flags & SP_WEP) {
 		cur_pom = 3;
 		sp_wep = 1;
 	} else {
@@ -1950,40 +1952,40 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 		inter.iobj[0]->pos.y += 170.f;
 	}
 	
-	WILL_RESTORE_PLAYER_POSITION = asp.pos;
+	WILL_RESTORE_PLAYER_POSITION = asp->pos;
 	WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
 	
-	ARX_CHECK_UCHAR(asp.resist_magic);
-	ARX_CHECK_UCHAR(asp.resist_poison);
-	player.resist_magic = static_cast<unsigned char>(asp.resist_magic);
-	player.resist_poison = static_cast<unsigned char>(asp.resist_poison);
+	ARX_CHECK_UCHAR(asp->resist_magic);
+	ARX_CHECK_UCHAR(asp->resist_poison);
+	player.resist_magic = static_cast<unsigned char>(asp->resist_magic);
+	player.resist_poison = static_cast<unsigned char>(asp->resist_poison);
 	
-	ARX_CHECK_UCHAR(asp.Attribute_Redistribute);
-	ARX_CHECK_UCHAR(asp.Skill_Redistribute);
-	player.Attribute_Redistribute = static_cast<unsigned char>(asp.Attribute_Redistribute);
-	player.Skill_Redistribute = static_cast<unsigned char>(asp.Skill_Redistribute);
+	ARX_CHECK_UCHAR(asp->Attribute_Redistribute);
+	ARX_CHECK_UCHAR(asp->Skill_Redistribute);
+	player.Attribute_Redistribute = static_cast<unsigned char>(asp->Attribute_Redistribute);
+	player.Skill_Redistribute = static_cast<unsigned char>(asp->Skill_Redistribute);
 	
-	player.rune_flags = Flag(asp.rune_flags); // TODO save/load flags
-	player.size = asp.size;
-	player.Skill_Stealth = asp.Skill_Stealth;
-	player.Skill_Mecanism = asp.Skill_Mecanism;
-	player.Skill_Intuition = asp.Skill_Intuition;
-	player.Skill_Etheral_Link = asp.Skill_Etheral_Link;
-	player.Skill_Object_Knowledge = asp.Skill_Object_Knowledge;
-	player.Skill_Casting = asp.Skill_Casting;
-	player.Skill_Projectile = asp.Skill_Projectile;
-	player.Skill_Close_Combat = asp.Skill_Close_Combat;
-	player.Skill_Defense = asp.Skill_Defense;
+	player.rune_flags = Flag(asp->rune_flags); // TODO save/load flags
+	player.size = asp->size;
+	player.Skill_Stealth = asp->Skill_Stealth;
+	player.Skill_Mecanism = asp->Skill_Mecanism;
+	player.Skill_Intuition = asp->Skill_Intuition;
+	player.Skill_Etheral_Link = asp->Skill_Etheral_Link;
+	player.Skill_Object_Knowledge = asp->Skill_Object_Knowledge;
+	player.Skill_Casting = asp->Skill_Casting;
+	player.Skill_Projectile = asp->Skill_Projectile;
+	player.Skill_Close_Combat = asp->Skill_Close_Combat;
+	player.Skill_Defense = asp->Skill_Defense;
 	
-	ARX_CHECK_CHAR(asp.skin);
-	player.skin = static_cast<char>(asp.skin);
+	ARX_CHECK_CHAR(asp->skin);
+	player.skin = static_cast<char>(asp->skin);
 	
-	player.xp = asp.xp;
-	GLOBAL_MAGIC_MODE = asp.Global_Magic_Mode;
+	player.xp = asp->xp;
+	GLOBAL_MAGIC_MODE = asp->Global_Magic_Mode;
 	
 	ARX_MINIMAP_PurgeTC();
 	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
-	std::copy(asp.minimap, asp.minimap + SAVED_MAX_MINIMAPS, minimap);
+	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, minimap);
 	
 	INTERACTIVE_OBJ & io = *inter.iobj[0];
 	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
@@ -1991,8 +1993,8 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 		if(io.anims[i] != NULL) {
 			ReleaseAnimFromIO(&io, i);
 		}
-		if(asp.anims[i][0]) {
-			io.anims[i] = EERIE_ANIMMANAGER_Load(asp.anims[i]);
+		if(asp->anims[i][0]) {
+			io.anims[i] = EERIE_ANIMMANAGER_Load(asp->anims[i]);
 		}
 	}
 	
@@ -2001,45 +2003,43 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
 		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
 			for (size_t n = 0; n < SAVED_INVENTORY_X; n++) {
-				inventory[iNbBag][n][m].io = ConvertToValidIO(asp.id_inventory[iNbBag][n][m]);
-				inventory[iNbBag][n][m].show = asp.inventory_show[iNbBag][n][m];
+				inventory[iNbBag][n][m].io = ConvertToValidIO(asp->id_inventory[iNbBag][n][m]);
+				inventory[iNbBag][n][m].show = asp->inventory_show[iNbBag][n][m];
 			}
 		}
 	}
 	
-	size_t pos = sizeof(ARX_CHANGELEVEL_PLAYER);
-	
-	if(size < pos + (asp.nb_PlayerQuest * 80)) {
+	if(size < pos + (asp->nb_PlayerQuest * 80)) {
 		LogError << "truncated data";
 		return -1;
 	}
 	ARX_PLAYER_Quest_Init();
-	for(int i = 0; i < asp.nb_PlayerQuest; i++) {
+	for(int i = 0; i < asp->nb_PlayerQuest; i++) {
 		dat[pos + 80 - 1] = '\0';
 		ARX_PLAYER_Quest_Add(dat + pos, true);
 		pos += 80;
 	}
 	
-	if(size < pos + (asp.keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
+	if(size < pos + (asp->keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
 		LogError << "truncated data";
 		return -1;
 	}
 	ARX_KEYRING_Init();
-	LogDebug << asp.keyring_nb;
-	for(int i = 0; i < asp.keyring_nb; i++) {
+	LogDebug << asp->keyring_nb;
+	for(int i = 0; i < asp->keyring_nb; i++) {
 		dat[pos + SAVED_KEYRING_SLOT_SIZE - 1] = '\0';
 		ARX_KEYRING_Add(dat + pos);
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
-	if(size < pos + (asp.Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
+	if(size < pos + (asp->Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
 		LogError << "truncated data";
 		return -1;
 	}
 	ARX_MAPMARKER_Init();
 	arx_assert(Mapmarkers.empty());
-	Mapmarkers.reserve(asp.Nb_Mapmarkers);
-	for(int i = 0; i < asp.Nb_Mapmarkers; i++) {
+	Mapmarkers.reserve(asp->Nb_Mapmarkers);
+	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
 		const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 		pos += sizeof(SavedMapMarkerData);
 		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, toLowercase(safestring(acmd->string)));
@@ -2055,17 +2055,17 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	LoadLevelScreen();
 	
 	// Restoring Player equipment...
-	player.equipsecondaryIO = ConvertToValidIO(asp.equipsecondaryIO);
-	player.equipshieldIO = ConvertToValidIO(asp.equipshieldIO);
-	player.leftIO = ConvertToValidIO(asp.leftIO);
-	player.rightIO = ConvertToValidIO(asp.rightIO);
-	CURRENT_TORCH = ConvertToValidIO(asp.curtorch);
+	player.equipsecondaryIO = ConvertToValidIO(asp->equipsecondaryIO);
+	player.equipshieldIO = ConvertToValidIO(asp->equipshieldIO);
+	player.leftIO = ConvertToValidIO(asp->leftIO);
+	player.rightIO = ConvertToValidIO(asp->rightIO);
+	CURRENT_TORCH = ConvertToValidIO(asp->curtorch);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
-		player.equiped[i] = (short)GetInterNum(ConvertToValidIO(asp.equiped[i]));
+		player.equiped[i] = (short)GetInterNum(ConvertToValidIO(asp->equiped[i]));
 		if(player.equiped[i] > 0 && ValidIONum(player.equiped[i])) {
 			inter.iobj[player.equiped[i]]->level = (short)instance;
 		} else {
