@@ -2287,36 +2287,35 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			io->strikespeech = strdup(loadPath(safestring(ais->strikespeech)).c_str());
 		}
 		
-		for (long i = 0; i < MAX_ANIMS; i++)
-		{
-			if (io->anims[i] != NULL)
-			{
+		for(long i = 0; i < MAX_ANIMS; i++) {
+			
+			if(io->anims[i] != NULL) {
 				ReleaseAnimFromIO(io, i);
 			}
-
-			if (ais->anims[i][0])
-			{
-				char tex[256];
-
-				if (strlen(ais->anims[i]) > 256)
-				{
-					continue;
-				}
-
-				io->anims[i] = EERIE_ANIMMANAGER_Load(ais->anims[i]);
-
-				if (io->anims[i] == NULL)
-				{
-					if (io->ioflags & IO_NPC)
-						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]).c_str());
-					else
-						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]).c_str());
-
-					io->anims[i] = EERIE_ANIMMANAGER_Load(tex);
-				}
+			
+			if(ais->anims[i][0] == '\0') {
+				continue;
+			}
+			
+			string path = loadPath(safestring(ais->anims[i]));
+			
+			io->anims[i] = EERIE_ANIMMANAGER_Load(ais->anims[i]);
+			if(io->anims[i]) {
+				continue;
+			}
+			
+			if(io->ioflags & IO_NPC) {
+				path = "graph\\obj3d\\anims\\npc\\" + GetName(path) + GetExt(path);
+			} else {
+				path = "graph\\obj3d\\anims\\fix_inter\\" + GetName(path) + GetExt(path);
+			}
+			
+			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
+			if(!io->anims[i]) {
+				LogWarning << "error loading animation " << path;
 			}
 		}
-
+		
 		io->spellcast_data = ais->spellcast_data;
 		io->physics = ais->physics;
 		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
