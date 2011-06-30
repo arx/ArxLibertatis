@@ -138,6 +138,7 @@ void MakeLocalised(const std::string & text, std::string & output) {
 	
 	if(text.empty()) {
 		output = "ERROR";
+		return;
 	}
 	
 	std::string section = text;
