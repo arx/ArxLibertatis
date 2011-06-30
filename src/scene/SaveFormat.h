@@ -82,22 +82,17 @@ struct SavedGlobalMods {
 		flags = b.flags;
 		depthcolor = b.depthcolor;
 		zclip = b.zclip;
-		assert(array_size(b.ambiance) == AMBIANCE_SIZE);
-		std::copy(b.ambiance, b.ambiance + AMBIANCE_SIZE, ambiance);
-		ambiance_vol = b.ambiance_vol;
-		ambiance_maxvol = b.ambiance_maxvol;
+		ambiance[0] = '\0';
+		ambiance_vol = 0.f;
+		ambiance_maxvol = 0.f;
 		return *this;
 	}
 	
 	inline operator GLOBAL_MODS() {
 		GLOBAL_MODS a;
-		a.flags = flags;
+		a.flags = Flag(flags); // TODO save/load flags
 		a.depthcolor = depthcolor;
 		a.zclip = zclip;
-		assert(array_size(a.ambiance) == AMBIANCE_SIZE);
-		std::copy(ambiance, ambiance + AMBIANCE_SIZE, a.ambiance);
-		a.ambiance_vol = ambiance_vol;
-		a.ambiance_maxvol = ambiance_maxvol;
 		return a;
 	}
 	

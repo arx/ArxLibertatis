@@ -22,36 +22,31 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef ARX_GLOBALMODS_H
-#define ARX_GLOBALMODS_H
+#ifndef ARX_GRAPHICS_GLOBALMODS_H
+#define ARX_GRAPHICS_GLOBALMODS_H
 
 #include "graphics/GraphicsTypes.h"
+#include "platform/Flags.h"
 
-//-----------------------------------------------------------------------------
-struct GLOBAL_MODS // Warning !!! used for save
-{
-	long		flags;
-	EERIE_RGB	depthcolor;
-	float		zclip;
-	char		ambiance[128];
-	float		ambiance_vol;
-	float		ambiance_maxvol;
+enum GMODFlag {
+	GMOD_DCOLOR = (1<<0),
+	GMOD_ZCLIP  = (1<<1)
+};
+DECLARE_FLAGS(GMODFlag, GMODFlags)
+DECLARE_FLAGS_OPERATORS(GMODFlags)
+
+struct GLOBAL_MODS {
+	GMODFlags flags;
+	EERIE_RGB depthcolor;
+	float zclip;
 };
 
-//-----------------------------------------------------------------------------
-#define GMOD_DCOLOR		1
-#define GMOD_ZCLIP		2
-#define GMOD_AMBIANCE	4
-#define GMOD_REVERB		8
-
-//-----------------------------------------------------------------------------
 extern GLOBAL_MODS current;
 extern GLOBAL_MODS desired;
 
-//-----------------------------------------------------------------------------
 void ARX_GLOBALMODS_Reset();
 void ARX_GLOBALMODS_Apply();
 void ARX_GLOBALMODS_Stack();
 void ARX_GLOBALMODS_UnStack();
 
-#endif
+#endif // ARX_GRAPHICS_GLOBALMODS_H
