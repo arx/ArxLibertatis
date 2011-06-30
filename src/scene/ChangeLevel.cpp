@@ -1741,40 +1741,37 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 			}
 		}
 	}
-
-	if (asi->ambiances_data_size > 0)
-	{
+	
+	if(asi->ambiances_data_size > 0) {
 		pos += asi->ambiances_data_size;
 	}
-
-	for (int i = 0; i < asi->nb_lights; i++)
-	{
-		ARX_CHANGELEVEL_LIGHT * acl = (ARX_CHANGELEVEL_LIGHT *)(dat + pos);
+	
+	for(int i = 0; i < asi->nb_lights; i++) {
+		
+		const ARX_CHANGELEVEL_LIGHT * acl = reinterpret_cast<const ARX_CHANGELEVEL_LIGHT *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_LIGHT);
+		
 		long count = 0;
 
 		for(size_t j = 0; j < MAX_LIGHTS; j++) {
-			
 			EERIE_LIGHT * el = GLight[j];
-
-			if ((el != NULL) && (!(el->type & TYP_SPECIAL1)))
-			{
-				if (count == i)
-				{
+			if(el && !(el->type & TYP_SPECIAL1)) {
+				if(count == i) {
 					el->status = acl->status;
-					j = MAX_LIGHTS + 1;
+					break;
 				}
-
 				count++;
 			}
 		}
 	}
-
+	
 	free(dat);
+	
 	return 1;
 }
+
 extern long NO_GMOD_RESET;
-//-----------------------------------------------------------------------------
+
 long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long FirstTime)
 {
 	char tex[256];
