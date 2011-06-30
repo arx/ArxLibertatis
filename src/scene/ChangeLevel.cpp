@@ -2015,8 +2015,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	}
 	ARX_PLAYER_Quest_Init();
 	for(int i = 0; i < asp->nb_PlayerQuest; i++) {
-		dat[pos + 80 - 1] = '\0';
-		ARX_PLAYER_Quest_Add(dat + pos, true);
+		ARX_PLAYER_Quest_Add(toLowercase(safestring(dat + pos, 80)), true);
 		pos += 80;
 	}
 	
