@@ -94,10 +94,10 @@ void ARX_MINIMAP_ValidatePlayerPos();
 void ARX_MINIMAP_Reveal();
 
 struct MAPMARKER_DATA {
-	float   x;
-	float   y;
-	long    lvl;
-	char    string[64];
+	float x;
+	float y;
+	long lvl;
+	char string[64];
 	std::string tstring;
 };
 

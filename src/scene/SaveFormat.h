@@ -144,7 +144,7 @@ struct ARX_CHANGELEVEL_SAVE_GLOBALS {
 	s32 padding[256];
 };
 
-struct SavedMapMakerData {
+struct SavedMapMarkerData {
 	
 	static const size_t STRING_SIZE = 64;
 	
@@ -153,24 +153,12 @@ struct SavedMapMakerData {
 	s32 lvl;
 	char string[STRING_SIZE];
 	
-	inline SavedMapMakerData() { }
-	
-	inline SavedMapMakerData(const MAPMARKER_DATA & b) {
+	inline SavedMapMarkerData(const MAPMARKER_DATA & b) {
 		x = b.x;
 		y = b.y;
 		lvl = b.lvl;
 		assert(array_size(b.string) == STRING_SIZE);
 		std::copy(b.string, b.string + STRING_SIZE, string);
-	}
-	
-	inline operator MAPMARKER_DATA() {
-		MAPMARKER_DATA a;
-		a.x = x;
-		a.y = y;
-		a.lvl = lvl;
-		assert(array_size(a.string) == STRING_SIZE);
-		std::copy(string, string + STRING_SIZE, a.string);
-		return a;
 	}
 	
 };
