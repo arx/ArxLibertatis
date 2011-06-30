@@ -2420,12 +2420,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 }
 
 void GetIOScript(INTERACTIVE_OBJ * io, const std::string & texscript) {
-	
-	io->script.data = resources->readAlloc(texscript, io->script.size);
-	
-	if(io->script.data) {
-		InitScript(&io->script);
-	}
+	loadScript(io->script, resources->getFile(texscript));
 }
 
 //***********************************************************************************
@@ -2985,17 +2980,8 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	io->script.data = resources->readAlloc(texscript, io->script.size);
-	if(io->script.data) {
-		InitScript(&io->script);
-	}
-
-	texscript = io->full_name() + '\\' + io->short_name() + ".asl";
-
-	io->over_script.data = resources->readAlloc(texscript, io->over_script.size);
-	if(io->over_script.data) {
-		InitScript(&io->over_script);
-	}
+	loadScript(io->script, resources->getFile(texscript));
+	loadScript(io->over_script, resources->getFile(io->full_name() + '\\' + io->short_name() + ".asl"));
 
 	long num = GetInterNum(io);
 
