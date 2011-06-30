@@ -1231,14 +1231,14 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 
 	if (io->inventory)
 	{
-		ais.system_flags   |= SYSTEM_FLAG_INVENTORY;
+		ais.system_flags |= SYSTEM_FLAG_INVENTORY;
 	}
 
 	if (type == TYPE_ITEM)
 	{
 		if (io->_itemdata->equipitem)
 		{
-			ais.system_flags   |= SYSTEM_FLAG_EQUIPITEMDATA;
+			ais.system_flags |= SYSTEM_FLAG_EQUIPITEMDATA;
 		}
 	}
 
@@ -2477,9 +2477,12 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				break;
 			}
 			
-			case TYPE_ITEM:
-				ARX_CHANGELEVEL_ITEM_IO_SAVE * ai;
-				ai = (ARX_CHANGELEVEL_ITEM_IO_SAVE *)(dat + pos);
+			case TYPE_ITEM: {
+				
+				const ARX_CHANGELEVEL_ITEM_IO_SAVE * ai;
+				ai = reinterpret_cast<const ARX_CHANGELEVEL_ITEM_IO_SAVE *>(dat + pos);
+				pos += sizeof(ARX_CHANGELEVEL_ITEM_IO_SAVE);
+				
 				io->_itemdata->price = ai->price;
 				io->_itemdata->count = ai->count;
 				io->_itemdata->maxcount = ai->maxcount;
@@ -2487,61 +2490,60 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				io->_itemdata->stealvalue = ai->stealvalue;
 				io->_itemdata->playerstacksize = ai->playerstacksize;
 				io->_itemdata->LightValue = ai->LightValue;
-
-				if (ais->system_flags  & SYSTEM_FLAG_EQUIPITEMDATA)
-				{
-					if (io->_itemdata->equipitem)
+				
+				if(ais->system_flags & SYSTEM_FLAG_EQUIPITEMDATA) {
+					if(io->_itemdata->equipitem) {
 						free(io->_itemdata->equipitem);
-
+					}
 					io->_itemdata->equipitem = (IO_EQUIPITEM *)malloc(sizeof(IO_EQUIPITEM));
 					*io->_itemdata->equipitem = ai->equipitem;
+				} else {
+					io->_itemdata->equipitem = NULL;
 				}
-				else io->_itemdata->equipitem = NULL;
-
-				pos += sizeof(ARX_CHANGELEVEL_ITEM_IO_SAVE);
+				
 				break;
-			case TYPE_FIX:
-				ARX_CHANGELEVEL_FIX_IO_SAVE * af;
-				af = (ARX_CHANGELEVEL_FIX_IO_SAVE *)(dat + pos);
-				io->_fixdata->trapvalue = af->trapvalue;
+			}
+			
+			case TYPE_FIX: {
+				const ARX_CHANGELEVEL_FIX_IO_SAVE * af;
+				af = reinterpret_cast<const ARX_CHANGELEVEL_FIX_IO_SAVE *>(dat + pos);
 				pos += sizeof(ARX_CHANGELEVEL_FIX_IO_SAVE);
+				io->_fixdata->trapvalue = af->trapvalue;
 				break;
-			case TYPE_CAMERA:
-				ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac;
-				ac = (ARX_CHANGELEVEL_CAMERA_IO_SAVE *)(dat + pos);
-				io->_camdata->cam = ac->cam;
+			}
+			
+			case TYPE_CAMERA: {
+				const ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac;
+				ac = reinterpret_cast<const ARX_CHANGELEVEL_CAMERA_IO_SAVE *>(dat + pos);
 				pos += sizeof(ARX_CHANGELEVEL_CAMERA_IO_SAVE);
+				io->_camdata->cam = ac->cam;
 				break;
-			case TYPE_MARKER:
+			}
+			
+			case TYPE_MARKER: {
 				pos += sizeof(ARX_CHANGELEVEL_MARKER_IO_SAVE);
 				break;
+			}
 		}
-
-		if (ais->system_flags & SYSTEM_FLAG_INVENTORY)
-		{
-
-			memcpy(_Gaids[Gaids_Number], dat + pos,
-				   sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
-				   - SIZE_ID - SIZE_ID - MAX_LINKED_SAVE * SIZE_ID
-				   - SIZE_ID * MAX_STACKED_BEHAVIOR);
-
+		
+		if(ais->system_flags & SYSTEM_FLAG_INVENTORY) {
+			
+			memcpy(_Gaids[Gaids_Number], dat + pos, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
+			       - SIZE_ID - SIZE_ID - MAX_LINKED_SAVE * SIZE_ID - SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
-
+			
 			if(io->inventory == NULL) {
 				io->inventory = (INVENTORY_DATA *)malloc(sizeof(INVENTORY_DATA));
 			}
-
 			memset(io->inventory, 0, sizeof(INVENTORY_DATA));
-		}
-		else
-		{
-			if (io->inventory)
-			{
+			
+		} else {
+			if(io->inventory) {
 				free(io->inventory);
 				io->inventory = NULL;
 			}
 		}
-
+		
 		if(ais->system_flags & SYSTEM_FLAG_TWEAKER_INFO) {
 			
 			if(io->tweakerinfo) {
@@ -2562,11 +2564,11 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			assert(array_size(io->tweakerinfo->skinchangeto) >= array_size(sti->skinchangeto));
 			strcpy(io->tweakerinfo->skinchangeto, loadPath(safestring(sti->skinchangeto)).c_str());
 		}
-
-		if (io->iogroups) free(io->iogroups);
-
-		io->iogroups = NULL;
-
+		
+		if(io->iogroups) {
+			free(io->iogroups), io->iogroups = NULL;
+		}
+		
 		if(io->nb_iogroups > 0) {
 			io->iogroups = (IO_GROUP_DATA *)malloc(sizeof(IO_GROUP_DATA) * io->nb_iogroups);
 			for(long i = 0; i < io->nb_iogroups; i++) {
@@ -2576,9 +2578,8 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				strcpy(io->iogroups[i].name, toLowercase(safestring(sgd->name)).c_str());
 			}
 		}
-
+		
 		io->Tweak_nb = ais->Tweak_nb;
-
 		if(io->Tweak_nb) {
 			io->Tweaks = (TWEAK_INFO *)malloc(sizeof(TWEAK_INFO) * io->Tweak_nb);
 			for(long i = 0; i < io->Tweak_nb; i++) {
@@ -2592,62 +2593,44 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				strcpy(tweak.param2, loadPath(safestring(sti->param2)).c_str());
 			}
 		}
-
+		
 		ARX_INTERACTIVE_APPLY_TWEAK_INFO(io);
-
-
-		if (io->obj)
-		{
+		
+		if(io->obj) {
+			
 			io->obj->nblinked = ais->nb_linked;
-
-			if (io->obj->nblinked)
-			{
-				if (io->obj->linked)
+			
+			if(io->obj->nblinked) {
+				
+				if(io->obj->linked) {
 					free(io->obj->linked);
-
-				io->obj->linked = (EERIE_LINKED *) malloc(sizeof(EERIE_LINKED) * (io->obj->nblinked));
-
-				for (long n = 0; n < ais->nb_linked; n++)
-				{
+				}
+				
+				io->obj->linked = (EERIE_LINKED *)malloc(sizeof(EERIE_LINKED) * io->obj->nblinked);
+				
+				for(long n = 0; n < ais->nb_linked; n++) {
 					io->obj->linked[n].lgroup = ais->linked_data[n].lgroup;
 					io->obj->linked[n].lidx = ais->linked_data[n].lidx;
 					io->obj->linked[n].lidx2 = ais->linked_data[n].lidx2;
 					io->obj->linked[n].modinfo = ais->linked_data[n].modinfo;
-					strcpy(_Gaids[Gaids_Number]->linked_id[n], ais->linked_data[n].linked_id);
+					memcpy(_Gaids[Gaids_Number]->linked_id[n], ais->linked_data[n].linked_id, SIZE_ID);
 					io->obj->linked[n].io = NULL;
 					io->obj->linked[n].obj = NULL;
 				}
 			}
 		}
-
-		long hidegore;
-
-		if ((io->ioflags & IO_NPC)
-				&&	(io->_npcdata->life > 0.f))
-			hidegore = 1;
-		else
-			hidegore = 0;
-
+		
+		long hidegore = ((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) ? 1 : 0;
 		ARX_INTERACTIVE_HideGore(io, hidegore);
-
+		
 	}
-
-
+	
 	free(dat);
 	CONVERT_CREATED = 1;
-
-	return io;
-corrupted:
-	LogError << "Save File Is Corrupted, Trying to Fix " << ident;
-
-	free(dat);
-	io->inventory = NULL; 
-	RestoreInitialIOStatusOfIO(io);
-	SendInitScriptEvent(io);
-
+	
 	return io;
 }
-//-----------------------------------------------------------------------------
+
 long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 	
 	float increment = 0;
