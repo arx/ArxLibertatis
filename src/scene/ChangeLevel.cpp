@@ -2338,13 +2338,27 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		{
 			long nn = (long)ais->animlayer[k].cur_anim;
 
-			if (nn == -1) io->animlayer[k].cur_anim = NULL;
-			else io->animlayer[k].cur_anim = (ANIM_HANDLE *)io->anims[nn];
+			if(nn == -1) {
+				io->animlayer[k].cur_anim = NULL;
+			} else {
+				io->animlayer[k].cur_anim = (ANIM_HANDLE *)io->anims[nn];
+				if(io->animlayer[k].cur_anim && io->animlayer[k].altidx_cur >= io->animlayer[k].cur_anim->alt_nb) {
+					LogWarning << "out of bounds animation alternative index " << io->animlayer[k].altidx_cur << " for " << io->animlayer[k].cur_anim->path << ", resetting to 0";
+					io->animlayer[k].altidx_cur = 0;
+				}
+			}
 
 			nn = (long)ais->animlayer[k].next_anim;
 
-			if (nn == -1) io->animlayer[k].next_anim = NULL;
-			else io->animlayer[k].next_anim = (ANIM_HANDLE *)io->anims[nn];
+			if(nn == -1) {
+				io->animlayer[k].next_anim = NULL;
+			} else {
+				io->animlayer[k].next_anim = (ANIM_HANDLE *)io->anims[nn];
+				if(io->animlayer[k].next_anim && io->animlayer[k].altidx_next >= io->animlayer[k].next_anim->alt_nb) {
+					LogWarning << "out of bounds animation alternative index " << io->animlayer[k].altidx_next << " for " << io->animlayer[k].next_anim->path << ", resetting to 0";
+					io->animlayer[k].altidx_next = 0;
+				}
+			}
 		}
 
 		// Target Info
@@ -2650,6 +2664,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					
 					assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
 					std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked);
+					// TODO properly load stacked animations
 
 					for (long iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++)
 					{
