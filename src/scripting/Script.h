@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
+class PakFile;
 struct INTERACTIVE_OBJ;
 struct ANIM_HANDLE;
 
@@ -519,5 +520,7 @@ bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string & group);
 void ARX_SCRIPT_Free_All_Global_Variables();
 void MakeLocalText(EERIE_SCRIPT * es, std::string & tx);
 void MakeGlobalText(std::string & tx);
+
+void loadScript(EERIE_SCRIPT & script, PakFile * file);
 
 #endif // ARX_SCRIPTING_SCRIPT_H

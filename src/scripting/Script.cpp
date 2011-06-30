@@ -87,6 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/FilePath.h"
 #include "io/Logger.h"
+#include "io/PakReader.h"
 
 #include "platform/String.h"
 
@@ -148,6 +149,26 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string& str)
 	if (es->data[result+len2] <= 32) return result;
 
 	return -1;
+}
+
+void loadScript(EERIE_SCRIPT & script, PakFile * file) {
+	
+	if(!file) {
+		return;
+	}
+	
+	if(script.data) {
+		free(script.data);
+	}
+	
+	script.data = (char *)malloc(file->size() + 2);
+	script.size = file->size();
+	script.data[script.size] = script.data[script.size + 1] = '\0'; // TODO(case-sensitive) remove
+	
+	file->read(script.data);
+	
+	InitScript(&script);
+	
 }
 
 /**
