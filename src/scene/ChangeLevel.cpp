@@ -1772,62 +1772,52 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 
 extern long NO_GMOD_RESET;
 
-long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long FirstTime)
-{
-	char tex[256];
-	char postxt[256];
-	char lev[256];
-	char ftemp[256];
-	strcpy(postxt, "NONE");
-	GetLevelNameByNum(num, lev);
-
-	if (!FirstTime)
-	{
-		DONT_LOAD_INTERS = 1;
-	}
-	else
-	{
-		DONT_LOAD_INTERS = 0;
-	}
-
+long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long FirstTime) {
+	
+	char levelId[256];
+	GetLevelNameByNum(num, levelId);
+	string levelFile = string("graph\\levels\\level") + levelId + "\\level" + levelId + ".dlf";
+	
+	DONT_LOAD_INTERS = (!FirstTime) ? 1 : 0;
 	LOAD_N_DONT_ERASE = 1;
-
-	sprintf(tex, "LEVEL%s", lev);
-	sprintf(ftemp, "Graph\\Levels\\%s\\%s.DLF", tex, tex);
-
-	if(!resources->getFile(ftemp)) {
-		LogError << "Unable To Find " << ftemp;
+	
+	if(!resources->getFile(levelFile)) {
+		LogError << "Unable To Find " << levelFile;
 		return 0;
 	}
-
+	
 	LoadLevelScreen(num);
 	SetEditMode(1, false);
-
-	if (ARX_CHANGELEVEL_Pop_Globals() != 1)
-	{
+	
+	if(ARX_CHANGELEVEL_Pop_Globals() != 1) {
 		LogWarning << "Cannot Load Globals data";
 	}
-
-	DanaeLoadLevel(ftemp);
+	
+	DanaeLoadLevel(levelFile);
 	CleanScriptLoadedIO();
-
+	
 	FirstFrame = 1;
 	DONT_LOAD_INTERS = 0;
-
-	if (FirstTime)
-	{
+	
+	if(FirstTime) {
+		
 		RestoreInitialIOStatus();
- 
-
-		for (long i = 1; i < inter.nbmax; i++)
-		{
-			if (inter.iobj[i] != NULL)
-			{
-				if (!inter.iobj[i]->scriptload)
-					ARX_SCRIPT_Reset(inter.iobj[i], 1);
+		
+		for(long i = 1; i < inter.nbmax; i++) {
+			if(inter.iobj[i] && !inter.iobj[i]->scriptload) {
+				ARX_SCRIPT_Reset(inter.iobj[i], 1);
 			}
 		}
-
+		
+#ifdef BUILD_EDITOR
+		EDITMODE = 0;
+#endif
+		BLOCK_PLAYER_CONTROLS = 0;
+		ARX_INTERFACE_Reset();
+		EERIE_ANIMMANAGER_PurgeUnused();
+		
+	} else {
+		
 #ifdef BUILD_EDITOR
 		EDITMODE = 0;
 #endif
@@ -1835,23 +1825,14 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 		ARX_INTERFACE_Reset();
 		EERIE_ANIMMANAGER_PurgeUnused();
 	}
-	else
-	{
-#ifdef BUILD_EDITOR
-		EDITMODE = 0;
-#endif
-		BLOCK_PLAYER_CONTROLS = 0;
-		ARX_INTERFACE_Reset();
-		EERIE_ANIMMANAGER_PurgeUnused();
-	}
-
-
+	
 	stacked = asi->gmods_stacked;
 	desired = asi->gmods_desired;
 	current = asi->gmods_current;
 	NO_GMOD_RESET = 1;
-	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);//asi.time);
+	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
+	
 	return 1;
 }
 
