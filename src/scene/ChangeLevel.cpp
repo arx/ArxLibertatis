@@ -1897,7 +1897,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.falling = asp->falling;
 	player.gold = asp->gold;
 	inter.iobj[0]->invisibility = asp->invisibility;
-	player.inzone = ARX_PATH_GetAddressByName(asp->inzone);;
+	player.inzone = ARX_PATH_GetAddressByName(toLowercase(safestring(asp->inzone)));
 	player.jumpphase = asp->jumpphase;
 	player.jumpstarttime = asp->jumpstarttime;
 	player.Last_Movement = Flag(asp->Last_Movement); // TODO save/load flags
@@ -1994,7 +1994,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 			ReleaseAnimFromIO(&io, i);
 		}
 		if(asp->anims[i][0]) {
-			io.anims[i] = EERIE_ANIMMANAGER_Load(asp->anims[i]);
+			io.anims[i] = EERIE_ANIMMANAGER_Load(loadPath(safestring(asp->anims[i])));
 		}
 	}
 	
