@@ -164,40 +164,34 @@ long CURRENT_GAME_INSTANCE = -1;
 char GameSavePath[256];
 
 static void ARX_GAMESAVE_CreateNewInstance() {
+	
 	char testpath[256];
 	long num = 1;
-
-	for (;;)
-	{
+	
+	for(;;) {
+		
 		sprintf(testpath, "save\\save%04ld", num);
-
-		if (!DirectoryExist(testpath))
-		{
+		
+		if(!DirectoryExist(testpath)) {
 			CreateDirectory(testpath, NULL);
 			CURRENT_GAME_INSTANCE = num;
 			ARX_GAMESAVE_MakePath();
 			return;
-		}
-		else
-		{
+		} else {
 			//The directory may exist but may be empty after crash
-			strcat(testpath, "\\GSAVE.SAV");
+			strcat(testpath, "\\gsave.sav");
 			if(!FileExist(testpath)) {
 				CURRENT_GAME_INSTANCE = num;
 				ARX_GAMESAVE_MakePath();
 				return;
 			}
 		}
-
+		
 		num++;
 	}
 }
 
-long NEED_LOG = 1; //0;
-
-//-----------------------------------------------------------------------------
-INTERACTIVE_OBJ * ConvertToValidIO(char * str)
-{
+INTERACTIVE_OBJ * ConvertToValidIO(char * str) {
 
 	CONVERT_CREATED = 0;
 
@@ -208,8 +202,7 @@ INTERACTIVE_OBJ * ConvertToValidIO(char * str)
 
 	if (t < 0)
 	{
-		if ((NEED_LOG) && (strcasecmp(str, "none")))
-		{
+		if(strcasecmp(str, "none")) {
 			LogDebug << "Call to ConvertToValidIO(" << str << ")";
 		}
 
@@ -2112,10 +2105,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 	if (ValidIONum(t))
 		return t;
 
-	if (NEED_LOG)
-	{
-		LogDebug << "--> Before ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
-	}
+	LogDebug << "--> Before ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
 
 	size_t size = 0;
 	char * dat = _pSaveBlock->load(loadfile, size);
@@ -2145,11 +2135,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 	{
 		free(dat);
 		return -1;
-	}
-
-	if (NEED_LOG)
-	{
-		LogDebug << "--> Phase2 ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
 	}
 
 	long num = atoi(ident.c_str() + ident.length() - 4); // TODO this is ugly
@@ -2846,11 +2831,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 	free(dat);
 	CONVERT_CREATED = 1;
-
-	if (NEED_LOG)
-	{
-		LogDebug << "--> After  ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
-	}
 
 	return GetInterNum(tmp);
 corrupted:
