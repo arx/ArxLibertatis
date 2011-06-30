@@ -2251,11 +2251,12 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			aup->path = ARX_PATH_GetAddressByName(toLowercase(safestring(ais->usepath_name)));
 		}
 		
-		if (ais->shop_category[0])
-			io->shop_category = strdup(ais->shop_category);
-		else
+		if(ais->shop_category[0]) {
+			io->shop_category = strdup(toLowercase(safestring(ais->shop_category)).c_str());
+		} else {
 			io->shop_category = NULL;
-
+		}
+		
 		io->halo_native = ais->halo;
 		io->halo_native.dynlight = -1;
 		io->halo.dynlight = -1;
