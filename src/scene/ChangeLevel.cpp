@@ -2347,8 +2347,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		}
 		
 		// Target Info
-		arx_assert(array_size(_Gaids[Gaids_Number]->targetinfo) >= array_size(ais->id_targetinfo));
-		strncpy(_Gaids[Gaids_Number]->targetinfo, ais->id_targetinfo, array_size(ais->id_targetinfo));
+		memcpy(_Gaids[Gaids_Number]->targetinfo, ais->id_targetinfo, SIZE_ID);
 		
 		ARX_SCRIPT_Timer_Clear_By_IO(io);
 		
@@ -2403,84 +2402,81 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		
 		_Gaids[Gaids_Number]->weapon[0] = '\0';
 		
-		switch (ais->savesystem_type)
-		{
-			case TYPE_NPC:
-				ARX_CHANGELEVEL_NPC_IO_SAVE * as;
-				as = (ARX_CHANGELEVEL_NPC_IO_SAVE *)(dat + pos);
-				{
-					io->_npcdata->absorb = as->absorb;
-					io->_npcdata->aimtime = as->aimtime;
-					io->_npcdata->armor_class = as->armor_class;
-					io->_npcdata->behavior = as->behavior;
-					io->_npcdata->behavior_param = as->behavior_param;
-					io->_npcdata->collid_state = as->collid_state;
-					io->_npcdata->collid_time = as->collid_time;
-					io->_npcdata->cut = as->cut;
-					io->_npcdata->damages = as->damages;
-					io->_npcdata->detect = as->detect;
-					io->_npcdata->fightdecision = as->fightdecision;
-
-					strcpy(_Gaids[Gaids_Number]->weapon, as->id_weapon);
-
-					io->_npcdata->lastmouth = as->lastmouth;
-					io->_npcdata->life = as->life;
-					io->_npcdata->look_around_inc = as->look_around_inc;
-					io->_npcdata->mana = as->mana;
-					io->_npcdata->maxlife = as->maxlife;
-					io->_npcdata->maxmana = as->maxmana;
-					io->_npcdata->movemode = as->movemode;
-					io->_npcdata->moveproblem = as->moveproblem;
-					io->_npcdata->reachedtarget = as->reachedtarget;
-					io->_npcdata->speakpitch = as->speakpitch;
-					io->_npcdata->tactics = as->tactics;
-					io->_npcdata->tohit = as->tohit;
-					io->_npcdata->weaponinhand = as->weaponinhand;
-					strcpy(io->_npcdata->weaponname, as->weaponname);
-					io->_npcdata->weapontype = Flag(as->weapontype); // TODO save/load flags
-					io->_npcdata->xpvalue = as->xpvalue;
-					
-					assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
-					std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked);
-					// TODO properly load stacked animations
-
-					for (long iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++)
-					{
-						strcpy(_Gaids[Gaids_Number]->stackedtarget[iii], as->stackedtarget[iii]);
-					}
-
-					io->_npcdata->critical = as->critical;
-					io->_npcdata->reach = as->reach;
-					io->_npcdata->backstab_skill = as->backstab_skill;
-					io->_npcdata->poisonned = as->poisonned;
-					io->_npcdata->resist_poison = as->resist_poison;
-					io->_npcdata->resist_magic = as->resist_magic;
-					io->_npcdata->resist_fire = as->resist_fire;
-					io->_npcdata->strike_time = as->strike_time;
-					io->_npcdata->walk_start_time = as->walk_start_time;
-					io->_npcdata->aiming_start = as->aiming_start;
-					io->_npcdata->npcflags = as->npcflags;
-					io->_npcdata->fDetect = as->fDetect;
-					io->_npcdata->cuts = as->cuts;
-
-					memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
-
-					io->_npcdata->pathfind.truetarget = as->pathfind.truetarget;
-
-					if (ais->saveflags & SAVEFLAGS_EXTRA_ROTATE)
-					{
-						if (io->_npcdata->ex_rotate == NULL)
-						{
-							io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *) malloc(sizeof(EERIE_EXTRA_ROTATE));
-						}
-
-						*io->_npcdata->ex_rotate = as->ex_rotate;
-					}
-
-					io->_npcdata->blood_color = as->blood_color;
-				}
+		switch (ais->savesystem_type) {
+			
+			case TYPE_NPC: {
+				
+				const ARX_CHANGELEVEL_NPC_IO_SAVE * as;
+				as = reinterpret_cast<const ARX_CHANGELEVEL_NPC_IO_SAVE *>(dat + pos);
 				pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
+				
+				io->_npcdata->absorb = as->absorb;
+				io->_npcdata->aimtime = as->aimtime;
+				io->_npcdata->armor_class = as->armor_class;
+				io->_npcdata->behavior = as->behavior;
+				io->_npcdata->behavior_param = as->behavior_param;
+				io->_npcdata->collid_state = as->collid_state;
+				io->_npcdata->collid_time = as->collid_time;
+				io->_npcdata->cut = as->cut;
+				io->_npcdata->damages = as->damages;
+				io->_npcdata->detect = as->detect;
+				io->_npcdata->fightdecision = as->fightdecision;
+				
+				memcpy(_Gaids[Gaids_Number]->weapon, as->id_weapon, SIZE_ID);
+				
+				io->_npcdata->lastmouth = as->lastmouth;
+				io->_npcdata->life = as->life;
+				io->_npcdata->look_around_inc = as->look_around_inc;
+				io->_npcdata->mana = as->mana;
+				io->_npcdata->maxlife = as->maxlife;
+				io->_npcdata->maxmana = as->maxmana;
+				io->_npcdata->movemode = as->movemode;
+				io->_npcdata->moveproblem = as->moveproblem;
+				io->_npcdata->reachedtarget = as->reachedtarget;
+				io->_npcdata->speakpitch = as->speakpitch;
+				io->_npcdata->tactics = as->tactics;
+				io->_npcdata->tohit = as->tohit;
+				io->_npcdata->weaponinhand = as->weaponinhand;
+				strcpy(io->_npcdata->weaponname, as->weaponname);
+				io->_npcdata->weapontype = Flag(as->weapontype); // TODO save/load flags
+				io->_npcdata->xpvalue = as->xpvalue;
+				
+				assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
+				std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked);
+				// TODO properly load stacked animations
+				
+				memcpy(_Gaids[Gaids_Number]->stackedtarget, as->stackedtarget, SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
+				
+				io->_npcdata->critical = as->critical;
+				io->_npcdata->reach = as->reach;
+				io->_npcdata->backstab_skill = as->backstab_skill;
+				io->_npcdata->poisonned = as->poisonned;
+				io->_npcdata->resist_poison = as->resist_poison;
+				io->_npcdata->resist_magic = as->resist_magic;
+				io->_npcdata->resist_fire = as->resist_fire;
+				io->_npcdata->strike_time = as->strike_time;
+				io->_npcdata->walk_start_time = as->walk_start_time;
+				io->_npcdata->aiming_start = as->aiming_start;
+				io->_npcdata->npcflags = as->npcflags;
+				io->_npcdata->fDetect = as->fDetect;
+				io->_npcdata->cuts = as->cuts;
+				
+				memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
+				
+				io->_npcdata->pathfind.truetarget = as->pathfind.truetarget;
+				
+				if(ais->saveflags & SAVEFLAGS_EXTRA_ROTATE) {
+					if(io->_npcdata->ex_rotate == NULL) {
+						io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
+					}
+					*io->_npcdata->ex_rotate = as->ex_rotate;
+				}
+				
+				io->_npcdata->blood_color = as->blood_color;
+				
 				break;
+			}
+			
 			case TYPE_ITEM:
 				ARX_CHANGELEVEL_ITEM_IO_SAVE * ai;
 				ai = (ARX_CHANGELEVEL_ITEM_IO_SAVE *)(dat + pos);
