@@ -994,76 +994,69 @@ static long ARX_CHANGELEVEL_Push_AllIO() {
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-INTERACTIVE_OBJ * GetObjIOSource(EERIE_3DOBJ * obj)
-{
-	if (!obj)
+static INTERACTIVE_OBJ * GetObjIOSource(const EERIE_3DOBJ * obj) {
+	
+	if(!obj) {
 		return NULL;
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i]) && (inter.iobj[i]->obj))
-		{
-			if (inter.iobj[i]->obj == obj)
+	}
+	
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i] && inter.iobj[i]->obj) {
+			if(inter.iobj[i]->obj == obj) {
 				return inter.iobj[i];
+			}
 		}
 	}
-
+	
 	return NULL;
 }
 
 template <size_t N>
 void FillTargetInfo(char (&info)[N], long numtarget) {
-	if(numtarget == -2) strcpy(info, "SELF");
-	else if(numtarget == -1) strcpy(info, "NONE");
-	else if(numtarget == 0) strcpy(info, "PLAYER");
-	else if(ValidIONum(numtarget))
+	arx_assert(N >= 6);
+	if(numtarget == -2) {
+		strcpy(info, "self");
+	} else if(numtarget == -1) {
+		strcpy(info, "none");
+	} else if(numtarget == 0) {
+		strcpy(info, "player");
+	} else if(ValidIONum(numtarget)) {
 		FillIOIdent(info, (INTERACTIVE_OBJ *)inter.iobj[numtarget]);
-	else strcpy(info, "NONE");
+	} else {
+		strcpy(info, "none");
+	}
 }
 
-// num = num in index file
-//-----------------------------------------------------------------------------
 static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	
 	// Check Valid IO
-	if (!io)
+	if(!io) {
 		return -1;
-
+	}
+	
 	// Sets Savefile Name
-	char savefile[256];
-	sprintf(savefile, "%s_%04ld.sav", GetName(io->filename).c_str(), io->ident);
-
+	string savefile = io->long_name() + ".sav";
+	
 	// Define Type & Affiliated Structure Size
 	long type;
 	long struct_size;
-
-	if (io->ioflags & IO_NPC)
-	{
+	if(io->ioflags & IO_NPC) {
 		type = TYPE_NPC;
-		struct_size	= sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
-	}
-	else if (io->ioflags & IO_ITEM)
-	{
+		struct_size = sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
+	} else if (io->ioflags & IO_ITEM) {
 		type = TYPE_ITEM;
-		struct_size	= sizeof(ARX_CHANGELEVEL_ITEM_IO_SAVE);
-	}
-	else if (io->ioflags & IO_FIX)
-	{
+		struct_size = sizeof(ARX_CHANGELEVEL_ITEM_IO_SAVE);
+	} else if (io->ioflags & IO_FIX) {
 		type = TYPE_FIX;
-		struct_size	= sizeof(ARX_CHANGELEVEL_FIX_IO_SAVE);
-	}
-	else if (io->ioflags & IO_CAMERA)
-	{
+		struct_size = sizeof(ARX_CHANGELEVEL_FIX_IO_SAVE);
+	} else if (io->ioflags & IO_CAMERA) {
 		type = TYPE_CAMERA;
-		struct_size	= sizeof(ARX_CHANGELEVEL_CAMERA_IO_SAVE);
-	}
-	else
-	{
+		struct_size = sizeof(ARX_CHANGELEVEL_CAMERA_IO_SAVE);
+	} else {
 		type = TYPE_MARKER;
-		struct_size	= sizeof(ARX_CHANGELEVEL_MARKER_IO_SAVE);
+		struct_size = sizeof(ARX_CHANGELEVEL_MARKER_IO_SAVE);
 	}
-
+	
 	// Init Changelevel Main IO Save Structure
 	ARX_CHANGELEVEL_IO_SAVE ais;
 	memset(&ais, 0, sizeof(ARX_CHANGELEVEL_IO_SAVE));
@@ -1677,31 +1670,27 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	long pos = 0;
 	std::string loadfile;
 	std::stringstream ss;
-
+	
 	ss << "lvl" << std::setfill('0') << std::setw(3) << num << ".sav";
 	loadfile = ss.str();
-
-	size_t size;
+	
+	size_t size; // TODO size is not used
 	char * dat = _pSaveBlock->load(loadfile, size);
 	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
 	}
 	
-	// TODO size is not used
-
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
-
-	if (asi->nb_inter)
-	{
-		idx_io = (ARX_CHANGELEVEL_IO_INDEX *) malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
-
+	
+	arx_assert(idx_io == NULL);
+	if(asi->nb_inter) {
+		idx_io = (ARX_CHANGELEVEL_IO_INDEX *)malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
 		memcpy(idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
 		pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
 	}
-	else idx_io = NULL;
-
+	
 	// Skip Path info (used later !)
 	pos += sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths;
 	
@@ -1712,52 +1701,45 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	}
 	
 	free(dat);
+	
 	return 1;
 }
-//-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
-{
-	
-	long pos = 0;
-	std::string loadfile;
-	std::stringstream ss;
-	
 
-	ss << "lvl" << std::setfill('0') << std::setw(3) << num << ".sav";
-	loadfile = ss.str();
+long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
-	size_t size;
+	std::stringstream ss;
+	ss << "lvl" << std::setfill('0') << std::setw(3) << num << ".sav";
+	std::string loadfile = ss.str();
+	
+	size_t size; // TODO size not used
+	// TODO this has already been loaded and decompressed in ARX_CHANGELEVEL_Pop_Index!
 	char * dat = _pSaveBlock->load(loadfile, size);
 	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
 	}
 	
-	// TODO size not used
-
+	size_t pos = 0;
 	// Skip Changelevel Index
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	// Skip Inter idx
 	pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
+	
 	// Now Restore Paths
-	ARX_CHANGELEVEL_PATH * acp;
-
-	for (int i = 0; i < asi->nb_paths; i++)
-	{
-		acp = (ARX_CHANGELEVEL_PATH *)(dat + pos);
-		ARX_PATH * ap = ARX_PATH_GetAddressByName(acp->name);
-
-		if (ap)
-		{
-			if (acp->controled[0] == 0)
-				ap->controled[0] = 0;
-			else
-			{
-				strcpy(ap->controled, acp->controled);
+	for (int i = 0; i < asi->nb_paths; i++) {
+		
+		const ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<const ARX_CHANGELEVEL_PATH *>(dat + pos);
+		pos += sizeof(ARX_CHANGELEVEL_PATH);
+		
+		ARX_PATH * ap = ARX_PATH_GetAddressByName(toLowercase(safestring(acp->name)));
+		
+		if(ap) {
+			if(acp->controled[0] == '\0') {
+				ap->controled[0] = '\0';
+			} else {
+				strcpy(ap->controled, toLowercase(safestring(acp->controled)).c_str());
 			}
 		}
-
-		pos += sizeof(ARX_CHANGELEVEL_PATH);
 	}
 
 	if (asi->ambiances_data_size > 0)
