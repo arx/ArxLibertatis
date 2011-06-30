@@ -145,7 +145,7 @@ static long ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player();
 static long ARX_CHANGELEVEL_Push_AllIO();
 static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io);
-static long ARX_CHANGELEVEL_Pop_IO(const string & ident);
+static long ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 long LAST_CHINSTANCE = 1; // temporary MUST return to -1;
@@ -191,46 +191,88 @@ static void ARX_GAMESAVE_CreateNewInstance() {
 	}
 }
 
-INTERACTIVE_OBJ * ConvertToValidIO(char * str) {
+// TODO(case-sensitive) remove
+void badident(const string & ident) {
+	LogWarning << "bad ident: \"" << ident << "\"";
+}
+const string IDENTCHARS = "abcdefghijklmnopqrstuvwxyz_0123456789";
 
+static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
+	
 	CONVERT_CREATED = 0;
-
-	if ((!str)
-			||	(str[0] == 0)) return NULL;
-
-	long t = GetTargetByNameTarget(str);
-
-	if (t < 0)
-	{
-		if(strcasecmp(str, "none")) {
-			LogDebug << "Call to ConvertToValidIO(" << str << ")";
-		}
-
-		t = ARX_CHANGELEVEL_Pop_IO(str);
-
-		if (t < 0) return NULL;
+	
+	if(ident.empty() || ident == "none") {
+		return NULL;
 	}
-
+	
+	if(ident.find_first_not_of(IDENTCHARS) != string::npos) {
+		badident(ident);
+	}
+	
+	long t = GetTargetByNameTarget(ident);
+	
+	if(t < 0) {
+		
+		LogDebug << "Call to ConvertToValidIO(" << ident << ")";
+		
+		size_t pos = ident.find_last_of('_');
+		if(pos == string::npos || pos == ident.length() - 1) {
+			return NULL;
+		}
+		pos = ident.find_first_not_of('0', pos + 1);
+		if(pos == string::npos) {
+			return NULL;
+		}
+		
+		t = ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
+		
+		if (t < 0) {
+			return NULL;
+		}
+	}
+	
+	arx_assert_msg(ValidIONum(t), "got invalid IO num %d", t);
+	
 	inter.iobj[t]->level = (short)NEW_LEVEL; // Not really needed anymore...
-	return (inter.iobj[t]);
+	return inter.iobj[t];
 }
 
-//-----------------------------------------------------------------------------
-long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim)
-{
-	if ((!io)
-			||	(!anim))
+template <size_t N>
+static INTERACTIVE_OBJ * ConvertToValidIO(const char (&str)[N]) {
+	return _ConvertToValidIO(toLowercase(safestring(str)));
+}
+
+template <size_t N>
+static long ReadTargetInfo(const char (&str)[N]) {
+	
+	string ident = toLowercase(safestring(str));
+	
+	if(ident == "none") {
 		return -1;
-
-	for (long i = 0; i < MAX_ANIMS; i++)
-	{
-		if (io->anims[i] == anim)
-			return i;
+	} else if(ident == "self") {
+		return -2;
+	} else if(ident == "player") {
+		return 0;
+	} else {
+		return GetInterNum(_ConvertToValidIO(ident));
 	}
+}
 
+long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
+	
+	if(!io || !anim) {
+		return -1;
+	}
+	
+	for(long i = 0; i < MAX_ANIMS; i++) {
+		if(io->anims[i] == anim) {
+			return i;
+		}
+	}
+	
 	return -1;
 }
-//--------------------------------------------------------------------------------------------
+
 void ARX_CHANGELEVEL_MakePath() {
 	sprintf(CurGamePath, "save\\cur%04ld\\", LAST_CHINSTANCE);
 	CreateFullPath(CurGamePath);
@@ -2087,8 +2129,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 
 extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 
-//-----------------------------------------------------------------------------
-static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
+static long ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	
 	if(!strcasecmp(ident, "NONE")) {
 		return -1;
@@ -2137,7 +2178,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		return -1;
 	}
 
-	long num = atoi(ident.c_str() + ident.length() - 4); // TODO this is ugly
 	INTERACTIVE_OBJ * tmp = LoadInter_Ex(ais->filename, num, ais->pos, ais->angle, MSP);
 	long idx = -1;
 	INTERACTIVE_OBJ * io = NULL;
@@ -2859,20 +2899,13 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		LoadLevelScreen();
 		char tempo[256];
 		sprintf(tempo, "%s_%04d", GetName(idx_io[i].filename).c_str(), idx_io[i].ident);
-		ARX_CHANGELEVEL_Pop_IO(tempo);
+		ARX_CHANGELEVEL_Pop_IO(tempo, idx_io[i].ident);
 	}
 	
 	return 1;
 }
 extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
 //-----------------------------------------------------------------------------
-
-long ReadTargetInfo(char * info) {
-	if(!strcasecmp(info, "NONE")) return -1;
-	else if(!strcasecmp(info, "SELF")) return -2;
-	else if(!strcasecmp(info, "PLAYER")) return 0;
-	else return GetInterNum(ConvertToValidIO(info));
-}
 
 long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 {
