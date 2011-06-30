@@ -2185,18 +2185,16 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;
 	} else {
 		
-		long idx = GetInterNum(io);
-
-		long  Gaids_Number = idx;
-		_Gaids[Gaids_Number] = (ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *) malloc(sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
-
+		long Gaids_Number = GetInterNum(io);
+		_Gaids[Gaids_Number] = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE;
+		
 		memset(_Gaids[Gaids_Number], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
-
+		
 		io->room_flags = 1;
 		io->room = -1;
 		io->no_collide = -1;
 		io->ioflags = ais->ioflags;
-
+		
 		io->ioflags &= ~IO_FREEZESCRIPT;
 		io->pos = ais->pos;
 		io->lastpos = ais->lastpos;
@@ -2207,19 +2205,19 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->angle = ais->angle;
 		io->scale = ais->scale;
 		io->weight = ais->weight;
-		strcpy(io->locname, ais->locname);
+		strcpy(io->locname, toLowercase(safestring(ais->locname)).c_str());
 		io->EditorFlags = ais->EditorFlags;
 		io->GameFlags = ais->GameFlags;
 		io->material = ais->material;
 		io->level = ais->level;
 		io->truelevel = ais->truelevel;
-
+		
 		// Script data
 		io->scriptload = ais->scriptload;
 		io->show = ais->show;
 		io->collision = ais->collision;
-		strcpy(io->mainevent, ais->mainevent);
-
+		strcpy(io->mainevent, toLowercase(safestring(ais->mainevent)).c_str());
+		
 		// Physics data
 		io->velocity = ais->velocity;
 		io->stopped = ais->stopped;
@@ -2242,7 +2240,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->original_height = ais->original_height;
 		io->original_radius = ais->original_radius;
 		io->ignition = ais->ignition;
-
+		
 		if(ais->system_flags & SYSTEM_FLAG_USEPATH) {
 			ARX_USE_PATH * aup = io->usepath = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
 			aup->aupflags = Flag(ais->usepath_aupflags); // TODO save/load flags
@@ -2250,10 +2248,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			aup->initpos = ais->usepath_initpos;
 			aup->lastWP = ais->usepath_lastWP;
 			aup->_starttime = static_cast<float>(ais->usepath_starttime);
-			ARX_PATH * ap = ARX_PATH_GetAddressByName(ais->usepath_name);
-			aup->path = ap;
+			aup->path = ARX_PATH_GetAddressByName(toLowercase(safestring(ais->usepath_name)));
 		}
-
+		
 		if (ais->shop_category[0])
 			io->shop_category = strdup(ais->shop_category);
 		else
