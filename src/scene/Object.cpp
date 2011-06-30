@@ -429,7 +429,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const string & file) {
 			LogDebug << " -> sample " << ts->sample_name << " size " << ts->sample_size
 			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE);
 			
-			eerie->frames[i].sample = ARX_SOUND_Load(toLowercase(safestring(ts->sample_name)));
+			eerie->frames[i].sample = ARX_SOUND_Load(loadPath(safestring(ts->sample_name)));
 		}
 		
 		pos += 4; // num_sfx
@@ -959,7 +959,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & 
 			pos += sizeof(THEO_TEXTURE);
 			
 			// TODO what is the point in adding adding the extension when it is ignored later anyway
-			string mapsname = temp + toLowercase(safestring(tt->texture_name)) + ".bmp";
+			string mapsname = temp + loadPath(safestring(tt->texture_name)) + ".bmp";
 			seerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
 		}
 		
@@ -1849,11 +1849,11 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const string & tex
 				if(pth->version >= 3008) {
 					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = toLowercase(safestring(tsmi3019->texture_name));
+					name = loadPath(safestring(tsmi3019->texture_name));
 				} else {
 					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = toLowercase(safestring(tsmi->texture_name));
+					name = loadPath(safestring(tsmi->texture_name));
 				}
 				
 				if(!name.empty()) {
