@@ -848,13 +848,6 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	asp->gold = player.gold;
 	asp->invisibility = inter.iobj[0]->invisibility;
 
-	if (player.inzone)
-	{
-		// TODO does this do anything?
-		ARX_PATH * ap = (ARX_PATH *)asp->inzone;
-		strcpy(asp->inzone, ap->name);
-	}
-
 	asp->jumpphase = player.jumpphase;
 	asp->jumpstarttime = player.jumpstarttime;
 	asp->Last_Movement = player.Last_Movement;
