@@ -218,7 +218,7 @@ long ValidIONum(long num)
 
 	return 1;
 }
-long ValidIOAddress(INTERACTIVE_OBJ * io)
+long ValidIOAddress(const INTERACTIVE_OBJ * io)
 {
 	if (!io) return 0;
 

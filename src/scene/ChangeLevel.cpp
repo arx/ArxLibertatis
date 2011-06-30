@@ -283,12 +283,11 @@ void ARX_GAMESAVE_MakePath() {
 	CreateFullPath(GameSavePath);
 }
 
-//--------------------------------------------------------------------------------------------
-void ARX_CHANGELEVEL_CreateNewInstance()
-{
+void ARX_CHANGELEVEL_CreateNewInstance() {
+	
 	char testpath[256];
 	long num = 1;
-
+	
 	for (;;)
 	{
 		sprintf(testpath, "save\\cur%04ld", num);
@@ -317,7 +316,7 @@ void ARX_Changelevel_CurGame_Open() {
 	}
 	
 	string savefile = CurGamePath;
-	savefile += "Gsave.sav";
+	savefile += "gsave.sav";
 	
 	if(FileExist(savefile)) {
 		
@@ -333,9 +332,9 @@ void ARX_Changelevel_CurGame_Open() {
 
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
 	if(_pSaveBlock) {
-		return _pSaveBlock->hasFile( ident + ".sav" );
+		return _pSaveBlock->hasFile(ident + ".sav");
 	} else if(GLOBAL_pSaveB) {
-		return GLOBAL_pSaveB->hasFile( ident + ".sav" );
+		return GLOBAL_pSaveB->hasFile(ident + ".sav");
 	} else {
 		// this is normal when starting a new game
 		return false;
@@ -350,31 +349,27 @@ void ARX_Changelevel_CurGame_Close() {
 }
 
 extern long JUST_RELOADED;
-extern void DemoFileCheck();
 extern long FINAL_COMMERCIAL_DEMO;
 
-void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle) {
+void ARX_CHANGELEVEL_Change(const string & level, const string & target, long angle) {
 	
 	LogDebug << "ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle;
-
+	
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
-
+	
 	ARX_CHANGELEVEL_DesiredTime = ARX_TIME_Get();
-
-	if (LAST_CHINSTANCE == -1)
-	{
+	
+	if(LAST_CHINSTANCE == -1) {
 		ARX_CHANGELEVEL_CreateNewInstance();
+	} else {
+		ARX_CHANGELEVEL_MakePath();
 	}
-	else ARX_CHANGELEVEL_MakePath();
-
+	
 	FORBID_SAVE = 1;
 	// CurGamePath contains current game temporary savepath
-	char tex[256];
-	sprintf(tex, "LEVEL%s", level.c_str());
-	long num = GetLevelNumByName(tex);
-
-
+	long num = GetLevelNumByName("level" + level);
+	
 	if ((FINAL_COMMERCIAL_DEMO)
 			&&	(num != 10)
 			&&	(num != 12)
@@ -425,7 +420,6 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 	LogDebug << "Before ARX_CHANGELEVEL_PushLevel";
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, NEW_LEVEL);
 	LogDebug << "After  ARX_CHANGELEVEL_PushLevel";
-
 
 	LogDebug << "Before ARX_CHANGELEVEL_PopLevel";
 	ARX_CHANGELEVEL_PopLevel(num, 1);
@@ -485,7 +479,7 @@ static long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	ForcePlayerInventoryObjectLevel(newnum);
 
 	char sfile[256];
-	sprintf(sfile, "%sGsave.sav", CurGamePath);
+	sprintf(sfile, "%sgsave.sav", CurGamePath);
 	_pSaveBlock = new SaveBlock(sfile);
 
 	if (!_pSaveBlock->BeginSave()) {
@@ -531,8 +525,9 @@ static long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	ARX_TIME_UnPause();
 	return 1;
 }
-bool IsPlayerEquipedWith(INTERACTIVE_OBJ * io)
-{
+
+bool IsPlayerEquipedWith(INTERACTIVE_OBJ * io) {
+	
 	if (!io) return false;
 
 	long num = GetInterNum(io);
@@ -553,10 +548,11 @@ bool IsPlayerEquipedWith(INTERACTIVE_OBJ * io)
 
 	return false;
 }
+
 extern GLOBAL_MODS stacked;
 extern GLOBAL_MODS current;
 extern GLOBAL_MODS desired;
-//--------------------------------------------------------------------------------------------
+
 static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
 	long pos = 0;
@@ -667,25 +663,24 @@ static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
 	return ret ? 1 : -1;
 }
-//--------------------------------------------------------------------------------------------
+
 static long ARX_CHANGELEVEL_Push_Globals() {
 	
 	ARX_CHANGELEVEL_SAVE_GLOBALS acsg;
 	long pos = 0;
-
+	
 	memset(&acsg, 0, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
 	acsg.nb_globals = NB_GLOBALS;
 	acsg.version = ARX_GAMESAVE_VERSION;
-
+	
 	char savefile[256];
-	sprintf(savefile, "Globals.sav");
+	sprintf(savefile, "globals.sav");
 
 	long allocsize = sizeof(ARX_VARIABLE_SAVE) * acsg.nb_globals
-					 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000
-					 + 48000;
-
+	                 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000 + 48000;
+	
 	char * dat = new char[allocsize];
-
+	
 	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 	long count;
@@ -761,16 +756,19 @@ static long ARX_CHANGELEVEL_Push_Globals() {
 	return 1;
 }
 
-//--------------------------------------------------------------------------------------------
-void FillIOIdent(char * tofill, INTERACTIVE_OBJ * io)
-{
-	if ((!io)
-			||	(!ValidIOAddress(io))
-			||	(io->filename[0] == 0)
-	   )
-		strcpy(tofill, "NONE");
-	else
-		sprintf(tofill, "%s", io->long_name().c_str() );
+template <size_t N>
+void FillIOIdent(char (&tofill)[N], const INTERACTIVE_OBJ * io) {
+	
+	if(!io || !ValidIOAddress(io) || io->filename[0] == '\0') {
+		arx_assert(N >= 4);
+		strcpy(tofill, "none");
+	} else {
+		
+		string ident = io->long_name();
+		
+		arx_assert(ident.length() <= N);
+		strncpy(tofill, ident.c_str(),  N);
+	}
 }
 
 extern long sp_max;
@@ -1021,7 +1019,8 @@ INTERACTIVE_OBJ * GetObjIOSource(EERIE_3DOBJ * obj)
 	return NULL;
 }
 
-void FillTargetInfo(char * info, long numtarget) {
+template <size_t N>
+void FillTargetInfo(char (&info)[N], long numtarget) {
 	if(numtarget == -2) strcpy(info, "SELF");
 	else if(numtarget == -1) strcpy(info, "NONE");
 	else if(numtarget == 0) strcpy(info, "PLAYER");

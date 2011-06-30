@@ -155,7 +155,7 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string 
 
 void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io);
 long ValidIONum(long num);
-long ValidIOAddress(INTERACTIVE_OBJ * io);
+long ValidIOAddress(const INTERACTIVE_OBJ * io);
 long GetTargetByNameTarget(const std::string& name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
 
