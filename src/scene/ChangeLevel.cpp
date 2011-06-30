@@ -2631,7 +2631,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 	return io;
 }
 
-long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
+static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 	
 	float increment = 0;
 	if(asi->nb_inter > 0) {
@@ -2640,19 +2640,20 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		PROGRESS_BAR_COUNT += 60;
 		LoadLevelScreen();
 	}
-
+	
 	for (long i = 0; i < asi->nb_inter; i++) {
+		
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
-		char tempo[256];
-		sprintf(tempo, "%s_%04d", toLowercase(GetName(idx_io[i].filename)).c_str(), idx_io[i].ident);
-		if(!ValidIONum(GetTargetByNameTarget(tempo))) {
-			ARX_CHANGELEVEL_Pop_IO(tempo, idx_io[i].ident);
+		
+		std::ostringstream oss;
+		oss << GetName(loadPath(safestring(idx_io[i].filename))) << '_' << std::setfill('0') << std::setw(4) << idx_io[i].ident;
+		if(GetTargetByNameTarget(oss.str()) < 0) {
+			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
 		}
 	}
-	
-	return 1;
 }
+
 extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
 //-----------------------------------------------------------------------------
 
@@ -3127,27 +3128,9 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 	}
 
-	if (!FirstTime)
-	{
+	if(!FirstTime) {
 		LogDebug << "Before ARX_CHANGELEVEL_PopAllIO";
-
-		if (ARX_CHANGELEVEL_PopAllIO(&asi) != 1)
-		{
-
-			LogError << "Cannot Load IO data";
-
-			ARX_TIME_UnPause();
-
-			if (idx_io)
-				free(idx_io);
-
-			idx_io = NULL;
-
-			ReleaseGaids();
-			FORBID_SCRIPT_IO_CREATION = 0;
-			return -1;
-		}
-
+		ARX_CHANGELEVEL_PopAllIO(&asi);
 		LogDebug << "After  ARX_CHANGELEVEL_PopAllIO";
 	}
 
