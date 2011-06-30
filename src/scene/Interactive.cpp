@@ -251,7 +251,7 @@ long ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
 
 static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
 	
-	ARX_PATH * op = (ARX_PATH *)io->inzone;
+	ARX_PATH * op = io->inzone;
 
 	if (op)
 	{
@@ -802,9 +802,8 @@ void PrepareIOTreatZone(long flag)
 				io->GameFlags |= GFLAG_ISINTREATZONE;
 				TREATZONE_AddIO(io, i, 0);
 
-				if ((io->ioflags & IO_NPC) && (io->_npcdata->weapon))
-				{
-					INTERACTIVE_OBJ * iooo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
+				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
+					INTERACTIVE_OBJ * iooo = io->_npcdata->weapon;
 					iooo->room = io->room;
 					iooo->room_flags = io->room_flags;
 				}
@@ -1384,7 +1383,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 
 		if (io->inventory != NULL)
 		{
-			INVENTORY_DATA * id = (INVENTORY_DATA *)io->inventory;
+			INVENTORY_DATA * id = io->inventory;
 
 			for (long nj = 0; nj < id->sizey; nj++)
 				for (long ni = 0; ni < id->sizex; ni++)
@@ -2344,27 +2343,25 @@ void SetWeapon_On(INTERACTIVE_OBJ * io) {
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
-
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
-
-	if ((ioo)
-	        &&	(ioo->obj))
-	{
+	
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	
+	if(ioo && ioo->obj) {
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "PRIMARY_ATTACH", "PRIMARY_ATTACH", ioo);
 	}
 }
-void SetWeapon_Back(INTERACTIVE_OBJ * io)
-{
-	if (!io
-	        ||	!(io->ioflags & IO_NPC))
+
+void SetWeapon_Back(INTERACTIVE_OBJ * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
-
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
-
-	if ((ioo)
-	        &&	(ioo->obj))
-	{
+	}
+	
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	
+	if(ioo && ioo->obj) {
+		
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 
 		if (io->GameFlags & GFLAG_HIDEWEAPON) return;
@@ -2389,9 +2386,8 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	        ||	!(io->ioflags & IO_NPC))
 		return;
 
-	if (io->_npcdata->weapon)
-	{
-		INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
+	if(io->_npcdata->weapon) {
+		INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 		io->_npcdata->weapon = NULL;
 		ReleaseInter(ioo);
@@ -2404,17 +2400,16 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	
 	io->_npcdata->weapon = AddItem( tex, IO_IMMEDIATELOAD);
 
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
-
-	if (ioo)
-	{
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	if(ioo) {
+		
 		MakeTemporaryIOIdent(ioo);
 		SendIOScriptEvent(ioo, SM_INIT);
 		SendIOScriptEvent(ioo, SM_INITEND);
 		io->_npcdata->weapontype = ioo->type_flags;
 		ioo->show = SHOW_FLAG_LINKED;
 		ioo->scriptload = 2;
-
+		
 		SetWeapon_Back(io);
 	}
 }
@@ -3865,10 +3860,10 @@ void UpdateCameras()
 
 		if (io)
 		{
-			if (io->usepath) // interpolate & send events
-			{
+			// interpolate & send events
+			if(io->usepath) {
 
-				ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
+				ARX_USE_PATH * aup = io->usepath;
 				float diff = ARXTime - aup->_curtime;
 
 				if (aup->aupflags & ARX_USEPATH_FORWARD)

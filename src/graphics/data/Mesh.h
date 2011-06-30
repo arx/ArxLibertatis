@@ -73,6 +73,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // TODO Remove when this header is cleaned up
 #include "scripting/Script.h"
 
+struct ARX_PATH;
+struct SYMBOL_DRAW;
+struct INVENTORY_DATA;
+struct ARX_USE_PATH;
+struct INTERACTIVE_OBJ;
+
 void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
 
@@ -313,7 +319,7 @@ struct IO_NPCDATA
 	float		mana;
 	unsigned long	reachedtime;
 	long		reachedtarget;	//Is target in REACHZONE ?
-	void *		weapon;			//Linked Weapon (r-hand)
+	INTERACTIVE_OBJ * weapon; // Linked Weapon (r-hand)
 	long		detect;
 	long		movemode;
 	float		armor_class;
@@ -335,7 +341,7 @@ struct IO_NPCDATA
 	ObjectType weapontype;
 	long		weaponinhand;
 	long		fightdecision;
-	char		weaponname[256];
+	char weaponname[256]; // TODO(case-sensitive) remove!, use "weapon" directly
 
 	float		look_around_inc;
 	unsigned long collid_time;
@@ -487,7 +493,7 @@ struct INTERACTIVE_OBJ
 		IO_CAMDATA *		_camdata;			// Camera Datas
 	};
 
-	void *				inventory;			// Inventory Data
+	INVENTORY_DATA * inventory; // Inventory Data
 	short				show;				// Show Status (In Scene, In Inventory...)
 	short				collision;			// collision type
 	char 				mainevent[64];
@@ -508,11 +514,11 @@ struct INTERACTIVE_OBJ
 	char				filename[256];
 	float				scale;
 
-	void *				usepath;
-	void *				symboldraw;
+	ARX_USE_PATH * usepath;
+	SYMBOL_DRAW * symboldraw;
 	short				dynlight;
 	short				lastspeechflag;
-	void *				inzone;
+	ARX_PATH * inzone;
 	IO_HALO				halo;
 	IO_HALO				halo_native;
 
@@ -594,7 +600,7 @@ struct INTERACTIVE_OBJ
 	/**
 	 *  Returns the long name for this Object where the short name
 	 * is combined with the identifying number
-	 * in the form of "%s_4ld"
+	 * in the form of "%s_%04ld"
 	 * @return The short name combined with a 4 digit ident, padded with 0
 	 */
 	std::string long_name() const;

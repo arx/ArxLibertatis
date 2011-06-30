@@ -283,7 +283,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 			   )
 			{
 				ARX_PATH * p = ARX_PATH_CheckInZone(io);
-				ARX_PATH * op = (ARX_PATH *)io->inzone;
+				ARX_PATH * op = io->inzone;
 
 				if ((op == NULL) && (p == NULL)) goto next; // Not in a zone
 
@@ -376,7 +376,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					}
 				}
 
-				io->inzone = (void *)p;
+				io->inzone = p;
 			}
 
 		next:

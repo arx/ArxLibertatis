@@ -1454,7 +1454,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 							{
 								MasterCamera.exist |= 2;
 								MasterCamera.want_io = inter.iobj[t];
-								MasterCamera.want_aup = (ARX_USE_PATH *)inter.iobj[t]->usepath;
+								MasterCamera.want_aup = inter.iobj[t]->usepath;
 								MasterCamera.want_cam = &inter.iobj[t]->_camdata->cam;
 							}
 
@@ -2643,10 +2643,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						{
 							ARX_PATH * ap = ARX_PATH_GetAddressByName(word);
 
-							if ((ap != NULL) && (ap != io->usepath))
-							{
-								if (io->usepath != NULL)
-								{
+							if(ap) {
+								
+								if(io->usepath != NULL) {
 									free(io->usepath);
 									io->usepath = NULL;
 								}
@@ -2665,7 +2664,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 								aup->initpos = io->initpos;
 								aup->lastWP = -1;
 								aup->path = ap;
-								io->usepath = (void *)aup;
+								io->usepath = aup;
 							}
 						}
 					}
@@ -5041,7 +5040,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						{
 							if (inter.iobj[ion]->inventory != NULL)
 							{
-								INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[ion]->inventory;
+								INVENTORY_DATA * id = inter.iobj[ion]->inventory;
 
 								for (long nj = 0; nj < id->sizey; nj++)
 									for (long ni = 0; ni < id->sizex; ni++)
@@ -5071,9 +5070,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 							if (inter.iobj[ion]->inventory == NULL)
 							{
-								inter.iobj[ion]->inventory = malloc(sizeof(INVENTORY_DATA));
+								inter.iobj[ion]->inventory = (INVENTORY_DATA *)malloc(sizeof(INVENTORY_DATA));
 								memset(inter.iobj[ion]->inventory, 0, sizeof(INVENTORY_DATA));
-								INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[ion]->inventory;
+								INVENTORY_DATA * id = inter.iobj[ion]->inventory;
 								id->sizex = 3;
 								id->sizey = 11;
 								id->io = inter.iobj[ion];
@@ -5227,8 +5226,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 									inter.iobj[t]->scriptload = 0;
 									inter.iobj[t]->show = SHOW_FLAG_IN_INVENTORY;
 
-									if (!CanBePutInSecondaryInventory((INVENTORY_DATA *)inter.iobj[ion]->inventory, inter.iobj[t], &xx, &yy))
-									{
+									if(!CanBePutInSecondaryInventory(inter.iobj[ion]->inventory, inter.iobj[t], &xx, &yy)) {
 										PutInFrontOfPlayer(inter.iobj[t]);
 									}
 								}
@@ -5308,8 +5306,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 											ioo->show = SHOW_FLAG_IN_INVENTORY;
 
-											if (!CanBePutInSecondaryInventory((INVENTORY_DATA *)inter.iobj[ion]->inventory, ioo, &xx, &yy))
-											{
+											if(!CanBePutInSecondaryInventory(inter.iobj[ion]->inventory, ioo, &xx, &yy)) {
 												PutInFrontOfPlayer(ioo);
 											}
 										}
@@ -5326,8 +5323,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						{
 							if (inter.iobj[ion]->inventory != NULL)
 							{
-								if (SecondaryInventory == (INVENTORY_DATA *)inter.iobj[ion]->inventory)
+								if(SecondaryInventory == inter.iobj[ion]->inventory) {
 									SecondaryInventory = NULL;
+								}
 
 								free(inter.iobj[ion]->inventory);
 								inter.iobj[ion]->inventory = NULL;
@@ -5335,9 +5333,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						}
 						else if (!strcmp(word, "OPEN"))
 						{
-							if (SecondaryInventory != (INVENTORY_DATA *)inter.iobj[ion]->inventory)
-							{
-								SecondaryInventory = (INVENTORY_DATA *)inter.iobj[ion]->inventory;
+							if(SecondaryInventory != inter.iobj[ion]->inventory) {
+								SecondaryInventory = inter.iobj[ion]->inventory;
 								ARX_SOUND_PlayInterface(SND_BACKPACK);
 							}
 						}
@@ -6138,7 +6135,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					if (io->usepath)
 					{
-						ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
+						ARX_USE_PATH * aup = io->usepath;
 
 						if (iCharIn(word, 'B'))
 						{

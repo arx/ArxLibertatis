@@ -1600,7 +1600,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos)
 
 			if (ioo && ioo->inventory)
 			{
-				INVENTORY_DATA * id = (INVENTORY_DATA *)ioo->inventory;
+				INVENTORY_DATA * id = ioo->inventory;
 
 				for (long j = 0; j < id->sizey; j++)
 					for (long k = 0; k < id->sizex; k++)
@@ -1629,8 +1629,6 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos)
 bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos)
 {
 	if (!io) return false;
-
-	INVENTORY_DATA * id;
 	
 	if (DRAGINTER == io) {
 		ARX_PLAYER_FrontPos(pos);
@@ -1664,7 +1662,7 @@ bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos)
 			
 			if (ioo && ioo->inventory)
 			{
-				id = (INVENTORY_DATA *)ioo->inventory;
+				INVENTORY_DATA * id = ioo->inventory;
 
 				for (long j = 0; j < id->sizey; j++)
 					for (long k = 0; k < id->sizex; k++)
@@ -1718,7 +1716,7 @@ void RemoveFromAllInventories(const INTERACTIVE_OBJ * io) {
 	for(long i = 0; i < inter.nbmax; i++) {
 		if(inter.iobj[i] != NULL) {
 			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
+				INVENTORY_DATA * id = inter.iobj[i]->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
@@ -1757,7 +1755,7 @@ void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old) {
 	for(long i = 0; i < inter.nbmax; i++) {
 		if(inter.iobj[i] != NULL) {
 			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
+				INVENTORY_DATA * id = inter.iobj[i]->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
@@ -1800,7 +1798,7 @@ void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
 	for(long i = 0; i < inter.nbmax; i++) {
 		if(inter.iobj[i] && inter.iobj[i] != inter.iobj[ion]) {
 			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
+				INVENTORY_DATA * id = inter.iobj[i]->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
@@ -2123,7 +2121,7 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 	if ((_io && (SecondaryInventory == _io->inventory)) || (_io == NULL)) // CLOSING
 	{
 		if (SecondaryInventory && (SecondaryInventory->io != NULL))
-			SendIOScriptEvent((INTERACTIVE_OBJ *)SecondaryInventory->io, SM_INVENTORY2_CLOSE);
+			SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = -1;
 		TSecondaryInventory = SecondaryInventory;
@@ -2135,14 +2133,14 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 	else
 	{
 		if (TSecondaryInventory
-		        && TSecondaryInventory->io) SendIOScriptEvent((INTERACTIVE_OBJ *)TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
+		        && TSecondaryInventory->io) SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = 1;
-		TSecondaryInventory = SecondaryInventory = (INVENTORY_DATA *)_io->inventory;
+		TSecondaryInventory = SecondaryInventory = _io->inventory;
 
 		if (SecondaryInventory && SecondaryInventory->io != NULL)
 		{
-			if (SendIOScriptEvent((INTERACTIVE_OBJ *)SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE)
+			if (SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE)
 			{
 				InventoryDir = -1;
 				TSecondaryInventory = SecondaryInventory = NULL;

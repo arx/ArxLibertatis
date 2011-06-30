@@ -2798,7 +2798,7 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 			return;
 		}
 
-		ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
+		ARX_USE_PATH * aup = io->usepath;
 		aup->_curtime += smoothing + 100;
 		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);

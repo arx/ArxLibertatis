@@ -2200,7 +2200,7 @@ void ARX_NPC_Manage_Fight(INTERACTIVE_OBJ * io)
 {
 	if (!(io->ioflags & IO_NPC)) return;
 
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
 
 	if (ioo)
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2449,7 +2449,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 
 
 
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
 
 	if (ValidIOAddress(ioo))
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2814,11 +2814,11 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 						{
 							if (!(io->ioflags & IO_HIT))
 							{
-								if (ARX_EQUIPMENT_Strike_Check(io, (INTERACTIVE_OBJ *)io->_npcdata->weapon, 1, 0, io->targetinfo))
+								if (ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 0, io->targetinfo))
 									io->ioflags |= IO_HIT;
 							}
 							else
-								ARX_EQUIPMENT_Strike_Check(io, (INTERACTIVE_OBJ *)io->_npcdata->weapon, 1, 1, io->targetinfo);
+								ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 1, io->targetinfo);
 
 						}
 					}
@@ -2952,7 +2952,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	//	AnchorData_GetNearest_2(io->angle.b,&io->pos,&io->physics.cyl);
 	// Specific USEPATH management
-	ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
+	ARX_USE_PATH * aup = io->usepath;
 
 	if ((aup)
 	        &&	(aup->aupflags & ARX_USEPATH_WORM_SPECIFIC))

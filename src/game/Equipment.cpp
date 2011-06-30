@@ -744,12 +744,11 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 			strcpy(wmat, io_source->weaponmaterial);
 		}
 
-		if (io_source->_npcdata->weapon != NULL)
-		{
-			INTERACTIVE_OBJ * iow = (INTERACTIVE_OBJ *)io_source->_npcdata->weapon;
-
-			if (iow->weaponmaterial)
+		if(io_source->_npcdata->weapon != NULL) {
+			INTERACTIVE_OBJ * iow = io_source->_npcdata->weapon;
+			if(iow->weaponmaterial) {
 				strcpy(wmat, iow->weaponmaterial);
+			}
 		}
 
 		attack = io_source->_npcdata->tohit;

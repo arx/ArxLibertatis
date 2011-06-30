@@ -1110,7 +1110,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 
 	if (io->usepath)
 	{
-		ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
+		ARX_USE_PATH * aup = io->usepath;
 
 		ais.usepath_aupflags = aup->aupflags;
 
@@ -1491,10 +1491,11 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 			as->detect = io->_npcdata->detect;
 			as->fightdecision = io->_npcdata->fightdecision;
 
-			if (io->_npcdata->life > 0.f)
-				FillIOIdent(as->id_weapon, (INTERACTIVE_OBJ *)io->_npcdata->weapon);
-			else
+			if(io->_npcdata->life > 0.f) {
+				FillIOIdent(as->id_weapon, io->_npcdata->weapon);
+			} else {
 				as->id_weapon[0] = 0;
+			}
 
 			as->lastmouth = io->_npcdata->lastmouth;
 			as->life = io->_npcdata->life;
@@ -1597,7 +1598,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 		memset(aids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 		long m, n;
 
-		INVENTORY_DATA * inv = (INVENTORY_DATA *)io->inventory;
+		INVENTORY_DATA * inv = io->inventory;
 		FillIOIdent(aids->io, (INTERACTIVE_OBJ *)inv->io);
 		aids->sizex = inv->sizex;
 		aids->sizey = inv->sizey;
@@ -2224,16 +2225,13 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		io->original_radius = ais->original_radius;
 		io->ignition = ais->ignition;
 
-		if (ais->system_flags & SYSTEM_FLAG_USEPATH)
-		{
-			io->usepath = (void *)malloc(sizeof(ARX_USE_PATH));
-			ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
-
+		if(ais->system_flags & SYSTEM_FLAG_USEPATH) {
+			ARX_USE_PATH * aup = io->usepath = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
 			aup->aupflags = Flag(ais->usepath_aupflags); // TODO save/load flags
-			aup->_curtime = ARX_CLEAN_WARN_CAST_FLOAT(ais->usepath_curtime);
+			aup->_curtime = static_cast<float>(ais->usepath_curtime);
 			aup->initpos = ais->usepath_initpos;
 			aup->lastWP = ais->usepath_lastWP;
-			aup->_starttime = ARX_CLEAN_WARN_CAST_FLOAT(ais->usepath_starttime);
+			aup->_starttime = static_cast<float>(ais->usepath_starttime);
 			ARX_PATH * ap = ARX_PATH_GetAddressByName(ais->usepath_name);
 			aup->path = ap;
 		}
@@ -2743,9 +2741,8 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 
-			if (io->inventory == NULL)
-			{
-				io->inventory = (void *) malloc(sizeof(INVENTORY_DATA));
+			if(io->inventory == NULL) {
+				io->inventory = (INVENTORY_DATA *)malloc(sizeof(INVENTORY_DATA));
 			}
 
 			memset(io->inventory, 0, sizeof(INVENTORY_DATA));
@@ -2923,7 +2920,7 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 					{
 						if (io->inventory)
 						{
-							INVENTORY_DATA * inv = (INVENTORY_DATA *)io->inventory;
+							INVENTORY_DATA * inv = io->inventory;
 							inv->io = ConvertToValidIO(aids->io);
 							converted += CONVERT_CREATED;
 

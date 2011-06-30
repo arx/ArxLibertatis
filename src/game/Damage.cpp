@@ -292,7 +292,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 			if (inter.iobj[source]->ioflags & IO_NPC)
 			{
-				pio = (INTERACTIVE_OBJ *)inter.iobj[source]->_npcdata->weapon;
+				pio = inter.iobj[source]->_npcdata->weapon;
 
 				if ((pio) && ((pio->poisonous == 0) || (pio->poisonous_count == 0)))
 					pio = NULL;
@@ -648,12 +648,9 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 	{
 		io_dead->_npcdata->life = 0;
 
-		if (io_dead->_npcdata->weapon != NULL)
-		{
-			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io_dead->_npcdata->weapon;
-
-			if (ValidIOAddress(ioo))
-			{
+		if(io_dead->_npcdata->weapon) {
+			INTERACTIVE_OBJ * ioo = io_dead->_npcdata->weapon;
+			if(ValidIOAddress(ioo)) {
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
 				ioo->pos.x = ioo->obj->vertexlist3[ioo->obj->origin].v.x;
@@ -914,14 +911,12 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 					}
 				}
 			}
-			else
-			{
-				if (inter.iobj[source]->ioflags & IO_NPC)
-				{
-					pio = (INTERACTIVE_OBJ *)inter.iobj[source]->_npcdata->weapon;
-
-					if ((pio) && ((pio->poisonous == 0) || (pio->poisonous_count == 0)))
+			else {
+				if(inter.iobj[source]->ioflags & IO_NPC) {
+					pio = inter.iobj[source]->_npcdata->weapon;
+					if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) {
 						pio = NULL;
+					}
 				}
 			}
 

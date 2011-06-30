@@ -633,11 +633,11 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 		return;
 	}
 
-	io->symboldraw = realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
+	io->symboldraw = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
 	if (!io->symboldraw) return;
 
-	SYMBOL_DRAW *sd = (SYMBOL_DRAW *)io->symboldraw;
+	SYMBOL_DRAW *sd = io->symboldraw;
 
 	sd->duration = duration < 1.0F ? 1 : (short)(long)duration;
 	strcpy(sd->sequence, sequence);
@@ -731,14 +731,14 @@ static void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, Rune symb, float 
 			return;
 	}
 
-	void *ptr;
-	ptr = realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
+	SYMBOL_DRAW * ptr;
+	ptr = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
 	if (!ptr) return;
 
 	io->symboldraw = ptr;
 
-	SYMBOL_DRAW *sd = (SYMBOL_DRAW *)io->symboldraw;
+	SYMBOL_DRAW *sd = io->symboldraw;
 	sd->duration = duration < 1.0F ? 1 : (short)(long)duration;
 	strcpy(sd->sequence, sequence);
 	sd->starttime = ARXTimeUL();
@@ -1288,9 +1288,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				io->dynlight=-1;
 			}
 
-			if (io->symboldraw)
-			{
-				SYMBOL_DRAW * sd=(SYMBOL_DRAW *)inter.iobj[i]->symboldraw;
+			if(io->symboldraw) {
+				SYMBOL_DRAW * sd = inter.iobj[i]->symboldraw;
 				long tim=curtime-sd->starttime;
  
 
