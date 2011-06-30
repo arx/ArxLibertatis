@@ -1014,15 +1014,15 @@ long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 	
 	if (!bIsActive) return INVALID_ID;
 
-	string temp = name;
-	SetExt(temp, ".amb");
-
 	if (!strcasecmp(name, "NONE"))
 	{
 		aalAmbianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
 		ambiance_zone = INVALID_ID;
 		return INVALID_ID;
 	}
+
+	string temp = name;
+	SetExt(temp, ".amb");
 
 	long ambiance_id(aalGetAmbiance(temp));
 
@@ -1204,8 +1204,8 @@ void ARX_SOUND_PopAnimSamples()
 	ARX_SOUND_FreeAnimSamples();
 }
 
-void ARX_SOUND_AmbianceSavePlayList(void ** _play_list, unsigned long * size)
-{
+char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
+	
 	unsigned long count(0);
 	PlayingAmbiance * play_list = NULL;
 	long ambiance_id(INVALID_ID);
@@ -1245,26 +1245,28 @@ void ARX_SOUND_AmbianceSavePlayList(void ** _play_list, unsigned long * size)
 		ambiance_id = aalGetNextAmbiance(ambiance_id);
 	}
 
-	*_play_list = play_list;
-	*size = count * sizeof(PlayingAmbiance);
+	size = count * sizeof(PlayingAmbiance);
+	return reinterpret_cast<char *>(play_list);
 }
 
-void ARX_SOUND_AmbianceRestorePlayList(void * _play_list, unsigned long size)
-{
-	unsigned long count = size / sizeof(PlayingAmbiance);
-	PlayingAmbiance * play_list = (PlayingAmbiance *)_play_list;
-
-	for (unsigned long i(0); i < count; i++)
-	{
-		PlayingAmbiance * playing = &play_list[i];
-
-		switch (playing->type)
-		{
+void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
+	
+	size_t count = size / sizeof(PlayingAmbiance);
+	const PlayingAmbiance * play_list = reinterpret_cast<const PlayingAmbiance *>(_play_list);
+	
+	for(size_t i = 0; i < count; i++) {
+		
+		const PlayingAmbiance * playing = &play_list[i];
+		
+		string name = loadPath(safestring(playing->name));
+		
+		// TODO save/load enum
+		switch (playing->type) {
+			
 			case PLAYING_AMBIANCE_SCRIPT :
-				// TODO save/load enum
 				ARX_SOUND_PlayScriptAmbiance(playing->name, (SoundLoopMode)playing->loop, playing->volume);
 				break;
-
+			
 			case PLAYING_AMBIANCE_ZONE :
 				ARX_SOUND_PlayZoneAmbiance(playing->name, (SoundLoopMode)playing->loop, playing->volume);
 				break;

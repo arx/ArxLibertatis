@@ -76,9 +76,6 @@ extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern long MAX_LLIGHTS;
 extern long FRAME_COUNT;
 
-void		*	pAmbiancePlayList = NULL;
-unsigned long	ulSizeAmbiancePlayList = 0;
-
 void ARX_SOUND_PushAnimSamples();
 void ARX_SOUND_PopAnimSamples();
 
@@ -425,7 +422,8 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	config.audio.eax = _bEnable;
 	
 	ARX_SOUND_PushAnimSamples();
-	ARX_SOUND_AmbianceSavePlayList(&pAmbiancePlayList, &ulSizeAmbiancePlayList);
+	size_t ulSizeAmbiancePlayList;
+	char * pAmbiancePlayList = ARX_SOUND_AmbianceSavePlayList(ulSizeAmbiancePlayList);
 	
 	ARX_SOUND_Release();
 	ARX_SOUND_Init();
@@ -438,8 +436,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
 
-	if (pAmbiancePlayList)
-	{
+	if(pAmbiancePlayList) {
 		ARX_SOUND_AmbianceRestorePlayList(pAmbiancePlayList, ulSizeAmbiancePlayList);
 		free((void *)pAmbiancePlayList);
 	}

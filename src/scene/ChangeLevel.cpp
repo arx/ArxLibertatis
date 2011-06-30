@@ -565,9 +565,8 @@ static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 					 + sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths
 					 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi->nb_lights;
 
-	void * playlist = NULL;
-	unsigned long asize = 0;
-	ARX_SOUND_AmbianceSavePlayList(&playlist, &asize);
+	size_t asize = 0;
+	char * playlist = ARX_SOUND_AmbianceSavePlayList(asize);
 	allocsize += asize;
 
 	char * dat = new char[allocsize];
@@ -1680,16 +1679,13 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 
 	// Skip Path info (used later !)
 	pos += sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths;
-
+	
 	// Restore Ambiances
-	if (asi->ambiances_data_size)
-	{
-		void * playlist = (void *)(dat + pos);
+	if(asi->ambiances_data_size) {
+		ARX_SOUND_AmbianceRestorePlayList(dat + pos, asi->ambiances_data_size);
 		pos += asi->ambiances_data_size;
-
-		ARX_SOUND_AmbianceRestorePlayList(playlist, asi->ambiances_data_size);
 	}
-
+	
 	free(dat);
 	return 1;
 }

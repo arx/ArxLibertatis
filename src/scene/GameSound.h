@@ -241,8 +241,8 @@ long ARX_SOUND_PlayZoneAmbiance(const std::string & ambiance_name, SoundLoopMode
 long ARX_SOUND_PlayMenuAmbiance(const std::string & ambiance_name);
 long ARX_SOUND_SetAmbianceTrackStatus(const std::string & ambiance_name, const std::string & track_name, unsigned long status); //0 = off; 1 = on
 void ARX_SOUND_KillAmbiances();
-void ARX_SOUND_AmbianceSavePlayList(void ** play_list, unsigned long * size);
-void ARX_SOUND_AmbianceRestorePlayList(void * play_list, unsigned long size);
+char * ARX_SOUND_AmbianceSavePlayList(size_t & size);
+void ARX_SOUND_AmbianceRestorePlayList(const char * play_list, size_t size);
 
 void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume);
 void ARX_SOUND_MixerStop(ArxMixer mixer_id);
