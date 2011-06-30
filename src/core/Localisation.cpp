@@ -117,7 +117,7 @@ long getLocalisedKeyCount(const string & sectionname) {
 	return localisation.getKeyCount(sectionname);
 }
 
-static const string UPCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
+static const string BADNAMECHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]"; // TODO(case-sensitive) remove
 
 /**
  * Returns the localized string for the given key name
@@ -126,7 +126,7 @@ static const string UPCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitiv
  */
 string getLocalised(const string & name, const string & default_value) {
 	
-	if(name.find_first_of(UPCASE) != string::npos || (!name.empty() && name[0] == '[')) {
+	if(name.find_first_of(BADNAMECHAR) != string::npos) {
 		LogWarning << "upcase char in \"" << name << "\""; // TODO(case-sensitive) remove
 	}
 	
@@ -147,7 +147,7 @@ void MakeLocalised(const std::string & text, std::string & output) {
 		section = section.substr(1, section.length() - 2);
 	}
 	
-	toLowercase(section);
+	makeLowercase(section);
 	
 	output = getLocalised(section, "error");
 }
