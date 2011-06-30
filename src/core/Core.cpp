@@ -2550,17 +2550,13 @@ HRESULT DANAE::FrameMove()
 			DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						   MAKEINTRESOURCE(IDD_LEVEL_SELECTOR), this->m_hWnd, ChangeLevelProc );
 
-			if (CHANGE_LEVEL_PROC_RESULT!=-1)
-			{
+			if(CHANGE_LEVEL_PROC_RESULT!=-1) {
 				char levelnum[256];
 				char levelname[256];
-				GetLevelNameByNum(CHANGE_LEVEL_PROC_RESULT,levelnum);
-				sprintf(levelname,"LEVEL%s",levelnum);
-				char leveltarget[256];
-				strcpy(leveltarget,"no");
-
-				ARX_CHECK_LONG( player.angle.b );
-				ARX_CHANGELEVEL_Change( levelname, leveltarget, ARX_CLEAN_WARN_CAST_LONG( player.angle.b ), 0 );
+				GetLevelNameByNum(CHANGE_LEVEL_PROC_RESULT, levelnum);
+				sprintf(levelname, "level%s", levelnum);
+				ARX_CHECK_LONG(player.angle.b);
+				ARX_CHANGELEVEL_Change(levelname, "no", static_cast<long>(player.angle.b));
 
 			}
 
@@ -5260,7 +5256,7 @@ static float _AvgFrameDiff = 150.f;
 		LogDebug << "teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " "
 		         << TELEPORT_TO_ANGLE;
 		CHANGE_LEVEL_ICON=-1;
-		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE, 0);
+		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE);
 		memset(TELEPORT_TO_LEVEL,0,64);
 		memset(TELEPORT_TO_POSITION,0,64);
 	}

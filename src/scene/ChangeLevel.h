@@ -71,7 +71,7 @@ extern long FORBID_SAVE;
 void ARX_GAMESAVE_MakePath();
 void ARX_CHANGELEVEL_MakePath();
 
-void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle, long confirm);
+void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle);
 
 long ARX_CHANGELEVEL_GetInfo(const std::string & path, std::string & name, float & version, long & level, unsigned long & time);
 

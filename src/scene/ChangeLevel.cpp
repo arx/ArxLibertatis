@@ -319,20 +319,15 @@ void ARX_Changelevel_CurGame_Close() {
 extern long JUST_RELOADED;
 extern void DemoFileCheck();
 extern long FINAL_COMMERCIAL_DEMO;
-//--------------------------------------------------------------------------------------------
-void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle, long confirm)
-{
-	LogDebug << "ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle << " " << confirm;
+
+void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle) {
+	
+	LogDebug << "ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle;
 
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 
 	ARX_CHANGELEVEL_DesiredTime = ARX_TIME_Get();
-
-	if (confirm)
-	{
-		if (!OKBox("Change Level ?", "CONFIRM")) return;
-	}
 
 	if (LAST_CHINSTANCE == -1)
 	{
