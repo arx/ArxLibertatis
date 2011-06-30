@@ -158,8 +158,6 @@ long _FIRSTTIME = 0;
 SaveBlock * _pSaveBlock = NULL;
 
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
-long idx_io_nb = 0;
- 
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
 
 long CURRENT_GAME_INSTANCE = -1;
@@ -3293,7 +3291,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			idx_io = NULL;
 
-			idx_io_nb = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
 			return -1;
@@ -3311,17 +3308,14 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			idx_io = NULL;
 
-			idx_io_nb = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
 			return -1;
 		}
 
-		idx_io_nb = asi.nb_inter;
 	}
 	else
 	{
-		idx_io_nb = 0;
 		idx_io = NULL;
 	}
 
@@ -3341,7 +3335,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 		idx_io = NULL;
 
-		idx_io_nb = 0;
 		ReleaseGaids();
 		FORBID_SCRIPT_IO_CREATION = 0;
 		return -1;
@@ -3388,7 +3381,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 			idx_io = NULL;
 
-			idx_io_nb = 0;
 			ReleaseGaids();
 			FORBID_SCRIPT_IO_CREATION = 0;
 			return -1;
@@ -3412,7 +3404,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 		idx_io = NULL;
 
-		idx_io_nb = 0;
 		ReleaseGaids();
 		FORBID_SCRIPT_IO_CREATION = 0;
 		return -1;
@@ -3458,8 +3449,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 
 	idx_io = NULL;
 
-	idx_io_nb = 0;
-	
 	FORBID_SCRIPT_IO_CREATION = 0;
 
 	NO_TIME_INIT = 1;
