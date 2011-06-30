@@ -2776,15 +2776,13 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 		io->iogroups = NULL;
 
-		if (io->nb_iogroups > 0)
-		{
-			io->iogroups = (IO_GROUP_DATA *) malloc(sizeof(IO_GROUP_DATA) * io->nb_iogroups);
-
+		if(io->nb_iogroups > 0) {
+			io->iogroups = (IO_GROUP_DATA *)malloc(sizeof(IO_GROUP_DATA) * io->nb_iogroups);
 			for(long i = 0; i < io->nb_iogroups; i++) {
-				SavedGroupData sgd;
-				memcpy(&sgd, dat + pos, sizeof(SavedGroupData));
+				const SavedGroupData * sgd = reinterpret_cast<const SavedGroupData *>(dat + pos);
 				pos += sizeof(SavedGroupData);
-				io->iogroups[i] = sgd;
+				assert(array_size(io->iogroups[i].name) <= array_size(sgd->name));
+				strcpy(io->iogroups[i].name, toLowercase(safestring(sgd->name)).c_str());
 			}
 		}
 

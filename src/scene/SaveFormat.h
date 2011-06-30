@@ -929,15 +929,6 @@ struct SavedGroupData {
 	
 	char name[NAME_SIZE];
 	
-	inline operator IO_GROUP_DATA() {
-		IO_GROUP_DATA a;
-		assert(array_size(a.name) == NAME_SIZE);
-		std::copy(name, name + NAME_SIZE, a.name);
-		return a;
-	}
-	
-	inline SavedGroupData() { }
-	
 	inline SavedGroupData(const IO_GROUP_DATA & b) {
 		assert(array_size(b.name) == NAME_SIZE);
 		std::copy(b.name, b.name + NAME_SIZE, name);
