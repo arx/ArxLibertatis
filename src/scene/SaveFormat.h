@@ -944,18 +944,6 @@ struct SavedTweakInfo {
 	char param1[256];
 	char param2[256];
 	
-	inline operator TWEAK_INFO() {
-		TWEAK_INFO a;
-		a.type = type;
-		assert(array_size(a.param1) == PARAM_SIZE);
-		std::copy(param1, param1 + PARAM_SIZE, a.param1);
-		assert(array_size(a.param2) == PARAM_SIZE);
-		std::copy(param2, param2 + PARAM_SIZE, a.param2);
-		return a;
-	}
-	
-	inline SavedTweakInfo() { }
-	
 	inline SavedTweakInfo(const TWEAK_INFO & b) {
 		type = b.type;
 		assert(array_size(b.param1) == PARAM_SIZE);

@@ -2788,15 +2788,17 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 
 		io->Tweak_nb = ais->Tweak_nb;
 
-		if (io->Tweak_nb)
-		{
+		if(io->Tweak_nb) {
 			io->Tweaks = (TWEAK_INFO *)malloc(sizeof(TWEAK_INFO) * io->Tweak_nb);
-
 			for(long i = 0; i < io->Tweak_nb; i++) {
-				SavedTweakInfo sti;
-				memcpy(&sti, dat + pos, sizeof(SavedTweakInfo));
+				TWEAK_INFO & tweak = io->Tweaks[i];
+				const SavedTweakInfo * sti = reinterpret_cast<const SavedTweakInfo *>(dat + pos);
 				pos += sizeof(SavedTweakInfo);
-				io->Tweaks[i] = sti;
+				tweak.type = sti->type;
+				assert(array_size(tweak.param1) >= array_size(sti->param1));
+				strcpy(tweak.param1, loadPath(safestring(sti->param1)).c_str());
+				assert(array_size(tweak.param2) >= array_size(sti->param2));
+				strcpy(tweak.param2, loadPath(safestring(sti->param2)).c_str());
 			}
 		}
 
