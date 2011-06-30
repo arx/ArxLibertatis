@@ -2026,8 +2026,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	ARX_KEYRING_Init();
 	LogDebug << asp->keyring_nb;
 	for(int i = 0; i < asp->keyring_nb; i++) {
-		dat[pos + SAVED_KEYRING_SLOT_SIZE - 1] = '\0';
-		ARX_KEYRING_Add(dat + pos);
+		ARX_KEYRING_Add(toLowercase(safestring(dat + pos, SAVED_KEYRING_SLOT_SIZE)));
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
