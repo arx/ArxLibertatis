@@ -88,7 +88,7 @@ struct SavedGlobalMods {
 		return *this;
 	}
 	
-	inline operator GLOBAL_MODS() {
+	inline operator GLOBAL_MODS() const {
 		GLOBAL_MODS a;
 		a.flags = Flag(flags); // TODO save/load flags
 		a.depthcolor = depthcolor;
@@ -164,7 +164,7 @@ struct SavedCylinder {
 	f32 radius;
 	f32 height;
 	
-	inline operator EERIE_CYLINDER() {
+	inline operator EERIE_CYLINDER() const {
 		EERIE_CYLINDER a;
 		a.origin = origin, a.radius = radius, a.height = height;
 		return a;
@@ -185,7 +185,7 @@ struct SavedIOPhysics {
 	SavedVec3 velocity;
 	SavedVec3 forces;
 	
-	inline operator IO_PHYSICS() {
+	inline operator IO_PHYSICS() const {
 		IO_PHYSICS a;
 		a.cyl = cyl;
 		a.startpos = startpos;
@@ -223,7 +223,7 @@ struct SavedMiniMap {
 	f32 height;
 	u8 revealed[MAX_X][MAX_Z];
 	
-	inline operator MINI_MAP_DATA() {
+	inline operator MINI_MAP_DATA() const {
 		MINI_MAP_DATA a;
 		a.tc = NULL;
 		a.offsetx = offsetx;
@@ -264,7 +264,7 @@ struct SavedPrecast {
 	s32 flags;
 	s32 duration;
 	
-	inline operator PRECAST_STRUCT() {
+	inline operator PRECAST_STRUCT() const {
 		PRECAST_STRUCT a;
 		a.typ = (typ < 0) ? SPELL_NONE : (Spell)typ; // TODO save/load enum
 		a.level = level;
@@ -432,7 +432,7 @@ struct SavedModInfo {
 	SavedAnglef rot;
 	u32 flags;
 	
-	inline operator EERIE_MOD_INFO() {
+	inline operator EERIE_MOD_INFO() const {
 		EERIE_MOD_INFO a;
 		a.link_origin = link_origin;
 		a.link_position = link_position;
@@ -476,7 +476,7 @@ struct SavedAnimUse {
 	f32 pour;
 	s32 fr;
 	
-	inline operator ANIM_USE() {
+	inline operator ANIM_USE() const {
 		ANIM_USE a;
 		a.next_anim = NULL;
 		a.cur_anim = NULL;
@@ -516,7 +516,7 @@ struct SavedSpellcastData {
 	s32 target;
 	s32 duration;
 	
-	inline operator IO_SPELLCAST_DATA() {
+	inline operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
 		a.castingspell = (castingspell < 0) ? SPELL_NONE : (Spell)castingspell; // TODO save/load enum
 		assert(array_size(a.symb) == 4);
@@ -552,7 +552,7 @@ struct SavedHalo {
 	s32 dynlight;
 	SavedVec3 offset;
 	
-	inline operator IO_HALO() {
+	inline operator IO_HALO() const {
 		IO_HALO a;
 		a.color = color;
 		a.radius = radius;
@@ -674,7 +674,7 @@ struct SavedBehaviour {
 	s32 movemode;
 	SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS];
 	
-	inline operator IO_BEHAVIOR_DATA() {
+	inline operator IO_BEHAVIOR_DATA() const {
 		IO_BEHAVIOR_DATA a;
 		a.exist = exist;
 		a.behavior = behavior;
@@ -706,7 +706,7 @@ struct SavedPathfindTarget {
 	u32 padding[4];
 	s32 truetarget;
 	
-	inline operator IO_PATHFIND() {
+	inline operator IO_PATHFIND() const {
 		IO_PATHFIND a;
 		a.flags = 0;
 		a.listnb = a.listpos = a.pathwait = 0;
@@ -731,7 +731,7 @@ struct SavedExtraRotate {
 	s16 group_number[SAVED_MAX_EXTRA_ROTATE];
 	SavedAnglef group_rotate[SAVED_MAX_EXTRA_ROTATE];
 	
-	inline operator EERIE_EXTRA_ROTATE() {
+	inline operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
 		a.flags = flags;
 		assert(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
@@ -813,7 +813,7 @@ struct SavedEquipItemElement {
 	s16 flags;
 	s16 special;
 	
-	inline operator IO_EQUIPITEM_ELEMENT() {
+	inline operator IO_EQUIPITEM_ELEMENT() const {
 		IO_EQUIPITEM_ELEMENT a;
 		a.value = value;
 		a.flags = flags;
@@ -836,7 +836,7 @@ struct SavedEquipItem {
 	
 	SavedEquipItemElement elements[SAVED_IO_EQUIPITEM_ELEMENT_Number];
 	
-	inline operator IO_EQUIPITEM() {
+	inline operator IO_EQUIPITEM() const {
 		IO_EQUIPITEM a;
 		assert(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
 		std::copy(elements, elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, a.elements);
@@ -880,7 +880,7 @@ struct SavedRect {
 	s32 right;
 	s32 bottom;
 	
-	inline operator Rect() {
+	inline operator Rect() const {
 		Rect a;
 		a.left = left;
 		a.top = top;
@@ -956,7 +956,7 @@ struct SavedMatrix {
 	f32 _31, _32, _33, _34;
 	f32 _41, _42, _43, _44;
 	
-	inline operator EERIEMATRIX() {
+	inline operator EERIEMATRIX() const {
 		EERIEMATRIX a;
 		a._11 = _11, a._12 = _12, a._13 = _13, a._14 = _14;
 		a._21 = _21, a._22 = _22, a._23 = _23, a._24 = _24;
@@ -989,7 +989,7 @@ struct SavedTransform {
 	f32 ymod;
 	f32 zmod;
 	
-	inline operator EERIE_TRANSFORM() {
+	inline operator EERIE_TRANSFORM() const {
 		EERIE_TRANSFORM a;
 		a.posx = posx, a.posy = posy, a.posz = posz;
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
@@ -1058,7 +1058,7 @@ struct SavedCamera {
 	
 	SavedAnglef size;
 	
-	inline operator EERIE_CAMERA() {
+	inline operator EERIE_CAMERA() const {
 		
 		EERIE_CAMERA a;
 		
