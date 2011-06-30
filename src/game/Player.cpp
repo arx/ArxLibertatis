@@ -537,7 +537,6 @@ void ARX_PLAYER_Quest_Add( const std::string& quest, bool _bLoad)
     PlayerQuest.push_back(STRUCT_QUEST());
     PlayerQuest.back().ident = quest;
     PlayerQuest.back().localised = output;
-    PlayerQuest.back().localised = output;
     bBookHalo = !_bLoad;//true;
     ulBookHaloTime = 0;
 }
@@ -1725,11 +1724,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	std::string texscript = io->filename;
 	SetExt(texscript, ".asl");
 
-	io->script.data = resources->readAlloc(texscript, io->script.size);
-	if(io->script.data) {
-		InitScript(&io->script);
-	}
-
+	loadScript(io->script, resources->getFile(texscript));
 
 	if ((EERIE_OBJECT_GetGroup(io->obj, "head") != -1)
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "neck") != -1)
