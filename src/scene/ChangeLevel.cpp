@@ -2740,95 +2740,75 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 	}
 	
 	delete[] treated;
-
-	if (reloadflag)
-	{
-		for (long i = 0; i < inter.nbmax; i++)
-		{
-			if (inter.iobj[i])
-			{
-				if (inter.iobj[i]->script.data != NULL)
-				{
-					ScriptEvent::send(&inter.iobj[i]->script, SM_RELOAD, "CHANGE", inter.iobj[i], "");
+	
+	if(reloadflag) {
+		
+		for(long i = 0; i < inter.nbmax; i++) {
+			
+			if(!inter.iobj[i]) {
+				continue;
+			}
+			
+			if(inter.iobj[i]->script.data != NULL) {
+				ScriptEvent::send(&inter.iobj[i]->script, SM_RELOAD, "CHANGE", inter.iobj[i], "");
+			}
+			
+			if(inter.iobj[i] && inter.iobj[i]->over_script.data) {
+				ScriptEvent::send(&inter.iobj[i]->over_script, SM_RELOAD, "CHANGE", inter.iobj[i], "");
+			}
+			
+			if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC) && ValidIONum(inter.iobj[i]->targetinfo)) {
+				if(inter.iobj[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
+					GetIOCyl(inter.iobj[i], &inter.iobj[i]->physics.cyl);
+					GetTargetPos(inter.iobj[i]);
+					ARX_NPC_LaunchPathfind(inter.iobj[i], inter.iobj[i]->targetinfo);
 				}
-
-				if (inter.iobj[i]
-						&&	inter.iobj[i]->over_script.data)
-				{
-					ScriptEvent::send(&inter.iobj[i]->over_script, SM_RELOAD, "CHANGE", inter.iobj[i], "");
-				}
-
-				if (inter.iobj[i]
-						&&	(inter.iobj[i]->ioflags & IO_NPC))
-				{
-					if (ValidIONum(inter.iobj[i]->targetinfo))
-					{
-						if (inter.iobj[i]->_npcdata->behavior != BEHAVIOUR_NONE)
-						{
-							GetIOCyl(inter.iobj[i], &inter.iobj[i]->physics.cyl);
-							GetTargetPos(inter.iobj[i]);
-							ARX_NPC_LaunchPathfind(inter.iobj[i], inter.iobj[i]->targetinfo); //io->_npcdata->pathfind.truetarget);
-						}
-					}
+			}
+		}
+		
+	} else if (_FIRSTTIME) {
+		
+		for(long i = 0; i < inter.nbmax; i++) {
+			
+			if(!inter.iobj[i]) {
+				continue;
+			}
+			
+			if(inter.iobj[i]->script.data) {
+				ScriptEvent::send(&inter.iobj[i]->script, SM_INIT, "", inter.iobj[i], "");
+			}
+			
+			if(inter.iobj[i] && inter.iobj[i]->over_script.data) {
+				ScriptEvent::send(&inter.iobj[i]->over_script, SM_INIT, "", inter.iobj[i], "");
+			}
+			
+			if(inter.iobj[i] && inter.iobj[i]->script.data) {
+				ScriptEvent::send(&inter.iobj[i]->script, SM_INITEND, "", inter.iobj[i], "");
+			}
+			
+			if(inter.iobj[i] && inter.iobj[i]->over_script.data) {
+				ScriptEvent::send(&inter.iobj[i]->over_script, SM_INITEND, "", inter.iobj[i], "");
+			}
+		}
+		
+	} else {
+		
+		for(long i = 0; i < inter.nbmax; i++) {
+			
+			if(!inter.iobj[i]) {
+				continue;
+			}
+			
+			if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC) && ValidIONum(inter.iobj[i]->targetinfo)) {
+				if(inter.iobj[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
+					GetIOCyl(inter.iobj[i], &inter.iobj[i]->physics.cyl);
+					GetTargetPos(inter.iobj[i]);
+					ARX_NPC_LaunchPathfind(inter.iobj[i], inter.iobj[i]->targetinfo);
 				}
 			}
 		}
 	}
-	else if (_FIRSTTIME)
-	{
-
-		for (long i = 0; i < inter.nbmax; i++)
-		{
-			if (inter.iobj[i])
-			{
-				if (inter.iobj[i]->script.data)
-				{
-					ScriptEvent::send(&inter.iobj[i]->script, SM_INIT, "", inter.iobj[i], "");
-				}
-
-				if (inter.iobj[i]
-						&&	inter.iobj[i]->over_script.data)
-				{
-					ScriptEvent::send(&inter.iobj[i]->over_script, SM_INIT, "", inter.iobj[i], "");
-				}
-
-				if (inter.iobj[i]
-						&&	inter.iobj[i]->script.data)
-				{
-					ScriptEvent::send(&inter.iobj[i]->script, SM_INITEND, "", inter.iobj[i], "");
-				}
-
-				if (inter.iobj[i]
-						&&	inter.iobj[i]->over_script.data)
-				{
-					ScriptEvent::send(&inter.iobj[i]->over_script, SM_INITEND, "", inter.iobj[i], "");
-				}
-			}
-		}
-	}
-	else
-	{
-		for (long i = 0; i < inter.nbmax; i++)
-		{
-			if (inter.iobj[i])
-			{
-				if (inter.iobj[i]
-						&&	(inter.iobj[i]->ioflags & IO_NPC))
-				{
-					if (ValidIONum(inter.iobj[i]->targetinfo))
-					{
-						if (inter.iobj[i]->_npcdata->behavior != BEHAVIOUR_NONE)
-						{
-							GetIOCyl(inter.iobj[i], &inter.iobj[i]->physics.cyl);
-							GetTargetPos(inter.iobj[i]);
-							ARX_NPC_LaunchPathfind(inter.iobj[i], inter.iobj[i]->targetinfo); //io->_npcdata->pathfind.truetarget);
-						}
-					}
-				}
-			}
-		}
-	}
-
+	
 }
 
 static long ARX_CHANGELEVEL_Pop_Globals() {
