@@ -2047,8 +2047,6 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	
 	ARX_PLAYER_Modify_XP(0);
 	
-	free(dat);
-	
 	PROGRESS_BAR_COUNT += 10.f;
 	LoadLevelScreen();
 	
@@ -2070,6 +2068,8 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 			player.equiped[i] = 0;
 		}
 	}
+	
+	free(dat);
 	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
