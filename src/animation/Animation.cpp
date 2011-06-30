@@ -343,9 +343,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & _path) {
 		animations[i].locks = 1;
 		
 		// remove extension
-		SetExt(path, std::string());
-		
-		path.resize(path.size() - 4);
+		SetExt(path, string());
 		
 		int pathcount = 2;
 		string path2;
