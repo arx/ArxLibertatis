@@ -77,14 +77,11 @@ void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
 
 
-//-----------------------------------------------------------------------------
-struct ANIM_HANDLE
-{
-	char			path[256]; // path[0]==0 means an unallocated slot
-	EERIE_ANIM **	anims;
-	long *			sizes;
-	short			alt_nb;
-	long			locks;
+struct ANIM_HANDLE {
+	char path[256]; // path[0]==0 means an unallocated slot
+	EERIE_ANIM ** anims;
+	short alt_nb;
+	long locks;
 };
 
 struct EERIE_TRANSFORM

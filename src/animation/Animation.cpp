@@ -246,7 +246,7 @@ void EERIE_ANIMMANAGER_PurgeUnused()
 			for (long k=0;k<animations[i].alt_nb;k++)
 			{
 				ReleaseAnim(animations[i].anims[k]);
-				animations[i].anims[k]=NULL;					
+				animations[i].anims[k]=NULL;
 			}
 
 			if (animations[i].anims)
@@ -254,11 +254,7 @@ void EERIE_ANIMMANAGER_PurgeUnused()
 
 			animations[i].anims=NULL;
 
-			if (animations[i].sizes)
-				free(animations[i].sizes);
-
-			animations[i].sizes=NULL;
-			animations[i].path[0]=0;				
+			animations[i].path[0]=0;
 		}
 	}
 }
@@ -305,9 +301,7 @@ static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const string & path) 
 	
 	ah->alt_nb++;
 	ah->anims = (EERIE_ANIM **)realloc(ah->anims, sizeof(EERIE_ANIM *) * ah->alt_nb);
-	ah->sizes = (long *)realloc(ah->sizes, sizeof(long) * ah->alt_nb);
 	ah->anims[ah->alt_nb - 1] = temp;
-	ah->sizes[ah->alt_nb - 1] = FileSize;
 	
 	return true;
 }
@@ -336,9 +330,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & _path) {
 		}
 		
 		animations[i].anims = (EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
-		animations[i].sizes = (long *)malloc(sizeof(long));
 		animations[i].anims[0] = TheaToEerie(adr, FileSize, path);
-		animations[i].sizes[0] = FileSize;
 		animations[i].alt_nb = 1;
 		
 		free(adr);
@@ -386,9 +378,6 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 			strcpy(txx,animations[i].path);
 			GetName(txx);
 			long totsize=0;
-
-			for (long k=0;k<animations[i].alt_nb;k++)
-				totsize+=animations[i].sizes[k];
 
 			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
 			memsize+=totsize;
@@ -2098,10 +2087,6 @@ void EERIE_ANIMMANAGER_Clear(long i)
 
 	animations[i].anims=NULL;
 
-	if (animations[i].sizes)
-		free(animations[i].sizes);
-
-	animations[i].sizes=NULL;
 	animations[i].path[0]=0;
 }
 //-----------------------------------------------------------------------------
