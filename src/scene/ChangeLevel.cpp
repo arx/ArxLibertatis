@@ -139,9 +139,9 @@ extern Vec3f LastValidPlayerPos;
 #define MAX_IO_SAVELOAD 1500
 
 static long ARX_CHANGELEVEL_PushLevel(long num, long newnum);
-static long ARX_CHANGELEVEL_PopLevel(long num, long reloadflag = 0);
+static bool ARX_CHANGELEVEL_PopLevel(long num, long reloadflag = 0);
 static long ARX_CHANGELEVEL_Push_Globals();
-static long ARX_CHANGELEVEL_Pop_Globals();
+static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player();
 static long ARX_CHANGELEVEL_Push_AllIO();
 static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io);
@@ -1788,9 +1788,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	LoadLevelScreen(num);
 	SetEditMode(1, false);
 	
-	if(ARX_CHANGELEVEL_Pop_Globals() != 1) {
-		LogWarning << "Cannot Load Globals data";
-	}
+	ARX_CHANGELEVEL_Pop_Globals();
 	
 	DanaeLoadLevel(levelFile);
 	CleanScriptLoadedIO();
@@ -2811,7 +2809,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 	
 }
 
-static long ARX_CHANGELEVEL_Pop_Globals() {
+static void ARX_CHANGELEVEL_Pop_Globals() {
 	
 	ARX_SCRIPT_Free_All_Global_Variables();
 	
@@ -2819,7 +2817,7 @@ static long ARX_CHANGELEVEL_Pop_Globals() {
 	char * dat = _pSaveBlock->load("globals.sav", size);
 	if(!dat) {
 		LogError << "Unable to Open globals for Read...";
-		return -1;
+		return;
 	}
 	
 	size_t pos = 0;
@@ -2831,7 +2829,7 @@ static long ARX_CHANGELEVEL_Pop_Globals() {
 	if(acsg->version != ARX_GAMESAVE_VERSION) {
 		free(dat);
 		LogError << "Invalid version: globals";
-		return -1;
+		return;
 	}
 	
 	arx_assert(!svar);
@@ -2843,274 +2841,207 @@ static long ARX_CHANGELEVEL_Pop_Globals() {
 	NB_GLOBALS = acsg->nb_globals;
 	
 	bool ret = loadScriptVariables(svar, NB_GLOBALS, dat, pos, TYPE_G_TEXT, TYPE_G_LONG, TYPE_G_FLOAT);
-	
-	free(dat);
-	
 	if(!ret) {
 		LogError << "error loading globals";
-		return -1;
 	}
 	
-	return 1;
+	free(dat);
 }
 
-void ReleaseGaids()
-{
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (_Gaids[i] != NULL)
-			free(_Gaids[i]);
+static void ReleaseGaids() {
+	
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(_Gaids[i]) {
+			delete _Gaids[i];
+		}
 	}
-
-	free(_Gaids);
-	_Gaids = NULL;
+	
+	delete[] _Gaids, _Gaids = NULL;
 }
 
-static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
+static void ARX_CHANGELEVEL_PopLevel_Abort() {
+	
+	ARX_TIME_UnPause();
+	
+	if(idx_io) {
+		delete[] idx_io, idx_io = NULL;
+	}
+	
+	ReleaseGaids();
+	FORBID_SCRIPT_IO_CREATION = 0;
+}
+
+static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	DANAE_ReleaseAllDatasDynamic();
-
+	
 	LogDebug << "Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free";
-
-	if (_Gaids) ReleaseGaids();
-
-	_Gaids = (ARX_CHANGELEVEL_INVENTORY_DATA_SAVE **) malloc(sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *) * MAX_IO_SAVELOAD);
-
-	memset(_Gaids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *)*MAX_IO_SAVELOAD);
-
+	
+	if(_Gaids) {
+		ReleaseGaids();
+	}
+	
+	_Gaids = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *[MAX_IO_SAVELOAD];
+	memset(_Gaids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *) * MAX_IO_SAVELOAD);
+	
 	ARX_CHANGELEVEL_INDEX asi;
-
+	
 	CURRENT_GAME_INSTANCE = instance;
 	ARX_CHANGELEVEL_MakePath();
-
-	if (!DirectoryExist(CurGamePath))
-	{
+	
+	if(!DirectoryExist(CurGamePath)) {
 		LogError << "Cannot Load this game: Directory Not Found: " << CurGamePath;
-
 		ReleaseGaids();
-		return -1;
+		return false;
 	}
-
+	
 	LogDebug << "After  ARX_CHANGELEVEL_PopLevel Alloc'n'Free";
-
+	
 	// Clears All Scene contents...
 	LogDebug << "Before DANAE ClearAll";
 	DanaeClearAll();
 	LogDebug << "After  DANAE ClearAll";
-
+	
 	ARX_TIME_Pause();
 	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
-
-
+	
 	// Now we can load our things...
-	char loadfile[256];
-	long FirstTime;
-	sprintf(loadfile, "lvl%03ld.sav", instance);
+	std::ostringstream loadfile;
+	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance << ".sav";
+	string sfile = string(CurGamePath) + "gsave.sav";
 	
 	// Open Saveblock for read
-	char sfile[256];
-	sprintf(sfile, "%sGsave.sav", CurGamePath);
 	_pSaveBlock = new SaveBlock(sfile);
 	
 	// first time in this level ?
-	if (!_pSaveBlock->BeginRead()) {
-		LogDebug << "don't have save block \"" << sfile << "\"";
+	long FirstTime;
+	if(!_pSaveBlock->BeginRead() || !_pSaveBlock->hasFile(loadfile.str())) {
 		FirstTime = 1;
 		FORBID_SCRIPT_IO_CREATION = 0;
 		NO_PLAYER_POSITION_RESET = 0;
-	}
-	else if (!_pSaveBlock->hasFile(loadfile))
-	{
-		LogDebug << "don't have level \"" << loadfile << "\" save block";
-		FirstTime = 1;
-		FORBID_SCRIPT_IO_CREATION = 0;
-		NO_PLAYER_POSITION_RESET = 0;
-	}
-	else
-	{
+	} else {
 		FirstTime = 0;
 		FORBID_SCRIPT_IO_CREATION = 1;
 		NO_PLAYER_POSITION_RESET = 1;
 	}
+	LogDebug << "FirstTime = " << FirstTime;
 	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(instance);
 	
-	LogDebug << "FirstTime = " << FirstTime;
-
 	_FIRSTTIME = FirstTime;
 	NEW_LEVEL = instance;
-
-	if (!FirstTime)
-	{
+	
+	arx_assert(idx_io == NULL);
+	
+	if(!FirstTime) {
+		
 		LogDebug << "Before ARX_CHANGELEVEL_Pop_Index";
-
-		if (ARX_CHANGELEVEL_Pop_Index(&asi, instance) != 1)
-		{
-
+		if(ARX_CHANGELEVEL_Pop_Index(&asi, instance) != 1) {
 			LogError << "Cannot Load Index data";
-
-			ARX_TIME_UnPause();
-
-			if (idx_io)
-				free(idx_io);
-
-			idx_io = NULL;
-
-			ReleaseGaids();
-			FORBID_SCRIPT_IO_CREATION = 0;
-			return -1;
+			ARX_CHANGELEVEL_PopLevel_Abort();
+			return false;
 		}
-
+		
 		LogDebug << "After  ARX_CHANGELEVEL_Pop_Index";
-
-		if (asi.version != ARX_GAMESAVE_VERSION)
-		{
+		if(asi.version != ARX_GAMESAVE_VERSION) {
 			LogError << "Invalid Save Version...";
-			ARX_TIME_UnPause();
-
-			if (idx_io)
-				free(idx_io);
-
-			idx_io = NULL;
-
-			ReleaseGaids();
-			FORBID_SCRIPT_IO_CREATION = 0;
-			return -1;
+			ARX_CHANGELEVEL_PopLevel_Abort();
+			return false;
 		}
-
+		
 	}
-	else
-	{
-		idx_io = NULL;
-	}
-
+	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(instance);
+	
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Level";
-
-	if (ARX_CHANGELEVEL_Pop_Level(&asi, instance, FirstTime) != 1)
-	{
-
+	if(ARX_CHANGELEVEL_Pop_Level(&asi, instance, FirstTime) != 1) {
 		LogError << "Cannot Load Level data";
-
-		ARX_TIME_UnPause();
-
-		if (idx_io)
-			free(idx_io);
-
-		idx_io = NULL;
-
-		ReleaseGaids();
-		FORBID_SCRIPT_IO_CREATION = 0;
-		return -1;
+		ARX_CHANGELEVEL_PopLevel_Abort();
+		return false;
 	}
-
-
-
+	
 	LogDebug << "After  ARX_CHANGELEVEL_Pop_Index";
 	PROGRESS_BAR_COUNT += 20.f;
 	LoadLevelScreen(instance);
-
-	if (FirstTime)
-	{
-
-
+	
+	if(FirstTime) {
 		ARX_CHECK_ULONG(ARX_CHANGELEVEL_DesiredTime);
-		unsigned long ulDTime = ARX_CLEAN_WARN_CAST_ULONG(ARX_CHANGELEVEL_DesiredTime);
-
-		for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-		{
-			if (scr_timer[i].exist)
-			{
+		unsigned long ulDTime = static_cast<unsigned long>(ARX_CHANGELEVEL_DesiredTime);
+		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+			if(scr_timer[i].exist) {
 				scr_timer[i].tim = ulDTime;
 			}
 		}
-
-
-
-	}
-
-	if(!FirstTime) {
+	} else {
 		LogDebug << "Before ARX_CHANGELEVEL_PopAllIO";
 		ARX_CHANGELEVEL_PopAllIO(&asi);
 		LogDebug << "After  ARX_CHANGELEVEL_PopAllIO";
 	}
-
+	
 	PROGRESS_BAR_COUNT += 20.f;
 	LoadLevelScreen(instance);
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Player";
-
+	
 	if(ARX_CHANGELEVEL_Pop_Player(instance) != 1) {
-
 		LogError << "Cannot Load Player data";
-
-		ARX_TIME_UnPause();
-
-		if (idx_io)
-			free(idx_io);
-
-		idx_io = NULL;
-
-		ReleaseGaids();
-		FORBID_SCRIPT_IO_CREATION = 0;
-		return -1;
+		ARX_CHANGELEVEL_PopLevel_Abort();
+		return false;
 	}
-
 	LogDebug << "After  ARX_CHANGELEVEL_Pop_Player";
-
+	
 	LogDebug << "Before ARX_CHANGELEVEL_PopAllIO_FINISH";
 	// Restoring all Missing Objects required by other objects...
 	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag);
 	LogDebug << "After  ARX_CHANGELEVEL_PopAllIO_FINISH";
+	
 	PROGRESS_BAR_COUNT += 15.f;
 	LoadLevelScreen();
+	
 	ReleaseGaids();
+	
 	PROGRESS_BAR_COUNT += 3.f;
 	LoadLevelScreen();
-
-	if (!FirstTime)
-	{
+	
+	if(!FirstTime) {
 		LogDebug << "Before ARX_CHANGELEVEL_Pop_Zones_n_Lights";
 		ARX_CHANGELEVEL_Pop_Zones_n_Lights(&asi, instance);
 		LogDebug << "After  ARX_CHANGELEVEL_Pop_Zones_n_Lights";
 	}
-
+	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
+	
 	LogDebug << "Before Player Misc Init";
 	ForcePlayerInventoryObjectLevel(instance);
 	ARX_EQUIPMENT_RecreatePlayerMesh();
+	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-
+	
 	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
-
 	NO_TIME_INIT = 1;
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	LogDebug << "After  Player Misc Init";
-
+	
 	LogDebug << "Before Memory Release";
-
-	if (idx_io)
-		free(idx_io);
-
-	idx_io = NULL;
-
+	if(idx_io) {
+		delete[] idx_io, idx_io = NULL;
+	}
 	FORBID_SCRIPT_IO_CREATION = 0;
-
 	NO_TIME_INIT = 1;
 	LogDebug << "After  Memory Release";
-
+	
 	LogDebug << "Before SaveBlock Release";
 	delete _pSaveBlock;
 	_pSaveBlock = NULL;
 	LogDebug << "After  SaveBlock Release";
-
+	
 	LogDebug << "Before Final Inits";
 	HERO_SHOW_1ST = -1;
-
+	
 	if(EXTERNALVIEW) {
 		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0], 0);
 	}
@@ -3118,19 +3049,18 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	if(!EXTERNALVIEW) {
 		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0], 1);
 	}
-
+	
 	ARX_INTERACTIVE_HideGore(inter.iobj[0], 1);
 	TRUE_PLAYER_MOUSELOOK_ON = 0;
 	player.Interface &= ~INTER_COMBATMODE;
+	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
+	
 	LogDebug << "After  Final Inits";
-	return 1;
+	
+	return true;
 }
-
-
-
-
 
 //-----------------------------------------------------------------------------
 // copy a dir (recursive sub reps) in another, creating reps
