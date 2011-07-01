@@ -138,9 +138,10 @@ extern int iTimeToDrawD7;
 extern Vec3f LastValidPlayerPos;
 #define MAX_IO_SAVELOAD 1500
 
-static long ARX_CHANGELEVEL_PushLevel(long num, long newnum);
+static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num);
+static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static bool ARX_CHANGELEVEL_PopLevel(long num, long reloadflag = 0);
-static long ARX_CHANGELEVEL_Push_Globals();
+static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player();
 static long ARX_CHANGELEVEL_Push_AllIO();
@@ -452,9 +453,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	LogDebug << "-----------------------------------";
 }
 
-static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num);
-
-static long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
+static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	LogDebug << "ARX_CHANGELEVEL_PushLevel " << num << " " << newnum;
 	
@@ -481,40 +480,32 @@ static long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	sprintf(sfile, "%sgsave.sav", CurGamePath);
 	_pSaveBlock = new SaveBlock(sfile);
 
-	if (!_pSaveBlock->BeginSave()) {
+	if(!_pSaveBlock->BeginSave()) {
 		LogError << "Error writing to save block.";
-		return -1;
+		return false;
 	}
-
+	
 	// Now we can save our things
-	if (ARX_CHANGELEVEL_Push_Index(&asi, num) != 1)
-	{
+	if(!ARX_CHANGELEVEL_Push_Index(&asi, num)) {
 		LogError << "Error Saving Index...";
 		ARX_TIME_UnPause();
-		return -1;
+		return false;
 	}
-
-	if (ARX_CHANGELEVEL_Push_Globals() != 1)
-	{
-		LogError << "Error Saving Globals...";
-		ARX_TIME_UnPause();
-		return -1;
-	}
-
-	if (ARX_CHANGELEVEL_Push_Player() != 1)
-	{
+	
+	ARX_CHANGELEVEL_Push_Globals();
+	
+	if(ARX_CHANGELEVEL_Push_Player() != 1) {
 		LogError << "Error Saving Player...";
 		ARX_TIME_UnPause();
-		return -1;
+		return false;
 	}
-
-	if (ARX_CHANGELEVEL_Push_AllIO() != 1)
-	{
+	
+	if(ARX_CHANGELEVEL_Push_AllIO() != 1) {
 		LogError << "Error Saving IOs...";
 		ARX_TIME_UnPause();
-		return -1;
+		return false;
 	}
-
+	
 	if(!_pSaveBlock->flush()) {
 		LogError << "could not complete the save.";
 	}
@@ -522,7 +513,8 @@ static long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	delete _pSaveBlock;
 	_pSaveBlock = NULL;
 	ARX_TIME_UnPause();
-	return 1;
+	
+	return true;
 }
 
 bool IsPlayerEquipedWith(INTERACTIVE_OBJ * io) {
@@ -552,7 +544,7 @@ extern GLOBAL_MODS stacked;
 extern GLOBAL_MODS current;
 extern GLOBAL_MODS desired;
 
-static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
+static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
 	long pos = 0;
 
@@ -660,10 +652,10 @@ static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
 	delete[] dat;
 	
-	return ret ? 1 : -1;
+	return ret;
 }
 
-static long ARX_CHANGELEVEL_Push_Globals() {
+static void ARX_CHANGELEVEL_Push_Globals() {
 	
 	ARX_CHANGELEVEL_SAVE_GLOBALS acsg;
 	long pos = 0;
@@ -751,8 +743,6 @@ static long ARX_CHANGELEVEL_Push_Globals() {
 	_pSaveBlock->save(savefile, dat, pos);
 	
 	delete[] dat;
-	
-	return 1;
 }
 
 template <size_t N>
@@ -3062,14 +3052,13 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	return true;
 }
 
-//-----------------------------------------------------------------------------
 // copy a dir (recursive sub reps) in another, creating reps
 // overwrites files for update
-void CopyDirectory(char * _lpszSrc, char * _lpszDest)
-{
+// TODO(case-sensitive) move to Filesystem
+static void CopyDirectory(char * _lpszSrc, char * _lpszDest) {
 	CreateDirectory(_lpszDest, NULL);
 
-	//	WIN32_FIND_DATA FindFileData;
+	// WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 
 	LogDebug << "CopyDirectory " << _lpszSrc << " to " << _lpszDest;
@@ -3129,8 +3118,8 @@ void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 
 static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const string & path);
 
-long ARX_CHANGELEVEL_Save(long instance, const std::string& name)
-{
+long ARX_CHANGELEVEL_Save(long instance, const string & name) {
+	
 	LogDebug << "ARX_CHANGELEVEL_Save " << instance << " " << name;
 
 	ARX_TIME_Pause();
@@ -3180,9 +3169,9 @@ long ARX_CHANGELEVEL_Save(long instance, const std::string& name)
 	CopyDirectory(CurGamePath, GameSavePath);
 
 	//on copie le fichier temporaire bmp dans le repertoire
-	const char tcSrc[] = "SCT_0.BMP";
+	const char tcSrc[] = "sct_0.bmp";
 	char tcDst[256];
-	sprintf(tcDst, "%sGSAVE.BMP", GameSavePath);
+	sprintf(tcDst, "%sgsave.bmp", GameSavePath);
 	CopyFile(tcSrc, tcDst, false);
 	DeleteFile(tcSrc);
 
@@ -3197,10 +3186,10 @@ long ARX_CHANGELEVEL_Save(long instance, const std::string& name)
 	return 1;
 }
 
-static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const string & path)
-{
+static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const string & path) {
+	
 	char sfile[256];
-	sprintf(sfile, "%sGsave.sav", path.c_str());
+	sprintf(sfile, "%sgsave.sav", path.c_str());
 	
 	// TODO why use a global here?
 	assert(_pSaveBlock == NULL);
@@ -3235,7 +3224,7 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	if (!DirectoryExist(path)) return false;
 
 	// Open Save Block
-	string savefile = path + "Gsave.sav";
+	string savefile = path + "gsave.sav";
 
 	// Get Size
 	std::string loadfile = "pld.sav";
@@ -3261,11 +3250,10 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	free(dat);
 	return true;
 }
+
 long DONT_CLEAR_SCENE;
 extern long STARTED_A_GAME;
-//------------------------------------------------------------------------------
-// ARX_CHANGELEVEL_Load: 
-//------------------------------------------------------------------------------
+
 long ARX_CHANGELEVEL_Load(long instance) {
 	
 	LogDebug << "begin ARX_CHANGELEVEL_Load";
@@ -3309,7 +3297,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 		
 		DONT_CLEAR_SCENE = (pld.level == CURRENTLEVEL) ? 1 : 0;
 		
-		float fPldTime = ARX_CLEAN_WARN_CAST_FLOAT(pld.time);
+		float fPldTime = static_cast<float>(pld.time);
 		DanaeClearLevel();
 		PROGRESS_BAR_COUNT += 2.f;
 		LoadLevelScreen(pld.level);
@@ -3337,17 +3325,14 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	LogDebug << "success ARX_CHANGELEVEL_Load";
 	return 1;
 }
-//------------------------------------------------------------------------------
-// ARX_CHANGELEVEL_GetInfo: Retreives Name & Time of a Saved game in "path"
-//------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_GetInfo( const std::string& path, std::string& name, float& version, long& level, unsigned long& time)
-{
+
+long ARX_CHANGELEVEL_GetInfo(const string & path, string & name, float & version, long & level, unsigned long & time) {
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 
 	// IMPROVE this will load the whole save file FAT just to get one file!
 	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, path)) {
-		name = pld.name;
+		name = safestring(pld.name);
 		version = pld.version;
 		level = pld.level;
 		time = (pld.time / 1000);
@@ -3360,4 +3345,3 @@ long ARX_CHANGELEVEL_GetInfo( const std::string& path, std::string& name, float&
 		return -1;
 	}
 }
-//------------------------------------------------------------------------------
