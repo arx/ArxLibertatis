@@ -1929,10 +1929,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 							if ((!LINEEND) && (speechnum >= 0))
 							{
-								char timername[128];
-								char timername2[128];
-								ARX_SCRIPT_Timer_GetDefaultName(timername2);
-								sprintf(timername, "SPEAK_%s", timername2);
 								aspeech[speechnum].scrpos = pos;
 								aspeech[speechnum].es = es;
 								aspeech[speechnum].ioscript = io;
@@ -4076,10 +4072,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 										if (execute)
 										{
-											char timername[64];
-											char timername2[64];
-											ARX_SCRIPT_Timer_GetDefaultName(timername2);
-											sprintf(timername, "ANIM_%s", timername2);
+											string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
 											long num2 = ARX_SCRIPT_Timer_GetFree();
 
 											if (num2 > -1)
@@ -5868,14 +5861,16 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				else if ((word[1] == 'I') && (word[2] == 'M') && (word[3] == 'E') && (word[4] == 'R'))
 				{
 					// Timer -m nbtimes duration commands
-					char timername[64];
+					string timername;
 					std::string temp2;
 					std::string temp3;
 
 					// Checks if the timer is named by caller of if it needs a default name
-					if (word.length() > 5)
-						strcpy(timername, word.c_str() + 5);
-					else ARX_SCRIPT_Timer_GetDefaultName(timername);
+					if(word.length() > 5) {
+						timername = toLowercase(word.substr(5));
+					} else {
+						timername = ARX_SCRIPT_Timer_GetDefaultName();
+					}
 
 #ifdef NEEDING_DEBUG
 

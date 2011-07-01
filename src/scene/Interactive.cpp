@@ -1924,7 +1924,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 {
 	if (!io) return;
 
-	if (ARX_SCRIPT_GetSystemIOScript(io, "_R_A_T_") < 0)
+	if (ARX_SCRIPT_GetSystemIOScript(io, "_r_a_t_") < 0)
 	{
 		long num = ARX_SCRIPT_Timer_GetFree();
 
@@ -1936,7 +1936,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
 			scr_timer[num].msecs = rnd() * 3000 + 3000;
-			scr_timer[num].name = "_R_A_T_";
+			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = ARXTimeUL();
 			scr_timer[num].times = 1;

@@ -3196,44 +3196,34 @@ ScriptResult SendInitScriptEvent(INTERACTIVE_OBJ * io) {
 	return ACCEPT;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-// Checks if timer named texx exists. If so returns timer index else return -1.
-long ARX_SCRIPT_Timer_Exist(char * texx)
-{
-	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if ( !scr_timer[i].name.compare(texx) )
-			{
-				return i;
+
+//! Checks if timer named texx exists.
+static bool ARX_SCRIPT_Timer_Exist(const std::string & texx) {
+	
+	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+		if(scr_timer[i].exist) {
+			if(scr_timer[i].name == texx) {
+				return true;
 			}
 		}
 	}
-
-	return -1;
+	
+	return false;
 }
-//*************************************************************************************
-//*************************************************************************************
-// Generates a random name for an unnamed timer
-void ARX_SCRIPT_Timer_GetDefaultName(char * tx)
-{
-	long i = 1;
-	char texx[64];
 
-	for (;;)
-	{
-		sprintf(texx, "TIMER_%ld", i);
-		i++;
-
-		if (ARX_SCRIPT_Timer_Exist(texx) == -1)
-		{
-			strcpy(tx, texx);
-			return;
+string ARX_SCRIPT_Timer_GetDefaultName() {
+	
+	for(size_t i = 1; ; i++) {
+		
+		std::ostringstream oss;
+		oss << "timer_" << i;
+		
+		if(!ARX_SCRIPT_Timer_Exist(oss.str())) {
+			return oss.str();
 		}
 	}
 }
+
 //*************************************************************************************
 // Get a free script timer
 //*************************************************************************************
@@ -3274,29 +3264,10 @@ void ARX_SCRIPT_Timer_ClearByNum(long timer_idx)
 // by its Index (long timer_idx) on the timers list
 //*************************************************************************************
 
-
-
-
-
-
-
-
-
-
-
-
-
-//*************************************************************************************
-//*************************************************************************************
-void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * io)
-{
-	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if ((scr_timer[i].io == io) &&
-					(!scr_timer[i].name.compare(timername)))
-				ARX_SCRIPT_Timer_ClearByNum(i);
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const string & timername, INTERACTIVE_OBJ * io) {
+	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+		if(scr_timer[i].exist && scr_timer[i].io == io && scr_timer[i].name == timername) {
+			ARX_SCRIPT_Timer_ClearByNum(i);
 		}
 	}
 }
@@ -3389,22 +3360,16 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io)
 
 
 
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string& name)
-{
-	if (ActiveTimers)
-	{
-		for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-		{
-			if (scr_timer[i].exist)
-			{
-				if ((scr_timer[i].io == io) && (!scr_timer[i].name.compare(name)))
-				{
-					return i;
-				}
+long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string & name) {
+	
+	if(ActiveTimers) {
+		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+			if(scr_timer[i].exist && scr_timer[i].io == io && scr_timer[i].name == name) {
+				return i;
 			}
 		}
 	}
-
+	
 	return -1;
 }
 
@@ -3489,10 +3454,8 @@ void ARX_SCRIPT_Timer_Check()
 					INTERACTIVE_OBJ * io = st->io;
 					long pos = st->pos;
 
-					if (!es)
-					{
-						if (!st->name.compare("_R_A_T_"))
-						{
+					if(!es) {
+						if(st->name == "_r_a_t_") {
 							if (Manage_Specific_RAT_Timer(st)) continue;
 						}
 					}

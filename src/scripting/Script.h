@@ -479,7 +479,10 @@ float GetVarValueInterpretedAsFloat(std::string & temp1, EERIE_SCRIPT * esss, IN
 long FindLabelPos(EERIE_SCRIPT * es, const std::string & string);
 long SkipNextStatement(EERIE_SCRIPT * es, long pos);
 std::string GetVarValueInterpretedAsText(std::string & temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
-void ARX_SCRIPT_Timer_GetDefaultName(char * tx);
+
+//! Generates a random name for an unnamed timer
+std::string ARX_SCRIPT_Timer_GetDefaultName();
+
 void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string & group);
 void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const std::string & group);
 long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string & temp );
@@ -497,7 +500,7 @@ std::string GETVarValueText(SCRIPT_VAR *& svf, long & nb, const std::string & na
 AnimationNumber GetNumAnim(const std::string & name);
 ValueType GetSystemVar(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
-void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * io);
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, INTERACTIVE_OBJ * io);
 
 ScriptResult NotifyIOEvent(INTERACTIVE_OBJ * io, ScriptMessage msg);
 void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
