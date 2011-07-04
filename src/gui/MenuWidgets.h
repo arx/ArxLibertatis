@@ -719,11 +719,8 @@ public:
 		bool GetMouseButtonDoubleClick(int, int);
  
 		bool IsVirtualKeyPressed(int);
-		bool IsVirtualKeyPressedOneTouch(int);
 		bool IsVirtualKeyPressedNowPressed(int);
 		bool IsVirtualKeyPressedNowUnPressed(int);
-		std::string GetFullNameTouch(int);
- 
  
 		void ResetAll();
 		int GetWheelSens();

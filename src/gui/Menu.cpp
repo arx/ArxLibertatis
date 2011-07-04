@@ -64,11 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
-
 #include "Configure.h"
 
 #include "core/Config.h"
@@ -551,7 +546,7 @@ void ARX_Menu_Manage() {
 			break;
 		case AMCM_NEWQUEST:
 		{
-			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE)
+			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape)
 					&&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			   )
 			{
@@ -562,7 +557,7 @@ void ARX_Menu_Manage() {
 		break;
 		case AMCM_MAIN:
 
-			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
+			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
 			{
 				if ((MENU_NoActiveWindow())  && (!REFUSE_GAME_RETURN))
 				{
@@ -574,8 +569,8 @@ void ARX_Menu_Manage() {
 			break;
 		case AMCM_CREDITS:
 
-			if ((pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
-					|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_SPACE)))
+			if ((pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
+					|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Spacebar)))
 			{
 				ARX_MENU_CLICKSOUND();
 				bFadeInOut = true;	//fade out

@@ -69,11 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <shellapi.h>
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
-
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -4637,7 +4632,7 @@ bool DANAE_ManageSplashThings()
 				}
 			}
 
-			if (ARX_IMPULSE_Pressed(DIK_ESCAPE))
+			if (ARX_IMPULSE_Pressed(Keyboard::Key_Escape))
 			{
 				REFUSE_GAME_RETURN=1;
 				SPLASH_THINGS_STAGE = 14;
@@ -4767,8 +4762,8 @@ long DANAE_Manage_Cinematic()
 
 	//fin de l'anim
 	if ((!ControlCinematique->key)
-		|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
-		|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE)))
+		|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
+		|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape)))
 	{			
 		ControlCinematique->projectload=false;
 		StopSoundKeyFramer();
@@ -5157,7 +5152,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 
 	if(	(pGetInfoDirectInput)&&
-		(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F12)))
+		(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_F12)))
 	{
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
@@ -5170,7 +5165,7 @@ static float _AvgFrameDiff = 150.f;
 		&&  (ARXmenu.currentmode==AMCM_OFF)	)
 	{
 		if(	(pGetInfoDirectInput)&&
-			(pGetInfoDirectInput->IsVirtualKeyPressedOneTouch(DIK_Y)) )
+			(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_Y)) )
 		{
 			USE_OLD_MOUSE_SYSTEM=(USE_OLD_MOUSE_SYSTEM)?0:1;
 
@@ -5218,7 +5213,7 @@ static float _AvgFrameDiff = 150.f;
 		ARX_PLAYER_Frame_Update();
 
 	// Checks for ESC key
-	if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
+	if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
 	{
 		if (ARXmenu.currentmode == AMCM_OFF)
 		{
@@ -5245,7 +5240,7 @@ static float _AvgFrameDiff = 150.f;
 				ARX_MENU_Launch();
 				bFadeInOut=false;	//fade out
 				bFade=true;			//active le fade
-				pGetInfoDirectInput->iOneTouch[DIK_ESCAPE] = 0;
+				pGetInfoDirectInput->iOneTouch[Keyboard::Key_Escape] = 0;
 				TRUE_PLAYER_MOUSELOOK_ON = 0;
 
 				ARX_PLAYER_PutPlayerInNormalStance(1);
@@ -6649,7 +6644,7 @@ static float _AvgFrameDiff = 150.f;
 	norenderend:
 		;
 
-	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F10))
+	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_F10))
 	{
 		GetSnapShot();
 	}

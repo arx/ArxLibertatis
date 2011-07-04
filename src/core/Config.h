@@ -83,8 +83,6 @@ enum ControlAction {
 	
 };
 
-typedef int InputKeyId; // TODO use InputKey from Application.h?
-
 const size_t NUM_ACTION_KEY = CONTROLS_CUST_MINIMAP + 1;
 
 struct ActionKey {

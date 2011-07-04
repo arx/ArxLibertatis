@@ -58,99 +58,219 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_WINDOW_INPUT_H
 #define ARX_WINDOW_INPUT_H
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
-
 #include "window/DXInput.h"
 
 //-----------------------------------------------------------------------------
-#define INTERNAL_MOUSE_1	257
-#define INTERNAL_MOUSE_2	258
-#define INTERNAL_MOUSE_3	259
-#define INTERNAL_MOUSE_4	260
-#define INTERNAL_MOUSE_5	261
-#define INTERNAL_MOUSE_6	262
-
-#define INTERNAL_MOUSEWHEEL_DOWN	280
-#define INTERNAL_MOUSEWHEEL_UP		281
-
-#define INTERNAL_SCID			400
-
-#define INTERNAL_JOYSTICK_1		297
-#define INTERNAL_JOYSTICK_2		298
-#define INTERNAL_JOYSTICK_3		299
-#define INTERNAL_JOYSTICK_4		300
-#define INTERNAL_JOYSTICK_5		301
-#define INTERNAL_JOYSTICK_6		302
-#define INTERNAL_JOYSTICK_7		303
-#define INTERNAL_JOYSTICK_8		304
-#define INTERNAL_JOYSTICK_9		305
-#define INTERNAL_JOYSTICK_10	306
-#define INTERNAL_JOYSTICK_11	307
-#define INTERNAL_JOYSTICK_12	308
-#define INTERNAL_JOYSTICK_13	309
-
-#define MAX_IMPULSES						17
-#define MAX_IMPULSES_NB						3
-
-#define ARX_INPUT_IMPULSE_JUMP				0
-#define ARX_INPUT_IMPULSE_COMBAT_MODE		1
-#define ARX_INPUT_IMPULSE_MAGIC_MODE		2
-#define ARX_INPUT_IMPULSE_STEALTH			3
-#define ARX_INPUT_IMPULSE_WALK_FORWARD		4
-#define ARX_INPUT_IMPULSE_WALK_BACKWARD		5
-#define ARX_INPUT_IMPULSE_STRAFE_LEFT		6
-#define ARX_INPUT_IMPULSE_STRAFE_RIGHT		7
-#define ARX_INPUT_IMPULSE_MOUSE_LOOK		8
-#define ARX_INPUT_IMPULSE_ACTION			9
-#define ARX_INPUT_IMPULSE_INVENTORY			10
-#define ARX_INPUT_IMPULSE_BOOK				11
-#define ARX_INPUT_IMPULSE_ROTATE_LEFT		12
-#define ARX_INPUT_IMPULSE_ROTATE_RIGHT		13
-#define ARX_INPUT_IMPULSE_LEAN_RIGHT		14
-#define ARX_INPUT_IMPULSE_LEAN_LEFT			15
-#define ARX_INPUT_IMPULSE_CROUCH			16
-
-enum InputButton
+class InputDevice
 {
-	DIK_BUTTON1 = 0x80000000 | DXI_BUTTON0,
-	DIK_BUTTON2 = 0x80000000 | DXI_BUTTON1,
-	DIK_BUTTON3 = 0x80000000 | DXI_BUTTON2,
-	DIK_BUTTON4 = 0x80000000 | DXI_BUTTON3,
-	DIK_BUTTON5 = 0x80000000 | DXI_BUTTON4,
-	DIK_BUTTON6 = 0x80000000 | DXI_BUTTON5,
-	DIK_BUTTON7 = 0x80000000 | DXI_BUTTON6,
-	DIK_BUTTON8 = 0x80000000 | DXI_BUTTON7,
-	DIK_BUTTON9 = 0x80000000 | DXI_BUTTON8,
-	DIK_BUTTON10 = 0x80000000 | DXI_BUTTON9,
-	DIK_BUTTON11 = 0x80000000 | DXI_BUTTON10,
-	DIK_BUTTON12 = 0x80000000 | DXI_BUTTON11,
-	DIK_BUTTON13 = 0x80000000 | DXI_BUTTON12,
-	DIK_BUTTON14 = 0x80000000 | DXI_BUTTON13,
-	DIK_BUTTON15 = 0x80000000 | DXI_BUTTON14,
-	DIK_BUTTON16 = 0x80000000 | DXI_BUTTON15,
-	DIK_BUTTON17 = 0x80000000 | DXI_BUTTON16,
-	DIK_BUTTON18 = 0x80000000 | DXI_BUTTON17,
-	DIK_BUTTON19 = 0x80000000 | DXI_BUTTON18,
-	DIK_BUTTON20 = 0x80000000 | DXI_BUTTON19,
-	DIK_BUTTON21 = 0x80000000 | DXI_BUTTON20,
-	DIK_BUTTON22 = 0x80000000 | DXI_BUTTON21,
-	DIK_BUTTON23 = 0x80000000 | DXI_BUTTON22,
-	DIK_BUTTON24 = 0x80000000 | DXI_BUTTON23,
-	DIK_BUTTON25 = 0x80000000 | DXI_BUTTON24,
-	DIK_BUTTON26 = 0x80000000 | DXI_BUTTON25,
-	DIK_BUTTON27 = 0x80000000 | DXI_BUTTON26,
-	DIK_BUTTON28 = 0x80000000 | DXI_BUTTON27,
-	DIK_BUTTON29 = 0x80000000 | DXI_BUTTON28,
-	DIK_BUTTON30 = 0x80000000 | DXI_BUTTON29,
-	DIK_BUTTON31 = 0x80000000 | DXI_BUTTON30,
-	DIK_BUTTON32 = 0x80000000 | DXI_BUTTON31,
+};
 
+class Keyboard : public InputDevice
+{
+public:
+    //! Key enumeration.
+    enum Key
+    {
+		KeyBase = 0,
 
-	DIK_WHEELUP = 0x40000000 | 0,
-	DIK_WHEELDOWN = 0x40000000 | 1,
+        Key_0 = KeyBase,
+        Key_1,
+        Key_2,
+        Key_3,
+        Key_4,
+        Key_5,
+        Key_6,
+        Key_7,
+        Key_8,
+        Key_9,
+        
+        Key_A,
+        Key_B,
+        Key_C,
+        Key_D,
+        Key_E,
+        Key_F,
+        Key_G,
+        Key_H,
+        Key_I,
+        Key_J,
+        Key_K,
+        Key_L,
+        Key_M,    
+        Key_N,
+        Key_O,
+        Key_P,
+        Key_Q,
+        Key_R,
+        Key_S,
+        Key_T,
+        Key_U,
+        Key_V,
+        Key_W,
+        Key_X,
+        Key_Y,
+        Key_Z,
+
+        Key_F1,
+        Key_F2,
+        Key_F3,
+        Key_F4,
+        Key_F5,
+        Key_F6,
+        Key_F7,
+        Key_F8,
+        Key_F9,
+        Key_F10,
+        Key_F11,
+        Key_F12,
+        Key_F13,
+        Key_F14,
+        Key_F15,
+
+        Key_UpArrow,
+        Key_DownArrow,
+        Key_LeftArrow,
+        Key_RightArrow,
+
+        Key_Home,
+        Key_End,
+        Key_PageUp,
+        Key_PageDown,
+        Key_Insert,
+        Key_Delete,
+
+        Key_Escape,
+        
+        Key_NumLock,
+        Key_NumPad0,
+        Key_NumPad1,
+        Key_NumPad2,
+        Key_NumPad3,
+        Key_NumPad4,
+        Key_NumPad5,
+        Key_NumPad6,
+        Key_NumPad7,
+        Key_NumPad8,
+        Key_NumPad9,
+        Key_NumPadEnter,
+        Key_NumSubtract,        // (-) on numeric keypad 
+        Key_NumAdd,             // (+) on numeric keypad 
+        Key_NumMultiply,        // (*) on numeric keypad 
+        Key_NumDivide,          // (/) on numeric keypad 
+        Key_NumPoint,           // PERIOD (decimal point) on numeric keypad 
+
+        Key_LeftBracket,        // Left square bracket [ 
+        Key_LeftCtrl,           // Left CTRL         
+        Key_LeftAlt,            // Left ALT 
+        Key_LeftShift,          // Left SHIFT 
+        Key_LeftWin,            // Left Microsoft® Windows® logo key 
+
+        Key_RightBracket,       // Right square bracket ] 
+        Key_RightCtrl,          // Right CTRL 
+        Key_RightAlt,           // Right ALT 
+        Key_RightShift,         // Right SHIFT 
+        Key_RightWin,           // Right Windows logo key 
+
+        Key_PrintScreen,
+        Key_ScrollLock,
+        Key_Pause,
+        
+        Key_Spacebar,
+        Key_Backspace,
+        Key_Enter,              // ENTER on main keyboard 
+        Key_Tab,            
+
+        Key_Apps,               // Application key 
+        Key_CapsLock,
+
+        Key_Slash,              // (/) On main keyboard 
+        Key_Backslash,          // (\) 
+        Key_Comma,              // (,)
+        Key_Semicolon,          // (;)
+        Key_Period,             // (.) On main keyboard 
+        Key_Grave,              // (`) Grave accent 
+        Key_Apostrophe,         // (')
+        Key_Minus,              // (-) On main keyboard 
+        Key_Equals,             // (=) On main keyboard 
+
+        KeyMax
+    };
+
+    //! State of a keyboard key.
+    enum KeyState
+    {
+        Key_Up,                 //!< Key is up.
+        Key_Pressed,            //!< Key was up and is now down.
+        Key_Down,               //!< Key is down.
+        Key_Released            //!< Key was down and is now up.
+    };
+};
+
+class Mouse : public InputDevice
+{
+public:
+	enum Button
+	{
+		ButtonBase = 0x80000000,
+
+		Button_1 = ButtonBase,
+		Button_2,
+		Button_3,
+		Button_4,
+		Button_5,
+		Button_6,
+		Button_7,
+		Button_8,
+		Button_9,
+		Button_10,
+		Button_11,
+		Button_12,
+		Button_13,
+		Button_14,
+		Button_15,
+		Button_16,
+		Button_17,
+		Button_18,
+		Button_19,
+		Button_20,
+		Button_21,
+		Button_22,
+		Button_23,
+		Button_24,
+		Button_25,
+		Button_26,
+		Button_27,
+		Button_28,
+		Button_29,
+		Button_30,
+		Button_31,
+		Button_32,
+
+		ButtonMax
+	};
+
+	enum Wheel
+	{
+		Wheel_Up,
+		Wheel_Down
+	};
+};
+
+typedef int InputKeyId;
+
+struct KeyDescription {
+	InputKeyId id;
+	std::string name;
+};
+
+class Input
+{
+public:
+	static std::string	getKeyName(InputKeyId key);
+	static InputKeyId	getKeyId(const std::string& keyName);
+
+public:
+	static const std::string KEY_NONE;
 };
 
 bool ARX_INPUT_Init();

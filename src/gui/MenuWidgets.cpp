@@ -31,11 +31,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <sstream>
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
-
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -815,7 +810,7 @@ bool Menu2_Render()
 					pPanel->AddElementNoCenterIn(me);
 					szMenuText = getLocalised( "system_no" );
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
 
 
@@ -862,7 +857,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = MAIN;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pWindowMenuConsole->AddMenu(me);
 
 					pWindowMenu->eCurrentMenuState = EDIT_QUEST;
@@ -992,7 +987,7 @@ bool Menu2_Render()
 						pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 						me = new CMenuCheckButton(-1, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 						me->eMenuState = EDIT_QUEST;
-						me->SetShortCut(DIK_ESCAPE);
+						me->SetShortCut(Keyboard::Key_Escape);
 						pc->AddElementNoCenterIn(me);
 
 						pWindowMenuConsole->AddMenu(pc);
@@ -1131,7 +1126,7 @@ bool Menu2_Render()
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 
 					me->eMenuState = EDIT_QUEST;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pWindowMenuConsole->AddMenu(me);
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
@@ -1165,7 +1160,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = EDIT_QUEST_SAVE;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
 
 					pWindowMenuConsole->AddMenu(pPanel);
@@ -1197,7 +1192,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = MAIN;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pWindowMenuConsole->AddMenu(me);
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
@@ -1458,7 +1453,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BACK, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pc->AddElementNoCenterIn(me);
 
 					pWindowMenuConsole->AddMenu(pc);
@@ -1522,7 +1517,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pWindowMenuConsole->AddMenu(me);
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
@@ -1648,7 +1643,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pWindowMenuConsole->AddMenu(me);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 				//------------------ END INPUT
@@ -1767,7 +1762,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS_INPUT;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pc->AddElementNoCenterIn(me);
 					szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
@@ -1776,7 +1771,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\next.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosNext, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pc->AddElementNoCenterIn(me);
 
 					pWindowMenuConsole->AddMenu(pc);
@@ -1818,7 +1813,7 @@ bool Menu2_Render()
 					pTex = TextureContainer::Load("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pc->AddElementNoCenterIn(me);
 					szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
@@ -1864,7 +1859,7 @@ bool Menu2_Render()
 					pPanel->AddElementNoCenterIn(me);
 					szMenuText = getLocalised( "system_no" ); // TODO Is case sensitive, fix pak
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
-					me->SetShortCut(DIK_ESCAPE);
+					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
 
 
@@ -3685,9 +3680,9 @@ void CWindowMenuConsole::UpdateText()
 	{
 		pGetInfoDirectInput->iKeyId&=0xFFFF;
 
-		if(    (pGetInfoDirectInput->IsVirtualKeyPressed(DIK_RETURN))||
-			(pGetInfoDirectInput->IsVirtualKeyPressed(DIK_NUMPADENTER)) ||
-			(pGetInfoDirectInput->IsVirtualKeyPressed(DIK_ESCAPE)) )
+		if(    (pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_Enter))||
+			(pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_NumPadEnter)) ||
+			(pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_Escape)) )
 		{
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			((CMenuElementText*)pZoneClick)->eState=EDIT;
@@ -3724,7 +3719,7 @@ void CWindowMenuConsole::UpdateText()
 		
 		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
 
-		if(pGetInfoDirectInput->IsVirtualKeyPressedOneTouch(DIK_BACKSPACE))
+		if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_Backspace))
 		{
 			tText = pZoneText->lpszText;
 
@@ -3736,7 +3731,7 @@ void CWindowMenuConsole::UpdateText()
 		}
 		else
 		{
-			if(pGetInfoDirectInput->IsVirtualKeyPressedOneTouch(pGetInfoDirectInput->iKeyId))
+			if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(pGetInfoDirectInput->iKeyId))
 			{
 				tText = pZoneText->lpszText;
 
@@ -3753,40 +3748,40 @@ void CWindowMenuConsole::UpdateText()
 					//touche non reconnue
 					switch(iKey)
 					{
-					case DIK_NUMPAD0:
+					case Keyboard::Key_NumPad0:
 						tCat = '0';
 						break;
-					case DIK_NUMPAD1:
+					case Keyboard::Key_NumPad1:
 						tCat = '1';
 						break;
-					case DIK_NUMPAD2:
+					case Keyboard::Key_NumPad2:
 						tCat = '2';
 						break;
-					case DIK_NUMPAD3:
+					case Keyboard::Key_NumPad3:
 						tCat = '3';
 						break;
-					case DIK_NUMPAD4:
+					case Keyboard::Key_NumPad4:
 						tCat = '4';
 						break;
-					case DIK_NUMPAD5:
+					case Keyboard::Key_NumPad5:
 						tCat = '5';
 						break;
-					case DIK_NUMPAD6:
+					case Keyboard::Key_NumPad6:
 						tCat = '6';
 						break;
-					case DIK_NUMPAD7:
+					case Keyboard::Key_NumPad7:
 						tCat = '7';
 						break;
-					case DIK_NUMPAD8:
+					case Keyboard::Key_NumPad8:
 						tCat = '8';
 						break;
-					case DIK_NUMPAD9:
+					case Keyboard::Key_NumPad9:
 						tCat = '9';
 						break;
-					case DIK_DECIMAL:     
+					case Keyboard::Key_NumPoint:     
 						tCat = '.';
 						break;
-					case DIK_DIVIDE:      
+					case Keyboard::Key_NumDivide:      
 						tCat = '/';
 						break;
 					default:
@@ -3869,20 +3864,20 @@ int IsMouseButtonClick()
 	//MouseButton
 	for(size_t i = 0; i < CDirectInput::ARX_MAXBUTTON; i++) {
 		if(pGetInfoDirectInput->GetMouseButtonNowPressed(i)) {
-			return DIK_BUTTON1+i-DXI_BUTTON0;
+			return Mouse::Button_1+i-DXI_BUTTON0;
 		}
 	}
 
 	//Wheel UP/DOWN
 	if(pGetInfoDirectInput->iWheelSens<0)
 	{
-		return DIK_WHEELDOWN;
+		return Mouse::Wheel_Down;
 	}
 	else
 	{
 		if(pGetInfoDirectInput->iWheelSens>0)
 		{
-			return DIK_WHEELUP;
+			return Mouse::Wheel_Up;
 		}
 	}
 
@@ -3920,7 +3915,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 				}
 				else
 				{
-					for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
+					for(int iI=Mouse::Button_1;iI<=(int)Mouse::Button_32;iI++)
 					{
 						if(pGetInfoDirectInput->iKeyId==iI)
 						{
@@ -3934,7 +3929,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 			}
 		}
 
-		std::string pText = pGetInfoDirectInput->GetFullNameTouch((iMouseButton&0xc0000000)?iMouseButton:pGetInfoDirectInput->iKeyId); 
+		std::string pText = Input::getKeyName((iMouseButton&0xc0000000)?iMouseButton:pGetInfoDirectInput->iKeyId); 
 		if ( !pText.empty() )
 		{
 			pZoneText->lColorHighlight=pZoneText->lOldColor;
@@ -4347,52 +4342,52 @@ int CWindowMenuConsole::Render()
 
 				bool bOldTouch=pGetInfoDirectInput->bTouch;
 
-				if(    pGetInfoDirectInput->IsVirtualKeyPressed(DIK_LSHIFT)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(DIK_RSHIFT)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(DIK_LCONTROL)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(DIK_RCONTROL)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(DIK_LALT)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(DIK_RALT) )
+				if(    pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftShift)||
+					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightShift)||
+					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftCtrl)||
+					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightCtrl)||
+					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftAlt)||
+					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightAlt) )
 				{
 					if(!((pGetInfoDirectInput->iKeyId&~0x8000FFFF)>>16))
 						pGetInfoDirectInput->bTouch=false;
 				}
 				else
 				{
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_LSHIFT))
+					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftShift))
 					{
 						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=DIK_LSHIFT;
+						pGetInfoDirectInput->iKeyId=Keyboard::Key_LeftShift;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_RSHIFT))
+					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightShift))
 					{
 						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=DIK_RSHIFT;
+						pGetInfoDirectInput->iKeyId=Keyboard::Key_RightShift;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_LCONTROL))
+					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl))
 					{
 						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=DIK_LCONTROL;
+						pGetInfoDirectInput->iKeyId=Keyboard::Key_LeftCtrl;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_RCONTROL))
+					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightCtrl))
 					{
 						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=DIK_RCONTROL;
+						pGetInfoDirectInput->iKeyId=Keyboard::Key_RightCtrl;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_LALT))
+					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftAlt))
 					{
 						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=DIK_LALT;
+						pGetInfoDirectInput->iKeyId=Keyboard::Key_LeftAlt;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_RALT))
+					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightAlt))
 					{
 						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=DIK_RALT;
+						pGetInfoDirectInput->iKeyId=Keyboard::Key_RightAlt;
 					}
 				}
 
@@ -4989,7 +4984,7 @@ void CMenuSliderText::Move(int _iX, int _iY)
 void CMenuSliderText::EmptyFunction()
 {
 	//Touche pour la selection
-	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_LEFT))
+	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_LeftArrow))
 	{
 		iPos--;
 
@@ -4997,7 +4992,7 @@ void CMenuSliderText::EmptyFunction()
 	}
 	else
 	{
-		if( pGetInfoDirectInput->IsVirtualKeyPressedNowPressed( DIK_RIGHT ) )
+		if( pGetInfoDirectInput->IsVirtualKeyPressedNowPressed( Keyboard::Key_RightArrow ) )
 		{
 			iPos++;
 
@@ -5231,7 +5226,7 @@ void CMenuSlider::Move(int _iX, int _iY)
 void CMenuSlider::EmptyFunction()
 {
 	//Touche pour la selection
-	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_LEFT))
+	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_LeftArrow))
 	{
 		iPos--;
 
@@ -5239,7 +5234,7 @@ void CMenuSlider::EmptyFunction()
 	}
 	else
 	{
-		if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_RIGHT))
+		if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_RightArrow))
 		{
 			iPos++;
 
@@ -5576,12 +5571,12 @@ void CDirectInput::GetInput()
 		{
 			switch(i)
 			{
-			case DIK_LSHIFT:
-			case DIK_RSHIFT:
-			case DIK_LCONTROL:
-			case DIK_RCONTROL:
-			case DIK_LALT:
-			case DIK_RALT:
+			case Keyboard::Key_LeftShift:
+			case Keyboard::Key_RightShift:
+			case Keyboard::Key_LeftCtrl:
+			case Keyboard::Key_RightCtrl:
+			case Keyboard::Key_LeftAlt:
+			case Keyboard::Key_RightAlt:
 
 				if(i!=iKeyId)
 					iKeyId|=(i<<16);
@@ -5607,12 +5602,12 @@ void CDirectInput::GetInput()
 	{
 		switch(iKeyId)
 		{
-		case DIK_LSHIFT:
-		case DIK_RSHIFT:
-		case DIK_LCONTROL:
-		case DIK_RCONTROL:
-		case DIK_LALT:
-		case DIK_RALT:
+		case Keyboard::Key_LeftShift:
+		case Keyboard::Key_RightShift:
+		case Keyboard::Key_LeftCtrl:
+		case Keyboard::Key_RightCtrl:
+		case Keyboard::Key_LeftAlt:
+		case Keyboard::Key_RightAlt:
 			{
 				bool bFound=false;
 
@@ -5625,12 +5620,12 @@ void CDirectInput::GetInput()
 
 					switch(i&0xFFFF)
 					{
-					case DIK_LSHIFT:
-					case DIK_RSHIFT:
-					case DIK_LCONTROL:
-					case DIK_RCONTROL:
-					case DIK_LALT:
-					case DIK_RALT:
+					case Keyboard::Key_LeftShift:
+					case Keyboard::Key_RightShift:
+					case Keyboard::Key_LeftCtrl:
+					case Keyboard::Key_RightCtrl:
+					case Keyboard::Key_LeftAlt:
+					case Keyboard::Key_RightAlt:
 						continue;
 					default:
 						{
@@ -5845,15 +5840,6 @@ int CDirectInput::GetWheelSens() {
 bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
 {
 	return DXI_KeyPressed(_iVirtualKey)?true:false;
-}
-
-//-----------------------------------------------------------------------------
-
-bool CDirectInput::IsVirtualKeyPressedOneTouch(int _iVirtualKey)
-{
-
-	return(    (DXI_KeyPressed(_iVirtualKey))&&
-			(iOneTouch[_iVirtualKey]==1) );
 }
 
 //-----------------------------------------------------------------------------
@@ -6076,228 +6062,6 @@ bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton)
 {
 
 	return( (!bMouseButton[_iNumButton])&&(bOldMouseButton[_iNumButton]) );
-}
-
-//-----------------------------------------------------------------------------
-
-std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
-	
-	std::string pText;
-	
-	long lParam;
-	
-	std::string pText2;
-	
-	if( _iVirtualKey != -1 && (_iVirtualKey&~0xC000FFFF)) {
-		// key combination
-		pText2 = GetFullNameTouch((_iVirtualKey>>16)&0x3FFF);
-	}
-	
-	lParam=((_iVirtualKey)&0x7F)<<16;
-	
-	switch(_iVirtualKey) {
-	case DIK_HOME:
-		pText = getLocalised( "system_menus_options_input_customize_controls_home", "---" );
-		break;
-	case DIK_NEXT:
-		pText = getLocalised( "system_menus_options_input_customize_controls_pagedown", "---" );
-		break;
-	case DIK_END:
-		pText = getLocalised( "system_menus_options_input_customize_controls_end", "---" );
-		break;
-	case DIK_INSERT:
-		pText = getLocalised( "system_menus_options_input_customize_controls_insert", "---" );
-		break;
-	case DIK_DELETE:
-		pText = getLocalised( "system_menus_options_input_customize_controls_delete", "---" );
-		break;
-	case DIK_NUMLOCK:
-		pText = getLocalised( "system_menus_options_input_customize_controls_numlock", "---" );
-		break;
-	case DIK_DIVIDE:
-		pText = "_/_";
-		break;
-	case DIK_MULTIPLY:
-		pText += "_x_";
-		break;
-	case DIK_SYSRQ:           
-		pText = "?";
-		break;
-	case DIK_UP:                  // UpArrow on arrow keypad
-		pText = getLocalised("system_menus_options_input_customize_controls_up", "---");
-		break;
-	case DIK_PRIOR:               // PgUp on arrow keypad
-		pText = getLocalised("system_menus_options_input_customize_controls_pageup", "---");
-		break;
-	case DIK_LEFT:                // LeftArrow on arrow keypad
-		pText = getLocalised("system_menus_options_input_customize_controls_left", "---");
-		break;
-	case DIK_RIGHT:               // RightArrow on arrow keypad
-		pText = getLocalised("system_menus_options_input_customize_controls_right", "---");
-		break;
-	case DIK_DOWN:                // DownArrow on arrow keypad
-		pText = getLocalised("system_menus_options_input_customize_controls_down", "---");
-		break;
-	case DIK_BUTTON1:
-		pText = getLocalised("system_menus_options_input_customize_controls_button0", "b1");
-		break;
-	case DIK_BUTTON2:
-		pText = getLocalised("system_menus_options_input_customize_controls_button1", "b2");
-		break;
-	case DIK_BUTTON3:
-		pText = getLocalised("system_menus_options_input_customize_controls_button2", "b3");
-		break;
-	case DIK_BUTTON4:
-		pText = getLocalised("system_menus_options_input_customize_controls_button3", "b4");
-		break;
-	case DIK_BUTTON5:
-		pText = getLocalised("system_menus_options_input_customize_controls_button4", "b5");
-		break;
-	case DIK_BUTTON6:
-		pText = getLocalised("system_menus_options_input_customize_controls_button5", "b6");
-		break;
-	case DIK_BUTTON7:
-		pText = getLocalised("system_menus_options_input_customize_controls_button6", "b7");
-		break;
-	case DIK_BUTTON8:
-		pText = getLocalised("system_menus_options_input_customize_controls_button7", "b8");
-		break;
-	case DIK_BUTTON9:
-		pText = getLocalised("system_menus_options_input_customize_controls_button8", "b9");
-		break;
-	case DIK_BUTTON10:
-		pText = getLocalised("system_menus_options_input_customize_controls_button9", "b10");
-		break;
-	case DIK_BUTTON11:
-		pText = getLocalised("system_menus_options_input_customize_controls_button10", "b11");
-		break;
-	case DIK_BUTTON12:
-		pText = getLocalised("system_menus_options_input_customize_controls_button11", "b12");
-		break;
-	case DIK_BUTTON13:
-		pText = getLocalised("system_menus_options_input_customize_controls_button12", "b13");
-		break;
-	case DIK_BUTTON14:
-		pText = getLocalised("system_menus_options_input_customize_controls_button13", "b14");
-		break;
-	case DIK_BUTTON15:
-		pText = getLocalised("system_menus_options_input_customize_controls_button14", "b15");
-		break;
-	case DIK_BUTTON16:
-		pText = getLocalised("system_menus_options_input_customize_controls_button15", "b16");
-		break;
-	case DIK_BUTTON17:
-		pText = getLocalised("system_menus_options_input_customize_controls_button16", "b17");
-		break;
-	case DIK_BUTTON18:
-		pText = getLocalised("system_menus_options_input_customize_controls_button17", "b18");
-		break;
-	case DIK_BUTTON19:
-		pText = getLocalised("system_menus_options_input_customize_controls_button18", "b19");
-		break;
-	case DIK_BUTTON20:
-		pText = getLocalised("system_menus_options_input_customize_controls_button19", "b20");
-		break;
-	case DIK_BUTTON21:
-		pText = getLocalised("system_menus_options_input_customize_controls_button20", "b21");
-		break;
-	case DIK_BUTTON22:
-		pText = getLocalised("system_menus_options_input_customize_controls_button21", "b22");
-		break;
-	case DIK_BUTTON23:
-		pText = getLocalised("system_menus_options_input_customize_controls_button22", "b23");
-		break;
-	case DIK_BUTTON24:
-		pText = getLocalised("system_menus_options_input_customize_controls_button23", "b24");
-		break;
-	case DIK_BUTTON25:
-		pText = getLocalised("system_menus_options_input_customize_controls_button24", "b25");
-		break;
-	case DIK_BUTTON26:
-		pText = getLocalised("system_menus_options_input_customize_controls_button25", "b26");
-		break;
-	case DIK_BUTTON27:
-		pText = getLocalised("system_menus_options_input_customize_controls_button26", "b27");
-		break;
-	case DIK_BUTTON28:
-		pText = getLocalised("system_menus_options_input_customize_controls_button27", "b28");
-		break;
-	case DIK_BUTTON29:
-		pText = getLocalised("system_menus_options_input_customize_controls_button28", "b29");
-		break;
-	case DIK_BUTTON30:
-		pText = getLocalised("system_menus_options_input_customize_controls_button29", "b30");
-		break;
-	case DIK_BUTTON31:
-		pText = getLocalised("system_menus_options_input_customize_controls_button30", "b31");
-		break;
-	case DIK_BUTTON32:
-		pText = getLocalised("system_menus_options_input_customize_controls_button31", "b32");
-		break;
-	case DIK_WHEELUP:
-		pText = getLocalised("system_menus_options_input_customize_controls_wheelup", "w0");
-		break;
-	case DIK_WHEELDOWN:
-		pText = getLocalised("system_menus_options_input_customize_controls_wheeldown", "w1");
-		break;
-	case -1:
-		pText += "---";
-		break;
-	default:
-		{
-		char tAnsiText[256];
-		GetKeyNameText(lParam, tAnsiText, 256);
-		
-		if(tAnsiText[0] == '\0') {
-			std::stringstream ss;
-			ss << "Key_" << _iVirtualKey;
-			pText = ss.str();
-		}
-		else {
-			
-			pText = tAnsiText;
-			
-			if(_iVirtualKey == DIK_LSHIFT) {
-				std::string tText2;
-				tText2 = getLocalised( "system_menus_options_input_customize_controls_left", "---");
-				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
-			}
-			
-			if(_iVirtualKey == DIK_LCONTROL) {
-				std::string tText2;
-				tText2 = getLocalised( "system_menus_options_input_customize_controls_left", "---");
-				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
-			}
-			
-			if(_iVirtualKey == DIK_LALT) {
-				std::string tText2;
-				tText2 = getLocalised( "system_menus_options_input_customize_controls_left", "---");
-				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
-			}
-			
-			if(_iVirtualKey == DIK_NUMPADENTER) {
-				pText += "0";
-			}
-			
-			if(pText.length() > 8) {
-				size_t size = 8;
-				for(; size != 0; size--) {
-					if(pText[size - 1] != ' ') {
-						break;
-					}
-				}
-				pText.resize(size);
-			}
-		}
-		}
-		break;
-	}
-	
-	if(!pText2.empty()) {
-		pText = pText2 + "+" + pText;
-	}
-	
-	return pText;
 }
 
 //-----------------------------------------------------------------------------
