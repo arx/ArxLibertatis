@@ -273,6 +273,66 @@ public:
 	static const std::string KEY_NONE;
 };
 
+
+
+class CDirectInput {
+	
+public:
+	
+	// Keyboard
+	bool	bActive;
+	bool	bTouch;
+	int		iKeyId;
+	int		iOneTouch[256];
+
+	// Mouse
+	static const size_t ARX_MAXBUTTON = 8;
+
+	bool	bMouseMove;
+	int		iMouseRX;
+	int		iMouseRY;
+	int		iMouseRZ;
+	int		iMouseAX;
+	int		iMouseAY;
+	int		iMouseAZ;
+	float	fMouseAXTemp;
+	float	fMouseAYTemp;
+	int		iSensibility;
+	int		iOldMouseButton[ARX_MAXBUTTON];
+	bool	bMouseButton[ARX_MAXBUTTON];
+	bool	bOldMouseButton[ARX_MAXBUTTON];
+	int		iMouseTime[ARX_MAXBUTTON];
+	int		iMouseTimeSet[ARX_MAXBUTTON];
+	int		iOldNumClick[ARX_MAXBUTTON];
+	int		iOldNumUnClick[ARX_MAXBUTTON];
+	int		iWheelSens;
+ 
+public:
+	CDirectInput();
+	virtual ~CDirectInput();
+
+	void GetInput();
+
+	void SetSensibility(int);
+	int  GetSensibility() const;
+
+	bool GetMouseButton(int) const;
+	bool GetMouseButtonRepeat(int) const;
+	bool GetMouseButtonNowPressed(int) const;
+	bool GetMouseButtonNowUnPressed(int) const;
+	bool GetMouseButtonDoubleClick(int, int) const;
+ 
+	bool IsVirtualKeyPressed(int) const;
+	bool IsVirtualKeyPressedNowPressed(int) const;
+	bool IsVirtualKeyPressedNowUnPressed(int) const;
+	int  GetMouseButtonClicked() const;
+ 
+	void ResetAll();
+	int GetWheelSens() const;
+};
+
+
+
 bool ARX_INPUT_Init();
 void ARX_INPUT_Release();
 

@@ -5394,35 +5394,21 @@ void DANAE::ManageKeyMouse()
 				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
 			}
 
-			float fd;
+			float fd = (((float)pGetInfoDirectInput->GetSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 
-			if(	0
-				&&	(danaeApp.m_pFramework->m_bIsFullscreen)
-				&&	(bGLOBAL_DINPUT_GAME) )
-			{
-				fd = (Original_framedelay) * .3f * (640.f / (float)DANAESIZX); 
-			}
-			else
-			{
-
-				fd = (((float)pGetInfoDirectInput->iSensibility) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
-
-				if(config.input.mouseSmoothing) {
-					float of=Original_framedelay;
-
-					if (of<=0.f)
-						fd=0.f;
-					else if (of>80.f)
-					{
-						of=80.f;
-						fd*=of;
-					}
-					else
-						fd*=of;
+			if(config.input.mouseSmoothing) {
+				float of = Original_framedelay;
+				if (of<=0.f) {
+					fd = 0.f;
+				} else if (of>80.f) {
+					of = 80.f;
+					fd *= of;
+				} else {
+					fd *= of;
 				}
-				else if (fd > 200)
-						fd=200;
-			}
+			} else if (fd > 200) {
+				fd=200;
+			}			
 
 			fd *= ((float)DANAESIZX) * ( 1.0f / 640 ); 
 

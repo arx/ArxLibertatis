@@ -648,52 +648,31 @@ class CWindowMenu
 		MENUSTATE Render();
 };
 
-//-----------------------------------------------------------------------------
-enum CURSORSTATE
-{
-	CURSOR_OFF,
-	CURSOR_ON,
-};
 
 //-----------------------------------------------------------------------------
-class CDirectInput {
-	
+class MenuCursor {
+
 public:
-	
-	// Keyboard
-	bool				bActive;
-	bool				bTouch;
-	int					iKeyId;
-	int					iKeyScanCode[256];
-	int					iOneTouch[256];
+	enum CURSORSTATE
+	{
+		CURSOR_OFF,
+		CURSOR_ON,
+	};
 
-	// Mouse
-	static const size_t ARX_MAXBUTTON = 8;
+public:
+	MenuCursor();
+	virtual ~MenuCursor();
 
-	bool				bMouseMove;
-	int					iMouseRX;
-	int					iMouseRY;
-	int					iMouseRZ;
-	int					iMouseAX;
-	int					iMouseAY;
-	int					iMouseAZ;
-	float				fMouseAXTemp;
-	float				fMouseAYTemp;
-	int					iSensibility;
-	int					iOldMouseButton[ARX_MAXBUTTON];
-	bool				bMouseButton[ARX_MAXBUTTON];
-	bool				bOldMouseButton[ARX_MAXBUTTON];
-	int					iMouseTime[ARX_MAXBUTTON];
-	int					iMouseTimeSet[ARX_MAXBUTTON];
-	int					iOldNumClick[ARX_MAXBUTTON];
-	int					iOldNumUnClick[ARX_MAXBUTTON];
-	int					iWheelSens;
+	void Update();
+	void SetMouseOver();
+	void SetCursorOn();
+	void SetCursorOff();
+	void DrawCursor();
 
-	// For the ribbon effect in the menu
-	int					iNbOldCoord;
-	int					iMaxOldCoord;
-	Vec2i				iOldCoord[256];	
+private:
+	void DrawOneCursor(int, int);
 
+private:
 	// Cursor
 	TextureContainer	* pTex[8];
 	long				lFrameDiff;
@@ -704,31 +683,10 @@ public:
 	bool				bMouseOver;
 	bool				bDrawCursor;
 
-private:
-	void DrawOneCursor(int, int);
- 
-public:
-	CDirectInput();
-	virtual ~CDirectInput();
-
-	void SetMouseOver();
-	void SetCursorOn();
-	void SetCursorOff();
-	void SetSensibility(int);
-	void GetInput();
-	void DrawCursor();
-	bool GetMouseButton(int);
-	bool GetMouseButtonRepeat(int);
-	bool GetMouseButtonNowPressed(int);
-	bool GetMouseButtonNowUnPressed(int);
-	bool GetMouseButtonDoubleClick(int, int);
- 
-	bool IsVirtualKeyPressed(int);
-	bool IsVirtualKeyPressedNowPressed(int);
-	bool IsVirtualKeyPressedNowUnPressed(int);
- 
-	void ResetAll();
-	int GetWheelSens();
+	// For the ribbon effect
+	int					iNbOldCoord;
+	int					iMaxOldCoord;
+	Vec2i				iOldCoord[256];	
 };
 
 bool Menu2_Render();

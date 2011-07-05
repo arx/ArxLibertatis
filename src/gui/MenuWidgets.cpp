@@ -121,7 +121,9 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _b
 bool bGLOBAL_DINPUT_MENU=true;
 bool bGLOBAL_DINPUT_GAME=true;
 
-CDirectInput *pGetInfoDirectInput=NULL;
+extern CDirectInput *pGetInfoDirectInput;
+MenuCursor* pMenuCursor=NULL;
+
 static CWindowMenu *pWindowMenu=NULL;
 CMenuState *pMenu;
 
@@ -429,13 +431,6 @@ void FontRenderText(Font* _pFont, Vec3f pos, const std::string& _pText, Color _c
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonDoubleClick(int _iNumButton,int _iTime)
-{
-	return ((iMouseTimeSet[_iNumButton]==2)&&(iMouseTime[_iNumButton]<_iTime)) ;
-}
-
-//-----------------------------------------------------------------------------
-
 void to_lower(std::string & str) {
 	std::transform( str.begin(), str.end(), str.begin(), ::tolower );
 }
@@ -550,6 +545,11 @@ bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
 
 bool Menu2_Render()
 {
+	if(pMenuCursor == NULL)
+		pMenuCursor = new MenuCursor();
+
+	pMenuCursor->Update();
+
 	ARXOldTimeMenu = ARXTimeMenu;
 	ARXTimeMenu = ARX_TIME_Get( false );
 	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
@@ -1919,7 +1919,7 @@ bool Menu2_Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
-	pGetInfoDirectInput->DrawCursor();
+	pMenuCursor->DrawCursor();
 
 	if(pMenu->bReInitAll)
 	{
@@ -2613,7 +2613,7 @@ void CMenuElementText::RenderMouseOver()
 
 	if(bNoMenu) return;
 
-	pGetInfoDirectInput->SetMouseOver();
+	pMenuCursor->SetMouseOver();
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -3295,7 +3295,7 @@ void CMenuCheckButton::RenderMouseOver()
 
 	if(bNoMenu) return;
 
-	pGetInfoDirectInput->SetMouseOver();
+	pMenuCursor->SetMouseOver();
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -3859,41 +3859,12 @@ void CWindowMenuConsole::UpdateText()
 
 //-----------------------------------------------------------------------------
 
-int IsMouseButtonClick()
-{
-	//MouseButton
-	for(size_t i = 0; i < CDirectInput::ARX_MAXBUTTON; i++) {
-		if(pGetInfoDirectInput->GetMouseButtonNowPressed(i)) {
-			return Mouse::Button_1+i-DXI_BUTTON0;
-		}
-	}
-
-	//Wheel UP/DOWN
-	if(pGetInfoDirectInput->iWheelSens<0)
-	{
-		return Mouse::Wheel_Down;
-	}
-	else
-	{
-		if(pGetInfoDirectInput->iWheelSens>0)
-		{
-			return Mouse::Wheel_Up;
-		}
-	}
-
-	return 0;
-}
-
-//-----------------------------------------------------------------------------
-
 CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 {
-	int iMouseButton=0;
+	int iMouseButton = pGetInfoDirectInput->GetMouseButtonClicked();
 
-	if(    (pGetInfoDirectInput->bTouch)||
-		(((iMouseButton = IsMouseButtonClick()) & 0xc0000000)))
-	{
-		if(!pGetInfoDirectInput->bTouch&&!bMouseAttack)
+	if((pGetInfoDirectInput->bTouch) || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
+		if(!pGetInfoDirectInput->bTouch && !bMouseAttack)
 		{
 			bMouseAttack=!bMouseAttack;
 			return NULL;
@@ -4823,7 +4794,7 @@ void CMenuButton::RenderMouseOver()
 
 	if(bNoMenu) return;
 
-	pGetInfoDirectInput->SetMouseOver();
+	pMenuCursor->SetMouseOver();
 
 	//affichage de la texture
 	if(pTexOver)
@@ -5138,7 +5109,7 @@ void CMenuSliderText::RenderMouseOver()
 
 	if(bNoMenu) return;
 
-	pGetInfoDirectInput->SetMouseOver();
+	pMenuCursor->SetMouseOver();
 
 	int iX = pGetInfoDirectInput->iMouseAX;
 	int iY = pGetInfoDirectInput->iMouseAY;
@@ -5406,7 +5377,7 @@ void CMenuSlider::RenderMouseOver()
 
 	if(bNoMenu) return;
 
-	pGetInfoDirectInput->SetMouseOver();
+	pMenuCursor->SetMouseOver();
 
 	int iX = pGetInfoDirectInput->iMouseAX;
 	int iY = pGetInfoDirectInput->iMouseAY;
@@ -5441,7 +5412,7 @@ void CMenuSlider::RenderMouseOver()
 
 //-----------------------------------------------------------------------------
 
-CDirectInput::CDirectInput()
+MenuCursor::MenuCursor()
 {
 	pTex[0]=TextureContainer::Find("graph\\interface\\cursors\\cursor00.bmp");
 	pTex[1]=TextureContainer::Find("graph\\interface\\cursors\\cursor01.bmp");
@@ -5453,11 +5424,7 @@ CDirectInput::CDirectInput()
 	pTex[7]=TextureContainer::Find("graph\\interface\\cursors\\cursor07.bmp");
 
 	SetCursorOff();
-	SetSensibility(2);
-	iMouseAX=0;
-	iMouseAY=0;
-	iMouseAZ=0;
-	fMouseAXTemp=fMouseAYTemp=0.f;
+	
 	iNbOldCoord=0;
 	iMaxOldCoord=40;
 
@@ -5475,54 +5442,33 @@ CDirectInput::CDirectInput()
 
 	iNumCursor=0;
 	lFrameDiff=0;
-
-	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
-		iOldMouseButton[i] = 0;
-		iMouseTime[i] = 0;
-		iMouseTimeSet[i] = 0;
-		bMouseButton[i] = bOldMouseButton[i] = false;
-		iOldNumClick[i] = iOldNumUnClick[i] = 0;
-	}
-
-	// PreCompute le ScanCode
-	bTouch=false;
-	HKL layout=GetKeyboardLayout(0);
-
-	for(int iI=0;iI<256;iI++)
-	{
-		iKeyScanCode[iI]=MapVirtualKeyEx(iI,0,layout);
-		iOneTouch[iI]=0;
-	}
-
+	
 	bDrawCursor=true;
-	bActive=false;
-
-	iWheelSens=0;
 }
 
 //-----------------------------------------------------------------------------
 
-CDirectInput::~CDirectInput()
+MenuCursor::~MenuCursor()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::SetCursorOff()
+void MenuCursor::SetCursorOff()
 {
 	eNumTex=CURSOR_OFF;
 }
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::SetCursorOn()
+void MenuCursor::SetCursorOn()
 {
 	eNumTex=CURSOR_ON;
 }
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::SetMouseOver()
+void MenuCursor::SetMouseOver()
 {
 	bMouseOver=true;
 	SetCursorOn();
@@ -5530,343 +5476,7 @@ void CDirectInput::SetMouseOver()
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::SetSensibility(int _iSensibility)
-{
-	iSensibility=_iSensibility;
-}
-
-//-----------------------------------------------------------------------------
-
-void CDirectInput::ResetAll()
-{
-	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
-		iOldMouseButton[i] = 0;
-		iMouseTime[i] = 0;
-		iMouseTimeSet[i] = 0;
-		bMouseButton[i] = bOldMouseButton[i] = false;
-		iOldNumClick[i] = iOldNumUnClick[i] = 0;
-	}
-
-	iKeyId=-1;
-	bTouch=false;
-
-	for(int i=0;i<256;i++)
-	{
-		iOneTouch[i]=0;
-	}
-
-	EERIEMouseButton=LastEERIEMouseButton=0;
-
-	iWheelSens=0;
-}
-
-//-----------------------------------------------------------------------------
-
-void CDirectInput::GetInput()
-{
-	int iDTime;
-
-	DX7Input::update();
-
-	iKeyId= DX7Input::getKeyboardKeyPressed();
-	bTouch=(iKeyId>=0)?true:false;
-
-	for(int i=0;i<256;i++)
-	{
-		if(IsVirtualKeyPressed(i))
-		{
-			switch(i)
-			{
-			case Keyboard::Key_LeftShift:
-			case Keyboard::Key_RightShift:
-			case Keyboard::Key_LeftCtrl:
-			case Keyboard::Key_RightCtrl:
-			case Keyboard::Key_LeftAlt:
-			case Keyboard::Key_RightAlt:
-
-				if(i!=iKeyId)
-					iKeyId|=(i<<16);
-
-				break;
-			}
-
-			if(iOneTouch[i]<2)
-			{
-				iOneTouch[i]++;
-			}
-		}
-		else
-		{
-			if(iOneTouch[i]>0)
-			{
-				iOneTouch[i]--;
-			}
-		}
-	}
-
-	if(bTouch)    //priorit� des touches
-	{
-		switch(iKeyId)
-		{
-		case Keyboard::Key_LeftShift:
-		case Keyboard::Key_RightShift:
-		case Keyboard::Key_LeftCtrl:
-		case Keyboard::Key_RightCtrl:
-		case Keyboard::Key_LeftAlt:
-		case Keyboard::Key_RightAlt:
-			{
-				bool bFound=false;
-
-				for(int i=0;i<256;i++)
-				{
-					if(bFound)
-					{
-						break;
-					}
-
-					switch(i&0xFFFF)
-					{
-					case Keyboard::Key_LeftShift:
-					case Keyboard::Key_RightShift:
-					case Keyboard::Key_LeftCtrl:
-					case Keyboard::Key_RightCtrl:
-					case Keyboard::Key_LeftAlt:
-					case Keyboard::Key_RightAlt:
-						continue;
-					default:
-						{
-							if(iOneTouch[i])
-							{
-								bFound=true;
-								iKeyId&=~0xFFFF;
-								iKeyId|=i;
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
-	}
-
-
-	ARX_CHECK_INT(ARX_TIME_Get( false ));
-	const int iArxTime = ARX_CLEAN_WARN_CAST_INT(ARX_TIME_Get( false )) ;
-
-
-	for(size_t i = 0; i < ARX_MAXBUTTON; i++)
-	{
-		int iNumClick;
-		int iNumUnClick;
-		DX7Input::getMouseButtonClickCount(i, iNumClick, iNumUnClick);
-
-		iOldNumClick[i]+=iNumClick+iNumUnClick;
-
-		if(    (!bMouseButton[i])&&(iOldNumClick[i]==iNumUnClick) )
-		{
-			iOldNumClick[i]=0;
-		}
-
-		bOldMouseButton[i]=bMouseButton[i];
-
-		if(bMouseButton[i])
-		{
-			if(iOldNumClick[i])
-			{
-				bMouseButton[i]=false;
-			}
-		}
-		else
-		{
-			if(iOldNumClick[i])
-			{
-				bMouseButton[i]=true;
-			}
-		}
-
-		if(iOldNumClick[i]) iOldNumClick[i]--;
-
-		DX7Input::isMouseButtonPressed(i,iDTime);
-
-		if(iDTime)
-		{
-			iMouseTime[i]=iDTime;
-			iMouseTimeSet[i]=2;
-		}
-		else
-		{
-			if(    (iMouseTimeSet[i]>0)&&
-				((ARX_TIME_Get( false )-iMouseTime[i])>300)
-				)
-			{
-				iMouseTime[i]=0;
-				iMouseTimeSet[i]=0;
-			}
-
-			if(GetMouseButtonNowPressed(i))
-			{
-				switch(iMouseTimeSet[i])
-				{
-				case 0:
-					iMouseTime[i] = iArxTime;
-					iMouseTimeSet[i]++;
-					break;
-				case 1:
-					iMouseTime[i] = iArxTime - iMouseTime[i];
-					iMouseTimeSet[i]++;
-					break;
-				}
-			}
-		}
-		}
-
-	iWheelSens=pGetInfoDirectInput->GetWheelSens();
-
-	if(    ( danaeApp.m_pFramework->m_bIsFullscreen ) &&
-		( bGLOBAL_DINPUT_MENU ) )
-	{
-		float fDX = 0.f;
-		float fDY = 0.f;
-		iMouseRX = iMouseRY = iMouseRZ = 0;
-
-		if(DX7Input::getMouseCoordinates(iMouseRX, iMouseRY, iMouseRZ)) {
-			float fSensMax = 1.f / 6.f;
-			float fSensMin = 2.f;
-			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
-			fSens = pow( .7f, fSens ) * 2.f;
-
-			fDX=( (float)iMouseRX ) * fSens * ( ( (float)DANAESIZX ) / 640.f );
-			fDY=( (float)iMouseRY ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
-			fMouseAXTemp += fDX;
-			fMouseAYTemp += fDY;
-
-			ARX_CHECK_INT(fMouseAXTemp);
-			ARX_CHECK_INT(fMouseAYTemp);
-			iMouseAX  = ARX_CLEAN_WARN_CAST_INT(fMouseAXTemp);
-			iMouseAY  = ARX_CLEAN_WARN_CAST_INT(fMouseAYTemp);
-
-			iMouseAZ += iMouseRZ;
-
-
-			if(iMouseAX<0)
-			{
-				iMouseAX     = 0;
-				fMouseAXTemp = 0.f; 
-			}
-
-
-			ARX_CHECK_NOT_NEG( iMouseAX );
-
-			if( ARX_CAST_ULONG( iMouseAX ) >= danaeApp.m_pFramework->m_dwRenderWidth )
-			{
-
-				iMouseAX = danaeApp.m_pFramework->m_dwRenderWidth - 1;
-				fMouseAXTemp = ARX_CLEAN_WARN_CAST_FLOAT( iMouseAX );
-			}
-
-			if(iMouseAY<0)
-			{
-				fMouseAYTemp=    0.f;
-				iMouseAY    =    0;
-			}
-
-
-			ARX_CHECK_NOT_NEG( iMouseAY );
-
-			if( ARX_CAST_ULONG( iMouseAY ) >= danaeApp.m_pFramework->m_dwRenderHeight )
-			{
-
-				iMouseAY        = danaeApp.m_pFramework->m_dwRenderHeight - 1;
-				fMouseAYTemp    = ARX_CLEAN_WARN_CAST_FLOAT( iMouseAY ); 
-			}
-
-
-
-			bMouseMove=true;
-		}
-		else
-		{
-			bMouseMove=false;
-		}
-
-		if(bGLOBAL_DINPUT_GAME)
-		{
-			_EERIEMouseXdep=(int)fDX;
-			_EERIEMouseYdep=(int)fDY;
-			EERIEMouseX=iMouseAX;
-			EERIEMouseY=iMouseAY;
-		}
-	}
-	else
-	{
-		bMouseMove = ((iMouseAX != DANAEMouse.x) || (iMouseAY != DANAEMouse.y));
-		iMouseAX=DANAEMouse.x;
-		iMouseAY=DANAEMouse.y;
-		iMouseAZ=0;
-	}
-
-	int iDx;
-	int iDy;
-
-	if(pTex[eNumTex])
-	{
-		iDx=pTex[eNumTex]->m_dwWidth>>1;
-		iDy=pTex[eNumTex]->m_dwHeight>>1;
-	}
-	else
-	{
-		iDx=0;
-		iDy=0;
-	}
-
-	iOldCoord[iNbOldCoord].x=iMouseAX+iDx;
-	iOldCoord[iNbOldCoord].y=iMouseAY+iDy;
-	iNbOldCoord++;
-
-	if(iNbOldCoord>=iMaxOldCoord)
-	{
-		iNbOldCoord=iMaxOldCoord-1;
-		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(Vec2i)*iNbOldCoord);
-	}
-
-}
-
-//-----------------------------------------------------------------------------
-
-int CDirectInput::GetWheelSens() {
-	
-	int iX, iY, iZ = 0;
-	DX7Input::getMouseCoordinates(iX, iY, iZ);
-	
-	return iZ;
-}
-
-//-----------------------------------------------------------------------------
-
-bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
-{
-	return DX7Input::isKeyboardKeyPressed(_iVirtualKey)?true:false;
-}
-
-//-----------------------------------------------------------------------------
-
-bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey)
-{
-	return ((DX7Input::isKeyboardKeyPressed(_iVirtualKey)) &&
-		    (iOneTouch[_iVirtualKey]==1));
-}
-
-//-----------------------------------------------------------------------------
-
-bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey)
-{
-	return ((!DX7Input::isKeyboardKeyPressed(_iVirtualKey))&&
-			(iOneTouch[_iVirtualKey]==1) );
-}
-
-//-----------------------------------------------------------------------------
-
-void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
+void MenuCursor::DrawOneCursor(int _iPosX,int _iPosY) {
 	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
@@ -5882,6 +5492,36 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuCursor::Update()
+{
+    int iDx;
+	int iDy;
+
+	if(pTex[eNumTex])
+	{
+		iDx=pTex[eNumTex]->m_dwWidth>>1;
+		iDy=pTex[eNumTex]->m_dwHeight>>1;
+	}
+	else
+	{
+		iDx=0;
+		iDy=0;
+	}
+
+	iOldCoord[iNbOldCoord].x=pGetInfoDirectInput->iMouseAX+iDx;
+	iOldCoord[iNbOldCoord].y=pGetInfoDirectInput->iMouseAY+iDy;
+	iNbOldCoord++;
+
+	if(iNbOldCoord>=iMaxOldCoord)
+	{
+		iNbOldCoord=iMaxOldCoord-1;
+		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(Vec2i)*iNbOldCoord);
+	}
+
 }
 
 //-----------------------------------------------------------------------------
@@ -5982,21 +5622,23 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::DrawCursor()
+void MenuCursor::DrawCursor()
 {
-	if(!bDrawCursor) return;
+	if(!bDrawCursor)
+		return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
 
-	if(pTex[iNumCursor]) GRenderer->SetTexture(0, pTex[iNumCursor]);
-	else GRenderer->ResetTexture(0);
+	if(pTex[iNumCursor]) 
+		GRenderer->SetTexture(0, pTex[iNumCursor]);
+	else 
+		GRenderer->ResetTexture(0);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	DrawOneCursor(iMouseAX,iMouseAY);
-
+	DrawOneCursor(pGetInfoDirectInput->iMouseAX, pGetInfoDirectInput->iMouseAY);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 
@@ -6041,37 +5683,6 @@ void CDirectInput::DrawCursor()
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButton(int _iNumButton)
-{
-
-	return(    (bMouseButton[_iNumButton])&&(!bOldMouseButton[_iNumButton]));
-}
-
-//-----------------------------------------------------------------------------
-
-bool CDirectInput::GetMouseButtonRepeat(int _iNumButton)
-{
-	return( bMouseButton[_iNumButton] );
-}
-
-//-----------------------------------------------------------------------------
-
-bool CDirectInput::GetMouseButtonNowPressed(int _iNumButton)
-{
-
-	return(    (bMouseButton[_iNumButton])&&(!bOldMouseButton[_iNumButton]));
-}
-
-//-----------------------------------------------------------------------------
-
-bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton)
-{
-
-	return( (!bMouseButton[_iNumButton])&&(bOldMouseButton[_iNumButton]) );
-}
-
-//-----------------------------------------------------------------------------
-
 void Menu2_Close()
 {
 	ARXmenu.currentmode = AMCM_OFF;
@@ -6088,5 +5699,11 @@ void Menu2_Close()
 	{
 		delete pWindowMenu;
 		pWindowMenu=NULL;
+	}
+
+	if(pMenuCursor)
+	{
+		delete pMenuCursor;
+		pMenuCursor = NULL;
 	}
 }
