@@ -281,7 +281,6 @@ public:
 	// Keyboard
 	bool	bKeyTouched;		// Was a key pressed in the last update
 	int		iKeyId;				// Id of the key pressed in the last update
-	int	iOneTouch[256];
 
 	// Mouse
 	static const size_t ARX_MAXBUTTON = 8;
@@ -318,6 +317,8 @@ public:
 	int GetWheelDir() const;
 	
 private:
+	int	iOneTouch[256];
+
 	float fMouseAXTemp;
 	float fMouseAYTemp;
 

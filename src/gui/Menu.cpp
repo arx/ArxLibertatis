@@ -541,9 +541,40 @@ void ARX_Menu_Manage() {
 	switch (ARXmenu.currentmode)
 	{
 		case AMCM_OFF:
-			/* Checked in Danae.cpp now ! */
-			return;
-			break;
+		{
+			// Checks for ESC key
+			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
+			{
+				if (CINEMASCOPE)
+				{
+					if (!FADEDIR)	// Disabling ESC capture while fading in or out.
+					{
+						if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
+						{
+							REQUEST_SPEECH_SKIP=1;				
+						}
+					}
+				}
+				else
+				{
+					LogDebug << "snapshot";
+					//create a screenshot temporaire pour la sauvegarde
+					::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
+					pSnapShot->GetSnapShotDim(160,100);
+					delete pSnapShot;
+
+					ARX_TIME_Pause();
+					ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
+					ARX_MENU_Launch();
+					bFadeInOut=false;	//fade out
+					bFade=true;			//active le fade
+					TRUE_PLAYER_MOUSELOOK_ON = 0;
+
+					ARX_PLAYER_PutPlayerInNormalStance(1);
+				}
+			}
+		}
+		break;
 		case AMCM_NEWQUEST:
 		{
 			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape)

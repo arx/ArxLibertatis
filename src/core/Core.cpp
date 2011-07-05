@@ -5203,43 +5203,7 @@ static float _AvgFrameDiff = 150.f;
 	// Update Various Player Infos for this frame.
 	if (FirstFrame==0)
 		ARX_PLAYER_Frame_Update();
-
-	// Checks for ESC key
-	if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
-	{
-		if (ARXmenu.currentmode == AMCM_OFF)
-		{
-			if (CINEMASCOPE)
-			{
-				if (!FADEDIR)	// Disabling ESC capture while fading in or out.
-				{
-					if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
-					{
-						REQUEST_SPEECH_SKIP=1;				
-					}
-				}
-			}
-			else
-			{
-				LogDebug << "snapshot";
-				//create a screenshot temporaire pour la sauvegarde
-				::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
-				pSnapShot->GetSnapShotDim(160,100);
-				delete pSnapShot;
-
-				ARX_TIME_Pause();
-				ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
-				ARX_MENU_Launch();
-				bFadeInOut=false;	//fade out
-				bFade=true;			//active le fade
-				pGetInfoDirectInput->iOneTouch[Keyboard::Key_Escape] = 0;
-				TRUE_PLAYER_MOUSELOOK_ON = 0;
-
-				ARX_PLAYER_PutPlayerInNormalStance(1);
-			}
-		}
-	}
-
+	
 	// Project need to reload all textures ???
 	if (WILL_RELOAD_ALL_TEXTURES)
 	{
