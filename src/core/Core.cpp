@@ -1462,9 +1462,9 @@ int main(int argc, char ** argv) {
 		LogWarning << "Sound init failed";
 	}
 	
-	LogDebug << "DInput Init";
+	LogDebug << "Input Init";
 	pGetInfoDirectInput = new CDirectInput();
-	LogInfo << "DInput Init Success";
+	LogInfo << "Input Init Success";
 
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
@@ -4611,25 +4611,17 @@ bool DANAE_ManageSplashThings()
 	{
 		if (EDITMODE || !config.firstRun )
 		{
-			for (int i=0; i<256; i++)
-			{
-				pGetInfoDirectInput->iOneTouch[i] = 0;
-			}
-
 			pGetInfoDirectInput->GetInput();
 
-			for (int i=0; i<256; i++)
+			if (pGetInfoDirectInput->bKeyTouched)
 			{
-				if (pGetInfoDirectInput->iOneTouch[i] > 0)
-				{
-					REFUSE_GAME_RETURN=1;
-					FORBID_SAVE=0;
-					FirstFrame=1;
-					SPLASH_THINGS_STAGE=0;
-					INTRO_NOT_LOADED=0;
-					ARXmenu.currentmode=AMCM_MAIN;
-					ARX_MENU_Launch();
-				}
+				REFUSE_GAME_RETURN=1;
+				FORBID_SAVE=0;
+				FirstFrame=1;
+				SPLASH_THINGS_STAGE=0;
+				INTRO_NOT_LOADED=0;
+				ARXmenu.currentmode=AMCM_MAIN;
+				ARX_MENU_Launch();
 			}
 
 			if (ARX_IMPULSE_Pressed(Keyboard::Key_Escape))
@@ -7201,18 +7193,12 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 		if(wParam==WA_INACTIVE)
 		{
 			DX7Input::unacquireDevices();
-
-			if (pGetInfoDirectInput)
-			{
-				pGetInfoDirectInput->bActive=false;
-			}
 		}
 		else
 		{
 			if(pGetInfoDirectInput)
 			{
 				pGetInfoDirectInput->ResetAll();
-				pGetInfoDirectInput->bActive=true;
 			}
 
 			DX7Input::unacquireDevices();
@@ -7874,7 +7860,7 @@ void ClearGame() {
 	//configuration
 	config.save();
 	
-	//dinput
+	//input
 	if(pGetInfoDirectInput)	{
 		delete pGetInfoDirectInput;
 		pGetInfoDirectInput=NULL;

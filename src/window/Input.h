@@ -274,44 +274,31 @@ public:
 };
 
 
-
 class CDirectInput {
 	
 public:
 	
 	// Keyboard
-	bool	bActive;
-	bool	bTouch;
-	int		iKeyId;
-	int		iOneTouch[256];
+	bool	bKeyTouched;		// Was a key pressed in the last update
+	int		iKeyId;				// Id of the key pressed in the last update
+	int	iOneTouch[256];
 
 	// Mouse
 	static const size_t ARX_MAXBUTTON = 8;
 
-	bool	bMouseMove;
+	bool	bMouseMoved;
 	int		iMouseRX;
 	int		iMouseRY;
-	int		iMouseRZ;
 	int		iMouseAX;
 	int		iMouseAY;
-	int		iMouseAZ;
-	float	fMouseAXTemp;
-	float	fMouseAYTemp;
-	int		iSensibility;
-	int		iOldMouseButton[ARX_MAXBUTTON];
-	bool	bMouseButton[ARX_MAXBUTTON];
-	bool	bOldMouseButton[ARX_MAXBUTTON];
-	int		iMouseTime[ARX_MAXBUTTON];
-	int		iMouseTimeSet[ARX_MAXBUTTON];
-	int		iOldNumClick[ARX_MAXBUTTON];
-	int		iOldNumUnClick[ARX_MAXBUTTON];
-	int		iWheelSens;
  
 public:
 	CDirectInput();
 	virtual ~CDirectInput();
 
 	void GetInput();
+
+	void SetMousePosition(int mouseX, int mouseY);
 
 	void SetSensibility(int);
 	int  GetSensibility() const;
@@ -328,7 +315,21 @@ public:
 	int  GetMouseButtonClicked() const;
  
 	void ResetAll();
-	int GetWheelSens() const;
+	int GetWheelDir() const;
+	
+private:
+	float fMouseAXTemp;
+	float fMouseAYTemp;
+
+	int	iSensibility;
+	int	iWheelDir;
+
+	bool bMouseButton[ARX_MAXBUTTON];
+	bool bOldMouseButton[ARX_MAXBUTTON];
+
+	int	iMouseTime[ARX_MAXBUTTON];
+	int	iMouseTimeSet[ARX_MAXBUTTON];
+	int	iOldNumClick[ARX_MAXBUTTON];
 };
 
 

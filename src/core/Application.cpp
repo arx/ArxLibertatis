@@ -85,7 +85,6 @@ using std::max;
 //-----------------------------------------------------------------------------
 extern long USE_OLD_MOUSE_SYSTEM;
 extern long FINAL_RELEASE;
-extern bool bGLOBAL_DINPUT_GAME;
 
 extern long FINAL_COMMERCIAL_DEMO;
 extern long FINAL_COMMERCIAL_GAME;
@@ -457,9 +456,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //*************************************************************************************
 void CD3DApplication::EERIEMouseUpdate(short x, short y)
 {
-	if ((m_pFramework) &&
-	        (m_pFramework->m_bIsFullscreen) &&
-	        (bGLOBAL_DINPUT_GAME)) return;
+	if ((m_pFramework) && (m_pFramework->m_bIsFullscreen))
+		return;
 
 	// Inactive App: ignore
 	if (!this->m_bActive)	return;

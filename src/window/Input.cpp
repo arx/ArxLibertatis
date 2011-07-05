@@ -100,11 +100,11 @@ bool ARX_IMPULSE_NowPressed(long ident)
 					{
 						if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 						{
-							if (pGetInfoDirectInput->iWheelSens < 0) return true;
+							if (pGetInfoDirectInput->GetWheelDir() < 0) return true;
 						}
 						else
 						{
-							if (pGetInfoDirectInput->iWheelSens > 0) return true;
+							if (pGetInfoDirectInput->GetWheelDir() > 0) return true;
 						}
 					}
 					else
@@ -156,11 +156,11 @@ bool ARX_IMPULSE_Pressed(long ident)
 						{
 							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 							{
-								if (pGetInfoDirectInput->iWheelSens < 0) return true;
+								if (pGetInfoDirectInput->GetWheelDir() < 0) return true;
 							}
 							else
 							{
-								if (pGetInfoDirectInput->iWheelSens > 0) return true;
+								if (pGetInfoDirectInput->GetWheelDir() > 0) return true;
 							}
 						}
 						else
@@ -318,11 +318,11 @@ bool ARX_IMPULSE_Pressed(long ident)
 						{
 							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 							{
-								if (pGetInfoDirectInput->iWheelSens < 0) return true;
+								if (pGetInfoDirectInput->GetWheelDir() < 0) return true;
 							}
 							else
 							{
-								if (pGetInfoDirectInput->iWheelSens > 0) return true;
+								if (pGetInfoDirectInput->GetWheelDir() > 0) return true;
 							}
 						}
 						else
@@ -614,24 +614,20 @@ CDirectInput::CDirectInput()
 
 	iMouseAX=0;
 	iMouseAY=0;
-	iMouseAZ=0;
 	fMouseAXTemp=fMouseAYTemp=0.f;
 	
 	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
-		iOldMouseButton[i] = 0;
 		iMouseTime[i] = 0;
 		iMouseTimeSet[i] = 0;
 		bMouseButton[i] = bOldMouseButton[i] = false;
-		iOldNumClick[i] = iOldNumUnClick[i] = 0;
+		iOldNumClick[i] = 0;
 	}
 
-	bTouch=false;
+	bKeyTouched = false;
 	for(int iI=0;iI<256;iI++)
 		iOneTouch[iI]=0;
 
-	bActive=false;
-
-	iWheelSens=0;
+	iWheelDir = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -645,15 +641,14 @@ CDirectInput::~CDirectInput()
 void CDirectInput::ResetAll()
 {
 	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
-		iOldMouseButton[i] = 0;
 		iMouseTime[i] = 0;
 		iMouseTimeSet[i] = 0;
 		bMouseButton[i] = bOldMouseButton[i] = false;
-		iOldNumClick[i] = iOldNumUnClick[i] = 0;
+		iOldNumClick[i] = 0;
 	}
 
 	iKeyId=-1;
-	bTouch=false;
+	bKeyTouched = false;
 
 	for(int i=0;i<256;i++)
 	{
@@ -662,7 +657,18 @@ void CDirectInput::ResetAll()
 
 	EERIEMouseButton=LastEERIEMouseButton=0;
 
-	iWheelSens=0;
+	iWheelDir = 0;
+}
+
+void CDirectInput::SetMousePosition(int mouseX, int mouseY)
+{
+	fMouseAXTemp = mouseX;
+	fMouseAYTemp = mouseY;
+	ARX_CHECK_INT(fMouseAXTemp);
+	ARX_CHECK_INT(fMouseAYTemp);
+
+	iMouseAX = ARX_CLEAN_WARN_CAST_INT(fMouseAXTemp);
+	iMouseAY = ARX_CLEAN_WARN_CAST_INT(fMouseAYTemp);
 }
 
 //-----------------------------------------------------------------------------
@@ -673,8 +679,8 @@ void CDirectInput::GetInput()
 
 	DX7Input::update();
 
-	iKeyId= DX7Input::getKeyboardKeyPressed();
-	bTouch=(iKeyId>=0)?true:false;
+	iKeyId = DX7Input::getKeyboardKeyPressed();
+	bKeyTouched = iKeyId >= 0;
 
 	for(int i=0;i<256;i++)
 	{
@@ -709,7 +715,7 @@ void CDirectInput::GetInput()
 		}
 	}
 
-	if(bTouch)    //keys priority
+	if(bKeyTouched)    //keys priority
 	{
 		switch(iKeyId)
 		{
@@ -823,16 +829,18 @@ void CDirectInput::GetInput()
 				}
 			}
 		}
-		}
+	}
 
-	iWheelSens=pGetInfoDirectInput->GetWheelSens();
+	int iMouseRZ;
+	iMouseRX = iMouseRY = iMouseRZ = 0;
 
-	if(danaeApp.m_pFramework->m_bIsFullscreen && bGLOBAL_DINPUT_MENU) {
+	bool mouseMoved = DX7Input::getMouseCoordinates(iMouseRX, iMouseRY, iWheelDir);
+
+	if(danaeApp.m_pFramework->m_bIsFullscreen) {
 		float fDX = 0.f;
 		float fDY = 0.f;
-		iMouseRX = iMouseRY = iMouseRZ = 0;
 
-		if(DX7Input::getMouseCoordinates(iMouseRX, iMouseRY, iMouseRZ)) {
+		if(mouseMoved) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
@@ -847,9 +855,6 @@ void CDirectInput::GetInput()
 			ARX_CHECK_INT(fMouseAYTemp);
 			iMouseAX  = ARX_CLEAN_WARN_CAST_INT(fMouseAXTemp);
 			iMouseAY  = ARX_CLEAN_WARN_CAST_INT(fMouseAYTemp);
-
-			iMouseAZ += iMouseRZ;
-
 
 			if(iMouseAX<0)
 			{
@@ -885,27 +890,25 @@ void CDirectInput::GetInput()
 
 
 
-			bMouseMove=true;
+			bMouseMoved = true;
 		}
 		else
 		{
-			bMouseMove=false;
+			bMouseMoved = false;
 		}
 
-		if(bGLOBAL_DINPUT_GAME)
-		{
-			_EERIEMouseXdep=(int)fDX;
-			_EERIEMouseYdep=(int)fDY;
-			EERIEMouseX=iMouseAX;
-			EERIEMouseY=iMouseAY;
-		}
+		_EERIEMouseXdep=(int)fDX;
+		_EERIEMouseYdep=(int)fDY;
+		EERIEMouseX=iMouseAX;
+		EERIEMouseY=iMouseAY;
 	}
 	else
 	{
-		bMouseMove = ((iMouseAX != DANAEMouse.x) || (iMouseAY != DANAEMouse.y));
-		iMouseAX=DANAEMouse.x;
-		iMouseAY=DANAEMouse.y;
-		iMouseAZ=0;
+		bMouseMoved = ((iMouseAX != DANAEMouse.x) || (iMouseAY != DANAEMouse.y));
+		iMouseRX = DANAEMouse.x - iMouseAX;
+		iMouseRY = DANAEMouse.y - iMouseAY;
+		iMouseAX = DANAEMouse.x;
+		iMouseAY = DANAEMouse.y;
 	}
 }
 
@@ -918,86 +921,68 @@ void CDirectInput::SetSensibility(int _iSensibility)
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetSensibility() const
-{
+int CDirectInput::GetSensibility() const {
 	return iSensibility;
 }
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetWheelSens() const {
-	
-	int iX, iY, iZ = 0;
-	DX7Input::getMouseCoordinates(iX, iY, iZ);
-	
-	return iZ;
+int CDirectInput::GetWheelDir() const {
+	return iWheelDir;
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey) const
-{
-	return DX7Input::isKeyboardKeyPressed(_iVirtualKey)?true:false;
+bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey) const {
+	return DX7Input::isKeyboardKeyPressed(_iVirtualKey);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey) const
-{
-	return ((DX7Input::isKeyboardKeyPressed(_iVirtualKey)) &&
-		    (iOneTouch[_iVirtualKey]==1));
+bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey) const {
+	return DX7Input::isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey) const
-{
-	return ((!DX7Input::isKeyboardKeyPressed(_iVirtualKey))&&
-			(iOneTouch[_iVirtualKey]==1) );
+bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey) const {
+	return !DX7Input::isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButton(int _iNumButton) const
-{
-
-	return(    (bMouseButton[_iNumButton])&&(!bOldMouseButton[_iNumButton]));
+bool CDirectInput::GetMouseButton(int _iNumButton) const {
+	return bMouseButton[_iNumButton] && !bOldMouseButton[_iNumButton];
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonRepeat(int _iNumButton) const
-{
-	return( bMouseButton[_iNumButton] );
+bool CDirectInput::GetMouseButtonRepeat(int _iNumButton) const {
+	return bMouseButton[_iNumButton];
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonNowPressed(int _iNumButton) const
-{
-
-	return(    (bMouseButton[_iNumButton])&&(!bOldMouseButton[_iNumButton]));
+bool CDirectInput::GetMouseButtonNowPressed(int _iNumButton) const {
+	return bMouseButton[_iNumButton] && !bOldMouseButton[_iNumButton];
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton) const
-{
-
-	return( (!bMouseButton[_iNumButton])&&(bOldMouseButton[_iNumButton]) );
+bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton) const {
+	return !bMouseButton[_iNumButton] && bOldMouseButton[_iNumButton];
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonDoubleClick(int _iNumButton,int _iTime) const
-{
-	return ((iMouseTimeSet[_iNumButton]==2)&&(iMouseTime[_iNumButton]<_iTime)) ;
+bool CDirectInput::GetMouseButtonDoubleClick(int _iNumButton,int _iTime) const {
+	return (iMouseTimeSet[_iNumButton] == 2) && (iMouseTime[_iNumButton] < _iTime);
 }
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetMouseButtonClicked() const
-{
+int CDirectInput::GetMouseButtonClicked() const {
+
 	//MouseButton
 	for(size_t i = 0; i < CDirectInput::ARX_MAXBUTTON; i++) {
 		if(GetMouseButtonNowPressed(i)) {
@@ -1006,13 +991,13 @@ int CDirectInput::GetMouseButtonClicked() const
 	}
 
 	//Wheel UP/DOWN
-	if(iWheelSens<0)
+	if(iWheelDir < 0)
 	{
 		return Mouse::Wheel_Down;
 	}
 	else
 	{
-		if(iWheelSens>0)
+		if(iWheelDir > 0)
 		{
 			return Mouse::Wheel_Up;
 		}

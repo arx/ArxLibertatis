@@ -99,7 +99,6 @@ extern long NEED_TEST_TEXT;
 extern float Original_framedelay;
 extern long FINAL_COMMERCIAL_GAME;
 extern EERIE_3DOBJ *arrowobj;
-extern bool bGLOBAL_DINPUT_GAME;
 extern void InitTileLights();
 extern long USE_LIGHT_OPTIM;
 
@@ -5161,22 +5160,10 @@ void DANAE::ManageKeyMouse()
 		DANAEMouse.x=MemoMouse.x;
 		DANAEMouse.y=MemoMouse.y;
 
-		if(	(danaeApp.m_pFramework->m_bIsFullscreen)&&
-			(bGLOBAL_DINPUT_GAME) )
+		if(danaeApp.m_pFramework->m_bIsFullscreen)
 		{
 			if(pGetInfoDirectInput)
-			{
-
-				pGetInfoDirectInput->fMouseAXTemp	=	DANAEMouse.x ;
-				pGetInfoDirectInput->fMouseAYTemp	=	DANAEMouse.y ;
-				ARX_CHECK_INT(pGetInfoDirectInput->fMouseAXTemp);
-				ARX_CHECK_INT(pGetInfoDirectInput->fMouseAYTemp);
-
-				pGetInfoDirectInput->iMouseAX=ARX_CLEAN_WARN_CAST_INT(pGetInfoDirectInput->fMouseAXTemp);
-				pGetInfoDirectInput->iMouseAY=ARX_CLEAN_WARN_CAST_INT(pGetInfoDirectInput->fMouseAYTemp);
-
-
-			}
+				pGetInfoDirectInput->SetMousePosition(DANAEMouse.x, DANAEMouse.y);
 		}
 
 		bRestoreCoordMouse=false;

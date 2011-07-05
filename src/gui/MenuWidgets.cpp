@@ -118,9 +118,6 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _b
 
 //-----------------------------------------------------------------------------
 
-bool bGLOBAL_DINPUT_MENU=true;
-bool bGLOBAL_DINPUT_GAME=true;
-
 extern CDirectInput *pGetInfoDirectInput;
 MenuCursor* pMenuCursor=NULL;
 
@@ -3676,7 +3673,7 @@ static int scan2ascii(DWORD scancode, unsigned short* result)
 
 void CWindowMenuConsole::UpdateText()
 {
-	if(pGetInfoDirectInput->bTouch)
+	if(pGetInfoDirectInput->bKeyTouched)
 	{
 		pGetInfoDirectInput->iKeyId&=0xFFFF;
 
@@ -3863,8 +3860,8 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 {
 	int iMouseButton = pGetInfoDirectInput->GetMouseButtonClicked();
 
-	if((pGetInfoDirectInput->bTouch) || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
-		if(!pGetInfoDirectInput->bTouch && !bMouseAttack)
+	if((pGetInfoDirectInput->bKeyTouched) || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
+		if(!pGetInfoDirectInput->bKeyTouched && !bMouseAttack)
 		{
 			bMouseAttack=!bMouseAttack;
 			return NULL;
@@ -3879,7 +3876,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 			{
 				bool bOk=true;
 
-				if(    (iMouseButton&0x80000000)&&
+				if(  (iMouseButton&0x80000000)&&
 					!(iMouseButton&0x40000000) )
 				{
 					bOk=false;
@@ -4316,9 +4313,9 @@ int CWindowMenuConsole::Render()
 				else
 					((CMenuElementText*)pZoneClick)->lColorHighlight = Color(50, 0, 0);
 
-				bool bOldTouch=pGetInfoDirectInput->bTouch;
+				bool bOldTouch=pGetInfoDirectInput->bKeyTouched;
 
-				if(    pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftShift)||
+				if( pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftShift)||
 					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightShift)||
 					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftCtrl)||
 					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightCtrl)||
@@ -4326,49 +4323,49 @@ int CWindowMenuConsole::Render()
 					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightAlt) )
 				{
 					if(!((pGetInfoDirectInput->iKeyId&~0x8000FFFF)>>16))
-						pGetInfoDirectInput->bTouch=false;
+						pGetInfoDirectInput->bKeyTouched = false;
 				}
 				else
 				{
 					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftShift))
 					{
-						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=Keyboard::Key_LeftShift;
+						pGetInfoDirectInput->bKeyTouched = true;
+						pGetInfoDirectInput->iKeyId = Keyboard::Key_LeftShift;
 					}
 
 					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightShift))
 					{
-						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=Keyboard::Key_RightShift;
+						pGetInfoDirectInput->bKeyTouched = true;
+						pGetInfoDirectInput->iKeyId = Keyboard::Key_RightShift;
 					}
 
 					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl))
 					{
-						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=Keyboard::Key_LeftCtrl;
+						pGetInfoDirectInput->bKeyTouched = true;
+						pGetInfoDirectInput->iKeyId = Keyboard::Key_LeftCtrl;
 					}
 
 					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightCtrl))
 					{
-						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=Keyboard::Key_RightCtrl;
+						pGetInfoDirectInput->bKeyTouched = true;
+						pGetInfoDirectInput->iKeyId = Keyboard::Key_RightCtrl;
 					}
 
 					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftAlt))
 					{
-						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=Keyboard::Key_LeftAlt;
+						pGetInfoDirectInput->bKeyTouched = true;
+						pGetInfoDirectInput->iKeyId = Keyboard::Key_LeftAlt;
 					}
 
 					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightAlt))
 					{
-						pGetInfoDirectInput->bTouch=true;
-						pGetInfoDirectInput->iKeyId=Keyboard::Key_RightAlt;
+						pGetInfoDirectInput->bKeyTouched = true;
+						pGetInfoDirectInput->iKeyId = Keyboard::Key_RightAlt;
 					}
 				}
 
-				CMenuElement *pmeElement=GetTouch(true);
-				pGetInfoDirectInput->bTouch=bOldTouch;
+				CMenuElement *pmeElement = GetTouch(true);
+				pGetInfoDirectInput->bKeyTouched = bOldTouch;
 
 				if(pmeElement)
 				{
@@ -4412,9 +4409,9 @@ void CWindowMenuConsole::ReInitActionKey()
 {
 	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
 	int iI=NUM_ACTION_KEY;
-	bool bOldTouch=pGetInfoDirectInput->bTouch;
+	bool bOldTouch=pGetInfoDirectInput->bKeyTouched;
 	int iOldVirtualKey=pGetInfoDirectInput->iKeyId;
-	pGetInfoDirectInput->bTouch=true;
+	pGetInfoDirectInput->bKeyTouched = true;
 
 	while(iI--)
 	{
@@ -4444,7 +4441,7 @@ void CWindowMenuConsole::ReInitActionKey()
 		iID+=2;
 	}
 
-	pGetInfoDirectInput->bTouch=bOldTouch;
+	pGetInfoDirectInput->bKeyTouched=bOldTouch;
 	pGetInfoDirectInput->iKeyId=iOldVirtualKey;
 }
 
