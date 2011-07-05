@@ -660,70 +660,75 @@ class CDirectInput {
 	
 public:
 	
+	// Keyboard
+	bool				bActive;
+	bool				bTouch;
+	int					iKeyId;
+	int					iKeyScanCode[256];
+	int					iOneTouch[256];
+
+	// Mouse
 	static const size_t ARX_MAXBUTTON = 8;
-	
-		bool				bActive;
-		bool				bTouch;
-		int					iKeyId;
-		int					iKeyScanCode[256];
-		int					iOneTouch[256];
-		bool				bMouseMove;
-		int					iMouseRX;
-		int					iMouseRY;
-		int					iMouseRZ;
-		int					iMouseAX;
-		int					iMouseAY;
-		int					iMouseAZ;
-		float				fMouseAXTemp;
-		float				fMouseAYTemp;
-		int					iSensibility;
-		int					iOldMouseButton[ARX_MAXBUTTON];
-		bool				bMouseButton[ARX_MAXBUTTON];
-		bool				bOldMouseButton[ARX_MAXBUTTON];
-		int					iMouseTime[ARX_MAXBUTTON];
-		int					iMouseTimeSet[ARX_MAXBUTTON];
-		int					iNbOldCoord;
-		int					iMaxOldCoord;
-		Vec2i iOldCoord[256];
 
-		TextureContainer	* pTex[8];
-		long				lFrameDiff;
-		CURSORSTATE			eNumTex;
-		int					iNumCursor;
-		float				fTailleX;
-		float				fTailleY;
-		bool				bMouseOver;
-		bool				bDrawCursor;
+	bool				bMouseMove;
+	int					iMouseRX;
+	int					iMouseRY;
+	int					iMouseRZ;
+	int					iMouseAX;
+	int					iMouseAY;
+	int					iMouseAZ;
+	float				fMouseAXTemp;
+	float				fMouseAYTemp;
+	int					iSensibility;
+	int					iOldMouseButton[ARX_MAXBUTTON];
+	bool				bMouseButton[ARX_MAXBUTTON];
+	bool				bOldMouseButton[ARX_MAXBUTTON];
+	int					iMouseTime[ARX_MAXBUTTON];
+	int					iMouseTimeSet[ARX_MAXBUTTON];
+	int					iOldNumClick[ARX_MAXBUTTON];
+	int					iOldNumUnClick[ARX_MAXBUTTON];
+	int					iWheelSens;
 
-		int					iOldNumClick[ARX_MAXBUTTON];
-		int					iOldNumUnClick[ARX_MAXBUTTON];
+	// For the ribbon effect in the menu
+	int					iNbOldCoord;
+	int					iMaxOldCoord;
+	Vec2i				iOldCoord[256];	
 
-		int					iWheelSens;
-	private:
-		void DrawOneCursor(int, int);
+	// Cursor
+	TextureContainer	* pTex[8];
+	long				lFrameDiff;
+	CURSORSTATE			eNumTex;
+	int					iNumCursor;
+	float				fTailleX;
+	float				fTailleY;
+	bool				bMouseOver;
+	bool				bDrawCursor;
+
+private:
+	void DrawOneCursor(int, int);
  
-	public:
-		CDirectInput();
-		virtual ~CDirectInput();
+public:
+	CDirectInput();
+	virtual ~CDirectInput();
 
-		void SetMouseOver();
-		void SetCursorOn();
-		void SetCursorOff();
-		void SetSensibility(int);
-		void GetInput();
-		void DrawCursor();
-		bool GetMouseButton(int);
-		bool GetMouseButtonRepeat(int);
-		bool GetMouseButtonNowPressed(int);
-		bool GetMouseButtonNowUnPressed(int);
-		bool GetMouseButtonDoubleClick(int, int);
+	void SetMouseOver();
+	void SetCursorOn();
+	void SetCursorOff();
+	void SetSensibility(int);
+	void GetInput();
+	void DrawCursor();
+	bool GetMouseButton(int);
+	bool GetMouseButtonRepeat(int);
+	bool GetMouseButtonNowPressed(int);
+	bool GetMouseButtonNowUnPressed(int);
+	bool GetMouseButtonDoubleClick(int, int);
  
-		bool IsVirtualKeyPressed(int);
-		bool IsVirtualKeyPressedNowPressed(int);
-		bool IsVirtualKeyPressedNowUnPressed(int);
+	bool IsVirtualKeyPressed(int);
+	bool IsVirtualKeyPressedNowPressed(int);
+	bool IsVirtualKeyPressedNowUnPressed(int);
  
-		void ResetAll();
-		int GetWheelSens();
+	void ResetAll();
+	int GetWheelSens();
 };
 
 bool Menu2_Render();

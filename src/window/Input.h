@@ -58,8 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_WINDOW_INPUT_H
 #define ARX_WINDOW_INPUT_H
 
-#include "window/DXInput.h"
-
 //-----------------------------------------------------------------------------
 class InputDevice
 {
@@ -251,7 +249,9 @@ public:
 
 	enum Wheel
 	{
-		Wheel_Up,
+		WheelBase = 0x40000000,
+
+		Wheel_Up = WheelBase,
 		Wheel_Down
 	};
 };
@@ -266,7 +266,7 @@ struct KeyDescription {
 class Input
 {
 public:
-	static std::string	getKeyName(InputKeyId key);
+	static std::string	getKeyName(InputKeyId key, bool localizedName = false);
 	static InputKeyId	getKeyId(const std::string& keyName);
 
 public:

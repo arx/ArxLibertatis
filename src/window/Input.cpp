@@ -70,29 +70,11 @@ extern CDirectInput * pGetInfoDirectInput;
 extern long STOP_KEYBOARD_INPUT;
 
 bool ARX_INPUT_Init() {
-	
-	DXI_Init();
-	
-	if(!DXI_GetKeyboardInputDevice(DXI_MODE_NONEXCLUSIF_OURMSG)) {
-		LogWarning << "could not grab the keyboeard";
-		return false;
-	}
-	
-	if(!DXI_GetMouseInputDevice(DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2)) {
-		LogWarning << "could not grab the mouse";
-		return false;
-	}
-	
-	if(!DXI_SetMouseRelative()) {
-		LogWarning << "could not set mouse relative mode";
-		return false;
-	}
-	
-	return true;
+	return DX7Input::init();
 }
 
 void ARX_INPUT_Release() {
-	DXI_Release();
+	DX7Input::release();
 }
  
 //-----------------------------------------------------------------------------
@@ -109,37 +91,34 @@ bool ARX_IMPULSE_NowPressed(long ident)
 			{
 				if (config.actions[ident].key[j] != -1)
 				{
-					if (config.actions[ident].key[j] & 0x80000000)
+					if (config.actions[ident].key[j] & Mouse::ButtonBase)
 					{
-						if (pGetInfoDirectInput->GetMouseButtonNowPressed(config.actions[ident].key[j]&~0x80000000))
+						if (pGetInfoDirectInput->GetMouseButtonNowPressed(config.actions[ident].key[j] & ~Mouse::ButtonBase))
 							return true;
 					}
-					else
+					else if (config.actions[ident].key[j] & Mouse::WheelBase)
 					{
-						if (config.actions[ident].key[j] & 0x40000000)
+						if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 						{
-							if (config.actions[ident].key[j] == 0x40000001)
-							{
-								if (pGetInfoDirectInput->iWheelSens < 0) return true;
-							}
-							else
-							{
-								if (pGetInfoDirectInput->iWheelSens > 0) return true;
-							}
+							if (pGetInfoDirectInput->iWheelSens < 0) return true;
 						}
 						else
 						{
-							bool bCombine = true;
-
-							if (config.actions[ident].key[j] & 0x7FFF0000)
-							{
-								if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
-									bCombine = false;
-							}
-
-							if (pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(config.actions[ident].key[j] & 0xFFFF))
-								return true & bCombine;
+							if (pGetInfoDirectInput->iWheelSens > 0) return true;
 						}
+					}
+					else
+					{
+						bool bCombine = true;
+
+						if (config.actions[ident].key[j] & 0x7FFF0000)
+						{
+							if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+								bCombine = false;
+						}
+
+						if (pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(config.actions[ident].key[j] & 0xFFFF))
+							return true & bCombine;
 					}
 				}
 			}
@@ -168,139 +147,136 @@ bool ARX_IMPULSE_Pressed(long ident)
 				{
 					if (config.actions[ident].key[j] != -1)
 					{
-						if (config.actions[ident].key[j] & 0x80000000)
+						if (config.actions[ident].key[j] & Mouse::ButtonBase)
 						{
-							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j]&~0x80000000))
+							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j] & ~Mouse::ButtonBase))
 								return true;
+						}
+						else if (config.actions[ident].key[j] & Mouse::WheelBase)
+						{
+							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
+							{
+								if (pGetInfoDirectInput->iWheelSens < 0) return true;
+							}
+							else
+							{
+								if (pGetInfoDirectInput->iWheelSens > 0) return true;
+							}
 						}
 						else
 						{
-							if (config.actions[ident].key[j] & 0x40000000)
+							bool bCombine = true;
+
+							if (config.actions[ident].key[j] & 0x7FFF0000)
 							{
-								if (config.actions[ident].key[j] == 0x40000001)
+								if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+									bCombine = false;
+							}
+
+							if (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
+							{
+								bool bQuit = false;
+
+								switch (ident)
 								{
-									if (pGetInfoDirectInput->iWheelSens < 0) return true;
+									case CONTROLS_CUST_MAGICMODE:
+									{
+										if (bCombine)
+										{
+											if (!uiOneHandedMagicMode)
+											{
+												uiOneHandedMagicMode = 1;
+											}
+											else
+											{
+												if (uiOneHandedMagicMode == 2)
+												{
+													uiOneHandedMagicMode = 3;
+												}
+											}
+
+											bQuit = true;
+										}
+									}
+									break;
+									case CONTROLS_CUST_STEALTHMODE:
+									{
+										if (bCombine)
+										{
+											if (!uiOneHandedStealth)
+											{
+												uiOneHandedStealth = 1;
+											}
+											else
+											{
+												if (uiOneHandedStealth == 2)
+												{
+													uiOneHandedStealth = 3;
+												}
+											}
+
+											bQuit = true;
+										}
+									}
+									break;
+									default:
+									{
+										return true & bCombine;
+									}
+									break;
 								}
-								else
+
+								if (bQuit)
 								{
-									if (pGetInfoDirectInput->iWheelSens > 0) return true;
+									break;
 								}
 							}
 							else
 							{
-								bool bCombine = true;
-
-								if (config.actions[ident].key[j] & 0x7FFF0000)
+								switch (ident)
 								{
-									if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
-										bCombine = false;
-								}
-
-								if (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
-								{
-									bool bQuit = false;
-
-									switch (ident)
+									case CONTROLS_CUST_MAGICMODE:
 									{
-										case CONTROLS_CUST_MAGICMODE:
+										if ((!j) &&
+											    (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
 										{
-											if (bCombine)
-											{
-												if (!uiOneHandedMagicMode)
-												{
-													uiOneHandedMagicMode = 1;
-												}
-												else
-												{
-													if (uiOneHandedMagicMode == 2)
-													{
-														uiOneHandedMagicMode = 3;
-													}
-												}
+											continue;
+										}
 
-												bQuit = true;
+										if (uiOneHandedMagicMode == 1)
+										{
+											uiOneHandedMagicMode = 2;
+										}
+										else
+										{
+											if (uiOneHandedMagicMode == 3)
+											{
+												uiOneHandedMagicMode = 0;
 											}
 										}
-										break;
-										case CONTROLS_CUST_STEALTHMODE:
-										{
-											if (bCombine)
-											{
-												if (!uiOneHandedStealth)
-												{
-													uiOneHandedStealth = 1;
-												}
-												else
-												{
-													if (uiOneHandedStealth == 2)
-													{
-														uiOneHandedStealth = 3;
-													}
-												}
-
-												bQuit = true;
-											}
-										}
-										break;
-										default:
-										{
-											return true & bCombine;
-										}
-										break;
 									}
-
-									if (bQuit)
+									break;
+									case CONTROLS_CUST_STEALTHMODE:
 									{
-										break;
-									}
-								}
-								else
-								{
-									switch (ident)
-									{
-										case CONTROLS_CUST_MAGICMODE:
+										if ((!j) &&
+											    (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
 										{
-											if ((!j) &&
-											        (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
-											{
-												continue;
-											}
+											continue;
+										}
 
-											if (uiOneHandedMagicMode == 1)
+										if (uiOneHandedStealth == 1)
+										{
+											uiOneHandedStealth = 2;
+										}
+										else
+										{
+											if (uiOneHandedStealth == 3)
 											{
-												uiOneHandedMagicMode = 2;
-											}
-											else
-											{
-												if (uiOneHandedMagicMode == 3)
-												{
-													uiOneHandedMagicMode = 0;
-												}
+												uiOneHandedStealth = 0;
 											}
 										}
-										break;
-										case CONTROLS_CUST_STEALTHMODE:
-										{
-											if ((!j) &&
-											        (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
-											{
-												continue;
-											}
-
-											if (uiOneHandedStealth == 1)
-											{
-												uiOneHandedStealth = 2;
-											}
-											else
-											{
-												if (uiOneHandedStealth == 3)
-												{
-													uiOneHandedStealth = 0;
-												}
-											}
-										}
-										break;
 									}
+									break;
 								}
 							}
 						}
@@ -333,37 +309,34 @@ bool ARX_IMPULSE_Pressed(long ident)
 				{
 					if (config.actions[ident].key[j] != -1)
 					{
-						if (config.actions[ident].key[j] & 0x80000000)
+						if (config.actions[ident].key[j] & Mouse::ButtonBase)
 						{
-							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j]&~0x80000000))
+							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j] & ~Mouse::ButtonBase))
 								return true;
 						}
-						else
+						else if (config.actions[ident].key[j] & Mouse::WheelBase)
 						{
-							if (config.actions[ident].key[j] & 0x40000000)
+							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 							{
-								if (config.actions[ident].key[j] == 0x40000001)
-								{
-									if (pGetInfoDirectInput->iWheelSens < 0) return true;
-								}
-								else
-								{
-									if (pGetInfoDirectInput->iWheelSens > 0) return true;
-								}
+								if (pGetInfoDirectInput->iWheelSens < 0) return true;
 							}
 							else
 							{
-								bool bCombine = true;
-
-								if (config.actions[ident].key[j] & 0x7FFF0000)
-								{
-									if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
-										bCombine = false;
-								}
-
-								if (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
-									return true & bCombine;
+								if (pGetInfoDirectInput->iWheelSens > 0) return true;
 							}
+						}
+						else
+						{
+							bool bCombine = true;
+
+							if (config.actions[ident].key[j] & 0x7FFF0000)
+							{
+								if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+									bCombine = false;
+							}
+
+							if (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
+								return true & bCombine;
 						}
 					}
 				}
@@ -388,9 +361,9 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 			{
 				if (config.actions[ident].key[j] != -1)
 				{
-					if (config.actions[ident].key[j] & 0x80000000)
+					if (config.actions[ident].key[j] & Mouse::ButtonBase)
 					{
-						if (pGetInfoDirectInput->GetMouseButtonNowUnPressed(config.actions[ident].key[j]&~0x80000000))
+						if (pGetInfoDirectInput->GetMouseButtonNowUnPressed(config.actions[ident].key[j] & Mouse::ButtonBase))
 							return true;
 					}
 					else
@@ -535,8 +508,9 @@ const std::string PREFIX_BUTTON = "Button";
 const char SEPARATOR = '+';
 const std::string Input::KEY_NONE = "---";
 
-std::string Input::getKeyName(InputKeyId key) {
-	
+std::string Input::getKeyName(InputKeyId key, bool localizedName) {
+	ARX_UNUSED(localizedName);
+
 	if(key == -1) {
 		return string();
 	}

@@ -4128,16 +4128,13 @@ void UpdateIOInvisibility(INTERACTIVE_OBJ * io)
 	}
 }
 extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
+
 //*************************************************************************************
 // Renders Interactive objects.
 // Will render objects between distance "from" (included)
 // to distance "to" (not included)
 // from camera position.
 //*************************************************************************************
-
-extern CDirectInput * pGetInfoDirectInput;
-extern TextureContainer TexMetal;
-extern long FINAL_COMMERCIAL_DEMO;
 void RenderInter(float from, float to) {
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);

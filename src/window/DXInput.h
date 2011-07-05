@@ -26,12 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_WINDOW_DXINPUT_H
 #define ARX_WINDOW_DXINPUT_H
 
-enum DXIMode {
-	DXI_MODE_EXCLUSIF_ALLMSG = 0,
-	DXI_MODE_EXCLUSIF_OURMSG = 1,
-	DXI_MODE_NONEXCLUSIF_ALLMSG = 2,
-	DXI_MODE_NONEXCLUSIF_OURMSG = 3
-};
+#include "window/Input.h"
+
 
 enum DXIButton {
 	DXI_BUTTON0 = 0,
@@ -68,18 +64,27 @@ enum DXIButton {
 	DXI_BUTTON31 = 31
 };
 
-bool DXI_Init();
-void DXI_Release();
-bool DXI_GetAxeMouseXYZ(int & mx, int & my, int & mz);
-bool DXI_ExecuteAllDevices();
-bool DXI_GetKeyboardInputDevice(DXIMode mode);
-bool DXI_GetMouseInputDevice(DXIMode mode, int minbutton, int minaxe);
-bool DXI_KeyPressed(int dikkey);
-int DXI_GetKeyIDPressed();
-void DXI_RestoreAllDevices();
-void DXI_SleepAllDevices();
-bool DXI_MouseButtonPressed(int numb, int & _iDeltaTime);
-void DXI_MouseButtonCountClick(int numb, int & _iNumClick, int & _iNumUnClick);
-bool DXI_SetMouseRelative();
+// TODO-input: remove the static / create a base class and add virtuals
+class DX7Input : public Input
+{
+public:
+	// TODO-input: call from constructor...
+	static bool init();
+	static void release();
+
+	static bool update();
+
+	static void acquireDevices();
+	static void unacquireDevices();
+
+	// Mouse 
+	static bool getMouseCoordinates(int & mx, int & my, int & mz);
+	static bool isMouseButtonPressed(int numb, int & _iDeltaTime);
+	static void getMouseButtonClickCount(int numb, int & _iNumClick, int & _iNumUnClick);
+
+	// Keyboard
+	static bool isKeyboardKeyPressed(int dikkey);
+	static int getKeyboardKeyPressed();
+};
 
 #endif // ARX_WINDOW_DXINPUT_H

@@ -6967,7 +6967,7 @@ static void ShowInfoText() {
 	TSU_TEST_NB = 0;
 	TSU_TEST_NB_LIGHT = 0;
 
-	long pos=DXI_GetKeyIDPressed();
+	long pos = DX7Input::getKeyboardKeyPressed();
 	sprintf(tex,"%ld",pos);
 	danaeApp.OutputText( 70, 99, tex );
 
@@ -7200,7 +7200,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 		if(wParam==WA_INACTIVE)
 		{
-			DXI_SleepAllDevices();
+			DX7Input::unacquireDevices();
 
 			if (pGetInfoDirectInput)
 			{
@@ -7215,8 +7215,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				pGetInfoDirectInput->bActive=true;
 			}
 
-			DXI_SleepAllDevices();
-			DXI_RestoreAllDevices();
+			DX7Input::unacquireDevices();
+			DX7Input::acquireDevices();
 		}
 
 		break;

@@ -3929,7 +3929,12 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 			}
 		}
 
-		std::string pText = Input::getKeyName((iMouseButton&0xc0000000)?iMouseButton:pGetInfoDirectInput->iKeyId); 
+		std::string pText;
+		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))
+			pText = Input::getKeyName(iMouseButton, true); 
+		else
+			pText = Input::getKeyName(pGetInfoDirectInput->iKeyId, true);
+
 		if ( !pText.empty() )
 		{
 			pZoneText->lColorHighlight=pZoneText->lOldColor;
@@ -5561,8 +5566,9 @@ void CDirectInput::GetInput()
 {
 	int iDTime;
 
-	DXI_ExecuteAllDevices();
-	iKeyId=DXI_GetKeyIDPressed();
+	DX7Input::update();
+
+	iKeyId= DX7Input::getKeyboardKeyPressed();
 	bTouch=(iKeyId>=0)?true:false;
 
 	for(int i=0;i<256;i++)
@@ -5652,7 +5658,7 @@ void CDirectInput::GetInput()
 	{
 		int iNumClick;
 		int iNumUnClick;
-		DXI_MouseButtonCountClick(i, iNumClick, iNumUnClick);
+		DX7Input::getMouseButtonClickCount(i, iNumClick, iNumUnClick);
 
 		iOldNumClick[i]+=iNumClick+iNumUnClick;
 
@@ -5680,7 +5686,7 @@ void CDirectInput::GetInput()
 
 		if(iOldNumClick[i]) iOldNumClick[i]--;
 
-		DXI_MouseButtonPressed(i,iDTime);
+		DX7Input::isMouseButtonPressed(i,iDTime);
 
 		if(iDTime)
 		{
@@ -5723,7 +5729,7 @@ void CDirectInput::GetInput()
 		float fDY = 0.f;
 		iMouseRX = iMouseRY = iMouseRZ = 0;
 
-		if(DXI_GetAxeMouseXYZ(iMouseRX, iMouseRY, iMouseRZ)) {
+		if(DX7Input::getMouseCoordinates(iMouseRX, iMouseRY, iMouseRZ)) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
@@ -5830,7 +5836,7 @@ void CDirectInput::GetInput()
 int CDirectInput::GetWheelSens() {
 	
 	int iX, iY, iZ = 0;
-	DXI_GetAxeMouseXYZ(iX, iY, iZ);
+	DX7Input::getMouseCoordinates(iX, iY, iZ);
 	
 	return iZ;
 }
@@ -5839,22 +5845,22 @@ int CDirectInput::GetWheelSens() {
 
 bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
 {
-	return DXI_KeyPressed(_iVirtualKey)?true:false;
+	return DX7Input::isKeyboardKeyPressed(_iVirtualKey)?true:false;
 }
 
 //-----------------------------------------------------------------------------
 
 bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey)
 {
-	return(    (DXI_KeyPressed(_iVirtualKey))&&
-			(iOneTouch[_iVirtualKey]==1) );
+	return ((DX7Input::isKeyboardKeyPressed(_iVirtualKey)) &&
+		    (iOneTouch[_iVirtualKey]==1));
 }
 
 //-----------------------------------------------------------------------------
 
 bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey)
 {
-	return(    (!DXI_KeyPressed(_iVirtualKey))&&
+	return ((!DX7Input::isKeyboardKeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 

@@ -79,8 +79,6 @@ extern long TSU_TEST_NB_LIGHT;
 extern EERIEMATRIX ProjectionMatrix;
 extern float fZFogStart;
 
-extern CDirectInput * pGetInfoDirectInput;
-
 float SOFTNEARCLIPPZ=1.f;
 
 void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out);

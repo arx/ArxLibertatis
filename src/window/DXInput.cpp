@@ -72,6 +72,13 @@ using std::vector;
 
 #define INPUT_STATE_ADD (512)
 
+enum DXIMode {
+	DXI_MODE_EXCLUSIF_ALLMSG = 0,
+	DXI_MODE_EXCLUSIF_OURMSG = 1,
+	DXI_MODE_NONEXCLUSIF_ALLMSG = 2,
+	DXI_MODE_NONEXCLUSIF_OURMSG = 3
+};
+
 struct INPUT_INFO {
 	bool active;
 	GUID guid;
@@ -97,8 +104,14 @@ const int DI_KEY_ARRAY_SIZE = 256;
 
 static int DInputToArxKeyTable[DI_KEY_ARRAY_SIZE];
 
+static void initDInputToArxKeyTable();
+static void releaseDevice(INPUT_INFO & info);
+static bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode);
+static bool getKeyboardInputDevice(DXIMode mode);
+static bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe);
+static bool setMouseRelative();
 
-void InitDInputToArxKeyTable()
+void initDInputToArxKeyTable()
 {
 	for(int i = 0; i < DI_KEY_ARRAY_SIZE;++i)
 		DInputToArxKeyTable[i] = -1;
@@ -231,9 +244,9 @@ static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvR
 	return DIENUM_CONTINUE;
 }
 
-bool DXI_Init() {
+bool DX7Input::init() {
 	
-	InitDInputToArxKeyTable();
+	initDInputToArxKeyTable();
 
 	HINSTANCE h = GetModuleHandle(0);
 	if(!h) {
@@ -252,11 +265,26 @@ bool DXI_Init() {
 	
 	DI_KeyBoardBuffer = NULL;
 	DI_MouseState = NULL;
+
+	if(!getKeyboardInputDevice(DXI_MODE_NONEXCLUSIF_OURMSG)) {
+		LogWarning << "could not grab the keyboeard";
+		return false;
+	}
+	
+	if(!getMouseInputDevice(DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2)) {
+		LogWarning << "could not grab the mouse";
+		return false;
+	}
+	
+	if(!setMouseRelative()) {
+		LogWarning << "could not set mouse relative mode";
+		return false;
+	}
 	
 	return true;
 }
 
-static void DXI_ReleaseDevice(INPUT_INFO & info) {
+void releaseDevice(INPUT_INFO & info) {
 	
 	if(!info.active) {
 		return;
@@ -288,11 +316,12 @@ static void DXI_ReleaseDevice(INPUT_INFO & info) {
 	}
 }
 
-void DXI_Release() {
+void DX7Input::release() {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
-		DXI_ReleaseDevice(*i);
+		releaseDevice(*i);
 	}
+
 	DI_InputInfo.clear();
 	
 	if(DI_DInput7) {
@@ -301,7 +330,7 @@ void DXI_Release() {
 	DI_DInput7 = NULL;
 }
 
-void DXI_RestoreAllDevices() {
+void DX7Input::acquireDevices() {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		if(i->active) {
@@ -310,7 +339,7 @@ void DXI_RestoreAllDevices() {
 	}
 }
 
-void DXI_SleepAllDevices() {
+void DX7Input::unacquireDevices() {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		if(i->active) {
@@ -319,7 +348,7 @@ void DXI_SleepAllDevices() {
 	}
 }
 
-static bool DXI_ChooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
+bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 	
 	int flag;
 	switch(mode) {
@@ -340,7 +369,7 @@ static bool DXI_ChooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 			return false;
 	}
 	
-	DXI_ReleaseDevice(info);
+	releaseDevice(info);
 	
 	if(FAILED(DI_DInput7->CreateDeviceEx(info.guid, IID_IDirectInputDevice7, (void**)&info.inputdevice7, NULL))) {
 		return false;
@@ -414,10 +443,10 @@ static bool DXI_ChooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 // TODO
 extern HWND mainWindow;
 
-bool DXI_GetKeyboardInputDevice(DXIMode mode) {
+bool getKeyboardInputDevice(DXIMode mode) {
 	
 	if(DI_KeyBoardBuffer) {
-		DXI_ReleaseDevice(*DI_KeyBoardBuffer);
+		releaseDevice(*DI_KeyBoardBuffer);
 		DI_KeyBoardBuffer = NULL;
 	}
 	
@@ -427,7 +456,7 @@ bool DXI_GetKeyboardInputDevice(DXIMode mode) {
 			continue;
 		}
 		
-		if(DXI_ChooseInputDevice(mainWindow, *i, mode)) {
+		if(chooseInputDevice(mainWindow, *i, mode)) {
 			return true;
 		}
 		
@@ -436,10 +465,10 @@ bool DXI_GetKeyboardInputDevice(DXIMode mode) {
 	return false;
 }
 
-bool DXI_GetMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
+bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 	
 	if(DI_MouseState) {
-		DXI_ReleaseDevice(*DI_MouseState);
+		releaseDevice(*DI_MouseState);
 		DI_MouseState = NULL;
 	}
 	
@@ -449,11 +478,11 @@ bool DXI_GetMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 			continue;
 		}
 		
-		if(DXI_ChooseInputDevice(mainWindow, *i, mode)) {
+		if(chooseInputDevice(mainWindow, *i, mode)) {
 			if(i->nbbuttons >= minbutton && i->nbaxes >= minaxe) {
 				return true;
 			} else {
-				DXI_ReleaseDevice(*i);
+				releaseDevice(*i);
 			}
 		}
 		
@@ -462,7 +491,7 @@ bool DXI_GetMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 	return false;
 }
 
-bool DXI_ExecuteAllDevices() {
+bool DX7Input::update() {
 	
 	bool success = true;
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
@@ -490,7 +519,7 @@ bool DXI_ExecuteAllDevices() {
 			case DIDEVTYPE_KEYBOARD: {
 				char keyBuffer[DI_KEY_ARRAY_SIZE];
 				if(FAILED(i->inputdevice7->GetDeviceState(DI_KEY_ARRAY_SIZE, keyBuffer))) {
-					DXI_RestoreAllDevices(); 
+					acquireDevices(); 
 					if(FAILED(i->inputdevice7->GetDeviceState(DI_KEY_ARRAY_SIZE, keyBuffer)))  {
 						memset(i->bufferstate, 0, DI_KEY_ARRAY_SIZE);
 						success = false;
@@ -517,11 +546,11 @@ bool DXI_ExecuteAllDevices() {
 	return success;
 }
 
-bool DXI_KeyPressed(int dikkey) {
+bool DX7Input::isKeyboardKeyPressed(int dikkey) {
 	return (DI_KeyBoardBuffer->bufferstate[dikkey - Keyboard::KeyBase] & 0x80) == 0x80;
 }
 
-int DXI_GetKeyIDPressed() {
+int DX7Input::getKeyboardKeyPressed() {
 	
 	char * buf = DI_KeyBoardBuffer->bufferstate;
 	for(int i = 0; i < DI_KEY_ARRAY_SIZE; i++) {
@@ -532,7 +561,7 @@ int DXI_GetKeyIDPressed() {
 	return -1;
 }
 
-bool DXI_GetAxeMouseXYZ(int & mx, int & my, int & mz) {
+bool DX7Input::getMouseCoordinates(int & mx, int & my, int & mz) {
 	
 	mx = my = mz = 0;
 	
@@ -579,7 +608,7 @@ static bool isMouseButton(int numb, DWORD dwOfs) {
 	}
 }
 
-void DXI_MouseButtonCountClick(int numb, int & _iNumClick, int & _iNumUnClick) {
+void DX7Input::getMouseButtonClickCount(int numb, int & _iNumClick, int & _iNumUnClick) {
 	
 	_iNumClick = 0;
 	_iNumUnClick = 0;
@@ -597,7 +626,7 @@ void DXI_MouseButtonCountClick(int numb, int & _iNumClick, int & _iNumUnClick) {
 	
 }
 
-bool DXI_MouseButtonPressed(int numb, int & _iDeltaTime) {
+bool DX7Input::isMouseButtonPressed(int numb, int & _iDeltaTime) {
 	
 	int iTime1 = 0;
 	int iTime2 = 0;
@@ -622,7 +651,7 @@ bool DXI_MouseButtonPressed(int numb, int & _iDeltaTime) {
 	return (iTime1 != 0);
 }
 
-bool DXI_SetMouseRelative() {
+bool setMouseRelative() {
 	
 	if(FAILED(DI_MouseState->inputdevice7->Unacquire())) {
 		return false;
