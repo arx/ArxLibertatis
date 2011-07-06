@@ -2729,7 +2729,7 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	CMenuZone * iR=pMenuAllZone->CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
-	if(pGetInfoDirectInput->GetMouseButton(Mouse::Button_1)) {
+	if(pGetInfoDirectInput->GetMouseButton(Mouse::Button_0)) {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
 			pZoneClick->OnMouseClick(1);
@@ -3993,7 +3993,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
 
-				if( pGetInfoDirectInput->GetMouseButtonDoubleClick(Mouse::Button_1,300) )
+				if( pGetInfoDirectInput->GetMouseButtonDoubleClick(Mouse::Button_0,300) )
 				{
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseDoubleClick(0);
@@ -4007,7 +4007,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 					return e;
 				}
 
-				if( pGetInfoDirectInput->GetMouseButton(Mouse::Button_1) )
+				if( pGetInfoDirectInput->GetMouseButton(Mouse::Button_0) )
 				{
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseClick(0);
@@ -4028,7 +4028,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
 
-					if( pGetInfoDirectInput->GetMouseButtonDoubleClick(Mouse::Button_1,300) )
+					if( pGetInfoDirectInput->GetMouseButtonDoubleClick(Mouse::Button_0,300) )
 					{
 						bEdit = pZoneClick->OnMouseDoubleClick(0);
 
@@ -4378,7 +4378,7 @@ int CWindowMenuConsole::Render()
 			break;
 		default:
 			{
-				if(pGetInfoDirectInput->GetMouseButtonNowPressed(Mouse::Button_1))
+				if(pGetInfoDirectInput->GetMouseButtonNowPressed(Mouse::Button_0))
 				{
 					CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 

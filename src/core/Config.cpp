@@ -107,7 +107,7 @@ ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_E), // LEANRIGHT
 	ActionKey(Keyboard::Key_X), // CROUCH
 	ActionKey(Keyboard::Key_F, Keyboard::Key_Enter), // MOUSELOOK
-	ActionKey(Mouse::Button_1), // ACTION
+	ActionKey(Mouse::Button_0), // ACTION
 	ActionKey(Keyboard::Key_I), // INVENTORY
 	ActionKey(Keyboard::Key_Backspace), // BOOK
 	ActionKey(Keyboard::Key_F1), // BOOKCHARSHEET
@@ -129,7 +129,7 @@ ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_PageDown), // LOOKDOWN
 	ActionKey(Keyboard::Key_LeftAlt), // STRAFE
 	ActionKey(Keyboard::Key_End), // CENTERVIEW
-	ActionKey(Keyboard::Key_L, Mouse::Button_2), // FREELOOK
+	ActionKey(Keyboard::Key_L, Mouse::Button_1), // FREELOOK
 	ActionKey(Keyboard::Key_Minus), // PREVIOUS
 	ActionKey(Keyboard::Key_Equals), // NEXT
 	ActionKey(Keyboard::Key_C), // CROUCHTOGGLE
