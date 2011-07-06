@@ -93,7 +93,7 @@ bool ARX_IMPULSE_NowPressed(long ident)
 				{
 					if (config.actions[ident].key[j] & Mouse::ButtonBase)
 					{
-						if (pGetInfoDirectInput->GetMouseButtonNowPressed(config.actions[ident].key[j] & ~Mouse::ButtonBase))
+						if (pGetInfoDirectInput->GetMouseButtonNowPressed(config.actions[ident].key[j]))
 							return true;
 					}
 					else if (config.actions[ident].key[j] & Mouse::WheelBase)
@@ -149,7 +149,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 					{
 						if (config.actions[ident].key[j] & Mouse::ButtonBase)
 						{
-							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j] & ~Mouse::ButtonBase))
+							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j]))
 								return true;
 						}
 						else if (config.actions[ident].key[j] & Mouse::WheelBase)
@@ -311,7 +311,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 					{
 						if (config.actions[ident].key[j] & Mouse::ButtonBase)
 						{
-							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j] & ~Mouse::ButtonBase))
+							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j]))
 								return true;
 						}
 						else if (config.actions[ident].key[j] & Mouse::WheelBase)
@@ -363,7 +363,7 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 				{
 					if (config.actions[ident].key[j] & Mouse::ButtonBase)
 					{
-						if (pGetInfoDirectInput->GetMouseButtonNowUnPressed(config.actions[ident].key[j] & Mouse::ButtonBase))
+						if (pGetInfoDirectInput->GetMouseButtonNowUnPressed(config.actions[ident].key[j]))
 							return true;
 					}
 					else
@@ -524,11 +524,10 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 		key &= 0xC000ffff;
 	}
 	
-	arx_assert(Mouse::Button_32 > Mouse::Button_1 && Mouse::Button_32 - Mouse::Button_1 == 31);
-	if(key >= (InputKeyId)Mouse::Button_1 && key <= (InputKeyId)Mouse::Button_32) {
+	if(key >= (InputKeyId)Mouse::ButtonBase && key < (InputKeyId)Mouse::ButtonMax) {
 		
 		ostringstream oss;
-		oss << PREFIX_BUTTON << (int)(key - Mouse::Button_1 + 1);
+		oss << PREFIX_BUTTON << (int)(key - Mouse::ButtonBase + 1);
 		name = oss.str();
 		
 	} else {
@@ -577,13 +576,12 @@ InputKeyId Input::getKeyId(const std::string & name) {
 		}
 	}
 	
-	arx_assert(Mouse::Button_32 > Mouse::Button_1 && Mouse::Button_32 - Mouse::Button_1 == 31);
 	if(!name.compare(0, PREFIX_BUTTON.length(), PREFIX_BUTTON)) {
 		istringstream iss(name.substr(PREFIX_BUTTON.length()));
 		int key;
 		iss >> key;
-		if(!iss.bad() && key >= 0 && key <= (int)(Mouse::Button_32 - Mouse::Button_1)) {
-			return Mouse::Button_1 + key - 1;
+		if(!iss.bad() && key >= 0 && key < Mouse::ButtonCount) {
+			return Mouse::ButtonBase + key - 1;
 		}
 	}
 	
@@ -616,7 +614,7 @@ CDirectInput::CDirectInput()
 	iMouseAY=0;
 	fMouseAXTemp=fMouseAYTemp=0.f;
 	
-	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
+	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
 		iMouseTimeSet[i] = 0;
 		bMouseButton[i] = bOldMouseButton[i] = false;
@@ -640,7 +638,7 @@ CDirectInput::~CDirectInput()
 
 void CDirectInput::ResetAll()
 {
-	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
+	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
 		iMouseTimeSet[i] = 0;
 		bMouseButton[i] = bOldMouseButton[i] = false;
@@ -765,11 +763,13 @@ void CDirectInput::GetInput()
 	const int iArxTime = ARX_CLEAN_WARN_CAST_INT(ARX_TIME_Get( false )) ;
 
 
-	for(size_t i = 0; i < ARX_MAXBUTTON; i++)
+	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++)
 	{
+		int i = buttonId - Mouse::ButtonBase;
+
 		int iNumClick;
 		int iNumUnClick;
-		DX7Input::getMouseButtonClickCount(i, iNumClick, iNumUnClick);
+		DX7Input::getMouseButtonClickCount(buttonId, iNumClick, iNumUnClick);
 
 		iOldNumClick[i]+=iNumClick+iNumUnClick;
 
@@ -797,7 +797,7 @@ void CDirectInput::GetInput()
 
 		if(iOldNumClick[i]) iOldNumClick[i]--;
 
-		DX7Input::isMouseButtonPressed(i,iDTime);
+		DX7Input::isMouseButtonPressed(buttonId,iDTime);
 
 		if(iDTime)
 		{
@@ -814,7 +814,7 @@ void CDirectInput::GetInput()
 				iMouseTimeSet[i]=0;
 			}
 
-			if(GetMouseButtonNowPressed(i))
+			if(GetMouseButtonNowPressed(buttonId))
 			{
 				switch(iMouseTimeSet[i])
 				{
@@ -951,32 +951,47 @@ bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey) const {
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButton(int _iNumButton) const {
-	return bMouseButton[_iNumButton] && !bOldMouseButton[_iNumButton];
+bool CDirectInput::GetMouseButton(int buttonId) const {
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+
+	int buttonIdx = buttonId - Mouse::ButtonBase;
+	return bMouseButton[buttonIdx] && !bOldMouseButton[buttonIdx];
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonRepeat(int _iNumButton) const {
-	return bMouseButton[_iNumButton];
+bool CDirectInput::GetMouseButtonRepeat(int buttonId) const {
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+
+	int buttonIdx = buttonId - Mouse::ButtonBase;
+	return bMouseButton[buttonIdx];
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonNowPressed(int _iNumButton) const {
-	return bMouseButton[_iNumButton] && !bOldMouseButton[_iNumButton];
+bool CDirectInput::GetMouseButtonNowPressed(int buttonId) const {
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+
+	int buttonIdx = buttonId - Mouse::ButtonBase;
+	return bMouseButton[buttonIdx] && !bOldMouseButton[buttonIdx];
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton) const {
-	return !bMouseButton[_iNumButton] && bOldMouseButton[_iNumButton];
+bool CDirectInput::GetMouseButtonNowUnPressed(int buttonId) const {
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+
+	int buttonIdx = buttonId - Mouse::ButtonBase;
+	return !bMouseButton[buttonIdx] && bOldMouseButton[buttonIdx];
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonDoubleClick(int _iNumButton,int _iTime) const {
-	return (iMouseTimeSet[_iNumButton] == 2) && (iMouseTime[_iNumButton] < _iTime);
+bool CDirectInput::GetMouseButtonDoubleClick(int buttonId, int timeMs) const {
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+
+	int buttonIdx = buttonId - Mouse::ButtonBase;
+	return (iMouseTimeSet[buttonIdx] == 2) && (iMouseTime[buttonIdx] < timeMs);
 }
 
 //-----------------------------------------------------------------------------
@@ -984,9 +999,9 @@ bool CDirectInput::GetMouseButtonDoubleClick(int _iNumButton,int _iTime) const {
 int CDirectInput::GetMouseButtonClicked() const {
 
 	//MouseButton
-	for(size_t i = 0; i < CDirectInput::ARX_MAXBUTTON; i++) {
+	for(int i = Mouse::ButtonBase; i < Mouse::ButtonMax; i++) {
 		if(GetMouseButtonNowPressed(i)) {
-			return Mouse::Button_1+i-DXI_BUTTON0;
+			return i;
 		}
 	}
 

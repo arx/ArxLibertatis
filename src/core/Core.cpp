@@ -4838,7 +4838,7 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(pGetInfoDirectInput->GetMouseButtonDoubleClick(iButton&~0x80000000,300))
+		if(pGetInfoDirectInput->GetMouseButtonDoubleClick(iButton,300))
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton|=4;
@@ -4853,7 +4853,7 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if(pGetInfoDirectInput->GetMouseButtonDoubleClick(iButton&~0x80000000,300))
+			if(pGetInfoDirectInput->GetMouseButtonDoubleClick(iButton,300))
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton|=4;
@@ -4867,8 +4867,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowPressed(iButton&~0x80000000)))||
-			((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (pGetInfoDirectInput->GetMouseButtonNowPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton|=1;
@@ -4885,8 +4885,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowPressed(iButton&~0x80000000)))||
-				((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (pGetInfoDirectInput->GetMouseButtonNowPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton|=1;
@@ -4901,8 +4901,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton&~0x80000000)))||
-			((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton&=~1;
@@ -4917,8 +4917,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton&~0x80000000)))||
-				((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton&=~1;
@@ -4932,8 +4932,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowPressed(iButton&~0x80000000)))||
-			((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (pGetInfoDirectInput->GetMouseButtonNowPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
 		{
 			EERIEMouseButton|=2;
 			bNoAction=false;
@@ -4946,8 +4946,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowPressed(iButton&~0x80000000)))||
-				((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (pGetInfoDirectInput->GetMouseButtonNowPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
 			{
 				EERIEMouseButton|=2;
 			}
@@ -4959,8 +4959,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton&~0x80000000)))||
-			((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(iButton)) )
 		{
 			EERIEMouseButton&=~2;
 			bNoAction=false;
@@ -4973,8 +4973,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton&~0x80000000)))||
-				((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(iButton)) )
 			{
 				EERIEMouseButton&=~2;
 			}

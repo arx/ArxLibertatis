@@ -2729,7 +2729,7 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	CMenuZone * iR=pMenuAllZone->CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
-	if(pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0)) {
+	if(pGetInfoDirectInput->GetMouseButton(Mouse::Button_1)) {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
 			pZoneClick->OnMouseClick(1);
@@ -3876,16 +3876,16 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 			{
 				bool bOk=true;
 
-				if(  (iMouseButton&0x80000000)&&
-					!(iMouseButton&0x40000000) )
+				if(  (iMouseButton & Mouse::ButtonBase)&&
+					!(iMouseButton & Mouse::WheelBase) )
 				{
 					bOk=false;
 				}
 				else
 				{
-					for(int iI=Mouse::Button_1;iI<=(int)Mouse::Button_32;iI++)
+					for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++)
 					{
-						if(pGetInfoDirectInput->iKeyId==iI)
+						if(pGetInfoDirectInput->iKeyId == buttonId)
 						{
 							bOk=false;
 							break;
@@ -3993,7 +3993,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
 
-				if( pGetInfoDirectInput->GetMouseButtonDoubleClick(DXI_BUTTON0,300) )
+				if( pGetInfoDirectInput->GetMouseButtonDoubleClick(Mouse::Button_1,300) )
 				{
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseDoubleClick(0);
@@ -4007,7 +4007,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 					return e;
 				}
 
-				if( pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0) )
+				if( pGetInfoDirectInput->GetMouseButton(Mouse::Button_1) )
 				{
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseClick(0);
@@ -4028,7 +4028,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
 
-					if( pGetInfoDirectInput->GetMouseButtonDoubleClick(DXI_BUTTON0,300) )
+					if( pGetInfoDirectInput->GetMouseButtonDoubleClick(Mouse::Button_1,300) )
 					{
 						bEdit = pZoneClick->OnMouseDoubleClick(0);
 
@@ -4378,7 +4378,7 @@ int CWindowMenuConsole::Render()
 			break;
 		default:
 			{
-				if(pGetInfoDirectInput->GetMouseButtonNowPressed(DXI_BUTTON0))
+				if(pGetInfoDirectInput->GetMouseButtonNowPressed(Mouse::Button_1))
 				{
 					CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 

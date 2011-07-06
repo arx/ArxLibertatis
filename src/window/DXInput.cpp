@@ -585,37 +585,38 @@ bool DX7Input::getMouseCoordinates(int & mx, int & my, int & mz) {
 	return flg;
 }
 
-static bool isMouseButton(int numb, DWORD dwOfs) {
-	switch(numb) {
-	case DXI_BUTTON0:
+static bool isMouseButton(int buttonId, DWORD dwOfs) {
+	switch(buttonId) {
+	case Mouse::Button_1:
 		return (dwOfs == (DWORD)DIMOFS_BUTTON0);
-	case DXI_BUTTON1:
+	case Mouse::Button_2:
 		return (dwOfs == (DWORD)DIMOFS_BUTTON1);
-	case DXI_BUTTON2:
+	case Mouse::Button_3:
 		return (dwOfs == (DWORD)DIMOFS_BUTTON2);
-	case DXI_BUTTON3:
+	case Mouse::Button_4:
 		return (dwOfs == (DWORD)DIMOFS_BUTTON3);
-	case DXI_BUTTON4:
+	case Mouse::Button_5:
 		return (dwOfs == (DWORD)DIMOFS_BUTTON4);
-	case DXI_BUTTON5:
+	case Mouse::Button_6:
 		return (dwOfs == (DWORD)DIMOFS_BUTTON5);
-	case DXI_BUTTON6:
+	case Mouse::Button_7:
 		return (dwOfs == (DWORD)DIMOFS_BUTTON6);
-	case DXI_BUTTON7:
+	case Mouse::Button_8:
 		return (dwOfs == (DWORD)DIMOFS_BUTTON7);
 	default:
 		return false;
 	}
 }
 
-void DX7Input::getMouseButtonClickCount(int numb, int & _iNumClick, int & _iNumUnClick) {
-	
+void DX7Input::getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) {
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+
 	_iNumClick = 0;
 	_iNumUnClick = 0;
 	
 	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
 	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
-		if(isMouseButton(numb, od->dwOfs)) {
+		if(isMouseButton(buttonId, od->dwOfs)) {
 			if(od->dwData & 0x80) {
 				_iNumClick += 1;
 			} else {
@@ -626,14 +627,15 @@ void DX7Input::getMouseButtonClickCount(int numb, int & _iNumClick, int & _iNumU
 	
 }
 
-bool DX7Input::isMouseButtonPressed(int numb, int & _iDeltaTime) {
-	
+bool DX7Input::isMouseButtonPressed(int buttonId, int & _iDeltaTime) {
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+
 	int iTime1 = 0;
 	int iTime2 = 0;
 	
 	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
 	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
-		if(isMouseButton(numb, od->dwOfs) && od->dwData & 0x80) {
+		if(isMouseButton(buttonId, od->dwOfs) && od->dwData & 0x80) {
 			if(!iTime1) {
 				iTime1 = od->dwTimeStamp;
 			} else {

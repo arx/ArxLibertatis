@@ -664,12 +664,12 @@ bool ARX_Menu_Render()
 		return false;
 	}
 
-	if (pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0))
+	if (pGetInfoDirectInput->GetMouseButton(Mouse::Button_1))
 	{
 		EERIEMouseButton = 1;
 		LastMouseClick = 1;
 	}
-	else if (pGetInfoDirectInput->GetMouseButton(DXI_BUTTON1))
+	else if (pGetInfoDirectInput->GetMouseButton(Mouse::Button_2))
 	{
 		EERIEMouseButton = 2;
 		LastMouseClick = 2;

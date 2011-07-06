@@ -191,7 +191,8 @@ public:
         Key_Minus,              // (-) On main keyboard 
         Key_Equals,             // (=) On main keyboard 
 
-        KeyMax
+        KeyMax,
+		KeyCount = KeyMax - KeyBase
     };
 
     //! State of a keyboard key.
@@ -219,32 +220,9 @@ public:
 		Button_6,
 		Button_7,
 		Button_8,
-		Button_9,
-		Button_10,
-		Button_11,
-		Button_12,
-		Button_13,
-		Button_14,
-		Button_15,
-		Button_16,
-		Button_17,
-		Button_18,
-		Button_19,
-		Button_20,
-		Button_21,
-		Button_22,
-		Button_23,
-		Button_24,
-		Button_25,
-		Button_26,
-		Button_27,
-		Button_28,
-		Button_29,
-		Button_30,
-		Button_31,
-		Button_32,
 
-		ButtonMax
+		ButtonMax,
+		ButtonCount = ButtonMax - ButtonBase
 	};
 
 	enum Wheel
@@ -283,8 +261,6 @@ public:
 	int		iKeyId;				// Id of the key pressed in the last update
 
 	// Mouse
-	static const size_t ARX_MAXBUTTON = 8;
-
 	bool	bMouseMoved;
 	int		iMouseRX;
 	int		iMouseRY;
@@ -302,17 +278,17 @@ public:
 	void SetSensibility(int);
 	int  GetSensibility() const;
 
-	bool GetMouseButton(int) const;
-	bool GetMouseButtonRepeat(int) const;
-	bool GetMouseButtonNowPressed(int) const;
-	bool GetMouseButtonNowUnPressed(int) const;
-	bool GetMouseButtonDoubleClick(int, int) const;
- 
+	bool GetMouseButton(int buttonId) const;
+	int  GetMouseButtonClicked() const;
+	bool GetMouseButtonRepeat(int buttonId) const;
+	bool GetMouseButtonNowPressed(int buttonId) const;
+	bool GetMouseButtonNowUnPressed(int buttonId) const;
+	bool GetMouseButtonDoubleClick(int buttonId, int timeMs) const;
+	
 	bool IsVirtualKeyPressed(int) const;
 	bool IsVirtualKeyPressedNowPressed(int) const;
 	bool IsVirtualKeyPressedNowUnPressed(int) const;
-	int  GetMouseButtonClicked() const;
- 
+	 
 	void ResetAll();
 	int GetWheelDir() const;
 	
@@ -325,12 +301,12 @@ private:
 	int	iSensibility;
 	int	iWheelDir;
 
-	bool bMouseButton[ARX_MAXBUTTON];
-	bool bOldMouseButton[ARX_MAXBUTTON];
+	bool bMouseButton[Mouse::ButtonCount];
+	bool bOldMouseButton[Mouse::ButtonCount];
 
-	int	iMouseTime[ARX_MAXBUTTON];
-	int	iMouseTimeSet[ARX_MAXBUTTON];
-	int	iOldNumClick[ARX_MAXBUTTON];
+	int	iMouseTime[Mouse::ButtonCount];
+	int	iMouseTimeSet[Mouse::ButtonCount];
+	int	iOldNumClick[Mouse::ButtonCount];
 };
 
 
