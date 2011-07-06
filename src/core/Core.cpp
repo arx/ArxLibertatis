@@ -162,7 +162,7 @@ static void ShowInfoText();
 extern long LAST_PORTALS_COUNT;
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
-extern CDirectInput		*pGetInfoDirectInput;
+extern Input * pGetInfoDirectInput;
 extern CMenuState		*pMenu;
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
@@ -1463,7 +1463,7 @@ int main(int argc, char ** argv) {
 	}
 	
 	LogDebug << "Input Init";
-	pGetInfoDirectInput = new CDirectInput();
+	ARX_INPUT_Init();
 	LogInfo << "Input Init Success";
 
 	ARX_SetAntiAliasing();
@@ -1489,29 +1489,7 @@ int main(int argc, char ** argv) {
 	if(config.video.textureSize==0)Project.TextureSize=64;
 
 	ARX_MINIMAP_FirstInit();
-
-	i = 10;
-	LogDebug << "AInput Init";
-
-	while (!ARX_INPUT_Init()) {
-		Thread::sleep(30);
-		i--;
-
-		if (i==0) {
-			LogError << "Unable To Initialize ARX INPUT, Leaving...";
-			ARX_INPUT_Release();
-
-			SendMessage(danaeApp.m_hWnd, WM_CLOSE, 0, 0);
-
-			exit(0);
-		}
-
-		SetActiveWindow(danaeApp.m_hWnd);
-		SetWindowPos(danaeApp.m_hWnd,HWND_TOP,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
-	}
-
-	LogInfo << "AInput Init Success";
-
+		
 	//read from cfg file
 	if ( config.language.length() == 0 ) {
 		config.language = "english";
@@ -6923,10 +6901,6 @@ static void ShowInfoText() {
 	TSU_TEST_NB = 0;
 	TSU_TEST_NB_LIGHT = 0;
 
-	long pos = DX7Input::getKeyboardKeyPressed();
-	sprintf(tex,"%ld",pos);
-	danaeApp.OutputText( 70, 99, tex );
-
 #ifdef BUILD_EDITOR
 	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
 	{
@@ -7156,17 +7130,13 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 		if(wParam==WA_INACTIVE)
 		{
-			DX7Input::unacquireDevices();
+			pGetInfoDirectInput->UnacquireDevices();
 		}
 		else
 		{
-			if(pGetInfoDirectInput)
-			{
-				pGetInfoDirectInput->ResetAll();
-			}
-
-			DX7Input::unacquireDevices();
-			DX7Input::acquireDevices();
+			pGetInfoDirectInput->Reset();
+			pGetInfoDirectInput->UnacquireDevices();
+			pGetInfoDirectInput->AcquireDevices();
 		}
 
 		break;

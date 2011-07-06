@@ -27,28 +27,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_WINDOW_DXINPUT_H
 
 #include "window/Input.h"
+#include "input/InputBackend.h"
 
-// TODO-input: remove the static / create a base class and add virtuals
-class DX7Input : public Input
+class DX7InputBackend : public InputBackend
 {
 public:
-	// TODO-input: call from constructor...
-	static bool init();
-	static void release();
+	DX7InputBackend();
+	virtual ~DX7InputBackend();
 
-	static bool update();
+	virtual bool init();
+	virtual bool update();
 
-	static void acquireDevices();
-	static void unacquireDevices();
+	virtual void acquireDevices();
+	virtual void unacquireDevices();
 
 	// Mouse 
-	static bool getMouseCoordinates(int & mx, int & my, int & mz);
-	static bool isMouseButtonPressed(int numb, int & _iDeltaTime);
-	static void getMouseButtonClickCount(int numb, int & _iNumClick, int & _iNumUnClick);
+	virtual bool getMouseCoordinates(int & mx, int & my, int & mz) const;
+	virtual bool isMouseButtonPressed(int buttonId, int & _iDeltaTime) const;
+	virtual void getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const;
 
 	// Keyboard
-	static bool isKeyboardKeyPressed(int dikkey);
-	static int getKeyboardKeyPressed();
+	virtual bool isKeyboardKeyPressed(int dikkey) const;
+	virtual int getKeyboardKeyPressed() const;
 };
 
 #endif // ARX_WINDOW_DXINPUT_H

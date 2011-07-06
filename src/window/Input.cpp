@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "window/Input.h"
+#include "input/InputBackend.h"
 
 #include <cstdio>
 
@@ -66,15 +67,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "window/DXInput.h"
 
-extern CDirectInput * pGetInfoDirectInput;
+extern Input * pGetInfoDirectInput;
 extern long STOP_KEYBOARD_INPUT;
 
 bool ARX_INPUT_Init() {
-	return DX7Input::init();
+	pGetInfoDirectInput = new Input();
+	
+	bool ret = pGetInfoDirectInput->Init();
+	if(!ret)
+	{
+		delete pGetInfoDirectInput;
+		pGetInfoDirectInput = NULL;
+	}
+
+	return ret;
 }
 
 void ARX_INPUT_Release() {
-	DX7Input::release();
+	delete pGetInfoDirectInput;
+	pGetInfoDirectInput = NULL;
 }
  
 //-----------------------------------------------------------------------------
@@ -602,11 +613,11 @@ InputKeyId Input::getKeyId(const std::string & name) {
 
 //-----------------------------------------------------------------------------
 
-CDirectInput *pGetInfoDirectInput=NULL;
+Input *pGetInfoDirectInput=NULL;
 
 //-----------------------------------------------------------------------------
 
-CDirectInput::CDirectInput()
+Input::Input()
 {
 	SetSensibility(2);
 
@@ -630,13 +641,30 @@ CDirectInput::CDirectInput()
 
 //-----------------------------------------------------------------------------
 
-CDirectInput::~CDirectInput()
+bool Input::Init()
 {
+	backend = new DX7InputBackend();
+
+	bool ret = backend->init();
+	if(!ret)
+	{
+		delete backend;
+		backend = NULL;
+	}
+
+	return ret;
 }
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::ResetAll()
+Input::~Input()
+{
+	delete backend;
+}
+
+//-----------------------------------------------------------------------------
+
+void Input::Reset()
 {
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
@@ -658,7 +686,17 @@ void CDirectInput::ResetAll()
 	iWheelDir = 0;
 }
 
-void CDirectInput::SetMousePosition(int mouseX, int mouseY)
+void Input::AcquireDevices()
+{
+	backend->acquireDevices();
+}
+
+void Input::UnacquireDevices()
+{
+	backend->unacquireDevices();
+}
+
+void Input::SetMousePosition(int mouseX, int mouseY)
 {
 	fMouseAXTemp = mouseX;
 	fMouseAYTemp = mouseY;
@@ -671,13 +709,13 @@ void CDirectInput::SetMousePosition(int mouseX, int mouseY)
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::GetInput()
+void Input::GetInput()
 {
 	int iDTime;
 
-	DX7Input::update();
+	backend->update();
 
-	iKeyId = DX7Input::getKeyboardKeyPressed();
+	iKeyId = backend->getKeyboardKeyPressed();
 	bKeyTouched = iKeyId >= 0;
 
 	for(int i=0;i<256;i++)
@@ -769,7 +807,7 @@ void CDirectInput::GetInput()
 
 		int iNumClick;
 		int iNumUnClick;
-		DX7Input::getMouseButtonClickCount(buttonId, iNumClick, iNumUnClick);
+		backend->getMouseButtonClickCount(buttonId, iNumClick, iNumUnClick);
 
 		iOldNumClick[i]+=iNumClick+iNumUnClick;
 
@@ -797,7 +835,7 @@ void CDirectInput::GetInput()
 
 		if(iOldNumClick[i]) iOldNumClick[i]--;
 
-		DX7Input::isMouseButtonPressed(buttonId,iDTime);
+		backend->isMouseButtonPressed(buttonId,iDTime);
 
 		if(iDTime)
 		{
@@ -834,7 +872,7 @@ void CDirectInput::GetInput()
 	int iMouseRZ;
 	iMouseRX = iMouseRY = iMouseRZ = 0;
 
-	bool mouseMoved = DX7Input::getMouseCoordinates(iMouseRX, iMouseRY, iWheelDir);
+	bool mouseMoved = backend->getMouseCoordinates(iMouseRX, iMouseRY, iWheelDir);
 
 	if(danaeApp.m_pFramework->m_bIsFullscreen) {
 		float fDX = 0.f;
@@ -914,44 +952,44 @@ void CDirectInput::GetInput()
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::SetSensibility(int _iSensibility)
+void Input::SetSensibility(int _iSensibility)
 {
 	iSensibility=_iSensibility;
 }
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetSensibility() const {
+int Input::GetSensibility() const {
 	return iSensibility;
 }
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetWheelDir() const {
+int Input::GetWheelDir() const {
 	return iWheelDir;
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey) const {
-	return DX7Input::isKeyboardKeyPressed(_iVirtualKey);
+bool Input::IsVirtualKeyPressed(int _iVirtualKey) const {
+	return backend->isKeyboardKeyPressed(_iVirtualKey);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey) const {
-	return DX7Input::isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
+bool Input::IsVirtualKeyPressedNowPressed(int _iVirtualKey) const {
+	return backend->isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey) const {
-	return !DX7Input::isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
+bool Input::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey) const {
+	return !backend->isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButton(int buttonId) const {
+bool Input::GetMouseButton(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -960,7 +998,7 @@ bool CDirectInput::GetMouseButton(int buttonId) const {
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonRepeat(int buttonId) const {
+bool Input::GetMouseButtonRepeat(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -969,7 +1007,7 @@ bool CDirectInput::GetMouseButtonRepeat(int buttonId) const {
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonNowPressed(int buttonId) const {
+bool Input::GetMouseButtonNowPressed(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -978,7 +1016,7 @@ bool CDirectInput::GetMouseButtonNowPressed(int buttonId) const {
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonNowUnPressed(int buttonId) const {
+bool Input::GetMouseButtonNowUnPressed(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -987,7 +1025,7 @@ bool CDirectInput::GetMouseButtonNowUnPressed(int buttonId) const {
 
 //-----------------------------------------------------------------------------
 
-bool CDirectInput::GetMouseButtonDoubleClick(int buttonId, int timeMs) const {
+bool Input::GetMouseButtonDoubleClick(int buttonId, int timeMs) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -996,7 +1034,7 @@ bool CDirectInput::GetMouseButtonDoubleClick(int buttonId, int timeMs) const {
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetMouseButtonClicked() const {
+int Input::GetMouseButtonClicked() const {
 
 	//MouseButton
 	for(int i = Mouse::ButtonBase; i < Mouse::ButtonMax; i++) {

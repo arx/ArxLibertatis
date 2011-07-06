@@ -118,7 +118,7 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _b
 
 //-----------------------------------------------------------------------------
 
-extern CDirectInput *pGetInfoDirectInput;
+extern Input *pGetInfoDirectInput;
 MenuCursor* pMenuCursor=NULL;
 
 static CWindowMenu *pWindowMenu=NULL;

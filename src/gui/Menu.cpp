@@ -105,7 +105,7 @@ using std::string;
 using std::istringstream;
 
 extern TextManager * pTextManage;
-extern CDirectInput * pGetInfoDirectInput;
+extern Input * pGetInfoDirectInput;
 extern Anglef ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;

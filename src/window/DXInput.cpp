@@ -244,7 +244,26 @@ static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvR
 	return DIENUM_CONTINUE;
 }
 
-bool DX7Input::init() {
+DX7InputBackend::DX7InputBackend()
+{
+}
+
+DX7InputBackend::~DX7InputBackend()
+{
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
+		releaseDevice(*i);
+	}
+
+	DI_InputInfo.clear();
+	
+	if(DI_DInput7) {
+		DI_DInput7->Release();
+	}
+
+	DI_DInput7 = NULL;
+}
+
+bool DX7InputBackend::init() {
 	
 	initDInputToArxKeyTable();
 
@@ -316,21 +335,7 @@ void releaseDevice(INPUT_INFO & info) {
 	}
 }
 
-void DX7Input::release() {
-	
-	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
-		releaseDevice(*i);
-	}
-
-	DI_InputInfo.clear();
-	
-	if(DI_DInput7) {
-		DI_DInput7->Release();
-	}
-	DI_DInput7 = NULL;
-}
-
-void DX7Input::acquireDevices() {
+void DX7InputBackend::acquireDevices() {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		if(i->active) {
@@ -339,7 +344,7 @@ void DX7Input::acquireDevices() {
 	}
 }
 
-void DX7Input::unacquireDevices() {
+void DX7InputBackend::unacquireDevices() {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		if(i->active) {
@@ -491,7 +496,7 @@ bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 	return false;
 }
 
-bool DX7Input::update() {
+bool DX7InputBackend::update() {
 	
 	bool success = true;
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
@@ -546,11 +551,11 @@ bool DX7Input::update() {
 	return success;
 }
 
-bool DX7Input::isKeyboardKeyPressed(int dikkey) {
+bool DX7InputBackend::isKeyboardKeyPressed(int dikkey) const {
 	return (DI_KeyBoardBuffer->bufferstate[dikkey - Keyboard::KeyBase] & 0x80) == 0x80;
 }
 
-int DX7Input::getKeyboardKeyPressed() {
+int DX7InputBackend::getKeyboardKeyPressed() const {
 	
 	char * buf = DI_KeyBoardBuffer->bufferstate;
 	for(int i = 0; i < DI_KEY_ARRAY_SIZE; i++) {
@@ -561,7 +566,7 @@ int DX7Input::getKeyboardKeyPressed() {
 	return -1;
 }
 
-bool DX7Input::getMouseCoordinates(int & mx, int & my, int & mz) {
+bool DX7InputBackend::getMouseCoordinates(int & mx, int & my, int & mz) const {
 	
 	mx = my = mz = 0;
 	
@@ -608,7 +613,7 @@ static bool isMouseButton(int buttonId, DWORD dwOfs) {
 	}
 }
 
-void DX7Input::getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) {
+void DX7InputBackend::getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	_iNumClick = 0;
@@ -627,7 +632,7 @@ void DX7Input::getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _i
 	
 }
 
-bool DX7Input::isMouseButtonPressed(int buttonId, int & _iDeltaTime) {
+bool DX7InputBackend::isMouseButtonPressed(int buttonId, int & _iDeltaTime) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int iTime1 = 0;

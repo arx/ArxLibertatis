@@ -241,20 +241,12 @@ struct KeyDescription {
 	std::string name;
 };
 
-class Input
-{
-public:
-	static std::string	getKeyName(InputKeyId key, bool localizedName = false);
-	static InputKeyId	getKeyId(const std::string& keyName);
+class InputBackend;
 
-public:
-	static const std::string KEY_NONE;
-};
-
-
-class CDirectInput {
+class Input {
 	
 public:
+	static const std::string KEY_NONE;
 	
 	// Keyboard
 	bool	bKeyTouched;		// Was a key pressed in the last update
@@ -268,10 +260,18 @@ public:
 	int		iMouseAY;
  
 public:
-	CDirectInput();
-	virtual ~CDirectInput();
+	Input();
+	virtual ~Input();
+
+	bool Init();
+	void Reset();
+	void AcquireDevices();
+	void UnacquireDevices();
 
 	void GetInput();
+
+	static std::string	getKeyName(InputKeyId key, bool localizedName = false);
+	static InputKeyId	getKeyId(const std::string& keyName);
 
 	void SetMousePosition(int mouseX, int mouseY);
 
@@ -288,11 +288,12 @@ public:
 	bool IsVirtualKeyPressed(int) const;
 	bool IsVirtualKeyPressedNowPressed(int) const;
 	bool IsVirtualKeyPressedNowUnPressed(int) const;
-	 
-	void ResetAll();
-	int GetWheelDir() const;
 	
+	int GetWheelDir() const;
+
 private:
+	InputBackend* backend;
+
 	int	iOneTouch[256];
 
 	float fMouseAXTemp;
@@ -308,8 +309,6 @@ private:
 	int	iMouseTimeSet[Mouse::ButtonCount];
 	int	iOldNumClick[Mouse::ButtonCount];
 };
-
-
 
 bool ARX_INPUT_Init();
 void ARX_INPUT_Release();

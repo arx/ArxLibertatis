@@ -134,7 +134,7 @@ extern TextureContainer * pTCCrossHair;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
 extern FOG_DEF fogparam;
-extern CDirectInput *pGetInfoDirectInput;
+extern Input *pGetInfoDirectInput;
 extern D3DTLVERTEX LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
