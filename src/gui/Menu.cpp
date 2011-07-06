@@ -90,16 +90,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/font/Font.h"
 
-#include "io/PakManager.h"
+#include "input/Input.h"
+
 #include "io/Logger.h"
+#include "io/PakManager.h"
+#include "io/ScreenShot.h"
 
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"
-
-#include "window/DXInput.h"
 
 using std::string;
 using std::istringstream;
@@ -135,6 +136,9 @@ extern float PROGRESS_BAR_COUNT;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
+
+extern long	REQUEST_SPEECH_SKIP;
+extern long TRUE_PLAYER_MOUSELOOK_ON;
 
 extern TextureContainer * pTextureLoad;
 

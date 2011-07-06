@@ -76,6 +76,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/effects/SpellEffects.h"
 
+#include "input/Input.h"
+
 #include "physics/Collisions.h"
 #include "physics/Box.h"
 
@@ -84,8 +86,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
-
-#include "window/Input.h"
 
 using std::max;
 

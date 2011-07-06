@@ -62,7 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "graphics/data/Texture.h"
-#include "window/Input.h"
 
 #define MAX_FLYOVER	32
 struct MENU_DYNAMIC_DATA

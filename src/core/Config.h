@@ -26,7 +26,7 @@
 #ifndef ARX_CORE_CONFIG_H
 #define ARX_CORE_CONFIG_H
 
-#include <string>
+#include "input/InputKey.h"
 
 //! Enum for all the controlling actions
 enum ControlAction {

@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
 
-#include "window/DXInput.h"
+#include "input/DX7InputBackend.h"
 
 #include <cstdlib>
 #include <vector>
@@ -65,6 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	#define DIRECTINPUT_VERSION 0x0700
 #endif
 #include <dinput.h>
+
+#include "io/Logger.h"
 
 #include "platform/Platform.h"
 

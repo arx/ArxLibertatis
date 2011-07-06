@@ -108,6 +108,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 
+#include "input/Input.h"
+
 #include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
@@ -135,8 +137,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scripting/ScriptEvent.h"
 #include "scripting/ScriptDebugger.h"
-
-#include "window/DXInput.h"
 
 using std::min;
 using std::max;

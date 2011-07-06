@@ -55,20 +55,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "window/Input.h"
+#include "input/Input.h"
 #include "input/InputBackend.h"
+#include "input/DX7InputBackend.h"
 
 #include <cstdio>
+#include <string>
+#include <map>
 
+#include "core/Core.h"		// TODO-input: Remove this dependency (DANAE)
 #include "core/Config.h"
+#include "core/GameTime.h"
 
-#include "gui/MenuWidgets.h" //controls
+#include "graphics/Frame.h"	// TODO-input: Remove this dependency (CD3DFramework7)
 
 #include "io/Logger.h"
-#include "window/DXInput.h"
 
+// TODO-input: Clean me!
 extern Input * pGetInfoDirectInput;
 extern long STOP_KEYBOARD_INPUT;
+extern long EERIEMouseButton;
+extern long LastEERIEMouseButton;
+extern DANAE danaeApp;
+extern long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
 
 bool ARX_INPUT_Init() {
 	pGetInfoDirectInput = new Input();
@@ -523,7 +532,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	ARX_UNUSED(localizedName);
 
 	if(key == -1) {
-		return string();
+		return std::string();
 	}
 	
 	std::string name;
@@ -537,7 +546,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	
 	if(key >= (InputKeyId)Mouse::ButtonBase && key < (InputKeyId)Mouse::ButtonMax) {
 		
-		ostringstream oss;
+		std::ostringstream oss;
 		oss << PREFIX_BUTTON << (int)(key - Mouse::ButtonBase + 1);
 		name = oss.str();
 		
@@ -550,7 +559,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	}
 	
 	if(name.empty()) {
-		ostringstream oss;
+		std::ostringstream oss;
 		oss << PREFIX_KEY << (int)key;
 		name = oss.str();
 	}
@@ -572,14 +581,14 @@ InputKeyId Input::getKeyId(const std::string & name) {
 	}
 	
 	size_t sep = name.find(SEPARATOR);
-	if(sep != string::npos) {
+	if(sep != std::string::npos) {
 		InputKeyId modifier = getKeyId(name.substr(0, sep));
 		InputKeyId key = getKeyId(name.substr(sep + 1));
 		return (modifier << 16 | key);
 	}
 	
 	if(!name.compare(0, PREFIX_KEY.length(), PREFIX_KEY)) {
-		istringstream iss(name.substr(PREFIX_KEY.length()));
+		std::istringstream iss(name.substr(PREFIX_KEY.length()));
 		int key;
 		iss >> key;
 		if(!iss.bad()) {
@@ -588,7 +597,7 @@ InputKeyId Input::getKeyId(const std::string & name) {
 	}
 	
 	if(!name.compare(0, PREFIX_BUTTON.length(), PREFIX_BUTTON)) {
-		istringstream iss(name.substr(PREFIX_BUTTON.length()));
+		std::istringstream iss(name.substr(PREFIX_BUTTON.length()));
 		int key;
 		iss >> key;
 		if(!iss.bad() && key >= 0 && key < Mouse::ButtonCount) {
@@ -603,7 +612,7 @@ InputKeyId Input::getKeyId(const std::string & name) {
 		}
 	}
 	
-	map<string, InputKeyId>::const_iterator it = keyNames.find(name);
+	std::map<std::string, InputKeyId>::const_iterator it = keyNames.find(name);
 	if(it != keyNames.end()) {
 		return it->second;
 	}

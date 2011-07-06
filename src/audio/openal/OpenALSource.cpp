@@ -38,8 +38,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-const size_t OpenALSource::NBUFFERS;
-
 #define ALPREFIX << "[" << (s16)(((id)&0xffff0000)>>16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
 
 #undef ALError
@@ -52,7 +50,7 @@ static size_t nbsources = 0;
 static size_t nbbuffers = 0;
 
 // How often to queue the buffer when looping but not streaming.
-#define MAXLOOPBUFFERS std::max(NBUFFERS, NBUFFERS * (size_t)stream_limit_bytes / (size_t)sample->getLength())
+#define MAXLOOPBUFFERS std::max((size_t)NBUFFERS, NBUFFERS * stream_limit_bytes / sample->getLength())
 
 aalError OpenALSource::sourcePlay() {
 	

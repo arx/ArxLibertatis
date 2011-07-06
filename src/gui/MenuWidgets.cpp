@@ -50,14 +50,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/font/Font.h"
 
+#include "input/Input.h"
+
 #include "io/Logger.h"
 
 #include "platform/String.h"
 
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
-
-#include "window/DXInput.h"
 
 using std::wistringstream;
 using std::min;

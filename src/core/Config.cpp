@@ -28,12 +28,12 @@
 #include <fstream>
 #include <sstream>
 
+#include "input/Input.h"
 #include "io/IniReader.h"
 #include "io/IniWriter.h"
 #include "io/Logger.h"
 #include "platform/String.h"
 #include "platform/Platform.h"
-#include "window/Input.h" // for key codes TODO remove
 
 using std::string;
 using std::ifstream;

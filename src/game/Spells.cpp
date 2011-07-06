@@ -69,6 +69,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/Spells09.h"
 #include "graphics/spells/Spells10.h"
 
+#include "input/Input.h"
+
 #include "io/FilePath.h"
 
 #include "physics/Collisions.h"
@@ -80,8 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
-
-#include "window/Input.h"
 
 using std::abs;
 using std::string;

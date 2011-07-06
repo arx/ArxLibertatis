@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_WINDOW_DXINPUT_H
 #define ARX_WINDOW_DXINPUT_H
 
-#include "window/Input.h"
+#include "input/Input.h"
 #include "input/InputBackend.h"
 
 class DX7InputBackend : public InputBackend
