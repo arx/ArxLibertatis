@@ -1374,12 +1374,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			}
 		
 
-			if ((eobj->facelist[i].facetype & POLY_TRANS)
-			        || (invisibility > 0.f))
-			{
-				tv[0].color = D3DRGB(fTransp, fTransp, fTransp);
-				tv[1].color = D3DRGB(fTransp, fTransp, fTransp);
-				tv[2].color = D3DRGB(fTransp, fTransp, fTransp);
+			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+				tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
 			}
 
 			if ((io) && (io->ioflags & IO_ZMAP))
