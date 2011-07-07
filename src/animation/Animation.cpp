@@ -900,21 +900,17 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 			++it)
 		{
 			SMY_ZMAPPINFO *pSMY = &(*it);
-			float fColor;
 			
 			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[0];
-			fColor							= pSMY->color[0];
-			tTexturedVertexTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
+			tTexturedVertexTab2[iPos].color = Color::gray(pSMY->color[0]).toBGR();
 			tTexturedVertexTab2[iPos].tu		= pSMY->uv[0];
 			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[1];
 			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[1];
-			fColor							= pSMY->color[1];
-			tTexturedVertexTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
+			tTexturedVertexTab2[iPos].color = Color::gray(pSMY->color[1]).toBGR();
 			tTexturedVertexTab2[iPos].tu		= pSMY->uv[2];
 			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[3];
 			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[2];
-			fColor							= pSMY->color[2];
-			tTexturedVertexTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
+			tTexturedVertexTab2[iPos].color	= Color::gray(pSMY->color[2]).toBGR();
 			tTexturedVertexTab2[iPos].tu		= pSMY->uv[4];
 			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[5];
 		}
@@ -1666,17 +1662,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
 
 	// Transparent poly: storing info to draw later
-	if ((eobj->facelist[i].facetype & POLY_TRANS) 
-		|| (invisibility>0.f))
-	{
-		vert_list[0].color	=	D3DRGB( fTransp, fTransp, fTransp );
-		vert_list[1].color	=	D3DRGB( fTransp, fTransp, fTransp );
-		vert_list[2].color	=	D3DRGB( fTransp, fTransp, fTransp );
-
+	if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+		vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::gray(fTransp).toBGR();
 	}
 
-	if((io)&&(io->ioflags&IO_ZMAP))
-	{
+	if((io)&&(io->ioflags&IO_ZMAP)) {
 		CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
 	}
 
