@@ -2059,8 +2059,7 @@ CMenuElement* CMenuElement::OnShortCut()
 {
 	if(iShortCut==-1) return NULL;
 
-	if(    (GInput)&&
-		(GInput->IsVirtualKeyPressedNowUnPressed(iShortCut)) )
+	if( GInput->IsVirtualKeyPressedNowUnPressed(iShortCut) )
 	{
 		return this;
 	}
@@ -2572,8 +2571,7 @@ CMenuElement* CMenuElementText::OnShortCut()
 {
 	if(iShortCut==-1) return NULL;
 
-	if(    (GInput)&&
-		(GInput->IsVirtualKeyPressedNowUnPressed(iShortCut)) )
+	if( GInput->IsVirtualKeyPressedNowUnPressed(iShortCut) )
 	{
 		return this;
 	}

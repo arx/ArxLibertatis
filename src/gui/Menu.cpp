@@ -632,7 +632,7 @@ bool ARX_Menu_Render()
 	// Auto-Launch Demo after 60 sec idle on Main Menu
 	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
 	{
-		if ((ARXmenu_lastmode != AMCM_MAIN) || (GInput && (GInput->bKeyTouched || GInput->bMouseMoved)))
+		if ((ARXmenu_lastmode != AMCM_MAIN) || GInput->bKeyTouched || GInput->bMouseMoved)
 		{
 			ARXmenu_starttick = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long'
 		}

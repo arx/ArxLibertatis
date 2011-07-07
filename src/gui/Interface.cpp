@@ -5164,8 +5164,7 @@ void DANAE::ManageKeyMouse()
 
 		if(danaeApp.m_pFramework->m_bIsFullscreen)
 		{
-			if(GInput)
-				GInput->SetMousePosition(DANAEMouse.x, DANAEMouse.y);
+			GInput->SetMousePosition(DANAEMouse.x, DANAEMouse.y);
 		}
 
 		bRestoreCoordMouse=false;

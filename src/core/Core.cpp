@@ -1462,9 +1462,13 @@ int main(int argc, char ** argv) {
 		LogWarning << "Sound init failed";
 	}
 	
-	LogDebug << "Input Init";
-	ARX_INPUT_Init();
-	LogInfo << "Input Init Success";
+	LogDebug << "Input init";
+	if(ARX_INPUT_Init()) {
+		LogInfo << "Input init success";
+	} else {
+		LogError << "Input init failed";
+		return 0;
+	}
 
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
@@ -4809,8 +4813,6 @@ void DanaeItemAdd()
 
 void ReMappDanaeButton()
 {
-	if(!GInput) return;
-
 	bool bNoAction=true;
 	int iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
 
@@ -5121,8 +5123,7 @@ static float _AvgFrameDiff = 150.f;
 		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
 	}
 
-	if(	(GInput)&&
-		(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_F12)))
+	if( GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_F12) )
 	{
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
@@ -5134,8 +5135,7 @@ static float _AvgFrameDiff = 150.f;
 		&&	(!FINAL_COMMERCIAL_GAME)
 		&&  (ARXmenu.currentmode==AMCM_OFF)	)
 	{
-		if(	(GInput)&&
-			(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_Y)) )
+		if(	GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_Y) )
 		{
 			USE_OLD_MOUSE_SYSTEM=(USE_OLD_MOUSE_SYSTEM)?0:1;
 
@@ -7794,12 +7794,6 @@ void ClearGame() {
 	//configuration
 	config.save();
 	
-	//input
-	if(GInput)	{
-		delete GInput;
-		GInput=NULL;
-	}
-
 	RoomDrawRelease();
 	EXITING=1;
 	TREATZONE_Release();
