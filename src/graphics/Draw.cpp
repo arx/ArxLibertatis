@@ -699,7 +699,7 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 		SPRmaxs.y=out.sy+t;
 		SPRmins.y=out.sy-t;
 
-		D3DCOLOR col = color.toBGRA();
+		ColorBGRA col = color.toBGRA();
 		TexturedVertex v[4];
 		v[0]= TexturedVertex( Vec3f( SPRmins.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 0.f, 0.f);
 		v[1]= TexturedVertex( Vec3f( SPRmaxs.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 1.f, 0.f);
@@ -739,7 +739,7 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 			out.rhw*=(1.f/3000.f);
 		}
 
-		D3DCOLOR col = color.toBGRA();
+		ColorBGRA col = color.toBGRA();
 		TexturedVertex v[4];
 		v[0]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 0.f);
 		v[1]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 0.f);
@@ -801,7 +801,7 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 
 	GRenderer->ResetTexture(0);
 
-	D3DCOLOR col = color.toBGRA();
+	ColorBGRA col = color.toBGRA();
 	if (col)
 	 ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=col;
 	else if (to==4)
@@ -879,7 +879,7 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 		fEndu=fEndv=0.f;
 	}
 
-	D3DCOLOR col = color.toBGRA();
+	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
 	v[0]= TexturedVertex( Vec3f( x,	y,		z ), 1.f, col, 0xFF000000, smu,		smv);
 	v[1]= TexturedVertex( Vec3f( x+sx, y,		z ), 1.f, col, 0xFF000000, fEndu,	smv);
@@ -913,7 +913,7 @@ void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureCo
 		fDecalU=fDecalV=0.f;
 	}
 
-	D3DCOLOR col = color.toBGRA();
+	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
 	u0=smu+(fEndu-smu+fDecalU)*u0;
 	u1=smu+(fEndu-smu+fDecalU)*u1;
@@ -944,7 +944,7 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 		smu=smv=0.f;
 	}
 
-	D3DCOLOR col = color.toBGRA();
+	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
 	v[0]= TexturedVertex( Vec3f( x,	y,		z ), 1.f, col, 0xFF000000, smu+u0,	smv+v0);
 	v[1]= TexturedVertex( Vec3f( x+sx, y,		z ), 1.f, col, 0xFF000000, smu+u1,	smv+v1);
@@ -973,7 +973,7 @@ void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureCont
 		fEndu=fEndv=0.f;
 	}
 
-	D3DCOLOR col = color.toBGRA();
+	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
 	float fZMinus=1.f-z;
 	v[0]= TexturedVertex( Vec3f( x, y, z ), fZMinus, col, 0xFF000000, smu, smv);
@@ -1006,7 +1006,7 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
 		fEndu=fEndv=0.f;
 	}
 
-	D3DCOLOR col = color.toBGRA();
+	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
 	float fDy=_fDeltaY*sy;
 

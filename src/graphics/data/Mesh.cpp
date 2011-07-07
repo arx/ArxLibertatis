@@ -2990,7 +2990,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 	}
 
-	D3DCOLOR coll = col->toBGR();
+	ColorBGRA coll = col->toBGR();
 
 	for (size_t i = 0; i < eobj->facelist.size(); i++)
 	{

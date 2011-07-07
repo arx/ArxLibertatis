@@ -368,12 +368,14 @@ static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, floa
 }
 
 static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, const int _iNb, const Color color) {
-	D3DCOLOR col = color.toBGRA();
+	
+	ColorBGRA col = color.toBGRA();
+	
 	TexturedVertex v[4];
-	v[0]= TexturedVertex( Vec3f( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 0.f);
-	v[1]= TexturedVertex( Vec3f( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 0.f);
-	v[2]= TexturedVertex( Vec3f( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 1.f);
-	v[3]= TexturedVertex( Vec3f( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 1.f);
+	v[0] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 0.f, 0.f);
+	v[1] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 1.f, 0.f);
+	v[2] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 1.f, 1.f);
+	v[3] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 0.f, 1.f);
 	
 	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.0000001f;
 

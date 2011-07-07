@@ -400,40 +400,40 @@ void Direct3DRenderer::DrawTexturedRect( float pX, float pY, float pW, float pH,
 	pX -= 0.5f;
 	pY -= 0.5f;
 
-	const D3DCOLOR DIFFUSE  = pCol.toBGR();
-	const D3DCOLOR SPECULAR = 0;
+	const D3DCOLOR diffuse  = pCol.toBGR();
+	const D3DCOLOR specular = 0;
 
 	rect[0].x = pX;
 	rect[0].y = pY;
 	rect[0].z = 0;
 	rect[0].tu = pUStart;
 	rect[0].tv = pVStart;
-	rect[0].color = DIFFUSE;
-	rect[0].specular = SPECULAR;
+	rect[0].color = diffuse;
+	rect[0].specular = specular;
 
 	rect[1].x = pX+pW;
 	rect[1].y = pY;
 	rect[1].z = 0;
 	rect[1].tu = pUEnd;
 	rect[1].tv = pVStart;
-	rect[1].color = DIFFUSE;
-	rect[1].specular = SPECULAR;
+	rect[1].color = diffuse;
+	rect[1].specular = specular;
 
 	rect[2].x = pX;
 	rect[2].y = pY+pH;
 	rect[2].z = 0;
 	rect[2].tu = pUStart;
 	rect[2].tv = pVEnd;
-	rect[2].color = DIFFUSE;
-	rect[2].specular = SPECULAR;
+	rect[2].color = diffuse;
+	rect[2].specular = specular;
 
 	rect[3].x = pX+pW;
 	rect[3].y = pY+pH;
 	rect[3].z = 0;
 	rect[3].tu = pUEnd;
 	rect[3].tv = pVEnd;
-	rect[3].color = DIFFUSE;
-	rect[3].specular = SPECULAR;
+	rect[3].color = diffuse;
+	rect[3].specular = specular;
 	
 	GDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &rect, 4, 0);
 }

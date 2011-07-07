@@ -18,6 +18,11 @@ struct ColorLimits<float> {
 	inline static float max() { return 1.f; };
 };
 
+typedef u32 ColorBGR;
+typedef u32 ColorRGB;
+typedef u32 ColorRGBA;
+typedef u32 ColorBGRA;
+
 /*!
  * A color with red, blue and green components.
  */
@@ -51,19 +56,19 @@ public:
 		return *this;
 	}
 	
-	inline static Color3 fromRGB(u32 rgb) {
+	inline static Color3 fromRGB(ColorRGB rgb) {
 		return Color3(value(rgb), value(rgb >> 8), value(rgb >> 16));
 	}
 	
-	inline static Color3 fromBGR(u32 bgr) {
+	inline static Color3 fromBGR(ColorBGR bgr) {
 		return Color3(value(bgr >> 16), value(bgr >> 8), value(bgr));
 	}
 	
-	inline u32 toRGB(u8 _a = Limits::max()) const {
+	inline ColorRGBA toRGB(u8 _a = Limits::max()) const {
 		return byteval(r) | (byteval(g) << 8) | (byteval(b) << 16) | (u32(_a) << 24);
 	}
 	
-	inline u32 toBGR(u8 _a = Limits::max()) const {
+	inline ColorBGRA toBGR(u8 _a = Limits::max()) const {
 		return byteval(b) | (byteval(g) << 8) | (byteval(r) << 16) | (u32(_a) << 24);
 	}
 	
@@ -93,6 +98,10 @@ public:
 	inline static Color3 gray(float val) {
 		val *= (Limits::max() / ColorLimits<float>::max());
 		return Color3(T(val), T(val), T(val));
+	}
+	
+	inline Color3 operator*(float factor) {
+		return Color3(r * factor, g * factor, b * factor);
 	}
 	
 };
@@ -154,28 +163,28 @@ public:
 		return !(*this == o);
 	}
 	
-	inline u32 toRGBA() const {
+	inline ColorRGBA toRGBA() const {
 		return C3::toRGB((u8)C3::byteval(a));
 	}
 	
-	inline u32 toBGRA() const {
+	inline ColorBGRA toBGRA() const {
 		return C3::toBGR((u8)C3::byteval(a));
 	}
 	
-	inline static Color4 fromRGB(u32 rgb, u8 a = Limits::max()) {
+	inline static Color4 fromRGB(ColorRGB rgb, u8 a = Limits::max()) {
 		return Color4(C3::fromRGB(rgb), a);
 	}
 	
-	inline static Color4 fromBGR(u32 bgr, u8 a = Limits::max()) {
+	inline static Color4 fromBGR(ColorBGR bgr, u8 a = Limits::max()) {
 		return Color4(C3::fromBGR(bgr), a);
 	}
 	
-	inline static Color4 fromRGBA(u32 rgb) {
-		return fromRGB(rgb, C3::value(rgb >> 24));
+	inline static Color4 fromRGBA(ColorRGBA rgba) {
+		return fromRGB(rgba, C3::value(rgba >> 24));
 	}
 	
-	inline static Color4 fromBGRA(u32 bgr) {
-		return fromBGR(bgr, C3::value(bgr >> 24));
+	inline static Color4 fromBGRA(ColorBGRA bgra) {
+		return fromBGR(bgra, C3::value(bgra >> 24));
 	}
 	
 	template<class O>
@@ -186,6 +195,10 @@ public:
 	template<class O>
 	inline static O scale(T val) {
 		return O(val * (ColorLimits<O>::max() / Limits::max()));
+	}
+	
+	inline Color4 operator*(float factor) {
+		return Color4(C3::operator*(factor), a);
 	}
 	
 };

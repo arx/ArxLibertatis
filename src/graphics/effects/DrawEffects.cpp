@@ -514,7 +514,7 @@ void ARXDRAW_DrawPolyBoom()
 
 						if (tr<1.f) tr=1.f;
 
-						D3DCOLOR col=EERIERGB(polyboom[i].rgb.r*tt,polyboom[i].rgb.g*tt,polyboom[i].rgb.b*tt);
+						ColorBGRA col = (polyboom[i].rgb * tt).toBGR();
 
 						for (k=0;k<polyboom[i].nbvert;k++) 
 						{
@@ -526,14 +526,14 @@ void ARXDRAW_DrawPolyBoom()
 
 
 							IncrementPolyWithNormalOutput(polyboom[i].ep,2.f,ltv);
-							EE_RT2(&ltv[0],&ltv[0]);							
-							EE_RT2(&ltv[1],&ltv[1]);							
+							EE_RT2(&ltv[0],&ltv[0]);
+							EE_RT2(&ltv[1],&ltv[1]);
 							EE_RT2(&ltv[2],&ltv[2]);
 
 							if(polyboom[i].nbvert&4)
 							{
-								EE_RT2(&ltv[3],&ltv[3]);							
-							}							
+								EE_RT2(&ltv[3],&ltv[3]);
+							}
 
 								
 							{
@@ -578,17 +578,14 @@ void ARXDRAW_DrawPolyBoom()
 					{
 						float div=1.f/(float)polyboom[i].tolive;
 						tt=(float)t*div;
-						float tr = (tt * 2 - 0.5f); 
+						float tr = (tt * 2 - 0.5f);
 
-						if (tr<1.f) tr=1.f;			
+						if (tr<1.f) tr=1.f;
 
 						float ttt=tt*0.5f;
-						D3DCOLOR col=EERIERGB(	polyboom[i].rgb.r*ttt,
-												polyboom[i].rgb.g*ttt,
-												polyboom[i].rgb.b*ttt);
+						ColorBGRA col = (polyboom[i].rgb * ttt).toBGR();
 
-						for (k=0;k<polyboom[i].nbvert;k++) 
-						{
+						for(k=0;k<polyboom[i].nbvert;k++) {
 							ltv[k].tu=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
 							ltv[k].tv=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
 							ltv[k].color=col;
