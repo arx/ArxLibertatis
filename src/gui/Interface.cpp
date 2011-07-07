@@ -5164,7 +5164,7 @@ void DANAE::ManageKeyMouse()
 
 		if(danaeApp.m_pFramework->m_bIsFullscreen)
 		{
-			GInput->SetMousePosition(DANAEMouse.x, DANAEMouse.y);
+			GInput->setMousePosition(DANAEMouse.x, DANAEMouse.y);
 		}
 
 		bRestoreCoordMouse=false;
@@ -5382,7 +5382,7 @@ void DANAE::ManageKeyMouse()
 				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
 			}
 
-			float fd = (((float)GInput->GetSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+			float fd = (((float)GInput->getSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 
 			if(config.input.mouseSmoothing) {
 				float of = Original_framedelay;

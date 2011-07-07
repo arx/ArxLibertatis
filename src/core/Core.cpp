@@ -4593,7 +4593,7 @@ bool DANAE_ManageSplashThings()
 	{
 		if (EDITMODE || !config.firstRun )
 		{
-			GInput->GetInput();
+			GInput->update();
 
 			if (GInput->bKeyTouched)
 			{
@@ -4736,8 +4736,8 @@ long DANAE_Manage_Cinematic()
 
 	//fin de l'anim
 	if ((!ControlCinematique->key)
-		|| (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
-		|| (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape)))
+		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
+		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)))
 	{			
 		ControlCinematique->projectload=false;
 		StopSoundKeyFramer();
@@ -4818,7 +4818,7 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(GInput->GetMouseButtonDoubleClick(iButton,300))
+		if(GInput->getMouseButtonDoubleClick(iButton,300))
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton|=4;
@@ -4833,7 +4833,7 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if(GInput->GetMouseButtonDoubleClick(iButton,300))
+			if(GInput->getMouseButtonDoubleClick(iButton,300))
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton|=4;
@@ -4847,8 +4847,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->GetMouseButtonNowPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton|=1;
@@ -4865,8 +4865,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->GetMouseButtonNowPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton|=1;
@@ -4881,8 +4881,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->GetMouseButtonNowUnPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton&=~1;
@@ -4897,8 +4897,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->GetMouseButtonNowUnPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton&=~1;
@@ -4912,8 +4912,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->GetMouseButtonNowPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 		{
 			EERIEMouseButton|=2;
 			bNoAction=false;
@@ -4926,8 +4926,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->GetMouseButtonNowPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 			{
 				EERIEMouseButton|=2;
 			}
@@ -4939,8 +4939,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->GetMouseButtonNowUnPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->IsVirtualKeyPressedNowUnPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowUnPressed(iButton)) )
 		{
 			EERIEMouseButton&=~2;
 			bNoAction=false;
@@ -4953,8 +4953,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->GetMouseButtonNowUnPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->IsVirtualKeyPressedNowUnPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowUnPressed(iButton)) )
 			{
 				EERIEMouseButton&=~2;
 			}
@@ -5123,7 +5123,7 @@ static float _AvgFrameDiff = 150.f;
 		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
 	}
 
-	if( GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_F12) )
+	if( GInput->isKeyPressedNowPressed(Keyboard::Key_F12) )
 	{
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
@@ -5135,7 +5135,7 @@ static float _AvgFrameDiff = 150.f;
 		&&	(!FINAL_COMMERCIAL_GAME)
 		&&  (ARXmenu.currentmode==AMCM_OFF)	)
 	{
-		if(	GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_Y) )
+		if(	GInput->isKeyPressedNowPressed(Keyboard::Key_Y) )
 		{
 			USE_OLD_MOUSE_SYSTEM=(USE_OLD_MOUSE_SYSTEM)?0:1;
 
@@ -5162,7 +5162,7 @@ static float _AvgFrameDiff = 150.f;
 	// Get DirectInput Infos
 	if ((!USE_OLD_MOUSE_SYSTEM))
 	{
-		GInput->GetInput();
+		GInput->update();
 		ReMappDanaeButton();
 	}
 
@@ -6578,7 +6578,7 @@ static float _AvgFrameDiff = 150.f;
 	norenderend:
 		;
 
-	if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_F10))
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10))
 	{
 		GetSnapShot();
 	}
@@ -7130,13 +7130,13 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 		if(wParam==WA_INACTIVE)
 		{
-			GInput->UnacquireDevices();
+			GInput->unacquireDevices();
 		}
 		else
 		{
-			GInput->Reset();
-			GInput->UnacquireDevices();
-			GInput->AcquireDevices();
+			GInput->reset();
+			GInput->unacquireDevices();
+			GInput->acquireDevices();
 		}
 
 		break;

@@ -3651,7 +3651,7 @@ else
 	}
 }
 
-	if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_J))
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_J))
 		bOLD_CLIPP=!bOLD_CLIPP;
 
 	if ((SHOWSHADOWS) && (!Project.improve))

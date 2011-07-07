@@ -547,7 +547,7 @@ void ARX_Menu_Manage() {
 		case AMCM_OFF:
 		{
 			// Checks for ESC key
-			if (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
+			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
 			{
 				if (CINEMASCOPE)
 				{
@@ -581,7 +581,7 @@ void ARX_Menu_Manage() {
 		break;
 		case AMCM_NEWQUEST:
 		{
-			if (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape)
+			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 					&&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			   )
 			{
@@ -592,7 +592,7 @@ void ARX_Menu_Manage() {
 		break;
 		case AMCM_MAIN:
 
-			if (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
+			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
 			{
 				if ((MENU_NoActiveWindow())  && (!REFUSE_GAME_RETURN))
 				{
@@ -604,8 +604,8 @@ void ARX_Menu_Manage() {
 			break;
 		case AMCM_CREDITS:
 
-			if ((GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
-					|| (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Spacebar)))
+			if ((GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
+					|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)))
 			{
 				ARX_MENU_CLICKSOUND();
 				bFadeInOut = true;	//fade out
@@ -668,12 +668,12 @@ bool ARX_Menu_Render()
 		return false;
 	}
 
-	if (GInput->GetMouseButton(Mouse::Button_0))
+	if (GInput->getMouseButton(Mouse::Button_0))
 	{
 		EERIEMouseButton = 1;
 		LastMouseClick = 1;
 	}
-	else if (GInput->GetMouseButton(Mouse::Button_1))
+	else if (GInput->getMouseButton(Mouse::Button_1))
 	{
 		EERIEMouseButton = 2;
 		LastMouseClick = 2;

@@ -82,7 +82,7 @@ extern long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWhe
 bool ARX_INPUT_Init() {
 	GInput = new Input();
 	
-	bool ret = GInput->Init();
+	bool ret = GInput->init();
 	if(!ret)
 	{
 		delete GInput;
@@ -113,18 +113,18 @@ bool ARX_IMPULSE_NowPressed(long ident)
 				{
 					if (config.actions[ident].key[j] & Mouse::ButtonBase)
 					{
-						if (GInput->GetMouseButtonNowPressed(config.actions[ident].key[j]))
+						if (GInput->getMouseButtonNowPressed(config.actions[ident].key[j]))
 							return true;
 					}
 					else if (config.actions[ident].key[j] & Mouse::WheelBase)
 					{
 						if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 						{
-							if (GInput->GetWheelDir() < 0) return true;
+							if (GInput->getWheelDir() < 0) return true;
 						}
 						else
 						{
-							if (GInput->GetWheelDir() > 0) return true;
+							if (GInput->getWheelDir() > 0) return true;
 						}
 					}
 					else
@@ -133,11 +133,11 @@ bool ARX_IMPULSE_NowPressed(long ident)
 
 						if (config.actions[ident].key[j] & 0x7FFF0000)
 						{
-							if (!GInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+							if (!GInput->isKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 								bCombine = false;
 						}
 
-						if (GInput->IsVirtualKeyPressedNowPressed(config.actions[ident].key[j] & 0xFFFF))
+						if (GInput->isKeyPressedNowPressed(config.actions[ident].key[j] & 0xFFFF))
 							return true & bCombine;
 					}
 				}
@@ -169,18 +169,18 @@ bool ARX_IMPULSE_Pressed(long ident)
 					{
 						if (config.actions[ident].key[j] & Mouse::ButtonBase)
 						{
-							if (GInput->GetMouseButtonRepeat(config.actions[ident].key[j]))
+							if (GInput->getMouseButtonRepeat(config.actions[ident].key[j]))
 								return true;
 						}
 						else if (config.actions[ident].key[j] & Mouse::WheelBase)
 						{
 							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 							{
-								if (GInput->GetWheelDir() < 0) return true;
+								if (GInput->getWheelDir() < 0) return true;
 							}
 							else
 							{
-								if (GInput->GetWheelDir() > 0) return true;
+								if (GInput->getWheelDir() > 0) return true;
 							}
 						}
 						else
@@ -189,11 +189,11 @@ bool ARX_IMPULSE_Pressed(long ident)
 
 							if (config.actions[ident].key[j] & 0x7FFF0000)
 							{
-								if (!GInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+								if (!GInput->isKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 									bCombine = false;
 							}
 
-							if (GInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
+							if (GInput->isKeyPressed(config.actions[ident].key[j] & 0xFFFF))
 							{
 								bool bQuit = false;
 
@@ -258,7 +258,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 									case CONTROLS_CUST_MAGICMODE:
 									{
 										if ((!j) &&
-											    (GInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
+											    (GInput->isKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
 										{
 											continue;
 										}
@@ -279,7 +279,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 									case CONTROLS_CUST_STEALTHMODE:
 									{
 										if ((!j) &&
-											    (GInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
+											    (GInput->isKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
 										{
 											continue;
 										}
@@ -331,18 +331,18 @@ bool ARX_IMPULSE_Pressed(long ident)
 					{
 						if (config.actions[ident].key[j] & Mouse::ButtonBase)
 						{
-							if (GInput->GetMouseButtonRepeat(config.actions[ident].key[j]))
+							if (GInput->getMouseButtonRepeat(config.actions[ident].key[j]))
 								return true;
 						}
 						else if (config.actions[ident].key[j] & Mouse::WheelBase)
 						{
 							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 							{
-								if (GInput->GetWheelDir() < 0) return true;
+								if (GInput->getWheelDir() < 0) return true;
 							}
 							else
 							{
-								if (GInput->GetWheelDir() > 0) return true;
+								if (GInput->getWheelDir() > 0) return true;
 							}
 						}
 						else
@@ -351,11 +351,11 @@ bool ARX_IMPULSE_Pressed(long ident)
 
 							if (config.actions[ident].key[j] & 0x7FFF0000)
 							{
-								if (!GInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+								if (!GInput->isKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 									bCombine = false;
 							}
 
-							if (GInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
+							if (GInput->isKeyPressed(config.actions[ident].key[j] & 0xFFFF))
 								return true & bCombine;
 						}
 					}
@@ -383,7 +383,7 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 				{
 					if (config.actions[ident].key[j] & Mouse::ButtonBase)
 					{
-						if (GInput->GetMouseButtonNowUnPressed(config.actions[ident].key[j]))
+						if (GInput->getMouseButtonNowUnPressed(config.actions[ident].key[j]))
 							return true;
 					}
 					else
@@ -392,11 +392,11 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 
 						if (config.actions[ident].key[j] & 0x7FFF0000)
 						{
-							if (!GInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+							if (!GInput->isKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 								bCombine = false;
 						}
 
-						if (GInput->IsVirtualKeyPressedNowUnPressed(config.actions[ident].key[j] & 0xFFFF))
+						if (GInput->isKeyPressedNowUnPressed(config.actions[ident].key[j] & 0xFFFF))
 							return true & bCombine;
 					}
 				}
@@ -628,7 +628,7 @@ Input * GInput=NULL;
 
 Input::Input()
 {
-	SetSensibility(2);
+	setSensibility(2);
 
 	iMouseAX=0;
 	iMouseAY=0;
@@ -650,7 +650,7 @@ Input::Input()
 
 //-----------------------------------------------------------------------------
 
-bool Input::Init()
+bool Input::init()
 {
 	backend = new DInput7Backend();
 
@@ -673,7 +673,7 @@ Input::~Input()
 
 //-----------------------------------------------------------------------------
 
-void Input::Reset()
+void Input::reset()
 {
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
@@ -695,17 +695,17 @@ void Input::Reset()
 	iWheelDir = 0;
 }
 
-void Input::AcquireDevices()
+void Input::acquireDevices()
 {
 	backend->acquireDevices();
 }
 
-void Input::UnacquireDevices()
+void Input::unacquireDevices()
 {
 	backend->unacquireDevices();
 }
 
-void Input::SetMousePosition(int mouseX, int mouseY)
+void Input::setMousePosition(int mouseX, int mouseY)
 {
 	fMouseAXTemp = mouseX;
 	fMouseAYTemp = mouseY;
@@ -718,7 +718,7 @@ void Input::SetMousePosition(int mouseX, int mouseY)
 
 //-----------------------------------------------------------------------------
 
-void Input::GetInput()
+void Input::update()
 {
 	int iDTime;
 
@@ -729,7 +729,7 @@ void Input::GetInput()
 
 	for(int i=0;i<256;i++)
 	{
-		if(IsVirtualKeyPressed(i))
+		if(isKeyPressed(i))
 		{
 			switch(i)
 			{
@@ -861,7 +861,7 @@ void Input::GetInput()
 				iMouseTimeSet[i]=0;
 			}
 
-			if(GetMouseButtonNowPressed(buttonId))
+			if(getMouseButtonNowPressed(buttonId))
 			{
 				switch(iMouseTimeSet[i])
 				{
@@ -961,44 +961,44 @@ void Input::GetInput()
 
 //-----------------------------------------------------------------------------
 
-void Input::SetSensibility(int _iSensibility)
+void Input::setSensibility(int _iSensibility)
 {
 	iSensibility=_iSensibility;
 }
 
 //-----------------------------------------------------------------------------
 
-int Input::GetSensibility() const {
+int Input::getSensibility() const {
 	return iSensibility;
 }
 
 //-----------------------------------------------------------------------------
 
-int Input::GetWheelDir() const {
+int Input::getWheelDir() const {
 	return iWheelDir;
 }
 
 //-----------------------------------------------------------------------------
 
-bool Input::IsVirtualKeyPressed(int _iVirtualKey) const {
+bool Input::isKeyPressed(int _iVirtualKey) const {
 	return backend->isKeyboardKeyPressed(_iVirtualKey);
 }
 
 //-----------------------------------------------------------------------------
 
-bool Input::IsVirtualKeyPressedNowPressed(int _iVirtualKey) const {
+bool Input::isKeyPressedNowPressed(int _iVirtualKey) const {
 	return backend->isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
 }
 
 //-----------------------------------------------------------------------------
 
-bool Input::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey) const {
+bool Input::isKeyPressedNowUnPressed(int _iVirtualKey) const {
 	return !backend->isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
 }
 
 //-----------------------------------------------------------------------------
 
-bool Input::GetMouseButton(int buttonId) const {
+bool Input::getMouseButton(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -1007,7 +1007,7 @@ bool Input::GetMouseButton(int buttonId) const {
 
 //-----------------------------------------------------------------------------
 
-bool Input::GetMouseButtonRepeat(int buttonId) const {
+bool Input::getMouseButtonRepeat(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -1016,7 +1016,7 @@ bool Input::GetMouseButtonRepeat(int buttonId) const {
 
 //-----------------------------------------------------------------------------
 
-bool Input::GetMouseButtonNowPressed(int buttonId) const {
+bool Input::getMouseButtonNowPressed(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -1025,7 +1025,7 @@ bool Input::GetMouseButtonNowPressed(int buttonId) const {
 
 //-----------------------------------------------------------------------------
 
-bool Input::GetMouseButtonNowUnPressed(int buttonId) const {
+bool Input::getMouseButtonNowUnPressed(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -1034,7 +1034,7 @@ bool Input::GetMouseButtonNowUnPressed(int buttonId) const {
 
 //-----------------------------------------------------------------------------
 
-bool Input::GetMouseButtonDoubleClick(int buttonId, int timeMs) const {
+bool Input::getMouseButtonDoubleClick(int buttonId, int timeMs) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
@@ -1043,11 +1043,11 @@ bool Input::GetMouseButtonDoubleClick(int buttonId, int timeMs) const {
 
 //-----------------------------------------------------------------------------
 
-int Input::GetMouseButtonClicked() const {
+int Input::getMouseButtonClicked() const {
 
 	//MouseButton
 	for(int i = Mouse::ButtonBase; i < Mouse::ButtonMax; i++) {
-		if(GetMouseButtonNowPressed(i)) {
+		if(getMouseButtonNowPressed(i)) {
 			return i;
 		}
 	}

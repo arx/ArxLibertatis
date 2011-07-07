@@ -2059,7 +2059,7 @@ CMenuElement* CMenuElement::OnShortCut()
 {
 	if(iShortCut==-1) return NULL;
 
-	if( GInput->IsVirtualKeyPressedNowUnPressed(iShortCut) )
+	if( GInput->isKeyPressedNowUnPressed(iShortCut) )
 	{
 		return this;
 	}
@@ -2571,7 +2571,7 @@ CMenuElement* CMenuElementText::OnShortCut()
 {
 	if(iShortCut==-1) return NULL;
 
-	if( GInput->IsVirtualKeyPressedNowUnPressed(iShortCut) )
+	if( GInput->isKeyPressedNowUnPressed(iShortCut) )
 	{
 		return this;
 	}
@@ -2727,7 +2727,7 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	CMenuZone * iR=pMenuAllZone->CheckZone(GInput->iMouseAX,GInput->iMouseAY);
 
-	if(GInput->GetMouseButton(Mouse::Button_0)) {
+	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
 			pZoneClick->OnMouseClick(1);
@@ -3675,9 +3675,9 @@ void CWindowMenuConsole::UpdateText()
 	{
 		GInput->iKeyId&=0xFFFF;
 
-		if(    (GInput->IsVirtualKeyPressed(Keyboard::Key_Enter))||
-			(GInput->IsVirtualKeyPressed(Keyboard::Key_NumPadEnter)) ||
-			(GInput->IsVirtualKeyPressed(Keyboard::Key_Escape)) )
+		if(    (GInput->isKeyPressed(Keyboard::Key_Enter))||
+			(GInput->isKeyPressed(Keyboard::Key_NumPadEnter)) ||
+			(GInput->isKeyPressed(Keyboard::Key_Escape)) )
 		{
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			((CMenuElementText*)pZoneClick)->eState=EDIT;
@@ -3714,7 +3714,7 @@ void CWindowMenuConsole::UpdateText()
 		
 		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
 
-		if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_Backspace))
+		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace))
 		{
 			tText = pZoneText->lpszText;
 
@@ -3726,7 +3726,7 @@ void CWindowMenuConsole::UpdateText()
 		}
 		else
 		{
-			if(GInput->IsVirtualKeyPressedNowPressed(GInput->iKeyId))
+			if(GInput->isKeyPressedNowPressed(GInput->iKeyId))
 			{
 				tText = pZoneText->lpszText;
 
@@ -3856,7 +3856,7 @@ void CWindowMenuConsole::UpdateText()
 
 CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 {
-	int iMouseButton = GInput->GetMouseButtonClicked();
+	int iMouseButton = GInput->getMouseButtonClicked();
 
 	if((GInput->bKeyTouched) || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
 		if(!GInput->bKeyTouched && !bMouseAttack)
@@ -3991,7 +3991,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
 
-				if( GInput->GetMouseButtonDoubleClick(Mouse::Button_0,300) )
+				if( GInput->getMouseButtonDoubleClick(Mouse::Button_0,300) )
 				{
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseDoubleClick(0);
@@ -4005,7 +4005,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 					return e;
 				}
 
-				if( GInput->GetMouseButton(Mouse::Button_0) )
+				if( GInput->getMouseButton(Mouse::Button_0) )
 				{
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseClick(0);
@@ -4026,7 +4026,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
 
-					if( GInput->GetMouseButtonDoubleClick(Mouse::Button_0,300) )
+					if( GInput->getMouseButtonDoubleClick(Mouse::Button_0,300) )
 					{
 						bEdit = pZoneClick->OnMouseDoubleClick(0);
 
@@ -4313,49 +4313,49 @@ int CWindowMenuConsole::Render()
 
 				bool bOldTouch=GInput->bKeyTouched;
 
-				if( GInput->IsVirtualKeyPressed(Keyboard::Key_LeftShift)||
-					GInput->IsVirtualKeyPressed(Keyboard::Key_RightShift)||
-					GInput->IsVirtualKeyPressed(Keyboard::Key_LeftCtrl)||
-					GInput->IsVirtualKeyPressed(Keyboard::Key_RightCtrl)||
-					GInput->IsVirtualKeyPressed(Keyboard::Key_LeftAlt)||
-					GInput->IsVirtualKeyPressed(Keyboard::Key_RightAlt) )
+				if( GInput->isKeyPressed(Keyboard::Key_LeftShift)||
+					GInput->isKeyPressed(Keyboard::Key_RightShift)||
+					GInput->isKeyPressed(Keyboard::Key_LeftCtrl)||
+					GInput->isKeyPressed(Keyboard::Key_RightCtrl)||
+					GInput->isKeyPressed(Keyboard::Key_LeftAlt)||
+					GInput->isKeyPressed(Keyboard::Key_RightAlt) )
 				{
 					if(!((GInput->iKeyId&~0x8000FFFF)>>16))
 						GInput->bKeyTouched = false;
 				}
 				else
 				{
-					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftShift))
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift))
 					{
 						GInput->bKeyTouched = true;
 						GInput->iKeyId = Keyboard::Key_LeftShift;
 					}
 
-					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightShift))
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightShift))
 					{
 						GInput->bKeyTouched = true;
 						GInput->iKeyId = Keyboard::Key_RightShift;
 					}
 
-					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl))
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl))
 					{
 						GInput->bKeyTouched = true;
 						GInput->iKeyId = Keyboard::Key_LeftCtrl;
 					}
 
-					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightCtrl))
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightCtrl))
 					{
 						GInput->bKeyTouched = true;
 						GInput->iKeyId = Keyboard::Key_RightCtrl;
 					}
 
-					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftAlt))
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftAlt))
 					{
 						GInput->bKeyTouched = true;
 						GInput->iKeyId = Keyboard::Key_LeftAlt;
 					}
 
-					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightAlt))
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightAlt))
 					{
 						GInput->bKeyTouched = true;
 						GInput->iKeyId = Keyboard::Key_RightAlt;
@@ -4376,7 +4376,7 @@ int CWindowMenuConsole::Render()
 			break;
 		default:
 			{
-				if(GInput->GetMouseButtonNowPressed(Mouse::Button_0))
+				if(GInput->getMouseButtonNowPressed(Mouse::Button_0))
 				{
 					CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 
@@ -4955,7 +4955,7 @@ void CMenuSliderText::Move(int _iX, int _iY)
 void CMenuSliderText::EmptyFunction()
 {
 	//Touche pour la selection
-	if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_LeftArrow))
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow))
 	{
 		iPos--;
 
@@ -4963,7 +4963,7 @@ void CMenuSliderText::EmptyFunction()
 	}
 	else
 	{
-		if( GInput->IsVirtualKeyPressedNowPressed( Keyboard::Key_RightArrow ) )
+		if( GInput->isKeyPressedNowPressed( Keyboard::Key_RightArrow ) )
 		{
 			iPos++;
 
@@ -5197,7 +5197,7 @@ void CMenuSlider::Move(int _iX, int _iY)
 void CMenuSlider::EmptyFunction()
 {
 	//Touche pour la selection
-	if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_LeftArrow))
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow))
 	{
 		iPos--;
 
@@ -5205,7 +5205,7 @@ void CMenuSlider::EmptyFunction()
 	}
 	else
 	{
-		if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_RightArrow))
+		if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow))
 		{
 			iPos++;
 

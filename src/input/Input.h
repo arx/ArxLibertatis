@@ -82,33 +82,33 @@ public:
 	Input();
 	virtual ~Input();
 
-	bool Init();
-	void Reset();
-	void AcquireDevices();
-	void UnacquireDevices();
+	bool init();
+	void reset();
+	void acquireDevices();
+	void unacquireDevices();
 
-	void GetInput();
+	void update();
 
 	static std::string	getKeyName(InputKeyId key, bool localizedName = false);
 	static InputKeyId	getKeyId(const std::string& keyName);
 
-	void SetMousePosition(int mouseX, int mouseY);
+	void setMousePosition(int mouseX, int mouseY);
 
-	void SetSensibility(int);
-	int  GetSensibility() const;
+	void setSensibility(int);
+	int  getSensibility() const;
 
-	bool GetMouseButton(int buttonId) const;
-	int  GetMouseButtonClicked() const;
-	bool GetMouseButtonRepeat(int buttonId) const;
-	bool GetMouseButtonNowPressed(int buttonId) const;
-	bool GetMouseButtonNowUnPressed(int buttonId) const;
-	bool GetMouseButtonDoubleClick(int buttonId, int timeMs) const;
+	bool getMouseButton(int buttonId) const;
+	int  getMouseButtonClicked() const;
+	bool getMouseButtonRepeat(int buttonId) const;
+	bool getMouseButtonNowPressed(int buttonId) const;
+	bool getMouseButtonNowUnPressed(int buttonId) const;
+	bool getMouseButtonDoubleClick(int buttonId, int timeMs) const;
 	
-	bool IsVirtualKeyPressed(int) const;
-	bool IsVirtualKeyPressedNowPressed(int) const;
-	bool IsVirtualKeyPressedNowUnPressed(int) const;
+	bool isKeyPressed(int) const;
+	bool isKeyPressedNowPressed(int) const;
+	bool isKeyPressedNowUnPressed(int) const;
 	
-	int GetWheelDir() const;
+	int getWheelDir() const;
 
 private:
 	class InputBackend* backend;

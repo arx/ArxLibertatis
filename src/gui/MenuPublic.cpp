@@ -510,7 +510,7 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int _iSensitivity)
 	else if (_iSensitivity > 10)_iSensitivity = 10;
 
 	config.input.mouseSensitivity = _iSensitivity;
-	GInput->SetSensibility(_iSensitivity);
+	GInput->setSensibility(_iSensitivity);
 
 	danaeApp.fMouseSensibility = ((float)config.input.mouseSensitivity) / 10.f;
 }
