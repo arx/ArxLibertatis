@@ -23,17 +23,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_WINDOW_DXINPUT_H
-#define ARX_WINDOW_DXINPUT_H
+#ifndef ARX_INPUT_DINPUT7BACKEND_H
+#define ARX_INPUT_DINPUT7BACKEND_H
 
 #include "input/Input.h"
 #include "input/InputBackend.h"
 
-class DX7InputBackend : public InputBackend
+class DInput7Backend : public InputBackend
 {
 public:
-	DX7InputBackend();
-	virtual ~DX7InputBackend();
+	DInput7Backend();
+	virtual ~DInput7Backend();
 
 	virtual bool init();
 	virtual bool update();
@@ -51,4 +51,4 @@ public:
 	virtual int getKeyboardKeyPressed() const;
 };
 
-#endif // ARX_WINDOW_DXINPUT_H
+#endif // ARX_INPUT_DINPUT7BACKEND_H

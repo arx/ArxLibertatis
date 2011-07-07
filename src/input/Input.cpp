@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 #include "input/InputBackend.h"
-#include "input/DX7InputBackend.h"
+#include "input/DInput7Backend.h"
 
 #include <cstdio>
 #include <string>
@@ -652,7 +652,7 @@ Input::Input()
 
 bool Input::Init()
 {
-	backend = new DX7InputBackend();
+	backend = new DInput7Backend();
 
 	bool ret = backend->init();
 	if(!ret)
