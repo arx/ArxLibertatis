@@ -120,7 +120,6 @@ long LAST_PORTALS_COUNT=0;
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
 extern unsigned long ulBKGColor;
-extern Input * GInput;
 //-----------------------------------------------------------------------------
 EERIEPOLY VF_Center;
 EERIEPOLY VF_Top;

@@ -1101,7 +1101,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 	float z,s,r,g,b;
 
 	TextureContainer * surf;
-	bool key=!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE);
+	bool key=!GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
 	for (long j=1;j<5;j++) 
 	{

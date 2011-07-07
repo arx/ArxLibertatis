@@ -162,7 +162,6 @@ static void ShowInfoText();
 extern long LAST_PORTALS_COUNT;
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
-extern Input * GInput;
 extern CMenuState		*pMenu;
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
@@ -4606,7 +4605,7 @@ bool DANAE_ManageSplashThings()
 				ARX_MENU_Launch();
 			}
 
-			if (ARX_IMPULSE_Pressed(Keyboard::Key_Escape))
+			if (GInput->actionPressed(Keyboard::Key_Escape))
 			{
 				REFUSE_GAME_RETURN=1;
 				SPLASH_THINGS_STAGE = 14;
@@ -6558,12 +6557,12 @@ static float _AvgFrameDiff = 150.f;
 
 	if ((PLAY_LOADED_CINEMATIC == 0) && (!CINEMASCOPE) && (!BLOCK_PLAYER_CONTROLS) && (ARXmenu.currentmode == AMCM_OFF))
 	{
-		if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_QUICKLOAD) && !WILL_QUICKLOAD)
+		if (GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD) && !WILL_QUICKLOAD)
 		{
 			WILL_QUICKLOAD=1;
 		}
 
-		if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_QUICKSAVE) && !WILL_QUICKSAVE)
+		if (GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && !WILL_QUICKSAVE)
 		{
 			iTimeToDrawD7=2000;
 			WILL_QUICKSAVE=1;

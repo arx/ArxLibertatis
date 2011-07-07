@@ -118,7 +118,6 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _b
 
 //-----------------------------------------------------------------------------
 
-extern Input * GInput;
 MenuCursor* pMenuCursor=NULL;
 
 static CWindowMenu *pWindowMenu=NULL;
@@ -3897,9 +3896,9 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 
 		std::string pText;
 		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))
-			pText = Input::getKeyName(iMouseButton, true); 
+			pText = GInput->getKeyName(iMouseButton, true); 
 		else
-			pText = Input::getKeyName(GInput->iKeyId, true);
+			pText = GInput->getKeyName(GInput->iKeyId, true);
 
 		if ( !pText.empty() )
 		{
@@ -4408,7 +4407,7 @@ void CWindowMenuConsole::ReInitActionKey()
 	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
 	int iI=NUM_ACTION_KEY;
 	bool bOldTouch=GInput->bKeyTouched;
-	int iOldVirtualKey=GInput->iKeyId;
+	int iOldKey=GInput->iKeyId;
 	GInput->bKeyTouched = true;
 
 	while(iI--)
@@ -4440,7 +4439,7 @@ void CWindowMenuConsole::ReInitActionKey()
 	}
 
 	GInput->bKeyTouched=bOldTouch;
-	GInput->iKeyId=iOldVirtualKey;
+	GInput->iKeyId=iOldKey;
 }
 
 //-----------------------------------------------------------------------------

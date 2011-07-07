@@ -2108,7 +2108,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 	bPrecastSpell = false;
 
 	// wanna precast?
-	if (ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE))
+	if (GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))
 	{
 		bPrecastSpell = true;
 	}
@@ -2240,7 +2240,7 @@ static bool ARX_SPELLS_AnalyseSPELL() {
 	long caster = 0; // Local Player
 	SpellcastFlags flags = 0;
 	
-	if(ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE) || bPrecastSpell) {
+	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE) || bPrecastSpell) {
 		flags |= SPELLCAST_FLAG_PRECAST;
 	}
 	
@@ -2484,7 +2484,7 @@ void ARX_SPELLS_ManageMagic()
 	snip++;
 
 	if ((!(player.Current_Movement & PLAYER_CROUCH)) && (!BLOCK_PLAYER_CONTROLS && 
-		(ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))) && (!PLAYER_PARALYSED))
+		(GInput->actionPressed(CONTROLS_CUST_MAGICMODE))) && (!PLAYER_PARALYSED))
 	{
 		
 		if (player.Interface & INTER_COMBATMODE)

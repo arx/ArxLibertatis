@@ -71,342 +71,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Logger.h"
 
+Input * GInput = NULL;
+
 // TODO-input: Clean me!
-extern Input * GInput;
 extern long STOP_KEYBOARD_INPUT;
 extern long EERIEMouseButton;
 extern long LastEERIEMouseButton;
 extern DANAE danaeApp;
 extern long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
-
-bool ARX_INPUT_Init() {
-	GInput = new Input();
-	
-	bool ret = GInput->init();
-	if(!ret)
-	{
-		delete GInput;
-		GInput = NULL;
-	}
-
-	return ret;
-}
-
-void ARX_INPUT_Release() {
-	delete GInput;
-	GInput = NULL;
-}
- 
-//-----------------------------------------------------------------------------
-bool ARX_IMPULSE_NowPressed(long ident)
-{
-	switch (ident)
-	{
-		case CONTROLS_CUST_MOUSELOOK:
-		case CONTROLS_CUST_ACTION:
-			break;
-		default:
-		{
-			for (long j = 0; j < 2; j++)
-			{
-				if (config.actions[ident].key[j] != -1)
-				{
-					if (config.actions[ident].key[j] & Mouse::ButtonBase)
-					{
-						if (GInput->getMouseButtonNowPressed(config.actions[ident].key[j]))
-							return true;
-					}
-					else if (config.actions[ident].key[j] & Mouse::WheelBase)
-					{
-						if (config.actions[ident].key[j] == Mouse::Wheel_Down)
-						{
-							if (GInput->getWheelDir() < 0) return true;
-						}
-						else
-						{
-							if (GInput->getWheelDir() > 0) return true;
-						}
-					}
-					else
-					{
-						bool bCombine = true;
-
-						if (config.actions[ident].key[j] & 0x7FFF0000)
-						{
-							if (!GInput->isKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
-								bCombine = false;
-						}
-
-						if (GInput->isKeyPressedNowPressed(config.actions[ident].key[j] & 0xFFFF))
-							return true & bCombine;
-					}
-				}
-			}
-		}
-	}
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-static unsigned int uiOneHandedMagicMode = 0;
-static unsigned int uiOneHandedStealth = 0;
-
-bool ARX_IMPULSE_Pressed(long ident)
-{
-	switch (ident)
-	{
-		case CONTROLS_CUST_MOUSELOOK:
-		case CONTROLS_CUST_ACTION:
-			break;
-		default:
-		{
-			if (config.misc.forceToggle)
-			{
-				for (long j = 0; j < 2; j++)
-				{
-					if (config.actions[ident].key[j] != -1)
-					{
-						if (config.actions[ident].key[j] & Mouse::ButtonBase)
-						{
-							if (GInput->getMouseButtonRepeat(config.actions[ident].key[j]))
-								return true;
-						}
-						else if (config.actions[ident].key[j] & Mouse::WheelBase)
-						{
-							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
-							{
-								if (GInput->getWheelDir() < 0) return true;
-							}
-							else
-							{
-								if (GInput->getWheelDir() > 0) return true;
-							}
-						}
-						else
-						{
-							bool bCombine = true;
-
-							if (config.actions[ident].key[j] & 0x7FFF0000)
-							{
-								if (!GInput->isKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
-									bCombine = false;
-							}
-
-							if (GInput->isKeyPressed(config.actions[ident].key[j] & 0xFFFF))
-							{
-								bool bQuit = false;
-
-								switch (ident)
-								{
-									case CONTROLS_CUST_MAGICMODE:
-									{
-										if (bCombine)
-										{
-											if (!uiOneHandedMagicMode)
-											{
-												uiOneHandedMagicMode = 1;
-											}
-											else
-											{
-												if (uiOneHandedMagicMode == 2)
-												{
-													uiOneHandedMagicMode = 3;
-												}
-											}
-
-											bQuit = true;
-										}
-									}
-									break;
-									case CONTROLS_CUST_STEALTHMODE:
-									{
-										if (bCombine)
-										{
-											if (!uiOneHandedStealth)
-											{
-												uiOneHandedStealth = 1;
-											}
-											else
-											{
-												if (uiOneHandedStealth == 2)
-												{
-													uiOneHandedStealth = 3;
-												}
-											}
-
-											bQuit = true;
-										}
-									}
-									break;
-									default:
-									{
-										return true & bCombine;
-									}
-									break;
-								}
-
-								if (bQuit)
-								{
-									break;
-								}
-							}
-							else
-							{
-								switch (ident)
-								{
-									case CONTROLS_CUST_MAGICMODE:
-									{
-										if ((!j) &&
-											    (GInput->isKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
-										{
-											continue;
-										}
-
-										if (uiOneHandedMagicMode == 1)
-										{
-											uiOneHandedMagicMode = 2;
-										}
-										else
-										{
-											if (uiOneHandedMagicMode == 3)
-											{
-												uiOneHandedMagicMode = 0;
-											}
-										}
-									}
-									break;
-									case CONTROLS_CUST_STEALTHMODE:
-									{
-										if ((!j) &&
-											    (GInput->isKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
-										{
-											continue;
-										}
-
-										if (uiOneHandedStealth == 1)
-										{
-											uiOneHandedStealth = 2;
-										}
-										else
-										{
-											if (uiOneHandedStealth == 3)
-											{
-												uiOneHandedStealth = 0;
-											}
-										}
-									}
-									break;
-								}
-							}
-						}
-					}
-				}
-
-				switch (ident)
-				{
-					case CONTROLS_CUST_MAGICMODE:
-
-						if ((uiOneHandedMagicMode == 1) || (uiOneHandedMagicMode == 2))
-						{
-							return true;
-						}
-
-						break;
-					case CONTROLS_CUST_STEALTHMODE:
-
-						if ((uiOneHandedStealth == 1) || (uiOneHandedStealth == 2))
-						{
-							return true;
-						}
-
-						break;
-				}
-			}
-			else
-			{
-				for (long j = 0; j < 2; j++)
-				{
-					if (config.actions[ident].key[j] != -1)
-					{
-						if (config.actions[ident].key[j] & Mouse::ButtonBase)
-						{
-							if (GInput->getMouseButtonRepeat(config.actions[ident].key[j]))
-								return true;
-						}
-						else if (config.actions[ident].key[j] & Mouse::WheelBase)
-						{
-							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
-							{
-								if (GInput->getWheelDir() < 0) return true;
-							}
-							else
-							{
-								if (GInput->getWheelDir() > 0) return true;
-							}
-						}
-						else
-						{
-							bool bCombine = true;
-
-							if (config.actions[ident].key[j] & 0x7FFF0000)
-							{
-								if (!GInput->isKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
-									bCombine = false;
-							}
-
-							if (GInput->isKeyPressed(config.actions[ident].key[j] & 0xFFFF))
-								return true & bCombine;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-bool ARX_IMPULSE_NowUnPressed(long ident)
-{
-	switch (ident)
-	{
-		case CONTROLS_CUST_MOUSELOOK:
-		case CONTROLS_CUST_ACTION:
-			break;
-		default:
-		{
-			for (long j = 0; j < 2; j++)
-			{
-				if (config.actions[ident].key[j] != -1)
-				{
-					if (config.actions[ident].key[j] & Mouse::ButtonBase)
-					{
-						if (GInput->getMouseButtonNowUnPressed(config.actions[ident].key[j]))
-							return true;
-					}
-					else
-					{
-						bool bCombine = true;
-
-						if (config.actions[ident].key[j] & 0x7FFF0000)
-						{
-							if (!GInput->isKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
-								bCombine = false;
-						}
-
-						if (GInput->isKeyPressedNowUnPressed(config.actions[ident].key[j] & 0xFFFF))
-							return true & bCombine;
-					}
-				}
-			}
-		}
-	}
-
-	return false;
-}
-
 
 // All standard keys
 // "+" should not appear in names as it is used as a separator
@@ -528,107 +200,33 @@ const std::string PREFIX_BUTTON = "Button";
 const char SEPARATOR = '+';
 const std::string Input::KEY_NONE = "---";
 
-std::string Input::getKeyName(InputKeyId key, bool localizedName) {
-	ARX_UNUSED(localizedName);
+//-----------------------------------------------------------------------------
 
-	if(key == -1) {
-		return std::string();
-	}
+bool ARX_INPUT_Init() {
+	GInput = new Input();
 	
-	std::string name;
-	
-	std::string modifier;
-	if(key & ~0xC000ffff) {
-		// key combination
-		modifier = getKeyName((key >> 16) & 0x3fff);
-		key &= 0xC000ffff;
+	bool ret = GInput->init();
+	if(!ret)
+	{
+		delete GInput;
+		GInput = NULL;
 	}
-	
-	if(key >= (InputKeyId)Mouse::ButtonBase && key < (InputKeyId)Mouse::ButtonMax) {
-		
-		std::ostringstream oss;
-		oss << PREFIX_BUTTON << (int)(key - Mouse::ButtonBase + 1);
-		name = oss.str();
-		
-	} else {
-		arx_assert(key >= 0 && key < ARX_ARRAY_NB_ITEMS(keysDescriptions));
-		const KeyDescription & entity = keysDescriptions[key];
-		
-		arx_assert(entity.id == key);
-		name = entity.name;
-	}
-	
-	if(name.empty()) {
-		std::ostringstream oss;
-		oss << PREFIX_KEY << (int)key;
-		name = oss.str();
-	}
-	
-	if(!modifier.empty()) {
-		return modifier + SEPARATOR + name;
-	} else {
-		return name;
-	}
-}
 
-std::map<std::string, InputKeyId> keyNames;
-
-InputKeyId Input::getKeyId(const std::string & name) {
-	
-	// If a noneset key, return -1
-	if(name.empty() || name == KEY_NONE) {
-		return -1;
-	}
-	
-	size_t sep = name.find(SEPARATOR);
-	if(sep != std::string::npos) {
-		InputKeyId modifier = getKeyId(name.substr(0, sep));
-		InputKeyId key = getKeyId(name.substr(sep + 1));
-		return (modifier << 16 | key);
-	}
-	
-	if(!name.compare(0, PREFIX_KEY.length(), PREFIX_KEY)) {
-		std::istringstream iss(name.substr(PREFIX_KEY.length()));
-		int key;
-		iss >> key;
-		if(!iss.bad()) {
-			return key;
-		}
-	}
-	
-	if(!name.compare(0, PREFIX_BUTTON.length(), PREFIX_BUTTON)) {
-		std::istringstream iss(name.substr(PREFIX_BUTTON.length()));
-		int key;
-		iss >> key;
-		if(!iss.bad() && key >= 0 && key < Mouse::ButtonCount) {
-			return Mouse::ButtonBase + key - 1;
-		}
-	}
-	
-	if(keyNames.empty()) {
-		// Initialize the key name -> id map.
-		for(size_t i = 0; i < ARX_ARRAY_NB_ITEMS(keysDescriptions); i++) {
-			keyNames[keysDescriptions[i].name] = keysDescriptions[i].id;
-		}
-	}
-	
-	std::map<std::string, InputKeyId>::const_iterator it = keyNames.find(name);
-	if(it != keyNames.end()) {
-		return it->second;
-	}
-	
-	return -1;
+	return ret;
 }
 
 //-----------------------------------------------------------------------------
 
-Input * GInput=NULL;
+void ARX_INPUT_Release() {
+	delete GInput;
+	GInput = NULL;
+}
 
 //-----------------------------------------------------------------------------
 
 Input::Input()
 {
-	setSensibility(2);
+	setMouseSensibility(2);
 
 	iMouseAX=0;
 	iMouseAY=0;
@@ -960,40 +558,135 @@ void Input::update()
 }
 
 //-----------------------------------------------------------------------------
+std::map<std::string, InputKeyId> keyNames;
 
-void Input::setSensibility(int _iSensibility)
-{
-	iSensibility=_iSensibility;
+std::string Input::getKeyName(InputKeyId key, bool localizedName) {
+	ARX_UNUSED(localizedName);
+
+	if(key == -1) {
+		return std::string();
+	}
+	
+	std::string name;
+	
+	std::string modifier;
+	if(key & ~0xC000ffff) {
+		// key combination
+		modifier = getKeyName((key >> 16) & 0x3fff);
+		key &= 0xC000ffff;
+	}
+	
+	if(key >= (InputKeyId)Mouse::ButtonBase && key < (InputKeyId)Mouse::ButtonMax) {
+		
+		std::ostringstream oss;
+		oss << PREFIX_BUTTON << (int)(key - Mouse::ButtonBase + 1);
+		name = oss.str();
+		
+	} else {
+		arx_assert(key >= 0 && key < ARX_ARRAY_NB_ITEMS(keysDescriptions));
+		const KeyDescription & entity = keysDescriptions[key];
+		
+		arx_assert(entity.id == key);
+		name = entity.name;
+	}
+	
+	if(name.empty()) {
+		std::ostringstream oss;
+		oss << PREFIX_KEY << (int)key;
+		name = oss.str();
+	}
+	
+	if(!modifier.empty()) {
+		return modifier + SEPARATOR + name;
+	} else {
+		return name;
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-int Input::getSensibility() const {
+InputKeyId Input::getKeyId(const std::string & name) {
+	
+	// If a noneset key, return -1
+	if(name.empty() || name == KEY_NONE) {
+		return -1;
+	}
+	
+	size_t sep = name.find(SEPARATOR);
+	if(sep != std::string::npos) {
+		InputKeyId modifier = getKeyId(name.substr(0, sep));
+		InputKeyId key = getKeyId(name.substr(sep + 1));
+		return (modifier << 16 | key);
+	}
+	
+	if(!name.compare(0, PREFIX_KEY.length(), PREFIX_KEY)) {
+		std::istringstream iss(name.substr(PREFIX_KEY.length()));
+		int key;
+		iss >> key;
+		if(!iss.bad()) {
+			return key;
+		}
+	}
+	
+	if(!name.compare(0, PREFIX_BUTTON.length(), PREFIX_BUTTON)) {
+		std::istringstream iss(name.substr(PREFIX_BUTTON.length()));
+		int key;
+		iss >> key;
+		if(!iss.bad() && key >= 0 && key < Mouse::ButtonCount) {
+			return Mouse::ButtonBase + key - 1;
+		}
+	}
+	
+	if(keyNames.empty()) {
+		// Initialize the key name -> id map.
+		for(size_t i = 0; i < ARX_ARRAY_NB_ITEMS(keysDescriptions); i++) {
+			keyNames[keysDescriptions[i].name] = keysDescriptions[i].id;
+		}
+	}
+	
+	std::map<std::string, InputKeyId>::const_iterator it = keyNames.find(name);
+	if(it != keyNames.end()) {
+		return it->second;
+	}
+	
+	return -1;
+}
+
+//-----------------------------------------------------------------------------
+
+void Input::setMouseSensibility(int _iSensibility)
+{
+	iSensibility = _iSensibility;
+}
+
+//-----------------------------------------------------------------------------
+
+int Input::getMouseSensibility() const {
 	return iSensibility;
 }
 
 //-----------------------------------------------------------------------------
 
-int Input::getWheelDir() const {
+int Input::getMouseWheelDir() const {
 	return iWheelDir;
 }
 
 //-----------------------------------------------------------------------------
 
-bool Input::isKeyPressed(int _iVirtualKey) const {
-	return backend->isKeyboardKeyPressed(_iVirtualKey);
+bool Input::isKeyPressed(int keyId) const {
+	return backend->isKeyboardKeyPressed(keyId);
 }
 
 //-----------------------------------------------------------------------------
 
-bool Input::isKeyPressedNowPressed(int _iVirtualKey) const {
-	return backend->isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
+bool Input::isKeyPressedNowPressed(int keyId) const {
+	return backend->isKeyboardKeyPressed(keyId) && (iOneTouch[keyId] == 1);
 }
 
 //-----------------------------------------------------------------------------
 
-bool Input::isKeyPressedNowUnPressed(int _iVirtualKey) const {
-	return !backend->isKeyboardKeyPressed(_iVirtualKey) && (iOneTouch[_iVirtualKey] == 1);
+bool Input::isKeyPressedNowUnPressed(int keyId) const {
+	return !backend->isKeyboardKeyPressed(keyId) && (iOneTouch[keyId] == 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -1066,4 +759,316 @@ int Input::getMouseButtonClicked() const {
 	}
 
 	return 0;
+}
+
+//-----------------------------------------------------------------------------
+
+bool Input::actionNowPressed(int actionId) const
+{
+	switch (actionId)
+	{
+		case CONTROLS_CUST_MOUSELOOK:
+		case CONTROLS_CUST_ACTION:
+			break;
+		default:
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				if (config.actions[actionId].key[j] != -1)
+				{
+					if (config.actions[actionId].key[j] & Mouse::ButtonBase)
+					{
+						if (getMouseButtonNowPressed(config.actions[actionId].key[j]))
+							return true;
+					}
+					else if (config.actions[actionId].key[j] & Mouse::WheelBase)
+					{
+						if (config.actions[actionId].key[j] == Mouse::Wheel_Down)
+						{
+							if (getMouseWheelDir() < 0) return true;
+						}
+						else
+						{
+							if (getMouseWheelDir() > 0) return true;
+						}
+					}
+					else
+					{
+						bool bCombine = true;
+
+						if (config.actions[actionId].key[j] & 0x7FFF0000)
+						{
+							if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
+								bCombine = false;
+						}
+
+						if (isKeyPressedNowPressed(config.actions[actionId].key[j] & 0xFFFF))
+							return true & bCombine;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+static unsigned int uiOneHandedMagicMode = 0;
+static unsigned int uiOneHandedStealth = 0;
+
+bool Input::actionPressed(int actionId) const
+{
+	switch (actionId)
+	{
+		case CONTROLS_CUST_MOUSELOOK:
+		case CONTROLS_CUST_ACTION:
+			break;
+		default:
+		{
+			if (config.misc.forceToggle)
+			{
+				for (int j = 0; j < 2; j++)
+				{
+					if (config.actions[actionId].key[j] != -1)
+					{
+						if (config.actions[actionId].key[j] & Mouse::ButtonBase)
+						{
+							if (getMouseButtonRepeat(config.actions[actionId].key[j]))
+								return true;
+						}
+						else if (config.actions[actionId].key[j] & Mouse::WheelBase)
+						{
+							if (config.actions[actionId].key[j] == Mouse::Wheel_Down)
+							{
+								if (getMouseWheelDir() < 0) return true;
+							}
+							else
+							{
+								if (getMouseWheelDir() > 0) return true;
+							}
+						}
+						else
+						{
+							bool bCombine = true;
+
+							if (config.actions[actionId].key[j] & 0x7FFF0000)
+							{
+								if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
+									bCombine = false;
+							}
+
+							if (isKeyPressed(config.actions[actionId].key[j] & 0xFFFF))
+							{
+								bool bQuit = false;
+
+								switch (actionId)
+								{
+									case CONTROLS_CUST_MAGICMODE:
+									{
+										if (bCombine)
+										{
+											if (!uiOneHandedMagicMode)
+											{
+												uiOneHandedMagicMode = 1;
+											}
+											else
+											{
+												if (uiOneHandedMagicMode == 2)
+												{
+													uiOneHandedMagicMode = 3;
+												}
+											}
+
+											bQuit = true;
+										}
+									}
+									break;
+									case CONTROLS_CUST_STEALTHMODE:
+									{
+										if (bCombine)
+										{
+											if (!uiOneHandedStealth)
+											{
+												uiOneHandedStealth = 1;
+											}
+											else
+											{
+												if (uiOneHandedStealth == 2)
+												{
+													uiOneHandedStealth = 3;
+												}
+											}
+
+											bQuit = true;
+										}
+									}
+									break;
+									default:
+									{
+										return true & bCombine;
+									}
+									break;
+								}
+
+								if (bQuit)
+								{
+									break;
+								}
+							}
+							else
+							{
+								switch (actionId)
+								{
+									case CONTROLS_CUST_MAGICMODE:
+									{
+										if ((!j) &&
+											    (isKeyPressed(config.actions[actionId].key[j+1] & 0xFFFF)))
+										{
+											continue;
+										}
+
+										if (uiOneHandedMagicMode == 1)
+										{
+											uiOneHandedMagicMode = 2;
+										}
+										else
+										{
+											if (uiOneHandedMagicMode == 3)
+											{
+												uiOneHandedMagicMode = 0;
+											}
+										}
+									}
+									break;
+									case CONTROLS_CUST_STEALTHMODE:
+									{
+										if ((!j) &&
+											    (isKeyPressed(config.actions[actionId].key[j+1] & 0xFFFF)))
+										{
+											continue;
+										}
+
+										if (uiOneHandedStealth == 1)
+										{
+											uiOneHandedStealth = 2;
+										}
+										else
+										{
+											if (uiOneHandedStealth == 3)
+											{
+												uiOneHandedStealth = 0;
+											}
+										}
+									}
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				switch (actionId)
+				{
+					case CONTROLS_CUST_MAGICMODE:
+
+						if ((uiOneHandedMagicMode == 1) || (uiOneHandedMagicMode == 2))
+						{
+							return true;
+						}
+
+						break;
+					case CONTROLS_CUST_STEALTHMODE:
+
+						if ((uiOneHandedStealth == 1) || (uiOneHandedStealth == 2))
+						{
+							return true;
+						}
+
+						break;
+				}
+			}
+			else
+			{
+				for (int j = 0; j < 2; j++)
+				{
+					if (config.actions[actionId].key[j] != -1)
+					{
+						if (config.actions[actionId].key[j] & Mouse::ButtonBase)
+						{
+							if (getMouseButtonRepeat(config.actions[actionId].key[j]))
+								return true;
+						}
+						else if (config.actions[actionId].key[j] & Mouse::WheelBase)
+						{
+							if (config.actions[actionId].key[j] == Mouse::Wheel_Down)
+							{
+								if (getMouseWheelDir() < 0) return true;
+							}
+							else
+							{
+								if (getMouseWheelDir() > 0) return true;
+							}
+						}
+						else
+						{
+							bool bCombine = true;
+
+							if (config.actions[actionId].key[j] & 0x7FFF0000)
+							{
+								if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
+									bCombine = false;
+							}
+
+							if (isKeyPressed(config.actions[actionId].key[j] & 0xFFFF))
+								return true & bCombine;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+
+bool Input::actionNowReleased(int actionId) const
+{
+	switch (actionId)
+	{
+		case CONTROLS_CUST_MOUSELOOK:
+		case CONTROLS_CUST_ACTION:
+			break;
+		default:
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				if (config.actions[actionId].key[j] != -1)
+				{
+					if (config.actions[actionId].key[j] & Mouse::ButtonBase)
+					{
+						if (getMouseButtonNowUnPressed(config.actions[actionId].key[j]))
+							return true;
+					}
+					else
+					{
+						bool bCombine = true;
+
+						if (config.actions[actionId].key[j] & 0x7FFF0000)
+						{
+							if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
+								bCombine = false;
+						}
+
+						if (isKeyPressedNowUnPressed(config.actions[actionId].key[j] & 0xFFFF))
+							return true & bCombine;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
 }

@@ -1873,7 +1873,7 @@ bool TakeFromInventory(Vec2s * pos)
 			else if ((io->ioflags & IO_ITEM) &&
 			         (io->_itemdata->count > 1))
 			{
-				if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE))
+				if (!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))
 				{
 					ioo = CloneIOItem(io);
 					MakeTemporaryIOIdent(ioo);
@@ -1937,7 +1937,7 @@ bool TakeFromInventory(Vec2s * pos)
 	if (InPlayerInventoryPos(pos))
 	{
 		{
-			if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE))
+			if (!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))
 				if ((io->ioflags & IO_ITEM) && (io->_itemdata->count > 1)) // Multi-obj
 				{
 					if (io->_itemdata->count - 1 > 0)

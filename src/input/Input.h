@@ -92,10 +92,18 @@ public:
 	static std::string	getKeyName(InputKeyId key, bool localizedName = false);
 	static InputKeyId	getKeyId(const std::string& keyName);
 
+	///////////////////////////////////////////////////////////////////////////
+	// Action
+	bool actionNowPressed(int actionId) const;
+	bool actionPressed(int actionId) const;
+	bool actionNowReleased(int actionId) const;
+
+	///////////////////////////////////////////////////////////////////////////
+	// Mouse
 	void setMousePosition(int mouseX, int mouseY);
 
-	void setSensibility(int);
-	int  getSensibility() const;
+	void setMouseSensibility(int);
+	int  getMouseSensibility() const;
 
 	bool getMouseButton(int buttonId) const;
 	int  getMouseButtonClicked() const;
@@ -103,12 +111,14 @@ public:
 	bool getMouseButtonNowPressed(int buttonId) const;
 	bool getMouseButtonNowUnPressed(int buttonId) const;
 	bool getMouseButtonDoubleClick(int buttonId, int timeMs) const;
+
+	int  getMouseWheelDir() const;
 	
-	bool isKeyPressed(int) const;
-	bool isKeyPressedNowPressed(int) const;
-	bool isKeyPressedNowUnPressed(int) const;
-	
-	int getWheelDir() const;
+	///////////////////////////////////////////////////////////////////////////
+	// Keyboard
+	bool isKeyPressed(int keyId) const;
+	bool isKeyPressedNowPressed(int keyId) const;
+	bool isKeyPressedNowUnPressed(int keyId) const;	
 
 private:
 	class InputBackend* backend;
@@ -129,11 +139,9 @@ private:
 	int	iOldNumClick[Mouse::ButtonCount];
 };
 
+extern Input* GInput;
+
 bool ARX_INPUT_Init();
 void ARX_INPUT_Release();
-
-bool ARX_IMPULSE_NowPressed(long ident);
-bool ARX_IMPULSE_Pressed(long ident);
-bool ARX_IMPULSE_NowUnPressed(long ident);
  
 #endif // ARX_INPUT_INPUT_H

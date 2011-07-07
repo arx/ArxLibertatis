@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/GameSound.h"
 
-extern Input * GInput;
 extern bool bQuickGenFirstClick;
 #ifdef BUILD_EDITOR
 extern float FORCED_REDUCTION_VALUE;
@@ -510,7 +509,7 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int _iSensitivity)
 	else if (_iSensitivity > 10)_iSensitivity = 10;
 
 	config.input.mouseSensitivity = _iSensitivity;
-	GInput->setSensibility(_iSensitivity);
+	GInput->setMouseSensibility(_iSensitivity);
 
 	danaeApp.fMouseSensibility = ((float)config.input.mouseSensitivity) / 10.f;
 }
