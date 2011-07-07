@@ -600,9 +600,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[0].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
-						else
-							verts[0].color = D3DRGB(v, v, v);
+						verts[0].color = Color::gray(fl2 ? v * (1.f/2) : v).toBGR();
 
 						oo += v;
 
@@ -633,9 +631,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[1].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
-						else
-							verts[1].color = D3DRGB(v, v, v);
+						verts[1].color = Color::gray(fl2 ? v * ( 1.0f / 2 ) : v).toBGR();
 
 						oo += v;
 
@@ -667,9 +663,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						}
 						
 
-						if (fl2) verts[2].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
-						else
-							verts[2].color = D3DRGB(v, v, v);
+						verts[2].color = Color::gray(fl2 ? v * (1.f/2) : v).toBGR();
 
 						oo += v;
 
@@ -700,9 +694,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[3].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
-						else
-							verts[3].color = D3DRGB(v, v, v);
+						verts[3].color = Color::gray(fl2 ? v * (1.f/2) : v).toBGR();
 
 						oo += v;
 
