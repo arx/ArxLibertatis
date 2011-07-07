@@ -34,9 +34,9 @@ public:
 	typedef T type;
 	typedef ColorLimits<T> Limits;
 	
-	T r;
-	T g;
 	T b;
+	T g;
+	T r;
 	
 	const static Color3 black;
 	const static Color3 white;
@@ -48,8 +48,8 @@ public:
 	const static Color3 magenta;
 	
 	inline Color3() { }
-	inline Color3(T _r, T _g, T _b) : r(_r), g(_g), b(_b) { }
-	inline Color3(const Color3 & o) : r(o.r), g(o.g), b(o.b) { }
+	inline Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
+	inline Color3(const Color3 & o) : b(o.b), g(o.g), r(o.r) { }
 	
 	inline Color3 & operator=(const Color3 & o) {
 		r = o.r, g = o.g, b = o.b;
