@@ -1095,7 +1095,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 						r = flare[i].rgb.r * z;
 						b = flare[i].rgb.b * z;
 						
-						flare[i].tv.color=D3DRGB(r,g,b);
+						flare[i].tv.color = Color3f(r, g, b).toBGR();
 						flare[i].v.sx=flare[i].tv.sx;
 						flare[i].v.sy=flare[i].tv.sy;
 						flare[i].v.sz=flare[i].tv.sz;
@@ -1396,15 +1396,15 @@ void UpdateObjFx() {
 	Vec3f pos;
 
 	TexturedVertex v[3];
-	v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 0.f, 0.f);
-	v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 0.f);
-	v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 1.f);
+	v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
+	v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
+	v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
 	
 
 	TexturedVertex v2[3];
-	v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 0.f, 0.f);
-	v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 0.f);
-	v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 1.f);
+	v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
+	v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
+	v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1510,15 +1510,14 @@ void UpdateObjFx() {
 					EE_RTP(&v[1],&v2[1]);
 					EE_RTP(&v[2],&v2[2]);
 
-					if (Project.improve)
-					{
-						for (p=0;p<3;p++)
-							v2[p].color=D3DRGB(color.r/(3.f+(float)p),0.f,color.b/(5.f+(float)p));
-					}
-					else
-					{
-						for (p=0;p<3;p++)
-							v2[p].color=D3DRGB(color.r/(3.f+(float)p),color.g/(4.f+(float)p),color.b/(5.f+(float)p));
+					if(Project.improve) {
+						for(p = 0; p < 3; p++) {
+							v2[p].color = Color3f(color.r/(3.f + (float)p), 0.f, color.b/(5.f+(float)p)).toBGR();
+						}
+					} else {
+						for(p = 0; p < 3; p++) {
+							v2[p].color = Color3f(color.r/(3.f + (float)p), color.g/(4.f + (float)p), color.b/(5.f + (float)p)).toBGR();
+						}
 					}
 
 					GRenderer->ResetTexture(0);
