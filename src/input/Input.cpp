@@ -72,7 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 // TODO-input: Clean me!
-extern Input * pGetInfoDirectInput;
+extern Input * GInput;
 extern long STOP_KEYBOARD_INPUT;
 extern long EERIEMouseButton;
 extern long LastEERIEMouseButton;
@@ -80,21 +80,21 @@ extern DANAE danaeApp;
 extern long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
 
 bool ARX_INPUT_Init() {
-	pGetInfoDirectInput = new Input();
+	GInput = new Input();
 	
-	bool ret = pGetInfoDirectInput->Init();
+	bool ret = GInput->Init();
 	if(!ret)
 	{
-		delete pGetInfoDirectInput;
-		pGetInfoDirectInput = NULL;
+		delete GInput;
+		GInput = NULL;
 	}
 
 	return ret;
 }
 
 void ARX_INPUT_Release() {
-	delete pGetInfoDirectInput;
-	pGetInfoDirectInput = NULL;
+	delete GInput;
+	GInput = NULL;
 }
  
 //-----------------------------------------------------------------------------
@@ -113,18 +113,18 @@ bool ARX_IMPULSE_NowPressed(long ident)
 				{
 					if (config.actions[ident].key[j] & Mouse::ButtonBase)
 					{
-						if (pGetInfoDirectInput->GetMouseButtonNowPressed(config.actions[ident].key[j]))
+						if (GInput->GetMouseButtonNowPressed(config.actions[ident].key[j]))
 							return true;
 					}
 					else if (config.actions[ident].key[j] & Mouse::WheelBase)
 					{
 						if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 						{
-							if (pGetInfoDirectInput->GetWheelDir() < 0) return true;
+							if (GInput->GetWheelDir() < 0) return true;
 						}
 						else
 						{
-							if (pGetInfoDirectInput->GetWheelDir() > 0) return true;
+							if (GInput->GetWheelDir() > 0) return true;
 						}
 					}
 					else
@@ -133,11 +133,11 @@ bool ARX_IMPULSE_NowPressed(long ident)
 
 						if (config.actions[ident].key[j] & 0x7FFF0000)
 						{
-							if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+							if (!GInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 								bCombine = false;
 						}
 
-						if (pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(config.actions[ident].key[j] & 0xFFFF))
+						if (GInput->IsVirtualKeyPressedNowPressed(config.actions[ident].key[j] & 0xFFFF))
 							return true & bCombine;
 					}
 				}
@@ -169,18 +169,18 @@ bool ARX_IMPULSE_Pressed(long ident)
 					{
 						if (config.actions[ident].key[j] & Mouse::ButtonBase)
 						{
-							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j]))
+							if (GInput->GetMouseButtonRepeat(config.actions[ident].key[j]))
 								return true;
 						}
 						else if (config.actions[ident].key[j] & Mouse::WheelBase)
 						{
 							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 							{
-								if (pGetInfoDirectInput->GetWheelDir() < 0) return true;
+								if (GInput->GetWheelDir() < 0) return true;
 							}
 							else
 							{
-								if (pGetInfoDirectInput->GetWheelDir() > 0) return true;
+								if (GInput->GetWheelDir() > 0) return true;
 							}
 						}
 						else
@@ -189,11 +189,11 @@ bool ARX_IMPULSE_Pressed(long ident)
 
 							if (config.actions[ident].key[j] & 0x7FFF0000)
 							{
-								if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+								if (!GInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 									bCombine = false;
 							}
 
-							if (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
+							if (GInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
 							{
 								bool bQuit = false;
 
@@ -258,7 +258,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 									case CONTROLS_CUST_MAGICMODE:
 									{
 										if ((!j) &&
-											    (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
+											    (GInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
 										{
 											continue;
 										}
@@ -279,7 +279,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 									case CONTROLS_CUST_STEALTHMODE:
 									{
 										if ((!j) &&
-											    (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
+											    (GInput->IsVirtualKeyPressed(config.actions[ident].key[j+1] & 0xFFFF)))
 										{
 											continue;
 										}
@@ -331,18 +331,18 @@ bool ARX_IMPULSE_Pressed(long ident)
 					{
 						if (config.actions[ident].key[j] & Mouse::ButtonBase)
 						{
-							if (pGetInfoDirectInput->GetMouseButtonRepeat(config.actions[ident].key[j]))
+							if (GInput->GetMouseButtonRepeat(config.actions[ident].key[j]))
 								return true;
 						}
 						else if (config.actions[ident].key[j] & Mouse::WheelBase)
 						{
 							if (config.actions[ident].key[j] == Mouse::Wheel_Down)
 							{
-								if (pGetInfoDirectInput->GetWheelDir() < 0) return true;
+								if (GInput->GetWheelDir() < 0) return true;
 							}
 							else
 							{
-								if (pGetInfoDirectInput->GetWheelDir() > 0) return true;
+								if (GInput->GetWheelDir() > 0) return true;
 							}
 						}
 						else
@@ -351,11 +351,11 @@ bool ARX_IMPULSE_Pressed(long ident)
 
 							if (config.actions[ident].key[j] & 0x7FFF0000)
 							{
-								if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+								if (!GInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 									bCombine = false;
 							}
 
-							if (pGetInfoDirectInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
+							if (GInput->IsVirtualKeyPressed(config.actions[ident].key[j] & 0xFFFF))
 								return true & bCombine;
 						}
 					}
@@ -383,7 +383,7 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 				{
 					if (config.actions[ident].key[j] & Mouse::ButtonBase)
 					{
-						if (pGetInfoDirectInput->GetMouseButtonNowUnPressed(config.actions[ident].key[j]))
+						if (GInput->GetMouseButtonNowUnPressed(config.actions[ident].key[j]))
 							return true;
 					}
 					else
@@ -392,11 +392,11 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 
 						if (config.actions[ident].key[j] & 0x7FFF0000)
 						{
-							if (!pGetInfoDirectInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
+							if (!GInput->IsVirtualKeyPressed((config.actions[ident].key[j] >> 16) & 0xFFFF))
 								bCombine = false;
 						}
 
-						if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(config.actions[ident].key[j] & 0xFFFF))
+						if (GInput->IsVirtualKeyPressedNowUnPressed(config.actions[ident].key[j] & 0xFFFF))
 							return true & bCombine;
 					}
 				}
@@ -622,7 +622,7 @@ InputKeyId Input::getKeyId(const std::string & name) {
 
 //-----------------------------------------------------------------------------
 
-Input *pGetInfoDirectInput=NULL;
+Input * GInput=NULL;
 
 //-----------------------------------------------------------------------------
 

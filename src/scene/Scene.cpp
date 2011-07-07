@@ -120,7 +120,7 @@ long LAST_PORTALS_COUNT=0;
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
 extern unsigned long ulBKGColor;
-extern Input *pGetInfoDirectInput;
+extern Input * GInput;
 //-----------------------------------------------------------------------------
 EERIEPOLY VF_Center;
 EERIEPOLY VF_Top;
@@ -3651,7 +3651,7 @@ else
 	}
 }
 
-	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_J))
+	if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_J))
 		bOLD_CLIPP=!bOLD_CLIPP;
 
 	if ((SHOWSHADOWS) && (!Project.improve))

@@ -136,7 +136,7 @@ extern TextureContainer * pTCCrossHair;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
 extern FOG_DEF fogparam;
-extern Input *pGetInfoDirectInput;
+extern Input * GInput;
 extern D3DTLVERTEX LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
@@ -5164,8 +5164,8 @@ void DANAE::ManageKeyMouse()
 
 		if(danaeApp.m_pFramework->m_bIsFullscreen)
 		{
-			if(pGetInfoDirectInput)
-				pGetInfoDirectInput->SetMousePosition(DANAEMouse.x, DANAEMouse.y);
+			if(GInput)
+				GInput->SetMousePosition(DANAEMouse.x, DANAEMouse.y);
 		}
 
 		bRestoreCoordMouse=false;
@@ -5339,36 +5339,36 @@ void DANAE::ManageKeyMouse()
 					if (bRenderInCursorMode)
 					{
 						if(	(DANAEMouse.x==(DANAESIZX-1))&&
-						        (pGetInfoDirectInput->iMouseRX > 8))
+						        (GInput->iMouseRX > 8))
 						{
 							EERIEMouseYdep=0;
-							EERIEMouseXdep=pGetInfoDirectInput->iMouseRX;
+							EERIEMouseXdep=GInput->iMouseRX;
 							bKeySpecialMove=true;
 						}
 						else
 						{
 							if( (!DANAEMouse.x)&&
-							        (pGetInfoDirectInput->iMouseRX < -8))
+							        (GInput->iMouseRX < -8))
 							{
 								EERIEMouseYdep=0;
-								EERIEMouseXdep=pGetInfoDirectInput->iMouseRX;
+								EERIEMouseXdep=GInput->iMouseRX;
 								bKeySpecialMove=true;
 							}
 						}
 
 						if(	(DANAEMouse.y==(DANAESIZY-1))&&
-						        (pGetInfoDirectInput->iMouseRY > 8))
+						        (GInput->iMouseRY > 8))
 						{
-							EERIEMouseYdep=pGetInfoDirectInput->iMouseRY;
+							EERIEMouseYdep=GInput->iMouseRY;
 							EERIEMouseXdep=0;
 							bKeySpecialMove=true;
 						}
 						else
 						{
 							if(	(!DANAEMouse.y)&&
-							        (pGetInfoDirectInput->iMouseRY < -8))
+							        (GInput->iMouseRY < -8))
 							{
-								EERIEMouseYdep=pGetInfoDirectInput->iMouseRY;
+								EERIEMouseYdep=GInput->iMouseRY;
 								EERIEMouseXdep=0;
 								bKeySpecialMove=true;
 							}
@@ -5383,7 +5383,7 @@ void DANAE::ManageKeyMouse()
 				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
 			}
 
-			float fd = (((float)pGetInfoDirectInput->GetSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+			float fd = (((float)GInput->GetSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 
 			if(config.input.mouseSmoothing) {
 				float of = Original_framedelay;

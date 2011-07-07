@@ -118,7 +118,7 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _b
 
 //-----------------------------------------------------------------------------
 
-extern Input *pGetInfoDirectInput;
+extern Input * GInput;
 MenuCursor* pMenuCursor=NULL;
 
 static CWindowMenu *pWindowMenu=NULL;
@@ -2059,8 +2059,8 @@ CMenuElement* CMenuElement::OnShortCut()
 {
 	if(iShortCut==-1) return NULL;
 
-	if(    (pGetInfoDirectInput)&&
-		(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(iShortCut)) )
+	if(    (GInput)&&
+		(GInput->IsVirtualKeyPressedNowUnPressed(iShortCut)) )
 	{
 		return this;
 	}
@@ -2572,8 +2572,8 @@ CMenuElement* CMenuElementText::OnShortCut()
 {
 	if(iShortCut==-1) return NULL;
 
-	if(    (pGetInfoDirectInput)&&
-		(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(iShortCut)) )
+	if(    (GInput)&&
+		(GInput->IsVirtualKeyPressedNowUnPressed(iShortCut)) )
 	{
 		return this;
 	}
@@ -2727,9 +2727,9 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	pZoneClick=NULL;
 
-	CMenuZone * iR=pMenuAllZone->CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
+	CMenuZone * iR=pMenuAllZone->CheckZone(GInput->iMouseAX,GInput->iMouseAY);
 
-	if(pGetInfoDirectInput->GetMouseButton(Mouse::Button_0)) {
+	if(GInput->GetMouseButton(Mouse::Button_0)) {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
 			pZoneClick->OnMouseClick(1);
@@ -3673,13 +3673,13 @@ static int scan2ascii(DWORD scancode, unsigned short* result)
 
 void CWindowMenuConsole::UpdateText()
 {
-	if(pGetInfoDirectInput->bKeyTouched)
+	if(GInput->bKeyTouched)
 	{
-		pGetInfoDirectInput->iKeyId&=0xFFFF;
+		GInput->iKeyId&=0xFFFF;
 
-		if(    (pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_Enter))||
-			(pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_NumPadEnter)) ||
-			(pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_Escape)) )
+		if(    (GInput->IsVirtualKeyPressed(Keyboard::Key_Enter))||
+			(GInput->IsVirtualKeyPressed(Keyboard::Key_NumPadEnter)) ||
+			(GInput->IsVirtualKeyPressed(Keyboard::Key_Escape)) )
 		{
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			((CMenuElementText*)pZoneClick)->eState=EDIT;
@@ -3716,7 +3716,7 @@ void CWindowMenuConsole::UpdateText()
 		
 		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
 
-		if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_Backspace))
+		if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_Backspace))
 		{
 			tText = pZoneText->lpszText;
 
@@ -3728,14 +3728,14 @@ void CWindowMenuConsole::UpdateText()
 		}
 		else
 		{
-			if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(pGetInfoDirectInput->iKeyId))
+			if(GInput->IsVirtualKeyPressedNowPressed(GInput->iKeyId))
 			{
 				tText = pZoneText->lpszText;
 
 				unsigned short tusOutPut[2];
 				char tCat;
 
-				int iKey = pGetInfoDirectInput->iKeyId;
+				int iKey = GInput->iKeyId;
 				int iR = scan2ascii(iKey, tusOutPut);
 
 				if(!iR)
@@ -3858,10 +3858,10 @@ void CWindowMenuConsole::UpdateText()
 
 CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 {
-	int iMouseButton = pGetInfoDirectInput->GetMouseButtonClicked();
+	int iMouseButton = GInput->GetMouseButtonClicked();
 
-	if((pGetInfoDirectInput->bKeyTouched) || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
-		if(!pGetInfoDirectInput->bKeyTouched && !bMouseAttack)
+	if((GInput->bKeyTouched) || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
+		if(!GInput->bKeyTouched && !bMouseAttack)
 		{
 			bMouseAttack=!bMouseAttack;
 			return NULL;
@@ -3885,7 +3885,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 				{
 					for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++)
 					{
-						if(pGetInfoDirectInput->iKeyId == buttonId)
+						if(GInput->iKeyId == buttonId)
 						{
 							bOk=false;
 							break;
@@ -3901,7 +3901,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))
 			pText = Input::getKeyName(iMouseButton, true); 
 		else
-			pText = Input::getKeyName(pGetInfoDirectInput->iKeyId, true);
+			pText = Input::getKeyName(GInput->iKeyId, true);
 
 		if ( !pText.empty() )
 		{
@@ -3929,7 +3929,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 
 			if(iMouseButton&0xc0000000)
 			{
-				pGetInfoDirectInput->iKeyId=iMouseButton;
+				GInput->iKeyId=iMouseButton;
 			}
 
 			bMouseAttack=false;
@@ -3988,12 +3988,12 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 		if (!bEdit)
 		{
 			pZoneClick=NULL;
-			CMenuZone * iR = MenuAllZone.CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
+			CMenuZone * iR = MenuAllZone.CheckZone(GInput->iMouseAX,GInput->iMouseAY);
 
 			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
 
-				if( pGetInfoDirectInput->GetMouseButtonDoubleClick(Mouse::Button_0,300) )
+				if( GInput->GetMouseButtonDoubleClick(Mouse::Button_0,300) )
 				{
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseDoubleClick(0);
@@ -4007,7 +4007,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 					return e;
 				}
 
-				if( pGetInfoDirectInput->GetMouseButton(Mouse::Button_0) )
+				if( GInput->GetMouseButton(Mouse::Button_0) )
 				{
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseClick(0);
@@ -4023,12 +4023,12 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 		{
 			if(!pZoneClick)
 			{
-				CMenuZone * iR = MenuAllZone.CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
+				CMenuZone * iR = MenuAllZone.CheckZone(GInput->iMouseAX,GInput->iMouseAY);
 
 				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
 
-					if( pGetInfoDirectInput->GetMouseButtonDoubleClick(Mouse::Button_0,300) )
+					if( GInput->GetMouseButtonDoubleClick(Mouse::Button_0,300) )
 					{
 						bEdit = pZoneClick->OnMouseDoubleClick(0);
 
@@ -4077,163 +4077,163 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 		{
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
-			bChange=config.setActionKey(CONTROLS_CUST_JUMP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_JUMP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2:
-			bChange=config.setActionKey(CONTROLS_CUST_MAGICMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MAGICMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2:
-			bChange=config.setActionKey(CONTROLS_CUST_STEALTHMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STEALTHMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2:
-			bChange=config.setActionKey(CONTROLS_CUST_WALKFORWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WALKFORWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2:
-			bChange=config.setActionKey(CONTROLS_CUST_WALKBACKWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WALKBACKWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2:
-			bChange=config.setActionKey(CONTROLS_CUST_STRAFELEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFELEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2:
-			bChange=config.setActionKey(CONTROLS_CUST_STRAFERIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFERIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2:
-			bChange=config.setActionKey(CONTROLS_CUST_LEANLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LEANLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2:
-			bChange=config.setActionKey(CONTROLS_CUST_LEANRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LEANRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2:
-			bChange=config.setActionKey(CONTROLS_CUST_CROUCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CROUCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2:
-			bChange=config.setActionKey(CONTROLS_CUST_MOUSELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MOUSELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2:
-			bChange=config.setActionKey(CONTROLS_CUST_ACTION,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_ACTION,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2:
-			bChange=config.setActionKey(CONTROLS_CUST_INVENTORY,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_INVENTORY,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOKCHARSHEET,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKCHARSHEET,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOKSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOKMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOKQUEST,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKQUEST,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2:
-			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONLIFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONLIFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2:
-			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONMANA,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONMANA,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2:
-			bChange=config.setActionKey(CONTROLS_CUST_TORCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TORCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2:    
-			bChange=config.setActionKey(CONTROLS_CUST_CANCELCURSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CANCELCURSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2:
-			bChange=config.setActionKey(CONTROLS_CUST_PRECAST1,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST1,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2:
-			bChange=config.setActionKey(CONTROLS_CUST_PRECAST2,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST2,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2:
-			bChange=config.setActionKey(CONTROLS_CUST_PRECAST3,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST3,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2:
-			bChange=config.setActionKey(CONTROLS_CUST_WEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2:
-			bChange=config.setActionKey(CONTROLS_CUST_QUICKLOAD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_QUICKLOAD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2:
-			bChange=config.setActionKey(CONTROLS_CUST_QUICKSAVE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_QUICKSAVE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2:
-			bChange=config.setActionKey(CONTROLS_CUST_TURNLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TURNLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2:
-			bChange=config.setActionKey(CONTROLS_CUST_TURNRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TURNRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2:
-			bChange=config.setActionKey(CONTROLS_CUST_LOOKUP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LOOKUP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2:
-			bChange=config.setActionKey(CONTROLS_CUST_LOOKDOWN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LOOKDOWN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2:
-			bChange=config.setActionKey(CONTROLS_CUST_STRAFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2:
-			bChange=config.setActionKey(CONTROLS_CUST_CENTERVIEW,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CENTERVIEW,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2:
-			bChange=config.setActionKey(CONTROLS_CUST_FREELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_FREELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2:
-			bChange=config.setActionKey(CONTROLS_CUST_PREVIOUS,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PREVIOUS,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2:    
-			bChange=config.setActionKey(CONTROLS_CUST_NEXT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_NEXT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2:    
-			bChange=config.setActionKey(CONTROLS_CUST_CROUCHTOGGLE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CROUCHTOGGLE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2:    
-			bChange=config.setActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,GInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2:    
-			bChange=config.setActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,pGetInfoDirectInput->iKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,GInput->iKeyId);
 			break;
 		}
 	}
@@ -4313,59 +4313,59 @@ int CWindowMenuConsole::Render()
 				else
 					((CMenuElementText*)pZoneClick)->lColorHighlight = Color(50, 0, 0);
 
-				bool bOldTouch=pGetInfoDirectInput->bKeyTouched;
+				bool bOldTouch=GInput->bKeyTouched;
 
-				if( pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftShift)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightShift)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftCtrl)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightCtrl)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_LeftAlt)||
-					pGetInfoDirectInput->IsVirtualKeyPressed(Keyboard::Key_RightAlt) )
+				if( GInput->IsVirtualKeyPressed(Keyboard::Key_LeftShift)||
+					GInput->IsVirtualKeyPressed(Keyboard::Key_RightShift)||
+					GInput->IsVirtualKeyPressed(Keyboard::Key_LeftCtrl)||
+					GInput->IsVirtualKeyPressed(Keyboard::Key_RightCtrl)||
+					GInput->IsVirtualKeyPressed(Keyboard::Key_LeftAlt)||
+					GInput->IsVirtualKeyPressed(Keyboard::Key_RightAlt) )
 				{
-					if(!((pGetInfoDirectInput->iKeyId&~0x8000FFFF)>>16))
-						pGetInfoDirectInput->bKeyTouched = false;
+					if(!((GInput->iKeyId&~0x8000FFFF)>>16))
+						GInput->bKeyTouched = false;
 				}
 				else
 				{
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftShift))
+					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftShift))
 					{
-						pGetInfoDirectInput->bKeyTouched = true;
-						pGetInfoDirectInput->iKeyId = Keyboard::Key_LeftShift;
+						GInput->bKeyTouched = true;
+						GInput->iKeyId = Keyboard::Key_LeftShift;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightShift))
+					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightShift))
 					{
-						pGetInfoDirectInput->bKeyTouched = true;
-						pGetInfoDirectInput->iKeyId = Keyboard::Key_RightShift;
+						GInput->bKeyTouched = true;
+						GInput->iKeyId = Keyboard::Key_RightShift;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl))
+					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl))
 					{
-						pGetInfoDirectInput->bKeyTouched = true;
-						pGetInfoDirectInput->iKeyId = Keyboard::Key_LeftCtrl;
+						GInput->bKeyTouched = true;
+						GInput->iKeyId = Keyboard::Key_LeftCtrl;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightCtrl))
+					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightCtrl))
 					{
-						pGetInfoDirectInput->bKeyTouched = true;
-						pGetInfoDirectInput->iKeyId = Keyboard::Key_RightCtrl;
+						GInput->bKeyTouched = true;
+						GInput->iKeyId = Keyboard::Key_RightCtrl;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftAlt))
+					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_LeftAlt))
 					{
-						pGetInfoDirectInput->bKeyTouched = true;
-						pGetInfoDirectInput->iKeyId = Keyboard::Key_LeftAlt;
+						GInput->bKeyTouched = true;
+						GInput->iKeyId = Keyboard::Key_LeftAlt;
 					}
 
-					if(pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightAlt))
+					if(GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_RightAlt))
 					{
-						pGetInfoDirectInput->bKeyTouched = true;
-						pGetInfoDirectInput->iKeyId = Keyboard::Key_RightAlt;
+						GInput->bKeyTouched = true;
+						GInput->iKeyId = Keyboard::Key_RightAlt;
 					}
 				}
 
 				CMenuElement *pmeElement = GetTouch(true);
-				pGetInfoDirectInput->bKeyTouched = bOldTouch;
+				GInput->bKeyTouched = bOldTouch;
 
 				if(pmeElement)
 				{
@@ -4378,7 +4378,7 @@ int CWindowMenuConsole::Render()
 			break;
 		default:
 			{
-				if(pGetInfoDirectInput->GetMouseButtonNowPressed(Mouse::Button_0))
+				if(GInput->GetMouseButtonNowPressed(Mouse::Button_0))
 				{
 					CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 
@@ -4409,9 +4409,9 @@ void CWindowMenuConsole::ReInitActionKey()
 {
 	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
 	int iI=NUM_ACTION_KEY;
-	bool bOldTouch=pGetInfoDirectInput->bKeyTouched;
-	int iOldVirtualKey=pGetInfoDirectInput->iKeyId;
-	pGetInfoDirectInput->bKeyTouched = true;
+	bool bOldTouch=GInput->bKeyTouched;
+	int iOldVirtualKey=GInput->iKeyId;
+	GInput->bKeyTouched = true;
 
 	while(iI--)
 	{
@@ -4424,7 +4424,7 @@ void CWindowMenuConsole::ReInitActionKey()
 			if(pmzMenuZone)
 			{
 				pZoneClick = (CMenuElement*)pmzMenuZone;
-				pGetInfoDirectInput->iKeyId = config.actions[iTab].key[0];
+				GInput->iKeyId = config.actions[iTab].key[0];
 				GetTouch();
 			}
 
@@ -4433,7 +4433,7 @@ void CWindowMenuConsole::ReInitActionKey()
 			if( pmzMenuZone )
 			{
 				pZoneClick = (CMenuElement*)pmzMenuZone;
-				pGetInfoDirectInput->iKeyId = config.actions[iTab].key[1];
+				GInput->iKeyId = config.actions[iTab].key[1];
 				GetTouch();
 			}
 		}
@@ -4441,8 +4441,8 @@ void CWindowMenuConsole::ReInitActionKey()
 		iID+=2;
 	}
 
-	pGetInfoDirectInput->bKeyTouched=bOldTouch;
-	pGetInfoDirectInput->iKeyId=iOldVirtualKey;
+	GInput->bKeyTouched=bOldTouch;
+	GInput->iKeyId=iOldVirtualKey;
 }
 
 //-----------------------------------------------------------------------------
@@ -4957,7 +4957,7 @@ void CMenuSliderText::Move(int _iX, int _iY)
 void CMenuSliderText::EmptyFunction()
 {
 	//Touche pour la selection
-	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_LeftArrow))
+	if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_LeftArrow))
 	{
 		iPos--;
 
@@ -4965,7 +4965,7 @@ void CMenuSliderText::EmptyFunction()
 	}
 	else
 	{
-		if( pGetInfoDirectInput->IsVirtualKeyPressedNowPressed( Keyboard::Key_RightArrow ) )
+		if( GInput->IsVirtualKeyPressedNowPressed( Keyboard::Key_RightArrow ) )
 		{
 			iPos++;
 
@@ -4987,8 +4987,8 @@ bool CMenuSliderText::OnMouseClick(int)
 	if(iOldPos<0)
 		iOldPos=iPos;
 
-	int iX = pGetInfoDirectInput->iMouseAX;
-	int iY = pGetInfoDirectInput->iMouseAY;
+	int iX = GInput->iMouseAX;
+	int iY = GInput->iMouseAY;
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -5108,8 +5108,8 @@ void CMenuSliderText::RenderMouseOver()
 
 	pMenuCursor->SetMouseOver();
 
-	int iX = pGetInfoDirectInput->iMouseAX;
-	int iY = pGetInfoDirectInput->iMouseAY;
+	int iX = GInput->iMouseAX;
+	int iY = GInput->iMouseAY;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -5199,7 +5199,7 @@ void CMenuSlider::Move(int _iX, int _iY)
 void CMenuSlider::EmptyFunction()
 {
 	//Touche pour la selection
-	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_LeftArrow))
+	if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_LeftArrow))
 	{
 		iPos--;
 
@@ -5207,7 +5207,7 @@ void CMenuSlider::EmptyFunction()
 	}
 	else
 	{
-		if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_RightArrow))
+		if(GInput->IsVirtualKeyPressedNowPressed(Keyboard::Key_RightArrow))
 		{
 			iPos++;
 
@@ -5223,8 +5223,8 @@ bool CMenuSlider::OnMouseClick(int)
 {
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	int iX = pGetInfoDirectInput->iMouseAX;
-	int iY = pGetInfoDirectInput->iMouseAY;
+	int iX = GInput->iMouseAX;
+	int iY = GInput->iMouseAY;
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -5376,8 +5376,8 @@ void CMenuSlider::RenderMouseOver()
 
 	pMenuCursor->SetMouseOver();
 
-	int iX = pGetInfoDirectInput->iMouseAX;
-	int iY = pGetInfoDirectInput->iMouseAY;
+	int iX = GInput->iMouseAX;
+	int iY = GInput->iMouseAY;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -5509,8 +5509,8 @@ void MenuCursor::Update()
 		iDy=0;
 	}
 
-	iOldCoord[iNbOldCoord].x=pGetInfoDirectInput->iMouseAX+iDx;
-	iOldCoord[iNbOldCoord].y=pGetInfoDirectInput->iMouseAY+iDy;
+	iOldCoord[iNbOldCoord].x=GInput->iMouseAX+iDx;
+	iOldCoord[iNbOldCoord].y=GInput->iMouseAY+iDy;
 	iNbOldCoord++;
 
 	if(iNbOldCoord>=iMaxOldCoord)
@@ -5635,7 +5635,7 @@ void MenuCursor::DrawCursor()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	DrawOneCursor(pGetInfoDirectInput->iMouseAX, pGetInfoDirectInput->iMouseAY);
+	DrawOneCursor(GInput->iMouseAX, GInput->iMouseAY);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 

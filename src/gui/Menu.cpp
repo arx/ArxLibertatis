@@ -106,7 +106,7 @@ using std::string;
 using std::istringstream;
 
 extern TextManager * pTextManage;
-extern Input * pGetInfoDirectInput;
+extern Input * GInput;
 extern Anglef ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
@@ -547,7 +547,7 @@ void ARX_Menu_Manage() {
 		case AMCM_OFF:
 		{
 			// Checks for ESC key
-			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
+			if (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
 			{
 				if (CINEMASCOPE)
 				{
@@ -581,7 +581,7 @@ void ARX_Menu_Manage() {
 		break;
 		case AMCM_NEWQUEST:
 		{
-			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape)
+			if (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape)
 					&&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			   )
 			{
@@ -592,7 +592,7 @@ void ARX_Menu_Manage() {
 		break;
 		case AMCM_MAIN:
 
-			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
+			if (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
 			{
 				if ((MENU_NoActiveWindow())  && (!REFUSE_GAME_RETURN))
 				{
@@ -604,8 +604,8 @@ void ARX_Menu_Manage() {
 			break;
 		case AMCM_CREDITS:
 
-			if ((pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
-					|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Spacebar)))
+			if ((GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Escape))
+					|| (GInput->IsVirtualKeyPressedNowUnPressed(Keyboard::Key_Spacebar)))
 			{
 				ARX_MENU_CLICKSOUND();
 				bFadeInOut = true;	//fade out
@@ -632,7 +632,7 @@ bool ARX_Menu_Render()
 	// Auto-Launch Demo after 60 sec idle on Main Menu
 	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
 	{
-		if ((ARXmenu_lastmode != AMCM_MAIN) || (pGetInfoDirectInput && (pGetInfoDirectInput->bKeyTouched || pGetInfoDirectInput->bMouseMoved)))
+		if ((ARXmenu_lastmode != AMCM_MAIN) || (GInput && (GInput->bKeyTouched || GInput->bMouseMoved)))
 		{
 			ARXmenu_starttick = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long'
 		}
@@ -668,12 +668,12 @@ bool ARX_Menu_Render()
 		return false;
 	}
 
-	if (pGetInfoDirectInput->GetMouseButton(Mouse::Button_0))
+	if (GInput->GetMouseButton(Mouse::Button_0))
 	{
 		EERIEMouseButton = 1;
 		LastMouseClick = 1;
 	}
-	else if (pGetInfoDirectInput->GetMouseButton(Mouse::Button_1))
+	else if (GInput->GetMouseButton(Mouse::Button_1))
 	{
 		EERIEMouseButton = 2;
 		LastMouseClick = 2;
