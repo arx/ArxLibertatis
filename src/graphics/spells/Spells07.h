@@ -149,7 +149,7 @@ class CConfuse: public CSpellFx
 		TextureContainer * tex_p2;
 		TextureContainer * tex_trail;
 		TextureContainer * tex_light;
-		D3DTLVERTEX pathways[80];
+		TexturedVertex pathways[80];
 		ANIM_USE au;
 		int end;
 		float fColor[3];

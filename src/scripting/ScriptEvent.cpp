@@ -197,7 +197,7 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 	}
 }
 
-void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
+void ComputeACSPos(CinematicSpeech * acs, INTERACTIVE_OBJ * io, long ionum)
 {
 	if (!acs) return;
 
@@ -277,7 +277,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
 
 	if((aa < ab + 90.f) && (aa > ab - 90.f)) {
 		//font
-		ARX_TEXT_Draw(hFontInBook, 300, 320, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
+		ARX_TEXT_Draw(hFontInBook, 300, 320, "VISIBLE", Color::red);
 		return true;
 	}
 
@@ -959,13 +959,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "REVIVE"))
 				{
-					long tmp = GetNextWord(es, pos, word);
+					GetNextWord(es, pos, word);
 					long init = 0;
 
-					if (word[0] == '-')
-					{
-						pos = tmp;
-
+					if(word[0] == '-') {
 						if ((iCharIn(word, 'I'))) init = 1;
 					}
 
@@ -1738,7 +1735,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 				else if (!strcmp(word, "SPEAK")) // speak say_ident actions
 				{
-					ARX_CINEMATIC_SPEECH acs;
+					CinematicSpeech acs;
 					acs.type = ARX_CINE_SPEECH_NONE;
 
 					std::string temp2;
@@ -1757,7 +1754,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					{
 						
 						long player		=	0;
-						long voixoff	=	0;
+						SpeechFlags voixoff = 0;
 						long notext		=	0;
 						long mood			=	ANIM_TALK_NEUTRAL;
 						long unbreakable	=	0;
@@ -1774,10 +1771,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 							if (iCharIn(temp2, 'A')) mood		=	ANIM_TALK_ANGRY;
 
-							if (iCharIn(temp2, 'O'))
-							{
-								voixoff	=	2;
-
+							if(iCharIn(temp2, 'O')) {
+								voixoff = ARX_SPEECH_FLAG_OFFVOICE;
 								//Crash when we set speak pitch to 1,
 								//Variable use for a division, 0 is not possible
 								//To find
@@ -1940,7 +1935,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 								if (unbreakable) aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
 
-								memcpy(&aspeech[speechnum].cine, &acs, sizeof(ARX_CINEMATIC_SPEECH));
+								memcpy(&aspeech[speechnum].cine, &acs, sizeof(CinematicSpeech));
 								pos = GotoNextLine(es, pos);
 							}
 
@@ -2151,9 +2146,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					pos = GetNextWord(es, pos, word);
 					float b = GetVarValueInterpretedAsFloat(word, esss, io);
 
-					if (io->ioflags & IO_NPC)
-					{
-						io->_npcdata->blood_color = D3DRGB(r, g, b);
+					if(io->ioflags & IO_NPC) {
+						io->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
 					}
 				}
 				else if (!strcmp(word, "SETMATERIAL"))
@@ -4716,7 +4710,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 									if (t == -2) t = GetInterNum(io);
 
-									ObjectType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
+									ItemType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
 
 									if ((flagg != 0) && (ValidIONum(t)))
 									{
@@ -5465,12 +5459,11 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					strcpy(tempp, GetVarValueInterpretedAsText(word, esss, io).c_str());
 
-					if (tempp[0] == '[')
-					{
-						ARX_SPEECH_AddLocalised(NULL, tempp);
+					if(tempp[0] == '[') {
+						ARX_SPEECH_AddLocalised(tempp);
+					} else {
+						ARX_SPEECH_Add(tempp);
 					}
-					else
-						ARX_SPEECH_Add(NULL, tempp);
 
 				nodraw:
 					;
@@ -6883,7 +6876,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					long ppos = pos;
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
-					pos = GetNextWord(es, pos, temp4);
+					GetNextWord(es, pos, temp4);
 					sprintf(cmd, "Script Error for token #%ld '%s' (%s|%s|%s) in file %s_%04ld",
 							ppos,word.c_str(),temp2.c_str(), temp3.c_str(), temp4.c_str(),GetName(io->filename).c_str(),io->ident);
 					LogError << cmd;

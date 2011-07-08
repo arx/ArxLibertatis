@@ -90,6 +90,7 @@ DECLARE_FLAGS(PathFlag, PathFlags)
 DECLARE_FLAGS_OPERATORS(PathFlags)
 
 struct ARX_PATH {
+	
 	char name[64];
 	short idx;
 	PathFlags flags;
@@ -101,12 +102,13 @@ struct ARX_PATH {
 	char controled[64];
 	
 	char ambiance[128];
-	EERIE_RGB rgb;
+	Color3f rgb;
 	float farclip;
 	float reverb;
 	float amb_max_vol;
 	Vec3f bbmin;
 	Vec3f bbmax;
+	
 };
 
 enum UsePathFlag {

@@ -2100,7 +2100,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			if (!NO_TEXT_AT_ALL) 
 			{
 				tex = "Unknown Symbol - " + SpellMoves;
-				ARX_SPEECH_Add(NULL, tex);
+				ARX_SPEECH_Add(tex);
 			}
 		}
 	}
@@ -2283,129 +2283,68 @@ extern long PLAYER_PARALYSED;
 
 
 static void ARX_SPELLS_Analyse() {
+	
+	unsigned char dirs[MAX_POINTS];
+	unsigned char lastdir = 255;
+	long cdir = 0;
 
-	long			x		= 0,
-					xx		= 0,
-					y		= 0,
-					yy		= 0,
-					dx		= 0,
-					dy		= 0;
-	long			i		= 0;
-	float			pente	= 0,
-					a		= 0,
-					b		= 0;
-
-	unsigned char	dirs[MAX_POINTS];
-	unsigned char	lastdir			= 255;
-	long			cdir			= 0;
-	long			cx				= 0,
-					cy				= 0;
-
-	for ( i = 0 ; i < CurrPoint ; i++ )
-	{
-		x = plist[i].x;
-		y = plist[i].y;
-
-		if ( i > 0 ) 
-		{
-			dx = ( xx + cx ) - x;			
-			dy = ( yy + cy ) - y;
-
-			if ( Distance2D( (float)xx, (float)yy, (float)x, (float)y ) > 10 ) 
-			{
-				xx = xx + cx;
-				yy = yy + cy;
-				a = (float)( abs( dx ) );
-				b = (float)( abs( dy ) );
-
-				if ( b != 0.f )
-				{
-					pente = a / b;
-
-					if ( ( pente > 0.4f ) && ( pente < 2.5f ) ) //une diagonale
-					{
-						if ( ( dx < 0 ) && ( dy < 0 ) ) //on a boug� vers droite/bas
-						{
-							if ( lastdir != ADOWNRIGHT ) 
-							{
-								lastdir = dirs[cdir] = ADOWNRIGHT;
-								cdir++;
-							}
-						}
-						else if ( ( dx > 0 ) && ( dy < 0 ) ) //on a boug� vers gauche/bas
-						{
-							if ( lastdir != ADOWNLEFT ) 
-							{
-								lastdir = dirs[cdir] = ADOWNLEFT;
-								cdir++;
-							}
-						}
-						else if ( ( dx < 0 ) && ( dy > 0 ) ) //on a boug� vers droite/haut
-						{
-							if ( lastdir != AUPRIGHT ) 
-							{
-								lastdir = dirs[cdir] = AUPRIGHT;
-								cdir++;
-							}
-						}
-						else if ( ( dx > 0 ) && ( dy > 0 ) ) //on a boug� vers gauche/haut
-						{
-							if ( lastdir != AUPLEFT ) 
-							{
-								lastdir = dirs[cdir] = AUPLEFT;
-								cdir++;
-							}
-						}
-
-						goto lasuite;
+	for(long i = 1; i < CurrPoint ; i++) {
+		
+		Vec2s d = plist[i-1] - plist[i];
+		
+		if(d.lengthSqr() > 100) {
+			
+			float a = (float)abs(d.x);
+			float b = (float)abs(d.y);
+			
+			if(b != 0.f && a / b > 0.4f && a / b < 2.5f) {
+				// Diagonal movemement.
+				
+				if(d.x < 0 && d.y < 0) {
+					if(lastdir != ADOWNRIGHT) {
+						lastdir = dirs[cdir++] = ADOWNRIGHT;
+					}
+				} else if(d.x > 0 && d.y < 0) {
+					if(lastdir != ADOWNLEFT) {
+						lastdir = dirs[cdir++] = ADOWNLEFT;
+					}
+				} else if(d.x < 0 && d.y > 0) {
+					if(lastdir != AUPRIGHT) {
+						lastdir = dirs[cdir++] = AUPRIGHT;
+					}
+				} else if(d.x > 0 && d.y > 0) {
+					if(lastdir != AUPLEFT) {
+						lastdir = dirs[cdir++] = AUPLEFT;
 					}
 				}
-
-				if ( abs( dx ) > abs( dy ) ) //mouvement lat�ral plus important
-				{
-					if ( dx < 0 ) //on a boug� vers la droite
-					{
-						if ( lastdir != ARIGHT ) 
-						{
-							lastdir = dirs[cdir] = ARIGHT;
-							cdir++;
-						}
+				
+			} else if(a > b) {
+				// Horizontal movement.
+				
+				if(d.x < 0) {
+					if(lastdir != ARIGHT) {
+						lastdir = dirs[cdir++] = ARIGHT;
 					}
-					else //on a boug� vers la gauche
-					{
-						if ( lastdir != ALEFT ) 
-						{
-							lastdir = dirs[cdir] = ALEFT;
-							cdir++;
-						}
+				} else {
+					if(lastdir != ALEFT) {
+						lastdir = dirs[cdir++] = ALEFT;
 					}
 				}
-				else //mouvement vertical plus significatif
-				{
-					if ( dy < 0 ) //on a boug� vers le bas
-					{
-						if ( lastdir != ADOWN ) 
-						{
-							lastdir = dirs[cdir] = ADOWN;
-							cdir++;
-						}
+				
+			} else {
+				// Vertical movement.
+				
+				if(d.y < 0) {
+					if(lastdir != ADOWN) {
+						lastdir = dirs[cdir++] = ADOWN;
 					}
-					else //on a boug� vers le haut
-					{
-						if ( lastdir != AUP ) 
-						{
-							lastdir = dirs[cdir] = AUP;
-							cdir++;
-						}
+				} else {
+					if(lastdir != AUP) {
+						lastdir = dirs[cdir++] = AUP;
 					}
-				}			
+				}
 			}
 		}
-
-	lasuite:
-		;
-		xx = x;
-		yy = y;
 	}
 
 	SpellMoves.clear();
@@ -2413,7 +2352,7 @@ static void ARX_SPELLS_Analyse() {
 	if ( cdir > 0 )
 	{
 
-		for ( i = 0 ; i < cdir ; i++ )
+		for (long i = 0 ; i < cdir ; i++ )
 		{
 			switch ( dirs[i] )
 			{
@@ -2693,12 +2632,9 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 		{
 			ARX_SPELLS_FizzleNoMana(num);
 
-			if (_bSound)
-			{
-				ARX_SPEECH_AddLocalised(NULL, "[player_cantcast]");
-				ARX_SPEECH_AddSpeech(	inter.iobj[0],
-					"[player_cantcast]",
-					ANIM_TALK_NEUTRAL);
+			if(_bSound) {
+				ARX_SPEECH_AddLocalised("[player_cantcast]");
+				ARX_SPEECH_AddSpeech(inter.iobj[0], "[player_cantcast]", ANIM_TALK_NEUTRAL);
 			}
 
 			return 0;
@@ -2963,12 +2899,9 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 	
 	ARX_SPELLS_FizzleNoMana(num);
 
-	if (_bSound)
-	{
-		ARX_SPEECH_AddLocalised(NULL, "[player_cantcast]");
-		ARX_SPEECH_AddSpeech(	inter.iobj[0],
-			"[player_cantcast]",
-			ANIM_TALK_NEUTRAL);
+	if(_bSound) {
+		ARX_SPEECH_AddLocalised("[player_cantcast]");
+		ARX_SPEECH_AddSpeech(inter.iobj[0], "[player_cantcast]", ANIM_TALK_NEUTRAL);
 	}
 
 	return 0;
@@ -5464,9 +5397,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					pd->tc=tc4;
 					pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam=0.0000001f;
-					pd->r=0.7f;
-					pd->g=0.7f;
-					pd->b=1.f;
+					pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 				}
 			}
 
@@ -5923,41 +5854,21 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			AddQuakeFX(300,2000,400,1);
 
-			for ( long i_angle = 0 ; i_angle < 360 ; i_angle += 12 )
-			{
-				for ( long j = -100 ; j < 100 ; j += 50 )
-				{	
-					float		rr;
-					Vec3f	pos,	dir;
-
-					rr		=	radians( (float) i_angle );
-					pos.x	=	target.x - EEsin(rr) * 360.f;  
-					pos.y	=	target.y;
-					pos.z	=	target.z + EEcos(rr) * 360.f;  
-					dir.x	=	pos.x - target.x;
-					dir.y	=	0;
-					dir.z	=	pos.z - target.z;
-					dir.normalize();
-					dir.x	*=	60.f;
-					dir.y	*=	60.f;
-					dir.z	*=	60.f;
-
-					EERIE_RGB	rgb; 
-					rgb.r	=	0.1f + rnd() * ( 1.0f / 3 );
-					rgb.g	=	0.1f + rnd() * ( 1.0f / 3 );
-					rgb.b	=	0.8f + rnd() * ( 1.0f / 5 );
-
-					Vec3f posi;
-					posi.x	=	target.x;
-					posi.y	=	target.y + j * 2;
-					posi.z	=	target.z;
+			for(long i_angle = 0 ; i_angle < 360 ; i_angle += 12) {
+				for(long j = -100 ; j < 100 ; j += 50) {
 					
-					LaunchFireballBoom( &posi, 16, &dir, &rgb );
+					float rr = radians((float) i_angle);
+					Vec3f pos(target.x - EEsin(rr) * 360.f, target.y, target.z + EEcos(rr) * 360.f);
+					Vec3f dir = Vec3f(pos.x - target.x, 0.f, pos.z - target.z).getNormalized() * 60.f;
+					
+					Color3f rgb(0.1f + rnd() * (1.f/3), 0.1f + rnd() * (1.f/3), 0.8f + rnd() * (1.f/5));
+					
+					Vec3f posi = target + Vec3f(0.f, j * 2, 0.f);
+					
+					LaunchFireballBoom(&posi, 16, &dir, &rgb);
 				}
 			}
-
-
-
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
 			SPELLCAST_Notify(i);
 		}	
@@ -6113,11 +6024,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					
 				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
 					pCSpellFx->SetDuration(2000, 500, 1500);
-					pCSpellFx->SetColorBorder(1, 0, 0);
-					pCSpellFx->SetColorRays1(0.93f, 0.93f, 0.63f);
-					pCSpellFx->SetColorRays2(0,0,0);
-					pCSpellFx->SetColorRays1(1, 0, 0);
-					pCSpellFx->SetColorRays2(0.5f, 0.5f, 0);
+					pCSpellFx->SetColorBorder(Color3f::red);
+					pCSpellFx->SetColorRays1(Color3f::red);
+					pCSpellFx->SetColorRays2(Color3f::yellow * .5f);
 					
 					pCSpellFx->lLightId = GetFreeDynLight();
 
@@ -6128,9 +6037,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						DynLight[id].intensity = 0.3f;
 						DynLight[id].fallend = 500.f;
 						DynLight[id].fallstart = 400.f;
-						DynLight[id].rgb.r = 1.0f;
-						DynLight[id].rgb.g = 0.0f;
-						DynLight[id].rgb.b = 0.0f;
+						DynLight[id].rgb = Color3f::red;
 						DynLight[id].pos = pCSpellFx->eSrc;
 					}
 
@@ -6180,11 +6087,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					
 				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
 				pCSpellFx->SetDuration(2000, 500, 1500);
-				pCSpellFx->SetColorBorder(1, 0, 0);
-				pCSpellFx->SetColorRays1(0.93f, 0.93f, 0.63f);
-				pCSpellFx->SetColorRays2(0,0,0);
-				pCSpellFx->SetColorRays1(1, 0, 0);
-				pCSpellFx->SetColorRays2(0.5f, 0.5f, 0);
+				pCSpellFx->SetColorBorder(Color3f::red);
+				pCSpellFx->SetColorRays1(Color3f::red);
+				pCSpellFx->SetColorRays2(Color3f::yellow * .5f);
 					
 				pCSpellFx->lLightId = GetFreeDynLight();
 
@@ -6195,9 +6100,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					DynLight[id].intensity = 0.3f;
 					DynLight[id].fallend = 500.f;
 					DynLight[id].fallstart = 400.f;
-					DynLight[id].rgb.r = 1.0f;
-					DynLight[id].rgb.g = 0.0f;
-					DynLight[id].rgb.b = 0.0f;
+					DynLight[id].rgb = Color3f::red;
 					DynLight[id].pos = pCSpellFx->eSrc;
 					
 				}
@@ -6398,7 +6301,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			float val = 1.f; 
 
-			EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.00009f,NULL,D3DRGB(0.5f+val*( 1.0f / 2 ),val,val));
+			EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, Color3f(0.5f + val * (1.0f/2), val, val).to<u8>());
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}	
 		break;
@@ -6686,9 +6589,7 @@ void ARX_SPELLS_Kill(long i) {
 					pd->tc=tc4;
 					pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam=0.0000001f;
-					pd->r=0.7f;
-					pd->g=0.7f;
-					pd->b=1.f;
+					pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 				}
 			}
 
@@ -6817,7 +6718,7 @@ EYEBALL_DEF eyeball;
 Anglef cabalangle;
 Vec3f cabalpos;
 Vec3f cabalscale;
-EERIE_RGB cabalcolor;
+Color3f cabalcolor;
 
 
 float ARX_SPELLS_ApplyFireProtection(INTERACTIVE_OBJ * io,float damages)
@@ -7957,7 +7858,7 @@ void ARX_SPELLS_Update()
 								pd->scale.y		=	-8.f;
 								pd->scale.z		=	-8.f;
 										pd->timcreation	=	lARXTime;
-								pd->r			=	pd->g	=	pd->b	=	1.f;
+								pd->rgb = Color3f::white;
 								long j2			=	ARX_PARTICLES_GetFree();
 
 								if (j2!=-1)
@@ -8053,43 +7954,33 @@ void ARX_SPELLS_Update()
 					DynLight[id].rgb.b = 0.8f+rnd()*( 1.0f / 5 );;
 					DynLight[id].duration=200;
 				
-					long lvl;
 					float rr,r2;
 					Vec3f pos;
-
-					if (rnd()>0.8f)
-					{					
-						lvl = rnd() * 9.f + 4.f;
+					
+					float choice = rnd();
+					if(choice > .8f) {
+						long lvl = rnd() * 9.f + 4.f;
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*260;						
-						EERIE_RGB rgb; 
-						rgb.r=0.1f+rnd()*( 1.0f / 3 );
-						rgb.g=0.1f+rnd()*( 1.0f / 3 );
-						rgb.b=0.8f+rnd()*( 1.0f / 5 );
-								LaunchFireballBoom(&pos, ARX_CLEAN_WARN_CAST_FLOAT(lvl), NULL, &rgb);
-					}
-					else if (rnd()>0.76f)
-					{					
-						lvl = rnd() * 9.f + 4.f;
+						pos.z=DynLight[id].pos.z+EEcos(rr)*260;
+						Color3f rgb(0.1f + rnd()*(1.f/3), 0.1f + rnd()*(1.0f/3), 0.8f + rnd()*(1.0f/5));
+						LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
+					} else if(choice > .6f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*260;						
-						MakeCoolFx(&pos);		
-					}
-					else if (rnd()>0.66f)
-					{					
-						lvl = rnd() * 9.f + 4.f;
+						pos.z=DynLight[id].pos.z+EEcos(rr)*260;
+						MakeCoolFx(&pos);
+					} else if(choice > 0.4f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*160;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*160;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*160;						
-						ARX_PARTICLES_Add_Smoke(&pos,2,20); // flag 1 = randomize pos
+						pos.z=DynLight[id].pos.z+EEcos(rr)*160;
+						ARX_PARTICLES_Add_Smoke(&pos, 2, 20); // flag 1 = randomize pos
 					}
 				}
 			}
@@ -8427,30 +8318,15 @@ void ARX_SPELLS_Update()
 				{
 					float TELEPORT = (float)(((float)tim-(float)spells[i].timcreation)/(float)spells[i].tolive);
 
-					if ((LASTTELEPORT<0.5f) && (TELEPORT>=0.5f))
-					{
-						Vec3f pos;
-						
-						pos.x=lastteleport.x;
-						pos.y=lastteleport.y;
-						pos.z=lastteleport.z;							
-						lastteleport.x=player.pos.x;
-						lastteleport.y=player.pos.y;
-						lastteleport.z=player.pos.z;
-						player.pos.x=pos.x;
-						player.pos.y=pos.y;
-						player.pos.z=pos.z;
-						LASTTELEPORT=32.f;
+					if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
+						Vec3f pos = lastteleport;
+						lastteleport = player.pos;
+						player.pos = pos;
+						LASTTELEPORT = 32.f;
 						ARX_SOUND_PlaySFX(SND_SPELL_TELEPORTED, &player.pos);
+					} else {
+						LASTTELEPORT = TELEPORT;
 					}
-					else LASTTELEPORT=TELEPORT;
-
-					if (TELEPORT>=0.5f) 
-					{
-						TELEPORT=1.f-(TELEPORT-0.5f)*2.f;
-					}
-					else TELEPORT*=2.f;
-					
 				}
 				break;				
 				//-----------------------------------------------------------------------------------------
@@ -8807,39 +8683,26 @@ void MakeSpCol()
 		sp_max_y[i]=0;
 	}
 
-	sp_max_col[0]=0x00FF0000;
-	sp_max_col[1]=0x0000FF00;
-	sp_max_col[2]=0x000000FF;
-	sp_max_col[3]=0x00FFFF00;
-	sp_max_col[4]=0x00FF00FF;
-	sp_max_col[5]=0x0000FFFF;
-	sp_max_col[6]=0x00FF0000;
-	sp_max_col[7]=0x0000FF00;
-	sp_max_col[8]=0x000000FF;
-	sp_max_col[9]=0x00FFFF00;
-	sp_max_col[10]=0x00FF00FF;
-	sp_max_col[11]=0x0000FFFF;
-	sp_max_col[12]=0x00FF0000;
-	sp_max_col[13]=0x0000FF00;
-	sp_max_col[14]=0x000000FF;
-	sp_max_col[15]=0x00FFFF00;
-	sp_max_col[16]=0x00FF00FF;
-	sp_max_col[17]=0x0000FFFF;
-	sp_max_col[18]=0x00FF0000;
-	sp_max_col[19]=0x0000FF00;
-	sp_max_col[20]=0x000000FF;
-	sp_max_col[21]=0x00FFFF00;
-	sp_max_col[22]=0x00FF00FF;
-	sp_max_col[23]=0x0000FFFF;
-	sp_max_col[24]=0x00FFFF00;
-	sp_max_col[25]=0x00FF00FF;
-	sp_max_col[26]=0x0000FFFF;
-	sp_max_col[27]=0x00FF0000;
-	sp_max_col[28]=0x0000FF00;
-	sp_max_col[29]=0x000000FF;
-	sp_max_col[30]=0x00FFFF00;
-	sp_max_col[31]=0x00FF00FF;
-	sp_max_col[32]=0x0000FFFF;
+	sp_max_col[0] = Color::fromRGBA(0x00FF0000);
+	sp_max_col[1] = Color::fromRGBA(0x0000FF00);
+	sp_max_col[2] = Color::fromRGBA(0x000000FF);
+	
+	sp_max_col[3] = Color::fromRGBA(0x00FFFF00);
+	sp_max_col[4] = Color::fromRGBA(0x00FF00FF);
+	sp_max_col[5] = Color::fromRGBA(0x0000FFFF);
+	
+	for(size_t i = 6; i < 24; i++) {
+		sp_max_col[i] = sp_max_col[i - 6];
+	}
+	
+	for(size_t i = 24; i < 27; i++) {
+		sp_max_col[i] = sp_max_col[i - 3];
+	}
+	
+	for(size_t i = 27; i < 33; i++) {
+		sp_max_col[i] = sp_max_col[i - 9];
+	}
+	
 }
 
 static void ApplyCurSOS() {
@@ -9013,7 +8876,7 @@ static void ApplySPMax() {
 		
 		ARX_PLAYER_Rune_Add_All();
 		std::string text = "!!!!!!! FanTomAciE !!!!!!!";
-		ARX_SPEECH_Add(NULL, text);
+		ARX_SPEECH_Add(text);
 		player.Attribute_Redistribute+=10;
 		player.Skill_Redistribute+=50;
 		player.level=std::max((int)player.level,10);

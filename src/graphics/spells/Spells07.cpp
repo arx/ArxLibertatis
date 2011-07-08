@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells07.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -413,8 +415,8 @@ void GetChestPos(long num, Vec3f * p)
 //------------------------------------------------------------------------------
 float CLightning::Render()
 {
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
+	TexturedVertex v[4];
+	TexturedVertex v2[4];
 
 	if (ulCurrentTime >= ulDuration) return 0.f;
 
@@ -530,7 +532,7 @@ float CLightning::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->ResetTexture(0);
 
-	v2[0].color = v2[1].color = v2[2].color = v2[3].color = D3DRGB(1, 1, 1);
+	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::white.toBGR();
 
 	float xx;
 	float zz;
@@ -653,10 +655,10 @@ float CLightning::Render()
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 
@@ -679,10 +681,10 @@ float CLightning::Render()
 	
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 
@@ -704,10 +706,10 @@ float CLightning::Render()
 		
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 
@@ -726,10 +728,10 @@ float CLightning::Render()
 
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 	}
@@ -768,7 +770,7 @@ CConfuse::CConfuse()
 	tex_trail = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
 	if (!spapi)
-		spapi = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo", NULL);
+		spapi = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo");
 
 	spapi_count++;
 
@@ -842,7 +844,7 @@ float CConfuse::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 
 	eCurPos.x = inter.iobj[spells[spellinstance].target]->pos.x;
 	eCurPos.y = inter.iobj[spells[spellinstance].target]->pos.y;
@@ -916,9 +918,7 @@ float CConfuse::Render()
 				t3 = rnd() * 0.4f + 0.4f;
 			}
 
-			particle[j].r = t1 * 0.8f;
-			particle[j].g = t2 * 0.8f;
-			particle[j].b = t3 * 0.8f;
+			particle[j].rgb = Color3f(t1 * 0.8f, t2 * 0.8f, t3 * 0.8f);
 		}
 	}
 
@@ -1163,12 +1163,12 @@ CIceField::CIceField()
 	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
 	if (!stite)
-		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 		
 	stite_count++;
 
 	if (!smotte)
-		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 
 	smotte_count++;
 }
@@ -1301,7 +1301,7 @@ float CIceField::Render()
 		Anglef stiteangle;
 		Vec3f stitepos;
 		Vec3f stitescale;
-		EERIE_RGB stitecolor;
+		Color3f stitecolor;
 
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360; 
 		stiteangle.a = 0;
@@ -1375,9 +1375,7 @@ float CIceField::Render()
 				particle[j].tc			=	tex_p2;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	0.7f;
-				particle[j].g			=	0.7f;
-				particle[j].b			=	1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 		else if (t > 0.095f)
@@ -1409,9 +1407,7 @@ float CIceField::Render()
 				particle[j].tc			=	tex_p1;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	0.7f;
-				particle[j].g			=	0.7f;
-				particle[j].b			=	1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 	}

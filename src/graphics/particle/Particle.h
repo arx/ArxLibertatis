@@ -26,7 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_PARTICLE_PARTICLE_H
 #define ARX_GRAPHICS_PARTICLE_PARTICLE_H
 
-#include "platform/math/Vector3.h"
+#include "graphics/Color.h"
+#include "math/Vector3.h"
 
 class Particle {
 	
@@ -51,7 +52,7 @@ public:
 	float fColorStart[4];
 	float fColorEnd[4];
 	float fColor[4];
-	unsigned long ulColor;
+	Color ulColor;
 	
 	// rotation
 	int iRot;

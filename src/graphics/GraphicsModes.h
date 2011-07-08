@@ -27,15 +27,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
-//-----------------------------------------------------------------------------
-struct GLOBAL_MODS // Warning !!! used for save
-{
-	long		flags;
-	EERIE_RGB	depthcolor;
-	float		zclip;
-	char		ambiance[128];
-	float		ambiance_vol;
-	float		ambiance_maxvol;
+struct GLOBAL_MODS {
+	long flags;
+	Color3f depthcolor;
+	float zclip;
+	char ambiance[128];
+	float ambiance_vol;
+	float ambiance_maxvol;
 };
 
 //-----------------------------------------------------------------------------

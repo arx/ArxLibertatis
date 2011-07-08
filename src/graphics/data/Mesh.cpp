@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/PathFinderManager.h"
 
 #include "animation/Animation.h"
+#include "animation/AnimationRender.h"
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -74,7 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
-#include "graphics/GraphicsUtility.h"
+#include "graphics/VertexBuffer.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/data/Texture.h"
 #include "graphics/data/FastSceneFormat.h"
@@ -139,14 +140,11 @@ void ReleaseAnimFromIO(INTERACTIVE_OBJ * io, long num)
 	io->anims[num] = NULL;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void DebugSphere(float x, float y, float z, float siz, long tim, D3DCOLOR color)
-{
-	long	j = ARX_PARTICLES_GetFree();
-
-	if ((j != -1) && (!ARXPausedTimer))
-	{
+void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
+	
+	long j = ARX_PARTICLES_GetFree();
+	
+	if(j != -1 && !ARXPausedTimer) {
 		ParticleCount++;
 		particle[j].exist		=	true;
 		particle[j].zdec		=	0;
@@ -165,9 +163,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, D3DCOLOR color)
 		particle[j].tolive		=	tim;
 		particle[j].tc			=	EERIE_DRAW_sphere_particle;
 		particle[j].siz			=	siz;
-		particle[j].r			=	(float)((color >> 16) & 255) * ( 1.0f / 255 );
-		particle[j].g			=	(float)((color >> 8)  & 255) * ( 1.0f / 255 );
-		particle[j].b			=	(float)((color) & 255) * ( 1.0f / 255 );
+		particle[j].rgb = color.to<float>();
 	}
 }
 
@@ -220,15 +216,10 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	ProjectionMatrix._33 = -(fFarPlane * fNearPlane) / (fFarPlane - fNearPlane);	//HYPERBOLIC
 	ProjectionMatrix._43 = Q;
 
-	Renderer::Viewport vp;
-	vp.x = 0;
-	vp.y = 0;
-	vp.width = ARX_CLEAN_WARN_CAST_DWORD(_fWidth);
-	vp.height = ARX_CLEAN_WARN_CAST_DWORD(_fHeight);
-	GRenderer->SetViewport(vp);
+	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 
-void specialEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void specialEE_RTP(TexturedVertex * in, TexturedVertex * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->sx = in->sx - et->posx;
@@ -793,7 +784,7 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 
 //*************************************************************************************
 //*************************************************************************************
-void EERIETreatPoint(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out)
 {
 	out->sx = in->sx - ACTIVECAM->pos.x;
 	out->sy = in->sy - ACTIVECAM->pos.y;
@@ -821,7 +812,7 @@ void EERIETreatPoint(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-void EERIETreatPoint2(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
 {
 	out->sx = in->sx - ACTIVECAM->pos.x;
 	out->sy = in->sy - ACTIVECAM->pos.y;
@@ -852,7 +843,7 @@ void EERIETreatPoint2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 
 //*************************************************************************************
 //*************************************************************************************
-void EE_RT(D3DTLVERTEX * in, Vec3f * out)
+void EE_RT(TexturedVertex * in, Vec3f * out)
 {
 	out->x = in->sx - ACTIVECAM->pos.x;
 	out->y = in->sy - ACTIVECAM->pos.y;
@@ -871,7 +862,7 @@ void EE_RT(D3DTLVERTEX * in, Vec3f * out)
 	out->y = temp;
 }
 
-void EE_RT2(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_RT2(TexturedVertex * in, TexturedVertex * out)
 {
 
 	out->sx = in->sx - ACTIVECAM->pos.x;
@@ -891,7 +882,7 @@ void EE_RT2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->sy = temp;
 }
 
-void EE_P(Vec3f * in, D3DTLVERTEX * out)
+void EE_P(Vec3f * in, TexturedVertex * out)
 {
 	float fZTemp;
 	fZTemp = 1.f / in->z;
@@ -901,7 +892,7 @@ void EE_P(Vec3f * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_P2(TexturedVertex * in, TexturedVertex * out)
 {
 	float fZTemp;
 	fZTemp = 1.f / in->sz;
@@ -911,7 +902,7 @@ void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_RTP(TexturedVertex * in, TexturedVertex * out)
 {
 	//register float rhw;
 	out->sx = in->sx - ACTIVECAM->pos.x;
@@ -939,9 +930,9 @@ void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
 }
 //*************************************************************************************
 //*************************************************************************************
-__inline void camEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out, EERIE_CAMERA * cam)
+__inline void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam)
 {
-	D3DTLVERTEX tout;
+	TexturedVertex tout;
 	out->sx = in->sx - cam->pos.x;
 	out->sy = in->sy - cam->pos.y;
 	out->sz = in->sz - cam->pos.z;
@@ -979,7 +970,7 @@ __inline void camEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out, EERIE_CAMERA * cam)
 
 //*************************************************************************************
 //*************************************************************************************
-void EE_RTT(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_RTT(TexturedVertex * in, TexturedVertex * out)
 {
 	specialEE_RTP(in, out);
 }
@@ -999,15 +990,13 @@ extern float GLOBAL_LIGHT_FACTOR;
 //*************************************************************************************
 //*************************************************************************************
 
-D3DCOLOR GetColorz(float x, float y, float z)
-{
+float GetColorz(float x, float y, float z) {
+	
 	Vec3f pos(x, y, z);
 	llightsInit();
 	float ffr, ffg, ffb;
-	long lfr, lfg, lfb;
 	float dd, dc;
 	float p;
-	D3DCOLOR color;
 
 	for (long i = 0; i < TOTIOPDL; i++)
 	{
@@ -1082,12 +1071,11 @@ D3DCOLOR GetColorz(float x, float y, float z)
 
 		ApplyDynLight(ep);
 
-		for (long i = 0; i < to; i++)
-		{
-			D3DCOLOR col = ep->tv[i].color;
-			_ffr += (float)(long)((col >> 16) & 255);
-			_ffg += (float)(long)((col >> 8) & 255);
-			_ffb += (float)(long)((col) & 255);
+		for(long i = 0; i < to; i++) {
+			Color3f col = Color3f::fromBGR(ep->tv[i].color);
+			_ffr += col.r;
+			_ffg += col.g;
+			_ffb += col.b;
 		}
 
 		_ffr *= div;
@@ -1101,17 +1089,8 @@ D3DCOLOR GetColorz(float x, float y, float z)
 		ffg = ffg * ratio2 + _ffg * ratio;
 		ffb = ffb * ratio2 + _ffb * ratio;
 	}
-
-	ffr = min(ffr, 255.f);
-	lfr = ffr;
-
-	ffg = min(ffg, 255.f);
-	lfg = ffg;
-
-	ffb = min(ffb, 255.f);
-	lfb = ffb;
-	color = (0xFF000000L | ((lfr & 255) << 16) |	((lfg & 255) << 8) | (lfb & 255));
-	return color;
+	
+	return (min(ffr, 255.f) + min(ffg, 255.f) + min(ffb, 255.f)) * (1.f/3);
 }
 
 //*************************************************************************************
@@ -1253,7 +1232,7 @@ void SetTargetCamera(EERIE_CAMERA * cam, float x, float y, float z)
 //*************************************************************************************
 //*************************************************************************************
 
-int BackFaceCull2D(D3DTLVERTEX * tv)
+int BackFaceCull2D(TexturedVertex * tv)
 {
 
 	if ((tv[0].sx - tv[1].sx)*(tv[2].sy - tv[1].sy) - (tv[0].sy - tv[1].sy)*(tv[2].sx - tv[1].sx) > 0.f)
@@ -2684,9 +2663,8 @@ static void EERIE_PORTAL_Release() {
 					portals->room[nn].epdata = NULL;
 					portals->room[nn].portals = NULL;
 
-					if (portals->room[nn].pVertexBuffer)
-					{
-						portals->room[nn].pVertexBuffer->Release();
+					if(portals->room[nn].pVertexBuffer) {
+						delete portals->room[nn].pVertexBuffer;
 						portals->room[nn].pVertexBuffer = NULL;
 					}
 
@@ -2972,19 +2950,16 @@ long CountBkgVertex()
 }
 
 
-
-
-//*************************************************************************************
-//*************************************************************************************
-void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
-					Anglef * angle, Vec3f  * pos, Vec3f * scale, EERIE_RGB * col)
-{
-	if (eobj == NULL) return;
+void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * scale, Color3f * col) {
+	
+	if(eobj == NULL) {
+		return;
+	}
 
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	D3DTLVERTEX v;
-	D3DTLVERTEX rv;
-	D3DTLVERTEX vert_list[4];
+	TexturedVertex v;
+	TexturedVertex rv;
+	TexturedVertex vert_list[4];
 
 
 	Zsin = radians(angle->a);
@@ -3015,7 +2990,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 	}
 
-	D3DCOLOR coll = EERIERGB(col->r, col->g, col->b);
+	ColorBGRA coll = col->toBGR();
 
 	for (size_t i = 0; i < eobj->facelist.size(); i++)
 	{
@@ -3050,7 +3025,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
 			GRenderer->SetCulling(Renderer::CullNone);
 		else GRenderer->SetCulling(Renderer::CullCW);
 
-		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
+		ARX_DrawPrimitive(&vert_list[0],
 									 &vert_list[1],
 									 &vert_list[2]);
 	}
@@ -3064,9 +3039,9 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 	if (eobj == NULL) return;
 
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	D3DTLVERTEX v;
-	D3DTLVERTEX rv;
-	D3DTLVERTEX vert_list[4];
+	TexturedVertex v;
+	TexturedVertex rv;
+	TexturedVertex vert_list[4];
 
 
 	Zsin = radians(angle->a);
@@ -3131,7 +3106,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 			GRenderer->SetCulling(Renderer::CullNone);
 		else GRenderer->SetCulling(Renderer::CullCW);
 
-		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
+		ARX_DrawPrimitive(&vert_list[0],
 									 &vert_list[1],
 									 &vert_list[2]);
 	}
@@ -3141,7 +3116,6 @@ extern float FLOATTEST;
 
 Vec3f BBOXMIN, BBOXMAX;
 
-extern long USE_CEDRIC_ANIM;
 //*************************************************************************************
 // Memorizes information for animation to animation smoothing interpolation
 //*************************************************************************************
@@ -3344,7 +3318,7 @@ bool FastSceneLoad(const string & partial_path) {
 				}
 				
 				ep2->transval = ep->transval;
-				ep2->type = ep->type;
+				ep2->type = PolyType::load(ep->type);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->v[kk].color = 0xFFFFFFFF;
@@ -3357,7 +3331,7 @@ bool FastSceneLoad(const string & partial_path) {
 					ep2->v[kk].tv = ep->v[kk].stv;
 				}
 				
-				memcpy(ep2->tv, ep2->v, sizeof(D3DTLVERTEX) * 4);
+				memcpy(ep2->tv, ep2->v, sizeof(TexturedVertex) * 4);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->tv[kk].color = 0xFF000000;
@@ -3495,7 +3469,7 @@ bool FastSceneLoad(const string & partial_path) {
 			portal.useportal = epo->useportal;
 			portal.paddy = epo->paddy;
 			portal.poly.area = epo->poly.area;
-			portal.poly.type = epo->poly.type;
+			portal.poly.type = PolyType::load(epo->poly.type);
 			portal.poly.transval = epo->poly.transval;
 			portal.poly.room = epo->poly.room;
 			portal.poly.misc = epo->poly.misc;
@@ -3858,16 +3832,16 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	return 1;
 }
 
-static void EERIEAddPolyToBackground(D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval, EERIE_3DOBJ * eobj) {
+static void EERIEAddPolyToBackground(TexturedVertex * vert2, TextureContainer * tex, PolyType render, float transval, EERIE_3DOBJ * eobj) {
 	
 	EERIEPOLY ep;
 	
-	memset(ep.tv, 0, sizeof(D3DTLVERTEX) * 3);
+	memset(ep.tv, 0, sizeof(TexturedVertex) * 3);
 	
 	if(vert2 != NULL) {
-		memcpy(ep.v, vert2, sizeof(D3DTLVERTEX) * 3);
+		memcpy(ep.v, vert2, sizeof(TexturedVertex) * 3);
 	} else {
-		memset(ep.tv, 0, sizeof(D3DTLVERTEX) * 3);
+		memset(ep.tv, 0, sizeof(TexturedVertex) * 3);
 	}
 	
 	ep.type = render;
@@ -3881,7 +3855,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	float       Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
 	Vec3f      p, rp;
 
-	D3DTLVERTEX vlist[3];
+	TexturedVertex vlist[3];
 	Zsin = radians(eobj->angle.a);
 	Xcos = (float)EEcos(Zsin);
 	Xsin = (float)EEsin(Zsin);
@@ -3919,7 +3893,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 				{
 					for (long kk = 0; kk < 3; kk++)
 					{
-						memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(D3DTLVERTEX));
+						memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(TexturedVertex));
 					}
 
 					if (i == 0)
@@ -3959,9 +3933,9 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 		vlist[1] = eobj->vertexlist[eobj->facelist[i].vid[1]].vert;
 		vlist[2] = eobj->vertexlist[eobj->facelist[i].vid[2]].vert;
 
-		if (eobj->facelist[i].facetype & 1)
+		vlist[0].color = vlist[1].color = vlist[2].color = Color::white.toBGR();
+		if (eobj->facelist[i].facetype & POLY_NO_SHADOW)
 		{
-			vlist[0].color = vlist[1].color = vlist[2].color = D3DCOLORWHITE;
 			vlist[0].tu = eobj->facelist[i].u[0];
 			vlist[0].tv = eobj->facelist[i].v[0];
 			vlist[1].tu = eobj->facelist[i].u[1];
@@ -3971,12 +3945,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 
 			if (eobj->facelist[i].texid >= 0)
 				EERIEAddPolyToBackground(vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
-		}
-		else
-		{
-			vlist[0].color = 0xFFFFFFFF;
-			vlist[1].color = 0xFFFFFFFF;
-			vlist[2].color = 0xFFFFFFFF;
+		} else {
 			EERIEAddPolyToBackground(vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
 		}
 	}
@@ -4357,9 +4326,8 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
 				{
 					portals->room[nn].usNbTextures = 0;
 
-					if (portals->room[nn].pVertexBuffer)
-					{
-						portals->room[nn].pVertexBuffer->Release();
+					if(portals->room[nn].pVertexBuffer) {
+						delete portals->room[nn].pVertexBuffer;
 						portals->room[nn].pVertexBuffer = NULL;
 					}
 
@@ -4533,7 +4501,7 @@ void ComputePortalVertexBuffer()
 							}
 						}
 
-						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = D3DRGB(fTransp, fTransp, fTransp);
+						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
 					}
 					else
 					{
@@ -4577,7 +4545,7 @@ void ComputePortalVertexBuffer()
 							}
 						}
 
-						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = D3DRGB(fTransp, fTransp, fTransp);
+						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
 					}
 					else
 					{
@@ -4602,55 +4570,11 @@ void ComputePortalVertexBuffer()
 			}
 
 			pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
-			int iFlag = D3DVBCAPS_WRITEONLY;
+			
+			// TODO should be static, but is updated for dynamic lighting
+			pRoom->pVertexBuffer = GRenderer->createVertexBuffer(iNbVertexForRoom, Renderer::Dynamic);
 
-			if (!( mainApp->m_pDeviceInfo->ddDeviceDesc.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT))
-			{
-				iFlag |= D3DVBCAPS_SYSTEMMEMORY;
-			}
-
-			D3DVERTEXBUFFERDESC d3dvbufferdesc;
-			d3dvbufferdesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
-			d3dvbufferdesc.dwCaps = iFlag;
-			d3dvbufferdesc.dwFVF = FVF_D3DVERTEX;
-			d3dvbufferdesc.dwNumVertices = iNbVertexForRoom;
-
-			pRoom->pVertexBuffer = NULL;
-
-			if (FAILED( mainApp->m_pD3D->CreateVertexBuffer(&d3dvbufferdesc,
-					   &pRoom->pVertexBuffer,
-					   0)))
-			{
-				if (pRoom->pussIndice)
-				{
-					free((void *)pRoom->pussIndice);
-					pRoom->pussIndice = NULL;
-				}
-
-				char tTxt[256];
-				sprintf(tTxt, "CreateVertexBuffer - NbVertexs %d", iNbVertexForRoom);
-				LogError << tTxt<< " Error TransForm";
-				return;
-			}
-
-
-			SMY_D3DVERTEX * pVertex;
-
-			if (FAILED(pRoom->pVertexBuffer->Lock(DDLOCK_WRITEONLY | DDLOCK_NOOVERWRITE,
-												  (void **)&pVertex,
-												  NULL)))
-			{
-				pRoom->pVertexBuffer->Release();
-				pRoom->pVertexBuffer = NULL;
-
-				if (pRoom->pussIndice)
-				{
-					free((void *)pRoom->pussIndice);
-					pRoom->pussIndice = NULL;
-				}
-
-				return;
-			}
+			SMY_VERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
 
 			int iStartVertex = 0;
 			int iStartCull = 0;
@@ -4780,18 +4704,8 @@ void ComputePortalVertexBuffer()
 
 				free((void *)(*it));
 			}
-
-			if (FAILED(pRoom->pVertexBuffer->Unlock()))
-			{
-				pRoom->pVertexBuffer->Release();
-				pRoom->pVertexBuffer = NULL;
-
-				if (pRoom->pussIndice)
-				{
-					free((void *)pRoom->pussIndice);
-					pRoom->pussIndice = NULL;
-				}
-			}
+			
+			pRoom->pVertexBuffer->unlock();
 		}
 
 		vTextureVertex.clear();

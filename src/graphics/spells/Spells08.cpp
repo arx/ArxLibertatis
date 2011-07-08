@@ -157,7 +157,7 @@ void CExplosion::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-void CExplosion::ExplosionAddParticule(int num, D3DTLVERTEX * v, TextureContainer * tp)
+void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureContainer * tp)
 {
 	if (DoSphericDamage((Vec3f *)v, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
 	{
@@ -196,9 +196,7 @@ void CExplosion::ExplosionAddParticule(int num, D3DTLVERTEX * v, TextureContaine
 			particle[j].tc			=	tp;
 			particle[j].special		=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION;
 			particle[j].fparam		=	0.0000001f;
-			particle[j].r			=	1.f;
-			particle[j].g			=	1.f;
-			particle[j].b			=	1.f;
+			particle[j].rgb = Color3f::white;
 		}
 	}
 }
@@ -228,7 +226,7 @@ float CExplosion::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	//calcul du disque
-	D3DTLVERTEX d3dvs, *d3dv;
+	TexturedVertex d3dvs, *d3dv;
 	Vec3f	* vertex;
 	int			nb, col, col2;
 	float		rin;
@@ -291,9 +289,7 @@ float CExplosion::Render()
 					particle[j].tc			=	tp;
 					particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam		=	0.0000001f;
-					particle[j].r			=	1.f;
-					particle[j].g			=	1.f;
-					particle[j].b			=	1.f;
+					particle[j].rgb = Color3f::white;
 				}
 
 				j = ARX_PARTICLES_GetFree();
@@ -322,9 +318,7 @@ float CExplosion::Render()
 					particle[j].tc		=	tp;
 					particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam	=	0.0000001f;
-					particle[j].r		=	1.f;
-					particle[j].g		=	1.f;
-					particle[j].b		=	1.f;
+					particle[j].rgb = Color3f::white;
 				}
 			}
 
@@ -356,15 +350,13 @@ float CExplosion::Render()
 					particle[j].tc		=	tp2;
 					particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam	=	0.0000001f;
-					particle[j].r		=	1.f;
-					particle[j].g		=	1.f;
-					particle[j].b		=	1.f;
+					particle[j].rgb = Color3f::white;
 				}
 			}
 
 			break;
 		case 1:
-			D3DTLVERTEX d3dvs2;
+			TexturedVertex d3dvs2;
 			rin = 1.f + (puissance * scale);
 			vertex = disquevertex;
 			d3dv = disqued3d;
@@ -422,7 +414,7 @@ float CExplosion::Render()
 	//trac� du disque
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->ResetTexture(0);
-	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, disqued3d, disquenbvertex, (unsigned short *)disqueind, disquenbvertex + 2, 0);
+	GRenderer->drawIndexed(Renderer::TriangleStrip, disqued3d, disquenbvertex, disqueind, disquenbvertex + 2);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

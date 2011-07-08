@@ -122,8 +122,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 
 	if ((j != -1) && (!ARXPausedTimer))
 	{
-		D3DCOLOR col = inter.iobj[0]->_npcdata->blood_color;
-		D3DTLVERTEX in, out;
+		TexturedVertex in, out;
 		in.sx = pos->x;
 		in.sy = pos->y;
 		in.sz = pos->z;
@@ -133,7 +132,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		if (out.sx < 0)
 			out.sx = 0;
 		else if (out.sx > DANAESIZX)
-			out.sx = ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
+			out.sx = static_cast<float>(DANAESIZX);
 
 
 
@@ -141,16 +140,12 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		if (out.sy < 0)
 			out.sy = 0;
 		else if (out.sy > DANAESIZY)
-			out.sy = ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
+			out.sy = static_cast<float>(DANAESIZY);
 
 
 
 		float power;
 		power = (dmgs * ( 1.0f / 60 )) + 0.9f;
-		float r, g, b;
-		r = (float)((long)((col >> 16) & 255)) * ( 1.0f / 255 );
-		g = (float)((long)((col >> 8) & 255)) * ( 1.0f / 255 );
-		b = (float)((long)((col) & 255)) * ( 1.0f / 255 );
 		ParticleCount++;
 		PARTICLE_DEF * pd = &particle[j];
 		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
@@ -173,9 +168,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		else if (num > 5) num = 5;
 
 		pd->tc = bloodsplat[num];
-		pd->r = r;
-		pd->g = g;
-		pd->b = b;
+		pd->rgb = inter.iobj[0]->_npcdata->blood_color.to<float>();
 		pd->siz = 3.5f * power * 40 * Xratio;
 		pd->type = PARTICLE_2D;
 	}
@@ -189,7 +182,7 @@ void ARX_DAMAGE_Reset_Blood_Info()
 
 void ARX_DAMAGE_Show_Hit_Blood()
 {
-	D3DCOLOR color;
+	Color color;
 	static float Last_Blood_Pos = 0.f;
 	static long duration;
 
@@ -205,9 +198,9 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		if (player.poison > 1.f)
-			color = D3DRGB(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f);
+			color = Color3f(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f).to<u8>();
 		else
-			color = D3DRGB(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f);
+			color = Color3f(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f).to<u8>();
 
 		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -220,9 +213,9 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		if (player.poison > 1.f)
-			color = D3DRGB(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos);
+			color = Color3f(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos).to<u8>();
 		else
-			color = D3DRGB(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos);
+			color = Color3f(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos).to<u8>();
 
 		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -1139,23 +1132,16 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 				particle[j].special		   |= FIRE_TO_SMOKE;
 				particle[j].tolive			= 500 + (unsigned long)(rnd() * 400.f);
 
-				if (di->type & DAMAGE_TYPE_MAGICAL)
-				{
+				if(di->type & DAMAGE_TYPE_MAGICAL) {
 					particle[j].move.x	= 1.f - 2.f * rnd();
 					particle[j].move.y	= 2.f - 16.f * rnd();
 					particle[j].move.z	= 1.f - 2.f * rnd();
-					particle[j].r		= 0.3f;
-					particle[j].g		= 0.3f;
-					particle[j].b		= 0.8f;
-				}
-				else
-				{
+					particle[j].rgb = Color3f(.3f, .3f, .8f);
+				} else {
 					particle[j].move.x	= 1.f - 2.f * rnd();
 					particle[j].move.y	= 2.f - 16.f * rnd();
 					particle[j].move.z	= 1.f - 2.f * rnd();
-					particle[j].r		= 0.5f;
-					particle[j].g		= 0.5f;
-					particle[j].b		= 0.5f;
+					particle[j].rgb = Color3f::gray(.5f);
 				}
 
 				particle[j].tc		= TC_fire2;

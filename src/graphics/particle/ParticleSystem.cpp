@@ -617,7 +617,7 @@ void ParticleSystem::Render() {
 				}
 			}
 
-			D3DTLVERTEX p3pos;
+			TexturedVertex p3pos;
 			p3pos.sx = p->p3Pos.x;
 			p3pos.sy = p->p3Pos.y;
 			p3pos.sz = p->p3Pos.z;

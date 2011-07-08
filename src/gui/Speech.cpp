@@ -87,6 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::string;
 using std::transform;
 
 extern TextureContainer *	arx_logo_tc;
@@ -96,7 +97,7 @@ extern long REQUEST_SPEECH_SKIP;
 
 ARX_SPEECH aspeech[MAX_ASPEECH];
 long HIDESPEECH = 0;
-STRUCT_SPEECH speech[MAX_SPEECH];
+Notification speech[MAX_SPEECH];
 
 
 //-----------------------------------------------------------------------------
@@ -111,7 +112,7 @@ void ARX_SPEECH_MoveUp()
 {
 	if (speech[0].timecreation != 0)
 	{
-			speech[0].lpszUText.clear();
+			speech[0].text.clear();
 	}
 
 	for (size_t j = 0; j < MAX_SPEECH - 1; j++)
@@ -133,59 +134,40 @@ void ARX_SPEECH_ClearAll()
 	}
 }
 
-//-----------------------------------------------------------------------------
-long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duration)
-{
-
-	if ( _name.empty() ) return -1;
-
+long ARX_SPEECH_Add(const string & text, long duration) {
+	
+	if(text.empty()) return -1;
+	
 	unsigned long tim = ARXTimeUL();
-
-	if (tim == 0) tim = 1;
-
-	if (speech[MAX_SPEECH-1].timecreation != 0)
-		ARX_SPEECH_MoveUp();
-
-	for (size_t i = 0; i < MAX_SPEECH; i++)
-	{
-		if (speech[i].timecreation == 0)
-		{
-			long length = _name.length();
-
-			speech[i].lpszUText.clear();
-
-			// Sets creation time
-			speech[i].timecreation = tim;
-
-			// Sets/computes speech duration
-			if (duration == -1) speech[i].duration = 2000 + length * 60;
-			else speech[i].duration = duration;
-
-			/*if (length > 4095)
-			{
-				speech[i].lpszUText = _name;
-				speech[i].lpszUText[4095] = 0;
-			}*/
-			speech[i].lpszUText = _name;
-
-			// Sets speech color
-			if (io == NULL)
-			{
-				speech[i].io = NULL;
-				strcpy(speech[i].name, " ");
-			}
-			else
-			{
-				speech[i].io = io;
-				strcpy(speech[i].name, GetName(io->filename).c_str());
-			}
-
-			speech[i].color = D3DRGB(1.f, 1.f, 1.f);
-			// Successfull allocation
-			return speech[i].duration;
-		}
+	if(tim == 0) {
+		tim = 1;
 	}
-
+	
+	if(speech[MAX_SPEECH - 1].timecreation != 0) {
+		ARX_SPEECH_MoveUp();
+	}
+	
+	for(size_t i = 0; i < MAX_SPEECH; i++) {
+		if(speech[i].timecreation != 0) {
+			continue;
+		}
+		
+		// Sets creation time
+		speech[i].timecreation = tim;
+		
+		// Sets/computes speech duration
+		if(duration == -1) {
+			speech[i].duration = 2000 + text.length() * 60;
+		} else {
+			speech[i].duration = duration;
+		}
+		
+		speech[i].text = text;
+		
+		// Successfull allocation
+		return speech[i].duration;
+	}
+	
 	return -1;
 }
 
@@ -195,7 +177,7 @@ bool CheckLastSpeech(int _iI)
 	for (size_t i = _iI + 1; i < MAX_SPEECH; i++)
 	{
 		if ((speech[i].timecreation != 0) &&
-				(!speech[i].lpszUText.empty()))
+				(!speech[i].text.empty()))
 		{
 			return false;
 		}
@@ -203,45 +185,33 @@ bool CheckLastSpeech(int _iI)
 
 	return true;
 }
-//-----------------------------------------------------------------------------
-void ARX_SPEECH_Render()
-{
-	char temp[4096];
-	long igrec = 14;
 
+void ARX_SPEECH_Render() {
+	
+	long igrec = 14;
+	
 	Vec2i sSize = hFontInBook->GetTextSize("p");
 	sSize.y *= 3;
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	int iEnd = igrec + sSize.y;
-
-	for (size_t i = 0; i < MAX_SPEECH; i++)
-	{
-		if (speech[i].timecreation != 0)
-		{
-			if (!speech[i].lpszUText.empty())
-			{
-				if ((speech[i].name) && (speech[i].name[0] != ' '))
-					sprintf(temp, "%s > %s", speech[i].name, speech[i].lpszUText.c_str());
-				else
-					sprintf(temp, " %s", speech[i].lpszUText.c_str());//>
-
-				EERIEDrawBitmap(
-								120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
-								16 * Xratio, 16 * Xratio,
-								0.00001f,
-								arx_logo_tc,
-								D3DCOLORWHITE);
-
-				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
-										   temp, speech[i].color, NULL);
-				if(igrec > iEnd && !CheckLastSpeech(i)) {
-					ARX_SPEECH_MoveUp();
-					break;
-				}
-			}
+	
+	for(size_t i = 0; i < MAX_SPEECH; i++) {
+		
+		if(speech[i].timecreation == 0 || speech[i].text.empty()) {
+			continue;
+		}
+		
+		EERIEDrawBitmap(120 * Xratio - 16 * Xratio, static_cast<float>(igrec),
+		                16 * Xratio, 16 * Xratio, .00001f, arx_logo_tc, Color::white);
+		
+		igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
+		                           ' ' + speech[i].text, Color::white, NULL);
+		if(igrec > iEnd && !CheckLastSpeech(i)) {
+			ARX_SPEECH_MoveUp();
+			break;
 		}
 	}
 
@@ -280,10 +250,10 @@ void ARX_SPEECH_Check()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io_source, long mood)
+void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, INTERACTIVE_OBJ * io_source, long mood)
 {
 	mood = ANIM_TALK_NEUTRAL;
-	long speechnum = ARX_SPEECH_AddSpeech(io_source, string, mood, 4);
+	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
 
 	if (speechnum >= 0)
 	{
@@ -291,7 +261,7 @@ void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io
 		aspeech[speechnum].es = NULL;
 		aspeech[speechnum].ioscript = io_source;
 		aspeech[speechnum].flags = 0;
-		ARX_CINEMATIC_SPEECH acs;
+		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
 		aspeech[speechnum].cine = acs;
 	}
@@ -310,144 +280,115 @@ void ARX_CONVERSATION_Reset()
 	main_conversation.current = -1;
 }
 
-void ARX_CONVERSATION_CheckAcceleratedSpeech()
-{
-	if (REQUEST_SPEECH_SKIP)
-	{
-		for (long i = 0; i < MAX_ASPEECH; i++)
-		{
-			if ((aspeech[i].exist) && !(aspeech[i].flags & ARX_SPEECH_FLAG_UNBREAKABLE))
-			{
+void ARX_CONVERSATION_CheckAcceleratedSpeech() {
+	
+	if(REQUEST_SPEECH_SKIP) {
+		for(size_t i = 0; i < MAX_ASPEECH; i++) {
+			if((aspeech[i].exist) && !(aspeech[i].flags & ARX_SPEECH_FLAG_UNBREAKABLE)) {
 				aspeech[i].duration = 0;
 			}
 		}
-
 		REQUEST_SPEECH_SKIP = 0;
 	}
 }
 
 
-void ARX_SPEECH_FirstInit()
-{
-	for( int i = 0 ; i < MAX_ASPEECH ; i++ )
+void ARX_SPEECH_FirstInit() {
+	for(size_t i = 0 ; i < MAX_ASPEECH ; i++) {
 		aspeech[i].clear();
+	}
 }
 
-long ARX_SPEECH_GetFree()
-{
-	for (long i = 0; i < MAX_ASPEECH; i++)
-	{
-		if (!aspeech[i].exist)
-		{
-			aspeech[i].cine.type = 0;
+long ARX_SPEECH_GetFree() {
+	
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+		if(!aspeech[i].exist) {
+			aspeech[i].cine.type = ARX_CINE_SPEECH_NONE;
 			return i;
 		}
 	}
-
+	
 	return -1;
 }
 
-long ARX_SPEECH_GetIOSpeech(INTERACTIVE_OBJ * io)
-{
-	for (long i = 0; i < MAX_ASPEECH; i++)
-	{
-		if ((aspeech[i].exist)
-				&&	(aspeech[i].io == io))
+long ARX_SPEECH_GetIOSpeech(INTERACTIVE_OBJ * io) {
+	
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+		if(aspeech[i].exist && aspeech[i].io == io) {
 			return i;
+		}
 	}
-
+	
 	return -1;
 }
 
-void ARX_SPEECH_Release(long i)
-{
-	if (aspeech[i].exist)
-	{
+void ARX_SPEECH_Release(long i) {
+	
+	if(aspeech[i].exist) {
+		
 		ARX_SOUND_Stop(aspeech[i].sample);
-
-		aspeech[i].text.clear();
-
-		if ((ValidIOAddress(aspeech[i].io))
-				&&	(aspeech[i].io->animlayer[2].cur_anim))
-		{
+		
+		if(ValidIOAddress(aspeech[i].io) && aspeech[i].io->animlayer[2].cur_anim) {
 			AcquireLastAnim(aspeech[i].io);
 			aspeech[i].io->animlayer[2].cur_anim = NULL;
 		}
-
+		
 		aspeech[i].clear();
 	}
 }
 
-void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io)
-{
-	for (long i = 0; i < MAX_ASPEECH; i++)
-	{
-		if ((aspeech[i].exist)
-				&&	(aspeech->io == io))
-		{
+void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io) {
+	
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+		if(aspeech[i].exist && aspeech->io == io) {
 			ARX_SPEECH_Release(i);
 		}
 	}
 }
 
-void ARX_SPEECH_Reset()
-{
-	for (long i = 0; i < MAX_ASPEECH; i++)
-	{
+void ARX_SPEECH_Reset() {
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		ARX_SPEECH_Release(i);
 	}
 }
 
-void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
-{
-	if (!io) return;
-
-	for (long i = 0; i < MAX_ASPEECH; i++)
-	{
-		if ((aspeech[i].exist)
-				&&	(aspeech[i].io == io))
-		{
-			EERIE_SCRIPT * es = aspeech[i].es;
-			INTERACTIVE_OBJ * io = aspeech[i].ioscript;
-			long scrpos = aspeech[i].scrpos;
-			ARX_SPEECH_Release(i);
-
-			if ((es)
-					&&	(ValidIOAddress(io)))
-			{
-				ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
-			}
+void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io) {
+	
+	if(!io) {
+		return;
+	}
+	
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+		
+		if(!aspeech[i].exist || aspeech[i].io != io) {
+			continue;
+		}
+		
+		EERIE_SCRIPT * es = aspeech[i].es;
+		INTERACTIVE_OBJ * io = aspeech[i].ioscript;
+		long scrpos = aspeech[i].scrpos;
+		ARX_SPEECH_Release(i);
+		
+		if(es && ValidIOAddress(io)) {
+			ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 		}
 	}
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mood, long flags) {
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mood, SpeechFlags flags) {
 	
-	if ( data.empty() ) return -1;
-
-	long num = ARX_SPEECH_GetFree();
-
-	if (num < 0) return -1;
-
-	long ioo = ARX_SPEECH_GetIOSpeech(io);
-
-	if (ioo != -1)
-	{
-		for (long i = 0; i < MAX_ASPEECH; i++)
-			if (aspeech[i].exist && aspeech[i].io == io)
-			{
-				EERIE_SCRIPT * es = aspeech[i].es;
-				INTERACTIVE_OBJ * io = aspeech[i].ioscript;
-				long scrpos = aspeech[i].scrpos;
-				ARX_SPEECH_Release(i);
-
-				if ((es)
-						&&	(ValidIOAddress(io)))
-					ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
-			}
+	if(data.empty()) {
+		return -1;
 	}
-
+	
+	ARX_SPEECH_ClearIOSpeech(io);
+	
+	long num = ARX_SPEECH_GetFree();
+	if(num < 0) {
+		return -1;
+	}
+	
 	aspeech[num].exist = 1;
 	aspeech[num].time_creation = ARX_TIME_GetUL();
 	aspeech[num].io = io; // can be NULL
@@ -457,7 +398,6 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 	aspeech[num].fDeltaY = 0.f;
 	aspeech[num].iTimeScroll = 0;
 	aspeech[num].fPixelScroll = 0.f;
-	aspeech[num].color = 0xFFFFFFFF;
 	aspeech[num].mood = mood;
 
 	long flg = 0;
@@ -535,7 +475,7 @@ void ARX_SPEECH_Update() {
 
 	if (CINEMASCOPE || BLOCK_PLAYER_CONTROLS) ARX_CONVERSATION_CheckAcceleratedSpeech();
 
-	for (long i = 0 ; i < MAX_ASPEECH ; i++)
+	for (size_t i = 0 ; i < MAX_ASPEECH ; i++)
 	{
 		if (aspeech[i].exist)
 		{
@@ -581,7 +521,7 @@ void ARX_SPEECH_Update() {
 		}
 	}
 
-	for (int i = 0 ; i < MAX_ASPEECH ; i++)
+	for (size_t i = 0 ; i < MAX_ASPEECH ; i++)
 	{
 		ARX_SPEECH * speech = &aspeech[i];
 
@@ -628,37 +568,21 @@ void ARX_SPEECH_Update() {
 						                    fDepY + fZoneClippHeight,
 						                    -10.f + (float)DANAESIZX,
 						                    speech->text,
-						                    Color(255, 255, 255),
+						                    Color::white,
 						                    &clippingRect);
-
-						GRenderer->ResetTexture(0);
+						
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthTest, false);
-						EERIEDrawFill2DRectDegrad(
-												  0.f,
-												  fZoneClippY - 1.f, 
-												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-												  fZoneClippY + (sSize.y * 3 / 4),
-												  0.f,
-												  RGBA_MAKE(255, 255, 255, 255),
-												  RGBA_MAKE(0, 0, 0, 255));
-
-						EERIEDrawFill2DRectDegrad(
-												  0.f,
-												  fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
-												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-												  fZoneClippY + fZoneClippHeight,
-												  0.f,
-												  RGBA_MAKE(0, 0, 0, 255),
-												  RGBA_MAKE(255, 255, 255, 255));
-
+						EERIEDrawFill2DRectDegrad(0.f, fZoneClippY - 1.f,  static_cast<float>(DANAESIZX),
+						                          fZoneClippY + (sSize.y * 3 / 4), 0.f, Color::white, Color::black);
+						EERIEDrawFill2DRectDegrad(0.f, fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
+						                          static_cast<float>(DANAESIZX), fZoneClippY + fZoneClippHeight,
+						                          0.f, Color::black, Color::white);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
-
 						GRenderer->SetRenderState(Renderer::DepthTest, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-
+						
 						iTaille += (int)fZoneClippHeight;
 
 						if (((int)speech->fDeltaY) <= iTaille)

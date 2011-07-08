@@ -56,60 +56,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsUtility.h"
 
-//-----------------------------------------------------------------------------
-// Name: D3DUtil_InitSurfaceDesc()
-// Desc: Helper function called to build a DDSURFACEDESC2 structure,
-//       typically before calling CreateSurface() or GetSurfaceDesc()
-//-----------------------------------------------------------------------------
-VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags,
-                             DWORD dwCaps)
-{
-	ZeroMemory(&ddsd, sizeof(ddsd));
-	ddsd.dwSize                 = sizeof(ddsd);
-	ddsd.dwFlags                = dwFlags;
-	ddsd.ddsCaps.dwCaps         = dwCaps;
-	ddsd.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-}
-
-//-----------------------------------------------------------------------------
-// Name: D3DUtil_SetViewMatrix()
-// Desc: Given an eye point, a lookat point, and an up vector, this
-//       function builds a 4x4 view matrix.
-//-----------------------------------------------------------------------------
-HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
-                              D3DVECTOR & vAt, D3DVECTOR & vWorldUp)
-{
+bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
+                           const Vec3f & vAt, const Vec3f & vWorldUp) {
+	
 	// Get the z basis vector, which points straight ahead. This is the
 	// difference from the eyepoint to the lookat point.
-	D3DVECTOR vView = vAt - vFrom;
-
-	float fLength = Magnitude(vView);
-
-	if (fLength < 1e-6f)
-		return E_INVALIDARG;
+	Vec3f vView = vAt - vFrom;
 
 	// Normalize the z basis vector
-	vView /= fLength;
+	float fLength = vView.normalize();
+
+	if (fLength < 1e-6f)
+		return false;
 
 	// Get the dot product, and calculate the projection of the z basis
 	// vector onto the up vector. The projection is the y basis vector.
-	float fDotProduct = DotProduct(vWorldUp, vView);
+	float fDotProduct = vWorldUp dot vView;
 
-	D3DVECTOR vUp = vWorldUp - fDotProduct * vView;
+	Vec3f vUp = vWorldUp - vView * fDotProduct;
 
 	// If this vector has near-zero length because the input specified a
 	// bogus up vector, let's try a default up vector
-	if (1e-6f > (fLength = Magnitude(vUp)))
+	if (1e-6f > (fLength = vUp.length()))
 	{
-		vUp = D3DVECTOR(0.0f, 1.0f, 0.0f) - vView.y * vView;
+		vUp = Vec3f::Y_AXIS - vView * vView.y;
 
 		// If we still have near-zero length, resort to a different axis.
-		if (1e-6f > (fLength = Magnitude(vUp)))
+		if (1e-6f > (fLength = vUp.length()))
 		{
-			vUp = D3DVECTOR(0.0f, 0.0f, 1.0f) - vView.z * vView;
+			vUp = Vec3f::Z_AXIS - vView * vView.z;
 
-			if (1e-6f > (fLength = Magnitude(vUp)))
-				return E_INVALIDARG;
+			if (1e-6f > (fLength = vUp.length()))
+				return false;
 		}
 	}
 
@@ -118,11 +96,11 @@ HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
 
 	// The x basis vector is found simply with the cross product of the y
 	// and z basis vectors
-	D3DVECTOR vRight = CrossProduct(vUp, vView);
+	Vec3f vRight = vUp cross vView;
 
 	// Start building the matrix. The first three rows contains the basis
 	// vectors used to rotate the view to point at the lookat point
-	D3DUtil_SetIdentityMatrix(mat);
+	Util_SetIdentityMatrix(mat);
 	mat._11 = vRight.x;
 	mat._12 = vUp.x;
 	mat._13 = vView.x;
@@ -134,32 +112,9 @@ HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
 	mat._33 = vView.z;
 
 	// Do the translation values (rotations are still about the eyepoint)
-	mat._41 = - DotProduct(vFrom, vRight);
-	mat._42 = - DotProduct(vFrom, vUp);
-	mat._43 = - DotProduct(vFrom, vView);
+	mat._41 = - vFrom dot vRight;
+	mat._42 = - vFrom dot vUp;
+	mat._43 = - vFrom dot vView;
 
-	return S_OK;
+	return true;
 }
-
-//-----------------------------------------------------------------------------
-// Name: _DbgOut()
-// Desc: Outputs a message to the debug stream
-//-----------------------------------------------------------------------------
-HRESULT _DbgOut(const char * strFile, DWORD dwLine, HRESULT hr, const char * strMsg)
-{
-	char buffer[256];
-	wsprintf(buffer, "%s(%ld): ", strFile, dwLine);
-	OutputDebugString(buffer);
-	OutputDebugString(strMsg);
-
-	if (hr)
-	{
-		wsprintf(buffer, "(hr=%08lx)\n", hr);
-		OutputDebugString(buffer);
-	}
-
-	OutputDebugString("\n");
-
-	return hr;
-}
-

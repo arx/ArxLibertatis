@@ -70,9 +70,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
 
+#include "graphics/GraphicsUtility.h"
 #include "graphics/Frame.h"
 #include "graphics/GraphicsEnum.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/data/Mesh.h"
 
 #include "io/FilePath.h"
@@ -278,7 +278,7 @@ void Application::EERIEMouseUpdate(short x, short y)
 // brings the GDI surface to the front of the display, so drawing
 // output like message boxes and menus may be displayed.
 //*************************************************************************************
-VOID Application::Pause(bool bPause)
+void Application::Pause(bool bPause)
 {
 	static DWORD dwAppPausedCount = 0L;
 

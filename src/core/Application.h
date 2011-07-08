@@ -61,8 +61,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include <windows.h>
+#include <d3d.h>
 
-#include "graphics/d3dwrapper.h"
 #include "graphics/Renderer.h"
 
 #include "platform/Flags.h"
@@ -218,17 +218,6 @@ enum InputKey {
 	
 };
 
-struct EERIE_RGBB {
-	
-	EERIE_RGBB() {
-		r = g = b = 0;
-	}
-	
-	float r;
-	float g;
-	float b;
-};
-
 struct PROJECT {
 	
 	PROJECT()
@@ -236,7 +225,8 @@ struct PROJECT {
 		  compatibility(0), ambient(0),
 		  improve(0), detectliving(0), improvespeed(0),
 		  telekinesis(0), multiplayer(0), demo(0),
-		  bits(0), hide(0), TextureSize(0), TextureBits(0), 
+		  bits(0), hide(0), TextureSize(0), TextureBits(0),
+		  interfacergb(Color3f::black), torch(Color3f::black),
 		  interpolatemouse(0), vsync(0) {
 	}
 	
@@ -252,8 +242,8 @@ struct PROJECT {
 	HideFlags hide;
 	long TextureSize;
 	long TextureBits;
-	EERIE_RGBB interfacergb;
-	EERIE_RGBB torch;
+	Color3f interfacergb;
+	Color3f torch;
 	long interpolatemouse;
 	long vsync;
 	

@@ -2,8 +2,7 @@
 #ifndef ARX_GAME_INVENTORY_H
 #define ARX_GAME_INVENTORY_H
 
-#include "platform/math/Vector2.h"
-#include "platform/math/Vector3.h"
+#include "math/MathFwd.h"
 #include "scripting/Script.h"
 
 struct INTERACTIVE_OBJ;

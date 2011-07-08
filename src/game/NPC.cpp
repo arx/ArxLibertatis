@@ -133,7 +133,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 #ifdef BUILD_EDITOR
 		if(DEBUGNPCMOVE) {
-			EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+			EERIEDrawTrue3DLine(ppos, pos, Color::red);
 		}
 #endif
 
@@ -1205,8 +1205,8 @@ void ARX_PHYSICS_Apply()
 
 				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
 
-				ARX_PARTICLES_Spawn_Splat(&io->obj->vertexlist3[idx].v, 20, 0xFFFF0000);
-				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20, GetInterNum(io));
+				ARX_PARTICLES_Spawn_Splat(io->obj->vertexlist3[idx].v, 20.f, Color::red);
+				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20.f, GetInterNum(io));
 			}
 
 			ARX_INTERACTIVE_DestroyIO(io);
@@ -3519,24 +3519,20 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	// Some visual debug stuff
 	if(DEBUGNPCMOVE) {
 		EERIE_CYLINDER cyll;
-		cyll.height = GetIOHeight(io); 
-		cyll.radius = GetIORadius(io); 
-		cyll.origin.x = phys.startpos.x;
-		cyll.origin.y = phys.startpos.y;
-		cyll.origin.z = phys.startpos.z;
-		EERIEDraw3DCylinder( &cyll, 0xFF00FF00);
+		cyll.height = GetIOHeight(io);
+		cyll.radius = GetIORadius(io);
+		cyll.origin = phys.startpos;
+		EERIEDraw3DCylinder(cyll, Color::green);
 
 		if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
 		{
 			cyll.height = -40.f;
-			EERIEDraw3DCylinder( &cyll, 0xFF0000FF);
+			EERIEDraw3DCylinder(cyll, Color::blue);
 			cyll.height = GetIOHeight(io); 
 		}
 
-		cyll.origin.x = io->physics.targetpos.x;
-		cyll.origin.y = io->physics.targetpos.y;
-		cyll.origin.z = io->physics.targetpos.z;
-		EERIEDraw3DCylinder( &cyll, 0xFFFF0000);
+		cyll.origin = io->physics.targetpos;
+		EERIEDraw3DCylinder(cyll, Color::red);
 
 		if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
 		{
@@ -4320,9 +4316,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							pd->scale.y			=	-8.f;
 							pd->scale.z			=	-8.f;
 							pd->timcreation		=	lARXTime;
-							pd->r				=	0.71f;
-							pd->g				=	0.43f;
-							pd->b				=	0.29f;
+							pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 							//pd->delay=nn*180;
 						}
 					}
@@ -4390,10 +4384,8 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				pd->scale.y		=	-8.f;
 				pd->scale.z		=	-8.f;
 				pd->timcreation	=	lARXTime;
-				pd->r			=	0.71f;
-				pd->g			=	0.43f;
-				pd->b			=	0.29f;
-				pd->delay		=	nn * 2;
+				pd->rgb = Color3f(.71f, .43f, .29f);
+				pd->delay = nn * 2;
 			}
 		}
 	}
@@ -4456,9 +4448,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							pd->scale.y			=	-8.f;
 							pd->scale.z			=	-8.f;
 							pd->timcreation		=	lARXTime;
-							pd->r				=	0.71f;
-							pd->g				=	0.43f;
-							pd->b				=	0.29f;
+							pd->rgb = Color3f(.71f, .43f, .29f);
 							pd->delay			=	nn * 180;
 						}
 					}

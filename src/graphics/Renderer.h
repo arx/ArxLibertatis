@@ -1,18 +1,30 @@
-#ifndef _RENDERER_H_
-#define _RENDERER_H_
 
-#include "graphics/BaseGraphicsTypes.h"
-#include "graphics/data/Texture.h"
+#ifndef ARX_GRAPHICS_RENDERER_H
+#define ARX_GRAPHICS_RENDERER_H
+
+#include <vector>
+
+#include "platform/Flags.h"
+#include "math/MathFwd.h"
 #include "graphics/Color.h"
-#include "graphics/texture/Texture.h"
-#include "graphics/texture/TextureStage.h"
 
-class Renderer
-{
+struct EERIEMATRIX;
+struct TexturedVertex;
+struct SMY_VERTEX;
+struct SMY_VERTEX3;
+class TextureContainer;
+class TextureStage;
+class Image;
+class Texture;
+class Texture2D;
+template <class Vertex> class VertexBuffer;
+
+class Renderer {
+	
 public:
+	
 	//! Render states
-	enum RenderState
-	{
+	enum RenderState {
 		AlphaBlending,
 		ColorKey,
 		DepthTest,
@@ -21,10 +33,9 @@ public:
 		Lighting,
 		ZBias
 	};
-
+	
 	//! Pixel comparison functions
-	enum PixelCompareFunc
-	{
+	enum PixelCompareFunc {
 		CmpNever,               //!< Never
 		CmpLess,                //!< Less
 		CmpEqual,               //!< Equal
@@ -34,11 +45,10 @@ public:
 		CmpGreaterEqual,        //!< Greater Equal
 		CmpAlways               //!< Always
 	};
-
+	
 	//! Pixel blending factor
-	enum PixelBlendingFactor
-	{
-		BlendZero,              //!< Zero    
+	enum PixelBlendingFactor {
+		BlendZero,              //!< Zero
 		BlendOne,               //!< One
 		BlendSrcColor,          //!< Source color
 		BlendSrcAlpha,          //!< Source alpha
@@ -50,115 +60,129 @@ public:
 		BlendInvDstColor,       //!< Inverse destination color
 		BlendInvDstAlpha        //!< Inverse destination alpha
 	};
-
-//! Culling 
-	enum CullingMode
-	{
+	
+	//! Culling 
+	enum CullingMode {
 		CullNone,
 		CullCW,
 		CullCCW
 	};
-
-	enum FillMode
-	{
+	
+	enum FillMode {
 		FillPoint,
 		FillWireframe,
 		FillSolid
 	};
-
+	
 	//! Fog
-	enum FogMode
-	{
+	enum FogMode {
 		FogNone,
 		FogExp,
 		FogExp2,
 		FogLinear
 	};
-
+	
 	//! Target surface
-	enum BufferType
-	{
-		ColorBuffer     = 0x00000001,
-		DepthBuffer     = 0x00000002,
-		StencilBuffer   = 0x00000004
+	enum BufferType {
+		ColorBuffer   = (1<<0),
+		DepthBuffer   = (1<<1),
+		StencilBuffer = (1<<2)
 	};
-
-	struct Viewport
-	{
-		int x;
-		int y;
-		int width;
-		int height;
+	DECLARE_FLAGS(BufferType, BufferFlags);
+	
+	enum Primitive {
+		TriangleList,
+		TriangleStrip,
+		TriangleFan,
+		LineList,
+		LineStrip
 	};
-
-	Renderer();
-	virtual ~Renderer();
-
-	void Initialize();
-
+	
+	enum BufferUsage {
+		Static,
+		Dynamic,
+		Stream
+	};
+	
+	virtual ~Renderer() { };
+	
+	virtual void Initialize() = 0;
+	
 	// Scene begin/end...
-	virtual bool BeginScene();
-	virtual bool EndScene();
-
-    // Matrices
-	virtual void SetViewMatrix(const EERIEMATRIX& matView);
-	virtual void SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp);
-	virtual void GetViewMatrix(EERIEMATRIX& matView) const;
-	virtual void SetProjectionMatrix(const EERIEMATRIX& matProj);
-	virtual void GetProjectionMatrix(EERIEMATRIX& matProj) const;
-
+	virtual bool BeginScene() = 0;
+	virtual bool EndScene() = 0;
+	
+	// Matrices
+	virtual void SetViewMatrix(const EERIEMATRIX & matView) = 0;
+	virtual void SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp) = 0;
+	virtual void GetViewMatrix(EERIEMATRIX & matView) const = 0;
+	virtual void SetProjectionMatrix(const EERIEMATRIX & matProj) = 0;
+	virtual void GetProjectionMatrix(EERIEMATRIX & matProj) const = 0;
+	
 	// Texture management
-	virtual void ReleaseAllTextures();
-	virtual void RestoreAllTextures();
-
+	virtual void ReleaseAllTextures() = 0;
+	virtual void RestoreAllTextures() = 0;
+	
 	// Factory
-	virtual Texture2D*	CreateTexture2D();
-
+	virtual Texture2D * CreateTexture2D() = 0;
+	
 	// Render states
-	virtual void SetRenderState(RenderState renderState, bool enable);
-
+	virtual void SetRenderState(RenderState renderState, bool enable) = 0;
+	
 	// Alphablending & Transparency
-	virtual void SetAlphaFunc(PixelCompareFunc func, float fef);    // Ref = [0.0f, 1.0f]
-	virtual void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
-
+	virtual void SetAlphaFunc(PixelCompareFunc func, float fef) = 0; // Ref = [0.0f, 1.0f]
+	virtual void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) = 0;
+	
 	// Viewport
-	virtual void SetViewport(const Viewport& viewport);
-	virtual Viewport GetViewport();
-
+	virtual void SetViewport(const Rect & viewport) = 0;
+	virtual Rect GetViewport() = 0;
+	
 	// Projection
-	virtual void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
-	virtual void End2DProjection();
-
+	virtual void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) = 0;
+	virtual void End2DProjection() = 0;
+	
 	// Render Target
-	virtual void Clear(int bufferFlags, Color clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
-
+	virtual void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f, size_t nrects = 0, Rect * rect = 0) = 0;
+	
 	// Fog
-	virtual void SetFogColor(Color color);
-	virtual void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
-		
+	virtual void SetFogColor(Color color) = 0;
+	virtual void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f) = 0;
+	
 	// Rasterizer
-	virtual void SetAntialiasing(bool enable);
-	virtual void SetCulling(CullingMode mode);
-	virtual void SetDepthBias(int depthBias);
-	virtual void SetFillMode(FillMode mode);
+	virtual void SetAntialiasing(bool enable) = 0;
+	virtual void SetCulling(CullingMode mode) = 0;
+	virtual void SetDepthBias(int depthBias) = 0;
+	virtual void SetFillMode(FillMode mode) = 0;
 	
 	// Texturing
-	virtual unsigned int GetTextureStageCount() const;
-	virtual TextureStage* GetTextureStage(unsigned int textureStage);
-	virtual void ResetTexture(unsigned int textureStage);
-	virtual void SetTexture(unsigned int textureStage, Texture* pTexture);
-	virtual void SetTexture(unsigned int textureStage, TextureContainer* pTextureContainer);
+	virtual unsigned int GetTextureStageCount() const = 0;
+	virtual TextureStage* GetTextureStage(unsigned int textureStage) = 0;
+	virtual void ResetTexture(unsigned int textureStage) = 0;
+	virtual void SetTexture(unsigned int textureStage, Texture * pTexture) = 0;
+	virtual void SetTexture(unsigned int textureStage, TextureContainer* pTextureContainer) = 0;
 	
-	virtual float GetMaxAnisotropy() const;
-
+	virtual float GetMaxAnisotropy() const = 0;
+	
 	// Utilities...
-	virtual void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color );
-
-private:
-	std::vector<TextureStage*>	m_TextureStages;
+	virtual void DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) = 0;
+	
+	virtual VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage) = 0;
+	virtual VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage) = 0;
+	virtual VertexBuffer<SMY_VERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage) = 0;
+	
+	virtual void drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) = 0;
+	
+	virtual bool getSnapshot(Image & image) = 0;
+	virtual bool getSnapshot(Image & image, size_t width, size_t height) = 0;
+	
+protected:
+	
+	std::vector<TextureStage*> m_TextureStages;
+	
 };
 
-extern Renderer* GRenderer;
+DECLARE_FLAGS_OPERATORS(Renderer::BufferFlags)
 
+extern Renderer * GRenderer;
 
-#endif // _RENDERER_H_
+#endif // ARX_GRAPHICS_RENDERER_H

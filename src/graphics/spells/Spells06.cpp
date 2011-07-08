@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells06.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -69,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "scene/Light.h"
 #include "scene/Object.h"
@@ -119,10 +122,10 @@ void CCreateField::Create(Vec3f aeSrc, float afBeta)
 }
 
 //-----------------------------------------------------------------------------
-void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4, int rec, Vec3f norm)
+void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVertex p3, TexturedVertex p4, int rec, Vec3f norm)
 {
-	D3DTLVERTEX v[5];
-	D3DTLVERTEX v2[5];
+	TexturedVertex v[5];
+	TexturedVertex v2[5];
 
  
 
@@ -186,24 +189,24 @@ void CCreateField::RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3
 		v2[3].tu = 0 + zab;
 		v2[3].tv = 1 + zab;
 
-		v2[1].color = v2[2].color = D3DRGB(falpha * 0.3f + rnd() * 0.025f, falpha * 0.00f, falpha * 0.5f + rnd() * 0.025f);
-		v2[0].color = v2[3].color = D3DRGB(falpha * 0.3f + rnd() * 0.025f, falpha * 0.00f, falpha * 0.5f + rnd() * 0.025f);
+		v2[1].color = v2[2].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
+		v2[0].color = v2[3].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
 	
 		EE_RT2(&p1, &v2[0]);
 		EE_RT2(&p2, &v2[1]);
 		EE_RT2(&p3, &v2[2]);
 		EE_RT2(&p4, &v2[3]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[3]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[1],
+		ARX_DrawPrimitive(&v2[1],
 		                             &v2[2],
 		                             &v2[3]);
 	}
 }
 
 //-----------------------------------------------------------------------------
-void CCreateField::RenderSubDivFace(D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2)
+void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2)
 {
 	Vec3f norm;
 	norm.x = (b[b1].sx + b[b2].sx + t[t1].sx + t[t2].sx) * 0.25f - eSrc.x;
@@ -380,17 +383,17 @@ CSlowDown::CSlowDown()
 	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
 	if (!ssol) // Pentacle
-		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 
 	ssol_count++;
 
 	if (!slight) // Twirl
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
+		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 
 	slight_count++; //runes
 
 	if (!srune)
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 
 	srune_count++;
 	
@@ -825,9 +828,7 @@ void CRiseDead::DrawStone()
 				particle[j].tc = NULL;
 				particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
-				particle[j].r = 1.f;
-				particle[j].g = 1.f;
-				particle[j].b = 1.f;
+				particle[j].rgb = Color3f::white;
 			}
 
 
@@ -851,7 +852,7 @@ void CRiseDead::DrawStone()
 }
 
 //-----------------------------------------------------------------------------
-void CRiseDead::Split(D3DTLVERTEX * v, int a, int b, float yo)
+void CRiseDead::Split(TexturedVertex * v, int a, int b, float yo)
 {
 	if (a != b)
 	{
@@ -873,9 +874,9 @@ void CRiseDead::RenderFissure()
 {
 	int i;
 	float ff;
-	D3DTLVERTEX vt[4];
-	D3DTLVERTEX vr[4];
-	D3DTLVERTEX target;
+	TexturedVertex vt[4];
+	TexturedVertex vr[4];
+	TexturedVertex target;
 
 	Vec3f etarget;
 	etarget.x = fBetaRadCos;
@@ -917,7 +918,7 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	vr[0].color = vr[1].color = vr[2].color = vr[3].color = D3DRGB(0, 0, 0);
+	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toBGR();
 
 	if (bIntro)
 	{
@@ -927,10 +928,10 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&v1b[i], &vr[1]);
 			EE_RT2(&v1a[i+1], &vr[2]);
 			EE_RT2(&v1b[i+1], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 
@@ -944,10 +945,10 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vb[i], &vr[1]);
 			EE_RT2(&va[i+1], &vr[2]);
 			EE_RT2(&vb[i+1], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -956,8 +957,8 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
-	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
+	vr[0].color = vr[1].color = Color::black.toBGR();
+	vr[2].color = vr[3].color = Color3f(fColorBorder[0], fColorBorder[1], fColorBorder[2]).toBGR();
 
 	for (i = 0; i < min(end, (int)fSizeIntro); i++)
 	{
@@ -972,10 +973,10 @@ void CRiseDead::RenderFissure()
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&va[i+1], &vr[2]);
 		EE_RT2(&va[i], &vr[3]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[0],
+		ARX_DrawPrimitive(&vr[0],
 		                             &vr[1],
 		                             &vr[2]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[1],
+		ARX_DrawPrimitive(&vr[1],
 		                             &vr[2],
 		                             &vr[3]);
 
@@ -990,10 +991,10 @@ void CRiseDead::RenderFissure()
 		EE_RT2(&vb[i+1], &vr[2]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&vt[3], &vr[0]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[0],
+		ARX_DrawPrimitive(&vr[0],
 		                             &vr[1],
 		                             &vr[2]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[1],
+		ARX_DrawPrimitive(&vr[1],
 		                             &vr[2],
 		                             &vr[3]);
 	}
@@ -1012,10 +1013,8 @@ void CRiseDead::RenderFissure()
 	target.sz = eSrc.z ;
 
 	EE_RTP(&vt[1], &vr[0]);
-	vr[0].color = D3DRGB(fColorRays1[0], fColorRays1[1], fColorRays1[2]);
-	vr[1].color = D3DRGB(fColorRays1[0], fColorRays1[1], fColorRays1[2]);
-	vr[2].color = D3DRGB(fColorRays2[0], fColorRays2[1], fColorRays2[2]);
-	vr[3].color = D3DRGB(fColorRays2[0], fColorRays2[1], fColorRays2[2]);
+	vr[0].color = vr[1].color = Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]).toBGR();
+	vr[2].color = vr[3].color = Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]).toBGR();
 
 	vr[0].tu = fTexWrap;
 	vr[0].tv = 1;
@@ -1107,19 +1106,19 @@ void CRiseDead::RenderFissure()
 			vt[3].sy = va[i+1].sy + (va[i+1].sy - target.sy) * 2;
 			vt[3].sz = va[i+1].sz ;
 
-			vr[0].color = D3DRGB(tfRaysa[i] * fColorRays1[0],   tfRaysa[i] * fColorRays1[1],   tfRaysa[i] * fColorRays1[2]);
-			vr[1].color = D3DRGB(tfRaysa[i+1] * fColorRays1[0], tfRaysa[i+1] * fColorRays1[1], tfRaysa[i+1] * fColorRays1[2]);
-			vr[2].color = D3DRGB(tfRaysa[i] * fColorRays2[0],   tfRaysa[i] * fColorRays2[1],   tfRaysa[i] * fColorRays2[2]);
-			vr[3].color = D3DRGB(tfRaysa[i+1] * fColorRays2[0], tfRaysa[i+1] * fColorRays2[1], tfRaysa[i+1] * fColorRays2[2]);
+			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i]).toBGR();
+			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i + 1]).toBGR();
+			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i]).toBGR();
+			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i + 1]).toBGR();
 			
 			EE_RT2(&vt[0], &vr[0]);
 			EE_RT2(&vt[1], &vr[1]);
 			EE_RT2(&vt[2], &vr[2]);
 			EE_RT2(&vt[3], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -1139,19 +1138,19 @@ void CRiseDead::RenderFissure()
 			vt[3].sy = vb[i].sy + (vb[i].sy - target.sy) * 2;
 			vt[3].sz = vb[i].sz ;
 
-			vr[0].color = D3DRGB(tfRaysb[i] * fColorRays1[0],   tfRaysb[i] * fColorRays1[1],   tfRaysb[i] * fColorRays1[2]);
-			vr[1].color = D3DRGB(tfRaysb[i+1] * fColorRays1[0], tfRaysb[i+1] * fColorRays1[1], tfRaysb[i+1] * fColorRays1[2]);
-			vr[2].color = D3DRGB(tfRaysb[i] * fColorRays2[0],   tfRaysb[i] * fColorRays2[1],   tfRaysb[i] * fColorRays2[2]);
-			vr[3].color = D3DRGB(tfRaysb[i+1] * fColorRays2[0], tfRaysb[i+1] * fColorRays2[1], tfRaysb[i+1] * fColorRays2[2]);
+			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i]).toBGR();
+			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i + 1]).toBGR();
+			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i]).toBGR();
+			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i + 1]).toBGR();
 
 			EE_RT2(&vt[0], &vr[0]);
 			EE_RT2(&vt[1], &vr[1]);
 			EE_RT2(&vt[2], &vr[2]);
 			EE_RT2(&vt[3], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -1445,7 +1444,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 
 	prismnbpt = 1 + (adef << 1);
 	prismnbface = adef + (adef << 1);
-	prismd3d = new D3DTLVERTEX[prismnbpt];
+	prismd3d = new TexturedVertex[prismnbpt];
 	prismvertex = new Vec3f[prismnbpt];
 	prismind = new unsigned short [prismnbface*3];
 
@@ -1673,7 +1672,7 @@ float CParalyse::Render()
 
 	int			nb;
 	Vec3f	* vertex;
-	D3DTLVERTEX	* vd3d, d3ds;
+	TexturedVertex	* vd3d, d3ds;
 
 	//uv
 	vd3d = this->prismd3d;
@@ -1729,9 +1728,9 @@ float CParalyse::Render()
 				}
 
 				GRenderer->SetCulling(Renderer::CullCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 				GRenderer->SetCulling(Renderer::CullCCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 
 				vertex = this->tabprism[nb2].vertex;
 				int j;
@@ -1758,9 +1757,7 @@ float CParalyse::Render()
 					particle[j].tc			=	tex_p;
 					particle[j].special 	=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam		=	0.0000001f;
-					particle[j].r			=	1.f;
-					particle[j].g			=	1.f;
-					particle[j].b			=	1.f;
+					particle[j].rgb = Color3f::white;
 				}
 			}
 
@@ -1791,9 +1788,9 @@ float CParalyse::Render()
 				}
 
 				GRenderer->SetCulling(Renderer::CullCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 				GRenderer->SetCulling(Renderer::CullCCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 			}
 
 			vertex = this->prismvertex;
@@ -1806,7 +1803,7 @@ float CParalyse::Render()
 				d3ds.sy = this->pos.y + vertex->y * this->scale;
 				d3ds.sz = this->pos.z + vertex->z * this->scale;
 				EE_RTP(&d3ds, vd3d);
-				vd3d->color = ARX_OPAQUE_WHITE;
+				vd3d->color = Color::white.toBGR();
 				vertex++;
 				vd3d++;
 				nb--;
@@ -1837,9 +1834,7 @@ float CParalyse::Render()
 				particle[j].tc			=	tex_p;
 				particle[j].special 	=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	1.f;
-				particle[j].g			=	1.f;
-				particle[j].b			=	1.f;
+				particle[j].rgb = Color3f::white;
 			}
 
 			vertex++;
@@ -1870,9 +1865,7 @@ float CParalyse::Render()
 					particle[j].tc = tex_p;
 					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam = 0.0000001f;
-					particle[j].r = 1.f;
-					particle[j].g = 1.f;
-					particle[j].b = 1.f;
+					particle[j].rgb = Color3f::white;
 				}
 
 				vertex += 2;
@@ -1918,9 +1911,9 @@ float CParalyse::Render()
 				}
 
 				GRenderer->SetCulling(Renderer::CullCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 				GRenderer->SetCulling(Renderer::CullCCW);
-				GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 			}
 
 			col = RGBA_MAKE((int)(this->prismrd + (this->prismre - this->prismrd) * this->prisminterpcol),
@@ -1948,9 +1941,9 @@ float CParalyse::Render()
 	}
 
 	GRenderer->SetCulling(Renderer::CullCW);
-	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+	GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 	GRenderer->SetCulling(Renderer::CullCCW);
-	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->prismd3d, this->prismnbpt, this->prismind, this->prismnbface * 3, 0);
+	GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 
 
 	for (int i = 0; i < 20; i++)
@@ -1993,9 +1986,7 @@ float CParalyse::Render()
 				particle[j].tc = tex_p2;
 				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
-				particle[j].r = 0.7f;
-				particle[j].g = 0.7f;
-				particle[j].b = 1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 		else if (t > 0.095f)
@@ -2034,9 +2025,7 @@ float CParalyse::Render()
 				particle[j].tc			=	tex_p1;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	0.7f;
-				particle[j].g			=	0.7f;
-				particle[j].b			=	1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 	}
@@ -2067,17 +2056,17 @@ CDisarmTrap::CDisarmTrap()
 	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 	
 	if (!smotte)
-		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 
 	smotte_count++;
 
 	if (!slight)
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo", NULL);
+		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 	
 	slight_count++; 
 
 	if (!srune)
-		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo", NULL);
+		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 	
 	srune_count++;
 }
@@ -2175,7 +2164,7 @@ float CDisarmTrap::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 
 	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120;
 	stiteangle.a = 0;

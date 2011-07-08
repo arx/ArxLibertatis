@@ -76,7 +76,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 
 #include "graphics/Math.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/Frame.h"
@@ -97,12 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/LoadLevel.h"
 
-#define _ARX_CEDITOR_  0
-
 long FASTLOADS = 0;
-
-extern long CURRENTSNAPNUM;
-extern long SnapShotMode;
 
 extern long NOCHECKSUM;
 extern long ZMAPMODE;
@@ -307,17 +301,13 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 			if (ARX_PATHS_SelectedAP)
 			{
-				D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-				Color rgbResult = ((col >> 16 & 255))
-				                     | ((col >> 8 & 255) << 8)
-				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 				InvalidateRect(thWnd, NULL, true);
 
 				if(HDC dc = GetDC(thWnd)) {
 					RECT rect;
 					GetClientRect(thWnd, &rect);
-					HBRUSH brush = CreateSolidBrush(rgbResult);
+					HBRUSH brush = CreateSolidBrush(ARX_PATHS_SelectedAP->rgb.toRGB());
 					SelectObject(dc, brush);
 					FillRect(dc, &rect, brush);
 					DeleteObject(brush);
@@ -365,17 +355,13 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			if ((ARX_PATHS_SelectedAP != NULL) &&
 			        (ARX_PATHS_SelectedNum != -1))
 			{
-				D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-				Color rgbResult = ((col >> 16 & 255))
-				                     | ((col >> 8 & 255) << 8)
-				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 				InvalidateRect(thWnd, NULL, true);
 
 				if(HDC dc = GetDC(thWnd)) {
 					RECT rect;
 					GetClientRect(thWnd, &rect);
-					HBRUSH brush = CreateSolidBrush(rgbResult);
+					HBRUSH brush = CreateSolidBrush(ARX_PATHS_SelectedAP->rgb.toRGB());
 					SelectObject(dc, brush);
 					FillRect(dc, &rect, brush);
 					DeleteObject(brush);
@@ -512,16 +498,11 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						cc.lStructSize = sizeof(CHOOSECOLOR);
 						cc.hwndOwner = hWnd;
 						cc.hInstance = 0; //Ignored
-						D3DCOLOR col = EERIERGB(ARX_PATHS_SelectedAP->rgb.r, ARX_PATHS_SelectedAP->rgb.g, ARX_PATHS_SelectedAP->rgb.b);
-						cc.rgbResult = ((col >> 16 & 255))
-						               | ((col >> 8 & 255) << 8)
-						               | ((col & 255) << 16);
+						cc.rgbResult = ARX_PATHS_SelectedAP->rgb.toRGB();
 						cc.lpCustColors = custcr;
 						cc.Flags = CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT;
 						ChooseColor(&cc);
-						ARX_PATHS_SelectedAP->rgb.r = (float)((long)(cc.rgbResult & 255)) * ( 1.0f / 255 );
-						ARX_PATHS_SelectedAP->rgb.g = (float)((long)((cc.rgbResult >> 8) & 255)) * ( 1.0f / 255 );
-						ARX_PATHS_SelectedAP->rgb.b = (float)((long)((cc.rgbResult >> 16) & 255)) * ( 1.0f / 255 );
+						ARX_PATHS_SelectedAP->rgb = Color3f::fromRGB(cc.rgbResult);
 						thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 						InvalidateRect(thWnd, NULL, true);
 
@@ -1244,199 +1225,6 @@ void KillInterTreeView()
 
 extern long FINAL_COMMERCIAL_DEMO;
 
-HWND SnapShotDlg = NULL;
-void LaunchSnapShotParamApp(HWND hwnd)
-{
-	if (SnapShotDlg) return;
-
-	SnapShotDlg = CreateDialogParam(
-	                  (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
-	                  MAKEINTRESOURCE(IDD_SNAPSHOT),
-	                  hwnd,
-	                  SnapShotDlgProc, 0);
-
-}
-
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	
-	(void)lParam;
-	
-	char temp[256];
-	HWND thWnd;
-
-	switch (uMsg)
-	{
-		case WM_COMMAND:
-
-			switch (LOWORD(wParam))
-			{
-				case IDC_16BITS:
-
-					if (snapshotdata.bits == 16) snapshotdata.bits = 24;
-					else snapshotdata.bits = 16;
-
-					thWnd = GetDlgItem(hWnd, IDC_16BITS);
-
-					if (snapshotdata.bits == 16) SetWindowText(thWnd, "16 Bits");
-					else SetWindowText(thWnd, "24 Bits");
-
-					break;
-				case IDC_SETPATH:
-					HERMESFolderSelector(snapshotdata.path, "Choose Working Folder");
-					thWnd = GetDlgItem(hWnd, IDC_SETPATH);
-					SetWindowText(thWnd, snapshotdata.path);
-					break;
-				case IDOK:
-
-					thWnd = GetDlgItem(hWnd, IDC_IMAGESSEC);
-					GetWindowText(thWnd, temp, 5);
-					snapshotdata.imgsec = atoi(temp);
-
-					if (snapshotdata.imgsec < 1) snapshotdata.imgsec = 1;
-
-					if (snapshotdata.imgsec > 100) snapshotdata.imgsec = 100;
-
-					thWnd = GetDlgItem(hWnd, IDC_XSIZE);
-					GetWindowText(thWnd, temp, 5);
-					snapshotdata.xsize = atoi(temp);
-
-					if (snapshotdata.xsize < 1) snapshotdata.xsize = 1;
-
-					if (snapshotdata.xsize > 640) snapshotdata.xsize = 640;
-
-					thWnd = GetDlgItem(hWnd, IDC_YSIZE);
-					GetWindowText(thWnd, temp, 5);
-					snapshotdata.ysize = atoi(temp);
-
-					if (snapshotdata.ysize < 1) snapshotdata.ysize = 1;
-
-					if (snapshotdata.ysize > 480) snapshotdata.ysize = 480;
-
-
-					if (IsChecked(hWnd, IDC_MEMORYCACHE))	snapshotdata.flag |= 1;
-					else snapshotdata.flag &= ~1;
-
-					thWnd = GetDlgItem(hWnd, IDC_EDITFILENAMES);
-					GetWindowText(thWnd, temp, 128);
-					strcpy(snapshotdata.filenames, temp);
-
-					SnapShotDlg = NULL;
-					EndDialog(hWnd, true);
-					break;
-				case IDCANCELSNAP:
-
-					if (SnapShotMode)
-					{
-						FlushMemorySnaps(0);
-						SnapShotMode = 0;
-						thWnd = GetDlgItem(hWnd, IDSTARTSNAPSHOT);
-						SetWindowText(thWnd, "Start Snapshot");
-						CURRENTSNAPNUM = 0;
-					}
-
-					break;
-				case IDSTARTSNAPSHOT:
-					thWnd = GetDlgItem(hWnd, IDC_IMAGESSEC);
-					GetWindowText(thWnd, temp, 5);
-					snapshotdata.imgsec = atoi(temp);
-
-					if (snapshotdata.imgsec < 1) snapshotdata.imgsec = 1;
-
-					if (snapshotdata.imgsec > 100) snapshotdata.imgsec = 100;
-
-					thWnd = GetDlgItem(hWnd, IDC_XSIZE);
-					GetWindowText(thWnd, temp, 5);
-					snapshotdata.xsize = atoi(temp);
-
-					if (snapshotdata.xsize < 1) snapshotdata.xsize = 1;
-
-					if (snapshotdata.xsize > 640) snapshotdata.xsize = 640;
-
-					thWnd = GetDlgItem(hWnd, IDC_YSIZE);
-					GetWindowText(thWnd, temp, 5);
-					snapshotdata.ysize = atoi(temp);
-
-					if (snapshotdata.ysize < 1) snapshotdata.ysize = 1;
-
-					if (snapshotdata.ysize > 480) snapshotdata.ysize = 480;
-
-					if (IsChecked(hWnd, IDC_MEMORYCACHE))	snapshotdata.flag |= 1;
-					else snapshotdata.flag &= ~1;
-
-					thWnd = GetDlgItem(hWnd, IDC_EDITFILENAMES);
-					GetWindowText(thWnd, temp, 128);
-					strcpy(snapshotdata.filenames, temp);
-
-					thWnd = GetDlgItem(hWnd, IDSTARTSNAPSHOT);
-
-					if (SnapShotMode)
-					{
-						FlushMemorySnaps(1);
-						SnapShotMode = 0;
-						SetWindowText(thWnd, "Start Snapshot");
-					}
-					else
-					{
-						long nb = InitMemorySnaps();
-						SnapShotMode = 1;
-						char temp[64];
-						sprintf(temp, "%ld Stop", nb);
-						SetWindowText(thWnd, temp);
-					}
-
-					CURRENTSNAPNUM = 0;
-
-
-					break;
-			}
-
-			break;
-		case WM_INITDIALOG:
-
-			thWnd = GetDlgItem(hWnd, IDSTARTSNAPSHOT);
-
-			if (SnapShotMode) SetWindowText(thWnd, "Stop Snapshot");
-			else SetWindowText(thWnd, "Start Snapshot");
-
-			thWnd = GetDlgItem(hWnd, IDC_16BITS);
-
-			if (snapshotdata.bits == 16) SetWindowText(thWnd, "16 bits");
-			else SetWindowText(thWnd, "24 bits");
-
-			thWnd = GetDlgItem(hWnd, IDC_EDITFILENAMES);
-			SetWindowText(thWnd, snapshotdata.filenames);
-			thWnd = GetDlgItem(hWnd, IDC_SETPATH);
-			SetWindowText(thWnd, snapshotdata.path);
-
-			thWnd = GetDlgItem(hWnd, IDC_XSIZE);
-			sprintf(temp, "%ld", snapshotdata.xsize);
-			SetWindowText(thWnd, temp);
-
-			thWnd = GetDlgItem(hWnd, IDC_YSIZE);
-			sprintf(temp, "%ld", snapshotdata.ysize);
-			SetWindowText(thWnd, temp);
-
-			thWnd = GetDlgItem(hWnd, IDC_IMAGESSEC);
-			sprintf(temp, "%ld", snapshotdata.imgsec);
-			SetWindowText(thWnd, temp);
-
-			if (snapshotdata.flag & 1) SetCheck(hWnd, IDC_MEMORYCACHE, CHECK);
-
-			return true;
-			break;
-		case WM_CLOSE:
-			SnapShotDlg = NULL;
-			EndDialog(hWnd, true);
-			break;
-	}
-
-	return false;
-
-}
-
 //*************************************************************************************
 
 long THREAD_MINX = 0;
@@ -1966,9 +1754,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			thWnd = GetDlgItem(hWnd, IDC_VERSION);
 			sprintf(tex, "Ver.%2.3f", DANAE_VERSION);
 			SetWindowText(thWnd, tex);
-			//Danae_Registry_Read("LastWorkingDir", Project_workingdir, "c:\\arx\\", 256);
-			thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
-			//SetWindowText(thWnd, Project_workingdir);
 
 			SetClick(hWnd, IDC_OTHERSERVER);
 
@@ -2168,15 +1953,11 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					cc.lStructSize = sizeof(CHOOSECOLOR);
 					cc.hwndOwner = hWnd;
 					cc.hInstance = 0; //Ignored
-					cc.rgbResult = ((subj.bkgcolor >> 16 & 255))
-					               | ((subj.bkgcolor >> 8 & 255) << 8)
-					               | ((subj.bkgcolor & 255) << 16);
+					cc.rgbResult = subj.bkgcolor.toRGB(0);
 					cc.lpCustColors = custcr;
 					cc.Flags = CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT;
 					ChooseColor(&cc);
-					subj.bkgcolor = ((cc.rgbResult >> 16 & 255))
-					                | ((cc.rgbResult >> 8 & 255) << 8)
-					                | ((cc.rgbResult & 255) << 16);
+					subj.bkgcolor = Color::fromRGB(cc.rgbResult, 0);
 					break;
 				}
 
@@ -3386,14 +3167,6 @@ long IOScript_Y = -1;
 long IOScript_XX = -1;
 long IOScript_YY = -1;
 
-#if _ARX_CEDITOR_
-CEditor * edit1 = NULL;
-CEditor * edit2 = NULL;
-
-long edit_lin1 = 0;
-long edit_lin2 = 0;
-#endif // _ARX_CEDITOR_
-
 INTERACTIVE_OBJ * edit_io = NULL;
 
 //*************************************************************************************
@@ -3469,7 +3242,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
-			px += rec.right + 5;
 
 			// Secondary win
 			px = rec2.left;
@@ -3507,7 +3279,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
-			px += rec.right + 5;
 
 
 			UpdateWindow(hWnd);
@@ -3516,18 +3287,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 		case WM_CLOSE:
 			KillLightThread();
 
-#if _ARX_CEDITOR_
-			if ((CDP_EditIO) && edit1 && edit2)
-			{
-				edit_io = CDP_EditIO;
-				edit_lin1 = LOWORD(edit1->GetCurrentPos());
-				edit_lin2 = LOWORD(edit2->GetCurrentPos());
-			}
-
-			CDP_IOOptions = NULL;
-			SAFE_DELETE(edit1);
-			SAFE_DELETE(edit2);
-#endif
 			CDP_IOOptions = NULL;
 			RECT _wndrect;
 			GetWindowRect(hWnd, &_wndrect);
@@ -3581,12 +3340,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 					if (IsChecked(hWnd, IDC_FREEZESCRIPT))	CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
 					else CDP_EditIO->ioflags &= ~IO_FREEZESCRIPT;
 
-#if _ARX_CEDITOR_
-					edit_lin1 = LOWORD(edit1->GetCurrentPos());
-					edit_lin2 = LOWORD(edit2->GetCurrentPos());
-					edit1->GetText(text1, MAX_SCRIPT_SIZE);
-					edit2->GetText(text2, MAX_SCRIPT_SIZE);
-#endif
 					long i = 0;
 
 					if (CDP_EditIO->script.data != NULL)
@@ -3692,10 +3445,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				}
 
 				CDP_IOOptions = NULL;
-#if _ARX_CEDITOR_
-				SAFE_DELETE(edit1);
-				SAFE_DELETE(edit2);
-#endif			
 				RECT _wndrect;
 				GetWindowRect(hWnd, &_wndrect);
 				IOScript_X = _wndrect.left;
@@ -3707,18 +3456,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			if (IDCANCEL == LOWORD(wParam))
 			{
-
-			#if _ARX_CEDITOR_
-				if ((CDP_EditIO) && (edit1) && (edit2))
-				{
-					edit_io = CDP_EditIO;
-					edit_lin1 = LOWORD(edit1->GetCurrentPos());
-					edit_lin2 = LOWORD(edit2->GetCurrentPos());
-				}
-
-				SAFE_DELETE(edit1);
-				SAFE_DELETE(edit2);		
-			#endif
 			
 				CDP_IOOptions = NULL;
 				RECT _wndrect;
@@ -3744,64 +3481,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				SetWindowText(thWnd, temp);
 
 				thWnd = GetDlgItem(hWnd, IDC_EDIT1);
-
-#if _ARX_CEDITOR_
-				edit1 = new CEditor(thWnd, SW_SHOW);
-
-				if (CDP_EditIO->script.data)
-				{
-					memcpy(text1, CDP_EditIO->script.data, CDP_EditIO->script.size);
-					text1[CDP_EditIO->script.size] = 0;
-
-					for (long k = CDP_EditIO->script.size; k > 0; k--)
-					{
-						if (text1[k] <= 32) text1[k] = 0;
-						else break;
-					}
-				}
-				else strcpy(text1, "");
-
-				edit1->SetText(text1);
-				edit1->SetBackgroundColor(0x00FFFFFF);
-				HWND h1, h2;
-				h1 = GetDlgItem(hWnd, IDC_LINE1);
-				h2 = GetDlgItem(hWnd, IDC_COL1);
-				edit1->SetHwndWindowPos(h1, h2);
-
-				thWnd = GetDlgItem(hWnd, IDC_EDIT2);
-				edit2 = new CEditor(thWnd, SW_SHOW);
-
-				if (CDP_EditIO->over_script.data)
-				{
-					memcpy(text2, CDP_EditIO->over_script.data, CDP_EditIO->over_script.size);
-					text2[CDP_EditIO->over_script.size] = 0;
-
-					for (long k = CDP_EditIO->over_script.size; k > 0; k--)
-					{
-						if (text2[k] <= 32) text2[k] = 0;
-						else break;
-					}
-				}
-				else strcpy(text2, "");
-
-				edit2->SetText(text2);
-
-				if (CDP_EditIO->ident == -1)
-					edit2->SetBackgroundColor(0x000000FF);
-				else
-					edit2->SetBackgroundColor(0x00FFFFFF);
-
-				h1 = GetDlgItem(hWnd, IDC_LINE2);
-				h2 = GetDlgItem(hWnd, IDC_COL2);
-				edit2->SetHwndWindowPos(h1, h2);
-
-				if ((edit_io == CDP_EditIO) && (edit_io != NULL))
-				{
-					edit1->SetCurrentLinePos(edit_lin1);
-					edit2->SetCurrentLinePos(edit_lin2);
-				}
-
-#endif
 
 				if (CDP_EditIO->ioflags & IO_FREEZESCRIPT) SetCheck(hWnd, IDC_FREEZESCRIPT, CHECK);
 

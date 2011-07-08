@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "io/IO.h"
 #include "io/FilePath.h"
@@ -136,10 +137,10 @@ extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
 extern FOG_DEF fogparam;
 extern CDirectInput *pGetInfoDirectInput;
-extern D3DTLVERTEX LATERDRAWHALO[];
+extern TexturedVertex LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern STRUCT_SPEECH speech[];
+extern Notification speech[];
 extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
 extern float SLID_VALUE;
@@ -155,7 +156,6 @@ extern long NO_TEXT_AT_ALL;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
 extern long HALOCUR;
-extern long USE_CEDRIC_ANIM;
 extern long ALLOW_CHEATS;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long WILLRETURNTOFREELOOK;
@@ -188,7 +188,6 @@ TextureContainer *	NoteTextureRight=NULL;
 TextureContainer *	BasicInventorySkin=NULL;
 TextureContainer *	ThrowObject=NULL;
 ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
-D3DCOLOR			BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
 E_ARX_STATE_MOUSE	eMouseState;
 Vec2s			bookclick;
 Vec2s			MemoMouse;
@@ -294,7 +293,7 @@ float INTERFACE_RATIO_LONG(const long a)
 {
 	return INTERFACE_RATIO(ARX_CLEAN_WARN_CAST_FLOAT(a));
 }
-float INTERFACE_RATIO_DWORD(const DWORD a)
+float INTERFACE_RATIO_DWORD(const u32 a)
 {
 	return INTERFACE_RATIO(ARX_CLEAN_WARN_CAST_FLOAT(a));
 }
@@ -362,21 +361,21 @@ bool ARX_INTERFACE_MouseInBook()
 	else return false;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawItem(TextureContainer *tc, const float x, const float y, const float z, const D3DCOLOR col)
-{
-	if (tc)
+static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, float z = 0.001f, Color col = Color::white) {
+	if(tc) {
 		EERIEDrawBitmap(x, y, INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), z, tc, col);
+	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, const int _iNb, const D3DCOLOR col)
-{
-	D3DTLVERTEX v[4];
-	v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 0.f);
-	v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 0.f);
-	v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 1.f);
-	v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 1.f);
+static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, const int _iNb, const Color color) {
+	
+	ColorBGRA col = color.toBGRA();
+	
+	TexturedVertex v[4];
+	v[0] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 0.f, 0.f);
+	v[1] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 1.f, 0.f);
+	v[2] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 1.f, 1.f);
+	v[3] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 0.f, 1.f);
 	
 	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.0000001f;
 
@@ -415,7 +414,7 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 				v[2].tv = v[3].tv = divideY * 12;
 				GRenderer->SetTexture(0, inventory_font);
 
-				EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX,v, 4, 0 );
+				EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
 			}
 		}
 	}
@@ -508,6 +507,12 @@ void INTERFACE_TC::Reset()
 
 	ITC.Level.clear();
 	ITC.Xp.clear();
+}
+
+static void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, Color color = Color::white, float z = 0.000001f) {
+	if(tc) {
+		EERIEDrawBitmap2((x+BOOKDECX)*Xratio, (y+BOOKDECY)*Yratio, (float)(tc->m_dwWidth)*Xratio, (float)(tc->m_dwHeight)*Yratio, z, tc, color);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -873,7 +878,7 @@ void ARX_INTERFACE_NoteManage()
 		if (NoteTexture)
 		{
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-			DrawBookInterfaceItem( NoteTexture, NotePosX, NotePosY);
+			DrawBookInterfaceItem(NoteTexture, NotePosX, NotePosY);
 
 			if (Note.type==NOTE_TYPE_BOOK || Note.type == NOTE_TYPE_BIGNOTE)
 			{
@@ -890,7 +895,7 @@ void ARX_INTERFACE_NoteManage()
 						float fWidth = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureRight->m_dwWidth);
 						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureRight->m_dwHeight);
 
-						DrawBookInterfaceItem( NoteTextureRight,x0, y0);
+						DrawBookInterfaceItem(NoteTextureRight, x0, y0);
 
 						if (MouseInBookRect(x0, y0, fWidth, fHeight))
 						{
@@ -917,7 +922,7 @@ void ARX_INTERFACE_NoteManage()
 						float fWidth  = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureLeft->m_dwWidth);
 						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureLeft->m_dwHeight);
 
-						DrawBookInterfaceItem( NoteTextureLeft, x0, y0);
+						DrawBookInterfaceItem(NoteTextureLeft, x0, y0);
 
 						if ( MouseInBookRect( x0, y0, fWidth, fHeight) )
 
@@ -939,12 +944,12 @@ void ARX_INTERFACE_NoteManage()
 					if(Note.pages[Note.curpage+1]>0)
 					{
 						Page_Buffer = Note.text.substr( Note.pages[Note.curpage], Note.pages[Note.curpage+1] - Note.pages[Note.curpage] );
-						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0);
+						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
 
 						if(Note.pages[Note.curpage+2]>0)
 						{
 							Page_Buffer = Note.text.substr( Note.pages[Note.curpage+1], Note.pages[Note.curpage+2] - Note.pages[Note.curpage+1] );
-							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer, 0);
+							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer, Color::none);
 						}
 					}
 					else
@@ -952,7 +957,7 @@ void ARX_INTERFACE_NoteManage()
 						if(Note.pages[Note.curpage]>=0)
 						{
 							Page_Buffer = Note.text.substr(Note.pages[Note.curpage]);
-							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer,0);
+							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
 						}
 					}
 				}
@@ -961,7 +966,7 @@ void ARX_INTERFACE_NoteManage()
 			}
 			else
 			{
-				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text,0);
+				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text, Color::none);
 			}
 		}
 
@@ -5691,7 +5696,7 @@ void Win32Application::ManageKeyMouse()
 			if (!WILLADDSPEECH.empty())
 				if (WILLADDSPEECHTIME+300<FrameTime)
 				{
-					ARX_SPEECH_Add(NULL, WILLADDSPEECH);
+					ARX_SPEECH_Add(WILLADDSPEECH);
 					WILLADDSPEECH.clear();
 				}
 
@@ -6061,44 +6066,26 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 					float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
 					float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
 
-					D3DCOLOR color;
-
-					if ((io->poisonous) && (io->poisonous_count!=0))
-						color=0xFF00FF00;
-					else color=D3DCOLORWHITE;
-
-					EERIEDrawBitmap(
-						px,
-						py,
-					                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-						0.001f,
-						tc,color);
+					Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
+					EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+					                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
 
 					if (!bItemSteal && (io==FlyingOverIO))
 					{
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-						EERIEDrawBitmap(
-							px,
-							py,
-						                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-							0.001f,
-							tc,
-							D3DCOLORWHITE);
+						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 					else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						
-						float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-						DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
-						
-						EERIEDrawBitmap(
-							px,
-							py,
-							INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, (dwColor<<16)|(dwColor<<8)|dwColor);
+						float fColorPulse = fabs(cos(radians(fDecPulse)));
+						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc,
+						                Color::gray(fColorPulse));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
@@ -6110,7 +6097,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 					}
 
 					if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
-						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, D3DCOLORWHITE);
+						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
 				}
 			}
 		}
@@ -6146,60 +6133,29 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 				if (NeedHalo(io))
 					tc2 = io->inv->TextureHalo;
 
-				if (tc!=NULL)
-				{
+				if(tc != NULL) {
+					
 					float px = fPosX + i*INTERFACE_RATIO(32) + INTERFACE_RATIO(7);
 					float py = fPosY + j*INTERFACE_RATIO(32) + INTERFACE_RATIO(6);
-
-					D3DCOLOR color;
-
-					if ((io->poisonous) && (io->poisonous_count!=0))
-						color=0xFF00FF00;
-					else color=D3DCOLORWHITE;
-
-					EERIEDrawBitmap(
-						px,
-						py,
-
-						INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-						INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-
-						0.001f,
-						tc,color);
-
-					if (io==FlyingOverIO)
-					{
+					
+					Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
+					EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+					                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
+					
+					if(io == FlyingOverIO) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						EERIEDrawBitmap(
-							px,
-							py,
-
-							INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-							INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-
-							0.001f,
-							tc,D3DCOLORWHITE);
+						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-					else
-					{
-						if (io->ioflags & IO_CAN_COMBINE)
-						{
-							float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
-							DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
-
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							EERIEDrawBitmap(
-								px,
-								py,
-								INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-								INTERFACE_RATIO_DWORD(tc->m_dwHeight),
-								0.001f,
-								tc,(dwColor<<16)|(dwColor<<8)|dwColor);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
+					} else if(io->ioflags & IO_CAN_COMBINE) {
+						float fColorPulse = fabs(cos(radians(fDecPulse)));
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, 
+						                Color::gray(fColorPulse));
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
 					if (tc2)
@@ -6213,7 +6169,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 					}
 
 					if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
-						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, D3DCOLORWHITE);
+						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
 				}
 			}
 		}
@@ -6242,15 +6198,12 @@ void ARX_INTERFACE_Draw_Stealth_Gauge()
 			if (t>=15) v=1.f;
 			else v=(t*( 1.0f / 15 ))*0.9f+0.1f;
 
-			D3DCOLOR col=_EERIERGB(v);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			EERIEDrawBitmap(
-			                px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth), INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
-				stealth_gauge_tc,col);
-
+			EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth),
+			                INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
+			                stealth_gauge_tc, Color::gray(v));
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
@@ -6352,12 +6305,9 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 				{
 					INTERACTIVE_OBJ * io=inter.iobj[player.equiped[eq]];
 					float ratio=io->durability/io->max_durability;
-					D3DCOLOR col=EERIERGB(1.f-ratio,ratio,0);
-					EERIEDrawBitmap2(
-						px,py,
-					                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth), INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight),
-						0.001f,
-						iconequip[i],col);
+					Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
+					EERIEDrawBitmap2(px, py, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
+					                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
 				}
 			}
 		}
@@ -6365,15 +6315,6 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 		currpos += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(33.f));
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
-}
-
-
-
-//-----------------------------------------------------------------------------
-void DrawBookInterfaceItem(TextureContainer *tc,float x,float y,float z)
-{
-	if (tc)
-		EERIEDrawBitmap2((x+BOOKDECX)*Xratio, (y+BOOKDECY)*Yratio, (float)(tc->m_dwWidth)*Xratio, (float)(tc->m_dwHeight)*Yratio, z, tc, BOOKINTERFACEITEMCOLOR);
 }
 
 //-----------------------------------------------------------------------------
@@ -6400,7 +6341,7 @@ bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 		rval=true;
 
 		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
-			DrawBookInterfaceItem(tc,x,y);
+			DrawBookInterfaceItem(tc, x, y);
 
 		if (!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1))
 		{
@@ -6447,7 +6388,7 @@ bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float
 		rval=true;
 
 		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
-			DrawBookInterfaceItem(tc,x,y);
+			DrawBookInterfaceItem(tc, x, y);
 
 		if (!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1))
 		{
@@ -6481,12 +6422,10 @@ bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float
 	return rval;
 }
 
-//#######################################################################################################
 //AFFICHAGE ICONE DE SPELLS DE DURATION
-//#######################################################################################################
-//---------------------------------------------------------------------------
-void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long flag,long i)
-{
+
+static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
+	
 	TextureContainer * tc;
 
 	if (tcc==NULL)
@@ -6500,15 +6439,12 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 
 	if (tc)
 	{
-		EERIEDrawBitmap( posx, posy, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.01f, tc, color);
+		EERIEDrawBitmap(posx, posy, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.01f, tc, color);
 
-		if (flag & 2)
-		{
+		if(flag & 2) {
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
-
-			EERIEDrawBitmap(posx-1,posy-1,INTERFACE_RATIO_DWORD(tc->m_dwWidth)*0.5f,INTERFACE_RATIO_DWORD(tc->m_dwHeight)*0.5f,0.0001f, tc,color);
-			EERIEDrawBitmap(posx+1,posy+1,INTERFACE_RATIO_DWORD(tc->m_dwWidth)*0.5f,INTERFACE_RATIO_DWORD(tc->m_dwHeight)*0.5f,0.0001f, tc,color);
-
+			EERIEDrawBitmap(posx - 1, posy - 1, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.0001f, tc, color);
+			EERIEDrawBitmap(posx + 1, posy + 1, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.0001f, tc, color);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		}
 
@@ -6559,29 +6495,24 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 void ManageSpellIcon(long i,float rrr,long flag)
 {
 	float POSX = DANAESIZX-INTERFACE_RATIO(35);
-	D3DCOLOR color;
+	Color color;
 	float posx = POSX+lSLID_VALUE;
 	float posy = (float)currpos;
 	Spell typ=spells[i].type;
 
-	if (flag & 1)
-	{
-		color=D3DRGB(rrr,0,0);
-	}
-	else if (flag & 2)
-	{
-		color=D3DRGB(0,rrr*( 1.0f / 2 ),rrr);
+	if(flag & 1) {
+		color = Color3f(rrr, 0, 0).to<u8>();
+	} else if(flag & 2) {
+		color = Color3f(0, rrr * (1.0f/2), rrr).to<u8>();
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-
-		if (px < INTERFACE_RATIO(10)) px = INTERFACE_RATIO(10);
-
+		if(px < INTERFACE_RATIO(10)) {
+			px = INTERFACE_RATIO(10);
+		}
 		posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
-		posy =DANAESIZY - INTERFACE_RATIO(126+32); // niveau du stealth
+		posy = DANAESIZY - INTERFACE_RATIO(126+32); // niveau du stealth
 		typ = (Spell)i; // TODO ugh
-	}
-	else
-	{
-		color=D3DRGB(rrr,rrr,rrr);
+	} else {
+		color = Color::gray(rrr);
 	}
 
 	bool bOk=true;
@@ -6721,7 +6652,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						// Now draw the rune
 						DrawEERIEInter(necklace.runes[i],&angle,&pos,NULL);
 
-						PopAllTriangleList(true);
+						PopAllTriangleList();
 
 						xpos++;
 
@@ -6756,7 +6687,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 								necklace.runes[i]->angle.b+=_framedelay*2.f;
 
-								PopAllTriangleList(true);
+								PopAllTriangleList();
 								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -6901,7 +6832,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							flyingover = 1;
 
 							SpecialCursor=CURSOR_INTERACTION_ON;
-							DrawBookTextCenter(hFontInBook, 208, 90, spellicons[i].name, 0);
+							DrawBookTextCenter(hFontInBook, 208, 90, spellicons[i].name, Color::none);
 
 							for(size_t si = 0; si < MAX_SPEECH; si++) {
 								if(speech[si].timecreation > 0)
@@ -6935,7 +6866,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								{
 									pos.x = (240-(count*32)*( 1.0f / 2 )+j*32);
 									pos.y = (306);
-									DrawBookInterfaceItem( necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
+									DrawBookInterfaceItem(necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
 								}
 						}
 
@@ -6943,10 +6874,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						{
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-							if (flyingover)
-							{
-								BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+							
+							Color color;
+							if(flyingover) {
+								color = Color::white;
 
 								if ((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
 								{
@@ -6959,12 +6890,12 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 									player.SpellToMemorize.lTimeCreation = ARXTimeUL();
 								}
+							} else {
+								color = Color::fromBGRA(0xFFa8d0df);
 							}
-							else BOOKINTERFACEITEMCOLOR = 0xFFa8d0df;
 
-							DrawBookInterfaceItem( spellicons[i].tc, fPosX, fPosY);
+							DrawBookInterfaceItem(spellicons[i].tc, fPosX, fPosY, color);
 
-							BOOKINTERFACEITEMCOLOR = D3DCOLORWHITE;
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
 
@@ -7077,7 +7008,7 @@ void QuestBook_Render()
 		float x0 =   8 + NotePosX;
 		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerLeft")->m_dwHeight;
 
-		DrawBookInterfaceItem( ITC.Get("pTexCornerLeft"), x0, y0);
+		DrawBookInterfaceItem(ITC.Get("pTexCornerLeft"), x0, y0);
 
 		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerLeft")->m_dwWidth, y0 + ITC.Get("pTexCornerLeft")->m_dwHeight))
 		{
@@ -7097,7 +7028,7 @@ void QuestBook_Render()
 		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("pTexCornerRight")->m_dwWidth;
 		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerRight")->m_dwHeight;
 
-		DrawBookInterfaceItem( ITC.Get("pTexCornerRight"), x0, y0);
+		DrawBookInterfaceItem(ITC.Get("pTexCornerRight"), x0, y0);
 
 		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerRight")->m_dwWidth, y0 + ITC.Get("pTexCornerRight")->m_dwHeight))
 		{
@@ -7117,12 +7048,12 @@ void QuestBook_Render()
 		if (QuestBook.pages[QuestBook.curpage+1] > 0)
 		{
 			Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage] );
-			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, Page_Buffer, 0);
+			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, Page_Buffer, Color::none);
 
 			if (QuestBook.pages[QuestBook.curpage+2]>0)
 			{
 				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1] );
-				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, Page_Buffer, 0);
+				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, Page_Buffer, Color::none);
 			}
 		}
 		else
@@ -7130,7 +7061,7 @@ void QuestBook_Render()
 			if (QuestBook.pages[QuestBook.curpage]>=0)
 			{
 				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage] );
-				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0);
+				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
 			}
 		}
 	}
@@ -7207,27 +7138,17 @@ void ARX_INTERFACE_ManageOpenedBook()
 	BOOKDECX = 0;
 	BOOKDECY = 0;
 
-	if (ARXmenu.currentmode != AMCM_NEWQUEST)
-	{
+	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-		if (Book_Mode == BOOKMODE_STATS)
-		{
-			DrawBookInterfaceItem( ITC.Get("playerbook"), 97, 64, 0.9999f); 
+		if(Book_Mode == BOOKMODE_STATS) {
+			DrawBookInterfaceItem(ITC.Get("playerbook"), 97, 64, Color::white, 0.9999f); 
+		} else if(Book_Mode == BOOKMODE_SPELLS) {
+			DrawBookInterfaceItem(ITC.Get("pTexSpellBook"), 97, 64, Color::white, 0.9999f);
+		} else if (Book_Mode == 2) {
+			DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
+		} else {
+			DrawBookInterfaceItem(ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
 		}
-		else if (Book_Mode == BOOKMODE_SPELLS)
-		{
-			DrawBookInterfaceItem( ITC.Get("pTexSpellBook"), 97, 64, 0.9999f);
-		}
-		else if (Book_Mode == 2)
-		{
-			DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, 0.9999f);
-		}
-		else
-		{
-			DrawBookInterfaceItem(ITC.Get("questbook"), 97, 64, 0.9999f);
-		}
-
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 	else
@@ -7239,7 +7160,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
 			float y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
 
-			DrawBookInterfaceItem( ITC.Get("playerbook"), x, y );//95.f+2.f,47.f+17.f);
+			DrawBookInterfaceItem(ITC.Get("playerbook"), x, y);
 		}
 
 		BOOKDECX = x - 97;
@@ -7261,19 +7182,17 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float px=BOOKMARKS_POS_X;
 			float py=BOOKMARKS_POS_Y;
 			TextureContainer* tcBookmarkChar = ITC.Get("bookmark_char");
-			DrawBookInterfaceItem(tcBookmarkChar,px,py);
+			DrawBookInterfaceItem(tcBookmarkChar, px, py);
 
 			// Check for cursor on charcter sheet bookmark
 			if (	tcBookmarkChar
 				&&	MouseInBookRect(px,py,px+tcBookmarkChar->m_dwWidth,py+tcBookmarkChar->m_dwHeight))
 			{
 				// Draw highlighted Character sheet icon
-				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(tcBookmarkChar,px,py);
+				DrawBookInterfaceItem(tcBookmarkChar, px, py, Color::grayb(0x55));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 				// Set cursor to interacting
 				SpecialCursor=CURSOR_INTERACTION_ON;
@@ -7294,7 +7213,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				float px=BOOKMARKS_POS_X+32;
 				float py=BOOKMARKS_POS_Y;
-				DrawBookInterfaceItem(ITC.Get("bookmark_magic"),px,py);
+				DrawBookInterfaceItem(ITC.Get("bookmark_magic"), px, py);
 
 				//////////////// TO BE REDONE/REMOVED - START
 				if (NewSpell==1)
@@ -7306,16 +7225,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 				//////////////// TO BE REDONE/REMOVED - END
 				if (	ITC.Get("bookmark_magic") 
-					&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_magic")->m_dwWidth,py+ITC.Get("bookmark_magic")->m_dwHeight))				
+					&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_magic")->m_dwWidth,py+ITC.Get("bookmark_magic")->m_dwHeight))
 				{
 					// Draw highlighted Magic sheet icon
-					BOOKINTERFACEITEMCOLOR=0xFF555555;
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.Get("bookmark_magic"),px,py);
+					DrawBookInterfaceItem(ITC.Get("bookmark_magic"), px, py, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 					// Set cursor to interacting
 					SpecialCursor=CURSOR_INTERACTION_ON;
@@ -7336,17 +7252,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float px=BOOKMARKS_POS_X+64;
 			float py=BOOKMARKS_POS_Y;
 
-			DrawBookInterfaceItem(ITC.Get("bookmark_map"),px,py);			
+			DrawBookInterfaceItem(ITC.Get("bookmark_map"), px, py);
 
 			if (	ITC.Get("bookmark_map")
-				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_map")->m_dwWidth,py+ITC.Get("bookmark_map")->m_dwHeight))				
+				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_map")->m_dwWidth,py+ITC.Get("bookmark_map")->m_dwHeight))
 			{
-				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.Get("bookmark_map"),px,py);			
+				DrawBookInterfaceItem(ITC.Get("bookmark_map"), px, py, Color::grayb(0x55));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 				// Set cursor to interacting
 				SpecialCursor=CURSOR_INTERACTION_ON;
@@ -7365,17 +7279,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			float px=BOOKMARKS_POS_X+96;
 			float py=BOOKMARKS_POS_Y;
-			DrawBookInterfaceItem(ITC.Get("bookmark_quest"),px,py);
+			DrawBookInterfaceItem(ITC.Get("bookmark_quest"), px, py);
 
 			if (	ITC.Get("bookmark_quest")
-				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_quest")->m_dwWidth,py+ITC.Get("bookmark_quest")->m_dwHeight))				
+				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_quest")->m_dwWidth,py+ITC.Get("bookmark_quest")->m_dwHeight))
 			{
-				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.Get("bookmark_quest"),px,py);
+				DrawBookInterfaceItem(ITC.Get("bookmark_quest"), px, py, Color::grayb(0x55));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 				// Set cursor to interacting
 				SpecialCursor=CURSOR_INTERACTION_ON;
@@ -7430,16 +7342,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=100.f;
 					float py=82.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_1"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_1"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_1"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_1"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
 						if (bookclick.x!=-1)
@@ -7449,7 +7358,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_1"),102.f,82.f);
+				else DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
 			}
 
 			if (bOnglet[2])
@@ -7458,16 +7367,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=98.f;
 					float py=112.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_2"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_2"), px, py);
 
 					if (MouseInBookRect(px,py,px+32,py+32))
 					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_2"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_2"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
 						if (bookclick.x!=-1)
@@ -7477,7 +7384,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_2"),100.f,114.f);
+				else DrawBookInterfaceItem(ITC.Get("current_2"), 100.f, 114.f);
 			}
 
 			if (bOnglet[3])
@@ -7486,26 +7393,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=97.f;
 					float py=143.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_3"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_3"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_3"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_3"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=3;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_3"),101.f,141.f);
+				else DrawBookInterfaceItem(ITC.Get("current_3"), 101.f, 141.f);
 			}
 
 			if (bOnglet[4])
@@ -7514,26 +7416,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=95.f;
 					float py=170.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_4"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_4"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_4"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_4"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=4;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_4"),100.f,170.f);
+				else DrawBookInterfaceItem(ITC.Get("current_4"), 100.f, 170.f);
 			}
 
 			if (bOnglet[5])
@@ -7542,26 +7439,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=95.f;
 					float py=200.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_5"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_5"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_5"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_5"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=5;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_5"),97.f,199.f);
+				else DrawBookInterfaceItem(ITC.Get("current_5"), 97.f, 199.f);
 			}
 
 			if (bOnglet[6])
@@ -7570,26 +7462,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=94.f;
 					float py=229.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_6"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_6"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_6"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_6"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=6;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_6"),103.f,226.f);
+				else DrawBookInterfaceItem(ITC.Get("current_6"), 103.f, 226.f);
 			}
 
 			if (bOnglet[7])
@@ -7598,26 +7485,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=94.f;
 					float py=259.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_7"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_7"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_7"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_7"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=7;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_7"),101.f,255.f);
+				else DrawBookInterfaceItem(ITC.Get("current_7"), 101.f, 255.f);
 			}
 
 			if (bOnglet[8])
@@ -7626,26 +7508,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=92.f;
 					float py=282.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_8"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_8"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_8"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_8"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=8;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_8"),99.f,283.f);
+				else DrawBookInterfaceItem(ITC.Get("current_8"), 99.f, 283.f);
 			}
 
 			if (bOnglet[9])
@@ -7654,26 +7531,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=90.f;
 					float py=308.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_9"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_9"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_9"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_9"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=9;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_9"),99.f,307.f);
+				else DrawBookInterfaceItem(ITC.Get("current_9"), 99.f, 307.f);
 			}
 
 			if (bOnglet[10])
@@ -7682,26 +7554,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					float px=97.f;
 					float py=331.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_10"),px,py);
+					DrawBookInterfaceItem(ITC.Get("accessible_10"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_10"),px,py);
+						DrawBookInterfaceItem(ITC.Get("accessible_10"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=10;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_10"),104.f,331.f);
+				else DrawBookInterfaceItem(ITC.Get("current_10"), 104.f, 331.f);
 			}		
 
 			if (Book_Mode==1) Book_SpellPage=Book_Page;
@@ -7948,15 +7815,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Strength<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Attribute_Strength>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Strength == 6)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 391, 129, tex, color);
@@ -7966,15 +7833,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Mind<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Attribute_Mind>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Mind == 6)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 440, 129, tex, color);
@@ -7984,15 +7851,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Dexterity<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Attribute_Dexterity>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Dexterity == 6)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 490, 129, tex, color);
@@ -8001,15 +7868,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Constitution<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Attribute_Constitution>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Full_Attribute_Constitution == 6)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 538, 129, tex, color);
@@ -8020,15 +7887,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Stealth<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Stealth>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Stealth == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 405, 210, tex, color);
@@ -8038,15 +7905,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Mecanism<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Mecanism>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Mecanism == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 210, tex, color);
@@ -8056,15 +7923,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Intuition<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Intuition>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Intuition == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 533, 210, tex, color);
@@ -8074,15 +7941,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Etheral_Link<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Etheral_Link>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Etheral_Link == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 405, 265, tex, color);
@@ -8092,15 +7959,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Object_Knowledge<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Object_Knowledge>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Object_Knowledge == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 265, tex, color);
@@ -8110,15 +7977,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Casting<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Casting>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Casting == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 533, 265, tex, color);
@@ -8128,15 +7995,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Close_Combat<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Close_Combat>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Close_Combat == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 405, 319, tex, color);
@@ -8147,15 +8014,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Projectile<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Projectile>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Projectile == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 319, tex, color);
@@ -8165,15 +8032,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss3.str();
 
 		if (player.Mod_Skill_Defense<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_Skill_Defense>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		if (ARXmenu.currentmode==AMCM_NEWQUEST)
 		{
 			if (player.Skill_Defense == 0)
-				color = 0x000000FF;
+				color = Color::red;
 		}
 
 		DrawBookTextCenter(hFontInBook, 533, 319, tex, color);
@@ -8185,10 +8052,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
-			color = 0x000000FF;
+			color = Color::red;
 		else if ((player.Mod_maxlife>0.f) || (player.Full_maxlife > player.maxlife))
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter( hFontInBook, 324, 158, tex, color );
 		
@@ -8197,10 +8064,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
-			color = 0x000000FF;
+			color = Color::red;
 		else if ((player.Mod_maxmana>0.f) || (player.Full_maxmana > player.maxmana))
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter( hFontInBook, 324, 218, tex, color );
 		
@@ -8209,10 +8076,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_damages<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_damages>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter(hFontInBook, 324, 278, tex, color);
 
@@ -8222,10 +8089,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_armor_class<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_armor_class>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter(hFontInBook, 153, 158, tex, color);
 
@@ -8234,10 +8101,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_resist_magic<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_resist_magic>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter(hFontInBook, 153, 218, tex, color);
 		
@@ -8246,10 +8113,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		tex = ss4.str();
 
 		if (player.Mod_resist_poison<0.f)
-			color = 0x000000FF;
+			color = Color::red;
 		else if (player.Mod_resist_poison>0.f)
-			color = 0x00FF0000;
-		else color = 0;
+			color = Color::blue;
+		else color = Color::black;
 
 		DrawBookTextCenter(hFontInBook, 153, 278, tex, color);
 	}
@@ -8279,35 +8146,24 @@ void ARX_INTERFACE_ManageOpenedBook()
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-		D3DRECT rec;
-
+		Rect rec;
 		if (BOOKZOOM) {
- 
-			rec.x1 = (118.F + BOOKDECX) * Xratio;
-			rec.y1 = (69.f + BOOKDECY) * Yratio;
-			rec.x2 = (280.f + BOOKDECY) * Xratio;
-			rec.y2 = (310.f + BOOKDECY) * Yratio;
+			
+			rec = Rect(s32((118.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
+			           s32((280.f + BOOKDECY) * Xratio), s32((310.f + BOOKDECY) * Yratio));
+			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
-			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
-
-			if (ARXmenu.currentmode!=AMCM_OFF)
-			{
-				Renderer::Viewport vp;
-				vp.x = 139.f*Xratio;
-				vp.y = 0;
-				vp.width = 139.f*Xratio;
-				vp.height = 310.f*Yratio;
+			if(ARXmenu.currentmode != AMCM_OFF) {
+				Rect vp = Rect(Vec2i(s32(139.f * Xratio), 0), s32(139.f * Xratio), s32(310.f * Yratio));
 				GRenderer->SetViewport(vp);
 			}
 		} else {
-			rec.x1 = (118.F + BOOKDECX) * Xratio;
-			rec.y1 = (69.f + BOOKDECY) * Yratio;
-			rec.x2 = (300.f + 50 + BOOKDECX) * Xratio;
-			rec.y2 = (338.f + BOOKDECY) * Yratio;
 			
-			GRenderer->Clear(Renderer::DepthBuffer, 0, 1, 1, &rec);
+			rec = Rect(s32((118.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
+			          s32((350.f + BOOKDECX) * Xratio), s32((338.f + BOOKDECY) * Yratio));
+			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
-			rec.x2 -= 50;
+			rec.right -= 50;
 		}
 
 		if (ARXmenu.currentmode==AMCM_OFF)
@@ -8361,27 +8217,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 		TOTPDL = 2;
 
 		EERIE_CAMERA * oldcam=ACTIVECAM;
-		bookcam.centerx=(rec.x2-rec.x1)/2+rec.x1;
-		bookcam.centery=(rec.y2-rec.y1)/2+rec.y1;
+		bookcam.centerx = rec.center().x;
+		bookcam.centery = rec.center().y;
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 
-		Renderer::Viewport vp;
-		if (BOOKZOOM)
-		{
-			vp.x		=	ARX_CLEAN_WARN_CAST_DWORD( rec.x1 + 52.f * Xratio );
-			vp.y		=	rec.y1;
-			vp.width	=	ARX_CLEAN_WARN_CAST_DWORD( rec.x2 - rec.x1 - 73.f * Xratio );
-			vp.height	=	ARX_CLEAN_WARN_CAST_DWORD( rec.y2 - rec.y1 - 17.f * Yratio );
+		if(BOOKZOOM) {
+			Rect vp;
+			vp.left = static_cast<int>(rec.left + 52.f * Xratio);
+			vp.top = rec.top;
+			vp.right = static_cast<int>(rec.right - 21.f * Xratio);
+			vp.bottom = static_cast<int>(rec.bottom - 17.f * Yratio);
+			GRenderer->SetViewport(vp);
+		} else {
+			GRenderer->SetViewport(rec);
 		}
-		else
-		{
-			vp.x		=	rec.x1;
-			vp.y		=	rec.y1;
-			vp.width	=	rec.x2 - rec.x1;
-			vp.height	=	rec.y2 - rec.y1;
-		}
-		GRenderer->SetViewport(vp);
 
 		ePlayerAngle.a=0.f;
 		ePlayerAngle.g=0.f;
@@ -8422,18 +8272,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 		IN_BOOK_DRAW=1;
 		vector<EERIE_VERTEX> vertexlist = inter.iobj[0]->obj->vertexlist3;
 
-		if (player.useanim.cur_anim != NULL)
-		{
-
+		if(player.useanim.cur_anim != NULL) {
 			ARX_CHECK_ULONG(Original_framedelay);
-			EERIEDrawAnimQuat(inter.iobj[0]->obj, &player.useanim,&ePlayerAngle,&pos,
-				ARX_CLEAN_WARN_CAST_ULONG(Original_framedelay),
-				NULL, 0);
-
-		}
-		else
-		{
-			DrawEERIEInter(inter.iobj[0]->obj,&ePlayerAngle,&pos,NULL);
+			EERIEDrawAnimQuat(inter.iobj[0]->obj, &player.useanim, &ePlayerAngle, &pos,
+			                  static_cast<unsigned long>(Original_framedelay), NULL);
+		} else {
+			DrawEERIEInter(inter.iobj[0]->obj, &ePlayerAngle, &pos, NULL);
 		}
 
 		INVISIBILITY_OVERRIDE=0;
@@ -8442,7 +8286,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			PopAllTriangleList(true);
+			PopAllTriangleList();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			PopAllTriangleListTransparency();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -8458,11 +8302,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		FORCE_NO_HIDE=0;
 		Project.improve=ti;
 
-		vp.x		=	0;
-		vp.y		=	0;
-		vp.width	=	DANAESIZX;
-		vp.height	=	DANAESIZY;
-		GRenderer->SetViewport(vp);
+		GRenderer->SetViewport(Rect(DANAESIZX, DANAESIZY));
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetCulling(Renderer::CullNone);
@@ -8605,13 +8445,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox1.x=146;
 					todraw->bbox1.y=312;
 
-					if ((todraw->poisonous) && (todraw->poisonous_count!=0))
-						BOOKINTERFACEITEMCOLOR=0xFF00FF00;
-					else BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
-
-					DrawBookInterfaceItem(tc,todraw->bbox1.x,todraw->bbox1.y,0);
-
-					BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
+					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
+					DrawBookInterfaceItem(tc, todraw->bbox1.x, todraw->bbox1.y, color, 0);
 
 					if (tc2!=NULL)
 					{
@@ -8662,13 +8497,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox1.x=296;
 					todraw->bbox1.y=312;
 
-					if ((todraw->poisonous) && (todraw->poisonous_count!=0))
-						BOOKINTERFACEITEMCOLOR=0xFF00FF00;
-					else BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
-
-					DrawBookInterfaceItem(tc,todraw->bbox1.x,todraw->bbox1.y,0);
-
-					BOOKINTERFACEITEMCOLOR=D3DCOLORWHITE;
+					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
+					DrawBookInterfaceItem(tc, todraw->bbox1.x, todraw->bbox1.y, color, 0);
 
 					if (tc2!=NULL)
 					{
@@ -8721,20 +8551,20 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 				for (int i=0;i<HALOCUR;i++)
 				{
-					D3DTLVERTEX * vert=&LATERDRAWHALO[(i<<2)];
+					TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
 
 					if (vert[2].color == 0)
 					{
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						vert[2].color =0xFF000000;
-						EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 						GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 					}
-					else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, vert, 4,  0, 0 ); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+					else EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 				}
 
 				HALOCUR=0;
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);			
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
 	}	
@@ -8811,12 +8641,9 @@ void ARX_INTERFACE_DrawCurrentTorch()
 	py = DANAESIZY - INTERFACE_RATIO(158+32);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-	EERIEDrawBitmap(
-		px, py,
-	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth), INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
-		0.001f,
-		CURRENT_TORCH->inv,D3DCOLORWHITE);
+	EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth),
+	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
+	                0.001f, CURRENT_TORCH->inv, Color::white);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	if ( rnd() > 0.2f )
@@ -8842,9 +8669,7 @@ void ARX_INTERFACE_DrawCurrentTorch()
 			pd->timcreation		=	lARXTime;
 			pd->tolive			=	500+(unsigned long)(rnd()*400.f);
 			pd->tc				=	fire2;
-			pd->r				=	1.f;
-			pd->g				=	0.6f;
-			pd->b				=	0.5f;
+			pd->rgb = Color3f(1.f, .6f, .5f);
 			pd->siz				=	INTERFACE_RATIO(14.f);
 			pd->type			=	PARTICLE_2D;
 		}
@@ -8896,28 +8721,17 @@ void Win32Application::DrawAllInterface()
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(j,j,j));
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(1,1,1));
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
 			
-			if (bHitFlash)
-			{
-				if (player.Full_Skill_Etheral_Link >= 40)
-				{
-					float j = 1.0f - fHitFlash;
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					long col = 0;
-
-					if (j < 0.5f)
-						col = D3DRGB(j*2.0f,1,0);
-					else
-						col = D3DRGB(1,fHitFlash,0);
-
-					ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), DANAESIZY + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
+			if(bHitFlash && player.Full_Skill_Etheral_Link >= 40){
+				float j = 1.0f - fHitFlash;
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
+				ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), DANAESIZY + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
 
@@ -9243,9 +9057,9 @@ void Win32Application::DrawAllInterface()
 
 
 						if ( amount <= player.gold )
-							ARX_INTERFACE_DrawNumber(px,py,amount,6,D3DRGB(0,1,0));
+							ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 						else
-							ARX_INTERFACE_DrawNumber(px,py,amount,6,D3DRGB(1,0,0));
+							ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
 					}
 					else if (InPlayerInventoryPos(&DANAEMouse))
 					{
@@ -9260,9 +9074,9 @@ void Win32Application::DrawAllInterface()
 						{
 							if ((!(temp->shop_category)) ||
 								((temp->shop_category) && (IsIOGroup(FlyingOverIO,temp->shop_category))))
-								ARX_INTERFACE_DrawNumber(px,py,amount,6,D3DRGB(0,1,0));
+								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 							else
-								ARX_INTERFACE_DrawNumber(px,py,amount,6,D3DRGB(1,0,0));
+								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
 						}
 					}
 				}
@@ -9382,7 +9196,7 @@ void Win32Application::DrawAllInterface()
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					ARX_INTERFACE_DrawNumber(px-INTERFACE_RATIO(30),py + INTERFACE_RATIO(10-25), player.gold, 6, D3DRGB(1,1,1));
+					ARX_INTERFACE_DrawNumber(px - INTERFACE_RATIO(30), py + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
 				}
 			}
 
@@ -9458,7 +9272,7 @@ void Win32Application::DrawAllInterface()
 		if ( vv < 0.f ) vv = 0;
 		else if ( vv > 1.f ) vv = 1.f;
 
-		ARX_INTERFACE_DrawItem( ChangeLevel, px, py, 0.0001f, D3DRGB( vv, vv, vv ) );
+		ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 			if (MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
@@ -9530,9 +9344,8 @@ void Win32Application::DrawAllInterface()
 
 			if (player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE)
 			{
-				EERIEDrawBitmap2( pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
-					necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]]
-					, D3DRGB(1,1,1));
+				EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+				                 necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
 
 				if (bHalo)
 				{
@@ -9551,9 +9364,8 @@ void Win32Application::DrawAllInterface()
 					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-					EERIEDrawBitmap2( pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
-						Movable
-						, D3DRGB(0.8f,0.8f,0.8f));
+					EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+					                 Movable, Color::gray(.8f));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 
@@ -9569,12 +9381,12 @@ void Win32Application::DrawAllInterface()
 
 	if (player.Interface & INTER_LIFE_MANA)
 	{
-		D3DTLVERTEX v[4];
+		TexturedVertex v[4];
 		float px, py;
-		v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 0.f, 0.f);
-		v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 1.f, 0.f);
-		v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 1.f, 1.f);
-		v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 0.f, 1.f);
+		v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
+		v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
+		v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
+		v[3]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 1.f);
 
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
@@ -9587,17 +9399,19 @@ void Win32Application::DrawAllInterface()
 
 		//---------------------------------------------------------------------
 		//RED GAUGE
-		unsigned long ulcolor=0xFFFF0000;
+		Color ulcolor = Color::red;
 		float fSLID_VALUE_neg = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
 
-		if (player.poison>0.f)
-		{
-			float val = min(player.poison, 0.2f) * 255.f * 5.f; 
+		if(player.poison > 0.f) {
+			float val = min(player.poison, 0.2f) * 255.f * 5.f;
 			long g = val;
-			ulcolor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
+			ulcolor = Color(u8(255 - g), u8(g) , 0);
 		}
 
-		EERIEDrawBitmap2DecalY( fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
+		EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78),
+		                       INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
+		                       INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
+		                       0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9610,7 +9424,7 @@ void Win32Application::DrawAllInterface()
 
 					std::stringstream ss;
 					ss << (int)player.life;
-					ARX_SPEECH_Add( NULL, ss.str() );
+					ARX_SPEECH_Add(ss.str());
 				}
 			}
 		}
@@ -9629,7 +9443,9 @@ void Win32Application::DrawAllInterface()
 		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
 		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
 
-		EERIEDrawBitmap2DecalY( DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
+		EERIEDrawBitmap2DecalY(DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
+		                       DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
+		                       ITC.Get("filled_gauge_blue"), Color::white, (1.f - fnm));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -9641,7 +9457,7 @@ void Win32Application::DrawAllInterface()
 					ARX_CHECK_INT(player.mana);
 					std::stringstream ss;
 					ss << (int)player.mana;
-					ARX_SPEECH_Add( NULL, ss.str() );
+					ARX_SPEECH_Add(ss.str());
 				}
 			}
 		}
@@ -9659,27 +9475,17 @@ void Win32Application::DrawAllInterface()
 					if (mecanism_tc && (MAGICMODE < 0) && (lNbToDrawMecanismCursor < 3))
 					{
 
-					long lcolorMecanism=D3DRGB(1,1,1);
-
-					if(lTimeToDrawMecanismCursor>300)
-					{
-						lcolorMecanism=0;
-
-						if(lTimeToDrawMecanismCursor>400)
-						{
+					Color lcolorMecanism = Color::white;
+					if(lTimeToDrawMecanismCursor > 300) {
+						lcolorMecanism = Color::black;
+						if(lTimeToDrawMecanismCursor > 400) {
 							lTimeToDrawMecanismCursor=0;
 							lNbToDrawMecanismCursor++;
 						}
 					}
 
-						lTimeToDrawMecanismCursor += ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
-
-					EERIEDrawBitmap(0,0,
-									INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth),
-									INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
-									0.01f,
-									mecanism_tc,
-									lcolorMecanism );
+					lTimeToDrawMecanismCursor += static_cast<long>(FrameDiff);
+					EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
 				}
 
 					if (arrow_left_tc)
@@ -9687,7 +9493,7 @@ void Win32Application::DrawAllInterface()
 
 					float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
 					float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-					long lcolor=D3DRGB(.5f,.5f,.5f);
+					Color lcolor = Color::gray(.5f);
 					static float fArrowMove=0.f;
 					fArrowMove+=.5f*FrameDiff;
 
@@ -9696,49 +9502,21 @@ void Win32Application::DrawAllInterface()
 
 					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 					
-					EERIEDrawBitmap(0+fMove,						// Left
-									(DANAESIZY-fSizeY)*.5f,
-									fSizeX,
-									fSizeY,
-									0.01f,
-									arrow_left_tc,
-									lcolor );
-
-					EERIEDrawBitmapUVs( DANAESIZX-fSizeX-fMove,		// Right
-										(DANAESIZY-fSizeY)*.5f,
-										fSizeX,
-										fSizeY,
-										0.01f,
-										arrow_left_tc,
-										lcolor,
-										1.f,0.f,
-										0.f,0.f,
-										1.f,1.f,
-										0.f,1.f);
-
-					EERIEDrawBitmapUVs((DANAESIZX-fSizeY)*.5f,		// Up
-										0.f+fMove,
-										fSizeY,
-										fSizeX,
-										0.01f,
-										arrow_left_tc,
-										lcolor,
-										0.f,1.f,
-										0.f,0.f,
-										1.f,1.f,
-										1.f,0.f);
-
-					EERIEDrawBitmapUVs(	(DANAESIZX-fSizeY)*.5f,		// Down
-										(DANAESIZY-fSizeX)-fMove,
-										fSizeY,
-										fSizeX,
-										0.01f,
-										arrow_left_tc,
-										lcolor,
-										1.f,1.f,
-										1.f,0.f,
-										0.f,1.f,
-										0.f,0.f);
+					// Left
+					EERIEDrawBitmap(0 + fMove, (DANAESIZY - fSizeY) * .5f, fSizeX, fSizeY, 0.01f,
+					               arrow_left_tc, lcolor);
+					
+					// Right
+					EERIEDrawBitmapUVs(DANAESIZX - fSizeX - fMove, (DANAESIZY - fSizeY)*.5f, fSizeX, fSizeY,
+					                   .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+					
+					// Up
+					EERIEDrawBitmapUVs((DANAESIZX - fSizeY)*.5f, 0.f + fMove, fSizeY, fSizeX, .01f,
+					                   arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+					
+					// Down
+					EERIEDrawBitmapUVs((DANAESIZX - fSizeY)*.5f, (DANAESIZY - fSizeX) - fMove, fSizeY, fSizeX,
+					                    .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 				}
 
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -10158,9 +9936,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 			float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-			EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
-				fTexSizeX, fTexSizeY, 0.f,
-				surf,D3DCOLORWHITE);
+			EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)), (float)(POSY-(surf->m_dwHeight*0.5f)), fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
 
 			return;
 		}
@@ -10269,10 +10045,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 					if (SpecialCursor==CURSOR_COMBINEON)
 					{
-						EERIEDrawBitmap((float)POSX+MODIF,(float)POSY+MODIF
-							,(float)fTexSizeX
-							,(float)fTexSizeY,0.00001f
-							,tc,0xFFFFFFFF);
+						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, .00001f, tc, Color::white);
 
 						if ((FlyingOverIO!=NULL) && (FlyingOverIO->ioflags & IO_BLACKSMITH))
 						{
@@ -10281,15 +10054,12 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 							if (v>0.f)
 							{								
 								long t = v;
-								ARX_INTERFACE_DrawNumber(POSX+MODIF-16,POSY+MODIF-10,t,6,0xFF00FFFF);
+								ARX_INTERFACE_DrawNumber(POSX + MODIF - 16, POSY + MODIF - 10, t, 6, Color::cyan);
 							}
 						}
 					}
 					else
-						EERIEDrawBitmap((float)POSX+MODIF,(float)POSY+MODIF
-						,(float)fTexSizeX
-						,(float)fTexSizeY,0.00001f
-						,tc,0xFFFFAA66);
+						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
 				}
 
 				switch (SpecialCursor)
@@ -10380,15 +10150,12 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 					if (SpecialCursor == CURSOR_REDIST)
 					{
-						EERIEDrawBitmap((float)POSX,(float)POSY,
-							surf->m_dwWidth * Xratio,
-							surf->m_dwHeight * Yratio,
-							0.f,
-							surf,D3DCOLORWHITE);
+						EERIEDrawBitmap(POSX, POSY, surf->m_dwWidth * Xratio, surf->m_dwHeight * Yratio,
+						                0.f, surf, Color::white);
 						
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
-						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), D3DCOLORBLACK);
+						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), Color::black);
 					}
 					else
 					{
@@ -10396,9 +10163,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 						float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-						EERIEDrawBitmap((float)POSX,(float)POSY,
-							fTexSizeX, fTexSizeY, 0.f,
-							surf,D3DCOLORWHITE);
+						EERIEDrawBitmap(POSX, POSY, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
 					}
 				}
 
@@ -10436,13 +10201,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
 
-					EERIEDrawBitmap((float)(POSX - (fTexSizeX*0.5f)),
-									(float)(POSY - (fTexSizeY*0.5f)),
-									(float)fTexSizeX,
-									(float)fTexSizeY,
-									0.f,
-									surf,
-									D3DCOLORWHITE);
+					EERIEDrawBitmap(POSX - (fTexSizeX*0.5f), POSY - (fTexSizeY*0.5f), fTexSizeX, fTexSizeY,
+					                0.f, surf, Color::white);
 				}
 				else
 				{
@@ -10460,11 +10220,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 						if (NeedHalo(DRAGINTER)) tc2=DRAGINTER->inv->TextureHalo;//>_itemdata->halo_tc;
 
-						D3DCOLOR color;
-
-						if ((DRAGINTER->poisonous) && (DRAGINTER->poisonous_count!=0))
-							color=0xFF00FF00;
-						else color=D3DCOLORWHITE;
+						Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 
 						float mx = POSX;
 						float my = POSY;
@@ -10481,25 +10237,16 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 						if (!(DRAGINTER->ioflags & IO_MOVABLE))
 						{
-							EERIEDrawBitmap((float)mx,(float)my
-								,(float)fTexSizeX
-								,(float)fTexSizeY,0.00001f
-								,tc,color);
+							EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 
 							if ((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count!=1))
-								ARX_INTERFACE_DrawNumber(mx+2.f,my+13.f,
-								DRAGINTER->_itemdata->count, 3, D3DCOLORWHITE);
+								ARX_INTERFACE_DrawNumber(mx + 2.f, my + 13.f, DRAGINTER->_itemdata->count, 3, Color::white);
 						}
 						else
 						{
 							if ((InInventoryPos(&DANAEMouse) || InSecondaryInventoryPos(&DANAEMouse))
-								||
-								(CANNOT_PUT_IT_HERE != -1))
-							{
-								EERIEDrawBitmap((float)mx,(float)my
-									,(float)fTexSizeX
-									,(float)fTexSizeY,0.00001f
-									,tc,color);
+								|| (CANNOT_PUT_IT_HERE != -1)) {
+								EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 							}
 						}
 
@@ -10514,12 +10261,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 									tcc=ThrowObject;
 
 								if ((tcc) && (tcc!=tc)) // to avoid movable double red cross...
-									EERIEDrawBitmap((float)mx+16,(float)my
-
-									,INTERFACE_RATIO_DWORD(tcc->m_dwWidth)
-									,INTERFACE_RATIO_DWORD(tcc->m_dwHeight),0.00001f
-
-									,tcc,D3DCOLORWHITE);
+									EERIEDrawBitmap(mx + 16, my, INTERFACE_RATIO_DWORD(tcc->m_dwWidth),
+									                INTERFACE_RATIO_DWORD(tcc->m_dwHeight), 0.00001f, tcc, Color::white);
 							}
 						}
 
@@ -10550,9 +10293,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 						if (surf)
 						{
-							EERIEDrawBitmap((float)POSX,(float)POSY,
-							                INTERFACE_RATIO_DWORD(surf->m_dwWidth), INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f,
-								surf,D3DCOLORWHITE);
+							EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
+							                INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::white);
 						}
 					}
 				}
@@ -10600,15 +10342,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						float POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
 						float POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
 
-						D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
-
-						EERIEDrawBitmap((float)POSX,(float)POSY,
-
-							INTERFACE_RATIO_DWORD(surf->m_dwWidth),
-							INTERFACE_RATIO_DWORD(surf->m_dwHeight),
-
-							0.f,
-							surf, col);
+						EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
+						                INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 				}
