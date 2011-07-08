@@ -1,8 +1,6 @@
 
 #include "math/Angle.h"
 
-using std::min;
-
 float AngleDifference(float d, float e) {
 	
 	float da = e - d;
