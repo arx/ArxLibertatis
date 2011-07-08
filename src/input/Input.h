@@ -123,7 +123,7 @@ public:
 private:
 	class InputBackend* backend;
 
-	int	iOneTouch[256];
+	int	iOneTouch[Keyboard::KeyCount];
 
 	float fMouseAXTemp;
 	float fMouseAYTemp;

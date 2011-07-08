@@ -240,8 +240,8 @@ Input::Input()
 	}
 
 	bKeyTouched = false;
-	for(int iI=0;iI<256;iI++)
-		iOneTouch[iI]=0;
+	for(size_t i = 0; i < Keyboard::KeyCount; i++)
+		iOneTouch[i]=0;
 
 	iWheelDir = 0;
 }
@@ -283,7 +283,7 @@ void Input::reset()
 	iKeyId=-1;
 	bKeyTouched = false;
 
-	for(int i=0;i<256;i++)
+	for(int i = 0; i < Keyboard::KeyCount; i++)
 	{
 		iOneTouch[i]=0;
 	}
@@ -325,7 +325,7 @@ void Input::update()
 	iKeyId = backend->getKeyboardKeyPressed();
 	bKeyTouched = iKeyId >= 0;
 
-	for(int i=0;i<256;i++)
+	for(int i = 0; i < Keyboard::KeyCount; i++)
 	{
 		if(isKeyPressed(i))
 		{
@@ -371,14 +371,14 @@ void Input::update()
 			{
 				bool bFound=false;
 
-				for(int i=0;i<256;i++)
+				for(int i = 0; i < Keyboard::KeyCount; i++)
 				{
 					if(bFound)
 					{
 						break;
 					}
 
-					switch(i&0xFFFF)
+					switch(i & 0xFFFF)
 					{
 					case Keyboard::Key_LeftShift:
 					case Keyboard::Key_RightShift:
@@ -674,18 +674,24 @@ int Input::getMouseWheelDir() const {
 //-----------------------------------------------------------------------------
 
 bool Input::isKeyPressed(int keyId) const {
+	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
+
 	return backend->isKeyboardKeyPressed(keyId);
 }
 
 //-----------------------------------------------------------------------------
 
 bool Input::isKeyPressedNowPressed(int keyId) const {
+	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
+
 	return backend->isKeyboardKeyPressed(keyId) && (iOneTouch[keyId] == 1);
 }
 
 //-----------------------------------------------------------------------------
 
 bool Input::isKeyPressedNowUnPressed(int keyId) const {
+	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
+
 	return !backend->isKeyboardKeyPressed(keyId) && (iOneTouch[keyId] == 1);
 }
 
