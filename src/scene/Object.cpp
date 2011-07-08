@@ -1063,12 +1063,8 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & 
 	}
 	
 	pos = psth->light_seek; // ambient
-	seerie->ambient_r = *reinterpret_cast<const f32 *>(adr + pos);
-	pos += sizeof(f32);
-	seerie->ambient_g = *reinterpret_cast<const f32 *>(adr + pos);
-	pos += sizeof(f32);
-	seerie->ambient_b = *reinterpret_cast<const f32 *>(adr + pos);
-	pos += sizeof(f32);
+	
+	pos += sizeof(SavedColor); // ignore ambient color
 	
 	s32 nbl = *reinterpret_cast<const s32 *>(adr + pos);
 	pos += sizeof(s32);

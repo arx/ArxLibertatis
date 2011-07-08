@@ -542,9 +542,6 @@ struct EERIE_3DSCENE {
 	TextureContainer ** texturecontainer;
 	long nblight;
 	EERIE_LIGHT ** light;
-	float ambient_r;
-	float ambient_g;
-	float ambient_b;
 	CUB3D cub;
 };
 
