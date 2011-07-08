@@ -73,14 +73,14 @@ private:
 	
 	void addFile(const std::string & name, PakFile * file);
 	
-	PakDirectory();
-	~PakDirectory();
-	
 	friend class PakReader;
 	friend class std::map<std::string, PakDirectory>;
 	friend struct std::pair<const std::string, PakDirectory>;
 	
 public:
+	
+	PakDirectory();
+	~PakDirectory();
 	
 	typedef std::map<std::string, PakDirectory>::iterator dirs_iterator;
 	typedef std::map<std::string, PakFile *>::const_iterator files_iterator;
