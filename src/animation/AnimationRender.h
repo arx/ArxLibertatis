@@ -26,36 +26,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_ANIMATION_ANIMATIONRENDER_H
 #define ARX_ANIMATION_ANIMATIONRENDER_H
 
-#include "graphics/d3dwrapper.h"
-#include "platform/math/Vector3.h"
-#include "platform/math/Angle.h"
+#include "graphics/Color.h"
+#include "math/MathFwd.h"
 
 struct EERIE_3DOBJ;
 struct ANIM_USE;
 struct INTERACTIVE_OBJ;
 struct EERIE_VERTEX;
 struct EERIE_FACE;
-struct EERIE_RGB;
 struct EERIEMATRIX;
 struct EERIE_QUAT;
+struct TexturedVertex;
 class TextureContainer;
 
-#define CEDRIC 1
-#define REFERENCE_FPS (20.0f)
-#define ANIMQUATTYPE_FIRST_PERSON 2
-#define ANIMQUATTYPE_NO_RENDER 4
-#define MIPMESH_START 380.f
-#define MIPMESH_DIV (1.0f / 190)
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, INTERACTIVE_OBJ * io, bool render);
 
-#if CEDRIC
+void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *);
 
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, INTERACTIVE_OBJ * io, long typ);
-
-int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB);
-
-#endif // CEDRIC
-
-void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT);
-void MakeCLight2(INTERACTIVE_OBJ * io,EERIE_RGB * infra, Anglef * angle,Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long i);
+void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT);
+void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long i);
 
 #endif // ARX_ANIMATION_ANIMATIONRENDER_H

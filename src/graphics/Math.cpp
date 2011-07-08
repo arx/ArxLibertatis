@@ -525,62 +525,6 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 	rad = fa * boxhalfsize[X] + fb * boxhalfsize[Y];   \
 	if(min>rad || max<-rad) return 0;
 
-//*************************************************************************************
-//*************************************************************************************
-float InterpolateAngle(float a1, float a2, const float pour)
-{
-	a1 = MAKEANGLE(a1);
-	a2 = MAKEANGLE(a2);
-	float t1 = a1 - a2;
-	float t2 = a2 - a1;
-	float t3 = 360.f + a1 - a2;
-	float t4 = 360.f + a2 - a1;
-	float ft1 = EEfabs(t1);
-	float ft2 = EEfabs(t2);
-	float ft3 = EEfabs(t3);
-	float ft4 = EEfabs(t4);
-	float t = min(ft1, ft2);
-	t = min(t, ft3);
-	t = min(t, ft4);
-
-	float i;
-
-	if (t == ft1)
-	{
-		i = ft1 * pour;
-
-		return MAKEANGLE(a2);
-	}
-
-	if (t == ft2)
-	{
-		i = ft2 * pour;
-
-		if (a2 < a1)
-			a2 = a1 - i;
-		else a2 = a1 + i;
-
-		return MAKEANGLE(a2);
-	}
-
-	if (t == ft3)
-	{
-		i = ft3 * pour;
-
-		return MAKEANGLE(a2);
-	}
-	else
-	{
-		i = ft4 * pour;
-
-		if (a2 < a1)
-			a2 = a1 + i;
-		else a2 = a1 - i;
-
-		return MAKEANGLE(a2);
-	}
-}
-
 //*******************************************************************************************
 //*******************************************************************************************
 
@@ -913,28 +857,6 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 }
 
 //--------------------------------------------------------------------------------------
-// ANGLES Functions
-//--------------------------------------------------------------------------------------
-
-/*----------------------------------------------------------------------------*/
-/*
-	angle de 0 a 360(par exemple)
-*/
-float AngleDifference(const float d, const float e)
-{
-	register float	da;
-	da = e - d;
-
-	if (EEfabs(da) > 180.f)
-	{
-		if (da > 0) da -= 360.f;
-		else da += 360.f;
-	}
-
-	return da;
-}
-
-//--------------------------------------------------------------------------------------
 // VECTORS Functions
 //--------------------------------------------------------------------------------------
 
@@ -1032,7 +954,7 @@ long F2L_RoundUp(float val)
 }
 
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
-void CalcFaceNormal(EERIEPOLY * ep, const D3DTLVERTEX * v)
+void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v)
 {
 	register float Ax, Ay, Az, Bx, By, Bz, epnlen;
 	Ax = v[1].sx - v[0].sx;
@@ -1177,16 +1099,7 @@ VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 	memcpy(q, pM, sizeof(EERIEMATRIX));
 }
 
-//-----------------------------------------------------------------------------
-// Name: D3DMath_MatrixInvert()
-// Desc: Does the matrix operation: [Q] = inv[A]. Note: this function only
-//       works for matrices with [0 0 0 1] for the 4th column.
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-// Name: D3DMath_VectorMatrixMultiply()
 // Desc: Multiplies a vector by a matrix
-//-----------------------------------------------------------------------------
 void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc,
                           const EERIEMATRIX * mat)
 {

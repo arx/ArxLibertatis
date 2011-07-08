@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
-#include "platform/math/Vector3.h"
+#include "math/Vector3.h"
 
 // TODO macros
 //fx

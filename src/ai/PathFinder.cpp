@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/PathFinder.h"
 
 #include <cassert>
+#include <climits>
 
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
@@ -122,7 +123,7 @@ public:
 		}
 		
 		NodeList::iterator best = nodes.begin();
-		float cost = FLT_MAX;
+		float cost = std::numeric_limits<float>::max();
 		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
 			if((*i)->getCost() < cost) {
 				cost = (*i)->getCost();
@@ -372,7 +373,7 @@ bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool steal
 PathFinder::NodeId PathFinder::getNearestNode(const Vec3f & pos) const {
 	
 	NodeId best = 0;
-	float distance = FLT_MAX;
+	float distance = std::numeric_limits<float>::max();
 	
 	for(size_t i = 0; i < map_s; i++) {
 		float dist = distSqr(map_d[i].pos, pos);

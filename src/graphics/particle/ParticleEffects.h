@@ -60,77 +60,65 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
-//-----------------------------------------------------------------------------
-struct FLARES
-{
-	unsigned char	exist;
-	char			type;
-	short			flags;
-	D3DTLVERTEX		v;
-	D3DTLVERTEX		tv;
-	float			x;
-	float			y;
-	float			tolive;
-	float			r;
-	float			g;
-	float			b;
-	float			size;
-	long			dynlight;
-	long			move;
+struct FLARES {
+	unsigned char exist;
+	char type;
+	short flags;
+	TexturedVertex v;
+	TexturedVertex tv;
+	float x;
+	float y;
+	float tolive;
+	Color3f rgb;
+	float size;
+	long dynlight;
+	long move;
 	INTERACTIVE_OBJ * io;
-	bool		bDrawBitmap;
+	bool bDrawBitmap;
 };
 
-//-----------------------------------------------------------------------------
-struct BOOM
-{
-	Vec3f		pos;
-	long			exist;
+struct BOOM {
+	Vec3f pos;
+	long exist;
 };
 
-//-----------------------------------------------------------------------------
-struct POLYBOOM
-{
-	long				exist;
-	short				tx;
-	short				tz;
-	EERIEPOLY 	*		ep;
-	float				u[4];
-	float				v[4];
-	EERIE_RGB			rgb;
-	TextureContainer *	tc;
-	unsigned long		timecreation;
-	unsigned long		tolive;
-	short				type;
-	short				nbvert;
-};
-
-//-----------------------------------------------------------------------------
-struct PARTICLE_DEF
-{
-	bool		exist;
-	long		type;
-	Vec3f	ov;
-	Vec3f	move;
-	Vec3f	scale;
-	Vec3f	oldpos;
-	float		siz;
-	long		zdec;
-	long		timcreation;
-	unsigned long	tolive;
-	unsigned long	delay;
+struct POLYBOOM {
+	long exist;
+	short tx;
+	short tz;
+	EERIEPOLY * ep;
+	float u[4];
+	float v[4];
+	Color3f rgb;
 	TextureContainer * tc;
-	float		r;
-	float		g;
-	float		b;
-	long		special;
-	float		fparam;
-	long		mask;
-	Vec3f  * source;
-	long		sourceionum;
-	short		sval;
-	char		cval1;
-	char		cval2;
+	unsigned long timecreation;
+	unsigned long tolive;
+	short type;
+	short nbvert;
+};
+
+struct PARTICLE_DEF {
+	bool exist;
+	long type;
+	Vec3f ov;
+	Vec3f move;
+	Vec3f scale;
+	Vec3f oldpos;
+	float siz;
+	long zdec;
+	long timcreation;
+	unsigned long tolive;
+	unsigned long delay;
+	TextureContainer * tc;
+	Color3f rgb;
+	long special; // TODO ARX_PARTICLES_TYPE_FLAG
+	float fparam;
+	long mask;
+	Vec3f * source;
+	long sourceionum;
+	short sval;
+	char cval1;
+	char cval2;
 };
 
 //-----------------------------------------------------------------------------
@@ -139,7 +127,7 @@ struct FOG_DEF
 	bool		exist;
 	long		selected;
 	Vec3f	pos;
-	EERIE_RGB	rgb;
+	Color3f	rgb;
 	float		size;
 	long		special;
 	float		scale;
@@ -250,18 +238,18 @@ void ManageTorch();
 void ARX_GenereSpheriqueEtincelles(Vec3f * pos, float r, TextureContainer * tc, float rr, float g, float b, int mask);
 void MakePlayerAppearsFX(INTERACTIVE_OBJ * io);
 void MakeCoolFx(Vec3f * pos);
-void SpawnGroundSplat(EERIE_SPHERE * sp, EERIE_RGB * rgb, float size, long flags);
+void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags);
 
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
 long ARX_PARTICLES_GetFree();
 void ARX_PARTICLES_Render(EERIE_CAMERA * cam);
 void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source);
-void ARX_PARTICLES_Spawn_Blood2(Vec3f * pos, float dmgs, D3DCOLOR col, INTERACTIVE_OBJ * io);
+void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, INTERACTIVE_OBJ * io);
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, INTERACTIVE_OBJ * io = NULL);
-void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, EERIE_RGB * rgb = NULL); // flag 1 = randomize pos
+void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos
 void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags);
-void ARX_PARTICLES_Spawn_Splat(Vec3f * pos, float dmgs, D3DCOLOR col);
+void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
 void ARX_PARTICLES_SpawnWaterSplash(Vec3f *);
 
 void ARX_BOOMS_ClearAllPolyBooms();
@@ -272,7 +260,7 @@ void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();
 void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS);
 
-void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction = NULL, EERIE_RGB * rgb = NULL);
+void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
 void SpawnFireballTail(Vec3f *, Vec3f *, float, long);
 void SpawnMetalShine(Vec3f * pos, long r, long g, long b, long num);
 

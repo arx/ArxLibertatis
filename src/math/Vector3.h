@@ -1,11 +1,11 @@
 
-#ifndef ARX_PLATFORM_MATH_VECTOR3_H
-#define ARX_PLATFORM_MATH_VECTOR3_H
+#ifndef ARX_MATH_VECTOR3_H
+#define ARX_MATH_VECTOR3_H
 
 #include <limits>
 #include <cmath>
 
-#include "platform/Platform.h"
+#include "math/MathFwd.h"
 
 #define cross ^
 #define dot |
@@ -386,8 +386,4 @@ inline bool fartherThan(const Vector3<T> & a, const Vector3<T> & b, T d) {
 	return (distSqr(a, b) > (d * d));
 }
 
-typedef Vector3<s32> Vec3i;
-typedef Vector3<float> Vec3f;
-typedef Vector3<double> Vec3d;
-
-#endif // ARX_PLATFORM_MATH_VECTOR3_H
+#endif // ARX_MATH_VECTOR3_H

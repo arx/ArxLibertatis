@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 
 #include "graphics/Draw.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
@@ -397,7 +398,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		}
 
 
-		D3DTLVERTEX verts[4];
+		TexturedVertex verts[4];
 		GRenderer->SetTexture(0, minimap[SHOWLEVEL].tc);
 
 		for (long k = 0; k < 4; k++)
@@ -599,9 +600,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[0].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
-						else
-							verts[0].color = D3DRGB(v, v, v);
+						verts[0].color = Color::gray(fl2 ? v * (1.f/2) : v).toBGR();
 
 						oo += v;
 
@@ -632,9 +631,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[1].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
-						else
-							verts[1].color = D3DRGB(v, v, v);
+						verts[1].color = Color::gray(fl2 ? v * ( 1.0f / 2 ) : v).toBGR();
 
 						oo += v;
 
@@ -666,9 +663,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						}
 						
 
-						if (fl2) verts[2].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
-						else
-							verts[2].color = D3DRGB(v, v, v);
+						verts[2].color = Color::gray(fl2 ? v * (1.f/2) : v).toBGR();
 
 						oo += v;
 
@@ -699,9 +694,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[3].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
-						else
-							verts[3].color = D3DRGB(v, v, v);
+						verts[3].color = Color::gray(fl2 ? v * (1.f/2) : v).toBGR();
 
 						oo += v;
 
@@ -719,7 +712,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 								verts[3].sy += DECALY * Yratio;
 							}
 
-							EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 4, 0);
+							EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
 						}
 					}
 				}
@@ -776,7 +769,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					verts[2].sy += DECALY * Yratio;
 				}
 
-				EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 3, 0);
+				EERIEDRAWPRIM(Renderer::TriangleFan, verts);
 
 				if (fl2) GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
@@ -843,8 +836,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 										fpx *= Xratio;
 										fpy *= Yratio;
-										EERIEDrawBitmap( fpx, fpy,
-														5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect, D3DRGB(col, 0, 0));
+										EERIEDrawBitmap(fpx, fpy, 5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect,
+										                Color3f(col, 0, 0).to<u8>());
 
 										if (!fl2)
 											GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -922,7 +915,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
 							Page_Buffer[lLengthDraw] = '\0';
 
-							DrawBookTextInRect( hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Page_Buffer, 0 );
+							DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Page_Buffer, Color::none);
 						}
 					}
 
@@ -943,7 +936,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						verts[3].sy += DECALY * Yratio;
 					}
 
-					EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, verts, 4, 0);
+					EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
 				}
 			}
 	}

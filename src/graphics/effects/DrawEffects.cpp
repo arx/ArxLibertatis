@@ -58,17 +58,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/DrawEffects.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
 
 #include "game/Spells.h"
+
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "scene/Light.h"
 #include "scene/Interactive.h"
@@ -83,12 +87,9 @@ extern TextureContainer * Boom;
 
 POLYBOOM polyboom[MAX_POLYBOOM];
 
-extern unsigned long ulBKGColor;
+extern Color ulBKGColor;
 
-void EE_RT2(D3DTLVERTEX*,D3DTLVERTEX*);
-
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*);
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _fAdd);
+void EE_RT2(TexturedVertex*,TexturedVertex*);
 
 //***********************************************************************************************
 // hum... to be checked again for performance and result quality.
@@ -97,7 +98,7 @@ bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _
 //***********************************************************************************************
 void ARXDRAW_DrawInterShadows()
 {	
-	GRenderer->SetFogColor(0);
+	GRenderer->SetFogColor(Color::none);
 	SetZBias(1);
 
 	long first=1;
@@ -136,13 +137,13 @@ void ARXDRAW_DrawInterShadows()
 			if ( !(io->ioflags & IO_GOLD) ) 
 			{
 				register EERIEPOLY * ep;
-				D3DTLVERTEX in;			
+				TexturedVertex in;			
 				
-				D3DTLVERTEX ltv[4];
-				ltv[0]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.3f) ;
-				ltv[1]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.7f, 0.3f) ;
-				ltv[2]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.7f, 0.7f) ;		
-				ltv[3]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.7f) ;
+				TexturedVertex ltv[4];
+				ltv[0]=	TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.3f) ;
+				ltv[1]=	TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, 0, 1, 0.7f, 0.3f) ;
+				ltv[2]=	TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, 0, 1, 0.7f, 0.7f) ;		
+				ltv[3]=	TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.7f) ;
 				
 				float s1=16.f*io->scale;
 				float s2=s1 * ( 1.0f / 2 );	
@@ -186,16 +187,9 @@ void ARXDRAW_DrawInterShadows()
 							in.sx-=s1;
 							EE_RT2(&in,&ltv[3]);
 
-							if ((ltv[0].sz>0.f) && (ltv[1].sz>0.f) && (ltv[2].sz>0.f))
-							{
-								ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
-															&ltv[1],
-															&ltv[2],
-															50.f);
-								ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
-															&ltv[2],
-															&ltv[3],
-															50.f);
+							if(ltv[0].sz > 0.f && ltv[1].sz > 0.f && ltv[2].sz > 0.f) {
+								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+								ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
 							}
 						}
 					}	
@@ -241,14 +235,8 @@ void ARXDRAW_DrawInterShadows()
 							EE_RT2(&in,&ltv[2]);
 							in.sx-=s1;
 							EE_RT2(&in,&ltv[3]);
-							ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
-															&ltv[1],
-															&ltv[2],
-															50.f);
-							ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
-															&ltv[2],
-															&ltv[3],
-															50.f);
+							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
 						}
 					}
 				}
@@ -271,8 +259,8 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 {
 //	long i;
  
-	D3DTLVERTEX in;
-	D3DTLVERTEX center;
+	TexturedVertex in;
+	TexturedVertex center;
 	GRenderer->SetCulling(Renderer::CullNone);
 	
 	if (el!=NULL)
@@ -283,11 +271,9 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 		in.sy=el->pos.y;
 		in.sz=el->pos.z;
 
-		if (ACTIVECAM->type==CAM_TOPVIEW)
-			EERIEDrawSprite(&in,11.f,lightsource_tc,EERIERGB(el->rgb.r,el->rgb.g,el->rgb.b),2.f);
-		else 
-		{
-			EERIEDrawSprite(&in,11.f,lightsource_tc,EERIERGB(el->rgb.r,el->rgb.g,el->rgb.b),2.f);
+		EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
+		if(ACTIVECAM->type != CAM_TOPVIEW) {
+			
 			el->mins = SPRmins;
 			el->maxs = SPRmaxs;
 
@@ -305,11 +291,11 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 					{
 						float t=(1.f-center.sz)*ACTIVECAM->use_focal*( 1.0f / 3000 );
 						float rad=el->fallstart*t;
-						EERIEDrawCircle(center.sx,center.sy,rad,0xFFFFFF00,0.0001f);
+						EERIEDrawCircle(center.sx, center.sy, rad, Color::yellow, 0.0001f);
 						rad=el->fallend*t;
-						EERIEDrawCircle(center.sx,center.sy,rad,0xFFFF0000,0.0001f);
+						EERIEDrawCircle(center.sx, center.sy, rad, Color::red, 0.0001f);
 						rad=el->intensity*200.f*t;
-						EERIEDrawCircle(center.sx,center.sy,rad,0xFF00FF00,0.0001f);
+						EERIEDrawCircle(center.sx, center.sy, rad, Color::green, 0.0001f);
 					}
 				}
 			}			
@@ -348,7 +334,6 @@ void ARXDRAW_DrawEyeBall()
 	Anglef angle;
 	Vec3f pos;
 	Vec3f scale;
-	EERIE_RGB rgb;
 	
 	float d;
 
@@ -372,16 +357,15 @@ void ARXDRAW_DrawEyeBall()
 	scale.x=d;
 	scale.y=d;
 	scale.z=d;
-	rgb.r=d;
-	rgb.g=d;
-	rgb.b=d;
+	
+	Color3f rgb(d, d, d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(eyeballobj,&angle,&pos,&scale,&rgb);	
 }
 //*************************************************************************************
 //*************************************************************************************
-void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,D3DTLVERTEX *_pOut)
+void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,TexturedVertex *_pOut)
 {
 	if(config.misc.forceZBias)
 	{
@@ -429,17 +413,16 @@ void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,D3DTLVERTEX 
 	}
 }
 extern float FrameDiff;
-void EE_P2(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void ARXDRAW_DrawPolyBoom()
 {
-	D3DTLVERTEX ltv[4];
+	TexturedVertex ltv[4];
 
 	long i,k;
 	float tt;
 
 	SetZBias(8);
-	GRenderer->SetFogColor(0);
-	unsigned long tim = ARXTimeUL(); 	
+	GRenderer->SetFogColor(Color::none);
+	unsigned long tim = ARXTimeUL();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for ( i = 0 ; i < MAX_POLYBOOM ; i++ )
@@ -489,35 +472,28 @@ void ARXDRAW_DrawPolyBoom()
 					EE_RT2(&ltv[1],&ltv[1]);
 					EE_RT2(&ltv[2],&ltv[2]);
 
-					for (k=0;k<polyboom[i].nbvert;k++) 
-					{
+					for(k=0;k<polyboom[i].nbvert;k++) {
 						ltv[k].tu=polyboom[i].u[k];
 						ltv[k].tv=polyboom[i].v[k];
+						ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
+						ltv[k].specular = Color::black.toBGR();
+					}
 
-						if (Project.improve) ltv[k].color=EERIERGB(tt*( 1.0f / 2 ),0.f,0.f);
-						else ltv[k].color=_EERIERGB(tt);
-
-						ltv[k].specular=0xFF000000;
-					}				
-
-						if (Project.improve) 
-						{
+						if(Project.improve) {
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						}
-						else  
-						{
+						} else {
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						}
 
 						GRenderer->SetTexture(0, Boom);
-						ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
+						ARX_DrawPrimitive(	&ltv[0],
 														&ltv[1],
 														&ltv[2]);
 
 						if(polyboom[i].nbvert&4)
 						{
 							EE_RT2(&ltv[3],&ltv[3]);
-							ARX_DrawPrimitive_SoftClippZ(	&ltv[1],
+							ARX_DrawPrimitive(	&ltv[1],
 															&ltv[2],
 															&ltv[3]);
 						}
@@ -530,7 +506,7 @@ void ARXDRAW_DrawPolyBoom()
 
 						if (tr<1.f) tr=1.f;
 
-						D3DCOLOR col=EERIERGB(polyboom[i].rgb.r*tt,polyboom[i].rgb.g*tt,polyboom[i].rgb.b*tt);
+						ColorBGRA col = (polyboom[i].rgb * tt).toBGR();
 
 						for (k=0;k<polyboom[i].nbvert;k++) 
 						{
@@ -542,14 +518,14 @@ void ARXDRAW_DrawPolyBoom()
 
 
 							IncrementPolyWithNormalOutput(polyboom[i].ep,2.f,ltv);
-							EE_RT2(&ltv[0],&ltv[0]);							
-							EE_RT2(&ltv[1],&ltv[1]);							
+							EE_RT2(&ltv[0],&ltv[0]);
+							EE_RT2(&ltv[1],&ltv[1]);
 							EE_RT2(&ltv[2],&ltv[2]);
 
 							if(polyboom[i].nbvert&4)
 							{
-								EE_RT2(&ltv[3],&ltv[3]);							
-							}							
+								EE_RT2(&ltv[3],&ltv[3]);
+							}
 
 								
 							{
@@ -558,30 +534,29 @@ void ARXDRAW_DrawPolyBoom()
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetTexture(0, polyboom[i].tc); 
 
- 									ARX_DrawPrimitive_SoftClippZ(		&ltv[0],
+ 									ARX_DrawPrimitive(		&ltv[0],
  																		&ltv[1],
  																		&ltv[2]);
 
  									if(polyboom[i].nbvert&4)
  									{
-  										ARX_DrawPrimitive_SoftClippZ(	&ltv[1],
+  										ARX_DrawPrimitive(	&ltv[1],
   																		&ltv[2],
  																		&ltv[3]);
 									}
 
 
-								col=_EERIERGB(tt);
-								ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=col;								
+								ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
 								
 								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
-									ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
+									ARX_DrawPrimitive(	&ltv[0],
 																	&ltv[1],
 																	&ltv[2]);
 
 									if(polyboom[i].nbvert&4)
 									{
-										ARX_DrawPrimitive_SoftClippZ(	&ltv[1],
+										ARX_DrawPrimitive(	&ltv[1],
 																		&ltv[2],
 																		&ltv[3]);
 									}
@@ -594,17 +569,14 @@ void ARXDRAW_DrawPolyBoom()
 					{
 						float div=1.f/(float)polyboom[i].tolive;
 						tt=(float)t*div;
-						float tr = (tt * 2 - 0.5f); 
+						float tr = (tt * 2 - 0.5f);
 
-						if (tr<1.f) tr=1.f;			
+						if (tr<1.f) tr=1.f;
 
 						float ttt=tt*0.5f;
-						D3DCOLOR col=EERIERGB(	polyboom[i].rgb.r*ttt,
-												polyboom[i].rgb.g*ttt,
-												polyboom[i].rgb.b*ttt);
+						ColorBGRA col = (polyboom[i].rgb * ttt).toBGR();
 
-						for (k=0;k<polyboom[i].nbvert;k++) 
-						{
+						for(k=0;k<polyboom[i].nbvert;k++) {
 							ltv[k].tu=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
 							ltv[k].tv=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
 							ltv[k].color=col;
@@ -644,14 +616,14 @@ void ARXDRAW_DrawPolyBoom()
 								GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 						GRenderer->SetTexture(0, polyboom[i].tc); 
 				
-								ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
+								ARX_DrawPrimitive(	&ltv[0],
 																&ltv[1],
 																&ltv[2]);
 
 								if(polyboom[i].nbvert&4)
 								{
 									EE_RT2(&ltv[3],&ltv[3]);
-									ARX_DrawPrimitive_SoftClippZ(	&ltv[1],
+									ARX_DrawPrimitive(	&ltv[1],
 																	&ltv[2],
 																	&ltv[3]);
 								}
@@ -672,7 +644,7 @@ extern long TRANSPOLYSPOS;
 extern EERIEPOLY * TransPol[MAX_TRANSPOL];
 
 extern long INTERTRANSPOLYSPOS;
-extern D3DTLVERTEX InterTransPol[MAX_INTERTRANSPOL][4];
+extern TexturedVertex InterTransPol[MAX_INTERTRANSPOL][4];
 extern EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
 extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 
@@ -700,28 +672,28 @@ void ARXDRAW_DrawAllInterTransPolyPos()
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			ttt*=( 1.0f / 2 );
 			ttt+=0.5f;
-			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
+			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
 		}
 		else if (ttt>=1.f) //ADDITIVE
 		{	
 			ttt-=1.f;
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
+			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
 		}
 		else if (ttt>0.f)  //NORMAL TRANS
 		{
 			ttt=1.f-ttt;
 			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGBA(ttt);//ttt);
+			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR(Color::Limits::max() * ttt);
 		}
 		else  //SUBTRACTIVE
 		{
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			ttt=1.f-ttt;
-			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
+			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
 		}
 
-		EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, InterTransPol[i], 3,  0, EERIE_NOCOUNT );
+		EERIEDRAWPRIM(Renderer::TriangleStrip, InterTransPol[i], 3, true);
 	}
 
 	INTERTRANSPOLYSPOS=0;
@@ -763,34 +735,34 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				ttt	*= ( 1.0f / 2 );
 				ttt	+= 0.5f;
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
+				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
 			}
 			else if ( ttt >= 1.f ) //ADDITIVE
 			{	
 				ttt -= 1.f;
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
+				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
 			}
 			else if ( ttt > 0.f )  //NORMAL TRANS
 			{
 				ttt = 1.f - ttt;
 				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGBA(ttt);  
+				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR(Color::Limits::max() * ttt);
 			}
 			else  //SUBTRACTIVE
 			{
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				ttt = 1.f - ttt;
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
+				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
 			}
 
-			EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, ep->tv, to,  0, 0  );
+			EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to);
 
 				if (ep->type & POLY_LAVA)
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
-					D3DTLVERTEX verts[4];
+					TexturedVertex verts[4];
 					GRenderer->SetTexture(0, enviro );
 
 				ARX_CHECK(to > 0);
@@ -806,14 +778,14 @@ void ARXDRAW_DrawAllTransPolysPos() {
 						verts[j].tv		= ep->v[j].sz * ( 1.0f / 1000 ) + EEcos( (ep->v[j].sz) * ( 1.0f / 200 ) + (float) FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
 					}	
 
-					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 					for ( i = 0 ; i < to ; i++ )
 					{
 						verts[i].tu = ep->v[i].sx * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].sx ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
 						verts[i].tv = ep->v[i].sz * ( 1.0f / 1000 ) + EEcos( ( ep->v[i].sz ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
 					}	
-					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 					
 					for ( i = 0 ; i < to ; i++ )
 					{
@@ -823,7 +795,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					}	
 
 					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 				}
 			}
 
@@ -833,7 +805,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 				
-				D3DTLVERTEX verts[4];
+				TexturedVertex verts[4];
 
 				GRenderer->SetTexture(0, enviro );
 
@@ -852,7 +824,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					if ( ep->type & POLY_FALL ) verts[j].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}
 
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 				for ( i = 0 ; i < to ; i++ )
 				{
@@ -862,7 +834,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}
 
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 				for ( i = 0 ; i < to ; i++ )
 				{
@@ -871,7 +843,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}	
-				EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, verts, to, 0, EERIE_NOCOUNT );
+				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 		}
 	}
 

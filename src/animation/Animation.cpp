@@ -75,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "io/FilePath.h"
 #include "io/PakManager.h"
@@ -104,16 +105,12 @@ extern long ForceIODraw;
 extern long INTER_DRAW;
 extern long INTER_COMPUTE;
 extern long FRAME_COUNT;
-extern unsigned long ulBKGColor;
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBufferTransform;
-extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_TLVERTEX;	// VB using TLVERTEX format.
+extern Color ulBKGColor;
 extern long ZMAPMODE;
 extern float fZFogStart;
-//-----------------------------------------------------------------------------
 ANIM_HANDLE animations[MAX_ANIMATIONS];
 bool MIPM;
-D3DTLVERTEX LATERDRAWHALO[HALOMAX*4];
+TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 EERIE_QUAT * BIGQUAT;
 EERIEMATRIX * BIGMAT;
@@ -124,13 +121,8 @@ long __MUST_DRAW=0;
 long FORCE_NO_HIDE=0;
 long DEBUG_PATHFAIL=1;
 long LOOK_AT_TARGET=0;
-#if !CEDRIC
-	static unsigned char * grps=NULL;
-	static long max_grps=0;	
-#else
-	unsigned char * grps=NULL;
-	long max_grps=0;	
-#endif
+unsigned char * grps = NULL;
+long max_grps = 0;
 long TRAP_DETECT=-1;
 long TRAP_SECRET=-1;
 long USEINTERNORM=1;
@@ -138,7 +130,7 @@ long HALOCUR=0;
 long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
 //-----------------------------------------------------------------------------
-D3DTLVERTEX tD3DTLVERTEXTab2[4000];
+TexturedVertex tTexturedVertexTab2[4000];
 
 extern long EXTERNALVIEW;
 void EERIE_ANIM_Get_Scale_Invisibility(INTERACTIVE_OBJ * io,float &invisibility,float &scale)
@@ -225,18 +217,14 @@ void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim)
 	au->flags&=~EA_FORCEPLAY;	
 }
 
-//-----------------------------------------------------------------------------
-void EERIE_ANIMMANAGER_Init()
-{
-	memset(animations,0,sizeof(ANIM_HANDLE)*MAX_ANIMATIONS);
+void EERIE_ANIMMANAGER_Init() {
+	memset(animations, 0, sizeof(ANIM_HANDLE) * MAX_ANIMATIONS);
 }
 
-//-----------------------------------------------------------------------------
-
-void EERIE_ANIMMANAGER_PurgeUnused()
-{
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
+void EERIE_ANIMMANAGER_PurgeUnused() {
+	
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		
 		if (	(animations[i].path[0]!=0)
 			&&	(animations[i].locks==0)	)
 		{
@@ -271,17 +259,14 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 	}
 }
 
-//-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path)
-{
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
-		if (!strcasecmp(animations[i].path,path))
-		{
+ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path) {
+	
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		if(!strcasecmp(animations[i].path, path)) {
 			return &animations[i];
 		}
 	}
-
+	
 	return NULL;
 }
 
@@ -330,8 +315,8 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 	char path2[256];
 	int pathcount = 2;
 
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		
 		if (animations[i].path[0]==0)
 		{				
 			if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,FileSize))!=NULL)
@@ -378,8 +363,8 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 	long count=0;
 	*memsize=0;
 
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		
 		if (animations[i].path[0]!=0)
 		{
 			count++;
@@ -391,7 +376,7 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 			for (long k=0;k<animations[i].alt_nb;k++)
 				totsize+=animations[i].sizes[k];
 
-			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
+			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,(long)i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
 			memsize+=totsize;
 			tex += temp;
 		}
@@ -437,7 +422,6 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
 //  EERIE_3D  * pos					Object Position
 //  unsigned long time				Time increment to current animation in Ms
 //  INTERACTIVE_OBJ * io			Referrence to Interactive Object (NULL if no IO)
-//  D3DCOLOR col					Color
 //  long typ						Misc Type 0=World View 1=1st Person View
 //*************************************************************************************
 
@@ -619,18 +603,16 @@ suite:
 		}	
 	}
 }
-INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING=NULL;							
-extern long USE_CEDRIC_ANIM;
-//-----------------------------------------------------------------------------
-void EERIEDrawAnimQuat(	EERIE_3DOBJ * eobj,
-						ANIM_USE * eanim,
-						Anglef * angle,
-						Vec3f * pos,
-						unsigned long time,
-						INTERACTIVE_OBJ * io,
-						long typ
-						)
-{
+INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING=NULL;
+
+void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
+                       ANIM_USE * eanim,
+                       Anglef * angle,
+                       Vec3f * pos,
+                       unsigned long time,
+                       INTERACTIVE_OBJ * io,
+                       bool render) {
+	
 	if (	(io)
 		&&	(io!=inter.iobj[0])	)
 	{
@@ -673,20 +655,15 @@ suite:
 
 	DESTROYED_DURING_RENDERING=NULL;
 
-	if (USE_CEDRIC_ANIM)
-		Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, typ);
+	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, render);
 }
 
-#define ANIMQUATTYPE_FIRST_PERSON	2
-#define ANIMQUATTYPE_NO_RENDER		4
-#define ANIMQUATTYPE_NO_COMPUTATIONS	8
 extern float GLOBAL_LIGHT_FACTOR;
 
 
 //*************************************************************************************
 // Procedure for drawing Interactive Objects (Not Animated)
 //*************************************************************************************
-
 void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
 					EERIEMATRIX * mat,Vec3f  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
 {
@@ -700,18 +677,18 @@ void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
 }
 // List of TO-TREAT vertex for MIPMESHING
 
-void specialEE_P(D3DTLVERTEX *in,D3DTLVERTEX *out);
+void specialEE_P(TexturedVertex *in,TexturedVertex *out);
 
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private 
 TextureContainer TexSpecialColor("SPECIALCOLOR_LIST", TextureContainer::NoInsert);
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull+3)>pTex->ulMaxVertexListCull)
 	{
 		pTex->ulMaxVertexListCull+=10*3;
-		pTex->pVertexListCull=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull,pTex->ulMaxVertexListCull*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull=(TexturedVertex*)realloc(pTex->pVertexListCull,pTex->ulMaxVertexListCull*sizeof(TexturedVertex));
 	}
 
 	pTex->ulNbVertexListCull+=3;
@@ -719,12 +696,12 @@ ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TNormalTrans+3)>pTex->ulMaxVertexListCull_TNormalTrans)
 	{
 		pTex->ulMaxVertexListCull_TNormalTrans+=20*3;
-		pTex->pVertexListCull_TNormalTrans=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TNormalTrans,pTex->ulMaxVertexListCull_TNormalTrans*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TNormalTrans=(TexturedVertex*)realloc(pTex->pVertexListCull_TNormalTrans,pTex->ulMaxVertexListCull_TNormalTrans*sizeof(TexturedVertex));
 
 		if (!pTex->pVertexListCull_TNormalTrans)
 		{
@@ -739,12 +716,12 @@ ARX_D3DVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TAdditive+3)>pTex->ulMaxVertexListCull_TAdditive)
 	{
 		pTex->ulMaxVertexListCull_TAdditive+=20*3;
-		pTex->pVertexListCull_TAdditive=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TAdditive,pTex->ulMaxVertexListCull_TAdditive*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TAdditive=(TexturedVertex*)realloc(pTex->pVertexListCull_TAdditive,pTex->ulMaxVertexListCull_TAdditive*sizeof(TexturedVertex));
 
 		if (!pTex->pVertexListCull_TAdditive)
 		{
@@ -759,12 +736,12 @@ ARX_D3DVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TSubstractive+3)>pTex->ulMaxVertexListCull_TSubstractive)
 	{
 		pTex->ulMaxVertexListCull_TSubstractive+=20*3;
-		pTex->pVertexListCull_TSubstractive=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TSubstractive,pTex->ulMaxVertexListCull_TSubstractive*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TSubstractive=(TexturedVertex*)realloc(pTex->pVertexListCull_TSubstractive,pTex->ulMaxVertexListCull_TSubstractive*sizeof(TexturedVertex));
 
 		if (!pTex->pVertexListCull_TSubstractive)
 		{
@@ -779,12 +756,12 @@ ARX_D3DVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TMultiplicative+3)>pTex->ulMaxVertexListCull_TMultiplicative)
 	{
 		pTex->ulMaxVertexListCull_TMultiplicative+=20*3;
-		pTex->pVertexListCull_TMultiplicative=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TMultiplicative,pTex->ulMaxVertexListCull_TMultiplicative*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TMultiplicative=(TexturedVertex*)realloc(pTex->pVertexListCull_TMultiplicative,pTex->ulMaxVertexListCull_TMultiplicative*sizeof(TexturedVertex));
 
 		if (!pTex->pVertexListCull_TMultiplicative)
 		{
@@ -799,61 +776,46 @@ ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TMetal(TextureContainer *pTex)
+TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TMetal+3)>pTex->ulMaxVertexListCull_TMetal)
 	{
 		pTex->ulMaxVertexListCull_TMetal+=20*3;
-		pTex->pVertexListCull_TMetal=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TMetal,pTex->ulMaxVertexListCull_TMetal*sizeof(ARX_D3DVERTEX));
+		pTex->pVertexListCull_TMetal=(TexturedVertex*)realloc(pTex->pVertexListCull_TMetal,pTex->ulMaxVertexListCull_TMetal*sizeof(TexturedVertex));
 	}
 
 	pTex->ulNbVertexListCull_TMetal+=3;
 	return &pTex->pVertexListCull_TMetal[pTex->ulNbVertexListCull_TMetal-3];
 }
 
-void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex);
-
-
-//-----------------------------------------------------------------------------
-void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
-{
-	if(	!_pTex->ulNbVertexListCull )
-	{
+static void PopOneTriangleList(TextureContainer *_pTex) {
+	
+	if(!_pTex->ulNbVertexListCull) {
 		return;
 	}
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetTexture(0, _pTex);
-
-	if (_pTex->userflags & POLY_LATE_MIP)
-	{
+	
+	if(_pTex->userflags & POLY_LATE_MIP) {
 		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
 	}
 	
-	if( _pTex->ulNbVertexListCull )
-	{
-		EERIEDRAWPRIM(	D3DPT_TRIANGLELIST,
-						D3DFVF_TLVERTEX,
-						_pTex->pVertexListCull,
-						_pTex->ulNbVertexListCull,
-						0, 
-						0 );
-
-		if(_bUpdate) 
-			_pTex->ulNbVertexListCull = 0;
-	}
 	
-	if (_pTex->userflags & POLY_LATE_MIP)
-	{
+	EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull, _pTex->ulNbVertexListCull);
+	
+	_pTex->ulNbVertexListCull = 0;
+	
+	if(_pTex->userflags & POLY_LATE_MIP) {
 		float biasResetVal = 0;
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(biasResetVal);
 	}
+	
 }
 
-//-----------------------------------------------------------------------------
-void PopOneTriangleListTransparency(TextureContainer *_pTex)
-{
+static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
+	
 	if(	!_pTex->ulNbVertexListCull_TNormalTrans&&
 		!_pTex->ulNbVertexListCull_TAdditive&&
 		!_pTex->ulNbVertexListCull_TSubstractive&&
@@ -864,86 +826,56 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetTexture(0, _pTex);
 
-	if(	_pTex->ulNbVertexListCull_TNormalTrans )
-	{
+	if(_pTex->ulNbVertexListCull_TNormalTrans) {
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-
-		if(_pTex->ulNbVertexListCull_TNormalTrans)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TNormalTrans,
-				_pTex->ulNbVertexListCull_TNormalTrans,
-				0, 0 );
+		if(_pTex->ulNbVertexListCull_TNormalTrans) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TNormalTrans,
+			              _pTex->ulNbVertexListCull_TNormalTrans);
 			_pTex->ulNbVertexListCull_TNormalTrans=0;
 		}
 	}
 	
-	if(	_pTex->ulNbVertexListCull_TAdditive )
-	{
+	if(_pTex->ulNbVertexListCull_TAdditive) {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		if(_pTex->ulNbVertexListCull_TAdditive)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TAdditive,
-				_pTex->ulNbVertexListCull_TAdditive,
-				0, 0 );
+		if(_pTex->ulNbVertexListCull_TAdditive) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TAdditive,
+			              _pTex->ulNbVertexListCull_TAdditive);
 			_pTex->ulNbVertexListCull_TAdditive=0;
 		}
 	}
-
-	if (_pTex->ulNbVertexListCull_TSubstractive)
-	{
+	
+	if(_pTex->ulNbVertexListCull_TSubstractive) {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
-
-		if(_pTex->ulNbVertexListCull_TSubstractive)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TSubstractive,
-				_pTex->ulNbVertexListCull_TSubstractive,
-				0, 0 );
+		if(_pTex->ulNbVertexListCull_TSubstractive) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TSubstractive,
+			              _pTex->ulNbVertexListCull_TSubstractive);
 			_pTex->ulNbVertexListCull_TSubstractive=0;
 		}
 	}
-
-	if (_pTex->ulNbVertexListCull_TMultiplicative)
-	{
+	
+	if(_pTex->ulNbVertexListCull_TMultiplicative) {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		if(_pTex->ulNbVertexListCull_TMultiplicative)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TMultiplicative,
-				_pTex->ulNbVertexListCull_TMultiplicative,
-				0, 0 );
-			_pTex->ulNbVertexListCull_TMultiplicative=0;
+		if(_pTex->ulNbVertexListCull_TMultiplicative) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TMultiplicative,
+			              _pTex->ulNbVertexListCull_TMultiplicative);
+			_pTex->ulNbVertexListCull_TMultiplicative = 0;
 		}
 	}
-
-	if(	_pTex->ulNbVertexListCull_TMetal )
-	{
+	
+	if(_pTex->ulNbVertexListCull_TMetal) {
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-
-		if(_pTex->ulNbVertexListCull_TMetal)
-		{
-			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
-				D3DFVF_TLVERTEX,
-				_pTex->pVertexListCull_TMetal,
-				_pTex->ulNbVertexListCull_TMetal,
-				0, 0 );
+		if(_pTex->ulNbVertexListCull_TMetal) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TMetal,
+			              _pTex->ulNbVertexListCull_TMetal);
 			_pTex->ulNbVertexListCull_TMetal=0;
 		}
 	}
 }
 
-void PopAllTriangleList(bool _bUpdate) {
+void PopAllTriangleList() {
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
-		PopOneTriangleList(pTex, _bUpdate);
+		PopOneTriangleList(pTex);
 		pTex = pTex->m_pNext;
 	}
 }
@@ -968,30 +900,22 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 			++it)
 		{
 			SMY_ZMAPPINFO *pSMY = &(*it);
-			float fColor;
 			
-			tD3DTLVERTEXTab2[iPos]			= pSMY->pD3DVertex[0];
-			fColor							= pSMY->color[0];
-			tD3DTLVERTEXTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
-			tD3DTLVERTEXTab2[iPos].tu		= pSMY->uv[0];
-			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[1];
-			tD3DTLVERTEXTab2[iPos]			= pSMY->pD3DVertex[1];
-			fColor							= pSMY->color[1];
-			tD3DTLVERTEXTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
-			tD3DTLVERTEXTab2[iPos].tu		= pSMY->uv[2];
-			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[3];
-			tD3DTLVERTEXTab2[iPos]			= pSMY->pD3DVertex[2];
-			fColor							= pSMY->color[2];
-			tD3DTLVERTEXTab2[iPos].color	= D3DRGB(fColor,fColor,fColor);
-			tD3DTLVERTEXTab2[iPos].tu		= pSMY->uv[4];
-			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[5];
+			tTexturedVertexTab2[iPos]			= pSMY->pVertex[0];
+			tTexturedVertexTab2[iPos].color = Color::gray(pSMY->color[0]).toBGR();
+			tTexturedVertexTab2[iPos].tu		= pSMY->uv[0];
+			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[1];
+			tTexturedVertexTab2[iPos]			= pSMY->pVertex[1];
+			tTexturedVertexTab2[iPos].color = Color::gray(pSMY->color[1]).toBGR();
+			tTexturedVertexTab2[iPos].tu		= pSMY->uv[2];
+			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[3];
+			tTexturedVertexTab2[iPos]			= pSMY->pVertex[2];
+			tTexturedVertexTab2[iPos].color	= Color::gray(pSMY->color[2]).toBGR();
+			tTexturedVertexTab2[iPos].tu		= pSMY->uv[4];
+			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[5];
 		}
 
-		EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
-						D3DFVF_TLVERTEX,
-						tD3DTLVERTEXTab2,
-						iPos,
-						0, 0 );
+		EERIEDRAWPRIM(Renderer::TriangleList, tTexturedVertexTab2, iPos);
 
 		_pTex->TextureRefinement->vPolyInterZMap.clear();
 	}
@@ -1000,7 +924,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 //-----------------------------------------------------------------------------
 void PopAllTriangleListTransparency() {
 
-	GRenderer->SetFogColor(0);
+	GRenderer->SetFogColor(Color::none);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
@@ -1027,7 +951,7 @@ void PopAllTriangleListTransparency() {
 float INVISIBILITY_OVERRIDE=0.f;
 
 //-----------------------------------------------------------------------------
-void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex,D3DTLVERTEX *_pD3DVertex)
+void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex,TexturedVertex *_pVertex)
 {
     SMY_ZMAPPINFO sZMappInfo;
 
@@ -1064,7 +988,7 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 
 		if (sZMappInfo.color[iI]<0.f) sZMappInfo.color[iI]=0.f;
 	
-		sZMappInfo.pD3DVertex[iI]=_pD3DVertex[iI];
+		sZMappInfo.pVertex[iI]=_pVertex[iI];
 	}
 
 	//optim
@@ -1076,8 +1000,6 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 	}
 }
 
-//-----------------------------------------------------------------------------
-int ARX_SoftClippZ(EERIE_VERTEX *_pVertex1,EERIE_VERTEX *_pVertex2,EERIE_VERTEX *_pVertex3,D3DTLVERTEX **_ptV,EERIE_FACE *_pFace,float _fInvibility,TextureContainer *_pTex,bool _bZMapp,EERIE_3DOBJ *_pObj,int _iNumFace,long *_pInd,INTERACTIVE_OBJ *_pioInteractive,bool _bNPC,long _lSpecialColorFlag,EERIE_RGB *_pRGB);
 extern EERIEMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 
@@ -1135,13 +1057,13 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 	}
 
 	float					Xcos = 0, Ycos = 0, Zcos = 0, Xsin = 0, Ysin = 0, Zsin = 0;
-	D3DTLVERTEX vert_list_static[4];
+	TexturedVertex vert_list_static[4];
 	long					k;
 	
 	long			lfr, lfg, lfb;		
 	Vec3f		temporary3D;
 	EERIE_CAMERA	Ncam;
-	EERIE_RGB		infra;
+	Color3f infra;
 	float			invisibility;
 	float			scale;
 
@@ -1310,10 +1232,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		need_halo=1;
 	}
 	
+	{
 	long		special_color_flag;
 				special_color_flag	=	0;
-	EERIE_RGB	special_color;
-				special_color.r		=	special_color.g		=	special_color.b		=	0; 
+	Color3f special_color = Color3f::black;
 
 	if ( io ) 
 	{
@@ -1454,11 +1376,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 						{
 							MakePlayerAppearsFX(io);
 							AddRandomSmoke(io,50);
-							EERIE_RGB rgb;
-							unsigned long color=io->_npcdata->blood_color;
-							rgb.r=(float)((long)((color>>16) & 255))*( 1.0f / 255 );
-							rgb.g=(float)((long)((color>>8) & 255))*( 1.0f / 255 );
-							rgb.b=(float)((long)((color) & 255))*( 1.0f / 255 );
+							Color3f rgb = io->_npcdata->blood_color.to<float>();
 							EERIE_SPHERE sp;
 							sp.origin.x=io->pos.x;
 							sp.origin.y=io->pos.y;
@@ -1471,7 +1389,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 								SpawnGroundSplat(&sp,&rgb,rnd()*30.f+30.f,1);
 								sp.origin.y-=rnd()*150.f;
 
-								ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color);
+								ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);
 
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;
@@ -1544,7 +1462,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			if((DOTPRODUCT( normFace , nrm )>0.f) ) continue;
 		}
 
-		ARX_D3DVERTEX		*vert_list;
+		TexturedVertex		*vert_list;
 		TextureContainer	*pTex;
 
 		if(	(eobj->facelist[i].texid<0)|| 
@@ -1553,7 +1471,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		if ((io) && (io->ioflags & IO_ANGULAR))
 			MakeCLight2(io,&infra,angle,&pos,eobj,BIGMAT,BIGQUAT,i);
 
-		unsigned long*	pNbVertexPush;
 		float			fTransp = 0.f;
 
 		if(	(eobj->facelist[i].facetype&POLY_TRANS) ||
@@ -1571,7 +1488,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 				
 				{
 					vert_list=PushVertexInTableCull_TMultiplicative(pTex);
-					pNbVertexPush=&pTex->ulNbVertexListCull_TMultiplicative;
 				}
 			}
 			else
@@ -1582,7 +1498,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 					{
 						vert_list=PushVertexInTableCull_TAdditive(pTex);
-						pNbVertexPush=&pTex->ulNbVertexListCull_TAdditive;
 					}
 				}
 				else
@@ -1593,7 +1508,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 						{
 							vert_list=PushVertexInTableCull_TNormalTrans(pTex);
-							pNbVertexPush=&pTex->ulNbVertexListCull_TNormalTrans;
 						}
 					}
 					else  //SUBTRACTIVE
@@ -1602,7 +1516,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		
 						{
 							vert_list=PushVertexInTableCull_TSubstractive(pTex);
-							pNbVertexPush=&pTex->ulNbVertexListCull_TSubstractive;
 						}
 					}
 				}				
@@ -1612,7 +1525,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		{
 			{
 				vert_list=PushVertexInTableCull(pTex);
-				pNbVertexPush=&pTex->ulNbVertexListCull;
 			}
 		}
 
@@ -1666,14 +1578,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 				}					
 			}
 			// Are we using IMPROVED VISION view ?
-			else if (Project.improve) 
-			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color
-					=EERIERGB(io->infracolor.r,io->infracolor.g,io->infracolor.b);
-			}
-			else 
-			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xFFFFFFFF;
+			else if(Project.improve) {
+				vert_list[0].color = vert_list[1].color = vert_list[2].color = io->infracolor.toBGR();
+			} else {
+				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 
 			if(Project.improve)
@@ -1715,18 +1623,15 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
 				else if (USEINTERNORM) // using INTERNORM lighting
 			{
-				for (long j=0;j<3;j++)
-				{			
-						vert_list[j].color = eobj->vertexlist3[paf[j]].vert.color; 
-				}					
-			}
-			else if (Project.improve) // using IMPROVED VISION view
-			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=EERIERGB(0.6f,0.f,1.f);
-			}
-			else // using default white
-			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=EERIECOLOR_WHITE;
+				for (long j=0;j<3;j++) {
+					vert_list[j].color = eobj->vertexlist3[paf[j]].vert.color; 
+				}
+			} else if(Project.improve) {
+				// using IMPROVED VISION view
+				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color3f(.6f, 0.f, 1.f).toBGR();
+			} else {
+				// using default white
+				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 		}
 
@@ -1743,44 +1648,18 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 	}			
 
 	if (FRAME_COUNT!=0)
-	for (long j=0;j<3;j++)		
-		vert_list[j].color=eobj->facelist[i].color[j];		
+	for (long j=0;j<3;j++)
+		vert_list[j].color = eobj->facelist[i].color[j].toBGRA();
 	else 
-	for (long j=0;j<3;j++)		
-		eobj->facelist[i].color[j]=vert_list[j].color;		
+	for (long j=0;j<3;j++)
+		eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
 
 	// Transparent poly: storing info to draw later
-	if ((eobj->facelist[i].facetype & POLY_TRANS) 
-		|| (invisibility>0.f))
-	{
-		vert_list[0].color	=	D3DRGB( fTransp, fTransp, fTransp );
-		vert_list[1].color	=	D3DRGB( fTransp, fTransp, fTransp );
-		vert_list[2].color	=	D3DRGB( fTransp, fTransp, fTransp );
-
+	if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+		vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::gray(fTransp).toBGR();
 	}
 
-	if(!(ARX_SoftClippZ(	&eobj->vertexlist[paf[0]],
-						&eobj->vertexlist[paf[1]],
-						&eobj->vertexlist[paf[2]],
-						&vert_list,
-						&eobj->facelist[i],
-						invisibility,
-						pTex,
-						(io)&&(io->ioflags&IO_ZMAP),
-						eobj,
-						i,
-						paf,
-						io,
-						false,
-						0,
-						NULL)))
-	{
-		*pNbVertexPush-=3;
-		continue;
-	}
-
-	if((io)&&(io->ioflags&IO_ZMAP))
-	{
+	if((io)&&(io->ioflags&IO_ZMAP)) {
 		CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
 	}
 
@@ -1788,7 +1667,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 	if ((eobj->facelist[i].facetype & POLY_METAL)
 		|| ((pTex) && (pTex->userflags & POLY_METAL)) )				
 	{
-		ARX_D3DVERTEX *vert_list_metal;
+		TexturedVertex *vert_list_metal;
 
 		unsigned long *pulNbVertexList_TMetal;
 		{
@@ -1796,8 +1675,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			pulNbVertexList_TMetal=&pTex->ulNbVertexListCull_TMetal;
 		}
 
-		memcpy((void*)vert_list_metal,(void*)vert_list,sizeof(D3DTLVERTEX)*3);
-		D3DTLVERTEX * tl=vert_list_metal;
+		memcpy((void*)vert_list_metal,(void*)vert_list,sizeof(TexturedVertex)*3);
+		TexturedVertex * tl=vert_list_metal;
 
 		long r = 0, g = 0, b = 0;
 		long todo	=	0;
@@ -1858,7 +1737,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		float tot=0;
 		float _ffr[3];
 			
-		ARX_D3DVERTEX * workon=vert_list;
+		TexturedVertex * workon=vert_list;
 
 		for (long o=0;o<3;o++)
 		{
@@ -1931,14 +1810,16 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			if ((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) 
 				{
 					Vec3f vect1,vect2;
-					D3DTLVERTEX * vert=&LATERDRAWHALO[(HALOCUR<<2)];						
+					TexturedVertex * vert=&LATERDRAWHALO[(HALOCUR<<2)];
 
-					if (HALOCUR<(HALOMAX-1)) HALOCUR++;
+					if(HALOCUR < ((long)HALOMAX) - 1) {
+						HALOCUR++;
+					}
 
-					memcpy(&vert[0],&workon[first],sizeof(D3DTLVERTEX));
-					memcpy(&vert[1],&workon[first],sizeof(D3DTLVERTEX));
-					memcpy(&vert[2],&workon[second],sizeof(D3DTLVERTEX));
-					memcpy(&vert[3],&workon[second],sizeof(D3DTLVERTEX));						
+					memcpy(&vert[0],&workon[first],sizeof(TexturedVertex));
+					memcpy(&vert[1],&workon[first],sizeof(TexturedVertex));
+					memcpy(&vert[2],&workon[second],sizeof(TexturedVertex));
+					memcpy(&vert[3],&workon[second],sizeof(TexturedVertex));
 
 					float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 10 )+0.7f))*0.6f;
 					vect1.x=workon[first].sx-workon[third].sx;
@@ -1980,7 +1861,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 // HALO HANDLING END
 ////////////////////////////////////////////////////////////////////////
-
+	}
 finish:
 
 	// storing 2D Bounding Box info
@@ -2105,23 +1986,20 @@ void EERIE_ANIMMANAGER_Clear(long i)
 	animations[i].sizes=NULL;
 	animations[i].path[0]=0;
 }
-//-----------------------------------------------------------------------------
-void EERIE_ANIMMANAGER_ClearAll()
-{
-	for (long i=0;i<MAX_ANIMATIONS;i++)
-	{
-		if (animations[i].path[0]!=0)
-		{
-			EERIE_ANIMMANAGER_Clear(i);			
+
+void EERIE_ANIMMANAGER_ClearAll() {
+	
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		if(animations[i].path[0] != '\0') {
+			EERIE_ANIMMANAGER_Clear(i);
 		}
 	}
-
-	if (grps)
-	{
-		free (grps);
+	
+	if(grps) {
+		free(grps);
 		grps = NULL;
 	}
-
+	
 }
 void EERIE_ANIMMANAGER_ReloadAll()
 {
@@ -2145,11 +2023,9 @@ void EERIE_ANIMMANAGER_ReloadAll()
 			}
 		}
 	}
-		
-	for ( int i=0;i<MAX_ANIMATIONS;i++)
-	{
-		if (animations[i].path[0]!=0)
-		{
+	
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		if(animations[i].path[0] != '\0') {
 			char pathhh[256];
 			strcpy(pathhh,animations[i].path);
 			EERIE_ANIMMANAGER_Clear(i);

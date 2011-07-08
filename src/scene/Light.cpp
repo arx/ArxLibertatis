@@ -84,7 +84,7 @@ bool ValidDynLight(long num)
 
 	return false;
 }
-extern float GLOBAL_LIGHT_FACTOR;
+
 void PrecalcIOLighting(const Vec3f * pos, float radius, long flags)
 {
 	static Vec3f lastpos;
@@ -175,18 +175,11 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	if (ep->type & POLY_QUAD) nbvert = 4;
 	else nbvert = 3;
 
-	for (long i = 0; i < nbvert; i++)
-	{
-		if (epr[i] > 1.f) epr[i] = 1.f;
-		else if (epr[i] < ACTIVEBKG->ambient.r) epr[i] = ACTIVEBKG->ambient.r;
-
-		if (epg[i] > 1.f) epg[i] = 1.f;
-		else if (epg[i] < ACTIVEBKG->ambient.g) epg[i] = ACTIVEBKG->ambient.g;
-
-		if (epb[i] > 1.f) epb[i] = 1.f;
-		else if (epb[i] < ACTIVEBKG->ambient.b) epb[i] = ACTIVEBKG->ambient.b;
-
-		ep->v[i].color = EERIERGB(epr[i], epg[i], epb[i]);
+	for(long i = 0; i < nbvert; i++) {
+		epr[i] = clamp(epr[i], ACTIVEBKG->ambient.r, 1.f);
+		epg[i] = clamp(epg[i], ACTIVEBKG->ambient.g, 1.f);
+		epb[i] = clamp(epb[i], ACTIVEBKG->ambient.b, 1.f);
+		ep->v[i].color = Color3f(epr[i], epg[i], epb[i]).toBGR();
 	}
 }
 
@@ -515,9 +508,6 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	}
 }
 
-//*************************************************************************************
-extern float GLOBAL_LIGHT_FACTOR;
-//*************************************************************************************
 long	DYNAMIC_NORMALS = 1;
 
 extern EERIE_CAMERA DynLightCam;
@@ -525,7 +515,7 @@ extern EERIE_CAMERA DynLightCam;
 //-----------------------------------------------------------------------------
 void ComputeLight2DPos(EERIE_LIGHT * _pL)
 {
-	D3DTLVERTEX in, out;
+	TexturedVertex in, out;
 	in.sx = _pL->pos.x;
 	in.sy = _pL->pos.y;
 	in.sz = _pL->pos.z;
@@ -552,10 +542,10 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL)
 				if ((_pL->mins.y >= -200.f) && (_pL->mins.y <= 1000.f))
 				{
 
-					EERIEDraw2DLine( _pL->mins.x, _pL->mins.y, _pL->maxs.x, _pL->mins.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine( _pL->maxs.x, _pL->mins.y, _pL->maxs.x, _pL->maxs.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine( _pL->maxs.x, _pL->maxs.y, _pL->mins.x, _pL->maxs.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine( _pL->mins.x, _pL->maxs.y, _pL->mins.x, _pL->mins.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
+					EERIEDraw2DLine(_pL->mins.x, _pL->mins.y, _pL->maxs.x, _pL->mins.y, 0.00001f, Color::white);
+					EERIEDraw2DLine(_pL->maxs.x, _pL->mins.y, _pL->maxs.x, _pL->maxs.y, 0.00001f, Color::white);
+					EERIEDraw2DLine(_pL->maxs.x, _pL->maxs.y, _pL->mins.x, _pL->maxs.y, 0.00001f, Color::white);
+					EERIEDraw2DLine(_pL->mins.x, _pL->maxs.y, _pL->mins.x, _pL->mins.y, 0.00001f, Color::white);
 				}
 	}
 }
@@ -927,7 +917,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 								}
 
 							tcd = 1.f / (float)tc;
-							ep->v[k].color = D3DRGB(totr * tcd * ( 1.0f / 255 ), totg * tcd * ( 1.0f / 255 ), totb * tcd * ( 1.0f / 255 ));
+							ep->v[k].color = (Color3f(totr, totg, totb) * (tcd * (1.f/255))).toBGR();
 						}
 
 				}
@@ -981,7 +971,7 @@ void EERIERemovePrecalcLights() {
 			
 			for (long k = 0; k < eg->nbpoly; k++) {
 				ep = &eg->polydata[k];
-				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = D3DCOLORWHITE;
+				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = Color::white.toBGR();
 			}
 		}
 	}

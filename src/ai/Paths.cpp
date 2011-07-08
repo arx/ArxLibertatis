@@ -439,9 +439,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 			if (p->flags & PATH_RGB)
 			{
 				desired.flags |= GMOD_DCOLOR;
-				desired.depthcolor.r = p->rgb.r;
-				desired.depthcolor.g = p->rgb.g;
-				desired.depthcolor.b = p->rgb.b;
+				desired.depthcolor = p->rgb;
 			}
 
 			if (p->controled[0] != 0)
@@ -938,18 +936,15 @@ void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del)
 	ap->pathways = (ARX_PATHWAY *)realloc(ap->pathways, sizeof(ARX_PATHWAY) * (ap->nb_pathways - 1));
 	ap->nb_pathways--;
 }
-//*************************************************************************************
-//*************************************************************************************
-void ARX_PATHS_DrawPathWay(Vec3f * pos, float siz, D3DCOLOR color, long height)
-{
-	D3DTLVERTEX vert;
+
+static void ARX_PATHS_DrawPathWay(Vec3f * pos, float siz, Color color) {
+	
+	TexturedVertex vert;
 	vert.sx = pos->x;
 	vert.sy = pos->y;
 	vert.sz = pos->z;
-
-	if (height == 0)
-		EERIEDrawSprite(&vert, siz, EERIE_DRAW_sphere_particle, color, 2.f);
-	else EERIEDrawSprite(&vert, siz, EERIE_DRAW_square_particle, color, 2.f);
+	
+	EERIEDrawSprite(&vert, siz, EERIE_DRAW_square_particle, color, 2.f);
 }
 ARX_PATH *	ARX_PATHS_FlyingOverAP = NULL;
 long		ARX_PATHS_FlyingOverNum = -1;
@@ -976,37 +971,33 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 		switch (flagg)
 		{
 			case PATHWAY_STANDARD:
-				from.x = ap->pos.x + ap->pathways[i].rpos.x;
-				from.y = ap->pos.y + ap->pathways[i].rpos.y;
-				from.z = ap->pos.z + ap->pathways[i].rpos.z;
-				to.x = ap->pos.x + ap->pathways[i+1].rpos.x;
-				to.y = ap->pos.y + ap->pathways[i+1].rpos.y;
-				to.z = ap->pos.z + ap->pathways[i+1].rpos.z;
+				from = ap->pos + ap->pathways[i].rpos;
+				to = ap->pos + ap->pathways[i + 1].rpos;
 
 				if (ap->height != 0)
 				{
 					if (selected)
 					{
-						EERIEDraw3DLine(&from, &to,  0xFFFFFFFF);
+						EERIEDraw3DLine(from, to, Color::white);
 
 						if (ap->height > 0)
 						{
 							to.y -= ap->height;
 							from.y -= ap->height;
-							EERIEDraw3DLine(&from, &to,  0xFFFFFFFF);
+							EERIEDraw3DLine(from, to, Color::white);
 							to.y += ap->height;
 							from.y += ap->height;
 						}
 					}
 					else
 					{
-						EERIEDraw3DLine(&from, &to,  0xFFCCCCCC);
+						EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFCCCCCC));
 
 						if (ap->height > 0)
 						{
 							to.y -= ap->height;
 							from.y -= ap->height;
-							EERIEDraw3DLine(&from, &to,  0xFFCCCCCC);
+							EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFCCCCCC));
 							to.y += ap->height;
 							from.y += ap->height;
 						}
@@ -1020,26 +1011,26 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 
 						if (selected)
 						{
-							EERIEDraw3DLine(&from, &to,  0xFFDDDDDD);
+							EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFDDDDDD));
 
 							if (ap->height > 0)
 							{
 								to.y -= ap->height;
 								from.y -= ap->height;
-								EERIEDraw3DLine(&from, &to,  0xFFDDDDDD);
+								EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFDDDDDD));
 								to.y += ap->height;
 								from.y += ap->height;
 							}
 						}
 						else
 						{
-							EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
+							EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFAAAAAA));
 
 							if (ap->height > 0)
 							{
 								to.y -= ap->height;
 								from.y -= ap->height;
-								EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
+								EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFAAAAAA));
 								to.y += ap->height;
 								from.y += ap->height;
 							}
@@ -1048,8 +1039,8 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 				}
 				else
 				{
-					if (selected) EERIEDraw3DLine(&from, &to,  0xFFFFFF00);
-					else EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
+					if (selected) EERIEDraw3DLine(from, to, Color::yellow);
+					else EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFAAAAAA));
 				}
 
 				break;
@@ -1073,8 +1064,8 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 					newpos.y += ap->pos.y + ap->pathways[i].rpos.y;
 					newpos.z += ap->pos.z + ap->pathways[i].rpos.z;
 
-					if (selected) EERIEDraw3DLine(&lastpos, &newpos,  0xFF00FF00);
-					else EERIEDraw3DLine(&lastpos, &newpos,  0xFFAAAAAA);
+					if (selected) EERIEDraw3DLine(lastpos, newpos, Color::green);
+					else EERIEDraw3DLine(lastpos, newpos, Color::fromBGRA(0xFFAAAAAA));
 
 					lastpos = newpos;
 				}
@@ -1100,30 +1091,30 @@ void ARX_PATHS_DrawPath(ARX_PATH * ap)
 			to.x = from.x;
 			to.y = from.y - ap->height;
 			to.z = from.z;
-			EERIEDraw3DLine(&from, &to,  0xFFAAAAAA);
+			EERIEDraw3DLine(from, to, Color::fromBGRA(0xFFAAAAAA));
 		}
 
 		if ((ARX_PATHS_SelectedNum == (i + 1)) &&
-		        (ap == ARX_PATHS_SelectedAP)) ARX_PATHS_DrawPathWay(&from, 4.f, 0xFF0000FF, ap->height);
+		        (ap == ARX_PATHS_SelectedAP)) ARX_PATHS_DrawPathWay(&from, 4.f, Color::blue);
 
 		if (i == 0)
 		{
-			if (selected) ARX_PATHS_DrawPathWay(&from, 3.f, 0xFFFF0000, ap->height);
-			else ARX_PATHS_DrawPathWay(&from, 3.f, 0xFFAA0000, ap->height);
+			if (selected) ARX_PATHS_DrawPathWay(&from, 3.f, Color::red);
+			else ARX_PATHS_DrawPathWay(&from, 3.f, Color::fromBGRA(0xFFAA0000));
 		}
 		else
 			switch (ap->pathways[i].flag)
 			{
 				case PATHWAY_STANDARD:
 
-					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFFFFF00, ap->height);
-					else ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFAAAAAA, ap->height);
+					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, Color::cyan);
+					else ARX_PATHS_DrawPathWay(&from, 2.4f, Color::grayb(0xaa));
 
 					break;
 				case PATHWAY_BEZIER:
 
-					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFF00FF00, ap->height);
-					else ARX_PATHS_DrawPathWay(&from, 2.4f, 0xFFAAAAAA, ap->height);
+					if (selected) ARX_PATHS_DrawPathWay(&from, 2.4f, Color::green);
+					else ARX_PATHS_DrawPathWay(&from, 2.4f, Color::gray(0xaa));
 
 					break;
 				case PATHWAY_BEZIER_CONTROLPOINT: break;
@@ -1269,7 +1260,6 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	float attack, dmgs, backstab, critical, ac;
 
-	dmgs		=	0;
 	backstab	=	1.f;
 	critical	=	false;
 
@@ -1296,11 +1286,11 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	}
 	else
 	{
-		// treat NPC !!!
+		// TODO treat NPC !!!
 
 		ARX_CHECK_NO_ENTRY();
-		attack	=	0;
-
+		attack = 0;
+		dmgs = 0;
 
 	}
 
@@ -1579,9 +1569,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									pd->scale.y	=	-8.f;
 									pd->scale.z	=	-8.f;
 									pd->timcreation	=	lARXTime;
-									pd->r		=	0.71f;
-									pd->g		=	0.43f;
-									pd->b		=	0.29f;
+									pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 									pd->delay	=	nn * 180;
 								}
 							}
@@ -1727,7 +1715,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 										if (target->ioflags & IO_NPC)
 										{
 											Vec3f	pos;
-											D3DCOLOR	color		=	0x00000000;
+											Color color = Color::none;
 											long		hitpoint	=	-1;
 											float		curdist		=	999999.f;
 
@@ -1746,7 +1734,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 											if (hitpoint >= 0)
 											{
-												color	=	target->_npcdata->blood_color;
+												color = target->_npcdata->blood_color;
 												pos = target->obj->vertexlist3[hitpoint].v;
 											}
 
@@ -1761,10 +1749,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 													if (target->ioflags & IO_NPC)
 													{
 														target->_npcdata->SPLAT_TOT_NB = 0;
-														ARX_PARTICLES_Spawn_Blood2(&original_pos, damages, color, target);
+														ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, target);
 													}
 
-													ARX_PARTICLES_Spawn_Blood2(&pos, damages, color, target);
+													ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
 													ARX_DAMAGES_DamageNPC(target, damages, Thrown[i].source, 0, &pos);
 
 													if (rnd() * 100.f > target->_npcdata->resist_poison)
@@ -1964,7 +1952,7 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 
 		if ((num >= 0) && (numsuiv >= 0))
 		{
-			Draw3DLineTex2(truban[num].pos, truban[numsuiv].pos, size, RGBA_MAKE(r1 >> 16, g1 >> 16, b1 >> 16, 0), RGBA_MAKE((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
+			Draw3DLineTex2(truban[num].pos, truban[numsuiv].pos, size, Color(r1 >> 16, g1 >> 16, b1 >> 16, 0), Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
 			r1 += dr;
 			g1 += dg;
 			b1 += db;

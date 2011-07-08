@@ -36,8 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#include "platform/Platform.h"
-#include "platform/math/Vector3.h"
+#include "math/MathFwd.h"
 
 struct INTERACTIVE_OBJ;
 

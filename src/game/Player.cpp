@@ -1551,10 +1551,8 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 				{
 					bool bOk = true;
 
-					for (long i = 0; i < MAX_ASPEECH; i++)
-					{
-						if (aspeech[i].exist && (aspeech[i].io == inter.iobj[0]))
-						{
+					for(size_t i = 0; i < MAX_ASPEECH; i++) {
+						if(aspeech[i].exist && (aspeech[i].io == inter.iobj[0])) {
 							bOk = false;
 						}
 					}
@@ -1713,7 +1711,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	//todo free
 	io->_npcdata = (IO_NPCDATA *)malloc(sizeof(IO_NPCDATA));
 	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
-	io->_npcdata->blood_color = 0xFFFF0000;
+	io->_npcdata->blood_color = Color::red;
 	io->ioflags = IO_NPC;
 	io->_npcdata->maxlife = io->_npcdata->life = 10;
 	io->_npcdata->vvpos = -99999.f;
@@ -2343,18 +2341,11 @@ void ARX_PLAYER_Manage_Visual()
 							particle[j].source	=	&eobj->vertexlist3[id].v;
 							particle[j].fparam	=	0.0000001f;
 
-							if (FistParticles & 2)
-							{
+							if(FistParticles & 2) {
 								particle[j].move.y *= 2.f;
-								particle[j].r = 1.f - rnd() * 0.1f;
-								particle[j].g = 0.3f + rnd() * 0.1f;
-								particle[j].b = 0.2f - rnd() * 0.1f;
-							}
-							else
-							{
-								particle[j].r = 0.7f - rnd() * 0.1f;
-								particle[j].g = 0.3f - rnd() * 0.1f;
-								particle[j].b = 1.f - rnd() * 0.1f;
+								particle[j].rgb = Color3f(1.f - rnd() * .1f, .3f + rnd() * .1f, .2f - rnd() * .1f);
+							} else {
+								particle[j].rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
 							}
 						}
 					}
@@ -2378,13 +2369,11 @@ void ARX_PLAYER_Manage_Visual()
 					Full_Jump_Height = 0;
 					player.jumpphase = 2;
 					ChangeMoveAnim = alist[ANIM_JUMP_UP];
-					ChangeMA_Stopend = 1;
 					player.jumpstarttime = ARXTimeUL();
 					player.jumplastposition = -1.f;
 					break;
 				case 2: // Moving Up
 					ChangeMoveAnim = alist[ANIM_JUMP_UP];
-					ChangeMA_Stopend = 1;
 
 					if (player.jumplastposition >= 1.f)
 					{
@@ -2394,7 +2383,6 @@ void ARX_PLAYER_Manage_Visual()
 					}
 					break;
 				case 4: // Post-synch
-					ChangeMA_Stopend = 1;
 					LAST_JUMP_ENDTIME = ARXTimeUL();
 
 					if (((ause0->cur_anim == alist[ANIM_JUMP_END])
@@ -3487,11 +3475,7 @@ lasuite:
 	;
 
 	// Get Player position color
-	unsigned long col = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z);
-	player.grnd_color = (float)(long)(col & 255);
-	player.grnd_color += (float)(long)((col >> 8) & 255);
-	player.grnd_color += (float)(long)((col >> 16) & 255);
-	player.grnd_color *= ( 1.0f / 3 );
+	player.grnd_color = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z);
 	player.grnd_color -= 15.f; 
 	if (CURRENT_PLAYER_COLOR < player.grnd_color)
 	{
@@ -3560,8 +3544,7 @@ void ARX_PLAYER_Manage_Death()
 	{
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-		EERIEDrawBitmap( 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f,
-		                NULL, _EERIERGB(ratio));
+		EERIEDrawBitmap( 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f, NULL, Color::gray(ratio));
 
 	}
 }
@@ -3864,7 +3847,8 @@ void ARX_GAME_Reset(long type) {
 
 	// Particles
 	ARX_PARTICLES_ClearAll();
-	pParticleManager->Clear();
+	if(pParticleManager)
+		pParticleManager->Clear();
 
 	// Fogs
 	ARX_FOGS_TimeReset();
@@ -4015,8 +3999,8 @@ void Manage_sp_max()
 			sp_max_y[i] = EEsin(dx + (float)ARXTime * ( 1.0f / 100 )) * 30.f * modi;
 			std::string tex( 1, sp_max_ch[i] );
 
-			UNICODE_ARXDrawTextCenter( hFontInBook, dx - 1, dy - 1, tex, 0 );
-			UNICODE_ARXDrawTextCenter( hFontInBook, dx + 1, dy + 1, tex, 0 );
+			UNICODE_ARXDrawTextCenter( hFontInBook, dx - 1, dy - 1, tex, Color::none );
+			UNICODE_ARXDrawTextCenter( hFontInBook, dx + 1, dy + 1, tex, Color::none );
 			UNICODE_ARXDrawTextCenter( hFontInBook, dx, dy, tex, sp_max_col[i] );
 
 		}

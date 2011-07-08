@@ -1585,7 +1585,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 				as->ex_rotate = *io->_npcdata->ex_rotate;
 			}
 
-			as->blood_color = io->_npcdata->blood_color;
+			as->blood_color = io->_npcdata->blood_color.toBGRA();
 			as->fDetect = io->_npcdata->fDetect;
 			as->cuts = io->_npcdata->cuts;
 			pos += struct_size;
@@ -1688,7 +1688,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 
 static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
-	long pos = 0;
+	size_t pos = 0;
 	std::string loadfile;
 	std::stringstream ss;
 
@@ -1707,27 +1707,25 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 
-	if (asi->nb_inter)
-	{
-		idx_io = (ARX_CHANGELEVEL_IO_INDEX *) malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
-
+	if(asi->nb_inter) {
+		idx_io = (ARX_CHANGELEVEL_IO_INDEX *)malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
 		memcpy(idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
 		pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
+	} else {
+		idx_io = NULL;
 	}
-	else idx_io = NULL;
-
+	
 	// Skip Path info (used later !)
 	pos += sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths;
-
+	
 	// Restore Ambiances
-	if (asi->ambiances_data_size)
-	{
-		void * playlist = (void *)(dat + pos);
+	if(asi->ambiances_data_size) {
+		ARX_SOUND_AmbianceRestorePlayList(dat + pos, asi->ambiances_data_size);
 		pos += asi->ambiances_data_size;
-
-		ARX_SOUND_AmbianceRestorePlayList(playlist, asi->ambiances_data_size);
 	}
-
+	
+	arx_assert(pos <= size);
+	
 	free(dat);
 	return 1;
 }
@@ -1927,10 +1925,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Mind = asp.Attribute_Mind;
 	player.Attribute_Strength = asp.Attribute_Strength;
 	player.Critical_Hit = asp.Critical_Hit;
-	player.Current_Movement = Flag(asp.Current_Movement); // TODO save/load flags
+	player.Current_Movement = PlayerMovement::load(asp.Current_Movement); // TODO save/load flags
 	player.damages = asp.damages;
 	player.doingmagic = asp.doingmagic;
-	player.playerflags = Flag(asp.playerflags); // TODO save/load flags
+	player.playerflags = PlayerFlags::load(asp.playerflags); // TODO save/load flags
 	
 	if(asp.TELEPORT_TO_LEVEL[0]) {
 		strcpy(TELEPORT_TO_LEVEL, asp.TELEPORT_TO_LEVEL);
@@ -1957,7 +1955,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.inzone = ARX_PATH_GetAddressByName(asp.inzone);;
 	player.jumpphase = asp.jumpphase;
 	player.jumpstarttime = asp.jumpstarttime;
-	player.Last_Movement = Flag(asp.Last_Movement); // TODO save/load flags
+	player.Last_Movement = PlayerMovement::load(asp.Last_Movement); // TODO save/load flags
 	
 	ARX_CHECK_UCHAR(asp.level);
 	player.level = static_cast<unsigned char>(asp.level);
@@ -2022,7 +2020,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Redistribute = static_cast<unsigned char>(asp.Attribute_Redistribute);
 	player.Skill_Redistribute = static_cast<unsigned char>(asp.Skill_Redistribute);
 	
-	player.rune_flags = Flag(asp.rune_flags); // TODO save/load flags
+	player.rune_flags = RuneFlags::load(asp.rune_flags); // TODO save/load flags
 	player.size = asp.size;
 	player.Skill_Stealth = asp.Skill_Stealth;
 	player.Skill_Mecanism = asp.Skill_Mecanism;
@@ -2267,8 +2265,8 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		io->head_rot = ais->head_rot;
 		io->damager_damages = ais->damager_damages;
 		io->nb_iogroups = ais->nb_iogroups;
-		io->damager_type = Flag(ais->damager_type); // TODO save/load flags
-		io->type_flags = Flag(ais->type_flags); // TODO save/load flags
+		io->damager_type = DamageType::load(ais->damager_type); // TODO save/load flags
+		io->type_flags = ItemType::load(ais->type_flags); // TODO save/load flags
 		io->secretvalue = ais->secretvalue;
 		io->shop_multiply = ais->shop_multiply;
 		io->aflags = ais->aflags;
@@ -2281,7 +2279,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 			io->usepath = (void *)malloc(sizeof(ARX_USE_PATH));
 			ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
 
-			aup->aupflags = Flag(ais->usepath_aupflags); // TODO save/load flags
+			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
 			aup->_curtime = ARX_CLEAN_WARN_CAST_FLOAT(ais->usepath_curtime);
 			aup->initpos = ais->usepath_initpos;
 			aup->lastWP = ais->usepath_lastWP;
@@ -2443,7 +2441,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		//////////////////
 		ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 
-		io->script.allowevents = Flag(ass->allowevents); // TODO save/load flags
+		io->script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 		io->script.nblvar = 0;
 
 		if (io->script.lvar)
@@ -2460,7 +2458,6 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		else io->script.lvar = NULL;
 
 		io->script.nblvar = ass->nblvar;
-		long ERRCOUNT = 0;
 
 		pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 
@@ -2468,89 +2465,76 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		{
 			ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
 			memset(&io->script.lvar[i], 0, sizeof(SCRIPT_VAR)); 
-		retry:
-			;
-
-			switch (avs->type)
-			{
-				case TYPE_L_TEXT:
+			
+			s32 type = avs->type;
+			if(type != TYPE_L_TEXT && type != TYPE_L_LONG && type != TYPE_L_FLOAT) {
+				if(avs->name[0] == '$' || avs->name[0] == '\xA3') {
+					avs->type = TYPE_L_TEXT;
+				} else if(avs->name[0] == '#' || avs->name[0] == 's') {
+					avs->type = TYPE_L_LONG;
+				} else if(avs->name[0] == '&' || avs->name[0] == '@') {
+					avs->type = TYPE_L_FLOAT;
+				}
+			}
+			
+			switch (type) {
+				
+				case TYPE_L_TEXT: {
+					
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
 					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_TEXT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-
-					if (io->script.lvar[i].ival)
-					{
+					
+					if(io->script.lvar[i].ival) {
 						io->script.lvar[i].text = (char *) malloc(io->script.lvar[i].ival + 1);
-
 						memset(io->script.lvar[i].text, 0, io->script.lvar[i].ival + 1);
 						memcpy(io->script.lvar[i].text, dat + pos, io->script.lvar[i].ival);
 						pos += io->script.lvar[i].ival;
 						io->script.lvar[i].ival = strlen(io->script.lvar[i].text) + 1;
-
-						if (io->script.lvar[i].text[0] == '\xCC')
+						if(io->script.lvar[i].text[0] == '\xCC') {
 							io->script.lvar[i].text[0] = 0;
-					}
-					else
-					{
+						}
+					} else {
 						io->script.lvar[i].text = NULL;
 						io->script.lvar[i].ival = 0;
 					}
-
 					break;
-				case TYPE_L_LONG:
+				}
+				
+				case TYPE_L_LONG: {
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
 					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_LONG;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
-				case TYPE_L_FLOAT:
+				}
+				
+				case TYPE_L_FLOAT: {
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
 					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_FLOAT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
-				default:
-
-					if ((avs->name[0] == '$') || (avs->name[0] == '\xA3'))
-					{
-						avs->type = TYPE_L_TEXT;
-						goto retry;
-					}
-
-		if ((avs->name[0] == '#') || (avs->name[0] == '\xA7'))
-					{
-						avs->type = TYPE_L_LONG;
-						goto retry;
-					}
-
-					if ((avs->name[0] == '&') || (avs->name[0] == '@'))
-					{
-						avs->type = TYPE_L_FLOAT;
-						goto retry;
-					}
-
-					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+				}
+				
+				default: {
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = 0;
 					io->script.lvar[i].ival = 0;
 					io->script.lvar[i].type = TYPE_L_LONG;
-					ERRCOUNT++;
-					ass->nblvar = i;
-
 					goto corrupted;
-				
-					break;
+				}
 			}
 		}
 
 
 		ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 
-		io->over_script.allowevents = Flag(ass->allowevents); // TODO save/load flags
+		io->over_script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 
 		io->over_script.nblvar = 0; 
 
@@ -2574,79 +2558,69 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		for (int i = 0; i < ass->nblvar; i++)
 		{
 			ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
-			memset(&io->over_script.lvar[i], 0, sizeof(SCRIPT_VAR)); 
-		retry2:
-			;
-
-			switch (avs->type)
-			{
-				case TYPE_L_TEXT:
+			memset(&io->over_script.lvar[i], 0, sizeof(SCRIPT_VAR));
+			
+			s32 type = avs->type;
+			if(type != TYPE_L_TEXT && type != TYPE_L_LONG && type != TYPE_L_FLOAT) {
+				if(avs->name[0] == '$' || avs->name[0] == '\xA3') {
+					avs->type = TYPE_L_TEXT;
+				} else if(avs->name[0] == '#' || avs->name[0] == 's') {
+					avs->type = TYPE_L_LONG;
+				} else if(avs->name[0] == '&' || avs->name[0] == '@') {
+					avs->type = TYPE_L_FLOAT;
+				}
+			}
+			
+			switch (type) {
+				
+				case TYPE_L_TEXT: {
+					
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
 					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_TEXT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
-
-					if (io->over_script.lvar[i].ival)
-					{
+					
+					if(io->over_script.lvar[i].ival) {
 						io->over_script.lvar[i].text = (char *) malloc(io->over_script.lvar[i].ival + 1);
-
 						memset(io->over_script.lvar[i].text, 0, io->over_script.lvar[i].ival + 1);
 						memcpy(io->over_script.lvar[i].text, dat + pos, io->over_script.lvar[i].ival);
 						pos += io->over_script.lvar[i].ival;
 						io->over_script.lvar[i].ival = strlen(io->over_script.lvar[i].text) + 1;
-					}
-					else
-					{
+					} else {
 						io->over_script.lvar[i].text = NULL;
 						io->over_script.lvar[i].ival = 0;
 					}
-
-					break;
 					
-				case TYPE_L_LONG:
+					break;
+				}
+				
+				case TYPE_L_LONG: {
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
 					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_LONG;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
-				case TYPE_L_FLOAT:
+				}
+				
+				case TYPE_L_FLOAT: {
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
 					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_FLOAT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
-				default:
-
-				if ((avs->name[0] == '$') || (avs->name[0] == '\xA3'))
-				{
-					avs->type = TYPE_L_TEXT;
-						goto retry2;
-					}
-
-					if ((avs->name[0] == '#') || (avs->name[0] == 's'))
-					{
-						avs->type = TYPE_L_LONG;
-						goto retry2;
-					}
-
-					if ((avs->name[0] == '&') || (avs->name[0] == '@'))
-					{
-						avs->type = TYPE_L_FLOAT;
-						goto retry2;
-					}
-
-					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
+				}
+				
+				default: {
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = 0;
 					io->script.lvar[i].ival = 0;
 					io->script.lvar[i].type = TYPE_L_LONG;
-					ERRCOUNT++;
-					ass->nblvar = i;
 					goto corrupted;
 					break;
+				}
 			}
 		}
 
@@ -2687,7 +2661,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 					io->_npcdata->tohit = as->tohit;
 					io->_npcdata->weaponinhand = as->weaponinhand;
 					strcpy(io->_npcdata->weaponname, as->weaponname);
-					io->_npcdata->weapontype = Flag(as->weapontype); // TODO save/load flags
+					io->_npcdata->weapontype = ItemType::load(as->weapontype); // TODO save/load flags
 					io->_npcdata->xpvalue = as->xpvalue;
 					
 					assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
@@ -2726,7 +2700,7 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 						*io->_npcdata->ex_rotate = as->ex_rotate;
 					}
 
-					io->_npcdata->blood_color = as->blood_color;
+					io->_npcdata->blood_color.fromBGRA(as->blood_color);
 				}
 				pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 				break;

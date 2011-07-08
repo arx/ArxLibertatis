@@ -99,7 +99,6 @@ public:
 	
 	DECLARE_FLAGS(TCFlag, TCFlags)
 	static const TCFlags UI;
-	static const TCFlags All;
 	
 
 public:
@@ -134,7 +133,7 @@ public:
 	 **/
 	static TextureContainer * Find(const std::string& strTextureName);
 
-	static void DeleteAll(TCFlags flag = All);
+	static void DeleteAll(TCFlags flag = TCFlags::all());
 
 	/**	Create a texture to display a glowing halo around a transparent texture
 	 *	@todo Rewrite this feature using shaders instead of hacking a texture effect
@@ -145,13 +144,13 @@ public:
 	bool LoadFile(const std::string& strPathname);
 
 	std::string m_texName;              // Name of texture
-	DWORD   m_dwWidth;
-	DWORD   m_dwHeight;
-	DWORD	m_dwDeviceWidth;
-	DWORD	m_dwDeviceHeight;
-	DWORD   m_dwBPP;
+	u32   m_dwWidth;
+	u32   m_dwHeight;
+	u32	m_dwDeviceWidth;
+	u32	m_dwDeviceHeight;
+	u32   m_dwBPP;
 	TCFlags m_dwFlags;
-	DWORD	userflags;
+	u32	userflags;
 
 	Texture2D* m_pTexture;				// Diffuse
 
@@ -179,27 +178,27 @@ public:
 
 	unsigned long	ulMaxVertexListCull;
 	unsigned long	ulNbVertexListCull;
-	ARX_D3DVERTEX	* pVertexListCull;
+	TexturedVertex	* pVertexListCull;
 
 	unsigned long	ulMaxVertexListCull_TNormalTrans;
 	unsigned long	ulNbVertexListCull_TNormalTrans;
-	ARX_D3DVERTEX	* pVertexListCull_TNormalTrans;
+	TexturedVertex	* pVertexListCull_TNormalTrans;
 
 	unsigned long	ulMaxVertexListCull_TAdditive;
 	unsigned long	ulNbVertexListCull_TAdditive;
-	ARX_D3DVERTEX	* pVertexListCull_TAdditive;
+	TexturedVertex	* pVertexListCull_TAdditive;
 
 	unsigned long	ulMaxVertexListCull_TSubstractive;
 	unsigned long	ulNbVertexListCull_TSubstractive;
-	ARX_D3DVERTEX	* pVertexListCull_TSubstractive;
+	TexturedVertex	* pVertexListCull_TSubstractive;
 
 	unsigned long	ulMaxVertexListCull_TMultiplicative;
 	unsigned long	ulNbVertexListCull_TMultiplicative;
-	ARX_D3DVERTEX	* pVertexListCull_TMultiplicative;
+	TexturedVertex	* pVertexListCull_TMultiplicative;
 
 	unsigned long	ulMaxVertexListCull_TMetal;
 	unsigned long	ulNbVertexListCull_TMetal;
-	ARX_D3DVERTEX	* pVertexListCull_TMetal;
+	TexturedVertex	* pVertexListCull_TMetal;
 	// END TODO
 
 private:
@@ -221,9 +220,6 @@ DECLARE_FLAGS_OPERATORS(TextureContainer::TCFlags)
  
 TextureContainer * GetTextureList();
 long CountTextures( std::string& tex, long * memsize, long * memmip);
- 
-#define D3DCOLORWHITE 0xFFFFFFFF
-#define D3DCOLORBLACK 0xFF000000
 
 //-----------------------------------------------------------------------------
 // Texture creation and deletion functions

@@ -181,12 +181,9 @@ void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Re
 		*numChars = it - text.begin();
 }
 
-//-----------------------------------------------------------------------------
-long ARX_UNICODE_ForceFormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect)
-{
+long ARX_UNICODE_ForceFormattingInRect(Font* pFont, const string & text, const Rect & _rRect) {
 	long numChars;
-	ARX_UNICODE_FormattingInRect(pFont, text, _rRect, 0, 0, &numChars, true);
-
+	ARX_UNICODE_FormattingInRect(pFont, text, _rRect, Color::none, 0, &numChars, true);
 	return numChars;
 }
 
@@ -197,20 +194,12 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
                                 const std::string& _text,
                                 Color col,
                                 const Rect * pClipRect
-                               )
-{
-	Renderer::Viewport previousViewport;
-
-	if (pClipRect)
-	{
+                               ) {
+	
+	Rect previousViewport;
+	if(pClipRect) {
 		previousViewport = GRenderer->GetViewport();
-
-		Renderer::Viewport clippedViewport;
-		clippedViewport.x = pClipRect->left;
-		clippedViewport.y = pClipRect->top;
-		clippedViewport.width = pClipRect->right - pClipRect->left;
-		clippedViewport.height = pClipRect->bottom - pClipRect->top;
-		GRenderer->SetViewport(clippedViewport); 
+		GRenderer->SetViewport(*pClipRect); 
 	}
 
 	Rect rect((Rect::Num)x, (Rect::Num)y, (Rect::Num)maxx, Rect::Limits::max());
@@ -221,8 +210,7 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	long height;
 	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
 
-	if (pClipRect)
-	{
+	if(pClipRect) {
 		GRenderer->SetViewport(previousViewport);
 	}
 
@@ -246,8 +234,6 @@ long ARX_TEXT_DrawRect(Font* ef,
                        const string & car,
                        Color col,
                        const Rect * pClipRect) {
-	
-	col = Color((col >> 16) & 255, (col >> 8) & 255, (col) & 255);
 	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, col, pClipRect);
 }
 

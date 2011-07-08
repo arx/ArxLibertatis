@@ -39,6 +39,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsEnum.h"
 #include "graphics/Math.h"
 #include "graphics/data/Texture.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "scene/GameSound.h"
 
@@ -80,23 +81,20 @@ void ARX_INTERFACE_KillARKANE()
 	ARKANE_img = NULL;
 }
 //-----------------------------------------------------------------------------
-void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f)
-{
-	if (_bRatio)
-	{
+void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f) {
+	
+	if(_bRatio) {
 		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f)*Xratio,
 		                 DANAECENTERY - (tc->m_dwHeight * 0.5f)*Yratio,
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwWidth * Xratio)),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwHeight * Yratio)),
-		                 0.001f, tc, D3DRGB(_fFade, _fFade, _fFade));
-	}
-	else
-	{
+		                 0.001f, tc, Color::gray(_fFade));
+	} else {
 		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f),
 		                 DANAECENTERY - (tc->m_dwHeight * 0.5f),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwWidth)),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwHeight)),
-		                 0.001f, tc, D3DRGB(_fFade, _fFade, _fFade));
+		                 0.001f, tc, Color::gray(_fFade));
 	}
 }
 
@@ -293,7 +291,7 @@ void LoadLevelScreen(long num)
 					py = ipy * Yratio;
 					px2 = (ratio * pbar->m_dwWidth) * Xratio;
 					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv( px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
 				}
 				else
 				{
@@ -306,7 +304,7 @@ void LoadLevelScreen(long num)
 					py = ipy * Yratio;
 					px2 = (ratio * pbar->m_dwWidth) * Xratio;
 					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv( px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1);
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
 				}
 			}
 

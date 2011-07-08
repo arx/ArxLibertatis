@@ -57,15 +57,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/Progressive.h"
 
+#include <cstring>
+
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 
+using std::memset;
+
 //*************************************************************************************
 // Adds a neighboring vertex to a vertex
 //*************************************************************************************
-__inline void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b)
-{
+void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b) {
+	
 	if (i == b) return;
 
 	
@@ -89,8 +93,7 @@ __inline void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b)
 //*************************************************************************************
 // Adds a neighboring face to a vertex
 //*************************************************************************************
-__inline void AddNeighBoringFace(EERIE_3DOBJ * obj, long i, long b)
-{
+void AddNeighBoringFace(EERIE_3DOBJ * obj, long i, long b) {
 
 	if (obj->ndata[i].Nfaces == NULL)
 	{

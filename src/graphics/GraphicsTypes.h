@@ -47,12 +47,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <vector>
 
-#include "graphics/d3dwrapper.h"
 #include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "graphics/Vertex.h"
 
-#include "platform/Platform.h"
-#include "platform/math/Vector2.h"
-#include "platform/math/Angle.h"
+#include "math/Vector2.h"
+#include "math/Angle.h"
+
+#include "platform/Flags.h"
 
 #include "Configure.h"
 
@@ -60,7 +62,7 @@ class TextureContainer;
 
 struct EERIE_TRI {
 	Vec3f v[3];
-}; // Aligned 1 2 4
+};
 
 struct EERIE_2D_BBOX {
 	Vec2f min;
@@ -70,43 +72,42 @@ struct EERIE_2D_BBOX {
 struct EERIE_3D_BBOX {
 	Vec3f min;
 	Vec3f max;
-}; // Aligned 1 2 4
+};
 
 typedef s32 ArxSound;
 
-struct EERIE_LIGHT
-{
-	char		exist;
-	char		type;
-	char		treat;
-	char		selected;
-	short		extras;
-	short		status; // on/off 1/0
-	Vec3f	pos;
-	float		fallstart;
-	float		fallend;
-	float		falldiff;
-	float		falldiffmul;
-	float		precalc;
-	EERIE_RGB	rgb255;
-	float		intensity;
-	EERIE_RGB	rgb;
-	float		i;
-	Vec3f	mins;
-	Vec3f	maxs;
-	float		temp;
-	long		ltemp;
-	EERIE_RGB	ex_flicker;
-	float		ex_radius;
-	float		ex_frequency;
-	float		ex_size;
-	float		ex_speed;
-	float		ex_flaresize;
-	long		tl;
-	unsigned long	time_creation;
-	long		duration; // will start to fade before the end of duration...
+struct EERIE_LIGHT {
+	char exist;
+	char type;
+	char treat;
+	char selected;
+	short extras;
+	short status; // on/off 1/0
+	Vec3f pos;
+	float fallstart;
+	float fallend;
+	float falldiff;
+	float falldiffmul;
+	float precalc;
+	Color3f rgb255;
+	float intensity;
+	Color3f rgb;
+	float i;
+	Vec3f mins;
+	Vec3f maxs;
+	float temp;
+	long ltemp;
+	Color3f ex_flicker;
+	float ex_radius;
+	float ex_frequency;
+	float ex_size;
+	float ex_speed;
+	float ex_flaresize;
+	long tl;
+	unsigned long time_creation;
+	long duration; // will start to fade before the end of duration...
 	ArxSound sample;
-}; // Aligned 1 2 4
+};
 
 enum EERIE_TYPES_EXTRAS_MODE
 {
@@ -131,22 +132,47 @@ enum EERIE_TYPES_EXTRAS_MODE
 // EERIE Types
 //*************************************************************************************
 
-struct EERIE_TLVERTEX {
-	Vec3f vert;
-	EERIE_RGBA color;
-	EERIE_RGBA specular;
-	Vec2f tex;
+enum PolyTypeFlag {
+	POLY_NO_SHADOW    = (1<<0),
+	POLY_DOUBLESIDED  = (1<<1),
+	POLY_TRANS        = (1<<2),
+	POLY_WATER        = (1<<3),
+	POLY_GLOW         = (1<<4),
+	POLY_IGNORE       = (1<<5),
+	POLY_QUAD         = (1<<6),
+	POLY_TILED        = (1<<7),
+	POLY_METAL        = (1<<8),
+	POLY_HIDE         = (1<<9),
+	POLY_STONE        = (1<<10),
+	POLY_WOOD         = (1<<11),
+	POLY_GRAVEL       = (1<<12),
+	POLY_EARTH        = (1<<13),
+	POLY_NOCOL        = (1<<14),
+	POLY_LAVA         = (1<<15),
+	POLY_CLIMB        = (1<<16),
+	POLY_FALL         = (1<<17),
+	POLY_NOPATH       = (1<<18),
+	POLY_NODRAW       = (1<<19),
+	POLY_PRECISE_PATH = (1<<20),
+	POLY_NO_CLIMB     = (1<<21),
+	POLY_ANGULAR      = (1<<22),
+	POLY_ANGULAR_IDX0 = (1<<23),
+	POLY_ANGULAR_IDX1 = (1<<24),
+	POLY_ANGULAR_IDX2 = (1<<25),
+	POLY_ANGULAR_IDX3 = (1<<26),
+	POLY_LATE_MIP     = (1<<27)
 };
+DECLARE_FLAGS(PolyTypeFlag, PolyType);
+DECLARE_FLAGS_OPERATORS(PolyType);
 
-struct EERIEPOLY
-{
-	long 			type;	// at least 16 bits
+struct EERIEPOLY {
+	PolyType type;
 	Vec3f		min;
 	Vec3f		max;
 	Vec3f		norm;
 	Vec3f		norm2;
-	D3DTLVERTEX		v[4];
-	D3DTLVERTEX		tv[4];
+	TexturedVertex		v[4];
+	TexturedVertex		tv[4];
 	Vec3f		nrml[4];
 	TextureContainer * tex;
 	Vec3f		center;
@@ -155,14 +181,6 @@ struct EERIEPOLY
 	short			room;
 	short			misc;
 	unsigned short	uslInd[4];
-}; // Aligned 1 2 4
-
-struct EERIE_VERTEX {
-	EERIE_TLVERTEX tlvert;
-	D3DTLVERTEX vert;
-	Vec3f v;
-	Vec3f norm;
-	Vec3f vworld;
 };
 
 #define MATERIAL_NONE		0
@@ -183,70 +201,24 @@ struct EERIE_VERTEX {
 #define MATERIAL_FOOT_METAL	15
 #define MATERIAL_FOOT_STEALTH	16
 
-#define POLY_NO_SHADOW		1
-#define POLY_DOUBLESIDED	(1<<1)
-#define POLY_TRANS			(1<<2)
-#define POLY_WATER			(1<<3)
-#define POLY_GLOW			(1<<4)
-
-#define POLY_IGNORE			(1<<5)
-#define POLY_QUAD			(1<<6)
-#define POLY_TILED			(1<<7)
-#define POLY_METAL			(1<<8)
-#define POLY_HIDE			(1<<9)
-
-#define POLY_STONE			(1<<10)
-#define POLY_WOOD			(1<<11)
-#define POLY_GRAVEL			(1<<12)
-#define POLY_EARTH			(1<<13)
-#define POLY_NOCOL			(1<<14)
-#define POLY_LAVA			(1<<15)
-#define POLY_CLIMB			(1<<16)
-#define POLY_FALL			(1<<17)
-#define POLY_NOPATH			(1<<18)
-#define POLY_NODRAW			(1<<19)
-#define POLY_PRECISE_PATH	(1<<20)
-#define POLY_NO_CLIMB		(1<<21)
-#define POLY_ANGULAR		(1<<22)
-#define POLY_ANGULAR_IDX0	(1<<23)
-#define POLY_ANGULAR_IDX1	(1<<24)
-#define POLY_ANGULAR_IDX2	(1<<25)
-#define POLY_ANGULAR_IDX3	(1<<26)
-#define POLY_LATE_MIP		(1<<27)
 #define IOPOLYVERT 3
-
-struct EERIE_FACE
-{
-	long		facetype;	// 0 = flat  1 = text
-							// 2 = Double-Side
-	short		texid;
-	unsigned short		vid[IOPOLYVERT];
-	float		u[IOPOLYVERT];
-	float		v[IOPOLYVERT];
-
-	float		transval;
-	Vec3f	norm;
-	Vec3f	nrmls[IOPOLYVERT];
-	float		temp;
-
-	short		ou[IOPOLYVERT];
-	short		ov[IOPOLYVERT];
-	D3DCOLOR	color[IOPOLYVERT];
-
-}; // Aligned 1 2 4
-
-#define MAX_PFACE 16
-struct EERIE_PFACE
-{
-	short		faceidx[MAX_PFACE];
-	long		facetype;
-	short		texid;  //long
-	short		nbvert;
-	float		transval;
-	unsigned short		vid[MAX_PFACE];
-	float		u[MAX_PFACE];
-	float		v[MAX_PFACE];
-	D3DCOLOR	color[MAX_PFACE];
+struct EERIE_FACE {
+	
+	PolyType facetype;
+	short texid; //!< index into the objects texture list
+	unsigned short vid[IOPOLYVERT];
+	float u[IOPOLYVERT];
+	float v[IOPOLYVERT];
+	
+	float transval;
+	Vec3f norm;
+	Vec3f nrmls[IOPOLYVERT];
+	float temp;
+	
+	short ou[IOPOLYVERT];
+	short ov[IOPOLYVERT];
+	Color color[IOPOLYVERT];
+	
 };
 
 
@@ -331,7 +303,7 @@ struct PHYSVERT
 	Vec3f	force;
 	Vec3f	inertia;
 	float		mass;
-}; // Aligned 1 2 4
+};
 
 struct PHYSICS_BOX_DATA
 {
@@ -341,7 +313,7 @@ struct PHYSICS_BOX_DATA
 	short	stopcount;
 	float	radius; //radius around vert[0].pos for spherical collision
 	float	storedtiming;
-}; // Aligned 1 2 4
+};
 
 
 struct EERIE_GROUPLIST {
@@ -370,7 +342,7 @@ struct CUB3D
 	float	ymax;
 	float	zmin;
 	float	zmax;
-}; // Aligned 1 2 4
+};
 
 struct EERIE_MOD_INFO {
 	long link_origin;
@@ -388,7 +360,7 @@ struct EERIE_LINKED
 	void *	obj;
 	EERIE_MOD_INFO	modinfo;
 	void * io;
-}; // Aligned 1 2 4
+};
 
 
 struct EERIE_SELECTIONS {
@@ -470,13 +442,11 @@ struct EERIE_3DOBJ
 
 		origin = 0;
 		ident = 0;
-		nbpfaces = 0;
 		nbgroups = 0;
 		drawflags = 0;
 
 		vertexlocal = NULL;
 
-		pfacelist = NULL;
 		grouplist = NULL;
 
 		originaltextures = NULL;
@@ -533,7 +503,6 @@ struct EERIE_3DOBJ
 	Anglef angle;
 	long origin;
 	long ident;
-	long nbpfaces;
 	long nbgroups;
 	unsigned long drawflags;
 	EERIE_3DPAD * vertexlocal;
@@ -541,7 +510,6 @@ struct EERIE_3DOBJ
 	std::vector<EERIE_VERTEX> vertexlist3;
 
 	std::vector<EERIE_FACE> facelist;
-	EERIE_PFACE * pfacelist;
 	EERIE_GROUPLIST * grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
@@ -562,7 +530,7 @@ struct EERIE_3DOBJ
 	EERIE_FASTACCESS fastaccess;
 	EERIE_C_DATA * c_data;
 	
-}; // Aligned 1 2 4
+};
 
 
 struct EERIE_3DSCENE {
@@ -578,7 +546,7 @@ struct EERIE_3DSCENE {
 	float			ambient_g;
 	float			ambient_b;
 	CUB3D			cub;
-}; // Aligned 1 2 4
+};
 
 
 #ifdef BUILD_EDIT_LOADSAVE
@@ -603,7 +571,7 @@ struct EERIE_FRAME
 	Vec3f	translate;
 	EERIE_QUAT	quat;
 	ArxSound	sample;
-}; // Aligned 1 2 4
+};
 
 struct EERIE_GROUP
 {
@@ -611,7 +579,7 @@ struct EERIE_GROUP
 	Vec3f	translate;
 	EERIE_QUAT	quat;
 	Vec3f	zoom;
-}; // Aligned 1 2 4
+};
 
 // Animation playing flags
 #define EA_LOOP			1	// Must be looped at end (indefinitely...)
@@ -631,7 +599,7 @@ struct EERIE_ANIM
 	EERIE_FRAME *	frames;
 	EERIE_GROUP  *  groups;
 	unsigned char *	voidgroups;
-}; // Aligned 1 2 4
+};
 
 //-------------------------------------------------------------------------
 //Portal Data;
@@ -652,61 +620,30 @@ struct EP_DATA {
 	short padd;
 };
 
-struct EERIE_ROOM_DATA
-{
+struct EERIE_ROOM_DATA {
 	long nb_portals;
 	long * portals;
 	long nb_polys;
 	EP_DATA * epdata;
-	Vec3f	center;
-	float		radius;
-	unsigned short		*		pussIndice;
-	LPDIRECT3DVERTEXBUFFER7		pVertexBuffer;
-	unsigned long				usNbTextures;
-	TextureContainer		**	ppTextureContainer;
+	Vec3f center;
+	float radius;
+	unsigned short * pussIndice;
+	VertexBuffer<SMY_VERTEX> * pVertexBuffer;
+	unsigned long usNbTextures;
+	TextureContainer ** ppTextureContainer;
 };
 
 struct EERIE_PORTAL_DATA
 {
 	long nb_rooms;
 	EERIE_ROOM_DATA * room;
-	long nb_total;	// of portals
+	long nb_total; // of portals
 	EERIE_PORTALS * portals;
-};
-
-
-typedef D3DTLVERTEX ARX_D3DVERTEX;
-
-
-struct SMY_D3DVERTEX
-{
-	float	x, y, z;
-	int		color;
-	float	tu, tv;
-};
-
-struct SMY_D3DVERTEX3
-{
-	float	x, y, z;
-	int		color;
-	float	tu, tv;
-	float	tu2, tv2;
-	float	tu3, tv3;
-};
-
-struct SMY_D3DVERTEX3_T
-{
-	float	x, y, z;
-	float	rhw;
-	int		color;
-	float	tu, tv;
-	float	tu2, tv2;
-	float	tu3, tv3;
 };
 
 struct SMY_ZMAPPINFO
 {
-	D3DTLVERTEX pD3DVertex[3];
+	TexturedVertex pVertex[3];
 	float		uv[6];
 	float		color[3];
 };
@@ -741,26 +678,6 @@ struct SMY_ARXMAT
 	unsigned long uslStartNoCull_TSubstractive;
 	unsigned long uslNbIndiceNoCull_TSubstractive;
 };
-
-class CMY_DYNAMIC_VERTEXBUFFER
-{
-	public:
-		unsigned long			uslFormat;
-		unsigned short			ussMaxVertex;
-		unsigned short			ussNbVertex;
-		unsigned short			ussNbIndice;
-		LPDIRECT3DVERTEXBUFFER7	pVertexBuffer;
-		unsigned short		*	pussIndice;
-	public:
-		CMY_DYNAMIC_VERTEXBUFFER(unsigned short, unsigned long);
-		~CMY_DYNAMIC_VERTEXBUFFER();
-
-		void * Lock(unsigned int);
-		bool UnLock();
-};
-
-#define FVF_D3DVERTEX	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
-#define FVF_D3DVERTEX3	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX3|D3DFVF_TEXTUREFORMAT2)
 
 extern long USE_PORTALS;
 extern EERIE_PORTAL_DATA * portals;

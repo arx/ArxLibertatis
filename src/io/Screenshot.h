@@ -43,18 +43,6 @@ public:
 	
 };
 
-struct SNAPSHOTINFO {
-	long imgsec;
-	long xsize;
-	long ysize;
-	long bits;
-	char filenames[256];
-	char path[512];
-	long flag;
-};
-
-extern SNAPSHOTINFO snapshotdata;
-
 void InitSnapShot(const char *, const char *);
 void GetSnapShot();
 void FreeSnapShot();

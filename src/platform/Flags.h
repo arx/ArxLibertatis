@@ -7,24 +7,6 @@
 // Based on QFlags from Qt
 
 /*!
- * An intermediary to initialize Flags from arbitray integer values.
- * TODO should this be removed?
- */
-class Flag {
-	
-	u32 value;
-	
-public:
-	
-	Flag(u32 flag) : value(flag) { }
-	
-	operator u32() {
-		return value;
-	}
-	
-};
-
-/*!
  * A typesafe way to define flags as a combination of enum values.
  * 
  * This type should not be used directly, only through DECLARE_FLAGS.
@@ -34,6 +16,8 @@ class Flags {
 	
 	typedef void ** Zero;
 	u32 flags;
+	
+	inline Flags(u32 flag, bool dummy) : flags(flag) { ARX_UNUSED(dummy); }
 	
 public:
 	
@@ -45,7 +29,9 @@ public:
 	
 	inline Flags(const Flags & o) : flags(o.flags) { }
 	
-	inline Flags(Flag flag) : flags(flag) { }
+	static inline Flags load(u32 flags) {
+		return Flags(flags, true);
+	}
 	
 	inline bool has(Enum flag) const {
 		return (bool)(flags & (u32)flag);

@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-#if	CEDRIC
-
 extern		bool 		MIPM;
 extern		float 		vdist;
 extern		unsigned char * grps;
@@ -78,10 +76,6 @@ extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
 extern EERIEMATRIX ProjectionMatrix;
 extern float fZFogStart;
-
-float SOFTNEARCLIPPZ=1.f;
-
-void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out);
 
 /* Init bounding box */
 inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
@@ -169,39 +163,31 @@ static	void	Cedric_GetScale(float & scale, float & invisibility, INTERACTIVE_OBJ
 	}
 }
 
-
-static	void	Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io, long typ)
-{
-	if ((io) && (!(typ & ANIMQUATTYPE_FIRST_PERSON)))
-	{
-		if (io->nb_lastanimvertex)
-		{
-			timm = (FrameTime - io->lastanimtime) + 0.0001f;
-
-			if (timm >= 300.f)
-			{
-				timm = 0.f;
-				io->nb_lastanimvertex = 0;
-			}
-			else
-			{
-				timm *= ( 1.0f / 300 );
-
-				if (timm >= 1.f) timm = 0.f;
-				else if (timm < 0.f) timm = 0.f;
-			}
-		}
-		else timm = 0.f;
+static void Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io) {
+	
+	if(!io || !io->nb_lastanimvertex) {
+		timm = 0.f;
+		return;
 	}
-	else timm = 0.f;
+	
+	timm = (FrameTime - io->lastanimtime) + 0.0001f;
+	
+	if(timm >= 300.f) {
+		timm = 0.f;
+		io->nb_lastanimvertex = 0;
+	} else {
+		timm *= ( 1.0f / 300 );
+		if(timm >= 1.f) {
+			timm = 0.f;
+		} else if(timm < 0.f) {
+			timm = 0.f;
+		}
+	}
 }
 
 
-#define ANIMQUATTYPE_NO_COMPUTATIONS	8
-
-
 /* Evaluate main entity translation */
-static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, long typ, Vec3f & ftr, Vec3f & ftr2)
+static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, bool render, Vec3f & ftr, Vec3f & ftr2)
 {
 	// Resets Frame Translate
 	ftr = Vec3f::ZERO;
@@ -252,15 +238,11 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 			EERIE_FRAME * eFrame = &eanim->frames[animuse->fr+1];
 
 			// Linear interpolation of object translation (MOVE)
-			ftr.x = sFrame->translate.x + (eFrame->translate.x - sFrame->translate.x) * animuse->pour;
-			ftr.y = sFrame->translate.y + (eFrame->translate.y - sFrame->translate.y) * animuse->pour;
-			ftr.z = sFrame->translate.z + (eFrame->translate.z - sFrame->translate.z) * animuse->pour;
+			ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
 
-			if ((io) && !(typ & ANIMQUATTYPE_NO_RENDER))
-			{
-				ftr.x *= scale;
-				ftr.y *= scale;
-				ftr.z *= scale;
+			if(io && render) {
+				
+				ftr *= scale;
 
 				float temp = radians(MAKEANGLE(180.f - io->angle.b));
 
@@ -269,30 +251,22 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 				_YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
 				// stores Translations for a later use
-				io->move.x = ftr2.x;
-				io->move.y = ftr2.y;
-				io->move.z = ftr2.z;
+				io->move = ftr2;
 			}
 		}
 	}
-
-	if ((io) && (io->animlayer[0].cur_anim) && !(typ & ANIMQUATTYPE_NO_RENDER))
-	{
+	
+	if(io && (io->animlayer[0].cur_anim) && render) {
+		
 		// Use calculated value to notify the Movement engine of the translation to do
-		if (io->ioflags & IO_NPC)
-		{
+		if(io->ioflags & IO_NPC) {
 			ftr = Vec3f::ZERO;
 			io->move -= io->lastmove;
+		} else if (io->GameFlags & GFLAG_ELEVATOR) {
+			// Must recover translations for NON-NPC IO
+			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
 		}
-		// Must recover translations for NON-NPC IO
-		else
-		{
-			if (io->GameFlags & GFLAG_ELEVATOR)
-			{
-				PushIO_ON_Top(io, io->move.y - io->lastmove.y);
-			}
-		}
-
+		
 		io->lastmove = ftr2;
 	}
 }
@@ -457,8 +431,8 @@ static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Angle
 	}
 }
 
-void EE_RT(D3DTLVERTEX * in, Vec3f * out);
-void EE_P(Vec3f * in, D3DTLVERTEX * out);
+void EE_RT(TexturedVertex * in, Vec3f * out);
+void EE_P(Vec3f * in, TexturedVertex * out);
 
 extern long INTERPOLATE_BETWEEN_BONES;
 
@@ -558,7 +532,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 }
 extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
 long special_color_flag = 0;
-EERIE_RGB special_color;
+Color3f special_color;
 extern long DEBUG_PATHFAIL;
 extern long FINAL_RELEASE;
 extern long TRAP_DETECT;
@@ -569,16 +543,13 @@ extern long ALTERNATE_LIGHTING;
 extern float GLOBAL_LIGHT_FACTOR;
 
 /* Object dynamic lighting */
-static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, long typ) {
+static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos) {
 	
-	EERIE_RGB		infra;
+	Color3f infra = Color3f::black;
 	int				i, v, l;
 	Vec3f		tv;
-	Vec3f		vTLights[32];//MAX_LLIGHTS];				/* Same as above but in bone space (for faster calculation) */
+	Vec3f		vTLights[32]; /* Same as above but in bone space (for faster calculation) */
 
-
-
-	ZeroMemory(&infra, sizeof(EERIE_RGB));
 
 
 	special_color_flag = 0;
@@ -720,11 +691,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 						{
 							MakePlayerAppearsFX(io);
 							AddRandomSmoke(io, 50);
-							EERIE_RGB rgb;
-							unsigned long color = io->_npcdata->blood_color;
-							rgb.r = (float)((long)((color >> 16) & 255)) * ( 1.0f / 255 );
-							rgb.g = (float)((long)((color >> 8) & 255)) * ( 1.0f / 255 );
-							rgb.b = (float)((long)((color) & 255)) * ( 1.0f / 255 );
+							Color3f rgb = io->_npcdata->blood_color.to<float>();
 							EERIE_SPHERE sp;
 							sp.origin.x = io->pos.x;
 							sp.origin.y = io->pos.y;
@@ -737,7 +704,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 								SpawnGroundSplat(&sp, &rgb, rnd() * 30.f + 30.f, 1);
 								sp.origin.y -= rnd() * 150.f;
 
-								ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color);
+								ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);
 
 								sp.origin.x = io->pos.x + rnd() * 200.f - 100.f;
 								sp.origin.y = io->pos.y + rnd() * 20.f - 10.f;
@@ -829,13 +796,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 	/* Get nearest lights */
 	tv = *pos;
-
-	if (typ & ANIMQUATTYPE_FIRST_PERSON)
-	{
-		tv.x = subj.pos.x;
-		tv.y = subj.pos.y;
-		tv.z = subj.pos.z;
-	}
 
 	if ((io) && (io->obj->fastaccess.view_attach >= 0) && (io->obj->fastaccess.head_group_origin != -1))
 	{
@@ -1124,74 +1084,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 }
 
 //-----------------------------------------------------------------------------
-void ARX_ClippZ(D3DTLVERTEX * _pD3DA, D3DTLVERTEX * _pD3DB, EERIE_VERTEX * _pVertexA, EERIE_VERTEX * _pVertexB, D3DTLVERTEX * _pOut)
-{
-	Vec3f e3dTemp;
-
-	float fDenom	=	(SOFTNEARCLIPPZ - _pVertexB->vworld.z) / (_pVertexA->vworld.z - _pVertexB->vworld.z);
-	e3dTemp.x		=	(_pVertexA->vworld.x - _pVertexB->vworld.x) * fDenom + _pVertexB->vworld.x;
-	e3dTemp.y		=	(_pVertexA->vworld.y - _pVertexB->vworld.y) * fDenom + _pVertexB->vworld.y;
-	e3dTemp.z		=	SOFTNEARCLIPPZ ;
-
-	float fRA, fGA, fBA;
-	float fRB, fGB, fBB;
-
-
-	fRA = ARX_CLEAN_WARN_CAST_FLOAT((_pD3DA->color >> 16) & 255);
-	fGA = ARX_CLEAN_WARN_CAST_FLOAT((_pD3DA->color >> 8) & 255);
-	fBA = ARX_CLEAN_WARN_CAST_FLOAT(_pD3DA->color & 255);
-	fRB = ARX_CLEAN_WARN_CAST_FLOAT((_pD3DB->color >> 16) & 255);
-	fGB = ARX_CLEAN_WARN_CAST_FLOAT((_pD3DB->color >> 8) & 255);
-	fBB = ARX_CLEAN_WARN_CAST_FLOAT(_pD3DB->color & 255);
-
-	float fRC, fGC, fBC;
-	fRC = (fRA - fRB) * fDenom + fRB;
-	fGC = (fGA - fGB) * fDenom + fGB;
-	fBC = (fBA - fBB) * fDenom + fBB;
-
-	_pOut->color	=	(((int)fRC) << 16) | (((int)fGC) << 8) | ((int)fBC);
-	_pOut->tu		=	(_pD3DA->tu - _pD3DB->tu) * fDenom + _pD3DB->tu;
-	_pOut->tv		=	(_pD3DA->tv - _pD3DB->tv) * fDenom + _pD3DB->tv;
-
-	EE_P(&e3dTemp, _pOut);
-}
-
-//-----------------------------------------------------------------------------
-void ARX_DrawPrimitive_ClippZ(D3DTLVERTEX * _pVertexA, D3DTLVERTEX * _pVertexB, D3DTLVERTEX * _pOut, float _fAdd = 0.f);
-void ARX_DrawPrimitive_ClippZ(D3DTLVERTEX * _pVertexA, D3DTLVERTEX * _pVertexB, D3DTLVERTEX * _pOut, float _fAdd)
-{
-	Vec3f e3dTemp;
-	float fDenom = ((SOFTNEARCLIPPZ + _fAdd) - _pVertexB->sz) / (_pVertexA->sz - _pVertexB->sz);
-	e3dTemp.x = (_pVertexA->sx - _pVertexB->sx) * fDenom + _pVertexB->sx;
-	e3dTemp.y = (_pVertexA->sy - _pVertexB->sy) * fDenom + _pVertexB->sy;
-	e3dTemp.z = SOFTNEARCLIPPZ + _fAdd;
-
-	float fRA, fGA, fBA;
-	float fRB, fGB, fBB;
-
-
-	fRA = ARX_CLEAN_WARN_CAST_FLOAT((_pVertexA->color >> 16) & 255);
-	fGA = ARX_CLEAN_WARN_CAST_FLOAT((_pVertexA->color >> 8) & 255);
-	fBA = ARX_CLEAN_WARN_CAST_FLOAT(_pVertexA->color & 255);
-	fRB = ARX_CLEAN_WARN_CAST_FLOAT((_pVertexB->color >> 16) & 255);
-	fGB = ARX_CLEAN_WARN_CAST_FLOAT((_pVertexB->color >> 8) & 255);
-	fBB = ARX_CLEAN_WARN_CAST_FLOAT(_pVertexB->color & 255);
-
-
-	float fRC, fGC, fBC;
-	fRC = (fRA - fRB) * fDenom + fRB;
-	fGC = (fGA - fGB) * fDenom + fGB;
-	fBC = (fBA - fBB) * fDenom + fBB;
-
-	_pOut->color	= (((int) fRC) << 16) | (((int)fGC) << 8) | ((int) fBC);
-	_pOut->tu		= (_pVertexA->tu - _pVertexB->tu) * fDenom + _pVertexB->tu;
-	_pOut->tv		= (_pVertexA->tv - _pVertexB->tv) * fDenom + _pVertexB->tv;
-
-	EE_P(&e3dTemp, _pOut);
-}
-
-//-----------------------------------------------------------------------------
-D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex) {
+TexturedVertex * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex) {
 	
 	if(!(_pFace->facetype & POLY_TRANS) && !(_fInvisibility > 0.f)) {
 		return PushVertexInTableCull(_pTex);
@@ -1216,351 +1109,48 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 	}
 }
 
-int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB)
-{
-	int iPointAdd = 3;
-	int iClipp = 0;
-
-	if ((_pVertex1->vworld.z) < SOFTNEARCLIPPZ) iClipp |= 1;
-
-	if ((_pVertex2->vworld.z) < SOFTNEARCLIPPZ) iClipp |= 2;
-
-	if ((_pVertex3->vworld.z) < SOFTNEARCLIPPZ) iClipp |= 4;
-
-	D3DTLVERTEX D3DClippZ1, D3DClippZ2;
-	D3DTLVERTEX * pD3DPointAdd = NULL;
-	D3DTLVERTEX * ptV = *_ptV;
-
-	switch (iClipp)
-	{
-		case 1:						//pt1 outside
-			ARX_ClippZ(&ptV[0], &ptV[1], _pVertex1, _pVertex2, &D3DClippZ1);
-			ARX_ClippZ(&ptV[0], &ptV[2], _pVertex1, _pVertex3, &D3DClippZ2);
-			pD3DPointAdd = GetNewVertexList(_pFace,
-			                                _fInvibility,
-			                                _pTex);
-			ptV = pD3DPointAdd - 3;
-
-			if (pD3DPointAdd)
-			{
-				pD3DPointAdd[0] = D3DClippZ1;
-				pD3DPointAdd[1] = ptV[1];
-				pD3DPointAdd[2] = D3DClippZ2;
-			}
-
-			ptV[0] = D3DClippZ2;
-			iPointAdd = 6;
-			break;
-		case 2:						//pt2 outside
-			ARX_ClippZ(&ptV[1], &ptV[2], _pVertex2, _pVertex3, &D3DClippZ1);
-			ARX_ClippZ(&ptV[1], &ptV[0], _pVertex2, _pVertex1, &D3DClippZ2);
-			pD3DPointAdd = GetNewVertexList(_pFace,
-			                                _fInvibility,
-			                                _pTex);
-			ptV = pD3DPointAdd - 3;
-
-			if (pD3DPointAdd)
-			{
-				pD3DPointAdd[0] = ptV[2];
-				pD3DPointAdd[1] = D3DClippZ1;
-				pD3DPointAdd[2] = D3DClippZ2;
-			}
-
-			ptV[1] = D3DClippZ2;
-			iPointAdd = 6;
-			break;
-		case 4:						//pt3 outside
-			ARX_ClippZ(&ptV[2], &ptV[0], _pVertex3, _pVertex1, &D3DClippZ1);
-			ARX_ClippZ(&ptV[2], &ptV[1], _pVertex3, _pVertex2, &D3DClippZ2);
-			pD3DPointAdd = GetNewVertexList(_pFace,
-			                                _fInvibility,
-			                                _pTex);
-			ptV = pD3DPointAdd - 3;
-
-			if (pD3DPointAdd)
-			{
-				pD3DPointAdd[0] = ptV[0];
-				pD3DPointAdd[1] = D3DClippZ2;
-				pD3DPointAdd[2] = D3DClippZ1;
-			}
-
-			ptV[2] = D3DClippZ2;
-			iPointAdd = 6;
-			break;
-		case 3:						//pt1_2 outside
-			ARX_ClippZ(&ptV[0], &ptV[2], _pVertex1, _pVertex3, &D3DClippZ1);
-			ARX_ClippZ(&ptV[1], &ptV[2], _pVertex2, _pVertex3, &D3DClippZ2);
-			ptV[0] = D3DClippZ1;
-			ptV[1] = D3DClippZ2;
-			break;
-		case 5:						//pt1_3 outside
-			ARX_ClippZ(&ptV[0], &ptV[1], _pVertex1, _pVertex2, &D3DClippZ1);
-			ARX_ClippZ(&ptV[2], &ptV[1], _pVertex3, _pVertex2, &D3DClippZ2);
-			ptV[0] = D3DClippZ1;
-			ptV[2] = D3DClippZ2;
-			break;
-		case 6:						//pt2_3 outside
-			ARX_ClippZ(&ptV[2], &ptV[0], _pVertex3, _pVertex1, &D3DClippZ1);
-			ARX_ClippZ(&ptV[1], &ptV[0], _pVertex2, _pVertex1, &D3DClippZ2);
-			ptV[1] = D3DClippZ1;
-			ptV[2] = D3DClippZ2;
-			break;
-		case 7:
-			return 0;
-	}
-
-	if (pD3DPointAdd)
-	{
-		*_ptV = ptV;
-
-		if (_bZMapp)
-		{
-			CalculateInterZMapp(_pObj, _iNumFace, _pInd, _pTex, pD3DPointAdd);
-		}
-
-		if ((_pFace->facetype & POLY_METAL)
-		        || ((_pTex) && (_pTex->userflags & POLY_METAL)))
-		{
-			if (_bNPC)
-			{
-				D3DTLVERTEX * tv2;
-
-				if (_lSpecialColorFlag & 2)
-				{
-					tv2 = PushVertexInTableCull(&TexSpecialColor);
-					memcpy((void *)tv2, (void *)pD3DPointAdd, sizeof(D3DTLVERTEX) * 3);
-					tv2[0].color = tv2[1].color = tv2[2].color = _EERIERGB(_pRGB->r);
-				}
-
-				tv2 = PushVertexInTableCull_TMetal(_pTex);
-				unsigned long * pulNbVertexList_TMetal = &_pTex->ulNbVertexListCull_TMetal;
-
-				memcpy((void *)tv2, (void *)pD3DPointAdd, sizeof(D3DTLVERTEX) * 3);
-
-				long r, g, b;
-				long todo = 0;
-
-				for (long j = 0; j < 3; j++)
-				{
-					r = (tv2[j].color >> 16) & 255;
-					g = (tv2[j].color >> 8) & 255;
-					b = tv2[j].color & 255;
-
-					if (r > 192 || g > 192 || b > 192)
-					{
-						todo++;
-					}
-
-					r -= 192;
-
-					if (r < 0.f) r = 0;
-
-					g -= 192;
-
-					if (g < 0.f) g = 0;
-
-					b -= 192;
-
-					if (b < 0.f) b = 0;
-
-					tv2[j].color = 0xFF000000 | (r << 18) | (g << 10) | (b << 2);
-				}
-
-				if (!todo)
-				{
-					*pulNbVertexList_TMetal -= 3;
-				}
-			}
-			else
-			{
-				ARX_D3DVERTEX * vert_list_metal			= PushVertexInTableCull_TMetal(_pTex);
-				unsigned long * pulNbVertexList_TMetal	= &_pTex->ulNbVertexListCull_TMetal;
-
-				memcpy((void *)vert_list_metal, (void *)pD3DPointAdd, sizeof(D3DTLVERTEX) * 3);
-				D3DTLVERTEX * tl = vert_list_metal;
-
-				long r, g, b;
-				long todo = 0;
-
-				r = g = b = 0 ;
-
-				for (long j = 0 ; j < 3 ; j++)
-				{
-					r = (tl->color >> 16) & 255;
-					g = (tl->color >> 8) & 255;
-					b = tl->color & 255;
-
-					if (r > 192 || g > 192 || b > 192)
-					{
-						todo++;
-					}
-
-					r -= 192;
-
-					if (r < 0.f) r = 0;
-
-					g -= 192;
-
-					if (g < 0.f) g = 0;
-
-					b -= 192;
-
-					if (b < 0.f) b = 0;
-
-					tl->color = 0xFF000000 | (r << 18) | (g << 10) | (b << 2);
-					tl++;
-				}
-
-				if (todo)
-				{
-					if ((todo > 2) && (rnd() > 0.997f))
-					{
-						if (_pioInteractive)
-							SpawnMetalShine((Vec3f *)&_pObj->vertexlist3[_pObj->facelist[_iNumFace].vid[0]].vert, r, g, b, GetInterNum(_pioInteractive));
-					}
-				}
-				else
-				{
-					*pulNbVertexList_TMetal -= 3;
-				}
-			}
-		}
-	}
-
-	return iPointAdd;
-}
 extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
-//-----------------------------------------------------------------------------
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3)
-{
-	return ARX_DrawPrimitive_SoftClippZ(_pVertex1, _pVertex2, _pVertex3, 0.0f);
+
+void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
+	
+	TexturedVertex pPointAdd[3];
+	
+	Vec3f e3dTemp;
+	e3dTemp.x = _pVertex1->sx;
+	e3dTemp.y = _pVertex1->sy;
+	e3dTemp.z = _pVertex1->sz;
+	EE_P(&e3dTemp, &pPointAdd[0]);
+	e3dTemp.x = _pVertex2->sx;
+	e3dTemp.y = _pVertex2->sy;
+	e3dTemp.z = _pVertex2->sz;
+	EE_P(&e3dTemp, &pPointAdd[1]);
+	e3dTemp.x = _pVertex3->sx;
+	e3dTemp.y = _pVertex3->sy;
+	e3dTemp.z = _pVertex3->sz;
+	EE_P(&e3dTemp, &pPointAdd[2]);
+	pPointAdd[0].color = _pVertex1->color;
+	pPointAdd[0].specular = _pVertex1->specular;
+	pPointAdd[0].tu = _pVertex1->tu;
+	pPointAdd[0].tv = _pVertex1->tv;
+	pPointAdd[1].color = _pVertex2->color;
+	pPointAdd[1].specular = _pVertex2->specular;
+	pPointAdd[1].tu = _pVertex2->tu;
+	pPointAdd[1].tv = _pVertex2->tv;
+	pPointAdd[2].color = _pVertex3->color;
+	pPointAdd[2].specular = _pVertex3->specular;
+	pPointAdd[2].tu = _pVertex3->tu;
+	pPointAdd[2].tv = _pVertex3->tv;
+	
+	EERIEDRAWPRIM(Renderer::TriangleList, pPointAdd);
 }
 
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3, float _fAddZ)
-{
-	int iClipp = 0;
-
-	if (_pVertex1->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 1;
-
-	if (_pVertex2->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 2;
-
-	if (_pVertex3->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 4;
-
-	D3DTLVERTEX D3DClippZ1, D3DClippZ2;
-	D3DTLVERTEX pD3DPointAdd[6];
-	int			iNbTotVertex = 3;
-
-	switch (iClipp)
-	{
-		case 0: {
-			Vec3f e3dTemp;
-			e3dTemp.x = _pVertex1->sx;
-			e3dTemp.y = _pVertex1->sy;
-			e3dTemp.z = _pVertex1->sz;
-			EE_P(&e3dTemp, &pD3DPointAdd[0]);
-			e3dTemp.x = _pVertex2->sx;
-			e3dTemp.y = _pVertex2->sy;
-			e3dTemp.z = _pVertex2->sz;
-			EE_P(&e3dTemp, &pD3DPointAdd[1]);
-			e3dTemp.x = _pVertex3->sx;
-			e3dTemp.y = _pVertex3->sy;
-			e3dTemp.z = _pVertex3->sz;
-			EE_P(&e3dTemp, &pD3DPointAdd[2]);
-			pD3DPointAdd[0].color = _pVertex1->color;
-			pD3DPointAdd[0].specular = _pVertex1->specular;
-			pD3DPointAdd[0].tu = _pVertex1->tu;
-			pD3DPointAdd[0].tv = _pVertex1->tv;
-			pD3DPointAdd[1].color = _pVertex2->color;
-			pD3DPointAdd[1].specular = _pVertex2->specular;
-			pD3DPointAdd[1].tu = _pVertex2->tu;
-			pD3DPointAdd[1].tv = _pVertex2->tv;
-			pD3DPointAdd[2].color = _pVertex3->color;
-			pD3DPointAdd[2].specular = _pVertex3->specular;
-			pD3DPointAdd[2].tu = _pVertex3->tu;
-			pD3DPointAdd[2].tv = _pVertex3->tv;
-			break;
-		}
-		case 1:						//pt1 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex2, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex3, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = D3DClippZ2;
-			pD3DPointAdd[1] = *_pVertex2;
-			EE_P2(&pD3DPointAdd[1], &pD3DPointAdd[1]);
-			pD3DPointAdd[2] = *_pVertex3;
-			EE_P2(&pD3DPointAdd[2], &pD3DPointAdd[2]);
-			pD3DPointAdd[3] = D3DClippZ1;
-			pD3DPointAdd[4] = pD3DPointAdd[1];
-			pD3DPointAdd[5] = D3DClippZ2;
-			iNbTotVertex = 6;
-			break;
-		case 2:						//pt2 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex3, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex1, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = *_pVertex1;
-			EE_P2(&pD3DPointAdd[0], &pD3DPointAdd[0]);
-			pD3DPointAdd[1] = D3DClippZ2;
-			pD3DPointAdd[2] = *_pVertex3;
-			EE_P2(&pD3DPointAdd[2], &pD3DPointAdd[2]);
-			pD3DPointAdd[3] = pD3DPointAdd[2];
-			pD3DPointAdd[4] = D3DClippZ1;
-			pD3DPointAdd[5] = D3DClippZ2;
-			iNbTotVertex = 6;
-			break;
-		case 4:						//pt3 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex1, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex2, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = *_pVertex1;
-			EE_P2(&pD3DPointAdd[0], &pD3DPointAdd[0]);
-			pD3DPointAdd[1] = *_pVertex2;
-			EE_P2(&pD3DPointAdd[1], &pD3DPointAdd[1]);
-			pD3DPointAdd[2] = D3DClippZ2;
-			pD3DPointAdd[3] = pD3DPointAdd[0];
-			pD3DPointAdd[4] = D3DClippZ2;
-			pD3DPointAdd[5] = D3DClippZ1;
-			iNbTotVertex = 6;
-			break;
-		case 3:						//pt1_2 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex3, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex3, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = D3DClippZ1;
-			pD3DPointAdd[1] = D3DClippZ2;
-			pD3DPointAdd[2] = *_pVertex3;
-			EE_P2(&pD3DPointAdd[2], &pD3DPointAdd[2]);
-			break;
-		case 5:						//pt1_3 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex2, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex2, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = D3DClippZ1;
-			pD3DPointAdd[1] = *_pVertex2;
-			EE_P2(&pD3DPointAdd[1], &pD3DPointAdd[1]);
-			pD3DPointAdd[2] = D3DClippZ2;
-			break;
-		case 6:						//pt2_3 outside
-			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex1, &D3DClippZ1, _fAddZ);
-			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex1, &D3DClippZ2, _fAddZ);
-			pD3DPointAdd[0] = *_pVertex1;
-			EE_P2(&pD3DPointAdd[0], &pD3DPointAdd[0]);
-			pD3DPointAdd[1] = D3DClippZ1;
-			pD3DPointAdd[2] = D3DClippZ2;
-			break;
-		case 7:
-			return false;
-	}
-
-	EERIEDRAWPRIM(D3DPT_TRIANGLELIST,
-	              D3DFVF_TLVERTEX,
-	              pD3DPointAdd,
-				  iNbTotVertex,
-				  0, 0 );
-	return true;
-}
 long FORCE_FRONT_DRAW = 0;
 
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 
 /* Render object */
-void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
 	
 	float MAX_ZEDE = 0.f;
 
@@ -1661,7 +1251,7 @@ void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 	{
 		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
 		{
-			ARX_D3DVERTEX	* tv			= NULL;
+			TexturedVertex	* tv			= NULL;
 
  
 			EERIE_FACE	*	eface;
@@ -1703,56 +1293,31 @@ void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 			        (!(pTex = eobj->texturecontainer[eobj->facelist[i].texid]))) continue;
 
 			float			fTransp = 0;
-			unsigned long	* pNb;
 
-			if ((eobj->facelist[i].facetype & POLY_TRANS) ||
-			        (invisibility > 0.f))
-			{
-				if (invisibility > 0.f)
-					fTransp = 2.f - invisibility;
-				else
-					fTransp = eobj->facelist[i].transval;
-
-				if (fTransp >= 2.f)    //MULTIPLICATIVE
-				{
-					fTransp *= ( 1.0f / 2 );
-					fTransp += 0.5f;
-
-					tv	= PushVertexInTableCull_TMultiplicative(pTex);
-					pNb	= &pTex->ulNbVertexListCull_TMultiplicative;
+			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+				
+				fTransp = (invisibility > 0.f) ? 2.f - invisibility : eobj->facelist[i].transval;
+				
+				if(fTransp >= 2.f) {
+					//MULTIPLICATIVE
+					fTransp *= (1.f/2);
+					fTransp += .5f;
+					tv = PushVertexInTableCull_TMultiplicative(pTex);
+				} else if(fTransp >= 1.f) {
+					//ADDITIVE
+					fTransp -= 1.f;
+					tv = PushVertexInTableCull_TAdditive(pTex);
+				} else if(fTransp > 0.f) {
+					//NORMAL TRANS
+					fTransp = 1.f - fTransp;
+					tv = PushVertexInTableCull_TNormalTrans(pTex);
+				} else {
+					//SUBTRACTIVE
+					fTransp = 1.f - fTransp;
+					tv = PushVertexInTableCull_TSubstractive(pTex);
 				}
-				else
-				{
-					if (fTransp >= 1.f)  //ADDITIVE
-					{
-						fTransp -= 1.f;
-
-						tv		 = PushVertexInTableCull_TAdditive(pTex);
-						pNb		 = &pTex->ulNbVertexListCull_TAdditive;
-					}
-					else
-					{
-						if (fTransp > 0.f)   //NORMAL TRANS
-						{
-							fTransp = 1.f - fTransp;
-
-							tv		= PushVertexInTableCull_TNormalTrans(pTex);
-							pNb		= &pTex->ulNbVertexListCull_TNormalTrans;
-						}
-						else  //SUBTRACTIVE
-						{
-							fTransp	= 1.f - fTransp;
-
-							tv		= PushVertexInTableCull_TSubstractive(pTex);
-							pNb		= &pTex->ulNbVertexListCull_TSubstractive;
-						}
-					}
-				}
-			}
-			else
-			{
-				tv	= PushVertexInTableCull(pTex);
-				pNb	= &pTex->ulNbVertexListCull;
+			} else {
+				tv = PushVertexInTableCull(pTex);
 			}
 
 			for (long n = 0 ; n < 3 ; n++)
@@ -1805,32 +1370,8 @@ void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 			}
 		
 
-			if ((eobj->facelist[i].facetype & POLY_TRANS)
-			        || (invisibility > 0.f))
-			{
-				tv[0].color = D3DRGB(fTransp, fTransp, fTransp);
-				tv[1].color = D3DRGB(fTransp, fTransp, fTransp);
-				tv[2].color = D3DRGB(fTransp, fTransp, fTransp);
-			}
-
-			if (!(ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
-			                                   &eobj->vertexlist3[paf[1]],
-			                                   &eobj->vertexlist3[paf[2]],
-			                                   &tv,
-			                                   eface,
-			                                   invisibility,
-			                                   pTex,
-			                                   (io) && (io->ioflags & IO_ZMAP),
-			                                   eobj,
-			                                   i,
-			                                   paf,
-			                                   NULL,
-			                                   true,
-			                                   special_color_flag,
-			                                   &special_color)))
-			{
-				*pNb -= 3;
-				continue;
+			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+				tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
 			}
 
 			if ((io) && (io->ioflags & IO_ZMAP))
@@ -1917,7 +1458,7 @@ void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 
 					ARX_CHECK(curhaloInitialized > 0);
 
-					D3DTLVERTEX * workon;
+					TexturedVertex * workon;
 					workon	= tv;
 
 					long o;
@@ -1990,16 +1531,16 @@ void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 						if ((_ffr[first] > 150.f) && (_ffr[second] > 110.f)) 
 						{
 							Vec3f		vect1, vect2;
-							D3DTLVERTEX *	vert = &LATERDRAWHALO[(HALOCUR << 2)];
+							TexturedVertex *	vert = &LATERDRAWHALO[(HALOCUR << 2)];
 
-							HALOCUR++;
+							if(HALOCUR < ((long)HALOMAX) - 1) {
+								HALOCUR++;
+							}
 
-							if (HALOCUR >= HALOMAX) HALOCUR--;
-
-							memcpy(&vert[0], &workon[first], sizeof(D3DTLVERTEX));
-							memcpy(&vert[1], &workon[first], sizeof(D3DTLVERTEX));
-							memcpy(&vert[2], &workon[second], sizeof(D3DTLVERTEX));
-							memcpy(&vert[3], &workon[second], sizeof(D3DTLVERTEX));
+							memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
+							memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
+							memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
+							memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
 
 							float siz = ddist * (curhalo.radius * (EEsin((float)(FrameTime + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
 
@@ -2070,28 +1611,25 @@ void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 
 			if (special_color_flag & 2)
 			{
-				D3DTLVERTEX * tv2;
+				TexturedVertex * tv2;
 				{
 					tv2 = PushVertexInTableCull(&TexSpecialColor);
 				}
-				memcpy((void *) tv2, (void *)tv, sizeof(D3DTLVERTEX) * 3);
+				memcpy((void *) tv2, (void *)tv, sizeof(TexturedVertex) * 3);
 
-				unsigned long v = _EERIERGB(special_color.r);
-				tv2[0].color	= v;
-				tv2[1].color	= v;
-				tv2[2].color	= v;
+				tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
 			}
 
 			// Add a little bit of Fake Metal Specular if needed :p
 			if ((eface->facetype & POLY_METAL)
 			        || ((pTex) && (pTex->userflags & POLY_METAL)))
 			{
-				D3DTLVERTEX	* tv2;
+				TexturedVertex	* tv2;
 				unsigned long	* pulNbVertexList_TMetal;
 
 				tv2						=	PushVertexInTableCull_TMetal(pTex);
 				pulNbVertexList_TMetal	=	&pTex->ulNbVertexListCull_TMetal;
-				memcpy((void *)tv2, (void *)tv, sizeof(D3DTLVERTEX) * 3);
+				memcpy((void *)tv2, (void *)tv, sizeof(TexturedVertex) * 3);
 				
 				long r, g, b;
 				long todo = 0;
@@ -2189,15 +1727,11 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 extern long LOOK_AT_TARGET;
 
 extern long ForceIODraw;
-bool Cedric_IO_Visible(INTERACTIVE_OBJ * io, long typ)
-{
+static bool Cedric_IO_Visible(INTERACTIVE_OBJ * io) {
 	if (io == inter.iobj[0]) return true;
 
-	if ((!ForceIODraw)
-	    &&	(ACTIVEBKG != NULL)
-	    &&	(io)
-	    &&	(!(typ & 1)))
-	{
+	if(!ForceIODraw && ACTIVEBKG && io) {
+		
 		if (distSqr(io->pos, ACTIVECAM->pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 			return false;
 
@@ -2227,13 +1761,13 @@ extern long __MUST_DRAW;
 extern long EXTERNALVIEW;
 
 /* Apply animation and draw object */
-void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
-                                 ANIM_USE * animuse,
-                                 Anglef * angle,
-                                 Vec3f * pos,
-                                 INTERACTIVE_OBJ * io,
-                                 long typ)
-{
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
+                              ANIM_USE * animuse,
+                              Anglef * angle,
+                              Vec3f * pos,
+                              INTERACTIVE_OBJ * io,
+                              bool render) {
+	
 	float 				invisibility;
 	float 				scale;
 	float				timm;
@@ -2251,7 +1785,7 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	//Cedric_FlagLinkedObjects(eobj); ???
 
 	// Is There any Between-Animations Interpolation to make ? timm>0.f
-	Cedric_GetTime(timm, io, typ);
+	Cedric_GetTime(timm, io);
 
 
 	// Buffer size check
@@ -2264,11 +1798,9 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 	memset(grps, 0, eobj->nbgroups);
 
+	Cedric_AnimCalcTranslation(io, animuse, scale, render, ftr, ftr2);
 
-	Cedric_AnimCalcTranslation(io, animuse, scale, typ, ftr, ftr2);
-
-	if (Cedric_IO_Visible(io, typ))
-	{
+	if(Cedric_IO_Visible(io)) {
 
 		// Manage Extra Rotations in Local Space
 		Cedric_ManageExtraRotationsFirst(io, eobj);
@@ -2299,11 +1831,13 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			return;
 
 
-		if ((Cedric_TransformVerts(io, eobj, obj, pos)) && (!(typ & ANIMQUATTYPE_NO_RENDER)))
-		{
+		if(Cedric_TransformVerts(io, eobj, obj, pos) && render) {
+			
 			INTER_DRAW++;
 
-			if (!Cedric_ApplyLighting(eobj, obj, io, pos, typ)) return;
+			if(!Cedric_ApplyLighting(eobj, obj, io, pos)) {
+				return;
+			}
 
 			Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
 
@@ -2316,6 +1850,7 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			}
 
 			// Now we can render Linked Objects
+			
 			for (long k = 0; k < eobj->nblinked; k++)
 			{
 				if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
@@ -2396,7 +1931,7 @@ void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	}
 }
 
-void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
+void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
 {
 	if ((Project.improve) && (!io))
 	{
@@ -2560,11 +2095,11 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f *
 		}
 }
 
-void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii)
-{
-	Vec3f		vLight;
-	Vec3f		vTLights[32];
-	EERIE_QUAT		qInvert;
+void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii) {
+	
+	Vec3f vLight;
+	Vec3f vTLights[32];
+	EERIE_QUAT qInvert;
 
 	if (BIGMAT != NULL)
 	{
@@ -2728,7 +2263,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 		return;
 	}
 
-	EERIE_RGB rgb;
+	Color3f rgb;
 	long j;
 
 	float epr[4];
@@ -2835,7 +2370,7 @@ void ApplyDynLight(EERIEPOLY * ep)
  
 float TOTAL_CHRONO = 0.f;
 //*************************************************************************************
-void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
+void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
 {
 	long nbvert, i;
 
@@ -2952,7 +2487,7 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 extern TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 //*************************************************************************************
 
-void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
+void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
 {
 	// Nuky - 25/01/11 - harmless refactor to understand what is slow.
 	//        MASSIVE speed up thanks to "harmless refactor", wtf ?
@@ -3073,5 +2608,3 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 	}
 
 }
-
-#endif

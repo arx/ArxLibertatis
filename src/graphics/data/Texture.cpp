@@ -71,7 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 
-#include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
@@ -94,7 +93,6 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
 
 const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap | TextureContainer::NoRefinement);
-const TextureContainer::TCFlags TextureContainer::All = Flag(0xffffffff);
 
 TextureContainer * g_ptcTextureList = NULL;
 
@@ -143,11 +141,11 @@ long CountTextures( std::string& tex, long * memsize, long * memmip)
 		}
 
 		*memsize += (long)(ptcTexture->m_dwWidth * ptcTexture->m_dwHeight * ptcTexture->m_dwBPP) >> 3;
-		tex = temp;
+		tex += temp;
+		
+		ptcTexture = ptcTexture->m_pNext;
 	}
-
-	ptcTexture = ptcTexture->m_pNext;
-
+	
 	return count;
 }
 

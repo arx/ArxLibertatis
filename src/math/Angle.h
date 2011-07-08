@@ -1,10 +1,11 @@
 
-#ifndef ARX_PLATFORM_MATH_ANGLE_H
-#define ARX_PLATFORM_MATH_ANGLE_H
+#ifndef ARX_MATH_ANGLE_H
+#define ARX_MATH_ANGLE_H
 
 #include <limits>
+#include <cmath>
 
-#include "platform/Platform.h"
+#include "math/MathFwd.h"
 
 /*!
  * A 3-dimensional euler-angle.
@@ -138,8 +139,13 @@ public:
 
 template<class T> const Angle<T> Angle<T>::ZERO(T(0), T(0), T(0));
 
-typedef Angle<s32> Anglei;
-typedef Angle<float> Anglef;
-typedef Angle<double> Angled;
+float AngleDifference(float d, float e);
 
-#endif // ARX_PLATFORM_MATH_ANGLE_H
+inline float MAKEANGLE(float a) {
+	float angle = std::fmod(a, 360.f);
+	return (angle >= 0) ? angle : angle + 360.f;
+}
+
+float InterpolateAngle(float a1, float a2, float pour);
+
+#endif // ARX_MATH_ANGLE_H

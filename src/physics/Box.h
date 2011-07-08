@@ -60,8 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
-#include "platform/math/Vector3.h"
-#include "platform/math/Angle.h"
+#include "math/MathFwd.h"
 
 struct EERIE_3DOBJ;
 

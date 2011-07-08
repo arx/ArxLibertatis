@@ -67,7 +67,7 @@ public:
     bool ToGrayscale();
     bool ToNormalMap();
 
-	void Dump( const std::string& pFilename ) const;
+	void save( const std::string& pFilename ) const;
 
 public:
     static unsigned int	GetSize( Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1 );

@@ -77,7 +77,7 @@ struct ACTIONSTRUCT {
 
 const size_t MAX_ACTIONS = 100;
 
-extern D3DTLVERTEX	vert_list[4];
+extern TexturedVertex	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 #ifdef BUILD_EDIT_LOADSAVE
@@ -103,7 +103,7 @@ EERIE_3DOBJ * loadObject(const std::string & file, bool pbox = true);
 /*!
  * @param texpath texture path relative to file
  */
-EERIE_3DOBJ * _LoadTheObj(const std::string & file, const std::string & texpath);
+EERIE_3DOBJ * _LoadTheObj(const std::string & file, const std::string & texpath = std::string());
 
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const std::string & fic);
 
@@ -114,7 +114,6 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * obj);
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj);
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret);
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj);
-void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void RemoveAllBackgroundActions();
 
 #endif // ARX_SCENE_OBJECT_H

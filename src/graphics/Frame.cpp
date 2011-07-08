@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "graphics/GraphicsUtility.h"
 #include "io/Logger.h"
+#include "math/Rectangle.h"
 
 //-----------------------------------------------------------------------------
 // Name: CD3DFramework7()
@@ -501,12 +502,7 @@ HRESULT CD3DFramework7::CreateDirect3D(GUID * pDeviceGUID)
 	}
 
 	// Finally, set the viewport for the newly created device
-	Renderer::Viewport vp;
-	vp.x = 0;
-	vp.y = 0;
-	vp.width = m_dwRenderWidth;
-	vp.height = m_dwRenderHeight;
-	GRenderer->SetViewport(vp);
+	GRenderer->SetViewport(Rect(m_dwRenderWidth, m_dwRenderHeight));
 	
 	return S_OK;
 }

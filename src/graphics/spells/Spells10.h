@@ -98,8 +98,8 @@ class CControlTarget: public CSpellFx
 		Vec3f eSrc;
 		Vec3f eTarget;
 		TextureContainer * tex_mm;
-		D3DTLVERTEX v1a[40];
-		D3DTLVERTEX pathways[40];
+		TexturedVertex v1a[40];
+		TexturedVertex pathways[40];
 		ANIM_USE au;
 		int end;
 		float fColor[3];

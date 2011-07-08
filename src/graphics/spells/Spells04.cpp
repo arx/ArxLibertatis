@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells04.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -142,14 +144,14 @@ float CBless::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v3[4];
+	TexturedVertex v[4];
+	TexturedVertex v3[4];
 
 	float ff = ((float)spells[spellinstance].caster_level + 10) * 6.f;
 	float fBetaRadCos = (float) cos(radians(MAKEANGLE(player.angle.b))) * ff;
 	float fBetaRadSin = (float) sin(radians(MAKEANGLE(player.angle.b))) * ff;
 
-	unsigned long color = D3DRGB(1, 1, 1);
+	ColorBGRA color = Color::white.toBGR();
 
 	v[0].sx = x - fBetaRadCos - fBetaRadSin;
 	v[0].sy = y;
@@ -184,10 +186,10 @@ float CBless::Render()
 	EE_RT2(&v[1], &v3[1]);
 	EE_RT2(&v[2], &v3[2]);
 	EE_RT2(&v[3], &v3[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v3[0],
+	ARX_DrawPrimitive(&v3[0],
 	                             &v3[1],
 	                             &v3[2]);
-	ARX_DrawPrimitive_SoftClippZ(&v3[1],
+	ARX_DrawPrimitive(&v3[1],
 	                             &v3[2],
 	                             &v3[3]);
 	
@@ -219,9 +221,7 @@ float CBless::Render()
 			particle[j].tc			=	tex_p1;
 			particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			particle[j].fparam		=	0.0000001f;
-			particle[j].r			=	0.7f;
-			particle[j].g			=	0.6f;
-			particle[j].b			=	0.2f;
+			particle[j].rgb = Color3f(.7f, .6f, .2f);
 		}
 	}
 
@@ -277,7 +277,7 @@ float CDispellField::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 
 	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120;
 	stiteangle.a = 0;
@@ -427,90 +427,35 @@ void CTelekinesis::Update(unsigned long _ulTime)
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CTelekinesis::Render()
-{
-	int i = 0;
-
-	float x = eSrc.x;
-	float y = eSrc.y + 100.0f;
-	float z = eSrc.z;
-
-	if (ulCurrentTime >= ulDuration)
-	{
+float CTelekinesis::Render() {
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	//	register INTERACTIVE_OBJ * io;
-	for (i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			x = inter.iobj[i]->pos.x;
-			y = inter.iobj[i]->pos.y;
-			z = inter.iobj[i]->pos.z;
-		}
-	}
 	
-	y -= 40;
-	y = eSrc.y + 140;
-
-	//----------------------------
- 
- 	GRenderer->SetTexture(0, tex_p2);
-
-	//----------------------------
-	y -= 40;
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	EERIE_RGB stitecolor;
-
-	x = player.pos.x;
-	y = player.pos.y + 80;
-	z = player.pos.z;
-
-	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120; //+=(float)FrameDiff*0.1f;
-	stiteangle.a = 0;//abs(cos (radians(tPos[i].x)))*10;
-	stiteangle.g = 0;//cos (radians(tPos[i].x))*360;
-	stitepos.x = x;//tPos[i].x;//player.pos.x;//-(float)EEsin(radians(player.angle.b))*(100.f) ;
-	stitepos.y = y;//player.pos.y+60.f-mov;
-	stitepos.z = z;//tPos[i].z;//player.pos.z;//+(float)EEcos(radians(player.angle.b))*(100.f) ;
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	stiteangle.b = -stiteangle.b * 1.5f;
-	stitecolor.r = 0.7f;
-	stitecolor.g = 0.7f;
-	stitecolor.b = 0.7f;
-	stitescale.x = 1;
-	stitescale.y = -0.1f;
-	stitescale.z = 1;
-	//	DrawEERIEObjEx(slight,&stiteangle,&stitepos,&stitescale,&stitecolor);
-
-	stiteangle.b = -stiteangle.b;
+	GRenderer->SetTexture(0, tex_p2);
+	
+	Anglef stiteangle((float) ulCurrentTime * fOneOnDuration * 120, 0.f, 0.f);
+	
+	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
+	
+	Color3f stitecolor;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
-	stitescale.x = 2;
-	stitescale.y = 2;
-	stitescale.z = 2;
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	Vec3f stitescale(2.f, 2.f, 2.f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
-	y = player.pos.y + 20;
-	stitepos.y = y;//player.pos.y+60.f-mov;
+	
+	stitepos.y = player.pos.y + 20;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
-	stitescale.z = 1.8f;
-	stitescale.y = 1.8f;
-	stitescale.x = 1.8f;
+	stitescale = Vec3f(1.8f, 1.8f, 1.8f);
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
+	
 	return 1;
 }
 
@@ -542,7 +487,7 @@ CCurse::CCurse()
 	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
 
 	if (!svoodoo)
-		svoodoo = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_voodoodoll\\fx_voodoodoll.teo", NULL);
+		svoodoo = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_voodoodoll\\fx_voodoodoll.teo");
 
 	svoodoo_count++;
 }
@@ -581,37 +526,6 @@ void CCurse::Update(unsigned long _ulTime)
 float CCurse::Render()
 {Vec3f * pos = NULL; // TODO
 	int i = 0;
-/*
-	float x = eSrc.x;
-	float y = eSrc.y;// + 200.0f;
-	float z = eSrc.z;
-
-	if (ulCurrentTime >= ulDuration)
-	{
-				if (bDone)
-				{
-					EERIE_3D target,source;
-					target.x=player.pos.x;// - EEsin(radians(MAKEANGLE(player.angle.b)))*1000.f;
-					target.y=player.pos.y;//+30.f;
-					target.z=player.pos.z;// + EEcos(radians(MAKEANGLE(player.angle.b)))*1000.f;
-					source.x = x;
-					source.y = y;
-					source.z = z;
-					if (pIncinerate)
-					{
-						pIncinerate->Create(source, MAKEANGLE(player.angle.b));
-						pIncinerate->SetDuration(2000);
-					}
-					//DebugSphere(source.x,source.y,source.z,20,8000,0xFFFF0000);
-					//DebugSphere(target.x,target.y,target.z,20,8000,0xFFFF0000);
-					bDone = false;
-				}
-				else
-				{
-					return 0.f;
-				}
-		
-	}*/
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -620,14 +534,14 @@ float CCurse::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 
 	stiteangle.b = fRot;
 	stiteangle.a = 0;
 	stiteangle.g = 0;
-	stitepos = *pos;
+	stitepos = Vec3f::ZERO; //*pos; TODO null pointer dereference
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
@@ -661,9 +575,7 @@ float CCurse::Render()
 			pd->tc			=	tex_p1;
 			pd->special		=	ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
 			pd->fparam		=	0.0000001f;
-			pd->r			=	1.f;
-			pd->g			=	1.f;
-			pd->b			=	1.f;
+			pd->rgb = Color3f::white;
 		}
 	}
 

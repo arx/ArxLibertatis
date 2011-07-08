@@ -201,7 +201,7 @@ struct EERIE_SPRINGS_FTL {
 
 struct EERIE_OLD_VERTEX {
 	
-	SavedD3DTLVertex vert;
+	SavedTextureVertex vert;
 	SavedVec3 v;
 	SavedVec3 norm;
 	

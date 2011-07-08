@@ -234,8 +234,6 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 #define ARX_CAST_UINT( _x )		static_cast<unsigned int>( _x )
 #define ARX_CAST_USHORT( _x )	static_cast<unsigned short>( _x )
 
-#define ARX_OPAQUE_WHITE		0xFFFFFFFF
-
 // TODO use arx_assert directly
 #define ARX_CHECK_NOT_NEG( _x ) arx_assert((_x) >= 0)
 #define ARX_CHECK_NO_ENTRY( )   arx_assert(false)
@@ -270,17 +268,13 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 #define ARX_CLEAN_WARN_CAST_FLOAT(_x)	(static_cast<float>( _x ))
 #define ARX_CLEAN_WARN_CAST_UCHAR(_x)	(static_cast<unsigned char>( _x ))
 #define ARX_CLEAN_WARN_CAST_CHAR(_x)	(static_cast<char>( _x ))
-#define ARX_CLEAN_WARN_CAST_BYTE(_x)	(static_cast<BYTE>( _x ))
 #define ARX_CLEAN_WARN_CAST_SHORT(_x)	(static_cast<short>( _x ))
 #define ARX_CLEAN_WARN_CAST_USHORT(_x)	(static_cast<unsigned short>( _x ))
-#define ARX_CLEAN_WARN_CAST_WORD(_x)	(static_cast<WORD>( _x ))
 #define ARX_CLEAN_WARN_CAST_INT(_x)		(static_cast<int>( _x ))
 #define ARX_CLEAN_WARN_CAST_UINT(_x)	(static_cast<unsigned int>( _x ))
 #define ARX_CLEAN_WARN_CAST_SIZET(_x)	(static_cast<size_t>( _x ))
 #define ARX_CLEAN_WARN_CAST_LONG(_x)	(static_cast<long>( _x ))
 #define ARX_CLEAN_WARN_CAST_ULONG(_x)	(static_cast<unsigned long>( _x ))
-#define ARX_CLEAN_WARN_CAST_DWORD(_x)	(static_cast<DWORD>( _x ))
-#define ARX_CLEAN_WARN_CAST_D3DVALUE(_x)(static_cast<D3DVALUE>( _x ))
 
 /* ---------------------------------------------------------
                       String utilities

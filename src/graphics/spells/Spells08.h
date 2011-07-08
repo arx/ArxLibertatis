@@ -78,14 +78,14 @@ class CExplosion: public CSpellFx
 		int				disquenbvertex;
 		int				disquenbfaces;
 		Vec3f	*	disquevertex;
-		D3DTLVERTEX	*	disqued3d;
+		TexturedVertex	*	disqued3d;
 		unsigned short	* disqueind;
 
 		int		*		tactif;
 
 
  
-		void ExplosionAddParticule(int, D3DTLVERTEX *, TextureContainer *);
+		void ExplosionAddParticule(int, TexturedVertex *, TextureContainer *);
 		void Collision(int, Vec3f *, Vec3f *);
 	public:
  

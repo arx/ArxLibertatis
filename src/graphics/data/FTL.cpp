@@ -543,7 +543,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 			EERIE_FACE_FTL * eff = reinterpret_cast<EERIE_FACE_FTL*>(dat + pos);
 			pos += sizeof(EERIE_FACE_FTL); 
 			
-			obj->facelist[ii].facetype = eff->facetype;
+			obj->facelist[ii].facetype = PolyType::load(eff->facetype);
 			obj->facelist[ii].texid = eff->texid;
 			obj->facelist[ii].transval = eff->transval;
 			obj->facelist[ii].temp = eff->temp;
@@ -638,7 +638,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		
 		// Cast to header
 		ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
-		pos = afsh->offset_collision_spheres;
+		size_t pos = afsh->offset_collision_spheres;
 		afcsdh = reinterpret_cast<ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + pos);
 		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
 		
@@ -655,11 +655,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	
 	// Alloc'n'Copy Progressive DATA
 	if(afsh->offset_progressive_data != -1) {
-		ARX_FTL_PROGRESSIVE_DATA_HEADER *	afpdh;
-		afpdh = (ARX_FTL_PROGRESSIVE_DATA_HEADER *)(dat + afsh->offset_progressive_data);
-		pos = afsh->offset_progressive_data;
-		pos += sizeof(ARX_FTL_PROGRESSIVE_DATA_HEADER);
-		pos += sizeof(PROGRESSIVE_DATA) * afpdh->nb_vertex;
+		// Progressive data ignored.
 	}
 	
 	// Alloc'n'Copy Clothes DATA
@@ -671,7 +667,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		afcdh = reinterpret_cast<ARX_FTL_CLOTHES_DATA_HEADER*>(dat + afsh->offset_clothes_data);
 		obj->cdata->nb_cvert = (short)afcdh->nb_cvert;
 		obj->cdata->springs.resize(afcdh->nb_springs);
-		pos = afsh->offset_clothes_data;
+		size_t pos = afsh->offset_clothes_data;
 		pos += sizeof(ARX_FTL_CLOTHES_DATA_HEADER);
 		
 		// now load cvert
@@ -693,7 +689,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	
 	EERIE_OBJECT_CenterObjectCoordinates(obj);
 	EERIE_CreateCedricData(obj);
-	EERIEOBJECT_CreatePFaces(obj);
 	// Now we can release our cool FTL file
 	EERIE_Object_Precompute_Fast_Access(obj);
 	
