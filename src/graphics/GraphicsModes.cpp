@@ -32,7 +32,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 #include "gui/MenuWidgets.h"
-#include "graphics/d3dwrapper.h"
 #include "graphics/Math.h"
 
 using std::min;

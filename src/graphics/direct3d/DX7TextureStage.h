@@ -2,9 +2,9 @@
 #ifndef ARX_GRAPHICS_DIRECT3D_DX7TEXTURESTAGE_H
 #define ARX_GRAPHICS_DIRECT3D_DX7TEXTURESTAGE_H
 
-#include "graphics/texture/TextureStage.h"
+#include <d3d.h>
 
-#include "graphics/d3dwrapper.h"
+#include "graphics/texture/TextureStage.h"
 
 class DX7TextureStage : public TextureStage {
 	

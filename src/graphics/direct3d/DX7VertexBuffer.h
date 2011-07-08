@@ -2,8 +2,9 @@
 #ifndef ARX_GRAPHICS_DIRECT3D_DX7VERTEXBUFFER_H
 #define ARX_GRAPHICS_DIRECT3D_DX7VERTEXBUFFER_H
 
+#include <d3d.h>
+
 #include "core/Core.h"
-#include "graphics/d3dwrapper.h"
 #include "graphics/VertexBuffer.h"
 
 extern const DWORD ARXToDXBufferFlags[];

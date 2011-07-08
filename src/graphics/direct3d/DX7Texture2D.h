@@ -4,7 +4,8 @@
 
 #include <list>
 
-#include "graphics/d3dwrapper.h"
+#include <d3d.h>
+
 #include "graphics/texture/Texture.h"
 
 class DX7Texture2D : public Texture2D {
