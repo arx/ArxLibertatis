@@ -25,6 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakEntry.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <cassert>
 #include <algorithm>
@@ -34,6 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 using std::find_first_of;
+using std::malloc;
 
 PakFile::~PakFile() {
 	
