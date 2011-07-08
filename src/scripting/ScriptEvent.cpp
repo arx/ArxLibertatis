@@ -726,64 +726,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					LogDebug << "  ACCEPT";
 					goto end;
 				}
-				else if (!strcmp(word, "AMBIANCE"))
-				{
-
-					pos = GetNextWord(es, pos, word);
-
-					LogDebug << "AMBIANCE " << word;
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'V'))
-						{
-							float volume = 1.f;
-							pos = GetNextWord(es, pos, word);
-							LogDebug << word;
-							volume = GetVarValueInterpretedAsFloat(word, esss, io);
-
-							pos = GetNextWord(es, pos, word);
-							LogDebug << word;
-
-							ARX_SOUND_PlayScriptAmbiance(word.c_str(), ARX_SOUND_PLAY_LOOPED, volume * ( 1.0f / 100 ));
-						}
-						else if (iCharIn(word, 'N'))
-						{
-							pos = GetNextWord(es, pos, word);
-							LogDebug << word;
-
-							ARX_SOUND_PlayScriptAmbiance(word.c_str(), ARX_SOUND_PLAY_ONCE);
-						}
-						else if (iCharIn(word, 'M'))
-						{
-							std::string temp2;
-
-							pos = GetNextWord(es, pos, temp2);
-							LogDebug << temp2;
-
-							ARX_SOUND_SetAmbianceTrackStatus(word.c_str(), temp2.c_str(), 1); //1 = Mute
-
-							pos = GetNextWord(es, pos, word);
-							LogDebug << word;
-						}
-						else if (iCharIn(word, 'U'))
-						{
-							std::string temp2;
-
-							pos = GetNextWord(es, pos, temp2);
-							LogDebug <<  temp2;
-
-							ARX_SOUND_SetAmbianceTrackStatus(word.c_str(), temp2.c_str(), 0);//0 = unmute
-
-							pos = GetNextWord(es, pos, word);
-							LogDebug << word;
-						}
-					}
-					else if (!strcasecmp(word, "KILL"))
-						ARX_SOUND_KillAmbiances();
-					else
-						ARX_SOUND_PlayScriptAmbiance(word.c_str());
-				}
 				else if (!strcmp(word, "ANCHORBLOCK"))
 				{
 					pos = GetNextWord(es, pos, word);
