@@ -722,19 +722,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					LogDebug << "  ACCEPT";
 					goto end;
 				}
-				else if (!strcmp(word, "ADDGOLD"))
-				{
-					pos = GetNextWord(es, pos, word);
-					float val = GetVarValueInterpretedAsFloat(word, esss, io);
-
-					if (val != 0) ARX_SOUND_PlayInterface(SND_GOLD);
-
-
-					ARX_CHECK_LONG(val);
-					ARX_PLAYER_AddGold(ARX_CLEAN_WARN_CAST_LONG(val));
-
-					LogDebug << "ADD_GOLD " << word;
-				}
 				else if (!strcmp(word, "ATTRACTOR"))
 				{
 					pos = GetNextWord(es, pos, word);

@@ -3,6 +3,7 @@
 
 #include "game/Player.h"
 #include "io/Logger.h"
+#include "scene/GameSound.h"
 #include "scripting/ScriptEvent.h"
 
 using std::string;
@@ -36,7 +37,7 @@ public:
 		
 		float val = context.getFloat();
 		
-		ARX_PLAYER_Modify_XP((long)val);
+		ARX_PLAYER_Modify_XP(static_cast<long>(val));
 		
 		LogDebug << "addxp " << val;
 		
@@ -47,11 +48,36 @@ public:
 	
 };
 
+class AddGoldCommand : public ScriptCommand {
+	
+public:
+	
+	ScriptResult execute(ScriptContext & context) {
+		
+		float val = context.getFloat();
+		
+		if(val != 0) {
+			ARX_SOUND_PlayInterface(SND_GOLD);
+		}
+		
+		ARX_CHECK_LONG(val);
+		ARX_PLAYER_AddGold(static_cast<long>(val));
+		
+		LogDebug << "addgold " << val;
+		
+		return ACCEPT;
+	}
+	
+	~AddGoldCommand() { }
+	
+};
+
 }
 
 void setupScriptedPlayer() {
 	
 	ScriptEvent::registerCommand("addbag", new AddBagCommand);
 	ScriptEvent::registerCommand("addxp", new AddXpCommand);
+	ScriptEvent::registerCommand("addgold", new AddGoldCommand);
 	
 }
