@@ -100,7 +100,7 @@ public:
 		return Color3(T(val), T(val), T(val));
 	}
 	
-	inline Color3 operator*(float factor) {
+	inline Color3 operator*(float factor) const {
 		return Color3(r * factor, g * factor, b * factor);
 	}
 	
@@ -197,7 +197,7 @@ public:
 		return O(val * (ColorLimits<O>::max() / Limits::max()));
 	}
 	
-	inline Color4 operator*(float factor) {
+	inline Color4 operator*(float factor) const {
 		return Color4(C3::operator*(factor), a);
 	}
 	

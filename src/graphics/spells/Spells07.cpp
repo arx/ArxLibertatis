@@ -532,7 +532,7 @@ float CLightning::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->ResetTexture(0);
 
-	v2[0].color = v2[1].color = v2[2].color = v2[3].color = D3DRGB(1, 1, 1);
+	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::white.toBGR();
 
 	float xx;
 	float zz;

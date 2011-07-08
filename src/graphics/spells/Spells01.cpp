@@ -208,12 +208,8 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-CMagicMissile::CMagicMissile() : CSpellFx()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
+CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f::ZERO) {
+	
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
@@ -224,13 +220,6 @@ CMagicMissile::CMagicMissile() : CSpellFx()
 
 	smissile_count++;
 
-	fColor[0] = 1;
-	fColor[1] = 1;
-	fColor[2] = 1;
-
-	fColor1[0] = 1;
-	fColor1[1] = 1;
-	fColor1[2] = 1;
 	bExplo = false;
 	bMove = true;
 }
@@ -266,10 +255,6 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	this->angles = angles;
 	eCurPos = eSrc = aeSrc;
 
-
-	fSize = 1;
-	bDone = true;
-
 	s = eSrc;
 	e = eSrc;
 
@@ -297,7 +282,6 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	fTrail = 0;
 
 	iLength = 50;
-	fOneOnLength = 1.0f / (float) iLength;
 	iBezierPrecision = BEZIERPrecision;
 	fOneOnBezierPrecision = 1.0f / (float) iBezierPrecision;
 	bExplo = false;
@@ -308,20 +292,8 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MM_LOOP, &eCurPos, 1.0F, ARX_SOUND_PLAY_LOOPED);
 }
 
-//-----------------------------------------------------------------------------
-void CMagicMissile::SetColor(float faRed, float faGreen, float faBlue)
-{
-	fColor[0] = faRed;
-	fColor[1] = faGreen;
-	fColor[2] = faBlue;
-}
-
-//-----------------------------------------------------------------------------
-void CMagicMissile::SetColor1(float faRed, float faGreen, float faBlue)
-{
-	fColor1[0] = faRed;
-	fColor1[1] = faGreen;
-	fColor1[2] = faBlue;
+void CMagicMissile::SetColor(Color3f color) {
+	fColor = color;
 }
 
 //-----------------------------------------------------------------------------
@@ -455,7 +427,7 @@ float CMagicMissile::Render()
 				if (c < 0) c = 0;
 				else if (c > 1) c = 1;
 
-				Color color = Color3f(c * fColor[0] * alpha, c * fColor[1] * alpha, c * fColor[2] * alpha).to<u8>();
+				Color color = (fColor * (c * alpha)).to<u8>();
 
 				if (fsize < 0.5f)
 					fsize = fsize * 2 * 3;
@@ -660,15 +632,10 @@ void CMultiMagicMissile::Create()
 
 				pMM->SetDuration(lTime);
 
-				if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-				{
-					pMM->SetColor(0.9f, 0.2f, 0.5f);
-					pMM->SetColor1(0.9f, 0.2f, 0.5f);
-				}
-				else
-				{
-					pMM->SetColor(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f);
-					pMM->SetColor1(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f);
+				if(spells[spellinstance].caster == 0 && cur_mr == 3) {
+					pMM->SetColor(Color3f(0.9f, 0.2f, 0.5f));
+				} else {
+					pMM->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
 				}
 
 				pTab[i]->lLightId = GetFreeDynLight();
@@ -716,8 +683,8 @@ void CMultiMagicMissile::CheckCollision()
 			{
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
-				if (pMM->bExplo == false)
-				{
+				if(!pMM->bExplo) {
+					
 					EERIE_SPHERE sphere;
 					sphere.origin = pMM->eCurPos;
 					sphere.radius	= 10.f;

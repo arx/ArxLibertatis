@@ -61,90 +61,75 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 #include "graphics/effects/SpellEffects.h"
 
-//-----------------------------------------------------------------------------
 // Done By : Didier Pédreno
-// Status  :
-//-----------------------------------------------------------------------------
-class CMagicMissile: public CSpellFx
-{
-	public:
-		bool bExplo;
-		bool bMove;
-		bool bDone;
-		int end;
-		int iMax;
-		int iLength;
-		int	iBezierPrecision;
-		float fColor[3];
-		float fColor1[3];
-		float fSize;
-		float fTrail;
-		float fOneOnLength;
-		float fOneOnBezierPrecision;
-		Vec3f eSrc;
-		Vec3f eCurPos;
-		Anglef angles;
-		TextureContainer * tex_mm;
-		TexturedVertex pathways[6];
-		ArxSound snd_loop;
-	public:
-		CMagicMissile();
-		~CMagicMissile();
-
-		// accesseurs
-	public:
-		void SetTTL(unsigned long);
-		void SetPos(Vec3f);
-		void SetColor(float, float, float);
-		void SetColor1(float, float, float);
-
-		// surcharge
-	public:
-		void	Create(const Vec3f &, const Anglef &);
-		void	Kill();
-		void	Update(unsigned long);
-		float	Render();
+class CMagicMissile : public CSpellFx {
+	
+public:
+	
+	bool bExplo;
+	bool bMove;
+	int iLength;
+	int	iBezierPrecision;
+	Color3f fColor;
+	float fTrail;
+	float fOneOnBezierPrecision;
+	Vec3f eSrc;
+	Vec3f eCurPos;
+	Anglef angles;
+	TextureContainer * tex_mm;
+	TexturedVertex pathways[6];
+	ArxSound snd_loop;
+	
+	CMagicMissile();
+	~CMagicMissile();
+	
+	// accesseurs
+	void SetTTL(unsigned long);
+	void SetColor(Color3f);
+	
+	// surcharge
+	void Create(const Vec3f &, const Anglef &);
+	void Update(unsigned long);
+	float Render();
+	
 };
 
-//-----------------------------------------------------------------------------
-class CMultiMagicMissile: public CSpellFx
-{
-	private:
-		CMagicMissile ** pTab;
-		unsigned int uiNumber;
-		bool bExplo;
-	public:
-		CMultiMagicMissile(long nb);
-		~CMultiMagicMissile();
-
-	public:
-		void	CheckCollision();
-
-	public:
-		void	Create();
-		void	Kill();
-		void	Update(unsigned long);
-		float	Render();
+class CMultiMagicMissile : public CSpellFx {
+	
+private:
+	
+	CMagicMissile ** pTab;
+	unsigned int uiNumber;
+	
+public:
+	
+	CMultiMagicMissile(long nb);
+	~CMultiMagicMissile();
+	
+	void CheckCollision();
+	
+	void Create();
+	void Update(unsigned long);
+	float Render();
+	
 };
 
-//-----------------------------------------------------------------------------
 // Done By : Sébastien Scieux
-// Status  :
-//-----------------------------------------------------------------------------
-class CIgnit: public CSpellFx
-{
-	private:
-		Vec3f	pos;
-		float		perimetre;
-		short		key;
-		int			duration;
-		int			currduration;
-		float		interp;
-
+class CIgnit : public CSpellFx {
+	
+private:
+	
+	Vec3f	pos;
+	float		perimetre;
+	short		key;
+	int			duration;
+	int			currduration;
+	float		interp;
+	
 		TextureContainer	* tp;
 		float				r, g, b;
 		int					mask;
-
+	
 		struct T_LINKLIGHTTOFX
 		{
 			Vec3f	poslight;
@@ -158,7 +143,6 @@ class CIgnit: public CSpellFx
 		unsigned char		nblight;
 		T_LINKLIGHTTOFX		tablight[256];
 
-	public:
 		CIgnit();
 		~CIgnit();
 

@@ -71,7 +71,7 @@ class CSummonCreature: public CSpellFx
 {
 	public:
 		Vec3f eSrc;
-		float	fColorRays1[3];
+		Color3f fColorRays1;
 
 	private:
 		TextureContainer * tex_light;
@@ -87,10 +87,10 @@ class CSummonCreature: public CSpellFx
 		float	fSizeIntro;
 		float	fRand;
 		float	fTexWrap;
-		float	fColorBorder[3];
-		float	fColorRays2[3];
-		float	tfRaysa[40];
-		float	tfRaysb[40];
+		Color3f fColorBorder;
+		Color3f fColorRays2;
+		float tfRaysa[40];
+		float tfRaysb[40];
 		unsigned long ulDurationIntro;
 		unsigned long ulDurationRender;
 		unsigned long ulDurationOuttro;
@@ -112,9 +112,9 @@ class CSummonCreature: public CSpellFx
 		void SetDuration(unsigned long, unsigned long, unsigned long);
 		void SetPos(Vec3f);
  
-		void SetColorBorder(float, float, float);
-		void SetColorRays1(float, float, float);
-		void SetColorRays2(float, float, float);
+		void SetColorBorder(Color3f);
+		void SetColorRays1(Color3f);
+		void SetColorRays2(Color3f);
  
 		unsigned long GetDuration();
 

@@ -151,7 +151,7 @@ float CBless::Render()
 	float fBetaRadCos = (float) cos(radians(MAKEANGLE(player.angle.b))) * ff;
 	float fBetaRadSin = (float) sin(radians(MAKEANGLE(player.angle.b))) * ff;
 
-	unsigned long color = D3DRGB(1, 1, 1);
+	ColorBGRA color = Color::white.toBGR();
 
 	v[0].sx = x - fBetaRadCos - fBetaRadSin;
 	v[0].sy = y;

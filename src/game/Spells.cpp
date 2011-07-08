@@ -6024,11 +6024,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					
 				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
 					pCSpellFx->SetDuration(2000, 500, 1500);
-					pCSpellFx->SetColorBorder(1, 0, 0);
-					pCSpellFx->SetColorRays1(0.93f, 0.93f, 0.63f);
-					pCSpellFx->SetColorRays2(0,0,0);
-					pCSpellFx->SetColorRays1(1, 0, 0);
-					pCSpellFx->SetColorRays2(0.5f, 0.5f, 0);
+					pCSpellFx->SetColorBorder(Color3f::red);
+					pCSpellFx->SetColorRays1(Color3f::red);
+					pCSpellFx->SetColorRays2(Color3f::yellow * .5f);
 					
 					pCSpellFx->lLightId = GetFreeDynLight();
 
@@ -6039,9 +6037,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						DynLight[id].intensity = 0.3f;
 						DynLight[id].fallend = 500.f;
 						DynLight[id].fallstart = 400.f;
-						DynLight[id].rgb.r = 1.0f;
-						DynLight[id].rgb.g = 0.0f;
-						DynLight[id].rgb.b = 0.0f;
+						DynLight[id].rgb = Color3f::red;
 						DynLight[id].pos = pCSpellFx->eSrc;
 					}
 
@@ -6091,11 +6087,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					
 				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
 				pCSpellFx->SetDuration(2000, 500, 1500);
-				pCSpellFx->SetColorBorder(1, 0, 0);
-				pCSpellFx->SetColorRays1(0.93f, 0.93f, 0.63f);
-				pCSpellFx->SetColorRays2(0,0,0);
-				pCSpellFx->SetColorRays1(1, 0, 0);
-				pCSpellFx->SetColorRays2(0.5f, 0.5f, 0);
+				pCSpellFx->SetColorBorder(Color3f::red);
+				pCSpellFx->SetColorRays1(Color3f::red);
+				pCSpellFx->SetColorRays2(Color3f::yellow * .5f);
 					
 				pCSpellFx->lLightId = GetFreeDynLight();
 
@@ -6106,9 +6100,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					DynLight[id].intensity = 0.3f;
 					DynLight[id].fallend = 500.f;
 					DynLight[id].fallstart = 400.f;
-					DynLight[id].rgb.r = 1.0f;
-					DynLight[id].rgb.g = 0.0f;
-					DynLight[id].rgb.b = 0.0f;
+					DynLight[id].rgb = Color3f::red;
 					DynLight[id].pos = pCSpellFx->eSrc;
 					
 				}

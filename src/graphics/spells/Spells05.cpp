@@ -427,10 +427,6 @@ float CRuneOfGuarding::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	//----------------------------
-	//	long color = D3DRGB(1,1,1);
-	//	int size = 100;
-	//----------------------------
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
@@ -593,27 +589,9 @@ void LaunchPoisonExplosion(Vec3f * aePos)
 }
 
 
-//-----------------------------------------------------------------------------
-CPoisonProjectile::CPoisonProjectile()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CPoisonProjectile::CPoisonProjectile() : eSrc(Vec3f::ZERO) {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
-
-	fColor[0] = 1;
-	fColor[1] = 1;
-	fColor[2] = 0;
-
-	fColor1[0] = 0.8f;
-	fColor1[1] = 0.6f;
-	fColor1[2] = 0.2f;
 }
 
 //-----------------------------------------------------------------------------
@@ -625,29 +603,15 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	SetAngle(_fBeta);
 
-	eSrc.x = _eSrc.x;
-	eSrc.y = _eSrc.y;
-	eSrc.z = _eSrc.z;
+	eSrc = _eSrc;
 
-	fSize = 1;
-	bDone = true;
 	bOk = false;
 
-	eTarget.x = eSrc.x - fBetaRadSin * 850;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z + fBetaRadCos * 850;
-
-	eMove.x = - fBetaRadSin * 2; 
-	eMove.y = 0;
-	eMove.z = + fBetaRadCos * 2; 
+	eMove = Vec3f(-fBetaRadSin * 2, 0.f, fBetaRadCos * 2); 
 
 	Vec3f s, e, h;
-	s.x = eSrc.x;
-	s.y = eSrc.y;
-	s.z = eSrc.z;
-	e.x = eSrc.x;
-	e.y = eSrc.y;
-	e.z = eSrc.z;
+	s = eSrc;
+	e = eSrc;
 
 	i = 0;
 
@@ -691,18 +655,12 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.iNbMax = 5;
 	cp.fLife = 2000;
 	cp.fLifeRandom = 1000;
-	cp.p3Pos.x = 0;
-	cp.p3Pos.y = 0;
-	cp.p3Pos.z = 0;
-	cp.p3Direction.x = -eMove.x;
-	cp.p3Direction.y = -eMove.y;
-	cp.p3Direction.z = -eMove.z;
+	cp.p3Pos = Vec3f::ZERO;
+	cp.p3Direction = -eMove;
 	cp.fAngle = 0;
 	cp.fSpeed = 10;
 	cp.fSpeedRandom = 10;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
+	cp.p3Gravity = Vec3f::ZERO;
 	cp.fFlash = 21;
 	cp.fRotation = 80;
 	cp.bRotationRandomDirection = true;
@@ -747,23 +705,6 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pPS.Update(0);
 }
 
-//---------------------------------------------------------------------
-void CPoisonProjectile::SetColor(float _fRed, float _fGreen, float _fBlue)
-{
-	fColor[0] = _fRed;
-	fColor[1] = _fGreen;
-	fColor[2] = _fBlue;
-}
-
-//---------------------------------------------------------------------
-void CPoisonProjectile::SetColor1(float _fRed, float _fGreen, float _fBlue)
-{
-	fColor1[0] = _fRed;
-	fColor1[1] = _fGreen;
-	fColor1[2] = _fBlue;
-}
-
-//---------------------------------------------------------------------
 void CPoisonProjectile::Update(unsigned long _ulTime)
 {
 	if (ulCurrentTime <= 2000)
@@ -781,7 +722,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 	{
 		if (!bOk)
 		{
-			bOk = !bOk;
+			bOk = true;
 
 			// go
 			ParticleParams cp;
@@ -792,9 +733,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.p3Pos.y = 0.f;
 			cp.p3Pos.z = fBetaRadCos * 20;
 
-			cp.p3Direction.x = -eMove.x;
-			cp.p3Direction.y = -eMove.y;
-			cp.p3Direction.z = -eMove.z;
+			cp.p3Direction = -eMove;
 
 			cp.fAngle = radians(4);
 			cp.fSpeed = 150;
@@ -1051,11 +990,6 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 
 		CPoisonProjectile * pPP = (CPoisonProjectile *) pTab[i];
 
-		pPP->SetColor(0.5f + rnd() * 0.5f, 0.5f + rnd() * 0.5f, 0.5f + rnd() * 0.5f);
-		pPP->SetColor1(0.5f + rnd() * 0.5f, 0.5f + rnd() * 0.5f, 0.5f + rnd() * 0.5f);
-
-		pPP->SetColor(0, 1, 0);
-		pPP->SetColor1(0.3f, 0.8f, 0);
 		pPP->lLightId = GetFreeDynLight();
 
 		if (pPP->lLightId != -1)
@@ -1065,12 +999,8 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 			DynLight[id].intensity		= 2.3f;
 			DynLight[id].fallend		= 250.f;
 			DynLight[id].fallstart		= 150.f;
-			DynLight[id].rgb.r			= 0;
-			DynLight[id].rgb.g			= 1;
-			DynLight[id].rgb.b			= 0;
-			DynLight[id].pos.x			= pPP->eSrc.x;
-			DynLight[id].pos.y			= pPP->eSrc.y;
-			DynLight[id].pos.z			= pPP->eSrc.z;
+			DynLight[id].rgb = Color3f::green;
+			DynLight[id].pos = pPP->eSrc;
 			DynLight[id].time_creation	= ARXTimeUL();
 			DynLight[id].duration		= 200;
 		}
@@ -1109,12 +1039,8 @@ float CMultiPoisonProjectile::Render()
 			DynLight[id].intensity	= 2.3f * fa;
 			DynLight[id].fallend	= 250.f;
 			DynLight[id].fallstart	= 150.f;
-			DynLight[id].rgb.r		= 0.f;
-			DynLight[id].rgb.g		= 1.0f;
-			DynLight[id].rgb.b		= 0.f;
-			DynLight[id].pos.x		= pPoisonProjectile->eCurPos.x;
-			DynLight[id].pos.y		= pPoisonProjectile->eCurPos.y;
-			DynLight[id].pos.z		= pPoisonProjectile->eCurPos.z;
+			DynLight[id].rgb = Color3f::green;
+			DynLight[id].pos = pPoisonProjectile->eCurPos;
 			DynLight[id].time_creation = ARXTimeUL();
 			DynLight[id].duration	= 200;
 		}
@@ -1125,9 +1051,7 @@ float CMultiPoisonProjectile::Render()
 		if ((t != -1)
 		        &&	(spells[pTab[i]->spellinstance].timcreation + 1600 < ARXTimeUL()))
 		{
-			damages[t].pos.x  = pPoisonProjectile->eCurPos.x;
-			damages[t].pos.y  = pPoisonProjectile->eCurPos.y;
-			damages[t].pos.z  = pPoisonProjectile->eCurPos.z;
+			damages[t].pos = pPoisonProjectile->eCurPos;
 			damages[t].radius = 120.f;
 			float v = spells[spellinstance].caster_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
