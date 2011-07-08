@@ -1,4 +1,7 @@
+
 #include "graphics/OpenGLRenderer.h"
+
+#ifdef HAVE_OPENGL
 
 #include <GL/gl.h>
 
@@ -60,3 +63,5 @@ void OpenGLRenderer::SetRenderState( Renderer::RenderState state, bool enable )
 			Renderer::SetRenderState( state, enable );
 	}
 }
+
+#endif // HAVE_OPENGL
