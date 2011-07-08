@@ -28,10 +28,30 @@ public:
 	
 };
 
+class AddXpCommand : public ScriptCommand {
+	
+public:
+	
+	ScriptResult execute(ScriptContext & context) {
+		
+		float val = context.getFloat();
+		
+		ARX_PLAYER_Modify_XP((long)val);
+		
+		LogDebug << "addxp " << val;
+		
+		return ACCEPT;
+	}
+	
+	~AddXpCommand() { }
+	
+};
+
 }
 
 void setupScriptedPlayer() {
 	
 	ScriptEvent::registerCommand("addbag", new AddBagCommand);
+	ScriptEvent::registerCommand("addxp", new AddXpCommand);
 	
 }

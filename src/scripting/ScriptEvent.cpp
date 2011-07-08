@@ -722,13 +722,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					LogDebug << "  ACCEPT";
 					goto end;
 				}
-				else if (!strcmp(word, "ADDXP"))
-				{
-					pos = GetNextWord(es, pos, word);
-					float val = GetVarValueInterpretedAsFloat(word, esss, io);
-					ARX_PLAYER_Modify_XP((long)val);
-					LogDebug << "ADD_XP "<< word;
-				}
 				else if (!strcmp(word, "ADDGOLD"))
 				{
 					pos = GetNextWord(es, pos, word);
