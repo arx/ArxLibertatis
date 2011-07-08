@@ -342,7 +342,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, long behavior, long behavior_param)
+void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, Behaviour behavior, long behavior_param)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -1005,7 +1005,7 @@ void ARX_TEMPORARY_TrySound(float volume)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, long MOVEMODE)
+void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, MoveMode MOVEMODE)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))

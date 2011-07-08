@@ -2405,7 +2405,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				io->_npcdata->absorb = as->absorb;
 				io->_npcdata->aimtime = as->aimtime;
 				io->_npcdata->armor_class = as->armor_class;
-				io->_npcdata->behavior = as->behavior;
+				io->_npcdata->behavior = Behaviour::load(as->behavior); // TODO save/load flags
 				io->_npcdata->behavior_param = as->behavior_param;
 				io->_npcdata->collid_state = as->collid_state;
 				io->_npcdata->collid_time = as->collid_time;
@@ -2422,7 +2422,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				io->_npcdata->mana = as->mana;
 				io->_npcdata->maxlife = as->maxlife;
 				io->_npcdata->maxmana = as->maxmana;
-				io->_npcdata->movemode = as->movemode;
+				io->_npcdata->movemode = (MoveMode)as->movemode; // TODO save/load enum
 				io->_npcdata->moveproblem = as->moveproblem;
 				io->_npcdata->reachedtarget = as->reachedtarget;
 				io->_npcdata->speakpitch = as->speakpitch;

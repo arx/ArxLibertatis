@@ -49,6 +49,8 @@
 #include "scene/Object.h"
 #include "scene/Light.h"
 
+#include "scripting/ScriptedNPC.h"
+
 using std::max;
 using std::min;
 using std::string;
@@ -421,6 +423,116 @@ extern long LINEEND; // set by GetNextWord
 extern INTERACTIVE_OBJ * LASTSPAWNED;
 extern long PauseScript;
 
+ScriptContext::ScriptContext(const EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
+
+string ScriptContext::getStringVar(const string & var) {
+	if(script->master) {
+		return GetVarValueInterpretedAsText(var, script->master, NULL);
+	} else {
+		return GetVarValueInterpretedAsText(var, script, NULL);
+	}
+}
+
+string ScriptContext::getWord() {
+	
+	skipWhitespace();
+	
+	if(pos >= script->size) {
+		return string();
+	}
+	
+	LINEEND = 0; // Global LINEEND set to 0 (no LINEEND for now)
+	const char * esdat = script->data;
+	
+	boolean tilde = false; // number of tildes
+	
+	string word;
+	string var;
+	
+	// now take chars until it finds a space or unused char
+	while(((unsigned char)esdat[pos]) > 32 && esdat[pos] != '(' && esdat[pos] != ')') {
+		
+		if(esdat[pos] == '"') {
+			pos++;
+			if(pos == script->size) {
+				return word;
+			}
+			
+			while(esdat[pos] != '"' && !LINEEND) {
+				if(esdat[pos] == '\n') {
+					LINEEND = 1;
+				} else if(esdat[pos] == '~') {
+					if(tilde) {
+						word += getStringVar(var);
+					}
+					tilde = !tilde;
+				} else if(tilde) {
+					var.push_back(esdat[pos]);
+				} else {
+					word.push_back(esdat[pos]);
+				}
+				pos++;
+				if(pos == script->size) {
+					return word;
+				}
+			}
+			
+			pos++;
+			return word;
+			
+		} else if(esdat[pos] == '~') {
+			if(tilde) {
+				word += getStringVar(var);
+			}
+			tilde = !tilde;
+		} else if(tilde) {
+			var.push_back(esdat[pos]);
+		} else {
+			word.push_back(esdat[pos]);
+		}
+		
+		pos++;
+		if(pos == script->size) {
+			return word;
+		}
+	}
+	
+	return word;
+}
+
+void ScriptContext::skipWhitespace() {
+	
+	const char * esdat = script->data;
+	
+	// First ignores spaces & unused chars
+	while(pos < script->size && (((unsigned char)esdat[pos]) <= 32 || esdat[pos] == '(' || esdat[pos] == ')')) {
+		if(script->data[pos] == '\n') {
+			LINEEND = 1;
+		}
+		pos++;
+	}
+}
+
+std::string ScriptContext::getFlags() {
+	
+	skipWhitespace();
+	
+	if(pos < script->size && script->data[pos] == '-') {
+		return getLowercase();
+	}
+	
+	return string();
+}
+
+float ScriptContext::getFloat() {
+	return GetVarValueInterpretedAsFloat(getWord(), script, io);
+}
+
+string ScriptContext::getLowercase() {
+	return toLowercase(getWord());
+}
+
+
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
@@ -573,8 +685,18 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 		//TODO(lubosz): this is one mega switch
 		LogDebug << "Switching! current word '" << word << "'";
-
-		switch (word[0]) {
+		
+		Commands::const_iterator it = commands.find(toLowercase(word));
+		
+		if(it != commands.end()) {
+			
+			ScriptContext context(es, pos, io);
+			
+			it->second->execute(context);
+			
+			pos = context.pos;
+			
+		} else switch (word[0]) {
 			case '}':
 				brackets--;
 				break;
@@ -588,131 +710,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				if (word[1] == '>') pos = GotoNextLine(es, pos);
 				break;
 			case 'B':
-				if (!strcmp(word, "BEHAVIOR"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug << "BEHAVIOR " << word;
-
-					if (!strcasecmp(word, "STACK"))
-					{
-						ARX_NPC_Behaviour_Stack(io);
-					}
-					else if (!strcasecmp(word, "UNSTACK"))
-					{
-						ARX_NPC_Behaviour_UnStack(io);
-					}
-					else if (!strcasecmp(word, "UNSTACKALL"))
-					{
-						ARX_NPC_Behaviour_Reset(io);
-					}
-					else
-					{
-						unsigned long behavior = 0; //BEHAVIOUR_NONE;
-						if (word[0] == '-')
-						{
-
-							if (iCharIn(word, 'L'))
-								behavior |= BEHAVIOUR_LOOK_AROUND;
-
-							if (iCharIn(word, 'S'))
-								behavior |= BEHAVIOUR_SNEAK;
-
-							if (iCharIn(word, 'D'))
-								behavior |= BEHAVIOUR_DISTANT;
-
-							if (iCharIn(word, 'M'))
-								behavior |= BEHAVIOUR_MAGIC;
-
-							if (iCharIn(word, 'F'))
-								behavior |= BEHAVIOUR_FIGHT;
-
-							if (iCharIn(word, 'A'))
-								behavior |= BEHAVIOUR_STARE_AT;
-
-							if (CharIn(word, '0') && io && (io->ioflags & IO_NPC))
-								io->_npcdata->tactics = 0;
-
-							if (CharIn(word, '1') && io && (io->ioflags & IO_NPC))
-								io->_npcdata->tactics = 0;
-
-							if (CharIn(word, '2') && io && (io->ioflags & IO_NPC))
-								io->_npcdata->tactics = 0;
-
-							pos = GetNextWord(es, pos, word);
-
-							LogDebug <<  word;
-
-						}
-
-						float behavior_param = 0.f;
-						if (!strcasecmp(word, "GO_HOME"))
-							behavior |= BEHAVIOUR_GO_HOME;
-						else if (!strcasecmp(word, "FRIENDLY"))
-						{
-							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = NOMOVEMODE;
-
-							behavior |= BEHAVIOUR_FRIENDLY;
-						}
-						else if (!strcasecmp(word, "MOVE_TO"))
-						{
-							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
-
-							behavior |= BEHAVIOUR_MOVE_TO;
-						}
-						else if (!strcasecmp(word, "FLEE"))
-						{
-							behavior |= BEHAVIOUR_FLEE;
-							pos = GetNextWord(es, pos, word);
-							behavior_param = GetVarValueInterpretedAsFloat(word, esss, io);
-
-							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = RUNMODE;
-						}
-						else if (!strcasecmp(word, "LOOK_FOR"))
-						{
-							behavior |= BEHAVIOUR_LOOK_FOR;
-							pos = GetNextWord(es, pos, word);
-							behavior_param = GetVarValueInterpretedAsFloat(word, esss, io);
-
-							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
-						}
-						else if (!strcasecmp(word, "HIDE"))
-						{
-							behavior |= BEHAVIOUR_HIDE;
-							pos = GetNextWord(es, pos, word);
-							behavior_param = GetVarValueInterpretedAsFloat(word, esss, io);
-
-							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
-						}
-						else if (!strcasecmp(word, "WANDER_AROUND"))
-						{
-							behavior |= BEHAVIOUR_WANDER_AROUND;
-							pos = GetNextWord(es, pos, word);
-							behavior_param = GetVarValueInterpretedAsFloat(word, esss, io);
-
-							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
-						}
-						else if (!strcasecmp(word, "GUARD"))
-						{
-							behavior |= BEHAVIOUR_GUARD;
-
-							if (io)
-							{
-								io->targetinfo = -2;
-
-								if (io->ioflags & IO_NPC) io->_npcdata->movemode = NOMOVEMODE;
-							}
-						}
-
-						if ((io) && (io->ioflags & IO_NPC))
-						{
-
-							ARX_CHECK_LONG(behavior_param);
-							ARX_NPC_Behaviour_Change(io, behavior, ARX_CLEAN_WARN_CAST_LONG(behavior_param));
-
-
-						}
-					}
-				}
+				
 
 				if (!strcmp(word, "BOOK"))
 				{
@@ -6872,3 +6870,22 @@ end:
 
 	return ret;
 }
+
+void ScriptEvent::registerCommand(const std::string & name, ScriptCommand * command) {
+	
+	typedef std::pair<std::map<string, ScriptCommand *>::iterator, bool> Res;
+	
+	Res res = commands.insert(std::make_pair(name, command));
+	
+	if(!res.second) {
+		LogError << "duplicate script command name: " + name;
+		delete command;
+	}
+	
+}
+
+void ScriptEvent::init() {
+	setupScriptedNPC();
+}
+
+ScriptEvent::Commands ScriptEvent::commands;

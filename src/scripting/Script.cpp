@@ -597,7 +597,7 @@ void ReleaseScript(EERIE_SCRIPT * es)
 
 //*************************************************************************************
 //*************************************************************************************
-ValueType GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent, float * fcontent,long * lcontent)
+ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const string & _name, std::string& txtcontent, float * fcontent,long * lcontent)
 {
 	std::string name = _name;
 	MakeUpcase(name);
@@ -1797,50 +1797,40 @@ SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR*& _svff, long& _nb)
 
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR* GetVarAddress(SCRIPT_VAR svf[], long& nb, const std::string& name)
-{
-	for (long i = 0; i < nb; i++)
-	{
-		if (svf[i].type != 0)
-		{
-			if (!strcasecmp(name, svf[i].name))
+SCRIPT_VAR * GetVarAddress(SCRIPT_VAR svf[], size_t nb, const string & name) {
+	
+	for(size_t i = 0; i < nb; i++) {
+		if(svf[i].type != TYPE_UNKNOWN) {
+			if(!strcasecmp(name, svf[i].name)) {
 				return &svf[i];
+			}
 		}
 	}
 
 	return NULL;
 }
-//*************************************************************************************
-//*************************************************************************************
 
-//*************************************************************************************
-//*************************************************************************************
-
-//*************************************************************************************
-//*************************************************************************************
-long GETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name)
-{
-	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
+long GETVarValueLong(SCRIPT_VAR svf[], size_t nb, const string & name) {
+	
+	const SCRIPT_VAR * tsv = GetVarAddress(svf, nb, name);
 
 	if (tsv == NULL) return 0;
 
 	return tsv->ival;
 }
-//*************************************************************************************
-//*************************************************************************************
-float GETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name)
-{
-	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
+
+float GETVarValueFloat(SCRIPT_VAR svf[], size_t nb, const string & name) {
+	
+	const SCRIPT_VAR * tsv = GetVarAddress(svf, nb, name);
 
 	if (tsv == NULL) return 0;
 
 	return tsv->fval;
 }
-//*************************************************************************************
-//*************************************************************************************
-std::string GETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name)
-{
-	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
+
+std::string GETVarValueText(SCRIPT_VAR svf[], size_t nb, const string & name) {
+	
+	const SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
 
 	if (!tsv) return "";
 
@@ -1849,8 +1839,8 @@ std::string GETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name)
 
 //*************************************************************************************
 //*************************************************************************************
-std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
-{
+string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io) {
+	
 	char var_text[256];
 	float t1;
 
@@ -1920,7 +1910,7 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	return var_text;
 }
 
-float GetVarValueInterpretedAsFloat(string & temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io) {
+float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io) {
 	
 	if(temp1[0] == '^') {
 		long lv;

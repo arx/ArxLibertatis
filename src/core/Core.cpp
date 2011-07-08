@@ -1232,6 +1232,8 @@ int main(int argc, char ** argv) {
 	
 	LocalisationInit();
 	
+	ScriptEvent::init();
+	
 	//delete current for clean save.........
 	char txttemp[256];
 
@@ -6918,7 +6920,7 @@ static void ShowInfoText() {
 			  	sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
 					io->pos.y,io->pos.z,io->move.x,
 					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
-					io->_npcdata->pathfind.truetarget,io->_npcdata->behavior);
+					io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
 				danaeApp.OutputText( 170, 420, tex );
 			sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",player.life,player.maxlife,
 					player.mana,player.maxmana,player.poison,player.hunger);
@@ -6933,7 +6935,7 @@ static void ShowInfoText() {
 				sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
 					io->pos.y,io->pos.z,io->move.x,
 					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
-					io->_npcdata->pathfind.truetarget,io->_npcdata->behavior);
+					io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
 				danaeApp.OutputText( 170, 420, tex );
 				sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",io->_npcdata->life,io->_npcdata->maxlife,
 					io->_npcdata->mana,io->_npcdata->maxmana,io->_npcdata->poisonned);

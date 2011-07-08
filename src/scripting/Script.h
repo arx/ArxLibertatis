@@ -126,7 +126,7 @@ struct EERIE_SCRIPT {
 	unsigned long lastcall;
 	unsigned long timers[MAX_SCRIPTTIMERS];
 	DisabledEvents allowevents;
-	void * master;
+	EERIE_SCRIPT * master;
 	long shortcut[MAX_SHORTCUT];
 	long nb_labels;
 	LABEL_INFO * labels;
@@ -475,10 +475,10 @@ void MakeStandard(std::string & str);
 long GotoNextLine(EERIE_SCRIPT * es, long pos);
 bool iCharIn(const std::string & str, char _char);
 bool CharIn(const std::string & str, char _char);
-float GetVarValueInterpretedAsFloat(std::string & temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
+float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
 long FindLabelPos(EERIE_SCRIPT * es, const std::string & string);
 long SkipNextStatement(EERIE_SCRIPT * es, long pos);
-std::string GetVarValueInterpretedAsText(std::string & temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
+std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
 
 //! Generates a random name for an unnamed timer
 std::string ARX_SCRIPT_Timer_GetDefaultName();
@@ -493,12 +493,12 @@ SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR *& svf, long & nb, const std::string & n
 SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR *& svf, long & nb, const std::string & name, float val);
 
 // Use to get the value of a script variable
-long GETVarValueLong(SCRIPT_VAR *& svf, long & nb, const std::string & name);
-float GETVarValueFloat(SCRIPT_VAR *& svf, long & nb, const std::string & name);
-std::string GETVarValueText(SCRIPT_VAR *& svf, long & nb, const std::string & name);
+long GETVarValueLong(SCRIPT_VAR svf[], size_t nb, const std::string & name);
+float GETVarValueFloat(SCRIPT_VAR svf[], size_t nb, const std::string & name);
+std::string GETVarValueText(SCRIPT_VAR svf[], size_t nb, const std::string & name);
 
 AnimationNumber GetNumAnim(const std::string & name);
-ValueType GetSystemVar(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
+ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, INTERACTIVE_OBJ * io);
 

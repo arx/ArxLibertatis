@@ -1610,7 +1610,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 			io->infracolor.g = 0.f;
 			io->infracolor.b = 0.2f;
 			io->_npcdata->detect = 0;
-			io->_npcdata->movemode = 0;
+			io->_npcdata->movemode = WALKMODE;
 			io->_npcdata->reach = 20.f;
 			io->_npcdata->armor_class = 0;
 			io->_npcdata->absorb = 0;

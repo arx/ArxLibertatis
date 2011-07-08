@@ -257,15 +257,41 @@ struct ANIM_USE
 	long			fr;
 };
 
+enum BehaviourFlag {
+	BEHAVIOUR_NONE          = (1<<0), // no pathfind
+	BEHAVIOUR_FRIENDLY      = (1<<1), // no pathfind
+	BEHAVIOUR_MOVE_TO       = (1<<2),
+	BEHAVIOUR_WANDER_AROUND = (1<<3), //behavior_param = distance
+	BEHAVIOUR_FLEE          = (1<<4), //behavior_param = distance
+	BEHAVIOUR_HIDE          = (1<<5), //behavior_param = distance
+	BEHAVIOUR_LOOK_FOR      = (1<<6), //behavior_param = distance
+	BEHAVIOUR_SNEAK         = (1<<7),
+	BEHAVIOUR_FIGHT         = (1<<8),
+	BEHAVIOUR_DISTANT       = (1<<9),
+	BEHAVIOUR_MAGIC         = (1<<10),
+	BEHAVIOUR_GUARD         = (1<<11),
+	BEHAVIOUR_GO_HOME       = (1<<12),
+	BEHAVIOUR_LOOK_AROUND   = (1<<13),
+	BEHAVIOUR_STARE_AT      = (1<<14)
+};
+DECLARE_FLAGS(BehaviourFlag, Behaviour)
+DECLARE_FLAGS_OPERATORS(Behaviour)
+
+enum MoveMode {
+	WALKMODE = 0,
+	RUNMODE = 1,
+	NOMOVEMODE = 2,
+	SNEAKMODE = 3
+};
+
 #define MAX_ANIM_LAYERS	4
-struct IO_BEHAVIOR_DATA
-{
+struct IO_BEHAVIOR_DATA {
 	long			exist;
-	unsigned long	behavior;
+	Behaviour behavior;
 	float			behavior_param;
 	long			tactics;		// 0=none ; 1=side ; 2=side+back
 	long			target;
-	long			movemode;
+	MoveMode movemode;
 	ANIM_USE		animlayer[MAX_ANIM_LAYERS];
 };
 
@@ -306,8 +332,7 @@ struct EERIE_EXTRA_ROTATE {
 
 #define MAX_STACKED_BEHAVIOR 5
 
-struct IO_NPCDATA
-{
+struct IO_NPCDATA {
 	float		maxlife;
 	float		life;
 	float		maxmana;
@@ -316,7 +341,7 @@ struct IO_NPCDATA
 	long		reachedtarget;	//Is target in REACHZONE ?
 	INTERACTIVE_OBJ * weapon; // Linked Weapon (r-hand)
 	long		detect;
-	long		movemode;
+	MoveMode movemode;
 	float		armor_class;
 	float		absorb;
 	float		damages;
@@ -326,7 +351,7 @@ struct IO_NPCDATA
 	float		reach;
 	float		backstab_skill;
 
-	unsigned long	behavior;
+	Behaviour behavior;
 	float			behavior_param;
 	long			tactics;		 // 0=none ; 1=side ; 2=side+back
 	long		xpvalue;
@@ -607,22 +632,6 @@ struct INTERACTIVE_OBJ
 	std::string full_name() const;
 };
 
-//-----------------------------------------------------------------------------
-#define BEHAVIOUR_NONE			1		// no pathfind
-#define BEHAVIOUR_FRIENDLY		(1<<1)		// no pathfind
-#define BEHAVIOUR_MOVE_TO		(1<<2)
-#define BEHAVIOUR_WANDER_AROUND	(1<<3)	//behavior_param = distance
-#define BEHAVIOUR_FLEE			(1<<4)	//behavior_param = distance
-#define BEHAVIOUR_HIDE			(1<<5)	//behavior_param = distance
-#define BEHAVIOUR_LOOK_FOR		(1<<6)	//behavior_param = distance
-#define BEHAVIOUR_SNEAK			(1<<7)
-#define BEHAVIOUR_FIGHT			(1<<8)
-#define BEHAVIOUR_DISTANT		(1<<9)
-#define BEHAVIOUR_MAGIC			(1<<10)
-#define BEHAVIOUR_GUARD			(1<<11)
-#define BEHAVIOUR_GO_HOME		(1<<12)
-#define BEHAVIOUR_LOOK_AROUND	(1<<13)
-#define BEHAVIOUR_STARE_AT		(1<<14)
 #define MAX_EQUIPED 12
 #define MORE_COMPATIBILITY
 
@@ -680,11 +689,6 @@ struct INTERACTIVE_OBJ
 #define IO_FIERY				(1<<28)
 #define IO_NO_NPC_COLLIDE		(1<<29)
 #define IO_CAN_COMBINE			(1<<30)
-
-#define WALKMODE	0
-#define RUNMODE		1
-#define NOMOVEMODE	2
-#define SNEAKMODE	3
 
 //-----------------------------------------------------------------------------
 //	INTERACTIVE_OBJ Structs Start

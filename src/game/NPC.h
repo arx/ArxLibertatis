@@ -60,9 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "graphics/data/Mesh.h"
 #include "math/MathFwd.h"
-
-struct INTERACTIVE_OBJ;
 
 const float ARX_NPC_AUDIBLE_VOLUME_MIN(0.94F);
 const float ARX_NPC_AUDIBLE_VOLUME_MAX(1.0F);
@@ -86,8 +85,8 @@ void ARX_NPC_Behaviour_Stack(INTERACTIVE_OBJ * io);
 void ARX_NPC_Behaviour_UnStack(INTERACTIVE_OBJ * io);
 void ARX_NPC_Behaviour_Reset(INTERACTIVE_OBJ * io);
 void ARX_NPC_Behaviour_ResetAll();
-void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, long behavior, long behavior_param);
-void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, long MOVEMODE);
+void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, Behaviour behavior, long behavior_param);
+void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, MoveMode MOVEMODE);
 void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source,
                                const float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT,
                                const float presence = ARX_NPC_AUDIBLE_PRESENCE_DEFAULT);

@@ -677,11 +677,11 @@ struct SavedBehaviour {
 	inline operator IO_BEHAVIOR_DATA() const {
 		IO_BEHAVIOR_DATA a;
 		a.exist = exist;
-		a.behavior = behavior;
+		a.behavior = Behaviour::load(behavior); // TODO save/load flags
 		a.behavior_param = behavior_param;
 		a.tactics = tactics;
 		a.target = target;
-		a.movemode = movemode;
+		a.movemode = (MoveMode)movemode; // TODO save/load enum
 		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
 		std::copy(animlayer, animlayer + SAVED_MAX_ANIM_LAYERS, a.animlayer);
 		return a;

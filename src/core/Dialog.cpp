@@ -3385,7 +3385,7 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 								strcpy(CDP_EditIO->over_script.data, text2);
 
 								if (CDP_EditIO->script.data != NULL)
-									CDP_EditIO->over_script.master = (void *)&CDP_EditIO->script;
+									CDP_EditIO->over_script.master = &CDP_EditIO->script;
 								else CDP_EditIO->over_script.master = NULL;
 
 								SaveIOScript(CDP_EditIO, 1);
@@ -3408,7 +3408,7 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 								strcpy(CDP_EditIO->over_script.data, text2);
 
 								if (CDP_EditIO->script.data != NULL)
-									CDP_EditIO->over_script.master = (void *)&CDP_EditIO->script;
+									CDP_EditIO->over_script.master = &CDP_EditIO->script;
 								else CDP_EditIO->over_script.master = NULL;
 
 								SaveIOScript(CDP_EditIO, 2);
@@ -3430,7 +3430,7 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 								strcpy(CDP_EditIO->script.data, text1);
 
 								if (CDP_EditIO->script.data != NULL)
-									CDP_EditIO->over_script.master = (void *)&CDP_EditIO->script;
+									CDP_EditIO->over_script.master = &CDP_EditIO->script;
 								else CDP_EditIO->over_script.master = NULL;
 
 								SaveIOScript(CDP_EditIO, 1);
