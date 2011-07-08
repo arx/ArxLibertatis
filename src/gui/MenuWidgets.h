@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "gui/Text.h"
+#include "input/InputKey.h"
 #include "platform/math/Vector2.h"
 
 class TextureContainer;
@@ -611,7 +612,7 @@ class CWindowMenuConsole
 		MENUSTATE Update(int, int, int);
 		int Render();
  
-		CMenuElement * GetTouch(bool _bValidateTest = false);
+		CMenuElement * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
 		void ReInitActionKey();
 };
 
