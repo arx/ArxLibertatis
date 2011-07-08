@@ -1,10 +1,10 @@
 
-#ifndef ARX_PLATFORM_MATH_RECTANGLE_H
-#define ARX_PLATFORM_MATH_RECTANGLE_H
+#ifndef ARX_MATH_RECTANGLE_H
+#define ARX_MATH_RECTANGLE_H
 
 #include <algorithm>
 
-#include "platform/math/Vector2.h"
+#include "math/Vector2.h"
 
 // TODO name Rectangle is used in windows headers
 template<class T>
@@ -56,10 +56,9 @@ public:
 	
 	_Rectangle(T _left, T _top, T _right, T _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) { }
 	
-	_Rectangle(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : origin(_origin), right(_origin.x + width), bottom(_origin.y + height) { }
+	_Rectangle(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
 	
-	
-	_Rectangle(const Vector2<T> & _origin, const Vector2<T> & _end) : origin(_origin), end(_end) { }
+	_Rectangle(const Vector2<T> & _origin, const Vector2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
 	
 	_Rectangle(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
 	
@@ -140,13 +139,14 @@ public:
 		return (left <= right && top <= bottom);
 	}
 	
+	Vector2<T> center() const {
+		return Vector2<T>(left + (right - left) / 2, top + (bottom - top) / 2);
+	}
+	
 	static const _Rectangle ZERO;
 	
 };
 
 template<class T> const _Rectangle<T> _Rectangle<T>::ZERO(T(0), T(0), T(0));
 
-typedef _Rectangle<s32> Rect;
-typedef _Rectangle<float> Rectf;
-
-#endif // ARX_PLATFORM_MATH_RECTANGLE_H
+#endif // ARX_MATH_RECTANGLE_H

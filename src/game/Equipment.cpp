@@ -110,7 +110,7 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-ObjectType ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
+ItemType ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
 {
 	if ( temp.empty() ) return 0;
 
@@ -992,7 +992,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					INTERACTIVE_OBJ * target = inter.iobj[EVERYTHING_IN_SPHERE[jj]];
 			
 					Vec3f	pos;
-					D3DCOLOR	color		=	ARX_OPAQUE_WHITE;
+					Color color = Color::white;
 					long		hitpoint	=	-1;
 					float		curdist		=	999999.f;
 					
@@ -1015,12 +1015,8 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 						}
 					}
 
-					if (hitpoint >= 0)
-					{
-						if (target->ioflags & IO_NPC)
-							color = target->_npcdata->blood_color;
-						else color = 0xFFFFFFFF;
-
+					if(hitpoint >= 0) {
+						color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
 						pos = target->obj->vertexlist3[hitpoint].v;
 					}
 					else ARX_CHECK_NO_ENTRY(); 
@@ -1078,7 +1074,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 							if (!(flags & 1))
 							{
-								ARX_PARTICLES_Spawn_Splat(&pos, dmgs, color);
+								ARX_PARTICLES_Spawn_Splat(pos, dmgs, color);
 
 								EERIE_SPHERE sp;
 								float power;
@@ -1093,12 +1089,8 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 								sp.origin.z = target->obj->vertexlist3[hitpoint].v.z + vect.z * 30.f;
 								sp.radius = 3.5f * power * 20;
 
-								if (CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL))
-								{
-									EERIE_RGB rgb;
-									rgb.r = (float)((long)((color >> 16) & 255)) * ( 1.0f / 255 );
-									rgb.g = (float)((long)((color >> 8) & 255)) * ( 1.0f / 255 );
-									rgb.b = (float)((long)((color) & 255)) * ( 1.0f / 255 );
+								if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+									Color3f rgb = color.to<float>();
 									SpawnGroundSplat(&sp, &rgb, 30, 1);
 								}
 							}
@@ -1106,7 +1098,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							if (target == inter.iobj[0])
 								ARX_DAMAGES_SCREEN_SPLATS_Add(&pos, dmgs);
 
-							ARX_PARTICLES_Spawn_Blood2(&pos, dmgs, color, target);
+							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 
 							if (!ValidIONum(weapon)) io_weapon = NULL;
 						}
@@ -1464,7 +1456,7 @@ void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, 
 	if (!io) return;
 
 	// retrieves flag
-	ObjectType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
+	ItemType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
 
 	if (val)	// add flag
 		io->type_flags |= flagg;

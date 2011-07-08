@@ -57,8 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/LinkedObject.h"
 
+#include <cstdlib>
+#include <cstring>
+
 #include "scene/Object.h"
 
+using std::free;
+using std::realloc;
+using std::memcpy;
 
 // Releases Data for linked objects
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj)

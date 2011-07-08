@@ -71,7 +71,7 @@ class CSummonCreature: public CSpellFx
 {
 	public:
 		Vec3f eSrc;
-		float	fColorRays1[3];
+		Color3f fColorRays1;
 
 	private:
 		TextureContainer * tex_light;
@@ -87,23 +87,23 @@ class CSummonCreature: public CSpellFx
 		float	fSizeIntro;
 		float	fRand;
 		float	fTexWrap;
-		float	fColorBorder[3];
-		float	fColorRays2[3];
-		float	tfRaysa[40];
-		float	tfRaysb[40];
+		Color3f fColorBorder;
+		Color3f fColorRays2;
+		float tfRaysa[40];
+		float tfRaysb[40];
 		unsigned long ulDurationIntro;
 		unsigned long ulDurationRender;
 		unsigned long ulDurationOuttro;
-		D3DTLVERTEX va[40];
-		D3DTLVERTEX vb[40];
-		D3DTLVERTEX v1a[40];
-		D3DTLVERTEX v1b[40];
+		TexturedVertex va[40];
+		TexturedVertex vb[40];
+		TexturedVertex v1a[40];
+		TexturedVertex v1b[40];
 
 	public:
 		CSummonCreature();
 
 	private:
-		void Split(D3DTLVERTEX * v, int a, int b, float yo);
+		void Split(TexturedVertex * v, int a, int b, float yo);
 		void RenderFissure();
 
 		// accesseurs
@@ -112,9 +112,9 @@ class CSummonCreature: public CSpellFx
 		void SetDuration(unsigned long, unsigned long, unsigned long);
 		void SetPos(Vec3f);
  
-		void SetColorBorder(float, float, float);
-		void SetColorRays1(float, float, float);
-		void SetColorRays2(float, float, float);
+		void SetColorBorder(Color3f);
+		void SetColorRays1(Color3f);
+		void SetColorRays2(Color3f);
  
 		unsigned long GetDuration();
 
@@ -178,7 +178,7 @@ class CIncinerate: public CSpellFx
 		TextureContainer * tex_pouf_noir;
 		ParticleSystem pPSStream;
 		ParticleSystem pPSHit;
-		D3DTLVERTEX tv1a[150+1];
+		TexturedVertex tv1a[150+1];
 
 		int iMax;
 		float fSize;

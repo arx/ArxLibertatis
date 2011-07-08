@@ -121,7 +121,7 @@ class CRuneOfGuarding: public CSpellFx
 
 //-----------------------------------------------------------------------------
 // LEVITATION
-// Done By : S�bastien Scieux
+// Done By : Sébastien Scieux
 // Status  :
 //-----------------------------------------------------------------------------
 class CLevitate: public CSpellFx
@@ -141,7 +141,7 @@ class CLevitate: public CSpellFx
 			int				conenbvertex;
 			int				conenbfaces;
 			Vec3f	*	conevertex;
-			D3DTLVERTEX	*	coned3d;
+			TexturedVertex	*	coned3d;
 			unsigned short	* coneind;
 		};
 
@@ -188,7 +188,7 @@ class CLevitate: public CSpellFx
 
 
 //-----------------------------------------------------------------------------
-// Done By : Didier P�dreno
+// Done By : Didier Pédreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CCurePoison: public CSpellFx
@@ -212,45 +212,30 @@ class CCurePoison: public CSpellFx
 };
 
 //-----------------------------------------------------------------------------
-// Done By : Didier P�dreno
+// Done By : Didier Pédreno
 // Status  :
 //-----------------------------------------------------------------------------
-class CPoisonProjectile: public CSpellFx
-{
-	public:
-		int end;
-		int iMax;
-		float fSize;
-		float fTrail;
-		float fColor[3];
-		float fColor1[3];
-		bool  bOk;
-		bool bDone;
-
-
-		Vec3f eSrc;
-		Vec3f eTarget;
-		Vec3f eCurPos;
-		Vec3f eMove;
-		D3DTLVERTEX pathways[40];
-		ParticleSystem pPS;
-		ParticleSystem pPSStream;
-
-	public:
-		CPoisonProjectile();
-
-		// accesseurs
-	public:
-		void	SetPos(Vec3f);
-		void	SetColor(float, float, float);
-		void	SetColor1(float, float, float);
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void	Update(unsigned long);
-		float	Render();
+class CPoisonProjectile: public CSpellFx {
+	
+public:
+	
+	float fTrail;
+	bool  bOk;
+	
+	Vec3f eSrc;
+	Vec3f eCurPos;
+	Vec3f eMove;
+	TexturedVertex pathways[40];
+	ParticleSystem pPS;
+	ParticleSystem pPSStream;
+	
+	CPoisonProjectile();
+	
+	// surcharge
+	void Create(Vec3f, float afBeta = 0);
+	void Update(unsigned long);
+	float Render();
+	
 };
 
 //-----------------------------------------------------------------------------

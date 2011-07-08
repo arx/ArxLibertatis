@@ -39,9 +39,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#include "graphics/d3dwrapper.h"
-#include "platform/math/Vector3.h"
-#include "platform/math/Angle.h"
+#include "math/MathFwd.h"
 
 class TextureContainer;
 struct INTERACTIVE_OBJ;
@@ -50,13 +48,14 @@ struct EERIE_LIGHT;
 struct ANIM_USE;
 struct EERIEMATRIX;
 struct EERIE_MOD_INFO;
+struct TexturedVertex;
 
-#define HALOMAX 2000
+const size_t HALOMAX = 2000;
 extern long MAX_LLIGHTS;
-#define MAX_ANIMATIONS 900
+const size_t MAX_ANIMATIONS = 900;
 
 extern long HALOCUR;
-extern D3DTLVERTEX LATERDRAWHALO[HALOMAX*4];
+extern TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 extern EERIE_LIGHT * llights[32];
 
 long EERIE_ANIMMANAGER_Count(std::string & tex, long * memsize);
@@ -65,21 +64,20 @@ void llightsInit();
 void Preparellights(Vec3f * pos);
 void Insertllight(EERIE_LIGHT * el, float dist);
 
-void PopAllTriangleList(bool);
-void PopOneTriangleList(TextureContainer * _pTex, bool _bNoUpdate = true);
+void PopAllTriangleList();
 void PopAllTriangleListTransparency();
 
-D3DTLVERTEX * PushVertexInTableCull(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TMetal(TextureContainer *);
+TexturedVertex * PushVertexInTableCull(TextureContainer *);
+TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer *);
+TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer *);
+TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer *);
+TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *);
+TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer *);
 
-void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, D3DTLVERTEX * _pD3DVertex);
+void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj, ANIM_USE * eanim, Anglef * angle, Vec3f  * pos, unsigned long time, INTERACTIVE_OBJ * io, long typ = 0);
+void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj, ANIM_USE * eanim, Anglef * angle, Vec3f  * pos, unsigned long time, INTERACTIVE_OBJ * io, bool render = true);
 
 void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
 

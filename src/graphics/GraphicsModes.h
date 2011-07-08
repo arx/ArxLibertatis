@@ -37,7 +37,7 @@ DECLARE_FLAGS_OPERATORS(GMODFlags)
 
 struct GLOBAL_MODS {
 	GMODFlags flags;
-	EERIE_RGB depthcolor;
+	Color3f depthcolor;
 	float zclip;
 };
 

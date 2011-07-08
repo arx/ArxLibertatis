@@ -27,6 +27,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <climits>
+#include <cstring>
+#include <cstdlib>
 
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
@@ -46,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 using std::copy;
+using std::strcmp;
+using std::free;
 
 extern C_KEY KeyTemp;
 extern int LSoundChoose;

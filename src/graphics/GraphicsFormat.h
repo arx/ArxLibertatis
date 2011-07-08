@@ -14,13 +14,13 @@ struct SavedColor {
 	f32 g;
 	f32 b;
 	
-	inline SavedColor & operator=(const EERIE_RGB & o) {
+	inline SavedColor & operator=(const Color3f & o) {
 		r = o.r, g = o.g, b = o.b;
 		return *this;
 	}
 	
-	inline operator EERIE_RGB() const {
-		EERIE_RGB a;
+	inline operator Color3f() const {
+		Color3f a;
 		a.r = r, a.g = g, a.b = b;
 		return a;
 	}
@@ -65,7 +65,7 @@ struct SavedAnglef {
 	
 };
 
-struct SavedD3DTLVertex {
+struct SavedTextureVertex {
 	
 	SavedVec3 pos;
 	f32 rhw;
@@ -74,8 +74,8 @@ struct SavedD3DTLVertex {
 	f32 tu;
 	f32 tv;
 	
-	inline operator D3DTLVERTEX() const {
-		D3DTLVERTEX a;
+	inline operator TexturedVertex() const {
+		TexturedVertex a;
 		a.sx = pos.x, a.sy = pos.y, a.sz = pos.z;
 		a.rhw = rhw;
 		a.color = color;
@@ -85,7 +85,7 @@ struct SavedD3DTLVertex {
 		return a;
 	}
 	
-	inline SavedD3DTLVertex & operator=(const D3DTLVERTEX & b) {
+	inline SavedTextureVertex & operator=(const TexturedVertex & b) {
 		pos.x = b.sx, pos.y = b.sy, pos.z = b.sz;
 		rhw = b.rhw;
 		color = b.color;

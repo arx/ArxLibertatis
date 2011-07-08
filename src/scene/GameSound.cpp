@@ -37,6 +37,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <sstream>
 
+#include "animation/Animation.h"
+
 #include "audio/Audio.h"
 
 #include "core/Application.h"
@@ -1129,7 +1131,6 @@ void ARX_SOUND_FreeAnimSamples()
 	nbelems = 0;
 
 }
-#define MAX_ANIMATIONS 900
 
 extern ANIM_HANDLE animations[];
 void ARX_SOUND_PushAnimSamples()
@@ -1138,8 +1139,8 @@ void ARX_SOUND_PushAnimSamples()
 
 	long number = 0;
 
-	for (long i = 0; i < MAX_ANIMATIONS; i++)
-	{
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		
 		if (animations[i].path[0])
 		{
 			for (long j = 0; j < animations[i].alt_nb; j++)
@@ -1178,8 +1179,8 @@ void ARX_SOUND_PopAnimSamples()
 	long curelem = 0;
 	long number = 0;
 
-	for (long i = 0; i < MAX_ANIMATIONS; i++)
-	{
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		
 		if (animations[i].path[0])
 		{
 			for (long j = 0; j < animations[i].alt_nb; j++)

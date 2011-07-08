@@ -72,7 +72,6 @@ extern bool	bFadeInOut;
 extern int iFadeAction;
 
 extern long ZMAPMODE;
-extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern long MAX_LLIGHTS;
 extern long FRAME_COUNT;
 
@@ -248,7 +247,7 @@ void SetGammaLumContrast()
 
 
 		ARX_CHECK_WORD(iColor);
-		WORD wColor = ARX_CLEAN_WARN_CAST_WORD(iColor);
+		WORD wColor = static_cast<u16>(iColor);
 
 		danaeApp.DDGammaRamp.red[iI] = wColor;
 		danaeApp.DDGammaRamp.green[iI] = wColor;

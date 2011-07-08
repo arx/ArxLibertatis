@@ -1,13 +1,14 @@
-#include "graphics/OpenGLRenderer.h"
+
+#include "graphics/opengl/OpenGLRenderer.h"
+
+#ifdef HAVE_OPENGL
 
 #include <GL/gl.h>
 
 #include "io/Logger.h"
 
-//OpenGLRenderer instance;
-
-void OpenGLRenderer::SetRenderState( Renderer::RenderState state, bool enable )
-{
+void OpenGLRenderer::SetRenderState(Renderer::RenderState state, bool enable) {
+	
 	switch ( state )
 	{
 		case AlphaBlending:
@@ -57,6 +58,8 @@ void OpenGLRenderer::SetRenderState( Renderer::RenderState state, bool enable )
 			return;
 		}
 		default:
-			Renderer::SetRenderState( state, enable );
+			LogWarning << "unsupported render state: " << state;
 	}
 }
+
+#endif // HAVE_OPENGL

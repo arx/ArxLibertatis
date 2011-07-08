@@ -52,8 +52,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #ifndef EERIEFRAME_H
 #define EERIEFRAME_H
-#include <math.h>
-#include "graphics/d3dwrapper.h"
+
+#include <cmath>
+
+#include <d3d.h>
 
 //-----------------------------------------------------------------------------
 // Flags used for the Initialize() method of a CD3DFramework object

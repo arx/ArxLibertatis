@@ -505,7 +505,7 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, INTERA
 ScriptResult NotifyIOEvent(INTERACTIVE_OBJ * io, ScriptMessage msg);
 void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
 
-long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string & text, long duration = -1);
+long ARX_SPEECH_AddLocalised(const std::string & text, long duration = -1);
 
 ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "" );
 

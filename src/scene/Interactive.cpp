@@ -89,6 +89,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 #include "graphics/data/Progressive.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
@@ -1585,7 +1586,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 			io->_npcdata->cut = 0;
 			io->_npcdata->cuts = 0;
 			io->_npcdata->poisonned = 0.f;
-			io->_npcdata->blood_color = 0xFFFF0000;
+			io->_npcdata->blood_color = Color::red;
 			io->_npcdata->stare_factor = 1.f;
 
 			io->_npcdata->weapon = NULL;
@@ -2900,7 +2901,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	io->_npcdata->aiming_start = 0;
 	io->_npcdata->npcflags = 0;
 	io->_npcdata->backstab_skill = 0;
-	io->_npcdata->blood_color = 0xFFFF0000;
+	io->_npcdata->blood_color = Color::red;
 	io->_npcdata->stare_factor = 1.f;
 
 	if (!(flags & NO_ON_LOAD))
@@ -3290,7 +3291,6 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 
 extern float LAST_FZPOS;
 extern float LAST_FZSCREEN;
-extern long USE_CEDRIC_ANIM;
 
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
@@ -3389,17 +3389,13 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 						goto suite;
 					}
 
-					for (size_t j = 0; j < io->obj->facelist.size(); j++)
-					{
-						if (io->animlayer[0].cur_anim != NULL)
-						{
-							if (USE_CEDRIC_ANIM)
-								n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
-							else
-								n = -1; 
-						}
-						else
+					for(size_t j = 0; j < io->obj->facelist.size(); j++) {
+						
+						if(io->animlayer[0].cur_anim != NULL) {
+							n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+						} else {
 							n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+						}
 
 						if (n > 0.f) 
 						{
@@ -4234,16 +4230,9 @@ void RenderInter(float from, float to) {
 					pos.y = io->_npcdata->vvpos;
 				}
 
-				long flgs;
+				bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
 
-				if (!(EDITMODE) &&
-				        (ARX_SCENE_PORTAL_Basic_ClipIO(io)))
-					flgs = 4;
-				else flgs = 0;
-
-				EERIEDrawAnimQuat(	io->obj,
-				                  &io->animlayer[0],
-				                  &temp, &pos, diff, io, flgs);
+				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
 				LOOK_AT_TARGET = 0;
 
 				if (DESTROYED_DURING_RENDERING)
@@ -4328,17 +4317,9 @@ void RenderInter(float from, float to) {
 			if ((io->ignition > 0.f) || (io->ioflags & IO_FIERY))
 				ManageIgnition(io);
 
-			if ((NEED_TEST_TEXT || EDITMODE) && (!FOR_EXTERNAL_PEOPLE))
-			{
-				D3DCOLOR color;
-
-				if ((EDITMODE && (io->EditorFlags & EFLAG_SELECTED))) 
-					color = 0xFFFFFF00;
-				else
-					color = 0xFF0000FF;
-
-				if ((io->bbox1.x != io->bbox2.x) && (io->bbox1.x < DANAESIZX))
-				{
+			if((NEED_TEST_TEXT || EDITMODE) && !FOR_EXTERNAL_PEOPLE) {
+				Color color = (EDITMODE && (io->EditorFlags & EFLAG_SELECTED)) ? Color::yellow : Color::blue;
+				if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
 					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
 					EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
 					EERIEDraw2DLine(io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);

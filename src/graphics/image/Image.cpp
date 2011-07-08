@@ -1,12 +1,16 @@
+
 #include "Image.h"
+
+#include <cstring>
+#include <map>
+#include <il.h>
 
 #include "graphics/Math.h"
 #include "io/PakReader.h"
 
-#include <map>
-#include <il.h>
-
 using std::string;
+using std::memcpy;
+using std::memset;
 
 class DevilLib
 {
@@ -282,25 +286,30 @@ bool Image::LoadFromMemory(void* pData, unsigned int size)
 	return mData != NULL;
 }
 
-void Image::Create( unsigned int pWidth, unsigned int pHeight, Image::Format pFormat, unsigned int pNumMipmaps, unsigned int pDepth )
-{
-    arx_assert_msg( pWidth > 0, "[Image::Create] Width is 0!" );
-    arx_assert_msg( pHeight > 0, "[Image::Create] Width is 0!" );
-    arx_assert_msg( pFormat < Format_Unknown, "[Image::Create] Unknown texture format!" );
-    arx_assert_msg( pNumMipmaps > 0, "[Image::Create] Mipmap count must at least be 1!" );
-    arx_assert_msg( pDepth > 0, "[Image::Create] Image depth must at least be 1!" );
+void Image::Create( unsigned int pWidth, unsigned int pHeight, Image::Format pFormat, unsigned int pNumMipmaps, unsigned int pDepth ) {
+	
+	arx_assert_msg( pWidth > 0, "[Image::Create] Width is 0!" );
+	arx_assert_msg( pHeight > 0, "[Image::Create] Width is 0!" );
+	arx_assert_msg( pFormat < Format_Unknown, "[Image::Create] Unknown texture format!" );
+	arx_assert_msg( pNumMipmaps > 0, "[Image::Create] Mipmap count must at least be 1!" );
+	arx_assert_msg( pDepth > 0, "[Image::Create] Image depth must at least be 1!" );
+	
 
-    if( mData )
-        delete[] mData;
-
-    mWidth  = pWidth;
-    mHeight = pHeight;
-    mDepth  = pDepth;
-    mFormat = pFormat;
-    mNumMipmaps = pNumMipmaps;
-
-    mDataSize = Image::GetSizeWithMipmaps( mFormat, mWidth, mHeight, mDepth, mNumMipmaps );
-    mData = new unsigned char[mDataSize];
+	
+	mWidth  = pWidth;
+	mHeight = pHeight;
+	mDepth  = pDepth;
+	mFormat = pFormat;
+	mNumMipmaps = pNumMipmaps;
+	
+	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mDepth, mNumMipmaps);
+	if(mData && dataSize != mDataSize) {
+		delete[] mData, mData = NULL;
+	}
+	mDataSize = dataSize;
+	if(!mData) {
+		mData = new unsigned char[mDataSize];
+	}
 }
 
 void Image::Clear()
@@ -757,7 +766,7 @@ ILenum ARXImageToILFormat[] = {
 	IL_DXT5,            // Format_DXT5
 };
 
-void Image::Dump(const string & pFilename) const {
+void Image::save(const string & pFilename) const {
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);

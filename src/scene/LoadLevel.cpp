@@ -856,7 +856,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 	return io;
 }
 long LastLoadedLightningNb = 0;
-D3DCOLOR * LastLoadedLightning = NULL;
+u32 * LastLoadedLightning = NULL;
 Vec3f loddpos;
 Vec3f MSP;
 
@@ -1047,7 +1047,7 @@ long DanaeLoadLevel(const string & file) {
 			}
 			
 			//DANAE_LS_VLIGHTING
-			D3DCOLOR * ll = LastLoadedLightning = (D3DCOLOR *)malloc(sizeof(D3DCOLOR) * bcount);
+			u32 * ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
 			
 			if(dlh.version > 1.001f) {
 				std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
@@ -1066,8 +1066,8 @@ long DanaeLoadLevel(const string & file) {
 			pos += sizeof(u32) * bcount;
 		}
 		
-		ModeLight = Flag(dll->ModeLight); // TODO save/load flags
-		ViewMode = Flag(dll->ViewMode); // TODO save/load flags
+		ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
+		ViewMode = ViewModeFlags::load(dll->ViewMode); // TODO save/load flags
 		ViewMode &= ~VIEWMODE_WIRE;
 	}
 	
@@ -1210,7 +1210,7 @@ long DanaeLoadLevel(const string & file) {
 		const DANAE_LS_PATH * dlp = reinterpret_cast<const DANAE_LS_PATH *>(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
 		
-		ap->flags = Flag(dlp->flags); // TODO save/load flags
+		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
 		ap->idx = dlp->idx;
 		ap->initpos.x = dlp->initpos.x + trans.x;
 		ap->initpos.y = dlp->initpos.y + trans.y;
@@ -1359,11 +1359,11 @@ long DanaeLoadLevel(const string & file) {
 	}
 	
 	//DANAE_LS_VLIGHTING
-	D3DCOLOR * ll;
-	ll = LastLoadedLightning = (D3DCOLOR *)malloc(sizeof(D3DCOLOR) * bcount);
+	u32 * ll;
+	ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
 	if(dlh.version > 1.001f) {
 		std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
-		pos += sizeof(D3DCOLOR) * bcount;
+		pos += sizeof(u32) * bcount;
 	} else {
 		while(bcount) {
 			const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
@@ -1374,8 +1374,10 @@ long DanaeLoadLevel(const string & file) {
 		}
 	}
 	
-	ModeLight = Flag(dll->ModeLight); // TODO save/load flags
-	ViewMode = Flag(dll->ViewMode); // TODO save/load flags
+	arx_assert(pos <= FileSize);
+	
+	ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
+	ViewMode = ViewModeFlags::load(dll->ViewMode); // TODO save/load flags
 	ViewMode &= ~VIEWMODE_WIRE;
 	
 	free(dat);
@@ -1572,7 +1574,6 @@ void DanaeClearAll()
 
 void RestoreLastLoadedLightning()
 {
-	D3DCOLOR dc;
 	long pos = 0;
 	long bcount = CountBkgVertex();
 
@@ -1611,7 +1612,7 @@ void RestoreLastLoadedLightning()
 
 				for (long k = 0; k < nbvert; k++)
 				{
-					memcpy(&dc, LastLoadedLightning + pos, sizeof(D3DCOLOR));
+					u32 dc = LastLoadedLightning[pos];
 					pos++;
 					dc = dc | 0xFF000000;
 					ep->tv[k].color = ep->v[k].color = dc;

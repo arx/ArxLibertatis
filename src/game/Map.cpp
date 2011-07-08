@@ -25,16 +25,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Map.h"
 
+#ifdef BUILD_EDITOR
+
 #include <cstdio>
 
 #include "core/Core.h"
 
 #include "game/Levels.h"
 
-#include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
+#include "graphics/GraphicsUtility.h"
 #include "graphics/data/Texture.h"
 
 #include "io/PakReader.h"
@@ -221,11 +223,7 @@ bool C_ARX_Carte::Render(void)
 					else
 						GRenderer->ResetTexture(0);
 
-					EERIEDRAWPRIM(	D3DPT_TRIANGLESTRIP,
-									D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,
-									ep->tv,
-									nb,
-									0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, nb, true);
 				}
 
 			}
@@ -522,9 +520,6 @@ float oldposx,oldposz;
 
 	this->surfacetemp->Unlock(NULL);
 
-	//sauvegarde
-	nby=0;
-
 	FileHandle f = FileOpenWrite(name);
 	FileWrite(f, &bm, sizeof(BITMAPFILEHEADER));
 	FileWrite(f, &bi, sizeof(BITMAPINFO) - 4);
@@ -574,3 +569,5 @@ void DANAE_Manage_CreateMap()
 		iCreateMap=0;
 	}
 }
+
+#endif // BUILD_EDITOR

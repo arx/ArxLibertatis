@@ -32,7 +32,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 #include "gui/MenuWidgets.h"
-#include "graphics/d3dwrapper.h"
 #include "graphics/Math.h"
 
 using std::min;
@@ -50,11 +49,11 @@ extern float fZFogEnd;
 extern float fZFogStart;
 extern EERIEMATRIX ProjectionMatrix;
 
-unsigned long ulBKGColor = 0;
+Color ulBKGColor = Color::none;
 
 void ARX_GLOBALMODS_Reset()
 {
-	memset(&desired, 0, sizeof(GLOBAL_MODS));	
+	memset(&desired, 0, sizeof(GLOBAL_MODS));
 	memset(&current, 0, sizeof(GLOBAL_MODS));
 	current.zclip = DEFAULT_ZCLIP;
 	memset(&stacked, 0, sizeof(GLOBAL_MODS));
@@ -134,7 +133,7 @@ void ARX_GLOBALMODS_Apply()
 	fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
 	SetCameraDepth(min(current.zclip, fZclipp));
 
-	ulBKGColor = D3DRGB(current.depthcolor.r, current.depthcolor.g, current.depthcolor.b);
+	ulBKGColor = current.depthcolor.to<u8>();
 	GRenderer->SetFogColor(ulBKGColor);
 	
 	float fogEnd = fZFogEnd;

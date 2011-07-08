@@ -70,9 +70,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
 
+#include "graphics/GraphicsUtility.h"
 #include "graphics/Frame.h"
 #include "graphics/GraphicsEnum.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/font/Font.h"
 
@@ -1009,7 +1009,7 @@ VOID CD3DApplication::Cleanup3DEnvironment()
 	if (m_pFramework)
 	{
 		DeleteDeviceObjects();
-		SAFE_DELETE(m_pFramework);
+		delete m_pFramework, m_pFramework = NULL;
 
 		FinalCleanup();
 	}

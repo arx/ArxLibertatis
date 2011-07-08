@@ -76,7 +76,7 @@ struct KeySetting {
 			return false;
 		}
 		min = _min, max = _max, interval = _interval;
-		flags = Flag(_flags); // TODO save/load flags
+		flags = KeyFlags::load(_flags); // TODO save/load flags
 		
 		return true;
 	}
@@ -337,7 +337,7 @@ static aalError _LoadAmbiance_1001(PakFileHandle * file, size_t track_c, Ambianc
 				return AAL_ERROR_FILEIO;
 		}
 		track->key_c = key_c;
-		track->flags = Flag(flags); // TODO save/load flags
+		track->flags = Ambiance::Track::TrackFlags::load(flags); // TODO save/load flags
 		track->flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED | Ambiance::Track::PREFETCHED);
 		
 		if(track->key_c) {
@@ -386,7 +386,7 @@ static aalError _LoadAmbiance_1002(PakFileHandle * file, size_t track_c, Ambianc
 				return AAL_ERROR_FILEIO;
 		}
 		track->key_c = key_c;
-		track->flags = Flag(flags); // TODO save/load flags
+		track->flags = Ambiance::Track::TrackFlags::load(flags); // TODO save/load flags
 		track->flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED | Ambiance::Track::PREFETCHED);
 		
 		if(track->key_c) {
@@ -438,7 +438,7 @@ static aalError _LoadAmbiance_1003(PakFileHandle * file, size_t track_c, Ambianc
 				return AAL_ERROR_FILEIO;
 		}
 		track->key_c = key_c;
-		track->flags = Flag(flags); // TODO save/load flags
+		track->flags = Ambiance::Track::TrackFlags::load(flags); // TODO save/load flags
 		track->flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED | Ambiance::Track::PREFETCHED);
 		
 		if(track->key_c) {

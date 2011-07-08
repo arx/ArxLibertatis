@@ -1553,7 +1553,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 				as->ex_rotate = *io->_npcdata->ex_rotate;
 			}
 
-			as->blood_color = io->_npcdata->blood_color;
+			as->blood_color = io->_npcdata->blood_color.toBGRA();
 			as->fDetect = io->_npcdata->fDetect;
 			as->cuts = io->_npcdata->cuts;
 			pos += struct_size;
@@ -1656,7 +1656,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 
 static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
-	long pos = 0;
+	size_t pos = 0;
 	std::string loadfile;
 	std::stringstream ss;
 	
@@ -1678,6 +1678,8 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 		idx_io = (ARX_CHANGELEVEL_IO_INDEX *)malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
 		memcpy(idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
 		pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
+	} else {
+		idx_io = NULL;
 	}
 	
 	// Skip Path info (used later !)
@@ -1688,6 +1690,8 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 		ARX_SOUND_AmbianceRestorePlayList(dat + pos, asi->ambiances_data_size);
 		pos += asi->ambiances_data_size;
 	}
+	
+	arx_assert(pos <= size);
 	
 	free(dat);
 	
@@ -1857,10 +1861,10 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Mind = asp->Attribute_Mind;
 	player.Attribute_Strength = asp->Attribute_Strength;
 	player.Critical_Hit = asp->Critical_Hit;
-	player.Current_Movement = Flag(asp->Current_Movement); // TODO save/load flags
+	player.Current_Movement = PlayerMovement::load(asp->Current_Movement); // TODO save/load flags
 	player.damages = asp->damages;
 	player.doingmagic = asp->doingmagic;
-	player.playerflags = Flag(asp->playerflags); // TODO save/load flags
+	player.playerflags = PlayerFlags::load(asp->playerflags); // TODO save/load flags
 	
 	if(asp->TELEPORT_TO_LEVEL[0]) {
 		strcpy(TELEPORT_TO_LEVEL, toLowercase(safestring(asp->TELEPORT_TO_LEVEL)).c_str());
@@ -1887,7 +1891,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.inzone = ARX_PATH_GetAddressByName(toLowercase(safestring(asp->inzone)));
 	player.jumpphase = asp->jumpphase;
 	player.jumpstarttime = asp->jumpstarttime;
-	player.Last_Movement = Flag(asp->Last_Movement); // TODO save/load flags
+	player.Last_Movement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
 	ARX_CHECK_UCHAR(asp->level);
 	player.level = static_cast<unsigned char>(asp->level);
@@ -1952,7 +1956,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Attribute_Redistribute = static_cast<unsigned char>(asp->Attribute_Redistribute);
 	player.Skill_Redistribute = static_cast<unsigned char>(asp->Skill_Redistribute);
 	
-	player.rune_flags = Flag(asp->rune_flags); // TODO save/load flags
+	player.rune_flags = RuneFlags::load(asp->rune_flags); // TODO save/load flags
 	player.size = asp->size;
 	player.Skill_Stealth = asp->Skill_Stealth;
 	player.Skill_Mecanism = asp->Skill_Mecanism;
@@ -2122,7 +2126,7 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 	ass = reinterpret_cast<const ARX_CHANGELEVEL_SCRIPT_SAVE *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
-	script.allowevents = Flag(ass->allowevents); // TODO save/load flags
+	script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 	script.nblvar = ass->nblvar;
 	
 	if(script.lvar) {
@@ -2220,8 +2224,8 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->head_rot = ais->head_rot;
 		io->damager_damages = ais->damager_damages;
 		io->nb_iogroups = ais->nb_iogroups;
-		io->damager_type = Flag(ais->damager_type); // TODO save/load flags
-		io->type_flags = Flag(ais->type_flags); // TODO save/load flags
+		io->damager_type = DamageType::load(ais->damager_type); // TODO save/load flags
+		io->type_flags = ItemType::load(ais->type_flags); // TODO save/load flags
 		io->secretvalue = ais->secretvalue;
 		io->shop_multiply = ais->shop_multiply;
 		io->aflags = ais->aflags;
@@ -2231,7 +2235,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		
 		if(ais->system_flags & SYSTEM_FLAG_USEPATH) {
 			ARX_USE_PATH * aup = io->usepath = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
-			aup->aupflags = Flag(ais->usepath_aupflags); // TODO save/load flags
+			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
 			aup->_curtime = static_cast<float>(ais->usepath_curtime);
 			aup->initpos = ais->usepath_initpos;
 			aup->lastWP = ais->usepath_lastWP;
@@ -2426,7 +2430,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				io->_npcdata->tohit = as->tohit;
 				io->_npcdata->weaponinhand = as->weaponinhand;
 				strcpy(io->_npcdata->weaponname, as->weaponname);
-				io->_npcdata->weapontype = Flag(as->weapontype); // TODO save/load flags
+				io->_npcdata->weapontype = ItemType::load(as->weapontype); // TODO save/load flags
 				io->_npcdata->xpvalue = as->xpvalue;
 				
 				assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
@@ -2460,7 +2464,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 					*io->_npcdata->ex_rotate = as->ex_rotate;
 				}
 				
-				io->_npcdata->blood_color = as->blood_color;
+				io->_npcdata->blood_color = Color::fromBGRA(as->blood_color);
 				
 				break;
 			}

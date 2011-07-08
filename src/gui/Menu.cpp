@@ -740,7 +740,7 @@ bool ARX_Menu_Render()
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
+			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 
 		BOOKZOOM = 1;
@@ -798,7 +798,7 @@ bool ARX_Menu_Render()
 			float fSizeX = 100 * Xratio;
 			float fSizeY = 100 * Yratio;
 
-			Color color = 0;
+			Color color = Color::none;
 
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
@@ -957,11 +957,11 @@ bool ARX_Menu_Render()
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
+			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 
 		Vec3f ePos;
-		Color color = 0;
+		Color color = Color::none;
 		std::string szText;
 
 		color = Color(232, 204, 143);

@@ -88,8 +88,8 @@ struct SAVE_EERIEPOLY {
 	SavedVec3 max;
 	SavedVec3 norm;
 	SavedVec3 norm2;
-	SavedD3DTLVertex v[4];
-	SavedD3DTLVertex tv[4];
+	SavedTextureVertex v[4];
+	SavedTextureVertex tv[4];
 	SavedVec3 nrml[4];
 	s32 tex;
 	SavedVec3 center;

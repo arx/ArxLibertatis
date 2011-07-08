@@ -37,6 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <map>
 
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
@@ -46,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float BOOKDECX;
 extern float BOOKDECY;
 #ifdef BUILD_EDITOR
+#include <windows.h>
 extern HWND CDP_PATHWAYS_Options;
 extern HWND CDP_IOOptions;
 extern HWND CDP_FogOptions;
@@ -244,13 +246,12 @@ extern long CONSTANTUPDATELIGHT;
 //-----------------------------------------------------------------------------
 float INTERFACE_RATIO(const float);
 float INTERFACE_RATIO_LONG(const long);
-float INTERFACE_RATIO_DWORD(const DWORD);
+float INTERFACE_RATIO_DWORD(const u32);
 short SHORT_INTERFACE_RATIO(const float);
 
 bool MouseInCam(EERIE_CAMERA * cam);
 bool MouseInRect(float x0, float y0, float x1, float y1);
 long GetMainSpeakingIO();
-void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, float z = 0.000001f);
 bool ARX_INTERFACE_MouseInBook();
 void ARX_INTERFACE_PlayerInterfaceModify(long showhide, long smooth);
 void ARX_INTERFACE_Reset();
@@ -270,7 +271,6 @@ void ARX_INTERFACE_KillFISHTANK();
 void ARX_INTERFACE_KillARKANE();
 void ARX_INTERFACE_EndIntro();
 void ARX_INTERFACE_HALO_Flush();
-void ARX_INTERFACE_DrawItem(TextureContainer * tc, const float x, const float y, const float z = 0.001f, const D3DCOLOR col = D3DRGB(1, 1, 1));
 void LoadScreen();
 void LoadLevelScreen();
 void LoadLevelScreen(long lev);

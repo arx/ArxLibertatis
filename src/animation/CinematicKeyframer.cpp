@@ -25,11 +25,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/CinematicKeyframer.h"
 
+#include <cstdlib>
+#include <cstring>
+
 #include "animation/Cinematic.h"
 #include "core/GameTime.h"
 
 #define C_MIN_F32 1.175494351e-38F
 #define C_NEQUAL_F32(f1,f2) (fabs(f1-f2)>=C_MIN_F32)
+
+using std::malloc;
+using std::realloc;
+using std::memcpy;
+using std::memmove;
 
 
 /*----------------------------------------------------------------------*/
