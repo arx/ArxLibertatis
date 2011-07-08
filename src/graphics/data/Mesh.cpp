@@ -4572,17 +4572,11 @@ void ComputePortalVertexBuffer()
 			}
 
 			pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
-			int iFlag = D3DVBCAPS_WRITEONLY;
-
-			if (!(danaeApp.m_pDeviceInfo->ddDeviceDesc.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT))
-			{
-				iFlag |= D3DVBCAPS_SYSTEMMEMORY;
-			}
 			
 			// TODO should be static, but is updated for dynamic lighting
 			pRoom->pVertexBuffer = GRenderer->createVertexBuffer(iNbVertexForRoom, Renderer::Dynamic);
 
-			SMY_D3DVERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
+			SMY_VERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
 
 			int iStartVertex = 0;
 			int iStartCull = 0;

@@ -901,15 +901,15 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 		{
 			SMY_ZMAPPINFO *pSMY = &(*it);
 			
-			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[0];
+			tTexturedVertexTab2[iPos]			= pSMY->pVertex[0];
 			tTexturedVertexTab2[iPos].color = Color::gray(pSMY->color[0]).toBGR();
 			tTexturedVertexTab2[iPos].tu		= pSMY->uv[0];
 			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[1];
-			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[1];
+			tTexturedVertexTab2[iPos]			= pSMY->pVertex[1];
 			tTexturedVertexTab2[iPos].color = Color::gray(pSMY->color[1]).toBGR();
 			tTexturedVertexTab2[iPos].tu		= pSMY->uv[2];
 			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[3];
-			tTexturedVertexTab2[iPos]			= pSMY->pD3DVertex[2];
+			tTexturedVertexTab2[iPos]			= pSMY->pVertex[2];
 			tTexturedVertexTab2[iPos].color	= Color::gray(pSMY->color[2]).toBGR();
 			tTexturedVertexTab2[iPos].tu		= pSMY->uv[4];
 			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[5];
@@ -951,7 +951,7 @@ void PopAllTriangleListTransparency() {
 float INVISIBILITY_OVERRIDE=0.f;
 
 //-----------------------------------------------------------------------------
-void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex,TexturedVertex *_pD3DVertex)
+void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex,TexturedVertex *_pVertex)
 {
     SMY_ZMAPPINFO sZMappInfo;
 
@@ -988,7 +988,7 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 
 		if (sZMappInfo.color[iI]<0.f) sZMappInfo.color[iI]=0.f;
 	
-		sZMappInfo.pD3DVertex[iI]=_pD3DVertex[iI];
+		sZMappInfo.pVertex[iI]=_pVertex[iI];
 	}
 
 	//optim

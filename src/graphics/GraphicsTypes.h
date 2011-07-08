@@ -628,7 +628,7 @@ struct EERIE_ROOM_DATA {
 	Vec3f center;
 	float radius;
 	unsigned short * pussIndice;
-	VertexBuffer<SMY_D3DVERTEX> * pVertexBuffer;
+	VertexBuffer<SMY_VERTEX> * pVertexBuffer;
 	unsigned long usNbTextures;
 	TextureContainer ** ppTextureContainer;
 };
@@ -643,7 +643,7 @@ struct EERIE_PORTAL_DATA
 
 struct SMY_ZMAPPINFO
 {
-	TexturedVertex pD3DVertex[3];
+	TexturedVertex pVertex[3];
 	float		uv[6];
 	float		color[3];
 };

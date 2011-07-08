@@ -154,7 +154,7 @@ float fZFogEnd=.5f;
 long iTotPoly;
 unsigned long FrameCount;
 
-CircularVertexBuffer<SMY_D3DVERTEX3> * pDynamicVertexBuffer;
+CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
 namespace {
 
@@ -162,7 +162,7 @@ struct DynamicVertexBuffer {
 	
 private:
 	
-	SMY_D3DVERTEX3 * vertices;
+	SMY_VERTEX3 * vertices;
 	size_t start;
 	
 public:
@@ -187,7 +187,7 @@ public:
 		
 	}
 	
-	SMY_D3DVERTEX3 * append(size_t nbvertices) {
+	SMY_VERTEX3 * append(size_t nbvertices) {
 		
 		arx_assert(vertices);
 		
@@ -195,7 +195,7 @@ public:
 			return NULL;
 		}
 		
-		SMY_D3DVERTEX3 * pos = vertices + pDynamicVertexBuffer->pos;
+		SMY_VERTEX3 * pos = vertices + pDynamicVertexBuffer->pos;
 		
 		pDynamicVertexBuffer->pos += nbvertices;
 		
@@ -319,7 +319,7 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 	}
 }
 
-void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim,SMY_D3DVERTEX *_pVertex)
+void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim,SMY_VERTEX *_pVertex)
 {
 	for (long k=0;k<to;k++) 
 	{
@@ -338,7 +338,7 @@ void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long
 	}					
 }
 
-void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim,SMY_D3DVERTEX *_pVertex)
+void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim,SMY_VERTEX *_pVertex)
 {
 	for (long k=0;k<to;k++) 
 	{
@@ -1326,7 +1326,7 @@ static void RenderWater() {
 		EERIEPOLY * ep = vPolyWater[iNb];
 		
 		unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
-		SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
+		SMY_VERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 		
 		if(!pVertex) {
 			dynamicVertices.unlock();
@@ -1520,7 +1520,7 @@ void RenderLava() {
 		EERIEPOLY * ep = vPolyLava[iNb];
 		
 		unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
-		SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
+		SMY_VERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 		
 		if(!pVertex) {
 			dynamicVertices.unlock();
@@ -1987,8 +1987,8 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 	}
 }
 
-void ApplyDynLight_VertexBuffer(EERIEPOLY *ep,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
-void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
+void ApplyDynLight_VertexBuffer(EERIEPOLY *ep,SMY_VERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
+void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_VERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
@@ -2059,7 +2059,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 			return;
 		}
 		
-		SMY_D3DVERTEX * pMyVertex = portals->room[room_num].pVertexBuffer->lock(NoOverwrite);
+		SMY_VERTEX * pMyVertex = portals->room[room_num].pVertexBuffer->lock(NoOverwrite);
 		
 		unsigned short *pIndices=portals->room[room_num].pussIndice;
 
@@ -2204,7 +2204,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 				}
 			}
 
-			SMY_D3DVERTEX *pMyVertexCurr;
+			SMY_VERTEX *pMyVertexCurr;
 
 				*pIndicesCurr++=ep->uslInd[0];
 				*pIndicesCurr++=ep->uslInd[1];
@@ -2461,7 +2461,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 					EERIEPOLY * ep = *it;
 					
 					unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
-					SMY_D3DVERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
+					SMY_VERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
 					
 					if(!pVertex) {
 						dynamicVertices.unlock();

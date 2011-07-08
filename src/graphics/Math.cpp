@@ -1166,16 +1166,7 @@ VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 	memcpy(q, pM, sizeof(EERIEMATRIX));
 }
 
-//-----------------------------------------------------------------------------
-// Name: D3DMath_MatrixInvert()
-// Desc: Does the matrix operation: [Q] = inv[A]. Note: this function only
-//       works for matrices with [0 0 0 1] for the 4th column.
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-// Name: D3DMath_VectorMatrixMultiply()
 // Desc: Multiplies a vector by a matrix
-//-----------------------------------------------------------------------------
 void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc,
                           const EERIEMATRIX * mat)
 {

@@ -30,13 +30,13 @@ struct TexturedVertex {
 template <class Vertex>
 class VertexBuffer;
 
-struct SMY_D3DVERTEX {
+struct SMY_VERTEX {
 	float x, y, z;
 	ColorBGRA color;
 	float tu, tv;
 };
 
-struct SMY_D3DVERTEX3 {
+struct SMY_VERTEX3 {
 	float x, y, z;
 	ColorBGRA color;
 	float tu, tv;

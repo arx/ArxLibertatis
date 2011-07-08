@@ -10,8 +10,8 @@
 
 struct EERIEMATRIX;
 struct TexturedVertex;
-struct SMY_D3DVERTEX;
-struct SMY_D3DVERTEX3;
+struct SMY_VERTEX;
+struct SMY_VERTEX3;
 class TextureContainer;
 class TextureStage;
 class Image;
@@ -167,8 +167,8 @@ public:
 	virtual void DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) = 0;
 	
 	virtual VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage) = 0;
-	virtual VertexBuffer<SMY_D3DVERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage) = 0;
-	virtual VertexBuffer<SMY_D3DVERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage) = 0;
+	virtual VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage) = 0;
+	virtual VertexBuffer<SMY_VERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage) = 0;
 	
 	virtual void drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) = 0;
 	

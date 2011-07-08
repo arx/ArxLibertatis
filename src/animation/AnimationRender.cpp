@@ -1117,35 +1117,35 @@ extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
 
 void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
 	
-	TexturedVertex pD3DPointAdd[3];
+	TexturedVertex pPointAdd[3];
 	
 	Vec3f e3dTemp;
 	e3dTemp.x = _pVertex1->sx;
 	e3dTemp.y = _pVertex1->sy;
 	e3dTemp.z = _pVertex1->sz;
-	EE_P(&e3dTemp, &pD3DPointAdd[0]);
+	EE_P(&e3dTemp, &pPointAdd[0]);
 	e3dTemp.x = _pVertex2->sx;
 	e3dTemp.y = _pVertex2->sy;
 	e3dTemp.z = _pVertex2->sz;
-	EE_P(&e3dTemp, &pD3DPointAdd[1]);
+	EE_P(&e3dTemp, &pPointAdd[1]);
 	e3dTemp.x = _pVertex3->sx;
 	e3dTemp.y = _pVertex3->sy;
 	e3dTemp.z = _pVertex3->sz;
-	EE_P(&e3dTemp, &pD3DPointAdd[2]);
-	pD3DPointAdd[0].color = _pVertex1->color;
-	pD3DPointAdd[0].specular = _pVertex1->specular;
-	pD3DPointAdd[0].tu = _pVertex1->tu;
-	pD3DPointAdd[0].tv = _pVertex1->tv;
-	pD3DPointAdd[1].color = _pVertex2->color;
-	pD3DPointAdd[1].specular = _pVertex2->specular;
-	pD3DPointAdd[1].tu = _pVertex2->tu;
-	pD3DPointAdd[1].tv = _pVertex2->tv;
-	pD3DPointAdd[2].color = _pVertex3->color;
-	pD3DPointAdd[2].specular = _pVertex3->specular;
-	pD3DPointAdd[2].tu = _pVertex3->tu;
-	pD3DPointAdd[2].tv = _pVertex3->tv;
+	EE_P(&e3dTemp, &pPointAdd[2]);
+	pPointAdd[0].color = _pVertex1->color;
+	pPointAdd[0].specular = _pVertex1->specular;
+	pPointAdd[0].tu = _pVertex1->tu;
+	pPointAdd[0].tv = _pVertex1->tv;
+	pPointAdd[1].color = _pVertex2->color;
+	pPointAdd[1].specular = _pVertex2->specular;
+	pPointAdd[1].tu = _pVertex2->tu;
+	pPointAdd[1].tv = _pVertex2->tv;
+	pPointAdd[2].color = _pVertex3->color;
+	pPointAdd[2].specular = _pVertex3->specular;
+	pPointAdd[2].tu = _pVertex3->tu;
+	pPointAdd[2].tv = _pVertex3->tv;
 	
-	EERIEDRAWPRIM(Renderer::TriangleList, pD3DPointAdd);
+	EERIEDRAWPRIM(Renderer::TriangleList, pPointAdd);
 }
 
 long FORCE_FRONT_DRAW = 0;
@@ -2377,7 +2377,7 @@ void ApplyDynLight(EERIEPOLY * ep)
  
 float TOTAL_CHRONO = 0.f;
 //*************************************************************************************
-void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
+void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
 {
 	long nbvert, i;
 
@@ -2494,7 +2494,7 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 extern TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 //*************************************************************************************
 
-void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
+void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
 {
 	// Nuky - 25/01/11 - harmless refactor to understand what is slow.
 	//        MASSIVE speed up thanks to "harmless refactor", wtf ?

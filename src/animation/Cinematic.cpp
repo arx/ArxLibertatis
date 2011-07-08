@@ -55,7 +55,7 @@ bool			InRender;
 bool			ProjectModif;
 
 //vertex
-TexturedVertex		AllD3DTLVertex[40000];
+TexturedVertex		AllTLVertex[40000];
 
 extern float DreamTable[];
 
@@ -340,7 +340,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 {
 	int nb = grille->nbvertexs;
 	Vec3f * v = grille->vertexs;
-	TexturedVertex * d3dv = AllD3DTLVertex;
+	TexturedVertex * d3dv = AllTLVertex;
 
 	LocalPos = *posgrille;
 	LocalSin = (float)sin(radians(angzgrille));
@@ -436,12 +436,12 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 
 		while (nb2--)
 		{
-			AllD3DTLVertex[uvs->indvertex].tu = uvs->uv.x;
-			AllD3DTLVertex[uvs->indvertex].tv = uvs->uv.y;
+			AllTLVertex[uvs->indvertex].tu = uvs->uv.x;
+			AllTLVertex[uvs->indvertex].tv = uvs->uv.y;
 			uvs++;
 		}
 
-		GRenderer->drawIndexed(Renderer::TriangleList, AllD3DTLVertex, grille->nbvertexs,
+		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->nbvertexs,
 		                       ((unsigned short *)grille->inds) + mat->startind, mat->nbind);
 	}
 }

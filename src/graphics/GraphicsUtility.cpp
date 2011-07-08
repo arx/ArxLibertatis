@@ -56,12 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsUtility.h"
 
-//-----------------------------------------------------------------------------
-// Name: D3DUtil_SetViewMatrix()
-// Desc: Given an eye point, a lookat point, and an up vector, this
-//       function builds a 4x4 view matrix.
-//-----------------------------------------------------------------------------
-bool D3DUtil_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
+bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
                            const Vec3f & vAt, const Vec3f & vWorldUp) {
 	
 	// Get the z basis vector, which points straight ahead. This is the
@@ -105,7 +100,7 @@ bool D3DUtil_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
 
 	// Start building the matrix. The first three rows contains the basis
 	// vectors used to rotate the view to point at the lookat point
-	D3DUtil_SetIdentityMatrix(mat);
+	Util_SetIdentityMatrix(mat);
 	mat._11 = vRight.x;
 	mat._12 = vUp.x;
 	mat._13 = vView.x;

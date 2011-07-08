@@ -172,11 +172,8 @@ void Direct3DRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 void Direct3DRenderer::SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp) {
 	
 	EERIEMATRIX matView;
-	Vec3f pos(vPosition.x, vPosition.y, vPosition.z);
-	Vec3f at(vDir.x, vDir.y, vDir.z);
-	Vec3f up(vUp.x, vUp.y, vUp.z);
+	Util_SetViewMatrix(matView, vPosition, vDir, vUp);
 	
-	D3DUtil_SetViewMatrix(matView, pos, at, up);
 	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
@@ -443,16 +440,16 @@ VertexBuffer<TexturedVertex> * Direct3DRenderer::createVertexBufferTL(size_t cap
 	return new DX7VertexBuffer<TexturedVertex>(D3DFVF_TLVERTEX, capacity);
 }
 
-VertexBuffer<SMY_D3DVERTEX> * Direct3DRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
+VertexBuffer<SMY_VERTEX> * Direct3DRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
 	const DWORD format = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_TEXTUREFORMAT2;
-	return new DX7VertexBuffer<SMY_D3DVERTEX>(format, capacity);
+	return new DX7VertexBuffer<SMY_VERTEX>(format, capacity);
 }
 
-VertexBuffer<SMY_D3DVERTEX3> * Direct3DRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
+VertexBuffer<SMY_VERTEX3> * Direct3DRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
 	const DWORD format = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX3 | D3DFVF_TEXTUREFORMAT2;
-	return new DX7VertexBuffer<SMY_D3DVERTEX3>(format, capacity);
+	return new DX7VertexBuffer<SMY_VERTEX3>(format, capacity);
 }
 
 void Direct3DRenderer::drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {

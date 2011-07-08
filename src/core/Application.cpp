@@ -1010,7 +1010,7 @@ VOID CD3DApplication::Cleanup3DEnvironment()
 	if (m_pFramework)
 	{
 		DeleteDeviceObjects();
-		SAFE_DELETE(m_pFramework);
+		delete m_pFramework, m_pFramework = NULL;
 
 		FinalCleanup();
 	}

@@ -65,7 +65,7 @@ struct SavedAnglef {
 	
 };
 
-struct SavedD3DTLVertex {
+struct SavedTextureVertex {
 	
 	SavedVec3 pos;
 	f32 rhw;
@@ -85,7 +85,7 @@ struct SavedD3DTLVertex {
 		return a;
 	}
 	
-	inline SavedD3DTLVertex & operator=(const TexturedVertex & b) {
+	inline SavedTextureVertex & operator=(const TexturedVertex & b) {
 		pos.x = b.sx, pos.y = b.sy, pos.z = b.sz;
 		rhw = b.rhw;
 		color = b.color;

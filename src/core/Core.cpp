@@ -253,7 +253,7 @@ long LAST_LOCK_SUCCESSFULL=0;
 extern EERIEMATRIX ProjectionMatrix;
 
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
-extern CircularVertexBuffer<SMY_D3DVERTEX3> * pDynamicVertexBuffer;
+extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
 extern std::string pStringMod;
 
@@ -7070,8 +7070,8 @@ HRESULT DANAE::InitDeviceObjects()
 	SetZBias(0);
 
 	ComputePortalVertexBuffer();
-	VertexBuffer<SMY_D3DVERTEX3> * vb3 = GRenderer->createVertexBuffer3(4000, Renderer::Stream);
-	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_D3DVERTEX3>(vb3);
+	VertexBuffer<SMY_VERTEX3> * vb3 = GRenderer->createVertexBuffer3(4000, Renderer::Stream);
+	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_VERTEX3>(vb3);
 	
 	VertexBuffer<TexturedVertex> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
