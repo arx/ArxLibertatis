@@ -43,6 +43,8 @@ public:
 	
 	float getFloat();
 	
+	float getFloatVar(const std::string & name);
+	
 	friend class ScriptEvent;
 };
 

@@ -49,6 +49,7 @@
 #include "scene/Object.h"
 #include "scene/Light.h"
 
+#include "scripting/ScriptedControl.h"
 #include "scripting/ScriptedInteractiveObject.h"
 #include "scripting/ScriptedInterface.h"
 #include "scripting/ScriptedNPC.h"
@@ -450,7 +451,7 @@ string ScriptContext::getWord() {
 	boolean tilde = false; // number of tildes
 	
 	string word;
-	string var;
+	string var; // TODO(case-sensitive) should sometimes be lowercased
 	
 	// now take chars until it finds a space or unused char
 	while(((unsigned char)esdat[pos]) > 32 && esdat[pos] != '(' && esdat[pos] != ')') {
@@ -528,13 +529,16 @@ std::string ScriptContext::getFlags() {
 }
 
 float ScriptContext::getFloat() {
-	return GetVarValueInterpretedAsFloat(getWord(), script, io);
+	return GetVarValueInterpretedAsFloat(getLowercase(), script, io);
 }
 
 string ScriptContext::getLowercase() {
 	return toLowercase(getWord());
 }
 
+float ScriptContext::getFloatVar(const std::string & name) {
+	return GetVarValueInterpretedAsFloat(name, script, io);
+}
 
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
 	
@@ -721,26 +725,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					LogDebug << "  ACCEPT";
 					goto end;
-				}
-				else if (!strcmp(word, "ATTRACTOR"))
-				{
-					pos = GetNextWord(es, pos, word);
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -2) t = GetInterNum(io);
-
-					pos = GetNextWord(es, pos, word);
-					float val = 0.f;
-					float val2 = 0.f;
-
-					if (strcasecmp(word, "OFF"))
-					{
-						val = GetVarValueInterpretedAsFloat(word, esss, io);
-						pos = GetNextWord(es, pos, word);
-						val2 = GetVarValueInterpretedAsFloat(word, esss, io);
-					}
-
-					ARX_SPECIAL_ATTRACTORS_Add(t, val, val2);
 				}
 				else if (!strcmp(word, "AMBIANCE"))
 				{
@@ -6826,6 +6810,7 @@ void ScriptEvent::registerCommand(const std::string & name, ScriptCommand * comm
 }
 
 void ScriptEvent::init() {
+	setupScriptedControl();
 	setupScriptedInteractiveObject();
 	setupScriptedInterface();
 	setupScriptedNPC();
