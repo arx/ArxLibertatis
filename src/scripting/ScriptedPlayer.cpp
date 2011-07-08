@@ -1,5 +1,5 @@
 
-#include "scripting/ScriptedNPC.h"
+#include "scripting/ScriptedPlayer.h"
 
 #include "game/Player.h"
 #include "io/Logger.h"

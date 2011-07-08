@@ -1,5 +1,5 @@
 
-#include "scripting/ScriptedNPC.h"
+#include "scripting/ScriptedInterface.h"
 
 #include "gui/Interface.h"
 #include "io/Logger.h"

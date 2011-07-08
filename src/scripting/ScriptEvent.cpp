@@ -49,6 +49,7 @@
 #include "scene/Object.h"
 #include "scene/Light.h"
 
+#include "scripting/ScriptedInteractiveObject.h"
 #include "scripting/ScriptedInterface.h"
 #include "scripting/ScriptedNPC.h"
 #include "scripting/ScriptedPlayer.h"
@@ -720,10 +721,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					LogDebug << "  ACCEPT";
 					goto end;
-				}
-				else if (!strcmp(word, "ACTIVATEPHYSICS"))
-				{
-					ARX_INTERACTIVE_ActivatePhysics(GetInterNum(io));
 				}
 				else if (!strcmp(word, "ADDXP"))
 				{
@@ -6849,6 +6846,7 @@ void ScriptEvent::registerCommand(const std::string & name, ScriptCommand * comm
 }
 
 void ScriptEvent::init() {
+	setupScriptedInteractiveObject();
 	setupScriptedInterface();
 	setupScriptedNPC();
 	setupScriptedPlayer();
