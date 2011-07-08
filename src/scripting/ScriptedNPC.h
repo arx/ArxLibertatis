@@ -1,2 +1,7 @@
 
+#ifndef ARX_SCRIPTING_SCRIPTEDNPC_H
+#define ARX_SCRIPTING_SCRIPTEDNPC_H
+
 void setupScriptedNPC();
+
+#endif // ARX_SCRIPTING_SCRIPTEDNPC_H

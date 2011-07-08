@@ -9,6 +9,8 @@
 
 using std::string;
 
+namespace {
+
 class BehaviourCommand : public ScriptCommand {
 	
 public:
@@ -131,6 +133,8 @@ public:
 	~BehaviourCommand() { }
 	
 };
+
+}
 
 void setupScriptedNPC() {
 	

@@ -50,6 +50,7 @@
 #include "scene/Light.h"
 
 #include "scripting/ScriptedNPC.h"
+#include "scripting/ScriptedInterface.h"
 
 using std::max;
 using std::min;
@@ -708,38 +709,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case '>':
 				if (word[1] == '>') pos = GotoNextLine(es, pos);
-				break;
-			case 'B':
-				
-
-				if (!strcmp(word, "BOOK"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'A')) //MAGIC
-							Book_Mode = BOOKMODE_MINIMAP;
-
-						if (iCharIn(word, 'E')) //Equip
-							Book_Mode = BOOKMODE_SPELLS;
-
-						if (iCharIn(word, 'M')) //Map
-							Book_Mode = BOOKMODE_QUESTS;
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					if (!strcasecmp(word, "OPEN"))
-					{
-						ARX_INTERFACE_BookOpenClose(1);
-					}
-					else if (!strcasecmp(word, "CLOSE"))
-					{
-						ARX_INTERFACE_BookOpenClose(2);
-					}
-				}
-
 				break;
 			case 'A':
 
@@ -6886,6 +6855,7 @@ void ScriptEvent::registerCommand(const std::string & name, ScriptCommand * comm
 
 void ScriptEvent::init() {
 	setupScriptedNPC();
+	setupScriptedInterface();
 }
 
 ScriptEvent::Commands ScriptEvent::commands;
