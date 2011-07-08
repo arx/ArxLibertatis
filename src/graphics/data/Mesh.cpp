@@ -4503,7 +4503,7 @@ void ComputePortalVertexBuffer()
 							}
 						}
 
-						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = D3DRGB(fTransp, fTransp, fTransp);
+						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
 					}
 					else
 					{
@@ -4547,7 +4547,7 @@ void ComputePortalVertexBuffer()
 							}
 						}
 
-						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = D3DRGB(fTransp, fTransp, fTransp);
+						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
 					}
 					else
 					{
