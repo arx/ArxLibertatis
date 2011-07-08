@@ -924,7 +924,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 								}
 
 							tcd = 1.f / (float)tc;
-							ep->v[k].color = D3DRGB(totr * tcd * ( 1.0f / 255 ), totg * tcd * ( 1.0f / 255 ), totb * tcd * ( 1.0f / 255 ));
+							ep->v[k].color = (Color3f(totr, totg, totb) * (tcd * (1.f/255))).toBGR();
 						}
 
 				}

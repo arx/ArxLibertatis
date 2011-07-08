@@ -2518,7 +2518,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 						pVertex->x				=	ep->v[idx].sx;
 						pVertex->y				=	- ep->v[idx].sy;
 						pVertex->z				=	ep->v[idx].sz;
-						pVertex->color			=	D3DRGB( _fTransp[idx], _fTransp[idx], _fTransp[idx]);
+						pVertex->color = Color::gray(_fTransp[idx]).toBGR();
 						pVertex->tu				=	tu[idx]; 
 						pVertex->tv				=	tv[idx]; 
 						pVertex++;
