@@ -125,12 +125,9 @@ bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt);
 bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
-float InterpolateAngle(float a1, float a2, float pour);
-
 //*************************************************************************************
 // Simple 2D Functions
 //*************************************************************************************
-float FORCEANGLE(float a);
 
 inline float ffsqrt(float f)
 {
@@ -466,15 +463,6 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)
 // ANGLES Functions
 //*******************************************************************************
 float	GetAngle(const float x0, const float y0, const float x1, const float y1);
-float	AngleDifference(float d, float e);
-
-inline float MAKEANGLE(float a)
-{
-	if (a >= 0)
-		return a - 360 * (int)(a * 0.0027777777f);
-	else
-		return a + 360 * (1 + (int)(-a * 0.0027777777f));
-}
  
 
 float GetNearestSnappedAngle(float angle);

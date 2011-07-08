@@ -525,51 +525,6 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 	rad = fa * boxhalfsize[X] + fb * boxhalfsize[Y];   \
 	if(min>rad || max<-rad) return 0;
 
-//*************************************************************************************
-//*************************************************************************************
-float InterpolateAngle(float a1, float a2, const float pour)
-{
-	a1 = MAKEANGLE(a1);
-	a2 = MAKEANGLE(a2);
-	float t1 = a1 - a2;
-	float t2 = a2 - a1;
-	float t3 = 360.f + a1 - a2;
-	float t4 = 360.f + a2 - a1;
-	float ft1 = EEfabs(t1);
-	float ft2 = EEfabs(t2);
-	float ft3 = EEfabs(t3);
-	float ft4 = EEfabs(t4);
-	float t = min(ft1, ft2);
-	t = min(t, ft3);
-	t = min(t, ft4);
-	
-	if(t == ft1) {
-		return MAKEANGLE(a2);
-	}
-
-	if(t == ft2) {
-		float i = ft2 * pour;
-
-		if (a2 < a1)
-			a2 = a1 - i;
-		else a2 = a1 + i;
-
-		return MAKEANGLE(a2);
-	}
-
-	if(t == ft3) {
-		return MAKEANGLE(a2);
-	} else {
-		float i = ft4 * pour;
-
-		if (a2 < a1)
-			a2 = a1 + i;
-		else a2 = a1 - i;
-
-		return MAKEANGLE(a2);
-	}
-}
-
 //*******************************************************************************************
 //*******************************************************************************************
 
@@ -899,28 +854,6 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 		quat.z = q[2];
 		quat.w = q[3];
 	}
-}
-
-//--------------------------------------------------------------------------------------
-// ANGLES Functions
-//--------------------------------------------------------------------------------------
-
-/*----------------------------------------------------------------------------*/
-/*
-	angle de 0 a 360(par exemple)
-*/
-float AngleDifference(const float d, const float e)
-{
-	register float	da;
-	da = e - d;
-
-	if (EEfabs(da) > 180.f)
-	{
-		if (da > 0) da -= 360.f;
-		else da += 360.f;
-	}
-
-	return da;
 }
 
 //--------------------------------------------------------------------------------------

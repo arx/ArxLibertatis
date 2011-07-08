@@ -3,6 +3,7 @@
 #define ARX_MATH_ANGLE_H
 
 #include <limits>
+#include <cmath>
 
 #include "math/MathFwd.h"
 
@@ -137,5 +138,14 @@ public:
 };
 
 template<class T> const Angle<T> Angle<T>::ZERO(T(0), T(0), T(0));
+
+float AngleDifference(float d, float e);
+
+inline float MAKEANGLE(float a) {
+	float angle = std::fmod(a, 360.f);
+	return (angle >= 0) ? angle : angle + 360.f;
+}
+
+float InterpolateAngle(float a1, float a2, float pour);
 
 #endif // ARX_MATH_ANGLE_H
