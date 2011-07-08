@@ -7055,25 +7055,23 @@ HRESULT DANAE::DeleteDeviceObjects() {
 // MsgProc()
 //   Overrides StdMsgProc
 //*************************************************************************************
-LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
-									LPARAM lParam )
-{
-	switch (uMsg)
-	{
-		case WM_ACTIVATE:
-
-		if(wParam==WA_INACTIVE)
-		{
-			GInput->unacquireDevices();
+LRESULT DANAE::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	switch(uMsg) {
+		
+		case WM_ACTIVATE: {
+			if(GInput) {
+				if(wParam==WA_INACTIVE) {
+					GInput->unacquireDevices();
+				} else {
+					GInput->reset();
+					GInput->unacquireDevices();
+					GInput->acquireDevices();
+				}
+			}
+			break;
 		}
-		else
-		{
-			GInput->reset();
-			GInput->unacquireDevices();
-			GInput->acquireDevices();
-		}
-
-		break;
+		
 		case WM_SYSCOMMAND: // To avoid ScreenSaver Interference
 
 			if ((wParam & 0xFFF0)== SC_SCREENSAVE ||
