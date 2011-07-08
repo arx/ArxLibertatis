@@ -49,8 +49,9 @@
 #include "scene/Object.h"
 #include "scene/Light.h"
 
-#include "scripting/ScriptedNPC.h"
 #include "scripting/ScriptedInterface.h"
+#include "scripting/ScriptedNPC.h"
+#include "scripting/ScriptedPlayer.h"
 
 using std::max;
 using std::min;
@@ -719,12 +720,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					LogDebug << "  ACCEPT";
 					goto end;
-				}
-				else if (!strcmp(word, "ADDBAG"))
-				{
-					ARX_PLAYER_AddBag();
-					LogDebug << "ADD_BAG " << word;
-
 				}
 				else if (!strcmp(word, "ACTIVATEPHYSICS"))
 				{
@@ -6854,8 +6849,9 @@ void ScriptEvent::registerCommand(const std::string & name, ScriptCommand * comm
 }
 
 void ScriptEvent::init() {
-	setupScriptedNPC();
 	setupScriptedInterface();
+	setupScriptedNPC();
+	setupScriptedPlayer();
 }
 
 ScriptEvent::Commands ScriptEvent::commands;

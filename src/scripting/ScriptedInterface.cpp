@@ -3,7 +3,6 @@
 
 #include "gui/Interface.h"
 #include "io/Logger.h"
-#include "platform/String.h"
 #include "scripting/ScriptEvent.h"
 
 using std::string;
@@ -37,6 +36,8 @@ public:
 		} else if(command == "close") {
 			ARX_INTERFACE_BookOpenClose(2);
 		}
+		
+		LogDebug << "book " << flags << " \"" << command << "\"";
 		
 		return ACCEPT;
 	}
