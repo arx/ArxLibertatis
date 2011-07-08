@@ -726,20 +726,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					LogDebug << "  ACCEPT";
 					goto end;
 				}
-				else if (!strcmp(word, "ANCHORBLOCK"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io)
-					{
-						if ((!strcasecmp(word, "ON")) || (!strcasecmp(word, "YES")))
-						{
-							ANCHOR_BLOCK_By_IO(io, 1);
-						}
-						else
-							ANCHOR_BLOCK_By_IO(io, 0);
-					}
-				}
 				else if (!strcmp(word, "ATTACHNPCTOPLAYER"))
 				{
 					LogDebug << "ATTACH_NPC_TO_PLAYER ...OBSOLETE...";

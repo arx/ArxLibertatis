@@ -2,6 +2,7 @@
 #include "scripting/ScriptedControl.h"
 
 #include "physics/Attractors.h"
+#include "physics/Collisions.h"
 #include "io/Logger.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
@@ -81,11 +82,35 @@ public:
 	
 };
 
+class AnchorBlockCommand : public ScriptCommand {
+	
+public:
+	
+	ScriptResult execute(ScriptContext & context) {
+		
+		string choice = context.getLowercase();
+		
+		if(choice == "on" || choice == "yes") {
+			ANCHOR_BLOCK_By_IO(context.getIO(), 1);
+		} else {
+			ANCHOR_BLOCK_By_IO(context.getIO(), 0);
+		}
+		
+		LogDebug << "anchorblock \"" << choice << "\"";
+		
+		return ACCEPT;
+	}
+	
+	~AnchorBlockCommand() { }
+	
+};
+
 }
 
 void setupScriptedControl() {
 	
 	ScriptEvent::registerCommand("attractor", new AttractorCommand);
 	ScriptEvent::registerCommand("ambiance", new AmbianceCommand);
+	ScriptEvent::registerCommand("anchorblock", new AnchorBlockCommand);
 	
 }
