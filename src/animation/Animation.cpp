@@ -1578,14 +1578,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 				}					
 			}
 			// Are we using IMPROVED VISION view ?
-			else if (Project.improve) 
-			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color
-					=EERIERGB(io->infracolor.r,io->infracolor.g,io->infracolor.b);
-			}
-			else 
-			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xFFFFFFFF;
+			else if(Project.improve) {
+				vert_list[0].color = vert_list[1].color = vert_list[2].color = io->infracolor.toBGR();
+			} else {
+				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 
 			if(Project.improve)
@@ -1627,18 +1623,15 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
 				else if (USEINTERNORM) // using INTERNORM lighting
 			{
-				for (long j=0;j<3;j++)
-				{			
-						vert_list[j].color = eobj->vertexlist3[paf[j]].vert.color; 
-				}					
-			}
-			else if (Project.improve) // using IMPROVED VISION view
-			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=EERIERGB(0.6f,0.f,1.f);
-			}
-			else // using default white
-			{
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=Color::white.toBGR();
+				for (long j=0;j<3;j++) {
+					vert_list[j].color = eobj->vertexlist3[paf[j]].vert.color; 
+				}
+			} else if(Project.improve) {
+				// using IMPROVED VISION view
+				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color3f(.6f, 0.f, 1.f).toBGR();
+			} else {
+				// using default white
+				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 		}
 

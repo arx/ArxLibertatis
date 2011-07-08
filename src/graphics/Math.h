@@ -125,32 +125,6 @@ bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt);
 bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
-inline u32 EERIERGB(float r, float g, float b) {
-	long t[3];
-	t[0] = r * 255.f;
-	t[1] = g * 255.f;
-	t[2] = b * 255.f;
-	return (0xff000000L | (t[0] << 16) | (t[1] << 8) | t[2]);
-}
-
-inline u32 _EERIERGB(float v) {
-	long t = v * 255.f;
-	return (0xff000000L | (t << 16) | (t << 8) | t);
-}
-
-inline u32 _EERIERGBA(float v) {
-	long t = v * 255.f;
-	return (0x00000000L | (t << 24) | (t << 16) | (t << 8) | t);
-}
-
-#define EERIELRGB255(r,g,b) (0xff000000L | ( r << 16) | ( g << 8) | b);
-
-#define FLOAT2LONG(floatx,longx) \
-	longx = (long)floatx
-
-
-float	SSQRT(long a);
-
 float InterpolateAngle(float a1, float a2, float pour);
 
 //*************************************************************************************

@@ -1621,10 +1621,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				}
 				memcpy((void *) tv2, (void *)tv, sizeof(TexturedVertex) * 3);
 
-				unsigned long v = _EERIERGB(special_color.r);
-				tv2[0].color	= v;
-				tv2[1].color	= v;
-				tv2[2].color	= v;
+				tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
 			}
 
 			// Add a little bit of Fake Metal Specular if needed :p

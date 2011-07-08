@@ -473,23 +473,16 @@ void ARXDRAW_DrawPolyBoom()
 					EE_RT2(&ltv[1],&ltv[1]);
 					EE_RT2(&ltv[2],&ltv[2]);
 
-					for (k=0;k<polyboom[i].nbvert;k++) 
-					{
+					for(k=0;k<polyboom[i].nbvert;k++) {
 						ltv[k].tu=polyboom[i].u[k];
 						ltv[k].tv=polyboom[i].v[k];
+						ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
+						ltv[k].specular = Color::black.toBGR();
+					}
 
-						if (Project.improve) ltv[k].color=EERIERGB(tt*( 1.0f / 2 ),0.f,0.f);
-						else ltv[k].color=_EERIERGB(tt);
-
-						ltv[k].specular=0xFF000000;
-					}				
-
-						if (Project.improve) 
-						{
+						if(Project.improve) {
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						}
-						else  
-						{
+						} else {
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						}
 
@@ -554,8 +547,7 @@ void ARXDRAW_DrawPolyBoom()
 									}
 
 
-								col=_EERIERGB(tt);
-								ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=col;								
+								ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
 								
 								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
@@ -681,25 +673,25 @@ void ARXDRAW_DrawAllInterTransPolyPos()
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			ttt*=( 1.0f / 2 );
 			ttt+=0.5f;
-			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
+			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
 		}
 		else if (ttt>=1.f) //ADDITIVE
 		{	
 			ttt-=1.f;
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
+			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
 		}
 		else if (ttt>0.f)  //NORMAL TRANS
 		{
 			ttt=1.f-ttt;
 			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGBA(ttt);//ttt);
+			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR(Color::Limits::max() * ttt);
 		}
 		else  //SUBTRACTIVE
 		{
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			ttt=1.f-ttt;
-			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
+			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
 		}
 
 		EERIEDRAWPRIM(Renderer::TriangleStrip, InterTransPol[i], 3, true);
@@ -744,25 +736,25 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				ttt	*= ( 1.0f / 2 );
 				ttt	+= 0.5f;
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
+				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
 			}
 			else if ( ttt >= 1.f ) //ADDITIVE
 			{	
 				ttt -= 1.f;
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
+				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
 			}
 			else if ( ttt > 0.f )  //NORMAL TRANS
 			{
 				ttt = 1.f - ttt;
 				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGBA(ttt);  
+				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR(Color::Limits::max() * ttt);
 			}
 			else  //SUBTRACTIVE
 			{
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				ttt = 1.f - ttt;
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
+				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
 			}
 
 			EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to);

@@ -175,18 +175,11 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	if (ep->type & POLY_QUAD) nbvert = 4;
 	else nbvert = 3;
 
-	for (long i = 0; i < nbvert; i++)
-	{
-		if (epr[i] > 1.f) epr[i] = 1.f;
-		else if (epr[i] < ACTIVEBKG->ambient.r) epr[i] = ACTIVEBKG->ambient.r;
-
-		if (epg[i] > 1.f) epg[i] = 1.f;
-		else if (epg[i] < ACTIVEBKG->ambient.g) epg[i] = ACTIVEBKG->ambient.g;
-
-		if (epb[i] > 1.f) epb[i] = 1.f;
-		else if (epb[i] < ACTIVEBKG->ambient.b) epb[i] = ACTIVEBKG->ambient.b;
-
-		ep->v[i].color = EERIERGB(epr[i], epg[i], epb[i]);
+	for(long i = 0; i < nbvert; i++) {
+		epr[i] = clamp(epr[i], ACTIVEBKG->ambient.r, 1.f);
+		epg[i] = clamp(epg[i], ACTIVEBKG->ambient.g, 1.f);
+		epb[i] = clamp(epb[i], ACTIVEBKG->ambient.b, 1.f);
+		ep->v[i].color = Color3f(epr[i], epg[i], epb[i]).toBGR();
 	}
 }
 
