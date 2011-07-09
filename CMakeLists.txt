@@ -231,13 +231,19 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-	add_definitions(/wd4995)
 	
 	# TEMP - disable warning caused by the F2L removal
 	add_definitions(/wd4244)    # conversion from 'float' to 'long', possible loss of data
 
 	# This is needed to use ZLIB as a DLL
 	add_definitions(-DZLIB_WINAPI)
+
+	if(NOT ARX_DEBUG_EXTRA)
+		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
+		add_definitions(-D_SECURE_SCL=0)
+		add_definitions(-D_SECURE_SCL_THROWS=0)
+		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
+	endif()
 	
 	# Add dx7 include & lib paths
 	if("$ENV{DX7SDK_PATH}" STREQUAL "")
