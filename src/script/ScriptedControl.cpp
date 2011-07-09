@@ -265,6 +265,27 @@ public:
 	
 };
 
+class QuakeCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		float intensity = context.getFloat();
+		float duration = context.getFloat();
+		float period = context.getFloat();
+		
+		LogDebug << "quake " << intensity << ' ' << duration << ' ' << period;
+		
+		AddQuakeFX(intensity, duration, period, 1);
+		
+		return Success;
+	}
+	
+	~QuakeCommand() { }
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -276,6 +297,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand("attach", new AttachCommand);
 	ScriptEvent::registerCommand("cine", new CineCommand);
 	ScriptEvent::registerCommand("conversation", new ConversationCommand);
+	ScriptEvent::registerCommand("quake", new QuakeCommand);
 	
 }
 

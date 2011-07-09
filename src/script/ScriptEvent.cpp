@@ -883,19 +883,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'Q':
 
-				if (!strcmp(word, "QUAKE"))
-				{
-					float f1, f2, f3; // intensity duration period
-					pos = GetNextWord(es, pos, word);
-					f1 = GetVarValueInterpretedAsFloat(word, esss, io);
-					pos = GetNextWord(es, pos, word);
-					f2 = GetVarValueInterpretedAsFloat(word, esss, io);
-					pos = GetNextWord(es, pos, word);
-					f3 = GetVarValueInterpretedAsFloat(word, esss, io);
-					AddQuakeFX(f1, f2, f3, 1);
-					LogDebug <<  "QUAKE";
-				}
-				else if (!strcmp(word, "QUEST"))
+				if (!strcmp(word, "QUEST"))
 				{
 					pos = GetNextWord(es, pos, word);
 					ARX_PLAYER_Quest_Add(word);
