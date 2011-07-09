@@ -225,22 +225,7 @@ Input::Input()
 {
 	setMouseSensibility(2);
 
-	iMouseAX=0;
-	iMouseAY=0;
-	fMouseAXTemp=fMouseAYTemp=0.f;
-	
-	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
-		iMouseTime[i] = 0;
-		iMouseTimeSet[i] = 0;
-		bMouseButton[i] = bOldMouseButton[i] = false;
-		iOldNumClick[i] = 0;
-	}
-
-	bKeyTouched = false;
-	for(size_t i = 0; i < Keyboard::KeyCount; i++)
-		iOneTouch[i]=0;
-
-	iWheelDir = 0;
+	reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -270,6 +255,10 @@ Input::~Input()
 
 void Input::reset()
 {
+	iMouseAX=0;
+	iMouseAY=0;
+	fMouseAXTemp=fMouseAYTemp=0.f;
+
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
 		iMouseTimeSet[i] = 0;
@@ -278,11 +267,10 @@ void Input::reset()
 	}
 
 	iKeyId=-1;
-	bKeyTouched = false;
 
 	for(int i = 0; i < Keyboard::KeyCount; i++)
 	{
-		iOneTouch[i]=0;
+		keysStates[i]=0;
 	}
 
 	EERIEMouseButton=LastEERIEMouseButton=0;
@@ -319,8 +307,9 @@ void Input::update()
 
 	backend->update();
 
-	iKeyId = backend->getKeyboardKeyPressed();
-	bKeyTouched = iKeyId >= 0;
+	bool keyJustPressed = false;
+	iKeyId = -1;
+	int modifier = 0;
 
 	for(int i = 0; i < Keyboard::KeyCount; i++)
 	{
@@ -334,28 +323,43 @@ void Input::update()
 			case Keyboard::Key_RightCtrl:
 			case Keyboard::Key_LeftAlt:
 			case Keyboard::Key_RightAlt:
-
-				if(i!=iKeyId)
-					iKeyId|=(i<<16);
-
+				modifier = i;
 				break;
 			}
 
-			if(iOneTouch[i]<2)
+			if(keysStates[i]<2)
 			{
-				iOneTouch[i]++;
+				keysStates[i]++;
+			}
+
+			if(!keyJustPressed)
+			{
+				if(keysStates[i] == 1)
+				{
+					iKeyId = i;
+					keyJustPressed = true;
+				}
+				else
+				{
+					iKeyId = i;
+				}
 			}
 		}
 		else
 		{
-			if(iOneTouch[i]>0)
+			if(keysStates[i]>0)
 			{
-				iOneTouch[i]--;
+				keysStates[i]--;
 			}
 		}
 	}
 
-	if(bKeyTouched)    //keys priority
+	if(modifier != 0 && iKeyId != modifier)
+	{
+		iKeyId |= (modifier << 16);
+	}
+
+	if(iKeyId >= 0)    //keys priority
 	{
 		switch(iKeyId)
 		{
@@ -386,7 +390,7 @@ void Input::update()
 						continue;
 					default:
 						{
-							if(iOneTouch[i])
+							if(keysStates[i])
 							{
 								bFound=true;
 								iKeyId&=~0xFFFF;
@@ -675,6 +679,14 @@ int Input::getMouseWheelDir() const {
 }
 
 //-----------------------------------------------------------------------------
+int Input::getKeyPressed() const {
+	return iKeyId;
+}
+
+//-----------------------------------------------------------------------------
+bool Input::isAnyKeyPressed() const {
+	return iKeyId >= 0;
+}
 
 bool Input::isKeyPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
@@ -687,7 +699,7 @@ bool Input::isKeyPressed(int keyId) const {
 bool Input::isKeyPressedNowPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
 
-	return backend->isKeyboardKeyPressed(keyId) && (iOneTouch[keyId] == 1);
+	return backend->isKeyboardKeyPressed(keyId) && (keysStates[keyId] == 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -695,7 +707,7 @@ bool Input::isKeyPressedNowPressed(int keyId) const {
 bool Input::isKeyPressedNowUnPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
 
-	return !backend->isKeyboardKeyPressed(keyId) && (iOneTouch[keyId] == 1);
+	return !backend->isKeyboardKeyPressed(keyId) && (keysStates[keyId] == 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -751,7 +763,11 @@ bool Input::getMouseButtonDoubleClick(int buttonId, int timeMs) const {
 }
 
 //-----------------------------------------------------------------------------
+bool Input::hasMouseMoved() const {
+	return bMouseMoved;
+}
 
+//-----------------------------------------------------------------------------
 int Input::getMouseButtonClicked() const {
 
 	//MouseButton

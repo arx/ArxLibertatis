@@ -556,22 +556,9 @@ bool DInput7Backend::isKeyboardKeyPressed(int keyId) const {
 	return (DI_KeyBoardBuffer->bufferstate[keyId - Keyboard::KeyBase] & 0x80) == 0x80;
 }
 
-int DInput7Backend::getKeyboardKeyPressed() const {
-	
-	char * buf = DI_KeyBoardBuffer->bufferstate;
-	for(int i = 0; i < DI7_KEY_ARRAY_SIZE; i++) {
-		if(buf[i] & 0x80) {
-			return i;
-		}
-	}
-	return -1;
-}
-
 bool DInput7Backend::getKeyAsText(int keyId, char& result) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
 
-	unsigned jasdf = 323;
-	int iasd = jasdf;
 	// Numpad state isn't working, translate by hand...
 	if(keyId >= Keyboard::Key_NumPad0 && keyId <= Keyboard::Key_NumPad9)
 	{

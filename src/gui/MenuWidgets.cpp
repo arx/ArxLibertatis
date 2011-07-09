@@ -3643,10 +3643,8 @@ void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement)
 
 void CWindowMenuConsole::UpdateText()
 {
-	if(GInput->bKeyTouched)
+	if(GInput->isAnyKeyPressed())
 	{
-		GInput->iKeyId&=0xFFFF;
-
 		if( (GInput->isKeyPressed(Keyboard::Key_Enter)) ||
 			(GInput->isKeyPressed(Keyboard::Key_NumPadEnter)) ||
 			(GInput->isKeyPressed(Keyboard::Key_Escape)) )
@@ -3698,12 +3696,15 @@ void CWindowMenuConsole::UpdateText()
 		}
 		else
 		{
-			if(GInput->isKeyPressedNowPressed(GInput->iKeyId))
+			int iKey = GInput->getKeyPressed();
+			iKey&=0xFFFF;
+
+			if(GInput->isKeyPressedNowPressed(iKey))
 			{
 				tText = pZoneText->lpszText;
 
 				char tCat;
-				int iKey = GInput->iKeyId;
+				
 				bKey = GInput->getKeyAsText(iKey, tCat);
 
 				if(bKey)
@@ -4231,8 +4232,8 @@ int CWindowMenuConsole::Render()
 				else
 					((CMenuElementText*)pZoneClick)->lColorHighlight = Color(50, 0, 0);
 
-				bool keyTouched = GInput->bKeyTouched;
-				int keyId = GInput->iKeyId;
+				bool keyTouched = GInput->isAnyKeyPressed();
+				int keyId = GInput->getKeyPressed();
 				
 				if( GInput->isKeyPressed(Keyboard::Key_LeftShift)||
 					GInput->isKeyPressed(Keyboard::Key_RightShift)||
@@ -4241,7 +4242,7 @@ int CWindowMenuConsole::Render()
 					GInput->isKeyPressed(Keyboard::Key_LeftAlt)||
 					GInput->isKeyPressed(Keyboard::Key_RightAlt) )
 				{
-					if(!((GInput->iKeyId & INPUT_COMBINATION_MASK )>>16))
+					if(!((keyId & INPUT_COMBINATION_MASK )>>16))
 						keyTouched = false;
 				}
 				else

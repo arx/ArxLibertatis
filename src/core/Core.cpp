@@ -4578,7 +4578,7 @@ bool DANAE_ManageSplashThings()
 		{
 			GInput->update();
 
-			if (GInput->bKeyTouched)
+			if (GInput->isAnyKeyPressed())
 			{
 				REFUSE_GAME_RETURN=1;
 				FORBID_SAVE=0;

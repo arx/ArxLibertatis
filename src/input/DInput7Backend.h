@@ -48,7 +48,6 @@ public:
 
 	// Keyboard
 	virtual bool isKeyboardKeyPressed(int dikkey) const;
-	virtual int getKeyboardKeyPressed() const;
 	virtual bool getKeyAsText(int keyId, char& result) const;
 };
 

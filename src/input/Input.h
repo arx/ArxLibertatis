@@ -66,13 +66,8 @@ class Input {
 	
 public:
 	static const std::string KEY_NONE;
-	
-	// Keyboard
-	bool	bKeyTouched;		// Was a key pressed in the last update
-	int		iKeyId;				// Id of the key pressed in the last update
 
 	// Mouse
-	bool	bMouseMoved;
 	int		iMouseRX;
 	int		iMouseRY;
 	int		iMouseAX;
@@ -105,6 +100,7 @@ public:
 	void setMouseSensibility(int);
 	int  getMouseSensibility() const;
 
+	bool hasMouseMoved() const;
 	bool getMouseButton(int buttonId) const;
 	int  getMouseButtonClicked() const;
 	bool getMouseButtonRepeat(int buttonId) const;
@@ -116,6 +112,8 @@ public:
 	
 	///////////////////////////////////////////////////////////////////////////
 	// Keyboard
+	int  getKeyPressed() const;
+	bool isAnyKeyPressed() const;
 	bool isKeyPressed(int keyId) const;
 	bool isKeyPressedNowPressed(int keyId) const;
 	bool isKeyPressedNowUnPressed(int keyId) const;	
@@ -124,20 +122,26 @@ public:
 private:
 	class InputBackend* backend;
 
-	int	iOneTouch[Keyboard::KeyCount];
+	///////////////////////////////////////////////////////////////////////////
+	// Mouse
+	float	fMouseAXTemp;
+	float	fMouseAYTemp;
 
-	float fMouseAXTemp;
-	float fMouseAYTemp;
+	int		iSensibility;
+	int		iWheelDir;
 
-	int	iSensibility;
-	int	iWheelDir;
+	bool	bMouseMoved;
+	bool	bMouseButton[Mouse::ButtonCount];
+	bool	bOldMouseButton[Mouse::ButtonCount];
 
-	bool bMouseButton[Mouse::ButtonCount];
-	bool bOldMouseButton[Mouse::ButtonCount];
-
-	int	iMouseTime[Mouse::ButtonCount];
-	int	iMouseTimeSet[Mouse::ButtonCount];
-	int	iOldNumClick[Mouse::ButtonCount];
+	int		iMouseTime[Mouse::ButtonCount];
+	int		iMouseTimeSet[Mouse::ButtonCount];
+	int		iOldNumClick[Mouse::ButtonCount];
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Keyboard
+	int		iKeyId;								// Id of the key pressed in the last update
+	int		keysStates[Keyboard::KeyCount];		// 0: up, 1: just pressed/released, 2: pressed
 };
 
 extern Input* GInput;

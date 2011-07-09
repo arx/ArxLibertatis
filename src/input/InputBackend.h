@@ -18,7 +18,6 @@ public:
 
 	// Keyboard
 	virtual bool isKeyboardKeyPressed(int keyId) const = 0;
-	virtual int	 getKeyboardKeyPressed() const = 0;
 	virtual bool getKeyAsText(int keyId, char& result) const = 0;
 };
 
