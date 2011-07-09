@@ -847,10 +847,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					LogDebug << "  REFUSE";
 					goto end;
 				}
-				else if (!strcmp(word, "RIDICULOUS"))
-				{
-					ARX_PLAYER_MakeFreshHero();
-				}
 				else if (!strcmp(word, "REPAIR"))
 				{
 					pos = GetNextWord(es, pos, word);

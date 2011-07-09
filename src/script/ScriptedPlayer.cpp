@@ -74,6 +74,25 @@ public:
 	
 };
 
+class RidiculousCommand : public Command {
+	
+public:
+	
+	ScriptResult execute(Context & context) {
+		
+		ARX_UNUSED(context);
+		
+		ARX_PLAYER_MakeFreshHero();
+		
+		LogDebug << "ridiculous";
+		
+		return ACCEPT;
+	}
+	
+	~RidiculousCommand() { }
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -81,6 +100,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand("addbag", new AddBagCommand);
 	ScriptEvent::registerCommand("addxp", new AddXpCommand);
 	ScriptEvent::registerCommand("addgold", new AddGoldCommand);
+	ScriptEvent::registerCommand("ridiculous", new RidiculousCommand);
 	
 }
 
