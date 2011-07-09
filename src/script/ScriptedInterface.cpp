@@ -16,7 +16,7 @@ class BookCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		string options = context.getFlags();
 		
@@ -48,7 +48,7 @@ public:
 		
 		LogDebug << "book " << options << " \"" << command << "\"";
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~BookCommand() { }

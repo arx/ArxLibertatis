@@ -598,7 +598,7 @@ public:
 	
 	ObsoleteCommand(const string & _command, size_t _nargs = 0) : command(_command), nargs(_nargs) { }
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		for(size_t i = 0; i < nargs; i++) {
 			context.skipWord();
@@ -606,7 +606,7 @@ public:
 		
 		LogWarning << "obsolete command: " << command;
 		
-		return ACCEPT;
+		return Failed;
 	}
 	
 	~ObsoleteCommand() { }
@@ -776,9 +776,15 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			
 			Context context(es, pos, io);
 			
-			it->second->execute(context);
+			Command::Result res = it->second->execute(context);
 			
 			pos = context.pos;
+			
+			if(res == Command::AbortAccept) {
+				return ACCEPT;
+			} else if(res == Command::AbortRefuse) {
+				return REFUSE;
+			}
 			
 		} else switch (word[0]) {
 			case '}':
@@ -869,103 +875,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				{
 					if ((pos = GetSubStack(es)) == -1) return BIGERROR;
 					LogDebug << "RETURN";
-				}
-				else if (!strcmp(word, "REPLACEME"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io)
-					{
-
-						std::string tex;
-						std::string tex2;
-
-						if (io->ioflags & IO_NPC)
-							tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + word + ".teo";
-						else if (io->ioflags & IO_FIX)
-							tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + word + ".teo";
-						else
-							tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + word + ".teo";
-
-						File_Standardize(tex2, tex);
-						Anglef last_angle = io->angle;
-						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive( tex, -1); //AddItem(tex);
-
-						if (ioo != NULL)
-						{
-							LASTSPAWNED = ioo;
-							ioo->scriptload = 1;
-							ioo->initpos = io->initpos;
-							ioo->pos = io->pos;
-							ioo->angle = io->angle;
-							ioo->move = io->move;
-							ioo->show = io->show;
-
-							if (io == DRAGINTER)
-								Set_DragInter(ioo);
-
-							long neww = GetInterNum(ioo);
-							long oldd = GetInterNum(io);
-
-							if (io->ioflags & IO_ITEM)
-							{
-								if (io->_itemdata->count > 1)
-								{
-									io->_itemdata->count--;
-									SendInitScriptEvent(ioo);
-									CheckForInventoryReplaceMe(ioo, io);
-								}
-								else goto finishit;
-							}
-							else
-							{
-							finishit:
-								;
-
-								for (size_t i = 0; i < MAX_SPELLS; i++)
-								{
-									if ((spells[i].exist) && (spells[i].caster == oldd))
-									{
-										spells[i].caster = neww;
-									}
-								}
-
-								io->show = SHOW_FLAG_KILLED;
-								ReplaceInAllInventories(io, ioo);
-								SendInitScriptEvent(ioo);
-								ioo->angle = last_angle;
-								TREATZONE_AddIO(ioo, neww);
-
-								for (int i = 0; i < MAX_EQUIPED; i++)
-								{
-									if	((player.equiped[i] != 0)
-											&&	ValidIONum(player.equiped[i]))
-									{
-										INTERACTIVE_OBJ * equiped = inter.iobj[player.equiped[i]];
-
-										if	(equiped == io)
-										{
-											ARX_EQUIPMENT_UnEquip(inter.iobj[0], io, 1);
-											ARX_EQUIPMENT_Equip(inter.iobj[0], ioo);
-										}
-									}
-								}
-
-								if (io->scriptload)
-								{
-									ReleaseInter(io);
-									return REFUSE;
-								}
-
-								TREATZONE_RemoveIO(io);
-								return REFUSE;
-							}
-						}
-
-						LogDebug <<  "REPLACE_ME "<< word;
-					}
-
-					LogDebug << "REPLACE_ME " << word << " --> Failure Not An IO";
 				}
 				else if (!strcmp(word, "ROTATE"))
 				{

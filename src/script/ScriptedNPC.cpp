@@ -18,7 +18,7 @@ class BehaviourCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		string options = context.getFlags();
 		
@@ -30,15 +30,15 @@ public:
 			if(command == "stack") {
 				LogDebug << "behavior " << options << ' ' << command; 
 				ARX_NPC_Behaviour_Stack(io);
-				return ACCEPT;
+				return Success;
 			} else if(command == "unstack") {
 				LogDebug << "behavior " << options << ' ' << command; 
 				ARX_NPC_Behaviour_UnStack(io);
-				return ACCEPT;
+				return Success;
 			} else if(command == "unstackall") {
 				LogDebug << "behavior " << options << ' ' << command; 
 				ARX_NPC_Behaviour_Reset(io);
-				return ACCEPT;
+				return Success;
 			}
 		}
 		
@@ -130,7 +130,7 @@ public:
 			ARX_NPC_Behaviour_Change(io, behavior, static_cast<long>(behavior_param));
 		}
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~BehaviourCommand() { }
@@ -141,7 +141,7 @@ class ReviveCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		string options = context.getFlags();
 		
@@ -160,7 +160,7 @@ public:
 		
 		LogDebug << "revive " << options;
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~ReviveCommand() { }

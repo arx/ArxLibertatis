@@ -18,7 +18,7 @@ class RepairCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		string target = context.getLowercase();
 		long t = GetTargetByNameTarget(target);
@@ -34,7 +34,7 @@ public:
 		
 		LogDebug << "repair " << target << ' ' << val;
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~RepairCommand() { }

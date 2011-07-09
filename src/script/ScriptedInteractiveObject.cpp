@@ -1,30 +1,112 @@
 
 #include "script/ScriptedInteractiveObject.h"
 
+#include "game/Inventory.h"
+#include "game/Player.h"
+#include "graphics/data/Mesh.h"
+#include "gui/Interface.h"
 #include "scene/Interactive.h"
 #include "io/Logger.h"
+#include "io/FilePath.h"
 #include "script/ScriptEvent.h"
 
 using std::string;
+
+extern INTERACTIVE_OBJ * LASTSPAWNED;
 
 namespace script {
 
 namespace {
 
-class ActivatePhysicsCommand : public Command {
+class ReplaceMeCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
-		ARX_INTERACTIVE_ActivatePhysics(GetInterNum(context.getIO()));
+		string object = context.getLowercase();
 		
-		LogDebug << "activatephysics";
+		LogDebug << "replaceme \"" << object << '"';
 		
-		return ACCEPT;
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!io) {
+			LogDebug << "replaceme called for non-io";
+			return Failed;
+		}
+		
+		string tex2;
+		if(io->ioflags & IO_NPC) {
+			tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + object + ".teo";
+		} else if(io->ioflags & IO_FIX) {
+			tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + object + ".teo";
+		} else {
+			tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + object + ".teo";
+		}
+		string tex;
+		File_Standardize(tex2, tex);
+		
+		Anglef last_angle = io->angle;
+		INTERACTIVE_OBJ * ioo = AddInteractive(tex, -1);
+		if(!ioo) {
+			return Failed;
+		}
+		
+		LASTSPAWNED = ioo;
+		ioo->scriptload = 1;
+		ioo->initpos = io->initpos;
+		ioo->pos = io->pos;
+		ioo->angle = io->angle;
+		ioo->move = io->move;
+		ioo->show = io->show;
+		
+		if(io == DRAGINTER) {
+			Set_DragInter(ioo);
+		}
+		
+		long neww = GetInterNum(ioo);
+		long oldd = GetInterNum(io);
+		
+		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+			io->_itemdata->count--;
+			SendInitScriptEvent(ioo);
+			CheckForInventoryReplaceMe(ioo, io);
+		} else {
+			
+			for(size_t i = 0; i < MAX_SPELLS; i++) {
+				if(spells[i].exist && spells[i].caster == oldd) {
+					spells[i].caster = neww;
+				}
+			}
+			
+			io->show = SHOW_FLAG_KILLED;
+			ReplaceInAllInventories(io, ioo);
+			SendInitScriptEvent(ioo);
+			ioo->angle = last_angle;
+			TREATZONE_AddIO(ioo, neww);
+			
+			for(int i = 0; i < MAX_EQUIPED; i++) {
+				if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
+					if(inter.iobj[player.equiped[i]] == io) {
+						ARX_EQUIPMENT_UnEquip(inter.iobj[0], io, 1);
+						ARX_EQUIPMENT_Equip(inter.iobj[0], ioo);
+					}
+				}
+			}
+			
+			if(io->scriptload) {
+				ReleaseInter(io);
+				return AbortRefuse;
+			} else {
+				TREATZONE_RemoveIO(io);
+			}
+			
+			return AbortRefuse;
+		}
+		
+		return Success;
 	}
 	
-	~ActivatePhysicsCommand() { }
+	~ReplaceMeCommand() { }
 	
 };
 
@@ -32,7 +114,7 @@ public:
 
 void setupScriptedInteractiveObject() {
 	
-	ScriptEvent::registerCommand("activatephysics", new ActivatePhysicsCommand);
+	ScriptEvent::registerCommand("replaceme", new ReplaceMeCommand);
 	
 }
 

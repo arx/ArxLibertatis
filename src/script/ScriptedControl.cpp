@@ -16,11 +16,28 @@ namespace script {
 
 namespace {
 
+class ActivatePhysicsCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		ARX_INTERACTIVE_ActivatePhysics(GetInterNum(context.getIO()));
+		
+		LogDebug << "activatephysics";
+		
+		return Success;
+	}
+	
+	~ActivatePhysicsCommand() { }
+	
+};
+
 class AttractorCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		string target = context.getLowercase();
 		
@@ -43,7 +60,7 @@ public:
 		
 		LogDebug << "attractor \"" << target << "\" " << val << ' ' << radius;
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~AttractorCommand() { }
@@ -54,7 +71,7 @@ class AmbianceCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		string options = context.getFlags();
 		
@@ -67,6 +84,7 @@ public:
 				LogDebug << "ambiance " << options << ' ' << volume << " \"" << ambiance << "\"";
 			} else if(!flg || (flg & ~flag('v'))) {
 				LogWarning << "unexpected flags: ambiance " << options;
+				return Failed;
 			}
 		} else {
 			string ambiance = context.getLowercase();
@@ -78,7 +96,7 @@ public:
 			LogDebug << "ambiance \"" << ambiance << "\"";
 		}
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~AmbianceCommand() { }
@@ -89,7 +107,7 @@ class AnchorBlockCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		string choice = context.getLowercase();
 		
@@ -101,7 +119,7 @@ public:
 		
 		LogDebug << "anchorblock \"" << choice << "\"";
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~AnchorBlockCommand() { }
@@ -112,7 +130,7 @@ class AttachCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		string sourceio = context.getLowercase();
 		long t = GetTargetByNameTarget(sourceio);
@@ -134,7 +152,7 @@ public:
 		
 		LogDebug << "attach " << sourceio << ' ' << source << ' ' << targetio << ' ' << target;
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~AttachCommand() {}
@@ -145,6 +163,7 @@ public:
 
 void setupScriptedControl() {
 	
+	ScriptEvent::registerCommand("activatephysics", new ActivatePhysicsCommand);
 	ScriptEvent::registerCommand("attractor", new AttractorCommand);
 	ScriptEvent::registerCommand("ambiance", new AmbianceCommand);
 	ScriptEvent::registerCommand("anchorblock", new AnchorBlockCommand);

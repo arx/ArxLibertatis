@@ -16,7 +16,7 @@ class AddBagCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		ARX_UNUSED(context);
 		
@@ -24,7 +24,7 @@ public:
 		
 		LogDebug << "addbag";
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~AddBagCommand() { }
@@ -35,7 +35,7 @@ class AddXpCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		float val = context.getFloat();
 		
@@ -43,7 +43,7 @@ public:
 		
 		LogDebug << "addxp " << val;
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~AddXpCommand() { }
@@ -54,7 +54,7 @@ class AddGoldCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		float val = context.getFloat();
 		
@@ -67,7 +67,7 @@ public:
 		
 		LogDebug << "addgold " << val;
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~AddGoldCommand() { }
@@ -78,7 +78,7 @@ class RidiculousCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(Context & context) {
+	Result execute(Context & context) {
 		
 		ARX_UNUSED(context);
 		
@@ -86,7 +86,7 @@ public:
 		
 		LogDebug << "ridiculous";
 		
-		return ACCEPT;
+		return Success;
 	}
 	
 	~RidiculousCommand() { }

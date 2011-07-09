@@ -55,7 +55,14 @@ class Command {
 	
 public:
 	
-	virtual ScriptResult execute(Context & context) = 0;
+	enum Result {
+		Success,
+		Failed,
+		AbortAccept,
+		AbortRefuse
+	};
+	
+	virtual Result execute(Context & context) = 0;
 	
 	virtual ~Command() { }
 	
