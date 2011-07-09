@@ -110,11 +110,47 @@ public:
 	
 };
 
+class RotateCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!io) {
+			LogDebug << "rotate called without IO";
+			return Failed;
+		}
+		
+		float t1 = context.getFloat();
+		float t2 = context.getFloat();
+		float t3 = context.getFloat();
+		
+		io->angle.a += t1;
+		io->angle.b += t2;
+		io->angle.g += t3;
+		
+		if((size_t)io->nb_lastanimvertex != io->obj->vertexlist.size()) {
+			free(io->lastanimvertex);
+			io->lastanimvertex = NULL;
+		}
+		io->lastanimtime = 0;
+		
+		LogDebug << "rotate " << t1 << ' ' << t2 << ' ' << t3;
+		
+		return Success;
+	}
+	
+	~RotateCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
 	
 	ScriptEvent::registerCommand("replaceme", new ReplaceMeCommand);
+	ScriptEvent::registerCommand("rotate", new RotateCommand);
 	
 }
 

@@ -876,36 +876,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					if ((pos = GetSubStack(es)) == -1) return BIGERROR;
 					LogDebug << "RETURN";
 				}
-				else if (!strcmp(word, "ROTATE"))
-				{
-					if (io != NULL)
-					{
-						std::string temp1;
-						std::string temp2;
-						std::string temp3;
-						float t1, t2, t3;
-
-						pos = GetNextWord(es, pos, temp1);
-						pos = GetNextWord(es, pos, temp2);
-						pos = GetNextWord(es, pos, temp3);
-
-						t1 = GetVarValueInterpretedAsFloat(temp1, esss, io);
-						t2 = GetVarValueInterpretedAsFloat(temp2, esss, io);
-						t3 = GetVarValueInterpretedAsFloat(temp3, esss, io);
-						io->angle.a += t1;
-						io->angle.b += t2;
-						io->angle.g += t3;
-
-						if ((size_t)io->nb_lastanimvertex != io->obj->vertexlist.size())
-						{
-							free(io->lastanimvertex);
-							io->lastanimvertex = NULL;
-						}
-
-						io->lastanimtime = 0;
-						LogDebug << word << " " << temp1 << " " << temp2 << " " << temp3;
-					}
-				}
 				else if (!strcmp(word, "RUNE"))
 				{
 					pos		 = GetNextWord(es, pos, word);
