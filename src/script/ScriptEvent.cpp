@@ -883,30 +883,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "CINEMASCOPE"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "CINEMASCOPE "<< word;
-					long smooth = 0;
-
-					if (word[0] == '-')
-					{
-						if ((word[1] == 's') || (word[1] == 'S'))
-						{
-							smooth = 1;
-						}
-
-						pos = GetNextWord(es, pos, word);
-						LogDebug <<  word;
-					}
-
-					if (!strcasecmp(word, "ON"))
-					{
-						ARX_INTERFACE_SetCinemascope(1, smooth);
-					}
-					else ARX_INTERFACE_SetCinemascope(0, smooth);
-				}
-				else if (!strcmp(word, "CAMERAFOCAL"))
+				if (!strcmp(word, "CAMERAFOCAL"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "CAMERA_FOCAL "<< word;

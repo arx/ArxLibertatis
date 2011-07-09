@@ -3,6 +3,7 @@
 
 #include "ai/Paths.h"
 #include "graphics/data/Mesh.h"
+#include "gui/Interface.h"
 #include "io/Logger.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
@@ -100,6 +101,34 @@ public:
 	
 };
 
+class CinemascopeCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		string options = context.getFlags();
+		bool smooth = false;
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('s')) {
+				smooth = true;
+			} else if(!flg || (flg & ~flag('s'))) {
+				LogWarning << "unexpected flags: cinemascope " << options;
+			}
+		}
+		
+		bool enable = context.getBool();
+		
+		ARX_INTERFACE_SetCinemascope(enable ? 1 : 0, smooth);
+		
+		return Success;
+	}
+	
+	~CinemascopeCommand() {}
+	
+};
+
 }
 
 void setupScriptedCamera() {
@@ -107,6 +136,7 @@ void setupScriptedCamera() {
 	ScriptEvent::registerCommand("cameracontrol", new CameraControlCommand);
 	ScriptEvent::registerCommand("cameraactivate", new CameraActivateCommand);
 	ScriptEvent::registerCommand("camerasmoothing", new CameraSmoothingCommand);
+	ScriptEvent::registerCommand("cinemascope", new CinemascopeCommand);
 	
 }
 
