@@ -755,34 +755,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					LogDebug << "  ACCEPT";
 					goto end;
 				}
-				else if (!strcmp(word, "ATTACH"))
-				{
-					LogDebug << "ATTACH ";
-					std::string temp1;
-					std::string temp2;
-					pos = GetNextWord(es, pos, word); // Source IO
-					LogDebug << word;
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -2) t = GetInterNum(io); //self
-
-					pos = GetNextWord(es, pos, temp1); // source action_point
-					LogDebug <<  temp1;
-					pos = GetNextWord(es, pos, word); // target IO
-					long t2 = GetTargetByNameTarget(word);
-					LogDebug << word;
-
-					if (t2 == -2) t2 = GetInterNum(io); //self
-
-					pos = GetNextWord(es, pos, temp2); // target action_point
-					LogDebug << temp2;
-					if (ARX_INTERACTIVE_Attach(t, t2, temp1, temp2))
-					{
-						LogDebug << "--> success";
-					}
-
-					LogDebug <<  "--> failure";
-				}
 
 				break;
 			case 'G':

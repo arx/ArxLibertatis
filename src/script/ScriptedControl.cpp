@@ -108,6 +108,39 @@ public:
 	
 };
 
+class AttachCommand : public Command {
+	
+public:
+	
+	ScriptResult execute(Context & context) {
+		
+		string sourceio = context.getLowercase();
+		long t = GetTargetByNameTarget(sourceio);
+		if(t == -2) {
+			t = GetInterNum(context.getIO()); //self
+		}
+		
+		string source = context.getLowercase(); // source action_point
+		
+		string targetio = context.getLowercase();
+		long t2 = GetTargetByNameTarget(targetio);
+		if(t2 == -2) {
+			t2 = GetInterNum(context.getIO()); //self
+		}
+		
+		string target = context.getLowercase();
+		
+		ARX_INTERACTIVE_Attach(t, t2, source, target);
+		
+		LogDebug << "attach " << sourceio << ' ' << source << ' ' << targetio << ' ' << target;
+		
+		return ACCEPT;
+	}
+	
+	~AttachCommand() {}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -115,6 +148,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand("attractor", new AttractorCommand);
 	ScriptEvent::registerCommand("ambiance", new AmbianceCommand);
 	ScriptEvent::registerCommand("anchorblock", new AnchorBlockCommand);
+	ScriptEvent::registerCommand("attach", new AttachCommand);
 	
 }
 
