@@ -278,7 +278,7 @@ struct SavedPrecast {
 		a.typ = (typ < 0) ? SPELL_NONE : (Spell)typ; // TODO save/load enum
 		a.level = level;
 		a.launch_time = launch_time;
-		a.flags = Flag(flags); // TODO save/load flags
+		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
 		a.duration = duration;
 		return a;
 	}
@@ -533,7 +533,7 @@ struct SavedSpellcastData {
 		a.symb[1] = (Rune)symb[1];
 		a.symb[2] = (Rune)symb[2];
 		a.symb[3] = (Rune)symb[3];
-		a.spell_flags = Flag(spell_flags); // TODO save/load flags
+		a.spell_flags = SpellcastFlags::load(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
 		a.target = target;
 		a.duration = duration;
@@ -1133,7 +1133,7 @@ struct SavedCamera {
 		
 		a.clip3D = clip3D;
 		a.type = type;
-		a.bkgcolor = bkgcolor;
+		a.bkgcolor = Color::fromBGRA(bkgcolor);
 		a.nbdrawn = nbdrawn;
 		a.cdepth = cdepth;
 		
@@ -1172,7 +1172,7 @@ struct SavedCamera {
 		
 		clip3D = b.clip3D;
 		type = b.type;
-		bkgcolor = b.bkgcolor;
+		bkgcolor = b.bkgcolor.toBGRA();
 		nbdrawn = b.nbdrawn;
 		cdepth = b.cdepth;
 		

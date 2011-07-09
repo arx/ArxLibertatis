@@ -6,7 +6,7 @@
 #include <map>
 
 #include "graphics/Color.h"
-#include "platform/math/Vector2.h"
+#include "math/Vector2.h"
 
 
 class Font

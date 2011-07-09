@@ -31,6 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
 #include "graphics/data/CinematicTexture.h"
+#include "graphics/texture/TextureStage.h"
 
 /*---------------------------------------------------------------------------------*/
 extern HWND HwndPere;
@@ -151,7 +152,7 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 /*---------------------------------------------------------------------------------*/
 bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float currfps)
 {
-	D3DTLVERTEX	v[4];
+	TexturedVertex	v[4];
 	int			col;
 
 	if (FlashAlpha < 0.f)
@@ -192,14 +193,14 @@ bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float cu
 
 	FlashAlpha -= speed * fps / currfps;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
 	return true;
 }
 /*---------------------------------------------------------------------------------*/
 bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
-	D3DTLVERTEX	v[4];
+	TexturedVertex	v[4];
 	float		w, dv;
 
 	w = (float)(mask->m_dwWidth) * 5.f;
@@ -247,7 +248,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 	v[3].tu = 0.999999f;
 	v[3].tv = dv;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->DisableAlpha();
@@ -276,7 +277,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 	v[3].rhw = 1.f;
 	v[3].color = 0xFF000000;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
 	if (fpscurr > 1.f)
 	{
@@ -295,7 +296,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 /*---------------------------------------------------------------------------------*/
 bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
-	D3DTLVERTEX	v[4];
+	TexturedVertex	v[4];
 	float		w, dv;
 
 	w = (float)(mask->m_dwWidth) * 5.f;
@@ -343,7 +344,7 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 	v[3].tu = 0.9999999f;
 	v[3].tv = dv;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->DisableAlpha();
@@ -372,7 +373,7 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 	v[3].rhw = 1.f;
 	v[3].color = 0xFF000000;
 
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, v, 4, 0);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
 	if (fpscurr > 1.f)
 	{

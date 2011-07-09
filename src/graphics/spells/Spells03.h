@@ -168,7 +168,7 @@ class CIceProjectile: public CSpellFx
 		Vec3f tSizeMax[MAX_ICE];
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
-		D3DTLVERTEX tv1a[MAX_ICE];
+		TexturedVertex tv1a[MAX_ICE];
 
 	public:
 		CIceProjectile();

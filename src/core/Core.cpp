@@ -97,7 +97,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/TextManager.h"
 
-#include "graphics/GraphicsUtility.h"
+#include "graphics/VertexBuffer.h"
 #include "graphics/GraphicsEnum.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/Frame.h"
@@ -107,6 +107,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
+#include "graphics/direct3d/Direct3DRenderer.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "input/Input.h"
 
@@ -240,13 +242,12 @@ extern long svoodoo_count;
 
 extern INTERACTIVE_OBJ * FlyingOverIO;
 
-extern unsigned long ulBKGColor;
+extern Color ulBKGColor;
 long LAST_LOCK_SUCCESSFULL=0;
 extern EERIEMATRIX ProjectionMatrix;
 
-extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer_TLVERTEX;		// VB using TLVERTEX format.
-extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
-extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
+extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
+extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
 extern std::string pStringMod;
 
@@ -381,7 +382,6 @@ float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;
 float FrameDiff=0;
-long CEDRIC_VERSION=1;
 long CYRIL_VERSION=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
@@ -415,7 +415,6 @@ long FINAL_RELEASE		= 0;
 long AUTO_FULL_SCREEN	= 0;
 long SHOW_INGAME_MINIMAP= 1;
 long DEBUG_FRUSTRUM		= 0;
-long USE_CEDRIC_ANIM	= 1;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
@@ -427,7 +426,6 @@ float LastFrameTicks		= 0;
 long SPLASH_THINGS_STAGE= 0;
 long STARTED_A_GAME		= 0;
 long INTRO_NOT_LOADED	= 1;
-long SnapShotMode		= 0;
 long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
 long BOOKBUTTON			= 0;
@@ -485,7 +483,7 @@ unsigned long FRAMETICKS=0;
 unsigned long SPLASH_START=0;
 //-----------------------------------------------------------------------------
 extern float sp_max_start;
-EERIE_RGB	FADECOLOR;
+Color3f FADECOLOR;
 
 long DURING_LOCK=0;
 long START_NEW_QUEST=0;
@@ -778,13 +776,6 @@ extern void InitTileLights();
 void InitializeDanae()
 {
 	InitTileLights();
-	snapshotdata.bits=16;
-	strcpy(snapshotdata.filenames,"snap");
-	strcpy(snapshotdata.path,"c:\\");
-	snapshotdata.imgsec=25;
-	snapshotdata.xsize=640;
-	snapshotdata.ysize=480;
-	snapshotdata.flag=1;
 	
 	char levelPath[512];
 	EERIEMathPrecalc();
@@ -933,7 +924,7 @@ void InitializeDanae()
 	subj.Zmul=1.f/subj.Zdiv;
 	subj.clip3D=60;
 	subj.type=CAM_SUBJVIEW;
-	subj.bkgcolor=0x00000000;
+	subj.bkgcolor = Color::none;
 
 	SetActiveCamera(&subj);
 	SetCameraDepth(2100.f);
@@ -976,7 +967,7 @@ void InitializeDanae()
 	mapcam.Zmul=1.f/mapcam.Zdiv;
 	mapcam.clip3D=1000;
 	mapcam.type=CAM_TOPVIEW;
-	mapcam.bkgcolor=0x001F1F55;
+	mapcam.bkgcolor = Color::fromBGRA(0x001F1F55);
 	SetActiveCamera(&mapcam);
 	SetCameraDepth(10000.f);
 	danaeApp.MustRefresh=true;
@@ -1134,10 +1125,9 @@ int main(int argc, char ** argv) {
 		FOR_EXTERNAL_PEOPLE=1;
 	}
 
-	if (FOR_EXTERNAL_PEOPLE) {
+	if(FOR_EXTERNAL_PEOPLE) {
 		LogDebug << "FOR_EXTERNAL_PEOPLE";
 		ALLOW_CHEATS		= 0;
-		CEDRIC_VERSION		= 0;
 		NO_TEXT_AT_ALL		= 1;
 
 		FAST_SPLASHES		= 0;
@@ -1152,12 +1142,6 @@ int main(int argc, char ** argv) {
 		NEED_EDITOR = 0;
 		TRUEFIGHT = 0;
 #endif
-	} else if (CEDRIC_VERSION) {
-		LogDebug << "CEDRIC_VERSION";
-		FAST_SPLASHES=1;
-		FORCE_SHOW_FPS=1;
-		FINAL_RELEASE=1; // 1 with pack or 0 without pack
-		AUTO_FULL_SCREEN=0;
 	}
 	
 	// Initialize config first, before anything else.
@@ -1238,6 +1222,8 @@ int main(int argc, char ** argv) {
 		//TODO(lubosz): dirty hack to initialize the pak manager
 		PAK_AddPak("");
 	}
+	
+	GRenderer = new Direct3DRenderer();
 	
 	LocalisationInit();
 	
@@ -2904,9 +2890,11 @@ HRESULT DANAE::BeforeRun()
 
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=old;
 
+#ifdef BUILD_EDITOR
 	// Need to create Map
 	if (iCreateMap)
 		DANAE_Manage_CreateMap();
+#endif
 
 	danaeApp.GetZBufferMax();
 
@@ -3164,8 +3152,8 @@ long FirstFrameHandling()
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene);
 	
-	iCreateMap=0;
 #ifdef BUILD_EDITOR
+	iCreateMap=0;
 	if ((CURRENTLEVEL>=0) && !(NOBUILDMAP) && GAME_EDITOR)
 	{
 		if (NeedMapCreation())	
@@ -4247,17 +4235,16 @@ void ManageFade()
 	}
 
 	LAST_FADEVALUE=Visibility;
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);										
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-			NULL,_EERIERGB(Visibility));
+	EERIEDrawBitmap(0.f,0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(Visibility));
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	float col=Visibility;
 	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-			NULL,EERIERGB(col*FADECOLOR.r,col*FADECOLOR.g,col*FADECOLOR.b));		
+	                NULL, Color(col * FADECOLOR.r, col * FADECOLOR.g, col * FADECOLOR.b));
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
@@ -4271,8 +4258,8 @@ void CheckMr()
 	{
 		if (GDevice && Mr_tc)
 		{
-			EERIEDrawBitmap(DANAESIZX-(128.f*Xratio),0.f,(float)128*Xratio,(float)128*Yratio,0.0001f,
-				Mr_tc,_EERIERGB(0.5f+PULSATE*( 1.0f / 10 )));		
+			EERIEDrawBitmap(DANAESIZX-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
+			                Mr_tc, Color::gray(0.5f + PULSATE * (1.0f/10)));
 		}
 		else
 		{
@@ -4285,7 +4272,7 @@ void DrawImproveVisionInterface()
 	if(ombrignon)
 	{
 		float mod = 0.6f + PULSATE * 0.35f;
-		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f, ombrignon,EERIERGB((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f));
+		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
 	}
 }
 
@@ -4310,14 +4297,12 @@ void DrawMagicSightInterface()
 			col = 1.f - eyeball.size.x;
 		}
 
-		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-			Flying_Eye,_EERIERGB(col));
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, Flying_Eye, Color::gray(col));
 
 		if (MagicSightFader>0.f)
 		{
 			col=MagicSightFader;
-			EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-				NULL,_EERIERGB(col));		
+			EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(col));
 			MagicSightFader-=Original_framedelay*( 1.0f / 400 );
 
 			if (MagicSightFader<0.f)
@@ -4353,20 +4338,19 @@ void RenderAllNodes()
 			{
 				xx=nodeobj->vertexlist[nodeobj->origin].vert.sx-40.f;
 				yy=nodeobj->vertexlist[nodeobj->origin].vert.sy-40.f;
-				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, EERIECOLOR_YELLOW); //font
+				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
 			}
 
-			if (nodes.nodes[i].selected)
-			{
-				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmin.y,nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmax.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
+			if(nodes.nodes[i].selected) {
+				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
 			}
 
 			for(size_t j = 0; j < MAX_LINKS; j++) {
 				if(nodes.nodes[i].link[j]!=-1) {
-					EERIEDrawTrue3DLine(&nodes.nodes[i].pos, &nodes.nodes[nodes.nodes[i].link[j]].pos, EERIECOLOR_GREEN);
+					EERIEDrawTrue3DLine(nodes.nodes[i].pos, nodes.nodes[nodes.nodes[i].link[j]].pos, Color::green);
 				}
 			}
 		}
@@ -4665,19 +4649,11 @@ bool DANAE_ManageSplashThings()
 			ARX_INTERFACE_KillARKANE();
 			char loadfrom[256];
 
-			if (CEDRIC_VERSION)
-			{
-				sprintf(loadfrom,"Graph\\Levels\\LevelDemo2\\levelDemo2.dlf");
-				LoadLevelScreen(29);	
-			}
-			else
-			{
-				REFUSE_GAME_RETURN=1;
-				sprintf(loadfrom,"Graph\\Levels\\Level10\\level10.dlf");
-				OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
-				PROGRESS_BAR_TOTAL = 108;
-				LoadLevelScreen(10);	
-			}
+			REFUSE_GAME_RETURN=1;
+			sprintf(loadfrom,"Graph\\Levels\\Level10\\level10.dlf");
+			OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
+			PROGRESS_BAR_TOTAL = 108;
+			LoadLevelScreen(10);	
 
 			DanaeLoadLevel(loadfrom);
 			FORBID_SAVE=0;
@@ -4996,8 +4972,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 {
 	iVPOS+=1;
 	CorrectValue(cur,dest);
-	D3DCOLOR col;
-	EERIE_RGB rgb;
+	Color3f rgb;
 
 	switch (iVPOS)
 	{
@@ -5053,18 +5028,16 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 			break;
 	}
 
-	col=EERIERGB(rgb.r,rgb.g,rgb.b);
 	float width=(float)(*cur)*( 1.0f / 500 );
-	EERIEDrawBitmap(0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, col);
-	danaeApp.OutputText(ARX_CLEAN_WARN_CAST_DWORD(width), iVPOS * 16 - 2, str);
+	EERIEDrawBitmap(0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, rgb.to<u8>());
+	danaeApp.OutputText(static_cast<u32>(width), iVPOS * 16 - 2, str);
 
 }
 
 extern long NEED_INTRO_LAUNCH;
 
-//-----------------------------------------------------------------------------
-HRESULT DANAE::Render()
-{
+HRESULT DANAE::Render() {
+	
 	FrameTime = ARX_TIME_Get();
 
 	if (GLOBAL_SLOWDOWN!=1.f)
@@ -5185,7 +5158,7 @@ static float _AvgFrameDiff = 150.f;
 	if (WILL_RELOAD_ALL_TEXTURES)
 	{
 		LogDebug << "reload all textures";
-		//ReloadAllTextures();
+		//ReloadAllTextures(); TODO is this needed for changing resolutions in-game?
 		WILL_RELOAD_ALL_TEXTURES=0;
 	}
 
@@ -5237,11 +5210,6 @@ static float _AvgFrameDiff = 150.f;
 	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
-	if (	(SnapShotMode)
-		&&	(!ARXPausedTime)	)
-	{
-		ARXTotalPausedTime+=ARXTime-(LastFrameTime+(1000/snapshotdata.imgsec));
-	}
 
 	PULSATE=EEsin(FrameTime / 800);
 	METALdecal=EEsin(FrameTime / 50) / 200 ;
@@ -5435,10 +5403,8 @@ static float _AvgFrameDiff = 150.f;
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	{
 		// Clear screen & Z buffers
-		if (desired.flags & GMOD_DCOLOR)
-		{
-			long DCOLOR=EERIERGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b);
-			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, DCOLOR);
+		if(desired.flags & GMOD_DCOLOR) {
+			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, current.depthcolor.to<u8>());
 		}
 		else
 		{
@@ -5448,19 +5414,17 @@ static float _AvgFrameDiff = 150.f;
 
 		//-------------------------------------------------------------------------------
 		//															DRAW CINEMASCOPE 16/9
-		if (CINEMA_DECAL!=0.f)
-		{
-			D3DRECT rectz[2];
-			rectz[0].x1 = rectz[1].x1 = 0;
-			rectz[0].x2			=	rectz[1].x2	=	DANAESIZX;
-			rectz[0].y1 = 0;
-
-			ARX_CHECK_LONG( CINEMA_DECAL * Yratio );
-			long	lMulResult	=	ARX_CLEAN_WARN_CAST_LONG( CINEMA_DECAL * Yratio );
-			rectz[0].y2 		= lMulResult;
-			rectz[1].y1 		= DANAESIZY - lMulResult;
-			rectz[1].y2 = DANAESIZY;
-			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, 0, 0.0f, 2, rectz);
+		if(CINEMA_DECAL != 0.f) {
+			Rect rectz[2];
+			rectz[0].left = rectz[1].left = 0;
+			rectz[0].right = rectz[1].right	=	DANAESIZX;
+			rectz[0].top = 0;
+			ARX_CHECK_LONG(CINEMA_DECAL * Yratio);
+			long lMulResult = static_cast<long>(CINEMA_DECAL * Yratio);
+			rectz[0].bottom = lMulResult;
+			rectz[1].top = DANAESIZY - lMulResult;
+			rectz[1].bottom = DANAESIZY;
+			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
 		}
 		//-------------------------------------------------------------------------------
 
@@ -5510,12 +5474,8 @@ static float _AvgFrameDiff = 150.f;
 				ARX_CHECK_ULONG(iCalc);
 
 				assert(inter.iobj[0]->obj != NULL);
-				EERIEDrawAnimQuat(inter.iobj[0]->obj,
-					&inter.iobj[0]->animlayer[0],
-					&inter.iobj[0]->angle,&inter.iobj[0]->pos,
-					ARX_CLEAN_WARN_CAST_ULONG(iCalc)
-
-									  , inter.iobj[0], 4);
+				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+				                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(iCalc), inter.iobj[0], false);
 
 					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
@@ -5543,18 +5503,9 @@ static float _AvgFrameDiff = 150.f;
 
 			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
-			// TODO remove
-			if(!inter.iobj[0]->obj)
-				LogError << "missing " << inter.iobj[0]->filename;
-
 			assert(inter.iobj[0]->obj != NULL);
-			EERIEDrawAnimQuat(inter.iobj[0]->obj,
-					&inter.iobj[0]->animlayer[0],
-					&inter.iobj[0]->angle,
-					&inter.iobj[0]->pos,
-					ARX_CLEAN_WARN_CAST_ULONG(val),
-					inter.iobj[0],
-					4);
+			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+			                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(val), inter.iobj[0], false);
 
 
 				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
@@ -5683,8 +5634,7 @@ static float _AvgFrameDiff = 150.f;
 		{
 			if (main_conversation.actors[j]>=0)
 			{
-				for (long k=0;k<MAX_ASPEECH;k++)
-				{
+				for(size_t k = 0 ; k < MAX_ASPEECH; k++) {
 					if (aspeech[k].exist)
 						if (aspeech[k].io==inter.iobj[main_conversation.actors[j]])
 						{
@@ -5812,8 +5762,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 		long valid=-1;
 
-		for (long i=0;i<MAX_ASPEECH;i++)
-		{
+		for(size_t i = 0; i < MAX_ASPEECH; i++) {
 			if ((aspeech[i].exist) && (aspeech[i].cine.type>0))
 			{
 				valid=i;
@@ -5823,7 +5772,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (valid>=0)
 		{
-			ARX_CINEMATIC_SPEECH * acs=&aspeech[valid].cine;
+			CinematicSpeech * acs=&aspeech[valid].cine;
 			INTERACTIVE_OBJ * io=aspeech[valid].io;
 			float rtime=(float)(ARX_TIME_Get()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
@@ -5971,6 +5920,7 @@ static float _AvgFrameDiff = 150.f;
 
 						break;
 					}
+					case ARX_CINE_SPEECH_NONE: break;
 				}
 
 				LASTCAMPOS.x=subj.pos.x;
@@ -6095,22 +6045,14 @@ static float _AvgFrameDiff = 150.f;
 
 		if ((pouet!=-1) && (pouet2!=-1))
 		{
-			if (USE_CINEMATICS_CAMERA==2)
-			{
-				subj.pos.x=pos.x;
-				subj.pos.y=pos.y;
-				subj.pos.z=pos.z;		
-
-				subj.d_angle.a=subj.angle.a;
-				subj.d_angle.b=subj.angle.b;
-				subj.d_angle.g=subj.angle.g;
-				pos2.x=(pos2.x+pos.x)*( 1.0f / 2 );
-				pos2.y=(pos2.y+pos.y)*( 1.0f / 2 );
-				pos2.z=(pos2.z+pos.z)*( 1.0f / 2 );
-				SetTargetCamera(&subj,pos2.x,pos2.y,pos2.z);
+			if(USE_CINEMATICS_CAMERA == 2) {
+				subj.pos = pos;
+				subj.d_angle = subj.angle;
+				pos2 = (pos2 + pos) * (1.0f/2);
+				SetTargetCamera(&subj, pos2.x, pos2.y, pos2.z);
+			} else {
+				DebugSphere(pos.x, pos.y, pos.z, 2, 50, Color::red);
 			}
-			else
-				DebugSphere(pos.x,pos.y,pos.z,2,50,0xFFFF0000);
 
 			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
 			{
@@ -6212,9 +6154,9 @@ static float _AvgFrameDiff = 150.f;
 		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
 
 		assert(inter.iobj[0]->obj != NULL);
-		EERIEDrawAnimQuat(inter.iobj[0]->obj,
-				&inter.iobj[0]->animlayer[0],
-				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],8);
+		EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+		                  &inter.iobj[0]->pos, 0, inter.iobj[0]);
+		
 		ACTIVECAM->use_focal=restore;
 		FORCE_FRONT_DRAW=0;
 	}
@@ -6323,7 +6265,7 @@ static float _AvgFrameDiff = 150.f;
 
 		std::stringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
-		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), EERIECOLOR_YELLOW);
+		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
 	
 		if (EDITION==EDITION_FOGS)
 			ARX_FOGS_RenderAll();
@@ -6364,8 +6306,7 @@ static float _AvgFrameDiff = 150.f;
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-				NULL,EERIERGB(0.2f,0.2f,1.f));		
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color(71, 71, 255));
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
@@ -6428,7 +6369,7 @@ static float _AvgFrameDiff = 150.f;
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	PopAllTriangleList(true);
+	PopAllTriangleList();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	PopAllTriangleListTransparency();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -6472,7 +6413,7 @@ static float _AvgFrameDiff = 150.f;
 		ARX_INTERFACE_RenderCursor();
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList(true);
+		PopAllTriangleList();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		PopAllTriangleListTransparency();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -6614,7 +6555,7 @@ static float _AvgFrameDiff = 150.f;
 
 void DANAE::GoFor2DFX()
 {
-	D3DTLVERTEX lv,ltvv;
+	TexturedVertex lv,ltvv;
 
 	long needed = 0;
 
@@ -6687,7 +6628,7 @@ void DANAE::GoFor2DFX()
 						vector.x*=fNorm;
 						vector.y*=fNorm;
 						vector.z*=fNorm;
-						D3DTLVERTEX ltvv2;
+						TexturedVertex ltvv2;
 						lv.sx-=vector.x;
 						lv.sy-=vector.y;
 						lv.sz-=vector.z;
@@ -6747,7 +6688,7 @@ void DANAE::GoFor2DFX()
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			GRenderer->SetFogColor(0);
+			GRenderer->SetFogColor(Color::none);
 
 			for (int i=0;i<TOTPDL;i++)
 			{
@@ -6763,7 +6704,7 @@ void DANAE::GoFor2DFX()
 						lv.sy=el->pos.y;
 						lv.sz=el->pos.z;
 						lv.rhw=1.f;
-						specialEE_RT((D3DTLVERTEX *)&lv,(Vec3f *)&ltvv);
+						specialEE_RT((TexturedVertex *)&lv,(Vec3f *)&ltvv);
 						float v=el->temp;
 
 						if (FADEDIR)
@@ -6778,7 +6719,7 @@ void DANAE::GoFor2DFX()
 						else
 							siz=-el->ex_flaresize;
 
-						EERIEDrawSprite(&lv, siz ,tflare,EERIERGB(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b),ltvv.sz);
+						EERIEDrawSprite(&lv, siz, tflare, Color3f(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b).to<u8>(), ltvv.sz);
 
 					}
 				}
@@ -6853,8 +6794,8 @@ static void ShowInfoText() {
 
 	sprintf(tex,"Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",player.pos.x,player.pos.y+player.size.y,poss,player.pos.z,player.angle.a,player.angle.b,ACTIVECAM->focal);
 	danaeApp.OutputText( 70, 48, tex );
-	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d  Lkey %d SSM %ld",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
-		,GAT,ParticleCount,player.doingmagic,danaeApp.kbd.lastkey,SnapShotMode);
+	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d  Lkey %d",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
+		,GAT,ParticleCount,player.doingmagic,danaeApp.kbd.lastkey);
 	danaeApp.OutputText( 70, 64, tex );
 
 	if (player.onfirmground==0) danaeApp.OutputText( 200, 280, "OFFGRND" );
@@ -7047,15 +6988,17 @@ HRESULT DANAE::InitDeviceObjects()
 	float fogEnd = 0.48f;
 	float fogStart = fogEnd * 0.65f;
 	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
-	GRenderer->SetFogColor(D3DRGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b));
+	GRenderer->SetFogColor(current.depthcolor.to<u8>());
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	
 	SetZBias(0);
 
 	ComputePortalVertexBuffer();
-	pDynamicVertexBuffer				=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);
-	pDynamicVertexBufferTransform		=	new CMY_DYNAMIC_VERTEXBUFFER(4000, FVF_D3DVERTEX );
-	pDynamicVertexBuffer_TLVERTEX		=	new CMY_DYNAMIC_VERTEXBUFFER(4000, D3DFVF_TLVERTEX );	// VB using TLVERTEX format (creating).
+	VertexBuffer<SMY_VERTEX3> * vb3 = GRenderer->createVertexBuffer3(4000, Renderer::Stream);
+	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_VERTEX3>(vb3);
+	
+	VertexBuffer<TexturedVertex> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
+	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
 
 	if(pMenu)
 	{
@@ -7089,30 +7032,22 @@ HRESULT DANAE::FinalCleanup()
 //  Called when the app is exitting, or the device is being changed,
 //  this function deletes any device dependant objects.
 //*************************************************************************************
-HRESULT DANAE::DeleteDeviceObjects()
-{
+HRESULT DANAE::DeleteDeviceObjects() {
+	
 	GRenderer->ReleaseAllTextures();
-
-	if(pDynamicVertexBufferTransform)
-	{
-		delete pDynamicVertexBufferTransform;
-		pDynamicVertexBufferTransform=NULL;
-	}
-
-	if(pDynamicVertexBuffer_TLVERTEX)
-	{
+	
+	if(pDynamicVertexBuffer_TLVERTEX) {
 		delete pDynamicVertexBuffer_TLVERTEX;
-		pDynamicVertexBuffer_TLVERTEX=NULL;
+		pDynamicVertexBuffer_TLVERTEX = NULL;
 	}
-
-	if(pDynamicVertexBuffer)
-	{
+	
+	if(pDynamicVertexBuffer) {
 		delete pDynamicVertexBuffer;
-		pDynamicVertexBuffer=NULL;
+		pDynamicVertexBuffer = NULL;
 	}
-
+	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
-
+	
 	return S_OK;
 }
 
@@ -7120,25 +7055,23 @@ HRESULT DANAE::DeleteDeviceObjects()
 // MsgProc()
 //   Overrides StdMsgProc
 //*************************************************************************************
-LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
-									LPARAM lParam )
-{
-	switch (uMsg)
-	{
-		case WM_ACTIVATE:
-
-		if(wParam==WA_INACTIVE)
-		{
-			GInput->unacquireDevices();
+LRESULT DANAE::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	switch(uMsg) {
+		
+		case WM_ACTIVATE: {
+			if(GInput) {
+				if(wParam==WA_INACTIVE) {
+					GInput->unacquireDevices();
+				} else {
+					GInput->reset();
+					GInput->unacquireDevices();
+					GInput->acquireDevices();
+				}
+			}
+			break;
 		}
-		else
-		{
-			GInput->reset();
-			GInput->unacquireDevices();
-			GInput->acquireDevices();
-		}
-
-		break;
+		
 		case WM_SYSCOMMAND: // To avoid ScreenSaver Interference
 
 			if ((wParam & 0xFFF0)== SC_SCREENSAVE ||
@@ -7229,10 +7162,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						ARX_SCRIPT_LaunchScriptSearch(SCRIPT_SEARCH_TEXT);
 
 					Pause(false);
-					ARX_TIME_UnPause();				
-				break;
-				case DANAE_B012:
-					LaunchSnapShotParamApp(this->m_hWnd);
+					ARX_TIME_UnPause();
 				break;
 				case DANAE_B014:
 
@@ -7864,6 +7794,8 @@ void ClearGame() {
 	ARX_INPUT_Release();
 	
 	danaeApp.Cleanup3DEnvironment();
+	
+	delete GRenderer;
 	
 	LogInfo << "Clean shutdown";
 }

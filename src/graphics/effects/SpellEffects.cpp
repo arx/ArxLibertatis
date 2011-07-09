@@ -216,6 +216,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <climits>
 
+#include "animation/AnimationRender.h"
 #include "core/Core.h"
 #include "game/Player.h"
 #include "graphics/Draw.h"
@@ -276,7 +277,7 @@ void CSpellFx::Update(float _fParam)
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex(Vec3f s, Vec3f e, int color, float fStartSize, float fEndSize) {
+void Draw3DLineTex(Vec3f s, Vec3f e, Color color, float fStartSize, float fEndSize) {
 	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float xxs = (float)(fStartSize * cos(radians(fBeta)));
@@ -284,10 +285,10 @@ void Draw3DLineTex(Vec3f s, Vec3f e, int color, float fStartSize, float fEndSize
 	float zzs = fStartSize;
 	float zze = fEndSize;
 
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
+	TexturedVertex v[4];
+	TexturedVertex v2[4];
 
-	v2[0].color = v2[1].color = v2[2].color = v2[3].color = color;
+	v2[0].color = v2[1].color = v2[2].color = v2[3].color = color.toBGRA();
 
 	// version 2 faces
 	v2[0].tu = 0;
@@ -319,10 +320,10 @@ void Draw3DLineTex(Vec3f s, Vec3f e, int color, float fStartSize, float fEndSize
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[1],
 	                             &v2[2]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[2],
 	                             &v2[3]);
 
@@ -349,26 +350,26 @@ void Draw3DLineTex(Vec3f s, Vec3f e, int color, float fStartSize, float fEndSize
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[1],
 	                             &v2[2]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[2],
 	                             &v2[3]);
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, int color, int color2) {
+void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
 	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float zz = fSize; 
 	float xx = (float)(fSize * cos(radians(fBeta)));
 
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
+	TexturedVertex v[4];
+	TexturedVertex v2[4];
 
-	v2[0].color = v2[1].color = color;
-	v2[2].color = v2[3].color = color2;
+	v2[0].color = v2[1].color = color.toBGRA();
+	v2[2].color = v2[3].color = color2.toBGRA();
 
 	// version 2 faces
 	v2[0].tu = 0;
@@ -400,10 +401,10 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, int color, int color2) {
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[1],
 	                             &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[1],
+	ARX_DrawPrimitive(&v2[1],
 	                             &v2[2],
 	                             &v2[3]);
 
@@ -430,16 +431,16 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, int color, int color2) {
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
+	ARX_DrawPrimitive(&v2[0],
 	                             &v2[1],
 	                             &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[1],
+	ARX_DrawPrimitive(&v2[1],
 	                             &v2[2],
 	                             &v2[3]);
 }
 
 //-----------------------------------------------------------------------------
-void Split(D3DTLVERTEX * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ)
+void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ)
 {
 	if (a != b)
 	{
@@ -457,7 +458,7 @@ void Split(D3DTLVERTEX * v, int a, int b, float fX, float fMulX, float fY, float
 }
 
 //-----------------------------------------------------------------------------
-void Split(D3DTLVERTEX * v, int a, int b, float yo, float fMul)
+void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 {
 	if (a != b)
 	{

@@ -32,7 +32,7 @@ struct CreditsTextInformations {
 	CreditsTextInformations() {
 		sPos.x = 0;
 		sPos.y = 0;
-		fColors = 0;
+		fColors = Color::none;
 	}
 	
 	string  sText;
@@ -160,9 +160,8 @@ void Credits::render() {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		//Draw Background
-		if(ARXmenu.mda->pTexCredits)
-		{
-			EERIEDrawBitmap2( 0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, 0xFFFFFFFF);
+		if(ARXmenu.mda->pTexCredits) {
+			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, Color::white);
 		}    
 
 		//Use time passed between frame to create scroll effect

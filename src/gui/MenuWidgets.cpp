@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/font/Font.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "input/Input.h"
 
@@ -104,7 +105,6 @@ extern long _EERIEMouseYdep;
 extern float PROGRESS_BAR_TOTAL;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_COUNT;
-extern float SOFTNEARCLIPPZ;
 
 extern long CURRENT_GAME_INSTANCE;
 extern char GameSavePath[];
@@ -298,13 +298,8 @@ void ARX_DrawAfterQuickLoad()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	EERIEDrawBitmap2(	0,
-						0,
-						INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
-						INTERFACE_RATIO_DWORD(pTex->m_dwHeight),
-						0.f,
-						pTex,
-						D3DRGB(fColor,fColor,fColor) );
+	EERIEDrawBitmap2(0, 0, INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
+	                 INTERFACE_RATIO_DWORD(pTex->m_dwHeight), 0.f, pTex, Color::gray(fColor));
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
@@ -447,7 +442,7 @@ void Check_Apply()
 		}
 		else
 		{
-			if(((CMenuElementText*)pMenuElementApply)->lColor!=(long)Color(127,127,127))
+			if(((CMenuElementText*)pMenuElementApply)->lColor!=Color(127,127,127))
 			{
 				pMenuElementApply->SetCheckOff();
 				((CMenuElementText*)pMenuElementApply)->lOldColor=((CMenuElementText*)pMenuElementApply)->lColor;
@@ -461,29 +456,29 @@ void Check_Apply()
 
 static void FadeInOut(float _fVal)
 {
-	D3DTLVERTEX d3dvertex[4];
+	TexturedVertex d3dvertex[4];
 
-	int iColor=D3DRGBA(_fVal,_fVal,_fVal,1.f);
+	u32 iColor = Color::gray(_fVal).toBGR();
 	d3dvertex[0].sx=0;
 	d3dvertex[0].sy=0;
 	d3dvertex[0].sz=0.f;
 	d3dvertex[0].rhw=0.999999f;
 	d3dvertex[0].color=iColor;
 
-	d3dvertex[1].sx=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
+	d3dvertex[1].sx=static_cast<float>(DANAESIZX);
 	d3dvertex[1].sy=0;
 	d3dvertex[1].sz=0.f;
 	d3dvertex[1].rhw=0.999999f;
 	d3dvertex[1].color=iColor;
 
 	d3dvertex[2].sx=0;
-	d3dvertex[2].sy=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
+	d3dvertex[2].sy=static_cast<float>(DANAESIZY);
 	d3dvertex[2].sz=0.f;
 	d3dvertex[2].rhw=0.999999f;
 	d3dvertex[2].color=iColor;
 
-	d3dvertex[3].sx=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
-	d3dvertex[3].sy=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
+	d3dvertex[3].sx=static_cast<float>(DANAESIZX);
+	d3dvertex[3].sy=static_cast<float>(DANAESIZY);
 	d3dvertex[3].sz=0.f;
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
@@ -496,7 +491,7 @@ static void FadeInOut(float _fVal)
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 
-	EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, d3dvertex, 4, 0, EERIE_NOCOUNT );
+	EERIEDRAWPRIM(Renderer::TriangleStrip, d3dvertex, 4, true);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -609,7 +604,7 @@ bool Menu2_Render()
 		eM=pMenu->eOldMenuWindowState;
 	}
 
-	long lColor = Color(232, 204, 142);
+	Color lColor = Color(232, 204, 142);
 
 	if(    (!pMenu)|| ((pMenu)&&(pMenu->bReInitAll)) )
 	{
@@ -1945,21 +1940,18 @@ bool Menu2_Render()
 
 		}
 
-		EERIEDrawBitmap(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
-						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
-						(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-						(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
-						0.001f,
-						pTextureLoad,
-						ARX_OPAQUE_WHITE);
+		EERIEDrawBitmap(static_cast<float>(DANAEMouse.x + iOffsetX),
+		                static_cast<float>(DANAEMouse.y + iOffsetY),
+		                (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+		                (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+		                0.001f, pTextureLoad, Color::white);
 
 		GRenderer->ResetTexture(0);
-		EERIEDraw2DRect(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
-						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
-						DANAEMouse.x+iOffsetX+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-						DANAEMouse.y+iOffsetY+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
-						0.01f,
-						ARX_OPAQUE_WHITE);
+		EERIEDraw2DRect(static_cast<float>(DANAEMouse.x + iOffsetX),
+		                static_cast<float>(DANAEMouse.y + iOffsetY),
+		                DANAEMouse.x + iOffsetX + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+		                DANAEMouse.y + iOffsetY + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+		                0.01f, Color::white);
 
 		pTextureLoadRender=NULL;
 	}
@@ -2068,7 +2060,7 @@ CMenuElement* CMenuElement::OnShortCut()
 
 //-----------------------------------------------------------------------------
 
-CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
+CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText,float _fPosX,float _fPosY,Color _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
 {
 	iID = _iID;
 
@@ -2750,7 +2742,7 @@ void CMenuState::Render()
 	if(bNoMenu) return;
 
 	if (pTexBackGround)
-		EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
+		EERIEDrawBitmap2(0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, Color::white);
 
 	//------------------------------------------------------------------------
 
@@ -2987,7 +2979,7 @@ void CMenuAllZone::DrawZone()
 
 		if(zone->bActif)
 		{
-			D3DTLVERTEX v1[3],v2[3];
+			TexturedVertex v1[3],v2[3];
 			v1[0].sx = (float)zone->rZone.left;
 			v1[0].sy = (float)zone->rZone.top;
 			v1[1].sx = (float)zone->rZone.left;
@@ -3006,8 +2998,8 @@ void CMenuAllZone::DrawZone()
 			v1[0].sz=v1[1].sz=v1[2].sz=v2[0].sz=v2[1].sz=v2[2].sz=0.f;    
 			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;    
 			
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v1,3,0);
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v2,3,0);
+			EERIEDRAWPRIM(Renderer::TriangleStrip, v1);
+			EERIEDRAWPRIM(Renderer::TriangleStrip, v2);
 		}
 	}
 
@@ -3065,7 +3057,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	{
 		textSize = pText->pFont->GetTextSize(pText->lpszText); 
 
-		_iTaille = max (_iTaille, textSize.y);
+		_iTaille = std::max<int>(_iTaille, textSize.y);
 		textSize.x += pText->rZone.left;
 		pText->Move(iPosX, iPosY + (_iTaille - textSize.y) / 2);
 	}
@@ -3075,12 +3067,12 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	ARX_CHECK_LONG( _fPosX );
 	ARX_CHECK_LONG( _fPosY );
 	ARX_CHECK_LONG( _fPosX + _iTaille + textSize.x );
-	ARX_CHECK_LONG( _fPosY + max(_iTaille, textSize.y) );
+	ARX_CHECK_LONG( _fPosY + std::max<int>(_iTaille, textSize.y) );
 	//CAST
-	rZone.left        = ARX_CLEAN_WARN_CAST_LONG( _fPosX );
-	rZone.top        = ARX_CLEAN_WARN_CAST_LONG( _fPosY );
-	rZone.right        = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + textSize.x );
-	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, textSize.y) );
+	rZone.left = ARX_CLEAN_WARN_CAST_LONG( _fPosX );
+	rZone.top = ARX_CLEAN_WARN_CAST_LONG( _fPosY );
+	rZone.right = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + textSize.x );
+	rZone.bottom = ARX_CLEAN_WARN_CAST_LONG( _fPosY + std::max<int>(_iTaille, textSize.y) );
 	pRef=this;
 
 	if (_pTex2) // TODO should this be _pTex1?
@@ -3251,13 +3243,8 @@ void CMenuCheckButton::Render()
 	{
 		TextureContainer *pTex = vTex[iState];
 
-		D3DTLVERTEX v[4];
-		unsigned long color;
-
-		if(bCheck)
-			color = ARX_OPAQUE_WHITE;
-		else
-			color=0xFF3F3F3F;    
+		TexturedVertex v[4];
+		Color color = (bCheck) ? Color::white : Color::fromBGRA(0xFF3F3F3F);
 
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
@@ -3271,7 +3258,7 @@ void CMenuCheckButton::Render()
 		}
 		
 		//carre
-		EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
+		EERIEDrawBitmap2(static_cast<float>(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
 	}
 
 	if (pText)
@@ -3299,8 +3286,8 @@ void CMenuCheckButton::RenderMouseOver()
 	if(pTex) GRenderer->SetTexture(0, pTex);
 	else GRenderer->ResetTexture(0);
 
-	D3DTLVERTEX v[4];
-	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
+	TexturedVertex v[4];
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -3311,7 +3298,7 @@ void CMenuCheckButton::RenderMouseOver()
 
 	//carre
 
-	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, ARX_OPAQUE_WHITE); 
+	EERIEDrawBitmap2(static_cast<float>(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, Color::white); 
 
 
 	//tick
@@ -3437,8 +3424,8 @@ MENUSTATE CWindowMenu::Render()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	D3DTLVERTEX v[4];
-	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
+	TexturedVertex v[4];
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -3763,10 +3750,10 @@ void CWindowMenuConsole::UpdateText()
 	}
 
 	//DRAW CURSOR
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	GRenderer->ResetTexture(0);
 	float col=.5f+rnd()*.5f;
-	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::gray(col).toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -3778,7 +3765,7 @@ void CWindowMenuConsole::UpdateText()
 	v[2].sy = (float)pZoneClick->rZone.bottom;
 	v[3].sx = v[1].sx;
 	v[3].sy = v[2].sy;
-	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
 //-----------------------------------------------------------------------------
@@ -4188,18 +4175,18 @@ int CWindowMenuConsole::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
-	RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
-	0, pTexBackground, ARX_OPAQUE_WHITE);
+	EERIEDrawBitmap2(static_cast<float>(iPosX), static_cast<float>(iSavePosY),
+	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
+	                 0, pTexBackground, Color::white);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
-	RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
-	0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);
+	EERIEDrawBitmap2(static_cast<float>(iPosX), static_cast<float>(iSavePosY),
+	                 RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
+	                 0, pTexBackgroundBorder, Color::white);
 
 	//------------------------------------------------------------------------
 
@@ -4678,14 +4665,9 @@ void CMenuButton::Render()
 	if(bNoMenu) return;
 
 	//affichage de la texture
-	if (pTex)
-	{
-		EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.left), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top),
-			RATIO_X(pTex->m_dwWidth),
-			RATIO_Y(pTex->m_dwHeight),
-			0,
-			pTex,
-			ARX_OPAQUE_WHITE);
+	if(pTex) {
+		EERIEDrawBitmap2(static_cast<float>(rZone.left), static_cast<float>(rZone.top),
+		                 RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
 	}
 
 	//affichage de la font
@@ -4720,8 +4702,8 @@ void CMenuButton::RenderMouseOver()
 	//affichage de la texture
 	if(pTexOver)
 	{
-		D3DTLVERTEX v[4];
-		v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
+		TexturedVertex v[4];
+		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -4742,7 +4724,7 @@ void CMenuButton::RenderMouseOver()
 		v[3].sy = v[2].sy;
 		v[3].tu = 0.999999f;
 		v[3].tv = 0.999999f;
-		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
+		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 
 	if( vText.size() )
@@ -5251,8 +5233,8 @@ void CMenuSlider::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	D3DTLVERTEX v[4];
-	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
+	TexturedVertex v[4];
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -5279,12 +5261,7 @@ void CMenuSlider::Render()
 			}
 		}
 
-		EERIEDrawBitmap2( iX, iY, 
-			RATIO_X(pTex->m_dwWidth),
-			RATIO_Y(pTex->m_dwHeight),
-			0,
-			pTex,
-			ARX_OPAQUE_WHITE);
+		EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
 
 		iX += iTexW;
 	}
@@ -5402,14 +5379,10 @@ void MenuCursor::DrawOneCursor(int _iPosX,int _iPosY) {
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
-	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
-
-					INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
-					INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
-
-					0.00000001f,
-					scursor[iNumCursor],D3DCOLORWHITE);
+	EERIEDrawBitmap2(static_cast<float>(_iPosX), static_cast<float>(_iPosY),
+	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
+	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
+	                 0.00000001f, scursor[iNumCursor], Color::white);
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
@@ -5447,7 +5420,7 @@ void MenuCursor::Update()
 
 //-----------------------------------------------------------------------------
 
-static bool ComputePer(const Vec2i & _psPoint1, const Vec2i & _psPoint2, D3DTLVERTEX * _psd3dv1, D3DTLVERTEX * _psd3dv2, float _fSize) {
+static bool ComputePer(const Vec2i & _psPoint1, const Vec2i & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
 	
 	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
 	float fTemp = sTemp.x;
@@ -5492,12 +5465,12 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	D3DTLVERTEX v[4];
+	TexturedVertex v[4];
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	const Vec2i * psOldPoint = _psPoint1++;
-	v[0].color=v[2].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
+	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 
 	if(!ComputePer(*psOldPoint, *_psPoint1, &v[0], &v[2], fTaille)) {
 		v[0].sx=v[2].sx=(float)psOldPoint->x;
@@ -5514,8 +5487,8 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 		fColorBlue+=fDColorBlue;
 
 		if(ComputePer(*psOldPoint, *(_psPoint1 + 1), &v[1], &v[3], fTaille)) {
-			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
+			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
+			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
 			v[0].sx=v[1].sx;
 			v[0].sy=v[1].sy;
@@ -5534,8 +5507,8 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 	fColorBlue+=fDColorBlue;
 
 	if(ComputePer(*_psPoint1, *psOldPoint, &v[1], &v[3], fTaille)) {
-		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,v,4,0);
+		v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
+		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

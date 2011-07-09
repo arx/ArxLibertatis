@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define EERIEMATH_H
 
 #include <algorithm>
+#include <cstdlib>
 
 using std::min;
 using std::max;
@@ -124,40 +125,9 @@ bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt);
 bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
-inline D3DCOLOR EERIERGB(float r, float g, float b)
-{
-	long t[3];
-	t[0] = r * 255.f;
-	t[1] = g * 255.f;
-	t[2] = b * 255.f;
-	return (0xff000000L | (t[0] << 16) | (t[1] << 8) | t[2]);
-}
-
-inline D3DCOLOR _EERIERGB(float v)
-{
-	long t = v * 255.f;
-	return (0xff000000L | (t << 16) | (t << 8) | t);
-}
-inline D3DCOLOR _EERIERGBA(float v)
-{
-	long t = v * 255.f;
-	return (0x00000000L | (t << 24) | (t << 16) | (t << 8) | t);
-}
-
-#define EERIELRGB255(r,g,b) (0xff000000L | ( r << 16) | ( g << 8) | b);
-
-#define FLOAT2LONG(floatx,longx) \
-	longx = (long)floatx
-
-
-float	SSQRT(long a);
-
-float InterpolateAngle(float a1, float a2, float pour);
-
 //*************************************************************************************
 // Simple 2D Functions
 //*************************************************************************************
-float FORCEANGLE(float a);
 
 inline float ffsqrt(float f)
 {
@@ -266,7 +236,7 @@ inline float Vector_Normalize(Vec3f * v)
 
 void	MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u);
 void	MatrixReset(EERIEMATRIX * mat);
-VOID    MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b);
+void    MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b);
 void	VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat);
 #define VertexMatrixMultiply(a,b,c) VectorMatrixMultiply(a,b,c)
 void	GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const float rollDegrees);
@@ -403,7 +373,7 @@ inline float ScalarProduct(const Vec3f * v0, const Vec3f * v1) {
 	isect0=VV0+(VV1-VV0)*D0/(D0-D1);    \
 	isect1=VV0+(VV2-VV0)*D0/(D0-D2);
  
-void CalcFaceNormal(EERIEPOLY * ep, const D3DTLVERTEX * v);
+void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);
 void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, Vec3f * v0, Vec3f * v1, Vec3f * v2);
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
@@ -420,21 +390,21 @@ void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 #define TRUEDistance2D(x0,y0,x1,y1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 #define TRUEDistance3D(x0,y0,z0,x1,y1,z1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
 
-// TODO don't use D3DTLVERTEX
+// TODO don't use TexturedVertex
 
-inline float dist(const Vec3f & from, const D3DTLVERTEX & to) {
+inline float dist(const Vec3f & from, const TexturedVertex & to) {
 	return dist(from, Vec3f(to.sx, to.sy, to.sz));
 }
 
-inline float distSqr(const Vec3f & from, const D3DTLVERTEX & to) {
+inline float distSqr(const Vec3f & from, const TexturedVertex & to) {
 	return distSqr(from, Vec3f(to.sx, to.sy, to.sz));
 }
 
-inline bool closerThan(const Vec3f & from, const D3DTLVERTEX & to, float d) {
+inline bool closerThan(const Vec3f & from, const TexturedVertex & to, float d) {
 	return closerThan(from, Vec3f(to.sx, to.sy, to.sz), d);
 }
 
-inline bool fartherThan(const Vec3f & from, const D3DTLVERTEX & to, float d) {
+inline bool fartherThan(const Vec3f & from, const TexturedVertex & to, float d) {
 	return fartherThan(from, Vec3f(to.sx, to.sy, to.sz), d);
 }
 
@@ -450,7 +420,7 @@ inline float fdist(const Vec3f & from, const Vec3f & to) {
 	return ffsqrt(((to.x - from.x) * (to.x - from.x)) + ((to.y - from.y) * (to.y - from.y)) + ((to.z - from.z) * (to.z - from.z)));
 }
 
-inline float fdist(const Vec3f & from, const D3DTLVERTEX & to) {
+inline float fdist(const Vec3f & from, const TexturedVertex & to) {
 	return fdist(from, Vec3f(to.sx, to.sy, to.sz));
 }
 
@@ -493,15 +463,6 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)
 // ANGLES Functions
 //*******************************************************************************
 float	GetAngle(const float x0, const float y0, const float x1, const float y1);
-float	AngleDifference(float d, float e);
-
-inline float MAKEANGLE(float a)
-{
-	if (a >= 0)
-		return a - 360 * (int)(a * 0.0027777777f);
-	else
-		return a + 360 * (1 + (int)(-a * 0.0027777777f));
-}
  
 
 float GetNearestSnappedAngle(float angle);
@@ -509,7 +470,7 @@ void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle);
 
 extern EERIEMATRIX ProjectionMatrix;
 
-inline void specialEE_RT(D3DTLVERTEX * in, Vec3f * out)
+inline void specialEE_RT(TexturedVertex * in, Vec3f * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->x = in->sx - et->posx;
@@ -522,7 +483,7 @@ inline void specialEE_RT(D3DTLVERTEX * in, Vec3f * out)
 	out->y = (out->y * et->xcos) - (temp * et->xsin);
 }
 
-inline void specialEE_P(Vec3f * in, D3DTLVERTEX * out)
+inline void specialEE_P(Vec3f * in, TexturedVertex * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 
@@ -551,7 +512,12 @@ inline float degrees(float radians){
 template <class T>
 inline T Rand( const T& pMin, const T& pMax )
 {
-    return pMin + (pMax - pMin) * rand() / (T)RAND_MAX;
+    return pMin + (pMax - pMin) * std::rand() / (T)RAND_MAX;
+}
+
+template <class T>
+inline T clamp(T value, T min, T max) {
+	return (value <= min) ? min : ((value >= max) ? max : value);
 }
 
 #endif

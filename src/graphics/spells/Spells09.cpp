@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells09.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -69,13 +71,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/Spells05.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
+#include "graphics/texture/TextureStage.h"
 
 #include "scene/Object.h"
 #include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
 
-CSummonCreature::CSummonCreature()
-{
+CSummonCreature::CSummonCreature() : fColorRays1(Color3f::white), fColorBorder(Color3f::white), fColorRays2(Color3f::black) {
 	eSrc.x = 0;
 	eSrc.y = 0;
 	eSrc.z = 0;
@@ -85,18 +87,6 @@ CSummonCreature::CSummonCreature()
 
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
-
-	fColorBorder[0] = 1;
-	fColorBorder[1] = 1;
-	fColorBorder[2] = 1;
-
-	fColorRays1[0] = 1;
-	fColorRays1[1] = 1;
-	fColorRays1[2] = 1;
-
-	fColorRays2[0] = 0;
-	fColorRays2[1] = 0;
-	fColorRays2[2] = 0;
 
 	tex_light = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
 }
@@ -151,33 +141,19 @@ void CSummonCreature::SetDuration(unsigned long alDurationIntro, unsigned long a
 	ulCurrentTime = 0;
 }
 
-//-----------------------------------------------------------------------------
-void CSummonCreature::SetColorBorder(float afRed, float afGreen, float afBlue)
-{
-	fColorBorder[0] = afRed;
-	fColorBorder[1] = afGreen;
-	fColorBorder[2] = afBlue;
+void CSummonCreature::SetColorBorder(Color3f color) {
+	fColorBorder = color;
 }
 
-//-----------------------------------------------------------------------------
-void CSummonCreature::SetColorRays1(float afRed, float afGreen, float afBlue)
-{
-	fColorRays1[0] = afRed;
-	fColorRays1[1] = afGreen;
-	fColorRays1[2] = afBlue;
+void CSummonCreature::SetColorRays1(Color3f color) {
+	fColorRays1 = color;
 }
 
-//-----------------------------------------------------------------------------
-void CSummonCreature::SetColorRays2(float afRed, float afGreen, float afBlue)
-{
-	fColorRays2[0] = afRed;
-	fColorRays2[1] = afGreen;
-	fColorRays2[2] = afBlue;
+void CSummonCreature::SetColorRays2(Color3f color) {
+	fColorRays2 = color;
 }
 
-//-----------------------------------------------------------------------------
-unsigned long CSummonCreature::GetDuration()
-{
+unsigned long CSummonCreature::GetDuration() {
 	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
 }
 
@@ -185,7 +161,7 @@ unsigned long CSummonCreature::GetDuration()
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
-	D3DTLVERTEX target;
+	TexturedVertex target;
 
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
@@ -280,7 +256,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 }
 
 //-----------------------------------------------------------------------------
-void CSummonCreature::Split(D3DTLVERTEX * v, int a, int b, float yo)
+void CSummonCreature::Split(TexturedVertex * v, int a, int b, float yo)
 {
 	if (a != b)
 	{
@@ -302,9 +278,9 @@ void CSummonCreature::RenderFissure()
 {
 	int i;
 	float ff;
-	D3DTLVERTEX vt[4];
-	D3DTLVERTEX vr[4];
-	D3DTLVERTEX target;
+	TexturedVertex vt[4];
+	TexturedVertex vr[4];
+	TexturedVertex target;
 
 	Vec3f etarget;
 	etarget.x = fBetaRadCos;
@@ -346,7 +322,7 @@ void CSummonCreature::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	vr[0].color = vr[1].color = vr[2].color = vr[3].color = D3DRGB(0, 0, 0);
+	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toBGR();
 
 	if (bIntro)
 	{
@@ -356,10 +332,10 @@ void CSummonCreature::RenderFissure()
 			EE_RT2(&v1b[i], &vr[1]);
 			EE_RT2(&v1a[i+1], &vr[2]);
 			EE_RT2(&v1b[i+1], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -372,10 +348,10 @@ void CSummonCreature::RenderFissure()
 			EE_RT2(&vb[i], &vr[1]);
 			EE_RT2(&va[i+1], &vr[2]);
 			EE_RT2(&vb[i+1], &vr[3]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -384,8 +360,8 @@ void CSummonCreature::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
-	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
+	vr[0].color = vr[1].color = Color::black.toBGR();
+	vr[2].color = vr[3].color = fColorBorder.toBGR();
 
 	for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
 	{
@@ -400,10 +376,10 @@ void CSummonCreature::RenderFissure()
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&va[i+1], &vr[2]);
 		EE_RT2(&va[i], &vr[3]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[0],
+		ARX_DrawPrimitive(&vr[0],
 		                             &vr[1],
 		                             &vr[2]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[1],
+		ARX_DrawPrimitive(&vr[1],
 		                             &vr[2],
 		                             &vr[3]);
 
@@ -418,10 +394,10 @@ void CSummonCreature::RenderFissure()
 		EE_RT2(&vb[i+1], &vr[2]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&vt[3], &vr[0]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[0],
+		ARX_DrawPrimitive(&vr[0],
 		                             &vr[1],
 		                             &vr[2]);
-		ARX_DrawPrimitive_SoftClippZ(&vr[1],
+		ARX_DrawPrimitive(&vr[1],
 		                             &vr[2],
 		                             &vr[3]);
 
@@ -441,10 +417,8 @@ void CSummonCreature::RenderFissure()
 	target.sz = eSrc.z + fBetaRadCos * (1.5f * sizeF); 
 
 	EE_RTP(&vt[1], &vr[0]);
-	vr[0].color = D3DRGB(fColorRays1[0], fColorRays1[1], fColorRays1[2]);
-	vr[1].color = D3DRGB(fColorRays1[0], fColorRays1[1], fColorRays1[2]);
-	vr[2].color = D3DRGB(fColorRays2[0], fColorRays2[1], fColorRays2[2]);
-	vr[3].color = D3DRGB(fColorRays2[0], fColorRays2[1], fColorRays2[2]);
+	vr[0].color = vr[1].color = fColorRays1.toBGR();
+	vr[2].color = vr[3].color = fColorRays2.toBGR();
 
 	vr[0].tu = fTexWrap;
 	vr[0].tv = 1;
@@ -472,19 +446,19 @@ void CSummonCreature::RenderFissure()
 			vt[3].sy = va[i+1].sy + (va[i+1].sy - target.sy) * 2;
 			vt[3].sz = va[i+1].sz + (va[i+1].sz - target.sz) * 2;
 
-			vr[0].color = D3DRGB(tfRaysa[i] * fColorRays1[0],   tfRaysa[i] * fColorRays1[1],   tfRaysa[i] * fColorRays1[2]);
-			vr[1].color = D3DRGB(tfRaysa[i+1] * fColorRays1[0], tfRaysa[i+1] * fColorRays1[1], tfRaysa[i+1] * fColorRays1[2]);
-			vr[2].color = D3DRGB(tfRaysa[i] * fColorRays2[0],   tfRaysa[i] * fColorRays2[1],   tfRaysa[i] * fColorRays2[2]);
-			vr[3].color = D3DRGB(tfRaysa[i+1] * fColorRays2[0], tfRaysa[i+1] * fColorRays2[1], tfRaysa[i+1] * fColorRays2[2]);
+			vr[0].color = (fColorRays1 * tfRaysa[i]).toBGR();
+			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toBGR();
+			vr[2].color = (fColorRays2 * tfRaysa[i]).toBGR();
+			vr[3].color = (fColorRays2 * tfRaysa[i + 1]).toBGR();
 			
 			EE_RT2(&vt[0], &vr[3]);
 			EE_RT2(&vt[1], &vr[2]);
 			EE_RT2(&vt[2], &vr[1]);
 			EE_RT2(&vt[3], &vr[0]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -504,19 +478,19 @@ void CSummonCreature::RenderFissure()
 			vt[3].sy = vb[i].sy + (vb[i].sy - target.sy) * 2;
 			vt[3].sz = vb[i].sz + (vb[i].sz - target.sz) * 2;
 
-			vr[0].color = D3DRGB(tfRaysb[i] * fColorRays1[0],   tfRaysb[i] * fColorRays1[1],   tfRaysb[i] * fColorRays1[2]);
-			vr[1].color = D3DRGB(tfRaysb[i+1] * fColorRays1[0], tfRaysb[i+1] * fColorRays1[1], tfRaysb[i+1] * fColorRays1[2]);
-			vr[2].color = D3DRGB(tfRaysb[i] * fColorRays2[0],   tfRaysb[i] * fColorRays2[1],   tfRaysb[i] * fColorRays2[2]);
-			vr[3].color = D3DRGB(tfRaysb[i+1] * fColorRays2[0], tfRaysb[i+1] * fColorRays2[1], tfRaysb[i+1] * fColorRays2[2]);
+			vr[0].color = (fColorRays1 * tfRaysb[i]).toBGR();
+			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toBGR();
+			vr[2].color = (fColorRays2 * tfRaysb[i]).toBGR();
+			vr[3].color = (fColorRays2 * tfRaysb[i + 1]).toBGR();
 
 			EE_RT2(&vt[0], &vr[3]);
 			EE_RT2(&vt[1], &vr[2]);
 			EE_RT2(&vt[2], &vr[1]);
 			EE_RT2(&vt[3], &vr[0]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[0],
+			ARX_DrawPrimitive(&vr[0],
 			                             &vr[1],
 			                             &vr[2]);
-			ARX_DrawPrimitive_SoftClippZ(&vr[1],
+			ARX_DrawPrimitive(&vr[1],
 			                             &vr[2],
 			                             &vr[3]);
 		}
@@ -840,7 +814,7 @@ float CIncinerate::Render()
 		d.x = tv1a[i+1].sx;
 		d.y = tv1a[i+1].sy;
 		d.z = tv1a[i+1].sz;
-		EERIEDraw3DLine(&s, &d, 0xFFFF0000);
+		EERIEDraw3DLine(s, d, Color::red);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -897,7 +871,7 @@ CNegateMagic::CNegateMagic()
 	tex_sol = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_negate_magic.bmp");
 
 	if (!ssol)
-		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo", NULL);
+		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 		
 	ssol_count++;
 	
@@ -999,42 +973,23 @@ float CNegateMagic::Render()
 				particle[j].tc			=	tex_p2;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	1.0f;
-				particle[j].g			=	1.0f;
-				particle[j].b			=	1.0f;
+				particle[j].rgb = Color3f::white;
 			}
 		}
 	}
-
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	EERIE_RGB stitecolor;
-
-	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120; 
-	stiteangle.a = 0;
-	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
-
+	
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	stiteangle.b = -stiteangle.b;
-	stitecolor.r = 0.4f;
-	stitecolor.g = 0.4f;
-	stitecolor.b = 0.4f;
-	stitescale.x = 3.f;
-	stitescale.y = 3.f;
-	stitescale.z = 3.f;
+	
+	Anglef stiteangle(0.f, -(float) ulCurrentTime * fOneOnDuration * 120, 0.f);
+	Vec3f stitepos(x, y, z);
+	
+	Color3f stitecolor(.4f, .4f, .4f);
+	Vec3f stitescale(3.f, 3.f, 3.f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	stitecolor.r = 0.5f;
-	stitecolor.g = 0.f;
-	stitecolor.b = 0.5f;
-	stitescale.x = 3.1f;
-	stitescale.y = 3.1f;
-	stitescale.z = 3.1f;
+	stitecolor = Color3f(.5f, 0.f, .5f);
+	stitescale = Vec3f(3.1f, 3.1f, 3.1f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	return 1;

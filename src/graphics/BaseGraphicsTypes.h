@@ -2,18 +2,7 @@
 #ifndef ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 #define ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 
-#include "platform/math/Vector3.h"
-
-struct EERIE_RGB {
-	float r;
-	float g;
-	float b;
-};
-
-struct EERIE_RGBA : EERIE_RGB
-{
-	float a;
-};
+#include "math/Vector3.h"
 
 struct EERIE_QUAT {
 	float x;

@@ -66,7 +66,7 @@ const float DANAE_VERSION = 1.864f;
 
 const size_t MAX_GOLD_COINS_VISUALS = 7;
 
-extern EERIE_RGB	FADECOLOR;
+extern Color3f FADECOLOR;
 extern TextureContainer * TC_fire2;
 extern TextureContainer * TC_fire;
 extern TextureContainer * TC_smoke;

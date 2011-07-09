@@ -1,12 +1,11 @@
 
-#ifndef ARX_PLATFORM_MATH_VECTOR2_H
-#define ARX_PLATFORM_MATH_VECTOR2_H
+#ifndef ARX_MATH_VECTOR2_H
+#define ARX_MATH_VECTOR2_H
 
 #include <limits>
 #include <cmath>
 
-#include "platform/Platform.h"
-
+#include "math/MathFwd.h"
 
 /*!
  * Representation of a vector in 2d space.
@@ -295,9 +294,4 @@ template<class T> const Vector2<T> Vector2<T>::X_AXIS(T(1), T(0));
 template<class T> const Vector2<T> Vector2<T>::Y_AXIS(T(0), T(1));
 template<class T> const Vector2<T> Vector2<T>::ZERO(T(0), T(0));
 
-typedef Vector2<int> Vec2i;
-typedef Vector2<short> Vec2s;
-typedef Vector2<float> Vec2f;
-typedef Vector2<double> Vec2d;
-
-#endif // ARX_PLATFORM_MATH_VECTOR2_H
+#endif // ARX_MATH_VECTOR2_H

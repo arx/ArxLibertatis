@@ -55,59 +55,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Desc: Helper functions and typing shortcuts for Direct3D programming.
-#ifndef D3DUTIL_H
-#define D3DUTIL_H
+#ifndef ARX_GRAPHICS_GRAPHICSUTILITY_H
+#define ARX_GRAPHICS_GRAPHICSUTILITY_H
 
-#include "graphics/d3dwrapper.h"
-#include "platform/Platform.h"
+#include "graphics/GraphicsTypes.h"
 
 //-----------------------------------------------------------------------------
 // Miscellaneous helper functions
 //-----------------------------------------------------------------------------
  
 
-#define SAFE_DELETE(p)  { if(p) { delete (p);     (p)=NULL; } }
-#define SAFE_DELETE_TAB(p)  { if(p) { delete[] (p);     (p)=NULL; } }
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 
-//-----------------------------------------------------------------------------
-// Short cut functions for creating and using DX structures
-//-----------------------------------------------------------------------------
-VOID D3DUtil_InitDeviceDesc(D3DDEVICEDESC7 & ddDevDesc);
-VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags = 0,
-                             DWORD dwCaps = 0);
+// TODO move to matrix class
 
-//-----------------------------------------------------------------------------
-// D3D Matrix functions. For performance reasons, some functions are inline.
-//-----------------------------------------------------------------------------
-HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
-                              D3DVECTOR & vAt, D3DVECTOR & vUp);
+// Desc: Given an eye point, a lookat point, and an up vector, this
+//       function builds a 4x4 view matrix.
+bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom, const Vec3f & vAt, const Vec3f & vUp);
 
-inline VOID D3DUtil_SetIdentityMatrix(D3DMATRIX & m)
-{
+inline void Util_SetIdentityMatrix(EERIEMATRIX & m) {
 	m._12 = m._13 = m._14 = m._21 = m._23 = m._24 = 0.0f;
 	m._31 = m._32 = m._34 = m._41 = m._42 = m._43 = 0.0f;
 	m._11 = m._22 = m._33 = m._44 = 1.0f;
 }
 
-inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, float tx, float ty,
-                                       float tz)
-{
-	D3DUtil_SetIdentityMatrix(m);
-	m._41 = tx;
-	m._42 = ty;
-	m._43 = tz;
-}
-
-inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, D3DVECTOR & v)
-{
-	D3DUtil_SetTranslateMatrix(m, v.x, v.y, v.z);
-}
-
-//-----------------------------------------------------------------------------
-// Debug printing support
-//-----------------------------------------------------------------------------
-
-HRESULT _DbgOut(const char *, DWORD, HRESULT, const char *);
-
-#endif // D3DUTIL_H
+#endif // ARX_GRAPHICS_GRAPHICSUTILITY_H

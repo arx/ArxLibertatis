@@ -485,12 +485,12 @@ CIceProjectile::CIceProjectile()
 	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
 
 	if (!stite)
-		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo", NULL);
+		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo");
 
 	stite_count++;
 
 	if (!smotte)
-		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo", NULL);
+		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
 
 	smotte_count++;
 
@@ -695,7 +695,7 @@ float CIceProjectile::Render()
 		Anglef stiteangle;
 		Vec3f stitepos;
 		Vec3f stitescale;
-		EERIE_RGB stitecolor;
+		Color3f stitecolor;
 
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360;
 		stiteangle.a = 0;
@@ -768,9 +768,7 @@ float CIceProjectile::Render()
 				particle[j].tc = tex_p2;
 				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
-				particle[j].r = 0.7f;
-				particle[j].g = 0.7f;
-				particle[j].b = 1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 		else if (t > 0.095f)
@@ -809,9 +807,7 @@ float CIceProjectile::Render()
 				particle[j].tc 			=	tex_p1;
 				particle[j].special 	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
-				particle[j].r			=	0.7f;
-				particle[j].g			=	0.7f;
-				particle[j].b			=	1.f;
+				particle[j].rgb = Color3f(.7f, .7f, 1.f);
 			}
 		}
 	}
@@ -997,7 +993,7 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 
 		if ((num >= 0) && (numsuiv >= 0))
 		{
-			Draw3DLineTex2(this->truban[num].pos, this->truban[numsuiv].pos, size, RGBA_MAKE(r1 >> 16, g1 >> 16, b1 >> 16, 0), RGBA_MAKE((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
+			Draw3DLineTex2(this->truban[num].pos, this->truban[numsuiv].pos, size, Color(r1 >> 16, g1 >> 16, b1 >> 16, 0), Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
 			r1 += dr;
 			g1 += dg;
 			b1 += db;

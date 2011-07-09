@@ -3,8 +3,8 @@
 #define ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
 
 #include "graphics/texture/Texture.h" // For Texture2D
-#include "platform/math/Vector2.h"
-#include "platform/math/Vector3.h"
+#include "math/MathFwd.h"
+#include "math/Vector2.h"
 
 class TextureContainer;
 class Cinematic;

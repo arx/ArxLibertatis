@@ -346,9 +346,7 @@ float CControlTarget::Render()
 					particle[j].tc			= tex_mm;
 					particle[j].special 	= FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam		= 0.0000001f;
-					particle[j].r			= c;
-					particle[j].g			= c;
-					particle[j].b			= c;
+					particle[j].rgb = Color3f::gray(c);
 				}
 			}
 
@@ -388,9 +386,7 @@ float CControlTarget::Render()
 				particle[j].tc		= tex_mm;
 				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam	= 0.0000001f;
-				particle[j].r		= 0.1f;
-				particle[j].g		= 0.1f;
-				particle[j].b		= 0.1f;
+				particle[j].rgb = Color3f::gray(0.1f);
 			}
 		}
 	}

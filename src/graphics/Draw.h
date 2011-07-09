@@ -45,9 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEDRAW_H
 #define EERIEDRAW_H
 
-#define EERIE_NOCOUNT	0x4000	// do not incr EERIEDrawnPolys for EERIEDRAWPRIM
-
-#include "graphics/d3dwrapper.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
 #include "graphics/Math.h"
@@ -57,60 +54,45 @@ extern long ARX_ALTERNATE_3D;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
 
-void MDL_AddMetalDrawLater(D3DTLVERTEX * tv);
+void MDL_AddMetalDrawLater(TexturedVertex * tv);
 void MDL_FlushAll();
 
 
 void Delayed_EERIEDRAWPRIM(EERIEPOLY * ep);
 void Delayed_FlushAll();
 
-HRESULT EERIEDRAWPRIM(D3DPRIMITIVETYPE dptPrimitiveType,
-                      DWORD  dwVertexTypeDesc,
-                      LPVOID lpvVertices,
-                      DWORD  dwVertexCount,
-                      DWORD  dwFlags,					//d3d flag
-                      long flags = 0					//eerie flag
-                     );
+void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
-void EERIEDrawLine(float x, float y, float x1, float y1, float z, D3DCOLOR col);
-void EERIEDrawCircle(float x0, float y0, float r, D3DCOLOR col, float z);
-void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
-void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
-void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
-void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, D3DCOLOR cold, D3DCOLOR cole);
+void EERIEDrawCircle(float x0, float y0, float r, Color col, float z);
+void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col);
+void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
+void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col);
+void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
 
-void DRAWLATER_ReInit();
-void DRAWLATER_Render();
-
-void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col);
-void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col);
-void EERIEDrawTrue3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
-void EERIEDraw3DLine(Vec3f * orgn, Vec3f * dest, D3DCOLOR col);
-void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float _fDeltaY);
+void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col);
+void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col);
+void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
+void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
+void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
+                            Color col, float _fDeltaY);
 
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
 void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
 
-void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos);
-void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos, float rot);
+void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
+void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
 
-void EERIEPOLY_DrawWired(EERIEPOLY * ep, long col = 0);
+void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color col = Color::none);
 void EERIEPOLY_DrawNormals(EERIEPOLY * ep);
 
 extern TextureContainer * EERIE_DRAW_sphere_particle;
 extern TextureContainer * EERIE_DRAW_square_particle;
 
-void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
-void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float u0, float v0, float u1, float v1);
-void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col
-                        , float u0, float v0
-                        , float u1, float v1
-                        , float u2, float v2
-                        , float u3, float v3
-                       );
-
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *);
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd);
+void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
+void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,
+                        float u0, float v0, float u1, float v1);
+void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,
+                        float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
 
 #endif
 

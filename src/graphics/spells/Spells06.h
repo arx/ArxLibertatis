@@ -80,7 +80,7 @@ class CParalyse : public CSpellFx
 		float		prismre, prismge, prismbe;
 
 		Vec3f		*	prismvertex;
-		D3DTLVERTEX		*	prismd3d;
+		TexturedVertex		*	prismd3d;
 		unsigned short	*	prismind;
 		int					prismnbpt;
 		int					prismnbface;
@@ -164,16 +164,16 @@ class CCreateField: public CSpellFx
 		float size;
 		float ft;
 		float fglow ;
-		D3DTLVERTEX b[4];
-		D3DTLVERTEX t[4];
+		TexturedVertex b[4];
+		TexturedVertex t[4];
 
 	public:
 		float	falpha;
 		CCreateField();
 
 	private:
-		void RenderQuad(D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4,  int rec, Vec3f);
-		void RenderSubDivFace(D3DTLVERTEX * b, D3DTLVERTEX * t, int b1, int b2, int t1, int t2);
+		void RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVertex p3, TexturedVertex p4,  int rec, Vec3f);
+		void RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2);
 
 	public:
 		void SetPos(Vec3f);
@@ -283,10 +283,10 @@ class CRiseDead: public CSpellFx
 		unsigned long ulDurationIntro;
 		unsigned long ulDurationRender;
 		unsigned long ulDurationOuttro;
-		D3DTLVERTEX va[40];
-		D3DTLVERTEX vb[40];
-		D3DTLVERTEX v1a[40];
-		D3DTLVERTEX v1b[40];
+		TexturedVertex va[40];
+		TexturedVertex vb[40];
+		TexturedVertex v1a[40];
+		TexturedVertex v1b[40];
 
 		EERIE_3DOBJ	*	stone[2];
 
@@ -315,7 +315,7 @@ class CRiseDead: public CSpellFx
 		~CRiseDead();
 
 	private:
-		void Split(D3DTLVERTEX * v, int a, int b, float yo);
+		void Split(TexturedVertex * v, int a, int b, float yo);
 		void RenderFissure();
 
 		// accesseurs

@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells01.h"
 
+#include "animation/AnimationRender.h"
+
 #include "core/GameTime.h"
 
 #include "game/Spells.h"
@@ -206,29 +208,18 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-CMagicMissile::CMagicMissile() : CSpellFx()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
+CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f::ZERO) {
+	
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
 	tex_mm = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
 
 	if (!smissile)
-		smissile = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo", NULL);
+		smissile = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo");
 
 	smissile_count++;
 
-	fColor[0] = 1;
-	fColor[1] = 1;
-	fColor[2] = 1;
-
-	fColor1[0] = 1;
-	fColor1[1] = 1;
-	fColor1[2] = 1;
 	bExplo = false;
 	bMove = true;
 }
@@ -264,10 +255,6 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	this->angles = angles;
 	eCurPos = eSrc = aeSrc;
 
-
-	fSize = 1;
-	bDone = true;
-
 	s = eSrc;
 	e = eSrc;
 
@@ -295,7 +282,6 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	fTrail = 0;
 
 	iLength = 50;
-	fOneOnLength = 1.0f / (float) iLength;
 	iBezierPrecision = BEZIERPrecision;
 	fOneOnBezierPrecision = 1.0f / (float) iBezierPrecision;
 	bExplo = false;
@@ -306,20 +292,8 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MM_LOOP, &eCurPos, 1.0F, ARX_SOUND_PLAY_LOOPED);
 }
 
-//-----------------------------------------------------------------------------
-void CMagicMissile::SetColor(float faRed, float faGreen, float faBlue)
-{
-	fColor[0] = faRed;
-	fColor[1] = faGreen;
-	fColor[2] = faBlue;
-}
-
-//-----------------------------------------------------------------------------
-void CMagicMissile::SetColor1(float faRed, float faGreen, float faBlue)
-{
-	fColor1[0] = faRed;
-	fColor1[1] = faGreen;
-	fColor1[2] = faBlue;
+void CMagicMissile::SetColor(Color3f color) {
+	fColor = color;
 }
 
 //-----------------------------------------------------------------------------
@@ -356,7 +330,7 @@ float CMagicMissile::Render()
 	Anglef stiteangle;
 	Vec3f stitepos;
 	Vec3f stitescale;
-	EERIE_RGB stitecolor;
+	Color3f stitecolor;
 	Vec3f av;
 
 	if (ulCurrentTime >= ulDuration)
@@ -453,7 +427,7 @@ float CMagicMissile::Render()
 				if (c < 0) c = 0;
 				else if (c > 1) c = 1;
 
-				int color = D3DRGB(c * fColor[0] * alpha, c * fColor[1] * alpha, c * fColor[2] * alpha);
+				Color color = (fColor * (c * alpha)).to<u8>();
 
 				if (fsize < 0.5f)
 					fsize = fsize * 2 * 3;
@@ -658,15 +632,10 @@ void CMultiMagicMissile::Create()
 
 				pMM->SetDuration(lTime);
 
-				if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-				{
-					pMM->SetColor(0.9f, 0.2f, 0.5f);
-					pMM->SetColor1(0.9f, 0.2f, 0.5f);
-				}
-				else
-				{
-					pMM->SetColor(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f);
-					pMM->SetColor1(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f);
+				if(spells[spellinstance].caster == 0 && cur_mr == 3) {
+					pMM->SetColor(Color3f(0.9f, 0.2f, 0.5f));
+				} else {
+					pMM->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
 				}
 
 				pTab[i]->lLightId = GetFreeDynLight();
@@ -714,8 +683,8 @@ void CMultiMagicMissile::CheckCollision()
 			{
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
-				if (pMM->bExplo == false)
-				{
+				if(!pMM->bExplo) {
+					
 					EERIE_SPHERE sphere;
 					sphere.origin = pMM->eCurPos;
 					sphere.radius	= 10.f;
@@ -750,10 +719,7 @@ void CMultiMagicMissile::CheckCollision()
 							damages[ttt].exist	= true;
 						}
 
-						EERIE_RGB rgb;
-						rgb.r = 0.3f;
-						rgb.g = 0.3f;
-						rgb.b = 0.45f;
+						Color3f rgb(.3f, .3f, .45f);
 						ARX_PARTICLES_Add_Smoke(&pMM->eCurPos, 0, 6, &rgb);
 					}
 				}
@@ -1038,8 +1004,8 @@ void GenereArcElectrique(Vec3f * pos, Vec3f * end, Vec3f * tabdef, int nbseg)
 //-----------------------------------------------------------------------------
 void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float fBeta, int tsp)
 {
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
+	TexturedVertex v[4];
+	TexturedVertex v2[4];
 
 	long i;
 
@@ -1098,10 +1064,10 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 
@@ -1127,10 +1093,10 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[1],
 		                             &v2[2]);
-		ARX_DrawPrimitive_SoftClippZ(&v2[0],
+		ARX_DrawPrimitive(&v2[0],
 		                             &v2[2],
 		                             &v2[3]);
 	}
@@ -1274,7 +1240,7 @@ float CPortal::Render()
 
 	//calcul sphere
 	int			nb = this->spherenbpt;
-	D3DTLVERTEX * v = this->sphered3d, d3dvs;
+	TexturedVertex * v = this->sphered3d, d3dvs;
 	Vec3f	* pt = this->spherevertex;
 	int col = RGBA_MAKE(0, (int)(200.f * this->spherealpha), (int)(255.f * this->spherealpha), 255);
 
@@ -1329,7 +1295,7 @@ float CPortal::Render()
 	//affichage de la sphere back
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->ResetTexture(0);
-	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
+	GRenderer->drawIndexed(Renderer::TriangleList, this->sphered3d, this->spherenbpt, this->sphereind, this->spherenbfaces * 3);
 
 	//affichage eclair
 	this->DrawAllEclair();
@@ -1364,16 +1330,14 @@ float CPortal::Render()
 			particle[j].tc		=	tp;
 			particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			particle[j].fparam	=	0.0000001f;
-			particle[j].r		=	1.f;
-			particle[j].g		=	1.f;
-			particle[j].b		=	1.f;
+			particle[j].rgb = Color3f::white;
 		}
 	}
 
 	//affichage de la sphere front
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->ResetTexture(0);
-	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
+	GRenderer->drawIndexed(Renderer::TriangleList, this->sphered3d, this->spherenbpt, this->sphereind, this->spherenbfaces * 3);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

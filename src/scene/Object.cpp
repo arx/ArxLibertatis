@@ -98,8 +98,6 @@ extern char LastLoadedScene[256];
 extern PakManager * pPakManager;
 
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
-void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
-void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
 
 void Clear3DScene(EERIE_3DSCENE	* eerie);
 
@@ -617,7 +615,6 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 	
 	THEO_NB tn;
 	memcpy(&tn, adr + pos, sizeof(THEO_NB));
-	pos += sizeof(THEO_NB);
 	
 	LogDebug << "Nb Vertex " << tn.nb_vertex << " Nb Action Points " << tn.nb_action_point
 	         << " Nb Lines " << tn.nb_lines;
@@ -709,7 +706,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const unsigned char * adr, size_t *
 		
 		if(ptf3006.ismap) {
 			eerie->facelist[i].texid = (short)ptf3006.num_map;
-			eerie->facelist[i].facetype = 1;
+			eerie->facelist[i].facetype = POLY_NO_SHADOW;
 			
 			if(ptf3006.num_map >= 0 && eerie->texturecontainer[ptf3006.num_map] && (eerie->texturecontainer[ptf3006.num_map]->userflags & POLY_NOCOL)) {
 				eerie->facelist[i].facetype |= POLY_NOCOL;
@@ -1395,7 +1392,6 @@ void EERIE_3DOBJ::clear() {
 
 		origin = 0;
 		ident = 0;
-		nbpfaces = 0;
 		nbgroups = 0;
 		drawflags = 0;
 
@@ -1404,7 +1400,6 @@ void EERIE_3DOBJ::clear() {
 		vertexlist3.clear();
 
 		facelist.clear();
-		pfacelist = NULL;
 		grouplist = NULL;
 		texturecontainer.clear();
 
@@ -1477,7 +1472,6 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 		KillClothesData(this);
 	}
 	
-	EERIEOBJECT_DeletePFaces(this);
 	EERIE_RemoveCedricData(this);
 	EERIE_PHYSICS_BOX_Release(this);
 	EERIE_COLLISION_SPHERES_Release(this);
@@ -1556,7 +1550,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	
 	memcpy(&nouvo->fastaccess, &obj->fastaccess, sizeof(EERIE_FASTACCESS));
 	EERIE_CreateCedricData(nouvo);
-	EERIEOBJECT_CreatePFaces(nouvo);
 
 	if (obj->pbox)
 	{
@@ -1758,7 +1751,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 
 	}
 
-#if CEDRIC
 	/* Build proper mesh */
 	{
 		EERIE_C_DATA* obj = eobj->c_data;
@@ -1806,108 +1798,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			}
 		}
 	}
-#endif
-}
-
-void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj)
-{
-	// todo Why does this return? Nonfunctional?
-	return;
-
-	if (eobj->pfacelist) free(eobj->pfacelist);
-
-	eobj->pfacelist = NULL;
-	eobj->nbpfaces = 0;
-}
-
-bool Is_Svert(EERIE_PFACE * epf, long epi, EERIE_FACE * ef, long ei)
-{
-	if ((epf->vid[epi] == ef->vid[ei])
-	        &&	(epf->u[epi] == ef->u[ei])
-	        &&	(epf->v[epi] == ef->v[ei])) 
-			return true;
-
-	return false;
-}
-
-long Strippable(EERIE_PFACE * epf, EERIE_FACE * ef)
-{
-	if ((Is_Svert(epf, epf->nbvert - 1, ef, 0))
-	        &&	(Is_Svert(epf, epf->nbvert - 2, ef, 1))) return 2;
-
-	if ((Is_Svert(epf, epf->nbvert - 1, ef, 1))
-	        &&	(Is_Svert(epf, epf->nbvert - 2, ef, 2))) return 0;
-
-	if ((Is_Svert(epf, epf->nbvert - 1, ef, 2))
-	        &&	(Is_Svert(epf, epf->nbvert - 2, ef, 0))) return 1;
-
-	return -1;
-}
-
-static bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face) {
-	
-	for (long i = 0; i < eobj->nbpfaces; i++)
-	{
-		// TODO pfacelist is never really used
-		EERIE_PFACE * epf = &eobj->pfacelist[i];
-
-		if (epf->nbvert >= MAX_PFACE) continue;
-
-		if (epf->facetype != face->facetype) continue;
-
-		if (face->facetype & POLY_TRANS) continue;
-
-		long r;
-
-		if ((r = Strippable(epf, face)) >= 0)
-		{
-			epf->color[epf->nbvert] = face->color[r];
-			epf->u[epf->nbvert] = face->u[r];
-			epf->v[epf->nbvert] = face->v[r];
-			epf->vid[epf->nbvert] = face->vid[r];
-			epf->nbvert++;
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
-{
-	if (EERIEOBJECT_AddFaceToPFace(eobj, face)) return;
-
-	eobj->pfacelist = (EERIE_PFACE *)realloc(eobj->pfacelist, sizeof(EERIE_PFACE) * (eobj->nbpfaces + 1));
-	EERIE_PFACE * epf = &eobj->pfacelist[eobj->nbpfaces];
-	epf->facetype = face->facetype;
-	epf->nbvert = 3;
-	epf->texid = face->texid;
-	epf->transval = face->transval;
-
-	ARX_CHECK_SHORT(faceidx);
-	short sfaceIdx = static_cast<short>(faceidx);
-
-	for (long i = 0; i < 3; i++)
-	{
-		epf->faceidx[i] = sfaceIdx;
-		epf->color[i] = face->color[i];
-		epf->u[i] = face->u[i];
-		epf->v[i] = face->v[i];
-		epf->vid[i] = face->vid[i];
-	}
-
-	epf->faceidx[0] = 0;
-	eobj->nbpfaces++;
-}
-
-void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
-{
-	// todo Find out why this function doesn't work
-	return;
-	EERIEOBJECT_DeletePFaces(eobj);
-
-	for (size_t i = 0; i < eobj->facelist.size(); i++)
-		EERIEOBJECT_AddFace(eobj, &eobj->facelist[i], i);
 }
 
 #ifdef BUILD_EDIT_LOADSAVE
@@ -2011,10 +1901,10 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	//Compute Faces Areas
 	for (size_t i = 0; i < eerie->facelist.size(); i++)
 	{
-		D3DTLVERTEX * ev[3];
-		ev[0] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
-		ev[1] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
-		ev[2] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
+		TexturedVertex * ev[3];
+		ev[0] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
+		ev[1] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
+		ev[2] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
 		eerie->facelist[i].temp = TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
 		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
 		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),
@@ -2137,7 +2027,6 @@ static EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const string & 
 	EERIE_LINKEDOBJ_InitData(eerie);
 	eerie->c_data = NULL;
 	EERIE_CreateCedricData(eerie);
-	EERIEOBJECT_CreatePFaces(eerie);
 	return eerie;
 }
 
