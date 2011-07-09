@@ -881,38 +881,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 
 				break;
-			case 'C':
-
-				if (!strcmp(word, "CLOSESTEALBAG"))
-				{
-					if ((io) && (io->ioflags & IO_NPC))
-					{
-						if (player.Interface & INTER_STEAL)
-						{
-							INTERACTIVE_OBJ * pio = NULL;
-
-							if (SecondaryInventory != NULL)
-							{
-								pio = (INTERACTIVE_OBJ *)SecondaryInventory->io;
-							}
-							else if (player.Interface & INTER_STEAL)
-							{
-								pio = ioSteal;
-							}
-
-							if ((pio != NULL) && (pio == ioSteal))
-							{
-								InventoryDir = -1;
-								SendIOScriptEvent(pio, SM_INVENTORY2_CLOSE);
-								TSecondaryInventory = SecondaryInventory;
-								SecondaryInventory = NULL;
-							}
-
-						}
-					}
-				}
-
-				break;
 			case 'Q':
 
 				if (!strcmp(word, "QUAKE"))
