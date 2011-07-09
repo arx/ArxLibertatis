@@ -116,13 +116,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string choice = context.getLowercase();
+		bool choice = context.getBool();
 		
-		if(choice == "on" || choice == "yes") {
-			ANCHOR_BLOCK_By_IO(context.getIO(), 1);
-		} else {
-			ANCHOR_BLOCK_By_IO(context.getIO(), 0);
-		}
+		ANCHOR_BLOCK_By_IO(context.getIO(), choice ? 1 : 0);
 		
 		LogDebug << "anchorblock \"" << choice << "\"";
 		

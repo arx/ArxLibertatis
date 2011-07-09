@@ -580,6 +580,13 @@ string Context::getLowercase() {
 	return toLowercase(getWord());
 }
 
+bool Context::getBool() {
+	
+	string word = getLowercase();
+	
+	return (word == "on" || word == "yes");
+}
+
 float Context::getFloatVar(const std::string & name) {
 	return GetVarValueInterpretedAsFloat(name, script, io);
 }
@@ -877,52 +884,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "COLLISION"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "COLLISION " << word;
-
-					if (io)
-					{
-						if ((!strcasecmp(word, "ON")) || (!strcasecmp(word, "YES")))
-						{
-							if (io->ioflags & IO_NO_COLLISIONS)
-							{
-								long col = 0;
-
-								for (long kkk = 0; kkk < inter.nbmax; kkk++)
-								{
-									INTERACTIVE_OBJ * ioo = inter.iobj[kkk];
-
-									if (ioo)
-									{
-										if (IsCollidingIO(io, ioo))
-										{
-											INTERACTIVE_OBJ * oes = EVENT_SENDER;
-											EVENT_SENDER = ioo;
-											Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR_DETAIL);
-											EVENT_SENDER = oes;
-											col = 1;
-										}
-									}
-								}
-
-								if (col)
-								{
-									INTERACTIVE_OBJ * oes = EVENT_SENDER;
-									EVENT_SENDER = NULL;
-									Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR);
-									EVENT_SENDER = oes;
-								}
-							}
-
-							io->ioflags &= ~IO_NO_COLLISIONS;
-						}
-						else
-							io->ioflags |= IO_NO_COLLISIONS;
-					}
-				}
-				else if (!strcmp(word, "CAMERACONTROL"))
+				if (!strcmp(word, "CAMERACONTROL"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "CAMERA_CONTROL "<< word;
@@ -6467,6 +6429,7 @@ void ScriptEvent::init() {
 	registerCommand("attachnpctoplayer", new ObsoleteCommand("attachnpctoplayer"));
 	registerCommand("gmode", new ObsoleteCommand("gmode", 1));
 	
+	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
 
 ScriptEvent::Commands ScriptEvent::commands;

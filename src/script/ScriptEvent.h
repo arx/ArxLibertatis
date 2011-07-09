@@ -43,6 +43,7 @@ public:
 	inline INTERACTIVE_OBJ * getIO() { return io; }
 	
 	std::string getLowercase();
+	bool getBool();
 	
 	float getFloat();
 	

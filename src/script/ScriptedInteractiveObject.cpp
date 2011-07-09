@@ -5,9 +5,10 @@
 #include "game/Player.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
-#include "scene/Interactive.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
+#include "physics/Collisions.h"
+#include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 
 using std::string;
@@ -145,12 +146,63 @@ public:
 	
 };
 
+class CollisionCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		bool choice = context.getBool();
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!io) {
+			LogWarning << "collision script command executed without IO";
+			return Failed;
+		}
+		
+		if(!choice) {
+			io->ioflags |= IO_NO_COLLISIONS;
+			return Success;
+		}
+		
+		if(io->ioflags & IO_NO_COLLISIONS) {
+			
+			bool colliding = false;
+			for(long k = 0; k < inter.nbmax; k++) {
+				INTERACTIVE_OBJ * ioo = inter.iobj[k];
+				if(ioo && IsCollidingIO(io, ioo)) {
+					INTERACTIVE_OBJ * oes = EVENT_SENDER;
+					EVENT_SENDER = ioo;
+					Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR_DETAIL);
+					EVENT_SENDER = oes;
+					colliding = true;
+				}
+			}
+			
+			if(colliding) {
+				INTERACTIVE_OBJ * oes = EVENT_SENDER;
+				EVENT_SENDER = NULL;
+				Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR);
+				EVENT_SENDER = oes;
+			}
+		}
+		
+		io->ioflags &= ~IO_NO_COLLISIONS;
+		
+		return Success;
+	}
+	
+	~CollisionCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
 	
 	ScriptEvent::registerCommand("replaceme", new ReplaceMeCommand);
 	ScriptEvent::registerCommand("rotate", new RotateCommand);
+	ScriptEvent::registerCommand("collision", new CollisionCommand);
 	
 }
 
