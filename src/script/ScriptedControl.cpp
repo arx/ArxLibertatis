@@ -1,8 +1,11 @@
 
 #include "script/ScriptedControl.h"
 
+#include <sstream>
+
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "gui/Speech.h"
 #include "physics/Attractors.h"
 #include "physics/Collisions.h"
 #include "io/Logger.h"
@@ -18,6 +21,7 @@ using std::string;
 extern long PLAY_LOADED_CINEMATIC;
 extern char WILL_LAUNCH_CINE[256];
 extern long CINE_PRELOAD;
+extern long ARX_CONVERSATION;
 
 namespace script {
 
@@ -210,6 +214,57 @@ public:
 	
 };
 
+class ConversationCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		string nbpeople = context.getWord();
+		long nb_people = 0;
+		if(!nbpeople.empty() && nbpeople[0] == '-') {
+			std::istringstream iss(nbpeople.substr(1));
+			iss >> nb_people;
+			if(iss.bad()) {
+				nb_people = 0;
+			}
+		}
+		
+		bool enabled = context.getBool();
+		ARX_CONVERSATION = enabled ? 1 : 0;
+		
+		if(!nb_people || !enabled) {
+			LogDebug << "conversation " << nbpeople << ' ' << enabled;
+			return Success;
+		}
+		
+		main_conversation.actors_nb = nb_people;
+		
+		std::ostringstream oss;
+		oss << "conversation " << nbpeople << ' ' << enabled;
+		
+		for(long j = 0; j < nb_people; j++) {
+			
+			string target = context.getLowercase();
+			long t = GetTargetByNameTarget(target);
+			if(t == -2) {
+				t = GetInterNum(context.getIO()); // self
+			}
+			
+			oss << ' ' << target;
+			
+			main_conversation.actors[j] = t;
+		}
+		
+		LogDebug << oss;
+		
+		return Success;
+	}
+	
+	~ConversationCommand() {}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -220,6 +275,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand("anchorblock", new AnchorBlockCommand);
 	ScriptEvent::registerCommand("attach", new AttachCommand);
 	ScriptEvent::registerCommand("cine", new CineCommand);
+	ScriptEvent::registerCommand("conversation", new ConversationCommand);
 	
 }
 

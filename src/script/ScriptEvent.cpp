@@ -70,7 +70,6 @@ extern float InventoryDir;
 extern long REFUSE_GAME_RETURN;
 extern long FINAL_RELEASE;
 extern long TELEPORT_TO_CONFIRM;
-extern long ARX_CONVERSATION;
 extern long CHANGE_LEVEL_ICON;
 extern long FRAME_COUNT;
 extern float g_TimeStartCinemascope;
@@ -884,74 +883,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "CONVERSATION"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "CONVERSATION " << word;
-					long nb_people = 0;
-
-					if (word[0] == '-')
-					{
-						if (CharIn(word, '0')) nb_people = 0;
-
-						if (CharIn(word, '1')) nb_people = 1;
-
-						if (CharIn(word, '2')) nb_people = 2;
-
-						if (CharIn(word, '3')) nb_people = 3;
-
-						if (CharIn(word, '4')) nb_people = 4;
-
-						if (CharIn(word, '5')) nb_people = 5;
-
-						if (CharIn(word, '6')) nb_people = 6;
-
-						if (CharIn(word, '7')) nb_people = 7;
-
-						if (CharIn(word, '8')) nb_people = 8;
-
-						if (CharIn(word, '9')) nb_people = 9;
-
-						pos = GetNextWord(es, pos, word);
-						LogDebug <<  word;
-					}
-
-					if (!strcmp(word, "ON"))
-					{
-						ARX_CONVERSATION = 1;
-					}
-					else
-					{
-						ARX_CONVERSATION = 0;
-					}
-
-					if ((nb_people) && ARX_CONVERSATION)
-					{
-						main_conversation.actors_nb = nb_people;
-
-						for (long j = 0; j < nb_people; j++)
-						{
-							pos = GetNextWord(es, pos, word);
-							LogDebug <<  word;
-							long t = GetTargetByNameTarget(word);
-
-							if (t == -2) //self
-							{
-								for (long k = 0; k < inter.nbmax; k++)
-								{
-									if (io == inter.iobj[k])
-									{
-										t = k;
-										break;
-									}
-								}
-							}
-
-							main_conversation.actors[j] = t;
-						}
-					}
-				}
-				else if (!strcmp(word, "CAMERAACTIVATE"))
+				if (!strcmp(word, "CAMERAACTIVATE"))
 				{
 					FRAME_COUNT = -1;
 					pos = GetNextWord(es, pos, word);
