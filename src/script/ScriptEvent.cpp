@@ -910,33 +910,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'N':
 
-				if (!strcmp(word, "NOTE"))
-				{
-					ARX_INTERFACE_NOTE_TYPE type = NOTE_TYPE_UNDEFINED;
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "NOTE"))
-						type = NOTE_TYPE_NOTE;
-
-					if (!strcasecmp(word, "NOTICE"))
-						type = NOTE_TYPE_NOTICE;
-
-					if (!strcasecmp(word, "BOOK"))
-						type = NOTE_TYPE_BOOK;
-
-					pos = GetNextWord(es, pos, word);
-
-					if (player.Interface & INTER_NOTE)
-						ARX_INTERFACE_NoteClose();
-					else
-					{
-						ARX_INTERFACE_NoteOpen(type, word);
-					}
-				}
-
-				break;
-			case 'S':
-
 				if (!strcmp(word, "SPELLCAST"))
 				{
 

@@ -93,6 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::string;
 
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;
@@ -677,47 +678,40 @@ void ARX_INTERFACE_NoteClear()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex)
-{
- 
-
-	if (player.Interface & INTER_NOTE)
-		ARX_INTERFACE_NoteClose();
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const string & tex) {
 	
-	std::string output;
+	if(player.Interface & INTER_NOTE) {
+		ARX_INTERFACE_NoteClose();
+	}
+	
 	ARX_INTERFACE_BookOpenClose(2);
 	ARX_INTERFACE_NoteClear();
-	Note.type=type;
-	MakeLocalised(tex,output);
-
-	Note.text = output;
-	player.Interface|=INTER_NOTE;
-
-	if (NoteTexture)
-	{
+	
+	Note.type = type;
+	Note.text = getLocalised(tex);
+	player.Interface |= INTER_NOTE;
+	
+	if(NoteTexture) {
 		delete NoteTexture;
-		NoteTexture=NULL;
-	}
-
-	if (NoteTextureLeft)
-	{
-		delete NoteTextureLeft;
-		NoteTextureLeft=NULL;
-	}
-
-	if (NoteTextureRight)
-	{
-		delete NoteTextureRight;
-		NoteTextureRight=NULL;
+		NoteTexture = NULL;
 	}
 	
-
+	if(NoteTextureLeft) {
+		delete NoteTextureLeft;
+		NoteTextureLeft = NULL;
+	}
+	
+	if(NoteTextureRight) {
+		delete NoteTextureRight;
+		NoteTextureRight = NULL;
+	}
+	
 	Note.curpage = 0;
 	Note.pages[0] = 0;
 	long length = Note.text.length();
 	long curpage = 1;
 
-	NoteTexture = TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
+	NoteTexture = TextureContainer::LoadUI("graph\\interface\\book\\ingame_books.bmp");
 
 	float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
 	float fHeight	= NoteTexture->m_dwHeight-40.f ; 

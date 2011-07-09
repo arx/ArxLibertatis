@@ -89,12 +89,42 @@ public:
 	
 };
 
+class NoteCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		ARX_INTERFACE_NOTE_TYPE type = NOTE_TYPE_UNDEFINED;
+		string tpname = context.getLowercase();
+		if(tpname == "note") {
+			type = NOTE_TYPE_NOTE;
+		} else if(tpname == "notice") {
+			type = NOTE_TYPE_NOTICE;
+		} else if(tpname == "book") {
+			type = NOTE_TYPE_BOOK;
+		}
+		
+		string text = loadUnlocalized(context.getLowercase());
+		
+		LogDebug << "note " << tpname << ' ' << text;
+		
+		ARX_INTERFACE_NoteOpen(type, text);
+		
+		return Success;
+	}
+	
+	~NoteCommand() { }
+	
+};
+
 }
 
 void setupScriptedInterface() {
 	
 	ScriptEvent::registerCommand("book", new BookCommand);
 	ScriptEvent::registerCommand("closestealbag", new CloseStealBagCommand);
+	ScriptEvent::registerCommand("note", new NoteCommand);
 	
 }
 
