@@ -626,6 +626,23 @@ public:
 	
 };
 
+class NopCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		ARX_UNUSED(context);
+		
+		LogDebug << "nop";
+		
+		return Success;
+	}
+	
+	~NopCommand() { }
+	
+};
+
 } // namespace script
 
 using namespace script; // TODO remove once everythng has been moved to the script namespace
@@ -893,11 +910,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'N':
 
-				if (!strcmp(word, "NOP"))
-				{
-					LogDebug <<  "NOP";
-				}
-				else if (!strcmp(word, "NOTE"))
+				if (!strcmp(word, "NOTE"))
 				{
 					ARX_INTERFACE_NOTE_TYPE type = NOTE_TYPE_UNDEFINED;
 					pos = GetNextWord(es, pos, word);
@@ -6199,6 +6212,7 @@ void ScriptEvent::init() {
 	
 	registerCommand("attachnpctoplayer", new ObsoleteCommand("attachnpctoplayer"));
 	registerCommand("gmode", new ObsoleteCommand("gmode", 1));
+	registerCommand("nop", new NopCommand);
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
