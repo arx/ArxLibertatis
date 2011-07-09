@@ -49,6 +49,7 @@
 #include "scene/Object.h"
 #include "scene/Light.h"
 
+#include "script/ScriptedCamera.h"
 #include "script/ScriptedControl.h"
 #include "script/ScriptedInteractiveObject.h"
 #include "script/ScriptedInterface.h"
@@ -65,7 +66,6 @@ extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern Vec3f LASTCAMPOS;
 extern Anglef LASTCAMANGLE;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern float InventoryDir;
 extern long REFUSE_GAME_RETURN;
 extern long FINAL_RELEASE;
@@ -884,15 +884,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "CAMERACONTROL"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "CAMERA_CONTROL "<< word;
-
-					if (!strcasecmp(word, "ON")) CAMERACONTROLLER = io;
-					else CAMERACONTROLLER = NULL;
-				}
-				else if (!strcmp(word, "CONVERSATION"))
+				if (!strcmp(word, "CONVERSATION"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "CONVERSATION " << word;
@@ -6419,6 +6411,7 @@ void ScriptEvent::registerCommand(const std::string & name, Command * command) {
 
 void ScriptEvent::init() {
 	
+	setupScriptedCamera();
 	setupScriptedControl();
 	setupScriptedInteractiveObject();
 	setupScriptedInterface();
