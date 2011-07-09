@@ -22,7 +22,7 @@ inline u64 flags(std::string flags) {
 	
 	u64 result = 0ul;
 	
-	size_t i = 1;
+	size_t i = 0;
 	if(flags.length() > 0 && flags[0] == '-') {
 		i++;
 	}
