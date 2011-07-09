@@ -141,7 +141,6 @@ public:
 		LogDebug << "camerafocal " << focal;
 		
 		INTERACTIVE_OBJ * io = context.getIO();
-		
 		if(!io || !(io->ioflags & IO_CAMERA)) {
 			return Failed;
 		}
@@ -155,6 +154,32 @@ public:
 	
 };
 
+class CameraTranslateTargetCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		float x = context.getFloat();
+		float y = context.getFloat();
+		float z = context.getFloat();
+		
+		LogDebug << "cameratranslatetarget " << x << ' ' << y << ' ' << z;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!io || !(io->ioflags & IO_CAMERA)) {
+			return Failed;
+		}
+		
+		io->_camdata->cam.translatetarget = Vec3f(x, y, z);
+		
+		return Success;
+	}
+	
+	~CameraTranslateTargetCommand() {}
+	
+};
+
 }
 
 void setupScriptedCamera() {
@@ -164,6 +189,7 @@ void setupScriptedCamera() {
 	ScriptEvent::registerCommand("camerasmoothing", new CameraSmoothingCommand);
 	ScriptEvent::registerCommand("cinemascope", new CinemascopeCommand);
 	ScriptEvent::registerCommand("camerafocal", new CameraFocalCommand);
+	ScriptEvent::registerCommand("cameratranslatetarget", new CameraTranslateTargetCommand);
 	
 }
 

@@ -883,31 +883,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "CAMERATRANSLATETARGET"))
-				{
-					std::string temp2;
-					std::string temp3;
-
-					pos = GetNextWord(es, pos, word);
-					pos = GetNextWord(es, pos, temp2);
-					pos = GetNextWord(es, pos, temp3);
-
-					if (io != NULL)
-					{
-						if (io->ioflags & IO_CAMERA)
-						{
-							Vec3f fo;
-							fo.x = GetVarValueInterpretedAsFloat(word, esss, io);
-							fo.y = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fo.z = GetVarValueInterpretedAsFloat(temp3, esss, io);
-							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
-							cam->translatetarget = fo;
-						}
-					}
-
-					LogDebug <<  "CAMERA_TRANSLATE_TARGET "<< word<< " "<< temp2<< " "<< temp3;
-				}
-				else if (!strcmp(word, "CLOSESTEALBAG"))
+				if (!strcmp(word, "CLOSESTEALBAG"))
 				{
 					if ((io) && (io->ioflags & IO_NPC))
 					{
