@@ -108,7 +108,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/SaveFormat.h"
 #include "scene/Light.h"
 
-#include "scripting/ScriptEvent.h"
+#include "script/ScriptEvent.h"
 
 using std::string;
 

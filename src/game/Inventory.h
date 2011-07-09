@@ -3,7 +3,7 @@
 #define ARX_GAME_INVENTORY_H
 
 #include "math/MathFwd.h"
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 struct INTERACTIVE_OBJ;
 

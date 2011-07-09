@@ -5,7 +5,7 @@
  *      Author: bmonkey
  */
 
-#include "ScriptEvent.h"
+#include "script/ScriptEvent.h"
 
 #include <cstdio>
 #include <cassert>
@@ -49,11 +49,11 @@
 #include "scene/Object.h"
 #include "scene/Light.h"
 
-#include "scripting/ScriptedControl.h"
-#include "scripting/ScriptedInteractiveObject.h"
-#include "scripting/ScriptedInterface.h"
-#include "scripting/ScriptedNPC.h"
-#include "scripting/ScriptedPlayer.h"
+#include "script/ScriptedControl.h"
+#include "script/ScriptedInteractiveObject.h"
+#include "script/ScriptedInterface.h"
+#include "script/ScriptedNPC.h"
+#include "script/ScriptedPlayer.h"
 
 using std::max;
 using std::min;
@@ -427,9 +427,11 @@ extern long LINEEND; // set by GetNextWord
 extern INTERACTIVE_OBJ * LASTSPAWNED;
 extern long PauseScript;
 
-ScriptContext::ScriptContext(const EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
+namespace script {
 
-string ScriptContext::getStringVar(const string & var) {
+Context::Context(const EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
+
+string Context::getStringVar(const string & var) {
 	if(script->master) {
 		return GetVarValueInterpretedAsText(var, script->master, NULL);
 	} else {
@@ -437,7 +439,7 @@ string ScriptContext::getStringVar(const string & var) {
 	}
 }
 
-string ScriptContext::getWord() {
+string Context::getWord() {
 	
 	skipWhitespace();
 	
@@ -504,7 +506,7 @@ string ScriptContext::getWord() {
 	return word;
 }
 
-void ScriptContext::skipWhitespace() {
+void Context::skipWhitespace() {
 	
 	const char * esdat = script->data;
 	
@@ -517,7 +519,7 @@ void ScriptContext::skipWhitespace() {
 	}
 }
 
-std::string ScriptContext::getFlags() {
+string Context::getFlags() {
 	
 	skipWhitespace();
 	
@@ -528,17 +530,21 @@ std::string ScriptContext::getFlags() {
 	return string();
 }
 
-float ScriptContext::getFloat() {
+float Context::getFloat() {
 	return GetVarValueInterpretedAsFloat(getLowercase(), script, io);
 }
 
-string ScriptContext::getLowercase() {
+string Context::getLowercase() {
 	return toLowercase(getWord());
 }
 
-float ScriptContext::getFloatVar(const std::string & name) {
+float Context::getFloatVar(const std::string & name) {
 	return GetVarValueInterpretedAsFloat(name, script, io);
 }
+
+} // namespace script
+
+using namespace script; // TODO remove once everythng has been moved to the script namespace
 
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
 	
@@ -697,7 +703,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		
 		if(it != commands.end()) {
 			
-			ScriptContext context(es, pos, io);
+			Context context(es, pos, io);
 			
 			it->second->execute(context);
 			
@@ -6724,9 +6730,9 @@ end:
 	return ret;
 }
 
-void ScriptEvent::registerCommand(const std::string & name, ScriptCommand * command) {
+void ScriptEvent::registerCommand(const std::string & name, Command * command) {
 	
-	typedef std::pair<std::map<string, ScriptCommand *>::iterator, bool> Res;
+	typedef std::pair<std::map<string, Command *>::iterator, bool> Res;
 	
 	Res res = commands.insert(std::make_pair(name, command));
 	

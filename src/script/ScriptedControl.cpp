@@ -1,5 +1,5 @@
 
-#include "scripting/ScriptedControl.h"
+#include "script/ScriptedControl.h"
 
 #include "physics/Attractors.h"
 #include "physics/Collisions.h"
@@ -7,17 +7,20 @@
 #include "platform/String.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
-#include "scripting/ScriptEvent.h"
+#include "script/ScriptEvent.h"
+#include "script/ScriptUtils.h"
 
 using std::string;
 
+namespace script {
+
 namespace {
 
-class AttractorCommand : public ScriptCommand {
+class AttractorCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(ScriptContext & context) {
+	ScriptResult execute(Context & context) {
 		
 		string target = context.getLowercase();
 		
@@ -40,7 +43,6 @@ public:
 		
 		LogDebug << "attractor \"" << target << "\" " << val << ' ' << radius;
 		
-		
 		return ACCEPT;
 	}
 	
@@ -48,22 +50,23 @@ public:
 	
 };
 
-class AmbianceCommand : public ScriptCommand {
+class AmbianceCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(ScriptContext & context) {
+	ScriptResult execute(Context & context) {
 		
-		string flags = context.getFlags();
+		string options = context.getFlags();
 		
-		if(!flags.empty()) {
-			if(CharIn(flags, 'v')) {
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('v')) {
 				float volume = context.getFloat();
 				string ambiance = context.getLowercase();
 				ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_LOOPED, volume * 0.01f);
-				LogDebug << "ambiance " << flags << ' ' << volume << " \"" << ambiance << "\"";
-			} else {
-				LogDebug << "ambiance " << flags;
+				LogDebug << "ambiance " << options << ' ' << volume << " \"" << ambiance << "\"";
+			} else if(!flg || (flg & ~flag('v'))) {
+				LogWarning << "unexpected flags: ambiance " << options;
 			}
 		} else {
 			string ambiance = context.getLowercase();
@@ -82,11 +85,11 @@ public:
 	
 };
 
-class AnchorBlockCommand : public ScriptCommand {
+class AnchorBlockCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(ScriptContext & context) {
+	ScriptResult execute(Context & context) {
 		
 		string choice = context.getLowercase();
 		
@@ -114,3 +117,5 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand("anchorblock", new AnchorBlockCommand);
 	
 }
+
+} // namespace script

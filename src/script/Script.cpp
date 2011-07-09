@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 #include <stddef.h>
 
@@ -94,7 +94,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
 
-#include "scripting/ScriptEvent.h"
+#include "script/ScriptEvent.h"
 
 using std::sprintf;
 using std::min;

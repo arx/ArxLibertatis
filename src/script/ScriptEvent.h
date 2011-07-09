@@ -10,7 +10,7 @@
 
 #include <map>
 
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 struct SCRIPT_EVENT {
 	SCRIPT_EVENT(const std::string & str): name(str) {}
@@ -19,7 +19,9 @@ struct SCRIPT_EVENT {
 
 class ScriptEvent;
 
-class ScriptContext {
+namespace script {
+
+class Context {
 	
 private:
 	
@@ -29,7 +31,7 @@ private:
 	
 public:
 	
-	ScriptContext(const EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL);
+	Context(const EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL);
 	
 	std::string getStringVar(const std::string & var);
 	std::string getFlags();
@@ -45,18 +47,20 @@ public:
 	
 	float getFloatVar(const std::string & name);
 	
-	friend class ScriptEvent;
+	friend class ::ScriptEvent;
 };
 
-class ScriptCommand {
+class Command {
 	
 public:
 	
-	virtual ScriptResult execute(ScriptContext & context) = 0;
+	virtual ScriptResult execute(Context & context) = 0;
 	
-	virtual ~ScriptCommand() { }
+	virtual ~Command() { }
 	
 };
+
+} // namespace script
 
 class ScriptEvent {
 	
@@ -69,13 +73,13 @@ public:
 	
 	static ScriptResult send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string & params, INTERACTIVE_OBJ * io, const std::string & eventname, long info = 0);
 	
-	static void registerCommand(const std::string & name, ScriptCommand * command);
+	static void registerCommand(const std::string & name, script::Command * command);
 	
 	static void init();
 	
 private:
 	
-	typedef std::map<std::string, ScriptCommand *> Commands;
+	typedef std::map<std::string, script::Command *> Commands;
 	
 	static Commands commands;
 	

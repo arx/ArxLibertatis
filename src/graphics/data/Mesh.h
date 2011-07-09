@@ -66,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Rectangle.h"
 #include "platform/Flags.h"
 // TODO Remove when this header is cleaned up
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 struct ARX_PATH;
 struct SYMBOL_DRAW;

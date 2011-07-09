@@ -1,19 +1,21 @@
 
-#include "scripting/ScriptedInteractiveObject.h"
+#include "script/ScriptedInteractiveObject.h"
 
 #include "scene/Interactive.h"
 #include "io/Logger.h"
-#include "scripting/ScriptEvent.h"
+#include "script/ScriptEvent.h"
 
 using std::string;
 
+namespace script {
+
 namespace {
 
-class ActivatePhysicsCommand : public ScriptCommand {
+class ActivatePhysicsCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(ScriptContext & context) {
+	ScriptResult execute(Context & context) {
 		
 		ARX_INTERACTIVE_ActivatePhysics(GetInterNum(context.getIO()));
 		
@@ -33,3 +35,5 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand("activatephysics", new ActivatePhysicsCommand);
 	
 }
+
+} // namespace script

@@ -1,20 +1,22 @@
 
-#include "scripting/ScriptedPlayer.h"
+#include "script/ScriptedPlayer.h"
 
 #include "game/Player.h"
 #include "io/Logger.h"
 #include "scene/GameSound.h"
-#include "scripting/ScriptEvent.h"
+#include "script/ScriptEvent.h"
 
 using std::string;
 
+namespace script {
+
 namespace {
 
-class AddBagCommand : public ScriptCommand {
+class AddBagCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(ScriptContext & context) {
+	ScriptResult execute(Context & context) {
 		
 		ARX_UNUSED(context);
 		
@@ -29,11 +31,11 @@ public:
 	
 };
 
-class AddXpCommand : public ScriptCommand {
+class AddXpCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(ScriptContext & context) {
+	ScriptResult execute(Context & context) {
 		
 		float val = context.getFloat();
 		
@@ -48,11 +50,11 @@ public:
 	
 };
 
-class AddGoldCommand : public ScriptCommand {
+class AddGoldCommand : public Command {
 	
 public:
 	
-	ScriptResult execute(ScriptContext & context) {
+	ScriptResult execute(Context & context) {
 		
 		float val = context.getFloat();
 		
@@ -81,3 +83,5 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand("addgold", new AddGoldCommand);
 	
 }
+
+} // namespace script

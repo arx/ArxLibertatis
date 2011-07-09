@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "scripting/ScriptDebugger.h"
+#include "script/ScriptDebugger.h"
 
 #ifdef BUILD_EDITOR
 
@@ -38,7 +38,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 #include "io/Logger.h"
 #include "scene/Interactive.h"
-#include "scripting/ScriptDebuggerDialog.h"
+#include "script/ScriptDebuggerDialog.h"
 
 typedef void (APIENTRY * CREATEDIALOG)(HWND);
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);

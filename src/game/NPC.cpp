@@ -94,7 +94,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 using std::sprintf;
 using std::min;

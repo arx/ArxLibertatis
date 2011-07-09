@@ -40,6 +40,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 
 #include "audio/Audio.h"
+#include "audio/Sample.h"
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -64,8 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Interactive.h"
 
-#include "scripting/Script.h"
-#include <audio/Sample.h>
+#include "script/Script.h"
 
 using std::map;
 using std::string;
