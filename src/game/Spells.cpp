@@ -1006,7 +1006,7 @@ static bool MakeSpellName(char * spell, Spell num) {
 
 Spell GetSpellId(const string & spell) {
 	
-	// TODO use map
+	// TODO(case-sensitive) use map
 	
 	if(!strcasecmp(spell, "ACTIVATE_PORTAL"))       return SPELL_ACTIVATE_PORTAL;		
 	if(!strcasecmp(spell, "DOUSE"))                 return SPELL_DOUSE;

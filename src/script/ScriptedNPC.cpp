@@ -2,9 +2,11 @@
 #include "script/ScriptedNPC.h"
 
 #include "game/NPC.h"
+#include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "io/Logger.h"
 #include "platform/String.h"
+#include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
@@ -167,12 +169,107 @@ public:
 	
 };
 
+class SpellcastCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		SpellcastFlags spflags = 0;
+		long duration = -1;
+		bool haveDuration = 0;
+		
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			
+			if(!flg || (flg & ~flags("kdxmsfz"))) {
+				LogWarning << "unexpected flags: spellcast " << options;
+			}
+			
+			if(flg & flag('k')) {
+				
+				string spellname = context.getLowercase();
+				Spell spellid = GetSpellId(spellname);
+				
+				LogDebug << "spellcast " << options << ' ' << spellname;
+				
+				long from = GetInterNum(context.getIO());
+				if(ValidIONum(from)) {
+					long sp = ARX_SPELLS_GetInstanceForThisCaster(spellid, from);
+					if(sp >= 0) {
+						spells[sp].tolive = 0;
+					}
+				}
+				
+				return Success;
+			}
+			
+			if(flg & flag('d')) {
+				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
+				duration = context.getFloat();
+				if(duration <= 0) {
+					duration = 99999999; // TODO should this be FLT_MAX?
+				}
+				haveDuration = 1;
+			}
+			if(flg & flag('x')) {
+				spflags |= SPELLCAST_FLAG_NOSOUND;
+			}
+			if(flg & flag('m')) {
+				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NODRAW;
+			}
+			if(flg & flag('s')) {
+				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOANIM;
+			}
+			if(flg & flag('f')) {
+				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
+			}
+			if(flg & flag('z')) {
+				spflags |= SPELLCAST_FLAG_RESTORE;
+			}
+		}
+		
+		long level = clamp(static_cast<long>(context.getFloat()), 1l, 10l);
+		if(!haveDuration) {
+			duration = 1000 + level * 2000;
+		}
+		
+		string spellname = context.getLowercase();
+		Spell spellid = GetSpellId(spellname);
+		
+		string target = context.getLowercase();
+		long t = GetTargetByNameTarget(target);
+		if(t <= -1) {
+			t = GetInterNum(context.getIO());
+		}
+		
+		if(!ValidIONum(t) || spellid == SPELL_NONE) {
+			return Failed;
+		}
+		
+		if(context.getIO() != inter.iobj[0]) {
+			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
+		}
+		
+		LogDebug << "spellcast " << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' ' << duration; 
+		
+		TryToCastSpell(context.getIO(), spellid, level, t, spflags, duration);
+		
+		return Success;
+	}
+	
+	~SpellcastCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
 	
 	ScriptEvent::registerCommand("behavior", new BehaviourCommand);
 	ScriptEvent::registerCommand("revive", new ReviveCommand);
+	ScriptEvent::registerCommand("spellcast", new SpellcastCommand);
 	
 }
 
