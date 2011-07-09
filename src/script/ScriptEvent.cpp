@@ -426,6 +426,16 @@ extern long PauseScript;
 
 namespace script {
 
+string loadUnlocalized(const std::string & str) {
+	
+	// if the section name has the qualifying brackets "[]", cut them off
+	if(!str.empty() && str[0] == '[' && str[str.length() - 1] == ']') {
+		return str.substr(1, str.length() - 2);
+	}
+	
+	return str;
+}
+
 Context::Context(const EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
 
 string Context::getStringVar(const string & var) {
@@ -878,16 +888,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				{
 					if ((pos = GetSubStack(es)) == -1) return BIGERROR;
 					LogDebug << "RETURN";
-				}
-
-				break;
-			case 'Q':
-
-				if (!strcmp(word, "QUEST"))
-				{
-					pos = GetNextWord(es, pos, word);
-					ARX_PLAYER_Quest_Add(word);
-					LogDebug <<  "QUEST "<< word;
 				}
 
 				break;

@@ -527,18 +527,18 @@ void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 // FUNCTION/RESULT:
 //   Add quest "quest" to player Questbook
 //*************************************************************************************
-void ARX_PLAYER_Quest_Add( const std::string& quest, bool _bLoad)
-{
-    std::string output;
-    MakeLocalised(quest, output);
-
-    if (output[0] == 0) return;
-
-    PlayerQuest.push_back(STRUCT_QUEST());
-    PlayerQuest.back().ident = quest;
-    PlayerQuest.back().localised = output;
-    bBookHalo = !_bLoad;//true;
-    ulBookHaloTime = 0;
+void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
+	
+	std::string output = getLocalised(quest);
+	if(output.empty()) {
+		return;
+	}
+	
+	PlayerQuest.push_back(STRUCT_QUEST());
+	PlayerQuest.back().ident = quest;
+	PlayerQuest.back().localised = output;
+	bBookHalo = !_bLoad;
+	ulBookHaloTime = 0;
 }
 
 //*************************************************************************************

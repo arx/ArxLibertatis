@@ -182,6 +182,25 @@ public:
 	
 };
 
+class QuestCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		string name = loadUnlocalized(context.getLowercase());
+		
+		LogDebug << "quest " << name;
+		
+		ARX_PLAYER_Quest_Add(name);
+		
+		return Success;
+	}
+	
+	~QuestCommand() { }
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -191,6 +210,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand("addgold", new AddGoldCommand);
 	ScriptEvent::registerCommand("ridiculous", new RidiculousCommand);
 	ScriptEvent::registerCommand("rune", new RuneCommand);
+	ScriptEvent::registerCommand("quest", new QuestCommand);
 	
 }
 

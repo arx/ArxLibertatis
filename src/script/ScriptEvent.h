@@ -21,6 +21,9 @@ class ScriptEvent;
 
 namespace script {
 
+//! strip a
+std::string loadUnlocalized(const std::string & str);
+
 class Context {
 	
 private:
