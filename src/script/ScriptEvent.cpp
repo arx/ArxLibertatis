@@ -506,6 +506,50 @@ string Context::getWord() {
 	return word;
 }
 
+void Context::skipWord() {
+	
+	skipWhitespace();
+	
+	if(pos >= script->size) {
+		return;
+	}
+	
+	LINEEND = 0; // Global LINEEND set to 0 (no LINEEND for now)
+	const char * esdat = script->data;
+	
+	// now take chars until it finds a space or unused char
+	while(((unsigned char)esdat[pos]) > 32 && esdat[pos] != '(' && esdat[pos] != ')') {
+		
+		if(esdat[pos] == '"') {
+			pos++;
+			if(pos == script->size) {
+				return;
+			}
+			
+			while(esdat[pos] != '"' && !LINEEND) {
+				if(esdat[pos] == '\n') {
+					LINEEND = 1;
+				}
+				pos++;
+				if(pos == script->size) {
+					return;
+				}
+			}
+			
+			pos++;
+			return;
+			
+		}
+		
+		pos++;
+		if(pos == script->size) {
+			return;
+		}
+	}
+	
+	return;
+}
+
 void Context::skipWhitespace() {
 	
 	const char * esdat = script->data;
@@ -547,14 +591,17 @@ class ObsoleteCommand : public Command {
 private:
 	
 	string command;
+	size_t nargs;
 	
 public:
 	
-	ObsoleteCommand(const string & _command) : command(_command) { }
+	ObsoleteCommand(const string & _command, size_t _nargs = 0) : command(_command), nargs(_nargs) { }
 	
 	ScriptResult execute(Context & context) {
 		
-		ARX_UNUSED(context);
+		for(size_t i = 0; i < nargs; i++) {
+			context.skipWord();
+		}
 		
 		LogWarning << "obsolete command: " << command;
 		
@@ -788,10 +835,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					if (pos == -1) return ACCEPT;
 
 					LogDebug <<  "GOSUB " << word;
-				}
-				else if (!strcmp(word, "GMODE"))
-				{
-					pos = GetNextWord(es, pos, word);
 				}
 
 				break;
@@ -6743,6 +6786,7 @@ void ScriptEvent::init() {
 	setupScriptedPlayer();
 	
 	registerCommand("attachnpctoplayer", new ObsoleteCommand("attachnpctoplayer"));
+	registerCommand("gmode", new ObsoleteCommand("gmode", 1));
 	
 }
 

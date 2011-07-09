@@ -36,6 +36,7 @@ public:
 	std::string getStringVar(const std::string & var);
 	std::string getFlags();
 	std::string getWord();
+	void skipWord();
 	
 	void skipWhitespace();
 	
