@@ -52,6 +52,7 @@
 #include "script/ScriptedControl.h"
 #include "script/ScriptedInteractiveObject.h"
 #include "script/ScriptedInterface.h"
+#include "script/ScriptedItem.h"
 #include "script/ScriptedNPC.h"
 #include "script/ScriptedPlayer.h"
 
@@ -846,22 +847,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					ret = REFUSE;
 					LogDebug << "  REFUSE";
 					goto end;
-				}
-				else if (!strcmp(word, "REPAIR"))
-				{
-					pos = GetNextWord(es, pos, word);
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -2) t = GetInterNum(io); //self
-
-					pos = GetNextWord(es, pos, word);
-					float val = GetVarValueInterpretedAsFloat(word, esss, io);
-
-					if (val < 0.f) val = 0.f;
-					else if (val > 100.f) val = 100.f;
-
-					if (ValidIONum(t))
-						ARX_DAMAGES_DurabilityRestore(inter.iobj[t], val);
 				}
 				else if (!strcmp(word, "RANDOM"))
 				{
@@ -6765,6 +6750,7 @@ void ScriptEvent::init() {
 	setupScriptedControl();
 	setupScriptedInteractiveObject();
 	setupScriptedInterface();
+	setupScriptedItem();
 	setupScriptedNPC();
 	setupScriptedPlayer();
 	
