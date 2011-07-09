@@ -76,12 +76,37 @@ public:
 	
 };
 
+class CameraSmoothingCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		float smoothing = context.getFloat();
+		
+		LogDebug << "camerasmoothing " << smoothing;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!io || !(io->ioflags & IO_CAMERA)) {
+			return Failed;
+		}
+		
+		io->_camdata->cam.smoothing = smoothing;
+		
+		return Success;
+	}
+	
+	~CameraSmoothingCommand() {}
+	
+};
+
 }
 
 void setupScriptedCamera() {
 	
 	ScriptEvent::registerCommand("cameracontrol", new CameraControlCommand);
 	ScriptEvent::registerCommand("cameraactivate", new CameraActivateCommand);
+	ScriptEvent::registerCommand("camerasmoothing", new CameraSmoothingCommand);
 	
 }
 

@@ -883,22 +883,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "CAMERASMOOTHING"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "CAMERA_SMOOTHING "<< word;
-
-					if (io != NULL)
-					{
-						if (io->ioflags & IO_CAMERA)
-						{
-							float fo = GetVarValueInterpretedAsFloat(word, esss, io);
-							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
-							cam->smoothing = fo;
-						}
-					}
-				}
-				else if (!strcmp(word, "CINEMASCOPE"))
+				if (!strcmp(word, "CINEMASCOPE"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "CINEMASCOPE "<< word;
