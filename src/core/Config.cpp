@@ -99,8 +99,8 @@ ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
 	ActionKey(Keyboard::Key_LeftCtrl, Keyboard::Key_RightCtrl), // MAGICMODE
 	ActionKey(Keyboard::Key_LeftShift, Keyboard::Key_RightShift), // STEALTHMODE
-	ActionKey(Keyboard::Key_W, Keyboard::Key_Up), // WALKFORWARD
-	ActionKey(Keyboard::Key_S, Keyboard::Key_Down), // WALKBACKWARD
+	ActionKey(Keyboard::Key_W, Keyboard::Key_UpArrow), // WALKFORWARD
+	ActionKey(Keyboard::Key_S, Keyboard::Key_DownArrow), // WALKBACKWARD
 	ActionKey(Keyboard::Key_A), // STRAFELEFT
 	ActionKey(Keyboard::Key_D), // STRAFERIGHT
 	ActionKey(Keyboard::Key_Q), // LEANLEFT

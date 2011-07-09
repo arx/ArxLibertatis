@@ -132,15 +132,6 @@ public:
         KeyMax,
 		KeyCount = KeyMax - KeyBase
     };
-
-    //! State of a keyboard key.
-    enum KeyState
-    {
-        Key_Up,                 //!< Key is up.
-        Key_Pressed,            //!< Key was up and is now down.
-        Key_Down,               //!< Key is down.
-        Key_Released            //!< Key was down and is now up.
-    };
 };
 
 #endif // ARX_INPUT_KEYBOARD_H
