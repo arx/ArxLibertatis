@@ -847,19 +847,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					LogDebug << "  REFUSE";
 					goto end;
 				}
-				else if (!strcmp(word, "REVIVE"))
-				{
-					GetNextWord(es, pos, word);
-					long init = 0;
-
-					if(word[0] == '-') {
-						if ((iCharIn(word, 'I'))) init = 1;
-					}
-
-					ARX_NPC_Revive(io, init);
-					LogDebug << "REVIVE";
-					goto end;
-				}
 				else if (!strcmp(word, "RIDICULOUS"))
 				{
 					ARX_PLAYER_MakeFreshHero();

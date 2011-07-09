@@ -137,11 +137,42 @@ public:
 	
 };
 
+class ReviveCommand : public Command {
+	
+public:
+	
+	ScriptResult execute(Context & context) {
+		
+		string options = context.getFlags();
+		
+		bool init = false;
+		
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('i')) {
+				init = true;
+			} else if(!flg || (flg & ~flag('i'))) {
+				LogWarning << "unexpected flags: revive " << options;
+			}
+		}
+		
+		ARX_NPC_Revive(context.getIO(), init ? 1 : 0);
+		
+		LogDebug << "revive " << options;
+		
+		return ACCEPT;
+	}
+	
+	~ReviveCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
 	
 	ScriptEvent::registerCommand("behavior", new BehaviourCommand);
+	ScriptEvent::registerCommand("revive", new ReviveCommand);
 	
 }
 
