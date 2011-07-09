@@ -85,15 +85,18 @@ struct MENU_DYNAMIC_DATA
 	{}
 };
 
+// Possible values for ARXmenu.currentmode
+enum MenuMode {
+	AMCM_OFF,
+	AMCM_MAIN,
+	AMCM_CREDITS,
+	AMCM_NEWQUEST
+};
+
 // ARX_MENU_DATA contains all Menu-datas
-struct ARX_MENU_DATA
-{
-	long				currentmode;
-	long				mainmenupos;
-	long				optionspos;
-	long				inputpos;
-	long				custompos;
-	MENU_DYNAMIC_DATA	* mda;
+struct ARX_MENU_DATA {
+	MenuMode currentmode;
+	MENU_DYNAMIC_DATA * mda;
 };
 
 extern ARX_MENU_DATA ARXmenu;
@@ -111,13 +114,6 @@ struct SaveGame {
 		{}
 };
 
-//-----------------------------------------------------------------------------
-// Possible values for ARXmenu.currentmode
-#define AMCM_OFF		0
-#define AMCM_MAIN		1
-#define AMCM_CREDITS	2
-#define AMCM_NEWQUEST	3
-#define AMCM_CDNOTFOUND	4
 
 //-----------------------------------------------------------------------------
 extern std::vector<SaveGame> save_l;

@@ -548,49 +548,43 @@ bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
 
 //-----------------------------------------------------------------------------
 
-bool Menu2_Render()
-{
+bool Menu2_Render() {
+	
 	ARXOldTimeMenu = ARXTimeMenu;
 	ARXTimeMenu = ARX_TIME_Get( false );
 	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
-
-	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reset
-		ARXDiffTimeMenu = 0 ;
-
+	
+	// this means ArxTimeMenu is reset
+	if(ARXDiffTimeMenu < 0) {
+		ARXDiffTimeMenu = 0;
+	}
+	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
-
-	if ((AMCM_NEWQUEST==ARXmenu.currentmode)
-		|| (AMCM_CREDITS==ARXmenu.currentmode)
-		|| (AMCM_CDNOTFOUND==ARXmenu.currentmode))
-	{
-		if(pWindowMenu)
-		{
-		delete pWindowMenu;
-		pWindowMenu=NULL;
+	
+	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
+		
+		if(pWindowMenu) {
+			delete pWindowMenu, pWindowMenu = NULL;
 		}
-
-		if(pMenu)
-		{
-			delete pMenu;
-			pMenu=NULL;
+		
+		if(pMenu) {
+			delete pMenu, pMenu = NULL;
 		}
-
+		
 		if(ARXmenu.currentmode == AMCM_CREDITS){
 			Credits::render();
 			return true;
 		}
-
+		
 		return false;
 	}
-
-	if(!GRenderer->BeginScene())
-	{
+	
+	if(!GRenderer->BeginScene()) {
 		return true;
 	}
-
-	if(pTextManage)
-	{
+	
+	if(pTextManage) {
 		pTextManage->Clear();
 	}
 
