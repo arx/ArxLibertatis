@@ -542,6 +542,29 @@ float Context::getFloatVar(const std::string & name) {
 	return GetVarValueInterpretedAsFloat(name, script, io);
 }
 
+class ObsoleteCommand : public Command {
+	
+private:
+	
+	string command;
+	
+public:
+	
+	ObsoleteCommand(const string & _command) : command(_command) { }
+	
+	ScriptResult execute(Context & context) {
+		
+		ARX_UNUSED(context);
+		
+		LogWarning << "obsolete command: " << command;
+		
+		return ACCEPT;
+	}
+	
+	~ObsoleteCommand() { }
+	
+};
+
 } // namespace script
 
 using namespace script; // TODO remove once everythng has been moved to the script namespace
@@ -731,10 +754,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					LogDebug << "  ACCEPT";
 					goto end;
-				}
-				else if (!strcmp(word, "ATTACHNPCTOPLAYER"))
-				{
-					LogDebug << "ATTACH_NPC_TO_PLAYER ...OBSOLETE...";
 				}
 				else if (!strcmp(word, "ATTACH"))
 				{
@@ -6744,11 +6763,15 @@ void ScriptEvent::registerCommand(const std::string & name, Command * command) {
 }
 
 void ScriptEvent::init() {
+	
 	setupScriptedControl();
 	setupScriptedInteractiveObject();
 	setupScriptedInterface();
 	setupScriptedNPC();
 	setupScriptedPlayer();
+	
+	registerCommand("attachnpctoplayer", new ObsoleteCommand("attachnpctoplayer"));
+	
 }
 
 ScriptEvent::Commands ScriptEvent::commands;
