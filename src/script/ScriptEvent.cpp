@@ -883,25 +883,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "CAMERAFOCAL"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "CAMERA_FOCAL "<< word;
-
-					if (io != NULL)
-					{
-						if (io->ioflags & IO_CAMERA)
-						{
-							float fo = GetVarValueInterpretedAsFloat(word, esss, io);
-							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
-							cam->focal = fo;
-
-							if (cam->focal < 100) cam->focal = 100;
-							else if (cam->focal > 800) cam->focal = 800;
-						}
-					}
-				}
-				else if (!strcmp(word, "CAMERATRANSLATETARGET"))
+				if (!strcmp(word, "CAMERATRANSLATETARGET"))
 				{
 					std::string temp2;
 					std::string temp3;

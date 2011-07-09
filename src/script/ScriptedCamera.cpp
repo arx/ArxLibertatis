@@ -2,6 +2,7 @@
 #include "script/ScriptedControl.h"
 
 #include "ai/Paths.h"
+#include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
 #include "io/Logger.h"
@@ -129,6 +130,31 @@ public:
 	
 };
 
+class CameraFocalCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		float focal = context.getFloat();
+		
+		LogDebug << "camerafocal " << focal;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		if(!io || !(io->ioflags & IO_CAMERA)) {
+			return Failed;
+		}
+		
+		io->_camdata->cam.focal = clamp(focal, 100.f, 800.f);
+		
+		return Success;
+	}
+	
+	~CameraFocalCommand() {}
+	
+};
+
 }
 
 void setupScriptedCamera() {
@@ -137,6 +163,7 @@ void setupScriptedCamera() {
 	ScriptEvent::registerCommand("cameraactivate", new CameraActivateCommand);
 	ScriptEvent::registerCommand("camerasmoothing", new CameraSmoothingCommand);
 	ScriptEvent::registerCommand("cinemascope", new CinemascopeCommand);
+	ScriptEvent::registerCommand("camerafocal", new CameraFocalCommand);
 	
 }
 
