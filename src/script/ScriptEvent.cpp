@@ -883,37 +883,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "CAMERAACTIVATE"))
-				{
-					FRAME_COUNT = -1;
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "CAMERA_ACTIVATE "<< word;
-
-					if (!strcasecmp(word, "NONE"))
-					{
-						MasterCamera.exist = 0;
-					}
-					else
-					{
-						FRAME_COUNT = 0;
-						long t = GetTargetByNameTarget(word);
-
-						if (t == -2) t = GetInterNum(io);
-
-						if (t != -1)
-						{
-							if (inter.iobj[t]->ioflags & IO_CAMERA)
-							{
-								MasterCamera.exist |= 2;
-								MasterCamera.want_io = inter.iobj[t];
-								MasterCamera.want_aup = inter.iobj[t]->usepath;
-								MasterCamera.want_cam = &inter.iobj[t]->_camdata->cam;
-							}
-
-						}
-					}
-				}
-				else if (!strcmp(word, "CAMERASMOOTHING"))
+				if (!strcmp(word, "CAMERASMOOTHING"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "CAMERA_SMOOTHING "<< word;
