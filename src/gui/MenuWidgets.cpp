@@ -3654,20 +3654,6 @@ void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement)
 
 //-----------------------------------------------------------------------------
 
-static int scan2ascii(DWORD scancode, unsigned short* result)
-{
-	static HKL layout=GetKeyboardLayout(0);
-	static unsigned char State[256];
-
-	if (GetKeyboardState(State)==false)
-	  return 0;
-
-	UINT vk=MapVirtualKeyEx(scancode,1,layout);
-	return ToAsciiEx(vk,scancode,State,result,0,layout);
-}
-
-//-----------------------------------------------------------------------------
-
 void CWindowMenuConsole::UpdateText()
 {
 	if(GInput->bKeyTouched)
@@ -3729,70 +3715,14 @@ void CWindowMenuConsole::UpdateText()
 			{
 				tText = pZoneText->lpszText;
 
-				unsigned short tusOutPut[2];
 				char tCat;
-
 				int iKey = GInput->iKeyId;
-				int iR = scan2ascii(iKey, tusOutPut);
-
-				if(!iR)
-				{
-					bKey=true;
-
-					//touche non reconnue
-					switch(iKey)
-					{
-					case Keyboard::Key_NumPad0:
-						tCat = '0';
-						break;
-					case Keyboard::Key_NumPad1:
-						tCat = '1';
-						break;
-					case Keyboard::Key_NumPad2:
-						tCat = '2';
-						break;
-					case Keyboard::Key_NumPad3:
-						tCat = '3';
-						break;
-					case Keyboard::Key_NumPad4:
-						tCat = '4';
-						break;
-					case Keyboard::Key_NumPad5:
-						tCat = '5';
-						break;
-					case Keyboard::Key_NumPad6:
-						tCat = '6';
-						break;
-					case Keyboard::Key_NumPad7:
-						tCat = '7';
-						break;
-					case Keyboard::Key_NumPad8:
-						tCat = '8';
-						break;
-					case Keyboard::Key_NumPad9:
-						tCat = '9';
-						break;
-					case Keyboard::Key_NumPoint:     
-						tCat = '.';
-						break;
-					case Keyboard::Key_NumDivide:      
-						tCat = '/';
-						break;
-					default:
-						bKey=false;
-						break;
-					}
-				}
-				else
-				{
-					// TODO handle non-ASCII characters
-					tCat= (char)(tusOutPut[0]);
-					bKey=true;
-				}
+				bKey = GInput->getKeyAsText(iKey, tCat);
 
 				if(bKey)
 				{
-					if ((isalnum(tCat) || isspace(tCat) || ispunct(tCat)) && (tCat != '\t') && (tCat != '*'))
+					int iChar = tCat & 0x000000FF; // To prevent ascii chars between [128, 255] from causing an assertion in the functions below...
+					if ((isalnum(iChar) || isspace(iChar) || ispunct(iChar)) && (tCat != '\t') && (tCat != '*'))
 						tText += tCat;
 				}
 			}

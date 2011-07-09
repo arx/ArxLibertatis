@@ -697,6 +697,13 @@ bool Input::isKeyPressedNowUnPressed(int keyId) const {
 
 //-----------------------------------------------------------------------------
 
+bool Input::getKeyAsText(int keyId, char& result) const
+{
+	return backend->getKeyAsText(keyId, result);
+}
+
+//-----------------------------------------------------------------------------
+
 bool Input::getMouseButton(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 

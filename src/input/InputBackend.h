@@ -17,8 +17,9 @@ public:
 	virtual void getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const = 0;
 
 	// Keyboard
-	virtual bool isKeyboardKeyPressed(int dikkey) const = 0;
+	virtual bool isKeyboardKeyPressed(int keyId) const = 0;
 	virtual int	 getKeyboardKeyPressed() const = 0;
+	virtual bool getKeyAsText(int keyId, char& result) const = 0;
 };
 
 #endif // ARX_INPUT_INPUTBACKEND_H

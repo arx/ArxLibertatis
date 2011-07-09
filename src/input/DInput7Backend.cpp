@@ -551,8 +551,9 @@ bool DInput7Backend::update() {
 	return success;
 }
 
-bool DInput7Backend::isKeyboardKeyPressed(int dikkey) const {
-	return (DI_KeyBoardBuffer->bufferstate[dikkey - Keyboard::KeyBase] & 0x80) == 0x80;
+bool DInput7Backend::isKeyboardKeyPressed(int keyId) const {
+	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
+	return (DI_KeyBoardBuffer->bufferstate[keyId - Keyboard::KeyBase] & 0x80) == 0x80;
 }
 
 int DInput7Backend::getKeyboardKeyPressed() const {
@@ -564,6 +565,50 @@ int DInput7Backend::getKeyboardKeyPressed() const {
 		}
 	}
 	return -1;
+}
+
+bool DInput7Backend::getKeyAsText(int keyId, char& result) const {
+	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
+
+	unsigned jasdf = 323;
+	int iasd = jasdf;
+	// Numpad state isn't working, translate by hand...
+	if(keyId >= Keyboard::Key_NumPad0 && keyId <= Keyboard::Key_NumPad9)
+	{
+		result = '0' + (char)(keyId - (int)Keyboard::Key_NumPad0);
+		return true;
+	}
+
+	static HKL layout = GetKeyboardLayout(0);
+	static unsigned char State[DI7_KEY_ARRAY_SIZE];
+
+	if (GetKeyboardState(State) == false)
+		return 0;
+
+	int scanCode = -1;
+	for(int i = 0; i < DI7_KEY_ARRAY_SIZE; i++)
+	{
+		if(keyId == DInput7ToArxKeyTable[i])
+		{
+			scanCode = i;
+			break;
+		}
+	}
+
+	if(scanCode == -1)
+		return false;
+
+	// TODO-input: handle non-ASCII characters
+	unsigned short outText[2];
+
+	UINT vk = MapVirtualKeyEx(scanCode, 1, layout);
+	int ret = ToAsciiEx(vk, scanCode, State, outText, 0, layout);
+	if(ret != 1)
+		return false;
+
+	result = (char)(outText[0]);
+
+	return true;
 }
 
 bool DInput7Backend::getMouseCoordinates(int & mx, int & my, int & mz) const {
