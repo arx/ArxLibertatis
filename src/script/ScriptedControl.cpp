@@ -1,9 +1,12 @@
 
 #include "script/ScriptedControl.h"
 
+#include "core/Core.h"
+#include "core/GameTime.h"
 #include "physics/Attractors.h"
 #include "physics/Collisions.h"
 #include "io/Logger.h"
+#include "io/PakReader.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
@@ -11,6 +14,10 @@
 #include "script/ScriptUtils.h"
 
 using std::string;
+
+extern long PLAY_LOADED_CINEMATIC;
+extern char WILL_LAUNCH_CINE[256];
+extern long CINE_PRELOAD;
 
 namespace script {
 
@@ -159,6 +166,54 @@ public:
 	
 };
 
+class CineCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		string options = context.getFlags();
+		
+		bool preload = false;
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('p')) {
+				preload = true;
+			} else if(!flg || (flg & !flag('p'))) {
+				LogWarning << "unexpected flags: cine " << options;
+			}
+		}
+		
+		string name = context.getLowercase();
+		
+		LogDebug << "cine " << options << " \"" << name << '"';
+		
+		if(name == "kill") {
+			DANAE_KillCinematic();
+		} else if(name == "play") {
+			PLAY_LOADED_CINEMATIC = 1;
+			ARX_TIME_Pause();
+		} else {
+			
+			string file = "graph\\interface\\illustrations\\" + name + ".cin";
+			
+			if(resources->getFile(file)) {
+				strcpy(WILL_LAUNCH_CINE, name.c_str());
+				strcat(WILL_LAUNCH_CINE, ".cin");
+				CINE_PRELOAD = preload;
+			} else {
+				LogError << "unable to load cinematic " << file;
+				return Failed;
+			}
+		}
+		
+		return Success;
+	}
+	
+	~CineCommand() {}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -168,6 +223,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand("ambiance", new AmbianceCommand);
 	ScriptEvent::registerCommand("anchorblock", new AnchorBlockCommand);
 	ScriptEvent::registerCommand("attach", new AttachCommand);
+	ScriptEvent::registerCommand("cine", new CineCommand);
 	
 }
 

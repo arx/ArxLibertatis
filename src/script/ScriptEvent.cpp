@@ -66,13 +66,10 @@ extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern Vec3f LASTCAMPOS;
 extern Anglef LASTCAMANGLE;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
-extern char WILL_LAUNCH_CINE[256];
 extern float InventoryDir;
 extern long REFUSE_GAME_RETURN;
 extern long FINAL_RELEASE;
 extern long TELEPORT_TO_CONFIRM;
-extern long CINE_PRELOAD;
-extern long PLAY_LOADED_CINEMATIC;
 extern long ARX_CONVERSATION;
 extern long CHANGE_LEVEL_ICON;
 extern long FRAME_COUNT;
@@ -880,50 +877,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'C':
 
-				if (!strcmp(word, "CINE")) //CAMERA_ACTIVATE
-				{
-					long preload = 0;
-					pos = GetNextWord(es, pos, word);
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'P'))
-							preload = 1;
-
-						pos = GetNextWord(es, pos, word);
-					}
-					
-					LogDebug << "CINE " << (preload ? "-P " : "") << word;
-
-					if (!strcasecmp(word, "KILL"))
-					{
-						DANAE_KillCinematic();
-					}
-					else if (!strcasecmp(word, "PLAY"))
-					{
-						PLAY_LOADED_CINEMATIC = 1;
-						ARX_TIME_Pause();
-					}
-					else
-					{
-						{
-							char temp2[256];
-							strcpy(temp2, "Graph\\interface\\illustrations\\");
-							strcat(temp2, word.c_str());
-							strcat(temp2, ".cin");
-							word += ".cin";
-
-							if (resources->getFile(temp2))
-							{
-								strcpy(WILL_LAUNCH_CINE, word.c_str());
-								CINE_PRELOAD = preload;
-							} else {
-								LogError << "unable to load cinematic " << temp2;
-							}
-						}
-					}
-				}
-				else if (!strcmp(word, "COLLISION"))
+				if (!strcmp(word, "COLLISION"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "COLLISION " << word;
