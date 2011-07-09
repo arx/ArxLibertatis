@@ -189,10 +189,7 @@ static const KeyDescription keysDescriptions[] = {
 	{ Keyboard::Key_Grave, "`" },
 	{ Keyboard::Key_Apostrophe, "'" },
 	{ Keyboard::Key_Minus, "-" },
-	{ Keyboard::Key_Equals, "=" },
-
-	{ Mouse::Wheel_Up, "WheelUp" },
-	{ Mouse::Wheel_Down, "WheelDown" }
+	{ Keyboard::Key_Equals, "=" }
 };
 
 const std::string PREFIX_KEY = "Key_";
@@ -570,10 +567,10 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	std::string name;
 	
 	std::string modifier;
-	if(key & ~0xC000ffff) {
+	if(key & INPUT_COMBINATION_MASK) {
 		// key combination
-		modifier = getKeyName((key >> 16) & 0x3fff);
-		key &= 0xC000ffff;
+		modifier = getKeyName((key >> 16) & 0x0fff);
+		key &= INPUT_MASK;
 	}
 	
 	if(key >= (InputKeyId)Mouse::ButtonBase && key < (InputKeyId)Mouse::ButtonMax) {
@@ -581,9 +578,15 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 		std::ostringstream oss;
 		oss << PREFIX_BUTTON << (int)(key - Mouse::ButtonBase + 1);
 		name = oss.str();
-		
+	
+	} else if(key == (InputKeyId)Mouse::Wheel_Up) {
+		name = "WheelUp";
+
+	} else if(key == (InputKeyId)Mouse::Wheel_Down) {
+		name = "WheelDown";
+
 	} else {
-		arx_assert(key >= 0 && key < ARX_ARRAY_NB_ITEMS(keysDescriptions));
+		arx_assert(key >= 0 && key < (int)ARX_ARRAY_NB_ITEMS(keysDescriptions));
 		const KeyDescription & entity = keysDescriptions[key];
 		
 		arx_assert(entity.id == key);
@@ -809,7 +812,7 @@ bool Input::actionNowPressed(int actionId) const
 					{
 						bool bCombine = true;
 
-						if (config.actions[actionId].key[j] & 0x7FFF0000)
+						if (config.actions[actionId].key[j] & INPUT_COMBINATION_MASK)
 						{
 							if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
 								bCombine = false;
@@ -865,7 +868,7 @@ bool Input::actionPressed(int actionId) const
 						{
 							bool bCombine = true;
 
-							if (config.actions[actionId].key[j] & 0x7FFF0000)
+							if (config.actions[actionId].key[j] & INPUT_COMBINATION_MASK)
 							{
 								if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
 									bCombine = false;
@@ -1027,7 +1030,7 @@ bool Input::actionPressed(int actionId) const
 						{
 							bool bCombine = true;
 
-							if (config.actions[actionId].key[j] & 0x7FFF0000)
+							if (config.actions[actionId].key[j] & INPUT_COMBINATION_MASK)
 							{
 								if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
 									bCombine = false;
@@ -1069,7 +1072,7 @@ bool Input::actionNowReleased(int actionId) const
 					{
 						bool bCombine = true;
 
-						if (config.actions[actionId].key[j] & 0x7FFF0000)
+						if (config.actions[actionId].key[j] & INPUT_COMBINATION_MASK)
 						{
 							if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
 								bCombine = false;

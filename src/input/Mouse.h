@@ -6,7 +6,7 @@ class Mouse
 public:
 	enum Button
 	{
-		ButtonBase = 0x80000000,
+		ButtonBase = 0x20000000,
 
 		Button_0 = ButtonBase,
 		Button_1,
@@ -23,7 +23,7 @@ public:
 
 	enum Wheel
 	{
-		WheelBase = 0x40000000,
+		WheelBase = 0x10000000,
 
 		Wheel_Up = WheelBase,
 		Wheel_Down

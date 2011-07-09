@@ -4254,7 +4254,7 @@ int CWindowMenuConsole::Render()
 					GInput->isKeyPressed(Keyboard::Key_LeftAlt)||
 					GInput->isKeyPressed(Keyboard::Key_RightAlt) )
 				{
-					if(!((GInput->iKeyId&~0x8000FFFF)>>16))
+					if(!((GInput->iKeyId & INPUT_COMBINATION_MASK )>>16))
 						keyTouched = false;
 				}
 				else
