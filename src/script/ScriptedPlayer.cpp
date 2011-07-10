@@ -3,8 +3,10 @@
 
 #include "game/Player.h"
 #include "graphics/data/Mesh.h"
+#include "gui/Interface.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
+#include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
@@ -284,6 +286,51 @@ public:
 	
 };
 
+class SetPlayerControlsCommand : public Command {
+	
+	static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
+		for(long i = 0; i < inter.nbmax; i++) {
+			if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC)) {
+				Stack_SendIOScriptEvent(inter.iobj[i], msg, dat);
+			}
+		}
+	}
+	
+public:
+	
+	SetPlayerControlsCommand() : Command("setplayercontrols") { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * oes = EVENT_SENDER;
+		EVENT_SENDER = context.getIO();
+		
+		bool enable = context.getBool();
+		
+		LogDebug << "setplayercontrols " << enable;
+		
+		if(enable) {
+			if(BLOCK_PLAYER_CONTROLS) {
+				Stack_SendMsgToAllNPC_IO(SM_CONTROLS_ON, "");
+			}
+			BLOCK_PLAYER_CONTROLS = 0;
+		} else {
+			if(!BLOCK_PLAYER_CONTROLS) {
+				ARX_PLAYER_PutPlayerInNormalStance(0);
+				Stack_SendMsgToAllNPC_IO(SM_CONTROLS_OFF, "");
+				ARX_SPELLS_FizzleAllSpellsFromCaster(0);
+			}
+			BLOCK_PLAYER_CONTROLS = 1;
+			player.Interface &= ~INTER_COMBATMODE;
+		}
+		
+		EVENT_SENDER = oes;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -297,6 +344,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new SetPlayerTweakCommand);
 	ScriptEvent::registerCommand(new SetHungerCommand);
 	ScriptEvent::registerCommand(new SetPlayerCollisionCommand);
+	ScriptEvent::registerCommand(new SetPlayerControlsCommand);
 	
 }
 

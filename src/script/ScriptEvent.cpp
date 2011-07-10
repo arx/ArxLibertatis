@@ -264,14 +264,6 @@ void ShowScriptError(const char * tx, const char * cmd)
 	LogError << (text);
 }
 
-static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC)) {
-			Stack_SendIOScriptEvent(inter.iobj[i], msg, dat);
-		}
-	}
-}
-
 void SetNextAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea, long layer, long loop, long flags)
 {
 	if (!ea) return;
@@ -634,39 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETPLAYERCONTROLS"))
-				{
-					INTERACTIVE_OBJ * oes = EVENT_SENDER;
-					EVENT_SENDER = io;
-					pos = GetNextWord(es, pos, word);
-					MakeUpcase(word);
-
-					if (!strcmp(word, "ON"))
-					{
-						if (BLOCK_PLAYER_CONTROLS)
-						{
-							Stack_SendMsgToAllNPC_IO(SM_CONTROLS_ON, "");
-						}
-
-						BLOCK_PLAYER_CONTROLS = 0;
-					}
-					else
-					{
-						if (!BLOCK_PLAYER_CONTROLS)
-						{
-							ARX_PLAYER_PutPlayerInNormalStance(0);
-							Stack_SendMsgToAllNPC_IO(SM_CONTROLS_OFF, "");
-							ARX_SPELLS_FizzleAllSpellsFromCaster(0);
-						}
-
-						BLOCK_PLAYER_CONTROLS = 1;
-						player.Interface &= ~INTER_COMBATMODE;
-					}
-
-					EVENT_SENDER = oes;
-					LogDebug << "SET_PLAYER_CONTROLS "<< word;
-				}
-				else if (!strcmp(word, "SETWORLDCOLLISION"))
+				if (!strcmp(word, "SETWORLDCOLLISION"))
 				{
 					pos = GetNextWord(es, pos, word);
 					MakeUpcase(word);
