@@ -643,6 +643,28 @@ public:
 	
 };
 
+class SetWeightCommand : public Command {
+	
+public:
+	
+	SetWeightCommand() : Command("setweight", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		float weight = context.getFloat();
+		if(weight < 0.f) {
+			weight = 0.f;
+		}
+		
+		LogDebug << "setweight " << weight;
+		
+		context.getIO()->weight = weight;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -677,6 +699,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetStrikeSpeechCommand);
 	ScriptEvent::registerCommand(new SetCollisionCommand("setplayercollision", 1));
 	ScriptEvent::registerCommand(new SetCollisionCommand("setworldcollision", 2));
+	ScriptEvent::registerCommand(new SetWeightCommand);
 	
 }
 

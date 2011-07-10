@@ -626,20 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETWEIGHT"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io != NULL)
-					{
-						io->weight = GetVarValueInterpretedAsFloat(word, esss, io);
-
-						if (io->weight < 0.f) io->weight = 0.f;
-					}
-
-					LogDebug << "SET_WEIGHT "<< word;
-				}
-				else if (!strcmp(word, "SETTRANSPARENCY"))
+				if (!strcmp(word, "SETTRANSPARENCY"))
 				{
 					pos = GetNextWord(es, pos, word);
 
