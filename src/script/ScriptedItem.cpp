@@ -206,6 +206,44 @@ public:
 	
 };
 
+class SetDurabilityCommand : public Command {
+	
+public:
+	
+	SetDurabilityCommand() : Command("setdurability", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(io->ioflags & IO_NPC) {
+			LogWarning << "cannot set durability on NPCs";
+			return Failed;
+		}
+		
+		bool current = false;
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			current = (flg & flag('c'));
+			if(!flg || (flg & ~flag('c'))) {
+				LogWarning << "unexpected flags: setdurability " << options;
+			}
+		}
+		
+		float durability = context.getFloat();
+		
+		LogDebug << "setdurability " << options << ' ' << durability;
+		
+		io->durability = durability;
+		if(!current) {
+			io->max_durability = durability;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -217,6 +255,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetFoodCommand);
 	ScriptEvent::registerCommand(new SetObjectTypeCommand);
 	ScriptEvent::registerCommand(new SetEquipCommand);
+	ScriptEvent::registerCommand(new SetDurabilityCommand);
 	
 }
 

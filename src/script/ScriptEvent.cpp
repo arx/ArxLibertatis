@@ -634,30 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETDURABILITY"))
-				{
-					long current = 0;
-					pos = GetNextWord(es, pos, word);
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'C')) current = 1;
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					if (io != NULL)
-					{
-						if (!(io->ioflags & IO_NPC))
-						{
-							if (current) io->durability = GetVarValueInterpretedAsFloat(word, esss, io);
-							else io->max_durability = io->durability = GetVarValueInterpretedAsFloat(word, esss, io);
-						}
-					}
-
-					LogDebug <<  "SET_LIFE "<< word;
-				}
-				else if (!strcmp(word, "SETPATH"))
+				if (!strcmp(word, "SETPATH"))
 				{
 					long wormspecific = 0;
 					long followdir = 0;
