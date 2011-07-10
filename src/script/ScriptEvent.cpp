@@ -626,15 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETDETACHABLE"))
-				{
-					pos = GetNextWord(es, pos, word);
-				}
-				else if (!strcmp(word, "SETSTACKABLE"))
-				{
-					pos = GetNextWord(es, pos, word);
-				}
-				else if (!strcmp(word, "SETMAXCOUNT"))
+				if (!strcmp(word, "SETMAXCOUNT"))
 				{
 					pos = GetNextWord(es, pos, word);
 
@@ -4224,6 +4216,8 @@ void ScriptEvent::init() {
 	registerCommand(new ObsoleteCommand("settwohanded"));
 	registerCommand(new ObsoleteCommand("setonehanded"));
 	registerCommand(new ObsoleteCommand("say"));
+	registerCommand(new ObsoleteCommand("setdetachable", 1));
+	registerCommand(new ObsoleteCommand("setstackable", 1));
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
