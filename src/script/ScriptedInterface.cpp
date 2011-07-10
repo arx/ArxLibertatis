@@ -115,6 +115,67 @@ public:
 	
 };
 
+class ShowGlobalsCommand : public Command {
+	
+public:
+	
+	ShowGlobalsCommand() : Command("showglobals") { }
+	
+	Result execute(Context & context) {
+		
+		ARX_UNUSED(context);
+		
+		LogDebug << "showglobals";
+		
+		string text;
+		MakeGlobalText(text);
+		LogInfo << "global vars:\n" << text;
+		
+		return Success;
+	}
+	
+};
+
+class ShowLocalsCommand : public Command {
+	
+public:
+	
+	ShowLocalsCommand() : Command("showlocals") { }
+	
+	Result execute(Context & context) {
+		
+		LogDebug << "showlocals";
+		
+		string text;
+		MakeLocalText(context.getScript(), text);
+		LogInfo << "local vars:\n" << text;
+		
+		return Success;
+	}
+	
+};
+
+class ShowVarsCommand : public Command {
+	
+public:
+	
+	ShowVarsCommand() : Command("showvars") { }
+	
+	Result execute(Context & context) {
+		
+		LogDebug << "showvars";
+		
+		string text;
+		MakeGlobalText(text);
+		text += "--------------------------\n";
+		MakeLocalText(context.getScript(), text);
+		LogInfo << "vars:\n" << text;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInterface() {
@@ -122,6 +183,9 @@ void setupScriptedInterface() {
 	ScriptEvent::registerCommand(new BookCommand);
 	ScriptEvent::registerCommand(new CloseStealBagCommand);
 	ScriptEvent::registerCommand(new NoteCommand);
+	ScriptEvent::registerCommand(new ShowGlobalsCommand);
+	ScriptEvent::registerCommand(new ShowLocalsCommand);
+	ScriptEvent::registerCommand(new ShowVarsCommand);
 	
 }
 

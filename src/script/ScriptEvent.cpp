@@ -626,60 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SHOWGLOBALS"))
-				{
-					ShowText = "";
-					MakeGlobalText(ShowText);
-					ShowTextWindowtext = "Global Variables";
-
-#ifdef BUILD_EDITOR
-					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
-						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
-#endif
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "SHOWGLOBALS");
-
-#endif
-				}
-				else if (!strcmp(word, "SHOWLOCALS"))
-				{
-					ShowText = "";
-					MakeLocalText(es, ShowText);
-					ShowTextWindowtext = "Local Variables";
-
-#ifdef BUILD_EDITOR
-					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
-						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
-#endif
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "SHOWLOCALS");
-
-#endif
-				}
-				else if (!strcmp(word, "SHOWVARS"))
-				{
-					ShowText = "";
-					ShowText2 = "";
-					MakeGlobalText(ShowText);
-					MakeLocalText(es, ShowText2);
-					ShowTextWindowtext = "Variables";
-
-#ifdef BUILD_EDITOR
-					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
-						DialogBox(hInstance, (LPCTSTR)IDD_SHOWVARS, NULL, (DLGPROC)ShowVarsDlg);
-#endif
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "SHOWVARS");
-
-#endif
-				}
-				else if (!strcmp(word, "SETIRCOLOR"))
+				if (!strcmp(word, "SETIRCOLOR"))
 				{
 					if (io != NULL)
 					{
