@@ -634,47 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETPLAYERTWEAK"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "SET_PLAYER_TWEAK "<< word;
-
-					if (io->tweakerinfo == NULL)
-					{
-						io->tweakerinfo = (IO_TWEAKER_INFO *)malloc(sizeof(IO_TWEAKER_INFO));
-
-						if (io->tweakerinfo)
-						{
-							memset(io->tweakerinfo, 0, sizeof(IO_TWEAKER_INFO));
-						}
-					}
-
-					if (!strcasecmp(word, "SKIN"))
-					{
-						std::string temp2;
-						pos = GetNextWord(es, pos, word);
-						LogDebug << word;
-						pos = GetNextWord(es, pos, temp2);
-						LogDebug << temp2;
-
-						if (io->tweakerinfo)
-						{
-							strcpy(io->tweakerinfo->skintochange, word.c_str());
-							strcpy(io->tweakerinfo->skinchangeto, temp2.c_str());
-						}
-					}
-					else	// Mesh Tweaker...
-					{
-						pos = GetNextWord(es, pos, word);
-						LogDebug << word;
-
-						if (io->tweakerinfo)
-						{
-							strcpy(io->tweakerinfo->filename, word.c_str());
-						}
-					}
-				}
-				else if (!strcmp(word, "SETCONTROLLEDZONE"))
+				if (!strcmp(word, "SETCONTROLLEDZONE"))
 				{
 					pos = GetNextWord(es, pos, word);
 					ARX_PATH * ap = ARX_PATH_GetAddressByName(word);

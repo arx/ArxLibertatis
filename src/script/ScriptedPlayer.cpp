@@ -2,7 +2,9 @@
 #include "script/ScriptedPlayer.h"
 
 #include "game/Player.h"
+#include "graphics/data/Mesh.h"
 #include "io/Logger.h"
+#include "io/FilePath.h"
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
@@ -211,6 +213,51 @@ public:
 	
 };
 
+class SetPlayerTweakCommand : public Command {
+	
+public:
+	
+	SetPlayerTweakCommand() : Command("setplayertweak", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string command = context.getLowercase();
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!io->tweakerinfo) {
+			io->tweakerinfo = (IO_TWEAKER_INFO *)malloc(sizeof(IO_TWEAKER_INFO));
+			if(!(io->tweakerinfo)) {
+				return Failed;
+			}
+			memset(io->tweakerinfo, 0, sizeof(IO_TWEAKER_INFO));
+		}
+		
+		if(command == "skin") {
+			
+			string src = loadPath(context.getWord());
+			string dst = loadPath(context.getWord());
+			
+			LogDebug << "setplayertweak skin " << src << ' ' << dst;
+			
+			strcpy(io->tweakerinfo->skintochange, src.c_str());
+			strcpy(io->tweakerinfo->skinchangeto, dst.c_str());
+			
+		} else {
+			
+			string mesh = loadPath(context.getWord());
+			
+			LogDebug << "setplayertweak mesh " << mesh;
+			
+			strcpy(io->tweakerinfo->filename, mesh.c_str());
+		}
+		
+		return Success;
+	}
+	
+	~SetPlayerTweakCommand() { }
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -221,6 +268,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new RidiculousCommand);
 	ScriptEvent::registerCommand(new RuneCommand);
 	ScriptEvent::registerCommand(new QuestCommand);
+	ScriptEvent::registerCommand(new SetPlayerTweakCommand);
 	
 }
 
