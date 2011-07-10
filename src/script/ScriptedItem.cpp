@@ -282,6 +282,28 @@ public:
 	
 };
 
+class SetPriceCommand : public Command {
+	
+public:
+	
+	SetPriceCommand() : Command("setprice", IO_ITEM) { }
+	
+	Result execute(Context & context) {
+		
+		long price = (long)context.getFloat();
+		if(price < 0) {
+			price = 0;
+		}
+		
+		LogDebug << "setprice " << price;
+		
+		context.getIO()->_itemdata->price = price;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -296,6 +318,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetDurabilityCommand);
 	ScriptEvent::registerCommand(new SetMaxCountCommand);
 	ScriptEvent::registerCommand(new SetCountCommand);
+	ScriptEvent::registerCommand(new SetPriceCommand);
 	
 }
 

@@ -626,27 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETPRICE"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io)
-					{
-						if (io->ioflags & IO_ITEM)
-						{
-							io->_itemdata->price = (long)GetVarValueInterpretedAsFloat(word, esss, io);
-
-							if (io->_itemdata->price < 0) io->_itemdata->price = 0;
-						}
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "SET_PRICE %s", word);
-
-#endif
-				}
-				else if (!strcmp(word, "SETINTERNALNAME"))
+				if (!strcmp(word, "SETINTERNALNAME"))
 				{
 					pos = GetNextWord(es, pos, word);
 
