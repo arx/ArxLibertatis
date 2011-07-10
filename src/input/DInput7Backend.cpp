@@ -565,6 +565,11 @@ bool DInput7Backend::getKeyAsText(int keyId, char& result) const {
 		result = '0' + (char)(keyId - (int)Keyboard::Key_NumPad0);
 		return true;
 	}
+	else if(keyId == Keyboard::Key_NumDivide)
+	{
+		result = '/';
+		return true;
+	}
 
 	static HKL layout = GetKeyboardLayout(0);
 	static unsigned char State[DI7_KEY_ARRAY_SIZE];
