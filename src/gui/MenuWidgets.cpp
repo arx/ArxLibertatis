@@ -2716,7 +2716,7 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	pZoneClick=NULL;
 
-	CMenuZone * iR=pMenuAllZone->CheckZone(GInput->iMouseA.x, GInput->iMouseA.y);
+	CMenuZone * iR=pMenuAllZone->CheckZone(GInput->getMousePosAbs());
 
 	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(iR) {
@@ -2844,7 +2844,7 @@ void CMenuZone::SetPos(float _fX,float _fY)
 
 //-----------------------------------------------------------------------------
 
-CMenuZone * CMenuZone::IsMouseOver(int _iX, int _iY)
+CMenuZone * CMenuZone::IsMouseOver(const Vec2s& mousePos) const
 {
 	int iYDouble=0;
 
@@ -2854,10 +2854,10 @@ CMenuZone * CMenuZone::IsMouseOver(int _iX, int _iY)
 	}
 
 	if(    bActif && 
-		(_iX >= rZone.left) &&
-		(_iY >= (rZone.top-iYDouble)) &&
-		(_iX <= rZone.right) &&
-		(_iY <= (rZone.bottom+iYDouble)) )
+		(mousePos.x >= rZone.left) &&
+		(mousePos.y >= (rZone.top-iYDouble)) &&
+		(mousePos.x <= rZone.right) &&
+		(mousePos.y <= (rZone.bottom+iYDouble)) )
 		return pRef;
 
 	return NULL;
@@ -2895,9 +2895,9 @@ void CMenuAllZone::AddZone(CMenuZone *_pMenuZone)
 
 //-----------------------------------------------------------------------------
 
-CMenuZone * CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
+CMenuZone * CMenuAllZone::CheckZone(const Vec2s& mousePos) const
 {
-	std::vector<CMenuZone*>::iterator i;
+	std::vector<CMenuZone*>::const_iterator i;
 
 	for(i=vMenuZone.begin();i!=vMenuZone.end();++i)
 	{
@@ -2905,7 +2905,7 @@ CMenuZone * CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
 
 		if(zone->bCheck && zone->bActif)
 		{
-			CMenuZone * pRef = ((*i)->IsMouseOver(_iPosX, _iPosY));
+			CMenuZone * pRef = ((*i)->IsMouseOver(mousePos));
 
             if (pRef)
                 return pRef;
@@ -3907,7 +3907,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 		if (!bEdit)
 		{
 			pZoneClick=NULL;
-			CMenuZone * iR = MenuAllZone.CheckZone(GInput->iMouseA.x,GInput->iMouseA.y);
+			CMenuZone * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 
 			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
@@ -3942,7 +3942,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 		{
 			if(!pZoneClick)
 			{
-				CMenuZone * iR = MenuAllZone.CheckZone(GInput->iMouseA.x,GInput->iMouseA.y);
+				CMenuZone * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 
 				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
@@ -4482,23 +4482,23 @@ CMenuZone * CMenuPanel::GetZoneWithID(int _iID)
 
 //-----------------------------------------------------------------------------
 
-CMenuZone * CMenuPanel::IsMouseOver(int _iX, int _iY)
+CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const
 {
-	if ((_iX >= rZone.left) &&
-		(_iY >= rZone.top) &&
-		(_iX <= rZone.right) &&
-		(_iY <= rZone.bottom))
+	if ((mousePos.x >= rZone.left) &&
+		(mousePos.y >= rZone.top) &&
+		(mousePos.x <= rZone.right) &&
+		(mousePos.y <= rZone.bottom))
 	{
-		vector<CMenuElement *>::iterator i;
+		vector<CMenuElement *>::const_iterator i;
 		
 		for(i=vElement.begin();i!=vElement.end();++i)
 		{
-			if(    (*i)->bCheck &&
+			if ((*i)->bCheck &&
 				(*i)->bActif && 
-				(_iX >= (*i)->rZone.left) &&
-				(_iY >= (*i)->rZone.top) &&
-				(_iX <= (*i)->rZone.right) &&
-				(_iY <= (*i)->rZone.bottom))
+				(mousePos.x >= (*i)->rZone.left) &&
+				(mousePos.y >= (*i)->rZone.top) &&
+				(mousePos.x <= (*i)->rZone.right) &&
+				(mousePos.y <= (*i)->rZone.bottom))
 				return (*i)->pRef;
 		}
 	}
@@ -4894,8 +4894,8 @@ bool CMenuSliderText::OnMouseClick(int)
 	if(iOldPos<0)
 		iOldPos=iPos;
 
-	int iX = GInput->iMouseA.x;
-	int iY = GInput->iMouseA.y;
+	int iX = GInput->getMousePosAbs().x;
+	int iY = GInput->getMousePosAbs().y;
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -5015,8 +5015,8 @@ void CMenuSliderText::RenderMouseOver()
 
 	pMenuCursor->SetMouseOver();
 
-	int iX = GInput->iMouseA.x;
-	int iY = GInput->iMouseA.y;
+	int iX = GInput->getMousePosAbs().x;
+	int iY = GInput->getMousePosAbs().y;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -5130,8 +5130,8 @@ bool CMenuSlider::OnMouseClick(int)
 {
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	int iX = GInput->iMouseA.x;
-	int iY = GInput->iMouseA.y;
+	int iX = GInput->getMousePosAbs().x;
+	int iY = GInput->getMousePosAbs().y;
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -5278,8 +5278,8 @@ void CMenuSlider::RenderMouseOver()
 
 	pMenuCursor->SetMouseOver();
 
-	int iX = GInput->iMouseA.x;
-	int iY = GInput->iMouseA.y;
+	int iX = GInput->getMousePosAbs().x;
+	int iY = GInput->getMousePosAbs().y;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -5375,12 +5375,12 @@ void MenuCursor::SetMouseOver()
 
 //-----------------------------------------------------------------------------
 
-void MenuCursor::DrawOneCursor(int _iPosX,int _iPosY) {
+void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	EERIEDrawBitmap2(static_cast<float>(_iPosX), static_cast<float>(_iPosY),
+	EERIEDrawBitmap2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y),
 	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
 	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
 	                 0.00000001f, scursor[iNumCursor], Color::white);
@@ -5393,35 +5393,33 @@ void MenuCursor::DrawOneCursor(int _iPosX,int _iPosY) {
 
 void MenuCursor::Update()
 {
-    int iDx;
-	int iDy;
+    Vec2s iDiff;
 
 	if(pTex[eNumTex])
 	{
-		iDx=pTex[eNumTex]->m_dwWidth>>1;
-		iDy=pTex[eNumTex]->m_dwHeight>>1;
+		iDiff.x=pTex[eNumTex]->m_dwWidth>>1;
+		iDiff.y=pTex[eNumTex]->m_dwHeight>>1;
 	}
 	else
 	{
-		iDx=0;
-		iDy=0;
+		iDiff.x=0;
+		iDiff.y=0;
 	}
 
-	iOldCoord[iNbOldCoord].x=GInput->iMouseA.x+iDx;
-	iOldCoord[iNbOldCoord].y=GInput->iMouseA.y+iDy;
+	iOldCoord[iNbOldCoord] = GInput->getMousePosAbs() + iDiff;
 	iNbOldCoord++;
 
 	if(iNbOldCoord>=iMaxOldCoord)
 	{
 		iNbOldCoord=iMaxOldCoord-1;
-		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(Vec2i)*iNbOldCoord);
+		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(Vec2s)*iNbOldCoord);
 	}
 
 }
 
 //-----------------------------------------------------------------------------
 
-static bool ComputePer(const Vec2i & _psPoint1, const Vec2i & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
+static bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
 	
 	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
 	float fTemp = sTemp.x;
@@ -5446,7 +5444,7 @@ static bool ComputePer(const Vec2i & _psPoint1, const Vec2i & _psPoint2, Texture
 
 //-----------------------------------------------------------------------------
 
-static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float _fRed, float _fGreen, float _fBlue) {
+static void DrawLine2D(const Vec2s * _psPoint1, int _iNbPt, float _fSize, float _fRed, float _fGreen, float _fBlue) {
 	
 	_iNbPt--;
 
@@ -5470,7 +5468,7 @@ static void DrawLine2D(const Vec2i * _psPoint1, int _iNbPt, float _fSize, float 
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-	const Vec2i * psOldPoint = _psPoint1++;
+	const Vec2s * psOldPoint = _psPoint1++;
 	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 
 	if(!ComputePer(*psOldPoint, *_psPoint1, &v[0], &v[2], fTaille)) {
@@ -5533,7 +5531,7 @@ void MenuCursor::DrawCursor()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	DrawOneCursor(GInput->iMouseA.x, GInput->iMouseA.y);
+	DrawOneCursor(GInput->getMousePosAbs());
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 

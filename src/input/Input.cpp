@@ -289,7 +289,21 @@ void Input::unacquireDevices()
 	backend->unacquireDevices();
 }
 
-void Input::setMousePosition(Vec2s mousePos)
+//-----------------------------------------------------------------------------
+
+const Vec2s& Input::getMousePosAbs() const {
+	return iMouseA;
+}
+
+//-----------------------------------------------------------------------------
+
+const Vec2s& Input::getMousePosRel() const {
+	return iMouseR;
+}
+
+//-----------------------------------------------------------------------------
+
+void Input::setMousePosAbs(const Vec2s& mousePos)
 {
 	fMouseATemp.x = mousePos.x;
 	fMouseATemp.y = mousePos.y;

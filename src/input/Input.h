@@ -66,10 +66,6 @@ class Input {
 	
 public:
 	static const std::string KEY_NONE;
-
-	// Mouse
-	Vec2s	iMouseR;
-	Vec2s	iMouseA;
  
 public:
 	Input();
@@ -93,7 +89,9 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////
 	// Mouse
-	void setMousePosition(Vec2s mousePos);
+	const Vec2s& getMousePosAbs() const;
+	const Vec2s& getMousePosRel() const;
+	void setMousePosAbs(const Vec2s& mousePos);
 
 	void setMouseSensibility(int);
 	int  getMouseSensibility() const;
@@ -122,6 +120,8 @@ private:
 
 	///////////////////////////////////////////////////////////////////////////
 	// Mouse
+	Vec2s	iMouseR;
+	Vec2s	iMouseA;
 	Vec2f	fMouseATemp;
 
 	int		iSensibility;

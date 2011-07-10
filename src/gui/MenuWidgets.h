@@ -272,11 +272,11 @@ class CMenuZone
 		CMenuZone(int, int, int, int, CMenuZone *);
 		virtual ~CMenuZone();
 
-		int GetWidth()
+		int GetWidth() const
 		{
 			return (rZone.right - rZone.left);
 		}
-		int GetHeight()
+		int GetHeight() const
 		{
 			return (rZone.bottom - rZone.top);
 		}
@@ -292,7 +292,7 @@ class CMenuZone
 			bCheck = true;
 		};
  
-		virtual CMenuZone * IsMouseOver(int, int);
+		virtual CMenuZone * IsMouseOver(const Vec2s& mousePos) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -305,7 +305,7 @@ class CMenuAllZone
 		virtual ~CMenuAllZone();
 
 		void AddZone(CMenuZone *);
-		CMenuZone * CheckZone(int, int);
+		CMenuZone * CheckZone(const Vec2s& mousePos) const;
  
 		CMenuZone * GetZoneNum(int);
 		CMenuZone * GetZoneWithID(int);
@@ -396,7 +396,7 @@ class CMenuPanel : public CMenuElement
 		};
 		CMenuElement * OnShortCut();
 		void RenderMouseOver() {};
-		CMenuZone * IsMouseOver(int, int);
+		CMenuZone * IsMouseOver(const Vec2s& mousePos) const;
 		CMenuZone * GetZoneWithID(int);
 };
 
@@ -671,7 +671,7 @@ public:
 	void DrawCursor();
 
 private:
-	void DrawOneCursor(int, int);
+	void DrawOneCursor(const Vec2s& mousePos);
 
 private:
 	// Cursor
@@ -687,7 +687,7 @@ private:
 	// For the ribbon effect
 	int					iNbOldCoord;
 	int					iMaxOldCoord;
-	Vec2i				iOldCoord[256];	
+	Vec2s				iOldCoord[256];	
 };
 
 bool Menu2_Render();
