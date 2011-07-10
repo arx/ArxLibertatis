@@ -894,32 +894,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETPOISONOUS"))
-				{
-					float poisonous = 0.f;
-					float poisonous_count = 0.f;
-					pos = GetNextWord(es, pos, word);
-					poisonous = GetVarValueInterpretedAsFloat(word, esss, io);;
-					pos = GetNextWord(es, pos, word);
-					poisonous_count = GetVarValueInterpretedAsFloat(word, esss, io);
-
-					if (poisonous_count == 0)
-					{
-						io->poisonous_count = 0;
-					}
-					else
-					{
-
-						ARX_CHECK_SHORT(poisonous);
-						ARX_CHECK_SHORT(poisonous_count);
-
-						io->poisonous		= ARX_CLEAN_WARN_CAST_SHORT(poisonous);
-						io->poisonous_count = ARX_CLEAN_WARN_CAST_SHORT(poisonous_count);
-
-					}
-
-				}
-				else if (!strcmp(word, "SETPLATFORM"))
+				if (!strcmp(word, "SETPLATFORM"))
 				{
 					pos = GetNextWord(es, pos, word);
 

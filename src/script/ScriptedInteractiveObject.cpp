@@ -204,6 +204,8 @@ public:
 		
 		string category = context.getLowercase();
 		
+		LogDebug << "shopcategory " << category;
+		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(!io) {
 			return Failed;
@@ -228,6 +230,8 @@ public:
 	Result execute(Context & context) {
 		
 		float multiply = context.getFloat();
+		
+		LogDebug << "shopmultiply " << multiply;
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(!io) {
