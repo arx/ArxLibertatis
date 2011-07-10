@@ -665,6 +665,29 @@ public:
 	
 };
 
+class SetTransparencyCommand : public Command {
+	
+public:
+	
+	SetTransparencyCommand() : Command("settransparency", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		float trans = context.getFloat();
+		
+		LogDebug << "settransparency " << trans;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		io->invisibility = 1.f + trans * 0.01f;
+		if(io->invisibility == 1.f) {
+			io->invisibility = 0;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -700,6 +723,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetCollisionCommand("setplayercollision", 1));
 	ScriptEvent::registerCommand(new SetCollisionCommand("setworldcollision", 2));
 	ScriptEvent::registerCommand(new SetWeightCommand);
+	ScriptEvent::registerCommand(new SetTransparencyCommand);
 	
 }
 

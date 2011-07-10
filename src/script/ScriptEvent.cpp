@@ -626,15 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETTRANSPARENCY"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					io->invisibility = 1.f + GetVarValueInterpretedAsFloat(word, esss, io) * ( 1.0f / 100 );
-
-					if (io->invisibility == 1.f) io->invisibility = 0;
-				}
-				else if (!strcmp(word, "SETEVENT"))
+				if (!strcmp(word, "SETEVENT"))
 				{
 					std::string temp2;
 					long t;
