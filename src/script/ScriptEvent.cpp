@@ -839,24 +839,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 
 				break;
-			case 'G':
-
-				if (!strcmp(word, "GOSUB"))
-				{
-					if (msg == SM_EXECUTELINE) msg = SM_DUMMY;
-
-					if ((pos = GetNextWord(es, pos, word)) == -1) return ACCEPT;
-
-					if (!InSubStack(es, pos)) return BIGERROR;
-
-					pos = FindLabelPos(es, word);
-
-					if (pos == -1) return ACCEPT;
-
-					LogDebug <<  "GOSUB " << word;
-				}
-
-				break;
 			case 'R':
 
 				if (!strcmp(word, "REFUSE"))

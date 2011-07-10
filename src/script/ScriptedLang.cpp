@@ -69,6 +69,7 @@ void setupScriptedLang() {
 	
 	ScriptEvent::registerCommand("nop", new NopCommand);
 	ScriptEvent::registerCommand("goto", new GotoCommand("goto"));
+	ScriptEvent::registerCommand("gosub", new GotoCommand("gosub", true));
 	
 }
 
