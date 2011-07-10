@@ -128,12 +128,13 @@ const std::string arxVersion = "0.1";
 
 // TODO check for these in CMakeLists.txt
 #if ARX_COMPILER_MSVC || ARX_COMPILER == ARX_COMPILER_MINGW
-	#define PRINT_SIZE_T "%Iu"
+	#define PRINT_SIZE_T_F "Iu"
 #elif ARX_COMPILER == ARX_COMPILER_GCC || ARX_COMPILER == ARX_COMPILER_CLANG
-	#define PRINT_SIZE_T "%zu"
+	#define PRINT_SIZE_T_F "zu"
 #else
-	#define PRINT_SIZE_T "%lu"
+	#define PRINT_SIZE_T_F "lu"
 #endif
+#define PRINT_SIZE_T "%" PRINT_SIZE_T_F
 
 /* ---------------------------------------------------------
                            Types
