@@ -626,17 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETINTERNALNAME"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "ERROR: SETINTERNALNAME %s - NOT AN IO !!!", word);
-
-#endif
-				}
-				else if (!strcmp(word, "SHOWGLOBALS"))
+				if (!strcmp(word, "SHOWGLOBALS"))
 				{
 					ShowText = "";
 					MakeGlobalText(ShowText);
@@ -4071,6 +4061,7 @@ void ScriptEvent::init() {
 	registerCommand(new ObsoleteCommand("say"));
 	registerCommand(new ObsoleteCommand("setdetachable", 1));
 	registerCommand(new ObsoleteCommand("setstackable", 1));
+	registerCommand(new ObsoleteCommand("setinternalname", 1));
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
