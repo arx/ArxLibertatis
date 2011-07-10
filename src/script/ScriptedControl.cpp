@@ -3,6 +3,7 @@
 
 #include <sstream>
 
+#include "ai/Paths.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "gui/Speech.h"
@@ -345,6 +346,33 @@ public:
 	
 };
 
+class SetControlledZoneCommand : public Command {
+	
+public:
+	
+	SetControlledZoneCommand() : Command("setcontrolledzone") { }
+	
+	Result execute(Context & context) {
+		
+		string name = context.getLowercase();
+		
+		LogDebug << "setcontrolledzone " << name;
+		
+		ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
+		if(!ap) {
+			LogWarning << "unknown zone: setcontrolledzone " << name;
+			return Failed;
+		}
+		
+		strcpy(ap->controled, context.getIO()->long_name().c_str());
+		
+		return Success;
+	}
+	
+	~SetControlledZoneCommand() { }
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -358,6 +386,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new ConversationCommand);
 	ScriptEvent::registerCommand(new QuakeCommand);
 	ScriptEvent::registerCommand(new SetGroupCommand);
+	ScriptEvent::registerCommand(new SetControlledZoneCommand);
 	
 }
 

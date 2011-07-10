@@ -634,20 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETCONTROLLEDZONE"))
-				{
-					pos = GetNextWord(es, pos, word);
-					ARX_PATH * ap = ARX_PATH_GetAddressByName(word);
-
-					if (ap != NULL)
-					{
-						std::string str = io->long_name();
-						strcpy(ap->controled, str.c_str() );
-					}
-
-					LogDebug << "SET_CONTROLLED_ZONE "<< word;
-				}
-				else if ((!strcmp(word, "SETSTATUS")) || (!strcmp(word, "SETMAINEVENT")))
+				if ((!strcmp(word, "SETSTATUS")) || (!strcmp(word, "SETMAINEVENT")))
 				{
 					pos = GetNextWord(es, pos, word);
 					ARX_SCRIPT_SetMainEvent(io, word);
