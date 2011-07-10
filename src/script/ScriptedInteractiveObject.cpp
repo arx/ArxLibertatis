@@ -499,6 +499,33 @@ public:
 	
 };
 
+class SetInteractivityCommand : public Command {
+	
+public:
+	
+	SetInteractivityCommand() : Command("setinteractivity", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string interactivity = context.getLowercase();
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(interactivity == "none") {
+			io->GameFlags &= ~GFLAG_INTERACTIVITY;
+			io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
+		} else if(interactivity == "hide") {
+			io->GameFlags &= ~GFLAG_INTERACTIVITY;
+			io->GameFlags |= GFLAG_INTERACTIVITYHIDE;
+		} else {
+			io->GameFlags |= GFLAG_INTERACTIVITY;
+			io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -525,6 +552,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetMaterialCommand);
 	ScriptEvent::registerCommand(new SetNameCommand);
 	ScriptEvent::registerCommand(new SpawnCommand);
+	ScriptEvent::registerCommand(new SetInteractivityCommand);
 	
 }
 

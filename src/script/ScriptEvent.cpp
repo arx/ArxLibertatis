@@ -634,29 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETINTERACTIVITY"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "NONE"))
-					{
-						io->GameFlags &= ~GFLAG_INTERACTIVITY;
-						io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
-					}
-					else if (!strcasecmp(word, "HIDE"))
-					{
-						io->GameFlags &= ~GFLAG_INTERACTIVITY;
-						io->GameFlags |= GFLAG_INTERACTIVITYHIDE;
-					}
-					else
-					{
-						io->GameFlags |= GFLAG_INTERACTIVITY;
-						io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
-					}
-
-					LogDebug <<  "SET_INTERACTIVITY "<< word;
-				}
-				else if (!strcmp(word, "SETEQUIP"))
+				if (!strcmp(word, "SETEQUIP"))
 				{
 					std::string temp2;
 					std::string temp3;
