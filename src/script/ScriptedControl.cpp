@@ -301,6 +301,50 @@ public:
 	
 };
 
+class SetGroupCommand : public Command {
+	
+public:
+	
+	SetGroupCommand() : Command("setgroup", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		bool remove = false;
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			remove = (flg & flag('r'));
+			if(!flg || (flg & ~flag('r'))) {
+				LogWarning << "unexpected flags: setgroup " << options;
+			}
+		}
+		
+		string group = toLowercase(context.getStringVar(context.getLowercase()));
+		
+		LogDebug << "setgroup " << options << ' ' << group;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(group == "door") {
+			if(remove) {
+				io->GameFlags &= ~GFLAG_DOOR;
+			} else {
+				io->GameFlags |= GFLAG_DOOR;
+			}
+		}
+		
+		if(remove) {
+			ARX_IOGROUP_Remove(io, group);
+		} else {
+			ARX_IOGROUP_Add(io, group);
+		}
+		
+		return Success;
+	}
+	
+	~SetGroupCommand() { }
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -313,6 +357,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new CineCommand);
 	ScriptEvent::registerCommand(new ConversationCommand);
 	ScriptEvent::registerCommand(new QuakeCommand);
+	ScriptEvent::registerCommand(new SetGroupCommand);
 	
 }
 

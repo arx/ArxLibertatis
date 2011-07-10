@@ -634,37 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETGROUP"))
-				{
-					pos = GetNextWord(es, pos, word);
-					long remove = 0;
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'R'))
-							remove = 1;
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					std::string temp1 = GetVarValueInterpretedAsText(word, esss, io);
-
-					if (remove)
-					{
-						if (!strcasecmp(temp1, "DOOR")) io->GameFlags &= ~GFLAG_DOOR;
-
-						ARX_IOGROUP_Remove(io, temp1);
-					}
-					else
-					{
-						if (!strcasecmp(temp1, "DOOR")) io->GameFlags |= GFLAG_DOOR;
-
-						ARX_IOGROUP_Add(io, temp1);
-					}
-
-					LogDebug <<  "SET_GROUP "<< word;
-				}
-				else if (!strcmp(word, "SETNPCSTAT"))
+				if (!strcmp(word, "SETNPCSTAT"))
 				{
 					std::string temp2;
 					pos = GetNextWord(es, pos, word);
