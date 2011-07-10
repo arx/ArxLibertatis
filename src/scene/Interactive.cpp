@@ -1821,7 +1821,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 		io->bbox2.x = -1;
 		io->bbox2.y = -1;
 
-		ARX_SCRIPT_SetMainEvent(io, "MAIN");
+		ARX_SCRIPT_SetMainEvent(io, "main");
 		io->targetinfo = TARGET_NONE;
 
 		io->weight = 1.f;

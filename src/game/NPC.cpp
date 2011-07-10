@@ -292,7 +292,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 		TSecondaryInventory = NULL;
 	}
 
-	ARX_SCRIPT_SetMainEvent(io, "MAIN");
+	ARX_SCRIPT_SetMainEvent(io, "main");
 
 	if (io->ioflags & IO_NPC)
 	{
@@ -1474,7 +1474,7 @@ bool IsDeadNPC(INTERACTIVE_OBJ * io)
 
 	if (io->_npcdata->life <= 0) return true;
 
-	if ((io->mainevent) && !strcmp(io->mainevent, "DEAD")) return true;
+	if ((io->mainevent) && !strcmp(io->mainevent, "dead")) return true;
 
 	return false;
 }

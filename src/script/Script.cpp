@@ -132,7 +132,7 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string& str)
 
 	if (!es->data) return -1;
 
-	const char * pdest = strstr(es->data, str.c_str());
+	const char * pdest = strcasestr(es->data, str.c_str());
 	
 	if(!pdest) {
 		return -1;
@@ -188,7 +188,7 @@ long FindScriptPosGOTO(const EERIE_SCRIPT * es, const string & str) {
 	
 	while(true) {
 		
-		const char * pdest = strstr(es->data + result, str.c_str());
+		const char * pdest = strcasestr(es->data + result, str.c_str());
 		if(!pdest) {
 			return -1;
 		}
@@ -403,13 +403,17 @@ suite:
 }
 #endif
 
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent)
-{
-	if (io == NULL) return;
-
-	if (!strcasecmp(newevent, "MAIN"))
+void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const string & newevent) {
+	
+	if(!io) {
+		return;
+	}
+	
+	if(newevent == "main") {
 		io->mainevent[0] = 0;
-	else strcpy(io->mainevent, newevent.c_str());
+	} else {
+		strcpy(io->mainevent, newevent.c_str());
+	}
 }
 
 //*************************************************************************************
@@ -429,7 +433,7 @@ void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags)
 
 
 			if (inter.iobj[num])
-				ARX_SCRIPT_SetMainEvent(inter.iobj[num], "MAIN");
+				ARX_SCRIPT_SetMainEvent(inter.iobj[num], "main");
 		}
 
 		// Do the same for Local Script

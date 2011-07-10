@@ -42,7 +42,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string label = context.getWord();
+		string label = context.getLowercase();
 		
 		LogDebug << getName() << ' ' << label;
 		
@@ -131,6 +131,27 @@ public:
 	
 };
 
+class SetMainEventCommand : public Command {
+	
+public:
+	
+	SetMainEventCommand(const string & command) : Command(command, ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string event = context.getLowercase();
+		
+		LogDebug << "setmainevent " << event;
+		
+		ARX_SCRIPT_SetMainEvent(context.getIO(), event);
+		
+		return Success;
+	}
+	
+	~SetMainEventCommand() { }
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -142,6 +163,8 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new AbortCommand("refuse", Command::AbortRefuse));
 	ScriptEvent::registerCommand(new RandomCommand);
 	ScriptEvent::registerCommand(new ReturnCommand);
+	ScriptEvent::registerCommand(new SetMainEventCommand("setstatus"));
+	ScriptEvent::registerCommand(new SetMainEventCommand("setmainevent"));
 	
 }
 

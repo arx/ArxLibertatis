@@ -458,7 +458,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	
 	// Finds script position to execute code...
 	if (!evname.empty()) {
-		strcpy(eventname, "ON ");
+		strcpy(eventname, "on ");
 		strcat(eventname, evname.c_str());
 		pos = FindScriptPos( es, eventname );
 	} else {
@@ -634,13 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if ((!strcmp(word, "SETSTATUS")) || (!strcmp(word, "SETMAINEVENT")))
-				{
-					pos = GetNextWord(es, pos, word);
-					ARX_SCRIPT_SetMainEvent(io, word);
-					LogDebug << "SETMAINEVENT "<< word;
-				}
-				else if (!strcmp(word, "SETMOVEMODE"))
+				if (!strcmp(word, "SETMOVEMODE"))
 				{
 					pos = GetNextWord(es, pos, word);
 
