@@ -623,25 +623,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "PLAYERLOOKAT"))
-				{
-					pos = GetNextWord(es, pos, word);
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -2) t = GetInterNum(io);
-
-					if (ValidIONum(t))
-					{
-						ForcePlayerLookAtIO(inter.iobj[t]);
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "PLAYERLOOKAT %s", word);
-
-#endif
-				}
-				else if (!strcmp(word, "PLAYERSTACKSIZE"))
+				if (!strcmp(word, "PLAYERSTACKSIZE"))
 				{
 					pos = GetNextWord(es, pos, word);
 

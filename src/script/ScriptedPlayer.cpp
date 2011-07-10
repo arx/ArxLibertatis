@@ -469,6 +469,34 @@ public:
 	
 };
 
+class PlayerLookAtCommand : public Command {
+	
+public:
+	
+	PlayerLookAtCommand() : Command("playerlookat") { }
+	
+	Result execute(Context & context) {
+		
+		string target = context.getLowercase();
+		
+		LogDebug << "playerlookat " << target;
+		
+		long t = GetTargetByNameTarget(target);
+		if(t == -2) {
+			t = GetInterNum(context.getIO());
+		}
+		if(!ValidIONum(t)) {
+			LogWarning << "playerlookat: unknown target: " << target;
+			return Failed;
+		}
+		
+		ForcePlayerLookAtIO(inter.iobj[t]);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -485,6 +513,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new StealNPCCommand);
 	ScriptEvent::registerCommand(new SpecialFXCommand);
 	ScriptEvent::registerCommand(new KeyringAddCommand);
+	ScriptEvent::registerCommand(new PlayerLookAtCommand);
 	
 }
 
