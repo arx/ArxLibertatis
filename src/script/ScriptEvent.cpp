@@ -634,27 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETSECRET")) // -1 = off
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io) && (io->ioflags & IO_FIX))
-					{
-						if (!strcasecmp(word, "off"))
-						{
-							io->secretvalue = -1;
-						}
-						else
-						{
-							io->secretvalue = (char)GetVarValueInterpretedAsFloat(word, esss, io);
-
-							if (io->secretvalue < -1) io->secretvalue = -1;
-
-							if (io->secretvalue > 100) io->secretvalue = 100;
-						}
-					}
-				}
-				else if (!strcmp(word, "SETDETECT")) // -1 = off
+				if (!strcmp(word, "SETDETECT")) // -1 = off
 				{
 					pos = GetNextWord(es, pos, word);
 

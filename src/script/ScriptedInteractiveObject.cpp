@@ -323,6 +323,32 @@ public:
 	
 };
 
+class SetSecretCommand : public Command {
+	
+public:
+	
+	SetSecretCommand() : Command("setsecret", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string secretvalue = context.getLowercase();
+		
+		LogDebug << "setsecret " << secretvalue;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(secretvalue == "off") {
+			io->secretvalue = -1;
+		} else {
+			io->secretvalue = clamp((int)context.getFloatVar(secretvalue), -1, 100);
+		}
+		
+		return Success;
+	}
+	
+	~SetSecretCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -345,6 +371,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new IOFlagCommand("setzmap", IO_ZMAP));
 	ScriptEvent::registerCommand(new IOFlagCommand("invertedobject", IO_INVERTED));
 	ScriptEvent::registerCommand(new SetTrapCommand);
+	ScriptEvent::registerCommand(new SetSecretCommand);
 	
 }
 
