@@ -2,6 +2,7 @@
 #include "script/ScriptedPlayer.h"
 
 #include "game/Player.h"
+#include "game/Inventory.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
 #include "io/Logger.h"
@@ -12,6 +13,8 @@
 #include "script/ScriptUtils.h"
 
 using std::string;
+
+extern float InventoryDir;
 
 namespace script {
 
@@ -308,6 +311,29 @@ public:
 	
 };
 
+class StealNPCCommand : public Command {
+	
+public:
+	
+	StealNPCCommand() : Command("stealnpc") { }
+	
+	Result execute(Context & context) {
+		
+		LogDebug << "stealnpc";
+		
+		if(player.Interface & INTER_STEAL) {
+			SendIOScriptEvent(ioSteal, SM_STEAL, "OFF");
+		}
+		
+		player.Interface |= INTER_STEAL;
+		InventoryDir = 1;
+		ioSteal = context.getIO();
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -321,6 +347,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new SetPlayerTweakCommand);
 	ScriptEvent::registerCommand(new SetHungerCommand);
 	ScriptEvent::registerCommand(new SetPlayerControlsCommand);
+	ScriptEvent::registerCommand(new StealNPCCommand);
 	
 }
 

@@ -66,7 +66,6 @@ using std::string;
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern float InventoryDir;
 extern long REFUSE_GAME_RETURN;
 extern long FINAL_RELEASE;
 extern long TELEPORT_TO_CONFIRM;
@@ -626,18 +625,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "STEALNPC"))
-				{
-					if (player.Interface & INTER_STEAL)
-					{
-						SendIOScriptEvent(ioSteal, SM_STEAL, "OFF");
-					}
-
-					player.Interface |= INTER_STEAL;
-					InventoryDir = 1;
-					ioSteal = io;
-				}
-				else if (!strcmp(word, "SPECIALFX"))
+				if (!strcmp(word, "SPECIALFX"))
 				{
 					std::string temp1;
 					pos = GetNextWord(es, pos, temp1);
