@@ -634,31 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETWEAPON"))
-				{
-					pos = GetNextWord(es, pos, word);
-					io->GameFlags &= ~GFLAG_HIDEWEAPON;
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'H'))	// Hide Weapon
-						{
-							io->GameFlags |= GFLAG_HIDEWEAPON;
-						}
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					if ((io) && (io->ioflags & IO_NPC))
-					{
-						// temporarily removed for Alpha
-						strcpy(io->_npcdata->weaponname, word.c_str());
-						Prepare_SetWeapon(io, word);
-					}
-
-					LogDebug <<  "SET_WEAPON "<< word;
-				}
-				else if (!strcmp(word, "SETLIFE"))
+				if (!strcmp(word, "SETLIFE"))
 				{
 					pos = GetNextWord(es, pos, word);
 

@@ -7,6 +7,7 @@
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 #include "io/Logger.h"
+#include "io/FilePath.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
@@ -616,6 +617,39 @@ public:
 	
 };
 
+class SetWeaponCommand : public Command {
+	
+public:
+	
+	SetWeaponCommand() : Command("setweapon", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		io->GameFlags &= ~GFLAG_HIDEWEAPON;
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('h')) {
+				io->GameFlags |= GFLAG_HIDEWEAPON;
+			} else if(!flg || (flg & ~flag('h'))) {
+				LogWarning << "unexpected flags: setequip " << options;
+			}
+		}
+		
+		string weapon = loadPath(context.getLowercase());
+		
+		LogDebug << "setweapon " << options << ' ' << weapon;
+		
+		strcpy(io->_npcdata->weaponname, weapon.c_str());
+		Prepare_SetWeapon(io, weapon);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -632,6 +666,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetNPCStatCommand);
 	ScriptEvent::registerCommand(new SetXPValueCommand);
 	ScriptEvent::registerCommand(new SetMoveModeCommand);
+	ScriptEvent::registerCommand(new SetWeaponCommand);
 	
 }
 

@@ -2429,7 +2429,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				io->_npcdata->tactics = as->tactics;
 				io->_npcdata->tohit = as->tohit;
 				io->_npcdata->weaponinhand = as->weaponinhand;
-				strcpy(io->_npcdata->weaponname, as->weaponname);
+				strcpy(io->_npcdata->weaponname, loadPath(as->weaponname).c_str());
 				io->_npcdata->weapontype = ItemType::load(as->weapontype); // TODO save/load flags
 				io->_npcdata->xpvalue = as->xpvalue;
 				
