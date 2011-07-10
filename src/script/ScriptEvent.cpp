@@ -634,42 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETEQUIP"))
-				{
-					std::string temp2;
-					std::string temp3;
-					pos = GetNextWord(es, pos, temp3);
-					LogDebug <<  "SET_EQUIP "<< temp3;
-
-					if (temp3[0] == '-')
-					{
-						if (!strcasecmp(temp3, "-r"))  ARX_EQUIPMENT_Remove_All_Special(io);
-						else
-						{
-							pos = GetNextWord(es, pos, word);
-							LogDebug <<  word;
-							pos = GetNextWord(es, pos, temp2);
-							LogDebug <<  temp2;
-						}
-					}
-					else
-					{
-						word = temp3;
-						pos = GetNextWord(es, pos, temp2);
-						temp3.clear();
-					}
-
-					short flag = 0;
-
-					if (!temp2.empty())
-					{
-						if (temp2[temp2.length()-1] == '%') flag = 1;
-					}
-					else flag = 0;
-
-					ARX_EQUIPMENT_SetEquip(io, temp3, word, GetVarValueInterpretedAsFloat(temp2, esss, io), flag);
-				}
-				else if (!strcmp(word, "SETONEHANDED"))
+				if (!strcmp(word, "SETONEHANDED"))
 				{
 
 					LogDebug <<  "SET_ONE_HANDED ...OBSOLETE...";

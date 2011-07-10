@@ -173,6 +173,39 @@ public:
 	
 };
 
+class SetEquipCommand : public Command {
+	
+public:
+	
+	SetEquipCommand() : Command("setequip", IO_ITEM) { }
+	
+	Result execute(Context & context) {
+		
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('r')) {
+				ARX_EQUIPMENT_Remove_All_Special(context.getIO());
+			} else if(!flg || (flg & ~flag('r'))) {
+				LogWarning << "unexpected flags: setequip " << options;
+			}
+		}
+		
+		string param2 = context.getLowercase();
+		string val = context.getLowercase();
+		
+		short flag = (!val.empty() && val[val.length() - 1] == '%') ? 1 : 0;
+		float fval = context.getFloatVar(val);
+		
+		LogDebug << "setequip " << options << ' ' << param2 << ' ' << fval << ' ' << flag;
+		
+		ARX_EQUIPMENT_SetEquip(context.getIO(), options, param2, fval, flag);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -183,6 +216,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetLightCommand);
 	ScriptEvent::registerCommand(new SetFoodCommand);
 	ScriptEvent::registerCommand(new SetObjectTypeCommand);
+	ScriptEvent::registerCommand(new SetEquipCommand);
 	
 }
 
