@@ -395,6 +395,27 @@ public:
 	
 };
 
+class SetNameCommand : public Command {
+	
+public:
+	
+	SetNameCommand() : Command("setname", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string name = loadUnlocalized(context.getLowercase());
+		
+		LogDebug << "setname " << name;
+		
+		strcpy(context.getIO()->locname, name.c_str());
+		
+		return Success;
+	}
+	
+	~SetNameCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -419,6 +440,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetTrapCommand);
 	ScriptEvent::registerCommand(new SetSecretCommand);
 	ScriptEvent::registerCommand(new SetMaterialCommand);
+	ScriptEvent::registerCommand(new SetNameCommand);
 	
 }
 

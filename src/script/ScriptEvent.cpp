@@ -634,18 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETNAME"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io != NULL)
-					{
-						strcpy(io->locname, word.c_str());
-					}
-
-					LogDebug <<  "SETNAME "<< word;
-				}
-				else if (!strcmp(word, "SETPLAYERTWEAK"))
+				if (!strcmp(word, "SETPLAYERTWEAK"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "SET_PLAYER_TWEAK "<< word;

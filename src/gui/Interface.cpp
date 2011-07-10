@@ -1673,7 +1673,7 @@ bool DANAE::ManageEditorControls()
 									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 								}
 
-								MakeLocalised(temp->locname,WILLADDSPEECH);
+								WILLADDSPEECH = getLocalised(temp->locname);
 
 								if (temp->ioflags & IO_GOLD)
 								{
@@ -5546,7 +5546,7 @@ void DANAE::ManageKeyMouse()
 								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 							}
 
-							MakeLocalised(temp->locname,WILLADDSPEECH);
+							WILLADDSPEECH = getLocalised(temp->locname);
 
 							if (temp->ioflags & IO_GOLD)
 							{
@@ -5559,16 +5559,16 @@ void DANAE::ManageKeyMouse()
 							{
 								std::string Text = getLocalised("description_poisoned", "error");
 								std::stringstream ss;
-								ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
-								WILLADDSPEECH = ss.str();
+								ss << " (" << Text << " " << (int)temp->poisonous << ")";
+								WILLADDSPEECH += ss.str();
 							}
 
 							if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 							{
 								std::string Text = getLocalised("description_durability", "error");
 								std::stringstream ss;
-								ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
-								WILLADDSPEECH = ss.str();
+								ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+								WILLADDSPEECH += ss.str();
 							}
 
 						WILLADDSPEECHTIME = ARXTimeUL();
@@ -5621,7 +5621,7 @@ void DANAE::ManageKeyMouse()
 										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 									}
 
-									MakeLocalised(temp->locname,WILLADDSPEECH);
+									WILLADDSPEECH = getLocalised(temp->locname);
 
 									if (temp->ioflags & IO_GOLD)
 									{

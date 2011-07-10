@@ -2197,7 +2197,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->angle = ais->angle;
 		io->scale = ais->scale;
 		io->weight = ais->weight;
-		strcpy(io->locname, toLowercase(safestring(ais->locname)).c_str());
+		strcpy(io->locname, script::loadUnlocalized(toLowercase(safestring(ais->locname))).c_str());
 		io->EditorFlags = ais->EditorFlags;
 		io->GameFlags = ais->GameFlags;
 		io->material = (Material)ais->material; // TODO save/load enum

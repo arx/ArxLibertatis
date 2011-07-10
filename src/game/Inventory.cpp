@@ -2067,7 +2067,7 @@ INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability() {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					if(inventory[iNbBag][i][j].io) {
-						if(strcmp(inventory[iNbBag][i][j].io->locname, "[description_torch]") == 0) {
+						if(!strcmp(inventory[iNbBag][i][j].io->locname, "description_torch")) {
 							if(!io) {
 								io = inventory[iNbBag][i][j].io;
 							} else {
