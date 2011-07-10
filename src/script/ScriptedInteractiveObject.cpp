@@ -196,6 +196,31 @@ public:
 	
 };
 
+class ShopCategoryCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		string category = context.getLowercase();
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!io) {
+			return Failed;
+		}
+		
+		if(io->shop_category) {
+			free(io->shop_category);
+		}
+		io->shop_category = strdup(category.c_str());
+		
+		return Success;
+	}
+	
+	~ShopCategoryCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -203,6 +228,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand("replaceme", new ReplaceMeCommand);
 	ScriptEvent::registerCommand("rotate", new RotateCommand);
 	ScriptEvent::registerCommand("collision", new CollisionCommand);
+	ScriptEvent::registerCommand("shopcategory", new ShopCategoryCommand);
 	
 }
 

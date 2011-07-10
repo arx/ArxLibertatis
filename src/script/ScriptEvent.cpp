@@ -894,19 +894,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SHOPCATEGORY"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io->shop_category) free(io->shop_category);
-
-					io->shop_category = NULL;
-					io->shop_category = (char *)malloc(word.length() + 1);
-
-					if (io->shop_category)
-						strcpy(io->shop_category, word.c_str());
-				}
-				else if (!strcmp(word, "SHOPMULTIPLY"))
+				if (!strcmp(word, "SHOPMULTIPLY"))
 				{
 					pos = GetNextWord(es, pos, word);
 					io->shop_multiply = GetVarValueInterpretedAsFloat(word, esss, io);
