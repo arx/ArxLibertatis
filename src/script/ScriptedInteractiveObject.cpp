@@ -688,6 +688,27 @@ public:
 	
 };
 
+class SetIRColorCommand : public Command {
+	
+public:
+	
+	SetIRColorCommand() : Command("setircolor", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		float r = context.getFloat();
+		float g = context.getFloat();
+		float b = context.getFloat();
+		
+		LogDebug << "setircolor " << r << ' ' << g << ' ' << b;
+		
+		context.getIO()->infracolor = Color3f(r, g, b);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -724,6 +745,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetCollisionCommand("setworldcollision", 2));
 	ScriptEvent::registerCommand(new SetWeightCommand);
 	ScriptEvent::registerCommand(new SetTransparencyCommand);
+	ScriptEvent::registerCommand(new SetIRColorCommand);
 	
 }
 
