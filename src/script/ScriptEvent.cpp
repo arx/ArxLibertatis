@@ -634,12 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETONEHANDED"))
-				{
-
-					LogDebug <<  "SET_ONE_HANDED ...OBSOLETE...";
-				}
-				else if (!strcmp(word, "SETWEAPON"))
+				if (!strcmp(word, "SETWEAPON"))
 				{
 					pos = GetNextWord(es, pos, word);
 					io->GameFlags &= ~GFLAG_HIDEWEAPON;
@@ -4894,6 +4889,7 @@ void ScriptEvent::init() {
 	registerCommand(new ObsoleteCommand("setlefthand", 1));
 	registerCommand(new ObsoleteCommand("setshield", 1));
 	registerCommand(new ObsoleteCommand("settwohanded"));
+	registerCommand(new ObsoleteCommand("setonehanded"));
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
