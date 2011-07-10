@@ -450,6 +450,25 @@ public:
 	
 };
 
+class KeyringAddCommand : public Command {
+	
+public:
+	
+	KeyringAddCommand() : Command("keyringadd") { }
+	
+	Result execute(Context & context) {
+		
+		string key = toLowercase(context.getStringVar(context.getLowercase()));
+		
+		LogDebug << "keyringadd " << key;
+		
+		ARX_KEYRING_Add(key);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -465,6 +484,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new SetPlayerControlsCommand);
 	ScriptEvent::registerCommand(new StealNPCCommand);
 	ScriptEvent::registerCommand(new SpecialFXCommand);
+	ScriptEvent::registerCommand(new KeyringAddCommand);
 	
 }
 

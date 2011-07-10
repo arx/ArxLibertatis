@@ -621,18 +621,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				if (word[1] == '>') pos = GotoNextLine(es, pos);
 				break;
 
-				break;
-			case 'K':
-
-				if (!strcmp(word, "KEYRINGADD"))
-				{
-					std::string temp2;
-					pos = GetNextWord(es, pos, temp2);
-					word = GetVarValueInterpretedAsText(temp2, esss, io);
-					ARX_KEYRING_Add(word);
-				}
-
-				break;
 			case 'F':
 
 				if (!strcmp(word, "FORCEANIM"))
