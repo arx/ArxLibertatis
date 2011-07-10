@@ -21,71 +21,10 @@ class ScriptEvent;
 
 namespace script {
 
-//! strip a
+//! strip [] brackets
 std::string loadUnlocalized(const std::string & str);
 
-class Context {
-	
-private:
-	
-	EERIE_SCRIPT * script;
-	size_t pos;
-	INTERACTIVE_OBJ * io;
-	
-public:
-	
-	Context(EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL);
-	
-	std::string getStringVar(const std::string & var);
-	std::string getFlags();
-	std::string getWord();
-	void skipWord();
-	
-	void skipWhitespace();
-	
-	inline INTERACTIVE_OBJ * getIO() { return io; }
-	
-	std::string getLowercase();
-	bool getBool();
-	
-	float getFloat();
-	
-	float getFloatVar(const std::string & name);
-	
-	/*!
-	 * Skip input until the end of the current line.
-	 * @return the current position or (size_t)-1 if we are already at the line end
-	 */
-	size_t skipCommand();
-	
-	void skipStatement();
-	
-	bool jumpToLabel(const std::string & target, bool substack = false);
-	bool returnToCaller();
-	
-	inline EERIE_SCRIPT * getScript() {  return script; }
-	
-	friend class ::ScriptEvent;
-};
-
-class Command {
-	
-public:
-	
-	enum Result {
-		Success,
-		Failed,
-		AbortAccept,
-		AbortRefuse,
-		AbortError,
-		Jumped
-	};
-	
-	virtual Result execute(Context & context) = 0;
-	
-	virtual ~Command() { }
-	
-};
+class Command;
 
 } // namespace script
 
@@ -100,7 +39,7 @@ public:
 	
 	static ScriptResult send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string & params, INTERACTIVE_OBJ * io, const std::string & eventname, long info = 0);
 	
-	static void registerCommand(const std::string & name, script::Command * command);
+	static void registerCommand(script::Command * command);
 	
 	static void init();
 	

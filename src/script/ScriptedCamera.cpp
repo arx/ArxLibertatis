@@ -8,7 +8,6 @@
 #include "io/Logger.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
-#include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
 using std::string;
@@ -23,6 +22,8 @@ namespace {
 class CameraControlCommand : public Command {
 	
 public:
+	
+	CameraControlCommand() : Command("cameracontrol", IO_CAMERA) { }
 	
 	Result execute(Context & context) {
 		
@@ -42,6 +43,8 @@ public:
 class CameraActivateCommand : public Command {
 	
 public:
+	
+	CameraActivateCommand() : Command("cameraactivate") { }
 	
 	Result execute(Context & context) {
 		
@@ -82,18 +85,15 @@ class CameraSmoothingCommand : public Command {
 	
 public:
 	
+	CameraSmoothingCommand() : Command("camerasmoothing", IO_CAMERA) { }
+	
 	Result execute(Context & context) {
 		
 		float smoothing = context.getFloat();
 		
 		LogDebug << "camerasmoothing " << smoothing;
 		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io || !(io->ioflags & IO_CAMERA)) {
-			return Failed;
-		}
-		
-		io->_camdata->cam.smoothing = smoothing;
+		context.getIO()->_camdata->cam.smoothing = smoothing;
 		
 		return Success;
 	}
@@ -105,6 +105,8 @@ public:
 class CinemascopeCommand : public Command {
 	
 public:
+	
+	CinemascopeCommand() : Command("cinemascope") { }
 	
 	Result execute(Context & context) {
 		
@@ -121,6 +123,8 @@ public:
 		
 		bool enable = context.getBool();
 		
+		LogDebug << "cinemascope " << options << ' ' << enable;
+		
 		ARX_INTERFACE_SetCinemascope(enable ? 1 : 0, smooth);
 		
 		return Success;
@@ -134,18 +138,15 @@ class CameraFocalCommand : public Command {
 	
 public:
 	
+	CameraFocalCommand() : Command("camerafocal", IO_CAMERA) { }
+	
 	Result execute(Context & context) {
 		
-		float focal = context.getFloat();
+		float focal = clamp(context.getFloat(), 100.f, 800.f);
 		
 		LogDebug << "camerafocal " << focal;
 		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io || !(io->ioflags & IO_CAMERA)) {
-			return Failed;
-		}
-		
-		io->_camdata->cam.focal = clamp(focal, 100.f, 800.f);
+		context.getIO()->_camdata->cam.focal = focal;
 		
 		return Success;
 	}
@@ -158,6 +159,8 @@ class CameraTranslateTargetCommand : public Command {
 	
 public:
 	
+	CameraTranslateTargetCommand() : Command("cameratranslatetarget", IO_CAMERA) { }
+	
 	Result execute(Context & context) {
 		
 		float x = context.getFloat();
@@ -166,12 +169,7 @@ public:
 		
 		LogDebug << "cameratranslatetarget " << x << ' ' << y << ' ' << z;
 		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io || !(io->ioflags & IO_CAMERA)) {
-			return Failed;
-		}
-		
-		io->_camdata->cam.translatetarget = Vec3f(x, y, z);
+		context.getIO()->_camdata->cam.translatetarget = Vec3f(x, y, z);
 		
 		return Success;
 	}
@@ -184,12 +182,12 @@ public:
 
 void setupScriptedCamera() {
 	
-	ScriptEvent::registerCommand("cameracontrol", new CameraControlCommand);
-	ScriptEvent::registerCommand("cameraactivate", new CameraActivateCommand);
-	ScriptEvent::registerCommand("camerasmoothing", new CameraSmoothingCommand);
-	ScriptEvent::registerCommand("cinemascope", new CinemascopeCommand);
-	ScriptEvent::registerCommand("camerafocal", new CameraFocalCommand);
-	ScriptEvent::registerCommand("cameratranslatetarget", new CameraTranslateTargetCommand);
+	ScriptEvent::registerCommand(new CameraControlCommand);
+	ScriptEvent::registerCommand(new CameraActivateCommand);
+	ScriptEvent::registerCommand(new CameraSmoothingCommand);
+	ScriptEvent::registerCommand(new CinemascopeCommand);
+	ScriptEvent::registerCommand(new CameraFocalCommand);
+	ScriptEvent::registerCommand(new CameraTranslateTargetCommand);
 	
 }
 

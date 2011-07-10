@@ -13,7 +13,6 @@
 #include "platform/String.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
-#include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
 using std::string;
@@ -31,11 +30,13 @@ class ActivatePhysicsCommand : public Command {
 	
 public:
 	
+	ActivatePhysicsCommand() : Command("activatephysics", ANY_IO) { }
+	
 	Result execute(Context & context) {
 		
-		ARX_INTERACTIVE_ActivatePhysics(GetInterNum(context.getIO()));
-		
 		LogDebug << "activatephysics";
+		
+		ARX_INTERACTIVE_ActivatePhysics(GetInterNum(context.getIO()));
 		
 		return Success;
 	}
@@ -47,6 +48,8 @@ public:
 class AttractorCommand : public Command {
 	
 public:
+	
+	AttractorCommand() : Command("attractor") { }
 	
 	Result execute(Context & context) {
 		
@@ -81,6 +84,8 @@ public:
 class AmbianceCommand : public Command {
 	
 public:
+	
+	AmbianceCommand() : Command("ambiance") { }
 	
 	Result execute(Context & context) {
 		
@@ -118,6 +123,8 @@ class AnchorBlockCommand : public Command {
 	
 public:
 	
+	AnchorBlockCommand() : Command("anchorblock", ANY_IO) { }
+	
 	Result execute(Context & context) {
 		
 		bool choice = context.getBool();
@@ -136,6 +143,8 @@ public:
 class AttachCommand : public Command {
 	
 public:
+	
+	AttachCommand() : Command("attach") { }
 	
 	Result execute(Context & context) {
 		
@@ -169,6 +178,8 @@ public:
 class CineCommand : public Command {
 	
 public:
+	
+	CineCommand() : Command("cine") { }
 	
 	Result execute(Context & context) {
 		
@@ -217,6 +228,8 @@ public:
 class ConversationCommand : public Command {
 	
 public:
+	
+	ConversationCommand() : Command("conversation") { }
 	
 	Result execute(Context & context) {
 		
@@ -269,6 +282,8 @@ class QuakeCommand : public Command {
 	
 public:
 	
+	QuakeCommand() : Command("quake") { }
+	
 	Result execute(Context & context) {
 		
 		float intensity = context.getFloat();
@@ -290,14 +305,14 @@ public:
 
 void setupScriptedControl() {
 	
-	ScriptEvent::registerCommand("activatephysics", new ActivatePhysicsCommand);
-	ScriptEvent::registerCommand("attractor", new AttractorCommand);
-	ScriptEvent::registerCommand("ambiance", new AmbianceCommand);
-	ScriptEvent::registerCommand("anchorblock", new AnchorBlockCommand);
-	ScriptEvent::registerCommand("attach", new AttachCommand);
-	ScriptEvent::registerCommand("cine", new CineCommand);
-	ScriptEvent::registerCommand("conversation", new ConversationCommand);
-	ScriptEvent::registerCommand("quake", new QuakeCommand);
+	ScriptEvent::registerCommand(new ActivatePhysicsCommand);
+	ScriptEvent::registerCommand(new AttractorCommand);
+	ScriptEvent::registerCommand(new AmbianceCommand);
+	ScriptEvent::registerCommand(new AnchorBlockCommand);
+	ScriptEvent::registerCommand(new AttachCommand);
+	ScriptEvent::registerCommand(new CineCommand);
+	ScriptEvent::registerCommand(new ConversationCommand);
+	ScriptEvent::registerCommand(new QuakeCommand);
 	
 }
 

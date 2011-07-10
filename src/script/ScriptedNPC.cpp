@@ -26,6 +26,8 @@ class BehaviourCommand : public Command {
 	
 public:
 	
+	BehaviourCommand() : Command("behavior", IO_NPC) { }
+	
 	Result execute(Context & context) {
 		
 		string options = context.getFlags();
@@ -72,10 +74,8 @@ public:
 			if(flg & flag('a')) {
 				behavior |= BEHAVIOUR_STARE_AT;
 			}
-			if(io && (io->ioflags & IO_NPC)) {
-				if(flg & flags("012")) {
-					io->_npcdata->tactics = 0;
-				}
+			if(flg & flags("012")) {
+				io->_npcdata->tactics = 0;
 			}
 			if(!flg || (flg & ~flags("lsdmfa012"))) {
 				LogWarning << "unexpected flags: behavior " << options;
@@ -86,57 +86,39 @@ public:
 		if(command == "go_home") {
 			behavior |= BEHAVIOUR_GO_HOME;
 		} else if(command == "friendly") {
-			if(io && (io->ioflags & IO_NPC)) {
-				io->_npcdata->movemode = NOMOVEMODE;
-			}
+			io->_npcdata->movemode = NOMOVEMODE;
 			behavior |= BEHAVIOUR_FRIENDLY;
 		} else if(command == "move_to") {
-			if(io && (io->ioflags & IO_NPC)) {
-				io->_npcdata->movemode = WALKMODE;
-			}
+			io->_npcdata->movemode = WALKMODE;
 			behavior |= BEHAVIOUR_MOVE_TO;
 		} else if(command == "flee") {
 			behavior_param = context.getFloat();
-			if(io && (io->ioflags & IO_NPC)) {
-				io->_npcdata->movemode = RUNMODE;
-			}
+			io->_npcdata->movemode = RUNMODE;
 			behavior |= BEHAVIOUR_FLEE;
 		} else if(command == "look_for") {
 			behavior_param = context.getFloat();
-			if(io && (io->ioflags & IO_NPC)) {
-				io->_npcdata->movemode = WALKMODE;
-			}
+			io->_npcdata->movemode = WALKMODE;
 			behavior |= BEHAVIOUR_LOOK_FOR;
 		} else if(command == "hide") {
 			behavior_param = context.getFloat();
-			if(io && (io->ioflags & IO_NPC)) {
-				io->_npcdata->movemode = WALKMODE;
-			}
+			io->_npcdata->movemode = WALKMODE;
 			behavior |= BEHAVIOUR_HIDE;
 		} else if(command == "wander_around") {
 			behavior_param = context.getFloat();
-			if(io && (io->ioflags & IO_NPC)) {
-				io->_npcdata->movemode = WALKMODE;
-			}
+			io->_npcdata->movemode = WALKMODE;
 			behavior |= BEHAVIOUR_WANDER_AROUND;
 		} else if(command == "guard") {
 			behavior |= BEHAVIOUR_GUARD;
-			if(io) {
-				io->targetinfo = -2;
-				if(io->ioflags & IO_NPC) {
-					io->_npcdata->movemode = NOMOVEMODE;
-				}
-			}
+			io->targetinfo = -2;
+			io->_npcdata->movemode = NOMOVEMODE;
 		} else {
 			LogWarning << "unexpected command: behavior " << options << " \"" << command << '"';
 		}
 		
 		LogDebug << "behavior " << options << " \"" << command << "\" " << behavior_param;
 		
-		if(io && (io->ioflags & IO_NPC)) {
-			ARX_CHECK_LONG(behavior_param);
-			ARX_NPC_Behaviour_Change(io, behavior, static_cast<long>(behavior_param));
-		}
+		ARX_CHECK_LONG(behavior_param);
+		ARX_NPC_Behaviour_Change(io, behavior, static_cast<long>(behavior_param));
 		
 		return Success;
 	}
@@ -148,6 +130,8 @@ public:
 class ReviveCommand : public Command {
 	
 public:
+	
+	ReviveCommand() : Command("revive", ANY_IO) { }
 	
 	Result execute(Context & context) {
 		
@@ -178,6 +162,8 @@ public:
 class SpellcastCommand : public Command {
 	
 public:
+	
+	SpellcastCommand() : Command("spellcast", ANY_IO) { }
 	
 	Result execute(Context & context) {
 		
@@ -312,6 +298,8 @@ class SpeakCommand : public Command {
 	}
 	
 public:
+	
+	SpeakCommand() : Command("speak") { }
 	
 	Result execute(Context & context) {
 		
@@ -460,10 +448,10 @@ public:
 
 void setupScriptedNPC() {
 	
-	ScriptEvent::registerCommand("behavior", new BehaviourCommand);
-	ScriptEvent::registerCommand("revive", new ReviveCommand);
-	ScriptEvent::registerCommand("spellcast", new SpellcastCommand);
-	ScriptEvent::registerCommand("speak", new SpeakCommand);
+	ScriptEvent::registerCommand(new BehaviourCommand);
+	ScriptEvent::registerCommand(new ReviveCommand);
+	ScriptEvent::registerCommand(new SpellcastCommand);
+	ScriptEvent::registerCommand(new SpeakCommand);
 	
 }
 

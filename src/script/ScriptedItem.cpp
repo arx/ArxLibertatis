@@ -18,6 +18,8 @@ class RepairCommand : public Command {
 	
 public:
 	
+	RepairCommand() : Command("repair") { }
+	
 	Result execute(Context & context) {
 		
 		string target = context.getLowercase();
@@ -45,6 +47,8 @@ class SetPoisonousCommand : public Command {
 	
 public:
 	
+	SetPoisonousCommand() : Command("setpoisonous", ANY_IO) { }
+	
 	Result execute(Context & context) {
 		
 		float poisonous = context.getFloat();
@@ -53,10 +57,6 @@ public:
 		LogDebug << "setpoisonous " << poisonous << ' ' << poisonous_count;
 		
 		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io) {
-			return Failed;
-		}
-		
 		if(poisonous_count == 0) {
 			io->poisonous_count = 0;
 		} else {
@@ -77,8 +77,8 @@ public:
 
 void setupScriptedItem() {
 	
-	ScriptEvent::registerCommand("repair", new RepairCommand);
-	ScriptEvent::registerCommand("setpoisonous", new SetPoisonousCommand);
+	ScriptEvent::registerCommand(new RepairCommand);
+	ScriptEvent::registerCommand(new SetPoisonousCommand);
 	
 }
 

@@ -9,7 +9,7 @@
 #include "io/FilePath.h"
 #include "physics/Collisions.h"
 #include "scene/Interactive.h"
-#include "script/ScriptEvent.h"
+#include "script/ScriptUtils.h"
 
 using std::string;
 
@@ -23,6 +23,8 @@ class ReplaceMeCommand : public Command {
 	
 public:
 	
+	ReplaceMeCommand() : Command("replaceme", ANY_IO) { }
+	
 	Result execute(Context & context) {
 		
 		string object = context.getLowercase();
@@ -30,10 +32,6 @@ public:
 		LogDebug << "replaceme \"" << object << '"';
 		
 		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io) {
-			LogDebug << "replaceme called for non-io";
-			return Failed;
-		}
 		
 		string tex2;
 		if(io->ioflags & IO_NPC) {
@@ -115,13 +113,11 @@ class RotateCommand : public Command {
 	
 public:
 	
+	RotateCommand() : Command("rotate", ANY_IO) { }
+	
 	Result execute(Context & context) {
 		
 		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io) {
-			LogDebug << "rotate called without IO";
-			return Failed;
-		}
 		
 		float t1 = context.getFloat();
 		float t2 = context.getFloat();
@@ -150,15 +146,13 @@ class CollisionCommand : public Command {
 	
 public:
 	
+	CollisionCommand() : Command("collision", ANY_IO) { }
+	
 	Result execute(Context & context) {
 		
 		bool choice = context.getBool();
 		
 		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io) {
-			LogWarning << "collision script command executed without IO";
-			return Failed;
-		}
 		
 		if(!choice) {
 			io->ioflags |= IO_NO_COLLISIONS;
@@ -200,6 +194,8 @@ class ShopCategoryCommand : public Command {
 	
 public:
 	
+	ShopCategoryCommand() : Command("shopcategory", ANY_IO) { }
+	
 	Result execute(Context & context) {
 		
 		string category = context.getLowercase();
@@ -207,10 +203,6 @@ public:
 		LogDebug << "shopcategory " << category;
 		
 		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io) {
-			return Failed;
-		}
-		
 		if(io->shop_category) {
 			free(io->shop_category);
 		}
@@ -227,18 +219,15 @@ class ShopMultiplyCommand : public Command {
 	
 public:
 	
+	ShopMultiplyCommand() : Command("shopmultiply", ANY_IO) { }
+	
 	Result execute(Context & context) {
 		
 		float multiply = context.getFloat();
 		
 		LogDebug << "shopmultiply " << multiply;
 		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io) {
-			return Failed;
-		}
-		
-		io->shop_multiply = multiply;
+		context.getIO()->shop_multiply = multiply;
 		
 		return Success;
 	}
@@ -247,15 +236,44 @@ public:
 	
 };
 
+class GameFlagCommand : public Command {
+	
+	unsigned short flag;
+	
+public:
+	
+	GameFlagCommand(string name, short _flag) : Command(name, ANY_IO), flag(_flag) { }
+	
+	Result execute(Context & context) {
+		
+		bool enable = context.getBool();
+		
+		LogDebug << getName() << ' ' << enable;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		if(enable) {
+			io->GameFlags |= flag;
+		} else {
+			io->GameFlags &= ~flag;
+		}
+		
+		return Success;
+	}
+	
+	~GameFlagCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
 	
-	ScriptEvent::registerCommand("replaceme", new ReplaceMeCommand);
-	ScriptEvent::registerCommand("rotate", new RotateCommand);
-	ScriptEvent::registerCommand("collision", new CollisionCommand);
-	ScriptEvent::registerCommand("shopcategory", new ShopCategoryCommand);
-	ScriptEvent::registerCommand("shopmultiply", new ShopMultiplyCommand);
+	ScriptEvent::registerCommand(new ReplaceMeCommand);
+	ScriptEvent::registerCommand(new RotateCommand);
+	ScriptEvent::registerCommand(new CollisionCommand);
+	ScriptEvent::registerCommand(new ShopCategoryCommand);
+	ScriptEvent::registerCommand(new ShopMultiplyCommand);
 	
 }
 

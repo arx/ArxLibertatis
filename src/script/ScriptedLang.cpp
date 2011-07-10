@@ -17,6 +17,8 @@ class NopCommand : public Command {
 	
 public:
 	
+	NopCommand() : Command("nop") { }
+	
 	Result execute(Context & context) {
 		
 		ARX_UNUSED(context);
@@ -32,22 +34,21 @@ public:
 
 class GotoCommand : public Command {
 	
-	string command;
 	bool sub;
 	
 public:
 	
-	GotoCommand(string _command, bool _sub = false) : command(_command), sub(_sub) { }
+	GotoCommand(string command, bool _sub = false) : Command(command), sub(_sub) { }
 	
 	Result execute(Context & context) {
 		
 		string label = context.getWord();
 		
-		LogDebug << command << ' ' << label;
+		LogDebug << getName() << ' ' << label;
 		
 		size_t pos = context.skipCommand();
 		if(pos != (size_t)-1) {
-			LogWarning << "unexpected text after " << command << " at " << pos;
+			LogWarning << "unexpected text after " << getName() << " at " << pos;
 		}
 		
 		if(!context.jumpToLabel(label)) {
@@ -65,18 +66,17 @@ public:
 
 class AbortCommand : public Command {
 	
-	string command;
 	Result result;
 	
 public:
 	
-	AbortCommand(string _command, Result _result) : command(_command), result(_result) { }
+	AbortCommand(string command, Result _result) : Command(command), result(_result) { }
 	
 	Result execute(Context & context) {
 		
 		ARX_UNUSED(context);
 		
-		LogDebug << command;
+		LogDebug << getName();
 		
 		return result;
 	}
@@ -88,6 +88,8 @@ public:
 class RandomCommand : public Command {
 	
 public:
+	
+	RandomCommand() : Command("random") { }
 	
 	Result execute(Context & context) {
 		
@@ -111,9 +113,11 @@ class ReturnCommand : public Command {
 	
 public:
 	
+	ReturnCommand() : Command("return") { }
+	
 	Result execute(Context & context) {
 		
-		LogDebug << "return";
+		LogDebug << getName();
 		
 		if(!context.returnToCaller()) {
 			LogError << "return failed";
@@ -131,13 +135,13 @@ public:
 
 void setupScriptedLang() {
 	
-	ScriptEvent::registerCommand("nop", new NopCommand);
-	ScriptEvent::registerCommand("goto", new GotoCommand("goto"));
-	ScriptEvent::registerCommand("gosub", new GotoCommand("gosub", true));
-	ScriptEvent::registerCommand("accept", new AbortCommand("accept", Command::AbortAccept));
-	ScriptEvent::registerCommand("refuse", new AbortCommand("refuse", Command::AbortRefuse));
-	ScriptEvent::registerCommand("random", new RandomCommand);
-	ScriptEvent::registerCommand("return", new ReturnCommand);
+	ScriptEvent::registerCommand(new NopCommand);
+	ScriptEvent::registerCommand(new GotoCommand("goto"));
+	ScriptEvent::registerCommand(new GotoCommand("gosub", true));
+	ScriptEvent::registerCommand(new AbortCommand("accept", Command::AbortAccept));
+	ScriptEvent::registerCommand(new AbortCommand("refuse", Command::AbortRefuse));
+	ScriptEvent::registerCommand(new RandomCommand);
+	ScriptEvent::registerCommand(new ReturnCommand);
 	
 }
 

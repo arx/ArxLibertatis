@@ -49,6 +49,7 @@
 #include "scene/Object.h"
 #include "scene/Light.h"
 
+#include "script/ScriptUtils.h"
 #include "script/ScriptedCamera.h"
 #include "script/ScriptedControl.h"
 #include "script/ScriptedInteractiveObject.h"
@@ -394,289 +395,17 @@ extern long PauseScript;
 
 namespace script {
 
-string loadUnlocalized(const std::string & str) {
-	
-	// if the section name has the qualifying brackets "[]", cut them off
-	if(!str.empty() && str[0] == '[' && str[str.length() - 1] == ']') {
-		return str.substr(1, str.length() - 2);
-	}
-	
-	return str;
-}
-
-Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
-
-string Context::getStringVar(const string & var) {
-	return GetVarValueInterpretedAsText(var, script, io);
-}
-
-string Context::getWord() {
-	
-	skipWhitespace();
-	
-	if(pos >= script->size) {
-		return string();
-	}
-	
-	const char * esdat = script->data;
-	
-	boolean tilde = false; // number of tildes
-	
-	string word;
-	string var; // TODO(case-sensitive) should sometimes be lowercased
-	
-	// now take chars until it finds a space or unused char
-	while(((unsigned char)esdat[pos]) > 32 && esdat[pos] != '(' && esdat[pos] != ')') {
-		
-		if(esdat[pos] == '"') {
-			pos++;
-			if(pos == script->size) {
-				return word;
-			}
-			
-			while(esdat[pos] != '"') {
-				if(esdat[pos] == '\n') {
-					return word;
-				} else if(esdat[pos] == '~') {
-					if(tilde) {
-						if(script->master) {
-							word += GetVarValueInterpretedAsText(var, script->master, NULL);
-						} else {
-							word += GetVarValueInterpretedAsText(var, script, NULL);
-						}
-					}
-					tilde = !tilde;
-				} else if(tilde) {
-					var.push_back(esdat[pos]);
-				} else {
-					word.push_back(esdat[pos]);
-				}
-				pos++;
-				if(pos == script->size) {
-					return word;
-				}
-			}
-			
-			pos++;
-			return word;
-			
-		} else if(esdat[pos] == '~') {
-			if(tilde) {
-				if(script->master) {
-					word += GetVarValueInterpretedAsText(var, script->master, NULL);
-				} else {
-					word += GetVarValueInterpretedAsText(var, script, NULL);
-				}
-			}
-			tilde = !tilde;
-		} else if(tilde) {
-			var.push_back(esdat[pos]);
-		} else {
-			word.push_back(esdat[pos]);
-		}
-		
-		pos++;
-		if(pos == script->size) {
-			return word;
-		}
-	}
-	
-	return word;
-}
-
-void Context::skipWord() {
-	
-	skipWhitespace();
-	
-	if(pos >= script->size) {
-		return;
-	}
-	
-	const char * esdat = script->data;
-	
-	// now take chars until it finds a space or unused char
-	while(((unsigned char)esdat[pos]) > 32 && esdat[pos] != '(' && esdat[pos] != ')') {
-		
-		if(esdat[pos] == '"') {
-			pos++;
-			if(pos == script->size) {
-				return;
-			}
-			
-			while(esdat[pos] != '"') {
-				if(esdat[pos] == '\n') {
-					return;
-				}
-				pos++;
-				if(pos == script->size) {
-					return;
-				}
-			}
-			
-			pos++;
-			return;
-			
-		}
-		
-		pos++;
-		if(pos == script->size) {
-			return;
-		}
-	}
-	
-	return;
-}
-
-void Context::skipWhitespace() {
-	
-	const char * esdat = script->data;
-	
-	// First ignores spaces & unused chars
-	while(pos < script->size && (((unsigned char)esdat[pos]) <= 32 || esdat[pos] == '(' || esdat[pos] == ')')) {
-		if(esdat[pos] == '\n') {
-			return;
-		}
-		pos++;
-	}
-}
-
-string Context::getFlags() {
-	
-	skipWhitespace();
-	
-	if(pos < script->size && script->data[pos] == '-') {
-		return getLowercase();
-	}
-	
-	return string();
-}
-
-float Context::getFloat() {
-	return GetVarValueInterpretedAsFloat(getLowercase(), script, io);
-}
-
-string Context::getLowercase() {
-	return toLowercase(getWord());
-}
-
-bool Context::getBool() {
-	
-	string word = getLowercase();
-	
-	return (word == "on" || word == "yes");
-}
-
-float Context::getFloatVar(const std::string & name) {
-	return GetVarValueInterpretedAsFloat(name, script, io);
-}
-
-size_t Context::skipCommand() {
-	
-	skipWhitespace();
-	
-	const char * esdat = script->data;
-	
-	if(pos >= script->size || esdat[pos] == '\n') {
-		return (size_t)-1;
-	}
-	
-	size_t oldpos = pos;
-	
-	if(esdat[pos] == '/' && pos + 1 < script->size && esdat[pos + 1] == '/') {
-		oldpos = (size_t)-1;
-		pos += 2;
-	}
-	
-	while(pos < script->size && esdat[pos] != '\n') {
-		pos++;
-	}
-	
-	return oldpos;
-}
-
-bool Context::jumpToLabel(const string & target, bool substack) {
-	
-	if(!substack && !InSubStack(script, pos)) {
-		return false;
-	}
-	
-	long targetpos = FindLabelPos(script, target);
-	if(targetpos == -1) {
-		return false;
-	}
-	
-	pos = targetpos;
-	return true;
-}
-
-bool Context::returnToCaller() {
-	
-	long oldpos = GetSubStack(script);
-	if(oldpos == -1) {
-		return false;
-	}
-	
-	pos = oldpos;
-	return true;
-}
-
-void Context::skipStatement() {
-	
-	string word = getWord();
-	if(pos == script->size) {
-		return;
-	}
-	
-	while(word.empty() && pos != script->size && script->data[pos] == '\n') {
-		pos++;
-		word = getWord();
-	}
-	
-	if(word == "{") {
-		long brackets = 1;
-		while(brackets > 0) {
-			
-			if(script->size && script->data[pos] == '\n') {
-				pos++;
-			}
-			word = getWord();
-			if(pos == script->size) {
-				return;
-			}
-			
-			if(word == "{") {
-				brackets++;
-			} else if(word == "}") {
-				brackets--;
-			}
-		}
-	} else {
-		skipCommand();
-	}
-	
-	size_t oldpos = pos;
-	if(pos != script->size && script->data[pos] == '\n') {
-		do {
-			pos++;
-			word = getWord();
-		} while(word.empty() && pos != script->size && script->data[pos] == '\n');
-	}
-	word = getLowercase();
-	if(word != "else") {
-		pos = oldpos;
-	}
-}
+namespace {
 
 class ObsoleteCommand : public Command {
 	
 private:
 	
-	string command;
 	size_t nargs;
 	
 public:
 	
-	ObsoleteCommand(const string & _command, size_t _nargs = 0) : command(_command), nargs(_nargs) { }
+	ObsoleteCommand(const string & command, size_t _nargs = 0) : Command(command), nargs(_nargs) { }
 	
 	Result execute(Context & context) {
 		
@@ -684,7 +413,7 @@ public:
 			context.skipWord();
 		}
 		
-		LogWarning << "obsolete command: " << command;
+		LogWarning << "obsolete command: " << getName();
 		
 		return Failed;
 	}
@@ -692,6 +421,8 @@ public:
 	~ObsoleteCommand() { }
 	
 };
+
+}
 
 } // namespace script
 
@@ -856,7 +587,16 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			
 			Context context(es, pos, io);
 			
-			Command::Result res = it->second->execute(context);
+			Command & command = *(it->second);
+			
+			Command::Result res;
+			if(command.getIOFlags() && (!io || (command.getIOFlags() != Command::ANY_IO && !(command.getIOFlags() & io->ioflags)))) {
+				LogWarning << "command " << command.getName() << " needs an IO of type " << command.getIOFlags();
+				context.skipCommand();
+				res = Command::Failed;
+			} else {
+				res = it->second->execute(context);
+			}
 			
 			pos = context.pos;
 			
@@ -5785,14 +5525,14 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	return ret;
 }
 
-void ScriptEvent::registerCommand(const std::string & name, Command * command) {
+void ScriptEvent::registerCommand(Command * command) {
 	
 	typedef std::pair<std::map<string, Command *>::iterator, bool> Res;
 	
-	Res res = commands.insert(std::make_pair(name, command));
+	Res res = commands.insert(std::make_pair(command->getName(), command));
 	
 	if(!res.second) {
-		LogError << "duplicate script command name: " + name;
+		LogError << "duplicate script command name: " + command->getName();
 		delete command;
 	}
 	
@@ -5809,8 +5549,8 @@ void ScriptEvent::init() {
 	setupScriptedNPC();
 	setupScriptedPlayer();
 	
-	registerCommand("attachnpctoplayer", new ObsoleteCommand("attachnpctoplayer"));
-	registerCommand("gmode", new ObsoleteCommand("gmode", 1));
+	registerCommand(new ObsoleteCommand("attachnpctoplayer"));
+	registerCommand(new ObsoleteCommand("gmode", 1));
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }

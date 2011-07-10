@@ -17,6 +17,8 @@ class AddBagCommand : public Command {
 	
 public:
 	
+	AddBagCommand() : Command("addbag") { }
+	
 	Result execute(Context & context) {
 		
 		ARX_UNUSED(context);
@@ -36,6 +38,8 @@ class AddXpCommand : public Command {
 	
 public:
 	
+	AddXpCommand() : Command("addxp") { }
+	
 	Result execute(Context & context) {
 		
 		float val = context.getFloat();
@@ -54,6 +58,8 @@ public:
 class AddGoldCommand : public Command {
 	
 public:
+	
+	AddGoldCommand() : Command("addgold") { }
 	
 	Result execute(Context & context) {
 		
@@ -79,6 +85,8 @@ class RidiculousCommand : public Command {
 	
 public:
 	
+	RidiculousCommand() : Command("ridiculous") { }
+	
 	Result execute(Context & context) {
 		
 		ARX_UNUSED(context);
@@ -101,7 +109,7 @@ class RuneCommand : public Command {
 	
 public:
 	
-	RuneCommand() {
+	RuneCommand() : Command("rune") {
 		runes["aam"] = FLAG_AAM;
 		runes["cetrius"] = FLAG_CETRIUS;
 		runes["comunicatum"] = FLAG_COMUNICATUM;
@@ -186,6 +194,8 @@ class QuestCommand : public Command {
 	
 public:
 	
+	QuestCommand() : Command("quest") { }
+	
 	Result execute(Context & context) {
 		
 		string name = loadUnlocalized(context.getLowercase());
@@ -205,12 +215,12 @@ public:
 
 void setupScriptedPlayer() {
 	
-	ScriptEvent::registerCommand("addbag", new AddBagCommand);
-	ScriptEvent::registerCommand("addxp", new AddXpCommand);
-	ScriptEvent::registerCommand("addgold", new AddGoldCommand);
-	ScriptEvent::registerCommand("ridiculous", new RidiculousCommand);
-	ScriptEvent::registerCommand("rune", new RuneCommand);
-	ScriptEvent::registerCommand("quest", new QuestCommand);
+	ScriptEvent::registerCommand(new AddBagCommand);
+	ScriptEvent::registerCommand(new AddXpCommand);
+	ScriptEvent::registerCommand(new AddGoldCommand);
+	ScriptEvent::registerCommand(new RidiculousCommand);
+	ScriptEvent::registerCommand(new RuneCommand);
+	ScriptEvent::registerCommand(new QuestCommand);
 	
 }
 

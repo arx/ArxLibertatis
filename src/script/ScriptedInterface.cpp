@@ -20,6 +20,8 @@ class BookCommand : public Command {
 	
 public:
 	
+	BookCommand() : Command("book") { }
+	
 	Result execute(Context & context) {
 		
 		string options = context.getFlags();
@@ -63,12 +65,11 @@ class CloseStealBagCommand : public Command {
 	
 public:
 	
+	CloseStealBagCommand() : Command("closestealbag", IO_NPC) { }
+	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(!io || !(io->ioflags & IO_NPC)) {
-			return Failed;
-		}
+		ARX_UNUSED(context);
 		
 		if(!(player.Interface & INTER_STEAL)) {
 			return Success;
@@ -92,6 +93,8 @@ public:
 class NoteCommand : public Command {
 	
 public:
+	
+	NoteCommand() : Command("note") { }
 	
 	Result execute(Context & context) {
 		
@@ -122,9 +125,9 @@ public:
 
 void setupScriptedInterface() {
 	
-	ScriptEvent::registerCommand("book", new BookCommand);
-	ScriptEvent::registerCommand("closestealbag", new CloseStealBagCommand);
-	ScriptEvent::registerCommand("note", new NoteCommand);
+	ScriptEvent::registerCommand(new BookCommand);
+	ScriptEvent::registerCommand(new CloseStealBagCommand);
+	ScriptEvent::registerCommand(new NoteCommand);
 	
 }
 
