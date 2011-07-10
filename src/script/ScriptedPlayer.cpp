@@ -258,6 +258,25 @@ public:
 	
 };
 
+class SetHungerCommand : public Command {
+	
+public:
+	
+	SetHungerCommand() : Command("sethunger") { }
+	
+	Result execute(Context & context) {
+		
+		player.hunger = context.getFloat();
+		
+		LogDebug << "sethunger " << player.hunger;
+		
+		return Success;
+	}
+	
+	~SetHungerCommand() { }
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -269,6 +288,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new RuneCommand);
 	ScriptEvent::registerCommand(new QuestCommand);
 	ScriptEvent::registerCommand(new SetPlayerTweakCommand);
+	ScriptEvent::registerCommand(new SetHungerCommand);
 	
 }
 

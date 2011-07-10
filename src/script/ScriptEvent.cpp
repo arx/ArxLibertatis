@@ -639,13 +639,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "SET_RIGHT_HAND ...OBSOLETE...: " << word;
 				}
-				else if (!strcmp(word, "SETHUNGER"))
-				{
-					pos = GetNextWord(es, pos, word);
-					player.hunger = GetVarValueInterpretedAsFloat(word, esss, io);
-					LogDebug <<  "SET_HUNGER "<< word;
-				}
-
 				else if (!strcmp(word, "SETLEFTHAND"))
 				{
 					pos = GetNextWord(es, pos, word);
