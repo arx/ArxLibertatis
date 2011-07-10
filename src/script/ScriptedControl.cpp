@@ -353,6 +353,67 @@ public:
 	
 };
 
+class SetPathCommand : public Command {
+	
+public:
+	
+	SetPathCommand() : Command("setpath", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		bool wormspecific = false;
+		bool followdir = false;
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			wormspecific = (flg & flag('w'));
+			followdir = (flg & flag('f'));
+			if(!flg || (flg & ~flags("wf"))) {
+				LogWarning << "unexpected flags: setpath " << options;
+			}
+		}
+		
+		string name = context.getLowercase();
+		
+		LogDebug << "setpath " << options << ' ' << name;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(name == "none") {
+			if(io->usepath) {
+				free(io->usepath), io->usepath = NULL;
+			}
+		} else {
+			
+			ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
+			if(!ap) {
+				LogWarning << "unknown path: " << name;
+				return Failed;
+			}
+			
+			if(io->usepath != NULL) {
+				free(io->usepath), io->usepath = NULL;
+			}
+			
+			ARX_USE_PATH * aup = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
+			aup->_starttime = aup->_curtime = ARXTime;
+			aup->aupflags = ARX_USEPATH_FORWARD;
+			if(wormspecific) {
+				aup->aupflags |= ARX_USEPATH_WORM_SPECIFIC | ARX_USEPATH_FLAG_ADDSTARTPOS;
+			}
+			if(followdir) {
+				aup->aupflags |= ARX_USEPATH_FOLLOW_DIRECTION;
+			}
+			aup->initpos = io->initpos;
+			aup->lastWP = -1;
+			aup->path = ap;
+			io->usepath = aup;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -367,6 +428,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new QuakeCommand);
 	ScriptEvent::registerCommand(new SetGroupCommand);
 	ScriptEvent::registerCommand(new SetControlledZoneCommand);
+	ScriptEvent::registerCommand(new SetPathCommand);
 	
 }
 

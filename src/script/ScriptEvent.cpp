@@ -634,71 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETPATH"))
-				{
-					long wormspecific = 0;
-					long followdir = 0;
-					pos = GetNextWord(es, pos, word);
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'W'))
-						{
-							wormspecific = 1;
-						}
-
-						if (iCharIn(word, 'F'))
-						{
-							followdir = 1;
-						}
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					if (io != NULL)
-					{
-
-						if (!strcasecmp(word, "NONE"))
-						{
-							if (io->usepath != NULL)
-							{
-								free(io->usepath);
-								io->usepath = NULL;
-							}
-						}
-						else
-						{
-							ARX_PATH * ap = ARX_PATH_GetAddressByName(word);
-
-							if(ap) {
-								
-								if(io->usepath != NULL) {
-									free(io->usepath);
-									io->usepath = NULL;
-								}
-
-								ARX_USE_PATH * aup = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
-								aup->_starttime = aup->_curtime = ARXTime;
-								aup->aupflags = ARX_USEPATH_FORWARD;
-
-								if (wormspecific)
-								{
-									aup->aupflags |= ARX_USEPATH_WORM_SPECIFIC | ARX_USEPATH_FLAG_ADDSTARTPOS;
-								}
-
-								if (followdir) aup->aupflags |= ARX_USEPATH_FOLLOW_DIRECTION;
-
-								aup->initpos = io->initpos;
-								aup->lastWP = -1;
-								aup->path = ap;
-								io->usepath = aup;
-							}
-						}
-					}
-
-					LogDebug << "SET_PATH "<< word;
-				}
-				else if (!strcmp(word, "SETTARGET"))
+				if (!strcmp(word, "SETTARGET"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug << "SET_TARGET "<< word;
