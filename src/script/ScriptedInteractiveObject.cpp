@@ -239,10 +239,11 @@ public:
 class GameFlagCommand : public Command {
 	
 	unsigned short flag;
+	bool inv;
 	
 public:
 	
-	GameFlagCommand(string name, short _flag) : Command(name, ANY_IO), flag(_flag) { }
+	GameFlagCommand(string name, short _flag, bool _inv = false) : Command(name, ANY_IO), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
 		
@@ -252,7 +253,7 @@ public:
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
-		if(enable) {
+		if(enable xor inv) {
 			io->GameFlags |= flag;
 		} else {
 			io->GameFlags &= ~flag;
@@ -274,6 +275,10 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new CollisionCommand);
 	ScriptEvent::registerCommand(new ShopCategoryCommand);
 	ScriptEvent::registerCommand(new ShopMultiplyCommand);
+	ScriptEvent::registerCommand(new GameFlagCommand("setplatform", GFLAG_PLATFORM));
+	ScriptEvent::registerCommand(new GameFlagCommand("setgore", GFLAG_NOGORE, true));
+	ScriptEvent::registerCommand(new GameFlagCommand("setelevator", GFLAG_ELEVATOR));
+	ScriptEvent::registerCommand(new GameFlagCommand("viewblock", GFLAG_VIEW_BLOCKER));
 	
 }
 

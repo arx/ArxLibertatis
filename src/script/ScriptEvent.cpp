@@ -634,27 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETPLATFORM"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-					{
-						io->GameFlags |= GFLAG_PLATFORM;
-					}
-					else io->GameFlags &= ~GFLAG_PLATFORM;
-				}
-				else if (!strcmp(word, "SETGORE"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-					{
-						io->GameFlags &= ~GFLAG_NOGORE;
-					}
-					else io->GameFlags |= GFLAG_NOGORE;
-				}
-				else if (!strcmp(word, "SETUNIQUE"))
+				if (!strcmp(word, "SETUNIQUE"))
 				{
 					pos = GetNextWord(es, pos, word);
 
@@ -673,16 +653,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						io->ioflags |= IO_BLACKSMITH;
 					}
 					else io->ioflags &= ~IO_BLACKSMITH;
-				}
-				else if (!strcmp(word, "SETELEVATOR"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-					{
-						io->GameFlags |= GFLAG_ELEVATOR;
-					}
-					else io->GameFlags &= ~GFLAG_ELEVATOR;
 				}
 				else if (!strcmp(word, "SETTRAP")) // -1 = off
 				{
@@ -4610,32 +4580,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 							pos = GotoNextLine(es, pos);
 						}
-					}
-				}
-
-				break;
-			case 'V':
-
-				if (!strcmp(word, "VIEWBLOCK"))
-				{
-					pos = GetNextWord(es, pos, word);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "VIEWBLOCK ");
-						strcat(cmd, word);
-					}
-
-#endif
-
-					if (io)
-					{
-						if (!strcasecmp(word, "ON"))
-						{
-							io->GameFlags |= GFLAG_VIEW_BLOCKER;
-						}
-						else io->GameFlags &= ~GFLAG_VIEW_BLOCKER;
 					}
 				}
 
