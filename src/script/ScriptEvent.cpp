@@ -609,6 +609,17 @@ bool Context::jumpToLabel(const string & target, bool substack) {
 	return true;
 }
 
+bool Context::returnToCaller() {
+	
+	long oldpos = GetSubStack(script);
+	if(oldpos == -1) {
+		return false;
+	}
+	
+	pos = oldpos;
+	return true;
+}
+
 class ObsoleteCommand : public Command {
 	
 private:
@@ -805,9 +816,14 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			LINEEND = (context.pos >= es->size || es->data[pos] == '\n') ? 1 : 0;
 			
 			if(res == Command::AbortAccept) {
+				ClearSubStack(es);
 				return ACCEPT;
 			} else if(res == Command::AbortRefuse) {
+				ClearSubStack(es);
 				return REFUSE;
+			} else if(res == Command::AbortError) {
+				ClearSubStack(es);
+				return BIGERROR;
 			} else if(res == Command::Jumped) {
 				if(msg == SM_EXECUTELINE) {
 					msg = SM_DUMMY;
@@ -827,16 +843,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			case '>':
 				if (word[1] == '>') pos = GotoNextLine(es, pos);
 				break;
-			case 'A':
-
-				if (!strcmp(word, "ACCEPT"))
-				{
-					ret = ACCEPT;
-					ClearSubStack(es);
-
-					LogDebug << "  ACCEPT";
-					goto end;
-				}
 
 				break;
 			case 'R':

@@ -59,6 +59,7 @@ public:
 	size_t skipCommand();
 	
 	bool jumpToLabel(const std::string & target, bool substack = false);
+	bool returnToCaller();
 	
 	inline EERIE_SCRIPT * getScript() {  return script; }
 	
@@ -74,6 +75,7 @@ public:
 		Failed,
 		AbortAccept,
 		AbortRefuse,
+		AbortError,
 		Jumped
 	};
 	
