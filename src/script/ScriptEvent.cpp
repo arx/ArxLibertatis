@@ -634,11 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SAY"))
-				{
-					//DO NOTHING
-				}
-				else if (!strcmp(word, "SETPLAYERCOLLISION"))
+				if (!strcmp(word, "SETPLAYERCOLLISION"))
 				{
 					pos = GetNextWord(es, pos, word);
 					MakeUpcase(word);
@@ -4352,6 +4348,7 @@ void ScriptEvent::init() {
 	registerCommand(new ObsoleteCommand("setshield", 1));
 	registerCommand(new ObsoleteCommand("settwohanded"));
 	registerCommand(new ObsoleteCommand("setonehanded"));
+	registerCommand(new ObsoleteCommand("say"));
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
