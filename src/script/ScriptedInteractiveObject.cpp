@@ -3,6 +3,7 @@
 
 #include "game/Inventory.h"
 #include "game/Player.h"
+#include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
 #include "io/Logger.h"
@@ -296,6 +297,32 @@ public:
 	
 };
 
+class SetTrapCommand : public Command {
+	
+public:
+	
+	SetTrapCommand() : Command("settrap", IO_FIX) { }
+	
+	Result execute(Context & context) {
+		
+		string trapvalue = context.getLowercase();
+		
+		LogDebug << "settrap " << trapvalue;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(trapvalue == "off") {
+			io->_fixdata->trapvalue = -1;
+		} else {
+			io->_fixdata->trapvalue = clamp((int)context.getFloatVar(trapvalue), -1, 100);
+		}
+		
+		return Success;
+	}
+	
+	~SetTrapCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -317,6 +344,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new IOFlagCommand("setbump", IO_BUMP));
 	ScriptEvent::registerCommand(new IOFlagCommand("setzmap", IO_ZMAP));
 	ScriptEvent::registerCommand(new IOFlagCommand("invertedobject", IO_INVERTED));
+	ScriptEvent::registerCommand(new SetTrapCommand);
 	
 }
 
