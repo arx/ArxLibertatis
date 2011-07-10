@@ -360,6 +360,111 @@ public:
 	
 };
 
+class SetCommand : public Command {
+	
+public:
+	
+	SetCommand() : Command("set") { }
+	
+	Result execute(Context & context) {
+		
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('g')) {
+				LogWarning << "broken 'set -a' script command used";
+			}
+			if(!flg || (flg & ~flag('a'))) {
+				LogWarning << "unexpected flags: sendevent " << options;
+			}
+		}
+		
+		string var = context.getLowercase(); // TODO word
+		string val = context.getWord(); // TODO temp2
+		
+		LogDebug << "set " << var << " \"" << val << '"';
+		
+		if(var.empty()) {
+			LogWarning << "missing var name for set command";
+			return Failed;
+		}
+		
+		EERIE_SCRIPT & es = *context.getScript();
+		
+		switch(var[0]) {
+			
+			case '$': { // global text
+				string v = context.getStringVar(val);
+				SCRIPT_VAR * sv = SETVarValueText(svar, NB_GLOBALS, var, v);
+				if(!sv) {
+					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					return Failed;
+				}
+				sv->type = TYPE_G_TEXT;
+				break;
+			}
+			
+			case '\xA3': { // local text
+				string v = context.getStringVar(val);
+				SCRIPT_VAR * sv = SETVarValueText(es.lvar, es.nblvar, var, v);
+				if(!sv) {
+					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					return Failed;
+				}
+				sv->type = TYPE_L_TEXT;
+				break;
+			}
+			
+			case '#': { // global long
+				long v = (long)context.getFloatVar(val);
+				SCRIPT_VAR * sv = SETVarValueLong(svar, NB_GLOBALS, var, v);
+				if(!sv) {
+					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					return Failed;
+				}
+				sv->type = TYPE_G_LONG;
+				break;
+			}
+			
+			case '\xA7': { // local long
+				long v = (long)context.getFloatVar(val);
+				SCRIPT_VAR * sv = SETVarValueLong(es.lvar, es.nblvar, var, v);
+				if(!sv) {
+					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					return Failed;
+				}
+				sv->type = TYPE_L_LONG;
+				break;
+			}
+			
+			case '&': { // global float
+				float v = context.getFloatVar(val);
+				SCRIPT_VAR * sv = SETVarValueFloat(svar, NB_GLOBALS, var, v);
+				if(!sv) {
+					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					return Failed;
+				}
+				sv->type = TYPE_G_FLOAT;
+				break;
+			}
+			
+			case '@': { // local float
+				float v = context.getFloatVar(val);
+				SCRIPT_VAR * sv = SETVarValueFloat(es.lvar, es.nblvar, var, v);
+				if(!sv) {
+					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					return Failed;
+				}
+				sv->type = TYPE_L_FLOAT;
+				break;
+			}
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -376,6 +481,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new StartStopTimerCommand("starttimer", true));
 	ScriptEvent::registerCommand(new StartStopTimerCommand("stoptimer", false));
 	ScriptEvent::registerCommand(new SendEventCommand);
+	ScriptEvent::registerCommand(new SetCommand);
 	
 }
 
