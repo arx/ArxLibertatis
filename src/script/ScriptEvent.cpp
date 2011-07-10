@@ -626,23 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETSCALE"))
-				{
-					if (io != NULL)
-					{
-						std::string temp1;
-						float t1;
-						pos = GetNextWord(es, pos, temp1);
-						t1 = GetVarValueInterpretedAsFloat(temp1, esss, io);
-						io->scale = t1 * ( 1.0f / 100 );
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "SET_SCALE %s", temp1);
-
-#endif
-					}
-				}
-				else if (!strcmp(word, "STEALNPC"))
+				if (!strcmp(word, "STEALNPC"))
 				{
 					if (player.Interface & INTER_STEAL)
 					{

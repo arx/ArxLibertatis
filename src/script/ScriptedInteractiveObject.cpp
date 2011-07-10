@@ -709,6 +709,25 @@ public:
 	
 };
 
+class SetScaleCommand : public Command {
+	
+public:
+	
+	SetScaleCommand() : Command("setscale", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		float scale = context.getFloat();
+		
+		LogDebug << "setscale " << scale;
+		
+		context.getIO()->scale = scale * 0.01f;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -746,6 +765,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetWeightCommand);
 	ScriptEvent::registerCommand(new SetTransparencyCommand);
 	ScriptEvent::registerCommand(new SetIRColorCommand);
+	ScriptEvent::registerCommand(new SetScaleCommand);
 	
 }
 
