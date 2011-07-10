@@ -401,16 +401,9 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 
 	long flg = 0;
 
-	// TODO move to caller
-	std::string section = data;
-	if(!section.empty() && section[0] == '[' && section[section.length() - 1] == ']') {
-		section = section.substr(1, section.length() - 2);
-	}
-	transform(section.begin(), section.end(), section.begin(), ::tolower);
-
 	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
 	{
-		std::string _output = getLocalised(section);
+		std::string _output = getLocalised(data);
 
 		io->lastspeechflag = 0;
 		aspeech[num].text.clear();
@@ -419,13 +412,13 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 	}
 	
 	
-	LogDebug << "speech \"" << section << "\" \"" << data << "\"";
+	LogDebug << "speech \"" << data << '"';
 
 	if (flags & ARX_SPEECH_FLAG_NOTEXT)
 	{
 		long count = 0;
 
-		count = getLocalisedKeyCount(section);
+		count = getLocalisedKeyCount(data);
 
 		do {
 			flg = rnd() * count + 1;
@@ -441,9 +434,9 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 
 	char speech_sample[256];
 	if (flg > 1)
-		sprintf(speech_sample, "%s%ld", section.c_str(), flg);
+		sprintf(speech_sample, "%s%ld", data.c_str(), flg);
 	else
-		strcpy(speech_sample, section.c_str());
+		strcpy(speech_sample, data.c_str());
 
 	if (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)
 		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample);

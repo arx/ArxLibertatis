@@ -2876,7 +2876,7 @@ void MakeStandard( std::string& str)
 
 long ARX_SPEECH_AddLocalised(const std::string& text, long duration) {
 	
-	// TODO move to caller
+	// TODO(case-sensitive) move to caller
 	std::string section = text;
 	if(!section.empty() && section[0] == '[' && section[section.length() - 1] == ']') {
 		section = section.substr(1, section.length() - 2);

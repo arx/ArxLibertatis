@@ -4,6 +4,8 @@
 #include "game/NPC.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
+#include "gui/Speech.h"
+#include "gui/Interface.h"
 #include "io/Logger.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
@@ -11,6 +13,10 @@
 #include "script/ScriptUtils.h"
 
 using std::string;
+
+extern long FRAME_COUNT;
+extern Vec3f LASTCAMPOS;
+extern Anglef LASTCAMANGLE;
 
 namespace script {
 
@@ -263,6 +269,193 @@ public:
 	
 };
 
+class SpeakCommand : public Command {
+	
+	static void computeACSPos(CinematicSpeech & acs, INTERACTIVE_OBJ * io, long ionum) {
+		
+		if(io) {
+			long id = io->obj->fastaccess.view_attach;
+			if(id != -1) {
+				acs.pos1 = io->obj->vertexlist3[id].v;
+			} else {
+				acs.pos1 = io->pos + Vec3f(0.f, io->physics.cyl.height, 0.f);
+			}
+		}
+		
+		if(ValidIONum(ionum)) {
+			INTERACTIVE_OBJ * ioo = inter.iobj[ionum];
+			long id = ioo->obj->fastaccess.view_attach;
+			if(id != -1) {
+				acs.pos2 = ioo->obj->vertexlist3[id].v;
+			} else {
+				acs.pos2 = ioo->pos + Vec3f(0.f, ioo->physics.cyl.height, 0.f);
+			}
+		}
+	}
+	
+	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
+		
+		string target = context.getLowercase();
+		acs.ionum = GetTargetByNameTarget(target);
+		if(acs.ionum == -2) {
+			acs.ionum = GetInterNum(context.getIO());
+		}
+		
+		acs.startpos = context.getFloat();
+		acs.endpos = context.getFloat();
+		
+		if(player) {
+			computeACSPos(acs, inter.iobj[0], acs.ionum);
+		} else {
+			computeACSPos(acs, context.getIO(), acs.ionum);
+		}
+	}
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		CinematicSpeech acs;
+		acs.type = ARX_CINE_SPEECH_NONE;
+		
+		string options = context.getFlags();
+		
+		string text = context.getLowercase();
+		
+		if(text == "killall") {
+			
+			if(!options.empty()) {
+				LogWarning << "unexpected options: speak " << options << " killall";
+			}
+			
+			ARX_SPEECH_Reset();
+			return Success;
+		}
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		bool player = false, unbreakable = false;
+		SpeechFlags voixoff = 0;
+		AnimationNumber mood = ANIM_TALK_NEUTRAL;
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(!flg || (flg & ~flags("tuphaoc"))) {
+				LogWarning << "unexpected flags: speak " << options << ' ' << text;
+			}
+			
+			if(flg & flag('t')) {
+				voixoff |= ARX_SPEECH_FLAG_NOTEXT;
+			}
+			if(flg & flag('u')) {
+				unbreakable = 1;
+			}
+			if(flg & flag('p')) {
+				player = 1;
+			}
+			if(flg & flag('h')) {
+				mood = ANIM_TALK_HAPPY;
+			}
+			if(flg & flag('a')) {
+				mood = ANIM_TALK_ANGRY;
+			}
+			
+			if(flg & flag('o')) {
+				voixoff |= ARX_SPEECH_FLAG_OFFVOICE;
+				// Crash when we set speak pitch to 1,
+				// Variable use for a division, 0 is not possible
+			}
+			
+			if(flg & flag('c')) {
+				
+				FRAME_COUNT = 0;
+				
+				if(text == "keep") {
+					acs.type = ARX_CINE_SPEECH_KEEP;
+					acs.pos1 = LASTCAMPOS;
+					acs.pos2.x = LASTCAMANGLE.a;
+					acs.pos2.y = LASTCAMANGLE.b;
+					acs.pos2.z = LASTCAMANGLE.g;
+					
+				} else if(text == "zoom") {
+					acs.type = ARX_CINE_SPEECH_ZOOM;
+					acs.startangle.a = context.getFloat();
+					acs.startangle.b = context.getFloat();
+					acs.endangle.a = context.getFloat();
+					acs.endangle.b = context.getFloat();
+					acs.startpos = context.getFloat();
+					acs.endpos = context.getFloat();
+					acs.ionum = GetInterNum(io);
+					if(player) {
+						computeACSPos(acs, inter.iobj[0], acs.ionum);
+					} else {
+						computeACSPos(acs, io, -1);
+					}
+					
+				} else if(text == "ccctalker_l" || text == "ccctalker_r") {
+					acs.type = (text == "ccctalker_r") ? ARX_CINE_SPEECH_CCCTALKER_R : ARX_CINE_SPEECH_CCCTALKER_L;
+					parseParams(acs, context, player);
+					
+				} else if(text == "ccclistener_l" || text == "ccclistener_r") {
+					acs.type = (text == "ccclistener_r") ? ARX_CINE_SPEECH_CCCLISTENER_R :  ARX_CINE_SPEECH_CCCLISTENER_L;
+					parseParams(acs, context, player);
+					
+				} else if(text == "side" || text == "side_l" || text == "side_r") {
+					acs.type = (text == "side_l") ? ARX_CINE_SPEECH_SIDE_LEFT : ARX_CINE_SPEECH_SIDE;
+					parseParams(acs, context, player);
+					acs.f0 = context.getFloat(); // startdist
+					acs.f1 = context.getFloat(); // enddist
+					acs.f2 = context.getFloat(); // height modifier
+				} else {
+					LogWarning << "unexpected command: speak " << options << ' ' << text;
+				}
+				
+				text = context.getLowercase();
+			}
+		}
+		
+		string data = script::loadUnlocalized(toLowercase(context.getStringVar(text)));
+		
+		LogDebug << "speak " << options << ' ' << data; // TODO debug more
+		
+		if(data.empty()) {
+			ARX_SPEECH_ClearIOSpeech(io);
+			return Success;
+		}
+		
+		
+		if(!CINEMASCOPE) {
+			voixoff |= ARX_SPEECH_FLAG_NOTEXT;
+		}
+		
+		long speechnum;
+		if(player) {
+			speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], data, mood, voixoff);
+		} else {
+			speechnum = ARX_SPEECH_AddSpeech(io, data, mood, voixoff);
+		}
+		if(speechnum < 0) {
+			return Failed;
+		}
+		
+		size_t onspeechend = context.skipCommand();
+		
+		if(onspeechend != (size_t)-1) {
+			aspeech[speechnum].scrpos = onspeechend;
+			aspeech[speechnum].es = context.getScript();
+			aspeech[speechnum].ioscript = io;
+			if(unbreakable) {
+				aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
+			}
+			aspeech[speechnum].cine = acs;
+		}
+		
+		return Success;
+	}
+	
+	~SpeakCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -270,6 +463,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand("behavior", new BehaviourCommand);
 	ScriptEvent::registerCommand("revive", new ReviveCommand);
 	ScriptEvent::registerCommand("spellcast", new SpellcastCommand);
+	ScriptEvent::registerCommand("speak", new SpeakCommand);
 	
 }
 

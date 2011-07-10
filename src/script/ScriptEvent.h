@@ -28,13 +28,13 @@ class Context {
 	
 private:
 	
-	const EERIE_SCRIPT * script;
+	EERIE_SCRIPT * script;
 	size_t pos;
 	INTERACTIVE_OBJ * io;
 	
 public:
 	
-	Context(const EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL);
+	Context(EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL);
 	
 	std::string getStringVar(const std::string & var);
 	std::string getFlags();
@@ -51,6 +51,14 @@ public:
 	float getFloat();
 	
 	float getFloatVar(const std::string & name);
+	
+	/*!
+	 * Skip input until the end of the current line.
+	 * @return the current position or (size_t)-1 if we are already at the line end
+	 */
+	size_t skipCommand();
+	
+	inline EERIE_SCRIPT * getScript() {  return script; }
 	
 	friend class ::ScriptEvent;
 };

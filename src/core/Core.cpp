@@ -3414,6 +3414,28 @@ bool StrikeAimtime()
 	return false;
 }
 
+void strikeSpeak(INTERACTIVE_OBJ * io) {
+	
+	if(!StrikeAimtime()) {
+		return;
+	}
+	
+	string str;
+	long equiped = player.equiped[EQUIP_SLOT_WEAPON];
+	if(equiped != 0 && inter.iobj[equiped]->strikespeech) {
+		str = inter.iobj[equiped]->strikespeech;
+	} else if(io->strikespeech) {
+		str = io->strikespeech;
+	} else {
+		return;
+	}
+	
+	// TODO(case-sensitive) move transform to where strikespeech is set
+	str = script::loadUnlocalized(toLowercase(str));
+	
+	ARX_SPEECH_AddSpeech(io, str, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+}
+
 void ManageCombatModeAnimations()
 {
 	STRIKE_TIME=0;
@@ -3470,25 +3492,7 @@ void ManageCombatModeAnimations()
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_BARE_STRIKE_LEFT+j*3]);
 
-					if (StrikeAimtime())
-					{
-						char str[128];
-						str[0]=0;
-
-						if (io->strikespeech)
-							strcpy(str,io->strikespeech);
-
-						if (player.equiped[EQUIP_SLOT_WEAPON]!=0)
-						{
-							if (inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->strikespeech)
-								strcpy(str,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->strikespeech);
-						}
-
-						if (str[0]!=0)
-						{
-							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
-						}
-					}
+					strikeSpeak(io);
 
 					SendIOScriptEvent(io,SM_STRIKE,"BARE");
 					PlayerWeaponBlocked=-1;
@@ -3633,25 +3637,7 @@ void ManageCombatModeAnimations()
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_DAGGER_STRIKE_LEFT+j*3]);
 
-					if (StrikeAimtime())
-					{
-						char str[128];
-						str[0]=0;
-
-						if (io->strikespeech)
-							strcpy(str,io->strikespeech);
-
-						if (player.equiped[EQUIP_SLOT_WEAPON]!=0)
-						{
-							if (inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->strikespeech)
-								strcpy(str,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->strikespeech);
-						}
-
-						if (str[0]!=0)
-						{
-							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
-						}
-					}
+					strikeSpeak(io);
 
 					SendIOScriptEvent(io,SM_STRIKE,"DAGGER");
 					CurrFightPos=0;
@@ -3721,25 +3707,7 @@ void ManageCombatModeAnimations()
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT+j*3]);
 
-					if (StrikeAimtime())
-					{
-						char str[128];
-						str[0]=0;
-
-						if (io->strikespeech)
-							strcpy(str,io->strikespeech);
-
-						if (player.equiped[EQUIP_SLOT_WEAPON]!=0)
-						{
-							if (inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->strikespeech)
-								strcpy(str,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->strikespeech);
-						}
-
-						if (str[0]!=0)
-						{
-							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
-						}
-					}
+					strikeSpeak(io);
 
 					SendIOScriptEvent(io,SM_STRIKE,"1H");
 					CurrFightPos=0;
@@ -3812,25 +3780,7 @@ void ManageCombatModeAnimations()
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_2H_STRIKE_LEFT+j*3]);
 
-					if (StrikeAimtime())
-					{
-						char str[128];
-						str[0]=0;
-
-						if (io->strikespeech)
-							strcpy(str,io->strikespeech);
-
-						if (player.equiped[EQUIP_SLOT_WEAPON]!=0)
-						{
-							if (inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->strikespeech)
-								strcpy(str,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->strikespeech);
-						}
-
-						if (str[0]!=0)
-						{
-							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
-						}
-					}
+					strikeSpeak(io);
 
 					SendIOScriptEvent(io,SM_STRIKE,"2H");
 					CurrFightPos=0;

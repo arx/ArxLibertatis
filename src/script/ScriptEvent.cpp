@@ -64,14 +64,11 @@ using std::string;
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern Vec3f LASTCAMPOS;
-extern Anglef LASTCAMANGLE;
 extern float InventoryDir;
 extern long REFUSE_GAME_RETURN;
 extern long FINAL_RELEASE;
 extern long TELEPORT_TO_CONFIRM;
 extern long CHANGE_LEVEL_ICON;
-extern long FRAME_COUNT;
 extern float g_TimeStartCinemascope;
 
 enum ScriptOperator {
@@ -197,35 +194,6 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 			}
 		}
 
-	}
-}
-
-void ComputeACSPos(CinematicSpeech * acs, INTERACTIVE_OBJ * io, long ionum)
-{
-	if (!acs) return;
-
-	if (io)
-	{
-
-		long id = io->obj->fastaccess.view_attach;
-
-		if(id != -1) {
-			acs->pos1 = io->obj->vertexlist3[id].v;
-		} else {
-			acs->pos1 = io->pos + Vec3f(0.f, io->physics.cyl.height, 0.f);
-		}
-	}
-
-	if (ValidIONum(ionum))
-	{
-		INTERACTIVE_OBJ *	ioo =	inter.iobj[ionum];
-		long				id	=	ioo->obj->fastaccess.view_attach;
-
-		if(id != -1) {
-			acs->pos2 = ioo->obj->vertexlist3[id].v;
-		} else {
-			acs->pos2 = ioo->pos + Vec3f(0.f, ioo->physics.cyl.height, 0.f);
-		}
 	}
 }
 
@@ -436,14 +404,10 @@ string loadUnlocalized(const std::string & str) {
 	return str;
 }
 
-Context::Context(const EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
+Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
 
 string Context::getStringVar(const string & var) {
-	if(script->master) {
-		return GetVarValueInterpretedAsText(var, script->master, NULL);
-	} else {
-		return GetVarValueInterpretedAsText(var, script, NULL);
-	}
+	return GetVarValueInterpretedAsText(var, script, io);
 }
 
 string Context::getWord() {
@@ -454,7 +418,6 @@ string Context::getWord() {
 		return string();
 	}
 	
-	LINEEND = 0; // Global LINEEND set to 0 (no LINEEND for now)
 	const char * esdat = script->data;
 	
 	boolean tilde = false; // number of tildes
@@ -471,12 +434,16 @@ string Context::getWord() {
 				return word;
 			}
 			
-			while(esdat[pos] != '"' && !LINEEND) {
+			while(esdat[pos] != '"') {
 				if(esdat[pos] == '\n') {
-					LINEEND = 1;
+					return word;
 				} else if(esdat[pos] == '~') {
 					if(tilde) {
-						word += getStringVar(var);
+						if(script->master) {
+							word += GetVarValueInterpretedAsText(var, script->master, NULL);
+						} else {
+							word += GetVarValueInterpretedAsText(var, script, NULL);
+						}
 					}
 					tilde = !tilde;
 				} else if(tilde) {
@@ -495,7 +462,11 @@ string Context::getWord() {
 			
 		} else if(esdat[pos] == '~') {
 			if(tilde) {
-				word += getStringVar(var);
+				if(script->master) {
+					word += GetVarValueInterpretedAsText(var, script->master, NULL);
+				} else {
+					word += GetVarValueInterpretedAsText(var, script, NULL);
+				}
 			}
 			tilde = !tilde;
 		} else if(tilde) {
@@ -521,7 +492,6 @@ void Context::skipWord() {
 		return;
 	}
 	
-	LINEEND = 0; // Global LINEEND set to 0 (no LINEEND for now)
 	const char * esdat = script->data;
 	
 	// now take chars until it finds a space or unused char
@@ -533,9 +503,9 @@ void Context::skipWord() {
 				return;
 			}
 			
-			while(esdat[pos] != '"' && !LINEEND) {
+			while(esdat[pos] != '"') {
 				if(esdat[pos] == '\n') {
-					LINEEND = 1;
+					return;
 				}
 				pos++;
 				if(pos == script->size) {
@@ -563,8 +533,8 @@ void Context::skipWhitespace() {
 	
 	// First ignores spaces & unused chars
 	while(pos < script->size && (((unsigned char)esdat[pos]) <= 32 || esdat[pos] == '(' || esdat[pos] == ')')) {
-		if(script->data[pos] == '\n') {
-			LINEEND = 1;
+		if(esdat[pos] == '\n') {
+			return;
 		}
 		pos++;
 	}
@@ -598,6 +568,30 @@ bool Context::getBool() {
 
 float Context::getFloatVar(const std::string & name) {
 	return GetVarValueInterpretedAsFloat(name, script, io);
+}
+
+size_t Context::skipCommand() {
+	
+	skipWhitespace();
+	
+	const char * esdat = script->data;
+	
+	if(pos >= script->size || esdat[pos] == '\n') {
+		return (size_t)-1;
+	}
+	
+	size_t oldpos = pos;
+	
+	if(esdat[pos] == '/' && pos + 1 < script->size && esdat[pos + 1] == '/') {
+		oldpos = (size_t)-1;
+		pos += 2;
+	}
+	
+	while(pos < script->size && esdat[pos] != '\n') {
+		pos++;
+	}
+	
+	return oldpos;
 }
 
 class ObsoleteCommand : public Command {
@@ -810,6 +804,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			
 			pos = context.pos;
 			
+			LINEEND = (context.pos >= es->size || es->data[pos] == '\n') ? 1 : 0;
+			
 			if(res == Command::AbortAccept) {
 				return ACCEPT;
 			} else if(res == Command::AbortRefuse) {
@@ -908,215 +904,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 
 				break;
-			case 'N':
+			case 'S':
 
-				if (!strcmp(word, "SPEAK")) // speak say_ident actions
-				{
-					CinematicSpeech acs;
-					acs.type = ARX_CINE_SPEECH_NONE;
-
-					std::string temp2;
-
-					pos = GetNextWord(es, pos, temp2);
-
-					LogDebug <<  "SPEAK "<< temp2;
-
-					MakeUpcase(temp2);
-
-					if (!strcasecmp(temp2, "KILLALL"))
-					{
-						ARX_SPEECH_Reset();
-					}
-					else
-					{
-						
-						long player		=	0;
-						SpeechFlags voixoff = 0;
-						long notext		=	0;
-						long mood			=	ANIM_TALK_NEUTRAL;
-						long unbreakable	=	0;
-						
-						if (temp2[0] == '-')
-						{
-							if (iCharIn(temp2, 'T')) notext		=	1;
-
-							if (iCharIn(temp2, 'U')) unbreakable =	1;
-
-							if (iCharIn(temp2, 'P')) player		=	1;
-
-							if (iCharIn(temp2, 'H')) mood		=	ANIM_TALK_HAPPY;
-
-							if (iCharIn(temp2, 'A')) mood		=	ANIM_TALK_ANGRY;
-
-							if(iCharIn(temp2, 'O')) {
-								voixoff = ARX_SPEECH_FLAG_OFFVOICE;
-								//Crash when we set speak pitch to 1,
-								//Variable use for a division, 0 is not possible
-								//To find
-							}
-
-							if (iCharIn(temp2, 'C'))
-							{
-								FRAME_COUNT	=	0;
-								pos			=	GetNextWord(es, pos, temp2);
-
-								if (!strcasecmp(temp2, "KEEP"))
-								{
-									acs.type	=	ARX_CINE_SPEECH_KEEP;
-									acs.pos1 = LASTCAMPOS;
-									acs.pos2.x	=	LASTCAMANGLE.a;
-									acs.pos2.y	=	LASTCAMANGLE.b;
-									acs.pos2.z	=	LASTCAMANGLE.g;
-								}
-
-								if (!strcasecmp(temp2, "ZOOM"))
-								{
-									acs.type			=	ARX_CINE_SPEECH_ZOOM;
-									pos					=	GetNextWord(es, pos, temp2);
-									acs.startangle.a	=	GetVarValueInterpretedAsFloat(temp2, esss, io);
-									pos					=	GetNextWord(es, pos, temp2);
-									acs.startangle.b	=	GetVarValueInterpretedAsFloat(temp2, esss, io);
-									pos					=	GetNextWord(es, pos, temp2);
-									acs.endangle.a		=	GetVarValueInterpretedAsFloat(temp2, esss, io);
-									pos					=	GetNextWord(es, pos, temp2);
-									acs.endangle.b		=	GetVarValueInterpretedAsFloat(temp2, esss, io);
-									pos					=	GetNextWord(es, pos, temp2);
-									acs.startpos		=	GetVarValueInterpretedAsFloat(temp2, esss, io);
-									pos					=	GetNextWord(es, pos, temp2);
-									acs.endpos			=	GetVarValueInterpretedAsFloat(temp2, esss, io);
-
-
-									//ARX_CHECK_NO_ENTRY(); //ARX: xrichter (2010-07-20) - temp2 is often (always?) a string number and GetTargetByNameTarget return -1. To be careful if temp2 is not a string number, we choose to test GetTargetByNameTarget return value.
-									acs.ionum			=	GetTargetByNameTarget(temp2);
-
-									if (acs.ionum == -2)   //means temp2 is "me" or "self"
-										acs.ionum		=	GetInterNum(io);
-
-
-
-									if (player)
-										ComputeACSPos(&acs, inter.iobj[0], acs.ionum);
-									else ComputeACSPos(&acs, io, -1);
-								}
-								else if ((!strcasecmp(temp2, "CCCTALKER_L"))
-										 || (!strcasecmp(temp2, "CCCTALKER_R")))
-								{
-									if (!strcasecmp(temp2, "CCCTALKER_R"))
-										acs.type = ARX_CINE_SPEECH_CCCTALKER_R;
-									else acs.type = ARX_CINE_SPEECH_CCCTALKER_L;
-
-									pos = GetNextWord(es, pos, temp2);
-									acs.ionum = GetTargetByNameTarget(temp2);
-
-									if (acs.ionum == -2) acs.ionum = GetInterNum(io);
-
-									pos = GetNextWord(es, pos, temp2);
-									acs.startpos = GetVarValueInterpretedAsFloat(temp2, esss, io);
-									pos = GetNextWord(es, pos, temp2);
-									acs.endpos = GetVarValueInterpretedAsFloat(temp2, esss, io);
-
-									if (player)
-										ComputeACSPos(&acs, inter.iobj[0], acs.ionum);
-									else ComputeACSPos(&acs, io, acs.ionum);
-								}
-								else if ((!strcasecmp(temp2, "CCCLISTENER_L"))
-										 || (!strcasecmp(temp2, "CCCLISTENER_R")))
-								{
-									if (!strcasecmp(temp2, "CCCLISTENER_R"))
-										acs.type = ARX_CINE_SPEECH_CCCLISTENER_R;
-									else acs.type = ARX_CINE_SPEECH_CCCLISTENER_L;
-
-									pos = GetNextWord(es, pos, temp2);
-									acs.ionum = GetTargetByNameTarget(temp2);
-
-									if (acs.ionum == -2) acs.ionum = GetInterNum(io);
-
-									pos = GetNextWord(es, pos, temp2);
-									acs.startpos = GetVarValueInterpretedAsFloat(temp2, esss, io);
-									pos = GetNextWord(es, pos, temp2);
-									acs.endpos = GetVarValueInterpretedAsFloat(temp2, esss, io);
-
-									if (player)
-										ComputeACSPos(&acs, inter.iobj[0], acs.ionum);
-									else ComputeACSPos(&acs, io, acs.ionum);
-								}
-								else if ((!strcasecmp(temp2, "SIDE"))
-										 || (!strcasecmp(temp2, "SIDE_L"))
-										 || (!strcasecmp(temp2, "SIDE_R")))
-								{
-									if (!strcasecmp(temp2, "SIDE_L"))
-										acs.type = ARX_CINE_SPEECH_SIDE_LEFT;
-									else acs.type = ARX_CINE_SPEECH_SIDE;
-
-									pos = GetNextWord(es, pos, temp2);
-									acs.ionum = GetTargetByNameTarget(temp2);
-
-									if (acs.ionum == -2) acs.ionum = GetInterNum(io);
-
-									pos = GetNextWord(es, pos, temp2);
-									acs.startpos = GetVarValueInterpretedAsFloat(temp2, esss, io);
-									pos = GetNextWord(es, pos, temp2);
-									acs.endpos = GetVarValueInterpretedAsFloat(temp2, esss, io);
-									//startdist
-									pos = GetNextWord(es, pos, temp2);
-									acs.f0 = GetVarValueInterpretedAsFloat(temp2, esss, io);
-									//enddist
-									pos = GetNextWord(es, pos, temp2);
-									acs.f1 = GetVarValueInterpretedAsFloat(temp2, esss, io);
-									//height modifier
-									pos = GetNextWord(es, pos, temp2);
-									acs.f2 = GetVarValueInterpretedAsFloat(temp2, esss, io);
-
-									if (player)
-										ComputeACSPos(&acs, inter.iobj[0], acs.ionum);
-									else ComputeACSPos(&acs, io, acs.ionum);
-								}
-							}
-
-							pos = GetNextWord(es, pos, temp2);
-							LogDebug <<  temp2;
-						}
-
-						std::string temp1 = GetVarValueInterpretedAsText(temp2, esss, io);
-
-						if (!strcmp(temp2, "[]"))
-						{
-							ARX_SPEECH_ClearIOSpeech(io);
-						}
-						else
-						{
-							if (notext) voixoff |= ARX_SPEECH_FLAG_NOTEXT;
-
-							if (!CINEMASCOPE) voixoff |= ARX_SPEECH_FLAG_NOTEXT;
-
-							long speechnum;
-							if (player)
-							{
-								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1, mood, voixoff);
-							}
-							else
-								speechnum = ARX_SPEECH_AddSpeech(io, temp1, mood, voixoff);
-
-							GetNextWord(es, pos, temp2);
-							LogDebug <<  temp2;
-
-							if ((!LINEEND) && (speechnum >= 0))
-							{
-								aspeech[speechnum].scrpos = pos;
-								aspeech[speechnum].es = es;
-								aspeech[speechnum].ioscript = io;
-
-								if (unbreakable) aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
-
-								memcpy(&aspeech[speechnum].cine, &acs, sizeof(CinematicSpeech));
-								pos = GotoNextLine(es, pos);
-							}
-
-							LINEEND = 0;
-						}
-					}
-				}
-				else if (!strcmp(word, "SHOPCATEGORY"))
+				if (!strcmp(word, "SHOPCATEGORY"))
 				{
 					pos = GetNextWord(es, pos, word);
 

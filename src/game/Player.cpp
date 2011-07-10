@@ -1557,7 +1557,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 					}
 
 					if (bOk)
-						ARX_SPEECH_AddSpeech(inter.iobj[0], "[Player_Off_Hungry]", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+						ARX_SPEECH_AddSpeech(inter.iobj[0], "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 				}
 			}
 
@@ -2853,7 +2853,7 @@ void PlayerMovementIterate(float DeltaTime)
 			{
 				REQUEST_JUMP = 0;
 				ARX_NPC_SpawnAudibleSound(&player.pos, inter.iobj[0]);
-				ARX_SPEECH_Launch_No_Unicode_Seek("[Player_Jump]", inter.iobj[0]);
+				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", inter.iobj[0]);
 				player.onfirmground = 0;
 				player.jumpphase = 1;
 

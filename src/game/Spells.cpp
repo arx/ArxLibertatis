@@ -2632,8 +2632,8 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 			ARX_SPELLS_FizzleNoMana(num);
 
 			if(_bSound) {
-				ARX_SPEECH_AddLocalised("[player_cantcast]");
-				ARX_SPEECH_AddSpeech(inter.iobj[0], "[player_cantcast]", ANIM_TALK_NEUTRAL);
+				ARX_SPEECH_AddLocalised("player_cantcast");
+				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 			}
 
 			return 0;
@@ -2900,7 +2900,7 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 
 	if(_bSound) {
 		ARX_SPEECH_AddLocalised("[player_cantcast]");
-		ARX_SPEECH_AddSpeech(inter.iobj[0], "[player_cantcast]", ANIM_TALK_NEUTRAL);
+		ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 
 	return 0;
@@ -4483,7 +4483,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (valid>dispelled)
 			{
-				ARX_SPEECH_AddSpeech(inter.iobj[0],"[player_not_skilled_enough]",ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_not_skilled_enough", ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 
 				if (dispelled>0)
 				{
