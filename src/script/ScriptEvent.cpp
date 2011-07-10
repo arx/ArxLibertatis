@@ -634,72 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETSTEPMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io)
-					{
-						if (io->stepmaterial)
-						{
-							free((void *)io->stepmaterial);
-							io->stepmaterial = NULL;
-						}
-
-						io->stepmaterial = (char *)malloc(word.length() + 1);
-						strcpy(io->stepmaterial, word.c_str());
-					}
-
-					LogDebug << "SET_STEP_MATERIAL "<< word;
-				}
-				else if (!strcmp(word, "SETARMORMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io)
-					{
-						if (io->armormaterial)
-						{
-							free((void *)io->armormaterial);
-							io->armormaterial = NULL;
-						}
-
-						io->armormaterial = (char *)malloc(word.length() + 1);
-						strcpy(io->armormaterial, word.c_str());
-					}
-
-					LogDebug << "SET_ARMOR_MATERIAL "<< word;
-				}
-				else if (!strcmp(word, "SETWEAPONMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io)
-					{
-						if (io->weaponmaterial)
-							free(io->weaponmaterial);
-
-						io->weaponmaterial = NULL;
-						io->weaponmaterial = strdup(word.c_str());
-					}
-
-					LogDebug << "SET_STEP_MATERIAL "<< word;
-				}
-				else if (!strcmp(word, "SETSTRIKESPEECH"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io)
-					{
-						if (io->strikespeech) free(io->strikespeech);
-
-						io->strikespeech = NULL;
-						io->strikespeech = strdup(word.c_str());
-					}
-
-					LogDebug << "SET_STEP_MATERIAL "<< word;
-				}
-				else if (!strcmp(word, "SETPLAYERCONTROLS"))
+				if (!strcmp(word, "SETPLAYERCONTROLS"))
 				{
 					INTERACTIVE_OBJ * oes = EVENT_SENDER;
 					EVENT_SENDER = io;

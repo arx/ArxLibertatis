@@ -526,6 +526,98 @@ public:
 	
 };
 
+class SetStepMaterialCommand : public Command {
+	
+public:
+	
+	SetStepMaterialCommand() : Command("setstepmaterial", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string material = context.getLowercase();
+		
+		LogDebug << "setstepmaterial " << material;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(io->stepmaterial) {
+			free(io->stepmaterial);
+		}
+		io->stepmaterial = strdup(material.c_str());
+		
+		return Success;
+	}
+	
+};
+
+class SetArmorMaterialCommand : public Command {
+	
+public:
+	
+	SetArmorMaterialCommand() : Command("setarmormaterial", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string material = context.getLowercase();
+		
+		LogDebug << "setarmormaterial " << material;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(io->armormaterial) {
+			free(io->armormaterial);
+		}
+		io->armormaterial = strdup(material.c_str());
+		
+		return Success;
+	}
+	
+};
+
+class SetWeaponMaterialCommand : public Command {
+	
+public:
+	
+	SetWeaponMaterialCommand() : Command("setweaponmaterial", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string material = context.getLowercase();
+		
+		LogDebug << "setweaponmaterial " << material;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(io->weaponmaterial) {
+			free(io->weaponmaterial);
+		}
+		io->weaponmaterial = strdup(material.c_str());
+		
+		return Success;
+	}
+	
+};
+
+class SetStrikeSpeechCommand : public Command {
+	
+public:
+	
+	SetStrikeSpeechCommand() : Command("setstrikespeech", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string speech = loadPath(context.getWord());
+		
+		LogDebug << "setstrikespeech " << speech;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(io->strikespeech) {
+			free(io->strikespeech);
+		}
+		io->strikespeech = strdup(speech.c_str());
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -554,6 +646,10 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetNameCommand);
 	ScriptEvent::registerCommand(new SpawnCommand);
 	ScriptEvent::registerCommand(new SetInteractivityCommand);
+	ScriptEvent::registerCommand(new SetStepMaterialCommand);
+	ScriptEvent::registerCommand(new SetArmorMaterialCommand);
+	ScriptEvent::registerCommand(new SetWeaponMaterialCommand);
+	ScriptEvent::registerCommand(new SetStrikeSpeechCommand);
 	
 }
 

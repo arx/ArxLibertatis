@@ -265,7 +265,7 @@ class SetPlayerCollisionCommand : public Command {
 	
 public:
 	
-	SetPlayerCollisionCommand() : Command("setplayercollision") { }
+	SetPlayerCollisionCommand() : Command("setplayercollision", ANY_IO) { }
 	
 	Result execute(Context & context) {
 		
