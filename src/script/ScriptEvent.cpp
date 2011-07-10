@@ -634,24 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETMOVEMODE"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io != NULL) && (io->ioflags & IO_NPC))
-					{
-						if (!strcmp(word, "WALK"))	ARX_NPC_ChangeMoveMode(io, WALKMODE);
-
-						if (!strcmp(word, "RUN"))	ARX_NPC_ChangeMoveMode(io, RUNMODE);
-
-						if (!strcmp(word, "NONE"))	ARX_NPC_ChangeMoveMode(io, NOMOVEMODE);
-
-						if (!strcmp(word, "SNEAK"))	ARX_NPC_ChangeMoveMode(io, SNEAKMODE);
-					}
-
-					LogDebug << "SETMOVEMODE "<< word;
-				}
-				else if (!strcmp(word, "SPAWN"))
+				if (!strcmp(word, "SPAWN"))
 				{
 					std::string temp2;
 					std::string tmptext;

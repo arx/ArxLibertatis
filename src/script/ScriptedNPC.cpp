@@ -607,6 +607,39 @@ public:
 	
 };
 
+class SetMoveModeCommand : public Command {
+	
+public:
+	
+	SetMoveModeCommand() : Command("setmovemode", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		string mode = context.getLowercase();
+		
+		LogDebug << "setmovemode " << mode;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(mode == "walk") {
+			ARX_NPC_ChangeMoveMode(io, WALKMODE);
+		} else if(mode == "run") {
+			ARX_NPC_ChangeMoveMode(io, RUNMODE);
+		} else if(mode == "none") {
+			ARX_NPC_ChangeMoveMode(io, NOMOVEMODE);
+		} else if(mode == "sneak") {
+			ARX_NPC_ChangeMoveMode(io, SNEAKMODE);
+		} else {
+			LogWarning << "unexpected move mode: " << mode;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+	~SetMoveModeCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -622,6 +655,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetStareFactorCommand);
 	ScriptEvent::registerCommand(new SetNPCStatCommand);
 	ScriptEvent::registerCommand(new SetXPValueCommand);
+	ScriptEvent::registerCommand(new SetMoveModeCommand);
 	
 }
 
