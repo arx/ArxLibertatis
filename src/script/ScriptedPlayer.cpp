@@ -32,8 +32,6 @@ public:
 		return Success;
 	}
 	
-	~AddBagCommand() { }
-	
 };
 
 class AddXpCommand : public Command {
@@ -52,8 +50,6 @@ public:
 		
 		return Success;
 	}
-	
-	~AddXpCommand() { }
 	
 };
 
@@ -79,8 +75,6 @@ public:
 		return Success;
 	}
 	
-	~AddGoldCommand() { }
-	
 };
 
 class RidiculousCommand : public Command {
@@ -99,8 +93,6 @@ public:
 		
 		return Success;
 	}
-	
-	~RidiculousCommand() { }
 	
 };
 
@@ -188,8 +180,6 @@ public:
 		return Success;
 	}
 	
-	~RuneCommand() { }
-	
 };
 
 class QuestCommand : public Command {
@@ -208,8 +198,6 @@ public:
 		
 		return Success;
 	}
-	
-	~QuestCommand() { }
 	
 };
 
@@ -254,8 +242,6 @@ public:
 		return Success;
 	}
 	
-	~SetPlayerTweakCommand() { }
-	
 };
 
 class SetHungerCommand : public Command {
@@ -272,8 +258,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetHungerCommand() { }
 	
 };
 

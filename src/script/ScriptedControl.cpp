@@ -42,8 +42,6 @@ public:
 		return Success;
 	}
 	
-	~ActivatePhysicsCommand() { }
-	
 };
 
 class AttractorCommand : public Command {
@@ -77,8 +75,6 @@ public:
 		
 		return Success;
 	}
-	
-	~AttractorCommand() { }
 	
 };
 
@@ -116,8 +112,6 @@ public:
 		return Success;
 	}
 	
-	~AmbianceCommand() { }
-	
 };
 
 class AnchorBlockCommand : public Command {
@@ -136,8 +130,6 @@ public:
 		
 		return Success;
 	}
-	
-	~AnchorBlockCommand() { }
 	
 };
 
@@ -171,8 +163,6 @@ public:
 		
 		return Success;
 	}
-	
-	~AttachCommand() {}
 	
 };
 
@@ -221,8 +211,6 @@ public:
 		
 		return Success;
 	}
-	
-	~CineCommand() {}
 	
 };
 
@@ -275,8 +263,6 @@ public:
 		return Success;
 	}
 	
-	~ConversationCommand() {}
-	
 };
 
 class QuakeCommand : public Command {
@@ -297,8 +283,6 @@ public:
 		
 		return Success;
 	}
-	
-	~QuakeCommand() { }
 	
 };
 
@@ -342,8 +326,6 @@ public:
 		return Success;
 	}
 	
-	~SetGroupCommand() { }
-	
 };
 
 class SetControlledZoneCommand : public Command {
@@ -368,8 +350,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetControlledZoneCommand() { }
 	
 };
 

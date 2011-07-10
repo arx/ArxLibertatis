@@ -28,8 +28,6 @@ public:
 		return Success;
 	}
 	
-	~NopCommand() { }
-	
 };
 
 class GotoCommand : public Command {
@@ -60,8 +58,6 @@ public:
 		return Jumped;
 	}
 	
-	~GotoCommand() { }
-	
 };
 
 class AbortCommand : public Command {
@@ -80,8 +76,6 @@ public:
 		
 		return result;
 	}
-	
-	~AbortCommand() { }
 	
 };
 
@@ -105,8 +99,6 @@ public:
 		return Jumped;
 	}
 	
-	~RandomCommand() { }
-	
 };
 
 class ReturnCommand : public Command {
@@ -127,8 +119,6 @@ public:
 		return Jumped;
 	}
 	
-	~ReturnCommand() { }
-	
 };
 
 class SetMainEventCommand : public Command {
@@ -147,8 +137,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetMainEventCommand() { }
 	
 };
 

@@ -123,8 +123,6 @@ public:
 		return Success;
 	}
 	
-	~BehaviourCommand() { }
-	
 };
 
 class ReviveCommand : public Command {
@@ -154,8 +152,6 @@ public:
 		
 		return Success;
 	}
-	
-	~ReviveCommand() { }
 	
 };
 
@@ -250,8 +246,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SpellcastCommand() { }
 	
 };
 
@@ -440,8 +434,6 @@ public:
 		return Success;
 	}
 	
-	~SpeakCommand() { }
-	
 };
 
 class SetDetectCommand : public Command {
@@ -465,8 +457,6 @@ public:
 		return Success;
 	}
 	
-	~SetDetectCommand() { }
-	
 };
 
 class SetBloodCommand : public Command {
@@ -487,8 +477,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetBloodCommand() { }
 	
 };
 
@@ -512,8 +500,6 @@ public:
 		return Success;
 	}
 	
-	~SetSpeakPitchCommand() { }
-	
 };
 
 class SetSpeedCommand : public Command {
@@ -533,8 +519,6 @@ public:
 		return Success;
 	}
 	
-	~SetSpeedCommand() { }
-	
 };
 
 class SetStareFactorCommand : public Command {
@@ -553,8 +537,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetStareFactorCommand() { }
 	
 };
 
@@ -579,8 +561,6 @@ public:
 		return Success;
 	}
 	
-	~SetNPCStatCommand() { }
-	
 };
 
 class SetXPValueCommand : public Command {
@@ -602,8 +582,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetXPValueCommand() { }
 	
 };
 
@@ -635,8 +613,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetMoveModeCommand() { }
 	
 };
 

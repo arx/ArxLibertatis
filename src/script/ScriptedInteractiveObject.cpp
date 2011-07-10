@@ -108,8 +108,6 @@ public:
 		return Success;
 	}
 	
-	~ReplaceMeCommand() { }
-	
 };
 
 class RotateCommand : public Command {
@@ -140,8 +138,6 @@ public:
 		
 		return Success;
 	}
-	
-	~RotateCommand() { }
 	
 };
 
@@ -189,8 +185,6 @@ public:
 		return Success;
 	}
 	
-	~CollisionCommand() { }
-	
 };
 
 class ShopCategoryCommand : public Command {
@@ -214,8 +208,6 @@ public:
 		return Success;
 	}
 	
-	~ShopCategoryCommand() { }
-	
 };
 
 class ShopMultiplyCommand : public Command {
@@ -234,8 +226,6 @@ public:
 		
 		return Success;
 	}
-	
-	~ShopMultiplyCommand() { }
 	
 };
 
@@ -265,8 +255,6 @@ public:
 		return Success;
 	}
 	
-	~GameFlagCommand() { }
-	
 };
 
 class IOFlagCommand : public Command {
@@ -295,8 +283,6 @@ public:
 		return Success;
 	}
 	
-	~IOFlagCommand() { }
-	
 };
 
 class SetTrapCommand : public Command {
@@ -320,8 +306,6 @@ public:
 		return Success;
 	}
 	
-	~SetTrapCommand() { }
-	
 };
 
 class SetSecretCommand : public Command {
@@ -344,8 +328,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetSecretCommand() { }
 	
 };
 
@@ -392,8 +374,6 @@ public:
 		return Success;
 	}
 	
-	~SetMaterialCommand() { }
-	
 };
 
 class SetNameCommand : public Command {
@@ -412,8 +392,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetNameCommand() { }
 	
 };
 
@@ -518,8 +496,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SpawnCommand() { }
 	
 };
 

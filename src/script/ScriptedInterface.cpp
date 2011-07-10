@@ -57,8 +57,6 @@ public:
 		return Success;
 	}
 	
-	~BookCommand() { }
-	
 };
 
 class CloseStealBagCommand : public Command {
@@ -85,8 +83,6 @@ public:
 		
 		return Success;
 	}
-	
-	~CloseStealBagCommand() { }
 	
 };
 
@@ -116,8 +112,6 @@ public:
 		
 		return Success;
 	}
-	
-	~NoteCommand() { }
 	
 };
 

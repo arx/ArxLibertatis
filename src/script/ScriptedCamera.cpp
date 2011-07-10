@@ -36,8 +36,6 @@ public:
 		return Success;
 	}
 	
-	~CameraControlCommand() {}
-	
 };
 
 class CameraActivateCommand : public Command {
@@ -77,8 +75,6 @@ public:
 		return Success;
 	}
 	
-	~CameraActivateCommand() {}
-	
 };
 
 class CameraSmoothingCommand : public Command {
@@ -97,8 +93,6 @@ public:
 		
 		return Success;
 	}
-	
-	~CameraSmoothingCommand() {}
 	
 };
 
@@ -130,8 +124,6 @@ public:
 		return Success;
 	}
 	
-	~CinemascopeCommand() {}
-	
 };
 
 class CameraFocalCommand : public Command {
@@ -150,8 +142,6 @@ public:
 		
 		return Success;
 	}
-	
-	~CameraFocalCommand() {}
 	
 };
 
@@ -173,8 +163,6 @@ public:
 		
 		return Success;
 	}
-	
-	~CameraTranslateTargetCommand() {}
 	
 };
 

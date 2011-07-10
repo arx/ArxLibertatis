@@ -39,8 +39,6 @@ public:
 		return Success;
 	}
 	
-	~RepairCommand() { }
-	
 };
 
 class SetPoisonousCommand : public Command {
@@ -69,8 +67,6 @@ public:
 		return Success;
 	}
 	
-	~SetPoisonousCommand() { }
-	
 };
 
 class SetStealCommand : public Command {
@@ -98,8 +94,6 @@ public:
 		return Success;
 	}
 	
-	~SetStealCommand() { }
-	
 };
 
 class SetLightCommand : public Command {
@@ -123,8 +117,6 @@ public:
 		return Success;
 	}
 	
-	~SetLightCommand() { }
-	
 };
 
 class SetFoodCommand : public Command {
@@ -143,8 +135,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetFoodCommand() { }
 	
 };
 
@@ -180,8 +170,6 @@ public:
 		
 		return Success;
 	}
-	
-	~SetObjectTypeCommand() { }
 	
 };
 
