@@ -261,6 +261,29 @@ public:
 	
 };
 
+class SetPlayerCollisionCommand : public Command {
+	
+public:
+	
+	SetPlayerCollisionCommand() : Command("setplayercollision") { }
+	
+	Result execute(Context & context) {
+		
+		bool enable = context.getBool();
+		
+		LogDebug << "setplayercollision " << enable;
+		
+		if(enable) {
+			context.getIO()->collision |= 1;
+		} else {
+			context.getIO()->collision &= ~1;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -273,6 +296,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new QuestCommand);
 	ScriptEvent::registerCommand(new SetPlayerTweakCommand);
 	ScriptEvent::registerCommand(new SetHungerCommand);
+	ScriptEvent::registerCommand(new SetPlayerCollisionCommand);
 	
 }
 
