@@ -634,21 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETLIFE"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io != NULL)
-					{
-						if (io->ioflags & IO_NPC)
-						{
-							io->_npcdata->maxlife = io->_npcdata->life = GetVarValueInterpretedAsFloat(word, esss, io);
-						}
-					}
-
-					LogDebug <<  "SET_LIFE "<< word;
-				}
-				else if (!strcmp(word, "SETDURABILITY"))
+				if (!strcmp(word, "SETDURABILITY"))
 				{
 					long current = 0;
 					pos = GetNextWord(es, pos, word);

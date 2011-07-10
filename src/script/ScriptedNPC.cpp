@@ -650,6 +650,25 @@ public:
 	
 };
 
+class SetLifeCommand : public Command {
+	
+public:
+	
+	SetLifeCommand() : Command("setlife", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		float life = context.getFloat();
+		
+		LogDebug << "setlife " << life;
+		
+		context.getIO()->_npcdata->maxlife = context.getIO()->_npcdata->life = life;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -667,6 +686,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetXPValueCommand);
 	ScriptEvent::registerCommand(new SetMoveModeCommand);
 	ScriptEvent::registerCommand(new SetWeaponCommand);
+	ScriptEvent::registerCommand(new SetLifeCommand);
 	
 }
 
