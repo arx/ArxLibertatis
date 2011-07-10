@@ -626,35 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETMAXCOUNT"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io != NULL) && (io->ioflags & IO_ITEM))
-					{
-						io->_itemdata->maxcount = (short)GetVarValueInterpretedAsFloat(word, esss, io);
-
-						if (io->_itemdata->maxcount < 1) io->_itemdata->maxcount = 1;
-					}
-
-					LogDebug << "SET_MAX_COUNT "<<word;
-				}
-				else if (!strcmp(word, "SETCOUNT"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io != NULL) && (io->ioflags & IO_ITEM))
-					{
-						io->_itemdata->count = (short)GetVarValueInterpretedAsFloat(word, esss, io);
-
-						if (io->_itemdata->count < 1) io->_itemdata->count = 1;
-
-						if (io->_itemdata->count > io->_itemdata->maxcount) io->_itemdata->count = io->_itemdata->maxcount;
-					}
-
-					LogDebug << "SET_COUNT "<< word;
-				}
-				else if (!strcmp(word, "SETWEIGHT"))
+				if (!strcmp(word, "SETWEIGHT"))
 				{
 					pos = GetNextWord(es, pos, word);
 

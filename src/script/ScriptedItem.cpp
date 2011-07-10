@@ -241,6 +241,47 @@ public:
 	
 };
 
+class SetMaxCountCommand : public Command {
+	
+public:
+	
+	SetMaxCountCommand() : Command("setmaxcount", IO_ITEM) { }
+	
+	Result execute(Context & context) {
+		
+		short count = (short)context.getFloat();
+		if(count < 1) {
+			count = 1;
+		}
+		
+		LogDebug << "setmaxcount " << count;
+		
+		context.getIO()->_itemdata->maxcount = count;
+		
+		return Success;
+	}
+	
+};
+
+class SetCountCommand : public Command {
+	
+public:
+	
+	SetCountCommand() : Command("setcount", IO_ITEM) { }
+	
+	Result execute(Context & context) {
+		
+		short count = clamp((short)context.getFloat(), (short)1, context.getIO()->_itemdata->maxcount);
+		
+		LogDebug << "setcount " << count;
+		
+		context.getIO()->_itemdata->count = count;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -253,6 +294,8 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetObjectTypeCommand);
 	ScriptEvent::registerCommand(new SetEquipCommand);
 	ScriptEvent::registerCommand(new SetDurabilityCommand);
+	ScriptEvent::registerCommand(new SetMaxCountCommand);
+	ScriptEvent::registerCommand(new SetCountCommand);
 	
 }
 
