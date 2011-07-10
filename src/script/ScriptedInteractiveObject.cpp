@@ -728,6 +728,31 @@ public:
 	
 };
 
+class KillMeCommand : public Command {
+	
+public:
+	
+	KillMeCommand() : Command("killme", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		LogDebug << "killme";
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+			io->_itemdata->count--;
+		} else {
+			io->show = SHOW_FLAG_KILLED;
+			io->GameFlags &= ~GFLAG_ISINTREATZONE;
+			RemoveFromAllInventories(io);
+			ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -766,6 +791,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetTransparencyCommand);
 	ScriptEvent::registerCommand(new SetIRColorCommand);
 	ScriptEvent::registerCommand(new SetScaleCommand);
+	ScriptEvent::registerCommand(new KillMeCommand);
 	
 }
 

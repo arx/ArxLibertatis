@@ -6,11 +6,13 @@
 #include "ai/Paths.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "graphics/GraphicsModes.h"
 #include "gui/Speech.h"
 #include "physics/Attractors.h"
 #include "physics/Collisions.h"
 #include "io/Logger.h"
 #include "io/PakReader.h"
+#include "io/FilePath.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
@@ -414,6 +416,59 @@ public:
 	
 };
 
+class ZoneParamCommand : public Command {
+	
+public:
+	
+	ZoneParamCommand() : Command("zoneparam") { }
+	
+	Result execute(Context & context) {
+		
+		string options = context.getFlags();
+		string command = context.getLowercase();
+		
+		if(command == "stack") {
+			LogDebug << "zoeparam stack";
+			ARX_GLOBALMODS_Stack();
+			
+		} else if(command == "unstack") {
+			LogDebug << "zoeparam unstack";
+			ARX_GLOBALMODS_UnStack();
+			
+		} else if(command == "rgb") {
+			
+			desired.depthcolor.r = context.getFloat();
+			desired.depthcolor.g = context.getFloat();
+			desired.depthcolor.b = context.getFloat();
+			desired.flags |= GMOD_DCOLOR;
+			
+			LogDebug << "zoneparam rgb " << desired.depthcolor.r << ' ' << desired.depthcolor.g << ' ' << desired.depthcolor.b;
+			
+		} else if(command == "zclip") {
+				
+			desired.zclip = context.getFloat();
+			desired.flags |= GMOD_ZCLIP;
+			
+			LogDebug << "zoneparam zclip " << desired.zclip;
+			
+		} else if(command == "ambiance") {
+			
+			string ambiance = loadPath(context.getWord());
+			
+			LogDebug << "zoneparam ambiance " << ambiance;
+			
+			ARX_SOUND_PlayZoneAmbiance(ambiance);
+			
+		} else {
+			LogWarning << "unknwon zoneparam command: " << command;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -429,6 +484,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new SetGroupCommand);
 	ScriptEvent::registerCommand(new SetControlledZoneCommand);
 	ScriptEvent::registerCommand(new SetPathCommand);
+	ScriptEvent::registerCommand(new ZoneParamCommand);
 	
 }
 
