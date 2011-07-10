@@ -537,6 +537,27 @@ public:
 	
 };
 
+class SetStareFactorCommand : public Command {
+	
+public:
+	
+	SetStareFactorCommand() : Command("setstarefactor", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		float stare_factor = context.getFloat();
+		
+		LogDebug << "setstarefactor " << stare_factor;
+		
+		context.getIO()->_npcdata->stare_factor = stare_factor;
+		
+		return Success;
+	}
+	
+	~SetStareFactorCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -549,6 +570,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetBloodCommand);
 	ScriptEvent::registerCommand(new SetSpeakPitchCommand);
 	ScriptEvent::registerCommand(new SetSpeedCommand);
+	ScriptEvent::registerCommand(new SetStareFactorCommand);
 	
 }
 

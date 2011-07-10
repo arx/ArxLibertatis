@@ -634,16 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETSTAREFACTOR"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io) && (io->ioflags & IO_NPC))
-					{
-						io->_npcdata->stare_factor = GetVarValueInterpretedAsFloat(word, esss, io);
-					}
-				}
-				else if (!strcmp(word, "SETGROUP"))
+				if (!strcmp(word, "SETGROUP"))
 				{
 					pos = GetNextWord(es, pos, word);
 					long remove = 0;
