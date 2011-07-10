@@ -74,7 +74,7 @@ const float ARX_NPC_AUDIBLE_FACTOR_RANGE(ARX_NPC_AUDIBLE_FACTOR_MAX - ARX_NPC_AU
 const float ARX_NPC_AUDIBLE_PRESENCE_DEFAULT(1.0F);
 
 void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flag);
-void ARX_NPC_SetStat( INTERACTIVE_OBJ& io, const std::string& statname, float value );
+bool ARX_NPC_SetStat(INTERACTIVE_OBJ & io, const std::string & statname, float value);
 void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos);
 bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target);
 bool IsDeadNPC(INTERACTIVE_OBJ * io);

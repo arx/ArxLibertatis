@@ -558,6 +558,31 @@ public:
 	
 };
 
+class SetNPCStatCommand : public Command {
+	
+public:
+	
+	SetNPCStatCommand() : Command("setnpcstat", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		string stat = context.getLowercase();
+		float value = context.getFloat();
+		
+		LogDebug << "setnpcstat " << stat << ' ' << value;
+		
+		if(!ARX_NPC_SetStat(*context.getIO(), stat, value)) {
+			LogWarning << "unknown stat name: setnpcstat " << stat << ' ' << value;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+	~SetNPCStatCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -571,6 +596,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetSpeakPitchCommand);
 	ScriptEvent::registerCommand(new SetSpeedCommand);
 	ScriptEvent::registerCommand(new SetStareFactorCommand);
+	ScriptEvent::registerCommand(new SetNPCStatCommand);
 	
 }
 

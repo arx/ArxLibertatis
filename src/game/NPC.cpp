@@ -99,6 +99,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::sprintf;
 using std::min;
 using std::max;
+using std::string;
 
 void CheckNPCEx(INTERACTIVE_OBJ * io);
 
@@ -870,99 +871,44 @@ failure:
 	return false;
 }
 
-//***********************************************************************************************
-//***********************************************************************************************
-void ARX_NPC_SetStat( INTERACTIVE_OBJ& io, const std::string& statname, float value )
-{
-	if ( !(io.ioflags & IO_NPC) )
-		return;
-
-	if (!strcasecmp(statname, "ARMOR_CLASS"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->armor_class = value;
-	}
-	else if (!strcasecmp(statname, "BACKSTAB_SKILL"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->backstab_skill = value;
-	}
-	else if (!strcasecmp(statname, "BACKSTAB"))
-	{
+bool ARX_NPC_SetStat(INTERACTIVE_OBJ& io, const string & statname, float value) {
+	
+	arx_assert(io.ioflags & IO_NPC);
+	
+	if(statname == "armor_class") {
+		io._npcdata->armor_class = value < 0 ? 0 : value;
+	} else if(statname == "backstab_skill") {
+		io._npcdata->backstab_skill = value < 0 ? 0 : value;
+	} else if(statname == "backstab") {
 		if (value == 0) io._npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
 		else io._npcdata->npcflags |= NPCFLAG_BACKSTAB;
+	} else if(statname == "reach") {
+		io._npcdata->reach = value < 0 ? 0 : value;
+	} else if(statname == "critical") {
+		io._npcdata->critical = value < 0 ? 0 : value;
+	} else if(statname == "absorb") {
+		io._npcdata->absorb = value < 0 ? 0 : value;
+	} else if(statname == "damages") {
+		io._npcdata->damages = value < 0 ? 0 : value;
+	} else if(statname == "tohit") {
+		io._npcdata->tohit = value < 0 ? 0 : value;
+	} else if(statname == "aimtime") {
+		io._npcdata->aimtime = value < 0 ? 0 : value;
+	} else if(statname == "life") {
+		io._npcdata->maxlife = io._npcdata->life = value < 0 ? 0.0000001f : value;
+	} else if(statname == "mana") {
+		io._npcdata->maxmana = io._npcdata->mana = value < 0 ? 0 : value;
+	} else if(statname == "resistfire") {
+		io._npcdata->resist_fire = (unsigned char)clamp(value, 0.f, 100.f);
+	} else if(statname == "resistpoison") {
+		io._npcdata->resist_poison = (unsigned char)clamp(value, 0.f, 100.f);
+	} else if(statname == "resistmagic") {
+		io._npcdata->resist_magic = (unsigned char)clamp(value, 0.f, 100.f);
+	} else {
+		return false;
 	}
-	else if (!strcasecmp(statname, "REACH"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->reach = value;
-	}
-	else if (!strcasecmp(statname, "CRITICAL"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->critical = value;
-	}
-	else if (!strcasecmp(statname, "ABSORB"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->absorb = value;
-	}
-	else if (!strcasecmp(statname, "DAMAGES"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->damages = value;
-	}
-	else if (!strcasecmp(statname, "TOHIT"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->tohit = value;
-	}
-	else if (!strcasecmp(statname, "AIMTIME"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->aimtime = value;
-	}
-	else if (!strcasecmp(statname, "LIFE"))
-	{
-		if (value < 0) value = 0.0000001f;
-
-		io._npcdata->maxlife = io._npcdata->life = value;
-	}
-	else if (!strcasecmp(statname, "MANA"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->maxmana = io._npcdata->mana = value;
-	}
-	else if (!strcasecmp(statname, "RESISTFIRE"))
-	{
-		if (value < 0) value = 0;
-		else if (value > 100) value = 100;
-
-		io._npcdata->resist_fire = (unsigned char)value;
-	}
-	else if (!strcasecmp(statname, "RESISTPOISON"))
-	{
-		if (value < 0) value = 0;
-		else if (value > 100) value = 100;
-
-		io._npcdata->resist_poison = (unsigned char)value;
-	}
-	else if (!strcasecmp(statname, "RESISTMAGIC"))
-	{
-		if (value < 0) value = 0;
-		else if (value > 100) value = 100;
-
-		io._npcdata->resist_magic = (unsigned char)value;
-	}
+	
+	return true;
 }
 
 extern long CUR_COLLISION_MATERIAL;

@@ -634,15 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETNPCSTAT"))
-				{
-					std::string temp2;
-					pos = GetNextWord(es, pos, word);
-					pos = GetNextWord(es, pos, temp2);
-					ARX_NPC_SetStat( *io, word, GetVarValueInterpretedAsFloat(temp2, esss, io));
-					LogDebug <<  "SET_NPC_STAT "<< word;
-				}
-				else if (!strcmp(word, "SETXPVALUE"))
+				if (!strcmp(word, "SETXPVALUE"))
 				{
 					pos = GetNextWord(es, pos, word);
 
