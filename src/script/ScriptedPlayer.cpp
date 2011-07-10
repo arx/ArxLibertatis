@@ -1,9 +1,12 @@
 
 #include "script/ScriptedPlayer.h"
 
+#include "core/Core.h"
 #include "game/Player.h"
 #include "game/Inventory.h"
+#include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/particle/ParticleEffects.h"
 #include "gui/Interface.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
@@ -15,6 +18,7 @@
 using std::string;
 
 extern float InventoryDir;
+extern INTERACTIVE_OBJ * CURRENT_TORCH;
 
 namespace script {
 
@@ -334,6 +338,118 @@ public:
 	
 };
 
+class SpecialFXCommand : public Command {
+	
+public:
+	
+	SpecialFXCommand() : Command("specialfx") { }
+	
+	Result execute(Context & context) {
+		
+		string type = context.getLowercase();
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		if(type == "ylside_death") {
+			LogDebug << "specialfx ylside_death";
+			if(!io) {
+				LogWarning << "can only use 'specialfx ylside_death' in IO context";
+				return Failed;
+			}
+			SetYlsideDeath(io);
+			
+		} else if(type == "player_appears") {
+			LogDebug << "specialfx player_appears";
+			if(!io) {
+				LogWarning << "can only use 'specialfx player_appears' in IO context";
+				return Failed;
+			}
+			MakePlayerAppearsFX(io);
+			
+		} else if(type == "heal") {
+			
+			float val = context.getFloat();
+			
+			LogDebug << "specialfx heal " << val;
+			
+			if(!BLOCK_PLAYER_CONTROLS) {
+				player.life += val;
+			}
+			player.life = clamp(player.life, 0.f, player.Full_maxlife);
+			
+		} else if(type == "mana") {
+			
+			float val = context.getFloat();
+			
+			LogDebug << "specialfx mana " << val;
+			
+			player.mana = clamp(player.mana + val, 0.f, player.Full_maxmana);
+			
+		} else if(type == "newspell") {
+			
+			context.skipWord();
+			
+			LogDebug << "specialfx newspell";
+			
+			MakeBookFX(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148), 0.00001f);
+			
+		} else if(type == "torch") {
+			
+			LogDebug << "specialfx torch";
+			
+			if(!io || !(io->ioflags & IO_ITEM)) {
+				LogWarning << "can only use 'specialfx torch' for items";
+				return Failed;
+			}
+			
+			INTERACTIVE_OBJ * ioo = io;
+			if(io->_itemdata->count > 1) {
+				ioo = CloneIOItem(io);
+				MakeTemporaryIOIdent(ioo);
+				ioo->show = SHOW_FLAG_IN_INVENTORY;
+				ioo->scriptload = 1;
+				ioo->_itemdata->count = 1;
+				io->_itemdata->count--;
+			}
+			
+			ARX_PLAYER_ClickedOnTorch(ioo);
+			
+		} else if(type == "fiery") {
+			LogDebug << "specialfx fiery";
+			if(!io) {
+				LogWarning << "can only use 'specialfx fiery' in IO context";
+				return Failed;
+			}
+			io->ioflags |= IO_FIERY;
+			
+		} else if(type == "fieryoff") {
+			LogDebug << "specialfx fieryoff";
+			if(!io) {
+				LogWarning << "can only use 'specialfx fieryoff' in IO context";
+				return Failed;
+			}
+			io->ioflags &= ~IO_FIERY;
+			
+		} else if(type == "torchon") {
+			LogDebug << "specialfx torchon";
+			// do nothing
+			
+		} else if(type == "torchoff") {
+			LogDebug << "specialfx torchoff";
+			if(CURRENT_TORCH) {
+				ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
+			}
+			
+		} else {
+			LogWarning << "unknown specialfx: " << type;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -348,6 +464,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new SetHungerCommand);
 	ScriptEvent::registerCommand(new SetPlayerControlsCommand);
 	ScriptEvent::registerCommand(new StealNPCCommand);
+	ScriptEvent::registerCommand(new SpecialFXCommand);
 	
 }
 

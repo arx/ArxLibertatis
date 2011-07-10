@@ -65,7 +65,6 @@ using std::string;
 
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long REFUSE_GAME_RETURN;
 extern long FINAL_RELEASE;
 extern long TELEPORT_TO_CONFIRM;
@@ -621,121 +620,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			case '>':
 				if (word[1] == '>') pos = GotoNextLine(es, pos);
 				break;
-
-				break;
-			case 'S':
-
-				if (!strcmp(word, "SPECIALFX"))
-				{
-					std::string temp1;
-					pos = GetNextWord(es, pos, temp1);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "SPECIAL_FX ");
-						strcat(cmd, word);
-					}
-
-#endif
-
-					if (!strcasecmp(temp1, "YLSIDE_DEATH"))
-					{
-						SetYlsideDeath(io);
-					}
-					else if (!strcasecmp(temp1, "PLAYER_APPEARS"))
-					{
-						MakePlayerAppearsFX(io);
-					}
-					else if (!strcmp(temp1, "HEAL"))
-					{
-						pos = GetNextWord(es, pos, temp1);
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG)
-						{
-							strcat(cmd, " ");
-							strcat(cmd, temp1);
-						}
-
-#endif
-
-						if (!BLOCK_PLAYER_CONTROLS)
-							player.life += (float)atof(temp1.c_str());
-
-						if (player.life > player.Full_maxlife) player.life = player.Full_maxlife;
-
-						if (player.life < 0.f) player.life = 0.f;
-					}
-					else if (!strcmp(temp1, "MANA"))
-					{
-						pos = GetNextWord(es, pos, temp1);
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG)
-						{
-							strcat(cmd, " ");
-							strcat(cmd, temp1);
-						}
-
-#endif
-						player.mana += (float)atof(temp1.c_str());
-
-						if (player.mana > player.Full_maxmana) player.mana = player.Full_maxmana;
-
-						if (player.mana < 0.f) player.mana = 0.f;
-					}
-					else if (!strcmp(temp1, "NEWSPELL"))
-					{
-						MakeBookFX(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148), 0.00001f);
-						pos = GetNextWord(es, pos, temp1);
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG)
-						{
-							strcat(cmd, " ");
-							strcat(cmd, temp1);
-						}
-
-#endif
-					}
-					else if (!strcmp(temp1, "TORCH"))
-					{
-						if ((io) && (io->ioflags & IO_ITEM))
-						{
-							INTERACTIVE_OBJ * ioo = io;
-
-							if (io->_itemdata->count > 1)
-							{
-								ioo = CloneIOItem(io);
-								MakeTemporaryIOIdent(ioo);
-								ioo->show = SHOW_FLAG_IN_INVENTORY;
-								ioo->scriptload = 1;
-								ioo->_itemdata->count = 1;
-								io->_itemdata->count--;
-							}
-
-							ARX_PLAYER_ClickedOnTorch(ioo);
-						}
-					}
-					else if (!strcmp(temp1, "FIERY"))
-					{
-						io->ioflags |= IO_FIERY;
-					}
-					else if (!strcmp(temp1, "FIERYOFF"))
-					{
-						io->ioflags &= ~IO_FIERY;
-					}
-					else if (!strcmp(temp1, "TORCHON"))
-					{
-						//DO NOTHING
-					}
-					else if (!strcmp(temp1, "TORCHOFF"))
-					{
-						if (CURRENT_TORCH)
-							ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
-					}
-				}
 
 				break;
 			case 'Z':
