@@ -634,20 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETSPEAKPITCH"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io) && (io->ioflags & IO_NPC))
-					{
-						io->_npcdata->speakpitch = GetVarValueInterpretedAsFloat(word, esss, io);
-
-						if (io->_npcdata->speakpitch < 0.6f) io->_npcdata->speakpitch = 0.6f;
-					}
-
-					LogDebug <<  "SET_SPEAK_PITCH "<< word;
-				}
-				else if (!strcmp(word, "SETFOOD"))
+				if (!strcmp(word, "SETFOOD"))
 				{
 					pos = GetNextWord(es, pos, word);
 

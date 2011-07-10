@@ -53,7 +53,7 @@ public:
 		
 		if(!context.jumpToLabel(label)) {
 			// TODO should be a warning, but some scripts do this
-			LogInfo << "error jumping to label \"" << label << '"';
+			LogDebug << "error jumping to label \"" << label << '"';
 			return AbortError;
 		}
 		

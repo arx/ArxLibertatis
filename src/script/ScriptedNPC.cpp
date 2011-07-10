@@ -492,6 +492,30 @@ public:
 	
 };
 
+class SetSpeakPitchCommand : public Command {
+	
+public:
+	
+	SetSpeakPitchCommand() : Command("setspeakpitch", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		float pitch = context.getFloat();
+		if(pitch < .6f) {
+			pitch = .6f;
+		}
+		
+		LogDebug << "setspeakpitch " << pitch;
+		
+		context.getIO()->_npcdata->speakpitch = pitch;
+		
+		return Success;
+	}
+	
+	~SetSpeakPitchCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -502,6 +526,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SpeakCommand);
 	ScriptEvent::registerCommand(new SetDetectCommand);
 	ScriptEvent::registerCommand(new SetBloodCommand);
+	ScriptEvent::registerCommand(new SetSpeakPitchCommand);
 	
 }
 
