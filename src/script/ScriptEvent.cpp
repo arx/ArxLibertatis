@@ -847,14 +847,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'R':
 
-				if (!strcmp(word, "REFUSE"))
-				{
-					ClearSubStack(es);
-					ret = REFUSE;
-					LogDebug << "  REFUSE";
-					goto end;
-				}
-				else if (!strcmp(word, "RANDOM"))
+				if (!strcmp(word, "RANDOM"))
 				{
 					std::string temp1;
 					pos = GetNextWord(es, pos, temp1);
@@ -5798,8 +5791,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 	}
 
-end:
-	;
 	LogDebug << "goto end";
 
 	if (msg != SM_EXECUTELINE) {

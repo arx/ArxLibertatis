@@ -92,6 +92,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand("goto", new GotoCommand("goto"));
 	ScriptEvent::registerCommand("gosub", new GotoCommand("gosub", true));
 	ScriptEvent::registerCommand("accept", new AbortCommand("accept", Command::AbortAccept));
+	ScriptEvent::registerCommand("refuse", new AbortCommand("refuse", Command::AbortRefuse));
 	
 }
 
