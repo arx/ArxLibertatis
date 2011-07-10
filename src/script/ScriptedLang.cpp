@@ -1,6 +1,7 @@
 
 #include "script/ScriptedLang.h"
 
+#include "core/GameTime.h"
 #include "graphics/Math.h"
 #include "platform/String.h"
 #include "io/Logger.h"
@@ -140,6 +141,48 @@ public:
 	
 };
 
+class StartStopTimerCommand : public Command {
+	
+	const bool start;
+	
+public:
+	
+	StartStopTimerCommand(const string & command, bool _start) : Command(command), start(_start) { }
+	
+	Result execute(Context & context) {
+		
+		string timer = context.getLowercase();
+		
+		LogDebug << getName() << ' ' << timer;
+		
+		long t;
+		if(timer == "timer1") {
+			t = 0;
+		} else if(timer == "timer2") {
+			t = 1;
+		} else if(timer == "timer3") {
+			t = 2;
+		} else if(timer == "timer4") {
+			t = 3;
+		} else {
+			LogWarning << "invalid timer: " << timer;
+			return Failed;
+		}
+		
+		if(start) {
+			context.getScript()->timers[t] = ARXTimeUL();
+			if(context.getScript()->timers[t] == 0) {
+				context.getScript()->timers[t] = 1;
+			}
+		} else {
+			context.getScript()->timers[t] = 0;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -153,6 +196,8 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new ReturnCommand);
 	ScriptEvent::registerCommand(new SetMainEventCommand("setstatus"));
 	ScriptEvent::registerCommand(new SetMainEventCommand("setmainevent"));
+	ScriptEvent::registerCommand(new StartStopTimerCommand("starttimer", true));
+	ScriptEvent::registerCommand(new StartStopTimerCommand("stoptimer", false));
 	
 }
 

@@ -634,49 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "STARTTIMER"))
-				{
-					pos = GetNextWord(es, pos, word);
-					long t = -1;
-
-					if (!strcmp(word, "TIMER1")) t = 0;
-
-					if (!strcmp(word, "TIMER2")) t = 1;
-
-					if (!strcmp(word, "TIMER3")) t = 2;
-
-					if (!strcmp(word, "TIMER4")) t = 3;
-
-					if (t > -1)
-					{
-						esss->timers[t] = ARXTimeUL();
-
-						if (esss->timers[t] == 0) esss->timers[t] = 1;
-					}
-
-					LogDebug <<  "START_TIMER "<< word;
-				}
-				else if (!strcmp(word, "STOPTIMER"))
-				{
-					pos = GetNextWord(es, pos, word);
-					long t = -1;
-
-					if (!strcmp(word, "TIMER1")) t = 0;
-
-					if (!strcmp(word, "TIMER2")) t = 1;
-
-					if (!strcmp(word, "TIMER3")) t = 2;
-
-					if (!strcmp(word, "TIMER4")) t = 3;
-
-					if (t > -1)
-					{
-						esss->timers[t] = 0;
-					}
-
-					LogDebug <<  "STOP_TIMER "<< word;
-				}
-				else if (!strcmp(word, "SENDEVENT"))
+				if (!strcmp(word, "SENDEVENT"))
 				{
 					std::string evt;
 					std::string temp1;
