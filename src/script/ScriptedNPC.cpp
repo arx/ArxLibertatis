@@ -669,6 +669,88 @@ public:
 	
 };
 
+class SetTargetCommand : public Command {
+	
+public:
+	
+	SetTargetCommand() : Command("settarget", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(io->ioflags & IO_NPC) {
+			io->_npcdata->pathfind.flags &= ~(PATHFIND_ALWAYS|PATHFIND_ONCE|PATHFIND_NO_UPDATE);
+		}
+		
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(io->ioflags & IO_NPC) {
+				if(flg & flag('s')) {
+					io->_npcdata->pathfind.flags |= PATHFIND_ONCE;
+				}
+				if(flg & flag('a')) {
+					io->_npcdata->pathfind.flags |= PATHFIND_ALWAYS;
+				}
+				if(flg & flag('n')) {
+					io->_npcdata->pathfind.flags |= PATHFIND_NO_UPDATE;
+				}
+			}
+			if(!flg || (flg & ~flags("san"))) {
+				LogWarning << "unexpected flags: settarget " << options;
+			}
+		}
+		
+		long old_target = -12;
+		if(io->ioflags & IO_NPC) {
+			if(io->_npcdata->reachedtarget) {
+				old_target = io->targetinfo;
+			}
+			if(io->_npcdata->behavior & (BEHAVIOUR_FLEE|BEHAVIOUR_WANDER_AROUND)) {
+				old_target = -12;
+			}
+		}
+		
+		string target = context.getLowercase();
+		if(target == "object") {
+			target = context.getLowercase();
+		}
+		target = toLowercase(context.getStringVar(target));
+		long t = GetTargetByNameTarget(target);
+		if(t == -2) {
+			t = GetInterNum(io);
+		}
+		
+		LogDebug << "settarget " << options << ' ' << target;
+		
+		if(io->ioflags & IO_CAMERA) {
+			io->_camdata->cam.translatetarget = Vec3f::ZERO;
+		}
+		
+		if(ValidIONum(t)) {
+			io->targetinfo = t;
+			GetTargetPos(io);
+		}
+		
+		if(target == "path") {
+			io->targetinfo = TARGET_PATH;
+			GetTargetPos(io);
+		} else if(target == "none") {
+			io->targetinfo = TARGET_NONE;
+		}
+		
+		if(old_target != t) {
+			if(io->ioflags & IO_NPC) {
+				io->_npcdata->reachedtarget = 0;
+			}
+			ARX_NPC_LaunchPathfind(io, t);
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -687,6 +769,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetMoveModeCommand);
 	ScriptEvent::registerCommand(new SetWeaponCommand);
 	ScriptEvent::registerCommand(new SetLifeCommand);
+	ScriptEvent::registerCommand(new SetTargetCommand);
 	
 }
 
