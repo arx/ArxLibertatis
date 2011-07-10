@@ -782,6 +782,25 @@ public:
 	
 };
 
+class ForceAngleCommand : public Command {
+	
+public:
+	
+	ForceAngleCommand() : Command("forceangle", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		float angle = MAKEANGLE(context.getFloat());
+		
+		LogDebug << "forceangle " << angle;
+		
+		context.getIO()->angle.b = angle;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -822,6 +841,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetScaleCommand);
 	ScriptEvent::registerCommand(new KillMeCommand);
 	ScriptEvent::registerCommand(new ForceAnimCommand);
+	ScriptEvent::registerCommand(new ForceAngleCommand);
 	
 }
 

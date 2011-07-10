@@ -623,23 +623,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'F':
 
-				if (!strcmp(word, "FORCEANGLE"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io != NULL)
-					{
-
-						io->angle.b = MAKEANGLE(GetVarValueInterpretedAsFloat(word, esss, io));
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "FORCEANGLE %s", word);
-
-#endif
-				}
-				else if (!strcmp(word, "FORCEDEATH"))
+				if (!strcmp(word, "FORCEDEATH"))
 				{
 					std::string temp2;
 					long t;
