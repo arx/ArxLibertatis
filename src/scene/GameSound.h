@@ -201,7 +201,6 @@ extern ArxSound SND_SPELL_VISION_START;
 extern ArxSound SND_SPELL_VISION_LOOP;
 
 // inter-material sounds
-long ARX_MATERIAL_GetIdByName(const std::string & name);
 bool ARX_MATERIAL_GetNameById(long id, char * name);
 
 bool ARX_SOUND_Init();

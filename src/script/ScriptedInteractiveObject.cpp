@@ -9,6 +9,7 @@
 #include "io/Logger.h"
 #include "io/FilePath.h"
 #include "physics/Collisions.h"
+#include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
 
@@ -347,6 +348,53 @@ public:
 	
 };
 
+class SetMaterialCommand : public Command {
+	
+	typedef std::map<std::string, Material> Materials;
+	Materials materials;
+	
+public:
+	
+	SetMaterialCommand() : Command("setmaterial", ANY_IO) {
+		materials["weapon"] = MATERIAL_WEAPON;
+		materials["flesh"] = MATERIAL_FLESH;
+		materials["metal"] = MATERIAL_METAL;
+		materials["glass"] = MATERIAL_GLASS;
+		materials["cloth"] = MATERIAL_CLOTH;
+		materials["wood"] = MATERIAL_WOOD;
+		materials["earth"] = MATERIAL_EARTH;
+		materials["water"] = MATERIAL_WATER;
+		materials["ice"] = MATERIAL_ICE;
+		materials["gravel"] = MATERIAL_GRAVEL;
+		materials["stone"] = MATERIAL_STONE;
+		materials["foot_large"] = MATERIAL_FOOT_LARGE;
+		materials["foot_bare"] = MATERIAL_FOOT_BARE;
+		materials["foot_shoe"] = MATERIAL_FOOT_SHOE;
+		materials["foot_metal"] = MATERIAL_FOOT_METAL;
+		materials["foot_stealth"] = MATERIAL_FOOT_STEALTH;
+	}
+	
+	Result execute(Context & context) {
+		
+		string name = context.getLowercase();
+		
+		LogDebug << "setmaterial " << name;
+		
+		Materials::const_iterator it = materials.find(name);
+		if(it == materials.end()) {
+			LogWarning << "unknown material: setmaterial " << name;
+			context.getIO()->material = MATERIAL_NONE;
+		} else {
+			context.getIO()->material = it->second;
+		}
+		
+		return Success;
+	}
+	
+	~SetMaterialCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -370,6 +418,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new IOFlagCommand("invertedobject", IO_INVERTED));
 	ScriptEvent::registerCommand(new SetTrapCommand);
 	ScriptEvent::registerCommand(new SetSecretCommand);
+	ScriptEvent::registerCommand(new SetMaterialCommand);
 	
 }
 

@@ -545,7 +545,7 @@ struct INTERACTIVE_OBJ
 	short				stat_count;
 	short				stat_sent;
 	IO_TWEAKER_INFO *	tweakerinfo; // optional tweaker infos
-	long				material;
+	Material material;
 
 
 	IO_GROUP_DATA *		iogroups;

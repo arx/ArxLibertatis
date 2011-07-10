@@ -634,18 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io)
-					{
-						io->material = ARX_MATERIAL_GetIdByName(word);
-					}
-
-					LogDebug <<  "SET_MATERIAL "<< word;
-				}
-				else if (!strcmp(word, "SETSPEAKPITCH"))
+				if (!strcmp(word, "SETSPEAKPITCH"))
 				{
 					pos = GetNextWord(es, pos, word);
 

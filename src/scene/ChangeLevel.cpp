@@ -2200,7 +2200,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		strcpy(io->locname, toLowercase(safestring(ais->locname)).c_str());
 		io->EditorFlags = ais->EditorFlags;
 		io->GameFlags = ais->GameFlags;
-		io->material = ais->material;
+		io->material = (Material)ais->material; // TODO save/load enum
 		io->level = ais->level;
 		io->truelevel = ais->truelevel;
 		

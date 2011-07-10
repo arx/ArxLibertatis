@@ -1528,7 +1528,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->sound = -1;
 		io->soundtime = 0;
 		io->soundcount = 0;
-		io->material = 11;
+		io->material = MATERIAL_STONE;
 		io->collide_door_time = 0;
 		io->ouch_time = 0;
 		io->dmg_sum = 0;
