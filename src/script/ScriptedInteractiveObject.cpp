@@ -221,6 +221,28 @@ public:
 	
 };
 
+class ShopMultiplyCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		float multiply = context.getFloat();
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!io) {
+			return Failed;
+		}
+		
+		io->shop_multiply = multiply;
+		
+		return Success;
+	}
+	
+	~ShopMultiplyCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -229,6 +251,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand("rotate", new RotateCommand);
 	ScriptEvent::registerCommand("collision", new CollisionCommand);
 	ScriptEvent::registerCommand("shopcategory", new ShopCategoryCommand);
+	ScriptEvent::registerCommand("shopmultiply", new ShopMultiplyCommand);
 	
 }
 

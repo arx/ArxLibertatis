@@ -894,12 +894,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SHOPMULTIPLY"))
-				{
-					pos = GetNextWord(es, pos, word);
-					io->shop_multiply = GetVarValueInterpretedAsFloat(word, esss, io);
-				}
-				else if (!strcmp(word, "SETPOISONOUS"))
+				if (!strcmp(word, "SETPOISONOUS"))
 				{
 					float poisonous = 0.f;
 					float poisonous_count = 0.f;
