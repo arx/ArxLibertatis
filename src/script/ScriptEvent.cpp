@@ -634,26 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETRIGHTHAND"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "SET_RIGHT_HAND ...OBSOLETE...: " << word;
-				}
-				else if (!strcmp(word, "SETLEFTHAND"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "SET_LEFT_HAND ...OBSOLETE...: "<< word;
-				}
-				else if (!strcmp(word, "SETSHIELD"))
-				{
-					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "SET_SHIELD ...OBSOLETE...: "<< word;
-				}
-				else if (!strcmp(word, "SETTWOHANDED"))
-				{
-					LogDebug <<  "SET_TWO_HANDED ...OBSOLETE...";
-				}
-				else if (!strcmp(word, "SETINTERACTIVITY"))
+				if (!strcmp(word, "SETINTERACTIVITY"))
 				{
 					pos = GetNextWord(es, pos, word);
 
@@ -4966,6 +4947,10 @@ void ScriptEvent::init() {
 	
 	registerCommand(new ObsoleteCommand("attachnpctoplayer"));
 	registerCommand(new ObsoleteCommand("gmode", 1));
+	registerCommand(new ObsoleteCommand("setrighthand", 1));
+	registerCommand(new ObsoleteCommand("setlefthand", 1));
+	registerCommand(new ObsoleteCommand("setshield", 1));
+	registerCommand(new ObsoleteCommand("settwohanded"));
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
