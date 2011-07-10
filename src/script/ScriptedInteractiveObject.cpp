@@ -3,6 +3,7 @@
 
 #include "game/Inventory.h"
 #include "game/Player.h"
+#include "game/Missile.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
@@ -416,6 +417,112 @@ public:
 	
 };
 
+class SpawnCommand : public Command {
+	
+public:
+	
+	SpawnCommand() : Command("spawn") { }
+	
+	Result execute(Context & context) {
+		
+		string type = context.getLowercase();
+		
+		if(type == "npc" || type == "item") {
+			
+			string file = loadPath(context.getWord()); // object to spawn.
+			
+			string target = context.getLowercase(); // object ident for position
+			long t = GetTargetByNameTarget(target);
+			if(t == -2) {
+				t = GetInterNum(context.getIO());
+			}
+			if(!ValidIONum(t)) {
+				LogWarning << "unknown target: spawn npc " << file << ' ' << target;
+				return Failed;
+			}
+			
+			LogDebug << "spawn npc " << file << ' ' << target;
+			
+			if(FORBID_SCRIPT_IO_CREATION) {
+				return Failed;
+			}
+			
+			string path;
+			File_Standardize("graph\\obj3d\\interactive\\npc\\" + file, path);
+			
+			if(type == "npc") {
+				
+				INTERACTIVE_OBJ * ioo = AddNPC(path, IO_IMMEDIATELOAD);
+				if(!ioo) {
+					LogWarning << "failed to create npc " << path;
+					return Failed;
+				}
+				
+				LASTSPAWNED = ioo;
+				ioo->scriptload = 1;
+				ioo->pos = inter.iobj[t]->pos;
+				
+				ioo->angle = inter.iobj[t]->angle;
+				MakeTemporaryIOIdent(ioo);
+				SendInitScriptEvent(ioo);
+				
+				if(inter.iobj[t]->ioflags & IO_NPC) {
+					float dist = inter.iobj[t]->physics.cyl.radius + ioo->physics.cyl.radius + 10;
+					ioo->pos.x += -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
+					ioo->pos.z += EEcos(radians(inter.iobj[t]->angle.b)) * dist;
+				}
+				
+				TREATZONE_AddIO(ioo, GetInterNum(ioo));
+				
+			} else {
+				
+				INTERACTIVE_OBJ * ioo = AddItem(path, IO_IMMEDIATELOAD);
+				if(!ioo) {
+					LogWarning << "failed to create item " << path;
+					return Failed;
+				}
+				
+				MakeTemporaryIOIdent(ioo);
+				LASTSPAWNED = ioo;
+				ioo->scriptload = 1;
+				ioo->pos = inter.iobj[t]->pos;
+				ioo->angle = inter.iobj[t]->angle;
+				MakeTemporaryIOIdent(ioo);
+				SendInitScriptEvent(ioo);
+				
+				TREATZONE_AddIO(ioo, GetInterNum(ioo));
+				
+			}
+			
+		} else if(type == "fireball") {
+			
+			INTERACTIVE_OBJ * io = context.getIO();
+			if(!io) {
+				LogWarning << "must be npc to spawn fireballs";
+				return  Failed;
+			}
+			
+			GetTargetPos(io);
+			Vec3f pos = io->pos;
+			
+			if(io->ioflags & IO_NPC) {
+				pos.y -= 80.f;
+			}
+			
+			ARX_MISSILES_Spawn(io, MISSILE_FIREBALL, &pos, &io->target);
+			
+		} else {
+			LogWarning << "unexpected spawn type: " << type;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+	~SpawnCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -441,6 +548,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetSecretCommand);
 	ScriptEvent::registerCommand(new SetMaterialCommand);
 	ScriptEvent::registerCommand(new SetNameCommand);
+	ScriptEvent::registerCommand(new SpawnCommand);
 	
 }
 
