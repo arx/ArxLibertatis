@@ -751,6 +751,34 @@ public:
 	
 };
 
+class ForceDeathCommand : public Command {
+	
+public:
+	
+	ForceDeathCommand() : Command("forcedeath", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string target = context.getLowercase();
+		
+		LogDebug << "forcedeath " << target;
+		
+		long t = GetTargetByNameTarget(target);
+		if(t == -2) {
+			t = GetInterNum(context.getIO());
+		}
+		if(!t) {
+			LogWarning << "forcedeath: unknown target: " << target;
+			return Failed;
+		}
+		
+		ARX_DAMAGES_ForceDeath(inter.iobj[t], context.getIO());
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -770,6 +798,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetWeaponCommand);
 	ScriptEvent::registerCommand(new SetLifeCommand);
 	ScriptEvent::registerCommand(new SetTargetCommand);
+	ScriptEvent::registerCommand(new ForceDeathCommand);
 	
 }
 

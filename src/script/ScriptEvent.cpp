@@ -621,39 +621,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				if (word[1] == '>') pos = GotoNextLine(es, pos);
 				break;
 
-			case 'F':
-
-				if (!strcmp(word, "FORCEDEATH"))
-				{
-					std::string temp2;
-					long t;
-					pos = GetNextWord(es, pos, temp2);
-					MakeUpcase(temp2);
-
-					if ((!strcmp(temp2, "ME")) || (!strcmp(temp2, "SELF")))
-					{
-						t = GetInterNum(io);
-					}
-					else
-					{
-						t = GetTargetByNameTarget(temp2);
-
-						if (t == -2) t = GetInterNum(io);
-					}
-
-					if (t > 0)
-					{
-						ARX_DAMAGES_ForceDeath(inter.iobj[t], io);
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "FORCE_DEATH %s", temp2);
-
-#endif
-				}
-
-				break;
 			case 'P':
 
 				if (!strcmp(word, "PLAYERLOOKAT"))
