@@ -634,20 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETXPVALUE"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io && (io->ioflags & IO_NPC))
-					{
-						io->_npcdata->xpvalue = (long)GetVarValueInterpretedAsFloat(word, esss, io);
-
-						if (io->_npcdata->xpvalue < 0) io->_npcdata->xpvalue = 0;
-					}
-
-					LogDebug << "SET_XP_VALUE " << word;
-				}
-				else if (!strcmp(word, "SETNAME"))
+				if (!strcmp(word, "SETNAME"))
 				{
 					pos = GetNextWord(es, pos, word);
 

@@ -583,6 +583,30 @@ public:
 	
 };
 
+class SetXPValueCommand : public Command {
+	
+public:
+	
+	SetXPValueCommand() : Command("setxpvalue", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		float xpvalue = context.getFloat();
+		if(xpvalue < 0) {
+			xpvalue = 0;
+		}
+		
+		LogDebug << "setxpvalue " << xpvalue;
+		
+		context.getIO()->_npcdata->xpvalue = (long)xpvalue;
+		
+		return Success;
+	}
+	
+	~SetXPValueCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -597,6 +621,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetSpeedCommand);
 	ScriptEvent::registerCommand(new SetStareFactorCommand);
 	ScriptEvent::registerCommand(new SetNPCStatCommand);
+	ScriptEvent::registerCommand(new SetXPValueCommand);
 	
 }
 
