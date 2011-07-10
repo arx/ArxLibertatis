@@ -148,6 +148,43 @@ public:
 	
 };
 
+class SetObjectTypeCommand : public Command {
+	
+public:
+	
+	SetObjectTypeCommand() : Command("setobjecttype", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		bool set = true;
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			set = !(flg & flag('r'));
+			if(!flg || (flg & ~flag('r'))) {
+				LogWarning << "unexpected flags: setobjecttype " << options;
+			}
+		}
+		
+		string type = context.getLowercase();
+		if(type.length() != 1) {
+			LogWarning << "setobjecttype: expected only one character, got " << type;
+		}
+		
+		LogDebug << "setobjecttype " << type << ' ' << set;
+		
+		if(!ARX_EQUIPMENT_SetObjectType(*context.getIO(), type, set)) {
+			LogWarning << "setobjecttype: unknown object type: " << type;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+	~SetObjectTypeCommand() { }
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -157,6 +194,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetStealCommand);
 	ScriptEvent::registerCommand(new SetLightCommand);
 	ScriptEvent::registerCommand(new SetFoodCommand);
+	ScriptEvent::registerCommand(new SetObjectTypeCommand);
 	
 }
 

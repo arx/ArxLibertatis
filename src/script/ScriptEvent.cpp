@@ -634,25 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETOBJECTTYPE"))
-				{
-					pos = GetNextWord(es, pos, word);
-					long val = 1; // flag to add
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'R'))
-						{
-							val = 0; // flag to remove
-						}
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					ARX_EQUIPMENT_SetObjectType(io, word, val);
-					LogDebug <<  "SET_OBJECT_TYPE "<< word;
-				}
-				else if (!strcmp(word, "SETRIGHTHAND"))
+				if (!strcmp(word, "SETRIGHTHAND"))
 				{
 					pos = GetNextWord(es, pos, word);
 					LogDebug <<  "SET_RIGHT_HAND ...OBSOLETE...: " << word;
@@ -2831,7 +2813,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 									if (t == -2) t = GetInterNum(io);
 
-									ItemType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
+									ItemType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(toLowercase(tvar2));
 
 									if ((flagg != 0) && (ValidIONum(t)))
 									{

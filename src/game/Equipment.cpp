@@ -88,6 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::string;
 
 struct EQUIP_INFO
 {
@@ -110,17 +111,17 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-ItemType ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
-{
-	if ( temp.empty() ) return 0;
-
+ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const string & temp) {
+	
+	if(temp.empty()) {
+		return 0;
+	}
+	
 	char c = temp[0];
-
-	if ((temp[0] >= 'A') && (temp[0] <= 'Z'))
-		c = _tolower(temp[0]);
-
-	switch (c)
-	{
+	
+	arx_assert(tolower(c) == c);
+	
+	switch(c) {
 		case 'w':
 			return OBJECT_TYPE_WEAPON;
 		case 'd':
@@ -146,7 +147,7 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
 		case 'l':
 			return OBJECT_TYPE_LEGGINGS;
 	}
-
+	
 	return 0;
 }
 //***********************************************************************************************
@@ -1446,22 +1447,17 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
-//***********************************************************************************************
-// Sets/unsets an object type flag
-//-----------------------------------------------------------------------------------------------
-//***********************************************************************************************
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, long val)
-{
-	// avoid erroneous objects
-	if (!io) return;
-
-	// retrieves flag
-	ItemType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
-
-	if (val)	// add flag
-		io->type_flags |= flagg;
-	else		// remove flag
-		io->type_flags &= ~flagg;
+bool ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ & io, const string & temp, bool set) {
+	
+	ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
+	
+	if(set) {
+		io.type_flags |= flag;
+	} else {
+		io.type_flags &= ~flag;
+	}
+	
+	return (flag != 0);
 }
 
 //***********************************************************************************************
