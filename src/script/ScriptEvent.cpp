@@ -634,27 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETUNIQUE"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-					{
-						io->ioflags |= IO_UNIQUE;
-					}
-					else io->ioflags &= ~IO_UNIQUE;
-				}
-				else if (!strcmp(word, "SETBLACKSMITH"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-					{
-						io->ioflags |= IO_BLACKSMITH;
-					}
-					else io->ioflags &= ~IO_BLACKSMITH;
-				}
-				else if (!strcmp(word, "SETTRAP")) // -1 = off
+				if (!strcmp(word, "SETTRAP")) // -1 = off
 				{
 					pos = GetNextWord(es, pos, word);
 
@@ -1702,13 +1682,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				{
 					//DO NOTHING
 				}
-				else if (!strcmp(word, "SETANGULAR"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))	io->ioflags |= IO_ANGULAR;
-					else	io->ioflags &= ~IO_ANGULAR;
-				}
 				else if (!strcmp(word, "SETPLAYERCOLLISION"))
 				{
 					pos = GetNextWord(es, pos, word);
@@ -1826,16 +1799,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 					LogDebug << "SET_WORLD_COLLISION "<< word;
 				}
-				else if (!strcmp(word, "SETSHADOW"))
-				{
-					pos = GetNextWord(es, pos, word);
-					MakeUpcase(word);
-
-					if (!strcmp(word, "ON"))	io->ioflags &= ~IO_NOSHADOW;
-					else io->ioflags |= IO_NOSHADOW;
-
-					LogDebug << "SET_SHADOW "<< word;
-				}
 				else if (!strcmp(word, "SETDETACHABLE"))
 				{
 					pos = GetNextWord(es, pos, word);
@@ -1843,17 +1806,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				else if (!strcmp(word, "SETSTACKABLE"))
 				{
 					pos = GetNextWord(es, pos, word);
-				}
-				else if (!strcmp(word, "SETSHOP"))
-				{
-					pos = GetNextWord(es, pos, word);
-					MakeUpcase(word);
-
-					if ((!strcmp(word, "ON")) || (!strcmp(word, "YES")))
-						io->ioflags |= IO_SHOP;
-					else	io->ioflags &= ~IO_SHOP;
-
-					LogDebug << "SET_SHOP "<< word;
 				}
 				else if (!strcmp(word, "SETMAXCOUNT"))
 				{
@@ -2226,52 +2178,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					{
 						if (CURRENT_TORCH)
 							ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
-					}
-				}
-				else if (!strcmp(word, "SETBUMP"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-					{
-						io->ioflags |= IO_BUMP;
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "SETBUMP ON");
-
-#endif
-					}
-					else if (!strcasecmp(word, "OFF"))
-					{
-						io->ioflags &= ~IO_BUMP;
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "SETBUMP OFF");
-
-#endif
-					}
-				}
-				else if (!strcmp(word, "SETZMAP"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-					{
-						io->ioflags |= IO_ZMAP;
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "SETMAP ON");
-
-#endif
-					}
-					else if (!strcasecmp(word, "OFF"))
-					{
-						io->ioflags &= ~IO_ZMAP;
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "SETMAP OFF");
-
-#endif
 					}
 				}
 
@@ -3592,16 +3498,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 						else
 							io->ioflags &= ~IO_INVULNERABILITY;
 					}
-				}
-				else if (!strcmp(word, "INVERTEDOBJECT"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-					{
-						io->ioflags |= IO_INVERTED;
-					}
-					else io->ioflags &= ~IO_INVERTED;
 				}
 				else if (!strcmp(word, "IFVISIBLE"))
 				{

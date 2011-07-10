@@ -266,6 +266,36 @@ public:
 	
 };
 
+class IOFlagCommand : public Command {
+	
+	long flag;
+	bool inv;
+	
+public:
+	
+	IOFlagCommand(string name, long _flag, bool _inv = false) : Command(name, ANY_IO), flag(_flag), inv(_inv) { }
+	
+	Result execute(Context & context) {
+		
+		bool enable = context.getBool();
+		
+		LogDebug << getName() << ' ' << enable;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		if(enable xor inv) {
+			io->ioflags |= flag;
+		} else {
+			io->ioflags &= ~flag;
+		}
+		
+		return Success;
+	}
+	
+	~IOFlagCommand() { }
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -279,6 +309,14 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new GameFlagCommand("setgore", GFLAG_NOGORE, true));
 	ScriptEvent::registerCommand(new GameFlagCommand("setelevator", GFLAG_ELEVATOR));
 	ScriptEvent::registerCommand(new GameFlagCommand("viewblock", GFLAG_VIEW_BLOCKER));
+	ScriptEvent::registerCommand(new IOFlagCommand("setunique", IO_UNIQUE));
+	ScriptEvent::registerCommand(new IOFlagCommand("setblacksmith", IO_BLACKSMITH));
+	ScriptEvent::registerCommand(new IOFlagCommand("setangular", IO_ANGULAR));
+	ScriptEvent::registerCommand(new IOFlagCommand("setshadow", IO_NOSHADOW, true));
+	ScriptEvent::registerCommand(new IOFlagCommand("setshop", IO_SHOP));
+	ScriptEvent::registerCommand(new IOFlagCommand("setbump", IO_BUMP));
+	ScriptEvent::registerCommand(new IOFlagCommand("setzmap", IO_ZMAP));
+	ScriptEvent::registerCommand(new IOFlagCommand("invertedobject", IO_INVERTED));
 	
 }
 
