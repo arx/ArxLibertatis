@@ -255,9 +255,10 @@ Input::~Input()
 
 void Input::reset()
 {
-	iMouseAX=0;
-	iMouseAY=0;
-	fMouseAXTemp=fMouseAYTemp=0.f;
+	iMouseR = Vec2s::ZERO;
+	iMouseA = Vec2s::ZERO;
+	
+	fMouseATemp = Vec2f::ZERO;
 
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
@@ -288,15 +289,16 @@ void Input::unacquireDevices()
 	backend->unacquireDevices();
 }
 
-void Input::setMousePosition(int mouseX, int mouseY)
+void Input::setMousePosition(Vec2s mousePos)
 {
-	fMouseAXTemp = mouseX;
-	fMouseAYTemp = mouseY;
-	ARX_CHECK_INT(fMouseAXTemp);
-	ARX_CHECK_INT(fMouseAYTemp);
+	fMouseATemp.x = mousePos.x;
+	fMouseATemp.y = mousePos.y;
 
-	iMouseAX = ARX_CLEAN_WARN_CAST_INT(fMouseAXTemp);
-	iMouseAY = ARX_CLEAN_WARN_CAST_INT(fMouseAYTemp);
+	ARX_CHECK_INT(fMouseATemp.x);
+	ARX_CHECK_INT(fMouseATemp.y);
+
+	iMouseA.x = ARX_CLEAN_WARN_CAST_INT(fMouseATemp.x);
+	iMouseA.y = ARX_CLEAN_WARN_CAST_INT(fMouseATemp.y);
 }
 
 //-----------------------------------------------------------------------------
@@ -477,84 +479,73 @@ void Input::update()
 		}
 	}
 
-	int iMouseRZ;
-	iMouseRX = iMouseRY = iMouseRZ = 0;
+	int iMouseRX = 0;
+	int iMouseRY = 0;
+	int iMouseRZ = 0;
+	
+	bool bMouseMoved = backend->getMouseCoordinates(iMouseRX, iMouseRY, iMouseRZ);
 
-	bool mouseMoved = backend->getMouseCoordinates(iMouseRX, iMouseRY, iWheelDir);
+	iMouseR.x = (short)iMouseRX;
+	iMouseR.y = (short)iMouseRY;
+	iWheelDir = iMouseRZ;
 
 	if(danaeApp.m_pFramework->m_bIsFullscreen) {
-		float fDX = 0.f;
-		float fDY = 0.f;
+		Vec2f fD = Vec2f::ZERO;
 
-		if(mouseMoved) {
+		if(bMouseMoved) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
 			fSens = pow( .7f, fSens ) * 2.f;
 
-			fDX=( (float)iMouseRX ) * fSens * ( ( (float)DANAESIZX ) / 640.f );
-			fDY=( (float)iMouseRY ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
-			fMouseAXTemp += fDX;
-			fMouseAYTemp += fDY;
+			fD.x=( (float)iMouseR.x ) * fSens * ( ( (float)DANAESIZX ) / 640.f );
+			fD.y=( (float)iMouseR.y ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
+			fMouseATemp += fD;
 
-			ARX_CHECK_INT(fMouseAXTemp);
-			ARX_CHECK_INT(fMouseAYTemp);
-			iMouseAX  = ARX_CLEAN_WARN_CAST_INT(fMouseAXTemp);
-			iMouseAY  = ARX_CLEAN_WARN_CAST_INT(fMouseAYTemp);
+			ARX_CHECK_INT(fMouseATemp.x);
+			ARX_CHECK_INT(fMouseATemp.y);
+			iMouseA.x  = ARX_CLEAN_WARN_CAST_INT(fMouseATemp.x);
+			iMouseA.y  = ARX_CLEAN_WARN_CAST_INT(fMouseATemp.y);
 
-			if(iMouseAX<0)
+			if(iMouseA.x<0)
 			{
-				iMouseAX     = 0;
-				fMouseAXTemp = 0.f; 
+				iMouseA.x = 0;
+				fMouseATemp.x = 0.f; 
+			}
+			ARX_CHECK_NOT_NEG( iMouseA.x );
+
+			if( ARX_CAST_ULONG( iMouseA.x ) >= danaeApp.m_pFramework->m_dwRenderWidth )
+			{
+				iMouseA.x = danaeApp.m_pFramework->m_dwRenderWidth - 1;
+				fMouseATemp.x = ARX_CLEAN_WARN_CAST_FLOAT( iMouseA.x );
 			}
 
-
-			ARX_CHECK_NOT_NEG( iMouseAX );
-
-			if( ARX_CAST_ULONG( iMouseAX ) >= danaeApp.m_pFramework->m_dwRenderWidth )
+			if(iMouseA.y<0)
 			{
-
-				iMouseAX = danaeApp.m_pFramework->m_dwRenderWidth - 1;
-				fMouseAXTemp = ARX_CLEAN_WARN_CAST_FLOAT( iMouseAX );
+				iMouseA.y = 0;
+				fMouseATemp.y = 0.f;				
 			}
+			ARX_CHECK_NOT_NEG( iMouseA.y );
 
-			if(iMouseAY<0)
+			if( ARX_CAST_ULONG( iMouseA.y ) >= danaeApp.m_pFramework->m_dwRenderHeight )
 			{
-				fMouseAYTemp=    0.f;
-				iMouseAY    =    0;
+				iMouseA.y = danaeApp.m_pFramework->m_dwRenderHeight - 1;
+				fMouseATemp.y = ARX_CLEAN_WARN_CAST_FLOAT( iMouseA.y ); 
 			}
-
-
-			ARX_CHECK_NOT_NEG( iMouseAY );
-
-			if( ARX_CAST_ULONG( iMouseAY ) >= danaeApp.m_pFramework->m_dwRenderHeight )
-			{
-
-				iMouseAY        = danaeApp.m_pFramework->m_dwRenderHeight - 1;
-				fMouseAYTemp    = ARX_CLEAN_WARN_CAST_FLOAT( iMouseAY ); 
-			}
-
-
-
+			
 			bMouseMoved = true;
 		}
-		else
-		{
-			bMouseMoved = false;
-		}
-
-		_EERIEMouseXdep=(int)fDX;
-		_EERIEMouseYdep=(int)fDY;
-		EERIEMouseX=iMouseAX;
-		EERIEMouseY=iMouseAY;
+		
+		_EERIEMouseXdep=(int)fD.x;
+		_EERIEMouseYdep=(int)fD.y;
+		EERIEMouseX=iMouseA.x;
+		EERIEMouseY=iMouseA.y;
 	}
 	else
 	{
-		bMouseMoved = ((iMouseAX != DANAEMouse.x) || (iMouseAY != DANAEMouse.y));
-		iMouseRX = DANAEMouse.x - iMouseAX;
-		iMouseRY = DANAEMouse.y - iMouseAY;
-		iMouseAX = DANAEMouse.x;
-		iMouseAY = DANAEMouse.y;
+		bMouseMoved = iMouseA != DANAEMouse;
+		iMouseR = DANAEMouse - iMouseA;
+		iMouseA = DANAEMouse;
 	}
 }
 

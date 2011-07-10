@@ -5168,7 +5168,7 @@ void DANAE::ManageKeyMouse()
 
 		if(danaeApp.m_pFramework->m_bIsFullscreen)
 		{
-			GInput->setMousePosition(DANAEMouse.x, DANAEMouse.y);
+			GInput->setMousePosition(DANAEMouse);
 		}
 
 		bRestoreCoordMouse=false;
@@ -5342,36 +5342,36 @@ void DANAE::ManageKeyMouse()
 					if (bRenderInCursorMode)
 					{
 						if(	(DANAEMouse.x==(DANAESIZX-1))&&
-						        (GInput->iMouseRX > 8))
+						        (GInput->iMouseR.x > 8))
 						{
 							EERIEMouseYdep=0;
-							EERIEMouseXdep=GInput->iMouseRX;
+							EERIEMouseXdep=GInput->iMouseR.x;
 							bKeySpecialMove=true;
 						}
 						else
 						{
 							if( (!DANAEMouse.x)&&
-							        (GInput->iMouseRX < -8))
+							        (GInput->iMouseR.x < -8))
 							{
 								EERIEMouseYdep=0;
-								EERIEMouseXdep=GInput->iMouseRX;
+								EERIEMouseXdep=GInput->iMouseR.x;
 								bKeySpecialMove=true;
 							}
 						}
 
 						if(	(DANAEMouse.y==(DANAESIZY-1))&&
-						        (GInput->iMouseRY > 8))
+						        (GInput->iMouseR.y > 8))
 						{
-							EERIEMouseYdep=GInput->iMouseRY;
+							EERIEMouseYdep=GInput->iMouseR.y;
 							EERIEMouseXdep=0;
 							bKeySpecialMove=true;
 						}
 						else
 						{
 							if(	(!DANAEMouse.y)&&
-							        (GInput->iMouseRY < -8))
+							        (GInput->iMouseR.y < -8))
 							{
-								EERIEMouseYdep=GInput->iMouseRY;
+								EERIEMouseYdep=GInput->iMouseR.y;
 								EERIEMouseXdep=0;
 								bKeySpecialMove=true;
 							}

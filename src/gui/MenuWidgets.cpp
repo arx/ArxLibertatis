@@ -2716,7 +2716,7 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	pZoneClick=NULL;
 
-	CMenuZone * iR=pMenuAllZone->CheckZone(GInput->iMouseAX,GInput->iMouseAY);
+	CMenuZone * iR=pMenuAllZone->CheckZone(GInput->iMouseA.x, GInput->iMouseA.y);
 
 	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(iR) {
@@ -3907,7 +3907,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 		if (!bEdit)
 		{
 			pZoneClick=NULL;
-			CMenuZone * iR = MenuAllZone.CheckZone(GInput->iMouseAX,GInput->iMouseAY);
+			CMenuZone * iR = MenuAllZone.CheckZone(GInput->iMouseA.x,GInput->iMouseA.y);
 
 			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
@@ -3942,7 +3942,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 		{
 			if(!pZoneClick)
 			{
-				CMenuZone * iR = MenuAllZone.CheckZone(GInput->iMouseAX,GInput->iMouseAY);
+				CMenuZone * iR = MenuAllZone.CheckZone(GInput->iMouseA.x,GInput->iMouseA.y);
 
 				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
@@ -4894,8 +4894,8 @@ bool CMenuSliderText::OnMouseClick(int)
 	if(iOldPos<0)
 		iOldPos=iPos;
 
-	int iX = GInput->iMouseAX;
-	int iY = GInput->iMouseAY;
+	int iX = GInput->iMouseA.x;
+	int iY = GInput->iMouseA.y;
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -5015,8 +5015,8 @@ void CMenuSliderText::RenderMouseOver()
 
 	pMenuCursor->SetMouseOver();
 
-	int iX = GInput->iMouseAX;
-	int iY = GInput->iMouseAY;
+	int iX = GInput->iMouseA.x;
+	int iY = GInput->iMouseA.y;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -5130,8 +5130,8 @@ bool CMenuSlider::OnMouseClick(int)
 {
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	int iX = GInput->iMouseAX;
-	int iY = GInput->iMouseAY;
+	int iX = GInput->iMouseA.x;
+	int iY = GInput->iMouseA.y;
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -5278,8 +5278,8 @@ void CMenuSlider::RenderMouseOver()
 
 	pMenuCursor->SetMouseOver();
 
-	int iX = GInput->iMouseAX;
-	int iY = GInput->iMouseAY;
+	int iX = GInput->iMouseA.x;
+	int iY = GInput->iMouseA.y;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -5407,8 +5407,8 @@ void MenuCursor::Update()
 		iDy=0;
 	}
 
-	iOldCoord[iNbOldCoord].x=GInput->iMouseAX+iDx;
-	iOldCoord[iNbOldCoord].y=GInput->iMouseAY+iDy;
+	iOldCoord[iNbOldCoord].x=GInput->iMouseA.x+iDx;
+	iOldCoord[iNbOldCoord].y=GInput->iMouseA.y+iDy;
 	iNbOldCoord++;
 
 	if(iNbOldCoord>=iMaxOldCoord)
@@ -5533,7 +5533,7 @@ void MenuCursor::DrawCursor()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	DrawOneCursor(GInput->iMouseAX, GInput->iMouseAY);
+	DrawOneCursor(GInput->iMouseA.x, GInput->iMouseA.y);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 

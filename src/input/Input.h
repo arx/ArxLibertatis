@@ -68,10 +68,8 @@ public:
 	static const std::string KEY_NONE;
 
 	// Mouse
-	int		iMouseRX;
-	int		iMouseRY;
-	int		iMouseAX;
-	int		iMouseAY;
+	Vec2s	iMouseR;
+	Vec2s	iMouseA;
  
 public:
 	Input();
@@ -95,7 +93,7 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////
 	// Mouse
-	void setMousePosition(int mouseX, int mouseY);
+	void setMousePosition(Vec2s mousePos);
 
 	void setMouseSensibility(int);
 	int  getMouseSensibility() const;
@@ -124,8 +122,7 @@ private:
 
 	///////////////////////////////////////////////////////////////////////////
 	// Mouse
-	float	fMouseAXTemp;
-	float	fMouseAYTemp;
+	Vec2f	fMouseATemp;
 
 	int		iSensibility;
 	int		iWheelDir;
