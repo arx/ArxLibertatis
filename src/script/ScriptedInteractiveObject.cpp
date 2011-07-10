@@ -618,6 +618,31 @@ public:
 	
 };
 
+class SetCollisionCommand : public Command {
+	
+	short flag;
+	
+public:
+	
+	SetCollisionCommand(const string & command, short _flag) : Command(command, ANY_IO), flag(_flag) { }
+	
+	Result execute(Context & context) {
+		
+		bool enable = context.getBool();
+		
+		LogDebug << getName() << ' ' << enable;
+		
+		if(enable) {
+			context.getIO()->collision |= flag;
+		} else {
+			context.getIO()->collision &= ~flag;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -650,6 +675,8 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetArmorMaterialCommand);
 	ScriptEvent::registerCommand(new SetWeaponMaterialCommand);
 	ScriptEvent::registerCommand(new SetStrikeSpeechCommand);
+	ScriptEvent::registerCommand(new SetCollisionCommand("setplayercollision", 1));
+	ScriptEvent::registerCommand(new SetCollisionCommand("setworldcollision", 2));
 	
 }
 

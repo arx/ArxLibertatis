@@ -263,29 +263,6 @@ public:
 	
 };
 
-class SetPlayerCollisionCommand : public Command {
-	
-public:
-	
-	SetPlayerCollisionCommand() : Command("setplayercollision", ANY_IO) { }
-	
-	Result execute(Context & context) {
-		
-		bool enable = context.getBool();
-		
-		LogDebug << "setplayercollision " << enable;
-		
-		if(enable) {
-			context.getIO()->collision |= 1;
-		} else {
-			context.getIO()->collision &= ~1;
-		}
-		
-		return Success;
-	}
-	
-};
-
 class SetPlayerControlsCommand : public Command {
 	
 	static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
@@ -343,7 +320,6 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new QuestCommand);
 	ScriptEvent::registerCommand(new SetPlayerTweakCommand);
 	ScriptEvent::registerCommand(new SetHungerCommand);
-	ScriptEvent::registerCommand(new SetPlayerCollisionCommand);
 	ScriptEvent::registerCommand(new SetPlayerControlsCommand);
 	
 }

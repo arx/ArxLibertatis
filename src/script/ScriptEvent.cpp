@@ -626,17 +626,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETWORLDCOLLISION"))
-				{
-					pos = GetNextWord(es, pos, word);
-					MakeUpcase(word);
-
-					if (!strcmp(word, "ON"))	io->collision |= 2;
-					else io->collision &= ~2;
-
-					LogDebug << "SET_WORLD_COLLISION "<< word;
-				}
-				else if (!strcmp(word, "SETDETACHABLE"))
+				if (!strcmp(word, "SETDETACHABLE"))
 				{
 					pos = GetNextWord(es, pos, word);
 				}
