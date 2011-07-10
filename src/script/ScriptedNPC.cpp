@@ -516,6 +516,27 @@ public:
 	
 };
 
+class SetSpeedCommand : public Command {
+	
+public:
+	
+	SetSpeedCommand() : Command("setspeed", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		float speed = clamp(context.getFloat(), 0.f, 10.f);
+		
+		LogDebug << "setspeed " << speed;
+		
+		context.getIO()->basespeed = speed;
+		
+		return Success;
+	}
+	
+	~SetSpeedCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -527,6 +548,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetDetectCommand);
 	ScriptEvent::registerCommand(new SetBloodCommand);
 	ScriptEvent::registerCommand(new SetSpeakPitchCommand);
+	ScriptEvent::registerCommand(new SetSpeedCommand);
 	
 }
 

@@ -634,16 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETSPEED"))
-				{
-					pos = GetNextWord(es, pos, word);
-					io->basespeed = GetVarValueInterpretedAsFloat(word, esss, io);
-
-					if (io->basespeed < 0.f) io->basespeed = 0.f;
-
-					if (io->basespeed > 10.f) io->basespeed = 10.f;
-				}
-				else if (!strcmp(word, "SETSTAREFACTOR"))
+				if (!strcmp(word, "SETSTAREFACTOR"))
 				{
 					pos = GetNextWord(es, pos, word);
 
