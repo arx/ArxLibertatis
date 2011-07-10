@@ -304,6 +304,25 @@ public:
 	
 };
 
+class PlayerStackSizeCommand : public Command {
+	
+public:
+	
+	PlayerStackSizeCommand() : Command("playerstacksize", IO_ITEM) { }
+	
+	Result execute(Context & context) {
+		
+		short size = (short)clamp((int)context.getFloat(), 1, 100);
+		
+		LogDebug << "playerstacksize " << size;
+		
+		context.getIO()->_itemdata->playerstacksize = size;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -319,6 +338,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetMaxCountCommand);
 	ScriptEvent::registerCommand(new SetCountCommand);
 	ScriptEvent::registerCommand(new SetPriceCommand);
+	ScriptEvent::registerCommand(new PlayerStackSizeCommand);
 	
 }
 

@@ -623,22 +623,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "PLAYERSTACKSIZE"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io) && (io->ioflags & IO_ITEM))
-					{
-						io->_itemdata->playerstacksize = (short)GetVarValueInterpretedAsFloat(word, esss, io);
-
-						if (io->_itemdata->playerstacksize < 1)
-							io->_itemdata->playerstacksize = 1;
-
-						if (io->_itemdata->playerstacksize > 100)
-							io->_itemdata->playerstacksize = 100;
-					}
-				}
-				else if (!strcmp(word, "PRECAST"))
+				if (!strcmp(word, "PRECAST"))
 				{
 					std::string temp2;
 					long duration = -1;
