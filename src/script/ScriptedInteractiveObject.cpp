@@ -145,7 +145,7 @@ class CollisionCommand : public Command {
 	
 public:
 	
-	CollisionCommand() : Command("collision", ANY_IO) { }
+	CollisionCommand(const string & command) : Command(command, ANY_IO) { }
 	
 	Result execute(Context & context) {
 		
@@ -532,7 +532,8 @@ void setupScriptedInteractiveObject() {
 	
 	ScriptEvent::registerCommand(new ReplaceMeCommand);
 	ScriptEvent::registerCommand(new RotateCommand);
-	ScriptEvent::registerCommand(new CollisionCommand);
+	ScriptEvent::registerCommand(new CollisionCommand("collision"));
+	ScriptEvent::registerCommand(new CollisionCommand("collison"));
 	ScriptEvent::registerCommand(new ShopCategoryCommand);
 	ScriptEvent::registerCommand(new ShopMultiplyCommand);
 	ScriptEvent::registerCommand(new GameFlagCommand("setplatform", GFLAG_PLATFORM));

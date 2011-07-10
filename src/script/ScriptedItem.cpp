@@ -157,9 +157,6 @@ public:
 		}
 		
 		string type = context.getLowercase();
-		if(type.length() != 1) {
-			LogWarning << "setobjecttype: expected only one character, got " << type;
-		}
 		
 		LogDebug << "setobjecttype " << type << ' ' << set;
 		

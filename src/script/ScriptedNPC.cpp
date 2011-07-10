@@ -112,7 +112,7 @@ public:
 			behavior |= BEHAVIOUR_GUARD;
 			io->targetinfo = -2;
 			io->_npcdata->movemode = NOMOVEMODE;
-		} else {
+		} else if(command != "none") {
 			LogWarning << "unexpected command: behavior " << options << " \"" << command << '"';
 		}
 		
