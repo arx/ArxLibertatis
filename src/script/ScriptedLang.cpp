@@ -465,6 +465,50 @@ public:
 	
 };
 
+class SetEventCommand : public Command {
+	
+	typedef std::map<string, DisabledEvent> Events;
+	Events events;
+	
+public:
+	
+	SetEventCommand() : Command("setevent") {
+		events["collide_npc"] = DISABLE_COLLIDE_NPC;
+		events["chat"] = DISABLE_CHAT;
+		events["hit"] = DISABLE_HIT;
+		events["inventory2_open"] = DISABLE_INVENTORY2_OPEN;
+		events["detectplayer"] = DISABLE_DETECT;
+		events["hear"] = DISABLE_HEAR;
+		events["aggression"] = DISABLE_AGGRESSION;
+		events["main"] = DISABLE_MAIN;
+		events["cursormode"] = DISABLE_CURSORMODE;
+		events["explorationmode"] = DISABLE_EXPLORATIONMODE;
+	}
+	
+	Result execute(Context & context) {
+		
+		string name = context.getLowercase();
+		bool enable = context.getBool();
+		
+		LogDebug << "setevent " << name << ' ' << enable;
+		
+		Events::const_iterator it = events.find(name);
+		if(it == events.end()) {
+			LogDebug << "setevent: unknown event: " << name;
+			return Failed;
+		}
+		
+		if(enable) {
+			context.getScript()->allowevents &= ~it->second;
+		} else {
+			context.getScript()->allowevents |= it->second;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -482,6 +526,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new StartStopTimerCommand("stoptimer", false));
 	ScriptEvent::registerCommand(new SendEventCommand);
 	ScriptEvent::registerCommand(new SetCommand);
+	ScriptEvent::registerCommand(new SetEventCommand);
 	
 }
 
