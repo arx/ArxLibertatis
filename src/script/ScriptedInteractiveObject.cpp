@@ -753,6 +753,35 @@ public:
 	
 };
 
+class ForceAnimCommand : public Command {
+	
+public:
+	
+	ForceAnimCommand() : Command("forceanim", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string anim = context.getLowercase();
+		
+		LogDebug << "forceanim " << anim;
+		
+		long num = GetNumAnim(anim);
+		if(num < 0) {
+			LogWarning << "forceanim: unknown animation: " << anim;
+			return Failed;
+		}
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(io->anims[num]) {
+			ForceAnim(io, io->anims[num]);
+			CheckSetAnimOutOfTreatZone(io, 0);
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -792,6 +821,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new SetIRColorCommand);
 	ScriptEvent::registerCommand(new SetScaleCommand);
 	ScriptEvent::registerCommand(new KillMeCommand);
+	ScriptEvent::registerCommand(new ForceAnimCommand);
 	
 }
 

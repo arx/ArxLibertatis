@@ -623,30 +623,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'F':
 
-				if (!strcmp(word, "FORCEANIM"))
-				{
-					std::string temp2;
-					long num;
-					pos = GetNextWord(es, pos, temp2);
-					num = GetNumAnim(temp2);
-
-					if (num > -1)
-					{
-						if (io != NULL)
-							if (io->anims[num] != NULL)
-							{
-								ForceAnim(io, io->anims[num]);
-								CheckSetAnimOutOfTreatZone(io, 0);
-							}
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "FORCEANIM %s", temp2.c_str());
-
-#endif
-				}
-				else if (!strcmp(word, "FORCEANGLE"))
+				if (!strcmp(word, "FORCEANGLE"))
 				{
 					pos = GetNextWord(es, pos, word);
 
