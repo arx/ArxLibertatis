@@ -892,15 +892,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 
 				break;
-			case 'R':
-
-				if (!strcmp(word, "RETURN"))
-				{
-					if ((pos = GetSubStack(es)) == -1) return BIGERROR;
-					LogDebug << "RETURN";
-				}
-
-				break;
 			case 'S':
 
 				if (!strcmp(word, "SHOPCATEGORY"))

@@ -107,6 +107,26 @@ public:
 	
 };
 
+class ReturnCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		LogDebug << "return";
+		
+		if(!context.returnToCaller()) {
+			LogError << "return failed";
+			return AbortError;
+		}
+		
+		return Jumped;
+	}
+	
+	~ReturnCommand() { }
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -117,6 +137,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand("accept", new AbortCommand("accept", Command::AbortAccept));
 	ScriptEvent::registerCommand("refuse", new AbortCommand("refuse", Command::AbortRefuse));
 	ScriptEvent::registerCommand("random", new RandomCommand);
+	ScriptEvent::registerCommand("return", new ReturnCommand);
 	
 }
 
