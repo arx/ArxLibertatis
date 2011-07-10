@@ -309,11 +309,10 @@ public:
 		
 		LogDebug << "settrap " << trapvalue;
 		
-		INTERACTIVE_OBJ * io = context.getIO();
 		if(trapvalue == "off") {
-			io->_fixdata->trapvalue = -1;
+			context.getIO()->_fixdata->trapvalue = -1;
 		} else {
-			io->_fixdata->trapvalue = clamp((int)context.getFloatVar(trapvalue), -1, 100);
+			context.getIO()->_fixdata->trapvalue = clamp((int)context.getFloatVar(trapvalue), -1, 100);
 		}
 		
 		return Success;
@@ -335,11 +334,10 @@ public:
 		
 		LogDebug << "setsecret " << secretvalue;
 		
-		INTERACTIVE_OBJ * io = context.getIO();
 		if(secretvalue == "off") {
-			io->secretvalue = -1;
+			context.getIO()->secretvalue = -1;
 		} else {
-			io->secretvalue = clamp((int)context.getFloatVar(secretvalue), -1, 100);
+			context.getIO()->secretvalue = clamp((int)context.getFloatVar(secretvalue), -1, 100);
 		}
 		
 		return Success;

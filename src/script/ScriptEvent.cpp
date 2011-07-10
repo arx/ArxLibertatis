@@ -634,27 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETDETECT")) // -1 = off
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io) && (io->ioflags & IO_NPC))
-					{
-						if (!strcasecmp(word, "off"))
-						{
-							io->_npcdata->fDetect = -1;
-						}
-						else
-						{
-							io->_npcdata->fDetect = (char)GetVarValueInterpretedAsFloat(word, esss, io);
-
-							if (io->_npcdata->fDetect < -1)	io->_npcdata->fDetect = -1;
-
-							if (io->_npcdata->fDetect > 100) io->_npcdata->fDetect = 100;
-						}
-					}
-				}
-				else if (!strcmp(word, "SETSTEAL")) // -1 = off
+				if (!strcmp(word, "SETSTEAL")) // -1 = off
 				{
 					pos = GetNextWord(es, pos, word);
 

@@ -444,6 +444,31 @@ public:
 	
 };
 
+class SetDetectCommand : public Command {
+	
+public:
+	
+	SetDetectCommand() : Command("setdetect", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		string detectvalue = context.getLowercase();
+		
+		LogDebug << "setdetect " << detectvalue;
+		
+		if(detectvalue == "off") {
+			context.getIO()->_npcdata->fDetect = -1;
+		} else {
+			context.getIO()->_npcdata->fDetect = clamp((int)context.getFloatVar(detectvalue), -1, 100);
+		}
+		
+		return Success;
+	}
+	
+	~SetDetectCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -452,6 +477,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new ReviveCommand);
 	ScriptEvent::registerCommand(new SpellcastCommand);
 	ScriptEvent::registerCommand(new SpeakCommand);
+	ScriptEvent::registerCommand(new SetDetectCommand);
 	
 }
 
