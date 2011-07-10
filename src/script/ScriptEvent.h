@@ -58,6 +58,8 @@ public:
 	 */
 	size_t skipCommand();
 	
+	bool jumpToLabel(const std::string & target, bool substack = false);
+	
 	inline EERIE_SCRIPT * getScript() {  return script; }
 	
 	friend class ::ScriptEvent;
@@ -71,7 +73,8 @@ public:
 		Success,
 		Failed,
 		AbortAccept,
-		AbortRefuse
+		AbortRefuse,
+		Jumped
 	};
 	
 	virtual Result execute(Context & context) = 0;

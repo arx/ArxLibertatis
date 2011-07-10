@@ -54,6 +54,7 @@
 #include "script/ScriptedInteractiveObject.h"
 #include "script/ScriptedInterface.h"
 #include "script/ScriptedItem.h"
+#include "script/ScriptedLang.h"
 #include "script/ScriptedNPC.h"
 #include "script/ScriptedPlayer.h"
 
@@ -373,7 +374,6 @@ static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, Scri
 	  && msg != SM_DIE
 	  && msg != SM_EXECUTELINE
 	  && msg != SM_RELOAD
-	  && msg != SM_EXECUTELINE
 	  && msg != SM_INVENTORY2_OPEN
 	  && msg != SM_INVENTORY2_CLOSE) {
 		ret = ACCEPT;
@@ -594,6 +594,21 @@ size_t Context::skipCommand() {
 	return oldpos;
 }
 
+bool Context::jumpToLabel(const string & target, bool substack) {
+	
+	if(!substack && !InSubStack(script, pos)) {
+		return false;
+	}
+	
+	long targetpos = FindLabelPos(script, target);
+	if(targetpos == -1) {
+		return false;
+	}
+	
+	pos = targetpos;
+	return true;
+}
+
 class ObsoleteCommand : public Command {
 	
 private:
@@ -617,23 +632,6 @@ public:
 	}
 	
 	~ObsoleteCommand() { }
-	
-};
-
-class NopCommand : public Command {
-	
-public:
-	
-	Result execute(Context & context) {
-		
-		ARX_UNUSED(context);
-		
-		LogDebug << "nop";
-		
-		return Success;
-	}
-	
-	~NopCommand() { }
 	
 };
 
@@ -810,6 +808,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				return ACCEPT;
 			} else if(res == Command::AbortRefuse) {
 				return REFUSE;
+			} else if(res == Command::Jumped) {
+				if(msg == SM_EXECUTELINE) {
+					msg = SM_DUMMY;
+				}
 			}
 			
 		} else switch (word[0]) {
@@ -839,23 +841,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'G':
 
-				if (!strcmp(word, "GOTO"))
-				{
-					if (msg == SM_EXECUTELINE) msg = SM_DUMMY;
-
-					if ((pos = GetNextWord(es, pos, word)) == -1)
-					{
-						ret = ACCEPT;
-						goto end;
-					}
-
-					pos = FindLabelPos(es, word);
-
-					if (pos == -1) return ACCEPT;
-
-					LogDebug << "GOTO " << word;
-				}
-				else if (!strcmp(word, "GOSUB"))
+				if (!strcmp(word, "GOSUB"))
 				{
 					if (msg == SM_EXECUTELINE) msg = SM_DUMMY;
 
@@ -5861,12 +5847,12 @@ void ScriptEvent::init() {
 	setupScriptedInteractiveObject();
 	setupScriptedInterface();
 	setupScriptedItem();
+	setupScriptedLang();
 	setupScriptedNPC();
 	setupScriptedPlayer();
 	
 	registerCommand("attachnpctoplayer", new ObsoleteCommand("attachnpctoplayer"));
 	registerCommand("gmode", new ObsoleteCommand("gmode", 1));
-	registerCommand("nop", new NopCommand);
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
