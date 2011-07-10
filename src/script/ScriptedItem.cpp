@@ -73,12 +73,42 @@ public:
 	
 };
 
+class SetStealCommand : public Command {
+	
+public:
+	
+	SetStealCommand() : Command("setsteal", IO_ITEM) { }
+	
+	Result execute(Context & context) {
+		
+		string stealvalue = context.getLowercase();
+		
+		LogDebug << "setsteal " << stealvalue;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(stealvalue == "off") {
+			io->_itemdata->stealvalue = -1;
+		} else {
+			io->_itemdata->stealvalue = clamp((int)context.getFloatVar(stealvalue), -1, 100);
+			if(io->_itemdata->stealvalue == 100) {
+				io->_itemdata->stealvalue = -1;
+			}
+		}
+		
+		return Success;
+	}
+	
+	~SetStealCommand() { }
+	
+};
+
 }
 
 void setupScriptedItem() {
 	
 	ScriptEvent::registerCommand(new RepairCommand);
 	ScriptEvent::registerCommand(new SetPoisonousCommand);
+	ScriptEvent::registerCommand(new SetStealCommand);
 	
 }
 
