@@ -634,20 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETBLOOD"))
-				{
-					pos = GetNextWord(es, pos, word);
-					float r = GetVarValueInterpretedAsFloat(word, esss, io);
-					pos = GetNextWord(es, pos, word);
-					float g = GetVarValueInterpretedAsFloat(word, esss, io);
-					pos = GetNextWord(es, pos, word);
-					float b = GetVarValueInterpretedAsFloat(word, esss, io);
-
-					if(io->ioflags & IO_NPC) {
-						io->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
-					}
-				}
-				else if (!strcmp(word, "SETMATERIAL"))
+				if (!strcmp(word, "SETMATERIAL"))
 				{
 					pos = GetNextWord(es, pos, word);
 

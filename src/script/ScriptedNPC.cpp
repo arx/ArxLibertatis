@@ -469,6 +469,29 @@ public:
 	
 };
 
+class SetBloodCommand : public Command {
+	
+public:
+	
+	SetBloodCommand() : Command("setblood", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		float r = context.getFloat();
+		float g = context.getFloat();
+		float b = context.getFloat();
+		
+		LogDebug << "setblood " << r << ' ' << g << ' ' << b;
+		
+		context.getIO()->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
+		
+		return Success;
+	}
+	
+	~SetBloodCommand() { }
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -478,6 +501,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SpellcastCommand);
 	ScriptEvent::registerCommand(new SpeakCommand);
 	ScriptEvent::registerCommand(new SetDetectCommand);
+	ScriptEvent::registerCommand(new SetBloodCommand);
 	
 }
 
