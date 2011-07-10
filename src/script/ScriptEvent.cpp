@@ -634,16 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETFOOD"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io->ioflags & IO_ITEM)
-					{
-						io->_itemdata->food_value = (char)GetVarValueInterpretedAsFloat(word, esss, io);
-					}
-				}
-				else if (!strcmp(word, "SETSPEED"))
+				if (!strcmp(word, "SETSPEED"))
 				{
 					pos = GetNextWord(es, pos, word);
 					io->basespeed = GetVarValueInterpretedAsFloat(word, esss, io);

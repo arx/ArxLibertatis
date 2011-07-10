@@ -127,6 +127,27 @@ public:
 	
 };
 
+class SetFoodCommand : public Command {
+	
+public:
+	
+	SetFoodCommand() : Command("setfood", IO_ITEM) { }
+	
+	Result execute(Context & context) {
+		
+		float food_value = context.getFloat();
+		
+		LogDebug << "setfood " << food_value;
+		
+		context.getIO()->_itemdata->food_value = (char)food_value;
+		
+		return Success;
+	}
+	
+	~SetFoodCommand() { }
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -135,6 +156,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetPoisonousCommand);
 	ScriptEvent::registerCommand(new SetStealCommand);
 	ScriptEvent::registerCommand(new SetLightCommand);
+	ScriptEvent::registerCommand(new SetFoodCommand);
 	
 }
 
