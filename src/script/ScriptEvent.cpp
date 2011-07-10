@@ -620,6 +620,53 @@ bool Context::returnToCaller() {
 	return true;
 }
 
+void Context::skipStatement() {
+	
+	string word = getWord();
+	if(pos == script->size) {
+		return;
+	}
+	
+	while(word.empty() && pos != script->size && script->data[pos] == '\n') {
+		pos++;
+		word = getWord();
+	}
+	
+	if(word == "{") {
+		long brackets = 1;
+		while(brackets > 0) {
+			
+			if(script->size && script->data[pos] == '\n') {
+				pos++;
+			}
+			word = getWord();
+			if(pos == script->size) {
+				return;
+			}
+			
+			if(word == "{") {
+				brackets++;
+			} else if(word == "}") {
+				brackets--;
+			}
+		}
+	} else {
+		skipCommand();
+	}
+	
+	size_t oldpos = pos;
+	if(pos != script->size && script->data[pos] == '\n') {
+		do {
+			pos++;
+			word = getWord();
+		} while(word.empty() && pos != script->size && script->data[pos] == '\n');
+	}
+	word = getLowercase();
+	if(word != "else") {
+		pos = oldpos;
+	}
+}
+
 class ObsoleteCommand : public Command {
 	
 private:
@@ -847,24 +894,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'R':
 
-				if (!strcmp(word, "RANDOM"))
-				{
-					std::string temp1;
-					pos = GetNextWord(es, pos, temp1);
-					float val = (float)atof(temp1.c_str());
-
-					if (val < 0.f) val = 0.f;
-					else if (val > 100.f) val = 100.f;
-
-					float t = rnd() * 100.f;
-
-					if (val < t)
-					{
-						pos = SkipNextStatement(es, pos);
-					}
-					LogDebug << "RANDOM " << temp1;
-				}
-				else if (!strcmp(word, "RETURN"))
+				if (!strcmp(word, "RETURN"))
 				{
 					if ((pos = GetSubStack(es)) == -1) return BIGERROR;
 					LogDebug << "RETURN";

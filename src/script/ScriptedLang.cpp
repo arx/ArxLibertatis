@@ -1,6 +1,7 @@
 
 #include "script/ScriptedLang.h"
 
+#include "graphics/Math.h"
 #include "platform/String.h"
 #include "io/Logger.h"
 #include "script/ScriptEvent.h"
@@ -84,6 +85,28 @@ public:
 	
 };
 
+class RandomCommand : public Command {
+	
+public:
+	
+	Result execute(Context & context) {
+		
+		float chance = clamp(context.getFloat(), 0.f, 100.f);
+		
+		LogDebug << "random " << chance;
+		
+		float t = rnd() * 100.f;
+		if(chance < t) {
+			context.skipStatement();
+		}
+		
+		return Jumped;
+	}
+	
+	~RandomCommand() { }
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -93,6 +116,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand("gosub", new GotoCommand("gosub", true));
 	ScriptEvent::registerCommand("accept", new AbortCommand("accept", Command::AbortAccept));
 	ScriptEvent::registerCommand("refuse", new AbortCommand("refuse", Command::AbortRefuse));
+	ScriptEvent::registerCommand("random", new RandomCommand);
 	
 }
 
