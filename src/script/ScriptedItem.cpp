@@ -102,6 +102,31 @@ public:
 	
 };
 
+class SetLightCommand : public Command {
+	
+public:
+	
+	SetLightCommand() : Command("setlight", IO_ITEM) { }
+	
+	Result execute(Context & context) {
+		
+		string lightvalue = context.getLowercase();
+		
+		LogDebug << "setlight " << lightvalue;
+		
+		if(lightvalue == "off") {
+			context.getIO()->_itemdata->LightValue = -1;
+		} else {
+			context.getIO()->_itemdata->LightValue = clamp((int)context.getFloatVar(lightvalue), -1, 1);
+		}
+		
+		return Success;
+	}
+	
+	~SetLightCommand() { }
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -109,6 +134,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new RepairCommand);
 	ScriptEvent::registerCommand(new SetPoisonousCommand);
 	ScriptEvent::registerCommand(new SetStealCommand);
+	ScriptEvent::registerCommand(new SetLightCommand);
 	
 }
 

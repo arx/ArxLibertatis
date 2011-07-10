@@ -634,27 +634,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'S':
 
-				if (!strcmp(word, "SETLIGHT")) // -1 = off  for ITEM only
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io) && (io->ioflags & IO_ITEM))
-					{
-						if (!strcasecmp(word, "off"))
-						{
-							io->_itemdata->stealvalue = -1;
-						}
-						else
-						{
-							io->_itemdata->LightValue = (char)GetVarValueInterpretedAsFloat(word, esss, io);
-
-							if (io->_itemdata->LightValue < -1)  io->_itemdata->LightValue = -1;
-
-							if (io->_itemdata->LightValue > 1) io->_itemdata->LightValue = 1;
-						}
-					}
-				}
-				else if (!strcmp(word, "SETBLOOD"))
+				if (!strcmp(word, "SETBLOOD"))
 				{
 					pos = GetNextWord(es, pos, word);
 					float r = GetVarValueInterpretedAsFloat(word, esss, io);
