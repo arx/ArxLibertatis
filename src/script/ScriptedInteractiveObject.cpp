@@ -929,6 +929,50 @@ public:
 	
 };
 
+class PhysicalCommand : public Command {
+	
+public:
+	
+	PhysicalCommand() : Command("physical", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string type = context.getLowercase();
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		if(type == "on") {
+			io->ioflags &= ~IO_PHYSICAL_OFF;
+			LogDebug << "physical on";
+			
+		} else if(type == "off") {
+			io->ioflags |= IO_PHYSICAL_OFF;
+			LogDebug << "physical off";
+			
+		} else {
+			
+			float fval = context.getFloat();
+			
+			LogDebug << "physical " << type << ' ' << fval;
+			
+			if(type == "height") {
+				io->original_height = clamp(-fval, -165.f, -30.f);
+				io->physics.cyl.height = io->original_height * io->scale;
+			} else if(type == "radius") {
+				io->original_radius = clamp(fval, 10.f, 40.f);
+				io->physics.cyl.radius = io->original_radius * io->scale;
+			} else {
+				LogWarning << "physical: unknown command: " << type;
+				return Failed;
+			}
+			
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -971,6 +1015,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new ForceAnimCommand);
 	ScriptEvent::registerCommand(new ForceAngleCommand);
 	ScriptEvent::registerCommand(new PlayAnimCommand);
+	ScriptEvent::registerCommand(new PhysicalCommand);
 	
 }
 
