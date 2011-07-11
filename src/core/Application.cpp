@@ -89,7 +89,7 @@ extern long FINAL_COMMERCIAL_DEMO;
 extern long FINAL_COMMERCIAL_GAME;
 
 //-----------------------------------------------------------------------------
-long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel = 0;
+long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY = 0;
 long EERIEMouseButton = 0;
 long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
@@ -554,6 +554,7 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 
 			break;
+
 		case WM_KEYUP:
 			this->kbd.nbkeydown--;
 			iii = (lParam >> 16) & 255;
@@ -568,11 +569,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 			break;
 
-			//-------------------------------------------
-			//warning "macro redefinition" - as we haven't redefined WM_MOUSEWHEEL, WM_MOUSEWHEEL is equal to 0x020A
-		case WM_MOUSEWHEEL:
-			EERIEWheel = (short) HIWORD(wParam);
-			break;
 		case WM_MOUSEMOVE:
 			EERIEMouseUpdate(LOWORD(lParam), HIWORD(lParam));
 			break;

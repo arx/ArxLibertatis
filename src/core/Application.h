@@ -277,7 +277,7 @@ extern LightMode ModeLight;
 
 extern ViewModeFlags ViewMode;
 
-extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
+extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY;
 extern long EERIEMouseButton, EERIEMouseGrab;
 extern HWND MSGhwnd;
 

@@ -78,7 +78,7 @@ extern long STOP_KEYBOARD_INPUT;
 extern long EERIEMouseButton;
 extern long LastEERIEMouseButton;
 extern DANAE danaeApp;
-extern long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
+extern long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseX, EERIEMouseY;
 
 // All standard keys
 // "+" should not appear in names as it is used as a separator
