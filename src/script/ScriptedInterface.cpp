@@ -212,6 +212,23 @@ public:
 	
 };
 
+class PopupCommand : public Command {
+	
+public:
+	
+	PopupCommand() : Command("popup") { }
+	
+	Result execute(Context & context) {
+		
+		string message = context.getWord();
+		
+		LogInfo << "popup: " << message;
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInterface() {
@@ -223,6 +240,7 @@ void setupScriptedInterface() {
 	ScriptEvent::registerCommand(new ShowLocalsCommand);
 	ScriptEvent::registerCommand(new ShowVarsCommand);
 	ScriptEvent::registerCommand(new PlayInterfaceCommand);
+	ScriptEvent::registerCommand(new PopupCommand);
 	
 }
 

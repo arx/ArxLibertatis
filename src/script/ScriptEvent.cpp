@@ -600,24 +600,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "POPUP"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
-					{
-						ARX_TIME_Pause();
-						LogError << word;
-						ARX_TIME_UnPause();
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "POPUP %s", word);
-
-#endif
-				}
-				else if (!strcmp(word, "PHYSICAL"))
+				if (!strcmp(word, "PHYSICAL"))
 				{
 					std::string temp2;
 					pos = GetNextWord(es, pos, word);
