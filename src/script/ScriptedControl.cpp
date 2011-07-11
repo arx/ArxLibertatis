@@ -540,6 +540,31 @@ public:
 	
 };
 
+class PlaySpeechCommand : public Command {
+	
+public:
+	
+	PlaySpeechCommand() : Command("playspeech") { }
+	
+	Result execute(Context & context) {
+		
+		string sample = loadPath(context.getLowercase());
+		
+		LogDebug << "playspeech " << sample;
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		long num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
+		
+		if(num == ARX_SOUND_INVALID_RESOURCE) {
+			LogWarning << "playspeech: unable to load sound file " << sample;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -557,6 +582,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new SetPathCommand);
 	ScriptEvent::registerCommand(new ZoneParamCommand);
 	ScriptEvent::registerCommand(new PlayCommand);
+	ScriptEvent::registerCommand(new PlaySpeechCommand);
 	
 }
 

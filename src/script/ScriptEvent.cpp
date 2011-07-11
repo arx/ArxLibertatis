@@ -600,21 +600,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "PLAYSPEECH"))
-				{
-					std::string temp2;
-
-					pos = GetNextWord(es, pos, temp2);
-
-					long num = ARX_SOUND_PlaySpeech(temp2.c_str(), io && io->show == 1 ? io : NULL);
-
-					if (num == ARX_SOUND_INVALID_RESOURCE)
-						sprintf(cmd, "PLAYSPEECH %s - UNABLE TO LOAD FILE", temp2.c_str());
-					else
-						sprintf(cmd, "PLAYSPEECH %s - Success DanaePlaySample", temp2.c_str());
-					
-				}
-				else if (!strcmp(word, "POPUP"))
+				if (!strcmp(word, "POPUP"))
 				{
 					pos = GetNextWord(es, pos, word);
 
