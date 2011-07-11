@@ -1036,6 +1036,33 @@ public:
 	
 };
 
+class LinkObjToMeCommand : public Command {
+	
+public:
+	
+	LinkObjToMeCommand() : Command("linkobjtome", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string name = toLowercase(context.getStringVar(context.getLowercase()));
+		
+		string attach = context.getLowercase();
+		
+		LogDebug << "linkobjtome " << name << ' ' << attach;
+		
+		long t = GetTargetByNameTarget(name);
+		if(!ValidIONum(t)) {
+			LogWarning << "linkobjtome: unknown target: " << name;
+			return Failed;
+		}
+		
+		LinkObjToMe(context.getIO(), inter.iobj[t], attach);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1080,6 +1107,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new PlayAnimCommand);
 	ScriptEvent::registerCommand(new PhysicalCommand);
 	ScriptEvent::registerCommand(new LoadAnimCommand);
+	ScriptEvent::registerCommand(new LinkObjToMeCommand);
 	
 }
 

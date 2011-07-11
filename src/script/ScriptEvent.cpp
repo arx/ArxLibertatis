@@ -598,25 +598,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				if (word[1] == '>') pos = GotoNextLine(es, pos);
 				break;
 
-			case 'L':
-
-				if (!strcmp(word, "LINKOBJTOME"))
-				{
-					pos = GetNextWord_Interpreted(io, es, pos, word);
-					long t = GetTargetByNameTarget(word);
-					pos = GetNextWord(es, pos, word);
-
-					if (ValidIONum(t))
-						LinkObjToMe(io, inter.iobj[t], word);
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "LINKOBJTOME %ld %s", t, word);
-
-#endif
-				}
-
-				break;
 			case 'I':
 
 				if ((word[1] == 'F') && (word.size() == 2))
