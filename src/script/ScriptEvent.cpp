@@ -623,18 +623,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "POISON"))
-				{
-					pos = GetNextWord(es, pos, word);
-					float fval = GetVarValueInterpretedAsFloat(word, esss, io);
-					ARX_PLAYER_Poison(fval);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "POISON %s", word);
-
-#endif
-				}
-				else if (!strcmp(word, "PLAYERMANADRAIN"))
+				if (!strcmp(word, "PLAYERMANADRAIN"))
 				{
 					pos = GetNextWord(es, pos, word);
 

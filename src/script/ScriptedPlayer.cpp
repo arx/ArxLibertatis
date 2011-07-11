@@ -551,6 +551,25 @@ public:
 	
 };
 
+class PoisonCommand : public Command {
+	
+public:
+	
+	PoisonCommand() : Command("poison") { }
+	
+	Result execute(Context & context) {
+		
+		float fval = context.getFloat();
+		
+		LogDebug << "poison " << fval;
+		
+		ARX_PLAYER_Poison(fval);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -569,6 +588,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new KeyringAddCommand);
 	ScriptEvent::registerCommand(new PlayerLookAtCommand);
 	ScriptEvent::registerCommand(new PrecastCommand);
+	ScriptEvent::registerCommand(new PoisonCommand);
 	
 }
 
