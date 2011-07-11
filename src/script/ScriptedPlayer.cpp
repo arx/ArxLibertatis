@@ -570,6 +570,29 @@ public:
 	
 };
 
+class PlayerManaDrainCommand : public Command {
+	
+public:
+	
+	PlayerManaDrainCommand() : Command("playermanadrain") { }
+	
+	Result execute(Context & context) {
+		
+		bool enable = context.getBool();
+		
+		LogDebug << "playermanadrain " << enable;
+		
+		if(enable) {
+			player.playerflags &= ~PLAYERFLAGS_NO_MANA_DRAIN;
+		} else {
+			player.playerflags |= PLAYERFLAGS_NO_MANA_DRAIN;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -589,6 +612,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new PlayerLookAtCommand);
 	ScriptEvent::registerCommand(new PrecastCommand);
 	ScriptEvent::registerCommand(new PoisonCommand);
+	ScriptEvent::registerCommand(new PlayerManaDrainCommand);
 	
 }
 

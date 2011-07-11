@@ -623,16 +623,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "PLAYERMANADRAIN"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "ON"))
-						player.playerflags &= ~PLAYERFLAGS_NO_MANA_DRAIN;
-					else
-						player.playerflags |= PLAYERFLAGS_NO_MANA_DRAIN;
-				}
-				else if (!strcmp(word, "PATHFIND"))
+				if (!strcmp(word, "PATHFIND"))
 				{
 					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
