@@ -783,7 +783,6 @@ extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 //-----------------------------------------------------------------------------
 float FirstPolyPosY(float x,float z);
 void SetActiveCamera(EERIE_CAMERA* cam);
-void SetNextAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * ea,long layer=0,long loop=0);
 //	INTERACTIVE_OBJ Struct End
 //****************************************************************************
 

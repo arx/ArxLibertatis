@@ -1,9 +1,11 @@
 
 #include "script/ScriptedInteractiveObject.h"
 
+#include "core/GameTime.h"
 #include "game/Inventory.h"
 #include "game/Player.h"
 #include "game/Missile.h"
+#include "game/NPC.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
@@ -801,6 +803,132 @@ public:
 	
 };
 
+class PlayAnimCommand : public Command {
+	
+	static void SetNextAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea, long layer, bool loop, bool nointerpol) {
+		
+		if(IsDeadNPC(io)) {
+			return;
+		}
+		
+		if(nointerpol) {
+			AcquireLastAnim(io);
+		}
+		
+		FinishAnim(io, io->animlayer[layer].cur_anim);
+		ANIM_Set(&io->animlayer[layer], ea);
+		io->animlayer[layer].next_anim = NULL;
+		
+		if(loop) {
+			io->animlayer[layer].flags |= EA_LOOP;
+		} else {
+			io->animlayer[layer].flags &= ~EA_LOOP;
+		}
+		io->animlayer[layer].flags |= EA_FORCEPLAY;
+	}
+	
+public:
+	
+	PlayAnimCommand() : Command("playanim") { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * iot = context.getIO();
+		long nu = 0;
+		bool loop = false;
+		bool nointerpol = false;
+		bool execute = false;
+		
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('1')) {
+				nu = 0;
+			}
+			if(flg & flag('2')) {
+				nu = 1;
+			}
+			if(flg & flag('3')) {
+				nu = 2;
+			}
+			loop = (flg & flag('l'));
+			nointerpol = (flg & flag('n'));
+			execute = (flg & flag('e'));
+			if(flg & flag('p')) {
+				iot = inter.iobj[0];
+				iot->move = iot->lastmove = Vec3f::ZERO;
+			}
+			if(!flg || (flg & ~flags("123lnep"))) {
+				LogWarning << "unexpected flags: playanim " << options;
+			}
+		}
+		
+		string anim = context.getLowercase();
+		
+		LogDebug << "playanim " << options << ' ' << anim;
+		
+		if(!iot) {
+			LogWarning << "playanim: must either use -p or use with IO";
+			return Failed;
+		}
+		
+		if(anim == "none") {
+			iot->animlayer[nu].cur_anim = NULL;
+			iot->animlayer[nu].next_anim = NULL;
+			return Success;
+		}
+		
+		long num = GetNumAnim(anim);
+		if(num < 0) {
+			LogWarning << "playanim: unknown anim: " << anim;
+			return Failed;
+		}
+		
+		if(!iot->anims[num]) {
+			return Success;
+		}
+		
+		iot->ioflags |= IO_NO_PHYSICS_INTERPOL;
+		SetNextAnim(iot, iot->anims[num], nu, loop, nointerpol);
+		
+		if(!loop) {
+			CheckSetAnimOutOfTreatZone(iot, nu);
+		}
+		
+		if(iot == inter.iobj[0]) {
+			iot->animlayer[nu].flags &= ~EA_STATICANIM;
+		}
+		
+		if(execute) {
+			
+			string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
+			long num2 = ARX_SCRIPT_Timer_GetFree();
+			if(num2 < 0) {
+				LogError << "no free timer";
+				return Failed;
+			}
+			
+			size_t pos = context.skipCommand();
+			if(pos != (size_t)-1) {
+				scr_timer[num2].reset();
+				ActiveTimers++;
+				scr_timer[num2].es = context.getScript();
+				scr_timer[num2].exist = 1;
+				scr_timer[num2].io = context.getIO();
+				scr_timer[num2].msecs = max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.f);
+				scr_timer[num2].name = timername;
+				scr_timer[num2].pos = pos;
+				scr_timer[num2].tim = ARXTimeUL();
+				scr_timer[num2].times = 1;
+				scr_timer[num2].longinfo = 0;
+			}
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -842,6 +970,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new KillMeCommand);
 	ScriptEvent::registerCommand(new ForceAnimCommand);
 	ScriptEvent::registerCommand(new ForceAngleCommand);
+	ScriptEvent::registerCommand(new PlayAnimCommand);
 	
 }
 

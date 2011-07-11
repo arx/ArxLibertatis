@@ -262,29 +262,6 @@ void ShowScriptError(const char * tx, const char * cmd)
 	LogError << (text);
 }
 
-void SetNextAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea, long layer, long loop, long flags)
-{
-	if (!ea) return;
-
-	if (!io) return;
-
-	if (IsDeadNPC(io)) return;
-
-	if (!(flags & 1))
-		AcquireLastAnim(io);
-
-	FinishAnim(io, io->animlayer[layer].cur_anim);
-	ANIM_Set(&io->animlayer[layer], ea);
-	io->animlayer[layer].next_anim = NULL;
-
-	if (loop)
-		io->animlayer[layer].flags |= EA_LOOP;
-	else
-		io->animlayer[layer].flags &= ~EA_LOOP;
-
-	io->animlayer[layer].flags |= EA_FORCEPLAY;
-}
-
 bool IsGlobal(char c)
 {
 	if ((c == '$') || (c == '#') || (c == '&')) return true;
@@ -623,111 +600,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "PLAYANIM"))
-				{
-					INTERACTIVE_OBJ * iot = io;
-					std::string temp2;
-					long nu = 0;
-					long loop = 0;
-					long execute = 0;
-					long nointerpol = 0;
-					pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "PLAY_ANIM ");
-						strcat(cmd, word);
-					}
-
-#endif
-
-					if (temp2[0] == '-')
-					{
-						if (CharIn(temp2, '1')) nu = 0;
-
-						if (CharIn(temp2, '2')) nu = 1;
-
-						if (CharIn(temp2, '3')) nu = 2;
-
-						if (iCharIn(temp2, 'L')) loop = 1;
-
-						if (iCharIn(temp2, 'N')) nointerpol = 1;
-
-						if (iCharIn(temp2, 'E')) execute = 1;
-
-						if(iCharIn(temp2, 'P')) {
-							iot = inter.iobj[0];
-							iot->move = iot->lastmove = Vec3f::ZERO;
-						}
-
-						pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG)
-						{
-							strcat(cmd, " ");
-							strcat(cmd, temp2);
-						}
-
-#endif
-					}
-
-					if (!strcasecmp(temp2, "NONE"))
-					{
-						if (iot != NULL)
-						{
-							iot->animlayer[nu].cur_anim = NULL;
-							iot->animlayer[nu].next_anim = NULL;
-						}
-					}
-					else
-					{
-						long num = GetNumAnim(temp2);
-
-						if (num > -1)
-						{
-							if (iot != NULL)
-								if (iot->anims[num] != NULL)
-								{
-									iot->ioflags |= IO_NO_PHYSICS_INTERPOL;
-									SetNextAnim(iot, iot->anims[num], nu, loop, nointerpol);
-
-									if (!loop)
-										CheckSetAnimOutOfTreatZone(iot, nu);
-
-									{
-										if (iot == inter.iobj[0])
-											iot->animlayer[nu].flags &= ~EA_STATICANIM;
-
-										if (execute)
-										{
-											string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
-											long num2 = ARX_SCRIPT_Timer_GetFree();
-
-											if (num2 > -1)
-											{
-												scr_timer[num2].reset();
-												ActiveTimers++;
-												scr_timer[num2].es = es;
-												scr_timer[num2].exist = 1;
-												scr_timer[num2].io = io;
-												scr_timer[num2].msecs = max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.0f);
-												scr_timer[num2].name = timername;
-												scr_timer[num2].pos = pos;
-												scr_timer[num2].tim = ARXTimeUL();
-												scr_timer[num2].times = 1;
-												scr_timer[num2].longinfo = 0; //numsound;
-											}
-
-											pos = GotoNextLine(es, pos);
-										}
-									}
-								}
-						}
-					}
-				}
-				else if (!strcmp(word, "PLAYERINTERFACE"))
+				if (!strcmp(word, "PLAYERINTERFACE"))
 				{
 					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
