@@ -6,6 +6,7 @@
 #include "ai/Paths.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "graphics/Math.h"
 #include "graphics/GraphicsModes.h"
 #include "gui/Speech.h"
 #include "physics/Attractors.h"
@@ -469,6 +470,76 @@ public:
 	
 };
 
+class PlayCommand : public Command {
+	
+public:
+	
+	PlayCommand() : Command("play", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		bool unique = false;
+		SoundLoopMode loop = ARX_SOUND_PLAY_ONCE;
+		float pitch = 1.f;
+		bool stop = false;
+		bool no_pos = false;
+		
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			unique = (flg & flag('i'));
+			if(flg & flag('l')) {
+				loop = ARX_SOUND_PLAY_LOOPED;
+			}
+			if(flg & flag('p')) {
+				pitch = 0.9F + 0.2F * rnd();
+			}
+			stop = (flg & flag('s'));
+			no_pos = (flg & flag('o'));
+			if(!flg || (flg & ~flags("ilpso"))) {
+				LogWarning << "unexpected flags: book " << options;
+			}
+		}
+		
+		string sample = loadPath(context.getStringVar(context.getLowercase()));
+		SetExt(sample, ".wav");
+		
+		LogDebug << "play " << options << " \"" << sample << '"';
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(stop) {
+			ARX_SOUND_Stop(io->sound);
+			io->sound = ARX_SOUND_INVALID_RESOURCE;
+			
+		} else {
+			
+			if(unique && io->sound != ARX_SOUND_INVALID_RESOURCE) {
+				ARX_SOUND_Stop(io->sound);
+			}
+			
+			long num;
+			if(no_pos) { // TODO(case-sensitive) || SM_INVENTORYUSE == msg
+				num = ARX_SOUND_PlayScript(sample, NULL, pitch, loop);
+			} else {
+				num = ARX_SOUND_PlayScript(sample, io, pitch, loop);
+			}
+			
+			if(unique) {
+				io->sound = num;
+			}
+			
+			if(num == ARX_SOUND_INVALID_RESOURCE) {
+				LogWarning << "play: unable to load sound file " << sample;
+				return Failed;
+			}
+			
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -485,6 +556,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new SetControlledZoneCommand);
 	ScriptEvent::registerCommand(new SetPathCommand);
 	ScriptEvent::registerCommand(new ZoneParamCommand);
+	ScriptEvent::registerCommand(new PlayCommand);
 	
 }
 
