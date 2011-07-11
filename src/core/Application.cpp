@@ -83,7 +83,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::max;
 
 //-----------------------------------------------------------------------------
-extern long USE_OLD_MOUSE_SYSTEM;
 extern long FINAL_RELEASE;
 
 extern long FINAL_COMMERCIAL_DEMO;
@@ -566,54 +565,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				this->kbd.inkey[iii] = 0;
 			}
 			else this->kbd.inkey[iii] = 0;;
-
-			break;
-
-		case WM_LBUTTONDBLCLK:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton |= 4;
-				EERIEMouseButton &= ~1;
-			}
-
-			break;
-		case WM_LBUTTONDOWN:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton |= 1;
-
-				if (EERIEMouseButton & 4) EERIEMouseButton &= ~1;
-			}
-
-			break;
-		case WM_LBUTTONUP:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton &= ~1;
-				EERIEMouseButton &= ~4;
-			}
-
-			break;
-		case WM_RBUTTONDOWN:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				EERIEMouseButton |= 2;
-			}
-
-			break;
-		case WM_RBUTTONUP:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				EERIEMouseButton &= ~2;
-			}
 
 			break;
 

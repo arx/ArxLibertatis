@@ -406,7 +406,6 @@ long USE_LIGHT_OPTIM	=1;
 long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
 long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
-long USE_OLD_MOUSE_SYSTEM=1;
 long NO_TEXT_AT_ALL		= 0;
 long LAST_CONVERSATION	= 0;
 long FAST_SPLASHES		= 0;
@@ -2594,29 +2593,8 @@ void SetEditMode(long ed, const bool stop_sound)
 	EERIEMouseButton=0;
 
 #ifdef BUILD_EDITOR
-	if (ed)
-	{
-		EDITMODE=1;
-
-		if(	((danaeApp.m_pFramework)&&
-			(danaeApp.m_pFramework->m_bIsFullscreen))||
-			(FINAL_COMMERCIAL_GAME) )
-		{
-			USE_OLD_MOUSE_SYSTEM=0;
-		}
-		else
-		{
-			USE_OLD_MOUSE_SYSTEM=1;
-		}
-	}
-	else
+	EDITMODE=ed;
 #endif
-	{
-#ifdef BUILD_EDITOR
-		EDITMODE=0;
-#endif
-		USE_OLD_MOUSE_SYSTEM=0;
-	}
 
 	for (long i=0;i<inter.nbmax;i++)
 	{
@@ -5103,23 +5081,6 @@ static float _AvgFrameDiff = 150.f;
 
 	ACTIVECAM = &subj;
 
-	if (	(!FINAL_COMMERCIAL_DEMO)
-		&&	(!FINAL_COMMERCIAL_GAME)
-		&&  (ARXmenu.currentmode==AMCM_OFF)	)
-	{
-		if(	GInput->isKeyPressedNowPressed(Keyboard::Key_Y) )
-		{
-			USE_OLD_MOUSE_SYSTEM=(USE_OLD_MOUSE_SYSTEM)?0:1;
-
-			if(!USE_OLD_MOUSE_SYSTEM)
-			{
-				current.depthcolor.r=0.f;
-				current.depthcolor.g=0.f;
-				current.depthcolor.b=1.f;
-			}
-		}
-	}
-
 	if (this->m_pFramework->m_bHasMoved)
 	{
 		LogDebug << "has moved";
@@ -5131,12 +5092,9 @@ static float _AvgFrameDiff = 150.f;
 		AdjustUI();
 	}
 
-	// Get DirectInput Infos
-	if ((!USE_OLD_MOUSE_SYSTEM))
-	{
-		GInput->update();
-		ReMappDanaeButton();
-	}
+	// Update input
+	GInput->update();
+	ReMappDanaeButton();
 
 	// Manages Splash Screens if needed
 	if(DANAE_ManageSplashThings()) {
