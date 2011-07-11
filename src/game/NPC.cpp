@@ -877,7 +877,7 @@ bool ARX_NPC_SetStat(INTERACTIVE_OBJ& io, const string & statname, float value) 
 	
 	if(statname == "armor_class") {
 		io._npcdata->armor_class = value < 0 ? 0 : value;
-	} else if(statname == "backstab_skill") {
+	} else if(statname == "backstab_skill" || statname == "backstabskill") {
 		io._npcdata->backstab_skill = value < 0 ? 0 : value;
 	} else if(statname == "backstab") {
 		if (value == 0) io._npcdata->npcflags &= ~NPCFLAG_BACKSTAB;

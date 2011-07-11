@@ -57,8 +57,9 @@ public:
 		}
 		
 		if(!context.jumpToLabel(label)) {
-			// TODO should be a warning, but some scripts do this
-			LogDebug << "error jumping to label \"" << label << '"';
+			if(label != "main_alert") {// TODO(broken-scripts)
+				LogError << "error jumping to label \"" << label << '"';
+			}
 			return AbortError;
 		}
 		
@@ -255,9 +256,9 @@ public:
 			}
 		}
 		
-		string param = context.getWord();
+		string params = context.getWord();
 		
-		LogDebug << "sendevent " << options << " g=\"" << groupname << "\" e=\"" << event << "\" r=" << rad << " t=\"" << target << "\" p=\"" << param << '"';
+		LogDebug << "sendevent " << options << " g=\"" << groupname << "\" e=\"" << event << "\" r=" << rad << " t=\"" << target << "\" p=\"" << params << '"';
 		
 		INTERACTIVE_OBJ * oes = EVENT_SENDER;
 		EVENT_SENDER = context.getIO();
@@ -286,7 +287,7 @@ public:
 					
 					if(distSqr(_pos, _pos2) <= square(rad)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, param, event);
+						Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
 					}
 				}
 			}
@@ -319,7 +320,7 @@ public:
 					
 					if(ARX_PATH_IsPosInZone(ap, _pos.x, _pos.y, _pos.z)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, param, event);
+						Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
 					}
 				}
 			}
@@ -333,7 +334,7 @@ public:
 				}
 				
 				io->stat_sent++;
-				Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, param, event);
+				Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
 			}
 			
 		} else { // single object event
@@ -350,7 +351,7 @@ public:
 			}
 			
 			io->stat_sent++;
-			Stack_SendIOScriptEvent(inter.iobj[t], SM_NULL, param, event);
+			Stack_SendIOScriptEvent(inter.iobj[t], SM_NULL, params, event);
 		}
 		
 		EVENT_SENDER = oes;

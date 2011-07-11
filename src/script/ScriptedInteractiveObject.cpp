@@ -1007,7 +1007,9 @@ public:
 		
 		AnimationNumber num = GetNumAnim(anim);
 		if(num == ANIM_NONE) {
-			LogWarning << "loadanim: unknown anim: " << anim;
+			if(anim != "cast_hold" && anim != "lean_left_cycle" && anim != "lean_left_out" && anim != "lean_right_cycle" && anim != "lean_right_out" && anim != "bae_ready") { // TODO(broken-scripts)
+				LogWarning << "loadanim: unknown anim: " << anim;
+			}
 			return Failed;
 		}
 		
@@ -1015,10 +1017,14 @@ public:
 			ReleaseAnimFromIO(iot, num);
 		}
 		
+		if(file == "human_death_cool" || file == "human_talk_happyneutral_headonly") {
+			return Failed; // TODO(broken-scripts)
+		}
+		
 		if(iot == inter.iobj[0] || (iot->ioflags & IO_NPC)) {
-			file = "Graph\\Obj3D\\Anims\\npc\\" + file;
+			file = "graph\\obj3d\\anims\\npc\\" + file;
 		} else {
-			file = "Graph\\Obj3D\\Anims\\Fix_Inter\\" + file;
+			file = "graph\\obj3d\\anims\\fix_inter\\" + file;
 		}
 		SetExt(file, ".tea");
 		string path;
@@ -1027,7 +1033,6 @@ public:
 		iot->anims[num] = EERIE_ANIMMANAGER_Load(path);
 		
 		if(!iot->anims[num]) {
-			LogWarning << "loadanim: file not found: " << path;
 			return Failed;
 		}
 		
@@ -1070,7 +1075,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new ReplaceMeCommand);
 	ScriptEvent::registerCommand(new RotateCommand);
 	ScriptEvent::registerCommand(new CollisionCommand("collision"));
-	ScriptEvent::registerCommand(new CollisionCommand("collison"));
+	ScriptEvent::registerCommand(new CollisionCommand("collison")); // TODO(broken-scripts)
 	ScriptEvent::registerCommand(new ShopCategoryCommand);
 	ScriptEvent::registerCommand(new ShopMultiplyCommand);
 	ScriptEvent::registerCommand(new GameFlagCommand("setplatform", GFLAG_PLATFORM));
@@ -1080,6 +1085,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new IOFlagCommand("setunique", IO_UNIQUE));
 	ScriptEvent::registerCommand(new IOFlagCommand("setblacksmith", IO_BLACKSMITH));
 	ScriptEvent::registerCommand(new IOFlagCommand("setangular", IO_ANGULAR));
+	ScriptEvent::registerCommand(new IOFlagCommand("satangular", IO_ANGULAR)); // TODO(broken-scripts)
 	ScriptEvent::registerCommand(new IOFlagCommand("setshadow", IO_NOSHADOW, true));
 	ScriptEvent::registerCommand(new IOFlagCommand("setshop", IO_SHOP));
 	ScriptEvent::registerCommand(new IOFlagCommand("setbump", IO_BUMP));

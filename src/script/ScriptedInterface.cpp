@@ -176,11 +176,11 @@ public:
 	
 };
 
-class PlayInterfaceCommand : public Command {
+class PlayerInterfaceCommand : public Command {
 	
 public:
 	
-	PlayInterfaceCommand() : Command("playinterface") { }
+	PlayerInterfaceCommand() : Command("playerinterface") { }
 	
 	Result execute(Context & context) {
 		
@@ -239,7 +239,7 @@ void setupScriptedInterface() {
 	ScriptEvent::registerCommand(new ShowGlobalsCommand);
 	ScriptEvent::registerCommand(new ShowLocalsCommand);
 	ScriptEvent::registerCommand(new ShowVarsCommand);
-	ScriptEvent::registerCommand(new PlayInterfaceCommand);
+	ScriptEvent::registerCommand(new PlayerInterfaceCommand);
 	ScriptEvent::registerCommand(new PopupCommand);
 	
 }
