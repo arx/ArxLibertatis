@@ -600,48 +600,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "PLAYERINTERFACE"))
-				{
-					std::string temp2;
-					pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "PLAYER_INTERFACE ");
-						strcat(cmd, word);
-					}
-
-#endif
-					long smooth = 0;
-
-					if (temp2[0] == '-')
-					{
-						if ((temp2[1] == 's') || (temp2[1] == 'S'))
-						{
-							smooth = 1;
-						}
-
-						pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG)
-						{
-							strcat(cmd, " ");
-							strcat(cmd, temp2);
-						}
-
-#endif
-					}
-
-					if (!strcasecmp(temp2, "HIDE"))
-						ARX_INTERFACE_PlayerInterfaceModify(0, smooth);
-
-					if (!strcasecmp(temp2, "SHOW"))
-						ARX_INTERFACE_PlayerInterfaceModify(1, smooth);
-
-				}
-				else if (!strcmp(word, "PLAY"))
+				if (!strcmp(word, "PLAY"))
 				{
 					SoundLoopMode loop(ARX_SOUND_PLAY_ONCE);
 					std::string temp2;

@@ -176,6 +176,42 @@ public:
 	
 };
 
+class PlayInterfaceCommand : public Command {
+	
+public:
+	
+	PlayInterfaceCommand() : Command("playinterface") { }
+	
+	Result execute(Context & context) {
+		
+		bool smooth = false;
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			smooth = (flg & flag('s'));
+			if(!flg || (flg & ~flag('s'))) {
+				LogWarning << "unexpected flags: book " << options;
+			}
+		}
+		
+		string command = context.getLowercase();
+		
+		LogDebug << "playinterface " << options << ' ' << command;
+		
+		if(command == "hide") {
+			ARX_INTERFACE_PlayerInterfaceModify(0, smooth);
+		} else if(command == "show") {
+			ARX_INTERFACE_PlayerInterfaceModify(1, smooth);
+		} else {
+			LogWarning << "unknown playinterface command: " << command;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInterface() {
@@ -186,6 +222,7 @@ void setupScriptedInterface() {
 	ScriptEvent::registerCommand(new ShowGlobalsCommand);
 	ScriptEvent::registerCommand(new ShowLocalsCommand);
 	ScriptEvent::registerCommand(new ShowVarsCommand);
+	ScriptEvent::registerCommand(new PlayInterfaceCommand);
 	
 }
 
