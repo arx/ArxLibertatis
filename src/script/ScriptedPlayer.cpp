@@ -497,6 +497,60 @@ public:
 	
 };
 
+class PrecastCommand : public Command {
+	
+public:
+	
+	PrecastCommand() : Command("precast") { }
+	
+	Result execute(Context & context) {
+		
+		SpellcastFlags spflags = SPELLCAST_FLAG_PRECAST | SPELLCAST_FLAG_NOANIM;
+		bool dur = false;
+		long duration = -1;
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('d')) {
+				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
+				duration = (long)context.getFloat();
+				dur = 1;
+			}
+			if(flg & flag('f')) {
+				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
+			}
+			if(!flg || (flg & ~flags("df"))) {
+				LogWarning << "unexpected flags: rotate " << options;
+			}
+		}
+		
+		long level = clamp((long)context.getFloat(), 1l, 10l);
+		
+		string spellname = context.getLowercase();
+		
+		LogDebug << "precast " << options << ' ' << duration << ' ' << level << ' ' << spellname;
+		
+		Spell spellid = GetSpellId(spellname);
+		if(spellid == SPELL_NONE) {
+			LogWarning << "precast: unknown spell: " << spellname;
+			return Failed;
+		}
+		
+		if(!dur) {
+			duration = 2000 + level * 2000;
+		}
+		
+		if(context.getIO() != inter.iobj[0]) {
+			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
+		}
+		
+		TryToCastSpell(inter.iobj[0], spellid, level, -1, spflags, duration);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -514,6 +568,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new SpecialFXCommand);
 	ScriptEvent::registerCommand(new KeyringAddCommand);
 	ScriptEvent::registerCommand(new PlayerLookAtCommand);
+	ScriptEvent::registerCommand(new PrecastCommand);
 	
 }
 

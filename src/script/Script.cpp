@@ -1279,7 +1279,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			if (!specialstrcmp(name, "^MYSPELL_"))
 			{
 				char * temp = &name[9];
-				Spell id = GetSpellId(temp);
+				Spell id = GetSpellId(toLowercase(temp));
 
 				if(id != SPELL_NONE)
 				{
@@ -1616,7 +1616,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			if (!specialstrcmp(name, "^PLAYERSPELL_"))
 			{
 				char * temp = &name[13];
-				Spell id = GetSpellId(temp);
+				Spell id = GetSpellId(toLowercase(temp));
 
 				if (id != SPELL_NONE)
 				{

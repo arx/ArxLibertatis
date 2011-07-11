@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/Spells10.h"
 
 #include "io/FilePath.h"
+#include "io/Logger.h"
 
 #include "physics/Collisions.h"
 
@@ -826,6 +827,8 @@ void GetSymbVector(char c,Vec2s * vec)
 
 static bool MakeSpellName(char * spell, Spell num) {
 	
+	// TODO(case-sensitive) use map
+	
 	switch (num)
 	{
 		// Level 1
@@ -1002,82 +1005,6 @@ static bool MakeSpellName(char * spell, Spell num) {
 	}
 
 	return true;
-}
-
-Spell GetSpellId(const string & spell) {
-	
-	// TODO(case-sensitive) use map
-	
-	if(!strcasecmp(spell, "ACTIVATE_PORTAL"))       return SPELL_ACTIVATE_PORTAL;		
-	if(!strcasecmp(spell, "DOUSE"))                 return SPELL_DOUSE;
-	if(!strcasecmp(spell, "IGNIT"))                 return SPELL_IGNIT;
-	if(!strcasecmp(spell, "MAGIC_SIGHT"))           return SPELL_MAGIC_SIGHT;
-	if(!strcasecmp(spell, "MAGIC_MISSILE"))         return SPELL_MAGIC_MISSILE;
-	
-	// Level 2
-	if(!strcasecmp(spell, "ARMOR"))                 return SPELL_ARMOR;
-	if(!strcasecmp(spell, "DETECT_TRAP"))           return SPELL_DETECT_TRAP;		
-	if(!strcasecmp(spell, "HARM"))                  return SPELL_HARM;				
-	if(!strcasecmp(spell, "HEAL"))                  return SPELL_HEAL;		
-	if(!strcasecmp(spell, "LOWER_ARMOR"))           return SPELL_LOWER_ARMOR;		
-	
-	// Level 3
-	if(!strcasecmp(spell, "CREATE_FOOD"))           return SPELL_CREATE_FOOD;		
-	if(!strcasecmp(spell, "DISPELL_ILLUSION"))      return SPELL_DISPELL_ILLUSION;		
-	if(!strcasecmp(spell, "FIREBALL"))              return SPELL_FIREBALL;				
-	if(!strcasecmp(spell, "ICE_PROJECTILE"))        return SPELL_ICE_PROJECTILE;		
-	if(!strcasecmp(spell, "SPEED"))                 return SPELL_SPEED;
-	
-	// Level 4
-	if(!strcasecmp(spell, "BLESS"))                 return SPELL_BLESS;
-	if(!strcasecmp(spell, "COLD_PROTECTION"))       return SPELL_COLD_PROTECTION;		
-	if(!strcasecmp(spell, "CURSE"))                 return SPELL_CURSE;		
-	if(!strcasecmp(spell, "DISPELL_FIELD"))         return SPELL_DISPELL_FIELD;		
-	if(!strcasecmp(spell, "FIRE_PROTECTION"))       return SPELL_FIRE_PROTECTION;		
-	if(!strcasecmp(spell, "TELEKINESIS"))           return SPELL_TELEKINESIS;		
-	
-	// Level 5
-	if(!strcasecmp(spell, "CURE_POISON"))           return SPELL_CURE_POISON;
-	if(!strcasecmp(spell, "LEVITATE"))              return SPELL_LEVITATE;
-	if(!strcasecmp(spell, "POISON_PROJECTILE"))     return SPELL_POISON_PROJECTILE;
-	if(!strcasecmp(spell, "REPEL_UNDEAD"))          return SPELL_REPEL_UNDEAD;
-	if(!strcasecmp(spell, "RUNE_OF_GUARDING"))      return SPELL_RUNE_OF_GUARDING;
-	
-	// Level 6
-	if(!strcasecmp(spell, "CREATE_FIELD"))          return SPELL_CREATE_FIELD;		
-	if(!strcasecmp(spell, "DISARM_TRAP"))           return SPELL_DISARM_TRAP;		
-	if(!strcasecmp(spell, "PARALYSE"))              return SPELL_PARALYSE;	
-	if(!strcasecmp(spell, "RAISE_DEAD"))            return SPELL_RISE_DEAD;
-	if(!strcasecmp(spell, "SLOWDOWN"))              return SPELL_SLOW_DOWN;				
-	
-	// Level 7
-	if(!strcasecmp(spell, "CONFUSE"))               return SPELL_CONFUSE;				
-	if(!strcasecmp(spell, "FIRE_FIELD"))            return SPELL_FIRE_FIELD;		
-	if(!strcasecmp(spell, "FLYING_EYE"))            return SPELL_FLYING_EYE;		
-	if(!strcasecmp(spell, "ICE_FIELD"))             return SPELL_ICE_FIELD;		
-	if(!strcasecmp(spell, "LIGHTNING_STRIKE"))      return SPELL_LIGHTNING_STRIKE;		
-	
-	// Level 8
-	if(!strcasecmp(spell, "ENCHANT_WEAPON"))        return SPELL_ENCHANT_WEAPON;		
-	if(!strcasecmp(spell, "EXPLOSION"))             return SPELL_EXPLOSION;		
-	if(!strcasecmp(spell, "INVISIBILITY"))          return SPELL_INVISIBILITY;		
-	if(!strcasecmp(spell, "LIFE_DRAIN"))            return SPELL_LIFE_DRAIN;		
-	if(!strcasecmp(spell, "MANA_DRAIN"))            return SPELL_MANA_DRAIN;		
-	
-	// Level 9
-	if(!strcasecmp(spell, "INCINERATE"))            return SPELL_INCINERATE;		
-	if(!strcasecmp(spell, "MASS_PARALYSE"))         return SPELL_MASS_PARALYSE;		
-	if(!strcasecmp(spell, "NEGATE_MAGIC"))          return SPELL_NEGATE_MAGIC;		
-	if(!strcasecmp(spell, "SUMMON_CREATURE"))       return SPELL_SUMMON_CREATURE;		
-	if(!strcasecmp(spell, "FAKE_SUMMON"))           return SPELL_FAKE_SUMMON;		
-	
-	// Level 10
-	if(!strcasecmp(spell, "CONTROL"))               return SPELL_CONTROL_TARGET;
-	if(!strcasecmp(spell, "FREEZE_TIME"))           return SPELL_FREEZE_TIME;
-	if(!strcasecmp(spell, "MASS_INCINERATE"))       return SPELL_MASS_INCINERATE;
-	if(!strcasecmp(spell, "MASS_LIGHTNING_STRIKE")) return SPELL_MASS_LIGHTNING_STRIKE;
-	
-	return SPELL_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -2124,8 +2051,20 @@ struct SpellDefinition {
 };
 
 static SpellDefinition definedSpells;
+typedef std::map<string, Spell> SpellNames;
+static SpellNames spellNames;
 
-static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell) {
+static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell, const string & name) {
+	
+	typedef std::pair<SpellNames::const_iterator, bool> Res;
+	Res res = spellNames.insert(std::make_pair(name, spell));
+	if(!res.second) {
+		LogWarning << "duplicate spell name: " + name;
+	}
+	
+	if(symbols[0] == RUNE_NONE) {
+		return;
+	}
 	
 	SpellDefinition * def = &definedSpells;
 	
@@ -2163,62 +2102,71 @@ static Spell getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 	return def->spell;
 }
 
+Spell GetSpellId(const string & spell) {
+	
+	SpellNames::const_iterator it = spellNames.find(spell);
+	
+	return (it == spellNames.end()) ? SPELL_NONE : it->second;
+}
+
 struct RawSpellDefinition {
 	Rune symbols[MAX_SPELL_SYMBOLS];
 	Spell spell;
+	std::string name;
 };
 
 // TODO move to external file
 static const RawSpellDefinition allSpells[] = {
-	{{RUNE_RHAA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_CURSE}, // level 4
-	{{RUNE_RHAA, RUNE_TEMPUS, RUNE_NONE}, SPELL_FREEZE_TIME}, // level 10
-	{{RUNE_RHAA, RUNE_KAOM, RUNE_NONE}, SPELL_LOWER_ARMOR}, // level 2
-	{{RUNE_RHAA, RUNE_MOVIS, RUNE_NONE}, SPELL_SLOW_DOWN}, // level 6
-	{{RUNE_RHAA, RUNE_VITAE, RUNE_NONE}, SPELL_HARM}, // level 2
-	{{RUNE_RHAA, RUNE_VISTA, RUNE_NONE}, SPELL_CONFUSE}, // level 7
-	{{RUNE_MEGA, RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_MASS_PARALYSE}, // level 9
-	{{RUNE_MEGA, RUNE_KAOM, RUNE_NONE}, SPELL_ARMOR}, // level 2
-	{{RUNE_MEGA, RUNE_VISTA, RUNE_NONE}, SPELL_MAGIC_SIGHT}, // level 1
-	{{RUNE_MEGA, RUNE_VITAE, RUNE_NONE}, SPELL_HEAL}, // level 2
-	{{RUNE_MEGA, RUNE_MOVIS, RUNE_NONE}, SPELL_SPEED}, // level 3
-	{{RUNE_MEGA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_BLESS}, // level 4
-	{{RUNE_MEGA, RUNE_STREGUM, RUNE_COSUM, RUNE_NONE}, SPELL_ENCHANT_WEAPON}, // level 8
-	{{RUNE_MEGA, RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_MASS_INCINERATE}, // level 10
-	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_NONE}, SPELL_ACTIVATE_PORTAL}, // level ?
-	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_MOVIS, RUNE_NONE}, SPELL_LEVITATE}, // level 5
-	{{RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_PARALYSE}, // level 6
-	{{RUNE_NHI, RUNE_CETRIUS, RUNE_NONE}, SPELL_CURE_POISON}, // level 5
-	{{RUNE_NHI, RUNE_YOK, RUNE_NONE}, SPELL_DOUSE}, // level 1
-	{{RUNE_NHI, RUNE_STREGUM, RUNE_VISTA, RUNE_NONE}, SPELL_DISPELL_ILLUSION}, // level 3
-	{{RUNE_NHI, RUNE_STREGUM, RUNE_SPACIUM, RUNE_NONE}, SPELL_NEGATE_MAGIC}, // level 9
-	{{RUNE_NHI, RUNE_SPACIUM, RUNE_NONE}, SPELL_DISPELL_FIELD}, // level 4
-	{{RUNE_NHI, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_DISARM_TRAP}, // level 6
-	{{RUNE_NHI, RUNE_VISTA, RUNE_NONE}, SPELL_INVISIBILITY}, // level ?
-	{{RUNE_VISTA, RUNE_MOVIS, RUNE_NONE}, SPELL_FLYING_EYE}, // level 7
-	{{RUNE_MORTE, RUNE_KAOM, RUNE_NONE}, SPELL_REPEL_UNDEAD}, // level 5
-	{{RUNE_MORTE, RUNE_COSUM, RUNE_VISTA, RUNE_NONE}, SPELL_DETECT_TRAP}, // level 2
-	{{RUNE_MOVIS, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_CONTROL_TARGET}, // level 10
-	{{RUNE_STREGUM, RUNE_MOVIS, RUNE_NONE}, SPELL_MANA_DRAIN}, // level 8
-	{{RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_INCINERATE}, // level 9
-	{{RUNE_AAM, RUNE_MEGA, RUNE_MORTE, RUNE_NONE}, SPELL_EXPLOSION}, // level 8
-	{{RUNE_AAM, RUNE_KAOM, RUNE_SPACIUM, RUNE_NONE}, SPELL_CREATE_FIELD}, // level 6
-	{{RUNE_AAM, RUNE_MORTE, RUNE_VITAE, RUNE_NONE}, SPELL_RISE_DEAD}, // level 6
-	{{RUNE_AAM, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_RUNE_OF_GUARDING}, // level 5
-	{{RUNE_AAM, RUNE_VITAE, RUNE_TERA, RUNE_NONE}, SPELL_SUMMON_CREATURE}, // level 9
-	{{RUNE_AAM, RUNE_VITAE, RUNE_COSUM, RUNE_NONE}, SPELL_CREATE_FOOD}, // level 3
-	{{RUNE_AAM, RUNE_FOLGORA, RUNE_TAAR, RUNE_NONE}, SPELL_LIGHTNING_STRIKE}, // level 7
-	{{RUNE_AAM, RUNE_FOLGORA, RUNE_SPACIUM, RUNE_NONE}, SPELL_MASS_LIGHTNING_STRIKE}, // level 10
-	{{RUNE_AAM, RUNE_YOK, RUNE_NONE}, SPELL_IGNIT}, // level 1
-	{{RUNE_AAM, RUNE_YOK, RUNE_SPACIUM, RUNE_NONE}, SPELL_FIRE_FIELD}, // level 7
-	{{RUNE_AAM, RUNE_YOK, RUNE_TAAR, RUNE_NONE}, SPELL_FIREBALL}, // level 3
-	{{RUNE_AAM, RUNE_FRIDD, RUNE_SPACIUM, RUNE_NONE}, SPELL_ICE_FIELD}, // level 7
-	{{RUNE_AAM, RUNE_FRIDD, RUNE_TAAR, RUNE_NONE}, SPELL_ICE_PROJECTILE}, // level 3
-	{{RUNE_AAM, RUNE_CETRIUS, RUNE_TAAR, RUNE_NONE}, SPELL_POISON_PROJECTILE}, // level 5
-	{{RUNE_AAM, RUNE_TAAR, RUNE_NONE}, SPELL_MAGIC_MISSILE}, // level 1
-	{{RUNE_YOK, RUNE_KAOM, RUNE_NONE}, SPELL_FIRE_PROTECTION}, // level 4
-	{{RUNE_FRIDD, RUNE_KAOM, RUNE_NONE}, SPELL_COLD_PROTECTION}, // level 4
-	{{RUNE_VITAE, RUNE_MOVIS, RUNE_NONE}, SPELL_LIFE_DRAIN}, // level 8
-	{{RUNE_SPACIUM, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_TELEKINESIS}, // level 4
+	{{RUNE_RHAA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_CURSE, "curse"}, // level 4
+	{{RUNE_RHAA, RUNE_TEMPUS, RUNE_NONE}, SPELL_FREEZE_TIME, "freeze_time"}, // level 10
+	{{RUNE_RHAA, RUNE_KAOM, RUNE_NONE}, SPELL_LOWER_ARMOR, "lower_armor"}, // level 2
+	{{RUNE_RHAA, RUNE_MOVIS, RUNE_NONE}, SPELL_SLOW_DOWN, "slowdown"}, // level 6
+	{{RUNE_RHAA, RUNE_VITAE, RUNE_NONE}, SPELL_HARM, "harm"}, // level 2
+	{{RUNE_RHAA, RUNE_VISTA, RUNE_NONE}, SPELL_CONFUSE, "confuse"}, // level 7
+	{{RUNE_MEGA, RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_MASS_PARALYSE, "mass_paralyse"}, // level 9
+	{{RUNE_MEGA, RUNE_KAOM, RUNE_NONE}, SPELL_ARMOR, "armor"}, // level 2
+	{{RUNE_MEGA, RUNE_VISTA, RUNE_NONE}, SPELL_MAGIC_SIGHT, "magic_sight"}, // level 1
+	{{RUNE_MEGA, RUNE_VITAE, RUNE_NONE}, SPELL_HEAL, "heal"}, // level 2
+	{{RUNE_MEGA, RUNE_MOVIS, RUNE_NONE}, SPELL_SPEED, "speed"}, // level 3
+	{{RUNE_MEGA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_BLESS, "bless"}, // level 4
+	{{RUNE_MEGA, RUNE_STREGUM, RUNE_COSUM, RUNE_NONE}, SPELL_ENCHANT_WEAPON, "enchant_weapon"}, // level 8
+	{{RUNE_MEGA, RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_MASS_INCINERATE, "mass_incinerate"}, // level 10
+	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_NONE}, SPELL_ACTIVATE_PORTAL, "activate_portal"}, // level ?
+	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_MOVIS, RUNE_NONE}, SPELL_LEVITATE, "levitate"}, // level 5
+	{{RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_PARALYSE, "paralyse"}, // level 6
+	{{RUNE_NHI, RUNE_CETRIUS, RUNE_NONE}, SPELL_CURE_POISON, "cure_poison"}, // level 5
+	{{RUNE_NHI, RUNE_YOK, RUNE_NONE}, SPELL_DOUSE, "douse"}, // level 1
+	{{RUNE_NHI, RUNE_STREGUM, RUNE_VISTA, RUNE_NONE}, SPELL_DISPELL_ILLUSION, "dispell_illusion"}, // level 3
+	{{RUNE_NHI, RUNE_STREGUM, RUNE_SPACIUM, RUNE_NONE}, SPELL_NEGATE_MAGIC, "negate_magic"}, // level 9
+	{{RUNE_NHI, RUNE_SPACIUM, RUNE_NONE}, SPELL_DISPELL_FIELD, "dispell_field"}, // level 4
+	{{RUNE_NHI, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_DISARM_TRAP, "disarm_trap"}, // level 6
+	{{RUNE_NHI, RUNE_VISTA, RUNE_NONE}, SPELL_INVISIBILITY, "invisibility"}, // level ?
+	{{RUNE_VISTA, RUNE_MOVIS, RUNE_NONE}, SPELL_FLYING_EYE, "flying_eye"}, // level 7
+	{{RUNE_MORTE, RUNE_KAOM, RUNE_NONE}, SPELL_REPEL_UNDEAD, "repel_undead"}, // level 5
+	{{RUNE_MORTE, RUNE_COSUM, RUNE_VISTA, RUNE_NONE}, SPELL_DETECT_TRAP, "detect_trap"}, // level 2
+	{{RUNE_MOVIS, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_CONTROL_TARGET, "control"}, // level 10
+	{{RUNE_STREGUM, RUNE_MOVIS, RUNE_NONE}, SPELL_MANA_DRAIN, "mana_drain"}, // level 8
+	{{RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_INCINERATE, "incinerate"}, // level 9
+	{{RUNE_AAM, RUNE_MEGA, RUNE_MORTE, RUNE_NONE}, SPELL_EXPLOSION, "explosion"}, // level 8
+	{{RUNE_AAM, RUNE_KAOM, RUNE_SPACIUM, RUNE_NONE}, SPELL_CREATE_FIELD, "create_field"}, // level 6
+	{{RUNE_AAM, RUNE_MORTE, RUNE_VITAE, RUNE_NONE}, SPELL_RISE_DEAD, "raise_dead"}, // level 6
+	{{RUNE_AAM, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_RUNE_OF_GUARDING, "rune_of_guarding"}, // level 5
+	{{RUNE_AAM, RUNE_VITAE, RUNE_TERA, RUNE_NONE}, SPELL_SUMMON_CREATURE, "summon_creature"}, // level 9
+	{{RUNE_AAM, RUNE_VITAE, RUNE_COSUM, RUNE_NONE}, SPELL_CREATE_FOOD, "create_food"}, // level 3
+	{{RUNE_AAM, RUNE_FOLGORA, RUNE_TAAR, RUNE_NONE}, SPELL_LIGHTNING_STRIKE, "lightning_strike"}, // level 7
+	{{RUNE_AAM, RUNE_FOLGORA, RUNE_SPACIUM, RUNE_NONE}, SPELL_MASS_LIGHTNING_STRIKE, "mass_lightning_strike"}, // level 10
+	{{RUNE_AAM, RUNE_YOK, RUNE_NONE}, SPELL_IGNIT, "ignit"}, // level 1
+	{{RUNE_AAM, RUNE_YOK, RUNE_SPACIUM, RUNE_NONE}, SPELL_FIRE_FIELD, "fire_field"}, // level 7
+	{{RUNE_AAM, RUNE_YOK, RUNE_TAAR, RUNE_NONE}, SPELL_FIREBALL, "fireball"}, // level 3
+	{{RUNE_AAM, RUNE_FRIDD, RUNE_SPACIUM, RUNE_NONE}, SPELL_ICE_FIELD, "ice_field"}, // level 7
+	{{RUNE_AAM, RUNE_FRIDD, RUNE_TAAR, RUNE_NONE}, SPELL_ICE_PROJECTILE, "ice_projectile"}, // level 3
+	{{RUNE_AAM, RUNE_CETRIUS, RUNE_TAAR, RUNE_NONE}, SPELL_POISON_PROJECTILE, "poison_projectile"}, // level 5
+	{{RUNE_AAM, RUNE_TAAR, RUNE_NONE}, SPELL_MAGIC_MISSILE, "magic_missile"}, // level 1
+	{{RUNE_YOK, RUNE_KAOM, RUNE_NONE}, SPELL_FIRE_PROTECTION, "fire_protection"}, // level 4
+	{{RUNE_FRIDD, RUNE_KAOM, RUNE_NONE}, SPELL_COLD_PROTECTION, "cold_protection"}, // level 4
+	{{RUNE_VITAE, RUNE_MOVIS, RUNE_NONE}, SPELL_LIFE_DRAIN, "life_drain"}, // level 8
+	{{RUNE_SPACIUM, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_TELEKINESIS, "telekinesis"}, // level 4
+	{{RUNE_NONE}, SPELL_FAKE_SUMMON, "fake_summon"}
 };
 
 //! Plays the sound of Fizzling spell
@@ -2764,7 +2712,7 @@ void ARX_SPELLS_Init() {
 	
 	size_t nspells = sizeof(allSpells)/sizeof(*allSpells);
 	for(size_t i = 0; i < nspells; i++) {
-		addSpell(allSpells[i].symbols, allSpells[i].spell);
+		addSpell(allSpells[i].symbols, allSpells[i].spell, allSpells[i].name);
 	}
 	
 }

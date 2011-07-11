@@ -623,59 +623,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "PRECAST"))
-				{
-					std::string temp2;
-					long duration = -1;
-					SpellcastFlags flags = 0;
-					long dur = 0;
-					pos = GetNextWord(es, pos, word); // switch or level
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'D'))
-						{
-							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
-							pos = GetNextWord(es, pos, temp2); // duration
-							duration = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							dur = 1;
-						}
-
-						if (iCharIn(word, 'F'))
-						{
-							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
-							flags |= SPELLCAST_FLAG_NOMANA;
-						}
-
-						pos = GetNextWord(es, pos, word); // level
-					}
-
-					long level = GetVarValueInterpretedAsFloat(word, esss, io);
-
-					if (level < 1) level = 1;
-					else if (level > 10) level = 10;
-
-					pos = GetNextWord(es, pos, word); //spell id
-					Spell spellid;
-					spellid = GetSpellId(word);
-
-					if (spellid != SPELL_NONE)
-					{
-						flags |= SPELLCAST_FLAG_PRECAST;
-
-						if (!dur)
-							duration = 2000 + level * 2000;
-
-						if (io != inter.iobj[0])
-						{
-							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
-						}
-
-						flags |= SPELLCAST_FLAG_NOANIM;
-						TryToCastSpell(inter.iobj[0], spellid, level, -1, flags, duration);
-					}
-				}
-				else if (!strcmp(word, "POISON"))
+				if (!strcmp(word, "POISON"))
 				{
 					pos = GetNextWord(es, pos, word);
 					float fval = GetVarValueInterpretedAsFloat(word, esss, io);
