@@ -779,6 +779,26 @@ public:
 	
 };
 
+class PathfindCommand : public Command {
+	
+public:
+	
+	PathfindCommand() : Command("pathfind", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		string target = context.getLowercase();
+		
+		LogDebug << "pathfind " << target;
+		
+		long t = GetTargetByNameTarget(target);
+		ARX_NPC_LaunchPathfind(context.getIO(), t);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -799,6 +819,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetLifeCommand);
 	ScriptEvent::registerCommand(new SetTargetCommand);
 	ScriptEvent::registerCommand(new ForceDeathCommand);
+	ScriptEvent::registerCommand(new PathfindCommand);
 	
 }
 

@@ -623,19 +623,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'P':
 
-				if (!strcmp(word, "PATHFIND"))
-				{
-					std::string temp2;
-					pos = GetNextWord(es, pos, temp2);
-					long t = GetTargetByNameTarget(temp2);
-					ARX_NPC_LaunchPathfind(io, t);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "PATHFIND %s", temp2);
-
-#endif
-				}
-				else if (!strcmp(word, "PLAYANIM"))
+				if (!strcmp(word, "PLAYANIM"))
 				{
 					INTERACTIVE_OBJ * iot = io;
 					std::string temp2;
