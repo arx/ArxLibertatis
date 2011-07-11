@@ -767,8 +767,8 @@ public:
 		
 		LogDebug << "forceanim " << anim;
 		
-		long num = GetNumAnim(anim);
-		if(num < 0) {
+		AnimationNumber num = GetNumAnim(anim);
+		if(num == ANIM_NONE) {
 			LogWarning << "forceanim: unknown animation: " << anim;
 			return Failed;
 		}
@@ -878,8 +878,8 @@ public:
 			return Success;
 		}
 		
-		long num = GetNumAnim(anim);
-		if(num < 0) {
+		AnimationNumber num = GetNumAnim(anim);
+		if(num == ANIM_NONE) {
 			LogWarning << "playanim: unknown anim: " << anim;
 			return Failed;
 		}
@@ -973,6 +973,69 @@ public:
 	
 };
 
+class LoadAnimCommand : public Command {
+	
+public:
+	
+	LoadAnimCommand() : Command("loadanim") { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * iot = context.getIO();
+		
+		string options = context.getFlags();
+		if(!options.empty()) {
+			u64 flg = flags(options);
+			if(flg & flag('p')) {
+				iot = inter.iobj[0];
+			}
+			if(!flg || (flg & ~flag('p'))) {
+				LogWarning << "unexpected flags: playanim " << options;
+			}
+		}
+		
+		string anim = context.getLowercase();
+		
+		string file = loadPath(context.getWord());
+		
+		LogDebug << "loadanim " << options << ' ' << anim << ' ' << file;
+		
+		if(!iot) {
+			LogWarning << "playanim: must either use -p or use with IO";
+			return Failed;
+		}
+		
+		AnimationNumber num = GetNumAnim(anim);
+		if(num == ANIM_NONE) {
+			LogWarning << "loadanim: unknown anim: " << anim;
+			return Failed;
+		}
+		
+		if(iot->anims[num]) {
+			ReleaseAnimFromIO(iot, num);
+		}
+		
+		if(iot == inter.iobj[0] || (iot->ioflags & IO_NPC)) {
+			file = "Graph\\Obj3D\\Anims\\npc\\" + file;
+		} else {
+			file = "Graph\\Obj3D\\Anims\\Fix_Inter\\" + file;
+		}
+		SetExt(file, ".tea");
+		string path;
+		File_Standardize(file, path);
+		
+		iot->anims[num] = EERIE_ANIMMANAGER_Load(path);
+		
+		if(!iot->anims[num]) {
+			LogWarning << "loadanim: file not found: " << path;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1016,6 +1079,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new ForceAngleCommand);
 	ScriptEvent::registerCommand(new PlayAnimCommand);
 	ScriptEvent::registerCommand(new PhysicalCommand);
+	ScriptEvent::registerCommand(new LoadAnimCommand);
 	
 }
 

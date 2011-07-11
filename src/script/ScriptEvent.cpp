@@ -600,72 +600,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'L':
 
-				if (!strcmp(word, "LOADANIM"))
-				{
-					INTERACTIVE_OBJ * iot = io;
-					pos = GetNextWord(es, pos, word);
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'P'))
-							iot = inter.iobj[0];
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					std::string temp2;
-
-					pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "LOADANIM %s %s", word, temp2);
-
-#endif
-
-					if (iot != NULL)
-					{
-						long num = -1;
-						MakeUpcase(word);
-						num = GetNumAnim(word);
-
-						if ((num > -1) && (num < MAX_ANIMS))
-						{
-
-
-							if (iot->anims[num] != NULL)
-							{
-								ReleaseAnimFromIO(iot, num);
-							}
-
-							if (iot->anims[num] == NULL)
-							{
-								std::string tex2;
-								std::string tex3;
-
-								if((iot == inter.iobj[0]) || (iot->ioflags & IO_NPC)) {
-									tex3 = "Graph\\Obj3D\\Anims\\npc\\" + temp2;
-								} else {
-									tex3 = "Graph\\Obj3D\\Anims\\Fix_Inter\\" + temp2;
-								}
-
-								SetExt(tex3, ".tea");
-								File_Standardize(tex3, tex2);
-
-								if (resources->getFile(tex2))
-								{
-									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2);
-
-									if(iot->anims[num] == NULL) {
-										LogWarning << "LOADANIM " << word << " " << temp2 << " FAILED";
-									}
-								}
-							} else {
-								LogWarning << "LOADANIM " << word << " " << temp2 << " FAILED";
-							}
-						}
-					}
-				}
-				else if (!strcmp(word, "LINKOBJTOME"))
+				if (!strcmp(word, "LINKOBJTOME"))
 				{
 					pos = GetNextWord_Interpreted(io, es, pos, word);
 					long t = GetTargetByNameTarget(word);
@@ -3135,6 +3070,8 @@ void ScriptEvent::registerCommand(Command * command) {
 }
 
 void ScriptEvent::init() {
+	
+	initAnimationNumbers();
 	
 	setupScriptedCamera();
 	setupScriptedControl();

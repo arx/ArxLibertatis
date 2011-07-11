@@ -2013,368 +2013,179 @@ SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name,
 	return tsv;
 }
 
+namespace {
+
+typedef std::map<string, AnimationNumber> Animations;
+Animations animations;
+
+}
+
+void initAnimationNumbers() {
+	
+	animations["wait"] = ANIM_WAIT;
+	animations["wait2"] = ANIM_WAIT2;
+	animations["walk"] = ANIM_WALK;
+	animations["walk1"] = ANIM_WALK;
+	animations["walk2"] = ANIM_WALK2;
+	animations["walk3"] = ANIM_WALK3;
+	animations["walk_backward"] = ANIM_WALK_BACKWARD;
+	animations["walk_ministep"] = ANIM_WALK_MINISTEP;
+	animations["wait_short"] = ANIM_WAIT_SHORT;
+	animations["walk_sneak"] = ANIM_WALK_SNEAK;
+	animations["action"] = ANIM_ACTION;
+	animations["action1"] = ANIM_ACTION;
+	animations["action2"] = ANIM_ACTION2;
+	animations["action3"] = ANIM_ACTION3;
+	animations["action4"] = ANIM_ACTION4;
+	animations["action5"] = ANIM_ACTION5;
+	animations["action6"] = ANIM_ACTION6;
+	animations["action7"] = ANIM_ACTION7;
+	animations["action8"] = ANIM_ACTION8;
+	animations["action9"] = ANIM_ACTION9;
+	animations["action10"] = ANIM_ACTION10;
+	animations["hit1"] = ANIM_HIT1;
+	animations["hit"] = ANIM_HIT1;
+	animations["hold_torch"] = ANIM_HOLD_TORCH;
+	animations["hit_short"] = ANIM_HIT_SHORT;
+	animations["strike1"] = ANIM_STRIKE1;
+	animations["strike"] = ANIM_STRIKE1;
+	animations["shield_start"] = ANIM_SHIELD_START;
+	animations["shield_cycle"] = ANIM_SHIELD_CYCLE;
+	animations["shield_hit"] = ANIM_SHIELD_HIT;
+	animations["shield_end"] = ANIM_SHIELD_END;
+	animations["strafe_right"] = ANIM_STRAFE_RIGHT;
+	animations["strafe_left"] = ANIM_STRAFE_LEFT;
+	animations["strafe_run_left"] = ANIM_STRAFE_RUN_LEFT;
+	animations["strafe_run_right"] = ANIM_STRAFE_RUN_RIGHT;
+	animations["die"] = ANIM_DIE;
+	animations["dagger_ready_part_1"] = ANIM_DAGGER_READY_PART_1;
+	animations["dagger_ready_part_2"] = ANIM_DAGGER_READY_PART_2;
+	animations["dagger_unready_part_1"] = ANIM_DAGGER_UNREADY_PART_1;
+	animations["dagger_unready_part_2"] = ANIM_DAGGER_UNREADY_PART_2;
+	animations["dagger_wait"] = ANIM_DAGGER_WAIT;
+	animations["dagger_strike_left_start"] = ANIM_DAGGER_STRIKE_LEFT_START;
+	animations["dagger_strike_left_cycle"] = ANIM_DAGGER_STRIKE_LEFT_CYCLE;
+	animations["dagger_strike_left"] = ANIM_DAGGER_STRIKE_LEFT;
+	animations["dagger_strike_right_start"] = ANIM_DAGGER_STRIKE_RIGHT_START;
+	animations["dagger_strike_right_cycle"] = ANIM_DAGGER_STRIKE_RIGHT_CYCLE;
+	animations["dagger_strike_right"] = ANIM_DAGGER_STRIKE_RIGHT;
+	animations["dagger_strike_top_start"] = ANIM_DAGGER_STRIKE_TOP_START;
+	animations["dagger_strike_top_cycle"] = ANIM_DAGGER_STRIKE_TOP_CYCLE;
+	animations["dagger_strike_top"] = ANIM_DAGGER_STRIKE_TOP;
+	animations["dagger_strike_bottom_start"] = ANIM_DAGGER_STRIKE_BOTTOM_START;
+	animations["dagger_strike_bottom_cycle"] = ANIM_DAGGER_STRIKE_BOTTOM_CYCLE;
+	animations["dagger_strike_bottom"] = ANIM_DAGGER_STRIKE_BOTTOM;
+	animations["death_critical"] = ANIM_DEATH_CRITICAL;
+	animations["run"] = ANIM_RUN;
+	animations["run1"] = ANIM_RUN;
+	animations["run2"] = ANIM_RUN2;
+	animations["run3"] = ANIM_RUN3;
+	animations["run_backward"] = ANIM_RUN_BACKWARD;
+	animations["talk_neutral"] = ANIM_TALK_NEUTRAL;
+	animations["talk_angry"] = ANIM_TALK_ANGRY;
+	animations["talk_happy"] = ANIM_TALK_HAPPY;
+	animations["talk_neutral_head"] = ANIM_TALK_NEUTRAL_HEAD;
+	animations["talk_angry_head"] = ANIM_TALK_ANGRY_HEAD;
+	animations["talk_happy_head"] = ANIM_TALK_HAPPY_HEAD;
+	animations["bare_ready"] = ANIM_BARE_READY;
+	animations["bare_unready"] = ANIM_BARE_UNREADY;
+	animations["bare_wait"] = ANIM_BARE_WAIT;
+	animations["bare_strike_left_start"] = ANIM_BARE_STRIKE_LEFT_START;
+	animations["bare_strike_left_cycle"] = ANIM_BARE_STRIKE_LEFT_CYCLE;
+	animations["bare_strike_left"] = ANIM_BARE_STRIKE_LEFT;
+	animations["bare_strike_right_start"] = ANIM_BARE_STRIKE_RIGHT_START;
+	animations["bare_strike_right_cycle"] = ANIM_BARE_STRIKE_RIGHT_CYCLE;
+	animations["bare_strike_right"] = ANIM_BARE_STRIKE_RIGHT;
+	animations["bare_strike_top_start"] = ANIM_BARE_STRIKE_TOP_START;
+	animations["bare_strike_top_cycle"] = ANIM_BARE_STRIKE_TOP_CYCLE;
+	animations["bare_strike_top"] = ANIM_BARE_STRIKE_TOP;
+	animations["bare_strike_bottom_start"] = ANIM_BARE_STRIKE_BOTTOM_START;
+	animations["bare_strike_bottom_cycle"] = ANIM_BARE_STRIKE_BOTTOM_CYCLE;
+	animations["bare_strike_bottom"] = ANIM_BARE_STRIKE_BOTTOM;
+	animations["1h_ready_part_1"] = ANIM_1H_READY_PART_1;
+	animations["1h_ready_part_2"] = ANIM_1H_READY_PART_2;
+	animations["1h_unready_part_1"] = ANIM_1H_UNREADY_PART_1;
+	animations["1h_unready_part_2"] = ANIM_1H_UNREADY_PART_2;
+	animations["1h_wait"] = ANIM_1H_WAIT;
+	animations["1h_strike_left_start"] = ANIM_1H_STRIKE_LEFT_START;
+	animations["1h_strike_left_cycle"] = ANIM_1H_STRIKE_LEFT_CYCLE;
+	animations["1h_strike_left"] = ANIM_1H_STRIKE_LEFT;
+	animations["1h_strike_right_start"] = ANIM_1H_STRIKE_RIGHT_START;
+	animations["1h_strike_right_cycle"] = ANIM_1H_STRIKE_RIGHT_CYCLE;
+	animations["1h_strike_right"] = ANIM_1H_STRIKE_RIGHT;
+	animations["1h_strike_top_start"] = ANIM_1H_STRIKE_TOP_START;
+	animations["1h_strike_top_cycle"] = ANIM_1H_STRIKE_TOP_CYCLE;
+	animations["1h_strike_top"] = ANIM_1H_STRIKE_TOP;
+	animations["1h_strike_bottom_start"] = ANIM_1H_STRIKE_BOTTOM_START;
+	animations["1h_strike_bottom_cycle"] = ANIM_1H_STRIKE_BOTTOM_CYCLE;
+	animations["1h_strike_bottom"] = ANIM_1H_STRIKE_BOTTOM;
+	animations["2h_ready_part_1"] = ANIM_2H_READY_PART_1;
+	animations["2h_ready_part_2"] = ANIM_2H_READY_PART_2;
+	animations["2h_unready_part_1"] = ANIM_2H_UNREADY_PART_1;
+	animations["2h_unready_part_2"] = ANIM_2H_UNREADY_PART_2;
+	animations["2h_wait"] = ANIM_2H_WAIT;
+	animations["2h_strike_left_start"] = ANIM_2H_STRIKE_LEFT_START;
+	animations["2h_strike_left_cycle"] = ANIM_2H_STRIKE_LEFT_CYCLE;
+	animations["2h_strike_left"] = ANIM_2H_STRIKE_LEFT;
+	animations["2h_strike_right_start"] = ANIM_2H_STRIKE_RIGHT_START;
+	animations["2h_strike_right_cycle"] = ANIM_2H_STRIKE_RIGHT_CYCLE;
+	animations["2h_strike_right"] = ANIM_2H_STRIKE_RIGHT;
+	animations["2h_strike_top_start"] = ANIM_2H_STRIKE_TOP_START;
+	animations["2h_strike_top_cycle"] = ANIM_2H_STRIKE_TOP_CYCLE;
+	animations["2h_strike_top"] = ANIM_2H_STRIKE_TOP;
+	animations["2h_strike_bottom_start"] = ANIM_2H_STRIKE_BOTTOM_START;
+	animations["2h_strike_bottom_cycle"] = ANIM_2H_STRIKE_BOTTOM_CYCLE;
+	animations["2h_strike_bottom"] = ANIM_2H_STRIKE_BOTTOM;
+	animations["missile_ready_part_1"] = ANIM_MISSILE_READY_PART_1;
+	animations["missile_ready_part_2"] = ANIM_MISSILE_READY_PART_2;
+	animations["missile_unready_part_1"] = ANIM_MISSILE_UNREADY_PART_1;
+	animations["missile_unready_part_2"] = ANIM_MISSILE_UNREADY_PART_2;
+	animations["missile_wait"] = ANIM_MISSILE_WAIT;
+	animations["missile_strike_part_1"] = ANIM_MISSILE_STRIKE_PART_1;
+	animations["missile_strike_part_2"] = ANIM_MISSILE_STRIKE_PART_2;
+	animations["missile_strike_cycle"] = ANIM_MISSILE_STRIKE_CYCLE;
+	animations["missile_strike"] = ANIM_MISSILE_STRIKE;
+	animations["meditation"] = ANIM_MEDITATION;
+	animations["cast_start"] = ANIM_CAST_START;
+	animations["cast_cycle"] = ANIM_CAST_CYCLE;
+	animations["cast"] = ANIM_CAST;
+	animations["cast_end"] = ANIM_CAST_END;
+	animations["crouch"] = ANIM_CROUCH;
+	animations["crouch_walk"] = ANIM_CROUCH_WALK;
+	animations["crouch_walk_backward"] = ANIM_CROUCH_WALK_BACKWARD;
+	animations["crouch_strafe_left"] = ANIM_CROUCH_STRAFE_LEFT;
+	animations["crouch_strafe_right"] = ANIM_CROUCH_STRAFE_RIGHT;
+	animations["crouch_start"] = ANIM_CROUCH_START;
+	animations["crouch_wait"] = ANIM_CROUCH_WAIT;
+	animations["crouch_end"] = ANIM_CROUCH_END;
+	animations["lean_right"] = ANIM_LEAN_RIGHT;
+	animations["lean_left"] = ANIM_LEAN_LEFT;
+	animations["levitate"] = ANIM_LEVITATE;
+	animations["jump"] = ANIM_JUMP;
+	animations["jump_anticipation"] = ANIM_JUMP_ANTICIPATION;
+	animations["jump_up"] = ANIM_JUMP_UP;
+	animations["jump_cycle"] = ANIM_JUMP_CYCLE;
+	animations["jump_end"] = ANIM_JUMP_END;
+	animations["jump_end_part2"] = ANIM_JUMP_END_PART2;
+	animations["fight_walk_forward"] = ANIM_FIGHT_WALK_FORWARD;
+	animations["fight_walk_backward"] = ANIM_FIGHT_WALK_BACKWARD;
+	animations["fight_walk_ministep"] = ANIM_FIGHT_WALK_MINISTEP;
+	animations["fight_strafe_right"] = ANIM_FIGHT_STRAFE_RIGHT;
+	animations["fight_strafe_left"] = ANIM_FIGHT_STRAFE_LEFT;
+	animations["fight_wait"] = ANIM_FIGHT_WAIT;
+	animations["grunt"] = ANIM_GRUNT;
+	animations["u_turn_left"] = ANIM_U_TURN_LEFT;
+	animations["u_turn_right"] = ANIM_U_TURN_RIGHT;
+	animations["u_turn_left_fight"] = ANIM_U_TURN_LEFT_FIGHT;
+	animations["u_turn_right_fight"] = ANIM_U_TURN_RIGHT_FIGHT;
+	
+}
+
 AnimationNumber GetNumAnim(const string & name) {
 	
-	char c = ARX_CLEAN_WARN_CAST_CHAR(toupper(name[0]));
+	Animations::const_iterator it = animations.find(name);
 	
-	switch (c)
-	{
-		case 'W':
-
-			if (!strcasecmp(name, "WAIT"))		return ANIM_WAIT;
-
-			if (!strcasecmp(name, "WAIT2"))		return ANIM_WAIT2;
-
-			if (!strcasecmp(name, "WALK"))		return ANIM_WALK;
-
-			if (!strcasecmp(name, "WALK1"))		return ANIM_WALK;
-
-			if (!strcasecmp(name, "WALK2"))		return ANIM_WALK2;
-
-			if (!strcasecmp(name, "WALK3"))		return ANIM_WALK3;
-
-			if (!strcasecmp(name, "WALK_BACKWARD"))				return ANIM_WALK_BACKWARD;
-
-			if (!strcasecmp(name, "WALK_MINISTEP"))			return ANIM_WALK_MINISTEP;
-
-			if (!strcasecmp(name, "WAIT_SHORT"))			return ANIM_WAIT_SHORT;
-
-			if (!strcasecmp(name, "WALK_SNEAK"))			return ANIM_WALK_SNEAK;
-
-			break;
-		case 'A':
-
-			if (!strcasecmp(name, "ACTION"))		return ANIM_ACTION;
-			else if (!strcasecmp(name, "ACTION1"))	return ANIM_ACTION;
-			else if (!strcasecmp(name, "ACTION2"))	return ANIM_ACTION2;
-			else if (!strcasecmp(name, "ACTION3"))	return ANIM_ACTION3;
-			else if (!strcasecmp(name, "ACTION4"))	return ANIM_ACTION4;
-			else if (!strcasecmp(name, "ACTION5"))	return ANIM_ACTION5;
-			else if (!strcasecmp(name, "ACTION6"))	return ANIM_ACTION6;
-			else if (!strcasecmp(name, "ACTION7"))	return ANIM_ACTION7;
-			else if (!strcasecmp(name, "ACTION8"))	return ANIM_ACTION8;
-			else if (!strcasecmp(name, "ACTION9"))	return ANIM_ACTION9;
-			else if (!strcasecmp(name, "ACTION10"))	return ANIM_ACTION10;
-
-			break;
-		case 'H':
-
-			if (!strcasecmp(name, "HIT1"))		return ANIM_HIT1;
-
-			if (!strcasecmp(name, "HIT"))		return ANIM_HIT1;
-
-			if (!strcasecmp(name, "HOLD_TORCH"))			return ANIM_HOLD_TORCH;
-
-			if (!strcasecmp(name, "HIT_SHORT"))				return ANIM_HIT_SHORT;
-
-			break;
-		case 'S':
-
-			if (!strcasecmp(name, "STRIKE1"))	return ANIM_STRIKE1;
-
-			if (!strcasecmp(name, "STRIKE"))	return ANIM_STRIKE1;
-
-			if (!strcasecmp(name, "SHIELD_START"))			return ANIM_SHIELD_START;
-
-			if (!strcasecmp(name, "SHIELD_CYCLE"))			return ANIM_SHIELD_CYCLE;
-
-			if (!strcasecmp(name, "SHIELD_HIT"))			return ANIM_SHIELD_HIT;
-
-			if (!strcasecmp(name, "SHIELD_END"))			return ANIM_SHIELD_END;
-
-			if (!strcasecmp(name, "STRAFE_RIGHT"))			return ANIM_STRAFE_RIGHT;
-
-			if (!strcasecmp(name, "STRAFE_LEFT"))			return ANIM_STRAFE_LEFT;
-
-			if (!strcasecmp(name, "STRAFE_RUN_LEFT"))		return ANIM_STRAFE_RUN_LEFT;
-
-			if (!strcasecmp(name, "STRAFE_RUN_RIGHT"))		return ANIM_STRAFE_RUN_RIGHT;
-
-			break;
-		case 'D':
-
-			if (!strcasecmp(name, "DIE"))		return ANIM_DIE;
-
-			if (!strcasecmp(name, "DAGGER_READY_PART_1"))		return ANIM_DAGGER_READY_PART_1;
-
-			if (!strcasecmp(name, "DAGGER_READY_PART_2"))		return ANIM_DAGGER_READY_PART_2;
-
-			if (!strcasecmp(name, "DAGGER_UNREADY_PART_1"))		return ANIM_DAGGER_UNREADY_PART_1;
-
-			if (!strcasecmp(name, "DAGGER_UNREADY_PART_2"))		return ANIM_DAGGER_UNREADY_PART_2;
-
-			if (!strcasecmp(name, "DAGGER_WAIT"))				return ANIM_DAGGER_WAIT;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_LEFT_START"))	return ANIM_DAGGER_STRIKE_LEFT_START;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_LEFT_CYCLE"))	return ANIM_DAGGER_STRIKE_LEFT_CYCLE;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_LEFT"))		return ANIM_DAGGER_STRIKE_LEFT;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_RIGHT_START"))	return ANIM_DAGGER_STRIKE_RIGHT_START;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_RIGHT_CYCLE"))	return ANIM_DAGGER_STRIKE_RIGHT_CYCLE;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_RIGHT"))		return ANIM_DAGGER_STRIKE_RIGHT;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_TOP_START"))	return ANIM_DAGGER_STRIKE_TOP_START;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_TOP_CYCLE"))	return ANIM_DAGGER_STRIKE_TOP_CYCLE;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_TOP"))			return ANIM_DAGGER_STRIKE_TOP;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_BOTTOM_START")) return ANIM_DAGGER_STRIKE_BOTTOM_START;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_BOTTOM_CYCLE")) return ANIM_DAGGER_STRIKE_BOTTOM_CYCLE;
-
-			if (!strcasecmp(name, "DAGGER_STRIKE_BOTTOM"))		return ANIM_DAGGER_STRIKE_BOTTOM;
-
-			if (!strcasecmp(name, "DEATH_CRITICAL"))		return ANIM_DEATH_CRITICAL;
-
-			break;
-		case 'R':
-
-			if (!strcasecmp(name, "RUN"))		return ANIM_RUN;
-
-			if (!strcasecmp(name, "RUN1"))		return ANIM_RUN;
-
-			if (!strcasecmp(name, "RUN2"))		return ANIM_RUN2;
-
-			if (!strcasecmp(name, "RUN3"))		return ANIM_RUN3;
-
-			if (!strcasecmp(name, "RUN_BACKWARD"))		return ANIM_RUN_BACKWARD;
-
-			break;
-		case 'T':
-
-			if (!strcasecmp(name, "TALK_NEUTRAL"))		return ANIM_TALK_NEUTRAL;
-
-			if (!strcasecmp(name, "TALK_ANGRY"))		return ANIM_TALK_ANGRY;
-
-			if (!strcasecmp(name, "TALK_HAPPY"))		return ANIM_TALK_HAPPY;
-
-			if (!strcasecmp(name, "TALK_NEUTRAL_HEAD"))		return ANIM_TALK_NEUTRAL_HEAD;
-
-			if (!strcasecmp(name, "TALK_ANGRY_HEAD"))		return ANIM_TALK_ANGRY_HEAD;
-
-			if (!strcasecmp(name, "TALK_HAPPY_HEAD"))		return ANIM_TALK_HAPPY_HEAD;
-
-			break;
-		case 'B':
-
-			if (!strcasecmp(name, "BARE_READY"))				return ANIM_BARE_READY;
-
-			if (!strcasecmp(name, "BARE_UNREADY"))				return ANIM_BARE_UNREADY;
-
-			if (!strcasecmp(name, "BARE_WAIT"))					return ANIM_BARE_WAIT;
-
-			if (!strcasecmp(name, "BARE_STRIKE_LEFT_START"))	return ANIM_BARE_STRIKE_LEFT_START;
-
-			if (!strcasecmp(name, "BARE_STRIKE_LEFT_CYCLE"))	return ANIM_BARE_STRIKE_LEFT_CYCLE;
-
-			if (!strcasecmp(name, "BARE_STRIKE_LEFT"))			return ANIM_BARE_STRIKE_LEFT;
-
-			if (!strcasecmp(name, "BARE_STRIKE_RIGHT_START"))	return ANIM_BARE_STRIKE_RIGHT_START;
-
-			if (!strcasecmp(name, "BARE_STRIKE_RIGHT_CYCLE"))	return ANIM_BARE_STRIKE_RIGHT_CYCLE;
-
-			if (!strcasecmp(name, "BARE_STRIKE_RIGHT"))			return ANIM_BARE_STRIKE_RIGHT;
-
-			if (!strcasecmp(name, "BARE_STRIKE_TOP_START"))		return ANIM_BARE_STRIKE_TOP_START;
-
-			if (!strcasecmp(name, "BARE_STRIKE_TOP_CYCLE"))		return ANIM_BARE_STRIKE_TOP_CYCLE;
-
-			if (!strcasecmp(name, "BARE_STRIKE_TOP"))			return ANIM_BARE_STRIKE_TOP;
-
-			if (!strcasecmp(name, "BARE_STRIKE_BOTTOM_START"))	return ANIM_BARE_STRIKE_BOTTOM_START;
-
-			if (!strcasecmp(name, "BARE_STRIKE_BOTTOM_CYCLE"))	return ANIM_BARE_STRIKE_BOTTOM_CYCLE;
-
-			if (!strcasecmp(name, "BARE_STRIKE_BOTTOM"))		return ANIM_BARE_STRIKE_BOTTOM;
-
-			break;
-		case '1':
-
-			if (!strcasecmp(name, "1H_READY_PART_1"))			return ANIM_1H_READY_PART_1;
-
-			if (!strcasecmp(name, "1H_READY_PART_2"))			return ANIM_1H_READY_PART_2;
-
-			if (!strcasecmp(name, "1H_UNREADY_PART_1"))			return ANIM_1H_UNREADY_PART_1;
-
-			if (!strcasecmp(name, "1H_UNREADY_PART_2"))			return ANIM_1H_UNREADY_PART_2;
-
-			if (!strcasecmp(name, "1H_WAIT"))					return ANIM_1H_WAIT;
-
-			if (!strcasecmp(name, "1H_STRIKE_LEFT_START"))		return ANIM_1H_STRIKE_LEFT_START;
-
-			if (!strcasecmp(name, "1H_STRIKE_LEFT_CYCLE"))		return ANIM_1H_STRIKE_LEFT_CYCLE;
-
-			if (!strcasecmp(name, "1H_STRIKE_LEFT"))			return ANIM_1H_STRIKE_LEFT;
-
-			if (!strcasecmp(name, "1H_STRIKE_RIGHT_START"))		return ANIM_1H_STRIKE_RIGHT_START;
-
-			if (!strcasecmp(name, "1H_STRIKE_RIGHT_CYCLE"))		return ANIM_1H_STRIKE_RIGHT_CYCLE;
-
-			if (!strcasecmp(name, "1H_STRIKE_RIGHT"))			return ANIM_1H_STRIKE_RIGHT;
-
-			if (!strcasecmp(name, "1H_STRIKE_TOP_START"))		return ANIM_1H_STRIKE_TOP_START;
-
-			if (!strcasecmp(name, "1H_STRIKE_TOP_CYCLE"))		return ANIM_1H_STRIKE_TOP_CYCLE;
-
-			if (!strcasecmp(name, "1H_STRIKE_TOP"))				return ANIM_1H_STRIKE_TOP;
-
-			if (!strcasecmp(name, "1H_STRIKE_BOTTOM_START"))	return ANIM_1H_STRIKE_BOTTOM_START;
-
-			if (!strcasecmp(name, "1H_STRIKE_BOTTOM_CYCLE"))	return ANIM_1H_STRIKE_BOTTOM_CYCLE;
-
-			if (!strcasecmp(name, "1H_STRIKE_BOTTOM"))			return ANIM_1H_STRIKE_BOTTOM;
-
-			break;
-		case '2':
-
-			if (!strcasecmp(name, "2H_READY_PART_1"))			return ANIM_2H_READY_PART_1;
-
-			if (!strcasecmp(name, "2H_READY_PART_2"))			return ANIM_2H_READY_PART_2;
-
-			if (!strcasecmp(name, "2H_UNREADY_PART_1"))			return ANIM_2H_UNREADY_PART_1;
-
-			if (!strcasecmp(name, "2H_UNREADY_PART_2"))			return ANIM_2H_UNREADY_PART_2;
-
-			if (!strcasecmp(name, "2H_WAIT"))					return ANIM_2H_WAIT;
-
-			if (!strcasecmp(name, "2H_STRIKE_LEFT_START"))		return ANIM_2H_STRIKE_LEFT_START;
-
-			if (!strcasecmp(name, "2H_STRIKE_LEFT_CYCLE"))		return ANIM_2H_STRIKE_LEFT_CYCLE;
-
-			if (!strcasecmp(name, "2H_STRIKE_LEFT"))			return ANIM_2H_STRIKE_LEFT;
-
-			if (!strcasecmp(name, "2H_STRIKE_RIGHT_START"))		return ANIM_2H_STRIKE_RIGHT_START;
-
-			if (!strcasecmp(name, "2H_STRIKE_RIGHT_CYCLE"))		return ANIM_2H_STRIKE_RIGHT_CYCLE;
-
-			if (!strcasecmp(name, "2H_STRIKE_RIGHT"))			return ANIM_2H_STRIKE_RIGHT;
-
-			if (!strcasecmp(name, "2H_STRIKE_TOP_START"))		return ANIM_2H_STRIKE_TOP_START;
-
-			if (!strcasecmp(name, "2H_STRIKE_TOP_CYCLE"))		return ANIM_2H_STRIKE_TOP_CYCLE;
-
-			if (!strcasecmp(name, "2H_STRIKE_TOP"))				return ANIM_2H_STRIKE_TOP;
-
-			if (!strcasecmp(name, "2H_STRIKE_BOTTOM_START"))	return ANIM_2H_STRIKE_BOTTOM_START;
-
-			if (!strcasecmp(name, "2H_STRIKE_BOTTOM_CYCLE"))	return ANIM_2H_STRIKE_BOTTOM_CYCLE;
-
-			if (!strcasecmp(name, "2H_STRIKE_BOTTOM"))			return ANIM_2H_STRIKE_BOTTOM;
-
-			break;
-		case 'M':
-
-			if (!strcasecmp(name, "MISSILE_READY_PART_1"))		return ANIM_MISSILE_READY_PART_1;
-
-			if (!strcasecmp(name, "MISSILE_READY_PART_2"))		return ANIM_MISSILE_READY_PART_2;
-
-			if (!strcasecmp(name, "MISSILE_UNREADY_PART_1"))	return ANIM_MISSILE_UNREADY_PART_1;
-
-			if (!strcasecmp(name, "MISSILE_UNREADY_PART_2"))	return ANIM_MISSILE_UNREADY_PART_2;
-
-			if (!strcasecmp(name, "MISSILE_WAIT"))				return ANIM_MISSILE_WAIT;
-
-			if (!strcasecmp(name, "MISSILE_STRIKE_PART_1"))		return ANIM_MISSILE_STRIKE_PART_1;
-
-			if (!strcasecmp(name, "MISSILE_STRIKE_PART_2"))		return ANIM_MISSILE_STRIKE_PART_2;
-
-			if (!strcasecmp(name, "MISSILE_STRIKE_CYCLE"))		return ANIM_MISSILE_STRIKE_CYCLE;
-
-			if (!strcasecmp(name, "MISSILE_STRIKE"))			return ANIM_MISSILE_STRIKE;
-
-			if (!strcasecmp(name, "MEDITATION"))			return ANIM_MEDITATION;
-
-			break;
-		case 'C':
-
-			if (!strcasecmp(name, "CAST_START"))			return ANIM_CAST_START;
-
-			if (!strcasecmp(name, "CAST_CYCLE"))			return ANIM_CAST_CYCLE;
-
-			if (!strcasecmp(name, "CAST"))					return ANIM_CAST;
-
-			if (!strcasecmp(name, "CAST_END"))				return ANIM_CAST_END;
-
-			if (!strcasecmp(name, "CROUCH"))				return ANIM_CROUCH;
-
-			if (!strcasecmp(name, "CROUCH_WALK"))			return ANIM_CROUCH_WALK;
-
-			if (!strcasecmp(name, "CROUCH_WALK_BACKWARD"))	return ANIM_CROUCH_WALK_BACKWARD;
-
-			if (!strcasecmp(name, "CROUCH_STRAFE_LEFT"))	return ANIM_CROUCH_STRAFE_LEFT;
-
-			if (!strcasecmp(name, "CROUCH_STRAFE_RIGHT"))	return ANIM_CROUCH_STRAFE_RIGHT;
-
-			if (!strcasecmp(name, "CROUCH_START"))			return ANIM_CROUCH_START;
-
-			if (!strcasecmp(name, "CROUCH_WAIT"))			return ANIM_CROUCH_WAIT;
-
-			if (!strcasecmp(name, "CROUCH_END"))			return ANIM_CROUCH_END;
-
-			break;
-		case 'L':
-
-			if (!strcasecmp(name, "LEAN_RIGHT"))			return ANIM_LEAN_RIGHT;
-
-			if (!strcasecmp(name, "LEAN_LEFT"))				return ANIM_LEAN_LEFT;
-
-			if (!strcasecmp(name, "LEVITATE"))				return ANIM_LEVITATE;
-
-			break;
-		case 'J':
-
-			if (!strcasecmp(name, "JUMP"))					return ANIM_JUMP;
-
-			if (!strcasecmp(name, "JUMP_ANTICIPATION"))		return ANIM_JUMP_ANTICIPATION;
-
-			if (!strcasecmp(name, "JUMP_UP"))				return ANIM_JUMP_UP;
-
-			if (!strcasecmp(name, "JUMP_CYCLE"))			return ANIM_JUMP_CYCLE;
-
-			if (!strcasecmp(name, "JUMP_END"))				return ANIM_JUMP_END;
-
-			if (!strcasecmp(name, "JUMP_END_PART2"))		return ANIM_JUMP_END_PART2;
-
-			break;
-		case 'F':
-
-			if (!strcasecmp(name, "FIGHT_WALK_FORWARD"))	return ANIM_FIGHT_WALK_FORWARD;
-
-			if (!strcasecmp(name, "FIGHT_WALK_BACKWARD"))	return ANIM_FIGHT_WALK_BACKWARD;
-
-			if (!strcasecmp(name, "FIGHT_WALK_MINISTEP"))	return ANIM_FIGHT_WALK_MINISTEP;
-
-			if (!strcasecmp(name, "FIGHT_STRAFE_RIGHT"))	return ANIM_FIGHT_STRAFE_RIGHT;
-
-			if (!strcasecmp(name, "FIGHT_STRAFE_LEFT"))		return ANIM_FIGHT_STRAFE_LEFT;
-
-			if (!strcasecmp(name, "FIGHT_WAIT"))			return ANIM_FIGHT_WAIT;
-
-			break;
-		case 'G':
-
-			if (!strcasecmp(name, "GRUNT"))					return ANIM_GRUNT;
-
-			break;
-		case 'U':
-
-			if (!strcasecmp(name, "U_TURN_LEFT"))			return ANIM_U_TURN_LEFT;
-
-			if (!strcasecmp(name, "U_TURN_RIGHT"))			return ANIM_U_TURN_RIGHT;
-
-			if (!strcasecmp(name, "U_TURN_LEFT_FIGHT"))		return ANIM_U_TURN_LEFT_FIGHT;
-
-			if (!strcasecmp(name, "U_TURN_RIGHT_FIGHT"))	return ANIM_U_TURN_RIGHT_FIGHT;
-
-			break;
-	}
-	
-	return ANIM_NONE;
+	return (it == animations.end()) ? ANIM_NONE : it->second;
 }
 
 long LINEEND;
