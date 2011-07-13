@@ -64,9 +64,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 
+#include "core/Core.h"			// TODO-input: Remove this dependency (danaeApp)
+#include "graphics/Frame.h"		// TODO-input: Remove this dependency (danaeApp.m_pFramework->m_bIsFullscreen)
 #include "io/Logger.h"
-
 #include "platform/Platform.h"
+
 
 using std::vector;
 
