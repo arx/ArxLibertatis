@@ -257,8 +257,6 @@ void Input::reset()
 {
 	iMouseR = Vec2s::ZERO;
 	iMouseA = Vec2s::ZERO;
-	
-	fMouseATemp = Vec2f::ZERO;
 
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
@@ -302,17 +300,15 @@ const Vec2s& Input::getMousePosRel() const {
 }
 
 //-----------------------------------------------------------------------------
-
 void Input::setMousePosAbs(const Vec2s& mousePos)
 {
-	fMouseATemp.x = mousePos.x;
-	fMouseATemp.y = mousePos.y;
-
-	ARX_CHECK_INT(fMouseATemp.x);
-	ARX_CHECK_INT(fMouseATemp.y);
-
-	iMouseA.x = ARX_CLEAN_WARN_CAST_INT(fMouseATemp.x);
-	iMouseA.y = ARX_CLEAN_WARN_CAST_INT(fMouseATemp.y);
+	backend->setMouseCoordinates(mousePos.x, mousePos.y);
+	iMouseA = mousePos;
+	iMouseARaw = mousePos;
+		
+	// TODO-input: Get rid of this !
+	EERIEMouseX=iMouseA.x;
+	EERIEMouseY=iMouseA.y;
 }
 
 //-----------------------------------------------------------------------------
@@ -457,7 +453,8 @@ void Input::update()
 			}
 		}
 
-		if(iOldNumClick[i]) iOldNumClick[i]--;
+		if(iOldNumClick[i]) 
+			iOldNumClick[i]--;
 
 		backend->isMouseButtonPressed(buttonId,iDTime);
 
@@ -468,9 +465,8 @@ void Input::update()
 		}
 		else
 		{
-			if(    (iMouseTimeSet[i]>0)&&
-				((ARX_TIME_Get( false )-iMouseTime[i])>300)
-				)
+			if( (iMouseTimeSet[i]>0)&&
+					((ARX_TIME_Get( false )-iMouseTime[i])>300))
 			{
 				iMouseTime[i]=0;
 				iMouseTimeSet[i]=0;
@@ -493,74 +489,45 @@ void Input::update()
 		}
 	}
 
-	int iMouseRX = 0;
-	int iMouseRY = 0;
-	int iMouseRZ = 0;
+	Vec2s iLastMouseARaw = iMouseARaw;
 	
-	bool bMouseMoved = backend->getMouseCoordinates(iMouseRX, iMouseRY, iMouseRZ);
+	// Get the new coordinates
+	int absX, absY;
+	backend->getMouseCoordinates(absX, absY, iWheelDir);
+	iMouseARaw = Vec2s((short)absX, (short)absY);
 
-	iMouseR.x = (short)iMouseRX;
-	iMouseR.y = (short)iMouseRY;
-	iWheelDir = iMouseRZ;
+	// Clamp to window rect
+	iMouseARaw.x = Clamp(iMouseARaw.x, 0, (short)DANAESIZX - 1);
+	iMouseARaw.y = Clamp(iMouseARaw.y, 0, (short)DANAESIZY - 1);
 
+	// In fullscreen, use the sensitivity config value to adjust mouse mouvements
 	if(danaeApp.m_pFramework->m_bIsFullscreen) {
-		Vec2f fD = Vec2f::ZERO;
+		float fSensMax = 1.f / 6.f;
+		float fSensMin = 2.f;
+		float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
+		fSens = pow( .7f, fSens ) * 2.f;
 
-		if(bMouseMoved) {
-			float fSensMax = 1.f / 6.f;
-			float fSensMin = 2.f;
-			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
-			fSens = pow( .7f, fSens ) * 2.f;
+		Vec2f fD;
+		fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens * ( ( (float)DANAESIZX ) / 640.f );
+		fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
 
-			fD.x=( (float)iMouseR.x ) * fSens * ( ( (float)DANAESIZX ) / 640.f );
-			fD.y=( (float)iMouseR.y ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
-			fMouseATemp += fD;
-
-			ARX_CHECK_INT(fMouseATemp.x);
-			ARX_CHECK_INT(fMouseATemp.y);
-			iMouseA.x  = ARX_CLEAN_WARN_CAST_INT(fMouseATemp.x);
-			iMouseA.y  = ARX_CLEAN_WARN_CAST_INT(fMouseATemp.y);
-
-			if(iMouseA.x<0)
-			{
-				iMouseA.x = 0;
-				fMouseATemp.x = 0.f; 
-			}
-			ARX_CHECK_NOT_NEG( iMouseA.x );
-
-			if( ARX_CAST_ULONG( iMouseA.x ) >= danaeApp.m_pFramework->m_dwRenderWidth )
-			{
-				iMouseA.x = danaeApp.m_pFramework->m_dwRenderWidth - 1;
-				fMouseATemp.x = ARX_CLEAN_WARN_CAST_FLOAT( iMouseA.x );
-			}
-
-			if(iMouseA.y<0)
-			{
-				iMouseA.y = 0;
-				fMouseATemp.y = 0.f;				
-			}
-			ARX_CHECK_NOT_NEG( iMouseA.y );
-
-			if( ARX_CAST_ULONG( iMouseA.y ) >= danaeApp.m_pFramework->m_dwRenderHeight )
-			{
-				iMouseA.y = danaeApp.m_pFramework->m_dwRenderHeight - 1;
-				fMouseATemp.y = ARX_CLEAN_WARN_CAST_FLOAT( iMouseA.y ); 
-			}
-			
-			bMouseMoved = true;
-		}
-		
-		_EERIEMouseXdep=(int)fD.x;
-		_EERIEMouseYdep=(int)fD.y;
-		EERIEMouseX=iMouseA.x;
-		EERIEMouseY=iMouseA.y;
+		iMouseR.x = (int)fD.x;
+		iMouseR.y = (int)fD.y;
+		iMouseA += iMouseR;
+	} else {
+		iMouseR = iMouseARaw - iMouseA;
+		iMouseA = iMouseARaw;		
 	}
-	else
-	{
-		bMouseMoved = iMouseA != DANAEMouse;
-		iMouseR = DANAEMouse - iMouseA;
-		iMouseA = DANAEMouse;
-	}
+
+	// Clamp to window rect
+	iMouseA.x = Clamp(iMouseA.x, 0, (short)DANAESIZX - 1);
+	iMouseA.y = Clamp(iMouseA.y, 0, (short)DANAESIZY - 1);
+
+	// TODO-input: Get rid of this !
+	EERIEMouseX=iMouseA.x;
+	EERIEMouseY=iMouseA.y;
+	_EERIEMouseXdep=iMouseR.x;
+	_EERIEMouseYdep=iMouseR.y;
 }
 
 //-----------------------------------------------------------------------------
@@ -769,7 +736,7 @@ bool Input::getMouseButtonDoubleClick(int buttonId, int timeMs) const {
 
 //-----------------------------------------------------------------------------
 bool Input::hasMouseMoved() const {
-	return bMouseMoved;
+	return iMouseR.x != 0 || iMouseR.y != 0;
 }
 
 //-----------------------------------------------------------------------------

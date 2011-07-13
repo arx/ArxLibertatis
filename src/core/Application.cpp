@@ -451,51 +451,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 //*************************************************************************************
-// Callback for WM_MOUSEMOUVE
-//*************************************************************************************
-void CD3DApplication::EERIEMouseUpdate(short x, short y)
-{
-	if ((m_pFramework) && (m_pFramework->m_bIsFullscreen))
-		return;
-
-	// Inactive App: ignore
-	if (!this->m_bActive)	return;
-
-	// Updates MouseX & MouseY offsets
-	_EERIEMouseXdep += (x - EERIEMouseX);
-	_EERIEMouseYdep += (y - EERIEMouseY);
-
-	// Manages MouseGrab (Right-click maintained pressed)
-
-	POINT	pos;
-	bool	mod	=	false;
-
-	pos.x = pos.y = 0;
-
-	if (EERIEMouseGrab)
-	{
-		pos.x = (short)(this->m_pFramework->m_dwRenderWidth >> 1);
-		pos.y = (short)(this->m_pFramework->m_dwRenderHeight >> 1);
-
-		if ((x != pos.x) || (y != pos.y)) mod = true;
-	}
-
-	if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
-	        ||	(player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP))))
-		if (mod)
-		{
-			EERIEMouseX = (long)pos.x;
-			EERIEMouseY = (long)pos.y;
-			ClientToScreen(this->m_hWnd, &pos);
-			SetCursorPos(pos.x, pos.y);
-			return;
-		}
-
-	EERIEMouseX = x;
-	EERIEMouseY = y;
-}
-
-//*************************************************************************************
 //*************************************************************************************
 LRESULT CD3DApplication::SwitchFullScreen()
 {
@@ -567,10 +522,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 			else this->kbd.inkey[iii] = 0;;
 
-			break;
-
-		case WM_MOUSEMOVE:
-			EERIEMouseUpdate(LOWORD(lParam), HIWORD(lParam));
 			break;
 
 		case WM_ERASEBKGND:

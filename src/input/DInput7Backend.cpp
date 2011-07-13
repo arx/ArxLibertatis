@@ -246,6 +246,7 @@ static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvR
 
 DInput7Backend::DInput7Backend()
 {
+	iLastMouseX = iLastMouseY = 0;
 }
 
 DInput7Backend::~DInput7Backend()
@@ -447,6 +448,7 @@ bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 
 // TODO
 extern HWND mainWindow;
+extern DANAE danaeApp;
 
 bool getKeyboardInputDevice(DXIMode mode) {
 	
@@ -603,28 +605,47 @@ bool DInput7Backend::getKeyAsText(int keyId, char& result) const {
 	return true;
 }
 
-bool DInput7Backend::getMouseCoordinates(int & mx, int & my, int & mz) const {
-	
-	mx = my = mz = 0;
-	
-	bool flg = false;
+void DInput7Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
+		
+	// DInput relative
 	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
 	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
 		if(od->dwOfs == (DWORD)DIMOFS_X) {
-			mx += od->dwData;
-			flg = true;
+			iLastMouseX += od->dwData;
 		}
 		else if(od->dwOfs == (DWORD)DIMOFS_Y) {
-			my += od->dwData;
-			flg = true;
+			iLastMouseY += od->dwData;
 		}
 		else if(od->dwOfs == (DWORD)DIMOFS_Z) {
-			mz += od->dwData;
-			flg = true;
+			wheelDir += od->dwData;
 		}
 	}
 	
-	return flg;
+	if(danaeApp.m_pFramework->m_bIsFullscreen) {
+		absX = iLastMouseX;
+		absY = iLastMouseY;
+	} else {
+		// Win absolute
+		POINT pt;
+		GetCursorPos(&pt);
+		ScreenToClient(mainWindow, &pt);
+		absX = pt.x;
+		absY = pt.y;
+	}	
+}
+
+void DInput7Backend::setMouseCoordinates(int absX, int absY)
+{
+	iLastMouseX = absX;
+	iLastMouseY = absY;
+	
+	if(!danaeApp.m_pFramework->m_bIsFullscreen) {
+		POINT pt;
+		pt.x = absX;
+		pt.y = absY;
+		ClientToScreen(mainWindow,&pt);
+		SetCursorPos(pt.x, pt.y);
+	}
 }
 
 static bool isMouseButton(int buttonId, DWORD dwOfs) {

@@ -3035,17 +3035,17 @@ void ARX_SCENE_Render(long flag) {
 		
 		ACTIVECAM->Xsnap = xx;
 		ACTIVECAM->Zsnap = yy;
-		FORCERANGE(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
-		FORCERANGE(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
+		ACTIVECAM->Xsnap = Clamp(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
+		ACTIVECAM->Zsnap = Clamp(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
 		
 		x0=ACTIVECAM->Xsnap-lcval;
 		x1=ACTIVECAM->Xsnap+lcval;
 		z0=ACTIVECAM->Zsnap-lcval;
 		z1=ACTIVECAM->Zsnap+lcval;
-		FORCERANGE(x0,0,ACTIVEBKG->Xsize-1);
-		FORCERANGE(x1,0,ACTIVEBKG->Xsize-1);
-		FORCERANGE(z0,0,ACTIVEBKG->Zsize-2);
-		FORCERANGE(z1,0,ACTIVEBKG->Xsize-2);
+		x0 = Clamp(x0,0,ACTIVEBKG->Xsize-1);
+		x1 = Clamp(x1,0,ACTIVEBKG->Xsize-1);
+		z0 = Clamp(z0,0,ACTIVEBKG->Zsize-2);
+		z1 = Clamp(z1,0,ACTIVEBKG->Xsize-2);
 			
 			
 		ACTIVEBKG->Backg[ACTIVECAM->Xsnap+ACTIVECAM->Zsnap * ACTIVEBKG->Xsize].treat = 1;

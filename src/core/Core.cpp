@@ -4914,6 +4914,22 @@ void ReMappDanaeButton()
 		}
 	}
 }
+
+void AdjustMousePosition()
+{
+	if (EERIEMouseGrab && GInput->hasMouseMoved())
+	{
+		Vec2s pos;
+		pos.x = (short)(DANAESIZX >> 1);
+		pos.y = (short)(DANAESIZY >> 1);
+
+		if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
+				||	(player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {
+			GInput->setMousePosAbs(pos);
+		}
+	}
+}
+
 long NEED_SPECIAL_RENDEREND=0;
 long INTERPOLATE_BETWEEN_BONES=1;
 
@@ -5095,6 +5111,7 @@ static float _AvgFrameDiff = 150.f;
 	// Update input
 	GInput->update();
 	ReMappDanaeButton();
+	AdjustMousePosition();
 
 	// Manages Splash Screens if needed
 	if(DANAE_ManageSplashThings()) {

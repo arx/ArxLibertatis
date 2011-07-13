@@ -178,9 +178,16 @@ inline unsigned int GetNextPowerOf2(unsigned int n)
 	return ++n;
 }
 
-#define FORCERANGE(a,b,c)	if (a<b) a=b; \
-	if (a>c) a=c;
+template <class T1, class T2, class T3>
+inline T1 Clamp(T1 val, T2 min, T3 max)
+{
+	if (val<min) 
+		val=min;
+	if (val>max)
+		val=max;
 
+	return val;
+}
 
 //*************************************************************************************
 // Rotations

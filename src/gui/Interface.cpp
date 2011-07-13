@@ -5161,8 +5161,7 @@ void DANAE::ManageKeyMouse()
 			pos.y+=this->m_pFramework->Ystart;
 		}
 
-		ClientToScreen(this->m_hWnd,&pos);
-		SetCursorPos(pos.x,pos.y);
+		
 		DANAEMouse.x=MemoMouse.x;
 		DANAEMouse.y=MemoMouse.y;
 

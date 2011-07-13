@@ -123,12 +123,11 @@ private:
 	// Mouse
 	Vec2s	iMouseR;
 	Vec2s	iMouseA;
-	Vec2f	fMouseATemp;
+	Vec2s	iMouseARaw;		// Unsmooted
 
 	int		iSensibility;
 	int		iWheelDir;
 
-	bool	bMouseMoved;
 	bool	bMouseButton[Mouse::ButtonCount];
 	bool	bOldMouseButton[Mouse::ButtonCount];
 
