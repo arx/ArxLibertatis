@@ -91,7 +91,6 @@ extern long FINAL_COMMERCIAL_DEMO;
 extern long FINAL_COMMERCIAL_GAME;
 
 //-----------------------------------------------------------------------------
-long EERIEMouseXdep, EERIEMouseYdep = 0;
 long EERIEMouseButton = 0;
 long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
@@ -804,15 +803,13 @@ HRESULT CD3DApplication::UpdateGamma()
 HRESULT CD3DApplication::Render3DEnvironment()
 {
 	HRESULT hr;
-	EERIEMouseXdep = GInput->getMousePosRel().x;
-	EERIEMouseYdep = GInput->getMousePosRel().y;
 
 	// mode systemshock
 	if ((EERIEMouseButton & 1) &&
 	        (config.input.autoReadyWeapon == false))
 	{
-		MouseDragX += EERIEMouseXdep;
-		MouseDragY += EERIEMouseYdep;
+		MouseDragX += GInput->getMousePosRel().x;
+		MouseDragY += GInput->getMousePosRel().y;
 	}
 
 	// Check the cooperative level before rendering

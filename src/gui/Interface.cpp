@@ -3350,10 +3350,10 @@ bool DANAE::ManageEditorControls()
 			val=1.f;
 
 			if ((LastSelectedFog!=-1) && (fogs[LastSelectedFog].special & FOG_DIRECTIONAL)
-				&& ((EERIEMouseXdep) || (EERIEMouseYdep)))
+				&& GInput->hasMouseMoved())
 			{
-				fogs[LastSelectedFog].angle.a+=EERIEMouseYdep;
-				fogs[LastSelectedFog].angle.b+=EERIEMouseXdep;
+				fogs[LastSelectedFog].angle.a+=GInput->getMousePosRel().y;
+				fogs[LastSelectedFog].angle.b+=GInput->getMousePosRel().x;
 
 				fogs[LastSelectedFog].move.x=1.f;
 				fogs[LastSelectedFog].move.y=0.f;
@@ -5156,9 +5156,12 @@ void DANAE::ManageKeyMouse()
 	LAST_PLAYER_MOUSELOOK_ON=PLAYER_MOUSELOOK_ON;
 	PLAYER_ROTATION=0;
 
+	long mouseDiffX = GInput->getMousePosRel().x;
+	long mouseDiffY = GInput->getMousePosRel().y;
+
 	if (Project.interpolatemouse) // mouse smoothing...
 	{
-		float v=EERIEMouseXdep*( 1.0f / 1000 );
+		float v=mouseDiffX*( 1.0f / 1000 );
 
 		if (v>3.1415927f)
 		{
@@ -5169,9 +5172,9 @@ void DANAE::ManageKeyMouse()
 			v=-3.1415927f;
 		}
 
-		EERIEMouseXdep = EEsin(v) * 600.f;
+		mouseDiffX = EEsin(v) * 600.f;
 		
-		v=EERIEMouseYdep*( 1.0f / 1000 );
+		v=mouseDiffY*( 1.0f / 1000 );
 
 		if (v>3.1415927f) 
 		{
@@ -5182,7 +5185,7 @@ void DANAE::ManageKeyMouse()
 			v=-3.1415927f;
 		}
 
-		EERIEMouseYdep = EEsin(v) * 600.f;
+		mouseDiffY = EEsin(v) * 600.f;
 		
 	}
 
@@ -5280,8 +5283,8 @@ void DANAE::ManageKeyMouse()
 				if(	flPushTimeX[0]||
 					flPushTimeX[1] )
 				{
-					if(flPushTimeX[0]<flPushTimeX[1]) EERIEMouseXdep=10;
-					else EERIEMouseXdep=-10;
+					if(flPushTimeX[0]<flPushTimeX[1]) mouseDiffX=10;
+					else mouseDiffX=-10;
 
 					iAction|=1;
 				}
@@ -5289,15 +5292,15 @@ void DANAE::ManageKeyMouse()
 				if(	flPushTimeY[0]||
 					flPushTimeY[1] )
 				{
-					if(flPushTimeY[0]<flPushTimeY[1]) EERIEMouseYdep=10;
-					else EERIEMouseYdep=-10;
+					if(flPushTimeY[0]<flPushTimeY[1]) mouseDiffY=10;
+					else mouseDiffY=-10;
 
 					iAction|=2;
 				}
 
-				if(!(iAction&1)) EERIEMouseXdep=0;
+				if(!(iAction&1)) mouseDiffX=0;
 
-				if(!(iAction&2)) EERIEMouseYdep=0;
+				if(!(iAction&2)) mouseDiffY=0;
 			}
 			else
 			{
@@ -5309,8 +5312,8 @@ void DANAE::ManageKeyMouse()
 						if(	(DANAEMouse.x==(DANAESIZX-1))&&
 								(mousePosRel.x > 8) )
 						{
-							EERIEMouseYdep=0;
-							EERIEMouseXdep=mousePosRel.x;
+							mouseDiffY=0;
+							mouseDiffX=mousePosRel.x;
 							bKeySpecialMove=true;
 						}
 						else
@@ -5318,8 +5321,8 @@ void DANAE::ManageKeyMouse()
 							if( (!DANAEMouse.x)&&
 									(mousePosRel.x < -8))
 							{
-								EERIEMouseYdep=0;
-								EERIEMouseXdep=mousePosRel.x;
+								mouseDiffY=0;
+								mouseDiffX=mousePosRel.x;
 								bKeySpecialMove=true;
 							}
 						}
@@ -5327,8 +5330,8 @@ void DANAE::ManageKeyMouse()
 						if(	(DANAEMouse.y==(DANAESIZY-1))&&
 						        (mousePosRel.y > 8))
 						{
-							EERIEMouseYdep=mousePosRel.y;
-							EERIEMouseXdep=0;
+							mouseDiffY=mousePosRel.y;
+							mouseDiffX=0;
 							bKeySpecialMove=true;
 						}
 						else
@@ -5336,8 +5339,8 @@ void DANAE::ManageKeyMouse()
 							if(	(!DANAEMouse.y)&&
 							        (mousePosRel.y < -8))
 							{
-								EERIEMouseYdep=mousePosRel.y;
-								EERIEMouseXdep=0;
+								mouseDiffY=mousePosRel.y;
+								mouseDiffX=0;
 								bKeySpecialMove=true;
 							}
 						}
@@ -5371,14 +5374,14 @@ void DANAE::ManageKeyMouse()
 
 			if ((eyeball.exist==2) && (PLAYER_MOUSELOOK_ON||bKeySpecialMove))
 			{
-				if (EERIEMouseYdep!=0)
+				if (mouseDiffY!=0)
 				{
 					float ia;
 
 					if(config.input.mouseSmoothing) {
-						ia=((float)EERIEMouseYdep*( 1.0f / 60 ))*fd;
+						ia=((float)mouseDiffY*( 1.0f / 60 ))*fd;
 					} else {
-						ia=((float)EERIEMouseYdep*( 1.0f / 5 ))*fd;
+						ia=((float)mouseDiffY*( 1.0f / 5 ))*fd;
 					}
 
 					if (INVERTMOUSE) ia=-ia;
@@ -5395,14 +5398,14 @@ void DANAE::ManageKeyMouse()
 					eyeball.angle.a=MAKEANGLE(eyeball.angle.a);
 				}
 
-				if (EERIEMouseXdep!=0)
+				if (mouseDiffX!=0)
 				{
 					float ib;
 
 					if(config.input.mouseSmoothing) {
-						ib=((float)EERIEMouseXdep*( 1.0f / 50 ))*fd;
+						ib=((float)mouseDiffX*( 1.0f / 50 ))*fd;
 					} else {
-						ib=((float)EERIEMouseXdep*( 1.0f / 5 ))*fd;
+						ib=((float)mouseDiffX*( 1.0f / 5 ))*fd;
 					}
 
 					eyeball.angle.b=MAKEANGLE(eyeball.angle.b-ib);
@@ -5411,14 +5414,14 @@ void DANAE::ManageKeyMouse()
 			else if (PLAYER_MOUSELOOK_ON || bKeySpecialMove)
 				if (ARXmenu.currentmode != AMCM_NEWQUEST)
 					{
-					if ((EERIEMouseYdep != 0))
+					if ((mouseDiffY != 0))
 						{
 						float ia;
 
 							if(config.input.mouseSmoothing) {
-								ia = ((float)EERIEMouseYdep * ( 1.0f / 60 ) * fd);
+								ia = ((float)mouseDiffY * ( 1.0f / 60 ) * fd);
 							} else {
-								ia = ((float)EERIEMouseYdep * ( 1.0f / 5 ) * fd);
+								ia = ((float)mouseDiffY * ( 1.0f / 5 ) * fd);
 							}
 
 							if ((inter.iobj[0]) && EEfabs(ia)>2.f) inter.iobj[0]->lastanimtime=0;
@@ -5439,14 +5442,14 @@ void DANAE::ManageKeyMouse()
 
 						}
 
-					if ((EERIEMouseXdep != 0))
+					if ((mouseDiffX != 0))
 						{
 							float ib;
 
 							if(config.input.mouseSmoothing) {
-								ib = ((float)EERIEMouseXdep * ( 1.0f / 50 ) * fd);
+								ib = ((float)mouseDiffX * ( 1.0f / 50 ) * fd);
 							} else {
-								ib = ((float)EERIEMouseXdep * ( 1.0f / 5 ) * fd); 
+								ib = ((float)mouseDiffX * ( 1.0f / 5 ) * fd); 
 							}
 
 							if (ib!=0.f) player.Current_Movement|=PLAYER_ROTATE;
