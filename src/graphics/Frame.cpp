@@ -84,8 +84,6 @@ CD3DFramework7::CD3DFramework7()
 	m_pD3D            = NULL;
 	m_dwDeviceMemType = 0;
 	m_bHasMoved = false;
-	Ystart = 0;
-	Xstart = 0;
 }
 
 //-----------------------------------------------------------------------------

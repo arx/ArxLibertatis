@@ -4901,17 +4901,7 @@ void DANAE::ManageKeyMouse()
 				&& (eMouseState != MOUSE_IN_NOTE)
 				)
 			{
-				POINT pos;
-				pos.x=EERIEMouseX;
-				pos.y=EERIEMouseY;
-
 				Vec2s poss;
-
-				ARX_CHECK_SHORT(pos.x);
-				ARX_CHECK_SHORT(pos.y);
-				poss.x=ARX_CLEAN_WARN_CAST_SHORT(pos.x);
-				poss.y=ARX_CLEAN_WARN_CAST_SHORT(pos.y);
-
 				poss.x=MemoMouse.x;
 				poss.y=MemoMouse.y;
 
@@ -5151,17 +5141,7 @@ void DANAE::ManageKeyMouse()
 	else if ((!PLAYER_MOUSELOOK_ON) && (LAST_PLAYER_MOUSELOOK_ON))
 	{
 		EERIEMouseGrab=0;
-		POINT	pos;
-		pos.x=MemoMouse.x;
-		pos.y=MemoMouse.y;
-
-		if ( this->m_pDeviceInfo->bWindowed)
-		{
-			pos.x+=this->m_pFramework->Xstart;
-			pos.y+=this->m_pFramework->Ystart;
-		}
-
-		
+				
 		DANAEMouse.x=MemoMouse.x;
 		DANAEMouse.y=MemoMouse.y;
 
@@ -5212,23 +5192,8 @@ void DANAE::ManageKeyMouse()
 
 	MOVETYPE=MOVE_WAIT;
 
-	if(bRestoreCoordMouse)
-	{
-		ARX_CHECK_SHORT(EERIEMouseX-this->m_pFramework->Xstart);
-		ARX_CHECK_SHORT(EERIEMouseX-this->m_pFramework->Ystart);
-		ARX_CHECK_SHORT(EERIEMouseX);
-		ARX_CHECK_SHORT(EERIEMouseY);
-
-		if ( this->m_pDeviceInfo->bWindowed)
-		{
-			DANAEMouse.x=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseX-this->m_pFramework->Xstart);
-			DANAEMouse.y=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseY-this->m_pFramework->Ystart);
-		}
-		else
-		{
-			DANAEMouse.x=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseX);
-			DANAEMouse.y=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseY);
-		}
+	if(bRestoreCoordMouse) {
+		DANAEMouse=GInput->getMousePosAbs();
 	}
 
 	// Player/Eyeball Freelook Management

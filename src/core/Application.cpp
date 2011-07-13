@@ -76,6 +76,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/font/Font.h"
 
+#include "input/Input.h"
+
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
@@ -89,7 +91,7 @@ extern long FINAL_COMMERCIAL_DEMO;
 extern long FINAL_COMMERCIAL_GAME;
 
 //-----------------------------------------------------------------------------
-long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY = 0;
+long EERIEMouseXdep, EERIEMouseYdep = 0;
 long EERIEMouseButton = 0;
 long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
@@ -204,29 +206,6 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		DisplayFrameworkError(E_OUTOFMEMORY, MSGERR_APPMUSTEXIT);
 		return E_OUTOFMEMORY;
 	}
-
-	//	DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-#ifdef BUILD_EDITOR
-	if (ToolBar != NULL)
-	{
-		if (this->ToolBar->Type == EERIE_TOOLBAR_TOP)
-		{
-			this->m_pFramework->Ystart = 26;
-			this->m_pFramework->Xstart = 0;
-		}
-		else
-		{
-			this->m_pFramework->Ystart = 0;
-			this->m_pFramework->Xstart = 98;
-		}
-	}
-	else
-#endif
-	{
-		this->m_pFramework->Ystart = 0;
-		this->m_pFramework->Xstart = 0;
-	}
-
 
 	// Register the window class
 	WNDCLASS wndClass = { CS_DBLCLKS, WndProc, 0, 0, hInst,
@@ -825,10 +804,8 @@ HRESULT CD3DApplication::UpdateGamma()
 HRESULT CD3DApplication::Render3DEnvironment()
 {
 	HRESULT hr;
-	EERIEMouseXdep = _EERIEMouseXdep;
-	EERIEMouseYdep = _EERIEMouseYdep;
-	_EERIEMouseXdep = 0;
-	_EERIEMouseYdep = 0;
+	EERIEMouseXdep = GInput->getMousePosRel().x;
+	EERIEMouseYdep = GInput->getMousePosRel().y;
 
 	// mode systemshock
 	if ((EERIEMouseButton & 1) &&

@@ -1041,8 +1041,8 @@ bool ARX_Menu_Render()
 
 	
 
-	DynLight[0].pos.x = 0.f + EERIEMouseX - (DANAESIZX >> 1);
-	DynLight[0].pos.y = 0.f + EERIEMouseY - (DANAESIZY >> 1);
+	DynLight[0].pos.x = 0.f + GInput->getMousePosAbs().x - (DANAESIZX >> 1);
+	DynLight[0].pos.y = 0.f + GInput->getMousePosAbs().y - (DANAESIZY >> 1);
 
 	if (pTextManage)
 	{

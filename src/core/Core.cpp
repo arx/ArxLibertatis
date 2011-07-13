@@ -739,9 +739,6 @@ void AdjustUI()
 	DANAESIZX = danaeApp.m_pFramework->m_dwRenderWidth;
 	DANAESIZY = danaeApp.m_pFramework->m_dwRenderHeight;
 
-	if (danaeApp.m_pDeviceInfo->bWindowed)
-		DANAESIZY -= danaeApp.m_pFramework->Ystart;
-
 	// Now computes screen center
 	DANAECENTERX = DANAESIZX>>1;
 	DANAECENTERY = DANAESIZY>>1;

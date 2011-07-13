@@ -78,7 +78,6 @@ extern long STOP_KEYBOARD_INPUT;
 extern long EERIEMouseButton;
 extern long LastEERIEMouseButton;
 extern DANAE danaeApp;
-extern long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseX, EERIEMouseY;
 
 // All standard keys
 // "+" should not appear in names as it is used as a separator
@@ -305,10 +304,6 @@ void Input::setMousePosAbs(const Vec2s& mousePos)
 	backend->setMouseCoordinates(mousePos.x, mousePos.y);
 	iMouseA = mousePos;
 	iMouseARaw = mousePos;
-		
-	// TODO-input: Get rid of this !
-	EERIEMouseX=iMouseA.x;
-	EERIEMouseY=iMouseA.y;
 }
 
 //-----------------------------------------------------------------------------
@@ -522,12 +517,6 @@ void Input::update()
 	// Clamp to window rect
 	iMouseA.x = Clamp(iMouseA.x, 0, (short)DANAESIZX - 1);
 	iMouseA.y = Clamp(iMouseA.y, 0, (short)DANAESIZY - 1);
-
-	// TODO-input: Get rid of this !
-	EERIEMouseX=iMouseA.x;
-	EERIEMouseY=iMouseA.y;
-	_EERIEMouseXdep=iMouseR.x;
-	_EERIEMouseYdep=iMouseR.y;
 }
 
 //-----------------------------------------------------------------------------

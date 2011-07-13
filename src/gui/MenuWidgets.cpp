@@ -99,9 +99,6 @@ extern long FINAL_RELEASE;
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
 
-extern long _EERIEMouseXdep;
-extern long _EERIEMouseYdep;
-
 extern float PROGRESS_BAR_TOTAL;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_COUNT;

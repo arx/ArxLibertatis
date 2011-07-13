@@ -277,7 +277,7 @@ extern LightMode ModeLight;
 
 extern ViewModeFlags ViewMode;
 
-extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY;
+extern long EERIEMouseXdep, EERIEMouseYdep;
 extern long EERIEMouseButton, EERIEMouseGrab;
 extern HWND MSGhwnd;
 
@@ -363,7 +363,6 @@ public:
 	HWND m_hWndRender;
 	WNDPROC m_OldProc;
 	long d_dlgframe;
-	void EERIEMouseUpdate(short x, short y);
 	
 	// Functions to create, run, pause, and clean up the application
 	virtual HRESULT Create(HINSTANCE);
