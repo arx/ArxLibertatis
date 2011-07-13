@@ -34,9 +34,9 @@ public:
 		
 		ARX_UNUSED(context);
 		
-		ARX_PLAYER_AddBag();
+		DebugScript("");
 		
-		LogDebug << "addbag";
+		ARX_PLAYER_AddBag();
 		
 		return Success;
 	}
@@ -53,9 +53,9 @@ public:
 		
 		float val = context.getFloat();
 		
-		ARX_PLAYER_Modify_XP(static_cast<long>(val));
+		DebugScript(' ' << val);
 		
-		LogDebug << "addxp " << val;
+		ARX_PLAYER_Modify_XP(static_cast<long>(val));
 		
 		return Success;
 	}
@@ -72,14 +72,14 @@ public:
 		
 		float val = context.getFloat();
 		
+		DebugScript(' ' << val);
+		
 		if(val != 0) {
 			ARX_SOUND_PlayInterface(SND_GOLD);
 		}
 		
 		ARX_CHECK_LONG(val);
 		ARX_PLAYER_AddGold(static_cast<long>(val));
-		
-		LogDebug << "addgold " << val;
 		
 		return Success;
 	}
@@ -96,9 +96,9 @@ public:
 		
 		ARX_UNUSED(context);
 		
-		ARX_PLAYER_MakeFreshHero();
+		DebugScript("");
 		
-		LogDebug << "ridiculous";
+		ARX_PLAYER_MakeFreshHero();
 		
 		return Success;
 	}
@@ -137,30 +137,19 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		
 		long add = 0;
-		if(!options.empty()) {
-			u64 flg = flags(options);
-			if(flg & flag('a')) {
-				add = 1;
-			}
-			if(flg & flag('r')) {
-				add = -1;
-			}
-			if(!flg || (flg & ~flags("ar"))) {
-				LogWarning << "unexpected flags: rotate " << options;
-			}
+		HandleFlags("ar") {
+			add = (flg & flag('r')) ? -1 : ((flg & flag('a')) ? 1 : 0);
 		}
 		
 		string name = context.getLowercase();
 		
-		LogDebug << "rune " << options << ' ' << name;
+		DebugScript(' ' << options << ' ' << name);
 		
 		if(name == "all") {
 			
-			if(add != 0) {
-				LogWarning << "unexpected flags: rotate " << options << " all";
+			if(add) {
+				ScriptWarning << "unexpected flags: " << options << " all";
 				return Failed;
 			}
 			
@@ -168,14 +157,14 @@ public:
 			
 		} else {
 			
-			if(add == 0) {
-				LogWarning << "missing flags:  rotate " << options << ' ' << name << "; expected -a or -r";
+			if(!add) {
+				ScriptWarning << "missing flags:  " << options << ' ' << name << "; expected -a or -r";
 				return Failed;
 			}
 			
 			Runes::const_iterator it = runes.find(name);
 			if(it == runes.end()) {
-				LogWarning << "unknown rune name: rune " << options << ' ' << name;
+				ScriptWarning << "unknown rune name: " << options << ' ' << name;
 				return Failed;
 			}
 			
@@ -201,7 +190,7 @@ public:
 		
 		string name = loadUnlocalized(context.getLowercase());
 		
-		LogDebug << "quest " << name;
+		DebugScript(' ' << name);
 		
 		ARX_PLAYER_Quest_Add(name);
 		
@@ -234,7 +223,7 @@ public:
 			string src = loadPath(context.getWord());
 			string dst = loadPath(context.getWord());
 			
-			LogDebug << "setplayertweak skin " << src << ' ' << dst;
+			DebugScript(" skin " << src << ' ' << dst);
 			
 			strcpy(io->tweakerinfo->skintochange, src.c_str());
 			strcpy(io->tweakerinfo->skinchangeto, dst.c_str());
@@ -243,7 +232,7 @@ public:
 			
 			string mesh = loadPath(context.getWord());
 			
-			LogDebug << "setplayertweak mesh " << mesh;
+			DebugScript(" mesh " << mesh);
 			
 			strcpy(io->tweakerinfo->filename, mesh.c_str());
 		}
@@ -263,7 +252,7 @@ public:
 		
 		player.hunger = context.getFloat();
 		
-		LogDebug << "sethunger " << player.hunger;
+		DebugScript(' ' << player.hunger);
 		
 		return Success;
 	}
@@ -291,7 +280,7 @@ public:
 		
 		bool enable = context.getBool();
 		
-		LogDebug << "setplayercontrols " << enable;
+		DebugScript(' ' << enable);
 		
 		if(enable) {
 			if(BLOCK_PLAYER_CONTROLS) {
@@ -323,7 +312,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		LogDebug << "stealnpc";
+		DebugScript("");
 		
 		if(player.Interface & INTER_STEAL) {
 			SendIOScriptEvent(ioSteal, SM_STEAL, "OFF");
@@ -351,17 +340,17 @@ public:
 		INTERACTIVE_OBJ * io = context.getIO();
 		
 		if(type == "ylside_death") {
-			LogDebug << "specialfx ylside_death";
+			DebugScript(" ylside_death");
 			if(!io) {
-				LogWarning << "can only use 'specialfx ylside_death' in IO context";
+				ScriptWarning << "can only use 'specialfx ylside_death' in IO context";
 				return Failed;
 			}
 			SetYlsideDeath(io);
 			
 		} else if(type == "player_appears") {
-			LogDebug << "specialfx player_appears";
+			DebugScript(" player_appears");
 			if(!io) {
-				LogWarning << "can only use 'specialfx player_appears' in IO context";
+				ScriptWarning << "can only use 'specialfx player_appears' in IO context";
 				return Failed;
 			}
 			MakePlayerAppearsFX(io);
@@ -370,7 +359,7 @@ public:
 			
 			float val = context.getFloat();
 			
-			LogDebug << "specialfx heal " << val;
+			DebugScript(" heal " << val);
 			
 			if(!BLOCK_PLAYER_CONTROLS) {
 				player.life += val;
@@ -381,7 +370,7 @@ public:
 			
 			float val = context.getFloat();
 			
-			LogDebug << "specialfx mana " << val;
+			DebugScript(" mana " << val);
 			
 			player.mana = clamp(player.mana + val, 0.f, player.Full_maxmana);
 			
@@ -389,16 +378,16 @@ public:
 			
 			context.skipWord();
 			
-			LogDebug << "specialfx newspell";
+			DebugScript(" newspell");
 			
 			MakeBookFX(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148), 0.00001f);
 			
 		} else if(type == "torch") {
 			
-			LogDebug << "specialfx torch";
+			DebugScript(" torch");
 			
 			if(!io || !(io->ioflags & IO_ITEM)) {
-				LogWarning << "can only use 'specialfx torch' for items";
+				ScriptWarning << "can only use 'specialfx torch' for items";
 				return Failed;
 			}
 			
@@ -415,33 +404,33 @@ public:
 			ARX_PLAYER_ClickedOnTorch(ioo);
 			
 		} else if(type == "fiery") {
-			LogDebug << "specialfx fiery";
+			DebugScript(" fiery");
 			if(!io) {
-				LogWarning << "can only use 'specialfx fiery' in IO context";
+				ScriptWarning << "can only use 'specialfx fiery' in IO context";
 				return Failed;
 			}
 			io->ioflags |= IO_FIERY;
 			
 		} else if(type == "fieryoff") {
-			LogDebug << "specialfx fieryoff";
+			DebugScript(" fieryoff");
 			if(!io) {
-				LogWarning << "can only use 'specialfx fieryoff' in IO context";
+				ScriptWarning << "can only use 'specialfx fieryoff' in IO context";
 				return Failed;
 			}
 			io->ioflags &= ~IO_FIERY;
 			
 		} else if(type == "torchon") {
-			LogDebug << "specialfx torchon";
+			DebugScript(" torchon");
 			// do nothing
 			
 		} else if(type == "torchoff") {
-			LogDebug << "specialfx torchoff";
+			DebugScript(" torchoff");
 			if(CURRENT_TORCH) {
 				ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
 			}
 			
 		} else {
-			LogWarning << "unknown specialfx: " << type;
+			ScriptWarning << "unknown fx: " << type;
 			return Failed;
 		}
 		
@@ -460,7 +449,7 @@ public:
 		
 		string key = toLowercase(context.getStringVar(context.getLowercase()));
 		
-		LogDebug << "keyringadd " << key;
+		DebugScript(' ' << key);
 		
 		ARX_KEYRING_Add(key);
 		
@@ -479,14 +468,14 @@ public:
 		
 		string target = context.getLowercase();
 		
-		LogDebug << "playerlookat " << target;
+		DebugScript(' ' << target);
 		
 		long t = GetTargetByNameTarget(target);
 		if(t == -2) {
 			t = GetInterNum(context.getIO());
 		}
 		if(!ValidIONum(t)) {
-			LogWarning << "playerlookat: unknown target: " << target;
+			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
@@ -508,9 +497,7 @@ public:
 		SpellcastFlags spflags = SPELLCAST_FLAG_PRECAST | SPELLCAST_FLAG_NOANIM;
 		bool dur = false;
 		long duration = -1;
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("df") {
 			if(flg & flag('d')) {
 				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 				duration = (long)context.getFloat();
@@ -519,20 +506,17 @@ public:
 			if(flg & flag('f')) {
 				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
 			}
-			if(!flg || (flg & ~flags("df"))) {
-				LogWarning << "unexpected flags: rotate " << options;
-			}
 		}
 		
 		long level = clamp((long)context.getFloat(), 1l, 10l);
 		
 		string spellname = context.getLowercase();
 		
-		LogDebug << "precast " << options << ' ' << duration << ' ' << level << ' ' << spellname;
+		DebugScript(' ' << options << ' ' << duration << ' ' << level << ' ' << spellname);
 		
 		Spell spellid = GetSpellId(spellname);
 		if(spellid == SPELL_NONE) {
-			LogWarning << "precast: unknown spell: " << spellname;
+			ScriptWarning << "unknown spell: " << spellname;
 			return Failed;
 		}
 		
@@ -561,7 +545,7 @@ public:
 		
 		float fval = context.getFloat();
 		
-		LogDebug << "poison " << fval;
+		DebugScript(' ' << fval);
 		
 		ARX_PLAYER_Poison(fval);
 		
@@ -580,7 +564,7 @@ public:
 		
 		bool enable = context.getBool();
 		
-		LogDebug << "playermanadrain " << enable;
+		DebugScript(' ' << enable);
 		
 		if(enable) {
 			player.playerflags &= ~PLAYERFLAGS_NO_MANA_DRAIN;

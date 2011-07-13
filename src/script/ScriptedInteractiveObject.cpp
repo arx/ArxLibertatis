@@ -34,17 +34,17 @@ public:
 		
 		string object = context.getLowercase();
 		
-		LogDebug << "replaceme \"" << object << '"';
+		DebugScript(" \"" << object << '"');
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
 		string tex2;
 		if(io->ioflags & IO_NPC) {
-			tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + object + ".teo";
+			tex2 = "graph\\obj3d\\interactive\\npc\\" + object + ".teo";
 		} else if(io->ioflags & IO_FIX) {
-			tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + object + ".teo";
+			tex2 = "graph\\obj3d\\interactive\\fix_inter\\" + object + ".teo";
 		} else {
-			tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + object + ".teo";
+			tex2 = "graph\\obj3d\\interactive\\items\\" + object + ".teo";
 		}
 		string tex;
 		File_Standardize(tex2, tex);
@@ -126,6 +126,8 @@ public:
 		float t2 = context.getFloat();
 		float t3 = context.getFloat();
 		
+		DebugScript(' ' << t1 << ' ' << t2 << ' ' << t3);
+		
 		io->angle.a += t1;
 		io->angle.b += t2;
 		io->angle.g += t3;
@@ -135,8 +137,6 @@ public:
 			io->lastanimvertex = NULL;
 		}
 		io->lastanimtime = 0;
-		
-		LogDebug << "rotate " << t1 << ' ' << t2 << ' ' << t3;
 		
 		return Success;
 	}
@@ -152,6 +152,8 @@ public:
 	Result execute(Context & context) {
 		
 		bool choice = context.getBool();
+		
+		DebugScript(' ' << choice);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
@@ -199,7 +201,7 @@ public:
 		
 		string category = context.getLowercase();
 		
-		LogDebug << "shopcategory " << category;
+		DebugScript(' ' << category);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(io->shop_category) {
@@ -222,7 +224,7 @@ public:
 		
 		float multiply = context.getFloat();
 		
-		LogDebug << "shopmultiply " << multiply;
+		DebugScript(' ' << multiply);
 		
 		context.getIO()->shop_multiply = multiply;
 		
@@ -244,7 +246,7 @@ public:
 		
 		bool enable = context.getBool();
 		
-		LogDebug << getName() << ' ' << enable;
+		DebugScript(' ' << enable);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
@@ -272,7 +274,7 @@ public:
 		
 		bool enable = context.getBool();
 		
-		LogDebug << getName() << ' ' << enable;
+		DebugScript(' ' << enable);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
@@ -297,7 +299,7 @@ public:
 		
 		string trapvalue = context.getLowercase();
 		
-		LogDebug << "settrap " << trapvalue;
+		DebugScript(' ' << trapvalue);
 		
 		if(trapvalue == "off") {
 			context.getIO()->_fixdata->trapvalue = -1;
@@ -320,7 +322,7 @@ public:
 		
 		string secretvalue = context.getLowercase();
 		
-		LogDebug << "setsecret " << secretvalue;
+		DebugScript(' ' << secretvalue);
 		
 		if(secretvalue == "off") {
 			context.getIO()->secretvalue = -1;
@@ -363,11 +365,11 @@ public:
 		
 		string name = context.getLowercase();
 		
-		LogDebug << "setmaterial " << name;
+		DebugScript(' ' << name);
 		
 		Materials::const_iterator it = materials.find(name);
 		if(it == materials.end()) {
-			LogWarning << "unknown material: setmaterial " << name;
+			ScriptWarning << "unknown material: " << name;
 			context.getIO()->material = MATERIAL_NONE;
 		} else {
 			context.getIO()->material = it->second;
@@ -388,7 +390,7 @@ public:
 		
 		string name = loadUnlocalized(context.getLowercase());
 		
-		LogDebug << "setname " << name;
+		DebugScript(' ' << name);
 		
 		strcpy(context.getIO()->locname, name.c_str());
 		
@@ -417,11 +419,11 @@ public:
 				t = GetInterNum(context.getIO());
 			}
 			if(!ValidIONum(t)) {
-				LogWarning << "unknown target: spawn npc " << file << ' ' << target;
+				ScriptWarning << "unknown target: npc " << file << ' ' << target;
 				return Failed;
 			}
 			
-			LogDebug << "spawn npc " << file << ' ' << target;
+			DebugScript(" npc " << file << ' ' << target);
 			
 			if(FORBID_SCRIPT_IO_CREATION) {
 				return Failed;
@@ -434,7 +436,7 @@ public:
 				
 				INTERACTIVE_OBJ * ioo = AddNPC(path, IO_IMMEDIATELOAD);
 				if(!ioo) {
-					LogWarning << "failed to create npc " << path;
+					ScriptWarning << "failed to create npc " << path;
 					return Failed;
 				}
 				
@@ -458,7 +460,7 @@ public:
 				
 				INTERACTIVE_OBJ * ioo = AddItem(path, IO_IMMEDIATELOAD);
 				if(!ioo) {
-					LogWarning << "failed to create item " << path;
+					ScriptWarning << "failed to create item " << path;
 					return Failed;
 				}
 				
@@ -478,7 +480,7 @@ public:
 			
 			INTERACTIVE_OBJ * io = context.getIO();
 			if(!io) {
-				LogWarning << "must be npc to spawn fireballs";
+				ScriptWarning << "must be npc to spawn fireballs";
 				return  Failed;
 			}
 			
@@ -492,7 +494,7 @@ public:
 			ARX_MISSILES_Spawn(io, MISSILE_FIREBALL, &pos, &io->target);
 			
 		} else {
-			LogWarning << "unexpected spawn type: " << type;
+			ScriptWarning << "unexpected type: " << type;
 			return Failed;
 		}
 		
@@ -538,7 +540,7 @@ public:
 		
 		string material = context.getLowercase();
 		
-		LogDebug << "setstepmaterial " << material;
+		DebugScript(' ' << material);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(io->stepmaterial) {
@@ -561,7 +563,7 @@ public:
 		
 		string material = context.getLowercase();
 		
-		LogDebug << "setarmormaterial " << material;
+		DebugScript(' ' << material);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(io->armormaterial) {
@@ -584,7 +586,7 @@ public:
 		
 		string material = context.getLowercase();
 		
-		LogDebug << "setweaponmaterial " << material;
+		DebugScript(' ' << material);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(io->weaponmaterial) {
@@ -607,7 +609,7 @@ public:
 		
 		string speech = loadPath(context.getWord());
 		
-		LogDebug << "setstrikespeech " << speech;
+		DebugScript(' ' << speech);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(io->strikespeech) {
@@ -632,7 +634,7 @@ public:
 		
 		bool enable = context.getBool();
 		
-		LogDebug << getName() << ' ' << enable;
+		DebugScript(' ' << enable);
 		
 		if(enable) {
 			context.getIO()->collision |= flag;
@@ -658,7 +660,7 @@ public:
 			weight = 0.f;
 		}
 		
-		LogDebug << "setweight " << weight;
+		DebugScript(' ' << weight);
 		
 		context.getIO()->weight = weight;
 		
@@ -677,7 +679,7 @@ public:
 		
 		float trans = context.getFloat();
 		
-		LogDebug << "settransparency " << trans;
+		DebugScript(' ' << trans);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		io->invisibility = 1.f + trans * 0.01f;
@@ -702,7 +704,7 @@ public:
 		float g = context.getFloat();
 		float b = context.getFloat();
 		
-		LogDebug << "setircolor " << r << ' ' << g << ' ' << b;
+		DebugScript(' ' << r << ' ' << g << ' ' << b);
 		
 		context.getIO()->infracolor = Color3f(r, g, b);
 		
@@ -721,7 +723,7 @@ public:
 		
 		float scale = context.getFloat();
 		
-		LogDebug << "setscale " << scale;
+		DebugScript(' ' << scale);
 		
 		context.getIO()->scale = scale * 0.01f;
 		
@@ -738,7 +740,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		LogDebug << "killme";
+		DebugScript("");
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
@@ -765,11 +767,11 @@ public:
 		
 		string anim = context.getLowercase();
 		
-		LogDebug << "forceanim " << anim;
+		DebugScript(' ' << anim);
 		
 		AnimationNumber num = GetNumAnim(anim);
 		if(num == ANIM_NONE) {
-			LogWarning << "forceanim: unknown animation: " << anim;
+			ScriptWarning << "unknown animation: " << anim;
 			return Failed;
 		}
 		
@@ -794,7 +796,7 @@ public:
 		
 		float angle = MAKEANGLE(context.getFloat());
 		
-		LogDebug << "forceangle " << angle;
+		DebugScript(' ' << angle);
 		
 		context.getIO()->angle.b = angle;
 		
@@ -839,9 +841,7 @@ public:
 		bool nointerpol = false;
 		bool execute = false;
 		
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("123lnep") {
 			if(flg & flag('1')) {
 				nu = 0;
 			}
@@ -858,17 +858,14 @@ public:
 				iot = inter.iobj[0];
 				iot->move = iot->lastmove = Vec3f::ZERO;
 			}
-			if(!flg || (flg & ~flags("123lnep"))) {
-				LogWarning << "unexpected flags: playanim " << options;
-			}
 		}
 		
 		string anim = context.getLowercase();
 		
-		LogDebug << "playanim " << options << ' ' << anim;
+		DebugScript(' ' << options << ' ' << anim);
 		
 		if(!iot) {
-			LogWarning << "playanim: must either use -p or use with IO";
+			ScriptWarning << "must either use -p or use with IO";
 			return Failed;
 		}
 		
@@ -880,7 +877,7 @@ public:
 		
 		AnimationNumber num = GetNumAnim(anim);
 		if(num == ANIM_NONE) {
-			LogWarning << "playanim: unknown anim: " << anim;
+			ScriptWarning << "unknown anim: " << anim;
 			return Failed;
 		}
 		
@@ -904,7 +901,7 @@ public:
 			string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
 			long num2 = ARX_SCRIPT_Timer_GetFree();
 			if(num2 < 0) {
-				LogError << "no free timer";
+				ScriptError << "no free timer";
 				return Failed;
 			}
 			
@@ -943,17 +940,17 @@ public:
 		
 		if(type == "on") {
 			io->ioflags &= ~IO_PHYSICAL_OFF;
-			LogDebug << "physical on";
+			DebugScript(" on");
 			
 		} else if(type == "off") {
 			io->ioflags |= IO_PHYSICAL_OFF;
-			LogDebug << "physical off";
+			DebugScript(" off");
 			
 		} else {
 			
 			float fval = context.getFloat();
 			
-			LogDebug << "physical " << type << ' ' << fval;
+			DebugScript(' ' << type << ' ' << fval);
 			
 			if(type == "height") {
 				io->original_height = clamp(-fval, -165.f, -30.f);
@@ -962,7 +959,7 @@ public:
 				io->original_radius = clamp(fval, 10.f, 40.f);
 				io->physics.cyl.radius = io->original_radius * io->scale;
 			} else {
-				LogWarning << "physical: unknown command: " << type;
+				ScriptWarning << "unknown command: " << type;
 				return Failed;
 			}
 			
@@ -983,14 +980,9 @@ public:
 		
 		INTERACTIVE_OBJ * iot = context.getIO();
 		
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("p") {
 			if(flg & flag('p')) {
 				iot = inter.iobj[0];
-			}
-			if(!flg || (flg & ~flag('p'))) {
-				LogWarning << "unexpected flags: playanim " << options;
 			}
 		}
 		
@@ -998,17 +990,17 @@ public:
 		
 		string file = loadPath(context.getWord());
 		
-		LogDebug << "loadanim " << options << ' ' << anim << ' ' << file;
+		DebugScript(' ' << options << ' ' << anim << ' ' << file);
 		
 		if(!iot) {
-			LogWarning << "playanim: must either use -p or use with IO";
+			ScriptWarning << "must either use -p or use with IO";
 			return Failed;
 		}
 		
 		AnimationNumber num = GetNumAnim(anim);
 		if(num == ANIM_NONE) {
 			if(anim != "cast_hold" && anim != "lean_left_cycle" && anim != "lean_left_out" && anim != "lean_right_cycle" && anim != "lean_right_out" && anim != "bae_ready") { // TODO(broken-scripts)
-				LogWarning << "loadanim: unknown anim: " << anim;
+				ScriptWarning << "unknown anim: " << anim;
 			}
 			return Failed;
 		}
@@ -1053,11 +1045,11 @@ public:
 		
 		string attach = context.getLowercase();
 		
-		LogDebug << "linkobjtome " << name << ' ' << attach;
+		DebugScript(' ' << name << ' ' << attach);
 		
 		long t = GetTargetByNameTarget(name);
 		if(!ValidIONum(t)) {
-			LogWarning << "linkobjtome: unknown target: " << name;
+			ScriptWarning << "unknown target: " << name;
 			return Failed;
 		}
 		

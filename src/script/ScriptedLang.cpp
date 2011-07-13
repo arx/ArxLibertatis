@@ -10,7 +10,6 @@
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
-#include <winsock.h>
 
 using std::string;
 
@@ -30,7 +29,7 @@ public:
 		
 		ARX_UNUSED(context);
 		
-		LogDebug << "nop";
+		DebugScript("");
 		
 		return Success;
 	}
@@ -49,16 +48,16 @@ public:
 		
 		string label = context.getLowercase();
 		
-		LogDebug << getName() << ' ' << label;
+		DebugScript(' ' << label);
 		
 		size_t pos = context.skipCommand();
 		if(pos != (size_t)-1) {
-			LogWarning << "unexpected text after " << getName() << " at " << pos;
+			ScriptWarning << "unexpected text at " << pos;
 		}
 		
 		if(!context.jumpToLabel(label)) {
 			if(label != "main_alert") {// TODO(broken-scripts)
-				LogError << "error jumping to label \"" << label << '"';
+				ScriptError << "error jumping to label \"" << label << '"';
 			}
 			return AbortError;
 		}
@@ -80,7 +79,7 @@ public:
 		
 		ARX_UNUSED(context);
 		
-		LogDebug << getName();
+		DebugScript("");
 		
 		return result;
 	}
@@ -97,7 +96,7 @@ public:
 		
 		float chance = clamp(context.getFloat(), 0.f, 100.f);
 		
-		LogDebug << "random " << chance;
+		DebugScript(' ' << chance);
 		
 		float t = rnd() * 100.f;
 		if(chance < t) {
@@ -117,10 +116,10 @@ public:
 	
 	Result execute(Context & context) {
 		
-		LogDebug << getName();
+		DebugScript("");
 		
 		if(!context.returnToCaller()) {
-			LogError << "return failed";
+			ScriptError << "return failed";
 			return AbortError;
 		}
 		
@@ -139,7 +138,7 @@ public:
 		
 		string event = context.getLowercase();
 		
-		LogDebug << "setmainevent " << event;
+		DebugScript(' ' << event);
 		
 		ARX_SCRIPT_SetMainEvent(context.getIO(), event);
 		
@@ -160,7 +159,7 @@ public:
 		
 		string timer = context.getLowercase();
 		
-		LogDebug << getName() << ' ' << timer;
+		DebugScript(' ' << timer);
 		
 		long t;
 		if(timer == "timer1") {
@@ -172,7 +171,7 @@ public:
 		} else if(timer == "timer4") {
 			t = 3;
 		} else {
-			LogWarning << "invalid timer: " << timer;
+			ScriptWarning << "invalid timer: " << timer;
 			return Failed;
 		}
 		
@@ -210,18 +209,13 @@ public:
 		bool radius = false;
 		bool zone = false;
 		bool group = false;
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("gfinrz") {
 			group = (flg & flag('g'));
 			sendto |= (flg & flag('f')) ? SEND_FIX : (SendTargets)0;
 			sendto |= (flg & flag('i')) ? SEND_ITEM : (SendTargets)0;
 			sendto |= (flg & flag('n')) ? SEND_NPC : (SendTargets)0;
 			radius = (flg & flag('r'));
 			zone = (flg & flag('z'));
-			if(!flg || (flg & ~flags("gfinrz"))) {
-				LogWarning << "unexpected flags: sendevent " << options;
-			}
 		}
 		if(!sendto) {
 			sendto = SEND_NPC;
@@ -259,7 +253,7 @@ public:
 		
 		string params = context.getWord();
 		
-		LogDebug << "sendevent " << options << " g=\"" << groupname << "\" e=\"" << event << "\" r=" << rad << " t=\"" << target << "\" p=\"" << params << '"';
+		DebugScript(' ' << options << " g=\"" << groupname << "\" e=\"" << event << "\" r=" << rad << " t=\"" << target << "\" p=\"" << params << '"');
 		
 		INTERACTIVE_OBJ * oes = EVENT_SENDER;
 		EVENT_SENDER = context.getIO();
@@ -297,7 +291,7 @@ public:
 			
 			ARX_PATH * ap = ARX_PATH_GetAddressByName(zonename);
 			if(!ap) {
-				LogWarning << "unknown zone: " << zonename;
+				ScriptWarning << "unknown zone: " << zonename;
 				EVENT_SENDER = oes;
 				return Failed;
 			}
@@ -346,7 +340,7 @@ public:
 			}
 			
 			if(!ValidIONum(t)) {
-				LogWarning << "invalid target: " << target;
+				ScriptWarning << "invalid target: " << target;
 				EVENT_SENDER = oes;
 				return Failed;
 			}
@@ -370,24 +364,19 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("a") {
 			if(flg & flag('a')) {
-				LogWarning << "broken 'set -a' script command used";
-			}
-			if(!flg || (flg & ~flag('a'))) {
-				LogWarning << "unexpected flags: sendevent " << options;
+				ScriptWarning << "broken 'set -a' script command used";
 			}
 		}
 		
-		string var = context.getLowercase(); // TODO word
-		string val = context.getWord(); // TODO temp2
+		string var = context.getLowercase();
+		string val = context.getWord();
 		
-		LogDebug << "set " << var << " \"" << val << '"';
+		DebugScript(' ' << var << " \"" << val << '"');
 		
 		if(var.empty()) {
-			LogWarning << "missing var name for set command";
+			ScriptWarning << "missing var name";
 			return Failed;
 		}
 		
@@ -399,7 +388,7 @@ public:
 				string v = context.getStringVar(val);
 				SCRIPT_VAR * sv = SETVarValueText(svar, NB_GLOBALS, var, v);
 				if(!sv) {
-					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
 				}
 				sv->type = TYPE_G_TEXT;
@@ -410,7 +399,7 @@ public:
 				string v = context.getStringVar(val);
 				SCRIPT_VAR * sv = SETVarValueText(es.lvar, es.nblvar, var, v);
 				if(!sv) {
-					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
 				}
 				sv->type = TYPE_L_TEXT;
@@ -421,7 +410,7 @@ public:
 				long v = (long)context.getFloatVar(val);
 				SCRIPT_VAR * sv = SETVarValueLong(svar, NB_GLOBALS, var, v);
 				if(!sv) {
-					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
 				}
 				sv->type = TYPE_G_LONG;
@@ -432,7 +421,7 @@ public:
 				long v = (long)context.getFloatVar(val);
 				SCRIPT_VAR * sv = SETVarValueLong(es.lvar, es.nblvar, var, v);
 				if(!sv) {
-					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
 				}
 				sv->type = TYPE_L_LONG;
@@ -443,7 +432,7 @@ public:
 				float v = context.getFloatVar(val);
 				SCRIPT_VAR * sv = SETVarValueFloat(svar, NB_GLOBALS, var, v);
 				if(!sv) {
-					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
 				}
 				sv->type = TYPE_G_FLOAT;
@@ -454,7 +443,7 @@ public:
 				float v = context.getFloatVar(val);
 				SCRIPT_VAR * sv = SETVarValueFloat(es.lvar, es.nblvar, var, v);
 				if(!sv) {
-					LogWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
 				}
 				sv->type = TYPE_L_FLOAT;
@@ -462,7 +451,7 @@ public:
 			}
 			
 			default: {
-				LogWarning << "unknown variable type: " << var;
+				ScriptWarning << "unknown variable type: " << var;
 				return Failed;
 			}
 			
@@ -498,11 +487,11 @@ public:
 		string name = context.getLowercase();
 		bool enable = context.getBool();
 		
-		LogDebug << "setevent " << name << ' ' << enable;
+		DebugScript(' ' << name << ' ' << enable);
 		
 		Events::const_iterator it = events.find(name);
 		if(it == events.end()) {
-			LogDebug << "setevent: unknown event: " << name;
+			ScriptWarning << "unknown event: " << name;
 			return Failed;
 		}
 		

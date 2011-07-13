@@ -31,55 +31,36 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		
-		string command = context.getLowercase();
-		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
-		if(options.empty()) {
-			if(command == "stack") {
-				LogDebug << "behavior " << options << ' ' << command; 
-				ARX_NPC_Behaviour_Stack(io);
-				return Success;
-			} else if(command == "unstack") {
-				LogDebug << "behavior " << options << ' ' << command; 
-				ARX_NPC_Behaviour_UnStack(io);
-				return Success;
-			} else if(command == "unstackall") {
-				LogDebug << "behavior " << options << ' ' << command; 
-				ARX_NPC_Behaviour_Reset(io);
-				return Success;
-			}
-		}
-		
 		Behaviour behavior = 0;
-		
-		if(!options.empty()) {
-			u64 flg = flags(options);
-			if(flg & flag('l')) {
-				behavior |= BEHAVIOUR_LOOK_AROUND;
-			}
-			if(flg & flag('s')) {
-				behavior |= BEHAVIOUR_SNEAK;
-			}
-			if(flg & flag('d')) {
-				behavior |= BEHAVIOUR_DISTANT;
-			}
-			if(flg & flag('m')) {
-				behavior |= BEHAVIOUR_MAGIC;
-			}
-			if(flg & flag('f')) {
-				behavior |= BEHAVIOUR_FIGHT;
-			}
-			if(flg & flag('a')) {
-				behavior |= BEHAVIOUR_STARE_AT;
-			}
+		HandleFlags("lsdmfa012") {
+			behavior |= (flg & flag('l')) ? BEHAVIOUR_LOOK_AROUND : Behaviour(0);
+			behavior |= (flg & flag('s')) ? BEHAVIOUR_SNEAK : Behaviour(0);
+			behavior |= (flg & flag('d')) ? BEHAVIOUR_DISTANT : Behaviour(0);
+			behavior |= (flg & flag('m')) ? BEHAVIOUR_MAGIC : Behaviour(0);
+			behavior |= (flg & flag('f')) ? BEHAVIOUR_FIGHT : Behaviour(0);
+			behavior |= (flg & flag('a')) ? BEHAVIOUR_STARE_AT : Behaviour(0);
 			if(flg & flags("012")) {
 				io->_npcdata->tactics = 0;
 			}
-			if(!flg || (flg & ~flags("lsdmfa012"))) {
-				LogWarning << "unexpected flags: behavior " << options;
+		}
+		
+		string command = context.getLowercase();
+		
+		if(options.empty()) {
+			if(command == "stack") {
+				DebugScript(' ' << options << ' ' << command);
+				ARX_NPC_Behaviour_Stack(io);
+				return Success;
+			} else if(command == "unstack") {
+				DebugScript(' ' << options << ' ' << command);
+				ARX_NPC_Behaviour_UnStack(io);
+				return Success;
+			} else if(command == "unstackall") {
+				DebugScript(' ' << options << ' ' << command);
+				ARX_NPC_Behaviour_Reset(io);
+				return Success;
 			}
 		}
 		
@@ -113,10 +94,10 @@ public:
 			io->targetinfo = -2;
 			io->_npcdata->movemode = NOMOVEMODE;
 		} else if(command != "none") {
-			LogWarning << "unexpected command: behavior " << options << " \"" << command << '"';
+			ScriptWarning << "unexpected command: " << options << " \"" << command << '"';
 		}
 		
-		LogDebug << "behavior " << options << " \"" << command << "\" " << behavior_param;
+		DebugScript(' ' << options << " \"" << command << "\" " << behavior_param);
 		
 		ARX_CHECK_LONG(behavior_param);
 		ARX_NPC_Behaviour_Change(io, behavior, static_cast<long>(behavior_param));
@@ -134,22 +115,14 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		
 		bool init = false;
-		
-		if(!options.empty()) {
-			u64 flg = flags(options);
-			if(flg & flag('i')) {
-				init = true;
-			} else if(!flg || (flg & ~flag('i'))) {
-				LogWarning << "unexpected flags: revive " << options;
-			}
+		HandleFlags("i") {
+			init = (flg & flag('i'));
 		}
 		
-		ARX_NPC_Revive(context.getIO(), init ? 1 : 0);
+		DebugScript(' ' << options);
 		
-		LogDebug << "revive " << options;
+		ARX_NPC_Revive(context.getIO(), init ? 1 : 0);
 		
 		return Success;
 	}
@@ -168,20 +141,14 @@ public:
 		long duration = -1;
 		bool haveDuration = 0;
 		
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
-			
-			if(!flg || (flg & ~flags("kdxmsfz"))) {
-				LogWarning << "unexpected flags: spellcast " << options;
-			}
+		HandleFlags("kdxmsfz") {
 			
 			if(flg & flag('k')) {
 				
 				string spellname = context.getLowercase();
 				Spell spellid = GetSpellId(spellname);
 				
-				LogDebug << "spellcast " << options << ' ' << spellname;
+				DebugScript(' ' << options << ' ' << spellname);
 				
 				long from = GetInterNum(context.getIO());
 				if(ValidIONum(from)) {
@@ -241,7 +208,7 @@ public:
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
-		LogDebug << "spellcast " << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' ' << duration; 
+		DebugScript(' ' << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' ' << duration);
 		
 		TryToCastSpell(context.getIO(), spellid, level, t, spflags, duration);
 		
@@ -301,40 +268,16 @@ public:
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
 		
-		string options = context.getFlags();
-		
-		string text = context.getLowercase();
-		
-		if(text == "killall") {
-			
-			if(!options.empty()) {
-				LogWarning << "unexpected options: speak " << options << " killall";
-			}
-			
-			ARX_SPEECH_Reset();
-			return Success;
-		}
-		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
 		bool player = false, unbreakable = false;
 		SpeechFlags voixoff = 0;
 		AnimationNumber mood = ANIM_TALK_NEUTRAL;
-		if(!options.empty()) {
-			u64 flg = flags(options);
-			if(!flg || (flg & ~flags("tuphaoc"))) {
-				LogWarning << "unexpected flags: speak " << options << ' ' << text;
-			}
+		HandleFlags("tuphaoc") {
 			
-			if(flg & flag('t')) {
-				voixoff |= ARX_SPEECH_FLAG_NOTEXT;
-			}
-			if(flg & flag('u')) {
-				unbreakable = 1;
-			}
-			if(flg & flag('p')) {
-				player = 1;
-			}
+			voixoff |= (flg & flag('t')) ? ARX_SPEECH_FLAG_NOTEXT : SpeechFlags(0);
+			unbreakable = (flg & flag('u'));
+			player = (flg & flag('p'));
 			if(flg & flag('h')) {
 				mood = ANIM_TALK_HAPPY;
 			}
@@ -342,24 +285,24 @@ public:
 				mood = ANIM_TALK_ANGRY;
 			}
 			
-			if(flg & flag('o')) {
-				voixoff |= ARX_SPEECH_FLAG_OFFVOICE;
-				// Crash when we set speak pitch to 1,
-				// Variable use for a division, 0 is not possible
-			}
+			// Crash when we set speak pitch to 1,
+			// Variable use for a division, 0 is not possible
+			voixoff |= (flg & flag('o')) ? ARX_SPEECH_FLAG_OFFVOICE : SpeechFlags(0);
 			
 			if(flg & flag('c')) {
 				
+				string command = context.getLowercase();
+				
 				FRAME_COUNT = 0;
 				
-				if(text == "keep") {
+				if(command == "keep") {
 					acs.type = ARX_CINE_SPEECH_KEEP;
 					acs.pos1 = LASTCAMPOS;
 					acs.pos2.x = LASTCAMANGLE.a;
 					acs.pos2.y = LASTCAMANGLE.b;
 					acs.pos2.z = LASTCAMANGLE.g;
 					
-				} else if(text == "zoom") {
+				} else if(command == "zoom") {
 					acs.type = ARX_CINE_SPEECH_ZOOM;
 					acs.startangle.a = context.getFloat();
 					acs.startangle.b = context.getFloat();
@@ -374,31 +317,42 @@ public:
 						computeACSPos(acs, io, -1);
 					}
 					
-				} else if(text == "ccctalker_l" || text == "ccctalker_r") {
-					acs.type = (text == "ccctalker_r") ? ARX_CINE_SPEECH_CCCTALKER_R : ARX_CINE_SPEECH_CCCTALKER_L;
+				} else if(command == "ccctalker_l" || command == "ccctalker_r") {
+					acs.type = (command == "ccctalker_r") ? ARX_CINE_SPEECH_CCCTALKER_R : ARX_CINE_SPEECH_CCCTALKER_L;
 					parseParams(acs, context, player);
 					
-				} else if(text == "ccclistener_l" || text == "ccclistener_r") {
-					acs.type = (text == "ccclistener_r") ? ARX_CINE_SPEECH_CCCLISTENER_R :  ARX_CINE_SPEECH_CCCLISTENER_L;
+				} else if(command == "ccclistener_l" || command == "ccclistener_r") {
+					acs.type = (command == "ccclistener_r") ? ARX_CINE_SPEECH_CCCLISTENER_R :  ARX_CINE_SPEECH_CCCLISTENER_L;
 					parseParams(acs, context, player);
 					
-				} else if(text == "side" || text == "side_l" || text == "side_r") {
-					acs.type = (text == "side_l") ? ARX_CINE_SPEECH_SIDE_LEFT : ARX_CINE_SPEECH_SIDE;
+				} else if(command == "side" || command == "side_l" || command == "side_r") {
+					acs.type = (command == "side_l") ? ARX_CINE_SPEECH_SIDE_LEFT : ARX_CINE_SPEECH_SIDE;
 					parseParams(acs, context, player);
 					acs.f0 = context.getFloat(); // startdist
 					acs.f1 = context.getFloat(); // enddist
 					acs.f2 = context.getFloat(); // height modifier
 				} else {
-					LogWarning << "unexpected command: speak " << options << ' ' << text;
+					ScriptWarning << "unexpected command: " << options << ' ' << command;
 				}
 				
-				text = context.getLowercase();
 			}
 		}
 		
-		string data = script::loadUnlocalized(toLowercase(context.getStringVar(text)));
+		string text = context.getLowercase();
 		
-		LogDebug << "speak " << options << ' ' << data; // TODO debug more
+		if(text == "killall") {
+			
+			if(!options.empty()) {
+				ScriptWarning << "unexpected options: " << options << " killall";
+			}
+			
+			ARX_SPEECH_Reset();
+			return Success;
+		}
+		
+		string data = loadUnlocalized(toLowercase(context.getStringVar(text)));
+		
+		DebugScript(' ' << options << ' ' << data); // TODO debug more
 		
 		if(data.empty()) {
 			ARX_SPEECH_ClearIOSpeech(io);
@@ -447,7 +401,7 @@ public:
 		
 		string detectvalue = context.getLowercase();
 		
-		LogDebug << "setdetect " << detectvalue;
+		DebugScript(' ' << detectvalue);
 		
 		if(detectvalue == "off") {
 			context.getIO()->_npcdata->fDetect = -1;
@@ -472,7 +426,7 @@ public:
 		float g = context.getFloat();
 		float b = context.getFloat();
 		
-		LogDebug << "setblood " << r << ' ' << g << ' ' << b;
+		DebugScript(' ' << r << ' ' << g << ' ' << b);
 		
 		context.getIO()->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
 		
@@ -494,7 +448,7 @@ public:
 			pitch = .6f;
 		}
 		
-		LogDebug << "setspeakpitch " << pitch;
+		DebugScript(' ' << pitch);
 		
 		context.getIO()->_npcdata->speakpitch = pitch;
 		
@@ -513,7 +467,7 @@ public:
 		
 		float speed = clamp(context.getFloat(), 0.f, 10.f);
 		
-		LogDebug << "setspeed " << speed;
+		DebugScript(' ' << speed);
 		
 		context.getIO()->basespeed = speed;
 		
@@ -532,7 +486,7 @@ public:
 		
 		float stare_factor = context.getFloat();
 		
-		LogDebug << "setstarefactor " << stare_factor;
+		DebugScript(' ' << stare_factor);
 		
 		context.getIO()->_npcdata->stare_factor = stare_factor;
 		
@@ -552,10 +506,10 @@ public:
 		string stat = context.getLowercase();
 		float value = context.getFloat();
 		
-		LogDebug << "setnpcstat " << stat << ' ' << value;
+		DebugScript(' ' << stat << ' ' << value);
 		
 		if(!ARX_NPC_SetStat(*context.getIO(), stat, value)) {
-			LogWarning << "unknown stat name: setnpcstat " << stat << ' ' << value;
+			ScriptWarning << "unknown stat name: " << stat << ' ' << value;
 			return Failed;
 		}
 		
@@ -577,7 +531,7 @@ public:
 			xpvalue = 0;
 		}
 		
-		LogDebug << "setxpvalue " << xpvalue;
+		DebugScript(' ' << xpvalue);
 		
 		context.getIO()->_npcdata->xpvalue = (long)xpvalue;
 		
@@ -596,7 +550,7 @@ public:
 		
 		string mode = context.getLowercase();
 		
-		LogDebug << "setmovemode " << mode;
+		DebugScript(' ' << mode);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(mode == "walk") {
@@ -608,7 +562,7 @@ public:
 		} else if(mode == "sneak") {
 			ARX_NPC_ChangeMoveMode(io, SNEAKMODE);
 		} else {
-			LogWarning << "unexpected move mode: " << mode;
+			ScriptWarning << "unexpected mode: " << mode;
 			return Failed;
 		}
 		
@@ -628,19 +582,15 @@ public:
 		INTERACTIVE_OBJ * io = context.getIO();
 		
 		io->GameFlags &= ~GFLAG_HIDEWEAPON;
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("h") {
 			if(flg & flag('h')) {
 				io->GameFlags |= GFLAG_HIDEWEAPON;
-			} else if(!flg || (flg & ~flag('h'))) {
-				LogWarning << "unexpected flags: setequip " << options;
 			}
 		}
 		
 		string weapon = loadPath(context.getLowercase());
 		
-		LogDebug << "setweapon " << options << ' ' << weapon;
+		DebugScript(' ' << options << ' ' << weapon);
 		
 		strcpy(io->_npcdata->weaponname, weapon.c_str());
 		Prepare_SetWeapon(io, weapon);
@@ -660,7 +610,7 @@ public:
 		
 		float life = context.getFloat();
 		
-		LogDebug << "setlife " << life;
+		DebugScript(' ' << life);
 		
 		context.getIO()->_npcdata->maxlife = context.getIO()->_npcdata->life = life;
 		
@@ -682,9 +632,7 @@ public:
 			io->_npcdata->pathfind.flags &= ~(PATHFIND_ALWAYS|PATHFIND_ONCE|PATHFIND_NO_UPDATE);
 		}
 		
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("san") {
 			if(io->ioflags & IO_NPC) {
 				if(flg & flag('s')) {
 					io->_npcdata->pathfind.flags |= PATHFIND_ONCE;
@@ -695,9 +643,6 @@ public:
 				if(flg & flag('n')) {
 					io->_npcdata->pathfind.flags |= PATHFIND_NO_UPDATE;
 				}
-			}
-			if(!flg || (flg & ~flags("san"))) {
-				LogWarning << "unexpected flags: settarget " << options;
 			}
 		}
 		
@@ -721,7 +666,7 @@ public:
 			t = GetInterNum(io);
 		}
 		
-		LogDebug << "settarget " << options << ' ' << target;
+		DebugScript(' ' << options << ' ' << target);
 		
 		if(io->ioflags & IO_CAMERA) {
 			io->_camdata->cam.translatetarget = Vec3f::ZERO;
@@ -761,14 +706,14 @@ public:
 		
 		string target = context.getLowercase();
 		
-		LogDebug << "forcedeath " << target;
+		DebugScript(' ' << target);
 		
 		long t = GetTargetByNameTarget(target);
 		if(t == -2) {
 			t = GetInterNum(context.getIO());
 		}
 		if(!t) {
-			LogWarning << "forcedeath: unknown target: " << target;
+			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
@@ -789,7 +734,7 @@ public:
 		
 		string target = context.getLowercase();
 		
-		LogDebug << "pathfind " << target;
+		DebugScript(' ' << target);
 		
 		long t = GetTargetByNameTarget(target);
 		ARX_NPC_LaunchPathfind(context.getIO(), t);

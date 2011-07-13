@@ -38,7 +38,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		LogDebug << "activatephysics";
+		DebugScript("");
 		
 		ARX_INTERACTIVE_ActivatePhysics(GetInterNum(context.getIO()));
 		
@@ -72,9 +72,9 @@ public:
 			radius = context.getFloat();
 		}
 		
-		ARX_SPECIAL_ATTRACTORS_Add(t, val, radius);
+		DebugScript(" \"" << target << "\" " << val << ' ' << radius);
 		
-		LogDebug << "attractor \"" << target << "\" " << val << ' ' << radius;
+		ARX_SPECIAL_ATTRACTORS_Add(t, val, radius);
 		
 		return Success;
 	}
@@ -89,27 +89,23 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("v") {
 			if(flg & flag('v')) {
 				float volume = context.getFloat();
 				string ambiance = context.getLowercase();
+				DebugScript(' ' << options << ' ' << volume << " \"" << ambiance << '"');
 				ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_LOOPED, volume * 0.01f);
-				LogDebug << "ambiance " << options << ' ' << volume << " \"" << ambiance << "\"";
-			} else if(!flg || (flg & ~flag('v'))) {
-				LogWarning << "unexpected flags: ambiance " << options;
-				return Failed;
+				return Success;
 			}
+			return Failed;
+		}
+		
+		string ambiance = context.getLowercase();
+		DebugScript(" \"" << ambiance << '"');
+		if(ambiance == "kill") {
+			ARX_SOUND_KillAmbiances();
 		} else {
-			string ambiance = context.getLowercase();
-			if(ambiance == "kill") {
-				ARX_SOUND_KillAmbiances();
-			} else {
-				ARX_SOUND_PlayScriptAmbiance(ambiance);
-			}
-			LogDebug << "ambiance \"" << ambiance << "\"";
+			ARX_SOUND_PlayScriptAmbiance(ambiance);
 		}
 		
 		return Success;
@@ -127,9 +123,9 @@ public:
 		
 		bool choice = context.getBool();
 		
-		ANCHOR_BLOCK_By_IO(context.getIO(), choice ? 1 : 0);
+		DebugScript(" \"" << choice << "\"");
 		
-		LogDebug << "anchorblock \"" << choice << "\"";
+		ANCHOR_BLOCK_By_IO(context.getIO(), choice ? 1 : 0);
 		
 		return Success;
 	}
@@ -160,9 +156,9 @@ public:
 		
 		string target = context.getLowercase();
 		
-		ARX_INTERACTIVE_Attach(t, t2, source, target);
+		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
 		
-		LogDebug << "attach " << sourceio << ' ' << source << ' ' << targetio << ' ' << target;
+		ARX_INTERACTIVE_Attach(t, t2, source, target);
 		
 		return Success;
 	}
@@ -177,21 +173,16 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		
 		bool preload = false;
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("p") {
 			if(flg & flag('p')) {
 				preload = true;
-			} else if(!flg || (flg & !flag('p'))) {
-				LogWarning << "unexpected flags: cine " << options;
 			}
 		}
 		
 		string name = context.getLowercase();
 		
-		LogDebug << "cine " << options << " \"" << name << '"';
+		DebugScript(' ' << options << " \"" << name << '"');
 		
 		if(name == "kill") {
 			DANAE_KillCinematic();
@@ -207,7 +198,7 @@ public:
 				strcat(WILL_LAUNCH_CINE, ".cin");
 				CINE_PRELOAD = preload;
 			} else {
-				LogError << "unable to load cinematic " << file;
+				ScriptWarning << "unable to load cinematic " << file;
 				return Failed;
 			}
 		}
@@ -239,14 +230,14 @@ public:
 		ARX_CONVERSATION = enabled ? 1 : 0;
 		
 		if(!nb_people || !enabled) {
-			LogDebug << "conversation " << nbpeople << ' ' << enabled;
+			DebugScript(' ' << nbpeople << ' ' << enabled);
 			return Success;
 		}
 		
 		main_conversation.actors_nb = nb_people;
 		
 		std::ostringstream oss;
-		oss << "conversation " << nbpeople << ' ' << enabled;
+		oss << ' ' << nbpeople << ' ' << enabled;
 		
 		for(long j = 0; j < nb_people; j++) {
 			
@@ -261,7 +252,7 @@ public:
 			main_conversation.actors[j] = t;
 		}
 		
-		LogDebug << oss;
+		DebugScript(oss);
 		
 		return Success;
 	}
@@ -280,7 +271,7 @@ public:
 		float duration = context.getFloat();
 		float period = context.getFloat();
 		
-		LogDebug << "quake " << intensity << ' ' << duration << ' ' << period;
+		DebugScript(' ' << intensity << ' ' << duration << ' ' << period);
 		
 		AddQuakeFX(intensity, duration, period, 1);
 		
@@ -298,18 +289,13 @@ public:
 	Result execute(Context & context) {
 		
 		bool remove = false;
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("r") {
 			remove = (flg & flag('r'));
-			if(!flg || (flg & ~flag('r'))) {
-				LogWarning << "unexpected flags: setgroup " << options;
-			}
 		}
 		
 		string group = toLowercase(context.getStringVar(context.getLowercase()));
 		
-		LogDebug << "setgroup " << options << ' ' << group;
+		DebugScript(' ' << options << ' ' << group);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(group == "door") {
@@ -341,11 +327,11 @@ public:
 		
 		string name = context.getLowercase();
 		
-		LogDebug << "setcontrolledzone " << name;
+		DebugScript(' ' << name);
 		
 		ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
 		if(!ap) {
-			LogWarning << "unknown zone: setcontrolledzone " << name;
+			ScriptWarning << "unknown zone: " << name;
 			return Failed;
 		}
 		
@@ -366,19 +352,14 @@ public:
 		
 		bool wormspecific = false;
 		bool followdir = false;
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("wf") {
 			wormspecific = (flg & flag('w'));
 			followdir = (flg & flag('f'));
-			if(!flg || (flg & ~flags("wf"))) {
-				LogWarning << "unexpected flags: setpath " << options;
-			}
 		}
 		
 		string name = context.getLowercase();
 		
-		LogDebug << "setpath " << options << ' ' << name;
+		DebugScript(' ' << options << ' ' << name);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(name == "none") {
@@ -389,7 +370,7 @@ public:
 			
 			ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
 			if(!ap) {
-				LogWarning << "unknown path: " << name;
+				ScriptWarning << "unknown path: " << name;
 				return Failed;
 			}
 			
@@ -429,11 +410,11 @@ public:
 		string command = context.getLowercase();
 		
 		if(command == "stack") {
-			LogDebug << "zoeparam stack";
+			DebugScript(" stack");
 			ARX_GLOBALMODS_Stack();
 			
 		} else if(command == "unstack") {
-			LogDebug << "zoeparam unstack";
+			DebugScript(" unstack");
 			ARX_GLOBALMODS_UnStack();
 			
 		} else if(command == "rgb") {
@@ -443,25 +424,25 @@ public:
 			desired.depthcolor.b = context.getFloat();
 			desired.flags |= GMOD_DCOLOR;
 			
-			LogDebug << "zoneparam rgb " << desired.depthcolor.r << ' ' << desired.depthcolor.g << ' ' << desired.depthcolor.b;
+			DebugScript(" rgb " << desired.depthcolor.r << ' ' << desired.depthcolor.g << ' ' << desired.depthcolor.b);
 			
 		} else if(command == "zclip") {
 				
 			desired.zclip = context.getFloat();
 			desired.flags |= GMOD_ZCLIP;
 			
-			LogDebug << "zoneparam zclip " << desired.zclip;
+			DebugScript(" zclip " << desired.zclip);
 			
 		} else if(command == "ambiance") {
 			
 			string ambiance = loadPath(context.getWord());
 			
-			LogDebug << "zoneparam ambiance " << ambiance;
+			DebugScript(" ambiance " << ambiance);
 			
 			ARX_SOUND_PlayZoneAmbiance(ambiance);
 			
 		} else {
-			LogWarning << "unknwon zoneparam command: " << command;
+			ScriptWarning << "unknown command: " << command;
 			return Failed;
 		}
 		
@@ -484,9 +465,7 @@ public:
 		bool stop = false;
 		bool no_pos = false;
 		
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("ilpso") {
 			unique = (flg & flag('i'));
 			if(flg & flag('l')) {
 				loop = ARX_SOUND_PLAY_LOOPED;
@@ -496,15 +475,12 @@ public:
 			}
 			stop = (flg & flag('s'));
 			no_pos = (flg & flag('o'));
-			if(!flg || (flg & ~flags("ilpso"))) {
-				LogWarning << "unexpected flags: book " << options;
-			}
 		}
 		
 		string sample = loadPath(context.getStringVar(context.getLowercase()));
 		SetExt(sample, ".wav");
 		
-		LogDebug << "play " << options << " \"" << sample << '"';
+		DebugScript(' ' << options << " \"" << sample << '"');
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(stop) {
@@ -529,7 +505,7 @@ public:
 			}
 			
 			if(num == ARX_SOUND_INVALID_RESOURCE) {
-				LogWarning << "play: unable to load sound file " << sample;
+				ScriptWarning << "unable to load sound file " << sample;
 				return Failed;
 			}
 			
@@ -550,13 +526,13 @@ public:
 		
 		string sample = loadPath(context.getLowercase());
 		
-		LogDebug << "playspeech " << sample;
+		DebugScript(' ' << sample);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		long num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
 		if(num == ARX_SOUND_INVALID_RESOURCE) {
-			LogWarning << "playspeech: unable to load sound file " << sample;
+			ScriptWarning << "unable to load sound file " << sample;
 			return Failed;
 		}
 		

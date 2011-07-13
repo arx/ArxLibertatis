@@ -29,7 +29,7 @@ public:
 		
 		bool enable = context.getBool();
 		
-		LogDebug << "cameracontrol " << enable;
+		DebugScript(' ' << enable);
 		
 		CAMERACONTROLLER = enable ? context.getIO() : NULL;
 		
@@ -48,7 +48,7 @@ public:
 		
 		string target = context.getLowercase();
 		
-		LogDebug << "cameraactivate " << target;
+		DebugScript(' ' << target);
 		
 		if(target == "none") {
 			FRAME_COUNT = -1;
@@ -87,7 +87,7 @@ public:
 		
 		float smoothing = context.getFloat();
 		
-		LogDebug << "camerasmoothing " << smoothing;
+		DebugScript(' ' << smoothing);
 		
 		context.getIO()->_camdata->cam.smoothing = smoothing;
 		
@@ -104,20 +104,16 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
 		bool smooth = false;
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("s") {
 			if(flg & flag('s')) {
 				smooth = true;
-			} else if(!flg || (flg & ~flag('s'))) {
-				LogWarning << "unexpected flags: cinemascope " << options;
 			}
 		}
 		
 		bool enable = context.getBool();
 		
-		LogDebug << "cinemascope " << options << ' ' << enable;
+		DebugScript(' ' << options << ' ' << enable);
 		
 		ARX_INTERFACE_SetCinemascope(enable ? 1 : 0, smooth);
 		
@@ -136,7 +132,7 @@ public:
 		
 		float focal = clamp(context.getFloat(), 100.f, 800.f);
 		
-		LogDebug << "camerafocal " << focal;
+		DebugScript(' ' << focal);
 		
 		context.getIO()->_camdata->cam.focal = focal;
 		
@@ -157,7 +153,7 @@ public:
 		float y = context.getFloat();
 		float z = context.getFloat();
 		
-		LogDebug << "cameratranslatetarget " << x << ' ' << y << ' ' << z;
+		DebugScript(' ' << x << ' ' << y << ' ' << z);
 		
 		context.getIO()->_camdata->cam.translatetarget = Vec3f(x, y, z);
 		

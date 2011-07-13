@@ -109,6 +109,14 @@ public:
 	
 };
 
+#define ScriptPrefix << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() + "." : context.getIO()->long_name() + ".") : "") << getName() <<
+#define DebugScript(args) LogDebug ScriptPrefix args
+#define ScriptWarning LogWarning ScriptPrefix ": "
+#define ScriptError LogError ScriptPrefix ": "
+
+#define HandleFlags(expected) string options = context.getFlags(); \
+	for(u64 run = !options.empty(), flg; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
+
 } // namespace script
 
 #endif // ARX_SCRIPTING_SCRIPTUTILS_H

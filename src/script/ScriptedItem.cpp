@@ -9,6 +9,7 @@
 #include "script/ScriptUtils.h"
 
 using std::string;
+using std::max;
 
 namespace script {
 
@@ -34,7 +35,7 @@ public:
 			ARX_DAMAGES_DurabilityRestore(inter.iobj[t], val);
 		}
 		
-		LogDebug << "repair " << target << ' ' << val;
+		DebugScript(' ' << target << ' ' << val);
 		
 		return Success;
 	}
@@ -52,7 +53,7 @@ public:
 		float poisonous = context.getFloat();
 		float poisonous_count = context.getFloat();
 		
-		LogDebug << "setpoisonous " << poisonous << ' ' << poisonous_count;
+		DebugScript(' ' << poisonous << ' ' << poisonous_count);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(poisonous_count == 0) {
@@ -79,7 +80,7 @@ public:
 		
 		string stealvalue = context.getLowercase();
 		
-		LogDebug << "setsteal " << stealvalue;
+		DebugScript(' ' << stealvalue);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(stealvalue == "off") {
@@ -106,7 +107,7 @@ public:
 		
 		string lightvalue = context.getLowercase();
 		
-		LogDebug << "setlight " << lightvalue;
+		DebugScript(' ' << lightvalue);
 		
 		if(lightvalue == "off") {
 			context.getIO()->_itemdata->LightValue = -1;
@@ -129,7 +130,7 @@ public:
 		
 		float food_value = context.getFloat();
 		
-		LogDebug << "setfood " << food_value;
+		DebugScript(' ' << food_value);
 		
 		context.getIO()->_itemdata->food_value = (char)food_value;
 		
@@ -147,21 +148,16 @@ public:
 	Result execute(Context & context) {
 		
 		bool set = true;
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("r") {
 			set = !(flg & flag('r'));
-			if(!flg || (flg & ~flag('r'))) {
-				LogWarning << "unexpected flags: setobjecttype " << options;
-			}
 		}
 		
 		string type = context.getLowercase();
 		
-		LogDebug << "setobjecttype " << type << ' ' << set;
+		DebugScript(' ' << type << ' ' << set);
 		
 		if(!ARX_EQUIPMENT_SetObjectType(*context.getIO(), type, set)) {
-			LogWarning << "setobjecttype: unknown object type: " << type;
+			ScriptWarning << "unknown object type: " << type;
 			return Failed;
 		}
 		
@@ -178,13 +174,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("r") {
 			if(flg & flag('r')) {
 				ARX_EQUIPMENT_Remove_All_Special(context.getIO());
-			} else if(!flg || (flg & ~flag('r'))) {
-				LogWarning << "unexpected flags: setequip " << options;
 			}
 		}
 		
@@ -194,7 +186,7 @@ public:
 		short flag = (!val.empty() && val[val.length() - 1] == '%') ? 1 : 0;
 		float fval = context.getFloatVar(val);
 		
-		LogDebug << "setequip " << options << ' ' << param2 << ' ' << fval << ' ' << flag;
+		DebugScript(' ' << options << ' ' << param2 << ' ' << fval << ' ' << flag);
 		
 		ARX_EQUIPMENT_SetEquip(context.getIO(), options, param2, fval, flag);
 		
@@ -213,23 +205,18 @@ public:
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(io->ioflags & IO_NPC) {
-			LogWarning << "cannot set durability on NPCs";
+			ScriptWarning << "cannot set durability on NPCs";
 			return Failed;
 		}
 		
 		bool current = false;
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("c") {
 			current = (flg & flag('c'));
-			if(!flg || (flg & ~flag('c'))) {
-				LogWarning << "unexpected flags: setdurability " << options;
-			}
 		}
 		
 		float durability = context.getFloat();
 		
-		LogDebug << "setdurability " << options << ' ' << durability;
+		DebugScript(' ' << options << ' ' << durability);
 		
 		io->durability = durability;
 		if(!current) {
@@ -249,12 +236,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		short count = (short)context.getFloat();
-		if(count < 1) {
-			count = 1;
-		}
+		short count = max((short)context.getFloat(), (short)1);
 		
-		LogDebug << "setmaxcount " << count;
+		DebugScript(' ' << count);
 		
 		context.getIO()->_itemdata->maxcount = count;
 		
@@ -273,7 +257,7 @@ public:
 		
 		short count = clamp((short)context.getFloat(), (short)1, context.getIO()->_itemdata->maxcount);
 		
-		LogDebug << "setcount " << count;
+		DebugScript(' ' << count);
 		
 		context.getIO()->_itemdata->count = count;
 		
@@ -290,12 +274,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		long price = (long)context.getFloat();
-		if(price < 0) {
-			price = 0;
-		}
+		long price = max((long)context.getFloat(), 0l);
 		
-		LogDebug << "setprice " << price;
+		DebugScript(' ' << price);
 		
 		context.getIO()->_itemdata->price = price;
 		
@@ -314,7 +295,7 @@ public:
 		
 		short size = (short)clamp((int)context.getFloat(), 1, 100);
 		
-		LogDebug << "playerstacksize " << size;
+		DebugScript(' ' << size);
 		
 		context.getIO()->_itemdata->playerstacksize = size;
 		

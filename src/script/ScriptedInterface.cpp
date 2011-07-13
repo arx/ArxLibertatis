@@ -24,12 +24,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		
-		string command = context.getLowercase();
-		
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("aem") {
 			if(flg & flag('a')) { // Magic
 				Book_Mode = BOOKMODE_MINIMAP;
 			}
@@ -39,20 +34,19 @@ public:
 			if(flg & flag('m')) { // Map
 				Book_Mode = BOOKMODE_QUESTS;
 			}
-			if(!flg || (flg & ~flags("aem"))) {
-				LogWarning << "unexpected flags: book " << options;
-			}
 		}
+		
+		string command = context.getLowercase();
 		
 		if(command == "open") {
 			ARX_INTERFACE_BookOpenClose(1);
 		} else if(command == "close") {
 			ARX_INTERFACE_BookOpenClose(2);
 		} else {
-			LogWarning << "unexpected command: book " << options << " \"" << command << "\"";
+			ScriptWarning << "unexpected command: " << options << " \"" << command << "\"";
 		}
 		
-		LogDebug << "book " << options << " \"" << command << "\"";
+		DebugScript(' ' << options << " \"" << command << "\"");
 		
 		return Success;
 	}
@@ -106,7 +100,7 @@ public:
 		
 		string text = loadUnlocalized(context.getLowercase());
 		
-		LogDebug << "note " << tpname << ' ' << text;
+		DebugScript(' ' << tpname << ' ' << text);
 		
 		ARX_INTERFACE_NoteOpen(type, text);
 		
@@ -125,7 +119,7 @@ public:
 		
 		ARX_UNUSED(context);
 		
-		LogDebug << "showglobals";
+		DebugScript("");
 		
 		string text;
 		MakeGlobalText(text);
@@ -144,7 +138,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		LogDebug << "showlocals";
+		DebugScript("");
 		
 		string text;
 		MakeLocalText(context.getScript(), text);
@@ -163,7 +157,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		LogDebug << "showvars";
+		DebugScript("");
 		
 		string text;
 		MakeGlobalText(text);
@@ -185,25 +179,20 @@ public:
 	Result execute(Context & context) {
 		
 		bool smooth = false;
-		string options = context.getFlags();
-		if(!options.empty()) {
-			u64 flg = flags(options);
+		HandleFlags("s") {
 			smooth = (flg & flag('s'));
-			if(!flg || (flg & ~flag('s'))) {
-				LogWarning << "unexpected flags: book " << options;
-			}
 		}
 		
 		string command = context.getLowercase();
 		
-		LogDebug << "playinterface " << options << ' ' << command;
+		DebugScript(' ' << options << ' ' << command);
 		
 		if(command == "hide") {
 			ARX_INTERFACE_PlayerInterfaceModify(0, smooth);
 		} else if(command == "show") {
 			ARX_INTERFACE_PlayerInterfaceModify(1, smooth);
 		} else {
-			LogWarning << "unknown playinterface command: " << command;
+			ScriptWarning << "unknown command: " << command;
 			return Failed;
 		}
 		
@@ -222,7 +211,7 @@ public:
 		
 		string message = context.getWord();
 		
-		LogInfo << "popup: " << message;
+		DebugScript(' ' << message);
 		
 		return Success;
 	}
