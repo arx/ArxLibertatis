@@ -74,7 +74,8 @@ public:
 	bool jumpToLabel(const std::string & target, bool substack = false);
 	bool returnToCaller();
 	
-	inline EERIE_SCRIPT * getScript() {  return script; }
+	inline EERIE_SCRIPT * getScript() { return script; }
+	inline EERIE_SCRIPT * getMaster() { return script->master ? script->master : script; }
 	
 	friend class ::ScriptEvent;
 };

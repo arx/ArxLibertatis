@@ -176,13 +176,14 @@ public:
 			return Failed;
 		}
 		
+		EERIE_SCRIPT * script = context.getMaster();
 		if(start) {
-			context.getScript()->timers[t] = ARXTimeUL();
-			if(context.getScript()->timers[t] == 0) {
-				context.getScript()->timers[t] = 1;
+			script->timers[t] = ARXTimeUL();
+			if(script->timers[t] == 0) {
+				script->timers[t] = 1;
 			}
 		} else {
-			context.getScript()->timers[t] = 0;
+			script->timers[t] = 0;
 		}
 		
 		return Success;
@@ -372,7 +373,7 @@ public:
 		string options = context.getFlags();
 		if(!options.empty()) {
 			u64 flg = flags(options);
-			if(flg & flag('g')) {
+			if(flg & flag('a')) {
 				LogWarning << "broken 'set -a' script command used";
 			}
 			if(!flg || (flg & ~flag('a'))) {
@@ -390,7 +391,7 @@ public:
 			return Failed;
 		}
 		
-		EERIE_SCRIPT & es = *context.getScript();
+		EERIE_SCRIPT & es = *context.getMaster();
 		
 		switch(var[0]) {
 			
@@ -459,6 +460,12 @@ public:
 				sv->type = TYPE_L_FLOAT;
 				break;
 			}
+			
+			default: {
+				LogWarning << "unknown variable type: " << var;
+				return Failed;
+			}
+			
 		}
 		
 		return Success;
@@ -500,9 +507,9 @@ public:
 		}
 		
 		if(enable) {
-			context.getScript()->allowevents &= ~it->second;
+			context.getMaster()->allowevents &= ~it->second;
 		} else {
-			context.getScript()->allowevents |= it->second;
+			context.getMaster()->allowevents |= it->second;
 		}
 		
 		return Success;
