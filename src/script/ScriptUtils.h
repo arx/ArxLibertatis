@@ -10,7 +10,7 @@
 namespace script {
 
 inline u64 flag(char c) {
-	if(c >= '0' && c <= '0') {
+	if(c >= '0' && c <= '9') {
 		return (u64(1) << (c - '0'));
 	} else if(c >= 'a' && c <= 'z') {
 		return (u64(1) << (c - 'a' + 10));
@@ -19,16 +19,33 @@ inline u64 flag(char c) {
 	}
 }
 
-inline u64 flags(std::string flags) {
+inline u64 flags(const std::string & flags) {
 	
-	u64 result = 0ul;
 	
 	size_t i = 0;
 	if(flags.length() > 0 && flags[0] == '-') {
 		i++;
 	}
 	
+	u64 result = 0ul;
 	for(; i < flags.length(); i++) {
+		result |= flag(flags[i]);
+	}
+	
+	return result;
+}
+
+/**
+ * Overload to give compilers a chance to calculate flag masks at compile-time for string constants.
+ * 
+ * This should probably be done using constexpr in c++11.
+ * We could force compile-time calculation with a template-based implementation, but that will be much uglier and limited.
+ */
+template <size_t N>
+inline u64 flags(const char (&flags)[N]) {
+	
+	u64 result = 0ul;
+	for(size_t i = (flags[0] == '-') ? 1 : 0; i < N - 1; i++) {
 		result |= flag(flags[i]);
 	}
 	
