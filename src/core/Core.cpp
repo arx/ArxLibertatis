@@ -4564,7 +4564,7 @@ bool DANAE_ManageSplashThings()
 				ARX_MENU_Launch();
 			}
 
-			if (GInput->actionPressed(Keyboard::Key_Escape))
+			if (GInput->isKeyPressed(Keyboard::Key_Escape))
 			{
 				REFUSE_GAME_RETURN=1;
 				SPLASH_THINGS_STAGE = 14;
