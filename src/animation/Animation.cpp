@@ -294,9 +294,17 @@ static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const string & path) 
 	return true;
 }
 
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & _path) {
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & path) {
 	
-	string path = _path;
+	ANIM_HANDLE * anim = EERIE_ANIMMANAGER_Load_NoWarning(path);
+	if(!anim) {
+		LogWarning << "Animation not found: " << path;
+	}
+	
+	return anim;
+}
+
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const string & path) {
 	
 	ANIM_HANDLE * handl = EERIE_ANIMMANAGER_GetHandle(path);
 	if(handl) {
@@ -313,7 +321,6 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & _path) {
 		size_t FileSize;
 		char * adr = resources->readAlloc(path, FileSize);
 		if(!adr) {
-			LogWarning << "Animation not found: " << path;
 			return NULL;
 		}
 		
@@ -331,13 +338,14 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & _path) {
 		animations[i].locks = 1;
 		
 		// remove extension
-		SetExt(path, string());
+		string altpath = path;
+		SetExt(altpath, string());
 		
 		int pathcount = 2;
 		string path2;
 		do {
 			ostringstream oss;
-			oss << path << pathcount++ << ".tea";
+			oss << altpath << pathcount++ << ".tea";
 			path2 = oss.str();
 		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], path2));
 		

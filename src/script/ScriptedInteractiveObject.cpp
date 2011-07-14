@@ -1022,9 +1022,10 @@ public:
 		string path;
 		File_Standardize(file, path);
 		
-		iot->anims[num] = EERIE_ANIMMANAGER_Load(path);
+		iot->anims[num] = EERIE_ANIMMANAGER_Load_NoWarning(path);
 		
 		if(!iot->anims[num]) {
+			ScriptWarning << "animation not found: " << path;
 			return Failed;
 		}
 		
