@@ -59,26 +59,27 @@ private:
 	EERIE_SCRIPT * script;
 	size_t pos;
 	INTERACTIVE_OBJ * io;
+	ScriptMessage message;
 	
 public:
 	
 	Context(EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL);
 	
-	std::string getStringVar(const std::string & var);
+	std::string getStringVar(const std::string & var) const;
 	std::string getFlags();
 	std::string getWord();
 	void skipWord();
 	
 	void skipWhitespace();
 	
-	inline INTERACTIVE_OBJ * getIO() { return io; }
+	inline INTERACTIVE_OBJ * getIO() const { return io; }
 	
 	std::string getLowercase();
 	bool getBool();
 	
 	float getFloat();
 	
-	float getFloatVar(const std::string & name);
+	float getFloatVar(const std::string & name) const;
 	
 	/*!
 	 * Skip input until the end of the current line.
@@ -91,8 +92,12 @@ public:
 	bool jumpToLabel(const std::string & target, bool substack = false);
 	bool returnToCaller();
 	
-	inline EERIE_SCRIPT * getScript() { return script; }
-	inline EERIE_SCRIPT * getMaster() { return script->master ? script->master : script; }
+	inline EERIE_SCRIPT * getScript() const { return script; }
+	inline EERIE_SCRIPT * getMaster() const { return script->master ? script->master : script; }
+	
+	inline size_t getPosition() const { return pos; }
+	
+	inline ScriptMessage getMessage() const { return message; }
 	
 	friend class ::ScriptEvent;
 };
@@ -121,15 +126,19 @@ public:
 	
 	virtual ~Command() { }
 	
-	inline const std::string & getName() { return name; }
-	inline long getIOFlags() { return ioflags; }
+	inline const std::string & getName() const { return name; }
+	inline long getIOFlags() const { return ioflags; }
 	
 };
 
-#define ScriptPrefix << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() + "." : context.getIO()->long_name() + ".") : "") << getName() <<
+bool isSuppressed(const Context & context, const Command & command);
+
+void initSuppressions();
+
+#define ScriptPrefix << '[' << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown") << ':' << context.getPosition() << "] " << getName() <<
 #define DebugScript(args) LogDebug ScriptPrefix args
-#define ScriptWarning LogWarning ScriptPrefix ": "
-#define ScriptError LogError ScriptPrefix ": "
+#define ScriptWarning Logger(__FILE__,__LINE__, isSuppressed(context, *this) ? Logger::Debug : Logger::Warning) ScriptPrefix ": "
+#define ScriptError Logger(__FILE__,__LINE__, isSuppressed(context, *this) ? Logger::Debug : Logger::Error) ScriptPrefix ": "
 
 #define HandleFlags(expected) string options = context.getFlags(); \
 	for(u64 run = !options.empty(), flg; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)

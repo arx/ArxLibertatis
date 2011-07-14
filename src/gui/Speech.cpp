@@ -442,6 +442,9 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample);
 	else
 		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample, io);
+	if(aspeech[num].sample == ARX_SOUND_TOO_FAR) {
+		aspeech[num].sample = audio::INVALID_ID;
+	}
 
 	//Next lines must be removed (use callback instead)
 	aspeech[num].duration = (unsigned long)ARX_SOUND_GetDuration(aspeech[num].sample);

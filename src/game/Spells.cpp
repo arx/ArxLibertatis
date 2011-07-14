@@ -3208,7 +3208,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			{
 				if ( !( player.rune_flags & (RuneFlag)( 1 << SpellSymbol[i] ) ) )
 				{
-					ARX_SOUND_PlaySpeech( "player_cantcast" );
+					ARX_SOUND_PlaySpeech("player_cantcast");
 					CurrSpellSymbol = 0;
 					ARX_SPELLS_ResetRecognition();
 					
@@ -3340,7 +3340,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return false;
 			}
 
-			ARX_SOUND_PlaySpeech( "Player_follower_attack" );
+			ARX_SOUND_PlaySpeech("player_follower_attack");
 				LOOKING_FOR_SPELL_TARGET_TIME	= ARXTimeUL();
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;

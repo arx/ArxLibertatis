@@ -1,6 +1,8 @@
 
 #include "script/ScriptUtils.h"
 
+#include "graphics/data/Mesh.h"
+#include "io/Logger.h"
 #include "platform/String.h"
 
 using std::string;
@@ -19,7 +21,7 @@ string loadUnlocalized(const std::string & str) {
 
 Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
 
-string Context::getStringVar(const string & var) {
+string Context::getStringVar(const string & var) const {
 	return GetVarValueInterpretedAsText(var, script, io);
 }
 
@@ -179,7 +181,7 @@ bool Context::getBool() {
 	return (word == "on" || word == "yes");
 }
 
-float Context::getFloatVar(const std::string & name) {
+float Context::getFloatVar(const std::string & name) const {
 	return GetVarValueInterpretedAsFloat(name, script, io);
 }
 
@@ -209,7 +211,7 @@ size_t Context::skipCommand() {
 
 bool Context::jumpToLabel(const string & target, bool substack) {
 	
-	if(!substack && !InSubStack(script, pos)) {
+	if(substack && !InSubStack(script, pos)) {
 		return false;
 	}
 	
@@ -278,6 +280,58 @@ void Context::skipStatement() {
 	if(word != "else") {
 		pos = oldpos;
 	}
+}
+
+namespace {
+
+typedef std::map<string, bool> SuppressedCommands;
+typedef std::map<string, SuppressedCommands> SuppressionsForFile;
+typedef std::map<size_t, SuppressionsForFile> SuppressionsForPos;
+
+SuppressionsForPos suppressions;
+
+}
+
+void initSuppressions() {
+	
+	// TODO(broken-scripts)
+	
+	suppressions[7725]["Player"]["loadanim"] = true;
+	suppressions[8463]["Player"]["loadanim"] = true;
+	suppressions[8531]["Player"]["loadanim"] = true;
+	suppressions[8666]["Player"]["loadanim"] = true;
+	suppressions[8733]["Player"]["loadanim"] = true;
+	suppressions[9284]["Player"]["loadanim"] = true;
+	suppressions[9558]["Player"]["loadanim"] = true;
+	
+	suppressions[5872]["human_base"]["loadanim"] = true;
+	
+	suppressions[422]["light_door"]["set"] = true;
+	
+	suppressions[152]["jail_wood_grid"]["set"] = true;
+	
+	suppressions[5107]["troll_base"]["loadanim"] = true;
+	suppressions[5175]["troll_base"]["loadanim"] = true;
+	
+	suppressions[93]["dragon_ice_0001"]["loadanim"] = true;
+	
+}
+
+bool isSuppressed(const Context & context, const Command & command) {
+	
+	SuppressionsForPos::const_iterator i0 = suppressions.find(context.getPosition());
+	if(i0 == suppressions.end()) {
+		return false;
+	}
+	
+	SuppressionsForFile::const_iterator i1 = i0->second.find(context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown");
+	if(i1 == i0->second.end()) {
+		return false;
+	}
+	
+	SuppressedCommands::const_iterator i2 = i1->second.find(command.getName());
+	
+	return (i2 != i1->second.end() && i2->second);
 }
 
 }

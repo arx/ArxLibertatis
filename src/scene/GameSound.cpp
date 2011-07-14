@@ -601,7 +601,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = FLAG_VOLUME | FLAG_POSITION | FLAG_REVERBERATION | FLAG_AUTOFREE | FLAG_FALLOFF;
-	channel.volume = 1.0F;
+	channel.volume = 1.f;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 
@@ -612,15 +612,14 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 			ARX_SOUND_IOFrontPos(io, channel.position);
 		else
 		{
-			channel.position.x = io->pos.x;
-			channel.position.y = io->pos.y;
-			channel.position.z = io->pos.z;
+			channel.position = io->pos;
 		}
 
-		if (ACTIVECAM && distSqr(ACTIVECAM->pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE))
-			return -1;
+		if(ACTIVECAM && distSqr(ACTIVECAM->pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+			return ARX_SOUND_TOO_FAR; // TODO sample is never freed!
+		}
 
-		if (io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.0F)
+		if (io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f)
 		{
 			channel.flags |= FLAG_PITCH;
 			channel.pitch = io->_npcdata->speakpitch;
@@ -630,9 +629,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 	else
 	{
 		channel.flags |= FLAG_RELATIVE;
-		channel.position.x = 0.0F;
-		channel.position.y = 0.0F;
-		channel.position.z = 100.0F;
+		channel.position = Vec3f::Z_AXIS * 100.f;
 	}
 
 	aalSamplePlay(sample_id, channel);
@@ -764,52 +761,45 @@ long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float
 
 long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
 {
-	if (!bIsActive) return INVALID_ID;
+	if (!bIsActive) {
+		return INVALID_ID;
+	}
 
 	Channel channel;
-	s32 sample_id;
+	SampleId sample_id;
 
 	sample_id = aalCreateSample(name);
 
-	if (sample_id == INVALID_ID) return INVALID_ID;
-
+	if (sample_id == INVALID_ID) {
+		return INVALID_ID;
+	}
+	
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	channel.volume = 1.0F;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * GetSamplePresenceFactor(name);
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
-
-	if (io)
-	{
-		GetItemWorldPositionSound(io, &channel.position); // TODO this cast is wrong
-
-		if (loop != ARX_SOUND_PLAY_LOOPED)
-		{
-			Vec3f ePos;
-			ePos.x = channel.position.x;
-			ePos.y = channel.position.y;
-			ePos.z = channel.position.z;
-
-			if (ACTIVECAM && distSqr(ACTIVECAM->pos, ePos) > square(ARX_SOUND_REFUSE_DISTANCE))
-				return -1;
+	
+	if(io) {
+		GetItemWorldPositionSound(io, &channel.position);
+		if(loop != ARX_SOUND_PLAY_LOOPED) {
+			if (ACTIVECAM && distSqr(ACTIVECAM->pos, channel.position) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+				// TODO the sample will never be freed!
+				return ARX_SOUND_TOO_FAR;
+			}
 		}
-	}
-	else
-	{
+	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position.x = 0.0F;
-		channel.position.y = 0.0F;
-		channel.position.z = 100.0F;
+		channel.position = Vec3f::Z_AXIS * 100.f;
 	}
-
-	if (pitch != 1.0F)
-	{
+	
+	if(pitch != 1.0F) {
 		channel.flags |= FLAG_PITCH;
 		channel.pitch = pitch;
 	}
-
+	
 	aalSamplePlay(sample_id, channel, loop);
-
+	
 	return sample_id;
 }
 
@@ -974,20 +964,24 @@ void ARX_SOUND_Stop(ArxSound & sample_id)
 	if (bIsActive && sample_id != INVALID_ID) aalSampleStop(sample_id);
 }
 
-long ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float volume) {
+bool ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float volume) {
 	
 	if (!bIsActive) return INVALID_ID;
 
 	string temp = name;
 	SetExt(temp, ".amb");
 
-	long ambiance_id(aalGetAmbiance(temp));
+	AmbianceId ambiance_id = aalGetAmbiance(temp);
 
 	if (ambiance_id == INVALID_ID)
 	{
-		if (volume == 0.0F) return INVALID_ID;
+		if (volume == 0.f) return true;
 
 		ambiance_id = aalCreateAmbiance(temp);
+		if(ambiance_id == INVALID_ID) {
+			return false;
+		}
+		
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_SCRIPT);
 
 		Channel channel;
@@ -1003,38 +997,41 @@ long ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float
 		if (volume <= 0.0F)
 		{
 			aalDeleteAmbiance(ambiance_id);
-			return INVALID_ID;
+			return true;
 		}
 
 		aalSetAmbianceVolume(ambiance_id, volume);
 	}
 
-	return ambiance_id;
+	return true;
 }
 
-long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float volume) {
+bool ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float volume) {
 	
-	if (!bIsActive) return INVALID_ID;
+	if (!bIsActive) return true;
 
 	if (!strcasecmp(name, "none"))
 	{
 		aalAmbianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
 		ambiance_zone = INVALID_ID;
-		return INVALID_ID;
+		return true;
 	}
 
 	string temp = name;
 	SetExt(temp, ".amb");
 
-	long ambiance_id(aalGetAmbiance(temp));
+	AmbianceId ambiance_id = aalGetAmbiance(temp);
 
 	if (ambiance_id == INVALID_ID)
 	{
 		ambiance_id = aalCreateAmbiance(temp);
+		if(ambiance_id == INVALID_ID) {
+			return false;
+		}
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_ZONE);
 	}
 	else if (ambiance_id == ambiance_zone)
-		return ambiance_zone;
+		return true;
 
 	Channel channel;
 
@@ -1045,7 +1042,7 @@ long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 	aalAmbianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
 	aalAmbiancePlay(ambiance_zone = ambiance_id, channel, loop == ARX_SOUND_PLAY_LOOPED, AMBIANCE_FADE_TIME);
 
-	return ambiance_zone;
+	return true;
 }
 
 long ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string & track_name, unsigned long status) {

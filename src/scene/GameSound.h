@@ -36,6 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "audio/AudioTypes.h"
 #include "math/MathFwd.h"
 
 struct INTERACTIVE_OBJ;
@@ -49,6 +50,9 @@ typedef s32 ArxSound;
 typedef s32 ArxMixer;
 
 const ArxSound ARX_SOUND_INVALID_RESOURCE = -1;
+
+
+const audio::SampleId ARX_SOUND_TOO_FAR = -2;
 
 extern ArxMixer ARX_SOUND_MixerGame;
 extern ArxMixer ARX_SOUND_MixerGameSample;
@@ -234,8 +238,8 @@ void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ
 
 void ARX_SOUND_Stop(ArxSound & sample_id);
 
-long ARX_SOUND_PlayScriptAmbiance(const std::string & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
-long ARX_SOUND_PlayZoneAmbiance(const std::string & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+bool ARX_SOUND_PlayScriptAmbiance(const std::string & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+bool ARX_SOUND_PlayZoneAmbiance(const std::string & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
 long ARX_SOUND_PlayMenuAmbiance(const std::string & ambiance_name);
 long ARX_SOUND_SetAmbianceTrackStatus(const std::string & ambiance_name, const std::string & track_name, unsigned long status); //0 = off; 1 = on
 void ARX_SOUND_KillAmbiances();

@@ -55,10 +55,8 @@ public:
 			ScriptWarning << "unexpected text at " << pos;
 		}
 		
-		if(!context.jumpToLabel(label)) {
-			if(label != "main_alert") {// TODO(broken-scripts)
-				ScriptError << "error jumping to label \"" << label << '"';
-			}
+		if(!context.jumpToLabel(label, sub)) {
+			ScriptError << "error jumping to label \"" << label << '"';
 			return AbortError;
 		}
 		
@@ -242,7 +240,7 @@ public:
 		if(!group && !zone && !radius) {
 			target = context.getLowercase();
 			
-			// work around broken scripts
+			// TODO(broken-scripts) work around broken scripts 
 			for(size_t i = 0; i < SM_MAXCMD; i++) {
 				if(!strcasecmp(target, AS_EVENT[i].name.c_str() + 3)) { // TODO(case-sensitive) strcasecmp
 					std::swap(target, event);

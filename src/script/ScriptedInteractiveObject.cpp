@@ -992,6 +992,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << anim << ' ' << file);
 		
+		
 		if(!iot) {
 			ScriptWarning << "must either use -p or use with IO";
 			return Failed;
@@ -999,9 +1000,7 @@ public:
 		
 		AnimationNumber num = GetNumAnim(anim);
 		if(num == ANIM_NONE) {
-			if(anim != "cast_hold" && anim != "lean_left_cycle" && anim != "lean_left_out" && anim != "lean_right_cycle" && anim != "lean_right_out" && anim != "bae_ready") { // TODO(broken-scripts)
-				ScriptWarning << "unknown anim: " << anim;
-			}
+			ScriptWarning << "unknown anim: " << anim;
 			return Failed;
 		}
 		
@@ -1009,8 +1008,9 @@ public:
 			ReleaseAnimFromIO(iot, num);
 		}
 		
-		if(file == "human_death_cool" || file == "human_talk_happyneutral_headonly") {
-			return Failed; // TODO(broken-scripts)
+		if(file == "none") {
+			iot->anims[num] = NULL;
+			return Success;
 		}
 		
 		if(iot == inter.iobj[0] || (iot->ioflags & IO_NPC)) {

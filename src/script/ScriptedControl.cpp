@@ -94,7 +94,11 @@ public:
 				float volume = context.getFloat();
 				string ambiance = context.getLowercase();
 				DebugScript(' ' << options << ' ' << volume << " \"" << ambiance << '"');
-				ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_LOOPED, volume * 0.01f);
+				bool ret = ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_LOOPED, volume * 0.01f);
+				if(!ret) {
+					ScriptWarning << "unable to find ambiance \"" << ambiance << '"';
+					return Failed;
+				}
 				return Success;
 			}
 			return Failed;
@@ -105,7 +109,11 @@ public:
 		if(ambiance == "kill") {
 			ARX_SOUND_KillAmbiances();
 		} else {
-			ARX_SOUND_PlayScriptAmbiance(ambiance);
+			bool ret = ARX_SOUND_PlayScriptAmbiance(ambiance);
+			if(!ret) {
+				ScriptWarning << "unable to find \"" << ambiance << '"';
+				return Failed;
+			}
 		}
 		
 		return Success;
@@ -198,7 +206,7 @@ public:
 				strcat(WILL_LAUNCH_CINE, ".cin");
 				CINE_PRELOAD = preload;
 			} else {
-				ScriptWarning << "unable to load cinematic " << file;
+				ScriptWarning << "unable to load cinematic \"" << file << '"';
 				return Failed;
 			}
 		}
@@ -439,7 +447,10 @@ public:
 			
 			DebugScript(" ambiance " << ambiance);
 			
-			ARX_SOUND_PlayZoneAmbiance(ambiance);
+			bool ret = ARX_SOUND_PlayZoneAmbiance(ambiance);
+			if(!ret) {
+				ScriptWarning << "unable to find ambiance \"" << ambiance << '"';
+			}
 			
 		} else {
 			ScriptWarning << "unknown command: " << command;
@@ -493,19 +504,20 @@ public:
 				ARX_SOUND_Stop(io->sound);
 			}
 			
-			long num;
-			if(no_pos) { // TODO(case-sensitive) || SM_INVENTORYUSE == msg
+			audio::SampleId num;
+			// TODO (case-sensitive) should be a flag instead of depending on the event
+			if(no_pos || SM_INVENTORYUSE == context.getMessage()) {
 				num = ARX_SOUND_PlayScript(sample, NULL, pitch, loop);
 			} else {
 				num = ARX_SOUND_PlayScript(sample, io, pitch, loop);
 			}
 			
 			if(unique) {
-				io->sound = num;
+				io->sound = (num == ARX_SOUND_TOO_FAR) ? audio::INVALID_ID : num;
 			}
 			
-			if(num == ARX_SOUND_INVALID_RESOURCE) {
-				ScriptWarning << "unable to load sound file " << sample;
+			if(num == audio::INVALID_ID) {
+				ScriptWarning << "unable to load sound file \"" << sample << '"';
 				return Failed;
 			}
 			
@@ -529,10 +541,10 @@ public:
 		DebugScript(' ' << sample);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
-		long num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
+		audio::SampleId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
-		if(num == ARX_SOUND_INVALID_RESOURCE) {
-			ScriptWarning << "unable to load sound file " << sample;
+		if(num == audio::INVALID_ID) {
+			ScriptWarning << "unable to load sound file \"" << sample << '"';
 			return Failed;
 		}
 		

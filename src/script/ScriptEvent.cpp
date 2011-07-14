@@ -554,6 +554,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			
 			Context context(es, pos, io);
 			
+			context.message = msg;
+			
 			Command & command = *(it->second);
 			
 			Command::Result res;
@@ -3052,6 +3054,7 @@ void ScriptEvent::registerCommand(Command * command) {
 
 void ScriptEvent::init() {
 	
+	initSuppressions();
 	initAnimationNumbers();
 	
 	setupScriptedCamera();
