@@ -12,6 +12,7 @@
 #include "io/Logger.h"
 #include "io/FilePath.h"
 #include "physics/Collisions.h"
+#include "scene/Light.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
@@ -1583,6 +1584,63 @@ public:
 	
 };
 
+class HaloCommand : public Command {
+	
+public:
+	
+	HaloCommand() : Command("halo", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		HandleFlags("ofnlcs") {
+		
+			if(flg & flag('o')) {
+				io->halo_native.flags |= HALO_ACTIVE;
+			}
+			
+			if(flg & flag('f')) {
+				io->halo_native.flags &= ~HALO_ACTIVE;
+			}
+			
+			if(flg & flag('n')) {
+				io->halo_native.flags |= HALO_NEGATIVE;
+			} else {
+				io->halo_native.flags &= ~HALO_NEGATIVE;
+			}
+			
+			if(flg & flag('l')) {
+				io->halo_native.flags |= HALO_DYNLIGHT;
+			} else {
+				io->halo_native.flags &= ~HALO_DYNLIGHT;
+				if(ValidDynLight(io->halo_native.dynlight)) {
+					DynLight[io->halo_native.dynlight].exist = 0;
+				}
+				io->halo_native.dynlight = -1;
+			}
+			
+			if(flg & flag('c')) {
+				io->halo_native.color.r = context.getFloat();
+				io->halo_native.color.g = context.getFloat();
+				io->halo_native.color.b = context.getFloat();
+			}
+			
+			if(flg & flag('s')) {
+				io->halo_native.radius = context.getFloat();
+			}
+			
+		}
+		
+		DebugScript(' ' << options);
+		
+		ARX_HALO_SetToNative(io);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1633,6 +1691,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new IfVisibleCommand);
 	ScriptEvent::registerCommand(new InventoryCommand);
 	ScriptEvent::registerCommand(new ObjectHideCommand);
+	ScriptEvent::registerCommand(new HaloCommand);
 	
 }
 
