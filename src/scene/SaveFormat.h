@@ -146,14 +146,14 @@ struct SavedMapMarkerData {
 	f32 x;
 	f32 y;
 	s32 lvl;
-	char string[STRING_SIZE];
+	char name[STRING_SIZE];
 	
 	inline SavedMapMarkerData(const MAPMARKER_DATA & b) {
 		x = b.x;
 		y = b.y;
 		lvl = b.lvl;
-		assert(array_size(b.string) == STRING_SIZE);
-		std::copy(b.string, b.string + STRING_SIZE, string);
+		assert(STRING_SIZE > b.name.length());
+		strcpy(name, b.name.c_str());
 	}
 	
 };

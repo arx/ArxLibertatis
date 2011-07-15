@@ -5,6 +5,7 @@
 #include "game/Inventory.h"
 #include "gui/Interface.h"
 #include "gui/Menu.h"
+#include "gui/MiniMap.h"
 #include "io/Logger.h"
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
@@ -264,6 +265,46 @@ public:
 	
 };
 
+class MapMarkerCommand : public Command {
+	
+public:
+	
+	MapMarkerCommand() : Command("mapmarker") { }
+	
+	Result execute(Context & context) {
+		
+		bool remove = false;
+		HandleFlags("r") {
+			remove = (flg & flag('r'));
+		}
+		
+		if(remove) {
+			
+			string marker = loadUnlocalized(context.getLowercase());
+			
+			DebugScript(' ' << options << ' ' << marker);
+			
+			ARX_MAPMARKER_Remove(marker);
+			
+		} else {
+			
+			float x = context.getFloat();
+			float y = context.getFloat();
+			long level = (long)context.getFloat();
+			
+			string marker = loadUnlocalized(context.getLowercase());
+			
+			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
+			
+			ARX_MAPMARKER_Add(x, y, level, marker);
+			
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInterface() {
@@ -278,6 +319,7 @@ void setupScriptedInterface() {
 	ScriptEvent::registerCommand(new PopupCommand);
 	ScriptEvent::registerCommand(new EndIntroCommand);
 	ScriptEvent::registerCommand(new EndGameCommand);
+	ScriptEvent::registerCommand(new MapMarkerCommand);
 	
 }
 

@@ -585,31 +585,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 
 				break;
-			case 'M':
-
-				if (!strcmp(word, "MAPMARKER"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((!strcasecmp(word, "remove")) || (!strcasecmp(word, "-r")))
-					{
-						pos = GetNextWord(es, pos, word);
-						ARX_MAPMARKER_Remove(word);
-					}
-					else
-					{
-						float x = GetVarValueInterpretedAsFloat(word, esss, io);
-						pos = GetNextWord(es, pos, word);
-						float y = GetVarValueInterpretedAsFloat(word, esss, io);
-						pos = GetNextWord(es, pos, word);
-						float t = GetVarValueInterpretedAsFloat(word, esss, io);
-						long lvl = t;
-						pos = GetNextWord(es, pos, word);
-						ARX_MAPMARKER_Add(x, y, lvl, word);
-					}
-				}
-
-				break;
 			case '-':
 			case '+':
 

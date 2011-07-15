@@ -942,8 +942,8 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	}
 	
 	for(size_t i = 0; i < Mapmarkers.size(); i++) {
-		SavedMapMarkerData acmd = Mapmarkers[i];
-		memcpy((char *)(dat + pos), &acmd, sizeof(SavedMapMarkerData));
+		SavedMapMarkerData * acmd = reinterpret_cast<SavedMapMarkerData *>(dat + pos);
+		*acmd = Mapmarkers[i];
 		pos += sizeof(SavedMapMarkerData);
 	}
 	
@@ -2031,7 +2031,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
 		const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 		pos += sizeof(SavedMapMarkerData);
-		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, toLowercase(safestring(acmd->string)));
+		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, script::loadUnlocalized(toLowercase(safestring(acmd->name))));
 	}
 	
 	ARX_PLAYER_Restore_Skin();

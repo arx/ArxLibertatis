@@ -81,6 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::string;
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
 float mini_offset_x[MAX_MINIMAPS];
@@ -883,21 +884,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 					if (!fl2 && MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy))
 					{
-						if (Mapmarkers[i].tstring.empty())
-						{
-							std::string output;
-							MakeLocalised(Mapmarkers[i].string, output);
-							Mapmarkers[i].tstring = output;
-						}
 
-						if ( !Mapmarkers[i].tstring.empty() )
-						{
-							std::string output;
-							MakeLocalised( Mapmarkers[i].string, output);
-							Mapmarkers[i].tstring = output;
-						}
-
-						if ( !Mapmarkers[i].tstring.empty() )
+						if (!Mapmarkers[i].text.empty())
 						{
 							Rect bRect(140, 290, 140 + 205, 358);
 
@@ -913,19 +901,14 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 							Rect rRect = Rect(Rect::Num(fLeft), Rect::Num(fTop), Rect::Num(fRight), Rect::Num(fBottom));
 
-							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].tstring, rRect);
+							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].text, rRect);
 
-							char Page_Buffer[256];
-							//_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
-							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
-							Page_Buffer[lLengthDraw] = '\0';
-
-							DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Page_Buffer, Color::none);
+							DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Mapmarkers[i].text.substr(0, lLengthDraw), Color::none);
 						}
 					}
 
 					if (MapMarkerTc == NULL)
-						MapMarkerTc = TextureContainer::Load("Graph\\interface\\icons\\mapmarker.bmp");
+						MapMarkerTc = TextureContainer::Load("graph\\interface\\icons\\mapmarker.bmp");
 
 					GRenderer->SetTexture(0, MapMarkerTc);
 
@@ -951,28 +934,28 @@ void ARX_MAPMARKER_Init() {
 	Mapmarkers.clear();
 }
 
-long ARX_MAPMARKER_Get( const std::string& str) {
+static long ARX_MAPMARKER_Get(const string & name) {
+	
 	for(size_t i = 0; i < Mapmarkers.size(); i++) {
-		if(!strcasecmp(Mapmarkers[i].string, str.c_str()))
+		if(!strcasecmp(Mapmarkers[i].name, name)) {
 			return i;
+		}
 	}
+	
 	return -1;
 }
 
-void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
-{
-	long num = ARX_MAPMARKER_Get(temp);
-
-	if (num >= 0) // already exists
-	{
+void ARX_MAPMARKER_Add(float x, float y, long lvl, const string & name) {
+	
+	long num = ARX_MAPMARKER_Get(name);
+	
+	if(num >= 0)  {
+		
+		// already exists
 		Mapmarkers[num].lvl = lvl;
 		Mapmarkers[num].x = x;
 		Mapmarkers[num].y = y;
-
-		if (!Mapmarkers[num].tstring.empty())
-			Mapmarkers[num].tstring.clear();
-
-		strcpy(Mapmarkers[num].string, temp.c_str());
+		
 		return;
 	}
 	
@@ -981,15 +964,17 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
 	Mapmarkers.back().lvl = lvl;
 	Mapmarkers.back().x = x;
 	Mapmarkers.back().y = y;
-	Mapmarkers.back().tstring.clear();
-	strcpy(Mapmarkers.back().string, temp.c_str());
+	Mapmarkers.back().name = name;
+	Mapmarkers.back().text = getLocalised(name);
+	
 }
 
-void ARX_MAPMARKER_Remove( const std::string& temp)
-{
-	long num = ARX_MAPMARKER_Get(temp);
-
-	if (num < 0) return; // Doesn't exists
-
-	Mapmarkers.erase( Mapmarkers.begin() + num );
+void ARX_MAPMARKER_Remove(const string & name) {
+	
+	long num = ARX_MAPMARKER_Get(name);
+	if(num < 0) {
+		return; // Doesn't exist
+	}
+	
+	Mapmarkers.erase(Mapmarkers.begin() + num);
 }

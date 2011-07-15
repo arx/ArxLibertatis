@@ -97,8 +97,8 @@ struct MAPMARKER_DATA {
 	float x;
 	float y;
 	long lvl;
-	char string[64];
-	std::string tstring;
+	std::string name;
+	std::string text;
 };
 
 extern std::vector<MAPMARKER_DATA> Mapmarkers;
