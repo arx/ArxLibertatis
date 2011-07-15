@@ -2,6 +2,8 @@
 #include "script/ScriptedControl.h"
 
 #include "ai/Paths.h"
+#include "core/Core.h"
+#include "core/GameTime.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
@@ -162,6 +164,44 @@ public:
 	
 };
 
+class WorldFadeCommand : public Command {
+	
+public:
+	
+	WorldFadeCommand() : Command("worldfade") { }
+	
+	Result execute(Context & context) {
+		
+		string inout = context.getLowercase();
+		
+		FADEDURATION = context.getFloat();
+		FADESTART = ARX_TIME_GetUL();
+		
+		if(inout == "out") {
+			
+			FADECOLOR.r = context.getFloat();
+			FADECOLOR.g = context.getFloat();
+			FADECOLOR.b = context.getFloat();
+			FADEDIR = -1;
+			
+			DebugScript(" out " << FADEDURATION << ' ' << FADECOLOR.r << ' ' << FADECOLOR.g << ' ' << FADECOLOR.b);
+			
+		} else if(inout == "in") {
+			
+			FADEDIR = 1;
+			
+			DebugScript(" in " << FADEDURATION);
+			
+		} else {
+			ScriptWarning << "unexpected fade direction: " << inout;
+			return Failed;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedCamera() {
@@ -172,6 +212,7 @@ void setupScriptedCamera() {
 	ScriptEvent::registerCommand(new CinemascopeCommand);
 	ScriptEvent::registerCommand(new CameraFocalCommand);
 	ScriptEvent::registerCommand(new CameraTranslateTargetCommand);
+	ScriptEvent::registerCommand(new WorldFadeCommand);
 	
 }
 

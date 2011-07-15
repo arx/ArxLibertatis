@@ -636,40 +636,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'W':
 
-				if (!strcmp(word, "WORLDFADE"))
-				{
-					std::string temp1;
-					pos = GetNextWord(es, pos, word);
-					pos = GetNextWord(es, pos, temp1); //duration
-					FADEDURATION = GetVarValueInterpretedAsFloat(temp1, esss, io);
-					FADESTART = ARX_TIME_GetUL();
-
-					if (!strcasecmp(word, "OUT"))
-					{
-
-						std::string temp2;
-						std::string temp3;
-
-						pos = GetNextWord(es, pos, temp1);
-						pos = GetNextWord(es, pos, temp2);
-						pos = GetNextWord(es, pos, temp3);
-						FADECOLOR.r = GetVarValueInterpretedAsFloat(temp1, esss, io);
-						FADECOLOR.g = GetVarValueInterpretedAsFloat(temp2, esss, io);
-						FADECOLOR.b = GetVarValueInterpretedAsFloat(temp3, esss, io);
-						FADEDIR = -1;
-					}
-					else
-					{
-						FADEDIR = 1;
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "WORLD_FADE %s %s", word, temp1);
-
-#endif
-				}
-				else if (!strcmp(word, "WEAPON"))
+				if (!strcmp(word, "WEAPON"))
 				{
 					pos = GetNextWord(es, pos, word);
 
