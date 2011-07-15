@@ -1063,6 +1063,65 @@ public:
 	
 };
 
+class IncrementCommand : public Command {
+	
+	float diff;
+	
+public:
+	
+	IncrementCommand(const string & name, float _diff) : Command(name), diff(_diff) { }
+	
+	Result execute(Context & context) {
+		
+		string var = context.getLowercase();
+		
+		DebugScript(' ' << var);
+		
+		if(var.empty()) {
+			ScriptWarning << "missing variable name";
+			return Failed;
+		}
+		
+		EERIE_SCRIPT& es = *context.getMaster();
+		
+		switch(var[0]) {
+			
+			case '#': {
+				long ival = GETVarValueLong(svar, NB_GLOBALS, var);
+				SETVarValueLong(svar, NB_GLOBALS, var, ival + (long)diff);
+				break;
+			}
+			
+			case '\xA3': {
+				long ival = GETVarValueLong(es.lvar, es.nblvar, var);
+				SETVarValueLong(es.lvar, es.nblvar, var, ival + (long)diff);
+				break;
+			}
+			
+			case '&': {
+				float fval = GETVarValueFloat(svar, NB_GLOBALS, var);
+				SETVarValueFloat(svar, NB_GLOBALS, var, fval + diff);
+				break;
+			}
+			
+			case '@': {
+				float fval = GETVarValueFloat(es.lvar, es.nblvar, var);
+				SETVarValueFloat(es.lvar, es.nblvar, var, fval + diff);
+				break;
+			}
+			
+			default: {
+				ScriptWarning << "can only use " << getName() << " with number variables, got " << var;
+				return Failed;
+			}
+			
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -1088,6 +1147,8 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new ArithmeticCommand("div", ArithmeticCommand::Divide));
 	ScriptEvent::registerCommand(new UnsetCommand);
 	ScriptEvent::registerCommand(new ElseCommand);
+	ScriptEvent::registerCommand(new IncrementCommand("++", 1.f));
+	ScriptEvent::registerCommand(new IncrementCommand("--", -1.f));
 	
 }
 
