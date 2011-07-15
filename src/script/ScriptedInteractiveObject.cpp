@@ -1781,6 +1781,24 @@ public:
 	
 };
 
+class TargetPlayerPosCommand : public Command {
+	
+public:
+	
+	TargetPlayerPosCommand() : Command("targetplayerpos", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		DebugScript("");
+		
+		context.getIO()->targetinfo = TARGET_PLAYER;
+		GetTargetPos(context.getIO());
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1833,6 +1851,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new ObjectHideCommand);
 	ScriptEvent::registerCommand(new HaloCommand);
 	ScriptEvent::registerCommand(new TeleportCommand);
+	ScriptEvent::registerCommand(new TargetPlayerPosCommand);
 	
 }
 

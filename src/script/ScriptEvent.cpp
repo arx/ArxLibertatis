@@ -525,25 +525,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'T':
 
-				if (!strcmp(word, "TARGETPLAYERPOS"))
-				{
-					if (io != NULL)
-					{
-						io->targetinfo = TARGET_PLAYER;
-						GetTargetPos(io);
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "TARGETPLAYERPOS");
-
-#endif
-					}
-
-#ifdef NEEDING_DEBUG
-					else if (NEED_DEBUG) sprintf(cmd, "ERROR: TARGETPLAYERPOS - NOT AN IO !!!");
-
-#endif
-				}
-				else if (!strcmp(word, "TWEAK"))
+				if (!strcmp(word, "TWEAK"))
 				{
 					if (io != NULL)
 					{
