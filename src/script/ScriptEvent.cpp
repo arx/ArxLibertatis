@@ -588,26 +588,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 
 				break;
-			case 'U':
-
-				if (!strcmp(word, "UNSETCONTROLLEDZONE"))
-				{
-					pos = GetNextWord(es, pos, word);
-					ARX_PATH * ap = ARX_PATH_GetAddressByName(word);
-
-					if (ap != NULL)
-					{
-						ap->controled[0] = 0;
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "UNSET_CONTROLLED_ZONE %s", word);
-
-#endif
-				}
-
-				break;
 			case 'E':
 
 				if (!strcmp(word, "ELSE"))

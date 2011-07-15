@@ -601,6 +601,28 @@ public:
 	
 };
 
+class UnsetControlledZoneCommand : public Command {
+	
+public:
+	
+	UnsetControlledZoneCommand() : Command("unsetcontrolledzone", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string zone = context.getLowercase();
+		
+		DebugScript(' ' << zone);
+		
+		ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
+		if(ap) {
+			ap->controled[0] = 0;
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -620,6 +642,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new PlaySpeechCommand);
 	ScriptEvent::registerCommand(new HeroSayCommand);
 	ScriptEvent::registerCommand(new UsePathCommand);
+	ScriptEvent::registerCommand(new UnsetControlledZoneCommand);
 	
 }
 
