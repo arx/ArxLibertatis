@@ -1875,6 +1875,26 @@ public:
 	
 };
 
+class UseMeshCommand : public Command {
+	
+public:
+	
+	UseMeshCommand() : Command("usemesh", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string mesh = loadPath(context.getLowercase());
+		
+		DebugScript(" \"" << mesh << '"');
+		
+		ARX_INTERACTIVE_MEMO_TWEAK(context.getIO(), TWEAK_TYPE_MESH, mesh, string());
+		ARX_INTERACTIVE_USEMESH(context.getIO(), mesh);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1929,6 +1949,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new TeleportCommand);
 	ScriptEvent::registerCommand(new TargetPlayerPosCommand);
 	ScriptEvent::registerCommand(new TweakCommand);
+	ScriptEvent::registerCommand(new UseMeshCommand);
 	
 }
 

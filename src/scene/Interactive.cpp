@@ -1206,9 +1206,9 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
     std::string tex;
     std::string tex2;
 
-    if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp;
-    else if (io->ioflags & IO_FIX)	tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + temp;
-    else if (io->ioflags & IO_ITEM)	tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp;
+    if (io->ioflags & IO_NPC)	tex2 = "graph\\obj3d\\interactive\\npc\\" + temp;
+    else if (io->ioflags & IO_FIX)	tex2 = "graph\\obj3d\\interactive\\fix_inter\\" + temp;
+    else if (io->ioflags & IO_ITEM)	tex2 = "graph\\obj3d\\interactive\\items\\" + temp;
     else tex2.clear();
 
     File_Standardize(tex2, tex);

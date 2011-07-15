@@ -636,51 +636,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'U':
 
-				if (!strcmp(word, "USEMESH"))
-				{
-					pos = GetNextWord(es, pos, word);
-					ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_MESH, word, string());
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "USE_MESH ");
-						strcat(cmd, word);
-					}
-
-#endif
-					ARX_INTERACTIVE_USEMESH(io, word);
-
-					std::string tex;
-					std::string tex1;
-					std::string tex2;
-
-					if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + word;
-					else if (io->ioflags & IO_FIX)	tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + word;
-					else if (io->ioflags & IO_ITEM)	tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + word;
-					else tex2[0] = 0;
-
-					File_Standardize(tex2, tex);
-
-					if (!tex.empty())
-					{
-						if (io->usemesh == NULL)
-							io->usemesh = (char *)malloc(256);
-
-						strcpy(io->usemesh, tex.c_str());
-
-						if(io->obj) {
-							delete io->obj;
-							io->obj = NULL;
-						}
-						
-						bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
-						io->obj = loadObject(tex, pbox);
-						
-						EERIE_COLLISION_Cylinder_Create(io);
-					}
-				}
-
 				if (!strcmp(word, "UNSET"))
 				{
 					pos = GetNextWord(es, pos, word, 1);
