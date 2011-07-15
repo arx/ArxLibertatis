@@ -587,40 +587,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'D':
 
-				if (!strcmp(word, "DETACH"))
-				{
-					pos = GetNextWord(es, pos, word); // Source IO
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "DETACH ");
-						strcat(cmd, word);
-					}
-
-#endif
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -2) t = GetInterNum(io); //self
-
-					pos = GetNextWord(es, pos, word); // target IO
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcat(cmd, " ");
-						strcat(cmd, tempo);
-					}
-
-#endif
-					long t2 = GetTargetByNameTarget(word);
-
-					if (t2 == -2) t2 = GetInterNum(io); //self
-
-					ARX_INTERACTIVE_Detach(t, t2);
-				}
-
-				else if (!strcmp(word, "DRAWSYMBOL")) // DRAWSYMBOL symbol duration
+				if (!strcmp(word, "DRAWSYMBOL")) // DRAWSYMBOL symbol duration
 				{
 					std::string temp1;
 					std::string temp2;

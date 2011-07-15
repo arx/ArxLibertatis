@@ -641,6 +641,44 @@ public:
 	
 };
 
+class DetachCommand : public Command {
+	
+public:
+	
+	DetachCommand() : Command("detach") { }
+	
+	Result execute(Context & context) {
+		
+		string source = context.getLowercase(); // source IO
+		string target = context.getLowercase(); // target IO
+		
+		DebugScript(' ' << source << ' ' << target);
+		
+		long t = GetTargetByNameTarget(source);
+		if(t == -2) {
+			t = GetInterNum(context.getIO()); //self
+		}
+		if(!ValidIONum(t)) {
+			ScriptWarning << "unknown source: " << source;
+			return Failed;
+		}
+		
+		long t2 = GetTargetByNameTarget(target);
+		if(t2 == -2) {
+			t2 = GetInterNum(context.getIO()); //self
+		}
+		if(!ValidIONum(t2)) {
+			ScriptWarning << "unknown target: " << target;
+			return Failed;
+		}
+		
+		ARX_INTERACTIVE_Detach(t, t2);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -662,6 +700,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new UsePathCommand);
 	ScriptEvent::registerCommand(new UnsetControlledZoneCommand);
 	ScriptEvent::registerCommand(new MagicCommand);
+	ScriptEvent::registerCommand(new DetachCommand);
 	
 }
 
