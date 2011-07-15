@@ -587,15 +587,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'D':
 
-				if (!strcmp(word, "DETACHNPCFROMPLAYER"))
-				{
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "DETACH_NPC_FROM_PLAYER ...OBSOLETE...");
-
-#endif
-				}
-				else if (!strcmp(word, "DODAMAGE"))
+				if (!strcmp(word, "DODAMAGE"))
 				{
 					pos = GetNextWord(es, pos, word); // Source IO
 					DamageType type = 0;
@@ -861,6 +853,7 @@ void ScriptEvent::init() {
 	registerCommand(new ObsoleteCommand("setdetachable", 1));
 	registerCommand(new ObsoleteCommand("setstackable", 1));
 	registerCommand(new ObsoleteCommand("setinternalname", 1));
+	registerCommand(new ObsoleteCommand("detachnpcfromplayer"));
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands";
 }
