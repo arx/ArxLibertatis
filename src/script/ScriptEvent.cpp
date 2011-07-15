@@ -587,75 +587,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'D':
 
-				if (!strcmp(word, "DODAMAGE"))
-				{
-					pos = GetNextWord(es, pos, word); // Source IO
-					DamageType type = 0;
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'F'))
-							type |= DAMAGE_TYPE_FIRE;
-
-						if (iCharIn(word, 'M'))
-							type |= DAMAGE_TYPE_MAGICAL;
-
-						if (iCharIn(word, 'P'))
-							type |= DAMAGE_TYPE_POISON;
-
-						if (iCharIn(word, 'L'))
-							type |= DAMAGE_TYPE_LIGHTNING;
-
-						if (iCharIn(word, 'C'))
-							type |= DAMAGE_TYPE_COLD;
-
-						if (iCharIn(word, 'G'))
-							type |= DAMAGE_TYPE_GAS;
-
-						if (iCharIn(word, 'E'))
-							type |= DAMAGE_TYPE_METAL;
-
-						if (iCharIn(word, 'W'))
-							type |= DAMAGE_TYPE_WOOD;
-
-						if (iCharIn(word, 'S'))
-							type |= DAMAGE_TYPE_STONE;
-
-						if (iCharIn(word, 'A'))
-							type |= DAMAGE_TYPE_ACID;
-
-						if (iCharIn(word, 'O'))
-							type |= DAMAGE_TYPE_ORGANIC;
-
-						if (iCharIn(word, 'R'))
-							type |= DAMAGE_TYPE_DRAIN_LIFE;
-
-						if (iCharIn(word, 'N'))
-							type |= DAMAGE_TYPE_DRAIN_MANA;
-
-						if (iCharIn(word, 'U'))
-							type |= DAMAGE_TYPE_PUSH;
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -2) t = GetInterNum(io); //self
-
-					pos = GetNextWord(es, pos, word);
-					float fval = GetVarValueInterpretedAsFloat(word, esss, io);
-
-					if (ValidIONum(t))
-						ARX_DAMAGES_DealDamages(t, fval, GetInterNum(io), type, &inter.iobj[t]->pos);
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "DODAMAGE");
-
-#endif
-				}
-				else if (!strcmp(word, "DAMAGER"))
+				if (!strcmp(word, "DAMAGER"))
 				{
 					io->damager_type = DAMAGE_TYPE_PER_SECOND;
 					pos = GetNextWord(es, pos, word);

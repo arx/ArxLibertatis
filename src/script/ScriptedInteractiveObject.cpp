@@ -1946,6 +1946,54 @@ public:
 	
 };
 
+class DoDamageCommand : public Command {
+	
+public:
+	
+	DoDamageCommand() : Command("dodamage") { }
+	
+	Result execute(Context & context) {
+		
+		DamageType type = 0;
+		HandleFlags("fmplcgewsaornu") {
+			type |= (flg & flag('f')) ? DAMAGE_TYPE_FIRE : DamageType(0);
+			type |= (flg & flag('m')) ? DAMAGE_TYPE_MAGICAL : DamageType(0);
+			type |= (flg & flag('p')) ? DAMAGE_TYPE_POISON : DamageType(0);
+			type |= (flg & flag('l')) ? DAMAGE_TYPE_LIGHTNING : DamageType(0);
+			type |= (flg & flag('c')) ? DAMAGE_TYPE_COLD : DamageType(0);
+			type |= (flg & flag('g')) ? DAMAGE_TYPE_GAS : DamageType(0);
+			type |= (flg & flag('e')) ? DAMAGE_TYPE_METAL : DamageType(0);
+			type |= (flg & flag('w')) ? DAMAGE_TYPE_WOOD : DamageType(0);
+			type |= (flg & flag('s')) ? DAMAGE_TYPE_STONE : DamageType(0);
+			type |= (flg & flag('a')) ? DAMAGE_TYPE_ACID : DamageType(0);
+			type |= (flg & flag('o')) ? DAMAGE_TYPE_ORGANIC : DamageType(0);
+			type |= (flg & flag('r')) ? DAMAGE_TYPE_DRAIN_LIFE : DamageType(0);
+			type |= (flg & flag('n')) ? DAMAGE_TYPE_DRAIN_MANA : DamageType(0);
+			type |= (flg & flag('u')) ? DAMAGE_TYPE_PUSH : DamageType(0);
+		}
+		
+		string target = context.getLowercase();
+		
+		float damage = context.getFloat();
+		
+		DebugScript(' ' << options << ' ' << target);
+		
+		long t = GetTargetByNameTarget(target);
+		if(t == -2) {
+			t = GetInterNum(context.getIO()); //self
+		}
+		if(!ValidIONum(t)) {
+			ScriptWarning << "unknown target: " << target;
+			return Failed;
+		}
+		
+		ARX_DAMAGES_DealDamages(t, damage, GetInterNum(context.getIO()), type, &inter.iobj[t]->pos);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -2003,6 +2051,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new UseMeshCommand);
 	ScriptEvent::registerCommand(new MoveCommand);
 	ScriptEvent::registerCommand(new DestroyCommand);
+	ScriptEvent::registerCommand(new DoDamageCommand);
 	
 }
 
