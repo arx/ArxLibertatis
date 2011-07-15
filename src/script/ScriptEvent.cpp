@@ -588,37 +588,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'E':
 
-				if (!strcmp(word, "EATME"))
-				{
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "EATME");
-
-#endif
-
-					if (io) // can only kill IOs
-					{
-						if (io->ioflags & IO_ITEM)
-						{
-							player.hunger += io->_itemdata->food_value * 4;
-
-							if (player.hunger > 100.f) player.hunger = 100.f;
-						}
-
-						if ((io->ioflags & IO_ITEM) && (io->_itemdata->count > 1))
-						{
-							io->_itemdata->count--;
-						}
-						else
-						{
-							io->show = SHOW_FLAG_KILLED;
-							io->GameFlags &= ~GFLAG_ISINTREATZONE;
-							RemoveFromAllInventories(io);
-							ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
-						}
-					}
-				}
-				else if (!strcmp(word, "EQUIP"))
+				if (!strcmp(word, "EQUIP"))
 				{
 					pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG

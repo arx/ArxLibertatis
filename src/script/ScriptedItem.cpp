@@ -1,6 +1,8 @@
 
 #include "script/ScriptedItem.h"
 
+#include "game/Player.h"
+#include "game/Inventory.h"
 #include "graphics/Math.h"
 #include "io/Logger.h"
 #include "platform/String.h"
@@ -304,6 +306,36 @@ public:
 	
 };
 
+class EatMeCommand : public Command {
+	
+public:
+	
+	EatMeCommand() : Command("eatme", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		DebugScript("");
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		if(io->ioflags & IO_ITEM) {
+			player.hunger += min(io->_itemdata->food_value * 4.f, 100.f);
+		}
+		
+		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+			io->_itemdata->count--;
+		} else {
+			io->show = SHOW_FLAG_KILLED;
+			io->GameFlags &= ~GFLAG_ISINTREATZONE;
+			RemoveFromAllInventories(io);
+			ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -320,6 +352,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetCountCommand);
 	ScriptEvent::registerCommand(new SetPriceCommand);
 	ScriptEvent::registerCommand(new PlayerStackSizeCommand);
+	ScriptEvent::registerCommand(new EatMeCommand);
 	
 }
 
