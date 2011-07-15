@@ -63,9 +63,7 @@ using std::max;
 using std::min;
 using std::string;
 
-extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;
-extern long REFUSE_GAME_RETURN;
 extern float g_TimeStartCinemascope;
 
 #ifdef NEEDING_DEBUG
@@ -590,20 +588,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'E':
 
-				if (!strcmp(word, "ENDGAME"))
-				{
-					REFUSE_GAME_RETURN = 1;
-
-					if (FINAL_COMMERCIAL_DEMO)
-						ARX_INTERFACE_EndIntro();
-					else
-					{
-						ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-						ARX_MENU_Launch();
-						ARX_MENU_Clicked_CREDITS();
-					}
-				}
-				else if (!strcmp(word, "EATME"))
+				if (!strcmp(word, "EATME"))
 				{
 #ifdef NEEDING_DEBUG
 

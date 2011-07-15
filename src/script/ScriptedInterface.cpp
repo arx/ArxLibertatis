@@ -4,13 +4,17 @@
 #include "game/Player.h"
 #include "game/Inventory.h"
 #include "gui/Interface.h"
+#include "gui/Menu.h"
 #include "io/Logger.h"
+#include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
 using std::string;
 
 extern float InventoryDir;
+extern long REFUSE_GAME_RETURN;
+extern long FINAL_COMMERCIAL_DEMO;
 
 namespace script {
 
@@ -235,6 +239,31 @@ public:
 	
 };
 
+class EndGameCommand : public Command {
+	
+public:
+	
+	EndGameCommand() : Command("endgame") { }
+	
+	Result execute(Context & context) {
+		
+		DebugScript("");
+		
+		REFUSE_GAME_RETURN = 1;
+		
+		if(FINAL_COMMERCIAL_DEMO) {
+			ARX_INTERFACE_EndIntro();
+		} else {
+			ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
+			ARX_MENU_Launch();
+			ARX_MENU_Clicked_CREDITS();
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInterface() {
@@ -248,6 +277,7 @@ void setupScriptedInterface() {
 	ScriptEvent::registerCommand(new PlayerInterfaceCommand);
 	ScriptEvent::registerCommand(new PopupCommand);
 	ScriptEvent::registerCommand(new EndIntroCommand);
+	ScriptEvent::registerCommand(new EndGameCommand);
 	
 }
 
