@@ -1,6 +1,7 @@
 
 #include "script/ScriptedInteractiveObject.h"
 
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Inventory.h"
 #include "game/Player.h"
@@ -20,6 +21,8 @@
 using std::string;
 
 extern INTERACTIVE_OBJ * LASTSPAWNED;
+extern long TELEPORT_TO_CONFIRM;
+extern long CHANGE_LEVEL_ICON;
 
 namespace script {
 
@@ -1641,6 +1644,143 @@ public:
 	
 };
 
+class TeleportCommand : public Command {
+	
+public:
+	
+	TeleportCommand() : Command("teleport") { }
+	
+	Result execute(Context & context) {
+		
+		TELEPORT_TO_CONFIRM = 1;
+		
+		bool teleport_player = false, initpos = false;
+		HandleFlags("alnpi") {
+			
+			long angle = -1;
+			
+			if(flg & flag('a')) {
+				float fangle = context.getFloat();
+				angle = static_cast<long>(fangle);
+				if(!flg & flag('l')) {
+					player.desiredangle.b = player.angle.b = fangle;
+				}
+			}
+			
+			if(flg & flag('n')) {
+				TELEPORT_TO_CONFIRM = 0;
+			}
+			
+			if(flg & flag('l')) {
+				
+				string level = context.getLowercase();
+				string target = context.getLowercase();
+				
+				strcpy(TELEPORT_TO_LEVEL, level.c_str());
+				strcpy(TELEPORT_TO_POSITION, target.c_str());
+				
+				if(angle == -1) {
+					TELEPORT_TO_ANGLE	=	static_cast<long>(player.angle.b);
+				} else {
+					TELEPORT_TO_ANGLE = angle;
+				}
+				
+				CHANGE_LEVEL_ICON = 1;
+				if(!TELEPORT_TO_CONFIRM) {
+					CHANGE_LEVEL_ICON = 200;
+				}
+				
+				DebugScript(' ' << options << ' ' << level << ' ' << target);
+				
+				return Success;
+			}
+			
+			teleport_player = (flg & flag('p'));
+			initpos = (flg & flag('i'));
+		}
+		
+		string target;
+		if(!initpos) {
+			target = context.getLowercase();
+		}
+		
+		DebugScript(' ' << options << ' ' << target);
+		
+		if(target == "behind") {
+			TELEPORT_TO_CONFIRM = 0;
+			ARX_INTERACTIVE_TeleportBehindTarget(context.getIO());
+			return Success;
+		}
+		
+#ifdef BUILD_EDITOR
+		if(!GAME_EDITOR) {
+#endif
+			TELEPORT_TO_CONFIRM = 0;
+#ifdef BUILD_EDITOR
+		}
+#endif
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!teleport_player && !io) {
+			LogWarning << "must either use -p or use in IO context";
+			return Failed;
+		}
+		
+		if(!initpos) {
+			
+			long t = GetTargetByNameTarget(target);
+			if(t == -2) {
+				t = GetInterNum(context.getIO());
+			}
+			arx_assert(t != -3);
+			if(!ValidIONum(t)) {
+				ScriptWarning << "unknown target: " << target;
+				return Failed;
+			}
+			
+			Vec3f pos;
+			if(!GetItemWorldPosition(inter.iobj[t], &pos)) {
+				ScriptWarning << "could not get world position";
+				return Failed;
+			}
+			
+			if(teleport_player) {
+				ARX_INTERACTIVE_Teleport(inter.iobj[0], &pos);
+				return Success;
+			}
+			
+			if(!(io->ioflags & IO_NPC) || io->_npcdata->life > 0) {
+				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
+					io->show = SHOW_FLAG_IN_SCENE;
+				}
+				ARX_INTERACTIVE_Teleport(io, &pos);
+			}
+			
+		} else {
+			
+			if(!io) {
+				LogWarning << "must be in IO context to teleport -i";
+				return Failed;
+			}
+			
+			if(teleport_player) {
+				Vec3f pos;
+				if(GetItemWorldPosition(io, &pos)) {
+					ARX_INTERACTIVE_Teleport(inter.iobj[0], &pos);
+				}
+			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->life > 0) {
+				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
+					io->show = SHOW_FLAG_IN_SCENE;
+				}
+				ARX_INTERACTIVE_Teleport(io, &io->initpos);
+			}
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1692,6 +1832,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new InventoryCommand);
 	ScriptEvent::registerCommand(new ObjectHideCommand);
 	ScriptEvent::registerCommand(new HaloCommand);
+	ScriptEvent::registerCommand(new TeleportCommand);
 	
 }
 
