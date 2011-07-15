@@ -590,11 +590,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'E':
 
-				if (!strcmp(word, "ENDINTRO"))
-				{
-					ARX_INTERFACE_EndIntro();
-				}
-				else if (!strcmp(word, "ENDGAME"))
+				if (!strcmp(word, "ENDGAME"))
 				{
 					REFUSE_GAME_RETURN = 1;
 

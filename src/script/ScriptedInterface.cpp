@@ -218,6 +218,23 @@ public:
 	
 };
 
+class EndIntroCommand : public Command {
+	
+public:
+	
+	EndIntroCommand() : Command("endintro") { }
+	
+	Result execute(Context & context) {
+		
+		DebugScript("");
+		
+		ARX_INTERFACE_EndIntro();
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInterface() {
@@ -230,6 +247,7 @@ void setupScriptedInterface() {
 	ScriptEvent::registerCommand(new ShowVarsCommand);
 	ScriptEvent::registerCommand(new PlayerInterfaceCommand);
 	ScriptEvent::registerCommand(new PopupCommand);
+	ScriptEvent::registerCommand(new EndIntroCommand);
 	
 }
 
