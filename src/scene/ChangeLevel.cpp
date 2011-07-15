@@ -2578,7 +2578,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				TWEAK_INFO & tweak = io->Tweaks[i];
 				const SavedTweakInfo * sti = reinterpret_cast<const SavedTweakInfo *>(dat + pos);
 				pos += sizeof(SavedTweakInfo);
-				tweak.type = sti->type;
+				tweak.type = TweakType::load(sti->type); // TODO save/load flags
 				assert(array_size(tweak.param1) >= array_size(sti->param1));
 				strcpy(tweak.param1, loadPath(safestring(sti->param1)).c_str());
 				assert(array_size(tweak.param2) >= array_size(sti->param2));

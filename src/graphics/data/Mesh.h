@@ -449,12 +449,7 @@ struct IO_GROUP_DATA
 	 char			name[64];
 };
 
-struct TWEAK_INFO
-{
-	long type;
-	char param1[256];
-	char param2[256];
-};
+struct TWEAK_INFO;
 
 #define IO_NPC_AFLAG_HIT_BACKGROUND			1
 #define IO_NPC_AFLAG_HIT_CLEAR				(1)

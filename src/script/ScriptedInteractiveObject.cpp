@@ -8,6 +8,7 @@
 #include "game/Missile.h"
 #include "game/NPC.h"
 #include "graphics/Math.h"
+#include "graphics/data/MeshManipulation.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
 #include "io/Logger.h"
@@ -1799,6 +1800,81 @@ public:
 	
 };
 
+class TweakCommand : public Command {
+	
+public:
+	
+	TweakCommand() : Command("tweak", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		string type = context.getLowercase();
+		
+		if(type == "skin") {
+			
+			string oldskin = loadPath(context.getLowercase());
+			string newskin = loadPath(context.getLowercase());
+			
+			DebugScript(" skin \"" << oldskin << "\" \"" << newskin << '"');
+			
+			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_SKIN, oldskin, newskin);
+			EERIE_MESH_TWEAK_Skin(io->obj, oldskin, newskin);
+			
+		} else if(type == "icon") {
+			
+			string icon = loadPath(context.getLowercase());
+			
+			DebugScript(" icon \"" << icon << '"');
+			
+			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, icon, string());
+			ARX_INTERACTIVE_TWEAK_Icon(io, icon);
+			
+		} else if(type == "remove") {
+			
+			DebugScript(" remove");
+			
+			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_REMOVE, string(), string());
+			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, string());
+			
+		} else {
+			
+			TweakType tw;
+			if(type == "head") {
+				tw = TWEAK_HEAD;
+			} else if(type == "torso") {
+				tw = TWEAK_TORSO;
+			} else if(type == "legs") {
+				tw = TWEAK_LEGS;
+			} else if(type == "all") {
+				tw = TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS;
+			} else if(type == "upper") {
+				tw = TWEAK_HEAD | TWEAK_TORSO;
+			} else if(type == "lower") {
+				tw = TWEAK_TORSO | TWEAK_LEGS;
+			} else if(type == "up_lo") {
+				tw = TWEAK_HEAD | TWEAK_LEGS;
+			} else {
+				ScriptWarning << "unknown tweak type: " << type;
+				return Failed;
+			}
+			
+			string mesh = loadPath(context.getLowercase());
+			
+			string path = io->usemesh ? io->usemesh : io->filename;
+			RemoveName(path);
+			path += "tweaks\\" + mesh + ".teo";
+			
+			ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, string());
+			EERIE_MESH_TWEAK_Do(io, tw, path);
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1852,6 +1928,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new HaloCommand);
 	ScriptEvent::registerCommand(new TeleportCommand);
 	ScriptEvent::registerCommand(new TargetPlayerPosCommand);
+	ScriptEvent::registerCommand(new TweakCommand);
 	
 }
 

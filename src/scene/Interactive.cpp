@@ -1242,7 +1242,7 @@ static void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io) {
 	io->Tweak_nb = 0;
 }
 
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string& param1, const std::string& param2)
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const std::string& param1, const std::string& param2)
 {
 	io->Tweaks = (TWEAK_INFO *)realloc(io->Tweaks, sizeof(TWEAK_INFO) * (io->Tweak_nb + 1));
 	memset(&io->Tweaks[io->Tweak_nb], 0, sizeof(TWEAK_INFO));

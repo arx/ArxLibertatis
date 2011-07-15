@@ -786,7 +786,7 @@ long ALLOW_MESH_TWEAKING = 1;
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
+void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const string & _path)
 {
 	if (!ALLOW_MESH_TWEAKING) return;
 
@@ -802,7 +802,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 
 	if ((!resources->getFile(file2)) && (!resources->getFile(path))) return;
 
-	if (tw == TWEAK_ERROR) return;
+	if (!tw) return;
 
 	if (io == NULL) return;
 
@@ -834,7 +834,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 
 		switch (tw)
 		{
-			case TWEAK_ALL:
+			case (u32)TWEAK_HEAD | (u32)TWEAK_TORSO | (u32)TWEAK_LEGS:
 
 				if (!io->tweaky)
 					io->tweaky = io->obj;
@@ -844,17 +844,17 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 				io->obj = tobj;
 				return;
 				break;
-			case TWEAK_UPPER:
+			case (u32)TWEAK_HEAD | (u32)TWEAK_TORSO:
 				result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
 				result = CreateIntermediaryMesh(result2, tobj, TWEAK_TORSO);
 				delete result2;
 				break;
-			case TWEAK_LOWER:
+			case (u32)TWEAK_TORSO | (u32)TWEAK_LEGS:
 				result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_TORSO);
 				result = CreateIntermediaryMesh(result2, tobj, TWEAK_LEGS);
 				delete result2;
 				break;
-			case TWEAK_UP_LO:
+			case (u32)TWEAK_HEAD | (u32)TWEAK_LEGS:
 				result = CreateIntermediaryMesh(tobj, io->obj, TWEAK_TORSO);
 				break;
 			default:
