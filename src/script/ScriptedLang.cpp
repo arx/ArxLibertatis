@@ -876,6 +876,90 @@ public:
 	
 };
 
+class IncCommand : public Command {
+	
+public:
+	
+	IncCommand() : Command("inc") { }
+	
+	Result execute(Context & context) {
+		
+		string var = context.getLowercase();
+		float val = context.getFloat();
+		
+		DebugScript(' ' << var << ' ' << val);
+		
+		if(var.empty()) {
+			ScriptWarning << "missing variable name";
+			return Failed;
+		}
+		
+		EERIE_SCRIPT * es = context.getMaster();
+		
+		switch(var[0]) {
+			
+			case '$': // global text
+			case '\xA3': { // local text
+				ScriptWarning << "cannot increment string variables";
+				return Failed;
+			}
+			
+			case '#':  {// global long
+				float old = (float)GETVarValueLong(svar, NB_GLOBALS, var);
+				SCRIPT_VAR * sv = SETVarValueLong(svar, NB_GLOBALS, var, (long)(old + val));
+				if(!sv) {
+					ScriptWarning << "unable to set var " << var;
+					return Failed;
+				}
+				sv->type = TYPE_G_LONG;
+				break;
+			}
+			
+			case '\xA7': { // local long
+				float old = (float)GETVarValueLong(es->lvar, es->nblvar, var);
+				SCRIPT_VAR * sv = SETVarValueLong(es->lvar, es->nblvar, var, (long)(old + val));
+				if(!sv) {
+					ScriptWarning << "unable to set var " << var;
+					return Failed;
+				}
+				sv->type = TYPE_L_LONG;
+				break;
+			}
+			
+			case '&': { // global float
+				float old = GETVarValueFloat(svar, NB_GLOBALS, var);
+				SCRIPT_VAR * sv = SETVarValueFloat(svar, NB_GLOBALS, var, old + val);
+				if(!sv) {
+					ScriptWarning << "unable to set var " << var;
+					return Failed;
+				}
+				sv->type = TYPE_G_FLOAT;
+				break;
+			}
+			
+			case '@': { // local float
+				float old = GETVarValueFloat(es->lvar, es->nblvar, var);
+				SCRIPT_VAR * sv = SETVarValueFloat(es->lvar, es->nblvar, var, old + val);
+				if(!sv) {
+					ScriptWarning << "unable to set var " << var;
+					return Failed;
+				}
+				sv->type = TYPE_L_FLOAT;
+				break;
+			}
+			
+			default: {
+				ScriptWarning << "unknown variable type: " << var;
+				return Failed;
+			}
+			
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -895,6 +979,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new SetCommand);
 	ScriptEvent::registerCommand(new SetEventCommand);
 	ScriptEvent::registerCommand(new IfCommand);
+	ScriptEvent::registerCommand(new IncCommand);
 	
 }
 
