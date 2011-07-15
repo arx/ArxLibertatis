@@ -1916,6 +1916,36 @@ public:
 	
 };
 
+class DestroyCommand : public Command {
+	
+public:
+	
+	DestroyCommand() : Command("destroy") { }
+	
+	Result execute(Context & context) {
+		
+		string target = toLowercase(context.getStringVar(context.getLowercase()));
+		
+		DebugScript(' ' << target);
+		
+		long t = GetTargetByNameTarget(target);
+		if(t == -2) {
+			t = GetInterNum(context.getIO()); //self
+		}
+		if(!ValidIONum(t)) {
+			ScriptWarning << "unknown target: " << target;
+			return Failed;
+		}
+		
+		bool self = (inter.iobj[t] == context.getIO());
+		
+		ARX_INTERACTIVE_DestroyIO(inter.iobj[t]);
+		
+		return self ? AbortAccept : Success; // Cannot process further if we destroyed the script's IO
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1972,6 +2002,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new TweakCommand);
 	ScriptEvent::registerCommand(new UseMeshCommand);
 	ScriptEvent::registerCommand(new MoveCommand);
+	ScriptEvent::registerCommand(new DestroyCommand);
 	
 }
 

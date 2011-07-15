@@ -587,34 +587,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'D':
 
-				if (!strcmp(word, "DESTROY"))
-				{
-					std::string temp2;
-					pos = GetNextWord(es, pos, temp2); // Source IO
-					word = GetVarValueInterpretedAsText(temp2, esss, io);
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -2) t = GetInterNum(io); //self
-
-					if (ValidIONum(t)) // can only kill IOs
-					{
-						long self = 0;
-						INTERACTIVE_OBJ * ioo = inter.iobj[t];
-
-						if (io == ioo) self = 1;
-
-						ARX_INTERACTIVE_DestroyIO(ioo);
-
-						if (self) return ACCEPT; // Cannot process further...
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "DESTROY");
-
-#endif
-				}
-				else if (!strcmp(word, "DETACHNPCFROMPLAYER"))
+				if (!strcmp(word, "DETACHNPCFROMPLAYER"))
 				{
 #ifdef NEEDING_DEBUG
 
