@@ -504,6 +504,378 @@ public:
 	
 };
 
+class IfCommand : public Command {
+	
+	// TODO(script) move to context?
+	static ValueType getVar(const Context & context, const string & var, string & s, float & f, ValueType def) {
+		
+		char c = (var.empty() ? '\0' : var[0]);
+		
+		EERIE_SCRIPT * es = context.getMaster();
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		switch(c) {
+			
+			case '^': {
+				
+				long l;
+				switch(GetSystemVar(es, io, var, s, &f, &l)) {
+					
+					case TYPE_TEXT: return TYPE_TEXT;
+					
+					case TYPE_FLOAT: return TYPE_FLOAT;
+					
+					case TYPE_LONG: {
+						f = static_cast<float>(l);
+						return TYPE_FLOAT;
+					}
+					
+					default: {
+						ARX_CHECK_NO_ENTRY();
+						return TYPE_TEXT;
+					}
+					
+				}
+			}
+			
+			case '#': {
+				f = GETVarValueLong(svar, NB_GLOBALS, var);
+				return TYPE_FLOAT;
+			}
+			
+			case '\xA7': {
+				f = GETVarValueLong(es->lvar, es->nblvar, var);
+				return TYPE_FLOAT;
+			}
+			
+			case '&': {
+				f = GETVarValueFloat(svar, NB_GLOBALS, var);
+				return TYPE_FLOAT;
+			}
+			
+			case '@': {
+				f = GETVarValueFloat(es->lvar, es->nblvar, var);
+				return TYPE_FLOAT;
+			}
+			
+			case '$': {
+				s = GETVarValueText(svar, NB_GLOBALS, var);
+				return TYPE_TEXT;
+			}
+			
+			case '\xA3': {
+				s = GETVarValueText(es->lvar, es->nblvar, var);
+				return TYPE_TEXT;
+			}
+			
+			default: {
+				if(def == TYPE_TEXT) {
+					s = var;
+					return TYPE_TEXT;
+				} else {
+					f = static_cast<float>(atof(var.c_str()));
+					return TYPE_FLOAT;
+				}
+			}
+			
+		}
+		
+	}
+	
+	class Operator {
+		
+		string name;
+		ValueType type;
+		
+	public:
+		
+		Operator(const string & _name, ValueType _type) : name(_name), type(_type) { };
+		
+		virtual bool number(const Context & context, float left, float right) {
+			ARX_UNUSED(left), ARX_UNUSED(right);
+			ScriptWarning << "operator " << name << " is not aplicable to numbers";
+			return true;
+		}
+		
+		virtual bool text(const Context & context, const string & left, const string & right) {
+			ARX_UNUSED(left), ARX_UNUSED(right);
+			ScriptWarning << "operator " << name << " is not aplicable to text";
+			return false;
+		}
+		
+		inline string getName() { return "if"; }
+		inline const string & getOperator() { return name; }
+		inline ValueType getType() { return type; }
+		
+	};
+	
+	typedef std::map<string, Operator *> Operators;
+	Operators operators;
+	
+	void addOperator(Operator * op) {
+		
+		typedef std::pair<Operators::iterator, bool> Res;
+		
+		Res res = operators.insert(std::make_pair(op->getOperator(), op));
+		
+		if(!res.second) {
+			LogError << "duplicate script 'if' operator name: " + op->getOperator();
+			delete op;
+		}
+		
+	}
+	
+	class IsElementOperator : public Operator {
+		
+	public:
+		
+		IsElementOperator() : Operator("iselement", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool text(const Context & context, const string & seek, const string & text) {
+			ARX_UNUSED(context);
+			
+			for(size_t pos = 0, next; next = text.find(' ', pos), true ; pos = next + 1) {
+				
+				if(next == string::npos) {
+					return (text.compare(pos, text.length() - pos, seek) == 0);
+				}
+				
+				if(text.compare(pos, next - pos, seek) == 0) {
+					return true;
+				}
+				
+			}
+			
+			return false; // for stupid compilers
+		}
+		
+	};
+	
+	class IsClassOperator : public Operator {
+		
+	public:
+		
+		IsClassOperator() : Operator("isclass", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool text(const Context & context, const string & left, const string & right) {
+			ARX_UNUSED(context);
+			return (left.find(right) != string::npos || right.find(left) != string::npos);
+		}
+		
+	};
+	
+	class IsGroupOperator : public Operator {
+		
+	public:
+		
+		IsGroupOperator() : Operator("isgroup", TYPE_TEXT) { };
+		
+		bool text(const Context & context, const string & obj, const string & group) {
+			
+			long t = GetTargetByNameTarget(obj);
+			if(t == -2) {
+				t = GetInterNum(context.getIO());
+			}
+			
+			return (ValidIONum(t) && IsIOGroup(inter.iobj[t], group));
+		}
+		
+	};
+	
+	class NotIsGroupOperator : public Operator {
+		
+	public:
+		
+		NotIsGroupOperator() : Operator("!isgroup", TYPE_TEXT) { };
+		
+		bool text(const Context & context, const string & obj, const string & group) {
+			
+			long t = GetTargetByNameTarget(obj);
+			if(t == -2) {
+				t = GetInterNum(context.getIO());
+			}
+			
+			return (ValidIONum(t) && !IsIOGroup(inter.iobj[t], group));
+		}
+		
+	};
+	
+	class IsTypeOperator : public Operator {
+		
+	public:
+		
+		IsTypeOperator() : Operator("istype", TYPE_TEXT) { };
+		
+		bool text(const Context & context, const string & obj, const string & type) {
+			
+			long t = GetTargetByNameTarget(obj);
+			if(t == -2) {
+				t = GetInterNum(context.getIO());
+			}
+			
+			ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(type);
+			if(!flag) {
+				ScriptWarning << "unknown type: " << type;
+				return false;
+			}
+			
+			return (ValidIONum(t) && (inter.iobj[t]->type_flags & flag));
+		}
+		
+	};
+	
+	class IsInOperator : public Operator {
+		
+	public:
+		
+		IsInOperator() : Operator("isin", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool text(const Context & context, const string & needle, const string & haystack) {
+			return ARX_UNUSED(context), (haystack.find(needle) != string::npos);
+		}
+		
+	};
+	
+	class EqualOperator : public Operator {
+		
+	public:
+		
+		EqualOperator() : Operator("==", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool text(const Context & context, const string & left, const string & right) {
+			return ARX_UNUSED(context), (left == right);
+		}
+		
+		bool number(const Context & context, const float left, const float right) {
+			return ARX_UNUSED(context), (left == right);
+		}
+		
+	};
+	
+	class NotEqualOperator : public Operator {
+		
+	public:
+		
+		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool text(const Context & context, const string & left, const string & right) {
+			return ARX_UNUSED(context), (left != right);
+		}
+		
+		bool number(const Context & context, float left, float right) {
+			return ARX_UNUSED(context), (left != right);
+		}
+		
+	};
+	
+	class LessEqualOperator : public Operator {
+		
+	public:
+		
+		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool number(const Context & context, float left, float right) {
+			return ARX_UNUSED(context), (left <= right);
+		}
+		
+	};
+	
+	class LessOperator : public Operator {
+		
+	public:
+		
+		LessOperator() : Operator("<", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool number(const Context & context, float left, float right) {
+			return ARX_UNUSED(context), (left < right);
+		}
+		
+	};
+	
+	class GreaterEqualOperator : public Operator {
+		
+	public:
+		
+		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool number(const Context & context, float left, float right) {
+			return ARX_UNUSED(context), (left >= right);
+		}
+		
+	};
+	
+	class GreaterOperator : public Operator {
+		
+	public:
+		
+		GreaterOperator() : Operator(">", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		
+		bool number(const Context & context, float left, float right) {
+			return ARX_UNUSED(context), (left > right);
+		}
+		
+	};
+	
+public:
+	
+	IfCommand() : Command("if") {
+		addOperator(new IsElementOperator);
+		addOperator(new IsClassOperator);
+		addOperator(new IsGroupOperator);
+		addOperator(new NotIsGroupOperator);
+		addOperator(new IsTypeOperator);
+		addOperator(new IsInOperator);
+		addOperator(new EqualOperator);
+		addOperator(new NotEqualOperator);
+		addOperator(new LessEqualOperator);
+		addOperator(new LessOperator);
+		addOperator(new GreaterEqualOperator);
+		addOperator(new GreaterOperator);
+	}
+	
+	Result execute(Context & context) {
+		
+		string left = context.getLowercase();
+		
+		string op = context.getLowercase();
+		
+		string right = context.getLowercase();
+		
+		DebugScript(" \"" << left << "\" " << op << " \"" << right << '"');
+		
+		Operators::const_iterator it = operators.find(op);
+		if(it == operators.end()) {
+			ScriptWarning << "unknown operator: " << op;
+			return Jumped;
+		}
+		
+		float f1, f2;
+		string s1, s2;
+		ValueType t1 = getVar(context, left, s1, f1, it->second->getType());
+		ValueType t2 = getVar(context, right, s2, f2, t1);
+		
+		if(t1 != t2) {
+			ScriptWarning << "incompatible types: \"" << left << "\" (" << (t1 == TYPE_TEXT ? "text" : "number") << ") and \"" << right << "\" (" << (t2 == TYPE_TEXT ? "text" : "number") << ')';
+			context.skipStatement();
+			return Jumped;
+		}
+		
+		bool condition;
+		if(t1 == TYPE_TEXT) {
+			condition = it->second->text(context, toLowercase(s1), toLowercase(s2)); // TODO case-sensitive
+		} else {
+			condition = it->second->number(context, f1, f2);
+		}
+		
+		if(!condition) {
+			context.skipStatement();
+		}
+		
+		return Jumped;
+	}
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -522,6 +894,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new SendEventCommand);
 	ScriptEvent::registerCommand(new SetCommand);
 	ScriptEvent::registerCommand(new SetEventCommand);
+	ScriptEvent::registerCommand(new IfCommand);
 	
 }
 

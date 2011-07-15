@@ -311,7 +311,7 @@ void initSuppressions() {
 	
 }
 
-bool isSuppressed(const Context & context, const Command & command) {
+bool isSuppressed(const Context & context, const string & command) {
 	
 	SuppressionsForPos::const_iterator i0 = suppressions.find(context.getPosition());
 	if(i0 == suppressions.end()) {
@@ -323,7 +323,7 @@ bool isSuppressed(const Context & context, const Command & command) {
 		return false;
 	}
 	
-	SuppressedCommands::const_iterator i2 = i1->second.find(command.getName());
+	SuppressedCommands::const_iterator i2 = i1->second.find(command);
 	
 	return (i2 != i1->second.end() && i2->second);
 }
