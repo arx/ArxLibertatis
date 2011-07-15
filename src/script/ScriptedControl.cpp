@@ -269,27 +269,6 @@ public:
 	
 };
 
-class QuakeCommand : public Command {
-	
-public:
-	
-	QuakeCommand() : Command("quake") { }
-	
-	Result execute(Context & context) {
-		
-		float intensity = context.getFloat();
-		float duration = context.getFloat();
-		float period = context.getFloat();
-		
-		DebugScript(' ' << intensity << ' ' << duration << ' ' << period);
-		
-		AddQuakeFX(intensity, duration, period, 1);
-		
-		return Success;
-	}
-	
-};
-
 class SetGroupCommand : public Command {
 	
 public:
@@ -596,7 +575,6 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new AttachCommand);
 	ScriptEvent::registerCommand(new CineCommand);
 	ScriptEvent::registerCommand(new ConversationCommand);
-	ScriptEvent::registerCommand(new QuakeCommand);
 	ScriptEvent::registerCommand(new SetGroupCommand);
 	ScriptEvent::registerCommand(new SetControlledZoneCommand);
 	ScriptEvent::registerCommand(new SetPathCommand);

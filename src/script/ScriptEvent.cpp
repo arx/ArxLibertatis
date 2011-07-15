@@ -634,38 +634,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 
 				break;
-			case 'W':
-
-				if (!strcmp(word, "WEAPON"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if ((io) && (io->ioflags & IO_NPC))
-					{
-						if ((!strcasecmp(word, "DRAW")) || (!strcasecmp(word, "ON")))
-						{
-							if (io->_npcdata->weaponinhand == 0)
-							{
-								AcquireLastAnim(io);
-								FinishAnim(io, io->animlayer[1].cur_anim);
-								io->animlayer[1].cur_anim = NULL;
-								io->_npcdata->weaponinhand = -1;
-							}
-						}
-						else
-						{
-							if (io->_npcdata->weaponinhand == 1)
-							{
-								AcquireLastAnim(io);
-								FinishAnim(io, io->animlayer[1].cur_anim);
-								io->animlayer[1].cur_anim = NULL;
-								io->_npcdata->weaponinhand = 2;
-							}
-						}
-					}
-				}
-
-				break;
 			case 'U':
 
 				if (!strcmp(word, "USEMESH"))

@@ -744,6 +744,41 @@ public:
 	
 };
 
+class WeaponCommand : public Command {
+	
+public:
+	
+	WeaponCommand() : Command("weapon", IO_NPC) { }
+	
+	Result execute(Context & context) {
+		
+		bool draw = context.getBool();
+		
+		DebugScript(' ' << draw);
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		if(draw) {
+			if(io->_npcdata->weaponinhand == 0) {
+				AcquireLastAnim(io);
+				FinishAnim(io, io->animlayer[1].cur_anim);
+				io->animlayer[1].cur_anim = NULL;
+				io->_npcdata->weaponinhand = -1;
+			}
+		} else {
+			if(io->_npcdata->weaponinhand == 1) {
+				AcquireLastAnim(io);
+				FinishAnim(io, io->animlayer[1].cur_anim);
+				io->animlayer[1].cur_anim = NULL;
+				io->_npcdata->weaponinhand = 2;
+			}
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedNPC() {
@@ -765,6 +800,7 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new SetTargetCommand);
 	ScriptEvent::registerCommand(new ForceDeathCommand);
 	ScriptEvent::registerCommand(new PathfindCommand);
+	ScriptEvent::registerCommand(new WeaponCommand);
 	
 }
 
