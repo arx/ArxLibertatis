@@ -564,6 +564,43 @@ public:
 	
 };
 
+class UsePathCommand : public Command {
+	
+public:
+	
+	UsePathCommand() : Command("usepath", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		HandleFlags("bfp") {
+			
+			ARX_USE_PATH * aup = context.getIO()->usepath;
+			if(aup) {
+				if(flg & flag('b')) {
+					aup->aupflags &= ~ARX_USEPATH_PAUSE;
+					aup->aupflags &= ~ARX_USEPATH_FORWARD;
+					aup->aupflags |= ARX_USEPATH_BACKWARD;
+				}
+				if(flg & flag('f')) {
+					aup->aupflags &= ~ARX_USEPATH_PAUSE;
+					aup->aupflags |= ARX_USEPATH_FORWARD;
+					aup->aupflags &= ~ARX_USEPATH_BACKWARD;
+				}
+				if(flg & flag('p')) {
+					aup->aupflags |= ARX_USEPATH_PAUSE;
+					aup->aupflags &= ~ARX_USEPATH_FORWARD;
+					aup->aupflags &= ~ARX_USEPATH_BACKWARD;
+				}
+			}
+		}
+		
+		DebugScript(' ' << options);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -582,6 +619,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new PlayCommand);
 	ScriptEvent::registerCommand(new PlaySpeechCommand);
 	ScriptEvent::registerCommand(new HeroSayCommand);
+	ScriptEvent::registerCommand(new UsePathCommand);
 	
 }
 

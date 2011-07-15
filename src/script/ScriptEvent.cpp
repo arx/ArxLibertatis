@@ -590,37 +590,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'U':
 
-				if (!strcmp(word, "USEPATH"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (io->usepath)
-					{
-						ARX_USE_PATH * aup = io->usepath;
-
-						if (iCharIn(word, 'B'))
-						{
-							aup->aupflags &= ~ARX_USEPATH_PAUSE;
-							aup->aupflags &= ~ARX_USEPATH_FORWARD;
-							aup->aupflags |= ARX_USEPATH_BACKWARD;
-						}
-
-						if (iCharIn(word, 'F'))
-						{
-							aup->aupflags &= ~ARX_USEPATH_PAUSE;
-							aup->aupflags |= ARX_USEPATH_FORWARD;
-							aup->aupflags &= ~ARX_USEPATH_BACKWARD;
-						}
-
-						if (iCharIn(word, 'P'))
-						{
-							aup->aupflags |= ARX_USEPATH_PAUSE;
-							aup->aupflags &= ~ARX_USEPATH_FORWARD;
-							aup->aupflags &= ~ARX_USEPATH_BACKWARD;
-						}
-					}
-				}
-				else if (!strcmp(word, "UNSETCONTROLLEDZONE"))
+				if (!strcmp(word, "UNSETCONTROLLEDZONE"))
 				{
 					pos = GetNextWord(es, pos, word);
 					ARX_PATH * ap = ARX_PATH_GetAddressByName(word);
