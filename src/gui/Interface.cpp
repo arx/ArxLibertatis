@@ -6687,83 +6687,83 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 										switch(i)
 										{
 										case RUNE_AAM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "AAM", ARX_SOUND_GetDuration(SND_SYMB_AAM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "aam", ARX_SOUND_GetDuration(SND_SYMB_AAM));
 											ARX_SOUND_PlayInterface(SND_SYMB_AAM);
 											break;
 										case RUNE_CETRIUS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "CETRIUS", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "cetrius", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
 											ARX_SOUND_PlayInterface(SND_SYMB_CETRIUS);
 											break;
 										case RUNE_COMUNICATUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "COMUNICATUM", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "comunicatum", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_COMUNICATUM);
 											break;
 										case RUNE_COSUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "COSUM", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "cosum", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_COSUM);
 											break;
 										case RUNE_FOLGORA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "FOLGORA", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "folgora", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
 											ARX_SOUND_PlayInterface(SND_SYMB_FOLGORA);
 											break;
 										case RUNE_FRIDD:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "FRIDD", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "fridd", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
 											ARX_SOUND_PlayInterface(SND_SYMB_FRIDD);
 											break;
 										case RUNE_KAOM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "KAOM", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "kaom", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
 											ARX_SOUND_PlayInterface(SND_SYMB_KAOM);
 											break;
 										case RUNE_MEGA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "MEGA", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "mega", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
 											ARX_SOUND_PlayInterface(SND_SYMB_MEGA);
 											break;
 										case RUNE_MORTE:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "MORTE", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "morte", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
 											ARX_SOUND_PlayInterface(SND_SYMB_MORTE);
 											break;
 										case RUNE_MOVIS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "MOVIS", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "movis", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
 											ARX_SOUND_PlayInterface(SND_SYMB_MOVIS);
 											break;
 										case RUNE_NHI:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "NHI", ARX_SOUND_GetDuration(SND_SYMB_NHI));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "nhi", ARX_SOUND_GetDuration(SND_SYMB_NHI));
 											ARX_SOUND_PlayInterface(SND_SYMB_NHI);
 											break;
 										case RUNE_RHAA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "RHAA", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "rhaa", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
 											ARX_SOUND_PlayInterface(SND_SYMB_RHAA);
 											break;
 										case RUNE_SPACIUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "SPACIUM", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "spacium", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_SPACIUM);
 											break;
 										case RUNE_STREGUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "STREGUM", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "stregum", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_STREGUM);
 											break;
 										case RUNE_TAAR:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "TAAR", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "taar", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
 											ARX_SOUND_PlayInterface(SND_SYMB_TAAR);
 											break;
 										case RUNE_TEMPUS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "TEMPUS", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "tempus", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
 											ARX_SOUND_PlayInterface(SND_SYMB_TEMPUS);
 											break;
 										case RUNE_TERA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "TERA", ARX_SOUND_GetDuration(SND_SYMB_TERA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "tera", ARX_SOUND_GetDuration(SND_SYMB_TERA));
 											ARX_SOUND_PlayInterface(SND_SYMB_TERA);
 											break;
 										case RUNE_VISTA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "VISTA", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "vista", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
 											ARX_SOUND_PlayInterface(SND_SYMB_VISTA);
 											break;
 										case RUNE_VITAE:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "VITAE", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "vitae", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
 											ARX_SOUND_PlayInterface(SND_SYMB_VITAE);
 											break;
 										case RUNE_YOK:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "YOK", ARX_SOUND_GetDuration(SND_SYMB_YOK));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "yok", ARX_SOUND_GetDuration(SND_SYMB_YOK));
 											ARX_SOUND_PlayInterface(SND_SYMB_YOK);
 											break;
 										}

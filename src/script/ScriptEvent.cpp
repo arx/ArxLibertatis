@@ -585,30 +585,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 
 				break;
-			case 'D':
-
-				if (!strcmp(word, "DRAWSYMBOL")) // DRAWSYMBOL symbol duration
-				{
-					std::string temp1;
-					std::string temp2;
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-
-					if (io != NULL)
-					{
-						MakeUpcase(temp1);
-						float dur = GetVarValueInterpretedAsFloat(temp2, esss, io);
-						ARX_SPELLS_RequestSymbolDraw(io, temp1, dur);
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "DRAW_SYMBOL %s %s", temp1, temp2);
-
-#endif
-				}
-
-				break;
 			default:
 				if (io) {
 					std::string temp2;

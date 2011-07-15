@@ -305,6 +305,27 @@ public:
 	
 };
 
+class DrawSymbolCommand : public Command {
+	
+public:
+	
+	DrawSymbolCommand() : Command("drawsymbol", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string symbol = context.getLowercase();
+		
+		float duration = context.getFloat();
+		
+		DebugScript(' ' << symbol << ' ' << duration);
+		
+		ARX_SPELLS_RequestSymbolDraw(context.getIO(), symbol, duration);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInterface() {
@@ -320,6 +341,7 @@ void setupScriptedInterface() {
 	ScriptEvent::registerCommand(new EndIntroCommand);
 	ScriptEvent::registerCommand(new EndGameCommand);
 	ScriptEvent::registerCommand(new MapMarkerCommand);
+	ScriptEvent::registerCommand(new DrawSymbolCommand);
 	
 }
 

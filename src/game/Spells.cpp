@@ -609,27 +609,27 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 	int iPosX = 0;
 	int iPosY = 0;
 
-	if(!name.compare("AAM"))              iPosX = 0, iPosY = 2, sequence = "6666";
-	else if(!name.compare("CETRIUS"))     iPosX = 1, iPosY = 1, sequence = "33388886666";
-	else if(!name.compare("COMUNICATUM")) iPosX = 0, iPosY = 0, sequence = "6666622244442226666";
-	else if(!name.compare("COSUM"))       iPosX = 0, iPosY = 2, sequence = "66666222244448888";
-	else if(!name.compare("FOLGORA"))     iPosX = 0, iPosY = 3, sequence = "99993333";
-	else if(!name.compare("FRIDD"))       iPosX = 0, iPosY = 4, sequence = "888886662222";
-	else if(!name.compare("KAOM"))        iPosX = 3, iPosY = 0, sequence = "44122366";
-	else if(!name.compare("MEGA"))        iPosX = 2, iPosY = 4, sequence = "88888";
-	else if(!name.compare("MORTE"))       iPosX = 0, iPosY = 2, sequence = "66666222";
-	else if(!name.compare("MOVIS"))       iPosX = 0, iPosY = 0, sequence = "666611116666";
-	else if(!name.compare("NHI"))         iPosX = 4, iPosY = 2, sequence = "4444";
-	else if(!name.compare("RHAA"))        iPosX = 2, iPosY = 0, sequence = "22222";
-	else if(!name.compare("SPACIUM"))     iPosX = 4, iPosY = 0, sequence = "44444222266688";
-	else if(!name.compare("STREGUM"))     iPosX = 0, iPosY = 4, sequence = "8888833338888";
-	else if(!name.compare("TAAR"))        iPosX = 0, iPosY = 1, sequence = "666222666";
-	else if(!name.compare("TEMPUS"))      iPosX = 0, iPosY = 4, sequence = "88886662226668866";
-	else if(!name.compare("TERA"))        iPosX = 0, iPosY = 3, sequence = "99922266";
-	else if(!name.compare("VISTA"))       iPosX = 1, iPosY = 0, sequence = "333111";
-	else if(!name.compare("VITAE"))       iPosX = 0, iPosY = 2, sequence = "66666888";
-	else if(!name.compare("YOK"))         iPosX = 0, iPosY = 0, sequence = "222226666888";
-	else if(!name.compare("AKBAA"))       iPosX = 0, iPosY = 0, sequence = "22666772222";
+	if(name == "aam")              iPosX = 0, iPosY = 2, sequence = "6666";
+	else if(name == "cetrius")     iPosX = 1, iPosY = 1, sequence = "33388886666";
+	else if(name == "comunicatum") iPosX = 0, iPosY = 0, sequence = "6666622244442226666";
+	else if(name == "cosum")       iPosX = 0, iPosY = 2, sequence = "66666222244448888";
+	else if(name == "folgora")     iPosX = 0, iPosY = 3, sequence = "99993333";
+	else if(name == "fridd")       iPosX = 0, iPosY = 4, sequence = "888886662222";
+	else if(name == "kaom")        iPosX = 3, iPosY = 0, sequence = "44122366";
+	else if(name == "mega")        iPosX = 2, iPosY = 4, sequence = "88888";
+	else if(name == "morte")       iPosX = 0, iPosY = 2, sequence = "66666222";
+	else if(name == "movis")       iPosX = 0, iPosY = 0, sequence = "666611116666";
+	else if(name == "nhi")         iPosX = 4, iPosY = 2, sequence = "4444";
+	else if(name == "rhaa")        iPosX = 2, iPosY = 0, sequence = "22222";
+	else if(name == "spacium")     iPosX = 4, iPosY = 0, sequence = "44444222266688";
+	else if(name == "stregum")     iPosX = 0, iPosY = 4, sequence = "8888833338888";
+	else if(name == "taar")        iPosX = 0, iPosY = 1, sequence = "666222666";
+	else if(name == "tempus")      iPosX = 0, iPosY = 4, sequence = "88886662226668866";
+	else if(name == "tera")        iPosX = 0, iPosY = 3, sequence = "99922266";
+	else if(name == "vista")       iPosX = 1, iPosY = 0, sequence = "333111";
+	else if(name == "vitae")       iPosX = 0, iPosY = 2, sequence = "66666888";
+	else if(name == "yok")         iPosX = 0, iPosY = 0, sequence = "222226666888";
+	else if(name == "akbaa")       iPosX = 0, iPosY = 0, sequence = "22666772222";
 	else {
 		return;
 	}
