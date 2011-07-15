@@ -872,11 +872,33 @@ public:
 	
 };
 
-class IncCommand : public Command {
+class ArithmeticCommand : public Command {
 	
 public:
 	
-	IncCommand() : Command("inc") { }
+	enum Operator {
+		Add,
+		Subtract,
+		Multiply,
+		Divide
+	};
+	
+private:
+	
+	float calculate(float left, float right) {
+		switch(op) {
+			case Add: return left + right;
+			case Subtract: return left - right;
+			case Multiply: return left * right;
+			case Divide: return (right == 0.f) ? 0.f : left / right;
+		}
+	}
+	
+	Operator op;
+	
+public:
+	
+	ArithmeticCommand(const string & name, Operator _op) : Command(name), op(_op) { }
 	
 	Result execute(Context & context) {
 		
@@ -902,7 +924,7 @@ public:
 			
 			case '#':  {// global long
 				float old = (float)GETVarValueLong(svar, NB_GLOBALS, var);
-				SCRIPT_VAR * sv = SETVarValueLong(svar, NB_GLOBALS, var, (long)(old + val));
+				SCRIPT_VAR * sv = SETVarValueLong(svar, NB_GLOBALS, var, (long)calculate(old, val));
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
@@ -913,7 +935,7 @@ public:
 			
 			case '\xA7': { // local long
 				float old = (float)GETVarValueLong(es->lvar, es->nblvar, var);
-				SCRIPT_VAR * sv = SETVarValueLong(es->lvar, es->nblvar, var, (long)(old + val));
+				SCRIPT_VAR * sv = SETVarValueLong(es->lvar, es->nblvar, var, (long)calculate(old, val));
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
@@ -924,7 +946,7 @@ public:
 			
 			case '&': { // global float
 				float old = GETVarValueFloat(svar, NB_GLOBALS, var);
-				SCRIPT_VAR * sv = SETVarValueFloat(svar, NB_GLOBALS, var, old + val);
+				SCRIPT_VAR * sv = SETVarValueFloat(svar, NB_GLOBALS, var, calculate(old, val));
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
@@ -935,7 +957,7 @@ public:
 			
 			case '@': { // local float
 				float old = GETVarValueFloat(es->lvar, es->nblvar, var);
-				SCRIPT_VAR * sv = SETVarValueFloat(es->lvar, es->nblvar, var, old + val);
+				SCRIPT_VAR * sv = SETVarValueFloat(es->lvar, es->nblvar, var, calculate(old, val));
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
@@ -1060,7 +1082,10 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new SetCommand);
 	ScriptEvent::registerCommand(new SetEventCommand);
 	ScriptEvent::registerCommand(new IfCommand);
-	ScriptEvent::registerCommand(new IncCommand);
+	ScriptEvent::registerCommand(new ArithmeticCommand("inc", ArithmeticCommand::Add));
+	ScriptEvent::registerCommand(new ArithmeticCommand("dec", ArithmeticCommand::Subtract));
+	ScriptEvent::registerCommand(new ArithmeticCommand("mul", ArithmeticCommand::Multiply));
+	ScriptEvent::registerCommand(new ArithmeticCommand("div", ArithmeticCommand::Divide));
 	ScriptEvent::registerCommand(new UnsetCommand);
 	ScriptEvent::registerCommand(new ElseCommand);
 	
