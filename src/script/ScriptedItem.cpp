@@ -336,6 +336,48 @@ public:
 	
 };
 
+class EquipCommand : public Command {
+	
+public:
+	
+	EquipCommand() : Command("equip", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		bool unequip = false;
+		HandleFlags("r") {
+			unequip = (flg & flag('r'));
+		}
+		
+		string target = context.getLowercase();
+		
+		DebugScript(' ' << options << ' ' << target);
+		
+		long t = GetTargetByNameTarget(target);
+		if(!ValidIONum(t)) {
+			ScriptWarning << "unknown target: " << target;
+			return Failed;
+		}
+		
+		if(unequip) {
+			INTERACTIVE_OBJ * oes = EVENT_SENDER;
+			EVENT_SENDER = inter.iobj[t];
+			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPOUT);
+			EVENT_SENDER = oes;
+			ARX_EQUIPMENT_UnEquip(inter.iobj[t], context.getIO());
+		} else {
+			INTERACTIVE_OBJ * oes = EVENT_SENDER;
+			EVENT_SENDER = inter.iobj[t];
+			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPIN);
+			EVENT_SENDER = oes;
+			ARX_EQUIPMENT_Equip(inter.iobj[t], context.getIO());
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedItem() {
@@ -353,6 +395,7 @@ void setupScriptedItem() {
 	ScriptEvent::registerCommand(new SetPriceCommand);
 	ScriptEvent::registerCommand(new PlayerStackSizeCommand);
 	ScriptEvent::registerCommand(new EatMeCommand);
+	ScriptEvent::registerCommand(new EquipCommand);
 	
 }
 

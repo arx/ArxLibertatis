@@ -586,64 +586,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 
 				break;
-			case 'E':
-
-				if (!strcmp(word, "EQUIP"))
-				{
-					pos = GetNextWord(es, pos, word);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "EQUIP ");
-						strcat(cmd, word);
-					}
-
-#endif
-					long unequip = 0;
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'R')) unequip = 1;
-
-						pos = GetNextWord(es, pos, word);
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG)
-						{
-							strcat(cmd, " ");
-							strcat(cmd, word);
-						}
-
-#endif
-					}
-
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -3) t = 0;
-
-					if (ValidIONum(t))
-					{
-						if (unequip)
-						{
-							INTERACTIVE_OBJ * oes = EVENT_SENDER;
-							EVENT_SENDER = inter.iobj[t];
-							Stack_SendIOScriptEvent(io, SM_EQUIPOUT);
-							EVENT_SENDER = oes;
-							ARX_EQUIPMENT_UnEquip(inter.iobj[t], io);
-						}
-						else
-						{
-							INTERACTIVE_OBJ * oes = EVENT_SENDER;
-							EVENT_SENDER = inter.iobj[t];
-							Stack_SendIOScriptEvent(io, SM_EQUIPIN);
-							EVENT_SENDER = oes;
-							ARX_EQUIPMENT_Equip(inter.iobj[t], io);
-						}
-					}
-				}
-
-				break;
 			case 'M':
 
 				if (
