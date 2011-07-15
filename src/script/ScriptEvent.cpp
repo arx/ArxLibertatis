@@ -570,33 +570,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'I':
 
-				if (!strcmp(word, "IFEXISTINTERNAL"))
-				{
-					long failed = 1;
-					pos = GetNextWord(es, pos, word);
-					long t = GetTargetByNameTarget(word);
-
-					if (t != -1)
-					{
-						failed = 0;
-					}
-
-					if (failed)
-					{
-						pos = SkipNextStatement(es, pos);
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						if (failed) sprintf(cmd, "IFEXISTINTERNAL (%s) -> false", word);
-						else sprintf(cmd, "IFEXISTINTERNAL (%s) -> true", word);
-					}
-
-#endif
-				}
-				else if (!strcmp(word, "INVULNERABILITY"))
+				if (!strcmp(word, "INVULNERABILITY"))
 				{
 					pos = GetNextWord(es, pos, word);
 					long player = 0;

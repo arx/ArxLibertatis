@@ -1061,6 +1061,29 @@ public:
 	
 };
 
+class IfExistInternalCommand : public Command {
+	
+public:
+	
+	IfExistInternalCommand() : Command("ifexistinternal") { }
+	
+	Result execute(Context & context) {
+		
+		string target = context.getLowercase();
+		
+		DebugScript(' ' << target);
+		
+		long t = GetTargetByNameTarget(target);
+		
+		if(t == -1) {
+			context.skipStatement();
+		}
+		
+		return Jumped;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1107,6 +1130,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new PhysicalCommand);
 	ScriptEvent::registerCommand(new LoadAnimCommand);
 	ScriptEvent::registerCommand(new LinkObjToMeCommand);
+	ScriptEvent::registerCommand(new IfExistInternalCommand);
 	
 }
 
