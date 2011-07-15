@@ -2327,10 +2327,10 @@ void LaunchWaitingCine()
 	
 	DANAE_KillCinematic();
 	
-	const char RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS[] = "Graph\\interface\\illustrations\\";
+	const char RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS[] = "graph\\interface\\illustrations\\";
 	
 	string cinematic = RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS;
-	cinematic += RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS;
+	cinematic += WILL_LAUNCH_CINE;
 	
 	if(resources->getFile(cinematic)) {
 		
@@ -2348,8 +2348,12 @@ void LaunchWaitingCine()
 			}
 			
 			strcpy(LAST_LAUNCHED_CINE,WILL_LAUNCH_CINE);
+		} else {
+			LogWarning << "error loading cinematic \"" << cinematic << '"';
 		}
 		
+	} else {
+		LogWarning << "could not find cinematic \"" << cinematic << '"';
 	}
 	
 	WILL_LAUNCH_CINE[0]=0;
