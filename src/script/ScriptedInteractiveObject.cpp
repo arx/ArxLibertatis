@@ -1946,13 +1946,13 @@ public:
 	
 };
 
-class DoDamageCommand : public Command {
+class AbstractDamageCommand : public Command {
 	
-public:
+protected:
 	
-	DoDamageCommand() : Command("dodamage") { }
+	AbstractDamageCommand(const string & name, long ioflags = 0) : Command(name, ioflags) { }
 	
-	Result execute(Context & context) {
+	DamageType getDamageType(Context & context) {
 		
 		DamageType type = 0;
 		HandleFlags("fmplcgewsaornu") {
@@ -1972,11 +1972,26 @@ public:
 			type |= (flg & flag('u')) ? DAMAGE_TYPE_PUSH : DamageType(0);
 		}
 		
+		return type;
+	}
+	
+};
+
+class DoDamageCommand : public AbstractDamageCommand {
+	
+public:
+	
+	DoDamageCommand() : AbstractDamageCommand("dodamage") { }
+	
+	Result execute(Context & context) {
+		
+		DamageType type = getDamageType(context);
+		
 		string target = context.getLowercase();
 		
 		float damage = context.getFloat();
 		
-		DebugScript(' ' << options << ' ' << target);
+		DebugScript(' ' << type << ' ' << target);
 		
 		long t = GetTargetByNameTarget(target);
 		if(t == -2) {
@@ -1988,6 +2003,30 @@ public:
 		}
 		
 		ARX_DAMAGES_DealDamages(t, damage, GetInterNum(context.getIO()), type, &inter.iobj[t]->pos);
+		
+		return Success;
+	}
+	
+};
+
+class DamagerCommand : public AbstractDamageCommand {
+	
+public:
+	
+	DamagerCommand() : AbstractDamageCommand("damager", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		
+		io->damager_type = getDamageType(context) | DAMAGE_TYPE_PER_SECOND;
+		
+		float damages = context.getFloat();
+		
+		DebugScript(' ' << io->damager_type << damages);
+		
+		ARX_CHECK_SHORT(damages);
+		io->damager_damages = static_cast<short>(damages);
 		
 		return Success;
 	}
@@ -2052,6 +2091,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new MoveCommand);
 	ScriptEvent::registerCommand(new DestroyCommand);
 	ScriptEvent::registerCommand(new DoDamageCommand);
+	ScriptEvent::registerCommand(new DamagerCommand);
 	
 }
 

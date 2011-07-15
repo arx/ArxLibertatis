@@ -587,73 +587,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'D':
 
-				if (!strcmp(word, "DAMAGER"))
-				{
-					io->damager_type = DAMAGE_TYPE_PER_SECOND;
-					pos = GetNextWord(es, pos, word);
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'F'))
-							io->damager_type |= DAMAGE_TYPE_FIRE;
-
-						if (iCharIn(word, 'M'))
-							io->damager_type |= DAMAGE_TYPE_MAGICAL;
-
-						if (iCharIn(word, 'P'))
-							io->damager_type |= DAMAGE_TYPE_POISON;
-
-						if (iCharIn(word, 'L'))
-							io->damager_type |= DAMAGE_TYPE_LIGHTNING;
-
-						if (iCharIn(word, 'C'))
-							io->damager_type |= DAMAGE_TYPE_COLD;
-
-						if (iCharIn(word, 'G'))
-							io->damager_type |= DAMAGE_TYPE_GAS;
-
-						if (iCharIn(word, 'E'))
-							io->damager_type |= DAMAGE_TYPE_METAL;
-
-						if (iCharIn(word, 'W'))
-							io->damager_type |= DAMAGE_TYPE_WOOD;
-
-						if (iCharIn(word, 'S'))
-							io->damager_type |= DAMAGE_TYPE_STONE;
-
-						if (iCharIn(word, 'A'))
-							io->damager_type |= DAMAGE_TYPE_ACID;
-
-						if (iCharIn(word, 'O'))
-							io->damager_type |= DAMAGE_TYPE_ORGANIC;
-
-						if (iCharIn(word, 'R'))
-							io->damager_type |= DAMAGE_TYPE_DRAIN_LIFE;
-
-						if (iCharIn(word, 'N'))
-							io->damager_type |= DAMAGE_TYPE_DRAIN_MANA;
-
-						if (iCharIn(word, 'U'))
-							io->damager_type |= DAMAGE_TYPE_PUSH;
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					float fval = GetVarValueInterpretedAsFloat(word, esss, io);
-
-
-
-					ARX_CHECK_SHORT(fval);
-
-					io->damager_damages = ARX_CLEAN_WARN_CAST_SHORT(fval);
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "DAMAGER");
-
-#endif
-				}
-				else if (!strcmp(word, "DETACH"))
+				if (!strcmp(word, "DETACH"))
 				{
 					pos = GetNextWord(es, pos, word); // Source IO
 #ifdef NEEDING_DEBUG
