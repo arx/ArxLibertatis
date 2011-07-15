@@ -137,6 +137,7 @@ void initSuppressions();
 
 #define ScriptPrefix << '[' << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown") << ':' << context.getPosition() << "] " << getName() <<
 #define DebugScript(args) LogDebug ScriptPrefix args
+#define ScriptInfo(args) LogInfo ScriptPrefix args
 #define ScriptWarning Logger(__FILE__,__LINE__, isSuppressed(context, *this) ? Logger::Debug : Logger::Warning) ScriptPrefix ": "
 #define ScriptError Logger(__FILE__,__LINE__, isSuppressed(context, *this) ? Logger::Debug : Logger::Error) ScriptPrefix ": "
 

@@ -22,7 +22,7 @@ string loadUnlocalized(const std::string & str) {
 Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io) : script(_script), pos(_pos), io(_io) { };
 
 string Context::getStringVar(const string & var) const {
-	return GetVarValueInterpretedAsText(var, script, io);
+	return GetVarValueInterpretedAsText(var, getMaster(), io);
 }
 
 string Context::getWord() {
@@ -54,11 +54,8 @@ string Context::getWord() {
 					return word;
 				} else if(esdat[pos] == '~') {
 					if(tilde) {
-						if(script->master) {
-							word += GetVarValueInterpretedAsText(var, script->master, NULL);
-						} else {
-							word += GetVarValueInterpretedAsText(var, script, NULL);
-						}
+						word += GetVarValueInterpretedAsText(var, getMaster(), NULL);
+						var.clear();
 					}
 					tilde = !tilde;
 				} else if(tilde) {
@@ -77,11 +74,8 @@ string Context::getWord() {
 			
 		} else if(esdat[pos] == '~') {
 			if(tilde) {
-				if(script->master) {
-					word += GetVarValueInterpretedAsText(var, script->master, NULL);
-				} else {
-					word += GetVarValueInterpretedAsText(var, script, NULL);
-				}
+				word += GetVarValueInterpretedAsText(var, getMaster(), NULL);
+				var.clear();
 			}
 			tilde = !tilde;
 		} else if(tilde) {
@@ -167,7 +161,7 @@ string Context::getFlags() {
 }
 
 float Context::getFloat() {
-	return GetVarValueInterpretedAsFloat(getLowercase(), script, io);
+	return getFloatVar(getLowercase());
 }
 
 string Context::getLowercase() {
@@ -182,7 +176,7 @@ bool Context::getBool() {
 }
 
 float Context::getFloatVar(const std::string & name) const {
-	return GetVarValueInterpretedAsFloat(name, script, io);
+	return GetVarValueInterpretedAsFloat(name, getMaster(), io);
 }
 
 size_t Context::skipCommand() {
