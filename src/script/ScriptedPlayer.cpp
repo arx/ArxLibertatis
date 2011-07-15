@@ -577,6 +577,49 @@ public:
 	
 };
 
+class InvulnerabilityCommand : public Command {
+	
+public:
+	
+	InvulnerabilityCommand() : Command("invulnerability") { }
+	
+	Result execute(Context & context) {
+		
+		bool player = false;
+		HandleFlags("p") {
+			player = (flg & flag('p'));
+		}
+		
+		bool enable = context.getBool();
+		
+		DebugScript(' ' << options << ' ' << enable);
+		
+		INTERACTIVE_OBJ * io = context.getIO();
+		if(!player && !io) {
+			ScriptWarning << "must either use -p or execute in IO context";
+			return Failed;
+		}
+		
+		
+		if(enable) {
+			if(player) {
+				ARX_PLAYER_Invulnerability(1);
+			} else {
+				io->ioflags |= IO_INVULNERABILITY;
+			}
+		} else {
+			if(player) {
+				ARX_PLAYER_Invulnerability(0);
+			} else {
+				io->ioflags &= ~IO_INVULNERABILITY;
+			}
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedPlayer() {
@@ -597,6 +640,7 @@ void setupScriptedPlayer() {
 	ScriptEvent::registerCommand(new PrecastCommand);
 	ScriptEvent::registerCommand(new PoisonCommand);
 	ScriptEvent::registerCommand(new PlayerManaDrainCommand);
+	ScriptEvent::registerCommand(new InvulnerabilityCommand);
 	
 }
 

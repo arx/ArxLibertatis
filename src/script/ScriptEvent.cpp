@@ -570,35 +570,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'I':
 
-				if (!strcmp(word, "INVULNERABILITY"))
-				{
-					pos = GetNextWord(es, pos, word);
-					long player = 0;
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'P'))
-							player = 1;
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					if (!strcasecmp(word, "ON"))
-					{
-						if (player)
-							ARX_PLAYER_Invulnerability(1);
-						else
-							io->ioflags |= IO_INVULNERABILITY;
-					}
-					else
-					{
-						if (player)
-							ARX_PLAYER_Invulnerability(0);
-						else
-							io->ioflags &= ~IO_INVULNERABILITY;
-					}
-				}
-				else if (!strcmp(word, "IFVISIBLE"))
+				if (!strcmp(word, "IFVISIBLE"))
 				{
 					long failed = 1;
 					pos = GetNextWord(es, pos, word);
