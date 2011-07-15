@@ -590,16 +590,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'E':
 
-				if (!strcmp(word, "ELSE"))
-				{
-					pos = SkipNextStatement(es, pos);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "ELSE");
-
-#endif
-				}
-				else if (!strcmp(word, "ENDINTRO"))
+				if (!strcmp(word, "ENDINTRO"))
 				{
 					ARX_INTERFACE_EndIntro();
 				}

@@ -27,8 +27,6 @@ public:
 	
 	Result execute(Context & context) {
 		
-		ARX_UNUSED(context);
-		
 		DebugScript("");
 		
 		return Success;
@@ -74,8 +72,6 @@ public:
 	AbortCommand(string command, Result _result) : Command(command), result(_result) { }
 	
 	Result execute(Context & context) {
-		
-		ARX_UNUSED(context);
 		
 		DebugScript("");
 		
@@ -1004,7 +1000,7 @@ class UnsetCommand : public Command {
 	
 public:
 	
-	UnsetCommand() : Command("unset", ANY_IO) { }
+	UnsetCommand() : Command("unset") { }
 	
 	Result execute(Context & context) {
 		
@@ -1022,6 +1018,23 @@ public:
 		} else {
 			UNSETVar(context.getMaster()->lvar, context.getMaster()->nblvar, var);
 		}
+		
+		return Success;
+	}
+	
+};
+
+class ElseCommand : public Command {
+	
+public:
+	
+	ElseCommand() : Command("else") { }
+	
+	Result execute(Context & context) {
+		
+		DebugScript("");
+		
+		context.skipStatement();
 		
 		return Success;
 	}
@@ -1049,6 +1062,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new IfCommand);
 	ScriptEvent::registerCommand(new IncCommand);
 	ScriptEvent::registerCommand(new UnsetCommand);
+	ScriptEvent::registerCommand(new ElseCommand);
 	
 }
 
