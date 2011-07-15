@@ -588,34 +588,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'M':
 
-				if (!strcmp(word, "MOVE"))
-				{
-					if (io != NULL)
-					{
-						std::string temp1;
-						std::string temp2;
-						std::string temp3;
-						float t1, t2, t3;
-
-						pos = GetNextWord(es, pos, temp1);
-						pos = GetNextWord(es, pos, temp2);
-						pos = GetNextWord(es, pos, temp3);
-
-						t1 = GetVarValueInterpretedAsFloat(temp1, esss, io);
-						t2 = GetVarValueInterpretedAsFloat(temp2, esss, io);
-						t3 = GetVarValueInterpretedAsFloat(temp3, esss, io);
-
-						io->pos.x += t1;
-						io->pos.y += t2;
-						io->pos.z += t3;
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "%s %s %s %s", word, temp1, temp2, temp3);
-
-#endif
-					}
-				}
-				else if (!strcmp(word, "MAGIC"))
+				if (!strcmp(word, "MAGIC"))
 				{
 					pos = GetNextWord(es, pos, word);
 

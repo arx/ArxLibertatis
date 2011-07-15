@@ -1895,6 +1895,27 @@ public:
 	
 };
 
+class MoveCommand : public Command {
+	
+public:
+	
+	MoveCommand() : Command("move", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		float dx = context.getFloat();
+		float dy = context.getFloat();
+		float dz = context.getFloat();
+		
+		DebugScript(' ' << dx << ' ' << dy << ' ' << dz);
+		
+		context.getIO()->pos += Vec3f(dx, dy, dz);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1950,6 +1971,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new TargetPlayerPosCommand);
 	ScriptEvent::registerCommand(new TweakCommand);
 	ScriptEvent::registerCommand(new UseMeshCommand);
+	ScriptEvent::registerCommand(new MoveCommand);
 	
 }
 
