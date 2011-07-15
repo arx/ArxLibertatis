@@ -526,66 +526,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				if (word[1] == '>') pos = GotoNextLine(es, pos);
 				break;
 
-			case 'O':
-
-				if (!strcmp(word, "OBJECTHIDE"))
-				{
-					std::string temp1;
-					long megahide = 0;
-					pos = GetNextWord(es, pos, word);
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'M'))
-							megahide = 1;
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					long t = GetTargetByNameTarget(word);
-
-					if (t == -2) t = GetInterNum(io);
-
-					pos = GetNextWord(es, pos, temp1);
-
-					if (ValidIONum(t))
-					{
-						inter.iobj[t]->GameFlags &= ~GFLAG_MEGAHIDE;
-
-						if ((!strcasecmp(temp1, "ON")) || (!strcasecmp(temp1, "YES")))
-						{
-							if (megahide)
-							{
-								inter.iobj[t]->GameFlags |= GFLAG_MEGAHIDE;
-								inter.iobj[t]->show = SHOW_FLAG_MEGAHIDE;
-							}
-							else inter.iobj[t]->show = SHOW_FLAG_HIDDEN;
-						}
-						else if ((inter.iobj[t]->show == SHOW_FLAG_MEGAHIDE)
-								 ||	(inter.iobj[t]->show == SHOW_FLAG_HIDDEN))
-						{
-							inter.iobj[t]->show = SHOW_FLAG_IN_SCENE;
-
-							if ((inter.iobj[t]->ioflags & IO_NPC)
-									&&	(inter.iobj[t]->_npcdata->life <= 0.f)
-							   )
-							{
-								inter.iobj[t]->animlayer[0].cur_anim = inter.iobj[t]->anims[ANIM_DIE];
-								inter.iobj[t]->animlayer[1].cur_anim = NULL;
-								inter.iobj[t]->animlayer[2].cur_anim = NULL;
-								inter.iobj[t]->animlayer[0].ctime = 9999999;
-							}
-						}
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "OBJECT_HIDE %s %s", word, temp1);
-
-#endif
-				}
-
-				break;
 			case 'H':
 			{
 				if (!strcmp(word, "HEROSAY"))

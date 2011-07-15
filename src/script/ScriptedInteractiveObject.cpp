@@ -1531,6 +1531,58 @@ public:
 	
 };
 
+class ObjectHideCommand : public Command {
+	
+public:
+	
+	ObjectHideCommand() : Command("objecthide") { }
+	
+	Result execute(Context & context) {
+		
+		bool megahide = false;
+		HandleFlags("m") {
+			megahide = (flg & flag('m'));
+		}
+		
+		string target = context.getLowercase();
+		long t = GetTargetByNameTarget(target);
+		if(t == -2) {
+			t = GetInterNum(context.getIO());
+		}
+		
+		bool hide = context.getBool();
+		
+		DebugScript(' ' << options << ' ' << target << ' ' << hide);
+		
+		if(!ValidIONum(t)) {
+			ScriptWarning << "unknown target: " << target;
+			return Failed;
+		}
+		
+		INTERACTIVE_OBJ * io = inter.iobj[t];
+		io->GameFlags &= ~GFLAG_MEGAHIDE;
+		if(hide) {
+			if(megahide) {
+				io->GameFlags |= GFLAG_MEGAHIDE;
+				io->show = SHOW_FLAG_MEGAHIDE;
+			} else {
+				io->show = SHOW_FLAG_HIDDEN;
+			}
+		} else if(io->show == SHOW_FLAG_MEGAHIDE || io->show == SHOW_FLAG_HIDDEN) {
+			io->show = SHOW_FLAG_IN_SCENE;
+			if((io->ioflags & IO_NPC) && io->_npcdata->life <= 0.f) {
+				inter.iobj[t]->animlayer[0].cur_anim = inter.iobj[t]->anims[ANIM_DIE];
+				inter.iobj[t]->animlayer[1].cur_anim = NULL;
+				inter.iobj[t]->animlayer[2].cur_anim = NULL;
+				inter.iobj[t]->animlayer[0].ctime = 9999999;
+			}
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1580,6 +1632,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new IfExistInternalCommand);
 	ScriptEvent::registerCommand(new IfVisibleCommand);
 	ScriptEvent::registerCommand(new InventoryCommand);
+	ScriptEvent::registerCommand(new ObjectHideCommand);
 	
 }
 
