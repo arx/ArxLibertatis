@@ -27,6 +27,7 @@ extern char WILL_LAUNCH_CINE[256];
 extern long CINE_PRELOAD;
 extern long ARX_CONVERSATION;
 extern long FINAL_RELEASE;
+extern long GLOBAL_MAGIC_MODE;
 
 namespace script {
 
@@ -605,7 +606,7 @@ class UnsetControlledZoneCommand : public Command {
 	
 public:
 	
-	UnsetControlledZoneCommand() : Command("unsetcontrolledzone", ANY_IO) { }
+	UnsetControlledZoneCommand() : Command("unsetcontrolledzone") { }
 	
 	Result execute(Context & context) {
 		
@@ -617,6 +618,23 @@ public:
 		if(ap) {
 			ap->controled[0] = 0;
 		}
+		
+		return Success;
+	}
+	
+};
+
+class MagicCommand : public Command {
+	
+public:
+	
+	MagicCommand() : Command("magic") { }
+	
+	Result execute(Context & context) {
+		
+		GLOBAL_MAGIC_MODE = context.getBool() ? 1 : 0;
+		
+		DebugScript(' ' << GLOBAL_MAGIC_MODE);
 		
 		return Success;
 	}
@@ -643,6 +661,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new HeroSayCommand);
 	ScriptEvent::registerCommand(new UsePathCommand);
 	ScriptEvent::registerCommand(new UnsetControlledZoneCommand);
+	ScriptEvent::registerCommand(new MagicCommand);
 	
 }
 

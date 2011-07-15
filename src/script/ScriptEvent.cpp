@@ -63,7 +63,6 @@ using std::max;
 using std::min;
 using std::string;
 
-extern long GLOBAL_MAGIC_MODE;
 extern float g_TimeStartCinemascope;
 
 #ifdef NEEDING_DEBUG
@@ -588,16 +587,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'M':
 
-				if (!strcmp(word, "MAGIC"))
-				{
-					pos = GetNextWord(es, pos, word);
-
-					if (!strcasecmp(word, "OFF"))
-						GLOBAL_MAGIC_MODE = 0;
-					else
-						GLOBAL_MAGIC_MODE = 1;
-				}
-				else if (!strcmp(word, "MAPMARKER"))
+				if (!strcmp(word, "MAPMARKER"))
 				{
 					pos = GetNextWord(es, pos, word);
 
