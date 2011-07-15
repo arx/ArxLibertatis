@@ -1084,6 +1084,47 @@ public:
 	
 };
 
+class IfVisibleCommand : public Command {
+	
+	static bool hasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+		
+		if(distSqr(io->pos, ioo->pos) > square(20000)) {
+			return false;
+		}
+		
+		float ab = MAKEANGLE(io->angle.b);
+		float aa = GetAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
+		aa = MAKEANGLE(degrees(aa));
+		
+		if((aa < ab + 90.f) && (aa > ab - 90.f)) {
+			//font
+			return true;
+		}
+		
+		return false;
+	}
+	
+public:
+	
+	IfVisibleCommand() : Command("ifvisible", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string target = context.getLowercase();
+		
+		DebugScript(' ' << target);
+		
+		long t = GetTargetByNameTarget(target);
+		
+		if(!ValidIONum(t) || !hasVisibility(context.getIO(), inter.iobj[t])) {
+			context.skipStatement();
+		}
+		
+		return Jumped;
+	}
+	
+};
+
 }
 
 void setupScriptedInteractiveObject() {
@@ -1131,6 +1172,7 @@ void setupScriptedInteractiveObject() {
 	ScriptEvent::registerCommand(new LoadAnimCommand);
 	ScriptEvent::registerCommand(new LinkObjToMeCommand);
 	ScriptEvent::registerCommand(new IfExistInternalCommand);
+	ScriptEvent::registerCommand(new IfVisibleCommand);
 	
 }
 

@@ -202,27 +202,6 @@ void RemoveNumerics(char * tx)
 	tx[pos] = 0;
 }*/
 
-
-
-bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
-	
-	if(distSqr(io->pos, ioo->pos) > square(20000)) {
-		return false;
-	}
-	
-	float ab = MAKEANGLE(io->angle.b);
-	float aa = GetAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
-	aa = MAKEANGLE(degrees(aa));
-
-	if((aa < ab + 90.f) && (aa > ab - 90.f)) {
-		//font
-		ARX_TEXT_Draw(hFontInBook, 300, 320, "VISIBLE", Color::red);
-		return true;
-	}
-
-	return false;
-}
-
 void ShowScriptError(const char * tx, const char * cmd)
 {
 	char text[512];
@@ -570,34 +549,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'I':
 
-				if (!strcmp(word, "IFVISIBLE"))
-				{
-					long failed = 1;
-					pos = GetNextWord(es, pos, word);
-					long t = GetTargetByNameTarget(word);
-
-					if (ValidIONum(t))
-					{
-						if (HasVisibility(io, inter.iobj[t]))
-							failed = 0;
-					}
-
-					if (failed)
-					{
-						pos = SkipNextStatement(es, pos);
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						if (failed) sprintf(cmd, "IFVISIBLE (%s) -> false", word);
-						else sprintf(cmd, "IFVISIBLE (%s) -> true", word);
-					}
-
-#endif
-				}
-				else if (!strcmp(word, "INVENTORY"))
+				if (!strcmp(word, "INVENTORY"))
 				{
 					pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
