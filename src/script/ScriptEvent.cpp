@@ -185,52 +185,6 @@ void ShowScriptError(const char * tx, const char * cmd)
 	LogError << (text);
 }
 
-bool IsGlobal(char c)
-{
-	if ((c == '$') || (c == '#') || (c == '&')) return true;
-
-	return false;
-}
-
-long GetVarNum(SCRIPT_VAR * svf, long* nb, const std::string& name)
-{
-	if (!svf) return -1;
-
-	for (long i = 0; i < *nb; i++)
-	{
-		if ((svf[i].type != 0) && (svf[i].name))
-		{
-			if (!strcmp(name.c_str(), svf[i].name)) return i;
-		}
-	}
-
-	return -1;
-}
-
-bool UNSETVar(SCRIPT_VAR * & svf, long* nb, const std::string& name)
-{
-	long i = GetVarNum(svf, nb, name);
-
-	if (i < 0) return false;
-
-	long n = *nb;
-
-	if (svf[i].text)
-	{
-		free((void *)svf[i].text);
-		svf[i].text = NULL;
-	}
-
-	if (n - 1 - i > 0)
-	{
-		memcpy(&svf[i], &svf[i+1], sizeof(SCRIPT_VAR)*(n - i - 1));
-	}
-
-	svf = (SCRIPT_VAR *)realloc(svf, sizeof(SCRIPT_VAR) * (n - 1));
-	(*nb)--;
-	return true;
-}
-
 ScriptEvent::ScriptEvent() {
 	// TODO Auto-generated constructor stub
 
@@ -636,26 +590,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				break;
 			case 'U':
 
-				if (!strcmp(word, "UNSET"))
-				{
-					pos = GetNextWord(es, pos, word, 1);
-
-					if (IsGlobal(word[0]))
-					{
-						UNSETVar(svar, &NB_GLOBALS, word);
-					}
-					else
-					{
-						UNSETVar(esss->lvar, &esss->nblvar, word);
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "UNSET %s", word);
-
-#endif
-				}
-				else if (!strcmp(word, "USEPATH"))
+				if (!strcmp(word, "USEPATH"))
 				{
 					pos = GetNextWord(es, pos, word);
 

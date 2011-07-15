@@ -960,6 +960,74 @@ public:
 	
 };
 
+class UnsetCommand : public Command {
+	
+	static long GetVarNum(SCRIPT_VAR * svf, size_t nb, const string & name) {
+		
+		if(!svf) {
+			return -1;
+		}
+		
+		for(size_t i = 0; i < nb; i++) {
+			if(svf[i].type != 0 && !strcasecmp(name.c_str(), svf[i].name)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	static bool isGlobal(char c) {
+		return (c == '$' || c == '#' || c == '&');
+	}
+	
+	// TODO move to variable context
+	static bool UNSETVar(SCRIPT_VAR * & svf, long & nb, const string & name) {
+		
+		long i = GetVarNum(svf, nb, name);
+		if(i < 0) {
+			return false;
+		}
+		
+		if(svf[i].text) {
+			free((void *)svf[i].text), svf[i].text = NULL;
+		}
+		
+		if(i + 1 < nb) {
+			memcpy(&svf[i], &svf[i + 1], sizeof(SCRIPT_VAR) * (nb - i - 1));
+		}
+		
+		svf = (SCRIPT_VAR *)realloc(svf, sizeof(SCRIPT_VAR) * (nb - 1));
+		nb--;
+		return true;
+	}
+	
+public:
+	
+	UnsetCommand() : Command("unset", ANY_IO) { }
+	
+	Result execute(Context & context) {
+		
+		string var = context.getLowercase();
+		
+		DebugScript(' ' << var);
+		
+		if(var.empty()) {
+			ScriptWarning << "missing variable name";
+			return Failed;
+		}
+		
+		if(isGlobal(var[0])) {
+			UNSETVar(svar, NB_GLOBALS, var);
+		} else {
+			UNSETVar(context.getMaster()->lvar, context.getMaster()->nblvar, var);
+		}
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedLang() {
@@ -980,6 +1048,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new SetEventCommand);
 	ScriptEvent::registerCommand(new IfCommand);
 	ScriptEvent::registerCommand(new IncCommand);
+	ScriptEvent::registerCommand(new UnsetCommand);
 	
 }
 
