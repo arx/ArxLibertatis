@@ -46,7 +46,6 @@ public:
 private:
 	
 	typedef std::map<std::string, script::Command *> Commands;
-	
 	static Commands commands;
 	
 };
