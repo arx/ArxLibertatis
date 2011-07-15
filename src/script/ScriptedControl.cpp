@@ -6,6 +6,7 @@
 #include "ai/Paths.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "core/Localisation.h"
 #include "graphics/Math.h"
 #include "graphics/GraphicsModes.h"
 #include "gui/Speech.h"
@@ -25,6 +26,7 @@ extern long PLAY_LOADED_CINEMATIC;
 extern char WILL_LAUNCH_CINE[256];
 extern long CINE_PRELOAD;
 extern long ARX_CONVERSATION;
+extern long FINAL_RELEASE;
 
 namespace script {
 
@@ -553,6 +555,36 @@ public:
 	
 };
 
+class HeroSayCommand : public Command {
+	
+public:
+	
+	HeroSayCommand() : Command("herosay") { }
+	
+	Result execute(Context & context) {
+		
+		HandleFlags("d") {
+			if((flg & flag('d')) && FINAL_RELEASE) {
+				context.skipWord();
+				return Success;
+			}
+		}
+		
+		string text = toLowercase(context.getStringVar(context.getLowercase()));
+		
+		DebugScript(' ' << options << " \"" << text << '"');
+		
+		if(!text.empty() && text[0] == '[') {
+			text = getLocalised(loadUnlocalized(text), "Not Found");
+		}
+		
+		ARX_SPEECH_Add(text);
+		
+		return Success;
+	}
+	
+};
+
 }
 
 void setupScriptedControl() {
@@ -571,6 +603,7 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new ZoneParamCommand);
 	ScriptEvent::registerCommand(new PlayCommand);
 	ScriptEvent::registerCommand(new PlaySpeechCommand);
+	ScriptEvent::registerCommand(new HeroSayCommand);
 	
 }
 

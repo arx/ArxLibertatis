@@ -66,7 +66,6 @@ using std::string;
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GLOBAL_MAGIC_MODE;
 extern long REFUSE_GAME_RETURN;
-extern long FINAL_RELEASE;
 extern long TELEPORT_TO_CONFIRM;
 extern long CHANGE_LEVEL_ICON;
 extern float g_TimeStartCinemascope;
@@ -528,44 +527,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			case 'H':
 			{
-				if (!strcmp(word, "HEROSAY"))
-				{
-					char tempp[256];
-					pos = GetNextWord(es, pos, word);
-
-					if (word[0] == '-')
-					{
-						if (iCharIn(word, 'D'))
-						{
-							// do not show (debug say)
-							if (FINAL_RELEASE)
-							{
-								pos = GetNextWord(es, pos, word);
-								goto nodraw;
-							}
-						}
-
-						pos = GetNextWord(es, pos, word);
-					}
-
-					strcpy(tempp, GetVarValueInterpretedAsText(word, esss, io).c_str());
-
-					if(tempp[0] == '[') {
-						ARX_SPEECH_AddLocalised(tempp);
-					} else {
-						ARX_SPEECH_Add(tempp);
-					}
-
-				nodraw:
-					;
-					LogDebug << "goto nodraw";
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "HEROSAY %s", word);
-
-#endif
-				}
-				else if (!strcmp(word, "HALO"))
+				if (!strcmp(word, "HALO"))
 				{
 					pos = GetNextWord(es, pos, word);
 					MakeUpcase(word);
