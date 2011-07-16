@@ -228,8 +228,7 @@ void BIG_PURGE() {
 void ReplaceSpecifics( char* text )
 {
 /*	std::string temp = text;
-	MakeUpcase( temp );
-	size_t graph_loc = temp.find_first_of( "GRAPH" );
+	size_t graph_loc = temp.find_first_of( "graph" );
 
 	if ( graph_loc != string::npos )
 	{
@@ -244,10 +243,9 @@ void ReplaceSpecifics( char* text )
 		memcpy(temp, text + i, 5);
 		temp[5] = 0;
 		std::string temp2 = temp;
-		MakeUpcase(temp2);
 		strcpy( temp, temp2.c_str() );
 
-		if (!strcmp(temp, "GRAPH"))
+		if (!strcmp(temp, "graph"))
 		{
 			strcpy(temp, text + i);
 			strcpy(text, temp);
@@ -266,7 +264,7 @@ long DanaeSaveLevel(const string & _fic) {
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	
 	string fic = _fic;
-	SetExt(fic, ".DLF");
+	SetExt(fic, ".dlf");
 	if(FileExist(fic)) {
 		string backupfile = fic;
 		int i = 0;
@@ -279,7 +277,7 @@ long DanaeSaveLevel(const string & _fic) {
 	}
 	
 	std::string fic2 = fic;
-	SetExt(fic2, ".LLF");
+	SetExt(fic2, ".llf");
 	if(FileExist(fic2)) {
 		string backupfile = fic;
 		int i = 0;
@@ -752,7 +750,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 	{
 		case 1: //CLASS SCRIPT
 			temp = io->filename;
-			SetExt(temp, "ASL");
+			SetExt(temp, "asl");
 
 //			todo win32api
 //			int fic;
@@ -881,7 +879,7 @@ long DanaeLoadLevel(const string & file) {
 	CURRENTLEVEL = GetLevelNumByName(file);
 	
 	string lightingFileName = file;
-	SetExt(lightingFileName, ".LLF");
+	SetExt(lightingFileName, ".llf");
 
 	LogDebug << "fic2 " << lightingFileName;
 	LogDebug << "fileDlf " << file;
@@ -959,7 +957,7 @@ long DanaeLoadLevel(const string & file) {
 		} else {
 #ifdef BUILD_EDIT_LOADSAVE
 			LogDebug << "fast loading scene failed";
-			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
+			ARX_SOUND_PlayCinematic("editor_humiliation.wav");
 			mse = PAK_MultiSceneToEerie(scene);
 			PROGRESS_BAR_COUNT += 20.f;
 			LoadLevelScreen();
@@ -1709,7 +1707,7 @@ void AddIdent( std::string& ident, long num)
 
 static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	
-	std::string fic("Graph\\Levels\\Level");
+	std::string fic = "graph\\levels\\level";
 	fic += path;
 
 	char _error[512];
@@ -1721,7 +1719,7 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	long i;
 	size_t FileSize = 0;
 
-	SetExt(fic, ".DLF");
+	SetExt(fic, ".dlf");
 	
 	dat = (unsigned char *)resources->readAlloc(fic, FileSize);
 	if(!dat) {
@@ -1788,7 +1786,7 @@ void ARX_SAVELOAD_CheckDLFs() {
 	for (long n = 0; n < 24; n++)
 	{
 		char temp[256];
-		sprintf(temp, "%ld\\Level%ld.dlf", n, n);
+		sprintf(temp, "%ld\\level%ld.dlf", n, n);
 		ARX_SAVELOAD_DLFCheckAdd(temp, n);
 	}
 
