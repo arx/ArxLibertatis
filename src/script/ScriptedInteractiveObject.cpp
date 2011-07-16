@@ -1723,7 +1723,7 @@ public:
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(!teleport_player && !io) {
-			LogWarning << "must either use -p or use in IO context";
+			ScriptWarning << "must either use -p or use in IO context";
 			return Failed;
 		}
 		
@@ -1760,7 +1760,7 @@ public:
 		} else {
 			
 			if(!io) {
-				LogWarning << "must be in IO context to teleport -i";
+				ScriptWarning << "must be in IO context to teleport -i";
 				return Failed;
 			}
 			

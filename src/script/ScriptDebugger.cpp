@@ -278,22 +278,22 @@ void DANAE_DEBUGGER_Update()
 	if (io->ioflags & IO_NPC)
 	{
 		if (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
-			strcpy(temp, "MOVE_TO");
+			strcpy(temp, "move_to");
 		else if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-			strcpy(temp, "GO_HOME");
+			strcpy(temp, "go_home");
 		else if (io->_npcdata->behavior & BEHAVIOUR_FLEE)
-			strcpy(temp, "FLEE");
+			strcpy(temp, "flee");
 		else if (io->_npcdata->behavior & BEHAVIOUR_LOOK_FOR)
-			strcpy(temp, "LOOK_FOR");
+			strcpy(temp, "look_for");
 		else if (io->_npcdata->behavior & BEHAVIOUR_HIDE)
-			strcpy(temp, "HIDE");
+			strcpy(temp, "hide");
 		else if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-			strcpy(temp, "WANDER_AROUND");
+			strcpy(temp, "wander_around");
 		else if (io->_npcdata->behavior & BEHAVIOUR_GUARD)
-			strcpy(temp, "GUARD");
+			strcpy(temp, "guard");
 		else if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
-			strcpy(temp, "FRIENDLY");
-		else strcpy(temp, "NONE");
+			strcpy(temp, "friendly");
+		else strcpy(temp, "none");
 
 		if (io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
 			strcat(temp, " Look_Around");

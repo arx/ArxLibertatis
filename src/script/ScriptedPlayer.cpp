@@ -315,7 +315,7 @@ public:
 		DebugScript("");
 		
 		if(player.Interface & INTER_STEAL) {
-			SendIOScriptEvent(ioSteal, SM_STEAL, "OFF");
+			SendIOScriptEvent(ioSteal, SM_STEAL, "off");
 		}
 		
 		player.Interface |= INTER_STEAL;
