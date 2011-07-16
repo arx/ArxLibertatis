@@ -1138,7 +1138,7 @@ class InventoryCommand : public Command {
 		
 	public:
 		
-		SubCommand(const std::string & name) : Command("inventory " + name, ANY_IO) { }
+		SubCommand(const std::string & name) : Command("inventory " + name, ANY_IO), command(name) { }
 		
 		inline const string & getCommand() { return command; }
 		
