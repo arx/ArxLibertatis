@@ -120,72 +120,69 @@ long GetLevelNumByName(const std::string& name)
 {
 	if ( !name.empty() )
 	{
-		std::string temp = name;
-		MakeUpcase(temp);
+		if (IsIn(name, "level10")) return 10;
 
-		if (IsIn(temp, "LEVEL10")) return 10;
+		if (IsIn(name, "level11")) return 11;
 
-		if (IsIn(temp, "LEVEL11")) return 11;
+		if (IsIn(name, "level12")) return 12;
 
-		if (IsIn(temp, "LEVEL12")) return 12;
+		if (IsIn(name, "level13")) return 13;
 
-		if (IsIn(temp, "LEVEL13")) return 13;
+		if (IsIn(name, "level14")) return 14;
 
-		if (IsIn(temp, "LEVEL14")) return 14;
+		if (IsIn(name, "level15")) return 15;
 
-		if (IsIn(temp, "LEVEL15")) return 15;
+		if (IsIn(name, "level16")) return 16;
 
-		if (IsIn(temp, "LEVEL16")) return 16;
+		if (IsIn(name, "level17")) return 17;
 
-		if (IsIn(temp, "LEVEL17")) return 17;
+		if (IsIn(name, "level18")) return 18;
 
-		if (IsIn(temp, "LEVEL18")) return 18;
+		if (IsIn(name, "level19")) return 19;
 
-		if (IsIn(temp, "LEVEL19")) return 19;
+		if (IsIn(name, "level20")) return 20;
 
-		if (IsIn(temp, "LEVEL20")) return 20;
+		if (IsIn(name, "level21")) return 21;
 
-		if (IsIn(temp, "LEVEL21")) return 21;
+		if (IsIn(name, "level22")) return 22;
 
-		if (IsIn(temp, "LEVEL22")) return 22;
+		if (IsIn(name, "level23")) return 23;
 
-		if (IsIn(temp, "LEVEL23")) return 23;
+		if (IsIn(name, "level24")) return 24;
 
-		if (IsIn(temp, "LEVEL24")) return 24;
+		if (IsIn(name, "level25")) return 25;
 
-		if (IsIn(temp, "LEVEL25")) return 25;
+		if (IsIn(name, "level26")) return 26;
 
-		if (IsIn(temp, "LEVEL26")) return 26;
+		if (IsIn(name, "level27")) return 27;
 
-		if (IsIn(temp, "LEVEL27")) return 27;
+		if (IsIn(name, "leveldemo2")) return 29;
 
-		if (IsIn(temp, "LEVELDEMO2")) return 29;
+		if (IsIn(name, "leveldemo3")) return 30;
 
-		if (IsIn(temp, "LEVELDEMO3")) return 30;
+		if (IsIn(name, "leveldemo4")) return 31;
 
-		if (IsIn(temp, "LEVELDEMO4")) return 31;
+		if (IsIn(name, "leveldemo")) return 28;
 
-		if (IsIn(temp, "LEVELDEMO")) return 28;
+		if (IsIn(name, "level0")) return 0;
 
-		if (IsIn(temp, "LEVEL0")) return 0;
+		if (IsIn(name, "level1")) return 1;
 
-		if (IsIn(temp, "LEVEL1")) return 1;
+		if (IsIn(name, "level2")) return 2;
 
-		if (IsIn(temp, "LEVEL2")) return 2;
+		if (IsIn(name, "level3")) return 3;
 
-		if (IsIn(temp, "LEVEL3")) return 3;
+		if (IsIn(name, "level4")) return 4;
 
-		if (IsIn(temp, "LEVEL4")) return 4;
+		if (IsIn(name, "level5")) return 5;
 
-		if (IsIn(temp, "LEVEL5")) return 5;
+		if (IsIn(name, "level6")) return 6;
 
-		if (IsIn(temp, "LEVEL6")) return 6;
+		if (IsIn(name, "level7")) return 7;
 
-		if (IsIn(temp, "LEVEL7")) return 7;
+		if (IsIn(name, "level8")) return 8;
 
-		if (IsIn(temp, "LEVEL8")) return 8;
-
-		if (IsIn(temp, "LEVEL9")) return 9;
+		if (IsIn(name, "level9")) return 9;
 	}
 
 	return -1;
@@ -195,7 +192,7 @@ void GetLevelNameByNum(long num, char * name)
 {
 	if (name)
 	{
-		strcpy(name, "NONE");
+		strcpy(name, "none");
 
 		if (num == 0) strcpy(name, "0");
 
@@ -253,12 +250,12 @@ void GetLevelNameByNum(long num, char * name)
 
 		if (num == 27) strcpy(name, "27");
 
-		if (num == 28) strcpy(name, "DEMO");
+		if (num == 28) strcpy(name, "demo");
 
-		if (num == 29) strcpy(name, "DEMO2");
+		if (num == 29) strcpy(name, "demo2");
 
-		if (num == 30) strcpy(name, "DEMO3");
+		if (num == 30) strcpy(name, "demo3");
 
-		if (num == 31) strcpy(name, "DEMO4");
+		if (num == 31) strcpy(name, "demo4");
 	}
 }
