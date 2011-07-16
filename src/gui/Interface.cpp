@@ -428,34 +428,34 @@ void CreateInterfaceTextureContainers()
 {
     ITC.Reset();
 
-	ITC.Set("aim_empty", "Graph\\Interface\\bars\\aim_empty.bmp");
-	ITC.Set("aim_maxi", "Graph\\Interface\\bars\\aim_maxi.bmp");
-	ITC.Set("aim_hit", "Graph\\Interface\\bars\\flash_gauge.bmp");
-	ITC.Set("hero_inventory", "Graph\\Interface\\Inventory\\hero_inventory.bmp");
-	ITC.Set("hero_inventory_up", "Graph\\Interface\\Inventory\\scroll_up.bmp");
-	ITC.Set("hero_inventory_down", "Graph\\Interface\\Inventory\\scroll_down.bmp");
-	ITC.Set("hero_inventory_link", "Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
-	ITC.Set("inventory_pickall", "Graph\\Interface\\Inventory\\inv_pick.bmp");
-	ITC.Set("inventory_close", "Graph\\Interface\\Inventory\\inv_close.bmp");
-	ITC.Set("Icon_Lvl_Up", "Graph\\Interface\\Icons\\lvl_up.bmp");
+	ITC.Set("aim_empty", "graph\\interface\\bars\\aim_empty.bmp");
+	ITC.Set("aim_maxi", "graph\\interface\\bars\\aim_maxi.bmp");
+	ITC.Set("aim_hit", "graph\\interface\\bars\\flash_gauge.bmp");
+	ITC.Set("hero_inventory", "graph\\interface\\inventory\\hero_inventory.bmp");
+	ITC.Set("hero_inventory_up", "graph\\interface\\inventory\\scroll_up.bmp");
+	ITC.Set("hero_inventory_down", "graph\\interface\\inventory\\scroll_down.bmp");
+	ITC.Set("hero_inventory_link", "graph\\interface\\inventory\\hero_inventory_link.bmp");
+	ITC.Set("inventory_pickall", "graph\\interface\\inventory\\inv_pick.bmp");
+	ITC.Set("inventory_close", "graph\\interface\\inventory\\inv_close.bmp");
+	ITC.Set("icon_lvl_up", "graph\\interface\\icons\\lvl_up.bmp");
 
-	ITC.Set("backpack", "Graph\\Interface\\Icons\\Backpack.bmp");
-	ITC.Set("gold", "Graph\\Interface\\Inventory\\Gold.bmp");
-	ITC.Set("book", "Graph\\Interface\\Icons\\Book.bmp");
-	ITC.Set("steal", "Graph\\Interface\\Icons\\Steal.bmp");
-	ITC.Set("item_cant_steal", "Graph\\Interface\\Icons\\cant_steal_item.bmp");
-	ITC.Set("empty_gauge_red", "Graph\\interface\\bars\\Empty_gauge_Red.bmp");
-	ITC.Set("empty_gauge_blue", "Graph\\interface\\bars\\Empty_gauge_Blue.bmp");
-	ITC.Set("filled_gauge_red", "Graph\\interface\\bars\\Filled_gauge_Red.bmp");
-	ITC.Set("filled_gauge_blue", "Graph\\interface\\bars\\Filled_gauge_Blue.bmp");
-	ITC.Set("target_on", "Graph\\Interface\\cursors\\target_on.bmp");
-	ITC.Set("target_off", "Graph\\Interface\\cursors\\target_off.bmp");
-	ITC.Set("interaction_on", "Graph\\Interface\\cursors\\interaction_on.bmp");
-	ITC.Set("interaction_off", "Graph\\Interface\\cursors\\interaction_off.bmp");
-	ITC.Set("magic", "Graph\\Interface\\cursors\\magic.bmp");
+	ITC.Set("backpack", "graph\\interface\\icons\\backpack.bmp");
+	ITC.Set("gold", "graph\\interface\\inventory\\gold.bmp");
+	ITC.Set("book", "graph\\interface\\icons\\book.bmp");
+	ITC.Set("steal", "graph\\interface\\icons\\steal.bmp");
+	ITC.Set("item_cant_steal", "graph\\interface\\icons\\cant_steal_item.bmp");
+	ITC.Set("empty_gauge_red", "graph\\interface\\bars\\empty_gauge_red.bmp");
+	ITC.Set("empty_gauge_blue", "graph\\interface\\bars\\empty_gauge_blue.bmp");
+	ITC.Set("filled_gauge_red", "graph\\interface\\bars\\filled_gauge_red.bmp");
+	ITC.Set("filled_gauge_blue", "graph\\interface\\bars\\filled_gauge_blue.bmp");
+	ITC.Set("target_on", "graph\\interface\\cursors\\target_on.bmp");
+	ITC.Set("target_off", "graph\\interface\\cursors\\target_off.bmp");
+	ITC.Set("interaction_on", "graph\\interface\\cursors\\interaction_on.bmp");
+	ITC.Set("interaction_off", "graph\\interface\\cursors\\interaction_off.bmp");
+	ITC.Set("magic", "graph\\interface\\cursors\\magic.bmp");
 	
-	BasicInventorySkin = TextureContainer::LoadUI("Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
-	ThrowObject = TextureContainer::LoadUI("Graph\\Interface\\cursors\\throw.bmp");
+	BasicInventorySkin = TextureContainer::LoadUI("graph\\interface\\inventory\\ingame_inventory.bmp");
+	ThrowObject = TextureContainer::LoadUI("graph\\interface\\cursors\\throw.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -810,7 +810,7 @@ void ARX_INTERFACE_NoteManage()
 			switch (Note.type)
 			{
 			case NOTE_TYPE_NOTE:
-				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\BigNote.bmp");
+				NoteTexture=TextureContainer::LoadUI("graph\\interface\\book\\bignote.bmp");
 
 				if (NoteTexture)
 				{
@@ -824,7 +824,7 @@ void ARX_INTERFACE_NoteManage()
 
 				break;
 			case NOTE_TYPE_NOTICE:
-				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Notice.bmp");
+				NoteTexture=TextureContainer::LoadUI("graph\\interface\\book\\notice.bmp");
 
 				if (NoteTexture)
 				{
@@ -842,15 +842,15 @@ void ARX_INTERFACE_NoteManage()
 
 				if (Note.type == NOTE_TYPE_BIGNOTE)
 				{
-					NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Very_BigNote.bmp");
-					NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
-					NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
+					NoteTexture=TextureContainer::LoadUI("graph\\interface\\book\\very_bignote.bmp");
+					NoteTextureLeft=TextureContainer::LoadUI("graph\\interface\\book\\left_corner.bmp");
+					NoteTextureRight=TextureContainer::LoadUI("graph\\interface\\book\\right_corner.bmp");
 				}
 				else
 				{
-					NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
-					NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
-					NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
+					NoteTexture=TextureContainer::LoadUI("graph\\interface\\book\\ingame_books.bmp");
+					NoteTextureLeft=TextureContainer::LoadUI("graph\\interface\\book\\left_corner.bmp");
+					NoteTextureRight=TextureContainer::LoadUI("graph\\interface\\book\\right_corner.bmp");
 				}
 
 				if (NoteTexture)
@@ -1003,7 +1003,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	}
 	else
 	{
-		SendIOScriptEvent(inter.iobj[0],SM_NULL,"","BOOK_OPEN");
+		SendIOScriptEvent(inter.iobj[0],SM_NULL,"","book_open");
 
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
 		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN);
@@ -1977,7 +1977,7 @@ bool DANAE::ManageEditorControls()
 		switch (Note.type)
 		{
 		case NOTE_TYPE_NOTE:
-			NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\BigNote.bmp");
+			NoteTexture=TextureContainer::LoadUI("graph\\interface\\book\\bignote.bmp");
 
 			if (NoteTexture)
 			{
@@ -1991,7 +1991,7 @@ bool DANAE::ManageEditorControls()
 
 			break;
 		case NOTE_TYPE_NOTICE:
-			NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Notice.bmp");
+			NoteTexture=TextureContainer::LoadUI("graph\\interface\\book\\notice.bmp");
 
 			if (NoteTexture)
 			{
@@ -2009,15 +2009,15 @@ bool DANAE::ManageEditorControls()
 
 			if (Note.type ==NOTE_TYPE_BIGNOTE)
 			{
-				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Very_BigNote.bmp");
-				NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
-				NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
+				NoteTexture=TextureContainer::LoadUI("graph\\interface\\book\\very_bignote.bmp");
+				NoteTextureLeft=TextureContainer::LoadUI("graph\\interface\\book\\left_corner.bmp");
+				NoteTextureRight=TextureContainer::LoadUI("graph\\interface\\book\\right_corner.bmp");
 			}
 			else
 			{
-				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
-				NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
-				NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
+				NoteTexture=TextureContainer::LoadUI("graph\\interface\\book\\ingame_books.bmp");
+				NoteTextureLeft=TextureContainer::LoadUI("graph\\interface\\book\\left_corner.bmp");
+				NoteTextureRight=TextureContainer::LoadUI("graph\\interface\\book\\right_corner.bmp");
 			}
 
 			if (NoteTexture)
@@ -2327,7 +2327,7 @@ bool DANAE::ManageEditorControls()
 			if (COMBINEGOLD)
 			{
 				char temp[256];
-				strcpy(temp,"GOLD_COIN");
+				strcpy(temp,"gold_coin");
 				SendIOScriptEvent(io,SM_COMBINE,temp);
 			}
 			else
@@ -2338,7 +2338,7 @@ bool DANAE::ManageEditorControls()
 					MakeUpcase(temp);
 					EVENT_SENDER=COMBINE;
 
-					if (!specialstrcmp( COMBINE->short_name(),"KEYRING"))
+					if (!specialstrcmp( COMBINE->short_name(),"keyring"))
 						ARX_KEYRING_Combine(io);
 					else
 						SendIOScriptEvent(io,SM_COMBINE,temp);
@@ -2377,7 +2377,7 @@ bool DANAE::ManageEditorControls()
 								{
 									GLight[i]->status = 0;
 									ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
-									SendIOScriptEvent(COMBINE, SM_CUSTOM, "DOUSE");
+									SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
 								}
 							}
 						}
@@ -3784,7 +3784,7 @@ void DANAE::ManagePlayerControls()
 							if (player.Interface & INTER_STEAL)
 								if (ioSteal && t != ioSteal)
 								{
-									SendIOScriptEvent(ioSteal, SM_STEAL,"OFF");
+									SendIOScriptEvent(ioSteal, SM_STEAL,"off");
 									player.Interface &= ~INTER_STEAL;
 								}
 
@@ -3814,7 +3814,7 @@ void DANAE::ManagePlayerControls()
 					if (player.Interface & INTER_STEAL)
 						if (ioSteal && t != ioSteal)
 						{
-							SendIOScriptEvent(ioSteal, SM_STEAL,"OFF");
+							SendIOScriptEvent(ioSteal, SM_STEAL,"off");
 							player.Interface &= ~INTER_STEAL;
 						}
 
@@ -4160,12 +4160,12 @@ void DANAE::ManagePlayerControls()
 
 	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_DRINKPOTIONLIFE))
 	{
-		SendInventoryObjectCommand("GRAPH\\OBJ3D\\TEXTURES\\ITEM_POTION_LIFE.BMP", SM_INVENTORYUSE);
+		SendInventoryObjectCommand("graph\\obj3d\\textures\\item_potion_life.bmp", SM_INVENTORYUSE);
 	}
 
 	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_DRINKPOTIONMANA))
 	{
-		SendInventoryObjectCommand("GRAPH\\OBJ3D\\TEXTURES\\ITEM_POTION_MANA.BMP", SM_INVENTORYUSE);
+		SendInventoryObjectCommand("graph\\obj3d\\textures\\item_potion_mana.bmp", SM_INVENTORYUSE);
 	}
 
 	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_TORCH))
@@ -5988,7 +5988,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 	if (TSecondaryInventory->io && TSecondaryInventory->io->inventory_skin)
 	{
 		char temp[256];
-		sprintf(temp,"Graph\\Interface\\Inventory\\%s.bmp",TSecondaryInventory->io->inventory_skin);
+		sprintf(temp,"graph\\interface\\inventory\\%s.bmp",TSecondaryInventory->io->inventory_skin);
 		TextureContainer * tc=TextureContainer::LoadUI(temp);
 
 		if (tc)
@@ -6419,7 +6419,7 @@ static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc,
 	if (tcc==NULL)
 	{
 		if (ITC.Get("unknown")==NULL)
-			ITC.Set("unknown", TextureContainer::Load("Graph\\interface\\icons\\spell_unknown.bmp"));
+			ITC.Set("unknown", TextureContainer::Load("graph\\interface\\icons\\spell_unknown.bmp"));
 
 		tc=ITC.Get("unknown");
 	}
@@ -6994,11 +6994,11 @@ void QuestBook_Render()
 	if (QuestBook.curpage > 1)
 	{
 		float x0 =   8 + NotePosX;
-		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerLeft")->m_dwHeight;
+		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("ptexcornerleft")->m_dwHeight;
 
-		DrawBookInterfaceItem(ITC.Get("pTexCornerLeft"), x0, y0);
+		DrawBookInterfaceItem(ITC.Get("ptexcornerleft"), x0, y0);
 
-		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerLeft")->m_dwWidth, y0 + ITC.Get("pTexCornerLeft")->m_dwHeight))
+		if (MouseInBookRect(x0, y0, x0 + ITC.Get("ptexcornerleft")->m_dwWidth, y0 + ITC.Get("ptexcornerleft")->m_dwHeight))
 		{
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7013,12 +7013,12 @@ void QuestBook_Render()
 	// Next page corner
 	if (QuestBook.curpage + 4 < QuestBook.totpages)
 	{
-		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("pTexCornerRight")->m_dwWidth;
-		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerRight")->m_dwHeight;
+		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("ptexcornerright")->m_dwWidth;
+		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("ptexcornerright")->m_dwHeight;
 
-		DrawBookInterfaceItem(ITC.Get("pTexCornerRight"), x0, y0);
+		DrawBookInterfaceItem(ITC.Get("ptexcornerright"), x0, y0);
 
-		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerRight")->m_dwWidth, y0 + ITC.Get("pTexCornerRight")->m_dwHeight))
+		if (MouseInBookRect(x0, y0, x0 + ITC.Get("ptexcornerright")->m_dwWidth, y0 + ITC.Get("ptexcornerright")->m_dwHeight))
 		{
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7064,53 +7064,53 @@ void ARX_INTERFACE_ManageOpenedBook()
 	
 	if (ITC.Get("questbook")==NULL)
 	{
-		ITC.Set("playerbook", "Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
-		ITC.Set("ic_casting", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
-		ITC.Set("ic_close_combat", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
-		ITC.Set("ic_constitution", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
-		ITC.Set("ic_defense", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
-		ITC.Set("ic_dexterity", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
-		ITC.Set("ic_etheral_link", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
-		ITC.Set("ic_mind", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
-		ITC.Set("ic_intuition", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
-		ITC.Set("ic_mecanism", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
-		ITC.Set("ic_object_knowledge", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
-		ITC.Set("ic_projectile", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
-		ITC.Set("ic_stealth", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
-		ITC.Set("ic_strength", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
+		ITC.Set("playerbook", "graph\\interface\\book\\character_sheet\\char_sheet_book.bmp");
+		ITC.Set("ic_casting", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
+		ITC.Set("ic_close_combat", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
+		ITC.Set("ic_constitution", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
+		ITC.Set("ic_defense", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
+		ITC.Set("ic_dexterity", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
+		ITC.Set("ic_etheral_link", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
+		ITC.Set("ic_mind", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
+		ITC.Set("ic_intuition", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
+		ITC.Set("ic_mecanism", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
+		ITC.Set("ic_object_knowledge", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
+		ITC.Set("ic_projectile", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
+		ITC.Set("ic_stealth", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
+		ITC.Set("ic_strength", "graph\\interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
 		
-		ITC.Set("questbook", "Graph\\Interface\\book\\questbook.bmp");
-		ITC.Set("pTexSpellBook", "Graph\\Interface\\book\\SpellBook.bmp");
-		ITC.Set("bookmark_char", "Graph\\Interface\\book\\bookmark_char.bmp");
-		ITC.Set("bookmark_magic", "Graph\\Interface\\book\\bookmark_magic.bmp");
-		ITC.Set("bookmark_map", "Graph\\Interface\\book\\bookmark_map.bmp");
-		ITC.Set("bookmark_quest", "Graph\\Interface\\book\\bookmark_quest.bmp");
+		ITC.Set("questbook", "graph\\interface\\book\\questbook.bmp");
+		ITC.Set("ptexspellbook", "graph\\interface\\book\\spellbook.bmp");
+		ITC.Set("bookmark_char", "graph\\interface\\book\\bookmark_char.bmp");
+		ITC.Set("bookmark_magic", "graph\\interface\\book\\bookmark_magic.bmp");
+		ITC.Set("bookmark_map", "graph\\interface\\book\\bookmark_map.bmp");
+		ITC.Set("bookmark_quest", "graph\\interface\\book\\bookmark_quest.bmp");
 
-		ITC.Set("accessible_1", "Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
-		ITC.Set("accessible_2", "Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
-		ITC.Set("accessible_3", "Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
-		ITC.Set("accessible_4", "Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
-		ITC.Set("accessible_5", "Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
-		ITC.Set("accessible_6", "Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
-		ITC.Set("accessible_7", "Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
-		ITC.Set("accessible_8", "Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
-		ITC.Set("accessible_9", "Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
-		ITC.Set("accessible_10", "Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
-		ITC.Set("current_1", "Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
-		ITC.Set("current_2", "Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
-		ITC.Set("current_3", "Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
-		ITC.Set("current_4", "Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
-		ITC.Set("current_5", "Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
-		ITC.Set("current_6", "Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
-		ITC.Set("current_7", "Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
-		ITC.Set("current_8", "Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
-		ITC.Set("current_9", "Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
-		ITC.Set("current_10", "Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
+		ITC.Set("accessible_1", "graph\\interface\\book\\accessible\\accessible_1.bmp");
+		ITC.Set("accessible_2", "graph\\interface\\book\\accessible\\accessible_2.bmp");
+		ITC.Set("accessible_3", "graph\\interface\\book\\accessible\\accessible_3.bmp");
+		ITC.Set("accessible_4", "graph\\interface\\book\\accessible\\accessible_4.bmp");
+		ITC.Set("accessible_5", "graph\\interface\\book\\accessible\\accessible_5.bmp");
+		ITC.Set("accessible_6", "graph\\interface\\book\\accessible\\accessible_6.bmp");
+		ITC.Set("accessible_7", "graph\\interface\\book\\accessible\\accessible_7.bmp");
+		ITC.Set("accessible_8", "graph\\interface\\book\\accessible\\accessible_8.bmp");
+		ITC.Set("accessible_9", "graph\\interface\\book\\accessible\\accessible_9.bmp");
+		ITC.Set("accessible_10", "graph\\interface\\book\\accessible\\accessible_10.bmp");
+		ITC.Set("current_1", "graph\\interface\\book\\current_page\\current_1.bmp");
+		ITC.Set("current_2", "graph\\interface\\book\\current_page\\current_2.bmp");
+		ITC.Set("current_3", "graph\\interface\\book\\current_page\\current_3.bmp");
+		ITC.Set("current_4", "graph\\interface\\book\\current_page\\current_4.bmp");
+		ITC.Set("current_5", "graph\\interface\\book\\current_page\\current_5.bmp");
+		ITC.Set("current_6", "graph\\interface\\book\\current_page\\current_6.bmp");
+		ITC.Set("current_7", "graph\\interface\\book\\current_page\\current_7.bmp");
+		ITC.Set("current_8", "graph\\interface\\book\\current_page\\current_8.bmp");
+		ITC.Set("current_9", "graph\\interface\\book\\current_page\\current_9.bmp");
+		ITC.Set("current_10", "graph\\interface\\book\\current_page\\current_10.bmp");
 		
-		ITC.Set("pTexCursorRedist", "Graph\\Interface\\cursors\\add_points.bmp");
+		ITC.Set("ptexcursorredist", "graph\\interface\\cursors\\add_points.bmp");
 		
-		ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
-		ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
+		ITC.Set("ptexcornerleft", "graph\\interface\\book\\left_corner_original.bmp");
+		ITC.Set("ptexcornerright", "graph\\interface\\book\\right_corner_original.bmp");
 		
 		ITC.Level = getLocalised("system_charsheet_player_lvl");
 		ITC.Xp = getLocalised("system_charsheet_player_xp");
@@ -7131,7 +7131,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if(Book_Mode == BOOKMODE_STATS) {
 			DrawBookInterfaceItem(ITC.Get("playerbook"), 97, 64, Color::white, 0.9999f); 
 		} else if(Book_Mode == BOOKMODE_SPELLS) {
-			DrawBookInterfaceItem(ITC.Get("pTexSpellBook"), 97, 64, Color::white, 0.9999f);
+			DrawBookInterfaceItem(ITC.Get("ptexspellbook"), 97, 64, Color::white, 0.9999f);
 		} else if (Book_Mode == 2) {
 			DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
 		} else {
@@ -9159,13 +9159,13 @@ void DANAE::DrawAllInterface()
 			{
 				px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 				py=DANAESIZY - INTERFACE_RATIO(218);
-				ARX_INTERFACE_DrawItem(ITC.Get("Icon_Lvl_Up"),px,py);		
+				ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
 
 				if (eMouseState == MOUSE_IN_REDIST_ICON)
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("Icon_Lvl_Up"),px,py);		
+					ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 				}			  
 			}
@@ -10054,7 +10054,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				{
 				case CURSOR_REDIST:
 					{
-						surf = ITC.Get("pTexCursorRedist");
+						surf = ITC.Get("ptexcursorredist");
 					}
 					break;
 				case CURSOR_COMBINEOFF:

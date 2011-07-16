@@ -165,7 +165,6 @@ void Credits::render() {
 		}    
 
 		//Use time passed between frame to create scroll effect
-		//ARX_LOG("CreditStart %f, CreditGet ARX_TIME_Get %f  ", ARXmenu.mda->creditstart,ARX_TIME_Get( false ));
 		ARXmenu.mda->creditspos-=0.025f*(float)(ARX_TIME_Get( false )-ARXmenu.mda->creditstart);
 		ARXmenu.mda->creditstart=ARX_TIME_Get( false );
 		
