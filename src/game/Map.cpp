@@ -538,7 +538,7 @@ float oldposx,oldposz;
 bool NeedMapCreation() {
 	char name[256];
 	GetLevelNameByNum(CURRENTLEVEL, name);	
-	sprintf(ThisLevelMap, "\\Graph\\Levels\\Level%s\\map.bmp", name);
+	sprintf(ThisLevelMap, "\\graph\\levels\\level%s\\map.bmp", name);
 	return (resources->getFile(ThisLevelMap) == NULL);
 }
 
