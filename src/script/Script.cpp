@@ -360,36 +360,34 @@ void ReleaseScript(EERIE_SCRIPT * es)
 	memset(es->shortcut, 0, sizeof(long)*MAX_SHORTCUT);
 }
 
-ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const string & _name, std::string& txtcontent, float * fcontent,long * lcontent)
+ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const string & name, std::string& txtcontent, float * fcontent,long * lcontent)
 {
-	std::string name = _name;
-	MakeUpcase(name);
 
 	switch (name[1])
 	{
 		case '$':
 
-			if (!name.compare("^$PARAM1"))
+			if (!name.compare("^$param1"))
 			{
 				txtcontent = SSEPARAMS[0];
 				return TYPE_TEXT;
 			}
 
-			if (!name.compare("^$PARAM2"))
+			if (!name.compare("^$param2"))
 			{
 				txtcontent = SSEPARAMS[1];
 				return TYPE_TEXT;
 			}
 
-			if (!name.compare("^$PARAM3"))
+			if (!name.compare("^$param3"))
 			{
 				txtcontent = SSEPARAMS[2];
 				return TYPE_TEXT;
 			}
 
-			if (!name.compare("^$OBJONTOP"))
+			if (!name.compare("^$objontop"))
 			{
-				txtcontent = "NONE";
+				txtcontent = "none";
 
 				if (io)	MakeTopObjString(io,txtcontent);
 
@@ -399,25 +397,25 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case '&':
 
-			if (!name.compare("^&PARAM1"))
+			if (!name.compare("^&param1"))
 			{
 				*fcontent = (float)atof(SSEPARAMS[0]);
 				return TYPE_FLOAT;
 			}
 
-			if (!name.compare("^&PARAM2"))
+			if (!name.compare("^&param2"))
 			{
 				*fcontent = (float)atof(SSEPARAMS[1]);
 				return TYPE_FLOAT;
 			}
 
-			if (!name.compare("^&PARAM3"))
+			if (!name.compare("^&param3"))
 			{
 				*fcontent = (float)atof(SSEPARAMS[2]);
 				return TYPE_FLOAT;
 			}
 
-			if (!name.compare("^&PLAYERDIST"))
+			if (!name.compare("^&playerdist"))
 			{
 				if (io)
 				{
@@ -429,7 +427,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case '#':
 
-			if (!name.compare("^#PLAYERDIST"))
+			if (!name.compare("^#playerdist"))
 			{
 				if (io != NULL)
 				{
@@ -438,25 +436,25 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				}
 			}
 
-			if (!name.compare("^#PARAM1"))
+			if (!name.compare("^#param1"))
 			{
 				*lcontent = atol(SSEPARAMS[0]);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^#PARAM2"))
+			if (!name.compare("^#param2"))
 			{
 				*lcontent = atol(SSEPARAMS[1]);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^#PARAM3"))
+			if (!name.compare("^#param3"))
 			{
 				*lcontent = atol(SSEPARAMS[2]);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^#TIMER1"))
+			if (!name.compare("^#timer1"))
 			{
 				if (io != NULL)
 				{
@@ -472,7 +470,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^#TIMER2"))
+			if (!name.compare("^#timer2"))
 			{
 				if (io != NULL)
 				{
@@ -488,7 +486,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^#TIMER3"))
+			if (!name.compare("^#timer3"))
 			{
 				if (io != NULL)
 				{
@@ -504,7 +502,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^#TIMER4"))
+			if (!name.compare("^#timer4"))
 			{
 				if (io != NULL)
 				{
@@ -524,31 +522,31 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'G':
 
-			if (!name.compare("^GORE"))
+			if (!name.compare("^gore"))
 			{
 				*lcontent = config.misc.gore ? 1 : 0;
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^GAMEDAYS"))
+			if (!name.compare("^gamedays"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 864000000);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^GAMEHOURS"))
+			if (!name.compare("^gamehours"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 3600000);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^GAMEMINUTES"))
+			if (!name.compare("^gameminutes"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 60000);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^GAMESECONDS"))
+			if (!name.compare("^gameseconds"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 1000);
 				return TYPE_LONG;
@@ -557,7 +555,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'A':
 
-			if (!specialstrcmp(name, "^AMOUNT"))
+			if (!specialstrcmp(name, "^amount"))
 			{
 				if ((io) && (io->ioflags & IO_ITEM))
 				{
@@ -569,32 +567,32 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!name.compare("^ARXDAYS"))
+			if (!name.compare("^arxdays"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 7200000);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^ARXHOURS"))
+			if (!name.compare("^arxhours"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 600000);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^ARXMINUTES"))
+			if (!name.compare("^arxminutes"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 10000);
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^ARXSECONDS"))
+			if (!name.compare("^arxseconds"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 1000);
 				*lcontent *= 6;
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^ARXTIME_HOURS"))
+			if (!name.compare("^arxtime_hours"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 600000);
 
@@ -603,7 +601,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^ARXTIME_MINUTES"))
+			if (!name.compare("^arxtime_minutes"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 10000);
 
@@ -612,7 +610,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!name.compare("^ARXTIME_SECONDS"))
+			if (!name.compare("^arxtime_seconds"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime * 6 / 1000);
 
@@ -625,13 +623,13 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'R':
 
-			if (!specialstrcmp(name, "^REALDIST_"))
+			if (!specialstrcmp(name, "^realdist_"))
 			{
 				if (io)
 				{
-					char * obj = &name[10];
+					const char * obj = name.c_str() + 10;
 
-					if (!strcmp(obj, "PLAYER"))
+					if (!strcmp(obj, "player"))
 					{
 						if (io->room_flags & 1)
 							UpdateIORoom(io);
@@ -674,9 +672,9 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				}
 			}
 
-			if (!specialstrcmp(name, "^REPAIRPRICE_"))
+			if (!specialstrcmp(name, "^repairprice_"))
 			{
-				char * obj = &name[13];
+				const char * obj = name.c_str() + 13;
 				long t = GetTargetByNameTarget(obj);
 
 				if (ValidIONum(t))
@@ -689,9 +687,9 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^RND_"))
+			if (!specialstrcmp(name, "^rnd_"))
 			{
-				char * max = &name[5];
+				const char * max = name.c_str() + 5;
 
 				if (max[0])
 				{
@@ -704,106 +702,106 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^RUNE_"))
+			if (!specialstrcmp(name, "^rune_"))
 			{
-				char * temp = &name[6];
+				const char * temp = name.c_str() + 6;
 
-				if (!strcasecmp(temp, "AAM"))
+				if (!strcasecmp(temp, "aam"))
 				{
 					*lcontent = player.rune_flags & FLAG_AAM;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "CETRIUS"))
+				else if (!strcasecmp(temp, "cetrius"))
 				{
 					*lcontent = player.rune_flags & FLAG_CETRIUS;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "COMUNICATUM"))
+				else if (!strcasecmp(temp, "comunicatum"))
 				{
 					*lcontent = player.rune_flags & FLAG_COMUNICATUM;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "COSUM"))
+				else if (!strcasecmp(temp, "cosum"))
 				{
 					*lcontent = player.rune_flags & FLAG_COSUM;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "FOLGORA"))
+				else if (!strcasecmp(temp, "folgora"))
 				{
 					*lcontent = player.rune_flags & FLAG_FOLGORA;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "FRIDD"))
+				else if (!strcasecmp(temp, "fridd"))
 				{
 					*lcontent = player.rune_flags & FLAG_FRIDD;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "KAOM"))
+				else if (!strcasecmp(temp, "kaom"))
 				{
 					*lcontent = player.rune_flags & FLAG_KAOM;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "MEGA"))
+				else if (!strcasecmp(temp, "mega"))
 				{
 					*lcontent = player.rune_flags & FLAG_MEGA;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "MORTE"))
+				else if (!strcasecmp(temp, "morte"))
 				{
 					*lcontent = player.rune_flags & FLAG_MORTE;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "MOVIS"))
+				else if (!strcasecmp(temp, "movis"))
 				{
 					*lcontent = player.rune_flags & FLAG_MOVIS;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "NHI"))
+				else if (!strcasecmp(temp, "nhi"))
 				{
 					*lcontent = player.rune_flags & FLAG_NHI;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "RHAA"))
+				else if (!strcasecmp(temp, "rhaa"))
 				{
 					*lcontent = player.rune_flags & FLAG_RHAA;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "SPACIUM"))
+				else if (!strcasecmp(temp, "spacium"))
 				{
 					*lcontent = player.rune_flags & FLAG_SPACIUM;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "STREGUM"))
+				else if (!strcasecmp(temp, "stregum"))
 				{
 					*lcontent = player.rune_flags & FLAG_STREGUM;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "TAAR"))
+				else if (!strcasecmp(temp, "taar"))
 				{
 					*lcontent = player.rune_flags & FLAG_TAAR;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "TEMPUS"))
+				else if (!strcasecmp(temp, "tempus"))
 				{
 					*lcontent = player.rune_flags & FLAG_TEMPUS;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "TERA"))
+				else if (!strcasecmp(temp, "tera"))
 				{
 					*lcontent = player.rune_flags & FLAG_TERA;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "VISTA"))
+				else if (!strcasecmp(temp, "vista"))
 				{
 					*lcontent = player.rune_flags & FLAG_VISTA;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "VITAE"))
+				else if (!strcasecmp(temp, "vitae"))
 				{
 					*lcontent = player.rune_flags & FLAG_VITAE;
 					return TYPE_LONG;
 				}
-				else if (!strcasecmp(temp, "YOK"))
+				else if (!strcasecmp(temp, "yok"))
 				{
 					*lcontent = player.rune_flags & FLAG_YOK;
 					return TYPE_LONG;
@@ -816,11 +814,11 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'I':
 
-			if (!specialstrcmp(name, "^INZONE_"))
+			if (!specialstrcmp(name, "^inzone_"))
 			{
 				if (io)
 				{
-					char * zone = &name[8];
+					const char * zone = name.c_str() + 8;
 					ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
 
 					if (ap == NULL)
@@ -847,7 +845,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!specialstrcmp(name, "^ININITPOS"))
+			if (!specialstrcmp(name, "^ininitpos"))
 			{
 				Vec3f pos;
 
@@ -865,7 +863,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!specialstrcmp(name, "^INPLAYERINVENTORY"))
+			if (!specialstrcmp(name, "^inplayerinventory"))
 			{
 				*lcontent = 0;
 
@@ -880,53 +878,53 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'B':
 
-			if (!specialstrcmp(name, "^BEHAVIOR"))
+			if (!specialstrcmp(name, "^behavior"))
 			{
 				if (io && (io->ioflags & IO_NPC))
 				{
 					txtcontent = "";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
-						txtcontent += "L";
+						txtcontent += "l";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_SNEAK)
-						txtcontent += "S";
+						txtcontent += "s";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_DISTANT)
-						txtcontent += "D";
+						txtcontent += "d";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_MAGIC)
-						txtcontent += "M";
+						txtcontent += "m";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-						txtcontent += "F";
+						txtcontent += "f";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-						txtcontent += "H";
+						txtcontent += "h";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
-						txtcontent += "R";
+						txtcontent += "r";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
-						txtcontent += "T";
+						txtcontent += "t";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_FLEE)
-						txtcontent += "E";
+						txtcontent += "e";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_LOOK_FOR)
-						txtcontent += "O";
+						txtcontent += "o";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_HIDE)
-						txtcontent += "I";
+						txtcontent += "i";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-						txtcontent += "W";
+						txtcontent += "w";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_GUARD)
-						txtcontent += "U";
+						txtcontent += "u";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
-						txtcontent += "A";
+						txtcontent += "a";
 				}
 				else txtcontent = "";
 
@@ -936,21 +934,21 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'S':
 
-			if (!specialstrcmp(name, "^SENDER"))
+			if (!specialstrcmp(name, "^sender"))
 			{
 				if (EVENT_SENDER)
 				{
 					if (EVENT_SENDER == inter.iobj[0])
-						txtcontent = "PLAYER";
+						txtcontent = "player";
 					else
 						txtcontent = EVENT_SENDER->long_name();
 				}
-				else 	txtcontent = "NONE";
+				else 	txtcontent = "none";
 
 				return TYPE_TEXT;
 			}
 
-			if (!specialstrcmp(name, "^SCALE"))
+			if (!specialstrcmp(name, "^scale"))
 			{
 				if (io)
 				{
@@ -962,7 +960,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^SPEAKING"))
+			if (!specialstrcmp(name, "^speaking"))
 			{
 				if (io)
 				{
@@ -989,17 +987,17 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'M':
 
-			if (!specialstrcmp(name, "^ME"))
+			if (!specialstrcmp(name, "^me"))
 			{
 				if (io == inter.iobj[0])
-					txtcontent = "PLAYER";
+					txtcontent = "player";
 				else
 					txtcontent = io->long_name();
 
 				return TYPE_TEXT;
 			}
 
-			if (!specialstrcmp(name, "^MAXLIFE"))
+			if (!specialstrcmp(name, "^maxlife"))
 			{
 				if ((io) && (io->ioflags & IO_NPC))
 				{
@@ -1011,7 +1009,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^MANA"))
+			if (!specialstrcmp(name, "^mana"))
 			{
 				if ((io) && (io->ioflags & IO_NPC))
 				{
@@ -1023,7 +1021,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^MAXMANA"))
+			if (!specialstrcmp(name, "^maxmana"))
 			{
 				if ((io) && (io->ioflags & IO_NPC))
 				{
@@ -1035,9 +1033,9 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^MYSPELL_"))
+			if (!specialstrcmp(name, "^myspell_"))
 			{
-				char * temp = &name[9];
+				const char * temp = name.c_str() + 9;
 				Spell id = GetSpellId(toLowercase(temp));
 
 				if(id != SPELL_NONE)
@@ -1061,7 +1059,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!specialstrcmp(name, "^MAXDURABILITY"))
+			if (!specialstrcmp(name, "^maxdurability"))
 			{
 				if (io)
 				{
@@ -1076,7 +1074,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'L':
 
-			if (!specialstrcmp(name, "^LIFE"))
+			if (!specialstrcmp(name, "^life"))
 			{
 				if ((io) && (io->ioflags & IO_NPC))
 				{
@@ -1088,12 +1086,12 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^LAST_SPAWNED"))
+			if (!specialstrcmp(name, "^last_spawned"))
 			{
 				if (LASTSPAWNED)
 					txtcontent = LASTSPAWNED->long_name();
 				else
-					txtcontent = "NONE";
+					txtcontent = "none";
 
 				return TYPE_TEXT;
 			}
@@ -1101,13 +1099,13 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'D':
 
-			if (!specialstrcmp(name, "^DIST_"))
+			if (!specialstrcmp(name, "^dist_"))
 			{
 				if (io)
 				{
-					char * obj = &name[6];
+					const char * obj = name.c_str() + 6;
 
-					if (!strcmp(obj, "PLAYER"))
+					if (!strcmp(obj, "player"))
 					{
 						*fcontent = (float)Distance3D(player.pos.x, player.pos.y, player.pos.z,
 													  io->pos.x, io->pos.y, io->pos.z);
@@ -1139,13 +1137,13 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				}
 			}
 
-			if (!specialstrcmp(name, "^DEMO"))
+			if (!specialstrcmp(name, "^demo"))
 			{
 				*lcontent = FINAL_COMMERCIAL_DEMO;
 				return TYPE_LONG;
 			}
 
-			if (!specialstrcmp(name, "^DURABILITY"))
+			if (!specialstrcmp(name, "^durability"))
 			{
 				if (io)
 				{
@@ -1160,7 +1158,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'P':
 
-			if (!specialstrcmp(name, "^PRICE"))
+			if (!specialstrcmp(name, "^price"))
 			{
 				if ((io) && (io->ioflags & IO_ITEM))
 				{
@@ -1172,13 +1170,13 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_ZONE"))
+			if (!specialstrcmp(name, "^player_zone"))
 			{
 				ARX_PATH * op = (ARX_PATH *)player.inzone;
 
 				if (op == NULL)
 				{
-					txtcontent = "NONE";
+					txtcontent = "none";
 					return TYPE_TEXT;
 				}
 
@@ -1186,13 +1184,13 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_TEXT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_LIFE"))
+			if (!specialstrcmp(name, "^player_life"))
 			{
 				*fcontent = player.Full_life;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^POISONED"))
+			if (!specialstrcmp(name, "^poisoned"))
 			{
 				if ((io) && (io->ioflags & IO_NPC))
 				{
@@ -1204,7 +1202,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^POISONOUS"))
+			if (!specialstrcmp(name, "^poisonous"))
 			{
 				if (io)
 				{
@@ -1216,9 +1214,9 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^POSSESS_"))
+			if (!specialstrcmp(name, "^possess_"))
 			{
-				char * obj = &name[9];
+				const char * obj = name.c_str() + 9;
 				long t = GetTargetByNameTarget(obj);
 
 				if (ValidIONum(t))
@@ -1243,109 +1241,109 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_GOLD"))
+			if (!specialstrcmp(name, "^player_gold"))
 			{
 				*fcontent = ARX_CLEAN_WARN_CAST_FLOAT(player.gold);
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_MAXLIFE"))
+			if (!specialstrcmp(name, "^player_maxlife"))
 			{
 				*fcontent = player.Full_maxlife;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_ATTRIBUTE_STRENGTH"))
+			if (!specialstrcmp(name, "^player_attribute_strength"))
 			{
 				*fcontent = player.Full_Attribute_Strength;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_ATTRIBUTE_DEXTERITY"))
+			if (!specialstrcmp(name, "^player_attribute_dexterity"))
 			{
 				*fcontent = player.Full_Attribute_Dexterity;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_ATTRIBUTE_CONSTITUTION"))
+			if (!specialstrcmp(name, "^player_attribute_constitution"))
 			{
 				*fcontent = player.Full_Attribute_Constitution;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_ATTRIBUTE_MIND"))
+			if (!specialstrcmp(name, "^player_attribute_mind"))
 			{
 				*fcontent = player.Full_Attribute_Mind;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_STEALTH"))
+			if (!specialstrcmp(name, "^player_skill_stealth"))
 			{
 				*fcontent = player.Full_Skill_Stealth;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_MECANISM"))
+			if (!specialstrcmp(name, "^player_skill_mecanism"))
 			{
 				*fcontent = player.Full_Skill_Mecanism;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_INTUITION"))
+			if (!specialstrcmp(name, "^player_skill_intuition"))
 			{
 				*fcontent = player.Full_Skill_Intuition;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_ETHERAL_LINK"))
+			if (!specialstrcmp(name, "^player_skill_etheral_link"))
 			{
 				*fcontent = player.Full_Skill_Etheral_Link;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_OBJECT_KNOWLEDGE"))
+			if (!specialstrcmp(name, "^player_skill_object_knowledge"))
 			{
 				*fcontent = player.Full_Skill_Object_Knowledge;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_CASTING"))
+			if (!specialstrcmp(name, "^player_skill_casting"))
 			{
 				*fcontent = player.Full_Skill_Casting;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_PROJECTILE"))
+			if (!specialstrcmp(name, "^player_skill_projectile"))
 			{
 				*fcontent = player.Full_Skill_Projectile;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_CLOSE_COMBAT"))
+			if (!specialstrcmp(name, "^player_skill_close_combat"))
 			{
 				*fcontent = player.Full_Skill_Close_Combat;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_SKILL_DEFENSE"))
+			if (!specialstrcmp(name, "^player_skill_defense"))
 			{
 				*fcontent = player.Full_Skill_Defense;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_HUNGER"))
+			if (!specialstrcmp(name, "^player_hunger"))
 			{
 				*fcontent = player.hunger;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYER_POISON"))
+			if (!specialstrcmp(name, "^player_poison"))
 			{
 				*fcontent = player.poison;
 				return TYPE_FLOAT;
 			}
 
-			if (!specialstrcmp(name, "^PLAYERCASTING"))
+			if (!specialstrcmp(name, "^playercasting"))
 			{
 				for (size_t i = 0; i < MAX_SPELLS; i++)
 				{
@@ -1372,9 +1370,9 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				return TYPE_LONG;
 			}
 
-			if (!specialstrcmp(name, "^PLAYERSPELL_"))
+			if (!specialstrcmp(name, "^playerspell_"))
 			{
-				char * temp = &name[13];
+				const char * temp = name.c_str() + 13;
 				Spell id = GetSpellId(toLowercase(temp));
 
 				if (id != SPELL_NONE)
@@ -1393,7 +1391,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 					}
 				}
 
-				if (!strcasecmp(name, "^PLAYERSPELL_INVISIBILITY"))
+				if (!strcasecmp(name, "^playerspell_invisibility"))
 				{
 					if (inter.iobj[0]->invisibility > 0.3f)
 					{
@@ -1409,16 +1407,16 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'N':
 
-			if (!specialstrcmp(name, "^NPCINSIGHT"))
+			if (!specialstrcmp(name, "^npcinsight"))
 			{
 				INTERACTIVE_OBJ * ioo = ARX_NPC_GetFirstNPCInSight(io);
 
 				if (ioo == inter.iobj[0])
-					txtcontent = "PLAYER";
+					txtcontent = "player";
 				else if (ioo)
 					txtcontent = ioo->long_name();
 				else
-					txtcontent = "NONE";
+					txtcontent = "none";
 
 				return TYPE_TEXT;
 			}
@@ -1426,13 +1424,13 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'T':
 
-			if (!specialstrcmp(name, "^TARGET"))
+			if (!specialstrcmp(name, "^target"))
 			{
-				if (io->targetinfo == 0) txtcontent = "PLAYER";
+				if (io->targetinfo == 0) txtcontent = "player";
 				else
 				{
 					if (!ValidIONum(io->targetinfo))
-						txtcontent = "NONE";
+						txtcontent = "none";
 					else
 						txtcontent = inter.iobj[io->targetinfo]->long_name();
 				}
@@ -1443,7 +1441,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			break;
 		case 'F':
 
-			if (!specialstrcmp(name, "^FOCAL"))
+			if (!specialstrcmp(name, "^focal"))
 			{
 				if ((io != NULL) && (io->ioflags & IO_CAMERA))
 				{
@@ -1453,7 +1451,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				}
 			}
 
-			if (!specialstrcmp(name, "^FIGHTING"))
+			if (!specialstrcmp(name, "^fighting"))
 			{
 				if (ARX_PLAYER_IsInFightMode())
 				{
@@ -1472,7 +1470,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 	if (!specialstrcmp(name, " "))
 	{
 		if (io == inter.iobj[0])
-			txtcontent = "PLAYER";
+			txtcontent = "player";
 		else
 			txtcontent = io->long_name();
 
@@ -1641,14 +1639,14 @@ string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * e
 		{
 			SCRIPT_VAR * var = GetVarAddress(svar, NB_GLOBALS, temp1);
 
-			if (!var) return "VOID";
+			if (!var) return "void";
 			else return var->text;
 		}
 		else if (temp1[0] == '\xA3')
 		{
 			SCRIPT_VAR * var = GetVarAddress(esss->lvar, esss->nblvar, temp1);
 
-			if (!var) return "VOID";
+			if (!var) return "void";
 			else return var->text;
 		}
 		else
@@ -2178,7 +2176,6 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 //*************************************************************************************
 void MakeSSEPARAMS(const char * params)
 {
-	// LogDebug << "MakeSSEPARAMS " << Logger::nullstr(params);
 	
 	for (long i = 0; i < MAX_SSEPARAMS; i++)
 	{
@@ -2310,7 +2307,6 @@ void ARX_SCRIPT_EventStackExecuteAll()
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
-	// LogDebug << "Stack_SendIOScriptEvent "<< eventname;
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
 		if (!eventstack[i].exist)
@@ -2329,7 +2325,6 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std:
 
 ScriptResult SendIOScriptEventReverse(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
-	// LogDebug << "SendIOScriptEventReverse "<< eventname;
 	// checks invalid IO
 	if (!io) return REFUSE;
 
@@ -2362,8 +2357,6 @@ ScriptResult SendIOScriptEventReverse(INTERACTIVE_OBJ * io, ScriptMessage msg, c
 
 ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
-	//if (msg != 8)
-	//	LogDebug << "SendIOScriptEvent event '"<< eventname<<"' message " << msg;
 	// checks invalid IO
 	if (!io) return REFUSE;
 
