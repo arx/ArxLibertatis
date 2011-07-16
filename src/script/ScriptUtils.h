@@ -63,7 +63,7 @@ private:
 	
 public:
 	
-	Context(EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL);
+	Context(EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL, ScriptMessage msg = SM_NULL);
 	
 	std::string getStringVar(const std::string & var) const;
 	std::string getFlags();

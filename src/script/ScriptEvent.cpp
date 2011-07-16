@@ -273,9 +273,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	
 	ScriptResult ret = ACCEPT;
 	std::string word = "";
-	char cmd[256];
 	char eventname[64];
-	long brackets = 0;
 	long pos;
 	
 	totalCount++;
@@ -398,37 +396,47 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			LogError << "ERROR: No bracket after event, got \"" << word << "\"";
 			return ACCEPT;
 		}
-		else brackets = 1;
 	} else {
 		LogDebug << "EXECUTELINE received";
-		brackets = 0;
 	}
+	
+	Context context(es, pos, io, msg);
 
-	while (pos >= 0) {
-
-		cmd[0] = 0;
-
-		if (pos >= (int)es->size - 1)
-			return ACCEPT;
-
-		if ((pos = GetNextWord(es, pos, word)) < 0)
-			return ACCEPT;
-
-		if ((msg == SM_EXECUTELINE) && (LINEEND == 1))
-			return ACCEPT;
-
-		MakeStandard(word);
-
-		//TODO(lubosz): this is one mega switch
-		LogDebug << "Switching! current word '" << word << "'";
+	for(;;) {
+		
+		bool newline;
+		do {
+			
+			context.skipWhitespace();
+			
+			if(context.pos >= context.getScript()->size) {
+				LogWarning << "reached script end without accept / refuse / return";
+				return ACCEPT;
+			}
+			
+			newline = false;
+			if(context.script->data[context.pos] == '\n') {
+				newline = true;
+				context.pos++;
+				if(msg == SM_EXECUTELINE) {
+					return ACCEPT;
+				}
+			}
+			
+		} while(newline);
+		
+		string word = context.getLowercase();
+		
+		arx_assert(!word.empty());
+		
+		// Remove all underscores from the command.
+		word.resize(std::remove(word.begin(), word.end(), '_') - word.begin());
 		
 		Commands::const_iterator it = commands.find(toLowercase(word));
 		
 		if(it != commands.end()) {
 			
-			Context context(es, pos, io);
 			
-			context.message = msg;
 			
 			Command & command = *(it->second);
 			
@@ -446,181 +454,47 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			LINEEND = (context.pos >= es->size || es->data[pos] == '\n') ? 1 : 0;
 			
 			if(res == Command::AbortAccept) {
-				ClearSubStack(es);
-				return ACCEPT;
+				ret = ACCEPT;
+				break;
 			} else if(res == Command::AbortRefuse) {
-				ClearSubStack(es);
-				return REFUSE;
+				ret = REFUSE;
+				break;
 			} else if(res == Command::AbortError) {
-				ClearSubStack(es);
-				return BIGERROR;
+				ret =  BIGERROR;
+				break;
 			} else if(res == Command::Jumped) {
 				if(msg == SM_EXECUTELINE) {
 					msg = SM_DUMMY;
 				}
 			}
 			
-		} else switch (word[0]) {
-			case '}':
-				brackets--;
-				break;
-			case '{':
-				brackets++;
-				break;
-			case '/':
-				if (word[1] == '/') pos = GotoNextLine(es, pos);
-				break;
-			case '>':
-				if (word[1] == '>') pos = GotoNextLine(es, pos);
-				break;
-
-			case 'T':
-
-				if ((word[1] == 'I') && (word[2] == 'M') && (word[3] == 'E') && (word[4] == 'R'))
-				{
-					// Timer -m nbtimes duration commands
-					string timername;
-					std::string temp2;
-					std::string temp3;
-
-					// Checks if the timer is named by caller of if it needs a default name
-					if(word.length() > 5) {
-						timername = toLowercase(word.substr(5));
-					} else {
-						timername = ARX_SCRIPT_Timer_GetDefaultName();
-					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, word);
-					}
-
-#endif
-					pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcat(cmd, " ");
-						strcat(cmd, temp2);
-					}
-
-#endif
-
-					// We start by clearing instances of this timer. (Timers are unique by
-					// a combination of name & IO).
-					if (!strcasecmp(temp2, "KILL_LOCAL"))
-					{
-						ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(io);
-					}
-					else
-					{
-						ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, io);
-
-						if (strcasecmp(temp2, "OFF"))
-						{
-							long mili = 0;
-							long idle = 0;
-							
-							if (temp2[0] == '-')
-							{
-								if (iCharIn(temp2, 'M'))
-									mili = 1;
-
-								if (iCharIn(temp2, 'I'))
-									idle = 1;
-
-								pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-								if (NEED_DEBUG)
-								{
-									strcat(cmd, " ");
-									strcat(cmd, temp2);
-								}
-
-#endif
-							}
-
-							long times = atoi(temp2);
-							pos = GetNextWord(es, pos, temp3);
-#ifdef NEEDING_DEBUG
-
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, " ");
-								strcat(cmd, temp3);
-							}
-
-#endif
-							long msecs = atoi(temp3);
-
-							if (!mili) msecs *= 1000;
-
-							long num = ARX_SCRIPT_Timer_GetFree();
-
-							if (num != -1)
-							{
-								ActiveTimers++;
-								scr_timer[num].es = es;
-								scr_timer[num].exist = 1;
-								scr_timer[num].io = io;
-								scr_timer[num].msecs = msecs;
-								scr_timer[num].name = timername;
-								scr_timer[num].pos = pos;
-								scr_timer[num].tim = ARXTimeUL();
-								scr_timer[num].times = times;
-
-								if ((idle) && io)
-									scr_timer[num].flags = 1;
-								else
-									scr_timer[num].flags = 0;
-							}
-
-							pos = GotoNextLine(es, pos);
-						}
-					}
-				}
-
-				break;
-			default:
-				if (io) {
-					std::string temp2;
-					std::string temp3;
-					std::string temp4;
-					long ppos = pos;
-					pos = GetNextWord(es, pos, temp2);
-					pos = GetNextWord(es, pos, temp3);
-					GetNextWord(es, pos, temp4);
-					sprintf(cmd, "Script Error for token #%ld '%s' (%s|%s|%s) in file %s_%04ld",
-							ppos,word.c_str(),temp2.c_str(), temp3.c_str(), temp4.c_str(),GetName(io->filename).c_str(),io->ident);
-					LogError << cmd;
-
-					io->ioflags |= IO_FREEZESCRIPT;
-					return REFUSE;
-				}
-
-				LogError << "unknown command: " << word;
+		} else if(!word.compare(0, 2, "//", 2) || !word.compare(0, 2, ">>", 2)) {
+			context.skipCommand(); // comments and labels
+		} else if(!word.compare(0, 5, "timer", 5)) {
+			timerCommand(word.substr(5), context);
+		} else {
+			
+			LogError << '[' << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown") << ':' << context.getPosition() << "]: unknown command: " << word;
+			
+			io->ioflags |= IO_FREEZESCRIPT;
+			return REFUSE;
+			
 		}
-
-		if (cmd[0] != 0) LogDebug << "CMD " << cmd;
-
+		
 	}
-
-	LogDebug << "goto end";
-
-	if (msg != SM_EXECUTELINE) {
-		if (evname != "")
-			LogDebug << eventname << " EVENT Successfully Finished";
-		else if (msg != SM_DUMMY)
-			LogDebug << AS_EVENT[msg].name << " EVENT Successfully Finished";
-		else LogDebug << "Dummy EVENT Successfully Finished";
+	
+	ClearSubStack(es);
+	
+	if(msg == SM_EXECUTELINE) {
+		LogDebug << "executeline successfully finished";
+	} else if(evname != "") {
+		LogDebug << eventname << " event successfully finished";
+	} else if(msg != SM_DUMMY) {
+		LogDebug << AS_EVENT[msg].name << " event successfully finished";
 	} else {
-		LogDebug << "EXECUTELINE Successfully Finished";
+		LogDebug << "dummy event successfully finished";
 	}
-
+	
 	return ret;
 }
 

@@ -23,7 +23,7 @@ class NopCommand : public Command {
 	
 public:
 	
-	NopCommand() : Command("nop") { }
+	NopCommand(const string & name) : Command(name) { }
 	
 	Result execute(Context & context) {
 		
@@ -1124,9 +1124,73 @@ public:
 
 }
 
+const string getName() {
+	return "timer";
+}
+
+void timerCommand(const string & timer, Context & context) {
+	
+	// Checks if the timer is named by caller of if it needs a default name
+	string timername = timer.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : timer;
+	
+	bool mili = false, idle = false;
+	HandleFlags("mi") {
+		mili = (flg & flag('m'));
+		idle = (flg & flag('i'));
+	}
+	
+	string command = context.getLowercase();
+	
+	DebugScript(' ' << options << ' ' << command);
+	
+	INTERACTIVE_OBJ * io = context.getIO();
+	
+	if(command == "kill_local") {
+		DebugScript(' ' << options << " kill_local");
+		ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(io);
+		return;
+	}
+	
+	ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, io);
+	if(command == "off") {
+		DebugScript(' ' << options << " off");
+		return;
+	}
+	
+	long count = (long)context.getFloatVar(command);
+	long millisecons = (long)context.getFloat();
+	
+	if(!mili) {
+		millisecons *= 1000;
+	}
+	
+	size_t pos = context.skipCommand();
+	
+	long num = ARX_SCRIPT_Timer_GetFree();
+	if(num != -1) {
+		ScriptError << "no free timer available";
+		return;
+	}
+	
+	ActiveTimers++;
+	scr_timer[num].es = context.getScript();
+	scr_timer[num].exist = 1;
+	scr_timer[num].io = io;
+	scr_timer[num].msecs = millisecons;
+	scr_timer[num].name = timername;
+	scr_timer[num].pos = pos;
+	scr_timer[num].tim = ARXTimeUL();
+	scr_timer[num].times = count;
+	
+	scr_timer[num].flags = (idle && io) ? 1 : 0;
+	
+}
+
 void setupScriptedLang() {
 	
-	ScriptEvent::registerCommand(new NopCommand);
+	ScriptEvent::registerCommand(new NopCommand("nop"));
+	ScriptEvent::registerCommand(new NopCommand("{"));
+	ScriptEvent::registerCommand(new NopCommand("}"));
 	ScriptEvent::registerCommand(new GotoCommand("goto"));
 	ScriptEvent::registerCommand(new GotoCommand("gosub", true));
 	ScriptEvent::registerCommand(new AbortCommand("accept", Command::AbortAccept));
