@@ -150,26 +150,6 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string& str)
 	return -1;
 }
 
-void loadScript(EERIE_SCRIPT & script, PakFile * file) {
-	
-	if(!file) {
-		return;
-	}
-	
-	if(script.data) {
-		free(script.data);
-	}
-	
-	script.data = (char *)malloc(file->size() + 2);
-	script.size = file->size();
-	script.data[script.size] = script.data[script.size + 1] = '\0'; // TODO(case-sensitive) remove
-	
-	file->read(script.data);
-	
-	InitScript(&script);
-	
-}
-
 ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
 	
 	ScriptResult ret = ACCEPT;
@@ -2959,23 +2939,36 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 	}
 }
 
-void InitScript(EERIE_SCRIPT * es) {
-
-	es->allowevents = 0;
-	es->nblvar = 0;
-
-	if (es->lvar)
-	{
-		free(es->lvar);
-		es->lvar = NULL;
+void loadScript(EERIE_SCRIPT & script, PakFile * file) {
+	
+	if(!file) {
+		return;
 	}
-
-	es->master = NULL;
-
-	for (size_t j = 0; j < MAX_SCRIPTTIMERS; j++)
-		es->timers[j] = 0;
-
-
-
-	ARX_SCRIPT_ComputeShortcuts(*es);
+	
+	if(script.data) {
+		free(script.data);
+	}
+	
+	script.data = (char *)malloc(file->size() + 2);
+	script.size = file->size();
+	script.data[script.size] = script.data[script.size + 1] = '\0'; // TODO(case-sensitive) remove
+	
+	file->read(script.data);
+	
+	std::transform(script.data, script.data + script.size, script.data, ::tolower);
+	
+	script.allowevents = 0;
+	script.nblvar = 0;
+	if(script.lvar) {
+		free(script.lvar), script.lvar = NULL;
+	}
+	
+	script.master = NULL;
+	
+	for(size_t j = 0; j < MAX_SCRIPTTIMERS; j++) {
+		script.timers[j] = 0;
+	}
+	
+	ARX_SCRIPT_ComputeShortcuts(script);
+	
 }

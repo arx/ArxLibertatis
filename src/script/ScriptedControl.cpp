@@ -227,7 +227,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string nbpeople = context.getWord();
+		string nbpeople = context.getLowercase();
 		long nb_people = 0;
 		if(!nbpeople.empty() && nbpeople[0] == '-') {
 			std::istringstream iss(nbpeople.substr(1));
@@ -425,7 +425,7 @@ public:
 			
 		} else if(command == "ambiance") {
 			
-			string ambiance = loadPath(context.getWord());
+			string ambiance = loadPath(context.getLowercase());
 			
 			DebugScript(" ambiance " << ambiance);
 			

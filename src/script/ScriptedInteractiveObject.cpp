@@ -416,7 +416,7 @@ public:
 		
 		if(type == "npc" || type == "item") {
 			
-			string file = loadPath(context.getWord()); // object to spawn.
+			string file = loadPath(context.getLowercase()); // object to spawn.
 			
 			string target = context.getLowercase(); // object ident for position
 			long t = GetTargetByNameTarget(target);
@@ -612,7 +612,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string speech = loadPath(context.getWord());
+		string speech = loadPath(context.getLowercase());
 		
 		DebugScript(' ' << speech);
 		
@@ -993,7 +993,7 @@ public:
 		
 		string anim = context.getLowercase();
 		
-		string file = loadPath(context.getWord());
+		string file = loadPath(context.getLowercase());
 		
 		DebugScript(' ' << options << ' ' << anim << ' ' << file);
 		

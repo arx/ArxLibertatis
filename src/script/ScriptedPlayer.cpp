@@ -220,8 +220,8 @@ public:
 		
 		if(command == "skin") {
 			
-			string src = loadPath(context.getWord());
-			string dst = loadPath(context.getWord());
+			string src = loadPath(context.getLowercase());
+			string dst = loadPath(context.getLowercase());
 			
 			DebugScript(" skin " << src << ' ' << dst);
 			
@@ -230,7 +230,7 @@ public:
 			
 		} else {
 			
-			string mesh = loadPath(context.getWord());
+			string mesh = loadPath(context.getLowercase());
 			
 			DebugScript(" mesh " << mesh);
 			

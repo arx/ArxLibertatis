@@ -214,7 +214,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string message = context.getWord();
+		string message = context.getLowercase();
 		
 		DebugScript(' ' << message);
 		

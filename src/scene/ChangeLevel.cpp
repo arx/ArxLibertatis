@@ -2104,7 +2104,7 @@ static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, si
 		
 		if(type == ttext) {
 			if(var[i].ival) {
-				var[i].text = strdup(safestring(dat + pos, var[i].ival).c_str());
+				var[i].text = strdup(toLowercase(safestring(dat + pos, var[i].ival)).c_str());
 				pos += var[i].ival;
 				if(var[i].text[0] == '\xCC') {
 					var[i].text[0] = 0;

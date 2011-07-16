@@ -429,8 +429,6 @@ extern long ActiveTimers;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long MAX_TIMER_SCRIPT;
 
-void InitScript(EERIE_SCRIPT * es);
-
 void ARX_SCRIPT_Timer_Check();
 void ARX_SCRIPT_Timer_FirstInit(long number);
 void ARX_SCRIPT_Timer_ClearAll();
