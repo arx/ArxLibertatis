@@ -206,6 +206,8 @@ public:
 
 } // namespace script
 
+#define ScriptEventWarning LogWarning << '[' << (io ? ((es == &io->script) ? io->short_name() : io->long_name()) : "unknown") << ':' << context.pos << "] " << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "on " + evname) << ": "
+
 using namespace script; // TODO remove once everythng has been moved to the script namespace
 
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
@@ -336,7 +338,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		
 		string word = context.getLowercase();
 		if(word != "{") {
-			LogError << "missing bracket after event, got \"" << word << "\"";
+			ScriptEventWarning << "missing bracket after event, got \"" << word << "\"";
 			return ACCEPT;
 		}
 	}
@@ -349,7 +351,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			context.skipWhitespace();
 			
 			if(context.pos >= context.getScript()->size) {
-				LogWarning << "reached script end without accept / refuse / return";
+				ScriptEventWarning << "reached script end without accept / refuse / return";
 				return ACCEPT;
 			}
 			
@@ -381,7 +383,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			
 			Command::Result res;
 			if(command.getIOFlags() && (!io || (command.getIOFlags() != Command::ANY_IO && !(command.getIOFlags() & io->ioflags)))) {
-				LogWarning << "command " << command.getName() << " needs an IO of type " << command.getIOFlags();
+				ScriptEventWarning << "command " << command.getName() << " needs an IO of type " << command.getIOFlags();
 				context.skipCommand();
 				res = Command::Failed;
 			} else {
@@ -409,7 +411,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			timerCommand(word.substr(5), context);
 		} else {
 			
-			LogError << '[' << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown") << ':' << context.getPosition() << "]: unknown command: " << word;
+			ScriptEventWarning << "unknown command: " << word;
 			
 			io->ioflags |= IO_FREEZESCRIPT;
 			return REFUSE;
