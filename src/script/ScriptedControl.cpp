@@ -573,29 +573,32 @@ public:
 	
 	Result execute(Context & context) {
 		
-		HandleFlags("bfp") {
-			
-			ARX_USE_PATH * aup = context.getIO()->usepath;
-			if(aup) {
-				if(flg & flag('b')) {
-					aup->aupflags &= ~ARX_USEPATH_PAUSE;
-					aup->aupflags &= ~ARX_USEPATH_FORWARD;
-					aup->aupflags |= ARX_USEPATH_BACKWARD;
-				}
-				if(flg & flag('f')) {
-					aup->aupflags &= ~ARX_USEPATH_PAUSE;
-					aup->aupflags |= ARX_USEPATH_FORWARD;
-					aup->aupflags &= ~ARX_USEPATH_BACKWARD;
-				}
-				if(flg & flag('p')) {
-					aup->aupflags |= ARX_USEPATH_PAUSE;
-					aup->aupflags &= ~ARX_USEPATH_FORWARD;
-					aup->aupflags &= ~ARX_USEPATH_BACKWARD;
-				}
-			}
+		string type = context.getLowercase();
+		
+		DebugScript(' ' << type);
+		
+		ARX_USE_PATH * aup = context.getIO()->usepath;
+		if(!aup) {
+			ScriptWarning << "no path set";
+			return Failed;
 		}
 		
-		DebugScript(' ' << options);
+		if(type == "b") {
+			aup->aupflags &= ~ARX_USEPATH_PAUSE;
+			aup->aupflags &= ~ARX_USEPATH_FORWARD;
+			aup->aupflags |= ARX_USEPATH_BACKWARD;
+		} else if(type == "f") {
+			aup->aupflags &= ~ARX_USEPATH_PAUSE;
+			aup->aupflags |= ARX_USEPATH_FORWARD;
+			aup->aupflags &= ~ARX_USEPATH_BACKWARD;
+		} else if(type == "p") {
+			aup->aupflags |= ARX_USEPATH_PAUSE;
+			aup->aupflags &= ~ARX_USEPATH_FORWARD;
+			aup->aupflags &= ~ARX_USEPATH_BACKWARD;
+		} else {
+			ScriptWarning << "unknown usepath type: " << type;
+			return Failed;
+		}
 		
 		return Success;
 	}

@@ -334,6 +334,7 @@ void initSuppressions() {
 	suppressions[9558]["Player"]["loadanim"] = true;
 	
 	suppressions[5872]["human_base"]["loadanim"] = true;
+	suppressions[45586]["human_base"]["goto"] = true; // missing label "main_alert"
 	
 	suppressions[422]["light_door"]["set"] = true;
 	
@@ -343,6 +344,14 @@ void initSuppressions() {
 	suppressions[5175]["troll_base"]["loadanim"] = true;
 	
 	suppressions[93]["dragon_ice_0001"]["loadanim"] = true;
+	
+	suppressions[30010]["goblin_base"]["goto"] = true; // missing label "main_alert"
+	
+	suppressions[399]["corpse_0003"]["inventory addfromscene"] = true; // bad target ident
+	
+	suppressions[242]["chest_metal_0045"]["inventory addfromscene"] = true; // bad target ident
+	
+	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
 	
 }
 

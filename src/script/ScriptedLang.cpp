@@ -54,7 +54,7 @@ public:
 		}
 		
 		if(!context.jumpToLabel(label, sub)) {
-			ScriptError << "error jumping to label \"" << label << '"';
+			ScriptError << "unknown label \"" << label << '"';
 			return AbortError;
 		}
 		
@@ -625,7 +625,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsElementOperator() : Operator("iselement", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		IsElementOperator() : Operator("iselement", TYPE_TEXT) { };
 		
 		bool text(const Context & context, const string & seek, const string & text) {
 			ARX_UNUSED(context);
@@ -651,7 +651,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsClassOperator() : Operator("isclass", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		IsClassOperator() : Operator("isclass", TYPE_TEXT) { };
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			ARX_UNUSED(context);
@@ -724,7 +724,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsInOperator() : Operator("isin", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		IsInOperator() : Operator("isin", TYPE_TEXT) { };
 		
 		bool text(const Context & context, const string & needle, const string & haystack) {
 			return ARX_UNUSED(context), (haystack.find(needle) != string::npos);
@@ -736,7 +736,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		EqualOperator() : Operator("==", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		EqualOperator() : Operator("==", TYPE_FLOAT) { };
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			return ARX_UNUSED(context), (left == right);
@@ -752,7 +752,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { };
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			return ARX_UNUSED(context), (left != right);
@@ -768,7 +768,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { };
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left <= right);
@@ -780,7 +780,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		LessOperator() : Operator("<", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		LessOperator() : Operator("<", TYPE_FLOAT) { };
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left < right);
@@ -792,7 +792,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { };
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left >= right);
@@ -804,7 +804,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		GreaterOperator() : Operator(">", TYPE_FLOAT) { }; // TODO TYPE_TEXT?
+		GreaterOperator() : Operator(">", TYPE_FLOAT) { };
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left > right);
