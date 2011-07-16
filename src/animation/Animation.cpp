@@ -677,7 +677,7 @@ void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
 void specialEE_P(TexturedVertex *in,TexturedVertex *out);
 
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private 
-TextureContainer TexSpecialColor("SPECIALCOLOR_LIST", TextureContainer::NoInsert);
+TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
 
 //-----------------------------------------------------------------------------
 TexturedVertex * PushVertexInTableCull(TextureContainer *pTex)
