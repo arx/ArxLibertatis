@@ -348,7 +348,7 @@ void CFireBall::Update(unsigned long aulTime)
 		{
 			SetAngle(player.angle.b);
 			afAlpha = player.angle.a;
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "CHEST");
+			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx)
 			{
@@ -481,16 +481,16 @@ CIceProjectile::CIceProjectile()
 
 	iNumber = MAX_ICE;
 
-	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_bluepouf.bmp");
 
 	if (!stite)
-		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\Stalagmite.teo");
+		stite = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\stalagmite\\stalagmite.teo");
 
 	stite_count++;
 
 	if (!smotte)
-		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
+		smotte = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\stalagmite\\motte.teo");
 
 	smotte_count++;
 
@@ -850,7 +850,7 @@ void CSpeed::Create(int numinteractive, int duration)
 		grouplist += 2;
 	}
 
-	this->tp = TextureContainer::Load("Graph\\Particles\\fire.bmp");
+	this->tp = TextureContainer::Load("graph\\particles\\fire.bmp");
 }
 
 //-----------------------------------------------------------------------------

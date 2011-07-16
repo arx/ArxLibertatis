@@ -399,7 +399,7 @@ void GetChestPos(long num, Vec3f * p)
 
 	if (ValidIONum(num))
 	{
-		long idx = GetGroupOriginByName(inter.iobj[num]->obj, "CHEST");
+		long idx = GetGroupOriginByName(inter.iobj[num]->obj, "chest");
 
 		if(idx >= 0) {
 			*p = inter.iobj[num]->obj->vertexlist3[idx].v;
@@ -441,7 +441,7 @@ float CLightning::Render()
 	falpha = 0.f;
 
 	// Create hand position if a hand is defined
-	//	spells[spellinstance].hand_group=inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj,"PRIMARY_ATTACH");
+	//	spells[spellinstance].hand_group=inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj,"primary_attach");
 	// Player source
 	if (spells[spellinstance].type == SPELL_MASS_LIGHTNING_STRIKE)
 	{
@@ -457,7 +457,7 @@ float CLightning::Render()
 	{
 		if (spells[spellinstance].caster == 0)
 		{
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "CHEST");
+			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx >= 0)
 			{
@@ -478,7 +478,7 @@ float CLightning::Render()
 		// IO source
 		else
 		{
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "CHEST");
+			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx >= 0)
 			{
@@ -766,15 +766,15 @@ CConfuse::CConfuse()
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_trail = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
+	tex_p1 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
+	tex_trail = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_bandelette_blue.bmp");
 
 	if (!spapi)
-		spapi = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo");
+		spapi = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_papivolle\\fx_papivolle.teo");
 
 	spapi_count++;
 
-	const char tex[] = "Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.tea";
+	const char tex[] = "graph\\obj3d\\interactive\\fix_inter\\fx_papivolle\\fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
 
 	fColor[0] = 0.3f;
@@ -1159,16 +1159,16 @@ CIceField::CIceField()
 
 	iNumber = 50;
 
-	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_bluepouf.bmp");
 
 	if (!stite)
-		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
+		stite = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\stalagmite\\motte.teo");
 		
 	stite_count++;
 
 	if (!smotte)
-		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
+		smotte = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\stalagmite\\motte.teo");
 
 	smotte_count++;
 }

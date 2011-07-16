@@ -213,10 +213,10 @@ CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f:
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_mm = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
+	tex_mm = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_bandelette_blue.bmp");
 
 	if (!smissile)
-		smissile = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo");
+		smissile = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_magic_missile\\fx_magic_missile.teo");
 
 	smissile_count++;
 
@@ -542,7 +542,7 @@ void CMultiMagicMissile::Create()
 	{
 		
 
-		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "PRIMARY_ATTACH");
+		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "primary_attach");
 
 		if (spells[spellinstance].hand_group != -1)
 		{
@@ -826,7 +826,7 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 		this->tablight[nb].idl = -1;
 	}
 
-	this->ChangeTexture(TextureContainer::Load("Graph\\Particles\\fire_hit.bmp"));
+	this->ChangeTexture(TextureContainer::Load("graph\\particles\\fire_hit.bmp"));
 	this->ChangeRGBMask(1.f, 1.f, 1.f, RGBA_MAKE(255, 200, 0, 255));
 }
 

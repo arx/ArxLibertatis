@@ -307,20 +307,20 @@ CRuneOfGuarding::CRuneOfGuarding() {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 	
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
 
 	if (!ssol)
-		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 	
 	ssol_count++;
 
 	if (!slight)
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
+		slight = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 	
 	slight_count++;
 
 	if (!srune)
-		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
+		srune = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 	
 	srune_count++;
 }
@@ -1081,20 +1081,20 @@ CRepelUndead::CRepelUndead()
 
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
 
 	if (!ssol) // Pentacle
-		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 
 	ssol_count++;
 
 	if (!slight) // Twirl
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
+		slight = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 
 	slight_count++; //runes
 
 	if (!srune)
-		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
+		srune = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 
 	srune_count++;
 }
@@ -1276,13 +1276,13 @@ CLevitate::CLevitate()
 	}
 
 	if(!stone0) {
-		stone0 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo");
+		stone0 = loadObject("graph\\obj3d\\interactive\\fix_inter\\fx_raise_dead\\stone01.teo");
 	}
 
 	stone0_count++;
 
 	if(!stone1) {
-		stone1 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo");
+		stone1 = loadObject("graph\\obj3d\\interactive\\fix_inter\\fx_raise_dead\\stone02.teo");
 	}
 
 	stone1_count++;
@@ -1368,7 +1368,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	this->scale = 0.f;
 	this->ang = 0.f;
 	this->def = (short)def;
-	this->tsouffle = TextureContainer::Load("Graph\\Obj3D\\Textures\\(FX)_sebsouffle.bmp");
+	this->tsouffle = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_sebsouffle.bmp");
 
 	this->timestone = 0;
 	this->nbstone = 0;

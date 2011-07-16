@@ -102,7 +102,7 @@ CCreateField::CCreateField() {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_jelly = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu3.bmp");
+	tex_jelly = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu3.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -380,20 +380,20 @@ CSlowDown::CSlowDown()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
 
 	if (!ssol) // Pentacle
-		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
 
 	ssol_count++;
 
 	if (!slight) // Twirl
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
+		slight = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 
 	slight_count++; //runes
 
 	if (!srune)
-		srune  = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
+		srune  = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 
 	srune_count++;
 	
@@ -550,16 +550,16 @@ CRiseDead::CRiseDead()
 	fColorRays2[2] = 0;
 
 	if(stone0 == NULL) {
-		stone0 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo");
+		stone0 = loadObject("graph\\obj3d\\interactive\\fix_inter\\fx_raise_dead\\stone01.teo");
 	}
 	stone0_count++;
 	
 	if(stone1 == NULL) {
-		stone1 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo");
+		stone1 = loadObject("graph\\obj3d\\interactive\\fix_inter\\fx_raise_dead\\stone02.teo");
 	}
 	stone1_count++;
 
-	tex_light = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
+	tex_light = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu4.bmp");
 }
 
 //-----------------------------------------------------------------------------
@@ -1453,10 +1453,10 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		tabprism[i].vertex = new Vec3f[prismnbpt];
 	}
 
-	tex_prism = TextureContainer::Load("Graph\\Obj3D\\Textures\\(FX)_paralyze.bmp");
-	tex_p	  = TextureContainer::Load("Graph\\Particles\\missile.bmp");
-	tex_p1	  = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2	  = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_prism = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_paralyze.bmp");
+	tex_p	  = TextureContainer::Load("graph\\particles\\missile.bmp");
+	tex_p1	  = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
+	tex_p2	  = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_bluepouf.bmp");
 
 	CreatePrismTriangleList(arayon, ahcapuchon, ahauteur, adef);
 	CreateLittlePrismTriangleList();
@@ -2053,20 +2053,20 @@ CDisarmTrap::CDisarmTrap()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
 	
 	if (!smotte)
-		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
+		smotte = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\stalagmite\\motte.teo");
 
 	smotte_count++;
 
 	if (!slight)
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
+		slight = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
 	
 	slight_count++; 
 
 	if (!srune)
-		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
+		srune = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
 	
 	srune_count++;
 }
