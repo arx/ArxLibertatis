@@ -532,30 +532,30 @@ void MakeUserFlag(TextureContainer * tc) {
 		return;
 	}
 	
-	if(NC_IsIn(tc->m_texName, "npc_")) {
+	if(IsIn(tc->m_texName, "npc_")) {
 		tc->userflags |= POLY_LATE_MIP;
 	}
 	
-	if(NC_IsIn(tc->m_texName, "nocol")) {
+	if(IsIn(tc->m_texName, "nocol")) {
 		tc->userflags |= POLY_NOCOL;
 	}
 	
-	if(NC_IsIn(tc->m_texName, "climb")) {
+	if(IsIn(tc->m_texName, "climb")) {
 		tc->userflags |= POLY_CLIMB;
 	}
 	
-	if(NC_IsIn(tc->m_texName, "fall")) {
+	if(IsIn(tc->m_texName, "fall")) {
 		tc->userflags |= POLY_FALL;
 	}
 	
-	if(NC_IsIn(tc->m_texName, "lava")) {
+	if(IsIn(tc->m_texName, "lava")) {
 		tc->userflags |= POLY_LAVA;
 	}
 	
-	if (NC_IsIn(tc->m_texName, "water") || NC_IsIn(tc->m_texName, "spider_web")) {
+	if (IsIn(tc->m_texName, "water") || IsIn(tc->m_texName, "spider_web")) {
 		tc->userflags |= POLY_WATER;
 		tc->userflags |= POLY_TRANS;
-	} else if(NC_IsIn(tc->m_texName, "[metal]")) {
+	} else if(IsIn(tc->m_texName, "[metal]")) {
 		tc->userflags |= POLY_METAL;
 	}
 	

@@ -19,7 +19,6 @@ std::string safestring(const char (&data)[N]) {
 }
 
 bool IsIn(const std::string & strin, const std::string & str);
-bool NC_IsIn(std::string strin, std::string str);
 int strcasecmp(const std::string & str1, const std::string & str2);
 int strcmp(const std::string & str1, const std::string & str2);
 
