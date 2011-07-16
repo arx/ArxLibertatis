@@ -1527,7 +1527,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 				if(io->_npcdata->stacked[i].exist) {
 					FillTargetInfo(as->stackedtarget[i], io->_npcdata->stacked[i].target);
 				} else {
-					strcpy(as->stackedtarget[i], "NONE");
+					strcpy(as->stackedtarget[i], "none");
 				}
 			}
 
@@ -2742,11 +2742,11 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 			}
 			
 			if(inter.iobj[i]->script.data != NULL) {
-				ScriptEvent::send(&inter.iobj[i]->script, SM_RELOAD, "CHANGE", inter.iobj[i], "");
+				ScriptEvent::send(&inter.iobj[i]->script, SM_RELOAD, "change", inter.iobj[i], "");
 			}
 			
 			if(inter.iobj[i] && inter.iobj[i]->over_script.data) {
-				ScriptEvent::send(&inter.iobj[i]->over_script, SM_RELOAD, "CHANGE", inter.iobj[i], "");
+				ScriptEvent::send(&inter.iobj[i]->over_script, SM_RELOAD, "change", inter.iobj[i], "");
 			}
 			
 			if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC) && ValidIONum(inter.iobj[i]->targetinfo)) {
