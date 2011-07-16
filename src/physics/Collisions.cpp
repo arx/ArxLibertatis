@@ -827,7 +827,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 								io->collide_door_time = ARXTimeUL(); 	
 
 								if (CollidedFromBack(io,ioo))
-									SendIOScriptEvent(io,SM_COLLIDE_NPC,"BACK");
+									SendIOScriptEvent(io,SM_COLLIDE_NPC,"back");
 								else
 									SendIOScriptEvent(io,SM_COLLIDE_NPC);
 
@@ -835,7 +835,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 								io->collide_door_time = ARXTimeUL(); 
 
 								if (CollidedFromBack(ioo,io))
-									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"BACK");
+									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"back");
 								else
 									SendIOScriptEvent(ioo,SM_COLLIDE_NPC);
 							}
@@ -862,7 +862,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 									if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 									io->_npcdata->pathfind.list=NULL;
-									SendIOScriptEvent(io,SM_NULL,"","PATHFINDER_END");
+									SendIOScriptEvent(io,SM_NULL,"","pathfinder_end");
 								}							
 
 								if (!io->_npcdata->reachedtarget)

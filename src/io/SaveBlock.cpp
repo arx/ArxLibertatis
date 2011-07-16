@@ -449,7 +449,7 @@ bool SaveBlock::defragment() {
 	
 	LogDebug << "defrag " << savefile;
 	
-	string tempFileName = savefile + "DFG";
+	string tempFileName = savefile + "dfg";
 	FileHandle tempFile = FileOpenWrite(tempFileName);
 	
 	u32 fakeFATOffset = 0;
