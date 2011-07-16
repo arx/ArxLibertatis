@@ -1197,40 +1197,42 @@ void RestoreInitialIOStatus()
 	}
 }
 
-void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
-{
-    if ((!io)
-            ||	(temp.empty()))
-        return;
-
-    std::string tex;
-    std::string tex2;
-
-    if (io->ioflags & IO_NPC)	tex2 = "graph\\obj3d\\interactive\\npc\\" + temp;
-    else if (io->ioflags & IO_FIX)	tex2 = "graph\\obj3d\\interactive\\fix_inter\\" + temp;
-    else if (io->ioflags & IO_ITEM)	tex2 = "graph\\obj3d\\interactive\\items\\" + temp;
-    else tex2.clear();
-
-    File_Standardize(tex2, tex);
-
-    if ( tex.empty() )
-    {
-        if (io->usemesh == NULL)
-            io->usemesh = (char *)malloc(256);
-        else if (!strcasecmp(io->usemesh, tex)) return; //already tweaked with this mesh !
-
-        strcpy(io->usemesh, tex.c_str());
-
-        if(io->obj) {
-            delete io->obj;
-            io->obj = NULL;
-        }
-
-        bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
-        io->obj = loadObject(tex, pbox);
-
-		EERIE_COLLISION_Cylinder_Create(io);
+bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const string & temp) {
+	
+	if(!io || temp.empty()) {
+		return false;
 	}
+	
+	std::string tex;
+	std::string tex2;
+	
+	if (io->ioflags & IO_NPC)	tex2 = "graph\\obj3d\\interactive\\npc\\" + temp;
+	else if (io->ioflags & IO_FIX)	tex2 = "graph\\obj3d\\interactive\\fix_inter\\" + temp;
+	else if (io->ioflags & IO_ITEM)	tex2 = "graph\\obj3d\\interactive\\items\\" + temp;
+	else tex2.clear();
+	
+	File_Standardize(tex2, tex);
+	
+	if (tex.empty() ) {
+		return false;
+	}
+	
+	if (io->usemesh == NULL)
+		io->usemesh = (char *)malloc(256);
+	else if (!strcasecmp(io->usemesh, tex)) return false; //already tweaked with this mesh !
+	
+	strcpy(io->usemesh, tex.c_str());
+	
+	if(io->obj) {
+		delete io->obj;
+		io->obj = NULL;
+	}
+	
+	bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
+	io->obj = loadObject(tex, pbox);
+	
+	EERIE_COLLISION_Cylinder_Create(io);
+	return true;
 }
 
 static void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io) {

@@ -1862,6 +1862,8 @@ public:
 			
 			string mesh = loadPath(context.getLowercase());
 			
+			DebugScript(' ' << type << " \"" << mesh << '"');
+			
 			string path = io->usemesh ? io->usemesh : io->filename;
 			RemoveName(path);
 			path += "tweaks\\" + mesh + ".teo";
