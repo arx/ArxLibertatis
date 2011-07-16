@@ -312,9 +312,9 @@ Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned in
 }
 
 string getFontFile() {
-	string tx= "misc" PATH_SEPERATOR_STR "Arx.ttf";
+	string tx= "misc" PATH_SEPERATOR_STR "arx.ttf";
 	if(!FileExist(tx.c_str())) {
-		tx = "misc" PATH_SEPERATOR_STR "ARX_default.ttf"; // Full path
+		tx = "misc" PATH_SEPERATOR_STR "arx_default.ttf"; // Full path
 	}
 	return tx;
 }
