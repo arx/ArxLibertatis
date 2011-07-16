@@ -8,7 +8,6 @@
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "gui/Interface.h"
-#include "io/Logger.h"
 #include "io/FilePath.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"

@@ -325,13 +325,13 @@ void initSuppressions() {
 	
 	// TODO(broken-scripts)
 	
-	suppressions[7725]["Player"]["loadanim"] = true;
-	suppressions[8463]["Player"]["loadanim"] = true;
-	suppressions[8531]["Player"]["loadanim"] = true;
-	suppressions[8666]["Player"]["loadanim"] = true;
-	suppressions[8733]["Player"]["loadanim"] = true;
-	suppressions[9284]["Player"]["loadanim"] = true;
-	suppressions[9558]["Player"]["loadanim"] = true;
+	suppressions[7725]["player"]["loadanim"] = true;
+	suppressions[8463]["player"]["loadanim"] = true;
+	suppressions[8531]["player"]["loadanim"] = true;
+	suppressions[8666]["player"]["loadanim"] = true;
+	suppressions[8733]["player"]["loadanim"] = true;
+	suppressions[9284]["player"]["loadanim"] = true;
+	suppressions[9558]["player"]["loadanim"] = true;
 	
 	suppressions[5872]["human_base"]["loadanim"] = true;
 	suppressions[45586]["human_base"]["goto"] = true; // missing label "main_alert"

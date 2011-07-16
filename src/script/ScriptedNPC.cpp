@@ -6,7 +6,6 @@
 #include "graphics/data/Mesh.h"
 #include "gui/Speech.h"
 #include "gui/Interface.h"
-#include "io/Logger.h"
 #include "io/FilePath.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"

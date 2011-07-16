@@ -7,6 +7,7 @@
 
 #include "platform/Platform.h"
 #include "script/ScriptEvent.h"
+#include "io/Logger.h"
 
 namespace script {
 

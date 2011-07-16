@@ -11,7 +11,6 @@
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
-#include "io/Logger.h"
 #include "io/FilePath.h"
 #include "physics/Collisions.h"
 #include "scene/Light.h"

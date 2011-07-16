@@ -4,7 +4,6 @@
 #include "game/Player.h"
 #include "game/Inventory.h"
 #include "graphics/Math.h"
-#include "io/Logger.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"

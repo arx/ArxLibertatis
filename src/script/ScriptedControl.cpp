@@ -12,7 +12,6 @@
 #include "gui/Speech.h"
 #include "physics/Attractors.h"
 #include "physics/Collisions.h"
-#include "io/Logger.h"
 #include "io/PakReader.h"
 #include "io/FilePath.h"
 #include "platform/String.h"

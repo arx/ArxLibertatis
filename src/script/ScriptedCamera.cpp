@@ -7,7 +7,6 @@
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
-#include "io/Logger.h"
 #include "platform/String.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"

@@ -6,7 +6,6 @@
 #include "game/Inventory.h"
 #include "graphics/Math.h"
 #include "platform/String.h"
-#include "io/Logger.h"
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
