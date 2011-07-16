@@ -105,10 +105,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 	
 	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
-	string skintochange = "Graph\\Obj3D\\Textures\\" + s1 + ".bmp";
-	MakeUpcase(skintochange);
+	string skintochange = "graph\\obj3d\\textures\\" + s1 + ".bmp";
 	
-	string skinname = "Graph\\Obj3D\\Textures\\" + s2 + ".bmp";
+	string skinname = "graph\\obj3d\\textures\\" + s2 + ".bmp";
 	TextureContainer * tex = TextureContainer::Load(skinname);
 
 	if (obj->originaltextures == NULL)
@@ -795,9 +794,9 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const string & _pat
 	string path;
 	File_Standardize(_path, path);
 
-	filet = "GAME\\" + path;
+	filet = "game\\" + path;
 
-	SetExt(filet, ".FTL");
+	SetExt(filet, ".ftl");
 	File_Standardize(filet, file2);
 
 	if ((!resources->getFile(file2)) && (!resources->getFile(path))) return;
