@@ -303,7 +303,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
 	{
 		{
 			if (EEfabs(player.pos.y + 160.f - boxmin.y) < 50.f)
-				dest += " PLAYER";
+				dest += " player";
 		}
 	}
 
@@ -331,7 +331,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
 		}
 	}
 
-	if (dest.length() == 0) dest = "NONE";
+	if (dest.length() == 0) dest = "none";
 
 	return -1;
 }
@@ -3821,12 +3821,12 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 		if (ep->tex != NULL)
 			if ( !ep->tex->m_texName.empty() )
 			{
-				if ( ep->tex->m_texName.find("STONE") != std::string::npos )         ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("PIERRE") != std::string::npos )   ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("WOOD") != std::string::npos )     ep->type |= POLY_WOOD;
-				else if ( ep->tex->m_texName.find("BOIS") != std::string::npos )     ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("GAVIER") != std::string::npos )   ep->type |= POLY_GRAVEL;
-				else if ( ep->tex->m_texName.find("EARTH") != std::string::npos )    ep->type |= POLY_EARTH;
+				if ( ep->tex->m_texName.find("stone") != std::string::npos )         ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("pierre") != std::string::npos )   ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("wood") != std::string::npos )     ep->type |= POLY_WOOD;
+				else if ( ep->tex->m_texName.find("bois") != std::string::npos )     ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("gavier") != std::string::npos )   ep->type |= POLY_GRAVEL;
+				else if ( ep->tex->m_texName.find("earth") != std::string::npos )    ep->type |= POLY_EARTH;
 			}
 
 	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
@@ -3958,7 +3958,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
  */
 static bool FastSceneSave(const string & partial_path) {
 	
-	string path = "Game\\" + partial_path;
+	string path = "game\\" + partial_path;
 	
 	LogDebug << "FastSceneSave" << path;
 	
@@ -4020,7 +4020,7 @@ static bool FastSceneSave(const string & partial_path) {
 //			{
 //				char * text = GetExt(fd.name);
 //
-//				if (!strcasecmp(text, ".SCN"))
+//				if (!strcasecmp(text, ".scn"))
 //				{
 //					char path3[256];
 //					sprintf(path3, "%s%s", partial_path, fd.name);
