@@ -1356,11 +1356,11 @@ static void ARX_SOUND_CreateStaticSamples()
 	SND_SPELL_ARMOR_START              = aalCreateSample("magic_spell_armor_start.wav");
 	SND_SPELL_ARMOR_END                = aalCreateSample("magic_spell_armor_end.wav");
 	SND_SPELL_ARMOR_LOOP               = aalCreateSample("magic_spell_armor_loop.wav");
-	SND_SPELL_LOWER_ARMOR              = aalCreateSample("Magic_Spell_decrease_Armor.wav");
+	SND_SPELL_LOWER_ARMOR              = aalCreateSample("magic_spell_decrease_armor.wav");
 	SND_SPELL_BLESS                    = aalCreateSample("magic_spell_bless.wav");
-	SND_SPELL_COLD_PROTECTION_START    = aalCreateSample("Magic_Spell_Cold_Protection.wav");
-	SND_SPELL_COLD_PROTECTION_LOOP     = aalCreateSample("Magic_Spell_Cold_Protection_loop.wav");
-	SND_SPELL_COLD_PROTECTION_END      = aalCreateSample("Magic_Spell_Cold_Protection_end.wav");
+	SND_SPELL_COLD_PROTECTION_START    = aalCreateSample("magic_spell_cold_protection.wav");
+	SND_SPELL_COLD_PROTECTION_LOOP     = aalCreateSample("magic_spell_cold_protection_loop.wav");
+	SND_SPELL_COLD_PROTECTION_END      = aalCreateSample("magic_spell_cold_protection_end.wav");
 	SND_SPELL_CONFUSE                  = aalCreateSample("magic_spell_confuse.wav");
 	SND_SPELL_CONTROL_TARGET           = aalCreateSample("magic_spell_control_target.wav");
 	SND_SPELL_CREATE_FIELD             = aalCreateSample("magic_spell_create_field.wav");
@@ -1368,7 +1368,7 @@ static void ARX_SOUND_CreateStaticSamples()
 	SND_SPELL_CURE_POISON              = aalCreateSample("magic_spell_cure_poison.wav");
 	SND_SPELL_CURSE                    = aalCreateSample("magic_spell_curse.wav");
 	SND_SPELL_DETECT_TRAP              = aalCreateSample("magic_spell_detect_trap.wav");
-	SND_SPELL_DETECT_TRAP_LOOP         = aalCreateSample("magic_spell_detect_trap_Loop.wav");
+	SND_SPELL_DETECT_TRAP_LOOP         = aalCreateSample("magic_spell_detect_trap_loop.wav");
 	SND_SPELL_DISARM_TRAP              = aalCreateSample("magic_spell_disarm_trap.wav");
 	SND_SPELL_DISPELL_FIELD            = aalCreateSample("magic_spell_dispell_field.wav");
 	SND_SPELL_DISPELL_ILLUSION         = aalCreateSample("magic_spell_dispell_illusion.wav");
@@ -1578,72 +1578,72 @@ bool ARX_MATERIAL_GetNameById(long id, char * name)
 	switch (id)
 	{
 		case MATERIAL_WEAPON:
-			strcpy(name, "WEAPON");
+			strcpy(name, "weapon");
 			return true;
 			break;
 		case MATERIAL_FLESH:
-			strcpy(name, "FLESH");
+			strcpy(name, "flesh");
 			return true;
 			break;
 		case MATERIAL_METAL:
-			strcpy(name, "METAL");
+			strcpy(name, "metal");
 			return true;
 			break;
 		case MATERIAL_GLASS:
-			strcpy(name, "GLASS");
+			strcpy(name, "glass");
 			return true;
 			break;
 		case MATERIAL_CLOTH:
-			strcpy(name, "CLOTH");
+			strcpy(name, "cloth");
 			return true;
 			break;
 		case MATERIAL_WOOD:
-			strcpy(name, "WOOD");
+			strcpy(name, "wood");
 			return true;
 			break;
 		case MATERIAL_EARTH:
-			strcpy(name, "EARTH");
+			strcpy(name, "earth");
 			return true;
 			break;
 		case MATERIAL_WATER:
-			strcpy(name, "WATER");
+			strcpy(name, "water");
 			return true;
 			break;
 		case MATERIAL_ICE:
-			strcpy(name, "ICE");
+			strcpy(name, "ice");
 			return true;
 			break;
 		case MATERIAL_GRAVEL:
-			strcpy(name, "GRAVEL");
+			strcpy(name, "gravel");
 			return true;
 			break;
 		case MATERIAL_STONE:
-			strcpy(name, "STONE");
+			strcpy(name, "stone");
 			return true;
 			break;
 		case MATERIAL_FOOT_LARGE:
-			strcpy(name, "FOOT_LARGE");
+			strcpy(name, "foot_large");
 			return true;
 			break;
 		case MATERIAL_FOOT_BARE:
-			strcpy(name, "FOOT_BARE");
+			strcpy(name, "foot_bare");
 			return true;
 			break;
 		case MATERIAL_FOOT_SHOE:
-			strcpy(name, "FOOT_SHOE");
+			strcpy(name, "foot_shoe");
 			return true;
 			break;
 		case MATERIAL_FOOT_METAL:
-			strcpy(name, "FOOT_METAL");
+			strcpy(name, "foot_metal");
 			return true;
 			break;
 		case MATERIAL_FOOT_STEALTH:
-			strcpy(name, "FOOT_STEALTH");
+			strcpy(name, "foot_stealth");
 			return true;
 			break;
 	}
 
-	strcpy(name, "NONE");
+	strcpy(name, "none");
 	return false;
 }
 static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const char * name)
@@ -1732,82 +1732,82 @@ static void ARX_SOUND_CreateMaterials()
 {
 	memset(Inter_Materials, -1, sizeof(long) * MAX_MATERIALS * MAX_MATERIALS * MAX_VARIANTS);
 
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WEAPON,       "WEAPON_on_WEAPON");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_FLESH,        "WEAPON_on_FLESH");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_METAL,        "WEAPON_on_METAL");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_GLASS,        "WEAPON_on_GLASS");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_CLOTH,        "WEAPON_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WOOD,         "WEAPON_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_EARTH,        "WEAPON_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WATER,        "WEAPON_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_ICE,          "WEAPON_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_GRAVEL,       "WEAPON_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_STONE,        "WEAPON_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WEAPON,       "weapon_on_weapon");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_FLESH,        "weapon_on_flesh");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_METAL,        "weapon_on_metal");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_GLASS,        "weapon_on_glass");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_CLOTH,        "weapon_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WOOD,         "weapon_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_EARTH,        "weapon_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WATER,        "weapon_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_ICE,          "weapon_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_GRAVEL,       "weapon_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_STONE,        "weapon_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_FLESH,        "FLESH_on_FLESH");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_METAL,        "FLESH_on_METAL");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_GLASS,        "FLESH_on_GLASS");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_CLOTH,        "FLESH_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_WOOD,         "FLESH_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_EARTH,        "FLESH_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_WATER,        "FLESH_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_ICE,          "FLESH_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_GRAVEL,       "FLESH_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_STONE,        "FLESH_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_FLESH,        "flesh_on_flesh");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_METAL,        "flesh_on_metal");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_GLASS,        "flesh_on_glass");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_CLOTH,        "flesh_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_WOOD,         "flesh_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_EARTH,        "flesh_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_WATER,        "flesh_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_ICE,          "flesh_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_GRAVEL,       "flesh_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_STONE,        "flesh_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_METAL,        "METAL_on_METAL");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_GLASS,        "METAL_on_GLASS");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_CLOTH,        "METAL_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_WOOD,         "METAL_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_EARTH,        "METAL_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_WATER,        "METAL_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_ICE,          "METAL_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_GRAVEL,       "METAL_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_STONE,        "METAL_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_METAL,        "metal_on_metal");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_GLASS,        "metal_on_glass");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_CLOTH,        "metal_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_WOOD,         "metal_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_EARTH,        "metal_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_WATER,        "metal_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_ICE,          "metal_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_GRAVEL,       "metal_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_STONE,        "metal_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_GLASS,        "GLASS_on_GLASS");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_CLOTH,        "GLASS_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_WOOD,         "GLASS_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_EARTH,        "GLASS_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_WATER,        "GLASS_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_ICE,          "GLASS_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_GRAVEL,       "GLASS_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_STONE,        "GLASS_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_GLASS,        "glass_on_glass");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_CLOTH,        "glass_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_WOOD,         "glass_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_EARTH,        "glass_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_WATER,        "glass_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_ICE,          "glass_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_GRAVEL,       "glass_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_STONE,        "glass_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_CLOTH,        "CLOTH_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_WOOD,         "CLOTH_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_EARTH,        "CLOTH_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_WATER,        "CLOTH_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_ICE,          "CLOTH_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_GRAVEL,       "CLOTH_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_STONE,        "CLOTH_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_CLOTH,        "cloth_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_WOOD,         "cloth_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_EARTH,        "cloth_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_WATER,        "cloth_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_ICE,          "cloth_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_GRAVEL,       "cloth_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_STONE,        "cloth_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_WOOD,         "WOOD_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_EARTH,        "WOOD_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_WATER,        "WOOD_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_ICE,          "WOOD_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_GRAVEL,       "WOOD_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_STONE,        "WOOD_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_WOOD,         "wood_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_EARTH,        "wood_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_WATER,        "wood_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_ICE,          "wood_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_GRAVEL,       "wood_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_STONE,        "wood_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_EARTH,        "EARTH_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_WATER,        "EARTH_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_ICE,          "EARTH_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_GRAVEL,       "EARTH_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_STONE,        "EARTH_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_EARTH,        "earth_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_WATER,        "earth_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_ICE,          "earth_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_GRAVEL,       "earth_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_STONE,        "earth_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_WATER,        "WATER_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_ICE,          "WATER_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_GRAVEL,       "WATER_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_STONE,        "WATER_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_WATER,        "water_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_ICE,          "water_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_GRAVEL,       "water_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_STONE,        "water_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_ICE,          "ICE_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_GRAVEL,       "ICE_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_STONE,        "ICE_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_ICE,          "ice_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_GRAVEL,       "ice_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_STONE,        "ice_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_GRAVEL, MATERIAL_GRAVEL,       "GRAVEL_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_GRAVEL, MATERIAL_STONE,        "GRAVEL_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_GRAVEL, MATERIAL_GRAVEL,       "gravel_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_GRAVEL, MATERIAL_STONE,        "gravel_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_STONE,  MATERIAL_STONE,        "STONE_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_STONE,  MATERIAL_STONE,        "stone_on_stone");
 }
 
 
