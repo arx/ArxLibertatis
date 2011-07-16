@@ -206,7 +206,7 @@ public:
 
 } // namespace script
 
-#define ScriptEventWarning LogWarning << '[' << (io ? ((es == &io->script) ? io->short_name() : io->long_name()) : "unknown") << ':' << context.pos << "] " << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "on " + evname) << ": "
+#define ScriptEventWarning LogWarning << '[' << (io ? ((es == &io->script) ? io->short_name() : io->long_name()) : "unknown") << ':' << context.pos << "] " << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1 && msg != SM_NULL) ? AS_EVENT[msg].name : "on " + evname) << ": "
 
 using namespace script; // TODO remove once everythng has been moved to the script namespace
 
@@ -335,6 +335,27 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	Context context(es, pos, io, msg);
 	
 	if(msg != SM_EXECUTELINE) {
+		
+		bool newline;
+		do {
+			
+			context.skipWhitespace();
+			
+			if(context.pos >= context.getScript()->size) {
+				ScriptEventWarning << "no content after on event!";
+				return ACCEPT;
+			}
+			
+			newline = false;
+			if(context.script->data[context.pos] == '\n') {
+				newline = true;
+				context.pos++;
+				if(msg == SM_EXECUTELINE) {
+					return ACCEPT;
+				}
+			}
+			
+		} while(newline);
 		
 		string word = context.getLowercase();
 		if(word != "{") {
