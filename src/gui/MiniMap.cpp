@@ -104,7 +104,7 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 		char LevelMap[256];
 		GetLevelNameByNum(SHOWLEVEL, name);
 
-		sprintf(LevelMap, "Graph\\Levels\\Level%s\\map.bmp", name);
+		sprintf(LevelMap, "graph\\levels\\level%s\\map.bmp", name);
 		minimap[SHOWLEVEL].tc = TextureContainer::Load(LevelMap);
 
 		if (minimap[SHOWLEVEL].tc) // 4 pix/meter
@@ -323,7 +323,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 	static const float FL2_PLAYERSIZE = 4.f;
 
 	if (!pTexDetect)
-		pTexDetect = TextureContainer::Load("Graph\\particles\\flare.bmp");
+		pTexDetect = TextureContainer::Load("graph\\particles\\flare.bmp");
 
 	//	SHOWLEVEL=8;
 	// First Load Minimap TC & DATA if needed
