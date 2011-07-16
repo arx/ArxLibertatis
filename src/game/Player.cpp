@@ -445,7 +445,7 @@ void ARX_PLAYER_Quest_Init() {
 // void ARX_Player_Rune_Add(unsigned long _ulRune)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Add "_ulRune" to player runes
+//   Add _ulRune to player runes
 //*************************************************************************************
 void ARX_Player_Rune_Add(RuneFlag _ulRune)
 {
@@ -514,7 +514,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 // void ARX_Player_Rune_Remove(unsigned long _ulRune
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Remove "_ulRune" from player runes
+//   Remove _ulRune from player runes
 //*************************************************************************************
 void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 {
@@ -1142,7 +1142,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 // void ARX_PLAYER_MakeFreshHero()
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Creates a "Fresh" hero
+//   Creates a Fresh hero
 //*************************************************************************************
 void ARX_PLAYER_MakeFreshHero()
 {
@@ -1225,7 +1225,7 @@ void ARX_PLAYER_MakeSpHero()
 // void ARX_PLAYER_MakePowerfullHero()
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Creates a "POWERFULL" hero
+//   Creates a POWERFULL hero
 //*************************************************************************************
 void ARX_PLAYER_MakePowerfullHero()
 {
@@ -1265,7 +1265,7 @@ void ARX_PLAYER_MakePowerfullHero()
 // void ARX_PLAYER_MakeAverageHero()
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Creates an "Average" hero
+//   Creates an Average hero
 //*************************************************************************************
 void ARX_PLAYER_MakeAverageHero()
 {
@@ -1481,7 +1481,7 @@ void ARX_PLAYER_LEVEL_UP()
 	player.Old_Skill_Projectile			=	player.Skill_Projectile;
 	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat;
 	player.Old_Skill_Defense			=	player.Skill_Defense;
-	SendIOScriptEvent(inter.iobj[0], SM_NULL, "", "LEVEL_UP");
+	SendIOScriptEvent(inter.iobj[0], SM_NULL, "", "level_up");
 }
 
 //*************************************************************************************
@@ -1617,46 +1617,46 @@ void ARX_PLAYER_Restore_Skin()
 	switch (player.skin)
 	{
 		case 0:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph\\obj3d\\textures\\npc_human_base_hero_head.bmp";
+			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 1:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero2_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero2_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero2_head.bmp";
+			tx  = "graph\\obj3d\\textures\\npc_human_base_hero2_head.bmp";
+			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero2_head.bmp";
+			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero2_head.bmp";
+			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero2_head.bmp";
 			break;
 		case 2:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero3_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero3_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero3_head.bmp";
+			tx  = "graph\\obj3d\\textures\\npc_human_base_hero3_head.bmp";
+			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero3_head.bmp";
+			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero3_head.bmp";
+			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero3_head.bmp";
 			break;
 		case 3:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero4_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero4_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero4_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero4_head.bmp";
+			tx  = "graph\\obj3d\\textures\\npc_human_base_hero4_head.bmp";
+			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero4_head.bmp";
+			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero4_head.bmp";
+			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero4_head.bmp";
 			break;
 		case 4:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph\\obj3d\\textures\\npc_human_cm_hero_head.bmp";
+			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 5:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph\\obj3d\\textures\\npc_human__base_hero_head.bmp";
+			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 6: //just in case
-			tx  = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph\\obj3d\\textures\\npc_human__base_hero_head.bmp";
+			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp";
 			break;
 	}
 
@@ -1665,15 +1665,15 @@ void ARX_PLAYER_Restore_Skin()
 	if (PLAYER_SKIN_TC && !tx.empty())
 		PLAYER_SKIN_TC->LoadFile(tx);
 
-	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp");
 	if (tmpTC && !tx2.empty())
 		tmpTC->LoadFile(tx2);
 
-	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp");
 	if (tmpTC && !tx3.empty())
 		tmpTC->LoadFile(tx3);
 
-	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp");
 	if (tmpTC && !tx4.empty())
 		tmpTC->LoadFile(tx4);
 }
@@ -1686,15 +1686,15 @@ extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 void ARX_PLAYER_LoadHeroAnimsAndMesh()
 {
-	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo"; 
+	const char OBJECT_HUMAN_BASE[] = "graph\\obj3d\\interactive\\npc\\human_base\\human_base.teo"; 
 	hero = loadObject(OBJECT_HUMAN_BASE, false);
-	PLAYER_SKIN_TC = TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
+	PLAYER_SKIN_TC = TextureContainer::Load("graph\\obj3d\\textures\\npc_human_base_hero_head.bmp");
 
-	const char ANIM_WAIT_BOOK[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book.tea";
+	const char ANIM_WAIT_BOOK[] = "graph\\obj3d\\anims\\npc\\human_wait_book.tea";
 	herowaitbook = EERIE_ANIMMANAGER_Load(ANIM_WAIT_BOOK);
-	const char ANIM_WAIT_NORMAL[] = "graph\\Obj3D\\Anims\\NPC\\human_normal_wait.tea";
+	const char ANIM_WAIT_NORMAL[] = "graph\\obj3d\\anims\\npc\\human_normal_wait.tea";
 	herowait2 = EERIE_ANIMMANAGER_Load(ANIM_WAIT_NORMAL);
-	const char ANIM_WAIT_TWOHANDED[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book_2handed.tea";
+	const char ANIM_WAIT_TWOHANDED[] = "graph\\obj3d\\anims\\npc\\human_wait_book_2handed.tea";
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter(0);
@@ -1717,8 +1717,8 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	io->_npcdata->speakpitch = 1.f;
 
 	//todo free
-	io->armormaterial = strdup("LEATHER");
-	strcpy(io->filename, "graph\\obj3D\\Interactive\\Player\\Player.teo");
+	io->armormaterial = strdup("leather");
+	strcpy(io->filename, "graph\\obj3d\\interactive\\player\\player.teo");
 	std::string texscript = io->filename;
 	SetExt(texscript, ".asl");
 
@@ -2240,7 +2240,7 @@ void ARX_PLAYER_Manage_Visual()
 				if (pouet == 2)
 					id = io->obj->fastaccess.primary_attach;
 				else
-					id = GetActionPointIdx(io->obj, "LEFT_ATTACH");
+					id = GetActionPointIdx(io->obj, "left_attach");
 
 				pouet--;
 
@@ -2484,10 +2484,7 @@ nochanges:
 // FUNCTION/RESULT:
 //   Init Local Player Data
 //*************************************************************************************
-void ARX_PLAYER_InitPlayer()
-{
-	char tex[256];
-	strcpy(tex, "Beware of the EXE that sleeps... :) ");
+void ARX_PLAYER_InitPlayer() {
 	player.Interface = INTER_MINIBOOK | INTER_MINIBACK | INTER_LIFE_MANA;
 	player.physics.cyl.height = PLAYER_BASE_HEIGHT;
 	player.physics.cyl.radius = PLAYER_BASE_RADIUS;
@@ -3492,7 +3489,7 @@ lasuite:
 
 			if (player.Interface & INTER_STEAL || ioSteal)
 			{
-				SendIOScriptEvent(ioSteal, SM_STEAL, "OFF");
+				SendIOScriptEvent(ioSteal, SM_STEAL, "off");
 				player.Interface &= ~INTER_STEAL;
 				ioSteal = NULL;
 			}
