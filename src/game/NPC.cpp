@@ -316,7 +316,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 	{
 		if (!io->obj->texturecontainer.empty()
 		        &&	io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName, "GORE")))
+		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName, "gore")))
 		{
 			goretex = i;
 			break;
@@ -1544,7 +1544,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	for (size_t k = 0; k < from->texturecontainer.size(); k++)
 	{
 		if (from->texturecontainer[k]
-		        && (IsIn(from->texturecontainer[k]->m_texName, "GORE")))
+		        && (IsIn(from->texturecontainer[k]->m_texName, "gore")))
 		{
 			gore = k;
 			break;
@@ -1694,7 +1694,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if (from->texturecontainer[k]
-			        && (IsIn(from->texturecontainer[k]->m_texName, "GORE")))
+			        && (IsIn(from->texturecontainer[k]->m_texName, "gore")))
 			{
 				gore = k;
 				break;
@@ -1733,7 +1733,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	io->script.data	=	NULL;
 	io->GameFlags	|=	GFLAG_NO_PHYS_IO_COL;
 	
-	strcpy(io->filename, "NoName");
+	strcpy(io->filename, "noname");
 
 	EERIE_COLLISION_Cylinder_Create(io);
 	EERIE_PHYSICS_BOX_Create(nouvo);
@@ -1808,22 +1808,22 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 short GetCutFlag( const std::string& str )
 {
-	if (!strcasecmp(str, "CUT_HEAD"))
+	if (!strcasecmp(str, "cut_head"))
 		return FLAG_CUT_HEAD;
 
-	if (!strcasecmp(str, "CUT_TORSO"))
+	if (!strcasecmp(str, "cut_torso"))
 		return FLAG_CUT_TORSO;
 
-	if (!strcasecmp(str, "CUT_LARM"))
+	if (!strcasecmp(str, "cut_larm"))
 		return FLAG_CUT_LARM;
 
-	if (!strcasecmp(str, "CUT_RARM"))
+	if (!strcasecmp(str, "cut_rarm"))
 		return FLAG_CUT_HEAD;
 
-	if (!strcasecmp(str, "CUT_LLEG"))
+	if (!strcasecmp(str, "cut_lleg"))
 		return FLAG_CUT_LLEG;
 
-	if (!strcasecmp(str, "CUT_RLEG"))
+	if (!strcasecmp(str, "cut_rleg"))
 		return FLAG_CUT_RLEG;
 
 	return 0;
@@ -1837,20 +1837,20 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	std::string tx;
 
 	if (flag == FLAG_CUT_HEAD)
-		tx =  "CUT_HEAD";
+		tx =  "cut_head";
 	else if (flag == FLAG_CUT_TORSO)
-		tx = "CUT_TORSO";
+		tx = "cut_torso";
 	else if (flag == FLAG_CUT_LARM)
-		tx = "CUT_LARM";
+		tx = "cut_larm";
 
 	if (flag == FLAG_CUT_RARM)
-		tx = "CUT_RARM";
+		tx = "cut_rarm";
 
 	if (flag == FLAG_CUT_LLEG)
-		tx = "CUT_LLEG";
+		tx = "cut_lleg";
 
 	if (flag == FLAG_CUT_RLEG)
-		tx = "CUT_RLEG";
+		tx = "cut_rleg";
 
 	if ( !tx.empty() )
 	{
@@ -1912,7 +1912,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
 		if (io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName, "GORE")))
+		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName, "gore")))
 		{
 			goretex = i;
 			break;
@@ -1979,7 +1979,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
 	{
 		if (target->obj->texturecontainer[i]
-		        &&	(IsIn(target->obj->texturecontainer[i]->m_texName, "GORE")))
+		        &&	(IsIn(target->obj->texturecontainer[i]->m_texName, "gore")))
 		{
 			goretex = i;
 			break;
@@ -1989,7 +1989,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	for (size_t i = 0; i < target->obj->selections.size(); i++)
 	{ // TODO iterator
 		if ((target->obj->selections[i].selected.size() > 0)
-		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
+		        &&	(IsIn(target->obj->selections[i].name, "cut_")))
 		{
 			short fll = GetCutFlag( target->obj->selections[i].name );
 
@@ -2046,7 +2046,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 
 	if (hid)
 	{
-		ARX_SOUND_PlayCinematic("Flesh_Critical.wav");
+		ARX_SOUND_PlayCinematic("flesh_critical.wav");
 		ARX_NPC_SpawnMember(target, numsel);
 	}
 }
@@ -2573,7 +2573,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 					AcquireLastAnim(io);
 					FinishAnim(io, ause1->cur_anim);
 					ANIM_Set(ause1, io->anims[ANIM_BARE_STRIKE_LEFT+j*3]);
-					SendIOScriptEvent(io, SM_STRIKE, "BARE");
+					SendIOScriptEvent(io, SM_STRIKE, "bare");
 				}
 			}
 			else if ((ause1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3])
@@ -2733,13 +2733,13 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 						ANIM_Set(ause1, io->anims[ANIM_1H_STRIKE_LEFT+j*3+ANIMBase]);
 
 						if (io->_npcdata->weapontype & OBJECT_TYPE_1H)
-							SendIOScriptEvent(io, SM_STRIKE, "1H");
+							SendIOScriptEvent(io, SM_STRIKE, "1h");
 
 						if (io->_npcdata->weapontype & OBJECT_TYPE_2H)
-							SendIOScriptEvent(io, SM_STRIKE, "2H");
+							SendIOScriptEvent(io, SM_STRIKE, "2h");
 
 						if (io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
-							SendIOScriptEvent(io, SM_STRIKE, "DAGGER");
+							SendIOScriptEvent(io, SM_STRIKE, "dagger");
 					}
 				}
 				else if ((ause1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3+ANIMBase])
@@ -3706,7 +3706,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 					if ((io->_npcdata->behavior & BEHAVIOUR_FLEE)
 					        && (!io->_npcdata->pathfind.pathwait))
-						SendIOScriptEvent(io, SM_NULL, "", "FLEE_END");
+						SendIOScriptEvent(io, SM_NULL, "", "flee_end");
 
 					if ((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) &&
 					        (io->_npcdata->pathfind.pathwait == 0))
@@ -3719,7 +3719,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 							if (io->targetinfo != num)
 							{
-								SendIOScriptEvent(io, SM_REACHEDTARGET, "FAKE");
+								SendIOScriptEvent(io, SM_REACHEDTARGET, "fake");
 								io->targetinfo = num;
 							}
 						}
@@ -4082,11 +4082,11 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 //-------------------------------------------------------------------------
 void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power)
 {
-	char step_material[64] = "Foot_bare";
-	std::string floor_material = "EARTH";
+	char step_material[64] = "foot_bare";
+	std::string floor_material = "earth";
 
 	if (EEIsUnderWater(pos))
-		floor_material = "WATER";
+		floor_material = "water";
 	else
 	{
 		EERIEPOLY * ep;
