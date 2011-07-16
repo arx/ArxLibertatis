@@ -213,7 +213,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		delete io->obj;
 	}
 
-	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
+	const char OBJECT_HUMAN_BASE[] = "graph\\obj3d\\interactive\\npc\\human_base\\human_base.teo";
 	io->obj = loadObject(OBJECT_HUMAN_BASE, false);
 	
 	long sel_ = -1;
@@ -228,14 +228,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
+				sprintf(pathh, "graph\\obj3d\\interactive\\npc\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_HEAD, pathh);
 			}
 
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph\\obj3d\\textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
@@ -282,14 +282,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
+				sprintf(pathh, "graph\\obj3d\\interactive\\npc\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_TORSO, pathh);
 			}
 
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph\\obj3d\\textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
@@ -336,14 +336,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
+				sprintf(pathh, "graph\\obj3d\\interactive\\npc\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_LEGS, pathh);
 			}
 
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph\\obj3d\\textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
@@ -407,14 +407,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 					}
 					else
 					{
-						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "PRIMARY_ATTACH", toequip); //
+						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip); //
 					}
 				}
 				else if (toequip->type_flags & OBJECT_TYPE_SHIELD)
 				{
 					if (player.equiped[EQUIP_SLOT_SHIELD] != 0)
 					{
-						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "SHIELD_ATTACH", "SHIELD_ATTACH", toequip);
+						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
 					}
 
 				}
@@ -553,7 +553,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 				   )
 				{
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
-					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "PRIMARY_ATTACH", "PRIMARY_ATTACH", toequip); //
+					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "primary_attach", "primary_attach", toequip); //
 					return;
 				}
 			}
@@ -587,12 +587,12 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 					if (toequip->type_flags & OBJECT_TYPE_BOW)
 					{
 						EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
-						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "TEST", toequip); //
+						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "test", toequip); //
 						return;
 					}
 
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
-					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "PRIMARY_ATTACH", toequip); //
+					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip); //
 					return;
 				}
 			}
@@ -698,8 +698,8 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	char wmat[64];
 	char amat[64];
 
-	strcpy(wmat, "BARE");
-	strcpy(amat, "FLESH");
+	strcpy(wmat, "bare");
+	strcpy(amat, "flesh");
 
 	bool critical = false;
 
@@ -835,7 +835,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	if (power > 1.f) power = 1.f;
 
-	if (!strcasecmp(wmat, "BARE"))
+	if (!strcasecmp(wmat, "bare"))
 		power = power * 0.1f + 0.9f;
 	else power = power * 0.1f + 0.9f;
 
@@ -847,7 +847,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	if (dice <= chance) 
 	{
-		strcpy(amat, "FLESH");
+		strcpy(amat, "flesh");
 		ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &pos, io_source);
 
 		Vec3f pos;
@@ -1170,7 +1170,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 								if (io_weapon && io_weapon->weaponmaterial) strcpy(weapon_material, io_weapon->weaponmaterial);
 								else
-									strcpy(weapon_material, "METAL");
+									strcpy(weapon_material, "metal");
 
 								char bkg_material[128];
 
@@ -1205,9 +1205,9 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 						if (io_weapon && io_weapon->weaponmaterial) strcpy(weapon_material, io_weapon->weaponmaterial);
 						else
-							strcpy(weapon_material, "METAL");
+							strcpy(weapon_material, "metal");
 
-						std::string bkg_material = "EARTH";
+						std::string bkg_material = "earth";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
 							bkg_material = GetMaterialString( ep->tex->m_texName );
@@ -1337,11 +1337,11 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 
 		if (toequip->type_flags & OBJECT_TYPE_BOW)
 		{
-			EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "TEST", toequip); //
+			EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "test", toequip); //
 		}
 		else
 		{
-			EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "PRIMARY_ATTACH", toequip); //
+			EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip); //
 		}
 
 		if ((toequip->type_flags & OBJECT_TYPE_2H) || (toequip->type_flags & OBJECT_TYPE_BOW))
@@ -1361,7 +1361,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		}
 
 		player.equiped[EQUIP_SLOT_SHIELD] = (short)validid;
-		EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "SHIELD_ATTACH", "SHIELD_ATTACH", toequip);
+		EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
 
 		if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 		        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
@@ -1585,7 +1585,7 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 
 	if (!io->_itemdata->equipitem)
 	{
-		io->_itemdata->equipitem = (IO_EQUIPITEM *) malloc(sizeof(IO_EQUIPITEM)); //"IOequip"
+		io->_itemdata->equipitem = (IO_EQUIPITEM *) malloc(sizeof(IO_EQUIPITEM));
 
 		if (io->_itemdata->equipitem == NULL) return;
 
@@ -1602,9 +1602,9 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 		{
 			if (io->_itemdata->equipitem->elements[i].special == IO_SPECIAL_ELEM_NONE)
 			{
-				if (!strcasecmp(param2, "PARALYSE"))
+				if (!strcasecmp(param2, "paralyse"))
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_PARALYZE;
-				else if (!strcasecmp(param2, "DRAINLIFE"))
+				else if (!strcasecmp(param2, "drainlife"))
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_DRAIN_LIFE;
 
 				io->_itemdata->equipitem->elements[i].value = val;
