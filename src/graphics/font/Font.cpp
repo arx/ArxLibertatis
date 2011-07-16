@@ -113,7 +113,7 @@ void Font::WriteToDisk()
 		}
 		ss << "_";
 		ss << m_Info.m_Size;
-		ss << "_Page";
+		ss << "_page";
 		ss << i;
 		ss << ".png";
 
