@@ -350,7 +350,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			
 			if(context.pos >= context.getScript()->size) {
 				LogWarning << "reached script end without accept / refuse / return";
-				ClearSubStack(es);
 				return ACCEPT;
 			}
 			
@@ -359,7 +358,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				newline = true;
 				context.pos++;
 				if(msg == SM_EXECUTELINE) {
-					ClearSubStack(es);
 					return ACCEPT;
 				}
 			}
@@ -414,14 +412,11 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			LogError << '[' << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown") << ':' << context.getPosition() << "]: unknown command: " << word;
 			
 			io->ioflags |= IO_FREEZESCRIPT;
-			ClearSubStack(es);
 			return REFUSE;
 			
 		}
 		
 	}
-	
-	ClearSubStack(es);
 	
 	if(msg == SM_EXECUTELINE) {
 		LogDebug << "executeline successfully finished";

@@ -240,8 +240,8 @@ static long FindScriptPosGOTO(const EERIE_SCRIPT * es, const string & str) {
 
 bool Context::jumpToLabel(const string & target, bool substack) {
 	
-	if(substack && !InSubStack(script, pos)) {
-		return false;
+	if(substack) {
+		stack.push_back(pos);
 	}
 	
 	long targetpos = FindScriptPosGOTO(script, ">>" + target);
@@ -255,12 +255,12 @@ bool Context::jumpToLabel(const string & target, bool substack) {
 
 bool Context::returnToCaller() {
 	
-	long oldpos = GetSubStack(script);
-	if(oldpos == -1) {
+	if(stack.empty()) {
 		return false;
 	}
 	
-	pos = oldpos;
+	pos = stack.back();
+	stack.pop_back();
 	return true;
 }
 

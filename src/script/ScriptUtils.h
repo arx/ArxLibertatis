@@ -3,6 +3,7 @@
 #define ARX_SCRIPTING_SCRIPTUTILS_H
 
 #include <string>
+#include <vector>
 
 #include "platform/Platform.h"
 #include "script/ScriptEvent.h"
@@ -60,6 +61,7 @@ private:
 	size_t pos;
 	INTERACTIVE_OBJ * io;
 	ScriptMessage message;
+	std::vector<size_t> stack;
 	
 public:
 	

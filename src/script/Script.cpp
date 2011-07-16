@@ -2959,49 +2959,7 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 	}
 }
 
-bool InSubStack(EERIE_SCRIPT * es, long pos)
-{
-	for (size_t i = 0; i < MAX_GOSUB; i++)
-	{
-		if (es->sub[i] == -1)
-		{
-			es->sub[i] = pos;
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void ClearSubStack(EERIE_SCRIPT * es)
-{
-	for (size_t i = 0; i < MAX_GOSUB; i++)
-		es->sub[i] = -1;
-}
-
-long GetSubStack(EERIE_SCRIPT * es)
-{
-	long ret;
-
-	for (long i = MAX_GOSUB - 1; i >= 0; i--)
-	{
-		if (es->sub[i] != -1)
-		{
-			ret = es->sub[i];
-			es->sub[i] = -1;
-			return ret;
-		}
-	}
-
-	return -1;
-}
-
 void InitScript(EERIE_SCRIPT * es) {
-	
-	for (size_t i = 0; i < MAX_GOSUB; i++)
-	{
-		es->sub[i] = -1;
-	}
 
 	es->allowevents = 0;
 	es->nblvar = 0;

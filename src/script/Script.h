@@ -68,7 +68,6 @@ class PakFile;
 struct INTERACTIVE_OBJ;
 struct ANIM_HANDLE;
 
-const size_t MAX_GOSUB = 10;
 const size_t MAX_SHORTCUT = 80;
 const size_t MAX_SCRIPTTIMERS = 5;
 
@@ -120,7 +119,6 @@ DECLARE_FLAGS_OPERATORS(DisabledEvents)
 struct EERIE_SCRIPT {
 	size_t size;
 	char * data;
-	long sub[MAX_GOSUB];
 	long nblvar;
 	SCRIPT_VAR * lvar;
 	unsigned long lastcall;
@@ -463,7 +461,6 @@ void ReleaseScript(EERIE_SCRIPT * es);
 long GetNextWord(EERIE_SCRIPT * es, long i, std::string & temp, long flags = 0);
 void ARX_SCRIPT_Init_Event_Stats();
 ScriptResult SendInitScriptEvent(INTERACTIVE_OBJ * io);
-void ClearSubStack(EERIE_SCRIPT * es);
 
 //used by scriptevent
 void MakeSSEPARAMS(const char * params);
@@ -501,8 +498,6 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params = "");
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "");
 
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
-bool InSubStack(EERIE_SCRIPT * es, long pos);
-long GetSubStack(EERIE_SCRIPT * es);
 void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing = 0);
 void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io);
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
