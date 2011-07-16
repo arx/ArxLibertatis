@@ -120,20 +120,6 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 
 	for (long j = 1; j < nb; j++) {
 		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
-
-		if (es.shortcut[j] >= 0) {
-			std::string dest;
-			GetNextWord(&es, es.shortcut[j], dest);
-
-			if (!strcmp(dest, "{")) {
-				GetNextWord(&es, es.shortcut[j], dest);
-
-				if (!strcasecmp(dest, "ACCEPT")) {
-					es.shortcut[j] = -1;
-				}
-			}
-		}
-
 	}
 }
 
@@ -185,7 +171,6 @@ static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, Scri
 	return false;
 }
 
-extern long LINEEND; // set by GetNextWord
 extern long PauseScript;
 
 namespace script {
@@ -226,8 +211,7 @@ using namespace script; // TODO remove once everythng has been moved to the scri
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
-	std::string word = "";
-	char eventname[64];
+	string eventname;
 	long pos;
 	
 	totalCount++;
@@ -251,9 +235,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	
 	// Finds script position to execute code...
 	if (!evname.empty()) {
-		strcpy(eventname, "on ");
-		strcat(eventname, evname.c_str());
-		pos = FindScriptPos( es, eventname );
+		eventname = "on " + evname;
+		pos = FindScriptPos(es, eventname);
 	} else {
 		if (msg == SM_EXECUTELINE) {
 			pos = info;
@@ -337,24 +320,26 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 	if (msg != SM_EXECUTELINE) {
 		if (!evname.empty()) {
-			pos += strlen(eventname); // adding 'ON ' length
+			pos += eventname.length(); // adding 'ON ' length
 			LogDebug << eventname << " received";
 		} else {
 			pos += AS_EVENT[msg].name.length();
 			LogDebug << AS_EVENT[msg].name << " received";
-		}
-
-		if ((pos = GetNextWord(es, pos, word)) < 0) return ACCEPT;
-
-		if(word.empty() || word[0] != '{') {
-			LogError << "ERROR: No bracket after event, got \"" << word << "\"";
-			return ACCEPT;
 		}
 	} else {
 		LogDebug << "EXECUTELINE received";
 	}
 	
 	Context context(es, pos, io, msg);
+	
+	if(msg != SM_EXECUTELINE) {
+		
+		string word = context.getLowercase();
+		if(word != "{") {
+			LogError << "missing bracket after event, got \"" << word << "\"";
+			return ACCEPT;
+		}
+	}
 
 	for(;;) {
 		
@@ -365,6 +350,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			
 			if(context.pos >= context.getScript()->size) {
 				LogWarning << "reached script end without accept / refuse / return";
+				ClearSubStack(es);
 				return ACCEPT;
 			}
 			
@@ -373,6 +359,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				newline = true;
 				context.pos++;
 				if(msg == SM_EXECUTELINE) {
+					ClearSubStack(es);
 					return ACCEPT;
 				}
 			}
@@ -403,10 +390,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				res = it->second->execute(context);
 			}
 			
-			pos = context.pos;
-			
-			LINEEND = (context.pos >= es->size || es->data[pos] == '\n') ? 1 : 0;
-			
 			if(res == Command::AbortAccept) {
 				ret = ACCEPT;
 				break;
@@ -431,6 +414,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			LogError << '[' << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown") << ':' << context.getPosition() << "]: unknown command: " << word;
 			
 			io->ioflags |= IO_FREEZESCRIPT;
+			ClearSubStack(es);
 			return REFUSE;
 			
 		}

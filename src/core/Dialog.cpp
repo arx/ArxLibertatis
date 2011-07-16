@@ -3155,9 +3155,6 @@ char text2[MAX_SCRIPT_SIZE+1];
  
 //*************************************************************************************
 //*************************************************************************************
- 
-extern HWND LastErrorPopupNO2;
-extern HWND LastErrorPopupNO1;
 
 UINT uFindReplaceMsg;
 
@@ -3306,26 +3303,12 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 					SHOWWARNINGS = 1;
 					CDP_EditIO->ioflags &= ~IO_FREEZESCRIPT;
 
-					if (CheckScriptSyntax(CDP_EditIO) != true) CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
-					else CDP_EditIO->ioflags &= ~IO_FREEZESCRIPT;
+					/*if (CheckScriptSyntax(CDP_EditIO) != true) CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
+					else*/ CDP_EditIO->ioflags &= ~IO_FREEZESCRIPT;
 
 					SHOWWARNINGS = 0;
 					RECT rec;
 					GetWindowRect(hWnd, &rec);
-
-					if (LastErrorPopupNO2 != NULL)
-					{
-						SetWindowPos(LastErrorPopupNO2, HWND_TOPMOST, rec.left + rec.right - rec.left, rec.top + 200, 0, 0, SWP_NOSIZE);
-						SetCheck(hWnd, IDC_FREEZESCRIPT, CHECK);
-						LastErrorPopupNO2 = NULL;
-					}
-
-					if (LastErrorPopupNO1 != NULL)
-					{
-						SetWindowPos(LastErrorPopupNO1, HWND_TOPMOST, rec.left + rec.right - rec.left, rec.top, 0, 0, SWP_NOSIZE);
-						SetCheck(hWnd, IDC_FREEZESCRIPT, CHECK);
-						LastErrorPopupNO1 = NULL;
-					}
 
 					SYNTAXCHECKING = SC;
 				}
@@ -3439,8 +3422,8 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 							break;
 					}
 
-					if (!(CDP_EditIO->ioflags & IO_FREEZESCRIPT))
-						if (CheckScriptSyntax(CDP_EditIO) != true) CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
+					/*if (!(CDP_EditIO->ioflags & IO_FREEZESCRIPT))
+						if (CheckScriptSyntax(CDP_EditIO) != true)*/ CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
 				}
 
 				CDP_IOOptions = NULL;
@@ -3485,18 +3468,6 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 				RECT rec;
 				GetWindowRect(hWnd, &rec);
-
-				if (LastErrorPopupNO2 != NULL)
-				{
-					SetWindowPos(LastErrorPopupNO2, HWND_TOPMOST, rec.left + rec.right - rec.left, rec.top + 200, 0, 0, SWP_NOSIZE);
-					SetCheck(hWnd, IDC_FREEZESCRIPT, CHECK);
-				}
-
-				if (LastErrorPopupNO1 != NULL)
-				{
-					SetWindowPos(LastErrorPopupNO1, HWND_TOPMOST, rec.left + rec.right - rec.left, rec.top, 0, 0, SWP_NOSIZE);
-					SetCheck(hWnd, IDC_FREEZESCRIPT, CHECK);
-				}
 			}
 
 			if (IOScript_X != -1)

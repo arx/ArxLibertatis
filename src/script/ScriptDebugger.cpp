@@ -432,18 +432,6 @@ suite:
 			MODIFFF = 1;
 		}
 	}
-
-	if (su.bUpdateGlobalVar)
-	{
-		ARX_SCRIPT_SetVar(NULL, su.globalVar.lpszVarName, su.globalVar.lpszVarValue);
-		MODIFFF = 1;
-	}
-
-	if ((su.bUpdateLocalVar) && (io))
-	{
-		ARX_SCRIPT_SetVar(io, su.localVar.lpszVarName, su.localVar.lpszVarValue);
-		MODIFFF = 1;
-	}
 }
 
 #endif // BUILD_EDITOR

@@ -189,9 +189,7 @@ void Danae_Registry_ReadValue(const char * string, long * value, long defaultval
 void Danae_Registry_Write(const char * string, const char * text);
 void Danae_Registry_WriteValue(const char * string, DWORD value);
 
-// TODO move to Script.h?
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 #endif
 
 INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock = false);

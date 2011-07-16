@@ -203,13 +203,48 @@ size_t Context::skipCommand() {
 	return oldpos;
 }
 
+/**
+ * Finds the first occurence of str in the script that is followed
+ * by a separator (a character of value less then or equal 32)
+ * 
+ * @return The position of str in the script or -1 if str was not found.
+ */
+static long FindScriptPosGOTO(const EERIE_SCRIPT * es, const string & str) {
+	
+	if(!es->data) {
+		return -1;
+	}
+	
+	size_t result = 0;
+	size_t len2 = str.length();
+	
+	while(true) {
+		
+		const char * pdest = strcasestr(es->data + result, str.c_str());
+		if(!pdest) {
+			return -1;
+		}
+		
+		result = pdest - es->data;
+		
+		arx_assert(result + len2 <= (size_t)es->size);
+		
+		if(es->data[result + len2] <= 32) {
+			return result + len2;
+		}
+		
+		result += len2;
+	}
+	
+}
+
 bool Context::jumpToLabel(const string & target, bool substack) {
 	
 	if(substack && !InSubStack(script, pos)) {
 		return false;
 	}
 	
-	long targetpos = FindLabelPos(script, target);
+	long targetpos = FindScriptPosGOTO(script, ">>" + target);
 	if(targetpos == -1) {
 		return false;
 	}

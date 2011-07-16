@@ -560,7 +560,7 @@ void LaunchMoulinex();
 void SendGameReadyMsg()
 {
 	LogDebug << "SendGameReadyMsg";
-	SendMsgToAllIO(SM_GAME_READY,"");
+	SendMsgToAllIO(SM_GAME_READY);
 }
 
 void DANAE_KillCinematic()
@@ -5144,7 +5144,7 @@ static float _AvgFrameDiff = 150.f;
 			{
 				if (!FADEDIR)	// Disabling ESC capture while fading in or out.
 				{
-					if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
+					if (SendMsgToAllIO(SM_KEY_PRESSED)!=REFUSE)
 					{
 						REQUEST_SPEECH_SKIP=1;				
 					}
@@ -6776,6 +6776,45 @@ extern long TSU_TEST;
 long TSU_TEST_NB = 0;
 long TSU_TEST_NB_LIGHT = 0;
 
+#ifdef BUILD_EDITOR
+LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
+	HWND thWnd;
+
+	switch (message)
+	{
+		case WM_CLOSE:
+			EndDialog(hDlg, LOWORD(wParam));
+			break;
+		case WM_INITDIALOG:
+			SendMessage(hDlg, WM_SIZE, 0, 0);
+			SetWindowText(hDlg, ShowTextWindowtext.c_str());
+			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT);
+			SendMessage(thWnd, WM_SETFONT, (WPARAM) GetStockObject(ANSI_FIXED_FONT), true);
+			SetWindowText(thWnd, ShowText.c_str());
+
+			return true;
+		case WM_SIZE:
+			break;
+		case WM_COMMAND:
+
+			switch (LOWORD(wParam))
+			{
+				case IDOK:
+					EndDialog(hDlg, LOWORD(wParam));
+					break;
+			}
+
+			break;
+	}
+
+	return false;
+}
+
+#endif // BUILD_EDITOR
+
 static void ShowInfoText() {
 	
 	unsigned long uGAT = ARXTimeUL() / 1000;
@@ -7190,9 +7229,6 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					Pause(true);
 					DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_SEARCH), danaeApp.m_hWnd, ScriptSearchProc);
-
-					if (SCRIPT_SEARCH_TEXT[0])
-						ARX_SCRIPT_LaunchScriptSearch(SCRIPT_SEARCH_TEXT);
 
 					Pause(false);
 					ARX_TIME_UnPause();

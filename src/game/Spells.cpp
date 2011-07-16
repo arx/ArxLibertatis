@@ -2580,7 +2580,7 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 			ARX_SPELLS_FizzleNoMana(num);
 
 			if(_bSound) {
-				ARX_SPEECH_AddLocalised("player_cantcast");
+				ARX_SPEECH_Add("player_cantcast");
 				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 			}
 
@@ -2847,7 +2847,7 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 	ARX_SPELLS_FizzleNoMana(num);
 
 	if(_bSound) {
-		ARX_SPEECH_AddLocalised("[player_cantcast]");
+		ARX_SPEECH_Add("player_cantcast");
 		ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 

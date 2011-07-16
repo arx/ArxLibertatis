@@ -576,9 +576,14 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 	//Kill all Timers...
 	ARX_SCRIPT_Timer_Clear_By_IO(io_dead);
 
-	if (strcmp(io_dead->mainevent, "dead"))
-		NotifyIOEvent(io_dead, SM_DIE);
-
+	if(strcmp(io_dead->mainevent, "dead")) {
+		if(SendIOScriptEvent(io_dead, SM_DIE) != REFUSE && ValidIOAddress(io_dead)) {
+			io_dead->infracolor.b = 1.f;
+			io_dead->infracolor.g = 0.f;
+			io_dead->infracolor.r = 0.f;
+		}
+	}
+	
 	if (!ValidIOAddress(io_dead))
 		return;
 

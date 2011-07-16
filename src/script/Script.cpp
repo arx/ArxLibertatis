@@ -170,122 +170,7 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	
 }
 
-/**
- * Finds the first occurence of str in the script that is followed
- * by a separator (a character of value less then or equal 32)
- * 
- * @return The position of str in the script or -1 if str was not found.
- */
-long FindScriptPosGOTO(const EERIE_SCRIPT * es, const string & str) {
-	
-	if(!es->data) {
-		return -1;
-	}
-	
-	size_t result = 0;
-	size_t len2 = str.length();
-	
-	while(true) {
-		
-		const char * pdest = strcasestr(es->data + result, str.c_str());
-		if(!pdest) {
-			return -1;
-		}
-		
-		result = pdest - es->data;
-		
-		assert(result + len2 <= (size_t)es->size);
-		
-		if(es->data[result + len2] <= 32) {
-			return result + len2;
-		}
-		
-		result += len2;
-	}
-	
-}
-
-bool CharIn( const std::string& str, char _char)
-{
-	return ( str.find( _char ) != std::string::npos );
-}
-
-bool iCharIn( const std::string& str, char _char)
-{
-	std::string temp = str;
-	MakeUpcase(temp);
-	_char = ::toupper(_char);
-	return ( temp.find( _char ) != std::string::npos );
-/*
-	char * s = string;
-	MakeUpcase(string);
-
-	while (*s)
-	{
-		if ((*s) == _char) return true;
-
-		s++;
-	}
-
-	return false; */
-}
-
-
-
-extern long FOR_EXTERNAL_PEOPLE;
-
-//*************************************************************************************
-// SCRIPT Precomputed Label Offsets Management
-long FindLabelPos(EERIE_SCRIPT * es, const std::string& string) {
-	return FindScriptPosGOTO(es, ">>" + string);
-}
-
-long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, const std::string& search, long startpos, std::string& tline, long * nline)
-{
-	static long lastline = 0;
-	long curline;
-	
-	if (es == NULL) return -1;
-	
-	if (es->data == NULL) return -1;
-	
-	if (es->size <= 0) return -1;
-	
-	if (startpos == 0) curline = lastline = 0;
-	else curline = lastline;
-	
-	size_t curpos = startpos; // current pos in stream
-	
-	// Get a line from stream
-	while (curpos < es->size) {
-		std::string curtline;
-		
-		while((curpos < es->size) && (es->data[curpos] != '\n')) {
-			curtline.push_back(es->data[curpos]);
-			curpos++; // advance in stream
-		}
-		
-		curpos++;
-		curline++;
-		
-		if(!curtline.empty()) {
-			MakeUpcase(curtline);
-			
-			if(curtline.find( search) != std::string::npos) {
-				*nline = curline;
-				tline = curtline;
-				lastline = curline;
-				return curpos;
-			}
-		}
-	}
-	
-	lastline = 0;
-	return -1;
-}
-
-
-ScriptResult SendMsgToAllIO(ScriptMessage msg, const char * dat) {
+ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
 	
 	ScriptResult ret = ACCEPT;
 
@@ -293,114 +178,13 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const char * dat) {
 	{
 		if (inter.iobj[i])
 		{
-			if (SendIOScriptEvent(inter.iobj[i], msg, dat) == REFUSE)
+			if (SendIOScriptEvent(inter.iobj[i], msg, params) == REFUSE)
 				ret = REFUSE;
 		}
 	}
 
 	return ret;
 }
-
-#ifdef BUILD_EDITOR
-void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
-{
-	ShowText.clear();
-	long foundnb = 0;
-	long size = 0;
-	std::string tline;
-	std::string toadd;
-	std::string objname;
-	long nline;
-	INTERACTIVE_OBJ * io = NULL;
-	MakeUpcase(search);
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			io = inter.iobj[i];
-
-			if (i == 0)
-				objname = "PLAYER";
-			else
-				objname = io->long_name();
-
-			long pos = 0;
-
-			while (pos != -1)
-			{
-
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search, pos, tline, &nline);
-
-				if (pos > 0)
-				{
-					std::stringstream ss;
-					ss << objname << " - GLOBAL - Line " << std::setw(4) << nline
-					   << std::setw(0) << " : " << tline << '\n';
-					//sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
-					toadd = ss.str();
-
-					if (size + toadd.length() + 3 < 65535)
-					{
-						ShowText += toadd;
-						foundnb++;
-					}
-					else
-					{
-						ShowText += "...";
-						goto suite;
-					}
-
-					size += toadd.length();
-				}
-			}
-
-			pos = 0;
-
-			while (pos != -1)
-			{
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->over_script, search, pos, tline, &nline);
-
-				if (pos > 0)
-				{
-					std::stringstream ss;
-					ss << objname << " - LOCAL  - Line " << std::setw(4) << nline
-					   << std::setw(0) << " : " << tline << '\n';
-					toadd = ss.str();
-					//toadd, "%s - LOCAL  - Line %4ld : %s\n", objname, nline, tline);
-
-					if (size + toadd.length() + 3 < 65535)
-					{
-						ShowText += toadd;
-						foundnb++;
-					}
-					else
-					{
-						ShowText += "...";
-						goto suite;
-					}
-
-					size += toadd.length();
-				}
-			}
-		}
-	}
-
-suite:
-	;
-
-	if (foundnb <= 0)
-	{
-		ShowText = "No Occurence Found...";
-	}
-
-	std::stringstream ss;
-	ss << "Search Results for " << search << '(' << foundnb << " occurences)";
-	ShowTextWindowtext = ss.str();
-
-	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
-}
-#endif
 
 void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const string & newevent) {
 	
@@ -549,8 +333,6 @@ void ARX_SCRIPT_AllowInterScriptExec()
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
 
 void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es)
 {
@@ -598,8 +380,6 @@ void ReleaseScript(EERIE_SCRIPT * es)
 	memset(es->shortcut, 0, sizeof(long)*MAX_SHORTCUT);
 }
 
-//*************************************************************************************
-//*************************************************************************************
 ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const string & _name, std::string& txtcontent, float * fcontent,long * lcontent)
 {
 	std::string name = _name;
@@ -1723,8 +1503,6 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 	return TYPE_LONG;
 }
 
-//*************************************************************************************
-//*************************************************************************************
 void ARX_SCRIPT_Free_All_Global_Variables()
 {
 	if (svar)
@@ -1744,8 +1522,7 @@ void ARX_SCRIPT_Free_All_Global_Variables()
 	}
 
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io)
 {
 	if (!ioo) return;
@@ -1785,8 +1562,7 @@ void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io)
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR*& _svff, long& _nb)
 {
 
@@ -1798,8 +1574,6 @@ SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR*& _svff, long& _nb)
 	return &svf[_nb-1];
 }
 
-//*************************************************************************************
-//*************************************************************************************
 SCRIPT_VAR * GetVarAddress(SCRIPT_VAR svf[], size_t nb, const string & name) {
 	
 	for(size_t i = 0; i < nb; i++) {
@@ -1840,8 +1614,6 @@ std::string GETVarValueText(SCRIPT_VAR svf[], size_t nb, const string & name) {
 	return tsv->text;
 }
 
-//*************************************************************************************
-//*************************************************************************************
 string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io) {
 	
 	char var_text[256];
@@ -1941,8 +1713,7 @@ float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * e
 	
 	return (float)atof(temp1.c_str());
 }
-//*************************************************************************************
-//*************************************************************************************
+
 SCRIPT_VAR* SETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name, long val)
 {
 	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
@@ -1960,8 +1731,7 @@ SCRIPT_VAR* SETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name,
 	tsv->ival = val;
 	return tsv;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 SCRIPT_VAR* SETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name, float val)
 {
 	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
@@ -1979,8 +1749,7 @@ SCRIPT_VAR* SETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name
 	tsv->fval = val;
 	return tsv;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name, const std::string& val)
 {
 	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
@@ -2187,254 +1956,6 @@ AnimationNumber GetNumAnim(const string & name) {
 	return (it == animations.end()) ? ANIM_NONE : it->second;
 }
 
-long LINEEND;
-INTERACTIVE_OBJ * _CURIO = NULL;
-//*************************************************************************************
-//returns pos after this word.														//
-// -1 failure																		//
-// flags =0 standard																//
-//		 =1 no INTERPRETATION (except for ~ )										//
-//*************************************************************************************
-/* TODO Clean up this mess */
-long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
-{
-
-	// Avoids negative position...
-	if (i < 0) return -1;
-
-	// Avoids position superior to script size
-	if (i >= (long)es->size) return -1;
-
-	long tildes = 0;	// number of tildes
-	long old = i;		// stores start pos in old
-	LINEEND = 0;		// Global LINEEND set to 0 (no LINEEND for now)
-	unsigned char * esdat = (unsigned char *)es->data;
-
-	// First ignores spaces & unused chars
-	while ((i < (long)es->size) &&
-			((esdat[i] <= 32)	|| (esdat[i] == '(') || (esdat[i] == ')'))
-		  )
-	{
-		if (es->data[i] == '\n') LINEEND = 1;
-
-		i++;
-	}
-
-	temp.clear();
-	// now take chars until it finds a space or unused char
-	while ((esdat[i] > 32)
-			&& (esdat[i] != '(')
-			&& (esdat[i] != ')')
-		  )
-	{
-
-
-		if (esdat[i] == '"')
-		{
-			i++;
-
-			if (i >= (long)es->size) return -1;
-
-			while ((esdat[i] != '"') && (!LINEEND))
-			{
-				if (esdat[i] == '\n') LINEEND = 1;
-				else if (esdat[i] == '~') tildes++;
-
-				temp.push_back(esdat[i]);
-				i++;
-
-				if (i >= (long)es->size) return -1;
-
-			}
-
-			return i + 1;
-		}
-		else
-		{
-			temp.push_back(esdat[i]);
-
-			if (esdat[i] == '~') tildes++;
-		}
-
-		i++;
-
-		if (i >= (long)es->size) return -1;
-
-	}
-
-	if (i == old) return -1;
-
-	// Now retreives Tilded chars...
-	if ((!(flags & 2))
-			&&	(tildes > 0)
-	   )
-	{
-		long _pos = 0;
-		long _size = temp.length();
-
-		while ((_pos < _size) && (tildes >= 2))
-		{
-			if (temp[_pos] == '~')
-			{
-				long start = _pos + 1;
-				_pos++;
-
-				while ((_pos < _size) && (temp[_pos] != '~'))
-				{
-					_pos++;
-				}
-
-				long end = _pos - 1;
-
-				// Found A tilded string...
-				if (end > start)
-				{
-					std::string tildedd(temp, start, end - start + 1);
-					char interp[256];
-					char result[512];
-
-					if (es->master)
-						strcpy(interp, GetVarValueInterpretedAsText(tildedd, (EERIE_SCRIPT *)es->master, _CURIO).c_str());
-					else
-						strcpy(interp, GetVarValueInterpretedAsText(tildedd, es, _CURIO).c_str());
-
-					if (start == 1) strcpy(result, "");
-					else
-					{
-						memcpy(result, temp.c_str(), start - 1);
-						result[start-1] = 0;
-					}
-
-					strcat(result, interp);
-
-					if (end + 2 < _size)
-						strcat(result, temp.c_str() + end + 2);
-
-					_pos = -1;
-					temp = result;
-					_size = temp.length();
-					tildes -= 2;
-				}
-			}
-
-			_pos++;
-		}
-	}
-
-	return i;
-}
-
-
-//*************************************************************************************
-//*************************************************************************************
-long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp )
-{
-	long pos=GetNextWord(es,i,temp);
-	std::stringstream ss;
-	if	(temp[0]=='^') {
-		long lv;
-		float fv;
-		std::string tv;
-
-		switch (GetSystemVar(es,io,temp,tv,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
-		{
-			case TYPE_TEXT:
-				temp = tv;
-				break;
-			case TYPE_LONG:
-				ss << lv;
-				temp = ss.str();
-				break;
-			case TYPE_FLOAT:
-				ss << fv;
-				temp = ss.str();
-				break;
-		}
-	}
-	else if	(temp[0] == '#')
-	{
-		ss << GETVarValueLong(svar, NB_GLOBALS, temp);
-		temp = ss.str();
-	}
-	else if (temp[0] == '\xA7')
-	{
-		ss << GETVarValueLong(es->lvar, es->nblvar, temp);
-		temp = ss.str();
-	}
-	else if (temp[0] == '&')
-	{
-		ss << GETVarValueFloat(svar, NB_GLOBALS, temp);
-		temp = ss.str();
-	}
-	else if (temp[0] == '@')
-	{
-		ss << GETVarValueFloat(es->lvar, es->nblvar, temp);
-		temp = ss.str();
-	}
-	else if (temp[0] == '$')
-	{
-		temp = GETVarValueText(svar, NB_GLOBALS, temp);
-	}
-	else if (temp[0] == '\xA3')
-	{
-		temp = GETVarValueText(es->lvar, es->nblvar, temp);
-	}
-
-	return pos;
-}
-
-//*************************************************************************************
-//*************************************************************************************
-long GotoNextLine(EERIE_SCRIPT * es, long pos)
-{
-	while ((es->data[pos] != '\n'))
-	{
-		if (es->data[pos] == '\0') return -1;
-
-		pos++;
-	}
-
-	pos++;
-	return pos;
-}
-
-//*************************************************************************************
-//*************************************************************************************
-long SkipNextStatement(EERIE_SCRIPT * es, long pos)
-{
-	std::string temp;
-	long tpos;
-	pos = GetNextWord(es, pos, temp);
-
-	if (temp[0] == '{')
-	{
-		long brack = 1;
-		while (brack > 0)
-		{
-			pos = GetNextWord(es, pos, temp);
-
-			if (pos < 0) return -1;
-
-			if(!temp.empty())
-			{
-				if (temp[0] == '{') brack++;
-				else if (temp[0] == '}') brack--;
-			}
-		}
-	}
-	else pos = GotoNextLine(es, pos);
-
-	tpos = GetNextWord(es, pos, temp);
-	MakeUpcase(temp);
-
-	if (!temp.compare("ELSE"))
-	{
-		pos = tpos;
-	}
-
-	return pos;
-}
-
 void MakeGlobalText(std::string & tx)
 {
 	char texx[256];
@@ -2469,8 +1990,7 @@ void MakeGlobalText(std::string & tx)
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 {
 	char texx[256];
@@ -2511,8 +2031,6 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 		}
 	}
 }
-
-extern INTERACTIVE_OBJ * LastSelectedIO;
 
 void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea)
 {
@@ -2672,35 +2190,6 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 	io->target.z = io->pos.z;
 }
 
-void MakeStandard( std::string& str)
-{
-	size_t i = 0;
-	
-	while ( i < str.length() )
-	{
-		if (str[i] != '_')
-		{
-			str[i] = toupper(str[i]);
-			i++;
-		} else {
-			str.erase(i, 1);
-		}
-	}
-}
-
-long ARX_SPEECH_AddLocalised(const std::string& text, long duration) {
-	
-	// TODO(case-sensitive) move to caller
-	std::string section = text;
-	if(!section.empty() && section[0] == '[' && section[section.length() - 1] == ']') {
-		section = section.substr(1, section.length() - 2);
-	}
-	transform(section.begin(), section.end(), section.begin(), ::tolower);
-	
-	std::string output = getLocalised(section, "Not Found");
-	return ARX_SPEECH_Add(output, duration);
-}
-
 //*************************************************************************************
 // ScriptEvent::send																	//
 // Sends a event to a script.														//
@@ -2742,22 +2231,6 @@ void MakeSSEPARAMS(const char * params)
 		pos++;
 	}
 }
-
-
-ScriptResult NotifyIOEvent(INTERACTIVE_OBJ * io, ScriptMessage msg) {
-	
-	if(SendIOScriptEvent(io, msg) != REFUSE) {
-		if(msg == SM_DIE && io && ValidIOAddress(io)) {
-			io->infracolor.b = 1.f;
-			io->infracolor.g = 0.f;
-			io->infracolor.r = 0.f;
-		}
-		return ACCEPT;
-	}
-	
-	return REFUSE;
-}
-
 
 #define MAX_EVENT_STACK 800
 struct STACKED_EVENT {
@@ -2958,13 +2431,6 @@ ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const st
 	return REFUSE;
 }
 
-
-
-
-
-
-
-
 ScriptResult SendInitScriptEvent(INTERACTIVE_OBJ * io) {
 	
 	if (!io) return REFUSE;
@@ -3000,7 +2466,6 @@ ScriptResult SendInitScriptEvent(INTERACTIVE_OBJ * io) {
 	return ACCEPT;
 }
 
-
 //! Checks if timer named texx exists.
 static bool ARX_SCRIPT_Timer_Exist(const std::string & texx) {
 	
@@ -3031,42 +2496,34 @@ string ARX_SCRIPT_Timer_GetDefaultName() {
 //*************************************************************************************
 // Get a free script timer
 //*************************************************************************************
-long ARX_SCRIPT_Timer_GetFree()
-{
-	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (!(scr_timer[i].exist))
+long ARX_SCRIPT_Timer_GetFree() {
+	
+	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+		if(!(scr_timer[i].exist))
 			return i;
 	}
-
+	
 	return -1;
 }
+
 //*************************************************************************************
 // Count the number of active script timers...
 //*************************************************************************************
-long ARX_SCRIPT_CountTimers()
-{
+long ARX_SCRIPT_CountTimers() {
 	return ActiveTimers;
 }
+
 //*************************************************************************************
 // ARX_SCRIPT_Timer_ClearByNum
 // Clears a timer by its Index (long timer_idx) on the timers list
 //*************************************************************************************
-void ARX_SCRIPT_Timer_ClearByNum(long timer_idx)
-{
-	if (scr_timer[timer_idx].exist)
-	{
+void ARX_SCRIPT_Timer_ClearByNum(long timer_idx) {
+	if(scr_timer[timer_idx].exist) {
 		scr_timer[timer_idx].name.clear();
 		ActiveTimers--;
 		scr_timer[timer_idx].exist = 0;
 	}
 }
-//*************************************************************************************
-// ARX_SCRIPT_Timer_ForceCallnKill
-//
-// Forces a timer to die after having called one time its callback script position
-// by its Index (long timer_idx) on the timers list
-//*************************************************************************************
 
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const string & timername, INTERACTIVE_OBJ * io) {
 	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
@@ -3116,8 +2573,7 @@ void ARX_SCRIPT_Timer_FirstInit(long number)
 	scr_timer = new SCR_TIMER[MAX_TIMER_SCRIPT];
 	ActiveTimers = 0;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ARX_SCRIPT_Timer_ClearAll()
 {
 	if (ActiveTimers)
@@ -3126,8 +2582,7 @@ void ARX_SCRIPT_Timer_ClearAll()
 
 	ActiveTimers = 0;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io)
 {
 	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
@@ -3138,31 +2593,6 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io)
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string & name) {
 	
@@ -3181,16 +2611,11 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 {
 	INTERACTIVE_OBJ * io = st->io;
 	GetTargetPos(io);
-	Vec3f target;
-	target.x = io->target.x - io->pos.x;
-	target.y = io->target.y - io->pos.y;
-	target.z = io->target.z - io->pos.z;
+	Vec3f target = io->target - io->pos;
 	Vector_Normalize(&target);
 	Vec3f targ;
 	Vector_RotateY(&targ, &target, rnd() * 60.f - 30.f);
-	target.x = io->target.x + targ.x * 100.f;
-	target.y = io->target.y + targ.y * 100.f;
-	target.z = io->target.z + targ.z * 100.f;
+	target = io->target + targ * 100.f;
 
 	if (ARX_INTERACTIVE_ConvertToValidPosForIO(io, &target))
 	{
@@ -3227,8 +2652,6 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	return 0;
 }
 
-//*************************************************************************************
-//*************************************************************************************
 void ARX_SCRIPT_Timer_Check()
 {
 	if (ActiveTimers)
@@ -3287,1668 +2710,6 @@ void ARX_SCRIPT_Timer_Check()
 		}
 	}
 }
-long CountBrackets(EERIE_SCRIPT * es)
-{
-	long count = 0;
-
-	for (long i = 0; i < (long)es->size; i++)
-	{
-		if ((es->data[i] == '/') && (i < (long)es->size - 1) && (es->data[i+1] == '/'))
-		{
-			i = GotoNextLine(es, i);
-
-			if (i == -1) return count;
-		}
-
-		if (es->data[i] == '{') count++;
-
-		if (es->data[i] == '}') count--;
-	}
-
-	return count;
-}
-long GetCurrentLine(EERIE_SCRIPT * es, long poss)
-{
-	long pos = 0;
-	long linecount = -1;
-
-	while ((pos < poss) && (pos < (long)es->size))
-	{
-		pos = GotoNextLine(es, pos);
-
-		if (pos == -1) return -1;
-
-		linecount++;
-	}
-
-	if (linecount == -1) return -1;
-
-	return linecount + 1;
-}
-long GetLastLineNum(EERIE_SCRIPT * es)
-{
-	long pos = 0;
-	long linecount = -1;
-
-	while (pos < (long)es->size)
-	{
-		pos = GotoNextLine(es, pos);
-
-		if (pos == -1) return linecount + 2;
-
-		linecount++;
-	}
-
-	if (linecount == -1) return -1;
-
-	return linecount + 2;
-}
-
-void GetLineAsText(EERIE_SCRIPT * es, long curline, char * tex)
-{
-	
-	long pos = 1;
-	long linecount = -1;
-
-	while ((linecount + 2 < curline) && (pos < (long)es->size))
-	{
-		pos = GotoNextLine(es, pos);
-
-		if (pos == -1)
-		{
-			strcpy(tex, "Internal ERROR...");
-			return ;
-		}
-
-		linecount++;
-	}
-	
-	size_t curpos = 0;
-	while (pos + curpos < es->size)
-	{
-		if ((es->data[pos+curpos] == '\n') || (es->data[pos+curpos] == '\0'))
-		{
-			tex[curpos] = 0;
-			return;
-		}
-
-		tex[curpos] = es->data[pos+curpos];
-		curpos++;
-	}
-
-	strcpy(tex, "Internal ERROR...");
-}
-#ifdef BUILD_EDITOR
-HWND LastErrorPopup = NULL;
-extern long SYNTAXCHECKING;
-long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
-{
-//	return 1;
-
-//	if (SYNTAXCHECKING == 0) return 1;
-	//TODO(lubosz): Make validator functional
-	LogDebug << "LaunchScriptCheck";
-
-	if (io->ioflags & IO_FREEZESCRIPT) return 1;
-
-	long errors = 0;
-	long warnings = 0;
-	long stoppingdebug = 0;
-	long brackets = 0;
-	char errstring[65535];
-	char tem[256];
-
-	if (io == NULL) return 1;
-
-	if (es == NULL) return 1;
-
-	if (!es->data) return 1;
-
-	if (es->data[0] == 0) return 1;
-
-	long returnvalue = 1;
-	errstring[0] = 0;
-	long cb = CountBrackets(es);
-
-	if (cb != 0)
-	{
-		if (cb > 0) sprintf(tem, "Global - Warning: Invalid Number of Closing Brackets. %ld '}' missed\n", cb);
-		else sprintf(tem, "Global - Warning: Invalid Number of Opening Brackets. %ld '{' missed\n", -cb);
-
-		if (strlen(tem) + strlen(errstring) < 65480) strcat(errstring, tem);
-		else stoppingdebug = 1;
-
-		warnings++;
-	}
-
-	std::string temp;
-	std::string temp1;
-	std::string temp2;
-	std::string temp3;
-
-	char curlinetext[512];
-	long pos = 0;
-	_CURIO = io;
-
-	while (((pos = GetNextWord(es, pos, temp)) >= 0) && (pos >= 0) && (pos < (long)es->size - 1))
-	{
-		MakeStandard(temp);
-		long currentline = GetCurrentLine(es, pos);
-
-		if (currentline == -1)
-		{
-			currentline = GetLastLineNum(es);
-		}
-
-		memset(curlinetext, 0, 512);
-		GetLineAsText(es, currentline, curlinetext);
-		tem[0] = 0;
-		long unknowncommand = 0;
-
-		switch (temp[0])
-		{
-			case '}':
-				brackets--;
-				break;
-			case 'O':
-
-				if (!temp.compare("OBJECTHIDE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("ON"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case '{':
-				brackets++;
-				break;
-			case '/':
-
-				if (temp[1] == '/') pos = GotoNextLine(es, pos);
-				else unknowncommand = 1;
-
-				break;
-			case '>':
-
-				if (temp[1] == '>') pos = GotoNextLine(es, pos);
-				else unknowncommand = 1;
-
-				break;
-			case 'B':
-
-				if (!temp.compare("BOOK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!temp.compare("BEHAVIOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!temp.compare("STACK"))
-					{
-					}
-					else if (!strcasecmp(temp, "UNSTACK"))
-					{
-					}
-					else if (!strcasecmp(temp, "UNSTACKALL"))
-					{
-					}
-					else
-					{
-						if (temp[0] == '-')
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-
-						if (!strcasecmp(temp, "FLEE"))
-							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp, "LOOK_FOR"))
-							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp, "HIDE"))
-							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp, "WANDER_AROUND"))
-							pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'A':
-
-				if (!temp.compare("ADDBAG"))
-				{
-				}
-
-				if (!temp.compare("ACTIVATEPHYSICS"))
-				{
-				}
-
-				if (!temp.compare("AMBIANCE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						if (iCharIn(temp, 'V'))
-						{
-							pos = GetNextWord(es, pos, temp);
-
-							pos = GetNextWord(es, pos, temp);
-						}
-						else if (iCharIn(temp, 'N'))
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-						else if (iCharIn(temp, 'M'))
-						{
-							pos = GetNextWord(es, pos, temp);
-
-							pos = GetNextWord(es, pos, temp);
-
-						}
-						else if (iCharIn(temp, 'U'))
-						{
-
-							pos = GetNextWord(es, pos, temp);
-
-							pos = GetNextWord(es, pos, temp);
-
-						}
-					}
-				}
-				else if (!temp.compare("ATTRACTOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-
-					if (strcasecmp(temp, "OFF"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!temp.compare("ACCEPT"))
-				{
-				}
-				else if (!temp.compare("ANCHORBLOCK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("ADDXP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("ADDGOLD"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("ATTACHNPCTOPLAYER"))
-				{
-				}
-				else if (!temp.compare("ATTACH"))
-				{
-					pos = GetNextWord(es, pos, temp); // Source IO
-					pos = GetNextWord(es, pos, temp); // source action_point
-					pos = GetNextWord(es, pos, temp); // target IO
-					pos = GetNextWord(es, pos, temp); // target action_point
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'G':
-
-				if (!temp.compare("GOTO"))
-				{
-					char texx[64];
-
-					if ((pos = GetNextWord(es, pos, temp)) == -1)
-					{
-						sprintf(tem, "Line %04ld - Error: 'GOTO': No Label specified\n-- %s", currentline, curlinetext);
-						errors++;
-					}
-					else
-					{
-						sprintf(texx, ">>%s", temp.c_str());
-						long ppos = FindLabelPos(es, texx);
-
-						if (ppos == -1)
-						{
-							sprintf(tem, "Line %04ld - Error: 'GOTO': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
-							errors++;
-						}
-					}
-				}
-				else if (!temp.compare("GOSUB"))
-				{
-					char texx[64];
-
-					if ((pos = GetNextWord(es, pos, temp)) == -1)
-					{
-						sprintf(tem, "Line %04ld - Error: 'GOSUB': No Label specified\n-- %s", currentline, curlinetext);
-						errors++;
-					}
-					else
-					{
-						sprintf(texx, ">>%s", temp.c_str());
-						pos = FindLabelPos(es, texx);
-
-						if (pos == -1)
-						{
-							sprintf(tem, "Line %04ld - Error: 'GOSUB': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
-							errors++;
-						}
-					}
-				}
-				else if (!temp.compare("GMODE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else
-					unknowncommand = 1;
-
-				break;
-			case 'R':
-
-				if (!temp.compare("REFUSE"))
-				{
-				}
-				else if (!temp.compare("REVIVE"))
-				{
-					long tmp = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = tmp;
-					}
-				}
-				else if (!temp.compare("RIDICULOUS"))
-				{
-				}
-				else if (!temp.compare("REPAIR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("RANDOM"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("RETURN"))
-					{		}
-				else if (!temp.compare("REPLACEME"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("ROTATE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("RUNE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-						pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'C':
-
-				if (!temp.compare("CINE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("COLLISION"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("CAMERACONTROL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("CONVERSATION"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					long nb_people = 0;
-
-					if (temp[0] == '-')
-					{
-						if (CharIn(temp, '0')) nb_people = 0;
-
-						if (CharIn(temp, '1')) nb_people = 1;
-
-						if (CharIn(temp, '2')) nb_people = 2;
-
-						if (CharIn(temp, '3')) nb_people = 3;
-
-						if (CharIn(temp, '4')) nb_people = 4;
-
-						if (CharIn(temp, '5')) nb_people = 5;
-
-						if (CharIn(temp, '6')) nb_people = 6;
-
-						if (CharIn(temp, '7')) nb_people = 7;
-
-						if (CharIn(temp, '8')) nb_people = 8;
-
-						if (CharIn(temp, '9')) nb_people = 9;
-
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					if (nb_people)
-					{
-						for (long j = 0; j < nb_people; j++)
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-					}
-				}
-				else if (!temp.compare("CAMERAACTIVATE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("CAMERASMOOTHING"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("CINEMASCOPE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!temp.compare("CAMERAFOCAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("CAMERATRANSLATETARGET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (temp.compare("CLOSE_STEAL_BAG"))   // temp != "CLOSE_STEAL_BAG"
-				{
-					unknowncommand = 1;
-				}
-
-				break;
-			case 'Q':
-
-				if (!temp.compare("QUAKE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("QUEST"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'N':
-
-				if (!temp.compare("NOP"))
-				{
-				}
-				else if (!temp.compare("NOTE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'S':
-
-				if (!temp.compare("SPELLCAST"))
-				{
-					pos = GetNextWord(es, pos, temp); // switch or level
-
-					if (temp[0] == '-')
-					{
-						if (iCharIn(temp1, 'K'))
-						{
-							pos = GetNextWord(es, pos, temp); //spell id
-							goto suite;
-						}
-
-						if (iCharIn(temp1, 'D'))
-							pos = GetNextWord(es, pos, temp); // duration
-
-						pos = GetNextWord(es, pos, temp); // level
-					}
-
-					pos = GetNextWord(es, pos, temp); //spell id
-					pos = GetNextWord(es, pos, temp); //spell target
-				suite:
-					;
-				}
-				else if (!temp.compare("SPEAK")) // speak say_ident actions
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!strcasecmp(temp, "KILLALL"))
-					{
-					}
-					else if (temp[0] == '-')
-					{
-						if ((temp2.find("C") != std::string::npos) || (temp2.find("c") != std::string::npos))
-						{
-							pos = GetNextWord(es, pos, temp2);
-
-							if (!strcasecmp(temp2, "ZOOM"))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-							else if ((!strcasecmp(temp2, "CCCTALKER_L"))
-									 || (!strcasecmp(temp2, "CCCTALKER_R")))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-							else if ((!strcasecmp(temp2, "CCCLISTENER_L"))
-									 || (!strcasecmp(temp2, "CCCLISTENER_R")))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-							else if ((!strcasecmp(temp2, "SIDE"))
-									 || (!strcasecmp(temp2, "SIDE_L"))
-									 || (!strcasecmp(temp2, "SIDE_R")))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-						}
-
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!temp.compare("SHOPCATEGORY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SHOPMULTIPLY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETPOISONOUS"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETPLATFORM"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETGORE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETUNIQUE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETBLACKSMITH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETDETECT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETELEVATOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETTRAP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSECRET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSTEAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETLIGHT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETBLOOD"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSPEAKPITCH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSPEED"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETGROUP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!temp.compare("SETNPCSTAT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETXPVALUE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETNAME"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETPLAYERTWEAK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!strcasecmp(temp, "SKIN"))
-						pos = GetNextWord(es, pos, temp);
-
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETCONTROLLEDZONE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if ((!temp.compare("SETSTATUS")) || (!temp.compare("SETMAINEVENT")))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETMOVEMODE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SPAWN"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!temp.compare("NPC")) || (!temp.compare("ITEM")) || (!temp.compare("FIX")))
-					{
-						pos = GetNextWord(es, pos, temp); // object to spawn.
-						pos = GetNextWord(es, pos, temp); // spawn position.
-					}
-				}
-				else if (!temp.compare("SETOBJECTTYPE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!temp.compare("SETRIGHTHAND"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETLEFTHAND"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETHUNGER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSHIELD"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETTWOHANDED"))
-				{
-				}
-				else if (!temp.compare("SETINTERACTIVITY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETEQUIP"))
-				{
-					std::string temp2;
-					std::string temp3;
-					pos = GetNextWord(es, pos, temp3);
-
-					if (temp3[0] == '-')
-					{
-						if (!strcasecmp(temp3, "-r")) { }
-						else
-						{
-							pos = GetNextWord(es, pos, temp);
-							pos = GetNextWord(es, pos, temp2);
-						}
-					}
-					else
-					{
-						pos = GetNextWord(es, pos, temp2);
-
-					}
-				}
-				else if (!temp.compare("SETONEHANDED"))
-				{
-				}
-				else if (!temp.compare("SETWEAPON"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-						pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETLIFE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETDURABILITY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-						pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETPATH"))
-				{
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETTARGET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					if (!temp.compare("PATH"))
-					{
-					}
-					else if (!temp.compare("PLAYER"))
-					{
-					}
-					else if (!temp.compare("NONE"))
-					{
-					}
-					else if (!temp.compare("NODE"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!temp.compare("OBJECT"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else
-					{
-						sprintf(tem, "Line %04ld - Error: 'SET_TARGET': param1 '%s' is an invalid parameter\n-- %s", currentline, temp.c_str(), curlinetext);
-						errors++;
-					}
-
-				}
-				else if (!temp.compare("STARTTIMER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("STOPTIMER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SENDEVENT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						if (iCharIn(temp, 'R'))
-							pos = GetNextWord(es, pos, temp);
-
-						if (iCharIn(temp, 'G'))
-							pos = GetNextWord(es, pos, temp);
-
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord_Interpreted(io, es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!temp.compare("SAY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSTEPMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETARMORMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETWEAPONMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSTRIKESPEECH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETANGULAR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETPLAYERCOLLISION"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETPLAYERCONTROLS"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETWORLDCOLLISION"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSHADOW"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETDETACHABLE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSTACKABLE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSHOP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETMAXCOUNT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETCOUNT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETWEIGHT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETEVENT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp2);
-					MakeUpcase(temp);
-					MakeUpcase(temp2);
-				}
-				else if (!temp.compare("SETPRICE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETINTERNALNAME"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					sprintf(tem, "Line %04ld - Warning: 'SET_INTERNAL_NAME': Obsolete Command.\n-- %s", currentline, curlinetext);
-					warnings++;
-				}
-				else if (!temp.compare("SHOWGLOBALS"))
-				{
-				}
-				else if (!temp.compare("SHOWLOCALS"))
-				{
-				}
-				else if (!temp.compare("SHOWVARS"))
-				{
-				}
-				else if (!temp.compare("SETIRCOLOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETSCALE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SPECIALFX"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!strcasecmp(temp, "PLAYER_APPEARS"))
-					{
-					}
-					else if (!temp.compare("HEAL"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!temp.compare("MANA"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!temp.compare("NEWSPELL"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!temp.compare("TORCH"))
-					{
-					}
-					else if (!temp.compare("FIERY"))
-					{
-					}
-					else if (!temp.compare("FIERYOFF"))
-					{
-					}
-					else
-					{
-						sprintf(tem, "Line %04ld - Error: 'SPECIAL_FX': param1 '%s' is an invalid parameter.\n-- %s", currentline, temp1.c_str(), curlinetext);
-						errors++;
-					}
-				}
-				else if (!temp.compare("SETBUMP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!temp.compare("ON")) || (!temp.compare("OFF")))
-					{
-					}
-					else pos = GetNextWord(es, pos, temp);
-				}
-				else if (!temp.compare("SETZMAP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!temp.compare("ON")) || (!temp.compare("OFF")))
-					{
-					}
-					else pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'Z':
-
-				if (!temp.compare("ZONEPARAM"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!strcasecmp(temp, "STACK"))
-					{
-					}
-					else if (!strcasecmp(temp, "UNSTACK"))
-					{
-					}
-					else
-					{
-						if (temp[0] == '-')
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-
-						if (!strcasecmp(temp, "RGB"))
-						{
-							pos = GetNextWord(es, pos, temp);
-							pos = GetNextWord(es, pos, temp);
-							pos = GetNextWord(es, pos, temp);
-						}
-						else if (!strcasecmp(temp, "ZCLIP"))
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-						else if (!strcasecmp(temp, "AMBIANCE"))
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'K':
-
-				if (!strcmp(temp, "KILLME"))
-				{
-				}
-				else if (!strcmp(temp, "KEYRINGADD"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'F':
-
-				if (!strcmp(temp, "FORCEANIM"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "FORCEANGLE"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-
-				else if (!strcmp(temp, "FORCEDEATH"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'P':
-
-				if (!strcmp(temp, "PLAYERLOOKAT"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYERSTACKSIZE"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PRECAST"))
-				{
-					pos = GetNextWord(es, pos, temp); // switch or level
-
-					if (temp[0] == '-')
-					{
-						if (iCharIn(temp, 'D'))
-						{
-							pos = GetNextWord(es, pos, temp2); // duration
-						}
-
-						pos = GetNextWord(es, pos, temp); // level
-					}
-
-					pos = GetNextWord(es, pos, temp); //spell id
-				}
-				else if (!strcmp(temp, "POISON"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYERMANADRAIN"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PATHFIND"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYANIM"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-
-					if (temp2[0] == '-')
-						pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYERINTERFACE"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-
-					if (temp2[0] == '-')
-						pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAY"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-
-					if (temp2[0] == '-') pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYSPEECH"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-
-				}
-				else if (!strcmp(temp, "POPUP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "PHYSICAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
-					{
-					}
-					else pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'L':
-
-				if (!strcmp(temp, "LOADANIM"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "LINKOBJTOME"))
-				{
-					pos = GetNextWord_Interpreted(io, es, pos, temp);
-					pos = GetNextWord(es, pos, temp1);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'I':
-
-				if (!strcmp(temp, "IF"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-					pos = GetNextWord(es, pos, temp3);
-
-
-					MakeUpcase(temp2);
-
-					if	(!strcmp(temp2, "==")) {}
-					else if (!strcmp(temp2, "!="))	{}
-					else if (!strcmp(temp2, "<="))	{}
-					else if (!strcmp(temp2, "<"))	{}
-					else if (!strcmp(temp2, ">="))	{}
-					else if (!strcmp(temp2, ">"))	{}
-					else if	(!strcasecmp(temp2, "isclass"))	{}
-					else if	(!strcasecmp(temp2, "isgroup"))	{}
-					else if	(!strcasecmp(temp2, "!isgroup"))	{}
-					else if	(!strcasecmp(temp2, "iselement"))	{}
-					else if	(!strcasecmp(temp2, "isin"))	{}
-					else if	(!strcasecmp(temp2, "istype"))	{}
-					else
-					{
-						sprintf(tem, "Line %04ld - Error: 'IF': Unknown Operator %s found.\n-- %s", currentline, temp2.c_str(), curlinetext);
-						errors++;
-					}
-				}
-				else if (!strcmp(temp, "INC"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "IFEXISTINTERNAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					sprintf(tem, "Line %04ld - Warning: 'IF_EXIST_INTERNAL': Obsolete Command.\n-- %s", currentline, curlinetext);
-					warnings++;
-				}
-				else if (!strcmp(temp, "IFVISIBLE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "INVERTEDOBJECT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "INVULNERABILITY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "INVENTORY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					MakeStandard(temp);
-
-					if (!strcmp(temp, "CREATE"))
-					{
-					}
-					else if (!strcmp(temp, "SKIN"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!strcmp(temp, "PLAYERADDFROMSCENE"))
-					{
-						pos = GetNextWord(es, pos, temp2);
-					}
-					else if (!strcmp(temp, "ADDFROMSCENE"))
-					{
-						pos = GetNextWord(es, pos, temp2);
-					}
-					else if ((!strcmp(temp, "PLAYERADD")) || (!strcmp(temp, "PLAYERADDMULTI")))
-					{
-						pos = GetNextWord(es, pos, temp2);
-
-						if (!strcmp(temp, "PLAYERADDMULTI"))
-						{
-							pos = GetNextWord(es, pos, temp2);
-						}
-					}
-					else if ((!strcmp(temp, "ADD")) || (!strcmp(temp, "ADDMULTI")))
-					{
-						pos = GetNextWord(es, pos, temp2);
-
-						if (!strcmp(temp, "ADDMULTI"))
-						{
-							pos = GetNextWord(es, pos, temp2);
-						}
-					}
-					else if (!strcmp(temp, "DESTROY"))
-					{
-					}
-					else if (!strcmp(temp, "OPEN"))
-					{
-					}
-					else if (!strcmp(temp, "CLOSE"))
-					{
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'H':
-
-				if (!strcmp(temp, "HEROSAY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'T':
-
-				if (!strcmp(temp, "TELEPORT"))
-				{
-
-					pos = GetNextWord(es, pos, temp);
-
-					if (0 != strcasecmp(temp, "behind"))
-					{
-						std::string temp2;
-
-						if (temp[0] == '-')
-						{
-							if (iCharIn(temp, 'A'))
-							{
-								pos = GetNextWord(es, pos, temp2);
-							}
-
-							if (iCharIn(temp, 'L'))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-
-							if (iCharIn(temp, 'P'))
-							{
-								pos = GetNextWord(es, pos, temp2);
-							}
-						}
-
-					}
-				}
-				else if (!strcmp(temp, "TARGETPLAYERPOS"))
-				{
-					sprintf(tem, "Line %04ld - Warning: 'TARGET_PLAYER_POS': Obsolete Command Please Use SET_TARGET PLAYER.\n-- %s", currentline, curlinetext);
-					warnings++;
-				}
-				else if (!strcmp(temp, "TWEAK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!strcmp(temp, "HEAD")) {}
-					else if (!strcmp(temp, "TORSO")) {}
-					else if (!strcmp(temp, "LEGS")) {}
-					else if (!strcmp(temp, "ALL")) {}
-					else if (!strcmp(temp, "UPPER")) {}
-					else if (!strcmp(temp, "LOWER")) {}
-					else if (!strcmp(temp, "UP_LO")) {}
-
-					if (!strcmp(temp, "REMOVE"))
-					{
-					}
-					else if (!strcmp(temp, "SKIN"))
-					{
-						pos = GetNextWord(es, pos, temp);
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!strcmp(temp, "ICON"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else
-					{
-						sprintf(tem, "Line %04ld - Error: 'TWEAK %s': Unknown parameter %s found.\n-- %s", currentline, temp.c_str(), temp.c_str(), curlinetext);
-						errors++;
-					}
-				}
-				else if ((temp[1] == 'I') && (temp[2] == 'M') && (temp[3] == 'E') && (temp[4] == 'R'))
-				{
-					// Timer -m nbtimes duration commands
-					pos = GetNextWord(es, pos, temp2);
-					MakeUpcase(temp2);
-
-					if (!strcmp(temp2, "KILL_LOCAL"))
-					{
-
-					}
-					else
-					{
-						if (!strcmp(temp2, "OFF"))
-						{
-						}
-						else
-						{
-							if (temp2[0] == '-')
-							{
-								pos = GetNextWord(es, pos, temp2);
-							}
-
-							pos = GetNextWord(es, pos, temp3);
-						}
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'V':
-
-				if (!strcmp(temp, "VIEWBLOCK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'W':
-
-				if (!strcmp(temp, "WORLDFADE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp1);
-
-					if (!strcasecmp(temp, "OUT"))
-					{
-						pos = GetNextWord(es, pos, temp1);
-						pos = GetNextWord(es, pos, temp2);
-						pos = GetNextWord(es, pos, temp3);
-					}
-				}
-				else if (!strcmp(temp, "WEAPON"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'U':
-
-				if (!strcmp(temp, "UNSET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "USEMESH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "USEPATH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "UNSETCONTROLLEDZONE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-
-			case 'E':
-
-				if (!strcmp(temp, "ELSE"))
-				{
-				}
-				else if (!strcmp(temp, "ENDINTRO"))
-				{
-				}
-				else if (!strcmp(temp, "ENDGAME"))
-				{
-				}
-				else if (!strcmp(temp, "EATME"))
-				{
-				}
-				else if (!strcmp(temp, "EQUIP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'M':
-
-				if (!strcmp(temp, "MUL"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "MAPMARKER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!strcasecmp(temp, "remove")) || (!strcasecmp(temp, "-r")))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else
-					{
-						pos = GetNextWord(es, pos, temp);
-						pos = GetNextWord(es, pos, temp);
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "MOVE"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-					pos = GetNextWord(es, pos, temp3);
-				}
-				else if (!strcmp(temp, "MAGIC"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case '-':
-			case '+':
-
-				if ((!strcmp(temp, "++")) ||
-						(!strcmp(temp, "--")))
-				{
-					pos = GetNextWord(es, pos, temp1);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'D':
-
-				if (
-					(!strcmp(temp, "DEC")) ||
-					(!strcmp(temp, "DIV")))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "DESTROY"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-				}
-				else if (!strcmp(temp, "DETACHNPCFROMPLAYER"))
-				{
-				}
-				else if (!strcmp(temp, "DODAMAGE"))
-				{
-					pos = GetNextWord(es, pos, temp); // Source IO
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "DAMAGER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "DETACH"))
-				{
-					pos = GetNextWord(es, pos, temp); // Source IO
-					pos = GetNextWord(es, pos, temp); // target IO
-				}
-				else if (!strcmp(temp, "DRAWSYMBOL"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else unknowncommand = 1;
-
-				break;
-			default:
-				unknowncommand = 1;
-
-		}
-
-		if (unknowncommand)
-		{
-			sprintf(tem, "Line %04ld - Error: Unknown Command '%s'\n-- %s", currentline, temp.c_str(), curlinetext);
-			errors++;
-		}
-
-		if (strlen(tem) + strlen(errstring) < 65480) strcat(errstring, tem);
-		else stoppingdebug = 1;
-	}
-
-	if (stoppingdebug) strcat(errstring, "\nToo Many Errors. Stopping Syntax Check...");
-
-
-	if (errstring[0] == 0) returnvalue = 1;
-	else returnvalue = 0;
-
-	if ((errors > 0) || ((warnings > 0)))
-	{
-		std::string title;
-
-		if (es == &io->over_script)
-			title = io->long_name() + " LOCAL SCRIPT.";
-		else
-			title = io->long_name() + " CLASS SCRIPT.";
-
-		LogError << title << " : "  << errstring;
-	}
-	else LastErrorPopup = NULL;
-
-	LogDebug << "Tem" << tem;
-	return returnvalue;
-}
-#endif // BUILD_EDITOR
-
-#ifdef BUILD_EDITOR
-HWND LastErrorPopupNO1 = NULL;
-HWND LastErrorPopupNO2 = NULL;
-bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
-{
-	if (SYNTAXCHECKING == 0) return true;
-
-	long s1 = LaunchScriptCheck(&io->script, io);
-	LastErrorPopupNO1 = LastErrorPopup;
-	long s2 = LaunchScriptCheck(&io->over_script, io);
-	LastErrorPopupNO2 = LastErrorPopup;
-
-	if (s1 + s2 < 2) return false;
-
-	return true; // no errors.
-}
-#endif
 
 void ARX_SCRIPT_Init_Event_Stats() {
 	
@@ -4961,8 +2722,7 @@ void ARX_SCRIPT_Init_Event_Stats() {
 		}
 	}
 }
-//*********************************************************************************************
-//*********************************************************************************************
+
 bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string& group)
 {
 	for (long i = 0; i < io->nb_iogroups; i++)
@@ -4982,6 +2742,7 @@ void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io)
 	io->iogroups = NULL;
 	io->nb_iogroups = 0;
 }
+
 void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group)
 {
 	if ( group.empty() ) return;
@@ -5029,8 +2790,7 @@ void ARX_IOGROUP_Add( INTERACTIVE_OBJ * io, const std::string& group )
 	strcpy(io->iogroups[io->nb_iogroups].name, group.c_str());
 	io->nb_iogroups++;
 }
-//*********************************************************************************************
-//*********************************************************************************************
+
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events()
 {
 	long max = -1;
@@ -5052,6 +2812,7 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events()
 
 	return NULL;
 }
+
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 {
 	long max = -1;
@@ -5211,11 +2972,13 @@ bool InSubStack(EERIE_SCRIPT * es, long pos)
 
 	return false;
 }
+
 void ClearSubStack(EERIE_SCRIPT * es)
 {
 	for (size_t i = 0; i < MAX_GOSUB; i++)
 		es->sub[i] = -1;
 }
+
 long GetSubStack(EERIE_SCRIPT * es)
 {
 	long ret;
@@ -5257,155 +3020,4 @@ void InitScript(EERIE_SCRIPT * es) {
 
 
 	ARX_SCRIPT_ComputeShortcuts(*es);
-}
-
-#ifdef BUILD_EDITOR
-LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
-	
-	(void)lParam;
-	
-	HWND thWnd;
-
-	switch (message)
-	{
-		case WM_CLOSE:
-			EndDialog(hDlg, LOWORD(wParam));
-			break;
-		case WM_INITDIALOG:
-			SendMessage(hDlg, WM_SIZE, 0, 0);
-			SetWindowText(hDlg, ShowTextWindowtext.c_str());
-			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT);
-			SendMessage(thWnd, WM_SETFONT, (WPARAM) GetStockObject(ANSI_FIXED_FONT), true);
-			SetWindowText(thWnd, ShowText.c_str());
-
-			return true;
-		case WM_SIZE:
-			break;
-		case WM_COMMAND:
-
-			switch (LOWORD(wParam))
-			{
-				case IDOK:
-					EndDialog(hDlg, LOWORD(wParam));
-					break;
-			}
-
-			break;
-	}
-
-	return false;
-}
-
-LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
-	
-	(void)lParam;
-	
-	HWND thWnd;
-
-	switch (message)
-	{
-		case WM_CLOSE:
-			EndDialog(hDlg, LOWORD(wParam));
-			break;
-		case WM_INITDIALOG:
-			SendMessage(hDlg, WM_SIZE, 0, 0);
-			SetWindowText(hDlg, ShowTextWindowtext.c_str());
-			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT);
-			SetWindowText(thWnd, ShowText.c_str());
-			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT2);
-			SetWindowText(thWnd, ShowText2.c_str());
-			return true;
-		case WM_COMMAND:
-
-			switch (LOWORD(wParam))
-			{
-				case IDOK:
-					EndDialog(hDlg, LOWORD(wParam));
-					break;
-			}
-
-			break;
-	}
-
-	return false;
-}
-#endif // BUILD_EDITOR
-
-void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std::string& content)
-{
-	EERIE_SCRIPT * esss = NULL;
-	SCRIPT_VAR * sv = NULL;
-
-	if (io) esss = &io->script;
-
-	long ival;
-	float fval;
-
-	switch (name[0])
-	{
-		case '$': // GLOBAL TEXT
-
-			if (io) return;
-
-			sv = SETVarValueText(svar, NB_GLOBALS, name, content);
-
-			if (sv != NULL)
-				sv->type = TYPE_G_TEXT;
-
-			break;
-		case '\xA3': // LOCAL TEXT
-
-			if (io == NULL) return;
-
-			sv = SETVarValueText(esss->lvar, esss->nblvar, name, content);
-
-			if (sv != NULL)
-				sv->type = TYPE_L_TEXT;
-
-			break;
-		case '#': // GLOBAL LONG
-
-			if (io) return;
-
-			ival = atoi(content);
-			sv = SETVarValueLong(svar, NB_GLOBALS, name, ival);
-
-			if (sv != NULL)
-				sv->type = TYPE_G_LONG;
-
-			break;
-		case '\xA7': // LOCAL LONG
-
-			if (io == NULL) return;
-
-			ival = atoi(content);
-			sv = SETVarValueLong(esss->lvar, esss->nblvar, name, ival);
-
-			if (sv != NULL)
-				sv->type = TYPE_L_LONG;
-
-			break;
-		case '&': // GLOBAL float
-
-			if (io) return;
-
-			fval = (float)atof(content.c_str());
-			sv = SETVarValueFloat(svar, NB_GLOBALS, name, fval);
-
-			if (sv != NULL)
-				sv->type = TYPE_G_FLOAT;
-
-			break;
-		case '@': // LOCAL float
-
-			if (io == NULL) return;
-
-			fval = (float)atof(content.c_str());
-			sv = SETVarValueFloat(esss->lvar, esss->nblvar, name, fval);
-
-			if (sv != NULL)
-				sv->type = TYPE_L_FLOAT;
-
-			break;
-	}
 }
