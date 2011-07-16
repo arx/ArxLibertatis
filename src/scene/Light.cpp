@@ -585,7 +585,7 @@ void TreatBackgroundDynlights()
 							GetItemWorldPosition(inter.iobj[l], &_pos2);
 
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "DOUSE");
+								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "douse");
 							}
 						}
 					}
@@ -606,7 +606,7 @@ void TreatBackgroundDynlights()
 							GetItemWorldPosition(inter.iobj[l], &_pos2);
 
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "FIRE");
+								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "fire");
 							}
 						}
 					}
