@@ -1167,7 +1167,7 @@ void timerCommand(const string & timer, Context & context) {
 	size_t pos = context.skipCommand();
 	
 	long num = ARX_SCRIPT_Timer_GetFree();
-	if(num != -1) {
+	if(num == -1) {
 		ScriptError << "no free timer available";
 		return;
 	}
