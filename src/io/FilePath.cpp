@@ -158,7 +158,7 @@ void File_Standardize(const string & from, string & to) {
 			}
 			
 		} else {
-			temp.push_back((char)toupper(c));
+			temp.push_back(c);
 			in++;
 		}
 	}

@@ -854,10 +854,6 @@ bool Menu2_Render() {
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 					{
-						//QUICK LOAD
-						std::string szMenuText = QUICK_SAVE_ID;
-						std::string szMenuText1 = QUICK_SAVE_ID1;
-
 						//LOAD
 						int iFirst=2;
 						bool b1 = false;
@@ -870,23 +866,19 @@ bool Menu2_Render() {
 
 								CMenuElementText *me02;
 
-								std::string tex2;
-								tex2.resize(tex.size());
-								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
-
-								if( !szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
+								if(tex == QUICK_SAVE_ID || tex == QUICK_SAVE_ID1)
 								{
 									if(!iFirst || (b1 && b2)) continue;
 
 									tex = getLocalised("system_menus_main_quickloadsave", "Quick");
 
-									if ( szMenuText.find( tex2) != std::string::npos )
+									if (tex == QUICK_SAVE_ID)
 									{
 										if (b1) continue;
 
 										b1 = true;
 									}
-									else if ( szMenuText1.find( tex2 ) != std::string::npos )
+									else if (tex == QUICK_SAVE_ID1)
 									{
 										if (b2) continue;
 
