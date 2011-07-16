@@ -8,46 +8,13 @@
 #include "script/ScriptEvent.h"
 
 #include <cstdio>
-#include <cassert>
-
-#include "ai/Paths.h"
 
 #include "core/GameTime.h"
-#include "core/Resource.h"
 #include "core/Core.h"
 
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "game/Missile.h"
-#include "game/NPC.h"
-#include "game/Player.h"
-#include "game/Inventory.h"
-
-#include "gui/Speech.h"
-#include "gui/MiniMap.h"
-#include "gui/Text.h"
-#include "gui/Menu.h"
-
-#include "graphics/GraphicsModes.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/Math.h"
-#include "graphics/data/MeshManipulation.h"
-
 #include "io/Logger.h"
-#include "io/FilePath.h"
-#include "io/PakReader.h"
-
-#include "physics/Attractors.h"
-#include "physics/CollisionShapes.h"
-#include "physics/Collisions.h"
 
 #include "platform/String.h"
-
-#include "scene/Scene.h"
-#include "scene/GameSound.h"
-#include "scene/Interactive.h"
-#include "scene/Object.h"
-#include "scene/Light.h"
 
 #include "script/ScriptUtils.h"
 #include "script/ScriptedCamera.h"
@@ -65,14 +32,9 @@ using std::string;
 
 extern float g_TimeStartCinemascope;
 
-#ifdef NEEDING_DEBUG
-long NEED_DEBUG = 0;
-#endif // NEEDING_DEBUG
-
 long ScriptEvent::totalCount = 0;
 
-SCRIPT_EVENT AS_EVENT[] =
-{
+SCRIPT_EVENT AS_EVENT[] = {
 	std::string("ON NULL"),
 	std::string("ON INIT"),
 	std::string("ON INVENTORYIN"),
@@ -163,7 +125,7 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 			std::string dest;
 			GetNextWord(&es, es.shortcut[j], dest);
 
-			if (!strcasecmp(dest, "{")) {
+			if (!strcmp(dest, "{")) {
 				GetNextWord(&es, es.shortcut[j], dest);
 
 				if (!strcasecmp(dest, "ACCEPT")) {
@@ -173,13 +135,6 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 		}
 
 	}
-}
-
-void ShowScriptError(const char * tx, const char * cmd)
-{
-	char text[512];
-	sprintf(text, "SCRIPT ERROR\n%s\n\n%s", tx, cmd);
-	LogError << (text);
 }
 
 ScriptEvent::ScriptEvent() {
@@ -231,7 +186,6 @@ static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, Scri
 }
 
 extern long LINEEND; // set by GetNextWord
-extern INTERACTIVE_OBJ * LASTSPAWNED;
 extern long PauseScript;
 
 namespace script {
@@ -351,7 +305,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				pos = es->shortcut[msg];
 			} else {
 				
-				assert(msg != SM_EXECUTELINE && evname.empty());
+				arx_assert(msg != SM_EXECUTELINE && evname.empty());
 				
 				if(msg >= SM_MAXCMD) {
 					LogDebug << "unknown message " << msg;
