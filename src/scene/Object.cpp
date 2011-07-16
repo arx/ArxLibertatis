@@ -154,11 +154,11 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	
 	if(!eerie) return;
 
-	long lVRight		=	GetActionPointIdx(eerie, "V_RIGHT");
-	long lURight		=	GetActionPointIdx(eerie, "U_RIGHT");
-	long lViewAttach	=	GetActionPointIdx(eerie, "View_attach") ;
-	long lPrimAttach	=	GetActionPointIdx(eerie, "PRIMARY_ATTACH");
-	long lLeftAttach	=	GetActionPointIdx(eerie, "LEFT_ATTACH");
+	long lVRight		=	GetActionPointIdx(eerie, "v_right");
+	long lURight		=	GetActionPointIdx(eerie, "u_right");
+	long lViewAttach	=	GetActionPointIdx(eerie, "view_attach") ;
+	long lPrimAttach	=	GetActionPointIdx(eerie, "primary_attach");
+	long lLeftAttach	=	GetActionPointIdx(eerie, "left_attach");
 
 	ARX_CHECK_SHORT(lVRight);
 	ARX_CHECK_SHORT(lURight);
@@ -173,8 +173,8 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	eerie->fastaccess.left_attach	=	ARX_CLEAN_WARN_CAST_SHORT(lLeftAttach);
 
 
-	long lWeapAttach				=	GetActionPointIdx(eerie, "WEAPON_ATTACH");
-	long lSecAttach					=	GetActionPointIdx(eerie, "SECONDARY_ATTACH");
+	long lWeapAttach				=	GetActionPointIdx(eerie, "weapon_attach");
+	long lSecAttach					=	GetActionPointIdx(eerie, "secondary_attach");
 	long lJaw						=	EERIE_OBJECT_GetGroup(eerie, "jaw");
 	long lMouthAll					=	EERIE_OBJECT_GetGroup(eerie, "mouth all");
 
@@ -212,8 +212,8 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	}
 
 
-	long lFire = GetActionPointIdx(eerie, "FIRE");
-	long lCarryAttach = GetActionPointIdx(eerie, "CARRY_ATTACH");
+	long lFire = GetActionPointIdx(eerie, "fire");
+	long lCarryAttach = GetActionPointIdx(eerie, "carry_attach");
 	long lHead = EERIE_OBJECT_GetSelection(eerie, "head");
 	long lChest = EERIE_OBJECT_GetSelection(eerie, "chest");
 	long lLeggings = EERIE_OBJECT_GetSelection(eerie, "leggings") ;
@@ -532,7 +532,7 @@ void MakeUserFlag(TextureContainer * tc) {
 		return;
 	}
 	
-	if(NC_IsIn(tc->m_texName, "NPC_")) {
+	if(NC_IsIn(tc->m_texName, "npc_")) {
 		tc->userflags |= POLY_LATE_MIP;
 	}
 	
@@ -945,7 +945,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & 
 	
 	seerie->nbtex = psth->nb_maps;
 	
-	const string temp = "Graph\\Obj3D\\Textures\\";
+	const string temp = "graph\\obj3d\\textures\\";
 	
 	if(psth->type_write == 0) {
 		
@@ -1845,7 +1845,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const string & tex
 	}
 
 	// Apply Normals Spherical correction for NPC head
-	long neck_orgn = GetGroupOriginByName(eerie, "NECK");
+	long neck_orgn = GetGroupOriginByName(eerie, "neck");
 	long head_idx = EERIE_OBJECT_GetGroup(eerie, "head");
 
 	if ((head_idx >= 0) && (neck_orgn >= 0))
