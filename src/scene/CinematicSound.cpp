@@ -202,10 +202,8 @@ int AddSoundToList(const std::string & path) {
 		return -1;
 	}
 	
-	string uppath = path;
-	MakeUpcase(uppath);
-	LogDebug << "adding cinematic sound " << uppath;
-	cs->sound = strdup(uppath.c_str());
+	LogDebug << "adding cinematic sound " << path;
+	cs->sound = strdup(path.c_str());
 	
 	cs->load = 1;
 	

@@ -924,18 +924,17 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	
 	if(ais.ioflags & IO_ITEM) {
 		
-		string file = ais.filename;
-		MakeUpcase(file);
+		string file = toLowercase(ais.filename);
 		
 		s32 flags = ais.ioflags;
 		
-		if(!specialstrcmp(GetName(file), "GOLD_COIN")) {
+		if(!specialstrcmp(GetName(file), "gold_coin")) {
 			RemoveName(file);
-			file += "GOLD_COIN.asl";
+			file += "gold_coin.asl";
 			flags = ais.ioflags | IO_GOLD;
 		}
 		
-		if(IsIn(file, "MOVABLE")) {
+		if(IsIn(file, "movable")) {
 			flags = ais.ioflags | IO_MOVABLE;
 		}
 		

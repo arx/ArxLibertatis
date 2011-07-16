@@ -1679,9 +1679,8 @@ long GetIdent( const std::string& ident)
 	return -1;
 }
 
-void AddIdent( std::string& ident, long num)
+void AddIdent(std::string & ident, long num)
 {
-	MakeUpcase(ident);
 	long n = GetIdent(ident);
 
 	if (n != -1)

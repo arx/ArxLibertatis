@@ -193,9 +193,6 @@ void ARX_QuickSave()
 
 	CreateSaveGameList();
 
-	std::string szMenuText = QUICK_SAVE_ID;
-	std::string szMenuText1 = QUICK_SAVE_ID1;
-
 	int iOldGamma;
 
 	ARXMenu_Options_Video_GetGamma( iOldGamma );
@@ -216,16 +213,13 @@ void ARX_QuickSave()
 
 	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
 	{
-		std::string tex2 = save_l[iI].name;
-		MakeUpcase( tex2 );
-
-		if( szMenuText.find( tex2 ) != std::string::npos )
+		if(save_l[iI].name == QUICK_SAVE_ID)
 		{
 			bFound0     = true;
 			sTime0      = save_l[iI].stime;
 			iNbSave0    = iI;
 		}
-		else if( szMenuText1.find( tex2 ) != std::string::npos )
+		else if(save_l[iI].name ==  QUICK_SAVE_ID1)
 		{
 			bFound1     = true;
 			sTime1      = save_l[iI].stime;
@@ -315,9 +309,6 @@ bool ARX_QuickLoad()
 {
 	CreateSaveGameList();
 
-	std::string szMenuText = QUICK_SAVE_ID;
-	std::string szMenuText1 = QUICK_SAVE_ID1;
-
 	bool bFound0 = false;
 	bool bFound1 = false;
 
@@ -330,16 +321,13 @@ bool ARX_QuickLoad()
 
 	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
 	{
-		std::string tex2 = save_l[iI].name;
-		MakeUpcase( tex2 );
-
-		if( szMenuText.find( tex2 ) != std::string::npos )
+		if(save_l[iI].name == QUICK_SAVE_ID)
 		{
 			bFound0     = true;
 			sTime0      = save_l[iI].stime;
 			iNbSave0    = iI;
 		}
-		else if( szMenuText1.find( tex2 ) != std::string::npos )
+		else if(save_l[iI].name == QUICK_SAVE_ID1)
 		{
 			bFound1     = true;
 			sTime1      = save_l[iI].stime;

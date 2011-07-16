@@ -220,7 +220,6 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 TextureContainer::TextureContainer(const std::string& strName, TCFlags flags) {
 	
 	m_texName = strName;
-	MakeUpcase( m_texName );
 
 	m_dwWidth		= 0;
 	m_dwHeight		= 0;
@@ -303,7 +302,6 @@ bool TextureContainer::LoadFile(const std::string& strPathname)
 	bool bLoaded = false;
 
 	m_texName = strPathname;
-	MakeUpcase( m_texName );
 	
 	std::string tempPath = m_texName;
 	bool foundPath = resources->getFile(SetExt(tempPath, ".png"));
@@ -396,12 +394,9 @@ TextureContainer * TextureContainer::Find(const std::string& strTextureName) {
 	
 	TextureContainer * ptcTexture = g_ptcTextureList;
 	
-	std::string strTexNameUpper = strTextureName;
-	MakeUpcase(strTexNameUpper);
-	
 	while(ptcTexture) {
 		
-		if(strTexNameUpper.find(ptcTexture->m_texName) != std::string::npos) {
+		if(strTextureName.find(ptcTexture->m_texName) != std::string::npos) {
 			return ptcTexture;
 		}
 		
@@ -514,10 +509,7 @@ void TextureContainer::LookForRefinementMap(TCFlags flags) {
 		loadedRefinements = true;
 	}
 	
-	std::string name = GetName(m_texName);
-	MakeUpcase(name);
-	
-	RefinementMap::const_iterator it = s_Refine.find(name);
+	RefinementMap::const_iterator it = s_Refine.find(m_texName);
 	if(it != s_Refine.end()) {
 		if(!it->second.empty()) {
 			string file = "graph\\obj3d\\textures\\refinement\\" + it->second + ".bmp";
@@ -526,7 +518,7 @@ void TextureContainer::LookForRefinementMap(TCFlags flags) {
 		return;
 	}
 	
-	it = s_GlobalRefine.find(name);
+	it = s_GlobalRefine.find(m_texName);
 	if(it != s_GlobalRefine.end() && !it->second.empty()) {
 		string file = "graph\\obj3d\\textures\\refinement\\" + it->second + ".bmp";
 		TextureRefinement = Load(file, flags);

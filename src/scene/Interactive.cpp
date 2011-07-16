@@ -257,7 +257,6 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
 	if (op)
 	{
 		std::string temp = op->name;
-		MakeUpcase(temp);
 
 		if (flags & 1) // no need when being destroyed !
 			SendIOScriptEvent(io, SM_LEAVEZONE, temp);

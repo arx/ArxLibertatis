@@ -156,9 +156,7 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	
 	// Identification
 	char check[512];
-	string filename = file;
-	MakeUpcase(filename);
-	HERMES_CreateFileCheck(filename.c_str(), check, 512, CURRENT_FTL_VERSION);
+	HERMES_CreateFileCheck(file.c_str(), check, 512, CURRENT_FTL_VERSION);
 	memcpy(dat + pos, check, 512);
 	pos += 512;
 	

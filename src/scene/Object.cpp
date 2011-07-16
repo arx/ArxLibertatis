@@ -872,7 +872,6 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 		eerie->actionlist[i].sfx = ptap->num_sfx;
 		eerie->actionlist[i].idx = ptap->vert_index;
 		eerie->actionlist[i].name = toLowercase(safestring(ptap->name));
-		MakeUpcase(eerie->actionlist[i].name);
 	}
 	
 	eerie->angle.g = eerie->angle.b = eerie->angle.a = 0.f;

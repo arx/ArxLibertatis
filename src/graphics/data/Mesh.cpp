@@ -2528,11 +2528,8 @@ float GetTileMaxY(long i, long j)
 
 #define TYPE_PORTAL	1
 #define TYPE_ROOM	2
-bool GetNameInfo( const std::string& name1, long& type, long& val1, long& val2)
+bool GetNameInfo(const string & name, long& type, long& val1, long& val2)
 {
-	std::string name;
-	name = name1;
-	MakeUpcase(name);
 
 	if (name[0] == 'R')
 	{

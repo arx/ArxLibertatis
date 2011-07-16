@@ -58,12 +58,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 
 #include <cstdio>
+#include <algorithm>
 
 #include <windows.h>
 
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "platform/Platform.h"
+
+using std::string;
  
 bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const float id)
 {
@@ -79,6 +82,9 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 	if (!(file = FileOpenRead(name))) return true;
 
 	FileSeek(file, 0, SEEK_END);
+	
+	string upcase = name;
+	std::transform(upcase.begin(), upcase.end(), upcase.begin(), ::toupper);
 
 	memset(scheck, 0, size);
 	((float *)scheck)[0] = id;
@@ -86,7 +92,7 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 	memcpy(&((long *)scheck)[2], &attrib.ftCreationTime, sizeof(FILETIME));
 	memcpy(&((long *)scheck)[4], &attrib.ftLastWriteTime, sizeof(FILETIME));
 	((long *)scheck)[6] = FileTell(file);
-	memcpy(&scheck[i], name, strlen(name) + 1);
+	memcpy(&scheck[i], upcase.c_str(), upcase.length() + 1);
 	i += strlen(name) + 1;
 	memset(&scheck[i], 0, i % 4);
 	i += i % 4;

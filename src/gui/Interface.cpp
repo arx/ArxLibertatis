@@ -1128,7 +1128,6 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 	}
 
 	std::string tcIndent = COMBINE->long_name();
-	MakeUpcase(tcIndent);
 
 		char tTxtCombineDest[256];
 
@@ -2335,7 +2334,6 @@ bool DANAE::ManageEditorControls()
 				if (io!=COMBINE)
 				{
 					std::string temp = COMBINE->long_name();
-					MakeUpcase(temp);
 					EVENT_SENDER=COMBINE;
 
 					if (!specialstrcmp( COMBINE->short_name(),"keyring"))

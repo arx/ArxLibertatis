@@ -5,12 +5,6 @@
 #include <string>
 #include <cstring>
 
-/**
- * Converts a given string into uppercase characters
- * @param A reference to the string being converted
- */
-void MakeUpcase(std::string & str);
-
 void makeLowercase(std::string & str);
 std::string toLowercase(const std::string & str);
 
