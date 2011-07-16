@@ -449,7 +449,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 
 	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
-		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.find("GORE") != std::string::npos ) )
+		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.find("gore") != std::string::npos ) )
 		{
 			gorenum = nn;
 			break;
@@ -484,7 +484,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 
 	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
-		if (io->obj->texturecontainer[nn] && strstr(io->obj->texturecontainer[nn]->m_texName.c_str(), "GORE"))
+		if (io->obj->texturecontainer[nn] && strstr(io->obj->texturecontainer[nn]->m_texName.c_str(), "gore"))
 		{
 			gorenum = nn;
 			break;
@@ -1093,14 +1093,14 @@ void MakeNodeName(long i)
 	char name[64];
 	long o;
 	//float f;
-	sprintf(name, "NODE_%08ld", i);
+	sprintf(name, "node_%08ld", i);
 
 	while (ExistNodeName(name))
 	{
 		//f=rnd()*99999999.f;
 		//o=(long)f;
 		o = rnd() * 99999999.f;
-		sprintf(name, "NODE_%08ld", o);
+		sprintf(name, "node_%08ld", o);
 	}
 
 	strcpy(nodes.nodes[i].name, name);
@@ -1114,7 +1114,7 @@ void InitNodes(long nb)
 
 	nodes.init = 1;
 	nodes.nbmax = nb;
-	nodes.nodes = (ARX_NODE *)malloc(sizeof(ARX_NODE) * nodes.nbmax); //"NODES Structure"
+	nodes.nodes = (ARX_NODE *)malloc(sizeof(ARX_NODE) * nodes.nbmax);
 	memset(nodes.nodes, 0, sizeof(ARX_NODE)*nodes.nbmax);
 	ClearNodes();
 }
@@ -1158,7 +1158,7 @@ void InitInter(long nb)
 	}
 
 	inter.init = 1;
-	inter.iobj = (INTERACTIVE_OBJ **)malloc(sizeof(INTERACTIVE_OBJ *) * inter.nbmax); //,"Interactive Objects Structure");
+	inter.iobj = (INTERACTIVE_OBJ **)malloc(sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
 	memset(inter.iobj, 0, sizeof(INTERACTIVE_OBJ *)*inter.nbmax);
 }
 
@@ -1660,7 +1660,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
 
 	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
 	if (tc == NULL)
-		tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp");
+		tc = TextureContainer::LoadUI("graph\\interface\\misc\\default[icon].bmp");
 
 	if (tc != NULL)
 	{
@@ -2161,7 +2161,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	IO_UnlinkAllLinkedObjects(io);
 
 
-	// Releases "ToBeDrawn" Transparent Polys linked to this object !
+	// Releases ToBeDrawn Transparent Polys linked to this object !
 	ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 
@@ -2309,17 +2309,16 @@ INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFla
 	INTERACTIVE_OBJ * io = NULL;
 	std::string ficc;
 	ficc = file;
-	MakeUpcase(ficc);
 
-	if (IsIn(ficc, "ITEMS"))
+	if (IsIn(ficc, "items"))
 		io = AddItem(file, flags);
-	else if (IsIn(ficc, "NPC"))
+	else if (IsIn(ficc, "npc"))
 		io = AddNPC(file, flags);
-	else if (IsIn(ficc, "FIX"))
+	else if (IsIn(ficc, "fix"))
 		io = AddFix(file, flags);
-	else if (IsIn(ficc, "CAMERA"))
+	else if (IsIn(ficc, "camera"))
 		io = AddCamera(file);
-	else if (IsIn(ficc, "MARKER"))
+	else if (IsIn(ficc, "marker"))
 		io = AddMarker(file);
 
 	if (io)
@@ -2351,7 +2350,7 @@ void SetWeapon_On(INTERACTIVE_OBJ * io) {
 	
 	if(ioo && ioo->obj) {
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
-		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "PRIMARY_ATTACH", "PRIMARY_ATTACH", ioo);
+		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "primary_attach", "primary_attach", ioo);
 	}
 }
 
@@ -2372,13 +2371,13 @@ void SetWeapon_Back(INTERACTIVE_OBJ * io) {
 		long ni = io->obj->fastaccess.weapon_attach;
 
 		if (ni >= 0)
-			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "WEAPON_ATTACH", "PRIMARY_ATTACH", ioo);
+			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "weapon_attach", "primary_attach", ioo);
 		else
 		{
 			ni = io->obj->fastaccess.secondary_attach;
 
 			if (ni >= 0)
-				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "SECONDARY_ATTACH", "PRIMARY_ATTACH", ioo);
+				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "secondary_attach", "primary_attach", ioo);
 		}
 	}
 }
@@ -2397,7 +2396,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	}
 
 	std::string tex;
-	const std::string tex1 = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\";
+	const std::string tex1 = "graph\\obj3d\\interactive\\items\\weapons\\";
 	std::string tx = tex1 + '\\' + temp + '\\' + temp + ".teo";
 	File_Standardize(tx, tex);
 	
@@ -2442,9 +2441,9 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	SetExt(texscript, "asl");
 	SetExt(tex1, "teo");
 
-	std::string file2 = "GAME\\";
+	std::string file2 = "game\\";
 	file2 += file;
-	SetExt(file2, ".FTL");
+	SetExt(file2, ".ftl");
 
 	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
@@ -2458,7 +2457,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		return NULL;
 
 
-	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA)); //"IO FIXdata"
+	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA));
 	memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
@@ -2513,7 +2512,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	io->infracolor.g = 0.f;
 	io->infracolor.b = 1.f;
 	TextureContainer * tc;
-	tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp"); 
+	tc = TextureContainer::LoadUI("graph\\interface\\misc\\default[icon].bmp"); 
 
 	if (tc)
 	{
@@ -2548,9 +2547,9 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 	SetExt(texscript, "asl");
 	SetExt(tex1, "teo");
 
-	std::string file2 = "GAME\\";
+	std::string file2 = "game\\";
     file2 += file;
-	SetExt(file2, ".FTL");
+	SetExt(file2, ".ftl");
 
 	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
@@ -2610,9 +2609,9 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
 	SetExt(tex1, "teo");
 
 	std::string file2;
-	file2 = "GAME\\";
+	file2 = "game\\";
     file2 += file;
-	SetExt(file2, ".FTL");
+	SetExt(file2, ".ftl");
 
 	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
@@ -2776,7 +2775,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 
 	if (inter.iobj[i] != NULL)
 	{
-		//Must "KILL" dir...
+		//Must KILL dir...
 		if (inter.iobj[i]->scriptload == 0)
 		{
 			if (inter.iobj[i]->ident > 0)
@@ -2867,9 +2866,9 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
     SetExt(tex1, "teo");
 
     std::string file2;
-    file2 = "GAME\\";
+    file2 = "game\\";
     file2 += file;
-    SetExt(file2, ".FTL");
+    SetExt(file2, ".ftl");
 
 	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
@@ -2885,7 +2884,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	io->forcedmove.x = 0.f;
 	io->forcedmove.y = 0.f;
 	io->forcedmove.z = 0.f;
-	io->_npcdata = (IO_NPCDATA *)malloc(sizeof(IO_NPCDATA)); //"NPC DATA"
+	io->_npcdata = (IO_NPCDATA *)malloc(sizeof(IO_NPCDATA));
 	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
 	io->ioflags = IO_NPC;
 
@@ -3048,7 +3047,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 
 //*************************************************************************************
 // Tells if an ident corresponds to a temporary IO
-// NEED TO OPEN "if (LAST_CHINSTANCE!=-1) ARX_Changelevel_CurGame_Open();"
+// NEED TO OPEN if (LAST_CHINSTANCE!=-1) ARX_Changelevel_CurGame_Open();
 // And close after seek session
 //*************************************************************************************
 static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
@@ -3135,15 +3134,14 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	long type = IO_ITEM;
 
 	string file = fil;
-	MakeUpcase(file);
 	
-	if (!specialstrcmp(GetName(file), "GOLD_COIN")) {
+	if (!specialstrcmp(GetName(file), "gold_coin")) {
 		RemoveName(file);
-		file += "GOLD_COIN.asl";
+		file += "gold_coin.asl";
 		type = IO_ITEM | IO_GOLD;
 	}
 
-	if (IsIn(file, "MOVABLE"))
+	if (IsIn(file, "movable"))
 	{
 		type = IO_ITEM | IO_MOVABLE;
 	}
@@ -3158,12 +3156,12 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	SetExt(tex2, "bmp");
 	std::string temp;
 	temp = tex2;
-	AddToName( temp, "[Icon]");
+	AddToName( temp, "[icon]");
 	tex2 = temp;
 
 	std::string file2;
-	file2 = "GAME\\" + file;
-	SetExt(file2, ".FTL");
+	file2 = "game\\" + file;
+	SetExt(file2, ".ftl");
 
 	if(!resources->getFile(file2) && !resources->getFile(file)) {
 		return NULL;
@@ -3253,7 +3251,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 		tc = TextureContainer::LoadUI(tex2, TextureContainer::Level);
 
 	if (tc == NULL)
-		tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp");
+		tc = TextureContainer::LoadUI("graph\\interface\\misc\\default[icon].bmp");
 
 	if (tc)
 	{
@@ -3897,7 +3895,7 @@ void UpdateCameras()
 						sprintf(str, "%ld", aup->path->nb_pathways - 1);
 						EVENT_SENDER = NULL;
 						SendIOScriptEvent(io, SM_WAYPOINT, str);
-						sprintf(str, "WAYPOINT%ld", aup->path->nb_pathways - 1);
+						sprintf(str, "waypoint%ld", aup->path->nb_pathways - 1);
 						SendIOScriptEvent(io, SM_NULL, "", str);
 						SendIOScriptEvent(io, SM_PATHEND);
 						aup->lastWP = last;
@@ -3918,7 +3916,7 @@ void UpdateCameras()
 						sprintf(str, "%ld", ii);
 						EVENT_SENDER = NULL;
 						SendIOScriptEvent(io, SM_WAYPOINT, str);
-						sprintf(str, "WAYPOINT%ld", ii);
+						sprintf(str, "waypoint%ld", ii);
 						SendIOScriptEvent(io, SM_NULL, "", str);
 
 						if (ii == aup->path->nb_pathways)
@@ -4550,29 +4548,29 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 std::string GetMaterialString( const std::string& origin )
 {
 	// need to be precomputed !!!
-	if (IsIn(origin, "STONE")) return "STONE";
-	else if (IsIn(origin, "MARBLE")) return "STONE";
-	else if (IsIn(origin, "ROCK")) return "STONE";
-	else if (IsIn(origin, "WOOD")) return "WOOD";
-	else if (IsIn(origin, "WET")) return "WET";
-	else if (IsIn(origin, "MUD")) return "WET";
-	else if (IsIn(origin, "BLOOD")) return "WET";
-	else if (IsIn(origin, "BONE")) return "WET";
-	else if (IsIn(origin, "FLESH")) return "WET";
-	else if (IsIn(origin, "SHIT")) return "WET";
-	else if (IsIn(origin, "SOIL")) return "GRAVEL";
-	else if (IsIn(origin, "GRAVEL")) return "GRAVEL";
-	else if (IsIn(origin, "EARTH")) return "GRAVEL";
-	else if (IsIn(origin, "DUST")) return "GRAVEL";
-	else if (IsIn(origin, "SAND")) return "GRAVEL";
-	else if (IsIn(origin, "STRAW")) return "GRAVEL";
-	else if (IsIn(origin, "METAL")) return "METAL";
-	else if (IsIn(origin, "IRON")) return "METAL";
-	else if (IsIn(origin, "GLASS")) return "METAL";
-	else if (IsIn(origin, "RUST")) return "METAL";
-	else if (IsIn(origin, "EARTH")) return "EARTH";
-	else if (IsIn(origin, "ICE")) return "ICE";
-	else if (IsIn(origin, "FABRIC")) return "CARPET";
-	else if (IsIn(origin, "MOSS")) return "CARPET";
-	else return "UNKNOWN";
+	if (IsIn(origin, "stone")) return "stone";
+	else if (IsIn(origin, "marble")) return "stone";
+	else if (IsIn(origin, "rock")) return "stone";
+	else if (IsIn(origin, "wood")) return "wood";
+	else if (IsIn(origin, "wet")) return "wet";
+	else if (IsIn(origin, "mud")) return "wet";
+	else if (IsIn(origin, "blood")) return "wet";
+	else if (IsIn(origin, "bone")) return "wet";
+	else if (IsIn(origin, "flesh")) return "wet";
+	else if (IsIn(origin, "shit")) return "wet";
+	else if (IsIn(origin, "soil")) return "gravel";
+	else if (IsIn(origin, "gravel")) return "gravel";
+	else if (IsIn(origin, "earth")) return "gravel";
+	else if (IsIn(origin, "dust")) return "gravel";
+	else if (IsIn(origin, "sand")) return "gravel";
+	else if (IsIn(origin, "straw")) return "gravel";
+	else if (IsIn(origin, "metal")) return "metal";
+	else if (IsIn(origin, "iron")) return "metal";
+	else if (IsIn(origin, "glass")) return "metal";
+	else if (IsIn(origin, "rust")) return "metal";
+	else if (IsIn(origin, "earth")) return "earth";
+	else if (IsIn(origin, "ice")) return "ice";
+	else if (IsIn(origin, "fabric")) return "carpet";
+	else if (IsIn(origin, "moss")) return "carpet";
+	else return "unknown";
 }
