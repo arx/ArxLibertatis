@@ -485,10 +485,10 @@ static void LoadRefinementMap(const string & fileName, map<string, string> & ref
 			name = data;
 		} else if(count == 1) {
 			
-			MakeUpcase(name);
-			MakeUpcase(data);
+			makeLowercase(name);
+			makeLowercase(data);
 			
-			if(data != "NONE") {
+			if(data != "none") {
 				refinementMap[name] = data;
 			} else {
 				refinementMap[name].clear();
@@ -507,8 +507,8 @@ void TextureContainer::LookForRefinementMap(TCFlags flags) {
 	
 	static bool loadedRefinements = false;
 	if(!loadedRefinements) {
-		const char INI_REFINEMENT_GLOBAL[] = "Graph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini";
-		const char INI_REFINEMENT[] = "Graph\\Obj3D\\Textures\\Refinement\\Refinement.ini";
+		const char INI_REFINEMENT_GLOBAL[] = "graph\\obj3d\\textures\\refinement\\globalrefinement.ini";
+		const char INI_REFINEMENT[] = "graph\\obj3d\\textures\\refinement\\refinement.ini";
 		LoadRefinementMap(INI_REFINEMENT_GLOBAL, s_GlobalRefine);
 		LoadRefinementMap(INI_REFINEMENT, s_Refine);
 		loadedRefinements = true;
@@ -520,7 +520,7 @@ void TextureContainer::LookForRefinementMap(TCFlags flags) {
 	RefinementMap::const_iterator it = s_Refine.find(name);
 	if(it != s_Refine.end()) {
 		if(!it->second.empty()) {
-			string file = "Graph\\Obj3D\\Textures\\Refinement\\" + it->second + ".bmp";
+			string file = "graph\\obj3d\\textures\\refinement\\" + it->second + ".bmp";
 			TextureRefinement = Load(file, flags);
 		}
 		return;
@@ -528,7 +528,7 @@ void TextureContainer::LookForRefinementMap(TCFlags flags) {
 	
 	it = s_GlobalRefine.find(name);
 	if(it != s_GlobalRefine.end() && !it->second.empty()) {
-		string file = "Graph\\Obj3D\\Textures\\Refinement\\" + it->second + ".bmp";
+		string file = "graph\\obj3d\\textures\\refinement\\" + it->second + ".bmp";
 		TextureRefinement = Load(file, flags);
 	}
 	
