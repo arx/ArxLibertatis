@@ -91,8 +91,8 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	}
 	
 	// Generate File name/path and create it
-	string gamefic = "Game\\" + file;
-	SetExt(gamefic, ".FTL");
+	string gamefic = "game\\" + file;
+	SetExt(gamefic, ".ftl");
 	
 	if(!CreateFullPath(gamefic)) {
 		return NULL;
