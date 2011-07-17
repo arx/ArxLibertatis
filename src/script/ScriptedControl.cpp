@@ -232,7 +232,7 @@ class SetGroupCommand : public Command {
 		
 		long toremove = -1;
 		for(long i = 0; i < io.nb_iogroups; i++) {
-			if(!strcasecmp(group, io.iogroups[i].name)) {
+			if(group == io.iogroups[i].name) {
 				toremove = i;
 			}
 		}
