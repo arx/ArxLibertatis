@@ -937,7 +937,7 @@ void ARX_MAPMARKER_Init() {
 static long ARX_MAPMARKER_Get(const string & name) {
 	
 	for(size_t i = 0; i < Mapmarkers.size(); i++) {
-		if(!strcasecmp(Mapmarkers[i].name, name)) {
+		if(Mapmarkers[i].name == name) {
 			return i;
 		}
 	}
