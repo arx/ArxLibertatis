@@ -131,7 +131,7 @@ long FindScriptPos(const EERIE_SCRIPT * es, const std::string& str)
 
 	if (!es->data) return -1;
 
-	const char * pdest = strcasestr(es->data, str.c_str());
+	const char * pdest = strstr(es->data, str.c_str());
 	
 	if(!pdest) {
 		return -1;
@@ -703,105 +703,66 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!specialstrcmp(name, "^rune_"))
 			{
-				const char * temp = name.c_str() + 6;
+				string temp = name.substr(6);
 
-				if (!strcasecmp(temp, "aam"))
-				{
+				if(temp == "aam") {
 					*lcontent = player.rune_flags & FLAG_AAM;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "cetrius"))
-				{
+				} else if(temp == "cetrius") {
 					*lcontent = player.rune_flags & FLAG_CETRIUS;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "comunicatum"))
-				{
+				} else if(temp == "comunicatum") {
 					*lcontent = player.rune_flags & FLAG_COMUNICATUM;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "cosum"))
-				{
+				} else if(temp == "cosum") {
 					*lcontent = player.rune_flags & FLAG_COSUM;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "folgora"))
-				{
+				} else if(temp == "folgora") {
 					*lcontent = player.rune_flags & FLAG_FOLGORA;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "fridd"))
-				{
+				} else if(temp == "fridd") {
 					*lcontent = player.rune_flags & FLAG_FRIDD;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "kaom"))
-				{
+				} else if(temp == "kaom") {
 					*lcontent = player.rune_flags & FLAG_KAOM;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "mega"))
-				{
+				} else if(temp == "mega") {
 					*lcontent = player.rune_flags & FLAG_MEGA;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "morte"))
-				{
+				} else if(temp == "morte") {
 					*lcontent = player.rune_flags & FLAG_MORTE;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "movis"))
-				{
+				} else if(temp == "movis") {
 					*lcontent = player.rune_flags & FLAG_MOVIS;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "nhi"))
-				{
+				} else if(temp == "nhi") {
 					*lcontent = player.rune_flags & FLAG_NHI;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "rhaa"))
-				{
+				} else if(temp == "rhaa") {
 					*lcontent = player.rune_flags & FLAG_RHAA;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "spacium"))
-				{
+				} else if(temp == "spacium") {
 					*lcontent = player.rune_flags & FLAG_SPACIUM;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "stregum"))
-				{
+				} else if(temp == "stregum") {
 					*lcontent = player.rune_flags & FLAG_STREGUM;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "taar"))
-				{
+				} else if(temp == "taar") {
 					*lcontent = player.rune_flags & FLAG_TAAR;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "tempus"))
-				{
+				} else if(temp == "tempus") {
 					*lcontent = player.rune_flags & FLAG_TEMPUS;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "tera"))
-				{
+				} else if(temp == "tera") {
 					*lcontent = player.rune_flags & FLAG_TERA;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "vista"))
-				{
+				} else if(temp == "vista") {
 					*lcontent = player.rune_flags & FLAG_VISTA;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "vitae"))
-				{
+				} else if(temp == "vitae") {
 					*lcontent = player.rune_flags & FLAG_VITAE;
 					return TYPE_LONG;
-				}
-				else if (!strcasecmp(temp, "yok"))
-				{
+				} else if(temp == "yok") {
 					*lcontent = player.rune_flags & FLAG_YOK;
 					return TYPE_LONG;
 				}
@@ -1371,8 +1332,8 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!specialstrcmp(name, "^playerspell_"))
 			{
-				const char * temp = name.c_str() + 13;
-				Spell id = GetSpellId(toLowercase(temp));
+				string temp = name.substr(13);
+				Spell id = GetSpellId(temp);
 
 				if (id != SPELL_NONE)
 				{
@@ -1390,10 +1351,8 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 					}
 				}
 
-				if (!strcasecmp(name, "^playerspell_invisibility"))
-				{
-					if (inter.iobj[0]->invisibility > 0.3f)
-					{
+				if(temp == "invisibility") {
+					if(inter.iobj[0]->invisibility > 0.3f) {
 						*lcontent = 1;
 						return TYPE_LONG;
 					}
@@ -1555,7 +1514,7 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VAR svf[], size_t nb, const string & name) {
 	
 	for(size_t i = 0; i < nb; i++) {
 		if(svf[i].type != TYPE_UNKNOWN) {
-			if(!strcasecmp(name, svf[i].name)) {
+			if(name == svf[i].name) {
 				return &svf[i];
 			}
 		}
@@ -2366,15 +2325,14 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	}
 }
 
-bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string& group)
-{
-	for (long i = 0; i < io->nb_iogroups; i++)
-	{
-		if ((io->iogroups[i].name)
-				&&	(!strcasecmp(group, io->iogroups[i].name)))
+bool IsIOGroup(INTERACTIVE_OBJ * io, const string & group) {
+	
+	for(long i = 0; i < io->nb_iogroups; i++) {
+		if(group == io->iogroups[i].name) {
 			return true;
+		}
 	}
-
+	
 	return false;
 }
 
