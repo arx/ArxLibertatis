@@ -548,10 +548,7 @@ aalError Ambiance::muteTrack(const string & name, bool mute) {
 	Track * track = &track_l[track_c];
 	while(track > track_l) {
 		--track;
-		if(!strcasecmp(track->name, name)) {
-			found = true;
-			break;
-		} else if(!strcasecmp(_sample[Backend::getSampleId(track->s_id)]->getName(), name)) {
+		if(track->name == name || _sample[Backend::getSampleId(track->s_id)]->getName() == name) {
 			found = true;
 			break;
 		}
