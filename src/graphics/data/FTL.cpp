@@ -373,16 +373,19 @@ struct MCACHE_DATA {
 static vector<MCACHE_DATA> meshCache;
 
 // Checks for Mesh file existence in cache
-static long MCache_Get( const string file)
-{
-    string fic;
-
-    File_Standardize(file, fic);
-
-    for (size_t i = 0; i < meshCache.size(); i++)
-        if ( !strcasecmp(meshCache[i].name.c_str(), fic.c_str() ) ) return i;
-
-    return -1;
+static long MCache_Get( const string file) {
+	
+	string fic;
+	
+	File_Standardize(file, fic);
+	
+	for(size_t i = 0; i < meshCache.size(); i++) {
+		if(meshCache[i].name == fic) {
+			return i;
+		}
+	}
+	
+	return -1;
 }
 
 // Pushes a Mesh In Mesh Cache
