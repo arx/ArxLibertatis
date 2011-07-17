@@ -318,7 +318,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 
 					if ((JUST_RELOADED)
-					        &&	((!strcasecmp(p->name, "ingot_maker")) || (!strcasecmp(p->name, "mauld_user"))))
+					        &&	((!strcmp(p->name, "ingot_maker")) || (!strcmp(p->name, "mauld_user"))))
 					{
 						ARX_DEAD_CODE(); 
 					}
@@ -530,18 +530,19 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 #endif
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name)
-{
-
-	if ( !(name).empty() && (ARXpaths) )
-		for (long i = 0; i < nbARXpaths; i++)
-		{
-			if (ARXpaths[i])
-			{
-				if (!strcasecmp(ARXpaths[i]->name, name)) return ARXpaths[i];
-			}
+ARX_PATH * ARX_PATH_GetAddressByName(const string & name) {
+	
+	if(name.empty() || !ARXpaths) {
+		return NULL;
+	}
+	
+	
+	for(long i = 0; i < nbARXpaths; i++) {
+		if(ARXpaths[i] && ARXpaths[i]->name == name) {
+			return ARXpaths[i];
 		}
-
+	}
+	
 	return NULL;
 }
 //*************************************************************************************
@@ -579,7 +580,7 @@ ARX_PATH * ARX_PATHS_ExistName(char * name)
 
 	for (long i = 0; i < nbARXpaths; i++)
 	{
-		if (!strcasecmp(ARXpaths[i]->name, name))
+		if (!strcmp(ARXpaths[i]->name, name))
 			return ARXpaths[i];
 	}
 
