@@ -2531,7 +2531,7 @@ float GetTileMaxY(long i, long j)
 bool GetNameInfo(const string & name, long& type, long& val1, long& val2)
 {
 
-	if (name[0] == 'R')
+	if (name[0] == 'r')
 	{
 		if (name[1] == '_')
 		{
@@ -2541,8 +2541,8 @@ bool GetNameInfo(const string & name, long& type, long& val1, long& val2)
 			return true;
 		}
 
-		if ((name[1] == 'O') && (name[2] == 'O')
-				&& (name[3] == 'M') && (name[4] == '_'))
+		if ((name[1] == 'o') && (name[2] == 'o')
+				&& (name[3] == 'm') && (name[4] == '_'))
 		{
 			type = TYPE_ROOM;
 			val1 = atoi(name.c_str() + 5);
@@ -2551,8 +2551,8 @@ bool GetNameInfo(const string & name, long& type, long& val1, long& val2)
 		}
 	}
 
-	if ((name[0] == 'P') && (name[1] == 'O') && (name[2] == 'R')
-			&& (name[3] == 'T') && (name[4] == 'A') && (name[5] == 'L')
+	if ((name[0] == 'p') && (name[1] == 'o') && (name[2] == 'r')
+			&& (name[3] == 't') && (name[4] == 'a') && (name[5] == 'l')
 			&& (name[6] == '_'))
 	{
 		type = TYPE_PORTAL;
