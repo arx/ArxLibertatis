@@ -482,7 +482,6 @@ void ScriptEvent::registerCommand(Command * command) {
 void ScriptEvent::init() {
 	
 	initSuppressions();
-	initAnimationNumbers();
 	
 	setupScriptedAnimation();
 	setupScriptedCamera();

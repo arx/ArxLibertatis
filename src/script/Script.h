@@ -478,8 +478,6 @@ long GETVarValueLong(SCRIPT_VAR svf[], size_t nb, const std::string & name);
 float GETVarValueFloat(SCRIPT_VAR svf[], size_t nb, const std::string & name);
 std::string GETVarValueText(SCRIPT_VAR svf[], size_t nb, const std::string & name);
 
-void initAnimationNumbers();
-AnimationNumber GetNumAnim(const std::string & name);
 ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, INTERACTIVE_OBJ * io);
