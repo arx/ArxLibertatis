@@ -19,7 +19,6 @@ std::string safestring(const char (&data)[N]) {
 }
 
 bool IsIn(const std::string & strin, const std::string & str);
-int strcmp(const std::string & str1, const std::string & str2);
 
 /**
  * Converts a given string to an integer using stringstream

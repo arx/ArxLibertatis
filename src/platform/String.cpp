@@ -27,10 +27,6 @@ bool IsIn(const string & strin, const string & str) {
 	return (strin.find( str ) != string::npos);
 }
 
-int strcmp(const string & str1, const string & str2) {
-	return str1.compare(str2);
-}
-
 long specialstrcmp(const string & text, const string & seek) {
 	return text.compare(0, seek.length(), seek) ? 1 : 0;
 }
