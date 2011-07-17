@@ -17,14 +17,19 @@
 #include "platform/String.h"
 
 #include "script/ScriptUtils.h"
+#include "script/ScriptedAnimation.h"
 #include "script/ScriptedCamera.h"
 #include "script/ScriptedControl.h"
-#include "script/ScriptedInteractiveObject.h"
+#include "script/ScriptedConversation.h"
 #include "script/ScriptedInterface.h"
+#include "script/ScriptedInventory.h"
+#include "script/ScriptedIOControl.h"
+#include "script/ScriptedIOProperties.h"
 #include "script/ScriptedItem.h"
 #include "script/ScriptedLang.h"
 #include "script/ScriptedNPC.h"
 #include "script/ScriptedPlayer.h"
+#include "script/ScriptedVariable.h"
 
 using std::max;
 using std::min;
@@ -479,14 +484,19 @@ void ScriptEvent::init() {
 	initSuppressions();
 	initAnimationNumbers();
 	
+	setupScriptedAnimation();
 	setupScriptedCamera();
 	setupScriptedControl();
-	setupScriptedInteractiveObject();
+	setupScriptedConversation();
 	setupScriptedInterface();
+	setupScriptedInventory();
+	setupScriptedIOControl();
+	setupScriptedIOProperties();
 	setupScriptedItem();
 	setupScriptedLang();
 	setupScriptedNPC();
 	setupScriptedPlayer();
+	setupScriptedVariable();
 	
 	registerCommand(new ObsoleteCommand("attachnpctoplayer"));
 	registerCommand(new ObsoleteCommand("gmode", 1));

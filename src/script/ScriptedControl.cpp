@@ -3,7 +3,6 @@
 
 #include <sstream>
 
-#include "ai/Paths.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
@@ -24,8 +23,6 @@ using std::string;
 extern long PLAY_LOADED_CINEMATIC;
 extern char WILL_LAUNCH_CINE[256];
 extern long CINE_PRELOAD;
-extern long ARX_CONVERSATION;
-extern long FINAL_RELEASE;
 extern long GLOBAL_MAGIC_MODE;
 
 namespace script {
@@ -218,57 +215,6 @@ public:
 	
 };
 
-class ConversationCommand : public Command {
-	
-public:
-	
-	ConversationCommand() : Command("conversation") { }
-	
-	Result execute(Context & context) {
-		
-		string nbpeople = context.getLowercase();
-		long nb_people = 0;
-		if(!nbpeople.empty() && nbpeople[0] == '-') {
-			std::istringstream iss(nbpeople.substr(1));
-			iss >> nb_people;
-			if(iss.bad()) {
-				nb_people = 0;
-			}
-		}
-		
-		bool enabled = context.getBool();
-		ARX_CONVERSATION = enabled ? 1 : 0;
-		
-		if(!nb_people || !enabled) {
-			DebugScript(' ' << nbpeople << ' ' << enabled);
-			return Success;
-		}
-		
-		main_conversation.actors_nb = nb_people;
-		
-		std::ostringstream oss;
-		oss << ' ' << nbpeople << ' ' << enabled;
-		
-		for(long j = 0; j < nb_people; j++) {
-			
-			string target = context.getLowercase();
-			long t = GetTargetByNameTarget(target);
-			if(t == -2) {
-				t = GetInterNum(context.getIO()); // self
-			}
-			
-			oss << ' ' << target;
-			
-			main_conversation.actors[j] = t;
-		}
-		
-		DebugScript(oss);
-		
-		return Success;
-	}
-	
-};
-
 class SetGroupCommand : public Command {
 	
 public:
@@ -299,87 +245,6 @@ public:
 			ARX_IOGROUP_Remove(io, group);
 		} else {
 			ARX_IOGROUP_Add(io, group);
-		}
-		
-		return Success;
-	}
-	
-};
-
-class SetControlledZoneCommand : public Command {
-	
-public:
-	
-	SetControlledZoneCommand() : Command("setcontrolledzone") { }
-	
-	Result execute(Context & context) {
-		
-		string name = context.getLowercase();
-		
-		DebugScript(' ' << name);
-		
-		ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
-		if(!ap) {
-			ScriptWarning << "unknown zone: " << name;
-			return Failed;
-		}
-		
-		strcpy(ap->controled, context.getIO()->long_name().c_str());
-		
-		return Success;
-	}
-	
-};
-
-class SetPathCommand : public Command {
-	
-public:
-	
-	SetPathCommand() : Command("setpath", ANY_IO) { }
-	
-	Result execute(Context & context) {
-		
-		bool wormspecific = false;
-		bool followdir = false;
-		HandleFlags("wf") {
-			wormspecific = (flg & flag('w'));
-			followdir = (flg & flag('f'));
-		}
-		
-		string name = context.getLowercase();
-		
-		DebugScript(' ' << options << ' ' << name);
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(name == "none") {
-			if(io->usepath) {
-				free(io->usepath), io->usepath = NULL;
-			}
-		} else {
-			
-			ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
-			if(!ap) {
-				ScriptWarning << "unknown path: " << name;
-				return Failed;
-			}
-			
-			if(io->usepath != NULL) {
-				free(io->usepath), io->usepath = NULL;
-			}
-			
-			ARX_USE_PATH * aup = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
-			aup->_starttime = aup->_curtime = ARXTime;
-			aup->aupflags = ARX_USEPATH_FORWARD;
-			if(wormspecific) {
-				aup->aupflags |= ARX_USEPATH_WORM_SPECIFIC | ARX_USEPATH_FLAG_ADDSTARTPOS;
-			}
-			if(followdir) {
-				aup->aupflags |= ARX_USEPATH_FOLLOW_DIRECTION;
-			}
-			aup->initpos = io->initpos;
-			aup->lastWP = -1;
-			aup->path = ap;
-			io->usepath = aup;
 		}
 		
 		return Success;
@@ -436,189 +301,6 @@ public:
 		} else {
 			ScriptWarning << "unknown command: " << command;
 			return Failed;
-		}
-		
-		return Success;
-	}
-	
-};
-
-class PlayCommand : public Command {
-	
-public:
-	
-	PlayCommand() : Command("play", ANY_IO) { }
-	
-	Result execute(Context & context) {
-		
-		bool unique = false;
-		SoundLoopMode loop = ARX_SOUND_PLAY_ONCE;
-		float pitch = 1.f;
-		bool stop = false;
-		bool no_pos = false;
-		
-		HandleFlags("ilpso") {
-			unique = (flg & flag('i'));
-			if(flg & flag('l')) {
-				loop = ARX_SOUND_PLAY_LOOPED;
-			}
-			if(flg & flag('p')) {
-				pitch = 0.9F + 0.2F * rnd();
-			}
-			stop = (flg & flag('s'));
-			no_pos = (flg & flag('o'));
-		}
-		
-		string sample = loadPath(context.getStringVar(context.getLowercase()));
-		SetExt(sample, ".wav");
-		
-		DebugScript(' ' << options << " \"" << sample << '"');
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(stop) {
-			ARX_SOUND_Stop(io->sound);
-			io->sound = ARX_SOUND_INVALID_RESOURCE;
-			
-		} else {
-			
-			if(unique && io->sound != ARX_SOUND_INVALID_RESOURCE) {
-				ARX_SOUND_Stop(io->sound);
-			}
-			
-			audio::SampleId num;
-			// TODO (case-sensitive) should be a flag instead of depending on the event
-			if(no_pos || SM_INVENTORYUSE == context.getMessage()) {
-				num = ARX_SOUND_PlayScript(sample, NULL, pitch, loop);
-			} else {
-				num = ARX_SOUND_PlayScript(sample, io, pitch, loop);
-			}
-			
-			if(unique) {
-				io->sound = (num == ARX_SOUND_TOO_FAR) ? audio::INVALID_ID : num;
-			}
-			
-			if(num == audio::INVALID_ID) {
-				ScriptWarning << "unable to load sound file \"" << sample << '"';
-				return Failed;
-			}
-			
-		}
-		
-		return Success;
-	}
-	
-};
-
-class PlaySpeechCommand : public Command {
-	
-public:
-	
-	PlaySpeechCommand() : Command("playspeech") { }
-	
-	Result execute(Context & context) {
-		
-		string sample = loadPath(context.getLowercase());
-		
-		DebugScript(' ' << sample);
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		audio::SampleId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
-		
-		if(num == audio::INVALID_ID) {
-			ScriptWarning << "unable to load sound file \"" << sample << '"';
-			return Failed;
-		}
-		
-		return Success;
-	}
-	
-};
-
-class HeroSayCommand : public Command {
-	
-public:
-	
-	HeroSayCommand() : Command("herosay") { }
-	
-	Result execute(Context & context) {
-		
-		HandleFlags("d") {
-			if((flg & flag('d')) && FINAL_RELEASE) {
-				context.skipWord();
-				return Success;
-			}
-		}
-		
-		string text = toLowercase(context.getStringVar(context.getLowercase()));
-		
-		DebugScript(' ' << options << " \"" << text << '"');
-		
-		if(!text.empty() && text[0] == '[') {
-			text = getLocalised(loadUnlocalized(text), "Not Found");
-		}
-		
-		ARX_SPEECH_Add(text);
-		
-		return Success;
-	}
-	
-};
-
-class UsePathCommand : public Command {
-	
-public:
-	
-	UsePathCommand() : Command("usepath", ANY_IO) { }
-	
-	Result execute(Context & context) {
-		
-		string type = context.getLowercase();
-		
-		DebugScript(' ' << type);
-		
-		ARX_USE_PATH * aup = context.getIO()->usepath;
-		if(!aup) {
-			ScriptWarning << "no path set";
-			return Failed;
-		}
-		
-		if(type == "b") {
-			aup->aupflags &= ~ARX_USEPATH_PAUSE;
-			aup->aupflags &= ~ARX_USEPATH_FORWARD;
-			aup->aupflags |= ARX_USEPATH_BACKWARD;
-		} else if(type == "f") {
-			aup->aupflags &= ~ARX_USEPATH_PAUSE;
-			aup->aupflags |= ARX_USEPATH_FORWARD;
-			aup->aupflags &= ~ARX_USEPATH_BACKWARD;
-		} else if(type == "p") {
-			aup->aupflags |= ARX_USEPATH_PAUSE;
-			aup->aupflags &= ~ARX_USEPATH_FORWARD;
-			aup->aupflags &= ~ARX_USEPATH_BACKWARD;
-		} else {
-			ScriptWarning << "unknown usepath type: " << type;
-			return Failed;
-		}
-		
-		return Success;
-	}
-	
-};
-
-class UnsetControlledZoneCommand : public Command {
-	
-public:
-	
-	UnsetControlledZoneCommand() : Command("unsetcontrolledzone") { }
-	
-	Result execute(Context & context) {
-		
-		string zone = context.getLowercase();
-		
-		DebugScript(' ' << zone);
-		
-		ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
-		if(ap) {
-			ap->controled[0] = 0;
 		}
 		
 		return Success;
@@ -691,16 +373,8 @@ void setupScriptedControl() {
 	ScriptEvent::registerCommand(new AnchorBlockCommand);
 	ScriptEvent::registerCommand(new AttachCommand);
 	ScriptEvent::registerCommand(new CineCommand);
-	ScriptEvent::registerCommand(new ConversationCommand);
 	ScriptEvent::registerCommand(new SetGroupCommand);
-	ScriptEvent::registerCommand(new SetControlledZoneCommand);
-	ScriptEvent::registerCommand(new SetPathCommand);
 	ScriptEvent::registerCommand(new ZoneParamCommand);
-	ScriptEvent::registerCommand(new PlayCommand);
-	ScriptEvent::registerCommand(new PlaySpeechCommand);
-	ScriptEvent::registerCommand(new HeroSayCommand);
-	ScriptEvent::registerCommand(new UsePathCommand);
-	ScriptEvent::registerCommand(new UnsetControlledZoneCommand);
 	ScriptEvent::registerCommand(new MagicCommand);
 	ScriptEvent::registerCommand(new DetachCommand);
 	

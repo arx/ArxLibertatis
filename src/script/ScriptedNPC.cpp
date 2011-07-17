@@ -14,10 +14,6 @@
 
 using std::string;
 
-extern long FRAME_COUNT;
-extern Vec3f LASTCAMPOS;
-extern Anglef LASTCAMANGLE;
-
 namespace script {
 
 namespace {
@@ -216,180 +212,6 @@ public:
 	
 };
 
-class SpeakCommand : public Command {
-	
-	static void computeACSPos(CinematicSpeech & acs, INTERACTIVE_OBJ * io, long ionum) {
-		
-		if(io) {
-			long id = io->obj->fastaccess.view_attach;
-			if(id != -1) {
-				acs.pos1 = io->obj->vertexlist3[id].v;
-			} else {
-				acs.pos1 = io->pos + Vec3f(0.f, io->physics.cyl.height, 0.f);
-			}
-		}
-		
-		if(ValidIONum(ionum)) {
-			INTERACTIVE_OBJ * ioo = inter.iobj[ionum];
-			long id = ioo->obj->fastaccess.view_attach;
-			if(id != -1) {
-				acs.pos2 = ioo->obj->vertexlist3[id].v;
-			} else {
-				acs.pos2 = ioo->pos + Vec3f(0.f, ioo->physics.cyl.height, 0.f);
-			}
-		}
-	}
-	
-	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
-		
-		string target = context.getLowercase();
-		acs.ionum = GetTargetByNameTarget(target);
-		if(acs.ionum == -2) {
-			acs.ionum = GetInterNum(context.getIO());
-		}
-		
-		acs.startpos = context.getFloat();
-		acs.endpos = context.getFloat();
-		
-		if(player) {
-			computeACSPos(acs, inter.iobj[0], acs.ionum);
-		} else {
-			computeACSPos(acs, context.getIO(), acs.ionum);
-		}
-	}
-	
-public:
-	
-	SpeakCommand() : Command("speak") { }
-	
-	Result execute(Context & context) {
-		
-		CinematicSpeech acs;
-		acs.type = ARX_CINE_SPEECH_NONE;
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		
-		bool player = false, unbreakable = false;
-		SpeechFlags voixoff = 0;
-		AnimationNumber mood = ANIM_TALK_NEUTRAL;
-		HandleFlags("tuphaoc") {
-			
-			voixoff |= (flg & flag('t')) ? ARX_SPEECH_FLAG_NOTEXT : SpeechFlags(0);
-			unbreakable = (flg & flag('u'));
-			player = (flg & flag('p'));
-			if(flg & flag('h')) {
-				mood = ANIM_TALK_HAPPY;
-			}
-			if(flg & flag('a')) {
-				mood = ANIM_TALK_ANGRY;
-			}
-			
-			// Crash when we set speak pitch to 1,
-			// Variable use for a division, 0 is not possible
-			voixoff |= (flg & flag('o')) ? ARX_SPEECH_FLAG_OFFVOICE : SpeechFlags(0);
-			
-			if(flg & flag('c')) {
-				
-				string command = context.getLowercase();
-				
-				FRAME_COUNT = 0;
-				
-				if(command == "keep") {
-					acs.type = ARX_CINE_SPEECH_KEEP;
-					acs.pos1 = LASTCAMPOS;
-					acs.pos2.x = LASTCAMANGLE.a;
-					acs.pos2.y = LASTCAMANGLE.b;
-					acs.pos2.z = LASTCAMANGLE.g;
-					
-				} else if(command == "zoom") {
-					acs.type = ARX_CINE_SPEECH_ZOOM;
-					acs.startangle.a = context.getFloat();
-					acs.startangle.b = context.getFloat();
-					acs.endangle.a = context.getFloat();
-					acs.endangle.b = context.getFloat();
-					acs.startpos = context.getFloat();
-					acs.endpos = context.getFloat();
-					acs.ionum = GetInterNum(io);
-					if(player) {
-						computeACSPos(acs, inter.iobj[0], acs.ionum);
-					} else {
-						computeACSPos(acs, io, -1);
-					}
-					
-				} else if(command == "ccctalker_l" || command == "ccctalker_r") {
-					acs.type = (command == "ccctalker_r") ? ARX_CINE_SPEECH_CCCTALKER_R : ARX_CINE_SPEECH_CCCTALKER_L;
-					parseParams(acs, context, player);
-					
-				} else if(command == "ccclistener_l" || command == "ccclistener_r") {
-					acs.type = (command == "ccclistener_r") ? ARX_CINE_SPEECH_CCCLISTENER_R :  ARX_CINE_SPEECH_CCCLISTENER_L;
-					parseParams(acs, context, player);
-					
-				} else if(command == "side" || command == "side_l" || command == "side_r") {
-					acs.type = (command == "side_l") ? ARX_CINE_SPEECH_SIDE_LEFT : ARX_CINE_SPEECH_SIDE;
-					parseParams(acs, context, player);
-					acs.f0 = context.getFloat(); // startdist
-					acs.f1 = context.getFloat(); // enddist
-					acs.f2 = context.getFloat(); // height modifier
-				} else {
-					ScriptWarning << "unexpected command: " << options << ' ' << command;
-				}
-				
-			}
-		}
-		
-		string text = context.getLowercase();
-		
-		if(text == "killall") {
-			
-			if(!options.empty()) {
-				ScriptWarning << "unexpected options: " << options << " killall";
-			}
-			
-			ARX_SPEECH_Reset();
-			return Success;
-		}
-		
-		string data = loadUnlocalized(toLowercase(context.getStringVar(text)));
-		
-		DebugScript(' ' << options << ' ' << data); // TODO debug more
-		
-		if(data.empty()) {
-			ARX_SPEECH_ClearIOSpeech(io);
-			return Success;
-		}
-		
-		
-		if(!CINEMASCOPE) {
-			voixoff |= ARX_SPEECH_FLAG_NOTEXT;
-		}
-		
-		long speechnum;
-		if(player) {
-			speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], data, mood, voixoff);
-		} else {
-			speechnum = ARX_SPEECH_AddSpeech(io, data, mood, voixoff);
-		}
-		if(speechnum < 0) {
-			return Failed;
-		}
-		
-		size_t onspeechend = context.skipCommand();
-		
-		if(onspeechend != (size_t)-1) {
-			aspeech[speechnum].scrpos = onspeechend;
-			aspeech[speechnum].es = context.getScript();
-			aspeech[speechnum].ioscript = io;
-			if(unbreakable) {
-				aspeech[speechnum].flags |= ARX_SPEECH_FLAG_UNBREAKABLE;
-			}
-			aspeech[speechnum].cine = acs;
-		}
-		
-		return Success;
-	}
-	
-};
-
 class SetDetectCommand : public Command {
 	
 public:
@@ -428,28 +250,6 @@ public:
 		DebugScript(' ' << r << ' ' << g << ' ' << b);
 		
 		context.getIO()->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
-		
-		return Success;
-	}
-	
-};
-
-class SetSpeakPitchCommand : public Command {
-	
-public:
-	
-	SetSpeakPitchCommand() : Command("setspeakpitch", IO_NPC) { }
-	
-	Result execute(Context & context) {
-		
-		float pitch = context.getFloat();
-		if(pitch < .6f) {
-			pitch = .6f;
-		}
-		
-		DebugScript(' ' << pitch);
-		
-		context.getIO()->_npcdata->speakpitch = pitch;
 		
 		return Success;
 	}
@@ -564,35 +364,6 @@ public:
 			ScriptWarning << "unexpected mode: " << mode;
 			return Failed;
 		}
-		
-		return Success;
-	}
-	
-};
-
-class SetWeaponCommand : public Command {
-	
-public:
-	
-	SetWeaponCommand() : Command("setweapon", IO_NPC) { }
-	
-	Result execute(Context & context) {
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		
-		io->GameFlags &= ~GFLAG_HIDEWEAPON;
-		HandleFlags("h") {
-			if(flg & flag('h')) {
-				io->GameFlags |= GFLAG_HIDEWEAPON;
-			}
-		}
-		
-		string weapon = loadPath(context.getLowercase());
-		
-		DebugScript(' ' << options << ' ' << weapon);
-		
-		strcpy(io->_npcdata->weaponname, weapon.c_str());
-		Prepare_SetWeapon(io, weapon);
 		
 		return Success;
 	}
@@ -743,41 +514,6 @@ public:
 	
 };
 
-class WeaponCommand : public Command {
-	
-public:
-	
-	WeaponCommand() : Command("weapon", IO_NPC) { }
-	
-	Result execute(Context & context) {
-		
-		bool draw = context.getBool();
-		
-		DebugScript(' ' << draw);
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		
-		if(draw) {
-			if(io->_npcdata->weaponinhand == 0) {
-				AcquireLastAnim(io);
-				FinishAnim(io, io->animlayer[1].cur_anim);
-				io->animlayer[1].cur_anim = NULL;
-				io->_npcdata->weaponinhand = -1;
-			}
-		} else {
-			if(io->_npcdata->weaponinhand == 1) {
-				AcquireLastAnim(io);
-				FinishAnim(io, io->animlayer[1].cur_anim);
-				io->animlayer[1].cur_anim = NULL;
-				io->_npcdata->weaponinhand = 2;
-			}
-		}
-		
-		return Success;
-	}
-	
-};
-
 }
 
 void setupScriptedNPC() {
@@ -785,21 +521,17 @@ void setupScriptedNPC() {
 	ScriptEvent::registerCommand(new BehaviourCommand);
 	ScriptEvent::registerCommand(new ReviveCommand);
 	ScriptEvent::registerCommand(new SpellcastCommand);
-	ScriptEvent::registerCommand(new SpeakCommand);
 	ScriptEvent::registerCommand(new SetDetectCommand);
 	ScriptEvent::registerCommand(new SetBloodCommand);
-	ScriptEvent::registerCommand(new SetSpeakPitchCommand);
 	ScriptEvent::registerCommand(new SetSpeedCommand);
 	ScriptEvent::registerCommand(new SetStareFactorCommand);
 	ScriptEvent::registerCommand(new SetNPCStatCommand);
 	ScriptEvent::registerCommand(new SetXPValueCommand);
 	ScriptEvent::registerCommand(new SetMoveModeCommand);
-	ScriptEvent::registerCommand(new SetWeaponCommand);
 	ScriptEvent::registerCommand(new SetLifeCommand);
 	ScriptEvent::registerCommand(new SetTargetCommand);
 	ScriptEvent::registerCommand(new ForceDeathCommand);
 	ScriptEvent::registerCommand(new PathfindCommand);
-	ScriptEvent::registerCommand(new WeaponCommand);
 	
 }
 
