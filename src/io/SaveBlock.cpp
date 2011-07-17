@@ -323,7 +323,7 @@ bool SaveBlock::loadFileTable() {
 			if(c == '\0') {
 				break;
 			}
-			name.push_back(c);
+			name.push_back(tolower(c));
 		}
 		
 		if(!i && version == SAV_VERSION_OLD) {
@@ -504,7 +504,7 @@ bool SaveBlock::defragment() {
 SaveBlock::File * SaveBlock::getFile(const std::string & name) {
 	
 	for(FileList::iterator file = files.begin(); file != files.end(); ++file) {
-		if(!strcasecmp(file->name, name)) {
+		if(file->name == name) {
 			return &*file;
 			break;
 		}
@@ -590,7 +590,7 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 		// TODO always create the hashMap
 		file = NULL;
 		for(FileList::const_iterator f = files.begin(); f != files.end(); ++f) {
-			if(!strcasecmp(f->name, name)) {
+			if(f->name == name) {
 				file = &*f;
 			}
 		}
@@ -612,7 +612,7 @@ bool SaveBlock::hasFile(const string & name) const {
 	} else {
 		// TODO always create the hashMap
 		for(FileList::const_iterator file = files.begin(); file != files.end(); ++file) {
-			if(!strcasecmp(file->name, name)) {
+			if(file->name == name) {
 				return true;
 			}
 		}
@@ -699,7 +699,7 @@ char * SaveBlock::load(const std::string & savefile, const std::string & filenam
 			if(c == '\0') {
 				break;
 			}
-			name.push_back(c);
+			name.push_back(tolower(c));
 		}
 		
 		if(!file.loadOffsets(handle, version)) {
@@ -710,7 +710,7 @@ char * SaveBlock::load(const std::string & savefile, const std::string & filenam
 			continue;
 		}
 		
-		if(strcasecmp(name, filename)) {
+		if(name != filename) {
 			file.chunks.clear();
 			continue;
 		}
