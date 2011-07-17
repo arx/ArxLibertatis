@@ -322,7 +322,7 @@ AmbianceId aalGetAmbiance(const string & name) {
 	AAL_ENTRY_V(INVALID_ID)
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && !strcasecmp(name, _amb[i]->getName())) {
+		if(_amb[i] && name == _amb[i]->getName()) {
 			return i;
 		}
 	}
@@ -335,7 +335,7 @@ EnvId aalGetEnvironment(const string & name) {
 	AAL_ENTRY_V(INVALID_ID)
 	
 	for(size_t i = 0; i < _env.size(); i++) {
-		if(_env[i] && !strcasecmp(name, _env[i]->name)) {
+		if(_env[i] && name == _env[i]->name) {
 			return i;
 		}
 	}
