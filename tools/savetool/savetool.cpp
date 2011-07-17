@@ -889,7 +889,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 
 static long fix_io(SaveBlock & save, const string & name, Idents & idents, const string & where, Remap & remap) {
 	
-	if(!strcasecmp(name, "none") || name.empty()) {
+	if(toLowercase(name) == "none" || name.empty()) {
 		remap[name] = 0;
 		return 0;
 	}
@@ -982,7 +982,9 @@ static bool patch_ident(char name[SIZE_ID], long newIdent, const string & where)
 
 static bool fix_ident(SaveBlock & save, char name[SIZE_ID], Idents & idents, const string & where, Remap & remap) {
 	
-	if(name[0] == '\0' || !strcasecmp(name, "none") || !strcasecmp(name, "player") || !strcasecmp(name, "self")) {
+	string lname = toLowercase(name);
+	
+	if(name[0] == '\0' || lname == "none" || lname == "player" || lname == "self") {
 		return false;
 	}
 	

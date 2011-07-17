@@ -27,10 +27,6 @@ bool IsIn(const string & strin, const string & str) {
 	return (strin.find( str ) != string::npos);
 }
 
-int strcasecmp(const string & str1, const string & str2) {
-	return strcasecmp(str1.c_str(), str2.c_str());
-}
-
 int strcmp(const string & str1, const string & str2) {
 	return str1.compare(str2);
 }

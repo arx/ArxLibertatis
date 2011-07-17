@@ -117,13 +117,8 @@ const std::string arxVersion = "0.1";
 
 #define ARX_COMPILER_MSVC ((ARX_COMPILER == ARX_COMPILER_VC9) || (ARX_COMPILER == ARX_COMPILER_VC10))
 
-// TODO: Move this in a platform specific file
 #if ARX_COMPILER_MSVC
 	#include <direct.h>
-	// Windows like to be non-standard... sigh
-	inline int strcasecmp(const char* str1, const char* str2) { return _stricmp(str1, str2); }
-	inline int strncasecmp(const char* str1, const char* str2, size_t maxCount) { return _strnicmp(str1, str2, maxCount); }
-	inline int chdir(const char* path) { return _chdir(path); }
 #endif
 
 // TODO check for these in CMakeLists.txt
