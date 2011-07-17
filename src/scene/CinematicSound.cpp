@@ -144,12 +144,8 @@ int ExistSound(const string & dir, const string & name) {
 		if ((cs->active) &&
 		        ((cs->active & 0xFF00) == LSoundChoose))
 		{
-			if (!strcasecmp(dir, cs->dir))
-			{
-				if (!strcasecmp(name, cs->name))
-				{
-					return MAX_SOUND - nb;
-				}
+			if(dir == cs->dir && name == cs->name) {
+				return MAX_SOUND - nb;
 			}
 		}
 		
