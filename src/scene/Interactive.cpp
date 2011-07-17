@@ -1216,9 +1216,11 @@ bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const string & temp) {
 		return false;
 	}
 	
-	if (io->usemesh == NULL)
+	if(io->usemesh == NULL) {
 		io->usemesh = (char *)malloc(256);
-	else if (!strcasecmp(io->usemesh, tex)) return false; //already tweaked with this mesh !
+	} else if(io->usemesh == tex) {
+		return false; //already tweaked with this mesh !
+	}
 	
 	strcpy(io->usemesh, tex.c_str());
 	
@@ -2105,20 +2107,18 @@ long GetTargetByNameTarget( const std::string& name )
 {
 	if (name.empty()) return -1;
 
-	if ( !strcasecmp(name, "self"))		return -2;
+	if (name == "self" || name == "me")		return -2;
 
-	if ( !strcasecmp(name, "none"))		return -1;
+	if (name == "none")		return -1;
 
-	if ( !strcasecmp(name, "me"))		return -2;
-
-	if ( !strcasecmp(name, "player"))	return 0;     ///player is now an io with index 0
+	if (name == "player")	return 0;     ///player is now an io with index 0
 
 	for (long i = 0 ; i < inter.nbmax ; i++)
 	{
 		if ((inter.iobj[i] != NULL)
 		        &&	(inter.iobj[i]->ident > -1))
 		{
-			if ( !strcasecmp(name, inter.iobj[i]->long_name() ) )
+			if (name == inter.iobj[i]->long_name())
 				return i;
 		}
 	}
@@ -3081,7 +3081,7 @@ static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 				char name2[256];
 				strcpy(name2, GetName(inter.iobj[i]->filename).c_str());
 
-				if (!strcasecmp(name1, name2))
+				if (!strcmp(name1, name2))
 				{
 					return true;
 				}
@@ -4426,7 +4426,7 @@ bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
 	if ((io == NULL)
 	        ||	(ioo == NULL)
-	        ||	(strcasecmp(io->filename, ioo->filename))
+	        ||	(strcmp(io->filename, ioo->filename))
 	        ||	(io->ioflags & IO_UNIQUE)
 	        ||	(io->durability != ioo->durability)
 	        ||	(io->max_durability != ioo->max_durability))
@@ -4456,7 +4456,7 @@ bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	{
 		for (long k = 0; k < ioo->nb_iogroups; k++)
 		{
-			if (!strcasecmp(io->iogroups[i].name, ioo->iogroups[k].name))
+			if (!strcmp(io->iogroups[i].name, ioo->iogroups[k].name))
 				return true;
 		}
 	}
