@@ -342,7 +342,6 @@ string LAST_FAILED_SEQUENCE = "none";
 char TELEPORT_TO_LEVEL[64];
 char TELEPORT_TO_POSITION[64];
 long TELEPORT_TO_ANGLE;
-long TELEPORT_TO_CONFIRM=1;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 char LastLoadedDLF[512];
 char ItemToBeAdded[1024];

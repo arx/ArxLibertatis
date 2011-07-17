@@ -21,7 +21,6 @@
 using std::string;
 
 extern INTERACTIVE_OBJ * LASTSPAWNED;
-extern long TELEPORT_TO_CONFIRM;
 extern long CHANGE_LEVEL_ICON;
 
 namespace script {
@@ -1652,7 +1651,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		TELEPORT_TO_CONFIRM = 1;
+		bool confirm = true;
 		
 		bool teleport_player = false, initpos = false;
 		HandleFlags("alnpi") {
@@ -1662,13 +1661,13 @@ public:
 			if(flg & flag('a')) {
 				float fangle = context.getFloat();
 				angle = static_cast<long>(fangle);
-				if(!flg & flag('l')) {
+				if(!(flg & flag('l'))) {
 					player.desiredangle.b = player.angle.b = fangle;
 				}
 			}
 			
 			if(flg & flag('n')) {
-				TELEPORT_TO_CONFIRM = 0;
+				confirm = false;
 			}
 			
 			if(flg & flag('l')) {
@@ -1685,12 +1684,9 @@ public:
 					TELEPORT_TO_ANGLE = angle;
 				}
 				
-				CHANGE_LEVEL_ICON = 1;
-				if(!TELEPORT_TO_CONFIRM) {
-					CHANGE_LEVEL_ICON = 200;
-				}
+				CHANGE_LEVEL_ICON =  confirm ? 1 : 200;
 				
-				DebugScript(' ' << options << ' ' << level << ' ' << target);
+				DebugScript(' ' << options << ' ' << angle << ' ' << level << ' ' << target);
 				
 				return Success;
 			}
@@ -1704,21 +1700,12 @@ public:
 			target = context.getLowercase();
 		}
 		
-		DebugScript(' ' << options << ' ' << target);
+		DebugScript(' ' << options << ' ' << player.angle.b << ' ' << target);
 		
 		if(target == "behind") {
-			TELEPORT_TO_CONFIRM = 0;
 			ARX_INTERACTIVE_TeleportBehindTarget(context.getIO());
 			return Success;
 		}
-		
-#ifdef BUILD_EDITOR
-		if(!GAME_EDITOR) {
-#endif
-			TELEPORT_TO_CONFIRM = 0;
-#ifdef BUILD_EDITOR
-		}
-#endif
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(!teleport_player && !io) {
