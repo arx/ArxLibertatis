@@ -360,9 +360,8 @@ void ReleaseScript(EERIE_SCRIPT * es)
 	memset(es->shortcut, 0, sizeof(long)*MAX_SHORTCUT);
 }
 
-ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const string & name, std::string& txtcontent, float * fcontent,long * lcontent)
-{
-
+ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const string & name, std::string& txtcontent, float * fcontent,long * lcontent) {
+	
 	switch (name[1])
 	{
 		case '$':
@@ -520,7 +519,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 
 			break;
-		case 'G':
+		case 'g':
 
 			if (!name.compare("^gore"))
 			{
@@ -553,7 +552,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'A':
+		case 'a':
 
 			if (!specialstrcmp(name, "^amount"))
 			{
@@ -621,7 +620,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 
 			break;
-		case 'R':
+		case 'r':
 
 			if (!specialstrcmp(name, "^realdist_"))
 			{
@@ -812,7 +811,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'I':
+		case 'i':
 
 			if (!specialstrcmp(name, "^inzone_"))
 			{
@@ -876,7 +875,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'B':
+		case 'b':
 
 			if (!specialstrcmp(name, "^behavior"))
 			{
@@ -932,7 +931,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'S':
+		case 's':
 
 			if (!specialstrcmp(name, "^sender"))
 			{
@@ -985,7 +984,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'M':
+		case 'm':
 
 			if (!specialstrcmp(name, "^me"))
 			{
@@ -1072,7 +1071,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'L':
+		case 'l':
 
 			if (!specialstrcmp(name, "^life"))
 			{
@@ -1097,7 +1096,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'D':
+		case 'd':
 
 			if (!specialstrcmp(name, "^dist_"))
 			{
@@ -1156,7 +1155,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'P':
+		case 'p':
 
 			if (!specialstrcmp(name, "^price"))
 			{
@@ -1405,7 +1404,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'N':
+		case 'n':
 
 			if (!specialstrcmp(name, "^npcinsight"))
 			{
@@ -1422,7 +1421,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'T':
+		case 't':
 
 			if (!specialstrcmp(name, "^target"))
 			{
@@ -1439,7 +1438,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			}
 
 			break;
-		case 'F':
+		case 'f':
 
 			if (!specialstrcmp(name, "^focal"))
 			{
