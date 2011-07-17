@@ -243,8 +243,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
-					if (!strcasecmp(io->obj->selections[i].name, "head"))
-					{
+					if(io->obj->selections[i].name == "head") {
 						sel_ = i;
 						break;
 					}
@@ -252,10 +251,10 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
-				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
+				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
+					if(tweaker->tweakerinfo->skintochange == GetName(io->obj->texturecontainer[i]->m_texName)) {
 						textochange = i;
+					}
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
@@ -297,8 +296,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
-					if (!strcasecmp(io->obj->selections[i].name, "chest"))
-					{
+					if(io->obj->selections[i].name == "chest") {
 						sel_ = i;
 						break;
 					}
@@ -306,10 +304,10 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
-				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
+				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
+					if(tweaker->tweakerinfo->skintochange == GetName(io->obj->texturecontainer[i]->m_texName)) {
 						textochange = i;
+					}
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
@@ -351,8 +349,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
-					if ( !strcasecmp(io->obj->selections[i].name, "leggings") )
-					{
+					if(io->obj->selections[i].name == "leggings") {
 						sel_ = i;
 						break;
 					}
@@ -360,10 +357,10 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
-				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
+				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
+					if(tweaker->tweakerinfo->skintochange == GetName(io->obj->texturecontainer[i]->m_texName)) {
 						textochange = i;
+					}
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
@@ -835,7 +832,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	if (power > 1.f) power = 1.f;
 
-	if (!strcasecmp(wmat, "bare"))
+	if (!strcmp(wmat, "bare"))
 		power = power * 0.1f + 0.9f;
 	else power = power * 0.1f + 0.9f;
 
@@ -1596,16 +1593,16 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value = 0;
 	}
 
-	if (!strcasecmp(param1, "-s"))
-	{
+	if(param1 == "-s") {
 		for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
 		{
 			if (io->_itemdata->equipitem->elements[i].special == IO_SPECIAL_ELEM_NONE)
 			{
-				if (!strcasecmp(param2, "paralyse"))
+				if(param2 == "paralyse") {
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_PARALYZE;
-				else if (!strcasecmp(param2, "drainlife"))
+				} else if(param2 == "drainlife") {
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_DRAIN_LIFE;
+				}
 
 				io->_itemdata->equipitem->elements[i].value = val;
 				io->_itemdata->equipitem->elements[i].flags = flags;
@@ -1615,17 +1612,16 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 
 		return;
 	}
-	else
-		for (long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++)
-		{
-			if (!strcasecmp(param2, equipinfo[i].name))
-			{
+	else {
+		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
+			if(param2 == equipinfo[i].name) {
 				io->_itemdata->equipitem->elements[i].value = val;
 				io->_itemdata->equipitem->elements[i].special = 0;
 				io->_itemdata->equipitem->elements[i].flags = flags;
 				return;
 			}
 		}
+	}
 }
 
 //-----------------------------------------------------------------------------
