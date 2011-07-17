@@ -237,7 +237,7 @@ class UnsetCommand : public Command {
 		}
 		
 		for(size_t i = 0; i < nb; i++) {
-			if(svf[i].type != 0 && !strcasecmp(name.c_str(), svf[i].name)) {
+			if(svf[i].type != 0 && name == svf[i].name) {
 				return i;
 			}
 		}
