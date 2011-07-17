@@ -106,8 +106,7 @@ long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
 	}
 	
 	for(long i = 0; i < eobj->nbgroups; i++) {
-		// TODO use string compare
-		if(!strcasecmp(text, eobj->grouplist[i].name)) {
+		if(eobj->grouplist[i].name == text) {
 			return eobj->grouplist[i].origin;
 		}
 	}
@@ -123,8 +122,7 @@ long GetActionPointIdx(const EERIE_3DOBJ * eobj, const string & text) {
 	
 	for(vector<EERIE_ACTIONLIST>::const_iterator i = eobj->actionlist.begin();
 	    i != eobj->actionlist.end(); ++i) {
-		// TODO use string compare
-		if(!strcasecmp(text, i->name)) {
+		if(i->name == text) {
 			return i->idx;
 		}
 	}
@@ -1449,7 +1447,7 @@ long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const string & selname) 
 	}
 	
 	for(size_t i = 0; i < obj->selections.size(); i++) {
-		if(!strcasecmp(obj->selections[i].name, selname)) {
+		if(obj->selections[i].name == selname) {
 			return i;
 		}
 	}
@@ -1464,7 +1462,7 @@ long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const string & groupname) {
 	}
 	
 	for(long i = 0; i < obj->nbgroups; i++) {
-		if(!strcasecmp(obj->grouplist[i].name, groupname)) {
+		if(obj->grouplist[i].name == groupname) {
 			return i;
 		}
 	}
