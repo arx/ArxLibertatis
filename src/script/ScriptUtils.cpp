@@ -220,7 +220,7 @@ static long FindScriptPosGOTO(const EERIE_SCRIPT * es, const string & str) {
 	
 	while(true) {
 		
-		const char * pdest = strcasestr(es->data + result, str.c_str());
+		const char * pdest = strstr(es->data + result, str.c_str());
 		if(!pdest) {
 			return -1;
 		}
