@@ -237,7 +237,7 @@ public:
 			
 			// TODO(broken-scripts) work around broken scripts 
 			for(size_t i = 0; i < SM_MAXCMD; i++) {
-				if(!strcasecmp(target, AS_EVENT[i].name.c_str() + 3)) { // TODO(case-sensitive) strcasecmp
+				if(target == AS_EVENT[i].name.c_str() + 3) {
 					std::swap(target, event);
 					break;
 				}
