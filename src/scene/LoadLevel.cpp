@@ -1672,7 +1672,7 @@ long GetIdent( const std::string& ident)
 {
 	for (long n = 0; n < dlfcount; n++)
 	{
-		if (!strcasecmp(dlfcheck[n].ident, ident))
+		if (dlfcheck[n].ident == ident)
 			return n;
 	}
 
