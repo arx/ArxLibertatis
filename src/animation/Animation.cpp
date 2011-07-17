@@ -261,7 +261,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const string & path) {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(!strcasecmp(animations[i].path, path)) {
+		if(animations[i].path == path) {
 			return &animations[i];
 		}
 	}
