@@ -209,6 +209,15 @@ public:
 
 using namespace script; // TODO remove once everythng has been moved to the script namespace
 
+static const char * toString(ScriptResult ret) {
+	switch(ret) {
+		case ACCEPT: return "accept";
+		case REFUSE: return "refuse";
+		case BIGERROR: return "error";
+		default: arx_assert(false); return NULL;
+	}
+}
+
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
@@ -309,26 +318,23 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	}
 	
 	
-	LogDebug << "SendScriptEvent msg=" << msg << " ("
-	         << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
-	         << ")" << " params=\"" << params << "\""
-	         << " evame=\"" << evname << "\" info=" << info;
-	LogDebug << " io=" << Logger::nullstr(io ? io->filename : NULL)
-	         << ":" << io->ident
-	         << (io == NULL ? "" : es == &io->script ? " base" : " overriding");
+	LogDebug << "--> SendScriptEvent event="
+	         << (!evname.empty() ? evname
+	            : ((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name.substr(3)
+	            : "(none)")
+	         << " params=\"" << params << "\""
+	         << " io=" << (io ? io->long_name() : "unknown")
+	         << (io == NULL ? "" : es == &io->script ? " base" : " overriding")
+	         << " pos=" << pos;
 
 	MakeSSEPARAMS(params.c_str());
 
 	if (msg != SM_EXECUTELINE) {
 		if (!evname.empty()) {
 			pos += eventname.length(); // adding 'ON ' length
-			LogDebug << eventname << " received";
 		} else {
 			pos += AS_EVENT[msg].name.length();
-			LogDebug << AS_EVENT[msg].name << " received";
 		}
-	} else {
-		LogDebug << "EXECUTELINE received";
 	}
 	
 	Context context(es, pos, io, msg);
@@ -341,7 +347,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			context.skipWhitespace();
 			
 			if(context.pos >= context.getScript()->size) {
-				ScriptEventWarning << "no content after on event!";
+				ScriptEventWarning << "--> no content after on event!";
 				return ACCEPT;
 			}
 			
@@ -350,6 +356,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				newline = true;
 				context.pos++;
 				if(msg == SM_EXECUTELINE) {
+					LogDebug << "--> line end before any commands";
 					return ACCEPT;
 				}
 			}
@@ -358,7 +365,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		
 		string word = context.getLowercase();
 		if(word != "{") {
-			ScriptEventWarning << "missing bracket after event, got \"" << word << "\"";
+			ScriptEventWarning << "--> missing bracket after event, got \"" << word << "\"";
 			return ACCEPT;
 		}
 	}
@@ -371,7 +378,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			context.skipWhitespace();
 			
 			if(context.pos >= context.getScript()->size) {
-				ScriptEventWarning << "reached script end without accept / refuse / return";
+				ScriptEventWarning << "--> reached script end without accept / refuse / return";
 				return ACCEPT;
 			}
 			
@@ -380,6 +387,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				newline = true;
 				context.pos++;
 				if(msg == SM_EXECUTELINE) {
+					LogDebug << "--> line end";
 					return ACCEPT;
 				}
 			}
@@ -431,7 +439,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			timerCommand(word.substr(5), context);
 		} else {
 			
-			ScriptEventWarning << "unknown command: " << word;
+			ScriptEventWarning << "--> unknown command: " << word;
 			
 			io->ioflags |= IO_FREEZESCRIPT;
 			return REFUSE;
@@ -441,13 +449,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	}
 	
 	if(msg == SM_EXECUTELINE) {
-		LogDebug << "executeline successfully finished";
+		LogDebug << "--> executeline finished: " << toString(ret);
 	} else if(evname != "") {
-		LogDebug << eventname << " event successfully finished";
+		LogDebug << "--> " << eventname << " event finished: " << toString(ret);
 	} else if(msg != SM_DUMMY) {
-		LogDebug << AS_EVENT[msg].name << " event successfully finished";
+		LogDebug << "--> " << AS_EVENT[msg].name.substr(3) << " event finished: " << toString(ret);
 	} else {
-		LogDebug << "dummy event successfully finished";
+		LogDebug << "--> dummy event finished: " << toString(ret);
 	}
 	
 	return ret;
