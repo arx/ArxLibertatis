@@ -3197,7 +3197,7 @@ bool FastSceneLoad(const string & partial_path) {
 	const UNIQUE_HEADER * uh = reinterpret_cast<const UNIQUE_HEADER *>(dat + pos);
 	pos += sizeof(UNIQUE_HEADER);
 	
-	if(!NOCHECKSUM && strcasecmp(uh->path, path.c_str())) {
+	if(!NOCHECKSUM && toLowercase(uh->path) != path) {
 		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
 		free(dat);
 		return false;
@@ -4017,7 +4017,7 @@ static bool FastSceneSave(const string & partial_path) {
 //			{
 //				char * text = GetExt(fd.name);
 //
-//				if (!strcasecmp(text, ".scn"))
+//				if (!strcmp(text, ".scn"))
 //				{
 //					char path3[256];
 //					sprintf(path3, "%s%s", partial_path, fd.name);
