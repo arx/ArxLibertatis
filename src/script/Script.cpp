@@ -2009,26 +2009,6 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 	}
 }
 
-void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea)
-{
-	if (ea == NULL) return;
-
-	if (io == NULL) return;
-
-	if ((io->animlayer[0].cur_anim)
-			&& (io->animlayer[0].cur_anim != io->anims[ANIM_DIE])
-			&& (io->animlayer[0].cur_anim != io->anims[ANIM_HIT1]))
-		AcquireLastAnim(io);
-
-	FinishAnim(io, io->animlayer[0].cur_anim);
-	io->lastmove.x = 0;
-	io->lastmove.y = 0;
-	io->lastmove.z = 0;
-	ANIM_Set(&io->animlayer[0], ea);
-	io->animlayer[0].flags |= EA_FORCEPLAY;
-	io->animlayer[0].nextflags = 0;
-}
-
 //*************************************************************************************
 // ScriptEvent::send																	//
 // Sends a event to a script.														//

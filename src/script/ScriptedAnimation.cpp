@@ -49,6 +49,23 @@ public:
 
 class ForceAnimCommand : public Command {
 	
+	static void forceAnim(INTERACTIVE_OBJ & io, ANIM_HANDLE * ea) {
+		
+		if(io.animlayer[0].cur_anim
+		   && io.animlayer[0].cur_anim != io.anims[ANIM_DIE]
+		   && io.animlayer[0].cur_anim != io.anims[ANIM_HIT1]) {
+			AcquireLastAnim(&io);
+		}
+		
+		FinishAnim(&io, io.animlayer[0].cur_anim);
+		io.lastmove = Vec3f::ZERO;
+		ANIM_Set(&io.animlayer[0], ea);
+		io.animlayer[0].flags |= EA_FORCEPLAY;
+		io.animlayer[0].nextflags = 0;
+		
+		CheckSetAnimOutOfTreatZone(&io, 0);
+	}
+	
 public:
 	
 	ForceAnimCommand() : Command("forceanim", ANY_IO) { }
@@ -65,11 +82,13 @@ public:
 			return Failed;
 		}
 		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(io->anims[num]) {
-			ForceAnim(io, io->anims[num]);
-			CheckSetAnimOutOfTreatZone(io, 0);
+		INTERACTIVE_OBJ & io = *context.getIO();
+		if(!io.anims[num]) {
+			ScriptWarning << "animation " << anim << " not set";
+			return Failed;
 		}
+		
+		forceAnim(io, io.anims[num]);
 		
 		return Success;
 	}

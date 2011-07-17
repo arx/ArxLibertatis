@@ -484,8 +484,6 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const std:
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, INTERACTIVE_OBJ * io);
 
-void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
-
 ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "" );
 
 ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params = "");
