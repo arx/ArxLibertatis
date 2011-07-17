@@ -1806,26 +1806,22 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 #define	FLAG_CUT_LLEG	(1<<4)
 #define	FLAG_CUT_RLEG	(1<<5)
 
-short GetCutFlag( const std::string& str )
-{
-	if (!strcasecmp(str, "cut_head"))
+static short GetCutFlag(const string & str) {
+	
+	if(str == "cut_head") {
 		return FLAG_CUT_HEAD;
-
-	if (!strcasecmp(str, "cut_torso"))
+	} else if(str == "cut_torso") {
 		return FLAG_CUT_TORSO;
-
-	if (!strcasecmp(str, "cut_larm"))
+	} else if(str == "cut_larm") {
 		return FLAG_CUT_LARM;
-
-	if (!strcasecmp(str, "cut_rarm"))
+	} else if(str == "cut_rarm") {
 		return FLAG_CUT_HEAD;
-
-	if (!strcasecmp(str, "cut_lleg"))
+	} else if(str == "cut_lleg") {
 		return FLAG_CUT_LLEG;
-
-	if (!strcasecmp(str, "cut_rleg"))
+	} else if(str == "cut_rleg") {
 		return FLAG_CUT_RLEG;
-
+	}
+	
 	return 0;
 }
 
@@ -1856,8 +1852,9 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	{
 		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
 		for(iterator iter = io->obj->selections.begin(); iter != io->obj->selections.end(); ++iter) {
-			if ( ( iter->selected.size() > 0 ) && ( !strcasecmp( iter->name, tx)))
+			if(iter->selected.size() > 0 && iter->name == tx) {
 				return iter - io->obj->selections.begin();
+			}
 		}
 	}
 
