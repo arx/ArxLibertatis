@@ -1046,7 +1046,7 @@ void forInternalPeople(LPSTR strCmdLine) {
 		FINAL_RELEASE=0;
 		GAME_EDITOR=1;
 		
-		if (!strcasecmp(param[parampos],"editor")) {
+		if (!strcmp(param[parampos], "editor")) {
 			LogInfo << "PARAM EDITOR";
 			NEED_ANCHORS=1;
 		} else {
@@ -1090,7 +1090,7 @@ void forInternalPeople(LPSTR strCmdLine) {
 				PROCESS_LEVELS=1;
 			}
 			
-			if(!strcasecmp(param[parampos],"moulinex")) {
+			if(!strcmp(param[parampos], "moulinex")) {
 				LogInfo << "Launching moulinex";
 				MOULINEX=1;
 				KILL_AT_MOULINEX_END=1;
@@ -1284,17 +1284,6 @@ int main(int argc, char ** argv) {
 		LogDebug << "RegData Read";
 	}
 #endif
-
-	if (!FOR_EXTERNAL_PEOPLE) {
-		char stemp[256];
-		u32 ls = 64;
-		GetComputerName(stemp, &ls);
-
-		if (!strcasecmp(stemp,"max")) {
-			CYRIL_VERSION=1;
-			AUTO_FULL_SCREEN=0;
-		}
-	}	
 
 	ARX_CHANGELEVEL_MakePath();
 	LogDebug << "ACL MakePath";
@@ -4480,7 +4469,7 @@ void LaunchMoulinex()
 
 		GetLevelNameByNum(lvl,tx);
 
-		if (strcasecmp(tx,"none"))
+		if (strcmp(tx,"none"))
 		{
 			sprintf(loadfrom,"graph\\levels\\level%s\\level%s.dlf",tx,tx);
 
