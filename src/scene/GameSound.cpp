@@ -1010,8 +1010,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 	
 	if (!bIsActive) return true;
 
-	if (!strcasecmp(name, "none"))
-	{
+	if(name == "none") {
 		aalAmbianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
 		ambiance_zone = INVALID_ID;
 		return true;
