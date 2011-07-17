@@ -103,4 +103,6 @@ void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io);
 
 void ARX_PHYSICS_Apply();
 
+void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing = 0);
+
 #endif // ARX_GAME_NPC_H

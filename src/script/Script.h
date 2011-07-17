@@ -493,7 +493,6 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params = "");
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "");
 
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
-void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing = 0);
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
 bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string & group);
 void ARX_SCRIPT_Free_All_Global_Variables();
