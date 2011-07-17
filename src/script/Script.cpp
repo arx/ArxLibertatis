@@ -2707,62 +2707,6 @@ bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string& group)
 	return false;
 }
 
-void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io)
-{
-	if (io->iogroups) free(io->iogroups);
-
-	io->iogroups = NULL;
-	io->nb_iogroups = 0;
-}
-
-void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group)
-{
-	if ( group.empty() ) return;
-
-	long toremove = -1;
-
-	for (long i = 0; i < io->nb_iogroups; i++)
-	{
-		if ((io->iogroups[i].name)
-				&&	(!strcasecmp(group, io->iogroups[i].name)))
-			toremove = i;
-	}
-
-	if (toremove == -1) return;
-
-	if (io->nb_iogroups == 1)
-	{
-		free(io->iogroups);
-		io->iogroups = NULL;
-		io->nb_iogroups = 0;
-		return;
-	}
-
-	IO_GROUP_DATA * temporary = (IO_GROUP_DATA *)malloc(sizeof(IO_GROUP_DATA) * (io->nb_iogroups - 1));
-	long pos = 0;
-
-	for (int i = 0; i < io->nb_iogroups; i++)
-	{
-		if (i != toremove)
-			strcpy(temporary[pos++].name, io->iogroups[i].name);
-	}
-
-	free(io->iogroups);
-	io->iogroups = temporary;
-	io->nb_iogroups--;
-}
-
-void ARX_IOGROUP_Add( INTERACTIVE_OBJ * io, const std::string& group )
-{
-	if ( group.empty() ) return;
-
-	if (IsIOGroup(io, group)) return;
-
-	io->iogroups = (IO_GROUP_DATA *)realloc(io->iogroups, sizeof(IO_GROUP_DATA) * (io->nb_iogroups + 1));
-	strcpy(io->iogroups[io->nb_iogroups].name, group.c_str());
-	io->nb_iogroups++;
-}
-
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events()
 {
 	long max = -1;

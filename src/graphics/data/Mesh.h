@@ -543,7 +543,7 @@ struct INTERACTIVE_OBJ
 	Material material;
 
 
-	IO_GROUP_DATA *		iogroups;
+	IO_GROUP_DATA * iogroups; // TODO should be std::set<std::string>
 	short				nb_iogroups;
 	char				sizex;		// Inventory Icon sizeX
 	char				sizey;		// Inventory Icon sizeY

@@ -468,9 +468,6 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 //! Generates a random name for an unnamed timer
 std::string ARX_SCRIPT_Timer_GetDefaultName();
 
-void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string & group);
-void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const std::string & group);
-
 // Use to set the value of a script variable
 SCRIPT_VAR * SETVarValueText(SCRIPT_VAR *& svf, long & nb, const std::string &  name, const std::string & val);
 SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR *& svf, long & nb, const std::string & name, long val);
@@ -497,7 +494,6 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std:
 
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
 void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing = 0);
-void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io);
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
 bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string & group);
 void ARX_SCRIPT_Free_All_Global_Variables();

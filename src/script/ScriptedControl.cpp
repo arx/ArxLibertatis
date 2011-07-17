@@ -217,34 +217,83 @@ public:
 
 class SetGroupCommand : public Command {
 	
+	static void add(INTERACTIVE_OBJ & io, const string & group) {
+		
+		if(IsIOGroup(&io, group)) {
+			return;
+		}
+		
+		io.iogroups = (IO_GROUP_DATA *)realloc(io.iogroups, sizeof(IO_GROUP_DATA) * (io.nb_iogroups + 1));
+		strcpy(io.iogroups[io.nb_iogroups].name, group.c_str());
+		io.nb_iogroups++;
+	}
+	
+	static void remove(INTERACTIVE_OBJ & io, const string & group) {
+		
+		long toremove = -1;
+		for(long i = 0; i < io.nb_iogroups; i++) {
+			if(!strcasecmp(group, io.iogroups[i].name)) {
+				toremove = i;
+			}
+		}
+		
+		if(toremove == -1) {
+			return;
+		}
+		
+		if(io.nb_iogroups == 1) {
+			free(io.iogroups);
+			io.iogroups = NULL;
+			io.nb_iogroups = 0;
+			return;
+		}
+		
+		IO_GROUP_DATA * temporary = (IO_GROUP_DATA *)malloc(sizeof(IO_GROUP_DATA) * (io.nb_iogroups - 1));
+		long pos = 0;
+		for(int i = 0; i < io.nb_iogroups; i++) {
+			if(i != toremove) {
+				strcpy(temporary[pos++].name, io.iogroups[i].name);
+			}
+		}
+		
+		free(io.iogroups);
+		io.iogroups = temporary;
+		io.nb_iogroups--;
+	}
+	
 public:
 	
 	SetGroupCommand() : Command("setgroup", ANY_IO) { }
 	
 	Result execute(Context & context) {
 		
-		bool remove = false;
+		bool rem = false;
 		HandleFlags("r") {
-			remove = (flg & flag('r'));
+			rem = (flg & flag('r'));
 		}
 		
 		string group = toLowercase(context.getStringVar(context.getLowercase()));
 		
 		DebugScript(' ' << options << ' ' << group);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		INTERACTIVE_OBJ & io = *context.getIO();
 		if(group == "door") {
-			if(remove) {
-				io->GameFlags &= ~GFLAG_DOOR;
+			if(rem) {
+				io.GameFlags &= ~GFLAG_DOOR;
 			} else {
-				io->GameFlags |= GFLAG_DOOR;
+				io.GameFlags |= GFLAG_DOOR;
 			}
 		}
 		
-		if(remove) {
-			ARX_IOGROUP_Remove(io, group);
+		if(group.empty()) {
+			ScriptWarning << "missing group";
+			return Failed;
+		}
+		
+		if(rem) {
+			remove(io, group);
 		} else {
-			ARX_IOGROUP_Add(io, group);
+			add(io, group);
 		}
 		
 		return Success;

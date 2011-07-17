@@ -1294,6 +1294,18 @@ void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io)
 		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 }
+
+
+
+static void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io) {
+	
+	if(io->iogroups) {
+		free(io->iogroups), io->iogroups = NULL;
+	}
+	
+	io->nb_iogroups = 0;
+}
+
 void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 {
 	if (io)
