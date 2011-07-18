@@ -216,7 +216,7 @@ if(ARX_USE_OPENAL)
 endif()
 find_package(Doxygen)
 find_package(PythonInterp)
-find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(Boost REQUIRED COMPONENTS filesystem system)
 
 mark_as_advanced(IL_INCLUDE_DIR)
 mark_as_advanced(ILUT_LIBRARIES)

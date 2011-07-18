@@ -62,9 +62,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cassert>
 #include <cstdio>
-
 #include <fstream>
 #include <sstream>
+#include <set>
+
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <windows.h>
 #include <shellapi.h>
@@ -149,6 +152,8 @@ using std::min;
 using std::max;
 using std::string;
 using std::ostringstream;
+
+namespace fs = boost::filesystem;
 
 void DemoFileCheck();
 
@@ -1110,6 +1115,75 @@ void forInternalPeople(LPSTR strCmdLine) {
 
 HWND mainWindow = 0;
 
+static bool migrateFilenames(fs::path path) {
+	
+	string name = path.leaf().string();
+	string lowercase = toLowercase(name);
+	
+	bool migrated = true;
+	
+	if(lowercase != name) {
+		
+		fs::path dst = path.parent_path() / lowercase;
+		
+		LogInfo << "renaming " << path << " to " << dst.leaf() << "";
+		
+		try {
+			fs::rename(path, dst);
+			path = dst;
+		} catch(fs::filesystem_error) {
+			migrated = false;
+		}
+		
+	}
+	
+	try {
+		if(fs::is_directory(path)) {
+			fs::directory_iterator end;
+			for(fs::directory_iterator it(path); it != end; ++it) {
+				migrated &= migrateFilenames(it->path());
+			}
+		}
+	} catch(fs::filesystem_error) {
+		migrated = false;
+	}
+	
+	return migrated;
+}
+
+static bool migrateFilenames() {
+	
+	LogInfo << "changing filenames to lowercase...";
+	
+	static const char * files[] = { "cfg.ini", "cfg_default.ini",
+	 "sfx.pak", "loc.pak", "data2.pak", "data.pak", "speech.pak",
+	 "save", "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
+	
+	std::set<string> fileset;
+	for(size_t i = 0; i < sizeof(files)/sizeof(*files); i++) {
+		fileset.insert(files[i]);
+	}
+	
+	bool migrated = true;
+	
+	try {
+		fs::directory_iterator end;
+		for(fs::directory_iterator it("./"); it != end; ++it) {
+			if(fileset.find(toLowercase(it->path().leaf().string())) != fileset.end()) {
+				migrated &= migrateFilenames(it->path());
+			}
+		}
+	} catch(fs::filesystem_error) {
+		migrated = false;
+	}
+	
+	if(!migrated) {
+		LogError << "Could not rename all files to lowercase, please do so manually!";
+	}
+	
+	return migrated;
+}
+
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
 int main(int argc, char ** argv) {
@@ -1148,10 +1222,23 @@ int main(int argc, char ** argv) {
 	}
 	
 	// Initialize config first, before anything else.
-	const char RESOURCE_CONFIG[] = "cfg.ini";
+	fs::path configFile = "cfg.ini";
+	
+	bool migrated = false;
+	if(!fs::exists(configFile)) {
+		migrated = migrateFilenames();
+	}
+	
 	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
-	if(!config.init(RESOURCE_CONFIG, RESOURCE_CONFIG_DEFAULT)) {
-		LogWarning << "Could not read config files " << RESOURCE_CONFIG << " and " << RESOURCE_CONFIG_DEFAULT;
+	if(!config.init(configFile.string(), RESOURCE_CONFIG_DEFAULT)) {
+		LogWarning << "Could not read config files " << configFile << " and " << RESOURCE_CONFIG_DEFAULT;
+	}
+	
+	if(!migrated && config.misc.migration < Config::CaseSensitiveFilenames) {
+		migrated = migrateFilenames();
+	}
+	if(migrated) {
+		config.misc.migration = Config::CaseSensitiveFilenames;
 	}
 	
 	Random::seed();

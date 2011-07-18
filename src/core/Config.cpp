@@ -75,7 +75,8 @@ const int
 	sfxVolume = 10,
 	speechVolume = 10,
 	ambianceVolume = 10,
-	mouseSensitivity = 4;
+	mouseSensitivity = 4,
+	migration = Config::OriginalAssets;
 
 const bool
 	first_run = true,
@@ -244,7 +245,8 @@ const string
 	forceZBias = "forcezbias",
 	forceToggle = "forcetoggle",
 	gore = "fg",
-	newControl = "newcontrol";
+	newControl = "newcontrol",
+	migration = "migration";
 
 } // namespace Key
 
@@ -672,6 +674,7 @@ bool Config::save() {
 	writer.writeKey(Key::newControl, misc.newControl);
 	writer.writeKey(Key::forceToggle, misc.forceToggle);
 	writer.writeKey(Key::gore, misc.gore);
+	writer.writeKey(Key::migration, misc.migration);
 	
 	return writer.flush();
 }
@@ -753,6 +756,7 @@ bool Config::init(const string & file, const string & defaultFile) {
 	misc.forceToggle = reader.getKey(Section::Misc, Key::forceToggle, Default::forceToggle);
 	misc.gore = reader.getKey(Section::Misc, Key::gore, Default::gore);
 	misc.newControl = reader.getKey(Section::Misc, Key::newControl, Default::newControl);
+	misc.migration = (MigrationStatus)reader.getKey(Section::Misc, Key::migration, Default::migration);
 	
 	return loaded;
 }
