@@ -995,8 +995,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!specialstrcmp(name, "^myspell_"))
 			{
-				const char * temp = name.c_str() + 9;
-				Spell id = GetSpellId(toLowercase(temp));
+				Spell id = GetSpellId(name.substr(9));
 
 				if(id != SPELL_NONE)
 				{
