@@ -1744,15 +1744,10 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 		case WM_INITDIALOG:
 			HWND thWnd;
-			char tex[128];
 
 			thWnd = GetDlgItem(hWnd, IDC_NODIRCREATION);
 
 			if (NODIRCREATION) SendMessage(thWnd, BM_CLICK, 0, 0);
-
-			thWnd = GetDlgItem(hWnd, IDC_VERSION);
-			sprintf(tex, "Ver.%2.3f", DANAE_VERSION);
-			SetWindowText(thWnd, tex);
 
 			SetClick(hWnd, IDC_OTHERSERVER);
 
@@ -1818,14 +1813,7 @@ INT_PTR CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 		if (IDOK == LOWORD(wParam) || IDCANCEL == LOWORD(wParam))
 			EndDialog(hWnd, true);
 
-	if (uMsg == WM_INITDIALOG)
-	{
-		HWND thWnd;
-		char tex[128];
-
-		thWnd = GetDlgItem(hWnd, IDC_ABOUT_VERSION);
-		sprintf(tex, "Ver.%2.3f", DANAE_VERSION);
-		SetWindowText(thWnd, tex);
+	if(uMsg == WM_INITDIALOG) {
 		return true;
 	}
 

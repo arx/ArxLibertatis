@@ -77,8 +77,6 @@ int newBpp;
 bool changeResolution = false;
 bool changeTextures = false;
 
-extern char* GetVersionString();
-
 #define NODEBUGZONE
 
 //-----------------------------------------------------------------------------
@@ -656,7 +654,7 @@ bool Menu2_Render() {
 	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
 	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
 #undef MACRO_MENU_PRINCIPALE
-		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
+		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(520), RATIO_Y(80), lColor, 1.0f, NOP );
 		me->SetCheckOff();
 		me->lColor=Color(127,127,127);
 		pMenu->AddMenuElement(me);

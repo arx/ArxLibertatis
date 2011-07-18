@@ -1133,7 +1133,6 @@ int main(int argc, char ** argv) {
 		LogDebug << "FOR_EXTERNAL_PEOPLE";
 		ALLOW_CHEATS		= 0;
 		NO_TEXT_AT_ALL		= 1;
-
 		FAST_SPLASHES		= 0;
 		FORCE_SHOW_FPS		= 0;
 		FINAL_RELEASE		= 1;
@@ -1183,7 +1182,7 @@ int main(int argc, char ** argv) {
 
 	if(FINAL_RELEASE) {
 		
-		LogInfo << "FINAL RELEASE";
+		LogInfo << "Starting " << arxVersion;
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
 		
@@ -1492,25 +1491,8 @@ int main(int argc, char ** argv) {
 		config.language = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
-
-	char tex[512];
-
-#ifdef BUILD_EDITOR
-	if(GAME_EDITOR) {
-		sprintf(tex,"DANAE Project");
-	} else
-#endif
-	{
-		sprintf(tex,"ARX Fatalis");
-	}
-
-#ifdef BUILD_EDITOR
-	if(MOULINEX)
-		sprintf(tex,"MOULINEX");
-#endif
-
-	strcat(tex, arxVersion.c_str());
-	SetWindowText(danaeApp.m_hWnd, tex);
+	
+	SetWindowText(danaeApp.m_hWnd, arxVersion.c_str());
 	
 	Project.interfacergb.r = 0.46f;
 	Project.interfacergb.g = 0.46f;
@@ -6736,9 +6718,9 @@ void ShowTestText()
 	char tex[256];
 
 	if (FINAL_COMMERCIAL_GAME)
-		sprintf(tex,"Version : Final 1.00 - Build n%02.3f",DANAE_VERSION);
+		sprintf(tex,"Version : Final 1.00");
 	else
-		sprintf(tex,"Version : Demo  1.01 - Build n%02.3f",DANAE_VERSION);
+		sprintf(tex,"Version : Demo  1.01");
 
 	danaeApp.OutputText( 0, 16, tex );
 
