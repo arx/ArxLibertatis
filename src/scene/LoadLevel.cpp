@@ -820,8 +820,8 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 #endif
 		{
 			io->ident = ident;
-			string tmp = toLowercase(io->full_name()); // Get the directory name to check for
-			string id = toLowercase(io->short_name()); // TODO(case-sensitive) remove toLowercase
+			string tmp = io->full_name(); // Get the directory name to check for
+			string id = io->short_name();
 
 			if(PakDirectory * dir = resources->getDirectory(tmp)) {
 				if(PakFile * file = dir->getFile(id + ".asl")) {
@@ -1178,12 +1178,12 @@ long DanaeLoadLevel(const string & file) {
 		const DANAE_LS_NODE * dln = reinterpret_cast<const DANAE_LS_NODE *>(dat + pos);
 		pos += sizeof(DANAE_LS_NODE);
 		
-		strncpy(nodes.nodes[i].name, dln->name, sizeof(dln->name));
+		strcpy(nodes.nodes[i].name, toLowercase(safestring(dln->name)).c_str());
 		nodes.nodes[i].pos = (Vec3f)dln->pos + trans;
 		
 		for(long j = 0; j < dlh.nb_nodeslinks; j++) {
 			if(dat[pos] != '\0') {
-				strncpy(nodes.nodes[i].lnames[j], dat + pos, 64);
+				strcpy(nodes.nodes[i].lnames[j], toLowercase(safestring(dat + pos, 64)).c_str());
 			}
 			pos += 64;
 		}
