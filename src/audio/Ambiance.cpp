@@ -369,15 +369,19 @@ static aalError _LoadAmbiance_1002(PakFileHandle * file, size_t track_c, Ambianc
 		}
 		
 		//Get track name (!= sample name)
-		size_t k = 0;
-		char text[256];
-		do {
-			if(!file->read(&text[k], 1)) return AAL_ERROR_FILEIO;
+		track->name.clear();
+		for(;;) {
+			char c;
+			if(!file->read(&c, 1)) {
+				return AAL_ERROR_FILEIO;
+			}
+			if(c) {
+				track->name.push_back(c);
+			} else {
+				break;
+			}
 		}
-		while(text[k++]);
-		if(k > 1) {
-			track->name = toLowercase(text);
-		}
+		makeLowercase(track->name);
 		
 		// Read flags and key count
 		u32 flags;
@@ -420,16 +424,19 @@ static aalError _LoadAmbiance_1003(PakFileHandle * file, size_t track_c, Ambianc
 		}
 		
 		//Get track name (!= sample name)
-		size_t k = 0;
-		char text[256];
-		do {
-			if(!file->read(&text[k], 1)) {
+		track->name.clear();
+		for(;;) {
+			char c;
+			if(!file->read(&c, 1)) {
 				return AAL_ERROR_FILEIO;
 			}
-		} while(text[k++]);
-		if(k > 1) {
-			track->name = toLowercase(text);
+			if(c) {
+				track->name.push_back(c);
+			} else {
+				break;
+			}
 		}
+		makeLowercase(track->name);
 		
 		// Read flags and key count
 		u32 flags;
