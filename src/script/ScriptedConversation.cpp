@@ -189,7 +189,7 @@ public:
 			}
 		}
 		
-		string text = toLowercase(context.getStringVar(context.getWord()));
+		string text = context.getStringVar(context.getWord());
 		
 		DebugScript(' ' << options << " \"" << text << '"');
 		
@@ -359,7 +359,7 @@ public:
 			return Success;
 		}
 		
-		string data = loadUnlocalized(toLowercase(context.getStringVar(text)));
+		string data = loadUnlocalized(context.getStringVar(text));
 		
 		DebugScript(' ' << options << ' ' << data); // TODO debug more
 		
