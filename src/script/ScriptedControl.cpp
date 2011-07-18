@@ -272,7 +272,7 @@ public:
 			rem = (flg & flag('r'));
 		}
 		
-		string group = toLowercase(context.getStringVar(context.getWord()));
+		string group = context.getStringVar(context.getWord());
 		
 		DebugScript(' ' << options << ' ' << group);
 		
