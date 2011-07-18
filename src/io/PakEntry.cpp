@@ -76,6 +76,8 @@ PakDirectory * PakDirectory::addDirectory(strref path) {
 	}
 }
 
+static char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
+
 PakDirectory * PakDirectory::getDirectory(strref path) {
 	
 	const char * pos = find_first_of(path.begin(), path.end(), DIR_SEP, DIR_SEP + sizeof(DIR_SEP));
@@ -84,6 +86,8 @@ PakDirectory * PakDirectory::getDirectory(strref path) {
 	if(name.empty()) {
 		return this;
 	}
+	
+	arx_assert(std::find_first_of(name.begin(), name.end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == name.end()); // TODO(case-sensitive) remove
 	
 	dirs_iterator dir = dirs.find(name);
 	if(dir == dirs.end()) {
@@ -111,6 +115,8 @@ void PakDirectory::addFile(const string & name, PakFile * file) {
 
 PakFile * PakDirectory::getFile(const string & path) {
 	
+	arx_assert(path[0] != '\\');
+	
 	size_t pos = path.find_last_of(DIR_SEP);
 	
 	PakDirectory * d = this;
@@ -120,6 +126,8 @@ PakFile * PakDirectory::getFile(const string & path) {
 			return NULL;
 		}
 	}
+	
+	arx_assert(std::find_first_of(path.begin() + pos, path.end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.end()); // TODO(case-sensitive) remove
 	
 	files_iterator file = d->files.find((pos == string::npos) ? path : path.substr(pos + 1));
 	if(file == d->files.end()) {

@@ -63,8 +63,6 @@ public:
 	
 	~PakReader();
 	
-	PakFile * getFile(const std::string & path); // TODO remove
-	
 	bool addFiles(const std::string & path);
 	bool addArchive(const std::string & pakfile);
 	void clear();

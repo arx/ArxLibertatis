@@ -571,12 +571,6 @@ void PakReader::clear() {
 	}
 }
 
-// TODO remove
-PakFile * PakReader::getFile(const std::string & path) {
-	arx_assert(path[0] != '\\');
-	return PakDirectory::getFile(toLowercase(path));
-}
-
 bool PakReader::read(const string & name, void * buf) {
 	
 	PakFile * f = getFile(name);
@@ -631,8 +625,7 @@ bool PakReader::addFiles(PakDirectory * dir, const string & path) {
 		}
 		
 		string name = path + '/' + ent->d_name;
-		// TODO remove
-		string entry = toLowercase(ent->d_name);
+		string entry = toLowercase(ent->d_name); // TODO(case-sensitive) remove
 		
 		if(addFiles(dir->addDirectory(entry), name)) {
 			continue;
