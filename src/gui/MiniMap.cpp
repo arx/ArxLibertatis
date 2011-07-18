@@ -104,7 +104,7 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 		char LevelMap[256];
 		GetLevelNameByNum(SHOWLEVEL, name);
 
-		sprintf(LevelMap, "graph\\levels\\level%s\\map.bmp", name);
+		sprintf(LevelMap, "graph/levels/level%s/map.bmp", name);
 		minimap[SHOWLEVEL].tc = TextureContainer::Load(LevelMap);
 
 		if (minimap[SHOWLEVEL].tc) // 4 pix/meter
@@ -206,7 +206,7 @@ void ARX_MINIMAP_ValidatePlayerPos()
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_Load_Offsets()
 {
-	const char INI_MINI_OFFSETS[] = "graph\\levels\\mini_offsets.ini";
+	const char INI_MINI_OFFSETS[] = "graph/levels/mini_offsets.ini";
 	
 	PakFile * file = resources->getFile(INI_MINI_OFFSETS);
 	if(!file) {
@@ -323,7 +323,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 	static const float FL2_PLAYERSIZE = 4.f;
 
 	if (!pTexDetect)
-		pTexDetect = TextureContainer::Load("graph\\particles\\flare.bmp");
+		pTexDetect = TextureContainer::Load("graph/particles/flare.bmp");
 
 	//	SHOWLEVEL=8;
 	// First Load Minimap TC & DATA if needed
@@ -908,7 +908,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					}
 
 					if (MapMarkerTc == NULL)
-						MapMarkerTc = TextureContainer::Load("graph\\interface\\icons\\mapmarker.bmp");
+						MapMarkerTc = TextureContainer::Load("graph/interface/icons/mapmarker.bmp");
 
 					GRenderer->SetTexture(0, MapMarkerTc);
 
