@@ -45,7 +45,9 @@ std::string Context::getCommand() {
 		
 		char c = esdat[pos];
 		if(c == '"') {
-			LogWarning << ScriptContextPrefix(*this) << ": unexpected '\"' in command name";
+			if(word.length() < 2 || word[0] != '/' || word[1] != '/') {
+				LogWarning << ScriptContextPrefix(*this) << ": unexpected '\"' in command name";
+			}
 		} else if(c == '~') {
 			LogWarning << ScriptContextPrefix(*this) << ": unexpected '~' in command name";
 		} else if(c == '\n') {
