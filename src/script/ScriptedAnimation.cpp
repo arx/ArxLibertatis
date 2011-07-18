@@ -290,9 +290,9 @@ public:
 		}
 		
 		if(iot == inter.iobj[0] || (iot->ioflags & IO_NPC)) {
-			file = "graph\\obj3d\\anims\\npc\\" + file;
+			file = "graph/obj3d/anims/npc/" + file;
 		} else {
-			file = "graph\\obj3d\\anims\\fix_inter\\" + file;
+			file = "graph/obj3d/anims/fix_inter/" + file;
 		}
 		SetExt(file, ".tea");
 		string path;
