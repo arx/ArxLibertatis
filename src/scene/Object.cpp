@@ -938,7 +938,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & 
 	
 	seerie->nbtex = psth->nb_maps;
 	
-	const string temp = "graph\\obj3d\\textures\\";
+	const string temp = "graph/obj3d/textures/";
 	
 	if(psth->type_write == 0) {
 		
@@ -1682,7 +1682,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const string & tex
 	
 	string txpath;
 	if(texpath.empty()) {
-		txpath = "graph\\obj3d\\textures\\";
+		txpath = "graph/obj3d/textures/";
 	} else {
 		txpath = texpath;
 	}
@@ -1979,7 +1979,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 }
 
 EERIE_3DOBJ * loadObject(const string & file, bool pbox) {
-	return TheoToEerie_Fast("graph\\obj3d\\textures\\", file, pbox);
+	return TheoToEerie_Fast("graph/obj3d/textures/", file, pbox);
 }
 
 EERIE_3DOBJ * _LoadTheObj(const string & file, const string & texpath) {
