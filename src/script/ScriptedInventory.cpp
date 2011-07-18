@@ -172,7 +172,7 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			File_Standardize("graph\\obj3d\\interactive\\items\\" + file + ".teo", file);
+			File_Standardize("graph/obj3d/interactive/items/" + file + ".teo", file);
 			
 			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(file, IO_IMMEDIATELOAD);
 			if(!ioo) {
@@ -275,7 +275,7 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			File_Standardize("graph\\obj3d\\interactive\\items\\" + file + ".teo", file);
+			File_Standardize("graph/obj3d/interactive/items/" + file + ".teo", file);
 			
 			long count = -1;
 			if(multi) {
