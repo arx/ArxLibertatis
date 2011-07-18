@@ -88,7 +88,7 @@ CSummonCreature::CSummonCreature() : fColorRays1(Color3f::white), fColorBorder(C
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
 
-	tex_light = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu4.bmp");
+	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4.bmp");
 }
 
 void CSummonCreature::SetDuration(const unsigned long alDuration)
@@ -703,7 +703,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	pPSStream.SetParams(cp);
 	pPSStream.ulParticleSpawn = 0;
 
-	pPSStream.SetTexture("graph\\particles\\smallfire", 4, 10);
+	pPSStream.SetTexture("graph/particles/smallfire", 4, 10);
 
 	pPSStream.fParticleFreq = 250;
 	pPSStream.bParticleFollow = false;
@@ -763,7 +763,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	pPSHit.SetParams(cp);
 	pPSHit.ulParticleSpawn = 0;
 
-	pPSHit.SetTexture("graph\\particles\\firebase", 4, 100);
+	pPSHit.SetTexture("graph/particles/firebase", 4, 100);
 
 	pPSHit.fParticleFreq = -1;
 	pPSHit.SetPos(eSrc);
@@ -867,11 +867,11 @@ CNegateMagic::CNegateMagic()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_bluepouf.bmp");
-	tex_sol = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_negate_magic.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf.bmp");
+	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic.bmp");
 
 	if (!ssol)
-		ssol = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 		
 	ssol_count++;
 	

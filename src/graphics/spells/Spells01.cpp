@@ -134,7 +134,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 		cp.fEndColor[1] = 40;
 		cp.fEndColor[2] = 120;
 		cp.fEndColor[3] = 10;//55;
-		pPS->SetTexture("graph\\particles\\(fx)_mr.bmp", 0, 500);
+		pPS->SetTexture("graph/particles/(fx)_mr.bmp", 0, 500);
 	}
 	else
 	{
@@ -151,7 +151,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 		cp.fEndColor[1] = 0;
 		cp.fEndColor[2] = 120;
 		cp.fEndColor[3] = 10;
-		pPS->SetTexture("graph\\particles\\magicexplosion.bmp", 0, 500);
+		pPS->SetTexture("graph/particles/magicexplosion.bmp", 0, 500);
 	}
 
 	cp.fEndColorRandom[0] = 50;
@@ -213,10 +213,10 @@ CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f:
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_mm = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_bandelette_blue.bmp");
+	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue.bmp");
 
 	if (!smissile)
-		smissile = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_magic_missile\\fx_magic_missile.teo");
+		smissile = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
 
 	smissile_count++;
 
@@ -826,7 +826,7 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 		this->tablight[nb].idl = -1;
 	}
 
-	this->ChangeTexture(TextureContainer::Load("graph\\particles\\fire_hit.bmp"));
+	this->ChangeTexture(TextureContainer::Load("graph/particles/fire_hit.bmp"));
 	this->ChangeRGBMask(1.f, 1.f, 1.f, RGBA_MAKE(255, 200, 0, 255));
 }
 

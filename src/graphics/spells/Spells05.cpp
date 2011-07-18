@@ -179,7 +179,7 @@ void CCurePoison::Create()
 	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	pPS->SetTexture("graph\\particles\\cure_poison.bmp", 0, 100); //5
+	pPS->SetTexture("graph/particles/cure_poison.bmp", 0, 100); //5
 
 	pPS->lLightId = GetFreeDynLight();
 
@@ -307,20 +307,20 @@ CRuneOfGuarding::CRuneOfGuarding() {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 	
-	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
 
 	if (!ssol)
-		ssol = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 	
 	ssol_count++;
 
 	if (!slight)
-		slight = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
+		slight = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
 	
 	slight_count++;
 
 	if (!srune)
-		srune = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
+		srune = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
 	
 	srune_count++;
 }
@@ -560,7 +560,7 @@ void LaunchPoisonExplosion(Vec3f * aePos)
 	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
-	pPS->SetTexture("graph\\particles\\big_greypouf.bmp", 0, 200);
+	pPS->SetTexture("graph/particles/big_greypouf.bmp", 0, 200);
 
 	pPS->SetPos(*aePos);
 	pPS->Update(0);
@@ -695,7 +695,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pPS.SetParams(cp);
 	pPS.ulParticleSpawn = 0;
 
-	pPS.SetTexture("graph\\particles\\big_greypouf.bmp", 0, 200);
+	pPS.SetTexture("graph/particles/big_greypouf.bmp", 0, 200);
 
 	pPS.fParticleFreq = -1;
 
@@ -775,7 +775,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			pPSStream.SetParams(cp);
 			pPSStream.ulParticleSpawn = 0;
 
-			pPSStream.SetTexture("graph\\particles\\big_greypouf.bmp", 0, 200);
+			pPSStream.SetTexture("graph/particles/big_greypouf.bmp", 0, 200);
 
 			pPSStream.fParticleFreq = 80;
 			pPSStream.bParticleFollow = true;
@@ -1081,20 +1081,20 @@ CRepelUndead::CRepelUndead()
 
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
 
 	if (!ssol) // Pentacle
-		ssol = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 
 	ssol_count++;
 
 	if (!slight) // Twirl
-		slight = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
+		slight = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
 
 	slight_count++; //runes
 
 	if (!srune)
-		srune = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
+		srune = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
 
 	srune_count++;
 }
@@ -1276,13 +1276,13 @@ CLevitate::CLevitate()
 	}
 
 	if(!stone0) {
-		stone0 = loadObject("graph\\obj3d\\interactive\\fix_inter\\fx_raise_dead\\stone01.teo");
+		stone0 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone01.teo");
 	}
 
 	stone0_count++;
 
 	if(!stone1) {
-		stone1 = loadObject("graph\\obj3d\\interactive\\fix_inter\\fx_raise_dead\\stone02.teo");
+		stone1 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone02.teo");
 	}
 
 	stone1_count++;
@@ -1368,7 +1368,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	this->scale = 0.f;
 	this->ang = 0.f;
 	this->def = (short)def;
-	this->tsouffle = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_sebsouffle.bmp");
+	this->tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle.bmp");
 
 	this->timestone = 0;
 	this->nbstone = 0;

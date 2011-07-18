@@ -766,15 +766,15 @@ CConfuse::CConfuse()
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
-	tex_trail = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_bandelette_blue.bmp");
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
+	tex_trail = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue.bmp");
 
 	if (!spapi)
-		spapi = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\fx_papivolle\\fx_papivolle.teo");
+		spapi = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.teo");
 
 	spapi_count++;
 
-	const char tex[] = "graph\\obj3d\\interactive\\fix_inter\\fx_papivolle\\fx_papivolle.tea";
+	const char tex[] = "graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
 
 	fColor[0] = 0.3f;
@@ -1021,7 +1021,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	pPSStream.SetParams(cp);
 	pPSStream.ulParticleSpawn = 0;
 
-	pPSStream.SetTexture("graph\\particles\\firebase", 4, 100);
+	pPSStream.SetTexture("graph/particles/firebase", 4, 100);
 
 	pPSStream.fParticleFreq = 150.0f;
 	pPSStream.SetPos(*pos);
@@ -1079,7 +1079,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	pPSStream1.SetParams(cp);
 	pPSStream1.ulParticleSpawn = 0;
 
-	pPSStream1.SetTexture("graph\\particles\\fire.bmp", 0, 500);
+	pPSStream1.SetTexture("graph/particles/fire.bmp", 0, 500);
 
 	pPSStream1.fParticleFreq = 150.0f;
 	Vec3f ea;
@@ -1159,16 +1159,16 @@ CIceField::CIceField()
 
 	iNumber = 50;
 
-	tex_p1 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_blueting.bmp");
-	tex_p2 = TextureContainer::Load("graph\\obj3d\\textures\\(fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf.bmp");
 
 	if (!stite)
-		stite = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\stalagmite\\motte.teo");
+		stite = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
 		
 	stite_count++;
 
 	if (!smotte)
-		smotte = _LoadTheObj("graph\\obj3d\\interactive\\fix_inter\\stalagmite\\motte.teo");
+		smotte = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
 
 	smotte_count++;
 }
