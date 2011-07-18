@@ -57,7 +57,7 @@ void LocalisationInit() {
 	localisation.clear();
 
 	// Generate the filename for the localization strings
-	std::string tx = "localisation\\utext_" + config.language + ".ini";
+	std::string tx = "localisation/utext_" + config.language + ".ini";
 	
 	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
@@ -69,7 +69,7 @@ void LocalisationInit() {
 	{
 		// Default to english locale
 		config.language = "english";
-		tx = "localisation\\utext_" + config.language + ".ini";
+		tx = "localisation/utext_" + config.language + ".ini";
 
 		// Load the default english locale file
 		Localisation = (u16*)resources->readAlloc(tx, loc_file_size);
