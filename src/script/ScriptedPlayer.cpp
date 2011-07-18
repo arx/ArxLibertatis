@@ -446,7 +446,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string key = toLowercase(context.getStringVar(context.getWord()));
+		string key = context.getStringVar(context.getWord());
 		
 		DebugScript(' ' << key);
 		
