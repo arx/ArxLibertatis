@@ -106,10 +106,10 @@ static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
 static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
 static const float ARX_SOUND_REFUSE_DISTANCE(2500.0F);
 
-static const string ARX_SOUND_PATH_INI = "localisation\\";
-static const char ARX_SOUND_PATH_SAMPLE[] = "sfx\\";
-static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx\\ambiance\\";
-static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx\\environment\\";
+static const string ARX_SOUND_PATH_INI = "localisation/";
+static const char ARX_SOUND_PATH_SAMPLE[] = "sfx/";
+static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx/ambiance/";
+static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment/";
 static const string ARX_SOUND_PRESENCE_NAME = "presence";
 static const char ARX_SOUND_FILE_EXTENSION_WAV[] = ".wav";
 static const string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
@@ -595,7 +595,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 	Channel channel;
 	SampleId sample_id;
 
-	string file_name = "speech\\" + config.language + "\\" + name + ".wav";
+	string file_name = "speech/" + config.language + "/" + name + ".wav";
 
 	sample_id = aalCreateSample(file_name);
 
