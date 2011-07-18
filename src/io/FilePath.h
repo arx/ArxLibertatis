@@ -4,8 +4,8 @@
 
 #include "platform/String.h"
 
-const char EXT_OR_DIR_SEP[] = "./\\";
-const char DIR_SEP[] = "/\\";
+const char EXT_OR_DIR_SEP[] = "./\\"; // TODO(case-sensitive) remove backslash
+const char DIR_SEP[] = "/\\"; // TODO(case-sensitive) remove backslash
 
 /**
  * Get the directory bit of a path, up until the last

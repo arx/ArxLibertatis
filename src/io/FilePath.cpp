@@ -7,7 +7,7 @@ using std::string;
 using std::copy;
 
 static inline bool isDirSeperator(char c) {
-	return (c == '\\' || c == '/');
+	return (c == '\\' || c == '/'); // TODO(case-sensitive) remove backslash
 }
 
 string GetName(const string & str) {

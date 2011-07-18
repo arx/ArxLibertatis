@@ -115,7 +115,7 @@ void PakDirectory::addFile(const string & name, PakFile * file) {
 
 PakFile * PakDirectory::getFile(const string & path) {
 	
-	arx_assert(path[0] != '\\');
+	arx_assert(path[0] != '/');
 	
 	size_t pos = path.find_last_of(DIR_SEP);
 	

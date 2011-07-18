@@ -1769,7 +1769,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	
 	char levelId[256];
 	GetLevelNameByNum(num, levelId);
-	string levelFile = string("graph\\levels\\level") + levelId + "\\level" + levelId + ".dlf";
+	string levelFile = string("graph/levels/level") + levelId + "/level" + levelId + ".dlf";
 	
 	DONT_LOAD_INTERS = (!FirstTime) ? 1 : 0;
 	LOAD_N_DONT_ERASE = 1;
@@ -2297,9 +2297,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			}
 			
 			if(io->ioflags & IO_NPC) {
-				path = "graph\\obj3d\\anims\\npc\\" + GetName(path) + GetExt(path);
+				path = "graph/obj3d/anims/npc/" + GetName(path) + GetExt(path);
 			} else {
-				path = "graph\\obj3d\\anims\\fix_inter\\" + GetName(path) + GetExt(path);
+				path = "graph/obj3d/anims/fix_inter/" + GetName(path) + GetExt(path);
 			}
 			
 			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
