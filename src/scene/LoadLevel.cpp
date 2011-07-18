@@ -662,7 +662,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 	if (DirectoryExist(dir))
 	{
 		strcpy(temp, GetName(io->filename).c_str());
-		sprintf(dfile, "%s\\%s.log", dir.c_str(), temp);
+		sprintf(dfile, "%s/%s.log", dir.c_str(), temp);
 
 		if ((fic = fopen(dfile, "w")) != NULL)
 		{
@@ -725,7 +725,7 @@ void CheckIO_NOT_SAVED()
 
 								if (OKBox(temp3, "WARNING"))
 								{
-									temp += "\\";
+									temp += "/";
 									LogDirDestruction(temp);
 									KillAllDirectory(temp);
 								}
@@ -767,7 +767,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 
 			if (io->ident != 0)
 			{
-				temp = io->full_name() + "\\" + io->short_name() + ".asl"; // Looks odd, results in /path/human_0001/human.asl and so on
+				temp = io->full_name() + "/" + io->short_name() + ".asl"; // Looks odd, results in /path/human_0001/human.asl and so on
 
 				if (DirectoryExist( io->full_name() ))
 				{
@@ -1706,7 +1706,7 @@ void AddIdent(std::string & ident, long num)
 
 static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	
-	std::string fic = "graph\\levels\\level";
+	std::string fic = "graph/levels/level";
 	fic += path;
 
 	char _error[512];
@@ -1785,7 +1785,7 @@ void ARX_SAVELOAD_CheckDLFs() {
 	for (long n = 0; n < 24; n++)
 	{
 		char temp[256];
-		sprintf(temp, "%ld\\level%ld.dlf", n, n);
+		sprintf(temp, "%ld/level%ld.dlf", n, n);
 		ARX_SAVELOAD_DLFCheckAdd(temp, n);
 	}
 
