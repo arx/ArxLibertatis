@@ -383,7 +383,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		// Remove all underscores from the command.
 		word.resize(std::remove(word.begin(), word.end(), '_') - word.begin());
 		
-		Commands::const_iterator it = commands.find(toLowercase(word));
+		Commands::const_iterator it = commands.find(word);
 		
 		if(it != commands.end()) {
 			
