@@ -342,7 +342,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = toLowercase(context.getStringVar(context.getWord()));
+		string name = context.getStringVar(context.getWord());
 		
 		string attach = context.getWord();
 		
@@ -628,7 +628,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = toLowercase(context.getStringVar(context.getWord()));
+		string target = context.getStringVar(context.getWord());
 		
 		DebugScript(' ' << target);
 		
