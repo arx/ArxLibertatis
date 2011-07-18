@@ -551,7 +551,7 @@ public:
 			
 			string path = io->usemesh ? io->usemesh : io->filename;
 			RemoveName(path);
-			path += "tweaks\\" + mesh + ".teo";
+			path += "tweaks/" + mesh + ".teo";
 			
 			ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, string());
 			EERIE_MESH_TWEAK_Do(io, tw, path);

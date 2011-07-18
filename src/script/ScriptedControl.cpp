@@ -198,7 +198,7 @@ public:
 			ARX_TIME_Pause();
 		} else {
 			
-			string file = "graph\\interface\\illustrations\\" + name + ".cin";
+			string file = "graph/interface/illustrations/" + name + ".cin";
 			
 			if(resources->getFile(file)) {
 				strcpy(WILL_LAUNCH_CINE, name.c_str());
