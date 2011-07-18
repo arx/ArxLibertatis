@@ -216,14 +216,14 @@ public:
 		
 		string groupname;
 		if(group) {
-			groupname = toLowercase(context.getStringVar(context.getWord()));
+			groupname = context.getStringVar(context.getWord());
 		}
 		
 		string event = context.getWord();
 		
 		string zonename;
 		if(zone) {
-			zonename = toLowercase(context.getStringVar(context.getWord()));
+			zonename = context.getStringVar(context.getWord());
 		}
 		
 		float rad = 0.f;
@@ -755,7 +755,7 @@ public:
 		
 		bool condition;
 		if(t1 == TYPE_TEXT) {
-			condition = it->second->text(context, toLowercase(s1), toLowercase(s2)); // TODO case-sensitive
+			condition = it->second->text(context, s1, s2); // TODO case-sensitive
 			DebugScript(" \"" << left << "\" " << op << " \"" << right << "\"  ->  \"" << s1 << "\" " << op << " \"" << s2 << "\"  ->  " << (condition ? "true" : "false")); // TODO fix formatting in Logger and use std::boolalpha
 		} else {
 			condition = it->second->number(context, f1, f2);

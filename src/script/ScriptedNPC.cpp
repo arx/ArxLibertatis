@@ -430,7 +430,7 @@ public:
 		if(target == "object") {
 			target = context.getWord();
 		}
-		target = toLowercase(context.getStringVar(target));
+		target = context.getStringVar(target);
 		long t = GetTargetByNameTarget(target);
 		if(t == -2) {
 			t = GetInterNum(io);
