@@ -792,7 +792,7 @@ void InitializeDanae()
 	ARX_MAGICAL_FLARES_FirstInit();
 
 	strcpy(LastLoadedScene,"");
-	strcpy(levelPath, "graph\\levels\\level");
+	strcpy(levelPath, "graph/levels/level");
 
 	switch (Project.demo)
 	{
@@ -800,100 +800,100 @@ void InitializeDanae()
 			levelPath[0] = 0;
 			break;
 		case LEVELDEMO:
-			strcat(levelPath, "demo\\");
+			strcat(levelPath, "demo/");
 			break;
 		case LEVELDEMO2:
-			strcat(levelPath, "demo2\\");
+			strcat(levelPath, "demo2/");
 			break;
 		case LEVELDEMO3:
-			strcat(levelPath, "demo3\\");
+			strcat(levelPath, "demo3/");
 			break;
 		case LEVELDEMO4:
-			strcat(levelPath, "demo4\\");
+			strcat(levelPath, "demo4/");
 			break;
 		case LEVEL0:
-			strcat(levelPath, "0\\");
+			strcat(levelPath, "0/");
 			break;
 		case LEVEL1:
-			strcat(levelPath, "1\\");
+			strcat(levelPath, "1/");
 			break;
 		case LEVEL2:
-			strcat(levelPath, "2\\");
+			strcat(levelPath, "2/");
 			break;
 		case LEVEL3:
-			strcat(levelPath, "3\\");
+			strcat(levelPath, "3/");
 			break;
 		case LEVEL4:
-			strcat(levelPath, "4\\");
+			strcat(levelPath, "4/");
 			break;
 		case LEVEL5:
-			strcat(levelPath, "5\\");
+			strcat(levelPath, "5/");
 			break;
 		case LEVEL6:
-			strcat(levelPath, "6\\");
+			strcat(levelPath, "6/");
 			break;
 		case LEVEL7:
-			strcat(levelPath, "7\\");
+			strcat(levelPath, "7/");
 			break;
 		case LEVEL8:
-			strcat(levelPath, "8\\");
+			strcat(levelPath, "8/");
 			break;
 		case LEVEL9:
-			strcat(levelPath, "9\\");
+			strcat(levelPath, "9/");
 			break;
 		case LEVEL10:
-			strcat(levelPath, "10\\");
+			strcat(levelPath, "10/");
 			break;
 		case LEVEL11:
-			strcat(levelPath, "11\\");
+			strcat(levelPath, "11/");
 			break;
 		case LEVEL12:
-			strcat(levelPath, "12\\");
+			strcat(levelPath, "12/");
 			break;
 		case LEVEL13:
-			strcat(levelPath, "13\\");
+			strcat(levelPath, "13/");
 			break;
 		case LEVEL14:
-			strcat(levelPath, "14\\");
+			strcat(levelPath, "14/");
 			break;
 		case LEVEL15:
-			strcat(levelPath, "15\\");
+			strcat(levelPath, "15/");
 			break;
 		case LEVEL16:
-			strcat(levelPath, "16\\");
+			strcat(levelPath, "16/");
 			break;
 		case LEVEL17:
-			strcat(levelPath, "17\\");
+			strcat(levelPath, "17/");
 			break;
 		case LEVEL18:
-			strcat(levelPath, "18\\");
+			strcat(levelPath, "18/");
 			break;
 		case LEVEL19:
-			strcat(levelPath, "19\\");
+			strcat(levelPath, "19/");
 			break;
 		case LEVEL20:
-			strcat(levelPath, "20\\");
+			strcat(levelPath, "20/");
 			break;
 		case LEVEL21:
-			strcat(levelPath, "21\\");
+			strcat(levelPath, "21/");
 			break;
 		case LEVEL22:
-			strcat(levelPath, "22\\");
+			strcat(levelPath, "22/");
 			break;
 		case LEVEL23:
-			strcat(levelPath, "23\\");
+			strcat(levelPath, "23/");
 			break;
 		case LEVEL24:
-			strcat(levelPath, "24\\");
+			strcat(levelPath, "24/");
 			break;
 		case LEVEL25:
-			strcat(levelPath, "25\\");
+			strcat(levelPath, "25/");
 			break;
 		case LEVEL26:
-			strcat(levelPath, "26\\");
+			strcat(levelPath, "26/");
 			break;
 		case LEVEL27:
-			strcat(levelPath, "27\\");
+			strcat(levelPath, "27/");
 			break;
 		default:
 			levelPath[0] = 0;
@@ -1587,7 +1587,7 @@ void LoadSysTextures()
 
 	for (long i=1;i<10;i++)
 	{
-		sprintf(temp,"graph\\particles\\shine%ld.bmp", i);
+		sprintf(temp,"graph/particles/shine%ld.bmp", i);
 		flaretc.shine[i]=TextureContainer::LoadUI(temp);
 
 	}
@@ -1614,7 +1614,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_magic_sight");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_SIGHT;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_magic_sight.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_magic_sight.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_VISTA;
 
@@ -1626,7 +1626,7 @@ void LoadSysTextures()
 	current->spellid=SPELL_MAGIC_MISSILE;
 	current->bDuration = false;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_magic_missile.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_magic_missile.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_TAAR;
 
@@ -1637,7 +1637,7 @@ void LoadSysTextures()
 	current->level=1;
 	current->spellid=SPELL_IGNIT;
 	current->bDuration = false;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_ignite.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_ignite.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_YOK;
 
@@ -1648,7 +1648,7 @@ void LoadSysTextures()
 	current->level=1;
 	current->spellid=SPELL_DOUSE;
 	current->bDuration = false;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_douse.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_douse.bmp");
 	current->symbols[0]=RUNE_NHI;
 	current->symbols[1]=RUNE_YOK;
 
@@ -1658,7 +1658,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_activate_portal");
 	current->level=1;
 	current->spellid=SPELL_ACTIVATE_PORTAL;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_activate_portal.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_activate_portal.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_SPACIUM;
 	current->bSecret = true;
@@ -1669,7 +1669,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_heal");
 	current->level=2;
 	current->spellid=SPELL_HEAL;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_heal.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_heal.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_VITAE;
 
@@ -1679,7 +1679,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_detect_trap");
 	current->level=2;
 	current->spellid=SPELL_DETECT_TRAP;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_detect_trap.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_detect_trap.bmp");
 	current->symbols[0]=RUNE_MORTE;
 	current->symbols[1]=RUNE_COSUM;
 	current->symbols[2]=RUNE_VISTA;
@@ -1690,7 +1690,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_armor");
 	current->level=2;
 	current->spellid=SPELL_ARMOR;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_armor.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_armor.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_KAOM;
 
@@ -1700,7 +1700,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_lower_armor");
 	current->level=2;
 	current->spellid=SPELL_LOWER_ARMOR;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_lower_armor.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_lower_armor.bmp");
 	current->symbols[0]=RUNE_RHAA;
 	current->symbols[1]=RUNE_KAOM;
 
@@ -1711,7 +1711,7 @@ void LoadSysTextures()
 	current->level=2;
 	current->spellid=SPELL_HARM;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_harm.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_harm.bmp");
 	current->symbols[0]=RUNE_RHAA;
 	current->symbols[1]=RUNE_VITAE;
 	current->bSecret = true;
@@ -1722,7 +1722,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_speed");
 	current->level=3;
 	current->spellid=SPELL_SPEED;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_speed.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_speed.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_MOVIS;
 
@@ -1732,7 +1732,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_reveal");
 	current->level=3;
 	current->spellid=SPELL_DISPELL_ILLUSION;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_reveal.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_reveal.bmp");
 	current->symbols[0]=RUNE_NHI;
 	current->symbols[1]=RUNE_STREGUM;
 	current->symbols[2]=RUNE_VISTA;
@@ -1745,7 +1745,7 @@ void LoadSysTextures()
 	current->spellid=SPELL_FIREBALL;
 	current->bDuration = false;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_fireball.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_fireball.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_YOK;
 	current->symbols[2]=RUNE_TAAR;
@@ -1756,7 +1756,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_create_food");
 	current->level=3;
 	current->spellid=SPELL_CREATE_FOOD;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_create_food.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_create_food.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_VITAE;
 	current->symbols[2]=RUNE_COSUM;
@@ -1769,7 +1769,7 @@ void LoadSysTextures()
 	current->spellid=SPELL_ICE_PROJECTILE;
 	current->bDuration = false;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_iceball.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_iceball.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_FRIDD;
 	current->symbols[2]=RUNE_TAAR;
@@ -1781,7 +1781,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_sanctify");
 	current->level=4;
 	current->spellid=SPELL_BLESS;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_bless.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_bless.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_STREGUM;
 	current->symbols[2]=RUNE_VITAE;
@@ -1792,7 +1792,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_dispell_field");
 	current->level=4;
 	current->spellid=SPELL_DISPELL_FIELD;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_dispell_field.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_dispell_field.bmp");
 	current->symbols[0]=RUNE_NHI;
 
 	current->symbols[1]=RUNE_SPACIUM;
@@ -1803,7 +1803,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_cold_protection");
 	current->level=4;
 	current->spellid=SPELL_COLD_PROTECTION;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_protection_cold.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_protection_cold.bmp");
 	current->symbols[0]=RUNE_FRIDD;
 	current->symbols[1]=RUNE_KAOM;
 	current->bSecret = true;
@@ -1814,7 +1814,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_fire_protection");
 	current->level=4;
 	current->spellid=SPELL_FIRE_PROTECTION;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_protection_fire.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_protection_fire.bmp");
 	current->symbols[0]=RUNE_YOK;
 	current->symbols[1]=RUNE_KAOM;
 
@@ -1824,7 +1824,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_telekinesis");
 	current->level=4;
 	current->spellid=SPELL_TELEKINESIS;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_telekinesis.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_telekinesis.bmp");
 	current->symbols[0]=RUNE_SPACIUM;
 	current->symbols[1]=RUNE_COMUNICATUM;
 
@@ -1834,7 +1834,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_curse");
 	current->level=4;
 	current->spellid=SPELL_CURSE;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_curse.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_curse.bmp");
 	current->symbols[0]=RUNE_RHAA;
 	current->symbols[1]=RUNE_STREGUM;
 	current->symbols[2]=RUNE_VITAE;
@@ -1846,7 +1846,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_rune_guarding");
 	current->level=5;
 	current->spellid=SPELL_RUNE_OF_GUARDING;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_rune_guarding.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_rune_guarding.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_MORTE;
 	current->symbols[2]=RUNE_COSUM;
@@ -1857,7 +1857,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_levitate");
 	current->level=5;
 	current->spellid=SPELL_LEVITATE;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_levitate.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_levitate.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_SPACIUM;
 	current->symbols[2]=RUNE_MOVIS;
@@ -1868,7 +1868,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_cure_poison");
 	current->level=5;
 	current->spellid=SPELL_CURE_POISON;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_cure_poison.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_cure_poison.bmp");
 	current->symbols[0]=RUNE_NHI;
 	current->symbols[1]=RUNE_CETRIUS;
 
@@ -1878,7 +1878,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_repel_undead");
 	current->level=5;
 	current->spellid=SPELL_REPEL_UNDEAD;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_repel_undead.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_repel_undead.bmp");
 	current->symbols[0]=RUNE_MORTE;
 	current->symbols[1]=RUNE_KAOM;
 
@@ -1889,7 +1889,7 @@ void LoadSysTextures()
 	current->level=5;
 	current->spellid=SPELL_POISON_PROJECTILE;
 	current->bDuration = false;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_poison_projection.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_poison_projection.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_CETRIUS;
 	current->symbols[2]=RUNE_TAAR;
@@ -1902,7 +1902,7 @@ void LoadSysTextures()
 	current->level=6;
 	current->spellid=SPELL_RISE_DEAD;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_raise_dead.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_raise_dead.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_MORTE;
 	current->symbols[2]=RUNE_VITAE;
@@ -1913,7 +1913,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_paralyse");
 	current->level=6;
 	current->spellid=SPELL_PARALYSE;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_paralyse.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_paralyse.bmp");
 	current->symbols[0]=RUNE_NHI;
 	current->symbols[1]=RUNE_MOVIS;
 
@@ -1923,7 +1923,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_create_field");
 	current->level=6;
 	current->spellid=SPELL_CREATE_FIELD;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_create_field.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_create_field.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_KAOM;
 	current->symbols[2]=RUNE_SPACIUM;
@@ -1934,7 +1934,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_disarm_trap");
 	current->level=6;
 	current->spellid=SPELL_DISARM_TRAP;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_disarm_trap.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_disarm_trap.bmp");
 	current->symbols[0]=RUNE_NHI;
 	current->symbols[1]=RUNE_MORTE;
 	current->symbols[2]=RUNE_COSUM;
@@ -1945,7 +1945,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_slowdown");
 	current->level=6;
 	current->spellid=SPELL_SLOW_DOWN;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_slow_down.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_slow_down.bmp");
 	current->symbols[0]=RUNE_RHAA;
 	current->symbols[1]=RUNE_MOVIS;
 	current->bSecret = true;
@@ -1956,7 +1956,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_flying_eye");
 	current->level=7;
 	current->spellid=SPELL_FLYING_EYE;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_flying_eye.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_flying_eye.bmp");
 	current->symbols[0]=RUNE_VISTA;
 	current->symbols[1]=RUNE_MOVIS;
 
@@ -1966,7 +1966,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_fire_field");
 	current->level=7;
 	current->spellid=SPELL_FIRE_FIELD;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_create_fire_field.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_create_fire_field.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_YOK;
 	current->symbols[2]=RUNE_SPACIUM;
@@ -1977,7 +1977,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_ice_field");
 	current->level=7;
 	current->spellid=SPELL_ICE_FIELD;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_create_cold_field.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_create_cold_field.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_FRIDD;
 	current->symbols[2]=RUNE_SPACIUM;
@@ -1991,7 +1991,7 @@ void LoadSysTextures()
 	current->spellid=SPELL_LIGHTNING_STRIKE;
 	current->bDuration = false;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_lightning_strike.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_lightning_strike.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_FOLGORA;
 	current->symbols[2]=RUNE_TAAR;
@@ -2002,7 +2002,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_confuse");
 	current->level=7;
 	current->spellid=SPELL_CONFUSE;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_confuse.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_confuse.bmp");
 	current->symbols[0]=RUNE_RHAA;
 	current->symbols[1]=RUNE_VISTA;
 
@@ -2012,7 +2012,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_invisibility");
 	current->level=8;
 	current->spellid=SPELL_INVISIBILITY;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_invisibility.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_invisibility.bmp");
 	current->symbols[0]=RUNE_NHI;
 	current->symbols[1]=RUNE_VISTA;
 
@@ -2023,7 +2023,7 @@ void LoadSysTextures()
 	current->level=8;
 	current->spellid=SPELL_MANA_DRAIN;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_drain_mana.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_drain_mana.bmp");
 	current->symbols[0]=RUNE_STREGUM;
 	current->symbols[1]=RUNE_MOVIS;
 
@@ -2035,7 +2035,7 @@ void LoadSysTextures()
 	current->spellid=SPELL_EXPLOSION;
 	current->bDuration = false;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_explosion.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_explosion.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_MEGA;
 	current->symbols[2]=RUNE_MORTE;
@@ -2046,7 +2046,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_enchant_weapon");
 	current->level=8;
 	current->spellid=SPELL_ENCHANT_WEAPON;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_enchant_weapon.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_enchant_weapon.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_STREGUM;
 	current->symbols[2]=RUNE_COSUM;
@@ -2058,7 +2058,7 @@ void LoadSysTextures()
 	current->level=8;
 	current->spellid=SPELL_LIFE_DRAIN;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_drain_life.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_drain_life.bmp");
 	current->symbols[0]=RUNE_VITAE;
 	current->symbols[1]=RUNE_MOVIS;
 	current->bSecret = true;
@@ -2070,7 +2070,7 @@ void LoadSysTextures()
 	current->level=9;
 	current->spellid=SPELL_SUMMON_CREATURE;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_summon_creature.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_summon_creature.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_VITAE;
 	current->symbols[2]=RUNE_TERA;
@@ -2083,7 +2083,7 @@ void LoadSysTextures()
 	current->spellid=SPELL_FAKE_SUMMON;
 	current->bAudibleAtStart = true;
 	current->bSecret = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_summon_creature.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_summon_creature.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_VITAE;
 	current->symbols[2]=RUNE_TERA;
@@ -2094,7 +2094,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_negate_magic");
 	current->level=9;
 	current->spellid=SPELL_NEGATE_MAGIC;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_negate_magic.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_negate_magic.bmp");
 	current->symbols[0]=RUNE_NHI;
 	current->symbols[1]=RUNE_STREGUM;
 	current->symbols[2]=RUNE_SPACIUM;
@@ -2107,7 +2107,7 @@ void LoadSysTextures()
 	current->spellid=SPELL_INCINERATE;
 	current->bDuration = false;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_incinerate.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_incinerate.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_MEGA;
 	current->symbols[2]=RUNE_YOK;
@@ -2118,7 +2118,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_mass_paralyse");
 	current->level=9;
 	current->spellid=SPELL_MASS_PARALYSE;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_mass_paralyse.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_mass_paralyse.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_NHI;
 	current->symbols[2]=RUNE_MOVIS;
@@ -2131,7 +2131,7 @@ void LoadSysTextures()
 	current->spellid=SPELL_MASS_LIGHTNING_STRIKE;
 	current->bDuration = false;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_mass_lighting_strike.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_mass_lighting_strike.bmp");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_FOLGORA;
 	current->symbols[2]=RUNE_SPACIUM;
@@ -2142,7 +2142,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_control_target");
 	current->level=10;
 	current->spellid=SPELL_CONTROL_TARGET;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_control_target.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_control_target.bmp");
 	current->symbols[0]=RUNE_MOVIS;
 	current->symbols[1]=RUNE_COMUNICATUM;
 
@@ -2152,7 +2152,7 @@ void LoadSysTextures()
 	current->description = getLocalised("system_spell_description_freeze_time");
 	current->level=10;
 	current->spellid=SPELL_FREEZE_TIME;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_freeze_time.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_freeze_time.bmp");
 	current->symbols[0] = RUNE_RHAA;
 	current->symbols[1]=RUNE_TEMPUS;
 
@@ -2164,117 +2164,117 @@ void LoadSysTextures()
 	current->spellid=SPELL_MASS_INCINERATE;
 	current->bDuration = false;
 	current->bAudibleAtStart = true;
-	current->tc=TextureContainer::LoadUI("graph\\interface\\icons\\spell_mass_incinerate.bmp");
+	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_mass_incinerate.bmp");
 	current->symbols[0]=RUNE_MEGA;
 	current->symbols[1]=RUNE_AAM;
 	current->symbols[2]=RUNE_MEGA;
 	current->symbols[3]=RUNE_YOK;
 
-	Flying_Eye=			TextureContainer::LoadUI("graph\\particles\\flying_eye_fx.bmp");
-	specular=			TextureContainer::LoadUI("graph\\particles\\specular.bmp");
-	enviro=				TextureContainer::LoadUI("graph\\particles\\enviro.bmp");
-	sphere_particle=	TextureContainer::LoadUI("graph\\particles\\sphere.bmp");
-	inventory_font=		TextureContainer::LoadUI("graph\\interface\\font\\font10x10_inventory.bmp");
-	npc_fight=			TextureContainer::LoadUI("graph\\interface\\icons\\follower_attack.bmp");
-	npc_follow=			TextureContainer::LoadUI("graph\\interface\\icons\\follower_follow.bmp");
-	npc_stop=			TextureContainer::LoadUI("graph\\interface\\icons\\follower_stop.bmp");
-	flaretc.lumignon=	TextureContainer::LoadUI("graph\\particles\\lumignon.bmp");
-	flaretc.lumignon2=	TextureContainer::LoadUI("graph\\particles\\lumignon2.bmp");
-	flaretc.plasm=		TextureContainer::LoadUI("graph\\particles\\plasm.bmp");
-	tflare=				TextureContainer::LoadUI("graph\\particles\\flare.bmp");
-	ombrignon=			TextureContainer::LoadUI("graph\\particles\\ombrignon.bmp");
-	teleportae=			TextureContainer::LoadUI("graph\\particles\\teleportae.bmp");
-	TC_fire=			TextureContainer::LoadUI("graph\\particles\\fire.bmp");
-	TC_fire2=			TextureContainer::LoadUI("graph\\particles\\fire2.bmp");
-	TC_smoke=			TextureContainer::LoadUI("graph\\particles\\smoke.bmp");
-	TextureContainer::LoadUI("graph\\particles\\missile.bmp");
-	Z_map=				TextureContainer::LoadUI("graph\\interface\\misc\\z-map.bmp");
-	Boom=				TextureContainer::LoadUI("graph\\particles\\boom.bmp");
-	lightsource_tc=		TextureContainer::LoadUI("graph\\particles\\light.bmp");
-	stealth_gauge_tc=	TextureContainer::LoadUI("graph\\interface\\icons\\stealth_gauge.bmp");
-	arx_logo_tc=		TextureContainer::LoadUI("graph\\interface\\icons\\arx_logo_32.bmp");
-	iconequip[0]=		TextureContainer::LoadUI("graph\\interface\\icons\\equipment_sword.bmp");
-	iconequip[1]=		TextureContainer::LoadUI("graph\\interface\\icons\\equipment_shield.bmp");
-	iconequip[2]=		TextureContainer::LoadUI("graph\\interface\\icons\\equipment_helm.bmp");
-	iconequip[3]=		TextureContainer::LoadUI("graph\\interface\\icons\\equipment_chest.bmp");
-	iconequip[4]=		TextureContainer::LoadUI("graph\\interface\\icons\\equipment_leggings.bmp");
-	mecanism_tc=		TextureContainer::LoadUI("graph\\interface\\cursors\\mecanism.bmp");
-	arrow_left_tc=		TextureContainer::LoadUI("graph\\interface\\icons\\arrow_left.bmp");
+	Flying_Eye=			TextureContainer::LoadUI("graph/particles/flying_eye_fx.bmp");
+	specular=			TextureContainer::LoadUI("graph/particles/specular.bmp");
+	enviro=				TextureContainer::LoadUI("graph/particles/enviro.bmp");
+	sphere_particle=	TextureContainer::LoadUI("graph/particles/sphere.bmp");
+	inventory_font=		TextureContainer::LoadUI("graph/interface/font/font10x10_inventory.bmp");
+	npc_fight=			TextureContainer::LoadUI("graph/interface/icons/follower_attack.bmp");
+	npc_follow=			TextureContainer::LoadUI("graph/interface/icons/follower_follow.bmp");
+	npc_stop=			TextureContainer::LoadUI("graph/interface/icons/follower_stop.bmp");
+	flaretc.lumignon=	TextureContainer::LoadUI("graph/particles/lumignon.bmp");
+	flaretc.lumignon2=	TextureContainer::LoadUI("graph/particles/lumignon2.bmp");
+	flaretc.plasm=		TextureContainer::LoadUI("graph/particles/plasm.bmp");
+	tflare=				TextureContainer::LoadUI("graph/particles/flare.bmp");
+	ombrignon=			TextureContainer::LoadUI("graph/particles/ombrignon.bmp");
+	teleportae=			TextureContainer::LoadUI("graph/particles/teleportae.bmp");
+	TC_fire=			TextureContainer::LoadUI("graph/particles/fire.bmp");
+	TC_fire2=			TextureContainer::LoadUI("graph/particles/fire2.bmp");
+	TC_smoke=			TextureContainer::LoadUI("graph/particles/smoke.bmp");
+	TextureContainer::LoadUI("graph/particles/missile.bmp");
+	Z_map=				TextureContainer::LoadUI("graph/interface/misc/z-map.bmp");
+	Boom=				TextureContainer::LoadUI("graph/particles/boom.bmp");
+	lightsource_tc=		TextureContainer::LoadUI("graph/particles/light.bmp");
+	stealth_gauge_tc=	TextureContainer::LoadUI("graph/interface/icons/stealth_gauge.bmp");
+	arx_logo_tc=		TextureContainer::LoadUI("graph/interface/icons/arx_logo_32.bmp");
+	iconequip[0]=		TextureContainer::LoadUI("graph/interface/icons/equipment_sword.bmp");
+	iconequip[1]=		TextureContainer::LoadUI("graph/interface/icons/equipment_shield.bmp");
+	iconequip[2]=		TextureContainer::LoadUI("graph/interface/icons/equipment_helm.bmp");
+	iconequip[3]=		TextureContainer::LoadUI("graph/interface/icons/equipment_chest.bmp");
+	iconequip[4]=		TextureContainer::LoadUI("graph/interface/icons/equipment_leggings.bmp");
+	mecanism_tc=		TextureContainer::LoadUI("graph/interface/cursors/mecanism.bmp");
+	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left.bmp");
 
 	for (i=0;i<MAX_EXPLO;i++)
 	{
 		char temp[256];
-		sprintf(temp,"graph\\particles\\fireb_%02ld.bmp",i+1);
+		sprintf(temp,"graph/particles/fireb_%02ld.bmp",i+1);
 		explo[i]= TextureContainer::LoadUI(temp);
 	}
 
-	blood_splat=TextureContainer::LoadUI("graph\\particles\\new_blood2.bmp");
+	blood_splat=TextureContainer::LoadUI("graph/particles/new_blood2.bmp");
 
 	EERIE_DRAW_SetTextureZMAP(Z_map);
 	EERIE_DRAW_sphere_particle=sphere_particle;
-	EERIE_DRAW_square_particle=TextureContainer::LoadUI("graph\\particles\\square.bmp");
+	EERIE_DRAW_square_particle=TextureContainer::LoadUI("graph/particles/square.bmp");
 
-	TextureContainer::LoadUI("graph\\particles\\fire_hit.bmp");
-	TextureContainer::LoadUI("graph\\particles\\light.bmp");
-	TextureContainer::LoadUI("graph\\particles\\blood01.bmp");
-	TextureContainer::LoadUI("graph\\particles\\cross.bmp");
+	TextureContainer::LoadUI("graph/particles/fire_hit.bmp");
+	TextureContainer::LoadUI("graph/particles/light.bmp");
+	TextureContainer::LoadUI("graph/particles/blood01.bmp");
+	TextureContainer::LoadUI("graph/particles/cross.bmp");
 
 	//INTERFACE LOADING
-	TextureContainer::LoadUI("graph\\interface\\bars\\empty_gauge_red.bmp");
-	TextureContainer::LoadUI("graph\\interface\\bars\\empty_gauge_blue.bmp");
-	TextureContainer::LoadUI("graph\\interface\\bars\\filled_gauge_blue.bmp");
-	TextureContainer::LoadUI("graph\\interface\\bars\\filled_gauge_red.bmp");
-	TextureContainer::LoadUI("graph\\interface\\icons\\book.bmp");
-	TextureContainer::LoadUI("graph\\interface\\icons\\backpack.bmp");
-	TextureContainer::LoadUI("graph\\interface\\icons\\lvl_up.bmp");
-	TextureContainer::LoadUI("graph\\interface\\icons\\steal.bmp");
-	TextureContainer::LoadUI("graph\\interface\\icons\\cant_steal_item.bmp");
-	TextureContainer::LoadUI("graph\\interface\\inventory\\hero_inventory.bmp");
-	TextureContainer::LoadUI("graph\\interface\\inventory\\scroll_up.bmp");
-	TextureContainer::LoadUI("graph\\interface\\inventory\\scroll_down.bmp");
-	TextureContainer::LoadUI("graph\\interface\\inventory\\hero_inventory_link.bmp");
-	TextureContainer::LoadUI("graph\\interface\\inventory\\ingame_inventory.bmp");
-	TextureContainer::LoadUI("graph\\interface\\inventory\\gold.bmp");
+	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red.bmp");
+	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue.bmp");
+	TextureContainer::LoadUI("graph/interface/bars/filled_gauge_blue.bmp");
+	TextureContainer::LoadUI("graph/interface/bars/filled_gauge_red.bmp");
+	TextureContainer::LoadUI("graph/interface/icons/book.bmp");
+	TextureContainer::LoadUI("graph/interface/icons/backpack.bmp");
+	TextureContainer::LoadUI("graph/interface/icons/lvl_up.bmp");
+	TextureContainer::LoadUI("graph/interface/icons/steal.bmp");
+	TextureContainer::LoadUI("graph/interface/icons/cant_steal_item.bmp");
+	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory.bmp");
+	TextureContainer::LoadUI("graph/interface/inventory/scroll_up.bmp");
+	TextureContainer::LoadUI("graph/interface/inventory/scroll_down.bmp");
+	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link.bmp");
+	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory.bmp");
+	TextureContainer::LoadUI("graph/interface/inventory/gold.bmp");
 
-	TextureContainer::LoadUI("graph\\interface\\inventory\\inv_pick.bmp");
-	TextureContainer::LoadUI("graph\\interface\\inventory\\inv_close.bmp");
+	TextureContainer::LoadUI("graph/interface/inventory/inv_pick.bmp");
+	TextureContainer::LoadUI("graph/interface/inventory/inv_close.bmp");
 
 	// MENU2
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor00.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor01.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor02.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor03.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor04.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor05.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor06.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor07.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cruz.bmp");
-	TextureContainer::LoadUI("graph\\interface\\menus\\menu_main_background.bmp");
-	TextureContainer::LoadUI("graph\\interface\\menus\\menu_console_background.bmp");
-	TextureContainer::LoadUI("graph\\interface\\menus\\menu_console_background_border.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor00.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor01.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor02.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor03.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor04.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor05.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor06.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor07.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cruz.bmp");
+	TextureContainer::LoadUI("graph/interface/menus/menu_main_background.bmp");
+	TextureContainer::LoadUI("graph/interface/menus/menu_console_background.bmp");
+	TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border.bmp");
 
 	//CURSORS LOADING
-	TextureContainer::LoadUI("graph\\interface\\cursors\\cursor.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\magic.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\interaction_on.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\interaction_off.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\target_on.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\target_off.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\drop.bmp");
-	TextureContainer::LoadUI("graph\\interface\\cursors\\throw.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/cursor.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/magic.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/interaction_on.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/interaction_off.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/target_on.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/target_off.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/drop.bmp");
+	TextureContainer::LoadUI("graph/interface/cursors/throw.bmp");
 
 	for (i=0;i<8;i++)
 	{
 		char temp[256];
-		sprintf(temp,"graph\\interface\\cursors\\cursor%02ld.bmp",i);
+		sprintf(temp,"graph/interface/cursors/cursor%02ld.bmp",i);
 		scursor[i]=TextureContainer::LoadUI(temp);
 	}
 
-	pTCCrossHair = TextureContainer::LoadUI("graph\\interface\\cursors\\cruz.bmp");
+	pTCCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz.bmp");
 
-	TextureContainer::LoadUI("graph\\interface\\bars\\aim_empty.bmp");
-	TextureContainer::LoadUI("graph\\interface\\bars\\aim_maxi.bmp");
-	TextureContainer::LoadUI("graph\\interface\\bars\\flash_gauge.bmp");
+	TextureContainer::LoadUI("graph/interface/bars/aim_empty.bmp");
+	TextureContainer::LoadUI("graph/interface/bars/aim_maxi.bmp");
+	TextureContainer::LoadUI("graph/interface/bars/flash_gauge.bmp");
 }
 
 void ClearSysTextures() {
@@ -2312,7 +2312,7 @@ void LaunchWaitingCine()
 	
 	DANAE_KillCinematic();
 	
-	const char RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS[] = "graph\\interface\\illustrations\\";
+	const char RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS[] = "graph/interface/illustrations/";
 	
 	string cinematic = RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS;
 	cinematic += WILL_LAUNCH_CINE;
@@ -2807,48 +2807,48 @@ HRESULT DANAE::BeforeRun()
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=-1;
-	necklace.lacet =                   loadObject("graph\\interface\\book\\runes\\lacet.teo");
-	necklace.runes[RUNE_AAM] =         loadObject("graph\\interface\\book\\runes\\runes_aam.teo");
-	necklace.runes[RUNE_CETRIUS] =     loadObject("graph\\interface\\book\\runes\\runes_citrius.teo");
-	necklace.runes[RUNE_COMUNICATUM] = loadObject("graph\\interface\\book\\runes\\runes_comunicatum.teo");
-	necklace.runes[RUNE_COSUM] =       loadObject("graph\\interface\\book\\runes\\runes_cosum.teo");
-	necklace.runes[RUNE_FOLGORA] =     loadObject("graph\\interface\\book\\runes\\runes_folgora.teo");
-	necklace.runes[RUNE_FRIDD] =       loadObject("graph\\interface\\book\\runes\\runes_fridd.teo");
-	necklace.runes[RUNE_KAOM] =        loadObject("graph\\interface\\book\\runes\\runes_kaom.teo");
-	necklace.runes[RUNE_MEGA] =        loadObject("graph\\interface\\book\\runes\\runes_mega.teo");
-	necklace.runes[RUNE_MORTE] =       loadObject("graph\\interface\\book\\runes\\runes_morte.teo");
-	necklace.runes[RUNE_MOVIS] =       loadObject("graph\\interface\\book\\runes\\runes_movis.teo");
-	necklace.runes[RUNE_NHI] =         loadObject("graph\\interface\\book\\runes\\runes_nhi.teo");
-	necklace.runes[RUNE_RHAA] =        loadObject("graph\\interface\\book\\runes\\runes_rhaa.teo");
-	necklace.runes[RUNE_SPACIUM] =     loadObject("graph\\interface\\book\\runes\\runes_spacium.teo");
-	necklace.runes[RUNE_STREGUM] =     loadObject("graph\\interface\\book\\runes\\runes_stregum.teo");
-	necklace.runes[RUNE_TAAR] =        loadObject("graph\\interface\\book\\runes\\runes_taar.teo");
-	necklace.runes[RUNE_TEMPUS] =      loadObject("graph\\interface\\book\\runes\\runes_tempus.teo");
-	necklace.runes[RUNE_TERA] =        loadObject("graph\\interface\\book\\runes\\runes_tera.teo");
-	necklace.runes[RUNE_VISTA] =       loadObject("graph\\interface\\book\\runes\\runes_vista.teo");
-	necklace.runes[RUNE_VITAE] =       loadObject("graph\\interface\\book\\runes\\runes_vitae.teo");
-	necklace.runes[RUNE_YOK] =         loadObject("graph\\interface\\book\\runes\\runes_yok.teo");
+	necklace.lacet =                   loadObject("graph/interface/book/runes/lacet.teo");
+	necklace.runes[RUNE_AAM] =         loadObject("graph/interface/book/runes/runes_aam.teo");
+	necklace.runes[RUNE_CETRIUS] =     loadObject("graph/interface/book/runes/runes_citrius.teo");
+	necklace.runes[RUNE_COMUNICATUM] = loadObject("graph/interface/book/runes/runes_comunicatum.teo");
+	necklace.runes[RUNE_COSUM] =       loadObject("graph/interface/book/runes/runes_cosum.teo");
+	necklace.runes[RUNE_FOLGORA] =     loadObject("graph/interface/book/runes/runes_folgora.teo");
+	necklace.runes[RUNE_FRIDD] =       loadObject("graph/interface/book/runes/runes_fridd.teo");
+	necklace.runes[RUNE_KAOM] =        loadObject("graph/interface/book/runes/runes_kaom.teo");
+	necklace.runes[RUNE_MEGA] =        loadObject("graph/interface/book/runes/runes_mega.teo");
+	necklace.runes[RUNE_MORTE] =       loadObject("graph/interface/book/runes/runes_morte.teo");
+	necklace.runes[RUNE_MOVIS] =       loadObject("graph/interface/book/runes/runes_movis.teo");
+	necklace.runes[RUNE_NHI] =         loadObject("graph/interface/book/runes/runes_nhi.teo");
+	necklace.runes[RUNE_RHAA] =        loadObject("graph/interface/book/runes/runes_rhaa.teo");
+	necklace.runes[RUNE_SPACIUM] =     loadObject("graph/interface/book/runes/runes_spacium.teo");
+	necklace.runes[RUNE_STREGUM] =     loadObject("graph/interface/book/runes/runes_stregum.teo");
+	necklace.runes[RUNE_TAAR] =        loadObject("graph/interface/book/runes/runes_taar.teo");
+	necklace.runes[RUNE_TEMPUS] =      loadObject("graph/interface/book/runes/runes_tempus.teo");
+	necklace.runes[RUNE_TERA] =        loadObject("graph/interface/book/runes/runes_tera.teo");
+	necklace.runes[RUNE_VISTA] =       loadObject("graph/interface/book/runes/runes_vista.teo");
+	necklace.runes[RUNE_VITAE] =       loadObject("graph/interface/book/runes/runes_vitae.teo");
+	necklace.runes[RUNE_YOK] =         loadObject("graph/interface/book/runes/runes_yok.teo");
 
-	necklace.pTexTab[RUNE_AAM]			= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_aam[icon].bmp");
-	necklace.pTexTab[RUNE_CETRIUS]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_cetrius[icon].bmp");
-	necklace.pTexTab[RUNE_COMUNICATUM]	= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_comunicatum[icon].bmp");
-	necklace.pTexTab[RUNE_COSUM]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_cosum[icon].bmp");
-	necklace.pTexTab[RUNE_FOLGORA]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_folgora[icon].bmp");
-	necklace.pTexTab[RUNE_FRIDD]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_fridd[icon].bmp");
-	necklace.pTexTab[RUNE_KAOM]			= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_kaom[icon].bmp");
-	necklace.pTexTab[RUNE_MEGA]			= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_mega[icon].bmp");
-	necklace.pTexTab[RUNE_MORTE]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_morte[icon].bmp");
-	necklace.pTexTab[RUNE_MOVIS]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_movis[icon].bmp");
-	necklace.pTexTab[RUNE_NHI]			= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_nhi[icon].bmp");
-	necklace.pTexTab[RUNE_RHAA]			= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_rhaa[icon].bmp");
-	necklace.pTexTab[RUNE_SPACIUM]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_spacium[icon].bmp");
-	necklace.pTexTab[RUNE_STREGUM]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_stregum[icon].bmp");
-	necklace.pTexTab[RUNE_TAAR]			= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_taar[icon].bmp");
-	necklace.pTexTab[RUNE_TEMPUS]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_tempus[icon].bmp");
-	necklace.pTexTab[RUNE_TERA]			= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_tera[icon].bmp");
-	necklace.pTexTab[RUNE_VISTA]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_vista[icon].bmp");
-	necklace.pTexTab[RUNE_VITAE]		= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_vitae[icon].bmp");
-	necklace.pTexTab[RUNE_YOK]			= TextureContainer::LoadUI("graph\\obj3d\\interactive\\items\\magic\\rune_aam\\rune_yok[icon].bmp");
+	necklace.pTexTab[RUNE_AAM]			= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_aam[icon].bmp");
+	necklace.pTexTab[RUNE_CETRIUS]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_cetrius[icon].bmp");
+	necklace.pTexTab[RUNE_COMUNICATUM]	= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_comunicatum[icon].bmp");
+	necklace.pTexTab[RUNE_COSUM]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_cosum[icon].bmp");
+	necklace.pTexTab[RUNE_FOLGORA]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_folgora[icon].bmp");
+	necklace.pTexTab[RUNE_FRIDD]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_fridd[icon].bmp");
+	necklace.pTexTab[RUNE_KAOM]			= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_kaom[icon].bmp");
+	necklace.pTexTab[RUNE_MEGA]			= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_mega[icon].bmp");
+	necklace.pTexTab[RUNE_MORTE]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_morte[icon].bmp");
+	necklace.pTexTab[RUNE_MOVIS]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_movis[icon].bmp");
+	necklace.pTexTab[RUNE_NHI]			= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_nhi[icon].bmp");
+	necklace.pTexTab[RUNE_RHAA]			= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_rhaa[icon].bmp");
+	necklace.pTexTab[RUNE_SPACIUM]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_spacium[icon].bmp");
+	necklace.pTexTab[RUNE_STREGUM]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_stregum[icon].bmp");
+	necklace.pTexTab[RUNE_TAAR]			= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_taar[icon].bmp");
+	necklace.pTexTab[RUNE_TEMPUS]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_tempus[icon].bmp");
+	necklace.pTexTab[RUNE_TERA]			= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_tera[icon].bmp");
+	necklace.pTexTab[RUNE_VISTA]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_vista[icon].bmp");
+	necklace.pTexTab[RUNE_VITAE]		= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_vitae[icon].bmp");
+	necklace.pTexTab[RUNE_YOK]			= TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_yok[icon].bmp");
 
 	for(size_t i = 0; i<RUNE_COUNT-1; i++) { // TODO why -1?
 		if(necklace.pTexTab[i]) {
@@ -2859,36 +2859,36 @@ HRESULT DANAE::BeforeRun()
 	// TODO the .teo files are not shipped with the game, only the textures are
 	// TODO this is the only place where _LoadTheObj is used
 	EERIE_3DOBJ * _fogobj;
-	_fogobj=		_LoadTheObj("editor\\obj3d\\fog_generator.teo","node_teo maps\\");
+	_fogobj=		_LoadTheObj("editor/obj3d/fog_generator.teo","node_teo maps/");
 	ARX_FOGS_Set_Object(_fogobj);
-	eyeballobj = _LoadTheObj("editor\\obj3d\\eyeball.teo","eyeball_teo maps\\");
-	cabal = _LoadTheObj("editor\\obj3d\\cabal.teo","cabal_teo maps\\");
-	nodeobj = _LoadTheObj("editor\\obj3d\\node.teo","node_teo maps\\");
+	eyeballobj = _LoadTheObj("editor/obj3d/eyeball.teo","eyeball_teo maps/");
+	cabal = _LoadTheObj("editor/obj3d/cabal.teo","cabal_teo maps/");
+	nodeobj = _LoadTheObj("editor/obj3d/node.teo","node_teo maps/");
 	
-	cameraobj = loadObject("graph\\obj3d\\interactive\\system\\camera\\camera.teo");
-	markerobj = loadObject("graph\\obj3d\\interactive\\system\\marker\\marker.teo");
-	arrowobj = loadObject("graph\\obj3d\\interactive\\items\\weapons\\arrow\\arrow.teo");
+	cameraobj = loadObject("graph/obj3d/interactive/system/camera/camera.teo");
+	markerobj = loadObject("graph/obj3d/interactive/system/marker/marker.teo");
+	arrowobj = loadObject("graph/obj3d/interactive/items/weapons/arrow/arrow.teo");
 
 	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		char temp[256];
 
 		if (i==0)
-			strcpy(temp,	"graph\\obj3d\\interactive\\items\\jewelry\\gold_coin\\gold_coin.teo");
+			strcpy(temp,	"graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin.teo");
 		else
-			sprintf(temp,	"graph\\obj3d\\interactive\\items\\jewelry\\gold_coin\\gold_coin" PRINT_SIZE_T ".teo",i+1);
+			sprintf(temp,	"graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin" PRINT_SIZE_T ".teo",i+1);
 
 		GoldCoinsObj[i] = loadObject(temp);
 
 		if (i==0)
-			strcpy(temp,	"graph\\obj3d\\interactive\\items\\jewelry\\gold_coin\\gold_coin[icon].bmp");
+			strcpy(temp,	"graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin[icon].bmp");
 		else
-			sprintf(temp,	"graph\\obj3d\\interactive\\items\\jewelry\\gold_coin\\gold_coin" PRINT_SIZE_T "[icon].bmp",i+1);
+			sprintf(temp,	"graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin" PRINT_SIZE_T "[icon].bmp",i+1);
 
 		GoldCoinsTC[i] =	TextureContainer::LoadUI(temp);
 	}
 
-	Movable=				TextureContainer::LoadUI("graph\\interface\\cursors\\wrong.bmp");
-	ChangeLevel=			TextureContainer::LoadUI("graph\\interface\\icons\\change_lvl.bmp");
+	Movable=				TextureContainer::LoadUI("graph/interface/cursors/wrong.bmp");
+	ChangeLevel=			TextureContainer::LoadUI("graph/interface/icons/change_lvl.bmp");
 
 	ARX_PLAYER_LoadHeroAnimsAndMesh();
 
@@ -4214,7 +4214,7 @@ void CheckMr()
 		}
 		else
 		{
-			Mr_tc=TextureContainer::LoadUI("graph\\particles\\(fx)_mr.bmp");
+			Mr_tc=TextureContainer::LoadUI("graph/particles/(fx)_mr.bmp");
 		}
 	}
 }
@@ -4419,7 +4419,7 @@ void LaunchMoulinex()
 			lastlvl=MOULINEX-2;
 
 		GetLevelNameByNum(lastlvl,tx);
-		sprintf(saveto,"graph\\levels\\level%s\\level%s.dlf",tx,tx);
+		sprintf(saveto,"graph/levels/level%s/level%s.dlf",tx,tx);
 
 		if (FileExist(saveto))
 		{
@@ -4468,7 +4468,7 @@ void LaunchMoulinex()
 
 		if (strcmp(tx,"none"))
 		{
-			sprintf(loadfrom,"graph\\levels\\level%s\\level%s.dlf",tx,tx);
+			sprintf(loadfrom,"graph/levels/level%s/level%s.dlf",tx,tx);
 
 			if (FileExist(loadfrom))
 			{
@@ -4503,7 +4503,7 @@ void DANAE_StartNewQuest()
 	OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 	LoadLevelScreen(1);
 	char loadfrom[256];
-	sprintf(loadfrom, "graph\\levels\\level1\\level1.dlf");
+	sprintf(loadfrom, "graph/levels/level1/level1.dlf");
 	DONT_ERASE_PLAYER=1;
 	DanaeClearAll();
 	PROGRESS_BAR_COUNT+=2.f;
@@ -4609,7 +4609,7 @@ bool DANAE_ManageSplashThings()
 			char loadfrom[256];
 
 			REFUSE_GAME_RETURN=1;
-			sprintf(loadfrom,"graph\\levels\\level10\\level10.dlf");
+			sprintf(loadfrom,"graph/levels/level10/level10.dlf");
 			OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 			PROGRESS_BAR_TOTAL = 108;
 			LoadLevelScreen(10);	
@@ -5184,7 +5184,7 @@ static float _AvgFrameDiff = 150.f;
 		SPLASH_THINGS_STAGE=14;
 		NEED_INTRO_LAUNCH=0;
 		REFUSE_GAME_RETURN=1;
-		const char RESOURCE_LEVEL_10[] = "graph\\levels\\level10\\level10.dlf";
+		const char RESOURCE_LEVEL_10[] = "graph/levels/level10/level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
 		LoadLevelScreen(10);	
@@ -7598,7 +7598,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					LogWarning << "not implemented";
 					//HERMESFolderSelector("","Choose Working Folder"); first param receives folder
 					//SetWindowTitle(hWnd,"DANAE Project");
-					//chdir("GRAPH\\LEVELS\\");
+					//chdir("GRAPH/LEVELS/");
 					break;
 				case DANAE_MENU_NEWLEVEL:
 					ARX_TIME_Pause();
