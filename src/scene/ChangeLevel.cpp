@@ -2276,7 +2276,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		
 		arx_assert(!io->strikespeech);
 		if(ais->strikespeech[0]) {
-			io->strikespeech = strdup(loadPath(safestring(ais->strikespeech)).c_str());
+			io->strikespeech = strdup(script::loadUnlocalized(toLowercase(safestring(ais->strikespeech))).c_str());
 		}
 		
 		for(long i = 0; i < MAX_ANIMS; i++) {

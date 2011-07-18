@@ -408,7 +408,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string speech = loadPath(context.getWord());
+		string speech = script::loadUnlocalized(context.getWord());
 		
 		DebugScript(' ' << speech);
 		

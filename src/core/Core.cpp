@@ -3419,9 +3419,6 @@ void strikeSpeak(INTERACTIVE_OBJ * io) {
 		return;
 	}
 	
-	// TODO(case-sensitive) move transform to where strikespeech is set
-	str = script::loadUnlocalized(toLowercase(str));
-	
 	ARX_SPEECH_AddSpeech(io, str, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 }
 
