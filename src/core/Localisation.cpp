@@ -132,23 +132,3 @@ string getLocalised(const string & name, const string & default_value) {
 	
 	return localisation.getKey(name, string(), default_value);
 }
-
-// TODO(case-sensitive) remove
-void MakeLocalised(const std::string & text, std::string & output) {
-	
-	if(text.empty()) {
-		output = "ERROR";
-		return;
-	}
-	
-	std::string section = text;
-	
-	// if the section name has the qualifying brackets "[]", cut the back one then the front off
-	if(section[0] == '[' && section[section.length() - 1] == ']') {
-		section = section.substr(1, section.length() - 2);
-	}
-	
-	makeLowercase(section);
-	
-	output = getLocalised(section, "error");
-}
