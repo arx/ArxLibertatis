@@ -73,22 +73,22 @@ static void fixSoundPath(string & path) {
 		
 		size_t uk_pos = path.find("uk");
 		if(uk_pos != string::npos) {
-			path.replace(uk_pos, 3, "english\\");
+			path.replace(uk_pos, 3, "english/");
 		}
 		
 		size_t fr_pos = path.find("fr");
 		if(fr_pos != string::npos) {
-			path.replace(fr_pos, 3, "francais\\");
+			path.replace(fr_pos, 3, "francais/");
 		}
 		
-		size_t sfxspeech_pos = path.find("sfx\\speech\\");
+		size_t sfxspeech_pos = path.find("sfx/speech/");
 		if(sfxspeech_pos != string::npos) {
 			path.erase(0, sfxspeech_pos + 4);
 		}
 		
 	} else {
 		// Speech
-		path = "speech\\" + config.language + "\\" + GetName(path);
+		path = "speech/" + config.language + "/" + GetName(path);
 	}
 	
 }
@@ -175,7 +175,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		}
 		string path = loadPath(str);
 		
-		clearAbsDirectory(path, "arx\\");
+		clearAbsDirectory(path, "arx/");
 		
 		LogDebug << "adding bitmap " << i << ": " << path;
 		
