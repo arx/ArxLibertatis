@@ -1205,9 +1205,9 @@ bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const string & temp) {
 	std::string tex;
 	std::string tex2;
 	
-	if (io->ioflags & IO_NPC)	tex2 = "graph\\obj3d\\interactive\\npc\\" + temp;
-	else if (io->ioflags & IO_FIX)	tex2 = "graph\\obj3d\\interactive\\fix_inter\\" + temp;
-	else if (io->ioflags & IO_ITEM)	tex2 = "graph\\obj3d\\interactive\\items\\" + temp;
+	if (io->ioflags & IO_NPC)	tex2 = "graph/obj3d/interactive/npc/" + temp;
+	else if (io->ioflags & IO_FIX)	tex2 = "graph/obj3d/interactive/fix_inter/" + temp;
+	else if (io->ioflags & IO_ITEM)	tex2 = "graph/obj3d/interactive/items/" + temp;
 	else tex2.clear();
 	
 	File_Standardize(tex2, tex);
@@ -1673,7 +1673,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
 
 	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
 	if (tc == NULL)
-		tc = TextureContainer::LoadUI("graph\\interface\\misc\\default[icon].bmp");
+		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon].bmp");
 
 	if (tc != NULL)
 	{
@@ -2407,8 +2407,8 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	}
 
 	std::string tex;
-	const std::string tex1 = "graph\\obj3d\\interactive\\items\\weapons\\";
-	std::string tx = tex1 + '\\' + temp + '\\' + temp + ".teo";
+	const std::string tex1 = "graph/obj3d/interactive/items/weapons/";
+	std::string tx = tex1 + '/' + temp + '/' + temp + ".teo";
 	File_Standardize(tx, tex);
 	
 	io->_npcdata->weapon = AddItem( tex, IO_IMMEDIATELOAD);
@@ -2452,7 +2452,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	SetExt(texscript, "asl");
 	SetExt(tex1, "teo");
 
-	std::string file2 = "game\\";
+	std::string file2 = "game/";
 	file2 += file;
 	SetExt(file2, ".ftl");
 
@@ -2523,7 +2523,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	io->infracolor.g = 0.f;
 	io->infracolor.b = 1.f;
 	TextureContainer * tc;
-	tc = TextureContainer::LoadUI("graph\\interface\\misc\\default[icon].bmp"); 
+	tc = TextureContainer::LoadUI("graph/interface/misc/default[icon].bmp"); 
 
 	if (tc)
 	{
@@ -2558,7 +2558,7 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 	SetExt(texscript, "asl");
 	SetExt(tex1, "teo");
 
-	std::string file2 = "game\\";
+	std::string file2 = "game/";
     file2 += file;
 	SetExt(file2, ".ftl");
 
@@ -2620,7 +2620,7 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
 	SetExt(tex1, "teo");
 
 	std::string file2;
-	file2 = "game\\";
+	file2 = "game/";
     file2 += file;
 	SetExt(file2, ".ftl");
 
@@ -2811,7 +2811,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 
 					if (_delete)
 					{
-						temp += "\\";
+						temp += "/";
 						KillAllDirectory(temp);
 					}
 				}
@@ -2877,7 +2877,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
     SetExt(tex1, "teo");
 
     std::string file2;
-    file2 = "game\\";
+    file2 = "game/";
     file2 += file;
     SetExt(file2, ".ftl");
 
@@ -2989,7 +2989,7 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 	ReleaseScript(&io->script);
 
 	loadScript(io->script, resources->getFile(texscript));
-	loadScript(io->over_script, resources->getFile(io->full_name() + '\\' + io->short_name() + ".asl"));
+	loadScript(io->over_script, resources->getFile(io->full_name() + '/' + io->short_name() + ".asl"));
 
 	long num = GetInterNum(io);
 
@@ -3170,7 +3170,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	tex2 = temp;
 
 	std::string file2;
-	file2 = "game\\" + file;
+	file2 = "game/" + file;
 	SetExt(file2, ".ftl");
 
 	if(!resources->getFile(file2) && !resources->getFile(file)) {
@@ -3261,7 +3261,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 		tc = TextureContainer::LoadUI(tex2, TextureContainer::Level);
 
 	if (tc == NULL)
-		tc = TextureContainer::LoadUI("graph\\interface\\misc\\default[icon].bmp");
+		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon].bmp");
 
 	if (tc)
 	{
