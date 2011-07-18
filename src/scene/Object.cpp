@@ -846,10 +846,6 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 		pos += sizeof(THEO_SELECTED);
 		
 		eerie->selections[i].name = toLowercase(safestring(pts->name));
-		if(eerie->selections[i].name.length() > 63) {
-			// TODO why? was this just for a now-remove storage limitation in EERIE_SELECTIONS::name?
-			eerie->selections[i].name.resize(63);
-		}
 		eerie->selections[i].selected.resize(pts->nb_index);
 		
 		if(pts->nb_index > 0) {
@@ -1187,7 +1183,7 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 	string path = dirr;
 	RemoveName(path);
 	
-	PakDirectory * dir = resources->getDirectory(toLowercase(path)); // TODO(case-sensitive) remove toLowercase
+	PakDirectory * dir = resources->getDirectory(path);
 	if(dir) {
 		for(PakDirectory::files_iterator i = dir->files_begin(); i != dir->files_end(); i++) {
 			if(GetExt(i->first) != ".scn") {
