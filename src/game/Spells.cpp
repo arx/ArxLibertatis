@@ -3272,7 +3272,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		Player_Magic_Level = ARX_CLEAN_WARN_CAST_FLOAT(level);
 	}
 
-	static TextureContainer * tc4 = TextureContainer::Load("graph\\particles\\smoke.bmp");
+	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke.bmp");
 
 
 	if ((target < 0)
@@ -5115,13 +5115,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			{
 				pCSpellFx->spellinstance=i;
 				char tmptext[256];
-				strcpy(tmptext,"graph\\obj3d\\interactive\\fix_inter\\blue_cube\\blue_cube.asl");
+				strcpy(tmptext,"graph/obj3d/interactive/fix_inter/blue_cube/blue_cube.asl");
 				INTERACTIVE_OBJ * io;
 				io=AddFix(tmptext,IO_IMMEDIATELOAD);
 
 				if (io)
 				{
-					ARX_INTERACTIVE_HideGore(io);								
+					ARX_INTERACTIVE_HideGore(io);
 					RestoreInitialIOStatusOfIO(io);
 					spells[i].longinfo=GetInterNum(io);
 					io->scriptload=1;
@@ -6408,7 +6408,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 //*************************************************************************************
 void ARX_SPELLS_Kill(long i) {
 	
-	static TextureContainer * tc4=TextureContainer::Load("graph\\particles\\smoke.bmp");
+	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke.bmp");
 
 	if (!spells[i].exist) return;
 
@@ -7604,13 +7604,13 @@ void ARX_SPELLS_Update()
 
 							if (EEfabs(anything)<30)
 							{
-								strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\undead_base\\undead_base.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/undead_base/undead_base.asl");
 								INTERACTIVE_OBJ * io;
 								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 
 								if (io)
 								{
-									ARX_INTERACTIVE_HideGore(io);								
+									ARX_INTERACTIVE_HideGore(io);
 									RestoreInitialIOStatusOfIO(io);
 											
 
@@ -8003,7 +8003,7 @@ void ARX_SPELLS_Update()
 							if (spells[i].caster_level>=9)
 							{
 								tokeep=1;
-								strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\demon\\demon.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/demon/demon.asl");
 							}
 							else 
 							{
@@ -8011,22 +8011,22 @@ void ARX_SPELLS_Update()
 
 								if (rnd()>0.98f)
 								{
-									strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\wrat_base\\wrat_base.asl");
+									strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
 									tokeep=-1;
 								}
 								else
-									strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\chicken_base\\chicken_base.asl");
+									strcpy(tmptext,"graph/obj3d/interactive/npc/chicken_base/chicken_base.asl");
 							}
 
 							if ((rnd()>0.997f) || ((cur_rf>=3) && (rnd()>0.8f)) || ((cur_mr>=3) && (rnd()>0.3f)))
 							{
-								strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\wrat_base\\wrat_base.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
 								tokeep=-1;
 							}
 
 							if ((rnd()>0.997f) || (sp_max && (rnd()>0.8f)) || ((cur_mr>=3) && (rnd()>0.3f)))
 							{
-								strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\y_mx\\y_mx.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/y_mx/y_mx.asl");
 								tokeep=0;
 							}
 
@@ -8034,12 +8034,12 @@ void ARX_SPELLS_Update()
 							{
 								if (rnd()>0.5) 
 								{
-									strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\wrat_base\\wrat_base.asl");
+									strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
 									tokeep=-1;
 								}
 								else
 								{
-									strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\y_mx\\y_mx.asl");
+									strcpy(tmptext,"graph/obj3d/interactive/npc/y_mx/y_mx.asl");
 									tokeep=0;
 								}
 							}
@@ -8049,7 +8049,7 @@ void ARX_SPELLS_Update()
 
 							if (!io)
 							{
-								strcpy(tmptext,"graph\\obj3d\\interactive\\npc\\chicken_base\\chicken_base.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/chicken_base/chicken_base.asl");
 								tokeep=0;
 								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 							}
@@ -8597,7 +8597,7 @@ static void ApplySPWep() {
 		ARX_SPSound();
 		std::string tex;
 		std::string tex2;
-		tex2 = "graph\\obj3d\\interactive\\items\\weapons\\sword_mx\\sword_mx.teo";
+		tex2 = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
 		File_Standardize(tex2,tex);
 		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(tex,IO_IMMEDIATELOAD);
 
@@ -8663,7 +8663,7 @@ static void ApplyCurSOS() {
 static void ApplySPBow() {
 	
 	ARX_SPSound();
-	const char OBJ_BOW[] = "graph\\obj3d\\interactive\\items\\weapons\\bow_mx\\bow_mx.teo";
+	const char OBJ_BOW[] = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx.teo";
 	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(OBJ_BOW,IO_IMMEDIATELOAD);
 	
 	if(ioo!=NULL) {
@@ -8692,13 +8692,13 @@ static void ApplySPArm() {
 	switch (sp_arm)
 	{
 		case 0:
-			tex2 = "%sgraph\\obj3d\\interactive\\items\\armor\\helmet_plate_cm\\helmet_plate_cm.teo";
+			tex2 = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm.teo";
 		break;
 		case 1:
-			tex2 = "%sgraph\\obj3d\\interactive\\items\\armor\\legging_plate_cm\\legging_plate_cm.teo";
+			tex2 = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm.teo";
 		break;
 		case 2:
-			tex2 = "%sgraph\\obj3d\\interactive\\items\\armor\\chest_plate_cm\\chest_plate_cm.teo";
+			tex2 = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm.teo";
 		break;
 		default:
 			return;
@@ -8831,14 +8831,14 @@ static void ApplySPMax() {
 	}
 	else
 	{
-		TextureContainer * tcm=TextureContainer::Load("graph\\obj3d\\textures\\npc_human_cm_hero_head.bmp");
+		TextureContainer * tcm=TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head.bmp");
 
 		if (tcm)
 		{
 			delete tcm;
-			player.heads[0]=TextureContainer::Load("graph\\obj3d\\textures\\npc_human_base_hero_head.bmp");
-			player.heads[1]=TextureContainer::Load("graph\\obj3d\\textures\\npc_human_base_hero2_head.bmp");
-			player.heads[2]=TextureContainer::Load("graph\\obj3d\\textures\\npc_human_base_hero3_head.bmp");
+			player.heads[0]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head.bmp");
+			player.heads[1]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head.bmp");
+			player.heads[2]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head.bmp");
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 		}
 	}	
