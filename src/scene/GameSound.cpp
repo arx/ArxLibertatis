@@ -1689,7 +1689,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 				for(size_t mi = 0; mi < MAX_VARIANTS; mi++) {
 					
 					ostringstream oss;
-					oss << key.getValue();
+					oss << toLowercase(key.getValue());
 					if(mi) {
 						oss << mi;
 					}
@@ -1698,7 +1698,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					
 					if(sample == INVALID_ID) {
 						ostringstream oss2;
-						oss2 << key.getValue() << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
+						oss2 << toLowercase(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
 						sample = aalCreateSample(oss2.str());
 					}
 					

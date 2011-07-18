@@ -127,7 +127,7 @@ PakFile * PakDirectory::getFile(const string & path) {
 		}
 	}
 	
-	arx_assert(std::find_first_of(path.begin() + pos, path.end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.end()); // TODO(case-sensitive) remove
+	arx_assert(std::find_first_of(path.begin() + ((pos == string::npos) ? 0 : pos), path.end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.end()); // TODO(case-sensitive) remove
 	
 	files_iterator file = d->files.find((pos == string::npos) ? path : path.substr(pos + 1));
 	if(file == d->files.end()) {
