@@ -692,19 +692,15 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source) {
+long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source) {
 	
 	if(!bIsActive) {
 		return 0;
 	}
 	
-	if( _name1.empty() || _name2.empty()) {
+	if(name1.empty() || name2.empty()) {
 		return 0;
 	}
-	
-	// TODO move to caller
-	string name1 = toLowercase(_name1);
-	string name2 = toLowercase(_name2);
 	
 	if(name2 == "water") {
 		ARX_PARTICLES_SpawnWaterSplash(position);
@@ -1844,10 +1840,11 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 }
 
-static float GetSamplePresenceFactor(const string & _name) {
+static char BADSAMPLECHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
+
+static float GetSamplePresenceFactor(const string & name) {
 	
-	// TODO move to caller
-	string name = toLowercase(_name);
+	arx_assert(name.find_first_of(BADSAMPLECHAR) == string::npos); // TODO(case-sensitive) remove
 	
 	PresenceFactors::const_iterator it = presence.find(name);
 	if(it != presence.end()) {
