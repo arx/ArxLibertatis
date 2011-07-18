@@ -30,7 +30,7 @@ public:
 			}
 		}
 		
-		string var = context.getLowercase();
+		string var = context.getWord();
 		string val = context.getWord();
 		
 		DebugScript(' ' << var << " \"" << val << '"');
@@ -152,7 +152,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string var = context.getLowercase();
+		string var = context.getWord();
 		float val = context.getFloat();
 		
 		DebugScript(' ' << var << ' ' << val);
@@ -276,7 +276,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string var = context.getLowercase();
+		string var = context.getWord();
 		
 		DebugScript(' ' << var);
 		
@@ -306,7 +306,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string var = context.getLowercase();
+		string var = context.getWord();
 		
 		DebugScript(' ' << var);
 		

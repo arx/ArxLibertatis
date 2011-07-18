@@ -106,7 +106,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string skin = loadPath(context.getLowercase());
+			string skin = loadPath(context.getWord());
 			
 			DebugScript(" \"" << skin << '"');
 			
@@ -129,7 +129,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string target = context.getLowercase();
+			string target = context.getWord();
 			
 			DebugScript(' ' << target);
 			
@@ -163,7 +163,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string file = loadPath(context.getLowercase());
+			string file = loadPath(context.getWord());
 			
 			if(FORBID_SCRIPT_IO_CREATION) {
 				if(multi) {
@@ -222,7 +222,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string target = context.getLowercase();
+			string target = context.getWord();
 			
 			DebugScript(' ' << target);
 			
@@ -264,7 +264,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string file = loadPath(context.getLowercase());
+			string file = loadPath(context.getWord());
 			
 			INTERACTIVE_OBJ * io = context.getIO();
 			
@@ -406,7 +406,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string cmdname = context.getLowercase();
+		string cmdname = context.getWord();
 		
 		// Remove all underscores from the command.
 		cmdname.resize(std::remove(cmdname.begin(), cmdname.end(), '_') - cmdname.begin());
@@ -435,7 +435,7 @@ public:
 			unequip = (flg & flag('r'));
 		}
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << target);
 		
@@ -516,7 +516,7 @@ public:
 			}
 		}
 		
-		string weapon = loadPath(context.getLowercase());
+		string weapon = loadPath(context.getWord());
 		
 		DebugScript(' ' << options << ' ' << weapon);
 		

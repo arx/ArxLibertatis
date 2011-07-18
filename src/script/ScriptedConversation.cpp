@@ -40,7 +40,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string nbpeople = context.getLowercase();
+		string nbpeople = context.getWord();
 		long nb_people = 0;
 		if(!nbpeople.empty() && nbpeople[0] == '-') {
 			std::istringstream iss(nbpeople.substr(1));
@@ -65,7 +65,7 @@ public:
 		
 		for(long j = 0; j < nb_people; j++) {
 			
-			string target = context.getLowercase();
+			string target = context.getWord();
 			long t = GetTargetByNameTarget(target);
 			if(t == -2) {
 				t = GetInterNum(context.getIO()); // self
@@ -109,7 +109,7 @@ public:
 			no_pos = (flg & flag('o'));
 		}
 		
-		string sample = loadPath(context.getStringVar(context.getLowercase()));
+		string sample = loadPath(context.getStringVar(context.getWord()));
 		SetExt(sample, ".wav");
 		
 		DebugScript(' ' << options << " \"" << sample << '"');
@@ -157,7 +157,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string sample = loadPath(context.getLowercase());
+		string sample = loadPath(context.getWord());
 		
 		DebugScript(' ' << sample);
 		
@@ -189,7 +189,7 @@ public:
 			}
 		}
 		
-		string text = toLowercase(context.getStringVar(context.getLowercase()));
+		string text = toLowercase(context.getStringVar(context.getWord()));
 		
 		DebugScript(' ' << options << " \"" << text << '"');
 		
@@ -252,7 +252,7 @@ class SpeakCommand : public Command {
 	
 	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		acs.ionum = GetTargetByNameTarget(target);
 		if(acs.ionum == -2) {
 			acs.ionum = GetInterNum(context.getIO());
@@ -300,7 +300,7 @@ public:
 			
 			if(flg & flag('c')) {
 				
-				string command = context.getLowercase();
+				string command = context.getWord();
 				
 				FRAME_COUNT = 0;
 				
@@ -347,7 +347,7 @@ public:
 			}
 		}
 		
-		string text = context.getLowercase();
+		string text = context.getWord();
 		
 		if(text == "killall") {
 			
@@ -408,7 +408,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string speech = loadPath(context.getLowercase());
+		string speech = loadPath(context.getWord());
 		
 		DebugScript(' ' << speech);
 		

@@ -47,7 +47,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -171,7 +171,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string inout = context.getLowercase();
+		string inout = context.getWord();
 		
 		FADEDURATION = context.getFloat();
 		FADESTART = ARX_TIME_GetUL();

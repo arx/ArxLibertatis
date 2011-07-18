@@ -33,7 +33,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string object = context.getLowercase();
+		string object = context.getWord();
 		
 		DebugScript(" \"" << object << '"');
 		
@@ -169,13 +169,13 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string type = context.getLowercase();
+		string type = context.getWord();
 		
 		if(type == "npc" || type == "item") {
 			
-			string file = loadPath(context.getLowercase()); // object to spawn.
+			string file = loadPath(context.getWord()); // object to spawn.
 			
-			string target = context.getLowercase(); // object ident for position
+			string target = context.getWord(); // object ident for position
 			long t = GetTargetByNameTarget(target);
 			if(t == -2) {
 				t = GetInterNum(context.getIO());
@@ -298,7 +298,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string type = context.getLowercase();
+		string type = context.getWord();
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
@@ -342,9 +342,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = toLowercase(context.getStringVar(context.getLowercase()));
+		string name = toLowercase(context.getStringVar(context.getWord()));
 		
-		string attach = context.getLowercase();
+		string attach = context.getWord();
 		
 		DebugScript(' ' << name << ' ' << attach);
 		
@@ -369,7 +369,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -410,7 +410,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -438,7 +438,7 @@ public:
 			megahide = (flg & flag('m'));
 		}
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		long t = GetTargetByNameTarget(target);
 		if(t == -2) {
 			t = GetInterNum(context.getIO());
@@ -506,8 +506,8 @@ public:
 			
 			if(flg & flag('l')) {
 				
-				string level = context.getLowercase();
-				string target = context.getLowercase();
+				string level = context.getWord();
+				string target = context.getWord();
 				
 				strcpy(TELEPORT_TO_LEVEL, level.c_str());
 				strcpy(TELEPORT_TO_POSITION, target.c_str());
@@ -531,7 +531,7 @@ public:
 		
 		string target;
 		if(!initpos) {
-			target = context.getLowercase();
+			target = context.getWord();
 		}
 		
 		DebugScript(' ' << options << ' ' << player.angle.b << ' ' << target);
@@ -628,7 +628,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = toLowercase(context.getStringVar(context.getLowercase()));
+		string target = toLowercase(context.getStringVar(context.getWord()));
 		
 		DebugScript(' ' << target);
 		
@@ -691,7 +691,7 @@ public:
 		
 		DamageType type = getDamageType(context);
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		float damage = context.getFloat();
 		

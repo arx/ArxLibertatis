@@ -3092,7 +3092,6 @@ static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 	std::string file2 = io->filename;
 	RemoveName(file2);
 	file2 += ident;
-	makeLowercase(file2); // TODO(case-sensitive) remove
 
 	if(resources->getDirectory(file2))
 		return true;

@@ -24,7 +24,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		long t = GetTargetByNameTarget(target);
 		if(t == -2) {
 			t = GetInterNum(context.getIO()); //self
@@ -79,7 +79,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string stealvalue = context.getLowercase();
+		string stealvalue = context.getWord();
 		
 		DebugScript(' ' << stealvalue);
 		
@@ -106,7 +106,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string lightvalue = context.getLowercase();
+		string lightvalue = context.getWord();
 		
 		DebugScript(' ' << lightvalue);
 		
@@ -153,7 +153,7 @@ public:
 			set = !(flg & flag('r'));
 		}
 		
-		string type = context.getLowercase();
+		string type = context.getWord();
 		
 		DebugScript(' ' << type << ' ' << set);
 		
@@ -181,8 +181,8 @@ public:
 			}
 		}
 		
-		string param2 = context.getLowercase();
-		string val = context.getLowercase();
+		string param2 = context.getWord();
+		string val = context.getWord();
 		
 		short flag = (!val.empty() && val[val.length() - 1] == '%') ? 1 : 0;
 		float fval = context.getFloatVar(val);

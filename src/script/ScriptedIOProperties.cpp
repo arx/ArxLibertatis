@@ -22,7 +22,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string category = context.getLowercase();
+		string category = context.getWord();
 		
 		DebugScript(' ' << category);
 		
@@ -120,7 +120,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string trapvalue = context.getLowercase();
+		string trapvalue = context.getWord();
 		
 		DebugScript(' ' << trapvalue);
 		
@@ -143,7 +143,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string secretvalue = context.getLowercase();
+		string secretvalue = context.getWord();
 		
 		DebugScript(' ' << secretvalue);
 		
@@ -186,7 +186,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = context.getLowercase();
+		string name = context.getWord();
 		
 		DebugScript(' ' << name);
 		
@@ -211,7 +211,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = loadUnlocalized(context.getLowercase());
+		string name = loadUnlocalized(context.getWord());
 		
 		DebugScript(' ' << name);
 		
@@ -230,7 +230,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string interactivity = context.getLowercase();
+		string interactivity = context.getWord();
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(interactivity == "none") {
@@ -257,7 +257,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string material = context.getLowercase();
+		string material = context.getWord();
 		
 		DebugScript(' ' << material);
 		
@@ -280,7 +280,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string material = context.getLowercase();
+		string material = context.getWord();
 		
 		DebugScript(' ' << material);
 		
@@ -303,7 +303,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string material = context.getLowercase();
+		string material = context.getWord();
 		
 		DebugScript(' ' << material);
 		
@@ -495,12 +495,12 @@ public:
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
-		string type = context.getLowercase();
+		string type = context.getWord();
 		
 		if(type == "skin") {
 			
-			string oldskin = loadPath(context.getLowercase());
-			string newskin = loadPath(context.getLowercase());
+			string oldskin = loadPath(context.getWord());
+			string newskin = loadPath(context.getWord());
 			
 			DebugScript(" skin \"" << oldskin << "\" \"" << newskin << '"');
 			
@@ -509,7 +509,7 @@ public:
 			
 		} else if(type == "icon") {
 			
-			string icon = loadPath(context.getLowercase());
+			string icon = loadPath(context.getWord());
 			
 			DebugScript(" icon \"" << icon << '"');
 			
@@ -545,7 +545,7 @@ public:
 				return Failed;
 			}
 			
-			string mesh = loadPath(context.getLowercase());
+			string mesh = loadPath(context.getWord());
 			
 			DebugScript(' ' << type << " \"" << mesh << '"');
 			
@@ -570,7 +570,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string mesh = loadPath(context.getLowercase());
+		string mesh = loadPath(context.getWord());
 		
 		DebugScript(" \"" << mesh << '"');
 		

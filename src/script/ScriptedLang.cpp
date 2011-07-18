@@ -43,7 +43,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string label = context.getLowercase();
+		string label = context.getWord();
 		
 		DebugScript(' ' << label);
 		
@@ -129,7 +129,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string event = context.getLowercase();
+		string event = context.getWord();
 		
 		DebugScript(' ' << event);
 		
@@ -150,7 +150,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string timer = context.getLowercase();
+		string timer = context.getWord();
 		
 		DebugScript(' ' << timer);
 		
@@ -216,14 +216,14 @@ public:
 		
 		string groupname;
 		if(group) {
-			groupname = toLowercase(context.getStringVar(context.getLowercase()));
+			groupname = toLowercase(context.getStringVar(context.getWord()));
 		}
 		
-		string event = context.getLowercase();
+		string event = context.getWord();
 		
 		string zonename;
 		if(zone) {
-			zonename = toLowercase(context.getStringVar(context.getLowercase()));
+			zonename = toLowercase(context.getStringVar(context.getWord()));
 		}
 		
 		float rad = 0.f;
@@ -233,7 +233,7 @@ public:
 		
 		string target;
 		if(!group && !zone && !radius) {
-			target = context.getLowercase();
+			target = context.getWord();
 			
 			// TODO(broken-scripts) work around broken scripts 
 			for(size_t i = 0; i < SM_MAXCMD; i++) {
@@ -377,7 +377,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = context.getLowercase();
+		string name = context.getWord();
 		bool enable = context.getBool();
 		
 		DebugScript(' ' << name << ' ' << enable);
@@ -730,11 +730,11 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string left = context.getLowercase();
+		string left = context.getWord();
 		
-		string op = context.getLowercase();
+		string op = context.getWord();
 		
-		string right = context.getLowercase();
+		string right = context.getWord();
 		
 		Operators::const_iterator it = operators.find(op);
 		if(it == operators.end()) {
@@ -805,7 +805,7 @@ void timerCommand(const string & timer, Context & context) {
 		idle = (flg & flag('i'));
 	}
 	
-	string command = context.getLowercase();
+	string command = context.getWord();
 	
 	DebugScript(' ' << options << ' ' << command);
 	

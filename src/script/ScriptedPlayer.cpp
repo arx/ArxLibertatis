@@ -141,7 +141,7 @@ public:
 			add = (flg & flag('r')) ? -1 : ((flg & flag('a')) ? 1 : 0);
 		}
 		
-		string name = context.getLowercase();
+		string name = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << name);
 		
@@ -187,7 +187,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = loadUnlocalized(context.getLowercase());
+		string name = loadUnlocalized(context.getWord());
 		
 		DebugScript(' ' << name);
 		
@@ -206,7 +206,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string command = context.getLowercase();
+		string command = context.getWord();
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(!io->tweakerinfo) {
@@ -219,8 +219,8 @@ public:
 		
 		if(command == "skin") {
 			
-			string src = loadPath(context.getLowercase());
-			string dst = loadPath(context.getLowercase());
+			string src = loadPath(context.getWord());
+			string dst = loadPath(context.getWord());
 			
 			DebugScript(" skin " << src << ' ' << dst);
 			
@@ -229,7 +229,7 @@ public:
 			
 		} else {
 			
-			string mesh = loadPath(context.getLowercase());
+			string mesh = loadPath(context.getWord());
 			
 			DebugScript(" mesh " << mesh);
 			
@@ -334,7 +334,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string type = context.getLowercase();
+		string type = context.getWord();
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
@@ -446,7 +446,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string key = toLowercase(context.getStringVar(context.getLowercase()));
+		string key = toLowercase(context.getStringVar(context.getWord()));
 		
 		DebugScript(' ' << key);
 		
@@ -465,7 +465,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -509,7 +509,7 @@ public:
 		
 		long level = clamp((long)context.getFloat(), 1l, 10l);
 		
-		string spellname = context.getLowercase();
+		string spellname = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << duration << ' ' << level << ' ' << spellname);
 		

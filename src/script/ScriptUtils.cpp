@@ -190,23 +190,19 @@ string Context::getFlags() {
 	skipWhitespace();
 	
 	if(pos < script->size && script->data[pos] == '-') {
-		return getLowercase();
+		return getWord();
 	}
 	
 	return string();
 }
 
 float Context::getFloat() {
-	return getFloatVar(getLowercase());
-}
-
-string Context::getLowercase() {
-	return toLowercase(getWord());
+	return getFloatVar(getWord());
 }
 
 bool Context::getBool() {
 	
-	string word = getLowercase();
+	string word = getWord();
 	
 	return (word == "on" || word == "yes");
 }

@@ -40,7 +40,7 @@ public:
 			}
 		}
 		
-		string command = context.getLowercase();
+		string command = context.getWord();
 		
 		if(command == "open") {
 			ARX_INTERFACE_BookOpenClose(1);
@@ -93,7 +93,7 @@ public:
 	Result execute(Context & context) {
 		
 		ARX_INTERFACE_NOTE_TYPE type = NOTE_TYPE_UNDEFINED;
-		string tpname = context.getLowercase();
+		string tpname = context.getWord();
 		if(tpname == "note") {
 			type = NOTE_TYPE_NOTE;
 		} else if(tpname == "notice") {
@@ -102,7 +102,7 @@ public:
 			type = NOTE_TYPE_BOOK;
 		}
 		
-		string text = loadUnlocalized(context.getLowercase());
+		string text = loadUnlocalized(context.getWord());
 		
 		DebugScript(' ' << tpname << ' ' << text);
 		
@@ -187,7 +187,7 @@ public:
 			smooth = (flg & flag('s'));
 		}
 		
-		string command = context.getLowercase();
+		string command = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << command);
 		
@@ -213,7 +213,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string message = context.getLowercase();
+		string message = context.getWord();
 		
 		DebugScript(' ' << message);
 		
@@ -279,7 +279,7 @@ public:
 		
 		if(remove) {
 			
-			string marker = loadUnlocalized(context.getLowercase());
+			string marker = loadUnlocalized(context.getWord());
 			
 			DebugScript(' ' << options << ' ' << marker);
 			
@@ -291,7 +291,7 @@ public:
 			float y = context.getFloat();
 			long level = (long)context.getFloat();
 			
-			string marker = loadUnlocalized(context.getLowercase());
+			string marker = loadUnlocalized(context.getWord());
 			
 			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
 			
@@ -312,7 +312,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string symbol = context.getLowercase();
+		string symbol = context.getWord();
 		
 		float duration = context.getFloat();
 		

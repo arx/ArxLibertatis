@@ -82,7 +82,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string anim = context.getLowercase();
+		string anim = context.getWord();
 		
 		DebugScript(' ' << anim);
 		
@@ -179,7 +179,7 @@ public:
 			}
 		}
 		
-		string anim = context.getLowercase();
+		string anim = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << anim);
 		
@@ -262,9 +262,9 @@ public:
 			}
 		}
 		
-		string anim = context.getLowercase();
+		string anim = context.getWord();
 		
-		string file = loadPath(context.getLowercase());
+		string file = loadPath(context.getWord());
 		
 		DebugScript(' ' << options << ' ' << anim << ' ' << file);
 		
@@ -339,7 +339,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string type = context.getLowercase();
+		string type = context.getWord();
 		
 		DebugScript(' ' << type);
 		
@@ -379,7 +379,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string zone = context.getLowercase();
+		string zone = context.getWord();
 		
 		DebugScript(' ' << zone);
 		
@@ -408,7 +408,7 @@ public:
 			followdir = (flg & flag('f'));
 		}
 		
-		string name = context.getLowercase();
+		string name = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << name);
 		
@@ -457,7 +457,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = context.getLowercase();
+		string name = context.getWord();
 		
 		DebugScript(' ' << name);
 		

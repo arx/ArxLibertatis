@@ -41,7 +41,7 @@ public:
 			}
 		}
 		
-		string command = context.getLowercase();
+		string command = context.getWord();
 		
 		if(options.empty()) {
 			if(command == "stack") {
@@ -140,7 +140,7 @@ public:
 			
 			if(flg & flag('k')) {
 				
-				string spellname = context.getLowercase();
+				string spellname = context.getWord();
 				Spell spellid = GetSpellId(spellname);
 				
 				DebugScript(' ' << options << ' ' << spellname);
@@ -186,10 +186,10 @@ public:
 			duration = 1000 + level * 2000;
 		}
 		
-		string spellname = context.getLowercase();
+		string spellname = context.getWord();
 		Spell spellid = GetSpellId(spellname);
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		long t = GetTargetByNameTarget(target);
 		if(t <= -1) {
 			t = GetInterNum(context.getIO());
@@ -220,7 +220,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string detectvalue = context.getLowercase();
+		string detectvalue = context.getWord();
 		
 		DebugScript(' ' << detectvalue);
 		
@@ -302,7 +302,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string stat = context.getLowercase();
+		string stat = context.getWord();
 		float value = context.getFloat();
 		
 		DebugScript(' ' << stat << ' ' << value);
@@ -347,7 +347,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string mode = context.getLowercase();
+		string mode = context.getWord();
 		
 		DebugScript(' ' << mode);
 		
@@ -426,9 +426,9 @@ public:
 			}
 		}
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		if(target == "object") {
-			target = context.getLowercase();
+			target = context.getWord();
 		}
 		target = toLowercase(context.getStringVar(target));
 		long t = GetTargetByNameTarget(target);
@@ -474,7 +474,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -502,7 +502,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		

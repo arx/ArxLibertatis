@@ -54,14 +54,14 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		long t = GetTargetByNameTarget(target);
 		if(t == -2) {
 			t = GetInterNum(context.getIO());
 		}
 		
-		string power = context.getLowercase();
+		string power = context.getWord();
 		
 		float val = 0.f;
 		float radius = 0.f;
@@ -91,7 +91,7 @@ public:
 		HandleFlags("v") {
 			if(flg & flag('v')) {
 				float volume = context.getFloat();
-				string ambiance = context.getLowercase();
+				string ambiance = context.getWord();
 				DebugScript(' ' << options << ' ' << volume << " \"" << ambiance << '"');
 				bool ret = ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_LOOPED, volume * 0.01f);
 				if(!ret) {
@@ -103,7 +103,7 @@ public:
 			return Failed;
 		}
 		
-		string ambiance = context.getLowercase();
+		string ambiance = context.getWord();
 		DebugScript(" \"" << ambiance << '"');
 		if(ambiance == "kill") {
 			ARX_SOUND_KillAmbiances();
@@ -147,21 +147,21 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string sourceio = context.getLowercase();
+		string sourceio = context.getWord();
 		long t = GetTargetByNameTarget(sourceio);
 		if(t == -2) {
 			t = GetInterNum(context.getIO()); //self
 		}
 		
-		string source = context.getLowercase(); // source action_point
+		string source = context.getWord(); // source action_point
 		
-		string targetio = context.getLowercase();
+		string targetio = context.getWord();
 		long t2 = GetTargetByNameTarget(targetio);
 		if(t2 == -2) {
 			t2 = GetInterNum(context.getIO()); //self
 		}
 		
-		string target = context.getLowercase();
+		string target = context.getWord();
 		
 		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
 		
@@ -187,7 +187,7 @@ public:
 			}
 		}
 		
-		string name = context.getLowercase();
+		string name = context.getWord();
 		
 		DebugScript(' ' << options << " \"" << name << '"');
 		
@@ -272,7 +272,7 @@ public:
 			rem = (flg & flag('r'));
 		}
 		
-		string group = toLowercase(context.getStringVar(context.getLowercase()));
+		string group = toLowercase(context.getStringVar(context.getWord()));
 		
 		DebugScript(' ' << options << ' ' << group);
 		
@@ -310,7 +310,7 @@ public:
 	Result execute(Context & context) {
 		
 		string options = context.getFlags();
-		string command = context.getLowercase();
+		string command = context.getWord();
 		
 		if(command == "stack") {
 			DebugScript(" stack");
@@ -338,7 +338,7 @@ public:
 			
 		} else if(command == "ambiance") {
 			
-			string ambiance = loadPath(context.getLowercase());
+			string ambiance = loadPath(context.getWord());
 			
 			DebugScript(" ambiance " << ambiance);
 			
@@ -382,8 +382,8 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string source = context.getLowercase(); // source IO
-		string target = context.getLowercase(); // target IO
+		string source = context.getWord(); // source IO
+		string target = context.getWord(); // target IO
 		
 		DebugScript(' ' << source << ' ' << target);
 		
