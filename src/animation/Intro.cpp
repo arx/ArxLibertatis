@@ -109,7 +109,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	if (GRenderer->BeginScene())
 	{
-		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::LoadUI("misc\\logo.bmp");
+		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::LoadUI("misc/logo.bmp");
 
 		if (FISHTANK_img != NULL)
 		{
@@ -143,7 +143,7 @@ void ARX_INTERFACE_ShowARKANE()
 	if (GRenderer->BeginScene())
 	{
 		if (ARKANE_img == NULL)
-			ARKANE_img = TextureContainer::LoadUI("graph\\interface\\misc\\arkane.bmp");
+			ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane.bmp");
 
 		if (ARKANE_img != NULL)
 		{
@@ -252,9 +252,9 @@ void LoadLevelScreen(long num)
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			if(num == 10) {
-				pbar = TextureContainer::LoadUI("graph\\interface\\menus\\load_full.bmp");
+				pbar = TextureContainer::LoadUI("graph/interface/menus/load_full.bmp");
 			} else {
-				pbar = TextureContainer::LoadUI("graph\\interface\\menus\\load_full_level.bmp");
+				pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level.bmp");
 			}
 			
 			nopbar = 1;
@@ -270,7 +270,7 @@ void LoadLevelScreen(long num)
 				char temp[256];
 				char tx[256];
 				GetLevelNameByNum(num, tx);
-				sprintf(temp, "graph\\levels\\level%s\\loading.bmp", tx);
+				sprintf(temp, "graph/levels/level%s/loading.bmp", tx);
 				tc = TextureContainer::LoadUI(temp);
 			}
 			
