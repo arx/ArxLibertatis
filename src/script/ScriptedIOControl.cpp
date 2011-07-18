@@ -41,11 +41,11 @@ public:
 		
 		string tex2;
 		if(io->ioflags & IO_NPC) {
-			tex2 = "graph\\obj3d\\interactive\\npc\\" + object + ".teo";
+			tex2 = "graph/obj3d/interactive/npc/" + object + ".teo";
 		} else if(io->ioflags & IO_FIX) {
-			tex2 = "graph\\obj3d\\interactive\\fix_inter\\" + object + ".teo";
+			tex2 = "graph/obj3d/interactive/fix_inter/" + object + ".teo";
 		} else {
-			tex2 = "graph\\obj3d\\interactive\\items\\" + object + ".teo";
+			tex2 = "graph/obj3d/interactive/items/" + object + ".teo";
 		}
 		string tex;
 		File_Standardize(tex2, tex);
@@ -192,7 +192,7 @@ public:
 			}
 			
 			string path;
-			File_Standardize("graph\\obj3d\\interactive\\npc\\" + file, path);
+			File_Standardize("graph/obj3d/interactive/npc/" + file, path);
 			
 			if(type == "npc") {
 				
