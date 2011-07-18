@@ -126,13 +126,13 @@ public:
 
 class PlayAnimCommand : public Command {
 	
-	static void SetNextAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea, long layer, bool loop, bool nointerpol) {
+	static void setNextAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea, long layer, bool loop, bool nointerpol) {
 		
 		if(IsDeadNPC(io)) {
 			return;
 		}
 		
-		if(nointerpol) {
+		if(!nointerpol) {
 			AcquireLastAnim(io);
 		}
 		
@@ -201,11 +201,12 @@ public:
 		}
 		
 		if(!iot->anims[num]) {
-			return Success;
+			ScriptWarning << "animation " << anim << " not loaded";
+			return Failed;
 		}
 		
 		iot->ioflags |= IO_NO_PHYSICS_INTERPOL;
-		SetNextAnim(iot, iot->anims[num], nu, loop, nointerpol);
+		setNextAnim(iot, iot->anims[num], nu, loop, nointerpol);
 		
 		if(!loop) {
 			CheckSetAnimOutOfTreatZone(iot, nu);

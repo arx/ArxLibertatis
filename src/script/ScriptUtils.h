@@ -73,6 +73,8 @@ public:
 	std::string getWord();
 	void skipWord();
 	
+	std::string getCommand();
+	
 	void skipWhitespace();
 	
 	inline INTERACTIVE_OBJ * getIO() const { return io; }
@@ -138,7 +140,8 @@ bool isSuppressed(const Context & context, const std::string & command);
 
 void initSuppressions();
 
-#define ScriptPrefix << '[' << (context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown") << ':' << context.getPosition() << "] " << getName() <<
+#define ScriptContextPrefix(context) '[' << ((context).getIO() ? (((context).getScript() == &(context).getIO()->script) ? (context).getIO()->short_name() : (context).getIO()->long_name()) : "unknown") << ':' << (context).getPosition() << "] "
+#define ScriptPrefix << ScriptContextPrefix(context) << getName() <<
 #define DebugScript(args) LogDebug ScriptPrefix args
 #define ScriptInfo(args) LogInfo ScriptPrefix args
 #define ScriptWarning Logger(__FILE__,__LINE__, isSuppressed(context, getName()) ? Logger::Debug : Logger::Warning) ScriptPrefix ": "

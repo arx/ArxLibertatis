@@ -25,6 +25,39 @@ string Context::getStringVar(const string & var) const {
 	return GetVarValueInterpretedAsText(var, getMaster(), io);
 }
 
+std::string Context::getCommand() {
+	
+	const char * esdat = script->data;
+	
+	// First ignores spaces & unused chars
+	while(pos < script->size && (((unsigned char)esdat[pos]) <= 32 || esdat[pos] == '(' || esdat[pos] == ')' || esdat[pos] == '\n')) {
+		pos++;
+	}
+	
+	if(pos >= script->size) {
+		return string();
+	}
+	
+	string word;
+	
+	// now take chars until it finds a space or unused char
+	for(; ((unsigned char)esdat[pos]) > 32 && esdat[pos] != '(' && esdat[pos] != ')'; pos++) {
+		
+		char c = esdat[pos];
+		if(c == '"') {
+			LogWarning << ScriptContextPrefix(*this) << ": unexpected '\"' in command name";
+		} else if(c == '~') {
+			LogWarning << ScriptContextPrefix(*this) << ": unexpected '~' in command name";
+		} else if(c == '\n') {
+			break;
+		} else {
+			word.push_back(c);
+		}
+	}
+	
+	return word;
+}
+
 string Context::getWord() {
 	
 	skipWhitespace();
@@ -109,15 +142,18 @@ void Context::skipWord() {
 		if(esdat[pos] == '"') {
 			pos++;
 			if(pos == script->size) {
+				LogWarning << ScriptContextPrefix(*this) << ": missing '\"' before end of script";
 				return;
 			}
 			
 			while(esdat[pos] != '"') {
 				if(esdat[pos] == '\n') {
+					LogWarning << ScriptContextPrefix(*this) << ": missing '\"' before end of line";
 					return;
 				}
 				pos++;
 				if(pos == script->size) {
+					LogWarning << ScriptContextPrefix(*this) << ": missing '\"' before end of script";
 					return;
 				}
 			}
@@ -266,25 +302,22 @@ bool Context::returnToCaller() {
 
 void Context::skipStatement() {
 	
-	string word = getWord();
+	string word = getCommand();
 	if(pos == script->size) {
+		LogWarning << ScriptContextPrefix(*this) << ": missing statement before end of script";
 		return;
-	}
-	
-	while(word.empty() && pos != script->size && script->data[pos] == '\n') {
-		pos++;
-		word = getWord();
 	}
 	
 	if(word == "{") {
 		long brackets = 1;
 		while(brackets > 0) {
 			
-			if(script->size && script->data[pos] == '\n') {
+			if(script->data[pos] == '\n') {
 				pos++;
 			}
-			word = getWord();
+			word = getWord(); // TODO should not evaluate ~var~
 			if(pos == script->size) {
+				LogWarning << ScriptContextPrefix(*this) << ": missing '}' before end of script";
 				return;
 			}
 			
@@ -298,14 +331,13 @@ void Context::skipStatement() {
 		skipCommand();
 	}
 	
-	size_t oldpos = pos;
-	if(pos != script->size && script->data[pos] == '\n') {
-		do {
-			pos++;
-			word = getWord();
-		} while(word.empty() && pos != script->size && script->data[pos] == '\n');
+	skipWhitespace();
+	while(script->data[pos] == '\n') {
+		pos++;
+		skipWhitespace();
 	}
-	word = getLowercase();
+	size_t oldpos = pos;
+	word = getCommand();
 	if(word != "else") {
 		pos = oldpos;
 	}

@@ -246,7 +246,13 @@ public:
 		
 		string params = context.getWord();
 		
-		DebugScript(' ' << options << " g=\"" << groupname << "\" e=\"" << event << "\" r=" << rad << " t=\"" << target << "\" p=\"" << params << '"');
+		if(radius) {
+			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in radius " << rad);
+		} else if(zone) {
+			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in zone " << zonename);
+		} else {
+			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << target);
+		}
 		
 		INTERACTIVE_OBJ * oes = EVENT_SENDER;
 		EVENT_SENDER = context.getIO();
@@ -730,8 +736,6 @@ public:
 		
 		string right = context.getLowercase();
 		
-		DebugScript(" \"" << left << "\" " << op << " \"" << right << '"');
-		
 		Operators::const_iterator it = operators.find(op);
 		if(it == operators.end()) {
 			ScriptWarning << "unknown operator: " << op;
@@ -752,8 +756,10 @@ public:
 		bool condition;
 		if(t1 == TYPE_TEXT) {
 			condition = it->second->text(context, toLowercase(s1), toLowercase(s2)); // TODO case-sensitive
+			DebugScript(" \"" << left << "\" " << op << " \"" << right << "\"  ->  \"" << s1 << "\" " << op << " \"" << s2 << "\"  ->  " << (condition ? "true" : "false")); // TODO fix formatting in Logger and use std::boolalpha
 		} else {
 			condition = it->second->number(context, f1, f2);
+			DebugScript(" \"" << left << "\" " << op << " \"" << right << "\"  ->  " << f1 << " " << op << " " << f2 << "  ->  " << (condition ? "true" : "false"));
 		}
 		
 		if(!condition) {
@@ -848,10 +854,10 @@ void timerCommand(const string & timer, Context & context) {
 
 void setupScriptedLang() {
 	
-	ScriptEvent::registerCommand(new NopCommand("nop"));
-	ScriptEvent::registerCommand(new NopCommand("{"));
-	ScriptEvent::registerCommand(new NopCommand("}"));
-	ScriptEvent::registerCommand(new GotoCommand("goto"));
+	ScriptEvent::registerCommand(new NopCommand("nop")); // TODO(script-parser) remove
+	ScriptEvent::registerCommand(new NopCommand("{")); // TODO(script-parser) remove
+	ScriptEvent::registerCommand(new NopCommand("}")); // TODO(script-parser) remove
+	ScriptEvent::registerCommand(new GotoCommand("goto")); // TODO(script-parser) remove when possible
 	ScriptEvent::registerCommand(new GotoCommand("gosub", true));
 	ScriptEvent::registerCommand(new AbortCommand("accept", Command::AbortAccept));
 	ScriptEvent::registerCommand(new AbortCommand("refuse", Command::AbortRefuse));
@@ -864,7 +870,7 @@ void setupScriptedLang() {
 	ScriptEvent::registerCommand(new SendEventCommand);
 	ScriptEvent::registerCommand(new SetEventCommand);
 	ScriptEvent::registerCommand(new IfCommand);
-	ScriptEvent::registerCommand(new ElseCommand);
+	ScriptEvent::registerCommand(new ElseCommand); // TODO(script-parser) remove
 	
 }
 
