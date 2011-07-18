@@ -3184,7 +3184,7 @@ bool FastSceneLoad(const string & partial_path) {
 		return false;
 	}
 	
-	string path = "game\\" + partial_path;
+	string path = "game/" + partial_path;
 	string file = path + "fast.fts";
 	
 	size_t size;
@@ -3955,7 +3955,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
  */
 static bool FastSceneSave(const string & partial_path) {
 	
-	string path = "game\\" + partial_path;
+	string path = "game/" + partial_path;
 	
 	LogDebug << "FastSceneSave" << path;
 	

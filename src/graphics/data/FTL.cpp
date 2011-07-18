@@ -91,7 +91,7 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	}
 	
 	// Generate File name/path and create it
-	string gamefic = "game\\" + file;
+	string gamefic = "game/" + file;
 	SetExt(gamefic, ".ftl");
 	
 	if(!CreateFullPath(gamefic)) {
@@ -426,7 +426,7 @@ static char* MCache_Pop( const string& file, size_t& size)
 EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	
 	// Creates FTL file name
-	string filename = "game\\";
+	string filename = "game/";
 	filename += file;
 	SetExt(filename, ".ftl");
 	
