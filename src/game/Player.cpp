@@ -1617,46 +1617,46 @@ void ARX_PLAYER_Restore_Skin()
 	switch (player.skin)
 	{
 		case 0:
-			tx  = "graph\\obj3d\\textures\\npc_human_base_hero_head.bmp";
-			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_base_hero_head.bmp";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head.bmp";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head.bmp";
 			break;
 		case 1:
-			tx  = "graph\\obj3d\\textures\\npc_human_base_hero2_head.bmp";
-			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero2_head.bmp";
-			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero2_head.bmp";
-			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero2_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_base_hero2_head.bmp";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero2_head.bmp";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero2_head.bmp";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero2_head.bmp";
 			break;
 		case 2:
-			tx  = "graph\\obj3d\\textures\\npc_human_base_hero3_head.bmp";
-			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero3_head.bmp";
-			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero3_head.bmp";
-			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero3_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_base_hero3_head.bmp";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero3_head.bmp";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero3_head.bmp";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero3_head.bmp";
 			break;
 		case 3:
-			tx  = "graph\\obj3d\\textures\\npc_human_base_hero4_head.bmp";
-			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero4_head.bmp";
-			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero4_head.bmp";
-			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero4_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_base_hero4_head.bmp";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero4_head.bmp";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero4_head.bmp";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero4_head.bmp";
 			break;
 		case 4:
-			tx  = "graph\\obj3d\\textures\\npc_human_cm_hero_head.bmp";
-			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_cm_hero_head.bmp";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head.bmp";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head.bmp";
 			break;
 		case 5:
-			tx  = "graph\\obj3d\\textures\\npc_human__base_hero_head.bmp";
-			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human__base_hero_head.bmp";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head.bmp";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head.bmp";
 			break;
 		case 6: //just in case
-			tx  = "graph\\obj3d\\textures\\npc_human__base_hero_head.bmp";
-			tx2 = "graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human__base_hero_head.bmp";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head.bmp";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head.bmp";
 			break;
 	}
 
@@ -1665,15 +1665,15 @@ void ARX_PLAYER_Restore_Skin()
 	if (PLAYER_SKIN_TC && !tx.empty())
 		PLAYER_SKIN_TC->LoadFile(tx);
 
-	tmpTC = TextureContainer::Find("graph\\obj3d\\textures\\npc_human_chainmail_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_hero_head.bmp");
 	if (tmpTC && !tx2.empty())
 		tmpTC->LoadFile(tx2);
 
-	tmpTC = TextureContainer::Find("graph\\obj3d\\textures\\npc_human_chainmail_mithril_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_mithril_hero_head.bmp");
 	if (tmpTC && !tx3.empty())
 		tmpTC->LoadFile(tx3);
 
-	tmpTC = TextureContainer::Find("graph\\obj3d\\textures\\npc_human_leather_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_leather_hero_head.bmp");
 	if (tmpTC && !tx4.empty())
 		tmpTC->LoadFile(tx4);
 }
@@ -1686,15 +1686,15 @@ extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 void ARX_PLAYER_LoadHeroAnimsAndMesh()
 {
-	const char OBJECT_HUMAN_BASE[] = "graph\\obj3d\\interactive\\npc\\human_base\\human_base.teo"; 
+	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo"; 
 	hero = loadObject(OBJECT_HUMAN_BASE, false);
-	PLAYER_SKIN_TC = TextureContainer::Load("graph\\obj3d\\textures\\npc_human_base_hero_head.bmp");
+	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head.bmp");
 
-	const char ANIM_WAIT_BOOK[] = "graph\\obj3d\\anims\\npc\\human_wait_book.tea";
+	const char ANIM_WAIT_BOOK[] = "graph/obj3d/anims/npc/human_wait_book.tea";
 	herowaitbook = EERIE_ANIMMANAGER_Load(ANIM_WAIT_BOOK);
-	const char ANIM_WAIT_NORMAL[] = "graph\\obj3d\\anims\\npc\\human_normal_wait.tea";
+	const char ANIM_WAIT_NORMAL[] = "graph/obj3d/anims/npc/human_normal_wait.tea";
 	herowait2 = EERIE_ANIMMANAGER_Load(ANIM_WAIT_NORMAL);
-	const char ANIM_WAIT_TWOHANDED[] = "graph\\obj3d\\anims\\npc\\human_wait_book_2handed.tea";
+	const char ANIM_WAIT_TWOHANDED[] = "graph/obj3d/anims/npc/human_wait_book_2handed.tea";
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter(0);
@@ -1718,7 +1718,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 
 	//todo free
 	io->armormaterial = strdup("leather");
-	strcpy(io->filename, "graph\\obj3d\\interactive\\player\\player.teo");
+	strcpy(io->filename, "graph/obj3d/interactive/player/player.teo");
 	std::string texscript = io->filename;
 	SetExt(texscript, ".asl");
 
