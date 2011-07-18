@@ -76,7 +76,7 @@ PakDirectory * PakDirectory::addDirectory(strref path) {
 	}
 }
 
-static char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
+static char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\"; // TODO(case-sensitive) remove
 
 PakDirectory * PakDirectory::getDirectory(strref path) {
 	
