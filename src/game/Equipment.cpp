@@ -213,7 +213,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		delete io->obj;
 	}
 
-	const char OBJECT_HUMAN_BASE[] = "graph\\obj3d\\interactive\\npc\\human_base\\human_base.teo";
+	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo";
 	io->obj = loadObject(OBJECT_HUMAN_BASE, false);
 	
 	long sel_ = -1;
@@ -228,14 +228,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "graph\\obj3d\\interactive\\npc\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
+				sprintf(pathh, "graph/obj3d/interactive/npc/human_base/tweaks/%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_HEAD, pathh);
 			}
 
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "graph\\obj3d\\textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph/obj3d/textures/%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
@@ -281,14 +281,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "graph\\obj3d\\interactive\\npc\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
+				sprintf(pathh, "graph/obj3d/interactive/npc/human_base/tweaks/%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_TORSO, pathh);
 			}
 
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "graph\\obj3d\\textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph/obj3d/textures/%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
@@ -334,14 +334,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "graph\\obj3d\\interactive\\npc\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
+				sprintf(pathh, "graph/obj3d/interactive/npc/human_base/tweaks/%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_LEGS, pathh);
 			}
 
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "graph\\obj3d\\textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph/obj3d/textures/%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
