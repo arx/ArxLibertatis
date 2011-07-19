@@ -354,31 +354,16 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 	for(;;) {
 		
-		bool newline;
-		do {
-			
-			context.skipWhitespace();
-			
-			if(context.pos >= context.getScript()->size) {
-				ScriptEventWarning << "--> reached script end without accept / refuse / return";
+		string word = context.getCommand(msg != SM_EXECUTELINE);
+		if(word.empty()) {
+			if(msg == SM_EXECUTELINE && context.pos != es->size) {
+				arx_assert(es->data[context.pos] == '\n');
+				LogDebug << "--> line end";
 				return ACCEPT;
 			}
-			
-			newline = false;
-			if(context.script->data[context.pos] == '\n') {
-				newline = true;
-				context.pos++;
-				if(msg == SM_EXECUTELINE) {
-					LogDebug << "--> line end";
-					return ACCEPT;
-				}
-			}
-			
-		} while(newline);
-		
-		string word = context.getCommand();
-		
-		arx_assert(!word.empty());
+			ScriptEventWarning << "--> reached script end without accept / refuse / return";
+			return ACCEPT;
+		}
 		
 		// Remove all underscores from the command.
 		word.resize(std::remove(word.begin(), word.end(), '_') - word.begin());
@@ -413,7 +398,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 			}
 			
-		} else if(!word.compare(0, 2, "//", 2) || !word.compare(0, 2, ">>", 2)) {
+		} else if(!word.compare(0, 2, ">>", 2)) {
 			context.skipCommand(); // comments and labels
 		} else if(!word.compare(0, 5, "timer", 5)) {
 			timerCommand(word.substr(5), context);

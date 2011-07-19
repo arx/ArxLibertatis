@@ -488,7 +488,14 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params = "");
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "");
 
+/**
+ * Finds the first occurence of str in the script that is followed
+ * by a separator (a character of value less then or equal 32)
+ * 
+ * @return The position of str in the script or -1 if str was not found.
+ */
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
+
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
 bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string & group);
 void ARX_SCRIPT_Free_All_Global_Variables();

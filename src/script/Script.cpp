@@ -121,32 +121,34 @@ long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
-//*************************************************************************************
-// FindScriptPos																	//
-// Looks for string in script, return pos. Search start position can be set using	//
-// poss parameter.																	//
-//*************************************************************************************
-long FindScriptPos(const EERIE_SCRIPT * es, const std::string& str)
-{
-
-	if (!es->data) return -1;
-
-	const char * pdest = strstr(es->data, str.c_str());
+long FindScriptPos(const EERIE_SCRIPT * es, const string & str) {
 	
-	if(!pdest) {
-		return -1;
+	// TODO(script-parser) remove, respect quoted strings
+	
+	const char * start = es->data;
+	const char * end = es->data + es->size;
+	
+	while(true) {
+		
+		const char * dat = std::search(start, end, str.begin(), str.end());
+		if(dat + str.length() >= end) {
+			return -1;
+		}
+		
+		start = dat + 1;
+		if(((unsigned char)dat[str.length()]) > 32) {
+			continue;
+		}
+		
+		// Check if the line is commented out!
+		for(const char * search = dat; search[0] != '/' || search[1] != '/'; search--) {
+			if(*search == '\n' || search == es->data) {
+				return dat - es->data;
+			}
+		}
+		
 	}
 	
-	long result = pdest - es->data;
-
-	assert(result >= 0);
-
-	int len2 = str.length();
-	
-	assert(len2 + result <= (int)es->size);
-
-	if (es->data[result+len2] <= 32) return result;
-
 	return -1;
 }
 
@@ -2513,11 +2515,8 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 		free(script.data);
 	}
 	
-	script.data = (char *)malloc(file->size() + 2);
+	script.data = file->readAlloc();
 	script.size = file->size();
-	script.data[script.size] = script.data[script.size + 1] = '\0'; // TODO(script-parser) remove
-	
-	file->read(script.data);
 	
 	std::transform(script.data, script.data + script.size, script.data, ::tolower);
 	

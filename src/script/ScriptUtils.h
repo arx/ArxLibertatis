@@ -77,9 +77,9 @@ public:
 	std::string getWord();
 	void skipWord();
 	
-	std::string getCommand();
+	std::string getCommand(bool skipNewlines = true);
 	
-	void skipWhitespace();
+	void skipWhitespace(bool skipNewlines = false);
 	
 	inline INTERACTIVE_OBJ * getIO() const { return io; }
 	

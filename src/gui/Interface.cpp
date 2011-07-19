@@ -1135,14 +1135,16 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 			(_pWithIO!=COMBINE)&&
 			(_pWithIO->script.data) )
 		{
-			char* pCopyScript=new char[_pWithIO->script.size];
+			char* pCopyScript=new char[_pWithIO->script.size + 1];
+			pCopyScript[_pWithIO->script.size] = '\0';
 			memcpy(pCopyScript,_pWithIO->script.data,_pWithIO->script.size);
 
 			char* pCopyOverScript=NULL;
 
 			if(_pWithIO->over_script.data)
 			{
-				pCopyOverScript=new char[_pWithIO->over_script.size];
+				pCopyOverScript=new char[_pWithIO->over_script.size + 1];
+				pCopyOverScript[_pWithIO->over_script.size] = '\0';
 				memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
 			}
 
