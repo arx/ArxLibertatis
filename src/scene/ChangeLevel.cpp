@@ -2291,7 +2291,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			
 			string path = loadPath(safestring(ais->anims[i]));
 			
-			io->anims[i] = EERIE_ANIMMANAGER_Load(ais->anims[i]);
+			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
 			if(io->anims[i]) {
 				continue;
 			}
