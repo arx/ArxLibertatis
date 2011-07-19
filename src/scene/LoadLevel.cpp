@@ -64,6 +64,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <cassert>
 
+#ifdef BUILD_EDIT_LOADSAVE
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+#endif
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -106,6 +111,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::max;
 using std::string;
+
+#ifdef BUILD_EDIT_LOADSAVE
+namespace fs = boost::filesystem;
+#endif
 
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
@@ -258,35 +267,35 @@ void ReplaceSpecifics( char* text )
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-long DanaeSaveLevel(const string & _fic) {
+long DanaeSaveLevel(const fs::path & _fic) {
 	
 	long nb_inter = GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	
-	string fic = _fic;
-	SetExt(fic, ".dlf");
-	if(FileExist(fic)) {
-		string backupfile = fic;
+	fs::path fic = _fic;
+	fic.replace_extension("dlf");
+	if(fs::exists(fic)) {
+		fs::path backupfile = fic;
 		int i = 0;
 		do {
 			std::stringstream s;
-			s << ".dlf_bak_" << i;
-			SetExt(backupfile, s.str());
-		} while(FileExist(backupfile) && (i++, true));
-		FileMove(fic, backupfile);
+			s << "dlf_bak_" << i;
+			backupfile.replace_extension(s.str());
+		} while(fs::exists(backupfile) && (i++, true));
+		fs::rename(fic, backupfile);
 	}
 	
-	std::string fic2 = fic;
-	SetExt(fic2, ".llf");
-	if(FileExist(fic2)) {
-		string backupfile = fic;
+	fs::path fic2 = fic;
+	fic2.replace_extension("llf");
+	if(fs::exists(fic2)) {
+		fs::path backupfile = fic;
 		int i = 0;
 		do {
 			std::stringstream s;
-			s << ".llf_bak_" << i;
-			SetExt(backupfile, s.str());
-		} while(FileExist(backupfile) && (i++, true));
-		FileMove(fic2, backupfile);
+			s << "llf_bak_" << i;
+			backupfile.replace_extension(s.str());
+		} while(fs::exists(backupfile) && (i++, true));
+		fs::rename(fic2, backupfile);
 	}
 	
 	DANAE_LS_HEADER dlh;
@@ -337,24 +346,14 @@ long DanaeSaveLevel(const string & _fic) {
 	dlh.nb_inter = nb_inter;
 	dlh.nb_zones = 0;
 	
-	if(dlh.nb_scn != 0) {
-		// TODO operator overloading
-		dlh.pos_edit.x = subj.pos.x - Mscenepos.x;
-		dlh.pos_edit.y = subj.pos.y - Mscenepos.y;
-		dlh.pos_edit.z = subj.pos.z - Mscenepos.z;
-	} else {
-		dlh.pos_edit = subj.pos;
-	}
+	dlh.pos_edit = (dlh.nb_scn != 0) ? subj.pos - Mscenepos : subj.pos;
 
 	dlh.angle_edit = player.angle;
-	dlh.lighting = false; // MUST BE false !!!!
+	dlh.lighting = false; // must be false
 	
-	// TODO w32 api
-	// _time32(&dlh.time);
-	dlh.time = 0;
+	dlh.time = std::time(NULL);
 	
-	u32 siz = 255;
-	GetUserName(dlh.lastuser, &siz);
+	memset(dlh.lastuser, 0, sizeof(dlh.lastuser));
 	
 	size_t pos = 0;
 	
@@ -504,15 +503,15 @@ long DanaeSaveLevel(const string & _fic) {
 	}
 	
 	// Now Saving Whole Buffer
-	FileHandle handle;
-	if(!(handle = FileOpenWrite(fic))) {
-		LogError << "Unable to Open " << fic << " for Write...";
+	fs::ofstream ofs(fic, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	if(!ofs.is_open()) {
+		LogError << "Unable to open " << fic << " for write...";
 		delete[] dat;
 		return -1;
 	}
 	
-	if(FileWrite(handle, dat, sizeof(DANAE_LS_HEADER)) != sizeof(DANAE_LS_HEADER)) {
-		LogError << "Unable to Write to " << fic;
+	if(ofs.write(dat, sizeof(DANAE_LS_HEADER)).fail()) {
+		LogError << "Unable to write to " << fic;
 		delete[] dat;
 		return -1;
 	}
@@ -520,17 +519,16 @@ long DanaeSaveLevel(const string & _fic) {
 	size_t cpr_pos = 0;
 	char * compressed  = implodeAlloc(dat + sizeof(DANAE_LS_HEADER), pos - sizeof(DANAE_LS_HEADER), cpr_pos);
 	
-	size_t sizeWritten;
-	sizeWritten = FileWrite(handle, compressed, cpr_pos);
+	ofs.write(compressed, cpr_pos);
 	
 	delete[] compressed;
-	FileClose(handle);
 	
-	if(sizeWritten != cpr_pos) {
+	if(ofs.fail()) {
 		delete[] dat;
 		return false;
 	}
 	
+	ofs.close();
 	
 	//Now Save Separate LLF Lighting File
 	
@@ -545,11 +543,9 @@ long DanaeSaveLevel(const string & _fic) {
 	llh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
 	strcpy(llh.ident, "DANAE_LLH_FILE");
 	
-	// todo w32api
-	// _time32(&llh.time);
+	llh.time = std::time(NULL);
 	
-	u32 siz2 = 255;
-	GetUserName(llh.lastuser, &siz2);
+	memset(llh.lastuser, 0, sizeof(llh.lastuser));
 	
 	memcpy(dat, &llh, sizeof(DANAE_LLF_HEADER));
 	pos += sizeof(DANAE_LLF_HEADER);
@@ -613,14 +609,15 @@ long DanaeSaveLevel(const string & _fic) {
 	}
 	
 	if(pos > allocsize) {
-		LogError << "Badly Allocated SaveBuffer..." << fic2;
+		LogError << "Badly allocated save buffer..." << fic2;
 		delete[] dat;
 		return -1;
 	}
 	
 	// Now Saving Whole Buffer
-	if(!(handle = FileOpenWrite(fic2))) {
-		LogError << "Unable to Open " << fic2 << " for Write...";
+	ofs.open(fic2, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	if(!ofs.is_open()) {
+		LogError << "Unable to open " << fic2 << " for write...";
 		delete[] dat;
 		return -1;
 	}
@@ -630,13 +627,11 @@ long DanaeSaveLevel(const string & _fic) {
 	compressed = implodeAlloc(dat, pos, cpr_pos);
 	delete[] dat;
 
-	size_t sizeWritten2;
-	sizeWritten2 = FileWrite(handle, compressed, cpr_pos);
+	ofs.write(compressed, cpr_pos);
 	
 	delete[] compressed;
-	FileClose(handle);
 	
-	if(sizeWritten2 != cpr_pos) {
+	if(ofs.fail()) {
 		LogError << "Unable to Write to " << fic2;
 		return -1;
 	}

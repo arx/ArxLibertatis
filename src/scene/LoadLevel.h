@@ -63,6 +63,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 #include "Configure.h"
 
+#ifdef BUILD_EDIT_LOADSAVE
+#include <boost/filesystem/path.hpp>
+#endif
+
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
@@ -75,7 +79,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string & dir);
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
-long DanaeSaveLevel(const std::string & file);
+long DanaeSaveLevel(const boost::filesystem::path & file);
 #endif
 
 long DanaeLoadLevel(const std::string & file);
