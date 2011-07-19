@@ -33,7 +33,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string object = context.getWord();
+		string object = loadPath(context.getWord());
 		
 		DebugScript(" \"" << object << '"');
 		
