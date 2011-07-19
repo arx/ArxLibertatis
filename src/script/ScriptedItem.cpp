@@ -212,7 +212,7 @@ public:
 		
 		bool current = false;
 		HandleFlags("c") {
-			current = (flg & flag('c'));
+			current = test_flag(flg, 'c');
 		}
 		
 		float durability = context.getFloat();

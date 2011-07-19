@@ -203,12 +203,12 @@ public:
 		bool zone = false;
 		bool group = false;
 		HandleFlags("gfinrz") {
-			group = (flg & flag('g'));
+			group = test_flag(flg, 'g');
 			sendto |= (flg & flag('f')) ? SEND_FIX : (SendTargets)0;
 			sendto |= (flg & flag('i')) ? SEND_ITEM : (SendTargets)0;
 			sendto |= (flg & flag('n')) ? SEND_NPC : (SendTargets)0;
-			radius = (flg & flag('r'));
-			zone = (flg & flag('z'));
+			radius = test_flag(flg, 'r');
+			zone = test_flag(flg, 'z');
 		}
 		if(!sendto) {
 			sendto = SEND_NPC;
@@ -801,8 +801,8 @@ void timerCommand(const string & timer, Context & context) {
 	
 	bool mili = false, idle = false;
 	HandleFlags("mi") {
-		mili = (flg & flag('m'));
-		idle = (flg & flag('i'));
+		mili = test_flag(flg, 'm');
+		idle = test_flag(flg, 'i');
 	}
 	
 	string command = context.getWord();

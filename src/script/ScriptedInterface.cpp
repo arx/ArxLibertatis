@@ -184,7 +184,7 @@ public:
 		
 		bool smooth = false;
 		HandleFlags("s") {
-			smooth = (flg & flag('s'));
+			smooth = test_flag(flg, 's');
 		}
 		
 		string command = context.getWord();
@@ -274,7 +274,7 @@ public:
 		
 		bool remove = false;
 		HandleFlags("r") {
-			remove = (flg & flag('r'));
+			remove = test_flag(flg, 'r');
 		}
 		
 		if(remove) {

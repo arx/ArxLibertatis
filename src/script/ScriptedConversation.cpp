@@ -98,15 +98,15 @@ public:
 		bool no_pos = false;
 		
 		HandleFlags("ilpso") {
-			unique = (flg & flag('i'));
+			unique = test_flag(flg, 'i');
 			if(flg & flag('l')) {
 				loop = ARX_SOUND_PLAY_LOOPED;
 			}
 			if(flg & flag('p')) {
 				pitch = 0.9F + 0.2F * rnd();
 			}
-			stop = (flg & flag('s'));
-			no_pos = (flg & flag('o'));
+			stop = test_flag(flg, 's');
+			no_pos = test_flag(flg, 'o');
 		}
 		
 		string sample = loadPath(context.getStringVar(context.getWord()));
@@ -285,8 +285,8 @@ public:
 		HandleFlags("tuphaoc") {
 			
 			voixoff |= (flg & flag('t')) ? ARX_SPEECH_FLAG_NOTEXT : SpeechFlags(0);
-			unbreakable = (flg & flag('u'));
-			player = (flg & flag('p'));
+			unbreakable = test_flag(flg, 'u');
+			player = test_flag(flg, 'p');
 			if(flg & flag('h')) {
 				mood = ANIM_TALK_HAPPY;
 			}

@@ -65,6 +65,12 @@ if(ARX_USE_OPENAL)
 endif()
 find_package(Doxygen)
 find_package(PythonInterp)
+
+
+if(MSVC)
+	# Link statically with Boost under Windows
+	set(Boost_USE_STATIC_LIBS ON)
+endif(MSVC)
 find_package(Boost REQUIRED COMPONENTS filesystem system)
 
 mark_as_advanced(IL_INCLUDE_DIR)
@@ -100,6 +106,9 @@ if(MSVC)
 		include_directories("$ENV{DX7SDK_PATH}/include")
 		link_directories("$ENV{DX7SDK_PATH}/lib")
 	endif("$ENV{DX7SDK_PATH}" STREQUAL "")
+
+	# Add boost lib path
+	link_directories(${Boost_LIBRARY_DIRS})
 	
 	set(HAVE_WINAPI 1)
 	

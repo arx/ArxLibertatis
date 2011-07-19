@@ -170,9 +170,9 @@ public:
 			if(flg & flag('3')) {
 				nu = 2;
 			}
-			loop = (flg & flag('l'));
-			nointerpol = (flg & flag('n'));
-			execute = (flg & flag('e'));
+			loop = test_flag(flg, 'l');
+			nointerpol = test_flag(flg, 'n');
+			execute = test_flag(flg, 'e');
 			if(flg & flag('p')) {
 				iot = inter.iobj[0];
 				iot->move = iot->lastmove = Vec3f::ZERO;
@@ -404,8 +404,8 @@ public:
 		bool wormspecific = false;
 		bool followdir = false;
 		HandleFlags("wf") {
-			wormspecific = (flg & flag('w'));
-			followdir = (flg & flag('f'));
+			wormspecific = test_flag(flg, 'w');
+			followdir = test_flag(flg, 'f');
 		}
 		
 		string name = context.getWord();

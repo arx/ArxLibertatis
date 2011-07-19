@@ -73,7 +73,7 @@ public:
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
-		if(enable xor inv) {
+		if(enable ^ inv) {
 			io->GameFlags |= flag;
 		} else {
 			io->GameFlags &= ~flag;
@@ -101,7 +101,7 @@ public:
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
-		if(enable xor inv) {
+		if(enable ^ inv) {
 			io->ioflags |= flag;
 		} else {
 			io->ioflags &= ~flag;
