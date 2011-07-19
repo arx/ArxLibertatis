@@ -688,52 +688,6 @@ void LogDirCreation(const string & dir) {
 	}
 }
 
-
-static void LogDirDestruction(const string & dir ) {
-	if(DirectoryExist(dir)) {
-		LogDebug << "LogDirDestruction: " << dir;
-	}
-}
-
-//*************************************************************************************
-// Checks for IO created during this session but not saved...
-//*************************************************************************************
-void CheckIO_NOT_SAVED()
-{
-	if (ADDED_IO_NOT_SAVED)
-	{
-		if (OKBox("You have added objects, but not saved them...\nDELETE THEM ??????", "Danae WARNING"))
-		{
-			for (long i = 1; i < inter.nbmax; i++) // ignoring player
-			{
-				if ((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload))
-
-					if (inter.iobj[i]->EditorFlags & EFLAG_NOTSAVED)
-					{
-						if (inter.iobj[i]->ident > 0)
-						{
-							std::string temp = inter.iobj[i]->full_name();
-
-							if (DirectoryExist(temp))
-							{
-								std::string temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
-
-								if (OKBox(temp3, "WARNING"))
-								{
-									temp += "/";
-									LogDirDestruction(temp);
-									KillAllDirectory(temp);
-								}
-							}
-
-							ReleaseInter(inter.iobj[i]);
-						}
-					}
-			}
-		}
-	}
-}
-
 //*************************************************************************************
 //*************************************************************************************
 
@@ -1698,6 +1652,49 @@ void AddIdent(std::string & ident, long num)
 }
 
 #ifdef BUILD_EDITOR
+
+static void LogDirDestruction(const fs::path & dir ) {
+	if(fs::is_directory(dir)) {
+		LogDebug << "LogDirDestruction: " << dir;
+	}
+}
+
+//*************************************************************************************
+// Checks for IO created during this session but not saved...
+//*************************************************************************************
+void CheckIO_NOT_SAVED() {
+	
+	if(!ADDED_IO_NOT_SAVED) {
+		return;
+	}
+	
+	if(!OKBox("You have added objects, but not saved them...\nDELETE THEM ??????", "Danae WARNING")) {
+		return;
+	}
+	
+	for(long i = 1; i < inter.nbmax; i++) { // ignoring player
+
+		if(!inter.iobj[i] || !inter.iobj[i]->scriptload) {
+			continue;
+		}
+		
+		if(!(inter.iobj[i]->EditorFlags & EFLAG_NOTSAVED) || inter.iobj[i]->ident <= 0) {
+			continue;
+		}
+		
+		fs::path temp = inter.iobj[i]->full_name();
+		
+		if(fs::is_directory(temp)) {
+			if(OKBox("Really remove Directory & Directory Contents ?\n\n" + temp.string(), "WARNING")) {
+				LogDirDestruction(temp);
+				fs::remove_all(temp);
+			}
+		}
+		
+		ReleaseInter(inter.iobj[i]);
+	}
+	
+}
 
 static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	

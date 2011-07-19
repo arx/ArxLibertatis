@@ -87,8 +87,6 @@ void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();
 
-// TODO editor-specific?
-void CheckIO_NOT_SAVED();
 
 INTERACTIVE_OBJ * LoadInter_Ex(const std::string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
 
@@ -97,6 +95,7 @@ extern Vec3f MSP;
 #ifdef BUILD_EDITOR
 void BIG_PURGE();
 void ARX_SAVELOAD_CheckDLFs();
+void CheckIO_NOT_SAVED();
 #endif
 
 #endif // ARX_SCENE_LOADLEVEL_H
