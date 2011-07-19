@@ -100,6 +100,9 @@ if(MSVC)
 		include_directories("$ENV{DX7SDK_PATH}/include")
 		link_directories("$ENV{DX7SDK_PATH}/lib")
 	endif("$ENV{DX7SDK_PATH}" STREQUAL "")
+
+	# Add boost lib path
+	link_directories(${Boost_LIBRARY_DIRS})
 	
 	set(HAVE_WINAPI 1)
 	
