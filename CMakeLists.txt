@@ -65,6 +65,12 @@ if(ARX_USE_OPENAL)
 endif()
 find_package(Doxygen)
 find_package(PythonInterp)
+
+
+if(MSVC)
+	# Link statically with Boost under Windows
+	set(Boost_USE_STATIC_LIBS ON)
+endif(MSVC)
 find_package(Boost REQUIRED COMPONENTS filesystem system)
 
 mark_as_advanced(IL_INCLUDE_DIR)
