@@ -272,6 +272,10 @@ void CreateSaveGameList() {
 		save->stime = stime;
 		save->num = num;
 		
+		string thumbnail = oss.str() + "gsave.bmp";
+		resources->removeFile(thumbnail);
+		resources->addFiles(thumbnail, thumbnail);
+		
 		LogInfo << "found " << fdata.cFileName << ": \""
 			        << name << "\"   v" << version
 			        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay

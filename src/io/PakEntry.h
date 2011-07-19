@@ -72,6 +72,7 @@ private:
 	PakDirectory * addDirectory(strref path);
 	
 	void addFile(const std::string & name, PakFile * file);
+	void removeFile(const std::string & name);
 	
 	friend class PakReader;
 	friend class std::map<std::string, PakDirectory>;

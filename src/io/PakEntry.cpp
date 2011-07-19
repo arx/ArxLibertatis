@@ -113,6 +113,16 @@ void PakDirectory::addFile(const string & name, PakFile * file) {
 	}
 }
 
+void PakDirectory::removeFile(const string & name) {
+	
+	std::map<std::string, PakFile *>::iterator old = files.find(name);
+	
+	if(old != files.end()) {
+		delete old->second;
+		files.erase(old);
+	}
+}
+
 PakFile * PakDirectory::getFile(const string & path) {
 	
 	arx_assert(path[0] != '/');

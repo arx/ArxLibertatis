@@ -628,7 +628,7 @@ bool PakReader::addFiles(const fs::path & path, const string & mount) {
 			
 			size_t pos = mount.find_last_of(DIR_SEP);
 			
-			PakDirectory * dir = (pos == string::npos) ? this : getDirectory(strref(mount, 0, pos));
+			PakDirectory * dir = (pos == string::npos) ? this : addDirectory(strref(mount, 0, pos));
 			
 			return addFile(dir, path, (pos == string::npos) ? mount : mount.substr(pos + 1));
 		}
@@ -637,6 +637,16 @@ bool PakReader::addFiles(const fs::path & path, const string & mount) {
 		return false;
 	}
 	
+}
+
+void PakReader::removeFile(const string & file) {
+	
+	size_t pos = file.find_last_of(DIR_SEP);
+	
+	PakDirectory * dir = (pos == string::npos) ? this : getDirectory(strref(file, 0, pos));
+	if(dir) {
+		dir->removeFile((pos == string::npos) ? file : file.substr(pos + 1));
+	}
 }
 
 bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::string & name) {

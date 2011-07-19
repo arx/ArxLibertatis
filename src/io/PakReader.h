@@ -67,6 +67,8 @@ public:
 	
 	~PakReader();
 	
+	void removeFile(const std::string & name);
+	
 	bool addFiles(const boost::filesystem::path & path, const std::string & mount = std::string());
 	
 	bool addArchive(const boost::filesystem::path & pakfile);
