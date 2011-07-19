@@ -28,6 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <cstdio>
+#include <iostream>
 
 #include <boost/filesystem/path.hpp>
 
@@ -57,7 +58,7 @@ class PakReader : public PakDirectory {
 	
 private:
 	
-	std::vector<FILE *> paks;
+	std::vector<std::istream *> paks;
 	
 	bool addFiles(PakDirectory * dir, const boost::filesystem::path & path);
 	bool addFile(PakDirectory * dir, const boost::filesystem::path & path, const std::string & name);
@@ -68,7 +69,7 @@ public:
 	
 	bool addFiles(const boost::filesystem::path & path, const std::string & mount = std::string());
 	
-	bool addArchive(const std::string & pakfile);
+	bool addArchive(const boost::filesystem::path & pakfile);
 	void clear();
 	
 	bool read(const std::string & name, void * buf);
