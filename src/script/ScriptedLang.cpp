@@ -641,7 +641,7 @@ class IfCommand : public Command {
 			return ARX_UNUSED(context), (left == right);
 		}
 		
-		bool number(const Context & context, const float left, const float right) {
+		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left == right);
 		}
 		
