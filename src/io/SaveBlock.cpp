@@ -46,11 +46,14 @@ namespace fs = boost::filesystem;
 
 static const u32 SAV_VERSION_OLD = (1<<16) | 0;
 static const u32 SAV_VERSION_RELEASE = (1<<16) | 1;
-static const u32 SAV_VERSION_CURRENT = (2<<16) | 0;
+static const u32 SAV_VERSION_DEFLATE = (2<<16) | 0;
+static const u32 SAV_VERSION_NOEXT = (2<<16) | 1;
 
 static const u32 SAV_COMP_NONE = 0;
 static const u32 SAV_COMP_IMPLODE = 1;
 static const u32 SAV_COMP_DEFLATE = 2;
+
+static const char BADSAVCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\/."; // TODO(case-sensitive) remove
 
 struct FileChunk {
 	
@@ -97,7 +100,7 @@ struct SaveBlock::File {
 
 bool SaveBlock::File::loadOffsets(std::istream & handle, u32 version) {
 	
-	if(version < SAV_VERSION_CURRENT) {
+	if(version < SAV_VERSION_DEFLATE) {
 		// ignore the size, calculate from chunks
 		handle.seekg(4, std::ios_base::cur);
 		uncompressedSize = (size_t)-1;
@@ -113,12 +116,12 @@ bool SaveBlock::File::loadOffsets(std::istream & handle, u32 version) {
 	if(!fread(handle, nChunks)) {
 		return false;
 	}
-	if(version < SAV_VERSION_CURRENT && nChunks == 0) {
+	if(version < SAV_VERSION_DEFLATE && nChunks == 0) {
 		nChunks = 1;
 	}
 	chunks.resize(nChunks);
 	
-	if(version < SAV_VERSION_CURRENT) {
+	if(version < SAV_VERSION_DEFLATE) {
 		// ignored
 		handle.seekg(4, std::ios_base::cur);
 		comp = File::ImplodeCrypt;
@@ -282,7 +285,7 @@ bool SaveBlock::loadFileTable() {
 	if(fread(handle, version).fail()) {
 		return false;
 	}
-	if(version != SAV_VERSION_CURRENT && version != SAV_VERSION_RELEASE) {
+	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
 		LogWarning << "unexpected savegame version: " << version << " for " << savefile;
 	}
 	
@@ -322,7 +325,12 @@ bool SaveBlock::loadFileTable() {
 		if(fread(handle, name).fail()) {
 			return false;
 		}
-		makeLowercase(name);
+		if(version < SAV_VERSION_NOEXT) {
+			makeLowercase(name);
+			if(name.size() > 4 && !name.compare(name.size() - 4, 4, ".sav", 4)) {
+				name.resize(name.size() - 4);
+			}
+		}
 		
 		File & file = files[name];
 		
@@ -342,7 +350,7 @@ void SaveBlock::writeFileTable(const std::string & important) {
 	size_t fatOffset = totalSize;
 	handle.seekp(fatOffset + 4);
 	
-	fwrite(handle, SAV_VERSION_CURRENT);
+	fwrite(handle, SAV_VERSION_NOEXT);
 	
 	u32 nFiles = files.size();
 	fwrite(handle, nFiles);
@@ -392,6 +400,8 @@ bool SaveBlock::open(bool writable) {
 }
 
 bool SaveBlock::flush(const string & important) {
+	
+	arx_assert(important.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
 	
 	if((usedSize * 2 < totalSize || chunkCount > (files.size() * 4 / 3)) && !defragment()) {
 		return false;
@@ -472,6 +482,8 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 		return false;
 	}
 	
+	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
+	
 	File * file = &files[name];
 	
 	file->uncompressedSize = size;
@@ -532,12 +544,15 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 
 char * SaveBlock::load(const string & name, size_t & size) {
 	
+	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
+	
 	Files::const_iterator file = files.find(name);
 	
 	return (file == files.end()) ? NULL : file->second.loadData(handle, size, name);
 }
 
 bool SaveBlock::hasFile(const string & name) const {
+	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
 	return (files.find(name) != files.end());
 }
 
@@ -553,6 +568,8 @@ vector<string> SaveBlock::getFiles() const {
 }
 
 char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
+	
+	arx_assert(filename.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
 	
 	LogDebug << "reading savefile " << savefile;
 	
@@ -577,7 +594,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	if(fread(handle, version).fail()) {
 		return NULL;
 	}
-	if(version != SAV_VERSION_CURRENT && version != SAV_VERSION_RELEASE) {
+	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
 		LogWarning << "unexpected savegame version: " << version << " for " << savefile;
 	}
 	
@@ -595,7 +612,12 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 		if(fread(handle, name).fail()) {
 			return NULL;
 		}
-		makeLowercase(name);
+		if(version < SAV_VERSION_NOEXT) {
+			makeLowercase(name);
+			if(name.size() > 4 && !name.compare(name.size() - 4, 4, ".sav", 4)) {
+				name.resize(name.size() - 4);
+			}
+		}
 		
 		if(!file.loadOffsets(handle, version)) {
 			return NULL;

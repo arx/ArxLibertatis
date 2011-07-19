@@ -332,9 +332,9 @@ void ARX_Changelevel_CurGame_Open() {
 
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
 	if(_pSaveBlock) {
-		return _pSaveBlock->hasFile(ident + ".sav");
+		return _pSaveBlock->hasFile(ident);
 	} else if(GLOBAL_pSaveB) {
-		return GLOBAL_pSaveB->hasFile(ident + ".sav");
+		return GLOBAL_pSaveB->hasFile(ident);
 	} else {
 		// this is normal when starting a new game
 		return false;
@@ -506,7 +506,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		return false;
 	}
 	
-	if(!_pSaveBlock->flush("pld.sav")) {
+	if(!_pSaveBlock->flush("pld")) {
 		LogError << "could not complete the save.";
 	}
 	
@@ -578,7 +578,7 @@ static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	}
 	
 	char savefile[256];
-	sprintf(savefile, "lvl%03ld.sav", num);
+	sprintf(savefile, "lvl%03ld", num);
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_INDEX)
 					 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter
@@ -665,7 +665,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	acsg.version = ARX_GAMESAVE_VERSION;
 	
 	char savefile[256];
-	sprintf(savefile, "globals.sav");
+	sprintf(savefile, "globals");
 
 	long allocsize = sizeof(ARX_VARIABLE_SAVE) * acsg.nb_globals
 	                 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000 + 48000;
@@ -951,7 +951,7 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	LastValidPlayerPos.y = asp->LAST_VALID_POS.y;
 	LastValidPlayerPos.z = asp->LAST_VALID_POS.z;
 	
-	_pSaveBlock->save("player.sav", dat, pos);
+	_pSaveBlock->save("player", dat, pos);
 	
 	delete[] dat;
 	
@@ -1024,7 +1024,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	}
 	
 	// Sets Savefile Name
-	string savefile = io->long_name() + ".sav";
+	string savefile = io->long_name();
 	
 	// Define Type & Affiliated Structure Size
 	long type;
@@ -1660,7 +1660,7 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	std::string loadfile;
 	std::stringstream ss;
 	
-	ss << "lvl" << std::setfill('0') << std::setw(3) << num << ".sav";
+	ss << "lvl" << std::setfill('0') << std::setw(3) << num;
 	loadfile = ss.str();
 	
 	size_t size; // TODO size is not used
@@ -1701,7 +1701,7 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
 	std::stringstream ss;
-	ss << "lvl" << std::setfill('0') << std::setw(3) << num << ".sav";
+	ss << "lvl" << std::setfill('0') << std::setw(3) << num;
 	std::string loadfile = ss.str();
 	
 	size_t size; // TODO size not used
@@ -1829,7 +1829,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 
 static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	
-	const string & loadfile = "player.sav";
+	const string & loadfile = "player";
 	
 	size_t size;
 	char * dat = _pSaveBlock->load(loadfile, size);
@@ -2149,7 +2149,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 	LogDebug << "--> loading interactive object " << ident;
 	
 	size_t size = 0; // TODO size not used
-	char * dat = _pSaveBlock->load(ident + ".sav", size);
+	char * dat = _pSaveBlock->load(ident, size);
 	if(!dat) {
 		LogError << "Unable to Open " << ident << " for Read...";
 		return NULL;
@@ -2808,7 +2808,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	ARX_SCRIPT_Free_All_Global_Variables();
 	
 	size_t size;
-	char * dat = _pSaveBlock->load("globals.sav", size);
+	char * dat = _pSaveBlock->load("globals", size);
 	if(!dat) {
 		LogError << "Unable to Open globals for Read...";
 		return;
@@ -2902,7 +2902,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	// Now we can load our things...
 	std::ostringstream loadfile;
-	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance << ".sav";
+	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
 	string sfile = string(CurGamePath) + "gsave.sav";
 	
 	// Open Saveblock for read
@@ -3209,13 +3209,13 @@ static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LE
 	memcpy(dat, &pld, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
 	long pos = sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA);
 	char savefile[256];
-	sprintf(savefile, "pld.sav");
+	sprintf(savefile, "pld");
 	
 	_pSaveBlock->save(savefile, dat, pos);
 	
 	delete[] dat;
 	
-	_pSaveBlock->flush("pld.sav");
+	_pSaveBlock->flush("pld");
 	delete _pSaveBlock;
 	_pSaveBlock = NULL;
 	
@@ -3231,7 +3231,7 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	string savefile = path + "gsave.sav";
 
 	// Get Size
-	std::string loadfile = "pld.sav";
+	std::string loadfile = "pld";
 	
 	size_t size;
 	char * dat = SaveBlock::load(savefile, loadfile, size);
