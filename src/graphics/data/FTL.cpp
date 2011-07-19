@@ -82,7 +82,12 @@ extern long NOCHECKSUM;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+
+namespace fs = boost::filesystem;
+
+bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;
 	
@@ -91,11 +96,13 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	}
 	
 	// Generate File name/path and create it
-	string gamefic = "game/" + file;
-	SetExt(gamefic, ".ftl");
+	fs::path gamefic = "game" / file;
+	gamefic.replace_extension("ftl");
 	
-	if(!CreateFullPath(gamefic)) {
-		return NULL;
+	try {
+		fs::create_directories(gamefic.parent_path());
+	} catch(fs::filesystem_error) {
+		return false;
 	}
 	
 	// Compute allocsize...
@@ -343,23 +350,22 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	delete[] dat;
 	
 	// Now Saving Whole Buffer
-	FileHandle handle;
-	if(!(handle = FileOpenWrite(gamefic.c_str()))) {
+	fs::ofstream ofs(gamefic, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	if(!ofs.is_open()) {
 		LogError << "Unable to Open " << gamefic << " for Write...";
 		return false;
 	}
 	
-	if((size_t)FileWrite(handle, compressed, cpr_pos) != cpr_pos) {
+	ofs.write(compressed, cpr_pos);
+	delete[] compressed;
+	
+	
+	if(ofs.fail()) {
 		LogError <<  "Unable to Write to " << gamefic;
 		return false;
 	}
 	
-	FileClose(handle);
-	
-	delete[] compressed;
-	
 	return true;
-	
 }
 
 #endif // BUILD_EDIT_LOADSAVE

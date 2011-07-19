@@ -62,11 +62,13 @@ struct EERIE_3DOBJ;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
+#include <boost/filesystem/path.hpp>
+
 /*!
  * Save a FTL File
  * Must pass the original name of the theo file
  */
-bool ARX_FTL_Save(const std::string & file, const EERIE_3DOBJ * obj);
+bool ARX_FTL_Save(const boost::filesystem::path & file, const EERIE_3DOBJ * obj);
 
 #endif
 
