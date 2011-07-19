@@ -1123,10 +1123,12 @@ static int main_fix(SaveBlock & save, int argc, char ** argv) {
 	
 	resources = new PakReader();
 	
-	if(!resources->addArchive("data.pak") || !resources->addArchive("data2.pak") || !resources->addFiles(".")) {
+	if(!resources->addArchive("data.pak") || !resources->addArchive("data2.pak")) {
 		printf("could not open pak files, run 'savetool fix' from the game directory\n");
 		return 3;
 	}
+	
+	resources->addFiles("graph", "graph");
 	
 	if(!save.BeginSave()) {
 		return 2;

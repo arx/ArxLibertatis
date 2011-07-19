@@ -1308,7 +1308,13 @@ int main(int argc, char ** argv) {
 		
 	}
 	
-	resources->addFiles(".");
+	resources->addFiles("editor", "editor");
+	resources->addFiles("game", "game");
+	resources->addFiles("graph", "graph");
+	resources->addFiles("localisation", "localisation");
+	resources->addFiles("misc", "misc");
+	resources->addFiles("sfx", "sfx");
+	resources->addFiles("speech", "speech");
 	
 	GRenderer = new Direct3DRenderer();
 	
