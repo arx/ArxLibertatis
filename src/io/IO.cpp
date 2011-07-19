@@ -62,71 +62,62 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
-#include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "platform/Platform.h"
 
 using std::string;
- 
-bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const float id)
-{
-	LogWarning << "partially unimplemented HERMES_CreateFileCheck " << name;
+
+#ifdef BUILD_EDIT_LOADSAVE
+
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+
+namespace fs = boost::filesystem;
+
+void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, float id) {
 	
-	WIN32_FILE_ATTRIBUTE_DATA attrib;
-	FileHandle file;
-	long length(size >> 2), i = 7 * 4;
-
-	// TODO port
-	if (!GetFileAttributesEx(name, GetFileExInfoStandard, &attrib)) return true;
-
-	if (!(file = FileOpenRead(name))) return true;
-
-	FileSeek(file, 0, SEEK_END);
+	// TODO this will not produce the exact same hashes as the original, so me may as well uses a better hash function
 	
-	string upcase = name;
-	std::transform(upcase.begin(), upcase.end(), upcase.begin(), ::toupper);
-
 	memset(scheck, 0, size);
-	((float *)scheck)[0] = id;
-	((long *)scheck)[1] = size;
-	memcpy(&((long *)scheck)[2], &attrib.ftCreationTime, sizeof(FILETIME));
-	memcpy(&((long *)scheck)[4], &attrib.ftLastWriteTime, sizeof(FILETIME));
-	((long *)scheck)[6] = FileTell(file);
-	memcpy(&scheck[i], upcase.c_str(), upcase.length() + 1);
-	i += strlen(name) + 1;
-	memset(&scheck[i], 0, i % 4);
-	i += i % 4;
-	i >>= 2;
-
-	FileSeek(file, 0, SEEK_SET);
-
-	while (i < length)
-	{
+	
+	s32 * dst = reinterpret_cast<s32 *>(scheck);
+	size_t length = size / 4;
+	
+	fs::ifstream ifs(name, fs::fstream::ate | fs::fstream::in | fs::fstream::binary);
+	if(!ifs.is_open()) {
+		return;
+	}
+	
+	arx_assert(length > 6);
+	
+	mempcpy(&dst[0], &id, 4);
+	dst[1] = size;
+	
+	std::time_t write_time = fs::last_write_time(name);
+	dst[2] = dst[4] = u32(write_time);
+	dst[3] = dst[5] = u32(u64(write_time) >> 32);
+	
+	size_t i = 6;
+	string namestr = name.string();
+	size_t l = std::min(size - i*4, namestr.length());
+	mempcpy(&dst[i], namestr.c_str(), l);
+	i += (l + 3) / 4;
+	
+	ifs.seekg(0);
+	
+	while(i < length) {
+		
 		long crc = 0;
 		
-		for (long j = 0; j < 256; j++)
-		{
-			char read;
-
-			if (!FileRead(file, &read, 1)) break;
-
-			crc += read;
+		for(long j = 0; j < 256 && ifs.good(); j++) {
+			crc += ifs.get();
 		}
-
-		((long *)scheck)[i++] = crc;
-
-		// TODO is this actually needed?
-		//if (feof(file))
-		//{
-		//	memset(&((long *)scheck)[i], 0, (length - i) << 2);
-		//	break;
-		//}
+		
+		dst[i++] = crc;
 	}
-
-	FileClose(file);
-
-	return false;
 }
+
+#endif // BUILD_EDIT_LOADSAVE
 
 #ifdef BUILD_EDITOR
 

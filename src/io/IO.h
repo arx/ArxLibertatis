@@ -71,7 +71,11 @@ bool HERMESFolderSelector(char * file_name, const char * title);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
 
-#endif
+#endif // BUILD_EDITOR
+
+#ifdef BUILD_EDIT_LOADSAVE
+
+#include <boost/filesystem/path.hpp>
 
 /**
  * Create a hash of the file.
@@ -81,6 +85,8 @@ int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName
  * @param id An ID that contributes to the hash.
  * @return false if the hash was created, true if the file could not be read
  **/
-bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, float id);
+void HERMES_CreateFileCheck(const boost::filesystem::path & name, char * scheck, size_t size, float id);
+
+#endif // BUILD_EDIT_LOADSAVE
 
 #endif // ARX_IO_IO_H
