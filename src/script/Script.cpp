@@ -2515,7 +2515,7 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	
 	script.data = (char *)malloc(file->size() + 2);
 	script.size = file->size();
-	script.data[script.size] = script.data[script.size + 1] = '\0'; // TODO(case-sensitive) remove
+	script.data[script.size] = script.data[script.size + 1] = '\0'; // TODO(script-parser) remove
 	
 	file->read(script.data);
 	

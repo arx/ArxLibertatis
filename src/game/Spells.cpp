@@ -827,7 +827,7 @@ void GetSymbVector(char c,Vec2s * vec)
 
 static bool MakeSpellName(char * spell, Spell num) {
 	
-	// TODO(case-sensitive) use map
+	// TODO(spells) use map
 	
 	switch (num)
 	{

@@ -755,7 +755,7 @@ public:
 		
 		bool condition;
 		if(t1 == TYPE_TEXT) {
-			condition = it->second->text(context, s1, s2); // TODO case-sensitive
+			condition = it->second->text(context, s1, s2);
 			DebugScript(" \"" << left << "\" " << op << " \"" << right << "\"  ->  \"" << s1 << "\" " << op << " \"" << s2 << "\"  ->  " << (condition ? "true" : "false")); // TODO fix formatting in Logger and use std::boolalpha
 		} else {
 			condition = it->second->number(context, f1, f2);

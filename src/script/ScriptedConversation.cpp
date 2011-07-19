@@ -126,7 +126,7 @@ public:
 			}
 			
 			audio::SampleId num;
-			// TODO (case-sensitive) should be a flag instead of depending on the event
+			// TODO(broken-scripts) should be a flag instead of depending on the event
 			if(no_pos || SM_INVENTORYUSE == context.getMessage()) {
 				num = ARX_SOUND_PlayScript(sample, NULL, pitch, loop);
 			} else {

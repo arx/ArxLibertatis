@@ -196,7 +196,7 @@ static void ARX_GAMESAVE_CreateNewInstance() {
 void badident(const string & ident) {
 	LogWarning << "bad ident: \"" << ident << "\"";
 }
-const string IDENTCHARS = "abcdefghijklmnopqrstuvwxyz_0123456789";
+const string IDENTCHARS = "abcdefghijklmnopqrstuvwxyz_0123456789"; // TODO(case-sensitive) remove
 
 static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 	
@@ -206,7 +206,7 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 		return NULL;
 	}
 	
-	if(ident.find_first_not_of(IDENTCHARS) != string::npos) {
+	if(ident.find_first_not_of(IDENTCHARS) != string::npos) { // TODO(case-sensitive) remove
 		badident(ident);
 	}
 	

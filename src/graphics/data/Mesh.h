@@ -361,7 +361,7 @@ struct IO_NPCDATA {
 	ItemType weapontype;
 	long		weaponinhand;
 	long		fightdecision;
-	char weaponname[256]; // TODO(case-sensitive) remove!, use "weapon" directly
+	char weaponname[256]; // TODO remove!, use "weapon" directly
 
 	float		look_around_inc;
 	unsigned long collid_time;

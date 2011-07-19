@@ -216,7 +216,7 @@ void ARX_MINIMAP_Load_Offsets()
 	
 	size_t siz = file->size();
 	char * dat = new char[siz + 2];
-	dat[siz] = dat[siz + 1] = '\0'; // TODO(case-sensitive) remove
+	dat[siz] = dat[siz + 1] = '\0'; // TODO remove
 	
 	file->read(dat);
 	

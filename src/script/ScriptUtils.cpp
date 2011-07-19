@@ -73,7 +73,7 @@ string Context::getWord() {
 	bool tilde = false; // number of tildes
 	
 	string word;
-	string var; // TODO(case-sensitive) should sometimes be lowercased
+	string var;
 	
 	// now take chars until it finds a space or unused char
 	while(((unsigned char)esdat[pos]) > 32 && esdat[pos] != '(' && esdat[pos] != ')') {
