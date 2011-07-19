@@ -48,27 +48,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakReader.h"
 
-#include <dirent.h>
-
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
-#include <cassert>
+#include <iomanip>
+
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "io/Blast.h"
 #include "io/PakEntry.h"
 #include "io/HashMap.h"
 #include "io/Logger.h"
-#include "platform/String.h"
+#include "io/FilePath.h"
 
+#include "platform/String.h"
 #include "platform/Platform.h"
-#include <iomanip>
 
 using std::min;
 using std::max;
 using std::strlen;
 using std::string;
 using std::vector;
+
+namespace fs = boost::filesystem;
 
 #define PAK_READ_BUF_SIZE 1024
 
@@ -117,7 +120,7 @@ public:
 	
 	int seek(Whence whence, int offset);
 	
-	size_t tell() const;
+	size_t tell();
 	
 	~UncompressedFileHandle() { };
 	
@@ -175,7 +178,7 @@ int UncompressedFileHandle::seek(Whence whence, int _offset) {
 	return offset;
 }
 
-size_t UncompressedFileHandle::tell() const {
+size_t UncompressedFileHandle::tell() {
 	return offset;
 }
 
@@ -211,7 +214,7 @@ public:
 	
 	int seek(Whence whence, int offset);
 	
-	size_t tell() const;
+	size_t tell();
 	
 	~CompressedFileHandle() { };
 	
@@ -270,7 +273,7 @@ int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 	
 	BlastMemOutBufferOffset * p = (BlastMemOutBufferOffset *)Param;
 	
-	assert(p->currentOffset <= p->endOffset);
+	arx_assert(p->currentOffset <= p->endOffset);
 	
 	if(p->currentOffset == p->endOffset) {
 		return 1;
@@ -290,7 +293,7 @@ int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 	
 	size_t toCopy = min(len, p->endOffset - p->currentOffset);
 	
-	assert(toCopy != 0);
+	arx_assert(toCopy != 0);
 	
 	memcpy(p->buf, buf, toCopy);
 	
@@ -358,18 +361,18 @@ int CompressedFileHandle::seek(Whence whence, int _offset) {
 	return offset;
 }
 
-size_t CompressedFileHandle::tell() const {
+size_t CompressedFileHandle::tell() {
 	return offset;
 }
 
 /*! Plain file not in a .pak file archive. */
 class PlainFile : public PakFile {
 	
-	string path;
+	fs::path path;
 	
 public:
 	
-	PlainFile(const std::string & _path, size_t size) : PakFile(size), path(_path) { };
+	PlainFile(const fs::path & _path, size_t size) : PakFile(size), path(_path) { };
 	
 	void read(void * buf) const;
 	
@@ -379,17 +382,19 @@ public:
 
 class PlainFileHandle : public PakFileHandle {
 	
-	FILE * handle;
+	fs::ifstream ifs;
 	
 public:
 	
-	PlainFileHandle(FILE * _handle) : handle(_handle) { };
+	PlainFileHandle(const fs::path & path) : ifs(path, fs::ifstream::in | fs::ifstream::binary) {
+		arx_assert(ifs.is_open());
+	};
 	
 	size_t read(void * buf, size_t size);
 	
 	int seek(Whence whence, int offset);
 	
-	size_t tell() const;
+	size_t tell();
 	
 	~PlainFileHandle() { };
 	
@@ -397,40 +402,34 @@ public:
 
 void PlainFile::read(void * buf) const {
 	
-	FILE * handle = fopen(path.c_str(), "rb");
-	arx_assert(handle);
+	fs::ifstream ifs(path, fs::ifstream::in | fs::ifstream::binary);
+	arx_assert(ifs.is_open());
 	
-	size_t nread = fread(buf, size(), 1, handle);
-	arx_assert(nread == 1);
-	ARX_UNUSED(nread);
+	ifs.read(static_cast<char *>(buf), size());
 	
-	fclose(handle);
+	arx_assert(!ifs.fail());
 }
 
 PakFileHandle * PlainFile::open() const {
-	
-	FILE * handle = fopen(path.c_str(), "rb");
-	arx_assert(handle);
-	
-	return new PlainFileHandle(handle);
+	return new PlainFileHandle(path);
 }
 
 size_t PlainFileHandle::read(void * buf, size_t size) {
-	return fread(buf, 1, size, handle);
+	return ifs.read(static_cast<char *>(buf), size).gcount();
 }
 
-int arxToCSeekOrigin[] = {
-	SEEK_SET,
-	SEEK_CUR,
-	SEEK_END
+std::ios_base::seekdir arxToStlSeekOrigin[] = {
+	std::ios_base::beg,
+	std::ios_base::cur,
+	std::ios_base::end
 };
 
 int PlainFileHandle::seek(Whence whence, int offset) {
-	return fseek(handle, offset, arxToCSeekOrigin[whence]);
+	return ifs.seekg(offset, arxToStlSeekOrigin[whence]).tellg();
 }
 
-size_t PlainFileHandle::tell() const {
-	return ftell(handle);
+size_t PlainFileHandle::tell() {
+	return ifs.tellg();
 }
 
 PakReader::~PakReader() {
@@ -605,53 +604,77 @@ PakFileHandle * PakReader::open(const string & name) {
 	return f->open();
 }
 
-bool PakReader::addFiles(const string & path) {
-	return addFiles(this, path);
-}
-
-bool PakReader::addFiles(PakDirectory * dir, const string & path) {
+bool PakReader::addFiles(const fs::path & path, const string & mount) {
 	
-	DIR * d = opendir(path.c_str());
-	if(!d) {
+	try {
+		
+		if(!fs::exists(path)) {
+			return false;
+		}
+		
+		if(fs::is_directory(path)) {
+			
+			return addFiles(addDirectory(mount), path);
+			
+		} else {
+			
+			size_t pos = mount.find_last_of(DIR_SEP);
+			
+			PakDirectory * dir = (pos == string::npos) ? this : getDirectory(strref(mount, 0, pos));
+			
+			return addFile(dir, path, (pos == string::npos) ? mount : mount.substr(pos + 1));
+		}
+		
+	} catch(fs::filesystem_error) {
 		return false;
 	}
 	
-	struct dirent * ent;
+}
+
+bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::string & name) {
 	
-	while((ent = readdir(d)) != NULL) {
-		
-		if(ent->d_name[0] == '.') {
-			continue;
-		}
-		
-		string name = path + '/' + ent->d_name;
-		string entry = toLowercase(ent->d_name); // TODO(case-sensitive) remove
-		
-		if(addFiles(dir->addDirectory(entry), name)) {
-			continue;
-		}
-		
-		FILE * f = fopen(name.c_str(), "rb");
-		if(!f) {
-			continue;
-		}
-		
-		fseek(f, 0, SEEK_END);
-		
-		int size = ftell(f);
-		if(size < 0) {
-			continue;
-		}
-		
-		fclose(f);
-		
-		dir->addFile(entry, new PlainFile(name, size));
-		
+	if(name.empty()) {
+		return false;
 	}
 	
-	closedir(d);
+	try {
+		
+		size_t size = fs::file_size(path);
+		
+		dir->addFile(name, new PlainFile(path, size));
+		
+	} catch(fs::filesystem_error) {
+		return false;
+	}
 	
 	return true;
+}
+
+bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
+	
+	bool ret = true;
+	
+	try {
+		
+		fs::directory_iterator end;
+		for(fs::directory_iterator it(path); it != end; ++it) {
+			
+			const fs::path & entry = it->path();
+			
+			if(fs::is_directory(entry)) {
+				ret &= addFiles(dir->addDirectory(entry.leaf().string()), entry);
+			} else {
+				ret &= addFile(dir, entry, entry.leaf().string());
+			}
+			
+		}
+		
+		
+	} catch(fs::filesystem_error) {
+		return false;
+	}
+	
+	return ret;
 }
 
 PakReader * resources;

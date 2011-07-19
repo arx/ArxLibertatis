@@ -29,6 +29,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <cstdio>
 
+#include <boost/filesystem/path.hpp>
+
 #include "io/PakEntry.h"
 
 enum Whence {
@@ -45,7 +47,7 @@ public:
 	
 	virtual int seek(Whence whence, int offset) = 0;
 	
-	virtual size_t tell() const = 0;
+	virtual size_t tell() = 0;
 	
 	virtual ~PakFileHandle() { };
 	
@@ -57,13 +59,15 @@ private:
 	
 	std::vector<FILE *> paks;
 	
-	bool addFiles(PakDirectory * dir, const std::string & path);
+	bool addFiles(PakDirectory * dir, const boost::filesystem::path & path);
+	bool addFile(PakDirectory * dir, const boost::filesystem::path & path, const std::string & name);
 	
 public:
 	
 	~PakReader();
 	
-	bool addFiles(const std::string & path);
+	bool addFiles(const boost::filesystem::path & path, const std::string & mount = std::string());
+	
 	bool addArchive(const std::string & pakfile);
 	void clear();
 	
