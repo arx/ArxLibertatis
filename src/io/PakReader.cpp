@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/HashMap.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
+#include "io/Filesystem.h"
 
 #include "platform/String.h"
 #include "platform/Platform.h"
@@ -76,19 +77,6 @@ namespace fs = boost::filesystem;
 namespace {
 
 const size_t PAK_READ_BUF_SIZE = 1024;
-
-template <class T>
-inline bool fread(std::istream & ifs, T & data) {
-	return !ifs.read(reinterpret_cast<char *>(&data), sizeof(T)).fail();
-}
-
-inline bool fread(std::istream & ifs, void * buf, size_t n) {
-	return !ifs.read(reinterpret_cast<char *>(buf), n).fail();
-}
-
-inline bool fseek(std::istream & ifs, size_t pos) {
-	return !ifs.seekg(pos, std::ios_base::beg).fail();
-}
 
 static const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
 static const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
@@ -143,7 +131,7 @@ public:
 
 void UncompressedFile::read(void * buf) const {
 	
-	fseek(archive, offset);
+	archive.seekg(offset);
 	
 	fread(archive, buf, size());
 	
@@ -160,7 +148,7 @@ size_t UncompressedFileHandle::read(void * buf, size_t size) {
 		return 0;
 	}
 	
-	fseek(file.archive, file.offset + offset);
+	file.archive.seekg(file.offset + offset);
 	
 	if(file.size() < offset + size) {
 		size = (offset > file.size()) ? 0 : (file.size() - offset);
@@ -265,7 +253,7 @@ static int blast(std::ifstream & file, char * buf, size_t size) {
 
 void CompressedFile::read(void * buf) const {
 	
-	fseek(archive, offset);
+	archive.seekg(offset);
 	
 	int r = blast(archive, (char *)buf, size());
 	if(r) {
@@ -330,7 +318,7 @@ size_t CompressedFileHandle::read(void * buf, size_t size) {
 		           << " offset=" << offset << " total=" << file.size();
 	}
 	
-	fseek(file.archive, file.offset);
+	file.archive.seekg(file.offset);
 	
 	BlastFileInBuffer in(&file.archive);
 	BlastMemOutBufferOffset out;
@@ -431,7 +419,7 @@ PakFileHandle * PlainFile::open() const {
 }
 
 size_t PlainFileHandle::read(void * buf, size_t size) {
-	return ifs.read(static_cast<char *>(buf), size).gcount();
+	return fread(ifs, buf, size).gcount();
 }
 
 std::ios_base::seekdir arxToStlSeekOrigin[] = {
@@ -477,17 +465,17 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 	u32 fat_offset;
 	u32 fat_size;
 	
-	if(!fread(*ifs, fat_offset)) {
+	if(fread(*ifs, fat_offset).fail()) {
 		LogError << "error reading FAT offset";
 		delete ifs;
 		return false;
 	}
-	if(!fseek(*ifs, fat_offset)) {
+	if(ifs->seekg(fat_offset).fail()) {
 		LogError << "error seeking to FAT offset " << fat_offset;
 		delete ifs;
 		return false;
 	}
-	if(!fread(*ifs, fat_size)) {
+	if(fread(*ifs, fat_size).fail()) {
 		LogError << "error reading FAT size at offset " << fat_offset;
 		delete ifs;
 		return false;

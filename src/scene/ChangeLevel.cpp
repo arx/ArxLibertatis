@@ -171,7 +171,7 @@ static void ARX_GAMESAVE_CreateNewInstance() {
 	
 	for(;;) {
 		
-		sprintf(testpath, "save\\save%04ld", num);
+		sprintf(testpath, "save/save%04ld", num);
 		
 		if(!DirectoryExist(testpath)) {
 			CreateDirectory(testpath, NULL);
@@ -180,7 +180,7 @@ static void ARX_GAMESAVE_CreateNewInstance() {
 			return;
 		} else {
 			//The directory may exist but may be empty after crash
-			strcat(testpath, "\\gsave.sav");
+			strcat(testpath, "/gsave.sav");
 			if(!FileExist(testpath)) {
 				CURRENT_GAME_INSTANCE = num;
 				ARX_GAMESAVE_MakePath();
@@ -274,12 +274,12 @@ long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
 }
 
 void ARX_CHANGELEVEL_MakePath() {
-	sprintf(CurGamePath, "save\\cur%04ld\\", LAST_CHINSTANCE);
+	sprintf(CurGamePath, "save/cur%04ld/", LAST_CHINSTANCE);
 	CreateFullPath(CurGamePath);
 }
 
 void ARX_GAMESAVE_MakePath() {
-	sprintf(GameSavePath, "save\\save%04ld\\", CURRENT_GAME_INSTANCE);
+	sprintf(GameSavePath, "save/save%04ld/", CURRENT_GAME_INSTANCE);
 	CreateFullPath(GameSavePath);
 }
 
@@ -290,7 +290,7 @@ void ARX_CHANGELEVEL_CreateNewInstance() {
 	
 	for (;;)
 	{
-		sprintf(testpath, "save\\cur%04ld", num);
+		sprintf(testpath, "save/cur%04ld", num);
 
 		if (!DirectoryExist(testpath))
 		{
@@ -321,7 +321,7 @@ void ARX_Changelevel_CurGame_Open() {
 	if(FileExist(savefile)) {
 		
 		GLOBAL_pSaveB = new SaveBlock(savefile);
-		if(!GLOBAL_pSaveB->BeginRead()) {
+		if(!GLOBAL_pSaveB->open()) {
 			LogError << "cannot read cur game save file" << savefile;
 		}
 		
@@ -480,7 +480,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	sprintf(sfile, "%sgsave.sav", CurGamePath);
 	_pSaveBlock = new SaveBlock(sfile);
 
-	if(!_pSaveBlock->BeginSave()) {
+	if(!_pSaveBlock->open(true)) {
 		LogError << "Error writing to save block.";
 		return false;
 	}
@@ -506,7 +506,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		return false;
 	}
 	
-	if(!_pSaveBlock->flush()) {
+	if(!_pSaveBlock->flush("pld.sav")) {
 		LogError << "could not complete the save.";
 	}
 	
@@ -2910,7 +2910,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	// first time in this level ?
 	long FirstTime;
-	if(!_pSaveBlock->BeginRead() || !_pSaveBlock->hasFile(loadfile.str())) {
+	if(!_pSaveBlock->open() || !_pSaveBlock->hasFile(loadfile.str())) {
 		FirstTime = 1;
 		FORBID_SCRIPT_IO_CREATION = 0;
 		NO_PLAYER_POSITION_RESET = 0;
@@ -3095,8 +3095,8 @@ static void CopyDirectory(char * _lpszSrc, char * _lpszDest) {
 				strcpy(d, _lpszDest);
 				strcat(s, FindFileData->cFileName);
 				strcat(d, FindFileData->cFileName);
-				strcat(s, "\\");
-				strcat(d, "\\");
+				strcat(s, "/");
+				strcat(d, "/");
 				CopyDirectory(s, d);
 			}
 			else
@@ -3200,7 +3200,7 @@ static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LE
 	_pSaveBlock = new SaveBlock(sfile);
 	// TODO don't load the save block again!
 
-	if (!_pSaveBlock->BeginSave()) return false;
+	if (!_pSaveBlock->open(true)) return false;
 
 	if (!DirectoryExist(path)) return false;
 
@@ -3215,7 +3215,7 @@ static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LE
 	
 	delete[] dat;
 	
-	_pSaveBlock->flush();
+	_pSaveBlock->flush("pld.sav");
 	delete _pSaveBlock;
 	_pSaveBlock = NULL;
 	

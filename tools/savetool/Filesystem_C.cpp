@@ -26,15 +26,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "platform/Platform.h"
 
+#include <cstdio>
+#include <cstdlib>
+#include <cassert>
+
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	#include <windows.h>
 #else
 	#include <sys/stat.h>
 #endif
 
-#include <cstdio>
-#include <cstdlib>
-#include <cassert>
+#include <boost/filesystem/fstream.hpp>
 
 #include "io/Logger.h"
 
@@ -49,6 +51,8 @@ using std::rename;
 using std::malloc;
 using std::free;
 using std::string;
+
+namespace fs = boost::filesystem;
 
 // File handle 0 is reserved for error.
 #define GETHANDLE(handle)  (FILE*)(handle)
@@ -217,4 +221,34 @@ bool FileExist(const std::string & name) {
 	FileClose(handle);
 	LogInfo << "Found " << name;
 	return true;
+}
+
+std::istream & fread(std::istream & ifs, std::string & buf) {
+	while(ifs.good()) {
+		char c = static_cast<char>(ifs.get());
+		if(c == '\0') {
+			break;
+		}
+		buf.push_back(c);
+	}
+	return ifs;
+}
+
+char * read_file(const boost::filesystem::path & path, size_t & size) {
+	
+	fs::ifstream ifs(path, fs::ifstream::in | fs::ifstream::binary | fs::ifstream::ate);
+	if(!ifs.is_open()) {
+		return NULL;
+	}
+	
+	size = ifs.tellg();
+	
+	char * buf = new char[size];
+	
+	if(ifs.seekg(0).read(buf, size).fail()) {
+		delete[] buf;
+		return NULL;
+	}
+	
+	return buf;
 }

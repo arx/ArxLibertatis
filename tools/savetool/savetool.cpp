@@ -10,6 +10,16 @@
 #include <algorithm>
 #include <map>
 #include <set>
+
+#include <boost/filesystem/operations.hpp>
+
+#include "io/SaveBlock.h"
+#include "io/FilePath.h"
+#include "io/PakReader.h"
+#include "io/Filesystem.h"
+#include "platform/String.h"
+#include "platform/Platform.h"
+
 using std::string;
 using std::vector;
 using std::printf;
@@ -22,12 +32,7 @@ using std::map;
 using std::set;
 using std::transform;
 
-#include "io/SaveBlock.h"
-#include "io/Filesystem.h"
-#include "io/FilePath.h"
-#include "io/PakReader.h"
-#include "platform/String.h"
-#include "platform/Platform.h"
+namespace fs = boost::filesystem;
 
 // TODO use structs form SaveFormat.h, but that pulls in d3d dependencies
 
@@ -651,7 +656,7 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 		return 1;
 	}
 	
-	if(!save.BeginRead()) {
+	if(!save.open()) {
 		return 2;
 	}
 	
@@ -666,17 +671,15 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 			continue;
 		}
 		
-		FileHandle h = FileOpenWrite(file->c_str());
-		if(!h) {
+		std::ofstream h(file->c_str(), std::ios_base::out | std::ios_base::binary);
+		if(!h.is_open()) {
 			printf("error opening %s for writing\n", file->c_str());
 			continue;
 		}
 		
-		if((size_t)FileWrite(h, data, size) != size) {
+		if(h.write(data, size).fail()) {
 			printf("error writing to %s\n", file->c_str());
 		}
-		
-		FileClose(h);
 		
 	}
 	
@@ -685,14 +688,14 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 
 static int main_add(SaveBlock & save, int argc, char ** argv) {
 	
-	if(!save.BeginSave()) {
+	if(!save.open(true)) {
 		return 2;
 	}
 	
 	for(int i = 0; i < argc; i++) {
 		
 		size_t size;
-		char * data = (char*)FileLoadMalloc(argv[i], &size);
+		char * data = read_file(argv[i], size);
 		
 		if(!data) {
 			printf("error loading %s\n", argv[i]);
@@ -707,11 +710,13 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 			if(!save.save(name, data, size)) {
 				printf("error writing %s to save\n", argv[i]);
 			}
+			
+			delete[] data;
 		}
 		
 	}
 	
-	save.flush();
+	save.flush("pld");
 	
 	return 0;
 }
@@ -1130,7 +1135,7 @@ static int main_fix(SaveBlock & save, int argc, char ** argv) {
 	
 	resources->addFiles("graph", "graph");
 	
-	if(!save.BeginSave()) {
+	if(!save.open(true)) {
 		return 2;
 	}
 	
@@ -1143,7 +1148,7 @@ static int main_fix(SaveBlock & save, int argc, char ** argv) {
 		fix_level(save, i, idents);
 	}
 	
-	save.flush();
+	save.flush("pld");
 	
 	return 0;
 }

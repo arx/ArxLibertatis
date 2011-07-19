@@ -1326,7 +1326,7 @@ int main(int argc, char ** argv) {
 	char txttemp[256];
 
 	for(unsigned uiNum=0; uiNum < 20; ++uiNum) {
-		sprintf(txttemp,"save\\cur%04d\\",uiNum);
+		sprintf(txttemp,"save/cur%04d/",uiNum);
 		if(DirectoryExist(txttemp)) {
 			KillAllDirectory(txttemp);
 		}

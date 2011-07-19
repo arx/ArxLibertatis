@@ -29,11 +29,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 #include <cstdlib>
 
+#include <boost/filesystem/fstream.hpp>
 #include <windows.h>
 
 #include "io/Logger.h"
 
 using std::string;
+
+namespace fs = boost::filesystem;
 
 long KillAllDirectory(const std::string& path) {
 	LogInfo << "KillAllDirectory "<< path;
@@ -52,7 +55,7 @@ long KillAllDirectory(const std::string& path) {
 			{
 				if (fl.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 				{
-					pathh = path + fl.cFileName + "\\";
+					pathh = path + fl.cFileName + "/";
 					KillAllDirectory(pathh);
 					RemoveDirectory(pathh.c_str());
 				}
@@ -77,7 +80,7 @@ bool DirectoryExist(const string& _name) {
 	
 	// FindFirstFile does not expect a slash at the end
 	string name = _name;
-	if(!name.empty() && *name.rbegin() == '\\') {
+	if(!name.empty() && (*name.rbegin() == '\\' || *name.rbegin() == '/')) { // TODO(case-sensitive) remove slash
 		name.resize(name.length() - 1);
 	}
 	
@@ -286,5 +289,35 @@ bool CreateFullPath(const string & path) {
 	}
 	
 	return DirectoryExist(path);
+}
+
+std::istream & fread(std::istream & ifs, std::string & buf) {
+	while(ifs.good()) {
+		char c = static_cast<char>(ifs.get());
+		if(c == '\0') {
+			break;
+		}
+		buf.push_back(c);
+	}
+	return ifs;
+}
+
+char * read_file(const boost::filesystem::path & path, size_t & size) {
+	
+	fs::ifstream ifs(path, fs::ifstream::in | fs::ifstream::binary | fs::ifstream::ate);
+	if(!ifs.is_open()) {
+		return NULL;
+	}
+	
+	size = ifs.tellg();
+	
+	char * buf = new char[size];
+	
+	if(ifs.seekg(0).read(buf, size).fail()) {
+		delete[] buf;
+		return NULL;
+	}
+	
+	return buf;
 }
 
