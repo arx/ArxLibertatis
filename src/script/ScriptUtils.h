@@ -21,6 +21,10 @@ inline u64 flag(char c) {
 	}
 }
 
+inline bool test_flag(u64 flg, char c) {
+	return (flg & flag(c)) != 0;
+}
+
 inline u64 flags(const std::string & flags) {
 	
 	

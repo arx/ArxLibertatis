@@ -269,7 +269,7 @@ public:
 		
 		bool rem = false;
 		HandleFlags("r") {
-			rem = (flg & flag('r'));
+			rem = test_flag(flg, 'r');
 		}
 		
 		string group = context.getStringVar(context.getWord());

@@ -435,7 +435,7 @@ public:
 		
 		bool megahide = false;
 		HandleFlags("m") {
-			megahide = (flg & flag('m'));
+			megahide = test_flag(flg, 'm');
 		}
 		
 		string target = context.getWord();
@@ -525,8 +525,8 @@ public:
 				return Success;
 			}
 			
-			teleport_player = (flg & flag('p'));
-			initpos = (flg & flag('i'));
+			teleport_player = test_flag(flg, 'p');
+			initpos = test_flag(flg, 'i');
 		}
 		
 		string target;

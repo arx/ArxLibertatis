@@ -586,7 +586,7 @@ public:
 		
 		bool player = false;
 		HandleFlags("p") {
-			player = (flg & flag('p'));
+			player = test_flag(flg, 'p');
 		}
 		
 		bool enable = context.getBool();

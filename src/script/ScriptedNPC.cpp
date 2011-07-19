@@ -112,7 +112,7 @@ public:
 		
 		bool init = false;
 		HandleFlags("i") {
-			init = (flg & flag('i'));
+			init = test_flag(flg, 'i');
 		}
 		
 		DebugScript(' ' << options);

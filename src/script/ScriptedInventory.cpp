@@ -432,7 +432,7 @@ public:
 		
 		bool unequip = false;
 		HandleFlags("r") {
-			unequip = (flg & flag('r'));
+			unequip = test_flag(flg, 'r');
 		}
 		
 		string target = context.getWord();
