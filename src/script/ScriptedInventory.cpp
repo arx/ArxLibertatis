@@ -1,6 +1,8 @@
 
 #include "script/ScriptedInventory.h"
 
+#include <cstdlib>
+
 #include "game/Inventory.h"
 #include "graphics/data/Mesh.h"
 #include "io/FilePath.h"
@@ -9,6 +11,8 @@
 #include "script/ScriptUtils.h"
 
 using std::string;
+using std::free;
+using std::malloc;
 
 extern INTERACTIVE_OBJ * LASTSPAWNED;
 
