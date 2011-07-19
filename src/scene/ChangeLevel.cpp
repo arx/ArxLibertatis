@@ -70,6 +70,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -111,6 +114,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 
 using std::string;
+
+namespace fs = boost::filesystem;
 
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
@@ -166,26 +171,23 @@ char GameSavePath[256];
 
 static void ARX_GAMESAVE_CreateNewInstance() {
 	
-	char testpath[256];
 	long num = 1;
+	
+	fs::path savedir("save");
+	
+	arx_assert(fs::is_directory(savedir));
 	
 	for(;;) {
 		
-		sprintf(testpath, "save/save%04ld", num);
+		std::ostringstream oss;
+		oss << "save" << std::setfill('0') << std::setw(4) << num;
 		
-		if(!DirectoryExist(testpath)) {
-			CreateDirectory(testpath, NULL);
+		fs::path path = savedir / oss.str();
+		
+		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / "gsave.sav"))) {
+			fs::create_directories(path);
 			CURRENT_GAME_INSTANCE = num;
-			ARX_GAMESAVE_MakePath();
 			return;
-		} else {
-			//The directory may exist but may be empty after crash
-			strcat(testpath, "/gsave.sav");
-			if(!FileExist(testpath)) {
-				CURRENT_GAME_INSTANCE = num;
-				ARX_GAMESAVE_MakePath();
-				return;
-			}
 		}
 		
 		num++;
