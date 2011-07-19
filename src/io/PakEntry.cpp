@@ -87,7 +87,7 @@ PakDirectory * PakDirectory::getDirectory(strref path) {
 		return this;
 	}
 	
-	arx_assert(std::find_first_of(name.begin(), name.end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == name.end()); // TODO(case-sensitive) remove
+	arx_assert(std::find_first_of(name.begin(), name.end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == name.end()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
 	
 	dirs_iterator dir = dirs.find(name);
 	if(dir == dirs.end()) {

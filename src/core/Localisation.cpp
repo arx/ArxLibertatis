@@ -126,9 +126,7 @@ static const string BADNAMECHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]"; // TODO(case-s
  */
 string getLocalised(const string & name, const string & default_value) {
 	
-	if(name.find_first_of(BADNAMECHAR) != string::npos) {
-		LogWarning << "upcase char in \"" << name << "\""; // TODO(case-sensitive) remove
-	}
+	arx_assert(name.find_first_of(BADNAMECHAR) == string::npos); ARX_UNUSED(BADNAMECHAR); // TODO(case-sensitive) remove
 	
 	return localisation.getKey(name, string(), default_value);
 }

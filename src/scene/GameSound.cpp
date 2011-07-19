@@ -1844,7 +1844,7 @@ static char BADSAMPLECHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensiti
 
 static float GetSamplePresenceFactor(const string & name) {
 	
-	arx_assert(name.find_first_of(BADSAMPLECHAR) == string::npos); // TODO(case-sensitive) remove
+	arx_assert(name.find_first_of(BADSAMPLECHAR) == string::npos); ARX_UNUSED(BADSAMPLECHAR); // TODO(case-sensitive) remove
 	
 	PresenceFactors::const_iterator it = presence.find(name);
 	if(it != presence.end()) {
