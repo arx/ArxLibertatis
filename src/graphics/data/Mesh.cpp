@@ -60,6 +60,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <map>
 
+#ifdef BUILD_EDIT_LOADSAVE
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+#endif
+
 #include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
 
@@ -87,6 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
+#include "io/IO.h"
 
 #include "physics/Anchors.h"
 #include "physics/Physics.h"
@@ -102,6 +109,10 @@ using std::min;
 using std::max;
 using std::copy;
 using std::string;
+
+#ifdef BUILD_EDIT_LOADSAVE
+namespace fs = boost::filesystem;
+#endif
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
@@ -3953,13 +3964,15 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
  * Save the currently loaded scene.
  * @param partal_path Where to save the scene to.
  */
-static bool FastSceneSave(const string & partial_path) {
+static bool FastSceneSave(const fs::path & partial_path) {
 	
-	string path = "game/" + partial_path;
+	fs::path path = "game" / partial_path;
 	
 	LogDebug << "FastSceneSave" << path;
 	
-	if(!CreateFullPath(path)) {
+	try {
+		fs::create_directories(path);
+	} catch(fs::filesystem_error) {
 		return false;
 	}
 	
@@ -3995,61 +4008,47 @@ static bool FastSceneSave(const string & partial_path) {
 	
 	
 	size_t pos = 0;
-	unsigned char * dat = (unsigned char *)malloc(allocsize);
+	char * dat = new char[allocsize];
 	
 	memset(dat, 0, allocsize);
-	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
-	strcpy(uh->path, path.c_str());
-	uh->version = FTS_VERSION;
+	UNIQUE_HEADER * uh = reinterpret_cast<UNIQUE_HEADER *>(dat);
 	pos += sizeof(UNIQUE_HEADER);
-	
-	string path2 = partial_path + "*.scn";
+	strncpy(uh->path, path.c_str(), sizeof(uh->path));
+	uh->version = FTS_VERSION;
 	
 	long count = 0;
-//	TODO: find
-//	struct _finddata_t fd;
-//  long idx;
-//	if ((idx = _findfirst(path2, &fd)) != -1)
-//	{
-//		do
-//		{
-//			if (!(fd.attrib & _A_SUBDIR))
-//			{
-//				char * text = GetExt(fd.name);
-//
-//				if (!strcmp(text, ".scn"))
-//				{
-//					char path3[256];
-//					sprintf(path3, "%s%s", partial_path, fd.name);
-//					SetExt(path3, ".scn");
-//					UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
-//					strcpy(uh2->path, fd.name);
-//					pos += sizeof(UNIQUE_HEADER2);
-//
-//					char check[512];
-//					HERMES_CreateFileCheck(path3, check, 512, UNIQUE_VERSION);
-//					memcpy(dat + pos, check, 512);
-//					pos += 512;
-//					count++;
-//
-//					if (count > 60)
-//					{
-//						free(dat);
-//						return false;
-//					}
-//				}
-//			}
-//		}
-//		while (!(_findnext(idx, &fd)));
-//
-//		_findclose(idx);
-//	}
+	
+	fs::directory_iterator end;
+	for(fs::directory_iterator it(partial_path); it != end; ++it) {
+		
+		const fs::path & path = it->path();
+		if(path.extension() != ".scn" || !fs::is_regular_file(path)) {
+			continue;
+		}
+		
+		UNIQUE_HEADER2 * uh2 = reinterpret_cast<UNIQUE_HEADER2 *>(dat + pos);
+		pos += sizeof(UNIQUE_HEADER2);
+		strncpy(uh2->path, path.leaf().c_str(), sizeof(uh2->path));
+		
+		char check[512];
+		HERMES_CreateFileCheck(path, check, 512, FTS_VERSION);
+		
+		memcpy(dat + pos, check, 512);
+		pos += 512;
+		
+		count++;
+		
+		if(count > 60) {
+			delete[] dat;
+			return false;
+		}
+	}
 	
 	uh->count = count;
-	string file = path + "fast.fts";
+	fs::path file = path / "fast.fts";
 	long compressedstart = pos;
 	
-	FAST_SCENE_HEADER * fsh = (FAST_SCENE_HEADER *)(dat + pos);
+	FAST_SCENE_HEADER * fsh = reinterpret_cast<FAST_SCENE_HEADER *>(dat + pos);
 	pos += sizeof(FAST_SCENE_HEADER);
 	
 	fsh->version = FTS_VERSION;
@@ -4077,19 +4076,19 @@ static bool FastSceneSave(const string & partial_path) {
 		for(long i = 0; i < fsh->sizex; i++) {
 			for(long k = 0; k < ACTIVEBKG->Backg[i+j*fsh->sizex].nbpoly; k++) {
 				
-				EERIEPOLY * ep = (EERIEPOLY *)&ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
+				EERIEPOLY * ep = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
 				
 				if(ep && ep->tex) {
 					
 					if(textures.find(ep->tex) == textures.end()) {
 						textures[ep->tex] = ++texid;
 						
-						FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(dat + pos);
+						FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<FAST_TEXTURE_CONTAINER *>(dat + pos);
+						pos += sizeof(FAST_TEXTURE_CONTAINER);
 						ftc->tc = texid;
-						strcpy(ftc->fic, ep->tex->m_texName.c_str());
+						strncpy(ftc->fic, ep->tex->m_texName.c_str(), sizeof(ftc->fic));
 						ftc->temp = 0;
 						fsh->nb_textures++;
-						pos += sizeof(FAST_TEXTURE_CONTAINER);
 						
 						checkalloc
 					}
@@ -4100,7 +4099,7 @@ static bool FastSceneSave(const string & partial_path) {
 	
 	for(long j = 0; j < fsh->sizez; j++) {
 		for(long i = 0; i < fsh->sizex; i++) {
-			FAST_SCENE_INFO * fsi = (FAST_SCENE_INFO *)(dat + pos);
+			FAST_SCENE_INFO * fsi = reinterpret_cast<FAST_SCENE_INFO *>(dat + pos);
 			pos += sizeof(FAST_SCENE_INFO);
 			
 			checkalloc
@@ -4111,9 +4110,9 @@ static bool FastSceneSave(const string & partial_path) {
 			for(long k = 0; k < fsi->nbpoly; k++) {
 				fsh->nb_polys++;
 				
-				FAST_EERIEPOLY * ep = (FAST_EERIEPOLY *)(dat + pos);
-				EERIEPOLY * ep2 = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
+				FAST_EERIEPOLY * ep = reinterpret_cast<FAST_EERIEPOLY *>(dat + pos);
 				pos += sizeof(FAST_EERIEPOLY);
+				EERIEPOLY * ep2 = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
 				
 				checkalloc
 				
@@ -4147,7 +4146,7 @@ static bool FastSceneSave(const string & partial_path) {
 	
 	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
 		
-		FAST_ANCHOR_DATA * fad = (FAST_ANCHOR_DATA *)(dat + pos);
+		FAST_ANCHOR_DATA * fad = reinterpret_cast<FAST_ANCHOR_DATA *>(dat + pos);
 		pos += sizeof(FAST_ANCHOR_DATA);
 		
 		checkalloc
@@ -4159,7 +4158,7 @@ static bool FastSceneSave(const string & partial_path) {
 		fad->height = ACTIVEBKG->anchors[i].height;
 		
 		for(long kk = 0; kk < fad->nb_linked; kk++) {
-			s32 * lng = (s32 *)(dat + pos);
+			s32 * lng = reinterpret_cast<s32 *>(dat + pos);
 			pos += sizeof(s32);
 			checkalloc
 			*lng = ACTIVEBKG->anchors[i].linked[kk];
@@ -4170,7 +4169,7 @@ static bool FastSceneSave(const string & partial_path) {
 		
 		for(long i = 0; i < portals->nb_total; i++) {
 			
-			EERIE_SAVE_PORTALS * epo = (EERIE_SAVE_PORTALS *)(dat + pos);
+			EERIE_SAVE_PORTALS * epo = reinterpret_cast<EERIE_SAVE_PORTALS *>(dat + pos);
 			pos += sizeof(EERIE_SAVE_PORTALS);
 			
 			const EERIE_PORTALS & portal = portals->portals[i];
@@ -4197,7 +4196,7 @@ static bool FastSceneSave(const string & partial_path) {
 		
 		for(long i = 0; i < portals->nb_rooms + 1; i++) {
 			
-			EERIE_SAVE_ROOM_DATA * erd = (EERIE_SAVE_ROOM_DATA *)(dat + pos);
+			EERIE_SAVE_ROOM_DATA * erd = reinterpret_cast<EERIE_SAVE_ROOM_DATA *>(dat + pos);
 			pos += sizeof(EERIE_SAVE_ROOM_DATA);
 			
 			memset(erd, 0, sizeof(EERIE_SAVE_ROOM_DATA));
@@ -4205,13 +4204,13 @@ static bool FastSceneSave(const string & partial_path) {
 			erd->nb_portals = portals->room[i].nb_portals;
 			
 			for(long jj = 0; jj < portals->room[i].nb_portals; jj++) {
-				s32 * lng = (s32 *)(dat + pos);
+				s32 * lng = reinterpret_cast<s32 *>(dat + pos);
 				pos += sizeof(s32);
 				*lng = portals->room[i].portals[jj];
 			}
 			
 			if(portals->room[i].nb_polys) {
-				EP_DATA * ed = (EP_DATA *)(dat + pos);
+				EP_DATA * ed = reinterpret_cast<EP_DATA *>(dat + pos);
 				pos += sizeof(EP_DATA) * portals->room[i].nb_polys;
 				memcpy(ed, portals->room[i].epdata, sizeof(EP_DATA)*portals->room[i].nb_polys);
 			}
@@ -4225,7 +4224,7 @@ static bool FastSceneSave(const string & partial_path) {
 	if(portals && RoomDistance && NbRoomDistance > 0) {
 		for(long n = 0; n < NbRoomDistance; n++) {
 			for(long m = 0; m < NbRoomDistance; m++) {
-				ROOM_DIST_DATA_SAVE * rdds = (ROOM_DIST_DATA_SAVE *)(dat + pos);
+				ROOM_DIST_DATA_SAVE * rdds = reinterpret_cast<ROOM_DIST_DATA_SAVE *>(dat + pos);
 				pos += sizeof(ROOM_DIST_DATA_SAVE);
 				Vec3f start;
 				Vec3f end;
@@ -4239,37 +4238,30 @@ static bool FastSceneSave(const string & partial_path) {
 	// Now Saving Whole Buffer
 	uh->uncompressedsize = pos - compressedstart;
 	
-	FileHandle handle = FileOpenWrite(file);
-	if(!handle) {
-		free(dat);
+	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	if(!ofs.is_open()) {
+		delete[] dat;
 		return false;
 	}
 	
-	if(FileWrite(handle, dat, compressedstart) != compressedstart) {
-		free(dat);
+	if(ofs.write(dat, compressedstart).fail()) {
+		delete[] dat;
 		return false;
 	}
 	
 	size_t compressedSize;
-	char * compressed;
-	compressed = implodeAlloc((char *)(dat + compressedstart), pos - compressedstart, compressedSize);
+	char * compressed = implodeAlloc(dat + compressedstart, pos - compressedstart, compressedSize);
+	delete[] dat;
 	if(!compressed) {
 		LogError << "error compressing scene";
-		free(dat);
 		return false;
 	}
 	
-	if((size_t)FileWrite(handle, compressed, compressedSize) != compressedSize) {
-		FileClose(handle);
-		free(dat);
-		return false;
-	}
+	ofs.write(compressed, compressedSize);
 	
 	delete[] compressed;
-	FileClose(handle);
-	free(dat);
 	
-	return true;
+	return !ofs.fail();
 }
 
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
