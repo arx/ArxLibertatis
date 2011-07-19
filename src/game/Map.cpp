@@ -29,6 +29,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include <boost/filesystem/fstream.hpp>
+
 #include "core/Core.h"
 
 #include "game/Levels.h"
@@ -42,6 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+
+namespace fs = boost::filesystem;
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
@@ -520,12 +524,11 @@ float oldposx,oldposz;
 
 	this->surfacetemp->Unlock(NULL);
 
-	FileHandle f = FileOpenWrite(name);
-	FileWrite(f, &bm, sizeof(BITMAPFILEHEADER));
-	FileWrite(f, &bi, sizeof(BITMAPINFO) - 4);
-	FileWrite(f, mem, tailleraw);
-	FileClose(f);
-
+	fs::ofstream f(name, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	fwrite(f, bm);
+	fwrite(f, &bi, sizeof(BITMAPINFO) - 4);
+	fwrite(f, mem, tailleraw);
+	
 	free((void*)mem);
 	SAFE_RELEASE(this->surfacetemp);
 
