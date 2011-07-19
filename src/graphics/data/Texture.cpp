@@ -304,7 +304,7 @@ bool TextureContainer::LoadFile(const std::string& strPathname)
 	m_texName = strPathname;
 	
 	std::string tempPath = m_texName;
-	bool foundPath = resources->getFile(SetExt(tempPath, ".png"));
+	bool foundPath = resources->getFile(SetExt(tempPath, ".png")) != NULL;
 	foundPath = foundPath || resources->getFile(SetExt(tempPath, ".jpg"));
 	foundPath = foundPath || resources->getFile(SetExt(tempPath, ".jpeg"));
 	foundPath = foundPath || resources->getFile(SetExt(tempPath, ".bmp"));
