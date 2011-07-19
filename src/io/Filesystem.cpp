@@ -38,6 +38,17 @@ using std::string;
 
 namespace fs = boost::filesystem;
 
+typedef void * FileHandle;
+
+FileHandle FileOpenRead(const std::string& name);
+FileHandle FileOpenWrite(const std::string& name);
+FileHandle FileOpenReadWrite(const std::string& name);
+long FileClose(FileHandle h);
+long FileRead(FileHandle h, void * adr, size_t size);
+long FileWrite(FileHandle h, const void * adr, size_t size);
+long FileSeek(FileHandle handle, int offset, long mode);
+long FileTell(FileHandle handle);
+
 long KillAllDirectory(const std::string& path) {
 	LogInfo << "KillAllDirectory "<< path;
 	

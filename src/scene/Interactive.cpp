@@ -65,6 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
+#include <boost/filesystem/operations.hpp>
+
 #include "ai/Paths.h"
 
 #include "animation/Animation.h"
@@ -116,6 +118,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::string;
+
+namespace fs = boost::filesystem;
 
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;
@@ -2781,46 +2785,26 @@ void RotateSelectedIO(Anglef * op)
 //*************************************************************************************
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	
-	if ((i < 1) || (i >= inter.nbmax))
+	if(i < 1 || i >= inter.nbmax || !inter.iobj[i]) {
 		return;
-
-	if (inter.iobj[i] != NULL)
-	{
-		//Must KILL dir...
-		if (inter.iobj[i]->scriptload == 0)
-		{
-			if (inter.iobj[i]->ident > 0)
-			{
-				std::string temp = inter.iobj[i]->full_name() + '.';
-
-				if (DirectoryExist(temp))
-				{
-					long _delete = 0;
-					std::string temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
-
-					if (flag & FLAG_NOCONFIRM)
-					{
-						_delete = 1;
-					}
-					else if (OKBox(temp3, "WARNING"))
-					{
-						_delete = 1;
-					}
-
-					if (flag & FLAG_DONTKILLDIR) _delete = 0;
-
-					if (_delete)
-					{
-						temp += "/";
-						KillAllDirectory(temp);
-					}
-				}
-			}
-		}
-
-		ReleaseInter(inter.iobj[i]);
-		inter.iobj[i] = NULL;
 	}
+	
+	//Must KILL dir...
+	if(!(flag & FLAG_DONTKILLDIR) && inter.iobj[i]->scriptload == 0 && inter.iobj[i]->ident > 0) {
+		
+		fs::path dir = inter.iobj[i]->full_name();
+		
+		if(fs::is_directory(dir)) {
+			
+			string message = "Really remove Directory & Directory Contents ?\n\n" + dir.string();
+			if((flag & FLAG_NOCONFIRM) || OKBox(message, "WARNING")) {
+				fs::remove_all(dir);
+			}
+			
+		}
+	}
+	
+	ReleaseInter(inter.iobj[i]), inter.iobj[i] = NULL;
 }
 
 void DeleteSelectedIO()

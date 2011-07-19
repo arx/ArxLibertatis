@@ -43,18 +43,10 @@ typedef void * FileHandle;
 
 long KillAllDirectory(const std::string& path);
 
-bool FileExist(const std::string& name);
 bool DirectoryExist(const std::string & name);
-FileHandle FileOpenRead(const std::string& name);
-FileHandle FileOpenWrite(const std::string& name);
-FileHandle FileOpenReadWrite(const std::string& name);
-long FileClose(FileHandle h);
-long FileRead(FileHandle h, void * adr, size_t size);
-long FileWrite(FileHandle h, const void * adr, size_t size);
+bool FileExist(const std::string& name);
 void * FileLoadMalloc(const std::string& name, size_t * sizeLoaded = 0);
 void * FileLoadMallocZero(const std::string& name, size_t * sizeLoaded = 0);
-long FileSeek(FileHandle handle, int offset, long mode);
-long FileTell(FileHandle handle);
 bool FileDelete(const std::string & file);
 bool FileMove(const std::string & oldname, const std::string & newname);
 bool CreateFullPath(const std::string & path);
