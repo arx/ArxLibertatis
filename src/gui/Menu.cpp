@@ -61,13 +61,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 #include <iterator>
-
-#include <windows.h>
+#include <iomanip>
 
 #ifndef DIRECTINPUT_VERSION
 	#define DIRECTINPUT_VERSION 0x0700
 #endif
 #include <dinput.h>
+
+#include <boost/filesystem/operations.hpp>
 
 #include "Configure.h"
 
@@ -108,6 +109,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 using std::istringstream;
+
+namespace fs = boost::filesystem;
 
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
@@ -163,32 +166,13 @@ long SP_HEAD = 0;
  
 std::vector<SaveGame> save_l;
 
-int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
-	if(a.stime.wYear != b.stime.wYear) {
-		return (a.stime.wYear > b.stime.wYear);
-	} else 	if(a.stime.wMonth != b.stime.wMonth) {
-		return (a.stime.wMonth > b.stime.wMonth);
-	} else 	if(a.stime.wDay != b.stime.wDay) {
-		return (a.stime.wDay > b.stime.wDay);
-	} else 	if(a.stime.wHour != b.stime.wHour) {
-		return (a.stime.wHour > b.stime.wHour);
-	} else 	if(a.stime.wMinute != b.stime.wMinute) {
-		return (a.stime.wMinute > b.stime.wMinute);
-	} else 	if(a.stime.wSecond != b.stime.wSecond) {
-		return (a.stime.wSecond > b.stime.wSecond);
-	}
-	return (a.stime.wMilliseconds > b.stime.wMilliseconds);
-}
-
-bool operator==(const SYSTEMTIME & a, const SYSTEMTIME & b) {
-	return (a.wYear == b.wYear && a.wMonth == b.wMonth && a.wDay == b.wDay && a.wHour == b.wHour && a.wMinute == b.wMinute && a.wSecond == b.wSecond && a.wMilliseconds == b.wMilliseconds);
+static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
+	return (a.stime > b.stime);
 }
 
 void CreateSaveGameList() {
 	
 	LogDebug << "CreateSaveGameList";
-	
-	string path = "save/save*";
 	
 	if(save_l.empty()) {
 		save_l.resize(1);
@@ -205,30 +189,25 @@ void CreateSaveGameList() {
 		found[i] = false;
 	}
 	
-	WIN32_FIND_DATA fdata;
-	LogDebug << "looking for " << path;
-	
-	HANDLE h;
-	if((h = FindFirstFile(path.c_str(), &fdata)) == INVALID_HANDLE_VALUE) {
-		LogInfo << "no save files found";
-		save_l.resize(1);
-	}
-	
 	bool newSaves = false;
 	
-	do {
-		if(!(fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || fdata.cFileName[0] == '.') {
+	size_t maxlength = 0;
+	
+	fs::directory_iterator end;
+	for(fs::directory_iterator it("save"); it != end; it++) {
+		
+		const fs::path & path = it->path();
+		string dirname = path.leaf().string();
+		
+		if(dirname.compare(0, 4, "save") || !fs::is_directory(path)) {
 			continue;
 		}
 		
-		istringstream iss(fdata.cFileName + 4);
+		istringstream iss(dirname.substr(4));
 		long num;
 		iss >> num;
 		
-		SYSTEMTIME stime;
-		FILETIME fTime;
-		FileTimeToLocalFileTime(&fdata.ftLastWriteTime, &fTime);
-		FileTimeToSystemTime(&fTime, &stime);
+		std::time_t stime = fs::last_write_time(path / "gsave.sav");
 		
 		size_t index = (size_t)-1;
 		for(size_t i = 1; i <= oldCount; i++) {
@@ -241,15 +220,12 @@ void CreateSaveGameList() {
 			continue;
 		}
 		
-		std::stringstream oss;
-		oss << "save/" << fdata.cFileName << "/";
-		
 		string name;
 		float version;
 		long level;
 		unsigned long ignored;
-		if(ARX_CHANGELEVEL_GetInfo(oss.str(), name, version, level, ignored) == -1) {
-			LogWarning << "unable to get save file info for " << oss.str();
+		if(ARX_CHANGELEVEL_GetInfo(path, name, version, level, ignored) == -1) {
+			LogWarning << "unable to get save file info for " << path;
 			continue;
 		}
 		
@@ -272,23 +248,41 @@ void CreateSaveGameList() {
 		save->stime = stime;
 		save->num = num;
 		
-		string thumbnail = oss.str() + "gsave.bmp";
-		resources->removeFile(thumbnail);
-		resources->addFiles(thumbnail, thumbnail);
+		fs::path thumbnail = path / "gsave.bmp";
+		resources->removeFile(thumbnail.string());
+		resources->addFiles(thumbnail, thumbnail.string());
 		
-		LogInfo << "found " << fdata.cFileName << ": \""
-			        << name << "\"   v" << version
-			        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
-			        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
-			        << ":" << stime.wMilliseconds;
-			
-	} while(FindNextFile(h, &fdata));
+		maxlength = std::max(name.length(), maxlength);
+		
+		const struct tm & t = *localtime(&stime);
+		std::ostringstream oss;
+		oss << std::setfill('0') << (t.tm_year + 1900) << "-" << std::setw(2) << (t.tm_mon + 1) << "-" << std::setw(2) << t.tm_mday << "   " << std::setfill(' ') << std::setw(2) << t.tm_hour << ":" << std::setfill('0') << std::setw(2) << t.tm_min << ":" << std::setw(2) << t.tm_sec;
+		save->time = oss.str();
+	}
 	
-	for(size_t i = oldCount; i > 0; i--) {
-		if(!found[i - 1]) {
-			save_l.erase(save_l.begin() + i);
+	// print new savegames
+	for(size_t i = oldCount + 1; i < save_l.size(); i++) {
+		std::ostringstream oss;
+		if(save_l[i].name == "ARX_QUICK_ARX" || save_l[i].name == "ARX_QUICK_ARX1") {
+			oss << "(quicksave)" << std::setw(maxlength - 8) << ' ';
+		} else {
+			oss << "\"" << save_l[i].name << "\"" << std::setw(maxlength - save_l[i].name.length() + 1) << ' ';
+		}
+		
+		oss << save_l[i].time << "   v" << save_l[i].version;
+		LogInfo << "found save " << oss.str();
+	}
+	
+	size_t o = 1;
+	for(size_t i = 1; i < save_l.size(); i++) {
+		if(i > oldCount || found[i - 1]) {
+			if(o != i) {
+				save_l[o] = save_l[i];
+			}
+			o++;
 		}
 	}
+	save_l.resize(o);
 	
 #ifndef HAVE_DYNAMIC_STACK_ALLOCATION
 	delete[] found;
@@ -299,7 +293,6 @@ void CreateSaveGameList() {
 	}
 	
 	LogDebug << "found " << (save_l.size()-1) << " savegames";
-	FindClose(h);
 	
 }
 

@@ -76,7 +76,7 @@ void ARX_CHANGELEVEL_MakePath();
 
 void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle);
 
-long ARX_CHANGELEVEL_GetInfo(const std::string & path, std::string & name, float & version, long & level, unsigned long & time);
+long ARX_CHANGELEVEL_GetInfo(const boost::filesystem::path & path, std::string & name, float & version, long & level, unsigned long & time);
 
 /**
  * Load a GameSave

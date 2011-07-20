@@ -331,6 +331,7 @@ void ARX_Changelevel_CurGame_Open() {
 	fs::path savefile = CurGamePath / "gsave.sav";
 	if(!fs::exists(savefile)) {
 		// TODO this is normal when starting a new game
+		return;
 	}
 	
 	GLOBAL_pSaveB = new SaveBlock(savefile);
@@ -3265,7 +3266,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	return 1;
 }
 
-long ARX_CHANGELEVEL_GetInfo(const string & path, string & name, float & version, long & level, unsigned long & time) {
+long ARX_CHANGELEVEL_GetInfo(const fs::path & path, string & name, float & version, long & level, unsigned long & time) {
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 

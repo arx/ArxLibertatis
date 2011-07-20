@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <vector>
+#include <ctime>
 
 #include "graphics/data/Texture.h"
 #include "window/Input.h"
@@ -107,7 +108,9 @@ struct SaveGame {
 	std::string name;
 	long level;
 	float version;
-	SYSTEMTIME stime;
+	std::time_t stime;
+	
+	std::string time;
 	
 	SaveGame()
 	: num(0), level(0), version(0)

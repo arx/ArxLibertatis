@@ -36,6 +36,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 #include <dinput.h>
 
+#include <boost/filesystem/operations.hpp>
+
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -155,119 +157,47 @@ static TextureContainer *pTextureLoadRender=NULL;
 
 int iTimeToDrawD7=-3000;
 
-//-----------------------------------------------------------------------------
-// Local functions
+static const size_t MAX_QUICK_SAVES = 2; // TODO(case-sensitive) move to config
 
-namespace
-{
-
-bool isTimeBefore(const SYSTEMTIME& s1, const SYSTEMTIME& s2)
-{
-	if (s1.wYear < s2.wYear) return true;
-	if (s1.wYear > s2.wYear) return false;
-	if (s1.wMonth < s2.wMonth) return true;
-	if (s1.wMonth > s2.wMonth) return false;
-	if (s1.wDay < s2.wDay) return true;
-	if (s1.wDay > s2.wDay) return false;
-	if (s1.wHour < s2.wHour) return true;
-	if (s1.wHour > s2.wHour) return false;
-	if (s1.wMinute < s2.wMinute) return true;
-	if (s1.wMinute > s2.wMinute) return false;
-	if (s1.wSecond < s2.wSecond) return true;
-	if (s1.wSecond > s2.wSecond) return false;
-	if (s1.wMilliseconds < s2.wMilliseconds) return true;
-	if (s1.wMilliseconds > s2.wMilliseconds) return false;
-	return true;
-}
-
-} // \namespace
-
-//-----------------------------------------------------------------------------
-
-void ARX_QuickSave()
-{
-	if( REFUSE_GAME_RETURN ) return;
-
-	CreateSaveGameList();
-
-	int iOldGamma;
-
-	ARXMenu_Options_Video_GetGamma( iOldGamma );
-	ARXMenu_Options_Video_SetGamma( ( iOldGamma - 1 ) < 0 ? 0 : ( iOldGamma - 1 ) );
-
-	ARX_SOUND_MixerPause( ARX_SOUND_MixerGame );
-
-	bool        bFound0        =    false;
-	bool        bFound1        =    false;
-
-	size_t            iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	size_t            iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	SYSTEMTIME    sTime0;
-	SYSTEMTIME    sTime1;
-	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
-	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND and sTime1 will not be used)
-
-
-	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
-	{
-		if(save_l[iI].name == QUICK_SAVE_ID)
-		{
-			bFound0     = true;
-			sTime0      = save_l[iI].stime;
-			iNbSave0    = iI;
-		}
-		else if(save_l[iI].name ==  QUICK_SAVE_ID1)
-		{
-			bFound1     = true;
-			sTime1      = save_l[iI].stime;
-			iNbSave1    = iI;
-		}
-	}
-
-	if ( bFound0 && bFound1 &&
-		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
-		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
-	{
-		size_t iSave;
-		
-		if ( isTimeBefore( sTime0, sTime1 ) )
-			iSave = iNbSave0;
-		else
-			iSave = iNbSave1;
-
-		UpdateSaveGame( iSave );
-		ARXMenu_Options_Video_SetGamma( iOldGamma );
-		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
+void ARX_QuickSave() {
+	
+	if(REFUSE_GAME_RETURN) {
 		return;
 	}
-
-	const char    tcSrc[256] = "sct_0.bmp";
-	const char    tcDst[256] = "sct_1.bmp";
-	CopyFile( tcSrc, tcDst, false );
-
-	if ( bFound0 == false )
-	{
+	
+	CreateSaveGameList();
+	
+	int iOldGamma;
+	ARXMenu_Options_Video_GetGamma(iOldGamma);
+	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
+	
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
+	
+	size_t num = 0;
+	std::time_t time = std::numeric_limits<std::time_t>::max();
+	
+	size_t nfound = 0;
+	
+	// Find the oldest quicksave.
+	for(size_t i = 1; i < save_l.size(); i++) {
+		if(save_l[i].name == QUICK_SAVE_ID || save_l[i].name == QUICK_SAVE_ID1) {
+			nfound++;
+			if(save_l[i].stime < time) {
+				num = i, time = save_l[i].stime;
+			}
+		}
+	}
+	if(nfound < MAX_QUICK_SAVES) {
+		num = 0;
+	}
+	if(num == 0) {
 		save_l[0].name = QUICK_SAVE_ID;
-		UpdateSaveGame( 0 );
-		ARXMenu_Options_Video_SetGamma( iOldGamma );
-		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
-		CopyFile( tcDst, tcSrc, false );
-		DeleteFile( tcDst );
 	}
-
-	if ( bFound1 == false )
-	{
-		save_l[0].name = QUICK_SAVE_ID1;
-		UpdateSaveGame( 0 );
-		ARXMenu_Options_Video_SetGamma( iOldGamma );
-		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
-	}
-
-	DeleteFile( tcSrc );
-	DeleteFile( tcDst );
+	
+	UpdateSaveGame(num);
+	ARXMenu_Options_Video_SetGamma(iOldGamma);
+	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 }
-
-//-----------------------------------------------------------------------------
 
 void ARX_DrawAfterQuickLoad()
 {
@@ -302,93 +232,43 @@ void ARX_DrawAfterQuickLoad()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-bool ARX_QuickLoad()
-{
+bool ARX_QuickLoad() {
+	
 	CreateSaveGameList();
-
-	bool bFound0 = false;
-	bool bFound1 = false;
-
-	size_t iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	size_t iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	SYSTEMTIME sTime0;
-	SYSTEMTIME sTime1;
-	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
-	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave1>0 (iNbSave1==0 will so mean NOTFOUND ans sTime1 will not be used)
-
-	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
-	{
-		if(save_l[iI].name == QUICK_SAVE_ID)
-		{
-			bFound0     = true;
-			sTime0      = save_l[iI].stime;
-			iNbSave0    = iI;
-		}
-		else if(save_l[iI].name == QUICK_SAVE_ID1)
-		{
-			bFound1     = true;
-			sTime1      = save_l[iI].stime;
-			iNbSave1    = iI;
+	
+	// Find the newest quicksave.
+	size_t num = 0;
+	std::time_t time = std::numeric_limits<std::time_t>::min();
+	for(size_t i = 1; i < save_l.size(); i++) {
+		if(save_l[i].stime > time) {
+			if(save_l[i].name == QUICK_SAVE_ID || save_l[i].name == QUICK_SAVE_ID1) {
+				num = i, time = save_l[i].stime;
+			}
 		}
 	}
-
-	ARX_SOUND_MixerPause( ARX_SOUND_MixerGame );
-
-	if ( bFound0 && bFound1 &&
-		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
-		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
-	{
-		size_t iSave;
-
-		if ( isTimeBefore( sTime0, sTime1 ) )
-			iSave = iNbSave1;
-		else
-			iSave = iNbSave0;
-
-		INTRO_NOT_LOADED        =    1;
-		LoadLevelScreen();
-		PROGRESS_BAR_TOTAL        =    238;
-		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
-		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( save_l[iSave].level );
-		DanaeClearLevel();
-		ARX_CHANGELEVEL_Load( save_l[iSave].num );
-		REFUSE_GAME_RETURN        =    0;
-		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
-		return true;
+	
+	if(num == 0) {
+		// No quicksave found!
+		return false;
 	}
-
-	if ( bFound0 != false )
-	{
-		INTRO_NOT_LOADED        =    1;
-		LoadLevelScreen();
-		PROGRESS_BAR_TOTAL        =    238;
-		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
-		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( save_l[iNbSave0].level );
-		DanaeClearLevel();
-		ARX_CHANGELEVEL_Load( save_l[iNbSave0].num );
-		REFUSE_GAME_RETURN        =    0;
-		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
-		return true;
-	}
-
-	if ( bFound1 != false )
-	{
-		INTRO_NOT_LOADED        =    1;
-		LoadLevelScreen();
-		PROGRESS_BAR_TOTAL        =    238;
-		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
-		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( save_l[iNbSave1].level );
-		DanaeClearLevel();
-		ARX_CHANGELEVEL_Load( save_l[iNbSave1].num );
-		REFUSE_GAME_RETURN        =    0;
-		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
-		return true;
-	}
-
-	return false;
+	
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
+	
+	INTRO_NOT_LOADED = 1;
+	LoadLevelScreen();
+	PROGRESS_BAR_TOTAL = 238;
+	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
+	PROGRESS_BAR_COUNT += 1.f;
+	LoadLevelScreen(save_l[num].level);
+	
+	DanaeClearLevel();
+	
+	ARX_CHANGELEVEL_Load(save_l[num].num);
+	
+	REFUSE_GAME_RETURN = 0;
+	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
+	
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -881,23 +761,9 @@ bool Menu2_Render() {
 
 										b2 = true;
 									}
-
-									char tex3[256];
+									
 									tex += "  ";
-									GetDateFormat(    LOCALE_SYSTEM_DEFAULT,
-										0,
-										&save_l[iI].stime,
-										"MMM dd yyyy",
-										tex3,
-										256);
-									tex +=  tex3;
-									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
-										0,
-										&save_l[iI].stime,
-										"   HH:mm",
-										tex3,
-										256);
-									tex += tex3;
+									tex += save_l[iI].time;
 									
 									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
 
@@ -909,24 +775,9 @@ bool Menu2_Render() {
 								{
 									if(iFirst) continue;
 
-									char tex3[256];
-									char tex4[256];
-									strcpy(tex4,"  ");
-									GetDateFormat(    LOCALE_SYSTEM_DEFAULT,
-										0,
-										&save_l[iI].stime,
-										"MMM dd yyyy",
-										tex3,
-										256);
-									strcat(tex4,tex3);
-									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
-										0,
-										&save_l[iI].stime,
-										"   HH:mm",
-										tex3,
-										256);
-									strcat(tex4,tex3);
-									tex += tex4;
+									
+									tex += " ";
+									tex += save_l[iI].time;
 									
 									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
 								}
@@ -1011,27 +862,10 @@ bool Menu2_Render() {
 										if (b2) continue;
 
 										b2 = true;
-									}                                    
+									}
 
-									char tex3[256];
-									char tex4[256];
-									strcpy(tex4,"  ");
-									GetDateFormat(    LOCALE_SYSTEM_DEFAULT,
-										0,
-										&save_l[iI].stime,
-										"MMM dd yyyy",
-										tex3,
-										256);
-									strcat(tex4,tex3);
-									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
-										0,
-										&save_l[iI].stime,
-										"   HH:mm",
-										tex3,
-										256);
-									strcat(tex4,tex3);
-									
-									tex += tex4;
+									tex += "  ";
+									tex += save_l[iI].time;
 									
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, Color(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 									me->SetCheckOff();
@@ -1044,24 +878,8 @@ bool Menu2_Render() {
 								{
 									if(iFirst) continue;
 
-									char tex3[256];
-									char tex4[256];
-									strcpy(tex4,"  ");
-									GetDateFormat(    LOCALE_SYSTEM_DEFAULT,
-										0,
-										&save_l[iI].stime,
-										"MMM dd yyyy",
-										tex3,
-										256);
-									strcat(tex4,tex3);
-									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
-										0,
-										&save_l[iI].stime,
-										"   HH:mm",
-										tex3,
-										256);
-									strcat(tex4,tex3);
-									tex += tex4;
+									tex += "  ";
+									tex += save_l[iI].time;
 									
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 								}
