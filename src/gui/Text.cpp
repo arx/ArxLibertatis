@@ -58,6 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 #include <sstream>
 
+#include <boost/filesystem/operations.hpp>
+
 #include "core/Localisation.h"
 #include "core/Core.h"
 #include "core/Unicode.hpp"
@@ -75,6 +77,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 using std::string;
+
+namespace fs = boost::filesystem;
 
 //-----------------------------------------------------------------------------
 TextManager * pTextManage;
@@ -313,7 +317,7 @@ Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned in
 
 string getFontFile() {
 	string tx= "misc" PATH_SEPERATOR_STR "arx.ttf";
-	if(!FileExist(tx.c_str())) {
+	if(!fs::exists(tx.c_str())) {
 		tx = "misc" PATH_SEPERATOR_STR "arx_default.ttf"; // Full path
 	}
 	return tx;
