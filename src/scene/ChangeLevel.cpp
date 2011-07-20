@@ -174,13 +174,11 @@ fs::path GameSavePath;
 
 static void ARX_GAMESAVE_CreateNewInstance() {
 	
-	long num = 1;
-	
 	fs::path savedir("save");
 	
 	arx_assert(fs::is_directory(savedir));
 	
-	for(;;) {
+	for(long num = 1; ; num++) {
 		
 		std::ostringstream oss;
 		oss << "save" << std::setfill('0') << std::setw(4) << num;
@@ -193,8 +191,6 @@ static void ARX_GAMESAVE_CreateNewInstance() {
 			GameSavePath = path;
 			return;
 		}
-		
-		num++;
 	}
 }
 
@@ -301,22 +297,23 @@ void ARX_GAMESAVE_MakePath() {
 
 void ARX_CHANGELEVEL_CreateNewInstance() {
 	
-	char testpath[256];
-	long num = 1;
+	fs::path savedir("save");
 	
-	for (;;)
-	{
-		sprintf(testpath, "save/cur%04ld", num);
-
-		if (!DirectoryExist(testpath))
-		{
-			CreateDirectory(testpath, NULL);
-			LAST_CHINSTANCE = num;
-			ARX_CHANGELEVEL_MakePath();
+	arx_assert(fs::is_directory(savedir));
+	
+	for(long num = 1; ; num++) {
+		
+		std::ostringstream oss;
+		oss << "cur" << std::setfill('0') << std::setw(4) << LAST_CHINSTANCE;
+		
+		fs::path path = savedir / oss.str();
+		
+		if(!fs::exists(path)) {
+			fs::create_directories(path);
+			CURRENT_GAME_INSTANCE = num;
+			GameSavePath = path;
 			return;
 		}
-
-		num++;
 	}
 }
  
