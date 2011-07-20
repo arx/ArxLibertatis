@@ -104,6 +104,8 @@ extern ARX_MENU_DATA ARXmenu;
 
 struct SaveGame {
 	
+	bool quicksave;
+	
 	long num;
 	std::string name;
 	long level;

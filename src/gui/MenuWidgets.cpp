@@ -730,64 +730,45 @@ bool Menu2_Render() {
 					me = new CMenuCheckButton(-1, 0, 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
+					
+					string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
+					
+					// TODO make this list scrollable
+					// TODO align the date part to the right!
+					
 					{
-						//LOAD
-						int iFirst=2;
-						bool b1 = false;
-						bool b2 = false;
-
-						while(iFirst>=0)
-						{
-							for(size_t iI = 1; iI < save_l.size(); iI++) {
-								std::string tex = save_l[iI].name;
-
-								CMenuElementText *me02;
-
-								if(tex == QUICK_SAVE_ID || tex == QUICK_SAVE_ID1)
-								{
-									if(!iFirst || (b1 && b2)) continue;
-
-									tex = getLocalised("system_menus_main_quickloadsave", "Quick");
-
-									if (tex == QUICK_SAVE_ID)
-									{
-										if (b1) continue;
-
-										b1 = true;
-									}
-									else if (tex == QUICK_SAVE_ID1)
-									{
-										if (b2) continue;
-
-										b2 = true;
-									}
-									
-									tex += "  ";
-									tex += save_l[iI].time;
-									
-									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
-
-									me02->lData=iI;
-									pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me02);
-									break;
-								}
-								else
-								{
-									if(iFirst) continue;
-
-									
-									tex += " ";
-									tex += save_l[iI].time;
-									
-									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
-								}
-
-								me02->lData=iI;
-								pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me02);
-							}
-
-							iFirst--;
+					
+					size_t quicksaveNum = 0;
+					
+					for(size_t i = 1; i < save_l.size(); i++) {
+						
+						if(!save_l[i].quicksave) {
+							continue;
 						}
+						
+						std::ostringstream text;
+						text << quicksaveName << ' ' << ++quicksaveNum << "   " << save_l[i].time;
+						
+						me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), fPosX1, 0.f, lColor, 0.8f, NOP);
+						
+						me->lData = i;
+						pWindowMenuConsole->AddMenuCenterY(me);
+					}
+					
+					// regular quicksaves
+					for(size_t i = 1; i < save_l.size(); i++) {
+						
+						if(save_l[i].quicksave) {
+							continue;
+						}
+						
+						string text = save_l[i].name +  "   " + save_l[i].time;
+						
+						me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, fPosX1, 0.f, lColor, 0.8f, NOP);
+						
+						me->lData = i;
+						pWindowMenuConsole->AddMenuCenterY(me);
+					}
 
 						me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 							me01->SetCheckOff();
@@ -830,66 +811,38 @@ bool Menu2_Render() {
 					szMenuText = QUICK_SAVE_ID;
 					szMenuText1 = QUICK_SAVE_ID1;
 
-					//SAVE
-					int iFirst=2;
-					bool b1 = false;
-					bool b2 = false;
-
-					while(iFirst>=0)
-					{
-						if(save_l.size()!=1)
-						{
-							for(size_t iI = 1; iI < save_l.size(); iI++) {
-								std::string tex = save_l[iI].name;
-								std::string tex2;
-								tex2.resize(tex.size());
-								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
-
-								if(!szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
-								{
-									if(!iFirst || (b1 && b2)) continue;
-
-									tex = getLocalised( "system_menus_main_quickloadsave", "Quick" );
-
-									if ( szMenuText.find( tex2 ) != std::string::npos )
-									{
-										if (b1) continue;
-
-										b1 = true;
-									}
-									else if ( szMenuText1.find( tex2 ) != std::string::npos )
-									{
-										if (b2) continue;
-
-										b2 = true;
-									}
-
-									tex += "  ";
-									tex += save_l[iI].time;
-									
-									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, Color(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
-									me->SetCheckOff();
-
-									me->lData=iI;
-									pWindowMenuConsole->AddMenuCenterY(me);
-									break;
-								}
-								else
-								{
-									if(iFirst) continue;
-
-									tex += "  ";
-									tex += save_l[iI].time;
-									
-									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
-								}
-
-								me->lData=iI;
-								pWindowMenuConsole->AddMenuCenterY(me);
-							}
+					size_t quicksaveNum = 0;
+					
+					// quicksaves
+					for(size_t i = 1; i < save_l.size(); i++) {
+						
+						if(!save_l[i].quicksave) {
+							continue;
 						}
-
-						iFirst--;
+						
+						std::ostringstream text;
+						text << quicksaveName << ' ' << ++quicksaveNum << "   " << save_l[i].time;
+						
+						me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), fPosX1, 0.f, Color(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+						me->SetCheckOff();
+						
+						me->lData = i;
+						pWindowMenuConsole->AddMenuCenterY(me);
+					}
+					
+					// regular quicksaves
+					for(size_t i = 1; i < save_l.size(); i++) {
+						
+						if(save_l[i].quicksave) {
+							continue;
+						}
+						
+						string text = save_l[i].name +  "   " + save_l[i].time;
+						
+						me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+						
+						me->lData = i;
+						pWindowMenuConsole->AddMenuCenterY(me);
 					}
 
 					pTex = TextureContainer::Load("graph/interface/icons/arx_logo_08.bmp");

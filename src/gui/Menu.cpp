@@ -241,12 +241,13 @@ void CreateSaveGameList() {
 			save = &save_l[index];
 		}
 		
-		
 		save->name = name;
 		save->version = version;
 		save->level = level;
 		save->stime = stime;
 		save->num = num;
+		
+		save->quicksave = (name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1");
 		
 		fs::path thumbnail = path / "gsave.bmp";
 		resources->removeFile(thumbnail.string());
@@ -263,7 +264,7 @@ void CreateSaveGameList() {
 	// print new savegames
 	for(size_t i = oldCount + 1; i < save_l.size(); i++) {
 		std::ostringstream oss;
-		if(save_l[i].name == "ARX_QUICK_ARX" || save_l[i].name == "ARX_QUICK_ARX1") {
+		if(save_l[i].quicksave) {
 			oss << "(quicksave)" << std::setw(maxlength - 8) << ' ';
 		} else {
 			oss << "\"" << save_l[i].name << "\"" << std::setw(maxlength - save_l[i].name.length() + 1) << ' ';
