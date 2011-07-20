@@ -30,6 +30,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 
 #include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+
 #include <windows.h>
 
 #include "io/Logger.h"
@@ -331,4 +333,3 @@ char * read_file(const boost::filesystem::path & path, size_t & size) {
 	
 	return buf;
 }
-

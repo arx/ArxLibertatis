@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 #include <set>
+#include <iomanip>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -1322,14 +1323,12 @@ int main(int argc, char ** argv) {
 	
 	ScriptEvent::init();
 	
-	//delete current for clean save.........
-	char txttemp[256];
-
+	// delete current for clean save.........
 	for(unsigned uiNum=0; uiNum < 20; ++uiNum) {
-		sprintf(txttemp,"save/cur%04d/",uiNum);
-		if(DirectoryExist(txttemp)) {
-			KillAllDirectory(txttemp);
-		}
+		std::ostringstream oss;
+		oss << "save/cur" << std::setfill('0') << std::setw(4) << uiNum;
+		fs::path dir = oss.str();
+		fs::remove_all(dir);
 	}
 
 	ARX_INTERFACE_NoteInit();
@@ -1460,14 +1459,13 @@ int main(int argc, char ** argv) {
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
 	}
-
+	
 	if(LAST_CHINSTANCE != -1) {
 		ARX_CHANGELEVEL_MakePath();
 		LogInfo << "Clearing current game directory " << CurGamePath;
-		KillAllDirectory(CurGamePath);
-		CreateDirectory(CurGamePath,NULL);
+		fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
 	}
-
+	
 	Project.improve=0;
 	Project.interpolatemouse = 0;
 

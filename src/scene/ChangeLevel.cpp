@@ -155,7 +155,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 long LAST_CHINSTANCE = 1; // temporary MUST return to -1;
-char CurGamePath[256];
+
+fs::path CurGamePath;
+
 float ARX_CHANGELEVEL_DesiredTime = 0;
 long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
@@ -167,7 +169,8 @@ ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
 
 long CURRENT_GAME_INSTANCE = -1;
-char GameSavePath[256];
+
+fs::path GameSavePath;
 
 static void ARX_GAMESAVE_CreateNewInstance() {
 	
@@ -187,6 +190,7 @@ static void ARX_GAMESAVE_CreateNewInstance() {
 		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / "gsave.sav"))) {
 			fs::create_directories(path);
 			CURRENT_GAME_INSTANCE = num;
+			GameSavePath = path;
 			return;
 		}
 		
@@ -276,13 +280,23 @@ long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
 }
 
 void ARX_CHANGELEVEL_MakePath() {
-	sprintf(CurGamePath, "save/cur%04ld/", LAST_CHINSTANCE);
-	CreateFullPath(CurGamePath);
+	
+	std::ostringstream oss;
+	oss << "save/cur" << std::setfill('0') << std::setw(4) << LAST_CHINSTANCE;
+	
+	CurGamePath = oss.str();
+	
+	fs::create_directories(CurGamePath);
 }
 
 void ARX_GAMESAVE_MakePath() {
-	sprintf(GameSavePath, "save/save%04ld/", CURRENT_GAME_INSTANCE);
-	CreateFullPath(GameSavePath);
+	
+	std::ostringstream oss;
+	oss << "save/save" << std::setfill('0') << std::setw(4) << CURRENT_GAME_INSTANCE;
+	
+	GameSavePath = oss.str();
+	
+	fs::create_directories(GameSavePath);
 }
 
 void ARX_CHANGELEVEL_CreateNewInstance() {
@@ -317,18 +331,14 @@ void ARX_Changelevel_CurGame_Open() {
 		return;
 	}
 	
-	string savefile = CurGamePath;
-	savefile += "gsave.sav";
+	fs::path savefile = CurGamePath / "gsave.sav";
+	if(!fs::exists(savefile)) {
+		// TODO this is normal when starting a new game
+	}
 	
-	if(FileExist(savefile)) {
-		
-		GLOBAL_pSaveB = new SaveBlock(savefile);
-		if(!GLOBAL_pSaveB->open()) {
-			LogError << "cannot read cur game save file" << savefile;
-		}
-		
-	} else {
-		// this is normal when starting a new game
+	GLOBAL_pSaveB = new SaveBlock(savefile);
+	if(!GLOBAL_pSaveB->open()) {
+		LogError << "cannot read cur game save file" << savefile;
 	}
 }
 
@@ -369,7 +379,6 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	}
 	
 	FORBID_SAVE = 1;
-	// CurGamePath contains current game temporary savepath
 	long num = GetLevelNumByName("level" + level);
 	
 	if ((FINAL_COMMERCIAL_DEMO)
@@ -478,9 +487,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 
 	ForcePlayerInventoryObjectLevel(newnum);
 
-	char sfile[256];
-	sprintf(sfile, "%sgsave.sav", CurGamePath);
-	_pSaveBlock = new SaveBlock(sfile);
+	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
 
 	if(!_pSaveBlock->open(true)) {
 		LogError << "Error writing to save block.";
@@ -2885,7 +2892,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	CURRENT_GAME_INSTANCE = instance;
 	ARX_CHANGELEVEL_MakePath();
 	
-	if(!DirectoryExist(CurGamePath)) {
+	if(!fs::is_directory(CurGamePath)) {
 		LogError << "Cannot Load this game: Directory Not Found: " << CurGamePath;
 		ReleaseGaids();
 		return false;
@@ -2905,10 +2912,9 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	// Now we can load our things...
 	std::ostringstream loadfile;
 	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
-	string sfile = string(CurGamePath) + "gsave.sav";
 	
 	// Open Saveblock for read
-	_pSaveBlock = new SaveBlock(sfile);
+	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
 	
 	// first time in this level ?
 	long FirstTime;
@@ -3058,71 +3064,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	return true;
 }
 
-// copy a dir (recursive sub reps) in another, creating reps
-// overwrites files for update
-// TODO(case-sensitive) move to Filesystem
-static void CopyDirectory(char * _lpszSrc, char * _lpszDest) {
-	CreateDirectory(_lpszDest, NULL);
-
-	// WIN32_FIND_DATA FindFileData;
-	HANDLE hFind;
-
-	LogDebug << "CopyDirectory " << _lpszSrc << " to " << _lpszDest;
-
-	char path[256];
-	ZeroMemory(path, 256);
-	strcpy(path, _lpszSrc);
-	strcat(path, "*.*");
-
-	char tTemp[sizeof(WIN32_FIND_DATA)+2];
-	WIN32_FIND_DATA * FindFileData = (WIN32_FIND_DATA *)tTemp;
-
-	hFind = FindFirstFile(path, FindFileData);
-
-	do
-	{
-		if (hFind != INVALID_HANDLE_VALUE)
-		{
-			if (FindFileData->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			{
-				if (strcmp(FindFileData->cFileName, ".") == 0) continue;
-
-				if (strcmp(FindFileData->cFileName, "..") == 0) continue;
-
-				char s[256];
-				char d[256];
-				ZeroMemory(s, 256);
-				ZeroMemory(d, 256);
-				strcpy(s, _lpszSrc);
-				strcpy(d, _lpszDest);
-				strcat(s, FindFileData->cFileName);
-				strcat(d, FindFileData->cFileName);
-				strcat(s, "/");
-				strcat(d, "/");
-				CopyDirectory(s, d);
-			}
-			else
-			{
-				char s[256];
-				char d[256];
-				ZeroMemory(s, 256);
-				ZeroMemory(d, 256);
-				strcpy(s, _lpszSrc);
-				strcpy(d, _lpszDest);
-				strcat(s, FindFileData->cFileName);
-				strcat(d, FindFileData->cFileName);
-				LogDebug << "copy file " << s << " to " << d;
-				CopyFile(s, d, false);
-			}
-		}
-	}
-	while (FindNextFile(hFind, FindFileData) > 0);
-
-	if (hFind)
-		FindClose(hFind);
-}
-
-static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const string & path);
+static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const fs::path & path);
 
 long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	
@@ -3153,8 +3095,6 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	ARX_SCRIPT_EventStackExecuteAll();
 	// fill GameSavePath with our savepath.
 	ARX_GAMESAVE_MakePath();
-	// Erase All directory content if overwriting a game
-	CreateDirectory(GameSavePath, NULL);
 
 	if (SecondaryInventory != NULL)
 	{
@@ -3171,15 +3111,13 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 
 	ARX_CHANGELEVEL_MakePath();
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, CURRENTLEVEL);
-	KillAllDirectory(GameSavePath); 
-	CopyDirectory(CurGamePath, GameSavePath);
+	
+	fs::remove_all(GameSavePath), fs::create_directory(GameSavePath); 
+	
+	fs::copy_file(CurGamePath / "gsave.sav", GameSavePath / "gsave.sav");
 
 	//on copie le fichier temporaire bmp dans le repertoire
-	const char tcSrc[] = "sct_0.bmp";
-	char tcDst[256];
-	sprintf(tcDst, "%sgsave.bmp", GameSavePath);
-	CopyFile(tcSrc, tcDst, false);
-	DeleteFile(tcSrc);
+	fs::rename("sct_0.bmp", GameSavePath / "gsave.bmp");
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	memset(&pld, 0, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
@@ -3192,20 +3130,21 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	return 1;
 }
 
-static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const string & path) {
+static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const fs::path & path) {
 	
-	char sfile[256];
-	sprintf(sfile, "%sgsave.sav", path.c_str());
+	if(!fs::is_directory(path)) {
+		return false;
+	}
 	
 	// TODO why use a global here?
 	assert(_pSaveBlock == NULL);
-	_pSaveBlock = new SaveBlock(sfile);
+	_pSaveBlock = new SaveBlock(path / "gsave.sav");
 	// TODO don't load the save block again!
-
-	if (!_pSaveBlock->open(true)) return false;
-
-	if (!DirectoryExist(path)) return false;
-
+	
+	if(!_pSaveBlock->open(true)) {
+		return false;
+	}
+	
 	char * dat = new char[sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA)];
 
 	memcpy(dat, &pld, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
@@ -3224,21 +3163,17 @@ static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LE
 	return true;
 }
 
-static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const string path)
+static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const fs::path & path)
 {
 	// Checks For Directory
-	if (!DirectoryExist(path)) return false;
+	if(!fs::is_directory(path)) {
+		return false;
+	}
 
-	// Open Save Block
-	string savefile = path + "gsave.sav";
-
-	// Get Size
-	std::string loadfile = "pld";
-	
 	size_t size;
-	char * dat = SaveBlock::load(savefile, loadfile, size);
+	char * dat = SaveBlock::load(path / "gsave.sav", "pld", size);
 	if(!dat) {
-		LogError << "Unable to open " << loadfile << " for read...";
+		LogError << "Unable to open pld in " << path / "gsave.sav" << "";
 		return false;
 	}
 
@@ -3283,18 +3218,19 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	CURRENT_GAME_INSTANCE = instance;
 	ARX_GAMESAVE_MakePath();
 	
-	if(!DirectoryExist(GameSavePath)) {
+	if(!fs::is_directory(GameSavePath)) {
 		LogError << "Unknown SavePath: " << GameSavePath;
 		return -1;
 	}
 	
 	// Empty Directory
 	ARX_CHANGELEVEL_MakePath();
-	KillAllDirectory(CurGamePath);
-	CreateDirectory(CurGamePath, NULL);
+	
+	fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
 	
 	// Copy SavePath to Current Game
-	CopyDirectory(GameSavePath, CurGamePath);
+	fs::copy_file(GameSavePath / "gsave.sav", CurGamePath / "gsave.sav");
+	
 	// Retrieves Player LevelData
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, CurGamePath)) {

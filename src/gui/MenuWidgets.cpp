@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 
+#include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
 
@@ -69,6 +70,8 @@ using std::wistringstream;
 using std::min;
 using std::max;
 using std::string;
+
+namespace fs = boost::filesystem;
 
 int newTextureSize;
 int newWidth;
@@ -108,10 +111,6 @@ extern long _EERIEMouseYdep;
 extern float PROGRESS_BAR_TOTAL;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_COUNT;
-
-extern long CURRENT_GAME_INSTANCE;
-extern char GameSavePath[];
-void ARX_GAMESAVE_MakePath();
 
 
 float INTERFACE_RATIO(float a);
@@ -2596,49 +2595,50 @@ void CMenuElementText::RenderMouseOver()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	switch (iID)
-	{
-	case BUTTON_MENUEDITQUEST_LOAD:
-		{
-			CURRENT_GAME_INSTANCE=save_l[lData].num;
+	switch(iID) {
+		
+		case BUTTON_MENUEDITQUEST_LOAD: {
+			
+			CURRENT_GAME_INSTANCE = save_l[lData].num;
 			ARX_GAMESAVE_MakePath();
-			char tTxt[256];
-			sprintf(tTxt,"%sgsave.bmp",GameSavePath);
-			TextureContainer *pTextureTemp=TextureContainer::LoadUI(tTxt);
-
-			if (pTextureTemp != pTextureLoad)
-			{
-				if (pTextureLoad)
+			
+			fs::path path = GameSavePath / "gsave.bmp";
+			
+			TextureContainer * pTextureTemp = TextureContainer::LoadUI(path.string());
+			if(pTextureTemp != pTextureLoad) {
+				if(pTextureLoad) {
 					delete pTextureLoad;
-
-				pTextureLoad=pTextureTemp;
+				}
+				pTextureLoad = pTextureTemp;
 			}
-
-			pTextureLoadRender=pTextureLoad;
+			pTextureLoadRender = pTextureLoad;
+			
+			break;
 		}
-		break;
-	case BUTTON_MENUEDITQUEST_SAVEINFO:
-		{
-			CURRENT_GAME_INSTANCE=save_l[lData].num;
+		
+		case BUTTON_MENUEDITQUEST_SAVEINFO: {
+			
+			CURRENT_GAME_INSTANCE = save_l[lData].num;
 			ARX_GAMESAVE_MakePath();
-			char tTxt[256];
-			sprintf(tTxt,"%sgsave.bmp",GameSavePath);
-			TextureContainer *pTextureTemp=TextureContainer::LoadUI(tTxt);
-
-			if (pTextureTemp != pTextureLoad)
-			{
-				if (pTextureLoad)
+			
+			fs::path path = GameSavePath / "gsave.bmp";
+			
+			TextureContainer * pTextureTemp = TextureContainer::LoadUI(path.string());
+			if(pTextureTemp != pTextureLoad) {
+				if(pTextureLoad) {
 					delete pTextureLoad;
-
-				pTextureLoad=pTextureTemp;
+				}
+				pTextureLoad = pTextureTemp;
 			}
-
-			pTextureLoadRender=pTextureLoad;
+			pTextureLoadRender = pTextureLoad;
+			
+			break;
 		}
-		break;
-	default:
-		pTextureLoadRender=NULL;
-		break;
+		
+		default: {
+			pTextureLoadRender = NULL;
+			break;
+		}
 	}
 }
 

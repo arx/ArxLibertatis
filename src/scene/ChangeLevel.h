@@ -60,12 +60,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include <boost/filesystem/path.hpp>
+
 struct INTERACTIVE_OBJ;
 
 extern long LAST_CHINSTANCE;
-extern char CurGamePath[256];
+extern boost::filesystem::path CurGamePath;
 extern long CURRENT_GAME_INSTANCE;
-extern char GameSavePath[256];
+extern boost::filesystem::path GameSavePath;
+
 extern long FORBID_SAVE;
 
 void ARX_GAMESAVE_MakePath();

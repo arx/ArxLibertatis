@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cassert>
 
+#include <boost/filesystem/operations.hpp>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -100,6 +102,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
+
+namespace fs = boost::filesystem;
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
@@ -3637,9 +3641,7 @@ void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
 	
 }
 
-void ARX_PLAYER_Start_New_Quest()
-{
-
+void ARX_PLAYER_Start_New_Quest() {
 	SKIN_MOD = 0;
 	QUICK_MOD = 0;
 	EERIE_PATHFINDER_Clear();
@@ -3652,8 +3654,7 @@ void ARX_PLAYER_Start_New_Quest()
 	ARX_EQUIPMENT_UnEquipAllPlayer();
 	//Empty Current Game Directory to restart a new game...
 	ARX_CHANGELEVEL_MakePath();
-	KillAllDirectory(CurGamePath);
-	CreateDirectory(CurGamePath, NULL);
+	fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
 	inter.iobj[0]->halo.flags = 0;
 }
 

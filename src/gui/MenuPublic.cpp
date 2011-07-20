@@ -26,6 +26,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuPublic.h"
 
 #include <cstdio>
+#include <iomanip>
+
+#include <boost/filesystem/operations.hpp>
 
 #include "animation/Cinematic.h"
 
@@ -51,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 #include "scene/GameSound.h"
+
+namespace fs = boost::filesystem;
 
 extern CDirectInput * pGetInfoDirectInput;
 extern bool bQuickGenFirstClick;
@@ -576,16 +581,17 @@ void ARXMenu_LoadQuest(long num)
 	GRenderer->BeginScene();
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_DeleteQuest(long num)
-{
-	if (num != 0)
-	{
-		char temp[256];
-
-		sprintf(temp, "save/save%04ld/", save_l[num].num);
-		KillAllDirectory(temp);
+void ARXMenu_DeleteQuest(long num) {
+	
+	if(num != 0) {
+		
+		std::ostringstream oss;
+		oss << "save/save" << std::setfill('0') << std::setw(4) << save_l[num].num;
+		
+		fs::remove_all(oss.str());
+		
 		CreateSaveGameList();
+		
 	}
 }
 
