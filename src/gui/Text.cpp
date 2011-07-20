@@ -290,8 +290,8 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	return 0;
 }
 
-Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned int fontSize, float scaleFactor = Yratio)
-{
+static Font * _CreateFont(const string & fontFace, const string & fontProfileName, unsigned int fontSize, float scaleFactor = Yratio) {
+	
 	std::stringstream ss;
 
 	std::string szFontSize;
@@ -300,7 +300,7 @@ Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned in
 	ss.clear();
 
 	std::string szUT;
-	szUT = getLocalised( fontProfileName, szFontSize );
+	szUT = getLocalised(fontProfileName, szFontSize);
 	ss << szUT;
 	ss >> fontSize;
 	ss.clear();
@@ -315,10 +315,10 @@ Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned in
 	return newFont;
 }
 
-string getFontFile() {
-	string tx= "misc" PATH_SEPERATOR_STR "arx.ttf";
+static string getFontFile() {
+	string tx = "misc/arx.ttf";
 	if(!fs::exists(tx.c_str())) {
-		tx = "misc" PATH_SEPERATOR_STR "arx_default.ttf"; // Full path
+		tx = "misc/arx_default.ttf"; // Full path
 	}
 	return tx;
 }
@@ -327,36 +327,35 @@ void ARX_Text_Init() {
 	
 	ARX_Text_Close();
 	
-	std::string strInGameFont = getFontFile();
-	std::string strInMenuFont = strInGameFont;
+	string fontFile = getFontFile();
 
 	pTextManage = new TextManager();
 	pTextManageFlyingOver = new TextManager();
 
 	FontCache::Initialize();
 
-	hFontMainMenu = _CreateFont(strInMenuFont, "system_font_mainmenu_size", 58);
+	hFontMainMenu = _CreateFont(fontFile, "system_font_mainmenu_size", 58);
 	LogInfo << "Created hFontMainMenu, size " << hFontMainMenu->GetSize();
 
-	hFontMenu	  = _CreateFont(strInMenuFont, "system_font_menu_size", 32);
+	hFontMenu	  = _CreateFont(fontFile, "system_font_menu_size", 32);
 	LogInfo << "Created hFontMenu, size " << hFontMenu->GetSize();
 
-	hFontControls = _CreateFont(strInMenuFont, "system_font_menucontrols_size", 22);
+	hFontControls = _CreateFont(fontFile, "system_font_menucontrols_size", 22);
 	LogInfo << "Created hFontControls, size " << hFontControls->GetSize();
 
-	hFontCredits  = _CreateFont(strInMenuFont, "system_font_menucredits_size", 36);
+	hFontCredits  = _CreateFont(fontFile, "system_font_menucredits_size", 36);
 	LogInfo << "Created hFontCredits, size " << hFontCredits->GetSize();
 
 	// Keep small font small when increasing resolution
 	float smallFontRatio = Yratio > 1.0f ? Yratio * 0.8f : Yratio;
 
-	hFontInGame     = _CreateFont(strInGameFont, "system_font_book_size", 18, smallFontRatio);
+	hFontInGame     = _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
 	LogInfo << "Created hFontInGame, size " << hFontInGame->GetSize();
 
-	hFontInGameNote = _CreateFont(strInGameFont, "system_font_note_size", 18, smallFontRatio);
+	hFontInGameNote = _CreateFont(fontFile, "system_font_note_size", 18, smallFontRatio);
 	LogInfo << "Created hFontInGameNote, size " << hFontInGameNote->GetSize();
 
-	hFontInBook		= _CreateFont(strInGameFont, "system_font_book_size", 18, smallFontRatio);
+	hFontInBook		= _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
 	LogInfo << "Created InBookFont, size " << hFontInBook->GetSize();
 }
 

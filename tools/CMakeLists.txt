@@ -25,25 +25,24 @@ include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
 add_executable(unpaker 
 	unpak/unpak.cpp
-	savetool/Filesystem_C.cpp
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
 	../src/io/Logger.cpp
 	../src/io/Blast.cpp
+	../src/io/Filesystem.cpp
 	../src/platform/String.cpp
 	../src/platform/Platform.cpp
 )
 
 add_executable(savetool
 	savetool/savetool.cpp
-	savetool/Filesystem_C.cpp
 	../src/io/Logger.cpp
 	../src/io/Blast.cpp
 	../src/io/SaveBlock.cpp
-	../src/io/HashMap.cpp
 	../src/io/FilePath.cpp
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
+	../src/io/Filesystem.cpp
 	../src/platform/String.cpp
 	../src/platform/Platform.cpp
 )

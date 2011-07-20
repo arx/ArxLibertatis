@@ -33,19 +33,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/filesystem/path.hpp>
 
-#define PATH_SEPERATOR_STR "/"
-
-#define FILE_SEEK_START 0
-#define FILE_SEEK_CURRENT 1
-#define FILE_SEEK_END 2
-
-bool FileExist(const std::string& name);
-void * FileLoadMalloc(const std::string& name, size_t * sizeLoaded = 0);
-void * FileLoadMallocZero(const std::string& name, size_t * sizeLoaded = 0);
-bool FileDelete(const std::string & file);
-bool FileMove(const std::string & oldname, const std::string & newname);
-bool CreateFullPath(const std::string & path);
-
 template <class T>
 inline std::istream & fread(std::istream & ifs, T & data) {
 	return ifs.read(reinterpret_cast<char *>(&data), sizeof(T));
