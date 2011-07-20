@@ -673,6 +673,48 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	
 }
 
+void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
+	
+	fs::path file;
+	EERIE_SCRIPT * script;
+	
+	switch(fl) {
+		
+		case 1: { // class script
+			file = io->filename;
+			script = &io->script;
+			break;
+		}
+		
+		case 2: { // local script
+			if(io->ident == 0) {
+				LogError << ("NO IDENT...");
+				return;
+			}
+			file = io->full_name();
+			if(!fs::is_directory(file)) {
+				LogError << ("Local DIR don't Exists...");
+				return;
+			}
+			file /= io->short_name();
+			script = &io->over_script;
+			break;
+		}
+		
+		default: return;
+	}
+	
+	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc | fs::fstream::binary);
+	if(!ofs.is_open()) {
+		LogError << ("Unable To Save...");
+		return;
+	}
+	
+	ofs.write(script->data, script->size);
+	
+	ARX_SCRIPT_ComputeShortcuts(*script);
+}
+
 #endif // BUILD_EDIT_LOADSAVE
 
 
@@ -685,53 +727,6 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 
 //*************************************************************************************
 //*************************************************************************************
-
-void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
-{
-	std::string temp;
-
-	switch (fl)
-	{
-		case 1: //CLASS SCRIPT
-			temp = io->filename;
-			SetExt(temp, "asl");
-
-//			todo win32api
-//			int fic;
-//			if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
-//			{
-//				_write(fic, io->script.data, strlen(io->script.data));
-//				_close(fic);
-//			}
-//			else LogError << ("Unable To Save...");
-
-			ARX_SCRIPT_ComputeShortcuts(io->script);
-			break;
-		case 2: //LOCAL SCRIPT
-
-			if (io->ident != 0)
-			{
-				temp = io->full_name() + "/" + io->short_name() + ".asl"; // Looks odd, results in /path/human_0001/human.asl and so on
-
-				if (DirectoryExist( io->full_name() ))
-				{
-//					TODO win32api
-//					int fic;
-//					if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
-//					{
-//						_write(fic, io->over_script.data, strlen(io->over_script.data));
-//						_close(fic);
-//					}
-//					else LogError << ("Unable To Save...");
-				}
-				else LogError << ("Local DIR don't Exists...");
-			}
-			else LogError << ("NO IDENT...");
-
-			ARX_SCRIPT_ComputeShortcuts(io->over_script);
-			break;
-	}
-}
 
 INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	char nameident[256];

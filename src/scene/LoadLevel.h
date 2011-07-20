@@ -70,16 +70,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
-// TODO why is this in LoadLevel?
-void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
-
-
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
 long DanaeSaveLevel(const boost::filesystem::path & file);
 void LogDirCreation(const boost::filesystem::path & dir);
 void WriteIOInfo(INTERACTIVE_OBJ * io, const boost::filesystem::path & dir);
+void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 #endif
 
 long DanaeLoadLevel(const std::string & file);
