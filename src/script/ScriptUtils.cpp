@@ -328,6 +328,7 @@ void initSuppressions() {
 	
 	suppressions[5107]["troll_base"]["loadanim"] = true;
 	suppressions[5175]["troll_base"]["loadanim"] = true;
+	suppressions[19054]["troll_base"]["goto"] = true; // missing label "main_alert"
 	
 	suppressions[93]["dragon_ice_0001"]["loadanim"] = true;
 	
