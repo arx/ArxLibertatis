@@ -265,7 +265,15 @@ void ReplaceSpecifics( char* text )
 	return;
 }
 
+extern char LastLoadedDLF[512];
+
 #ifdef BUILD_EDIT_LOADSAVE
+
+void LogDirCreation(const fs::path & dir) {
+	if(fs::is_directory(dir)) {
+		LogDebug << "LogDirCreation: " << dir;
+	}
+}
 
 long DanaeSaveLevel(const fs::path & _fic) {
 	
@@ -641,52 +649,39 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	return 1;
 }
 
+void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
+	
+	if(!fs::is_directory(dir)) {
+		return;
+	}
+	
+	fs::path file = dir / GetName(io->filename);
+	file.replace_extension("log");
+	
+	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc);
+	if(!ofs.is_open()) {
+		return;
+	}
+	
+	ofs << "Object   : " << io->long_name() << std::endl;
+	ofs << "_______________________________" << std::endl << std::endl;
+	ofs << "Level    : " << LastLoadedScene << std::endl;
+	ofs << "DLF File : " << (LastLoadedDLF[0] ? LastLoadedDLF : "None") << std::endl;
+	ofs << "Position : x " << (io->initpos.x - Mscenepos.x)
+	              << " y " << (io->initpos.y - Mscenepos.y)
+	              << " z " << (io->initpos.z - Mscenepos.z) << " (relative to anchor)" << std::endl;
+	
+}
+
 #endif // BUILD_EDIT_LOADSAVE
 
-extern char LastLoadedDLF[512];
 
 //*************************************************************************************
 //*************************************************************************************
 
-void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
-{
-	char dfile[256];
-	char temp[256];
-	FILE * fic;
-
-	if (DirectoryExist(dir))
-	{
-		strcpy(temp, GetName(io->filename).c_str());
-		sprintf(dfile, "%s/%s.log", dir.c_str(), temp);
-
-		if ((fic = fopen(dfile, "w")) != NULL)
-		{
-			char name[256];
-			u32 num = 255;
-			fprintf(fic, "Object   : %s%04ld\n", temp, io->ident);
-			fprintf(fic, "_______________________________\n\n");
-			GetUserName(name, &num);
-			fprintf(fic, "Creator  : %s\n", name);
-			fprintf(fic, "Level    : %s\n", LastLoadedScene);
-
-			if (LastLoadedDLF[0] != 0)
-				fprintf(fic, "DLF File : %s\n", LastLoadedDLF);
-			else
-				fprintf(fic, "DLF File : None\n");
-
-			fprintf(fic, "Position : x %8.f y %8.f z %8.f (relative to anchor)\n",
-					io->initpos.x - Mscenepos.x, io->initpos.y - Mscenepos.y, io->initpos.z - Mscenepos.z);
-			fclose(fic);
-		}
-	}
-}
 
 
-void LogDirCreation(const string & dir) {
-	if(DirectoryExist(dir)) {
-		LogDebug << "LogDirCreation: " << dir;
-	}
-}
+
 
 //*************************************************************************************
 //*************************************************************************************
@@ -778,9 +773,13 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 					io->over_script.master = (io->script.data != NULL) ? &io->script : NULL;
 				}
 			} else {
-				CreateFullPath(tmp);
+#ifdef BUILD_EDIT_LOADSAVE
+				fs::create_directories(tmp);
 				LogDirCreation(tmp);
 				WriteIOInfo(io, tmp);
+#else
+				arx_assert(false);
+#endif
 			}
 		}
 

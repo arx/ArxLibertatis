@@ -2336,15 +2336,18 @@ INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFla
 	else if (IsIn(ficc, "marker"))
 		io = AddMarker(file);
 
-	if (io)
-	{
-		if ((id == 0)
-		        &&	!(flags & NO_IDENT))
+	if(io) {
+		if(id == 0 && !(flags & NO_IDENT)) {
+#ifdef BUILD_EDITOR
 			MakeIOIdent(io);
-		else if (id == -1)
+#else
+			arx_assert(false);
+#endif
+		} else if(id == -1) {
 			MakeTemporaryIOIdent(io);
-		else
+		} else {
 			io->ident = id;
+		}
 	}
 
 	return io;
@@ -3007,13 +3010,13 @@ void ReloadAllScripts()
 	}
 }
 
+#ifdef BUILD_EDIT_LOADSAVE
+
 //*************************************************************************************
 // Creates an unique identifier for an IO
 //*************************************************************************************
-void MakeIOIdent(INTERACTIVE_OBJ * io)
-{
-	long t = 1;
-
+void MakeIOIdent(INTERACTIVE_OBJ * io) {
+	
 	if(!io) {
 		return;
 	}
@@ -3024,14 +3027,15 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 	}
 #endif
 	
-	while (io->ident == 0)
-	{
-		std::string temp = io->full_name() + '.';
-
-		if (!DirectoryExist(temp))
-		{
+	long t = 1;
+	
+	while(io->ident == 0) {
+		
+		fs::path temp = io->full_name();
+		
+		if(!fs::is_directory(temp)) {
 			io->ident = t;
-			CreateFullPath(temp);
+			fs::create_directories(temp);
 			LogDirCreation(temp);
 			WriteIOInfo(io, temp);
 		}
@@ -3039,6 +3043,8 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 		t++;
 	}
 }
+
+#endif // BUILD_EDIT_LOADSAVE
 
 //*************************************************************************************
 // Tells if an ident corresponds to a temporary IO

@@ -72,14 +72,14 @@ struct EERIE_3DOBJ;
 
 // TODO why is this in LoadLevel?
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
-void LogDirCreation(const std::string & dir);
 
-void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string & dir);
 
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
 long DanaeSaveLevel(const boost::filesystem::path & file);
+void LogDirCreation(const boost::filesystem::path & dir);
+void WriteIOInfo(INTERACTIVE_OBJ * io, const boost::filesystem::path & dir);
 #endif
 
 long DanaeLoadLevel(const std::string & file);

@@ -41,8 +41,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 typedef void * FileHandle;
 
-long KillAllDirectory(const std::string& path);
-
 bool DirectoryExist(const std::string & name);
 bool FileExist(const std::string& name);
 void * FileLoadMalloc(const std::string& name, size_t * sizeLoaded = 0);

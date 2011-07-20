@@ -194,6 +194,10 @@ void DeleteSelectedIO();
 void ResetSelectedIORot();
 #endif
 
+#ifdef BUILD_EDIT_LOADSAVE
+void MakeIOIdent(INTERACTIVE_OBJ * io);
+#endif
+
 long GetNumberInterWithOutScriptLoadForLevel(long level);
 void FreeAllInter();
 
@@ -220,7 +224,6 @@ void UpdateCameras();
 INTERACTIVE_OBJ * InterClick(Vec2s * pos);
  
 void RenderInter(float from, float to);
-void MakeIOIdent(INTERACTIVE_OBJ * io);
 void SetWeapon_On(INTERACTIVE_OBJ * io);
  
 void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string & temp);
