@@ -1,24 +1,26 @@
 
 #include <string>
 #include <cassert>
-using std::string;
-
-#include <sys/stat.h>
 #include <cstdio>
 #include <cstdlib>
 #include <sstream>
-using std::ostringstream;
-
 #include <algorithm>
-using std::transform;
+
+#include <boost/filesystem/operations.hpp>
 
 #include "io/Filesystem.h"
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 
+using std::transform;
+using std::ostringstream;
+using std::string;
+
+namespace fs = boost::filesystem;
+
 void dump(PakDirectory & dir, const string  & dirname = string()) {
 	
-	CreateFullPath(dirname);
+	fs::create_directories(dirname);
 	
 	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
 		

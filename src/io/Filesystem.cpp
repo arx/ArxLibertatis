@@ -315,7 +315,7 @@ std::istream & fread(std::istream & ifs, std::string & buf) {
 	return ifs;
 }
 
-char * read_file(const boost::filesystem::path & path, size_t & size) {
+char * read_file(const fs::path & path, size_t & size) {
 	
 	fs::ifstream ifs(path, fs::ifstream::in | fs::ifstream::binary | fs::ifstream::ate);
 	if(!ifs.is_open()) {

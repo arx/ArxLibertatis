@@ -4494,8 +4494,8 @@ void LaunchMoulinex()
 		GetLevelNameByNum(lastlvl,tx);
 		sprintf(saveto,"graph/levels/level%s/level%s.dlf",tx,tx);
 
-		if (FileExist(saveto))
-		{
+		if(fs::exists(saveto)) {
+			
 			LightMode oldmode = ModeLight;
 			ModeLight=MODE_NORMALS | MODE_RAYLAUNCH | MODE_STATICLIGHT | MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
 
@@ -4543,8 +4543,8 @@ void LaunchMoulinex()
 		{
 			sprintf(loadfrom,"graph/levels/level%s/level%s.dlf",tx,tx);
 
-			if (FileExist(loadfrom))
-			{
+			if(fs::exists(loadfrom)) {
+				
 				if (CDP_LIGHTOptions!=NULL) SendMessage(CDP_LIGHTOptions,WM_CLOSE,0,0);
 
 				if (CDP_FogOptions!=NULL) SendMessage(CDP_FogOptions,WM_CLOSE,0,0);
