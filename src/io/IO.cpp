@@ -90,7 +90,7 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	
 	arx_assert(length > 6);
 	
-	mempcpy(&dst[0], &id, 4);
+	memcpy(&dst[0], &id, 4);
 	dst[1] = size;
 	
 	std::time_t write_time = fs::last_write_time(name);
@@ -100,7 +100,7 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	size_t i = 6;
 	string namestr = name.string();
 	size_t l = std::min(size - i*4, namestr.length());
-	mempcpy(&dst[i], namestr.c_str(), l);
+	memcpy(&dst[i], namestr.c_str(), l);
 	i += (l + 3) / 4;
 	
 	ifs.seekg(0);
