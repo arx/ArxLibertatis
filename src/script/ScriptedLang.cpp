@@ -233,7 +233,7 @@ public:
 		
 		string target;
 		if(!group && !zone && !radius) {
-			target = context.getWord();
+			target = context.getStringVar(context.getWord());
 			
 			// TODO(broken-scripts) work around broken scripts 
 			for(size_t i = 0; i < SM_MAXCMD; i++) {
