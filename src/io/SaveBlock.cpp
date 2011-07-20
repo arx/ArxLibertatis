@@ -238,7 +238,7 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 			char * uncompressed = (char*)malloc(uncompressedSize);
 			int ret = uncompress((Bytef*)uncompressed, &decompressedSize, (const Bytef*)buf, storedSize);
 			if(ret != Z_OK) {
-				LogError << "error decompressing deflated " << name << ": " << ret;
+				LogError << "error decompressing deflated " << name << ": " << zError(ret) << " (" << ret << ')';
 				free(buf);
 				free(uncompressed);
 				size = 0;
@@ -298,8 +298,7 @@ bool SaveBlock::loadFileTable() {
 	while(hashMapSize < nFiles) {
 		hashMapSize <<= 1;
 	}
-	size_t iNbHacheTroisQuart = (hashMapSize * 3) / 4;
-	if(nFiles > iNbHacheTroisQuart) {
+	if(nFiles > (hashMapSize * 3) / 4) {
 		hashMapSize <<= 1;
 	}
 	files.rehash(hashMapSize);
@@ -337,6 +336,7 @@ bool SaveBlock::loadFileTable() {
 		if(!file.loadOffsets(handle, version)) {
 			return false;
 		}
+		
 		usedSize += file.storedSize, chunkCount += file.chunks.size();
 	}
 	
@@ -347,7 +347,7 @@ void SaveBlock::writeFileTable(const std::string & important) {
 	
 	LogDebug << "writeFileTable " << savefile;
 	
-	size_t fatOffset = totalSize;
+	u32 fatOffset = totalSize;
 	handle.seekp(fatOffset + 4);
 	
 	fwrite(handle, SAV_VERSION_NOEXT);
@@ -403,8 +403,8 @@ bool SaveBlock::flush(const string & important) {
 	
 	arx_assert(important.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
 	
-	if((usedSize * 2 < totalSize || chunkCount > (files.size() * 4 / 3)) && !defragment()) {
-		return false;
+	if((usedSize * 2 < totalSize || chunkCount > (files.size() * 4 / 3))) {
+		defragment();
 	}
 	
 	writeFileTable(important);
@@ -416,7 +416,7 @@ bool SaveBlock::flush(const string & important) {
 
 bool SaveBlock::defragment() {
 	
-	LogDebug << "defrag " << savefile;
+	LogDebug << "defragmenting " << savefile << " save: using " << usedSize << " / " << totalSize << " b for " << files.size() << " files in " << chunkCount << " chunks"; 
 	
 	fs::path tempFileName = savefile.parent_path() / fs::unique_path();
 	
@@ -425,10 +425,8 @@ bool SaveBlock::defragment() {
 		return false;
 	}
 	
-	u32 fakeFATOffset = 0;
-	fwrite(tempFile, fakeFATOffset);
-	
 	totalSize = 0;
+	tempFile.seekp(4);
 	
 	for(Files::iterator file = files.begin(); file != files.end(); ++file) {
 		

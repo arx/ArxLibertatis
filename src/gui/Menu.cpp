@@ -181,13 +181,11 @@ void CreateSaveGameList() {
 	
 	size_t oldCount = save_l.size() - 1;
 #ifdef HAVE_DYNAMIC_STACK_ALLOCATION
-	bool found[oldCount];
+	char found[oldCount];
 #else
-	bool * found = new bool[oldCount];
+	char * found = new char[oldCount];
 #endif
-	for(size_t i = 0; i < oldCount; i++) {
-		found[i] = false;
-	}
+	memset(found, 0, oldCount);
 	
 	bool newSaves = false;
 	
@@ -216,7 +214,7 @@ void CreateSaveGameList() {
 			}
 		}
 		if(index != (size_t)-1 && save_l[index].stime == stime) {
-			found[index - 1] = true;
+			found[index - 1] = 1;
 			continue;
 		}
 		
@@ -237,7 +235,7 @@ void CreateSaveGameList() {
 			save_l.resize(save_l.size() + 1);
 			save = &save_l.back();
 		} else {
-			found[index - 1] = true;
+			found[index - 1] = 2;
 			save = &save_l[index];
 		}
 		
@@ -253,7 +251,7 @@ void CreateSaveGameList() {
 		resources->removeFile(thumbnail.string());
 		resources->addFiles(thumbnail, thumbnail.string());
 		
-		maxlength = std::max(name.length(), maxlength);
+		maxlength = std::max(save->quicksave ? 9 : name.length(), maxlength);
 		
 		const struct tm & t = *localtime(&stime);
 		std::ostringstream oss;
@@ -261,22 +259,25 @@ void CreateSaveGameList() {
 		save->time = oss.str();
 	}
 	
-	// print new savegames
-	for(size_t i = oldCount + 1; i < save_l.size(); i++) {
-		std::ostringstream oss;
-		if(save_l[i].quicksave) {
-			oss << "(quicksave)" << std::setw(maxlength - 8) << ' ';
-		} else {
-			oss << "\"" << save_l[i].name << "\"" << std::setw(maxlength - save_l[i].name.length() + 1) << ' ';
-		}
-		
-		oss << save_l[i].time << "   v" << save_l[i].version;
-		LogInfo << "found save " << oss.str();
-	}
-	
 	size_t o = 1;
 	for(size_t i = 1; i < save_l.size(); i++) {
 		if(i > oldCount || found[i - 1]) {
+			
+			// print new savegames
+			if(i > oldCount || found[i - 1] == 2) {
+				
+				std::ostringstream oss;
+				if(save_l[i].quicksave) {
+					oss << "(quicksave)" << std::setw(maxlength - 8) << ' ';
+				} else {
+					oss << "\"" << save_l[i].name << "\"" << std::setw(maxlength - save_l[i].name.length() + 1) << ' ';
+				}
+				
+				oss << "  " << save_l[i].time << "   v" << save_l[i].version;
+				LogInfo << "found save " << oss.str();
+				
+			}
+			
 			if(o != i) {
 				save_l[o] = save_l[i];
 			}

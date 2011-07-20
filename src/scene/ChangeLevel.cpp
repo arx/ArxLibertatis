@@ -425,10 +425,25 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	ARX_TIME_Pause();
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(num);
-
+	
+	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
+	
+	if(!_pSaveBlock->open(true)) {
+		LogError << "Error writing to save block.";
+		return;
+	}
+	
 	LogDebug << "Before ARX_CHANGELEVEL_PushLevel";
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, NEW_LEVEL);
 	LogDebug << "After  ARX_CHANGELEVEL_PushLevel";
+	
+	if(!_pSaveBlock->flush("pld")) {
+		LogError << "could not complete the save.";
+	}
+	delete _pSaveBlock;
+	_pSaveBlock = NULL;
+	
+	ARX_TIME_UnPause();
 
 	LogDebug << "Before ARX_CHANGELEVEL_PopLevel";
 	ARX_CHANGELEVEL_PopLevel(num, 1);
@@ -468,7 +483,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	ARX_CHANGELEVEL_INDEX asi;
 	ARX_SCRIPT_EventStackExecuteAll();
-
+	
 	// Close secondary inventory before leaving
 	if (SecondaryInventory != NULL)
 	{
@@ -482,15 +497,8 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 			SecondaryInventory = NULL;
 		}
 	}
-
+	
 	ForcePlayerInventoryObjectLevel(newnum);
-
-	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
-
-	if(!_pSaveBlock->open(true)) {
-		LogError << "Error writing to save block.";
-		return false;
-	}
 	
 	// Now we can save our things
 	if(!ARX_CHANGELEVEL_Push_Index(&asi, num)) {
@@ -512,14 +520,6 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		ARX_TIME_UnPause();
 		return false;
 	}
-	
-	if(!_pSaveBlock->flush("pld")) {
-		LogError << "could not complete the save.";
-	}
-	
-	delete _pSaveBlock;
-	_pSaveBlock = NULL;
-	ARX_TIME_UnPause();
 	
 	return true;
 }
@@ -3062,101 +3062,71 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	return true;
 }
 
-static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const fs::path & path);
-
 long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	
 	LogDebug << "ARX_CHANGELEVEL_Save " << instance << " " << name;
-
+	
 	ARX_TIME_Pause();
-
+	
 	if(instance <= 0) {
 		ARX_GAMESAVE_CreateNewInstance();
-		instance = CURRENT_GAME_INSTANCE;
 		LogDebug << "Created new instance " << instance;
+	} else {
+		CURRENT_GAME_INSTANCE = instance;
 	}
 	
-	CURRENT_GAME_INSTANCE = instance;
-	
-	if(instance == -1) {
-		// fatality...
-		LogWarning << "Internal Non-Fatal Error";
-		return 0;
-	}
-
 	if(CURRENTLEVEL == -1) {
-		// fatality...
 		LogWarning << "Internal Non-Fatal Error";
 		return 0;
 	}
 	
-	ARX_SCRIPT_EventStackExecuteAll();
-	// fill GameSavePath with our savepath.
-	ARX_GAMESAVE_MakePath();
-
-	if (SecondaryInventory != NULL)
-	{
-		INTERACTIVE_OBJ * io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
-
-		if (io != NULL)
-		{
-			InventoryDir = -1;
-			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
-			TSecondaryInventory = SecondaryInventory;
-			SecondaryInventory = NULL;
-		}
-	}
-
+	arx_assert(LAST_CHINSTANCE != -1);
 	ARX_CHANGELEVEL_MakePath();
-	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, CURRENTLEVEL);
 	
-	fs::remove_all(GameSavePath), fs::create_directory(GameSavePath); 
+	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
 	
-	fs::copy_file(CurGamePath / "gsave.sav", GameSavePath / "gsave.sav");
-
-	//on copie le fichier temporaire bmp dans le repertoire
-	fs::rename("sct_0.bmp", GameSavePath / "gsave.bmp");
-
+	if(!_pSaveBlock->open(true)) {
+		LogError << "opening savegame " << CurGamePath / "gsave.sav";
+		return false;
+	}
+	
+	// Save the current level
+	
+	if(!ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, CURRENTLEVEL)) {
+		LogWarning << "could not save the level";
+		return false;
+	}
+	
+	// Save the savegame name and level id
+	
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	memset(&pld, 0, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
 	pld.level = CURRENTLEVEL;
-	strcpy(pld.name, name.c_str());
+	strncpy(pld.name, name.c_str(), sizeof(pld.name));
 	pld.version = ARX_GAMESAVE_VERSION;
-	pld.time = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long''
-	ARX_CHANGELEVEL_Set_Player_LevelData(pld, GameSavePath);
+	pld.time = ARX_TIME_GetUL();
+	
+	const char * dat = reinterpret_cast<const char *>(&pld);
+	_pSaveBlock->save("pld", dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
+	
+	// Close the savegame file
+	
+	if(!_pSaveBlock->flush("pld")) {
+		LogError << "could not complete the save";
+		return false;
+	}
+	delete _pSaveBlock, _pSaveBlock = NULL;
+	
 	ARX_TIME_UnPause();
-	return 1;
-}
-
-static bool ARX_CHANGELEVEL_Set_Player_LevelData(const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const fs::path & path) {
 	
-	if(!fs::is_directory(path)) {
-		return false;
-	}
+	// Copy the savegame and screenshot to the final destination
 	
-	// TODO why use a global here?
-	assert(_pSaveBlock == NULL);
-	_pSaveBlock = new SaveBlock(path / "gsave.sav");
-	// TODO don't load the save block again!
+	ARX_GAMESAVE_MakePath();
+	fs::remove_all(GameSavePath), fs::create_directory(GameSavePath); 
 	
-	if(!_pSaveBlock->open(true)) {
-		return false;
-	}
+	fs::copy_file(CurGamePath / "gsave.sav", GameSavePath / "gsave.sav");
 	
-	char * dat = new char[sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA)];
-
-	memcpy(dat, &pld, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
-	long pos = sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA);
-	char savefile[256];
-	sprintf(savefile, "pld");
-	
-	_pSaveBlock->save(savefile, dat, pos);
-	
-	delete[] dat;
-	
-	_pSaveBlock->flush("pld");
-	delete _pSaveBlock;
-	_pSaveBlock = NULL;
+	fs::rename("sct_0.bmp", GameSavePath / "gsave.bmp");
 	
 	return true;
 }

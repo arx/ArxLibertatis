@@ -33,6 +33,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
 
+/*!
+ * Interface to read and write save block files. (used for savegames)
+ */
 class SaveBlock {
 	
 private:
@@ -54,11 +57,31 @@ private:
 public:
 	
 	SaveBlock(const boost::filesystem::path & savefile);
+	
+	/*!
+	 * Destructor: this will not finalize the save block.
+	 * 
+	 * If the SaveBlock vas changed (via save()) and not flushed since, the save fill will be corrupted.
+	 */
 	~SaveBlock();
 	
+	/*!
+	 * Open a save block.
+	 * @param writable must be true if the block is going to be changed
+	 */
 	bool open(bool writable = false);
 	
+	/*!
+	 * Finalize the save block: defragment if needed and write the file table.
+	 */
 	bool flush(const std::string & important);
+	
+	/*!
+	 * Save a file to the save block.
+	 * This only writes the file data and does not add the file to the file table.
+	 * Also, it may destroy any previous on-disk file table.
+	 * flush() should be called before destructing this SaveBlock instance
+	 */
 	bool save(const std::string & name, const char * data, size_t size);
 	
 	char * load(const std::string & name, size_t & size);
@@ -66,6 +89,22 @@ public:
 	
 	std::vector<std::string> getFiles() const;
 	
+	/*!
+	 * Load a single file from the save block.
+	 * 
+	 * This is semantically equivalent to, but hopefully faster than:
+	 * <pre>
+	 *  SaveBlock block(savefile);
+	 *  return block.open(false) ? block.load(name, size) : NULL
+	 * </pre>
+	 * 
+	 * This is optimized for loading the file named in flush().
+	 * 
+	 * @param savefile the save block to load from
+	 * @param name the file to load
+	 * @param size will be set to the loaded size
+	 * @return a new, malloc-allocated buffer or NULL if eiether the saveblock could not be opened or doesn't contain a file with the given name.
+	 */
 	static char * load(const boost::filesystem::path & savefile, const std::string & name, size_t & size);
 	
 };
