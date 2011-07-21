@@ -1659,7 +1659,7 @@ float GetHitValue( const std::string& name)
 
 	if ((name[0] == 'h')
 	        && (name[1] == 'i')
-	        && (name[1] == 't')
+	        && (name[2] == 't')
 	        && (name[3] == '_'))
 	{
 		long val = atoi( name.substr(4) ); // Get the number after the first 4 characters in the string
