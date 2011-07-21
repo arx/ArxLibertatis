@@ -454,7 +454,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 				vLight.z = light->pos.z - ep->v[i].sz;
 				vLight.normalize();
 
-				fRes = vLight dot ep->nrml[i];
+				fRes = dot(vLight, ep->nrml[i]);
 
 				if (fRes < 0.0f)
 				{

@@ -55,48 +55,14 @@ static const u32 SAV_COMP_DEFLATE = 2;
 
 static const char BADSAVCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\/."; // TODO(case-sensitive) remove
 
-struct FileChunk {
-	
-	size_t size;
-	size_t offset;
-	
-	FileChunk() : size(0), offset(0) { };
-	FileChunk(size_t _size, size_t _offset) : size(_size), offset(_offset) { };
-	
-};
-
-struct SaveBlock::File {
-	
-	typedef vector<FileChunk> ChunkList;
-	
-	enum Compression {
-		Unknown,
-		None,
-		ImplodeCrypt,
-		Deflate
-	};
-	
-	size_t storedSize;
-	size_t uncompressedSize;
-	ChunkList chunks;
-	Compression comp;
-	
-	const char * compressionName() const {
-		switch(comp) {
-			case None: return "none";
-			case ImplodeCrypt: return "implode+crypt";
-			case Deflate: return "deflate";
-			default: return "(unknown)";
-		}
+const char * SaveBlock::File::compressionName() const {
+	switch(comp) {
+		case None: return "none";
+		case ImplodeCrypt: return "implode+crypt";
+		case Deflate: return "deflate";
+		default: return "(unknown)";
 	}
-	
-	bool loadOffsets(std::istream & handle, u32 version);
-	
-	void writeEntry(std::ostream & handle, const std::string & name) const;
-	
-	char * loadData(std::istream & handle, size_t & size, const std::string & name) const;
-	
-};
+}
 
 bool SaveBlock::File::loadOffsets(std::istream & handle, u32 version) {
 	
@@ -418,7 +384,13 @@ bool SaveBlock::defragment() {
 	
 	LogDebug << "defragmenting " << savefile << " save: using " << usedSize << " / " << totalSize << " b for " << files.size() << " files in " << chunkCount << " chunks"; 
 	
-	fs::path tempFileName = savefile.parent_path() / fs::unique_path();
+	fs::path tempFileName = savefile;
+	int i = 0;
+	do {
+		std::ostringstream oss;
+		oss << "defrag" << i++;
+		tempFileName.replace_extension(oss.str());
+	} while(fs::exists(tempFileName));
 	
 	fs::ofstream tempFile(tempFileName, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!tempFile.is_open()) {
@@ -530,7 +502,7 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 		}
 	}
 	
-	file->chunks.push_back(FileChunk(remaining, totalSize));
+	file->chunks.push_back(File::Chunk(remaining, totalSize));
 	handle.seekp(totalSize + 4);
 	handle.write(p, remaining);
 	totalSize += remaining, usedSize += remaining, chunkCount++;

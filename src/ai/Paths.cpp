@@ -1994,7 +1994,7 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, fl
 	deltaV.x = pv_k->velocity.x - pv_l->velocity.x;
 	deltaV.y = pv_k->velocity.y - pv_l->velocity.y;
 	deltaV.z = pv_k->velocity.z - pv_l->velocity.z;		// Delta Velocity Vector
-	Dterm = (deltaV dot deltaP) * PHYSICS_Damp * divdist; // Damping Term
+	Dterm = dot(deltaV, deltaP) * PHYSICS_Damp * divdist; // Damping Term
 	Dterm = (-(Hterm + Dterm));
 	divdist *= Dterm;
 	springforce.x = deltaP.x * divdist;	// Normalize Distance Vector

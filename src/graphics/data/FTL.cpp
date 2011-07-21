@@ -84,6 +84,7 @@ extern long NOCHECKSUM;
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/convenience.hpp>
 
 namespace fs = boost::filesystem;
 
@@ -163,7 +164,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	
 	// Identification
 	char check[512];
-	HERMES_CreateFileCheck(file.c_str(), check, 512, CURRENT_FTL_VERSION);
+	HERMES_CreateFileCheck(file, check, 512, CURRENT_FTL_VERSION);
 	memcpy(dat + pos, check, 512);
 	pos += 512;
 	

@@ -28,10 +28,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <vector>
 
 #include <boost/unordered_map.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
+
+#include "platform/Platform.h"
 
 /*!
  * Interface to read and write save block files. (used for savegames)
@@ -40,7 +43,42 @@ class SaveBlock {
 	
 private:
 	
-	struct File;
+	struct File {
+		
+		struct Chunk {
+			
+			size_t size;
+			size_t offset;
+			
+			Chunk() : size(0), offset(0) { };
+			Chunk(size_t _size, size_t _offset) : size(_size), offset(_offset) { };
+			
+		};
+		
+		typedef std::vector<Chunk> ChunkList;
+		
+		enum Compression {
+			Unknown,
+			None,
+			ImplodeCrypt,
+			Deflate
+		};
+		
+		size_t storedSize;
+		size_t uncompressedSize;
+		ChunkList chunks;
+		Compression comp;
+		
+		const char * compressionName() const;
+		
+		bool loadOffsets(std::istream & handle, u32 version);
+		
+		void writeEntry(std::ostream & handle, const std::string & name) const;
+		
+		char * loadData(std::istream & handle, size_t & size, const std::string & name) const;
+		
+	};
+	
 	typedef boost::unordered_map<std::string, File> Files;
 	
 	boost::filesystem::path savefile;

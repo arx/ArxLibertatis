@@ -234,10 +234,9 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 		targvect.x *= divdist;
 		targvect.y *= divdist;
 		targvect.z *= divdist;
-		float val = *dirvect dot targvect;
+		float val = dot(*dirvect, targvect);
 
-		if (EEfabs(val) < 1.2f)
-		{
+		if(fabs(val) < 1.2f) {
 			if (distance > maxi) distance = maxi;
 
 			curradius += distance;

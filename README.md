@@ -18,6 +18,7 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 DevIL (libil.so)
 zlib (libz.so)
 OpenAL 1.1
+Boost 1.37 or newer (libraries system and filesystem)
 
 Non-Windows systems also need Wine (including development headers and tools). Wine is only a temporary solution.
 

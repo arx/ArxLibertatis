@@ -679,13 +679,12 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 			const fs::path & entry = it->path();
 			
 			if(fs::is_directory(entry)) {
-				ret &= addFiles(dir->addDirectory(entry.leaf().string()), entry);
+				ret &= addFiles(dir->addDirectory(as_string(entry.filename())), entry);
 			} else {
-				ret &= addFile(dir, entry, entry.leaf().string());
+				ret &= addFile(dir, entry, as_string(entry.filename()));
 			}
 			
 		}
-		
 		
 	} catch(fs::filesystem_error) {
 		return false;

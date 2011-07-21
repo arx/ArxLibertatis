@@ -98,6 +98,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakReader.h"
 #include "io/Logger.h"
+#include "io/FilePath.h"
 
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
@@ -195,7 +196,7 @@ void CreateSaveGameList() {
 	for(fs::directory_iterator it("save"); it != end; it++) {
 		
 		const fs::path & path = it->path();
-		string dirname = path.leaf().string();
+		string dirname = as_string(path.filename());
 		
 		if(dirname.compare(0, 4, "save") || !fs::is_directory(path)) {
 			continue;

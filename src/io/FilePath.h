@@ -4,6 +4,8 @@
 
 #include "platform/String.h"
 
+#include <boost/filesystem/path.hpp>
+
 const char EXT_OR_DIR_SEP[] = "./\\"; // TODO(case-sensitive) remove backslash
 const char DIR_SEP[] = "/\\"; // TODO(case-sensitive) remove backslash
 
@@ -53,5 +55,19 @@ void AddToName(std::string & str, const std::string & cat);
 void File_Standardize(const std::string & from, std::string & to);
 
 std::string loadPath(const std::string & path);
+
+// Helper functions so we can support both boost::filesystem v2 and v3
+inline const std::string  & as_string(const std::string & path) {
+	return path;
+}
+inline const std::string as_string(const boost::filesystem::path & path) {
+	return path.string();
+}
+inline const boost::filesystem::path as_path(const std::string & path) {
+	return path;
+}
+inline const boost::filesystem::path & as_path(const boost::filesystem::path & path) {
+	return path;
+}
 
 #endif // ARX_IO_FILEPATH_H

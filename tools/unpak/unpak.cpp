@@ -6,7 +6,8 @@
 #include <sstream>
 #include <algorithm>
 
-#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "io/Filesystem.h"
 #include "io/PakReader.h"
@@ -18,21 +19,21 @@ using std::string;
 
 namespace fs = boost::filesystem;
 
-void dump(PakDirectory & dir, const string  & dirname = string()) {
+void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
 	fs::create_directories(dirname);
 	
 	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
 		
-		string filename = dirname + i->first;
+		fs::path filename = dirname / i->first;
 		
 		PakFile * file = i->second;
 		
-		printf("%s\n", filename.c_str());
+		printf("%s\n", filename.string().c_str());
 		
-		FILE * f = fopen(filename.c_str(), "wb");
-		if(!f) {
-			printf("error opening file for writing: %s\n", filename.c_str());
+		fs::ofstream ofs(filename, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+		if(!ofs.is_open()) {
+			printf("error opening file for writing: %s\n", filename.string().c_str());
 			exit(1);
 		}
 		
@@ -41,9 +42,8 @@ void dump(PakDirectory & dir, const string  & dirname = string()) {
 			char * data = (char*)file->readAlloc();
 			assert(data != NULL);
 			
-			if(fwrite(data, file->size(), 1, f) != 1) {
-				printf("error writing to file: %s\n", filename.c_str());
-				fclose(f);
+			if(ofs.write(data, file->size()).fail()) {
+				printf("error writing to file: %s\n", filename.string().c_str());
 				exit(1);
 			}
 			
@@ -51,11 +51,10 @@ void dump(PakDirectory & dir, const string  & dirname = string()) {
 			
 		}
 		
-		fclose(f);
 	}
 	
 	for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
-		dump(i->second, dirname + i->first + '/');
+		dump(i->second, dirname / i->first);
 	}
 	
 }

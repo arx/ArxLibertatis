@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/convenience.hpp>
 
 #include "ai/Paths.h"
 

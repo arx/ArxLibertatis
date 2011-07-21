@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifdef BUILD_EDIT_LOADSAVE
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/convenience.hpp>
 #endif
 
 #include "ai/PathFinderManager.h"

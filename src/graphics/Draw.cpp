@@ -108,7 +108,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 	CalcFaceNormal(ep,ep->v);
 
-	if (EEfabs(ep->norm dot ep2->norm) < 1.f - tolerance) return false;
+	if (fabs(dot(ep->norm, ep2->norm)) < 1.f - tolerance) return false;
 	
 	for (long i=0;i<3;i++)
 	{

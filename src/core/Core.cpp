@@ -1118,7 +1118,7 @@ HWND mainWindow = 0;
 
 static bool migrateFilenames(fs::path path) {
 	
-	string name = path.leaf().string();
+	string name = as_string(path.filename());
 	string lowercase = toLowercase(name);
 	
 	bool migrated = true;
@@ -1127,7 +1127,7 @@ static bool migrateFilenames(fs::path path) {
 		
 		fs::path dst = path.parent_path() / lowercase;
 		
-		LogInfo << "renaming " << path << " to " << dst.leaf() << "";
+		LogInfo << "renaming " << path << " to " << dst.filename() << "";
 		
 		try {
 			fs::rename(path, dst);
@@ -1170,7 +1170,7 @@ static bool migrateFilenames() {
 	try {
 		fs::directory_iterator end;
 		for(fs::directory_iterator it("./"); it != end; ++it) {
-			if(fileset.find(toLowercase(it->path().leaf().string())) != fileset.end()) {
+			if(fileset.find(toLowercase(as_string(it->path().filename()))) != fileset.end()) {
 				migrated &= migrateFilenames(it->path());
 			}
 		}

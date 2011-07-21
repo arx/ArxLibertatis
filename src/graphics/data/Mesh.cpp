@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/convenience.hpp>
 #endif
 
 #include "ai/PathFinder.h"
@@ -4028,7 +4029,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 		
 		UNIQUE_HEADER2 * uh2 = reinterpret_cast<UNIQUE_HEADER2 *>(dat + pos);
 		pos += sizeof(UNIQUE_HEADER2);
-		strncpy(uh2->path, path.leaf().string().c_str(), sizeof(uh2->path));
+		strncpy(uh2->path, as_string(path.filename()).c_str(), sizeof(uh2->path));
 		
 		char check[512];
 		HERMES_CreateFileCheck(path, check, 512, FTS_VERSION);
