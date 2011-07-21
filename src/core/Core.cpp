@@ -1157,7 +1157,7 @@ static bool migrateFilenames() {
 	LogInfo << "changing filenames to lowercase...";
 	
 	static const char * files[] = { "cfg.ini", "cfg_default.ini",
-	 "sfx.pak", "loc.pak", "data2.pak", "data.pak", "speech.pak",
+	 "sfx.pak", "loc.pak", "data2.pak", "data.pak", "speech.pak", "loc_default.pak", "speech_default.pak",
 	 "save", "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
 	
 	std::set<string> fileset;
