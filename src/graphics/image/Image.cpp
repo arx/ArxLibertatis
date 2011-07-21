@@ -766,7 +766,7 @@ ILenum ARXImageToILFormat[] = {
 	IL_DXT5,            // Format_DXT5
 };
 
-void Image::save(const string & pFilename) const {
+void Image::save(const boost::filesystem::path & filename) const {
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);
@@ -781,7 +781,7 @@ void Image::save(const string & pFilename) const {
 	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(), ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
 	if(ret) {
 		ilEnable(IL_FILE_OVERWRITE);
-		ret = ilSaveImage(pFilename.c_str());
+		ret = ilSaveImage(filename.string().c_str());
 		arx_assert_msg(ret, "ilSaveImage failed: %d", ilGetError());
 	}
 	

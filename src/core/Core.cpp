@@ -3093,7 +3093,7 @@ void FirstFrameProc() {
 		}
 	}
 
-	InitSnapShot(NULL,"snapshot");
+	InitSnapShot("snapshot");
 }
 Vec3f LastValidPlayerPos;
 Vec3f	WILL_RESTORE_PLAYER_POSITION;
@@ -5209,7 +5209,7 @@ static float _AvgFrameDiff = 150.f;
 			{
 				LogDebug << "snapshot";
 				//create a screenshot temporaire pour la sauvegarde
-				::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
+				SnapShot * pSnapShot = new SnapShot("sct",true);
 				pSnapShot->GetSnapShotDim(160,100);
 				delete pSnapShot;
 
@@ -5412,7 +5412,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if (WILL_QUICKSAVE)
 	{
-		::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
+		SnapShot * pSnapShot = new SnapShot("sct", true);
 		pSnapShot->GetSnapShotDim(160,100);
 		delete pSnapShot;
 

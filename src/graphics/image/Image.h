@@ -1,5 +1,8 @@
-#ifndef _ARX_IMAGE_H_
-#define _ARX_IMAGE_H_
+
+#ifndef ARX_GRAPHICS_IMAGE_IMAGE_H
+#define ARX_GRAPHICS_IMAGE_IMAGE_H
+
+#include <boost/filesystem/path.hpp>
 
 #include "platform/Platform.h"
 
@@ -67,7 +70,7 @@ public:
     bool ToGrayscale();
     bool ToNormalMap();
 
-	void save( const std::string& pFilename ) const;
+	void save(const boost::filesystem::path & filename) const;
 
 public:
     static unsigned int	GetSize( Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1 );
@@ -91,4 +94,4 @@ private:
 };
 
 
-#endif	// _ARX_IMAGE_H_
+#endif // ARX_GRAPHICS_IMAGE_IMAGE_H
