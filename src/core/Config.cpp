@@ -76,7 +76,8 @@ const int
 	speechVolume = 10,
 	ambianceVolume = 10,
 	mouseSensitivity = 4,
-	migration = Config::OriginalAssets;
+	migration = Config::OriginalAssets,
+	quicksaveSlots = 2;
 
 const bool
 	first_run = true,
@@ -246,7 +247,8 @@ const string
 	forceToggle = "forcetoggle",
 	gore = "fg",
 	newControl = "newcontrol",
-	migration = "migration";
+	migration = "migration",
+	quicksaveSlots = "quicksave_slots";
 
 } // namespace Key
 
@@ -675,6 +677,7 @@ bool Config::save() {
 	writer.writeKey(Key::forceToggle, misc.forceToggle);
 	writer.writeKey(Key::gore, misc.gore);
 	writer.writeKey(Key::migration, misc.migration);
+	writer.writeKey(Key::quicksaveSlots, misc.quicksaveSlots);
 	
 	return writer.flush();
 }
@@ -757,6 +760,7 @@ bool Config::init(const string & file, const string & defaultFile) {
 	misc.gore = reader.getKey(Section::Misc, Key::gore, Default::gore);
 	misc.newControl = reader.getKey(Section::Misc, Key::newControl, Default::newControl);
 	misc.migration = (MigrationStatus)reader.getKey(Section::Misc, Key::migration, Default::migration);
+	misc.quicksaveSlots = std::max(reader.getKey(Section::Misc, Key::quicksaveSlots, Default::quicksaveSlots), 1);
 	
 	return loaded;
 }

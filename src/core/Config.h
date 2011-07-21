@@ -173,6 +173,8 @@ public:
 		
 		MigrationStatus migration;
 		
+		int quicksaveSlots;
+		
 	} misc;
 	
 public:

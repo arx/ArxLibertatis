@@ -152,12 +152,9 @@ long ARX_CHANGELEVEL_Load(long);
 TextureContainer *pTextureLoad=NULL;
 static TextureContainer *pTextureLoadRender=NULL;
 
-#define QUICK_SAVE_ID "ARX_QUICK_ARX"
-#define QUICK_SAVE_ID1 "ARX_QUICK_ARX1"
+const char QUICK_SAVE_ID[] = "ARX_QUICK_ARX";
 
 int iTimeToDrawD7=-3000;
-
-static const size_t MAX_QUICK_SAVES = 2; // TODO(case-sensitive) move to config
 
 void ARX_QuickSave() {
 	
@@ -180,14 +177,14 @@ void ARX_QuickSave() {
 	
 	// Find the oldest quicksave.
 	for(size_t i = 1; i < save_l.size(); i++) {
-		if(save_l[i].name == QUICK_SAVE_ID || save_l[i].name == QUICK_SAVE_ID1) {
+		if(save_l[i].quicksave) {
 			nfound++;
 			if(save_l[i].stime < time) {
 				num = i, time = save_l[i].stime;
 			}
 		}
 	}
-	if(nfound < MAX_QUICK_SAVES) {
+	if(nfound < (size_t)config.misc.quicksaveSlots) {
 		num = 0;
 	}
 	if(num == 0) {
@@ -241,7 +238,7 @@ bool ARX_QuickLoad() {
 	std::time_t time = std::numeric_limits<std::time_t>::min();
 	for(size_t i = 1; i < save_l.size(); i++) {
 		if(save_l[i].stime > time) {
-			if(save_l[i].name == QUICK_SAVE_ID || save_l[i].name == QUICK_SAVE_ID1) {
+			if(save_l[i].quicksave) {
 				num = i, time = save_l[i].stime;
 			}
 		}
@@ -807,9 +804,6 @@ bool Menu2_Render() {
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					//QUICK SAVE
-					std::string szMenuText1;
-					szMenuText = QUICK_SAVE_ID;
-					szMenuText1 = QUICK_SAVE_ID1;
 
 					size_t quicksaveNum = 0;
 					
