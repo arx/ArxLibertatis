@@ -190,6 +190,10 @@ aalError OpenALBackend::setRolloffFactor(float factor) {
 
 aalError OpenALBackend::setListenerPosition(const Vec3f & position) {
 	
+	if(!isallfinite(position)) {
+		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
+	}
+	
 	alListener3f(AL_POSITION, position.x, position.y, position.z);
 	AL_CHECK_ERROR("setting listener posiotion")
 	
@@ -197,6 +201,10 @@ aalError OpenALBackend::setListenerPosition(const Vec3f & position) {
 }
 
 aalError OpenALBackend::setListenerOrientation(const Vec3f & front, const Vec3f & up) {
+	
+	if(!isallfinite(front) || !isallfinite(up)) {
+		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
+	}
 	
 	ALfloat orientation[] = {front.x, front.y, front.z, -up.x, -up.y, -up.z};
 	alListenerfv(AL_ORIENTATION, orientation);
@@ -228,7 +236,14 @@ aalError OpenALBackend::setUnitFactor(float factor) {
 #endif
 	
 	const float speedOfSoundMetersPerSecond = 343.3f; // Default for OpenAL
-	alSpeedOfSound(speedOfSoundMetersPerSecond / factor);
+	
+	float speedOfSoundInUnits = speedOfSoundMetersPerSecond / factor;
+	
+	if(!(boost::math::isfinite)(speedOfSoundInUnits)) {
+		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
+	}
+	
+	alSpeedOfSound(speedOfSoundInUnits);
 	AL_CHECK_ERROR("scaling speed of sound to unit factor")
 	
 	return AAL_OK;

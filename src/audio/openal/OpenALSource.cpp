@@ -418,6 +418,10 @@ aalError OpenALSource::setPosition(const Vec3f & position) {
 	
 	channel.position = position;
 	
+	if(!isallfinite(position)) {
+		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
+	}
+	
 	alSource3f(source, AL_POSITION, position.x, position.y, position.z);
 	AL_CHECK_ERROR("setting source position")
 	
@@ -431,6 +435,10 @@ aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 	}
 	
 	channel.velocity = velocity;
+	
+	if(!isallfinite(velocity)) {
+		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
+	}
 	
 	alSource3f(source, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 	AL_CHECK_ERROR("setting source velocity")
