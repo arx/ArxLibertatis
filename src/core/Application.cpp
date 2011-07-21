@@ -330,6 +330,17 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 }
 
 #ifdef BUILD_EDITOR
+
+bool OKBox(const std::string & text, const std::string & title) {
+	
+	int i;
+	g_pD3DApp->Pause(true);
+	i = MessageBox(g_pD3DApp->m_hWnd, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
+	g_pD3DApp->Pause(false);
+	
+	return (i != IDCANCEL);
+}
+
 HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 	
 	HWND hWndToolbar;
@@ -355,7 +366,8 @@ HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
 
 	return hWndToolbar;
 }
-#endif
+
+#endif // BUILD_EDITOR
 
 //*************************************************************************************
 // Run()
@@ -1269,25 +1281,6 @@ bool CD3DApplication::Unlock()
 		m_pFramework->m_pddsZBuffer->Unlock(&srRect);
 		zbuf = NULL;
 	}
-
-	return true;
-}
-
-//******************************************************************************
-// MESSAGE BOXES
-//******************************************************************************
-//*************************************************************************************
-//*************************************************************************************
-//TODO(lubosz): is this needed in the game? replace
-bool OKBox(const std::string& text, const std::string& title)
-
-{
-	int i;
-	g_pD3DApp->Pause(true);
-	i = MessageBox(g_pD3DApp->m_hWnd, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
-	g_pD3DApp->Pause(false);
-
-	if (i == IDCANCEL) return false;
 
 	return true;
 }

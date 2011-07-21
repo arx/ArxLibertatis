@@ -25,7 +25,7 @@ struct LogSetting {
 };
 
 const LogSetting blackList[] = {
-	{ "Filesystem.cpp", Logger::Fatal },
+	{ "dummy", Logger::Info },
 };
 
 };

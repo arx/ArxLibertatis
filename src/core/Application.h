@@ -261,6 +261,8 @@ struct EERIETOOLBAR {
 	long Type;
 };
 
+bool OKBox(const std::string & text, const std::string & title);
+
 #endif
 
 struct KEYBOARD_MNG {
@@ -428,8 +430,6 @@ private:
 	CD3DApplicationScopedLock(const CD3DApplicationScopedLock&);
 	CD3DApplicationScopedLock& operator=(const CD3DApplicationScopedLock&);
 };
-
-bool OKBox(const std::string& text, const std::string& title);
 
 void CalcFPS(bool reset = false);
 
