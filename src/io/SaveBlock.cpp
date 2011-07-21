@@ -286,7 +286,7 @@ bool SaveBlock::loadFileTable() {
 		return false;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
-		LogWarning << "unexpected savegame version: " << version << " for " << savefile;
+		LogWarning << "unexpected savegame version: " << (version >> 16) << '.' << (version & 0xffff) << " for " << savefile;
 	}
 	
 	u32 nFiles;
