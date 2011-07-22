@@ -235,8 +235,9 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 	}
 	
 	INTERACTIVE_OBJ * io = ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
-	io->level = (short)NEW_LEVEL;
-	
+	if(io) {
+		io->level = (short)NEW_LEVEL;
+	}
 	return io;
 }
 
