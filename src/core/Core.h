@@ -87,6 +87,7 @@ extern EERIE_3DOBJ * nodeobj;
 extern Vec3f Mscenepos;
 #ifdef BUILD_EDIT_LOADSAVE
 extern EERIE_MULTI3DSCENE * mse;
+extern long ADDED_IO_NOT_SAVED;
 #endif
 extern EERIE_CAMERA * Kam;
 extern EERIE_BACKGROUND DefaultBkg;
@@ -125,7 +126,6 @@ const long EDITMODE = 0;
 extern long SHOW_TORCH;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
-extern long ADDED_IO_NOT_SAVED;
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern long DANAECENTERX;

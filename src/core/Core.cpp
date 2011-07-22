@@ -313,6 +313,7 @@ TextureContainer *	arrow_left_tc=NULL;
 #ifdef BUILD_EDIT_LOADSAVE
 extern long NEED_ANCHORS;
 EERIE_MULTI3DSCENE * mse = NULL;
+long ADDED_IO_NOT_SAVED = 0;
 #endif
 
 long NEED_TEST_TEXT=0;
@@ -386,7 +387,6 @@ long CURRENT_BASE_FOCAL=310;
 long CINE_PRELOAD=0;
 long PLAY_LOADED_CINEMATIC=0;
 long PauseScript=0;
-long ADDED_IO_NOT_SAVED=0;
 long WILL_RELOAD_ALL_TEXTURES=0;	// Set To 1 if Textures are to be reloaded from disk and restored.
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
