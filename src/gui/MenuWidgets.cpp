@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 #include <cstdio>
+#include <iomanip>
 
 #include <algorithm>
 #include <sstream>
@@ -2362,33 +2363,13 @@ void CMenuElementText::RenderMouseOver()
 
 	switch(iID) {
 		
-		case BUTTON_MENUEDITQUEST_LOAD: {
-			
-			CURRENT_GAME_INSTANCE = save_l[lData].num;
-			ARX_GAMESAVE_MakePath();
-			
-			fs::path path = GameSavePath / "gsave.bmp";
-			
-			TextureContainer * pTextureTemp = TextureContainer::LoadUI(path.string());
-			if(pTextureTemp != pTextureLoad) {
-				if(pTextureLoad) {
-					delete pTextureLoad;
-				}
-				pTextureLoad = pTextureTemp;
-			}
-			pTextureLoadRender = pTextureLoad;
-			
-			break;
-		}
-		
+		case BUTTON_MENUEDITQUEST_LOAD:
 		case BUTTON_MENUEDITQUEST_SAVEINFO: {
 			
-			CURRENT_GAME_INSTANCE = save_l[lData].num;
-			ARX_GAMESAVE_MakePath();
+			std::ostringstream oss;
+			oss << "save/save" << std::setw(4) << std::setfill('0') << save_l[lData].num << "/gsave.bmp";
 			
-			fs::path path = GameSavePath / "gsave.bmp";
-			
-			TextureContainer * pTextureTemp = TextureContainer::LoadUI(path.string());
+			TextureContainer * pTextureTemp = TextureContainer::LoadUI(oss.str());
 			if(pTextureTemp != pTextureLoad) {
 				if(pTextureLoad) {
 					delete pTextureLoad;
