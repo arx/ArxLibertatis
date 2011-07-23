@@ -1456,13 +1456,11 @@ int main(int argc, char ** argv) {
 		NOCHECKSUM=1;
 	}
 	
-	if(LAST_CHINSTANCE != -1) {
-		if(ARX_CHANGELEVEL_MakePath()) {
-			LogInfo << "Clearing current game directory " << CurGamePath;
-			fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
-		}
+	if(ARX_CHANGELEVEL_MakePath()) {
+		LogInfo << "Clearing current game directory " << CurGamePath;
+		fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
 	}
-	
+		
 	Project.improve=0;
 	Project.interpolatemouse = 0;
 

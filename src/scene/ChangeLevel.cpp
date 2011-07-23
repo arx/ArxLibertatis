@@ -155,7 +155,6 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io);
 static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
-long LAST_CHINSTANCE = 1; // temporary MUST return to -1;
 
 fs::path CurGamePath;
 
@@ -286,10 +285,7 @@ long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
 
 bool ARX_CHANGELEVEL_MakePath() {
 	
-	std::ostringstream oss;
-	oss << "save/cur" << std::setfill('0') << std::setw(4) << LAST_CHINSTANCE;
-	
-	CurGamePath = oss.str();
+	CurGamePath = "save/cur0001";
 	
 	boost::system::error_code ec;
 	fs::create_directories(CurGamePath, ec);
@@ -316,28 +312,6 @@ bool ARX_GAMESAVE_MakePath() {
 	}
 
 	return true;
-}
-
-void ARX_CHANGELEVEL_CreateNewInstance() {
-	
-	fs::path savedir("save");
-	
-	arx_assert(fs::is_directory(savedir));
-	
-	for(long num = 1; ; num++) {
-		
-		std::ostringstream oss;
-		oss << "cur" << std::setfill('0') << std::setw(4) << LAST_CHINSTANCE;
-		
-		fs::path path = savedir / oss.str();
-		
-		if(!fs::exists(path)) {
-			fs::create_directories(path);
-			CURRENT_GAME_INSTANCE = num;
-			GameSavePath = path;
-			return;
-		}
-	}
 }
  
 SaveBlock * GLOBAL_pSaveB = NULL;
@@ -393,12 +367,8 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	
 	ARX_CHANGELEVEL_DesiredTime = ARX_TIME_Get();
 	
-	if(LAST_CHINSTANCE == -1) {
-		ARX_CHANGELEVEL_CreateNewInstance();
-	} else {
-		ARX_CHANGELEVEL_MakePath();
-	}
-	
+	ARX_CHANGELEVEL_MakePath();
+		
 	FORBID_SAVE = 1;
 	long num = GetLevelNumByName("level" + level);
 	
@@ -3105,7 +3075,6 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 		return 0;
 	}
 	
-	arx_assert(LAST_CHINSTANCE != -1);
 	if(!ARX_CHANGELEVEL_MakePath()) {
 		return false;
 	}

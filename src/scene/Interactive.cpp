@@ -3059,7 +3059,6 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 
 //*************************************************************************************
 // Tells if an ident corresponds to a temporary IO
-// NEED TO OPEN if (LAST_CHINSTANCE!=-1) ARX_Changelevel_CurGame_Open();
 // And close after seek session
 //*************************************************************************************
 static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
@@ -3097,14 +3096,11 @@ static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 	if(resources->getDirectory(file2))
 		return true;
 
-	if (LAST_CHINSTANCE != -1)
-	{
-		ARX_CHANGELEVEL_MakePath();
+	ARX_CHANGELEVEL_MakePath();
 
-		if (ARX_Changelevel_CurGame_Seek(ident))
-			return true;
-	}
-
+	if (ARX_Changelevel_CurGame_Seek(ident))
+		return true;
+	
 	return false;
 }
 //*************************************************************************************
@@ -3117,7 +3113,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
 	if (!io) return;
 
 	// TODO do we really need to open this every time?
-	if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Open();
+	ARX_Changelevel_CurGame_Open();
 
 	for (;;)
 	{
@@ -3125,10 +3121,9 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
 		{
 			io->ident = t;
 
-			if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Close();
+			ARX_Changelevel_CurGame_Close();
 
 			return;
-			//	}
 		}
 
 		t++;

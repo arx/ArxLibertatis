@@ -64,7 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct INTERACTIVE_OBJ;
 
-extern long LAST_CHINSTANCE;
 extern boost::filesystem::path CurGamePath;
 extern long CURRENT_GAME_INSTANCE;
 extern boost::filesystem::path GameSavePath;
