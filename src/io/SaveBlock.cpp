@@ -439,10 +439,12 @@ bool SaveBlock::defragment() {
 	
 	tempFile.flush(), tempFile.close(), handle.close();
 	
-	fs::rename(tempFileName, savefile);
+	boost::system::error_code ec;
+	fs::rename(tempFileName, savefile, ec);
+	if(ec != boost::system::errc::success)
+		return false;
 	
 	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary);
-	
 	return handle.is_open();
 }
 

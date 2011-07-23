@@ -291,7 +291,13 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			s << "dlf_bak_" << i;
 			backupfile.replace_extension(s.str());
 		} while(fs::exists(backupfile) && (i++, true));
-		fs::rename(fic, backupfile);
+
+		boost::system::error_code ec;
+		fs::rename(fic, backupfile, ec);
+		if(ec != boost::system::errc::success) {
+			LogError << "Unable to rename file " << fic << " to " << backupfile;
+			return -1;
+		}
 	}
 	
 	fs::path fic2 = fic;
@@ -304,7 +310,13 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			s << "llf_bak_" << i;
 			backupfile.replace_extension(s.str());
 		} while(fs::exists(backupfile) && (i++, true));
-		fs::rename(fic2, backupfile);
+
+		boost::system::error_code ec;
+		fs::rename(fic2, backupfile, ec);
+		if(ec != boost::system::errc::success) {
+			LogError << "Unable to rename file " << fic2 << " to " << backupfile;
+			return -1;
+		}
 	}
 	
 	DANAE_LS_HEADER dlh;

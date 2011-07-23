@@ -1129,26 +1129,22 @@ static bool migrateFilenames(fs::path path) {
 		
 		LogInfo << "renaming " << path << " to " << dst.filename() << "";
 		
-		try {
-			fs::rename(path, dst);
+		boost::system::error_code ec;
+		fs::rename(path, dst, ec);
+		if(ec == boost::system::errc::success) {
 			path = dst;
-		} catch(fs::filesystem_error) {
+		} else {
 			migrated = false;
-		}
-		
+		}		
 	}
 	
-	try {
-		if(fs::is_directory(path)) {
-			fs::directory_iterator end;
-			for(fs::directory_iterator it(path); it != end; ++it) {
-				migrated &= migrateFilenames(it->path());
-			}
+	if(fs::is_directory(path)) {
+		fs::directory_iterator end;
+		for(fs::directory_iterator it(path); it != end; ++it) {
+			migrated &= migrateFilenames(it->path());
 		}
-	} catch(fs::filesystem_error) {
-		migrated = false;
 	}
-	
+
 	return migrated;
 }
 

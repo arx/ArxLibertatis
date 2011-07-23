@@ -2912,7 +2912,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	CURRENT_GAME_INSTANCE = instance;
 	
-	if(!ARX_CHANGELEVEL_MakePath() {
+	if(!ARX_CHANGELEVEL_MakePath()) {
 		ReleaseGaids();
 		return false;
 	}
