@@ -3153,9 +3153,23 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 		return false;
 	}
 
-	fs::remove_all(GameSavePath), fs::create_directory(GameSavePath); 
-	fs::copy_file(CurGamePath / "gsave.sav", GameSavePath / "gsave.sav");
-	fs::rename("sct_0.bmp", GameSavePath / "gsave.bmp");
+	boost::system::error_code ec;
+
+	fs::remove_all(GameSavePath, ec);
+	if(ec != boost::system::errc::success)
+		return false;
+
+	fs::create_directory(GameSavePath, ec); 
+	if(ec != boost::system::errc::success)
+		return false;
+
+	fs::copy_file(CurGamePath / "gsave.sav", GameSavePath / "gsave.sav", ec);
+	if(ec != boost::system::errc::success)
+		return false;
+
+	fs::rename("sct_0.bmp", GameSavePath / "gsave.bmp", ec);
+	if(ec != boost::system::errc::success)
+		return false;
 	
 	return true;
 }
@@ -3222,9 +3236,20 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	// Empty Directory
 	ARX_CHANGELEVEL_MakePath();
 	
-    fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
 	// Copy SavePath to Current Game
-	fs::copy_file(GameSavePath / "gsave.sav", CurGamePath / "gsave.sav");
+	boost::system::error_code ec;
+    
+	fs::remove_all(CurGamePath, ec);
+	if(ec != boost::system::errc::success)
+		return -1;
+	
+	fs::create_directory(CurGamePath, ec);
+	if(ec != boost::system::errc::success)
+		return -1;
+	
+	fs::copy_file(GameSavePath / "gsave.sav", CurGamePath / "gsave.sav", ec);
+	if(ec != boost::system::errc::success)
+		return -1;
 	
 	// Retrieves Player LevelData
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
