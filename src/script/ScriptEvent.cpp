@@ -398,6 +398,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				if(msg == SM_EXECUTELINE) {
 					msg = SM_DUMMY;
 				}
+				brackets = (size_t)-1;
 			}
 			
 		} else if(!word.compare(0, 2, ">>", 2)) {
@@ -405,12 +406,16 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		} else if(!word.compare(0, 5, "timer", 5)) {
 			timerCommand(word.substr(5), context);
 		} else if(word == "{") {
-			brackets++;
+			if(brackets != (size_t)-1) {
+				brackets++;
+			}
 		} else if(word == "}") {
-			brackets--;
-			if(brackets == 0) {
-				ScriptEventWarning << "--> event block ended without accept or refuse!";
-				return ACCEPT;
+			if(brackets != (size_t)-1) {
+				brackets--;
+				if(brackets == 0) {
+					ScriptEventWarning << "--> event block ended without accept or refuse!";
+					return ACCEPT;
+				}
 			}
 		} else {
 			

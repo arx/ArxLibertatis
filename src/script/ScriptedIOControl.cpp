@@ -379,7 +379,7 @@ public:
 			context.skipStatement();
 		}
 		
-		return Jumped;
+		return Success;
 	}
 	
 };
@@ -420,7 +420,7 @@ public:
 			context.skipStatement();
 		}
 		
-		return Jumped;
+		return Success;
 	}
 	
 };
