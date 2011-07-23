@@ -2802,7 +2802,11 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 			
 			string message = "Really remove Directory & Directory Contents ?\n\n" + dir.string();
 			if((flag & FLAG_NOCONFIRM) || OKBox(message, "WARNING")) {
-				fs::remove_all(dir);
+				boost::system::error_code ec;
+				fs::remove_all(dir, ec);
+				if(ec != boost::system::errc::success) {
+					LogError << "Could not remove directory " << dir;
+				}
 			}
 			
 		}

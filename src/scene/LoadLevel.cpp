@@ -1699,7 +1699,12 @@ void CheckIO_NOT_SAVED() {
 		if(fs::is_directory(temp)) {
 			if(OKBox("Really remove Directory & Directory Contents ?\n\n" + temp.string(), "WARNING")) {
 				LogDirDestruction(temp);
-				fs::remove_all(temp);
+
+				boost::system::error_code ec;
+				fs::remove_all(temp, ec);
+				if(ec != boost::system::errc::success) {
+					LogError << "Could not remove directory " << temp;
+				}
 			}
 		}
 		
