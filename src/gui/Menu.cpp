@@ -206,7 +206,10 @@ void CreateSaveGameList() {
 		long num;
 		iss >> num;
 		
-		std::time_t stime = fs::last_write_time(path / "gsave.sav");
+		boost::system::error_code ec;
+		std::time_t stime = fs::last_write_time(path / "gsave.sav", ec);
+		if(ec != boost::system::errc::success)
+			continue;
 		
 		size_t index = (size_t)-1;
 		for(size_t i = 1; i <= oldCount; i++) {

@@ -82,18 +82,21 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	
 	s32 * dst = reinterpret_cast<s32 *>(scheck);
 	size_t length = size / 4;
+	arx_assert(length > 6);
 	
 	fs::ifstream ifs(name, fs::fstream::ate | fs::fstream::in | fs::fstream::binary);
 	if(!ifs.is_open()) {
 		return;
-	}
-	
-	arx_assert(length > 6);
+	}	
+
+	boost::system::error_code ec;
+	std::time_t write_time = fs::last_write_time(name);
+	if(ec != boost::system::errc::success)
+		return;
 	
 	memcpy(&dst[0], &id, 4);
-	dst[1] = size;
-	
-	std::time_t write_time = fs::last_write_time(name);
+	dst[1] = size;	
+
 	dst[2] = dst[4] = u32(write_time);
 	dst[3] = dst[5] = u32(u64(write_time) >> 32);
 	
