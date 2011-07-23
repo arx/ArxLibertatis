@@ -655,8 +655,10 @@ bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::st
 	}
 	
 	try {
-		
-		size_t size = fs::file_size(path);
+		boost::system::error_code ec;
+		size_t size = fs::file_size(path, ec);
+		if(ec != boost::system::errc::success)
+			return false;
 		
 		dir->addFile(name, new PlainFile(path, size));
 		
