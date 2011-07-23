@@ -317,8 +317,12 @@ static Font * _CreateFont(const string & fontFace, const string & fontProfileNam
 
 static string getFontFile() {
 	string tx = "misc/arx.ttf";
-	if(!fs::exists(tx.c_str())) {
+	boost::system::error_code e;
+	if(!fs::exists(tx, e) || e) {
 		tx = "misc/arx_default.ttf"; // Full path
+		if(!fs::exists(tx, e) || e) {
+			LogFatal << "missing font file: need either misc/arx.ttf or misc/arx_default.ttf";
+		}
 	}
 	return tx;
 }
