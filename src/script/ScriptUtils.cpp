@@ -342,6 +342,8 @@ void initSuppressions() {
 	
 	suppressions[523]["wall_breakable"]["}"] = true; // missing accept/refuse before end of event block
 	
+	suppressions[66]["hammer_club"]["settwohanded"] = true; // obsolete command
+	
 }
 
 bool isSuppressed(const Context & context, const string & command) {

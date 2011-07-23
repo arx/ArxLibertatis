@@ -197,7 +197,7 @@ public:
 			context.skipWord();
 		}
 		
-		LogWarning << "obsolete command: " << getName();
+		ScriptWarning << "obsolete command";
 		
 		return Failed;
 	}
