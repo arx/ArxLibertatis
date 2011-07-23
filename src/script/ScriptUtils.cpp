@@ -340,8 +340,6 @@ void initSuppressions() {
 	
 	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
 	
-	suppressions[44]["spider_web_0004"]["sendevent"] = true; // unknown target: bat_0005
-	
 	suppressions[523]["wall_breakable"]["}"] = true; // missing accept/refuse before end of event block
 	
 }

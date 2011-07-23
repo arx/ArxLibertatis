@@ -341,7 +341,6 @@ public:
 			}
 			
 			if(!ValidIONum(t)) {
-				ScriptWarning << "invalid target: " << target;
 				EVENT_SENDER = oes;
 				return Failed;
 			}
