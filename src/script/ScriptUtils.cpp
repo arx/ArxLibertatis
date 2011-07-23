@@ -340,6 +340,8 @@ void initSuppressions() {
 	
 	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
 	
+	suppressions[523]["wall_breakable"]["}"] = true; // missing accept/refuse before end of event block
+	
 }
 
 bool isSuppressed(const Context & context, const string & command) {

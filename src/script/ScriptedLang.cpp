@@ -855,8 +855,6 @@ void timerCommand(const string & timer, Context & context) {
 void setupScriptedLang() {
 	
 	ScriptEvent::registerCommand(new NopCommand("nop")); // TODO(script-parser) remove
-	ScriptEvent::registerCommand(new NopCommand("{")); // TODO(script-parser) remove
-	ScriptEvent::registerCommand(new NopCommand("}")); // TODO(script-parser) remove
 	ScriptEvent::registerCommand(new GotoCommand("goto")); // TODO(script-parser) remove when possible
 	ScriptEvent::registerCommand(new GotoCommand("gosub", true));
 	ScriptEvent::registerCommand(new AbortCommand("accept", Command::AbortAccept));
