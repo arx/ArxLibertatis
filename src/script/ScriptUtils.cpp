@@ -324,6 +324,8 @@ void initSuppressions() {
 	
 	suppressions[422]["light_door"]["set"] = true; // bad variable name: "durability"
 	
+	suppressions[162]["light_door_0030"]["setevent"] = true; // unsupported event: "npc_open"
+	
 	suppressions[152]["jail_wood_grid"]["set"] = true; // bad variable name: "material"
 	
 	suppressions[5107]["troll_base"]["loadanim"] = true; // missing animation: "troll_fight_ready_toponly"
@@ -335,6 +337,8 @@ void initSuppressions() {
 	suppressions[30010]["goblin_base"]["goto"] = true; // missing label "main_alert"
 	
 	suppressions[399]["corpse_0003"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
+	
+	suppressions[274]["corpse_0084"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
 	
 	suppressions[242]["chest_metal_0045"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
 	
