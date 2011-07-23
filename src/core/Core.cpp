@@ -1461,9 +1461,10 @@ int main(int argc, char ** argv) {
 	}
 	
 	if(LAST_CHINSTANCE != -1) {
-		ARX_CHANGELEVEL_MakePath();
-		LogInfo << "Clearing current game directory " << CurGamePath;
-		fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
+		if(ARX_CHANGELEVEL_MakePath()) {
+			LogInfo << "Clearing current game directory " << CurGamePath;
+			fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
+		}
 	}
 	
 	Project.improve=0;

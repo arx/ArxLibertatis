@@ -770,9 +770,14 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 				}
 			} else {
 #ifdef BUILD_EDIT_LOADSAVE
-				fs::create_directories(tmp);
-				LogDirCreation(tmp);
-				WriteIOInfo(io, tmp);
+				boost::system::error_code ec;
+				fs::create_directories(tmp, ec);
+				if(ec == boost::system::errc::success) {
+					LogDirCreation(tmp);
+					WriteIOInfo(io, tmp);
+				} else {
+					LogError << "Could not create a unique identifier " << tmp;
+				}
 #else
 				arx_assert(false);
 #endif

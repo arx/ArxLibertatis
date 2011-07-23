@@ -71,8 +71,8 @@ extern boost::filesystem::path GameSavePath;
 
 extern long FORBID_SAVE;
 
-void ARX_GAMESAVE_MakePath();
-void ARX_CHANGELEVEL_MakePath();
+bool ARX_GAMESAVE_MakePath();
+bool ARX_CHANGELEVEL_MakePath();
 
 void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle);
 

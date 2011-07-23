@@ -443,7 +443,7 @@ bool SaveBlock::defragment() {
 	
 	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary);
 	
-	return true;
+	return handle.is_open();
 }
 
 bool SaveBlock::save(const string & name, const char * data, size_t size) {

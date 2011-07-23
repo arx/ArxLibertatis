@@ -3036,9 +3036,15 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 		
 		if(!fs::is_directory(temp)) {
 			io->ident = t;
-			fs::create_directories(temp);
-			LogDirCreation(temp);
-			WriteIOInfo(io, temp);
+			
+			boost::system::error_code ec;
+			fs::create_directories(temp, ec);
+			if(ec == boost::system::errc::success) {
+				LogDirCreation(temp);
+				WriteIOInfo(io, temp);
+			} else {
+				LogError << "Could not create a unique identifier " << temp;
+			}
 		}
 
 		t++;

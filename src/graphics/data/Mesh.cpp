@@ -3971,9 +3971,9 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	LogDebug << "FastSceneSave" << path;
 	
-	try {
-		fs::create_directories(path);
-	} catch(fs::filesystem_error) {
+	boost::system::error_code ec;
+	fs::create_directories(path, ec);
+	if(ec != boost::system::errc::success) {
 		return false;
 	}
 	

@@ -173,13 +173,15 @@ long CURRENT_GAME_INSTANCE = -1;
 
 fs::path GameSavePath;
 
-static void ARX_GAMESAVE_CreateNewInstance() {
+static bool ARX_GAMESAVE_CreateNewInstance() {
 	
 	fs::path savedir("save");
 	
-	arx_assert(fs::is_directory(savedir));
+	if(!fs::is_directory(savedir))
+		return false;
 	
-	for(long num = 1; ; num++) {
+    bool created = false;
+	for(long num = 1; !created; num++) {
 		
 		std::ostringstream oss;
 		oss << "save" << std::setfill('0') << std::setw(4) << num;
@@ -187,12 +189,17 @@ static void ARX_GAMESAVE_CreateNewInstance() {
 		fs::path path = savedir / oss.str();
 		
 		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / "gsave.sav"))) {
-			fs::create_directories(path);
+            boost::system::error_code ec;
+         	fs::create_directories(path, ec);
+	        if(ec != boost::system::errc::success)
+				break;
 			CURRENT_GAME_INSTANCE = num;
 			GameSavePath = path;
-			return;
+			created = true;
 		}
 	}
+
+	return created;
 }
 
 // TODO(case-sensitive) remove
@@ -277,24 +284,38 @@ long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
 	return -1;
 }
 
-void ARX_CHANGELEVEL_MakePath() {
+bool ARX_CHANGELEVEL_MakePath() {
 	
 	std::ostringstream oss;
 	oss << "save/cur" << std::setfill('0') << std::setw(4) << LAST_CHINSTANCE;
 	
 	CurGamePath = oss.str();
 	
-	fs::create_directories(CurGamePath);
+	boost::system::error_code ec;
+	fs::create_directories(CurGamePath, ec);
+	if(ec != boost::system::errc::success) {
+		LogError << "Could not create save path: " << CurGamePath;
+		return false;
+	}
+
+	return true;
 }
 
-void ARX_GAMESAVE_MakePath() {
+bool ARX_GAMESAVE_MakePath() {
 	
 	std::ostringstream oss;
 	oss << "save/save" << std::setfill('0') << std::setw(4) << CURRENT_GAME_INSTANCE;
 	
 	GameSavePath = oss.str();
 	
-	fs::create_directories(GameSavePath);
+    boost::system::error_code ec;
+	fs::create_directories(GameSavePath, ec);
+	if(ec != boost::system::errc::success) {
+		LogError << "Could not create game save path: " << GameSavePath;
+		return false;
+	}
+
+	return true;
 }
 
 void ARX_CHANGELEVEL_CreateNewInstance() {
@@ -2890,10 +2911,8 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	ARX_CHANGELEVEL_INDEX asi;
 	
 	CURRENT_GAME_INSTANCE = instance;
-	ARX_CHANGELEVEL_MakePath();
 	
-	if(!fs::is_directory(CurGamePath)) {
-		LogError << "Cannot Load this game: Directory Not Found: " << CurGamePath;
+	if(!ARX_CHANGELEVEL_MakePath() {
 		ReleaseGaids();
 		return false;
 	}
@@ -3071,8 +3090,12 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	ARX_TIME_Pause();
 	
 	if(instance <= 0) {
-		ARX_GAMESAVE_CreateNewInstance();
-		LogDebug << "Created new instance " << instance;
+		if(ARX_GAMESAVE_CreateNewInstance()) {
+			LogDebug << "Created new instance " << instance;
+		} else {
+			LogWarning << "could not save the level";
+			return false;
+		}
 	} else {
 		CURRENT_GAME_INSTANCE = instance;
 	}
@@ -3083,7 +3106,9 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	}
 	
 	arx_assert(LAST_CHINSTANCE != -1);
-	ARX_CHANGELEVEL_MakePath();
+	if(!ARX_CHANGELEVEL_MakePath()) {
+		return false;
+	}
 	
 	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
 	
@@ -3123,11 +3148,13 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	
 	// Copy the savegame and screenshot to the final destination
 	
-	ARX_GAMESAVE_MakePath();
+	if(!ARX_GAMESAVE_MakePath()) {
+		LogError << "could not complete the save";
+		return false;
+	}
+
 	fs::remove_all(GameSavePath), fs::create_directory(GameSavePath); 
-	
 	fs::copy_file(CurGamePath / "gsave.sav", GameSavePath / "gsave.sav");
-	
 	fs::rename("sct_0.bmp", GameSavePath / "gsave.bmp");
 	
 	return true;
@@ -3186,9 +3213,8 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	
 	// Checks/Create GameSavePath
 	CURRENT_GAME_INSTANCE = instance;
-	ARX_GAMESAVE_MakePath();
 	
-	if(!fs::is_directory(GameSavePath)) {
+	if(!ARX_GAMESAVE_MakePath()) {
 		LogError << "Unknown SavePath: " << GameSavePath;
 		return -1;
 	}
@@ -3196,8 +3222,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	// Empty Directory
 	ARX_CHANGELEVEL_MakePath();
 	
-	fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
-	
+    fs::remove_all(CurGamePath), fs::create_directory(CurGamePath);
 	// Copy SavePath to Current Game
 	fs::copy_file(GameSavePath / "gsave.sav", CurGamePath / "gsave.sav");
 	
