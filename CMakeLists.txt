@@ -219,7 +219,7 @@ else(MSVC)
 	endif()
 	
 	# Disable exceptions & rtti
-	add_cxxflag(-fno-exceptions)
+	# add_cxxflag(-fno-exceptions) - boost headers fail to compile if exceptions are disabled
 	add_cxxflag(-fno-rtti)
 	
 endif(MSVC)
