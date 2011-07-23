@@ -9,6 +9,7 @@
 #include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/data/MeshManipulation.h"
 #include "platform/Platform.h"
 
 const s32 SAVEFLAGS_EXTRA_ROTATE = 1;
