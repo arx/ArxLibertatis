@@ -4020,10 +4020,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	long count = 0;
 	
 	fs::directory_iterator end;
-	for(fs::directory_iterator it(partial_path); it != end; ++it) {
+	for(fs::directory_iterator it(partial_path, ec); it != end; it.increment(ec)) {
 		
 		const fs::path & path = it->path();
-		if(path.extension() != ".scn" || !fs::is_regular_file(path)) {
+		if(path.extension() != ".scn" || !fs::is_regular_file(path, ec)) {
 			continue;
 		}
 		

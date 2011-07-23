@@ -87,12 +87,13 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	fs::ifstream ifs(name, fs::fstream::ate | fs::fstream::in | fs::fstream::binary);
 	if(!ifs.is_open()) {
 		return;
-	}	
-
+	}
+	
 	boost::system::error_code ec;
-	std::time_t write_time = fs::last_write_time(name);
-	if(ec != boost::system::errc::success)
+	std::time_t write_time = fs::last_write_time(name, ec);
+	if(ec) {
 		return;
+	}
 	
 	memcpy(&dst[0], &id, 4);
 	dst[1] = size;	

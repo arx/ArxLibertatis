@@ -588,7 +588,8 @@ void ARXMenu_DeleteQuest(long num) {
 		std::ostringstream oss;
 		oss << "save/save" << std::setfill('0') << std::setw(4) << save_l[num].num;
 		
-		fs::remove_all(oss.str());
+		boost::system::error_code ec;
+		fs::remove_all(oss.str(), ec);
 		
 		CreateSaveGameList();
 		

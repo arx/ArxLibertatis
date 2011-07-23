@@ -37,8 +37,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 #include <dinput.h>
 
-#include <boost/filesystem/operations.hpp>
-
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -73,8 +71,6 @@ using std::wistringstream;
 using std::min;
 using std::max;
 using std::string;
-
-namespace fs = boost::filesystem;
 
 int newTextureSize;
 int newWidth;

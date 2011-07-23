@@ -386,11 +386,12 @@ bool SaveBlock::defragment() {
 	
 	fs::path tempFileName = savefile;
 	int i = 0;
+	boost::system::error_code ec;
 	do {
 		std::ostringstream oss;
 		oss << "defrag" << i++;
 		tempFileName.replace_extension(oss.str());
-	} while(fs::exists(tempFileName));
+	} while(fs::exists(tempFileName, ec));
 	
 	fs::ofstream tempFile(tempFileName, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!tempFile.is_open()) {
@@ -432,17 +433,18 @@ bool SaveBlock::defragment() {
 	usedSize = totalSize, chunkCount = files.size();
 	
 	if(tempFile.fail()) {
-		fs::remove(tempFileName);
+		fs::remove(tempFileName, ec);
 		handle.close(), files.clear();
+		LogWarning << "defragmenting failed: " << tempFileName;
 		return false;
 	}
 	
 	tempFile.flush(), tempFile.close(), handle.close();
 	
-	boost::system::error_code ec;
-	fs::rename(tempFileName, savefile, ec);
-	if(ec != boost::system::errc::success)
+	if(fs::rename(tempFileName, savefile, ec), ec) {
+		LogWarning << "failed to move defragmented savegame " << tempFileName << " to " << savefile;
 		return false;
+	}
 	
 	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary);
 	return handle.is_open();

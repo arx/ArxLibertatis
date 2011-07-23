@@ -176,10 +176,12 @@ static bool ARX_GAMESAVE_CreateNewInstance() {
 	
 	fs::path savedir("save");
 	
-	if(!fs::is_directory(savedir))
+	boost::system::error_code ec;
+	if(!fs::is_directory(savedir)) {
 		return false;
+	}
 	
-    bool created = false;
+	bool created = false;
 	for(long num = 1; !created; num++) {
 		
 		std::ostringstream oss;
@@ -187,17 +189,17 @@ static bool ARX_GAMESAVE_CreateNewInstance() {
 		
 		fs::path path = savedir / oss.str();
 		
-		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / "gsave.sav"))) {
-            boost::system::error_code ec;
-         	fs::create_directories(path, ec);
-	        if(ec != boost::system::errc::success)
+		if(!fs::exists(path, ec) || (fs::is_directory(path, ec) && !fs::exists(path / "gsave.sav", ec))) {
+			fs::create_directories(path, ec);
+			if(ec != boost::system::errc::success) {
 				break;
+			}
 			CURRENT_GAME_INSTANCE = num;
 			GameSavePath = path;
 			created = true;
 		}
 	}
-
+	
 	return created;
 }
 
@@ -293,7 +295,7 @@ bool ARX_CHANGELEVEL_MakePath() {
 		LogError << "Could not create save path: " << CurGamePath;
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -304,13 +306,13 @@ bool ARX_GAMESAVE_MakePath() {
 	
 	GameSavePath = oss.str();
 	
-    boost::system::error_code ec;
+	boost::system::error_code ec;
 	fs::create_directories(GameSavePath, ec);
 	if(ec != boost::system::errc::success) {
 		LogError << "Could not create game save path: " << GameSavePath;
 		return false;
 	}
-
+	
 	return true;
 }
  
@@ -326,7 +328,8 @@ void ARX_Changelevel_CurGame_Open() {
 	}
 	
 	fs::path savefile = CurGamePath / "gsave.sav";
-	if(!fs::exists(savefile)) {
+	boost::system::error_code ec;
+	if(!fs::exists(savefile, ec)) {
 		// TODO this is normal when starting a new game
 		return;
 	}
@@ -3121,24 +3124,17 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 		LogError << "could not complete the save";
 		return false;
 	}
-
+	
 	boost::system::error_code ec;
-
-	fs::remove_all(GameSavePath, ec);
-	if(ec != boost::system::errc::success)
+	if(fs::remove_all(GameSavePath, ec), ec) {
 		return false;
-
-	fs::create_directory(GameSavePath, ec); 
-	if(ec != boost::system::errc::success)
+	} else if(fs::create_directory(GameSavePath, ec), ec) {
 		return false;
-
-	fs::copy_file(CurGamePath / "gsave.sav", GameSavePath / "gsave.sav", ec);
-	if(ec != boost::system::errc::success)
+	} else if(fs::copy_file(CurGamePath / "gsave.sav", GameSavePath / "gsave.sav", ec), ec) {
 		return false;
-
-	fs::rename("sct_0.bmp", GameSavePath / "gsave.bmp", ec);
-	if(ec != boost::system::errc::success)
+	} else if(fs::rename("sct_0.bmp", GameSavePath / "gsave.bmp", ec), ec) {
 		return false;
+	}
 	
 	return true;
 }
@@ -3146,7 +3142,8 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const fs::path & path)
 {
 	// Checks For Directory
-	if(!fs::is_directory(path)) {
+	boost::system::error_code ec;
+	if(!fs::is_directory(path, ec) || ec) {
 		return false;
 	}
 
@@ -3207,18 +3204,13 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	
 	// Copy SavePath to Current Game
 	boost::system::error_code ec;
-    
-	fs::remove_all(CurGamePath, ec);
-	if(ec != boost::system::errc::success)
+	if(fs::remove_all(CurGamePath, ec), ec) {
 		return -1;
-	
-	fs::create_directory(CurGamePath, ec);
-	if(ec != boost::system::errc::success)
+	} else if(fs::create_directory(CurGamePath, ec), ec) {
 		return -1;
-	
-	fs::copy_file(GameSavePath / "gsave.sav", CurGamePath / "gsave.sav", ec);
-	if(ec != boost::system::errc::success)
+	} else if(fs::copy_file(GameSavePath / "gsave.sav", CurGamePath / "gsave.sav", ec), ec) {
 		return -1;
+	}
 	
 	// Retrieves Player LevelData
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;

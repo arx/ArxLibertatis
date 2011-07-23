@@ -80,15 +80,16 @@ SnapShot::SnapShot(const fs::path & name, bool replace) {
 	
 	int num = 0;
 	
+	boost::system::error_code ec;
 	do {
 		
 		ostringstream oss;
 		oss << as_string(name.filename()) << '_' << num << ".bmp";
 		
 		file = name.parent_path() / oss.str();
-
+		
 		num++;
-	} while(!replace && fs::exists(file));
+	} while(!replace && fs::exists(file, ec));
 	
 }
 

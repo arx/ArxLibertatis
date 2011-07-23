@@ -192,13 +192,14 @@ void CreateSaveGameList() {
 	
 	size_t maxlength = 0;
 	
+	boost::system::error_code ec;
 	fs::directory_iterator end;
-	for(fs::directory_iterator it("save"); it != end; it++) {
+	for(fs::directory_iterator it("save", ec); it != end; it.increment(ec)) {
 		
 		const fs::path & path = it->path();
 		string dirname = as_string(path.filename());
 		
-		if(dirname.compare(0, 4, "save") || !fs::is_directory(path)) {
+		if(dirname.compare(0, 4, "save") || !fs::is_directory(path, ec) || ec) {
 			continue;
 		}
 		
@@ -206,10 +207,10 @@ void CreateSaveGameList() {
 		long num;
 		iss >> num;
 		
-		boost::system::error_code ec;
 		std::time_t stime = fs::last_write_time(path / "gsave.sav", ec);
-		if(ec != boost::system::errc::success)
+		if(ec) {
 			continue;
+		}
 		
 		size_t index = (size_t)-1;
 		for(size_t i = 1; i <= oldCount; i++) {
@@ -252,7 +253,7 @@ void CreateSaveGameList() {
 		save->quicksave = (name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1");
 		
 		fs::path thumbnail = path / "gsave.bmp";
-		if(fs::exists(thumbnail)) {
+		if(fs::exists(thumbnail, ec) && !ec) {
 			std::ostringstream oss;
 			oss << "save/save" << std::setw(4) << std::setfill('0') << num << "/gsave.bmp";
 			resources->removeFile(oss.str());
