@@ -344,6 +344,8 @@ void initSuppressions() {
 	
 	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
 	
+	suppressions[18479]["demon"]["play"] = true; // sound number is sometimes too high
+	
 	suppressions[523]["wall_breakable"]["}"] = true; // missing accept/refuse before end of event block
 	
 	suppressions[66]["hammer_club"]["settwohanded"] = true; // obsolete command
@@ -351,6 +353,8 @@ void initSuppressions() {
 	suppressions[2410]["chicken_base"]["}"] = true; // missing accept/refuse before end of event block
 	
 	suppressions[2409]["pig"]["}"] = true; // missing accept/refuse before end of event block
+	
+	suppressions[3703]["black_thing"]["play"] = true; // variable is never set
 	
 }
 
