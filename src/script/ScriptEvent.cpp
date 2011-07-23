@@ -197,7 +197,7 @@ public:
 			context.skipWord();
 		}
 		
-		LogWarning << "obsolete command: " << getName();
+		ScriptWarning << "obsolete command";
 		
 		return Failed;
 	}
@@ -210,9 +210,9 @@ public:
 
 } // namespace script
 
-#define ScriptEventWarning LogWarning << ScriptContextPrefix(context) << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1 && msg != SM_NULL) ? AS_EVENT[msg].name : "on " + evname) << ": "
+#define ScriptEventWarning Logger(__FILE__,__LINE__, isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1 && msg != SM_NULL) ? AS_EVENT[msg].name : "on " + evname) << ": "
 
-using namespace script; // TODO remove once everythng has been moved to the script namespace
+using namespace script; // TODO(script-parser) remove once everythng has been moved to the script namespace
 
 static const char * toString(ScriptResult ret) {
 	switch(ret) {
@@ -351,7 +351,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			return ACCEPT;
 		}
 	}
-
+	
+	size_t brackets = 1;
+	
 	for(;;) {
 		
 		string word = context.getCommand(msg != SM_EXECUTELINE);
@@ -396,12 +398,25 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				if(msg == SM_EXECUTELINE) {
 					msg = SM_DUMMY;
 				}
+				brackets = (size_t)-1;
 			}
 			
 		} else if(!word.compare(0, 2, ">>", 2)) {
 			context.skipCommand(); // comments and labels
 		} else if(!word.compare(0, 5, "timer", 5)) {
 			timerCommand(word.substr(5), context);
+		} else if(word == "{") {
+			if(brackets != (size_t)-1) {
+				brackets++;
+			}
+		} else if(word == "}") {
+			if(brackets != (size_t)-1) {
+				brackets--;
+				if(brackets == 0) {
+					ScriptEventWarning << "--> event block ended without accept or refuse!";
+					return ACCEPT;
+				}
+			}
 		} else {
 			
 			ScriptEventWarning << "--> unknown command: " << word;

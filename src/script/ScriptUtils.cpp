@@ -311,34 +311,42 @@ void initSuppressions() {
 	
 	// TODO(broken-scripts)
 	
-	suppressions[7725]["player"]["loadanim"] = true;
-	suppressions[8463]["player"]["loadanim"] = true;
-	suppressions[8531]["player"]["loadanim"] = true;
-	suppressions[8666]["player"]["loadanim"] = true;
-	suppressions[8733]["player"]["loadanim"] = true;
-	suppressions[9284]["player"]["loadanim"] = true;
-	suppressions[9558]["player"]["loadanim"] = true;
+	suppressions[7725]["player"]["loadanim"] = true; // bad animation id: "cast_hold"
+	suppressions[8463]["player"]["loadanim"] = true; // bad animation id: "lean_left_cycle"
+	suppressions[8531]["player"]["loadanim"] = true; // bad animation id: "lean_left_out"
+	suppressions[8666]["player"]["loadanim"] = true; // bad animation id: "lean_right_cycle"
+	suppressions[8733]["player"]["loadanim"] = true; // bad animation id: "lean_right_out"
+	suppressions[9284]["player"]["loadanim"] = true; // missing animation "human_death_cool"
+	suppressions[9558]["player"]["loadanim"] = true; // missing animation: "human_talk_happyneutral_headonly"
 	
-	suppressions[5872]["human_base"]["loadanim"] = true;
+	suppressions[5872]["human_base"]["loadanim"] = true; // bad animation id: "bae_ready"
 	suppressions[45586]["human_base"]["goto"] = true; // missing label "main_alert"
 	
-	suppressions[422]["light_door"]["set"] = true;
+	suppressions[422]["light_door"]["set"] = true; // bad variable name: "durability"
 	
-	suppressions[152]["jail_wood_grid"]["set"] = true;
+	suppressions[152]["jail_wood_grid"]["set"] = true; // bad variable name: "material"
 	
-	suppressions[5107]["troll_base"]["loadanim"] = true;
-	suppressions[5175]["troll_base"]["loadanim"] = true;
+	suppressions[5107]["troll_base"]["loadanim"] = true; // missing animation: "troll_fight_ready_toponly"
+	suppressions[5175]["troll_base"]["loadanim"] = true; // missing animation: "troll_fight_unready_toponly"
 	suppressions[19054]["troll_base"]["goto"] = true; // missing label "main_alert"
 	
-	suppressions[93]["dragon_ice_0001"]["loadanim"] = true;
+	suppressions[93]["dragon_ice_0001"]["loadanim"] = true; // missing animation: "dragon_talk_head"
 	
 	suppressions[30010]["goblin_base"]["goto"] = true; // missing label "main_alert"
 	
-	suppressions[399]["corpse_0003"]["inventory addfromscene"] = true; // bad target ident
+	suppressions[399]["corpse_0003"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
 	
-	suppressions[242]["chest_metal_0045"]["inventory addfromscene"] = true; // bad target ident
+	suppressions[242]["chest_metal_0045"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
 	
 	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
+	
+	suppressions[523]["wall_breakable"]["}"] = true; // missing accept/refuse before end of event block
+	
+	suppressions[66]["hammer_club"]["settwohanded"] = true; // obsolete command
+	
+	suppressions[2410]["chicken_base"]["}"] = true; // missing accept/refuse before end of event block
+	
+	suppressions[2409]["pig"]["}"] = true; // missing accept/refuse before end of event block
 	
 }
 

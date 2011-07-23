@@ -22,7 +22,7 @@ class NopCommand : public Command {
 	
 public:
 	
-	NopCommand(const string & name) : Command(name) { }
+	NopCommand() : Command("nop") { }
 	
 	Result execute(Context & context) {
 		
@@ -47,9 +47,11 @@ public:
 		
 		DebugScript(' ' << label);
 		
-		size_t pos = context.skipCommand();
-		if(pos != (size_t)-1) {
-			ScriptWarning << "unexpected text at " << pos;
+		if(!sub) {
+			size_t pos = context.skipCommand();
+			if(pos != (size_t)-1) {
+				ScriptWarning << "unexpected text at " << pos;
+			}
 		}
 		
 		if(!context.jumpToLabel(label, sub)) {
@@ -96,7 +98,7 @@ public:
 			context.skipStatement();
 		}
 		
-		return Jumped;
+		return Success;
 	}
 	
 };
@@ -116,7 +118,7 @@ public:
 			return AbortError;
 		}
 		
-		return Jumped;
+		return Success;
 	}
 	
 };
@@ -339,7 +341,6 @@ public:
 			}
 			
 			if(!ValidIONum(t)) {
-				ScriptWarning << "invalid target: " << target;
 				EVENT_SENDER = oes;
 				return Failed;
 			}
@@ -739,7 +740,7 @@ public:
 		Operators::const_iterator it = operators.find(op);
 		if(it == operators.end()) {
 			ScriptWarning << "unknown operator: " << op;
-			return Jumped;
+			return Failed;
 		}
 		
 		float f1, f2;
@@ -750,7 +751,7 @@ public:
 		if(t1 != t2) {
 			ScriptWarning << "incompatible types: \"" << left << "\" (" << (t1 == TYPE_TEXT ? "text" : "number") << ") and \"" << right << "\" (" << (t2 == TYPE_TEXT ? "text" : "number") << ')';
 			context.skipStatement();
-			return Jumped;
+			return Failed;
 		}
 		
 		bool condition;
@@ -766,7 +767,7 @@ public:
 			context.skipStatement();
 		}
 		
-		return Jumped;
+		return Success;
 	}
 	
 };
@@ -854,9 +855,7 @@ void timerCommand(const string & timer, Context & context) {
 
 void setupScriptedLang() {
 	
-	ScriptEvent::registerCommand(new NopCommand("nop")); // TODO(script-parser) remove
-	ScriptEvent::registerCommand(new NopCommand("{")); // TODO(script-parser) remove
-	ScriptEvent::registerCommand(new NopCommand("}")); // TODO(script-parser) remove
+	ScriptEvent::registerCommand(new NopCommand); // TODO(script-parser) remove
 	ScriptEvent::registerCommand(new GotoCommand("goto")); // TODO(script-parser) remove when possible
 	ScriptEvent::registerCommand(new GotoCommand("gosub", true));
 	ScriptEvent::registerCommand(new AbortCommand("accept", Command::AbortAccept));
