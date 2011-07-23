@@ -47,9 +47,11 @@ public:
 		
 		DebugScript(' ' << label);
 		
-		size_t pos = context.skipCommand();
-		if(pos != (size_t)-1) {
-			ScriptWarning << "unexpected text at " << pos;
+		if(!sub) {
+			size_t pos = context.skipCommand();
+			if(pos != (size_t)-1) {
+				ScriptWarning << "unexpected text at " << pos;
+			}
 		}
 		
 		if(!context.jumpToLabel(label, sub)) {
