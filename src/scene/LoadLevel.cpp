@@ -235,37 +235,6 @@ void BIG_PURGE() {
 
 #endif // BUILD_EDITOR
 
-void ReplaceSpecifics( char* text )
-{
-/*	std::string temp = text;
-	size_t graph_loc = temp.find_first_of( "graph" );
-
-	if ( graph_loc != string::npos )
-	{
-		text = text.substr( graph_loc );
-	}
-*/
-	char			temp[512];
-	UINT			size_text = strlen(text);
-
-	for (unsigned long i = 0 ; i < size_text ; i++)
-	{
-		memcpy(temp, text + i, 5);
-		temp[5] = 0;
-		std::string temp2 = temp;
-		strcpy( temp, temp2.c_str() );
-
-		if (!strcmp(temp, "graph"))
-		{
-			strcpy(temp, text + i);
-			strcpy(text, temp);
-			return;
-		}
-	}
-
-	return;
-}
-
 extern char LastLoadedDLF[512];
 
 #ifdef BUILD_EDIT_LOADSAVE
@@ -756,8 +725,8 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 		return inter.iobj[t];
 	}
 	
-	char * nname = strdup(name.c_str()); // TODO use string
-	ReplaceSpecifics(nname);
+	size_t gpos = name.find("graph");
+	string nname = (gpos != string::npos && gpos != 0) ? name.substr(gpos) : name;
 	
 	io = AddInteractive(nname, ident, NO_MESH | NO_ON_LOAD);
 	
