@@ -455,7 +455,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 	
 	fs::ifstream * ifs = new fs::ifstream(pakfile, fs::ifstream::in | fs::ifstream::binary);
 	
-	if(!ifs->is_open() || ifs->fail()) {
+	if(!ifs->is_open()) {
 		delete ifs;
 		return false;
 	}

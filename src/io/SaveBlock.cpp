@@ -347,11 +347,11 @@ bool SaveBlock::open(bool writable) {
 	}
 	
 	handle.open(savefile, mode);
-	if(!handle.is_open() || handle.fail()) {
+	if(!handle.is_open()) {
 		if(writable) {
 			handle.open(savefile, mode | fs::fstream::trunc);
 		}
-		if(!handle.is_open() || handle.fail()) {
+		if(!handle.is_open()) {
 			LogError << "could not open " << savefile << " for " << (writable ? "reading/writing" : "reading");
 			return false;
 		}
@@ -548,7 +548,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	size = 0;
 	
 	fs::ifstream handle(savefile, fs::fstream::in | fs::fstream::binary);
-	if(!handle.is_open() | handle.fail()) {
+	if(!handle.is_open()) {
 		LogWarning << "cannot open save file " << savefile;
 		return NULL;
 	}
