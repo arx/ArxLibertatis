@@ -613,29 +613,22 @@ PakFileHandle * PakReader::open(const string & name) {
 
 bool PakReader::addFiles(const fs::path & path, const string & mount) {
 	
-	try {
-		
-		if(!fs::exists(path)) {
-			return false;
-		}
-		
-		if(fs::is_directory(path)) {
-			
-			return addFiles(addDirectory(mount), path);
-			
-		} else {
-			
-			size_t pos = mount.find_last_of(DIR_SEP);
-			
-			PakDirectory * dir = (pos == string::npos) ? this : addDirectory(strref(mount, 0, pos));
-			
-			return addFile(dir, path, (pos == string::npos) ? mount : mount.substr(pos + 1));
-		}
-		
-	} catch(fs::filesystem_error) {
+	if(!fs::exists(path)) {
 		return false;
 	}
-	
+		
+	if(fs::is_directory(path)) {
+			
+		return addFiles(addDirectory(mount), path);
+			
+	} else {
+			
+		size_t pos = mount.find_last_of(DIR_SEP);
+			
+		PakDirectory * dir = (pos == string::npos) ? this : addDirectory(strref(mount, 0, pos));
+			
+		return addFile(dir, path, (pos == string::npos) ? mount : mount.substr(pos + 1));
+	}
 }
 
 void PakReader::removeFile(const string & file) {
@@ -654,18 +647,12 @@ bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::st
 		return false;
 	}
 	
-	try {
-		boost::system::error_code ec;
-		size_t size = fs::file_size(path, ec);
-		if(ec != boost::system::errc::success)
-			return false;
-		
-		dir->addFile(name, new PlainFile(path, size));
-		
-	} catch(fs::filesystem_error) {
+	boost::system::error_code ec;
+	size_t size = fs::file_size(path, ec);
+	if(ec != boost::system::errc::success)
 		return false;
-	}
-	
+		
+	dir->addFile(name, new PlainFile(path, size));
 	return true;
 }
 
@@ -673,23 +660,17 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	
 	bool ret = true;
 	
-	try {
-		
-		fs::directory_iterator end;
-		for(fs::directory_iterator it(path); it != end; ++it) {
+	fs::directory_iterator end;
+	for(fs::directory_iterator it(path); it != end; ++it) {
 			
-			const fs::path & entry = it->path();
+		const fs::path & entry = it->path();
 			
-			if(fs::is_directory(entry)) {
-				ret &= addFiles(dir->addDirectory(as_string(entry.filename())), entry);
-			} else {
-				ret &= addFile(dir, entry, as_string(entry.filename()));
-			}
-			
+		if(fs::is_directory(entry)) {
+			ret &= addFiles(dir->addDirectory(as_string(entry.filename())), entry);
+		} else {
+			ret &= addFile(dir, entry, as_string(entry.filename()));
 		}
-		
-	} catch(fs::filesystem_error) {
-		return false;
+			
 	}
 	
 	return ret;

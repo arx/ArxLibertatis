@@ -1163,15 +1163,11 @@ static bool migrateFilenames() {
 	
 	bool migrated = true;
 	
-	try {
-		fs::directory_iterator end;
-		for(fs::directory_iterator it("./"); it != end; ++it) {
-			if(fileset.find(toLowercase(as_string(it->path().filename()))) != fileset.end()) {
-				migrated &= migrateFilenames(it->path());
-			}
+	fs::directory_iterator end;
+	for(fs::directory_iterator it("./"); it != end; ++it) {
+		if(fileset.find(toLowercase(as_string(it->path().filename()))) != fileset.end()) {
+			migrated &= migrateFilenames(it->path());
 		}
-	} catch(fs::filesystem_error) {
-		migrated = false;
 	}
 	
 	if(!migrated) {
