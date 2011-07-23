@@ -2325,18 +2325,19 @@ INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFla
 	INTERACTIVE_OBJ * io = NULL;
 	std::string ficc;
 	ficc = file;
-
-	if (IsIn(ficc, "items"))
+	
+	if(IsIn(ficc, "items")) {
 		io = AddItem(file, flags);
-	else if (IsIn(ficc, "npc"))
+	} else if(IsIn(ficc, "npc")) {
 		io = AddNPC(file, flags);
-	else if (IsIn(ficc, "fix"))
+	} else if(IsIn(ficc, "fix")) {
 		io = AddFix(file, flags);
-	else if (IsIn(ficc, "camera"))
+	} else if(IsIn(ficc, "camera")) {
 		io = AddCamera(file);
-	else if (IsIn(ficc, "marker"))
+	} else if (IsIn(ficc, "marker")) {
 		io = AddMarker(file);
-
+	}
+	
 	if(io) {
 		if(id == 0 && !(flags & NO_IDENT)) {
 #ifdef BUILD_EDITOR
@@ -2350,7 +2351,7 @@ INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFla
 			io->ident = id;
 		}
 	}
-
+	
 	return io;
 }
 //***********************************************************************************
