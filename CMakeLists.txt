@@ -89,6 +89,7 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+	add_definitions(-DBOOST_NO_EXCEPTIONS)
 	add_definitions(/wd4995)
 	
 	# TEMP - disable warning caused by the F2L removal
@@ -110,6 +111,11 @@ if(MSVC)
 	link_directories(${Boost_LIBRARY_DIRS})
 	
 	set(HAVE_WINAPI 1)
+	
+	# Disable exceptions & rtti
+	string(REGEX REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	add_definitions(/wd4530)
+	add_definitions(/GR-)
 	
 else(MSVC)
 	# Set optimal options for gcc:
@@ -212,6 +218,10 @@ else(MSVC)
 		add_cxxflag("-fwhole-program")
 	endif()
 	
+	# Disable exceptions & rtti
+	add_cxxflag(-fno-exceptions)
+	add_cxxflag(-fno-rtti)
+	
 endif(MSVC)
 
 check_type_size(char CHAR_SIZE)
@@ -291,6 +301,7 @@ if(ARX_USE_UNITYBUILD)
 	enable_unity_build(arx ALL_SOURCES)
 endif()
 
+add_definitions(-DBOOST_NO_EXCEPTIONS)
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
 #create source groups
