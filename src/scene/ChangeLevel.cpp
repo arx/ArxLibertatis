@@ -1678,7 +1678,7 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
 	arx_assert(idx_io == NULL);
 	if(asi->nb_inter) {
-		idx_io = (ARX_CHANGELEVEL_IO_INDEX *)malloc(sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter);
+		idx_io = new ARX_CHANGELEVEL_IO_INDEX[asi->nb_inter];
 		memcpy(idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
 		pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
 	} else {
