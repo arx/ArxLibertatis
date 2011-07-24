@@ -336,6 +336,8 @@ void initSuppressions() {
 	
 	suppressions[30010]["goblin_base"]["goto"] = true; // missing label "main_alert"
 	
+	suppressions[2924]["goblin_base_0046"]["if"] = true; // unknown operator '=>' (should be '>='?), interpreted as constant true
+	
 	suppressions[399]["corpse_0003"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
 	
 	suppressions[274]["corpse_0084"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
