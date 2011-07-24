@@ -212,6 +212,7 @@ void CreateSaveGameList() {
 	if((h = FindFirstFile(path.c_str(), &fdata)) == INVALID_HANDLE_VALUE) {
 		LogInfo << "no save files found";
 		save_l.resize(1);
+		return;
 	}
 	
 	bool newSaves = false;
