@@ -347,6 +347,8 @@ void initSuppressions() {
 	
 	suppressions[242]["chest_metal_0045"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
 	
+	suppressions[143]["chest_metal_0095"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/legging_leatherac/legging_leatherac.teo" (should be 'legging_leather_ac'?)
+	
 	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
 	
 	suppressions[62]["rat_base_0059"]["behavior"] = true; // unknown behavior 'firendly', should be 'friendly'
