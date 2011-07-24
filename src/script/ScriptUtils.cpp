@@ -358,6 +358,8 @@ void initSuppressions() {
 	
 	suppressions[3703]["black_thing"]["play"] = true; // variable is never set
 	
+	suppressions[114]["gem_inwall"]["play"] = true; // unknown flag -e (ignored)
+	
 }
 
 bool isSuppressed(const Context & context, const string & command) {
