@@ -384,9 +384,12 @@ public:
 		DebugScript(' ' << zone);
 		
 		ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
-		if(ap) {
-			ap->controled[0] = 0;
+		if(!ap) {
+			ScriptWarning << "unknown zone: " << zone;
+			return Failed;
 		}
+		
+		ap->controled[0] = 0;
 		
 		return Success;
 	}
