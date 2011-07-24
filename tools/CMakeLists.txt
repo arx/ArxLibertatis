@@ -8,6 +8,8 @@ include(CompileCheck)
 
 find_package(ZLIB REQUIRED)
 
+unset(Boost_LIBRARIES)
+
 if(MSVC)
 	# Link statically with Boost under Windows
 	set(Boost_USE_STATIC_LIBS ON)
@@ -15,19 +17,18 @@ endif(MSVC)
 find_package(Boost 1.37 REQUIRED COMPONENTS filesystem system)
 
 if(NOT MSVC AND NOT CMAKE_TOOLCHAIN_FILE)
-	set(CMAKE_CXX_COMPILER g++)
-	set(CMAKE_C_COMPILER gcc)
+	find_program(GXX_BINARY g++)
+	set(CMAKE_CXX_COMPILER "${GXX_BINARY}")
 	set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual -O2 -fno-strict-aliasing -ggdb")
 endif()
 
-set(My_Boost_LIBRARIES "${Boost_LIBRARIES}")
 if(NOT MSVC)
-	check_link_library(ZLIB ZLIB_LIBRARIES)
-	check_link_library(MyBoost My_Boost_LIBRARIES)
 	if(ARX_FORCE_32BIT)
 		set(CMAKE_C_FLAGS "-m32 ${CMAKE_C_FLAGS}")
 		set(CMAKE_CXX_FLAGS "-m32 ${CMAKE_CXX_FLAGS}")
 	endif()
+	check_link_library(ZLIB ZLIB_LIBRARIES)
+	check_link_library(Boost Boost_LIBRARIES)
 endif()
 
 include_directories(../src)
@@ -57,5 +58,5 @@ add_executable(savetool
 	../src/platform/Platform.cpp
 )
 
-target_link_libraries(savetool ${ZLIB_LIBRARIES} ${My_Boost_LIBRARIES})
+target_link_libraries(savetool ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(unpaker ${Boost_LIBRARIES})
