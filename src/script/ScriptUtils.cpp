@@ -367,6 +367,8 @@ void initSuppressions() {
 	
 	suppressions[114]["gem_inwall"]["play"] = true; // unknown flag -e (ignored)
 	
+	suppressions[26]["axe_2handed"]["settwohanded"] = true; // obsolete command
+	
 	suppressions[288]["marker_0025"]["sendevent"] = true; // unknown zone 'cooking' (should be 'cook_gary'?)
 	
 }
