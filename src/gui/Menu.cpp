@@ -195,16 +195,6 @@ void CreateSaveGameList() {
 		save_l[0].name = "New";
 	}
 	
-	size_t oldCount = save_l.size() - 1;
-#ifdef HAVE_DYNAMIC_STACK_ALLOCATION
-	bool found[oldCount];
-#else
-	bool * found = new bool[oldCount];
-#endif
-	for(size_t i = 0; i < oldCount; i++) {
-		found[i] = false;
-	}
-	
 	WIN32_FIND_DATA fdata;
 	LogDebug << "looking for " << path;
 	
@@ -213,6 +203,16 @@ void CreateSaveGameList() {
 		LogInfo << "no save files found";
 		save_l.resize(1);
 		return;
+	}
+	
+	size_t oldCount = save_l.size() - 1;
+#ifdef HAVE_DYNAMIC_STACK_ALLOCATION
+	bool found[oldCount];
+#else
+	bool * found = new bool[oldCount];
+#endif
+	for(size_t i = 0; i < oldCount; i++) {
+		found[i] = false;
 	}
 	
 	bool newSaves = false;
