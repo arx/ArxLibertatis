@@ -352,6 +352,7 @@ void initSuppressions() {
 	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
 	
 	suppressions[62]["rat_base_0059"]["behavior"] = true; // unknown behavior 'firendly', should be 'friendly'
+	suppressions[160]["rat_base_0059"]["behavior"] = true; // unknown behavior 'firendly', should be 'friendly'
 	
 	suppressions[18479]["demon"]["play"] = true; // sound number is sometimes too high
 	
