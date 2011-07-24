@@ -322,6 +322,9 @@ void initSuppressions() {
 	suppressions[5872]["human_base"]["loadanim"] = true; // bad animation id: "bae_ready"
 	suppressions[45586]["human_base"]["goto"] = true; // missing label "main_alert"
 	
+	suppressions[239]["human_base_0079"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
+	suppressions[303]["human_base_0079"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
+	
 	suppressions[422]["light_door"]["set"] = true; // bad variable name: "durability"
 	
 	suppressions[162]["light_door_0030"]["setevent"] = true; // unsupported event: "npc_open"
@@ -345,6 +348,8 @@ void initSuppressions() {
 	suppressions[242]["chest_metal_0045"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
 	
 	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
+	
+	suppressions[62]["rat_base_0059"]["behavior"] = true; // unknown behavior 'firendly', should be 'friendly'
 	
 	suppressions[18479]["demon"]["play"] = true; // sound number is sometimes too high
 	
