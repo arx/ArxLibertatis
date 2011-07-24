@@ -327,7 +327,21 @@ void initSuppressions() {
 	
 	suppressions[422]["light_door"]["set"] = true; // bad variable name: "durability"
 	
+	suppressions[105]["light_door_0019"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	
+	suppressions[230]["light_door_0020"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	
+	suppressions[234]["light_door_0021"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	
+	suppressions[88]["light_door_0029"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	
 	suppressions[162]["light_door_0030"]["setevent"] = true; // unsupported event: "npc_open"
+	
+	suppressions[69]["light_door_0100"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	
+	suppressions[88]["light_door_0102"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	
+	suppressions[88]["light_door_0121"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
 	
 	suppressions[152]["jail_wood_grid"]["set"] = true; // bad variable name: "material"
 	
