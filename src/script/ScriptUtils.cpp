@@ -348,6 +348,8 @@ void initSuppressions() {
 	
 	suppressions[18479]["demon"]["play"] = true; // sound number is sometimes too high
 	
+	suppressions[19669]["dog"]["play"] = true; // sound number is sometimes too high
+	
 	suppressions[523]["wall_breakable"]["}"] = true; // missing accept/refuse before end of event block
 	
 	suppressions[66]["hammer_club"]["settwohanded"] = true; // obsolete command
