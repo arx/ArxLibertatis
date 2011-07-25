@@ -81,16 +81,16 @@ extern TexturedVertex	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 #ifdef BUILD_EDIT_LOADSAVE
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const std::string & dir);
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const fs::path & dir);
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 #endif
 
 void MakeUserFlag(TextureContainer * tc);
 long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
-long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string& selname);
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname);
  
-long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string& text);
-long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string& text);
+long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text);
+long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text);
 long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx);
 
 /*!
@@ -103,7 +103,7 @@ EERIE_3DOBJ * loadObject(const fs::path & file, bool pbox = true);
 /*!
  * @param texpath texture path relative to file
  */
-EERIE_3DOBJ * _LoadTheObj(const fs::path & file, const fs::path & texpath = std::string());
+EERIE_3DOBJ * _LoadTheObj(const fs::path & file, const fs::path & texpath = fs::path());
 
 EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & fic);
 

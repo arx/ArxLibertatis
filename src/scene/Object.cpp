@@ -1163,16 +1163,15 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms) {
 	free(ms);
 }
 
-static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
+static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const fs::path & dirr) {
 	
 	EERIE_MULTI3DSCENE * es;
 	
 	es = allocStructZero<EERIE_MULTI3DSCENE>();
 	
-	strcpy(LastLoadedScene, dirr.c_str());
+	strcpy(LastLoadedScene, dirr.string().c_str());
 	
-	string path = dirr;
-	RemoveName(path);
+	fs::path path = dirr.parent();
 	
 	PakDirectory * dir = resources->getDirectory(path);
 	if(dir) {
@@ -1229,7 +1228,7 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const string & dirr) {
 	return es;
 }
 
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const string & dirr) {
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const fs::path & dirr) {
 	
 	LogDebug << "Loading Multiscene " << dirr;
 	
