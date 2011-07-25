@@ -1756,7 +1756,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	
 	ident = 0;
 	weight = 1.f;
-	memset(locname, 0, 64); // TODO use string
 	EditorFlags = 0;
 	GameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
 	velocity = Vec3f::ZERO;
@@ -1926,7 +1925,7 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src) {
 		memcpy(dest->_itemdata->equipitem, src->_itemdata->equipitem, sizeof(IO_EQUIPITEM));
 	}
 
-	strcpy(dest->locname, src->locname);
+	dest->locname = src->locname;
 
 	if ((dest->obj->pbox == NULL) && (src->obj->pbox))
 	{
@@ -4407,15 +4406,10 @@ bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if	((io->ioflags & IO_ITEM)
 	        &&	(ioo->ioflags & IO_ITEM)
 	        &&	(io->over_script.data == NULL)
-	        &&	(ioo->over_script.data == NULL))
-	{
-		if ((io->locname) && (ioo->locname))
-		{
-			if (strcmp(io->locname, ioo->locname) == 0)
-				return true;
-		}
-		else
+	        &&	(ioo->over_script.data == NULL)) {
+		if(io->locname == ioo->locname) {
 			return true;
+		}
 	}
 
 	return false;

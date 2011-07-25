@@ -393,27 +393,12 @@ bool ATRIMAXSIZE::operator()(const INTERACTIVE_OBJ * x, const INTERACTIVE_OBJ * 
 {
 	int iSize0 = x->sizex * x->sizey * x->sizey;
 	int iSize1 = y->sizex * y->sizey * y->sizey;
-
-	if (iSize0 > iSize1)
-	{
-		return true;
+	
+	if(iSize0 == iSize1) {
+		return (x->locname.compare(y->locname) < 0);
 	}
-	else
-	{
-		if (iSize0 == iSize1)
-		{
-			int iRes = strcmp(x->locname, y->locname);	 
-
-			if (!iRes)
-			{
-				return false;
-			}
-
-			return iRes < 0 ? true : false;
-		}
-	}
-
-	return false;
+	
+	return (iSize0 > iSize1);
 }
 
 bool FastInsert(INTERACTIVE_OBJ * _pIO, long _uiNumBag)
@@ -2067,7 +2052,7 @@ INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability() {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					if(inventory[iNbBag][i][j].io) {
-						if(!strcmp(inventory[iNbBag][i][j].io->locname, "description_torch")) {
+						if(inventory[iNbBag][i][j].io->locname == "description_torch") {
 							if(!io) {
 								io = inventory[iNbBag][i][j].io;
 							} else {

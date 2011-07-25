@@ -515,7 +515,7 @@ struct INTERACTIVE_OBJ {
 	
 	long ident; // Ident num
 	float weight;
-	char locname[64]; //localisation
+	std::string locname; //localisation
 	unsigned short EditorFlags; // 1 NOTSAVED 2 selected
 	unsigned short GameFlags; // GFLAGS
 	Vec3f velocity; // velocity

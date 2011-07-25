@@ -1662,8 +1662,8 @@ bool DANAE::ManageEditorControls()
 						{
 							INTERACTIVE_OBJ * temp = CURRENT_TORCH;
 
-							if ((temp!=NULL) && temp->locname[0])
-							{
+							if(temp && !temp->locname.empty()) {
+								
 								if (((CURRENT_TORCH->ioflags & IO_ITEM) && CURRENT_TORCH->_itemdata->equipitem)
 									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 									>= CURRENT_TORCH->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
@@ -5534,8 +5534,8 @@ void DANAE::ManageKeyMouse()
 						INTERACTIVE_OBJ * temp;
 					temp = FlyingOverIO;
 
-						if ((temp!=NULL) && temp->locname[0] )
-						{
+						if(temp && !temp->locname.empty()) {
+							
 							if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
 								&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 								>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
@@ -5609,8 +5609,8 @@ void DANAE::ManageKeyMouse()
 								INTERACTIVE_OBJ * temp;
 						temp = FlyingOverIO;
 
-								if ((temp!=NULL) && temp->locname[0] )
-								{
+								if(temp && !temp->locname.empty()) {
+									
 									if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
 										&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 										>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )

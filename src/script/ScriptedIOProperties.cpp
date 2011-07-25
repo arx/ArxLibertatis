@@ -218,7 +218,7 @@ public:
 		
 		DebugScript(' ' << name);
 		
-		strcpy(context.getIO()->locname, name.c_str());
+		context.getIO()->locname = name;
 		
 		return Success;
 	}
