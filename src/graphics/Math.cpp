@@ -1136,3 +1136,6 @@ float GetNearestSnappedAngle(float angle)
 	return 0.f;
 }
 
+#undef X
+#undef Y
+#undef Z

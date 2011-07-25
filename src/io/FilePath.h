@@ -137,7 +137,7 @@ public:
 	 * This overload is neccessary so comparing with string constants isn't ambigous
 	 */
 	inline bool operator!=(const char * str) const {
-		return pathstr.compare(0, pathstr.length(), str);
+		return pathstr.compare(0, pathstr.length(), str) != 0;
 	}
 	
 	/*! To allow path being used in std::map, etc
