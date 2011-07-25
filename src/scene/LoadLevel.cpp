@@ -87,6 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
+#include "io/FileStream.h"
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
@@ -479,7 +480,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// Now Saving Whole Buffer
-	fs_boost::ofstream ofs(fic.string(), std::fstream::out | std::fstream::binary | std::fstream::trunc);
+	fs::ofstream ofs(fic, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!ofs.is_open()) {
 		LogError << "Unable to open " << fic << " for write...";
 		delete[] dat;
@@ -591,7 +592,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// Now Saving Whole Buffer
-	ofs.open(fic2.string(), std::fstream::out | std::fstream::binary | std::fstream::trunc);
+	ofs.open(fic2, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!ofs.is_open()) {
 		LogError << "Unable to open " << fic2 << " for write...";
 		delete[] dat;
@@ -626,7 +627,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	fs::path file = dir / GetName(io->filename);
 	file.set_ext("log");
 	
-	fs_boost::ofstream ofs(file.string(), std::fstream::out | std::fstream::trunc);
+	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc);
 	if(!ofs.is_open()) {
 		return;
 	}
@@ -673,7 +674,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 		default: return;
 	}
 	
-	fs_boost::ofstream ofs(file.string(), std::fstream::out | std::fstream::trunc | std::fstream::binary);
+	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc | fs::fstream::binary);
 	if(!ofs.is_open()) {
 		LogError << ("Unable To Save...");
 		return;

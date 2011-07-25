@@ -10,6 +10,7 @@
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 #include "io/FilePath.h"
+#include "io/FileStream.h"
 
 using std::transform;
 using std::ostringstream;
@@ -27,7 +28,7 @@ void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 		
 		printf("%s\n", filename.string().c_str());
 		
-		fs_boost::ofstream ofs(filename.string(), std::fstream::out | std::fstream::binary | std::fstream::trunc);
+		fs::ofstream ofs(filename, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 		if(!ofs.is_open()) {
 			printf("error opening file for writing: %s\n", filename.string().c_str());
 			exit(1);

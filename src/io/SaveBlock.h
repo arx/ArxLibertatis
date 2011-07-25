@@ -35,6 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "platform/Platform.h"
 #include "io/FilePath.h"
+#include "io/FileStream.h"
 
 /*!
  * Interface to read and write save block files. (used for savegames)
@@ -82,7 +83,7 @@ private:
 	typedef boost::unordered_map<std::string, File> Files;
 	
 	fs::path savefile;
-	fs_boost::fstream handle;
+	fs::fstream handle;
 	size_t totalSize;
 	size_t usedSize;
 	size_t chunkCount;

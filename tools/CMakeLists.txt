@@ -42,6 +42,7 @@ add_executable(unpaker
 	../src/io/Blast.cpp
 	../src/io/Filesystem.cpp
 	../src/io/FilePath.cpp
+	../src/io/FileStream.cpp
 	../src/platform/String.cpp
 	../src/platform/Platform.cpp
 )
@@ -55,6 +56,7 @@ add_executable(savetool
 	../src/io/PakReader.cpp
 	../src/io/Filesystem.cpp
 	../src/io/FilePath.cpp
+	../src/io/FileStream.cpp
 	../src/platform/String.cpp
 	../src/platform/Platform.cpp
 )

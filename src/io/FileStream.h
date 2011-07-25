@@ -65,6 +65,26 @@ public:
 	
 };
 
+template <class T>
+inline std::istream & read(std::istream & ifs, T & data) {
+	return ifs.read(reinterpret_cast<char *>(&data), sizeof(T));
+}
+
+inline std::istream & read(std::istream & ifs, void * buf, size_t n) {
+	return ifs.read(reinterpret_cast<char *>(buf), n);
+}
+
+template <class T>
+inline std::ostream & write(std::ostream & ifs, const T & data) {
+	return ifs.write(reinterpret_cast<const char *>(&data), sizeof(T));
+}
+
+inline std::ostream & write(std::ostream & ifs, const void * buf, size_t n) {
+	return ifs.write(reinterpret_cast<const char *>(buf), n);
+}
+
+std::istream & read(std::istream & ifs, std::string & buf);
+
 } // namespace fs
 
 #endif // ARX_IO_FILESTREAM_H

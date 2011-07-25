@@ -82,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
+#include "io/FileStream.h"
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
@@ -4227,7 +4228,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	// Now Saving Whole Buffer
 	uh->uncompressedsize = pos - compressedstart;
 	
-	fs_boost::ofstream ofs(file.string(), fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
+	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!ofs.is_open()) {
 		delete[] dat;
 		return false;

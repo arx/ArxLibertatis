@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 
 #include "io/Filesystem.h"
+#include "io/FileStream.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
 #include "platform/Platform.h"
@@ -81,7 +82,7 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	size_t length = size / 4;
 	arx_assert(length > 6);
 	
-	fs_boost::ifstream ifs(name.string(), std::fstream::ate | std::fstream::in | std::fstream::binary);
+	fs::ifstream ifs(name, fs::fstream::ate | fs::fstream::in | fs::fstream::binary);
 	if(!ifs.is_open()) {
 		return;
 	}
@@ -92,7 +93,7 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	}
 	
 	memcpy(&dst[0], &id, 4);
-	dst[1] = size;	
+	dst[1] = ifs.tellg();
 
 	dst[2] = dst[4] = u32(write_time);
 	dst[3] = dst[5] = u32(u64(write_time) >> 32);

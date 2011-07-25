@@ -27,40 +27,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_IO_FILESYSTEM_H
 
 #include <cstddef>
-#include <string>
-
-#include <iostream>
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
 
 #include "platform/Platform.h"
 
-template <class T>
-inline std::istream & fread(std::istream & ifs, T & data) {
-	return ifs.read(reinterpret_cast<char *>(&data), sizeof(T));
-}
-
-inline std::istream & fread(std::istream & ifs, void * buf, size_t n) {
-	return ifs.read(reinterpret_cast<char *>(buf), n);
-}
-
-template <class T>
-inline std::ostream & fwrite(std::ostream & ifs, const T & data) {
-	return ifs.write(reinterpret_cast<const char *>(&data), sizeof(T));
-}
-
-inline std::ostream & fwrite(std::ostream & ifs, const void * buf, size_t n) {
-	return ifs.write(reinterpret_cast<const char *>(buf), n);
-}
-
-std::istream & fread(std::istream & ifs, std::string & buf);
-
 namespace fs_boost = boost::filesystem;
 
-// WIP!!
 namespace fs {
 
 class path;

@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/FilePath.h"
 #include "io/Filesystem.h"
+#include "io/FileStream.h"
 
 #include "platform/String.h"
 #include "platform/Platform.h"
@@ -127,7 +128,7 @@ void UncompressedFile::read(void * buf) const {
 	
 	archive.seekg(offset);
 	
-	fread(archive, buf, size());
+	fs::read(archive, buf, size());
 	
 	arx_assert(!archive.fail());
 }
@@ -148,7 +149,7 @@ size_t UncompressedFileHandle::read(void * buf, size_t size) {
 		size = (offset > file.size()) ? 0 : (file.size() - offset);
 	}
 	
-	fread(file.archive, buf, size);
+	fs::read(file.archive, buf, size);
 	
 	size_t nread = file.archive.gcount();
 	offset += nread;
@@ -233,8 +234,7 @@ size_t blastInFile(void * Param, const unsigned char ** buf) {
 	
 	*buf = p->readbuf;
 	
-	fread(p->file, p->readbuf, PAK_READ_BUF_SIZE);
-	return p->file.gcount();
+	return fs::read(p->file, p->readbuf, PAK_READ_BUF_SIZE).gcount();
 }
 
 static int blast(std::ifstream & file, char * buf, size_t size) {
@@ -380,11 +380,11 @@ public:
 
 class PlainFileHandle : public PakFileHandle {
 	
-	fs_boost::ifstream ifs;
+	fs::ifstream ifs;
 	
 public:
 	
-	PlainFileHandle(const fs::path & path) : ifs(path.string(), std::ifstream::in | std::ifstream::binary) {
+	PlainFileHandle(const fs::path & path) : ifs(path, fs::fstream::in | fs::fstream::binary) {
 		arx_assert(ifs.is_open());
 	};
 	
@@ -400,10 +400,10 @@ public:
 
 void PlainFile::read(void * buf) const {
 	
-	fs_boost::ifstream ifs(path.string(), std::ifstream::in | std::ifstream::binary);
+	fs::ifstream ifs(path, fs::fstream::in | fs::fstream::binary);
 	arx_assert(ifs.is_open());
 	
-	fread(ifs, buf, size());
+	fs::read(ifs, buf, size());
 	
 	arx_assert(!ifs.fail());
 }
@@ -413,7 +413,7 @@ PakFileHandle * PlainFile::open() const {
 }
 
 size_t PlainFileHandle::read(void * buf, size_t size) {
-	return fread(ifs, buf, size).gcount();
+	return fs::read(ifs, buf, size).gcount();
 }
 
 std::ios_base::seekdir arxToStlSeekOrigin[] = {
@@ -448,7 +448,7 @@ PakReader::~PakReader() {
 
 bool PakReader::addArchive(const fs::path & pakfile) {
 	
-	fs_boost::ifstream * ifs = new fs_boost::ifstream(pakfile.string(), std::ifstream::in | std::ifstream::binary);
+	fs::ifstream * ifs = new fs::ifstream(pakfile, fs::fstream::in | fs::fstream::binary);
 	
 	if(!ifs->is_open()) {
 		delete ifs;
@@ -459,7 +459,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 	u32 fat_offset;
 	u32 fat_size;
 	
-	if(fread(*ifs, fat_offset).fail()) {
+	if(fs::read(*ifs, fat_offset).fail()) {
 		LogError << "error reading FAT offset";
 		delete ifs;
 		return false;
@@ -469,7 +469,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 		delete ifs;
 		return false;
 	}
-	if(fread(*ifs, fat_size).fail()) {
+	if(fs::read(*ifs, fat_size).fail()) {
 		LogError << "error reading FAT size at offset " << fat_offset;
 		delete ifs;
 		return false;

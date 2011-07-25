@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 
 #include "io/FilePath.h"
+#include "io/FileStream.h"
 
 using std::string;
 
@@ -112,7 +113,7 @@ bool rename(const path & old_p, const path & new_p) {
 
 char * read_file(const path & p, size_t & size) {
 	
-	fs_boost::ifstream ifs(p.string(), fs_boost::ifstream::in | fs_boost::ifstream::binary | fs_boost::ifstream::ate);
+	fs::ifstream ifs(p, fs::fstream::in | fs::fstream::binary | fs::fstream::ate);
 	if(!ifs.is_open()) {
 		return NULL;
 	}
@@ -130,14 +131,3 @@ char * read_file(const path & p, size_t & size) {
 }
 
 } // namespace fs
-
-std::istream & fread(std::istream & ifs, string & buf) {
-	while(ifs.good()) {
-		char c = static_cast<char>(ifs.get());
-		if(c == '\0') {
-			break;
-		}
-		buf.push_back(c);
-	}
-	return ifs;
-}

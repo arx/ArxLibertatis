@@ -65,18 +65,18 @@ bool SaveBlock::File::loadOffsets(std::istream & handle, u32 version) {
 	
 	if(version < SAV_VERSION_DEFLATE) {
 		// ignore the size, calculate from chunks
-		handle.seekg(4, std::ios_base::cur);
+		handle.seekg(4, std::istream::cur);
 		uncompressedSize = (size_t)-1;
 	} else {
 		u32 uncompressed;
-		if(fread(handle, uncompressed).fail()) {
+		if(fs::read(handle, uncompressed).fail()) {
 			return false;
 		}
 		uncompressedSize = uncompressed;
 	}
 	
 	u32 nChunks;
-	if(!fread(handle, nChunks)) {
+	if(!fs::read(handle, nChunks)) {
 		return false;
 	}
 	if(version < SAV_VERSION_DEFLATE && nChunks == 0) {
@@ -86,11 +86,11 @@ bool SaveBlock::File::loadOffsets(std::istream & handle, u32 version) {
 	
 	if(version < SAV_VERSION_DEFLATE) {
 		// ignored
-		handle.seekg(4, std::ios_base::cur);
+		handle.seekg(4, std::istream::cur);
 		comp = File::ImplodeCrypt;
 	} else {
 		u32 compid;
-		if(!fread(handle, compid)) {
+		if(!fs::read(handle, compid)) {
 			return false;
 		}
 		switch(compid) {
@@ -105,13 +105,13 @@ bool SaveBlock::File::loadOffsets(std::istream & handle, u32 version) {
 	for(size_t i = 0; i < nChunks; i++) {
 		
 		u32 chunkSize;
-		if(!fread(handle, chunkSize)) {
+		if(!fs::read(handle, chunkSize)) {
 			return false;
 		}
 		size += chunkSize;
 		
 		u32 chunkOffset;
-		if(!fread(handle, chunkOffset)) {
+		if(!fs::read(handle, chunkOffset)) {
 			return false;
 		}
 		
@@ -129,10 +129,10 @@ void SaveBlock::File::writeEntry(std::ostream & handle, const std::string & name
 	handle.write(name.c_str(), name.length() + 1);
 	
 	u32 _uncompressedSize = uncompressedSize;
-	fwrite(handle, _uncompressedSize);
+	fs::write(handle, _uncompressedSize);
 	
 	u32 nChunks = chunks.size();
-	fwrite(handle, nChunks);
+	fs::write(handle, nChunks);
 	
 	u32 _comp;
 	switch(comp) {
@@ -141,15 +141,15 @@ void SaveBlock::File::writeEntry(std::ostream & handle, const std::string & name
 		case File::Deflate: _comp = SAV_COMP_DEFLATE; break;
 		case File::Unknown: _comp = (u32)-1; break;
 	}
-	fwrite(handle, _comp);
+	fs::write(handle, _comp);
 	
 	for(File::ChunkList::const_iterator chunk = chunks.begin(); chunk != chunks.end(); ++chunk) {
 		
 		u32 chunkSize = chunk->size;
-		fwrite(handle, chunkSize);
+		fs::write(handle, chunkSize);
 		
 		u32 chunkOffset = chunk->offset;
-		fwrite(handle, chunkOffset);
+		fs::write(handle, chunkOffset);
 		
 	}
 	
@@ -235,7 +235,7 @@ bool SaveBlock::loadFileTable() {
 	handle.seekg(0);
 	
 	u32 fatOffset;
-	if(fread(handle, fatOffset).fail()) {
+	if(fs::read(handle, fatOffset).fail()) {
 		return false;
 	}
 	if(handle.seekg(fatOffset + 4).fail()) {
@@ -245,7 +245,7 @@ bool SaveBlock::loadFileTable() {
 	totalSize = fatOffset;
 	
 	u32 version;
-	if(fread(handle, version).fail()) {
+	if(fs::read(handle, version).fail()) {
 		return false;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
@@ -253,7 +253,7 @@ bool SaveBlock::loadFileTable() {
 	}
 	
 	u32 nFiles;
-	if(fread(handle, nFiles).fail()) {
+	if(fs::read(handle, nFiles).fail()) {
 		return false;
 	}
 	nFiles = (version == SAV_VERSION_OLD) ? nFiles - 1 : nFiles;
@@ -284,7 +284,7 @@ bool SaveBlock::loadFileTable() {
 		
 		// Read the file name.
 		string name;
-		if(fread(handle, name).fail()) {
+		if(fs::read(handle, name).fail()) {
 			return false;
 		}
 		if(version < SAV_VERSION_NOEXT) {
@@ -313,10 +313,10 @@ void SaveBlock::writeFileTable(const std::string & important) {
 	u32 fatOffset = totalSize;
 	handle.seekp(fatOffset + 4);
 	
-	fwrite(handle, SAV_VERSION_NOEXT);
+	fs::write(handle, SAV_VERSION_NOEXT);
 	
 	u32 nFiles = files.size();
-	fwrite(handle, nFiles);
+	fs::write(handle, nFiles);
 	
 	Files::const_iterator ifile = files.find(important);
 	if(ifile != files.end()) {
@@ -330,7 +330,7 @@ void SaveBlock::writeFileTable(const std::string & important) {
 	}
 	
 	handle.seekp(0);
-	fwrite(handle, fatOffset);
+	fs::write(handle, fatOffset);
 	
 }
 
@@ -338,15 +338,15 @@ bool SaveBlock::open(bool writable) {
 	
 	LogDebug << "opening savefile " << savefile << " witable=" << writable;
 	
-	std::ios_base::openmode mode = fs_boost::fstream::in | fs_boost::fstream::binary | fs_boost::fstream::ate;
+	fs::fstream::openmode mode = fs::fstream::in | fs::fstream::binary | fs::fstream::ate;
 	if(writable) {
-		mode |= fs_boost::fstream::out;
+		mode |= fs::fstream::out;
 	}
 	
-	handle.open(savefile.string(), mode);
+	handle.open(savefile, mode);
 	if(!handle.is_open()) {
 		if(writable) {
-			handle.open(savefile.string(), mode | fs_boost::fstream::trunc);
+			handle.open(savefile, mode | fs::fstream::trunc);
 		}
 		if(!handle.is_open()) {
 			LogError << "could not open " << savefile << " for " << (writable ? "reading/writing" : "reading");
@@ -374,7 +374,7 @@ bool SaveBlock::flush(const string & important) {
 	
 	handle.flush();
 	
-	return true;
+	return handle.good();
 }
 
 bool SaveBlock::defragment() {
@@ -390,7 +390,7 @@ bool SaveBlock::defragment() {
 		tempFileName.set_ext(oss.str());
 	} while(fs::exists(tempFileName));
 	
-	fs_boost::ofstream tempFile(tempFileName.string(), fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
+	fs::ofstream tempFile(tempFileName, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!tempFile.is_open()) {
 		return false;
 	}
@@ -443,7 +443,7 @@ bool SaveBlock::defragment() {
 		return false;
 	}
 	
-	handle.open(savefile.string(), std::fstream::in | std::fstream::out | std::fstream::binary);
+	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary);
 	return handle.is_open();
 }
 
@@ -546,14 +546,14 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	
 	size = 0;
 	
-	fs_boost::ifstream handle(savefile.string(), std::fstream::in | std::fstream::binary);
+	fs::ifstream handle(savefile, fs::fstream::in | fs::fstream::binary);
 	if(!handle.is_open()) {
 		LogWarning << "cannot open save file " << savefile;
 		return NULL;
 	}
 	
 	u32 fatOffset;
-	if(fread(handle, fatOffset).fail()) {
+	if(fs::read(handle, fatOffset).fail()) {
 		return NULL;
 	}
 	if(handle.seekg(fatOffset + 4).fail()) {
@@ -562,7 +562,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	}
 	
 	u32 version;
-	if(fread(handle, version).fail()) {
+	if(fs::read(handle, version).fail()) {
 		return NULL;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
@@ -570,7 +570,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	}
 	
 	u32 nFiles;
-	if(fread(handle, nFiles).fail()) {
+	if(fs::read(handle, nFiles).fail()) {
 		return NULL;
 	}
 	
@@ -580,7 +580,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 		
 		// Read the file name.
 		string name;
-		if(fread(handle, name).fail()) {
+		if(fs::read(handle, name).fail()) {
 			return NULL;
 		}
 		if(version < SAV_VERSION_NOEXT) {
