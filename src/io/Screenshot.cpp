@@ -79,7 +79,7 @@ SnapShot::SnapShot(const fs::path & name, bool replace) {
 	do {
 		
 		ostringstream oss;
-		oss << as_string(name.filename()) << '_' << num << ".bmp";
+		oss << name.filename() << '_' << num << ".bmp";
 		
 		file = name.parent() / oss.str();
 		

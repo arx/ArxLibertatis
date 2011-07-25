@@ -1112,9 +1112,9 @@ void forInternalPeople(LPSTR strCmdLine) {
 
 HWND mainWindow = 0;
 
-static bool migrateFilenames(fs::path path) {
+static bool migrateFilenames(fs::path path, bool is_dir) {
 	
-	string name = as_string(path.filename());
+	string name = path.filename();
 	string lowercase = toLowercase(name);
 	
 	bool migrated = true;
@@ -1132,10 +1132,9 @@ static bool migrateFilenames(fs::path path) {
 		}
 	}
 	
-	if(fs::is_directory(path)) {
-		fs_boost::directory_iterator end;
-		for(fs_boost::directory_iterator it(path.string()); it != end; ++it) {
-			migrated &= migrateFilenames(path / as_string(it->path().filename()));
+	if(is_dir) {
+		for(fs::directory_iterator it(path); !it.end(); ++it) {
+			migrated &= migrateFilenames(path / it.name(), it.is_directory());
 		}
 	}
 	
@@ -1157,10 +1156,10 @@ static bool migrateFilenames() {
 	
 	bool migrated = true;
 	
-	fs_boost::directory_iterator end;
-	for(fs_boost::directory_iterator it("./"); it != end; ++it) {
-		if(fileset.find(toLowercase(as_string(it->path().filename()))) != fileset.end()) {
-			migrated &= migrateFilenames(as_string(it->path().filename()));
+	for(fs::directory_iterator it(""); !it.end(); ++it) {
+		string file = it.name();
+		if(fileset.find(toLowercase(file)) != fileset.end()) {
+			migrated &= migrateFilenames(file, it.is_directory());
 		}
 	}
 	

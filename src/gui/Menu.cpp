@@ -193,13 +193,12 @@ void CreateSaveGameList() {
 	
 	fs::path savedir = "save";
 	
-	fs_boost::directory_iterator end;
-	for(fs_boost::directory_iterator it(savedir.string()); it != end; ++it) {
+	for(fs::directory_iterator it(savedir); !it.end(); ++it) {
 		
-		fs::path path = savedir / as_string(it->path().filename());
-		string dirname = as_string(path.filename());
+		string dirname = it.name();
+		fs::path path = savedir / dirname;
 		
-		if(dirname.compare(0, 4, "save") || !fs::is_directory(path)) {
+		if(dirname.compare(0, 4, "save") || !it.is_directory()) {
 			continue;
 		}
 		

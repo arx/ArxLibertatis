@@ -1,6 +1,8 @@
 
 #include "script/ScriptedAnimation.h"
 
+#include <cstring>
+
 #include "ai/Paths.h"
 #include "core/GameTime.h"
 #include "game/NPC.h"
@@ -11,6 +13,7 @@
 #include "script/ScriptUtils.h"
 
 using std::string;
+using std::strcpy;
 
 namespace script {
 

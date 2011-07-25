@@ -655,17 +655,17 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	
 	bool ret = true;
 	
-	fs_boost::directory_iterator end;
-	for(fs_boost::directory_iterator it(path.string()); it != end; ++it) {
+	for(fs::directory_iterator it(path); !it.end(); ++it) {
+		
+		std::string name = it.name();
+		fs::path entry = path / name;
 			
-		fs::path entry = path / as_string(it->path().filename());
-			
-		if(fs::is_directory(entry)) {
-			ret &= addFiles(dir->addDirectory(as_string(entry.filename())), entry);
-		} else {
-			ret &= addFile(dir, entry, as_string(entry.filename()));
+		if(it.is_directory()) {
+			ret &= addFiles(dir->addDirectory(name), entry);
+		} else if(it.is_regular_file()) {
+			ret &= addFile(dir, entry, name);
 		}
-			
+		
 	}
 	
 	return ret;

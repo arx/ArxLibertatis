@@ -1,6 +1,8 @@
 
 #include "script/ScriptedIOProperties.h"
 
+#include <cstring>
+
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "io/FilePath.h"
@@ -9,6 +11,7 @@
 #include "script/ScriptUtils.h"
 
 using std::string;
+using std::strcpy;
 
 namespace script {
 

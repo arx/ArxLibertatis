@@ -243,12 +243,4 @@ void File_Standardize(const std::string & from, std::string & to);
 
 std::string loadPath(const std::string & path);
 
-// Helper functions so we can support both boost::filesystem v2 and v3
-inline const std::string  & as_string(const std::string & path) {
-	return path;
-}
-inline const std::string as_string(const fs_boost::path & path) {
-	return path.string();
-}
-
 #endif // ARX_IO_FILEPATH_H

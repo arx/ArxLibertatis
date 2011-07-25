@@ -4007,18 +4007,17 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	long count = 0;
 	
-	fs_boost::directory_iterator end;
-	for(fs_boost::directory_iterator it(partial_path.string()); it != end; ++it) {
+	for(fs::directory_iterator it(partial_path); !it.end(); ++it) {
 		
-		fs::path path = partial_path / as_string(it->path().filename());
+		fs::path path = partial_path / it.name();
 		
-		if(path.ext() != ".scn" || !fs::is_regular_file(path)) {
+		if(!path.has_ext("scn") || !it.is_regular_file()) {
 			continue;
 		}
 		
 		UNIQUE_HEADER2 * uh2 = reinterpret_cast<UNIQUE_HEADER2 *>(dat + pos);
 		pos += sizeof(UNIQUE_HEADER2);
-		strncpy(uh2->path, as_string(path.filename()).c_str(), sizeof(uh2->path));
+		strncpy(uh2->path, path.filename().c_str(), sizeof(uh2->path));
 		
 		char check[512];
 		HERMES_CreateFileCheck(path, check, 512, FTS_VERSION);

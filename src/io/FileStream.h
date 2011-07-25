@@ -10,8 +10,6 @@ class path;
 
 class ifstream : public std::ifstream {
 	
-private:
-	
 	ifstream(const ifstream &);
 	ifstream & operator=(const ifstream &);
 	
@@ -29,8 +27,6 @@ public:
 
 class ofstream : public std::ofstream {
 	
-private:
-	
 	ofstream(const ofstream &);
 	ofstream & operator=(const ofstream &);
 	
@@ -47,8 +43,6 @@ public:
 };
 
 class fstream : public std::fstream {
-	
-private:
 	
 	fstream(const fstream &);
 	fstream & operator=(const fstream &);

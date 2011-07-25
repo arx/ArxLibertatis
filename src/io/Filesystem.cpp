@@ -25,12 +25,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Filesystem.h"
 
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/convenience.hpp>
+
 #include "io/FilePath.h"
 #include "io/FileStream.h"
 
 using std::string;
 
 namespace fs {
+
+namespace fs_boost = boost::filesystem;
 
 bool exists(const path & p) {
 	try {
@@ -128,6 +133,40 @@ char * read_file(const path & p, size_t & size) {
 	}
 	
 	return buf;
+}
+
+// Helper functions so we can support both fs_boost v2 and v3
+inline const std::string  & as_string(const std::string & path) {
+	return path;
+}
+inline const std::string as_string(const fs_boost::path & path) {
+	return path.string();
+}
+
+directory_iterator::directory_iterator(const fs::path & p) : handle(new fs_boost::directory_iterator(p.empty() ? "./" : p.string())) { };
+
+directory_iterator::~directory_iterator() {
+	delete reinterpret_cast<fs_boost::directory_iterator *>(handle);
+}
+
+directory_iterator & directory_iterator::operator++() {
+	return (++*reinterpret_cast<fs_boost::directory_iterator *>(handle), *this);
+}
+
+bool directory_iterator::end() {
+	return (*reinterpret_cast<fs_boost::directory_iterator *>(handle) == fs_boost::directory_iterator());
+}
+
+std::string directory_iterator::name() {
+	return as_string((*reinterpret_cast<fs_boost::directory_iterator *>(handle))->path().filename());
+}
+
+bool directory_iterator::is_directory() {
+	return fs_boost::is_directory((*reinterpret_cast<fs_boost::directory_iterator *>(handle))->status());
+}
+
+bool directory_iterator::is_regular_file() {
+	return fs_boost::is_regular_file((*reinterpret_cast<fs_boost::directory_iterator *>(handle))->status());
 }
 
 } // namespace fs
