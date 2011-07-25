@@ -608,13 +608,11 @@ PakFileHandle * PakReader::open(const string & name) {
 
 bool PakReader::addFiles(const fs::path & path, const string & mount) {
 	
-	boost::system::error_code ec;
-	
-	if(!fs::exists(path, ec) || ec) {
+	if(!fs::exists(path)) {
 		return false;
 	}
 		
-	if(fs::is_directory(path, ec)) {
+	if(fs::is_directory(path)) {
 			
 		return addFiles(addDirectory(mount), path);
 			
@@ -644,9 +642,9 @@ bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::st
 		return false;
 	}
 	
-	boost::system::error_code ec;
-	size_t size = fs::file_size(path, ec);
-	if(ec) {
+	// TODO-fs: Fix for error code
+	size_t size = fs::file_size(path);
+	if(size == 0) {
 		return false;
 	}
 	
@@ -658,13 +656,12 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	
 	bool ret = true;
 	
-	boost::system::error_code ec;
 	fs::directory_iterator end;
-	for(fs::directory_iterator it(path, ec); it != end; it.increment(ec)) {
+	for(fs::directory_iterator it(path); it != end; ++it) {
 			
 		const fs::path & entry = it->path();
 			
-		if(fs::is_directory(entry, ec)) {
+		if(fs::is_directory(entry)) {
 			ret &= addFiles(dir->addDirectory(as_string(entry.filename())), entry);
 		} else {
 			ret &= addFile(dir, entry, as_string(entry.filename()));

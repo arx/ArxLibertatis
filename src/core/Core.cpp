@@ -1119,24 +1119,22 @@ static bool migrateFilenames(fs::path path) {
 	
 	bool migrated = true;
 	
-	boost::system::error_code ec;
 	if(lowercase != name) {
 		
 		fs::path dst = path.parent_path() / lowercase;
 		
 		LogInfo << "renaming " << path << " to " << dst.filename() << "";
 		
-		fs::rename(path, dst, ec);
-		if(ec == boost::system::errc::success) {
+		if(fs_tmp::rename(path, dst)) {
 			path = dst;
 		} else {
 			migrated = false;
 		}		
 	}
 	
-	if(fs::is_directory(path, ec) && !ec) {
+	if(fs::is_directory(path)) {
 		fs::directory_iterator end;
-		for(fs::directory_iterator it(path, ec); it != end; it.increment(ec)) {
+		for(fs::directory_iterator it(path); it != end; ++it) {
 			migrated &= migrateFilenames(it->path());
 		}
 	}
@@ -1159,9 +1157,8 @@ static bool migrateFilenames() {
 	
 	bool migrated = true;
 	
-	boost::system::error_code ec;
 	fs::directory_iterator end;
-	for(fs::directory_iterator it("./", ec); it != end; it.increment(ec)) {
+	for(fs::directory_iterator it("./"); it != end; ++it) {
 		if(fileset.find(toLowercase(as_string(it->path().filename()))) != fileset.end()) {
 			migrated &= migrateFilenames(it->path());
 		}
@@ -1214,10 +1211,8 @@ int main(int argc, char ** argv) {
 	// Initialize config first, before anything else.
 	fs::path configFile = "cfg.ini";
 	
-	boost::system::error_code ec;
-	
 	bool migrated = false;
-	if(!fs::exists(configFile, ec) && !ec) {
+	if(!fs::exists(configFile)) {
 		migrated = migrateFilenames();
 	}
 	
@@ -1317,7 +1312,7 @@ int main(int argc, char ** argv) {
 	// delete current for clean save.........
 	if(ARX_CHANGELEVEL_MakePath()) {
 		LogInfo << "Clearing current game directory " << CurGamePath;
-		if((fs::remove_all(CurGamePath, ec), ec) || (fs::create_directory(CurGamePath, ec), ec)) {
+		if(!fs_tmp::remove_all(CurGamePath) || !fs_tmp::create_directory(CurGamePath)) {
 			LogWarning << "failed to clear " << CurGamePath;
 		}
 	}
@@ -4466,8 +4461,6 @@ void LaunchMoulinex()
 
 	LogDebug << "Moulinex Lvl " << lvl;
 	
-	boost::system::error_code ec;
-
 	if (LASTMOULINEX!=-1)
 	{
 		char saveto[256];
@@ -4481,7 +4474,7 @@ void LaunchMoulinex()
 		GetLevelNameByNum(lastlvl,tx);
 		sprintf(saveto,"graph/levels/level%s/level%s.dlf",tx,tx);
 
-		if(fs::exists(saveto, ec)) {
+		if(fs::exists(saveto)) {
 			
 			LightMode oldmode = ModeLight;
 			ModeLight=MODE_NORMALS | MODE_RAYLAUNCH | MODE_STATICLIGHT | MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
@@ -4530,7 +4523,7 @@ void LaunchMoulinex()
 		{
 			sprintf(loadfrom,"graph/levels/level%s/level%s.dlf",tx,tx);
 
-			if(fs::exists(loadfrom, ec)) {
+			if(fs::exists(loadfrom)) {
 				
 				if (CDP_LIGHTOptions!=NULL) SendMessage(CDP_LIGHTOptions,WM_CLOSE,0,0);
 

@@ -85,9 +85,9 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 		return;
 	}
 	
-	boost::system::error_code ec;
-	std::time_t write_time = fs::last_write_time(name, ec);
-	if(ec) {
+	// TODO-fs: return value in case of failure ?
+	std::time_t write_time = fs::last_write_time(name);
+	if(write_time == 0) {
 		return;
 	}
 	

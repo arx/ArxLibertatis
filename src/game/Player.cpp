@@ -3650,8 +3650,8 @@ void ARX_PLAYER_Start_New_Quest() {
 	ARX_EQUIPMENT_UnEquipAllPlayer();
 	//Empty Current Game Directory to restart a new game...
 	ARX_CHANGELEVEL_MakePath();
-	boost::system::error_code ec;
-	if((fs::remove_all(CurGamePath, ec), ec) || (fs::create_directory(CurGamePath, ec), ec)) {
+	
+	if(!fs_tmp::remove_all(CurGamePath) || !fs_tmp::create_directory(CurGamePath)) {
 		LogWarning << "failed to clear " << CurGamePath;
 	}
 	inter.iobj[0]->halo.flags = 0;

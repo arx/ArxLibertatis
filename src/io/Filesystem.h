@@ -58,6 +58,44 @@ std::istream & fread(std::istream & ifs, std::string & buf);
 
 namespace fs = boost::filesystem;
 
+namespace fs_tmp
+{
+	bool remove_all(const fs::path& p)
+	{
+		boost::system::error_code ec;
+		fs::remove_all(p, ec);
+		return !ec;
+	}
+
+	bool create_directory(const fs::path& p)
+	{
+		boost::system::error_code ec;
+		fs::create_directory(p, ec);
+		return !ec;
+	}
+
+	bool create_directories(const fs::path& p)
+	{
+		boost::system::error_code ec;
+		fs::create_directories(p, ec);
+		return !ec;
+	}
+
+	bool copy_file(const fs::path& from_p, const fs::path& to_p)
+	{
+		boost::system::error_code ec;
+		fs::copy_file(from_p, to_p, ec);
+		return !ec;
+	}
+
+	bool rename(const fs::path& old_p, const fs::path& new_p)
+	{
+		boost::system::error_code ec;
+		fs::rename(old_p, new_p, ec);
+		return !ec;
+	}
+}
+
 char * read_file(const fs::path & path, size_t & size);
 
 #endif // ARX_IO_FILESYSTEM_H

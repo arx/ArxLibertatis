@@ -3960,9 +3960,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	LogDebug << "FastSceneSave" << path;
 	
-	boost::system::error_code ec;
-	fs::create_directories(path, ec);
-	if(ec != boost::system::errc::success) {
+	if(!fs::create_directories(path)) {
 		return false;
 	}
 	
@@ -4009,10 +4007,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	long count = 0;
 	
 	fs::directory_iterator end;
-	for(fs::directory_iterator it(partial_path, ec); it != end; it.increment(ec)) {
+	for(fs::directory_iterator it(partial_path); it != end; ++it) {
 		
 		const fs::path & path = it->path();
-		if(path.extension() != ".scn" || !fs::is_regular_file(path, ec)) {
+		if(path.extension() != ".scn" || !fs::is_regular_file(path)) {
 			continue;
 		}
 		

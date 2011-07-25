@@ -94,9 +94,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	fs::path gamefic = "game" / file;
 	gamefic.replace_extension("ftl");
 	
-	boost::system::error_code ec;
-	fs::create_directories(gamefic.parent_path(), ec);
-	if(ec != boost::system::errc::success) {
+	if(!fs_tmp::create_directories(gamefic.parent_path())) {
 		return false;
 	}
 	

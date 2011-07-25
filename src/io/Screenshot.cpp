@@ -76,7 +76,6 @@ SnapShot::SnapShot(const fs::path & name, bool replace) {
 	
 	int num = 0;
 	
-	boost::system::error_code ec;
 	do {
 		
 		ostringstream oss;
@@ -85,7 +84,7 @@ SnapShot::SnapShot(const fs::path & name, bool replace) {
 		file = name.parent_path() / oss.str();
 		
 		num++;
-	} while(!replace && fs::exists(file, ec));
+	} while(!replace && fs::exists(file));
 	
 }
 

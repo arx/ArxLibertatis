@@ -230,8 +230,7 @@ extern char LastLoadedDLF[512];
 #ifdef BUILD_EDIT_LOADSAVE
 
 void LogDirCreation(const fs::path & dir) {
-	boost::system::error_code ec;
-	if(fs::is_directory(dir, ec)) {
+	if(fs::is_directory(dir)) {
 		LogDebug << "LogDirCreation: " << dir;
 	}
 }
@@ -243,18 +242,16 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	fs::path fic = _fic;
 	fic.replace_extension("dlf");
-	boost::system::error_code ec;
-	if(fs::exists(fic, ec)) {
+	if(fs::exists(fic)) {
 		fs::path backupfile = fic;
 		int i = 0;
 		do {
 			std::stringstream s;
 			s << "dlf_bak_" << i;
 			backupfile.replace_extension(s.str());
-		} while(fs::exists(backupfile, ec) && (i++, true));
+		} while(fs::exists(backupfile) && (i++, true));
 		
-		fs::rename(fic, backupfile, ec);
-		if(ec != boost::system::errc::success) {
+		if(!fs_tmp::rename(fic, backupfile)) {
 			LogError << "Unable to rename file " << fic << " to " << backupfile;
 			return -1;
 		}
@@ -262,18 +259,16 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	fs::path fic2 = fic;
 	fic2.replace_extension("llf");
-	if(fs::exists(fic2, ec)) {
+	if(fs::exists(fic2)) {
 		fs::path backupfile = fic;
 		int i = 0;
 		do {
 			std::stringstream s;
 			s << "llf_bak_" << i;
 			backupfile.replace_extension(s.str());
-		} while(fs::exists(backupfile, ec) && (i++, true));
+		} while(fs::exists(backupfile) && (i++, true));
 		
-		boost::system::error_code ec;
-		fs::rename(fic2, backupfile, ec);
-		if(ec != boost::system::errc::success) {
+		if(!fs_tmp::rename(fic2, backupfile)) {
 			LogError << "Unable to rename file " << fic2 << " to " << backupfile;
 			return -1;
 		}
@@ -624,8 +619,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 
 void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	
-	boost::system::error_code ec;
-	if(!fs::is_directory(dir, ec) || ec) {
+	if(!fs::is_directory(dir)) {
 		return;
 	}
 	
@@ -666,8 +660,8 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 				return;
 			}
 			file = io->full_name();
-			boost::system::error_code ec;
-			if(!fs::is_directory(file, ec) || ec) {
+			
+			if(!fs::is_directory(file)) {
 				LogError << "Local DIR don't Exists...";
 				return;
 			}
@@ -744,9 +738,8 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 				}
 			} else {
 #ifdef BUILD_EDIT_LOADSAVE
-				boost::system::error_code ec;
-				fs::create_directories(tmp, ec);
-				if(ec == boost::system::errc::success) {
+
+				if(fs::create_directories(tmp)) {
 					LogDirCreation(tmp);
 					WriteIOInfo(io, tmp);
 				} else {
@@ -1628,8 +1621,7 @@ void AddIdent(std::string & ident, long num)
 #ifdef BUILD_EDITOR
 
 static void LogDirDestruction(const fs::path & dir ) {
-	boost::system::error_code ec;
-	if(fs::is_directory(dir, ec)) {
+	if(fs::is_directory(dir)) {
 		LogDebug << "LogDirDestruction: " << dir;
 	}
 }
@@ -1659,12 +1651,10 @@ void CheckIO_NOT_SAVED() {
 		
 		fs::path temp = inter.iobj[i]->full_name();
 		
-		boost::system::error_code ec;
-		if(fs::is_directory(temp, ec)) {
+		if(fs::is_directory(temp)) {
 			if(OKBox("Really remove Directory & Directory Contents ?\n\n" + temp.string(), "WARNING")) {
 				LogDirDestruction(temp);
-				fs::remove_all(temp, ec);
-				if(ec != boost::system::errc::success) {
+				if(!fs_tmp::remove_all(temp)) {
 					LogError << "Could not remove directory " << temp;
 				}
 			}

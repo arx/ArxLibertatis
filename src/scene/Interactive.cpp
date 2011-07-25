@@ -2794,13 +2794,11 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 		
 		fs::path dir = inter.iobj[i]->full_name();
 		
-		boost::system::error_code ec;
-		if(fs::is_directory(dir, ec)) {
+		if(fs::is_directory(dir)) {
 			
 			string message = "Really remove Directory & Directory Contents ?\n\n" + dir.string();
 			if((flag & FLAG_NOCONFIRM) || OKBox(message, "WARNING")) {
-				fs::remove_all(dir, ec);
-				if(ec != boost::system::errc::success) {
+				if(!fs_tmp::remove_all(dir)) {
 					LogError << "Could not remove directory " << dir;
 				}
 			}
@@ -3034,12 +3032,10 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 		
 		fs::path temp = io->full_name();
 		
-		boost::system::error_code ec;
-		if(!fs::is_directory(temp, ec)) {
+		if(!fs::is_directory(temp)) {
 			io->ident = t;
 			
-			fs::create_directories(temp, ec);
-			if(ec == boost::system::errc::success) {
+			if(fs_tmp::create_directories(temp)) {
 				LogDirCreation(temp);
 				WriteIOInfo(io, temp);
 			} else {
