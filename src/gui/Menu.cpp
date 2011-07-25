@@ -251,12 +251,10 @@ void CreateSaveGameList() {
 		
 		save->quicksave = (name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1");
 		
-		fs::path thumbnail = path / "gsave";
+		fs::path thumbnail = path / "gsave.bmp";
 		if(fs::exists(thumbnail)) {
-			std::ostringstream oss;
-			oss << "save/save" << std::setw(4) << std::setfill('0') << num << "/gsave";
-			resources->removeFile(oss.str());
-			resources->addFiles(thumbnail, oss.str());
+			resources->removeFile(thumbnail);
+			resources->addFiles(thumbnail, thumbnail);
 		}
 		
 		maxlength = std::max(save->quicksave ? 9 : name.length(), maxlength);
