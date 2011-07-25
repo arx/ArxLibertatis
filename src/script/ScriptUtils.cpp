@@ -325,6 +325,8 @@ void initSuppressions() {
 	suppressions[239]["human_base_0079"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
 	suppressions[303]["human_base_0079"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
 	
+	suppressions[722]["human_base_0095"]["setcontrolledzone"] = true; // unknown zone 'maria_shop'
+	
 	suppressions[422]["light_door"]["set"] = true; // bad variable name: "durability"
 	
 	suppressions[105]["light_door_0019"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
