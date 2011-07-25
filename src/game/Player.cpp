@@ -3651,7 +3651,7 @@ void ARX_PLAYER_Start_New_Quest() {
 	//Empty Current Game Directory to restart a new game...
 	ARX_CHANGELEVEL_MakePath();
 	
-	if(!fs_tmp::remove_all(CurGamePath) || !fs_tmp::create_directory(CurGamePath)) {
+	if(!fs::remove_all(CurGamePath) || !fs::create_directory(CurGamePath)) {
 		LogWarning << "failed to clear " << CurGamePath;
 	}
 	inter.iobj[0]->halo.flags = 0;

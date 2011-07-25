@@ -520,7 +520,7 @@ float oldposx,oldposz;
 
 	this->surfacetemp->Unlock(NULL);
 
-	fs::ofstream f(name, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	fs_boost::ofstream f(name, fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
 	fwrite(f, bm);
 	fwrite(f, &bi, sizeof(BITMAPINFO) - 4);
 	fwrite(f, mem, tailleraw);

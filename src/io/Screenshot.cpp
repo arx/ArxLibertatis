@@ -81,7 +81,7 @@ SnapShot::SnapShot(const fs::path & name, bool replace) {
 		ostringstream oss;
 		oss << as_string(name.filename()) << '_' << num << ".bmp";
 		
-		file = name.parent_path() / oss.str();
+		file = name.parent() / oss.str();
 		
 		num++;
 	} while(!replace && fs::exists(file));

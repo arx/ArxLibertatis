@@ -80,7 +80,7 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	size_t length = size / 4;
 	arx_assert(length > 6);
 	
-	fs::ifstream ifs(name, fs::fstream::ate | fs::fstream::in | fs::fstream::binary);
+	fs_boost::ifstream ifs(name, fs_boost::fstream::ate | fs_boost::fstream::in | fs_boost::fstream::binary);
 	if(!ifs.is_open()) {
 		return;
 	}

@@ -1121,11 +1121,11 @@ static bool migrateFilenames(fs::path path) {
 	
 	if(lowercase != name) {
 		
-		fs::path dst = path.parent_path() / lowercase;
+		fs::path dst = path.parent() / lowercase;
 		
 		LogInfo << "renaming " << path << " to " << dst.filename() << "";
 		
-		if(fs_tmp::rename(path, dst)) {
+		if(fs::rename(path, dst)) {
 			path = dst;
 		} else {
 			migrated = false;
@@ -1133,8 +1133,8 @@ static bool migrateFilenames(fs::path path) {
 	}
 	
 	if(fs::is_directory(path)) {
-		fs::directory_iterator end;
-		for(fs::directory_iterator it(path); it != end; ++it) {
+		fs_boost::directory_iterator end;
+		for(fs_boost::directory_iterator it(path); it != end; ++it) {
 			migrated &= migrateFilenames(it->path());
 		}
 	}
@@ -1157,8 +1157,8 @@ static bool migrateFilenames() {
 	
 	bool migrated = true;
 	
-	fs::directory_iterator end;
-	for(fs::directory_iterator it("./"); it != end; ++it) {
+	fs_boost::directory_iterator end;
+	for(fs_boost::directory_iterator it("./"); it != end; ++it) {
 		if(fileset.find(toLowercase(as_string(it->path().filename()))) != fileset.end()) {
 			migrated &= migrateFilenames(it->path());
 		}
@@ -1312,7 +1312,7 @@ int main(int argc, char ** argv) {
 	// delete current for clean save.........
 	if(ARX_CHANGELEVEL_MakePath()) {
 		LogInfo << "Clearing current game directory " << CurGamePath;
-		if(!fs_tmp::remove_all(CurGamePath) || !fs_tmp::create_directory(CurGamePath)) {
+		if(!fs::remove_all(CurGamePath) || !fs::create_directory(CurGamePath)) {
 			LogWarning << "failed to clear " << CurGamePath;
 		}
 	}

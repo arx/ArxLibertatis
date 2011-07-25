@@ -338,15 +338,15 @@ bool SaveBlock::open(bool writable) {
 	
 	LogDebug << "opening savefile " << savefile << " witable=" << writable;
 	
-	std::ios_base::openmode mode = fs::fstream::in | fs::fstream::binary | fs::fstream::ate;
+	std::ios_base::openmode mode = fs_boost::fstream::in | fs_boost::fstream::binary | fs_boost::fstream::ate;
 	if(writable) {
-		mode |= fs::fstream::out;
+		mode |= fs_boost::fstream::out;
 	}
 	
 	handle.open(savefile, mode);
 	if(!handle.is_open()) {
 		if(writable) {
-			handle.open(savefile, mode | fs::fstream::trunc);
+			handle.open(savefile, mode | fs_boost::fstream::trunc);
 		}
 		if(!handle.is_open()) {
 			LogError << "could not open " << savefile << " for " << (writable ? "reading/writing" : "reading");
@@ -387,10 +387,10 @@ bool SaveBlock::defragment() {
 	do {
 		std::ostringstream oss;
 		oss << "defrag" << i++;
-		tempFileName.replace_extension(oss.str());
+		tempFileName.set_ext(oss.str());
 	} while(fs::exists(tempFileName));
 	
-	fs::ofstream tempFile(tempFileName, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	fs_boost::ofstream tempFile(tempFileName, fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
 	if(!tempFile.is_open()) {
 		return false;
 	}
@@ -438,12 +438,12 @@ bool SaveBlock::defragment() {
 	
 	tempFile.flush(), tempFile.close(), handle.close();
 	
-	if(!fs_tmp::rename(tempFileName, savefile)) {
+	if(!fs::rename(tempFileName, savefile)) {
 		LogWarning << "failed to move defragmented savegame " << tempFileName << " to " << savefile;
 		return false;
 	}
 	
-	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary);
+	handle.open(savefile, fs_boost::fstream::in | fs_boost::fstream::out | fs_boost::fstream::binary);
 	return handle.is_open();
 }
 
@@ -546,7 +546,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	
 	size = 0;
 	
-	fs::ifstream handle(savefile, fs::fstream::in | fs::fstream::binary);
+	fs_boost::ifstream handle(savefile, fs_boost::fstream::in | fs_boost::fstream::binary);
 	if(!handle.is_open()) {
 		LogWarning << "cannot open save file " << savefile;
 		return NULL;

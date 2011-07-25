@@ -380,11 +380,11 @@ public:
 
 class PlainFileHandle : public PakFileHandle {
 	
-	fs::ifstream ifs;
+	fs_boost::ifstream ifs;
 	
 public:
 	
-	PlainFileHandle(const fs::path & path) : ifs(path, fs::ifstream::in | fs::ifstream::binary) {
+	PlainFileHandle(const fs::path & path) : ifs(path, fs_boost::ifstream::in | fs_boost::ifstream::binary) {
 		arx_assert(ifs.is_open());
 	};
 	
@@ -400,7 +400,7 @@ public:
 
 void PlainFile::read(void * buf) const {
 	
-	fs::ifstream ifs(path, fs::ifstream::in | fs::ifstream::binary);
+	fs_boost::ifstream ifs(path, fs_boost::ifstream::in | fs_boost::ifstream::binary);
 	arx_assert(ifs.is_open());
 	
 	fread(ifs, buf, size());
@@ -448,7 +448,7 @@ PakReader::~PakReader() {
 
 bool PakReader::addArchive(const fs::path & pakfile) {
 	
-	fs::ifstream * ifs = new fs::ifstream(pakfile, fs::ifstream::in | fs::ifstream::binary);
+	fs_boost::ifstream * ifs = new fs_boost::ifstream(pakfile, fs_boost::ifstream::in | fs_boost::ifstream::binary);
 	
 	if(!ifs->is_open()) {
 		delete ifs;
@@ -656,8 +656,8 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	
 	bool ret = true;
 	
-	fs::directory_iterator end;
-	for(fs::directory_iterator it(path); it != end; ++it) {
+	fs_boost::directory_iterator end;
+	for(fs_boost::directory_iterator it(path); it != end; ++it) {
 			
 		const fs::path & entry = it->path();
 			

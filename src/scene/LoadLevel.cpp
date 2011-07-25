@@ -241,34 +241,34 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	
 	fs::path fic = _fic;
-	fic.replace_extension("dlf");
+	fic.set_ext("dlf");
 	if(fs::exists(fic)) {
 		fs::path backupfile = fic;
 		int i = 0;
 		do {
 			std::stringstream s;
 			s << "dlf_bak_" << i;
-			backupfile.replace_extension(s.str());
+			backupfile.set_ext(s.str());
 		} while(fs::exists(backupfile) && (i++, true));
 		
-		if(!fs_tmp::rename(fic, backupfile)) {
+		if(!fs::rename(fic, backupfile)) {
 			LogError << "Unable to rename file " << fic << " to " << backupfile;
 			return -1;
 		}
 	}
 	
 	fs::path fic2 = fic;
-	fic2.replace_extension("llf");
+	fic2.set_ext("llf");
 	if(fs::exists(fic2)) {
 		fs::path backupfile = fic;
 		int i = 0;
 		do {
 			std::stringstream s;
 			s << "llf_bak_" << i;
-			backupfile.replace_extension(s.str());
+			backupfile.set_ext(s.str());
 		} while(fs::exists(backupfile) && (i++, true));
 		
-		if(!fs_tmp::rename(fic2, backupfile)) {
+		if(!fs::rename(fic2, backupfile)) {
 			LogError << "Unable to rename file " << fic2 << " to " << backupfile;
 			return -1;
 		}
@@ -479,7 +479,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// Now Saving Whole Buffer
-	fs::ofstream ofs(fic, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	fs_boost::ofstream ofs(fic, fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
 	if(!ofs.is_open()) {
 		LogError << "Unable to open " << fic << " for write...";
 		delete[] dat;
@@ -591,7 +591,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// Now Saving Whole Buffer
-	ofs.open(fic2, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	ofs.open(fic2, fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
 	if(!ofs.is_open()) {
 		LogError << "Unable to open " << fic2 << " for write...";
 		delete[] dat;
@@ -624,9 +624,9 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	}
 	
 	fs::path file = dir / GetName(io->filename);
-	file.replace_extension("log");
+	file.set_ext("log");
 	
-	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc);
+	fs_boost::ofstream ofs(file, fs_boost::fstream::out | fs_boost::fstream::trunc);
 	if(!ofs.is_open()) {
 		return;
 	}
@@ -673,7 +673,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 		default: return;
 	}
 	
-	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc | fs::fstream::binary);
+	fs_boost::ofstream ofs(file, fs_boost::fstream::out | fs_boost::fstream::trunc | fs_boost::fstream::binary);
 	if(!ofs.is_open()) {
 		LogError << ("Unable To Save...");
 		return;
@@ -1654,7 +1654,7 @@ void CheckIO_NOT_SAVED() {
 		if(fs::is_directory(temp)) {
 			if(OKBox("Really remove Directory & Directory Contents ?\n\n" + temp.string(), "WARNING")) {
 				LogDirDestruction(temp);
-				if(!fs_tmp::remove_all(temp)) {
+				if(!fs::remove_all(temp)) {
 					LogError << "Could not remove directory " << temp;
 				}
 			}

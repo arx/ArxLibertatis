@@ -40,7 +40,7 @@ std::istream & fread(std::istream & ifs, string & buf) {
 
 char * read_file(const fs::path & path, size_t & size) {
 	
-	fs::ifstream ifs(path, fs::ifstream::in | fs::ifstream::binary | fs::ifstream::ate);
+	fs_boost::ifstream ifs(path, fs_boost::ifstream::in | fs_boost::ifstream::binary | fs_boost::ifstream::ate);
 	if(!ifs.is_open()) {
 		return NULL;
 	}

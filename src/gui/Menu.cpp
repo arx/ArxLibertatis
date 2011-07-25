@@ -191,8 +191,8 @@ void CreateSaveGameList() {
 	
 	size_t maxlength = 0;
 	
-	fs::directory_iterator end;
-	for(fs::directory_iterator it("save"); it != end; ++it) {
+	fs_boost::directory_iterator end;
+	for(fs_boost::directory_iterator it("save"); it != end; ++it) {
 		
 		const fs::path & path = it->path();
 		string dirname = as_string(path.filename());

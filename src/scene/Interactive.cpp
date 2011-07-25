@@ -2798,7 +2798,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 			
 			string message = "Really remove Directory & Directory Contents ?\n\n" + dir.string();
 			if((flag & FLAG_NOCONFIRM) || OKBox(message, "WARNING")) {
-				if(!fs_tmp::remove_all(dir)) {
+				if(!fs::remove_all(dir)) {
 					LogError << "Could not remove directory " << dir;
 				}
 			}
@@ -3035,7 +3035,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 		if(!fs::is_directory(temp)) {
 			io->ident = t;
 			
-			if(fs_tmp::create_directories(temp)) {
+			if(fs::create_directories(temp)) {
 				LogDirCreation(temp);
 				WriteIOInfo(io, temp);
 			} else {
