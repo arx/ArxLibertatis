@@ -1718,11 +1718,8 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 
 	//todo free
 	io->armormaterial = strdup("leather");
-	strcpy(io->filename, "graph/obj3d/interactive/player/player.teo");
-	std::string texscript = io->filename;
-	SetExt(texscript, ".asl");
-
-	loadScript(io->script, resources->getFile(texscript));
+	io->filename = "graph/obj3d/interactive/player/player.teo";
+	loadScript(io->script, resources->getFile("graph/obj3d/interactive/player/player.asl"));
 
 	if ((EERIE_OBJECT_GetGroup(io->obj, "head") != -1)
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "neck") != -1)

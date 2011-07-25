@@ -134,7 +134,7 @@ extern long NbIOSelected;
 #endif
 
 void ARX_INTERACTIVE_UnfreezeAll();
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string & s1);
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const fs::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag = 0);
@@ -147,7 +147,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const std::string & param1, const std::string& param2);
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string & temp);
 void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags = 0);
@@ -215,10 +215,10 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef =
  * Creates an IO Ident for added object if necessary
  * @param flags can be IO_IMMEDIATELOAD (1) to FORCE loading
  */
-INTERACTIVE_OBJ * AddInteractive(const std::string & file, long id, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddFix(const std::string & file, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddNPC(const std::string & file, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddItem(const std::string & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddInteractive(const fs::path & file, long id, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddItem(const fs::path & file, AddInteractiveFlags flags = 0);
 
 void InitInter(long nb);
 INTERACTIVE_OBJ * CreateFreeInter(long num = -1);

@@ -788,21 +788,13 @@ long ALLOW_MESH_TWEAKING = 1;
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const string & _path)
+void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const fs::path & path)
 {
 	if (!ALLOW_MESH_TWEAKING) return;
 
-	string file2;
-	string filet;
-	string path;
-	File_Standardize(_path, path);
+	fs::path ftl_file = ("game" / path).set_ext("ftl");
 
-	filet = "game/" + path;
-
-	SetExt(filet, ".ftl");
-	File_Standardize(filet, file2);
-
-	if ((!resources->getFile(file2)) && (!resources->getFile(path))) return;
+	if ((!resources->getFile(ftl_file)) && (!resources->getFile(path))) return;
 
 	if (!tw) return;
 
@@ -828,7 +820,6 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const string & _pat
 	EERIE_3DOBJ * result = NULL;
 	EERIE_3DOBJ * result2 = NULL;
 
-	if ((resources->getFile(file2)) || (resources->getFile(path)))
 	{
 		tobj = loadObject(path);
 

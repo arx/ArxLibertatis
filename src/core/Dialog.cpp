@@ -3445,10 +3445,8 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if (CDP_EditIO)
 			{
 				// Isis Athena
-				char temp[256];
 				thWnd = GetDlgItem(hWnd, IDC_OBJNAME);
-				sprintf(temp, "%s_%04ld", GetName(CDP_EditIO->filename).c_str(), CDP_EditIO->ident);
-				SetWindowText(thWnd, temp);
+				SetWindowText(thWnd, CDP_EditIO->long_name().c_str());
 
 				thWnd = GetDlgItem(hWnd, IDC_EDIT1);
 

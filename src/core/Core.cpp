@@ -3391,7 +3391,7 @@ long Player_Arrow_Count() {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					INTERACTIVE_OBJ * io = inventory[iNbBag][i][j].io;
 					if(io) {
-						if(GetName(io->filename) == "arrows") {
+						if(io->short_name() == "arrows") {
 							if(io->durability >= 1.f) {
 								ARX_CHECK_LONG(io->durability);
 								count += static_cast<long>(io->durability);
@@ -3416,7 +3416,7 @@ INTERACTIVE_OBJ * Player_Arrow_Count_Decrease() {
 				for(size_t i = 0; i < INVENTORY_X;i++) {
 					INTERACTIVE_OBJ * ioo = inventory[iNbBag][i][j].io;
 					if(ioo) {
-						if(GetName(ioo->filename) == "arrows") {
+						if(ioo->short_name() == "arrows") {
 							if(ioo->durability >= 1.f) {
 								if(!io) {
 									io = ioo;
@@ -6893,14 +6893,11 @@ static void ShowInfoText() {
 	danaeApp.OutputText( 70, 80, tex );
 	INTERACTIVE_OBJ * io=ARX_SCRIPT_Get_IO_Max_Events();
 
-	char temp[256];
-
 	if (io==NULL)
 		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",ScriptEvent::totalCount,ARX_SCRIPT_CountTimers());
 	else 
 	{
-		strcpy(temp,GetName(io->filename).c_str());	
-		sprintf(tex,"Events %ld (IOmax %s_%04ld %d) Timers %ld",ScriptEvent::totalCount,temp,io->ident,io->stat_count,ARX_SCRIPT_CountTimers());
+		sprintf(tex,"Events %ld (IOmax %s %d) Timers %ld",ScriptEvent::totalCount, io->long_name().c_str(), io->stat_count,ARX_SCRIPT_CountTimers());
 	}
 
 	danaeApp.OutputText( 70, 94, tex );
@@ -6909,8 +6906,7 @@ static void ShowInfoText() {
 
 	if (io!=NULL)
 	{
-		strcpy(temp,GetName(io->filename).c_str());	
-		sprintf(tex,"Max SENDER %s_%04ld %d)",temp,io->ident,io->stat_sent);
+		sprintf(tex,"Max SENDER %s %d)", io->long_name().c_str(), io->stat_sent);
 		danaeApp.OutputText( 70, 114, tex );
 	}
 

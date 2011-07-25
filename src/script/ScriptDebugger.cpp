@@ -162,8 +162,7 @@ void DANAE_DEBUGGER_Update()
 
 	char temp[256];
 
-	sprintf(temp, "%s_%04ld", GetName(io->filename).c_str(), io->ident);
-	s.lpszObjName = strdup(temp);
+	s.lpszObjName = strdup(io->long_name().c_str());
 	sprintf(buffer, "%5.0f", io->pos.x);
 	s.p3ObjPos[0] = strdup(buffer);
 	sprintf(buffer, "%5.0f", io->pos.y);
@@ -181,8 +180,7 @@ void DANAE_DEBUGGER_Update()
 
 	if (tio)
 	{
-		sprintf(temp, "%s_%04ld", GetName(tio->filename).c_str(), tio->ident);
-		s.lpszTargetName = strdup(temp);
+		s.lpszTargetName = strdup(io->long_name().c_str());
 		sprintf(buffer, "%5.0f", tio->pos.x);
 		s.p3TargetPos[0] = strdup(buffer);
 		sprintf(buffer, "%5.0f", tio->pos.y);

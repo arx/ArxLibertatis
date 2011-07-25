@@ -597,7 +597,7 @@ static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 				&&	(!IsPlayerEquipedWith(inter.iobj[i]))
 		   )
 		{
-			strcpy(aii.filename, inter.iobj[i]->filename);
+			strncpy(aii.filename, inter.iobj[i]->filename.string().c_str(), sizeof(aii.filename));
 			aii.ident = inter.iobj[i]->ident;
 			aii.level = inter.iobj[i]->level;
 			aii.truelevel = inter.iobj[i]->truelevel;
@@ -740,7 +740,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 template <size_t N>
 void FillIOIdent(char (&tofill)[N], const INTERACTIVE_OBJ * io) {
 	
-	if(!io || !ValidIOAddress(io) || io->filename[0] == '\0') {
+	if(!io || !ValidIOAddress(io) || io->filename.empty()) {
 		arx_assert(N >= 4);
 		strcpy(tofill, "none");
 	} else {
@@ -1046,7 +1046,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	ais.version = ARX_GAMESAVE_VERSION;
 	ais.savesystem_type = type;
 	ais.saveflags = 0;
-	strcpy(ais.filename, io->filename);
+	strncpy(ais.filename, io->filename.string().c_str(), sizeof(ais.filename));
 	ais.ident = io->ident;
 	ais.ioflags = io->ioflags;
 

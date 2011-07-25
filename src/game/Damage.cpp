@@ -342,10 +342,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 							if (source == 0) killer = "player";
 							else if (source <= -1) killer = "none";
-							else if (ValidIONum(source)
-							         &&	(inter.iobj[source]->filename)
-							         &&	(inter.iobj[source]->filename[0] != 0))
-							{
+							else if(ValidIONum(source) && !inter.iobj[source]->filename.empty()) {
 								killer = inter.iobj[source]->long_name();
 							}
 

@@ -75,7 +75,7 @@ struct TWEAK_INFO {
 	char param2[256];
 };
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const std::string & path);
+void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const fs::path & path);
 long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw);
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val);
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & skintochange, const fs::path & skinname);

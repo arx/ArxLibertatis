@@ -1735,7 +1735,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	io->script.data	=	NULL;
 	io->GameFlags	|=	GFLAG_NO_PHYS_IO_COL;
 	
-	strcpy(io->filename, "noname");
+	io->filename = "noname";
 
 	EERIE_COLLISION_Cylinder_Create(io);
 	EERIE_PHYSICS_BOX_Create(nouvo);

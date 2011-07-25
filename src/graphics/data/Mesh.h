@@ -457,7 +457,7 @@ struct TWEAK_INFO;
 #define SFX_TYPE_YLSIDE_DEATH	1
 #define SFX_TYPE_INCINERATE		2
 
-#define MAX_ANIMS 200		// max loadable anims per character
+#define MAX_ANIMS 200 // max loadable anims per character
 
 typedef s32 ArxSound;
 
@@ -465,164 +465,163 @@ struct INTERACTIVE_OBJ {
 	
 	INTERACTIVE_OBJ(long num);
 	
-	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
-
-	long				ioflags;	// IO type
-	Vec3f			lastpos;	// IO last position
-	Vec3f			pos;		// IO position
-	Vec3f			move;
-	Vec3f			lastmove;
-	Vec3f			forcedmove;
-
-	Anglef angle;		// IO angle
-	IO_PHYSICS			physics;	// Movement Collision Data
-	short				room;
-	short				room_flags; // 1==need_update
-	float				original_height;
-	float				original_radius;
-	TextureContainer *	inv;		// Object Icon
-	EERIE_3DOBJ *		obj;		// IO Mesh data
-	ANIM_HANDLE *		anims[MAX_ANIMS];	// Object Animations
-	ANIM_USE			animlayer[MAX_ANIM_LAYERS];
-	Vec3f *			lastanimvertex;		// Last Animation Positions of Vertex
-	long				nb_lastanimvertex;
-	unsigned long		lastanimtime;
-
-	EERIE_3D_BBOX		bbox3D;
-	Vec2s			bbox1;		// 2D bounding box1
-	Vec2s			bbox2;		// 2D bounding box2
-	char *				usemesh;	// Alternate Mesh/path
-	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
-	ArxSound				sound;
-	ItemType type_flags;			// object type (weapon,goblin...)
-	long				scriptload;			// Is This object Loaded by Script ?
-	Vec3f			target;				// Target position
-	long				targetinfo;			// Target Type/Ident
-
-	union
-	{
-		IO_ITEMDATA *		_itemdata;			// ITEM Datas
-		IO_FIXDATA	*		_fixdata;			// FIX Datas
-		IO_NPCDATA *		_npcdata;			// NPC Datas
-		IO_CAMDATA *		_camdata;			// Camera Datas
+	long num; // Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
+	
+	long ioflags; // IO type
+	Vec3f lastpos; // IO last position
+	Vec3f pos; // IO position
+	Vec3f move;
+	Vec3f lastmove;
+	Vec3f forcedmove;
+	
+	Anglef angle; // IO angle
+	IO_PHYSICS physics;	// Movement Collision Data
+	short room;
+	short room_flags; // 1==need_update
+	float original_height;
+	float original_radius;
+	TextureContainer * inv; // Object Icon
+	EERIE_3DOBJ * obj; // IO Mesh data
+	ANIM_HANDLE * anims[MAX_ANIMS];	// Object Animations
+	ANIM_USE animlayer[MAX_ANIM_LAYERS];
+	Vec3f * lastanimvertex; // Last Animation Positions of Vertex
+	long nb_lastanimvertex;
+	unsigned long lastanimtime;
+	
+	EERIE_3D_BBOX bbox3D;
+	Vec2s bbox1; // 2D bounding box1
+	Vec2s bbox2; // 2D bounding box2
+	char * usemesh; // Alternate Mesh/path
+	EERIE_3DOBJ * tweaky; // tweaked original obj backup
+	ArxSound sound;
+	ItemType type_flags; // object type (weapon,goblin...)
+	long scriptload; // Is This object Loaded by Script ?
+	Vec3f target; // Target position
+	long targetinfo; // Target Type/Ident
+	
+	union {
+		IO_ITEMDATA * _itemdata; // ITEM Datas
+		IO_FIXDATA * _fixdata; // FIX Datas
+		IO_NPCDATA * _npcdata; // NPC Datas
+		IO_CAMDATA * _camdata; // Camera Datas
 	};
-
+	
 	INVENTORY_DATA * inventory; // Inventory Data
-	short				show;				// Show Status (In Scene, In Inventory...)
-	short				collision;			// collision type
-	char 				mainevent[64];
+	short show; // Show Status (In Scene, In Inventory...)
+	short collision; // collision type
+	char mainevent[64];
 	Color3f infracolor; // Improve Vision Color (Heat)
-	long				changeanim;
+	long changeanim;
+	
+	long ident; // Ident num
+	float weight;
+	char locname[64]; //localisation
+	unsigned short EditorFlags; // 1 NOTSAVED 2 selected
+	unsigned short GameFlags; // GFLAGS
+	Vec3f velocity; // velocity
+	float fall;
 
-	long				ident;				// Ident num
-	float				weight;
-	char				locname[64];		//localisation
-	unsigned short		EditorFlags; // 1 NOTSAVED 2 selected
-	unsigned short		GameFlags; // GFLAGS
-	Vec3f			velocity;			// velocity
-	float				fall;
-
-	long				stopped;
-	Vec3f			initpos;			// Initial Position
-	Anglef			initangle;			// Initial Angle
-	char				filename[256];
-	float				scale;
-
+	long stopped;
+	Vec3f initpos; // Initial Position
+	Anglef initangle; // Initial Angle
+	fs::path filename;
+	float scale;
+	
 	ARX_USE_PATH * usepath;
 	SYMBOL_DRAW * symboldraw;
-	short				dynlight;
-	short				lastspeechflag;
+	short dynlight;
+	short lastspeechflag;
 	ARX_PATH * inzone;
-	IO_HALO				halo;
-	IO_HALO				halo_native;
-
-	EERIE_SCRIPT		script;				// Primary Script
-	EERIE_SCRIPT		over_script;		// Overriding Script
-	short				stat_count;
-	short				stat_sent;
-	IO_TWEAKER_INFO *	tweakerinfo; // optional tweaker infos
+	IO_HALO halo;
+	IO_HALO halo_native;
+	
+	EERIE_SCRIPT script; // Primary Script
+	EERIE_SCRIPT over_script; // Overriding Script
+	short stat_count;
+	short stat_sent;
+	IO_TWEAKER_INFO * tweakerinfo; // optional tweaker infos
 	Material material;
-
-
+	
 	IO_GROUP_DATA * iogroups; // TODO should be std::set<std::string>
-	short				nb_iogroups;
-	char				sizex;		// Inventory Icon sizeX
-	char				sizey;		// Inventory Icon sizeY
-	unsigned long		soundtime;
-	unsigned long		soundcount;
-
-	short				level;
-	short				truelevel;
-	unsigned long		sfx_time;
-	unsigned long		collide_door_time;
-	unsigned long		ouch_time;
-	float				dmg_sum;
-
-	IO_SPELLCAST_DATA	spellcast_data;
-	short				flarecount;
-	short				no_collide;
-	float				invisibility;
-	float				frameloss;
-	float				basespeed;
-
-	float				speed_modif;
-	long *				spells_on;
-	short				nb_spells_on;
-	long				damagedata;
-
-	float				rubber;
-	float				max_durability;
-	float				durability;
-	short				poisonous;
-	short				poisonous_count;
-
-	float				ignition;
-	long				ignit_light;
-	ArxSound				ignit_sound;
-	float				head_rot;
-
-	short				damager_damages;
+	short 	nb_iogroups;
+	char sizex; // Inventory Icon sizeX
+	char sizey; // Inventory Icon sizeY
+	unsigned long soundtime;
+	unsigned long soundcount;
+	
+	short level;
+	short truelevel;
+	unsigned long sfx_time;
+	unsigned long collide_door_time;
+	unsigned long ouch_time;
+	float dmg_sum;
+	
+	IO_SPELLCAST_DATA spellcast_data;
+	short flarecount;
+	short no_collide;
+	float invisibility;
+	float frameloss;
+	float basespeed;
+	
+	float speed_modif;
+	long * spells_on;
+	short nb_spells_on;
+	long damagedata;
+	
+	float rubber;
+	float max_durability;
+	float durability;
+	short poisonous;
+	short poisonous_count;
+	
+	float ignition;
+	long ignit_light;
+	ArxSound ignit_sound;
+	float head_rot;
+	
+	short damager_damages;
 	DamageType damager_type;
-	char *				stepmaterial;
-	char *				armormaterial;
-	char *				weaponmaterial;
-	char *				strikespeech;
-
-	short				sfx_flag;
-	short				Tweak_nb;
-	TWEAK_INFO	*		Tweaks;
-	char				secretvalue;
-
-	char *				shop_category;
-	float				shop_multiply;
-	char *				inventory_skin;
-	long				aflags;		// additionnal flags
-	short				inzone_show;
-	short				summoner;
+	char * stepmaterial;
+	char * armormaterial;
+	char * weaponmaterial;
+	char * strikespeech;
+	
+	short sfx_flag;
+	short Tweak_nb;
+	TWEAK_INFO * Tweaks;
+	char secretvalue;
+	
+	char * shop_category;
+	float shop_multiply;
+	char * inventory_skin;
+	long aflags; // additionnal flags
+	short inzone_show;
+	short summoner;
 	long spark_n_blood;
-
-	/**
+	
+	/*!
 	 * Return the short name for this Object where only the name
 	 * of the file is returned
 	 * @return The name of the file at the end of the filename path
 	 */
 	std::string short_name() const;
-
-	/**
+	
+	/*!
 	 *  Returns the long name for this Object where the short name
 	 * is combined with the identifying number
 	 * in the form of "%s_%04ld"
 	 * @return The short name combined with a 4 digit ident, padded with 0
 	 */
 	std::string long_name() const;
-
-	/**
+	
+	/*!
 	 *  Returns the full name for this Object where the
 	 * directory portion of the filename member is combined
 	 * with the the result of long_name()
 	 * @return The directory of filename + long_name()
 	 */
-	std::string full_name() const;
+	fs::path full_name() const;
+	
 };
 
 #define MAX_EQUIPED 12

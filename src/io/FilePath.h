@@ -122,6 +122,24 @@ public:
 		return !pathstr.compare(0, pathstr.length(), str);
 	}
 	
+	//! @return pathstr != other.pathstr
+	inline bool operator!=(const path & other) const {
+		return (pathstr != other.pathstr);
+	}
+	
+	//! @return pathstr != str
+	inline bool operator!=(const std::string & str) const {
+		return (pathstr != str);
+	}
+	
+	/**
+	 * ! @return pathstr != str
+	 * This overload is neccessary so comparing with string constants isn't ambigous
+	 */
+	inline bool operator!=(const char * str) const {
+		return pathstr.compare(0, pathstr.length(), str);
+	}
+	
 	/*! To allow path being used in std::map, etc
 	 * @return pathstr < other.pathstr
 	 */
@@ -187,6 +205,14 @@ inline bool operator==(const std::string & a, const path & b) {
 
 inline bool operator==(const char * a, const path & b) {
 	return (b == a);
+}
+
+inline bool operator!=(const std::string & a, const path & b) {
+	return (b != a);
+}
+
+inline bool operator!=(const char * a, const path & b) {
+	return (b != a);
 }
 
 inline std::ostream & operator<<(std::ostream & strm, const path & path) {

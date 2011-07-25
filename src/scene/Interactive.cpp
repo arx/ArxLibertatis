@@ -152,27 +152,24 @@ long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
 static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos);
-static INTERACTIVE_OBJ * AddCamera(const std::string & file);
-static INTERACTIVE_OBJ * AddMarker(const std::string & file);
+static INTERACTIVE_OBJ * AddCamera(const fs::path & file);
+static INTERACTIVE_OBJ * AddMarker(const fs::path & file);
 
 
 /* Return the short name for this Object where only the name
  * of the file is returned
  */
-std::string INTERACTIVE_OBJ::short_name() const
-{
-	return GetName( filename );
+std::string INTERACTIVE_OBJ::short_name() const {
+	return filename.basename();
 }
 
 /* Returns the long name for this Object where the filename
  * is combined with the identifying number
  * in the form of "%s_4ld"
  */
-std::string INTERACTIVE_OBJ::long_name() const
-{
+std::string INTERACTIVE_OBJ::long_name() const {
 	std::stringstream ss;
-	ss << short_name() << '_'
-	   << std::setw(4) << std::setfill('0') << ident;
+	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
 	return ss.str();
 }
 
@@ -180,8 +177,8 @@ std::string INTERACTIVE_OBJ::long_name() const
  * directory portion of the filename member is combined
  * with the the result of long_name()
  */
-std::string INTERACTIVE_OBJ::full_name() const {
-	return GetDirectory( filename ) + long_name();
+fs::path INTERACTIVE_OBJ::full_name() const {
+	return filename.parent() / long_name();
 }
 
 float STARTED_ANGLE = 0;
@@ -1244,15 +1241,15 @@ static void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io) {
 	io->Tweak_nb = 0;
 }
 
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const std::string& param1, const std::string& param2)
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2)
 {
 	io->Tweaks = (TWEAK_INFO *)realloc(io->Tweaks, sizeof(TWEAK_INFO) * (io->Tweak_nb + 1));
 	memset(&io->Tweaks[io->Tweak_nb], 0, sizeof(TWEAK_INFO));
 	io->Tweaks[io->Tweak_nb].type = type;
 
-	if (!param1.empty()) strcpy(io->Tweaks[io->Tweak_nb].param1, param1.c_str());
+	if (!param1.empty()) strcpy(io->Tweaks[io->Tweak_nb].param1, param1.string().c_str());
 
-	if (!param2.empty()) strcpy(io->Tweaks[io->Tweak_nb].param2, param2.c_str());
+	if (!param2.empty()) strcpy(io->Tweaks[io->Tweak_nb].param2, param2.string().c_str());
 
 	io->Tweak_nb++;
 }
@@ -1658,16 +1655,12 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const fs::path & s1)
 {
 	if ((!io) || (s1.empty()))
 		return;
 
-	std::string icontochange;
-
-	icontochange = io->filename;
-	RemoveName(icontochange);
-	icontochange += s1;
+	fs::path icontochange = io->filename.parent() / s1;
 
 	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
 	if (tc == NULL)
@@ -1782,7 +1775,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	stopped = 1;
 	initpos = Vec3f::ZERO;
 	initangle = Anglef::ZERO;
-	memset(filename, 0, 256); // TODO use string
 	scale = 1.f;
 	
 	usepath = NULL;
@@ -1916,10 +1908,10 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 	return NULL;
 }
 // Be careful with this func...
-INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src)
-{
+INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src) {
+	
 	INTERACTIVE_OBJ * dest;
-	dest = AddItem( src->filename);
+	dest = AddItem(src->filename);
 
 	if (!dest) return NULL;
 
@@ -2382,11 +2374,10 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 }
 
 
-INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddInteractive(const fs::path & file, long id, AddInteractiveFlags flags) {
 	
 	INTERACTIVE_OBJ * io = NULL;
-	std::string ficc;
-	ficc = file;
+	const string & ficc = file.string();
 	
 	if(IsIn(ficc, "items")) {
 		io = AddItem(file, flags);
@@ -2516,18 +2507,13 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string&
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
 
-INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags) {
 	
-	std::string tex1 = file;
-	std::string texscript = file;
-	SetExt(texscript, "asl");
-	SetExt(tex1, "teo");
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path scriptfile = fs::path(file).set_ext("asl");
 
-	std::string file2 = "game/";
-	file2 += file;
-	SetExt(file2, ".ftl");
-
-	if(!resources->getFile(file2) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
 
@@ -2544,7 +2530,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
 
-	GetIOScript( io, texscript );
+	GetIOScript(io, scriptfile);
 
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
@@ -2575,7 +2561,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
 
 	if (!io->obj)
 	{
@@ -2586,7 +2572,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		}
 		else
 		{
-			io->obj = loadObject(tex1, false);
+			io->obj = loadObject(object, false);
 		}
 	}
 
@@ -2621,19 +2607,13 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddCamera(const string & file) {
+static INTERACTIVE_OBJ * AddCamera(const fs::path & file) {
 	
-	std::string tex1 = file;;
-	std::string texscript = file;
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path scriptfile = fs::path(file).set_ext("asl");
 
-	SetExt(texscript, "asl");
-	SetExt(tex1, "teo");
-
-	std::string file2 = "game/";
-    file2 += file;
-	SetExt(file2, ".ftl");
-
-	if(!resources->getFile(file2) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
 
@@ -2644,7 +2624,7 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 
 	if (!io) return NULL;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, scriptfile);
 
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -2669,7 +2649,7 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
 
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
  
 	io->obj = cameraobj;
 
@@ -2682,31 +2662,24 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddMarker(const string & file) {
+static INTERACTIVE_OBJ * AddMarker(const fs::path & file) {
 	
-	std::string tex1 = file;
-	std::string texscript = file;
-
-	SetExt(texscript, "asl");
-	SetExt(tex1, "teo");
-
-	std::string file2;
-	file2 = "game/";
-    file2 += file;
-	SetExt(file2, ".ftl");
-
-	if(!resources->getFile(file2) && !resources->getFile(file)) {
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path scriptfile = fs::path(file).set_ext("asl");
+	
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
-
+	
 	LogDebug << "AddMarker " << file;
-
+	
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
-
+	
 	if (!io) return NULL;
-
-	GetIOScript(io, texscript);
+	
+	GetIOScript(io, scriptfile);
 	
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -2733,7 +2706,7 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
 
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
  
 	io->obj = markerobj;
 	io->ioflags = IO_MARKER;
@@ -2919,22 +2892,13 @@ void GroundSnapSelectedIO()
 
 #endif // BUILD_EDITOR
 
-INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
 	
-    // creates script filename
-    std::string texscript = file;;
-    SetExt(texscript, "asl");
-
-    // creates teo filename
-    std::string tex1 = file;
-    SetExt(tex1, "teo");
-
-    std::string file2;
-    file2 = "game/";
-    file2 += file;
-    SetExt(file2, ".ftl");
-
-	if(!resources->getFile(file2) && !resources->getFile(file)) {
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path scriptfile = fs::path(file).set_ext("asl");
+	
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
 
@@ -2952,7 +2916,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
 	io->ioflags = IO_NPC;
 
-	GetIOScript( io, texscript );
+	GetIOScript(io, scriptfile);
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->_npcdata->life = io->_npcdata->maxlife = 20.f;
@@ -2996,7 +2960,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	}
 
 	
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
 
 	if (!io->obj)
 	{
@@ -3007,7 +2971,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 		}
 		else
 		{
-			io->obj = loadObject(tex1, false);
+			io->obj = loadObject(object, false);
 		}
 	}
 
@@ -3033,16 +2997,14 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 //*************************************************************************************
 // Reload Scripts (Class & Local) for an IO
 //*************************************************************************************
-void ReloadScript(INTERACTIVE_OBJ * io)
-{
-	std::string texscript = io->filename;
-	SetExt(texscript, "asl");
+void ReloadScript(INTERACTIVE_OBJ * io) {
+	
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	loadScript(io->script, resources->getFile(texscript));
-	loadScript(io->over_script, resources->getFile(io->full_name() + '/' + io->short_name() + ".asl"));
+	loadScript(io->script, resources->getFile(fs::path(io->filename).set_ext("asl")));
+	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()).set_ext("asl")));
 
 	long num = GetInterNum(io);
 
@@ -3122,43 +3084,29 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 //*************************************************************************************
 static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 	
-	if (!io)
+	if(!io) {
 		return false;
-
-	char name1[256];
-	char ident[256];;
-	strcpy(name1, GetName(io->filename).c_str());
-	sprintf(ident, "%s_%04ld", name1, t);
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i])
-		{
-			if ((inter.iobj[i]->ident == t)
-			        &&	(io != inter.iobj[i]))
-			{
-				char name2[256];
-				strcpy(name2, GetName(inter.iobj[i]->filename).c_str());
-
-				if (!strcmp(name1, name2))
-				{
+	}
+	
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i]) {
+			if(inter.iobj[i]->ident == t && io != inter.iobj[i]) {
+				if (inter.iobj[i]->short_name() == io->short_name()) {
 					return true;
 				}
 			}
 		}
 	}
-
-	std::string file2 = io->filename;
-	RemoveName(file2);
-	file2 += ident;
-
-	if(resources->getDirectory(file2))
+	
+	if(resources->getDirectory(io->full_name())) {
 		return true;
-
+	}
+	
 	ARX_CHANGELEVEL_MakePath();
-
-	if (ARX_Changelevel_CurGame_Seek(ident))
+	
+	if(ARX_Changelevel_CurGame_Seek(io->long_name())) {
 		return true;
+	}
 	
 	return false;
 }
@@ -3191,7 +3139,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
-INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddItem(const fs::path & fil, AddInteractiveFlags flags) {
 	
 	long type = IO_ITEM;
 
@@ -3275,8 +3223,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
-
-	strcpy(io->filename, object.string().c_str());
+	io->filename = object;
 
 	if (io->ioflags & IO_GOLD)
 		io->obj = GoldCoinsObj[0];
@@ -4464,7 +4411,7 @@ bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
 	if ((io == NULL)
 	        ||	(ioo == NULL)
-	        ||	(strcmp(io->filename, ioo->filename))
+	        ||	io->filename != ioo->filename
 	        ||	(io->ioflags & IO_UNIQUE)
 	        ||	(io->durability != ioo->durability)
 	        ||	(io->max_durability != ioo->max_durability))

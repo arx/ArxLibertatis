@@ -365,7 +365,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			}
 			
 			dli.angle = io->initangle;
-			strcpy( dli.name, io->filename);
+			strncpy(dli.name, io->filename.string().c_str(), sizeof(dli.name));
 			
 			if(io->ident == 0) {
 				MakeIOIdent(io);
@@ -624,8 +624,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 		return;
 	}
 	
-	fs::path file = dir / GetName(io->filename);
-	file.set_ext("log");
+	fs::path file = (dir / io->short_name()).set_ext("log");
 	
 	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc);
 	if(!ofs.is_open()) {
@@ -661,7 +660,6 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 				return;
 			}
 			file = io->full_name();
-			
 			if(!fs::is_directory(file)) {
 				LogError << "Local DIR don't Exists...";
 				return;
@@ -729,7 +727,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 #endif
 		{
 			io->ident = ident;
-			string tmp = io->full_name(); // Get the directory name to check for
+			fs::path tmp = io->full_name(); // Get the directory name to check for
 			string id = io->short_name();
 
 			if(PakDirectory * dir = resources->getDirectory(tmp)) {
