@@ -1129,16 +1129,16 @@ static bool migrateFilenames(fs::path path) {
 			path = dst;
 		} else {
 			migrated = false;
-		}		
+		}
 	}
 	
 	if(fs::is_directory(path)) {
 		fs_boost::directory_iterator end;
-		for(fs_boost::directory_iterator it(path); it != end; ++it) {
-			migrated &= migrateFilenames(it->path());
+		for(fs_boost::directory_iterator it(path.string()); it != end; ++it) {
+			migrated &= migrateFilenames(path / as_string(it->path().filename()));
 		}
 	}
-
+	
 	return migrated;
 }
 
@@ -1160,7 +1160,7 @@ static bool migrateFilenames() {
 	fs_boost::directory_iterator end;
 	for(fs_boost::directory_iterator it("./"); it != end; ++it) {
 		if(fileset.find(toLowercase(as_string(it->path().filename()))) != fileset.end()) {
-			migrated &= migrateFilenames(it->path());
+			migrated &= migrateFilenames(as_string(it->path().filename()));
 		}
 	}
 	

@@ -7,6 +7,7 @@
 
 #include "graphics/Math.h"
 #include "io/PakReader.h"
+#include "io/FilePath.h"
 
 using std::string;
 using std::memcpy;

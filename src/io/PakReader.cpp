@@ -384,7 +384,7 @@ class PlainFileHandle : public PakFileHandle {
 	
 public:
 	
-	PlainFileHandle(const fs::path & path) : ifs(path, fs_boost::ifstream::in | fs_boost::ifstream::binary) {
+	PlainFileHandle(const fs::path & path) : ifs(path.string(), std::ifstream::in | std::ifstream::binary) {
 		arx_assert(ifs.is_open());
 	};
 	
@@ -400,7 +400,7 @@ public:
 
 void PlainFile::read(void * buf) const {
 	
-	fs_boost::ifstream ifs(path, fs_boost::ifstream::in | fs_boost::ifstream::binary);
+	fs_boost::ifstream ifs(path.string(), std::ifstream::in | std::ifstream::binary);
 	arx_assert(ifs.is_open());
 	
 	fread(ifs, buf, size());
@@ -448,7 +448,7 @@ PakReader::~PakReader() {
 
 bool PakReader::addArchive(const fs::path & pakfile) {
 	
-	fs_boost::ifstream * ifs = new fs_boost::ifstream(pakfile, fs_boost::ifstream::in | fs_boost::ifstream::binary);
+	fs_boost::ifstream * ifs = new fs_boost::ifstream(pakfile.string(), std::ifstream::in | std::ifstream::binary);
 	
 	if(!ifs->is_open()) {
 		delete ifs;
@@ -642,9 +642,8 @@ bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::st
 		return false;
 	}
 	
-	// TODO-fs: Fix for error code
-	size_t size = fs::file_size(path);
-	if(size == 0) {
+	u64 size = fs::file_size(path);
+	if(size == (u64)-1) {
 		return false;
 	}
 	
@@ -657,9 +656,9 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	bool ret = true;
 	
 	fs_boost::directory_iterator end;
-	for(fs_boost::directory_iterator it(path); it != end; ++it) {
+	for(fs_boost::directory_iterator it(path.string()); it != end; ++it) {
 			
-		const fs::path & entry = it->path();
+		fs::path entry = path / as_string(it->path().filename());
 			
 		if(fs::is_directory(entry)) {
 			ret &= addFiles(dir->addDirectory(as_string(entry.filename())), entry);

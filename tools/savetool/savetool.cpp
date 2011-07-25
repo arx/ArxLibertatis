@@ -92,7 +92,7 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 	for(int i = 0; i < argc; i++) {
 		
 		size_t size;
-		char * data = read_file(argv[i], size);
+		char * data = fs::read_file(argv[i], size);
 		
 		if(!data) {
 			printf("error loading %s\n", argv[i]);

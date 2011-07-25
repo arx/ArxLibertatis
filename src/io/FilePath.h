@@ -2,10 +2,196 @@
 #ifndef ARX_IO_FILEPATH_H
 #define ARX_IO_FILEPATH_H
 
-#include "io/Filesystem.h"
-#include "platform/String.h"
+#include <string>
 
+#include "io/Filesystem.h" // TODO remove
 
+namespace fs {
+
+#define PATH_DEBUG 1
+
+class path {
+	
+private:
+	
+	std::string pathstr;
+	
+#ifdef _DEBUG
+	void check() const;
+#else
+	inline void check() const { }
+#endif
+	
+	static path resolve(const path & base, const path & branch);
+	
+public:
+	
+	static const char dir_or_ext_sep[];
+	static const char dir_sep = '/';
+	static const char ext_sep = '.';
+	
+	inline path() { };
+	inline path(const path & other) : pathstr(other.pathstr) { };
+	inline path(const std::string & str) : pathstr(str) { check(); };
+	inline path(const char * str) : pathstr(str) { check(); };
+	
+	inline path & operator=(const path & other) {
+		return (pathstr = other.pathstr, *this);
+	}
+	
+	inline path & operator=(const std::string & str) {
+		return (pathstr = str, check(), *this);
+	}
+	
+	inline path & operator=(const char * str) {
+		return (pathstr = str, check(), *this);
+	}
+	
+	path operator/(const path & other) const;
+	
+	path & operator/=(const path & other);
+	
+	inline const std::string & string() const {
+		return pathstr;
+	}
+	
+	/**
+	 * If pathstr contains a slash, return everything preceding it.
+	 * Otherwise, return path().
+	 */
+	inline path parent() const {
+		if(has_info()) {
+			size_t dirpos = pathstr.find_last_of(dir_sep);
+			return (dirpos == std::string::npos) ? path() : path(pathstr.substr(0, dirpos));
+		} else {
+			return empty() ? path("..") : path(pathstr + dir_sep + "..");
+		}
+	}
+	
+	/**
+	 * return *this = parent()
+	 */
+	path & up() {
+		if(has_info()) {
+			size_t dirpos = pathstr.find_last_of(dir_sep);
+			return (((dirpos != std::string::npos) ? pathstr.resize(dirpos) : pathstr.clear()), *this);
+		} else {
+			return ((empty() ? pathstr = ".." : (pathstr += dir_sep).append("..")), *this);
+		}
+	}
+	
+	/**
+	 * If pathstr contains a slash, return everything following it.
+	 * Otherwise, return pathstr.
+	 */
+	inline std::string filename() const {
+		size_t dirpos = pathstr.find_last_of(dir_sep);
+		return (dirpos == std::string::npos) ? pathstr : pathstr.substr(dirpos + 1);
+	}
+	
+	/**
+	 * If filename() constains a dot, return everything in filename() preceeding the dot.
+	 * Otherwise, return filename().
+	 */
+	std::string basename() const;
+	
+	/**
+	 * If filename() constains a dot, return dot and everything folowing it.
+	 * Otherwise, return std::string().
+	 */
+	std::string ext() const;
+	
+	inline bool empty() const {
+		return pathstr.empty();
+	}
+	
+	//! @return pathstr == other.pathstr
+	inline bool operator==(const path & other) const {
+		return (pathstr == other.pathstr);
+	}
+	
+	//! @return pathstr == str
+	inline bool operator==(const std::string & str) const {
+		return (pathstr == str);
+	}
+	
+	/**
+	 * ! @return pathstr == str
+	 * This overload is neccessary so comparing with string constants isn't ambigous
+	 */
+	inline bool operator==(const char * str) const {
+		return !pathstr.compare(0, pathstr.length(), str);
+	}
+	
+	/*! To allow path being used in std::map, etc
+	 * @return pathstr < other.pathstr
+	 */
+	inline bool operator<(const path & other) const {
+		return (pathstr < other.pathstr);
+	}
+	
+	/*!
+	 * If ext starts with a dot, return *this = remove_ext().append(ext).
+	 * Otherwise, return *this = remove_ext().append('.').append(ext).
+	 */
+	path & set_ext(const std::string & ext);
+	
+	/**
+	 * If pathstr constains a dot after the last slash, return everything preceeding the last dot
+	 * @return *this
+	 */
+	path & remove_ext();
+	
+	//! *this = parent() / filename;
+	path & set_filename(const std::string & filename);
+	
+	path & set_basename(const std::string & basename);
+	
+	//! @return set_basename(get_basename() + basename_part)
+	path & append_basename(const std::string & basename_part);
+	
+	inline void swap(path & other) {
+		pathstr.swap(other.pathstr);
+	}
+	
+	//! return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
+	bool has_ext(const std::string & str = std::string());
+	
+	inline bool is_up() const {
+		return (pathstr.length() == 2 && pathstr[0] == '.' && pathstr[1] == '.')
+		       || (pathstr.length() >= 3 && pathstr[0] == '.' && pathstr[1] == '.' && pathstr[2] == dir_sep);
+	}
+	
+	inline bool has_info() const {
+		return !pathstr.empty() && !(pathstr.length() == 2 && pathstr[0] == '.' && pathstr[1] == '.')
+		       && !(pathstr.length() >= 3 && pathstr[pathstr.length() - 1] == '.'
+		           && pathstr[pathstr.length() - 2] == '.' && pathstr[pathstr.length() - 3] == dir_sep);
+	}
+	
+};
+
+inline path operator/(const char * a, const path & b) {
+	return path(a) / b;
+}
+
+inline path operator/(const std::string & a, const path & b) {
+	return path(a) / b;
+}
+
+inline bool operator==(const std::string & a, const path & b) {
+	return (b == a);
+}
+
+inline bool operator==(const char * a, const path & b) {
+	return (b == a);
+}
+
+template <class ostream>
+inline ostream & operator<<(ostream & strm, const path & path) {
+	return strm << '"' << path.string() << '"';
+}
+
+} // namespace fs
 
 const char EXT_OR_DIR_SEP[] = "./\\"; // TODO(case-sensitive) remove backslash
 const char DIR_SEP[] = "/\\"; // TODO(case-sensitive) remove backslash
@@ -61,14 +247,8 @@ std::string loadPath(const std::string & path);
 inline const std::string  & as_string(const std::string & path) {
 	return path;
 }
-inline const std::string as_string(const fs::path & path) {
+inline const std::string as_string(const fs_boost::path & path) {
 	return path.string();
-}
-inline const fs::path as_path(const std::string & path) {
-	return path;
-}
-inline const fs::path & as_path(const fs::path & path) {
-	return path;
 }
 
 #endif // ARX_IO_FILEPATH_H

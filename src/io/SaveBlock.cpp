@@ -343,10 +343,10 @@ bool SaveBlock::open(bool writable) {
 		mode |= fs_boost::fstream::out;
 	}
 	
-	handle.open(savefile, mode);
+	handle.open(savefile.string(), mode);
 	if(!handle.is_open()) {
 		if(writable) {
-			handle.open(savefile, mode | fs_boost::fstream::trunc);
+			handle.open(savefile.string(), mode | fs_boost::fstream::trunc);
 		}
 		if(!handle.is_open()) {
 			LogError << "could not open " << savefile << " for " << (writable ? "reading/writing" : "reading");
@@ -390,7 +390,7 @@ bool SaveBlock::defragment() {
 		tempFileName.set_ext(oss.str());
 	} while(fs::exists(tempFileName));
 	
-	fs_boost::ofstream tempFile(tempFileName, fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
+	fs_boost::ofstream tempFile(tempFileName.string(), fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
 	if(!tempFile.is_open()) {
 		return false;
 	}
@@ -443,7 +443,7 @@ bool SaveBlock::defragment() {
 		return false;
 	}
 	
-	handle.open(savefile, fs_boost::fstream::in | fs_boost::fstream::out | fs_boost::fstream::binary);
+	handle.open(savefile.string(), std::fstream::in | std::fstream::out | std::fstream::binary);
 	return handle.is_open();
 }
 
@@ -546,7 +546,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	
 	size = 0;
 	
-	fs_boost::ifstream handle(savefile, fs_boost::fstream::in | fs_boost::fstream::binary);
+	fs_boost::ifstream handle(savefile.string(), std::fstream::in | std::fstream::binary);
 	if(!handle.is_open()) {
 		LogWarning << "cannot open save file " << savefile;
 		return NULL;

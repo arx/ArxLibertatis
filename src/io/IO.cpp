@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+#include "io/FilePath.h"
 #include "platform/Platform.h"
 
 using std::string;
@@ -80,12 +81,11 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	size_t length = size / 4;
 	arx_assert(length > 6);
 	
-	fs_boost::ifstream ifs(name, fs_boost::fstream::ate | fs_boost::fstream::in | fs_boost::fstream::binary);
+	fs_boost::ifstream ifs(name.string(), std::fstream::ate | std::fstream::in | std::fstream::binary);
 	if(!ifs.is_open()) {
 		return;
 	}
 	
-	// TODO-fs: return value in case of failure ?
 	std::time_t write_time = fs::last_write_time(name);
 	if(write_time == 0) {
 		return;

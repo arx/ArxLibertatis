@@ -34,6 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Filesystem.h"
 #include "platform/Platform.h"
+#include "io/FilePath.h"
 
 /*!
  * Interface to read and write save block files. (used for savegames)

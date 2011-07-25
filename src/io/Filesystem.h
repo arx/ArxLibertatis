@@ -63,137 +63,30 @@ namespace fs_boost = boost::filesystem;
 // WIP!!
 namespace fs {
 
-	class path {
-	public:
-		inline path(const fs_boost::path& p) : boost_path(p) {}
-		inline operator fs_boost::path () const { return boost_path; }
+class path;
 
-	public:
-	
-		inline path() {}
-		inline path(const path & name) : boost_path(name.filename()) {}
-				
-		// TODO allow trailing slashes? boost removes it!
-		inline path(const std::string & name) : boost_path(name) {}
-			
-		// maybe? - to load from char constants without strlen?
-		inline path(const char * name) : boost_path(name) {}
-	
-		// same for operator=
-	
-		// "foo" / "bar" -> "foo/bar"  |  "" / "foo" -> "foo"  |  "foo / "" -> "foo"
-		// +overloads for std::string
-		inline path operator/(const path & other) const { return boost_path / other.boost_path; }
-			
-		// *this = path(*this) / other;
-		// returns *this
-		// +overloads for std::string
-		inline path & operator/=(const path & other) { boost_path /= other.boost_path; return *this; }
-	
-		// retrun pathname;
-		inline const std::string & string() const { pathname = boost_path.string(); return pathname; }
-	
-		// "foo/bar" => "foo" | foo => ""
-		inline const path parent() const { return boost_path.parent_path(); }
-	
-		// "foo/bar.ext" => "bar.ext"  |  "foo/bar" -> "bar"  |  "foo" -> "foo"  |  "foo.ext" -> "foo.ext"
-		inline const std::string filename() const { return boost_path.filename().string(); }
-	
-		// "foo/bar.ext" => "bar"  |  "foo/bar" -> "bar"  |  "foo" -> "foo"  |  "foo.ext" -> "foo"
-		const std::string basename() const;
-	
-		// "foo/bar.ext" => ".ext"  | "foo/bar" -> ""
-		inline const std::string ext() const { return boost_path.extension().string(); }
-	
-		// "" -> true  |  "foo" -> false
-		inline bool empty() const { return boost_path.empty(); }
-	
-		 // TODO +overlad for std::string?
-		inline bool operator==(const path & other) const { return boost_path == other.boost_path; }
-	
-		// so it can be used in ordered maps, etc
-		inline bool operator<(const path & other) const { return boost_path < other.boost_path; }
-	
-		/*
-		 * "foo/bar".set_ext(".ext") -> "foo/bar.ext"
-		 * "foo/bar".set_ext("ext") -> "foo/bar.ext"
-		 * "foo/bar".set_ext("") -> "foo/bar"
-		 * "foo/bar.abc".set_ext(".ext") -> "foo/bar.ext"
-		 * "foo/bar.abc".set_ext("ext") -> "foo/bar.ext"
-		 * "foo/bar.abc".set_ext("") -> "foo/bar"
-		 * returns *this
-		 */
-		inline path & set_ext(const std::string & ext = std::string()) { boost_path.replace_extension(ext); return *this; }
-	
-		// *this = parent() / filename;
-		inline path & set_filename(const std::string & filename) { boost_path = boost_path.parent_path() / filename; return *this; }
-	
-		// TODO some form of append?
-	
-	private:
-	
-		// TMP - mutable !
-		mutable std::string pathname;
+bool exists(const path & p);
+bool is_directory(const path & p);
+bool is_regular_file(const path & p);
 
-		// TMP
-		fs_boost::path boost_path;	
-	};
+std::time_t last_write_time(const path & p);
+u64 file_size(const path & p);
 
-	inline path operator/(const std::string & base, const path & p) {
-		return path(base) / p;
-	}
+bool remove(const path & p);
 
-	inline std::ostream & operator<<(std::ostream & strm, const path & p) {
-		return strm << '"' << p.string() << '"';
-	}
-			
-	inline bool exists(const path& p) { return fs_boost::exists(p); }
-	inline bool is_directory(const path& p) { return fs_boost::is_directory(p); }
-	inline bool is_regular_file(const path& p) { return fs_boost::is_regular_file(p); }
+bool remove_all(const path & p);
 
-	inline std::time_t last_write_time(const path& p) { return fs_boost::last_write_time(p); }
-	inline u64 file_size(const path& p) { return fs_boost::file_size(p); }
+bool create_directory(const path & p);
 
-	inline bool remove(const path& p) { return fs_boost::remove(p); }
+bool create_directories(const path & p);
 
-	inline bool remove_all(const fs::path& p)
-	{
-		boost::system::error_code ec;
-		fs_boost::remove_all(p, ec);
-		return !ec;
-	}
+bool copy_file(const path & from_p, const path & to_p);
 
-	inline bool create_directory(const fs::path& p)
-	{
-		boost::system::error_code ec;
-		fs_boost::create_directory(p, ec);
-		return !ec;
-	}
+bool rename(const path & old_p, const path & new_p);
 
-	inline bool create_directories(const fs::path& p)
-	{
-		boost::system::error_code ec;
-		fs_boost::create_directories(p, ec);
-		return !ec;
-	}
+char * read_file(const path & p, size_t & size);
 
-	inline bool copy_file(const fs::path& from_p, const fs::path& to_p)
-	{
-		boost::system::error_code ec;
-		fs_boost::copy_file(from_p, to_p, ec);
-		return !ec;
-	}
-
-	inline bool rename(const fs::path& old_p, const fs::path& new_p)
-	{
-		boost::system::error_code ec;
-		fs_boost::rename(old_p, new_p, ec);
-		return !ec;
-	}
 }
 
-
-
-char * read_file(const fs::path & path, size_t & size);
 
 #endif // ARX_IO_FILESYSTEM_H

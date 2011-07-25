@@ -2,8 +2,11 @@
 #ifndef ARX_GRAPHICS_IMAGE_IMAGE_H
 #define ARX_GRAPHICS_IMAGE_IMAGE_H
 
-#include "io/Filesystem.h"
 #include "platform/Platform.h"
+
+namespace fs {
+class path;
+}
 
 class Image
 {

@@ -479,7 +479,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// Now Saving Whole Buffer
-	fs_boost::ofstream ofs(fic, fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
+	fs_boost::ofstream ofs(fic.string(), std::fstream::out | std::fstream::binary | std::fstream::trunc);
 	if(!ofs.is_open()) {
 		LogError << "Unable to open " << fic << " for write...";
 		delete[] dat;
@@ -591,7 +591,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// Now Saving Whole Buffer
-	ofs.open(fic2, fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
+	ofs.open(fic2.string(), std::fstream::out | std::fstream::binary | std::fstream::trunc);
 	if(!ofs.is_open()) {
 		LogError << "Unable to open " << fic2 << " for write...";
 		delete[] dat;
@@ -626,7 +626,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	fs::path file = dir / GetName(io->filename);
 	file.set_ext("log");
 	
-	fs_boost::ofstream ofs(file, fs_boost::fstream::out | fs_boost::fstream::trunc);
+	fs_boost::ofstream ofs(file.string(), std::fstream::out | std::fstream::trunc);
 	if(!ofs.is_open()) {
 		return;
 	}
@@ -673,7 +673,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 		default: return;
 	}
 	
-	fs_boost::ofstream ofs(file, fs_boost::fstream::out | fs_boost::fstream::trunc | fs_boost::fstream::binary);
+	fs_boost::ofstream ofs(file.string(), std::fstream::out | std::fstream::trunc | std::fstream::binary);
 	if(!ofs.is_open()) {
 		LogError << ("Unable To Save...");
 		return;

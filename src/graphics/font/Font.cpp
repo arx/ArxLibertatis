@@ -1,13 +1,14 @@
 #include "graphics/font/Font.h"
 
+#include <sstream>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/PackedTexture.h"
 #include "graphics/texture/TextureStage.h"
-
-#include <sstream>
-#include <ft2build.h>
-#include FT_FREETYPE_H
+#include "io/FilePath.h"
 
 
 Font::Font( const std::string& fontFile, unsigned int fontSize, FT_Face face ) 

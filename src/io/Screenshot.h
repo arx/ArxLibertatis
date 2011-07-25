@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_IO_SCREENSHOT_H
 #define ARX_IO_SCREENSHOT_H
 
-#include "io/Filesystem.h"
+#include "io/FilePath.h"
 
 class SnapShot {
 	

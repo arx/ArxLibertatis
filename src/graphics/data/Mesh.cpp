@@ -4007,9 +4007,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	long count = 0;
 	
 	fs_boost::directory_iterator end;
-	for(fs_boost::directory_iterator it(partial_path); it != end; ++it) {
+	for(fs_boost::directory_iterator it(partial_path.string()); it != end; ++it) {
 		
-		const fs::path & path = it->path();
+		fs::path path = partial_path / as_string(it->path().filename());
+		
 		if(path.ext() != ".scn" || !fs::is_regular_file(path)) {
 			continue;
 		}
@@ -4226,7 +4227,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	// Now Saving Whole Buffer
 	uh->uncompressedsize = pos - compressedstart;
 	
-	fs_boost::ofstream ofs(file, fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
+	fs_boost::ofstream ofs(file.string(), fs_boost::fstream::out | fs_boost::fstream::binary | fs_boost::fstream::trunc);
 	if(!ofs.is_open()) {
 		delete[] dat;
 		return false;

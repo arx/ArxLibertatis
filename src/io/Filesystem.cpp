@@ -25,22 +25,94 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Filesystem.h"
 
+#include "io/FilePath.h"
+
 using std::string;
 
-std::istream & fread(std::istream & ifs, string & buf) {
-	while(ifs.good()) {
-		char c = static_cast<char>(ifs.get());
-		if(c == '\0') {
-			break;
-		}
-		buf.push_back(c);
+namespace fs {
+
+bool exists(const path & p) {
+	try {
+		return fs_boost::exists(p.string());
+	} catch(...) {
+		return false;
 	}
-	return ifs;
 }
 
-char * read_file(const fs::path & path, size_t & size) {
+bool is_directory(const path & p) {
+	try {
+		return fs_boost::is_directory(p.string());
+	} catch(...) {
+		return false;
+	}
+}
+
+bool is_regular_file(const path & p) {
+	try {
+		return fs_boost::is_regular_file(p.string());
+	} catch(...) {
+		return false;
+	}
+}
+
+std::time_t last_write_time(const path & p) {
+	try {
+		return fs_boost::last_write_time(p.string());
+	} catch(...) {
+		return 0;
+	}
+}
+
+u64 file_size(const path & p) {
+	try {
+		return fs_boost::file_size(p.string());
+	} catch(...) {
+		return (u64)-1;
+	}
+}
+
+bool remove(const path & p) {
+	try {
+		fs_boost::remove(p.string());
+		return true;
+	} catch(...) {
+		return false;
+	}
+}
+
+bool remove_all(const path & p) {
+	boost::system::error_code ec;
+	fs_boost::remove_all(p.string(), ec);
+	return !ec;
+}
+
+bool create_directory(const path & p) {
+	boost::system::error_code ec;
+	fs_boost::create_directory(p.string(), ec);
+	return !ec;
+}
+
+bool create_directories(const path & p) {
+	boost::system::error_code ec;
+	fs_boost::create_directories(p.string(), ec);
+	return !ec;
+}
+
+bool copy_file(const path & from_p, const path & to_p) {
+	boost::system::error_code ec;
+	fs_boost::copy_file(from_p.string(), to_p.string(), ec);
+	return !ec;
+}
+
+bool rename(const path & old_p, const path & new_p) {
+	boost::system::error_code ec;
+	fs_boost::rename(old_p.string(), new_p.string(), ec);
+	return !ec;
+}
+
+char * read_file(const path & p, size_t & size) {
 	
-	fs_boost::ifstream ifs(path, fs_boost::ifstream::in | fs_boost::ifstream::binary | fs_boost::ifstream::ate);
+	fs_boost::ifstream ifs(p.string(), fs_boost::ifstream::in | fs_boost::ifstream::binary | fs_boost::ifstream::ate);
 	if(!ifs.is_open()) {
 		return NULL;
 	}
@@ -55,4 +127,17 @@ char * read_file(const fs::path & path, size_t & size) {
 	}
 	
 	return buf;
+}
+
+} // namespace fs
+
+std::istream & fread(std::istream & ifs, string & buf) {
+	while(ifs.good()) {
+		char c = static_cast<char>(ifs.get());
+		if(c == '\0') {
+			break;
+		}
+		buf.push_back(c);
+	}
+	return ifs;
 }

@@ -41,6 +41,7 @@ add_executable(unpaker
 	../src/io/Logger.cpp
 	../src/io/Blast.cpp
 	../src/io/Filesystem.cpp
+	../src/io/FilePath.cpp
 	../src/platform/String.cpp
 	../src/platform/Platform.cpp
 )
@@ -50,10 +51,10 @@ add_executable(savetool
 	../src/io/Logger.cpp
 	../src/io/Blast.cpp
 	../src/io/SaveBlock.cpp
-	../src/io/FilePath.cpp
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
 	../src/io/Filesystem.cpp
+	../src/io/FilePath.cpp
 	../src/platform/String.cpp
 	../src/platform/Platform.cpp
 )
