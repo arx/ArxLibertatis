@@ -1257,11 +1257,11 @@ void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
 		switch (playing->type) {
 			
 			case PLAYING_AMBIANCE_SCRIPT :
-				ARX_SOUND_PlayScriptAmbiance(playing->name, (SoundLoopMode)playing->loop, playing->volume);
+				ARX_SOUND_PlayScriptAmbiance(name, (SoundLoopMode)playing->loop, playing->volume);
 				break;
 			
 			case PLAYING_AMBIANCE_ZONE :
-				ARX_SOUND_PlayZoneAmbiance(playing->name, (SoundLoopMode)playing->loop, playing->volume);
+				ARX_SOUND_PlayZoneAmbiance(name, (SoundLoopMode)playing->loop, playing->volume);
 				break;
 		}
 	}
