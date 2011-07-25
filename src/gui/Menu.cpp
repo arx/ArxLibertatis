@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <dinput.h>
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/smart_ptr/scoped_array.hpp>
 
 #include "Configure.h"
 
@@ -184,9 +185,9 @@ void CreateSaveGameList() {
 #ifdef HAVE_DYNAMIC_STACK_ALLOCATION
 	char found[oldCount];
 #else
-	char * found = new char[oldCount];
+	boost::scoped_array<char> found(new char[oldCount]);
 #endif
-	memset(found, 0, oldCount);
+	std::fill_n(&found[0], oldCount, 0);
 	
 	bool newSaves = false;
 	
