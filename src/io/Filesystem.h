@@ -36,6 +36,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
 
+#include "platform/Platform.h"
+
 template <class T>
 inline std::istream & fread(std::istream & ifs, T & data) {
 	return ifs.read(reinterpret_cast<char *>(&data), sizeof(T));
@@ -63,55 +65,54 @@ namespace fs {
 
 	class path {
 	public:
-		path(const fs_boost::path& p) : boost_path(p) {}
-		operator fs_boost::path () const { return boost_path; }
+		inline path(const fs_boost::path& p) : boost_path(p) {}
+		inline operator fs_boost::path () const { return boost_path; }
 
 	public:
 	
-		path() {}
-		path(const path & name) : boost_path(name.filename()) {}
+		inline path() {}
+		inline path(const path & name) : boost_path(name.filename()) {}
 				
 		// TODO allow trailing slashes? boost removes it!
-		path(const std::string & name) : boost_path(name) {}
+		inline path(const std::string & name) : boost_path(name) {}
 			
 		// maybe? - to load from char constants without strlen?
-		template <size_t N>
-		path(const char (&name)[N]) : boost_path(name) {}
+		inline path(const char * name) : boost_path(name) {}
 	
 		// same for operator=
 	
 		// "foo" / "bar" -> "foo/bar"  |  "" / "foo" -> "foo"  |  "foo / "" -> "foo"
 		// +overloads for std::string
-		path operator/(const path & other) const { return boost_path / other.boost_path; }
+		inline path operator/(const path & other) const { return boost_path / other.boost_path; }
 			
 		// *this = path(*this) / other;
 		// returns *this
 		// +overloads for std::string
-		path & operator/=(const path & other) { boost_path /= other.boost_path; return *this; }
+		inline path & operator/=(const path & other) { boost_path /= other.boost_path; return *this; }
 	
 		// retrun pathname;
-		const std::string & string() const { pathname = boost_path.string(); return pathname; }
+		inline const std::string & string() const { pathname = boost_path.string(); return pathname; }
 	
 		// "foo/bar" => "foo" | foo => ""
-		const path parent() const { return boost_path.parent_path(); }
+		inline const path parent() const { return boost_path.parent_path(); }
 	
 		// "foo/bar.ext" => "bar.ext"  |  "foo/bar" -> "bar"  |  "foo" -> "foo"  |  "foo.ext" -> "foo.ext"
-		const std::string filename() const { return boost_path.filename().string(); }
+		inline const std::string filename() const { return boost_path.filename().string(); }
 	
 		// "foo/bar.ext" => "bar"  |  "foo/bar" -> "bar"  |  "foo" -> "foo"  |  "foo.ext" -> "foo"
 		const std::string basename() const;
 	
 		// "foo/bar.ext" => ".ext"  | "foo/bar" -> ""
-		const std::string ext() const { return boost_path.extension().string(); }
+		inline const std::string ext() const { return boost_path.extension().string(); }
 	
 		// "" -> true  |  "foo" -> false
-		bool empty() const { return boost_path.empty(); }
+		inline bool empty() const { return boost_path.empty(); }
 	
 		 // TODO +overlad for std::string?
-		bool operator==(const path & other) const { return boost_path == other.boost_path; }
+		inline bool operator==(const path & other) const { return boost_path == other.boost_path; }
 	
 		// so it can be used in ordered maps, etc
-		bool operator<(const path & other) const { return boost_path < other.boost_path; }
+		inline bool operator<(const path & other) const { return boost_path < other.boost_path; }
 	
 		/*
 		 * "foo/bar".set_ext(".ext") -> "foo/bar.ext"
@@ -122,10 +123,10 @@ namespace fs {
 		 * "foo/bar.abc".set_ext("") -> "foo/bar"
 		 * returns *this
 		 */
-		path & set_ext(const std::string & ext = std::string()) { boost_path.replace_extension(ext); return *this; }
+		inline path & set_ext(const std::string & ext = std::string()) { boost_path.replace_extension(ext); return *this; }
 	
 		// *this = parent() / filename;
-		path & set_filename(const std::string & filename) { boost_path = boost_path.parent_path() / filename; return *this; }
+		inline path & set_filename(const std::string & filename) { boost_path = boost_path.parent_path() / filename; return *this; }
 	
 		// TODO some form of append?
 	
@@ -138,52 +139,52 @@ namespace fs {
 		fs_boost::path boost_path;	
 	};
 
-	path operator/(const std::string & base, const path & p) {
+	inline path operator/(const std::string & base, const path & p) {
 		return path(base) / p;
 	}
 
-	std::ostream & operator<<(std::ostream & strm, const path & p) {
+	inline std::ostream & operator<<(std::ostream & strm, const path & p) {
 		return strm << '"' << p.string() << '"';
 	}
 			
-	bool exists(const path& p) { return fs_boost::exists(p); }
-	bool is_directory(const path& p) { return fs_boost::is_directory(p); }
-	bool is_regular_file(const path& p) { return fs_boost::is_regular_file(p); }
+	inline bool exists(const path& p) { return fs_boost::exists(p); }
+	inline bool is_directory(const path& p) { return fs_boost::is_directory(p); }
+	inline bool is_regular_file(const path& p) { return fs_boost::is_regular_file(p); }
 
-	std::time_t last_write_time(const path& p) { return fs_boost::last_write_time(p); }
-	u64 file_size(const path& p) { return fs_boost::file_size(p); }
+	inline std::time_t last_write_time(const path& p) { return fs_boost::last_write_time(p); }
+	inline u64 file_size(const path& p) { return fs_boost::file_size(p); }
 
-	bool remove(const path& p) { return fs_boost::remove(p); }
+	inline bool remove(const path& p) { return fs_boost::remove(p); }
 
-	bool remove_all(const fs::path& p)
+	inline bool remove_all(const fs::path& p)
 	{
 		boost::system::error_code ec;
 		fs_boost::remove_all(p, ec);
 		return !ec;
 	}
 
-	bool create_directory(const fs::path& p)
+	inline bool create_directory(const fs::path& p)
 	{
 		boost::system::error_code ec;
 		fs_boost::create_directory(p, ec);
 		return !ec;
 	}
 
-	bool create_directories(const fs::path& p)
+	inline bool create_directories(const fs::path& p)
 	{
 		boost::system::error_code ec;
 		fs_boost::create_directories(p, ec);
 		return !ec;
 	}
 
-	bool copy_file(const fs::path& from_p, const fs::path& to_p)
+	inline bool copy_file(const fs::path& from_p, const fs::path& to_p)
 	{
 		boost::system::error_code ec;
 		fs_boost::copy_file(from_p, to_p, ec);
 		return !ec;
 	}
 
-	bool rename(const fs::path& old_p, const fs::path& new_p)
+	inline bool rename(const fs::path& old_p, const fs::path& new_p)
 	{
 		boost::system::error_code ec;
 		fs_boost::rename(old_p, new_p, ec);

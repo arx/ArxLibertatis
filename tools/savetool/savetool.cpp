@@ -11,8 +11,6 @@
 #include <map>
 #include <set>
 
-#include <boost/filesystem/operations.hpp>
-
 #include "Configure.h"
 #ifdef BUILD_EDITOR
 #undef BUILD_EDITOR
@@ -36,9 +34,6 @@ using std::free;
 using std::map;
 using std::set;
 using std::transform;
-
-namespace fs = boost::filesystem;
-
 
 static void print_help() {
 	printf("usage: savetool <command> <savefile> [<options>...]\n"

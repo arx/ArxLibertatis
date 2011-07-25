@@ -206,7 +206,7 @@ void CreateSaveGameList() {
 		iss >> num;
 		
 		std::time_t stime = fs::last_write_time(path / "gsave.sav");
-		if(stime = 0) {
+		if(stime == 0) {
 			continue;
 		}
 		
