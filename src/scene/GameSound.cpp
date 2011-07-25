@@ -112,12 +112,12 @@ static const fs::path ARX_SOUND_PATH_INI = "localisation";
 static const char ARX_SOUND_PATH_SAMPLE[] = "sfx";
 static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx/ambiance";
 static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment";
-static const string ARX_SOUND_PRESENCE_NAME = "presence";
+static const fs::path ARX_SOUND_PRESENCE_NAME = "presence";
 static const string ARX_SOUND_FILE_EXTENSION_WAV = ".wav";
 static const string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
 
 static const unsigned long ARX_SOUND_COLLISION_MAP_COUNT = 3;
-static const string ARX_SOUND_COLLISION_MAP_NAMES[] = {
+static const fs::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 	"snd_armor",
 	"snd_step",
 	"snd_weapon"
@@ -126,8 +126,8 @@ static const string ARX_SOUND_COLLISION_MAP_NAMES[] = {
 static bool bIsActive(false);
 
 
-static long ambiance_zone(INVALID_ID);
-static long ambiance_menu(INVALID_ID);
+static AmbianceId ambiance_zone(INVALID_ID);
+static AmbianceId ambiance_menu = INVALID_ID;
 
 static long Inter_Materials[MAX_MATERIALS][MAX_MATERIALS][MAX_VARIANTS];
 
@@ -324,7 +324,7 @@ ArxSound SND_SPELL_TELEPORTED(INVALID_ID);
 ArxSound SND_SPELL_VISION_START(INVALID_ID);
 ArxSound SND_SPELL_VISION_LOOP(INVALID_ID);
 
-static void ARX_SOUND_EnvironmentSet(const std::string & name);
+static void ARX_SOUND_EnvironmentSet(const fs::path & name);
 static void ARX_SOUND_CreateEnvironments();
 static void ARX_SOUND_CreateStaticSamples();
 static void ARX_SOUND_ReleaseStaticSamples();
@@ -476,7 +476,7 @@ void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Ve
 	}
 }
 
-void ARX_SOUND_EnvironmentSet(const string & name) {
+void ARX_SOUND_EnvironmentSet(const fs::path & name) {
 	
 	if(bIsActive) {
 		EnvId e_id = aalGetEnvironment(name);
@@ -590,14 +590,15 @@ void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vec3f & pos)
 	}
 }
 
-long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
+long ARX_SOUND_PlaySpeech(const fs::path & name, const INTERACTIVE_OBJ * io)
 {
 	if (!bIsActive) return INVALID_ID;
 
 	Channel channel;
 	SampleId sample_id;
 
-	string file_name = "speech/" + config.language + "/" + name + ".wav";
+	fs::path file_name = fs::path("speech") / config.language / name;
+	file_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 
 	sample_id = aalCreateSample(file_name);
 
@@ -757,7 +758,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
+long ARX_SOUND_PlayScript(const fs::path & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
 {
 	if (!bIsActive) {
 		return INVALID_ID;
@@ -831,7 +832,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const string & name) {
+long ARX_SOUND_PlayCinematic(const fs::path & name) {
 	
 	LogDebug << "playing cinematic sound";
 	
@@ -941,13 +942,13 @@ void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ
 	aalSetSamplePosition(sample_id, position);
 }
 
-ArxSound ARX_SOUND_Load(const string & name) {
+ArxSound ARX_SOUND_Load(const fs::path & name) {
 	
 	if (!bIsActive) return INVALID_ID;
 
-	string sample_name = name + ARX_SOUND_FILE_EXTENSION_WAV;
+	fs::path sample_name = name;
 
-	return aalCreateSample(sample_name);
+	return aalCreateSample(sample_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV));
 }
 
 void ARX_SOUND_Free(const ArxSound & sample)
@@ -962,12 +963,11 @@ void ARX_SOUND_Stop(ArxSound & sample_id)
 	if (bIsActive && sample_id != INVALID_ID) aalSampleStop(sample_id);
 }
 
-bool ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float volume) {
+bool ARX_SOUND_PlayScriptAmbiance(const fs::path & name, SoundLoopMode loop, float volume) {
 	
 	if (!bIsActive) return INVALID_ID;
 
-	string temp = name;
-	SetExt(temp, ".amb");
+	fs::path temp = fs::path(name).set_ext("amb");
 
 	AmbianceId ambiance_id = aalGetAmbiance(temp);
 
@@ -1004,7 +1004,7 @@ bool ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float
 	return true;
 }
 
-bool ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float volume) {
+bool ARX_SOUND_PlayZoneAmbiance(const fs::path & name, SoundLoopMode loop, float volume) {
 	
 	if (!bIsActive) return true;
 
@@ -1014,8 +1014,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 		return true;
 	}
 
-	string temp = name;
-	SetExt(temp, ".amb");
+	fs::path temp = fs::path(name).set_ext("amb");
 
 	AmbianceId ambiance_id = aalGetAmbiance(temp);
 
@@ -1042,20 +1041,19 @@ bool ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 	return true;
 }
 
-long ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string & track_name, unsigned long status) {
+AmbianceId ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string & track_name, unsigned long status) {
 	
-	if (!bIsActive) return INVALID_ID;
-
-	s32 ambiance_id;
-	string temp = ambiance_name;
-	SetExt(temp, ".amb");
-
-	ambiance_id = aalGetAmbiance(temp);
-
-	if (ambiance_id == INVALID_ID) return INVALID_ID;
-
+	if(!bIsActive) {
+		return INVALID_ID;
+	}
+	
+	AmbianceId ambiance_id = aalGetAmbiance(fs::path(ambiance_name).set_ext("amb"));
+	if(ambiance_id == INVALID_ID) {
+		return INVALID_ID;
+	}
+	
 	aalMuteAmbianceTrack(ambiance_id, track_name, status != 0);
-
+	
 	return ambiance_id;
 }
 
@@ -1075,7 +1073,7 @@ void ARX_SOUND_KillAmbiances() {
 	ambiance_zone = INVALID_ID;
 }
 
-long ARX_SOUND_PlayMenuAmbiance(const string & ambiance_name) {
+AmbianceId ARX_SOUND_PlayMenuAmbiance(const fs::path & ambiance_name) {
 	
 	if (!bIsActive) return INVALID_ID;
 
@@ -1253,7 +1251,7 @@ void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
 		
 		const PlayingAmbiance * playing = &play_list[i];
 		
-		string name = loadPath(safestring(playing->name));
+		fs::path name = fs::path::load(safestring(playing->name));
 		
 		// TODO save/load enum
 		switch (playing->type) {
