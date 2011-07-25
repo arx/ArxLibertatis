@@ -188,9 +188,8 @@ inline bool operator==(const char * a, const path & b) {
 	return (b == a);
 }
 
-template <class ostream>
-inline ostream & operator<<(ostream & strm, const path & path) {
-	return strm << '"' << path.string() << '"';
+inline std::ostream & operator<<(std::ostream & strm, const path & path) {
+	return strm << "\"" << path.string() << "\"";
 }
 
 } // namespace fs

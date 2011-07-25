@@ -366,21 +366,17 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 
 // MESH cache structure definition & Globals
 struct MCACHE_DATA {
-	string name;
-	char* data;
+	fs::path name;
+	char * data;
 	size_t size;
 };
 static vector<MCACHE_DATA> meshCache;
 
 // Checks for Mesh file existence in cache
-static long MCache_Get( const string file) {
-	
-	string fic;
-	
-	File_Standardize(file, fic);
+static long MCache_Get(const fs::path & file) {
 	
 	for(size_t i = 0; i < meshCache.size(); i++) {
-		if(meshCache[i].name == fic) {
+		if(meshCache[i].name == file) {
 			return i;
 		}
 	}
@@ -389,22 +385,20 @@ static long MCache_Get( const string file) {
 }
 
 // Pushes a Mesh In Mesh Cache
-static bool MCache_Push( const string& file, char * data, size_t size)
-{
-	string fic;
-
-	File_Standardize(file, fic);
-
-	if (MCache_Get(fic.c_str()) != -1) return false; // already cached
-
-	LogDebug << fic  << " " << file << " #" << meshCache.size();
-
+static bool MCache_Push(const fs::path & file, char * data, size_t size) {
+	
+	if(MCache_Get(file) != -1) {
+		return false; // already cached
+	}
+	
+	LogDebug << file << " #" << meshCache.size();
+	
 	MCACHE_DATA newMesh;
 	newMesh.size = size;
 	newMesh.data = data;
-	newMesh.name = fic;
+	newMesh.name = file;
 	meshCache.push_back(newMesh);
-
+	
 	return true;
 }
 
@@ -413,22 +407,21 @@ void MCache_ClearAll(){
 }
 
 // Retreives a Mesh File pointer from cache...
-static char* MCache_Pop( const string& file, size_t& size)
-{
+static char * MCache_Pop(const fs::path & file, size_t & size) {
+	
 	long num = MCache_Get(file);
-
-	if (num == -1) return NULL;
-
+	if(num == -1) {
+		return NULL;
+	}
+	
 	size = meshCache[num].size;
 	return meshCache[num].data;
 }
 
-EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
+EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 	
 	// Creates FTL file name
-	string filename = "game/";
-	filename += file;
-	SetExt(filename, ".ftl");
+	fs::path filename = (fs::path("game") / file).set_ext("ftl");
 	
 	// Checks for FTL file existence
 	PakFile * pf = resources->getFile(filename);
