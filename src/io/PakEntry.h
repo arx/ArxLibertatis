@@ -26,9 +26,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_IO_PAKENTRY_H
 #define ARX_IO_PAKENTRY_H
 
+#include <string>
 #include <map>
 
-#include "platform/String.h"
+namespace fs {
+class path;
+}
 
 class PakFileHandle;
 
@@ -69,7 +72,7 @@ private:
 	std::map<std::string, PakFile *> files;
 	std::map<std::string, PakDirectory> dirs;
 	
-	PakDirectory * addDirectory(strref path);
+	PakDirectory * addDirectory(const fs::path & path);
 	
 	void addFile(const std::string & name, PakFile * file);
 	void removeFile(const std::string & name);
@@ -86,9 +89,9 @@ public:
 	typedef std::map<std::string, PakDirectory>::iterator dirs_iterator;
 	typedef std::map<std::string, PakFile *>::const_iterator files_iterator;
 	
-	PakDirectory * getDirectory(strref path);
+	PakDirectory * getDirectory(const fs::path & path);
 	
-	PakFile * getFile(const std::string & path);
+	PakFile * getFile(const fs::path & path);
 	
 	inline dirs_iterator dirs_begin() { return dirs.begin(); }
 	inline dirs_iterator dirs_end() { return dirs.end(); }

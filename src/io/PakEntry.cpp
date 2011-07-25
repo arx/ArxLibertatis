@@ -62,43 +62,93 @@ PakDirectory::~PakDirectory() {
 	}
 }
 
-PakDirectory * PakDirectory::addDirectory(strref path) {
+PakDirectory * PakDirectory::addDirectory(const fs::path & path) {
 	
-	const char * pos = find_first_of(path.begin(), path.end(), DIR_SEP, DIR_SEP + sizeof(DIR_SEP));
-	strref name = path.substr(0, pos - path.begin());
-	
-	PakDirectory * dir = &dirs[name];
-	
-	if(pos != path.end() && pos + 1 != path.end()) {
-		return dir->addDirectory(path.substr(pos - path.begin() + 1));
-	} else {
-		return dir;
+	if(path.empty()) {
+		return this;
 	}
+	
+	PakDirectory * dir = this;
+	size_t pos = 0;
+	while(true) {
+		
+		size_t end = path.string().find(fs::path::dir_sep, pos);
+		
+		if(end == string::npos) {
+			return &dir->dirs[path.string().substr(pos)];
+		}
+		dir = &dir->dirs[path.string().substr(pos, end - pos)];
+		
+		pos = end + 1;
+	}
+	
 }
 
 static char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\"; // TODO(case-sensitive) remove
 
-PakDirectory * PakDirectory::getDirectory(strref path) {
+PakDirectory * PakDirectory::getDirectory(const fs::path & path) {
 	
-	const char * pos = find_first_of(path.begin(), path.end(), DIR_SEP, DIR_SEP + sizeof(DIR_SEP));
-	strref name = path.substr(0, pos - path.begin());
+	arx_assert_msg(std::find_first_of(path.string().begin(), path.string().end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.string().end(), "bad pak path: \"%s\"", path.string().c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
 	
-	if(name.empty()) {
+	if(path.empty()) {
 		return this;
 	}
 	
-	arx_assert_msg(std::find_first_of(name.begin(), name.end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == name.end(), "bad pak path: \"%s\"", string(path.begin(), path.end()).c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
+	PakDirectory * dir = this;
+	size_t pos = 0;
+	while(true) {
+		
+		size_t end = path.string().find(fs::path::dir_sep, pos);
+		
+		string name;
+		if(end == string::npos) {
+			name = path.string().substr(pos);
+		} else {
+			name = path.string().substr(pos, end - pos);
+		}
+		
+		dirs_iterator entry = dir->dirs.find(name);
+		if(entry == dir->dirs.end()) {
+			return NULL;
+		}
+		dir = &entry->second;
+		
+		if(end == string::npos) {
+			return dir;
+		}
+		pos = end + 1;
+	};
 	
-	dirs_iterator dir = dirs.find(name);
-	if(dir == dirs.end()) {
+}
+
+PakFile * PakDirectory::getFile(const fs::path & path) {
+	
+	arx_assert_msg(std::find_first_of(path.string().begin(), path.string().end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.string().end(), "bad pak path: \"%s\"", path.string().c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
+	
+	if(path.empty()) {
 		return NULL;
 	}
 	
-	if(pos != path.end() && pos + 1 != path.end()) {
-		return dir->second.getDirectory(path.substr(pos - path.begin() + 1));
-	} else {
-		return &dir->second;
+	PakDirectory * dir = this;
+	size_t pos = 0;
+	while(true) {
+		
+		size_t end = path.string().find(fs::path::dir_sep, pos);
+		
+		if(end == string::npos) {
+			files_iterator file = dir->files.find(path.string().substr(pos));
+			return (file == dir->files.end()) ? NULL : file->second;
+		}
+		
+		dirs_iterator entry = dir->dirs.find(path.string().substr(pos, end - pos));
+		if(entry == dir->dirs.end()) {
+			return NULL;
+		}
+		dir = &entry->second;
+		
+		pos = end + 1;
 	}
+	
 }
 
 void PakDirectory::addFile(const string & name, PakFile * file) {
@@ -121,28 +171,4 @@ void PakDirectory::removeFile(const string & name) {
 		delete old->second;
 		files.erase(old);
 	}
-}
-
-PakFile * PakDirectory::getFile(const string & path) {
-	
-	arx_assert(path[0] != '/');
-	
-	size_t pos = path.find_last_of(DIR_SEP);
-	
-	PakDirectory * d = this;
-	if(pos != string::npos) {
-		d = getDirectory(strref(path, 0, pos));
-		if(!d) {
-			return NULL;
-		}
-	}
-	
-	arx_assert_msg(std::find_first_of(path.begin() + ((pos == string::npos) ? 0 : pos), path.end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.end(), "bad pak path: \"%s\"", path.c_str()); // TODO(case-sensitive) remove
-	
-	files_iterator file = d->files.find((pos == string::npos) ? path : path.substr(pos + 1));
-	if(file == d->files.end()) {
-		return NULL;
-	}
-	
-	return file->second;
 }

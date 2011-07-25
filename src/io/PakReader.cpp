@@ -504,10 +504,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 			goto error;
 		}
 		
-		size_t len = strlen(dirname);
-		std::transform(dirname, dirname + len, dirname, ::tolower);
-		
-		PakDirectory * dir = (*dirname != '\0') ? addDirectory(strref(dirname, len)) : this;
+		PakDirectory * dir = addDirectory(toLowercase(dirname));
 		
 		u32 nfiles;
 		if(!safeGet(nfiles, pos, fat_size)) {
@@ -620,7 +617,7 @@ bool PakReader::addFiles(const fs::path & path, const string & mount) {
 			
 		size_t pos = mount.find_last_of(DIR_SEP);
 			
-		PakDirectory * dir = (pos == string::npos) ? this : addDirectory(strref(mount, 0, pos));
+		PakDirectory * dir = (pos == string::npos) ? this : addDirectory(mount.substr(0, pos));
 			
 		return addFile(dir, path, (pos == string::npos) ? mount : mount.substr(pos + 1));
 	}
@@ -630,7 +627,7 @@ void PakReader::removeFile(const string & file) {
 	
 	size_t pos = file.find_last_of(DIR_SEP);
 	
-	PakDirectory * dir = (pos == string::npos) ? this : getDirectory(strref(file, 0, pos));
+	PakDirectory * dir = (pos == string::npos) ? this : getDirectory(file.substr(0, pos));
 	if(dir) {
 		dir->removeFile((pos == string::npos) ? file : file.substr(pos + 1));
 	}
