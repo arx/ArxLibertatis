@@ -51,6 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
 
+#include "io/FilePath.h"
+
 #include "math/Vector2.h"
 #include "math/Angle.h"
 
@@ -499,7 +501,7 @@ struct EERIE_3DOBJ
 	~EERIE_3DOBJ();
 	
 	std::string name;
-	std::string file;
+	fs::path file;
 	Vec3f pos;
 	Vec3f point0;
 	Anglef angle;

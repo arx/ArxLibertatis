@@ -102,7 +102,7 @@ CCreateField::CCreateField() {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_jelly = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu3.bmp");
+	tex_jelly = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu3");
 }
 
 //-----------------------------------------------------------------------------
@@ -380,7 +380,7 @@ CSlowDown::CSlowDown()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 
 	if (!ssol) // Pentacle
 		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
@@ -559,7 +559,7 @@ CRiseDead::CRiseDead()
 	}
 	stone1_count++;
 
-	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4.bmp");
+	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
 //-----------------------------------------------------------------------------
@@ -1453,10 +1453,10 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		tabprism[i].vertex = new Vec3f[prismnbpt];
 	}
 
-	tex_prism = TextureContainer::Load("graph/obj3d/textures/(fx)_paralyze.bmp");
-	tex_p	  = TextureContainer::Load("graph/particles/missile.bmp");
-	tex_p1	  = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
-	tex_p2	  = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf.bmp");
+	tex_prism = TextureContainer::Load("graph/obj3d/textures/(fx)_paralyze");
+	tex_p	  = TextureContainer::Load("graph/particles/missile");
+	tex_p1	  = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_p2	  = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 
 	CreatePrismTriangleList(arayon, ahcapuchon, ahauteur, adef);
 	CreateLittlePrismTriangleList();
@@ -1524,7 +1524,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
-	pPS->SetTexture("graph/particles/lil_greypouf.bmp", 0, 200);
+	pPS->SetTexture("graph/particles/lil_greypouf", 0, 200);
 
 	Vec3f ep;
 	ep.x = aePos->x;
@@ -1589,7 +1589,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
-	pPS->SetTexture("graph/particles/lil_greypouf.bmp", 0, 200);
+	pPS->SetTexture("graph/particles/lil_greypouf", 0, 200);
 
 	ep.x = aePos->x;
 	ep.y = aePos->y - 10;
@@ -2053,7 +2053,7 @@ CDisarmTrap::CDisarmTrap()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	
 	if (!smotte)
 		smotte = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");

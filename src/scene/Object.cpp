@@ -425,7 +425,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const string & file) {
 			LogDebug << " -> sample " << ts->sample_name << " size " << ts->sample_size
 			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE);
 			
-			eerie->frames[i].sample = ARX_SOUND_Load(loadPath(safestring(ts->sample_name)));
+			eerie->frames[i].sample = ARX_SOUND_Load(fs::path::load(safestring(ts->sample_name)));
 		}
 		
 		pos += 4; // num_sfx
@@ -530,30 +530,32 @@ void MakeUserFlag(TextureContainer * tc) {
 		return;
 	}
 	
-	if(IsIn(tc->m_texName, "npc_")) {
+	const string & tex = tc->m_texName.string();
+	
+	if(IsIn(tex, "npc_")) {
 		tc->userflags |= POLY_LATE_MIP;
 	}
 	
-	if(IsIn(tc->m_texName, "nocol")) {
+	if(IsIn(tex, "nocol")) {
 		tc->userflags |= POLY_NOCOL;
 	}
 	
-	if(IsIn(tc->m_texName, "climb")) {
+	if(IsIn(tex, "climb")) {
 		tc->userflags |= POLY_CLIMB;
 	}
 	
-	if(IsIn(tc->m_texName, "fall")) {
+	if(IsIn(tex, "fall")) {
 		tc->userflags |= POLY_FALL;
 	}
 	
-	if(IsIn(tc->m_texName, "lava")) {
+	if(IsIn(tex, "lava")) {
 		tc->userflags |= POLY_LAVA;
 	}
 	
-	if (IsIn(tc->m_texName, "water") || IsIn(tc->m_texName, "spider_web")) {
+	if (IsIn(tex, "water") || IsIn(tex, "spider_web")) {
 		tc->userflags |= POLY_WATER;
 		tc->userflags |= POLY_TRANS;
-	} else if(IsIn(tc->m_texName, "[metal]")) {
+	} else if(IsIn(tex, "[metal]")) {
 		tc->userflags |= POLY_METAL;
 	}
 	
@@ -913,7 +915,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 	EERIE_Object_Precompute_Fast_Access(eerie);
 }
 
-static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & fic) {
+static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const fs::path & fic) {
 	
 	(void)size; // TODO use size
 	
@@ -938,7 +940,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & 
 	
 	seerie->nbtex = psth->nb_maps;
 	
-	const string temp = "graph/obj3d/textures/";
+	const fs::path temp = "graph/obj3d/textures";
 	
 	if(psth->type_write == 0) {
 		
@@ -949,8 +951,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & 
 			const THEO_TEXTURE * tt = reinterpret_cast<const THEO_TEXTURE *>(adr + pos);
 			pos += sizeof(THEO_TEXTURE);
 			
-			// TODO what is the point in adding adding the extension when it is ignored later anyway
-			string mapsname = temp + loadPath(safestring(tt->texture_name)) + ".bmp";
+			fs::path mapsname = temp / fs::path::load(safestring(tt->texture_name)).remove_ext();
 			seerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
 		}
 		
@@ -962,29 +963,19 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const string & 
 			
 			for(long i = 0; i < psth->nb_maps; i++) {
 				
-				string name;
+				fs::path name;
 				if(psth->version >= 3019) {
 					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = safestring(tsmi3019->texture_name);
+					name = fs::path::load(safestring(tsmi3019->texture_name)).remove_ext();
 				} else {
 					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = safestring(tsmi->texture_name);
+					name = fs::path::load(safestring(tsmi->texture_name)).remove_ext();
 				}
-				makeLowercase(name);
 				
 				if(!name.empty()) {
-					
-					string mapsname = temp + name;
-					// TODO what is the point in adding the extension?
-					if(psth->type_write & SAVE_MAP_BMP) {
-						mapsname += ".bmp";
-					} else {
-						mapsname += ".tga";
-					}
-					
-					seerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
+					seerie->texturecontainer[i] = TextureContainer::Load(temp / name, TextureContainer::Level);
 				}
 			}
 		}
@@ -1672,7 +1663,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 #ifdef BUILD_EDIT_LOADSAVE
 
 // Converts a Theo Object to an EERIE object
-static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const string & texpath, const string & fic) {
+static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & texpath, const fs::path & fic) {
 	
 	LogWarning << "TheoToEerie " << fic;
 	
@@ -1680,12 +1671,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const string & tex
 		return NULL;
 	}
 	
-	string txpath;
-	if(texpath.empty()) {
-		txpath = "graph/obj3d/textures/";
-	} else {
-		txpath = texpath;
-	}
+	fs::path txpath = texpath.empty() ? "graph/obj3d/textures" : texpath;
 	
 	if(size < 10) {
 		return NULL;
@@ -1725,28 +1711,19 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const string & tex
 			eerie->texturecontainer.resize(pth->nb_maps);
 			for(long i = 0; i < pth->nb_maps; i++) {
 				
-				string name;
+				fs::path name;
 				if(pth->version >= 3008) {
 					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = loadPath(safestring(tsmi3019->texture_name));
+					name = fs::path::load(safestring(tsmi3019->texture_name)).remove_ext();
 				} else {
 					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = loadPath(safestring(tsmi->texture_name));
+					name = fs::path::load(safestring(tsmi->texture_name)).remove_ext();
 				}
 				
 				if(!name.empty()) {
-					
-					string mapsname = txpath + name;
-					// TODO isn't it pointless to add the extension since TextureContainer::Load ignores it?
-					if(pth->type_write & SAVE_MAP_BMP) {
-						mapsname += ".bmp";
-					} else {
-						mapsname += ".tga";
-					}
-					
-					eerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
+					eerie->texturecontainer[i] = TextureContainer::Load(txpath / name, TextureContainer::Level);
 				}
 			}
 		}
@@ -1895,7 +1872,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const string & tex
 	return eerie;
 }
 
-static EERIE_3DOBJ * GetExistingEerie(const string & file) {
+static EERIE_3DOBJ * GetExistingEerie(const fs::path & file) {
 	
 	for(long i = 1; i < inter.nbmax; i++) {
 		if(inter.iobj[i] != NULL && !inter.iobj[i]->tweaky && inter.iobj[i]->obj) {
@@ -1911,7 +1888,7 @@ static EERIE_3DOBJ * GetExistingEerie(const string & file) {
 
 #endif
 
-static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & file, bool pbox) {
+static EERIE_3DOBJ * TheoToEerie_Fast(const fs::path & texpath, const fs::path & file, bool pbox) {
 	
 	EERIE_3DOBJ * ret = ARX_FTL_Load(file);
 	if(ret) {
@@ -1978,17 +1955,12 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const string & texpath, const string & fil
 	return ret;
 }
 
-EERIE_3DOBJ * loadObject(const string & file, bool pbox) {
-	return TheoToEerie_Fast("graph/obj3d/textures/", file, pbox);
+EERIE_3DOBJ * loadObject(const fs::path & file, bool pbox) {
+	return TheoToEerie_Fast("graph/obj3d/textures", file, pbox);
 }
 
-EERIE_3DOBJ * _LoadTheObj(const string & file, const string & texpath) {
-	
-	std::string path = file;
-	RemoveName(path);
-	path += texpath;
-	
-	return TheoToEerie_Fast(path, file, true);
+EERIE_3DOBJ * _LoadTheObj(const fs::path & file, const fs::path & texpath) {
+	return TheoToEerie_Fast(file.parent() / texpath, file, true);
 }
 
 // TODO why is this in EERIEobject

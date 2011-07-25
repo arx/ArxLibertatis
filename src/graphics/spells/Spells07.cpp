@@ -766,8 +766,8 @@ CConfuse::CConfuse()
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
-	tex_trail = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue.bmp");
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_trail = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
 
 	if (!spapi)
 		spapi = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.teo");
@@ -1079,7 +1079,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	pPSStream1.SetParams(cp);
 	pPSStream1.ulParticleSpawn = 0;
 
-	pPSStream1.SetTexture("graph/particles/fire.bmp", 0, 500);
+	pPSStream1.SetTexture("graph/particles/fire", 0, 500);
 
 	pPSStream1.fParticleFreq = 150.0f;
 	Vec3f ea;
@@ -1159,8 +1159,8 @@ CIceField::CIceField()
 
 	iNumber = 50;
 
-	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
-	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 
 	if (!stite)
 		stite = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");

@@ -235,7 +235,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "graph/obj3d/textures/%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph/obj3d/textures/%s", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
@@ -252,7 +252,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long textochange = -1;
 
 				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == GetName(io->obj->texturecontainer[i]->m_texName)) {
+					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.basename()) {
 						textochange = i;
 					}
 				}
@@ -288,7 +288,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "graph/obj3d/textures/%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph/obj3d/textures/%s", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
@@ -305,7 +305,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long textochange = -1;
 
 				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == GetName(io->obj->texturecontainer[i]->m_texName)) {
+					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.basename()) {
 						textochange = i;
 					}
 				}
@@ -341,7 +341,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
 			{
 				char path[256];
-				sprintf(path, "graph/obj3d/textures/%s.bmp", tweaker->tweakerinfo->skinchangeto);
+				sprintf(path, "graph/obj3d/textures/%s", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
 
 				long mapidx = ObjectAddMap(io->obj, temp);
@@ -358,7 +358,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long textochange = -1;
 
 				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == GetName(io->obj->texturecontainer[i]->m_texName)) {
+					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.basename()) {
 						textochange = i;
 					}
 				}

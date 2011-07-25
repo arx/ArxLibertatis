@@ -197,7 +197,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSFire.SetParams(cp);
 	pPSFire.fParticleFreq = 100.0f;
 	pPSFire.ulParticleSpawn = 0;
-	pPSFire.SetTexture("graph/particles/fire.bmp", 0, 200);
+	pPSFire.SetTexture("graph/particles/fire", 0, 200);
 
 	pPSFire.Update(0);
 
@@ -245,7 +245,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSFire2.SetParams(cp);
 	pPSFire2.fParticleFreq = 20.0f;
 	pPSFire2.ulParticleSpawn = 0;
-	pPSFire2.SetTexture("graph/particles/fire.bmp", 0, 200);
+	pPSFire2.SetTexture("graph/particles/fire", 0, 200);
 	pPSFire2.Update(0);
 
 	// Smoke
@@ -293,7 +293,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSSmoke.ulParticleSpawn = 0;
 	pPSSmoke.fParticleFreq = 20.0f;
 
-	pPSSmoke.SetTexture("graph/particles/big_greypouf.bmp", 0, 0);
+	pPSSmoke.SetTexture("graph/particles/big_greypouf", 0, 0);
 	pPSSmoke.Update(0);
 
 	pPSFire.SetPos(eSrc);
@@ -481,8 +481,8 @@ CIceProjectile::CIceProjectile()
 
 	iNumber = MAX_ICE;
 
-	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
-	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 
 	if (!stite)
 		stite = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
@@ -850,7 +850,7 @@ void CSpeed::Create(int numinteractive, int duration)
 		grouplist += 2;
 	}
 
-	this->tp = TextureContainer::Load("graph/particles/fire.bmp");
+	this->tp = TextureContainer::Load("graph/particles/fire");
 }
 
 //-----------------------------------------------------------------------------
@@ -1099,7 +1099,7 @@ void CCreateFood::Create()
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	pPS->SetTexture("graph/particles/create_food.bmp", 0, 100); //5
+	pPS->SetTexture("graph/particles/create_food", 0, 100); //5
 
 	fSize = 1;
 }

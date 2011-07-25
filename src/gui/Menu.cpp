@@ -251,10 +251,10 @@ void CreateSaveGameList() {
 		
 		save->quicksave = (name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1");
 		
-		fs::path thumbnail = path / "gsave.bmp";
+		fs::path thumbnail = path / "gsave";
 		if(fs::exists(thumbnail)) {
 			std::ostringstream oss;
-			oss << "save/save" << std::setw(4) << std::setfill('0') << num << "/gsave.bmp";
+			oss << "save/save" << std::setw(4) << std::setfill('0') << num << "/gsave";
 			resources->removeFile(oss.str());
 			resources->addFiles(thumbnail, oss.str());
 		}
@@ -358,8 +358,8 @@ void ARX_Menu_Resources_Create() {
 	}
 
 	ARXmenu.mda = new MENU_DYNAMIC_DATA();
-	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("graph/interface/menus/menu_credits.bmp");
-	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_creation_bg.bmp");
+	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("graph/interface/menus/menu_credits");
+	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_creation_bg");
 
 	ARXmenu.mda->flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
 	ARXmenu.mda->flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
@@ -676,53 +676,53 @@ bool ARX_Menu_Render()
 			
 			// TODO this is also in Interface.cpp
 
-			ITC.Set("playerbook", "graph/interface/book/character_sheet/char_sheet_book.bmp");
-			ITC.Set("ic_casting", "graph/interface/book/character_sheet/buttons_carac/icone_casting.bmp");
-			ITC.Set("ic_close_combat", "graph/interface/book/character_sheet/buttons_carac/icone_close_combat.bmp");
-			ITC.Set("ic_constitution", "graph/interface/book/character_sheet/buttons_carac/icone_constit.bmp");
-			ITC.Set("ic_defense", "graph/interface/book/character_sheet/buttons_carac/icone_defense.bmp");
-			ITC.Set("ic_dexterity", "graph/interface/book/character_sheet/buttons_carac/icone_dext.bmp");
-			ITC.Set("ic_etheral_link", "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link.bmp");
-			ITC.Set("ic_mind", "graph/interface/book/character_sheet/buttons_carac/icone_intel.bmp");
-			ITC.Set("ic_intuition", "graph/interface/book/character_sheet/buttons_carac/icone_intuition.bmp");
-			ITC.Set("ic_mecanism", "graph/interface/book/character_sheet/buttons_carac/icone_mecanism.bmp");
-			ITC.Set("ic_object_knowledge", "graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge.bmp");
-			ITC.Set("ic_projectile", "graph/interface/book/character_sheet/buttons_carac/icone_projectile.bmp");
-			ITC.Set("ic_stealth", "graph/interface/book/character_sheet/buttons_carac/icone_stealth.bmp");
-			ITC.Set("ic_strength", "graph/interface/book/character_sheet/buttons_carac/icone_strenght.bmp");
+			ITC.Set("playerbook", "graph/interface/book/character_sheet/char_sheet_book");
+			ITC.Set("ic_casting", "graph/interface/book/character_sheet/buttons_carac/icone_casting");
+			ITC.Set("ic_close_combat", "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
+			ITC.Set("ic_constitution", "graph/interface/book/character_sheet/buttons_carac/icone_constit");
+			ITC.Set("ic_defense", "graph/interface/book/character_sheet/buttons_carac/icone_defense");
+			ITC.Set("ic_dexterity", "graph/interface/book/character_sheet/buttons_carac/icone_dext");
+			ITC.Set("ic_etheral_link", "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
+			ITC.Set("ic_mind", "graph/interface/book/character_sheet/buttons_carac/icone_intel");
+			ITC.Set("ic_intuition", "graph/interface/book/character_sheet/buttons_carac/icone_intuition");
+			ITC.Set("ic_mecanism", "graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
+			ITC.Set("ic_object_knowledge", "graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge");
+			ITC.Set("ic_projectile", "graph/interface/book/character_sheet/buttons_carac/icone_projectile");
+			ITC.Set("ic_stealth", "graph/interface/book/character_sheet/buttons_carac/icone_stealth");
+			ITC.Set("ic_strength", "graph/interface/book/character_sheet/buttons_carac/icone_strenght");
 
-			ITC.Set("questbook", "graph/interface/book/questbook.bmp");
-			ITC.Set("ptexspellbook", "graph/interface/book/spellbook.bmp");
-			ITC.Set("bookmark_char", "graph/interface/book/bookmark_char.bmp");
-			ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic.bmp");
-			ITC.Set("bookmark_map", "graph/interface/book/bookmark_map.bmp");
-			ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest.bmp");
+			ITC.Set("questbook", "graph/interface/book/questbook");
+			ITC.Set("ptexspellbook", "graph/interface/book/spellbook");
+			ITC.Set("bookmark_char", "graph/interface/book/bookmark_char");
+			ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic");
+			ITC.Set("bookmark_map", "graph/interface/book/bookmark_map");
+			ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest");
 
-			ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1.bmp");
-			ITC.Set("accessible_2", "graph/interface/book/accessible/accessible_2.bmp");
-			ITC.Set("accessible_3", "graph/interface/book/accessible/accessible_3.bmp");
-			ITC.Set("accessible_4", "graph/interface/book/accessible/accessible_4.bmp");
-			ITC.Set("accessible_5", "graph/interface/book/accessible/accessible_5.bmp");
-			ITC.Set("accessible_6", "graph/interface/book/accessible/accessible_6.bmp");
-			ITC.Set("accessible_7", "graph/interface/book/accessible/accessible_7.bmp");
-			ITC.Set("accessible_8", "graph/interface/book/accessible/accessible_8.bmp");
-			ITC.Set("accessible_9", "graph/interface/book/accessible/accessible_9.bmp");
-			ITC.Set("accessible_10", "graph/interface/book/accessible/accessible_10.bmp");
-			ITC.Set("current_1", "graph/interface/book/current_page/current_1.bmp");
-			ITC.Set("current_2", "graph/interface/book/current_page/current_2.bmp");
-			ITC.Set("current_3", "graph/interface/book/current_page/current_3.bmp");
-			ITC.Set("current_4", "graph/interface/book/current_page/current_4.bmp");
-			ITC.Set("current_5", "graph/interface/book/current_page/current_5.bmp");
-			ITC.Set("current_6", "graph/interface/book/current_page/current_6.bmp");
-			ITC.Set("current_7", "graph/interface/book/current_page/current_7.bmp");
-			ITC.Set("current_8", "graph/interface/book/current_page/current_8.bmp");
-			ITC.Set("current_9", "graph/interface/book/current_page/current_9.bmp");
-			ITC.Set("current_10", "graph/interface/book/current_page/current_10.bmp");
+			ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1");
+			ITC.Set("accessible_2", "graph/interface/book/accessible/accessible_2");
+			ITC.Set("accessible_3", "graph/interface/book/accessible/accessible_3");
+			ITC.Set("accessible_4", "graph/interface/book/accessible/accessible_4");
+			ITC.Set("accessible_5", "graph/interface/book/accessible/accessible_5");
+			ITC.Set("accessible_6", "graph/interface/book/accessible/accessible_6");
+			ITC.Set("accessible_7", "graph/interface/book/accessible/accessible_7");
+			ITC.Set("accessible_8", "graph/interface/book/accessible/accessible_8");
+			ITC.Set("accessible_9", "graph/interface/book/accessible/accessible_9");
+			ITC.Set("accessible_10", "graph/interface/book/accessible/accessible_10");
+			ITC.Set("current_1", "graph/interface/book/current_page/current_1");
+			ITC.Set("current_2", "graph/interface/book/current_page/current_2");
+			ITC.Set("current_3", "graph/interface/book/current_page/current_3");
+			ITC.Set("current_4", "graph/interface/book/current_page/current_4");
+			ITC.Set("current_5", "graph/interface/book/current_page/current_5");
+			ITC.Set("current_6", "graph/interface/book/current_page/current_6");
+			ITC.Set("current_7", "graph/interface/book/current_page/current_7");
+			ITC.Set("current_8", "graph/interface/book/current_page/current_8");
+			ITC.Set("current_9", "graph/interface/book/current_page/current_9");
+			ITC.Set("current_10", "graph/interface/book/current_page/current_10");
 
-			ITC.Set("ptexcursorredist", "graph/interface/cursors/add_points.bmp");
+			ITC.Set("ptexcursorredist", "graph/interface/cursors/add_points");
 
-			ITC.Set("ptexcornerleft", "graph/interface/book/left_corner_original.bmp");
-			ITC.Set("ptexcornerright", "graph/interface/book/right_corner_original.bmp");
+			ITC.Set("ptexcornerleft", "graph/interface/book/left_corner_original");
+			ITC.Set("ptexcornerright", "graph/interface/book/right_corner_original");
 
 			ITC.Level = getLocalised("system_charsheet_player_lvl");
 			ITC.Xp = getLocalised("system_charsheet_player_xp");

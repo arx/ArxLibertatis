@@ -240,7 +240,7 @@ path & path::append_basename(const std::string & basename_part) {
 	return *this;
 }
 
-bool path::has_ext(const std::string & str) {
+bool path::has_ext(const std::string & str) const {
 	
 	arx_assert_msg(str.empty() || (str[0] != dir_sep && str.find_first_of(dir_or_ext_sep, 1) == std::string::npos), "bad file ext: \"%s\"", str.c_str());
 	

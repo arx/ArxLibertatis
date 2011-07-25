@@ -98,12 +98,12 @@ long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx);
  * 
  * @param pbox true if the object should have a physics box.
  */
-EERIE_3DOBJ * loadObject(const std::string & file, bool pbox = true);
+EERIE_3DOBJ * loadObject(const fs::path & file, bool pbox = true);
 
 /*!
  * @param texpath texture path relative to file
  */
-EERIE_3DOBJ * _LoadTheObj(const std::string & file, const std::string & texpath = std::string());
+EERIE_3DOBJ * _LoadTheObj(const fs::path & file, const fs::path & texpath = std::string());
 
 EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const std::string & fic);
 

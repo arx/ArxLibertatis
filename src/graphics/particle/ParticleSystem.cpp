@@ -297,7 +297,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, b
 		for (int i = 0; i < _iNbTex; i++)
 		{
 			ZeroMemory(cBuf, 256);
-			sprintf(cBuf, "%s_%04d.bmp", _pszTex, i + 1);
+			sprintf(cBuf, "%s_%04d", _pszTex, i + 1);
 			tex_tab[i] = TextureContainer::Load(cBuf);
 		}
 

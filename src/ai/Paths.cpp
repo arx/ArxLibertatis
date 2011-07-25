@@ -1637,7 +1637,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						string bkg_material = "earth";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
-							bkg_material = GetMaterialString( ep->tex->m_texName );
+							bkg_material = GetMaterialString(ep->tex->m_texName);
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);

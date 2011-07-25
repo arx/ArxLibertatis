@@ -3263,7 +3263,7 @@ bool FastSceneLoad(const string & partial_path) {
 	TextureContainerMap textures;
 	for(long k = 0; k < fsh->nb_textures; k++) {
 		const FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<const FAST_TEXTURE_CONTAINER *>(rawdata + pos);
-		string file = loadPath(safestring(ftc->fic));
+		fs::path file = fs::path::load(safestring(ftc->fic)).remove_ext();
 		TextureContainer * tmpTC = TextureContainer::Load(file, TextureContainer::Level);
 		if(tmpTC) {
 			textures[ftc->tc] = tmpTC;
@@ -3820,12 +3820,12 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 		if (ep->tex != NULL)
 			if ( !ep->tex->m_texName.empty() )
 			{
-				if ( ep->tex->m_texName.find("stone") != std::string::npos )         ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("pierre") != std::string::npos )   ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("wood") != std::string::npos )     ep->type |= POLY_WOOD;
-				else if ( ep->tex->m_texName.find("bois") != std::string::npos )     ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.find("gavier") != std::string::npos )   ep->type |= POLY_GRAVEL;
-				else if ( ep->tex->m_texName.find("earth") != std::string::npos )    ep->type |= POLY_EARTH;
+				if ( ep->tex->m_texName.string().find("stone") != std::string::npos )         ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.string().find("pierre") != std::string::npos )   ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.string().find("wood") != std::string::npos )     ep->type |= POLY_WOOD;
+				else if ( ep->tex->m_texName.string().find("bois") != std::string::npos )     ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.string().find("gavier") != std::string::npos )   ep->type |= POLY_GRAVEL;
+				else if ( ep->tex->m_texName.string().find("earth") != std::string::npos )    ep->type |= POLY_EARTH;
 			}
 
 	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
@@ -4075,7 +4075,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 						FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<FAST_TEXTURE_CONTAINER *>(dat + pos);
 						pos += sizeof(FAST_TEXTURE_CONTAINER);
 						ftc->tc = texid;
-						strncpy(ftc->fic, ep->tex->m_texName.c_str(), sizeof(ftc->fic));
+						strncpy(ftc->fic, ep->tex->m_texName.string().c_str(), sizeof(ftc->fic));
 						ftc->temp = 0;
 						fsh->nb_textures++;
 						

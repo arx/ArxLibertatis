@@ -57,7 +57,7 @@ public:
 	
 	//! Access to internal data.
 	inline const unsigned char * GetData() const { return mData; }
-	inline unsigned char * GetData() const { return mData; }
+	inline unsigned char * GetData() { return mData; }
 	
 	void FlipY();
 	

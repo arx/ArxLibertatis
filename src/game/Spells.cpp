@@ -3272,7 +3272,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		Player_Magic_Level = ARX_CLEAN_WARN_CAST_FLOAT(level);
 	}
 
-	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke.bmp");
+	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 
 
 	if ((target < 0)
@@ -6408,7 +6408,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 //*************************************************************************************
 void ARX_SPELLS_Kill(long i) {
 	
-	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke.bmp");
+	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
 
 	if (!spells[i].exist) return;
 
@@ -8831,14 +8831,14 @@ static void ApplySPMax() {
 	}
 	else
 	{
-		TextureContainer * tcm=TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head.bmp");
+		TextureContainer * tcm=TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head");
 
 		if (tcm)
 		{
 			delete tcm;
-			player.heads[0]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head.bmp");
-			player.heads[1]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head.bmp");
-			player.heads[2]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head.bmp");
+			player.heads[0]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
+			player.heads[1]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head");
+			player.heads[2]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 		}
 	}	

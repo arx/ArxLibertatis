@@ -93,7 +93,7 @@ void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj) {
 	}
 }
  
-void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & s2) {
+void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & s1, const fs::path & s2) {
 	
 	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
@@ -105,9 +105,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 	
 	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
-	string skintochange = "graph/obj3d/textures/" + s1 + ".bmp";
+	fs::path skintochange = "graph/obj3d/textures" / s1;
 	
-	string skinname = "graph/obj3d/textures/" + s2 + ".bmp";
+	fs::path skinname = "graph/obj3d/textures" / s2;
 	TextureContainer * tex = TextureContainer::Load(skinname);
 
 	if (obj->originaltextures == NULL)
@@ -118,7 +118,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
 			if (obj->texturecontainer[i])
-				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.c_str());
+				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.string().c_str());
 
 		}
 	}
@@ -127,7 +127,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 	{
 		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
-			if ((strstr(obj->originaltextures + 256 * i, skintochange.c_str())))
+			if ((strstr(obj->originaltextures + 256 * i, skintochange.string().c_str())))
 			{
 				skintochange = obj->texturecontainer[i]->m_texName;
 				break;

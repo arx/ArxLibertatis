@@ -179,7 +179,7 @@ void CCurePoison::Create()
 	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	pPS->SetTexture("graph/particles/cure_poison.bmp", 0, 100); //5
+	pPS->SetTexture("graph/particles/cure_poison", 0, 100); //5
 
 	pPS->lLightId = GetFreeDynLight();
 
@@ -307,7 +307,7 @@ CRuneOfGuarding::CRuneOfGuarding() {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 	
-	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 
 	if (!ssol)
 		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
@@ -560,7 +560,7 @@ void LaunchPoisonExplosion(Vec3f * aePos)
 	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
-	pPS->SetTexture("graph/particles/big_greypouf.bmp", 0, 200);
+	pPS->SetTexture("graph/particles/big_greypouf", 0, 200);
 
 	pPS->SetPos(*aePos);
 	pPS->Update(0);
@@ -695,7 +695,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pPS.SetParams(cp);
 	pPS.ulParticleSpawn = 0;
 
-	pPS.SetTexture("graph/particles/big_greypouf.bmp", 0, 200);
+	pPS.SetTexture("graph/particles/big_greypouf", 0, 200);
 
 	pPS.fParticleFreq = -1;
 
@@ -775,7 +775,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			pPSStream.SetParams(cp);
 			pPSStream.ulParticleSpawn = 0;
 
-			pPSStream.SetTexture("graph/particles/big_greypouf.bmp", 0, 200);
+			pPSStream.SetTexture("graph/particles/big_greypouf", 0, 200);
 
 			pPSStream.fParticleFreq = 80;
 			pPSStream.bParticleFollow = true;
@@ -1081,7 +1081,7 @@ CRepelUndead::CRepelUndead()
 
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 
 	if (!ssol) // Pentacle
 		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
@@ -1368,7 +1368,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	this->scale = 0.f;
 	this->ang = 0.f;
 	this->def = (short)def;
-	this->tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle.bmp");
+	this->tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
 
 	this->timestone = 0;
 	this->nbstone = 0;

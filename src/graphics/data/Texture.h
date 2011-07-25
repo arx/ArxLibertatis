@@ -107,7 +107,7 @@ public:
 	 *	@param  
 	 *	@todo Make this constructor private.
 	 */ 
-	TextureContainer(const std::string& strName, TCFlags flags);
+	TextureContainer(const fs::path & strName, TCFlags flags);
 
 	/** Destructor
 	 */
@@ -117,13 +117,13 @@ public:
 	 *
 	 *
 	 */
-	static TextureContainer * Load(const std::string& strName, TCFlags flags = None);
+	static TextureContainer * Load(const fs::path & strName, TCFlags flags = None);
 
 	/**	Load an image into a TextureContainer
 	 *
 	 *
 	 */
-	static TextureContainer * LoadUI(const std::string& strName, TCFlags flags = None);
+	static TextureContainer * LoadUI(const fs::path & strName, TCFlags flags = None);
 
 	/** Find a TextureContainer by its name.
 	 *	Searches the internal list of textures for a texture specified by
@@ -131,7 +131,7 @@ public:
 	 *	@param strTextureName Name of the texture to find.
 	 *  @return A pointer to a TextureContainer if this texture was already loaded, NULL otherwise.
 	 **/
-	static TextureContainer * Find(const std::string& strTextureName);
+	static TextureContainer * Find(const fs::path & strTextureName);
 
 	static void DeleteAll(TCFlags flag = TCFlags::all());
 
@@ -141,9 +141,9 @@ public:
 	bool CreateHalo() { return false; }
 	TextureContainer * TextureHalo;
 
-	bool LoadFile(const std::string& strPathname);
+	bool LoadFile(const fs::path & strPathname);
 
-	std::string m_texName;              // Name of texture
+	fs::path m_texName;              // Name of texture
 	u32   m_dwWidth;
 	u32   m_dwHeight;
 	u32	m_dwDeviceWidth;
@@ -204,7 +204,7 @@ public:
 private:
 	void LookForRefinementMap(TCFlags flags);
 
-	typedef std::map<std::string, std::string> RefinementMap;
+	typedef std::map<fs::path, fs::path> RefinementMap;
 	static RefinementMap s_GlobalRefine;
 	static RefinementMap s_Refine;
 };

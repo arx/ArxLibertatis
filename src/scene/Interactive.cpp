@@ -448,7 +448,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 
 	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
-		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.find("gore") != std::string::npos ) )
+		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos ) )
 		{
 			gorenum = nn;
 			break;
@@ -483,7 +483,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 
 	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
-		if (io->obj->texturecontainer[nn] && strstr(io->obj->texturecontainer[nn]->m_texName.c_str(), "gore"))
+		if (io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != string::npos)
 		{
 			gorenum = nn;
 			break;
@@ -1668,11 +1668,10 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
 	icontochange = io->filename;
 	RemoveName(icontochange);
 	icontochange += s1;
-	SetExt(icontochange, ".bmp");
 
 	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
 	if (tc == NULL)
-		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon].bmp");
+		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 
 	if (tc != NULL)
 	{
@@ -2499,8 +2498,8 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	}
 }
 
-void GetIOScript(INTERACTIVE_OBJ * io, const std::string & texscript) {
-	loadScript(io->script, resources->getFile(texscript));
+static void GetIOScript(INTERACTIVE_OBJ * io, const fs::path & script) {
+	loadScript(io->script, resources->getFile(script));
 }
 
 //***********************************************************************************
@@ -2595,7 +2594,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	io->infracolor.g = 0.f;
 	io->infracolor.b = 1.f;
 	TextureContainer * tc;
-	tc = TextureContainer::LoadUI("graph/interface/misc/default[icon].bmp"); 
+	tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]"); 
 
 	if (tc)
 	{
@@ -3194,46 +3193,30 @@ extern long SP_DBG;
 
 INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	
-	std::string tex1;
-	std::string tex2;
-	std::string texscript;
 	long type = IO_ITEM;
 
-	string file = fil;
+	fs::path file = fil;
 	
-	if (!specialstrcmp(GetName(file), "gold_coin")) {
-		RemoveName(file);
-		file += "gold_coin.asl";
+	if(!specialstrcmp(file.filename(), "gold_coin")) {
+		file.up() /= "gold_coin.asl";
 		type = IO_ITEM | IO_GOLD;
 	}
 
-	if (IsIn(file, "movable"))
-	{
+	if(IsIn(file.string(), "movable")) {
 		type = IO_ITEM | IO_MOVABLE;
 	}
+	
+	fs::path script = fs::path(file).set_ext("asl");
+	
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path icon = fs::path(file).remove_ext().append_basename("[icon]");
 
-	texscript = file;
-	SetExt(texscript, "asl");
-	tex1 = file;
-	SetExt(tex1, "teo");
-
-	// TODO clean up
-	tex2 = file;
-	SetExt(tex2, "bmp");
-	std::string temp;
-	temp = tex2;
-	AddToName( temp, "[icon]");
-	tex2 = temp;
-
-	std::string file2;
-	file2 = "game/" + file;
-	SetExt(file2, ".ftl");
-
-	if(!resources->getFile(file2) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
 
-	if(!resources->getFile(tex2)) {
+	if(!resources->getFile(fs::path(icon).set_ext("bmp"))) {
 		return NULL;
 	}
 
@@ -3262,7 +3245,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 
 	io->_itemdata->playerstacksize = 1;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, script);
 
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
@@ -3293,7 +3276,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	}
 
 
-	strcpy(io->filename, tex1.c_str());
+	strcpy(io->filename, object.string().c_str());
 
 	if (io->ioflags & IO_GOLD)
 		io->obj = GoldCoinsObj[0];
@@ -3303,7 +3286,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 		if(flags & NO_MESH) {
 			io->obj = NULL;
 		} else {
-			io->obj = loadObject(tex1);
+			io->obj = loadObject(object);
 		}
 	}
 
@@ -3314,10 +3297,10 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	else if (io->ioflags & IO_GOLD)
 		tc = GoldCoinsTC[0];
 	else
-		tc = TextureContainer::LoadUI(tex2, TextureContainer::Level);
+		tc = TextureContainer::LoadUI(icon, TextureContainer::Level);
 
 	if (tc == NULL)
-		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon].bmp");
+		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 
 	if (tc)
 	{
@@ -4611,32 +4594,34 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 }
 
 //-------------------------------------------------------------------------
-std::string GetMaterialString( const std::string& origin )
-{
+string GetMaterialString(const fs::path & texture) {
+	
+	const string & origin = texture.string();
+	
 	// need to be precomputed !!!
-	if (IsIn(origin, "stone")) return "stone";
-	else if (IsIn(origin, "marble")) return "stone";
-	else if (IsIn(origin, "rock")) return "stone";
-	else if (IsIn(origin, "wood")) return "wood";
-	else if (IsIn(origin, "wet")) return "wet";
-	else if (IsIn(origin, "mud")) return "wet";
-	else if (IsIn(origin, "blood")) return "wet";
-	else if (IsIn(origin, "bone")) return "wet";
-	else if (IsIn(origin, "flesh")) return "wet";
-	else if (IsIn(origin, "shit")) return "wet";
-	else if (IsIn(origin, "soil")) return "gravel";
-	else if (IsIn(origin, "gravel")) return "gravel";
-	else if (IsIn(origin, "earth")) return "gravel";
-	else if (IsIn(origin, "dust")) return "gravel";
-	else if (IsIn(origin, "sand")) return "gravel";
-	else if (IsIn(origin, "straw")) return "gravel";
-	else if (IsIn(origin, "metal")) return "metal";
-	else if (IsIn(origin, "iron")) return "metal";
-	else if (IsIn(origin, "glass")) return "metal";
-	else if (IsIn(origin, "rust")) return "metal";
-	else if (IsIn(origin, "earth")) return "earth";
-	else if (IsIn(origin, "ice")) return "ice";
-	else if (IsIn(origin, "fabric")) return "carpet";
-	else if (IsIn(origin, "moss")) return "carpet";
+	if(IsIn(origin, "stone")) return "stone";
+	else if(IsIn(origin, "marble")) return "stone";
+	else if(IsIn(origin, "rock")) return "stone";
+	else if(IsIn(origin, "wood")) return "wood";
+	else if(IsIn(origin, "wet")) return "wet";
+	else if(IsIn(origin, "mud")) return "wet";
+	else if(IsIn(origin, "blood")) return "wet";
+	else if(IsIn(origin, "bone")) return "wet";
+	else if(IsIn(origin, "flesh")) return "wet";
+	else if(IsIn(origin, "shit")) return "wet";
+	else if(IsIn(origin, "soil")) return "gravel";
+	else if(IsIn(origin, "gravel")) return "gravel";
+	else if(IsIn(origin, "earth")) return "gravel";
+	else if(IsIn(origin, "dust")) return "gravel";
+	else if(IsIn(origin, "sand")) return "gravel";
+	else if(IsIn(origin, "straw")) return "gravel";
+	else if(IsIn(origin, "metal")) return "metal";
+	else if(IsIn(origin, "iron")) return "metal";
+	else if(IsIn(origin, "glass")) return "metal";
+	else if(IsIn(origin, "rust")) return "metal";
+	else if(IsIn(origin, "earth")) return "earth";
+	else if(IsIn(origin, "ice")) return "ice";
+	else if(IsIn(origin, "fabric")) return "carpet";
+	else if(IsIn(origin, "moss")) return "carpet";
 	else return "unknown";
 }

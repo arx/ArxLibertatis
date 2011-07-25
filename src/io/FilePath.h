@@ -3,6 +3,7 @@
 #define ARX_IO_FILEPATH_H
 
 #include <string>
+#include <iostream>
 
 namespace fs {
 
@@ -153,7 +154,7 @@ public:
 	}
 	
 	//! return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
-	bool has_ext(const std::string & str = std::string());
+	bool has_ext(const std::string & str = std::string()) const;
 	
 	inline bool is_up() const {
 		return (pathstr.length() == 2 && pathstr[0] == '.' && pathstr[1] == '.')
@@ -189,7 +190,7 @@ inline bool operator==(const char * a, const path & b) {
 }
 
 inline std::ostream & operator<<(std::ostream & strm, const path & path) {
-	return strm << "\"" << path.string() << "\"";
+	return strm << '"' << path.string() << '"';
 }
 
 } // namespace fs

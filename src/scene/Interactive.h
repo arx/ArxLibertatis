@@ -71,6 +71,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
+namespace fs {
+class path;
+}
+
 struct INTERACTIVE_OBJECTS {
 	long init;
 	long nbmax;
@@ -229,7 +233,7 @@ void SetWeapon_On(INTERACTIVE_OBJ * io);
 void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string & temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
-std::string GetMaterialString(const std::string & origin );
+std::string GetMaterialString(const fs::path & origin );
 INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io);

@@ -53,6 +53,10 @@ struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 class TextureContainer;
 
+namespace fs {
+class path;
+}
+
 enum TweakFlag {
 	TWEAK_REMOVE    = (1<<0),
 	TWEAK_HEAD      = (1<<1),
@@ -74,7 +78,7 @@ struct TWEAK_INFO {
 void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const std::string & path);
 long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw);
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val);
-void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string & skintochange, const std::string & skinname);
+void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & skintochange, const fs::path & skinname);
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc);
 void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj);
 

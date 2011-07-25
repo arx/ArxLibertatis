@@ -225,7 +225,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 		memset(ficc, 0, 256);
 
 		if (obj->texturecontainer[i])
-			strcpy(ficc, obj->texturecontainer[i]->m_texName.c_str());
+			strcpy(ficc, obj->texturecontainer[i]->m_texName.string().c_str());
 
 		memcpy(dat + pos, ficc, 256);
 		pos += 256;
@@ -272,7 +272,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
 
-		strcpy(af3Ddh->name, obj->file.c_str());
+		strncpy(af3Ddh->name, obj->file.string().c_str(), sizeof(af3Ddh->name));
 	}
 
 	// Progressive DATA
@@ -504,7 +504,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 	obj->actionlist.resize(af3Ddh->nb_action);
 	obj->selections.resize(af3Ddh->nb_selections);
 	obj->origin = af3Ddh->origin;
-	obj->file = loadPath(safestring(af3Ddh->name));
+	obj->file = fs::path::load(safestring(af3Ddh->name));
 	
 	// Alloc'n'Copy vertices
 	if(!obj->vertexlist.empty()) {
@@ -563,8 +563,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 			const Texture_Container_FTL * tex = reinterpret_cast<const Texture_Container_FTL *>(dat + pos);
 			pos += sizeof(Texture_Container_FTL);
 			
-			string name;
-			File_Standardize(loadPath(safestring(tex->name)), name);
+			fs::path name = fs::path::load(safestring(tex->name)).remove_ext();
 			
 			// Create the texture and put it in the container list
 			obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);

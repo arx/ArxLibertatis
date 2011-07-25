@@ -88,7 +88,7 @@ CSummonCreature::CSummonCreature() : fColorRays1(Color3f::white), fColorBorder(C
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
 
-	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4.bmp");
+	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
 void CSummonCreature::SetDuration(const unsigned long alDuration)
@@ -867,8 +867,8 @@ CNegateMagic::CNegateMagic()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf.bmp");
-	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
+	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic");
 
 	if (!ssol)
 		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");

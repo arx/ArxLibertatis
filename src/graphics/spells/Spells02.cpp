@@ -178,7 +178,7 @@ void CHeal::Create()
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	pPS->SetTexture("graph/particles/heal_0005.bmp", 0, 100); 
+	pPS->SetTexture("graph/particles/heal_0005", 0, 100); 
 
 	fSize = 1;
 }

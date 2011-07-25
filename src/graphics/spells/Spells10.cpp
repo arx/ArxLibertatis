@@ -144,7 +144,7 @@ CControlTarget::CControlTarget()
 	SetDuration(8000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_ctrl_target.bmp");
+	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_ctrl_target");
 
 	fColor[0] = 1;
 	fColor[1] = 1;
