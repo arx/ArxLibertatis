@@ -1751,7 +1751,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	inventory = NULL;
 	show = SHOW_FLAG_IN_SCENE;
 	collision = 0;
-	memset(mainevent, 0, 64); // TODO use string
 	infracolor = Color3f::blue;
 	changeanim = -1;
 	

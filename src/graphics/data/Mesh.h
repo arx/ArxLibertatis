@@ -509,7 +509,7 @@ struct INTERACTIVE_OBJ {
 	INVENTORY_DATA * inventory; // Inventory Data
 	short show; // Show Status (In Scene, In Inventory...)
 	short collision; // collision type
-	char mainevent[64];
+	std::string mainevent;
 	Color3f infracolor; // Improve Vision Color (Heat)
 	long changeanim;
 	

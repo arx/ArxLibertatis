@@ -1468,17 +1468,13 @@ extern INTERACTIVE_OBJ * EVENT_SENDER;
 //***********************************************************************************************
 // Checks If a NPC is dead
 //***********************************************************************************************
-bool IsDeadNPC(INTERACTIVE_OBJ * io)
-{
-	if (!io) return false;
-
-	if (!(io->ioflags & IO_NPC)) return false;
-
-	if (io->_npcdata->life <= 0) return true;
-
-	if ((io->mainevent) && !strcmp(io->mainevent, "dead")) return true;
-
-	return false;
+bool IsDeadNPC(INTERACTIVE_OBJ * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
+		return false;
+	}
+	
+	return (io->_npcdata->life <= 0 || io->mainevent == "dead");
 }
 //***********************************************************************************************
 //***********************************************************************************************

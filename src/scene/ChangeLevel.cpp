@@ -1083,7 +1083,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	ais.scriptload = io->scriptload;
 	ais.show = io->show;
 	ais.collision = io->collision;
-	strcpy(ais.mainevent, io->mainevent);
+	strncpy(ais.mainevent, io->mainevent.c_str(), sizeof(ais.mainevent));
 	ais.velocity = io->velocity;
 	ais.stopped = io->stopped;
 	ais.basespeed = io->basespeed;
@@ -2200,7 +2200,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->scriptload = ais->scriptload;
 		io->show = ais->show;
 		io->collision = ais->collision;
-		strcpy(io->mainevent, toLowercase(safestring(ais->mainevent)).c_str());
+		io->mainevent = toLowercase(safestring(ais->mainevent));
 		
 		// Physics data
 		io->velocity = ais->velocity;

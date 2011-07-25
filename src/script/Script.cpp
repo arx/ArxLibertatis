@@ -175,9 +175,9 @@ void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const string & newevent) {
 	}
 	
 	if(newevent == "main") {
-		io->mainevent[0] = 0;
+		io->mainevent.clear();
 	} else {
-		strcpy(io->mainevent, newevent.c_str());
+		io->mainevent = newevent;
 	}
 }
 
@@ -307,9 +307,11 @@ void ARX_SCRIPT_AllowInterScriptExec()
 				if (inter.iobj[i] != NULL)
 					if (inter.iobj[i]->GameFlags & GFLAG_ISINTREATZONE)
 					{
-						if(inter.iobj[i]->mainevent[0])
+						if(!inter.iobj[i]->mainevent.empty()) {
 							SendIOScriptEvent(inter.iobj[i], SM_NULL, "", inter.iobj[i]->mainevent);
-						else SendIOScriptEvent(inter.iobj[i], SM_MAIN);
+						} else {
+							SendIOScriptEvent(inter.iobj[i], SM_MAIN);
+						}
 					}
 			}
 		}
