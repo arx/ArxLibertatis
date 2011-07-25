@@ -59,8 +59,8 @@ private:
 	
 	std::vector<std::istream *> paks;
 	
-	bool addFiles(PakDirectory * dir, const boost::filesystem::path & path);
-	bool addFile(PakDirectory * dir, const boost::filesystem::path & path, const std::string & name);
+	bool addFiles(PakDirectory * dir, const fs::path & path);
+	bool addFile(PakDirectory * dir, const fs::path & path, const std::string & name);
 	
 public:
 	
@@ -68,9 +68,9 @@ public:
 	
 	void removeFile(const std::string & name);
 	
-	bool addFiles(const boost::filesystem::path & path, const std::string & mount = std::string());
+	bool addFiles(const fs::path & path, const std::string & mount = std::string());
 	
-	bool addArchive(const boost::filesystem::path & pakfile);
+	bool addArchive(const fs::path & pakfile);
 	void clear();
 	
 	bool read(const std::string & name, void * buf);

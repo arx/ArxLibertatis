@@ -32,11 +32,11 @@ class SnapShot {
 	
 private:
 	
-	boost::filesystem::path file;
+	fs::path file;
 	
 public:
 	
-	SnapShot(const boost::filesystem::path & name, bool replace = false);
+	SnapShot(const fs::path & name, bool replace = false);
 	~SnapShot();
 	
 	bool GetSnapShot();
@@ -44,7 +44,7 @@ public:
 	
 };
 
-void InitSnapShot(const boost::filesystem::path & name);
+void InitSnapShot(const fs::path & name);
 void GetSnapShot();
 void FreeSnapShot();
 

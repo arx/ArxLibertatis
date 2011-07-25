@@ -56,8 +56,8 @@ inline std::ostream & fwrite(std::ostream & ifs, const void * buf, size_t n) {
 
 std::istream & fread(std::istream & ifs, std::string & buf);
 
-char * read_file(const boost::filesystem::path & path, size_t & size);
-
 namespace fs = boost::filesystem;
+
+char * read_file(const fs::path & path, size_t & size);
 
 #endif // ARX_IO_FILESYSTEM_H

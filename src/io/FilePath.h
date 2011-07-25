@@ -61,13 +61,13 @@ std::string loadPath(const std::string & path);
 inline const std::string  & as_string(const std::string & path) {
 	return path;
 }
-inline const std::string as_string(const boost::filesystem::path & path) {
+inline const std::string as_string(const fs::path & path) {
 	return path.string();
 }
-inline const boost::filesystem::path as_path(const std::string & path) {
+inline const fs::path as_path(const std::string & path) {
 	return path;
 }
-inline const boost::filesystem::path & as_path(const boost::filesystem::path & path) {
+inline const fs::path & as_path(const fs::path & path) {
 	return path;
 }
 

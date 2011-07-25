@@ -80,8 +80,8 @@ private:
 	
 	typedef boost::unordered_map<std::string, File> Files;
 	
-	boost::filesystem::path savefile;
-	boost::filesystem::fstream handle;
+	fs::path savefile;
+	fs::fstream handle;
 	size_t totalSize;
 	size_t usedSize;
 	size_t chunkCount;
@@ -93,7 +93,7 @@ private:
 	
 public:
 	
-	SaveBlock(const boost::filesystem::path & savefile);
+	SaveBlock(const fs::path & savefile);
 	
 	/*!
 	 * Destructor: this will not finalize the save block.
@@ -142,7 +142,7 @@ public:
 	 * @param size will be set to the loaded size
 	 * @return a new, malloc-allocated buffer or NULL if eiether the saveblock could not be opened or doesn't contain a file with the given name.
 	 */
-	static char * load(const boost::filesystem::path & savefile, const std::string & name, size_t & size);
+	static char * load(const fs::path & savefile, const std::string & name, size_t & size);
 	
 };
 

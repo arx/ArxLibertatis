@@ -766,7 +766,7 @@ ILenum ARXImageToILFormat[] = {
 	IL_DXT5,            // Format_DXT5
 };
 
-void Image::save(const boost::filesystem::path & filename) const {
+void Image::save(const fs::path & filename) const {
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);

@@ -85,7 +85,7 @@ int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName
  * @param id An ID that contributes to the hash.
  * @return false if the hash was created, true if the file could not be read
  **/
-void HERMES_CreateFileCheck(const boost::filesystem::path & name, char * scheck, size_t size, float id);
+void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, float id);
 
 #endif // BUILD_EDIT_LOADSAVE
 

@@ -69,7 +69,7 @@ struct EERIE_3DOBJ;
  * Save a FTL File
  * Must pass the original name of the theo file
  */
-bool ARX_FTL_Save(const boost::filesystem::path & file, const EERIE_3DOBJ * obj);
+bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj);
 
 #endif
 

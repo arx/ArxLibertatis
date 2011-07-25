@@ -73,9 +73,9 @@ struct EERIE_3DOBJ;
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
-long DanaeSaveLevel(const boost::filesystem::path & file);
-void LogDirCreation(const boost::filesystem::path & dir);
-void WriteIOInfo(INTERACTIVE_OBJ * io, const boost::filesystem::path & dir);
+long DanaeSaveLevel(const fs::path & file);
+void LogDirCreation(const fs::path & dir);
+void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 #endif
 

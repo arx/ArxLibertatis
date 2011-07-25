@@ -69,7 +69,7 @@ public:
     bool ToGrayscale();
     bool ToNormalMap();
 
-	void save(const boost::filesystem::path & filename) const;
+	void save(const fs::path & filename) const;
 
 public:
     static unsigned int	GetSize( Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1 );
