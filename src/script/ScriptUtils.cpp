@@ -388,6 +388,8 @@ void initSuppressions() {
 	
 	suppressions[19669]["dog"]["play"] = true; // sound number is sometimes too high
 	
+	suppressions[31]["dog_0011"]["playanim"] = true; // animation 'action2' not loaded
+	
 	suppressions[523]["wall_breakable"]["}"] = true; // missing accept/refuse before end of event block
 	
 	suppressions[66]["hammer_club"]["settwohanded"] = true; // obsolete command
