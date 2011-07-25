@@ -552,7 +552,7 @@ public:
 			
 			DebugScript(' ' << type << " \"" << mesh << '"');
 			
-			fs::path path = (io->usemesh ? io->usemesh : io->filename).parent() / "tweaks" / mesh;
+			fs::path path = (!io->usemesh.empty() ? io->usemesh : io->filename).parent() / "tweaks" / mesh;
 			path.set_ext("teo");
 			
 			ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, fs::path());

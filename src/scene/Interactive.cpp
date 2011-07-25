@@ -1192,33 +1192,25 @@ void RestoreInitialIOStatus()
 	}
 }
 
-bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const string & temp) {
+bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const fs::path & temp) {
 	
 	if(!io || temp.empty()) {
 		return false;
 	}
 	
-	std::string tex;
-	std::string tex2;
+	if(io->ioflags & IO_NPC) {
+		io->usemesh = "graph/obj3d/interactive/npc" / temp;
+	} else if(io->ioflags & IO_FIX) {
+		io->usemesh = "graph/obj3d/interactive/fix_inter" / temp;
+	} else if (io->ioflags & IO_ITEM) {
+		io->usemesh = "graph/obj3d/interactive/items" / temp;
+	} else {
+		io->usemesh.clear();
+	}
 	
-	if (io->ioflags & IO_NPC)	tex2 = "graph/obj3d/interactive/npc/" + temp;
-	else if (io->ioflags & IO_FIX)	tex2 = "graph/obj3d/interactive/fix_inter/" + temp;
-	else if (io->ioflags & IO_ITEM)	tex2 = "graph/obj3d/interactive/items/" + temp;
-	else tex2.clear();
-	
-	File_Standardize(tex2, tex);
-	
-	if (tex.empty() ) {
+	if(io->usemesh.empty() ) {
 		return false;
 	}
-	
-	if(io->usemesh == NULL) {
-		io->usemesh = (char *)malloc(256);
-	} else if(io->usemesh == tex) {
-		return false; //already tweaked with this mesh !
-	}
-	
-	strcpy(io->usemesh, tex.c_str());
 	
 	if(io->obj) {
 		delete io->obj;
@@ -1226,7 +1218,7 @@ bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const string & temp) {
 	}
 	
 	bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
-	io->obj = loadObject(tex, pbox);
+	io->obj = loadObject(io->usemesh, pbox);
 	
 	EERIE_COLLISION_Cylinder_Create(io);
 	return true;
@@ -1747,7 +1739,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	
 	bbox1 = Vec2s(-1, -1);
 	bbox2 = Vec2s(-1, -1);
-	usemesh = NULL; // TODO use string
 	tweaky = NULL;
 	sound = audio::INVALID_ID;
 	type_flags = 0;
@@ -2283,9 +2274,6 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 		damages[io->damagedata].exist = 0;
 
 	ARX_IOGROUP_Release(io);
-
-	if (io->usemesh)
-		free(io->usemesh);
 
 	if (ValidDynLight(io->dynlight))
 		DynLight[io->dynlight].exist = 0;

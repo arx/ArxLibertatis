@@ -149,7 +149,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
 void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
-bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string & temp);
+bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const fs::path & temp);
 void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags = 0);
 
 bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io);
