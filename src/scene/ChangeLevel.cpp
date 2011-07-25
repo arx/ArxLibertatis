@@ -1096,7 +1096,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	ais.poisonous_count = io->poisonous_count;
 	ais.head_rot = io->head_rot;
 	ais.damager_damages = io->damager_damages;
-	ais.nb_iogroups = io->nb_iogroups;
+	ais.nb_iogroups = io->groups.size();
 	ais.damager_type = io->damager_type;
 	ais.type_flags = io->type_flags;
 	ais.secretvalue = io->secretvalue;
@@ -1271,7 +1271,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 		+ struct_size
 		+ sizeof(SavedTweakerInfo)
 		+ sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
-		+ sizeof(SavedGroupData) * io->nb_iogroups
+		+ sizeof(SavedGroupData) * io->groups.size()
 		+ sizeof(SavedTweakInfo) * io->Tweak_nb
 		+ 48000;
 
@@ -1623,10 +1623,10 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 		pos += sizeof(SavedTweakerInfo);
 	}
 
-	for(long ii = 0; ii < io->nb_iogroups; ii++) {
-		SavedGroupData sgd = io->iogroups[ii];
-		memcpy(dat + pos, &sgd, sizeof(SavedGroupData));
+	for(std::set<std::string>::const_iterator i = io->groups.begin(); i != io->groups.end(); i++) {
+		SavedGroupData * sgd = reinterpret_cast<SavedGroupData *>(dat + pos);
 		pos += sizeof(SavedGroupData);
+		strncpy(sgd->name, i->c_str(), sizeof(sgd->name));
 	}
 
 	for(int ii = 0; ii < io->Tweak_nb; ii++) {
@@ -2215,7 +2215,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->poisonous_count = ais->poisonous_count;
 		io->head_rot = ais->head_rot;
 		io->damager_damages = ais->damager_damages;
-		io->nb_iogroups = ais->nb_iogroups;
+		size_t nb_iogroups = ais->nb_iogroups;
 		io->damager_type = DamageType::load(ais->damager_type); // TODO save/load flags
 		io->type_flags = ItemType::load(ais->type_flags); // TODO save/load flags
 		io->secretvalue = ais->secretvalue;
@@ -2549,18 +2549,11 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			strcpy(io->tweakerinfo->skinchangeto, loadPath(safestring(sti->skinchangeto)).c_str());
 		}
 		
-		if(io->iogroups) {
-			free(io->iogroups), io->iogroups = NULL;
-		}
-		
-		if(io->nb_iogroups > 0) {
-			io->iogroups = (IO_GROUP_DATA *)malloc(sizeof(IO_GROUP_DATA) * io->nb_iogroups);
-			for(long i = 0; i < io->nb_iogroups; i++) {
-				const SavedGroupData * sgd = reinterpret_cast<const SavedGroupData *>(dat + pos);
-				pos += sizeof(SavedGroupData);
-				assert(array_size(io->iogroups[i].name) <= array_size(sgd->name));
-				strcpy(io->iogroups[i].name, toLowercase(safestring(sgd->name)).c_str());
-			}
+		io->groups.clear();
+		for(long i = 0; i < nb_iogroups; i++) {
+			const SavedGroupData * sgd = reinterpret_cast<const SavedGroupData *>(dat + pos);
+			pos += sizeof(SavedGroupData);
+			io->groups.insert(toLowercase(safestring(sgd->name)));
 		}
 		
 		io->Tweak_nb = ais->Tweak_nb;

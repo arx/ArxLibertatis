@@ -497,7 +497,6 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std:
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
 
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
-bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string & group);
 void ARX_SCRIPT_Free_All_Global_Variables();
 void MakeLocalText(EERIE_SCRIPT * es, std::string & tx);
 void MakeGlobalText(std::string & tx);

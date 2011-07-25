@@ -3326,11 +3326,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	( ioo->ioflags & IO_NPC )
 					&&	( ioo->_npcdata->life > 0.f )
 					&&	( ioo->show == SHOW_FLAG_IN_SCENE )
-					&&	( IsIOGroup( ioo, "demon") )	
+					&&	( ioo->groups.find("demon") != ioo->groups.end())
 					&&	( distSqr(ioo->pos, cpos) < square(900.f))
 					)
 				{
-					tcount++;					
+					tcount++;
 				}
 			}
 
@@ -6276,7 +6276,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	(ioo->ioflags & IO_NPC)
 					&&	(ioo->_npcdata->life>0.f)
 					&&	(ioo->show==SHOW_FLAG_IN_SCENE)
-					&&	(IsIOGroup(ioo, "demon"))
+					&&	(ioo->groups.find("demon") != ioo->groups.end())
 					&&	(distSqr(ioo->pos, spells[i].caster_pos) < square(900.f))
 					)
 				{

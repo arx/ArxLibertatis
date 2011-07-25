@@ -1243,19 +1243,9 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 										{
 											memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 											tTxtCombineDest[pEndString-pStartString]=0;
-
-											ARX_CHECK_NOT_NEG( COMBINE->nb_iogroups );
-
-											for(	unsigned int uiNbGroups = 0 ;
-													uiNbGroups < ARX_CAST_USHORT( COMBINE->nb_iogroups ) ;
-													uiNbGroups++ )
-											{
-
-												if(!strcmp(tTxtCombineDest,COMBINE->iogroups[uiNbGroups].name))
-												{
+											if(COMBINE->groups.find(tTxtCombineDest) != COMBINE->groups.end()) {
 													//same class
-													bCanCombine=true;
-												}
+													bCanCombine = true;
 											}
 										}
 									}
@@ -1388,19 +1378,10 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									{
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
-
-										ARX_CHECK_NOT_NEG( COMBINE->nb_iogroups );
-
-										for(	unsigned int uiNbGroups = 0 ;
-												uiNbGroups < ARX_CAST_USHORT( COMBINE->nb_iogroups ) ;
-												uiNbGroups++ )
-										{
-
-											if(!strcmp(tTxtCombineDest,COMBINE->iogroups[uiNbGroups].name))
-											{
-												//same class
-												bCanCombine=true;
-											}
+										
+										if(COMBINE->groups.find(tTxtCombineDest) != COMBINE->groups.end()) {
+											// same class
+											bCanCombine = true;
 										}
 									}
 								}
@@ -9057,8 +9038,8 @@ void DANAE::DrawAllInterface()
 
 						if (amount)
 						{
-							if ((!(temp->shop_category)) ||
-								((temp->shop_category) && (IsIOGroup(FlyingOverIO,temp->shop_category))))
+							if (!temp->shop_category ||
+								(temp->shop_category && FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()))
 								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 							else
 								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);

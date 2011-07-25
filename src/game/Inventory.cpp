@@ -1035,7 +1035,7 @@ bool PutInInventory()
 
 		if (io->ioflags & IO_SHOP)
 		{
-			if ((io->shop_category) && (!IsIOGroup(DRAGINTER, io->shop_category)))
+			if(io->shop_category && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
 				return false;
 
 			if (cos <= 0) return false;

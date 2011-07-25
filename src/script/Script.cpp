@@ -2328,17 +2328,6 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	}
 }
 
-bool IsIOGroup(INTERACTIVE_OBJ * io, const string & group) {
-	
-	for(long i = 0; i < io->nb_iogroups; i++) {
-		if(group == io->iogroups[i].name) {
-			return true;
-		}
-	}
-	
-	return false;
-}
-
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events()
 {
 	long max = -1;

@@ -269,7 +269,7 @@ public:
 					continue;
 				}
 				
-				if(group && !IsIOGroup(inter.iobj[l], groupname)) {
+				if(group && inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
 					continue;
 				}
 				
@@ -303,7 +303,7 @@ public:
 					continue;
 				}
 				
-				if(group && !IsIOGroup(inter.iobj[l], groupname)) {
+				if(group && inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
 					continue;
 				}
 				
@@ -325,7 +325,11 @@ public:
 			
 			for(long l = 0; l < inter.nbmax; l++) {
 				
-				if(!inter.iobj[l] || inter.iobj[l] == io || !IsIOGroup(inter.iobj[l], groupname)) {
+				if(!inter.iobj[l] || inter.iobj[l] == io) {
+					continue;
+				}
+				
+				if(inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
 					continue;
 				}
 				
@@ -573,7 +577,7 @@ class IfCommand : public Command {
 				t = GetInterNum(context.getIO());
 			}
 			
-			return (ValidIONum(t) && IsIOGroup(inter.iobj[t], group));
+			return (ValidIONum(t) && inter.iobj[t]->groups.find(group) != inter.iobj[t]->groups.end());
 		}
 		
 	};
@@ -591,7 +595,7 @@ class IfCommand : public Command {
 				t = GetInterNum(context.getIO());
 			}
 			
-			return (ValidIONum(t) && !IsIOGroup(inter.iobj[t], group));
+			return (ValidIONum(t) && inter.iobj[t]->groups.find(group) == inter.iobj[t]->groups.end());
 		}
 		
 	};

@@ -217,50 +217,6 @@ public:
 
 class SetGroupCommand : public Command {
 	
-	static void add(INTERACTIVE_OBJ & io, const string & group) {
-		
-		if(IsIOGroup(&io, group)) {
-			return;
-		}
-		
-		io.iogroups = (IO_GROUP_DATA *)realloc(io.iogroups, sizeof(IO_GROUP_DATA) * (io.nb_iogroups + 1));
-		strcpy(io.iogroups[io.nb_iogroups].name, group.c_str());
-		io.nb_iogroups++;
-	}
-	
-	static void remove(INTERACTIVE_OBJ & io, const string & group) {
-		
-		long toremove = -1;
-		for(long i = 0; i < io.nb_iogroups; i++) {
-			if(group == io.iogroups[i].name) {
-				toremove = i;
-			}
-		}
-		
-		if(toremove == -1) {
-			return;
-		}
-		
-		if(io.nb_iogroups == 1) {
-			free(io.iogroups);
-			io.iogroups = NULL;
-			io.nb_iogroups = 0;
-			return;
-		}
-		
-		IO_GROUP_DATA * temporary = (IO_GROUP_DATA *)malloc(sizeof(IO_GROUP_DATA) * (io.nb_iogroups - 1));
-		long pos = 0;
-		for(int i = 0; i < io.nb_iogroups; i++) {
-			if(i != toremove) {
-				strcpy(temporary[pos++].name, io.iogroups[i].name);
-			}
-		}
-		
-		free(io.iogroups);
-		io.iogroups = temporary;
-		io.nb_iogroups--;
-	}
-	
 public:
 	
 	SetGroupCommand() : Command("setgroup", ANY_IO) { }
@@ -291,9 +247,9 @@ public:
 		}
 		
 		if(rem) {
-			remove(io, group);
+			io.groups.erase(group);
 		} else {
-			add(io, group);
+			io.groups.insert(group);
 		}
 		
 		return Success;

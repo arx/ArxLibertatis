@@ -925,11 +925,6 @@ struct SavedGroupData {
 	
 	char name[NAME_SIZE];
 	
-	inline SavedGroupData(const IO_GROUP_DATA & b) {
-		assert(array_size(b.name) == NAME_SIZE);
-		std::copy(b.name, b.name + NAME_SIZE, name);
-	}
-	
 };
 
 struct SavedTweakInfo {

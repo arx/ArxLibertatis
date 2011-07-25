@@ -58,6 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEPOLY_H
 #define EERIEPOLY_H
 
+#include <set>
+
 #include "graphics/GraphicsTypes.h"
 // TODO move INTERCATIVE_OBJ somewhere else / move flags here
 #include "game/Damage.h"
@@ -444,11 +446,6 @@ struct IO_TWEAKER_INFO
 	 char			skinchangeto[256];
 };
 
-struct IO_GROUP_DATA
-{
-	 char			name[64];
-};
-
 struct TWEAK_INFO;
 
 #define IO_NPC_AFLAG_HIT_BACKGROUND			1
@@ -542,8 +539,7 @@ struct INTERACTIVE_OBJ {
 	IO_TWEAKER_INFO * tweakerinfo; // optional tweaker infos
 	Material material;
 	
-	IO_GROUP_DATA * iogroups; // TODO should be std::set<std::string>
-	short 	nb_iogroups;
+	std::set<std::string> groups;
 	char sizex; // Inventory Icon sizeX
 	char sizey; // Inventory Icon sizeY
 	unsigned long soundtime;

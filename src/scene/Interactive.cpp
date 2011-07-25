@@ -1285,17 +1285,6 @@ void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io)
 	}
 }
 
-
-
-static void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io) {
-	
-	if(io->iogroups) {
-		free(io->iogroups), io->iogroups = NULL;
-	}
-	
-	io->nb_iogroups = 0;
-}
-
 void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 {
 	if (io)
@@ -1327,7 +1316,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 
 		io->inventory_skin = NULL;
 		ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
-		ARX_IOGROUP_Release(io);
+		io->groups.clear();
 		ARX_INTERACTIVE_HideGore(io);
 		MOLLESS_Clear(io->obj);
 		ARX_SCRIPT_Timer_Clear_For_IO(io);
@@ -1787,8 +1776,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	tweakerinfo = NULL;
 	material = MATERIAL_NONE;
 	
-	iogroups = NULL; // TODO should be std::set<std::string>
-	nb_iogroups = 0;
 	sizex = 1;
 	sizey = 1;
 	soundtime = 0;
@@ -2270,8 +2257,6 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 
 	if (io->damagedata >= 0)
 		damages[io->damagedata].exist = 0;
-
-	ARX_IOGROUP_Release(io);
 
 	if (ValidDynLight(io->dynlight))
 		DynLight[io->dynlight].exist = 0;
@@ -4414,20 +4399,37 @@ bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 
 	return false;
 }
-bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
-{
-	if ((!io) || (!ioo)) return false;
 
-	for (long i = 0; i < io->nb_iogroups; i++)
-	{
-		for (long k = 0; k < ioo->nb_iogroups; k++)
-		{
-			if (!strcmp(io->iogroups[i].name, ioo->iogroups[k].name))
-				return true;
+static bool intersect(const std::set<std::string> & set1, const std::set<std::string> & set2) {
+	
+	if(set1.empty() || set2.empty()) {
+		return false;
+	}
+	
+	typedef std::set<std::string>::const_iterator itr;
+	
+	itr it1 = set1.begin();
+	itr it2 = set2.begin();
+	
+	if(*it1 > *set2.rbegin() || *it2 > *set1.rbegin()) {
+		return false;
+	}
+	
+	while(it1 != set1.end() && it2 != set2.end()) {
+		if(*it1 == *it2) {
+			return true;
+		} else if(*it1 < *it2) {
+			it1++;
+		} else {
+			it2++;
 		}
 	}
-
+	
 	return false;
+}
+
+bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+	return io && ioo && intersect(io->groups, ioo->groups);
 }
 
 //***********************************************************************************************
