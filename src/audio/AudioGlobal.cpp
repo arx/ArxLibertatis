@@ -32,17 +32,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Ambiance.h"
 #include "audio/AudioEnvironment.h"
 
-using std::string;
-
 namespace audio {
 
 // Audio device interface
 Backend * backend = NULL;
 
 // Global settings
-string sample_path;
-string ambiance_path;
-string environment_path;
+fs::path sample_path;
+fs::path ambiance_path;
+fs::path environment_path;
 size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
 size_t session_time = 0;
 

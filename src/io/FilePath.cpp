@@ -38,6 +38,8 @@ void path::check() const {
 		size_t next = pathstr.find(dir_sep, pos);
 		if(next == std::string::npos) {
 			next = pathstr.length();
+		} else {
+			arx_assert_msg(next + 1 != pathstr.length(), "bad path: \"%s\"", pathstr.c_str());
 		}
 		
 		arx_assert_msg(next > pos, "bad path: \"%s\"", pathstr.c_str());

@@ -28,8 +28,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
-#include "AudioTypes.h"
-#include "AudioResource.h"
+#include "audio/AudioTypes.h"
+#include "audio/AudioResource.h"
+#include "io/FilePath.h"
 
 namespace audio {
 
@@ -43,7 +44,7 @@ public:
 		size_t time;
 	};
 	
-	Sample(const std::string & name);
+	Sample(const fs::path & name);
 	~Sample();
 	
 	// File I/O
@@ -52,7 +53,7 @@ public:
 	// Setup
 	aalError setCallback(aalSampleCallback func, void * data, size_t time, TimeUnit unit = UNIT_MS);
 	
-	inline const std::string & getName() const { return name; }
+	inline const fs::path & getName() const { return name; }
 	inline size_t getLength() const { return length; }
 	inline const PCMFormat & getFormat() const { return format; }
 	inline size_t getCallbackCount() const { return callbacks.size(); }
@@ -61,7 +62,7 @@ public:
 	
 private:
 	
-	std::string name;
+	fs::path name;
 	size_t length;
 	PCMFormat format;
 	

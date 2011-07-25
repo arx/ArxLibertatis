@@ -108,12 +108,12 @@ static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
 static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
 static const float ARX_SOUND_REFUSE_DISTANCE(2500.0F);
 
-static const string ARX_SOUND_PATH_INI = "localisation/";
-static const char ARX_SOUND_PATH_SAMPLE[] = "sfx/";
-static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx/ambiance/";
-static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment/";
+static const fs::path ARX_SOUND_PATH_INI = "localisation";
+static const char ARX_SOUND_PATH_SAMPLE[] = "sfx";
+static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx/ambiance";
+static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment";
 static const string ARX_SOUND_PRESENCE_NAME = "presence";
-static const char ARX_SOUND_FILE_EXTENSION_WAV[] = ".wav";
+static const string ARX_SOUND_FILE_EXTENSION_WAV = ".wav";
 static const string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
 
 static const unsigned long ARX_SOUND_COLLISION_MAP_COUNT = 3;
@@ -166,7 +166,7 @@ namespace Section {
 static const string presence = "presence";
 }
 
-typedef map<string, float> PresenceFactors;
+typedef map<fs::path, float> PresenceFactors;
 static PresenceFactors presence;
 
 }
@@ -332,7 +332,7 @@ static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const 
 static void ARX_SOUND_CreateCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
 static void ARX_SOUND_CreatePresenceMap();
-static float GetSamplePresenceFactor(const string & name);
+static float GetSamplePresenceFactor(const fs::path & name);
 LPTHREAD_START_ROUTINE UpdateSoundThread(char *);
 static void ARX_SOUND_LaunchUpdateThread();
 static void ARX_SOUND_KillUpdateThread();
@@ -503,7 +503,7 @@ long ARX_SOUND_PlaySFX(ArxSound & sample_id, const Vec3f * position, float pitch
 			return -1;
 	}
 
-	string sample_name;
+	fs::path sample_name;
 	aalGetSampleName(sample_id, sample_name);
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -661,7 +661,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 
-	string sample_name;
+	fs::path sample_name;
 	aalGetSampleName(sample_id, sample_name);
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -727,7 +727,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
-	string sample_name;
+	fs::path sample_name;
 	aalGetSampleName(sample_id, sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -813,7 +813,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 
 	if(position) {
 		channel.flags |= FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
-		string sample_name;
+		fs::path sample_name;
 		aalGetSampleName(sample_id, sample_name);
 		float presence = GetSamplePresenceFactor(sample_name);
 		channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -1147,11 +1147,11 @@ void ARX_SOUND_PushAnimSamples()
 
 					if (anim->frames[k].sample != -1)
 					{
-						string dest;
+						fs::path dest;
 						aalGetSampleName(anim->frames[k].sample, dest);
 						if(!dest.empty()) {
 							elems = (char **)realloc(elems, sizeof(char *) * (nbelems + 1));
-							elems[nbelems] = strdup(dest.c_str());
+							elems[nbelems] = strdup(dest.string().c_str());
 							numbers = (long *)realloc(numbers, sizeof(long) * (nbelems + 1));
 							numbers[nbelems] = number;
 							nbelems++;
@@ -1226,10 +1226,10 @@ char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
 			
 			memset(playing->name, 0, sizeof(playing->name));
 			
-			string name;
+			fs::path name;
 			aalGetAmbianceName(ambiance_id, name);
-			arx_assert(name.length() + 1 < sizeof(playing->name)/sizeof(*playing->name));
-			strcpy(playing->name, name.c_str());
+			arx_assert(name.string().length() + 1 < sizeof(playing->name)/sizeof(*playing->name));
+			strcpy(playing->name, name.string().c_str());
 			aalGetAmbianceVolume(ambiance_id, playing->volume);
 			playing->loop = aalIsAmbianceLooped(ambiance_id) ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
 			playing->type = type;
@@ -1272,7 +1272,6 @@ void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
 static void ARX_SOUND_CreateEnvironments() {
 	
 	PakDirectory * dir = resources->getDirectory(ARX_SOUND_PATH_ENVIRONMENT);
-	
 	if(!dir) {
 		return;
 	}
@@ -1663,7 +1662,8 @@ static void ARX_SOUND_CreateCollisionMaps() {
 	
 	for(size_t i = 0; i < ARX_SOUND_COLLISION_MAP_COUNT; i++) {
 		
-		string file = ARX_SOUND_PATH_INI + ARX_SOUND_COLLISION_MAP_NAMES[i] + ARX_SOUND_FILE_EXTENSION_INI;
+		fs::path file = ARX_SOUND_PATH_INI / ARX_SOUND_COLLISION_MAP_NAMES[i];
+		file.set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 		
 		size_t fileSize;
 		char * data = resources->readAlloc(file, fileSize);
@@ -1812,7 +1812,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	presence.clear();
 	
-	string file = ARX_SOUND_PATH_INI + ARX_SOUND_PRESENCE_NAME + ARX_SOUND_FILE_EXTENSION_INI;
+	fs::path file = (ARX_SOUND_PATH_INI / ARX_SOUND_PRESENCE_NAME).set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 	
 	size_t fileSize;
 	char * data = resources->readAlloc(file, fileSize);
@@ -1837,16 +1837,16 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	for(IniSection::iterator i = section->begin(); i != section->end(); ++i) {
 		float factor = i->getValue(100.f) / 100.f;
-		presence[i->getName() + ARX_SOUND_FILE_EXTENSION_WAV] = factor;
+		presence[fs::path::load(i->getName()).set_ext(ARX_SOUND_FILE_EXTENSION_WAV)] = factor;
 	}
 	
 }
 
 static char BADSAMPLECHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
 
-static float GetSamplePresenceFactor(const string & name) {
+static float GetSamplePresenceFactor(const fs::path & name) {
 	
-	arx_assert(name.find_first_of(BADSAMPLECHAR) == string::npos); ARX_UNUSED(BADSAMPLECHAR); // TODO(case-sensitive) remove
+	arx_assert(name.string().find_first_of(BADSAMPLECHAR) == string::npos); ARX_UNUSED(BADSAMPLECHAR); // TODO(case-sensitive) remove
 	
 	PresenceFactors::const_iterator it = presence.find(name);
 	if(it != presence.end()) {

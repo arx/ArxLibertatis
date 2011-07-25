@@ -33,13 +33,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakReader.h"
 #include "io/Logger.h"
 
-using std::string;
-
 namespace audio {
 
-Stream * createStream(const string & name) {
+Stream * createStream(const fs::path & name) {
 	
-	PakFileHandle * file = OpenResource(name.c_str(), sample_path);
+	PakFileHandle * file = OpenResource(name, sample_path);
 	if(!file) {
 		return NULL;
 	}

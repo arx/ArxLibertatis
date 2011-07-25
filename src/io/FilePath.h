@@ -168,6 +168,8 @@ public:
 	
 	static path load(const std::string & str);
 	
+	inline void clear() { pathstr.clear(); }
+	
 };
 
 inline path operator/(const char * a, const path & b) {

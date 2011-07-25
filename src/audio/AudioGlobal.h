@@ -33,6 +33,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioResource.h"
 
 #include "io/Logger.h"
+#include "io/FilePath.h"
 
 namespace audio {
 
@@ -49,9 +50,9 @@ const ChannelFlags FLAG_ANY_3D_FX = FLAG_POSITION | FLAG_VELOCITY | FLAG_DIRECTI
 extern Backend * backend;
 
 // Global settings
-extern std::string sample_path;
-extern std::string ambiance_path;
-extern std::string environment_path;
+extern fs::path sample_path;
+extern fs::path ambiance_path;
+extern fs::path environment_path;
 extern size_t stream_limit_bytes;
 extern size_t session_time;
 

@@ -204,7 +204,7 @@ struct Ambiance::Track {
 	SourceId s_id; // Sample id
 	AmbianceId a_id; // Ambiance id
 	
-	std::string name; // Track name (if NULL use sample name instead)
+	string name; // Track name
 	
 	TrackFlags flags;
 	size_t key_c, key_i; // Key count and current index
@@ -286,7 +286,7 @@ static const u32 AMBIANCE_FILE_VERSION = AMBIANCE_FILE_VERSION_1003;
 
 static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data);
 
-Ambiance::Ambiance(const string & _name) :
+Ambiance::Ambiance(const fs::path & _name) :
 	status(Idle), loop(false), fade(None), start(0), time(0),
 	track_c(0), track_l(NULL), name(_name),
 	data(NULL) {
@@ -310,7 +310,7 @@ static SampleId _loadSample(PakFileHandle * file) {
 		}
 	} while (text[k++]);
 	
-	Sample * sample = new Sample(loadPath(text));
+	Sample * sample = new Sample(fs::path::load(text));
 	SampleId id = INVALID_ID;
 	if(sample->load() || (id = _sample.add(sample)) == INVALID_ID) {
 		delete sample;
