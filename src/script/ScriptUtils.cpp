@@ -379,6 +379,7 @@ void initSuppressions() {
 	suppress("light_door_0029", 88, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
 	suppress("light_door_0030", 162, "setevent"); // unsupported event: "npc_open"
+	suppress("light_door_0030", 488, "setevent"); // unsupported event: "npc_open"
 	
 	suppress("light_door_0100", 69, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
