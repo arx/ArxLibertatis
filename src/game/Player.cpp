@@ -101,8 +101,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Object.h"
 
-namespace fs = boost::filesystem;
-
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;

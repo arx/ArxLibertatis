@@ -27,8 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-namespace fs = boost::filesystem;
-
 std::istream & fread(std::istream & ifs, string & buf) {
 	while(ifs.good()) {
 		char c = static_cast<char>(ifs.get());

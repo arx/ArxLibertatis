@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/GameSound.h"
 
-namespace fs = boost::filesystem;
-
 extern CDirectInput * pGetInfoDirectInput;
 extern bool bQuickGenFirstClick;
 #ifdef BUILD_EDITOR

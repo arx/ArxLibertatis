@@ -107,10 +107,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::max;
 using std::string;
 
-#ifdef BUILD_EDIT_LOADSAVE
-namespace fs = boost::filesystem;
-#endif
-
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
 extern long DONT_ERASE_PLAYER;

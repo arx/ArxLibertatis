@@ -70,8 +70,6 @@ using std::string;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-namespace fs = boost::filesystem;
-
 void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, float id) {
 	
 	// TODO this will not produce the exact same hashes as the original, so me may as well uses a better hash function

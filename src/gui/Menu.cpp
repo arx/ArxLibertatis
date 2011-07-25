@@ -112,8 +112,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 using std::istringstream;
 
-namespace fs = boost::filesystem;
-
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
 extern Anglef ePlayerAngle;

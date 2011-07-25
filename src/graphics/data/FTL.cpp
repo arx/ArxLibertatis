@@ -82,8 +82,6 @@ extern long NOCHECKSUM;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-namespace fs = boost::filesystem;
-
 bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;

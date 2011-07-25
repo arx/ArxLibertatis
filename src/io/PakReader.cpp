@@ -68,8 +68,6 @@ using std::strlen;
 using std::string;
 using std::vector;
 
-namespace fs = boost::filesystem;
-
 namespace {
 
 const size_t PAK_READ_BUF_SIZE = 1024;

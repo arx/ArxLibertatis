@@ -104,10 +104,6 @@ using std::max;
 using std::copy;
 using std::string;
 
-#ifdef BUILD_EDIT_LOADSAVE
-namespace fs = boost::filesystem;
-#endif
-
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
 extern bool ARXPausedTimer;

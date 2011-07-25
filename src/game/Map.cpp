@@ -43,8 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
-namespace fs = boost::filesystem;
-
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
 int iCreateMap = 0; // used to create mini-map bitmap

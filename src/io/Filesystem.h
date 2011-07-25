@@ -58,4 +58,6 @@ std::istream & fread(std::istream & ifs, std::string & buf);
 
 char * read_file(const boost::filesystem::path & path, size_t & size);
 
+namespace fs = boost::filesystem;
+
 #endif // ARX_IO_FILESYSTEM_H

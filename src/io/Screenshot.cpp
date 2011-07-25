@@ -70,8 +70,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::ostringstream;
 
-namespace fs = boost::filesystem;
-
 static SnapShot * pSnapShot;
 
 SnapShot::SnapShot(const fs::path & name, bool replace) {

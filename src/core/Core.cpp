@@ -152,8 +152,6 @@ using std::max;
 using std::string;
 using std::ostringstream;
 
-namespace fs = boost::filesystem;
-
 void DemoFileCheck();
 
 //-----------------------------------------------------------------------------

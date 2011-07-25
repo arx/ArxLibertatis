@@ -76,8 +76,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-namespace fs = boost::filesystem;
-
 //-----------------------------------------------------------------------------
 TextManager * pTextManage;
 TextManager * pTextManageFlyingOver;

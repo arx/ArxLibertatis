@@ -112,8 +112,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-namespace fs = boost::filesystem;
-
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;

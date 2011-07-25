@@ -117,8 +117,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::string;
 
-namespace fs = boost::filesystem;
-
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;
 

@@ -41,8 +41,6 @@ using std::string;
 using std::vector;
 using std::min;
 
-namespace fs = boost::filesystem;
-
 static const u32 SAV_VERSION_OLD = (1<<16) | 0;
 static const u32 SAV_VERSION_RELEASE = (1<<16) | 1;
 static const u32 SAV_VERSION_DEFLATE = (2<<16) | 0;
