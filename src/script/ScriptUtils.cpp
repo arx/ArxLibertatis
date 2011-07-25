@@ -365,6 +365,10 @@ void initSuppressions() {
 	
 	suppressions[274]["corpse_0084"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
 	
+	suppressions[54]["chest_metal_0020"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppressions[99]["chest_metal_0020"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppressions[224]["chest_metal_0020"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/magic/ring_darkaa/ring_darkaa.teo" (should be 'ring_daarka/ring_daarka'?)
+	
 	suppressions[224]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
 	suppressions[317]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
 	suppressions[461]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
