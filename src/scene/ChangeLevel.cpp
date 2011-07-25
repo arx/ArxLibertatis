@@ -2550,7 +2550,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		}
 		
 		io->groups.clear();
-		for(long i = 0; i < nb_iogroups; i++) {
+		for(size_t i = 0; i < nb_iogroups; i++) {
 			const SavedGroupData * sgd = reinterpret_cast<const SavedGroupData *>(dat + pos);
 			pos += sizeof(SavedGroupData);
 			io->groups.insert(toLowercase(safestring(sgd->name)));
