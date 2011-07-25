@@ -307,104 +307,109 @@ SuppressionsForPos suppressions;
 
 }
 
+void suppress(const string & script, size_t pos, const string & command) {
+	suppressions[pos][script][command] = true;
+}
+
 void initSuppressions() {
 	
 	// TODO(broken-scripts)
+	// TODO move to external file
 	
-	suppressions[7725]["player"]["loadanim"] = true; // bad animation id: "cast_hold"
-	suppressions[8463]["player"]["loadanim"] = true; // bad animation id: "lean_left_cycle"
-	suppressions[8531]["player"]["loadanim"] = true; // bad animation id: "lean_left_out"
-	suppressions[8666]["player"]["loadanim"] = true; // bad animation id: "lean_right_cycle"
-	suppressions[8733]["player"]["loadanim"] = true; // bad animation id: "lean_right_out"
-	suppressions[9284]["player"]["loadanim"] = true; // missing animation "human_death_cool"
-	suppressions[9558]["player"]["loadanim"] = true; // missing animation "human_talk_happyneutral_headonly"
+	suppress("axe_2handed", 26, "settwohanded"); // obsolete command
 	
-	suppressions[5872]["human_base"]["loadanim"] = true; // bad animation id: "bae_ready"
-	suppressions[13711]["human_base"]["loadanim"] = true; // missing animation "child_get_hit", should be "child_hit"?
-	suppressions[13751]["human_base"]["loadanim"] = true; // missing animation "child_get_hit", should be "child_hit"?
-	suppressions[45586]["human_base"]["goto"] = true; // missing label "main_alert"
+	suppress("black_thing", 3703, "play"); // variable is never set
 	
-	suppressions[239]["human_base_0079"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
-	suppressions[303]["human_base_0079"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
+	suppress("chest_metal_0020", 54, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0020", 99, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0020", 224, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/ring_darkaa/ring_darkaa.teo" (should be 'ring_daarka/ring_daarka'?)
 	
-	suppressions[722]["human_base_0095"]["setcontrolledzone"] = true; // unknown zone 'maria_shop'
+	suppress("chest_metal_0029", 224, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0029", 317, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0029", 461, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0029", 557, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0029", 650, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
 	
-	suppressions[422]["light_door"]["set"] = true; // bad variable name: "durability"
+	suppress("chest_metal_0045", 242, "inventory addfromscene"); // bad target ident: "magic\\potion_life\\potion_life"
 	
-	suppressions[105]["light_door_0019"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	suppress("chest_metal_0095", 143, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/legging_leatherac/legging_leatherac.teo" (should be 'legging_leather_ac'?)
 	
-	suppressions[230]["light_door_0020"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	suppress("chicken_base", 2410, "}"); // missing accept/refuse before end of event block
 	
-	suppressions[234]["light_door_0021"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	suppress("corpse_0003", 399, "inventory addfromscene"); // bad target ident: "magic\\potion_life\\potion_life" (should be 'inventory add'?)
 	
-	suppressions[88]["light_door_0029"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	suppress("corpse_0084", 274, "inventory add"); // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
 	
-	suppressions[162]["light_door_0030"]["setevent"] = true; // unsupported event: "npc_open"
+	suppress("demon", 18479, "play"); // sound number is sometimes too high
 	
-	suppressions[69]["light_door_0100"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	suppress("dog", 19669, "play"); // sound number is sometimes too high
 	
-	suppressions[88]["light_door_0102"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	suppress("dog_0011", 31, "playanim"); // animation 'action2' not loaded
 	
-	suppressions[110]["light_door_0106"]["setcontrolledzone"] = true; // unknown zone 'city_entrance'
+	suppress("dragon_ice_0001", 93, "loadanim"); // missing animation: "dragon_talk_head"
 	
-	suppressions[88]["light_door_0121"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
+	suppress("gem_inwall", 114, "play"); // unknown flag -e (ignored)
 	
-	suppressions[152]["jail_wood_grid"]["set"] = true; // bad variable name: "material"
+	suppress("goblin_base", 30010, "goto"); // missing label "main_alert"
 	
-	suppressions[5107]["troll_base"]["loadanim"] = true; // missing animation: "troll_fight_ready_toponly"
-	suppressions[5175]["troll_base"]["loadanim"] = true; // missing animation: "troll_fight_unready_toponly"
-	suppressions[19054]["troll_base"]["goto"] = true; // missing label "main_alert"
+	suppress("goblin_base_0046", 2924, "if"); // unknown operator '=>' (should be '>='?), interpreted as constant true
 	
-	suppressions[93]["dragon_ice_0001"]["loadanim"] = true; // missing animation: "dragon_talk_head"
+	suppress("hammer_club", 66, "settwohanded"); // obsolete command
 	
-	suppressions[30010]["goblin_base"]["goto"] = true; // missing label "main_alert"
+	suppress("human_base", 5872, "loadanim"); // bad animation id: "bae_ready"
+	suppress("human_base", 13711, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
+	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
+	suppress("human_base", 45586, "goto"); // missing label "main_alert"
 	
-	suppressions[2924]["goblin_base_0046"]["if"] = true; // unknown operator '=>' (should be '>='?), interpreted as constant true
+	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
+	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
 	
-	suppressions[399]["corpse_0003"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
+	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
 	
-	suppressions[274]["corpse_0084"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
+	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
 	
-	suppressions[54]["chest_metal_0020"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
-	suppressions[99]["chest_metal_0020"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
-	suppressions[224]["chest_metal_0020"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/magic/ring_darkaa/ring_darkaa.teo" (should be 'ring_daarka/ring_daarka'?)
+	suppress("light_door", 422, "set"); // bad variable name: "durability"
 	
-	suppressions[224]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
-	suppressions[317]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
-	suppressions[461]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
-	suppressions[557]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
-	suppressions[650]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("light_door_0019", 105, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
-	suppressions[242]["chest_metal_0045"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
+	suppress("light_door_0020", 230, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
-	suppressions[143]["chest_metal_0095"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/legging_leatherac/legging_leatherac.teo" (should be 'legging_leather_ac'?)
+	suppress("light_door_0021", 234, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
-	suppressions[17145]["rat_base"]["play"] = true; // sound number is sometimes too high
+	suppress("light_door_0029", 88, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
-	suppressions[62]["rat_base_0059"]["behavior"] = true; // unknown behavior 'firendly', should be 'friendly'
-	suppressions[160]["rat_base_0059"]["behavior"] = true; // unknown behavior 'firendly', should be 'friendly'
+	suppress("light_door_0030", 162, "setevent"); // unsupported event: "npc_open"
 	
-	suppressions[18479]["demon"]["play"] = true; // sound number is sometimes too high
+	suppress("light_door_0100", 69, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
-	suppressions[19669]["dog"]["play"] = true; // sound number is sometimes too high
+	suppress("light_door_0102", 88, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
-	suppressions[31]["dog_0011"]["playanim"] = true; // animation 'action2' not loaded
+	suppress("light_door_0106", 110, "setcontrolledzone"); // unknown zone 'city_entrance'
 	
-	suppressions[523]["wall_breakable"]["}"] = true; // missing accept/refuse before end of event block
+	suppress("light_door_0121", 88, "setspeakpitch"); // setspeakpitch only applies to NPCs
 	
-	suppressions[66]["hammer_club"]["settwohanded"] = true; // obsolete command
+	suppress("marker_0025", 288, "sendevent"); // unknown zone 'cooking' (should be 'cook_gary'?)
 	
-	suppressions[2410]["chicken_base"]["}"] = true; // missing accept/refuse before end of event block
+	suppress("pig", 2409, "}"); // missing accept/refuse before end of event block
 	
-	suppressions[2409]["pig"]["}"] = true; // missing accept/refuse before end of event block
+	suppress("player", 7725, "loadanim"); // bad animation id: "cast_hold"
+	suppress("player", 8463, "loadanim"); // bad animation id: "lean_left_cycle"
+	suppress("player", 8531, "loadanim"); // bad animation id: "lean_left_out"
+	suppress("player", 8666, "loadanim"); // bad animation id: "lean_right_cycle"
+	suppress("player", 8733, "loadanim"); // bad animation id: "lean_right_out"
+	suppress("player", 9284, "loadanim"); // missing animation "human_death_cool"
+	suppress("player", 9558, "loadanim"); // missing animation "human_talk_happyneutral_headonly"
 	
-	suppressions[3703]["black_thing"]["play"] = true; // variable is never set
+	suppress("rat_base", 17145, "play"); // sound number is sometimes too high
 	
-	suppressions[114]["gem_inwall"]["play"] = true; // unknown flag -e (ignored)
+	suppress("rat_base_0059", 62, "behavior"); // unknown behavior 'firendly', should be 'friendly'
+	suppress("rat_base_0059", 160, "behavior"); // unknown behavior 'firendly', should be 'friendly'
 	
-	suppressions[26]["axe_2handed"]["settwohanded"] = true; // obsolete command
+	suppress("troll_base", 5107, "loadanim"); // missing animation: "troll_fight_ready_toponly"
+	suppress("troll_base", 5175, "loadanim"); // missing animation: "troll_fight_unready_toponly"
+	suppress("troll_base", 19054, "goto"); // missing label "main_alert"
 	
-	suppressions[288]["marker_0025"]["sendevent"] = true; // unknown zone 'cooking' (should be 'cook_gary'?)
+	suppress("wall_breakable", 523, "}"); // missing accept/refuse before end of event block
 	
 }
 
