@@ -1144,8 +1144,7 @@ void ReleaseNode()
 //*************************************************************************************
 // Initialises Interactive Objects Main Structure (pointer list)
 //*************************************************************************************
-void InitInter(long nb)
-{
+void InitInter(long nb) {
 	if (nb < 10) nb = 10;
 
 	inter.nbmax = nb;
@@ -1729,6 +1728,148 @@ void FreeAllInter()
 	inter.iobj = (INTERACTIVE_OBJ **)realloc(inter.iobj, sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
 }
 
+INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
+	
+	ioflags = 0;
+	lastpos = Vec3f::ZERO;
+	pos = Vec3f::ZERO;
+	move = Vec3f::ZERO;
+	lastmove = Vec3f::ZERO;
+	forcedmove = Vec3f::ZERO;
+	
+	angle = Anglef::ZERO;
+	memset(&physics, 0, sizeof(IO_PHYSICS)); // TODO use constructor
+	room = -1;
+	room_flags = 1;
+	original_height = 0.f;
+	original_radius = 0.f;
+	inv = NULL;
+	obj = NULL;
+	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
+	memset(animlayer, 0, sizeof(ANIM_USE) * MAX_ANIM_LAYERS); // TODO use constructor
+	lastanimvertex = NULL;
+	nb_lastanimvertex = 0;
+	lastanimtime = 0;
+	
+	memset(&bbox3D, 0, sizeof(EERIE_3D_BBOX)); // TODO use constructor
+	
+	bbox1 = Vec2s(-1, -1);
+	bbox2 = Vec2s(-1, -1);
+	usemesh = NULL; // TODO use string
+	tweaky = NULL;
+	sound = audio::INVALID_ID;
+	type_flags = 0;
+	scriptload = 0;
+	target = Vec3f::ZERO;
+	targetinfo = TARGET_NONE;
+	
+	_itemdata = NULL, _fixdata = NULL, _npcdata = NULL, _camdata = NULL;
+	
+	inventory = NULL;
+	show = SHOW_FLAG_IN_SCENE;
+	collision = 0;
+	memset(mainevent, 0, 64); // TODO use string
+	infracolor = Color3f::blue;
+	changeanim = -1;
+	
+	ident = 0;
+	weight = 1.f;
+	memset(locname, 0, 64); // TODO use string
+	EditorFlags = 0;
+	GameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
+	velocity = Vec3f::ZERO;
+	fall = 0.f;
+	
+	stopped = 1;
+	initpos = Vec3f::ZERO;
+	initangle = Anglef::ZERO;
+	memset(filename, 0, 256); // TODO use string
+	scale = 1.f;
+	
+	usepath = NULL;
+	symboldraw = NULL;
+	dynlight = -1;
+	lastspeechflag = 2;
+	inzone = NULL;
+	memset(&halo, 0, sizeof(IO_HALO)); // TODO use constructor
+	memset(&halo_native, 0, sizeof(IO_HALO)); // TODO use constructor
+	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
+	halo_native.radius = 45.f;
+	halo_native.flags = 0;
+	halo_native.dynlight = -1;
+	ARX_HALO_SetToNative(this);
+	halo.dynlight = -1;
+	
+	memset(&script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
+	memset(&over_script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
+	stat_count = 0;
+	stat_sent = 0;
+	tweakerinfo = NULL;
+	material = MATERIAL_NONE;
+	
+	iogroups = NULL; // TODO should be std::set<std::string>
+	nb_iogroups = 0;
+	sizex = 1;
+	sizey = 1;
+	soundtime = 0;
+	soundcount = 0;
+	
+	if(CURRENTLEVEL == -1) {
+		CURRENTLEVEL = GetLevelNumByName(LastLoadedScene);
+	}
+	level = truelevel = CURRENTLEVEL;
+	
+	sfx_time = 0;
+	collide_door_time = 0;
+	ouch_time = 0;
+	dmg_sum = 0.f;
+	
+	memset(&spellcast_data, 0, sizeof(IO_SPELLCAST_DATA));
+	flarecount = 0;
+	no_collide = -1;
+	invisibility = 0.f;
+	frameloss = 0.f;
+	basespeed = 1.f;
+	
+	speed_modif = 0.f;
+	spells_on = NULL;
+	nb_spells_on = 0;
+	damagedata = -1;
+	
+	rubber = BASE_RUBBER;
+	max_durability = durability = 100.f;
+	poisonous = 0;
+	poisonous_count = 0;
+	
+	ignition = 0.f;
+	ignit_light = -1;
+	ignit_sound = audio::INVALID_ID;
+	head_rot = 0.f;
+	
+	damager_damages = 0;
+	damager_type = 0;
+	stepmaterial = NULL; // TODO use string
+	armormaterial = NULL; // TODO use string
+	weaponmaterial = NULL; // TODO use string
+	strikespeech = NULL; // TODO use path
+	
+	sfx_flag = 0;
+	Tweak_nb = 0;
+	Tweaks = NULL;
+	secretvalue = -1;
+	
+	shop_category = NULL; // TODO use string
+	shop_multiply = 1.f;
+	inventory_skin = NULL; // TODO use path
+	aflags = 0;
+	inzone_show = 0;
+	summoner = 0;
+	spark_n_blood = 0;
+	
+	ARX_SCRIPT_SetMainEvent(this, "main");
+	
+}
+
 //*************************************************************************************
 // Creates a new free Interactive Object
 //*************************************************************************************
@@ -1768,83 +1909,11 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 	create:
 		;
 		i = tocreate;
-		INTERACTIVE_OBJ * io;
-		//todo free
-
-		inter.iobj[i] = (INTERACTIVE_OBJ *)malloc(sizeof(INTERACTIVE_OBJ)); 
-
-		memset(inter.iobj[i], 0, sizeof(INTERACTIVE_OBJ));
-		io = inter.iobj[i];
-		// Nuky - added num which caches the index position in global ios table
-		io->num = i;
-		io->room_flags = 1;
-		io->room = -1;
-		io->no_collide = -1;
-		io->shop_multiply = 1.f;
-		io->Tweaks = NULL;
-		io->Tweak_nb = 0;
-		io->ignition = 0.f;
-		io->ignit_light = -1;
-		io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
-
-		if (CURRENTLEVEL == -1) CURRENTLEVEL = GetLevelNumByName(LastLoadedScene);
-
-		io->truelevel = io->level = (short)CURRENTLEVEL;
-		io->usemesh = NULL;
-		io->lastspeechflag = 2;
-		io->damagedata = -1;
-		io->flarecount = 0;
-		io->rubber = BASE_RUBBER;
-
-		io->halo_native.color.r = 0.2f;
-		io->halo_native.color.g = 0.5f;
-		io->halo_native.color.b = 1.f;
-		io->halo_native.radius = 45.f;
-		io->halo_native.flags = 0;
-		io->halo_native.dynlight = -1;
-		ARX_HALO_SetToNative(io);
-		io->halo.dynlight = -1;
-
-		io->symboldraw = NULL;
-		io->dynlight = -1;
-		io->sfx_flag = 0;
-
-		io->max_durability = io->durability = 100.f;
-		io->speed_modif = 0.f;
-		io->basespeed = 1.f;
-		io->frameloss = 0.f;
-
-		io->GameFlags |= GFLAG_NEEDINIT;
-		io->poisonous = 0;
-		io->poisonous_count = 0;
-		io->secretvalue = -1;
-
-		// Already set to 0 by memset
-		io->infracolor.b = 1.f;
-		io->show = SHOW_FLAG_IN_SCENE;
-		io->sound = -1;
-		io->sizex = 1;
-		io->sizey = 1;
-
-		io->GameFlags |= GFLAG_INTERACTIVITY;
-		io->scale = 1.f;
-		io->stopped = 1;
-
-		io->changeanim = -1;
-		io->bbox1.x = -1;
-		io->bbox1.y = -1;
-		io->bbox2.x = -1;
-		io->bbox2.y = -1;
-
-		ARX_SCRIPT_SetMainEvent(io, "main");
-		io->targetinfo = TARGET_NONE;
-
-		io->weight = 1.f;
-		memset(io->animlayer, 0, sizeof(ANIM_USE)*MAX_ANIM_LAYERS);
-		return (io);
-
+		
+		return inter.iobj[i] = new INTERACTIVE_OBJ(i);
+		
 	}
-
+	
 	return NULL;
 }
 // Be careful with this func...
@@ -2310,8 +2379,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	if (ion > -1)
 		inter.iobj[ion] = NULL;
 
-	free(io);//
-	io = NULL;
+	delete io;
 }
 
 

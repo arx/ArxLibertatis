@@ -4,8 +4,6 @@
 
 #include <string>
 
-#include "io/Filesystem.h" // TODO remove
-
 namespace fs {
 
 #define PATH_DEBUG 1

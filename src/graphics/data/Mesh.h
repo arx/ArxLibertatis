@@ -461,8 +461,10 @@ struct TWEAK_INFO;
 
 typedef s32 ArxSound;
 
-struct INTERACTIVE_OBJ
-{
+struct INTERACTIVE_OBJ {
+	
+	INTERACTIVE_OBJ(long num);
+	
 	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
 
 	long				ioflags;	// IO type
@@ -497,7 +499,6 @@ struct INTERACTIVE_OBJ
 	Vec3f			target;				// Target position
 	long				targetinfo;			// Target Type/Ident
 
-	long				cstep;
 	union
 	{
 		IO_ITEMDATA *		_itemdata;			// ITEM Datas
@@ -567,7 +568,6 @@ struct INTERACTIVE_OBJ
 	float				speed_modif;
 	long *				spells_on;
 	short				nb_spells_on;
-	short				padding;
 	long				damagedata;
 
 	float				rubber;
@@ -582,7 +582,6 @@ struct INTERACTIVE_OBJ
 	float				head_rot;
 
 	short				damager_damages;
-	short				padding2;
 	DamageType damager_type;
 	char *				stepmaterial;
 	char *				armormaterial;
@@ -593,7 +592,6 @@ struct INTERACTIVE_OBJ
 	short				Tweak_nb;
 	TWEAK_INFO	*		Tweaks;
 	char				secretvalue;
-	char				padddd[3];
 
 	char *				shop_category;
 	float				shop_multiply;

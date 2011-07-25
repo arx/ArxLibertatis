@@ -3,6 +3,8 @@
 
 #include <algorithm>
 
+#include "platform/Platform.h"
+
 using std::string;
 using std::copy;
 
