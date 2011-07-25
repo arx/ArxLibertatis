@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#include <boost/filesystem/path.hpp>
+#include "io/Filesystem.h"
 
 struct INTERACTIVE_OBJ;
 

@@ -59,8 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cassert>
 
-#include <boost/filesystem/operations.hpp>
-
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 

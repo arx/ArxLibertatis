@@ -58,8 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 #include <sstream>
 
-#include <boost/filesystem/operations.hpp>
-
 #include "core/Localisation.h"
 #include "core/Core.h"
 #include "core/Unicode.hpp"

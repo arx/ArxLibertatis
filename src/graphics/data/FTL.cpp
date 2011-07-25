@@ -82,10 +82,6 @@ extern long NOCHECKSUM;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/convenience.hpp>
-
 namespace fs = boost::filesystem;
 
 bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {

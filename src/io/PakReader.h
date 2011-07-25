@@ -30,8 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <iostream>
 
-#include <boost/filesystem/path.hpp>
-
+#include "io/Filesystem.h"
 #include "io/PakEntry.h"
 
 enum Whence {

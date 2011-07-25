@@ -68,7 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 #include <dinput.h>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/smart_ptr/scoped_array.hpp>
 
 #include "Configure.h"
@@ -100,6 +99,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakReader.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
+
 
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"

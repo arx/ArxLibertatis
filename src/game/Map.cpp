@@ -29,8 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
-#include <boost/filesystem/fstream.hpp>
-
 #include "core/Core.h"
 
 #include "game/Levels.h"

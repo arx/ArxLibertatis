@@ -62,15 +62,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
+#include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "platform/Platform.h"
 
 using std::string;
 
 #ifdef BUILD_EDIT_LOADSAVE
-
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
 
 namespace fs = boost::filesystem;
 

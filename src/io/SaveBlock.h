@@ -31,9 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/unordered_map.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
 
+#include "io/Filesystem.h"
 #include "platform/Platform.h"
 
 /*!

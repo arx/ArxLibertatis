@@ -67,9 +67,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <set>
 #include <iomanip>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
 #include <windows.h>
 #include <shellapi.h>
 
@@ -120,6 +117,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 
 #include "io/FilePath.h"
+#include "io/Filesystem.h"
 #include "io/Registry.h"
 #include "io/PakReader.h"
 #include "io/Filesystem.h"

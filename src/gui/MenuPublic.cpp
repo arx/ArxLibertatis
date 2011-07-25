@@ -28,8 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <iomanip>
 
-#include <boost/filesystem/operations.hpp>
-
 #include "animation/Cinematic.h"
 
 #include "core/Config.h"

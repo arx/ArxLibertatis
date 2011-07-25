@@ -53,9 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <iomanip>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/fstream.hpp>
-
 #include "io/Blast.h"
 #include "io/PakEntry.h"
 #include "io/Logger.h"

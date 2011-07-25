@@ -57,12 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "Configure.h"
+#include "io/Filesystem.h"
 
 struct EERIE_3DOBJ;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-#include <boost/filesystem/path.hpp>
+
 
 /*!
  * Save a FTL File

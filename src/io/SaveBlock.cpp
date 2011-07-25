@@ -29,7 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 
 #include <zlib.h>
-#include <boost/filesystem/operations.hpp>
 
 #include "io/Filesystem.h"
 #include "io/Logger.h"

@@ -31,7 +31,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <iostream>
 
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 template <class T>
 inline std::istream & fread(std::istream & ifs, T & data) {

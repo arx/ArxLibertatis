@@ -2,8 +2,7 @@
 #ifndef ARX_GRAPHICS_IMAGE_IMAGE_H
 #define ARX_GRAPHICS_IMAGE_IMAGE_H
 
-#include <boost/filesystem/path.hpp>
-
+#include "io/Filesystem.h"
 #include "platform/Platform.h"
 
 class Image

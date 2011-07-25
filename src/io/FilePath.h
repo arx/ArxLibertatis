@@ -2,9 +2,10 @@
 #ifndef ARX_IO_FILEPATH_H
 #define ARX_IO_FILEPATH_H
 
+#include "io/Filesystem.h"
 #include "platform/String.h"
 
-#include <boost/filesystem/path.hpp>
+
 
 const char EXT_OR_DIR_SEP[] = "./\\"; // TODO(case-sensitive) remove backslash
 const char DIR_SEP[] = "/\\"; // TODO(case-sensitive) remove backslash
