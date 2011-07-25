@@ -341,6 +341,8 @@ void initSuppressions() {
 	
 	suppressions[88]["light_door_0102"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
 	
+	suppressions[110]["light_door_0106"]["setcontrolledzone"] = true; // unknown zone 'city_entrance'
+	
 	suppressions[88]["light_door_0121"]["setspeakpitch"] = true; // setspeakpitch only applies to NPCs
 	
 	suppressions[152]["jail_wood_grid"]["set"] = true; // bad variable name: "material"
