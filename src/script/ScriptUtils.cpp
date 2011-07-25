@@ -317,9 +317,11 @@ void initSuppressions() {
 	suppressions[8666]["player"]["loadanim"] = true; // bad animation id: "lean_right_cycle"
 	suppressions[8733]["player"]["loadanim"] = true; // bad animation id: "lean_right_out"
 	suppressions[9284]["player"]["loadanim"] = true; // missing animation "human_death_cool"
-	suppressions[9558]["player"]["loadanim"] = true; // missing animation: "human_talk_happyneutral_headonly"
+	suppressions[9558]["player"]["loadanim"] = true; // missing animation "human_talk_happyneutral_headonly"
 	
 	suppressions[5872]["human_base"]["loadanim"] = true; // bad animation id: "bae_ready"
+	suppressions[13711]["human_base"]["loadanim"] = true; // missing animation "child_get_hit", should be "child_hit"?
+	suppressions[13751]["human_base"]["loadanim"] = true; // missing animation "child_get_hit", should be "child_hit"?
 	suppressions[45586]["human_base"]["goto"] = true; // missing label "main_alert"
 	
 	suppressions[239]["human_base_0079"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
