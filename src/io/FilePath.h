@@ -166,6 +166,8 @@ public:
 		           && pathstr[pathstr.length() - 2] == '.' && pathstr[pathstr.length() - 3] == dir_sep);
 	}
 	
+	static path load(const std::string & str);
+	
 };
 
 inline path operator/(const char * a, const path & b) {

@@ -36,6 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <vector>
 #include <sstream>
+#include <cstdio>
 
 #include "animation/Animation.h"
 
@@ -72,6 +73,7 @@ using std::string;
 using std::istringstream;
 using std::ostringstream;
 using std::vector;
+using std::sprintf;
 
 using namespace audio;
 

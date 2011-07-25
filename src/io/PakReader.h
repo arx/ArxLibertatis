@@ -27,11 +27,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_IO_PAKREADER_H
 
 #include <vector>
-#include <cstdio>
 #include <iostream>
 
-#include "io/Filesystem.h"
 #include "io/PakEntry.h"
+#include "io/FilePath.h"
 
 enum Whence {
 	SeekSet,
@@ -66,17 +65,17 @@ public:
 	
 	~PakReader();
 	
-	void removeFile(const std::string & name);
+	void removeFile(const fs::path & name);
 	
-	bool addFiles(const fs::path & path, const std::string & mount = std::string());
+	bool addFiles(const fs::path & path, const fs::path & mount = fs::path());
 	
 	bool addArchive(const fs::path & pakfile);
 	void clear();
 	
-	bool read(const std::string & name, void * buf);
-	char * readAlloc(const std::string & name , size_t & size);
+	bool read(const fs::path & name, void * buf);
+	char * readAlloc(const fs::path & name , size_t & size);
 	
-	PakFileHandle * open(const std::string & name );
+	PakFileHandle * open(const fs::path & name);
 	
 };
 

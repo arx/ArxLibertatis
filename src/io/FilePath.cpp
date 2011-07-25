@@ -258,6 +258,68 @@ bool path::has_ext(const std::string & str) {
 	}
 }
 
+path path::load(const std::string & str) {
+	
+	std::string copy;
+	copy.resize(str.length());
+	
+	size_t istart = 0, ostart = 0;
+	while(istart < str.length()) {
+		
+		size_t pos = str.find_first_of("/\\", istart);
+		if(pos == std::string::npos) {
+			pos = str.length();
+		}
+		
+		size_t start = istart;
+		istart = pos + 1;
+		
+		if(pos == start) {
+			// double slash
+			continue;
+		}
+		
+		if(pos - start == 1 && str[start] == '.') {
+			// '.'
+			continue;
+		}
+		
+		if(pos - start == 2 && str[start] == '.' && str[start + 1] == '.') {
+			// '..'
+			if(ostart == 0) {
+				copy[ostart++] = '.', copy[ostart++] = '.';
+			} else {
+				size_t last = copy.find_last_of('/', ostart - 1);
+				if(last == string::npos) {
+					if(ostart == 2 && copy[0] == '.' && copy[1] == '.') {
+						copy[ostart++] = '/', copy[ostart++] = '.', copy[ostart++] = '.';
+					} else {
+						ostart = 0;
+					}
+				} else if(last - ostart - 1 == 2 && copy[last + 1] == '.' && copy[last + 2] == '.') {
+					copy[ostart++] = '/', copy[ostart++] = '.', copy[ostart++] = '.';
+				} else {
+					ostart = last;
+				}
+			}
+			continue;
+		}
+		
+		if(ostart != 0) {
+			copy[ostart++] = '/';
+		}
+		
+		for(size_t p = start; p < pos; p++) {
+			copy[ostart++] = tolower(str[p]);
+		}
+		
+	}
+	
+	copy.resize(ostart);
+	
+	return copy;
+}
+
 } // namespace fs
 
 

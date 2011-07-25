@@ -48,7 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakReader.h"
 
-#include <cstdlib>
 #include <cstring>
 #include <algorithm>
 #include <iomanip>
@@ -56,15 +55,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Blast.h"
 #include "io/PakEntry.h"
 #include "io/Logger.h"
-#include "io/FilePath.h"
 #include "io/Filesystem.h"
 #include "io/FileStream.h"
-
 #include "platform/String.h"
-#include "platform/Platform.h"
 
 using std::min;
-using std::max;
 using std::strlen;
 using std::string;
 using std::vector;
@@ -504,7 +499,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 			goto error;
 		}
 		
-		PakDirectory * dir = addDirectory(toLowercase(dirname));
+		PakDirectory * dir = addDirectory(fs::path::load(dirname));
 		
 		u32 nfiles;
 		if(!safeGet(nfiles, pos, fat_size)) {
@@ -569,7 +564,7 @@ void PakReader::clear() {
 	}
 }
 
-bool PakReader::read(const string & name, void * buf) {
+bool PakReader::read(const fs::path & name, void * buf) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -581,7 +576,7 @@ bool PakReader::read(const string & name, void * buf) {
 	return true;
 }
 
-char * PakReader::readAlloc(const string & name, size_t & sizeRead) {
+char * PakReader::readAlloc(const fs::path & name, size_t & sizeRead) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -593,7 +588,7 @@ char * PakReader::readAlloc(const string & name, size_t & sizeRead) {
 	return f->readAlloc();
 }
 
-PakFileHandle * PakReader::open(const string & name) {
+PakFileHandle * PakReader::open(const fs::path & name) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -603,33 +598,28 @@ PakFileHandle * PakReader::open(const string & name) {
 	return f->open();
 }
 
-bool PakReader::addFiles(const fs::path & path, const string & mount) {
+bool PakReader::addFiles(const fs::path & path, const fs::path & mount) {
 	
-	if(!fs::exists(path)) {
-		return false;
-	}
-		
 	if(fs::is_directory(path)) {
 			
 		return addFiles(addDirectory(mount), path);
 			
-	} else {
-			
-		size_t pos = mount.find_last_of(DIR_SEP);
-			
-		PakDirectory * dir = (pos == string::npos) ? this : addDirectory(mount.substr(0, pos));
-			
-		return addFile(dir, path, (pos == string::npos) ? mount : mount.substr(pos + 1));
+	} else if(fs::is_regular_file(path) && !mount.empty()) {
+		
+		PakDirectory * dir = addDirectory(mount.parent());
+		
+		return addFile(dir, path, mount.filename());
+		
 	}
+	
+	return false;
 }
 
-void PakReader::removeFile(const string & file) {
+void PakReader::removeFile(const fs::path & file) {
 	
-	size_t pos = file.find_last_of(DIR_SEP);
-	
-	PakDirectory * dir = (pos == string::npos) ? this : getDirectory(file.substr(0, pos));
+	PakDirectory * dir = getDirectory(file.parent());
 	if(dir) {
-		dir->removeFile((pos == string::npos) ? file : file.substr(pos + 1));
+		dir->removeFile(file.filename());
 	}
 }
 
