@@ -359,6 +359,12 @@ void initSuppressions() {
 	
 	suppressions[274]["corpse_0084"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
 	
+	suppressions[224]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppressions[317]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppressions[461]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppressions[557]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppressions[650]["chest_metal_0029"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	
 	suppressions[242]["chest_metal_0045"]["inventory addfromscene"] = true; // bad target ident: "magic\\potion_life\\potion_life"
 	
 	suppressions[143]["chest_metal_0095"]["inventory add"] = true; // missing object: "graph/obj3d/interactive/items/armor/legging_leatherac/legging_leatherac.teo" (should be 'legging_leather_ac'?)
