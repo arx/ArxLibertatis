@@ -1164,7 +1164,7 @@ static bool migrateFilenames() {
 	}
 	
 	if(!migrated) {
-		LogError << "Could not rename all files to lowercase, please do so manually!";
+		LogError << "Could not rename all files to lowercase, please do so manually and set migration=1 under [misc] in cfg.ini!";
 	}
 	
 	return migrated;
