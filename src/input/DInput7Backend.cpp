@@ -628,8 +628,8 @@ void DInput7Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir)
 		}
 	}
 
-	iLastMouseX = Clamp(iLastMouseX, 0, (int)danaeApp.m_pFramework->m_dwRenderWidth);
-	iLastMouseY = Clamp(iLastMouseY, 0, (int)danaeApp.m_pFramework->m_dwRenderHeight);
+	iLastMouseX = clamp(iLastMouseX, 0, (int)danaeApp.m_pFramework->m_dwRenderWidth);
+	iLastMouseY = clamp(iLastMouseY, 0, (int)danaeApp.m_pFramework->m_dwRenderHeight);
 	
 	if(danaeApp.m_pFramework->m_bIsFullscreen) {
 		absX = iLastMouseX;

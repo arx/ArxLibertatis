@@ -525,8 +525,8 @@ void Input::update()
 		}
 
 		// Clamp to window rect
-		iMouseA.x = Clamp(iMouseA.x, 0, (short)DANAESIZX - 1);
-		iMouseA.y = Clamp(iMouseA.y, 0, (short)DANAESIZY - 1);
+		iMouseA.x = clamp(iMouseA.x, 0, (short)DANAESIZX - 1);
+		iMouseA.y = clamp(iMouseA.y, 0, (short)DANAESIZY - 1);
 	}
 }
 
