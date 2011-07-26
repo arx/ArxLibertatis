@@ -252,7 +252,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long textochange = -1;
 
 				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.basename()) {
+					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
 						textochange = i;
 					}
 				}
@@ -305,7 +305,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long textochange = -1;
 
 				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.basename()) {
+					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
 						textochange = i;
 					}
 				}
@@ -358,7 +358,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long textochange = -1;
 
 				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.basename()) {
+					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
 						textochange = i;
 					}
 				}

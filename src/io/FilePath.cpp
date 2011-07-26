@@ -240,6 +240,14 @@ path & path::append_basename(const std::string & basename_part) {
 	return *this;
 }
 
+path & path::append(const std::string & str) {
+	
+	arx_assert_msg(str != "." && str != ".." && str.find(dir_sep) == std::string::npos, "cannot append: \"%s\"", str.c_str());
+	
+	pathstr += str;
+	return *this;
+}
+
 bool path::has_ext(const std::string & str) const {
 	
 	arx_assert_msg(str.empty() || (str[0] != dir_sep && str.find_first_of(dir_or_ext_sep, 1) == std::string::npos), "bad file ext: \"%s\"", str.c_str());

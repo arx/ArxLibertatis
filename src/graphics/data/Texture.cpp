@@ -125,13 +125,13 @@ long CountTextures( std::string& tex, long * memsize, long * memmip)
 
 		if (ptcTexture->m_dwFlags & TextureContainer::NoMipmap) {
 			std::stringstream ss;
-			ss << std::setw(3) << count << std::setw(0) << ' ' << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << ptcTexture->m_texName.basename() << "\r\n";
+			ss << std::setw(3) << count << std::setw(0) << ' ' << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << ptcTexture->m_texName.filename() << "\r\n";
 			temp = ss.str();
 		}
 		else
 		{
 			std::stringstream ss;
-			ss << std::setw(3) << count << ' ' << std::setw(0) << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << " MIP " << ptcTexture->m_texName.basename() << "\r\n";
+			ss << std::setw(3) << count << ' ' << std::setw(0) << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << " MIP " << ptcTexture->m_texName.filename() << "\r\n";
 			temp = ss.str();
 
 			for (long k = 1; k <= NB_MIPMAP_LEVELS; k++)
@@ -219,7 +219,7 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 //-----------------------------------------------------------------------------
 TextureContainer::TextureContainer(const fs::path & strName, TCFlags flags) {
 	
-	arx_assert_msg(!strName.has_ext("bmp"), "bad texture name: \"%s\"", strName.string().c_str());
+	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"), "bad texture name: \"%s\"", strName.string().c_str()); // TODO(case-sensitive) remove
 	
 	m_texName = strName;
 
@@ -306,7 +306,7 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 	m_texName = strPathname;
 	
 	fs::path tempPath = m_texName;
-	bool foundPath = resources->getFile(tempPath.set_ext("png")) != NULL;
+	bool foundPath = resources->getFile(tempPath.append(".png")) != NULL;
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpg"));
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpeg"));
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("bmp"));

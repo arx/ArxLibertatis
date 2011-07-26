@@ -187,6 +187,8 @@ public:
 	
 	static path load(const std::string & str);
 	
+	path & append(const std::string & str);
+	
 	inline void clear() { pathstr.clear(); }
 	
 };
