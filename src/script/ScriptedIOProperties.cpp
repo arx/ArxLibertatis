@@ -25,15 +25,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string category = context.getWord();
+		context.getIO()->shop_category = context.getWord();
 		
-		DebugScript(' ' << category);
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(io->shop_category) {
-			free(io->shop_category);
-		}
-		io->shop_category = strdup(category.c_str());
+		DebugScript(' ' << context.getIO()->shop_category);
 		
 		return Success;
 	}
@@ -48,11 +42,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		float multiply = context.getFloat();
+		context.getIO()->shop_multiply = context.getFloat();
 		
-		DebugScript(' ' << multiply);
-		
-		context.getIO()->shop_multiply = multiply;
+		DebugScript(' ' << context.getIO()->shop_multiply);
 		
 		return Success;
 	}
@@ -214,11 +206,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = loadUnlocalized(context.getWord());
+		context.getIO()->locname = loadUnlocalized(context.getWord());
 		
-		DebugScript(' ' << name);
-		
-		context.getIO()->locname = name;
+		DebugScript(' ' << context.getIO()->locname);
 		
 		return Success;
 	}
@@ -336,14 +326,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		float weight = context.getFloat();
-		if(weight < 0.f) {
-			weight = 0.f;
-		}
+		context.getIO()->weight = std::max(context.getFloat(), 0.f);
 		
-		DebugScript(' ' << weight);
-		
-		context.getIO()->weight = weight;
+		DebugScript(' ' << context.getIO()->weight);
 		
 		return Success;
 	}
@@ -402,11 +387,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		float scale = context.getFloat();
+		context.getIO()->scale = context.getFloat() * 0.01f;
 		
-		DebugScript(' ' << scale);
-		
-		context.getIO()->scale = scale * 0.01f;
+		DebugScript(' ' << context.getIO()->scale);
 		
 		return Success;
 	}
@@ -554,11 +537,11 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string mesh = loadPath(context.getWord());
+		fs::path mesh = fs::path::load(context.getWord());
 		
-		DebugScript(" \"" << mesh << '"');
+		DebugScript(' ' << mesh);
 		
-		ARX_INTERACTIVE_MEMO_TWEAK(context.getIO(), TWEAK_TYPE_MESH, mesh, string());
+		ARX_INTERACTIVE_MEMO_TWEAK(context.getIO(), TWEAK_TYPE_MESH, mesh, fs::path());
 		ARX_INTERACTIVE_USEMESH(context.getIO(), mesh);
 		
 		return Success;

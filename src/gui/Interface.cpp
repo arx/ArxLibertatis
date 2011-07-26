@@ -9038,8 +9038,8 @@ void DANAE::DrawAllInterface()
 
 						if (amount)
 						{
-							if (!temp->shop_category ||
-								(temp->shop_category && FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()))
+							if (temp->shop_category.empty() ||
+								FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end())
 								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 							else
 								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);

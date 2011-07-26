@@ -1130,11 +1130,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 		strcpy(ais.usepath_name, aup->path->name);
 	}
 
-
-	if (io->shop_category)
-		strcpy(ais.shop_category, io->shop_category);
-	else
-		ais.shop_category[0] = 0;
+	strncpy(ais.shop_category, io->shop_category.c_str(), sizeof(ais.shop_category));
 
 	memset(ais.inventory_skin, 0, 128);
 
@@ -2220,11 +2216,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			aup->path = ARX_PATH_GetAddressByName(toLowercase(safestring(ais->usepath_name)));
 		}
 		
-		if(ais->shop_category[0]) {
-			io->shop_category = strdup(toLowercase(safestring(ais->shop_category)).c_str());
-		} else {
-			io->shop_category = NULL;
-		}
+		io->shop_category = toLowercase(safestring(ais->shop_category));
 		
 		io->halo_native = ais->halo;
 		io->halo_native.dynlight = -1;

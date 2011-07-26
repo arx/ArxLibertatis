@@ -1306,10 +1306,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 		io->symboldraw = NULL;
 		io->spellcast_data.castingspell = SPELL_NONE;
 
-		if (io->shop_category)
-			free(io->shop_category);
-
-		io->shop_category = NULL;
+		io->shop_category.clear();
 
 		if (io->inventory_skin)
 			free(io->inventory_skin);
@@ -1806,7 +1803,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	Tweaks = NULL;
 	secretvalue = -1;
 	
-	shop_category = NULL; // TODO use string
 	shop_multiply = 1.f;
 	inventory_skin = NULL; // TODO use path
 	aflags = 0;
@@ -2229,9 +2225,6 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 			io->anims[n] = NULL;
 		}
 	}
-
-	if (io->shop_category)
-		free(io->shop_category);
 
 	if (io->inventory_skin)
 		free(io->inventory_skin);

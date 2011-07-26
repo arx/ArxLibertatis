@@ -587,7 +587,7 @@ struct INTERACTIVE_OBJ {
 	TWEAK_INFO * Tweaks;
 	char secretvalue;
 	
-	char * shop_category;
+	std::string shop_category;
 	float shop_multiply;
 	char * inventory_skin;
 	long aflags; // additionnal flags
