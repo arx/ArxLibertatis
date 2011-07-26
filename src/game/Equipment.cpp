@@ -692,25 +692,20 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	float attack, ac, damages;
 	float backstab = 1.f;
 
-	char wmat[64];
+	string _wmat = "bare";
+	const string * wmat = &_wmat;
 	
 	string _amat = "flesh";
 	const string * amat = &_amat;
 
-	strcpy(wmat, "bare");
-
 	bool critical = false;
 
-	if (io_source == inter.iobj[0]) 
-	{
-		if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
-		        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
-		{
+	if(io_source == inter.iobj[0]) {
+		
+		if(player.equiped[EQUIP_SLOT_WEAPON] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
-
-			if ((io) && (io->weaponmaterial))
-			{
-				strcpy(wmat, io->weaponmaterial);
+			if(io && !io->weaponmaterial.empty()) {
+				wmat = &io->weaponmaterial;
 			}
 		}
 
@@ -738,18 +733,17 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	{
 		if (!(io_source->ioflags & IO_NPC)) return 0.f; // no NPC source...
 
-		if (io_source->weaponmaterial)
-		{
-			strcpy(wmat, io_source->weaponmaterial);
+		if(!io_source->weaponmaterial.empty()){
+			wmat = &io_source->weaponmaterial;
 		}
-
+		
 		if(io_source->_npcdata->weapon != NULL) {
 			INTERACTIVE_OBJ * iow = io_source->_npcdata->weapon;
-			if(iow->weaponmaterial) {
-				strcpy(wmat, iow->weaponmaterial);
+			if(!iow->weaponmaterial.empty()) {
+				wmat = &iow->weaponmaterial;
 			}
 		}
-
+		
 		attack = io_source->_npcdata->tohit;
 		
 		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
@@ -826,12 +820,10 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	power = dmgs * ( 1.0f / 20 );
 
 	if (power > 1.f) power = 1.f;
-
-	if (!strcmp(wmat, "bare"))
-		power = power * 0.1f + 0.9f;
-	else power = power * 0.1f + 0.9f;
-
-	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, &pos, io_source);
+	
+	power = power * 0.1f + 0.9f;
+	
+	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, &pos, io_source);
 
 
 	float chance = 100.f - (ac - attack); 
@@ -839,7 +831,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	if (dice <= chance) 
 	{
-		ARX_SOUND_PlayCollision("flesh", wmat, power, 1.f, &pos, io_source);
+		ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, &pos, io_source);
 
 		Vec3f pos;
 		pos.x = io_target->pos.x;
@@ -1157,16 +1149,17 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							}
 							else
 							{
-								char weapon_material[64] = "";
+								string _weapon_material = "metal";
+								const string * weapon_material = &_weapon_material;
 
-								if (io_weapon && io_weapon->weaponmaterial) strcpy(weapon_material, io_weapon->weaponmaterial);
-								else
-									strcpy(weapon_material, "metal");
+								if(io_weapon && !io_weapon->weaponmaterial.empty()) {
+									weapon_material = &io_weapon->weaponmaterial;
+								}
 
 								char bkg_material[128];
 
 								if (ARX_MATERIAL_GetNameById(target->material, bkg_material))
-									ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, NULL);
+									ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, NULL);
 							}
 						}
 					}
@@ -1192,18 +1185,18 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					}
 					else
 					{
-						char weapon_material[64] = "";
-
-						if (io_weapon && io_weapon->weaponmaterial) strcpy(weapon_material, io_weapon->weaponmaterial);
-						else
-							strcpy(weapon_material, "metal");
+						string _weapon_material = "metal";
+						const string * weapon_material = &_weapon_material;
+						if(io_weapon && !io_weapon->weaponmaterial.empty()) {
+							weapon_material = &io_weapon->weaponmaterial;
+						}
 
 						std::string bkg_material = "earth";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
 							bkg_material = GetMaterialString( ep->tex->m_texName );
 
-						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
+						ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
 					}
 				}
 			}

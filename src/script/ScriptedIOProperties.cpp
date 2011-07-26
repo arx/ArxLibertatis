@@ -294,15 +294,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string material = context.getWord();
+		context.getIO()->weaponmaterial = context.getWord();
 		
-		DebugScript(' ' << material);
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(io->weaponmaterial) {
-			free(io->weaponmaterial);
-		}
-		io->weaponmaterial = strdup(material.c_str());
+		DebugScript(' ' << context.getIO()->weaponmaterial);
 		
 		return Success;
 	}

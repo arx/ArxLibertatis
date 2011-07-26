@@ -579,7 +579,7 @@ struct INTERACTIVE_OBJ {
 	DamageType damager_type;
 	std::string stepmaterial;
 	std::string armormaterial;
-	char * weaponmaterial;
+	std::string weaponmaterial;
 	char * strikespeech;
 	
 	short sfx_flag;
