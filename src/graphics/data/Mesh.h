@@ -580,7 +580,7 @@ struct INTERACTIVE_OBJ {
 	std::string stepmaterial;
 	std::string armormaterial;
 	std::string weaponmaterial;
-	char * strikespeech;
+	std::string strikespeech;
 	
 	short sfx_flag;
 	short Tweak_nb;

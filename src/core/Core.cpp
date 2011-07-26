@@ -3460,17 +3460,17 @@ void strikeSpeak(INTERACTIVE_OBJ * io) {
 		return;
 	}
 	
-	string str;
+	const string * str;
 	long equiped = player.equiped[EQUIP_SLOT_WEAPON];
-	if(equiped != 0 && inter.iobj[equiped]->strikespeech) {
-		str = inter.iobj[equiped]->strikespeech;
-	} else if(io->strikespeech) {
-		str = io->strikespeech;
+	if(equiped != 0 && !inter.iobj[equiped]->strikespeech.empty()) {
+		str = &inter.iobj[equiped]->strikespeech;
+	} else if(!io->strikespeech.empty()) {
+		str = &io->strikespeech;
 	} else {
 		return;
 	}
 	
-	ARX_SPEECH_AddSpeech(io, str, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+	ARX_SPEECH_AddSpeech(io, *str, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 }
 
 void ManageCombatModeAnimations()

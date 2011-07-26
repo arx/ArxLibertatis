@@ -1324,11 +1324,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 		io->stepmaterial.clear();
 		io->armormaterial.clear();
 		io->weaponmaterial.clear();
-
-		if (io->strikespeech)
-			free(io->strikespeech);
-
-		io->strikespeech = NULL;
+		io->strikespeech.clear();
 
 		if (io->lastanimvertex)
 			free(io->lastanimvertex);
@@ -1804,7 +1800,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	
 	damager_damages = 0;
 	damager_type = 0;
-	strikespeech = NULL; // TODO use path
 	
 	sfx_flag = 0;
 	Tweak_nb = 0;
@@ -2309,9 +2304,6 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	}
 
 	if (io->inventory != NULL) free(io->inventory);
-
-	if (io->strikespeech)
-		free(io->strikespeech);
 
 	long ion = GetInterNum(io);
 

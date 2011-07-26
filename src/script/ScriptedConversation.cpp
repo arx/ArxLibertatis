@@ -408,15 +408,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string speech = script::loadUnlocalized(context.getWord());
+		context.getIO()->strikespeech = script::loadUnlocalized(context.getWord());
 		
-		DebugScript(' ' << speech);
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(io->strikespeech) {
-			free(io->strikespeech);
-		}
-		io->strikespeech = strdup(speech.c_str());
+		DebugScript(' ' << context.getIO()->strikespeech);
 		
 		return Success;
 	}
