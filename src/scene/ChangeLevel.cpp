@@ -1131,12 +1131,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	}
 
 	strncpy(ais.shop_category, io->shop_category.c_str(), sizeof(ais.shop_category));
-
-	memset(ais.inventory_skin, 0, 128);
-
-	if (io->inventory_skin)
-		strcpy(ais.inventory_skin, io->inventory_skin);
-
+	strncpy(ais.inventory_skin, io->inventory_skin.string().c_str(), sizeof(ais.inventory_skin));
 	strncpy(ais.stepmaterial, io->stepmaterial.c_str(), sizeof(ais.stepmaterial));
 	strncpy(ais.armormaterial, io->armormaterial.c_str(), sizeof(ais.armormaterial));
 	strncpy(ais.weaponmaterial, io->weaponmaterial.c_str(), sizeof(ais.weaponmaterial));
@@ -2223,11 +2218,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->halo.dynlight = -1;
 		ARX_HALO_SetToNative(io);
 		
-		arx_assert(!io->inventory_skin);
-		if(ais->inventory_skin[0]) {
-			io->inventory_skin = strdup(loadPath(safestring(ais->inventory_skin)).c_str());
-		}
-		
+		io->inventory_skin = fs::path::load(safestring(ais->inventory_skin));
 		io->stepmaterial = toLowercase(safestring(ais->stepmaterial));
 		io->armormaterial = toLowercase(safestring(ais->armormaterial));
 		io->weaponmaterial = toLowercase(safestring(ais->weaponmaterial));

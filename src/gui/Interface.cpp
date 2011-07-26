@@ -5960,26 +5960,25 @@ void DANAE::ManageKeyMouse()
 
 static float fDecPulse;
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
-{
-	// To recode in a better way...
-	if (TSecondaryInventory->io && TSecondaryInventory->io->inventory_skin)
-	{
-		char temp[256];
-		sprintf(temp,"graph/interface/inventory/%s",TSecondaryInventory->io->inventory_skin);
-		TextureContainer * tc=TextureContainer::LoadUI(temp);
+void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
+	
+	if(TSecondaryInventory->io && !TSecondaryInventory->io->inventory_skin.empty()) {
+		
+		fs::path file = "graph/interface/inventory" / TSecondaryInventory->io->inventory_skin;
+		
+		TextureContainer * tc = TextureContainer::LoadUI(file);
 
-		if (tc)
+		if(tc) {
 			ITC.Set("ingame_inventory", tc);
-		else 
+		} else {
 			ITC.Set("ingame_inventory", BasicInventorySkin);
-	}
-	else if (ITC.Get("ingame_inventory") != BasicInventorySkin)
-	{
+		}
+		
+	} else if(ITC.Get("ingame_inventory") != BasicInventorySkin) {
 		ITC.Set("ingame_inventory", BasicInventorySkin);
 	}
 
-	ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"),INTERFACE_RATIO(InventoryX),0.f);
+	ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"), INTERFACE_RATIO(InventoryX), 0.f);
 
 
 	long i,j;

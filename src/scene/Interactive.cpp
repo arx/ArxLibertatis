@@ -1307,11 +1307,8 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 		io->spellcast_data.castingspell = SPELL_NONE;
 
 		io->shop_category.clear();
+		io->inventory_skin.clear();
 
-		if (io->inventory_skin)
-			free(io->inventory_skin);
-
-		io->inventory_skin = NULL;
 		ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
 		io->groups.clear();
 		ARX_INTERACTIVE_HideGore(io);
@@ -1804,7 +1801,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	secretvalue = -1;
 	
 	shop_multiply = 1.f;
-	inventory_skin = NULL; // TODO use path
 	aflags = 0;
 	inzone_show = 0;
 	summoner = 0;
@@ -2225,9 +2221,6 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 			io->anims[n] = NULL;
 		}
 	}
-
-	if (io->inventory_skin)
-		free(io->inventory_skin);
 
 	if (io->damagedata >= 0)
 		damages[io->damagedata].exist = 0;

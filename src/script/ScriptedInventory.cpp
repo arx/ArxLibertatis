@@ -113,15 +113,9 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string skin = loadPath(context.getWord());
+			context.getIO()->inventory_skin = fs::path::load(context.getWord());
 			
-			DebugScript(" \"" << skin << '"');
-			
-			INTERACTIVE_OBJ * io = context.getIO();
-			if(io->inventory_skin) {
-				free(io->inventory_skin);
-			}
-			io->inventory_skin = strdup(skin.c_str());
+			DebugScript(' ' << context.getIO()->inventory_skin);
 			
 			return Success;
 		}

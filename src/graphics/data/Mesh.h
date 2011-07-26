@@ -589,7 +589,7 @@ struct INTERACTIVE_OBJ {
 	
 	std::string shop_category;
 	float shop_multiply;
-	char * inventory_skin;
+	fs::path inventory_skin;
 	long aflags; // additionnal flags
 	short inzone_show;
 	short summoner;
