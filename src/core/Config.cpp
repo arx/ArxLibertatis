@@ -87,7 +87,6 @@ const bool
 	invertMouse = false,
 	autoReadyWeapon = false,
 	mouseLookToggle = false,
-	mouseSmoothing = false,
 	autoDescription = true,
 	linkMouseLookToUse = false,
 	forceZBias = false,
@@ -191,7 +190,6 @@ const string
 	autoReadyWeapon = "auto_ready_weapon",
 	mouseLookToggle = "mouse_look_toggle",
 	mouseSensitivity = "mouse_sensitivity",
-	mouseSmoothing = "mouse_smoothing",
 	autoDescription = "auto_description",
 	linkMouseLookToUse = "link_mouse_look_to_use";
 
@@ -409,7 +407,6 @@ bool Config::save() {
 	writer.writeKey(Key::autoReadyWeapon, input.autoReadyWeapon);
 	writer.writeKey(Key::mouseLookToggle, input.mouseLookToggle);
 	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
-	writer.writeKey(Key::mouseSmoothing, input.mouseSmoothing);
 	writer.writeKey(Key::autoDescription, input.autoDescription);
 	writer.writeKey(Key::linkMouseLookToUse, input.linkMouseLookToUse);
 	
@@ -492,7 +489,6 @@ bool Config::init(const string & file, const string & defaultFile) {
 	input.autoReadyWeapon = reader.getKey(Section::Input, Key::autoReadyWeapon, Default::autoReadyWeapon);
 	input.mouseLookToggle = reader.getKey(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
 	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
-	input.mouseSmoothing = reader.getKey(Section::Input, Key::mouseSmoothing, Default::mouseSmoothing);
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
 	input.linkMouseLookToUse = reader.getKey(Section::Input, Key::linkMouseLookToUse, Default::linkMouseLookToUse);
 	

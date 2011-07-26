@@ -5158,37 +5158,7 @@ void DANAE::ManageKeyMouse()
 
 	long mouseDiffX = GInput->getMousePosRel().x;
 	long mouseDiffY = GInput->getMousePosRel().y;
-
-	if (Project.interpolatemouse) // mouse smoothing...
-	{
-		float v=mouseDiffX*( 1.0f / 1000 );
-
-		if (v>3.1415927f)
-		{
-			v=3.1415927f;
-		}
-		else if (v<-3.1415927f)
-		{
-			v=-3.1415927f;
-		}
-
-		mouseDiffX = EEsin(v) * 600.f;
-		
-		v=mouseDiffY*( 1.0f / 1000 );
-
-		if (v>3.1415927f) 
-		{
-			v=3.1415927f;
-		}
-		else if (v<-3.1415927f) 
-		{
-			v=-3.1415927f;
-		}
-
-		mouseDiffY = EEsin(v) * 600.f;
-		
-	}
-
+	
 	ARX_Menu_Manage();
 	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
@@ -5355,18 +5325,7 @@ void DANAE::ManageKeyMouse()
 			}
 
 			float fd = (((float)GInput->getMouseSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
-
-			if(config.input.mouseSmoothing) {
-				float of = Original_framedelay;
-				if (of<=0.f) {
-					fd = 0.f;
-				} else if (of>80.f) {
-					of = 80.f;
-					fd *= of;
-				} else {
-					fd *= of;
-				}
-			} else if (fd > 200) {
+			if (fd > 200) {
 				fd=200;
 			}			
 
@@ -5376,13 +5335,7 @@ void DANAE::ManageKeyMouse()
 			{
 				if (mouseDiffY!=0)
 				{
-					float ia;
-
-					if(config.input.mouseSmoothing) {
-						ia=((float)mouseDiffY*( 1.0f / 60 ))*fd;
-					} else {
-						ia=((float)mouseDiffY*( 1.0f / 5 ))*fd;
-					}
+					float ia=((float)mouseDiffY*( 1.0f / 5 ))*fd;
 
 					if (INVERTMOUSE) ia=-ia;
 
@@ -5400,13 +5353,7 @@ void DANAE::ManageKeyMouse()
 
 				if (mouseDiffX!=0)
 				{
-					float ib;
-
-					if(config.input.mouseSmoothing) {
-						ib=((float)mouseDiffX*( 1.0f / 50 ))*fd;
-					} else {
-						ib=((float)mouseDiffX*( 1.0f / 5 ))*fd;
-					}
+					float ib=((float)mouseDiffX*( 1.0f / 5 ))*fd;
 
 					eyeball.angle.b=MAKEANGLE(eyeball.angle.b-ib);
 				}
@@ -5416,13 +5363,7 @@ void DANAE::ManageKeyMouse()
 					{
 					if ((mouseDiffY != 0))
 						{
-						float ia;
-
-							if(config.input.mouseSmoothing) {
-								ia = ((float)mouseDiffY * ( 1.0f / 60 ) * fd);
-							} else {
-								ia = ((float)mouseDiffY * ( 1.0f / 5 ) * fd);
-							}
+							float ia = ((float)mouseDiffY * ( 1.0f / 5 ) * fd);
 
 							if ((inter.iobj[0]) && EEfabs(ia)>2.f) inter.iobj[0]->lastanimtime=0;
 
@@ -5444,13 +5385,7 @@ void DANAE::ManageKeyMouse()
 
 					if ((mouseDiffX != 0))
 						{
-							float ib;
-
-							if(config.input.mouseSmoothing) {
-								ib = ((float)mouseDiffX * ( 1.0f / 50 ) * fd);
-							} else {
-								ib = ((float)mouseDiffX * ( 1.0f / 5 ) * fd); 
-							}
+							float ib = ((float)mouseDiffX * ( 1.0f / 5 ) * fd); 
 
 							if (ib!=0.f) player.Current_Movement|=PLAYER_ROTATE;
 

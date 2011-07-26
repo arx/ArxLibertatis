@@ -1589,25 +1589,6 @@ bool Menu2_Render()
 
 					if (config.misc.newControl)
 					{
-						szMenuText = getLocalised( "system_menus_options_input_mouse_smoothing", "mouse_smoothing" );
-						szMenuText += " ";
-						pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-						pTex2 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
-						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSE_SMOOTHING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-						bBOOL = false;
-						ARXMenu_Options_Control_GetMouseSmoothing(bBOOL);
-
-						if (bBOOL)
-						{
-							((CMenuCheckButton*)me)->iState=1;
-						}
-						else
-						{
-							((CMenuCheckButton*)me)->iState=0;
-						}
-
-						pWindowMenuConsole->AddMenuCenterY(me);
-
 						szMenuText = getLocalised( "system_menus_autodescription", "auto_description" );
 						szMenuText += " ";
 						pTex1 = TextureContainer::Load("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
@@ -3173,11 +3154,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 	case BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION:
 		{
 			ARXMenu_Options_Control_SetAutoDescription((iState)?true:false);
-		}
-		break;
-	case BUTTON_MENUOPTIONS_CONTROLS_MOUSE_SMOOTHING:
-		{
-			ARXMenu_Options_Control_SetMouseSmoothing((iState)?true:false);
 		}
 		break;
 	case BUTTON_MENUOPTIONS_CONTROLS_LINK:

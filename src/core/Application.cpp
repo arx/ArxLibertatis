@@ -153,7 +153,6 @@ CD3DApplication::CD3DApplication()
 	Project.TextureSize = 0;
 	Project.ambient = 0;
 	Project.vsync = true;		
-	Project.interpolatemouse = 1;
 
 	//Keyboard Init;
 	for (i = 0; i < 255; i++)	kbd.inkey[i] = 0;

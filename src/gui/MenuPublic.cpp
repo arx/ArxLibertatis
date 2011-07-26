@@ -514,18 +514,6 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int _iSensitivity)
 }
 
 //-----------------------------------------------------------------------------
-void ARXMenu_Options_Control_GetMouseSmoothing(bool & _bSmoothing)
-{
-	_bSmoothing = config.input.mouseSmoothing;
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Control_SetMouseSmoothing(bool _bSmoothing)
-{
-	config.input.mouseSmoothing = _bSmoothing;
-}
-
-//-----------------------------------------------------------------------------
 void ARXMenu_Options_Control_GetAutoDescription(bool & _bEnable)
 {
 	_bEnable = config.input.autoDescription;

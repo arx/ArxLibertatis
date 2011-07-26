@@ -220,7 +220,7 @@ struct PROJECT {
 		  telekinesis(0), multiplayer(0), demo(0),
 		  bits(0), hide(0), TextureSize(0), TextureBits(0),
 		  interfacergb(Color3f::black), torch(Color3f::black),
-		  interpolatemouse(0), vsync(0) {
+		  vsync(0) {
 	}
 	
 	long compatibility;
@@ -237,7 +237,6 @@ struct PROJECT {
 	long TextureBits;
 	Color3f interfacergb;
 	Color3f torch;
-	long interpolatemouse;
 	long vsync;
 	
 };
