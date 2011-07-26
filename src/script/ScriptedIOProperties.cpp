@@ -277,15 +277,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string material = context.getWord();
+		context.getIO()->armormaterial = context.getWord();
 		
-		DebugScript(' ' << material);
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(io->armormaterial) {
-			free(io->armormaterial);
-		}
-		io->armormaterial = strdup(material.c_str());
+		DebugScript(' ' << context.getIO()->armormaterial);
 		
 		return Success;
 	}

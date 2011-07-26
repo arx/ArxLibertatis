@@ -693,10 +693,11 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	float backstab = 1.f;
 
 	char wmat[64];
-	char amat[64];
+	
+	string _amat = "flesh";
+	const string * amat = &_amat;
 
 	strcpy(wmat, "bare");
-	strcpy(amat, "flesh");
 
 	bool critical = false;
 
@@ -801,21 +802,15 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	}
 
 
-	if (io_target->armormaterial)
-	{
-		strcpy(amat, io_target->armormaterial);
+	if(!io_target->armormaterial.empty()) {
+		amat = &io_target->armormaterial;
 	}
 
-	if (io_target == inter.iobj[0])
-	{
-		if ((player.equiped[EQUIP_SLOT_ARMOR] > 0)
-		        &&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]))
-		{
+	if(io_target == inter.iobj[0]) {
+		if(player.equiped[EQUIP_SLOT_ARMOR] > 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
-
-			if ((io) && (io->armormaterial))
-			{
-				strcpy(amat, io->armormaterial);
+			if(io && !io->armormaterial.empty()) {
+				amat = &io->armormaterial;
 			}
 		}
 	}
@@ -836,7 +831,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		power = power * 0.1f + 0.9f;
 	else power = power * 0.1f + 0.9f;
 
-	ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &pos, io_source);
+	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, &pos, io_source);
 
 
 	float chance = 100.f - (ac - attack); 
@@ -844,8 +839,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	if (dice <= chance) 
 	{
-		strcpy(amat, "flesh");
-		ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &pos, io_source);
+		ARX_SOUND_PlayCollision("flesh", wmat, power, 1.f, &pos, io_source);
 
 		Vec3f pos;
 		pos.x = io_target->pos.x;

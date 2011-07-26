@@ -1717,7 +1717,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	io->_npcdata->speakpitch = 1.f;
 
 	//todo free
-	io->armormaterial = strdup("leather");
+	io->armormaterial = "leather";
 	io->filename = "graph/obj3d/interactive/player/player.teo";
 	loadScript(io->script, resources->getFile("graph/obj3d/interactive/player/player.asl"));
 

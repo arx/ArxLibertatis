@@ -1284,25 +1284,21 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	}
 
 	char wmat[64];
-	char amat[64];
-
+	
+	string _amat = "flesh";
+	const string * amat = &_amat;
+	
 	strcpy(wmat, "dagger");
-	strcpy(amat, "flesh");
-
-	if (io_target->armormaterial)
-	{
-		strcpy(amat, io_target->armormaterial);
+	
+	if(!io_target->armormaterial.empty()) {
+		amat = &io_target->armormaterial;
 	}
-
-	if (io_target == inter.iobj[0])
-	{
-		if (player.equiped[EQUIP_SLOT_ARMOR] > 0)
-		{
-			INTERACTIVE_OBJ * io	=	inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
-
-			if ((io) && (io->armormaterial))
-			{
-				strcpy(amat, io->armormaterial);
+	
+	if(io_target == inter.iobj[0]) {
+		if(player.equiped[EQUIP_SLOT_ARMOR] > 0) {
+			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
+			if(io && !io->armormaterial.empty()) {
+				amat = &io->armormaterial;
 			}
 		}
 	}
@@ -1314,7 +1310,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	power	=	power * 0.15f + 0.85f;
 
-	ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &Thrown[thrownum].position, io_source);
+	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, &Thrown[thrownum].position, io_source);
 
 	dmgs	*=	backstab;
 	dmgs	-=	dmgs * (absorb * ( 1.0f / 100 ));
