@@ -260,15 +260,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string material = context.getWord();
+		context.getIO()->stepmaterial = context.getWord();
 		
-		DebugScript(' ' << material);
-		
-		INTERACTIVE_OBJ * io = context.getIO();
-		if(io->stepmaterial) {
-			free(io->stepmaterial);
-		}
-		io->stepmaterial = strdup(material.c_str());
+		DebugScript(' ' << context.getIO()->stepmaterial);
 		
 		return Success;
 	}

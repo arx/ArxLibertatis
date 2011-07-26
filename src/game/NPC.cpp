@@ -4075,10 +4075,11 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 }
 
 //-------------------------------------------------------------------------
-void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power)
-{
-	char step_material[64] = "foot_bare";
-	std::string floor_material = "earth";
+void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power) {
+	
+	string _step_material = "foot_bare";
+	const string * step_material = &_step_material;
+	string floor_material = "earth";
 
 	if (EEIsUnderWater(pos))
 		floor_material = "water";
@@ -4090,22 +4091,21 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume
 		if (ep &&  ep->tex && !ep->tex->m_texName.empty())
 			floor_material = GetMaterialString( ep->tex->m_texName );
 	}
-
-	if (io && io->stepmaterial)
-		strcpy(step_material, io->stepmaterial);
-
-	if ((io == inter.iobj[0]) && (player.equiped[EQUIP_SLOT_LEGGINGS] > 0))
-	{
-		if (ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]))
-		{
+	
+	if(io && !io->stepmaterial.empty()) {
+		step_material = &io->stepmaterial;
+	}
+	
+	if(io == inter.iobj[0] && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
+		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 			INTERACTIVE_OBJ * ioo = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
-
-			if (ioo->stepmaterial)
-				strcpy(step_material, ioo->stepmaterial);
+			if(!ioo->stepmaterial.empty()) {
+				step_material = &ioo->stepmaterial;
+			}
 		}
 	}
-
-	ARX_SOUND_PlayCollision(step_material, floor_material, volume, power, pos, io);
+	
+	ARX_SOUND_PlayCollision(*step_material, floor_material, volume, power, pos, io);
 }
 //-------------------------------------------------------------------------
 //***********************************************************************************************

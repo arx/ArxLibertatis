@@ -1141,10 +1141,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	if (io->inventory_skin)
 		strcpy(ais.inventory_skin, io->inventory_skin);
 
-	memset(ais.stepmaterial, 0, 128);
-
-	if (io->stepmaterial)
-		strcpy(ais.stepmaterial, io->stepmaterial);
+	strncpy(ais.stepmaterial, io->stepmaterial.c_str(), sizeof(ais.stepmaterial));
 
 	memset(ais.armormaterial, 0, 128);
 
@@ -2251,10 +2248,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			io->inventory_skin = strdup(loadPath(safestring(ais->inventory_skin)).c_str());
 		}
 		
-		arx_assert(!io->stepmaterial);
-		if(ais->stepmaterial[0]) {
-			io->stepmaterial = strdup(toLowercase(safestring(ais->stepmaterial)).c_str());
-		}
+		io->stepmaterial = toLowercase(safestring(ais->stepmaterial));
 		
 		arx_assert(!io->armormaterial);
 		if(ais->armormaterial[0]) {

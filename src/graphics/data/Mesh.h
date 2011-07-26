@@ -355,7 +355,7 @@ struct IO_NPCDATA {
 
 	Behaviour behavior;
 	float			behavior_param;
-	long			tactics;		 // 0=none ; 1=side ; 2=side+back
+	long			tactics; // 0=none ; 1=side ; 2=side+back
 	long		xpvalue;
 	long		cut;
 
@@ -577,7 +577,7 @@ struct INTERACTIVE_OBJ {
 	
 	short damager_damages;
 	DamageType damager_type;
-	char * stepmaterial;
+	std::string stepmaterial;
 	char * armormaterial;
 	char * weaponmaterial;
 	char * strikespeech;

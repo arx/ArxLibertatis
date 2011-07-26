@@ -1321,10 +1321,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 		MOLLESS_Clear(io->obj);
 		ARX_SCRIPT_Timer_Clear_For_IO(io);
 
-		if (io->stepmaterial)
-			free(io->stepmaterial);
-
-		io->stepmaterial = NULL;
+		io->stepmaterial.clear();
 
 		if (io->armormaterial)
 			free(io->armormaterial);
@@ -1815,7 +1812,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	
 	damager_damages = 0;
 	damager_type = 0;
-	stepmaterial = NULL; // TODO use string
 	armormaterial = NULL; // TODO use string
 	weaponmaterial = NULL; // TODO use string
 	strikespeech = NULL; // TODO use path
@@ -2329,9 +2325,6 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 
 	if (io->strikespeech)
 		free(io->strikespeech);
-
-	if (io->stepmaterial)
-		free(io->stepmaterial);
 
 	if (io->armormaterial)
 		free(io->armormaterial);
@@ -4098,12 +4091,6 @@ void RenderInter(float from, float to) {
 				dist = fdist(ACTIVECAM->pos, io->obj->pbox->vert[0].pos);
 			}
 			else dist = fdist(ACTIVECAM->pos, io->pos);
-
-			if ((0) && (inter.iobj[i]->stepmaterial))
-			{
-				free(inter.iobj[i]->stepmaterial);
-				inter.iobj[i]->stepmaterial = NULL;
-			}
 
 			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS))
 			{
