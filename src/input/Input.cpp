@@ -222,6 +222,7 @@ void ARX_INPUT_Release() {
 //-----------------------------------------------------------------------------
 
 Input::Input()
+	: backend(0)
 {
 	setMouseSensibility(2);
 
@@ -240,6 +241,10 @@ bool Input::init()
 		delete backend;
 		backend = NULL;
 	}
+	else
+	{
+		reset();
+	}
 
 	return ret;
 }
@@ -256,8 +261,10 @@ Input::~Input()
 void Input::reset()
 {
 	iMouseR = Vec2s::ZERO;
-	iMouseA = Vec2s::ZERO;
 
+	Vec2s absPos(DANAESIZX / 2,  DANAESIZY / 2);
+	setMousePosAbs(absPos);
+	
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
 		iMouseTimeSet[i] = 0;
@@ -302,7 +309,9 @@ const Vec2s& Input::getMousePosRel() const {
 //-----------------------------------------------------------------------------
 void Input::setMousePosAbs(const Vec2s& mousePos)
 {
-	backend->setMouseCoordinates(mousePos.x, mousePos.y);
+	if(backend)
+		backend->setMouseCoordinates(mousePos.x, mousePos.y);
+
 	iMouseA = mousePos;
 	iMouseARaw = mousePos;
 }
@@ -490,34 +499,35 @@ void Input::update()
 	// Get the new coordinates
 	int absX, absY;
 	backend->getMouseCoordinates(absX, absY, iWheelDir);
-	iMouseARaw = Vec2s((short)absX, (short)absY);
 
-	// Clamp to window rect
-	iMouseARaw.x = Clamp(iMouseARaw.x, 0, (short)DANAESIZX - 1);
-	iMouseARaw.y = Clamp(iMouseARaw.y, 0, (short)DANAESIZY - 1);
+	// Do not update mouse position when it is outside of the window
+	if(absX >= 0 && absX < DANAESIZX && absY >= 0 && absY < DANAESIZY)
+	{
+		iMouseARaw = Vec2s((short)absX, (short)absY);
 
-	// In fullscreen, use the sensitivity config value to adjust mouse mouvements
-	if(danaeApp.m_pFramework->m_bIsFullscreen) {
-		float fSensMax = 1.f / 6.f;
-		float fSensMin = 2.f;
-		float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
-		fSens = pow( .7f, fSens ) * 2.f;
+		// In fullscreen, use the sensitivity config value to adjust mouse mouvements
+		if(danaeApp.m_pFramework->m_bIsFullscreen) {
+			float fSensMax = 1.f / 6.f;
+			float fSensMin = 2.f;
+			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
+			fSens = pow( .7f, fSens ) * 2.f;
 
-		Vec2f fD;
-		fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens * ( ( (float)DANAESIZX ) / 640.f );
-		fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
+			Vec2f fD;
+			fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens * ( ( (float)DANAESIZX ) / 640.f );
+			fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
 
-		iMouseR.x = (int)fD.x;
-		iMouseR.y = (int)fD.y;
-		iMouseA += iMouseR;
-	} else {
-		iMouseR = iMouseARaw - iMouseA;
-		iMouseA = iMouseARaw;		
+			iMouseR.x = (int)fD.x;
+			iMouseR.y = (int)fD.y;
+			iMouseA += iMouseR;
+		} else {
+			iMouseR = iMouseARaw - iMouseA;
+			iMouseA = iMouseARaw;		
+		}
+
+		// Clamp to window rect
+		iMouseA.x = Clamp(iMouseA.x, 0, (short)DANAESIZX - 1);
+		iMouseA.y = Clamp(iMouseA.y, 0, (short)DANAESIZY - 1);
 	}
-
-	// Clamp to window rect
-	iMouseA.x = Clamp(iMouseA.x, 0, (short)DANAESIZX - 1);
-	iMouseA.y = Clamp(iMouseA.y, 0, (short)DANAESIZY - 1);
 }
 
 //-----------------------------------------------------------------------------

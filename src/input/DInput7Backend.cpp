@@ -302,6 +302,11 @@ bool DInput7Backend::init() {
 		LogWarning << "could not set mouse relative mode";
 		return false;
 	}
+
+    iLastMouseX = danaeApp.m_pFramework->m_dwRenderWidth / 2;
+	iLastMouseY = danaeApp.m_pFramework->m_dwRenderHeight / 2;
+
+	setMouseCoordinates(iLastMouseX, iLastMouseY);
 	
 	return true;
 }
@@ -622,6 +627,9 @@ void DInput7Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir)
 			wheelDir += od->dwData;
 		}
 	}
+
+	iLastMouseX = Clamp(iLastMouseX, 0, (int)danaeApp.m_pFramework->m_dwRenderWidth);
+	iLastMouseY = Clamp(iLastMouseY, 0, (int)danaeApp.m_pFramework->m_dwRenderHeight);
 	
 	if(danaeApp.m_pFramework->m_bIsFullscreen) {
 		absX = iLastMouseX;
