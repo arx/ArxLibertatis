@@ -219,7 +219,7 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 //-----------------------------------------------------------------------------
 TextureContainer::TextureContainer(const fs::path & strName, TCFlags flags) {
 	
-	arx_assert_msg(!strName.has_ext(), "bad texture name: \"%s\"", strName.string().c_str());
+	arx_assert_msg(!strName.has_ext("bmp"), "bad texture name: \"%s\"", strName.string().c_str());
 	
 	m_texName = strName;
 
