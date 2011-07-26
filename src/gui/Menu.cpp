@@ -193,6 +193,16 @@ void CreateSaveGameList() {
 		save_l[0].name = "New";
 	}
 	
+	WIN32_FIND_DATA fdata;
+	LogDebug << "looking for " << path;
+	
+	HANDLE h;
+	if((h = FindFirstFile(path.c_str(), &fdata)) == INVALID_HANDLE_VALUE) {
+		LogInfo << "no save files found";
+		save_l.resize(1);
+		return;
+	}
+	
 	size_t oldCount = save_l.size() - 1;
 #ifdef HAVE_DYNAMIC_STACK_ALLOCATION
 	bool found[oldCount];
@@ -201,15 +211,6 @@ void CreateSaveGameList() {
 #endif
 	for(size_t i = 0; i < oldCount; i++) {
 		found[i] = false;
-	}
-	
-	WIN32_FIND_DATA fdata;
-	LogDebug << "looking for " << path;
-	
-	HANDLE h;
-	if((h = FindFirstFile(path.c_str(), &fdata)) == INVALID_HANDLE_VALUE) {
-		LogInfo << "no save files found";
-		save_l.resize(1);
 	}
 	
 	bool newSaves = false;

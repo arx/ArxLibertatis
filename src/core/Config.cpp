@@ -454,10 +454,10 @@ bool Config::init(const string & file, const string & defaultFile) {
 	string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
 	istringstream iss(resolution);
 	iss >> video.width;
-	char x;
+	char x = '\0';
 	iss >> x;
 	iss >> video.height;
-	if(x != 'x' || iss.bad() || video.width <= 0 || video.height <= 0) {
+	if(iss.fail() || x != 'x' || video.width <= 0 || video.height <= 0) {
 		LogWarning << "bad resolution string: " << resolution;
 		video.width = DEFAULT_WIDTH;
 		video.height = DEFAULT_HEIGHT;
