@@ -227,8 +227,6 @@ void BIG_PURGE() {
 
 #endif // BUILD_EDITOR
 
-extern char LastLoadedDLF[512];
-
 #ifdef BUILD_EDIT_LOADSAVE
 
 void LogDirCreation(const fs::path & dir) {
@@ -632,7 +630,6 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	ofs << "Object   : " << io->long_name() << std::endl;
 	ofs << "_______________________________" << std::endl << std::endl;
 	ofs << "Level    : " << LastLoadedScene << std::endl;
-	ofs << "DLF File : " << (LastLoadedDLF[0] ? LastLoadedDLF : "None") << std::endl;
 	ofs << "Position : x " << (io->initpos.x - Mscenepos.x)
 	              << " y " << (io->initpos.y - Mscenepos.y)
 	              << " z " << (io->initpos.z - Mscenepos.z) << " (relative to anchor)" << std::endl;
@@ -804,8 +801,6 @@ long DanaeLoadLevel(const fs::path & file) {
 	}
 	
 	PakFile * lightingFile = resources->getFile(lightingFileName);
-	
-	strcpy(LastLoadedDLF, file.string().c_str());
 	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();

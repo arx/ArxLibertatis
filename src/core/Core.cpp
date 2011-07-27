@@ -348,7 +348,6 @@ char TELEPORT_TO_LEVEL[64];
 char TELEPORT_TO_POSITION[64];
 long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
-char LastLoadedDLF[512];
 char ItemToBeAdded[1024];
 char WILL_LAUNCH_CINE[256];
 char _CURRENTLOAD_[256];
@@ -1365,7 +1364,6 @@ int main(int argc, char ** argv) {
 	ARX_CHANGELEVEL_MakePath();
 	LogDebug << "ACL MakePath";
 
-	LastLoadedDLF[0]=0;
 	ARX_SCRIPT_Timer_FirstInit(512);
 	LogDebug << "Timer Init";
 	ARX_FOGS_FirstInit();
