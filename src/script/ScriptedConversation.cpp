@@ -109,8 +109,7 @@ public:
 			no_pos = test_flag(flg, 'o');
 		}
 		
-		string sample = loadPath(context.getStringVar(context.getWord()));
-		SetExt(sample, ".wav");
+		fs::path sample = fs::path::load(context.getStringVar(context.getWord())).set_ext("wav");
 		
 		DebugScript(' ' << options << " \"" << sample << '"');
 		
