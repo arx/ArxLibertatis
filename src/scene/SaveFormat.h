@@ -775,7 +775,7 @@ struct ARX_CHANGELEVEL_NPC_IO_SAVE {
 	s32 weapontype;
 	s32 weaponinhand;
 	s32 fightdecision;
-	char weaponname[256];
+	char padding[256];
 	f32 look_around_inc;
 	u32 collid_time;
 	s32 collid_state;

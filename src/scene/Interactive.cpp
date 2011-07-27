@@ -1563,7 +1563,6 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 			io->_npcdata->stare_factor = 1.f;
 
 			io->_npcdata->weapon = NULL;
-			io->_npcdata->weaponname[0] = 0;
 			io->_npcdata->weaponinhand = 0;
 			io->_npcdata->weapontype = 0;
 			io->_npcdata->weaponinhand = 0;
@@ -2829,7 +2828,6 @@ IO_NPCDATA::IO_NPCDATA() {
 	weapontype = 0;
 	weaponinhand = 0l;
 	fightdecision = 0l;
-	memset(weaponname, 0, 256); // TODO remove!, use "weapon" directly
 	
 	look_around_inc = 0.f;
 	collid_time = 0ul;

@@ -2620,8 +2620,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(ause1->cur_anim)
 			        &&	(ause1->flags & EA_ANIMEND))
 			{
-				if (io->_npcdata->weaponname[0] != 0)
-					SetWeapon_Back(io);
+				SetWeapon_Back(io);
 
 				AcquireLastAnim(io);
 				FinishAnim(io, ause1->cur_anim);
@@ -2651,8 +2650,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(ause1->cur_anim)
 			        &&	(ause1->flags & EA_ANIMEND))
 			{
-				if (io->_npcdata->weaponname[0] != 0)
-					SetWeapon_On(io);
+				SetWeapon_On(io);
 
 				AcquireLastAnim(io);
 				FinishAnim(io, ause1->cur_anim);

@@ -521,7 +521,6 @@ public:
 		
 		DebugScript(' ' << options << ' ' << weapon);
 		
-		strcpy(io->_npcdata->weaponname, weapon.c_str());
 		Prepare_SetWeapon(io, weapon);
 		
 		return Success;
