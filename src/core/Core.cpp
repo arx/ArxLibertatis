@@ -1308,14 +1308,10 @@ int main(int argc, char ** argv) {
 	
 	ScriptEvent::init();
 	
-	// delete current for clean save.........
-	if(ARX_CHANGELEVEL_MakePath()) {
-		LogInfo << "Clearing current game directory " << CurGamePath;
-		if(!fs::remove_all(CurGamePath) || !fs::create_directory(CurGamePath)) {
-			LogWarning << "failed to clear " << CurGamePath;
-		}
+	if(!fs::create_directories("save")) {
+		LogWarning << "failed to create save directory";
 	}
-
+	
 	ARX_INTERFACE_NoteInit();
 	LogDebug << "Note Init";
 	PUSH_PLAYER_FORCE = Vec3f::ZERO;
@@ -1359,10 +1355,7 @@ int main(int argc, char ** argv) {
 		LogDebug << "RegData Read";
 	}
 #endif
-
-	ARX_CHANGELEVEL_MakePath();
-	LogDebug << "ACL MakePath";
-
+	
 	ARX_SCRIPT_Timer_FirstInit(512);
 	LogDebug << "Timer Init";
 	ARX_FOGS_FirstInit();

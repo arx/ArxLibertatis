@@ -3637,6 +3637,7 @@ void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
 }
 
 void ARX_PLAYER_Start_New_Quest() {
+	
 	SKIN_MOD = 0;
 	QUICK_MOD = 0;
 	EERIE_PATHFINDER_Clear();
@@ -3647,12 +3648,12 @@ void ARX_PLAYER_Start_New_Quest() {
 	SecondaryInventory = NULL;
 	TSecondaryInventory = NULL;
 	ARX_EQUIPMENT_UnEquipAllPlayer();
-	//Empty Current Game Directory to restart a new game...
-	ARX_CHANGELEVEL_MakePath();
 	
+	//Empty Current Game Directory to restart a new game...
 	if(!fs::remove_all(CurGamePath) || !fs::create_directory(CurGamePath)) {
 		LogWarning << "failed to clear " << CurGamePath;
 	}
+	
 	inter.iobj[0]->halo.flags = 0;
 }
 

@@ -3033,8 +3033,6 @@ static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 		return true;
 	}
 	
-	ARX_CHANGELEVEL_MakePath();
-	
 	if(ARX_Changelevel_CurGame_Seek(io->long_name())) {
 		return true;
 	}

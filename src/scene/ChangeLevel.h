@@ -64,14 +64,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct INTERACTIVE_OBJ;
 
-extern fs::path CurGamePath;
-extern long CURRENT_GAME_INSTANCE;
-extern fs::path GameSavePath;
+extern const fs::path CurGamePath;
 
 extern long FORBID_SAVE;
-
-bool ARX_GAMESAVE_MakePath();
-bool ARX_CHANGELEVEL_MakePath();
 
 void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle);
 
