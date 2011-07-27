@@ -31,6 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 
 #include "io/FilePath.h"
+#include "io/Logger.h"
 #include "platform/Platform.h"
 
 using std::string;
@@ -92,6 +93,8 @@ PakDirectory * PakDirectory::getDirectory(const fs::path & path) {
 	
 	if(path.empty()) {
 		return this;
+	} else if(path.is_up()) {
+		LogWarning << "bad path: " << path;
 	}
 	
 	PakDirectory * dir = this;
@@ -127,6 +130,8 @@ PakFile * PakDirectory::getFile(const fs::path & path) {
 	
 	if(path.empty()) {
 		return NULL;
+	} if(path.is_up()) {
+		LogWarning << "bad path: " << path;
 	}
 	
 	PakDirectory * dir = this;
