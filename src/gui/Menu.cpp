@@ -63,11 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iterator>
 #include <iomanip>
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
-
 #include <boost/smart_ptr/scoped_array.hpp>
 
 #include "Configure.h"
@@ -97,10 +92,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/font/Font.h"
 
-#include "io/PakReader.h"
-#include "io/Logger.h"
-#include "io/FilePath.h"
+#include "input/Input.h"
 
+#include "io/Logger.h"
+#include "io/PakReader.h"
+#include "io/FilePath.h"
+#include "io/Screenshot.h"
 
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
@@ -108,13 +105,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 
-#include "window/DXInput.h"
-
 using std::string;
 using std::istringstream;
 
 extern TextManager * pTextManage;
-extern CDirectInput * pGetInfoDirectInput;
 extern Anglef ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
@@ -144,6 +138,9 @@ extern float PROGRESS_BAR_COUNT;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
+
+extern long	REQUEST_SPEECH_SKIP;
+extern long TRUE_PLAYER_MOUSELOOK_ON;
 
 extern TextureContainer * pTextureLoad;
 
@@ -548,12 +545,43 @@ void ARX_Menu_Manage() {
 	switch (ARXmenu.currentmode)
 	{
 		case AMCM_OFF:
-			/* Checked in Danae.cpp now ! */
-			return;
-			break;
+		{
+			// Checks for ESC key
+			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
+			{
+				if (CINEMASCOPE)
+				{
+					if (!FADEDIR)	// Disabling ESC capture while fading in or out.
+					{
+						if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
+						{
+							REQUEST_SPEECH_SKIP=1;				
+						}
+					}
+				}
+				else
+				{
+					LogDebug << "snapshot";
+					//create a screenshot temporaire pour la sauvegarde
+					SnapShot *pSnapShot = new SnapShot("sct", true);
+					pSnapShot->GetSnapShotDim(160,100);
+					delete pSnapShot;
+
+					ARX_TIME_Pause();
+					ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
+					ARX_MENU_Launch();
+					bFadeInOut=false;	//fade out
+					bFade=true;			//active le fade
+					TRUE_PLAYER_MOUSELOOK_ON = 0;
+
+					ARX_PLAYER_PutPlayerInNormalStance(1);
+				}
+			}
+		}
+		break;
 		case AMCM_NEWQUEST:
 		{
-			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE)
+			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 					&&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			   )
 			{
@@ -564,7 +592,7 @@ void ARX_Menu_Manage() {
 		break;
 		case AMCM_MAIN:
 
-			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
+			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
 			{
 				if ((MENU_NoActiveWindow())  && (!REFUSE_GAME_RETURN))
 				{
@@ -576,8 +604,8 @@ void ARX_Menu_Manage() {
 			break;
 		case AMCM_CREDITS:
 
-			if ((pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
-					|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_SPACE)))
+			if ((GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
+					|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)))
 			{
 				ARX_MENU_CLICKSOUND();
 				bFadeInOut = true;	//fade out
@@ -604,7 +632,7 @@ bool ARX_Menu_Render()
 	// Auto-Launch Demo after 60 sec idle on Main Menu
 	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
 	{
-		if ((ARXmenu_lastmode != AMCM_MAIN) || (pGetInfoDirectInput && (pGetInfoDirectInput->bTouch || pGetInfoDirectInput->bMouseMove)))
+		if ((ARXmenu_lastmode != AMCM_MAIN) || GInput->isAnyKeyPressed() || GInput->hasMouseMoved())
 		{
 			ARXmenu_starttick = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long'
 		}
@@ -640,12 +668,12 @@ bool ARX_Menu_Render()
 		return false;
 	}
 
-	if (pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0))
+	if (GInput->getMouseButton(Mouse::Button_0))
 	{
 		EERIEMouseButton = 1;
 		LastMouseClick = 1;
 	}
-	else if (pGetInfoDirectInput->GetMouseButton(DXI_BUTTON1))
+	else if (GInput->getMouseButton(Mouse::Button_1))
 	{
 		EERIEMouseButton = 2;
 		LastMouseClick = 2;
@@ -951,8 +979,8 @@ bool ARX_Menu_Render()
 		}
 	}
 
-	DynLight[0].pos.x = 0.f + EERIEMouseX - (DANAESIZX >> 1);
-	DynLight[0].pos.y = 0.f + EERIEMouseY - (DANAESIZY >> 1);
+	DynLight[0].pos.x = 0.f + GInput->getMousePosAbs().x - (DANAESIZX >> 1);
+	DynLight[0].pos.y = 0.f + GInput->getMousePosAbs().y - (DANAESIZY >> 1);
 
 	if (pTextManage)
 	{

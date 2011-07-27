@@ -62,11 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Config.h"
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
-
 #include "ai/Paths.h"
 
 #include "animation/Animation.h"
@@ -90,6 +85,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
+
+#include "input/Input.h"
 
 #include "io/Logger.h"
 
@@ -125,7 +122,6 @@ long LAST_PORTALS_COUNT=0;
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
 extern Color ulBKGColor;
-extern CDirectInput *pGetInfoDirectInput;
 //-----------------------------------------------------------------------------
 EERIEPOLY VF_Center;
 EERIEPOLY VF_Top;
@@ -3040,17 +3036,17 @@ void ARX_SCENE_Render(long flag) {
 		
 		ACTIVECAM->Xsnap = xx;
 		ACTIVECAM->Zsnap = yy;
-		FORCERANGE(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
-		FORCERANGE(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
+		ACTIVECAM->Xsnap = clamp(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
+		ACTIVECAM->Zsnap = clamp(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
 		
 		x0=ACTIVECAM->Xsnap-lcval;
 		x1=ACTIVECAM->Xsnap+lcval;
 		z0=ACTIVECAM->Zsnap-lcval;
 		z1=ACTIVECAM->Zsnap+lcval;
-		FORCERANGE(x0,0,ACTIVEBKG->Xsize-1);
-		FORCERANGE(x1,0,ACTIVEBKG->Xsize-1);
-		FORCERANGE(z0,0,ACTIVEBKG->Zsize-2);
-		FORCERANGE(z1,0,ACTIVEBKG->Xsize-2);
+		x0 = clamp(x0,0,ACTIVEBKG->Xsize-1);
+		x1 = clamp(x1,0,ACTIVEBKG->Xsize-1);
+		z0 = clamp(z0,0,ACTIVEBKG->Zsize-2);
+		z1 = clamp(z1,0,ACTIVEBKG->Xsize-2);
 			
 			
 		ACTIVEBKG->Backg[ACTIVECAM->Xsnap+ACTIVECAM->Zsnap * ACTIVEBKG->Xsize].treat = 1;
@@ -3415,7 +3411,7 @@ else
 	}
 }
 
-	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_J))
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_J))
 		bOLD_CLIPP=!bOLD_CLIPP;
 
 	if ((SHOWSHADOWS) && (!Project.improve))

@@ -74,6 +74,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "input/Input.h"
+
 #include "io/IO.h"
 #include "io/FilePath.h"
 #include "io/Logger.h"
@@ -104,7 +106,6 @@ extern long NEED_TEST_TEXT;
 extern float Original_framedelay;
 extern long FINAL_COMMERCIAL_GAME;
 extern EERIE_3DOBJ *arrowobj;
-extern bool bGLOBAL_DINPUT_GAME;
 extern void InitTileLights();
 extern long USE_LIGHT_OPTIM;
 
@@ -140,7 +141,6 @@ extern TextureContainer * pTCCrossHair;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
 extern FOG_DEF fogparam;
-extern CDirectInput *pGetInfoDirectInput;
 extern TexturedVertex LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
@@ -1754,7 +1754,7 @@ bool DANAE::ManageEditorControls()
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
 						if ((player.gold > 0)
-							&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+							&& (!GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
 							&& (COMBINE==NULL) && (!COMBINEGOLD))
 						{
 							if (EERIEMouseButton & 4)
@@ -2118,7 +2118,7 @@ bool DANAE::ManageEditorControls()
 			if ( !( FlyingOverIO->ioflags & IO_MOVABLE ) )
 				if ( ( FlyingOverIO->ioflags & IO_ITEM ) && bOk )
 				{
-					if ( ARX_IMPULSE_Pressed( CONTROLS_CUST_STEALTHMODE ) )
+					if ( GInput->actionPressed( CONTROLS_CUST_STEALTHMODE ) )
 					{
 						if ( !InPlayerInventoryPos( &DANAEMouse ) && !ARX_INTERFACE_MouseInBook() )
 						{
@@ -2461,12 +2461,12 @@ bool DANAE::ManageEditorControls()
 	// Checks for Object Dragging
 	if (!EDITMODE)
 		if (( DRAGGING && !PLAYER_MOUSELOOK_ON &&
-			(!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)) &&
+			(!GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) &&
 			(DRAGINTER==NULL)
 			)
 			|| // mode system shock
 			( DRAGGING && (config.input.autoReadyWeapon == false) &&
-			(!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)) &&
+			(!GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) &&
 			(DRAGINTER==NULL))
 			)
 		{
@@ -3323,10 +3323,10 @@ bool DANAE::ManageEditorControls()
 			val=1.f;
 
 			if ((LastSelectedFog!=-1) && (fogs[LastSelectedFog].special & FOG_DIRECTIONAL)
-				&& ((EERIEMouseXdep) || (EERIEMouseYdep)))
+				&& GInput->hasMouseMoved())
 			{
-				fogs[LastSelectedFog].angle.a+=EERIEMouseYdep;
-				fogs[LastSelectedFog].angle.b+=EERIEMouseXdep;
+				fogs[LastSelectedFog].angle.a+=GInput->getMousePosRel().y;
+				fogs[LastSelectedFog].angle.b+=GInput->getMousePosRel().x;
 
 				fogs[LastSelectedFog].move.x=1.f;
 				fogs[LastSelectedFog].move.y=0.f;
@@ -3831,7 +3831,7 @@ void DANAE::ManagePlayerControls()
 	tm.x=tm.y=tm.z=0.f;
 
 	// Checks STEALTH Key Status.
-	if (ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE) )
+	if (GInput->actionPressed(CONTROLS_CUST_STEALTHMODE) )
 	{
 		MoveDiv=0.02f;
 		player.Current_Movement|=PLAYER_MOVE_STEALTH;
@@ -3848,7 +3848,7 @@ void DANAE::ManagePlayerControls()
 			Vec3f old = eyeball.pos;
 
 			// Checks WALK_FORWARD Key Status.
-			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKFORWARD) )
+			if (GInput->actionPressed(CONTROLS_CUST_WALKFORWARD) )
 			{
 				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
@@ -3858,7 +3858,7 @@ void DANAE::ManagePlayerControls()
 			}
 
 			// Checks WALK_BACKWARD Key Status.
-			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKBACKWARD) )
+			if (GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD) )
 			{
 				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
@@ -3868,8 +3868,8 @@ void DANAE::ManagePlayerControls()
 			}
 
 			// Checks STRAFE_LEFT Key Status.
-			if( (ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFELEFT)||
-				(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNLEFT)))
+			if( (GInput->actionPressed(CONTROLS_CUST_STRAFELEFT)||
+				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 				&& !NOMOREMOVES)
 			{
 				float tr=radians(MAKEANGLE(eyeball.angle.b+90.f));
@@ -3880,8 +3880,8 @@ void DANAE::ManagePlayerControls()
 			}
 
 			// Checks STRAFE_RIGHT Key Status.
-			if( (ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFERIGHT)||
-				(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNRIGHT)))
+			if( (GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT)||
+				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
 				&& !NOMOREMOVES)
 			{
 				float tr=radians(MAKEANGLE(eyeball.angle.b-90.f));
@@ -3929,28 +3929,28 @@ void DANAE::ManagePlayerControls()
 
 		if (EDITMODE || ARXPausedTimer) FD=40.f;
 		
-		bool left=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFELEFT);
+		bool left=GInput->actionPressed(CONTROLS_CUST_STRAFELEFT);
 
 		if(!left)
 		{
-			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNLEFT))
+			if(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNLEFT))
 			{
 				left=true;
 			}
 		}
 
-		bool right=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFERIGHT);
+		bool right=GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT);
 
 		if(!right)
 		{
-			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNRIGHT))
+			if(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNRIGHT))
 			{
 				right=true;
 			}
 		}
 
 		// Checks WALK_BACKWARD Key Status.
-		if (	ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKBACKWARD)
+		if (	GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)
 			&&	!NOMOREMOVES	)
 		{
 			CurrFightPos=3;
@@ -3973,13 +3973,13 @@ void DANAE::ManagePlayerControls()
 
 			player.Current_Movement|=PLAYER_MOVE_WALK_BACKWARD;
 
-			if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_WALKBACKWARD) )
+			if (GInput->actionNowPressed(CONTROLS_CUST_WALKBACKWARD) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_BACKWARD;
 		}
 		else if (MOVE_PRECEDENCE==PLAYER_MOVE_WALK_BACKWARD) MOVE_PRECEDENCE=0;
 
 		// Checks WALK_FORWARD Key Status.
-		if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKFORWARD)
+		if (GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)
 			&& !NOMOREMOVES)
 		{
 			CurrFightPos=2;
@@ -4001,7 +4001,7 @@ void DANAE::ManagePlayerControls()
 			tm.z+=(float)EEcos(t)*multi;
 			player.Current_Movement|=PLAYER_MOVE_WALK_FORWARD;
 
-			if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_WALKFORWARD) )
+			if (GInput->actionNowPressed(CONTROLS_CUST_WALKFORWARD) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_FORWARD;
 		}
 		else if (MOVE_PRECEDENCE==PLAYER_MOVE_WALK_FORWARD) MOVE_PRECEDENCE=0;
@@ -4017,7 +4017,7 @@ void DANAE::ManagePlayerControls()
 
 			player.Current_Movement|=PLAYER_MOVE_STRAFE_LEFT;
 
-			if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_STRAFELEFT) )
+			if (GInput->actionNowPressed(CONTROLS_CUST_STRAFELEFT) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_LEFT;
 		}
 		else if (MOVE_PRECEDENCE==PLAYER_MOVE_STRAFE_LEFT) MOVE_PRECEDENCE=0;
@@ -4033,7 +4033,7 @@ void DANAE::ManagePlayerControls()
 
 			player.Current_Movement|=PLAYER_MOVE_STRAFE_RIGHT;
 
-			if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_STRAFERIGHT) )
+			if (GInput->actionNowPressed(CONTROLS_CUST_STRAFERIGHT) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_RIGHT;
 		}
 		else if (MOVE_PRECEDENCE==PLAYER_MOVE_STRAFE_RIGHT) MOVE_PRECEDENCE=0;
@@ -4083,18 +4083,18 @@ void DANAE::ManagePlayerControls()
 	// End of things to remove-------------------------------------------
 
 	// Checks CROUCH Key Status.
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CROUCHTOGGLE))
+	if (GInput->actionNowPressed(CONTROLS_CUST_CROUCHTOGGLE))
 	{
 		bGCroucheToggle=!bGCroucheToggle;
 	}
 
-	if(	ARX_IMPULSE_Pressed(CONTROLS_CUST_CROUCH)||
+	if(	GInput->actionPressed(CONTROLS_CUST_CROUCH)||
 		bGCroucheToggle )
 	{
 		player.Current_Movement|=PLAYER_CROUCH;
 	}
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_UNEQUIPWEAPON))
+	if (GInput->actionNowPressed(CONTROLS_CUST_UNEQUIPWEAPON))
 	{
 		ARX_EQUIPMENT_UnEquipPlayerWeapon();
 	}
@@ -4103,13 +4103,13 @@ void DANAE::ManagePlayerControls()
 	if (!(player.Interface & INTER_COMBATMODE))
 	{
 		// Checks LEAN_LEFT Key Status.
-		if (ARX_IMPULSE_Pressed(CONTROLS_CUST_LEANLEFT) )
+		if (GInput->actionPressed(CONTROLS_CUST_LEANLEFT) )
 		{
 			player.Current_Movement|=PLAYER_LEAN_LEFT;
 		}
 
 		// Checks LEAN_RIGHT Key Status.
-		if (ARX_IMPULSE_Pressed(CONTROLS_CUST_LEANRIGHT) )
+		if (GInput->actionPressed(CONTROLS_CUST_LEANRIGHT) )
 		{
 			player.Current_Movement|=PLAYER_LEAN_RIGHT;
 		}
@@ -4117,14 +4117,14 @@ void DANAE::ManagePlayerControls()
 
 	// Checks JUMP Key Status.
 	if ((player.jumpphase==0) &&
-		ARX_IMPULSE_NowPressed(CONTROLS_CUST_JUMP) )
+		GInput->actionNowPressed(CONTROLS_CUST_JUMP) )
 	{
 		REQUEST_JUMP = ARXTimeUL();
 	}
 
 
 	// MAGIC
-	if (ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+	if (GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
 	{
 		if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS)
 			&& (ARXmenu.currentmode==AMCM_OFF))
@@ -4139,17 +4139,17 @@ void DANAE::ManagePlayerControls()
 		ARX_SOUND_Stop(SND_MAGIC_DRAW);
 	}
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_DRINKPOTIONLIFE))
+	if (GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONLIFE))
 	{
 		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_life", SM_INVENTORYUSE);
 	}
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_DRINKPOTIONMANA))
+	if (GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONMANA))
 	{
 		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_mana", SM_INVENTORYUSE);
 	}
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_TORCH))
+	if (GInput->actionNowPressed(CONTROLS_CUST_TORCH))
 	{
 		if (CURRENT_TORCH)
 		{
@@ -4178,12 +4178,12 @@ void DANAE::ManagePlayerControls()
 		}
 	}
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_MINIMAP))
+	if (GInput->actionNowPressed(CONTROLS_CUST_MINIMAP))
 	{
 		SHOW_INGAME_MINIMAP=!SHOW_INGAME_MINIMAP;
 	}
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PREVIOUS))
+	if (GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS))
 	{
 		if (eMouseState == MOUSE_IN_BOOK)
 		{
@@ -4253,7 +4253,7 @@ void DANAE::ManagePlayerControls()
 		}
 	}
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_NEXT))
+	if (GInput->actionNowPressed(CONTROLS_CUST_NEXT))
 	{
 		if (eMouseState == MOUSE_IN_BOOK)
 		  {
@@ -4323,7 +4323,7 @@ void DANAE::ManagePlayerControls()
 		  }
 	}
 	  
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKCHARSHEET))
+	  if (GInput->actionNowPressed(CONTROLS_CUST_BOOKCHARSHEET))
 	{
 		  if (!(player.Interface & INTER_MAP))
 		  {
@@ -4338,7 +4338,7 @@ void DANAE::ManagePlayerControls()
 			  }
 	}
 	  
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKSPELL))
+	if (GInput->actionNowPressed(CONTROLS_CUST_BOOKSPELL))
 	{
 		  if (!(player.Interface & INTER_MAP))
 		  {
@@ -4356,7 +4356,7 @@ void DANAE::ManagePlayerControls()
 		  }	  
 	}
 	  
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKMAP))
+	  if (GInput->actionNowPressed(CONTROLS_CUST_BOOKMAP))
 	{
 		  if (!(player.Interface & INTER_MAP))
 		  {
@@ -4371,7 +4371,7 @@ void DANAE::ManagePlayerControls()
 		  }
 	}
 	  
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKQUEST))
+	if (GInput->actionNowPressed(CONTROLS_CUST_BOOKQUEST))
 	{
 		  if (!(player.Interface & INTER_MAP))
 		  {
@@ -4386,7 +4386,7 @@ void DANAE::ManagePlayerControls()
 		  }
 	}
 	  
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CANCELCURSPELL))
+	if (GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL))
 	{
 		  for (long i=MAX_SPELLS-1;i>=0;i--)
 		  {
@@ -4400,28 +4400,28 @@ void DANAE::ManagePlayerControls()
 		  }
 	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST1))
+	  if (GInput->actionNowPressed(CONTROLS_CUST_PRECAST1))
 	  {
 		  if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
 			  if (Precast[0].typ != -1)
 				  ARX_SPELLS_Precast_Launch(0);
 	  }
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST2))
+	  if (GInput->actionNowPressed(CONTROLS_CUST_PRECAST2))
 	  {
 		  if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
 			  if (Precast[1].typ != -1)
 				  ARX_SPELLS_Precast_Launch(1);
 	  }
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST3))
+	  if (GInput->actionNowPressed(CONTROLS_CUST_PRECAST3))
 	  {
 		  if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
 			  if (Precast[2].typ != -1)
 				  ARX_SPELLS_Precast_Launch(2);
 	  }
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_WEAPON)||lChangeWeapon)
+	  if (GInput->actionNowPressed(CONTROLS_CUST_WEAPON)||lChangeWeapon)
 	  {
 			bool bGo = true; 
 
@@ -4483,7 +4483,7 @@ void DANAE::ManagePlayerControls()
 	{
 		TRUE_PLAYER_MOUSELOOK_ON&=~1;
 
-		if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+		if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 		{
 			bForceEscapeFreeLook=false;
 		}
@@ -4494,7 +4494,7 @@ void DANAE::ManagePlayerControls()
 		{
 		if (!config.input.mouseLookToggle)
 		{
-			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+			if (GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 			{
 				if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
 				{
@@ -4512,7 +4512,7 @@ void DANAE::ManagePlayerControls()
 		}
 		else
 		{
-			if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_FREELOOK))
+			if (GInput->actionNowPressed(CONTROLS_CUST_FREELOOK))
 			{
 				if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
 				{
@@ -4533,7 +4533,7 @@ void DANAE::ManagePlayerControls()
 
 
 	if(	(player.Interface&INTER_COMBATMODE)&&
-		(ARX_IMPULSE_NowUnPressed(CONTROLS_CUST_FREELOOK)) )
+		(GInput->actionNowReleased(CONTROLS_CUST_FREELOOK)) )
 	{
 		if(config.misc.newControl)
 		{
@@ -4549,7 +4549,7 @@ void DANAE::ManagePlayerControls()
 	  if (EDITMODE) return;//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	  // Checks INVENTORY Key Status.
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_INVENTORY))
+	  if (GInput->actionNowPressed(CONTROLS_CUST_INVENTORY))
 	  {
 		  if (player.Interface & INTER_COMBATMODE)
 		  {
@@ -4573,7 +4573,7 @@ void DANAE::ManagePlayerControls()
 	  }
 
 	  // Checks BOOK Key Status.
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOK))
+	  if (GInput->actionNowPressed(CONTROLS_CUST_BOOK))
 		  ARX_INTERFACE_BookOpenClose(0);
 	  
 	  //	Check For Combat Mode ON/OFF
@@ -4874,17 +4874,7 @@ void DANAE::ManageKeyMouse()
 				&& (eMouseState != MOUSE_IN_NOTE)
 				)
 			{
-				POINT pos;
-				pos.x=EERIEMouseX;
-				pos.y=EERIEMouseY;
-
 				Vec2s poss;
-
-				ARX_CHECK_SHORT(pos.x);
-				ARX_CHECK_SHORT(pos.y);
-				poss.x=ARX_CLEAN_WARN_CAST_SHORT(pos.x);
-				poss.y=ARX_CLEAN_WARN_CAST_SHORT(pos.y);
-
 				poss.x=MemoMouse.x;
 				poss.y=MemoMouse.y;
 
@@ -5082,10 +5072,10 @@ void DANAE::ManageKeyMouse()
 					{
 						if (!SPECIAL_DRAW_WEAPON)
 						{
-							if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+							if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 								TRUE_PLAYER_MOUSELOOK_ON&=~1;
 
-							if ((player.Interface & INTER_COMBATMODE) && !ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+							if ((player.Interface & INTER_COMBATMODE) && !GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 								ARX_INTERFACE_Combat_Mode(0);
 						}
 
@@ -5095,7 +5085,7 @@ void DANAE::ManageKeyMouse()
 
 				if (TRUE_PLAYER_MOUSELOOK_ON && (!(EERIEMouseButton & 2)) && !SPECIAL_DRAW_WEAPON)
 				{
-					if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+					if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 						TRUE_PLAYER_MOUSELOOK_ON&=~1;
 				}
 			}
@@ -5124,37 +5114,13 @@ void DANAE::ManageKeyMouse()
 	else if ((!PLAYER_MOUSELOOK_ON) && (LAST_PLAYER_MOUSELOOK_ON))
 	{
 		EERIEMouseGrab=0;
-		POINT	pos;
-		pos.x=MemoMouse.x;
-		pos.y=MemoMouse.y;
-
-		if ( this->m_pDeviceInfo->bWindowed)
-		{
-			pos.x+=this->m_pFramework->Xstart;
-			pos.y+=this->m_pFramework->Ystart;
-		}
-
-		ClientToScreen(this->m_hWnd,&pos);
-		SetCursorPos(pos.x,pos.y);
+				
 		DANAEMouse.x=MemoMouse.x;
 		DANAEMouse.y=MemoMouse.y;
 
-		if(	(danaeApp.m_pFramework->m_bIsFullscreen)&&
-			(bGLOBAL_DINPUT_GAME) )
+		if(danaeApp.m_pFramework->m_bIsFullscreen)
 		{
-			if(pGetInfoDirectInput)
-			{
-
-				pGetInfoDirectInput->fMouseAXTemp	=	DANAEMouse.x ;
-				pGetInfoDirectInput->fMouseAYTemp	=	DANAEMouse.y ;
-				ARX_CHECK_INT(pGetInfoDirectInput->fMouseAXTemp);
-				ARX_CHECK_INT(pGetInfoDirectInput->fMouseAYTemp);
-
-				pGetInfoDirectInput->iMouseAX=ARX_CLEAN_WARN_CAST_INT(pGetInfoDirectInput->fMouseAXTemp);
-				pGetInfoDirectInput->iMouseAY=ARX_CLEAN_WARN_CAST_INT(pGetInfoDirectInput->fMouseAYTemp);
-
-
-			}
+			GInput->setMousePosAbs(DANAEMouse);
 		}
 
 		bRestoreCoordMouse=false;
@@ -5163,59 +5129,17 @@ void DANAE::ManageKeyMouse()
 	LAST_PLAYER_MOUSELOOK_ON=PLAYER_MOUSELOOK_ON;
 	PLAYER_ROTATION=0;
 
-	if (Project.interpolatemouse) // mouse smoothing...
-	{
-		float v=EERIEMouseXdep*( 1.0f / 1000 );
-
-		if (v>3.1415927f)
-		{
-			v=3.1415927f;
-		}
-		else if (v<-3.1415927f)
-		{
-			v=-3.1415927f;
-		}
-
-		EERIEMouseXdep = EEsin(v) * 600.f;
-		
-		v=EERIEMouseYdep*( 1.0f / 1000 );
-
-		if (v>3.1415927f) 
-		{
-			v=3.1415927f;
-		}
-		else if (v<-3.1415927f) 
-		{
-			v=-3.1415927f;
-		}
-
-		EERIEMouseYdep = EEsin(v) * 600.f;
-		
-	}
-
+	long mouseDiffX = GInput->getMousePosRel().x;
+	long mouseDiffY = GInput->getMousePosRel().y;
+	
 	ARX_Menu_Manage();
 	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
 
 	MOVETYPE=MOVE_WAIT;
 
-	if(bRestoreCoordMouse)
-	{
-		ARX_CHECK_SHORT(EERIEMouseX-this->m_pFramework->Xstart);
-		ARX_CHECK_SHORT(EERIEMouseX-this->m_pFramework->Ystart);
-		ARX_CHECK_SHORT(EERIEMouseX);
-		ARX_CHECK_SHORT(EERIEMouseY);
-
-		if ( this->m_pDeviceInfo->bWindowed)
-		{
-			DANAEMouse.x=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseX-this->m_pFramework->Xstart);
-			DANAEMouse.y=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseY-this->m_pFramework->Ystart);
-		}
-		else
-		{
-			DANAEMouse.x=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseX);
-			DANAEMouse.y=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseY);
-		}
+	if(bRestoreCoordMouse) {
+		DANAEMouse=GInput->getMousePosAbs();
 	}
 
 	// Player/Eyeball Freelook Management
@@ -5231,7 +5155,7 @@ void DANAE::ManageKeyMouse()
 			static int flPushTimeY[2]={0,0};
 			bool bKeySpecialMove=false;
 
-			if(!ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE))
+			if(!GInput->actionPressed(CONTROLS_CUST_STRAFE))
 			{
 
 				float fTime		= ARX_TIME_Get();
@@ -5240,7 +5164,7 @@ void DANAE::ManageKeyMouse()
 				int	iTime		=  ARX_CLEAN_WARN_CAST_INT(fTime);
 
 
-				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNLEFT))
+				if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT))
 				{
 					if(!flPushTimeX[0])
 					{
@@ -5251,7 +5175,7 @@ void DANAE::ManageKeyMouse()
 				}
 				else flPushTimeX[0]=0;
 
-				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNRIGHT))
+				if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT))
 				{
 					if(!flPushTimeX[1])
 					{
@@ -5272,7 +5196,7 @@ void DANAE::ManageKeyMouse()
 				int	iTime		=  ARX_CLEAN_WARN_CAST_INT(fTime);
 
 
-				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_LOOKUP))
+				if(GInput->actionPressed(CONTROLS_CUST_LOOKUP))
 				{
 					if(!flPushTimeY[0])
 					{
@@ -5283,7 +5207,7 @@ void DANAE::ManageKeyMouse()
 				}
 				else flPushTimeY[0]=0;
 
-				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_LOOKDOWN))
+				if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN))
 				{
 					if(!flPushTimeY[1])
 					{
@@ -5302,8 +5226,8 @@ void DANAE::ManageKeyMouse()
 				if(	flPushTimeX[0]||
 					flPushTimeX[1] )
 				{
-					if(flPushTimeX[0]<flPushTimeX[1]) EERIEMouseXdep=10;
-					else EERIEMouseXdep=-10;
+					if(flPushTimeX[0]<flPushTimeX[1]) mouseDiffX=10;
+					else mouseDiffX=-10;
 
 					iAction|=1;
 				}
@@ -5311,15 +5235,15 @@ void DANAE::ManageKeyMouse()
 				if(	flPushTimeY[0]||
 					flPushTimeY[1] )
 				{
-					if(flPushTimeY[0]<flPushTimeY[1]) EERIEMouseYdep=10;
-					else EERIEMouseYdep=-10;
+					if(flPushTimeY[0]<flPushTimeY[1]) mouseDiffY=10;
+					else mouseDiffY=-10;
 
 					iAction|=2;
 				}
 
-				if(!(iAction&1)) EERIEMouseXdep=0;
+				if(!(iAction&1)) mouseDiffX=0;
 
-				if(!(iAction&2)) EERIEMouseYdep=0;
+				if(!(iAction&2)) mouseDiffY=0;
 			}
 			else
 			{
@@ -5327,38 +5251,39 @@ void DANAE::ManageKeyMouse()
 				{
 					if (bRenderInCursorMode)
 					{
+						Vec2s mousePosRel = GInput->getMousePosRel();
 						if(	(DANAEMouse.x==(DANAESIZX-1))&&
-						        (pGetInfoDirectInput->iMouseRX > 8))
+								(mousePosRel.x > 8) )
 						{
-							EERIEMouseYdep=0;
-							EERIEMouseXdep=pGetInfoDirectInput->iMouseRX;
+							mouseDiffY=0;
+							mouseDiffX=mousePosRel.x;
 							bKeySpecialMove=true;
 						}
 						else
 						{
 							if( (!DANAEMouse.x)&&
-							        (pGetInfoDirectInput->iMouseRX < -8))
+									(mousePosRel.x < -8))
 							{
-								EERIEMouseYdep=0;
-								EERIEMouseXdep=pGetInfoDirectInput->iMouseRX;
+								mouseDiffY=0;
+								mouseDiffX=mousePosRel.x;
 								bKeySpecialMove=true;
 							}
 						}
 
 						if(	(DANAEMouse.y==(DANAESIZY-1))&&
-						        (pGetInfoDirectInput->iMouseRY > 8))
+						        (mousePosRel.y > 8))
 						{
-							EERIEMouseYdep=pGetInfoDirectInput->iMouseRY;
-							EERIEMouseXdep=0;
+							mouseDiffY=mousePosRel.y;
+							mouseDiffX=0;
 							bKeySpecialMove=true;
 						}
 						else
 						{
 							if(	(!DANAEMouse.y)&&
-							        (pGetInfoDirectInput->iMouseRY < -8))
+							        (mousePosRel.y < -8))
 							{
-								EERIEMouseYdep=pGetInfoDirectInput->iMouseRY;
-								EERIEMouseXdep=0;
+								mouseDiffY=mousePosRel.y;
+								mouseDiffX=0;
 								bKeySpecialMove=true;
 							}
 						}
@@ -5366,55 +5291,24 @@ void DANAE::ManageKeyMouse()
 				}
 			}
 
-			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_CENTERVIEW))
+			if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW))
 			{
 				eyeball.angle.a=eyeball.angle.g=0.f;
 				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
 			}
 
-			float fd;
-
-			if(	0
-				&&	(danaeApp.m_pFramework->m_bIsFullscreen)
-				&&	(bGLOBAL_DINPUT_GAME) )
-			{
-				fd = (Original_framedelay) * .3f * (640.f / (float)DANAESIZX); 
-			}
-			else
-			{
-
-				fd = (((float)pGetInfoDirectInput->iSensibility) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
-
-				if(config.input.mouseSmoothing) {
-					float of=Original_framedelay;
-
-					if (of<=0.f)
-						fd=0.f;
-					else if (of>80.f)
-					{
-						of=80.f;
-						fd*=of;
-					}
-					else
-						fd*=of;
-				}
-				else if (fd > 200)
-						fd=200;
-			}
+			float fd = (((float)GInput->getMouseSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+			if (fd > 200) {
+				fd=200;
+			}			
 
 			fd *= ((float)DANAESIZX) * ( 1.0f / 640 ); 
 
 			if ((eyeball.exist==2) && (PLAYER_MOUSELOOK_ON||bKeySpecialMove))
 			{
-				if (EERIEMouseYdep!=0)
+				if (mouseDiffY!=0)
 				{
-					float ia;
-
-					if(config.input.mouseSmoothing) {
-						ia=((float)EERIEMouseYdep*( 1.0f / 60 ))*fd;
-					} else {
-						ia=((float)EERIEMouseYdep*( 1.0f / 5 ))*fd;
-					}
+					float ia=((float)mouseDiffY*( 1.0f / 5 ))*fd;
 
 					if (INVERTMOUSE) ia=-ia;
 
@@ -5430,15 +5324,9 @@ void DANAE::ManageKeyMouse()
 					eyeball.angle.a=MAKEANGLE(eyeball.angle.a);
 				}
 
-				if (EERIEMouseXdep!=0)
+				if (mouseDiffX!=0)
 				{
-					float ib;
-
-					if(config.input.mouseSmoothing) {
-						ib=((float)EERIEMouseXdep*( 1.0f / 50 ))*fd;
-					} else {
-						ib=((float)EERIEMouseXdep*( 1.0f / 5 ))*fd;
-					}
+					float ib=((float)mouseDiffX*( 1.0f / 5 ))*fd;
 
 					eyeball.angle.b=MAKEANGLE(eyeball.angle.b-ib);
 				}
@@ -5446,15 +5334,9 @@ void DANAE::ManageKeyMouse()
 			else if (PLAYER_MOUSELOOK_ON || bKeySpecialMove)
 				if (ARXmenu.currentmode != AMCM_NEWQUEST)
 					{
-					if ((EERIEMouseYdep != 0))
+					if ((mouseDiffY != 0))
 						{
-						float ia;
-
-							if(config.input.mouseSmoothing) {
-								ia = ((float)EERIEMouseYdep * ( 1.0f / 60 ) * fd);
-							} else {
-								ia = ((float)EERIEMouseYdep * ( 1.0f / 5 ) * fd);
-							}
+							float ia = ((float)mouseDiffY * ( 1.0f / 5 ) * fd);
 
 							if ((inter.iobj[0]) && EEfabs(ia)>2.f) inter.iobj[0]->lastanimtime=0;
 
@@ -5474,15 +5356,9 @@ void DANAE::ManageKeyMouse()
 
 						}
 
-					if ((EERIEMouseXdep != 0))
+					if ((mouseDiffX != 0))
 						{
-							float ib;
-
-							if(config.input.mouseSmoothing) {
-								ib = ((float)EERIEMouseXdep * ( 1.0f / 50 ) * fd);
-							} else {
-								ib = ((float)EERIEMouseXdep * ( 1.0f / 5 ) * fd); 
-							}
+							float ib = ((float)mouseDiffX * ( 1.0f / 5 ) * fd); 
 
 							if (ib!=0.f) player.Current_Movement|=PLAYER_ROTATE;
 
@@ -8999,10 +8875,10 @@ void DANAE::DrawAllInterface()
 	}
 	
 	if (((FlyingOverIO) && !(PLAYER_MOUSELOOK_ON) && !(player.Interface & INTER_COMBATMODE)
-		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)))
+		&& (!GInput->actionPressed(CONTROLS_CUST_MAGICMODE)))
 		        || 
 		(((FlyingOverIO) && (config.input.autoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
-		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))))
+		&& (!GInput->actionPressed(CONTROLS_CUST_MAGICMODE))))
 		)
 	{
 		if ((FlyingOverIO->ioflags & IO_ITEM) && (!DRAGINTER))
@@ -9884,7 +9760,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			{
 				surf=ITC.Get("target_off");
 
-				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+				if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
 				{
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 					ARX_SPELLS_CancelSpellTarget();
@@ -10140,7 +10016,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			else
 			{
 				if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS
-					&& (ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)))
+					&& (GInput->actionPressed(CONTROLS_CUST_MAGICMODE)))
 					&& (ARXmenu.currentmode==AMCM_OFF))
 				{
 					if (MAGICMODE<0)

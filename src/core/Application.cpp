@@ -76,21 +76,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/font/Font.h"
 
+#include "input/Input.h"
+
 #include "io/FilePath.h"
 #include "io/Logger.h"
 
 using std::max;
 
 //-----------------------------------------------------------------------------
-extern long USE_OLD_MOUSE_SYSTEM;
 extern long FINAL_RELEASE;
-extern bool bGLOBAL_DINPUT_GAME;
 
 extern long FINAL_COMMERCIAL_DEMO;
 extern long FINAL_COMMERCIAL_GAME;
 
 //-----------------------------------------------------------------------------
-long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel = 0;
 long EERIEMouseButton = 0;
 long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
@@ -153,7 +152,6 @@ CD3DApplication::CD3DApplication()
 	Project.TextureSize = 0;
 	Project.ambient = 0;
 	Project.vsync = true;		
-	Project.interpolatemouse = 1;
 
 	//Keyboard Init;
 	for (i = 0; i < 255; i++)	kbd.inkey[i] = 0;
@@ -205,29 +203,6 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		DisplayFrameworkError(E_OUTOFMEMORY, MSGERR_APPMUSTEXIT);
 		return E_OUTOFMEMORY;
 	}
-
-	//	DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-#ifdef BUILD_EDITOR
-	if (ToolBar != NULL)
-	{
-		if (this->ToolBar->Type == EERIE_TOOLBAR_TOP)
-		{
-			this->m_pFramework->Ystart = 26;
-			this->m_pFramework->Xstart = 0;
-		}
-		else
-		{
-			this->m_pFramework->Ystart = 0;
-			this->m_pFramework->Xstart = 98;
-		}
-	}
-	else
-#endif
-	{
-		this->m_pFramework->Ystart = 0;
-		this->m_pFramework->Xstart = 0;
-	}
-
 
 	// Register the window class
 	WNDCLASS wndClass = { CS_DBLCLKS, WndProc, 0, 0, hInst,
@@ -464,52 +439,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 //*************************************************************************************
-// Callback for WM_MOUSEMOUVE
-//*************************************************************************************
-void CD3DApplication::EERIEMouseUpdate(short x, short y)
-{
-	if ((m_pFramework) &&
-	        (m_pFramework->m_bIsFullscreen) &&
-	        (bGLOBAL_DINPUT_GAME)) return;
-
-	// Inactive App: ignore
-	if (!this->m_bActive)	return;
-
-	// Updates MouseX & MouseY offsets
-	_EERIEMouseXdep += (x - EERIEMouseX);
-	_EERIEMouseYdep += (y - EERIEMouseY);
-
-	// Manages MouseGrab (Right-click maintained pressed)
-
-	POINT	pos;
-	bool	mod	=	false;
-
-	pos.x = pos.y = 0;
-
-	if (EERIEMouseGrab)
-	{
-		pos.x = (short)(this->m_pFramework->m_dwRenderWidth >> 1);
-		pos.y = (short)(this->m_pFramework->m_dwRenderHeight >> 1);
-
-		if ((x != pos.x) || (y != pos.y)) mod = true;
-	}
-
-	if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
-	        ||	(player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP))))
-		if (mod)
-		{
-			EERIEMouseX = (long)pos.x;
-			EERIEMouseY = (long)pos.y;
-			ClientToScreen(this->m_hWnd, &pos);
-			SetCursorPos(pos.x, pos.y);
-			return;
-		}
-
-	EERIEMouseX = x;
-	EERIEMouseY = y;
-}
-
-//*************************************************************************************
 //*************************************************************************************
 LRESULT CD3DApplication::SwitchFullScreen()
 {
@@ -568,6 +497,7 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 
 			break;
+
 		case WM_KEYUP:
 			this->kbd.nbkeydown--;
 			iii = (lParam >> 16) & 255;
@@ -580,63 +510,6 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 			else this->kbd.inkey[iii] = 0;;
 
-			break;
-
-		case WM_LBUTTONDBLCLK:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton |= 4;
-				EERIEMouseButton &= ~1;
-			}
-
-			break;
-		case WM_LBUTTONDOWN:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton |= 1;
-
-				if (EERIEMouseButton & 4) EERIEMouseButton &= ~1;
-			}
-
-			break;
-		case WM_LBUTTONUP:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton &= ~1;
-				EERIEMouseButton &= ~4;
-			}
-
-			break;
-		case WM_RBUTTONDOWN:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				EERIEMouseButton |= 2;
-			}
-
-			break;
-		case WM_RBUTTONUP:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				EERIEMouseButton &= ~2;
-			}
-
-			break;
-
-			//-------------------------------------------
-			//warning "macro redefinition" - as we haven't redefined WM_MOUSEWHEEL, WM_MOUSEWHEEL is equal to 0x020A
-		case WM_MOUSEWHEEL:
-			EERIEWheel = (short) HIWORD(wParam);
-			break;
-		case WM_MOUSEMOVE:
-			EERIEMouseUpdate(LOWORD(lParam), HIWORD(lParam));
 			break;
 
 		case WM_ERASEBKGND:
@@ -940,17 +813,13 @@ HRESULT CD3DApplication::UpdateGamma()
 HRESULT CD3DApplication::Render3DEnvironment()
 {
 	HRESULT hr;
-	EERIEMouseXdep = _EERIEMouseXdep;
-	EERIEMouseYdep = _EERIEMouseYdep;
-	_EERIEMouseXdep = 0;
-	_EERIEMouseYdep = 0;
 
 	// mode systemshock
 	if ((EERIEMouseButton & 1) &&
 	        (config.input.autoReadyWeapon == false))
 	{
-		MouseDragX += EERIEMouseXdep;
-		MouseDragY += EERIEMouseYdep;
+		MouseDragX += GInput->getMousePosRel().x;
+		MouseDragY += GInput->getMousePosRel().y;
 	}
 
 	// Check the cooperative level before rendering

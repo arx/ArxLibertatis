@@ -115,7 +115,8 @@ private:
 	
 	ALuint source;
 	
-	const static size_t NBUFFERS = 2;
+	enum { NBUFFERS = 2 };
+
 	ALuint buffers[NBUFFERS];
 	size_t bufferSizes[NBUFFERS];
 	unsigned int * refcount; // reference count for shared buffers

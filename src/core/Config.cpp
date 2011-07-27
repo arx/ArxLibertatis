@@ -28,12 +28,12 @@
 #include <fstream>
 #include <sstream>
 
+#include "input/Input.h"
 #include "io/IniReader.h"
 #include "io/IniWriter.h"
 #include "io/Logger.h"
 #include "platform/String.h"
 #include "platform/Platform.h"
-#include "window/Input.h" // for key codes TODO remove
 
 using std::string;
 using std::ifstream;
@@ -89,7 +89,6 @@ const bool
 	invertMouse = false,
 	autoReadyWeapon = false,
 	mouseLookToggle = false,
-	mouseSmoothing = false,
 	autoDescription = true,
 	linkMouseLookToUse = false,
 	forceZBias = false,
@@ -98,46 +97,46 @@ const bool
 	newControl = false;
 
 ActionKey actions[NUM_ACTION_KEY] = {
-	ActionKey(DIK_SPACE), // JUMP
-	ActionKey(DIK_LCONTROL, DIK_RCONTROL), // MAGICMODE
-	ActionKey(DIK_LSHIFT, DIK_RSHIFT), // STEALTHMODE
-	ActionKey(DIK_W, DIK_UP), // WALKFORWARD
-	ActionKey(DIK_S, DIK_DOWN), // WALKBACKWARD
-	ActionKey(DIK_A), // STRAFELEFT
-	ActionKey(DIK_D), // STRAFERIGHT
-	ActionKey(DIK_Q), // LEANLEFT
-	ActionKey(DIK_E), // LEANRIGHT
-	ActionKey(DIK_X), // CROUCH
-	ActionKey(DIK_F, DIK_RETURN), // MOUSELOOK
-	ActionKey(DIK_BUTTON1), // ACTION
-	ActionKey(DIK_I), // INVENTORY
-	ActionKey(DIK_BACKSPACE), // BOOK
-	ActionKey(DIK_F1), // BOOKCHARSHEET
-	ActionKey(DIK_F2), // BOOKSPELL
-	ActionKey(DIK_F3), // BOOKMAP
-	ActionKey(DIK_F4), // BOOKQUEST
-	ActionKey(DIK_H), // DRINKPOTIONLIFE
-	ActionKey(DIK_G), // DRINKPOTIONMANA
-	ActionKey(DIK_T), // TORCH
-	ActionKey(DIK_1), // PRECAST1
-	ActionKey(DIK_2), // PRECAST2
-	ActionKey(DIK_3), // PRECAST3
-	ActionKey(DIK_TAB, DIK_NUMPAD0), // WEAPON
-	ActionKey(DIK_F9), // QUICKLOAD
-	ActionKey(DIK_F5), // QUICKSAVE
-	ActionKey(DIK_LEFT), // TURNLEFT
-	ActionKey(DIK_RIGHT), // TURNRIGHT
-	ActionKey(DIK_PGUP), // LOOKUP
-	ActionKey(DIK_PGDN), // LOOKDOWN
-	ActionKey(DIK_LALT), // STRAFE
-	ActionKey(DIK_END), // CENTERVIEW
-	ActionKey(DIK_L, DIK_BUTTON2), // FREELOOK
-	ActionKey(DIK_MINUS), // PREVIOUS
-	ActionKey(DIK_EQUALS), // NEXT
-	ActionKey(DIK_C), // CROUCHTOGGLE
-	ActionKey(DIK_B), // UNEQUIPWEAPON
-	ActionKey(DIK_4), // CANCELCURSPELL
-	ActionKey(DIK_R, DIK_M), // MINIMAP
+	ActionKey(Keyboard::Key_Spacebar), // JUMP
+	ActionKey(Keyboard::Key_LeftCtrl, Keyboard::Key_RightCtrl), // MAGICMODE
+	ActionKey(Keyboard::Key_LeftShift, Keyboard::Key_RightShift), // STEALTHMODE
+	ActionKey(Keyboard::Key_W, Keyboard::Key_UpArrow), // WALKFORWARD
+	ActionKey(Keyboard::Key_S, Keyboard::Key_DownArrow), // WALKBACKWARD
+	ActionKey(Keyboard::Key_A), // STRAFELEFT
+	ActionKey(Keyboard::Key_D), // STRAFERIGHT
+	ActionKey(Keyboard::Key_Q), // LEANLEFT
+	ActionKey(Keyboard::Key_E), // LEANRIGHT
+	ActionKey(Keyboard::Key_X), // CROUCH
+	ActionKey(Keyboard::Key_F, Keyboard::Key_Enter), // MOUSELOOK
+	ActionKey(Mouse::Button_0), // ACTION
+	ActionKey(Keyboard::Key_I), // INVENTORY
+	ActionKey(Keyboard::Key_Backspace), // BOOK
+	ActionKey(Keyboard::Key_F1), // BOOKCHARSHEET
+	ActionKey(Keyboard::Key_F2), // BOOKSPELL
+	ActionKey(Keyboard::Key_F3), // BOOKMAP
+	ActionKey(Keyboard::Key_F4), // BOOKQUEST
+	ActionKey(Keyboard::Key_H), // DRINKPOTIONLIFE
+	ActionKey(Keyboard::Key_G), // DRINKPOTIONMANA
+	ActionKey(Keyboard::Key_T), // TORCH
+	ActionKey(Keyboard::Key_1), // PRECAST1
+	ActionKey(Keyboard::Key_2), // PRECAST2
+	ActionKey(Keyboard::Key_3), // PRECAST3
+	ActionKey(Keyboard::Key_Tab, Keyboard::Key_NumPad0), // WEAPON
+	ActionKey(Keyboard::Key_F9), // QUICKLOAD
+	ActionKey(Keyboard::Key_F5), // QUICKSAVE
+	ActionKey(Keyboard::Key_LeftArrow), // TURNLEFT
+	ActionKey(Keyboard::Key_RightArrow), // TURNRIGHT
+	ActionKey(Keyboard::Key_PageUp), // LOOKUP
+	ActionKey(Keyboard::Key_PageDown), // LOOKDOWN
+	ActionKey(Keyboard::Key_LeftAlt), // STRAFE
+	ActionKey(Keyboard::Key_End), // CENTERVIEW
+	ActionKey(Keyboard::Key_L, Mouse::Button_1), // FREELOOK
+	ActionKey(Keyboard::Key_Minus), // PREVIOUS
+	ActionKey(Keyboard::Key_Equals), // NEXT
+	ActionKey(Keyboard::Key_C), // CROUCHTOGGLE
+	ActionKey(Keyboard::Key_B), // UNEQUIPWEAPON
+	ActionKey(Keyboard::Key_4), // CANCELCURSPELL
+	ActionKey(Keyboard::Key_R, Keyboard::Key_M), // MINIMAP
 };
 
 } // namespace Default
@@ -193,7 +192,6 @@ const string
 	autoReadyWeapon = "auto_ready_weapon",
 	mouseLookToggle = "mouse_look_toggle",
 	mouseSensitivity = "mouse_sensitivity",
-	mouseSmoothing = "mouse_smoothing",
 	autoDescription = "auto_description",
 	linkMouseLookToUse = "link_mouse_look_to_use";
 
@@ -254,14 +252,7 @@ const string
 
 class ConfigReader : public IniReader {
 	
-private:
-	
-	mutable map<string, InputKeyId> keyNames;
-	
-	InputKeyId getKeyId(const string & name) const;
-	
 public:
-	
 	ActionKey getActionKey(const string & section, ControlAction index) const;
 	
 };
@@ -273,255 +264,15 @@ public:
 	ConfigWriter(ostream & _output) : IniWriter(_output) { }
 	
 	void writeActionKey(ControlAction index, const ActionKey & value);
-	
+
 };
-
-struct KeyDescription {
-	InputKeyId id;
-	std::string name;
-};
-
-// All standard keys, sorted by key ID
-// + should not appear in names as it is used as a separator
-static const KeyDescription keys[] = {
-	{ DIK_ESCAPE, "Escape" },
-	{ DIK_1, "1" },
-	{ DIK_2, "2" },
-	{ DIK_3, "3" },
-	{ DIK_4, "4" },
-	{ DIK_5, "5" },
-	{ DIK_6, "6" },
-	{ DIK_7, "7" },
-	{ DIK_8, "8" },
-	{ DIK_9, "9" },
-	{ DIK_0, "0" },
-	{ DIK_MINUS, "-" },
-	{ DIK_EQUALS, "=" },
-	{ DIK_BACK, "Backspace" },
-	{ DIK_TAB, "Tab" },
-	{ DIK_Q, "Q" },
-	{ DIK_W, "W" },
-	{ DIK_E, "E" },
-	{ DIK_R, "R" },
-	{ DIK_T, "T" },
-	{ DIK_Y, "Y" },
-	{ DIK_U, "U" },
-	{ DIK_I, "I" },
-	{ DIK_O, "O" },
-	{ DIK_P, "P" },
-	{ DIK_LBRACKET, "[" },
-	{ DIK_RBRACKET, "]" },
-	{ DIK_RETURN, "Return" },
-	{ DIK_LCONTROL, "LeftControl" },
-	{ DIK_A, "A" },
-	{ DIK_S, "S" },
-	{ DIK_D, "D" },
-	{ DIK_F, "F" },
-	{ DIK_G, "G" },
-	{ DIK_H, "H" },
-	{ DIK_J, "J" },
-	{ DIK_K, "K" },
-	{ DIK_L, "L" },
-	{ DIK_SEMICOLON, ";" },
-	{ DIK_APOSTROPHE, "'" },
-	{ DIK_GRAVE, "`" },
-	{ DIK_LSHIFT, "LeftShift" },
-	{ DIK_BACKSLASH, "Backslash" },
-	{ DIK_Z, "Z" },
-	{ DIK_X, "X" },
-	{ DIK_C, "C" },
-	{ DIK_V, "V" },
-	{ DIK_B, "B" },
-	{ DIK_N, "N" },
-	{ DIK_M, "M" },
-	{ DIK_COMMA, "," },
-	{ DIK_PERIOD, "." },
-	{ DIK_SLASH, "/" },
-	{ DIK_RSHIFT, "RightShift" },
-	{ DIK_MULTIPLY, "Multiply" },
-	{ DIK_LMENU, "LeftAlt" },
-	{ DIK_SPACE, "Space" },
-	{ DIK_CAPITAL, "Capital" },
-	{ DIK_F1, "F1" },
-	{ DIK_F2, "F2" },
-	{ DIK_F3, "F3" },
-	{ DIK_F4, "F4" },
-	{ DIK_F5, "F5" },
-	{ DIK_F6, "F6" },
-	{ DIK_F7, "F7" },
-	{ DIK_F8, "F8" },
-	{ DIK_F9, "F9" },
-	{ DIK_F10, "F10" },
-	{ DIK_NUMLOCK, "NumLock" },
-	{ DIK_SCROLL, "ScrollLock" },
-	{ DIK_NUMPAD7, "Numpad7" },
-	{ DIK_NUMPAD8, "Numpad8" },
-	{ DIK_NUMPAD9, "Numpad9" },
-	{ DIK_SUBTRACT, "Numpad-" },
-	{ DIK_NUMPAD4, "Numpad4" },
-	{ DIK_NUMPAD5, "Numpad5" },
-	{ DIK_NUMPAD6, "Numpad6" },
-	{ DIK_ADD, "NumpadPlus" },
-	{ DIK_NUMPAD1, "Numpad1" },
-	{ DIK_NUMPAD2, "Numpad2" },
-	{ DIK_NUMPAD3, "Numpad3" },
-	{ DIK_NUMPAD0, "Numpad0" },
-	{ DIK_DECIMAL, "Numpad." },
-	{ DIK_F11, "F11" },
-	{ DIK_F12, "F12" },
-	{ DIK_F13, "F13" },
-	{ DIK_F14, "F14" },
-	{ DIK_F15, "F15" },
-	{ DIK_KANA, "Kana" },
-	{ DIK_CONVERT, "Convert" },
-	{ DIK_NOCONVERT, "NoConvert" },
-	{ DIK_YEN, "Yen" },
-	{ DIK_NUMPADEQUALS, "Numpad=" },
-	{ DIK_CIRCUMFLEX, "Circumflex" },
-	{ DIK_AT, "@" },
-	{ DIK_COLON, ":" },
-	{ DIK_UNDERLINE, "_" },
-	{ DIK_KANJI, "Kanji" },
-	{ DIK_STOP, "Stop" },
-	{ DIK_AX, "Ax" },
-	{ DIK_NUMPADENTER, "NumpadReturn" },
-	{ DIK_RCONTROL, "RightControl" },
-	{ DIK_NUMPADCOMMA, "Numpad," },
-	{ DIK_DIVIDE, "Numpad/" },
-	{ DIK_SYSRQ, "?" },
-	{ DIK_RMENU, "RightAlt" },
-	{ DIK_PAUSE, "Pause" },
-	{ DIK_HOME, "Home" },
-	{ DIK_UP, "Up" },
-	{ DIK_PRIOR, "PageUp" },
-	{ DIK_LEFT, "Left" },
-	{ DIK_RIGHT, "Right" },
-	{ DIK_END, "End" },
-	{ DIK_DOWN, "Down" },
-	{ DIK_NEXT, "PageDown" },
-	{ DIK_INSERT, "Insert" },
-	{ DIK_DELETE, "Delete" },
-	{ DIK_LWIN, "LeftStart" },
-	{ DIK_RWIN, "RightStart" },
-	{ DIK_APPS, "AppMenu" },
-	{ DIK_POWER, "Power" },
-	{ DIK_SLEEP, "Sleep" },
-	{ DIK_WHEELUP, "WheelUp" },
-	{ DIK_WHEELDOWN, "WheelDown" }
-};
-
-static const string PREFIX_KEY = "Key_";
-static const string PREFIX_BUTTON = "Button";
-static const char SEPARATOR = '+';
-static const string KEY_NONE = "---";
-
-static int keyCompare(const void * a, const void * b) {
-	return *((const InputKeyId *)a) - ((const KeyDescription *)b)->id;
-}
-
-static string getKeyName(InputKeyId key) {
-	
-	if(key == -1) {
-		return string();
-	}
-	
-	std::string name;
-	
-	std::string modifier;
-	if(key & ~0xC000ffff) {
-		// key combination
-		modifier = getKeyName((key >> 16) & 0x3fff);
-		key &= 0xC000ffff;
-	}
-	
-	arx_assert(DIK_BUTTON32 > DIK_BUTTON1 && DIK_BUTTON32 - DIK_BUTTON1 == 31);
-	if(key >= (InputKeyId)DIK_BUTTON1 && key <= (InputKeyId)DIK_BUTTON32) {
-		
-		ostringstream oss;
-		oss << PREFIX_BUTTON << (int)(key - DIK_BUTTON1 + 1);
-		name = oss.str();
-		
-	} else {
-		
-		const KeyDescription * entity = (const KeyDescription *)bsearch(&key, keys, sizeof(keys) / sizeof(*keys), sizeof(*keys), keyCompare);
-		
-		if(entity != NULL) {
-			arx_assert(entity->id == key);
-			name = entity->name;
-		}
-	}
-	
-	if(name.empty()) {
-		ostringstream oss;
-		oss << PREFIX_KEY << (int)key;
-		name = oss.str();
-	}
-	
-	if(!modifier.empty()) {
-		return modifier + SEPARATOR + name;
-	} else {
-		return name;
-	}
-}
-
-InputKeyId ConfigReader::getKeyId(const string & name) const {
-	
-	// If a noneset key, return -1
-	if(name.empty() || name == KEY_NONE) {
-		return -1;
-	}
-	
-	size_t sep = name.find(SEPARATOR);
-	if(sep != string::npos) {
-		InputKeyId modifier = getKeyId(name.substr(0, sep));
-		InputKeyId key = getKeyId(name.substr(sep + 1));
-		if(modifier & key) {
-			// bits overlap, something went wrong
-			return key;
-		}
-		return (modifier << 16 | key);
-	}
-	
-	if(!name.compare(0, PREFIX_KEY.length(), PREFIX_KEY)) {
-		istringstream iss(name.substr(PREFIX_KEY.length()));
-		int key;
-		iss >> key;
-		if(!iss.bad()) {
-			return key;
-		}
-	}
-	
-	arx_assert(DIK_BUTTON32 > DIK_BUTTON1 && DIK_BUTTON32 - DIK_BUTTON1 == 31);
-	if(!name.compare(0, PREFIX_BUTTON.length(), PREFIX_BUTTON)) {
-		istringstream iss(name.substr(PREFIX_BUTTON.length()));
-		int key;
-		iss >> key;
-		if(!iss.bad() && key >= 0 && key <= (int)(DIK_BUTTON32 - DIK_BUTTON1)) {
-			return DIK_BUTTON1 + key - 1;
-		}
-	}
-	
-	if(keyNames.empty()) {
-		// Initialize the key name -> id map.
-		for(size_t i = 0; i < sizeof(keys)/sizeof(*keys); i++) {
-			keyNames[keys[i].name] = keys[i].id;
-		}
-	}
-	
-	map<string, InputKeyId>::const_iterator it = keyNames.find(name);
-	if(it != keyNames.end()) {
-		return it->second;
-	}
-	
-	return -1;
-}
 
 void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionKey) {
 	
-	string v1 = getKeyName(actionKey.key[0]);
+	string v1 = Input::getKeyName(actionKey.key[0]);
 	writeKey(Key::actions[index] + "_k0", v1);
 	
-	string v2 = getKeyName(actionKey.key[1]);
+	string v2 = Input::getKeyName(actionKey.key[1]);
 	writeKey(Key::actions[index] + "_k1", v2);
 }
 
@@ -532,9 +283,9 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 	
 	const IniKey * k0 = getKey(section, key + "_k0");
 	if(k0) {
-		InputKeyId id = getKeyId(k0->getValue());
-		if(id == -1 && !k0->getValue().empty() && k0->getValue() != KEY_NONE) {
-			LogWarning << "error parsing key name for " <<  key << "_k0: \"" << k0->getValue() << "\", resetting to \"" << getKeyName(action_key.key[0]) << "\"";
+		InputKeyId id = Input::getKeyId(k0->getValue());
+		if(id == -1 && !k0->getValue().empty() && k0->getValue() != Input::KEY_NONE) {
+			LogWarning << "error parsing key name for " <<  key << "_k0: \"" << k0->getValue() << "\", resetting to \"" << Input::getKeyName(action_key.key[0]) << "\"";
 		} else {
 			action_key.key[0] = id;
 		}
@@ -542,15 +293,15 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 	
 	const IniKey * k1 = getKey(section, key + "_k1");
 	if(k1) {
-		InputKeyId id = getKeyId(k1->getValue());
-		if(id == -1 && !k1->getValue().empty() && k1->getValue() != KEY_NONE) {
-			LogWarning << "error parsing key name for " <<  key << "_k1: \"" << k1->getValue() << "\", resetting to \"" << getKeyName(action_key.key[1]) << "\"";
+		InputKeyId id = Input::getKeyId(k1->getValue());
+		if(id == -1 && !k1->getValue().empty() && k1->getValue() != Input::KEY_NONE) {
+			LogWarning << "error parsing key name for " <<  key << "_k1: \"" << k1->getValue() << "\", resetting to \"" << Input::getKeyName(action_key.key[1]) << "\"";
 		} else {
 			action_key.key[1] = id;
 		}
 	}
 	
-	LogDebug << "[" << section << "] " << key << " = \"" << getKeyName(action_key.key[0]) << "\", \"" << getKeyName(action_key.key[1]) << "\"";
+	LogDebug << "[" << section << "] " << key << " = \"" << Input::getKeyName(action_key.key[0]) << "\", \"" << Input::getKeyName(action_key.key[1]) << "\"";
 	
 	return action_key;
 }
@@ -660,7 +411,6 @@ bool Config::save() {
 	writer.writeKey(Key::autoReadyWeapon, input.autoReadyWeapon);
 	writer.writeKey(Key::mouseLookToggle, input.mouseLookToggle);
 	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
-	writer.writeKey(Key::mouseSmoothing, input.mouseSmoothing);
 	writer.writeKey(Key::autoDescription, input.autoDescription);
 	writer.writeKey(Key::linkMouseLookToUse, input.linkMouseLookToUse);
 	
@@ -745,7 +495,6 @@ bool Config::init(const string & file, const string & defaultFile) {
 	input.autoReadyWeapon = reader.getKey(Section::Input, Key::autoReadyWeapon, Default::autoReadyWeapon);
 	input.mouseLookToggle = reader.getKey(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
 	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
-	input.mouseSmoothing = reader.getKey(Section::Input, Key::mouseSmoothing, Default::mouseSmoothing);
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
 	input.linkMouseLookToUse = reader.getKey(Section::Input, Key::linkMouseLookToUse, Default::linkMouseLookToUse);
 	

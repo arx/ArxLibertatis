@@ -78,10 +78,6 @@ extern long TSU_TEST_NB_LIGHT;
 extern EERIEMATRIX ProjectionMatrix;
 extern float fZFogStart;
 
-extern CDirectInput * pGetInfoDirectInput;
-
-void EE_P2(TexturedVertex * in, TexturedVertex * out);
-
 /* Init bounding box */
 inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 {

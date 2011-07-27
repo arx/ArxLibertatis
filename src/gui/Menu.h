@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MENU_MENU_H
 #define ARX_MENU_MENU_H
 
+#include <windows.h> // for SYSTEMTIME
+
 #include <string>
 #include <vector>
 #include <ctime>
@@ -80,7 +82,7 @@ struct MENU_DYNAMIC_DATA {
 	std::string str_button_quickgen;
 	std::string str_button_skin;
 	std::string str_button_done;
-
+	
 	MENU_DYNAMIC_DATA() : Background(NULL), BookBackground(NULL),
 	  pTexCredits(NULL), creditspos(0), creditstart(0) { }
 	

@@ -23,63 +23,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_WINDOW_DXINPUT_H
-#define ARX_WINDOW_DXINPUT_H
+#ifndef ARX_INPUT_DINPUT7BACKEND_H
+#define ARX_INPUT_DINPUT7BACKEND_H
 
-enum DXIMode {
-	DXI_MODE_EXCLUSIF_ALLMSG = 0,
-	DXI_MODE_EXCLUSIF_OURMSG = 1,
-	DXI_MODE_NONEXCLUSIF_ALLMSG = 2,
-	DXI_MODE_NONEXCLUSIF_OURMSG = 3
+#include "input/Input.h"
+#include "input/InputBackend.h"
+
+class DInput7Backend : public InputBackend
+{
+public:
+	DInput7Backend();
+	virtual ~DInput7Backend();
+
+	virtual bool init();
+	virtual bool update();
+
+	virtual void acquireDevices();
+	virtual void unacquireDevices();
+
+	// Mouse 
+	virtual void getMouseCoordinates(int & absX, int & absY, int & wheelDir) const;
+	virtual void setMouseCoordinates(int absX, int absY);
+	virtual bool isMouseButtonPressed(int buttonId, int & _iDeltaTime) const;
+	virtual void getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const;
+
+	// Keyboard
+	virtual bool isKeyboardKeyPressed(int dikkey) const;
+	virtual bool getKeyAsText(int keyId, char& result) const;
+
+private:
+	mutable int iLastMouseX;
+	mutable int iLastMouseY;
 };
 
-enum DXIButton {
-	DXI_BUTTON0 = 0,
-	DXI_BUTTON1 = 1,
-	DXI_BUTTON2 = 2,
-	DXI_BUTTON3 = 3,
-	DXI_BUTTON4 = 4,
-	DXI_BUTTON5 = 5,
-	DXI_BUTTON6 = 6,
-	DXI_BUTTON7 = 7,
-	DXI_BUTTON8 = 8,
-	DXI_BUTTON9 = 9,
-	DXI_BUTTON10 = 10,
-	DXI_BUTTON11 = 11,
-	DXI_BUTTON12 = 12,
-	DXI_BUTTON13 = 13,
-	DXI_BUTTON14 = 14,
-	DXI_BUTTON15 = 15,
-	DXI_BUTTON16 = 16,
-	DXI_BUTTON17 = 17,
-	DXI_BUTTON18 = 18,
-	DXI_BUTTON19 = 19,
-	DXI_BUTTON20 = 20,
-	DXI_BUTTON21 = 21,
-	DXI_BUTTON22 = 22,
-	DXI_BUTTON23 = 23,
-	DXI_BUTTON24 = 24,
-	DXI_BUTTON25 = 25,
-	DXI_BUTTON26 = 26,
-	DXI_BUTTON27 = 27,
-	DXI_BUTTON28 = 28,
-	DXI_BUTTON29 = 29,
-	DXI_BUTTON30 = 30,
-	DXI_BUTTON31 = 31
-};
-
-bool DXI_Init();
-void DXI_Release();
-bool DXI_GetAxeMouseXYZ(int & mx, int & my, int & mz);
-bool DXI_ExecuteAllDevices();
-bool DXI_GetKeyboardInputDevice(DXIMode mode);
-bool DXI_GetMouseInputDevice(DXIMode mode, int minbutton, int minaxe);
-bool DXI_KeyPressed(int dikkey);
-int DXI_GetKeyIDPressed();
-void DXI_RestoreAllDevices();
-void DXI_SleepAllDevices();
-bool DXI_MouseButtonPressed(int numb, int & _iDeltaTime);
-void DXI_MouseButtonCountClick(int numb, int & _iNumClick, int & _iNumUnClick);
-bool DXI_SetMouseRelative();
-
-#endif // ARX_WINDOW_DXINPUT_H
+#endif // ARX_INPUT_DINPUT7BACKEND_H

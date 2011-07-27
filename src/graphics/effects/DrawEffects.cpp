@@ -414,7 +414,6 @@ void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,TexturedVert
 	}
 }
 extern float FrameDiff;
-void EE_P2(TexturedVertex *in,TexturedVertex *out);
 void ARXDRAW_DrawPolyBoom()
 {
 	TexturedVertex ltv[4];

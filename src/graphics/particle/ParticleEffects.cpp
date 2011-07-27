@@ -77,6 +77,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 
+#include "input/Input.h"
+
 #include "physics/Collisions.h"
 #include "physics/Box.h"
 
@@ -85,8 +87,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
-
-#include "window/Input.h"
 
 using std::max;
 
@@ -1006,7 +1006,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 	float z,s,r,g,b;
 
 	TextureContainer * surf;
-	bool key=!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE);
+	bool key=!GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
 	for (long j=1;j<5;j++) 
 	{

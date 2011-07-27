@@ -13,7 +13,7 @@ include(CompileCheck)
 
 function(create_source_groups)
 	# Source groups
-	set(SOURCE_GROUPS ai animation audio core game graphics gui io physics platform scene script window)
+	set(SOURCE_GROUPS ai animation audio core game graphics gui input io physics platform scene script)
 	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
 		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.*)
 		source_group("${SOURCE_GROUP}" FILES ${SOURCES})
@@ -97,6 +97,13 @@ if(MSVC)
 
 	# This is needed to use ZLIB as a DLL
 	add_definitions(-DZLIB_WINAPI)
+
+	if(NOT ARX_DEBUG_EXTRA)
+		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
+		add_definitions(-D_SECURE_SCL=0)
+		add_definitions(-D_SECURE_SCL_THROWS=0)
+		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
+	endif()
 	
 	# Add dx7 include & lib paths
 	if("$ENV{DX7SDK_PATH}" STREQUAL "")
@@ -258,16 +265,16 @@ file(GLOB_RECURSE CORE_SOURCES ${SRC_DIR}/core/*.cpp)
 file(GLOB_RECURSE GAME_SOURCES ${SRC_DIR}/game/*.cpp)
 file(GLOB_RECURSE GRAPHICS_SOURCES ${SRC_DIR}/graphics/*.cpp)
 file(GLOB_RECURSE GUI_SOURCES ${SRC_DIR}/gui/*.cpp)
+file(GLOB_RECURSE INPUT_SOURCES ${SRC_DIR}/input/*.cpp)
 file(GLOB_RECURSE IO_SOURCES ${SRC_DIR}/io/*.cpp)
 file(GLOB_RECURSE MATH_SOURCES ${SRC_DIR}/math/*.cpp)
 file(GLOB_RECURSE PHYSICS_SOURCES ${SRC_DIR}/physics/*.cpp)
 file(GLOB_RECURSE PLATFORM_SOURCES ${SRC_DIR}/platform/*.cpp)
 file(GLOB_RECURSE SCENE_SOURCES ${SRC_DIR}/scene/*.cpp)
 file(GLOB_RECURSE SCRIPT_SOURCES ${SRC_DIR}/script/*.cpp)
-file(GLOB_RECURSE WINDOW_SOURCES ${SRC_DIR}/window/*.cpp)
 file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
-set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
+set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES})
 
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})

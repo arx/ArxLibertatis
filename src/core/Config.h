@@ -26,7 +26,7 @@
 #ifndef ARX_CORE_CONFIG_H
 #define ARX_CORE_CONFIG_H
 
-#include <string>
+#include "input/InputKey.h"
 
 //! Enum for all the controlling actions
 enum ControlAction {
@@ -82,8 +82,6 @@ enum ControlAction {
 	CONTROLS_CUST_MINIMAP
 	
 };
-
-typedef int InputKeyId; // TODO use InputKey from Application.h?
 
 const size_t NUM_ACTION_KEY = CONTROLS_CUST_MINIMAP + 1;
 
@@ -150,7 +148,6 @@ public:
 		bool mouseLookToggle;
 		bool autoDescription;
 		int mouseSensitivity;
-		bool mouseSmoothing;
 		bool linkMouseLookToUse;
 		
 	} input;
