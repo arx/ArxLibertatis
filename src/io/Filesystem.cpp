@@ -135,7 +135,7 @@ char * read_file(const path & p, size_t & size) {
 	return buf;
 }
 
-// Helper functions so we can support both fs_boost v2 and v3
+// Helper functions so we can support both boost::filesystem v2 and v3
 inline const std::string  & as_string(const std::string & path) {
 	return path;
 }
