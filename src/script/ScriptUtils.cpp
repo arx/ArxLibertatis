@@ -374,6 +374,8 @@ void initSuppressions() {
 	
 	suppress("dragon's_lair_ice_wall", 41, "satangular"); // unknown command 'satangular', should be setangular
 	
+	suppress("emerald_inwall", 136, "play"); // unknown flag -e (ignored)
+	
 	suppress("flour_bag", 41, "collison"); // unknown command 'collison', should be collision
 	
 	suppress("gem_inwall", 114, "play"); // unknown flag -e (ignored)
@@ -445,6 +447,8 @@ void initSuppressions() {
 	
 	suppress("rat_base_0059", 62, "behavior"); // unknown behavior 'firendly', should be 'friendly'
 	suppress("rat_base_0059", 160, "behavior"); // unknown behavior 'firendly', should be 'friendly'
+	
+	suppress("ruby_inwall", 135, "play"); // unknown flag -e (ignored)
 	
 	suppress("secret_door_council_2b", 609, "}"); // extraneous '}'
 	
