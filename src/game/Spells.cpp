@@ -8596,11 +8596,10 @@ static void ApplySPWep() {
 	if (!sp_wep)
 	{		
 		ARX_SPSound();
-		std::string tex;
-		std::string tex2;
-		tex2 = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
-		File_Standardize(tex2,tex);
-		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(tex,IO_IMMEDIATELOAD);
+		
+		fs::path file = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
+		
+		INTERACTIVE_OBJ * ioo = AddItem(file,IO_IMMEDIATELOAD);
 
 		if (ioo!=NULL)
 		{			
@@ -8610,7 +8609,7 @@ static void ApplySPWep() {
 			ioo->scriptload=1;
 			MakeTemporaryIOIdent(ioo);
 			SendInitScriptEvent(ioo);
-			ioo->show=SHOW_FLAG_IN_INVENTORY;									
+			ioo->show = SHOW_FLAG_IN_INVENTORY;
 
 			if (!CanBePutInInventory(ioo))
 				PutInFrontOfPlayer(ioo);
@@ -8665,7 +8664,7 @@ static void ApplySPBow() {
 	
 	ARX_SPSound();
 	const char OBJ_BOW[] = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx.teo";
-	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(OBJ_BOW,IO_IMMEDIATELOAD);
+	INTERACTIVE_OBJ * ioo = AddItem(OBJ_BOW, IO_IMMEDIATELOAD);
 	
 	if(ioo!=NULL) {
 		MakeCoolFx(&player.pos);
@@ -8687,27 +8686,24 @@ static void ApplySPBow() {
 
 static void ApplySPArm() {
 	ARX_SPSound();
-	std::string tex;
-	std::string tex2;
-
-	switch (sp_arm)
-	{
+	
+	fs::path file;
+	switch (sp_arm) {
 		case 0:
-			tex2 = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm.teo";
+			file = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm.teo";
 		break;
 		case 1:
-			tex2 = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm.teo";
+			file = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm.teo";
 		break;
 		case 2:
-			tex2 = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm.teo";
+			file = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm.teo";
 		break;
 		default:
 			return;
 		break;
 	}
 
-	File_Standardize(tex2,tex);
-	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(tex,IO_IMMEDIATELOAD);
+	INTERACTIVE_OBJ * ioo = AddItem(file, IO_IMMEDIATELOAD);
 
 	if (ioo!=NULL)
 	{			

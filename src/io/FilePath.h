@@ -263,10 +263,4 @@ std::string GetExt(const std::string & str);
  **/
 void AddToName(std::string & str, const std::string & cat);
 
-/**
- * Standardize the given path.
- * Removes any ./, evaluates ../ and changes all characters to upper case.
- */
-void File_Standardize(const std::string & from, std::string & to);
-
 #endif // ARX_IO_FILEPATH_H
