@@ -81,10 +81,16 @@ void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZN
 
 
 struct ANIM_HANDLE {
-	char path[256]; // empty path means an unallocated slot
+	
+	ANIM_HANDLE();
+	
+	fs::path path; // empty path means an unallocated slot
+	
 	EERIE_ANIM ** anims;
 	short alt_nb;
+	
 	long locks;
+	
 };
 
 struct EERIE_TRANSFORM
@@ -944,11 +950,10 @@ float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 void ResetWorlds();
 float GetSWorld(float x,float y,float z);
 
-void EERIE_ANIMMANAGER_Init();
 void EERIE_ANIMMANAGER_PurgeUnused();
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const std::string& path);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const std::string& path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const fs::path & path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const fs::path & path);
 void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);

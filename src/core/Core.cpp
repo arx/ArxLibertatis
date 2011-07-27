@@ -1337,7 +1337,6 @@ int main(int argc, char ** argv) {
 	memset(TELEPORT_TO_POSITION,0,64);
 	LogDebug << "Mset";
 	
-	EERIE_ANIMMANAGER_Init();
 	LogDebug << "AnimManager Init";
 	ARX_SCRIPT_EventStackInit();
 	LogDebug << "EventStack Init";

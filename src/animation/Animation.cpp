@@ -91,6 +91,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
+#include <platform/String.h>
 
 using std::min;
 using std::max;
@@ -113,7 +114,9 @@ extern long FRAME_COUNT;
 extern Color ulBKGColor;
 extern long ZMAPMODE;
 extern float fZFogStart;
+
 ANIM_HANDLE animations[MAX_ANIMATIONS];
+
 bool MIPM;
 TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
@@ -222,15 +225,18 @@ void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim)
 	au->flags&=~EA_FORCEPLAY;	
 }
 
-void EERIE_ANIMMANAGER_Init() {
-	memset(animations, 0, sizeof(ANIM_HANDLE) * MAX_ANIMATIONS);
+ANIM_HANDLE::ANIM_HANDLE() : path() {
+	
+	anims = NULL, alt_nb = 0;
+	
+	locks = 0;
 }
 
 void EERIE_ANIMMANAGER_PurgeUnused() {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (	(animations[i].path[0]!=0)
+		if (	(!animations[i].path.empty())
 			&&	(animations[i].locks==0)	)
 		{
 			for (long k=0;k<animations[i].alt_nb;k++)
@@ -244,7 +250,7 @@ void EERIE_ANIMMANAGER_PurgeUnused() {
 
 			animations[i].anims=NULL;
 
-			animations[i].path[0]=0;
+			animations[i].path.clear();
 		}
 	}
 }
@@ -260,7 +266,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 	}
 }
 
-static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const string & path) {
+static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const fs::path & path) {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		if(animations[i].path == path) {
@@ -271,9 +277,9 @@ static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const string & path) {
 	return NULL;
 }
 
-static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const string & path) {
+static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const fs::path & path) {
 	
-	if(!ah || !ah->path[0]) {
+	if(!ah || ah->path.empty()) {
 		return false;
 	}
 	
@@ -296,7 +302,7 @@ static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const string & path) 
 	return true;
 }
 
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & path) {
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const fs::path & path) {
 	
 	ANIM_HANDLE * anim = EERIE_ANIMMANAGER_Load_NoWarning(path);
 	if(!anim) {
@@ -306,7 +312,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const string & path) {
 	return anim;
 }
 
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const string & path) {
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const fs::path & path) {
 	
 	ANIM_HANDLE * handl = EERIE_ANIMMANAGER_GetHandle(path);
 	if(handl) {
@@ -316,7 +322,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const string & path) {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if(animations[i].path[0] != '\0') {
+		if(!animations[i].path.empty()) {
 			continue;
 		}
 		
@@ -336,20 +342,14 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const string & path) {
 			return NULL;
 		}
 		
-		strcpy(animations[i].path, path.c_str());
+		animations[i].path = path;
 		animations[i].locks = 1;
 		
-		// remove extension
-		string altpath = path;
-		SetExt(altpath, string());
-		
 		int pathcount = 2;
-		string path2;
+		fs::path altpath;
 		do {
-			ostringstream oss;
-			oss << altpath << pathcount++ << ".tea";
-			path2 = oss.str();
-		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], path2));
+			altpath = fs::path(path).append_basename(itoa(pathcount++));
+		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], altpath));
 		
 		return &animations[i];
 	}
@@ -367,11 +367,11 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (animations[i].path[0]!=0)
+		if(!animations[i].path.empty())
 		{
 			count++;
 			char txx[256];
-			strcpy(txx,animations[i].path);
+			strcpy(txx,animations[i].path.string().c_str());
 			GetName(txx);
 			long totsize=0;
 
@@ -1979,13 +1979,13 @@ void EERIE_ANIMMANAGER_Clear(long i)
 
 	animations[i].anims=NULL;
 
-	animations[i].path[0]=0;
+	animations[i].path.clear();
 }
 
 void EERIE_ANIMMANAGER_ClearAll() {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(animations[i].path[0] != '\0') {
+		if(!animations[i].path.empty()) {
 			EERIE_ANIMMANAGER_Clear(i);
 		}
 	}
@@ -2020,11 +2020,10 @@ void EERIE_ANIMMANAGER_ReloadAll()
 	}
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(animations[i].path[0] != '\0') {
-			char pathhh[256];
-			strcpy(pathhh,animations[i].path);
+		if(!animations[i].path.empty()) {
+			fs::path path = animations[i].path;
 			EERIE_ANIMMANAGER_Clear(i);
-			EERIE_ANIMMANAGER_Load(pathhh);			
+			EERIE_ANIMMANAGER_Load(path);
 		}
 	}
 }

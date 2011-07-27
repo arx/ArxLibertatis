@@ -1133,7 +1133,7 @@ void ARX_SOUND_PushAnimSamples()
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (animations[i].path[0])
+		if (!animations[i].path.empty())
 		{
 			for (long j = 0; j < animations[i].alt_nb; j++)
 			{
@@ -1173,7 +1173,7 @@ void ARX_SOUND_PopAnimSamples()
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (animations[i].path[0])
+		if (!animations[i].path.empty())
 		{
 			for (long j = 0; j < animations[i].alt_nb; j++)
 			{

@@ -905,7 +905,7 @@ static long ARX_CHANGELEVEL_Push_Player() {
 
 		if (inter.iobj[0]->anims[i] != NULL)
 		{
-			strcpy(asp->anims[i], inter.iobj[0]->anims[i]->path);
+			strncpy(asp->anims[i], inter.iobj[0]->anims[i]->path.string().c_str(), sizeof(asp->anims[i]));
 		}
 	}
 
@@ -1141,7 +1141,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 
 		if (io->anims[i] != NULL)
 		{
-			strcpy(ais.anims[i], io->anims[i]->path);
+			strncpy(ais.anims[i], io->anims[i]->path.string().c_str(), sizeof(ais.anims[i]));
 		}
 	}
 
