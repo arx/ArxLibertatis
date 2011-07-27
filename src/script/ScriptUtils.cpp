@@ -366,6 +366,8 @@ void initSuppressions() {
 	
 	suppress("demon", 18479, "play"); // sound number is sometimes too high
 	
+	suppress("diamond", 139, "play"); // unknown flag -e (ignored) note: fix_inter/diamond_inwall/diamond.asl!
+	
 	suppress("dog", 19669, "play"); // sound number is sometimes too high
 	
 	suppress("dog_0011", 31, "playanim"); // animation 'action2' not loaded
