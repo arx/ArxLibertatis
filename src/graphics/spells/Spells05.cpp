@@ -903,8 +903,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 	pTab	 = NULL;
 	pTab	 = new CPoisonProjectile*[uiNumber]();
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
-	{
+	for(unsigned int i = 0 ; i < uiNumber ; i++) {
 		pTab[i] = new CPoisonProjectile();
 		pTab[i]->spellinstance = this->spellinstance;
 	}
@@ -913,7 +912,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 //-----------------------------------------------------------------------------
 CMultiPoisonProjectile::~CMultiPoisonProjectile()
 {
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		if (pTab[i]->lLightId != -1)
 		{
@@ -982,7 +981,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 
 	long lMax = 0;
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		pTab[i]->Create(_eSrc, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + (long) rnd() * 5000;
@@ -1016,7 +1015,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 //-----------------------------------------------------------------------------
 void CMultiPoisonProjectile::Update(unsigned long _ulTime)
 {
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		pTab[i]->Update(_ulTime);
 	}
@@ -1027,7 +1026,7 @@ float CMultiPoisonProjectile::Render()
 {
  
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		float fa = pTab[i]->Render();
 

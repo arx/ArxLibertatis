@@ -961,15 +961,15 @@ bool Menu2_Render() {
 
 							ARX_CHECK_NOT_NEG( iModeBpp );
 
-							if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( iModeBpp ) )
+							if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == (DWORD)iModeBpp)
 							{
 								((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, (MENUSTATE)(OPTIONS_VIDEO_RESOLUTION_0+i)));
 
 								ARX_CHECK_NOT_NEG( iModeX );
 								ARX_CHECK_NOT_NEG( iModeY );
 
-								if( ( danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( iModeX ) ) &&
-									( danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( iModeY ) ) )
+								if( (danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == (DWORD)iModeX) &&
+									(danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == (DWORD)iModeY) )
 								{
 
 									((CMenuSliderText*)me)->iPos = ((CMenuSliderText *)me)->vText.size()-1;
@@ -984,8 +984,7 @@ bool Menu2_Render() {
 
 							for(ii=vBpp.begin();ii!=vBpp.end();++ii)
 							{
-								if (ARX_CAST_UINT(*ii) == danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount)
-								{
+								if((DWORD)*ii == danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount) {
 									bExist=true;
 									break;
 								}
@@ -1873,13 +1872,13 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
 
 		if (pWindowMenu)
 		{
-			for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+			for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
 				if ( p->eMenuState == EDIT_QUEST_LOAD )
 				{
-					for (UINT j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
+					for (size_t j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
 					{
 						CMenuElement *pMenuElement = (CMenuElement*) ( (CMenuElement*)p->MenuAllZone.vMenuZone[j] )->GetZoneWithID( BUTTON_MENUEDITQUEST_LOAD_CONFIRM );
 
@@ -1989,7 +1988,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	case BUTTON_MENUEDITQUEST_LOAD_INIT:
 		{
 			if ( pWindowMenu )
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 				{
 					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -1997,7 +1996,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 					{
 						pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 
-						for (UINT j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
+						for (size_t j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
 						{
 							CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
 
@@ -2017,7 +2016,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			pLoadConfirm->SetCheckOn();
 			pLoadConfirm->lColor=pLoadConfirm->lOldColor;
 
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -2025,7 +2024,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 				{
 					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 
-						for (UINT j = 0 ; j < p->MenuAllZone.vMenuZone.size(); j++)
+						for (size_t j = 0 ; j < p->MenuAllZone.vMenuZone.size(); j++)
 					{
 						CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
 
@@ -2046,7 +2045,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		{
 			if (pWindowMenu)
 			{
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -2081,7 +2080,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	case BUTTON_MENUEDITQUEST_SAVE:
 		{
 			if (pWindowMenu)
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -2103,7 +2102,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	case BUTTON_MENUEDITQUEST_DELETE:
 		{
 			if (pWindowMenu)
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -2270,7 +2269,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		(eMenuState == EDIT_QUEST_SAVE_CONFIRM) ||
 		(eMenuState == EDIT_QUEST_DELETE_CONFIRM))
 	{
-		for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+		for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 		{
 			CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -2852,7 +2851,7 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 	//NB : It seems that iState cannot be negative (used as tabular index / used as bool) but need further approval
 	ARX_CHECK_NOT_NEG( iState );
 
-	if (ARX_CAST_UINT( iState ) >= vTex.size())
+	if ((size_t)iState >= vTex.size())
 	{
 
 		iState = 0;
@@ -4466,7 +4465,7 @@ bool CMenuButton::OnMouseClick(int _iMouseButton) {
 
 	ARX_CHECK_NOT_NEG( iPos );
 
-	if( ARX_CAST_UINT( iPos ) >= vText.size() )
+	if((size_t)iPos >= vText.size() )
 		iPos = 0;
 
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
@@ -4701,7 +4700,7 @@ void CMenuSliderText::EmptyFunction()
 
 			ARX_CHECK_NOT_NEG(iPos);
 
-			if ( ARX_CAST_UINT( iPos ) >= vText.size() - 1 ) iPos = vText.size() - 1;
+			if ((size_t)iPos >= vText.size() - 1 ) iPos = vText.size() - 1;
 
 
 		}
@@ -4743,7 +4742,7 @@ bool CMenuSliderText::OnMouseClick(int)
 
 			ARX_CHECK_NOT_NEG(iPos);
 
-			if ( ARX_CAST_UINT( iPos ) >= vText.size() - 1 )
+			if ((size_t)iPos >= vText.size() - 1 )
 				iPos = vText.size() - 1 ;
 		}
 	}

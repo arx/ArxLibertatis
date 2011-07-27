@@ -137,13 +137,13 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 
 			ARX_CHECK_NOT_NEG(_iBpp);
 
-			if (danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT(_iBpp))
+			if (danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == (DWORD)_iBpp)
 			{
 				ARX_CHECK_NOT_NEG(_iWidth);
 				ARX_CHECK_NOT_NEG(_iHeight);
 
-				if ((danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT(_iWidth)) &&
-					    (danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT(_iHeight)))
+				if ((danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == (DWORD)_iWidth) &&
+					    (danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == (DWORD)_iHeight))
 				{
 
 					danaeApp.m_pDeviceInfo->ddsdFullscreenMode = danaeApp.m_pDeviceInfo->pddsdModes[i];
