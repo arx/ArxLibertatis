@@ -389,6 +389,8 @@ void initSuppressions() {
 	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 45586, "goto"); // missing label "main_alert"
 	
+	suppress("human_base_0076", 642, "destroy"); // target 'seat_stool1_0007' might already be destroyed TODO consider removing this warning
+	
 	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
 	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
 	
