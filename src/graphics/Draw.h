@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIEPOLY;
 struct EERIE_3DOBJ;
 struct EERIE_CYLINDER;
-class TexturedVertex;
+struct TexturedVertex;
 
 extern long ARX_ALTERNATE_3D;
 extern Vec3f SPRmins;

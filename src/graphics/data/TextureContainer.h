@@ -76,7 +76,7 @@ struct SMY_ARXMAT;
 struct SMY_ZMAPPINFO;
 struct EERIEPOLY;
 struct TexturedVertex;
-class Texture2D;
+struct Texture2D;
 
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 
