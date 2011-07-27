@@ -413,8 +413,12 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			if(brackets != (size_t)-1) {
 				brackets--;
 				if(brackets == 0) {
-					ScriptEventWarning << "--> event block ended without accept or refuse!";
-					return ACCEPT;
+					if(isBlockEndSuprressed(context)) { // TODO(broken-scripts)
+						brackets++;
+					} else {
+						ScriptEventWarning << "--> event block ended without accept or refuse!";
+						return ACCEPT;
+					}
 				}
 			}
 		} else {

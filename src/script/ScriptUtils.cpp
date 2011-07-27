@@ -1,6 +1,8 @@
 
 #include "script/ScriptUtils.h"
 
+#include <set>
+
 #include "graphics/data/Mesh.h"
 #include "io/Logger.h"
 #include "platform/String.h"
@@ -299,19 +301,41 @@ void Context::skipStatement() {
 
 namespace {
 
-typedef std::map<string, bool> SuppressedCommands;
+typedef std::set<string> SuppressedCommands;
 typedef std::map<string, SuppressedCommands> SuppressionsForFile;
 typedef std::map<size_t, SuppressionsForFile> SuppressionsForPos;
 
 SuppressionsForPos suppressions;
-
-}
+SuppressionsForPos blockSuppressions;
 
 void suppress(const string & script, size_t pos, const string & command) {
-	suppressions[pos][script][command] = true;
+	suppressions[pos][script].insert(command);
+}
+
+void suppressBlockEnd(const string & script, size_t pos) {
+	blockSuppressions[pos][script].insert("}");
+}
+
+bool contains(const SuppressionsForPos & list, const Context & context, const string & command) {
+	
+	SuppressionsForPos::const_iterator i0 = list.find(context.getPosition());
+	if(i0 == list.end()) {
+		return false;
+	}
+	
+	SuppressionsForFile::const_iterator i1 = i0->second.find(context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown");
+	if(i1 == i0->second.end()) {
+		return false;
+	}
+	
+	return (i1->second.find(command) != i1->second.end());
+}
+
 }
 
 void initSuppressions() {
+	
+	suppressBlockEnd("camera_0027", 1140); // '}' should be commented out!
 	
 	// TODO(broken-scripts)
 	// TODO move to external file
@@ -435,20 +459,11 @@ void initSuppressions() {
 }
 
 bool isSuppressed(const Context & context, const string & command) {
-	
-	SuppressionsForPos::const_iterator i0 = suppressions.find(context.getPosition());
-	if(i0 == suppressions.end()) {
-		return false;
-	}
-	
-	SuppressionsForFile::const_iterator i1 = i0->second.find(context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown");
-	if(i1 == i0->second.end()) {
-		return false;
-	}
-	
-	SuppressedCommands::const_iterator i2 = i1->second.find(command);
-	
-	return (i2 != i1->second.end() && i2->second);
+	return contains(suppressions, context, command);
+}
+
+bool isBlockEndSuprressed(const Context & context) {
+	return contains(blockSuppressions, context, "}");
 }
 
 }
