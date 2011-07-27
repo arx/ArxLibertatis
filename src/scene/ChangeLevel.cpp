@@ -2490,16 +2490,14 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			io->groups.insert(toLowercase(safestring(sgd->name)));
 		}
 		
-		arx_assert(io->tweaks.empty());
-		io->tweaks.reserve(ais->Tweak_nb);
-		for(long i = 0; i < ais->Tweak_nb; i++) {
+		io->tweaks.resize(ais->Tweak_nb);
+		for(size_t i = 0; i < io->tweaks.size(); i++) {
 			const SavedTweakInfo * sti = reinterpret_cast<const SavedTweakInfo *>(dat + pos);
 			pos += sizeof(SavedTweakInfo);
 			
-			io->tweaks.resize(io->tweaks.size() + 1);
-			io->tweaks.back().type = TweakType::load(sti->type); // TODO save/load flags
-			io->tweaks.back().param1 = fs::path::load(safestring(sti->param1));
-			io->tweaks.back().param2 = fs::path::load(safestring(sti->param2));
+			io->tweaks[i].type = TweakType::load(sti->type); // TODO save/load flags
+			io->tweaks[i].param1 = fs::path::load(safestring(sti->param1));
+			io->tweaks[i].param2 = fs::path::load(safestring(sti->param2));
 		}
 		
 		ARX_INTERACTIVE_APPLY_TWEAK_INFO(io);
