@@ -265,7 +265,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string file = loadPath(context.getWord());
+			fs::path file = fs::path::load(context.getWord());
 			
 			INTERACTIVE_OBJ * io = context.getIO();
 			
@@ -276,7 +276,7 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			File_Standardize("graph/obj3d/interactive/items/" + file + ".teo", file);
+			file = ("graph/obj3d/interactive/items" / file).append(".teo");
 			
 			long count = -1;
 			if(multi) {
