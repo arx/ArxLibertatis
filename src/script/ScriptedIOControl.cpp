@@ -33,25 +33,23 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string object = loadPath(context.getWord());
+		fs::path object = fs::path::load(context.getWord());
 		
 		DebugScript(" \"" << object << '"');
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
-		string tex2;
+		fs::path file;
 		if(io->ioflags & IO_NPC) {
-			tex2 = "graph/obj3d/interactive/npc/" + object + ".teo";
+			file = ("graph/obj3d/interactive/npc" / object).append(".teo");
 		} else if(io->ioflags & IO_FIX) {
-			tex2 = "graph/obj3d/interactive/fix_inter/" + object + ".teo";
+			file = ("graph/obj3d/interactive/fix_inter" / object).append(".teo");
 		} else {
-			tex2 = "graph/obj3d/interactive/items/" + object + ".teo";
+			file = ("graph/obj3d/interactive/items" / object).append(".teo");
 		}
-		string tex;
-		File_Standardize(tex2, tex);
 		
 		Anglef last_angle = io->angle;
-		INTERACTIVE_OBJ * ioo = AddInteractive(tex, -1);
+		INTERACTIVE_OBJ * ioo = AddInteractive(file, -1);
 		if(!ioo) {
 			return Failed;
 		}
