@@ -445,11 +445,10 @@ struct IO_PHYSICS
 	Vec3f		forces;
 };
 
-struct IO_TWEAKER_INFO
-{
-	 char			filename[256];
-	 char			skintochange[256];
-	 char			skinchangeto[256];
+struct IO_TWEAKER_INFO {
+	 char filename[256];
+	 char skintochange[256];
+	 char skinchangeto[256];
 };
 
 struct TWEAK_INFO;

@@ -210,11 +210,10 @@ public:
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(!io->tweakerinfo) {
-			io->tweakerinfo = (IO_TWEAKER_INFO *)malloc(sizeof(IO_TWEAKER_INFO));
-			if(!(io->tweakerinfo)) {
+			io->tweakerinfo = new IO_TWEAKER_INFO;
+			if(!io->tweakerinfo) {
 				return Failed;
 			}
-			memset(io->tweakerinfo, 0, sizeof(IO_TWEAKER_INFO));
 		}
 		
 		if(command == "skin") {

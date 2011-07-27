@@ -1349,10 +1349,8 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 			ARX_NPC_Behaviour_Reset(io);
 		}
 
-		if (io->tweakerinfo != NULL)
-		{
-			free(io->tweakerinfo);
-			io->tweakerinfo = NULL;
+		if(io->tweakerinfo) {
+			delete io->tweakerinfo, io->tweakerinfo = NULL;
 		}
 
 		if (io->inventory != NULL)
@@ -2187,7 +2185,7 @@ INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
 	ARX_SPELLS_RemoveAllSpellsOn(this);
 	
 	if(tweakerinfo) {
-		free(tweakerinfo);
+		delete tweakerinfo;
 	}
 
 	if(tweaky) {

@@ -2471,11 +2471,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		
 		if(ais->system_flags & SYSTEM_FLAG_TWEAKER_INFO) {
 			
-			if(io->tweakerinfo) {
-				free(io->tweakerinfo);
+			if(!io->tweakerinfo) {
+				io->tweakerinfo = new IO_TWEAKER_INFO;
 			}
-			
-			io->tweakerinfo = (IO_TWEAKER_INFO *)malloc(sizeof(IO_TWEAKER_INFO));
 			
 			const SavedTweakerInfo * sti = reinterpret_cast<const SavedTweakerInfo *>(dat + pos);
 			pos += sizeof(SavedTweakerInfo);
