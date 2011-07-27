@@ -492,22 +492,3 @@ void File_Standardize(const string & from, string & to) {
 	
 	to = temp;
 }
-
-std::string loadPath(const std::string & path) {
-	string copy;
-	copy.reserve(path.length());
-	bool slash = false;
-	for(size_t i = 0; i != path.length(); i++) {
-		char c = path[i];
-		if(c == '\\' || c == '/') {
-			if(!slash) {
-				copy.push_back('/');
-			}
-			slash = true;
-		} else {
-			copy.push_back(tolower(c));
-			slash = false;
-		}
-	}
-	return copy;
-}

@@ -238,6 +238,8 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	
 	string fname = name.substr(0, pos);
 	
+	fs::path dir = fs::path::load(safestring(ais.filename)).parent();
+	
 	long i = 1;
 	string ident;
 	for(; i < 10000; i++) {
@@ -248,11 +250,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 			continue;
 		}
 		
-		string file = loadPath(safestring(ais.filename));
-		RemoveName(file);
-		file += ident;
-		
-		if(resources->getDirectory(file)) {
+		if(resources->getDirectory(dir / ident)) {
 			continue;
 		}
 		
@@ -458,7 +456,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 	for(long i = 0; i < asi.nb_inter; i++) {
 		long res;
-		string ident = makeIdent(GetName(loadPath(safestring(idx_io[i].filename))), idx_io[i].ident);
+		string ident = makeIdent(fs::path::load(safestring(idx_io[i].filename)).basename(), idx_io[i].ident);
 		Remap::const_iterator it = remap.find(ident);
 		stringstream where;
 		where << "level" << num << "[" << i << "]";

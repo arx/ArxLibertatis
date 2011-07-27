@@ -269,6 +269,4 @@ void AddToName(std::string & str, const std::string & cat);
  */
 void File_Standardize(const std::string & from, std::string & to);
 
-std::string loadPath(const std::string & path);
-
 #endif // ARX_IO_FILEPATH_H
