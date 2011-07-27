@@ -289,12 +289,12 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 	}
 }
 
-CinematicBitmap* CreateCinematicBitmap(const string & path, int scale) {
+CinematicBitmap* CreateCinematicBitmap(const fs::path & path, int scale) {
 
 	int nbx, nby, w, h, num;
 	CinematicBitmap	* bi;
 	
-	string name = GetName(path);
+	string name = path.basename();
 	if(name.empty()) {
 		return 0;
 	}
@@ -307,11 +307,11 @@ CinematicBitmap* CreateCinematicBitmap(const string & path, int scale) {
 
 	size_t size = 0;
 	
-	string filename = path;
-	SetExt(filename, ".bmp");
+	fs::path filename = path;
+	filename.set_ext("bmp");
 	char * data = resources->readAlloc(filename, size);
 	if(!data) {
-		SetExt(filename, ".tga");
+		filename.set_ext("tga");
 		data = resources->readAlloc(filename, size);
 	}
 

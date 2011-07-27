@@ -43,6 +43,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/CinematicFormat.h"
 
 #include "platform/Platform.h"
+#include "platform/String.h"
 
 #include "scene/CinematicSound.h"
 
@@ -54,43 +55,53 @@ using std::free;
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
-static void clearAbsDirectory(string & path, const string & delimiter) {
+static fs::path fixTexturePath(const string & path) {
 	
-	size_t abs_dir = path.find(delimiter);
+	string copy = toLowercase(path);
+	
+	size_t abs_dir = copy.find("arx\\");
 	
 	if(abs_dir != std::string::npos) {
-		path = path.substr(abs_dir + delimiter.length());
+		return fs::path::load(copy.substr(abs_dir + 4));
+	} else {
+		return fs::path::load(copy);
 	}
 }
 
-static void fixSoundPath(string & path) {
+static fs::path fixSoundPath(const string & str) {
+	
+	string path = toLowercase(str);
 	
 	size_t sfx_pos = path.find("sfx");
 	
+	// Sfx
 	if(sfx_pos != string::npos) {
-		// Sfx
 		path.erase(0, sfx_pos);
 		
 		size_t uk_pos = path.find("uk");
 		if(uk_pos != string::npos) {
-			path.replace(uk_pos, 3, "english/");
+			path.replace(uk_pos, 3, "english\\");
 		}
 		
 		size_t fr_pos = path.find("fr");
 		if(fr_pos != string::npos) {
-			path.replace(fr_pos, 3, "francais/");
+			path.replace(fr_pos, 3, "francais\\");
 		}
 		
-		size_t sfxspeech_pos = path.find("sfx/speech/");
+		size_t sfxspeech_pos = path.find("sfx\\speech\\");
 		if(sfxspeech_pos != string::npos) {
 			path.erase(0, sfxspeech_pos + 4);
 		}
 		
-	} else {
-		// Speech
-		path = "speech/" + config.language + "/" + GetName(path);
+		return fs::path::load(path);
 	}
 	
+	// Speech
+	
+	size_t namepos = path.find_last_of('\\');
+	namepos = (namepos == string::npos) ? 0 : namepos + 1;
+	
+	return fs::path("speech") / config.language / path.substr(namepos);
 }
 
 bool parseCinematic(Cinematic * c, const char * data, size_t size);
@@ -98,8 +109,6 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size);
 bool loadCinematic(Cinematic * c, const string & file) {
 	
 	LogInfo << "loading cinematic " << file;
-	
-	InitSound();
 	
 	size_t size;
 	char * data = resources->readAlloc(file, size);
@@ -173,9 +182,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading bitmap path";
 			return false;
 		}
-		string path = loadPath(str);
-		
-		clearAbsDirectory(path, "arx/");
+		fs::path path = fixTexturePath(str);
 		
 		LogDebug << "adding bitmap " << i << ": " << path;
 		
@@ -211,11 +218,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading sound path";
 			return false;
 		}
-		string path = loadPath(str);
-		
-		LogDebug << "raw sound path " << i << ": " << path;
-		
-		fixSoundPath(path);
+		fs::path path = fixSoundPath(str);
 		
 		LogDebug << "adding sound " << i << ": " << path;
 		

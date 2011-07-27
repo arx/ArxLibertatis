@@ -184,7 +184,6 @@ void Cinematic::OneTimeSceneReInit() {
 	DeleteAllBitmap();
 	DeleteAllSound();
 	
-	InitSound();
 	DeleteTrack();
 	
 	FlashBlancEnCours = false;
@@ -219,7 +218,6 @@ void Cinematic::New() {
 	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
 
-	InitSound();
 	InitUndo();
 
 	SetCurrFrame(GetStartFrame());
