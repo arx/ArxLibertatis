@@ -82,7 +82,6 @@ void assertionFailed(const char * expr, const char * file, unsigned int line, co
 		Logger(file, line, Logger::Error) << "Message: " << formattedmsgbuf;
 	}
 	
-	// TODO should we exit here?
 }
 
 
