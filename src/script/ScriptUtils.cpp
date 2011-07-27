@@ -372,6 +372,14 @@ void initSuppressions() {
 	
 	suppress("human_base_0118", 101, "collisions"); // unknown command 'collisions', should be 'collision'
 	
+	suppress("human_base_0119", 179, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0120", 101, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0121", 135, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0122", 350, "collisions"); // unknown command 'collisions', should be 'collision'
+	
 	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
 	
 	suppress("light_door", 422, "set"); // bad variable name: "durability"
