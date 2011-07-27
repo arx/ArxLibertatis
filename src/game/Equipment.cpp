@@ -201,184 +201,87 @@ extern long EXITING;
 //***********************************************************************************************
 // Recreates player mesh from scratch
 //***********************************************************************************************
-void ARX_EQUIPMENT_RecreatePlayerMesh()
-{
-	if (EXITING) return;
 
+
+static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selection) {
+	
+	if(!player.equiped[equip] || !ValidIONum(player.equiped[equip])) {
+		return;
+	}
+	
 	INTERACTIVE_OBJ * io = inter.iobj[0];
+	
+	arx_assert(inter.iobj[player.equiped[equip]]->tweakerinfo != NULL);
+	
+	const IO_TWEAKER_INFO & tweak = *inter.iobj[player.equiped[equip]]->tweakerinfo;
+	
+	if(!tweak.filename.empty()) {
+		fs::path mesh = "graph/obj3d/interactive/npc/human_base/tweaks" / tweak.filename;
+		EERIE_MESH_TWEAK_Do(io, tw, mesh);
+	}
+	
+	if(tweak.skintochange.empty() || !tweak.skinchangeto.empty()) {
+		return;
+	}
+	
+	fs::path file = "graph/obj3d/textures" / tweak.skinchangeto;
+	TextureContainer * temp = TextureContainer::Load(file, TextureContainer::Level);
+	
+	long mapidx = ObjectAddMap(io->obj, temp);
+	
+	long sel = -1;
+	for(size_t i = 0; i < io->obj->selections.size(); i++) {
+		if(io->obj->selections[i].name == selection) {
+			sel = i;
+			break;
+		}
+	}
+	if(sel == -1) {
+		return;
+	}
+	
+	long textochange = -1;
+	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
+		if(tweak.skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
+			textochange = i;
+		}
+	}
+	if(textochange == -1) {
+		return;
+	}
+	
+	for(size_t i = 0; i < io->obj->facelist.size(); i++) {
+		if(IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel) != -1
+		   && IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel) != -1
+		   && IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel) != -1) {
+			if(io->obj->facelist[i].texid == textochange) {
+				io->obj->facelist[i].texid = (short)mapidx;
+			}
+		}
+	}
+	
+}
 
-	if (io == NULL) return;
-
+void ARX_EQUIPMENT_RecreatePlayerMesh() {
+	
+	if(EXITING) {
+		return;
+	}
+	
+	INTERACTIVE_OBJ * io = inter.iobj[0];
+	if(!io) {
+		return;
+	}
+	
 	if(io->obj != hero) {
 		delete io->obj;
 	}
-
-	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo";
-	io->obj = loadObject(OBJECT_HUMAN_BASE, false);
+	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false);
 	
-	long sel_ = -1;
-	char pathh[256];
-
-	if ((player.equiped[EQUIP_SLOT_HELMET] != 0)
-	        &&	ValidIONum(player.equiped[EQUIP_SLOT_HELMET]))
-	{
-		INTERACTIVE_OBJ * tweaker = inter.iobj[player.equiped[EQUIP_SLOT_HELMET]];
-
-		if (tweaker)
-		{
-			if (tweaker->tweakerinfo->filename[0] != 0)
-			{
-				sprintf(pathh, "graph/obj3d/interactive/npc/human_base/tweaks/%s", tweaker->tweakerinfo->filename);
-				EERIE_MESH_TWEAK_Do(io, TWEAK_HEAD, pathh);
-			}
-
-			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
-			{
-				char path[256];
-				sprintf(path, "graph/obj3d/textures/%s", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
-
-				long mapidx = ObjectAddMap(io->obj, temp);
-
-				// retreives head sel
-				for (size_t i = 0; i < io->obj->selections.size(); i++)
-				{ // TODO iterator
-					if(io->obj->selections[i].name == "head") {
-						sel_ = i;
-						break;
-					}
-				}
-
-				long textochange = -1;
-
-				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
-						textochange = i;
-					}
-				}
-
-				if ((sel_ != -1) && (textochange != -1))
-					for (size_t i = 0; i < io->obj->facelist.size(); i++)
-					{
-						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel_) != -1))
-						{
-							if (io->obj->facelist[i].texid == textochange)
-								io->obj->facelist[i].texid = (short)mapidx;
-						}
-					}
-			}
-		}
-	}
-
-	if ((player.equiped[EQUIP_SLOT_ARMOR] != 0)
-	        &&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]))
-	{
-		INTERACTIVE_OBJ * tweaker = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
-
-		if (tweaker)
-		{
-			if (tweaker->tweakerinfo->filename[0] != 0)
-			{
-				sprintf(pathh, "graph/obj3d/interactive/npc/human_base/tweaks/%s", tweaker->tweakerinfo->filename);
-				EERIE_MESH_TWEAK_Do(io, TWEAK_TORSO, pathh);
-			}
-
-			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
-			{
-				char path[256];
-				sprintf(path, "graph/obj3d/textures/%s", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
-
-				long mapidx = ObjectAddMap(io->obj, temp);
-
-				// retreives head sel
-				for (size_t i = 0; i < io->obj->selections.size(); i++)
-				{ // TODO iterator
-					if(io->obj->selections[i].name == "chest") {
-						sel_ = i;
-						break;
-					}
-				}
-
-				long textochange = -1;
-
-				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
-						textochange = i;
-					}
-				}
-
-				if ((sel_ != -1) && (textochange != -1))
-					for (size_t i = 0; i < io->obj->facelist.size(); i++)
-					{
-						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel_) != -1))
-						{
-							if (io->obj->facelist[i].texid == textochange)
-								io->obj->facelist[i].texid = (short)mapidx;
-						}
-					}
-			}
-		}
-	}
-
-	if ((player.equiped[EQUIP_SLOT_LEGGINGS] != 0)
-	        &&	ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]))
-	{
-		INTERACTIVE_OBJ * tweaker = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
-
-		if (tweaker)
-		{
-			if (tweaker->tweakerinfo->filename[0] != 0)
-			{
-				sprintf(pathh, "graph/obj3d/interactive/npc/human_base/tweaks/%s", tweaker->tweakerinfo->filename);
-				EERIE_MESH_TWEAK_Do(io, TWEAK_LEGS, pathh);
-			}
-
-			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
-			{
-				char path[256];
-				sprintf(path, "graph/obj3d/textures/%s", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
-
-				long mapidx = ObjectAddMap(io->obj, temp);
-
-				// retreives head sel
-				for (size_t i = 0; i < io->obj->selections.size(); i++)
-				{ // TODO iterator
-					if(io->obj->selections[i].name == "leggings") {
-						sel_ = i;
-						break;
-					}
-				}
-
-				long textochange = -1;
-
-				for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
-					if(tweaker->tweakerinfo->skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
-						textochange = i;
-					}
-				}
-
-				if ((sel_ != -1) && (textochange != -1))
-					for (size_t i = 0; i < io->obj->facelist.size(); i++)
-					{
-						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel_) != -1))
-						{
-							if (io->obj->facelist[i].texid == textochange)
-								io->obj->facelist[i].texid = (short)mapidx;
-						}
-					}
-			}
-		}
-	}
-
-
+	applyTweak(EQUIP_SLOT_HELMET, TWEAK_HEAD, "head");
+	applyTweak(EQUIP_SLOT_ARMOR, TWEAK_TORSO, "chest");
+	applyTweak(EQUIP_SLOT_LEGGINGS, TWEAK_LEGS, "leggings");
+	
 	INTERACTIVE_OBJ * target = inter.iobj[0];
 	INTERACTIVE_OBJ * toequip = NULL;
 

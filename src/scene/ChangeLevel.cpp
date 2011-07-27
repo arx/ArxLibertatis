@@ -2478,14 +2478,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			const SavedTweakerInfo * sti = reinterpret_cast<const SavedTweakerInfo *>(dat + pos);
 			pos += sizeof(SavedTweakerInfo);
 			
-			assert(array_size(io->tweakerinfo->filename) >= array_size(sti->filename));
-			strcpy(io->tweakerinfo->filename, loadPath(safestring(sti->filename)).c_str());
-			
-			assert(array_size(io->tweakerinfo->skintochange) >= array_size(sti->skintochange));
-			strcpy(io->tweakerinfo->skintochange, loadPath(safestring(sti->skintochange)).c_str());
-			
-			assert(array_size(io->tweakerinfo->skinchangeto) >= array_size(sti->skinchangeto));
-			strcpy(io->tweakerinfo->skinchangeto, loadPath(safestring(sti->skinchangeto)).c_str());
+			io->tweakerinfo->filename = fs::path::load(safestring(sti->filename));
+			io->tweakerinfo->skintochange = toLowercase(safestring(sti->skintochange));
+			io->tweakerinfo->skinchangeto = fs::path::load(safestring(sti->skinchangeto));
 		}
 		
 		io->groups.clear();

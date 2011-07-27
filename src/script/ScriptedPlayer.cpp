@@ -218,21 +218,16 @@ public:
 		
 		if(command == "skin") {
 			
-			string src = loadPath(context.getWord());
-			string dst = loadPath(context.getWord());
+			io->tweakerinfo->skintochange = context.getWord();
+			io->tweakerinfo->skinchangeto = fs::path::load(context.getWord());
 			
-			DebugScript(" skin " << src << ' ' << dst);
-			
-			strcpy(io->tweakerinfo->skintochange, src.c_str());
-			strcpy(io->tweakerinfo->skinchangeto, dst.c_str());
+			DebugScript(" skin " << io->tweakerinfo->skintochange << ' ' << io->tweakerinfo->skinchangeto);
 			
 		} else {
 			
-			string mesh = loadPath(context.getWord());
+			io->tweakerinfo->filename = fs::path::load(context.getWord());
 			
-			DebugScript(" mesh " << mesh);
-			
-			strcpy(io->tweakerinfo->filename, mesh.c_str());
+			DebugScript(" mesh " << io->tweakerinfo->filename);
 		}
 		
 		return Success;

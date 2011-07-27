@@ -909,12 +909,12 @@ struct SavedTweakerInfo {
 	char skinchangeto[NAME_SIZE];
 	
 	inline SavedTweakerInfo(const IO_TWEAKER_INFO & b) {
-		assert(array_size(b.filename) == NAME_SIZE);
-		std::copy(b.filename, b.filename + NAME_SIZE, filename);
-		assert(array_size(b.skintochange) == NAME_SIZE);
-		std::copy(b.skintochange, b.skintochange + NAME_SIZE, skintochange);
-		assert(array_size(b.skinchangeto) == NAME_SIZE);
-		std::copy(b.skinchangeto, b.skinchangeto + NAME_SIZE, skinchangeto);
+		assert(b.filename.string().length() <= sizeof(filename));
+		strncpy(filename, b.filename.string().c_str(), sizeof(filename));
+		assert(b.skintochange.length() <= sizeof(skintochange));
+		strncpy(skintochange, b.skintochange.c_str(), sizeof(skintochange));
+		assert(b.skinchangeto.filename().length() <= sizeof(skinchangeto));
+		strncpy(skinchangeto, b.skinchangeto.string().c_str(), sizeof(skinchangeto));
 	}
 	
 };

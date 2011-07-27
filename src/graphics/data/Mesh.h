@@ -446,9 +446,9 @@ struct IO_PHYSICS
 };
 
 struct IO_TWEAKER_INFO {
-	 char filename[256];
-	 char skintochange[256];
-	 char skinchangeto[256];
+	fs::path filename;
+	std::string skintochange;
+	fs::path skinchangeto;
 };
 
 struct TWEAK_INFO;
