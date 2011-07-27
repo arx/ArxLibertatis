@@ -309,9 +309,9 @@ int CalculLight(CinematicLight * light, float x, float y, int col)
 
 
 		Color in = Color::fromBGRA(col);
-		in.r = std::max(in.r + (int)r, 255);
-		in.g = std::max(in.g + (int)g, 255);
-		in.b = std::max(in.b + (int)b, 255);
+		in.r = min(in.r + (int)r, 255);
+		in.g = min(in.g + (int)g, 255);
+		in.b = min(in.b + (int)b, 255);
 		return in.toBGRA();
 	}
 }
