@@ -374,7 +374,7 @@ void initSuppressions() {
 	
 	suppress("dragon's_lair_ice_wall", 41, "satangular"); // unknown command 'satangular', should be setangular
 	
-	suppress("flour_bag", 41, "satangular"); // unknown command 'collison', should be collision
+	suppress("flour_bag", 41, "collison"); // unknown command 'collison', should be collision
 	
 	suppress("gem_inwall", 114, "play"); // unknown flag -e (ignored)
 	
