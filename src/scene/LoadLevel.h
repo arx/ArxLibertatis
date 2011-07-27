@@ -79,7 +79,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 #endif
 
-long DanaeLoadLevel(const std::string & file);
+long DanaeLoadLevel(const fs::path & file);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();

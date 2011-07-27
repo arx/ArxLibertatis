@@ -1762,7 +1762,7 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	soundcount = 0;
 	
 	if(CURRENTLEVEL == -1) {
-		CURRENTLEVEL = GetLevelNumByName(LastLoadedScene);
+		CURRENTLEVEL = GetLevelNumByName(LastLoadedScene.string());
 	}
 	level = truelevel = CURRENTLEVEL;
 	

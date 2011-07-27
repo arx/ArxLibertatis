@@ -315,11 +315,8 @@ long DanaeSaveLevel(const fs::path & _fic) {
 #endif
 	
 	strcpy(dlh.ident, "DANAE_FILE");
-	dlh.nb_scn = 1;
 	
-	if(LastLoadedScene[0] == 0) {
-		dlh.nb_scn = 0;
-	}
+	dlh.nb_scn = LastLoadedScene.empty() ? 0 : 1;
 	
 	dlh.nb_inter = nb_inter;
 	dlh.nb_zones = 0;
@@ -342,7 +339,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	if(dlh.nb_scn > 0) {
 		DANAE_LS_SCENE dls;
 		memset(&dls, 0, sizeof(DANAE_LS_SCENE));
-		strcpy(dls.name, LastLoadedScene);
+		strncpy(dls.name, LastLoadedScene.string().c_str(), sizeof(dls.name));
 		memcpy(dat + pos, &dls, sizeof(DANAE_LS_SCENE));
 		pos += sizeof(DANAE_LS_SCENE);
 	}
@@ -787,15 +784,14 @@ extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
 
-long DanaeLoadLevel(const string & file) {
+long DanaeLoadLevel(const fs::path & file) {
 	
 	LogInfo << "Loading Level " << file;
 	
 	ClearCurLoadInfo();
-	CURRENTLEVEL = GetLevelNumByName(file);
+	CURRENTLEVEL = GetLevelNumByName(file.string());
 	
-	string lightingFileName = file;
-	SetExt(lightingFileName, ".llf");
+	fs::path lightingFileName = fs::path(file).set_ext("llf");
 
 	LogDebug << "fic2 " << lightingFileName;
 	LogDebug << "fileDlf " << file;
@@ -809,7 +805,7 @@ long DanaeLoadLevel(const string & file) {
 	
 	PakFile * lightingFile = resources->getFile(lightingFileName);
 	
-	strcpy(LastLoadedDLF, file.c_str());
+	strcpy(LastLoadedDLF, file.string().c_str());
 	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
@@ -857,15 +853,8 @@ long DanaeLoadLevel(const string & file) {
 		const DANAE_LS_SCENE * dls = reinterpret_cast<const DANAE_LS_SCENE *>(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
 		
-		string scene;
-		if(FAKE_DIR) {
-			scene = file;
-			RemoveName(scene);
-			FAKE_DIR = 0;
-		} else {
-			scene = loadPath(safestring(dls->name));
-			RemoveName(scene);
-		}
+		fs::path scene = (FAKE_DIR) ? file.parent() : fs::path::load(safestring(dls->name));
+		FAKE_DIR = 0;
 		
 		if(FastSceneLoad(scene)) {
 			LogDebug << "done loading scene";
@@ -883,7 +872,7 @@ long DanaeLoadLevel(const string & file) {
 		}
 		
 		EERIEPOLY_Compute_PolyIn();
-		strcpy(LastLoadedScene, scene.c_str());
+		LastLoadedScene = scene;
 	}
 	
 	Vec3f trans;

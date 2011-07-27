@@ -4257,8 +4257,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 	
-	std::string ftemp = LastLoadedScene;
-	RemoveName(ftemp);
+	fs::path ftemp = LastLoadedScene.parent();
 	
 	// First Release Any Portal Data
 	EERIE_PORTAL_Release();

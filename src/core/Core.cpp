@@ -352,7 +352,7 @@ char LastLoadedDLF[512];
 char ItemToBeAdded[1024];
 char WILL_LAUNCH_CINE[256];
 char _CURRENTLOAD_[256];
-char LastLoadedScene[256];
+fs::path LastLoadedScene;
 char LAST_LAUNCHED_CINE[256];
 float BASE_FOCAL=350.f;
 float PLAYER_ARMS_FOCAL = 350.f;
@@ -795,7 +795,7 @@ void InitializeDanae()
 	ARX_BOOMS_ClearAll();
 	ARX_MAGICAL_FLARES_FirstInit();
 
-	strcpy(LastLoadedScene,"");
+	LastLoadedScene.clear();
 
 	switch(Project.demo) {
 		
@@ -1016,12 +1016,12 @@ void InitializeDanae()
 #endif
 		}
 		EERIEPOLY_Compute_PolyIn();
-		strcpy(LastLoadedScene, levelPath.string().c_str());
+		LastLoadedScene = levelPath;
 	}
 
 #ifdef BUILD_EDITOR
 	if(GAME_EDITOR && !MOULINEX) {
-		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
+		LaunchInteractiveObjectsApp(danaeApp.m_hWnd);
 	}
 #endif
 
@@ -3206,7 +3206,7 @@ long FirstFrameHandling()
 	FirstFrame=0;
 	FRAME_COUNT=0;
 	PrepareIOTreatZone(1);
-	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene);
+	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
 	
 #ifdef BUILD_EDITOR
 	iCreateMap=0;
@@ -6794,7 +6794,7 @@ void ShowTestText()
 
 	danaeApp.OutputText( 0, 16, tex );
 
-	sprintf(tex,"Level : %s",LastLoadedScene);
+	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
 	danaeApp.OutputText( 0, 32, tex );
 
 	sprintf(tex,"Position : %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);

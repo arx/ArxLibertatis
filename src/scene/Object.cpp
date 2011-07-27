@@ -62,8 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
-
 #include "core/Dialog.h"
+#include "core/Core.h"
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
@@ -93,8 +93,6 @@ using std::min;
 using std::max;
 using std::string;
 using std::vector;
-
-extern char LastLoadedScene[256];
 
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 
@@ -1170,7 +1168,7 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const fs::path & dirr) {
 	
 	es = allocStructZero<EERIE_MULTI3DSCENE>();
 	
-	strcpy(LastLoadedScene, dirr.string().c_str());
+	LastLoadedScene = dirr;
 	
 	fs::path path = dirr.parent();
 	
