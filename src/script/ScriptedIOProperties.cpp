@@ -565,7 +565,6 @@ void setupScriptedIOProperties() {
 	ScriptEvent::registerCommand(new IOFlagCommand("setunique", IO_UNIQUE));
 	ScriptEvent::registerCommand(new IOFlagCommand("setblacksmith", IO_BLACKSMITH));
 	ScriptEvent::registerCommand(new IOFlagCommand("setangular", IO_ANGULAR));
-	ScriptEvent::registerCommand(new IOFlagCommand("satangular", IO_ANGULAR)); // TODO(broken-scripts)
 	ScriptEvent::registerCommand(new IOFlagCommand("setshadow", IO_NOSHADOW, true));
 	ScriptEvent::registerCommand(new IOFlagCommand("setshop", IO_SHOP));
 	ScriptEvent::registerCommand(new IOFlagCommand("setbump", IO_BUMP));

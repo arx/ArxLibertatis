@@ -421,9 +421,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			
 			ScriptEventWarning << "--> unknown command: " << word;
 			
-			io->ioflags |= IO_FREEZESCRIPT;
-			return REFUSE;
+			// TODO(broken-scripts)
+			if(!isSuppressed(context, word)) {
+				io->ioflags |= IO_FREEZESCRIPT;
+				return REFUSE;
+			}
 			
+			context.skipCommand();
 		}
 		
 	}

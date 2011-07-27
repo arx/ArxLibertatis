@@ -115,7 +115,7 @@ class CollisionCommand : public Command {
 	
 public:
 	
-	CollisionCommand(const string & command) : Command(command, ANY_IO) { }
+	CollisionCommand() : Command("collision", ANY_IO) { }
 	
 	Result execute(Context & context) {
 		
@@ -739,8 +739,7 @@ public:
 void setupScriptedIOControl() {
 	
 	ScriptEvent::registerCommand(new ReplaceMeCommand);
-	ScriptEvent::registerCommand(new CollisionCommand("collision"));
-	ScriptEvent::registerCommand(new CollisionCommand("collison")); // TODO(broken-scripts)
+	ScriptEvent::registerCommand(new CollisionCommand);
 	ScriptEvent::registerCommand(new SpawnCommand);
 	ScriptEvent::registerCommand(new KillMeCommand);
 	ScriptEvent::registerCommand(new PhysicalCommand);
