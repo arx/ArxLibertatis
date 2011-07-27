@@ -164,7 +164,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string file = loadPath(context.getWord());
+			fs::path file = fs::path::load(context.getWord());
 			
 			if(FORBID_SCRIPT_IO_CREATION) {
 				if(multi) {
@@ -173,7 +173,7 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			File_Standardize("graph/obj3d/interactive/items/" + file + ".teo", file);
+			file = ("graph/obj3d/interactive/items" / file).append(".teo");
 			
 			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(file, IO_IMMEDIATELOAD);
 			if(!ioo) {
