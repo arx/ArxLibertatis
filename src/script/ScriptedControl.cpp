@@ -294,7 +294,7 @@ public:
 			
 		} else if(command == "ambiance") {
 			
-			string ambiance = loadPath(context.getWord());
+			fs::path ambiance = fs::path::load(context.getWord());
 			
 			DebugScript(" ambiance " << ambiance);
 			
