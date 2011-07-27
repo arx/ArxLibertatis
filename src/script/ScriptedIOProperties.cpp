@@ -467,29 +467,29 @@ public:
 		
 		if(type == "skin") {
 			
-			string oldskin = loadPath(context.getWord());
-			string newskin = loadPath(context.getWord());
+			fs::path oldskin = fs::path::load(context.getWord());
+			fs::path newskin = fs::path::load(context.getWord());
 			
-			DebugScript(" skin \"" << oldskin << "\" \"" << newskin << '"');
+			DebugScript(" skin " << oldskin << ' '<< newskin);
 			
 			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_SKIN, oldskin, newskin);
 			EERIE_MESH_TWEAK_Skin(io->obj, oldskin, newskin);
 			
 		} else if(type == "icon") {
 			
-			string icon = loadPath(context.getWord());
+			fs::path icon = fs::path::load(context.getWord());
 			
 			DebugScript(" icon \"" << icon << '"');
 			
-			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, icon, string());
+			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, icon, fs::path());
 			ARX_INTERACTIVE_TWEAK_Icon(io, icon);
 			
 		} else if(type == "remove") {
 			
 			DebugScript(" remove");
 			
-			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_REMOVE, string(), string());
-			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, string());
+			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_REMOVE, fs::path(), fs::path());
+			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, fs::path());
 			
 		} else {
 			
@@ -513,15 +513,18 @@ public:
 				return Failed;
 			}
 			
-			string mesh = loadPath(context.getWord());
+			fs::path mesh = fs::path::load(context.getWord()).append(".teo");
 			
 			DebugScript(' ' << type << " \"" << mesh << '"');
 			
-			fs::path path = (!io->usemesh.empty() ? io->usemesh : io->filename).parent() / "tweaks" / mesh;
-			path.set_ext("teo");
+			if(io->usemesh.empty()) {
+				mesh = io->filename.parent() / "tweaks" / mesh;
+			} else {
+				mesh = io->usemesh.parent() / "tweaks" / mesh;
+			}
 			
-			ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, fs::path());
-			EERIE_MESH_TWEAK_Do(io, tw, path);
+			ARX_INTERACTIVE_MEMO_TWEAK(io, tw, mesh, fs::path());
+			EERIE_MESH_TWEAK_Do(io, tw, mesh);
 		}
 		
 		return Success;
