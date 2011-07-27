@@ -230,7 +230,7 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos);
 void RenderInter(float from, float to);
 void SetWeapon_On(INTERACTIVE_OBJ * io);
  
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string & temp);
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const fs::path & temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
 std::string GetMaterialString(const fs::path & origin );

@@ -517,7 +517,7 @@ public:
 			}
 		}
 		
-		string weapon = loadPath(context.getWord());
+		fs::path weapon = fs::path::load(context.getWord());
 		
 		DebugScript(' ' << options << ' ' << weapon);
 		

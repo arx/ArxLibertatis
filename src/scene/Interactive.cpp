@@ -2362,25 +2362,20 @@ void SetWeapon_Back(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
-{
-	if (!io
-	        ||	!(io->ioflags & IO_NPC))
-		return;
-
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const fs::path & temp) {
+	
+	arx_assert(io && (io->ioflags & IO_NPC));
+	
 	if(io->_npcdata->weapon) {
 		INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 		io->_npcdata->weapon = NULL;
 		ReleaseInter(ioo);
 	}
-
-	std::string tex;
-	const std::string tex1 = "graph/obj3d/interactive/items/weapons/";
-	std::string tx = tex1 + '/' + temp + '/' + temp + ".teo";
-	File_Standardize(tx, tex);
 	
-	io->_npcdata->weapon = AddItem( tex, IO_IMMEDIATELOAD);
+	fs::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
+	
+	io->_npcdata->weapon = AddItem(file, IO_IMMEDIATELOAD);
 
 	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
 	if(ioo) {
