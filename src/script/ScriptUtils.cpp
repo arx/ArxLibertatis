@@ -366,6 +366,8 @@ void initSuppressions() {
 	
 	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
 	
+	suppress("human_base_0118", 101, "collisions"); // unknown command 'collisions', should be 'collision'
+	
 	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
 	
 	suppress("light_door", 422, "set"); // bad variable name: "durability"
@@ -405,6 +407,12 @@ void initSuppressions() {
 	
 	suppress("rat_base_0059", 62, "behavior"); // unknown behavior 'firendly', should be 'friendly'
 	suppress("rat_base_0059", 160, "behavior"); // unknown behavior 'firendly', should be 'friendly'
+	
+	suppress("secret_door_council_2b", 609, "}"); // extraneous '}'
+	
+	suppress("snake_woman_base", 26358, "goto"); // missing label 'main_alert'
+	
+	suppress("snake_woman_base_0010", 122, "collions"); // unknown command 'collions', should be 'collision'
 	
 	suppress("troll_base", 5107, "loadanim"); // missing animation: "troll_fight_ready_toponly"
 	suppress("troll_base", 5175, "loadanim"); // missing animation: "troll_fight_unready_toponly"
