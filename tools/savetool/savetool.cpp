@@ -306,17 +306,16 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	
 	if(ais.ioflags & IO_ITEM) {
 		
-		string file = toLowercase(safestring(ais.filename));
+		fs::path file = fs::path::load(safestring(ais.filename));
 		
 		s32 flags = ais.ioflags;
 		
-		if(!specialstrcmp(GetName(file), "gold_coin")) {
-			RemoveName(file);
-			file += "gold_coin.asl";
+		if(!specialstrcmp(file.basename(), "gold_coin")) {
+			file.up() /= "gold_coin.asl";
 			flags = ais.ioflags | IO_GOLD;
 		}
 		
-		if(IsIn(file, "movable")) {
+		if(IsIn(file.string(), "movable")) {
 			flags = ais.ioflags | IO_MOVABLE;
 		}
 		

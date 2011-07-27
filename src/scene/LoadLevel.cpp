@@ -1645,10 +1645,7 @@ void CheckIO_NOT_SAVED() {
 	
 }
 
-static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
-	
-	std::string fic = "graph/levels/level";
-	fic += path;
+static void ARX_SAVELOAD_DLFCheckAdd(const fs::path & path, long num) {
 
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
@@ -1658,8 +1655,8 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	long pos = 0;
 	long i;
 	size_t FileSize = 0;
-
-	SetExt(fic, ".dlf");
+	
+	fs::path fic = fs::path(path).set_ext("dlf");
 	
 	dat = (unsigned char *)resources->readAlloc(fic, FileSize);
 	if(!dat) {
@@ -1696,7 +1693,7 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 	if (strcmp(dlh.ident, "DANAE_FILE"))
 	{
 		free(dat);
-		sprintf(_error, "File %s is not a valid file", fic.c_str());
+		sprintf(_error, "File %s is not a valid file", fic.string().c_str());
 		return;
 	}
 
@@ -1711,7 +1708,7 @@ static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
 		dli = (DANAE_LS_INTER *)(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
 		std::stringstream ss;
-		ss << GetName(dli->name) << '_' << std::setfill('0') << std::setw(4) << dli->ident;
+		ss << fs::path::load(dli->name).basename() << '_' << std::setfill('0') << std::setw(4) << dli->ident;
 		string id = ss.str();
 		AddIdent(id, num);
 	}
@@ -1726,7 +1723,7 @@ void ARX_SAVELOAD_CheckDLFs() {
 	for (long n = 0; n < 24; n++)
 	{
 		char temp[256];
-		sprintf(temp, "%ld/level%ld.dlf", n, n);
+		sprintf(temp, "graph/levels/level%ld/level%ld.dlf", n, n);
 		ARX_SAVELOAD_DLFCheckAdd(temp, n);
 	}
 

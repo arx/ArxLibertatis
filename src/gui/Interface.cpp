@@ -2555,7 +2555,7 @@ bool DANAE::ManageEditorControls()
 				if (HERMESFileSelectorOpen(loadfrom,"Load Danae Level","Danae Level File (*.DLF)\0*.DLF\0\0",this->m_hWnd))
 				{
 					char pp[256];
-					strcpy(pp,GetName(loadfrom).c_str());
+					strcpy(pp,fs::path::load(loadfrom).basename().c_str());
 					LoadLevelScreen(GetLevelNumByName(pp));
 					
 					Pause(true);
