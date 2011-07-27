@@ -1226,47 +1226,30 @@ bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const fs::path & temp) {
 	return true;
 }
 
-static void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io) {
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2) {
 	
-	if(io->Tweaks) {
-		free(io->Tweaks);
-	}
-	io->Tweaks = NULL;
-	io->Tweak_nb = 0;
+	io->tweaks.resize(io->tweaks.size() + 1);
+	
+	io->tweaks.back().type = type;
+	io->tweaks.back().param1 = param1;
+	io->tweaks.back().param2 = param2;
 }
 
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2)
-{
-	io->Tweaks = (TWEAK_INFO *)realloc(io->Tweaks, sizeof(TWEAK_INFO) * (io->Tweak_nb + 1));
-	memset(&io->Tweaks[io->Tweak_nb], 0, sizeof(TWEAK_INFO));
-	io->Tweaks[io->Tweak_nb].type = type;
-
-	if (!param1.empty()) strcpy(io->Tweaks[io->Tweak_nb].param1, param1.string().c_str());
-
-	if (!param2.empty()) strcpy(io->Tweaks[io->Tweak_nb].param2, param2.string().c_str());
-
-	io->Tweak_nb++;
-}
-void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io)
-{
-	for (long ii = 0; ii < io->Tweak_nb; ii++)
-	{
-		if (io->Tweaks[ii].type == TWEAK_REMOVE)
-			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, string());
-		else if (io->Tweaks[ii].type == TWEAK_TYPE_SKIN)
-			EERIE_MESH_TWEAK_Skin(io->obj, io->Tweaks[ii].param1, io->Tweaks[ii].param2);
-		else if (io->Tweaks[ii].type == TWEAK_TYPE_ICON)
-			ARX_INTERACTIVE_TWEAK_Icon(io, io->Tweaks[ii].param1);
-		else if (io->Tweaks[ii].type == TWEAK_TYPE_MESH)
-			ARX_INTERACTIVE_USEMESH(io, io->Tweaks[ii].param1);
-		else
-		{
-			EERIE_MESH_TWEAK_Do(io, io->Tweaks[ii].type, io->Tweaks[ii].param1);
+void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io) {
+	
+	for(std::vector<TWEAK_INFO>::const_iterator i = io->tweaks.begin(); i != io->tweaks.end(); ++i) {
+		switch(i->type) {
+			case TWEAK_REMOVE: EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, fs::path()); break;
+			case TWEAK_TYPE_SKIN: EERIE_MESH_TWEAK_Skin(io->obj, i->param1, i->param2); break;
+			case TWEAK_TYPE_ICON: ARX_INTERACTIVE_TWEAK_Icon(io, i->param1); break;
+			case TWEAK_TYPE_MESH: ARX_INTERACTIVE_USEMESH(io, i->param1); break;
+			default: EERIE_MESH_TWEAK_Do(io, i->type, i->param1);
 		}
 	}
 }
-void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io)
-{
+
+void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io) {
+	
 	if (io)
 	{
 		if (ValidDynLight(io->dynlight))
@@ -1291,27 +1274,12 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 {
 	if (io)
 	{
-		//		ARX_SCRIPT_Timer_Clear_For_IO(io);
-		if (ValidDynLight(io->dynlight))
-			DynLight[io->dynlight].exist = 0;
-
-		io->dynlight = -1;
-
-		if (ValidDynLight(io->halo.dynlight))
-			DynLight[io->halo.dynlight].exist = 0;
-
-		io->halo.dynlight = -1;
-
-		if (io->symboldraw)
-			free(io->symboldraw);
-
-		io->symboldraw = NULL;
-		io->spellcast_data.castingspell = SPELL_NONE;
+		ARX_INTERACTIVE_ClearIODynData(io);
 
 		io->shop_category.clear();
 		io->inventory_skin.clear();
 
-		ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
+		io->tweaks.clear();
 		io->groups.clear();
 		ARX_INTERACTIVE_HideGore(io);
 		MOLLESS_Clear(io->obj);
@@ -1795,8 +1763,6 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 	damager_type = 0;
 	
 	sfx_flag = 0;
-	Tweak_nb = 0;
-	Tweaks = NULL;
 	secretvalue = -1;
 	
 	shop_multiply = 1.f;
@@ -2175,7 +2141,7 @@ INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
 	IO_UnlinkAllLinkedObjects(this);
 	
 	// Releases ToBeDrawn Transparent Polys linked to this object !
-	ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(this);
+	tweaks.clear();
 	ARX_SCRIPT_Timer_Clear_For_IO(this);
 	
 	if(obj && !(ioflags & IO_CAMERA) && !(ioflags & IO_MARKER) && !(ioflags & IO_GOLD)) {

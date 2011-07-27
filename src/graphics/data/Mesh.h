@@ -589,8 +589,7 @@ struct INTERACTIVE_OBJ {
 	std::string strikespeech;
 	
 	short sfx_flag;
-	short Tweak_nb;
-	TWEAK_INFO * Tweaks;
+	std::vector<TWEAK_INFO> tweaks;
 	char secretvalue;
 	
 	std::string shop_category;

@@ -932,15 +932,15 @@ struct SavedTweakInfo {
 	static const size_t PARAM_SIZE = 256;
 	
 	s32 type;
-	char param1[256];
-	char param2[256];
+	char param1[PARAM_SIZE];
+	char param2[PARAM_SIZE];
 	
 	inline SavedTweakInfo(const TWEAK_INFO & b) {
 		type = b.type;
-		assert(array_size(b.param1) == PARAM_SIZE);
-		std::copy(b.param1, b.param1 + PARAM_SIZE, param1);
-		assert(array_size(b.param2) == PARAM_SIZE);
-		std::copy(b.param2, b.param2 + PARAM_SIZE, param2);
+		assert(b.param1.string().length() <= PARAM_SIZE);
+		strncpy(param1, b.param1.string().c_str(), sizeof(param1));
+		assert(b.param2.string().length() <=PARAM_SIZE);
+		strncpy(param2, b.param2.string().c_str(), sizeof(param2));
 	}
 	
 };

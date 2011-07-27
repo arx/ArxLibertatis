@@ -1242,7 +1242,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 		+ sizeof(SavedTweakerInfo)
 		+ sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
 		+ sizeof(SavedGroupData) * io->groups.size()
-		+ sizeof(SavedTweakInfo) * io->Tweak_nb
+		+ sizeof(SavedTweakInfo) * io->tweaks.size()
 		+ 48000;
 
 	// Allocate Main Save Buffer
@@ -1250,7 +1250,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	long pos = 0;
 
 	ais.halo = io->halo_native;
-	ais.Tweak_nb = io->Tweak_nb;
+	ais.Tweak_nb = io->tweaks.size();
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 
@@ -1579,31 +1579,31 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 					FillIOIdent(aids->slot_io[m][n], inv->slot[m][n].io);
 				else
 					aids->slot_io[m][n][0] = 0;
-
+				
 				aids->slot_show[m][n] = inv->slot[m][n].show;
 			}
-
+		
 		pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 	}
-
+	
 	if(io->tweakerinfo) {
 		SavedTweakerInfo sti = *io->tweakerinfo;
 		memcpy(dat + pos, &sti, sizeof(SavedTweakerInfo));
 		pos += sizeof(SavedTweakerInfo);
 	}
-
-	for(std::set<std::string>::const_iterator i = io->groups.begin(); i != io->groups.end(); i++) {
+	
+	for(std::set<std::string>::const_iterator i = io->groups.begin(); i != io->groups.end(); ++i) {
 		SavedGroupData * sgd = reinterpret_cast<SavedGroupData *>(dat + pos);
 		pos += sizeof(SavedGroupData);
 		strncpy(sgd->name, i->c_str(), sizeof(sgd->name));
 	}
-
-	for(int ii = 0; ii < io->Tweak_nb; ii++) {
-		SavedTweakInfo sti = io->Tweaks[ii];
-		memcpy(dat + pos, &sti, sizeof(SavedTweakInfo));
+	
+	for(std::vector<TWEAK_INFO>::const_iterator i = io->tweaks.begin(); i != io->tweaks.end(); ++i) {
+		SavedTweakInfo * sti = reinterpret_cast<SavedTweakInfo *>(dat + pos);
 		pos += sizeof(SavedTweakInfo);
+		*sti = *i;
 	}
-
+	
 	if((pos > allocsize)) {
 		LogError << "SaveBuffer Overflow " << pos << " >> " << allocsize;
 	}
@@ -2490,19 +2490,16 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			io->groups.insert(toLowercase(safestring(sgd->name)));
 		}
 		
-		io->Tweak_nb = ais->Tweak_nb;
-		if(io->Tweak_nb) {
-			io->Tweaks = (TWEAK_INFO *)malloc(sizeof(TWEAK_INFO) * io->Tweak_nb);
-			for(long i = 0; i < io->Tweak_nb; i++) {
-				TWEAK_INFO & tweak = io->Tweaks[i];
-				const SavedTweakInfo * sti = reinterpret_cast<const SavedTweakInfo *>(dat + pos);
-				pos += sizeof(SavedTweakInfo);
-				tweak.type = TweakType::load(sti->type); // TODO save/load flags
-				assert(array_size(tweak.param1) >= array_size(sti->param1));
-				strcpy(tweak.param1, loadPath(safestring(sti->param1)).c_str());
-				assert(array_size(tweak.param2) >= array_size(sti->param2));
-				strcpy(tweak.param2, loadPath(safestring(sti->param2)).c_str());
-			}
+		arx_assert(io->tweaks.empty());
+		io->tweaks.reserve(ais->Tweak_nb);
+		for(long i = 0; i < ais->Tweak_nb; i++) {
+			const SavedTweakInfo * sti = reinterpret_cast<const SavedTweakInfo *>(dat + pos);
+			pos += sizeof(SavedTweakInfo);
+			
+			io->tweaks.resize(io->tweaks.size() + 1);
+			io->tweaks.back().type = TweakType::load(sti->type); // TODO save/load flags
+			io->tweaks.back().param1 = fs::path::load(safestring(sti->param1));
+			io->tweaks.back().param2 = fs::path::load(safestring(sti->param2));
 		}
 		
 		ARX_INTERACTIVE_APPLY_TWEAK_INFO(io);

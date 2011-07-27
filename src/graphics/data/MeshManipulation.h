@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "platform/Flags.h"
+#include "io/FilePath.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
@@ -70,9 +71,11 @@ DECLARE_FLAGS(TweakFlag, TweakType);
 DECLARE_FLAGS_OPERATORS(TweakType);
 
 struct TWEAK_INFO {
+	
 	TweakType type;
-	char param1[256];
-	char param2[256];
+	fs::path param1;
+	fs::path param2;
+	
 };
 
 void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const fs::path & path);
