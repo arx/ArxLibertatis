@@ -88,7 +88,7 @@ class CSpellFx
 		// accesseurs
 	public:
 		virtual void SetDuration(const unsigned long ulaDuration);
-		virtual unsigned long GetCurrentTime();
+		virtual unsigned long getCurrentTime();
 		virtual unsigned long GetDuration();
 		void SetAngle(float);
 

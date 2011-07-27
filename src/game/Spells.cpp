@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells01.h"
@@ -7584,7 +7585,7 @@ void ARX_SPELLS_Update()
 								DynLight[id].time_creation = ARXTimeUL();
 					}
 
-					unsigned long tim=pCSpellFX->GetCurrentTime();
+					unsigned long tim=pCSpellFX->getCurrentTime();
 
 					if ((tim>3000) && (spells[i].longinfo==-1))
 					{

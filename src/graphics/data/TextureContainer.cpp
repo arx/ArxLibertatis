@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include <cstdio>
 #include <cassert>
@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsEnum.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
+#include "graphics/texture/Texture.h"
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"

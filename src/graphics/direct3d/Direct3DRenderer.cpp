@@ -9,7 +9,6 @@
 #include "graphics/direct3d/DX7VertexBuffer.h"
 #include "graphics/direct3d/DX7TextureStage.h"
 #include "graphics/direct3d/DX7Texture2D.h"
-#include "graphics/data/Texture.h"
 #include "io/Logger.h"
 
 // TEMP: needed until all D3D code is isolated...
@@ -190,11 +189,6 @@ void Direct3DRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
 }
 
 Direct3DRenderer::~Direct3DRenderer() {
-	
-	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
-		delete m_TextureStages[i];
-	}
-
 	GRenderer = 0;
 }
 
@@ -358,31 +352,6 @@ void Direct3DRenderer::SetAntialiasing(bool enable) {
 	else
 	{
 		GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_NONE);
-	}
-}
-
-unsigned int Direct3DRenderer::GetTextureStageCount() const {
-	return m_TextureStages.size();
-}
-
-TextureStage * Direct3DRenderer::GetTextureStage(unsigned int textureStage) {
-	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : NULL;
-}
-
-void Direct3DRenderer::ResetTexture(unsigned int textureStage) {
-	GetTextureStage(textureStage)->ResetTexture();
-}
-
-void Direct3DRenderer::SetTexture(unsigned int textureStage, Texture* pTexture) {
-	GetTextureStage(textureStage)->SetTexture(pTexture);
-}
-
-void Direct3DRenderer::SetTexture(unsigned int textureStage, TextureContainer* pTextureContainer) {
-	
-	if(pTextureContainer && pTextureContainer->m_pTexture) {
-		GetTextureStage(textureStage)->SetTexture(pTextureContainer->m_pTexture);
-	} else {
-		GetTextureStage(textureStage)->ResetTexture();
 	}
 }
 

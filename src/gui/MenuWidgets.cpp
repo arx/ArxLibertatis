@@ -51,8 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
+#include "graphics/Math.h"
 #include "graphics/GraphicsEnum.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/font/Font.h"
 #include "graphics/texture/TextureStage.h"
@@ -71,6 +72,7 @@ using std::wistringstream;
 using std::min;
 using std::max;
 using std::string;
+using std::vector;
 
 int newTextureSize;
 int newWidth;

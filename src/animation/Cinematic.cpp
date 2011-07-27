@@ -287,12 +287,8 @@ int CalculLight(CinematicLight * light, float x, float y, int col)
 {
 	float	ra = (float)sqrt((light->pos.x - x) * (light->pos.x - x) + (light->pos.y - y) * (light->pos.y - y));
 
-	if (ra > light->fallout)
-	{
-		int ri = (int)(((float)((col >> 16) & 0xFF)) * LightRND);
-		int gi = (int)(((float)((col >> 8) & 0xFF)) * LightRND);
-		int bi = (int)(((float)((col) & 0xFF)) * LightRND);
-		return RGBA_MAKE(ri, gi, bi, (col >> 24) & 0xFF);
+	if(ra > light->fallout) {
+		return (Color::fromBGRA(col) * LightRND).toBGRA();
 	}
 	else
 	{
@@ -313,17 +309,12 @@ int CalculLight(CinematicLight * light, float x, float y, int col)
 			b = light->b * t;
 		}
 
-		int ri = ((col >> 16) & 0xFF) + ((int)r);
-		int gi = ((col >> 8) & 0xFF) + ((int)g);
-		int bi = ((col) & 0xFF) + ((int)b);
 
-		if (ri > 255) ri = 255;
-
-		if (gi > 255) gi = 255;
-
-		if (bi > 255) bi = 255;
-
-		return RGBA_MAKE(ri, gi, bi, (col >> 24) & 0xFF);
+		Color in = Color::fromBGRA(col);
+		in.r = std::max(in.r + (int)r, 255);
+		in.g = std::max(in.g + (int)g, 255);
+		in.b = std::max(in.b + (int)b, 255);
+		return in.toBGRA();
 	}
 }
 /*---------------------------------------------------------------*/

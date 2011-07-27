@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
 #include "graphics/GraphicsUtility.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "io/PakReader.h"
 #include "io/Filesystem.h"

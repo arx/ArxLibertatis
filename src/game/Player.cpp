@@ -79,7 +79,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/GraphicsModes.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -100,6 +102,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
+
+using std::vector;
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;

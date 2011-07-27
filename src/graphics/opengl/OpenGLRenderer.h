@@ -62,13 +62,6 @@ class OpenGLRenderer : Renderer {
 	virtual void SetDepthBias(int depthBias) = 0;
 	virtual void SetFillMode(FillMode mode) = 0;
 	
-	// Texturing
-	virtual unsigned int GetTextureStageCount() const = 0;
-	virtual TextureStage* GetTextureStage(unsigned int textureStage) = 0;
-	virtual void ResetTexture(unsigned int textureStage) = 0;
-	virtual void SetTexture(unsigned int textureStage, Texture * pTexture) = 0;
-	virtual void SetTexture(unsigned int textureStage, TextureContainer* pTextureContainer) = 0;
-	
 	virtual float GetMaxAnisotropy() const = 0;
 	
 	// Utilities...

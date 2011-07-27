@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -1439,7 +1440,7 @@ void CLevitate::DrawStone()
 				this->tstone[nb].actif = 0;
 			}
 
-			int col = RGBA_MAKE(255, 255, 255, (int)(255.f * (1.f - a)));
+			int col = Color4f(Color3f::white, 1.f - a).toBGRA();
 
 			if (this->stone[this->tstone[nb].numstone])
 				DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
@@ -1593,7 +1594,7 @@ float CLevitate::Render()
 					col	= ARX_CLEAN_WARN_CAST_INT(fRandom);
 
 
-					if (!ARXPausedTimer) d3dv->color = RGBA_MAKE(col, col, col, col);
+					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
 
 					d3dv->tu = u;
 					d3dv->tv = 0.f;
@@ -1613,7 +1614,7 @@ float CLevitate::Render()
 					col = ARX_CLEAN_WARN_CAST_INT(fRandom);
 
 
-					if (!ARXPausedTimer) d3dv->color = RGBA_MAKE(0, 0, 0, col);
+					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);
 
 					d3dv->tu = u;
 					d3dv->tv = 0.9999999f;
@@ -1680,7 +1681,7 @@ float CLevitate::Render()
 					EE_RT2(&d3dvs, d3dv);
 					col = (int)(rnd() * 80.f);
 
-					if (!ARXPausedTimer) d3dv->color = RGBA_MAKE(col, col, col, col);
+					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
 
 					d3dv->tu = u;
 					d3dv->tv = 0.f;
@@ -1694,7 +1695,7 @@ float CLevitate::Render()
 					EE_RT2(&d3dvs, d3dv);
 					col = (int)(rnd() * 80.f);
 
-					if (!ARXPausedTimer) d3dv->color = RGBA_MAKE(0, 0, 0, col);
+					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);
 
 					d3dv->tu = u;
 					d3dv->tv = 1; 

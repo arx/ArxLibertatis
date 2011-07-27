@@ -62,7 +62,7 @@ bool DX7Texture2D::Create()
 	// Setup the new surface desc for the texture. Note how we are using the
 	// texture manage attribute, so Direct3D does alot of dirty work for us
 	DDSURFACEDESC2 ddsd;
-	ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
+	memset(&ddsd, 0, sizeof(DDSURFACEDESC2));
 	ddsd.dwSize          = sizeof(DDSURFACEDESC2);
 	ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE;
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;

@@ -1089,7 +1089,7 @@ VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 	float * pB = (float *)b;
 	float  pM[16];
 
-	ZeroMemory(pM, sizeof(EERIEMATRIX));
+	memset(pM, 0, sizeof(EERIEMATRIX));
 
 	for (WORD i = 0; i < 4; i++)
 		for (WORD j = 0; j < 4; j++)

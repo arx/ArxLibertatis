@@ -43,6 +43,7 @@ public:
 	};
 	
 	TextureStage(unsigned int stage);
+	virtual ~TextureStage() { }
 	
 	virtual void SetTexture(Texture * pTexture) = 0;
 	virtual void ResetTexture() = 0;

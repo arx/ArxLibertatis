@@ -65,7 +65,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
+#include "graphics/Math.h"
 #include "graphics/GraphicsEnum.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/data/CinematicTexture.h"
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/effects/Fog.h"
@@ -94,6 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 using std::string;
+using std::vector;
 
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;
@@ -6931,7 +6934,7 @@ void QuestBook_Update()
 	}
 
 	QuestBook_Cache_Text = new char[lLenght+PlayerQuest.size()*2+1];
-	ZeroMemory(QuestBook_Cache_Text, (lLenght+PlayerQuest.size()*2+1)*sizeof(char));
+	memset(QuestBook_Cache_Text, 0, (lLenght+PlayerQuest.size()*2+1));
 
 	for(size_t i = 0; i < PlayerQuest.size(); ++i) {
 		if(PlayerQuest[i].localised.size()) {
@@ -7273,7 +7276,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (Book_Mode == BOOKMODE_SPELLS) Book_Page = Book_SpellPage;
 		else Book_Page = Book_MapPage;
 
-		ZeroMemory(&bOnglet, 11*sizeof(bool));
+		std::fill_n(bOnglet, 11, false);
 
 		// calcul de la page de spells
 		if (Book_Mode == BOOKMODE_SPELLS)

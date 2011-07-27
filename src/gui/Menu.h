@@ -55,35 +55,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_MENU_H
-#define ARX_MENU_H
+
+#ifndef ARX_MENU_MENU_H
+#define ARX_MENU_MENU_H
 
 #include <string>
 #include <vector>
 #include <ctime>
 
-#include "graphics/data/Texture.h"
-#include "window/Input.h"
+class TextureContainer;
 
-#define MAX_FLYOVER	32
-struct MENU_DYNAMIC_DATA
-{
-	TextureContainer*   Background;
-	TextureContainer*   BookBackground;
-	TextureContainer*   pTexCredits;
-	float               creditspos;
-	float               creditstart;
-	std::string         flyover[MAX_FLYOVER];
-	std::string         str_cre_credits;
+#define MAX_FLYOVER 32
+
+struct MENU_DYNAMIC_DATA {
+	
+	TextureContainer * Background;
+	TextureContainer * BookBackground;
+	TextureContainer * pTexCredits;
+	float creditspos;
+	float creditstart;
+	std::string flyover[MAX_FLYOVER];
+	std::string str_cre_credits;
 	// New Quest Buttons Strings
-	std::string         str_button_quickgen;
-	std::string         str_button_skin;
-	std::string         str_button_done;
+	std::string str_button_quickgen;
+	std::string str_button_skin;
+	std::string str_button_done;
 
-	MENU_DYNAMIC_DATA()
-	: Background(NULL), BookBackground(NULL),
-	  pTexCredits(NULL), creditspos(0), creditstart(0)
-	{}
+	MENU_DYNAMIC_DATA() : Background(NULL), BookBackground(NULL),
+	  pTexCredits(NULL), creditspos(0), creditstart(0) { }
+	
 };
 
 // Possible values for ARXmenu.currentmode
@@ -114,29 +114,22 @@ struct SaveGame {
 	
 	std::string time;
 	
-	SaveGame()
-	: num(0), level(0), version(0)
-		{}
+	SaveGame() : num(0), level(0), version(0) { }
 };
 
-
-//-----------------------------------------------------------------------------
 extern std::vector<SaveGame> save_l;
 
-//-----------------------------------------------------------------------------
 void ARX_Menu_Manage();
 bool ARX_Menu_Render();
 void ARX_MENU_Launch();
 void ARX_MENU_Clicked_QUIT_GAME();
 void ARX_Menu_Resources_Create();
 void ARX_Menu_Resources_Release(bool _bNoSound = true);
-void ARX_Menu_Release_Text(void * a);
 void ARX_MENU_Clicked_CREDITS();
 
-//-----------------------------------------------------------------------------
 void LoadSaveGame(const long & i);
 void UpdateSaveGame(const long & i);
 void CreateSaveGameList();
 void FreeSaveGameList();
 
-#endif
+#endif // ARX_MENU_MENU_H

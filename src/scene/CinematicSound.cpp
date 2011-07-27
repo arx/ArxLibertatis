@@ -40,7 +40,6 @@ using std::string;
 CinematicSound		TabSound[MAX_SOUND];
 int			NbSound;
 /*-----------------------------------------------------------*/
-extern HWND HwndPere;
 extern char DirectoryChoose[];
 extern int	LSoundChoose;
 

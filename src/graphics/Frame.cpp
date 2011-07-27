@@ -339,7 +339,7 @@ HRESULT CD3DFramework7::CreateFullscreenBuffers(DDSURFACEDESC2 * pddsd)
 
 	// Setup to create the primary surface w/backbuffer
 	DDSURFACEDESC2 ddsd;
-	ZeroMemory(&ddsd, sizeof(ddsd));
+	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize            = sizeof(ddsd);
 	ddsd.dwFlags           = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
 	ddsd.ddsCaps.dwCaps    = DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE |
@@ -420,7 +420,7 @@ HRESULT CD3DFramework7::CreateWindowedBuffers()
 
 	// Create the primary surface
 	DDSURFACEDESC2 ddsd;
-	ZeroMemory(&ddsd, sizeof(ddsd));
+	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize         = sizeof(ddsd);
 	ddsd.dwFlags        = DDSD_CAPS;
 	ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
@@ -470,7 +470,7 @@ HRESULT CD3DFramework7::CreateWindowedBuffers()
 		return DDERR_OUTOFVIDEOMEMORY;
 	}
 
-	ZeroMemory(&ddsd, sizeof(ddsd));
+	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize = sizeof(ddsd);
 	m_pddsFrontBuffer->GetSurfaceDesc(&ddsd);
 	bitdepth = ddsd.ddpfPixelFormat.dwRGBBitCount;

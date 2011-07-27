@@ -25,16 +25,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/CinematicEffects.h"
 
+#include <cstring>
+
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
 #include "graphics/data/CinematicTexture.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
 
 /*---------------------------------------------------------------------------------*/
-extern HWND HwndPere;
 extern EERIE_CAMERA	Camera;
 /*---------------------------------------------------------------------------------*/
 #define		NBOLDPOS	10
@@ -44,7 +46,7 @@ float		FlashAlpha;
 int			TotOldPos;
 Vec3f	OldPos[NBOLDPOS];
 float		OldAz[NBOLDPOS];
- 
+
 /*---------------------------------------------------------------------------------*/
 int FX_FadeIN(float a, int color, int colord)
 {
@@ -64,7 +66,7 @@ int FX_FadeIN(float a, int color, int colord)
 	g = (g - gd) * a + gd;
 	b = (b - bd) * a + bd;
 
-	c = RGB_MAKE((int)r, (int)g, (int)b);
+	c = Color((int)r, (int)g, (int)b, 0).toBGR();
 
 	return c;
 }
@@ -89,7 +91,7 @@ int FX_FadeOUT(float a, int color, int colord)
 	g = (g - gd) * a + gd;
 	b = (b - bd) * a + bd;
 
-	c = RGB_MAKE((int)r, (int)g, (int)b);
+	c = Color((int)r, (int)g, (int)b, 0).toBGR();
 
 	return c;
 }

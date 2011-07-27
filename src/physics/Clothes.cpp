@@ -57,9 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Clothes.h"
 
+#include <cstring>
+
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+
+using std::vector;
 
 #define MOLLESS_USEGRAVITY 1
 #define MOLLESS_USEDAMPING 1

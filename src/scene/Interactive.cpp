@@ -85,6 +85,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/FTL.h"
 #include "graphics/data/Progressive.h"
@@ -116,6 +118,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::string;
+using std::vector;
 
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;

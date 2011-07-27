@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells05.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -804,7 +805,7 @@ void CRiseDead::DrawStone()
 				this->tstone[nb].actif = 0;
 			}
 
-			int col = RGBA_MAKE(255, 255, 255, (int)(255.f * (1.f - a)));
+			int col = Color::white.toBGR((int)(255.f * (1.f - a)));
 			DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
 
 			int j = ARX_PARTICLES_GetFree();
@@ -1721,7 +1722,7 @@ float CParalyse::Render()
 					d3ds.sz = tabprism[nb2].pos.z + vertex->z * this->scale + this->tabprism[nb2].offset.z;
 		
 					EE_RTP(&d3ds, vd3d);
-					vd3d->color = RGBA_MAKE(50, 50, 64, 255);
+					vd3d->color = Color(50, 50, 64).toBGRA();
 					vertex++;
 					vd3d++;
 					nb--;
@@ -1781,7 +1782,7 @@ float CParalyse::Render()
 					d3ds.sy = py +  vertex->y + this->tabprism[nb2].offset.y;
 					d3ds.sz = pz +  vertex->z + this->tabprism[nb2].offset.z;
 					EE_RTP(&d3ds, vd3d);
-					vd3d->color = RGBA_MAKE(50, 50, 64, 255);
+					vd3d->color = Color(50, 50, 64).toBGRA();
 					vertex++;
 					vd3d++;
 					nb--;
@@ -1874,16 +1875,12 @@ float CParalyse::Render()
 
 			break;
 		case 1:
-			int col = RGBA_MAKE(((int)(this->prismrd + (this->prismre - this->prismrd) * this->prisminterpcol)) >> 1,
+			ColorBGRA col = Color(((int)(this->prismrd + (this->prismre - this->prismrd) * this->prisminterpcol)) >> 1,
 			                    ((int)(this->prismgd + (this->prismge - this->prismgd) * this->prisminterpcol)) >> 1,
-			                    ((int)(this->prismbd + (this->prismbe - this->prismbd) * this->prisminterpcol)) >> 1,
-			                    255);
+			                    ((int)(this->prismbd + (this->prismbe - this->prismbd) * this->prisminterpcol)) >> 1).toBGRA();
 
-			if (this->lLightId >= 0)
-			{
-				DynLight[this->lLightId].rgb.r = (((float)((col >> 16) & 0xFF)) * 1.9f) * ( 1.0f / 255 );
-				DynLight[this->lLightId].rgb.g = (((float)((col >> 8) & 0xFF)) * 1.9f) * ( 1.0f / 255 );
-				DynLight[this->lLightId].rgb.b = (((float)(col & 0xFF)) * 1.9f) * ( 1.0f / 255 );
+			if(this->lLightId >= 0) {
+				DynLight[this->lLightId].rgb = Color3f::fromBGR(col) * 1.9f;
 			}
 
 
@@ -1916,10 +1913,10 @@ float CParalyse::Render()
 				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 			}
 
-			col = RGBA_MAKE((int)(this->prismrd + (this->prismre - this->prismrd) * this->prisminterpcol),
+			col = Color((int)(this->prismrd + (this->prismre - this->prismrd) * this->prisminterpcol),
 			                (int)(this->prismgd + (this->prismge - this->prismgd) * this->prisminterpcol),
-			                (int)(this->prismbd + (this->prismbe - this->prismbd) * this->prisminterpcol),
-			                255);
+			                (int)(this->prismbd + (this->prismbe - this->prismbd) * this->prisminterpcol)
+			                ).toBGRA();
 
 			vertex = this->prismvertex;
 			vd3d = this->prismd3d;

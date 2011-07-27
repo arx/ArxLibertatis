@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include "graphics/Math.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::max;
 using std::string;
+using std::vector;
 
 void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj) {
 	

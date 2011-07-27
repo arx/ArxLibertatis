@@ -342,7 +342,7 @@ void DANAE_DEBUGGER_Update()
 	{
 		s.bTimers = true;
 		char buf[16000];
-		ZeroMemory(buf, 16000);
+		memset(buf, 0, 16000);
 
 		for (i = 0; i < MAX_TIMER_SCRIPT; i++)
 		{

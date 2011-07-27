@@ -148,7 +148,7 @@ static HRESULT WINAPI DeviceEnumCallback( char*	strDesc,
 
 	D3DEnum_DeviceInfo * pDriverInfo = (D3DEnum_DeviceInfo *)pParentInfo;
 	D3DEnum_DeviceInfo * pDeviceInfo = &g_pDeviceList[g_dwNumDevices];
-	ZeroMemory(pDeviceInfo, sizeof(D3DEnum_DeviceInfo));
+	memset(pDeviceInfo, 0, sizeof(D3DEnum_DeviceInfo));
 
 	//info sur le devices
 	pDeviceInfo->wNbBlendStage			= pDesc->wMaxTextureBlendStages;
@@ -278,7 +278,7 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, char* strDesc,
 	}
 
 	// Copy data to a device info structure
-	ZeroMemory(&d3dDeviceInfo, sizeof(d3dDeviceInfo));
+	memset(&d3dDeviceInfo, 0, sizeof(d3dDeviceInfo));
 	lstrcpyn(d3dDeviceInfo.strDesc, strDesc, 39);
 	d3dDeviceInfo.ddDriverCaps.dwSize = sizeof(DDCAPS);
 	d3dDeviceInfo.ddHELCaps.dwSize    = sizeof(DDCAPS);

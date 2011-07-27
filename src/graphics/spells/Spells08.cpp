@@ -245,7 +245,7 @@ float CExplosion::Render()
 				d3dvs.sy = pos.y;
 				d3dvs.sz = pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * scale);
 				EE_RTP(&d3dvs, d3dv);
-				d3dv->color = RGBA_MAKE(255, 200, 0, 255);
+				d3dv->color = Color(255, 200, 0).toBGRA();
 				vertex++;
 				d3dv++;
 
@@ -254,7 +254,7 @@ float CExplosion::Render()
 				d3dvs.sz = pos.z + vertex->z;
 				EE_RTP(&d3dvs, d3dv);
 
-				if (!ARXPausedTimer) d3dv->color = RGBA_MAKE((int)(rin * rnd()), 0, 0, 255);
+				if (!ARXPausedTimer) d3dv->color = Color((int)(rin * rnd()), 0, 0).toBGRA();
 
 				vertex++;
 				d3dv++;
@@ -362,8 +362,8 @@ float CExplosion::Render()
 			d3dv = disqued3d;
 			nb = disquenbvertex >> 1;
 			float a = 1.f - scale;
-			col = RGBA_MAKE((int)(255.f * a), (int)(200.f * a), 0, 255);
-			col2 = RGBA_MAKE((int)(255.f * a * rnd()), 0, 0, 0);
+			col = Color((int)(255.f * a), (int)(200.f * a), 0).toBGRA();
+			col2 = Color4f(a * rnd(), 0, 0, 0).toBGRA();
 
 			while (nb--)
 			{

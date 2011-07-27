@@ -75,9 +75,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/VertexBuffer.h"
 #include "graphics/GraphicsEnum.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/data/FastSceneFormat.h"
 #include "graphics/particle/ParticleEffects.h"
 
@@ -104,6 +105,7 @@ using std::min;
 using std::max;
 using std::copy;
 using std::string;
+using std::vector;
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
@@ -185,7 +187,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 
 	fK3 = (_fZFar - _fZNear);
 
-	ZeroMemory(&ProjectionMatrix, sizeof(EERIEMATRIX));
+	memset(&ProjectionMatrix, 0, sizeof(EERIEMATRIX));
 	ProjectionMatrix._11 = w;
 	ProjectionMatrix._22 = h;
 	ProjectionMatrix._33 = Q;

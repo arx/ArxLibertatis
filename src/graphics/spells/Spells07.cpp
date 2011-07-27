@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
@@ -297,7 +298,7 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 		falpha = 1.f; 
 
 		LIGHTNING LInfo;
-		ZeroMemory(&LInfo, sizeof(LIGHTNING));
+		memset(&LInfo, 0, sizeof(LIGHTNING));
 
 		LInfo.eStart = eSrc;
 		LInfo.eVect.x = eDest.x - eSrc.x;
@@ -342,7 +343,7 @@ void CLightning::ReCreate()
 		falpha = 1.f;
 
 		LIGHTNING LInfo;
-		ZeroMemory(&LInfo, sizeof(LIGHTNING));
+		memset(&LInfo, 0, sizeof(LIGHTNING));
 
 		LInfo.eStart = eSrc;
 		LInfo.eVect.x = eDest.x - eSrc.x;

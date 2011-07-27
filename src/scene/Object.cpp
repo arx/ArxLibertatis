@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/data/Progressive.h"
 #include "graphics/data/FTL.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
@@ -92,6 +92,7 @@ using std::sprintf;
 using std::min;
 using std::max;
 using std::string;
+using std::vector;
 
 extern char LastLoadedScene[256];
 

@@ -75,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -95,6 +96,7 @@ using std::min;
 using std::max;
 using std::string;
 using std::ostringstream;
+using std::vector;
 
 extern float IN_FRONT_DIVIDER_ITEMS;
 long MAX_LLIGHTS=18;
