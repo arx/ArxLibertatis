@@ -834,10 +834,7 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos);
 long PhysicalDrawBkgVLine(Vec3f * orgn,Vec3f * dest);
 
 // FAST SAVE LOAD
-bool FastSceneLoad(const std::string & path);
-bool CheckUniqueIdent(char * pathh);
-bool CreateUniqueIdent(char * pathh);
-
+bool FastSceneLoad(const fs::path & path);
 
 //****************************************************************************
 // DRAWING FUNCTIONS START

@@ -3178,7 +3178,7 @@ long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 
 
-bool FastSceneLoad(const string & partial_path) {
+bool FastSceneLoad(const fs::path & partial_path) {
 	
 	// TODO bounds checking
 	
@@ -3188,8 +3188,8 @@ bool FastSceneLoad(const string & partial_path) {
 		return false;
 	}
 	
-	string path = "game/" + partial_path;
-	string file = path + "fast.fts";
+	fs::path path = "game" / partial_path;
+	fs::path file = path / "fast.fts";
 	
 	size_t size;
 	char * dat = resources->readAlloc(file, size);
@@ -3201,7 +3201,7 @@ bool FastSceneLoad(const string & partial_path) {
 	const UNIQUE_HEADER * uh = reinterpret_cast<const UNIQUE_HEADER *>(dat + pos);
 	pos += sizeof(UNIQUE_HEADER);
 	
-	if(!NOCHECKSUM && toLowercase(uh->path) != path) {
+	if(!NOCHECKSUM && fs::path::load(uh->path) != path) {
 		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
 		free(dat);
 		return false;
