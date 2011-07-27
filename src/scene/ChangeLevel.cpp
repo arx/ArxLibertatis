@@ -1942,7 +1942,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 			ReleaseAnimFromIO(&io, i);
 		}
 		if(asp->anims[i][0]) {
-			io.anims[i] = EERIE_ANIMMANAGER_Load(loadPath(safestring(asp->anims[i])));
+			io.anims[i] = EERIE_ANIMMANAGER_Load(fs::path::load(safestring(asp->anims[i])));
 		}
 	}
 	
@@ -2223,7 +2223,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				continue;
 			}
 			
-			string path = loadPath(safestring(ais->anims[i]));
+			fs::path path = fs::path::load(safestring(ais->anims[i]));
 			
 			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
 			if(io->anims[i]) {
@@ -2231,9 +2231,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			}
 			
 			if(io->ioflags & IO_NPC) {
-				path = "graph/obj3d/anims/npc/" + GetName(path) + GetExt(path);
+				path = fs::path("graph/obj3d/anims/npc") / path.filename();
 			} else {
-				path = "graph/obj3d/anims/fix_inter/" + GetName(path) + GetExt(path);
+				path = fs::path("graph/obj3d/anims/fix_inter") / path.filename();
 			}
 			
 			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
@@ -2565,7 +2565,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		LoadLevelScreen();
 		
 		std::ostringstream oss;
-		oss << GetName(loadPath(safestring(idx_io[i].filename))) << '_' << std::setfill('0') << std::setw(4) << idx_io[i].ident;
+		oss << fs::path::load(safestring(idx_io[i].filename)).basename() << '_' << std::setfill('0') << std::setw(4) << idx_io[i].ident;
 		if(GetTargetByNameTarget(oss.str()) < 0) {
 			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
 		}
