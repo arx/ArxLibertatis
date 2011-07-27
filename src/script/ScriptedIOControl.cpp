@@ -171,7 +171,7 @@ public:
 		
 		if(type == "npc" || type == "item") {
 			
-			string file = loadPath(context.getWord()); // object to spawn.
+			fs::path file = fs::path::load(context.getWord()); // object to spawn.
 			
 			string target = context.getWord(); // object ident for position
 			long t = GetTargetByNameTarget(target);
@@ -189,8 +189,7 @@ public:
 				return Failed;
 			}
 			
-			string path;
-			File_Standardize("graph/obj3d/interactive/npc/" + file, path);
+			fs::path path = "graph/obj3d/interactive/npc" / file;
 			
 			if(type == "npc") {
 				
