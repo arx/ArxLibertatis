@@ -785,7 +785,7 @@ void InitializeDanae()
 {
 	InitTileLights();
 	
-	char levelPath[512];
+	fs::path levelPath = "graph/levels/level";
 	EERIEMathPrecalc();
 	ARX_MISSILES_ClearAll();
 	ARX_SPELLS_Init();
@@ -796,111 +796,110 @@ void InitializeDanae()
 	ARX_MAGICAL_FLARES_FirstInit();
 
 	strcpy(LastLoadedScene,"");
-	strcpy(levelPath, "graph/levels/level");
 
-	switch (Project.demo)
-	{
+	switch(Project.demo) {
+		
 		case NOLEVEL:
-			levelPath[0] = 0;
+			levelPath.clear();
 			break;
 		case LEVELDEMO:
-			strcat(levelPath, "demo/");
+			levelPath.append("demo");
 			break;
 		case LEVELDEMO2:
-			strcat(levelPath, "demo2/");
+			levelPath.append("demo2");
 			break;
 		case LEVELDEMO3:
-			strcat(levelPath, "demo3/");
+			levelPath.append("demo3");
 			break;
 		case LEVELDEMO4:
-			strcat(levelPath, "demo4/");
+			levelPath.append("demo4");
 			break;
 		case LEVEL0:
-			strcat(levelPath, "0/");
+			levelPath.append("0");
 			break;
 		case LEVEL1:
-			strcat(levelPath, "1/");
+			levelPath.append("1");
 			break;
 		case LEVEL2:
-			strcat(levelPath, "2/");
+			levelPath.append("2");
 			break;
 		case LEVEL3:
-			strcat(levelPath, "3/");
+			levelPath.append("3");
 			break;
 		case LEVEL4:
-			strcat(levelPath, "4/");
+			levelPath.append("4");
 			break;
 		case LEVEL5:
-			strcat(levelPath, "5/");
+			levelPath.append("5");
 			break;
 		case LEVEL6:
-			strcat(levelPath, "6/");
+			levelPath.append("6");
 			break;
 		case LEVEL7:
-			strcat(levelPath, "7/");
+			levelPath.append("7");
 			break;
 		case LEVEL8:
-			strcat(levelPath, "8/");
+			levelPath.append("8");
 			break;
 		case LEVEL9:
-			strcat(levelPath, "9/");
+			levelPath.append("9");
 			break;
 		case LEVEL10:
-			strcat(levelPath, "10/");
+			levelPath.append("10");
 			break;
 		case LEVEL11:
-			strcat(levelPath, "11/");
+			levelPath.append("11");
 			break;
 		case LEVEL12:
-			strcat(levelPath, "12/");
+			levelPath.append("12");
 			break;
 		case LEVEL13:
-			strcat(levelPath, "13/");
+			levelPath.append("13");
 			break;
 		case LEVEL14:
-			strcat(levelPath, "14/");
+			levelPath.append("14");
 			break;
 		case LEVEL15:
-			strcat(levelPath, "15/");
+			levelPath.append("15");
 			break;
 		case LEVEL16:
-			strcat(levelPath, "16/");
+			levelPath.append("16");
 			break;
 		case LEVEL17:
-			strcat(levelPath, "17/");
+			levelPath.append("17");
 			break;
 		case LEVEL18:
-			strcat(levelPath, "18/");
+			levelPath.append("18");
 			break;
 		case LEVEL19:
-			strcat(levelPath, "19/");
+			levelPath.append("19");
 			break;
 		case LEVEL20:
-			strcat(levelPath, "20/");
+			levelPath.append("20");
 			break;
 		case LEVEL21:
-			strcat(levelPath, "21/");
+			levelPath.append("21");
 			break;
 		case LEVEL22:
-			strcat(levelPath, "22/");
+			levelPath.append("22");
 			break;
 		case LEVEL23:
-			strcat(levelPath, "23/");
+			levelPath.append("23");
 			break;
 		case LEVEL24:
-			strcat(levelPath, "24/");
+			levelPath.append("24");
 			break;
 		case LEVEL25:
-			strcat(levelPath, "25/");
+			levelPath.append("25");
 			break;
 		case LEVEL26:
-			strcat(levelPath, "26/");
+			levelPath.append("26");
 			break;
 		case LEVEL27:
-			strcat(levelPath, "27/");
+			levelPath.append("27");
 			break;
 		default:
-			levelPath[0] = 0;
+			levelPath.clear();
 	}
 
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
@@ -1004,7 +1003,7 @@ void InitializeDanae()
 		}
 		LaunchDemo=0;
 		SPLASH_THINGS_STAGE=11;
-	} else if (levelPath[0]!=0)	{
+	} else if (!levelPath.empty())	{
 		LogInfo << "Launching Level " << levelPath;
 		if (FastSceneLoad(levelPath)) {
 			FASTmse = 1;
@@ -1017,7 +1016,7 @@ void InitializeDanae()
 #endif
 		}
 		EERIEPOLY_Compute_PolyIn();
-		strcpy(LastLoadedScene,levelPath);
+		strcpy(LastLoadedScene, levelPath.string().c_str());
 	}
 
 #ifdef BUILD_EDITOR
