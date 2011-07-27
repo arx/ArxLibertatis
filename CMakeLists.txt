@@ -309,6 +309,7 @@ if(ARX_USE_UNITYBUILD)
 endif()
 
 add_definitions(-DBOOST_NO_EXCEPTIONS)
+add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
 #create source groups
