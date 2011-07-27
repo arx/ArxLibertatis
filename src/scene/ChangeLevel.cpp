@@ -2138,7 +2138,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		return NULL;
 	}
 	
-	INTERACTIVE_OBJ * io = LoadInter_Ex(loadPath(safestring(ais->filename)), num, ais->pos, ais->angle, MSP);
+	INTERACTIVE_OBJ * io = LoadInter_Ex(fs::path::load(safestring(ais->filename)), num, ais->pos, ais->angle, MSP);
 	
 	if(!io) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;

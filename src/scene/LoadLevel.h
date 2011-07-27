@@ -85,7 +85,7 @@ void DanaeClearAll();
 void RestoreLastLoadedLightning();
 
 
-INTERACTIVE_OBJ * LoadInter_Ex(const std::string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
+INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
 
 extern Vec3f MSP;
 

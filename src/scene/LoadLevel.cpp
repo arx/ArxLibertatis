@@ -691,22 +691,17 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 //*************************************************************************************
 //*************************************************************************************
 
-INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
-	char nameident[256];
+INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	
-	INTERACTIVE_OBJ * io;
+	std::ostringstream nameident;
+	nameident << name.basename() << std::setfill('0') << std::setw(4) << ident;
 	
-	sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
-	
-	long t = GetTargetByNameTarget(nameident);
+	long t = GetTargetByNameTarget(nameident.str());
 	if(t >= 0) {
 		return inter.iobj[t];
 	}
 	
-	size_t gpos = name.find("graph");
-	string nname = (gpos != string::npos && gpos != 0) ? name.substr(gpos) : name;
-	
-	io = AddInteractive(nname, ident, NO_MESH | NO_ON_LOAD);
+	INTERACTIVE_OBJ * io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
 	
 	if (io)
 	{
@@ -926,7 +921,15 @@ long DanaeLoadLevel(const fs::path & file) {
 		const DANAE_LS_INTER * dli = reinterpret_cast<const DANAE_LS_INTER *>(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
 		if(!DONT_LOAD_INTERS) {
-			LoadInter_Ex(loadPath(safestring(dli->name)), dli->ident, dli->pos, dli->angle, trans);
+			
+			string pathstr = safestring(dli->name);
+			
+			size_t pos = pathstr.find("graph");
+			if(pos != std::string::npos) {
+				pathstr = pathstr.substr(pos);
+			}
+			
+			LoadInter_Ex(fs::path::load(pathstr), dli->ident, dli->pos, dli->angle, trans);
 		}
 	}
 	
