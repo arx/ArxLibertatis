@@ -348,6 +348,10 @@ void initSuppressions() {
 	
 	suppress("dragon_ice_0001", 93, "loadanim"); // missing animation: "dragon_talk_head"
 	
+	suppress("dragon's_lair_ice_wall", 41, "satangular"); // unknown command 'satangular', should be setangular
+	
+	suppress("flour_bag", 41, "satangular"); // unknown command 'collison', should be collision
+	
 	suppress("gem_inwall", 114, "play"); // unknown flag -e (ignored)
 	
 	suppress("goblin_base", 30010, "goto"); // missing label "main_alert"
