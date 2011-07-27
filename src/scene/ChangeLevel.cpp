@@ -608,14 +608,12 @@ static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 		}
 	}
 
-	ARX_CHANGELEVEL_PATH * acp;
-
 	for (int i = 0; i < nbARXpaths; i++)
 	{
-		acp = (ARX_CHANGELEVEL_PATH *)(dat + pos);
+		ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<ARX_CHANGELEVEL_PATH *>(dat + pos);
 		memset(acp, 0, sizeof(ARX_CHANGELEVEL_PATH));
-		strcpy(acp->name, ARXpaths[i]->name);
-		strcpy(acp->controled, ARXpaths[i]->controled);
+		strncpy(acp->name, ARXpaths[i]->name.c_str(), sizeof(acp->name));
+		strncpy(acp->controled, ARXpaths[i]->controled.c_str(), sizeof(acp->controled));
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 	}
 
@@ -1109,25 +1107,21 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	if (io->usepath)
 	{
 		ARX_USE_PATH * aup = io->usepath;
-
+		
 		ais.usepath_aupflags = aup->aupflags;
-
-
+		
 		float ulCurTime = aup->_curtime;
 		ARX_CHECK_ULONG(ulCurTime);
 		ais.usepath_curtime = ARX_CLEAN_WARN_CAST_ULONG(ulCurTime) ;
-
-
+		
 		ais.usepath_initpos = aup->initpos;
 		ais.usepath_lastWP = aup->lastWP;
-
-
+		
 		float ulStartTime = aup->_starttime;
 		ARX_CHECK_ULONG(ulStartTime);
 		ais.usepath_starttime = ARX_CLEAN_WARN_CAST_ULONG(ulStartTime);
-
-
-		strcpy(ais.usepath_name, aup->path->name);
+		
+		strncpy(ais.usepath_name, aup->path->name.c_str(), sizeof(ais.usepath_name));
 	}
 
 	strncpy(ais.shop_category, io->shop_category.c_str(), sizeof(ais.shop_category));
@@ -1686,7 +1680,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
 	
 	// Now Restore Paths
-	for (int i = 0; i < asi->nb_paths; i++) {
+	for(int i = 0; i < asi->nb_paths; i++) {
 		
 		const ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<const ARX_CHANGELEVEL_PATH *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
@@ -1694,11 +1688,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 		ARX_PATH * ap = ARX_PATH_GetAddressByName(toLowercase(safestring(acp->name)));
 		
 		if(ap) {
-			if(acp->controled[0] == '\0') {
-				ap->controled[0] = '\0';
-			} else {
-				strcpy(ap->controled, toLowercase(safestring(acp->controled)).c_str());
-			}
+			ap->controled = toLowercase(safestring(acp->controled));
 		}
 	}
 	

@@ -433,17 +433,17 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		DANAE_LS_PATH dlp;
 		memset(&dlp, 0, sizeof(DANAE_LS_PATH));
 		dlp.flags = (short)ARXpaths[i]->flags;
-		dlp.idx = ARXpaths[i]->idx;
+		dlp.idx = 0;
 		dlp.initpos.x = ARXpaths[i]->initpos.x - Mscenepos.x;
 		dlp.initpos.y = ARXpaths[i]->initpos.y - Mscenepos.y;
 		dlp.initpos.z = ARXpaths[i]->initpos.z - Mscenepos.z;
 		dlp.pos.x = ARXpaths[i]->pos.x - Mscenepos.x;
 		dlp.pos.y = ARXpaths[i]->pos.y - Mscenepos.y;
 		dlp.pos.z = ARXpaths[i]->pos.z - Mscenepos.z;
-		strcpy(dlp.name, ARXpaths[i]->name);
+		strncpy(dlp.name, ARXpaths[i]->name.c_str(), sizeof(dlp.name));
 		dlp.nb_pathways = ARXpaths[i]->nb_pathways;
 		dlp.height = ARXpaths[i]->height;
-		strcpy(dlp.ambiance, ARXpaths[i]->ambiance);
+		strncpy(dlp.ambiance, ARXpaths[i]->ambiance.string().c_str(), sizeof(dlp.ambiance));
 		dlp.amb_max_vol = ARXpaths[i]->amb_max_vol;
 		dlp.farclip = ARXpaths[i]->farclip;
 		dlp.reverb = ARXpaths[i]->reverb;
@@ -1105,26 +1105,19 @@ long DanaeLoadLevel(const fs::path & file) {
 	
 	for(long i = 0; i < dlh.nb_paths; i++) {
 		
-		ARX_PATH * ap = ARXpaths[i] = (ARX_PATH *)malloc(sizeof(ARX_PATH));
-		memset(ap, 0, sizeof(ARX_PATH));
-		
 		const DANAE_LS_PATH * dlp = reinterpret_cast<const DANAE_LS_PATH *>(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
 		
+		Vec3f ppos = Vec3f(dlp->initpos) + trans;
+		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(toLowercase(safestring(dlp->name)), ppos);
+		
 		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
-		ap->idx = dlp->idx;
-		ap->initpos.x = dlp->initpos.x + trans.x;
-		ap->initpos.y = dlp->initpos.y + trans.y;
-		ap->initpos.z = dlp->initpos.z + trans.z;
-		ap->pos.x = dlp->pos.x + trans.x;
-		ap->pos.y = dlp->pos.y + trans.y;
-		ap->pos.z = dlp->pos.z + trans.z;
-		strcpy(ap->name, toLowercase(safestring(dlp->name)).c_str());
+		ap->pos = Vec3f(dlp->pos) + trans;
 		ap->nb_pathways = dlp->nb_pathways;
 		ap->height = dlp->height;
-		strcpy(ap->ambiance, loadPath(safestring(dlp->ambiance)).c_str());
-		ap->amb_max_vol = dlp->amb_max_vol;
+		ap->ambiance = fs::path::load(safestring(dlp->ambiance));
 		
+		ap->amb_max_vol = dlp->amb_max_vol;
 		if(ap->amb_max_vol <= 1.f) {
 			ap->amb_max_vol = 100.f;
 		}
@@ -1138,7 +1131,7 @@ long DanaeLoadLevel(const fs::path & file) {
 		
 		for(long j = 0; j < dlp->nb_pathways; j++) {
 			
-			const DANAE_LS_PATHWAYS  * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
+			const DANAE_LS_PATHWAYS * dlpw = reinterpret_cast<const DANAE_LS_PATHWAYS *>(dat + pos);
 			pos += sizeof(DANAE_LS_PATHWAYS);
 			
 			app[j].flag = (PathwayType)dlpw->flag; // save/load enum

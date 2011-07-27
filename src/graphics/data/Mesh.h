@@ -81,7 +81,7 @@ void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZN
 
 
 struct ANIM_HANDLE {
-	char path[256]; // path[0]==0 means an unallocated slot
+	char path[256]; // empty path means an unallocated slot
 	EERIE_ANIM ** anims;
 	short alt_nb;
 	long locks;

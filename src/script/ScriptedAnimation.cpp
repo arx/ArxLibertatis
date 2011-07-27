@@ -392,7 +392,7 @@ public:
 			return Failed;
 		}
 		
-		ap->controled[0] = 0;
+		ap->controled.clear();
 		
 		return Success;
 	}
@@ -473,7 +473,7 @@ public:
 			return Failed;
 		}
 		
-		strcpy(ap->controled, context.getIO()->long_name().c_str());
+		ap->controled = context.getIO()->long_name();
 		
 		return Success;
 	}

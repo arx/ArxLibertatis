@@ -301,7 +301,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					SendIOScriptEvent(io, SM_LEAVEZONE, op->name); 
 
-					if (op->controled[0] != 0)
+					if (!op->controled.empty())
 					{
 						long t = GetTargetByNameTarget(op->controled);
 
@@ -319,16 +319,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					;
 
 
-					if ((JUST_RELOADED)
-					        &&	((!strcmp(p->name, "ingot_maker")) || (!strcmp(p->name, "mauld_user"))))
-					{
+					if(JUST_RELOADED && (p->name == "ingot_maker" || p->name == "mauld_user")) {
 						ARX_DEAD_CODE(); 
-					}
-					else
-					{
+					} else {
 						SendIOScriptEvent(io, SM_ENTERZONE, p->name); 
 
-						if (p->controled[0] != 0)
+						if (!p->controled.empty())
 						{
 							long t = GetTargetByNameTarget(p->controled);
 
@@ -344,7 +340,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					SendIOScriptEvent(io, SM_LEAVEZONE, op->name); 
 
-					if (op->controled[0] != 0)
+					if (!op->controled.empty())
 					{
 						long t = GetTargetByNameTarget(op->controled);
 
@@ -358,7 +354,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					io->inzone_show = io->show;
 					SendIOScriptEvent(io, SM_ENTERZONE, p->name); 
 
-					if (p->controled[0] != 0)
+					if (!p->controled.empty())
 					{
 						long t = GetTargetByNameTarget(p->controled);
 
@@ -397,13 +393,13 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, op->name); 
 			CHANGE_LEVEL_ICON = -1;
 
-			if (op->controled[0] != 0)
+			if (!op->controled.empty())
 			{
 				long t = GetTargetByNameTarget(op->controled);
 
 				if (t >= 0)
 				{
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, string("player ") + op->name);
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, "player " + op->name);
 				}
 			}
 		}
@@ -411,7 +407,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		{
 			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, p->name); 
 
-			if (p->flags & PATH_AMBIANCE && p->ambiance[0])
+			if (p->flags & PATH_AMBIANCE && !p->ambiance.empty())
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
 
 			if (p->flags & PATH_FARCLIP)
@@ -430,26 +426,26 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				desired.depthcolor = p->rgb;
 			}
 
-			if (p->controled[0] != 0)
+			if (!p->controled.empty())
 			{
 				long t = GetTargetByNameTarget(p->controled);
 
 				if (t >= 0)
 				{
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, string("player ") + p->name);
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
 		}
 		else 
 		{
 
-			if (op->controled[0] != 0)
+			if (!op->controled.empty())
 			{
 				long t = GetTargetByNameTarget(op->controled);
 
 				if (t >= 0)
 				{
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, string("player ") + p->name);
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, "player " + p->name);
 				}
 			}
 
@@ -459,7 +455,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 				if (t >= 0)
 				{
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, string("player ") + p->name);
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
 		}
@@ -473,21 +469,38 @@ suite:
 	JUST_RELOADED = 0;
 }
 
+ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos) : name(_name), initpos(_pos), pos(_pos) {
+	
+	flags = 0;
+	nb_pathways = 0;
+	pathways = NULL;
+	height = 0; // 0 NOT A ZONE
+	
+	rgb = Color3f::black;
+	farclip = 0.f;
+	reverb = 0.f;
+	amb_max_vol = 0.f;
+	bbmin = Vec3f::ZERO;
+	bbmax = Vec3f::ZERO;
+	
+}
+
+ARX_PATH::~ARX_PATH() {
+	
+}
+
 #ifdef BUILD_EDITOR
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATHS_Create(const char * name, Vec3f * pos)
-{
-	ARX_PATH * ap = (ARX_PATH *)malloc(sizeof(ARX_PATH)); 
-
-	if (ap == NULL) return NULL;
-
-	memset(ap, 0, sizeof(ARX_PATH));
-	SAFEstrcpy(ap->name, name, 64);
-	ap->initpos.x = ap->pos.x = pos->x;
-	ap->initpos.y = ap->pos.y = pos->y;
-	ap->initpos.z = ap->pos.z = pos->z;
-	InterTreeViewItemAdd(NULL, name, IOTVTYPE_PATH);
+ARX_PATH * ARX_PATHS_Create(const string & name, Vec3f * pos) {
+	
+	ARX_PATH * ap = new ARX_PATH(name, *pos); 
+	if(!ap) {
+		return NULL;
+	}
+	
+	InterTreeViewItemAdd(NULL, name.c_str(), IOTVTYPE_PATH);
+	
 	return ap;
 }
 #endif
@@ -506,38 +519,33 @@ void ARX_PATH_ClearAllUsePath()
 			}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
-void ARX_PATH_ClearAllControled()
-{
-	for (long i = 0; i < nbARXpaths; i++)
-	{
-		if (ARXpaths[i])
-		{
-			ARXpaths[i]->controled[0] = 0;
+
+void ARX_PATH_ClearAllControled() {
+	for(long i = 0; i < nbARXpaths; i++) {
+		if(ARXpaths[i]) {
+			ARXpaths[i]->controled.clear();
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 #ifdef BUILD_EDITOR
 void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 {
 	if (ap == NULL) return;
 
-	InterTreeViewItemRemove(NULL, ap->name);
-	strcpy(ap->name, newname);
-	InterTreeViewItemAdd(NULL, ap->name, IOTVTYPE_PATH);
+	InterTreeViewItemRemove(NULL, ap->name.c_str());
+	ap->name = newname;
+	InterTreeViewItemAdd(NULL, ap->name.c_str(), IOTVTYPE_PATH);
 }
 #endif
-//*************************************************************************************
-//*************************************************************************************
+
 ARX_PATH * ARX_PATH_GetAddressByName(const string & name) {
+	
+	// TODO this is almost the same as ARX_PATHS_ExistName()
 	
 	if(name.empty() || !ARXpaths) {
 		return NULL;
 	}
-	
 	
 	for(long i = 0; i < nbARXpaths; i++) {
 		if(ARXpaths[i] && ARXpaths[i]->name == name) {
@@ -558,14 +566,13 @@ void ARX_PATH_ReleaseAllPath()
 		if (ARXpaths[i])
 		{
 #ifdef BUILD_EDITOR
-			InterTreeViewItemRemove(NULL, ARXpaths[i]->name);
+			InterTreeViewItemRemove(NULL, ARXpaths[i]->name.c_str());
 #endif
 
 			if (ARXpaths[i]->pathways) free(ARXpaths[i]->pathways);
 
 			ARXpaths[i]->pathways = NULL;
-			free(ARXpaths[i]);
-			ARXpaths[i] = NULL;
+			delete ARXpaths[i], ARXpaths[i] = NULL;
 		}
 	}
 
@@ -574,30 +581,31 @@ void ARX_PATH_ReleaseAllPath()
 	ARXpaths = NULL;
 	nbARXpaths = 0;
 }
-//*************************************************************************************
-//*************************************************************************************
-ARX_PATH * ARX_PATHS_ExistName(char * name)
-{
-	if (ARXpaths == NULL) return NULL;
 
-	for (long i = 0; i < nbARXpaths; i++)
-	{
-		if (!strcmp(ARXpaths[i]->name, name))
-			return ARXpaths[i];
+ARX_PATH * ARX_PATHS_ExistName(const string & name) {
+	
+	if(!ARXpaths) {
+		return NULL;
 	}
-
+	
+	for(long i = 0; i < nbARXpaths; i++) {
+		if(ARXpaths[i]->name == name) {
+			return ARXpaths[i];
+		}
+	}
+	
 	return NULL;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 #ifdef BUILD_EDITOR
+
 void ARX_PATHS_Delete(ARX_PATH * ap)
 {
 	ARX_PATH_ClearAllUsePath();
 
 	if (ap == NULL) return;
 
-	InterTreeViewItemRemove(NULL, ap->name);
+	InterTreeViewItemRemove(NULL, ap->name.c_str());
 
 	for (long i = 0; i < nbARXpaths; i++)
 	{
@@ -631,10 +639,7 @@ void ARX_PATHS_Delete(ARX_PATH * ap)
 	free(ap);
 	ap = NULL;
 }
-#endif
-//*************************************************************************************
-//*************************************************************************************
-#ifdef BUILD_EDITOR
+
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert)
 {
 	if (ap == NULL) return 0;
@@ -664,9 +669,9 @@ long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert)
 	memset(&ap->pathways[insert], 0, sizeof(ARX_PATHWAY));
 	return insert + 1;
 }
-#endif
-//*************************************************************************************
-//*************************************************************************************
+
+#endif // BUILD_EDITOR
+
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
 {
 	ARX_PATH * ap = aup->path;

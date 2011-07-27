@@ -386,7 +386,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				{
 					SetCheck(hWnd, IDC_AMBIANCE, CHECK);
 					thWnd = GetDlgItem(hWnd, IDC_AMBIANCETEXT);
-					SetWindowText(thWnd, ARX_PATHS_SelectedAP->ambiance);
+					SetWindowText(thWnd, ARX_PATHS_SelectedAP->ambiance.string().c_str());
 				}
 				else
 				{
@@ -474,7 +474,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				thWnd = GetDlgItem(hWnd, IDC_EDITNAME);
 				char str2[64];
-				sprintf(str2, "%s", ARX_PATHS_SelectedAP->name);
+				sprintf(str2, "%s", ARX_PATHS_SelectedAP->name.c_str());
 				SetWindowText(thWnd, str2);
 			}
 			else
@@ -599,7 +599,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						}
 
 						thWnd = GetDlgItem(hWnd, IDC_AMBIANCETEXT);
-						GetWindowText(thWnd, ARX_PATHS_SelectedAP->ambiance, 127);
+						// TODO GetWindowText(thWnd, ARX_PATHS_SelectedAP->ambiance, 127);
 
 						if (IsChecked(hWnd, IDC_FADECOLOR))
 						{

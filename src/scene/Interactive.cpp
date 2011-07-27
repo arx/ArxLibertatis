@@ -261,7 +261,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
 		if (flags & 1) // no need when being destroyed !
 			SendIOScriptEvent(io, SM_LEAVEZONE, temp);
 
-		if (op->controled[0] != 0)
+		if(!op->controled.empty())
 		{
 			long t = GetTargetByNameTarget(op->controled);
 
