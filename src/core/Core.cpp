@@ -4511,34 +4511,29 @@ void DANAE_StartNewQuest()
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 }
 
-bool DANAE_ManageSplashThings()
-{
+bool DANAE_ManageSplashThings() {
+	
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
-	if (SPLASH_THINGS_STAGE>10)
-	{
-		if (EDITMODE || !config.firstRun )
-		{
-			GInput->update();
-
-			if (GInput->isAnyKeyPressed())
-			{
-				REFUSE_GAME_RETURN=1;
-				FORBID_SAVE=0;
-				FirstFrame=1;
-				SPLASH_THINGS_STAGE=0;
-				INTRO_NOT_LOADED=0;
-				ARXmenu.currentmode=AMCM_MAIN;
-				ARX_MENU_Launch();
-			}
-
-			if (GInput->isKeyPressed(Keyboard::Key_Escape))
-			{
-				REFUSE_GAME_RETURN=1;
-				SPLASH_THINGS_STAGE = 14;
-			}
+	
+	if(SPLASH_THINGS_STAGE > 10) {
+		
+		GInput->update();
+		
+		if(GInput->isAnyKeyPressed()) {
+			REFUSE_GAME_RETURN = 1;
+			FORBID_SAVE = 0;
+			FirstFrame=  1;
+			SPLASH_THINGS_STAGE = 0;
+			INTRO_NOT_LOADED = 0;
+			ARXmenu.currentmode = AMCM_MAIN;
+			ARX_MENU_Launch();
 		}
-
+		
+		if(GInput->isKeyPressed(Keyboard::Key_Escape)) {
+			REFUSE_GAME_RETURN=1;
+			SPLASH_THINGS_STAGE = 14;
+		}
+		
 		if (FAST_SPLASHES)
 			SPLASH_THINGS_STAGE=14;
 
