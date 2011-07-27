@@ -85,7 +85,7 @@ namespace
 // DANAE()
 // Win32Application constructor. Sets attributes for the app.
 //*************************************************************************************
-Win32Application::Win32Application() : Application()
+Win32Application::Win32Application()
 {
 	m_strWindowTitle  = TEXT("ARX Fatalis");
 	m_bAppUseZBuffer  = true;

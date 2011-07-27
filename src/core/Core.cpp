@@ -1229,16 +1229,17 @@ int main(int argc, char ** argv) {
 		}
 	}
 
+	memset(&Project, 0, sizeof(PROJECT));
+	Project.vsync = true;		
+	Project.interpolatemouse = 1;
+	
 	if (FINAL_RELEASE) {
 		LogDebug << "FINAL_RELEASE";
 		LaunchDemo=1;
-		Project.TextureSize=0;
 		Project.TextureBits=16;
 		Project.bits=32;
-		Project.compatibility=0;
 		Project.demo=LEVEL10;
 		Project.ambient=1;
-		Project.multiplayer=0;
 		NOCHECKSUM=1;
 	}
 #ifdef BUILD_EDITOR
@@ -1276,9 +1277,6 @@ int main(int argc, char ** argv) {
 		KillAllDirectory(CurGamePath);
 		CreateDirectory(CurGamePath,NULL);
 	}
-
-	Project.improve=0;
-	Project.interpolatemouse = 0;
 
 	// Create the Application instance
 	mainApp = new Win32Application;

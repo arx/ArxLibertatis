@@ -1640,10 +1640,6 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					if (IsChecked(hWnd, IDC_NEED_ANCHOR)) NEED_ANCHORS = 1;
 					else NEED_ANCHORS = 0;
 
-
-					if (IsChecked(hWnd, IDC_MULTIPLAYER)) Project.multiplayer = 1;
-					else Project.multiplayer = 0;
-
 					if (IsChecked(hWnd, IDC_COMPATIBILITY)) Project.compatibility = 1;
 					else Project.compatibility = 0;
 

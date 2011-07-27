@@ -121,6 +121,7 @@ Application::Application()
 
 	m_pddsRenderTarget     = NULL;
 	m_pddsRenderTargetLeft = NULL;
+	lpDDGammaControl = NULL;
 
 	m_bActive         = false;
 	m_bReady          = false;
@@ -140,12 +141,7 @@ Application::Application()
 	ToolBar = NULL;
 #endif
 	strcpy(StatusText, "");
-	memset(&Project, 0, sizeof(PROJECT));
-	Project.TextureSize = 0;
-	Project.ambient = 0;
-	Project.vsync = true;		
-	Project.interpolatemouse = 1;
-
+	
 	//Keyboard Init;
 	for (i = 0; i < 255; i++)	kbd.inkey[i] = 0;
 

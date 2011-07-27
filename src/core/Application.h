@@ -224,7 +224,7 @@ struct PROJECT {
 		:
 		  compatibility(0), ambient(0),
 		  improve(0), detectliving(0), improvespeed(0),
-		  telekinesis(0), multiplayer(0), demo(0),
+		  telekinesis(0), demo(0),
 		  bits(0), hide(0), TextureSize(0), TextureBits(0),
 		  interfacergb(Color3f::black), torch(Color3f::black),
 		  interpolatemouse(0), vsync(0) {
@@ -236,7 +236,6 @@ struct PROJECT {
 	long detectliving;
 	long improvespeed;
 	long telekinesis;
-	long multiplayer;
 	long demo;
 	long bits;
 	HideFlags hide;
