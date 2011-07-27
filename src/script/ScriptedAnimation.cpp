@@ -267,7 +267,7 @@ public:
 		
 		string anim = context.getWord();
 		
-		string file = loadPath(context.getWord());
+		fs::path file = fs::path::load(context.getWord());
 		
 		DebugScript(' ' << options << ' ' << anim << ' ' << file);
 		
@@ -292,14 +292,12 @@ public:
 			return Success;
 		}
 		
+		fs::path path;
 		if(iot == inter.iobj[0] || (iot->ioflags & IO_NPC)) {
-			file = "graph/obj3d/anims/npc/" + file;
+			path = ("graph/obj3d/anims/npc" / file).set_ext("tea");
 		} else {
-			file = "graph/obj3d/anims/fix_inter/" + file;
+			path = ("graph/obj3d/anims/fix_inter" / file).set_ext("tea");
 		}
-		SetExt(file, ".tea");
-		string path;
-		File_Standardize(file, path);
 		
 		iot->anims[num] = EERIE_ANIMMANAGER_Load_NoWarning(path);
 		
