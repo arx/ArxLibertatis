@@ -111,7 +111,7 @@ public:
 		
 		fs::path sample = fs::path::load(context.getStringVar(context.getWord())).set_ext("wav");
 		
-		DebugScript(' ' << options << " \"" << sample << '"');
+		DebugScript(' ' << options << ' ' << sample);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(stop) {
@@ -137,7 +137,7 @@ public:
 			}
 			
 			if(num == audio::INVALID_ID) {
-				ScriptWarning << "unable to load sound file \"" << sample << '"';
+				ScriptWarning << "unable to load sound file " << sample;
 				return Failed;
 			}
 			
@@ -156,7 +156,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string sample = loadPath(context.getWord());
+		fs::path sample = fs::path::load(context.getWord());
 		
 		DebugScript(' ' << sample);
 		
@@ -164,7 +164,7 @@ public:
 		audio::SampleId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
 		if(num == audio::INVALID_ID) {
-			ScriptWarning << "unable to load sound file \"" << sample << '"';
+			ScriptWarning << "unable to load sound file " << sample;
 			return Failed;
 		}
 		
