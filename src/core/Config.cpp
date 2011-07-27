@@ -145,7 +145,6 @@ namespace Section {
 
 const string
 	Language = "language",
-	FirstRun = "firstrun",
 	Video = "video",
 	Audio = "audio",
 	Input = "input",
@@ -154,9 +153,6 @@ const string
 }
 
 namespace Key {
-
-// First run options
-const string firstRun = "int";
 
 // Language options
 const string language = "string";
@@ -370,10 +366,6 @@ bool Config::save() {
 	
 	ConfigWriter writer(out);
 	
-	// firstrun
-	writer.beginSection(Section::FirstRun);
-	writer.writeKey(Key::firstRun, firstRun);
-	
 	// language
 	writer.beginSection(Section::Language);
 	writer.writeKey(Key::language, language);
@@ -448,9 +440,6 @@ bool Config::init(const string & file, const string & defaultFile) {
 	if(!reader.read(ifs)) {
 		LogWarning << "errors while parsing config file";
 	}
-	
-	// Check if this is the first run of the game
-	firstRun = reader.getKey(Section::FirstRun, Key::firstRun, Default::first_run);
 	
 	// Get locale language
 	language = reader.getKey(Section::Language, Key::language, Default::language);

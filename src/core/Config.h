@@ -100,9 +100,6 @@ class Config {
 	
 public:
 	
-	// section FIRSTRUN
-	bool firstRun;
-	
 	// section LANGUAGE
 	std::string language;
 	

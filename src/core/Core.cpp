@@ -4599,9 +4599,6 @@ bool DANAE_ManageSplashThings() {
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
 
-			if ( config.firstRun )
-				config.firstRun = false;
-
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
 			
@@ -4613,9 +4610,6 @@ bool DANAE_ManageSplashThings() {
 			FirstFrame=1;
 			SPLASH_THINGS_STAGE=0;
 			INTRO_NOT_LOADED=0;
-
-			if ( config.firstRun )
-				config.firstRun = false;
 
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
