@@ -1164,32 +1164,34 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms) {
 
 static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const fs::path & dirr) {
 	
-	EERIE_MULTI3DSCENE * es;
-	
-	es = allocStructZero<EERIE_MULTI3DSCENE>();
+	EERIE_MULTI3DSCENE * es = allocStructZero<EERIE_MULTI3DSCENE>();
 	
 	LastLoadedScene = dirr;
 	
-	fs::path path = dirr.parent();
-	
-	PakDirectory * dir = resources->getDirectory(path);
+	PakDirectory * dir = resources->getDirectory(dirr);
 	if(dir) {
+		bool loaded = false;
 		for(PakDirectory::files_iterator i = dir->files_begin(); i != dir->files_end(); i++) {
-			if(GetExt(i->first) != ".scn") {
+			if(!fs::path(i->first).has_ext("scn")) {
 				continue;
 			}
 			
 			char * adr = i->second->readAlloc();
 			if(adr) {
-				es->scenes[es->nb_scenes] = ScnToEerie(adr, i->second->size(), path);
+				es->scenes[es->nb_scenes] = ScnToEerie(adr, i->second->size(), dirr);
 				es->nb_scenes++;
 				free(adr);
 			} else {
-				LogError << "could not read scene " << path << '/' << i->first;
+				LogError << "could not read scene " << dirr << '/' << i->first;
 			}
+			
+			loaded = true;
+		}
+		if(!loaded) {
+			LogWarning << "Empty multiscene: " << dirr;
 		}
 	} else {
-		LogWarning << "Multiscene not found: " << path;
+		LogWarning << "Multiscene not found: " << dirr;
 	}
 	
 	es->cub.xmax = -9999999999.f;

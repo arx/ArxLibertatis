@@ -922,7 +922,7 @@ long DanaeLoadLevel(const fs::path & file) {
 		pos += sizeof(DANAE_LS_INTER);
 		if(!DONT_LOAD_INTERS) {
 			
-			string pathstr = safestring(dli->name);
+			string pathstr = toLowercase(safestring(dli->name));
 			
 			size_t pos = pathstr.find("graph");
 			if(pos != std::string::npos) {
