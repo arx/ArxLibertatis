@@ -232,16 +232,15 @@ struct EERIE_BACKGROUND
 	char		name[256];
 };
 
-struct IO_EQUIPITEM_ELEMENT
-{
-	float	value;
-	short	flags;
-	short	special;
+struct IO_EQUIPITEM_ELEMENT {
+	float value;
+	short flags;
+	short special;
 };
 
-#define IO_EQUIPITEM_ELEMENT_Number				29
-struct IO_EQUIPITEM
-{
+#define IO_EQUIPITEM_ELEMENT_Number 29
+
+struct IO_EQUIPITEM {
 	IO_EQUIPITEM_ELEMENT elements[IO_EQUIPITEM_ELEMENT_Number];
 };
 
@@ -335,86 +334,88 @@ struct EERIE_EXTRA_ROTATE {
 #define MAX_STACKED_BEHAVIOR 5
 
 struct IO_NPCDATA {
-	float		maxlife;
-	float		life;
-	float		maxmana;
-	float		mana;
-	unsigned long	reachedtime;
-	long		reachedtarget;	//Is target in REACHZONE ?
+	
+	IO_NPCDATA();
+	~IO_NPCDATA();
+	
+	float maxlife;
+	float life;
+	float maxmana;
+	float mana;
+	unsigned long reachedtime;
+	long reachedtarget;	//Is target in REACHZONE ?
 	INTERACTIVE_OBJ * weapon; // Linked Weapon (r-hand)
-	long		detect;
+	long detect;
 	MoveMode movemode;
-	float		armor_class;
-	float		absorb;
-	float		damages;
-	float		tohit;
-	float		aimtime;
-	float		critical;
-	float		reach;
-	float		backstab_skill;
-
+	float armor_class;
+	float absorb;
+	float damages;
+	float tohit;
+	float aimtime;
+	float critical;
+	float reach;
+	float backstab_skill;
+	
 	Behaviour behavior;
-	float			behavior_param;
-	long			tactics; // 0=none ; 1=side ; 2=side+back
-	long		xpvalue;
-	long		cut;
-
-	float				moveproblem;
+	float behavior_param;
+	long tactics; // 0=none ; 1=side ; 2=side+back
+	long xpvalue;
+	long cut;
+	
+	float moveproblem;
 	ItemType weapontype;
-	long		weaponinhand;
-	long		fightdecision;
+	long weaponinhand;
+	long fightdecision;
 	char weaponname[256]; // TODO remove!, use "weapon" directly
-
-	float		look_around_inc;
+	
+	float look_around_inc;
 	unsigned long collid_time;
-	long		collid_state;
-	float		speakpitch;
-	float		lastmouth;
-	long		ltemp;
-
-	IO_BEHAVIOR_DATA	stacked[MAX_STACKED_BEHAVIOR];
-	float		poisonned;
-	unsigned char	resist_poison;
-	unsigned char	resist_magic;
-	unsigned char	resist_fire;
-	unsigned char	padd;
-
-	short		strike_time;
-	short		walk_start_time;
-	long		aiming_start;
-	long		npcflags;
+	long collid_state;
+	float speakpitch;
+	float lastmouth;
+	long ltemp;
+	
+	IO_BEHAVIOR_DATA stacked[MAX_STACKED_BEHAVIOR];
+	float poisonned;
+	unsigned char resist_poison;
+	unsigned char resist_magic;
+	unsigned char resist_fire;
+	
+	short strike_time;
+	short walk_start_time;
+	long aiming_start;
+	long npcflags;
 	IO_PATHFIND pathfind;
 	EERIE_EXTRA_ROTATE * ex_rotate;
 	Color blood_color;
-
+	
 	short SPLAT_DAMAGES;
 	short SPLAT_TOT_NB;
 	Vec3f last_splat_pos;
 	float vvpos;
-
+	
 	float climb_count;
 	float stare_factor;
 	float fDetect;
-	short				cuts;
-	short				unused;
+	short cuts;
+	short unused;
+	
 };
 
-struct IO_ITEMDATA
-{
-	IO_EQUIPITEM *		equipitem;			// Equipitem Datas
-	long				price;
-	short				maxcount;			// max number cumulable
-	short				count;				// current number
-	char				food_value;
-	char				stealvalue;
-	short				playerstacksize;
-	short				LightValue;
+struct IO_ITEMDATA {
+	IO_EQUIPITEM * equipitem; // Equipitem Datas
+	long price;
+	short maxcount; // max number cumulable
+	short count; // current number
+	char food_value;
+	char stealvalue;
+	short playerstacksize;
+	short LightValue;
 };
 
-struct IO_FIXDATA
-{
-	char				trapvalue;
-	char				padd[3];
+struct IO_FIXDATA {
+	char trapvalue;
+	char padd[3];
 };
 
 
@@ -461,6 +462,7 @@ typedef s32 ArxSound;
 struct INTERACTIVE_OBJ {
 	
 	INTERACTIVE_OBJ(long num);
+	~INTERACTIVE_OBJ();
 	
 	long num; // Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
 	

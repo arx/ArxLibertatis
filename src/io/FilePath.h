@@ -7,8 +7,6 @@
 
 namespace fs {
 
-#define PATH_DEBUG 1
-
 class path {
 	
 private:

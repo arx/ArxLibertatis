@@ -1149,8 +1149,7 @@ void InitInter(long nb) {
 
 	inter.nbmax = nb;
 
-	if (inter.init)
-	{
+	if(inter.init) {
 		free(inter.iobj);
 		inter.iobj = NULL;
 	}
@@ -2139,167 +2138,147 @@ long GetTargetByNameTarget( const std::string& name )
 }
 
 extern long TOTAL_BODY_CHUNKS_COUNT;
+
+INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
+	
+	if(!FAST_RELEASE) {
+		TREATZONE_RemoveIO(this);
+	}
+	
+	if(ioflags & IO_BODY_CHUNK) {
+		TOTAL_BODY_CHUNKS_COUNT--;
+		if (TOTAL_BODY_CHUNKS_COUNT < 0) TOTAL_BODY_CHUNKS_COUNT = 0;
+	}
+	
+	if(ignit_light > -1) {
+		DynLight[ignit_light].exist = 0, ignit_light = -1;
+	}
+	
+	if(ignit_sound != ARX_SOUND_INVALID_RESOURCE) {
+		ARX_SOUND_Stop(ignit_sound), ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+	}
+	
+	if(this == FlyingOverIO) {
+		FlyingOverIO = NULL;
+	}
+	
+	if((MasterCamera.exist & 1) && MasterCamera.io == this) {
+		MasterCamera.exist = 0;
+	}
+	
+	if((MasterCamera.exist & 2) && MasterCamera.want_io == this) {
+		MasterCamera.exist = 0;
+	}
+	
+#ifdef BUILD_EDITOR
+	InterTreeViewItemRemove(this);
+#endif
+	
+	ARX_INTERACTIVE_DestroyDynamicInfo(this);
+	IO_UnlinkAllLinkedObjects(this);
+	
+	// Releases ToBeDrawn Transparent Polys linked to this object !
+	ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(this);
+	ARX_SCRIPT_Timer_Clear_For_IO(this);
+	
+	if(obj && !(ioflags & IO_CAMERA) && !(ioflags & IO_MARKER) && !(ioflags & IO_GOLD)) {
+		delete obj, obj = NULL;
+	}
+	
+	ARX_SPELLS_RemoveAllSpellsOn(this);
+	
+	if(tweakerinfo) {
+		free(tweakerinfo);
+	}
+
+	if(tweaky) {
+		delete tweaky, tweaky = NULL;
+	}
+	
+	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) for(size_t i = 0; i < INVENTORY_X; i++) {
+			if(::inventory[iNbBag][i][j].io == this) {
+				::inventory[iNbBag][i][j].io = NULL;
+			}
+		}
+	}
+	
+	ReleaseScript(&script);
+	ReleaseScript(&over_script);
+	
+	for(long n = 0; n < MAX_ANIMS; n++) {
+		if(anims[n]) {
+			EERIE_ANIMMANAGER_ReleaseHandle(anims[n]);
+			anims[n] = NULL;
+		}
+	}
+	
+	if(damagedata >= 0) {
+		damages[damagedata].exist = 0;
+	}
+	
+	if(ValidDynLight(dynlight)) {
+		DynLight[dynlight].exist = 0, dynlight = -1;
+	}
+	
+	if(ValidDynLight(halo.dynlight)) {
+		DynLight[halo.dynlight].exist = 0, halo.dynlight = -1;
+	}
+	
+	if(lastanimvertex) {
+		free(lastanimvertex);
+	}
+	
+	if(usepath) {
+		free(usepath);
+	}
+	
+	if(symboldraw) {
+		free(symboldraw), symboldraw = NULL;
+	}
+	
+	if(ioflags & IO_NPC) {
+		delete _npcdata;
+		
+	} else if(ioflags & IO_ITEM) {
+		if(_itemdata->equipitem) {
+			free(_itemdata->equipitem);
+		}
+		_itemdata->equipitem = NULL;
+		free(_itemdata);
+		
+	} else if(ioflags & IO_FIX) {
+		free(_fixdata);
+		
+	} else if(ioflags & IO_CAMERA && _camdata) {
+		if(ACTIVECAM == &_camdata->cam) {
+			ACTIVECAM = &subj;
+		}
+		free(_camdata);
+	}
+	
+	if(TSecondaryInventory && TSecondaryInventory->io == this) {
+		TSecondaryInventory = NULL;
+	}
+	
+	if(inventory != NULL) {
+		free(inventory);
+	}
+	
+	long ion = GetInterNum(this);
+	if(ion > -1) {
+		inter.iobj[ion] = NULL;
+	}
+	
+}
+
 //*************************************************************************************
 // Releases An Interactive Object from memory
 //*************************************************************************************
 void ReleaseInter(INTERACTIVE_OBJ * io) {
-	
-	if (!io) return;
-
-	if (!FAST_RELEASE)
-		TREATZONE_RemoveIO(io);
-
-	if (io->ioflags & IO_BODY_CHUNK)
-	{
-		TOTAL_BODY_CHUNKS_COUNT--;
-
-		if (TOTAL_BODY_CHUNKS_COUNT < 0) TOTAL_BODY_CHUNKS_COUNT = 0;
+	if(io) {
+		delete io;
 	}
-
-	if (io->ignit_light > -1)
-	{
-		DynLight[io->ignit_light].exist = 0;
-		io->ignit_light = -1;
-	}
-
-	if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
-	{
-		ARX_SOUND_Stop(io->ignit_sound);
-		io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
-	}
-
-	if (io == FlyingOverIO)
-		FlyingOverIO = NULL;
-
-	if ((MasterCamera.exist & 1) && (MasterCamera.io == io))
-		MasterCamera.exist = 0;
-
-	if ((MasterCamera.exist & 2) && (MasterCamera.want_io == io))
-		MasterCamera.exist = 0;
-
-#ifdef BUILD_EDITOR
-	InterTreeViewItemRemove(io);
-#endif
-	ARX_INTERACTIVE_DestroyDynamicInfo(io);
-	IO_UnlinkAllLinkedObjects(io);
-
-
-	// Releases ToBeDrawn Transparent Polys linked to this object !
-	ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
-	ARX_SCRIPT_Timer_Clear_For_IO(io);
-
-	if(io->obj && !(io->ioflags & IO_CAMERA) && !(io->ioflags & IO_MARKER) && !(io->ioflags & IO_GOLD)) {
-		delete io->obj;
-		io->obj = NULL;
-	}
-
-	ARX_SPELLS_RemoveAllSpellsOn(io);
-
-	if(io->tweakerinfo) {
-		free(io->tweakerinfo);
-		io->tweakerinfo = NULL;
-	}
-
-	if(io->tweaky) {
-		delete io->tweaky;
-		io->tweaky = NULL;
-	}
-
-	for (long iNbBag = 0; iNbBag < 3; iNbBag++)
-		for (size_t j = 0; j < INVENTORY_Y; j++)
-			for (size_t i = 0; i < INVENTORY_X; i++)
-			{
-				if (inventory[iNbBag][i][j].io == io)
-					inventory[iNbBag][i][j].io = NULL;
-			}
-
-	ReleaseScript(&io->script);
-	ReleaseScript(&io->over_script);
-
-	for (long n = 0; n < MAX_ANIMS; n++)
-	{
-		if (io->anims[n] != NULL)
-		{
-			EERIE_ANIMMANAGER_ReleaseHandle(io->anims[n]);
-			io->anims[n] = NULL;
-		}
-	}
-
-	if (io->damagedata >= 0)
-		damages[io->damagedata].exist = 0;
-
-	if (ValidDynLight(io->dynlight))
-		DynLight[io->dynlight].exist = 0;
-
-	io->dynlight = -1;
-
-	if (ValidDynLight(io->halo.dynlight))
-		DynLight[io->halo.dynlight].exist = 0;
-
-	io->halo.dynlight = -1;
-
-	if (io->lastanimvertex)
-		free(io->lastanimvertex);
-
-	if (io->usepath)
-		free(io->usepath);
-
-	if (io->symboldraw != NULL)
-	{
-		free(io->symboldraw);
-		io->symboldraw = NULL;
-	}
-
-	if (io->ioflags & IO_NPC)
-	{
-		if (io->_npcdata->ex_rotate != NULL) free(io->_npcdata->ex_rotate);
-
-		if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-		free(io->_npcdata);
-	}
-
-	if (io->ioflags & IO_ITEM)
-	{
-		if (io->_itemdata->equipitem) free(io->_itemdata->equipitem);
-
-		io->_itemdata->equipitem = NULL;
-	}
-
-	if (io->ioflags & IO_FIX)
-		free(io->_fixdata);
-
-	if (io->ioflags & IO_ITEM)
-		free(io->_itemdata);
-
-	if (io->ioflags & IO_CAMERA)
-	{
-		if (io->_camdata)
-		{
-			void * ptr = (void *)ACTIVECAM;
-
-			if (ptr == io->_camdata)
-				ACTIVECAM = &subj;
-
-			free(io->_camdata);
-		}
-
-		io->_camdata = NULL;
-	}
-
-	if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
-	{
-		TSecondaryInventory = NULL;
-	}
-
-	if (io->inventory != NULL) free(io->inventory);
-
-	long ion = GetInterNum(io);
-
-	if (ion > -1)
-		inter.iobj[ion] = NULL;
-
-	delete io;
 }
 
 
@@ -2821,6 +2800,83 @@ void GroundSnapSelectedIO()
 
 #endif // BUILD_EDITOR
 
+IO_NPCDATA::IO_NPCDATA() {
+	
+	life = maxlife = 20.f;
+	mana = maxmana = 0.f;
+	
+	reachedtime = 0ul;
+	reachedtarget = 0l;
+	weapon = NULL;
+	detect = 0;
+	movemode = WALKMODE;
+	armor_class = 0.f;
+	absorb = 0.f;
+	damages = 0.f;
+	tohit = 0.f;
+	aimtime = 0.f;
+	critical = 0.f;
+	reach = 0.f;
+	backstab_skill = 0.f;
+	
+	behavior = 0;
+	behavior_param = 0.f;
+	tactics = 0l;
+	xpvalue = 0l;
+	cut = 0l;
+	
+	moveproblem = 0.f;
+	weapontype = 0;
+	weaponinhand = 0l;
+	fightdecision = 0l;
+	memset(weaponname, 0, 256); // TODO remove!, use "weapon" directly
+	
+	look_around_inc = 0.f;
+	collid_time = 0ul;
+	collid_state = 0l;
+	speakpitch = 1.f;
+	lastmouth = 0.f;
+	ltemp = 0l;
+	
+	memset(stacked, 0, sizeof(IO_BEHAVIOR_DATA) * MAX_STACKED_BEHAVIOR); // TODO use constructor
+	
+	poisonned = 0.f;
+	resist_poison = 0;
+	resist_magic = 0;
+	resist_fire = 0;
+	
+	strike_time = 0;
+	walk_start_time = 0;
+	aiming_start = 0l;
+	npcflags = 0l;
+	memset(&pathfind, 0, sizeof(IO_PATHFIND)); // TODO use constructor
+	ex_rotate = 0;
+	blood_color = Color::red;
+	
+	SPLAT_DAMAGES = 0;
+	SPLAT_TOT_NB = 0;
+	last_splat_pos = Vec3f::ZERO;
+	vvpos = 0.f;
+	
+	climb_count = 0.f;
+	stare_factor = 0.f;
+	fDetect = 0.f;
+	cuts = 0;
+	unused = 0;
+	
+}
+
+IO_NPCDATA::~IO_NPCDATA() {
+	
+	if(ex_rotate) {
+		free(ex_rotate);
+	}
+	
+	if(pathfind.list) {
+		free(pathfind.list);
+	}
+}
+
 INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
 	
 	fs::path object = fs::path(file).set_ext("teo");
@@ -2838,38 +2894,28 @@ INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
 
 	if (io == NULL) return NULL;
 
-	io->forcedmove.x = 0.f;
-	io->forcedmove.y = 0.f;
-	io->forcedmove.z = 0.f;
-	io->_npcdata = (IO_NPCDATA *)malloc(sizeof(IO_NPCDATA));
-	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
+	io->forcedmove = Vec3f::ZERO;
+	
+	io->_npcdata = new IO_NPCDATA;
+	
 	io->ioflags = IO_NPC;
 
 	GetIOScript(io, scriptfile);
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
-	io->_npcdata->life = io->_npcdata->maxlife = 20.f;
 	io->_npcdata->mana = io->_npcdata->maxmana = 10.f;
-	io->_npcdata->poisonned = 0.f;
 	io->_npcdata->critical = 5.f;
-	io->_npcdata->strike_time = 0;
-	io->_npcdata->walk_start_time = 0;
 	io->_npcdata->reach = 20.f;
-	io->_npcdata->aimtime = 0.f;
-	io->_npcdata->aiming_start = 0;
-	io->_npcdata->npcflags = 0;
-	io->_npcdata->backstab_skill = 0;
-	io->_npcdata->blood_color = Color::red;
 	io->_npcdata->stare_factor = 1.f;
 
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
 
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
+	io->pos = player.pos + Vec3f(-(float)sin(radians(player.angle.b)) * 140.f, 0, (float)cos(radians(player.angle.b)) * 140.f);
+	
+	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
+	io->lastpos.y = io->initpos.y = io->pos.y;
+	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
 	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
 
 	if (ep)
@@ -2904,7 +2950,6 @@ INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
 		}
 	}
 
-	io->_npcdata->speakpitch = 1.f;
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
 	io->_npcdata->pathfind.truetarget = -1;

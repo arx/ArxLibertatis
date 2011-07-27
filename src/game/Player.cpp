@@ -1712,13 +1712,11 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	io->ident = -1;
 
 	//todo free
-	io->_npcdata = (IO_NPCDATA *)malloc(sizeof(IO_NPCDATA));
-	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
-	io->_npcdata->blood_color = Color::red;
+	io->_npcdata = new IO_NPCDATA;
+	
 	io->ioflags = IO_NPC;
-	io->_npcdata->maxlife = io->_npcdata->life = 10;
+	io->_npcdata->maxlife = io->_npcdata->life = 10.f;
 	io->_npcdata->vvpos = -99999.f;
-	io->_npcdata->speakpitch = 1.f;
 
 	//todo free
 	io->armormaterial = "leather";
