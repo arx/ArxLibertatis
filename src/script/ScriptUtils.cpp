@@ -452,6 +452,8 @@ void initSuppressions() {
 	suppress("rat_base_0059", 62, "behavior"); // unknown behavior 'firendly', should be 'friendly'
 	suppress("rat_base_0059", 160, "behavior"); // unknown behavior 'firendly', should be 'friendly'
 	
+	suppress("rock_akbaa", 135, "setinternalname"); // obsolete command 'setinternalname'
+	
 	suppress("ruby_inwall", 135, "play"); // unknown flag -e (ignored)
 	
 	suppress("secret_door_council_2b", 609, "}"); // extraneous '}'
