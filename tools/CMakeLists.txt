@@ -47,36 +47,25 @@ endif()
 include_directories(../src)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
-
-
-add_executable(unpaker 
-	unpak/unpak.cpp
-	../src/io/PakEntry.cpp
-	../src/io/PakReader.cpp
-	../src/io/Logger.cpp
-	../src/io/Blast.cpp
+# TODO use this for the game too once we get rid of wine (for non-unity-builds)
+add_library(tools_common STATIC
 	../src/io/Filesystem.cpp
 	${FILESYSTEM_SRC}
 	../src/io/FilePath.cpp
 	../src/io/FileStream.cpp
-	../src/platform/String.cpp
-	../src/platform/Platform.cpp
-)
-
-add_executable(savetool
-	savetool/savetool.cpp
-	../src/io/Logger.cpp
-	../src/io/Blast.cpp
-	../src/io/SaveBlock.cpp
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
-	../src/io/Filesystem.cpp
-	${FILESYSTEM_SRC}
-	../src/io/FilePath.cpp
-	../src/io/FileStream.cpp
+	../src/io/Logger.cpp
+	../src/io/Blast.cpp
 	../src/platform/String.cpp
 	../src/platform/Platform.cpp
 )
 
-target_link_libraries(savetool ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
-target_link_libraries(unpaker ${Boost_LIBRARIES})
+target_link_libraries(tools_common ${Boost_LIBRARIES})
+
+add_executable(unpaker unpak/unpak.cpp)
+
+add_executable(savetool savetool/savetool.cpp ../src/io/SaveBlock.cpp)
+
+target_link_libraries(savetool tools_common ${ZLIB_LIBRARIES})
+target_link_libraries(unpaker tools_common)
