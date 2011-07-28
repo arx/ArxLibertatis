@@ -70,6 +70,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
+namespace fs {
+class path;
+}
+
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
