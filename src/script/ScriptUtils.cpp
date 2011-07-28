@@ -339,6 +339,8 @@ void initSuppressions() {
 	
 	suppressBlockEnd("goblin_base_0021", 617, "on"); // missing '}'
 	
+	suppressBlockEnd("goblin_base_0031", 974, "on"); // missing '}'
+	
 	// TODO(broken-scripts)
 	// TODO move to external file
 	
