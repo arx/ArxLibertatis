@@ -366,6 +366,12 @@ void initSuppressions() {
 	
 	suppress("corpse_0084", 274, "inventory add"); // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
 	
+	suppress("demon", 3571, "loadanim"); // missing animation 'demon_fight_left_start'
+	suppress("demon", 3634, "loadanim"); // missing animation 'demon_fight_left_cycle'
+	suppress("demon", 3698, "loadanim"); // missing animation 'demon_fight_left_strike'
+	suppress("demon", 3762, "loadanim"); // missing animation 'demon_fight_right_start'
+	suppress("demon", 3826, "loadanim"); // missing animation 'demon_fight_right_cycle'
+	suppress("demon", 3891, "loadanim"); // missing animation 'demon_fight_right_strike'
 	suppress("demon", 18479, "play"); // sound number is sometimes too high
 	
 	suppress("diamond", 139, "play"); // unknown flag -e (ignored) note: fix_inter/diamond_inwall/diamond.asl!
