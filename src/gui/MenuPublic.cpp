@@ -47,12 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Frame.h"
 #include "graphics/data/CinematicTexture.h"
 
+#include "input/Input.h"
+
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
 #include "scene/GameSound.h"
 
-extern CDirectInput * pGetInfoDirectInput;
 extern bool bQuickGenFirstClick;
 #ifdef BUILD_EDITOR
 extern float FORCED_REDUCTION_VALUE;
@@ -507,21 +508,9 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int _iSensitivity)
 	else if (_iSensitivity > 10)_iSensitivity = 10;
 
 	config.input.mouseSensitivity = _iSensitivity;
-	pGetInfoDirectInput->SetSensibility(_iSensitivity);
+	GInput->setMouseSensibility(_iSensitivity);
 
 	mainApp->fMouseSensibility = ((float)config.input.mouseSensitivity) / 10.f;
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Control_GetMouseSmoothing(bool & _bSmoothing)
-{
-	_bSmoothing = config.input.mouseSmoothing;
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Control_SetMouseSmoothing(bool _bSmoothing)
-{
-	config.input.mouseSmoothing = _bSmoothing;
 }
 
 //-----------------------------------------------------------------------------

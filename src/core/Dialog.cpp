@@ -1851,8 +1851,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (ZMAPMODE)					SetClick(hWnd, IDC_ZMAPMODE);
 
-			if (Project.interpolatemouse)	SetClick(hWnd, IDC_INTERPOLATEMOUSE);
-
 			if (Project.vsync)				SetClick(hWnd, IDC_VSYNC);
 
 			if (SHOWSHADOWS)				SetClick(hWnd, IDC_SHOWSHADOWS);
@@ -1977,9 +1975,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					{
 						if (!ARX_SOUND_IsEnabled()) ARX_SOUND_Init();
 					}
-
-					if (IsChecked(hWnd, IDC_INTERPOLATEMOUSE)) Project.interpolatemouse = 1;
-					else Project.interpolatemouse = 0;
 
 					if (IsChecked(hWnd, IDC_TRUEFIGHT)) TRUEFIGHT = 1;
 					else TRUEFIGHT = 0;

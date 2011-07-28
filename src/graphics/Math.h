@@ -178,10 +178,6 @@ inline unsigned int GetNextPowerOf2(unsigned int n)
 	return ++n;
 }
 
-#define FORCERANGE(a,b,c)	if (a<b) a=b; \
-	if (a>c) a=c;
-
-
 //*************************************************************************************
 // Rotations
 //*************************************************************************************
@@ -515,8 +511,8 @@ inline T Rand( const T& pMin, const T& pMax )
     return pMin + (pMax - pMin) * std::rand() / (T)RAND_MAX;
 }
 
-template <class T>
-inline T clamp(T value, T min, T max) {
+template <class T1, class T2, class T3>
+inline T1 clamp(T1 value, T2 min, T3 max) {
 	return (value <= min) ? min : ((value >= max) ? max : value);
 }
 

@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Text.h"
 
+#include "input/Input.h"
+
 #include "io/CinematicLoad.h"
 #include "io/Logger.h"
 #include "io/PakManager.h"
@@ -133,29 +135,6 @@ bool Win32Application::Create() {
 		DisplayFrameworkError(E_OUTOFMEMORY, MSGERR_APPMUSTEXIT);
 		return false;
 	}
-
-	//	DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-#ifdef BUILD_EDITOR
-	if (ToolBar != NULL)
-	{
-		if (this->ToolBar->Type == EERIE_TOOLBAR_TOP)
-		{
-			this->m_pFramework->Ystart = 26;
-			this->m_pFramework->Xstart = 0;
-		}
-		else
-		{
-			this->m_pFramework->Ystart = 0;
-			this->m_pFramework->Xstart = 98;
-		}
-	}
-	else
-#endif
-	{
-		this->m_pFramework->Ystart = 0;
-		this->m_pFramework->Xstart = 0;
-	}
-
 
 	// Register the window class
 	WNDCLASS wndClass = { CS_DBLCLKS, WndProc, 0, 0, hInst,
@@ -502,6 +481,8 @@ VOID Win32Application::DisplayFrameworkError(HRESULT hr, DWORD dwType) {
 		LogError <<"Switching to software rasterizer.";
 	}
 }
+
+long MouseDragX, MouseDragY;
  
 //*************************************************************************************
 // Render3DEnvironment()
@@ -510,17 +491,13 @@ VOID Win32Application::DisplayFrameworkError(HRESULT hr, DWORD dwType) {
 HRESULT Win32Application::Render3DEnvironment()
 {
 	HRESULT hr;
-	EERIEMouseXdep = _EERIEMouseXdep;
-	EERIEMouseYdep = _EERIEMouseYdep;
-	_EERIEMouseXdep = 0;
-	_EERIEMouseYdep = 0;
 
 	// mode systemshock
 	if ((EERIEMouseButton & 1) &&
 	        (config.input.autoReadyWeapon == false))
 	{
-		MouseDragX += EERIEMouseXdep;
-		MouseDragY += EERIEMouseYdep;
+		MouseDragX += GInput->getMousePosRel().x;
+		MouseDragY += GInput->getMousePosRel().y;
 	}
 
 	// Check the cooperative level before rendering

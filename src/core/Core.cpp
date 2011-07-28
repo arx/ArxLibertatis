@@ -69,11 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <shellapi.h>
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
-
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -115,6 +110,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/direct3d/Direct3DRenderer.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "input/Input.h"
+
 #include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
@@ -143,8 +140,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scripting/ScriptEvent.h"
 #include "scripting/ScriptDebugger.h"
 
-#include "window/DXInput.h"
-
 using std::min;
 using std::max;
 
@@ -168,7 +163,6 @@ static void ShowInfoText();
 extern long LAST_PORTALS_COUNT;
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
-extern CDirectInput		*pGetInfoDirectInput;
 extern CMenuState		*pMenu;
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
@@ -410,7 +404,6 @@ long USE_LIGHT_OPTIM	=1;
 long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
 long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
-long USE_OLD_MOUSE_SYSTEM=1;
 long NO_TEXT_AT_ALL		= 0;
 long LAST_CONVERSATION	= 0;
 long FAST_SPLASHES		= 0;
@@ -632,9 +625,6 @@ void AdjustUI()
 	// Sets Danae Screen size depending on windowed/full-screen state
 	DANAESIZX = mainApp->m_pFramework->m_dwRenderWidth;
 	DANAESIZY = mainApp->m_pFramework->m_dwRenderHeight;
-
-	if (mainApp->m_pDeviceInfo->bWindowed)
-		DANAESIZY -= mainApp->m_pFramework->Ystart;
 
 	// Now computes screen center
 	DANAECENTERX = DANAESIZX>>1;
@@ -1231,7 +1221,6 @@ int main(int argc, char ** argv) {
 
 	memset(&Project, 0, sizeof(PROJECT));
 	Project.vsync = true;		
-	Project.interpolatemouse = 1;
 	
 	if (FINAL_RELEASE) {
 		LogDebug << "FINAL_RELEASE";
@@ -1337,9 +1326,13 @@ int main(int argc, char ** argv) {
 		LogWarning << "Sound init failed";
 	}
 	
-	LogDebug << "DInput Init";
-	pGetInfoDirectInput = new CDirectInput();
-	LogInfo << "DInput Init Success";
+	LogDebug << "Input init";
+	if(ARX_INPUT_Init()) {
+		LogInfo << "Input init success";
+	} else {
+		LogError << "Input init failed";
+		return 0;
+	}
 
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
@@ -1364,29 +1357,7 @@ int main(int argc, char ** argv) {
 	if(config.video.textureSize==0)Project.TextureSize=64;
 
 	ARX_MINIMAP_FirstInit();
-
-	i = 10;
-	LogDebug << "AInput Init";
-
-	while (!ARX_INPUT_Init()) {
-		Thread::sleep(30);
-		i--;
-
-		if (i==0) {
-			LogError << "Unable To Initialize ARX INPUT, Leaving...";
-			ARX_INPUT_Release();
-
-			SendMessage(mainApp->m_hWnd, WM_CLOSE, 0, 0);
-
-			exit(0);
-		}
-
-		SetActiveWindow(mainApp->m_hWnd);
-		SetWindowPos(mainApp->m_hWnd,HWND_TOP,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
-	}
-
-	LogInfo << "AInput Init Success";
-
+		
 	//read from cfg file
 	if ( config.language.length() == 0 ) {
 		config.language = "english";
@@ -2358,29 +2329,8 @@ void SetEditMode(long ed, const bool stop_sound)
 	EERIEMouseButton=0;
 
 #ifdef BUILD_EDITOR
-	if (ed)
-	{
-		EDITMODE=1;
-
-		if(	((mainApp->m_pFramework)&&
-			(mainApp->m_pFramework->m_bIsFullscreen))||
-			(FINAL_COMMERCIAL_GAME) )
-		{
-			USE_OLD_MOUSE_SYSTEM=0;
-		}
-		else
-		{
-			USE_OLD_MOUSE_SYSTEM=1;
-		}
-	}
-	else
+	EDITMODE=ed;
 #endif
-	{
-#ifdef BUILD_EDITOR
-		EDITMODE=0;
-#endif
-		USE_OLD_MOUSE_SYSTEM=0;
-	}
 
 	for (long i=0;i<inter.nbmax;i++)
 	{
@@ -4340,28 +4290,20 @@ bool DANAE_ManageSplashThings()
 	{
 		if (EDITMODE || !config.firstRun )
 		{
-			for (int i=0; i<256; i++)
+			GInput->update();
+
+			if (GInput->isAnyKeyPressed())
 			{
-				pGetInfoDirectInput->iOneTouch[i] = 0;
+				REFUSE_GAME_RETURN=1;
+				FORBID_SAVE=0;
+				FirstFrame=1;
+				SPLASH_THINGS_STAGE=0;
+				INTRO_NOT_LOADED=0;
+				ARXmenu.currentmode=AMCM_MAIN;
+				ARX_MENU_Launch();
 			}
 
-			pGetInfoDirectInput->GetInput();
-
-			for (int i=0; i<256; i++)
-			{
-				if (pGetInfoDirectInput->iOneTouch[i] > 0)
-				{
-					REFUSE_GAME_RETURN=1;
-					FORBID_SAVE=0;
-					FirstFrame=1;
-					SPLASH_THINGS_STAGE=0;
-					INTRO_NOT_LOADED=0;
-					ARXmenu.currentmode=AMCM_MAIN;
-					ARX_MENU_Launch();
-				}
-			}
-
-			if (ARX_IMPULSE_Pressed(DIK_ESCAPE))
+			if (GInput->isKeyPressed(Keyboard::Key_Escape))
 			{
 				REFUSE_GAME_RETURN=1;
 				SPLASH_THINGS_STAGE = 14;
@@ -4527,8 +4469,8 @@ long DANAE_Manage_Cinematic()
 
 	//fin de l'anim
 	if ((!ControlCinematique->key)
-		|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
-		|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE)))
+		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
+		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)))
 	{			
 		ControlCinematique->projectload=false;
 		StopSoundKeyFramer();
@@ -4604,14 +4546,12 @@ void DanaeItemAdd()
 
 void ReMappDanaeButton()
 {
-	if(!pGetInfoDirectInput) return;
-
 	bool bNoAction=true;
 	int iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
 
 	if(iButton!=-1)
 	{
-		if(pGetInfoDirectInput->GetMouseButtonDoubleClick(iButton&~0x80000000,300))
+		if(GInput->getMouseButtonDoubleClick(iButton,300))
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton|=4;
@@ -4626,7 +4566,7 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if(pGetInfoDirectInput->GetMouseButtonDoubleClick(iButton&~0x80000000,300))
+			if(GInput->getMouseButtonDoubleClick(iButton,300))
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton|=4;
@@ -4640,8 +4580,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowPressed(iButton&~0x80000000)))||
-			((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton|=1;
@@ -4658,8 +4598,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowPressed(iButton&~0x80000000)))||
-				((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton|=1;
@@ -4674,8 +4614,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton&~0x80000000)))||
-			((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 		{
 			LastEERIEMouseButton=EERIEMouseButton;
 			EERIEMouseButton&=~1;
@@ -4690,8 +4630,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton&~0x80000000)))||
-				((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 			{
 				LastEERIEMouseButton=EERIEMouseButton;
 				EERIEMouseButton&=~1;
@@ -4705,8 +4645,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowPressed(iButton&~0x80000000)))||
-			((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 		{
 			EERIEMouseButton|=2;
 			bNoAction=false;
@@ -4719,8 +4659,8 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowPressed(iButton&~0x80000000)))||
-				((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
 			{
 				EERIEMouseButton|=2;
 			}
@@ -4732,8 +4672,8 @@ void ReMappDanaeButton()
 
 	if(iButton!=-1)
 	{
-		if(	((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton&~0x80000000)))||
-			((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(iButton)) )
+		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
+			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowUnPressed(iButton)) )
 		{
 			EERIEMouseButton&=~2;
 			bNoAction=false;
@@ -4746,14 +4686,30 @@ void ReMappDanaeButton()
 
 		if(iButton!=-1)
 		{
-			if( ((iButton&0x80000000)&&(pGetInfoDirectInput->GetMouseButtonNowUnPressed(iButton&~0x80000000)))||
-				((!(iButton&0x80000000))&&pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(iButton)) )
+			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
+				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowUnPressed(iButton)) )
 			{
 				EERIEMouseButton&=~2;
 			}
 		}
 	}
 }
+
+void AdjustMousePosition()
+{
+	if (EERIEMouseGrab && GInput->hasMouseMoved())
+	{
+		Vec2s pos;
+		pos.x = (short)(DANAESIZX >> 1);
+		pos.y = (short)(DANAESIZY >> 1);
+
+		if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
+				||	(player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {
+			GInput->setMousePosAbs(pos);
+		}
+	}
+}
+
 long NEED_SPECIAL_RENDEREND=0;
 long INTERPOLATE_BETWEEN_BONES=1;
 
@@ -4912,32 +4868,13 @@ static float _AvgFrameDiff = 150.f;
 		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
 	}
 
-	if(	(pGetInfoDirectInput)&&
-		(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F12)))
+	if( GInput->isKeyPressedNowPressed(Keyboard::Key_F12) )
 	{
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
 	}
 
 	ACTIVECAM = &subj;
-
-	if (	(!FINAL_COMMERCIAL_DEMO)
-		&&	(!FINAL_COMMERCIAL_GAME)
-		&&  (ARXmenu.currentmode==AMCM_OFF)	)
-	{
-		if(	(pGetInfoDirectInput)&&
-			(pGetInfoDirectInput->IsVirtualKeyPressedOneTouch(DIK_Y)) )
-		{
-			USE_OLD_MOUSE_SYSTEM=(USE_OLD_MOUSE_SYSTEM)?0:1;
-
-			if(!USE_OLD_MOUSE_SYSTEM)
-			{
-				current.depthcolor.r=0.f;
-				current.depthcolor.g=0.f;
-				current.depthcolor.b=1.f;
-			}
-		}
-	}
 
 	if (this->m_pFramework->m_bHasMoved)
 	{
@@ -4950,12 +4887,10 @@ static float _AvgFrameDiff = 150.f;
 		AdjustUI();
 	}
 
-	// Get DirectInput Infos
-	if ((!USE_OLD_MOUSE_SYSTEM))
-	{
-		pGetInfoDirectInput->GetInput();
-		ReMappDanaeButton();
-	}
+	// Update input
+	GInput->update();
+	ReMappDanaeButton();
+	AdjustMousePosition();
 
 	// Manages Splash Screens if needed
 	if(DANAE_ManageSplashThings()) {
@@ -4972,43 +4907,7 @@ static float _AvgFrameDiff = 150.f;
 	// Update Various Player Infos for this frame.
 	if (FirstFrame==0)
 		ARX_PLAYER_Frame_Update();
-
-	// Checks for ESC key
-	if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
-	{
-		if (ARXmenu.currentmode == AMCM_OFF)
-		{
-			if (CINEMASCOPE)
-			{
-				if (!FADEDIR)	// Disabling ESC capture while fading in or out.
-				{
-					if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
-					{
-						REQUEST_SPEECH_SKIP=1;				
-					}
-				}
-			}
-			else
-			{
-				LogDebug << "snapshot";
-				//create a screenshot temporaire pour la sauvegarde
-				::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
-				pSnapShot->GetSnapShotDim(160,100);
-				delete pSnapShot;
-
-				ARX_TIME_Pause();
-				ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
-				ARX_MENU_Launch();
-				bFadeInOut=false;	//fade out
-				bFade=true;			//active le fade
-				pGetInfoDirectInput->iOneTouch[DIK_ESCAPE] = 0;
-				TRUE_PLAYER_MOUSELOOK_ON = 0;
-
-				ARX_PLAYER_PutPlayerInNormalStance(1);
-			}
-		}
-	}
-
+	
 	// Project need to reload all textures ???
 	if (WILL_RELOAD_ALL_TEXTURES)
 	{
@@ -6353,12 +6252,12 @@ static float _AvgFrameDiff = 150.f;
 
 	if ((PLAY_LOADED_CINEMATIC == 0) && (!CINEMASCOPE) && (!BLOCK_PLAYER_CONTROLS) && (ARXmenu.currentmode == AMCM_OFF))
 	{
-		if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_QUICKLOAD) && !WILL_QUICKLOAD)
+		if (GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD) && !WILL_QUICKLOAD)
 		{
 			WILL_QUICKLOAD=1;
 		}
 
-		if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_QUICKSAVE) && !WILL_QUICKSAVE)
+		if (GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && !WILL_QUICKSAVE)
 		{
 			iTimeToDrawD7=2000;
 			WILL_QUICKSAVE=1;
@@ -6373,7 +6272,7 @@ static float _AvgFrameDiff = 150.f;
 	norenderend:
 		;
 
-	if(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F10))
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10))
 	{
 		GetSnapShot();
 	}
@@ -6696,10 +6595,6 @@ static void ShowInfoText() {
 	TSU_TEST_NB = 0;
 	TSU_TEST_NB_LIGHT = 0;
 
-	long pos=DXI_GetKeyIDPressed();
-	sprintf(tex,"%ld",pos);
-	mainApp->OutputText( 70, 99, tex );
-
 #ifdef BUILD_EDITOR
 	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
 	{
@@ -6915,35 +6810,23 @@ bool Win32Application::DeleteDeviceObjects() {
 // MsgProc()
 //   Overrides StdMsgProc
 //*************************************************************************************
-LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
-									LPARAM lParam )
-{
-	switch (uMsg)
-	{
-		case WM_ACTIVATE:
-
-		if(wParam==WA_INACTIVE)
-		{
-			DXI_SleepAllDevices();
-
-			if (pGetInfoDirectInput)
-			{
-				pGetInfoDirectInput->bActive=false;
+LRESULT Win32Application::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	switch(uMsg) {
+		
+		case WM_ACTIVATE: {
+			if(GInput) {
+				if(wParam==WA_INACTIVE) {
+					GInput->unacquireDevices();
+				} else {
+					GInput->reset();
+					GInput->unacquireDevices();
+					GInput->acquireDevices();
+				}
 			}
+			break;
 		}
-		else
-		{
-			if(pGetInfoDirectInput)
-			{
-				pGetInfoDirectInput->ResetAll();
-				pGetInfoDirectInput->bActive=true;
-			}
-
-			DXI_SleepAllDevices();
-			DXI_RestoreAllDevices();
-		}
-
-		break;
+		
 		case WM_SYSCOMMAND: // To avoid ScreenSaver Interference
 
 			if ((wParam & 0xFFF0)== SC_SCREENSAVE ||
@@ -7530,6 +7413,7 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 
 			break;
+
 		case WM_KEYUP:
 			this->kbd.nbkeydown--;
 			iii = (lParam >> 16) & 255;
@@ -7542,63 +7426,6 @@ LRESULT Win32Application::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 			else this->kbd.inkey[iii] = 0;;
 
-			break;
-
-		case WM_LBUTTONDBLCLK:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton |= 4;
-				EERIEMouseButton &= ~1;
-			}
-
-			break;
-		case WM_LBUTTONDOWN:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton |= 1;
-
-				if (EERIEMouseButton & 4) EERIEMouseButton &= ~1;
-			}
-
-			break;
-		case WM_LBUTTONUP:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				LastEERIEMouseButton = EERIEMouseButton;
-				EERIEMouseButton &= ~1;
-				EERIEMouseButton &= ~4;
-			}
-
-			break;
-		case WM_RBUTTONDOWN:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				EERIEMouseButton |= 2;
-			}
-
-			break;
-		case WM_RBUTTONUP:
-
-			if (USE_OLD_MOUSE_SYSTEM)
-			{
-				EERIEMouseButton &= ~2;
-			}
-
-			break;
-
-			//-------------------------------------------
-			//warning "macro redefinition" - as we haven't redefined WM_MOUSEWHEEL, WM_MOUSEWHEEL is equal to 0x020A
-		case WM_MOUSEWHEEL:
-			EERIEWheel = (short) HIWORD(wParam);
-			break;
-		case WM_MOUSEMOVE:
-			EERIEMouseUpdate(LOWORD(lParam), HIWORD(lParam));
 			break;
 
 		case WM_ERASEBKGND:
@@ -7810,12 +7637,6 @@ void ClearGame() {
 	//configuration
 	config.save();
 	
-	//dinput
-	if(pGetInfoDirectInput)	{
-		delete pGetInfoDirectInput;
-		pGetInfoDirectInput=NULL;
-	}
-
 	RoomDrawRelease();
 	EXITING=1;
 	TREATZONE_Release();

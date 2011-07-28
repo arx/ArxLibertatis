@@ -999,10 +999,11 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 				ia = i + 2;
 				ji = j - 2;
 				ja = j + 2;
-				FORCERANGE(ii, 0, eb->Xsize - 1);
-				FORCERANGE(ia, 0, eb->Xsize - 1);
-				FORCERANGE(ji, 0, eb->Zsize - 1);
-				FORCERANGE(ja, 0, eb->Zsize - 1);
+
+				ii = clamp(ii, 0, eb->Xsize - 1);
+				ia = clamp(ia, 0, eb->Xsize - 1);
+				ji = clamp(ji, 0, eb->Zsize - 1);
+				ja = clamp(ja, 0, eb->Zsize - 1);
 
 				for (long j2 = ji; j2 <= ja; j2++)
 					for (long i2 = ii; i2 <= ia; i2++)

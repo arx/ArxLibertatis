@@ -227,7 +227,7 @@ struct PROJECT {
 		  telekinesis(0), demo(0),
 		  bits(0), hide(0), TextureSize(0), TextureBits(0),
 		  interfacergb(Color3f::black), torch(Color3f::black),
-		  interpolatemouse(0), vsync(0) {
+		  vsync(0) {
 	}
 	
 	long compatibility;
@@ -243,7 +243,6 @@ struct PROJECT {
 	long TextureBits;
 	Color3f interfacergb;
 	Color3f torch;
-	long interpolatemouse;
 	long vsync;
 	
 };
@@ -283,7 +282,6 @@ extern LightMode ModeLight;
 
 extern ViewModeFlags ViewMode;
 
-extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
 extern long EERIEMouseButton, EERIEMouseGrab;
 extern HWND MSGhwnd;
 
@@ -321,8 +319,6 @@ public:
 	bool m_bActive;
 	bool m_bReady;
 	long d_dlgframe;
-	long MouseDragX, MouseDragY;
-	long _EERIEMouseXdep, _EERIEMouseYdep, EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel;
 	KEYBOARD_MNG kbd;
 	char StatusText[512];
 	short WndSizeX;

@@ -81,8 +81,6 @@ void ARXMenu_Options_Control_GetMouseSensitivity(int &);
 void ARXMenu_Options_Control_SetMouseSensitivity(int);
 void ARXMenu_Options_Control_GetAutoDescription(bool &);
 void ARXMenu_Options_Control_SetAutoDescription(bool);
-void ARXMenu_Options_Control_GetMouseSmoothing(bool &);
-void ARXMenu_Options_Control_SetMouseSmoothing(bool);
 
 //-----------------------------------------------------------------------------
 //RESUME GAME

@@ -52,9 +52,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "gui/Text.h"
+#include "input/InputKey.h"
 #include "math/Vector2.h"
 #include "math/Rectangle.h"
-#include "window/Input.h"
 
 class TextureContainer;
 
@@ -199,7 +199,6 @@ enum MenuButton {
 	BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK,
 	BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY,
 	BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION,
-	BUTTON_MENUOPTIONS_CONTROLS_MOUSE_SMOOTHING,
 	BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK,
 
 	BUTTON_MENUOPTIONS_CONTROLS_BACK,
@@ -272,11 +271,11 @@ class CMenuZone
 		CMenuZone(int, int, int, int, CMenuZone *);
 		virtual ~CMenuZone();
 
-		int GetWidth()
+		int GetWidth() const
 		{
 			return (rZone.right - rZone.left);
 		}
-		int GetHeight()
+		int GetHeight() const
 		{
 			return (rZone.bottom - rZone.top);
 		}
@@ -292,7 +291,7 @@ class CMenuZone
 			bCheck = true;
 		};
  
-		virtual CMenuZone * IsMouseOver(int, int);
+		virtual CMenuZone * IsMouseOver(const Vec2s& mousePos) const;
 };
 
 //-----------------------------------------------------------------------------
@@ -305,7 +304,7 @@ class CMenuAllZone
 		virtual ~CMenuAllZone();
 
 		void AddZone(CMenuZone *);
-		CMenuZone * CheckZone(int, int);
+		CMenuZone * CheckZone(const Vec2s& mousePos) const;
  
 		CMenuZone * GetZoneNum(int);
 		CMenuZone * GetZoneWithID(int);
@@ -396,7 +395,7 @@ class CMenuPanel : public CMenuElement
 		};
 		CMenuElement * OnShortCut();
 		void RenderMouseOver() {};
-		CMenuZone * IsMouseOver(int, int);
+		CMenuZone * IsMouseOver(const Vec2s& mousePos) const;
 		CMenuZone * GetZoneWithID(int);
 };
 
@@ -613,7 +612,7 @@ class CWindowMenuConsole
 		MENUSTATE Update(int, int, int);
 		int Render();
  
-		CMenuElement * GetTouch(bool _bValidateTest = false);
+		CMenuElement * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
 		void ReInitActionKey();
 };
 
@@ -649,85 +648,45 @@ class CWindowMenu
 		MENUSTATE Render();
 };
 
-//-----------------------------------------------------------------------------
-enum CURSORSTATE
-{
-	CURSOR_OFF,
-	CURSOR_ON,
-};
 
 //-----------------------------------------------------------------------------
-class CDirectInput {
-	
+class MenuCursor {
+
 public:
-	
-	static const size_t ARX_MAXBUTTON = 8;
-	
-		bool				bActive;
-		bool				bTouch;
-		int					iKeyId;
-		int					iKeyScanCode[256];
-		int					iOneTouch[256];
-		bool				bMouseMove;
-		int					iMouseRX;
-		int					iMouseRY;
-		int					iMouseRZ;
-		int					iMouseAX;
-		int					iMouseAY;
-		int					iMouseAZ;
-		float				fMouseAXTemp;
-		float				fMouseAYTemp;
-		int					iSensibility;
-		int					iOldMouseButton[ARX_MAXBUTTON];
-		bool				bMouseButton[ARX_MAXBUTTON];
-		bool				bOldMouseButton[ARX_MAXBUTTON];
-		int					iMouseTime[ARX_MAXBUTTON];
-		int					iMouseTimeSet[ARX_MAXBUTTON];
-		int					iNbOldCoord;
-		int					iMaxOldCoord;
-		Vec2i iOldCoord[256];
+	enum CURSORSTATE
+	{
+		CURSOR_OFF,
+		CURSOR_ON,
+	};
 
-		TextureContainer	* pTex[8];
-		long				lFrameDiff;
-		CURSORSTATE			eNumTex;
-		int					iNumCursor;
-		float				fTailleX;
-		float				fTailleY;
-		bool				bMouseOver;
-		bool				bDrawCursor;
+public:
+	MenuCursor();
+	virtual ~MenuCursor();
 
-		int					iOldNumClick[ARX_MAXBUTTON];
-		int					iOldNumUnClick[ARX_MAXBUTTON];
+	void Update();
+	void SetMouseOver();
+	void SetCursorOn();
+	void SetCursorOff();
+	void DrawCursor();
 
-		int					iWheelSens;
-	private:
-		void DrawOneCursor(int, int);
- 
-	public:
-		CDirectInput();
-		virtual ~CDirectInput();
+private:
+	void DrawOneCursor(const Vec2s& mousePos);
 
-		void SetMouseOver();
-		void SetCursorOn();
-		void SetCursorOff();
-		void SetSensibility(int);
-		void GetInput();
-		void DrawCursor();
-		bool GetMouseButton(int);
-		bool GetMouseButtonRepeat(int);
-		bool GetMouseButtonNowPressed(int);
-		bool GetMouseButtonNowUnPressed(int);
-		bool GetMouseButtonDoubleClick(int, int);
- 
-		bool IsVirtualKeyPressed(int);
-		bool IsVirtualKeyPressedOneTouch(int);
-		bool IsVirtualKeyPressedNowPressed(int);
-		bool IsVirtualKeyPressedNowUnPressed(int);
-		std::string GetFullNameTouch(int);
- 
- 
-		void ResetAll();
-		int GetWheelSens();
+private:
+	// Cursor
+	TextureContainer	* pTex[8];
+	long				lFrameDiff;
+	CURSORSTATE			eNumTex;
+	int					iNumCursor;
+	float				fTailleX;
+	float				fTailleY;
+	bool				bMouseOver;
+	bool				bDrawCursor;
+
+	// For the ribbon effect
+	int					iNbOldCoord;
+	int					iMaxOldCoord;
+	Vec2s				iOldCoord[256];	
 };
 
 bool Menu2_Render();
