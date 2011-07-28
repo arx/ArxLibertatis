@@ -168,7 +168,7 @@ static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, Scri
 	}
 	
 	//change weapons if you break
-	if((io->ioflags & IO_FIX || io->ioflags & IO_ITEM) && msg == SM_BREAK) {
+	if(((io->ioflags & IO_FIX) || (io->ioflags & IO_ITEM)) && msg == SM_BREAK) {
 		ManageCasseDArme(io);
 	}
 	
@@ -242,6 +242,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		return ACCEPT;
 	}
 	
+	if(!es->data) {
+		return ACCEPT;
+	}
+	
 	// Retrieves in esss script pointer to script holding variables.
 	EERIE_SCRIPT * esss = (EERIE_SCRIPT *)es->master;
 	if(esss == NULL) {
@@ -301,6 +305,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 
 			if (msg < (long)MAX_SHORTCUT) {
 				pos = es->shortcut[msg];
+				arx_assert(pos <= (long)es->size);
 			} else {
 				
 				arx_assert(msg != SM_EXECUTELINE && evname.empty());
