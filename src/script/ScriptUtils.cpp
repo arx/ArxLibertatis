@@ -312,8 +312,8 @@ void suppress(const string & script, size_t pos, const string & command) {
 	suppressions[pos][script].insert(command);
 }
 
-void suppressBlockEnd(const string & script, size_t pos) {
-	blockSuppressions[pos][script].insert("}");
+void suppressBlockEnd(const string & script, size_t pos, const string & command) {
+	blockSuppressions[pos][script].insert(command);
 }
 
 bool contains(const SuppressionsForPos & list, const Context & context, const string & command) {
@@ -335,7 +335,9 @@ bool contains(const SuppressionsForPos & list, const Context & context, const st
 
 void initSuppressions() {
 	
-	suppressBlockEnd("camera_0027", 1140); // '}' should be commented out!
+	suppressBlockEnd("camera_0027", 1140, "}"); // '}' should be commented out!
+	
+	suppressBlockEnd("goblin_base_0021", 617, "on"); // missing '}'
 	
 	// TODO(broken-scripts)
 	// TODO move to external file
@@ -480,8 +482,8 @@ bool isSuppressed(const Context & context, const string & command) {
 	return contains(suppressions, context, command);
 }
 
-bool isBlockEndSuprressed(const Context & context) {
-	return contains(blockSuppressions, context, "}");
+bool isBlockEndSuprressed(const Context & context, const string & command) {
+	return contains(blockSuppressions, context, command);
 }
 
 }

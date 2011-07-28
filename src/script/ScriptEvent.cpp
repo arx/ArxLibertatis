@@ -418,7 +418,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			if(brackets != (size_t)-1) {
 				brackets--;
 				if(brackets == 0) {
-					if(isBlockEndSuprressed(context)) { // TODO(broken-scripts)
+					if(isBlockEndSuprressed(context, word)) { // TODO(broken-scripts)
 						brackets++;
 					} else {
 						ScriptEventWarning << "--> event block ended without accept or refuse!";
@@ -427,6 +427,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				}
 			}
 		} else {
+			
+			if(isBlockEndSuprressed(context, word)) { // TODO(broken-scripts)
+				return ACCEPT;
+			}
 			
 			ScriptEventWarning << "--> unknown command: " << word;
 			

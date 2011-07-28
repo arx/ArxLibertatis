@@ -141,7 +141,7 @@ public:
 
 bool isSuppressed(const Context & context, const std::string & command);
 
-bool isBlockEndSuprressed(const Context & context);
+bool isBlockEndSuprressed(const Context & context, const std::string & command);
 
 void initSuppressions();
 
