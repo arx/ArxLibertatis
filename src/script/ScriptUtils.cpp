@@ -362,6 +362,9 @@ void initSuppressions() {
 	
 	suppress("chest_metal_0095", 143, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/legging_leatherac/legging_leatherac.teo" (should be 'legging_leather_ac'?)
 	
+	suppress("chest_metal_0100", 629, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
+	suppress("chest_metal_0100", 693, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
+	
 	suppress("chicken_base", 2410, "}"); // missing accept/refuse before end of event block
 	
 	suppress("corpse_0003", 399, "inventory addfromscene"); // bad target ident: "magic\\potion_life\\potion_life" (should be 'inventory add'?)
