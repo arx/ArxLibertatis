@@ -135,6 +135,9 @@ extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
 extern long LOADEDD;
+extern std::string WILL_LAUNCH_CINE;
+extern long PLAY_LOADED_CINEMATIC;
+extern long CINE_PRELOAD;
 
 struct QUAKE_FX_STRUCT {
 	float intensity;

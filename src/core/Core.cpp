@@ -343,10 +343,10 @@ char TELEPORT_TO_POSITION[64];
 long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 char ItemToBeAdded[1024];
-char WILL_LAUNCH_CINE[256];
+string WILL_LAUNCH_CINE;
 char _CURRENTLOAD_[256];
 fs::path LastLoadedScene;
-char LAST_LAUNCHED_CINE[256];
+string LAST_LAUNCHED_CINE;
 float BASE_FOCAL=350.f;
 float PLAYER_ARMS_FOCAL = 350.f;
 float METALdecal=0.f;
@@ -2326,10 +2326,7 @@ void LaunchWaitingCine()
 	
 	DANAE_KillCinematic();
 	
-	const char RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS[] = "graph/interface/illustrations/";
-	
-	string cinematic = RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS;
-	cinematic += WILL_LAUNCH_CINE;
+	fs::path cinematic = fs::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
 	
 	if(resources->getFile(cinematic)) {
 		
@@ -2346,19 +2343,20 @@ void LaunchWaitingCine()
 				ARX_TIME_Pause();
 			}
 			
-			strcpy(LAST_LAUNCHED_CINE,WILL_LAUNCH_CINE);
+			LAST_LAUNCHED_CINE = WILL_LAUNCH_CINE;
 		} else {
-			LogWarning << "error loading cinematic \"" << cinematic << '"';
+			LogWarning << "error loading cinematic " << cinematic;
 		}
 		
 	} else {
-		LogWarning << "could not find cinematic \"" << cinematic << '"';
+		LogWarning << "could not find cinematic " << cinematic;
 	}
 	
-	WILL_LAUNCH_CINE[0]=0;
+	WILL_LAUNCH_CINE.clear();
 }
-static void PlayerLaunchArrow_Test(float aimratio,float poisonous,Vec3f * pos,Anglef * angle)
-{
+
+static void PlayerLaunchArrow_Test(float aimratio,float poisonous,Vec3f * pos,Anglef * angle) {
+	
 	Vec3f position;
 	Vec3f vect;
 	Vec3f dvect;
@@ -2586,8 +2584,7 @@ HRESULT DANAE::FrameMove()
 	}
 #endif // BUILD_EDITOR
 
-	if (WILL_LAUNCH_CINE[0]) // Checks if a cinematic is waiting to be played...
-	{
+	if(!WILL_LAUNCH_CINE.empty()) { // Checks if a cinematic is waiting to be played...
 		LaunchWaitingCine();
 	}
 
@@ -4669,7 +4666,7 @@ long DANAE_Manage_Cinematic()
 			BLOCK_PLAYER_CONTROLS=1;
 
 		ARX_SPEECH_Reset();
-		SendMsgToAllIO(SM_CINE_END,LAST_LAUNCHED_CINE);
+		SendMsgToAllIO(SM_CINE_END, LAST_LAUNCHED_CINE);
 	}
 
 	LastFrameTicks=FrameTicks;

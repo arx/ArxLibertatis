@@ -70,7 +70,7 @@ public:
 				long v = (long)context.getFloatVar(val);
 				SCRIPT_VAR * sv = SETVarValueLong(svar, NB_GLOBALS, var, v);
 				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
 				}
 				sv->type = TYPE_G_LONG;
@@ -81,7 +81,7 @@ public:
 				long v = (long)context.getFloatVar(val);
 				SCRIPT_VAR * sv = SETVarValueLong(es.lvar, es.nblvar, var, v);
 				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
 				}
 				sv->type = TYPE_L_LONG;
@@ -92,7 +92,7 @@ public:
 				float v = context.getFloatVar(val);
 				SCRIPT_VAR * sv = SETVarValueFloat(svar, NB_GLOBALS, var, v);
 				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
 				}
 				sv->type = TYPE_G_FLOAT;
@@ -103,7 +103,7 @@ public:
 				float v = context.getFloatVar(val);
 				SCRIPT_VAR * sv = SETVarValueFloat(es.lvar, es.nblvar, var, v);
 				if(!sv) {
-					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
+					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
 				}
 				sv->type = TYPE_L_FLOAT;

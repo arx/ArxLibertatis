@@ -106,7 +106,7 @@ static fs::path fixSoundPath(const string & str) {
 
 bool parseCinematic(Cinematic * c, const char * data, size_t size);
 
-bool loadCinematic(Cinematic * c, const string & file) {
+bool loadCinematic(Cinematic * c, const fs::path & file) {
 	
 	LogInfo << "loading cinematic " << file;
 	

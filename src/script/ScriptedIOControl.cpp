@@ -35,7 +35,7 @@ public:
 		
 		fs::path object = fs::path::load(context.getWord());
 		
-		DebugScript(" \"" << object << '"');
+		DebugScript(' ' << object);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		

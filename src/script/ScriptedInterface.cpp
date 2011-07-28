@@ -50,7 +50,7 @@ public:
 			ScriptWarning << "unexpected command: " << options << " \"" << command << "\"";
 		}
 		
-		DebugScript(' ' << options << " \"" << command << "\"");
+		DebugScript(' ' << options << ' ' << command);
 		
 		return Success;
 	}

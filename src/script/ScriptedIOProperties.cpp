@@ -479,7 +479,7 @@ public:
 			
 			fs::path icon = fs::path::load(context.getWord());
 			
-			DebugScript(" icon \"" << icon << '"');
+			DebugScript(" icon " << icon);
 			
 			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, icon, fs::path());
 			ARX_INTERACTIVE_TWEAK_Icon(io, icon);
@@ -515,7 +515,7 @@ public:
 			
 			fs::path mesh = fs::path::load(context.getWord()).append(".teo");
 			
-			DebugScript(' ' << type << " \"" << mesh << '"');
+			DebugScript(' ' << type << ' ' << mesh);
 			
 			if(io->usemesh.empty()) {
 				mesh = io->filename.parent() / "tweaks" / mesh;

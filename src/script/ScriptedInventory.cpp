@@ -177,7 +177,7 @@ class InventoryCommand : public Command {
 			
 			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(file, IO_IMMEDIATELOAD);
 			if(!ioo) {
-				ScriptWarning << "could not add item \"" << file << '"';
+				ScriptWarning << "could not add item " << file;
 				return Failed;
 			}
 			
@@ -282,17 +282,17 @@ class InventoryCommand : public Command {
 			if(multi) {
 				float val = context.getFloat();
 				
-				DebugScript(" \"" << file << "\" " << val);
+				DebugScript(' ' << file << ' ' << val);
 				
 				count = static_cast<long>(val);
 				
 			} else {
-				DebugScript(" \"" << file << '"');
+				DebugScript(' ' << file);
 			}
 			
 			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(file, IO_IMMEDIATELOAD);
 			if(!ioo) {
-				ScriptWarning << "could not add item \"" << file << '"';
+				ScriptWarning << "could not add item " << file;
 				return Failed;
 			}
 			

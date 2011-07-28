@@ -20,9 +20,6 @@
 
 using std::string;
 
-extern long PLAY_LOADED_CINEMATIC;
-extern char WILL_LAUNCH_CINE[256];
-extern long CINE_PRELOAD;
 extern long GLOBAL_MAGIC_MODE;
 
 namespace script {
@@ -71,7 +68,7 @@ public:
 			radius = context.getFloat();
 		}
 		
-		DebugScript(" \"" << target << "\" " << val << ' ' << radius);
+		DebugScript(' ' << target << ' ' << val << ' ' << radius);
 		
 		ARX_SPECIAL_ATTRACTORS_Add(t, val, radius);
 		
@@ -91,11 +88,11 @@ public:
 		HandleFlags("v") {
 			if(flg & flag('v')) {
 				float volume = context.getFloat();
-				string ambiance = context.getWord();
-				DebugScript(' ' << options << ' ' << volume << " \"" << ambiance << '"');
+				fs::path ambiance = fs::path::load(context.getWord());
+				DebugScript(' ' << options << ' ' << volume << ' ' << ambiance);
 				bool ret = ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_LOOPED, volume * 0.01f);
 				if(!ret) {
-					ScriptWarning << "unable to find ambiance \"" << ambiance << '"';
+					ScriptWarning << "unable to find ambiance " << ambiance;
 					return Failed;
 				}
 				return Success;
@@ -103,14 +100,14 @@ public:
 			return Failed;
 		}
 		
-		string ambiance = context.getWord();
-		DebugScript(" \"" << ambiance << '"');
+		fs::path ambiance = fs::path::load(context.getWord());
+		DebugScript(' ' << ambiance);
 		if(ambiance == "kill") {
 			ARX_SOUND_KillAmbiances();
 		} else {
 			bool ret = ARX_SOUND_PlayScriptAmbiance(ambiance);
 			if(!ret) {
-				ScriptWarning << "unable to find \"" << ambiance << '"';
+				ScriptWarning << "unable to find " << ambiance;
 				return Failed;
 			}
 		}
@@ -130,7 +127,7 @@ public:
 		
 		bool choice = context.getBool();
 		
-		DebugScript(" \"" << choice << "\"");
+		DebugScript(' ' << choice);
 		
 		ANCHOR_BLOCK_By_IO(context.getIO(), choice ? 1 : 0);
 		
@@ -198,14 +195,11 @@ public:
 			ARX_TIME_Pause();
 		} else {
 			
-			string file = "graph/interface/illustrations/" + name + ".cin";
-			
-			if(resources->getFile(file)) {
-				strcpy(WILL_LAUNCH_CINE, name.c_str());
-				strcat(WILL_LAUNCH_CINE, ".cin");
+			if(resources->getFile(fs::path("graph/interface/illustrations") / (name + ".cin"))) {
+				WILL_LAUNCH_CINE = name + ".cin";
 				CINE_PRELOAD = preload;
 			} else {
-				ScriptWarning << "unable to load cinematic \"" << file << '"';
+				ScriptWarning << "unable to find cinematic \"" << name << '"';
 				return Failed;
 			}
 		}
@@ -300,7 +294,7 @@ public:
 			
 			bool ret = ARX_SOUND_PlayZoneAmbiance(ambiance);
 			if(!ret) {
-				ScriptWarning << "unable to find ambiance \"" << ambiance << '"';
+				ScriptWarning << "unable to find ambiance " << ambiance;
 			}
 			
 		} else {
