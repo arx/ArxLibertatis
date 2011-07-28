@@ -396,6 +396,8 @@ void initSuppressions() {
 	
 	suppress("goblin_base_0046", 2924, "if"); // unknown operator '=>' (should be '>='?), interpreted as constant true
 	
+	suppress("gold_chunk_inwall", 144, "play"); // unknown flag -e (ignored)
+	
 	suppress("hammer_club", 66, "settwohanded"); // obsolete command
 	
 	suppress("human_base", 5872, "loadanim"); // bad animation id: "bae_ready"
