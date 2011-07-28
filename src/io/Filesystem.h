@@ -98,7 +98,7 @@ bool create_directories(const path & p);
  * TODO does this overwrite to_p
  * @return true if the file was copied or false if there was an error.
  */
-bool copy_file(const path & from_p, const path & to_p);
+bool copy_file(const path & from_p, const path & to_p, bool overwrite = false);
 
 /**
  * Move a regular file or directory.
@@ -126,6 +126,9 @@ class directory_iterator {
 	directory_iterator(const directory_iterator &);
 	
 	void * handle;
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION < 3
+	void * buf;
+#endif
 	
 public:
 	

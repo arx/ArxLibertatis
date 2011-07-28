@@ -14,7 +14,20 @@ if(MSVC)
 	# Link statically with Boost under Windows
 	set(Boost_USE_STATIC_LIBS ON)
 endif(MSVC)
-find_package(Boost 1.37 REQUIRED COMPONENTS filesystem system)
+find_package(Boost REQUIRED)
+
+if((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
+	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
+	set(HAVE_BOOST_FILESYSTEM_V3 1)
+	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
+	set(FILESYSTEM_SRC "../src/io/FilesystemBoost.cpp")
+else()
+	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
+	if(NOT HAVE_POSIX_FILESYSTEM)
+		message(FATAL_ERROR "You need either Boost >= 1.44 or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
+	endif()
+	set(FILESYSTEM_SRC "../src/io/FilesystemPOSIX.cpp")
+endif()
 
 if(NOT MSVC AND NOT CMAKE_TOOLCHAIN_FILE)
 	find_program(GXX_BINARY g++)
@@ -34,6 +47,8 @@ endif()
 include_directories(../src)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
+
+
 add_executable(unpaker 
 	unpak/unpak.cpp
 	../src/io/PakEntry.cpp
@@ -41,6 +56,7 @@ add_executable(unpaker
 	../src/io/Logger.cpp
 	../src/io/Blast.cpp
 	../src/io/Filesystem.cpp
+	${FILESYSTEM_SRC}
 	../src/io/FilePath.cpp
 	../src/io/FileStream.cpp
 	../src/platform/String.cpp
@@ -55,6 +71,7 @@ add_executable(savetool
 	../src/io/PakEntry.cpp
 	../src/io/PakReader.cpp
 	../src/io/Filesystem.cpp
+	${FILESYSTEM_SRC}
 	../src/io/FilePath.cpp
 	../src/io/FileStream.cpp
 	../src/platform/String.cpp

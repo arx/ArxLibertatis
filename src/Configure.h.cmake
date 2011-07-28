@@ -4,6 +4,10 @@
 
 #cmakedefine HAVE_WINAPI
 
+// Filesystem
+#cmakedefine HAVE_BOOST_FILESYSTEM_V3
+#cmakedefine HAVE_POSIX_FILESYSTEM
+
 // Threads
 #cmakedefine HAVE_PTHREADS
 

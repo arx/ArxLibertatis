@@ -70,7 +70,8 @@ if(MSVC)
 	# Link statically with Boost under Windows
 	set(Boost_USE_STATIC_LIBS ON)
 endif(MSVC)
-find_package(Boost 1.37 REQUIRED COMPONENTS filesystem system)
+
+find_package(Boost REQUIRED)
 
 mark_as_advanced(IL_INCLUDE_DIR)
 mark_as_advanced(ILUT_LIBRARIES)
@@ -164,7 +165,6 @@ else(MSVC)
 	if(ARX_USE_OPENGL)
 		check_link_library(OpenGL OPENGL_LIBRARIES)
 	endif()
-	check_link_library(Boost Boost_LIBRARIES)
 	
 	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=199309")
 	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
@@ -226,10 +226,25 @@ else(MSVC)
 	endif()
 	
 	# Disable exceptions & rtti
-	# add_cxxflag(-fno-exceptions) - boost headers fail to compile if exceptions are disabled
+	add_cxxflag(-fno-exceptions)
 	add_cxxflag(-fno-rtti)
 	
 endif(MSVC)
+
+if((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
+	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
+	set(HAVE_BOOST_FILESYSTEM_V3 1)
+	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
+else()
+	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
+	if(NOT HAVE_POSIX_FILESYSTEM)
+		message(FATAL_ERROR "You need either Boost >= 1.44 or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
+	endif()
+endif()
+
+if(NOT MSVC)
+	check_link_library(Boost Boost_LIBRARIES)
+endif()
 
 check_type_size(char CHAR_SIZE)
 if(NOT CHAR_SIZE EQUAL 1)
@@ -266,7 +281,7 @@ file(GLOB_RECURSE GAME_SOURCES ${SRC_DIR}/game/*.cpp)
 file(GLOB_RECURSE GRAPHICS_SOURCES ${SRC_DIR}/graphics/*.cpp)
 file(GLOB_RECURSE GUI_SOURCES ${SRC_DIR}/gui/*.cpp)
 file(GLOB_RECURSE INPUT_SOURCES ${SRC_DIR}/input/*.cpp)
-file(GLOB_RECURSE IO_SOURCES ${SRC_DIR}/io/*.cpp)
+file(GLOB_RECURSE IO_SOURCES ${SRC_DIR}/io/*.cpp) # TODO only build FilesystemBoost.cpp / FilesystemPOSIX if needed
 file(GLOB_RECURSE MATH_SOURCES ${SRC_DIR}/math/*.cpp)
 file(GLOB_RECURSE PHYSICS_SOURCES ${SRC_DIR}/physics/*.cpp)
 file(GLOB_RECURSE PLATFORM_SOURCES ${SRC_DIR}/platform/*.cpp)
