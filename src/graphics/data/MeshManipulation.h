@@ -54,10 +54,6 @@ struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 class TextureContainer;
 
-namespace fs {
-class path;
-}
-
 enum TweakFlag {
 	TWEAK_REMOVE    = (1<<0),
 	TWEAK_HEAD      = (1<<1),

@@ -60,7 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#include "io/Filesystem.h"
+namespace fs {
+class path;
+}
 
 struct INTERACTIVE_OBJ;
 

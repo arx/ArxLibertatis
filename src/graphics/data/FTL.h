@@ -57,9 +57,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "Configure.h"
-#include "io/Filesystem.h"
 
 struct EERIE_3DOBJ;
+
+namespace fs {
+class path;
+}
 
 #ifdef BUILD_EDIT_LOADSAVE
 

@@ -32,6 +32,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Ambiance.h"
 #include "audio/AudioEnvironment.h"
 
+#include "io/FilePath.h"
+
 namespace audio {
 
 // Audio device interface

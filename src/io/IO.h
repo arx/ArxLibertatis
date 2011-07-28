@@ -75,7 +75,9 @@ int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-#include "io/Filesystem.h"
+namespace fs {
+class path;
+}
 
 /**
  * Create a hash of the file.
