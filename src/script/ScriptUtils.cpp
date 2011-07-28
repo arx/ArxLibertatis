@@ -362,6 +362,8 @@ void initSuppressions() {
 	
 	suppress("corpse_0003", 399, "inventory addfromscene"); // bad target ident: "magic\\potion_life\\potion_life" (should be 'inventory add'?)
 	
+	suppress("corpse_0006", 172, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/helmet_leather/helmet_leather.teo"
+	
 	suppress("corpse_0084", 274, "inventory add"); // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
 	
 	suppress("demon", 18479, "play"); // sound number is sometimes too high
