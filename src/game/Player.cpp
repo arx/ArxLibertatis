@@ -2871,10 +2871,11 @@ void PlayerMovementIterate(float DeltaTime)
 
 	if ((!EDITMODE) && (USE_PLAYERCOLLISIONS))
 	{
-		long levitate = 0;
+		CollisionFlags levitate = 0;
 
-		if (player.climbing)
-			levitate = 1;
+		if(player.climbing) {
+			levitate = CFLAG_LEVITATE;
+		}
 
 		if (player.levitate)
 		{
@@ -2899,9 +2900,8 @@ void PlayerMovementIterate(float DeltaTime)
 				}
 			}
 
-			if (player.physics.cyl.height == PLAYER_LEVITATE_HEIGHT)
-			{
-				levitate = 1;
+			if(player.physics.cyl.height == PLAYER_LEVITATE_HEIGHT) {
+				levitate = CFLAG_LEVITATE;
 				player.climbing = 0;
 				bGCroucheToggle = false;
 				player.Current_Movement &= ~PLAYER_CROUCH;

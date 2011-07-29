@@ -2134,7 +2134,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		// Script data
 		io->scriptload = ais->scriptload;
 		io->show = ais->show;
-		io->collision = ais->collision;
+		io->collision = IOCollisionFlags::load(ais->collision); // TODO save/load flags
 		io->mainevent = toLowercase(safestring(ais->mainevent));
 		
 		// Physics data

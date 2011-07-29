@@ -461,7 +461,33 @@ struct TWEAK_INFO;
 
 #define MAX_ANIMS 200 // max loadable anims per character
 
-typedef s32 ArxSound;
+// ARX_COLLISIONS flags (cylinder move)
+enum CollisionFlag {
+	CFLAG_LEVITATE          = (1<<0),
+	CFLAG_NO_INTERCOL       = (1<<1),
+	CFLAG_SPECIAL           = (1<<2),
+	CFLAG_EASY_SLIDING      = (1<<3),
+	CFLAG_CLIMBING          = (1<<4),
+	CFLAG_JUST_TEST         = (1<<5),
+	CFLAG_NPC               = (1<<6),
+	CFLAG_PLAYER            = (1<<7),
+	CFLAG_RETURN_HEIGHT     = (1<<8),
+	CFLAG_EXTRA_PRECISION   = (1<<9),
+	CFLAG_CHECK_VALID_POS   = (1<<10),
+	CFLAG_ANCHOR_GENERATION = (1<<11),
+	CFLAG_COLLIDE_NOCOL     = (1<<12),
+	CFLAG_NO_NPC_COLLIDE    = (1<<13),
+	CFLAG_NO_HEIGHT_MOD     = (1<<14)
+};
+DECLARE_FLAGS(CollisionFlag, CollisionFlags)
+DECLARE_FLAGS_OPERATORS(CollisionFlags)
+
+enum IOCollisionFlag {
+	COLLIDE_WITH_PLAYER = (1<<0),
+	COLLIDE_WITH_WORLD  = (1<<1)
+};
+DECLARE_FLAGS(IOCollisionFlag, IOCollisionFlags)
+DECLARE_FLAGS_OPERATORS(IOCollisionFlags)
 
 struct INTERACTIVE_OBJ {
 	
@@ -496,7 +522,7 @@ struct INTERACTIVE_OBJ {
 	Vec2s bbox2; // 2D bounding box2
 	fs::path usemesh; // Alternate Mesh/path
 	EERIE_3DOBJ * tweaky; // tweaked original obj backup
-	ArxSound sound;
+	audio::SourceId sound;
 	ItemType type_flags; // object type (weapon,goblin...)
 	long scriptload; // Is This object Loaded by Script ?
 	Vec3f target; // Target position
@@ -511,7 +537,7 @@ struct INTERACTIVE_OBJ {
 	
 	INVENTORY_DATA * inventory; // Inventory Data
 	short show; // Show Status (In Scene, In Inventory...)
-	short collision; // collision type
+	IOCollisionFlags collision; // collision type
 	std::string mainevent;
 	Color3f infracolor; // Improve Vision Color (Heat)
 	long changeanim;
@@ -578,7 +604,7 @@ struct INTERACTIVE_OBJ {
 	
 	float ignition;
 	long ignit_light;
-	ArxSound ignit_sound;
+	audio::SampleId ignit_sound;
 	float head_rot;
 	
 	short damager_damages;
@@ -633,23 +659,6 @@ struct INTERACTIVE_OBJ {
 
 #define CAM_SUBJVIEW 0
 #define CAM_TOPVIEW 1
-
-// ARX_COLLISIONS flags (cylinder move)
-#define CFLAG_LEVITATE			1
-#define CFLAG_NO_INTERCOL		(1<<1)
-#define CFLAG_SPECIAL			(1<<2)
-#define CFLAG_EASY_SLIDING		(1<<3)
-#define CFLAG_CLIMBING			(1<<4)
-#define CFLAG_JUST_TEST			(1<<5)
-#define CFLAG_NPC				(1<<6)
-#define CFLAG_PLAYER			(1<<7)
-#define CFLAG_RETURN_HEIGHT		(1<<8)
-#define CFLAG_EXTRA_PRECISION	(1<<9)
-#define CFLAG_CHECK_VALID_POS	(1<<10)
-#define CFLAG_ANCHOR_GENERATION	(1<<11)
-#define CFLAG_COLLIDE_NOCOL		(1<<12)
-#define CFLAG_NO_NPC_COLLIDE	(1<<13)
-#define CFLAG_NO_HEIGHT_MOD		(1<<14)
 
 #define IO_UNDERWATER			1
 #define	IO_FREEZESCRIPT			(1<<1)

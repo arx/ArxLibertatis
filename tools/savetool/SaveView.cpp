@@ -44,6 +44,21 @@ string loadUnlocalized(const std::string & str) {
 	return str;
 }
 
+template <class E>
+inline void print_flag(std::ostream & strm, Flags<E> & flags, E flag, const string & name) {
+	if(flags & flag) {
+		strm << ' ' << name;
+		flags &= ~flag;
+	}
+}
+
+template <class E>
+inline void print_unknown_flags(std::ostream & strm, Flags<E> flags) {
+	if(flags) {
+		strm << " (unknown:0x" << std::hex << flags << ')';
+	}
+}
+
 const char * spellNames[] = {
 	"magic sight",
 	"magic missile",
@@ -584,21 +599,10 @@ int main_view(const fs::path & savefile, int argc, char ** argv) {
 	
 	if(ais.collision) {
 		cout << "Collision:";
-		if(ais.collision & CFLAG_LEVITATE) cout << " levitate";
-		if(ais.collision & CFLAG_NO_INTERCOL) cout << " no_intercol";
-		if(ais.collision & CFLAG_SPECIAL) cout << " special";
-		if(ais.collision & CFLAG_EASY_SLIDING) cout << " easy_sliding";
-		if(ais.collision & CFLAG_CLIMBING) cout << " climbing";
-		if(ais.collision & CFLAG_JUST_TEST) cout << " just_test";
-		if(ais.collision & CFLAG_NPC) cout << " npc";
-		if(ais.collision & CFLAG_PLAYER) cout << " player";
-		if(ais.collision & CFLAG_RETURN_HEIGHT) cout << " return_height";
-		if(ais.collision & CFLAG_EXTRA_PRECISION) cout << " extra_precision";
-		if(ais.collision & CFLAG_CHECK_VALID_POS) cout << " check_valid_pos";
-		if(ais.collision & CFLAG_ANCHOR_GENERATION) cout << " anchor_generation";
-		if(ais.collision & CFLAG_COLLIDE_NOCOL) cout << " collide_nocol";
-		if(ais.collision & CFLAG_NO_NPC_COLLIDE) cout << " no_npc_collide";
-		if(ais.collision & CFLAG_NO_HEIGHT_MOD) cout << " no_height_mod";
+		IOCollisionFlags iocf = IOCollisionFlags::load(ais.collision);
+		print_flag(cout, iocf, COLLIDE_WITH_PLAYER, "player");
+		print_flag(cout, iocf, COLLIDE_WITH_WORLD, "world");
+		print_unknown_flags(cout, iocf);
 		cout << endl;
 	}
 	

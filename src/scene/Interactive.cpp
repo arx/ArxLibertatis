@@ -1564,7 +1564,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 
 		if (io->ioflags & IO_ITEM)
 		{
-			io->collision = 1;
+			io->collision = COLLIDE_WITH_PLAYER;
 			io->_itemdata->count = 1;
 			io->_itemdata->maxcount = 1;
 			io->_itemdata->food_value = 0;
@@ -2468,7 +2468,7 @@ INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags) {
 		io->inv = tc;
 	}
 
-	io->collision = 1;
+	io->collision = COLLIDE_WITH_PLAYER;
 
 	return io;
 }
@@ -2918,7 +2918,7 @@ INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
 	io->infracolor.r = 1.f;
 	io->infracolor.g = 0.f;
 	io->infracolor.b = 0.2f;
-	io->collision = 1;
+	io->collision = COLLIDE_WITH_PLAYER;
 	io->inv = NULL;
 
 	ARX_INTERACTIVE_HideGore(io);

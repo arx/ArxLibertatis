@@ -295,11 +295,11 @@ public:
 
 class SetCollisionCommand : public Command {
 	
-	short flag;
+	IOCollisionFlags::Enum flag;
 	
 public:
 	
-	SetCollisionCommand(const string & command, short _flag) : Command(command, ANY_IO), flag(_flag) { }
+	SetCollisionCommand(const string & command, IOCollisionFlags::Enum _flag) : Command(command, ANY_IO), flag(_flag) { }
 	
 	Result execute(Context & context) {
 		
@@ -578,8 +578,8 @@ void setupScriptedIOProperties() {
 	ScriptEvent::registerCommand(new SetStepMaterialCommand);
 	ScriptEvent::registerCommand(new SetArmorMaterialCommand);
 	ScriptEvent::registerCommand(new SetWeaponMaterialCommand);
-	ScriptEvent::registerCommand(new SetCollisionCommand("setplayercollision", 1));
-	ScriptEvent::registerCommand(new SetCollisionCommand("setworldcollision", 2));
+	ScriptEvent::registerCommand(new SetCollisionCommand("setplayercollision", COLLIDE_WITH_PLAYER));
+	ScriptEvent::registerCommand(new SetCollisionCommand("setworldcollision", COLLIDE_WITH_WORLD));
 	ScriptEvent::registerCommand(new SetWeightCommand);
 	ScriptEvent::registerCommand(new SetTransparencyCommand);
 	ScriptEvent::registerCommand(new SetIRColorCommand);

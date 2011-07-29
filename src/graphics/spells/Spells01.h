@@ -77,7 +77,7 @@ public:
 	Anglef angles;
 	TextureContainer * tex_mm;
 	TexturedVertex pathways[6];
-	ArxSound snd_loop;
+	audio::SourceId snd_loop;
 	
 	CMagicMissile();
 	~CMagicMissile();
