@@ -121,13 +121,6 @@ bool Win32Application::Create() {
 		return false;
 	}
 
-	// Initialize the app's custom scene stuff
-	if (FAILED(hr = OneTimeSceneInit()))
-	{
-		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
-		return false;
-	}
-
 	// Create a new CD3DFramework class. This class does all of our D3D
 	// initialization and manages the common D3D objects.
 	if (NULL == (m_pFramework = new CD3DFramework7()))
@@ -282,15 +275,6 @@ int Win32Application::Run()
 	}
 
 	return msg.wParam;
-}
-
-//*************************************************************************************
-// OneTimeSceneInit()
-//  Called Once during initial app startup
-//*************************************************************************************
-bool Win32Application::OneTimeSceneInit()
-{
-	return true;
 }
 
 //*************************************************************************************

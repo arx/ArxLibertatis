@@ -34,7 +34,6 @@ class Win32Application : public Application {
 	
 protected:
 
-	bool OneTimeSceneInit();
 	bool DeleteDeviceObjects();
 	bool Render();
 	bool FrameMove();

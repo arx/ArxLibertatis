@@ -302,7 +302,6 @@ protected:
 #endif
 
 	/* Virtual functions to be overriden for the 3D scene in the Application */
-	virtual bool OneTimeSceneInit() { return true; }
 	virtual bool DeleteDeviceObjects() { return true; }
 	virtual bool FrameMove() { return true; }
 	virtual bool RestoreSurfaces() { return true; }
