@@ -241,7 +241,7 @@ struct EERIE_BACKGROUND
 struct IO_EQUIPITEM_ELEMENT {
 	float value;
 	short flags;
-	short special;
+	short special; // TODO unused?
 };
 
 #define IO_EQUIPITEM_ELEMENT_Number 29

@@ -353,7 +353,7 @@ struct EERIE_MOD_INFO {
 	Vec3f link_position;
 	Vec3f scale;
 	Anglef rot;
-	unsigned long	flags;
+	unsigned long	flags; // TODO unused?
 };
 
 struct EERIE_LINKED

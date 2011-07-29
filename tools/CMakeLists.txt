@@ -65,7 +65,15 @@ target_link_libraries(tools_common ${Boost_LIBRARIES})
 
 add_executable(unpaker unpak/unpak.cpp)
 
-add_executable(savetool savetool/savetool.cpp ../src/io/SaveBlock.cpp)
+add_executable(savetool
+	savetool/savetool.cpp
+	savetool/SaveFix.cpp
+	savetool/SaveView.cpp
+	../src/io/SaveBlock.cpp
+	../src/core/Localisation.cpp
+	../src/io/IniReader.cpp
+	../src/io/IniSection.cpp
+)
 
 target_link_libraries(savetool tools_common ${ZLIB_LIBRARIES})
 target_link_libraries(unpaker tools_common)
