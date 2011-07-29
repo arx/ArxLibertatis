@@ -476,14 +476,6 @@ HRESULT Win32Application::Render3DEnvironment()
 {
 	HRESULT hr;
 
-	// mode systemshock
-	if ((EERIEMouseButton & 1) &&
-	        (config.input.autoReadyWeapon == false))
-	{
-		MouseDragX += GInput->getMousePosRel().x;
-		MouseDragY += GInput->getMousePosRel().y;
-	}
-
 	// Check the cooperative level before rendering
 	if (FAILED(hr = m_pDD->TestCooperativeLevel()))
 	{

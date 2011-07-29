@@ -1627,6 +1627,13 @@ bool Win32Application::ManageEditorControls()
 		}
 		else
 		{
+			// mode systemshock
+			if (config.input.autoReadyWeapon == false)
+			{
+				MouseDragX += GInput->getMousePosRel().x;
+				MouseDragY += GInput->getMousePosRel().y;
+			}
+
 			if (((abs(DANAEMouse.x-STARTDRAG.x)>2) && (abs(DANAEMouse.y-STARTDRAG.y)>2))
 			   || ((config.input.autoReadyWeapon == false) && ((abs(MouseDragX) > 2) || (abs(MouseDragY) > 2))))
 			{
