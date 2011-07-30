@@ -207,12 +207,12 @@ struct Ambiance::Track {
 	string name; // Track name
 	
 	TrackFlags flags;
-	size_t key_i; // Key count and current index
 
 	typedef std::vector<TrackKey> KeyVector;
-	KeyVector key_l; // Key list
+	KeyVector			key_l; // Key list
+	KeyVector::iterator key_i;
 	
-	Track() : s_id(INVALID_ID), a_id(INVALID_ID), flags(0), key_i(0) {
+	Track() : s_id(INVALID_ID), a_id(INVALID_ID), flags(0) {
 	}
 	
 	~Track() {
@@ -526,7 +526,7 @@ aalError Ambiance::setVolume(float _volume) {
 		--track;
 		Source * source = backend->getSource(track->s_id);
 		if(source) {
-			source->setVolume(track->key_l[track->key_i].volume.cur * channel.volume);
+			source->setVolume(track->key_i->volume.cur * channel.volume);
 		}
 	}
 	
@@ -564,7 +564,8 @@ aalError Ambiance::muteTrack(const string & name, bool mute) {
 	} else {
 		track->flags &= ~Track::MUTED;
 		if(isPlaying()) {
-			track->keyPlay(track->key_l[track->key_i = 0]);
+			track->key_i = track->key_l.begin();
+			track->keyPlay(*track->key_i);
 		}
 	}
 	
@@ -621,7 +622,7 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_inter
 			key->z.reset();
 		}
 		
-		track->key_i = 0;
+		track->key_i = track->key_l.begin();
 	}
 	
 	status = Playing;
@@ -749,11 +750,11 @@ aalError Ambiance::update() {
 			continue;
 		}
 		
-		if(track->key_i >= track->key_l.size()) {
+		if(track->key_i == track->key_l.end()) {
 			continue;
 		}
 		
-		TrackKey * key = &track->key_l[track->key_i];
+		Ambiance::Track::KeyVector::iterator key = track->key_i;
 		
 		//Run / update keys
 		if(key->n_start <= interval) {
@@ -799,25 +800,26 @@ static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data) {
 	Source * instance = (Source *)inst;
 	Ambiance::Track * track = (Ambiance::Track*)data;
 	arx_assert(_amb.isValid(track->a_id));
-	TrackKey * key = &track->key_l[track->key_i];
+	Ambiance::Track::KeyVector::iterator key = track->key_i;
 	
 	if(track->flags & Ambiance::Track::PREFETCHED) {
 		track->flags &= ~Ambiance::Track::PREFETCHED;
-		if(track->key_i == track->key_l.size()) {
-			key = &track->key_l[track->key_i = 0];
+		if(track->key_i == track->key_l.end()) {
+			track->key_i = track->key_l.begin();
+			key = track->key_i;
 		}
-		track->key_l[track->key_i].n_start = KEY_CONTINUE;
-		track->key_l[track->key_i].loopc = track->key_l[track->key_i].loop;
+		track->key_i->n_start = KEY_CONTINUE;
+		track->key_i->loopc = track->key_i->loop;
 	}
 	
 	// Prefetch
 	if(!key->loopc && _amb[track->a_id]->isLooped()) {
-		size_t i = track->key_i + 1;
-		if(i == track->key_l.size()) {
-			i = 0;
+		Ambiance::Track::KeyVector::iterator keyPrefetch = track->key_i + 1;
+		if(keyPrefetch == track->key_l.end()) {
+			keyPrefetch = track->key_l.begin();
 		}
-		if(!track->key_l[i].start && !track->key_l[i].delay_min && !track->key_l[i].delay_max) {
-			instance->play(track->key_l[i].loop + 1);
+		if(!keyPrefetch->start && !keyPrefetch->delay_min && !keyPrefetch->delay_max) {
+			instance->play(keyPrefetch->loop + 1);
 			track->flags |= Ambiance::Track::PREFETCHED;
 		}
 	}
@@ -849,8 +851,8 @@ void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
 	Ambiance::Track * track = (Ambiance::Track*)data;
 	arx_assert(_amb.isValid(track->a_id));
 	Ambiance * ambiance = _amb[track->a_id];
-	TrackKey * key = &track->key_l[track->key_i];
-	
+
+	Ambiance::Track::KeyVector::iterator key = track->key_i;
 	if(!key->loopc--) {
 		
 		//Key end
@@ -860,7 +862,7 @@ void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
 		key->loopc = key->loop;
 		key->pitch.tupdate -= ambiance->time;
 		
-		if(++track->key_i == track->key_l.size()) {
+		if(++track->key_i == track->key_l.end()) {
 			//Track end
 			
 			if(track->flags & Ambiance::Track::MASTER) {
@@ -872,7 +874,7 @@ void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
 					while (track2 > ambiance->track_l) {
 						--track2;
 						if(!(track2->flags & Ambiance::Track::PREFETCHED)) {
-							track2->key_i = 0;
+							track2->key_i = track2->key_l.begin();
 						}
 					}
 					ambiance->start = session_time;
