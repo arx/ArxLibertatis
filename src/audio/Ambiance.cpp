@@ -5,10 +5,10 @@ Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
 This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute key and/or modify key under the terms of the GNU General Public 
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that key will be useful, but WITHOUT ANY WARRANTY; without even the implied 
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
@@ -207,10 +207,12 @@ struct Ambiance::Track {
 	string name; // Track name
 	
 	TrackFlags flags;
-	size_t key_c, key_i; // Key count and current index
-	TrackKey * key_l; // Key list
+	size_t key_i; // Key count and current index
+
+	typedef std::vector<TrackKey> KeyVector;
+	KeyVector key_l; // Key list
 	
-	Track() : s_id(INVALID_ID), a_id(INVALID_ID), flags(0), key_c(0), key_i(0), key_l(NULL) {
+	Track() : s_id(INVALID_ID), a_id(INVALID_ID), flags(0), key_i(0) {
 	}
 	
 	~Track() {
@@ -221,7 +223,6 @@ struct Ambiance::Track {
 		SampleId sid = Backend::getSampleId(s_id);
 		arx_assert(_sample.isValid(sid));
 		_sample[sid]->dereference();
-		delete[] key_l;
 	}
 	
 	void keyPlay(TrackKey & key) {
@@ -336,20 +337,16 @@ static aalError _LoadAmbiance_1001(PakFileHandle * file, size_t track_c, Ambianc
 		if(!file->read(&flags, 4) || !file->read(&key_c, 4)) {
 				return AAL_ERROR_FILEIO;
 		}
-		track->key_c = key_c;
+
 		track->flags = Ambiance::Track::TrackFlags::load(flags); // TODO save/load flags
 		track->flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED | Ambiance::Track::PREFETCHED);
 		
-		if(track->key_c) {
-			track->key_l = new TrackKey[track->key_c];
-			if(!track->key_l) {
-				return AAL_ERROR_MEMORY;
-			}
-		}
+		track->key_l.resize(key_c);
 		
 		//Read settings for each key
-		for(size_t j = 0; j < track->key_c; j++) {
-			if(!track->key_l[j].load(file)) {
+		Ambiance::Track::KeyVector::iterator key;
+		for(key = track->key_l.begin(); key != track->key_l.end(); ++key) {
+			if(!key->load(file)) {
 				return AAL_ERROR_FILEIO;
 			}
 		}
@@ -389,20 +386,17 @@ static aalError _LoadAmbiance_1002(PakFileHandle * file, size_t track_c, Ambianc
 		if(!file->read(&flags, 4) || !file->read(&key_c, 4)) {
 				return AAL_ERROR_FILEIO;
 		}
-		track->key_c = key_c;
+
 		track->flags = Ambiance::Track::TrackFlags::load(flags); // TODO save/load flags
 		track->flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED | Ambiance::Track::PREFETCHED);
 		
-		if(track->key_c) {
-			track->key_l = new TrackKey[track->key_c];
-			if(!track->key_l) {
-				return AAL_ERROR_MEMORY;
-			}
-		}
+		track->key_l.resize(key_c);
+		
 		
 		//Read settings for each key
-		for(size_t j = 0; j < track->key_c; j++) {
-			if(!track->key_l[j].load(file)) {
+		Ambiance::Track::KeyVector::iterator key;
+		for(key = track->key_l.begin(); key != track->key_l.end(); ++key) {
+			if(!key->load(file)) {
 				return AAL_ERROR_FILEIO;
 			}
 		}
@@ -444,21 +438,15 @@ static aalError _LoadAmbiance_1003(PakFileHandle * file, size_t track_c, Ambianc
 		if(!file->read(&flags, 4) || !file->read(&key_c, 4)) {
 				return AAL_ERROR_FILEIO;
 		}
-		track->key_c = key_c;
+
 		track->flags = Ambiance::Track::TrackFlags::load(flags); // TODO save/load flags
 		track->flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED | Ambiance::Track::PREFETCHED);
 		
-		if(track->key_c) {
-			track->key_l = new TrackKey[track->key_c];
-			if(!track->key_l) {
-				return AAL_ERROR_MEMORY;
-			}
-		}
+		track->key_l.resize(key_c);
 		
 		//Read settings for each key
-		TrackKey * key = &track->key_l[track->key_c];
-		while (key > track->key_l) {
-			--key;
+		Ambiance::Track::KeyVector::reverse_iterator key;
+		for(key = track->key_l.rbegin(); key != track->key_l.rend(); ++key) {
 			if(!key->load(file)) {
 				return AAL_ERROR_FILEIO;
 			}
@@ -617,9 +605,8 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_inter
 		}
 		
 		//Init track keys
-		TrackKey * key = &track->key_l[track->key_c];
-		while(key > track->key_l) {
-			--key;
+		Ambiance::Track::KeyVector::reverse_iterator key;
+		for(key = track->key_l.rbegin(); key != track->key_l.rend(); ++key) {
 			
 			key->delay = key->delay_max;
 			key->updateSynch();
@@ -762,7 +749,7 @@ aalError Ambiance::update() {
 			continue;
 		}
 		
-		if(track->key_i >= track->key_c) {
+		if(track->key_i >= track->key_l.size()) {
 			continue;
 		}
 		
@@ -816,7 +803,7 @@ static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data) {
 	
 	if(track->flags & Ambiance::Track::PREFETCHED) {
 		track->flags &= ~Ambiance::Track::PREFETCHED;
-		if(track->key_i == track->key_c) {
+		if(track->key_i == track->key_l.size()) {
 			key = &track->key_l[track->key_i = 0];
 		}
 		track->key_l[track->key_i].n_start = KEY_CONTINUE;
@@ -826,7 +813,7 @@ static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data) {
 	// Prefetch
 	if(!key->loopc && _amb[track->a_id]->isLooped()) {
 		size_t i = track->key_i + 1;
-		if(i == track->key_c) {
+		if(i == track->key_l.size()) {
 			i = 0;
 		}
 		if(!track->key_l[i].start && !track->key_l[i].delay_min && !track->key_l[i].delay_max) {
@@ -873,7 +860,7 @@ void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
 		key->loopc = key->loop;
 		key->pitch.tupdate -= ambiance->time;
 		
-		if(++track->key_i == track->key_c) {
+		if(++track->key_i == track->key_l.size()) {
 			//Track end
 			
 			if(track->flags & Ambiance::Track::MASTER) {
