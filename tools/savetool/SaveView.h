@@ -2,10 +2,8 @@
 #ifndef ARX_SAVETOOL_SAVEVIEW_H
 #define ARX_SAVETOOL_SAVEVIEW_H
 
-namespace fs {
-class path;
-}
+class SaveBlock;
 
-int main_view(const fs::path & savefile, int argc, char ** argv);
+int main_view(SaveBlock & savefile, int argc, char ** argv);
 
 #endif // ARX_SAVETOOL_SAVEVIEW_H

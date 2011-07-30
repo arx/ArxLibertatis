@@ -125,7 +125,7 @@ int main(int argc, char ** argv) {
 	} else if(command == "f" || command == "fix") {
 		ret = main_fix(save, argc, argv);
 	} else if(command == "v" || command == "view") {
-		ret = main_view(savefile, argc, argv);
+		ret = main_view(save, argc, argv);
 	}
 	
 	if(ret == -1) {

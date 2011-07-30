@@ -122,7 +122,7 @@ struct ARX_CHANGELEVEL_LIGHT {
 struct ARX_CHANGELEVEL_IO_INDEX {
 	char filename[256];
 	s32 ident;
-	s32 num;
+	s32 num; // unused TODO use this to restore spell targets?
 	s16 level;
 	s16 truelevel;
 	s32 unused;
