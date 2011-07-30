@@ -1741,21 +1741,15 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		return;
 	}
 
-	io->infracolor.r	=	0.f;
-	io->infracolor.g	=	0.f;
-	io->infracolor.b	=	0.8f;
-	io->collision		=	1;
-	io->inv				=	NULL;
-	io->scriptload		=	1;
-	io->obj				=	nouvo;
-	io->lastpos.x		=	io->initpos.x	=	io->pos.x	=	ioo->obj->vertexlist3[inpos].v.x;
-	io->lastpos.y		=	io->initpos.y	=	io->pos.y	=	ioo->obj->vertexlist3[inpos].v.y;
-	io->lastpos.z		=	io->initpos.z	=	io->pos.z	=	ioo->obj->vertexlist3[inpos].v.z;
-	io->angle.a			=	ioo->angle.a;
-	io->angle.b			=	ioo->angle.b;
-	io->angle.g			=	ioo->angle.g;
-
-	io->GameFlags		=	ioo->GameFlags;
+	io->infracolor = Color3f::blue * 0.8f;
+	io->collision = COLLIDE_WITH_PLAYER;
+	io->inv = NULL;
+	io->scriptload = 1;
+	io->obj = nouvo;
+	io->lastpos = io->initpos = io->pos = ioo->obj->vertexlist3[inpos].v;
+	io->angle = ioo->angle;
+	
+	io->GameFlags = ioo->GameFlags;
 	memcpy(&io->halo, &ioo->halo, sizeof(IO_HALO));
 	ioo->halo.dynlight	=	-1;
 	io->ioflags			|=	IO_MOVABLE;
@@ -3174,6 +3168,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 		return;
 	}
+	
+	{
 
 	// XS : Moved to top of func
 	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
@@ -3426,12 +3422,10 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 	GetIOCyl(io, &phys.cyl);
 
-	long levitate;
-	levitate = 0;
+	CollisionFlags levitate = 0;
 
-	if (ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0)
-	{
-		levitate = 1;
+	if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
+		levitate = CFLAG_LEVITATE;
 		io->physics.targetpos.y = io->pos.y + io->move.y + ForcedMove.y;
 	}
 	else  // Gravity 'simulation'
@@ -3564,6 +3558,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 		}
 	}
 
+	}
 
 	// We are still too far from our target...
 	if (io->_npcdata->pathfind.pathwait == 0)

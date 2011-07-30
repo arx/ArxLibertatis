@@ -2134,15 +2134,15 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		// Script data
 		io->scriptload = ais->scriptload;
 		io->show = ais->show;
-		io->collision = ais->collision;
+		io->collision = IOCollisionFlags::load(ais->collision); // TODO save/load flags
 		io->mainevent = toLowercase(safestring(ais->mainevent));
 		
 		// Physics data
 		io->velocity = ais->velocity;
 		io->stopped = ais->stopped;
-		io->basespeed = 1; 
-		io->speed_modif = 0.f; 
-		io->frameloss = 0; 
+		io->basespeed = 1;
+		io->speed_modif = 0.f; // TODO why are these not loaded from the savegame?
+		io->frameloss = 0;
 		io->rubber = ais->rubber;
 		io->max_durability = ais->max_durability;
 		io->durability = ais->durability;

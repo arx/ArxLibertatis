@@ -452,11 +452,9 @@ void ARX_SCRIPT_ResetAll(long flags);
 void ARX_SCRIPT_EventStackClearForIo(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events();
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent();
-bool CheckScriptSyntax(INTERACTIVE_OBJ * io);
 
 void ManageCasseDArme(INTERACTIVE_OBJ * io);
 void ReleaseScript(EERIE_SCRIPT * es);
-long GetNextWord(EERIE_SCRIPT * es, long i, std::string & temp, long flags = 0);
 void ARX_SCRIPT_Init_Event_Stats();
 ScriptResult SendInitScriptEvent(INTERACTIVE_OBJ * io);
 

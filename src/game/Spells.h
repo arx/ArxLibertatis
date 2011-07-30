@@ -225,7 +225,7 @@ struct SPELL {
 	float fManaCostPerSecond;
 	
 	SpellcastFlags flags;
-	ArxSound snd_loop;
+	audio::SourceId snd_loop;
 	CSpellFx * pSpellFx;
 	void * misc;
 };

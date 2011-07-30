@@ -60,14 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include "graphics/data/Mesh.h"
 #include "platform/Flags.h"
 #include "math/MathFwd.h"
-
-struct IO_PHYSICS;
-struct INTERACTIVE_OBJ;
-struct EERIE_SPHERE;
-struct EERIE_CYLINDER;
-struct EERIEPOLY;
 
 const size_t MAX_IN_SPHERE = 20;
 
@@ -77,7 +72,7 @@ extern size_t EXCEPTIONS_LIST_Pos;
 extern short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 extern bool DIRECT_PATH;
 
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags = 0);
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, CollisionFlags flags = 0);
 float CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo, long flags = 0);
 
 enum CheckAnythingInSphereFlag {
@@ -107,7 +102,7 @@ bool IsCollidingIO(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
  */
 bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag = false);
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags);
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, CollisionFlags flags);
 bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit);
 
 void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io, long status);

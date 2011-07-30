@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <vector>
 
+#include "audio/AudioTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
@@ -75,8 +76,6 @@ struct EERIE_3D_BBOX {
 	Vec3f min;
 	Vec3f max;
 };
-
-typedef s32 ArxSound;
 
 struct EERIE_LIGHT {
 	char exist;
@@ -108,7 +107,7 @@ struct EERIE_LIGHT {
 	long tl;
 	unsigned long time_creation;
 	long duration; // will start to fade before the end of duration...
-	ArxSound sample;
+	audio::SourceId sample;
 };
 
 enum EERIE_TYPES_EXTRAS_MODE
@@ -353,7 +352,7 @@ struct EERIE_MOD_INFO {
 	Vec3f link_position;
 	Vec3f scale;
 	Anglef rot;
-	unsigned long	flags;
+	unsigned long	flags; // TODO unused?
 };
 
 struct EERIE_LINKED
@@ -571,7 +570,7 @@ struct EERIE_FRAME
 	float		time;
 	Vec3f	translate;
 	EERIE_QUAT	quat;
-	ArxSound	sample;
+	audio::SampleId	sample;
 };
 
 struct EERIE_GROUP

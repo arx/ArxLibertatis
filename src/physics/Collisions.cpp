@@ -1486,7 +1486,7 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags)
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, CollisionFlags flags)
 {
 	PUSHABLE_NPC=NULL;
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
@@ -1656,7 +1656,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 //flags & 32 Just Test !!!
 //flags & 64 NPC mode
 //----------------------------------------------------------------------------------------------
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags)
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP, CollisionFlags flags)
 {
 //	HERMESPerf script(HPERF_PHYSICS);
 //	+5 on 15

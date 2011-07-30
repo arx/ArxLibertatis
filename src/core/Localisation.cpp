@@ -25,12 +25,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Localisation.h"
 
-#include <list>
 #include <sstream>
-#include <algorithm>
-#include <iterator>
+#include <cstdlib>
 
-#include "core/Application.h"
 #include "core/Unicode.hpp"
 #include "core/Config.h"
 
@@ -41,7 +38,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 
 using std::string;
-using std::transform;
 
 namespace {
 IniReader localisation;

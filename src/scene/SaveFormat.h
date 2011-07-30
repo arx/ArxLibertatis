@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <cstring>
 
 #include "gui/MiniMap.h"
 #include "graphics/GraphicsFormat.h"
@@ -121,7 +122,7 @@ struct ARX_CHANGELEVEL_LIGHT {
 struct ARX_CHANGELEVEL_IO_INDEX {
 	char filename[256];
 	s32 ident;
-	s32 num;
+	s32 num; // unused TODO use this to restore spell targets?
 	s16 level;
 	s16 truelevel;
 	s32 unused;
@@ -527,7 +528,7 @@ struct SavedSpellcastData {
 		a.symb[3] = (Rune)symb[3];
 		a.spell_flags = SpellcastFlags::load(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
-		a.target = target;
+		a.target = target; // TODO saved internum not valid after loading
 		a.duration = duration;
 		return a;
 	}
@@ -590,7 +591,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	SavedAnglef angle;
 	SavedAnglef initangle;
 	f32 scale;
-	u32 savetime;
+	u32 savetime; // unused
 	f32 weight;
 	
 	char locname[64];
@@ -616,7 +617,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS];
 	// Target Info
 	char id_targetinfo[SIZE_ID];
-	s32 inventory;
+	s32 inventory; // unused
 	// Group Info
 	s32 system_flags;
 	f32 basespeed;
