@@ -58,6 +58,8 @@ void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 
 int main(int argc, char ** argv) {
 	
+	ARX_UNUSED(resources);
+	
 	if(argc < 2) {
 		printf("usage: unpak <pakfile> [<pakfile>...]\n");
 		return 1;

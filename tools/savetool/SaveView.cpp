@@ -773,18 +773,18 @@ int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(asp.Interface) {
 		cout << "Interface:";
-		s16 interface = asp.Interface;
-		print_flag(interface, INTER_MAP, "map");
-		print_flag(interface, INTER_INVENTORY, "inventory");
-		print_flag(interface, INTER_INVENTORYALL, "inventoryall");
-		print_flag(interface, INTER_MINIBOOK, "minibook");
-		print_flag(interface, INTER_MINIBACK, "miniback");
-		print_flag(interface, INTER_LIFE_MANA, "life_mana");
-		print_flag(interface, INTER_COMBATMODE, "combatmode");
-		print_flag(interface, INTER_NOTE, "note");
-		print_flag(interface, INTER_STEAL, "steal");
-		print_flag(interface, INTER_NO_STRIKE, "no_strike");
-		print_unknown_flags(interface);
+		s16 interface_flags = asp.Interface;
+		print_flag(interface_flags, INTER_MAP, "map");
+		print_flag(interface_flags, INTER_INVENTORY, "inventory");
+		print_flag(interface_flags, INTER_INVENTORYALL, "inventoryall");
+		print_flag(interface_flags, INTER_MINIBOOK, "minibook");
+		print_flag(interface_flags, INTER_MINIBACK, "miniback");
+		print_flag(interface_flags, INTER_LIFE_MANA, "life_mana");
+		print_flag(interface_flags, INTER_COMBATMODE, "combatmode");
+		print_flag(interface_flags, INTER_NOTE, "note");
+		print_flag(interface_flags, INTER_STEAL, "steal");
+		print_flag(interface_flags, INTER_NO_STRIKE, "no_strike");
+		print_unknown_flags(interface_flags);
 		cout << endl;
 	}
 	
@@ -819,10 +819,10 @@ int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(asp.misc_flags) {
 		cout << "Misc flags:";
-		s16 interface = asp.misc_flags;
-		print_flag(interface, 1, "on_firm_ground");
-		print_flag(interface, 2, "will_return_to_combat_mode");
-		print_unknown_flags(interface);
+		s16 interface_flags = asp.misc_flags;
+		print_flag(interface_flags, 1, "on_firm_ground");
+		print_flag(interface_flags, 2, "will_return_to_combat_mode");
+		print_unknown_flags(interface_flags);
 		cout << endl;
 	}
 	

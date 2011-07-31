@@ -63,8 +63,7 @@ endif()
 include_directories(../src)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
-# TODO use this for the game too once we get rid of wine (for non-unity-builds)
-add_library(tools_common STATIC
+set(TOOLS_COMMON_SOURCES
 	../src/io/Filesystem.cpp
 	${FILESYSTEM_SRC}
 	../src/io/FilePath.cpp
@@ -77,11 +76,7 @@ add_library(tools_common STATIC
 	../src/platform/Platform.cpp
 )
 
-target_link_libraries(tools_common ${Boost_LIBRARIES})
-
-add_executable(unpak unpak/unpak.cpp)
-
-add_executable(savetool
+set(SAVETOOL_SOURCES
 	savetool/savetool.cpp
 	savetool/SaveFix.cpp
 	savetool/SaveView.cpp
@@ -91,5 +86,34 @@ add_executable(savetool
 	../src/io/IniSection.cpp
 )
 
-target_link_libraries(savetool tools_common ${ZLIB_LIBRARIES})
-target_link_libraries(unpak tools_common)
+set(UNPAK_SOURCES unpak/unpak.cpp)
+
+#enable unity build if requested
+if(ARX_USE_UNITYBUILD)
+	
+	set(CMAKE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/tools")
+	
+	set(SAVETOOL_SOURCES ${TOOLS_COMMON_SOURCES} ${SAVETOOL_SOURCES})
+	enable_unity_build(savetool SAVETOOL_SOURCES)
+	
+	set(UNPAK_SOURCES ${TOOLS_COMMON_SOURCES} ${UNPAK_SOURCES})
+	enable_unity_build(unpak UNPAK_SOURCES)
+	
+	set(TOOLS_LIBRARIES ${Boost_LIBRARIES})
+	
+else()
+	
+	# TODO use this for the game too once we get rid of wine (for non-unity-builds)
+	add_library(tools_common STATIC ${TOOLS_COMMON_SOURCES})
+	target_link_libraries(tools_common ${Boost_LIBRARIES})
+	
+	set(TOOLS_LIBRARIES tools_common)
+	
+endif()
+
+add_executable(unpak ${UNPAK_SOURCES})
+
+add_executable(savetool ${SAVETOOL_SOURCES})
+
+target_link_libraries(savetool ${TOOLS_LIBRARIES} ${ZLIB_LIBRARIES})
+target_link_libraries(unpak ${TOOLS_LIBRARIES})
