@@ -350,7 +350,7 @@ void initSuppressions() {
 	
 	suppress("chest_metal_0020", 54, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
 	suppress("chest_metal_0020", 99, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
-	suppress("chest_metal_0020", 224, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/ring_darkaa/ring_darkaa.teo" (should be 'ring_daarka/ring_daarka'?)
+	suppress("chest_metal_0020", 149, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/ring_darkaa/ring_darkaa.teo" (should be 'ring_daarka/ring_daarka'?)
 	
 	suppress("chest_metal_0029", 224, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
 	suppress("chest_metal_0029", 317, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
@@ -365,6 +365,7 @@ void initSuppressions() {
 	suppress("chest_metal_0100", 629, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
 	suppress("chest_metal_0100", 693, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
 	
+	suppress("chicken_base", 2037, "gosub"); // missing label 'save_behavior'
 	suppress("chicken_base", 2410, "}"); // missing accept/refuse before end of event block
 	
 	suppress("corpse_0003", 399, "inventory addfromscene"); // bad target ident: "magic\\potion_life\\potion_life" (should be 'inventory add'?)
@@ -409,6 +410,12 @@ void initSuppressions() {
 	suppress("human_base", 13711, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 45586, "goto"); // missing label "main_alert"
+	
+	suppress("human_base_0022", 10108, "behaviormoveto"); // unknown command 'behaviormoveto', should be 'behavior move_to'
+	
+	suppress("human_base_0041", 4279, "if"); // missing space between oprateor '==' and argument
+	
+	suppress("human_base_0046", 679, "goto"); // missing label 'next_step02', should be 'next_step01'?
 	
 	suppress("human_base_0076", 642, "destroy"); // target 'seat_stool1_0007' might already be destroyed TODO consider removing this warning
 	
