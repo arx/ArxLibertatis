@@ -220,7 +220,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selecti
 		EERIE_MESH_TWEAK_Do(io, tw, mesh);
 	}
 	
-	if(tweak.skintochange.empty() || !tweak.skinchangeto.empty()) {
+	if(tweak.skintochange.empty() || tweak.skinchangeto.empty()) {
 		return;
 	}
 	

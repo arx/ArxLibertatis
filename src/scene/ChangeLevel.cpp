@@ -395,8 +395,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	if(!_pSaveBlock->flush("pld")) {
 		LogError << "could not complete the save.";
 	}
-	delete _pSaveBlock;
-	_pSaveBlock = NULL;
+	delete _pSaveBlock, _pSaveBlock = NULL;
 	
 	ARX_TIME_UnPause();
 
@@ -2738,6 +2737,8 @@ static void ReleaseGaids() {
 }
 
 static void ARX_CHANGELEVEL_PopLevel_Abort() {
+	
+	delete _pSaveBlock, _pSaveBlock = NULL;
 	
 	ARX_TIME_UnPause();
 	

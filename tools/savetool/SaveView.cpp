@@ -1333,7 +1333,6 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 		cout << "  Position: " << ais.linked_data[i].modinfo.link_position << endl;
 		cout << "  Scale: " << ais.linked_data[i].modinfo.scale << endl;
 		cout << "  Rotation: " << ais.linked_data[i].modinfo.rot << endl;
-		cout << "  Position: " << ais.linked_data[i].modinfo.link_position << endl;
 		cout << "  Flags: " << ais.linked_data[i].modinfo.flags << endl;
 		cout << "  Ident: "; print_ident(save, toLowercase(safestring(ais.linked_data[i].linked_id))); cout << endl;
 	}
