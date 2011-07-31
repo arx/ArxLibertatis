@@ -22,7 +22,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	foreach(source_file ${files})
 		string(REGEX REPLACE ".*\\/" "" short_file "${source_file}")
 		file(APPEND ${unit_build_file} "#pragma message (\"[${currentIdx}/${numfiles}] Compiling ${short_file}...\")\n")
-		file(APPEND ${unit_build_file} "#include \"${source_file}\"\n\n")
+		file(APPEND ${unit_build_file} "#include \"${CMAKE_SOURCE_DIR}/${source_file}\"\n\n")
 		math(EXPR currentIdx "${currentIdx} + 1")
 	endforeach(source_file)
 	

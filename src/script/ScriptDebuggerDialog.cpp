@@ -48,8 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptDebuggerDialog.h"
 
-#ifdef BUILD_EDITOR
-
 #include <cstdio>
 #include <cstdlib>
 
@@ -496,5 +494,3 @@ void SCRIPT_DEBUGGER_Destroy()
 	if (gbDialog)
 		SendMessage(ghDialog, WM_CLOSE, 0, 0);
 }
-
-#endif // BUILD_EDITOR

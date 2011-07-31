@@ -233,24 +233,6 @@ else(MSVC)
 	
 endif(MSVC)
 
-if(HAVE_POSIX_FILESYSTEM)
-	set(FILESYSTEM_SRC "src/io/FilesystemPOSIX.cpp")
-elseif(HAVE_WINAPI)
-	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
-	set(FILESYSTEM_SRC "src/io/FilesystemWindows.cpp")
-elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
-	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
-	set(HAVE_BOOST_FILESYSTEM_V3 1)
-	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
-	set(FILESYSTEM_SRC "src/io/FilesystemBoost.cpp")
-else()
-	message(FATAL_ERROR "You need either Boost >= 1.44 or windows api or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
-endif()
-
-if(NOT MSVC)
-	check_link_library(Boost Boost_LIBRARIES)
-endif()
-
 check_type_size(char CHAR_SIZE)
 if(NOT CHAR_SIZE EQUAL 1)
 	message(SEND_ERROR "Unexpected char size: ${CHAR_SIZE}")
@@ -275,17 +257,134 @@ endif()
 add_definitions(-DNOMINMAX)
 add_definitions(-DWIN32_LEAN_AND_MEAN)
 
-#glob sources
-file(GLOB_RECURSE AI_SOURCES ${SRC_DIR}/ai/*.cpp)
-file(GLOB_RECURSE ANIMATION_SOURCES ${SRC_DIR}/animation/*.cpp)
-file(GLOB AUDIO_SOURCES ${SRC_DIR}/audio/*.cpp ${SRC_DIR}/audio/codec/*.cpp)
-file(GLOB AUDIO_OPENAL_SOURCES ${SRC_DIR}/audio/openal/*.cpp)
-file(GLOB AUDIO_DSOUND_SOURCES ${SRC_DIR}/audio/dsound/*.cpp)
-file(GLOB_RECURSE CORE_SOURCES ${SRC_DIR}/core/*.cpp)
-file(GLOB_RECURSE GAME_SOURCES ${SRC_DIR}/game/*.cpp)
-file(GLOB_RECURSE GRAPHICS_SOURCES ${SRC_DIR}/graphics/*.cpp)
-file(GLOB_RECURSE GUI_SOURCES ${SRC_DIR}/gui/*.cpp)
-file(GLOB_RECURSE INPUT_SOURCES ${SRC_DIR}/input/*.cpp)
+# Sources
+set(AI_SOURCES
+	src/ai/PathFinder.cpp
+	src/ai/PathFinderManager.cpp
+	src/ai/Paths.cpp
+)
+
+set(ANIMATION_SOURCES
+	src/animation/Animation.cpp
+	src/animation/AnimationRender.cpp
+	src/animation/Cinematic.cpp
+	src/animation/CinematicKeyframer.cpp
+	src/animation/Intro.cpp
+)
+
+set(AUDIO_SOURCES
+	src/audio/Ambiance.cpp
+	src/audio/Audio.cpp
+	src/audio/AudioEnvironment.cpp
+	src/audio/AudioGlobal.cpp
+	src/audio/AudioResource.cpp
+	src/audio/AudioSource.cpp
+	src/audio/Mixer.cpp
+	src/audio/Sample.cpp
+	src/audio/Stream.cpp
+	src/audio/codec/ADPCM.cpp
+	src/audio/codec/RAW.cpp
+	src/audio/codec/WAV.cpp
+)
+
+set(AUDIO_OPENAL_SOURCES
+	src/audio/openal/OpenALBackend.cpp
+	src/audio/openal/OpenALSource.cpp
+)
+
+set(AUDIO_DSOUND_SOURCES
+	src/audio/dsound/DSoundBackend.cpp
+	src/audio/dsound/DSoundSource.cpp
+)
+
+set(CORE_SOURCES
+	src/core/Application.cpp
+	src/core/Config.cpp
+	src/core/Core.cpp
+	src/core/GameTime.cpp
+	src/core/Localisation.cpp
+)
+
+set(EDITOR_SOURCES
+	src/core/Dialog.cpp
+	src/script/ScriptDebugger.cpp
+	src/script/ScriptDebuggerDialog.cpp
+)
+
+set(GAME_SOURCES
+	src/game/Damage.cpp
+	src/game/Equipment.cpp
+	src/game/Inventory.cpp
+	src/game/Levels.cpp
+	src/game/Map.cpp
+	src/game/Missile.cpp
+	src/game/NPC.cpp
+	src/game/Player.cpp
+	src/game/Spells.cpp
+)
+
+set(GRAPHICS_SOURCES
+	src/graphics/Draw.cpp
+	src/graphics/Frame.cpp
+	src/graphics/GraphicsEnum.cpp
+	src/graphics/GraphicsModes.cpp
+	src/graphics/GraphicsUtility.cpp
+	src/graphics/Math.cpp
+	src/graphics/Renderer.cpp
+	src/graphics/data/CinematicTexture.cpp
+	src/graphics/data/FTL.cpp
+	src/graphics/data/Mesh.cpp
+	src/graphics/data/MeshManipulation.cpp
+	src/graphics/data/Progressive.cpp
+	src/graphics/data/TextureContainer.cpp
+	src/graphics/effects/CinematicEffects.cpp
+	src/graphics/effects/DrawEffects.cpp
+	src/graphics/effects/Fog.cpp
+	src/graphics/effects/SpellEffects.cpp
+	src/graphics/font/Font.cpp
+	src/graphics/font/FontCache.cpp
+	src/graphics/image/Image.cpp
+	src/graphics/particle/Particle.cpp
+	src/graphics/particle/ParticleEffects.cpp
+	src/graphics/particle/ParticleManager.cpp
+	src/graphics/particle/ParticleSystem.cpp
+	src/graphics/spells/Spells01.cpp
+	src/graphics/spells/Spells02.cpp
+	src/graphics/spells/Spells03.cpp
+	src/graphics/spells/Spells04.cpp
+	src/graphics/spells/Spells05.cpp
+	src/graphics/spells/Spells06.cpp
+	src/graphics/spells/Spells07.cpp
+	src/graphics/spells/Spells08.cpp
+	src/graphics/spells/Spells09.cpp
+	src/graphics/spells/Spells10.cpp
+	src/graphics/texture/PackedTexture.cpp
+	src/graphics/texture/Texture.cpp
+	src/graphics/texture/TextureStage.cpp
+)
+set(GRAPHICS_DIRECT3D_SOURCES
+	src/graphics/direct3d/Direct3DRenderer.cpp
+	src/graphics/direct3d/DX7Texture2D.cpp
+	src/graphics/direct3d/DX7TextureStage.cpp
+)
+set(GRAPHICS_OPENGL_SOURCES
+	src/graphics/opengl/OpenGLRenderer.cpp
+)
+
+set(GUI_SOURCES
+	src/gui/Credits.cpp
+	src/gui/Interface.cpp
+	src/gui/Menu.cpp
+	src/gui/MenuPublic.cpp
+	src/gui/MenuWidgets.cpp
+	src/gui/MiniMap.cpp
+	src/gui/Speech.cpp
+	src/gui/Text.cpp
+	src/gui/TextManager.cpp
+)
+
+set(INPUT_SOURCES src/input/Input.cpp)
+set(INPUT_DINPUT7_SOURCES src/input/DInput7Backend.cpp)
 
 set(IO_SOURCES
 	src/io/Blast.cpp
@@ -304,23 +403,70 @@ set(IO_SOURCES
 	src/io/Registry.cpp
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
-	${FILESYSTEM_SRC}
+)
+set(IO_FILESYSTEM_BOOST_SOURCES src/io/FilesystemBoost.cpp)
+set(IO_FILESYSTEM_POSIX_SOURCES src/io/FilesystemPOSIX.cpp)
+set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/FilesystemWindows.cpp)
+
+set(MATH_SOURCES src/math/Angle.cpp)
+
+set(PHYSICS_SOURCES
+	src/physics/Anchors.cpp
+	src/physics/Attractors.cpp
+	src/physics/Box.cpp
+	src/physics/Clothes.cpp
+	src/physics/Collisions.cpp
+	src/physics/CollisionShapes.cpp
+	src/physics/Physics.cpp
 )
 
-file(GLOB_RECURSE MATH_SOURCES ${SRC_DIR}/math/*.cpp)
-file(GLOB_RECURSE PHYSICS_SOURCES ${SRC_DIR}/physics/*.cpp)
-file(GLOB_RECURSE PLATFORM_SOURCES ${SRC_DIR}/platform/*.cpp)
-file(GLOB_RECURSE SCENE_SOURCES ${SRC_DIR}/scene/*.cpp)
-file(GLOB_RECURSE SCRIPT_SOURCES ${SRC_DIR}/script/*.cpp)
-file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
+set(PLATFORM_SOURCES
+	src/platform/Lock.cpp
+	src/platform/Platform.cpp
+	src/platform/Random.cpp
+	src/platform/String.cpp
+	src/platform/Thread.cpp
+	src/platform/Time.cpp
+)
 
-set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES})
+set(SCENE_SOURCES
+	src/scene/ChangeLevel.cpp
+	src/scene/CinematicSound.cpp
+	src/scene/GameSound.cpp
+	src/scene/Interactive.cpp
+	src/scene/Light.cpp
+	src/scene/LinkedObject.cpp
+	src/scene/LoadLevel.cpp
+	src/scene/Object.cpp
+	src/scene/Scene.cpp
+)
+
+set(SCRIPT_SOURCES
+	src/script/Script.cpp
+	src/script/ScriptedAnimation.cpp
+	src/script/ScriptedCamera.cpp
+	src/script/ScriptedControl.cpp
+	src/script/ScriptedConversation.cpp
+	src/script/ScriptedInterface.cpp
+	src/script/ScriptedInventory.cpp
+	src/script/ScriptedIOControl.cpp
+	src/script/ScriptedIOProperties.cpp
+	src/script/ScriptedItem.cpp
+	src/script/ScriptedLang.cpp
+	src/script/ScriptedNPC.cpp
+	src/script/ScriptedPlayer.cpp
+	src/script/ScriptedVariable.cpp
+	src/script/ScriptEvent.cpp
+	src/script/ScriptUtils.cpp
+)
+
+file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
 if(ARX_USE_OPENAL)
-	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_OPENAL_SOURCES})
+	set(AUDIO_SOURCES ${AUDIO_SOURCES} ${AUDIO_OPENAL_SOURCES})
 	include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
 	set(HAVE_OPENAL 1)
 	if(OPENALEFX_FOUND)
@@ -329,14 +475,41 @@ if(ARX_USE_OPENAL)
 	endif()
 endif()
 if(ARX_USE_DSOUND)
-	set(ALL_SOURCES ${ALL_SOURCES} ${AUDIO_DSOUND_SOURCES})
+	set(AUDIO_SOURCES ${AUDIO_SOURCES} ${AUDIO_DSOUND_SOURCES})
 	set(HAVE_DSOUND 1)
 endif()
+
+set(GRAPHICS_SOURCES ${GRAPHICS_SOURCES} ${GRAPHICS_DIRECT3D_SOURCES})
+
 if(ARX_USE_OPENGL)
+	set(GRAPHICS_SOURCES ${GRAPHICS_SOURCES} ${GRAPHICS_OPENGL_SOURCES})
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR})
 endif()
 
+set(INPUT_SOURCES ${INPUT_SOURCES} ${INPUT_DINPUT7_SOURCES})
+
+if(HAVE_POSIX_FILESYSTEM)
+	set(IO_SOURCES ${IO_SOURCES} ${IO_FILESYSTEM_POSIX_SOURCES})
+elseif(HAVE_WINAPI)
+	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
+	set(IO_SOURCES ${IO_SOURCES} ${IO_FILESYSTEM_WINDOWS_SOURCES})
+elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
+	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
+	set(HAVE_BOOST_FILESYSTEM_V3 1)
+	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
+	set(IO_SOURCES ${IO_SOURCES} ${IO_FILESYSTEM_BOOST_SOURCES})
+else()
+	message(FATAL_ERROR "You need either Boost >= 1.44 or windows api or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
+endif()
+
+if(NOT MSVC)
+	check_link_library(Boost Boost_LIBRARIES)
+endif()
+
+set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES})
+
 if(ARX_BUILD_EDITOR)
+	set(ALL_SOURCES ${ALL_SOURCES} ${EDITOR_SOURCES})
 	set(BUILD_EDITOR 1)
 endif()
 if(ARX_BUILD_EDIT_LOADSAVE)

@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Dialog.h"
 
-#ifdef BUILD_EDITOR
-
 #include <windows.h>
 #include <commdlg.h>
 
@@ -3506,5 +3504,3 @@ void launchlightdialog()
 		}
 	}
 }
-
-#endif // BUILD_EDITOR
