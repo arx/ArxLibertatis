@@ -34,6 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/FilePath.h"
 #include "io/FileStream.h"
+#include "io/Logger.h"
 
 using std::string;
 
