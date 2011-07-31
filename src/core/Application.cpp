@@ -102,7 +102,6 @@ float				FPS;
 LightMode ModeLight = 0;
 ViewModeFlags ViewMode = 0;
 
-static RECT srRect;
 static int iCurrZBias;
 
 
@@ -148,8 +147,6 @@ Application::Application()
 	kbd.nbkeydown = 0;
 	kbd._CAPS = 0;
 
-	zbuffer_max = 1.f;
-	zbuffer_max_div = 1.f;
 }
 
 
@@ -283,62 +280,6 @@ VOID CalcFPS(bool reset)
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void * Application::Lock()
-{
-
-	memset((void *)&ddsd, 0, sizeof(ddsd));	
-	memset((void *)&ddsd2, 0, sizeof(ddsd2));
-
-	this->ddsd2.dwSize = this->ddsd.dwSize = sizeof(DDSURFACEDESC2);
-	this->m_pFramework->m_pddsBackBuffer->GetSurfaceDesc(&ddsd);
-	this->m_pFramework->m_pddsZBuffer->GetSurfaceDesc(&ddsd2);
-
-	this->zbuf = (void *)this->ddsd2.lpSurface ;
-	this->logical = (void *)this->ddsd.lpSurface ;
-
-	this->zbits = this->ddsd2.ddpfPixelFormat.dwZBufferBitDepth;	
-	this->nbbits = this->ddsd.ddpfPixelFormat.dwRGBBitCount;
-
-	dw_zXmodulo = ddsd2.lPitch;
-	dw_zmask = ddsd2.ddpfPixelFormat.dwZBitMask;
-	w_zdecal = 0;
-	unsigned long t = dw_zmask;
-
-	while (!(t & 1))
-	{
-		w_zdecal++;
-		t >>= 1;
-	}
-
-	int t2 = 0;
-	t = dw_zmask;
-
-	while (t)
-	{
-		if (t & 0xFF) t2++;
-
-		t >>= 8;
-	}
-
-	f_zmul = (float)((1 << (8 * t2)) - 1);	
-
-	return (void *) - 1;
-}
-
-//*************************************************************************************
-//*************************************************************************************
-bool Application::Unlock()
-{
-	if (zbuf)
-	{
-		m_pFramework->m_pddsZBuffer->Unlock(&srRect);
-		zbuf = NULL;
-	}
-
-	return true;
-}
 
 //******************************************************************************
 // MESSAGE BOXES

@@ -307,12 +307,6 @@ protected:
 	virtual bool RestoreSurfaces() { return true; }
 	virtual bool BeforeRun() { return true; }
 	
-	//zbuffer
-	short w_zdecal;
-	long dw_zmask;
-	float f_zmul;
-	long dw_zXmodulo;
-	
 public:
 	/* TODO Find out which of these can be privatized */
 	bool m_bActive;
@@ -325,21 +319,12 @@ public:
 	bool  Fullscreen;
 	long CreationMenu;
 	long MustRefresh;
-	void * logical;
-	void * zbuf;
-	long zbits;
-	long nbbits;
-	float GetZBufferMax();
-	float zbuffer_max;
-	float zbuffer_max_div;
 	int menu;
 	float fMouseSensibility;
 #ifdef BUILD_EDITOR
 	EERIETOOLBAR * ToolBar;
 #endif
 	/* TODO Should all be privatized eventually */
-	DDSURFACEDESC2 ddsd;
-	DDSURFACEDESC2 ddsd2;
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
 	DDGAMMARAMP DDGammaRamp; // modified ramp value
 	DDGAMMARAMP DDGammaOld; // backup gamma values
@@ -362,9 +347,6 @@ public:
 	void EvictManagedTextures();
 	void EERIEMouseUpdate(short x, short y);
 
-	void * Lock();
-	bool Unlock();
-
 	/* Virtual functions which may be overridden for specific implementations */
 
 	/**
@@ -386,25 +368,10 @@ public:
 	virtual void Cleanup3DEnvironment() {}
 	virtual bool SwitchFullScreen() { return true; }
 	virtual bool UpdateGamma() { return true; }
+	
 };
 
 extern Application * mainApp;
-
-/**
- * RAII for Lock() Unlock() on Application class
- * Can be used in conditions to test whether the lock was successfully acquired
- **/
-class CD3DApplicationScopedLock {
-public:
-	explicit CD3DApplicationScopedLock(Application& app) : instance_(&app) { if (!instance_->Lock()) instance_ = NULL; }
-	~CD3DApplicationScopedLock() { if (instance_) instance_->Unlock(); }
-	operator void*() const { return instance_; }
-private:
-	Application* instance_;
-	// Prevent instances from being copied.
-	CD3DApplicationScopedLock(const CD3DApplicationScopedLock&);
-	CD3DApplicationScopedLock& operator=(const CD3DApplicationScopedLock&);
-};
 
 bool OKBox(const std::string& text, const std::string& title);
 void CalcFPS(bool reset = false);

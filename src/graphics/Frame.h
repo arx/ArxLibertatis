@@ -116,8 +116,7 @@ class CD3DFramework7
 		// Access functions for DirectX objects
 		long				bitdepth;
 		bool				m_bHasMoved;
-
-		LPDIRECTDRAWSURFACE7 m_pddsZBuffer;        // The zbuffer surface
+		
 		LPDIRECTDRAWSURFACE7 m_pddsFrontBuffer;    // The primary surface
 		LPDIRECTDRAWSURFACE7 m_pddsBackBuffer;     // The backbuffer surface
 
@@ -155,7 +154,11 @@ class CD3DFramework7
 		// Creates the Framework
 		HRESULT Initialize(HWND, GUID *, GUID *, DDSURFACEDESC2 *, DWORD);
 		HRESULT DestroyObjects();
-
+	
+private:
+	
+	LPDIRECTDRAWSURFACE7 m_pddsZBuffer;        // The zbuffer surface
+	
 };
 
 #endif

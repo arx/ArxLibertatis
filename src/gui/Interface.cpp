@@ -4925,7 +4925,7 @@ void Win32Application::ManageKeyMouse()
 					DANAEMouse.y = ARX_CLEAN_WARN_CAST_SHORT(fY);
 
 
-					pIO = FlyingOverObject(&DANAEMouse, true);
+					pIO = FlyingOverObject(&DANAEMouse);
 
 					if (pIO)
 					{
@@ -4935,10 +4935,10 @@ void Win32Application::ManageKeyMouse()
 					}
 				}
 				else
-					pIO = FlyingOverObject(&poss, true);
+					pIO = FlyingOverObject(&poss);
 			}
 			else
-				pIO = FlyingOverObject(&DANAEMouse, true);
+				pIO = FlyingOverObject(&DANAEMouse);
 		}
 
 		if (pIO && (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))

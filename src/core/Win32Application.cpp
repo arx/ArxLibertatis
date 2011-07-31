@@ -225,7 +225,6 @@ bool Win32Application::Create() {
 #endif
 
 	this->m_pFramework->ShowFrame();
-	GetZBufferMax();
 	return true;
 }
 
@@ -628,7 +627,6 @@ bool Win32Application::Change3DEnvironment()
 		lpDDGammaControl->GetGammaRamp(0, &DDGammaRamp);
 	}
 	
-	GetZBufferMax();
 	return true;
 }
 
@@ -755,15 +753,4 @@ void Win32Application::OutputText( int x, int y, const std::string& str)
 	{
 		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
 	}
-}
-
-float Application::GetZBufferMax()
-{
-	Lock();
-	Unlock();
-	float ret = (float)(((unsigned long)dw_zmask) >> w_zdecal);
-
-	this->zbuffer_max = ret;
-	this->zbuffer_max_div = 1.f / this->zbuffer_max;
-	return this->zbuffer_max;
 }

@@ -1408,18 +1408,9 @@ int main(int argc, char ** argv) {
 //   Returns IO under cursor, be it in inventories or in scene
 //   Returns NULL if no IO under cursor
 //*************************************************************************************
-// Nuky - 01-02-11 - simplified prototype and recoded with new CD3DApplicationScopedLock
-//                   class and recursion
-INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock)
+INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos)
 {
 	INTERACTIVE_OBJ* io = NULL;
-
-	if (mustlock)
-	{
-		CD3DApplicationScopedLock lock( *mainApp );
-		if (lock)
-			return FlyingOverObject(pos, false);
-	}
 
 	if ((io = GetFromInventory(pos)) != NULL)
 		return io;
@@ -2609,8 +2600,6 @@ bool Win32Application::BeforeRun()
 	if (iCreateMap)
 		DANAE_Manage_CreateMap();
 #endif
-
-	mainApp->GetZBufferMax();
 
 	return true;
 }
@@ -7619,10 +7608,6 @@ void ClearGame() {
 	ShowWindow(mainApp->m_hWnd, SW_MINIMIZE | SW_HIDE);
 	
 	ARX_MINIMAP_PurgeTC();
-	
-	if(DURING_LOCK) {
-		mainApp->Unlock();
-	}
 	
 	KillInterfaceTextureContainers();
 	Menu2_Close();

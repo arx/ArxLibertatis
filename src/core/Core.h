@@ -161,6 +161,6 @@ extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPAR
 extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 #endif
 
-INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos, bool mustlock = false);
+INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos);
 
 #endif // ARX_CORE_CORE_H
