@@ -116,7 +116,7 @@ bool remove(const path & p) {
 	bool ret = DeleteFileA(p.string().c_str()) == TRUE;
 
 	if(!ret) {
-		LogError << "DeleteFileA(" << p << ") failed! GetLastError == " << GetLastError();
+		LogWarning << "DeleteFileA(" << p << ") failed! GetLastError() == " << GetLastError();
 	}
 	
 	return ret;
@@ -132,7 +132,7 @@ bool remove_all(const path & p) {
 	if(is_directory(p)) {
 		for(directory_iterator it(p); !it.end(); ++it) {
 			if(it.is_regular_file()) {
-				succeeded &= remove(p);
+				succeeded &= remove(p / it.name());
 			} else {
 				succeeded &= remove_all(p / it.name());				
 			}
@@ -140,7 +140,7 @@ bool remove_all(const path & p) {
 
 		succeeded &= RemoveDirectoryA(p.string().c_str()) == TRUE;
 		if(!succeeded) {
-			LogError << "RemoveDirectoryA(" << p << ") failed ! last error = " << GetLastError();
+			LogWarning << "RemoveDirectoryA(" << p << ") failed ! GetLastError() " << GetLastError();
 		}
 	} else {
 		succeeded &= remove(p);
@@ -160,7 +160,7 @@ bool create_directory(const path & p) {
 		ret = lastError == ERROR_ALREADY_EXISTS;
 
 		if(!ret) {
-			LogError << "CreateDirectoryA(" << p << ", NULL) failed! GetLastError() == " << lastError;
+			LogWarning << "CreateDirectoryA(" << p << ", NULL) failed! GetLastError() == " << lastError;
 		}
 	}
 
@@ -181,7 +181,7 @@ bool create_directories(const path & p) {
 		
 	ret = SHCreateDirectoryExA(NULL, fullPath, NULL);
 	if(!(ret == ERROR_SUCCESS || ret == ERROR_ALREADY_EXISTS)) {
-		LogError << "SHCreateDirectoryExA(NULL, " << fullPath << ", NULL) failed! return code = " << ret << ", GetLastError() == " << GetLastError();
+		LogWarning << "SHCreateDirectoryExA(NULL, " << fullPath << ", NULL) failed! return code = " << ret << ", GetLastError() == " << GetLastError();
 	}
 
 	return ret == ERROR_SUCCESS || ret == ERROR_ALREADY_EXISTS;
@@ -190,7 +190,7 @@ bool create_directories(const path & p) {
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	bool ret = CopyFileA(from_p.string().c_str(), to_p.string().c_str(), !overwrite) == TRUE;
 	if(!ret) {
-		LogError << "CopyFileA(" << from_p << ", " << to_p << ", " << !overwrite << ") failed! GetLastError() == " << GetLastError();
+		LogWarning << "CopyFileA(" << from_p << ", " << to_p << ", " << !overwrite << ") failed! GetLastError() == " << GetLastError();
 	}
 	return ret;
 }
@@ -198,7 +198,7 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 bool rename(const path & old_p, const path & new_p) {
 	bool ret = MoveFileA(old_p.string().c_str(), new_p.string().c_str()) == TRUE;
 	if(!ret) {
-		LogError << "MoveFileA(" << old_p << ", " << new_p << ") failed! GetLastError() == " << GetLastError();
+		LogWarning << "MoveFileA(" << old_p << ", " << new_p << ") failed! GetLastError() == " << GetLastError();
 	}
 	return ret;
 }
