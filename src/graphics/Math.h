@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 #include <cstdlib>
+#include <cstring>
 
 #include <boost/static_assert.hpp>
 
@@ -134,9 +135,8 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 template <class T, class O>
 inline T reinterpret(O v) {
 	BOOST_STATIC_ASSERT(sizeof(T) == sizeof(O));
-	// TODO use memcpy instead?
-	union { O o; T t; };
-	o = v;
+	T t;
+	memcpy(&t, &v, sizeof(T));
 	return t; 
 }
 
