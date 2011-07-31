@@ -2,9 +2,10 @@
 #ifndef ARX_SCENE_SAVEFORMAT_H
 #define ARX_SCENE_SAVEFORMAT_H
 
-#include <cassert>
 #include <algorithm>
 #include <cstring>
+
+#include <boost/static_assert.hpp>
 
 #include "gui/MiniMap.h"
 #include "graphics/GraphicsFormat.h"
@@ -30,11 +31,6 @@ enum SystemFlag {
 	SYSTEM_FLAG_EQUIPITEMDATA = (1<<2),
 	SYSTEM_FLAG_USEPATH       = (1<<3)
 };
-
-template<class T, size_t N>
-inline size_t array_size(T(&)[N]) {
-	return N;
-}
 
 enum SavePlayerFlag {
 	SP_MAX  = (1<<0),
@@ -154,7 +150,7 @@ struct SavedMapMarkerData {
 		x = b.x;
 		y = b.y;
 		lvl = b.lvl;
-		assert(STRING_SIZE > b.name.length());
+		arx_assert(STRING_SIZE > b.name.length());
 		strcpy(name, b.name.c_str());
 	}
 	
@@ -234,8 +230,8 @@ struct SavedMiniMap {
 		a.yratio = yratio;
 		a.width = width;
 		a.height = height;
-		assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
-		assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
+		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
+		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
 		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.revealed[0][0]);
 		return a;
 	}
@@ -248,8 +244,8 @@ struct SavedMiniMap {
 		yratio = b.yratio;
 		width = b.width;
 		height = b.height;
-		assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
-		assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
+		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
+		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
 		std::copy(&b.revealed[0][0], &b.revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);
 		return *this;
 	}
@@ -521,7 +517,7 @@ struct SavedSpellcastData {
 	inline operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
 		a.castingspell = (castingspell < 0) ? SPELL_NONE : (Spell)castingspell; // TODO save/load enum
-		assert(array_size(a.symb) == 4);
+		BOOST_STATIC_ASSERT(ARRAY_SIZE(a.symb) == 4);
 		a.symb[0] = (Rune)symb[0]; // TODO save/load enum
 		a.symb[1] = (Rune)symb[1];
 		a.symb[2] = (Rune)symb[2];
@@ -535,7 +531,7 @@ struct SavedSpellcastData {
 	
 	inline SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
 		castingspell = (b.castingspell == SPELL_NONE) ? -1 : b.castingspell;
-		assert(array_size(b.symb) == 4);
+		BOOST_STATIC_ASSERT(ARRAY_SIZE(b.symb) == 4);
 		std::copy(b.symb, b.symb + 4, symb);
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
@@ -684,7 +680,7 @@ struct SavedBehaviour {
 		a.tactics = tactics;
 		a.target = target;
 		a.movemode = (MoveMode)movemode; // TODO save/load enum
-		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
+		BOOST_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
 		std::copy(animlayer, animlayer + SAVED_MAX_ANIM_LAYERS, a.animlayer);
 		return a;
 	}
@@ -696,7 +692,7 @@ struct SavedBehaviour {
 		tactics = b.tactics;
 		target = b.target;
 		movemode = b.movemode;
-		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
+		BOOST_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
 		std::copy(b.animlayer, b.animlayer + SAVED_MAX_ANIM_LAYERS, animlayer);
 		return *this;
 	}
@@ -736,7 +732,7 @@ struct SavedExtraRotate {
 	inline operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
 		a.flags = flags;
-		assert(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
+		BOOST_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
 		std::copy(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number);
 		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate);
 		return a;
@@ -744,7 +740,7 @@ struct SavedExtraRotate {
 	
 	inline SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = b.flags;
-		assert(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
+		BOOST_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
 		std::copy(b.group_number, b.group_number + SAVED_MAX_EXTRA_ROTATE, group_number);
 		std::copy(b.group_rotate, b.group_rotate + SAVED_MAX_EXTRA_ROTATE, group_rotate);
 		return *this;
@@ -840,13 +836,13 @@ struct SavedEquipItem {
 	
 	inline operator IO_EQUIPITEM() const {
 		IO_EQUIPITEM a;
-		assert(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
+		BOOST_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
 		std::copy(elements, elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, a.elements);
 		return a;
 	}
 	
 	inline SavedEquipItem & operator=(const IO_EQUIPITEM & b) {
-		assert(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
+		BOOST_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
 		std::copy(b.elements, b.elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, elements);
 		return *this;
 	}
@@ -910,11 +906,11 @@ struct SavedTweakerInfo {
 	char skinchangeto[NAME_SIZE];
 	
 	inline SavedTweakerInfo(const IO_TWEAKER_INFO & b) {
-		assert(b.filename.string().length() <= sizeof(filename));
+		arx_assert(b.filename.string().length() <= sizeof(filename));
 		strncpy(filename, b.filename.string().c_str(), sizeof(filename));
-		assert(b.skintochange.length() <= sizeof(skintochange));
+		arx_assert(b.skintochange.length() <= sizeof(skintochange));
 		strncpy(skintochange, b.skintochange.c_str(), sizeof(skintochange));
-		assert(b.skinchangeto.filename().length() <= sizeof(skinchangeto));
+		arx_assert(b.skinchangeto.filename().length() <= sizeof(skinchangeto));
 		strncpy(skinchangeto, b.skinchangeto.string().c_str(), sizeof(skinchangeto));
 	}
 	
@@ -938,9 +934,9 @@ struct SavedTweakInfo {
 	
 	inline SavedTweakInfo(const TWEAK_INFO & b) {
 		type = b.type;
-		assert(b.param1.string().length() <= PARAM_SIZE);
+		arx_assert(b.param1.string().length() <= PARAM_SIZE);
 		strncpy(param1, b.param1.string().c_str(), sizeof(param1));
-		assert(b.param2.string().length() <=PARAM_SIZE);
+		arx_assert(b.param2.string().length() <=PARAM_SIZE);
 		strncpy(param2, b.param2.string().c_str(), sizeof(param2));
 	}
 	

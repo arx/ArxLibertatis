@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/IniReader.h"
 
+#include "platform/Platform.h"
 #include "platform/String.h"
 #include "platform/Thread.h"
 
@@ -343,7 +344,7 @@ bool ARX_SOUND_Init()
 {
 	if (bIsActive) ARX_SOUND_Release();
 
-	arx_assert(ARX_SOUND_INVALID_RESOURCE == INVALID_ID);
+	BOOST_STATIC_ASSERT(ARX_SOUND_INVALID_RESOURCE == INVALID_ID);
 	
 	if(aalInit(config.audio.backend,  config.audio.eax)) {
 		aalClean();
@@ -1226,7 +1227,7 @@ char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
 			
 			fs::path name;
 			aalGetAmbianceName(ambiance_id, name);
-			arx_assert(name.string().length() + 1 < sizeof(playing->name)/sizeof(*playing->name));
+			arx_assert(name.string().length() + 1 < ARRAY_SIZE(playing->name));
 			strcpy(playing->name, name.string().c_str());
 			aalGetAmbianceVolume(ambiance_id, playing->volume);
 			playing->loop = aalIsAmbianceLooped(ambiance_id) ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;

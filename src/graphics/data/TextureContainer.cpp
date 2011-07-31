@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 
 #include <cstdio>
-#include <cassert>
 #include <limits>
 #include <iomanip>
 #include <sstream>

@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
-#include <cassert>
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
@@ -1827,7 +1826,7 @@ void MakeSSEPARAMS(const char * params)
 			tokensize++;
 		}
 		
-		assert(tokensize < 64 - 1);
+		arx_assert(tokensize < 64 - 1);
 		memcpy(SSEPARAMS[pos], params, tokensize);
 		SSEPARAMS[pos][tokensize] = 0;
 		

@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
-#include <cassert>
 #include <cstdio>
 #include <fstream>
 #include <sstream>
@@ -1140,7 +1139,7 @@ static bool migrateFilenames() {
 	 "save", "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
 	
 	std::set<string> fileset;
-	for(size_t i = 0; i < sizeof(files)/sizeof(*files); i++) {
+	for(size_t i = 0; i < ARRAY_SIZE(files); i++) {
 		fileset.insert(files[i]);
 	}
 	
@@ -5399,7 +5398,7 @@ static float _AvgFrameDiff = 150.f;
 				float iCalc = step*speedfactor ;
 				ARX_CHECK_ULONG(iCalc);
 
-				assert(inter.iobj[0]->obj != NULL);
+				arx_assert(inter.iobj[0]->obj != NULL);
 				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
 				                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(iCalc), inter.iobj[0], false);
 
@@ -5429,7 +5428,7 @@ static float _AvgFrameDiff = 150.f;
 
 			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
-			assert(inter.iobj[0]->obj != NULL);
+			arx_assert(inter.iobj[0]->obj != NULL);
 			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
 			                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(val), inter.iobj[0], false);
 
@@ -6079,7 +6078,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
 
-		assert(inter.iobj[0]->obj != NULL);
+		arx_assert(inter.iobj[0]->obj != NULL);
 		EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
 		                  &inter.iobj[0]->pos, 0, inter.iobj[0]);
 		

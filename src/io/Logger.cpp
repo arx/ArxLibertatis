@@ -106,7 +106,7 @@ void Logger::log(const string& str) {
 }
 
 Logger::LogLevel Logger::getLogLevel(const string & file) {
-	for (unsigned i=0; i < sizeof(blackList)/sizeof(*blackList); i++) {
+	for (unsigned i=0; i < ARRAY_SIZE(blackList); i++) {
 		if (file.find(blackList[i].codefile) != string::npos)
 			return blackList[i].logLevel;
 	}

@@ -1,6 +1,5 @@
 
 #include <string>
-#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <sstream>
@@ -37,7 +36,7 @@ void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 		if(file->size() > 0) {
 			
 			char * data = (char*)file->readAlloc();
-			assert(data != NULL);
+			arx_assert(data != NULL);
 			
 			if(ofs.write(data, file->size()).fail()) {
 				printf("error writing to file: %s\n", filename.string().c_str());

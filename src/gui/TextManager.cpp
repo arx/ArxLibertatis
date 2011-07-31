@@ -7,8 +7,6 @@
 
 #include "gui/TextManager.h"
 
-#include <cassert>
-
 #include "core/Core.h"
 #include "gui/Text.h"
 #include "graphics/font/Font.h"

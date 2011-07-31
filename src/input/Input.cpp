@@ -562,7 +562,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 		name = "WheelDown";
 
 	} else {
-		arx_assert(key >= 0 && key < (int)ARX_ARRAY_NB_ITEMS(keysDescriptions));
+		arx_assert(key >= 0 && key < (int)ARRAY_SIZE(keysDescriptions));
 		const KeyDescription & entity = keysDescriptions[key];
 		
 		arx_assert(entity.id == key);
@@ -618,7 +618,7 @@ InputKeyId Input::getKeyId(const std::string & name) {
 	
 	if(keyNames.empty()) {
 		// Initialize the key name -> id map.
-		for(size_t i = 0; i < ARX_ARRAY_NB_ITEMS(keysDescriptions); i++) {
+		for(size_t i = 0; i < ARRAY_SIZE(keysDescriptions); i++) {
 			keyNames[keysDescriptions[i].name] = keysDescriptions[i].id;
 		}
 	}

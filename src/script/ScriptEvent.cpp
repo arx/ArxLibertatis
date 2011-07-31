@@ -210,7 +210,7 @@ public:
 
 } // namespace script
 
-#define ScriptEventWarning Logger(__FILE__,__LINE__, isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1 && msg != SM_NULL) ? AS_EVENT[msg].name : "on " + evname) << ": "
+#define ScriptEventWarning Logger(__FILE__,__LINE__, isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << (((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1 && msg != SM_NULL) ? AS_EVENT[msg].name : "on " + evname) << ": "
 
 using namespace script; // TODO(script-parser) remove once everythng has been moved to the script namespace
 
@@ -330,7 +330,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	
 	LogDebug << "--> SendScriptEvent event="
 	         << (!evname.empty() ? evname
-	            : ((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name.substr(3)
+	            : ((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1) ? AS_EVENT[msg].name.substr(3)
 	            : "(none)")
 	         << " params=\"" << params << "\""
 	         << " io=" << (io ? io->long_name() : "unknown")

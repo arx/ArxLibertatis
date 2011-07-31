@@ -234,7 +234,7 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 #define ARX_CHECK( _expr )      arx_assert(_expr)
 
 // Get the number of items in a static array
-#define ARX_ARRAY_NB_ITEMS(a)	((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
+#define ARRAY_SIZE(a) ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 
 /* ---------------------------------------------------------
                            Pragma

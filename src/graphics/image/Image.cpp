@@ -765,8 +765,7 @@ void Image::save(const fs::path & filename) const {
 	ilGenImages(1, &imageName);
 	ilBindImage(imageName);
 	
-	// TODO static assert
-	arx_assert(sizeof(ARXImageToILFormat)/sizeof(*ARXImageToILFormat) == Format_Unknown);
+	BOOST_STATIC_ASSERT(ARRAY_SIZE(ARXImageToILFormat) == Format_Unknown);
 	if(mFormat < 0 || mFormat >= Format_Unknown) {
 		return;
 	}

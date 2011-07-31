@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Player.h"
 
-#include <cassert>
-
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -3620,7 +3618,7 @@ void ARX_PLAYER_AddGold(long _lValue) {
 
 void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
 	
-	assert(gold->ioflags & IO_GOLD);
+	arx_assert(gold->ioflags & IO_GOLD);
 	
 	ARX_PLAYER_AddGold(gold->_itemdata->price * max((short)1, gold->_itemdata->count));
 	

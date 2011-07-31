@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/NPC.h"
 
-#include <cassert>
 #include <cstdio>
 
 #include "ai/Paths.h"
@@ -4216,7 +4215,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				{
 					num = rnd() * io->obj->facelist.size();
 					
-					assert(num < io->obj->facelist.size());
+					arx_assert(num < io->obj->facelist.size());
 					
 					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 					
@@ -4348,7 +4347,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				while (notok-- > 0)
 				{
 					num = rnd() * io->obj->facelist.size();
-					assert(num < io->obj->facelist.size());
+					arx_assert(num < io->obj->facelist.size());
 
 					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 

@@ -409,7 +409,7 @@ std::ostream & print_movemode(std::ostream & strm, s32 movemode) {
 
 void print_spell(s32 spell) {
 	
-	if((size_t)spell < sizeof(spellNames)/sizeof(*spellNames)) {
+	if((size_t)spell < ARRAY_SIZE(spellNames)) {
 		cout << spellNames[spell];
 	} else {
 		cout << "(unknown)";
@@ -477,7 +477,7 @@ void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 		hasAnims = true;
 		cout << endl;
 		
-		if(i < sizeof(animationNames)/sizeof(*animationNames)) {
+		if(i < ARRAY_SIZE(animationNames)) {
 			cout << "  - " << animationNames[i] << ": " << anim;
 		} else {
 			cout << "  - animation #" << i << ": " << anim;
@@ -501,7 +501,7 @@ void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS], cons
 		cout << endl << pf << "Animation layer #" << i << ':' << endl;
 		
 		if(layer.next_anim != ANIM_NONE) {
-			if((size_t)layer.next_anim < sizeof(animationNames)/sizeof(*animationNames)) {
+			if((size_t)layer.next_anim < ARRAY_SIZE(animationNames)) {
 				cout << pf << "  Next animation: " << animationNames[layer.next_anim] << endl;
 			} else {
 				cout << pf << "  Next animation: animation #" << layer.next_anim << endl;
@@ -509,7 +509,7 @@ void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS], cons
 		}
 		
 		if(layer.cur_anim != ANIM_NONE) {
-			if((size_t)layer.cur_anim < sizeof(animationNames)/sizeof(*animationNames)) {
+			if((size_t)layer.cur_anim < ARRAY_SIZE(animationNames)) {
 				cout << pf << "  Current animation: " << animationNames[layer.cur_anim] << endl;
 			} else {
 				cout << pf << "  Current animation: animation #" << layer.cur_anim << endl;
@@ -1236,7 +1236,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 		for(size_t i = 0; i < 4; i++) {
 			if(ais.spellcast_data.symb[i] == RUNE_NONE) {
 				cout << " (none)";
-			} else if((size_t)ais.spellcast_data.symb[i] < sizeof(runeNames)/sizeof(*runeNames)) {
+			} else if((size_t)ais.spellcast_data.symb[i] < ARRAY_SIZE(runeNames)) {
 				cout << ' ' << runeNames[i];
 			} else {
 				cout << " (unknown)";
@@ -1592,7 +1592,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 						continue;
 					}
 					
-					if(i < sizeof(equipitemNames)/sizeof(*equipitemNames)) {
+					if(i < ARRAY_SIZE(equipitemNames)) {
 						cout << endl << "  " << equipitemNames[i] << " modifier:";
 					} else {
 						cout << endl << "  EquipItem #" << i << ':';

@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells05.h"
 
-#include <cassert>
 #include <climits>
 
 #include "animation/AnimationRender.h"
@@ -225,7 +224,7 @@ void CCurePoison::Update(unsigned long aulTime)
 
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	assert(ulCalc <= LONG_MAX);
+	arx_assert(ulCalc <= LONG_MAX);
 	long ff = 	static_cast<long>(ulCalc);
 
 

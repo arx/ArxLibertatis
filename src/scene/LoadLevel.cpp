@@ -62,7 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 #include <vector>
-#include <cassert>
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
@@ -277,7 +276,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	DANAE_LS_HEADER dlh;
 	memset(&dlh, 0, sizeof(DANAE_LS_HEADER));
 	dlh.nb_nodes = CountNodes();
-	assert(SAVED_MAX_LINKS == MAX_LINKS);
+	BOOST_STATIC_ASSERT(SAVED_MAX_LINKS == MAX_LINKS);
 	dlh.nb_nodeslinks = SAVED_MAX_LINKS;
 	dlh.nb_lights = 0; // MUST BE 0 !!!!
 	dlh.nb_fogs = ARX_FOGS_Count();

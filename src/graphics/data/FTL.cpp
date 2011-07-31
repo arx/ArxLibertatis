@@ -57,7 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 
 #include <cstdlib>
-#include <cassert>
+
+#include <boost/static_assert.hpp>
 
 #include "core/Application.h"
 
@@ -542,7 +543,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 			obj->facelist[ii].norm = eff->norm;
 			
 			// Copy in all the texture and normals data
-			assert(IOPOLYVERT_FTL == IOPOLYVERT);
+			BOOST_STATIC_ASSERT(IOPOLYVERT_FTL == IOPOLYVERT);
 			for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
 				obj->facelist[ii].nrmls[kk] = eff->nrmls[kk];
 				obj->facelist[ii].vid[kk] = eff->vid[kk];

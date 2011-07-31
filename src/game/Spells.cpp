@@ -36,7 +36,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <cassert>
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -2073,14 +2072,14 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell, const s
 		if(symbols[i] == RUNE_NONE) {
 			break;
 		}
-		assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
+		arx_assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			def->next[symbols[i]] = new SpellDefinition();
 		}
 		def = def->next[symbols[i]];
 	}
 	
-	assert(def->spell == SPELL_NONE);
+	arx_assert(def->spell == SPELL_NONE);
 	
 	def->spell = spell;
 }
@@ -2093,7 +2092,7 @@ static Spell getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 		if(symbols[i] == RUNE_NONE) {
 			break;
 		}
-		assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
+		arx_assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			return SPELL_NONE;
 		}
@@ -2711,8 +2710,7 @@ void ARX_SPELLS_Init() {
 		spells[i].pSpellFx = NULL;
 	}
 	
-	size_t nspells = sizeof(allSpells)/sizeof(*allSpells);
-	for(size_t i = 0; i < nspells; i++) {
+	for(size_t i = 0; i < ARRAY_SIZE(allSpells); i++) {
 		addSpell(allSpells[i].symbols, allSpells[i].spell, allSpells[i].name);
 	}
 	

@@ -66,7 +66,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/ChangeLevel.h"
 
 #include <iomanip>
-#include <cassert>
 #include <sstream>
 #include <cstdio>
 
@@ -708,7 +707,7 @@ template <size_t N>
 void FillIOIdent(char (&tofill)[N], const INTERACTIVE_OBJ * io) {
 	
 	if(!io || !ValidIOAddress(io) || io->filename.empty()) {
-		arx_assert(N >= 4);
+		BOOST_STATIC_ASSERT(N >= 4);
 		strcpy(tofill, "none");
 	} else {
 		
@@ -961,7 +960,7 @@ static INTERACTIVE_OBJ * GetObjIOSource(const EERIE_3DOBJ * obj) {
 
 template <size_t N>
 void FillTargetInfo(char (&info)[N], long numtarget) {
-	arx_assert(N >= 6);
+	BOOST_STATIC_ASSERT(N >= 6);
 	if(numtarget == -2) {
 		strcpy(info, "self");
 	} else if(numtarget == -1) {

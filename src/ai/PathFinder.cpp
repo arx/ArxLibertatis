@@ -25,7 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/PathFinder.h"
 
-#include <cassert>
 #include <climits>
 
 #include "graphics/Math.h"
@@ -340,9 +339,9 @@ bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool steal
 			for(int notfinished = 0; notfinished < 4; notfinished++) {
 				
 				size_t r = (size_t)(rnd() * (float)map_d[next].nblinked);
-				assert(r < (size_t)map_d[next].nblinked);
+				arx_assert(r < (size_t)map_d[next].nblinked);
 				
-				assert(map_d[next].linked[r] >= 0);
+				arx_assert(map_d[next].linked[r] >= 0);
 				
 				NodeId nid = map_d[next].linked[r];
 				if((!(map_d[nid].flags & ANCHOR_FLAG_BLOCKED)) && (map_d[nid].nblinked)

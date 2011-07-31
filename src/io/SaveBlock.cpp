@@ -26,7 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/SaveBlock.h"
 
 #include <cstdlib>
-#include <cassert>
 
 #include <zlib.h>
 
@@ -170,12 +169,12 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 		p += chunk->size;
 	}
 	
-	assert(p == buf + storedSize);
+	arx_assert(p == buf + storedSize);
 	
 	switch(comp) {
 		
 		case File::None: {
-			assert(uncompressedSize == storedSize);
+			arx_assert(uncompressedSize == storedSize);
 			size = uncompressedSize;
 			return buf;
 		}
@@ -191,12 +190,12 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 				LogError << "error decompressing imploded " << name;
 				return NULL;
 			}
-			assert(uncompressedSize == (size_t)-1 || size == uncompressedSize);
+			arx_assert(uncompressedSize == (size_t)-1 || size == uncompressedSize);
 			return uncompressed;
 		}
 		
 		case File::Deflate: {
-			assert(uncompressedSize != (size_t)-1);
+			arx_assert(uncompressedSize != (size_t)-1);
 			uLongf decompressedSize = uncompressedSize;
 			char * uncompressed = (char*)malloc(uncompressedSize);
 			int ret = uncompress((Bytef*)uncompressed, &decompressedSize, (const Bytef*)buf, storedSize);
@@ -414,7 +413,7 @@ bool SaveBlock::defragment() {
 			p += chunk->size;
 		}
 		
-		assert(p == buf + file->second.storedSize);
+		arx_assert(p == buf + file->second.storedSize);
 		
 		tempFile.write(buf, file->second.storedSize);
 		
