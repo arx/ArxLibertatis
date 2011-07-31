@@ -233,16 +233,18 @@ else(MSVC)
 	
 endif(MSVC)
 
-if(NOT HAVE_POSIX_FILESYSTEM)
-	if(HAVE_WINAPI)
-		add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
-	elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
-		find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
-		set(HAVE_BOOST_FILESYSTEM_V3 1)
-		add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
-	else()
-		message(FATAL_ERROR "You need either Boost >= 1.44 or windows api or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
-	endif()
+if(HAVE_POSIX_FILESYSTEM)
+	set(FILESYSTEM_SRC "src/io/FilesystemPOSIX.cpp")
+elseif(HAVE_WINAPI)
+	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
+	set(FILESYSTEM_SRC "src/io/FilesystemWindows.cpp")
+elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
+	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
+	set(HAVE_BOOST_FILESYSTEM_V3 1)
+	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
+	set(FILESYSTEM_SRC "src/io/FilesystemBoost.cpp")
+else()
+	message(FATAL_ERROR "You need either Boost >= 1.44 or windows api or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
 endif()
 
 if(NOT MSVC)
@@ -284,7 +286,27 @@ file(GLOB_RECURSE GAME_SOURCES ${SRC_DIR}/game/*.cpp)
 file(GLOB_RECURSE GRAPHICS_SOURCES ${SRC_DIR}/graphics/*.cpp)
 file(GLOB_RECURSE GUI_SOURCES ${SRC_DIR}/gui/*.cpp)
 file(GLOB_RECURSE INPUT_SOURCES ${SRC_DIR}/input/*.cpp)
-file(GLOB_RECURSE IO_SOURCES ${SRC_DIR}/io/*.cpp) # TODO only build FilesystemBoost.cpp / FilesystemPOSIX if needed
+
+set(IO_SOURCES
+	src/io/Blast.cpp
+	src/io/CinematicLoad.cpp
+	src/io/FilePath.cpp
+	src/io/FileStream.cpp
+	src/io/Filesystem.cpp
+	src/io/Implode.cpp
+	src/io/IniReader.cpp
+	src/io/IniSection.cpp
+	src/io/IniWriter.cpp
+	src/io/IO.cpp
+	src/io/Logger.cpp
+	src/io/PakEntry.cpp
+	src/io/PakReader.cpp
+	src/io/Registry.cpp
+	src/io/SaveBlock.cpp
+	src/io/Screenshot.cpp
+	${FILESYSTEM_SRC}
+)
+
 file(GLOB_RECURSE MATH_SOURCES ${SRC_DIR}/math/*.cpp)
 file(GLOB_RECURSE PHYSICS_SOURCES ${SRC_DIR}/physics/*.cpp)
 file(GLOB_RECURSE PLATFORM_SOURCES ${SRC_DIR}/platform/*.cpp)

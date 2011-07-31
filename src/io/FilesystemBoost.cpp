@@ -27,8 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef HAVE_BOOST_FILESYSTEM_V3
-
 #define try
 #define catch(a) if(false)
 #include <boost/filesystem/operations.hpp>
@@ -161,5 +159,3 @@ bool directory_iterator::is_regular_file() {
 }
 
 } // namespace fs
-
-#endif // HAVE_BOOST_FILESYSTEM_V3

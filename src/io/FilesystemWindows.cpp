@@ -27,8 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef HAVE_WINDOWS_FILESYSTEM
-
 #include <windows.h>
 #include <shlobj.h>
 
@@ -286,10 +284,4 @@ bool directory_iterator::is_regular_file() {
 	return (itData->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
 }
 
-
-
-
-
 } // namespace fs
-
-#endif // HAVE_POSIX_FILESYSTEM

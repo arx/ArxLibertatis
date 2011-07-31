@@ -27,8 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef HAVE_POSIX_FILESYSTEM
-
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <dirent.h>
@@ -207,5 +205,3 @@ bool directory_iterator::is_regular_file() {
 }
 
 } // namespace fs
-
-#endif // HAVE_POSIX_FILESYSTEM

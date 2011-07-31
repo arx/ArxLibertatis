@@ -31,8 +31,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
-#include "Configure.h"
-
 namespace fs {
 
 class path;
@@ -128,9 +126,7 @@ class directory_iterator {
 	directory_iterator(const directory_iterator &);
 	
 	void * handle;
-#ifdef HAVE_POSIX_FILESYSTEM
 	void * buf;
-#endif
 	
 public:
 	
