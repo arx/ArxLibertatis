@@ -173,6 +173,7 @@ directory_iterator::~directory_iterator() {
 }
 
 directory_iterator & directory_iterator::operator++() {
+	arx_assert(buf != NULL);
 	
 	dirent * d;
 	do {
@@ -187,6 +188,7 @@ bool directory_iterator::end() {
 }
 
 string directory_iterator::name() {
+	arx_assert(buf != NULL);
 	return reinterpret_cast<dirent *>(buf)->d_name;
 }
 
@@ -195,10 +197,12 @@ string directory_iterator::name() {
 #endif
 
 bool directory_iterator::is_directory() {
+	arx_assert(buf != NULL);
 	return reinterpret_cast<dirent *>(buf)->d_type == DT_DIR;
 }
 
 bool directory_iterator::is_regular_file() {
+	arx_assert(buf != NULL);
 	return reinterpret_cast<dirent *>(buf)->d_type == DT_REG;
 }
 

@@ -208,7 +208,7 @@ struct directory_iterator_data {
 	HANDLE			 findHandle;
 };
 
-directory_iterator::directory_iterator(const fs::path & p) : buf(NULL) {
+directory_iterator::directory_iterator(const fs::path & p) {
 	
 	directory_iterator_data* itData = new directory_iterator_data();
 	handle = itData;

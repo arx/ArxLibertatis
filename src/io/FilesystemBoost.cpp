@@ -129,6 +129,7 @@ directory_iterator::~directory_iterator() {
 }
 
 directory_iterator & directory_iterator::operator++() {
+	arx_assert(!end());
 	error_code ec;
 	(*reinterpret_cast<fs_boost::directory_iterator *>(handle)).increment(ec);
 	if(ec) {
@@ -143,15 +144,18 @@ bool directory_iterator::end() {
 }
 
 string directory_iterator::name() {
+	arx_assert(!end());
 	return (*reinterpret_cast<fs_boost::directory_iterator *>(handle))->path().filename().string();
 }
 
 bool directory_iterator::is_directory() {
+	arx_assert(!end());
 	error_code ec;
 	return fs_boost::is_directory((*reinterpret_cast<fs_boost::directory_iterator *>(handle))->status(ec)) && !ec;
 }
 
 bool directory_iterator::is_regular_file() {
+	arx_assert(!end());
 	error_code ec;
 	return fs_boost::is_regular_file((*reinterpret_cast<fs_boost::directory_iterator *>(handle))->status(ec)) && !ec;
 }
