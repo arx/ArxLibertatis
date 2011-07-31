@@ -79,7 +79,7 @@ add_library(tools_common STATIC
 
 target_link_libraries(tools_common ${Boost_LIBRARIES})
 
-add_executable(unpaker unpak/unpak.cpp)
+add_executable(unpak unpak/unpak.cpp)
 
 add_executable(savetool
 	savetool/savetool.cpp
@@ -92,4 +92,4 @@ add_executable(savetool
 )
 
 target_link_libraries(savetool tools_common ${ZLIB_LIBRARIES})
-target_link_libraries(unpaker tools_common)
+target_link_libraries(unpak tools_common)

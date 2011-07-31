@@ -1,11 +1,9 @@
-# Arx Fatalis Port
-
-                      _______________________
-                     /\                      \
-                     \_|         Arx         |
-                       |      Libertatis     |
-                       |   __________________|__
-                        \_/____________________/
+            _______________________
+           /\                      \
+           \_|         Arx         |
+             |      Libertatis     |
+             |   __________________|__
+              \_/____________________/
 
 
 Port to x64_86 / GCC / OpenGL / Unix
@@ -15,16 +13,16 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Dependencies
 
-DevIL (libil.so)
-zlib (libz.so)
-OpenAL 1.1
-Boost 1.37 or newer (libraries system and filesystem)
+* DevIL (libil.so)
+* zlib (libz.so)
+* Boost
+* OpenAL 1.1 or DirectSound
 
 Non-Windows systems also need Wine (including development headers and tools). Wine is only a temporary solution.
 
 ## Compile
 
-`$ cmake .`
+`$ mkdir build && cd build && cmake ..`
 
 `$ make`
 
@@ -53,6 +51,11 @@ You can close it with `Alt + F4` or `killall arx.exe.so`
 Because ARX is compiled as a winelib application, normal gdb won't work. Instead use winedbg:
 
 `$ WINEDEBUG=-all winedbg ./arx.exe.so`
+
+## Tools
+
+* unpak - Extracts the .pak files containing the game assets.
+* savetool - Extract, modify, view and fix savegames.
 
 ## Build documentation
 
