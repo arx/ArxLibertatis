@@ -25,15 +25,12 @@ public:
 	Result execute(Context & context) {
 		
 		string target = context.getWord();
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(context.getIO()); //self
-		}
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 		
 		float val = clamp(context.getFloat(), 0.f, 100.f);
 		
-		if(ValidIONum(t)) {
-			ARX_DAMAGES_DurabilityRestore(inter.iobj[t], val);
+		if(t != NULL) {
+			ARX_DAMAGES_DurabilityRestore(t, val);
 		}
 		
 		DebugScript(' ' << target << ' ' << val);

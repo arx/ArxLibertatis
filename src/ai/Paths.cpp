@@ -302,7 +302,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 					if (!op->controled.empty())
 					{
-						long t = GetTargetByNameTarget(op->controled);
+						long t = inter.getById(op->controled);
 
 						if (t >= 0)
 						{
@@ -325,7 +325,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (!p->controled.empty())
 						{
-							long t = GetTargetByNameTarget(p->controled);
+							long t = inter.getById(p->controled);
 
 							if (t >= 0)
 							{
@@ -341,7 +341,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 					if (!op->controled.empty())
 					{
-						long t = GetTargetByNameTarget(op->controled);
+						long t = inter.getById(op->controled);
 
 						if (t >= 0)
 						{
@@ -355,7 +355,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 					if (!p->controled.empty())
 					{
-						long t = GetTargetByNameTarget(p->controled);
+						long t = inter.getById(p->controled);
 
 						if (t >= 0)
 						{
@@ -394,7 +394,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 			if (!op->controled.empty())
 			{
-				long t = GetTargetByNameTarget(op->controled);
+				long t = inter.getById(op->controled);
 
 				if (t >= 0)
 				{
@@ -427,7 +427,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 			if (!p->controled.empty())
 			{
-				long t = GetTargetByNameTarget(p->controled);
+				long t = inter.getById(p->controled);
 
 				if (t >= 0)
 				{
@@ -440,7 +440,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 			if (!op->controled.empty())
 			{
-				long t = GetTargetByNameTarget(op->controled);
+				long t = inter.getById(op->controled);
 
 				if (t >= 0)
 				{
@@ -450,7 +450,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 			if (p->controled[0] != 0)
 			{
-				long t = GetTargetByNameTarget(p->controled);
+				long t = inter.getById(p->controled);
 
 				if (t >= 0)
 				{

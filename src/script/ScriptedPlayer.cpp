@@ -463,16 +463,13 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(context.getIO());
-		}
-		if(!ValidIONum(t)) {
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		ForcePlayerLookAtIO(inter.iobj[t]);
+		ForcePlayerLookAtIO(t);
 		
 		return Success;
 	}

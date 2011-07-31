@@ -3204,11 +3204,9 @@ long FirstFrameHandling()
 		ARX_TIME_UnPause();
 	}
 
-	long t=GetTargetByNameTarget("seat_stool1_0012");
-
-	if (ValidIONum(t))
-	{
-		inter.iobj[t]->ioflags|=IO_FORCEDRAW;
+	long t = inter.getById("seat_stool1_0012");
+	if(ValidIONum(t)) {
+		inter.iobj[t]->ioflags |= IO_FORCEDRAW;
 	}
 
 	if (WILL_RESTORE_PLAYER_POSITION_FLAG)

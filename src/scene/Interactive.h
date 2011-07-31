@@ -76,9 +76,15 @@ class path;
 }
 
 struct INTERACTIVE_OBJECTS {
+	
 	long init;
 	long nbmax;
+	
 	INTERACTIVE_OBJ ** iobj;
+	
+	long getById(const std::string & name);
+	INTERACTIVE_OBJ * getById(const std::string & name, INTERACTIVE_OBJ * self);
+	
 };
 
 const size_t MAX_LINKS = 12;
@@ -161,7 +167,6 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string 
 void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io);
 long ValidIONum(long num);
 long ValidIOAddress(const INTERACTIVE_OBJ * io);
-long GetTargetByNameTarget(const std::string& name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
 
 void SetWeapon_Back(INTERACTIVE_OBJ * io);

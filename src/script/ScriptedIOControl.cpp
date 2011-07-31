@@ -174,11 +174,8 @@ public:
 			fs::path file = fs::path::load(context.getWord()); // object to spawn.
 			
 			string target = context.getWord(); // object ident for position
-			long t = GetTargetByNameTarget(target);
-			if(t == -2) {
-				t = GetInterNum(context.getIO());
-			}
-			if(!ValidIONum(t)) {
+			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			if(!t) {
 				ScriptWarning << "unknown target: npc " << file << ' ' << target;
 				return Failed;
 			}
@@ -201,16 +198,16 @@ public:
 				
 				LASTSPAWNED = ioo;
 				ioo->scriptload = 1;
-				ioo->pos = inter.iobj[t]->pos;
+				ioo->pos = t->pos;
 				
-				ioo->angle = inter.iobj[t]->angle;
+				ioo->angle = t->angle;
 				MakeTemporaryIOIdent(ioo);
 				SendInitScriptEvent(ioo);
 				
-				if(inter.iobj[t]->ioflags & IO_NPC) {
-					float dist = inter.iobj[t]->physics.cyl.radius + ioo->physics.cyl.radius + 10;
-					ioo->pos.x += -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
-					ioo->pos.z += EEcos(radians(inter.iobj[t]->angle.b)) * dist;
+				if(t->ioflags & IO_NPC) {
+					float dist = t->physics.cyl.radius + ioo->physics.cyl.radius + 10;
+					ioo->pos.x += -EEsin(radians(t->angle.b)) * dist;
+					ioo->pos.z += EEcos(radians(t->angle.b)) * dist;
 				}
 				
 				TREATZONE_AddIO(ioo, GetInterNum(ioo));
@@ -226,8 +223,8 @@ public:
 				MakeTemporaryIOIdent(ioo);
 				LASTSPAWNED = ioo;
 				ioo->scriptload = 1;
-				ioo->pos = inter.iobj[t]->pos;
-				ioo->angle = inter.iobj[t]->angle;
+				ioo->pos = t->pos;
+				ioo->angle = t->angle;
 				MakeTemporaryIOIdent(ioo);
 				SendInitScriptEvent(ioo);
 				
@@ -345,7 +342,7 @@ public:
 		
 		DebugScript(' ' << name << ' ' << attach);
 		
-		long t = GetTargetByNameTarget(name);
+		long t = inter.getById(name);
 		if(!ValidIONum(t)) {
 			ScriptWarning << "unknown target: " << name;
 			return Failed;
@@ -370,7 +367,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = GetTargetByNameTarget(target);
+		long t = inter.getById(target);
 		
 		if(t == -1) {
 			context.skipStatement();
@@ -411,7 +408,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = GetTargetByNameTarget(target);
+		long t = inter.getById(target);
 		
 		if(!ValidIONum(t) || !hasVisibility(context.getIO(), inter.iobj[t])) {
 			context.skipStatement();
@@ -436,36 +433,32 @@ public:
 		}
 		
 		string target = context.getWord();
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(context.getIO());
-		}
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 		
 		bool hide = context.getBool();
 		
 		DebugScript(' ' << options << ' ' << target << ' ' << hide);
 		
-		if(!ValidIONum(t)) {
+		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		INTERACTIVE_OBJ * io = inter.iobj[t];
-		io->GameFlags &= ~GFLAG_MEGAHIDE;
+		t->GameFlags &= ~GFLAG_MEGAHIDE;
 		if(hide) {
 			if(megahide) {
-				io->GameFlags |= GFLAG_MEGAHIDE;
-				io->show = SHOW_FLAG_MEGAHIDE;
+				t->GameFlags |= GFLAG_MEGAHIDE;
+				t->show = SHOW_FLAG_MEGAHIDE;
 			} else {
-				io->show = SHOW_FLAG_HIDDEN;
+				t->show = SHOW_FLAG_HIDDEN;
 			}
-		} else if(io->show == SHOW_FLAG_MEGAHIDE || io->show == SHOW_FLAG_HIDDEN) {
-			io->show = SHOW_FLAG_IN_SCENE;
-			if((io->ioflags & IO_NPC) && io->_npcdata->life <= 0.f) {
-				inter.iobj[t]->animlayer[0].cur_anim = inter.iobj[t]->anims[ANIM_DIE];
-				inter.iobj[t]->animlayer[1].cur_anim = NULL;
-				inter.iobj[t]->animlayer[2].cur_anim = NULL;
-				inter.iobj[t]->animlayer[0].ctime = 9999999;
+		} else if(t->show == SHOW_FLAG_MEGAHIDE || t->show == SHOW_FLAG_HIDDEN) {
+			t->show = SHOW_FLAG_IN_SCENE;
+			if((t->ioflags & IO_NPC) && t->_npcdata->life <= 0.f) {
+				t->animlayer[0].cur_anim = t->anims[ANIM_DIE];
+				t->animlayer[1].cur_anim = NULL;
+				t->animlayer[2].cur_anim = NULL;
+				t->animlayer[0].ctime = 9999999;
 			}
 		}
 		
@@ -546,18 +539,14 @@ public:
 		
 		if(!initpos) {
 			
-			long t = GetTargetByNameTarget(target);
-			if(t == -2) {
-				t = GetInterNum(context.getIO());
-			}
-			arx_assert(t != -3);
-			if(!ValidIONum(t)) {
+			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
 			}
 			
 			Vec3f pos;
-			if(!GetItemWorldPosition(inter.iobj[t], &pos)) {
+			if(!GetItemWorldPosition(t, &pos)) {
 				ScriptWarning << "could not get world position";
 				return Failed;
 			}
@@ -629,18 +618,15 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(context.getIO()); //self
-		}
-		if(!ValidIONum(t)) {
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		bool self = (inter.iobj[t] == context.getIO());
+		bool self = (t == context.getIO());
 		
-		ARX_INTERACTIVE_DestroyIO(inter.iobj[t]);
+		ARX_INTERACTIVE_DestroyIO(t);
 		
 		return self ? AbortAccept : Success; // Cannot process further if we destroyed the script's IO
 	}
@@ -694,16 +680,13 @@ public:
 		
 		DebugScript(' ' << type << ' ' << target);
 		
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(context.getIO()); //self
-		}
-		if(!ValidIONum(t)) {
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		ARX_DAMAGES_DealDamages(t, damage, GetInterNum(context.getIO()), type, &inter.iobj[t]->pos);
+		ARX_DAMAGES_DealDamages(GetInterNum(t), damage, GetInterNum(context.getIO()), type, &t->pos);
 		
 		return Success;
 	}

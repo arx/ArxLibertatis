@@ -263,7 +263,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
 
 		if(!op->controled.empty())
 		{
-			long t = GetTargetByNameTarget(op->controled);
+			long t = inter.getById(op->controled);
 
 			if (t >= 0)
 			{
@@ -2074,30 +2074,32 @@ void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags)
 	MOLLESS_Clear(io->obj, 1);
 	ResetVVPos(io);
 }
-//*************************************************************************************
+
 // Finds IO number by name
-//*************************************************************************************
-long GetTargetByNameTarget( const std::string& name )
-{
-	if (name.empty()) return -1;
-
-	if (name == "self" || name == "me")		return -2;
-
-	if (name == "none")		return -1;
-
-	if (name == "player")	return 0;     ///player is now an io with index 0
-
-	for (long i = 0 ; i < inter.nbmax ; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->ident > -1))
-		{
-			if (name == inter.iobj[i]->long_name())
+long INTERACTIVE_OBJECTS::getById(const string & name) {
+	
+	if(name.empty() || name == "none") {
+		return -1;
+	} else if(name == "self" || name == "me") {
+		return -2;
+	} else if(name == "player") {
+		return 0; // player is an IO with index 0
+	}
+	
+	for(long i = 0 ; i < nbmax ; i++) {
+		if(iobj[i] != NULL && iobj[i]->ident > -1) {
+			if(name == iobj[i]->long_name()) {
 				return i;
+			}
 		}
 	}
-
+	
 	return -1;
+}
+
+INTERACTIVE_OBJ * INTERACTIVE_OBJECTS::getById(const string & name, INTERACTIVE_OBJ * self) {
+	long index = getById(name);
+	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
 }
 
 extern long TOTAL_BODY_CHUNKS_COUNT;

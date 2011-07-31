@@ -59,19 +59,16 @@ public:
 		
 		FRAME_COUNT = 0;
 		
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(context.getIO());
-		}
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 		
-		if(t == -1 || !(inter.iobj[t]->ioflags & IO_CAMERA)) {
+		if(!t || !(t->ioflags & IO_CAMERA)) {
 			return Failed;
 		}
 		
 		MasterCamera.exist |= 2;
-		MasterCamera.want_io = inter.iobj[t];
-		MasterCamera.want_aup = inter.iobj[t]->usepath;
-		MasterCamera.want_cam = &inter.iobj[t]->_camdata->cam;
+		MasterCamera.want_io = t;
+		MasterCamera.want_aup = t->usepath;
+		MasterCamera.want_cam = &t->_camdata->cam;
 		
 		return Success;
 	}

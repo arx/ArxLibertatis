@@ -643,7 +643,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 						return TYPE_FLOAT;
 					}
 
-					long t = GetTargetByNameTarget(obj);
+					long t = inter.getById(obj);
 
 					if (ValidIONum(t))
 					{
@@ -676,8 +676,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!specialstrcmp(name, "^repairprice_"))
 			{
-				const char * obj = name.c_str() + 13;
-				long t = GetTargetByNameTarget(obj);
+				long t = inter.getById(name.substr(13));
 
 				if (ValidIONum(t))
 				{
@@ -1074,7 +1073,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 						return TYPE_FLOAT;
 					}
 
-					long t = GetTargetByNameTarget(obj);
+					long t = inter.getById(obj);
 
 					if (ValidIONum(t))
 					{
@@ -1178,8 +1177,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!specialstrcmp(name, "^possess_"))
 			{
-				const char * obj = name.c_str() + 9;
-				long t = GetTargetByNameTarget(obj);
+				long t = inter.getById(name.substr(9));
 
 				if (ValidIONum(t))
 				{

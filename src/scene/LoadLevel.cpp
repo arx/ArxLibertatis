@@ -695,7 +695,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & 
 	std::ostringstream nameident;
 	nameident << name.basename() << std::setfill('0') << std::setw(4) << ident;
 	
-	long t = GetTargetByNameTarget(nameident.str());
+	long t = inter.getById(nameident.str());
 	if(t >= 0) {
 		return inter.iobj[t];
 	}

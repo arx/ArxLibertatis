@@ -339,18 +339,14 @@ public:
 			
 		} else { // single object event
 			
-			long t = GetTargetByNameTarget(target);
-			if(t == -2) {
-				t = GetInterNum(io);
-			}
-			
-			if(!ValidIONum(t)) {
+			INTERACTIVE_OBJ * t = inter.getById(target, io);
+			if(!t) {
 				EVENT_SENDER = oes;
 				return Failed;
 			}
 			
 			io->stat_sent++;
-			Stack_SendIOScriptEvent(inter.iobj[t], SM_NULL, params, event);
+			Stack_SendIOScriptEvent(t, SM_NULL, params, event);
 		}
 		
 		EVENT_SENDER = oes;
@@ -572,12 +568,9 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			long t = GetTargetByNameTarget(obj);
-			if(t == -2) {
-				t = GetInterNum(context.getIO());
-			}
+			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
 			
-			return (ValidIONum(t) && inter.iobj[t]->groups.find(group) != inter.iobj[t]->groups.end());
+			return (t != NULL && t->groups.find(group) != t->groups.end());
 		}
 		
 	};
@@ -590,12 +583,9 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			long t = GetTargetByNameTarget(obj);
-			if(t == -2) {
-				t = GetInterNum(context.getIO());
-			}
+			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
 			
-			return (ValidIONum(t) && inter.iobj[t]->groups.find(group) == inter.iobj[t]->groups.end());
+			return (t != NULL && t->groups.find(group) == t->groups.end());
 		}
 		
 	};
@@ -608,10 +598,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & type) {
 			
-			long t = GetTargetByNameTarget(obj);
-			if(t == -2) {
-				t = GetInterNum(context.getIO());
-			}
+			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
 			
 			ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(type);
 			if(!flag) {
@@ -619,7 +606,7 @@ class IfCommand : public Command {
 				return false;
 			}
 			
-			return (ValidIONum(t) && (inter.iobj[t]->type_flags & flag));
+			return (t != NULL && (t->type_flags & flag));
 		}
 		
 	};

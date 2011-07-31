@@ -190,12 +190,9 @@ public:
 		Spell spellid = GetSpellId(spellname);
 		
 		string target = context.getWord();
-		long t = GetTargetByNameTarget(target);
-		if(t <= -1) {
-			t = GetInterNum(context.getIO());
-		}
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 		
-		if(!ValidIONum(t) || spellid == SPELL_NONE) {
+		if(!t || spellid == SPELL_NONE) {
 			return Failed;
 		}
 		
@@ -205,7 +202,7 @@ public:
 		
 		DebugScript(' ' << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' ' << duration);
 		
-		TryToCastSpell(context.getIO(), spellid, level, t, spflags, duration);
+		TryToCastSpell(context.getIO(), spellid, level, GetInterNum(t), spflags, duration);
 		
 		return Success;
 	}
@@ -431,10 +428,7 @@ public:
 			target = context.getWord();
 		}
 		target = context.getStringVar(target);
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(io);
-		}
+		INTERACTIVE_OBJ * t = inter.getById(target, io);
 		
 		DebugScript(' ' << options << ' ' << target);
 		
@@ -442,8 +436,8 @@ public:
 			io->_camdata->cam.translatetarget = Vec3f::ZERO;
 		}
 		
-		if(ValidIONum(t)) {
-			io->targetinfo = t;
+		if(t != NULL) {
+			io->targetinfo = GetInterNum(t);
 			GetTargetPos(io);
 		}
 		
@@ -454,11 +448,11 @@ public:
 			io->targetinfo = TARGET_NONE;
 		}
 		
-		if(old_target != t) {
+		if(old_target != GetInterNum(t)) {
 			if(io->ioflags & IO_NPC) {
 				io->_npcdata->reachedtarget = 0;
 			}
-			ARX_NPC_LaunchPathfind(io, t);
+			ARX_NPC_LaunchPathfind(io, GetInterNum(t));
 		}
 		
 		return Success;
@@ -478,16 +472,13 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(context.getIO());
-		}
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		ARX_DAMAGES_ForceDeath(inter.iobj[t], context.getIO());
+		ARX_DAMAGES_ForceDeath(t, context.getIO());
 		
 		return Success;
 	}
@@ -506,7 +497,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = GetTargetByNameTarget(target);
+		long t = inter.getById(target);
 		ARX_NPC_LaunchPathfind(context.getIO(), t);
 		
 		return Success;

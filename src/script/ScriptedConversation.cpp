@@ -66,14 +66,11 @@ public:
 		for(long j = 0; j < nb_people; j++) {
 			
 			string target = context.getWord();
-			long t = GetTargetByNameTarget(target);
-			if(t == -2) {
-				t = GetInterNum(context.getIO()); // self
-			}
+			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 			
 			oss << ' ' << target;
 			
-			main_conversation.actors[j] = t;
+			main_conversation.actors[j] = GetInterNum(t);
 		}
 		
 		DebugScript(oss);
@@ -252,11 +249,9 @@ class SpeakCommand : public Command {
 	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
 		
 		string target = context.getWord();
-		acs.ionum = GetTargetByNameTarget(target);
-		if(acs.ionum == -2) {
-			acs.ionum = GetInterNum(context.getIO());
-		}
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 		
+		acs.ionum = GetInterNum(t);
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		

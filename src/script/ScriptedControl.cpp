@@ -53,10 +53,7 @@ public:
 		
 		string target = context.getWord();
 		
-		long t = GetTargetByNameTarget(target);
-		if(t == -2) {
-			t = GetInterNum(context.getIO());
-		}
+		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 		
 		string power = context.getWord();
 		
@@ -70,7 +67,7 @@ public:
 		
 		DebugScript(' ' << target << ' ' << val << ' ' << radius);
 		
-		ARX_SPECIAL_ATTRACTORS_Add(t, val, radius);
+		ARX_SPECIAL_ATTRACTORS_Add(GetInterNum(t), val, radius);
 		
 		return Success;
 	}
@@ -145,24 +142,18 @@ public:
 	Result execute(Context & context) {
 		
 		string sourceio = context.getWord();
-		long t = GetTargetByNameTarget(sourceio);
-		if(t == -2) {
-			t = GetInterNum(context.getIO()); //self
-		}
+		INTERACTIVE_OBJ * t = inter.getById(sourceio, context.getIO());
 		
 		string source = context.getWord(); // source action_point
 		
 		string targetio = context.getWord();
-		long t2 = GetTargetByNameTarget(targetio);
-		if(t2 == -2) {
-			t2 = GetInterNum(context.getIO()); //self
-		}
+		INTERACTIVE_OBJ * t2 = inter.getById(targetio, context.getIO());
 		
 		string target = context.getWord();
 		
 		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
 		
-		ARX_INTERACTIVE_Attach(t, t2, source, target);
+		ARX_INTERACTIVE_Attach(GetInterNum(t), GetInterNum(t2), source, target);
 		
 		return Success;
 	}
@@ -337,25 +328,19 @@ public:
 		
 		DebugScript(' ' << source << ' ' << target);
 		
-		long t = GetTargetByNameTarget(source);
-		if(t == -2) {
-			t = GetInterNum(context.getIO()); //self
-		}
-		if(!ValidIONum(t)) {
+		INTERACTIVE_OBJ * t = inter.getById(source, context.getIO());
+		if(!t) {
 			ScriptWarning << "unknown source: " << source;
 			return Failed;
 		}
 		
-		long t2 = GetTargetByNameTarget(target);
-		if(t2 == -2) {
-			t2 = GetInterNum(context.getIO()); //self
-		}
-		if(!ValidIONum(t2)) {
+		INTERACTIVE_OBJ * t2 = inter.getById(target, context.getIO());
+		if(!t2) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		ARX_INTERACTIVE_Detach(t, t2);
+		ARX_INTERACTIVE_Detach(GetInterNum(t), GetInterNum(t2));
 		
 		return Success;
 	}

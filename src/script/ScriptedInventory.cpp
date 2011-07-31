@@ -134,19 +134,16 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			long t = GetTargetByNameTarget(target);
-			if(t == -2) {
-				t = GetInterNum(context.getIO());
-			}
-			if(!ValidIONum(t)) {
+			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
 			}
 			
-			RemoveFromAllInventories(inter.iobj[t]);
-			inter.iobj[t]->show = SHOW_FLAG_IN_INVENTORY;
-			if(!CanBePutInInventory(inter.iobj[t])) {
-				PutInFrontOfPlayer(inter.iobj[t]);
+			RemoveFromAllInventories(t);
+			t->show = SHOW_FLAG_IN_INVENTORY;
+			if(!CanBePutInInventory(t)) {
+				PutInFrontOfPlayer(t);
 			}
 			
 			return Success;
@@ -227,27 +224,24 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			long t = GetTargetByNameTarget(target);
-			if(t == -2) {
-				t = GetInterNum(context.getIO());
-			}
-			if(!ValidIONum(t)) {
+			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
 			}
 			
-			if(ARX_EQUIPMENT_IsPlayerEquip(inter.iobj[t])) {
-				ARX_EQUIPMENT_UnEquip(inter.iobj[0], inter.iobj[t], 1);
+			if(ARX_EQUIPMENT_IsPlayerEquip(t)) {
+				ARX_EQUIPMENT_UnEquip(inter.iobj[0], t, 1);
 			} else {
-				RemoveFromAllInventories(inter.iobj[t]);
+				RemoveFromAllInventories(t);
 			}
 			
-			inter.iobj[t]->scriptload = 0;
-			inter.iobj[t]->show = SHOW_FLAG_IN_INVENTORY;
+			t->scriptload = 0;
+			t->show = SHOW_FLAG_IN_INVENTORY;
 			
 			long xx, yy;
-			if(!CanBePutInSecondaryInventory(context.getIO()->inventory, inter.iobj[t], &xx, &yy)) {
-				PutInFrontOfPlayer(inter.iobj[t]);
+			if(!CanBePutInSecondaryInventory(context.getIO()->inventory, t, &xx, &yy)) {
+				PutInFrontOfPlayer(t);
 			}
 			
 			return Success;
@@ -440,7 +434,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << target);
 		
-		long t = GetTargetByNameTarget(target);
+		long t = inter.getById(target);
 		if(!ValidIONum(t)) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;

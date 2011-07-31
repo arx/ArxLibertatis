@@ -204,7 +204,7 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 		badident(ident);
 	}
 	
-	long t = GetTargetByNameTarget(ident);
+	long t = inter.getById(ident);
 	
 	if(t > 0) {
 		
@@ -354,7 +354,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	// TO RESTORE !!!!!!!!!!!!
 	if (num == CURRENTLEVEL) // not changing level, just teleported
 	{
-		long t = GetTargetByNameTarget(target);
+		long t = inter.getById(target);
 
 		if (t > 0)
 		{
@@ -403,7 +403,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	LogDebug << "After  ARX_CHANGELEVEL_PopLevel";
 
 	// Now restore player pos to destination
-	long t = GetTargetByNameTarget(target);
+	long t = inter.getById(target);
 
 	if (t > 0)
 	{
@@ -2522,7 +2522,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		
 		std::ostringstream oss;
 		oss << fs::path::load(safestring(idx_io[i].filename)).basename() << '_' << std::setfill('0') << std::setw(4) << idx_io[i].ident;
-		if(GetTargetByNameTarget(oss.str()) < 0) {
+		if(inter.getById(oss.str()) < 0) {
 			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
 		}
 	}
