@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <cstdlib>
 
+#include <boost/static_assert.hpp>
+
 using std::min;
 using std::max;
 
@@ -129,11 +131,17 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 // Simple 2D Functions
 //*************************************************************************************
 
-inline float ffsqrt(float f)
-{
-	unsigned int y = ((((unsigned int &)f) - 0x3f800000) >> 1) + 0x3f800000;
-	// can repeat the following line 3 times for improved precision...
-	return (float &)y;
+template <class T, class O>
+inline T reinterpret(O v) {
+	BOOST_STATIC_ASSERT(sizeof(T) == sizeof(O));
+	// TODO use memcpy instead?
+	union { O o; T t; };
+	o = v;
+	return t; 
+}
+
+inline float ffsqrt(float f) {
+	return reinterpret<f32, u32>(((reinterpret<u32, f32>(f) - 0x3f800000) >> 1) + 0x3f800000);
 }
 
 /**

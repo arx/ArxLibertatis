@@ -1,6 +1,7 @@
 
 #include "graphics/direct3d/DX7TextureStage.h"
 
+#include "graphics/Math.h"
 #include "graphics/direct3d/DX7Texture2D.h"
 
 // TEMP: needed until all D3D code is isolated...
@@ -150,9 +151,9 @@ void DX7TextureStage::SetMipFilter(FilterMode filterMode)
 void DX7TextureStage::SetMipMapLODBias(float bias) {
 	if(GetKeyState(VK_F12) != 0) { // TODO what kind of hack is this?
 		float val = 0;
-		GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+		GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, reinterpret<DWORD, f32>(val));
 	} else {
-		GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&bias)));
+		GDevice->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, reinterpret<DWORD, f32>(bias));
 	}
 }
 

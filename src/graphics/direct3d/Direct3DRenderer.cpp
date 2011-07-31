@@ -332,9 +332,9 @@ void Direct3DRenderer::SetFogColor(Color color) {
 
 void Direct3DRenderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity) {
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, ARXToDXFogMode[fogMode]);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGSTART,	*((LPDWORD) (&fogStart)));
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGEND,		*((LPDWORD) (&fogEnd)));
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGDENSITY,  *((LPDWORD) (&fogDensity)));
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, reinterpret<DWORD, f32>(fogStart));
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGEND, reinterpret<DWORD, f32>(fogEnd));
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGDENSITY, reinterpret<DWORD, f32>(fogDensity));
 }
 
 void Direct3DRenderer::SetAntialiasing(bool enable) {
