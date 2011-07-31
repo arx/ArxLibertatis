@@ -112,13 +112,22 @@ u64 file_size(const path & p) {
 }
 
 bool remove(const path & p) {
-	bool ret = DeleteFileA(p.string().c_str()) == TRUE;
 
-	if(!ret) {
-		LogWarning << "DeleteFileA(" << p << ") failed! GetLastError() == " << GetLastError();
-	}
+	bool succeeded = true;
 	
-	return ret;
+	if(is_directory(p)) {
+		succeeded &= RemoveDirectoryA(p.string().c_str()) == TRUE;
+		if(!succeeded) {
+			LogWarning << "RemoveDirectoryA(" << p << ") failed ! GetLastError() " << GetLastError();
+		}
+	} else {
+		succeeded &= DeleteFileA(p.string().c_str()) == TRUE;
+		if(!succeeded) {
+			LogWarning << "DeleteFileA(" << p << ") failed! GetLastError() == " << GetLastError();
+		}
+	}
+
+	return succeeded;
 }
 
 bool remove_all(const path & p) {
@@ -136,14 +145,9 @@ bool remove_all(const path & p) {
 				succeeded &= remove_all(p / it.name());				
 			}
 		}
-
-		succeeded &= RemoveDirectoryA(p.string().c_str()) == TRUE;
-		if(!succeeded) {
-			LogWarning << "RemoveDirectoryA(" << p << ") failed ! GetLastError() " << GetLastError();
-		}
-	} else {
-		succeeded &= remove(p);
 	}
+
+	succeeded &= remove(p);
 	
 	return succeeded;
 }
