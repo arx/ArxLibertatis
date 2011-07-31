@@ -846,13 +846,13 @@ static void OnAmbianceSampleStart(void * inst, const SourceId &, void * data) {
 	}
 }
 
-void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
+void Ambiance::OnAmbianceSampleEnd(void * inst, const SourceId &, void * data) {
 	
-	Ambiance::Track * track = (Ambiance::Track*)data;
+	Ambiance::Track * track = (Track*)data;
 	arx_assert(_amb.isValid(track->a_id));
 	Ambiance * ambiance = _amb[track->a_id];
 
-	Ambiance::Track::KeyVector::iterator key = track->key_i;
+	Track::KeyVector::iterator key = track->key_i;
 	if(!key->loopc--) {
 		
 		//Key end
@@ -865,22 +865,24 @@ void Ambiance::OnAmbianceSampleEnd(void *, const SourceId &, void * data) {
 		if(++track->key_i == track->key_l.end()) {
 			//Track end
 			
-			if(track->flags & Ambiance::Track::MASTER) {
+			if(track->flags & Track::MASTER) {
 				//Ambiance end
 				ambiance->time = 0;
 				
 				if(ambiance->isLooped()) {
-					Ambiance::Track * track2 = &ambiance->track_l[ambiance->track_c];
+					Track * track2 = &ambiance->track_l[ambiance->track_c];
 					while (track2 > ambiance->track_l) {
 						--track2;
-						if(!(track2->flags & Ambiance::Track::PREFETCHED)) {
+						if(!(track2->flags & Track::PREFETCHED)) {
 							track2->key_i = track2->key_l.begin();
 						}
 					}
 					ambiance->start = session_time;
 				} else {
-					ambiance->status = Ambiance::Idle;
+					ambiance->stop();
 				}
+			} else {
+				reinterpret_cast<Source *>(inst)->stop();
 			}
 		}
 		
