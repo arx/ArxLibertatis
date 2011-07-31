@@ -89,10 +89,8 @@ namespace
 //*************************************************************************************
 Win32Application::Win32Application()
 {
-	m_strWindowTitle  = TEXT("ARX Fatalis");
+	m_strWindowTitle  = "ARX Fatalis";
 	m_bAppUseZBuffer  = true;
-	m_bAppUseStereo   = false;
-	m_bShowStats      = true;
 	m_fnConfirmDevice = NULL;
 	m_hWnd=NULL;
 }
@@ -100,7 +98,7 @@ Win32Application::Win32Application()
 //*************************************************************************************
 // Create()
 //*************************************************************************************
-bool Win32Application::Create() {
+bool Win32Application::Create(WindowCreationFlags CreationFlags) {
 	
 	HINSTANCE hInst = GetModuleHandle(0);
 
@@ -153,20 +151,18 @@ bool Win32Application::Create() {
         flags &= ~WS_OVERLAPPEDWINDOW;
 		flags |= WS_CHILD;
 	}
-
-    long menu;
-	if( Fullscreen )
-	{
+	
+	long menu = 0;
+	if(Fullscreen) {
 		flags &= ~WS_CAPTION;
 		flags &= ~WS_MAXIMIZEBOX;
 		flags &= ~WS_THICKFRAME;
 		flags &= ~WS_SYSMENU;
 		flags &= ~WS_OVERLAPPEDWINDOW;
-		menu = 0;
-	}
-	else
-	{
+	} else {
+#ifdef BUILD_EDITOR
 		menu = CreationMenu;
+#endif
 	}
 
 	// We want the client rectangle (3d display) to be a certain size, adjust the window size accordingly
@@ -188,7 +184,7 @@ bool Win32Application::Create() {
 
 	MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
 		                            flags,
-									CW_USEDEFAULT, CW_USEDEFAULT, wndWidth, wndHeight, owner,
+									CW_USEDEFAULT, CW_USEDEFAULT, wndWidth, wndHeight, HWND(0),
 		                            LoadMenu(hInst, MAKEINTRESOURCE(menu)),
 		                            hInst, 0L);
 
@@ -210,9 +206,6 @@ bool Win32Application::Create() {
 		Cleanup3DEnvironment();
 		return false;
 	}
-
-	// Setup the app so it can support single-stepping
-	m_dwBaseTime = dwARX_TIME_Get();
 
 	// The app is ready to go
 	m_bReady = true;
@@ -476,7 +469,7 @@ HRESULT Win32Application::Render3DEnvironment()
 	HRESULT hr;
 
 	// Check the cooperative level before rendering
-	if (FAILED(hr = m_pDD->TestCooperativeLevel()))
+	if (FAILED(hr = m_pFramework->GetDirectDraw()->TestCooperativeLevel()))
 	{
 		printf("TestCooperativeLevel failed\n");
 		switch (hr)
@@ -500,8 +493,6 @@ HRESULT Win32Application::Render3DEnvironment()
 	// Get the relative time, in seconds
 	if (FAILED(hr = FrameMove()))
 		return hr;
-
-	m_bSingleStep = false;
 
 	// Render the scene as normal
 	if (FAILED(hr = Render()))
@@ -666,14 +657,7 @@ HRESULT Win32Application::Initialize3DEnvironment()
 	                   m_pDeviceInfo->pDriverGUID, m_pDeviceInfo->pDeviceGUID,
 	                   &m_pDeviceInfo->ddsdFullscreenMode, dwFrameworkFlags)))
 	{
-		m_pDD        = m_pFramework->GetDirectDraw();
 		m_pD3D       = m_pFramework->GetDirect3D();
-
-		m_pddsRenderTarget     = m_pFramework->GetRenderSurface();
-		m_pddsRenderTargetLeft = m_pFramework->GetRenderSurfaceLeft();
-
-		m_ddsdRenderTarget.dwSize = sizeof(m_ddsdRenderTarget);
-		m_pddsRenderTarget->GetSurfaceDesc(&m_ddsdRenderTarget);
 
 		if (this->m_pFramework->m_pddsFrontBuffer)
 		{
@@ -749,7 +733,7 @@ bool Win32Application::SwitchFullScreen()
 //*************************************************************************************
 void Win32Application::OutputText( int x, int y, const std::string& str)
 {
-	if (m_pddsRenderTarget)
+	if (m_pFramework->GetRenderSurface())
 	{
 		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
 	}

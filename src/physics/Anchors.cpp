@@ -976,7 +976,6 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 				lastper = per;
 			}
 
-			mainApp->WinManageMess();
 			count++;
 			eg = &eb->Backg[i+j*eb->Xsize];
 			long precise = 0;
@@ -1139,7 +1138,6 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 			}
 
 			count += 1.f;
-			mainApp->WinManageMess();
 
 			eg = &eb->Backg[i+j*eb->Xsize];
 			pos.x = (float)((float)((float)i) * (float)eb->Xdiv);
@@ -1296,7 +1294,6 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 				}
 
 				count += 1.f;
-				mainApp->WinManageMess();
 
 				if (LASTFOUND) break;
 

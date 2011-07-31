@@ -112,34 +112,23 @@ static int iCurrZBias;
 Application::Application()
 {
 	long i;
-	d_dlgframe = 0;
 	m_pFramework   = NULL;
 	m_hWnd         = NULL;
-	m_pDD          = NULL;
 	m_pD3D         = NULL;
 
-	m_pddsRenderTarget     = NULL;
-	m_pddsRenderTargetLeft = NULL;
 	lpDDGammaControl = NULL;
 
 	m_bActive         = false;
 	m_bReady          = false;
-	m_bSingleStep     = false;
 
-	m_strWindowTitle  = "EERIE Application";
 	m_bAppUseZBuffer  = false;
-	m_bAppUseStereo   = false;
-	m_bShowStats      = false;
 	WndSizeX = 640;
 	WndSizeY = 480;
 	Fullscreen = 0;
-	CreationFlags = 0;
-	owner = 0L;
-	CreationMenu = 0;
 #ifdef BUILD_EDITOR
 	ToolBar = NULL;
+	CreationMenu = 0;
 #endif
-	strcpy(StatusText, "");
 
 	//Keyboard Init;
 	for (i = 0; i < 255; i++)	kbd.inkey[i] = 0;
@@ -191,29 +180,6 @@ void Application::EvictManagedTextures()
 	}
 }
 
-int Application::WinManageMess()
-{
-	BOOL bGotMsg = true;
-	MSG  msg;
-
-	while (bGotMsg)
-	{
-		if (m_bActive)
-			bGotMsg = PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE);
-		else
-			bGotMsg = GetMessage(&msg, NULL, 0U, 0U);
-
-		if (bGotMsg)
-		{
-			// Translate and dispatch the message
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-	}
-
-	return 1;
-}
-
 
 //*************************************************************************************
 // Pause()
@@ -234,15 +200,6 @@ void Application::Pause(bool bPause)
 		// Get a surface for the GDI
 		if (m_pFramework)
 			m_pFramework->FlipToGDISurface(true);
-
-		// Stop the scene from animating
-		m_dwStopTime = dwARX_TIME_Get();
-	}
-
-	if (0 == dwAppPausedCount)
-	{
-		// Restart the scene
-		m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
 	}
 }
 

@@ -853,7 +853,6 @@ void InitializeDanae()
 	mapcam.bkgcolor = Color::fromBGRA(0x001F1F55);
 	SetActiveCamera(&mapcam);
 	SetCameraDepth(10000.f);
-	mainApp->MustRefresh=true;
 
 	for (long i=0;i<32;i++)
 		memcpy(&TCAM[i],&subj,sizeof(EERIE_CAMERA));
@@ -1270,24 +1269,17 @@ int main(int argc, char ** argv) {
 	// Create the Application instance
 	mainApp = new Win32Application;
 
-	mainApp->d_dlgframe=0;
-
 #ifdef BUILD_EDITOR
-	if(MOULINEX) {
-		mainApp->WndSizeX = 800;
-		mainApp->WndSizeY = 12;
-	} else
+	if(!MOULINEX)
 #endif
 	{
-		mainApp->WndSizeX = config.video.width;
-		mainApp->WndSizeY = config.video.height;
 		mainApp->Fullscreen = config.video.fullscreen;
 	}
 
+	WindowCreationFlags wcf = WCF_NOSTDPOPUP;
 #ifdef BUILD_EDITOR
 	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
 		GAME_EDITOR=1;
-		mainApp->CreationFlags= WCF_NOSTDPOPUP | WCF_ACCEPTFILES ;
 		mainApp->CreationMenu=IDR_DANAEMENU;
 
 		//todo free
@@ -1299,18 +1291,14 @@ int main(int argc, char ** argv) {
 		mainApp->ToolBar->Type=EERIE_TOOLBAR_TOP;
 		mainApp->ToolBar->String.clear();
 	}
-	else
-#endif
-	{
-		mainApp->CreationFlags= WCF_NOSTDPOPUP;
-#ifdef BUILD_EDITOR
-		if(GAME_EDITOR) mainApp->CreationFlags|= WCF_ACCEPTFILES;
-#endif
+	if(GAME_EDITOR) {
+		wcf |= WCF_ACCEPTFILES;
 	}
+#endif
 
 	LogDebug << "Application Creation";
 
-	if( !mainApp->Create() )
+	if( !mainApp->Create(wcf) )
 		return 0;
 	
 	AdjustUI();

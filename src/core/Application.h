@@ -289,13 +289,8 @@ class Application {
 
 protected:
 	// Overridable variables for the app
-	DWORD m_dwBaseTime;
-	DWORD m_dwStopTime;
-		std::string m_strWindowTitle;
+	std::string m_strWindowTitle;
 	bool m_bAppUseZBuffer;
-	bool m_bAppUseStereo;
-	bool m_bShowStats;
-	bool m_bSingleStep;
 	
 #ifdef BUILD_EDITOR
 	HWND CreateToolBar(HWND hWndParent, HINSTANCE hInst);
@@ -311,41 +306,29 @@ public:
 	/* TODO Find out which of these can be privatized */
 	bool m_bActive;
 	bool m_bReady;
-	long d_dlgframe;
 	KEYBOARD_MNG kbd;
-	char StatusText[512];
 	short WndSizeX;
 	short WndSizeY;
 	bool  Fullscreen;
-	long CreationMenu;
-	long MustRefresh;
-	int menu;
-	float fMouseSensibility;
+	
 #ifdef BUILD_EDITOR
 	EERIETOOLBAR * ToolBar;
+	long CreationMenu;
 #endif
+	
 	/* TODO Should all be privatized eventually */
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
 	DDGAMMARAMP DDGammaRamp; // modified ramp value
 	DDGAMMARAMP DDGammaOld; // backup gamma values
-	LPDIRECTDRAW7 m_pDD;
-	LPDIRECTDRAWSURFACE7 m_pddsRenderTarget;
-	LPDIRECTDRAWSURFACE7 m_pddsRenderTargetLeft;	// For stereo modes
-	DDSURFACEDESC2 m_ddsdRenderTarget;
 	LPDIRECT3D7 m_pD3D;
 	CD3DFramework7 * m_pFramework;
-	HWND owner;
-	WindowCreationFlags CreationFlags;
 	D3DEnum_DeviceInfo * m_pDeviceInfo;
 	HWND m_hWnd;
-	HWND m_hWndRender;
 
 	// Class constructor
 	Application();
 
-	int WinManageMess();
 	void EvictManagedTextures();
-	void EERIEMouseUpdate(short x, short y);
 
 	/* Virtual functions which may be overridden for specific implementations */
 
@@ -358,16 +341,16 @@ public:
 	virtual void OutputText( int, int, const std::string& ) {}
 	
 
-	virtual bool Create() { return true; }
-	virtual int Run() { return 0; }
+	virtual bool Create(WindowCreationFlags CreationFlags) = 0;
+	virtual int Run() = 0;
 	virtual void Pause(bool bPause);
 	virtual bool Render() { return true; }
-	virtual bool InitDeviceObjects() { return true; }
-	virtual bool FinalCleanup() { return true; }
-	virtual bool Change3DEnvironment() { return true; }
-	virtual void Cleanup3DEnvironment() {}
-	virtual bool SwitchFullScreen() { return true; }
-	virtual bool UpdateGamma() { return true; }
+	virtual bool InitDeviceObjects() = 0;
+	virtual bool FinalCleanup() = 0;
+	virtual bool Change3DEnvironment() = 0;
+	virtual void Cleanup3DEnvironment() = 0;
+	virtual bool SwitchFullScreen() = 0;
+	virtual bool UpdateGamma() = 0;
 	
 };
 

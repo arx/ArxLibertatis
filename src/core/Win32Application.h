@@ -60,7 +60,7 @@ protected:
 public:
 	
 	Win32Application();
-	virtual bool Create();
+	bool Create(WindowCreationFlags CreationFlags);
 	virtual int Run();
 	bool InitDeviceObjects();
 	bool FinalCleanup();

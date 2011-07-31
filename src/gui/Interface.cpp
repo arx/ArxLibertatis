@@ -3887,7 +3887,6 @@ void Win32Application::ManagePlayerControls()
 				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*20.f*(float)FD*0.033f;
-				MustRefresh=true;
 				NOMOREMOVES=1;
 			}
 
@@ -3897,7 +3896,6 @@ void Win32Application::ManagePlayerControls()
 				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=-(float)EEcos(tr)*20.f*(float)FD*0.033f;
-				MustRefresh=true;
 				NOMOREMOVES=1;
 			}
 
@@ -3909,7 +3907,6 @@ void Win32Application::ManagePlayerControls()
 				float tr=radians(MAKEANGLE(eyeball.angle.b+90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*10.f*(float)FD*0.033f;
-				MustRefresh=true;
 				NOMOREMOVES=1;			
 			}
 
@@ -3922,7 +3919,6 @@ void Win32Application::ManagePlayerControls()
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				//eyeball.pos.y+=FD*0.33f;
 				eyeball.pos.z+=(float)EEcos(tr)*10.f*(float)FD*0.033f;
-				MustRefresh=true;
 				NOMOREMOVES=1;
 			}
 

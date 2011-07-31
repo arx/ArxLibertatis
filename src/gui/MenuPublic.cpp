@@ -509,8 +509,6 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int _iSensitivity)
 
 	config.input.mouseSensitivity = _iSensitivity;
 	GInput->setMouseSensibility(_iSensitivity);
-
-	mainApp->fMouseSensibility = ((float)config.input.mouseSensitivity) / 10.f;
 }
 
 //-----------------------------------------------------------------------------
