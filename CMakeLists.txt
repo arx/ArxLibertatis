@@ -207,7 +207,7 @@ else(MSVC)
 	else()
 		#Release
 		add_cxxflag("-fno-strict-aliasing")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g3") # TODO fix strict aliasing
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g3") # TODO fix strict aliasing
 		add_definitions(-D_NDEBUG)
 	endif()
 	
