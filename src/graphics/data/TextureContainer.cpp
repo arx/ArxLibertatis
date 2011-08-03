@@ -217,16 +217,14 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 // Name: TextureContainer()
 // Desc: Constructor for a texture object
 //-----------------------------------------------------------------------------
-TextureContainer::TextureContainer(const fs::path & strName, TCFlags flags) {
+TextureContainer::TextureContainer(const fs::path & strName, TCFlags flags) : m_texName(strName) {
 	
 	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"), "bad texture name: \"%s\"", strName.string().c_str()); // TODO(case-sensitive) remove
 	
-	m_texName = strName;
-
-	m_dwWidth		= 0;
-	m_dwHeight		= 0;
-	m_dwBPP			= 0;
-	m_dwFlags		= flags;
+	m_dwWidth = 0;
+	m_dwHeight = 0;
+	m_dwBPP = 0;
+	m_dwFlags = flags;
 
 	m_pTexture = NULL;
 
@@ -303,18 +301,15 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 	
 	bool bLoaded = false;
 	
-	m_texName = strPathname;
-	
-	fs::path tempPath = m_texName;
+	fs::path tempPath = strPathname;
 	bool foundPath = resources->getFile(tempPath.append(".png")) != NULL;
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpg"));
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpeg"));
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("bmp"));
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("tga"));
 
-	if(!foundPath)
-	{
-		LogError << m_texName << " not found";
+	if(!foundPath) {
+		LogError << strPathname << " not found";
 		return false;
 	}
 	

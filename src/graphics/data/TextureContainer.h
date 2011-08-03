@@ -142,7 +142,7 @@ public:
 	
 	bool LoadFile(const fs::path & strPathname);
 	
-	fs::path m_texName; // Name of texture
+	const fs::path m_texName; // Name of texture
 	u32 m_dwWidth;
 	u32 m_dwHeight;
 	u32 m_dwDeviceWidth;

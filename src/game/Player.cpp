@@ -1609,15 +1609,14 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 }
 TextureContainer * PLAYER_SKIN_TC = NULL;
 
-void ARX_PLAYER_Restore_Skin()
-{
-	std::string tx;
-	std::string tx2;
-	std::string tx3;
-	std::string tx4;
-
-	switch (player.skin)
-	{
+void ARX_PLAYER_Restore_Skin() {
+	
+	fs::path tx;
+	fs::path tx2;
+	fs::path tx3;
+	fs::path tx4;
+	
+	switch(player.skin) {
 		case 0:
 			tx  = "graph/obj3d/textures/npc_human_base_hero_head";
 			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head";
@@ -1663,6 +1662,8 @@ void ARX_PLAYER_Restore_Skin()
 	}
 
 	TextureContainer * tmpTC;
+	
+	// TODO maybe it would be better to replace the textures in the player object instead of replacing the texture data for all objects that use these textures
 
 	if (PLAYER_SKIN_TC && !tx.empty())
 		PLAYER_SKIN_TC->LoadFile(tx);
@@ -1728,7 +1729,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	{
 		io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
 
-		if (io->_npcdata->ex_rotate)
+		if(io->_npcdata->ex_rotate)
 		{
 			io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
 			io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
@@ -1737,9 +1738,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 
 			for (long n = 0; n < MAX_EXTRA_ROTATE; n++)
 			{
-				io->_npcdata->ex_rotate->group_rotate[n].a = 0;
-				io->_npcdata->ex_rotate->group_rotate[n].b = 0;
-				io->_npcdata->ex_rotate->group_rotate[n].g = 0;
+				io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 			}
 
 			io->_npcdata->ex_rotate->flags = 0;
