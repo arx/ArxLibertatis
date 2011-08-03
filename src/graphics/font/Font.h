@@ -1,6 +1,6 @@
 
-#ifndef _FONT_H_
-#define _FONT_H_
+#ifndef ARX_GRAPHICS_FONT_FONT_H
+#define ARX_GRAPHICS_FONT_FONT_H
 
 #include <string>
 #include <map>
@@ -8,75 +8,80 @@
 #include "graphics/Color.h"
 #include "math/Vector2.h"
 
-
-class Font
-{
+class Font {
+	
 	friend class FontCache;
-
+	
 public:
-	struct Info
-	{
-		Info( const std::string& fontFile, unsigned int fontSize ) : m_Name(fontFile), m_Size(fontSize) {}
-
-        bool operator == ( const Info& pOther ) const { return m_Name == pOther.m_Name && m_Size == pOther.m_Size; }
-		bool operator < ( const Info& pOther ) const  { return m_Name == pOther.m_Name ? m_Size < pOther.m_Size : m_Name < pOther.m_Name; }
-        
-		std::string     m_Name;
-        unsigned int    m_Size;
+	
+	struct Info {
+		
+		Info(const std::string & fontFile, unsigned int fontSize ) : m_Name(fontFile), m_Size(fontSize) {}
+		
+		bool operator==(const Info & pOther) const { return m_Name == pOther.m_Name && m_Size == pOther.m_Size; }
+		bool operator<(const Info & pOther) const  { return m_Name == pOther.m_Name ? m_Size < pOther.m_Size : m_Name < pOther.m_Name; }
+		
+		std::string m_Name;
+		unsigned int m_Size;
+		
 	};
-    
+	
 	//! Representation of a glyph.
-    struct Glyph
-    {
-        Vec2i		size;           //!< Size of the glyph.
-        Vec2i		draw_offset;    //!< Offset to use when drawing.
-        Vec2f		advance;        //!< Pen advance after write this glyph.
-		int				lsb_delta;		//!< The difference between hinted and unhinted left side bearing while autohinting is active. Zero otherwise.
-		int				rsb_delta;		//!< The difference between hinted and unhinted right side bearing while autohinting is active. Zero otherwise.
-
-        Vec2f		uv_start;       //!< UV coordinates.
-        Vec2f		uv_end;         //!< UV coordinates.
-
-		unsigned int	texture;        //!< Texture page on which the glyph can be found.
-    };
-
+	struct Glyph {
+		
+		Vec2i size;        //!< Size of the glyph.
+		Vec2i draw_offset; //!< Offset to use when drawing.
+		Vec2f advance;     //!< Pen advance after write this glyph.
+		int lsb_delta;     //!< The difference between hinted and unhinted left side bearing while autohinting is active. Zero otherwise.
+		int rsb_delta;     //!< The difference between hinted and unhinted right side bearing while autohinting is active. Zero otherwise.
+		
+		Vec2f uv_start; //!< UV coordinates.
+		Vec2f uv_end;   //!< UV coordinates.
+		
+		unsigned int texture; //!< Texture page on which the glyph can be found.
+		
+	};
+	
 public:
-	const Info&	GetInfo() const { return m_Info; }
-	const std::string& GetName() const { return m_Info.m_Name; }
+	
+	const Info & GetInfo() const { return m_Info; }
+	const std::string & GetName() const { return m_Info.m_Name; }
 	unsigned int GetSize() const { return m_Info.m_Size; }
-
-	void Draw( int pX, int pY, const std::string& str, Color color );
-	void Draw( int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color );
-
-	Vec2i GetTextSize( const std::string& str );
-	Vec2i GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd );
-
-	int	GetLineHeight() const;
-
+	
+	void Draw(int pX, int pY, const std::string & str, Color color);
+	void Draw(int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color);
+	
+	Vec2i GetTextSize(const std::string & str);
+	Vec2i GetTextSize(std::string::const_iterator itStart, std::string::const_iterator itEnd);
+	
+	int GetLineHeight() const;
+	
 	// For debugging purpose... will write one image file per page
 	// under "name_style_size_pagen.png"
 	void WriteToDisk();
-
-private:
-	// Construction/destruction handled by FontCache only
-	Font(const std::string& fontFile, unsigned int fontSize, struct FT_FaceRec_* face);
-	~Font();
-
-	// Disable copy of Font objects
-    Font( const Font& pOther );
-    const Font& operator = ( const Font& pOther );
-
-	bool InsertGlyph( unsigned int character );
 	
 private:
-	Info							m_Info;
-	unsigned int					m_RefCount;
-
-	struct FT_FaceRec_*				m_FTFace;
-	std::map<unsigned int, Glyph>	m_Glyphs;
-
-	class PackedTexture*			m_Textures;
+	
+	// Construction/destruction handled by FontCache only
+	Font(const std::string & fontFile, unsigned int fontSize, struct FT_FaceRec_ * face);
+	~Font();
+	
+	// Disable copy of Font objects
+	Font(const Font & pOther);
+	const Font & operator=(const Font & pOther);
+	
+	bool InsertGlyph(unsigned int character);
+	
+private:
+	
+	Info m_Info;
+	unsigned int m_RefCount;
+	
+	struct FT_FaceRec_ * m_FTFace;
+	std::map<unsigned int, Glyph> m_Glyphs;
+	
+	class PackedTexture * m_Textures;
+	
 };
 
-
-#endif // _FONT_H_
+#endif // ARX_GRAPHICS_FONT_FONT_H
