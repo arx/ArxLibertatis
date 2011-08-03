@@ -45,11 +45,11 @@ public:
 	const std::string& GetName() const { return m_Info.m_Name; }
 	unsigned int GetSize() const { return m_Info.m_Size; }
 
-	void Draw( int pX, int pY, const std::string& str, Color color ) const;
-	void Draw( int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color ) const;
+	void Draw( int pX, int pY, const std::string& str, Color color );
+	void Draw( int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color );
 
-	Vec2i GetTextSize( const std::string& str ) const;
-	Vec2i GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const;
+	Vec2i GetTextSize( const std::string& str );
+	Vec2i GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd );
 
 	int	GetLineHeight() const;
 

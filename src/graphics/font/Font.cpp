@@ -10,6 +10,7 @@
 #include "graphics/texture/TextureStage.h"
 #include "io/FilePath.h"
 
+using std::string;
 
 Font::Font( const std::string& fontFile, unsigned int fontSize, FT_Face face ) 
 	: m_Info(fontFile, fontSize)
@@ -122,13 +123,55 @@ void Font::WriteToDisk()
 	}
 }
 
-void Font::Draw( int x, int y, const std::string& str, Color color ) const
-{
-	Draw( x, y, str.begin(), str.end(), color );
+inline static bool read_utf8(string::const_iterator & it, string::const_iterator end, u32 & chr) {
+	
+	if(it == end) {
+		return false;
+	}
+	chr = *it++;
+	
+	if(chr & (1 << 7)) {
+		
+		if(!(chr & (1 << 6))) {
+			// TODO bad start position
+		}
+		
+		if(it == end) {
+			return false;
+		}
+		chr &= 0x3f, chr <<= 6, chr |= ((*it++) & 0x3f);
+		
+		if(chr & (1 << (5 + 6))) {
+			
+			if(it == end) {
+				return false;
+			}
+			chr &= ~(1 << (5 + 6)), chr <<= 6, chr |= ((*it++) & 0x3f);
+			
+			if(chr & (1 << (4 + 6 + 6))) {
+				
+				if(it == end) {
+					return false;
+				}
+				chr &= ~(1 << (4 + 6 + 6)), chr <<= 6, chr |= ((*it++) & 0x3f);
+				
+				if(chr & (1 << (3 + 6 + 6 + 6))) {
+					// TODO bad UTF-8 string
+				}
+				
+			}
+		}
+	}
+	
+	return true;
 }
 
-void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color ) const
-{
+void Font::Draw( int x, int y, const std::string& str, Color color ) {
+	Draw(x, y, str.begin(), str.end(), color);
+}
+
+void Font::Draw(int x, int y, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color) {
+	
     GRenderer->SetRenderState( Renderer::Lighting, false );
     GRenderer->SetRenderState( Renderer::AlphaBlending, true );
     GRenderer->SetBlendFunc( Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha );
@@ -159,18 +202,22 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	FT_UInt previousGlyphIdx = 0;
 	FT_Pos  prevRsbDelta = 0;
 
-    for( std::string::const_iterator it = itStart; it != itEnd; ++it )
-    {
+	u32 chr;
+	for(string::const_iterator it = itStart; read_utf8(it, itEnd, chr); ) {
+		
 		// Get glyph in glyph map
-        std::map<unsigned int, Glyph>::const_iterator itGlyph = m_Glyphs.find( *it );
-		if(itGlyph == m_Glyphs.end())
-			continue;
-		const Glyph& glyph = (*itGlyph).second;
+		std::map<unsigned int, Glyph>::const_iterator itGlyph = m_Glyphs.find(chr);
+		if(itGlyph == m_Glyphs.end()) {
+			if(chr < 256 || !InsertGlyph(chr) || (itGlyph = m_Glyphs.find(chr)) == m_Glyphs.end()) {
+				continue;
+			}
+		}
+		const Glyph & glyph = (*itGlyph).second;
 
 		// Kerning
 		if( FT_HAS_KERNING(m_FTFace) )
 		{
-			currentGlyphIdx = FT_Get_Char_Index( m_FTFace, *it );
+			currentGlyphIdx = FT_Get_Char_Index(m_FTFace, chr);
 			if(previousGlyphIdx != 0)
 			{
 				FT_Vector delta;
@@ -211,13 +258,12 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	GRenderer->SetCulling( Renderer::CullCCW );
 }
 
-Vec2i Font::GetTextSize( const std::string& str ) const
-{
+Vec2i Font::GetTextSize(const std::string & str) {
 	return GetTextSize(str.begin(), str.end());
 }
 
-Vec2i Font::GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const
-{
+Vec2i Font::GetTextSize(std::string::const_iterator itStart, std::string::const_iterator itEnd) {
+	
 	FT_UInt currentGlyph;
 	FT_UInt previousGlyph = 0;
 
@@ -226,18 +272,22 @@ Vec2i Font::GetTextSize( std::string::const_iterator itStart, std::string::const
 	float	penX = 0;
 	FT_Pos  prevRsbDelta = 0;
 	
-	for( std::string::const_iterator it = itStart; it != itEnd; ++it )
-    {
-        std::map<unsigned int, Glyph>::const_iterator itGlyph = m_Glyphs.find( *it );
-		if(itGlyph == m_Glyphs.end())
-			continue;
+	u32 chr;
+	for(string::const_iterator it = itStart; read_utf8(it, itEnd, chr); ) {
+		
+		std::map<unsigned int, Glyph>::const_iterator itGlyph = m_Glyphs.find(chr);
+		if(itGlyph == m_Glyphs.end()) {
+			if(chr < 256 || !InsertGlyph(chr) || (itGlyph = m_Glyphs.find(chr)) == m_Glyphs.end()) {
+				continue;
+			}
+		}
 
 		const Glyph& glyph = (*itGlyph).second;
 
 		// Kerning
 		if( FT_HAS_KERNING(m_FTFace) )
 		{
-			currentGlyph = FT_Get_Char_Index( m_FTFace, *it );
+			currentGlyph = FT_Get_Char_Index( m_FTFace, chr);
 			if(previousGlyph != 0)
 			{
 				FT_Vector delta;
