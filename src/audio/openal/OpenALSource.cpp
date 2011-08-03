@@ -44,7 +44,7 @@ namespace audio {
 #define ALError LogError ALPREFIX
 #define ALWarning LogWarning ALPREFIX
 #define LogAL(x) LogDebug ALPREFIX << x
-#define TraceAL(x) (void)0
+#define TraceAL(x) LogDebug ALPREFIX << x
 
 static size_t nbsources = 0;
 static size_t nbbuffers = 0;
@@ -93,7 +93,7 @@ OpenALSource::OpenALSource(Sample * _sample) :
 	Source(_sample),
 	tooFar(false),
 	streaming(false), loadCount(0), written(0), stream(NULL),
-	time(0), read(0), callb_i(0),
+	read(0),
 	source(0),
 	refcount(NULL) {
 	for(size_t i = 0; i < NBUFFERS; i++) {
@@ -510,11 +510,14 @@ aalError OpenALSource::play(unsigned play_count) {
 		
 		status = Playing;
 		
-		time = read = written = 0;
-		callb_i = channel.flags & FLAG_CALLBACK ? 0 : (size_t)-1;
+		read = written = 0;
+		reset();
 		
 		alSourcei(source, AL_SEC_OFFSET, 0);
 		AL_CHECK_ERROR("set source offset")
+		
+	} else {
+		TraceAL("play(+" << play_count << ") vol=" << channel.volume);
 	}
 	
 	if(play_count && loadCount != (unsigned)-1) {
@@ -532,7 +535,7 @@ aalError OpenALSource::play(unsigned play_count) {
 		alGetSourcei(source, AL_BUFFERS_QUEUED, &queuedBuffers);
 		AL_CHECK_ERROR("getting queued buffer count")
 		size_t nbuffers = MAXLOOPBUFFERS;
-		for(size_t i = queuedBuffers; i < nbuffers && loadCount ; i++) {
+		for(size_t i = queuedBuffers; i < nbuffers && loadCount; i++) {
 			TraceAL("queueing buffer " << buffers[0]);
 			alSourceQueueBuffers(source, 1, &buffers[0]);
 			AL_CHECK_ERROR("queueing buffer")
@@ -655,19 +658,6 @@ bool OpenALSource::updateCulling() {
 	}
 }
 
-aalError OpenALSource::update() {
-	
-	if(status != Playing) {
-		return AAL_OK;
-	}
-	
-	if(updateCulling()) {
-		return AAL_OK;
-	}
-	
-	return updateBuffers();
-}
-
 aalError OpenALSource::updateBuffers() {
 	
 	// Stream data / queue buffers.
@@ -771,35 +761,14 @@ aalError OpenALSource::updateBuffers() {
 	AL_CHECK_ERROR("getting source byte offset")
 	arx_assert(newRead >= 0);
 	
+	arx_assert(status == Playing || newRead == 0);
+	
 	time = time - read + newRead;
 	TraceAL("update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	
 	arx_assert_msg(time >= oldTime, " oldTime=" PRINT_SIZE_T " time=" PRINT_SIZE_T " read=" PRINT_SIZE_T " newRead=%d nbuffersProcessed=%d status=%d sourceState=%d" , oldTime, time, read, newRead, nbuffersProcessed, (int)status, sourceState);
 	ARX_UNUSED(oldTime);
 	read = newRead;
-	
-	while(true) {
-		
-		// Check if it's time to launch a callback
-		while(callb_i < sample->getCallbackCount() && sample->getCallback(callb_i).time <= time) {
-			LogAL("invoking callback " << callb_i << " for time==" << sample->getCallback(callb_i).time);
-			sample->getCallback(callb_i).func(this, id, sample->getCallback(callb_i).data);
-			callb_i++;
-		}
-		
-		if(time < sample->getLength()) {
-			break;
-		}
-		
-		time -= sample->getLength();
-		callb_i = channel.flags & FLAG_CALLBACK ? 0 : (size_t)-1;
-		
-		if(!time && status != Playing) {
-			// Prevent callback for time==0 being called again after playing.
-			break;
-		}
-		
-	}
 	
 	return ret;
 }

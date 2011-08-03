@@ -66,18 +66,4 @@ aalError Sample::load() {
 	return AAL_OK;
 }
 
-aalError Sample::setCallback(aalSampleCallback func, void * _data, size_t time, TimeUnit unit) {
-	
-	callbacks.resize(callbacks.size() + 1);
-	
-	callbacks.back().func = func;
-	callbacks.back().data = _data;
-	callbacks.back().time = unitsToBytes(time, format, unit);
-	if(callbacks.back().time > length) {
-		callbacks.back().time = length;
-	}
-	
-	return AAL_OK;
-}
-
 } // namespace audio

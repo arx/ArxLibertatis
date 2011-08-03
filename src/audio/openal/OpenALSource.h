@@ -64,24 +64,21 @@ public:
 	aalError stop();
 	aalError pause();
 	aalError resume();
-	aalError update();
 	
 	aalError updateVolume();
 	
 	aalError setRolloffFactor(float factor);
 	
+protected:
+	
+	bool updateCulling();
+	
+	aalError updateBuffers();
+	
 private:
 	
 	aalError sourcePlay();
 	aalError sourcePause();
-	
-	/**
-	 * Check if this source is too far from the listener and play/pause it accordingly.
-	 * @return true if the source is too far and should not be played
-	 */
-	bool updateCulling();
-	
-	aalError updateBuffers();
 	
 	/*!
 	 * Create buffers for all unused entries of the buffers array and fill them.
@@ -109,9 +106,7 @@ private:
 	size_t written; // Streaming status
 	Stream * stream;
 	
-	size_t time; // Elapsed 'time'
 	size_t read;
-	size_t callb_i; // Next callback index
 	
 	ALuint source;
 	

@@ -42,7 +42,7 @@ const GUID CLSID_EAXDirectSound = { 0x4ff53b81, 0x1ce0, 0x11d3, { 0xaa, 0xb8, 0x
 namespace audio {
 
 DSoundSource::DSoundSource(Sample * _sample, DSoundBackend * _backend) :
-	Source(_sample), tooFar(false), loop(0), time(0),
+	Source(_sample), tooFar(false), loop(0),
 	stream(NULL), read(0), write(0), size(0),
 	lpdsb(NULL), lpds3db(NULL), lpeax(NULL), backend(_backend) {
 }
@@ -451,9 +451,9 @@ aalError DSoundSource::play(unsigned play_count) {
 	}
 	
 	status = Playing;
-	time = read = write = 0;
+	read = write = 0;
 	loop = play_count - 1;
-	callb_i = channel.flags & FLAG_CALLBACK ? 0 : 0xffffffff;
+	reset();
 	
 	if(lpdsb->SetCurrentPosition(0)) {
 		return AAL_ERROR_SYSTEM;
@@ -501,7 +501,7 @@ aalError DSoundSource::resume() {
 	
 	status = Playing;
 	
-	if(isTooFar()) {
+	if(updateCulling()) {
 		return AAL_OK;
 	}
 	
@@ -512,7 +512,7 @@ aalError DSoundSource::resume() {
 	return AAL_OK;
 }
 
-bool DSoundSource::isTooFar() {
+bool DSoundSource::updateCulling() {
 	
 	if(!(channel.flags & FLAG_POSITION) || !lpds3db) {
 		return false;
@@ -545,6 +545,10 @@ bool DSoundSource::isTooFar() {
 		}
 		tooFar = true;
 		lpdsb->Stop();
+		if(!loop) {
+			stop();
+			return false;
+		}
 		return true;
 	}
 }
@@ -595,19 +599,7 @@ void DSoundSource::updateStreaming() {
 	}
 }
 
-aalError DSoundSource::update() {
-	
-	if(status != Playing) {
-		return AAL_OK;
-	}
-	
-	if(channel.flags & FLAG_POSITION && lpds3db && isTooFar()) {
-		if(!loop) {
-			stop();
-		} else {
-			return AAL_OK;
-		}
-	}
+aalError DSoundSource::updateBuffers() {
 	
 	size_t last = read;
 	DWORD pos;
@@ -623,12 +615,6 @@ aalError DSoundSource::update() {
 	
 	time += read < last ? read + size - last : read - last;
 	
-	// Check if it's time to launch a callback
-	if(callb_i < sample->getCallbackCount() && sample->getCallback(callb_i).time <= time) {
-		sample->getCallback(callb_i).func(this, id, sample->getCallback(callb_i).data);
-		callb_i++;
-	}
-	
 	if(time >= sample->getLength()) {
 		if(!loop) {
 			status = Idle;
@@ -637,10 +623,6 @@ aalError DSoundSource::update() {
 		if(!--loop && !stream) {
 			lpdsb->Play(0, 0, 0);
 		}
-		if(channel.flags & FLAG_CALLBACK) {
-			callb_i = 0;
-		}
-		time -= sample->getLength();
 	}
 	
 	if(stream) {

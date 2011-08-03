@@ -38,26 +38,15 @@ class Sample : public ResourceHandle {
 	
 public:
 	
-	struct Callback {
-		aalSampleCallback func;
-		void * data;
-		size_t time;
-	};
-	
 	Sample(const fs::path & name);
 	~Sample();
 	
 	// File I/O
 	aalError load();
 	
-	// Setup
-	aalError setCallback(aalSampleCallback func, void * data, size_t time, TimeUnit unit = UNIT_MS);
-	
 	inline const fs::path & getName() const { return name; }
 	inline size_t getLength() const { return length; }
 	inline const PCMFormat & getFormat() const { return format; }
-	inline size_t getCallbackCount() const { return callbacks.size(); }
-	inline const Callback & getCallback(size_t i) const { return callbacks[i]; }
 	
 	
 private:
@@ -65,8 +54,6 @@ private:
 	fs::path name;
 	size_t length;
 	PCMFormat format;
-	
-	std::vector<Callback> callbacks; // User callback list
 	
 };
 

@@ -65,22 +65,24 @@ public:
 	aalError stop();
 	aalError pause();
 	aalError resume();
-	aalError update();
 	
 	aalError updateVolume();
+	
+protected:
+	
+	bool updateCulling();
+	
+	aalError updateBuffers();
 	
 private:
 	
 	aalError init();
 	void updateStreaming();
-	bool isTooFar();
 	aalError clean();
 	bool checkPlaying();
 	
 	bool tooFar;
-	size_t callb_i; // Next callback index
 	unsigned loop; // Remaining loop count
-	size_t time; // Elapsed 'time'
 	Stream * stream;
 	size_t read, write; // Streaming status
 	size_t size; // Buffer size

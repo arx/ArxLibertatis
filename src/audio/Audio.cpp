@@ -271,8 +271,6 @@ AmbianceId aalCreateAmbiance(const fs::path & name) {
 	if(ambiance->load() || (a_id = _amb.add(ambiance)) == INVALID_ID) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
-	} else {
-		ambiance->setId(a_id);
 	}
 	
 	return a_id;
