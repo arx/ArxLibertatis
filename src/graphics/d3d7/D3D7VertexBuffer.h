@@ -37,32 +37,26 @@ public:
 	
 	void setData(const Vertex * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) {
 		
-		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
-		Vertex * dest;
-		
-		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDXBufferFlags[flags], (LPVOID*)&dest, NULL);
-		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
-		ARX_UNUSED(hr);
-		
-		memcpy(dest + offset, vertices, count * sizeof(Vertex));
-		
-		vb->Unlock();
+		if(Vertex * buffer = lock(flags | DiscardRange, offset, count)) {
+			
+			memcpy(buffer, vertices, count * sizeof(Vertex));
+			
+			unlock();
+		}
 	}
 	
 	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
 		ARX_UNUSED(count);
 		
-		Vertex * dest = NULL;
+		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		
-		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDXBufferFlags[flags], (LPVOID*)&dest, NULL);
+		LPVOID dest = NULL;
+		
+		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDXBufferFlags[flags], &dest, NULL);
 		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);
 		
-		if(dest) {
-			dest += offset;
-		}
-		
-		return dest;
+		return dest ? reinterpret_cast<Vertex *>(dest) + offset : NULL;
 	}
 	
 	void unlock() {
