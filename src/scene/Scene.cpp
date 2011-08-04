@@ -1683,11 +1683,11 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 
 				if ( ep->type & POLY_QUAD) 
 				{
-					if ( (DOTPRODUCT( ep->norm , nrm )>0.f) &&
-						 (DOTPRODUCT( ep->norm2 , nrm )>0.f) )	
+					if ((dot(ep->norm , nrm) > 0.f) &&
+						 (dot(ep->norm2 , nrm) > 0.f) )	
 						continue;
 				}
-				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
+				else if (dot(ep->norm , nrm) > 0.f)
 						continue;
 
 				GRenderer->SetCulling(Renderer::CullCW);
@@ -1840,11 +1840,11 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 
 				if ( ep->type & POLY_QUAD) 
 				{
-					if ( (DOTPRODUCT( ep->norm , nrm )>0.f) &&
-						 (DOTPRODUCT( ep->norm2 , nrm )>0.f) )	
+					if ( (dot( ep->norm , nrm )>0.f) &&
+						 (dot( ep->norm2 , nrm )>0.f) )	
 						continue;
 				}
-				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
+				else if ( dot( ep->norm , nrm )>0.f)
 						continue;
 
 				GRenderer->SetCulling(Renderer::CullCW);
@@ -2106,8 +2106,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 			if(ep->type&POLY_QUAD)
 			{
 				if(	(!(ep->type&POLY_DOUBLESIDED))&&
-					(DOTPRODUCT( ep->norm , nrm )>0.f)&&
-					(DOTPRODUCT( ep->norm2 , nrm )>0.f) )
+					(dot( ep->norm , nrm )>0.f)&&
+					(dot( ep->norm2 , nrm )>0.f) )
 				{
 					continue;
 				}
@@ -2117,7 +2117,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 			else
 			{
 				if(	(!(ep->type&POLY_DOUBLESIDED))&&
-					(DOTPRODUCT( ep->norm , nrm )>0.f) )
+					(dot( ep->norm , nrm )>0.f) )
 				{
 					continue;
 				}
@@ -3028,10 +3028,9 @@ void ARX_SCENE_Render(long flag) {
 	ACTIVECAM->norm.x=-(float)EEsin(temp0);
 	ACTIVECAM->norm.y= (float)EEsin(radians(ACTIVECAM->angle.a));
 	ACTIVECAM->norm.z= (float)EEcos(temp0);
-	float dddd=1.f/EEsqrt(ACTIVECAM->norm.x*ACTIVECAM->norm.x+ACTIVECAM->norm.y*ACTIVECAM->norm.y+ACTIVECAM->norm.z*ACTIVECAM->norm.z);
-	ACTIVECAM->norm.x*=dddd;
-	ACTIVECAM->norm.y*=dddd;
-	ACTIVECAM->norm.z*=dddd;
+	
+	fnormalize(ACTIVECAM->norm);
+	
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
 	temp0=0;
@@ -3180,11 +3179,11 @@ else
 
 				if ( ep->type & POLY_QUAD) 
 				{
-					if ( (DOTPRODUCT( ep->norm , nrm )>0.f) &&
-						 (DOTPRODUCT( ep->norm2 , nrm )>0.f) )	
+					if ( (dot( ep->norm , nrm )>0.f) &&
+						 (dot( ep->norm2 , nrm )>0.f) )	
 						continue;
 				}
-				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
+				else if ( dot( ep->norm , nrm )>0.f)
 						continue;
 
 				GRenderer->SetCulling(Renderer::CullCW);

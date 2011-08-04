@@ -494,7 +494,6 @@ void InitializeDanae()
 {
 	InitTileLights();
 	
-	EERIEMathPrecalc();
 	ARX_MISSILES_ClearAll();
 	ARX_SPELLS_Init();
 

@@ -386,17 +386,7 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 								(fabs(ep->v[a].p.z - z) <= fDiff))
 						{
 
-							float v1[3];
-							v1[0] = mon_ep->nrml->x;
-							v1[1] = mon_ep->nrml->y;
-							v1[2] = mon_ep->nrml->z;
-
-							float v2[3];
-							v2[0] = ep->nrml->x;
-							v2[1] = ep->nrml->y;
-							v2[2] = ep->nrml->z;
-
-							if (DOT(v1, v2) > 0.0f)
+							if (dot(*mon_ep->nrml, *ep->nrml) > 0.0f)
 							{
 								nb_totalvertexinpoly += nbvert;
 

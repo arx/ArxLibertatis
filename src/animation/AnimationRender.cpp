@@ -1284,7 +1284,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 				normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
-				if ((DOTPRODUCT(normFace , nrm) > 0.f)) continue;
+				if ((dot(normFace , nrm) > 0.f)) continue;
 			}
 
 			TextureContainer * pTex;
@@ -1549,7 +1549,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 							vect1.x = workon[first].p.x - workon[third].p.x;
 							vect1.y = workon[first].p.y - workon[third].p.y;
-							float len1 = 2.f / EEsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
+							float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
 
 							if (vect1.x < 0.f) len1 *= 1.2f;
 
@@ -1558,7 +1558,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 							vect2.x	 = workon[second].p.x - workon[third].p.x;
 							vect2.y	 = workon[second].p.y - workon[third].p.y;
 
-							float len2 = 1.f / EEsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
+							float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
 							if (vect2.x < 0.f) len2 *= 1.2f;
 

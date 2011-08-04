@@ -804,7 +804,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 			                                           eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
 		}
 		
-		eerie->grouplist[i].siz = EEsqrt(eerie->grouplist[i].siz) * ( 1.0f / 16 );
+		eerie->grouplist[i].siz = ffsqrt(eerie->grouplist[i].siz) * (1.f/16);
 		
 	}
 
@@ -1269,8 +1269,8 @@ void EERIE_3DOBJ::clear() {
 
 		c_data = 0;
 		
-	cub.xmin = cub.ymin = cub.zmin = EEdef_MAXfloat;
-	cub.xmax = cub.ymax = cub.zmax = EEdef_MINfloat;
+	cub.xmin = cub.ymin = cub.zmin = std::numeric_limits<float>::max();
+	cub.xmax = cub.ymax = cub.zmax = std::numeric_limits<float>::min();
 }
 
 void Clear3DScene(EERIE_3DSCENE * eerie) {
@@ -1280,8 +1280,8 @@ void Clear3DScene(EERIE_3DSCENE * eerie) {
 	}
 	
 	memset(eerie, 0, sizeof(EERIE_3DSCENE));
-	eerie->cub.xmin = eerie->cub.ymin = eerie->cub.zmin = EEdef_MAXfloat;
-	eerie->cub.xmax = eerie->cub.ymax = eerie->cub.zmax = EEdef_MINfloat;
+	eerie->cub.xmin = eerie->cub.ymin = eerie->cub.zmin = std::numeric_limits<float>::max();
+	eerie->cub.xmax = eerie->cub.ymax = eerie->cub.zmax = std::numeric_limits<float>::min();
 }
 
 // TODO move to destructor?

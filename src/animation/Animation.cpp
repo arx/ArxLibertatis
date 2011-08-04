@@ -1462,7 +1462,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			normFace.y=(normV10.z*normV20.x)-(normV10.x*normV20.z);
 			normFace.z=(normV10.x*normV20.y)-(normV10.y*normV20.x);
 
-			if((DOTPRODUCT( normFace , nrm )>0.f) ) continue;
+			if((dot( normFace , nrm )>0.f) ) continue;
 		}
 
 		TexturedVertex		*vert_list;
@@ -1829,7 +1829,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 					float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 10 )+0.7f))*0.6f;
 					vect1.x=workon[first].p.x-workon[third].p.x;
 					vect1.y=workon[first].p.y-workon[third].p.y;						
-					float len1=1.f/EEsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
+					float len1=1.f/ffsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
 
 					if (vect1.x<0.f) len1*=1.2f;
 
@@ -1837,7 +1837,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 					vect1.y*=len1;
 					vect2.x=workon[second].p.x-workon[third].p.x;
 					vect2.y=workon[second].p.y-workon[third].p.y;
-					float len2=1.f/EEsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
+					float len2=1.f/ffsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
 
 					if (vect2.x<0.f) len2*=1.2f;
 
