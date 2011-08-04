@@ -91,14 +91,11 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long
 
 	float surface = 0.f;
 
-	for (size_t i = 0; i < obj->facelist.size(); i++)
-	{
-
-		TexturedVertex * ev[3];
-		ev[0] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[0]].v;
-		ev[1] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[1]].v;
-		ev[2] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[2]].v;
-		surface += dist((ev[0]->p + ev[1]->p) * .5f, ev[2]->p) * dist(ev[0]->p, ev[1]->p) * .5f;
+	for(size_t i = 0; i < obj->facelist.size(); i++) {
+		const Vec3f & p0 = obj->vertexlist[obj->facelist[i].vid[0]].v;
+		const Vec3f & p1 = obj->vertexlist[obj->facelist[i].vid[1]].v;
+		const Vec3f & p2 = obj->vertexlist[obj->facelist[i].vid[2]].v;
+		surface += dist((p0 + p1) * .5f, p2) * dist(p0, p1) * .5f;
 	}
 
 	float ratio = surface * ( 1.0f / 10000 );

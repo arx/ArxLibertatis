@@ -1713,14 +1713,11 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 	long j, j2;
 
 	//Compute Faces Areas
-	for (size_t i = 0; i < eerie->facelist.size(); i++)
-	{
-		TexturedVertex * ev[3];
-		ev[0] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
-		ev[1] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
-		ev[2] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
-		eerie->facelist[i].temp = dist((ev[0]->p + ev[1]->p) * .5f, ev[2]->p)
-		                          * dist(ev[0]->p, ev[1]->p) * .5f;
+	for(size_t i = 0; i < eerie->facelist.size(); i++) {
+		const Vec3f & p0 = eerie->vertexlist[eerie->facelist[i].vid[0]].v;
+		const Vec3f & p1 = eerie->vertexlist[eerie->facelist[i].vid[1]].v;
+		const Vec3f & p2 = eerie->vertexlist[eerie->facelist[i].vid[2]].v;
+		eerie->facelist[i].temp = dist((p0 + p1) * .5f, p2) * dist(p0, p1) * .5f;
 	}
 
 	for (size_t i = 0; i < eerie->facelist.size(); i++)
