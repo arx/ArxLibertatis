@@ -243,7 +243,6 @@ void	MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u);
 void	MatrixReset(EERIEMATRIX * mat);
 void    MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b);
 void	VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat);
-#define VertexMatrixMultiply(a,b,c) VectorMatrixMultiply(a,b,c)
 void	GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const float rollDegrees);
 
 float	ffsqrt(float value);
