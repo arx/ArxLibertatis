@@ -3692,10 +3692,9 @@ void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
 		lSLID_VALUE = SLID_VALUE;
 	}
 }
-extern void ARX_PrepareBackgroundNRMLs();
-//-----------------------------------------------------------------------------
-void ArxGame::ManageKeyMouse()
-{
+
+void ArxGame::ManageKeyMouse() {
+	
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		INTERACTIVE_OBJ * pIO = NULL;

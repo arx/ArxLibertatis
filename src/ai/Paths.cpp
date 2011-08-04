@@ -101,7 +101,7 @@ using std::string;
 
 extern long CHANGE_LEVEL_ICON;
 extern float FrameDiff;
-bool IsPointInField(Vec3f * pos);
+static bool IsPointInField(Vec3f * pos);
 ARX_PATH **	ARXpaths = NULL;
 ARX_USE_PATH USE_CINEMATICS_PATH;
 MASTER_CAMERA_STRUCT MasterCamera;
@@ -673,6 +673,7 @@ void ARX_THROWN_OBJECT_Kill(long num)
 		}
 	}
 }
+
 void ARX_THROWN_OBJECT_KillAll()
 {
 	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
@@ -682,6 +683,7 @@ void ARX_THROWN_OBJECT_KillAll()
 
 	Thrown_Count = 0;
 }
+
 long ARX_THROWN_OBJECT_GetFree()
 {
 	unsigned long latest_time = ARXTimeUL();
@@ -711,7 +713,9 @@ long ARX_THROWN_OBJECT_GetFree()
 
 	return -1;
 }
+
 extern EERIE_3DOBJ * arrowobj;
+
 long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f * upvect, EERIE_QUAT * quat, float velocity, float damages, float poison)
 {
 	long num = ARX_THROWN_OBJECT_GetFree();
@@ -755,6 +759,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 
 	return num;
 }
+
 float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 {
 	float				distance_limit	=	1000.f;
@@ -930,8 +935,9 @@ EERIEPOLY * CheckArrowPolyCollision(Vec3f * start, Vec3f * end)
 
 	return NULL;
 }
-void CheckExp(long i)
-{
+
+void CheckExp(long i) {
+	
 	if ((Thrown[i].flags & ATO_FIERY)
 	        &&	!(Thrown[i].flags & ATO_UNDERWATER))
 	{
@@ -960,8 +966,10 @@ void CheckExp(long i)
 		}
 	}
 }
+
 extern float fZFogEnd;
 extern long FRAME_COUNT;
+
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
 	if (Thrown_Count <= 0) return;
@@ -1316,9 +1324,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 	}
 }
 
-//-----------------------------------------------------------------------------
 // RUBAN
-//-----------------------------------------------------------------------------
 void CRuban::Create(int _iNumThrow, int _iDuration)
 {
 	iNumThrow = _iNumThrow;
@@ -1343,7 +1349,6 @@ void CRuban::Create(int _iNumThrow, int _iDuration)
 
 }
 
-//-----------------------------------------------------------------------------
 void CRuban::AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
 {
 	if (nbrubandef > 255) return;
@@ -1361,7 +1366,6 @@ void CRuban::AddRubanDef(int origin, float size, int dec, float r, float g, floa
 	nbrubandef++;
 }
 
-//-----------------------------------------------------------------------------
 int CRuban::GetFreeRuban()
 {
 	int nb = 2048;
@@ -1374,7 +1378,6 @@ int CRuban::GetFreeRuban()
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
 void CRuban::AddRuban(int * f, int dec)
 {
 	int	num;
@@ -1426,7 +1429,6 @@ void CRuban::AddRuban(int * f, int dec)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CRuban::Update() {
 	
 	int	nb, num;
@@ -1443,7 +1445,6 @@ void CRuban::Update() {
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
 {
 	int numsuiv;
@@ -1480,7 +1481,6 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 	}
 }
 
-//-----------------------------------------------------------------------------
 float CRuban::Render()
 {
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -1502,13 +1502,11 @@ float CRuban::Render()
 
 	return 0;
 }
+
 extern bool IsValidPos3(Vec3f * pos);
 
-#define FORCE_THRESHOLD 290.f
-extern long PHYS_COLLIDER;
 extern EERIEPOLY * LAST_COLLISION_POLY;
 extern long CUR_COLLISION_MATERIAL;
-extern bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source);
  
 extern float VELOCITY_THRESHOLD;
 
@@ -1521,30 +1519,20 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, fl
 
 	float restlength = dist(pv_k->initpos, pv_l->initpos);
 	//Computes Spring Magnitude
-	deltaP.x = pv_k->pos.x - pv_l->pos.x;		
-	deltaP.y = pv_k->pos.y - pv_l->pos.y;	
-	deltaP.z = pv_k->pos.z - pv_l->pos.z;		
-	float dist = (float)TRUEsqrt(deltaP.x * deltaP.x + deltaP.y * deltaP.y + deltaP.z * deltaP.z); // Magnitude of delta
+	deltaP = pv_k->pos - pv_l->pos;
+	float dist = deltaP.length(); // Magnitude of delta
 	float divdist = 1.f / dist;
-	Hterm = (dist - restlength) * PHYSICS_constant;	
+	Hterm = (dist - restlength) * PHYSICS_constant;
 
-	deltaV.x = pv_k->velocity.x - pv_l->velocity.x;
-	deltaV.y = pv_k->velocity.y - pv_l->velocity.y;
-	deltaV.z = pv_k->velocity.z - pv_l->velocity.z;		// Delta Velocity Vector
+	deltaV = pv_k->velocity - pv_l->velocity; // Delta Velocity Vector
 	Dterm = dot(deltaV, deltaP) * PHYSICS_Damp * divdist; // Damping Term
 	Dterm = (-(Hterm + Dterm));
 	divdist *= Dterm;
-	springforce.x = deltaP.x * divdist;	// Normalize Distance Vector
-	springforce.y = deltaP.y * divdist;	// & Calc Force
-	springforce.z = deltaP.z * divdist;
+	springforce = deltaP * divdist; // Normalize Distance Vector & Calc Force
 
-	pv_k->force.x += springforce.x;	// + force on particle 1
-	pv_k->force.y += springforce.y;
-	pv_k->force.z += springforce.z;
+	pv_k->force += springforce; // + force on particle 1
 
-	pv_l->force.x -= springforce.x;	// - force on particle 2
-	pv_l->force.y -= springforce.y;
-	pv_l->force.z -= springforce.z;
+	pv_l->force -= springforce; // - force on particle 2
 }
 
 void ComputeForces(PHYSVERT * phys, long nb)
@@ -1597,14 +1585,12 @@ void ComputeForces(PHYSVERT * phys, long nb)
 		}
 	}
 }
+
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source);
 
- 
-///////////////////////////////////////////////////////////////////////////////
 // Function:	RK4Integrate
 // 	Calculate new Positions and Velocities given a deltatime
 // 	DeltaTime that has passed since last iteration
-///////////////////////////////////////////////////////////////////////////////
 void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime)
 {
 
@@ -1676,8 +1662,9 @@ void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime)
 	}
 
 }
-bool IsPointInField(Vec3f * pos)
-{
+
+static bool IsPointInField(Vec3f * pos) {
+	
 	for (size_t i = 0; i < MAX_SPELLS; i++)
 	{
 		if ((spells[i].exist)
@@ -1730,9 +1717,8 @@ static bool IsObjectInField(EERIE_3DOBJ * obj) {
 
 	return false;
 }
-bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd);
 
-bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
+static bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
 	Vec3f pol[3];
 	pol[0].x = ep->v[0].p.x;
@@ -1890,7 +1876,7 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 	return ret;
 }
 
-bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source) {
+static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source) {
 	
 	PHYSVERT * pv;
 	Vec3f oldpos[32];
@@ -1922,8 +1908,6 @@ bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long sour
 
 	RK4Integrate(obj, framediff);
 
-
-	PHYS_COLLIDER = -1;
 	EERIE_SPHERE sphere;
 	pv = &obj->pbox->vert[0];
 	sphere.origin.x = pv->pos.x;
@@ -2258,8 +2242,7 @@ void ARX_PrepareBackgroundNRMLs()
 
 }
 
-void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags, Anglef * angle)
-{
+void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags, Anglef * angle) {
 	io->GameFlags |= GFLAG_NO_PHYS_IO_COL;
 	EERIE_PHYSICS_BOX_Launch(obj, pos, vect, flags, angle);
 }

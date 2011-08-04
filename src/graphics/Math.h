@@ -81,13 +81,7 @@ inline float rnd() {
 #define EEfabs(val) (float)fabs(val)
 #define EEatan(val) (float)atan(val)
 
-//True Methods
-// TODO just use sqrt directly
-#define TRUEsqrt(val) (float)sqrt(val)
-
-//-----------------------------------------------------------------------------
 // Math constants
-//-----------------------------------------------------------------------------
 #define PI 3.14159265358979323846f
 
 // TODO consider replacing these with defines from #include <cfloat>
