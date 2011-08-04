@@ -1992,14 +1992,12 @@ void ComputeTileLights(short x,short z)
 
 	for (long i=0;i<TOTPDL;i++)
 	{
-		float d2d=Distance2D(xx,zz,PDL[i]->pos.x,PDL[i]->pos.z);
-
-		if (d2d<PDL[i]->fallend+60.f)
-		{
+		if(closerThan(Vec2f(xx, zz), Vec2f(PDL[i]->pos.x, PDL[i]->pos.z), PDL[i]->fallend + 60.f)) {
+			
 			if (tilelights[x][z].num>=tilelights[x][z].max)
 			{
 				tilelights[x][z].max++;
-				tilelights[x][z].el=(EERIE_LIGHT **)realloc(tilelights[x][z].el,sizeof(EERIE_LIGHT *)*(tilelights[x][z].max));				
+				tilelights[x][z].el=(EERIE_LIGHT **)realloc(tilelights[x][z].el,sizeof(EERIE_LIGHT *)*(tilelights[x][z].max));
 			}
 
 			tilelights[x][z].el[tilelights[x][z].num]=PDL[i];

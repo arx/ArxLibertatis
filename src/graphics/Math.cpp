@@ -546,12 +546,13 @@ bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 
 	m1 = cyl1->radius + cyl2->radius;
 
-	if (SquaredDistance2D(cyl1->origin.x, cyl1->origin.z, cyl2->origin.x, cyl2->origin.z)
-	        <= m1 * m1)
+	if(!fartherThan(Vec2f(cyl1->origin.x, cyl1->origin.z), Vec2f(cyl2->origin.x, cyl2->origin.z), m1)) {
 		return true;
+	}
 
 	return false;
 }
+
 // Sort of...
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 {
@@ -565,13 +566,10 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 
 	if (m1 > m2) return false;
 
-	// Using Squared dists
-	if (SquaredDistance2D(cyl1->origin.x,
-	                      cyl1->origin.z,
-	                      s->origin.x,
-	                      s->origin.z)
-	        <= (cyl1->radius + s->radius)*(cyl1->radius + s->radius)) return true;
-
+	if(!fartherThan(Vec2f(cyl1->origin.x, cyl1->origin.z), Vec2f(s->origin.x, s->origin.z), cyl1->radius + s->radius)) {
+		return true;
+	}
+	
 	return false;
 }
 

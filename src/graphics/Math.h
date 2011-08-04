@@ -383,14 +383,6 @@ void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, Vec3f * v0, Vec3f * v1, Vec
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
 void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 
-//*******************************************************************************
-// DISTANCES Functions
-//*******************************************************************************
-#define SquaredDistance2D(x0,y0,x1,y1) (float)( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
-
-#define Distance2D(x0,y0,x1,y1) (float)EEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
-#define TRUEDistance2D(x0,y0,x1,y1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
-
 inline float square(float x) {
 	return x * x;
 }
@@ -403,38 +395,45 @@ inline float fdist(const Vec3f & from, const Vec3f & to) {
 	return ffsqrt(distSqr(from, to));
 }
 
-inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)
-{
-    using std::min;
-    using std::max;
+/*!
+ * Compute (approximate) Distance between two 2D points
+ * may use an approximative way of computing sqrt !
+ */
+inline float fdist(const Vec2f & from, const Vec2f & to) {
+	return ffsqrt(distSqr(from, to));
+}
+
+inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
+	
 	float pos1 = cyl->origin.y + cyl->height;
-
-	if (pt->y < min(cyl->origin.y, pos1)) return false;
-
-	if (pt->y > max(cyl->origin.y, pos1)) return false;
-
-	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
+	
+	if(pt->y < min(cyl->origin.y, pos1)) {
+		return false;
+	}
+	
+	if(pt->y > max(cyl->origin.y, pos1)) {
+		return false;
+	}
+	
+	if(!fartherThan(Vec2f(cyl->origin.x, cyl->origin.z), Vec2f(pt->x, pt->z), cyl->radius)) {
 		return true;
-
+	}
+	
 	return false;
 }
 
-inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)
-{
-    using std::min;
-    using std::max;
+inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
+	
 	float pos1 = cyl->origin.y + cyl->height;
-	long ret = 2;
-
-	if (pt->y < min(cyl->origin.y, pos1)) return 0;
-
-	if (pt->y > max(cyl->origin.y, pos1)) ret = 1;
-
-	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
-	{
-		return ret;
+	
+	if(pt->y < min(cyl->origin.y, pos1)) {
+		return 0;
 	}
-
+	
+	if(!fartherThan(Vec2f(cyl->origin.x, cyl->origin.z), Vec2f(pt->x, pt->z), cyl->radius)) {
+		return (pt->y > max(cyl->origin.y, pos1)) ? 1 : 2;
+	}
+	
 	return 0;
 }
 

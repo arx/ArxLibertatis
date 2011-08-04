@@ -7966,20 +7966,18 @@ long Manage3DCursor(long flags)
 					
 					for ( size_t i = 0 ; i < io->obj->vertexlist.size() ; i++ )
 					{
-						maxdist = max(	maxdist,
-											TRUEDistance2D(	objcenter.x, objcenter.z,
-			                               io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z) - 4.f);
+						maxdist = max(maxdist, dist(Vec2f(objcenter.x, objcenter.z),
+			                               Vec2f(io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z)) - 4.f);
 					}
 
 					if (io->obj->pbox)
 					{
 						for (int i=1;i<io->obj->pbox->nb_physvert;i++)
 						{
-							maxdist=max(maxdist,
-								TRUEDistance2D(	io->obj->pbox->vert[0].initpos.x,
-												io->obj->pbox->vert[0].initpos.z,
-												io->obj->pbox->vert[i].initpos.x,
-				                               io->obj->pbox->vert[i].initpos.z) + 14.f);
+							maxdist = max(maxdist, dist(Vec2f(io->obj->pbox->vert[0].initpos.x,
+												io->obj->pbox->vert[0].initpos.z),
+												Vec2f(io->obj->pbox->vert[i].initpos.x,
+				                               io->obj->pbox->vert[i].initpos.z)) + 14.f);
 						}
 					}
 

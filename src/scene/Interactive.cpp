@@ -3658,8 +3658,9 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						        ||	(miny >= sphere.origin.y))
 							if (In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius))
 							{
-								if (Distance2D(io->pos.x, io->pos.z, sphere.origin.x, sphere.origin.z) < 440.f + sphere.radius)
-								{
+								// TODO why ignore the z components?
+								if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+									
 									EERIEPOLY ep;
 									ep.type = 0;
 

@@ -825,8 +825,6 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z);
 float GetColorz(float x, float y, float z);
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
 
-float Distance2D(float x0, float y0, float x1, float y1);
-
 int EERIELaunchRay2(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
 int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
 float GetGroundY(Vec3f * pos);

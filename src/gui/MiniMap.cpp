@@ -189,15 +189,13 @@ void ARX_MINIMAP_ValidatePlayerPos()
 {
 	if (BLOCK_PLAYER_CONTROLS) return;
 
-	float dist = Distance2D(AM_LASTPOS_x, AM_LASTPOS_z, player.pos.x, player.pos.z);
 	float req;
 
 	if ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)) && (Book_Mode == BOOKMODE_MINIMAP))
 		req = 20.f;
 	else req = 80.f;
 
-	if (dist > req)
-	{
+	if(fartherThan(Vec2f(AM_LASTPOS_x, AM_LASTPOS_z), Vec2f(player.pos.x, player.pos.z), req)) {
 		AM_LASTPOS_x = player.pos.x;
 		AM_LASTPOS_z = player.pos.z;
 		ARX_MINIMAP_ValidatePos();
@@ -518,7 +516,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							&& (i >= 0) && (i < MINIMAP_MAX_X)
 							&& (j >= 0) && (j < MINIMAP_MAX_Z))
 					{
-						float d = Distance2D(posx * divXratio + casex * ( 1.0f / 2 ), posy * divYratio /*-casey * 2 * Yratio*/, px, py);
+						float d = fdist(Vec2f(posx * divXratio + casex * ( 1.0f / 2 ), posy * divYratio), Vec2f(px, py));
 
 						if (d <= 6.f)
 						{
@@ -802,7 +800,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 									}
 
-									float d = Distance2D(player.pos.x, player.pos.z, inter.iobj[lnpc]->pos.x, inter.iobj[lnpc]->pos.z);
+									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(inter.iobj[lnpc]->pos.x, inter.iobj[lnpc]->pos.z));
 
 
 									if ((d <= 800) && (fabs(inter.iobj[0]->pos.y - inter.iobj[lnpc]->pos.y) < 250.f))

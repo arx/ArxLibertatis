@@ -110,7 +110,7 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 	for (long num=0;num<to;num++)
 	{
-		float dd = Distance2D(ep->v[num].p.x, ep->v[num].p.z, cyl->origin.x, cyl->origin.z);
+		float dd = fdist(Vec2f(ep->v[num].p.x, ep->v[num].p.z), Vec2f(cyl->origin.x, cyl->origin.z));
 
 		if (dd<nearest)
 		{
@@ -375,8 +375,7 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 			&& (!(io->ioflags & (IO_FIX | IO_CAMERA | IO_MARKER)))
 			)
 		{
-			if (Distance2D(io->pos.x,io->pos.z,ioo->pos.x,ioo->pos.z)<450.f)
-			{
+			if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ioo->pos.x, ioo->pos.z), 450.f)) {
 				EERIEPOLY ep;
 				ep.type=0;
 				float miny=9999999.f;
@@ -663,7 +662,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 			if ((num==2) || (num==3))
 					nearz += 100; 
 
-			float dd=Distance2D(nearx,nearz,cyl->origin.x,cyl->origin.z);
+			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cyl->origin.x, cyl->origin.z));
 
 			if (dd<nearest)
 			{
@@ -758,7 +757,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 					||	((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))
 					)
 				{
-					if (Distance2D(io->pos.x,io->pos.z,cyl->origin.x,cyl->origin.z)<440.f+cyl->radius)
+					if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(cyl->origin.x, cyl->origin.z), 440.f + cyl->radius))
 					if (In3DBBoxTolerance(&cyl->origin,&io->bbox3D, cyl->radius+80))
 					{
 						if (io->ioflags & IO_FIELD)
@@ -1100,8 +1099,8 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 						||	(miny>= sphere->origin.y) )
 					if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
 					{
-						if (Distance2D(io->pos.x,io->pos.z,sphere->origin.x,sphere->origin.z)<440.f+sphere->radius)
-						{
+						if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
+							
 							EERIEPOLY ep;
 							ep.type=0;
 
@@ -1316,8 +1315,8 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 						||	(miny< sphere->origin.y+sphere->radius) )
 					if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
 					{
-						if (Distance2D(io->pos.x,io->pos.z,sphere->origin.x,sphere->origin.z)<440.f+sphere->radius)
-						{
+						if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
+							
 							EERIEPOLY ep;
 							ep.type=0;
 
@@ -2050,8 +2049,8 @@ void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status)
 
 		if (distSqr(ad->pos, io->pos) > square(600.f)) continue;
 
-		if (Distance2D(io->pos.x,io->pos.z,ad->pos.x,ad->pos.z)<440.f)
-		{
+		if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ad->pos.x, ad->pos.z), 440.f)) {
+			
 			EERIEPOLY ep;
 			ep.type=0;
 

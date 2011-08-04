@@ -1333,7 +1333,9 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 	tv.y = io->pos.y;
 	tv.z = io->pos.z;
 
-	if (Distance2D(tv.x, tv.z, io->target.x, io->target.z) <= 5.f) return;
+	if(!fartherThan(Vec2f(tv.x, tv.z), Vec2f(io->target.x, io->target.z), 5.f)) {
+		return;
+	}
 
 	float cangle, tangle;
 	tangle = MAKEANGLE(180.f + degrees(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
@@ -3184,7 +3186,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	{
 
 	// XS : Moved to top of func
-	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
+	_dist = dist(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
 
 	if (io->_npcdata->pathfind.listnb > 0)
@@ -3517,7 +3519,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	APPLY_PUSH = 0;
 
 	// Compute distance 2D to target.
-	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
+	_dist = dist(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
 
 	if (io->_npcdata->pathfind.listnb > 0)
