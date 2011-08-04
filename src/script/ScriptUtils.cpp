@@ -413,6 +413,8 @@ void initSuppressions() {
 	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 45586, "goto"); // missing label "main_alert"
 	
+	suppress("human_base_0012", 1519, "goto"); // missing label 'stop'
+	
 	suppress("human_base_0022", 10108, "behaviormoveto"); // unknown command 'behaviormoveto', should be 'behavior move_to'
 	
 	suppress("human_base_0041", 4279, "if"); // missing space between oprateor '==' and argument
