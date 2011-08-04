@@ -436,6 +436,8 @@ void initSuppressions() {
 	
 	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
 	
+	suppress("lamp_goblin2_0003", 737, "no"); // unknown command 'no' should be 'nop'?
+	
 	suppress("light_door", 422, "set"); // bad variable name: "durability"
 	
 	suppress("light_door_0019", 105, "setspeakpitch"); // setspeakpitch only applies to NPCs
