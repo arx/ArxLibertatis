@@ -387,12 +387,9 @@ void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 // DISTANCES Functions
 //*******************************************************************************
 #define SquaredDistance2D(x0,y0,x1,y1) (float)( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
-#define SquaredDistance3D(x0,y0,z0,x1,y1,z1) (float)( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
 
 #define Distance2D(x0,y0,x1,y1) (float)EEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
-#define Distance3D(x0,y0,z0,x1,y1,z1) (float)EEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
 #define TRUEDistance2D(x0,y0,x1,y1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
-#define TRUEDistance3D(x0,y0,z0,x1,y1,z1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
 
 // TODO don't use TexturedVertex
 

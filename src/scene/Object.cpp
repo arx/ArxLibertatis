@@ -1736,9 +1736,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 		for (j = 0; j < 3; j++)
 		{
 			float mod = area * area;
-			nrrr.x = nrml.x = eerie->facelist[i].norm.x * mod;
-			nrrr.y = nrml.y = eerie->facelist[i].norm.y * mod;
-			nrrr.z = nrml.z = eerie->facelist[i].norm.z * mod;
+			nrrr = nrml = eerie->facelist[i].norm * mod;
 			count = mod;
 
 			for (size_t i2 = 0; i2 < eerie->facelist.size(); i2++)
@@ -1749,16 +1747,10 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 
 					for (j2 = 0; j2 < 3; j2++)
 					{
-						float seuil2 = 0.1f; 
-						
-						float dist = TRUEDistance3D(eerie->vertexlist[eerie->facelist[i2].vid[j2]].v.x, eerie->vertexlist[eerie->facelist[i2].vid[j2]].v.y, eerie->vertexlist[eerie->facelist[i2].vid[j2]].v.z,
-						                            eerie->vertexlist[eerie->facelist[i].vid[j]].v.x, eerie->vertexlist[eerie->facelist[i].vid[j]].v.y, eerie->vertexlist[eerie->facelist[i].vid[j]].v.z); 
-						if (dist < seuil2)
+						if (closerThan(eerie->vertexlist[eerie->facelist[i2].vid[j2]].v, eerie->vertexlist[eerie->facelist[i].vid[j]].v, .1f))
 						{
 							mod = (area2 * area2);
-							nrml.x += eerie->facelist[i2].norm.x * mod; 
-							nrml.y += eerie->facelist[i2].norm.y * mod; 
-							nrml.z += eerie->facelist[i2].norm.z * mod; 
+							nrml += eerie->facelist[i2].norm * mod;
 							count += mod; 
 						}
 					}
@@ -1766,19 +1758,13 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 			}
 
 			count = 1.f / count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.x = nrml.x * count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.y = nrml.y * count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.z = nrml.z * count;
+			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p = nrml * count;
 		}
 	}
 
-	for (size_t i = 0; i < eerie->facelist.size(); i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.x = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.x;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.y = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.y;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.z = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.z;
+	for(size_t i = 0; i < eerie->facelist.size(); i++) {
+		for(j = 0; j < 3; j++) {
+			eerie->vertexlist[eerie->facelist[i].vid[j]].norm = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p;
 		}
 	}
 
@@ -1794,11 +1780,8 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 
 		if (count > 0.f)
 		{
-			for (size_t idx = 0 ; idx < eerie->grouplist[head_idx].indexes.size() ; idx++)
-			{
-				center.x += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v.x;
-				center.y += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v.y;
-				center.z += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v.z;
+			for(size_t idx = 0 ; idx < eerie->grouplist[head_idx].indexes.size(); idx++) {
+				center += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v;
 			}
 
 			float divc = 1.f / count;

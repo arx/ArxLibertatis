@@ -1508,7 +1508,7 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	float			distance;
 	float			nearest		=	distance	=	fdist(*orgn, *dest);
 
-	if (distance < pas) pas	=	distance * ( 1.0f / 2 );
+	if (distance < pas) pas	=	distance * .5f;
 
 	dx	=	(dest->x - orgn->x);
 	adx	=	EEfabs(dx);
@@ -1806,7 +1806,7 @@ bool GetRoomCenter(long room_num, Vec3f * center)
 		bbox.max.z = max(bbox.max.z, ep->center.z);
 	}
 
-	*center = (bbox.max + bbox.min) * ( 1.0f / 2 );
+	*center = (bbox.max + bbox.min) * .5f;
 
 	portals->room[room_num].center = *center;
 	portals->room[room_num].radius = fdist(*center, bbox.max);
@@ -1925,9 +1925,9 @@ void ComputeRoomDistance()
 		// Add V centers;
 		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
 		{
-			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].p.x + portals->portals[i].poly.v[nk].p.x) * ( 1.0f / 2 );
-			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].p.y + portals->portals[i].poly.v[nk].p.y) * ( 1.0f / 2 );
-			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].p.z + portals->portals[i].poly.v[nk].p.z) * ( 1.0f / 2 );
+			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].p.x + portals->portals[i].poly.v[nk].p.x) * .5f;
+			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].p.y + portals->portals[i].poly.v[nk].p.y) * .5f;
+			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].p.z + portals->portals[i].poly.v[nk].p.z) * .5f;
 			ptr[curpos] = (void *)&portals->portals[i];
 			curpos++;
 		}
@@ -2136,12 +2136,8 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 //*************************************************************************************
 // Checks for angular difference between normals
 //*************************************************************************************
-bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2)
-{
-	if (Distance3D(norm->x, norm->y, norm->z,
-				   norm2->x, norm2->y, norm2->z) < 1.41421f) return true;
-
-	return false;
+bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
+	return closerThan(*norm, *norm2, 1.41421f);
 }
 extern void ARX_PrepareBackgroundNRMLs();
 
@@ -2187,7 +2183,7 @@ void PrepareBackgroundNRMLs()
 					}
 					else if ((k > 0) && (nbvert > 3))
 					{
-						nrml = (ep->norm + ep->norm2) * ( 1.0f / 2 );
+						nrml = (ep->norm + ep->norm2) * .5f;
 						count = 1.f; 
 					}
 					else
@@ -2249,7 +2245,7 @@ void PrepareBackgroundNRMLs()
 											}
 											else if ((k2 > 0) && (nbvert2 > 3))
 											{
-												Vec3f tnrml = (ep2->norm + ep2->norm2) * ( 1.0f / 2 );
+												Vec3f tnrml = (ep2->norm + ep2->norm2) * .5f;
 
 												if (LittleAngularDiff(&cur_nrml, &tnrml))
 												{
@@ -2401,8 +2397,8 @@ void EERIEPOLY_Compute_PolyIn()
 			bb.min.y = (float)j * ACTIVEBKG->Zdiv - 10;
 			bb.max.y = (float)bb.min.y + ACTIVEBKG->Zdiv + 20;
 			Vec3f bbcenter;
-			bbcenter.x = (bb.min.x + bb.max.x) * ( 1.0f / 2 );
-			bbcenter.z = (bb.min.y + bb.max.y) * ( 1.0f / 2 );
+			bbcenter.x = (bb.min.x + bb.max.x) * .5f;
+			bbcenter.z = (bb.min.y + bb.max.y) * .5f;
 
 			for (long cj = ij; cj < aj; cj++)
 				for (long ci = ii; ci < ai; ci++)
@@ -2437,9 +2433,9 @@ void EERIEPOLY_Compute_PolyIn()
 								else
 								{
 									Vec3f pt;
-									pt.x = (ep2->v[k].p.x + ep2->center.x) * ( 1.0f / 2 );
-									pt.y = (ep2->v[k].p.y + ep2->center.y) * ( 1.0f / 2 );
-									pt.z = (ep2->v[k].p.z + ep2->center.z) * ( 1.0f / 2 );
+									pt.x = (ep2->v[k].p.x + ep2->center.x) * .5f;
+									pt.y = (ep2->v[k].p.y + ep2->center.y) * .5f;
+									pt.z = (ep2->v[k].p.z + ep2->center.z) * .5f;
 
 									if (PointInBBox((Vec3f *)&pt, &bb))
 									{
@@ -3712,7 +3708,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	cz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z);
 	posx = (long)(float)(cx * ( 1.0f / 3 ) * ACTIVEBKG->Xmul); 
 	posz = (long)(float)(cz * ( 1.0f / 3 ) * ACTIVEBKG->Zmul); 
-	posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * ( 1.0f / 2 )); 
+	posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * .5f); 
 
 	if (posy < 0) return 0;
 	else if (posy >= ACTIVEBKG->Xsize) return 0;
@@ -3778,12 +3774,8 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	epp->type &= ~POLY_QUAD;
 
 	CalcFaceNormal(epp, epp->v);
-	epp->area = Distance3D((epp->v[0].p.x + epp->v[1].p.x) * ( 1.0f / 2 ),
-	                       (epp->v[0].p.y + epp->v[1].p.y) * ( 1.0f / 2 ),
-	                       (epp->v[0].p.z + epp->v[1].p.z) * ( 1.0f / 2 ),
-	                       epp->v[2].p.x, epp->v[2].p.y, epp->v[2].p.z)
-	            * Distance3D(epp->v[0].p.x, epp->v[0].p.y, epp->v[0].p.z,
-	                         epp->v[1].p.x, epp->v[1].p.y, epp->v[1].p.z) * ( 1.0f / 2 );
+	epp->area = fdist((epp->v[0].p + epp->v[1].p) * .5f, epp->v[2].p)
+	            * fdist(epp->v[0].p, epp->v[1].p) * .5f;
 	
 	if (type == TYPE_ROOM)
 		epp->room = checked_range_cast<short>(val1);
@@ -4429,7 +4421,7 @@ void ComputePortalVertexBuffer()
 						if (pPoly->transval >= 2.f) //MULTIPLICATIVE
 						{
 							pTextureVertex->iNbIndiceNoCull_TMultiplicative += iNbIndice;
-							fTransp *= ( 1.0f / 2 );
+							fTransp *= .5f;
 							fTransp += .5f;
 						}
 						else
@@ -4473,7 +4465,7 @@ void ComputePortalVertexBuffer()
 						if (pPoly->transval >= 2.f) //MULTIPLICATIVE
 						{
 							pTextureVertex->iNbIndiceCull_TMultiplicative += iNbIndice;
-							fTransp *= ( 1.0f / 2 );
+							fTransp *= .5f;
 							fTransp += .5f;
 						}
 						else

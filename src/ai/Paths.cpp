@@ -816,7 +816,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	if (target == 0)
 	{
 		ac		=	player.Full_armor_class;
-		absorb	=	player.Full_Skill_Defense * ( 1.0f / 2 );
+		absorb	=	player.Full_Skill_Defense * .5f;
 	}
 	else
 	{
@@ -1145,7 +1145,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				{ // TODO iterator
 					float rad = -1;
 					rad = GetHitValue(Thrown[i].obj->actionlist[j].name);
-					rad *= ( 1.0f / 2 );
+					rad *= .5f;
 
 					if (rad == -1) continue;
 
@@ -1612,7 +1612,7 @@ void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime)
 	PHYSVERT	* source, *target, *accum1, *accum2, *accum3, *accum4;
 	///////////////////////////////////////////////////////////////////////////////
 	float		halfDeltaT, sixthDeltaT;
-	halfDeltaT = DeltaTime * ( 1.0f / 2 );		// SOME TIME VALUES I WILL NEED
+	halfDeltaT = DeltaTime * .5f;		// SOME TIME VALUES I WILL NEED
 	sixthDeltaT = ( 1.0f / 6 );
 
 	PHYSVERT m_TempSys[5][32];//* pv;
@@ -1812,19 +1812,14 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 					{
 						float radd = 4.f;
 
-						if (
-						    !fartherThan(ep->center, obj->pbox->vert[kk].pos, radd)
-						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[0], radd)
-						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[1], radd)
-						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2], radd)
-						    ||	(Distance3D((ep->v[0].p.x + ep->v[1].p.x)*( 1.0f / 2 ), (ep->v[0].p.y + ep->v[1].p.y)*( 1.0f / 2 ), (ep->v[0].p.z + ep->v[1].p.z)*( 1.0f / 2 ),
-						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
-						    ||	(Distance3D((ep->v[2].p.x + ep->v[1].p.x)*( 1.0f / 2 ), (ep->v[2].p.y + ep->v[1].p.y)*( 1.0f / 2 ), (ep->v[2].p.z + ep->v[1].p.z)*( 1.0f / 2 ),
-						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
-						    ||	(Distance3D((ep->v[0].p.x + ep->v[2].p.x)*( 1.0f / 2 ), (ep->v[0].p.y + ep->v[2].p.y)*( 1.0f / 2 ), (ep->v[0].p.z + ep->v[2].p.z)*( 1.0f / 2 ),
-						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
-						)
-						{
+						if(!fartherThan(obj->pbox->vert[kk].pos, ep->center, radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[0], radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[1], radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2], radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[1].p) * .5f, radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[2].p + ep->v[1].p) * .5f, radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)) {
+							
 							LAST_COLLISION_POLY = ep;
 
 							if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
@@ -1844,23 +1839,18 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 							if (kl != kk)
 							{
 								Vec3f pos;
-								pos.x = (obj->pbox->vert[kk].pos.x + obj->pbox->vert[kl].pos.x) * ( 1.0f / 2 );
-								pos.y = (obj->pbox->vert[kk].pos.y + obj->pbox->vert[kl].pos.y) * ( 1.0f / 2 );
-								pos.z = (obj->pbox->vert[kk].pos.z + obj->pbox->vert[kl].pos.z) * ( 1.0f / 2 );
+								pos.x = (obj->pbox->vert[kk].pos.x + obj->pbox->vert[kl].pos.x) * .5f;
+								pos.y = (obj->pbox->vert[kk].pos.y + obj->pbox->vert[kl].pos.y) * .5f;
+								pos.z = (obj->pbox->vert[kk].pos.z + obj->pbox->vert[kl].pos.z) * .5f;
 
-								if (
-								    !fartherThan(ep->center, pos, radd)
-								    || !fartherThan(pos, ep->v[0], radd)
-								    || !fartherThan(pos, ep->v[1], radd)
-								    || !fartherThan(pos, ep->v[2], radd)
-								    ||	(Distance3D((ep->v[0].p.x + ep->v[1].p.x)*( 1.0f / 2 ), (ep->v[0].p.y + ep->v[1].p.y)*( 1.0f / 2 ), (ep->v[0].p.z + ep->v[1].p.z)*( 1.0f / 2 ),
-								                    pos.x, pos.y, pos.z) <= radd)
-								    ||	(Distance3D((ep->v[2].p.x + ep->v[1].p.x)*( 1.0f / 2 ), (ep->v[2].p.y + ep->v[1].p.y)*( 1.0f / 2 ), (ep->v[2].p.z + ep->v[1].p.z)*( 1.0f / 2 ),
-								                    pos.x, pos.y, pos.z) <= radd)
-								    ||	(Distance3D((ep->v[0].p.x + ep->v[2].p.x)*( 1.0f / 2 ), (ep->v[0].p.y + ep->v[2].p.y)*( 1.0f / 2 ), (ep->v[0].p.z + ep->v[2].p.z)*( 1.0f / 2 ),
-								                    pos.x, pos.y, pos.z) <= radd)
-								)
-								{
+								if(!fartherThan(pos, ep->center, radd)
+								   || !fartherThan(pos, ep->v[0], radd)
+								   || !fartherThan(pos, ep->v[1], radd)
+								   || !fartherThan(pos, ep->v[2], radd)
+								   || !fartherThan(pos, (ep->v[0].p + ep->v[1].p) * .5f, radd)
+								   || !fartherThan(pos, (ep->v[2].p + ep->v[1].p) * .5f, radd)
+								   || !fartherThan(pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)) {
+									
 									LAST_COLLISION_POLY = ep;
 
 									if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
@@ -2133,7 +2123,7 @@ void ARX_PrepareBackgroundNRMLs()
 						nrml.y = (ep->norm.y + ep->norm2.y);
 						nrml.z = (ep->norm.z + ep->norm2.z);
 						count = 2.f;
-						ttt = ( 1.0f / 2 );
+						ttt = .5f;
 					}
 					else
 					{
@@ -2198,9 +2188,9 @@ void ARX_PrepareBackgroundNRMLs()
 											else if ((k2 > 0) && (nbvert2 > 3))
 											{
 												Vec3f tnrml;
-												tnrml.x = (ep2->norm.x + ep2->norm2.x) * ( 1.0f / 2 );
-												tnrml.y = (ep2->norm.y + ep2->norm2.y) * ( 1.0f / 2 );
-												tnrml.z = (ep2->norm.z + ep2->norm2.z) * ( 1.0f / 2 );
+												tnrml.x = (ep2->norm.x + ep2->norm2.x) * .5f;
+												tnrml.y = (ep2->norm.y + ep2->norm2.y) * .5f;
+												tnrml.z = (ep2->norm.z + ep2->norm2.z) * .5f;
 
 												if (LittleAngularDiff(&cur_nrml, &tnrml))
 												{

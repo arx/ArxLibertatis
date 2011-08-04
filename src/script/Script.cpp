@@ -1065,10 +1065,8 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				{
 					const char * obj = name.c_str() + 6;
 
-					if (!strcmp(obj, "player"))
-					{
-						*fcontent = (float)Distance3D(player.pos.x, player.pos.y, player.pos.z,
-													  io->pos.x, io->pos.y, io->pos.z);
+					if(!strcmp(obj, "player")) {
+						*fcontent = fdist(player.pos, io->pos);
 						return TYPE_FLOAT;
 					}
 

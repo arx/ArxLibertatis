@@ -539,7 +539,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		e.z = h.z - fBetaRadCos * 20;
 	}
 
-	fd = Distance3D(s.x, s.y, s.z, e.x, e.y, e.z);
+	fd = fdist(s, e);
 
 	float fCalc = ulDuration * (fd / fspelldist);
 	SetDuration(checked_range_cast<unsigned long>(fCalc));

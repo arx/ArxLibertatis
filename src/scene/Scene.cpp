@@ -692,14 +692,11 @@ bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, Vec3f * position) {
 				case 3:
 				case 4:
 
-					if (io)
-					{						
+					if(io) {
+						
 						EERIE_SPHERE sphere;
-						sphere.origin.x=(io->bbox3D.min.x+io->bbox3D.max.x)*( 1.0f / 2 );
-						sphere.origin.y=(io->bbox3D.min.y+io->bbox3D.max.y)*( 1.0f / 2 );
-						sphere.origin.z=(io->bbox3D.min.z+io->bbox3D.max.z)*( 1.0f / 2 );
-						sphere.radius=TRUEDistance3D(sphere.origin.x,sphere.origin.y,sphere.origin.z,
-											io->bbox3D.min.x,io->bbox3D.min.y,io->bbox3D.min.z)+10.f;
+						sphere.origin = (io->bbox3D.min + io->bbox3D.max) * .5f;
+						sphere.radius = dist(sphere.origin, io->bbox3D.min) + 10.f;
 						
 						EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
 

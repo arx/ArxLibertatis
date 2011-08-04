@@ -3374,13 +3374,10 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 
 	INTERACTIVE_OBJ * io = GetFirstInterAtPos(pos);
 
-	if (io != NULL)
+	if(io != NULL)
 	{
-		if (io->ioflags & IO_NPC)
-		{
-			if (Distance3D(player.pos.x, player.pos.y, player.pos.z, io->pos.x,
-			               io->pos.y, io->pos.z) < dist_Threshold)
-			{
+		if(io->ioflags & IO_NPC) {
+			if(closerThan(player.pos, io->pos, dist_Threshold)) {
 				LASTINTERCLICKNB = INTERNMB;
 				return io;
 			}
@@ -3391,8 +3388,7 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 			return io;
 		}
 		else if (IsEquipedByPlayer(io)
-		         || (Distance3D(player.pos.x, player.pos.y, player.pos.z, io->pos.x,
-		                        io->pos.y, io->pos.z) < dist_Threshold))
+		         || closerThan(player.pos, io->pos, dist_Threshold))
 		{
 			LASTINTERCLICKNB = INTERNMB;
 			return io;
@@ -3455,8 +3451,8 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 	        ||	(!io->obj))
 		return false;
 
-	if (Distance3D(pos->x, pos->y, pos->z, io->pos.x, io->pos.y, io->pos.z) < 190.f)
-	{
+	if(closerThan(*pos, io->pos, 190.f)) {
+		
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 		if (io->obj->nbgroups > 4)
@@ -3465,8 +3461,9 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 			{
 				long idx = io->obj->grouplist[i].origin;
 
-				if (Distance3D(pos->x, pos->y, pos->z, vlist[idx].v.x, vlist[idx].v.y, vlist[idx].v.z) <= 50.f)
+				if(!fartherThan(*pos, vlist[idx].v, 50.f)) {
 					return true;
+				}
 			}
 		}
 		else
@@ -3475,8 +3472,9 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 			for (long i = 0; i < nbv; i++)
 			{
 				if (i != io->obj->origin)
-					if (Distance3D(pos->x, pos->y, pos->z, vlist[i].v.x, vlist[i].v.y, vlist[i].v.z) <= 30.f)
+					if(!fartherThan(*pos, vlist[i].v, 30.f)) {
 						return true;
+					}
 			}
 		}
 	}

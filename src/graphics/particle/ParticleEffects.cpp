@@ -1277,20 +1277,19 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 
 			dod=1;
 
-			if ((ddd=Distance3D(ep->v[0].p.x,ep->v[0].p.y,ep->v[0].p.z,poss->x,poss->y,poss->z))<BOOM_RADIUS)
-			{	
+			if((ddd = fdist(ep->v[0].p, *poss)) < BOOM_RADIUS) {
 				temp_u1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
 				temp_v1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
 
-				for (long k=1;k<nbvert;k++) 
-				{
-					ddd=Distance3D(ep->v[k].p.x,ep->v[k].p.y,ep->v[k].p.z,poss->x,poss->y,poss->z);
+				for(long k=1;k<nbvert;k++) {
+					
+					ddd = fdist(ep->v[k].p, *poss);
 
 					if (ddd>BOOM_RADIUS) dod=0;
 					else 
 					{
 						temp_u1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);
-						temp_v1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);						
+						temp_v1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);
 					}
 				}
 

@@ -1231,7 +1231,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 			float mdist = ACTIVECAM->cdepth * ( 1.0f / 2 );
 
-			ddist = mdist - Distance3D(pos->x + ftr.x, pos->y + ftr.y, pos->z + ftr.z, ACTIVECAM->pos.x, ACTIVECAM->pos.y, ACTIVECAM->pos.z);
+			ddist = mdist - fdist(*pos + ftr, ACTIVECAM->pos);
 
 			ddist = (ddist / mdist);  //*0.1f;
 			ddist *= ddist * ddist * ddist * ddist * ddist;

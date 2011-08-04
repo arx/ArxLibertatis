@@ -628,7 +628,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 		e.z = h.z - fBetaRadCos * 20;
 	}
 
-	fd = Distance3D(s.x, s.y, s.z, e.x, e.y, e.z);
+	fd = fdist(s, e);
 
 
 	float fDur = ulDuration * (fd / 900.0f);
@@ -1007,11 +1007,7 @@ void CMassParalyse::Update(unsigned long _ulTime)
 		{
 			if (inter.iobj[nb])
 			{
-				float d = Distance3D(ePos.x, ePos.y, ePos.z,
-				                     inter.iobj[nb]->pos.x, inter.iobj[nb]->pos.y, inter.iobj[nb]->pos.z);
-
-				if (d <= fRayon)
-				{
+				if(!fartherThan(ePos, inter.iobj[nb]->pos, fRayon)) {
 					nb2 = iNbParalyse;
 
 					while (nb2--)

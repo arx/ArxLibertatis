@@ -192,12 +192,8 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 	ep2->norm2.y=ep->norm.y;
 	ep2->norm2.z=ep->norm.z;
 	
-	ep2->area+=Distance3D(	(ep2->v[1].p.x+ep2->v[2].p.x)*( 1.0f / 2 ),
-							(ep2->v[1].p.y+ep2->v[2].p.y)*( 1.0f / 2 ),
-							(ep2->v[1].p.z+ep2->v[2].p.z)*( 1.0f / 2 ),
-							ep2->v[3].p.x,ep2->v[3].p.y,ep2->v[3].p.z)
-			*Distance3D(	ep2->v[3].p.x,ep2->v[3].p.y,ep2->v[3].p.z,
-							ep2->v[1].p.x,ep2->v[1].p.y,ep2->v[1].p.z)*( 1.0f / 2 );
+	ep2->area += fdist((ep2->v[1].p + ep2->v[2].p) * .5f, ep2->v[3].p)
+	             * fdist(ep2->v[3].p, ep2->v[1].p)*.5f; // should this be v[2] instead of v[3]?
 
 		return true;
 	}

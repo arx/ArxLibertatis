@@ -3986,13 +3986,13 @@ extern long GLOBAL_Player_Room;
 void CheckNPCEx(INTERACTIVE_OBJ * io)
 {
 	// Distance Between Player and IO
-	float dist = Distance3D(io->pos.x, io->pos.y, io->pos.z, player.pos.x, player.pos.y - PLAYER_BASE_HEIGHT, player.pos.z);
+	float ds = distSqr(io->pos, player.pos - (Vec3f::Y_AXIS * PLAYER_BASE_HEIGHT));
 
 	// Start as not visible
 	long Visible = 0;
 
 	// Check visibility only if player is visible, not too far and not dead
-	if ((!(inter.iobj[0]->invisibility > 0.f)) && (dist < 2000.f) && (player.life > 0))
+	if ((!(inter.iobj[0]->invisibility > 0.f)) && (ds < square(2000.f)) && (player.life > 0))
 	{
 		// checks for near contact +/- 15 cm --> force visibility
 		if (io->room_flags & 1)
@@ -4007,7 +4007,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 		if ((GLOBAL_Player_Room > -1) && (io->room > -1) && (fdist > 2000.f))
 		{
 		}
-		else if ((dist < GetIORadius(io) + GetIORadius(inter.iobj[0]) + 15.f)
+		else if ((ds < square(GetIORadius(io) + GetIORadius(inter.iobj[0]) + 15.f))
 		         && (EEfabs(player.pos.y - io->pos.y) < 200.f))
 		{
 			Visible = 1;
@@ -4044,7 +4044,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 				// Check for Darkness/Stealth
 				if ((CURRENT_PLAYER_COLOR > GetPlayerStealth())
 				        ||	SHOW_TORCH
-				        ||	(dist < 200))
+				        ||	(ds < square(200.f)))
 				{
 					EERIEPOLY * epp = NULL;
 					Vec3f ppos;

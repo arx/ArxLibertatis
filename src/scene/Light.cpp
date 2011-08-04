@@ -154,9 +154,9 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 		if ((el) && (el->treat) && (el->exist) && (el->status) 
 		        && !(el->extras & EXTRAS_SEMIDYNAMIC))
 		{
-			if (Distance3D(el->pos.x, el->pos.y, el->pos.z,
-			               ep->center.x, ep->center.y, ep->center.z) < el->fallend + 100.f)
+			if(closerThan(el->pos, ep->center, el->fallend + 100.f)) {
 				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, el);
+			}
 		}
 	}
 
@@ -164,9 +164,9 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	{
 		if ((actions[i].exist) && ((actions[i].type == ACT_FIRE2) || (actions[i].type == ACT_FIRE)))
 		{
-			if (Distance3D(actions[i].light.pos.x, actions[i].light.pos.y, actions[i].light.pos.z,
-			               ep->center.x, ep->center.y, ep->center.z) < actions[i].light.fallend + 100.f)
+			if(closerThan(actions[i].light.pos, ep->center, actions[i].light.fallend + 100.f)) {
 				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, &actions[i].light);
+			}
 		}
 	}
 

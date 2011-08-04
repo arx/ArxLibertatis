@@ -7082,8 +7082,7 @@ void ArxGame::DrawAllInterface()
 
 		if (io!=NULL)
 		{
-			float dist=Distance3D(io->pos.x,io->pos.y,io->pos.z,
-				player.pos.x,player.pos.y+80.f,player.pos.z);
+			float dist = fdist(io->pos, player.pos + (Vec3f::Y_AXIS * 80.f));
 
 			if (Project.telekinesis)
 			{
