@@ -206,14 +206,9 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 	}
 }
 
-//-----------------------------------------------------------------------------
-void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2)
-{
-	Vec3f norm;
-	norm.x = (b[b1].p.x + b[b2].p.x + t[t1].p.x + t[t2].p.x) * 0.25f - eSrc.x;
-	norm.y = (b[b1].p.y + b[b2].p.y + t[t1].p.y + t[t2].p.y) * 0.25f - eSrc.y;
-	norm.z = (b[b1].p.z + b[b2].p.z + t[t1].p.z + t[t2].p.z) * 0.25f - eSrc.z;
-	Vector_Normalize(&norm);
+void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2) {
+	Vec3f norm = (b[b1].p + b[b2].p + t[t1].p + t[t2].p) * 0.25f - eSrc;
+	fnormalize(norm);
 	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm);
 }
 

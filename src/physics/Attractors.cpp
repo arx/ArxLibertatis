@@ -144,7 +144,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, Vec3f & fo
 			if(dist < max_radius) {
 				float ratio_dist = 1.f - (dist / max_radius);
 				Vec3f vect = io.pos - ioo.pos;
-				Vector_Normalize(&vect);
+				fnormalize(vect);
 				power *= ratio_dist * 0.01f;
 				force = vect * power;
 			}

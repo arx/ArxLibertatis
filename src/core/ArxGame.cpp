@@ -1204,7 +1204,7 @@ static float _AvgFrameDiff = 150.f;
 				vect.x=subj.pos.x-player.pos.x;
 				vect.y=0;
 				vect.z=subj.pos.z-player.pos.z;
-				float len=Vector_Magnitude(&vect);
+				float len = ffsqrt(vect.lengthSqr());
 
 				if (len>46.f)
 				{
@@ -1319,10 +1319,7 @@ static float _AvgFrameDiff = 150.f;
 		vect.x=targetpos.x-sourcepos.x;
 		vect.y=targetpos.y-sourcepos.y;
 		vect.z=targetpos.z-sourcepos.z;
-		float mag=1.f/Vector_Magnitude(&vect);
-		vect.x*=mag;
-		vect.y*=mag;
-		vect.z*=mag;
+		fnormalize(vect);
 		float dist=250.f-conversationcamera.size.g;
 
 		if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));

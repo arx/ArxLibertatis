@@ -1785,10 +1785,8 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	vector.x					=	-(float)EEsin(radians(io->angle.b));
 	vector.y					=	EEsin(radians(io->angle.a)) * 2.f; 
 	vector.z					=	(float)EEcos(radians(io->angle.b));
-	Vector_Normalize(&vector);
-	pos.x						=	io->pos.x;
-	pos.y						=	io->pos.y;
-	pos.z						=	io->pos.z;
+	fnormalize(vector);
+	pos = io->pos;
 	io->rubber					=	0.6f;
 
 

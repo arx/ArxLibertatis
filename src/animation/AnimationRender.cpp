@@ -969,12 +969,12 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 					if (Cur_llights)
 					{
-						Vec3f * Cur_vTLights = &vTLights[l];
+						Vec3f & Cur_vTLights = vTLights[l];
 						Vec3f tl;
 						tl.x = (Cur_llights->pos.x - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.x);
 						tl.y = (Cur_llights->pos.y - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.y);
 						tl.z = (Cur_llights->pos.z - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.z);
-						float dista = Vector_Magnitude(&tl);
+						float dista = ffsqrt(tl.lengthSqr());
 
 						if (dista < Cur_llights->fallend)
 						{
@@ -983,11 +983,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 							tl.y *= divv;
 							tl.z *= divv;
 
-							VectorMatrixMultiply(Cur_vTLights, &tl, &matrix);
+							VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
 
-							float cosangle = (inVert->x * Cur_vTLights->x +
-							            inVert->y * Cur_vTLights->y +
-							            inVert->z * Cur_vTLights->z);
+							float cosangle = dot(*inVert, Cur_vTLights);
 
 							/* If light visible */
 							if (cosangle > 0.0f)

@@ -146,6 +146,10 @@ inline float MAKEANGLE(float a) {
 	return (angle >= 0) ? angle : angle + 360.f;
 }
 
-float InterpolateAngle(float a1, float a2, float pour);
+float InterpolateAngle(float a1, float a2, float p);
+
+inline Anglef interploate(const Anglef & a1, const Anglef & a2, float p) {
+	return Anglef(InterpolateAngle(a1.a, a2.a, p), InterpolateAngle(a1.b, a2.b, p), InterpolateAngle(a1.g, a2.g, p));
+}
 
 #endif // ARX_MATH_ANGLE_H

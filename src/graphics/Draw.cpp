@@ -607,12 +607,12 @@ void EERIEDrawCircle(float x0, float y0, float r, Color col, float z) {
 void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	
 	Vec3f vect = dest - orgn;
-	float m=Vector_Magnitude(&vect);
+	float m = ffsqrt(vect.lengthSqr());
 
 	if (m<=0) return;
 
-	float om=1.f/m;
-	vect *= om;
+	vect *= 1 / m;
+	
 	Vec3f cpos = orgn;
 
 	while (m>0)

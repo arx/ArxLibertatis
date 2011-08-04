@@ -2151,11 +2151,8 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					}
 
 					GRenderer->SetCulling(Renderer::CullNone);
-					Vec3f vect;
-					vect.x=part->oldpos.x-in.p.x;
-					vect.y=part->oldpos.y-in.p.y;
-					vect.z=part->oldpos.z-in.p.z;
-					Vector_Normalize(&vect);
+					Vec3f vect = part->oldpos - in.p;
+					fnormalize(vect);
 					TexturedVertex tv[3];
 					tv[0].color = part->rgb.toBGR();
 					tv[1].color=0xFF666666;

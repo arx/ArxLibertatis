@@ -213,25 +213,13 @@ inline void _XRotatePoint(Vec3f * in, Vec3f * out, float c, float s)
 // Fuzzy compares (within tolerance)
 //*************************************************************************************
 #define EPSILON 0.000001f
- 
-//*************************************************************************************
-// Computes Length of a vector
-// WARNING: EEsqrt may use a approximative way of computing sqrt
-//*************************************************************************************
-inline float Vector_Magnitude(const Vec3f * v)
-{
-	return (float)EEsqrt(v->x * v->x + v->y * v->y + v->z * v->z);
-}
+
 //*************************************************************************************
 // Normalizes a Vector. Returns its length before normalization
 //*************************************************************************************
-inline float Vector_Normalize(Vec3f * v)
-{
-	register float len = Vector_Magnitude(v);
-	register float l2 = 1.f / len;
-	v->x *= l2;
-	v->y *= l2;
-	v->z *= l2;
+inline float fnormalize(Vec3f & v) {
+	float len = ffsqrt(v.lengthSqr());
+	v *= 1 / len;
 	return len;
 }
 
@@ -239,11 +227,11 @@ inline float Vector_Normalize(Vec3f * v)
 // Matrix functions
 //*******************************************************************************
 
-void	MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u);
-void	MatrixReset(EERIEMATRIX * mat);
-void    MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b);
-void	VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat);
-void	GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const float rollDegrees);
+void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u);
+void MatrixReset(EERIEMATRIX * mat);
+void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b);
+void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat);
+void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const float rollDegrees);
 
 float	ffsqrt(float value);
 long	isqrt(long value);
@@ -337,9 +325,6 @@ void Quat_GetShortestArc(EERIE_QUAT * q1 , EERIE_QUAT * q2);
 //*******************************************************************************
 // VECTORS Functions
 //*******************************************************************************
-float	Vector_Magnitude(const Vec3f * v);
-float	Vector_Normalize(Vec3f * v);
- 
 void	Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle);
 void	Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle);
 void	VRotateX(Vec3f * v1, const float angle);

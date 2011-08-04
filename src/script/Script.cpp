@@ -2210,7 +2210,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	INTERACTIVE_OBJ * io = st->io;
 	GetTargetPos(io);
 	Vec3f target = io->target - io->pos;
-	Vector_Normalize(&target);
+	fnormalize(target);
 	Vec3f targ;
 	Vector_RotateY(&targ, &target, rnd() * 60.f - 30.f);
 	target = io->target + targ * 100.f;

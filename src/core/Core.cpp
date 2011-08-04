@@ -2051,14 +2051,14 @@ void FirstFrameHandling()
 	}
 #ifdef BUILD_EDIT_LOADSAVE
 	else if(mse) {
-		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*( 1.0f / 2 )+((float)ACTIVEBKG->Xsize*(float)ACTIVEBKG->Xdiv)*( 1.0f / 2 );
-		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*( 1.0f / 2 )+((float)ACTIVEBKG->Zsize*(float)ACTIVEBKG->Zdiv)*( 1.0f / 2 );
+		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*.5f+((float)ACTIVEBKG->Xsize*(float)ACTIVEBKG->Xdiv)*.5f;
+		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*.5f+((float)ACTIVEBKG->Zsize*(float)ACTIVEBKG->Zdiv)*.5f;
 		float t1=(float)(long)(mse->point0.x/BKG_SIZX);
 		float t2=(float)(long)(mse->point0.z/BKG_SIZZ);
 		t1=mse->point0.x-t1*BKG_SIZX;
 		t2=mse->point0.z-t2*BKG_SIZZ;
-		Mscenepos.x=(float)((long)(Mscenepos.x/BKG_SIZX))*BKG_SIZX+(float)BKG_SIZX*( 1.0f / 2 );
-		Mscenepos.z=(float)((long)(Mscenepos.z/BKG_SIZZ))*BKG_SIZZ+(float)BKG_SIZZ*( 1.0f / 2 );
+		Mscenepos.x=(float)((long)(Mscenepos.x/BKG_SIZX))*BKG_SIZX+(float)BKG_SIZX*.5f;
+		Mscenepos.z=(float)((long)(Mscenepos.z/BKG_SIZZ))*BKG_SIZZ+(float)BKG_SIZZ*.5f;
 		mse->pos.x=Mscenepos.x=Mscenepos.x+BKG_SIZX-t1;
 		mse->pos.z=Mscenepos.z=Mscenepos.z+BKG_SIZZ-t2;
 		Mscenepos.y=mse->pos.y=-mse->cub.ymin-100.f-mse->point0.y;
@@ -3296,7 +3296,7 @@ void AddQuakeFX(float intensity,float duration,float period,long flags)
 
 		QuakeFx.duration+=(unsigned long)duration;
 		QuakeFx.frequency+=period;
-		QuakeFx.frequency*=( 1.0f / 2 );
+		QuakeFx.frequency*=.5f;
 		QuakeFx.flags|=flags;
 
 		if (flags & 1)
@@ -3342,7 +3342,7 @@ void ManageQuakeFX()
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 
 		float truepower=periodicity*QuakeFx.intensity*itmod*( 1.0f / 100 );
-		float halfpower=truepower*( 1.0f / 2 );
+		float halfpower=truepower*.5f;
 		ACTIVECAM->pos.x+=rnd()*truepower-halfpower;
 		ACTIVECAM->pos.y+=rnd()*truepower-halfpower;
 		ACTIVECAM->pos.z+=rnd()*truepower-halfpower;
@@ -3966,8 +3966,8 @@ void ShowInfoText() {
 					mainApp->OutputText( 170, 360, "PF_ALWAYS" );
 				else
 				{
-					sprintf(tex,"PF_%ld", (long)io->_npcdata->pathfind.flags);
-					mainApp->OutputText( 170, 360, tex);
+					sprintf(tex, "PF_%ld", (long)io->_npcdata->pathfind.flags);
+					mainApp->OutputText(170, 360, tex);
 				}
 			  }
 

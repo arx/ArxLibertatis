@@ -681,26 +681,13 @@ void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
 	{
 		power *= ( 1.0f / 20 );
 		INTERACTIVE_OBJ * io = inter.iobj[source];
-		Vec3f vect;
-		vect.x = io_target->pos.x - io->pos.x;
-		vect.y = io_target->pos.y - io->pos.y;
-		vect.z = io_target->pos.z - io->pos.z;
-		Vector_Normalize(&vect);
-		vect.x *= power;
-		vect.y *= power;
-		vect.z *= power;
-
-		if (io_target == inter.iobj[0])
-		{
-			PUSH_PLAYER_FORCE.x = vect.x;
-			PUSH_PLAYER_FORCE.y = vect.y;
-			PUSH_PLAYER_FORCE.z = vect.z;
-		}
-		else
-		{
-			io_target->move.x += vect.x;
-			io_target->move.y += vect.y;
-			io_target->move.z += vect.z;
+		Vec3f vect = io_target->pos - io->pos;
+		fnormalize(vect);
+		vect *= power;
+		if(io_target == inter.iobj[0]) {
+			PUSH_PLAYER_FORCE = vect;
+		} else {
+			io_target->move += vect;
 		}
 	}
 }
