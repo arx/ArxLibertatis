@@ -2316,7 +2316,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 					continue;
 				}
 
-				float d = fdist(el->pos, ep->v[j]);
+				float d = fdist(el->pos, ep->v[j].p);
 
 				if (d <= el->fallend)
 				{
@@ -2416,7 +2416,7 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_VERTEX * _pVertex, unsigned 
 
 		for (j = 0; j < nbvert; j++)
 		{
-			float d = fdist(el->pos, ep->v[j]);
+			float d = fdist(el->pos, ep->v[j].p);
 
 			if (d < el->fallend)
 			{
@@ -2538,7 +2538,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 		for (j = 0; j < nbvert; j++)
 		{
 		
-			float d = fdist(el->pos, ep->v[j]);
+			float d = fdist(el->pos, ep->v[j].p);
 
 			if (d < el->fallend)
 			{

@@ -2481,8 +2481,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 							tv[nu]=ep->v[nu].uv.y*4.f;						
 						}
 						
-						float			t		=	max( 10.0f, fdist(ACTIVECAM->pos, ep->v[nu]) - 80.f );
-						//if (t < 10.f)	t		=	10.f;
+						float t = max(10.f, fdist(ACTIVECAM->pos, ep->v[nu].p) - 80.f);
 						
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
 						
@@ -2636,8 +2635,8 @@ void ARX_PORTALS_ComputeRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long t
 		EERIEPOLY * epp=&po->poly;
 		
 		float threshold = square(ACTIVECAM->cdepth - ACTIVECAM->cdepth * fZFogEnd);
-		if((distSqr(ACTIVECAM->pos, epp->v[0]) > threshold)
-		   && (distSqr(ACTIVECAM->pos, epp->v[2]) > threshold) 
+		if((distSqr(ACTIVECAM->pos, epp->v[0].p) > threshold)
+		   && (distSqr(ACTIVECAM->pos, epp->v[2].p) > threshold) 
 		   && (distSqr(ACTIVECAM->pos, epp->center) > threshold)) {
 			portals->portals[portals->room[room_num].portals[lll]].useportal=2;
 			continue;

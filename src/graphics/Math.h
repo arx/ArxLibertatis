@@ -391,24 +391,6 @@ void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 #define Distance2D(x0,y0,x1,y1) (float)EEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 #define TRUEDistance2D(x0,y0,x1,y1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 
-// TODO don't use TexturedVertex
-
-inline float dist(const Vec3f & from, const TexturedVertex & to) {
-	return dist(from, Vec3f(to.p.x, to.p.y, to.p.z));
-}
-
-inline float distSqr(const Vec3f & from, const TexturedVertex & to) {
-	return distSqr(from, Vec3f(to.p.x, to.p.y, to.p.z));
-}
-
-inline bool closerThan(const Vec3f & from, const TexturedVertex & to, float d) {
-	return closerThan(from, Vec3f(to.p.x, to.p.y, to.p.z), d);
-}
-
-inline bool fartherThan(const Vec3f & from, const TexturedVertex & to, float d) {
-	return fartherThan(from, Vec3f(to.p.x, to.p.y, to.p.z), d);
-}
-
 inline float square(float x) {
 	return x * x;
 }
@@ -418,11 +400,7 @@ inline float square(float x) {
  * may use an approximative way of computing sqrt !
  */
 inline float fdist(const Vec3f & from, const Vec3f & to) {
-	return ffsqrt(((to.x - from.x) * (to.x - from.x)) + ((to.y - from.y) * (to.y - from.y)) + ((to.z - from.z) * (to.z - from.z)));
-}
-
-inline float fdist(const Vec3f & from, const TexturedVertex & to) {
-	return fdist(from, Vec3f(to.p.x, to.p.y, to.p.z));
+	return ffsqrt(distSqr(from, to));
 }
 
 inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)

@@ -434,9 +434,8 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	(ep->type & POLY_QUAD) ? nbvert = 4 : nbvert = 3;
 
 	// compute light - vertex distance
-	for (i = 0; i < nbvert; i++)
-	{
-		distance[i] = dist(light->pos, ep->v[i]);
+	for(i = 0; i < nbvert; i++) {
+		distance[i] = dist(light->pos, ep->v[i].p);
 	}
 
 	for (i = 0; i < nbvert; i++)
@@ -448,11 +447,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			//---------------------- start MODE_NORMALS
 			if (ModeLight & MODE_NORMALS)
 			{
-				Vec3f vLight; // vector (light to vertex)
-				vLight.x = light->pos.x - ep->v[i].p.x;
-				vLight.y = light->pos.y - ep->v[i].p.y;
-				vLight.z = light->pos.z - ep->v[i].p.z;
-				vLight.normalize();
+				Vec3f vLight = (light->pos - ep->v[i].p).getNormalized(); // vector (light to vertex)
 
 				fRes = dot(vLight, ep->nrml[i]);
 
@@ -467,13 +462,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			//---------------------- start MODE_RAYLAUNCH
 			if ((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED))
 			{
-				Vec3f orgn, dest, hit;
-				orgn.x = light->pos.x;
-				orgn.y = light->pos.y;
-				orgn.z = light->pos.z;
-				dest.x = ep->v[i].p.x;
-				dest.y = ep->v[i].p.y;
-				dest.z = ep->v[i].p.z;
+				Vec3f orgn = light->pos, dest = ep->v[i].p, hit;
 
 				if (ModeLight & MODE_SMOOTH)
 					fRes *= my_CheckInPoly(ep->v[i].p.x, ep->v[i].p.y, ep->v[i].p.z, ep, light);

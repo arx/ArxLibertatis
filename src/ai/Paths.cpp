@@ -1813,9 +1813,9 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 						float radd = 4.f;
 
 						if(!fartherThan(obj->pbox->vert[kk].pos, ep->center, radd)
-						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[0], radd)
-						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[1], radd)
-						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2], radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[0].p, radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[1].p, radd)
+						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2].p, radd)
 						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[1].p) * .5f, radd)
 						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[2].p + ep->v[1].p) * .5f, radd)
 						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)) {
@@ -1844,9 +1844,9 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 								pos.z = (obj->pbox->vert[kk].pos.z + obj->pbox->vert[kl].pos.z) * .5f;
 
 								if(!fartherThan(pos, ep->center, radd)
-								   || !fartherThan(pos, ep->v[0], radd)
-								   || !fartherThan(pos, ep->v[1], radd)
-								   || !fartherThan(pos, ep->v[2], radd)
+								   || !fartherThan(pos, ep->v[0].p, radd)
+								   || !fartherThan(pos, ep->v[1].p, radd)
+								   || !fartherThan(pos, ep->v[2].p, radd)
 								   || !fartherThan(pos, (ep->v[0].p + ep->v[1].p) * .5f, radd)
 								   || !fartherThan(pos, (ep->v[2].p + ep->v[1].p) * .5f, radd)
 								   || !fartherThan(pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)) {
@@ -2249,7 +2249,7 @@ void ARX_PrepareBackgroundNRMLs()
 				float d = 0.f;
 
 				for(long ii = 0; ii < nbvert; ii++) {
-					d = max(d, dist(ep->center, ep->v[ii]));
+					d = max(d, dist(ep->center, ep->v[ii].p));
 				}
 
 				ep->v[0].rhw = d;
