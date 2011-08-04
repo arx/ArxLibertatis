@@ -3967,7 +3967,7 @@ void ShowInfoText() {
 				else
 				{
 					sprintf(tex,"PF_%ld", (long)io->_npcdata->pathfind.flags);
-					mainApp->OutputText( 170, 360, tex); 
+					mainApp->OutputText( 170, 360, tex);
 				}
 			  }
 

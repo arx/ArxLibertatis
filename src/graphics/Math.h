@@ -53,8 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef EERIEMATH_H
-#define EERIEMATH_H
+
+#ifndef ARX_GRAPHICS_MATH_H
+#define ARX_GRAPHICS_MATH_H
 
 #include <algorithm>
 #include <cstdlib>
@@ -68,10 +69,10 @@ using std::max;
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
-//-----------------------------------------------------------------------------
 // RANDOM Sequences Funcs/Defs
-//-----------------------------------------------------------------------------
-#define rnd()  (((float)rand() ) * (1.0f / RAND_MAX))
+inline float rnd() {
+	return rand() * (1.f / RAND_MAX);
+}
 
 //Approximative Methods
 #define EEsqrt(val) (float)ffsqrt(val)
@@ -532,11 +533,10 @@ private:
 	
 };
 
-
 #ifdef _DEBUG
 #define checked_range_cast _checked_range_cast(__FILE__, __LINE__).cast
 #else
 #define checked_range_cast static_cast
 #endif
 
-#endif
+#endif // ARX_GRAPHICS_MATH_H

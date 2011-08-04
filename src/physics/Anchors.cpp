@@ -270,8 +270,7 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 			}
 		}
 
-		if (PointInCylinder(cyl, (Vec3f *)&ep->v[n])) 
-		{
+		if(PointInCylinder(cyl, &ep->v[n].p)) {
 			anything = std::min(anything, ep->v[n].p.y);
 			return anything;
 		}

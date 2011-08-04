@@ -478,7 +478,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 			inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
 			outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
 
-			TransformVertexMatrix(&matrix, (Vec3f *)inVert, &outVert->v);
+			TransformVertexMatrix(&matrix, inVert, &outVert->v);
 
 			outVert->v += vector;
 			outVert->vert.p.x = outVert->v.x;
@@ -838,13 +838,10 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 				float			r, g, b;
 				long	ir, ig, ib;
 
-				if (io)
-				{
-					posVert  = (Vec3f *)&io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
-				}
-				else
-				{
-					posVert  = (Vec3f *)&eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+				if(io) {
+					posVert = &io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+				} else {
+					posVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				}
 
 				/* Ambient light */

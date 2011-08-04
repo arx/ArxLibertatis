@@ -2426,20 +2426,15 @@ void EERIEPOLY_Compute_PolyIn()
 							for (long k = 0; k < nbvert; k++)
 							{
 
-								if (PointInBBox((Vec3f *)&ep2->v[k], &bb))
+								if (PointInBBox(&ep2->v[k].p, &bb))
 								{
 									EERIEPOLY_Add_PolyIn(eg, ep2);
 									break;
 								}
-								else
-								{
-									Vec3f pt;
-									pt.x = (ep2->v[k].p.x + ep2->center.x) * .5f;
-									pt.y = (ep2->v[k].p.y + ep2->center.y) * .5f;
-									pt.z = (ep2->v[k].p.z + ep2->center.z) * .5f;
-
-									if (PointInBBox((Vec3f *)&pt, &bb))
-									{
+								else {
+									
+									Vec3f pt = (ep2->v[k].p + ep2->center) * .5f;
+									if(PointInBBox(&pt, &bb)) {
 										EERIEPOLY_Add_PolyIn(eg, ep2);
 										break;
 									}
@@ -2960,9 +2955,9 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 		v.p.y = eobj->vertexlist[i].v.y * scale->y;
 		v.p.z = eobj->vertexlist[i].v.z * scale->z;
 
-		_YRotatePoint((Vec3f *)&v, (Vec3f *)&rv, Ycos, Ysin);
-		_XRotatePoint((Vec3f *)&rv, (Vec3f *)&v, Xcos, Xsin);
-		_ZRotatePoint((Vec3f *)&v, (Vec3f *)&rv, Zcos, Zsin);
+		_YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
+		_XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
+		_ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
 
 		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
 		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
@@ -3042,9 +3037,9 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 		v.p.y = eobj->vertexlist[i].v.y * scale->y;
 		v.p.z = eobj->vertexlist[i].v.z * scale->z;
 
-		_YRotatePoint((Vec3f *)&v, (Vec3f *)&rv, Ycos, Ysin);
-		_XRotatePoint((Vec3f *)&rv, (Vec3f *)&v, Xcos, Xsin);
-		_ZRotatePoint((Vec3f *)&v, (Vec3f *)&rv, Zcos, Zsin);
+		_YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
+		_XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
+		_ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
 
 		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
 		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;

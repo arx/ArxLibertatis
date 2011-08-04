@@ -217,10 +217,10 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 			}
 		}
 
-		if (PointInCylinder(cyl, (Vec3f *)&ep->v[n]))
-		{
-			anything=min(anything,ep->v[n].p.y);			
-			POLYIN=1;
+		if(PointInCylinder(cyl, &ep->v[n].p)) {
+			
+			anything=min(anything,ep->v[n].p.y);
+			POLYIN = 1;
 
 			if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
 		}

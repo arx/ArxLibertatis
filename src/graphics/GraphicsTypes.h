@@ -427,12 +427,8 @@ struct EERIE_C_DATA
 	EERIE_BONE *	bones;
 	long			nb_bones;
 };
-//////////////////////////////////////////////////////////////////////////////////
-struct EERIE_3DPAD
-{
-	float x;
-	float y;
-	float z;
+
+struct EERIE_3DPAD : public Vec3f {
 	float w;
 };
 

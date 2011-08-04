@@ -206,9 +206,9 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old)
 	{
 		for (short i=0;i<ah->alt_nb;i++)
 		{
-			float rnd=rnd()*tot;
+			float r = rnd()*tot;
 
-			if ((rnd<anim_power[min((int)i,14)]) && (i!=old))
+			if ((r < anim_power[min((int)i,14)]) && (i!=old))
 				return i;
 		}
 	}
@@ -1145,10 +1145,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 					vert_list_static[0].p.z	-=	io->obj->pbox->vert[0].initpos.z * scale-io->obj->point0.z;
 				}
 
-				if ( BIGQUAT == NULL )
-					VertexMatrixMultiply( (Vec3f *)&vert_list_static[1], (Vec3f *)&vert_list_static[0], BIGMAT );
-				else 
-					TransformVertexQuat ( BIGQUAT, (Vec3f *)&vert_list_static[0], (Vec3f *)&vert_list_static[1] );
+				if(BIGQUAT == NULL) {
+					VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, BIGMAT);
+				} else {
+					TransformVertexQuat(BIGQUAT, &vert_list_static[0].p, &vert_list_static[1].p);
+				}
 
 				eobj->vertexlist3[i].v.x	=	vert_list_static[1].p.x	+=	pos.x;
 				eobj->vertexlist3[i].v.y	=	vert_list_static[1].p.y	+=	pos.y;
@@ -1159,25 +1160,21 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			}
 			else
 			{
-				_YRotatePoint( (Vec3f *)&vert_list_static[0], (Vec3f *)&vert_list_static[1], Ycos, Ysin );
-				_XRotatePoint( (Vec3f *)&vert_list_static[1], (Vec3f *)&vert_list_static[0], Xcos, Xsin );
+				_YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ycos, Ysin);
+				_XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Xcos, Xsin);
 
 				// Misc Optim to avoid 1 infrequent rotation around Z
-				if ( Zsin == 0.f ) 
-				{
-					eobj->vertexlist3[i].v.x	=	vert_list_static[0].p.x	+=	pos.x;
-					eobj->vertexlist3[i].v.y	=	vert_list_static[0].p.y	+=	pos.y;
-					eobj->vertexlist3[i].v.z	=	vert_list_static[0].p.z	+=	pos.z;
+				if(Zsin == 0.f) {
+					
+					eobj->vertexlist3[i].v = vert_list_static[0].p += pos;
 					
 					specialEE_RT(&vert_list_static[0],&eobj->vertexlist[i].vworld);
 					specialEE_P(&eobj->vertexlist[i].vworld,&eobj->vertexlist[i].vert);
 				}
 				else 
 				{			
-					_ZRotatePoint( (Vec3f *) &vert_list_static[0], (Vec3f *)&vert_list_static[1], Zcos, Zsin );
-					eobj->vertexlist3[i].v.x	=	vert_list_static[1].p.x	+=	pos.x;
-					eobj->vertexlist3[i].v.y	=	vert_list_static[1].p.y	+=	pos.y;
-					eobj->vertexlist3[i].v.z	=	vert_list_static[1].p.z	+=	pos.z;
+					_ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Zcos, Zsin);
+					eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 				
 					specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
 					specialEE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
@@ -1400,7 +1397,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;
 								sp.origin.z=io->pos.z+rnd()*200.f-100.f;
-								sp.radius=rnd()*100.f+100.f;							
+								sp.radius=rnd()*100.f+100.f;
 							}
 
 							if (io->sfx_flag & SFX_TYPE_INCINERATE)
@@ -1559,7 +1556,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			{ 
 				vert_list[k].uv.x=eobj->facelist[i].u[k];
 				vert_list[k].uv.y=eobj->facelist[i].v[k];
-				ApplyWaterFXToVertex((Vec3f *)&eobj->vertexlist[eobj->facelist[i].vid[k]].v,&vert_list[k],0.3f);
+				ApplyWaterFXToVertex(&eobj->vertexlist[eobj->facelist[i].vid[k]].v, &vert_list[k], 0.3f);
 			}
 		}
 
@@ -1718,8 +1715,9 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		{
 			if ( ( todo > 2 ) && ( rnd() > 0.997f ) )
 			{
-				if ( io )
-					SpawnMetalShine( (Vec3f *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
+				if(io) {
+					SpawnMetalShine(&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert.p, r, g, b, GetInterNum(io));
+				}
 			}
 		}
 		else
@@ -1747,10 +1745,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 		for (long o=0;o<3;o++)
 		{
-			if (BIGMAT!=NULL)
-				VertexMatrixMultiply(&temporary3D, (Vec3f *)&eobj->vertexlist[paf[o]].norm, BIGMAT );
-			else 
-				_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm,&temporary3D,&Ncam);
+			if(BIGMAT) {
+				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, BIGMAT);
+			} else {
+				_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
+			}
 	
 			power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 

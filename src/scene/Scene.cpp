@@ -276,8 +276,8 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 			
 			if (ep->type & POLY_LAVA)
 			{
-				ApplyWaterFXToVertex((Vec3f *)&ep->v[k], &ep->tv[k], 0.35f); 
-				ApplyLavaGlowToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.6f);
+				ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f); 
+				ApplyLavaGlowToVertex(&ep->v[k].p,&ep->tv[k],0.6f);
 
 				if (rnd()>0.995f) 
 				{
@@ -292,7 +292,7 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 					
 				}
 			}
-			else ApplyWaterFXToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.35f);
+			else ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
 		}					
 	}	
 
@@ -311,34 +311,32 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 	}
 }
 
-void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim,SMY_VERTEX *_pVertex)
-{
+void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
+	
 	for (long k=0;k<to;k++) 
 	{
-		ep->tv[k].uv.x=ep->v[k].uv.x;
-		ep->tv[k].uv.y=ep->v[k].uv.y;
+		ep->tv[k].uv = ep->v[k].uv;
 		
-		ApplyWaterFXToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.35f);
+		ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
 			
 		if(ep->type&POLY_FALL)
 		{
 			ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 1000 );
 		}
 		
-		_pVertex[ep->uslInd[k]].tu=ep->tv[k].uv.x;
-		_pVertex[ep->uslInd[k]].tv=ep->tv[k].uv.y;
+		_pVertex[ep->uslInd[k]].tu = ep->tv[k].uv.x;
+		_pVertex[ep->uslInd[k]].tv = ep->tv[k].uv.y;
 	}					
 }
 
-void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim,SMY_VERTEX *_pVertex)
-{
+void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
+	
 	for (long k=0;k<to;k++) 
 	{
-		ep->tv[k].uv.x=ep->v[k].uv.x;
-		ep->tv[k].uv.y=ep->v[k].uv.y;
+		ep->tv[k].uv = ep->v[k].uv;
 		
-		ApplyWaterFXToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.35f); //0.25f
-		ApplyLavaGlowToVertex((Vec3f *)&ep->v[k],&ep->tv[k],0.6f);
+		ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f); //0.25f
+		ApplyLavaGlowToVertex(&ep->v[k].p, &ep->tv[k], 0.6f);
 			
 		if(ep->type&POLY_FALL)
 		{
@@ -401,7 +399,7 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 	{	
 		for (long i=0;i<frustrums->nb_frustrums;i++)
 		{
-			if (IsSphereInFrustrum(sphere->radius,(Vec3f *)&sphere->origin,&frustrums->frustrums[i]))
+			if (IsSphereInFrustrum(sphere->radius, &sphere->origin, &frustrums->frustrums[i]))
 				return false;
 		}
 	}
@@ -1040,7 +1038,7 @@ bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
 {
 	for (long i=0;i<frustrums->nb_frustrums;i++)
 	{
-		if (IsSphereInFrustrum(ep->v[0].rhw,(Vec3f *)&ep->center,&frustrums->frustrums[i]))
+		if (IsSphereInFrustrum(ep->v[0].rhw, &ep->center, &frustrums->frustrums[i]))
 			return false;
 			}
 
@@ -1102,31 +1100,23 @@ void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt
 	
 }
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum);
-void CreateFrustrum(EERIE_FRUSTRUM * frustrum,EERIEPOLY * ep,long cull)
-{
-
-	long to;
-
-	if (ep->type & POLY_QUAD)
-		to=4;
-	else to=3;
-
-	if (cull)
-	{
-		CreatePlane(frustrum,0,&ACTIVECAM->pos,(Vec3f *)&ep->v[0],(Vec3f *)&ep->v[1]);
-		CreatePlane(frustrum,1,&ACTIVECAM->pos,(Vec3f *)&ep->v[3],(Vec3f *)&ep->v[2]);
-		CreatePlane(frustrum,2,&ACTIVECAM->pos,(Vec3f *)&ep->v[1],(Vec3f *)&ep->v[3]);
-		CreatePlane(frustrum,3,&ACTIVECAM->pos,(Vec3f *)&ep->v[2],(Vec3f *)&ep->v[0]);
+void CreateFrustrum(EERIE_FRUSTRUM * frustrum, EERIEPOLY * ep, long cull) {
+	
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
+	
+	if(cull) {
+		CreatePlane(frustrum, 0, &ACTIVECAM->pos, &ep->v[0].p, &ep->v[1].p);
+		CreatePlane(frustrum, 1, &ACTIVECAM->pos, &ep->v[3].p, &ep->v[2].p);
+		CreatePlane(frustrum, 2, &ACTIVECAM->pos, &ep->v[1].p, &ep->v[3].p);
+		CreatePlane(frustrum, 3, &ACTIVECAM->pos, &ep->v[2].p, &ep->v[0].p);
+	} else {
+		CreatePlane(frustrum, 0, &ACTIVECAM->pos, &ep->v[1].p, &ep->v[0].p);
+		CreatePlane(frustrum, 1, &ACTIVECAM->pos, &ep->v[2].p, &ep->v[3].p);
+		CreatePlane(frustrum, 2, &ACTIVECAM->pos, &ep->v[3].p, &ep->v[1].p);
+		CreatePlane(frustrum, 3, &ACTIVECAM->pos, &ep->v[0].p, &ep->v[2].p);
 	}
-	else
-	{
-		CreatePlane(frustrum,0,&ACTIVECAM->pos,(Vec3f *)&ep->v[1],(Vec3f *)&ep->v[0]);
-		CreatePlane(frustrum,1,&ACTIVECAM->pos,(Vec3f *)&ep->v[2],(Vec3f *)&ep->v[3]);
-		CreatePlane(frustrum,2,&ACTIVECAM->pos,(Vec3f *)&ep->v[3],(Vec3f *)&ep->v[1]);
-		CreatePlane(frustrum,3,&ACTIVECAM->pos,(Vec3f *)&ep->v[0],(Vec3f *)&ep->v[2]);
-	}
-
-	frustrum->nb=to;
+	
+	frustrum->nb = to;
 }
 
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {

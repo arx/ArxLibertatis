@@ -159,7 +159,7 @@ void CExplosion::Update(unsigned long _ulTime)
 //-----------------------------------------------------------------------------
 void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureContainer * tp)
 {
-	if (DoSphericDamage((Vec3f *)v, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
+	if (DoSphericDamage(&v->p, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
 	{
 		Vec3f hit;
 		hit.x = v->p.x;
