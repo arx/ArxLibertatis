@@ -2175,9 +2175,7 @@ void ArxGame::GoFor2DFX()
 
 				if (el->extras & EXTRAS_FLARE)
 				{
-					lv.sx=el->pos.x;
-					lv.sy=el->pos.y;
-					lv.sz=el->pos.z;
+					lv.p = el->pos;
 					specialEE_RTP(&lv,&ltvv);
 					el->temp-=temp_increase;
 
@@ -2186,36 +2184,26 @@ void ArxGame::GoFor2DFX()
 						continue;
 
 					if ((ltvv.rhw > 0.f) &&
-						(ltvv.sx>0.f) &&
-						(ltvv.sy>(CINEMA_DECAL*Yratio)) &&
-						(ltvv.sx<DANAESIZX) &&
-						(ltvv.sy<(DANAESIZY-(CINEMA_DECAL*Yratio)))
+						(ltvv.p.x>0.f) &&
+						(ltvv.p.y>(CINEMA_DECAL*Yratio)) &&
+						(ltvv.p.x<DANAESIZX) &&
+						(ltvv.p.y<(DANAESIZY-(CINEMA_DECAL*Yratio)))
 						)
 					{
-						Vec3f vector;
-						vector.x=lv.sx-ACTIVECAM->pos.x;
-						vector.y=lv.sy-ACTIVECAM->pos.y;
-						vector.z=lv.sz-ACTIVECAM->pos.z;
-						float fNorm = 50.f / vector.length();
-						vector *= fNorm;
+						Vec3f vector = lv.p - ACTIVECAM->pos;
+						lv.p -= vector * (50.f / vector.length());
 						TexturedVertex ltvv2;
-						lv.sx-=vector.x;
-						lv.sy-=vector.y;
-						lv.sz-=vector.z;
-						specialEE_RTP(&lv,&ltvv2);
+						specialEE_RTP(&lv, &ltvv2);
 
 						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
 						Vec3f hit;
 						EERIEPOLY *tp=NULL;
 						Vec2s ees2dlv;
-						Vec3f ee3dlv;
-						ee3dlv.x = lv.sx;
-						ee3dlv.y = lv.sy;
-						ee3dlv.z = lv.sz;
+						Vec3f ee3dlv = lv.p;
 
-						ees2dlv.x = checked_range_cast<short>(ltvv.sx);
-						ees2dlv.y = checked_range_cast<short>(ltvv.sy);
+						ees2dlv.x = checked_range_cast<short>(ltvv.p.x);
+						ees2dlv.y = checked_range_cast<short>(ltvv.p.y);
 
 
 						if( !bComputeIO )
@@ -2225,7 +2213,7 @@ void ArxGame::GoFor2DFX()
 						}
 
 						if(
-							(ltvv.sz>fZFar)||
+							(ltvv.p.z>fZFar)||
 							EERIELaunchRay3(&ACTIVECAM->pos,&ee3dlv,&hit,tp,1)||
 							GetFirstInterAtPos(&ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 							)
@@ -2265,11 +2253,9 @@ void ArxGame::GoFor2DFX()
 				{
 					if (el->temp>0.f)
 					{
-						lv.sx=el->pos.x;
-						lv.sy=el->pos.y;
-						lv.sz=el->pos.z;
-						lv.rhw=1.f;
-						specialEE_RT((TexturedVertex *)&lv,(Vec3f *)&ltvv);
+						lv.p = el->pos;
+						lv.rhw = 1.f;
+						specialEE_RT(&lv, &ltvv.p);
 						float v=el->temp;
 
 						if (FADEDIR)
@@ -2284,7 +2270,7 @@ void ArxGame::GoFor2DFX()
 						else
 							siz=-el->ex_flaresize;
 
-						EERIEDrawSprite(&lv, siz, tflare, Color3f(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b).to<u8>(), ltvv.sz);
+						EERIEDrawSprite(&lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
 
 					}
 				}

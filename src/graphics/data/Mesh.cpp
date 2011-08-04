@@ -222,20 +222,20 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 void specialEE_RTP(TexturedVertex * in, TexturedVertex * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->sx = in->sx - et->posx;
-	out->sy = in->sy - et->posy;
-	out->sz = in->sz - et->posz;
+	out->p.x = in->p.x - et->posx;
+	out->p.y = in->p.y - et->posy;
+	out->p.z = in->p.z - et->posz;
 
-	register float temp = (out->sz * et->ycos) - (out->sx * et->ysin);
-	out->sx = (out->sz * et->ysin) + (out->sx * et->ycos);
-	out->sz = (out->sy * et->xsin) + (temp * et->xcos);
-	out->sy = (out->sy * et->xcos) - (temp * et->xsin);
+	register float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
+	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);
+	out->p.z = (out->p.y * et->xsin) + (temp * et->xcos);
+	out->p.y = (out->p.y * et->xcos) - (temp * et->xsin);
 
-	float fZTemp = 1.f / out->sz;
-	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
+	float fZTemp = 1.f / out->p.z;
+	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 
-	out->sx = out->sx * ProjectionMatrix._11 * fZTemp + et->xmod;
-	out->sy = out->sy * ProjectionMatrix._22 * fZTemp + et->ymod;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->xmod;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->ymod;
 	out->rhw = fZTemp;
 }
 
@@ -738,12 +738,12 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret)
 {
 	Vec3f	n, s21, s31;
 
-	s21.x = ep->v[1].sx - ep->v[0].sx;
-	s21.y = ep->v[1].sy - ep->v[0].sy;
-	s21.z = ep->v[1].sz - ep->v[0].sz;
-	s31.x = ep->v[2].sx - ep->v[0].sx;
-	s31.y = ep->v[2].sy - ep->v[0].sy;
-	s31.z = ep->v[2].sz - ep->v[0].sz;
+	s21.x = ep->v[1].p.x - ep->v[0].p.x;
+	s21.y = ep->v[1].p.y - ep->v[0].p.y;
+	s21.z = ep->v[1].p.z - ep->v[0].p.z;
+	s31.x = ep->v[2].p.x - ep->v[0].p.x;
+	s31.y = ep->v[2].p.y - ep->v[0].p.y;
+	s31.z = ep->v[2].p.z - ep->v[0].p.z;
 
 	n.y = (s21.z * s31.x) - (s21.x * s31.z);
 
@@ -753,7 +753,7 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret)
 	n.z = (s21.x * s31.y) - (s21.y * s31.x);
 
 	// uses s21.x instead of d
-	s21.x = ep->v[0].sx * n.x + ep->v[0].sy * n.y + ep->v[0].sz * n.z;
+	s21.x = ep->v[0].p.x * n.x + ep->v[0].p.y * n.y + ep->v[0].p.z * n.z;
 
 	s21.x = (s21.x - (n.x * pos->x) - (n.z * pos->z)) / n.y;
 
@@ -786,57 +786,57 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 //*************************************************************************************
 void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out)
 {
-	out->sx = in->sx - ACTIVECAM->pos.x;
-	out->sy = in->sy - ACTIVECAM->pos.y;
-	out->sz = in->sz - ACTIVECAM->pos.z;
-	in->sx = (out->sx * ACTIVECAM->Ycos) + (out->sz * ACTIVECAM->Ysin);
-	in->sz = (out->sz * ACTIVECAM->Ycos) - (out->sx * ACTIVECAM->Ysin);
-	out->sz = (out->sy * ACTIVECAM->Xsin) + (in->sz * ACTIVECAM->Xcos);
-	out->sy = (out->sy * ACTIVECAM->Xcos) - (in->sz * ACTIVECAM->Xsin);
+	out->p.x = in->p.x - ACTIVECAM->pos.x;
+	out->p.y = in->p.y - ACTIVECAM->pos.y;
+	out->p.z = in->p.z - ACTIVECAM->pos.z;
+	in->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
+	in->p.z = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
+	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (in->p.z * ACTIVECAM->Xcos);
+	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (in->p.z * ACTIVECAM->Xsin);
 
 	if (ACTIVECAM->Zsin == 0)
 	{
-		in->sy = out->sy;
+		in->p.y = out->p.y;
 	}
 	else
 	{
-		in->sy = (out->sy * ACTIVECAM->Zcos) - (in->sx * ACTIVECAM->Zsin);
-		in->sx = (in->sx * ACTIVECAM->Zcos) + (out->sy * ACTIVECAM->Zsin);
+		in->p.y = (out->p.y * ACTIVECAM->Zcos) - (in->p.x * ACTIVECAM->Zsin);
+		in->p.x = (in->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
 	}
 
 	float fZTemp;
-	fZTemp = 1.f / out->sz;
-	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->sx = in->sx * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->sy = in->sy * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	fZTemp = 1.f / out->p.z;
+	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
 	out->rhw = fZTemp;
 }
 
 void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
 {
-	out->sx = in->sx - ACTIVECAM->pos.x;
-	out->sy = in->sy - ACTIVECAM->pos.y;
-	out->sz = in->sz - ACTIVECAM->pos.z;
-	in->sx = (out->sx * ACTIVECAM->Ycos) + (out->sz * ACTIVECAM->Ysin);
-	in->sz = (out->sz * ACTIVECAM->Ycos) - (out->sx * ACTIVECAM->Ysin);
-	out->sz = (out->sy * ACTIVECAM->Xsin) + (in->sz * ACTIVECAM->Xcos);
-	out->sy = (out->sy * ACTIVECAM->Xcos) - (in->sz * ACTIVECAM->Xsin);
+	out->p.x = in->p.x - ACTIVECAM->pos.x;
+	out->p.y = in->p.y - ACTIVECAM->pos.y;
+	out->p.z = in->p.z - ACTIVECAM->pos.z;
+	in->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
+	in->p.z = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
+	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (in->p.z * ACTIVECAM->Xcos);
+	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (in->p.z * ACTIVECAM->Xsin);
 
 	if (ACTIVECAM->Zsin == 0)
 	{
-		in->sy = out->sy;
+		in->p.y = out->p.y;
 	}
 	else
 	{
-		in->sy = (out->sy * ACTIVECAM->Zcos) - (in->sx * ACTIVECAM->Zsin);
-		in->sx = (in->sx * ACTIVECAM->Zcos) + (out->sy * ACTIVECAM->Zsin);
+		in->p.y = (out->p.y * ACTIVECAM->Zcos) - (in->p.x * ACTIVECAM->Zsin);
+		in->p.x = (in->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
 	}
 
 	float fZTemp;
-	fZTemp = 1.f / out->sz;
-	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->sx = in->sx * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->sy = in->sy * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	fZTemp = 1.f / out->p.z;
+	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
 	out->rhw = fZTemp * 3000.f;
 
 }
@@ -845,9 +845,9 @@ void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
 //*************************************************************************************
 void EE_RT(TexturedVertex * in, Vec3f * out)
 {
-	out->x = in->sx - ACTIVECAM->pos.x;
-	out->y = in->sy - ACTIVECAM->pos.y;
-	out->z = in->sz - ACTIVECAM->pos.z;
+	out->x = in->p.x - ACTIVECAM->pos.x;
+	out->y = in->p.y - ACTIVECAM->pos.y;
+	out->z = in->p.z - ACTIVECAM->pos.z;
 
 	register float temp;
 	temp = (out->z * ACTIVECAM->Ycos) - (out->x * ACTIVECAM->Ysin);
@@ -865,57 +865,57 @@ void EE_RT(TexturedVertex * in, Vec3f * out)
 void EE_RT2(TexturedVertex * in, TexturedVertex * out)
 {
 
-	out->sx = in->sx - ACTIVECAM->pos.x;
-	out->sy = in->sy - ACTIVECAM->pos.y;
-	out->sz = in->sz - ACTIVECAM->pos.z;
+	out->p.x = in->p.x - ACTIVECAM->pos.x;
+	out->p.y = in->p.y - ACTIVECAM->pos.y;
+	out->p.z = in->p.z - ACTIVECAM->pos.z;
 
 	register float temp;
-	temp = (out->sz * ACTIVECAM->Ycos) - (out->sx * ACTIVECAM->Ysin);
-	out->sx = (out->sx * ACTIVECAM->Ycos) + (out->sz * ACTIVECAM->Ysin);
+	temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
+	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
 
-	out->sz = (out->sy * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
-	out->sy = (out->sy * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
+	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
+	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
 
 	// Might Prove Usefull one day...
-	temp = (out->sy * ACTIVECAM->Zcos) - (out->sx * ACTIVECAM->Zsin);
-	out->sx = (out->sx * ACTIVECAM->Zcos) + (out->sy * ACTIVECAM->Zsin);
-	out->sy = temp;
+	temp = (out->p.y * ACTIVECAM->Zcos) - (out->p.x * ACTIVECAM->Zsin);
+	out->p.x = (out->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
+	out->p.y = temp;
 }
 
 void EE_P(Vec3f * in, TexturedVertex * out)
 {
 	float fZTemp;
 	fZTemp = 1.f / in->z;
-	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->sx = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->sy = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
+	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
+	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
 	out->rhw = fZTemp;
 }
 
 void EE_RTP(TexturedVertex * in, TexturedVertex * out)
 {
 	//register float rhw;
-	out->sx = in->sx - ACTIVECAM->pos.x;
-	out->sy = in->sy - ACTIVECAM->pos.y;
-	out->sz = in->sz - ACTIVECAM->pos.z;
+	out->p.x = in->p.x - ACTIVECAM->pos.x;
+	out->p.y = in->p.y - ACTIVECAM->pos.y;
+	out->p.z = in->p.z - ACTIVECAM->pos.z;
 
 	register float temp;
-	temp = (out->sz * ACTIVECAM->Ycos) - (out->sx * ACTIVECAM->Ysin);
-	out->sx = (out->sx * ACTIVECAM->Ycos) + (out->sz * ACTIVECAM->Ysin);
+	temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
+	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
 
-	out->sz = (out->sy * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
-	out->sy = (out->sy * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
+	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
+	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
 
 	// Might Prove Usefull one day...
-	temp = (out->sy * ACTIVECAM->Zcos) - (out->sx * ACTIVECAM->Zsin);
-	out->sx = (out->sx * ACTIVECAM->Zcos) + (out->sy * ACTIVECAM->Zsin);
-	out->sy = temp;
+	temp = (out->p.y * ACTIVECAM->Zcos) - (out->p.x * ACTIVECAM->Zsin);
+	out->p.x = (out->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
+	out->p.y = temp;
 
 	float fZTemp;
-	fZTemp = 1.f / out->sz;
-	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->sx = out->sx * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->sy = out->sy * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	fZTemp = 1.f / out->p.z;
+	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
 	out->rhw = fZTemp;
 }
 //*************************************************************************************
@@ -923,39 +923,39 @@ void EE_RTP(TexturedVertex * in, TexturedVertex * out)
 __inline void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam)
 {
 	TexturedVertex tout;
-	out->sx = in->sx - cam->pos.x;
-	out->sy = in->sy - cam->pos.y;
-	out->sz = in->sz - cam->pos.z;
+	out->p.x = in->p.x - cam->pos.x;
+	out->p.y = in->p.y - cam->pos.y;
+	out->p.z = in->p.z - cam->pos.z;
 
-	tout.sx = (out->sx * cam->Ycos) + (out->sz * cam->Ysin);
-	tout.sz = (out->sz * cam->Ycos) - (out->sx * cam->Ysin);
+	tout.p.x = (out->p.x * cam->Ycos) + (out->p.z * cam->Ysin);
+	tout.p.z = (out->p.z * cam->Ycos) - (out->p.x * cam->Ysin);
 
-	out->sz = (out->sy * cam->Xsin) + (tout.sz * cam->Xcos);
-	out->sy = (out->sy * cam->Xcos) - (tout.sz * cam->Xsin);
+	out->p.z = (out->p.y * cam->Xsin) + (tout.p.z * cam->Xcos);
+	out->p.y = (out->p.y * cam->Xcos) - (tout.p.z * cam->Xsin);
 
 	if (ACTIVECAM->Zsin == 0)
 	{
-		tout.sy = out->sy;
+		tout.p.y = out->p.y;
 	}
 	else
 	{
-		tout.sy = (out->sy * cam->Zcos) - (tout.sx * cam->Zsin);
-		tout.sx = (tout.sx * cam->Zcos) + (out->sy * cam->Zsin);
+		tout.p.y = (out->p.y * cam->Zcos) - (tout.p.x * cam->Zsin);
+		tout.p.x = (tout.p.x * cam->Zcos) + (out->p.y * cam->Zsin);
 	}
 
-	if (out->sz <= 0.f)
+	if (out->p.z <= 0.f)
 	{
-		out->rhw = 1.f - out->sz;
+		out->rhw = 1.f - out->p.z;
 	}
 	else
 	{
-		out->rhw = 1.f / out->sz;
+		out->rhw = 1.f / out->p.z;
 	}
 
 	tout.rhw = cam->use_focal * out->rhw;
-	out->sz = out->sz * cam->Zmul;
-	out->sx = cam->posleft + (tout.sx * tout.rhw);
-	out->sy = cam->postop + (tout.sy * tout.rhw) ;
+	out->p.z = out->p.z * cam->Zmul;
+	out->p.x = cam->posleft + (tout.p.x * tout.rhw);
+	out->p.y = cam->postop + (tout.p.y * tout.rhw) ;
 }
 
 //*************************************************************************************
@@ -1120,9 +1120,9 @@ int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((ep->tv[i].sy <= y) && (y < ep->tv[j].sy)) ||
-				((ep->tv[j].sy <= y) && (y < ep->tv[i].sy))) &&
-				(x < (ep->tv[j].sx - ep->tv[i].sx) *(y - ep->tv[i].sy) / (ep->tv[j].sy - ep->tv[i].sy) + ep->tv[i].sx))
+		if ((((ep->tv[i].p.y <= y) && (y < ep->tv[j].p.y)) ||
+				((ep->tv[j].p.y <= y) && (y < ep->tv[i].p.y))) &&
+				(x < (ep->tv[j].p.x - ep->tv[i].p.x) *(y - ep->tv[i].p.y) / (ep->tv[j].p.y - ep->tv[i].p.y) + ep->tv[i].p.x))
 			c = !c;
 	}
 
@@ -1130,9 +1130,9 @@ int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
 	else if (ep->type & POLY_QUAD)
 		for (i = 1, j = 3; i < 4; j = i++)
 		{
-			if ((((ep->tv[i].sy <= y) && (y < ep->tv[j].sy)) ||
-					((ep->tv[j].sy <= y) && (y < ep->tv[i].sy))) &&
-					(x < (ep->tv[j].sx - ep->tv[i].sx) *(y - ep->tv[i].sy) / (ep->tv[j].sy - ep->tv[i].sy) + ep->tv[i].sx))
+			if ((((ep->tv[i].p.y <= y) && (y < ep->tv[j].p.y)) ||
+					((ep->tv[j].p.y <= y) && (y < ep->tv[i].p.y))) &&
+					(x < (ep->tv[j].p.x - ep->tv[i].p.x) *(y - ep->tv[i].p.y) / (ep->tv[j].p.y - ep->tv[i].p.y) + ep->tv[i].p.x))
 				c = !c;
 		}
 
@@ -1148,14 +1148,14 @@ float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z)
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((obj->vertexlist[ef->vid[i]].vert.sy <= z) && (z < obj->vertexlist[ef->vid[j]].vert.sy)) ||
-				((obj->vertexlist[ef->vid[j]].vert.sy <= z) && (z < obj->vertexlist[ef->vid[i]].vert.sy))) &&
-				(x < (obj->vertexlist[ef->vid[j]].vert.sx - obj->vertexlist[ef->vid[i]].vert.sx) *(z - obj->vertexlist[ef->vid[i]].vert.sy) / (obj->vertexlist[ef->vid[j]].vert.sy - obj->vertexlist[ef->vid[i]].vert.sy) + obj->vertexlist[ef->vid[i]].vert.sx))
+		if ((((obj->vertexlist[ef->vid[i]].vert.p.y <= z) && (z < obj->vertexlist[ef->vid[j]].vert.p.y)) ||
+				((obj->vertexlist[ef->vid[j]].vert.p.y <= z) && (z < obj->vertexlist[ef->vid[i]].vert.p.y))) &&
+				(x < (obj->vertexlist[ef->vid[j]].vert.p.x - obj->vertexlist[ef->vid[i]].vert.p.x) *(z - obj->vertexlist[ef->vid[i]].vert.p.y) / (obj->vertexlist[ef->vid[j]].vert.p.y - obj->vertexlist[ef->vid[i]].vert.p.y) + obj->vertexlist[ef->vid[i]].vert.p.x))
 			c = !c;
 	}
 
 	if (c)
-		return obj->vertexlist[ef->vid[0]].vert.sz;
+		return obj->vertexlist[ef->vid[0]].vert.p.z;
 	else
 		return 0.f;
 }
@@ -1169,13 +1169,13 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((obj->vertexlist3[ef->vid[i]].vert.sy <= z) && (z < obj->vertexlist3[ef->vid[j]].vert.sy)) ||
-				((obj->vertexlist3[ef->vid[j]].vert.sy <= z) && (z < obj->vertexlist3[ef->vid[i]].vert.sy))) &&
-				(x < (obj->vertexlist3[ef->vid[j]].vert.sx - obj->vertexlist3[ef->vid[i]].vert.sx) *(z - obj->vertexlist3[ef->vid[i]].vert.sy) / (obj->vertexlist3[ef->vid[j]].vert.sy - obj->vertexlist3[ef->vid[i]].vert.sy) + obj->vertexlist3[ef->vid[i]].vert.sx))
+		if ((((obj->vertexlist3[ef->vid[i]].vert.p.y <= z) && (z < obj->vertexlist3[ef->vid[j]].vert.p.y)) ||
+				((obj->vertexlist3[ef->vid[j]].vert.p.y <= z) && (z < obj->vertexlist3[ef->vid[i]].vert.p.y))) &&
+				(x < (obj->vertexlist3[ef->vid[j]].vert.p.x - obj->vertexlist3[ef->vid[i]].vert.p.x) *(z - obj->vertexlist3[ef->vid[i]].vert.p.y) / (obj->vertexlist3[ef->vid[j]].vert.p.y - obj->vertexlist3[ef->vid[i]].vert.p.y) + obj->vertexlist3[ef->vid[i]].vert.p.x))
 			c = !c;
 	}
 
-	if (c) return obj->vertexlist3[ef->vid[0]].vert.sz;
+	if (c) return obj->vertexlist3[ef->vid[0]].vert.p.z;
 	else return 0.f;
 }
 
@@ -1187,18 +1187,18 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z)
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((ep->v[i].sz <= z) && (z < ep->v[j].sz)) ||
-				((ep->v[j].sz <= z) && (z < ep->v[i].sz))) &&
-				(x < (ep->v[j].sx - ep->v[i].sx) *(z - ep->v[i].sz) / (ep->v[j].sz - ep->v[i].sz) + ep->v[i].sx))
+		if ((((ep->v[i].p.z <= z) && (z < ep->v[j].p.z)) ||
+				((ep->v[j].p.z <= z) && (z < ep->v[i].p.z))) &&
+				(x < (ep->v[j].p.x - ep->v[i].p.x) *(z - ep->v[i].p.z) / (ep->v[j].p.z - ep->v[i].p.z) + ep->v[i].p.x))
 			c = !c;
 	}
 
 	if (ep->type & POLY_QUAD)
 		for (i = 1, j = 3; i < 4; j = i++)
 		{
-			if ((((ep->v[i].sz <= z) && (z < ep->v[j].sz)) ||
-					((ep->v[j].sz <= z) && (z < ep->v[i].sz))) &&
-					(x < (ep->v[j].sx - ep->v[i].sx) *(z - ep->v[i].sz) / (ep->v[j].sz - ep->v[i].sz) + ep->v[i].sx))
+			if ((((ep->v[i].p.z <= z) && (z < ep->v[j].p.z)) ||
+					((ep->v[j].p.z <= z) && (z < ep->v[i].p.z))) &&
+					(x < (ep->v[j].p.x - ep->v[i].p.x) *(z - ep->v[i].p.z) / (ep->v[j].p.z - ep->v[i].p.z) + ep->v[i].p.x))
 				d = !d;
 		}
 
@@ -1225,7 +1225,7 @@ void SetTargetCamera(EERIE_CAMERA * cam, float x, float y, float z)
 int BackFaceCull2D(TexturedVertex * tv)
 {
 
-	if ((tv[0].sx - tv[1].sx)*(tv[2].sy - tv[1].sy) - (tv[0].sy - tv[1].sy)*(tv[2].sx - tv[1].sx) > 0.f)
+	if ((tv[0].p.x - tv[1].p.x)*(tv[2].p.y - tv[1].p.y) - (tv[0].p.y - tv[1].p.y)*(tv[2].p.x - tv[1].p.x) > 0.f)
 		return 0;
 	else return 1;
 }
@@ -1910,9 +1910,9 @@ void ComputeRoomDistance()
 		// Add 4 portal vertices
 		for (int nn = 0; nn < 4; nn++)
 		{
-			ad[curpos].pos.x = portals->portals[i].poly.v[nn].sx;
-			ad[curpos].pos.y = portals->portals[i].poly.v[nn].sy;
-			ad[curpos].pos.z = portals->portals[i].poly.v[nn].sz;
+			ad[curpos].pos.x = portals->portals[i].poly.v[nn].p.x;
+			ad[curpos].pos.y = portals->portals[i].poly.v[nn].p.y;
+			ad[curpos].pos.z = portals->portals[i].poly.v[nn].p.z;
 			ptr[curpos] = (void *)&portals->portals[i];
 			curpos++;
 		}
@@ -1925,9 +1925,9 @@ void ComputeRoomDistance()
 		// Add V centers;
 		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
 		{
-			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].sx + portals->portals[i].poly.v[nk].sx) * ( 1.0f / 2 );
-			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].sy + portals->portals[i].poly.v[nk].sy) * ( 1.0f / 2 );
-			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].sz + portals->portals[i].poly.v[nk].sz) * ( 1.0f / 2 );
+			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].p.x + portals->portals[i].poly.v[nk].p.x) * ( 1.0f / 2 );
+			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].p.y + portals->portals[i].poly.v[nk].p.y) * ( 1.0f / 2 );
+			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].p.z + portals->portals[i].poly.v[nk].p.z) * ( 1.0f / 2 );
 			ptr[curpos] = (void *)&portals->portals[i];
 			curpos++;
 		}
@@ -2227,9 +2227,9 @@ void PrepareBackgroundNRMLs()
 
 									for (k2 = 0; k2 < nbvert2; k2++)
 									{
-										if ((EEfabs(ep2->v[k2].sx - ep->v[k].sx) < 2.f)
-												&&	(EEfabs(ep2->v[k2].sy - ep->v[k].sy) < 2.f)
-												&&	(EEfabs(ep2->v[k2].sz - ep->v[k].sz) < 2.f))
+										if ((EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f)
+												&&	(EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f)
+												&&	(EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f))
 										{
 											if (k2 == 3)
 											{
@@ -2287,9 +2287,9 @@ void PrepareBackgroundNRMLs()
 						}
 
 					count = 1.f / count;
-					ep->tv[k].sx = nrml.x * count;
-					ep->tv[k].sy = nrml.y * count;
-					ep->tv[k].sz = nrml.z * count;
+					ep->tv[k].p.x = nrml.x * count;
+					ep->tv[k].p.y = nrml.y * count;
+					ep->tv[k].p.z = nrml.z * count;
 				}
 			}
 		}
@@ -2308,9 +2308,9 @@ void PrepareBackgroundNRMLs()
 
 				for (k = 0; k < nbvert; k++)
 				{
-					ep->nrml[k].x = ep->tv[k].sx;
-					ep->nrml[k].y = ep->tv[k].sy;
-					ep->nrml[k].z = ep->tv[k].sz;
+					ep->nrml[k].x = ep->tv[k].p.x;
+					ep->nrml[k].y = ep->tv[k].p.y;
+					ep->nrml[k].z = ep->tv[k].p.z;
 				}
 
 				float d = 0.f;
@@ -2437,9 +2437,9 @@ void EERIEPOLY_Compute_PolyIn()
 								else
 								{
 									Vec3f pt;
-									pt.x = (ep2->v[k].sx + ep2->center.x) * ( 1.0f / 2 );
-									pt.y = (ep2->v[k].sy + ep2->center.y) * ( 1.0f / 2 );
-									pt.z = (ep2->v[k].sz + ep2->center.z) * ( 1.0f / 2 );
+									pt.x = (ep2->v[k].p.x + ep2->center.x) * ( 1.0f / 2 );
+									pt.y = (ep2->v[k].p.y + ep2->center.y) * ( 1.0f / 2 );
+									pt.z = (ep2->v[k].p.z + ep2->center.z) * ( 1.0f / 2 );
 
 									if (PointInBBox((Vec3f *)&pt, &bb))
 									{
@@ -2568,9 +2568,9 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 	{
 		CalcFaceNormal(&portals->portals[num].poly, portals->portals[num].poly.v);
 		EERIEPOLY * ep = &portals->portals[num].poly;
-		ep->center.x = ep->v[0].sx;
-		ep->center.y = ep->v[0].sy;
-		ep->center.z = ep->v[0].sz;
+		ep->center.x = ep->v[0].p.x;
+		ep->center.y = ep->v[0].p.y;
+		ep->center.z = ep->v[0].p.z;
 		long to = 3;
 		float divide = ( 1.0f / 3 );
 
@@ -2580,25 +2580,25 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 			divide = ( 1.0f / 4 );
 		}
 
-		ep->min.x = ep->v[0].sx;
-		ep->min.y = ep->v[0].sy;
-		ep->min.z = ep->v[0].sz;
-		ep->max.x = ep->v[0].sx;
-		ep->max.y = ep->v[0].sy;
-		ep->max.z = ep->v[0].sz;
+		ep->min.x = ep->v[0].p.x;
+		ep->min.y = ep->v[0].p.y;
+		ep->min.z = ep->v[0].p.z;
+		ep->max.x = ep->v[0].p.x;
+		ep->max.y = ep->v[0].p.y;
+		ep->max.z = ep->v[0].p.z;
 
 		for (long i = 1; i < to; i++)
 		{
-			ep->center.x += ep->v[i].sx;
-			ep->center.y += ep->v[i].sy;
-			ep->center.z += ep->v[i].sz;
+			ep->center.x += ep->v[i].p.x;
+			ep->center.y += ep->v[i].p.y;
+			ep->center.z += ep->v[i].p.z;
 
-			ep->min.x = min(ep->min.x, ep->v[i].sx);
-			ep->min.y = min(ep->min.y, ep->v[i].sy);
-			ep->min.z = min(ep->min.z, ep->v[i].sz);
-			ep->max.x = max(ep->max.x, ep->v[i].sx);
-			ep->max.y = max(ep->max.y, ep->v[i].sy);
-			ep->max.z = max(ep->max.z, ep->v[i].sz);
+			ep->min.x = min(ep->min.x, ep->v[i].p.x);
+			ep->min.y = min(ep->min.y, ep->v[i].p.y);
+			ep->min.z = min(ep->min.z, ep->v[i].p.z);
+			ep->max.x = max(ep->max.x, ep->v[i].p.x);
+			ep->max.y = max(ep->max.y, ep->v[i].p.y);
+			ep->max.z = max(ep->max.z, ep->v[i].p.z);
 		}
 
 		ep->center *= divide;
@@ -2959,17 +2959,17 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
-		v.sx = eobj->vertexlist[i].v.x * scale->x;
-		v.sy = eobj->vertexlist[i].v.y * scale->y;
-		v.sz = eobj->vertexlist[i].v.z * scale->z;
+		v.p.x = eobj->vertexlist[i].v.x * scale->x;
+		v.p.y = eobj->vertexlist[i].v.y * scale->y;
+		v.p.z = eobj->vertexlist[i].v.z * scale->z;
 
 		_YRotatePoint((Vec3f *)&v, (Vec3f *)&rv, Ycos, Ysin);
 		_XRotatePoint((Vec3f *)&rv, (Vec3f *)&v, Xcos, Xsin);
 		_ZRotatePoint((Vec3f *)&v, (Vec3f *)&rv, Zcos, Zsin);
 
-		eobj->vertexlist3[i].v.x = rv.sx += pos->x;
-		eobj->vertexlist3[i].v.y = rv.sy += pos->y;
-		eobj->vertexlist3[i].v.z = rv.sz += pos->z;
+		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
+		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
+		eobj->vertexlist3[i].v.z = rv.p.z += pos->z;
 		
 		EE_RT(&rv, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
@@ -2979,21 +2979,21 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 
 	for (size_t i = 0; i < eobj->facelist.size(); i++)
 	{
-		vert_list[0].sx = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
-		vert_list[0].sy = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
-		vert_list[0].sz = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.z;
-		vert_list[1].sx = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.x;
-		vert_list[1].sy = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.y;
-		vert_list[1].sz = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.z;
-		vert_list[2].sx = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.x;
-		vert_list[2].sy = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.y;
-		vert_list[2].sz = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.z;
-		vert_list[0].tu = eobj->facelist[i].u[0];
-		vert_list[0].tv = eobj->facelist[i].v[0];
-		vert_list[1].tu = eobj->facelist[i].u[1];
-		vert_list[1].tv = eobj->facelist[i].v[1];
-		vert_list[2].tu = eobj->facelist[i].u[2];
-		vert_list[2].tv = eobj->facelist[i].v[2];
+		vert_list[0].p.x = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
+		vert_list[0].p.y = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
+		vert_list[0].p.z = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.z;
+		vert_list[1].p.x = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.x;
+		vert_list[1].p.y = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.y;
+		vert_list[1].p.z = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.z;
+		vert_list[2].p.x = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.x;
+		vert_list[2].p.y = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.y;
+		vert_list[2].p.z = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.z;
+		vert_list[0].uv.x = eobj->facelist[i].u[0];
+		vert_list[0].uv.y = eobj->facelist[i].v[0];
+		vert_list[1].uv.x = eobj->facelist[i].u[1];
+		vert_list[1].uv.y = eobj->facelist[i].v[1];
+		vert_list[2].uv.x = eobj->facelist[i].u[2];
+		vert_list[2].uv.y = eobj->facelist[i].v[2];
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
 
 		if ((eobj->facelist[i].facetype == 0)
@@ -3041,17 +3041,17 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
-		v.sx = eobj->vertexlist[i].v.x * scale->x;
-		v.sy = eobj->vertexlist[i].v.y * scale->y;
-		v.sz = eobj->vertexlist[i].v.z * scale->z;
+		v.p.x = eobj->vertexlist[i].v.x * scale->x;
+		v.p.y = eobj->vertexlist[i].v.y * scale->y;
+		v.p.z = eobj->vertexlist[i].v.z * scale->z;
 
 		_YRotatePoint((Vec3f *)&v, (Vec3f *)&rv, Ycos, Ysin);
 		_XRotatePoint((Vec3f *)&rv, (Vec3f *)&v, Xcos, Xsin);
 		_ZRotatePoint((Vec3f *)&v, (Vec3f *)&rv, Zcos, Zsin);
 
-		eobj->vertexlist3[i].v.x = rv.sx += pos->x;
-		eobj->vertexlist3[i].v.y = rv.sy += pos->y;
-		eobj->vertexlist3[i].v.z = rv.sz += pos->z;
+		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
+		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
+		eobj->vertexlist3[i].v.z = rv.p.z += pos->z;
 
 		EE_RT(&rv, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
@@ -3059,22 +3059,22 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 
 	for (size_t i = 0; i < eobj->facelist.size(); i++)
 	{
-		vert_list[0].sx = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
-		vert_list[0].sy = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
-		vert_list[0].sz = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.z;
-		vert_list[1].sx = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.x;
-		vert_list[1].sy = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.y;
-		vert_list[1].sz = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.z;
-		vert_list[2].sx = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.x;
-		vert_list[2].sy = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.y;
-		vert_list[2].sz = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.z;
+		vert_list[0].p.x = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
+		vert_list[0].p.y = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
+		vert_list[0].p.z = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.z;
+		vert_list[1].p.x = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.x;
+		vert_list[1].p.y = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.y;
+		vert_list[1].p.z = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.z;
+		vert_list[2].p.x = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.x;
+		vert_list[2].p.y = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.y;
+		vert_list[2].p.z = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.z;
 
-		vert_list[0].tu = eobj->facelist[i].u[0];
-		vert_list[0].tv = eobj->facelist[i].v[0];
-		vert_list[1].tu = eobj->facelist[i].u[1];
-		vert_list[1].tv = eobj->facelist[i].v[1];
-		vert_list[2].tu = eobj->facelist[i].u[2];
-		vert_list[2].tv = eobj->facelist[i].v[2];
+		vert_list[0].uv.x = eobj->facelist[i].u[0];
+		vert_list[0].uv.y = eobj->facelist[i].v[0];
+		vert_list[1].uv.x = eobj->facelist[i].u[1];
+		vert_list[1].uv.y = eobj->facelist[i].v[1];
+		vert_list[2].uv.x = eobj->facelist[i].u[2];
+		vert_list[2].uv.y = eobj->facelist[i].v[2];
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
 
 		if ((eobj->facelist[i].facetype == 0)
@@ -3309,11 +3309,11 @@ bool FastSceneLoad(const fs::path & partial_path) {
 					ep2->v[kk].color = 0xFFFFFFFF;
 					ep2->v[kk].rhw = 1;
 					ep2->v[kk].specular = 1;
-					ep2->v[kk].sx = ep->v[kk].ssx;
-					ep2->v[kk].sy = ep->v[kk].sy;
-					ep2->v[kk].sz = ep->v[kk].ssz;
-					ep2->v[kk].tu = ep->v[kk].stu;
-					ep2->v[kk].tv = ep->v[kk].stv;
+					ep2->v[kk].p.x = ep->v[kk].ssx;
+					ep2->v[kk].p.y = ep->v[kk].sy;
+					ep2->v[kk].p.z = ep->v[kk].ssz;
+					ep2->v[kk].uv.x = ep->v[kk].stu;
+					ep2->v[kk].uv.y = ep->v[kk].stv;
 				}
 				
 				memcpy(ep2->tv, ep2->v, sizeof(TexturedVertex) * 4);
@@ -3338,21 +3338,21 @@ bool FastSceneLoad(const fs::path & partial_path) {
 				
 				for(long h = 0; h < to; h++) {
 					
-					ep2->center.x += ep2->v[h].sx;
-					ep2->center.y += ep2->v[h].sy;
-					ep2->center.z += ep2->v[h].sz;
+					ep2->center.x += ep2->v[h].p.x;
+					ep2->center.y += ep2->v[h].p.y;
+					ep2->center.z += ep2->v[h].p.z;
 					
 					if(h != 0) {
-						ep2->max.x = max(ep2->max.x, ep2->v[h].sx);
-						ep2->min.x = min(ep2->min.x, ep2->v[h].sx);
-						ep2->max.y = max(ep2->max.y, ep2->v[h].sy);
-						ep2->min.y = min(ep2->min.y, ep2->v[h].sy);
-						ep2->max.z = max(ep2->max.z, ep2->v[h].sz);
-						ep2->min.z = min(ep2->min.z, ep2->v[h].sz);
+						ep2->max.x = max(ep2->max.x, ep2->v[h].p.x);
+						ep2->min.x = min(ep2->min.x, ep2->v[h].p.x);
+						ep2->max.y = max(ep2->max.y, ep2->v[h].p.y);
+						ep2->min.y = min(ep2->min.y, ep2->v[h].p.y);
+						ep2->max.z = max(ep2->max.z, ep2->v[h].p.z);
+						ep2->min.z = min(ep2->min.z, ep2->v[h].p.z);
 					} else {
-						ep2->min.x = ep2->max.x = ep2->v[0].sx;
-						ep2->min.y = ep2->max.y = ep2->v[0].sy;
-						ep2->min.z = ep2->max.z = ep2->v[0].sz;
+						ep2->min.x = ep2->max.x = ep2->v[0].p.x;
+						ep2->min.y = ep2->max.y = ep2->v[0].p.y;
+						ep2->min.z = ep2->max.z = ep2->v[0].p.z;
 					}
 				}
 				
@@ -3360,20 +3360,20 @@ bool FastSceneLoad(const fs::path & partial_path) {
 				
 				float dist = 0.f;
 				for(int h = 0; h < to; h++) {
-					float x = ep2->v[h].sx - ep2->center.x;
-					float y = ep2->v[h].sy - ep2->center.y;
-					float z = ep2->v[h].sz - ep2->center.z;
+					float x = ep2->v[h].p.x - ep2->center.x;
+					float y = ep2->v[h].p.y - ep2->center.y;
+					float z = ep2->v[h].p.z - ep2->center.z;
 					float d = sqrt((x * x) + (y * y) + (z * z));
 					dist = max(dist, d);
 				}
 				ep2->v[0].rhw = dist;
 				
 				DeclareEGInfo(ep2->center.x, ep2->center.z);
-				DeclareEGInfo(ep2->v[0].sx, ep2->v[0].sz);
-				DeclareEGInfo(ep2->v[1].sx, ep2->v[1].sz);
-				DeclareEGInfo(ep2->v[2].sx, ep2->v[2].sz);
+				DeclareEGInfo(ep2->v[0].p.x, ep2->v[0].p.z);
+				DeclareEGInfo(ep2->v[1].p.x, ep2->v[1].p.z);
+				DeclareEGInfo(ep2->v[2].p.x, ep2->v[2].p.z);
 				if(ep->type & POLY_QUAD) {
-					DeclareEGInfo(ep2->v[3].sx, ep2->v[3].sz);
+					DeclareEGInfo(ep2->v[3].p.x, ep2->v[3].p.z);
 				}
 			}
 			
@@ -3559,9 +3559,9 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 
 		for (long j = 0; j < 3; j++)
 		{
-			if	((po->v[j].sx == ep->v[i].sx)
-					&&	(po->v[j].sy == ep->v[i].sy)
-					&&	(po->v[j].sz == ep->v[i].sz))
+			if	((po->v[j].p.x == ep->v[i].p.x)
+					&&	(po->v[j].p.y == ep->v[i].p.y)
+					&&	(po->v[j].p.z == ep->v[i].p.z))
 				same = 1;
 		}
 
@@ -3571,17 +3571,17 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 	if (missing >= 0)
 	{
 		Vec3f temp;
-		temp.x = po->v[2].sx;
-		temp.y = po->v[2].sy;
-		temp.z = po->v[2].sz;
+		temp.x = po->v[2].p.x;
+		temp.y = po->v[2].p.y;
+		temp.z = po->v[2].p.z;
 
-		po->v[2].sx = ep->v[missing].sx;
-		po->v[2].sy = ep->v[missing].sy;
-		po->v[2].sz = ep->v[missing].sz;
+		po->v[2].p.x = ep->v[missing].p.x;
+		po->v[2].p.y = ep->v[missing].p.y;
+		po->v[2].p.z = ep->v[missing].p.z;
 
-		po->v[3].sx = temp.x;
-		po->v[3].sy = temp.y;
-		po->v[3].sz = temp.z;
+		po->v[3].p.x = temp.x;
+		po->v[3].p.y = temp.y;
+		po->v[3].p.z = temp.z;
 		po->type |= POLY_QUAD;
 	}
 }
@@ -3650,15 +3650,15 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		float fDistMax = std::numeric_limits<float>::min();
 		int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-		ep->center.x = ep->v[0].sx;
-		ep->center.y = ep->v[0].sy;
-		ep->center.z = ep->v[0].sz;
+		ep->center.x = ep->v[0].p.x;
+		ep->center.y = ep->v[0].p.y;
+		ep->center.z = ep->v[0].p.z;
 
 		for (long ii = 1; ii < nbvert; ii++)
 		{
-			ep->center.x += ep->v[ii].sx;
-			ep->center.y += ep->v[ii].sy;
-			ep->center.z += ep->v[ii].sz;
+			ep->center.x += ep->v[ii].p.x;
+			ep->center.y += ep->v[ii].p.y;
+			ep->center.z += ep->v[ii].p.z;
 		}
 
 		ep->center /= nbvert;
@@ -3707,9 +3707,9 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 
 	if (TryToQuadify(ep, eobj)) return 0;
 
-	cx = (ep->v[0].sx + ep->v[1].sx + ep->v[2].sx);
-	cy = (ep->v[0].sy + ep->v[1].sy + ep->v[2].sy);
-	cz = (ep->v[0].sz + ep->v[1].sz + ep->v[2].sz);
+	cx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x);
+	cy = (ep->v[0].p.y + ep->v[1].p.y + ep->v[2].p.y);
+	cz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z);
 	posx = (long)(float)(cx * ( 1.0f / 3 ) * ACTIVEBKG->Xmul); 
 	posz = (long)(float)(cz * ( 1.0f / 3 ) * ACTIVEBKG->Zmul); 
 	posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * ( 1.0f / 2 )); 
@@ -3726,9 +3726,9 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
 
 	DeclareEGInfo(cx * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
-	DeclareEGInfo(ep->v[0].sx, ep->v[0].sz);
-	DeclareEGInfo(ep->v[1].sx, ep->v[1].sz);
-	DeclareEGInfo(ep->v[2].sx, ep->v[2].sz);
+	DeclareEGInfo(ep->v[0].p.x, ep->v[0].p.z);
+	DeclareEGInfo(ep->v[1].p.x, ep->v[1].p.z);
+	DeclareEGInfo(ep->v[2].p.x, ep->v[2].p.z);
 
 	cx *= ( 1.0f / 3 );
 	cy *= ( 1.0f / 3 );
@@ -3751,8 +3751,8 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 
 	for (j = 0; j < 3; j++)
 	{
-		epp->tv[j].tu	= epp->v[j].tu;
-		epp->tv[j].tv	= epp->v[j].tv;
+		epp->tv[j].uv.x	= epp->v[j].uv.x;
+		epp->tv[j].uv.y	= epp->v[j].uv.y;
 		epp->tv[j].color = epp->v[j].color;
 		epp->tv[j].rhw	= 1.f;
 	}
@@ -3760,30 +3760,30 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	epp->center.x = cx; 
 	epp->center.y = cy; 
 	epp->center.z = cz; 
-	epp->max.x = max(epp->v[0].sx, epp->v[1].sx);
-	epp->max.x = max(epp->max.x, epp->v[2].sx);
-	epp->min.x = min(epp->v[0].sx, epp->v[1].sx);
-	epp->min.x = min(epp->min.x, epp->v[2].sx);
+	epp->max.x = max(epp->v[0].p.x, epp->v[1].p.x);
+	epp->max.x = max(epp->max.x, epp->v[2].p.x);
+	epp->min.x = min(epp->v[0].p.x, epp->v[1].p.x);
+	epp->min.x = min(epp->min.x, epp->v[2].p.x);
 
-	epp->max.y = max(epp->v[0].sy, epp->v[1].sy);
-	epp->max.y = max(epp->max.y, epp->v[2].sy);
-	epp->min.y = min(epp->v[0].sy, epp->v[1].sy);
-	epp->min.y = min(epp->min.y, epp->v[2].sy);
+	epp->max.y = max(epp->v[0].p.y, epp->v[1].p.y);
+	epp->max.y = max(epp->max.y, epp->v[2].p.y);
+	epp->min.y = min(epp->v[0].p.y, epp->v[1].p.y);
+	epp->min.y = min(epp->min.y, epp->v[2].p.y);
 
-	epp->max.z = max(epp->v[0].sz, epp->v[1].sz);
-	epp->max.z = max(epp->max.z, epp->v[2].sz);
-	epp->min.z = min(epp->v[0].sz, epp->v[1].sz);
-	epp->min.z = min(epp->min.z, epp->v[2].sz);
+	epp->max.z = max(epp->v[0].p.z, epp->v[1].p.z);
+	epp->max.z = max(epp->max.z, epp->v[2].p.z);
+	epp->min.z = min(epp->v[0].p.z, epp->v[1].p.z);
+	epp->min.z = min(epp->min.z, epp->v[2].p.z);
 	epp->type = ep->type;
 	epp->type &= ~POLY_QUAD;
 
 	CalcFaceNormal(epp, epp->v);
-	epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * ( 1.0f / 2 ),
-	                       (epp->v[0].sy + epp->v[1].sy) * ( 1.0f / 2 ),
-	                       (epp->v[0].sz + epp->v[1].sz) * ( 1.0f / 2 ),
-	                       epp->v[2].sx, epp->v[2].sy, epp->v[2].sz)
-	            * Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
-	                         epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * ( 1.0f / 2 );
+	epp->area = Distance3D((epp->v[0].p.x + epp->v[1].p.x) * ( 1.0f / 2 ),
+	                       (epp->v[0].p.y + epp->v[1].p.y) * ( 1.0f / 2 ),
+	                       (epp->v[0].p.z + epp->v[1].p.z) * ( 1.0f / 2 ),
+	                       epp->v[2].p.x, epp->v[2].p.y, epp->v[2].p.z)
+	            * Distance3D(epp->v[0].p.x, epp->v[0].p.y, epp->v[0].p.z,
+	                         epp->v[1].p.x, epp->v[1].p.y, epp->v[1].p.z) * ( 1.0f / 2 );
 	
 	if (type == TYPE_ROOM)
 		epp->room = checked_range_cast<short>(val1);
@@ -3851,9 +3851,9 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 		_YRotatePoint(&p, &rp, Ycos, Ysin);
 		_XRotatePoint(&rp, &p, Xcos, Xsin);
 		_ZRotatePoint(&p, &rp, Zcos, Zsin);
-		eobj->vertexlist[i].vert.sx = rp.x + eobj->pos.x + eobj->point0.x;
-		eobj->vertexlist[i].vert.sy = rp.y + eobj->pos.y + eobj->point0.y;
-		eobj->vertexlist[i].vert.sz = rp.z + eobj->pos.z + eobj->point0.z;
+		eobj->vertexlist[i].vert.p.x = rp.x + eobj->pos.x + eobj->point0.x;
+		eobj->vertexlist[i].vert.p.y = rp.y + eobj->pos.y + eobj->point0.y;
+		eobj->vertexlist[i].vert.p.z = rp.z + eobj->pos.z + eobj->point0.z;
 	}
 
 	long type, val1, val2;
@@ -3914,12 +3914,12 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 		vlist[0].color = vlist[1].color = vlist[2].color = Color::white.toBGR();
 		if (eobj->facelist[i].facetype & POLY_NO_SHADOW)
 		{
-			vlist[0].tu = eobj->facelist[i].u[0];
-			vlist[0].tv = eobj->facelist[i].v[0];
-			vlist[1].tu = eobj->facelist[i].u[1];
-			vlist[1].tv = eobj->facelist[i].v[1];
-			vlist[2].tu = eobj->facelist[i].u[2];
-			vlist[2].tv = eobj->facelist[i].v[2];
+			vlist[0].uv.x = eobj->facelist[i].u[0];
+			vlist[0].uv.y = eobj->facelist[i].v[0];
+			vlist[1].uv.x = eobj->facelist[i].u[1];
+			vlist[1].uv.y = eobj->facelist[i].v[1];
+			vlist[2].uv.x = eobj->facelist[i].u[2];
+			vlist[2].uv.y = eobj->facelist[i].v[2];
 
 			if (eobj->facelist[i].texid >= 0)
 				EERIEAddPolyToBackground(vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
@@ -4094,11 +4094,11 @@ static bool FastSceneSave(const fs::path & partial_path) {
 				ep->type = ep2->type;
 				
 				for(long kk = 0; kk < 4; kk++) {
-					ep->v[kk].ssx = ep2->v[kk].sx;
-					ep->v[kk].sy = ep2->v[kk].sy;
-					ep->v[kk].ssz = ep2->v[kk].sz;
-					ep->v[kk].stu = ep2->v[kk].tu;
-					ep->v[kk].stv = ep2->v[kk].tv;
+					ep->v[kk].ssx = ep2->v[kk].p.x;
+					ep->v[kk].sy = ep2->v[kk].p.y;
+					ep->v[kk].ssz = ep2->v[kk].p.z;
+					ep->v[kk].stu = ep2->v[kk].uv.x;
+					ep->v[kk].stv = ep2->v[kk].uv.y;
 				}
 			}
 			
@@ -4315,19 +4315,19 @@ vector<COPY3D> vCopy3d;
 
 void IncrementPolyWithNormal(EERIEPOLY * _pPoly, float _fFactor) {
 	if(config.misc.forceZBias) {
-		_pPoly->v[0].sx += _pPoly->norm.x * _fFactor;
-		_pPoly->v[0].sy += _pPoly->norm.y * _fFactor;
-		_pPoly->v[0].sz += _pPoly->norm.z * _fFactor;
-		_pPoly->v[1].sx += _pPoly->norm.x * _fFactor;
-		_pPoly->v[1].sy += _pPoly->norm.y * _fFactor;
-		_pPoly->v[1].sz += _pPoly->norm.z * _fFactor;
-		_pPoly->v[2].sx += _pPoly->norm.x * _fFactor;
-		_pPoly->v[2].sy += _pPoly->norm.y * _fFactor;
-		_pPoly->v[2].sz += _pPoly->norm.z * _fFactor;
+		_pPoly->v[0].p.x += _pPoly->norm.x * _fFactor;
+		_pPoly->v[0].p.y += _pPoly->norm.y * _fFactor;
+		_pPoly->v[0].p.z += _pPoly->norm.z * _fFactor;
+		_pPoly->v[1].p.x += _pPoly->norm.x * _fFactor;
+		_pPoly->v[1].p.y += _pPoly->norm.y * _fFactor;
+		_pPoly->v[1].p.z += _pPoly->norm.z * _fFactor;
+		_pPoly->v[2].p.x += _pPoly->norm.x * _fFactor;
+		_pPoly->v[2].p.y += _pPoly->norm.y * _fFactor;
+		_pPoly->v[2].p.z += _pPoly->norm.z * _fFactor;
 		if(_pPoly->type & POLY_QUAD) {
-			_pPoly->v[3].sx += _pPoly->norm2.x * _fFactor;
-			_pPoly->v[3].sy += _pPoly->norm2.y * _fFactor;
-			_pPoly->v[3].sz += _pPoly->norm2.z * _fFactor;
+			_pPoly->v[3].p.x += _pPoly->norm2.x * _fFactor;
+			_pPoly->v[3].p.y += _pPoly->norm2.y * _fFactor;
+			_pPoly->v[3].p.z += _pPoly->norm2.z * _fFactor;
 		}
 	}
 }
@@ -4556,28 +4556,28 @@ void ComputePortalVertexBuffer()
 
 					if (pPoly->tex == pTextureContainer)
 					{
-						pVertex->x = pPoly->v[0].sx;
-						pVertex->y = -(pPoly->v[0].sy);
-						pVertex->z = pPoly->v[0].sz;
+						pVertex->x = pPoly->v[0].p.x;
+						pVertex->y = -(pPoly->v[0].p.y);
+						pVertex->z = pPoly->v[0].p.z;
 						pVertex->color = pPoly->v[0].color;
-						pVertex->tu = pPoly->v[0].tu;
-						pVertex->tv = pPoly->v[0].tv;
+						pVertex->tu = pPoly->v[0].uv.x;
+						pVertex->tv = pPoly->v[0].uv.y;
 						pVertex++;
 
-						pVertex->x = pPoly->v[1].sx;
-						pVertex->y = -(pPoly->v[1].sy);
-						pVertex->z = pPoly->v[1].sz;
+						pVertex->x = pPoly->v[1].p.x;
+						pVertex->y = -(pPoly->v[1].p.y);
+						pVertex->z = pPoly->v[1].p.z;
 						pVertex->color = pPoly->v[1].color;
-						pVertex->tu = pPoly->v[1].tu;
-						pVertex->tv = pPoly->v[1].tv;
+						pVertex->tu = pPoly->v[1].uv.x;
+						pVertex->tv = pPoly->v[1].uv.y;
 						pVertex++;
 
-						pVertex->x = pPoly->v[2].sx;
-						pVertex->y = -(pPoly->v[2].sy);
-						pVertex->z = pPoly->v[2].sz;
+						pVertex->x = pPoly->v[2].p.x;
+						pVertex->y = -(pPoly->v[2].p.y);
+						pVertex->z = pPoly->v[2].p.z;
 						pVertex->color = pPoly->v[2].color;
-						pVertex->tu = pPoly->v[2].tu;
-						pVertex->tv = pPoly->v[2].tv;
+						pVertex->tu = pPoly->v[2].uv.x;
+						pVertex->tv = pPoly->v[2].uv.y;
 						pVertex++;
 
 						pPoly->uslInd[0] = iIndiceInVertex++;
@@ -4586,12 +4586,12 @@ void ComputePortalVertexBuffer()
 
 						if (pPoly->type & POLY_QUAD)
 						{
-							pVertex->x = pPoly->v[3].sx;
-							pVertex->y = -(pPoly->v[3].sy);
-							pVertex->z = pPoly->v[3].sz;
+							pVertex->x = pPoly->v[3].p.x;
+							pVertex->y = -(pPoly->v[3].p.y);
+							pVertex->z = pPoly->v[3].p.z;
 							pVertex->color = pPoly->v[3].color;
-							pVertex->tu = pPoly->v[3].tu;
-							pVertex->tv = pPoly->v[3].tv;
+							pVertex->tu = pPoly->v[3].uv.x;
+							pVertex->tv = pPoly->v[3].uv.y;
 							pVertex++;
 
 							pPoly->uslInd[3] = iIndiceInVertex++;
@@ -4678,19 +4678,19 @@ long EERIERTPPoly(EERIEPOLY *ep)
 	{
 		specialEE_RTP(&ep->v[3],&ep->tv[3]);	
 
-		if ((ep->tv[0].sz<=0.f) &&
-			(ep->tv[1].sz<=0.f) &&
-			(ep->tv[2].sz<=0.f) &&
-			(ep->tv[3].sz<=0.f) ) 
+		if ((ep->tv[0].p.z<=0.f) &&
+			(ep->tv[1].p.z<=0.f) &&
+			(ep->tv[2].p.z<=0.f) &&
+			(ep->tv[3].p.z<=0.f) ) 
 		{
 			return 0;
 		}
 	}
 	else
 	{
-		if ((ep->tv[0].sz<=0.f) &&
-			(ep->tv[1].sz<=0.f) &&
-			(ep->tv[2].sz<=0.f)  ) 
+		if ((ep->tv[0].p.z<=0.f) &&
+			(ep->tv[1].p.z<=0.f) &&
+			(ep->tv[2].p.z<=0.f)  ) 
 		{
 			return 0;
 		}

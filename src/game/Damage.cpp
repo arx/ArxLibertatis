@@ -136,24 +136,24 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 	if ((j != -1) && (!ARXPausedTimer))
 	{
 		TexturedVertex in, out;
-		in.sx = pos->x;
-		in.sy = pos->y;
-		in.sz = pos->z;
+		in.p.x = pos->x;
+		in.p.y = pos->y;
+		in.p.z = pos->z;
 		EERIETreatPoint(&in, &out);
 
 
-		if (out.sx < 0)
-			out.sx = 0;
-		else if (out.sx > DANAESIZX)
-			out.sx = static_cast<float>(DANAESIZX);
+		if (out.p.x < 0)
+			out.p.x = 0;
+		else if (out.p.x > DANAESIZX)
+			out.p.x = static_cast<float>(DANAESIZX);
 
 
 
 
-		if (out.sy < 0)
-			out.sy = 0;
-		else if (out.sy > DANAESIZY)
-			out.sy = static_cast<float>(DANAESIZY);
+		if (out.p.y < 0)
+			out.p.y = 0;
+		else if (out.p.y > DANAESIZY)
+			out.p.y = static_cast<float>(DANAESIZY);
 
 
 
@@ -164,8 +164,8 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
 		pd->exist			=	true;
 		pd->zdec			=	0;
-		pd->ov.x			=	out.sx;
-		pd->ov.y			=	out.sy;
+		pd->ov.x			=	out.p.x;
+		pd->ov.y			=	out.p.y;
 		pd->ov.z			=	0.0000001f;
 		pd->move.x			=	0.f;
 		pd->move.y			=	0.f;

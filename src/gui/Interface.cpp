@@ -356,12 +356,12 @@ static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long nu
 	ColorBGRA col = color.toBGRA();
 	
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 0.f, 0.f);
-	v[1] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 1.f, 0.f);
-	v[2] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 1.f, 1.f);
-	v[3] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 0.f, 1.f);
+	v[0] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f(1.f, 1.f));
+	v[3] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::Y_AXIS);
 	
-	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.0000001f;
+	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.0000001f;
 
 	if(inventory_font) {
 		
@@ -383,19 +383,19 @@ static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long nu
 			if (tt>=0)
 			{
 				removezero=0;
-				v[0].sx=v[3].sx=x + i*INTERFACE_RATIO(10);
-				v[1].sx = v[2].sx = v[0].sx + INTERFACE_RATIO(10);
-				v[0].sy=v[1].sy=y;
-				v[2].sy=v[3].sy=y + INTERFACE_RATIO(10);
+				v[0].p.x=v[3].p.x=x + i*INTERFACE_RATIO(10);
+				v[1].p.x = v[2].p.x = v[0].p.x + INTERFACE_RATIO(10);
+				v[0].p.y=v[1].p.y=y;
+				v[2].p.y=v[3].p.y=y + INTERFACE_RATIO(10);
 				v[0].color=v[1].color=v[2].color=v[3].color=col;
 
 				ttx = (float)((float)tt * (float)11.f) + 1.5f;
-				v[3].tu=v[0].tu=ttx*divideX;
-				v[1].tu=v[2].tu=(ttx+10.f)*divideX;
+				v[3].uv.x=v[0].uv.x=ttx*divideX;
+				v[1].uv.x=v[2].uv.x=(ttx+10.f)*divideX;
 
 				ttx=0.5f*divideY;
-				v[1].tv = v[0].tv = divideY + ttx;
-				v[2].tv = v[3].tv = divideY * 12;
+				v[1].uv.y = v[0].uv.y = divideY + ttx;
+				v[2].uv.y = v[3].uv.y = divideY * 12;
 				GRenderer->SetTexture(0, inventory_font);
 
 				EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
@@ -7676,10 +7676,10 @@ void ArxGame::DrawAllInterface()
 	{
 		TexturedVertex v[4];
 		float px, py;
-		v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
-		v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
-		v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
-		v[3]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 1.f);
+		v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
+		v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
+		v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
+		v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::Y_AXIS);
 
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;

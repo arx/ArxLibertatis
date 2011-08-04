@@ -397,19 +397,19 @@ void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 // TODO don't use TexturedVertex
 
 inline float dist(const Vec3f & from, const TexturedVertex & to) {
-	return dist(from, Vec3f(to.sx, to.sy, to.sz));
+	return dist(from, Vec3f(to.p.x, to.p.y, to.p.z));
 }
 
 inline float distSqr(const Vec3f & from, const TexturedVertex & to) {
-	return distSqr(from, Vec3f(to.sx, to.sy, to.sz));
+	return distSqr(from, Vec3f(to.p.x, to.p.y, to.p.z));
 }
 
 inline bool closerThan(const Vec3f & from, const TexturedVertex & to, float d) {
-	return closerThan(from, Vec3f(to.sx, to.sy, to.sz), d);
+	return closerThan(from, Vec3f(to.p.x, to.p.y, to.p.z), d);
 }
 
 inline bool fartherThan(const Vec3f & from, const TexturedVertex & to, float d) {
-	return fartherThan(from, Vec3f(to.sx, to.sy, to.sz), d);
+	return fartherThan(from, Vec3f(to.p.x, to.p.y, to.p.z), d);
 }
 
 inline float square(float x) {
@@ -425,7 +425,7 @@ inline float fdist(const Vec3f & from, const Vec3f & to) {
 }
 
 inline float fdist(const Vec3f & from, const TexturedVertex & to) {
-	return fdist(from, Vec3f(to.sx, to.sy, to.sz));
+	return fdist(from, Vec3f(to.p.x, to.p.y, to.p.z));
 }
 
 inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt)
@@ -477,9 +477,9 @@ extern EERIEMATRIX ProjectionMatrix;
 inline void specialEE_RT(TexturedVertex * in, Vec3f * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->x = in->sx - et->posx;
-	out->y = in->sy - et->posy;
-	out->z = in->sz - et->posz;
+	out->x = in->p.x - et->posx;
+	out->y = in->p.y - et->posy;
+	out->z = in->p.z - et->posz;
 
 	register float temp = (out->z * et->ycos) - (out->x * et->ysin);
 	out->x = (out->z * et->ysin) + (out->x * et->ycos);
@@ -492,9 +492,9 @@ inline void specialEE_P(Vec3f * in, TexturedVertex * out)
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 
 	float fZTemp = 1.f / in->z;
-	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->sx = in->x * ProjectionMatrix._11 * fZTemp + et->xmod;
-	out->sy = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
+	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
+	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->xmod;
+	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
 	out->rhw = fZTemp; 
 }
 

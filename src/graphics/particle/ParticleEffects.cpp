@@ -403,21 +403,21 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	if (flags & 1) py=poss->y;
 
 	EERIEPOLY TheoricalSplat; // clockwise
-	TheoricalSplat.v[0].sx=-splatsize*SPLAT_MULTIPLY;
-	TheoricalSplat.v[0].sy = py; 
-	TheoricalSplat.v[0].sz=-splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[0].p.x=-splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[0].p.y = py; 
+	TheoricalSplat.v[0].p.z=-splatsize*SPLAT_MULTIPLY;
 
-	TheoricalSplat.v[1].sx=-splatsize*SPLAT_MULTIPLY;
-	TheoricalSplat.v[1].sy = py; 
-	TheoricalSplat.v[1].sz=+splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[1].p.x=-splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[1].p.y = py; 
+	TheoricalSplat.v[1].p.z=+splatsize*SPLAT_MULTIPLY;
 
-	TheoricalSplat.v[2].sx=+splatsize*SPLAT_MULTIPLY;
-	TheoricalSplat.v[2].sy = py; 
-	TheoricalSplat.v[2].sz=+splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[2].p.x=+splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[2].p.y = py; 
+	TheoricalSplat.v[2].p.z=+splatsize*SPLAT_MULTIPLY;
 
-	TheoricalSplat.v[3].sx=+splatsize*SPLAT_MULTIPLY;
-	TheoricalSplat.v[3].sy = py; 
-	TheoricalSplat.v[3].sz=-splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[3].p.x=+splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[3].p.y = py; 
+	TheoricalSplat.v[3].p.z=-splatsize*SPLAT_MULTIPLY;
 	TheoricalSplat.type=POLY_QUAD;
 
 	Vec3f RealSplatStart;
@@ -425,17 +425,17 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	RealSplatStart.y=py;
 	RealSplatStart.z=-size;
 
-	TheoricalSplat.v[0].sx+=poss->x;
-	TheoricalSplat.v[0].sz+=poss->z;
+	TheoricalSplat.v[0].p.x+=poss->x;
+	TheoricalSplat.v[0].p.z+=poss->z;
 
-	TheoricalSplat.v[1].sx+=poss->x;
-	TheoricalSplat.v[1].sz+=poss->z;
+	TheoricalSplat.v[1].p.x+=poss->x;
+	TheoricalSplat.v[1].p.z+=poss->z;
 
-	TheoricalSplat.v[2].sx+=poss->x;
-	TheoricalSplat.v[2].sz+=poss->z;
+	TheoricalSplat.v[2].p.x+=poss->x;
+	TheoricalSplat.v[2].p.z+=poss->z;
 
-	TheoricalSplat.v[3].sx+=poss->x;
-	TheoricalSplat.v[3].sz+=poss->z;
+	TheoricalSplat.v[3].p.x+=poss->x;
+	TheoricalSplat.v[3].p.z+=poss->z;
 	
 	RealSplatStart.x+=poss->x;
 	RealSplatStart.z+=poss->z;
@@ -517,15 +517,15 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 			for (long k=0;k<nbvert;k++)
 			{
-				if ((PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].sx, ep->v[k].sz))
-					&& ((float)fabs(ep->v[k].sy-py) < 100.f) )
+				if ((PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z))
+					&& ((float)fabs(ep->v[k].p.y-py) < 100.f) )
 				{
 					 oki=1;
 					break;
 				}
 
-				if ((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].sx+ep->center.x)*( 1.0f / 2 ), (ep->v[k].sz+ep->center.z)*( 1.0f / 2 )))
-					&& ((float)fabs(ep->v[k].sy-py) < 100.f) )
+				if ((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x)*( 1.0f / 2 ), (ep->v[k].p.z+ep->center.z)*( 1.0f / 2 )))
+					&& ((float)fabs(ep->v[k].p.y-py) < 100.f) )
 				{
 					 oki=1;
 					break;
@@ -580,14 +580,14 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 					for (int k=0;k<nbvert;k++) 
 					{
-						float vdiff=EEfabs(ep->v[k].sy-RealSplatStart.y);
-						pb->u[k]=(ep->v[k].sx-RealSplatStart.x)*hdiv;
+						float vdiff=EEfabs(ep->v[k].p.y-RealSplatStart.y);
+						pb->u[k]=(ep->v[k].p.x-RealSplatStart.x)*hdiv;
 
 						if (pb->u[k]<0.5f)
 							pb->u[k]-=vdiff*hdiv;
 						else pb->u[k]+=vdiff*hdiv;
 
-						pb->v[k]=(ep->v[k].sz-RealSplatStart.z)*vdiv;
+						pb->v[k]=(ep->v[k].p.z-RealSplatStart.z)*vdiv;
 
 						if (pb->v[k]<0.5f)
 							pb->v[k]-=vdiff*vdiv;
@@ -1095,9 +1095,9 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 						b = flare[i].rgb.b * z;
 						
 						flare[i].tv.color = Color3f(r, g, b).toBGR();
-						flare[i].v.sx=flare[i].tv.sx;
-						flare[i].v.sy=flare[i].tv.sy;
-						flare[i].v.sz=flare[i].tv.sz;
+						flare[i].v.p.x=flare[i].tv.p.x;
+						flare[i].v.p.y=flare[i].tv.p.y;
+						flare[i].v.p.z=flare[i].tv.p.z;
 								
 						DynLight[0].rgb.r = std::max(DynLight[0].rgb.r, r);
 						DynLight[0].rgb.g = std::max(DynLight[0].rgb.g, g);
@@ -1106,9 +1106,9 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 						if (ValidDynLight(flare[i].dynlight)) 
 						{
 							EERIE_LIGHT * el=&DynLight[flare[i].dynlight];
-							el->pos.x=flare[i].v.sx;
-							el->pos.y=flare[i].v.sy;
-							el->pos.z=flare[i].v.sz;
+							el->pos.x=flare[i].v.p.x;
+							el->pos.y=flare[i].v.p.y;
+							el->pos.z=flare[i].v.p.z;
 							el->rgb = Color3f(r, g, b);
 						}
 
@@ -1124,7 +1124,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 						if(flare[i].bDrawBitmap)
 						{
 							s*=2.f;
-							EERIEDrawBitmap(flare[i].v.sx, flare[i].v.sy, s, s, flare[i].v.sz, surf, Color::fromBGRA(flare[i].tv.color));
+							EERIEDrawBitmap(flare[i].v.p.x, flare[i].v.p.y, s, s, flare[i].v.p.z, surf, Color::fromBGRA(flare[i].tv.color));
 						}
 						else
 						{
@@ -1277,14 +1277,14 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 
 			dod=1;
 
-			if ((ddd=Distance3D(ep->v[0].sx,ep->v[0].sy,ep->v[0].sz,poss->x,poss->y,poss->z))<BOOM_RADIUS)
+			if ((ddd=Distance3D(ep->v[0].p.x,ep->v[0].p.y,ep->v[0].p.z,poss->x,poss->y,poss->z))<BOOM_RADIUS)
 			{	
 				temp_u1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
 				temp_v1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
 
 				for (long k=1;k<nbvert;k++) 
 				{
-					ddd=Distance3D(ep->v[k].sx,ep->v[k].sy,ep->v[k].sz,poss->x,poss->y,poss->z);
+					ddd=Distance3D(ep->v[k].p.x,ep->v[k].p.y,ep->v[k].p.z,poss->x,poss->y,poss->z);
 
 					if (ddd>BOOM_RADIUS) dod=0;
 					else 
@@ -1395,15 +1395,14 @@ void UpdateObjFx() {
 	Vec3f pos;
 
 	TexturedVertex v[3];
-	v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
-	v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
-	v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
+	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
 	
-
 	TexturedVertex v2[3];
-	v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
-	v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
-	v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
+	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1491,20 +1490,20 @@ void UpdateObjFx() {
 
 					for (p=0;p<3;p++)
 					{
-						v[p].sx=pos.x;
-						v[p].sy=pos.y;
-						v[p].sz=pos.z;
+						v[p].p.x=pos.x;
+						v[p].p.y=pos.y;
+						v[p].p.z=pos.z;
 					}
 						
 					t1=100.f*scale.x;
 					t2=100.f*scale.y;
 					t3=100.f*scale.z;
-					v[1].sx-=EEsin(radians(objfx[i].spe[k].b))*t1;
-					v[1].sy+=EEsin(radians(objfx[i].spe[k].a))*t2;
-					v[1].sz+=EEcos(radians(objfx[i].spe[k].b))*t3;
-					v[2].sx=v[0].sx-EEsin(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t1;
-					v[2].sy=v[0].sy+EEsin(radians(MAKEANGLE(objfx[i].spe[k].a+aa)))*t2;
-					v[2].sz=v[0].sz+EEcos(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t3;
+					v[1].p.x-=EEsin(radians(objfx[i].spe[k].b))*t1;
+					v[1].p.y+=EEsin(radians(objfx[i].spe[k].a))*t2;
+					v[1].p.z+=EEcos(radians(objfx[i].spe[k].b))*t3;
+					v[2].p.x=v[0].p.x-EEsin(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t1;
+					v[2].p.y=v[0].p.y+EEsin(radians(MAKEANGLE(objfx[i].spe[k].a+aa)))*t2;
+					v[2].p.z=v[0].p.z+EEcos(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t3;
 					EE_RTP(&v[0],&v2[0]);
 					EE_RTP(&v[1],&v2[1]);
 					EE_RTP(&v[2],&v2[2]);
@@ -2066,27 +2065,27 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 			
 			if ((part->special & FOLLOW_SOURCE) && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
 			{
-				inn.sx=in.sx=part->source->x;
-				inn.sy=in.sy=part->source->y;
-				inn.sz=in.sz=part->source->z;
+				inn.p.x=in.p.x=part->source->x;
+				inn.p.y=in.p.y=part->source->y;
+				inn.p.z=in.p.z=part->source->z;
 			}
 			else if ((part->special & FOLLOW_SOURCE2) && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
 			{
-				inn.sx=in.sx=part->source->x+part->move.x*val;
-				inn.sy=in.sy=part->source->y+part->move.y*val;
-				inn.sz=in.sz=part->source->z+part->move.z*val;
+				inn.p.x=in.p.x=part->source->x+part->move.x*val;
+				inn.p.y=in.p.y=part->source->y+part->move.y*val;
+				inn.p.z=in.p.z=part->source->z+part->move.z*val;
 			}
 			else
 			{
-				inn.sx=in.sx=part->ov.x+part->move.x*val;
-				inn.sy=in.sy=part->ov.y+part->move.y*val;
-				inn.sz=in.sz=part->ov.z+part->move.z*val;
+				inn.p.x=in.p.x=part->ov.x+part->move.x*val;
+				inn.p.y=in.p.y=part->ov.y+part->move.y*val;
+				inn.p.z=in.p.z=part->ov.z+part->move.z*val;
 			}
 
 			if (part->special & GRAVITY)
 			{
-				inn.sy += 0.98f * 1.5f * val * val;
-				in.sy=inn.sy;
+				inn.p.y += 0.98f * 1.5f * val * val;
+				in.p.y=inn.p.y;
 			}
 			
 			if (part->special & PARTICLE_NOZBUFFER) 
@@ -2123,14 +2122,14 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 			if (!(part->type & PARTICLE_2D))
 			{
 				EERIE_SPHERE sp;
-				sp.origin.x=in.sx;
-				sp.origin.y=in.sy;
-				sp.origin.z=in.sz;
+				sp.origin.x=in.p.x;
+				sp.origin.y=in.p.y;
+				sp.origin.z=in.p.z;
 				EERIETreatPoint(&inn,&out);			
 
 				if (out.rhw<0) continue;
 
-				if (out.sz>cam->cdepth*fZFogEnd) continue;
+				if (out.p.z>cam->cdepth*fZFogEnd) continue;
 
 				if (part->special & PARTICLE_SPARK)
 				{
@@ -2154,26 +2153,26 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 
 					GRenderer->SetCulling(Renderer::CullNone);
 					Vec3f vect;
-					vect.x=part->oldpos.x-in.sx;
-					vect.y=part->oldpos.y-in.sy;
-					vect.z=part->oldpos.z-in.sz;
+					vect.x=part->oldpos.x-in.p.x;
+					vect.y=part->oldpos.y-in.p.y;
+					vect.z=part->oldpos.z-in.p.z;
 					Vector_Normalize(&vect);
 					TexturedVertex tv[3];
 					tv[0].color = part->rgb.toBGR();
 					tv[1].color=0xFF666666;
 					tv[2].color = 0xFF000000; 
-					tv[0].sx=out.sx;
-					tv[0].sy=out.sy;
-					tv[0].sz=out.sz;
+					tv[0].p.x=out.p.x;
+					tv[0].p.y=out.p.y;
+					tv[0].p.z=out.p.z;
 					tv[0].rhw=out.rhw;
 					TexturedVertex temp;
-					temp.sx=in.sx+rnd()*0.5f;
-					temp.sy=in.sy+0.8f;
-					temp.sz=in.sz+rnd()*0.5f;
+					temp.p.x=in.p.x+rnd()*0.5f;
+					temp.p.y=in.p.y+0.8f;
+					temp.p.z=in.p.z+rnd()*0.5f;
 					EERIETreatPoint(&temp,&tv[1]);
-					temp.sx=in.sx+vect.x*part->fparam;
-					temp.sy=in.sy+vect.y*part->fparam;
-					temp.sz=in.sz+vect.z*part->fparam;
+					temp.p.x=in.p.x+vect.x*part->fparam;
+					temp.p.y=in.p.y+vect.y*part->fparam;
+					temp.p.z=in.p.z+vect.z*part->fparam;
 
 					EERIETreatPoint(&temp,&tv[2]);
 					GRenderer->ResetTexture(0);
@@ -2181,9 +2180,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
 					if(!ARXPausedTimer)
 					{
-						part->oldpos.x=in.sx;
-						part->oldpos.y=in.sy;
-						part->oldpos.z=in.sz;
+						part->oldpos.x=in.p.x;
+						part->oldpos.y=in.p.y;
+						part->oldpos.z=in.p.z;
 					}
 
 					continue;
@@ -2227,10 +2226,10 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 				
 			}
 
-			if ((part->special & DISSIPATING) && (out.sz<0.05f))
+			if ((part->special & DISSIPATING) && (out.p.z<0.05f))
 			{
-				out.sz=(out.sz)*20.f;
-				r*=out.sz;
+				out.p.z=(out.p.z)*20.f;
+				r*=out.p.z;
 			}
 
 			if (r>0.f) 
@@ -2257,9 +2256,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 
 				if(!ARXPausedTimer)
 				{
-					part->oldpos.x=in.sx;
-					part->oldpos.y=in.sy;
-					part->oldpos.z=in.sz; 
+					part->oldpos.x=in.p.x;
+					part->oldpos.y=in.p.y;
+					part->oldpos.z=in.p.z; 
 				}
 
 				if (part->special & PARTICLE_GOLDRAIN)
@@ -2334,21 +2333,21 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						TexturedVertex in2;
 						memcpy(&in2,&in,sizeof(TexturedVertex));
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
-						EERIEDrawBitmap(in.sx, in.sy, siz, siz2, in.sz, tc, color);
+						EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
-						EERIEDrawBitmap(in2.sx, in.sy, siz, siz2, in.sz, tc, Color::white);
+						EERIEDrawBitmap(in2.p.x, in.p.y, siz, siz2, in.p.z, tc, Color::white);
 					}
 					else
-						EERIEDrawBitmap(in.sx, in.sy, siz, siz2, in.sz, tc,color);
+						EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc,color);
 				}
 				else 
 				{
 					if(part->type & PARTICLE_ETINCELLE)
 					{
 						Vec3f pos,end;
-						pos.x=in.sx;
-						pos.y=in.sy;
-						pos.z=in.sz;
+						pos.x=in.p.x;
+						pos.y=in.p.y;
+						pos.z=in.p.z;
 						Color col = Color3f(part->rgb.r * r, part->rgb.g * r, part->rgb.b * r).to<u8>();
 						end.x=pos.x-(pos.x-op.x)*2.5f;
 						end.y=pos.y-(pos.y-op.y)*2.5f;
@@ -2595,10 +2594,10 @@ void ARX_MAGICAL_FLARES_FirstInit()
 
 	for(long i=0;i<MAX_FLARES;i++) flare[i].exist=0; 
 
-	g_Lumignon[0] = TexturedVertex( Vec3f( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 0, 1 );
-    g_Lumignon[1] = TexturedVertex( Vec3f( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 0, 0 );
-    g_Lumignon[2] = TexturedVertex( Vec3f( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 1, 1 );
-    g_Lumignon[3] = TexturedVertex( Vec3f( 0, 0, 0.5 ), 0.5, 0xFFFFFFFF, 0, 1, 0 );	
+	g_Lumignon[0] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::Y_AXIS);
+	g_Lumignon[1] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::ZERO);
+	g_Lumignon[2] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f(1, 1));
+	g_Lumignon[3] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::X_AXIS);
 }
 void ARX_MAGICAL_FLARES_KillAll()
 {
@@ -2668,13 +2667,13 @@ void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 			EERIE_CAMERA * oldcam=ACTIVECAM;
 			SetActiveCamera(&ka);
 			PrepareCamera(&ka);
-			fl->v.sx+=ka.pos.x;
-			fl->v.sy+=ka.pos.y;
-			fl->v.sz+=ka.pos.z;
+			fl->v.p.x+=ka.pos.x;
+			fl->v.p.y+=ka.pos.y;
+			fl->v.p.z+=ka.pos.z;
 			EE_RTT(&fl->tv,&fl->v);
-			fl->v.sx+=ka.pos.x;
-			fl->v.sy+=ka.pos.y;
-			fl->v.sz+=ka.pos.z;
+			fl->v.p.x+=ka.pos.x;
+			fl->v.p.y+=ka.pos.y;
+			fl->v.p.z+=ka.pos.z;
 			
 			vx=-(fl->x-subj.centerx);
 			vy=(fl->y-subj.centery);
@@ -2683,34 +2682,34 @@ void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 			
 			if (io)
 			{
-				fl->v.sx=io->pos.x-(float)EEsin(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
-				fl->v.sy=io->pos.y+(float)EEsin(radians(MAKEANGLE(io->angle.a+vy)))*100.f-150.f;
-				fl->v.sz=io->pos.z+(float)EEcos(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
+				fl->v.p.x=io->pos.x-(float)EEsin(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
+				fl->v.p.y=io->pos.y+(float)EEsin(radians(MAKEANGLE(io->angle.a+vy)))*100.f-150.f;
+				fl->v.p.z=io->pos.z+(float)EEcos(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
 				
 			}
 			else
 			{
-				fl->v.sz=75.f;
-				fl->v.sx=((float)(pos->x-(DANAESIZX>>1)))*fl->v.sz*2.f/(float)DANAESIZX;
-				fl->v.sy=((float)(pos->y-(DANAESIZY>>1)))*fl->v.sz*2.f/((float)DANAESIZY*((float)DANAESIZX/(float)DANAESIZY));
+				fl->v.p.z=75.f;
+				fl->v.p.x=((float)(pos->x-(DANAESIZX>>1)))*fl->v.p.z*2.f/(float)DANAESIZX;
+				fl->v.p.y=((float)(pos->y-(DANAESIZY>>1)))*fl->v.p.z*2.f/((float)DANAESIZY*((float)DANAESIZX/(float)DANAESIZY));
 
 				ka=*oldcam;
 				SetActiveCamera(&ka);
 				PrepareCamera(&ka);
 
-				float temp=(fl->v.sy*-ka.Xsin) + (fl->v.sz*ka.Xcos);
-				fl->v.sy = (fl->v.sy*ka.Xcos) - (-fl->v.sz*ka.Xsin);
-				fl->v.sz =(temp*ka.Ycos) - (-fl->v.sx*ka.Ysin);
-				fl->v.sx = (temp*-ka.Ysin) + (fl->v.sx*ka.Ycos);	
+				float temp=(fl->v.p.y*-ka.Xsin) + (fl->v.p.z*ka.Xcos);
+				fl->v.p.y = (fl->v.p.y*ka.Xcos) - (-fl->v.p.z*ka.Xsin);
+				fl->v.p.z =(temp*ka.Ycos) - (-fl->v.p.x*ka.Ysin);
+				fl->v.p.x = (temp*-ka.Ysin) + (fl->v.p.x*ka.Ycos);	
 
-				fl->v.sx+=oldcam->pos.x;
-				fl->v.sy+=oldcam->pos.y;
-				fl->v.sz+=oldcam->pos.z;
+				fl->v.p.x+=oldcam->pos.x;
+				fl->v.p.y+=oldcam->pos.y;
+				fl->v.p.z+=oldcam->pos.z;
 			}
 			
-			fl->tv.sx=fl->v.sx;
-			fl->tv.sy=fl->v.sy;
-			fl->tv.sz=fl->v.sz;
+			fl->tv.p.x=fl->v.p.x;
+			fl->tv.p.y=fl->v.p.y;
+			fl->tv.p.z=fl->v.p.z;
 			SetActiveCamera(oldcam);
 			
 			switch(PIPOrgb) {
@@ -2783,9 +2782,9 @@ void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 
 						pd->exist		=	true;
 						pd->zdec		=	0;
-						pd->ov.x		=	fl->v.sx+rnd()*10.f-5.f;
-						pd->ov.y		=	fl->v.sy+rnd()*10.f-5.f;
-						pd->ov.z		=	fl->v.sz+rnd()*10.f-5.f;
+						pd->ov.x		=	fl->v.p.x+rnd()*10.f-5.f;
+						pd->ov.y		=	fl->v.p.y+rnd()*10.f-5.f;
+						pd->ov.z		=	fl->v.p.z+rnd()*10.f-5.f;
 						
 						pd->move.x		=	0.f;
 						pd->move.y		=	5.f;
@@ -2849,9 +2848,9 @@ void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 			fl->tv.rhw=fl->v.rhw=1.f;
 			fl->tv.specular=fl->v.specular=1;
 			
-			fl->tv.sx=fl->x;
-			fl->tv.sy=fl->y;
-			fl->tv.sz = 0.001f; 
+			fl->tv.p.x=fl->x;
+			fl->tv.p.y=fl->y;
+			fl->tv.p.z = 0.001f; 
 
 			switch (PIPOrgb)  {
 			case 0:
@@ -2917,9 +2916,9 @@ void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						pd->special		=	FADE_IN_AND_OUT;
 						pd->exist		=	true;
 						pd->zdec		=	0;
-						pd->ov.x		=	fl->v.sx+rnd()*10.f-5.f;
-						pd->ov.y		=	fl->v.sy+rnd()*10.f-5.f;
-						pd->ov.z		=	fl->v.sz+rnd()*10.f-5.f;
+						pd->ov.x		=	fl->v.p.x+rnd()*10.f-5.f;
+						pd->ov.y		=	fl->v.p.y+rnd()*10.f-5.f;
+						pd->ov.z		=	fl->v.p.z+rnd()*10.f-5.f;
 						
 						pd->move.x		=	0.f;
 						pd->move.y		=	5.f;

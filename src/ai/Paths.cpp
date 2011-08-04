@@ -1735,27 +1735,27 @@ bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long
 bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
 	Vec3f pol[3];
-	pol[0].x = ep->v[0].sx;
-	pol[0].y = ep->v[0].sy;
-	pol[0].z = ep->v[0].sz;
-	pol[1].x = ep->v[1].sx;
-	pol[1].y = ep->v[1].sy;
-	pol[1].z = ep->v[1].sz;
-	pol[2].x = ep->v[2].sx;
-	pol[2].y = ep->v[2].sy;
-	pol[2].z = ep->v[2].sz;
+	pol[0].x = ep->v[0].p.x;
+	pol[0].y = ep->v[0].p.y;
+	pol[0].z = ep->v[0].p.z;
+	pol[1].x = ep->v[1].p.x;
+	pol[1].y = ep->v[1].p.y;
+	pol[1].z = ep->v[1].p.z;
+	pol[2].x = ep->v[2].p.x;
+	pol[2].y = ep->v[2].p.y;
+	pol[2].z = ep->v[2].p.z;
 
 	
 	if (ep->type & POLY_QUAD)
 	{
 		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 		
-		pol[1].x = ep->v[2].sx;
-		pol[1].y = ep->v[2].sy;
-		pol[1].z = ep->v[2].sz;
-		pol[2].x = ep->v[3].sx;
-		pol[2].y = ep->v[3].sy;
-		pol[2].z = ep->v[3].sz;
+		pol[1].x = ep->v[2].p.x;
+		pol[1].y = ep->v[2].p.y;
+		pol[1].z = ep->v[2].p.z;
+		pol[2].x = ep->v[3].p.x;
+		pol[2].y = ep->v[3].p.y;
+		pol[2].z = ep->v[3].p.z;
 
 		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
 
@@ -1817,11 +1817,11 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[0], radd)
 						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[1], radd)
 						    || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2], radd)
-						    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[1].sz)*( 1.0f / 2 ),
+						    ||	(Distance3D((ep->v[0].p.x + ep->v[1].p.x)*( 1.0f / 2 ), (ep->v[0].p.y + ep->v[1].p.y)*( 1.0f / 2 ), (ep->v[0].p.z + ep->v[1].p.z)*( 1.0f / 2 ),
 						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
-						    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[2].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[2].sz + ep->v[1].sz)*( 1.0f / 2 ),
+						    ||	(Distance3D((ep->v[2].p.x + ep->v[1].p.x)*( 1.0f / 2 ), (ep->v[2].p.y + ep->v[1].p.y)*( 1.0f / 2 ), (ep->v[2].p.z + ep->v[1].p.z)*( 1.0f / 2 ),
 						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
-						    ||	(Distance3D((ep->v[0].sx + ep->v[2].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[2].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[2].sz)*( 1.0f / 2 ),
+						    ||	(Distance3D((ep->v[0].p.x + ep->v[2].p.x)*( 1.0f / 2 ), (ep->v[0].p.y + ep->v[2].p.y)*( 1.0f / 2 ), (ep->v[0].p.z + ep->v[2].p.z)*( 1.0f / 2 ),
 						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
 						)
 						{
@@ -1853,11 +1853,11 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 								    || !fartherThan(pos, ep->v[0], radd)
 								    || !fartherThan(pos, ep->v[1], radd)
 								    || !fartherThan(pos, ep->v[2], radd)
-								    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[1].sz)*( 1.0f / 2 ),
+								    ||	(Distance3D((ep->v[0].p.x + ep->v[1].p.x)*( 1.0f / 2 ), (ep->v[0].p.y + ep->v[1].p.y)*( 1.0f / 2 ), (ep->v[0].p.z + ep->v[1].p.z)*( 1.0f / 2 ),
 								                    pos.x, pos.y, pos.z) <= radd)
-								    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[2].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[2].sz + ep->v[1].sz)*( 1.0f / 2 ),
+								    ||	(Distance3D((ep->v[2].p.x + ep->v[1].p.x)*( 1.0f / 2 ), (ep->v[2].p.y + ep->v[1].p.y)*( 1.0f / 2 ), (ep->v[2].p.z + ep->v[1].p.z)*( 1.0f / 2 ),
 								                    pos.x, pos.y, pos.z) <= radd)
-								    ||	(Distance3D((ep->v[0].sx + ep->v[2].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[2].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[2].sz)*( 1.0f / 2 ),
+								    ||	(Distance3D((ep->v[0].p.x + ep->v[2].p.x)*( 1.0f / 2 ), (ep->v[0].p.y + ep->v[2].p.y)*( 1.0f / 2 ), (ep->v[0].p.z + ep->v[2].p.z)*( 1.0f / 2 ),
 								                    pos.x, pos.y, pos.z) <= radd)
 								)
 								{
@@ -2177,9 +2177,9 @@ void ARX_PrepareBackgroundNRMLs()
 
 									for (k2 = 0; k2 < nbvert2; k2++)
 									{
-										if ((EEfabs(ep2->v[k2].sx - ep->v[k].sx) < 2.f)
-										        &&	(EEfabs(ep2->v[k2].sy - ep->v[k].sy) < 2.f)
-										        &&	(EEfabs(ep2->v[k2].sz - ep->v[k].sz) < 2.f))
+										if ((EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f)
+										        &&	(EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f)
+										        &&	(EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f))
 										{
 											if (k2 == 3)
 											{
@@ -2227,11 +2227,11 @@ void ARX_PrepareBackgroundNRMLs()
 						}
 
 					count = 1.f / count;
-					ep->tv[k].sx = nrml.x * count;
+					ep->tv[k].p.x = nrml.x * count;
 
-					ep->tv[k].sy = nrml.y * count;
+					ep->tv[k].p.y = nrml.y * count;
 
-					ep->tv[k].sz = nrml.z * count;
+					ep->tv[k].p.z = nrml.z * count;
 
 				}
 			}
@@ -2251,9 +2251,9 @@ void ARX_PrepareBackgroundNRMLs()
 
 				for (k = 0; k < nbvert; k++)
 				{
-					ep->nrml[k].x = ep->tv[k].sx;
-					ep->nrml[k].y = ep->tv[k].sy;
-					ep->nrml[k].z = ep->tv[k].sz;
+					ep->nrml[k].x = ep->tv[k].p.x;
+					ep->nrml[k].y = ep->tv[k].p.y;
+					ep->nrml[k].z = ep->tv[k].p.z;
 				}
 
 				float d = 0.f;

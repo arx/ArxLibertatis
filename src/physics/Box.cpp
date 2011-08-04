@@ -84,9 +84,9 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long
 
 	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
-		obj->vertexlist[i].vert.sx = obj->vertexlist[i].v.x;
-		obj->vertexlist[i].vert.sy = obj->vertexlist[i].v.y;
-		obj->vertexlist[i].vert.sz = obj->vertexlist[i].v.z;
+		obj->vertexlist[i].vert.p.x = obj->vertexlist[i].v.x;
+		obj->vertexlist[i].vert.p.y = obj->vertexlist[i].v.y;
+		obj->vertexlist[i].vert.p.z = obj->vertexlist[i].v.z;
 	}
 
 	float surface = 0.f;
@@ -98,12 +98,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long
 		ev[0] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[0]].v;
 		ev[1] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[1]].v;
 		ev[2] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[2]].v;
-		surface += TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
-		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
-		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),
-		                          ev[2]->sx, ev[2]->sy, ev[2]->sz)
-		           * TRUEDistance3D(ev[0]->sx, ev[0]->sy, ev[0]->sz,
-		                            ev[1]->sx, ev[1]->sy, ev[1]->sz) * ( 1.0f / 2 );
+		surface += dist((ev[0]->p + ev[1]->p) * .5f, ev[2]->p) * dist(ev[0]->p, ev[1]->p) * .5f;
 	}
 
 	float ratio = surface * ( 1.0f / 10000 );
@@ -776,9 +771,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 }
 
 static void copy(Vec3f & dest, const TexturedVertex & src) {
-	dest.x = src.sx;
-	dest.y = src.sy;
-	dest.z = src.sz;
+	dest.x = src.p.x;
+	dest.y = src.p.y;
+	dest.z = src.p.z;
 }
 
 //*************************************************************************************
@@ -931,9 +926,9 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		cubmax.z = max(cubmax.z, obj->vertexlist[k].v.z);
 	}
 
-	obj->pbox->vert[0].pos.x = cubmin.x + (cubmax.x - cubmin.x) * ( 1.0f / 2 );
-	obj->pbox->vert[0].pos.y = cubmin.y + (cubmax.y - cubmin.y) * ( 1.0f / 2 );
-	obj->pbox->vert[0].pos.z = cubmin.z + (cubmax.z - cubmin.z) * ( 1.0f / 2 );
+	obj->pbox->vert[0].pos.x = cubmin.x + (cubmax.x - cubmin.x) * .5f;
+	obj->pbox->vert[0].pos.y = cubmin.y + (cubmax.y - cubmin.y) * .5f;
+	obj->pbox->vert[0].pos.z = cubmin.z + (cubmax.z - cubmin.z) * .5f;
 
 	obj->pbox->vert[13].pos.x = obj->pbox->vert[0].pos.x;
 	obj->pbox->vert[13].pos.y = cubmin.y;
@@ -1063,10 +1058,10 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	for (int k = 0; k < 4; k++)
 	{
 		if (EEfabs(obj->pbox->vert[5+k].pos.x - obj->pbox->vert[0].pos.x) < 2.f)
-			obj->pbox->vert[5+k].pos.x = (obj->pbox->vert[1+k].pos.x + obj->pbox->vert[9+k].pos.x) * ( 1.0f / 2 );
+			obj->pbox->vert[5+k].pos.x = (obj->pbox->vert[1+k].pos.x + obj->pbox->vert[9+k].pos.x) * .5f;
 
 		if (EEfabs(obj->pbox->vert[5+k].pos.z - obj->pbox->vert[0].pos.z) < 2.f)
-			obj->pbox->vert[5+k].pos.z = (obj->pbox->vert[1+k].pos.z + obj->pbox->vert[9+k].pos.z) * ( 1.0f / 2 );
+			obj->pbox->vert[5+k].pos.z = (obj->pbox->vert[1+k].pos.z + obj->pbox->vert[9+k].pos.z) * .5f;
 	}
 
 	obj->pbox->radius = 0.f;

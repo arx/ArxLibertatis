@@ -4,24 +4,22 @@
 
 #include "graphics/Color.h"
 #include "platform/Platform.h"
+#include "math/Vector2.h"
 #include "math/Vector3.h"
 
 struct TexturedVertex {
 	
-	float sx;
-	float sy;
-	float sz;
+	Vec3f p;
 	float rhw;
 	
 	ColorBGRA color;
 	ColorBGRA specular;
 	
-	float tu;
-	float tv;
+	Vec2f uv;
 	
-	TexturedVertex(const Vec3f & p, float _rhw, ColorBGRA _color, ColorBGRA _specular, float _tu, float _tv) : sx(p.x), sy(p.y), sz(p.z), rhw(_rhw), color(_color), specular(_specular), tu(_tu), tv(_tv) { }
+	TexturedVertex(const Vec3f & _p, float _rhw, ColorBGRA _color, ColorBGRA _specular, Vec2f _uv) : p(_p), rhw(_rhw), color(_color), specular(_specular), uv(_uv) { }
 	
-	TexturedVertex(const TexturedVertex & o) : sx(o.sx), sy(o.sy), sz(o.sz), rhw(o.rhw), color(o.color), specular(o.specular), tu(o.tu), tv(o.tv) { }
+	TexturedVertex(const TexturedVertex & o) : p(o.p), rhw(o.rhw), color(o.color), specular(o.specular), uv(o.uv) { }
 	
 	TexturedVertex() { }
 	

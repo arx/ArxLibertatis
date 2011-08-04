@@ -481,9 +481,9 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 			TransformVertexMatrix(&matrix, (Vec3f *)inVert, &outVert->v);
 
 			outVert->v += vector;
-			outVert->vert.sx = outVert->v.x;
-			outVert->vert.sy = outVert->v.y;
-			outVert->vert.sz = outVert->v.z;
+			outVert->vert.p.x = outVert->v.x;
+			outVert->vert.p.y = outVert->v.y;
+			outVert->vert.p.z = outVert->v.z;
 		}
 	}
 
@@ -491,9 +491,9 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 	{
 		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 		{
-			eobj->vertexlist[i].vert.sx = eobj->vertexlist3[i].v.x - pos->x;
-			eobj->vertexlist[i].vert.sy = eobj->vertexlist3[i].v.y - pos->y;
-			eobj->vertexlist[i].vert.sz = eobj->vertexlist3[i].v.z - pos->z;
+			eobj->vertexlist[i].vert.p.x = eobj->vertexlist3[i].v.x - pos->x;
+			eobj->vertexlist[i].vert.p.y = eobj->vertexlist3[i].v.y - pos->y;
+			eobj->vertexlist[i].vert.p.z = eobj->vertexlist3[i].v.z - pos->z;
 		}
 	}
 
@@ -507,10 +507,10 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 		// Updates 2D Bounding Box
 		if (outVert->vert.rhw > 0.f)
 		{
-			BBOXMIN.x = min(BBOXMIN.x, outVert->vert.sx);
-			BBOXMAX.x = max(BBOXMAX.x, outVert->vert.sx);
-			BBOXMIN.y = min(BBOXMIN.y, outVert->vert.sy);
-			BBOXMAX.y = max(BBOXMAX.y, outVert->vert.sy);
+			BBOXMIN.x = min(BBOXMIN.x, outVert->vert.p.x);
+			BBOXMAX.x = max(BBOXMAX.x, outVert->vert.p.x);
+			BBOXMIN.y = min(BBOXMIN.y, outVert->vert.p.y);
+			BBOXMAX.y = max(BBOXMAX.y, outVert->vert.p.y);
 		}
 	}
 
@@ -1121,30 +1121,30 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 	TexturedVertex pPointAdd[3];
 	
 	Vec3f e3dTemp;
-	e3dTemp.x = _pVertex1->sx;
-	e3dTemp.y = _pVertex1->sy;
-	e3dTemp.z = _pVertex1->sz;
+	e3dTemp.x = _pVertex1->p.x;
+	e3dTemp.y = _pVertex1->p.y;
+	e3dTemp.z = _pVertex1->p.z;
 	EE_P(&e3dTemp, &pPointAdd[0]);
-	e3dTemp.x = _pVertex2->sx;
-	e3dTemp.y = _pVertex2->sy;
-	e3dTemp.z = _pVertex2->sz;
+	e3dTemp.x = _pVertex2->p.x;
+	e3dTemp.y = _pVertex2->p.y;
+	e3dTemp.z = _pVertex2->p.z;
 	EE_P(&e3dTemp, &pPointAdd[1]);
-	e3dTemp.x = _pVertex3->sx;
-	e3dTemp.y = _pVertex3->sy;
-	e3dTemp.z = _pVertex3->sz;
+	e3dTemp.x = _pVertex3->p.x;
+	e3dTemp.y = _pVertex3->p.y;
+	e3dTemp.z = _pVertex3->p.z;
 	EE_P(&e3dTemp, &pPointAdd[2]);
 	pPointAdd[0].color = _pVertex1->color;
 	pPointAdd[0].specular = _pVertex1->specular;
-	pPointAdd[0].tu = _pVertex1->tu;
-	pPointAdd[0].tv = _pVertex1->tv;
+	pPointAdd[0].uv.x = _pVertex1->uv.x;
+	pPointAdd[0].uv.y = _pVertex1->uv.y;
 	pPointAdd[1].color = _pVertex2->color;
 	pPointAdd[1].specular = _pVertex2->specular;
-	pPointAdd[1].tu = _pVertex2->tu;
-	pPointAdd[1].tv = _pVertex2->tv;
+	pPointAdd[1].uv.x = _pVertex2->uv.x;
+	pPointAdd[1].uv.y = _pVertex2->uv.y;
 	pPointAdd[2].color = _pVertex3->color;
 	pPointAdd[2].specular = _pVertex3->specular;
-	pPointAdd[2].tu = _pVertex3->tu;
-	pPointAdd[2].tv = _pVertex3->tv;
+	pPointAdd[2].uv.x = _pVertex3->uv.x;
+	pPointAdd[2].uv.y = _pVertex3->uv.y;
 	
 	EERIEDRAWPRIM(Renderer::TriangleList, pPointAdd);
 }
@@ -1247,7 +1247,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			for (size_t i = 0 ; i < eobj->vertexlist.size() ; i++)
 			{
 				if (eobj->vertexlist3[i].vert.rhw > 0.f)
-					MAX_ZEDE = max(eobj->vertexlist3[i].vert.sz, MAX_ZEDE);
+					MAX_ZEDE = max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
 			}
 			
 		}
@@ -1328,9 +1328,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			for (long n = 0 ; n < 3 ; n++)
 			{
 				paf[n]		= eface->vid[n];
-				tv[n].sx	= eobj->vertexlist3[paf[n]].vert.sx;
-				tv[n].sy	= eobj->vertexlist3[paf[n]].vert.sy;
-				tv[n].sz	= eobj->vertexlist3[paf[n]].vert.sz;
+				tv[n].p.x	= eobj->vertexlist3[paf[n]].vert.p.x;
+				tv[n].p.y	= eobj->vertexlist3[paf[n]].vert.p.y;
+				tv[n].p.z	= eobj->vertexlist3[paf[n]].vert.p.z;
 
 				// Nuky - this code takes 20% of the whole game performance O_O
 				//        AFAIK it allows to correctly display the blue magic effects
@@ -1348,8 +1348,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				//}
 
 				tv[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
-				tv[n].tu	= eface->u[n];
-				tv[n].tv	= eface->v[n];
+				tv[n].uv.x	= eface->u[n];
+				tv[n].uv.y	= eface->v[n];
 				tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
 			}
 
@@ -1552,16 +1552,16 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 							if ((io == inter.iobj[0]) && (ddist > 0.8f) && !EXTERNALVIEW)
 								siz *= 1.5f;
 
-							vect1.x = workon[first].sx - workon[third].sx;
-							vect1.y = workon[first].sy - workon[third].sy;
+							vect1.x = workon[first].p.x - workon[third].p.x;
+							vect1.y = workon[first].p.y - workon[third].p.y;
 							float len1 = 2.f / EEsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
 
 							if (vect1.x < 0.f) len1 *= 1.2f;
 
 							vect1.x *= len1;
 							vect1.y *= len1;
-							vect2.x	 = workon[second].sx - workon[third].sx;
-							vect2.y	 = workon[second].sy - workon[third].sy;
+							vect2.x	 = workon[second].p.x - workon[third].p.x;
+							vect2.y	 = workon[second].p.y - workon[third].p.y;
 
 							float len2 = 1.f / EEsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
@@ -1569,31 +1569,31 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 							vect2.x		*= len2;
 							vect2.y		*= len2;
-							vert[1].sx	+= (vect1.x + 0.2f - rnd() * 0.1f) * siz;  
-							vert[1].sy	+= (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
+							vert[1].p.x	+= (vect1.x + 0.2f - rnd() * 0.1f) * siz;  
+							vert[1].p.y	+= (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
 							vert[1].color = 0xFF000000;
 
 							float valll;
-							valll = 0.005f + (EEfabs(workon[first].sz) - EEfabs(workon[third].sz))
-							               + (EEfabs(workon[second].sz) - EEfabs(workon[third].sz));   
+							valll = 0.005f + (EEfabs(workon[first].p.z) - EEfabs(workon[third].p.z))
+							               + (EEfabs(workon[second].p.z) - EEfabs(workon[third].p.z));   
 							valll = 0.0001f + valll * ( 1.0f / 10 );
 
 							if (valll < 0.f) valll = 0.f;
 
-							vert[1].sz	+= valll;
-							vert[2].sz	+= valll;
-							vert[0].sz	+= 0.0001f;
-							vert[3].sz	+= 0.0001f;//*( 1.0f / 2 );
+							vert[1].p.z	+= valll;
+							vert[2].p.z	+= valll;
+							vert[0].p.z	+= 0.0001f;
+							vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
 							vert[1].rhw	*= .98f;
 							vert[2].rhw	*= .98f;
 							vert[0].rhw	*= .98f;
 							vert[3].rhw	*= .98f;
 
-							vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz;  
-							vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz;  
+							vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;  
+							vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;  
 
-							vert[1].sz = (vert[1].sz + MAX_ZEDE) * ( 1.0f / 2 );
-							vert[2].sz = (vert[2].sz + MAX_ZEDE) * ( 1.0f / 2 );
+							vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
+							vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
 
 							if (curhalo.flags & HALO_NEGATIVE)
 								vert[2].color = 0x00000000;
@@ -2309,7 +2309,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 			for (j = 0; j < nbvert; j++)
 			{
-				Vec3f v(ep->v[j].sx,ep->v[j].sy, ep->v[j].sz);
+				Vec3f v(ep->v[j].p.x,ep->v[j].p.y, ep->v[j].p.z);
 				if (!(GetMaxManhattanDistance(&el->pos, &v) <= el->fallend))
 				{
 					TSU_TEST_NB ++;
@@ -2326,9 +2326,9 @@ void ApplyDynLight(EERIEPOLY * ep)
 					if (DYNAMIC_NORMALS)
 					{
 						Vec3f v1;
-						v1.x = (el->pos.x - ep->v[j].sx) * divd;
-						v1.y = (el->pos.y - ep->v[j].sy) * divd;
-						v1.z = (el->pos.z - ep->v[j].sz) * divd;
+						v1.x = (el->pos.x - ep->v[j].p.x) * divd;
+						v1.y = (el->pos.y - ep->v[j].p.y) * divd;
+						v1.z = (el->pos.z - ep->v[j].p.z) * divd;
 						nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
 
 						if (nvalue > 1.f) nvalue = 1.f;
@@ -2422,9 +2422,9 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_VERTEX * _pVertex, unsigned 
 			{
 				float nvalue;
 
-				nvalue =	((el->pos.x - ep->v[j].sx) * ep->nrml[j].x
-				             +	(el->pos.y - ep->v[j].sy) * ep->nrml[j].y
-				             +	(el->pos.z - ep->v[j].sz) * ep->nrml[j].z
+				nvalue =	((el->pos.x - ep->v[j].p.x) * ep->nrml[j].x
+				             +	(el->pos.y - ep->v[j].p.y) * ep->nrml[j].y
+				             +	(el->pos.z - ep->v[j].p.z) * ep->nrml[j].z
 				         ) * 0.5f / d; 
 
 				if (nvalue > 0.f)
@@ -2544,9 +2544,9 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 			{
 				float nvalue;
 				
-				nvalue =	((el->pos.x - ep->v[j].sx) * ep->nrml[j].x
-				             +	(el->pos.y - ep->v[j].sy) * ep->nrml[j].y
-				             +	(el->pos.z - ep->v[j].sz) * ep->nrml[j].z
+				nvalue =	((el->pos.x - ep->v[j].p.x) * ep->nrml[j].x
+				             +	(el->pos.y - ep->v[j].p.y) * ep->nrml[j].y
+				             +	(el->pos.z - ep->v[j].p.z) * ep->nrml[j].z
 				         ) * 0.5f / d; 
 				
 				if (nvalue > 0.f)

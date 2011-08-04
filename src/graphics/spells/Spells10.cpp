@@ -191,20 +191,20 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta)
 	}
 
 	end = 20 - 1;
-	v1a[0].sx = eSrc.x;
-	v1a[0].sy = eSrc.y + 100;
-	v1a[0].sz = eSrc.z;
-	v1a[end].sx = eTarget.x;
-	v1a[end].sy = eTarget.y;
-	v1a[end].sz = eTarget.z;
+	v1a[0].p.x = eSrc.x;
+	v1a[0].p.y = eSrc.y + 100;
+	v1a[0].p.z = eSrc.z;
+	v1a[end].p.x = eTarget.x;
+	v1a[end].p.y = eTarget.y;
+	v1a[end].p.z = eTarget.z;
 
 	Vec3f s, e, h;
-	s.x = v1a[0].sx;
-	s.y = v1a[0].sy;
-	s.z = v1a[0].sz;
-	e.x = v1a[end].sx;
-	e.y = v1a[end].sy;
-	e.z = v1a[end].sz;
+	s.x = v1a[0].p.x;
+	s.y = v1a[0].p.y;
+	s.z = v1a[0].p.z;
+	e.x = v1a[end].p.x;
+	e.y = v1a[end].p.y;
+	e.z = v1a[end].p.z;
 	//	GenereArcElectrique(&s,&e,v1a,end,0);
 
 	s.x = eSrc.x;
@@ -224,19 +224,19 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta)
 		i++;
 	}
 
-	pathways[0].sx = eSrc.x;
-	pathways[0].sy = eSrc.y + 100;
-	pathways[0].sz = eSrc.z;
-	pathways[9].sx = eTarget.x;
-	pathways[9].sy = eTarget.y;
-	pathways[9].sz = eTarget.z;
+	pathways[0].p.x = eSrc.x;
+	pathways[0].p.y = eSrc.y + 100;
+	pathways[0].p.z = eSrc.z;
+	pathways[9].p.x = eTarget.x;
+	pathways[9].p.y = eTarget.y;
+	pathways[9].p.z = eTarget.z;
 	Split(pathways, 0, 9, 150);
 
 	for (i = 0; i < 9; i++)
 	{
-		if (pathways[i].sy >= eSrc.y + 150)
+		if (pathways[i].p.y >= eSrc.y + 150)
 		{
-			pathways[i].sy = eSrc.y + 150;
+			pathways[i].p.y = eSrc.y + 150;
 		}
 	}
 
@@ -278,9 +278,9 @@ float CControlTarget::Render()
 	newpos.z = 0;
 
 
-	lastpos.x = pathways[0].sx;
-	lastpos.y = pathways[0].sy;
-	lastpos.z = pathways[0].sz;
+	lastpos.x = pathways[0].p.x;
+	lastpos.y = pathways[0].p.y;
+	lastpos.z = pathways[0].p.z;
 
 	for (i = 0; i < 9; i++)
 	{
@@ -303,20 +303,20 @@ float CControlTarget::Render()
 			float f2 = t3 - 2.f * t2 + t1 ;
 			float f3 = t3 - t2 ;
 
-			float val = pathways[kpsuiv].sx;
-			float p0 = 0.5f * (val - pathways[kpprec].sx) ;
-			float p1 = 0.5f * (pathways[kpsuivsuiv].sx - pathways[kp].sx) ;
-			v.x = f0 * pathways[kp].sx + f1 * val + f2 * p0 + f3 * p1 ;
+			float val = pathways[kpsuiv].p.x;
+			float p0 = 0.5f * (val - pathways[kpprec].p.x) ;
+			float p1 = 0.5f * (pathways[kpsuivsuiv].p.x - pathways[kp].p.x) ;
+			v.x = f0 * pathways[kp].p.x + f1 * val + f2 * p0 + f3 * p1 ;
 
-			val = pathways[kpsuiv].sy ;
-			p0 = 0.5f * (val - pathways[kpprec].sy) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].sy - pathways[kp].sy) ;
-			v.y = f0 * pathways[kp].sy + f1 * val + f2 * p0 + f3 * p1 ;
+			val = pathways[kpsuiv].p.y ;
+			p0 = 0.5f * (val - pathways[kpprec].p.y) ;
+			p1 = 0.5f * (pathways[kpsuivsuiv].p.y - pathways[kp].p.y) ;
+			v.y = f0 * pathways[kp].p.y + f1 * val + f2 * p0 + f3 * p1 ;
 
-			val = pathways[kpsuiv].sz ;
-			p0 = 0.5f * (val - pathways[kpprec].sz) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].sz - pathways[kp].sz) ;
-			v.z = f0 * pathways[kp].sz + f1 * val + f2 * p0 + f3 * p1 ;
+			val = pathways[kpsuiv].p.z ;
+			p0 = 0.5f * (val - pathways[kpprec].p.z) ;
+			p1 = 0.5f * (pathways[kpsuivsuiv].p.z - pathways[kp].p.z) ;
+			v.z = f0 * pathways[kp].p.z + f1 * val + f2 * p0 + f3 * p1 ;
 
 			newpos.x = v.x;
 			newpos.y = v.y;

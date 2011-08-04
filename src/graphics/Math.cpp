@@ -957,13 +957,13 @@ long F2L_RoundUp(float val)
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v)
 {
 	register float Ax, Ay, Az, Bx, By, Bz, epnlen;
-	Ax = v[1].sx - v[0].sx;
-	Ay = v[1].sy - v[0].sy;
-	Az = v[1].sz - v[0].sz;
+	Ax = v[1].p.x - v[0].p.x;
+	Ay = v[1].p.y - v[0].p.y;
+	Az = v[1].p.z - v[0].p.z;
 
-	Bx = v[2].sx - v[0].sx;
-	By = v[2].sy - v[0].sy;
-	Bz = v[2].sz - v[0].sz;
+	Bx = v[2].p.x - v[0].p.x;
+	By = v[2].p.y - v[0].p.y;
+	Bz = v[2].p.z - v[0].p.z;
 
 	ep->norm.x = Ay * Bz - Az * By;
 	ep->norm.y = Az * Bx - Ax * Bz;

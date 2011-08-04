@@ -381,9 +381,9 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 					{
 						float fDiff = 5.f;
 
-						if ((fabs(ep->v[a].sx - x) <= fDiff) &&
-								(fabs(ep->v[a].sy - y) <= fDiff) &&
-								(fabs(ep->v[a].sz - z) <= fDiff))
+						if ((fabs(ep->v[a].p.x - x) <= fDiff) &&
+								(fabs(ep->v[a].p.y - y) <= fDiff) &&
+								(fabs(ep->v[a].p.z - z) <= fDiff))
 						{
 
 							float v1[3];
@@ -402,9 +402,9 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 
 								for (b = 0; b < nbvert; b++)
 								{
-									dest.x = ep->v[b].sx;
-									dest.y = ep->v[b].sy;
-									dest.z = ep->v[b].sz;
+									dest.x = ep->v[b].p.x;
+									dest.y = ep->v[b].p.y;
+									dest.z = ep->v[b].p.z;
 
 									if (Visible(&orgn, &dest, ep, &hit))
 									{
@@ -449,9 +449,9 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			if (ModeLight & MODE_NORMALS)
 			{
 				Vec3f vLight; // vector (light to vertex)
-				vLight.x = light->pos.x - ep->v[i].sx;
-				vLight.y = light->pos.y - ep->v[i].sy;
-				vLight.z = light->pos.z - ep->v[i].sz;
+				vLight.x = light->pos.x - ep->v[i].p.x;
+				vLight.y = light->pos.y - ep->v[i].p.y;
+				vLight.z = light->pos.z - ep->v[i].p.z;
 				vLight.normalize();
 
 				fRes = dot(vLight, ep->nrml[i]);
@@ -471,12 +471,12 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 				orgn.x = light->pos.x;
 				orgn.y = light->pos.y;
 				orgn.z = light->pos.z;
-				dest.x = ep->v[i].sx;
-				dest.y = ep->v[i].sy;
-				dest.z = ep->v[i].sz;
+				dest.x = ep->v[i].p.x;
+				dest.y = ep->v[i].p.y;
+				dest.z = ep->v[i].p.z;
 
 				if (ModeLight & MODE_SMOOTH)
-					fRes *= my_CheckInPoly(ep->v[i].sx, ep->v[i].sy, ep->v[i].sz, ep, light);
+					fRes *= my_CheckInPoly(ep->v[i].p.x, ep->v[i].p.y, ep->v[i].p.z, ep, light);
 				else
 					fRes *= Visible(&orgn, &dest, ep, &hit);
 			}
@@ -516,12 +516,12 @@ extern EERIE_CAMERA DynLightCam;
 void ComputeLight2DPos(EERIE_LIGHT * _pL)
 {
 	TexturedVertex in, out;
-	in.sx = _pL->pos.x;
-	in.sy = _pL->pos.y;
-	in.sz = _pL->pos.z;
+	in.p.x = _pL->pos.x;
+	in.p.y = _pL->pos.y;
+	in.p.z = _pL->pos.z;
 	EERIETreatPoint(&in, &out);
 
-	if ((out.sz > 0.f) && (out.sz < 1000.f) && (out.rhw > 0))
+	if ((out.p.z > 0.f) && (out.p.z < 1000.f) && (out.rhw > 0))
 	{
 		float t;
 		float siz = 50;
@@ -531,10 +531,10 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL)
 
 		t = siz * (1.0f - 1.0f / (out.rhw * fMaxdist)) + 10;
 
-		_pL->maxs.x = out.sx + t;
-		_pL->mins.x = out.sx - t;
-		_pL->maxs.y = out.sy + t;
-		_pL->mins.y = out.sy - t;
+		_pL->maxs.x = out.p.x + t;
+		_pL->mins.x = out.p.x - t;
+		_pL->maxs.y = out.p.y + t;
+		_pL->mins.y = out.p.y - t;
 
 
 		if (0)

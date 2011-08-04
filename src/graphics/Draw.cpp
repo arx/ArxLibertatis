@@ -118,22 +118,22 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 		for (long j=0;j<3;j++)
 		{
-			if (   ( NearlyEqual(ep->v[i].sx,ep2->v[j].sx) )
-				&& ( NearlyEqual(ep->v[i].sy,ep2->v[j].sy) )
-				&& ( NearlyEqual(ep->v[i].sz,ep2->v[j].sz) )
-				&& ( NearlyEqual(ep->v[i].tu,ep2->v[j].tu) )
-				&& ( NearlyEqual(ep->v[i].tv,ep2->v[j].tv) )
+			if (   ( NearlyEqual(ep->v[i].p.x,ep2->v[j].p.x) )
+				&& ( NearlyEqual(ep->v[i].p.y,ep2->v[j].p.y) )
+				&& ( NearlyEqual(ep->v[i].p.z,ep2->v[j].p.z) )
+				&& ( NearlyEqual(ep->v[i].uv.x,ep2->v[j].uv.x) )
+				&& ( NearlyEqual(ep->v[i].uv.y,ep2->v[j].uv.y) )
 				)
 			{
 				count++;
 				common=j;
 			}
 
-			if (   ( NearlyEqual(ep->v[j].sx,ep2->v[i].sx) )
-				&& ( NearlyEqual(ep->v[j].sy,ep2->v[i].sy) )
-				&& ( NearlyEqual(ep->v[j].sz,ep2->v[i].sz) )
-				&& ( NearlyEqual(ep->v[j].tu,ep2->v[i].tu) )
-				&& ( NearlyEqual(ep->v[j].tv,ep2->v[i].tv) )
+			if (   ( NearlyEqual(ep->v[j].p.x,ep2->v[i].p.x) )
+				&& ( NearlyEqual(ep->v[j].p.y,ep2->v[i].p.y) )
+				&& ( NearlyEqual(ep->v[j].p.z,ep2->v[i].p.z) )
+				&& ( NearlyEqual(ep->v[j].uv.x,ep2->v[i].uv.x) )
+				&& ( NearlyEqual(ep->v[j].uv.y,ep2->v[i].uv.y) )
 				)
 			{				
 				common2=j;
@@ -168,36 +168,36 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 		}
 
 		CopyVertices(ep2,3,0);
-		ep2->v[3].sx=ep->v[ep_notcommon].sx;
-		ep2->v[3].sy=ep->v[ep_notcommon].sy;
-		ep2->v[3].sz=ep->v[ep_notcommon].sz;
-		ep2->tv[3].tu=ep2->v[3].tu=ep->v[ep_notcommon].tu;
-		ep2->tv[3].tv=ep2->v[3].tv=ep->v[ep_notcommon].tv;
+		ep2->v[3].p.x=ep->v[ep_notcommon].p.x;
+		ep2->v[3].p.y=ep->v[ep_notcommon].p.y;
+		ep2->v[3].p.z=ep->v[ep_notcommon].p.z;
+		ep2->tv[3].uv.x=ep2->v[3].uv.x=ep->v[ep_notcommon].uv.x;
+		ep2->tv[3].uv.y=ep2->v[3].uv.y=ep->v[ep_notcommon].uv.y;
 		ep2->tv[3].color=ep2->v[3].color=Color::white.toBGR();
 		ep2->tv[3].rhw=ep2->v[3].rhw=1.f;
 
-	DeclareEGInfo(ep->v[3].sx, ep->v[3].sz);
+	DeclareEGInfo(ep->v[3].p.x, ep->v[3].p.z);
 
-	ep2->center.x=(ep2->v[0].sx+ep2->v[1].sx+ep2->v[2].sx+ep2->v[3].sx)*( 1.0f / 4 );
-	ep2->center.y=(ep2->v[0].sy+ep2->v[1].sy+ep2->v[2].sy+ep2->v[3].sy)*( 1.0f / 4 );
-	ep2->center.z=(ep2->v[0].sz+ep2->v[1].sz+ep2->v[2].sz+ep2->v[3].sz)*( 1.0f / 4 );
-	ep2->max.x=max(ep2->max.x,ep2->v[3].sx);
-	ep2->min.x=min(ep2->min.x,ep2->v[3].sx);
-	ep2->max.y=max(ep2->max.y,ep2->v[3].sy);
-	ep2->min.y=min(ep2->min.y,ep2->v[3].sy);
-	ep2->max.z=max(ep2->max.z,ep2->v[3].sz);
-	ep2->min.z=min(ep2->min.z,ep2->v[3].sz);
+	ep2->center.x=(ep2->v[0].p.x+ep2->v[1].p.x+ep2->v[2].p.x+ep2->v[3].p.x)*( 1.0f / 4 );
+	ep2->center.y=(ep2->v[0].p.y+ep2->v[1].p.y+ep2->v[2].p.y+ep2->v[3].p.y)*( 1.0f / 4 );
+	ep2->center.z=(ep2->v[0].p.z+ep2->v[1].p.z+ep2->v[2].p.z+ep2->v[3].p.z)*( 1.0f / 4 );
+	ep2->max.x=max(ep2->max.x,ep2->v[3].p.x);
+	ep2->min.x=min(ep2->min.x,ep2->v[3].p.x);
+	ep2->max.y=max(ep2->max.y,ep2->v[3].p.y);
+	ep2->min.y=min(ep2->min.y,ep2->v[3].p.y);
+	ep2->max.z=max(ep2->max.z,ep2->v[3].p.z);
+	ep2->min.z=min(ep2->min.z,ep2->v[3].p.z);
 
 	ep2->norm2.x=ep->norm.x;
 	ep2->norm2.y=ep->norm.y;
 	ep2->norm2.z=ep->norm.z;
 	
-	ep2->area+=Distance3D(	(ep2->v[1].sx+ep2->v[2].sx)*( 1.0f / 2 ),
-							(ep2->v[1].sy+ep2->v[2].sy)*( 1.0f / 2 ),
-							(ep2->v[1].sz+ep2->v[2].sz)*( 1.0f / 2 ),
-							ep2->v[3].sx,ep2->v[3].sy,ep2->v[3].sz)
-			*Distance3D(	ep2->v[3].sx,ep2->v[3].sy,ep2->v[3].sz,
-							ep2->v[1].sx,ep2->v[1].sy,ep2->v[1].sz)*( 1.0f / 2 );
+	ep2->area+=Distance3D(	(ep2->v[1].p.x+ep2->v[2].p.x)*( 1.0f / 2 ),
+							(ep2->v[1].p.y+ep2->v[2].p.y)*( 1.0f / 2 ),
+							(ep2->v[1].p.z+ep2->v[2].p.z)*( 1.0f / 2 ),
+							ep2->v[3].p.x,ep2->v[3].p.y,ep2->v[3].p.z)
+			*Distance3D(	ep2->v[3].p.x,ep2->v[3].p.y,ep2->v[3].p.z,
+							ep2->v[1].p.x,ep2->v[1].p.y,ep2->v[1].p.z)*( 1.0f / 2 );
 
 		return true;
 	}
@@ -212,8 +212,8 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	long posx,posz;
 	float cx,cz;
 	EERIE_BKG_INFO * eg;
-	cx=(ep->v[0].sx+ep->v[1].sx+ep->v[2].sx);
-	cz=(ep->v[0].sz+ep->v[1].sz+ep->v[2].sz);
+	cx=(ep->v[0].p.x+ep->v[1].p.x+ep->v[2].p.x);
+	cz=(ep->v[0].p.z+ep->v[1].p.z+ep->v[2].p.z);
 	posx = cx*( 1.0f / 3 )*ACTIVEBKG->Xmul;
 	posz = cz*( 1.0f / 3 )*ACTIVEBKG->Zmul;
 	
@@ -334,25 +334,25 @@ void Delayed_FlushAll() {
 
 					for (long i=0;i<to;i++)
 					{
-						verts[i].sx=ep->tv[i].sx;
-						verts[i].sy=ep->tv[i].sy;
-						verts[i].sz=ep->tv[i].sz;
+						verts[i].p.x=ep->tv[i].p.x;
+						verts[i].p.y=ep->tv[i].p.y;
+						verts[i].p.z=ep->tv[i].p.z;
 						verts[i].rhw=ep->tv[i].rhw;
 						verts[i].color=0xFFFFFFFF;
 
 						// Water
 						if (ep->type & POLY_LAVA)
 						{
-							verts[i].tu=ep->v[i].sx*( 1.0f / 1000 )+EEsin((ep->v[i].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-							verts[i].tv=ep->v[i].sz*( 1.0f / 1000 )+EEcos((ep->v[i].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.x)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
 						}
 						else
 						{
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							verts[i].tu=ep->v[i].sx*( 1.0f / 800 )+EEsin((ep->v[i].sx)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
-							verts[i].tv=ep->v[i].sz*( 1.0f / 800 )+EEcos((ep->v[i].sz)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 800 )+EEsin((ep->v[i].p.x)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 800 )+EEcos((ep->v[i].p.z)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
 
-							if (ep->type & POLY_FALL) verts[i].tv-=(float)(FrameTime)*( 1.0f / 200 );
+							if (ep->type & POLY_FALL) verts[i].uv.y-=(float)(FrameTime)*( 1.0f / 200 );
 						}
 					}
 
@@ -362,12 +362,12 @@ void Delayed_FlushAll() {
 					{
 						for (long i=0;i<to;i++)
 						{
-							verts[i].tu=ep->v[i].sx*( 1.0f / 1000 )+EEsin((ep->v[i].sy)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
-							verts[i].tv=ep->v[i].sz*( 1.0f / 1000 )+EEcos((ep->v[i].sz+ep->v[i].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.y)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z+ep->v[i].p.x)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
 
 							if (ep->type & POLY_FALL) 
 							{
-								verts[i].tv-=(float)(FrameTime)*( 1.0f / 200 );
+								verts[i].uv.y-=(float)(FrameTime)*( 1.0f / 200 );
 							}
 						}	
 
@@ -378,14 +378,14 @@ void Delayed_FlushAll() {
 					{
 						for (long i=0;i<to;i++)
 						{
-							verts[i].tu=ep->v[i].sx*( 1.0f / 1000 )+EEsin((ep->v[i].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-							verts[i].tv=ep->v[i].sz*( 1.0f / 1000 )+EEcos((ep->v[i].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.x)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 						}	
 						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to);
 						for ( int i=0;i<to;i++)
 						{
-							verts[i].tu=ep->v[i].sx*( 1.0f / 600 )+EEsin((ep->v[i].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-							verts[i].tv=ep->v[i].sz*( 1.0f / 600 )+EEcos((ep->v[i].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 600 )+EEsin((ep->v[i].p.x)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 600 )+EEcos((ep->v[i].p.z)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
 							verts[i].color=0xFF666666;
 						}	
 
@@ -418,18 +418,18 @@ void Delayed_FlushAll() {
 
 						if (ep->type & POLY_QUAD) 
 						{
-							if ( (ep->tv[0].sz>0.048f) 
-								&& (ep->tv[1].sz>0.048f)
-								&& (ep->tv[2].sz>0.048f) 
-							        && (ep->tv[3].sz > 0.048f)) continue; 
+							if ( (ep->tv[0].p.z>0.048f) 
+								&& (ep->tv[1].p.z>0.048f)
+								&& (ep->tv[2].p.z>0.048f) 
+							        && (ep->tv[3].p.z > 0.048f)) continue; 
 
 							to=4;
 						}
 						else 
 						{
-							if ( (ep->tv[0].sz>0.048f) 
-								&& (ep->tv[1].sz>0.048f)
-							        && (ep->tv[2].sz > 0.048f)) continue; 
+							if ( (ep->tv[0].p.z>0.048f) 
+								&& (ep->tv[1].p.z>0.048f)
+							        && (ep->tv[2].p.z > 0.048f)) continue; 
 
 							to=3;	
 						}					
@@ -443,16 +443,16 @@ void Delayed_FlushAll() {
 
 						for (register long j=0;j<to;j++)
 						{
-							verts[j].sx=ep->tv[j].sx;
-							verts[j].sy=ep->tv[j].sy;
-							verts[j].sz=ep->tv[j].sz;
-							verts[j].tu=ep->tv[j].tu*4.f;
-							verts[j].tv=ep->tv[j].tv*4.f;
+							verts[j].p.x=ep->tv[j].p.x;
+							verts[j].p.y=ep->tv[j].p.y;
+							verts[j].p.z=ep->tv[j].p.z;
+							verts[j].uv.x=ep->tv[j].uv.x*4.f;
+							verts[j].uv.y=ep->tv[j].uv.y*4.f;
 							verts[j].rhw=ep->tv[j].rhw;
 
 							float val;
 
-							val = (0.038f - verts[j].sz); 
+							val = (0.038f - verts[j].p.z); 
 
 							if (val<=0.f) 
 							{
@@ -509,11 +509,11 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col) {
 	
 	TexturedVertex v[2];
-	v[0].sx = x0;
-	v[0].sy = y0;
-	v[0].sz = v[1].sz = z;
-	v[1].sx = x1;
-	v[1].sy = y1;
+	v[0].p.x = x0;
+	v[0].p.y = y0;
+	v[0].p.z = v[1].p.z = z;
+	v[1].p.x = x1;
+	v[1].p.y = y1;
 	v[1].color = v[0].color = col.toBGRA();
 	v[1].rhw = v[0].rhw = 1.f;
 	
@@ -524,11 +524,11 @@ void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col)
 void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col) {
 	
 	TexturedVertex v[5];
-	v[4].sx = v[3].sx = v[0].sx = x0;
-	v[4].sy = v[1].sy = v[0].sy = y0;
-	v[2].sx = v[1].sx = x1;
-	v[3].sy = v[2].sy = y1;
-	v[4].sz = v[3].sz = v[2].sz = v[1].sz = v[0].sz = z;
+	v[4].p.x = v[3].p.x = v[0].p.x = x0;
+	v[4].p.y = v[1].p.y = v[0].p.y = y0;
+	v[2].p.x = v[1].p.x = x1;
+	v[3].p.y = v[2].p.y = y1;
+	v[4].p.z = v[3].p.z = v[2].p.z = v[1].p.z = v[0].p.z = z;
 	v[4].color = v[3].color = v[2].color = v[1].color = v[0].color = col.toBGRA();
 	v[4].rhw = v[3].rhw = v[2].rhw = v[1].rhw = v[0].rhw = 1.f;
 	
@@ -539,13 +539,13 @@ void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col)
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole) {
 	
 	TexturedVertex v[4];
-	v[0].sx = v[2].sx = x0;
-	v[0].sy = v[1].sy = y0;
-	v[1].sx = v[3].sx = x1;
-	v[2].sy = v[3].sy = y1;
+	v[0].p.x = v[2].p.x = x0;
+	v[0].p.y = v[1].p.y = y0;
+	v[1].p.x = v[3].p.x = x1;
+	v[2].p.y = v[3].p.y = y1;
 	v[0].color = v[1].color = cold.toBGRA();
 	v[2].color = v[3].color = cole.toBGRA();
-	v[0].sz = v[1].sz = v[2].sz = v[3].sz = z;
+	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = z;
 	v[3].rhw = v[2].rhw = v[1].rhw = v[0].rhw = 1.f;
 	
 	GRenderer->ResetTexture(0);
@@ -636,19 +636,19 @@ void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	TexturedVertex v[2];
 	TexturedVertex in;
 	
-	in.sx = orgn.x;
-	in.sy = orgn.y;
-	in.sz = orgn.z;
+	in.p.x = orgn.x;
+	in.p.y = orgn.y;
+	in.p.z = orgn.z;
 	EE_RTP(&in,&v[0]);
-	if(v[0].sz < 0.f) {
+	if(v[0].p.z < 0.f) {
 		return;
 	}
 	
-	in.sx = dest.x;
-	in.sy = dest.y;
-	in.sz = dest.z;
+	in.p.x = dest.x;
+	in.p.y = dest.y;
+	in.p.z = dest.z;
 	EE_RTP(&in,&v[1]);
-	if(v[1].sz<0.f) {
+	if(v[1].p.z<0.f) {
 		return;
 	}
 	
@@ -667,9 +667,9 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 	
 	EERIETreatPoint2(in,&out);
 
-	if ((out.sz>0.f) && (out.sz<1000.f)
-		&& (out.sx>-1000) && (out.sx<2500.f)
-		&& (out.sy>-500) && (out.sy<1800.f))
+	if ((out.p.z>0.f) && (out.p.z<1000.f)
+		&& (out.p.x>-1000) && (out.p.x<2500.f)
+		&& (out.p.y>-500) && (out.p.y<1800.f))
 	{
 		float use_focal=BASICFOCAL*Xratio;
 		float t;
@@ -687,25 +687,25 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 		
 		if (Zpos<=1.f)
 		{
-			out.sz = Zpos;
-			out.rhw=1.f-out.sz;
+			out.p.z = Zpos;
+			out.rhw=1.f-out.p.z;
 		}
 		else
 		{
 			out.rhw*=(1.f/3000.f);
 		}
 
-		SPRmaxs.x=out.sx+t;
-		SPRmins.x=out.sx-t;
-		SPRmaxs.y=out.sy+t;
-		SPRmins.y=out.sy-t;
+		SPRmaxs.x=out.p.x+t;
+		SPRmins.x=out.p.x-t;
+		SPRmaxs.y=out.p.y+t;
+		SPRmins.y=out.p.y-t;
 
 		ColorBGRA col = color.toBGRA();
 		TexturedVertex v[4];
-		v[0]= TexturedVertex( Vec3f( SPRmins.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 0.f, 0.f);
-		v[1]= TexturedVertex( Vec3f( SPRmaxs.x, SPRmins.y, out.sz), out.rhw, col, out.specular, 1.f, 0.f);
-		v[2]= TexturedVertex( Vec3f( SPRmins.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 0.f, 1.f);
-		v[3]= TexturedVertex( Vec3f( SPRmaxs.x, SPRmaxs.y, out.sz), out.rhw, col, out.specular, 1.f, 1.f);
+		v[0] = TexturedVertex(Vec3f(SPRmins.x, SPRmins.y, out.p.z), out.rhw, col, out.specular, Vec2f::ZERO);
+		v[1] = TexturedVertex(Vec3f(SPRmaxs.x, SPRmins.y, out.p.z), out.rhw, col, out.specular, Vec2f::X_AXIS);
+		v[2] = TexturedVertex(Vec3f(SPRmins.x, SPRmaxs.y, out.p.z), out.rhw, col, out.specular, Vec2f::Y_AXIS);
+		v[3] = TexturedVertex(Vec3f(SPRmaxs.x, SPRmaxs.y, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
 
 		GRenderer->SetTexture(0, tex);
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
@@ -722,7 +722,7 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 	TexturedVertex out;
 	EERIETreatPoint2(in, &out);
 	
-	if ((out.sz>0.f) && (out.sz<1000.f))
+	if ((out.p.z>0.f) && (out.p.z<1000.f))
 	{
 		float use_focal=BASICFOCAL*Xratio;
 	
@@ -732,8 +732,8 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 
 		if (Zpos<=1.f)
 		{
-			out.sz = Zpos; 
-			out.rhw=1.f-out.sz;
+			out.p.z = Zpos; 
+			out.rhw=1.f-out.p.z;
 		}
 		else
 		{
@@ -742,24 +742,24 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 
 		ColorBGRA col = color.toBGRA();
 		TexturedVertex v[4];
-		v[0]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 0.f);
-		v[1]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 0.f);
-		v[2]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 1.f, 1.f);
-		v[3]= TexturedVertex( Vec3f( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 1.f);
+		v[0] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f::ZERO);
+		v[1] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f::X_AXIS);
+		v[2] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
+		v[3] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f::Y_AXIS);
 		
 		
-		SPRmaxs.x=out.sx+t;
-		SPRmins.x=out.sx-t;
+		SPRmaxs.x=out.p.x+t;
+		SPRmins.x=out.p.x-t;
 		
-		SPRmaxs.y=out.sy+t;			
-		SPRmins.y=out.sy-t;
+		SPRmaxs.y=out.p.y+t;			
+		SPRmins.y=out.p.y-t;
 
-		SPRmaxs.z = SPRmins.z = out.sz; 
+		SPRmaxs.z = SPRmins.z = out.p.z; 
 
 		for(long i=0;i<4;i++) {
 			float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
-			v[i].sx = EEsin(tt) * t + out.sx;
-			v[i].sy = EEcos(tt) * t + out.sy;
+			v[i].p.x = EEsin(tt) * t + out.p.x;
+			v[i].p.y = EEcos(tt) * t + out.p.y;
 		}
 
 		GRenderer->SetTexture(0, tex);
@@ -774,11 +774,11 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	
 	TexturedVertex ltv[5];
-	ltv[0]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
-	ltv[1]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 0.f);
-	ltv[2]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 1.f);
-	ltv[3]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
-	ltv[4]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
+	ltv[0] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::ZERO);
+	ltv[1] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::X_AXIS);
+	ltv[2] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f(1.f, 1.f));
+	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
+	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
 	
 	long to;
 
@@ -786,17 +786,17 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	else to=3;
 
 	memcpy(ltv,ep->tv,sizeof(TexturedVertex)*to);							
-	ltv[0].sz-=0.0002f;
-	ltv[1].sz-=0.0002f;
-	ltv[2].sz-=0.0002f;
-	ltv[3].sz-=0.0002f;
+	ltv[0].p.z-=0.0002f;
+	ltv[1].p.z-=0.0002f;
+	ltv[2].p.z-=0.0002f;
+	ltv[3].p.z-=0.0002f;
 
 	if (to==4) 
 	{
 		memcpy(&ltv[2],&ep->tv[3],sizeof(TexturedVertex));
 		memcpy(&ltv[3],&ep->tv[2],sizeof(TexturedVertex));
 		memcpy(&ltv[4],&ep->tv[0],sizeof(TexturedVertex));
-		ltv[4].sz-=0.0002f;
+		ltv[4].p.z-=0.0002f;
 	}
 	else memcpy(&ltv[to],&ltv[0],sizeof(TexturedVertex));
 
@@ -811,15 +811,14 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	
 	EERIEDRAWPRIM(Renderer::LineStrip, ltv, to + 1);
 }
-					
-void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
-{
+
+void EERIEPOLY_DrawNormals(EERIEPOLY * ep) {
 	TexturedVertex ltv[5];
-	ltv[0]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 0.f);
-	ltv[1]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 0.f);
-	ltv[2]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 1.f, 1.f);
-	ltv[3]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
-	ltv[4]= TexturedVertex( Vec3f( 0, 0, 0.5 ), 1.f, 1, 1, 0.f, 1.f);
+	ltv[0] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::ZERO);
+	ltv[1] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::X_AXIS);
+	ltv[2] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f(1.f, 1.f));
+	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
+	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
 	
 	TexturedVertex lv;
 	long to;
@@ -827,34 +826,34 @@ void EERIEPOLY_DrawNormals(EERIEPOLY *ep)
 	if (ep->type & POLY_QUAD) to=4;
 	else to=3;
 
-	lv.sx=ep->center.x;
-	lv.sy=ep->center.y;
-	lv.sz=ep->center.z;
+	lv.p.x=ep->center.x;
+	lv.p.y=ep->center.y;
+	lv.p.z=ep->center.z;
 	EE_RTP(&lv,&ltv[0]);
-	lv.sx+=ep->norm.x*10.f;
-	lv.sy+=ep->norm.y*10.f;
-	lv.sz+=ep->norm.z*10.f;
+	lv.p.x+=ep->norm.x*10.f;
+	lv.p.y+=ep->norm.y*10.f;
+	lv.p.z+=ep->norm.z*10.f;
 	EE_RTP(&lv,&ltv[1]);					
 	GRenderer->ResetTexture(0);
 	ltv[1].color=ltv[0].color=0xFFFF0000;
 
-	if ((ltv[1].sz>0.f) && (ltv[0].sz>0.f))
+	if ((ltv[1].p.z>0.f) && (ltv[0].p.z>0.f))
 		EERIEDRAWPRIM(Renderer::LineList, ltv, 3);
 
 	for (long h=0;h<to;h++)
 	{
-		lv.sx=ep->v[h].sx;
-		lv.sy=ep->v[h].sy;
-		lv.sz=ep->v[h].sz;
+		lv.p.x=ep->v[h].p.x;
+		lv.p.y=ep->v[h].p.y;
+		lv.p.z=ep->v[h].p.z;
 		EE_RTP(&lv,&ltv[0]);
-		lv.sx+=ep->nrml[h].x*10.f;
-		lv.sy+=ep->nrml[h].y*10.f;
-		lv.sz+=ep->nrml[h].z*10.f;
+		lv.p.x+=ep->nrml[h].x*10.f;
+		lv.p.y+=ep->nrml[h].y*10.f;
+		lv.p.z+=ep->nrml[h].z*10.f;
 		EE_RTP(&lv,&ltv[1]);
 		GRenderer->ResetTexture(0);
 		ltv[1].color=ltv[0].color=Color::yellow.toBGR();
 
-		if ((ltv[1].sz>0.f) &&  (ltv[0].sz>0.f))
+		if ((ltv[1].p.z>0.f) &&  (ltv[0].p.z>0.f))
 			EERIEDRAWPRIM(Renderer::LineList, ltv, 3);
 	}
 }
@@ -871,10 +870,10 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 	
 	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, 0.f,  0.f);
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, uv.x, 0.f);
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, 0.f,  uv.y);
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, uv.x, uv.y);
+	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, Vec2f(0.f,  0.f));
+	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, Vec2f(uv.x, 0.f));
+	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, Vec2f(0.f,  uv.y));
+	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, Vec2f(uv.x, uv.y));
 	
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
@@ -891,10 +890,10 @@ void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureCo
 
 	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, u0, v0);
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, u1, v0);
-	v[2] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, u1, v1);
-	v[3] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, u0, v1);
+	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, Vec2f(u0, v0));
+	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, Vec2f(u1, v0));
+	v[2] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, Vec2f(u1, v1));
+	v[3] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, Vec2f(u0, v1));
 
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
@@ -909,10 +908,10 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 	
 	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, u0, v0);
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, u1, v1);
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, u2, v2);
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, u3, v3);
+	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, Vec2f(u0, v0));
+	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, Vec2f(u1, v1));
+	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, Vec2f(u2, v2));
+	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, Vec2f(u3, v3));
 	
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);	
@@ -928,10 +927,10 @@ void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureCont
 	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
 	float rhw = 1.f - z;
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), rhw, col, 0xFF000000, 0.f,  0.f);
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), rhw, col, 0xFF000000, uv.x, 0.f);
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), rhw, col, 0xFF000000, 0.f,  uv.y);
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), rhw, col, 0xFF000000, uv.x, uv.y);
+	v[0] = TexturedVertex(Vec3f(x,      y,      z), rhw, col, 0xFF000000, Vec2f(0.f,  0.f));
+	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), rhw, col, 0xFF000000, Vec2f(uv.x, 0.f));
+	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), rhw, col, 0xFF000000, Vec2f(0.f,  uv.y));
+	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), rhw, col, 0xFF000000, Vec2f(uv.x, uv.y));
 	
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
@@ -950,15 +949,15 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
 	TexturedVertex v[4];
 	float fDy = _fDeltaY * sy;
 	if(sx < 0) {
-		v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, 0xFF000000, uv.x, sv);
-		v[1] = TexturedVertex(Vec3f(x - sx, y + fDy, z), 1.f, col, 0xFF000000, 0.f,  sv);
-		v[2] = TexturedVertex(Vec3f(x - sx, y + sy,  z), 1.f, col, 0xFF000000, 0.f,  uv.y);
-		v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, 0xFF000000, uv.x, uv.y);
+		v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, 0xFF000000, Vec2f(uv.x, sv));
+		v[1] = TexturedVertex(Vec3f(x - sx, y + fDy, z), 1.f, col, 0xFF000000, Vec2f(0.f,  sv));
+		v[2] = TexturedVertex(Vec3f(x - sx, y + sy,  z), 1.f, col, 0xFF000000, Vec2f(0.f,  uv.y));
+		v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, 0xFF000000, Vec2f(uv.x, uv.y));
 	} else {
-		v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, 0xFF000000, 0.f,  sv);
-		v[1] = TexturedVertex(Vec3f(x + sx, y + fDy, z), 1.f, col, 0xFF000000, uv.x, sv);
-		v[2] = TexturedVertex(Vec3f(x + sx, y + sy,  z), 1.f, col, 0xFF000000, uv.x, uv.y);
-		v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, 0xFF000000, 0.f,  uv.y);
+		v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, 0xFF000000, Vec2f(0.f,  sv));
+		v[1] = TexturedVertex(Vec3f(x + sx, y + fDy, z), 1.f, col, 0xFF000000, Vec2f(uv.x, sv));
+		v[2] = TexturedVertex(Vec3f(x + sx, y + sy,  z), 1.f, col, 0xFF000000, Vec2f(uv.x, uv.y));
+		v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, 0xFF000000, Vec2f(0.f,  uv.y));
 	}
 	
 	GRenderer->SetTexture(0, tex);

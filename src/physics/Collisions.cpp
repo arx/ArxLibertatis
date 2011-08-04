@@ -110,7 +110,7 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 	for (long num=0;num<to;num++)
 	{
-		float dd=Distance2D(ep->v[num].sx,ep->v[num].sz,cyl->origin.x,cyl->origin.z);
+		float dd = Distance2D(ep->v[num].p.x, ep->v[num].p.z, cyl->origin.x, cyl->origin.z);
 
 		if (dd<nearest)
 		{
@@ -157,9 +157,9 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 			for (long o=0;o<5;o++)
 			{
 				float p=(float)o*( 1.0f / 5 );
-				center.x=(ep->v[n].sx*p+ep->center.x*(1.f-p));
-				center.y=(ep->v[n].sy*p+ep->center.y*(1.f-p));
-				center.z=(ep->v[n].sz*p+ep->center.z*(1.f-p));
+				center.x=(ep->v[n].p.x*p+ep->center.x*(1.f-p));
+				center.y=(ep->v[n].p.y*p+ep->center.y*(1.f-p));
+				center.z=(ep->v[n].p.z*p+ep->center.z*(1.f-p));
 
 				if (PointInCylinder(cyl, &center)) 
 				{	
@@ -174,9 +174,9 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		if ((ep->area>2000.f) 
 		        || (flags & CFLAG_EXTRA_PRECISION)  )
 		{
-			center.x=(ep->v[n].sx+ep->v[r].sx)*( 1.0f / 2 );
-			center.y=(ep->v[n].sy+ep->v[r].sy)*( 1.0f / 2 );
-			center.z=(ep->v[n].sz+ep->v[r].sz)*( 1.0f / 2 );
+			center.x=(ep->v[n].p.x+ep->v[r].p.x)*( 1.0f / 2 );
+			center.y=(ep->v[n].p.y+ep->v[r].p.y)*( 1.0f / 2 );
+			center.z=(ep->v[n].p.z+ep->v[r].p.z)*( 1.0f / 2 );
 
 			if (PointInCylinder(cyl, &center)) 
 			{	
@@ -188,9 +188,9 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 			if ((ep->area>4000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x=(ep->v[n].sx+ep->center.x)*( 1.0f / 2 );
-				center.y=(ep->v[n].sy+ep->center.y)*( 1.0f / 2 );
-				center.z=(ep->v[n].sz+ep->center.z)*( 1.0f / 2 );
+				center.x=(ep->v[n].p.x+ep->center.x)*( 1.0f / 2 );
+				center.y=(ep->v[n].p.y+ep->center.y)*( 1.0f / 2 );
+				center.z=(ep->v[n].p.z+ep->center.z)*( 1.0f / 2 );
 
 				if (PointInCylinder(cyl, &center)) 
 				{	
@@ -203,9 +203,9 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 			if ((ep->area>6000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x=(center.x+ep->v[n].sx)*( 1.0f / 2 );
-				center.y=(center.y+ep->v[n].sy)*( 1.0f / 2 );
-				center.z=(center.z+ep->v[n].sz)*( 1.0f / 2 );
+				center.x=(center.x+ep->v[n].p.x)*( 1.0f / 2 );
+				center.y=(center.y+ep->v[n].p.y)*( 1.0f / 2 );
+				center.z=(center.z+ep->v[n].p.z)*( 1.0f / 2 );
 
 				if (PointInCylinder(cyl, &center))
 				{
@@ -219,7 +219,7 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 		if (PointInCylinder(cyl, (Vec3f *)&ep->v[n]))
 		{
-			anything=min(anything,ep->v[n].sy);			
+			anything=min(anything,ep->v[n].p.y);			
 			POLYIN=1;
 
 			if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
@@ -282,9 +282,9 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 	{
 		if (ep->area>2000.f)
 		{
-			center.x=(ep->v[n].sx+ep->v[r].sx)*( 1.0f / 2 );
-			center.y=(ep->v[n].sy+ep->v[r].sy)*( 1.0f / 2 );
-			center.z=(ep->v[n].sz+ep->v[r].sz)*( 1.0f / 2 );
+			center.x=(ep->v[n].p.x+ep->v[r].p.x)*( 1.0f / 2 );
+			center.y=(ep->v[n].p.y+ep->v[r].p.y)*( 1.0f / 2 );
+			center.z=(ep->v[n].p.z+ep->v[r].p.z)*( 1.0f / 2 );
 
 			if(sph->contains(center)) {	
 				return true;
@@ -292,9 +292,9 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 			if (ep->area>4000.f)
 			{
-				center.x=(ep->v[n].sx+ep->center.x)*( 1.0f / 2 );
-				center.y=(ep->v[n].sy+ep->center.y)*( 1.0f / 2 );
-				center.z=(ep->v[n].sz+ep->center.z)*( 1.0f / 2 );
+				center.x=(ep->v[n].p.x+ep->center.x)*( 1.0f / 2 );
+				center.y=(ep->v[n].p.y+ep->center.y)*( 1.0f / 2 );
+				center.z=(ep->v[n].p.z+ep->center.z)*( 1.0f / 2 );
 
 				if(sph->contains(center)) {	
 					return true;
@@ -303,9 +303,9 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 			if (ep->area>6000.f)
 			{
-				center.x=(center.x+ep->v[n].sx)*( 1.0f / 2 );
-				center.y=(center.y+ep->v[n].sy)*( 1.0f / 2 );
-				center.z=(center.z+ep->v[n].sz)*( 1.0f / 2 );
+				center.x=(center.x+ep->v[n].p.x)*( 1.0f / 2 );
+				center.y=(center.y+ep->v[n].p.y)*( 1.0f / 2 );
+				center.z=(center.z+ep->v[n].p.z)*( 1.0f / 2 );
 
 				if(sph->contains(center)) {
 					return true;
@@ -313,7 +313,7 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 			}
 		}
 		
-		Vec3f v(ep->v[n].sx, ep->v[n].sy, ep->v[n].sz);
+		Vec3f v(ep->v[n].p.x, ep->v[n].p.y, ep->v[n].p.z);
 
 		if(sph->contains(v)) {
 			return true;
@@ -409,9 +409,9 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 
 						for (long kk=0;kk<3;kk++)
 						{
-							cx+=ep.v[kk].sx=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.x;
-							ep.v[kk].sy=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.y;
-							cz+=ep.v[kk].sz=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.z;
+							cx+=ep.v[kk].p.x=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.x;
+							ep.v[kk].p.y=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.y;
+							cz+=ep.v[kk].p.z=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.z;
 						}
 
 						cx*=( 1.0f / 3 );
@@ -421,8 +421,8 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 
 						for (int kk=0;kk<3;kk++)
 						{
-								ep.v[kk].sx = (ep.v[kk].sx - cx) * tval + cx; 
-								ep.v[kk].sz = (ep.v[kk].sz - cz) * tval + cz; 
+								ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx; 
+								ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz; 
 						}
 
 						if (PointIn2DPolyXZ(&ep, io->pos.x, io->pos.z)) 
@@ -542,9 +542,9 @@ extern void GetIOCyl(INTERACTIVE_OBJ * io,EERIE_CYLINDER * cyl);
 
 inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
 {
-	out->sx = (in->sx*c) + (in->sz*s);
-	out->sy = in->sy;
-	out->sz = (in->sz*c) - (in->sx*s);
+	out->p.x = (in->p.x*c) + (in->p.z*s);
+	out->p.y = in->p.y;
+	out->p.z = (in->p.z*c) - (in->p.x*s);
 }
 
 bool CollidedFromBack(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
@@ -560,23 +560,23 @@ bool CollidedFromBack(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 	{
 
 	
-	ep.v[0].sx=io->pos.x;
-	ep.v[0].sz=io->pos.z;
+	ep.v[0].p.x=io->pos.x;
+	ep.v[0].p.z=io->pos.z;
 	float ft=radians(135.f+90.f);
-		ep.v[1].sx = EEsin(ft) * 180.f; 
-		ep.v[1].sz = -EEcos(ft) * 180.f; 
+		ep.v[1].p.x = EEsin(ft) * 180.f; 
+		ep.v[1].p.z = -EEcos(ft) * 180.f; 
 	ft=radians(225.f+90.f);
-		ep.v[2].sx = EEsin(ft) * 180.f; 
-		ep.v[2].sz = -EEcos(ft) * 180.f; 
+		ep.v[2].p.x = EEsin(ft) * 180.f; 
+		ep.v[2].p.z = -EEcos(ft) * 180.f; 
 	ft=radians(270.f-io->angle.b);
 	float ec=EEcos(ft);
 	float es=EEsin(ft);
 	EE_RotateY( &ep.v[1]  , &ep.tv[1]   , ec , es );
 	EE_RotateY( &ep.v[2]  , &ep.tv[2]   , ec , es );
-	ep.v[1].sx=ep.tv[1].sx+ep.v[0].sx;
-	ep.v[1].sz=ep.tv[1].sz+ep.v[0].sz;
-	ep.v[2].sx=ep.tv[2].sx+ep.v[0].sx;
-	ep.v[2].sz=ep.tv[2].sz+ep.v[0].sz;
+	ep.v[1].p.x=ep.tv[1].p.x+ep.v[0].p.x;
+	ep.v[1].p.z=ep.tv[1].p.z+ep.v[0].p.z;
+	ep.v[2].p.x=ep.tv[2].p.x+ep.v[0].p.x;
+	ep.v[2].p.z=ep.tv[2].p.z+ep.v[0].p.z;
 
 	// To keep if we need some visual debug
 	if (PointIn2DPolyXZ(&ep,ioo->pos.x,ioo->pos.z))
@@ -1112,9 +1112,9 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 
 								for (long kk=0;kk<3;kk++)
 								{
-									cx+=ep.v[kk].sx=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-										ep.v[kk].sy=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-									cz+=ep.v[kk].sz=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+									cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
+										ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
+									cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 								}
 
 								cx*=( 1.0f / 3 );
@@ -1122,8 +1122,8 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 
 								for (int kk=0;kk<3;kk++)
 								{
-									ep.v[kk].sx=(ep.v[kk].sx-cx)*3.5f+cx;
-									ep.v[kk].sz=(ep.v[kk].sz-cz)*3.5f+cz;
+									ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
+									ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
 								}
 
 								if (PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) 
@@ -1328,9 +1328,9 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 
 								for (long kk=0;kk<3;kk++)
 								{
-									cx+=ep.v[kk].sx=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-										ep.v[kk].sy=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-									cz+=ep.v[kk].sz=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+									cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
+										ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
+									cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 								}
 
 								cx*=( 1.0f / 3 );
@@ -1338,8 +1338,8 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 
 								for (int kk=0;kk<3;kk++)
 								{
-									ep.v[kk].sx=(ep.v[kk].sx-cx)*3.5f+cx;
-									ep.v[kk].sz=(ep.v[kk].sz-cz)*3.5f+cz;
+									ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
+									ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
 								}
 
 								if (PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) 
@@ -2062,9 +2062,9 @@ void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status)
 
 				for (long kk=0;kk<3;kk++)
 				{
-					cx+=ep.v[kk].sx=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.x+io->pos.x;
-						ep.v[kk].sy=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.y+io->pos.y;
-					cz+=ep.v[kk].sz=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.z+io->pos.z;
+					cx+=ep.v[kk].p.x=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.x+io->pos.x;
+						ep.v[kk].p.y=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.y+io->pos.y;
+					cz+=ep.v[kk].p.z=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.z+io->pos.z;
 				}
 
 				cx*=( 1.0f / 3 );
@@ -2072,8 +2072,8 @@ void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status)
 
 				for (int kk=0;kk<3;kk++)
 				{
-					ep.v[kk].sx=(ep.v[kk].sx-cx)*3.5f+cx;
-					ep.v[kk].sz=(ep.v[kk].sz-cz)*3.5f+cz;
+					ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
+					ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
 				}
 
 				if (PointIn2DPolyXZ(&ep, ad->pos.x, ad->pos.z)) 

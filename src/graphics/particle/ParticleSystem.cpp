@@ -608,15 +608,15 @@ void ParticleSystem::Render() {
 			}
 
 			TexturedVertex p3pos;
-			p3pos.sx = p->p3Pos.x;
-			p3pos.sy = p->p3Pos.y;
-			p3pos.sz = p->p3Pos.z;
+			p3pos.p.x = p->p3Pos.x;
+			p3pos.p.y = p->p3Pos.y;
+			p3pos.p.z = p->p3Pos.z;
 
 			if (bParticleFollow)
 			{
-				p3pos.sx += p3Pos.x;
-				p3pos.sy += p3Pos.y;
-				p3pos.sz += p3Pos.z;
+				p3pos.p.x += p3Pos.x;
+				p3pos.p.y += p3Pos.y;
+				p3pos.p.z += p3Pos.z;
 			}
 
 

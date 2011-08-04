@@ -187,23 +187,23 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 		tfRaysb[i] = 0.4f * rnd(); 
 	}
 
-	target.sx = eSrc.x - 100;
-	target.sy = eSrc.y;
-	target.sz = eSrc.z;
+	target.p.x = eSrc.x - 100;
+	target.p.y = eSrc.y;
+	target.p.z = eSrc.z;
 
-	v1a[0].sx = eSrc.x;
-	v1a[0].sy = eSrc.y - 100;
-	v1a[0].sz = eSrc.z;
-	v1a[end].sx = eSrc.x;
-	v1a[end].sy = eSrc.y + 100;
-	v1a[end].sz = eSrc.z;
+	v1a[0].p.x = eSrc.x;
+	v1a[0].p.y = eSrc.y - 100;
+	v1a[0].p.z = eSrc.z;
+	v1a[end].p.x = eSrc.x;
+	v1a[end].p.y = eSrc.y + 100;
+	v1a[end].p.z = eSrc.z;
 
-	v1b[0].sx = v1a[0].sx;
-	v1b[0].sy = v1a[0].sy;
-	v1b[0].sz = v1a[0].sz;
-	v1b[end].sx = v1a[end].sx;
-	v1b[end].sy = v1a[end].sy;
-	v1b[end].sz = v1a[end].sz;
+	v1b[0].p.x = v1a[0].p.x;
+	v1b[0].p.y = v1a[0].p.y;
+	v1b[0].p.z = v1a[0].p.z;
+	v1b[end].p.x = v1a[end].p.x;
+	v1b[end].p.y = v1a[end].p.y;
+	v1b[end].p.z = v1a[end].p.z;
 
 	sizeF = 200;
 	Split(v1a, 0, end, 20);
@@ -218,39 +218,39 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	// espace min
 	for (i = 0; i < 40; i++)
 	{
-		if (v1a[i].sx > v1b[i].sx)
+		if (v1a[i].p.x > v1b[i].p.x)
 		{
-			float fTemp = v1a[i].sx;
-			v1a[i].sx = v1b[i].sx;
-			v1b[i].sx = fTemp;
+			float fTemp = v1a[i].p.x;
+			v1a[i].p.x = v1b[i].p.x;
+			v1b[i].p.x = fTemp;
 		}
 
-		if (v1a[i].sz > v1b[i].sz)
+		if (v1a[i].p.z > v1b[i].p.z)
 		{
-			float fTemp = v1a[i].sz;
-			v1a[i].sz = v1b[i].sz;
-			v1b[i].sz = fTemp;
+			float fTemp = v1a[i].p.z;
+			v1a[i].p.z = v1b[i].p.z;
+			v1b[i].p.z = fTemp;
 		}
 
-		if ((v1b[i].sx - v1a[i].sx) > 20)
+		if ((v1b[i].p.x - v1a[i].p.x) > 20)
 		{
-			v1b[i].sx = v1a[i].sx + rnd() * 20.0f;
+			v1b[i].p.x = v1a[i].p.x + rnd() * 20.0f;
 		}
 
-		if ((v1b[i].sz - v1a[i].sz) > 20)
+		if ((v1b[i].p.z - v1a[i].p.z) > 20)
 		{
-			v1b[i].sz = v1a[i].sz + rnd() * 20.0f;
+			v1b[i].p.z = v1a[i].p.z + rnd() * 20.0f;
 		}
 	}
 
 	for (i = 0; i <= end; i++)
 	{
-		va[i].sx = eSrc.x;
-		va[i].sy = eSrc.y;
-		va[i].sz = eSrc.z;
-		vb[i].sx = eSrc.x;
-		vb[i].sy = eSrc.y;
-		vb[i].sz = eSrc.z;
+		va[i].p.x = eSrc.x;
+		va[i].p.y = eSrc.y;
+		va[i].p.z = eSrc.z;
+		vb[i].p.x = eSrc.x;
+		vb[i].p.y = eSrc.y;
+		vb[i].p.z = eSrc.z;
 	}
 
 	sizeF = 0;
@@ -265,9 +265,9 @@ void CSummonCreature::Split(TexturedVertex * v, int a, int b, float yo)
 
 		if ((i != a) && (i != b))
 		{
-			v[i].sx = (v[a].sx + v[b].sx) * 0.5f + yo * frand2() * (sizeF * 0.005f) * fBetaRadCos;
-			v[i].sy = v[0].sy + (i + 1) * 5;
-			v[i].sz = (v[a].sz + v[b].sz) * 0.5f + yo * frand2() * (sizeF * 0.005f) * fBetaRadSin;
+			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + yo * frand2() * (sizeF * 0.005f) * fBetaRadCos;
+			v[i].p.y = v[0].p.y + (i + 1) * 5;
+			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + yo * frand2() * (sizeF * 0.005f) * fBetaRadSin;
 			Split(v, a, i, yo * 0.8f);
 			Split(v, i, b, yo * 0.8f);
 		}
@@ -306,18 +306,18 @@ void CSummonCreature::RenderFissure()
 		fTempCos = ff * fBetaRadCos;
 		fTempSin = ff * fBetaRadSin;
 
-		va[i].sx   = v1a[i].sx   + sizeF * fTempCos;
-		va[i].sy   = v1a[i].sy;
-		va[i].sz   = v1a[i].sz   + sizeF * fTempSin;
+		va[i].p.x   = v1a[i].p.x   + sizeF * fTempCos;
+		va[i].p.y   = v1a[i].p.y;
+		va[i].p.z   = v1a[i].p.z   + sizeF * fTempSin;
 
-		vb[i].sx   = v1b[i].sx   - sizeF * fTempCos;
-		vb[i].sy   = v1b[i].sy;
-		vb[i].sz   = v1b[i].sz   - sizeF * fTempSin;
+		vb[i].p.x   = v1b[i].p.x   - sizeF * fTempCos;
+		vb[i].p.y   = v1b[i].p.y;
+		vb[i].p.z   = v1b[i].p.z   - sizeF * fTempSin;
 
-		va[i].sx += rnd() * 0.5f * fTempCos;
-		va[i].sz += rnd() * 0.5f * fTempSin;
-		vb[i].sx -= rnd() * 0.5f * fTempCos;
-		vb[i].sz -= rnd() * 0.5f * fTempSin;
+		va[i].p.x += rnd() * 0.5f * fTempCos;
+		va[i].p.z += rnd() * 0.5f * fTempSin;
+		vb[i].p.x -= rnd() * 0.5f * fTempCos;
+		vb[i].p.z -= rnd() * 0.5f * fTempSin;
 	}
 
 	//-------------------------------------------------------------------------
@@ -366,12 +366,12 @@ void CSummonCreature::RenderFissure()
 
 	for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
 	{
-		vt[2].sx = va[i].sx   - (va[i].sx - eSrc.x) * 0.2f;
-		vt[2].sy = va[i].sy   - (va[i].sy - eSrc.y) * 0.2f;
-		vt[2].sz = va[i].sz   - (va[i].sz - eSrc.z) * 0.2f;
-		vt[3].sx = va[i+1].sx - (va[i+1].sx - eSrc.x) * 0.2f;
-		vt[3].sy = va[i+1].sy - (va[i+1].sy - eSrc.y) * 0.2f;
-		vt[3].sz = va[i+1].sz - (va[i+1].sz - eSrc.z) * 0.2f;
+		vt[2].p.x = va[i].p.x   - (va[i].p.x - eSrc.x) * 0.2f;
+		vt[2].p.y = va[i].p.y   - (va[i].p.y - eSrc.y) * 0.2f;
+		vt[2].p.z = va[i].p.z   - (va[i].p.z - eSrc.z) * 0.2f;
+		vt[3].p.x = va[i+1].p.x - (va[i+1].p.x - eSrc.x) * 0.2f;
+		vt[3].p.y = va[i+1].p.y - (va[i+1].p.y - eSrc.y) * 0.2f;
+		vt[3].p.z = va[i+1].p.z - (va[i+1].p.z - eSrc.z) * 0.2f;
 
 		EE_RT2(&vt[3], &vr[0]);
 		EE_RT2(&vt[2], &vr[1]);
@@ -384,12 +384,12 @@ void CSummonCreature::RenderFissure()
 		                             &vr[2],
 		                             &vr[3]);
 
-		vt[2].sx = vb[i].sx   - (vb[i].sx - eSrc.x) * 0.2f;
-		vt[2].sy = vb[i].sy   - (vb[i].sy - eSrc.y) * 0.2f;
-		vt[2].sz = vb[i].sz   - (vb[i].sz - eSrc.z) * 0.2f;
-		vt[3].sx = vb[i+1].sx - (vb[i+1].sx - eSrc.x) * 0.2f;
-		vt[3].sy = vb[i+1].sy - (vb[i+1].sy - eSrc.y) * 0.2f;
-		vt[3].sz = vb[i+1].sz - (vb[i+1].sz - eSrc.z) * 0.2f;
+		vt[2].p.x = vb[i].p.x   - (vb[i].p.x - eSrc.x) * 0.2f;
+		vt[2].p.y = vb[i].p.y   - (vb[i].p.y - eSrc.y) * 0.2f;
+		vt[2].p.z = vb[i].p.z   - (vb[i].p.z - eSrc.z) * 0.2f;
+		vt[3].p.x = vb[i+1].p.x - (vb[i+1].p.x - eSrc.x) * 0.2f;
+		vt[3].p.y = vb[i+1].p.y - (vb[i+1].p.y - eSrc.y) * 0.2f;
+		vt[3].p.z = vb[i+1].p.z - (vb[i+1].p.z - eSrc.z) * 0.2f;
 
 		EE_RT2(&vb[i], &vr[3]);
 		EE_RT2(&vb[i+1], &vr[2]);
@@ -413,39 +413,39 @@ void CSummonCreature::RenderFissure()
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
 	GRenderer->SetTexture(0, tex_light);
 
-	target.sx = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
-	target.sy = eSrc.y;
-	target.sz = eSrc.z + fBetaRadCos * (1.5f * sizeF); 
+	target.p.x = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
+	target.p.y = eSrc.y;
+	target.p.z = eSrc.z + fBetaRadCos * (1.5f * sizeF); 
 
 	EE_RTP(&vt[1], &vr[0]);
 	vr[0].color = vr[1].color = fColorRays1.toBGR();
 	vr[2].color = vr[3].color = fColorRays2.toBGR();
 
-	vr[0].tu = fTexWrap;
-	vr[0].tv = 1;
-	vr[1].tu = 1.0f + fTexWrap;
-	vr[1].tv = 1;
-	vr[2].tu = fTexWrap;
-	vr[2].tv = 0;
-	vr[3].tu = 1.0f + fTexWrap;
-	vr[3].tv = 0;
+	vr[0].uv.x = fTexWrap;
+	vr[0].uv.y = 1;
+	vr[1].uv.x = 1.0f + fTexWrap;
+	vr[1].uv.y = 1;
+	vr[2].uv.x = fTexWrap;
+	vr[2].uv.y = 0;
+	vr[3].uv.x = 1.0f + fTexWrap;
+	vr[3].uv.y = 0;
 
 	for (i = 0; i < end - 1; i++)
 	{	
 		if (i < fSizeIntro)
 		{
-			vt[0].sx = va[i].sx;
-			vt[0].sy = va[i].sy;
-			vt[0].sz = va[i].sz;
-			vt[1].sx = va[i+1].sx;
-			vt[1].sy = va[i+1].sy;
-			vt[1].sz = va[i+1].sz;
-			vt[2].sx = va[i].sx + (va[i].sx - target.sx) * 2;
-			vt[2].sy = va[i].sy + (va[i].sy - target.sy) * 2;
-			vt[2].sz = va[i].sz + (va[i].sz - target.sz) * 2;
-			vt[3].sx = va[i+1].sx + (va[i+1].sx - target.sx) * 2;
-			vt[3].sy = va[i+1].sy + (va[i+1].sy - target.sy) * 2;
-			vt[3].sz = va[i+1].sz + (va[i+1].sz - target.sz) * 2;
+			vt[0].p.x = va[i].p.x;
+			vt[0].p.y = va[i].p.y;
+			vt[0].p.z = va[i].p.z;
+			vt[1].p.x = va[i+1].p.x;
+			vt[1].p.y = va[i+1].p.y;
+			vt[1].p.z = va[i+1].p.z;
+			vt[2].p.x = va[i].p.x + (va[i].p.x - target.p.x) * 2;
+			vt[2].p.y = va[i].p.y + (va[i].p.y - target.p.y) * 2;
+			vt[2].p.z = va[i].p.z + (va[i].p.z - target.p.z) * 2;
+			vt[3].p.x = va[i+1].p.x + (va[i+1].p.x - target.p.x) * 2;
+			vt[3].p.y = va[i+1].p.y + (va[i+1].p.y - target.p.y) * 2;
+			vt[3].p.z = va[i+1].p.z + (va[i+1].p.z - target.p.z) * 2;
 
 			vr[0].color = (fColorRays1 * tfRaysa[i]).toBGR();
 			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toBGR();
@@ -466,18 +466,18 @@ void CSummonCreature::RenderFissure()
 		
 		if (i < fSizeIntro)
 		{
-			vt[0].sx = vb[i+1].sx;
-			vt[0].sy = vb[i+1].sy;
-			vt[0].sz = vb[i+1].sz;
-			vt[1].sx = vb[i].sx;
-			vt[1].sy = vb[i].sy;
-			vt[1].sz = vb[i].sz;
-			vt[2].sx = vb[i+1].sx + (vb[i+1].sx - target.sx) * 2;
-			vt[2].sy = vb[i+1].sy + (vb[i+1].sy - target.sy) * 2;
-			vt[2].sz = vb[i+1].sz + (vb[i+1].sz - target.sz) * 2;
-			vt[3].sx = vb[i].sx + (vb[i].sx - target.sx) * 2;
-			vt[3].sy = vb[i].sy + (vb[i].sy - target.sy) * 2;
-			vt[3].sz = vb[i].sz + (vb[i].sz - target.sz) * 2;
+			vt[0].p.x = vb[i+1].p.x;
+			vt[0].p.y = vb[i+1].p.y;
+			vt[0].p.z = vb[i+1].p.z;
+			vt[1].p.x = vb[i].p.x;
+			vt[1].p.y = vb[i].p.y;
+			vt[1].p.z = vb[i].p.z;
+			vt[2].p.x = vb[i+1].p.x + (vb[i+1].p.x - target.p.x) * 2;
+			vt[2].p.y = vb[i+1].p.y + (vb[i+1].p.y - target.p.y) * 2;
+			vt[2].p.z = vb[i+1].p.z + (vb[i+1].p.z - target.p.z) * 2;
+			vt[3].p.x = vb[i].p.x + (vb[i].p.x - target.p.x) * 2;
+			vt[3].p.y = vb[i].p.y + (vb[i].p.y - target.p.y) * 2;
+			vt[3].p.z = vb[i].p.z + (vb[i].p.z - target.p.z) * 2;
 
 			vr[0].color = (fColorRays1 * tfRaysb[i]).toBGR();
 			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toBGR();
@@ -639,12 +639,12 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	iNumber = checked_range_cast<int>(fCalc);
 
 	int end = 40;
-	tv1a[0].sx = s.x;
-	tv1a[0].sy = s.y;
-	tv1a[0].sz = s.z;
-	tv1a[end].sx = e.x;
-	tv1a[end].sy = e.y;
-	tv1a[end].sz = e.z;
+	tv1a[0].p.x = s.x;
+	tv1a[0].p.y = s.y;
+	tv1a[0].p.z = s.z;
+	tv1a[end].p.x = e.x;
+	tv1a[end].p.y = e.y;
+	tv1a[end].p.z = e.z;
 
 	Split(tv1a, 0, end, 10, 1, 0, 1, 10, 1);
 
@@ -781,9 +781,9 @@ void CIncinerate::Update(unsigned long _ulTime)
 
 	if (iMax > 40) iMax = 40;
 
-	et.x = tv1a[iMax].sx;
-	et.y = tv1a[iMax].sy;
-	et.z = tv1a[iMax].sz;
+	et.x = tv1a[iMax].p.x;
+	et.y = tv1a[iMax].p.y;
+	et.z = tv1a[iMax].p.z;
 	pPSStream.SetPos(et);
 }
 
@@ -804,12 +804,12 @@ float CIncinerate::Render()
 	for (i = 0; i < 150 - 1; i++)
 	{
 		Vec3f s, d;
-		s.x = tv1a[i].sx;
-		s.y = tv1a[i].sy;
-		s.z = tv1a[i].sz;
-		d.x = tv1a[i+1].sx;
-		d.y = tv1a[i+1].sy;
-		d.z = tv1a[i+1].sz;
+		s.x = tv1a[i].p.x;
+		s.y = tv1a[i].p.y;
+		s.z = tv1a[i].p.z;
+		d.x = tv1a[i+1].p.x;
+		d.y = tv1a[i+1].p.y;
+		d.z = tv1a[i+1].p.z;
 		EERIEDraw3DLine(s, d, Color::red);
 	}
 

@@ -3265,10 +3265,10 @@ void RenderAllNodes()
 			nodes.nodes[i].bboxmax.x=(short)BBOXMAX.x;
 			nodes.nodes[i].bboxmax.y=(short)BBOXMAX.y;
 
-			if ((nodeobj->vertexlist[nodeobj->origin].vert.sz>0.f) && (nodeobj->vertexlist[nodeobj->origin].vert.sz<0.9f))
+			if ((nodeobj->vertexlist[nodeobj->origin].vert.p.z>0.f) && (nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f))
 			{
-				xx=nodeobj->vertexlist[nodeobj->origin].vert.sx-40.f;
-				yy=nodeobj->vertexlist[nodeobj->origin].vert.sy-40.f;
+				xx=nodeobj->vertexlist[nodeobj->origin].vert.p.x-40.f;
+				yy=nodeobj->vertexlist[nodeobj->origin].vert.p.y-40.f;
 				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
 			}
 

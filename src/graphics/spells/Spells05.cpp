@@ -625,25 +625,25 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	e.y += 0.f;
 
-	pathways[0].sx = eSrc.x;
-	pathways[0].sy = eSrc.y;
-	pathways[0].sz = eSrc.z;
-	pathways[9].sx = e.x;
-	pathways[9].sy = e.y;
-	pathways[9].sz = e.z;
+	pathways[0].p.x = eSrc.x;
+	pathways[0].p.y = eSrc.y;
+	pathways[0].p.z = eSrc.z;
+	pathways[9].p.x = e.x;
+	pathways[9].p.y = e.y;
+	pathways[9].p.z = e.z;
 	Split(pathways, 0, 9, 10 * fBetaRadCos, 10, 10, 10, 10 * fBetaRadSin, 10);
 
 	if (0)
 		for (i = 0; i < 10; i++)
 		{
-			if (pathways[i].sy >= eSrc.y + 150)
+			if (pathways[i].p.y >= eSrc.y + 150)
 			{
-				pathways[i].sy = eSrc.y + 150;
+				pathways[i].p.y = eSrc.y + 150;
 			}
 
-			if (pathways[i].sy <= eSrc.y + 50)
+			if (pathways[i].p.y <= eSrc.y + 50)
 			{
-				pathways[i].sy = eSrc.y + 50;
+				pathways[i].p.y = eSrc.y + 50;
 			}
 		}
 
@@ -805,7 +805,7 @@ float CPoisonProjectile::Render() {
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 	
-	Vec3f lastpos(pathways[0].sx, pathways[0].sy, pathways[0].sz);
+	Vec3f lastpos = pathways[0].p;
 	
 	int arx_check_init = -1;
 	
@@ -831,20 +831,20 @@ float CPoisonProjectile::Render() {
 			float f2 = t3 - 2.f * t2 + t ;
 			float f3 = t3 - t2 ;
 			
-			float val = pathways[kpsuiv].sx;
-			float p0 = 0.5f * (val - pathways[kpprec].sx) ;
-			float p1 = 0.5f * (pathways[kpsuivsuiv].sx - pathways[i].sx) ;
-			lastpos.x = f0 * pathways[i].sx + f1 * val + f2 * p0 + f3 * p1 ;
+			float val = pathways[kpsuiv].p.x;
+			float p0 = 0.5f * (val - pathways[kpprec].p.x);
+			float p1 = 0.5f * (pathways[kpsuivsuiv].p.x - pathways[i].p.x);
+			lastpos.x = f0 * pathways[i].p.x + f1 * val + f2 * p0 + f3 * p1;
 			
-			val = pathways[kpsuiv].sy ;
-			p0 = 0.5f * (val - pathways[kpprec].sy);
-			p1 = 0.5f * (pathways[kpsuivsuiv].sy - pathways[i].sy) ;
-			lastpos.y = f0 * pathways[i].sy + f1 * val + f2 * p0 + f3 * p1 ;
+			val = pathways[kpsuiv].p.y;
+			p0 = 0.5f * (val - pathways[kpprec].p.y);
+			p1 = 0.5f * (pathways[kpsuivsuiv].p.y - pathways[i].p.y);
+			lastpos.y = f0 * pathways[i].p.y + f1 * val + f2 * p0 + f3 * p1;
 			
-			val = pathways[kpsuiv].sz ;
-			p0 = 0.5f * (val - pathways[kpprec].sz) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].sz - pathways[i].sz) ;
-			lastpos.z = f0 * pathways[i].sz + f1 * val + f2 * p0 + f3 * p1 ;
+			val = pathways[kpsuiv].p.z;
+			p0 = 0.5f * (val - pathways[kpprec].p.z);
+			p1 = 0.5f * (pathways[kpsuivsuiv].p.z - pathways[i].p.z);
+			lastpos.z = f0 * pathways[i].p.z + f1 * val + f2 * p0 + f3 * p1;
 			
 			++arx_check_init;
 		}
@@ -1551,9 +1551,9 @@ float CLevitate::Render()
 
 				while (nb)
 				{
-					d3dvs.sx = this->pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * this->scale);
-					d3dvs.sy = this->pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * this->scale);
-					d3dvs.sz = this->pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
+					d3dvs.p.x = this->pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * this->scale);
+					d3dvs.p.y = this->pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * this->scale);
+					d3dvs.p.z = this->pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
 					
 					EE_RT2(&d3dvs, d3dv);
 
@@ -1564,14 +1564,14 @@ float CLevitate::Render()
 
 					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
 
-					d3dv->tu = u;
-					d3dv->tv = 0.f;
+					d3dv->uv.x = u;
+					d3dv->uv.y = 0.f;
 					vertex++;
 					d3dv++;
 
-					d3dvs.sx = this->pos.x + vertex->x;
-					d3dvs.sy = this->pos.y;
-					d3dvs.sz = this->pos.z + vertex->z;
+					d3dvs.p.x = this->pos.x + vertex->x;
+					d3dvs.p.y = this->pos.y;
+					d3dvs.p.z = this->pos.z + vertex->z;
 					
 					EE_RT2(&d3dvs, d3dv);
 
@@ -1583,8 +1583,8 @@ float CLevitate::Render()
 
 					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);
 
-					d3dv->tu = u;
-					d3dv->tv = 0.9999999f;
+					d3dv->uv.x = u;
+					d3dv->uv.y = 0.9999999f;
 					vertex++;
 					d3dv++;
 
@@ -1641,31 +1641,31 @@ float CLevitate::Render()
 
 				while (nb)
 				{
-					d3dvs.sx = this->pos.x + vertex->x;
-					d3dvs.sy = this->pos.y + vertex->y;
-					d3dvs.sz = this->pos.z + vertex->z;
+					d3dvs.p.x = this->pos.x + vertex->x;
+					d3dvs.p.y = this->pos.y + vertex->y;
+					d3dvs.p.z = this->pos.z + vertex->z;
 	
 					EE_RT2(&d3dvs, d3dv);
 					col = (int)(rnd() * 80.f);
 
 					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
 
-					d3dv->tu = u;
-					d3dv->tv = 0.f;
+					d3dv->uv.x = u;
+					d3dv->uv.y = 0.f;
 					vertex++;
 					d3dv++;
 
-					d3dvs.sx = this->pos.x + vertex->x;
-					d3dvs.sy = this->pos.y;
-					d3dvs.sz = this->pos.z + vertex->z;
+					d3dvs.p.x = this->pos.x + vertex->x;
+					d3dvs.p.y = this->pos.y;
+					d3dvs.p.z = this->pos.z + vertex->z;
 
 					EE_RT2(&d3dvs, d3dv);
 					col = (int)(rnd() * 80.f);
 
 					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);
 
-					d3dv->tu = u;
-					d3dv->tv = 1; 
+					d3dv->uv.x = u;
+					d3dv->uv.y = 1; 
 					vertex++;
 					d3dv++;
 

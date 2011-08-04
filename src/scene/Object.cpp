@@ -1719,12 +1719,8 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 		ev[0] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
 		ev[1] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
 		ev[2] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
-		eerie->facelist[i].temp = TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
-		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
-		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),
-		                          ev[2]->sx, ev[2]->sy, ev[2]->sz)
-		                          * TRUEDistance3D(ev[0]->sx, ev[0]->sy, ev[0]->sz,
-		                                  ev[1]->sx, ev[1]->sy, ev[1]->sz) * ( 1.0f / 2 );
+		eerie->facelist[i].temp = dist((ev[0]->p + ev[1]->p) * .5f, ev[2]->p)
+		                          * dist(ev[0]->p, ev[1]->p) * .5f;
 	}
 
 	for (size_t i = 0; i < eerie->facelist.size(); i++)
@@ -1770,9 +1766,9 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 			}
 
 			count = 1.f / count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sx = nrml.x * count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sy = nrml.y * count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sz = nrml.z * count;
+			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.x = nrml.x * count;
+			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.y = nrml.y * count;
+			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.z = nrml.z * count;
 		}
 	}
 
@@ -1780,9 +1776,9 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 	{
 		for (j = 0; j < 3; j++)
 		{
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.x = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sx;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.y = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sy;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.z = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sz;
+			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.x = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.x;
+			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.y = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.y;
+			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.z = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p.z;
 		}
 	}
 
@@ -1951,23 +1947,23 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 		ret->vertexlist[i].v.x -= offset.x;
 		ret->vertexlist[i].v.y -= offset.y;
 		ret->vertexlist[i].v.z -= offset.z;
-		ret->vertexlist[i].vert.sx -= offset.x;
-		ret->vertexlist[i].vert.sy -= offset.y;
-		ret->vertexlist[i].vert.sz -= offset.z;
+		ret->vertexlist[i].vert.p.x -= offset.x;
+		ret->vertexlist[i].vert.p.y -= offset.y;
+		ret->vertexlist[i].vert.p.z -= offset.z;
 
 		ret->vertexlist3[i].v.x -= offset.x;
 		ret->vertexlist3[i].v.y -= offset.y;
 		ret->vertexlist3[i].v.z -= offset.z;
-		ret->vertexlist3[i].vert.sx -= offset.x;
-		ret->vertexlist3[i].vert.sy -= offset.y;
-		ret->vertexlist3[i].vert.sz -= offset.z;
+		ret->vertexlist3[i].vert.p.x -= offset.x;
+		ret->vertexlist3[i].vert.p.y -= offset.y;
+		ret->vertexlist3[i].vert.p.z -= offset.z;
 
 		ret->vertexlist3[i].v.x -= offset.x;
 		ret->vertexlist3[i].v.y -= offset.y;
 		ret->vertexlist3[i].v.z -= offset.z;
-		ret->vertexlist3[i].vert.sx -= offset.x;
-		ret->vertexlist3[i].vert.sy -= offset.y;
-		ret->vertexlist3[i].vert.sz -= offset.z;
+		ret->vertexlist3[i].vert.p.x -= offset.x;
+		ret->vertexlist3[i].vert.p.y -= offset.y;
+		ret->vertexlist3[i].vert.p.z -= offset.z;
 	}
 
 	ret->point0.x -= offset.x;
