@@ -523,63 +523,43 @@ void CCurse::Update(unsigned long _ulTime)
 	fRot += fRotPerMSec * _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CCurse::Render()
-{Vec3f * pos = NULL; // TODO
-	int i = 0;
-
+float CCurse::Render() {
+	
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	//----------------------------
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	Color3f stitecolor;
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-
-	stiteangle.b = fRot;
-	stiteangle.a = 0;
-	stiteangle.g = 0;
-	stitepos = Vec3f::ZERO; //*pos; TODO null pointer dereference
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
-	stitescale.x = 1;
-	stitescale.y = 1;
-	stitescale.z = 1;
-
-	if (svoodoo)
+	
+	Anglef stiteangle = Anglef(fRot, 0, 0);
+	Vec3f stitepos = eTarget;
+	Vec3f stitescale = Vec3f(1.f, 1.f, 1.f);
+	Color3f stitecolor = Color3f::white;
+	
+	if(svoodoo) {
 		DrawEERIEObjEx(svoodoo , &stiteangle, &stitepos, &stitescale, &stitecolor);
-
-	for (i = 0; i < 4; i++)
-	{
+	}
+	
+	for(int i = 0; i < 4; i++) {
+		
 		int j = ARX_PARTICLES_GetFree();
-
-		if ((j != -1) && (!ARXPausedTimer))
-		{
+		
+		if((j != -1) && (!ARXPausedTimer)) {
 			ParticleCount++;
 			PARTICLE_DEF * pd = &particle[j];
-			pd->exist		=	1;
-			pd->zdec		=	0;
-			pd->ov = *pos;
-			pd->move.x		=	2.f * frand2();
-			pd->move.y		=	rnd() * -10.f - 10.f; 
-			pd->move.z		=	2.f * frand2();
-			pd->siz			=	0.015f;
-			pd->tolive		=	1000 + (unsigned long)(float)(rnd() * 600.f);
-			pd->scale.x		=	1.f;
-			pd->scale.y		=	1.f;
-			pd->scale.z		=	1.f;
-			pd->timcreation	=	lARXTime;
-			pd->tc			=	tex_p1;
-			pd->special		=	ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
-			pd->fparam		=	0.0000001f;
+			pd->exist = 1;
+			pd->zdec = 0;
+			pd->ov = eTarget;
+			pd->move = Vec3f(2.f * frand2(), rnd() * -10.f - 10.f, 2.f * frand2());
+			pd->siz = 0.015f;
+			pd->tolive = 1000 + (unsigned long)(float)(rnd() * 600.f);
+			pd->scale = Vec3f(1.f, 1.f, 1.f);
+			pd->timcreation = lARXTime;
+			pd->tc = tex_p1;
+			pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
+			pd->fparam = 0.0000001f;
 			pd->rgb = Color3f::white;
 		}
 	}
-
+	
 	return 1;
 }
 
