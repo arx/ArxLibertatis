@@ -480,6 +480,8 @@ void initSuppressions() {
 	suppress("player", 9284, "loadanim"); // missing animation "human_death_cool"
 	suppress("player", 9558, "loadanim"); // missing animation "human_talk_happyneutral_headonly"
 	
+	suppress("public_notice_0011", 965, "magicoff"); // unknown command 'magicoff', should be 'magic off'
+	
 	suppress("rat_base", 17145, "play"); // sound number is sometimes too high
 	
 	suppress("rat_base_0059", 62, "behavior"); // unknown behavior 'firendly', should be 'friendly'
