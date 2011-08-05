@@ -468,6 +468,8 @@ void initSuppressions() {
 	
 	suppress("marker_0025", 288, "sendevent"); // unknown zone 'cooking' (should be 'cook_gary'?)
 	
+	suppress("marker_0811", 536, "worldface"); // unknown command 'worldface', should be 'worldfade'
+	
 	suppress("pig", 2409, "}"); // missing accept/refuse before end of event block
 	
 	suppress("player", 7725, "loadanim"); // bad animation id: "cast_hold"
