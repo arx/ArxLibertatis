@@ -636,27 +636,32 @@ HRESULT CD3DFramework7::FlipToGDISurface(bool bDrawFrame)
 // Name: ShowFrame()
 // Desc: Show the frame on the primary surface, via a blt or a flip.
 //-----------------------------------------------------------------------------
-HRESULT CD3DFramework7::ShowFrame()
-{
+HRESULT CD3DFramework7::ShowFrame() {
 	if (NULL == m_pddsFrontBuffer)
 		return D3DFWERR_NOTINITIALIZED;
-
-	if (m_bIsFullscreen)
-	{
-		if (Project.vsync)
-			return m_pddsFrontBuffer->Flip(NULL, DDFLIP_WAIT); 
-
-		RECT rect = { 0, 0, m_dwRenderWidth, m_dwRenderHeight };
-		return m_pddsFrontBuffer->Blt(&rect, m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
-	}
-	else
-	{
+	
+	HRESULT ret;
+	
+	if (m_bIsFullscreen) {
+		if (Project.vsync) {
+			ret = m_pddsFrontBuffer->Flip(NULL, DDFLIP_WAIT); 
+		} else {
+			RECT rect = { 0, 0, m_dwRenderWidth, m_dwRenderHeight };
+			ret = m_pddsFrontBuffer->Blt(&rect, m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
+		}
+	} else {
 		// We are in windowed mode, so perform a blit.
 		RECT rect;
 		GetClientRect(m_hWnd, &rect);
 		ClientToScreen(m_hWnd, (LPPOINT)&rect.left);
 		ClientToScreen(m_hWnd, (LPPOINT)&rect.right);
 
-		return m_pddsFrontBuffer->Blt(&rect, m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
+		ret = m_pddsFrontBuffer->Blt(&rect, m_pddsBackBuffer, NULL, DDBLT_WAIT, NULL);
 	}
+
+	if (FAILED(ret)) {
+		LogError << "Show frame failed";
+	}
+
+	return ret;
 }

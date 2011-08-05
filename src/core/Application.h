@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <d3d.h>
 
+#include "core/Window.h"
 #include "graphics/Renderer.h"
 
 #include "platform/Flags.h"
@@ -113,111 +114,6 @@ enum LightModeFlag {
 DECLARE_FLAGS(LightModeFlag, LightMode);
 DECLARE_FLAGS_OPERATORS(LightMode);
 
-enum WindowCreationFlag {
-	WCF_NORESIZE     = (1<<0),
-	WCF_NOFRAMEINFOS = (1<<1),
-	WCF_NOSTDPOPUP   = (1<<2),
-	WCF_CHILD        = (1<<3),
-	WCF_ACCEPTFILES  = (1<<4)
-};
-DECLARE_FLAGS(WindowCreationFlag, WindowCreationFlags);
-DECLARE_FLAGS_OPERATORS(WindowCreationFlags);
-
-enum InputKey {
-	
-	INKEY_ESCAPE = 1,
-	INKEY_ARROW_UP = 172,
-	INKEY_ARROW_LEFT = 175,
-	INKEY_ARROW_RIGHT = 177,
-	INKEY_ARROW_DOWN = 180,
-	
-	INKEY_PAD0 = 82,
-	INKEY_PAD1 = 79,
-	INKEY_PAD2 = 80,
-	INKEY_PAD3 = 81,
-	INKEY_PAD4 = 75,
-	INKEY_PAD5 = 76,
-	INKEY_PAD6 = 77,
-	INKEY_PAD7 = 71,
-	INKEY_PAD8 = 72,
-	INKEY_PAD9 = 73,
-	INKEY_PADMINUS = 74,
-	INKEY_PADADD = 78,
-	INKEY_PADMULTIPLY = 55,
-	INKEY_PADDIVIDE = 153,
-	INKEY_PADENTER = 128,
-	INKEY_PADNUMLOCK = 169,
-	
-	INKEY_F1 = 59,
-	INKEY_F2 = 60,
-	INKEY_F3 = 61,
-	INKEY_F4 = 62,
-	INKEY_F5 = 63,
-	INKEY_F6 = 64,
-	INKEY_F7 = 65,
-	INKEY_F8 = 66,
-	INKEY_F9 = 67,
-	INKEY_F10 = 68,
-	
-	INKEY_RETURN = 28,
-	INKEY_SPACE = 57,
-	INKEY_LEFTCTRL = 29,
-	INKEY_RIGHTCTRL = 129,
-	INKEY_LEFTSHIFT = 42,
-	INKEY_RIGHTSHIFT = 54,
-	INKEY_DEL = 183,
-	INKEY_INSERT = 182,
-	INKEY_PAGEUP = 173,
-	INKEY_PAGEDOWN = 181,
-	INKEY_HOME = 171,
-	INKEY_END = 179,
-	INKEY_BACKSPACE = 14,
-	
-	INKEY_CAPSLOCK = 58,
-	INKEY_TAB = 15,
-	INKEY_EXPONENT = 41,
-	INKEY_1 = 2,
-	INKEY_2 = 3,
-	INKEY_3 = 4,
-	INKEY_4 = 5,
-	INKEY_5 = 6,
-	INKEY_6 = 7,
-	INKEY_7 = 8,
-	INKEY_8 = 9,
-	INKEY_9 = 10,
-	INKEY_0 = 11,
-	INKEY_CLOSEBRACKET = 12,
-	INKEY_ADD = 13,
-	
-	INKEY_A = 16,
-	INKEY_Z = 17,
-	INKEY_E = 18,
-	INKEY_R = 19,
-	INKEY_T = 20,
-	INKEY_Y = 21,
-	INKEY_U = 22,
-	INKEY_I = 23,
-	INKEY_O = 24,
-	INKEY_P = 25,
-	INKEY_Q = 30,
-	INKEY_S = 31,
-	INKEY_D = 32,
-	INKEY_F = 33,
-	INKEY_G = 34,
-	INKEY_H = 35,
-	INKEY_J = 36,
-	INKEY_K = 37,
-	INKEY_L = 38,
-	INKEY_M = 39,
-	INKEY_W = 44,
-	INKEY_X = 45,
-	INKEY_C = 46,
-	INKEY_V = 47,
-	INKEY_B = 48,
-	INKEY_N = 49
-	
-};
-
 struct PROJECT {
 	
 	PROJECT()
@@ -247,34 +143,6 @@ struct PROJECT {
 	
 };
 
-#ifdef BUILD_EDITOR
-
-#include <commctrl.h>
-
-enum ToolbarPosition {
-	EERIE_TOOLBAR_TOP,
-	EERIE_TOOLBAR_LEFT
-};
-
-struct EERIETOOLBAR {
-	HWND hWnd;
-	long CreationToolBar;
-	long ToolBarNb;
-	LPCTBBUTTON Buttons;
-	long		Bitmap;
-	std::string		String;
-	long Type;
-};
-
-#endif
-
-struct KEYBOARD_MNG {
-	short nbkeydown;
-	unsigned char inkey[255];
-	char _CAPS;
-	short lastkey;
-};
-
 extern PROJECT Project;
 extern float FPS;
 extern LPDIRECT3DDEVICE7 GDevice;
@@ -288,13 +156,7 @@ extern HWND MSGhwnd;
 class Application {
 
 protected:
-	// Overridable variables for the app
-	std::string m_strWindowTitle;
 	bool m_bAppUseZBuffer;
-	
-#ifdef BUILD_EDITOR
-	HWND CreateToolBar(HWND hWndParent, HINSTANCE hInst);
-#endif
 
 	/* Virtual functions to be overriden for the 3D scene in the Application */
 	virtual bool DeleteDeviceObjects() { return true; }
@@ -303,18 +165,20 @@ protected:
 	virtual bool BeforeRun() { return true; }
 	
 public:
-	/* TODO Find out which of these can be privatized */
-	bool m_bActive;
-	bool m_bReady;
-	KEYBOARD_MNG kbd;
-	short WndSizeX;
-	short WndSizeY;
-	bool  Fullscreen;
-	
-#ifdef BUILD_EDITOR
-	EERIETOOLBAR * ToolBar;
-	long CreationMenu;
-#endif
+	virtual bool Initialize();
+
+private:
+	virtual bool InitConfig();
+	virtual bool InitWindow() = 0;
+	virtual bool InitGraphics() = 0;
+	virtual bool InitInput() = 0;
+	virtual bool InitSound() = 0;
+
+public:
+	Window* GetWindow() { return m_MainWindow; }
+
+	bool	m_bReady;
+	Window*	m_MainWindow;
 	
 	/* TODO Should all be privatized eventually */
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
@@ -323,7 +187,7 @@ public:
 	LPDIRECT3D7 m_pD3D;
 	CD3DFramework7 * m_pFramework;
 	D3DEnum_DeviceInfo * m_pDeviceInfo;
-	HWND m_hWnd;
+	
 
 	// Class constructor
 	Application();
@@ -340,9 +204,7 @@ public:
 	*/
 	virtual void OutputText( int, int, const std::string& ) {}
 	
-
-	virtual bool Create(WindowCreationFlags CreationFlags) = 0;
-	virtual int Run() = 0;
+	virtual void Run() = 0;
 	virtual void Pause(bool bPause);
 	virtual bool Render() { return true; }
 	virtual bool InitDeviceObjects() = 0;

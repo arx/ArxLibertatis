@@ -107,7 +107,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
-#include "graphics/direct3d/Direct3DRenderer.h"
 #include "graphics/texture/TextureStage.h"
 
 #include "input/Input.h"
@@ -148,23 +147,16 @@ void DemoFileCheck();
 //-----------------------------------------------------------------------------
 
 #define MAX_EXPLO 24
-#define FFH_S_OK 1
-#define FFH_GOTO_FINISH 2
-extern INTERACTIVE_OBJ * CURPATHFINDIO;
-
 
 //-----------------------------------------------------------------------------
 
 void ClearGame();
-static void ShowInfoText();
 
 //-----------------------------------------------------------------------------
 
-extern long LAST_PORTALS_COUNT;
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CMenuState		*pMenu;
-extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern HWND		PRECALC;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
@@ -185,7 +177,6 @@ extern long		LastSelectedIONum;
 extern long		FistParticles;
 extern long		INTER_DRAW;
 extern long		INTER_COMPUTE;
-extern long		USEINTERNORM;
 extern long		FAKE_DIR;
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		DeadTime;
@@ -195,8 +186,6 @@ extern float		ARXTotalPausedTime;
 extern long		COLLIDED_CLIMB_POLY;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long PATHFINDER_WAIT;
-extern long		LAST_ROOM;
-extern long TRUE_PLAYER_MOUSELOOK_ON;
 extern unsigned char * grps;
 extern long		LastSelectedIONum;
 extern long		NOCHECKSUM;
@@ -209,15 +198,10 @@ extern long		FRAME_COUNT;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
 extern long LastEERIEMouseButton;
-extern long PLAYER_PARALYSED;
-extern float fZFogEnd;
-extern bool bOLD_CLIPP;
 extern float OLD_PROGRESS_BAR_COUNT;
-extern E_ARX_STATE_MOUSE	eMouseState;
 
 void DanaeRestoreFullScreen();
 
-extern long FORCE_FRONT_DRAW;
 extern EERIE_3DOBJ * ssol;
 extern long ssol_count;
 extern EERIE_3DOBJ * slight;
@@ -239,18 +223,9 @@ extern long svoodoo_count;
 
 //-----------------------------------------------------------------------------
 
-extern INTERACTIVE_OBJ * FlyingOverIO;
-
-extern Color ulBKGColor;
-long LAST_LOCK_SUCCESSFULL=0;
 extern EERIEMATRIX ProjectionMatrix;
 
-extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
-extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
-
 extern std::string pStringMod;
-
-static const float INC_FOCAL = 75.0f;
 
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
@@ -258,12 +233,9 @@ HINSTANCE hInstance;
 PROJECT Project;
 
 //-----------------------------------------------------------------------------
-Vec3f LASTCAMPOS;
-Anglef LASTCAMANGLE;
 Vec3f PUSH_PLAYER_FORCE;
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
 ParticleManager	*pParticleManager = NULL;
-INTERACTIVE_OBJ		*lastCAMERACONTROLLER=NULL;
 TextureContainer *  ombrignon = NULL;
 TextureContainer *  teleportae = NULL;
 TextureContainer *  Flying_Eye = NULL;
@@ -271,8 +243,6 @@ TextureContainer *	scursor[8];			// Animated Hand Cursor TC
 TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
 TextureContainer *	iconequip[5];
 TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
-TextureContainer *	ChangeLevel = NULL;
-TextureContainer *	Movable = NULL;			// TextureContainer for Movable Items (Red Cross)
 TextureContainer *	explo[MAX_EXPLO];		// TextureContainer for animated explosion bitmaps (24 frames)
 TextureContainer *	blood_splat = NULL;		// TextureContainer for blood splat particles
 
@@ -301,8 +271,6 @@ extern long NEED_ANCHORS;
 EERIE_MULTI3DSCENE * mse = NULL;
 #endif
 
-long NEED_TEST_TEXT=0;
-
 SPELL_ICON spellicons[SPELL_COUNT];
 bool bGToggleCombatModeWithKey;
 
@@ -322,7 +290,6 @@ EERIE_CAMERA TCAM[32];
 EERIE_CAMERA subj,mapcam,bookcam,raycam,conversationcamera;
 EERIE_CAMERA DynLightCam;
 
-INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
 std::string WILLADDSPEECH;
 
 Vec2s STARTDRAG;
@@ -344,22 +311,15 @@ char _CURRENTLOAD_[256];
 char LastLoadedScene[256];
 char LAST_LAUNCHED_CINE[256];
 float BASE_FOCAL=350.f;
-float PLAYER_ARMS_FOCAL = 350.f;
-float METALdecal=0.f;
-float currentbeta=0.f;
 float STRIKE_AIMTIME=0.f;
 float SLID_VALUE=0.f;
 float _framedelay;
 
-float TIMEFACTOR=1.f;
 float LASTfps2=0;
 float fps2=0;
 float fps2min=0;
 long LASTfpscount=0;
 
-long EXTERNALVIEW=0;
-long LASTEXTERNALVIEW=1;
-long EXTERNALVIEWING=0;
 long lSLID_VALUE=0;
 long _NB_=0;
 long LOAD_N_DONT_ERASE=0;
@@ -375,12 +335,10 @@ long CINE_PRELOAD=0;
 long PLAY_LOADED_CINEMATIC=0;
 long PauseScript=0;
 long ADDED_IO_NOT_SAVED=0;
-long WILL_RELOAD_ALL_TEXTURES=0;	// Set To 1 if Textures are to be reloaded from disk and restored.
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;
 float FrameDiff=0;
-long CYRIL_VERSION=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
 //-----------------------------------------------------------------------------
@@ -396,7 +354,6 @@ long FINAL_COMMERCIAL_DEMO =0;
 #endif
 
 float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
-long GLOBAL_FORCE_PLAYER_IN_FRONT	=1;
 long USE_NEW_SKILLS=1;
 
 long USE_LIGHT_OPTIM	=1;
@@ -405,12 +362,10 @@ long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
 long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
 long NO_TEXT_AT_ALL		= 0;
-long LAST_CONVERSATION	= 0;
 long FAST_SPLASHES		= 0;
 long FORCE_SHOW_FPS		= 0;
 long FINAL_RELEASE		= 0;
 long AUTO_FULL_SCREEN	= 0;
-long SHOW_INGAME_MINIMAP= 1;
 long DEBUG_FRUSTRUM		= 0;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
@@ -422,12 +377,6 @@ long DONT_ERASE_PLAYER	= 0;
 float LastFrameTicks		= 0;
 long SPLASH_THINGS_STAGE= 0;
 long STARTED_A_GAME		= 0;
-long INTRO_NOT_LOADED	= 1;
-long ARX_CONVERSATION_MODE=-1;
-long ARX_CONVERSATION_LASTIS=-1;
-long BOOKBUTTON			= 0;
-long LASTBOOKBUTTON		= 0;
-
 long FASTmse			= 0;
 
 //-----------------------------------------------------------------------------
@@ -461,7 +410,6 @@ static long NEED_EDITOR = 1;
 long TRUEFIGHT = 0;
 #endif
 
-long ARX_CONVERSATION=0;
 long CHANGE_LEVEL_ICON=-1;
 
 long ARX_MOUSE_OVER=0;
@@ -472,17 +420,13 @@ long LaunchDemo=0;
 long FirstFrame=1;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
-unsigned char ARX_FLARES_Block=1;
 float LastFrameTime=0;
 float FrameTime=0;
 unsigned long PlayerWeaponBlockTime=0;
-unsigned long FRAMETICKS=0;
 unsigned long SPLASH_START=0;
 //-----------------------------------------------------------------------------
-extern float sp_max_start;
 Color3f FADECOLOR;
 
-long DURING_LOCK=0;
 long START_NEW_QUEST=0;
 long LAST_WEAPON_TYPE=-1;
 long	FADEDURATION=0;
@@ -500,49 +444,9 @@ Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;
 
 //-----------------------------------------------------------------------------
-// Toolbar Buttons Def
-//-----------------------------------------------------------------------------
-
-#ifdef BUILD_EDITOR
-
-// TODO maybe this is a wine-specific bug?
-#define TBBUTTON_INIT {0,0} // was: 0L
-
-TBBUTTON tbButtons [] = {
-{0, DANAE_B001, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 0, 0},
-{1, DANAE_B002, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 1, 0},
-{0, 0, TBSTATE_ENABLED | TBSTATE_WRAP   , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
-{8, DANAE_B009, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 8, 0},
-{12, DANAE_B013, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 12, 0},
-
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
-
-{13, DANAE_B003, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 13, 0},
-{16, DANAE_B005, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 16, 0},
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
-{5, DANAE_B006, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 5, 0},
-{14, DANAE_B004, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 14, 0},
-{2, DANAE_B007, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 2, 0},
-{3, DANAE_B008, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 3, 0},
-{17, DANAE_B010, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 17, 0},
-{18, DANAE_B011, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 18, 0},
-{11, DANAE_B014, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 11, 0}, // Particles Button
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
-{19, DANAE_B012, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 19, 0},
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
-{20, DANAE_B015, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 20, 0},
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
-{21, DANAE_B016, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 21, 0},
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
-};
-
-#endif
-
-//-----------------------------------------------------------------------------
 
 void LoadSysTextures();
 void ShowFPS();
-void ShowTestText();
 void ManageNONCombatModeAnimations();
 #ifdef BUILD_EDITOR
 void LaunchMoulinex();
@@ -896,7 +800,7 @@ void InitializeDanae()
 
 #ifdef BUILD_EDITOR
 	if(GAME_EDITOR && !MOULINEX) {
-		LaunchInteractiveObjectsApp( mainApp->m_hWnd);
+		LaunchInteractiveObjectsApp();
 	}
 #endif
 
@@ -1024,15 +928,12 @@ int main(int argc, char ** argv) {
 #endif
 	}
 	
-	// Initialize config first, before anything else.
-	const char RESOURCE_CONFIG[] = "cfg.ini";
-	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
-	if(!config.init(RESOURCE_CONFIG, RESOURCE_CONFIG_DEFAULT)) {
-		LogWarning << "Could not read config files " << RESOURCE_CONFIG << " and " << RESOURCE_CONFIG_DEFAULT;
+	mainApp = new ArxGame();
+	if(!mainApp->Initialize()) {
+		LogError << "Application failed to initialize properly";
+		return false;
 	}
-	
-	Random::seed();
-	
+		
 	CalcFPS(true);
 
 	ARX_MAPMARKER_Init();
@@ -1055,58 +956,6 @@ int main(int argc, char ** argv) {
 
 	NOCHECKSUM=0;
 
-	if(FINAL_RELEASE) {
-		
-		LogInfo << "FINAL RELEASE";
-		NOBUILDMAP=1;
-		NOCHECKSUM=1;
-		
-		const char PAK_DATA[] = "data.pak";
-		LogDebug << PAK_DATA;
-		if(PAK_AddPak(PAK_DATA)) {
-			LogDebug << "LoadMode OK";
-		} else {
-			LogFatal << "Unable to find main data file " << PAK_DATA;
-		}
-		
-		const char PAK_LOC[] = "loc.pak";
-		LogDebug << "LocPAK";
-		if(!PAK_AddPak(PAK_LOC)) {
-			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
-			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
-				LogFatal << "Unable to find localisation file " << PAK_LOC << " or " << PAK_LOC_DEFAULT;
-			}
-		}
-		
-		LogDebug << "data2PAK";
-		const char PAK_DATA2[] = "data2.pak";
-		if(!PAK_AddPak(PAK_DATA2)) {
-			LogFatal << "Unable to find aux data file " << PAK_DATA2;
-		}
-		
-		const char PAK_SFX[] = "sfx.pak";
-		if(!PAK_AddPak(PAK_SFX)) {
-			LogFatal << "Unable to find sfx data file " << PAK_SFX;
-		}
-		
-		const char PAK_SPEECH[] = "speech.pak";
-		if(!PAK_AddPak(PAK_SPEECH)) {
-			const char PAK_SPEECH_DEFAULT[] = "speech_default.pak";
-			if(!PAK_AddPak(PAK_SPEECH_DEFAULT)) {
-				LogFatal << "Unable to find speech data file " << PAK_SPEECH << " or " << PAK_SPEECH_DEFAULT;
-			}
-		}
-		
-	} else {
-		LogInfo << "TRUEFILE LM";
-		//TODO(lubosz): dirty hack to initialize the pak manager
-		PAK_AddPak("");
-	}
-	
-	GRenderer = new Direct3DRenderer();
-	
-	LocalisationInit();
-	
 	//delete current for clean save.........
 	char txttemp[256];
 
@@ -1166,17 +1015,6 @@ int main(int argc, char ** argv) {
 	Danae_Registry_Read("LOCAL_SAVENAME",LOCAL_SAVENAME,"",16);
 #endif
 
-	if (!FOR_EXTERNAL_PEOPLE) {
-		char stemp[256];
-		u32 ls = 64;
-		GetComputerName(stemp, &ls);
-
-		if (!strcasecmp(stemp,"max")) {
-			CYRIL_VERSION=1;
-			AUTO_FULL_SCREEN=0;
-		}
-	}	
-
 	ARX_CHANGELEVEL_MakePath();
 	LogDebug << "ACL MakePath";
 
@@ -1230,12 +1068,6 @@ int main(int argc, char ** argv) {
 		Project.ambient=1;
 		NOCHECKSUM=1;
 	}
-#ifdef BUILD_EDITOR
-	else if (!MOULINEX) {
-//		DialogBox( hInstance,MAKEINTRESOURCE(IDD_STARTOPTIONS), NULL, StartProc );
-		LogError << "not MOULINEX ";
-	}
-#endif
 	else {
 		LogInfo << "default LEVELDEMO2";
 		Project.demo=LEVELDEMO2;
@@ -1266,62 +1098,12 @@ int main(int argc, char ** argv) {
 		CreateDirectory(CurGamePath,NULL);
 	}
 
-	// Create the Application instance
-	mainApp = new Win32Application;
-
-#ifdef BUILD_EDITOR
-	if(!MOULINEX)
-#endif
-	{
-		mainApp->Fullscreen = config.video.fullscreen;
-	}
-
-	WindowCreationFlags wcf = WCF_NOSTDPOPUP;
-#ifdef BUILD_EDITOR
-	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
-		GAME_EDITOR=1;
-		mainApp->CreationMenu=IDR_DANAEMENU;
-
-		//todo free
-		mainApp->ToolBar=(EERIETOOLBAR *)malloc(sizeof(EERIETOOLBAR));
-		mainApp->ToolBar->CreationToolBar = IDR_DANAETOOLS;
-		mainApp->ToolBar->Bitmap = IDB_DANAETB;
-		mainApp->ToolBar->Buttons=tbButtons;
-		mainApp->ToolBar->ToolBarNb=23;
-		mainApp->ToolBar->Type=EERIE_TOOLBAR_TOP;
-		mainApp->ToolBar->String.clear();
-	}
-	if(GAME_EDITOR) {
-		wcf |= WCF_ACCEPTFILES;
-	}
-#endif
-
-	LogDebug << "Application Creation";
-
-	if( !mainApp->Create(wcf) )
-		return 0;
-	
 	AdjustUI();
 
 	LogInfo << "Application Creation Success";
 
 	mainApp->m_pFramework->bitdepth=Project.bits;
-	
-	LogDebug << "Sound init";
-	if(ARX_SOUND_Init()) {
-		LogInfo << "Sound init success";
-	} else {
-		LogWarning << "Sound init failed";
-	}
-	
-	LogDebug << "Input init";
-	if(ARX_INPUT_Init()) {
-		LogInfo << "Input init success";
-	} else {
-		LogError << "Input init failed";
-		return 0;
-	}
-
+		
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
 	ARXMenu_Options_Video_SetTextureQuality(config.video.textureSize);
@@ -1351,26 +1133,7 @@ int main(int argc, char ** argv) {
 		config.language = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
-
-	char tex[512];
-
-#ifdef BUILD_EDITOR
-	if(GAME_EDITOR) {
-		sprintf(tex,"DANAE Project");
-	} else
-#endif
-	{
-		sprintf(tex,"ARX Fatalis");
-	}
-
-#ifdef BUILD_EDITOR
-	if(MOULINEX)
-		sprintf(tex,"MOULINEX");
-#endif
-
-	strcat(tex, arxVersion.c_str());
-	SetWindowText(mainApp->m_hWnd, tex);
-	
+		
 	Project.interfacergb.r = 0.46f;
 	Project.interfacergb.g = 0.46f;
 	Project.interfacergb.b = 1.f;
@@ -1410,7 +1173,7 @@ INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos)
 
 	return NULL;
 }
-extern long cur_rf;
+
 extern unsigned long FALLING_TIME;
 extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 
@@ -2486,112 +2249,6 @@ void ReleaseDanaeBeforeRun()
 
 }
 
-bool Win32Application::BeforeRun()
-{
-
-	LogDebug << "Before Run...";
-
-	ControlCinematique = new Cinematic(mainApp->m_pFramework->m_dwRenderWidth, mainApp->m_pFramework->m_dwRenderHeight);
-	LogDebug << "Initializing ControlCinematique " << mainApp->m_pFramework->m_dwRenderWidth << "x" << mainApp->m_pFramework->m_dwRenderHeight;
-	memset(&necklace,0,sizeof(ARX_NECKLACE));
-	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=-1;
-	necklace.lacet =                   loadObject("Graph\\Interface\\book\\runes\\lacet.teo");
-	necklace.runes[RUNE_AAM] =         loadObject("Graph\\Interface\\book\\runes\\runes_aam.teo");
-	necklace.runes[RUNE_CETRIUS] =     loadObject("Graph\\Interface\\book\\runes\\runes_citrius.teo");
-	necklace.runes[RUNE_COMUNICATUM] = loadObject("Graph\\Interface\\book\\runes\\runes_comunicatum.teo");
-	necklace.runes[RUNE_COSUM] =       loadObject("Graph\\Interface\\book\\runes\\runes_cosum.teo");
-	necklace.runes[RUNE_FOLGORA] =     loadObject("Graph\\Interface\\book\\runes\\runes_folgora.teo");
-	necklace.runes[RUNE_FRIDD] =       loadObject("Graph\\Interface\\book\\runes\\runes_fridd.teo");
-	necklace.runes[RUNE_KAOM] =        loadObject("Graph\\Interface\\book\\runes\\runes_kaom.teo");
-	necklace.runes[RUNE_MEGA] =        loadObject("Graph\\Interface\\book\\runes\\runes_mega.teo");
-	necklace.runes[RUNE_MORTE] =       loadObject("Graph\\Interface\\book\\runes\\runes_morte.teo");
-	necklace.runes[RUNE_MOVIS] =       loadObject("Graph\\Interface\\book\\runes\\runes_movis.teo");
-	necklace.runes[RUNE_NHI] =         loadObject("Graph\\Interface\\book\\runes\\runes_nhi.teo");
-	necklace.runes[RUNE_RHAA] =        loadObject("Graph\\Interface\\book\\runes\\runes_rhaa.teo");
-	necklace.runes[RUNE_SPACIUM] =     loadObject("Graph\\Interface\\book\\runes\\runes_spacium.teo");
-	necklace.runes[RUNE_STREGUM] =     loadObject("Graph\\Interface\\book\\runes\\runes_stregum.teo");
-	necklace.runes[RUNE_TAAR] =        loadObject("Graph\\Interface\\book\\runes\\runes_taar.teo");
-	necklace.runes[RUNE_TEMPUS] =      loadObject("Graph\\Interface\\book\\runes\\runes_tempus.teo");
-	necklace.runes[RUNE_TERA] =        loadObject("Graph\\Interface\\book\\runes\\runes_tera.teo");
-	necklace.runes[RUNE_VISTA] =       loadObject("Graph\\Interface\\book\\runes\\runes_vista.teo");
-	necklace.runes[RUNE_VITAE] =       loadObject("Graph\\Interface\\book\\runes\\runes_vitae.teo");
-	necklace.runes[RUNE_YOK] =         loadObject("Graph\\Interface\\book\\runes\\runes_yok.teo");
-
-	necklace.pTexTab[RUNE_AAM]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_Aam[icon].BMP");
-	necklace.pTexTab[RUNE_CETRIUS]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cetrius[icon].BMP");
-	necklace.pTexTab[RUNE_COMUNICATUM]	= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_comunicatum[icon].BMP");
-	necklace.pTexTab[RUNE_COSUM]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cosum[icon].BMP");
-	necklace.pTexTab[RUNE_FOLGORA]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_folgora[icon].BMP");
-	necklace.pTexTab[RUNE_FRIDD]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_fridd[icon].BMP");
-	necklace.pTexTab[RUNE_KAOM]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_kaom[icon].BMP");
-	necklace.pTexTab[RUNE_MEGA]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_mega[icon].BMP");
-	necklace.pTexTab[RUNE_MORTE]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_morte[icon].BMP");
-	necklace.pTexTab[RUNE_MOVIS]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_movis[icon].BMP");
-	necklace.pTexTab[RUNE_NHI]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_nhi[icon].BMP");
-	necklace.pTexTab[RUNE_RHAA]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_rhaa[icon].BMP");
-	necklace.pTexTab[RUNE_SPACIUM]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_spacium[icon].BMP");
-	necklace.pTexTab[RUNE_STREGUM]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_stregum[icon].BMP");
-	necklace.pTexTab[RUNE_TAAR]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_taar[icon].BMP");
-	necklace.pTexTab[RUNE_TEMPUS]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_tempus[icon].BMP");
-	necklace.pTexTab[RUNE_TERA]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_tera[icon].BMP");
-	necklace.pTexTab[RUNE_VISTA]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vista[icon].BMP");
-	necklace.pTexTab[RUNE_VITAE]		= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vitae[icon].BMP");
-	necklace.pTexTab[RUNE_YOK]			= TextureContainer::LoadUI("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_yok[icon].BMP");
-
-	for(size_t i = 0; i<RUNE_COUNT-1; i++) { // TODO why -1?
-		if(necklace.pTexTab[i]) {
-			necklace.pTexTab[i]->CreateHalo();
-		}
-	}
-
-	// TODO the .teo files are not shipped with the game, only the textures are
-	// TODO this is the only place where _LoadTheObj is used
-	EERIE_3DOBJ * _fogobj;
-	_fogobj=		_LoadTheObj("Editor\\Obj3D\\fog_generator.teo","node_TEO MAPS\\");
-	ARX_FOGS_Set_Object(_fogobj);
-	eyeballobj = _LoadTheObj("Editor\\Obj3D\\eyeball.teo","eyeball_TEO MAPS\\");
-	cabal = _LoadTheObj("Editor\\Obj3D\\cabal.teo","cabal_TEO MAPS\\");
-	nodeobj = _LoadTheObj("Editor\\Obj3D\\node.teo","node_TEO MAPS\\");
-	
-	cameraobj = loadObject("Graph\\Obj3D\\Interactive\\System\\Camera\\Camera.teo");
-	markerobj = loadObject("Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo");
-	arrowobj = loadObject("Graph\\Obj3D\\Interactive\\Items\\Weapons\\arrow\\arrow.teo");
-
-	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
-		char temp[256];
-
-		if (i==0)
-			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin.teo");
-		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin" PRINT_SIZE_T ".teo",i+1);
-
-		GoldCoinsObj[i] = loadObject(temp);
-
-		if (i==0)
-			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin[icon].bmp");
-		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin" PRINT_SIZE_T "[icon].bmp",i+1);
-
-		GoldCoinsTC[i] =	TextureContainer::LoadUI(temp);
-	}
-
-	Movable=				TextureContainer::LoadUI("Graph\\Interface\\Cursors\\wrong.bmp");
-	ChangeLevel=			TextureContainer::LoadUI("Graph\\Interface\\Icons\\change_lvl.bmp");
-
-	ARX_PLAYER_LoadHeroAnimsAndMesh();
-
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=old;
-
-#ifdef BUILD_EDITOR
-	// Need to create Map
-	if (iCreateMap)
-		DANAE_Manage_CreateMap();
-#endif
-
-	return true;
-}
-
 //*************************************************************************************
 
 void FirstTimeThings() {
@@ -2613,16 +2270,6 @@ void FirstTimeThings() {
 
 	LastFrameTime=FrameTime;
 	return;
-}
-
-//*************************************************************************************
-
-void ExitProc()
-{
-	if (mainApp->m_hWnd!=NULL)
-		SendMessage( mainApp->m_hWnd, WM_QUIT, 0, 0 );
-
-	exit(0);
 }
 
 //*************************************************************************************
@@ -2716,7 +2363,7 @@ extern long FLAG_ALLOW_CLOTHES;
 
 //*************************************************************************************
 
-long FirstFrameHandling()
+void FirstFrameHandling()
 {	
 	LogDebug << "FirstFrameHandling";
 	Vec3f trans;
@@ -2964,8 +2611,6 @@ long FirstFrameHandling()
 	LastValidPlayerPos.x=player.pos.x;
 	LastValidPlayerPos.y=player.pos.y;
 	LastValidPlayerPos.z=player.pos.z;
-
-	return FFH_GOTO_FINISH;
 }
 
 //*************************************************************************************
@@ -4275,7 +3920,6 @@ bool DANAE_ManageSplashThings()
 				FORBID_SAVE=0;
 				FirstFrame=1;
 				SPLASH_THINGS_STAGE=0;
-				INTRO_NOT_LOADED=0;
 				ARXmenu.currentmode=AMCM_MAIN;
 				ARX_MENU_Launch();
 			}
@@ -4350,7 +3994,6 @@ bool DANAE_ManageSplashThings()
 			FORBID_SAVE=0;
 			FirstFrame=1;
 			SPLASH_THINGS_STAGE=0;
-			INTRO_NOT_LOADED=0;
 
 			if ( config.firstRun )
 				config.firstRun = false;
@@ -4365,7 +4008,6 @@ bool DANAE_ManageSplashThings()
 			FORBID_SAVE=0;
 			FirstFrame=1;
 			SPLASH_THINGS_STAGE=0;
-			INTRO_NOT_LOADED=0;
 
 			if ( config.firstRun )
 				config.firstRun = false;
@@ -4687,16 +4329,7 @@ void AdjustMousePosition()
 	}
 }
 
-long NEED_SPECIAL_RENDEREND=0;
 long INTERPOLATE_BETWEEN_BONES=1;
-
-extern int iTimeToDrawD7;
-extern long INTERTRANSPOLYSPOS;
-
-extern long TRANSPOLYSPOS;
-
-long WILL_QUICKLOAD=0;
-long WILL_QUICKSAVE=0;
 
 // TODO what is the point of this function?
 void CorrectValue(unsigned long * cur,unsigned long * dest)
@@ -4784,1685 +4417,6 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 	mainApp->OutputText(static_cast<u32>(width), iVPOS * 16 - 2, str);
 }
 
-extern long NEED_INTRO_LAUNCH;
-
-bool Win32Application::Render() {
-	
-	FrameTime = ARX_TIME_Get();
-
-	if (GLOBAL_SLOWDOWN!=1.f)
-	{
-		float ft;
-		ft=FrameTime-LastFrameTime;
-		Original_framedelay=ft*TIMEFACTOR;
-
-		ft*=1.f-GLOBAL_SLOWDOWN;
-		float minus;
-
-		minus = ft;
-		ARXTotalPausedTime+=minus;
-		FrameTime = ARX_TIME_Get();
-
-		if (LastFrameTime>FrameTime)
-		{
-			LastFrameTime=FrameTime;
-		}
-
-		ft=FrameTime-LastFrameTime;
-
-		FrameDiff = ft;
-		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay=(float)FrameDiff;
-	}
-	else
-	{
-		// Nuky - added this security because sometimes when hitting ESC, FrameDiff would get negative
-		if (LastFrameTime>FrameTime)
-		{
-			LastFrameTime=FrameTime;
-		}
-		FrameDiff = FrameTime-LastFrameTime;
-
-		float FD;
-		FD=FrameDiff;
-		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay=((float)(FrameDiff)*TIMEFACTOR);
-		FrameDiff = _framedelay;
-
-		Original_framedelay=_framedelay;
-
-//	Original_framedelay = 1000/25;
-		ARXTotalPausedTime+=FD-FrameDiff;
-	}
-
-static float _AvgFrameDiff = 150.f;
-	if( FrameDiff > _AvgFrameDiff * 10.f )
-	{
-		FrameDiff = _AvgFrameDiff * 10.f;
-	}
-	else if ( FrameDiff > 15.f )
-	{
-		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
-	}
-
-	if( GInput->isKeyPressedNowPressed(Keyboard::Key_F12) )
-	{
-		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
-		ComputePortalVertexBuffer();
-	}
-
-	ACTIVECAM = &subj;
-
-	if (this->m_pFramework->m_bHasMoved)
-	{
-		LogDebug << "has moved";
-		
-		DanaeRestoreFullScreen();
-
-		this->m_pFramework->m_bHasMoved=false;
-
-		AdjustUI();
-	}
-
-	// Update input
-	GInput->update();
-	ReMappDanaeButton();
-	AdjustMousePosition();
-
-	// Manages Splash Screens if needed
-	if(DANAE_ManageSplashThings()) {
-		goto norenderend;
-	}
-
-	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)
-	if (START_NEW_QUEST)
-	{
-		LogDebug << "start quest";
-		DANAE_StartNewQuest();
-	}
-
-	// Update Various Player Infos for this frame.
-	if (FirstFrame==0)
-		ARX_PLAYER_Frame_Update();
-	
-	// Project need to reload all textures ???
-	if (WILL_RELOAD_ALL_TEXTURES)
-	{
-		LogDebug << "reload all textures";
-		//ReloadAllTextures(); TODO is this needed for changing resolutions in-game?
-		WILL_RELOAD_ALL_TEXTURES=0;
-	}
-
-	// Are we being teleported ?
-	if ((TELEPORT_TO_LEVEL[0]) && (CHANGE_LEVEL_ICON==200))
-	{
-		LogDebug << "teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " "
-		         << TELEPORT_TO_ANGLE;
-		CHANGE_LEVEL_ICON=-1;
-		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE, 0);
-		memset(TELEPORT_TO_LEVEL,0,64);
-		memset(TELEPORT_TO_POSITION,0,64);
-	}
-
-	if (NEED_INTRO_LAUNCH)
-	{
-		LogDebug << "need intro launch";
-		SetEditMode(0);
-		BLOCK_PLAYER_CONTROLS=1;
-		ARX_INTERFACE_PlayerInterfaceModify(0,0);
-		ARX_Menu_Resources_Release();
-		ARXmenu.currentmode=AMCM_OFF;
-		ARX_TIME_UnPause();
-		SPLASH_THINGS_STAGE=14;
-		NEED_INTRO_LAUNCH=0;
-		REFUSE_GAME_RETURN=1;
-		const char RESOURCE_LEVEL_10[] = "Graph\\Levels\\Level10\\level10.dlf";
-		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
-		PROGRESS_BAR_TOTAL = 108;
-		LoadLevelScreen(10);	
-		DanaeLoadLevel(RESOURCE_LEVEL_10);
-		FORBID_SAVE=0;
-		FirstFrame=1;
-		SPLASH_THINGS_STAGE=0;
-		INTRO_NOT_LOADED=0;
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-		return false;
-	}
-		
-	//Setting long from long
-	subj.centerx = DANAECENTERX;
-	subj.centery = DANAECENTERY;
-
-	//Casting long to float
-	subj.posleft = subj.transform.xmod = ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERX );
-	subj.postop	 = subj.transform.ymod = ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERY );
-
-	// Finally computes current focal
-	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
-
-	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
-
-	PULSATE=EEsin(FrameTime / 800);
-	METALdecal=EEsin(FrameTime / 50) / 200 ;
-	EERIEDrawnPolys=0;
-
-	// EditMode Specific code
-	if (EDITMODE)
-	{
-		TOTIOPDL=0;
-		BLOCK_PLAYER_CONTROLS=0;
-	}
-
-	if (FirstFrame==0) // Checks for Keyboard & Moulinex
-	{
-		ARX_MOUSE_OVER=0;
-
-		if (!EDITMODE && (ARXmenu.currentmode == AMCM_OFF)) // Playing Game
-		{
-			// Checks Clicks in Book Interface
-			if (ARX_INTERFACE_MouseInBook())
-			{
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_BOOK;
-				LASTBOOKBUTTON=BOOKBUTTON;
-				BOOKBUTTON=EERIEMouseButton;
-
-				if ( ((EERIEMouseButton & 1) && !(LastMouseClick & 1) )
-					|| ((EERIEMouseButton & 2) && !(LastMouseClick & 2) ) )
-				{
-					bookclick.x=DANAEMouse.x;
-					bookclick.y=DANAEMouse.y;
-				}
-			}
-			else if (InSecondaryInventoryPos(&DANAEMouse))
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_INVENTORY_2;
-			else if (InPlayerInventoryPos(&DANAEMouse))
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_INVENTORY;
-		}
-
-		if (	(player.Interface & INTER_COMBATMODE)
-			||	(PLAYER_MOUSELOOK_ON) )
-		{
-			FlyingOverIO = NULL; // Avoid to check with those modes
-		}
-		else
-		{
-			if ((DRAGINTER == NULL) && (FRAME_COUNT<=0))
-			{
-				if (!BLOCK_PLAYER_CONTROLS && !TRUE_PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-					&& (eMouseState != MOUSE_IN_NOTE)
-				   )
-					FlyingOverIO = FlyingOverObject(&DANAEMouse);
-				else
-					FlyingOverIO = NULL;
-			}
-		}
-
-		if (	(!PLAYER_PARALYSED)
-			||	(ARXmenu.currentmode != AMCM_OFF)	)
-
-		{
-			if (!STOP_KEYBOARD_INPUT)
-				ManageKeyMouse();
-			else
-			{
-				STOP_KEYBOARD_INPUT++;
-
-				if (STOP_KEYBOARD_INPUT>2) STOP_KEYBOARD_INPUT=0;
-			}
-		}
-
-#ifdef BUILD_EDITOR
-		if(MOULINEX) {
-			LaunchMoulinex();
-		}
-#endif
-	}
-	else // Manages our first frameS
-	{
-		LogDebug << "first frame";
-		ARX_TIME_Get();
-		long ffh=FirstFrameHandling();
-
-		if (ffh== FFH_S_OK) return true;
-
-		if (ffh== FFH_GOTO_FINISH) goto norenderend;
-	}
-
-	if (CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z))
-	{
-		LastValidPlayerPos.x=player.pos.x;
-		LastValidPlayerPos.y=player.pos.y;
-		LastValidPlayerPos.z=player.pos.z;
-	}
-
-	if ((!FINAL_RELEASE) && (ARXmenu.currentmode == AMCM_OFF))
-	{
-		if (this->kbd.inkey[INKEY_M])
-		{
-			USE_PORTALS++;
-
-			if (USE_PORTALS>4) USE_PORTALS=0;
-
-			if (USE_PORTALS==1) USE_PORTALS=2;
-
-			this->kbd.inkey[INKEY_M]=0;
-		}
-
-		if (this->kbd.inkey[INKEY_P])
-		{
-			if (INTERPOLATE_BETWEEN_BONES)
-				INTERPOLATE_BETWEEN_BONES=0;
-			else
-				INTERPOLATE_BETWEEN_BONES=1;
-
-			this->kbd.inkey[INKEY_P]=0;
-		}
-	}
-
-	// Updates Externalview
-	if (EXTERNALVIEWING) EXTERNALVIEW=1;
-	else EXTERNALVIEW=0;
-
-	GRenderer->SetRenderState(Renderer::Fog, false);
-
-	if(ARX_Menu_Render()) {
-		goto norenderend;
-	}
-
-	if (WILL_QUICKSAVE)
-	{
-		::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
-		pSnapShot->GetSnapShotDim(160,100);
-		delete pSnapShot;
-
-		if (WILL_QUICKSAVE>=2)
-		{
-			ARX_QuickSave();
-			WILL_QUICKSAVE=0;
-		}
-		else WILL_QUICKSAVE++;
-	}
-
-	if (WILL_QUICKLOAD)
-	{
-		WILL_QUICKLOAD=0;
-
-		if (ARX_QuickLoad())
-			NEED_SPECIAL_RENDEREND=1;
-	}
-
-	if (NEED_SPECIAL_RENDEREND)
-	{
-		NEED_SPECIAL_RENDEREND=0;
-		goto norenderend;
-	}
-
-	GRenderer->SetRenderState(Renderer::Fog, true);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
-	// Are we displaying a 2D cinematic ? Yes = manage it
-	if (	PLAY_LOADED_CINEMATIC
-		&&	ControlCinematique
-			&&	ControlCinematique->projectload)
-	{
-		if (DANAE_Manage_Cinematic()==1)
-			goto norenderend;
-
-		goto renderend;
-	}
-
-	if (ARXmenu.currentmode == AMCM_OFF)
-	{
-		if (!PLAYER_PARALYSED)
-		{
-			if	(ManageEditorControls()) goto finish;
-		}
-
-		if ((!BLOCK_PLAYER_CONTROLS) && (!PLAYER_PARALYSED))
-		{
-			ManagePlayerControls();
-		}
-	}
-
-	ARX_PLAYER_Manage_Movement();
-
-	ARX_PLAYER_Manage_Visual();
-
-	if (FRAME_COUNT<=0)
-		ARX_MINIMAP_ValidatePlayerPos();
-
-	// SUBJECTIVE VIEW UPDATE START  *********************************************************
-	{
-		// Clear screen & Z buffers
-		if(desired.flags & GMOD_DCOLOR) {
-			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, current.depthcolor.to<u8>());
-		}
-		else
-		{
-			subj.bkgcolor=ulBKGColor;
-			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, subj.bkgcolor);
-		}
-
-		//-------------------------------------------------------------------------------
-		//															DRAW CINEMASCOPE 16/9
-		if(CINEMA_DECAL != 0.f) {
-			Rect rectz[2];
-			rectz[0].left = rectz[1].left = 0;
-			rectz[0].right = rectz[1].right	=	DANAESIZX;
-			rectz[0].top = 0;
-			ARX_CHECK_LONG(CINEMA_DECAL * Yratio);
-			long lMulResult = static_cast<long>(CINEMA_DECAL * Yratio);
-			rectz[0].bottom = lMulResult;
-			rectz[1].top = DANAESIZY - lMulResult;
-			rectz[1].bottom = DANAESIZY;
-			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
-		}
-		//-------------------------------------------------------------------------------
-
-	if(!GRenderer->BeginScene())
-	{
-		return false;
-	}
-	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	if ( (inter.iobj[0]) && (inter.iobj[0]->animlayer[0].cur_anim) )
-	{
-		ManageNONCombatModeAnimations();
-		long old=USEINTERNORM;
-		USEINTERNORM=0;
-		float speedfactor;
-		speedfactor=inter.iobj[0]->basespeed+inter.iobj[0]->speed_modif;
-
-		if (cur_mr==3) speedfactor+=0.5f;
-
-		if (cur_rf==3) speedfactor+=1.5f;
-
-		if (speedfactor < 0) speedfactor = 0;
-
-		long tFrameDiff = Original_framedelay;
-	
-		if ((player.Interface & INTER_COMBATMODE) && (STRIKE_TIME))// need some precision for weapon...
-		{
-			float restore=ACTIVECAM->use_focal;
-
-			if ((!EXTERNALVIEW) && (!BOW_FOCAL))
-			{
-				ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
-			}
-
-			float cur=0;
-
-			while ((cur<tFrameDiff) && (!(inter.iobj[0]->ioflags & IO_FREEZESCRIPT)))
-			{
-				long step=min(50L,tFrameDiff);
-
-				if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) step=0;
-
-
-				float iCalc = step*speedfactor ;
-				ARX_CHECK_ULONG(iCalc);
-
-				assert(inter.iobj[0]->obj != NULL);
-				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-				                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(iCalc), inter.iobj[0], false);
-
-					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
-				ManageCombatModeAnimations();
-
-				if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
-					ManageCombatModeAnimationsEND();
-
-				cur+=step*speedfactor;
-			}
-
-			ACTIVECAM->use_focal=restore;
-		}
-		else
-		{
-			float restore=ACTIVECAM->use_focal;
-
-			if ((!EXTERNALVIEW) && (!BOW_FOCAL))
-			{
-				ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
-			}
-
-
-			float val=(float)tFrameDiff*speedfactor;
-			ARX_CHECK_LONG(val);
-
-			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
-
-			assert(inter.iobj[0]->obj != NULL);
-			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-			                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(val), inter.iobj[0], false);
-
-
-				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
-				ManageCombatModeAnimations();
-
-			if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
-					ManageCombatModeAnimationsEND();
-
-			ACTIVECAM->use_focal=restore;
-		}
-
-		USEINTERNORM=old;
-	}
-
-	INTERACTIVE_OBJ * io;
-	io=inter.iobj[0];
-	ANIM_USE * useanim;
-	useanim=&io->animlayer[1];
-	ANIM_HANDLE ** alist;
-	alist=io->anims;
-
-	if ( BOW_FOCAL
-			&&	(useanim->cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_1])
-			&&	(useanim->cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_2])
-			&&  (useanim->cur_anim!=alist[ANIM_MISSILE_STRIKE_CYCLE]) )
-		{
-			BOW_FOCAL-=Original_framedelay;
-
-			if (BOW_FOCAL<0) BOW_FOCAL=0;
-		}
-
-		if (eyeball.exist == 2)
-		{
-		subj.d_pos.x=eyeball.pos.x;
-		subj.d_pos.y=eyeball.pos.y;
-		subj.d_pos.z=eyeball.pos.z;
-		subj.d_angle.a=eyeball.angle.a;
-		subj.d_angle.b=eyeball.angle.b;
-		subj.d_angle.g=eyeball.angle.g;
-		EXTERNALVIEW=1;
-	}
-	else if (EXTERNALVIEW)
-	{
-		float t=radians(player.angle.b);
-		Vec3f tt;
-
-		for (long l=0;l<250;l+=10)
-		{
-			tt.x=player.pos.x+(float)EEsin(t)*(float)l;
-			tt.y=player.pos.y-50.f;
-			tt.z=player.pos.z-(float)EEcos(t)*(float)l;
-			EERIEPOLY * ep =EECheckInPoly(&tt);
-
-			if (ep)
-			{
-				subj.d_pos.x=tt.x;
-				subj.d_pos.y=tt.y;
-				subj.d_pos.z=tt.z;
-			}
-			else break;
-		}
-
-		subj.d_angle.a=player.angle.a+30.f;
-		subj.d_angle.b=player.angle.b;
-		subj.d_angle.g=player.angle.g;
-		EXTERNALVIEW=1;
-	}
-	else
-	{
-		subj.angle.a=player.angle.a;
-		subj.angle.b=player.angle.b;
-		subj.angle.g=player.angle.g;
-		EXTERNALVIEW=0;
-
-		if (inter.iobj[0])
-		{
-			long id = inter.iobj[0]->obj->fastaccess.view_attach;
-
-			if (id!=-1)
-			{
-				subj.pos.x=inter.iobj[0]->obj->vertexlist3[id].v.x;
-				subj.pos.y=inter.iobj[0]->obj->vertexlist3[id].v.y;
-				subj.pos.z=inter.iobj[0]->obj->vertexlist3[id].v.z;
-
-				Vec3f vect;
-				vect.x=subj.pos.x-player.pos.x;
-				vect.y=0;
-				vect.z=subj.pos.z-player.pos.z;
-				float len=Vector_Magnitude(&vect);
-
-				if (len>46.f)
-				{
-					float div=46.f/len;
-					vect.x*=div;
-					vect.z*=div;
-					subj.pos.x=player.pos.x+vect.x;
-					subj.pos.z=player.pos.z+vect.z;
-				}
-			}
-			else
-			{
-				subj.pos.x=player.pos.x;
-				subj.pos.y=player.pos.y;
-				subj.pos.z=player.pos.z;
-				subj.pos.y+=PLAYER_BASE_HEIGHT;
-			}
-	}
-		}
-
-	if (EXTERNALVIEW)
-	{
-		subj.pos.x=(subj.pos.x+subj.d_pos.x)*( 1.0f / 2 );
-		subj.pos.y=(subj.pos.y+subj.d_pos.y)*( 1.0f / 2 );
-		subj.pos.z=(subj.pos.z+subj.d_pos.z)*( 1.0f / 2 );
-
-		subj.angle.a=InterpolateAngle(subj.angle.a,subj.d_angle.a,0.1f);
-		subj.angle.b=InterpolateAngle(subj.angle.b,subj.d_angle.b,0.1f);
-		subj.angle.g=InterpolateAngle(subj.angle.g,subj.d_angle.g,0.1f);
-	}
-
-	if ((ARX_CONVERSATION) && (main_conversation.actors_nb))
-	{
-		// Decides who speaks !!
-		if (main_conversation.current<0)
-		for (long j=0;j<main_conversation.actors_nb;j++)
-		{
-			if (main_conversation.actors[j]>=0)
-			{
-				for(size_t k = 0 ; k < MAX_ASPEECH; k++) {
-					if (aspeech[k].exist)
-						if (aspeech[k].io==inter.iobj[main_conversation.actors[j]])
-						{
-							main_conversation.current=k;
-							j=main_conversation.actors_nb+1;
-							k=MAX_ASPEECH+1;
-						}
-				}
-			}
-		}
-
-		long is=main_conversation.current;
-
-		if (ARX_CONVERSATION_LASTIS!=is) ARX_CONVERSATION_MODE=-1;
-
-		ARX_CONVERSATION_LASTIS=is;
-
-		if (ARX_CONVERSATION_MODE==-1)
-		{
-			ARX_CONVERSATION_MODE=(long)(float)(rnd()*3.f+1.f);
-			conversationcamera.size.a=rnd()*50.f;
-			conversationcamera.size.b=0.f;
-			conversationcamera.size.g=rnd()*50.f;
-			conversationcamera.d_angle.a=0.f;
-			conversationcamera.d_angle.b=0.f;
-			conversationcamera.d_angle.g=0.f;
-
-			if (rnd()>0.4f) conversationcamera.d_angle.a=(1.f-rnd()*2.f)*( 1.0f / 30 );
-
-			if (rnd()>0.4f) conversationcamera.d_angle.b=(1.f-rnd()*1.2f)*( 1.0f / 5 );
-
-			if (rnd()>0.4f) conversationcamera.d_angle.g=(1.f-rnd()*2.f)*( 1.0f / 40 );
-
-			if (rnd()>0.5f)
-			{
-				conversationcamera.size.a=MAKEANGLE(180.f+rnd()*20.f-10.f);
-				conversationcamera.size.b=0.f;
-				conversationcamera.size.g=0.f;
-				conversationcamera.d_angle.g=0.08f;
-				conversationcamera.d_angle.b=0.f;
-				conversationcamera.d_angle.a = 0.f;
-			}
-		}
-		else
-		{
-			conversationcamera.size += conversationcamera.d_angle * FrameDiff;
-		}
-
-		Vec3f sourcepos,targetpos;
-
-		if (ApplySpeechPos(&conversationcamera,is))
-		{
-			targetpos.x=conversationcamera.d_pos.x;
-			targetpos.y=conversationcamera.d_pos.y;
-			targetpos.z=conversationcamera.d_pos.z;
-			sourcepos.x=conversationcamera.pos.x;
-			sourcepos.y=conversationcamera.pos.y;
-			sourcepos.z=conversationcamera.pos.z;
-		}
-		else
-		{
-			targetpos.x=player.pos.x;
-			targetpos.y=player.pos.y;
-			targetpos.z=player.pos.z;
-			float t=radians(player.angle.b);
-			sourcepos.x=targetpos.x+(float)EEsin(t)*100.f;
-			sourcepos.y=targetpos.y;
-			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
-			}
-
-		Vec3f vect,vec2;
-		vect.x=targetpos.x-sourcepos.x;
-		vect.y=targetpos.y-sourcepos.y;
-		vect.z=targetpos.z-sourcepos.z;
-		float mag=1.f/Vector_Magnitude(&vect);
-		vect.x*=mag;
-		vect.y*=mag;
-		vect.z*=mag;
-		float dist=250.f-conversationcamera.size.g;
-
-		if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
-		else if (dist<90.f) dist=90.f;
-
-		_YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
-		
-		sourcepos.x=targetpos.x-vec2.x*dist;
-		sourcepos.y=targetpos.y-vec2.y*dist;
-		sourcepos.z=targetpos.z-vec2.z*dist;
-
-		if (conversationcamera.size.b!=0.f)
-			sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
-
-		conversationcamera.pos.x=sourcepos.x;
-		conversationcamera.pos.y=sourcepos.y;
-		conversationcamera.pos.z=sourcepos.z;
-		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos.x=conversationcamera.pos.x;
-		subj.pos.y=conversationcamera.pos.y;
-		subj.pos.z=conversationcamera.pos.z;
-		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-		subj.angle.g=0.f;
-		EXTERNALVIEW=1;
-	}
-	else
-	{
-		ARX_CONVERSATION_MODE=-1;
-		ARX_CONVERSATION_LASTIS=-1;
-
-		if (LAST_CONVERSATION)
-		{
-			AcquireLastAnim(inter.iobj[0]);
-			ANIM_Set(&inter.iobj[0]->animlayer[1],inter.iobj[0]->anims[ANIM_WAIT]);
-			inter.iobj[0]->animlayer[1].flags|=EA_LOOP;
-		}
-	}
-
-		////////////////////////
-	// Checks SCRIPT TIMERS.
-	if (FirstFrame==0)
-		ARX_SCRIPT_Timer_Check();
-
-	/////////////////////////////////////////////
-	// Now checks for speech controlled cinematic
-	{
-		long valid=-1;
-
-		for(size_t i = 0; i < MAX_ASPEECH; i++) {
-			if ((aspeech[i].exist) && (aspeech[i].cine.type>0))
-			{
-				valid=i;
-				break;
-			}
-		}
-
-		if (valid>=0)
-		{
-			CinematicSpeech * acs=&aspeech[valid].cine;
-			INTERACTIVE_OBJ * io=aspeech[valid].io;
-			float rtime=(float)(ARX_TIME_Get()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
-
-			if (rtime<0) rtime=0;
-
-			if (rtime>1) rtime=1;
-
-			float itime=1.f-rtime;
-
-			if ((rtime>=0.f) && (rtime<=1.f) && io)
-			{
-				float alpha,beta,distance,_dist;
-
-				switch (acs->type)
-				{
-					case ARX_CINE_SPEECH_KEEP: {
-						subj.pos.x=acs->pos1.x;
-						subj.pos.y=acs->pos1.y;
-						subj.pos.z=acs->pos1.z;
-						subj.angle.a=acs->pos2.x;
-						subj.angle.b=acs->pos2.y;
-						subj.angle.g=acs->pos2.z;
-						EXTERNALVIEW=1;
-						break;
-					}
-					case ARX_CINE_SPEECH_ZOOM: {
-						//need to compute current values
-						alpha=acs->startangle.a*itime+acs->endangle.a*rtime;
-						beta=acs->startangle.b*itime+acs->endangle.b*rtime;
-						distance=acs->startpos*itime+acs->endpos*rtime;
-						Vec3f targetpos = acs->pos1;
-						conversationcamera.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
-						conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
-						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;						
-						SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-						subj.pos.x=conversationcamera.pos.x;
-						subj.pos.y=conversationcamera.pos.y;
-						subj.pos.z=conversationcamera.pos.z;
-						subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-						subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-						subj.angle.g=0.f;
-						EXTERNALVIEW=1;
-						break;
-					}
-					case ARX_CINE_SPEECH_SIDE_LEFT:
-					case ARX_CINE_SPEECH_SIDE: {
-
-						if (ValidIONum(acs->ionum))
-						{
-
-							const Vec3f & from = acs->pos1;
-							const Vec3f & to = acs->pos2;
-
-							Vec3f vect = (to - from).getNormalized();
-
-							Vec3f vect2;
-							if (acs->type==ARX_CINE_SPEECH_SIDE_LEFT)
-							{
-								Vector_RotateY(&vect2,&vect,-90);
-							}
-							else
-							{
-								Vector_RotateY(&vect2,&vect,90);
-							}
-
-							distance=acs->f0*itime+acs->f1*rtime;
-							vect2 *= distance;
-							_dist = dist(from, to);
-							Vec3f tfrom = from + vect * acs->startpos * (1.0f / 100) * _dist;
-							Vec3f tto = from + vect * acs->endpos * (1.0f / 100) * _dist;
-							Vec3f targetpos;
-							targetpos.x=tfrom.x*itime+tto.x*rtime;
-							targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;
-							targetpos.z=tfrom.z*itime+tto.z*rtime;
-							conversationcamera.pos.x=targetpos.x+vect2.x;
-							conversationcamera.pos.y=targetpos.y+vect2.y+acs->f2;
-							conversationcamera.pos.z=targetpos.z+vect2.z;
-							SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-							subj.pos = conversationcamera.pos;
-							subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-							subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-							subj.angle.g=0.f;
-							EXTERNALVIEW=1;
-						}
-
-						break;
-					}
-					case ARX_CINE_SPEECH_CCCLISTENER_R:
-					case ARX_CINE_SPEECH_CCCLISTENER_L:
-					case ARX_CINE_SPEECH_CCCTALKER_R:
-					case ARX_CINE_SPEECH_CCCTALKER_L: {
-
-						//need to compute current values
-						if (ValidIONum(acs->ionum))
-						{
-							Vec3f targetpos;
-							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
-								|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
-							{
-								conversationcamera.pos.x=acs->pos2.x;
-								conversationcamera.pos.y=acs->pos2.y;
-								conversationcamera.pos.z=acs->pos2.z;
-								targetpos.x=acs->pos1.x;
-								targetpos.y=acs->pos1.y;
-								targetpos.z=acs->pos1.z;
-							}
-							else
-							{
-								conversationcamera.pos.x=acs->pos1.x;
-								conversationcamera.pos.y=acs->pos1.y;
-								conversationcamera.pos.z=acs->pos1.z;
-								targetpos.x=acs->pos2.x;
-								targetpos.y=acs->pos2.y;
-								targetpos.z=acs->pos2.z;
-							}
-							
-							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );						
-							
-							Vec3f vect;
-							vect.x=conversationcamera.pos.x-targetpos.x;
-							vect.y=conversationcamera.pos.y-targetpos.y;
-							vect.z=conversationcamera.pos.z-targetpos.z;
-							Vec3f vect2;
-							Vector_RotateY(&vect2,&vect,90);
-							vect2.normalize();
-							Vec3f vect3 = vect.getNormalized();
-
-							vect = vect * distance + vect3 * 80.f;
-							vect2 *= 45.f;
-
-							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_R)
-								|| (acs->type==ARX_CINE_SPEECH_CCCTALKER_R))
-							{
-								vect2 = -vect2;
-							}
-
-							conversationcamera.pos = vect + targetpos + vect2;
-							SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-							subj.pos = conversationcamera.pos;
-							subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-							subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-							subj.angle.g=0.f;
-							EXTERNALVIEW=1;
-						}
-
-						break;
-					}
-					case ARX_CINE_SPEECH_NONE: break;
-				}
-
-				LASTCAMPOS.x=subj.pos.x;
-				LASTCAMPOS.y=subj.pos.y;
-				LASTCAMPOS.z=subj.pos.z;
-				LASTCAMANGLE.a=subj.angle.a;
-				LASTCAMANGLE.b=subj.angle.b;
-				LASTCAMANGLE.g=subj.angle.g;
-			}
-		}
-	}
-
-	if (player.life<=0)
-	{
-			DeadTime	+=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
-		float mdist	=	EEfabs(player.physics.cyl.height)-60;
-		DeadCameraDistance+=(float)FrameDiff*( 1.0f / 80 )*((mdist-DeadCameraDistance)/mdist)*2.f;
-
-		if (DeadCameraDistance>mdist) DeadCameraDistance=mdist;
-
-		Vec3f targetpos;
-
-		targetpos.x = player.pos.x;
-			targetpos.y = player.pos.y;
-			targetpos.z = player.pos.z;
-
-			long id	 = inter.iobj[0]->obj->fastaccess.view_attach;
-		long id2 = GetActionPointIdx( inter.iobj[0]->obj, "Chest2Leggings" );
-
-		if (id!=-1)
-		{
-			targetpos.x = inter.iobj[0]->obj->vertexlist3[id].v.x;
-			targetpos.y = inter.iobj[0]->obj->vertexlist3[id].v.y;
-			targetpos.z = inter.iobj[0]->obj->vertexlist3[id].v.z;
-		}
-
-		conversationcamera.pos.x = targetpos.x;
-		conversationcamera.pos.y = targetpos.y - DeadCameraDistance;
-		conversationcamera.pos.z = targetpos.z;
-
-		if (id2!=-1)
-		{
-				conversationcamera.pos.x=inter.iobj[0]->obj->vertexlist3[id2].v.x;
-				conversationcamera.pos.y=inter.iobj[0]->obj->vertexlist3[id2].v.y-DeadCameraDistance;
-				conversationcamera.pos.z=inter.iobj[0]->obj->vertexlist3[id2].v.z;
-		}
-
-		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos.x=conversationcamera.pos.x;
-		subj.pos.y=conversationcamera.pos.y;
-		subj.pos.z=conversationcamera.pos.z;
-		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-			subj.angle.g = 0;
-		EXTERNALVIEW=1;
-
-#ifdef BUILD_EDITOR
-		if(!GAME_EDITOR)
-			BLOCK_PLAYER_CONTROLS=1;
-#endif
-	}
-	else
-	{
-		DeadCameraDistance=0;
-
-	}
-
-		/////////////////////////////////////
-	LAST_CONVERSATION=ARX_CONVERSATION;
-
-	if ((this->kbd.inkey[INKEY_SPACE]) && (CAMERACONTROLLER!=NULL))
-	{
-		CAMERACONTROLLER=NULL;
-		this->kbd.inkey[INKEY_SPACE]=0;
-	}
-
-	if (CAMERACONTROLLER!=NULL)
-	{
-		if (lastCAMERACONTROLLER!=CAMERACONTROLLER)
-		{
-			currentbeta=CAMERACONTROLLER->angle.b;
-		}
-
-			Vec3f targetpos;
-
-		targetpos.x=CAMERACONTROLLER->pos.x;
-		targetpos.y=CAMERACONTROLLER->pos.y+PLAYER_BASE_HEIGHT;
-		targetpos.z=CAMERACONTROLLER->pos.z;
-
-			float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.b);
-			float delta_angle_t = delta_angle * FrameDiff * ( 1.0f / 1000 );
-
-			if (EEfabs(delta_angle_t) > EEfabs(delta_angle)) delta_angle_t = delta_angle;
-
-			currentbeta += delta_angle_t;
-		float t=radians(MAKEANGLE(currentbeta));
-		conversationcamera.pos.x=targetpos.x+(float)EEsin(t)*160.f;
-		conversationcamera.pos.y=targetpos.y+40.f;
-		conversationcamera.pos.z=targetpos.z-(float)EEcos(t)*160.f;
-
-		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos.x=conversationcamera.pos.x;
-		subj.pos.y=conversationcamera.pos.y;
-		subj.pos.z=conversationcamera.pos.z;
-		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-		subj.angle.g=0.f;
-		EXTERNALVIEW=1;
-	}
-
-	lastCAMERACONTROLLER=CAMERACONTROLLER;
-
-	if ((USE_CINEMATICS_CAMERA) && (USE_CINEMATICS_PATH.path!=NULL))
-	{
-		Vec3f pos,pos2;
-			USE_CINEMATICS_PATH._curtime = ARX_TIME_Get();
-
-		USE_CINEMATICS_PATH._curtime+=50;
-		long pouet2=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos);
-		USE_CINEMATICS_PATH._curtime-=50;
-		long pouet=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos2);
-
-		if ((pouet!=-1) && (pouet2!=-1))
-		{
-			if(USE_CINEMATICS_CAMERA == 2) {
-				subj.pos = pos;
-				subj.d_angle = subj.angle;
-				pos2 = (pos2 + pos) * (1.0f/2);
-				SetTargetCamera(&subj, pos2.x, pos2.y, pos2.z);
-			} else {
-				DebugSphere(pos.x, pos.y, pos.z, 2, 50, Color::red);
-			}
-
-			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
-			{
-				USE_CINEMATICS_CAMERA=0;
-				USE_CINEMATICS_PATH.path=NULL;
-			}
-		}
-		else
-		{
-			USE_CINEMATICS_CAMERA=0;
-			USE_CINEMATICS_PATH.path=NULL;
-		}
-	}
-
-	UpdateCameras();
-
-		///////////////////////////////////////////
-	ARX_PLAYER_FrameCheck(Original_framedelay);
-
-	if (MasterCamera.exist)
-	{
-		if (MasterCamera.exist & 2)
-		{
-			MasterCamera.exist&=~2;
-			MasterCamera.exist|=1;
-			MasterCamera.io=MasterCamera.want_io;
-			MasterCamera.aup=MasterCamera.want_aup;
-			MasterCamera.cam=MasterCamera.want_cam;
-		}
-
-		if (MasterCamera.cam->focal<100.f) MasterCamera.cam->focal=350.f;
-
-		SetActiveCamera(MasterCamera.cam);
-		EXTERNALVIEW=1;
-	}
-	else
-	{
-		// Set active camera for this viewport
-		SetActiveCamera(&subj);
-	}
-
-	ARX_GLOBALMODS_Apply();
-
-	if (EDITMODE) GRenderer->SetRenderState(Renderer::Fog, false);
-
-		ManageQuakeFX();
-
-	// Prepare ActiveCamera
-	PrepareCamera(ACTIVECAM);
-	// Recenter Viewport depending on Resolution
-
-	// setting long from long
-	ACTIVECAM->centerx	= DANAECENTERX;
-	ACTIVECAM->centery	= DANAECENTERY;
-	// casting long to float
-	ACTIVECAM->posleft	= ACTIVECAM->transform.xmod	= ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERX );
-	ACTIVECAM->postop	= ACTIVECAM->transform.ymod	= ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERY );
-
-
-	// Set Listener Position
-	{
-		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));			
-		Vec3f front(-EEsin(t), 0.f, EEcos(t));
-		front.normalize();
-		Vec3f up(0.f, 1.f, 0.f);
-		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
-	}
-
-	// Reset Transparent Polys Idx
-	INTERTRANSPOLYSPOS=TRANSPOLYSPOS=0;
-
-	// Check For Hiding/unHiding Player Gore
-	if ((EXTERNALVIEW) || (player.life<=0))
-	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],0);
-	}
-
-	if (!EXTERNALVIEW)
-	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],1);
-	}
-
-	LASTEXTERNALVIEW=EXTERNALVIEW;
-
-	// NOW DRAW the player (Really...)
-	if (	(inter.iobj[0])
-		&&	(inter.iobj[0]->animlayer[0].cur_anim) 	)
-	{
-		float restore=ACTIVECAM->use_focal;
-
-		if ((!EXTERNALVIEW) && (!BOW_FOCAL))
-		{
-			ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
-		}
-
-		if ((!EXTERNALVIEW) && GLOBAL_FORCE_PLAYER_IN_FRONT)
-			FORCE_FRONT_DRAW=1;
-
-		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
-
-		assert(inter.iobj[0]->obj != NULL);
-		EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-		                  &inter.iobj[0]->pos, 0, inter.iobj[0]);
-		
-		ACTIVECAM->use_focal=restore;
-		FORCE_FRONT_DRAW=0;
-	}
-
-	// SUBJECTIVE VIEW UPDATE START  *********************************************************
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-
-	if (FirstFrame==0)
-	{
-		PrepareIOTreatZone();
-			ARX_PHYSICS_Apply();
-
-		if (FRAME_COUNT<=0)
-				PrecalcIOLighting(&ACTIVECAM->pos, ACTIVECAM->cdepth * 0.6f);
-
-		ACTIVECAM->fadecolor.r=current.depthcolor.r;
-		ACTIVECAM->fadecolor.g=current.depthcolor.g;
-		ACTIVECAM->fadecolor.b=current.depthcolor.b;
-
-		if (uw_mode)
-		{
-			float val=10.f;
-			GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-			ARX_SCENE_Render(1);
-			val=-0.3f;
-			GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-		}
-		else {
-			ARX_SCENE_Render(1);
-		}
-
-	}
-
-#ifdef BUILD_EDITOR
-	if (EDITION==EDITION_PATHWAYS)
-	{
-		ARX_PATHS_RedrawAll();
-	}
-#endif
-
-	// Begin Particles ***************************************************************************
-	if (!(Project.hide & HIDE_PARTICLES))
-	{
-		if (pParticleManager)
-		{
-				pParticleManager->Update(ARX_CLEAN_WARN_CAST_LONG(FrameDiff));
-			pParticleManager->Render();
-		}
-
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);			
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_FOGS_Render();
-
-		ARX_PARTICLES_Render(&subj);
-		UpdateObjFx();
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	}
-
-	// End Particles ***************************************************************************
-
-	if (!EDITMODE) // Playing Game
-	{
-		// Checks Magic Flares Drawing
-		if (!PLAYER_PARALYSED)
-		{
-			if (EERIEMouseButton & 1)
-			{
-				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT)) 
-					ARX_SPELLS_AddPoint(DANAEMouse);
-				else
-				{
-					CurrPoint=0;
-					ARX_FLARES_Block=0;
-					CurrSlot=1;
-				}
-			}
-			else if (ARX_FLARES_Block==0)
-				ARX_FLARES_Block=1;
-		}
-
-		ARX_SPELLS_Precast_Check();
-		ARX_SPELLS_ManageMagic();
-		ARX_SPELLS_UpdateSymbolDraw();
-
-		ManageTorch();
-
-		// Renders Magical Flares
-		if (	!((player.Interface & INTER_MAP )
-			&&  (!(player.Interface & INTER_COMBATMODE)))
-			&&	flarenum
-			)
-		{
-			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-				FRAMETICKS = ARXTimeUL();
-		}
-	}
-#ifdef BUILD_EDITOR
-	else  // EDITMODE == true
-	{
-		if (!(Project.hide & HIDE_NODES))
-				RenderAllNodes();
-
-		std::stringstream ss("EDIT MODE - Selected ");
-		ss <<  NbIOSelected;
-		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
-	
-		if (EDITION==EDITION_FOGS)
-			ARX_FOGS_RenderAll();
-	}
-	
-	// To remove for Final Release but needed until then !
-	if (ItemToBeAdded[0]!=0)
-		DanaeItemAdd();
-#endif
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	// Checks some specific spell FX
-	CheckMr();
-
-	if (Project.improve)
-		DrawImproveVisionInterface();
-	else
-	{
-		if ((subj.focal<BASE_FOCAL))
-		{
-			subj.focal+=INC_FOCAL;
-
-			if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
-		}
-		else if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
-	}
-
-	if (eyeball.exist!=0)
-	{
-		DrawMagicSightInterface();
-	}
-
-		if (PLAYER_PARALYSED)
-	{
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color(71, 71, 255));
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	}
-
-	if (FADEDIR)
-	{
-		ManageFade();
-	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	
-	// Reset Last Key
-	mainApp->kbd.lastkey=-1;
-
-	// Red screen fade for damages.
-	ARX_DAMAGE_Show_Hit_Blood();
-
-	// Manage Notes/Books opened on screen
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	ARX_INTERFACE_NoteManage();
-
-	finish:; //----------------------------------------------------------------
-	// Update spells
-	ARX_SPELLS_Update();
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::Fog, true);
-
-	// Manage Death visual & Launch menu...
-	if (DeadTime>2000)
-		ARX_PLAYER_Manage_Death();
-
-	//-------------------------------------------------------------------------
-
-	// INTERFACE
-		// Remove the Alphablend State if needed : NO Z Clear
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::Fog, false);
-
-	// Draw game interface if needed
-	if (ARXmenu.currentmode == AMCM_OFF)
-	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
-	{
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-		DrawAllInterface();
-		DrawAllInterfaceFinish();
-
-		if (	(player.Interface & INTER_MAP )
-			&&  (!(player.Interface & INTER_COMBATMODE))
-			&&	flarenum
-			)
-		{
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
-			FRAMETICKS = ARXTimeUL();
-		}
-	}
-
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	PopAllTriangleList();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	PopAllTriangleListTransparency();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	GRenderer->SetRenderState(Renderer::Fog, true);
-		this->GoFor2DFX();
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	GRenderer->Clear(Renderer::DepthBuffer);
-
-	// Speech Management
-	if (!EDITMODE)
-	{
-		ARX_SPEECH_Check();
-		ARX_SPEECH_Update();
-	}
-
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
-	if(pTextManage && !pTextManage->Empty())
-	{
-		pTextManage->Update(FrameDiff);
-		pTextManage->Render();
-	}
-
-	if (SHOW_INGAME_MINIMAP && ((PLAY_LOADED_CINEMATIC == 0) && (!CINEMASCOPE) && (!BLOCK_PLAYER_CONTROLS) && (ARXmenu.currentmode == AMCM_OFF))
-		&& (!(player.Interface & INTER_MAP )	))
-	{
-			long	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
-
-		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
-			ARX_MINIMAP_Show(SHOWLEVEL,1,1);
-	}
-
-		//-------------------------------------------------------------------------
-
-	// CURSOR Rendering
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	if (DRAGINTER)
-	{
-		ARX_INTERFACE_RenderCursor();
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		PopAllTriangleListTransparency();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-		ARX_INTERFACE_HALO_Flush();
-	}
-	else
-	{
-		ARX_INTERFACE_HALO_Flush();
-		ARX_INTERFACE_RenderCursor();
-	}
-
-	GRenderer->SetRenderState(Renderer::Fog, true);
-
-	//----------------RENDEREND------------------------------------------------
-	renderend:
-		;
-
-	if (sp_max_start)
-		Manage_sp_max();
-
-	// Some Visual Debug/Info Text
-	CalcFPS();
-
-	if (!FINAL_COMMERCIAL_DEMO)
-	{
-		if ((NEED_TEST_TEXT) && (!FINAL_COMMERCIAL_DEMO))
-		{
-			ShowTestText();
-		}
-
-		if (!NO_TEXT_AT_ALL)
-		{
-			if (ViewMode & VIEWMODE_INFOTEXT)
-			{
-				ShowInfoText();
-			}
-			else if ((FORCE_SHOW_FPS) || CYRIL_VERSION)
-			{
-				ShowFPS();
-			}
-		}
-
-	if ((USE_PORTALS) && (NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
-		{
-			char tex[250];
-
-			switch(USE_PORTALS)
-			{
-			case 1:
-				sprintf(tex,"2DPortals_ROOM: %ld",LAST_ROOM);
-				break;
-			case 2:
-				sprintf(tex,"3DPortals_ROOM: %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-				break;
-			case 3:
-				sprintf(tex,"3DPortals_ROOM(Transform): %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-				break;
-			case 4:
-				sprintf(tex,"3DPortals_ROOM(TransformSC): %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-				break;
-			}
-
-			mainApp->OutputText( 320, 240, tex );
-		}
-
-		if((NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
-		{
-			if(bOLD_CLIPP)
-			{
-				mainApp->OutputText(0, 240, "New Clipp" );
-			}
-			else
-			{
-				mainApp->OutputText(0,274,"New Clipp");
-			}
-		}
-	}
-
-	//----------------------------------------------------------------------------
-	// Begin 2D Pass for Lense Flares
-
-	if ((PLAY_LOADED_CINEMATIC == 0) && (!CINEMASCOPE) && (!BLOCK_PLAYER_CONTROLS) && (ARXmenu.currentmode == AMCM_OFF))
-	{
-		if (GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD) && !WILL_QUICKLOAD)
-		{
-			WILL_QUICKLOAD=1;
-		}
-
-		if (GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && !WILL_QUICKSAVE)
-		{
-			iTimeToDrawD7=2000;
-			WILL_QUICKSAVE=1;
-		}
-
-		ARX_DrawAfterQuickLoad();
-	}
-
-	GRenderer->EndScene();
-
-	//--------------NORENDEREND---------------------------------------------------
-	norenderend:
-		;
-
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10))
-	{
-		GetSnapShot();
-	}
-
-	if ((LaunchDemo) && (FirstFrame == 0))
-	{
-		NOCHECKSUM=1;
-		LaunchDemo=0;
-		LaunchDummyParticle();
-	}
-	}
-	
-	if (ARXmenu.currentmode == AMCM_OFF)
-	{
-		ARX_SCRIPT_AllowInterScriptExec();
-		ARX_SCRIPT_EventStackExecute();
-		// Updates Damages Spheres
-		ARX_DAMAGES_UpdateAll();
-		ARX_MISSILES_Update();
-
-		if (FirstFrame==0)
-			ARX_PATH_UpdateAllZoneInOutInside();
-	}
-
-	LastFrameTime=FrameTime;
-	LastMouseClick=EERIEMouseButton;
-
-#ifdef BUILD_EDITOR
-		DANAE_DEBUGGER_Update();
-#endif
-
-	return true;
-}
-
-void Win32Application::GoFor2DFX()
-{
-	TexturedVertex lv,ltvv;
-
-	long needed = 0;
-
-	for (long i=0;i<TOTPDL;i++)
-	{
-		EERIE_LIGHT * el=PDL[i];
-
-		if (el->extras & EXTRAS_FLARE)
-		{
-			if(distSqr(ACTIVECAM->pos, el->pos) < square(2200)) {
-				needed=1;
-				break;
-			}
-		}
-	}
-
-	if (!needed) return;
-
-					{
-		INTERACTIVE_OBJ* pTableIO[256];
-		int nNbInTableIO = 0;
-
-		LAST_LOCK_SUCCESSFULL=1;
-		float temp_increase=_framedelay*( 1.0f / 1000 )*4.f;
-		DURING_LOCK=1;
-		{
-			bool bComputeIO = false;
-
-			for (int i=0;i<TOTPDL;i++)
-			{
-				EERIE_LIGHT * el=PDL[i];
-
-				long lPosx=(long)(float)(el->pos.x*ACTIVEBKG->Xmul);
-				long lPosz=(long)(float)(el->pos.z*ACTIVEBKG->Zmul);
-
-				if(	(lPosx<0)||
-					(lPosx>=ACTIVEBKG->Xsize)||
-					(lPosz<0)||
-					(lPosz>=ACTIVEBKG->Zsize)||
-					(!ACTIVEBKG->fastdata[lPosx][lPosz].treat) )
-				{
-					el->treat=0;
-					continue;
-				}
-
-				if (el->extras & EXTRAS_FLARE)
-				{
-					lv.sx=el->pos.x;
-					lv.sy=el->pos.y;
-					lv.sz=el->pos.z;
-					specialEE_RTP(&lv,&ltvv);
-					el->temp-=temp_increase;
-
-					if (!(player.Interface & INTER_COMBATMODE)
-						&& (player.Interface & INTER_MAP))
-						continue;
-
-					if ((ltvv.rhw > 0.f) &&
-						(ltvv.sx>0.f) &&
-						(ltvv.sy>(CINEMA_DECAL*Yratio)) &&
-						(ltvv.sx<DANAESIZX) &&
-						(ltvv.sy<(DANAESIZY-(CINEMA_DECAL*Yratio)))
-						)
-					{
-						Vec3f vector;
-						vector.x=lv.sx-ACTIVECAM->pos.x;
-						vector.y=lv.sy-ACTIVECAM->pos.y;
-						vector.z=lv.sz-ACTIVECAM->pos.z;
-						float fNorm = 50.f / sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
-						vector.x*=fNorm;
-						vector.y*=fNorm;
-						vector.z*=fNorm;
-						TexturedVertex ltvv2;
-						lv.sx-=vector.x;
-						lv.sy-=vector.y;
-						lv.sz-=vector.z;
-						specialEE_RTP(&lv,&ltvv2);
-
-						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
-
-						Vec3f	hit;
-						EERIEPOLY	*tp=NULL;
-						Vec2s ees2dlv;
-						Vec3f ee3dlv;
-						ee3dlv.x = lv.sx;
-						ee3dlv.y = lv.sy;
-						ee3dlv.z = lv.sz;
-
-
-						ARX_CHECK_SHORT(ltvv.sx) ;
-						ARX_CHECK_SHORT(ltvv.sy) ;
-
-						ees2dlv.x = ARX_CLEAN_WARN_CAST_SHORT(ltvv.sx) ;
-						ees2dlv.y = ARX_CLEAN_WARN_CAST_SHORT(ltvv.sy) ;
-
-
-						if( !bComputeIO )
-						{
-							GetFirstInterAtPos( &ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO );
-							bComputeIO = true;
-						}
-
-						if(
-							(ltvv.sz>fZFar)||
-							EERIELaunchRay3(&ACTIVECAM->pos,&ee3dlv,&hit,tp,1)||
-							GetFirstInterAtPos(&ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
-							)
-						{
-							el->temp-=temp_increase*2.f;
-						}
-						else
-						{
-							el->temp+=temp_increase*2.f;
-						}
-
-					}
-
-					if (el->temp<0.f) el->temp=0.f;
-					else if (el->temp>.8f) el->temp=.8f;
-				}
-			}
-		}
-
-		DURING_LOCK = 0;
-		// End 2D Pass ***************************************************************************
-
-		{
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);		
-			GRenderer->SetRenderState(Renderer::DepthWrite, false);
-			GRenderer->SetCulling(Renderer::CullNone);
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			GRenderer->SetFogColor(Color::none);
-
-			for (int i=0;i<TOTPDL;i++)
-			{
-				EERIE_LIGHT * el=PDL[i];
-
-				if ((!el->exist) || (!el->treat)) continue;
-
-				if (el->extras & EXTRAS_FLARE)
-				{
-					if (el->temp>0.f)
-					{
-						lv.sx=el->pos.x;
-						lv.sy=el->pos.y;
-						lv.sz=el->pos.z;
-						lv.rhw=1.f;
-						specialEE_RT((TexturedVertex *)&lv,(Vec3f *)&ltvv);
-						float v=el->temp;
-
-						if (FADEDIR)
-						{
-							v*=1.f-LAST_FADEVALUE;
-						}
-
-						float siz;
-
-						if (el->extras & EXTRAS_FIXFLARESIZE)
-							siz=el->ex_flaresize;
-						else
-							siz=-el->ex_flaresize;
-
-						EERIEDrawSprite(&lv, siz, tflare, Color3f(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b).to<u8>(), ltvv.sz);
-
-					}
-				}
-			}
-
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
-		}
-	}
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-}
-
 void ShowTestText()
 {
 	char tex[256];
@@ -6490,7 +4444,7 @@ extern long TSU_TEST;
 long TSU_TEST_NB = 0;
 long TSU_TEST_NB_LIGHT = 0;
 
-static void ShowInfoText() {
+void ShowInfoText() {
 	
 	unsigned long uGAT = ARXTimeUL() / 1000;
 	long GAT=(long)uGAT;
@@ -6525,8 +4479,8 @@ static void ShowInfoText() {
 
 	sprintf(tex,"Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",player.pos.x,player.pos.y+player.size.y,poss,player.pos.z,player.angle.a,player.angle.b,ACTIVECAM->focal);
 	mainApp->OutputText( 70, 48, tex );
-	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d  Lkey %d",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
-		,GAT,ParticleCount,player.doingmagic,mainApp->kbd.lastkey);
+	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
+		,GAT,ParticleCount,player.doingmagic);
 	mainApp->OutputText( 70, 64, tex );
 
 	if (player.onfirmground==0) mainApp->OutputText( 200, 280, "OFFGRND" );
@@ -6633,7 +4587,7 @@ static void ShowInfoText() {
 #endif // BUILD_EDITOR
 
 	long zap=IsAnyPolyThere(player.pos.x,player.pos.z);
-	sprintf(tex,"POLY %ld LASTLOCK %ld",zap,LAST_LOCK_SUCCESSFULL);		
+	sprintf(tex,"POLY %ld",zap);		
 	mainApp->OutputText( 270, 220, tex );
 
 	sprintf(tex,"COLOR %3.0f Stealth %3.0f",CURRENT_PLAYER_COLOR,GetPlayerStealth());
@@ -6696,836 +4650,6 @@ void ShowFPS()
 void ARX_SetAntiAliasing() {
 	GRenderer->SetAntialiasing(config.video.antialiasing);
 }
-
-bool Win32Application::InitDeviceObjects()
-{
-	// Enable Z-buffering RenderState
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	
-	// Restore All Textures RenderState
-	GRenderer->RestoreAllTextures();
-
-	ARX_PLAYER_Restore_Skin();
-	
-	// Disable Lighting RenderState
-	GRenderer->SetRenderState(Renderer::Lighting, false);
-
-	// Setup Texture Border RenderState
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
-	GRenderer->GetTextureStage(1)->DisableColor();
-	
-	// Fog
-	float fogEnd = 0.48f;
-	float fogStart = fogEnd * 0.65f;
-	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
-	GRenderer->SetFogColor(current.depthcolor.to<u8>());
-	GRenderer->SetRenderState(Renderer::Fog, true);
-	
-	SetZBias(0);
-
-	ComputePortalVertexBuffer();
-	VertexBuffer<SMY_VERTEX3> * vb3 = GRenderer->createVertexBuffer3(4000, Renderer::Stream);
-	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_VERTEX3>(vb3);
-	
-	VertexBuffer<TexturedVertex> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
-	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
-
-	if(pMenu)
-	{
-		pMenu->bReInitAll=true;
-	}
-
-	ARX_SetAntiAliasing();
-
-	m_pD3D->EvictManagedTextures();
-
-	return true;
-}
-
-//*************************************************************************************
-// FinalCleanup()
-// Called before the app exits
-//*************************************************************************************
-bool Win32Application::FinalCleanup()
-{
-	EERIE_PATHFINDER_Release();
-	ARX_INPUT_Release();
-	ARX_SOUND_Release();
-#ifdef BUILD_EDITOR
-	KillInterTreeView();
-#endif
-	return true;
-}
-
-//*************************************************************************************
-// DeleteDeviceObjects()
-//  Called when the app is exitting, or the device is being changed,
-//  this function deletes any device dependant objects.
-//*************************************************************************************
-
-bool Win32Application::DeleteDeviceObjects() {
-	
-	GRenderer->ReleaseAllTextures();
-	
-	if(pDynamicVertexBuffer_TLVERTEX) {
-		delete pDynamicVertexBuffer_TLVERTEX;
-		pDynamicVertexBuffer_TLVERTEX = NULL;
-	}
-	
-	if(pDynamicVertexBuffer) {
-		delete pDynamicVertexBuffer;
-		pDynamicVertexBuffer = NULL;
-	}
-	
-	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
-	
-	return true;
-}
-
-//*************************************************************************************
-// MsgProc()
-//   Overrides StdMsgProc
-//*************************************************************************************
-LRESULT Win32Application::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	
-	switch(uMsg) {
-		
-		case WM_ACTIVATE: {
-			if(GInput) {
-				if(wParam==WA_INACTIVE) {
-					GInput->unacquireDevices();
-				} else {
-					GInput->reset();
-					GInput->unacquireDevices();
-					GInput->acquireDevices();
-				}
-			}
-			break;
-		}
-		
-		case WM_SYSCOMMAND: // To avoid ScreenSaver Interference
-
-			if ((wParam & 0xFFF0)== SC_SCREENSAVE ||
-				(wParam & 0xFFF0)== SC_MONITORPOWER)
-			{
-				return 0;
-			}
-
-		break;
-
-#ifdef BUILD_EDITOR
-
-		break;
-		case WM_CLOSE:
-
-			if (	FINAL_COMMERCIAL_GAME
-				||	FINAL_COMMERCIAL_DEMO
-				||	OKBox("Do you REALLY want to quit ?","Danae WARNING"))
-			{
-				CheckIO_NOT_SAVED();
-				ADDED_IO_NOT_SAVED=0;
-			}
-			else
-			{
-				return false;
-			}
-
-			break;
-		case WM_DROPFILES:
-
-			if (	!FINAL_COMMERCIAL_DEMO
-				&&	!FINAL_COMMERCIAL_GAME
-				)
-			{
-				HANDLE	hDrop;
-				long		number;
-				char temp[512];
-				hDrop = (HANDLE) wParam;
-				number=DragQueryFile((HDROP)hDrop,0,temp,512);
-
-				if (number > 0)
-				{
-
-						strcpy(ItemToBeAdded,temp);
-				}
-
-				DragFinish((HDROP)hDrop);
-				SetFocus(hWnd);
-				SetActiveWindow(hWnd);
-			}
-
-		break;
-
-		case WM_COMMAND:
-
-			if (	!FINAL_COMMERCIAL_DEMO
-			&& !FINAL_COMMERCIAL_GAME
-			)
-			{
-			switch( LOWORD(wParam) )
-			{
-				case IDM_DLF_CHECK:
-					ARX_SAVELOAD_CheckDLFs();
-				break;
-				case IDM_ANYPOLY:
-				{
-					ARX_PLAYER_GotoAnyPoly();
-				}
-				break;
-				case IDM_MOULINEX:
-
-					if (OKBox("This Can Take a Loooooooooooooong Time... Sure ?","MOULINEX Confirm Box"))
-					{
-						MOULINEX=1;
-					}
-
-				break;
-				case DANAE_B016:
-					DANAE_DEBUGGER_Launch(mainApp->m_hWnd);
-				break;
-				case DANAE_B015:
-					ARX_TIME_Pause();
-					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_SEARCH), mainApp->m_hWnd, ScriptSearchProc);
-
-					if (SCRIPT_SEARCH_TEXT[0])
-						ARX_SCRIPT_LaunchScriptSearch(SCRIPT_SEARCH_TEXT);
-
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_B014:
-
-					if (EDITION==EDITION_PARTICLES)
-					{
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-						EDITION=EDITION_IO;
-					}
-					else 
-					{
-						EDITION=EDITION_PARTICLES;
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-					}
-
-				break;
-				case DANAE_B011: 
-
-					if (EDITION==EDITION_PATHWAYS) 
-					{
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-						EDITION=EDITION_IO;
-					}
-					else
-					{
-						EDITION=EDITION_PATHWAYS;
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						//SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-					}
-
-				break;
-				case DANAE_B010: 
-
-					if (EDITION==EDITION_ZONES) 
-					{
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-						EDITION=EDITION_IO;
-					}
-					else 
-					{
-						EDITION=EDITION_ZONES;
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Pathways						
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-					}
-
-				break;
-				case DANAE_B007:
-
-					if (EDITION==EDITION_LIGHTS)
-					{
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-						EDITION=EDITION_IO;
-					}
-					else
-					{
-						EDITION=EDITION_LIGHTS;
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-					}
-
-				break;
-				case DANAE_B006:
-
-					if (EDITMODE==1)
-					{
-							SetEditMode(0);
-						ARX_TIME_Get();
-						SendGameReadyMsg();
-					}
-					else
-					{
-							SetEditMode(1);
-						RestoreAllIOInitPos();
-					}
-
-					if (EDITMODE==1) SetEditMode(0);
-
-				break;
-				case DANAE_B003:
-
-					if (PauseScript==1) PauseScript=0;
-					else PauseScript=1;
-
-				break;
-				case DANAE_B004:
-
-					if (EDITION==EDITION_NODES)
-					{
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-						EDITION=EDITION_IO;
-					}
-					else
-					{
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-						EDITION=EDITION_NODES;
-					}
-
-				break;
-				case DANAE_B008:
-
-					if (EDITION == EDITION_FOGS)
-					{
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs
-						EDITION=EDITION_IO;
-					}
-					else
-					{
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B014,false); //Particles
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B011,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
-						SendMessage(mainApp->ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
-						EDITION=EDITION_FOGS;
-					}
-
-				break;
-				case DANAE_MENU_SAVEPATH:
-					TextBox("Enter SavePath",LOCAL_SAVENAME,16);
-					strcpy(LOCAL_SAVENAME,GTE_TEXT);
-					Danae_Registry_Write("LOCAL_SAVENAME",LOCAL_SAVENAME);
-					ARX_CHANGELEVEL_MakePath();
-				break;
-				case DANAE_MENU_MESH_REDUCTION:
-
-					if (MESH_REDUCTION_WINDOW==NULL)
-					{
-						if (mainApp->m_pFramework->m_bIsFullscreen)
-						{
-							ARX_TIME_Pause();
-							Pause(true);
-							DialogBox( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
-								MAKEINTRESOURCE(IDD_MESHREDUCTION), mainApp->m_hWnd, MeshReductionProc);
-							Pause(false);
-							ARX_TIME_UnPause();				
-						}
-						else
-						MESH_REDUCTION_WINDOW=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_MESHREDUCTION), mainApp->m_hWnd, MeshReductionProc,0 ));
-					}
-
-				break;
-				case DANAE_B009:
-					ARX_PARTICLES_ClearAll();
-					ARX_MISSILES_ClearAll();
-					ARX_SPELLS_ClearAll();
-
-					if (CDP_PATHWAYS_Options!=NULL) SendMessage(CDP_PATHWAYS_Options,WM_CLOSE,0,0);
-
-					if (CDP_LIGHTOptions!=NULL) SendMessage(CDP_LIGHTOptions,WM_CLOSE,0,0);
-
-					if (CDP_FogOptions!=NULL) SendMessage(CDP_FogOptions,WM_CLOSE,0,0);
-
-					CDP_LIGHTOptions=NULL;
-					CDP_FogOptions=NULL;
-					ARX_TIME_Pause();
-					DanaeSwitchFullScreen();
-					LaunchDummyParticle();
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_B013:
-					ARX_TIME_Pause();
-					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
-							   MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
-					EERIE_LIGHT_ChangeLighting();
-					Pause(false);
-					ARX_TIME_UnPause();
-
-				break;
-				case DANAE_MENU_UNFREEZEALLINTER:
-					ARX_INTERACTIVE_UnfreezeAll();
-				break;
-				case DANAE_MENU_RESETSHADOWS:
-					ARX_TIME_Pause();
-					Pause(true);
-
-					if(OKBox("Remove Casts Shadows Flag from all Lights ?","DANAE Confirm Box")) {
-						for(size_t i=0;i<MAX_LIGHTS;i++) {
-							if(GLight[i]) {
-								GLight[i]->extras |= EXTRAS_NOCASTED;
-							}
-						}
-					}
-
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_RECALC:
-
-					if (PRECALC==NULL)
-					{
-						if (mainApp->m_pFramework->m_bIsFullscreen)
-						{
-							ARX_TIME_Pause();
-							Pause(true);
-							DialogBox( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
-								MAKEINTRESOURCE(IDD_PRECALC), mainApp->m_hWnd, PrecalcProc);
-							Pause(false);
-							ARX_TIME_UnPause();				
-						}
-						else
-						PRECALC=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( mainApp->m_hWnd, GWLP_HINSTANCE ),
-							MAKEINTRESOURCE(IDD_PRECALC), mainApp->m_hWnd, PrecalcProc,0 ));
-					}
-
-				break;
-				case DANAE_MENU_LOCALLIST:
-
-					if (ValidIONum(LastSelectedIONum))
-					{
-						ShowText = "";
-
-						if (inter.iobj[LastSelectedIONum]->script.data!=NULL)
-							MakeLocalText(&inter.iobj[LastSelectedIONum]->script,ShowText);
-						else if (inter.iobj[LastSelectedIONum]->over_script.data!=NULL)
-							MakeLocalText(&inter.iobj[LastSelectedIONum]->over_script,ShowText);
-
-						ShowTextWindowtext = "Local Variables";
-						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);					
-					}
-					else  
-						LogError << ("No Interactive Object Selected");
-
-				break;
-				case DANAE_MENU_GLOBALLIST:
-					ShowText = "";
-					MakeGlobalText(ShowText);
-					ShowTextWindowtext ="Global Variables";
-					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);					
-				break;
-				case DANAE_MENU_INTEROBJLIST:
-					LaunchInteractiveObjectsApp(this->m_hWnd);
-				break;
-				case DANAE_MENU_IMPORTSCN:
-					ARX_TIME_Pause();
-					Pause(true);
-					LogError << ("Unavailable Command");
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_UPDATELOCALISATION:
-					ARX_TIME_Pause();
-					Pause(true);
-					LocalisationInit();
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_UPDATESOUNDS:
-					ARX_TIME_Pause();
-					Pause(true);
-					LogError << ("Unavailable Command");
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_UPDATESCENE:
-					ARX_TIME_Pause();
-					Pause(true);
-					LogError << ("Unavailable Command");
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_UPDATEALLSCRIPTS:
-
-					if (!EDITMODE)
-						LogError << ("Command Only Available in EDITOR mode!!!");
-					else
-					{
-						ARX_TIME_Pause();
-						Pause(true);
-
-						if (OKBox("Reload All Scripts ?","Confirm"))
-						ReloadAllScripts();
-
-						Pause(false);
-						ARX_TIME_UnPause();
-					}
-
-				break;
-				case DANAE_MENU_UPDATEALLOBJECTS:
-					ARX_TIME_Pause();
-					Pause(true);
-					LogError << ("Unavailable Command");
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_UPDATEALLTEXTURES:
-					ARX_TIME_Pause();
-					Pause(true);
-					//ReloadAllTextures();
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_UPDATEALLANIMS:
-
-					if (!EDITMODE)
-						LogError << ("Command Only Available in EDITOR mode!!!");
-					else
-					{
-						ARX_TIME_Pause();
-						Pause(true);
-						EERIE_ANIMMANAGER_ReloadAll();
-						Pause(false);
-						ARX_TIME_UnPause();
-					}
-
-				break;
-				case DANAE_MENU_ANIMATIONSLIST:
-				{
-					long tr;
-					long memsize;
-					ARX_TIME_Pause();
-					Pause(true);
-					tr=EERIE_ANIMMANAGER_Count(ShowText,&memsize);
-					std::stringstream ss;
-					ss << "Animations " << tr << ' ' << (memsize>>10) << " Ko";
-					ShowTextWindowtext = ss.str();
-					//sprintf(ShowTextWindowtext,"Animations %d %d Ko",tr,memsize>>10);
-					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, NULL, (DLGPROC)ShowTextDlg);
-					Pause(false);
-					ARX_TIME_UnPause();
-				}
-				break;
-				case DANAE_MENU_TEXLIST:
-				{
-					long _tr;
-					long _memsize;
-					long _memmip;
-					ARX_TIME_Pause();
-					Pause(true);
-					_tr=CountTextures(ShowText,&_memsize,&_memmip);
-					std::stringstream ss;
-					ss << "Textures " << _tr << ' ' << (_memsize>>10) << " Ko MIPsize " << (_memmip>>10) << " Ko";
-					ShowTextWindowtext = ss.str();
-					//sprintf(ShowTextWindowtext,"Textures %d %d Ko MIPsize %d Ko",_tr,_memsize>>10,_memmip>>10);
-					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, NULL, (DLGPROC)ShowTextDlg);
-					Pause(false);
-					ARX_TIME_UnPause();
-				}
-				break;
-				case DANAE_MENU_PROJECTPATH:
-					LogWarning << "not implemented";
-					//HERMESFolderSelector("","Choose Working Folder"); first param receives folder
-					//SetWindowTitle(hWnd,"DANAE Project");
-					//chdir("GRAPH\\LEVELS\\");
-					break;
-				case DANAE_MENU_NEWLEVEL:
-					ARX_TIME_Pause();
-					Pause(true);
-
-					if (OKBox("Do You Really Want to Start\na New Level ?","DANAE Confirm Box"))
-						DanaeClearLevel();
-
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_PURGELEVEL:
-
-					if (OKBox("This Can Be REALLY Dangerous !!! Sure ?","Confirm"))
-					{
-						BIG_PURGE();
-					}
-
-				break;
-				case DANAE_MENU_FORCELOAD:
-
-					if (OKBox("This Can Be Dangerous... Sure ?","Confirm"))
-					{
-						FAKE_DIR=1;
-						WILLLOADLEVEL=1;
-					}
-
-				break;
-				case DANAE_MENU_LOADLEVEL:
-					WILLLOADLEVEL=1;
-				break;
-				case DANAE_MENU_SAVELEVEL:
-					ARX_TIME_Pause();
-					Pause(true);			
-					LogError << ("Unavailable Command");
-					Pause(false);
-					ARX_TIME_UnPause();					
-				break;
-				case DANAE_MENU_SAVEAS:
-					WILLSAVELEVEL=1;
-				break;
-				case DANAE_MENU_EXIT:
-
-					if (OKBox("Do You Really\nWant to Quit DANAE ?","DANAE Confirm Box"))
-						SendMessage( hWnd, WM_CLOSE, 0, 0 );
-
-				break;
-				case DANAE_MENU_ABOUT:
-					ARX_TIME_Pause();
-					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
-							   MAKEINTRESOURCE(IDD_DANAEABOUT), hWnd, AboutProc );
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_OPTIONS:
-					ARX_TIME_Pause();
-					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
-							   MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_OPTIONS2:
-					ARX_TIME_Pause();
-					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
-							   MAKEINTRESOURCE(IDD_OPTIONS2), this->m_hWnd, OptionsProc_2 );
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-			}
-		}
-		break;
-
-#endif // BUILD_EDITOR
-
-	}
-
-	long iii, ij;
-
-	switch (uMsg)
-	{
-		case WM_KEYDOWN:
-			this->kbd.nbkeydown++;
-			iii = (lParam >> 16) & 255;
-			ij = (lParam >> 24) & 1;
-
-			if (ij)
-			{
-				iii += 100;
-				this->kbd.inkey[iii] = 1;
-			}
-			else this->kbd.inkey[iii] = 1;;
-
-			this->kbd.lastkey = (short)iii;
-
-			if (iii == 18)
-			{
-				if (this->kbd._CAPS) this->kbd._CAPS = 0;
-				else this->kbd._CAPS = 1;
-			}
-
-			break;
-
-		case WM_KEYUP:
-			this->kbd.nbkeydown--;
-			iii = (lParam >> 16) & 255;
-			ij = (lParam >> 24) & 1;
-
-			if (ij)
-			{
-				iii += 100;
-				this->kbd.inkey[iii] = 0;
-			}
-			else this->kbd.inkey[iii] = 0;;
-
-			break;
-
-		case WM_ERASEBKGND:
-		{
-			return 1;
-		}
-		break;
-		case WM_PAINT:
-			// Handle paint messages when the app is not ready
-			if (m_pFramework && !m_bReady)
-			{
-				if (m_pDeviceInfo->bWindowed)
-				{
-					m_pFramework->ShowFrame();
-				}
-				else
-				{
-					m_pFramework->FlipToGDISurface(true);
-				}
-			}
-			break;
-		
-		case WM_SIZE:
-			// Check to see if we are losing our window...
-			if (SIZE_MAXHIDE == wParam || SIZE_MINIMIZED == wParam)
-				m_bActive = false;
-			else 
-				m_bActive = true;
-			
-			// A new window size will require a new backbuffer
-			// size, so the 3D structures must be changed accordingly.
-			if (m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
-			{
-
-				m_pFramework->m_bHasMoved = true;
-
-#ifdef BUILD_EDITOR
-				RECT rec;
-				rec.right = LOWORD(lParam);
-				rec.bottom = HIWORD(lParam);
-				if(ToolBar && ToolBar->hWnd) {
-					RECT rectt;
-					GetWindowRect(ToolBar->hWnd, &rectt);
-					SetWindowPos(ToolBar->hWnd, HWND_TOP, 0, 0, rec.right, rectt.bottom, SWP_NOZORDER | SWP_NOREPOSITION | SWP_NOMOVE | SWP_SHOWWINDOW);
-				}
-#endif
-
-			}
-
-			break;
-
-		case WM_SETCURSOR:
-			// Prevent a cursor in fullscreen mode
-			if (m_bActive && m_bReady && !m_pDeviceInfo->bWindowed)
-			{
-				SetCursor(NULL);
-				return 1;
-			}
-			break;
-
-		case WM_NCHITTEST:
-			// Prevent the user from selecting the menu in fullscreen mode
-			if (!m_pDeviceInfo->bWindowed)
-				return HTCLIENT;
-			break;
-
-		case WM_POWERBROADCAST:
-
-			switch (wParam)
-			{
-				case PBT_APMQUERYSUSPEND:
-					// At this point, the app should save any data for open
-					// network connections, files, etc.., and prepare to go into
-					// a suspended mode.
-					return OnQuerySuspend((DWORD)lParam);
-
-				case PBT_APMRESUMESUSPEND:
-					// At this point, the app should recover any data, network
-					// connections, files, etc.., and resume running from when
-					// the app was suspended.
-					return OnResumeSuspend((DWORD)lParam);
-			}
-
-			break;
-
-		case WM_SYSCOMMAND:
-
-			// Prevent moving/sizing and power loss in fullscreen mode
-			switch (wParam)
-			{
-				case SC_MOVE:
-				case SC_SIZE:
-				case SC_MAXIMIZE:
-					// To Avoid Screensaver Problems
-				case SC_SCREENSAVE:
-				case SC_MONITORPOWER:
-					return 0;
-					break;
-				default:
-					break;
-			}
-
-			break;
-
-	case WM_COMMAND:
-	break;
-		case WM_GETMINMAXINFO:
-			((MINMAXINFO *)lParam)->ptMinTrackSize.x = 100;
-			((MINMAXINFO *)lParam)->ptMinTrackSize.y = 100;
-			break;
-
-		case WM_CLOSE:
-			DestroyWindow(hWnd);
-			return 0;
-
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			return 0;
-	}
-
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
-
 
 void ReleaseSystemObjects() {
 	
@@ -7593,7 +4717,7 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 	ARX_TIME_UnPause();
 	
-	ShowWindow(mainApp->m_hWnd, SW_MINIMIZE | SW_HIDE);
+	ShowWindow((HWND)mainApp->GetWindow()->GetHandle(), SW_MINIMIZE | SW_HIDE);
 	
 	ARX_MINIMAP_PurgeTC();
 	
@@ -7665,13 +4789,6 @@ void ClearGame() {
 	//object loaders from beforerun
 	ReleaseDanaeBeforeRun();
 	PAK_Close();
-	
-#ifdef BUILD_EDITOR
-	if (mainApp->ToolBar) {
-		free(mainApp->ToolBar);
-		mainApp->ToolBar=NULL;
-	}
-#endif
 	
 	ReleaseNode();
 	

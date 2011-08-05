@@ -100,7 +100,6 @@ extern long FINAL_RELEASE;
 extern EERIE_CAMERA TCAM[32];
 extern QUAKE_FX_STRUCT QuakeFx;
 extern float _framedelay;
-extern float METALdecal;
 extern long ForceIODraw;
 extern long INTER_DRAW;
 extern long INTER_COMPUTE;

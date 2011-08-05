@@ -1594,12 +1594,9 @@ void DanaeClearLevel(long flag)
 	FAST_RELEASE = 0;
 }
 
-extern void ARX_SOUND_PreloadAll();
-
 void DanaeClearAll()
 {
 	DanaeClearLevel();
-	ARX_SOUND_PreloadAll();
 }
 
 //*************************************************************************************

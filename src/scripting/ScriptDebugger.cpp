@@ -40,7 +40,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scripting/ScriptDebuggerDialog.h"
 
-typedef void (APIENTRY * CREATEDIALOG)(HWND);
+typedef void (APIENTRY * CREATEDIALOG)();
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);
 typedef bool (APIENTRY * DD_EXISTS)();
 typedef void (APIENTRY * DD_KILL)();
@@ -56,7 +56,7 @@ DD_GETVERSION DD_GetVersion = NULL;
 std::string BIG_DEBUG_STRING;
 long BIG_DEBUG_POS = 0;
 
-void DANAE_DEBUGGER_Launch(HWND hWnd)
+void DANAE_DEBUGGER_Launch()
 {
 	HMODULE hm = LoadLibrary("ARX_SCRIPT_DEBUGGER");
 
@@ -82,7 +82,7 @@ void DANAE_DEBUGGER_Launch(HWND hWnd)
 
 	if (DD_DebugDialog)
 	{
-		DD_DebugDialog(hWnd);
+		DD_DebugDialog();
 	}
 
 	return;

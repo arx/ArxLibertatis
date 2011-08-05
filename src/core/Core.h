@@ -77,7 +77,6 @@ extern EERIE_3DOBJ * markerobj;
 extern Vec3f lastteleport;
 extern EERIE_CAMERA bookcam;
 extern HINSTANCE hInstance;
-extern HINSTANCE hInst;
 extern Vec2s DANAEMouse;
 extern EERIE_CAMERA subj, mapcam;
 extern Vec3f moveto;
@@ -134,6 +133,7 @@ extern unsigned long FADESTART;
 extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
+extern float Original_framedelay;
 extern long LOADEDD;
 
 struct QUAKE_FX_STRUCT {
@@ -153,6 +153,29 @@ void AdjustUI();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
 void ARX_SetAntiAliasing();
+void ReMappDanaeButton();
+void AdjustMousePosition();
+void DANAE_StartNewQuest();
+bool DANAE_ManageSplashThings();
+long DANAE_Manage_Cinematic();
+void DanaeRestoreFullScreen();
+void FirstFrameHandling();
+
+void ShowTestText();
+void ShowInfoText();
+void ShowFPS();
+
+void DrawImproveVisionInterface();
+void DrawMagicSightInterface();
+
+void CheckMr();
+
+void ManageFade();
+void ManageQuakeFX();
+
+void ManageCombatModeAnimations();
+void ManageCombatModeAnimationsEND();
+void ManageNONCombatModeAnimations();
 
 #ifdef BUILD_EDITOR
 

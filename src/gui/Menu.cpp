@@ -108,7 +108,6 @@ extern Anglef ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long START_NEW_QUEST;
-extern long INTRO_NOT_LOADED;
 extern long LASTBOOKBUTTON;
 extern long BOOKBUTTON;
 extern long OLD_FLYING_OVER;
@@ -322,7 +321,6 @@ void ARX_MENU_CLICKSOUND()
 void LoadSaveGame(const long & i)
 {
 	ARX_MENU_CLICKSOUND();
-	INTRO_NOT_LOADED = 1;
 	LoadLevelScreen();	
 	PROGRESS_BAR_TOTAL = 238;
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
@@ -463,8 +461,6 @@ void ARX_MENU_Clicked_QUIT()
 {
 	if (REFUSE_GAME_RETURN) return;
 
-	if (INTRO_NOT_LOADED == 2) return;
-
 	ARX_Menu_Resources_Release();
 	ARXmenu.currentmode = AMCM_OFF;
 
@@ -494,7 +490,6 @@ void ARX_MENU_Clicked_NEWQUEST()
 //-----------------------------------------------------------------------------
 void ARX_MENU_NEW_QUEST_Clicked_QUIT()
 {
-	INTRO_NOT_LOADED = 1;
 	START_NEW_QUEST = 1;
 	REFUSE_GAME_RETURN = 0;
 	NEED_SPECIAL_RENDEREND = 1;

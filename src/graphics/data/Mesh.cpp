@@ -111,7 +111,6 @@ static void EERIE_PORTAL_Release();
 
 float Xratio = 1.f;
 float Yratio = 1.f;
-extern long CYRIL_VERSION;
 long COMPUTE_PORTALS = 1;
 
 
@@ -2859,7 +2858,6 @@ void SetCameraDepth(float depth)
 	ACTIVECAM->clip3D = (l / (long)BKG_SIZX) + 1;
 }
 
-extern TextureContainer * tflare;
 extern float _framedelay;
 
 //*************************************************************************************

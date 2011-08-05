@@ -96,7 +96,6 @@ extern long WILL_RELOAD_ALL_TEXTURES;
 
 extern long FINAL_RELEASE;
 
-extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
 
 extern float PROGRESS_BAR_TOTAL;
@@ -350,7 +349,6 @@ bool ARX_QuickLoad()
 		else
 			iSave = iNbSave0;
 
-		INTRO_NOT_LOADED        =    1;
 		LoadLevelScreen();
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
@@ -365,7 +363,6 @@ bool ARX_QuickLoad()
 
 	if ( bFound0 != false )
 	{
-		INTRO_NOT_LOADED        =    1;
 		LoadLevelScreen();
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
@@ -380,7 +377,6 @@ bool ARX_QuickLoad()
 
 	if ( bFound1 != false )
 	{
-		INTRO_NOT_LOADED        =    1;
 		LoadLevelScreen();
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;

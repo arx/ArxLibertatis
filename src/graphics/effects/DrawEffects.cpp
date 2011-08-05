@@ -82,7 +82,7 @@ extern long DANAESIZX;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
 extern long MOVETYPE;
-extern EERIE_3DOBJ * eyeballobj; 
+extern EERIE_3DOBJ * eyeballobj;
 extern TextureContainer * Boom;
 
 POLYBOOM polyboom[MAX_POLYBOOM];

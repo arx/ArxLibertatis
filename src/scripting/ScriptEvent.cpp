@@ -33,6 +33,8 @@
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
 
+#include "input/Input.h"
+
 #include "io/Logger.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
@@ -3400,11 +3402,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					MakeGlobalText(ShowText);
 					ShowTextWindowtext = "Global Variables";
 
-#ifdef BUILD_EDITOR
-					if (!(mainApp->kbd.inkey[INKEY_LEFTSHIFT]) && !(mainApp->kbd.inkey[INKEY_RIGHTSHIFT]))
-						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
-#endif
-
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG) sprintf(cmd, "SHOWGLOBALS");
@@ -3416,11 +3413,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					ShowText = "";
 					MakeLocalText(es, ShowText);
 					ShowTextWindowtext = "Local Variables";
-
-#ifdef BUILD_EDITOR
-					if (!(mainApp->kbd.inkey[INKEY_LEFTSHIFT]) && !(mainApp->kbd.inkey[INKEY_RIGHTSHIFT]))
-						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
-#endif
 
 #ifdef NEEDING_DEBUG
 
@@ -3435,11 +3427,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					MakeGlobalText(ShowText);
 					MakeLocalText(es, ShowText2);
 					ShowTextWindowtext = "Variables";
-
-#ifdef BUILD_EDITOR
-					if (!(mainApp->kbd.inkey[INKEY_LEFTSHIFT]) && !(mainApp->kbd.inkey[INKEY_RIGHTSHIFT]))
-						DialogBox(hInstance, (LPCTSTR)IDD_SHOWVARS, NULL, (DLGPROC)ShowVarsDlg);
-#endif
 
 #ifdef NEEDING_DEBUG
 
@@ -4243,8 +4230,8 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				else if (!strcmp(word, "POPUP"))
 				{
 					pos = GetNextWord(es, pos, word);
-
-					if (!(mainApp->kbd.inkey[INKEY_LEFTSHIFT]) && !(mainApp->kbd.inkey[INKEY_RIGHTSHIFT]))
+                    
+					if (!GInput->isKeyPressed(Keyboard::Key_LeftShift) && !GInput->isKeyPressed(Keyboard::Key_RightShift))
 					{
 						ARX_TIME_Pause();
 						LogError << word;

@@ -71,7 +71,10 @@ struct INTERACTIVE_OBJ;
 
 extern long FASTLOADS;
 
-void LaunchInteractiveObjectsApp(HWND hwnd);
+void ShowDialogBox(int i, DLGPROC lpDialogFunc);
+HWND CreateDialogHelper(int i, DLGPROC lpDialogFunc);
+
+void LaunchInteractiveObjectsApp();
 void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name = NULL);
 void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name = NULL, long type = 0);
 void KillInterTreeView();

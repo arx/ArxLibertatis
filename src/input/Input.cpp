@@ -74,7 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 Input * GInput = NULL;
 
 // TODO-input: Clean me!
-extern long STOP_KEYBOARD_INPUT;
 extern long EERIEMouseButton;
 extern long LastEERIEMouseButton;
 
@@ -260,7 +259,8 @@ void Input::reset()
 {
 	iMouseR = Vec2s::ZERO;
 
-	Vec2s absPos(mainApp->WndSizeX / 2,  mainApp->WndSizeY / 2);
+	Vec2s wndSize((short)mainApp->GetWindow()->GetSize().x, (short)mainApp->GetWindow()->GetSize().y); 
+	Vec2s absPos = wndSize / 2;
 	setMousePosAbs(absPos);
 	
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
@@ -498,21 +498,23 @@ void Input::update()
 	int absX, absY;
 	backend->getMouseCoordinates(absX, absY, iWheelDir);
 
+	Vec2i wndSize = mainApp->GetWindow()->GetSize();
+
 	// Do not update mouse position when it is outside of the window
-	if(absX >= 0 && absX < mainApp->WndSizeX && absY >= 0 && absY < mainApp->WndSizeY)
+	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y)
 	{
 		iMouseARaw = Vec2s((short)absX, (short)absY);
 
 		// In fullscreen, use the sensitivity config value to adjust mouse mouvements
-		if(mainApp->m_pFramework->m_bIsFullscreen) {
+		if(mainApp->GetWindow()->IsFullScreen()) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
 			fSens = pow( .7f, fSens ) * 2.f;
 
 			Vec2f fD;
-			fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens * ( ( (float)mainApp->WndSizeX ) / 640.f );
-			fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens * ( ( (float)mainApp->WndSizeY ) / 480.f );
+			fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens * ( ( (float)wndSize.x ) / 640.f );
+			fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens * ( ( (float)wndSize.y ) / 480.f );
 
 			iMouseR.x = (int)fD.x;
 			iMouseR.y = (int)fD.y;
@@ -523,8 +525,8 @@ void Input::update()
 		}
 
 		// Clamp to window rect
-		iMouseA.x = clamp(iMouseA.x, 0, (short)mainApp->WndSizeX - 1);
-		iMouseA.y = clamp(iMouseA.y, 0, (short)mainApp->WndSizeY - 1);
+		iMouseA.x = clamp(iMouseA.x, 0, (short)wndSize.x - 1);
+		iMouseA.y = clamp(iMouseA.y, 0, (short)wndSize.y - 1);
 	}
 }
 

@@ -28,11 +28,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Application.h"
 
-#include "windows.h"
+#include <windows.h>
 
-class Win32Application : public Application {
+class ArxGame : public Application, public Window::Listener {
 	
 protected:
+	virtual bool Initialize();
+	virtual bool InitWindow();
+	virtual bool InitGraphics();
+	virtual bool InitInput();
+	virtual bool InitSound();
+	bool InitGameData();
+	bool AddPaks();
 
 	bool DeleteDeviceObjects();
 	bool Render();
@@ -47,10 +54,6 @@ protected:
 	
 	HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
 
-	// Overridable power management (APM) functions
-	LRESULT OnQuerySuspend(DWORD dwFlags);
-	LRESULT OnResumeSuspend(DWORD dwData);
-
 	// 3D Framework functions
 	void DisplayFrameworkError(HRESULT, DWORD);
 	HRESULT Initialize3DEnvironment();
@@ -59,9 +62,9 @@ protected:
 
 public:
 	
-	Win32Application();
-	bool Create(WindowCreationFlags CreationFlags);
-	virtual int Run();
+	ArxGame();
+	bool Create();
+	virtual void Run();
 	bool InitDeviceObjects();
 	bool FinalCleanup();
 	virtual bool SwitchFullScreen();
@@ -78,7 +81,14 @@ public:
 	*/
 	virtual void OutputText( int x, int y, const std::string& str );
 
-	virtual LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+private:
+    virtual void OnWindowGotFocus(const Window& window);
+    virtual void OnWindowLostFocus(const Window& window);
+	virtual void OnResizeWindow(const Window& window);
+    virtual void OnPaintWindow(const Window& window);
+    virtual void OnDestroyWindow(const Window& pWindow);
+
+	bool m_RunLoop;
 };
 
 #endif // WIN32APPLICATION_H

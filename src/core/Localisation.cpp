@@ -50,7 +50,7 @@ IniReader localisation;
 extern long FINAL_COMMERCIAL_GAME;
 extern long FINAL_COMMERCIAL_DEMO;
 
-void LocalisationInit() {
+bool InitLocalisation() {
 	
 	LogDebug << "Starting localization";
 	
@@ -77,8 +77,10 @@ void LocalisationInit() {
 	
 	u16 * toFree = Localisation;
 
-	if ( !Localisation )
-		LogFatal << "Could not load localisation file " << tx;
+	if ( !Localisation ) {
+		LogError << "Could not load localisation file " << tx;
+		return false;
+	}
 	
 	
 	LogDebug << "Loaded localisation file " << tx;
@@ -111,6 +113,7 @@ void LocalisationInit() {
 	
 	free(toFree);
 	
+	return true;
 }
 
 long getLocalisedKeyCount(const string & sectionname) {

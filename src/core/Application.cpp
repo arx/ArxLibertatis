@@ -81,13 +81,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
+#include "platform/Random.h"
+
 using std::max;
-
-//-----------------------------------------------------------------------------
-extern long FINAL_RELEASE;
-
-extern long FINAL_COMMERCIAL_DEMO;
-extern long FINAL_COMMERCIAL_GAME;
 
 //-----------------------------------------------------------------------------
 long EERIEMouseButton = 0;
@@ -111,67 +107,63 @@ static int iCurrZBias;
 //*************************************************************************************
 Application::Application()
 {
-	long i;
 	m_pFramework   = NULL;
-	m_hWnd         = NULL;
 	m_pD3D         = NULL;
 
 	lpDDGammaControl = NULL;
 
-	m_bActive         = false;
 	m_bReady          = false;
 
 	m_bAppUseZBuffer  = false;
-	WndSizeX = 640;
-	WndSizeY = 480;
-	Fullscreen = 0;
-#ifdef BUILD_EDITOR
-	ToolBar = NULL;
-	CreationMenu = 0;
-#endif
-
-	//Keyboard Init;
-	for (i = 0; i < 255; i++)	kbd.inkey[i] = 0;
-
-	kbd.nbkeydown = 0;
-	kbd._CAPS = 0;
-
 }
 
+bool Application::Initialize()
+{
+	bool init;
 
-extern long FINAL_COMMERCIAL_DEMO;
-extern long FINAL_COMMERCIAL_GAME;
+	init = InitConfig();
+	if(!init) {
+		return false;
+	}
 
+	init = InitWindow();
+	if(!init) {
+		return false;
+	}
 
-#ifdef BUILD_EDITOR
-HWND Application::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
-	
-	HWND hWndToolbar;
-	long flags;
+	init = InitGraphics();
+	if(!init) {
+		return false;
+	}
 
+	init = InitInput();
+	if(!init) {
+		return false;
+	}
 
-	flags = WS_CHILD | WS_BORDER | WS_VISIBLE | TBSTYLE_WRAPABLE;
+	init = InitSound();
+	if(!init) {
+		return false;
+	}
 
-	if (this->ToolBar->Type == EERIE_TOOLBAR_TOP) flags |= CCS_TOP;
-	else flags |= CCS_LEFT;
+	Random::seed();
 
-	hWndToolbar = CreateToolbarEx(hWndParent,
-	                              flags,
-	                              this->ToolBar->CreationToolBar, this->ToolBar->ToolBarNb, //nb buttons in bmp
-	                              (HINSTANCE)hInst, this->ToolBar->Bitmap,
-	                              (LPCTBBUTTON)this->ToolBar->Buttons, this->ToolBar->ToolBarNb,
-	                              16, 15, 16, 15, sizeof(TBBUTTON));
-
-	SetWindowPos(hWndToolbar, HWND_TOP, 0, 90, 2, 500, SWP_SHOWWINDOW);
-	ShowWindow(hWndToolbar, SW_SHOW);
-	UpdateWindow(hWndToolbar);
-
-
-	return hWndToolbar;
+	return true;
 }
-#endif
 
-	
+bool Application::InitConfig()
+{
+	// Initialize config first, before anything else.
+	const char RESOURCE_CONFIG[] = "cfg.ini";
+	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
+	if(!config.init(RESOURCE_CONFIG, RESOURCE_CONFIG_DEFAULT)) {
+		LogWarning << "Could not read config files " << RESOURCE_CONFIG << " and " << RESOURCE_CONFIG_DEFAULT;
+		return false;
+	}
+
+	return true;
+}
+
 void Application::EvictManagedTextures()
 {
 	if (this->m_pD3D)
@@ -249,7 +241,7 @@ bool OKBox(const std::string& text, const std::string& title)
 {
 	int i;
 	mainApp->Pause(true);
-	i = MessageBox(mainApp->m_hWnd, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
+	i = MessageBox((HWND)mainApp->GetWindow()->GetHandle(), text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
 	mainApp->Pause(false);
 
 	if (i == IDCANCEL) return false;

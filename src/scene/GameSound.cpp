@@ -336,8 +336,6 @@ static float GetSamplePresenceFactor(const string & name);
 LPTHREAD_START_ROUTINE UpdateSoundThread(char *);
 static void ARX_SOUND_LaunchUpdateThread();
 static void ARX_SOUND_KillUpdateThread();
-void ARX_SOUND_PreloadAll();
-
 
 bool ARX_SOUND_Init()
 {
@@ -394,6 +392,15 @@ bool ARX_SOUND_Init()
 	aalSetUnitFactor(ARX_SOUND_UNIT_FACTOR);
 	aalSetRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
 
+	ARX_SOUND_LaunchUpdateThread();
+
+	bIsActive = true;
+
+	return true;
+}
+
+void ARX_SOUND_LoadData()
+{
 	// Load samples
 	ARX_SOUND_CreateStaticSamples();
 	ARX_SOUND_CreateMaterials();
@@ -407,21 +414,8 @@ bool ARX_SOUND_Init()
 		setReverbEnabled(true);
 		ARX_SOUND_EnvironmentSet("alley.aef");
 	}
-
-	ARX_SOUND_LaunchUpdateThread();
-
-	bIsActive = true;
-	ARX_SOUND_PreloadAll();
-
-	return true;
 }
  
-void ARX_SOUND_PreloadAll()
-{
-
-}
-
-
 void ARX_SOUND_Release()
 {
 	ARX_SOUND_ReleaseStaticSamples();

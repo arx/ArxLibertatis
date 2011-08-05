@@ -114,21 +114,9 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 	mainApp->m_pFramework->m_dwRenderHeight = _iHeight;
 	mainApp->m_pFramework->m_dwRenderWidth = _iWidth;
 
-	if (mainApp->m_pDeviceInfo->bWindowed)
+	if (!mainApp->GetWindow()->IsFullScreen())
 	{
-		RECT rRect;
-		RECT rRect2;
-		GetClientRect(mainApp->m_hWnd, &rRect);
-		GetWindowRect(mainApp->m_hWnd, &rRect2);
-		int dx = (rRect2.right - rRect2.left) - (rRect.right - rRect.left);
-		int dy = (rRect2.bottom - rRect2.top) - (rRect.bottom - rRect.top);
-		SetWindowPos(mainApp->m_hWnd,
-			            HWND_TOP,
-			            rRect2.left,
-			            rRect2.top,
-			            _iWidth + dx,
-			            _iHeight + dy,
-			            SWP_SHOWWINDOW);
+		mainApp->GetWindow()->SetSize(Vec2i(_iWidth, _iHeight));
 	}
 	else
 	{

@@ -304,8 +304,8 @@ bool DInput7Backend::init() {
 		return false;
 	}
 
-    iLastMouseX = mainApp->m_pFramework->m_dwRenderWidth / 2;
-	iLastMouseY = mainApp->m_pFramework->m_dwRenderHeight / 2;
+    iLastMouseX = mainApp->GetWindow()->GetSize().x / 2;
+	iLastMouseY = mainApp->GetWindow()->GetSize().y / 2;
 
 	setMouseCoordinates(iLastMouseX, iLastMouseY);
 	
@@ -467,7 +467,7 @@ bool getKeyboardInputDevice(DXIMode mode) {
 			continue;
 		}
 		
-		if(chooseInputDevice(mainApp->m_hWnd, *i, mode)) {
+		if(chooseInputDevice((HWND)mainApp->GetWindow()->GetHandle(), *i, mode)) {
 			return true;
 		}
 		
@@ -489,7 +489,7 @@ bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 			continue;
 		}
 		
-		if(chooseInputDevice(mainApp->m_hWnd, *i, mode)) {
+		if(chooseInputDevice((HWND)mainApp->GetWindow()->GetHandle(), *i, mode)) {
 			if(i->nbbuttons >= minbutton && i->nbaxes >= minaxe) {
 				return true;
 			} else {
@@ -628,14 +628,14 @@ void DInput7Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir)
 	iLastMouseX = clamp(iLastMouseX, 0, (int)mainApp->m_pFramework->m_dwRenderWidth);
 	iLastMouseY = clamp(iLastMouseY, 0, (int)mainApp->m_pFramework->m_dwRenderHeight);
 	
-	if(mainApp->m_pFramework->m_bIsFullscreen) {
+	if(mainApp->GetWindow()->IsFullScreen()) {
 		absX = iLastMouseX;
 		absY = iLastMouseY;
 	} else {
 		// Win absolute
 		POINT pt;
 		GetCursorPos(&pt);
-		ScreenToClient(mainApp->m_hWnd, &pt);
+		ScreenToClient((HWND)mainApp->GetWindow()->GetHandle(), &pt);
 		absX = pt.x;
 		absY = pt.y;
 	}	
@@ -646,11 +646,11 @@ void DInput7Backend::setMouseCoordinates(int absX, int absY)
 	iLastMouseX = absX;
 	iLastMouseY = absY;
 	
-	if(!mainApp->m_pFramework->m_bIsFullscreen) {
+	if(!mainApp->GetWindow()->IsFullScreen()) {
 		POINT pt;
 		pt.x = absX;
 		pt.y = absY;
-		ClientToScreen(mainApp->m_hWnd,&pt);
+		ClientToScreen((HWND)mainApp->GetWindow()->GetHandle(), &pt);
 		SetCursorPos(pt.x, pt.y);
 	}
 }

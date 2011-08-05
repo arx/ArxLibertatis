@@ -31,7 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /*!
  * Initializes the localisation hashmap based on the current chosen locale
  */
-void LocalisationInit();
+bool InitLocalisation();
 
 /*!
  * Returns the localized string for the given key name
