@@ -428,6 +428,8 @@ void initSuppressions() {
 	
 	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
 	
+	suppress("human_base_0099", 997, "errata"); // unknown command 'errata', should be 'goto errata'
+	
 	suppress("human_base_0118", 101, "collisions"); // unknown command 'collisions', should be 'collision'
 	
 	suppress("human_base_0119", 179, "collisions"); // unknown command 'collisions', should be 'collision'
