@@ -426,6 +426,10 @@ void initSuppressions() {
 	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
 	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
 	
+	suppress("human_base_0085", 426, "loadanim add"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
+	
+	suppress("human_base_0086", 787, "loadanim add"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
+	
 	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
 	
 	suppress("human_base_0099", 997, "errata"); // unknown command 'errata', should be 'goto errata'
