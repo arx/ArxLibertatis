@@ -71,10 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 EERIE_3DOBJ * fogobj = NULL;
 
-#ifdef BUILD_EDITOR
-extern FOG_DEF fogcopy;
-#endif
-
 FOG_DEF fogs[MAX_FOG];
 
 //*************************************************************************************
@@ -88,18 +84,6 @@ void ARX_FOGS_Set_Object(EERIE_3DOBJ * _fogobj)
 //*************************************************************************************
 void ARX_FOGS_FirstInit()
 {
-#ifdef BUILD_EDITOR
-	memset(&fogcopy, 0, sizeof(FOG_DEF));
-	fogcopy.frequency = 17.f;
-	fogcopy.rgb.r = 0.3f;
-	fogcopy.rgb.g = 0.3f;
-	fogcopy.rgb.b = 0.5f;
-	fogcopy.rotatespeed = 0.001f;
-	fogcopy.scale = 8.f;
-	fogcopy.size = 80.f;
-	fogcopy.speed = 1.f;
-	fogcopy.tolive = 4500;
-#endif
 	ARX_FOGS_Clear();
 }
 //*************************************************************************************

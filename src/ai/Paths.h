@@ -177,17 +177,6 @@ void ARX_PATH_ComputeAllBoundingBoxes();
 
 ARX_PATH * ARX_PATHS_ExistName(char * name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
-#ifdef BUILD_EDITOR
-void ARX_PATHS_RedrawAll();
-ARX_PATH * ARX_PATHS_Create(const char * name, Vec3f * pos);
-ARX_PATH * ARX_PATHS_AddNew(Vec3f * pos);
-void ARX_PATHS_Delete(ARX_PATH * ap);
-long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert);
-void ARX_PATHS_ModifyPathWay(ARX_PATH * ap, long num, PathMods mods, Vec3f * pos, PathwayType flags, unsigned long time);
-void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del);
-void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname);
-void ARX_PATHS_DrawPath(ARX_PATH * ap);
-#endif
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos);
 
 enum ThrownObjectFlag {

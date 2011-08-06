@@ -304,7 +304,6 @@ long TELEPORT_TO_ANGLE;
 long TELEPORT_TO_CONFIRM=1;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 char LastLoadedDLF[512];
-char ItemToBeAdded[1024];
 char WILL_LAUNCH_CINE[256];
 char LOCAL_SAVENAME[64];
 char _CURRENTLOAD_[256];
@@ -448,9 +447,6 @@ extern EERIE_CAMERA * ACTIVECAM;
 void LoadSysTextures();
 void ShowFPS();
 void ManageNONCombatModeAnimations();
-#ifdef BUILD_EDITOR
-void LaunchMoulinex();
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -477,39 +473,31 @@ void DANAE_KillCinematic()
 
 void DanaeSwitchFullScreen()
 {
-	if (mainApp->m_pDeviceInfo->bWindowed) // switching to fullscreen
+	int nb=mainApp->m_pDeviceInfo->dwNumModes;
+
+	for(int i=0;i<nb;i++)
 	{
-#ifdef BUILD_EDITOR
-		KillInterTreeView();
-#endif
-	}
+		ARX_CHECK_NOT_NEG( config.video.bpp );
 
-		int nb=mainApp->m_pDeviceInfo->dwNumModes;
-
-		for(int i=0;i<nb;i++)
+		if( mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( config.video.bpp ) )
 		{
+			ARX_CHECK_NOT_NEG( config.video.width );
+			ARX_CHECK_NOT_NEG( config.video.height );
 
-			ARX_CHECK_NOT_NEG( config.video.bpp );
-
-			if( mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( config.video.bpp ) )
+			if( ( mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( config.video.width ) ) &&
+				( mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( config.video.height ) ) )
 			{
-				ARX_CHECK_NOT_NEG( config.video.width );
-				ARX_CHECK_NOT_NEG( config.video.height );
 
-				if( ( mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( config.video.width ) ) &&
-					( mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( config.video.height ) ) )
-				{
-
-					mainApp->m_pDeviceInfo->ddsdFullscreenMode=mainApp->m_pDeviceInfo->pddsdModes[i];
-					mainApp->m_pDeviceInfo->dwCurrentMode=i;
-					break;
-				}
+				mainApp->m_pDeviceInfo->ddsdFullscreenMode=mainApp->m_pDeviceInfo->pddsdModes[i];
+				mainApp->m_pDeviceInfo->dwCurrentMode=i;
+				break;
 			}
 		}
+	}
 
-		config.video.bpp = mainApp->m_pFramework->bitdepth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
-		config.video.height = mainApp->m_pFramework->m_dwRenderHeight = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
-		config.video.width = mainApp->m_pFramework->m_dwRenderWidth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
+	config.video.bpp = mainApp->m_pFramework->bitdepth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
+	config.video.height = mainApp->m_pFramework->m_dwRenderHeight = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
+	config.video.width = mainApp->m_pFramework->m_dwRenderWidth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
 
 	if(pMenu)
 	{
@@ -797,13 +785,6 @@ void InitializeDanae()
 		EERIEPOLY_Compute_PolyIn();
 		strcpy(LastLoadedScene,levelPath);
 	}
-
-#ifdef BUILD_EDITOR
-	if(GAME_EDITOR && !MOULINEX) {
-		LaunchInteractiveObjectsApp();
-	}
-#endif
-
 }
 
 //-----------------------------------------------------------------------------
@@ -2297,7 +2278,6 @@ void FirstFrameProc() {
 
 	if (!LOAD_N_DONT_ERASE) ARX_TIME_Init();
 
-	strcpy(ItemToBeAdded,"");
 	ARX_BOOMS_ClearAllPolyBooms();
 	ARX_DAMAGES_Reset();
 	ARX_MISSILES_ClearAll();
@@ -2521,14 +2501,8 @@ void FirstFrameHandling()
 		DONT_WANT_PLAYER_INZONE=0;
 	}
 
-#ifdef BUILD_EDITOR
-	if(MOULINEX) {
-		LaunchMoulinex();
-	}
-#endif
-
- PROGRESS_BAR_COUNT+=1.f;
- LoadLevelScreen();
+	PROGRESS_BAR_COUNT+=1.f;
+	LoadLevelScreen();
 
 	player.desiredangle.a=player.angle.a=0.f;
 	ARX_PLAYER_RectifyPosition();
@@ -3760,127 +3734,6 @@ void ManageQuakeFX()
 	}
 }
 
-#ifdef BUILD_EDITOR
-void LaunchMoulinex()
-{
-	char tx[256];
-
-	if (PROCESS_ONLY_ONE_LEVEL!=-1)
-	{
-		PROCESS_LEVELS=1;
-	}
-
-	if (PROCESS_LEVELS==0)
-	{
-
-		MOULINEX=0;
-		LASTMOULINEX=-1;
-
-		if (KILL_AT_MOULINEX_END)
-		{
-			mainApp->FinalCleanup();
-			exit(0);
-		}
-		else LogError << ("Moulinex Successfull");
-
-		return;
-	}
-
-	long lvl=MOULINEX-1;
-
-	if (PROCESS_ONLY_ONE_LEVEL!=-1)
-		lvl=PROCESS_ONLY_ONE_LEVEL;
-
-	LogDebug << "Moulinex Lvl " << lvl;
-
-	if (LASTMOULINEX!=-1)
-	{
-		char saveto[256];
-		long lastlvl;
-
-		if (PROCESS_ONLY_ONE_LEVEL!=-1)
-			lastlvl=PROCESS_ONLY_ONE_LEVEL;
-		else
-			lastlvl=MOULINEX-2;
-
-		GetLevelNameByNum(lastlvl,tx);
-		sprintf(saveto,"Graph\\Levels\\Level%s\\level%s.dlf",tx,tx);
-
-		if (FileExist(saveto))
-		{
-			LightMode oldmode = ModeLight;
-			ModeLight=MODE_NORMALS | MODE_RAYLAUNCH | MODE_STATICLIGHT | MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
-
-			if (TSU_LIGHTING) ModeLight|=MODE_SMOOTH;
-
-			EERIERemovePrecalcLights();
-			EERIEPrecalcLights(0,0,999999,999999);
-			DanaeSaveLevel(saveto);
-			ModeLight = oldmode;
-		}
-
-		if (PROCESS_ONLY_ONE_LEVEL!=-1)
-		{
-			mainApp->FinalCleanup();
-			exit(0);
-		}
-	}
-
-	if (MOULINEX>=32)
-	{
-		MOULINEX=0;
-		LASTMOULINEX=-1;
-
-		if (KILL_AT_MOULINEX_END)
-		{
-			mainApp->FinalCleanup();
-			exit(0);
-		}
-		else LogError << ("Moulinex Successfull");
-
-		return;
-	}
-
-	if (PROCESS_ONLY_ONE_LEVEL!=-1)
-	{
-		lvl=PROCESS_ONLY_ONE_LEVEL;
-	}
-
-	{
-		char loadfrom[256];
-
-		GetLevelNameByNum(lvl,tx);
-
-		if (strcasecmp(tx,"NONE"))
-		{
-			sprintf(loadfrom,"Graph\\Levels\\Level%s\\level%s.dlf",tx,tx);
-
-			if (FileExist(loadfrom))
-			{
-				if (CDP_LIGHTOptions!=NULL) SendMessage(CDP_LIGHTOptions,WM_CLOSE,0,0);
-
-				if (CDP_FogOptions!=NULL) SendMessage(CDP_FogOptions,WM_CLOSE,0,0);
-
-				CDP_LIGHTOptions=NULL;
-				CDP_FogOptions=NULL;
-				SetEditMode(1);
-				DanaeClearLevel();
-				DanaeLoadLevel(loadfrom);
-				FORBID_SAVE=0;
-				FirstFrame=1;
-			}
-		}
-
-	}
-
-	if (PROCESS_ONLY_ONE_LEVEL!=-1)
-		LASTMOULINEX=PROCESS_ONLY_ONE_LEVEL;
-	else LASTMOULINEX=MOULINEX;
-
-	MOULINEX++;
-}
-#endif
-
 void DANAE_StartNewQuest()
 {
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
@@ -4120,48 +3973,6 @@ long DANAE_Manage_Cinematic()
 	LastFrameTicks=FrameTicks;
 	return 0;
 }
-
-#ifdef BUILD_EDITOR
-void DanaeItemAdd()
-{
-	INTERACTIVE_OBJ * tmp=AddInteractive(ItemToBeAdded,0,IO_IMMEDIATELOAD);
-
-	if (tmp!=NULL)
-	{
-		ARX_INTERACTIVE_HideGore(tmp);
-		ADDED_IO_NOT_SAVED++;
-		tmp->EditorFlags |= EFLAG_NOTSAVED;
-		InterTreeViewItemAdd(tmp);
-		RestoreInitialIOStatusOfIO(tmp);
-		long num=GetInterNum(tmp);
-
-		if (ValidIONum(num))
-		{
-			if (inter.iobj[num] && inter.iobj[num]->script.data)
-			{
-				ScriptEvent::send(&inter.iobj[num]->script,SM_INIT,"",inter.iobj[num],"");
-			}
-
-			if (inter.iobj[num] && inter.iobj[num]->over_script.data)
-			{
-				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INIT,"",inter.iobj[num],"");
-			}
-
-			if (inter.iobj[num] && inter.iobj[num]->script.data)
-			{
-				ScriptEvent::send(&inter.iobj[num]->script,SM_INITEND,"",inter.iobj[num],"");
-			}
-
-			if (inter.iobj[num] && inter.iobj[num]->over_script.data)
-			{
-				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INITEND,"",inter.iobj[num],"");
-			}
-		}
-	}
-
-	ItemToBeAdded[0]=0;
-}
-#endif
 
 void ReMappDanaeButton()
 {

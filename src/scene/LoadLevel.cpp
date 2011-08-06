@@ -156,76 +156,6 @@ bool CanPurge(Vec3f * pos)
 	return true;
 }
 
-#ifdef BUILD_EDITOR
-
-void BIG_PURGE() {
-	
-	if (OKBox("Do you really want to PURGE this level ???", "Confirm Box"))
-	{
-		
-		long IO_count = 0;
-		long LIGHT_count = 0;
-		long PATH_count = 0;
-		long FOG_count = 0;
-		
-		for (long i = 1; i < inter.nbmax; i++)
-		{
-			if (inter.iobj[i])
-				if (CanPurge(&inter.iobj[i]->initpos))
-				{
-					// purge io
-					ARX_INTERACTIVE_DeleteByIndex(i, FLAG_NOCONFIRM | FLAG_DONTKILLDIR);
-					IO_count++;
-				}
-		}
-
-		for(size_t i = 0; i < MAX_LIGHTS; i++) {
-			if(GLight[i]) {
-				if(CanPurge(&GLight[i]->pos)) {
-					// purge light
-					EERIE_LIGHT_ClearByIndex(i);
-					LIGHT_count++;
-				}
-			}
-		}
-
-		for (int i = nbARXpaths - 1; i >= 0; i--)
-		{
-			Vec3f pos;
-			pos.x = ARXpaths[i]->initpos.x;
-			pos.y = ARXpaths[i]->initpos.y;
-			pos.z = ARXpaths[i]->initpos.z;
-
-			if (CanPurge(&pos))   // To check (pos)
-			{
-				// purge path
-				ARX_PATHS_Delete(ARXpaths[i]);
-				PATH_count++;
-			}
-		}
-
-		for (int i = 0; i < MAX_FOG; i++)
-		{
-			if (fogs[i].exist)
-			{
-				if (CanPurge(&fogs[i].pos))
-				{
-					// purge fog
-					ARX_FOGS_KillByIndex(i);
-					FOG_count++;
-				}
-			}
-		}
-
-		char text[256];
-		sprintf(text, "Killed: %ld IO; %ld Lights; %ld Paths; %ld Fogs.",
-				IO_count, LIGHT_count, PATH_count, FOG_count);
-		LogError << (text);
-	}
-}
-
-#endif // BUILD_EDITOR
-
 void ReplaceSpecifics( char* text )
 {
 /*	std::string temp = text;
@@ -869,10 +799,6 @@ INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const Vec3f & po
 					EERIE_COLLISION_Cylinder_Create(io);
 			}
 		}
-
-#ifdef BUILD_EDITOR
-		InterTreeViewItemAdd(io);
-#endif
 	}
 
 	return io;

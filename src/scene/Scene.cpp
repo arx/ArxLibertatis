@@ -109,9 +109,6 @@ extern HANDLE LIGHTTHREAD;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
 extern long DEBUG_FRUSTRUM;
-#ifdef BUILD_EDITOR
-extern long HIDEANCHORS;
-#endif
 extern long EXTERNALVIEW;
 extern long WATERFX;
 extern long REFLECTFX;
@@ -3115,78 +3112,6 @@ void ARX_SCENE_Render(long flag) {
 		}
 			}
 
-	
-#ifdef BUILD_EDITOR
-	if ((!HIDEANCHORS) || DEBUG_FRUSTRUM)
-	for (long n=0;n<=lcval;n++)
-	{
-		temp0+=100.f;
-
-		for (long j=zsnap-n;j<=zsnap+n;j++)
-		{
-			for (i=xsnap-n;i<=xsnap+n;i++)
-			{
-				if ( (i!=xsnap-n) && (i!=xsnap+n) && (j!=zsnap-n) && (j!=zsnap+n) )
-					continue;
-
-				if ( (i<0) || (j<0) || (i>=ACTIVEBKG->Xsize) || (j>=ACTIVEBKG->Zsize) ) continue;
-
-				if (i<x0) continue;
-
-				if (i>x1) continue;
-	
-						feg = &ACTIVEBKG->fastdata[i][j]; 
-			
-				if (!HIDEANCHORS)
-				for (lll=0;lll<feg->nbianchors;lll++)
-				{
-					_ANCHOR_DATA * ad=&ACTIVEBKG->anchors[feg->ianchors[lll]];
-					ad->pos.y-=10;			
-
-					if(ad->nblinked == 0) {
-						DebugSphere(ad->pos.x, ad->pos.y, ad->pos.z, 3.f, 90, Color::green);
-					} else if (ad->flags & ANCHOR_FLAG_BLOCKED) {
-						DebugSphere(ad->pos.x, ad->pos.y, ad->pos.z, 3.f, 90, Color::cyan);
-					} else if (ad->flags & 1) {
-						DebugSphere(ad->pos.x, ad->pos.y, ad->pos.z, 3.f, 90, Color::green);
-					} else {
-						DebugSphere(ad->pos.x, ad->pos.y, ad->pos.z, 3.f, 90, Color::red);
-					}
-
-					for (long k=0;k<ad->nblinked;k++)
-					{
-						
-						_ANCHOR_DATA * ad2=&ACTIVEBKG->anchors[ad->linked[k]];
-						ad2->pos.y-=10;
-
-						if((ad->flags & 1) && (ad2->flags & 1)) {
-							EERIEDrawTrue3DLine(ad->pos, ad2->pos, Color::green);
-						} else {
-							EERIEDrawTrue3DLine(ad->pos, ad2->pos, Color::red);
-						}
-
-						ad2->pos.y+=10;
-					}
-
-					ad->pos.y+=10;
-
-					if(DEBUGNPCMOVE) {
-						EERIE_CYLINDER cyl;
-						cyl.origin = ad->pos;
-						cyl.radius = ad->radius;
-						cyl.height = ad->height;
-						EERIEDraw3DCylinderBase(cyl, Color::yellow);
-					}
-				}
-
-				if(DEBUG_FRUSTRUM) {
-					DebugSphere(i * ACTIVEBKG->Xdiv + 50.f, feg->frustrum_maxy, j * ACTIVEBKG->Zdiv + 50.f, 3.f, 90, Color::magenta);
-					DebugSphere(i * ACTIVEBKG->Xdiv + 50.f, feg->frustrum_miny, j * ACTIVEBKG->Zdiv + 50.f, 3.f, 90, Color::yellow);
-				}
-			}
-		}
-	}
-#endif
 
 if (USE_PORTALS && portals)
 {

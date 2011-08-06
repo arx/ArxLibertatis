@@ -752,9 +752,7 @@ void EERIE_LIGHT_ChangeLighting()
 
 //*************************************************************************************
 //*************************************************************************************
-#ifdef BUILD_EDITOR
-extern long LIGHT_THREAD_STATUS;
-#endif
+
 void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 {
 	EERIE_BKG_INFO * eg;
@@ -771,157 +769,60 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	if (maxz < 0) maxz = 0;
 	else if (maxz >= ACTIVEBKG->Zsize) maxz = ACTIVEBKG->Zsize - 1;
 
+	for (size_t i = 0; i < MAX_LIGHTS; i++)
 	{
-#ifdef BUILD_EDITOR
-		if (LIGHT_THREAD_STATUS == 3) return;
-#endif
-
-		for (size_t i = 0; i < MAX_LIGHTS; i++)
+		if (GLight[i] != NULL)
 		{
-			if (GLight[i] != NULL)
+			if ((GLight[i]->extras & EXTRAS_SEMIDYNAMIC))
 			{
-				if ((GLight[i]->extras & EXTRAS_SEMIDYNAMIC))
-				{
-					GLight[i]->treat = 0;
-				}
-				else if (!GLight[i]->treat)
-				{
-					GLight[i]->treat = 1;
-				}
-
-				GLight[i]->falldiff = GLight[i]->fallend - GLight[i]->fallstart;
-				GLight[i]->falldiffmul = 1.f / GLight[i]->falldiff;
-				GLight[i]->rgb255.r = GLight[i]->rgb.r * 255.f;
-				GLight[i]->rgb255.g = GLight[i]->rgb.g * 255.f;
-				GLight[i]->rgb255.b = GLight[i]->rgb.b * 255.f;
-				GLight[i]->precalc = GLight[i]->intensity * GLOBAL_LIGHT_FACTOR;
+				GLight[i]->treat = 0;
 			}
+			else if (!GLight[i]->treat)
+			{
+				GLight[i]->treat = 1;
+			}
+
+			GLight[i]->falldiff = GLight[i]->fallend - GLight[i]->fallstart;
+			GLight[i]->falldiffmul = 1.f / GLight[i]->falldiff;
+			GLight[i]->rgb255.r = GLight[i]->rgb.r * 255.f;
+			GLight[i]->rgb255.g = GLight[i]->rgb.g * 255.f;
+			GLight[i]->rgb255.b = GLight[i]->rgb.b * 255.f;
+			GLight[i]->precalc = GLight[i]->intensity * GLOBAL_LIGHT_FACTOR;
 		}
-
-		PROGRESS_COUNT = PROGRESS_TOTAL = 0;
-
-#ifdef BUILD_EDITOR
-		if (LIGHT_THREAD_STATUS == 3) return;
-#endif
-
-		for (long j = minz; j <= maxz; j++)
-			for (long i = minx; i <= maxx; i++)
-			{
-				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-				for (long k = 0; k < eg->nbpoly; k++)
-				{
-					PROGRESS_TOTAL++;
-				}
-			}
-
-#ifdef BUILD_EDITOR
-		if (LIGHT_THREAD_STATUS == 3) return;
-#endif
-
-		for (long j = minz; j <= maxz; j++)
-			for (long i = minx; i <= maxx; i++)
-			{
-#ifdef BUILD_EDITOR
-				if (LIGHT_THREAD_STATUS == 3) return;
-#endif
-
-				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-				for (long k = 0; k < eg->nbpoly; k++)
-				{
-
-#ifdef BUILD_EDITOR
-					if (LIGHT_THREAD_STATUS == 3) return;
-#endif
-
-					PROGRESS_COUNT++;
-					EERIEPOLY * ep = &eg->polydata[k];
-					
-					if(ep) {
-						ep->type &= ~POLY_IGNORE;
-						EERIE_LIGHT_Apply(ep);
-					}
-				}
-			}
-
 	}
 
-	if (0)
+	PROGRESS_COUNT = PROGRESS_TOTAL = 0;
+
+	for (long j = minz; j <= maxz; j++)
 	{
-		EERIE_BKG_INFO * eg2;
-		EERIEPOLY * ep2;
-		long i2, j2, k, k2, mai, maj, mii, mij;
-		float totr, totg, totb;
-		float tr, tg, tb, tcd, tc;
+		for (long i = minx; i <= maxx; i++)
+		{
+			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-		for (long j = minz; j <= maxz; j++)
-			for (long i = minx; i <= maxx; i++)
+			for (long k = 0; k < eg->nbpoly; k++)
 			{
-				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+				PROGRESS_TOTAL++;
+			}
+		}
+	}
 
-				for (long l = 0; l < eg->nbpoly; l++)
-				{
-					EERIEPOLY * ep = &eg->polydata[l];
+	for (long j = minz; j <= maxz; j++)
+	{
+		for (long i = minx; i <= maxx; i++)
+		{
+			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-					if (!(ep->type & POLY_IGNORE))
-						for (k = 0; k < 3; k++)
-						{
-							totr = (float)((ep->v[k].color >> 16) & 255) * 2.f;
-							totg = (float)((ep->v[k].color >> 8) & 255) * 2.f;
-							totb = (float)((ep->v[k].color) & 255) * 2.f;
-							tc = 2.f;
-							mai = i + 2;
-							maj = j + 2;
-							mii = i - 2;
-							mij = j - 2;
-
-							if (mij < 0) mij = 0;
-
-							if (mii < 0) mii = 0;
-
-							if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
-
-							if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
-
-							for (j2 = mij; j2 < maj; j2++)
-								for (i2 = mii; i2 < mai; i2++)
-								{
-									eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
-
-									for (long l = 0; l < eg2->nbpoly; l++)
-									{
-										ep2 = &eg2->polydata[l];
-
-										if (!(ep2->type & POLY_IGNORE))
-											if (ep != ep2)
-
-												for (k2 = 0; k2 < 3; k2++)
-												{
-													float dist = Distance3D(ep2->v[k2].sx, ep2->v[k2].sy, ep2->v[k2].sz,
-													                        ep->v[k].sx, ep->v[k].sy, ep->v[k].sz);
-
-													if (dist < 50.f)
-													{
-														tr = (float)((ep2->v[k2].color >> 16) & 255);
-														tg = (float)((ep2->v[k2].color >> 8) & 255);
-														tb = (float)((ep2->v[k2].color) & 255);
-														float r = (50.f - dist) * 0.02f;
-														totr += tr * r;
-														totg += tg * r;
-														totb += tb * r;
-														tc += r;
-													}
-												}
-									}
-								}
-
-							tcd = 1.f / (float)tc;
-							ep->v[k].color = (Color3f(totr, totg, totb) * (tcd * (1.f/255))).toBGR();
-						}
-
+			for (long k = 0; k < eg->nbpoly; k++)
+			{
+				PROGRESS_COUNT++;
+				EERIEPOLY * ep = &eg->polydata[k];
+					
+				if(ep) {
+					ep->type &= ~POLY_IGNORE;
+					EERIE_LIGHT_Apply(ep);
 				}
 			}
+		}
 	}
 }
 

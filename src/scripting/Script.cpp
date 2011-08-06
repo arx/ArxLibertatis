@@ -282,107 +282,6 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const char * dat) {
 	return ret;
 }
 
-#ifdef BUILD_EDITOR
-void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
-{
-	ShowText.clear();
-	long foundnb = 0;
-	long size = 0;
-	std::string tline;
-	std::string toadd;
-	std::string objname;
-	long nline;
-	INTERACTIVE_OBJ * io = NULL;
-	MakeUpcase(search);
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			io = inter.iobj[i];
-
-			if (i == 0)
-				objname = "PLAYER";
-			else
-				objname = io->long_name();
-
-			long pos = 0;
-
-			while (pos != -1)
-			{
-
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search, pos, tline, &nline);
-
-				if (pos > 0)
-				{
-					std::stringstream ss;
-					ss << objname << " - GLOBAL - Line " << std::setw(4) << nline
-					   << std::setw(0) << " : " << tline << '\n';
-					//sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
-					toadd = ss.str();
-
-					if (size + toadd.length() + 3 < 65535)
-					{
-						ShowText += toadd;
-						foundnb++;
-					}
-					else
-					{
-						ShowText += "...";
-						goto suite;
-					}
-
-					size += toadd.length();
-				}
-			}
-
-			pos = 0;
-
-			while (pos != -1)
-			{
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->over_script, search, pos, tline, &nline);
-
-				if (pos > 0)
-				{
-					std::stringstream ss;
-					ss << objname << " - LOCAL  - Line " << std::setw(4) << nline
-					   << std::setw(0) << " : " << tline << '\n';
-					toadd = ss.str();
-					//toadd, "%s - LOCAL  - Line %4ld : %s\n", objname, nline, tline);
-
-					if (size + toadd.length() + 3 < 65535)
-					{
-						ShowText += toadd;
-						foundnb++;
-					}
-					else
-					{
-						ShowText += "...";
-						goto suite;
-					}
-
-					size += toadd.length();
-				}
-			}
-		}
-	}
-
-suite:
-	;
-
-	if (foundnb <= 0)
-	{
-		ShowText = "No Occurence Found...";
-	}
-
-	std::stringstream ss;
-	ss << "Search Results for " << search << '(' << foundnb << " occurences)";
-	ShowTextWindowtext = ss.str();
-
-	ShowDialogBox(IDD_SHOWTEXTBIG, (DLGPROC)ShowTextDlg);
-}
-#endif
-
 void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent)
 {
 	if (io == NULL) return;
@@ -3593,7 +3492,7 @@ void GetLineAsText(EERIE_SCRIPT * es, long curline, char * tex)
 }
 #ifdef BUILD_EDITOR
 HWND LastErrorPopup = NULL;
-extern long SYNTAXCHECKING;
+long SYNTAXCHECKING;
 long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 {
 //	return 1;

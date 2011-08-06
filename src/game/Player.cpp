@@ -2567,11 +2567,6 @@ extern float PLAYER_ARMS_FOCAL;
 extern long CURRENT_BASE_FOCAL;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
-
-#ifdef BUILD_EDITOR
-extern Vec3f TVCONTROLEDplayerpos;
-extern long TVCONTROLED;
-#endif
 extern long FINAL_RELEASE;
 
 
@@ -2592,17 +2587,6 @@ void ARX_PLAYER_Frame_Update()
 		inter.iobj[0]->ioflags &= ~IO_FREEZESCRIPT;
 		PLAYER_PARALYSED = 0;
 	}
-
-#ifdef BUILD_EDITOR
-	// EDITMODE: Forced Changepos for Player by Treeview Command
-	if (TVCONTROLED)
-	{
-		player.pos.x = TVCONTROLEDplayerpos.x;
-		player.pos.y = TVCONTROLEDplayerpos.y;
-		player.pos.z = TVCONTROLEDplayerpos.z;
-		TVCONTROLED = 0;
-	}
-#endif
 
 	// Reset player moveto info
 	moveto.x = player.pos.x;

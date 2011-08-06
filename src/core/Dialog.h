@@ -60,45 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef BUILD_EDITOR
-
-#include <windows.h>
-
-struct INTERACTIVE_OBJ;
-
-#define IOTVTYPE_PATH 1
-#define IOTVTYPE_PLAYER 3
-
-extern long FASTLOADS;
-
-void ShowDialogBox(int i, DLGPROC lpDialogFunc);
-HWND CreateDialogHelper(int i, DLGPROC lpDialogFunc);
-
-void LaunchInteractiveObjectsApp();
-void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name = NULL);
-void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name = NULL, long type = 0);
-void KillInterTreeView();
-INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
-INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
-INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-void LaunchSnapShotParamApp(HWND hwnd);
-
-void TextBox(const char * title, char * text, long size);
-void launchlightdialog();
-
-void RecalcLightZone(float x, float z, long siz);
-
-#endif // BUILD_EDITOR
-
 enum LevelNumber {
 	LEVEL0     = 0,
 	LEVEL1     = 1,

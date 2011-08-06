@@ -2153,9 +2153,6 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	if ((MasterCamera.exist & 2) && (MasterCamera.want_io == io))
 		MasterCamera.exist = 0;
 
-#ifdef BUILD_EDITOR
-	InterTreeViewItemRemove(io);
-#endif
 	ARX_INTERACTIVE_DestroyDynamicInfo(io);
 	IO_UnlinkAllLinkedObjects(io);
 

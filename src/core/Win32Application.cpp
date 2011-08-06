@@ -87,6 +87,8 @@ ZeniMax	Media Inc.,	Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Scene.h"
 
+#include "scripting/ScriptDebugger.h"
+
 extern long	ALLOW_CHEATS;
 extern long	FINAL_COMMERCIAL_GAME;
 extern long	FINAL_COMMERCIAL_DEMO;
@@ -224,33 +226,14 @@ bool ArxGame::InitWindow()
 {
 	m_MainWindow = new Win32Window();
 
-#ifdef BUILD_EDITOR
-	if ((GAME_EDITOR &&	!MOULINEX && !FINAL_RELEASE) ||	NEED_EDITOR) {
-		GAME_EDITOR=1;
-	}
-#endif
-
 	// Window title
 	std::string	titleText =	"ARX Fatalis ";
-#ifdef BUILD_EDITOR
-	if(GAME_EDITOR)	{
-		titleText =	"DANAE Project ";
-	} else if(MOULINEX)	{
-		titleText =	"MOULINEX ";
-	}
-#endif
 	titleText += arxVersion;
 
-	// Fullscreen ?
-	bool fullScreen	= config.video.fullscreen;
-
-#ifdef BUILD_EDITOR
-	if(MOULINEX)
-		fullScreen = false;
-#endif
-
+	// Register ourself as a listener for this window messages
 	m_MainWindow->AddListener(this);	
-	return m_MainWindow->Init(titleText, config.video.width, config.video.height, true,	fullScreen);
+
+	return m_MainWindow->Init(titleText, config.video.width, config.video.height, true,	config.video.fullscreen);
 	 
 }
 
@@ -903,12 +886,6 @@ bool ArxGame::BeforeRun()
 
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=old;
 
-#ifdef BUILD_EDITOR
-	// Need	to create Map
-	if (iCreateMap)
-		DANAE_Manage_CreateMap();
-#endif
-
 	return true;
 }
 
@@ -1134,12 +1111,6 @@ static float _AvgFrameDiff = 150.f;
 				if (STOP_KEYBOARD_INPUT>2) STOP_KEYBOARD_INPUT=0;
 			}
 		}
-
-#ifdef BUILD_EDITOR
-		if(MOULINEX) {
-			LaunchMoulinex();
-		}
-#endif
 	}
 	else //	Manages	our	first frameS
 	{
@@ -2009,26 +1980,17 @@ static float _AvgFrameDiff = 150.f;
 			ARX_SCENE_Render(1);
 			val=-0.3f;
 			GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-		}
-		else {
+		} else {
 			ARX_SCENE_Render(1);
 		}
-
 	}
-
-#ifdef BUILD_EDITOR
-	if (EDITION==EDITION_PATHWAYS)
-	{
-		ARX_PATHS_RedrawAll();
-	}
-#endif
 
 	// Begin Particles ***************************************************************************
 	if (!(Project.hide & HIDE_PARTICLES))
 	{
 		if (pParticleManager)
 		{
-				pParticleManager->Update(ARX_CLEAN_WARN_CAST_LONG(FrameDiff));
+			pParticleManager->Update(ARX_CLEAN_WARN_CAST_LONG(FrameDiff));
 			pParticleManager->Render();
 		}
 
@@ -2086,7 +2048,7 @@ static float _AvgFrameDiff = 150.f;
 	else  // EDITMODE == true
 	{
 		if (!(Project.hide & HIDE_NODES))
-				RenderAllNodes();
+			RenderAllNodes();
 
 		std::stringstream ss("EDIT MODE	- Selected ");
 		ss <<  NbIOSelected;
@@ -2095,10 +2057,6 @@ static float _AvgFrameDiff = 150.f;
 		if (EDITION==EDITION_FOGS)
 			ARX_FOGS_RenderAll();
 	}
-	
-	// To remove for Final Release but needed until	then !
-	if (ItemToBeAdded[0]!=0)
-		DanaeItemAdd();
 #endif
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -2608,9 +2566,7 @@ bool ArxGame::FinalCleanup()
 	EERIE_PATHFINDER_Release();
 	ARX_INPUT_Release();
 	ARX_SOUND_Release();
-#ifdef BUILD_EDITOR
-	KillInterTreeView();
-#endif
+
 	return true;
 }
 

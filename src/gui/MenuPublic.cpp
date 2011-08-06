@@ -55,9 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 
 extern bool bQuickGenFirstClick;
-#ifdef BUILD_EDITOR
-extern float FORCED_REDUCTION_VALUE;
-#endif
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern long STARTED_A_GAME;
@@ -337,14 +334,6 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetLODQuality(int & _iQuality)
 {
-
-#ifdef BUILD_EDITOR
-	float fForced = FORCED_REDUCTION_VALUE * ( 1.0f / 5000 ) ;
-	ARX_CHECK_INT(fForced);
-
-	config.video.meshReduction = ARX_CLEAN_WARN_CAST_INT(fForced);
-#endif
-
 	_iQuality = config.video.meshReduction;
 }
 
@@ -355,9 +344,6 @@ void ARXMenu_Options_Video_SetLODQuality(int _iQuality)
 	else if (_iQuality < 0) _iQuality = 0;
 
 	config.video.meshReduction = _iQuality;
-#ifdef BUILD_EDITOR
-	FORCED_REDUCTION_VALUE = ARX_CLEAN_WARN_CAST_FLOAT(_iQuality * 5000);
-#endif
 }
 
 //OPTIONS AUDIO
