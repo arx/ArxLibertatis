@@ -348,6 +348,10 @@ void initSuppressions() {
 	
 	suppress("black_thing", 3703, "play"); // variable is never set
 	
+	suppress("chest_metal_0011", 78, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
+	
+	suppress("chest_metal_0012", 389, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
+	
 	suppress("chest_metal_0020", 54, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
 	suppress("chest_metal_0020", 99, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
 	suppress("chest_metal_0020", 149, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/ring_darkaa/ring_darkaa.teo" (should be 'ring_daarka/ring_daarka'?)
@@ -394,17 +398,24 @@ void initSuppressions() {
 	
 	suppress("emerald_inwall", 136, "play"); // unknown flag -e (ignored)
 	
+	suppress("fake_golden_snake", 185, "setinternalname"); // obsolete command (ignored)
+	
 	suppress("flour_bag", 41, "collison"); // unknown command 'collison', should be collision
 	
 	suppress("gem_inwall", 114, "play"); // unknown flag -e (ignored)
 	
 	suppress("goblin_base", 30010, "goto"); // missing label "main_alert"
 	
+	suppress("goblin_base_0034", 771, "detach"); // object mug_full_0003 already destroyed
+	suppress("goblin_base_0034", 831, "destroy"); // object mug_full_0003 already destroyed
+	
 	suppress("goblin_base_0041", 3063, "if"); // unknown operator '==1' (should be '== 1'), interpreted as constant true
 	
 	suppress("goblin_base_0046", 2924, "if"); // unknown operator '=>' (should be '>='?), interpreted as constant true
 	
 	suppress("gold_chunk_inwall", 144, "play"); // unknown flag -e (ignored)
+	
+	suppress("golden_snake", 156, "setinternalname"); // obsolete command
 	
 	suppress("hammer_club", 66, "settwohanded"); // obsolete command
 	
@@ -413,11 +424,17 @@ void initSuppressions() {
 	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 45586, "goto"); // missing label "main_alert"
 	
+	suppress("human_base_0006", 83, "playanim"); // animation 'wait' not loaded yet
+	
 	suppress("human_base_0012", 1519, "goto"); // missing label 'stop'
 	
 	suppress("human_base_0022", 10108, "behaviormoveto"); // unknown command 'behaviormoveto', should be 'behavior move_to'
 	
 	suppress("human_base_0041", 4279, "if"); // missing space between oprateor '==' and argument
+	
+	suppress("human_base_0051", 5396, "/"); // unknown command, should be '//' instead of '/ /'
+	
+	suppress("human_base_0051", 6083, "set"); // bad variable name: "waiting"
 	
 	suppress("human_base_0046", 679, "goto"); // missing label 'next_step02', should be 'next_step01'?
 	
@@ -426,9 +443,9 @@ void initSuppressions() {
 	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
 	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
 	
-	suppress("human_base_0085", 426, "loadanim add"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
+	suppress("human_base_0085", 426, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
 	
-	suppress("human_base_0086", 787, "loadanim add"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
+	suppress("human_base_0086", 787, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
 	
 	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
 	
@@ -443,6 +460,8 @@ void initSuppressions() {
 	suppress("human_base_0121", 135, "collisions"); // unknown command 'collisions', should be 'collision'
 	
 	suppress("human_base_0122", 350, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0138", 2439, "setcontrolledzone"); // unknown zone 'shani_flee'
 	
 	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
 	
@@ -469,6 +488,8 @@ void initSuppressions() {
 	suppress("light_door_0106", 110, "setcontrolledzone"); // unknown zone 'city_entrance'
 	
 	suppress("light_door_0121", 88, "setspeakpitch"); // setspeakpitch only applies to NPCs
+	
+	suppress("lockpicks", 462, "play"); // missing sound file 'brokenweapon.wav', should be 'broken_weapon'
 	
 	suppress("marker_0025", 288, "sendevent"); // unknown zone 'cooking' (should be 'cook_gary'?)
 	
@@ -499,9 +520,19 @@ void initSuppressions() {
 	
 	suppress("secret_door_council_2b", 609, "}"); // extraneous '}'
 	
+	suppress("shiny_orb", 103, "setinternalname"); // obsolete command
+	
 	suppress("snake_woman_base", 26358, "goto"); // missing label 'main_alert'
 	
+	suppress("snake_woman_base_0007", 1138, "goto"); // missing label 'short'
+	
 	suppress("snake_woman_base_0010", 122, "collions"); // unknown command 'collions', should be 'collision'
+	
+	suppress("snake_woman_base_0015", 113, "setevent"); // unsupported event: "misc_reflection"
+	
+	suppress("snake_woman_base_0016", 138, "setevent"); // unsupported event: "misc_reflection"
+	
+	suppress("sword_2handed_meteor_enchant_0001", 48, "}"); // missing accept/refuse before end of event block
 	
 	suppress("troll_base", 5107, "loadanim"); // missing animation: "troll_fight_ready_toponly"
 	suppress("troll_base", 5175, "loadanim"); // missing animation: "troll_fight_unready_toponly"
