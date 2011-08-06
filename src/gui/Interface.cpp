@@ -200,9 +200,6 @@ HWND CDP_LIGHTOptions = NULL;
 EERIE_LIGHT * CDP_EditLight = NULL;
 INTERACTIVE_OBJ * CDP_EditIO = NULL;
 FOG_DEF * CDP_EditFog = NULL;
-static long ObjectRotAxis = 0;
-static long LastSelectedNode = -1;
-static long LastSelectedFog = -1;
 long LastSelectedLight = -1;
 #endif
 

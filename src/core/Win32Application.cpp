@@ -390,6 +390,8 @@ bool ArxGame::Create() {
 
 void ArxGame::OnWindowGotFocus(const Window& window)
 {
+	ARX_UNUSED(window);
+
 	GInput->reset();
 	GInput->unacquireDevices();
 	GInput->acquireDevices();
@@ -397,6 +399,8 @@ void ArxGame::OnWindowGotFocus(const Window& window)
 
 void ArxGame::OnWindowLostFocus(const Window& window)
 {
+	ARX_UNUSED(window);
+
 	GInput->unacquireDevices();
 }
 
@@ -410,6 +414,8 @@ void ArxGame::OnResizeWindow(const Window& window)
 
 void ArxGame::OnPaintWindow(const Window& window)
 {
+	ARX_UNUSED(window);
+
 	// Handle paint	messages when the app is not ready
 	if (m_pFramework &&	!m_bReady)
 	{
@@ -426,6 +432,8 @@ void ArxGame::OnPaintWindow(const Window& window)
 
 void ArxGame::OnDestroyWindow(const	Window&	window)
 {
+	ARX_UNUSED(window);
+
 	LogInfo	<< "Application	window is being	destroyed";
 	m_RunLoop =	false;
 }

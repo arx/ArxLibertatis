@@ -1130,7 +1130,9 @@ int main(int argc, char ** argv) {
 	mainApp->m_bReady = true;
 
 	// Init all done, start the main loop
-	return mainApp->Run();
+	mainApp->Run();
+
+	return true;
 }
 
 //*************************************************************************************
