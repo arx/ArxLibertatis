@@ -662,7 +662,7 @@ aalError OpenALSource::updateBuffers() {
 	
 	// Stream data / queue buffers.
 	
-	// We need to get the source state before the number op processed buffers to prevent a race condition with the source reaching the end of the last buffer.
+	// We need to get the source state before the number of processed buffers to prevent a race condition with the source reaching the end of the last buffer.
 	ALint sourceState;
 	alGetSourcei(source, AL_SOURCE_STATE, &sourceState);
 	AL_CHECK_ERROR("getting source state")
@@ -762,6 +762,22 @@ aalError OpenALSource::updateBuffers() {
 	arx_assert(newRead >= 0);
 	
 	arx_assert(status == Playing || newRead == 0);
+	
+	if(newRead == 0 && read != 0 && nbuffersProcessed == 0) {
+		/*
+		 * OAL reached the end of the last buffer between the alGetSourcei(AL_BUFFERS_PROCESSED) and
+		 * alGetSourcei(AL_BYTE_OFFSET) calls and was so nice to reset the AL_BYTE_OFFSET to 0
+		 * even though we haven't yet unqueued the buffer.
+		 * We need to process played buffers before we can replace old 'read' with 'newRead.
+		 * This will be done in the next updateBuffers() call.
+		 */
+		ALint newSourceState;
+		alGetSourcei(source, AL_SOURCE_STATE, &newSourceState);
+		AL_CHECK_ERROR("getting source state")
+		arx_assert(newSourceState == AL_STOPPED);
+		arx_assert(status == Playing);
+		return ret;
+	}
 	
 	time = time - read + newRead;
 	TraceAL("update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
