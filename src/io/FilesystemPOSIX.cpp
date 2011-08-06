@@ -80,7 +80,7 @@ bool remove_all(const path & p) {
 	
 	struct stat buf;
 	if(stat(p.string().c_str(), &buf)) {
-		return false;
+		return true;
 	}
 	
 	if((buf.st_mode & S_IFMT) == S_IFDIR) {
