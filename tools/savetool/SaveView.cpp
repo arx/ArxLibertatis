@@ -757,6 +757,8 @@ int view_player(SaveBlock & save, const char * dat, size_t size) {
 		cout << endl;
 	}
 	
+	if(!asp.Global_Magic_Mode) cout << "Magic disabled!" << endl;
+	
 	string teleportToLevel = toLowercase(safestring(asp.TELEPORT_TO_LEVEL));
 	if(!teleportToLevel.empty()) cout << "Teleporting to level: " << teleportToLevel << endl;
 	
