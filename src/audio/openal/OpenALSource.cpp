@@ -157,18 +157,8 @@ OpenALSource::~OpenALSource() {
 	
 }
 
-static ALenum getALFormat(const PCMFormat & format) {
-	arx_assert(format.channels == 1 || format.channels == 2);
-	switch(format.quality) {
-		case 8:
-			return format.channels == 1 ? AL_FORMAT_MONO8 : AL_FORMAT_STEREO8;
-		case 16:
-			return format.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-		default:
-			LogError << "unexpected aalFormat: quality=" << format.quality;
-			arx_assert(false);
-			return 0;
-	}
+bool OpenALSource::convertStereoToMono() {
+	return ((channel.flags & FLAG_ANY_3D_FX) && sample->getFormat().channels == 2);
 }
 
 aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _channel) {
@@ -182,7 +172,7 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 		channel.flags &= ~FLAG_PAN;
 	}
 	
-	if(inst && !inst->streaming) {
+	if(inst && !inst->streaming && convertStereoToMono() == inst->convertStereoToMono()) {
 		
 		arx_assert(inst->sample == sample);
 		
@@ -235,9 +225,8 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 	// Create 3D interface if required
 	if(channel.flags & FLAG_ANY_3D_FX) {
 		
-		if(sample->getFormat().channels > 1) {
-			// TODO stereo formats don't work with positional audio
-			ALWarning << "too many channels for positional audio: " << sample->getFormat().channels;
+		if(sample->getFormat().channels != 1) {
+			// TODO(broken-assets) this is not supported by OpenAL so we will need to convert the sample
 		}
 		
 		setPosition(channel.position);
@@ -293,6 +282,25 @@ aalError OpenALSource::fillAllBuffers() {
 	return AAL_OK;
 }
 
+/*!
+ * Convert a stereo buffer to mono in-place.
+ * @param T The type of one (mono) sound sample.
+ * @return the size of the converted buffer
+ */
+template <class T>
+static size_t stereoToMono(char * data, size_t size) {
+	
+	T * buf = reinterpret_cast<T *>(data);
+	
+	arx_assert(size % (2 * sizeof(T)) == 0);
+	
+	for(size_t in = 0, out = 0; in < size - 1; in += 2, out++) {
+		buf[out] = T((int(buf[in]) + int(buf[in + 1])) / 2);
+	}
+	
+	return size / 2;
+}
+
 aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	arx_assert(loadCount > 0);
@@ -336,7 +344,25 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 		}
 	}
 	
-	alBufferData(buffers[i], getALFormat(sample->getFormat()), data, size, sample->getFormat().frequency);
+	const PCMFormat & f = sample->getFormat();
+	if((f.channels != 1 && f.channels != 2) || (f.quality != 8 && f.quality != 16)) {
+		LogError << "unsupported audio format: quality=" << f.quality << " channels=" << f.channels;
+		return AAL_ERROR_SYSTEM;
+	}
+	
+	ALenum alformat;
+	if(f.channels == 1 || convertStereoToMono()) {
+		alformat = (f.quality == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
+	} else {
+		alformat = (f.quality == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
+	}
+	
+	size_t alsize = size;
+	if(convertStereoToMono()) {
+		alsize = (f.quality == 8) ? stereoToMono<s8>(data, size) : stereoToMono<s16>(data, size);
+	}
+	
+	alBufferData(buffers[i], alformat, data, alsize, f.frequency);
 	delete[] data;
 	AL_CHECK_ERROR("setting buffer data")
 	
@@ -762,6 +788,10 @@ aalError OpenALSource::updateBuffers() {
 	arx_assert(newRead >= 0);
 	
 	arx_assert(status == Playing || newRead == 0);
+	
+	if(convertStereoToMono()) {
+		newRead *= 2;
+	}
 	
 	if(newRead == 0 && read != 0 && nbuffersProcessed == 0) {
 		/*
