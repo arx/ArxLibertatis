@@ -174,6 +174,10 @@ aalError DSoundSource::init() {
 	// Create 3D interface if required
 	if(channel.flags & FLAG_ANY_3D_FX) {
 		
+		if(sample->getFormat().channels != 1) {
+			// TODO(broken-assets) newer DSound versions don't supprt this
+		}
+		
 		if(lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (void **)&lpds3db)) {
 			return AAL_ERROR_SYSTEM;
 		}

@@ -94,6 +94,11 @@ private:
 	
 	bool markAsLoaded();
 	
+	/*!
+	 * @return true if we need to convert a stereo sample to mono before passing it to OpenAL
+	 */
+	bool convertStereoToMono();
+	
 	bool tooFar; // True if the listener is too far from this source.
 	
 	/*
