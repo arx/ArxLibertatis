@@ -31,6 +31,8 @@ string Context::getStringVar(const string & var) const {
 	return GetVarValueInterpretedAsText(var, getMaster(), io);
 }
 
+#define ScriptParserWarning Logger(__FILE__,__LINE__, isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "
+
 std::string Context::getCommand(bool skipNewlines) {
 	
 	const char * esdat = script->data;
@@ -44,9 +46,9 @@ std::string Context::getCommand(bool skipNewlines) {
 		
 		char c = esdat[pos];
 		if(c == '"') {
-			LogWarning << ScriptContextPrefix(*this) << ": unexpected '\"' in command name";
+			ScriptParserWarning << "unexpected '\"' in command name";
 		} else if(c == '~') {
-			LogWarning << ScriptContextPrefix(*this) << ": unexpected '~' in command name";
+			ScriptParserWarning << "unexpected '~' in command name";
 		} else if(c == '\n') {
 			break;
 		} else if(c == '/' && pos + 1 != script->size && esdat[pos + 1] == '/') {
@@ -83,7 +85,7 @@ string Context::getWord() {
 		for(pos++; pos != script->size && esdat[pos] != '"'; pos++) {
 			if(esdat[pos] == '\n') {
 				if(tilde) {
-					LogWarning << ScriptContextPrefix(*this) << ": unmatched '\"' before end of line";
+					ScriptParserWarning << "unmatched '\"' before end of line";
 				}
 				return word;
 			} else if(esdat[pos] == '~') {
@@ -102,7 +104,7 @@ string Context::getWord() {
 		if(pos != script->size) {
 			pos++;
 		} else {
-			LogWarning << ScriptContextPrefix(*this) << ": unmatched '\"'";
+			ScriptParserWarning << "unmatched '\"'";
 		}
 		
 	} else {
@@ -111,7 +113,7 @@ string Context::getWord() {
 		for(; pos != script->size && !isWhitespace(esdat[pos]); pos++) {
 			
 			if(esdat[pos] == '"') {
-				LogWarning << ScriptContextPrefix(*this) << ": unexpected '\"' inside token";
+				ScriptParserWarning << "unexpected '\"' inside token";
 			} else if(esdat[pos] == '~') {
 				if(tilde) {
 					word += GetVarValueInterpretedAsText(var, getMaster(), NULL);
@@ -132,7 +134,7 @@ string Context::getWord() {
 	}
 	
 	if(tilde) {
-		LogWarning << ScriptContextPrefix(*this) << ": unmatched '~'";
+		ScriptParserWarning << "unmatched '~'";
 	}
 	
 	return word;
@@ -148,7 +150,7 @@ void Context::skipWord() {
 		
 		for(pos++; pos != script->size && esdat[pos] != '"'; pos++) {
 			if(esdat[pos] == '\n') {
-				LogWarning << ScriptContextPrefix(*this) << ": missing '\"' before end of line";
+				ScriptParserWarning << "missing '\"' before end of line";
 				return;
 			}
 		}
@@ -156,7 +158,7 @@ void Context::skipWord() {
 		if(pos != script->size) {
 			pos++;
 		} else {
-			LogWarning << ScriptContextPrefix(*this) << ": unmatched '\"'";
+			ScriptParserWarning << "unmatched '\"'";
 		}
 		
 	} else {
@@ -164,7 +166,7 @@ void Context::skipWord() {
 		// now take chars until it finds a space or unused char
 		for(; pos != script->size && !isWhitespace(esdat[pos]); pos++) {
 			if(esdat[pos] == '"') {
-				LogWarning << ScriptContextPrefix(*this) << ": unexpected '\"' inside token";
+				ScriptParserWarning << "unexpected '\"' inside token";
 			} else if(esdat[pos] == '/' && pos + 1 != script->size && esdat[pos + 1] == '/') {
 				pos = std::find(esdat + pos + 2, esdat + script->size, '\n') - esdat;
 				break;
@@ -264,7 +266,7 @@ void Context::skipStatement() {
 	
 	string word = getCommand();
 	if(pos == script->size) {
-		LogWarning << ScriptContextPrefix(*this) << ": missing statement before end of script";
+		ScriptParserWarning << "missing statement before end of script";
 		return;
 	}
 	
@@ -277,7 +279,7 @@ void Context::skipStatement() {
 			}
 			word = getWord(); // TODO should not evaluate ~var~
 			if(pos == script->size) {
-				LogWarning << ScriptContextPrefix(*this) << ": missing '}' before end of script";
+				ScriptParserWarning << "missing '}' before end of script";
 				return;
 			}
 			
@@ -491,11 +493,15 @@ void initSuppressions() {
 	
 	suppress("lockpicks", 462, "play"); // missing sound file 'brokenweapon.wav', should be 'broken_weapon'
 	
+	suppress("long_sword_recovery", 591, "setequip"); // unknown flag '-s' (ignored)
+	
 	suppress("marker_0025", 288, "sendevent"); // unknown zone 'cooking' (should be 'cook_gary'?)
 	
 	suppress("marker_0247", 44, "setcontrolledzone"); // unknown zone 'level3_zone4'
 	
 	suppress("marker_0811", 536, "worldface"); // unknown command 'worldface', should be 'worldfade'
+	
+	suppress("metal_chunk_inwall", 143, "play"); // unknown flag -e (ignored)
 	
 	suppress("pig", 2409, "}"); // missing accept/refuse before end of event block
 	
@@ -506,6 +512,8 @@ void initSuppressions() {
 	suppress("player", 8733, "loadanim"); // bad animation id: "lean_right_out"
 	suppress("player", 9284, "loadanim"); // missing animation "human_death_cool"
 	suppress("player", 9558, "loadanim"); // missing animation "human_talk_happyneutral_headonly"
+	
+	suppress("pressurepad_gob_0029", 74, "goto"); // missing label 'stress'
 	
 	suppress("public_notice_0011", 965, "magicoff"); // unknown command 'magicoff', should be 'magic off'
 	
@@ -526,6 +534,8 @@ void initSuppressions() {
 	
 	suppress("snake_woman_base", 26358, "goto"); // missing label 'main_alert'
 	
+	suppress("snake_woman_base_0004", 1660, "goto"); // unreachable code after goto
+	
 	suppress("snake_woman_base_0007", 1138, "goto"); // missing label 'short'
 	
 	suppress("snake_woman_base_0010", 122, "collions"); // unknown command 'collions', should be 'collision'
@@ -535,6 +545,14 @@ void initSuppressions() {
 	suppress("snake_woman_base_0016", 138, "setevent"); // unsupported event: "misc_reflection"
 	
 	suppress("sword_2handed_meteor_enchant_0001", 48, "}"); // missing accept/refuse before end of event block
+	
+	suppress("torch_rotating_0004", 68, "?"); // 'playanim' only takes one parameter
+	suppress("torch_rotating_0004", 88, "?"); // 'playanim' only takes one parameter
+	suppress("torch_rotating_0004", 89, "rotatingtorchdown"); // 'playanim' only takes one parameter
+	
+	suppress("torch_rotating_0005", 68, "?"); // 'playanim' only takes one parameter
+	suppress("torch_rotating_0005", 88, "?"); // 'playanim' only takes one parameter
+	suppress("torch_rotating_0005", 89, "rotatingtorchdown"); // 'playanim' only takes one parameter
 	
 	suppress("troll_base", 5107, "loadanim"); // missing animation: "troll_fight_ready_toponly"
 	suppress("troll_base", 5175, "loadanim"); // missing animation: "troll_fight_unready_toponly"
