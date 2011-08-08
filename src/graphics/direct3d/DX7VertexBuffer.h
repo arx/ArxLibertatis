@@ -5,6 +5,7 @@
 #include <d3d.h>
 
 #include "core/Core.h"
+#include "graphics/Frame.h"
 #include "graphics/VertexBuffer.h"
 
 extern const DWORD ARXToDXBufferFlags[];
@@ -29,7 +30,7 @@ public:
 		d3dvbufferdesc.dwFVF = format;
 		d3dvbufferdesc.dwNumVertices = capacity;
 		
-		HRESULT hr = mainApp->m_pD3D->CreateVertexBuffer(&d3dvbufferdesc, &vb, 0);
+		HRESULT hr = mainApp->m_pFramework->GetDirect3D()->CreateVertexBuffer(&d3dvbufferdesc, &vb, 0);
 		arx_assert_msg(SUCCEEDED(hr), "error creating vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);
 		

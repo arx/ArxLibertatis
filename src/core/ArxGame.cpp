@@ -707,8 +707,6 @@ HRESULT ArxGame::Initialize3DEnvironment()
 					   m_pDeviceInfo->pDriverGUID, m_pDeviceInfo->pDeviceGUID,
 					   &m_pDeviceInfo->ddsdFullscreenMode, dwFrameworkFlags)))
 	{
-		m_pD3D   = m_pFramework->GetDirect3D();
-
 		if (this->m_pFramework->m_pddsFrontBuffer)
 		{
 			this->m_pFramework->m_pddsFrontBuffer->QueryInterface(IID_IDirectDrawGammaControl, (void **)&lpDDGammaControl);
@@ -2541,7 +2539,7 @@ bool ArxGame::InitDeviceObjects()
 
 	ARX_SetAntiAliasing();
 
-	m_pD3D->EvictManagedTextures();
+	EvictManagedTextures();
 
 	return true;
 }

@@ -109,7 +109,6 @@ static int iCurrZBias;
 Application::Application()
 {
 	m_pFramework   = NULL;
-	m_pD3D         = NULL;
 
 	lpDDGammaControl = NULL;
 
@@ -242,8 +241,8 @@ bool Application::InitConfig() {
 }
 
 void Application::EvictManagedTextures() {
-	if(this->m_pD3D) {
-		this->m_pD3D->EvictManagedTextures();
+	if(this->m_pFramework->GetDirect3D()) {
+		this->m_pFramework->GetDirect3D()->EvictManagedTextures();
 	}
 }
 

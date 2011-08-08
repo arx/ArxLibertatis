@@ -174,7 +174,6 @@ public:
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
 	DDGAMMARAMP DDGammaRamp; // modified ramp value
 	DDGAMMARAMP DDGammaOld; // backup gamma values
-	LPDIRECT3D7 m_pD3D;
 	CD3DFramework7 * m_pFramework;
 	D3DEnum_DeviceInfo * m_pDeviceInfo;
 	
