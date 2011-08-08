@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -225,7 +225,7 @@ bool ArxGame::InitWindow() {
 	m_MainWindow = new Win32Window();
 	
 	// Register ourself as a listener for this window messages
-	m_MainWindow->AddListener(this); 
+	m_MainWindow->AddListener(this);
 	
 	return m_MainWindow->Init(arxVersion, config.video.width, config.video.height, true, config.video.fullscreen);
 	
@@ -1017,7 +1017,7 @@ static float _AvgFrameDiff = 150.f;
 		const char RESOURCE_LEVEL_10[] = "graph/levels/level10/level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
-		LoadLevelScreen(10); 
+		LoadLevelScreen(10);
 		DanaeLoadLevel(RESOURCE_LEVEL_10);
 		FORBID_SAVE=0;
 		FirstFrame=1;
@@ -1600,7 +1600,7 @@ static float _AvgFrameDiff = 150.f;
 						Vec3f targetpos = acs->pos1;
 						conversationcamera.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
 						conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
-						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;      
+						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;
 						SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
 						subj.pos.x=conversationcamera.pos.x;
 						subj.pos.y=conversationcamera.pos.y;
@@ -1683,7 +1683,7 @@ static float _AvgFrameDiff = 150.f;
 								targetpos.z=acs->pos2.z;
 							}
 							
-							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );      
+							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );
 							
 							Vec3f vect;
 							vect.x=conversationcamera.pos.x-targetpos.x;
@@ -1905,7 +1905,7 @@ static float _AvgFrameDiff = 150.f;
 
 	// Set Listener Position
 	{
-		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));   
+		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
 		Vec3f front(-EEsin(t), 0.f, EEcos(t));
 		front.normalize();
 		Vec3f up(0.f, 1.f, 0.f);
@@ -1989,7 +1989,7 @@ static float _AvgFrameDiff = 150.f;
 			pParticleManager->Render();
 		}
 
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);   
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		ARX_FOGS_Render();
@@ -2010,7 +2010,7 @@ static float _AvgFrameDiff = 150.f;
 		{
 			if (EERIEMouseButton & 1)
 			{
-				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT)) 
+				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT))
 					ARX_SPELLS_AddPoint(DANAEMouse);
 				else
 				{

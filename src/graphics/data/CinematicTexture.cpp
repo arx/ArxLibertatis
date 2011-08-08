@@ -28,11 +28,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <climits>
 #include <sstream>
+#include <cstdlib>
 
 #include "animation/Cinematic.h"
 
-#include "core/Application.h"
-
+#include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 
 #include "io/FilePath.h"

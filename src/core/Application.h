@@ -49,8 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Updates: (date) (person) (update)
 //
-// Code:	Cyril Meynier
-//			Sébastien Scieux	(Zbuffer)
+// Code: Cyril Meynier
+//   Sébastien Scieux (Zbuffer)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
@@ -63,15 +63,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <d3d.h>
 
-#include "core/Window.h"
-#include "graphics/Renderer.h"
-
+#include "graphics/Color.h"
 #include "platform/Flags.h"
 
 #include "Configure.h"
 
 struct D3DEnum_DeviceInfo;
 class CD3DFramework7;
+class Window;
 
 enum APPMSGTYPE
 {
@@ -175,10 +174,10 @@ private:
 	virtual bool InitSound() = 0;
 
 public:
-	Window* GetWindow() { return m_MainWindow; }
+	Window * GetWindow() { return m_MainWindow; }
 
-	bool	m_bReady;
-	Window*	m_MainWindow;
+	bool m_bReady;
+	Window * m_MainWindow;
 	
 	/* TODO Should all be privatized eventually */
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control

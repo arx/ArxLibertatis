@@ -65,8 +65,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <dinput.h>
 
 #include "core/Application.h"
+#include "core/Window.h"
 #include "graphics/Math.h"
-#include "graphics/Frame.h"		// TODO-input: Remove this dependency (CD3DFramework7)
+#include "graphics/Frame.h" // TODO-input: Remove this dependency (CD3DFramework7)
 #include "io/Logger.h"
 #include "platform/Platform.h"
 
