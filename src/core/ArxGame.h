@@ -26,9 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef WIN32APPLICATION_H
 #define WIN32APPLICATION_H
 
-#include <windows.h>
-#include <d3d.h>
-
 #include "core/Application.h"
 #include "core/Window.h"
 
