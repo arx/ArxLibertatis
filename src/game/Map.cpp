@@ -34,7 +34,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Levels.h"
 
-#include "graphics/GraphicsEnum.h"
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
 #include "graphics/GraphicsUtility.h"

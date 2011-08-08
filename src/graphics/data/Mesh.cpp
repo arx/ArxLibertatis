@@ -77,7 +77,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/VertexBuffer.h"
-#include "graphics/GraphicsEnum.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/FastSceneFormat.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -3656,8 +3655,8 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		portals->portals[portals->nb_total].room_2 = val2;
 		memcpy(&portals->portals[portals->nb_total].poly, ep, sizeof(EERIEPOLY));
 
-		float fDistMin = FLT_MAX;
-		float fDistMax = FLT_MIN;
+		float fDistMin = std::numeric_limits<float>::max();
+		float fDistMax = std::numeric_limits<float>::min();
 		int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 		ep->center.x = ep->v[0].sx;

@@ -71,7 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 
-#include "graphics/GraphicsEnum.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
