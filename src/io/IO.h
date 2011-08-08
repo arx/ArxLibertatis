@@ -62,17 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef BUILD_EDITOR
-
-#include <windows.h>
-
-bool HERMESFolderSelector(char * file_name, const char * title);
-
-int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
-int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char * filter, HWND hWnd);
-
-#endif // BUILD_EDITOR
-
 #ifdef BUILD_EDIT_LOADSAVE
 
 namespace fs {

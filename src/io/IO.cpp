@@ -57,16 +57,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IO.h"
 
-#include <cstdio>
-#include <algorithm>
-
-#include <windows.h>
+#include <cstring>
 
 #include "io/Filesystem.h"
 #include "io/FileStream.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
-#include "platform/Platform.h"
 
 using std::string;
 
@@ -119,107 +115,3 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 }
 
 #endif // BUILD_EDIT_LOADSAVE
-
-#ifdef BUILD_EDITOR
-
-#include <shlobj.h>
-#include <commdlg.h>
-// TODO(lubosz): temporary include replacement
-#ifndef _MAX_FNAME
-	#define _MAX_FNAME 512
-#endif
-
-//******************************************************************************
-// OPEN/SAVE FILES DIALOGS
-//******************************************************************************
-char	LastFolder[MAX_PATH]; // Last Folder used
-static OPENFILENAME ofn;
-
-static bool HERMESFolderBrowse(const char * str)
-{
-	BROWSEINFO		bi;
-	LPITEMIDLIST	liil;
-
-	bi.hwndOwner	= NULL;//MainFrameWindow;
-	bi.pidlRoot		= NULL;
-	bi.pszDisplayName = LastFolder;
-	bi.lpszTitle	= str;
-	bi.ulFlags		= 0;
-	bi.lpfn			= NULL;
-	bi.lParam		= 0;
-	bi.iImage		= 0;
-
-
-	liil = SHBrowseForFolder(&bi);
-
-	if (liil)
-	{
-		if (SHGetPathFromIDList(liil, LastFolder))	return true;
-		else return false;
-	}
-	else return false;
-}
-
-
-bool HERMESFolderSelector(char * file_name, const char * title) {
-	if(HERMESFolderBrowse(title)) {
-		sprintf(file_name, "%s\\", LastFolder);
-		return true;
-	} else {
-		strcpy(file_name, " ");
-		return false;
-	}
-}
-
-static bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, const char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
-{
-	BOOL	value;
-	char	cwd[MAX_PATH];
-
-	ofn.lStructSize		= sizeof(OPENFILENAME) ;
-	ofn.hInstance			= NULL ;
-	ofn.lpstrCustomFilter	= NULL ;
-	ofn.nMaxCustFilter		= 0 ;
-	ofn.nFilterIndex		= 0 ;
-	ofn.lpstrFileTitle		= NULL ;
-	ofn.nMaxFileTitle		= _MAX_FNAME + MAX_PATH ;
-	ofn.nFileOffset		= 0 ;
-	ofn.nFileExtension		= 0 ;
-	ofn.lpstrDefExt		= "txt" ;
-	ofn.lCustData			= 0L ;
-	ofn.lpfnHook			= NULL ;
-	ofn.lpTemplateName		= NULL ;
-
-	ofn.lpstrFilter			= filter ;
-	ofn.hwndOwner			= hWnd;
-	ofn.lpstrFile			= strdup(pstrFileName);
-	ofn.lpstrTitle			= pstrTitleName ;
-	ofn.Flags				= flag;
-
-	GetCurrentDirectory(MAX_PATH, cwd);
-	ofn.lpstrInitialDir = cwd;
-	ofn.nMaxFile = max_car;
-
-	if (flag_operation)
-	{
-		value = GetOpenFileName(&ofn);
-	}
-	else
-	{
-		value = GetSaveFileName(&ofn);
-	}
-	
-	free(ofn.lpstrFile);
-
-	return value == TRUE;
-}
-
-int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd) {
-	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_HIDEREADONLY | OFN_CREATEPROMPT, 1, MAX_PATH, hWnd);
-}
- 
-int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd) {
-	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
-}
-
-#endif
