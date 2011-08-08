@@ -9,6 +9,7 @@
 
 extern const DWORD ARXToDXBufferFlags[];
 extern const D3DPRIMITIVETYPE ARXToDXPrimitiveType[];
+extern LPDIRECT3DDEVICE7 GDevice;
 
 template <class Vertex>
 class DX7VertexBuffer : public VertexBuffer<Vertex> {

@@ -95,7 +95,7 @@ void ARXMenu_Options_Video_GetBitPlane(int & _iBpp)
 //-----------------------------------------------------------------------------
 void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int _iBpp)
 {
-	if (!GDevice) return;
+	if (!GRenderer) return;
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	GRenderer->EndScene();

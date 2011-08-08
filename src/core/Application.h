@@ -137,7 +137,6 @@ struct PROJECT {
 
 extern PROJECT Project;
 extern float FPS;
-extern LPDIRECT3DDEVICE7 GDevice;
 extern LightMode ModeLight;
 
 extern ViewModeFlags ViewMode;

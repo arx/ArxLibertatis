@@ -37,6 +37,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 
+extern LPDIRECT3DDEVICE7 GDevice; // TODO(core_cleanup) remove
+
 GLOBAL_MODS current;
 GLOBAL_MODS desired;
 GLOBAL_MODS stacked;

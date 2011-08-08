@@ -3484,7 +3484,7 @@ void CheckMr()
 {
 	if (cur_mr==3)
 	{
-		if (GDevice && Mr_tc)
+		if (GRenderer && Mr_tc)
 		{
 			EERIEDrawBitmap(DANAESIZX-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
 			                Mr_tc, Color::gray(0.5f + PULSATE * (1.0f/10)));

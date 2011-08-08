@@ -12,14 +12,11 @@
 #include "io/Logger.h"
 
 // TEMP: needed until all D3D code is isolated...
-extern LPDIRECT3DDEVICE7 GDevice;
+LPDIRECT3DDEVICE7 GDevice;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARXToDX7 mapping tables - MOVE THAT SOMEWHERE ELSE!
 ///////////////////////////////////////////////////////////////////////////////
-
-
-
 
 const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
 						D3DRENDERSTATE_ALPHABLENDENABLE,	// AlphaBlending,

@@ -65,6 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "math/Rectangle.h"
 
+extern LPDIRECT3DDEVICE7 GDevice; // TODO(core_cleanup) remove
+
 //-----------------------------------------------------------------------------
 // Name: CD3DFramework7()
 // Desc: The constructor. Clears static variables
