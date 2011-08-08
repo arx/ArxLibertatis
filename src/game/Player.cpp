@@ -1681,7 +1681,7 @@ void ARX_PLAYER_Restore_Skin() {
 	if (tmpTC && !tx4.empty())
 		tmpTC->LoadFile(tx4);
 }
-extern HRESULT DANAEFinalCleanup();
+
 //*************************************************************************************
 // void ARX_PLAYER_LoadHeroAnimsAndMesh()
 //-------------------------------------------------------------------------------------

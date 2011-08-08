@@ -145,7 +145,6 @@ extern long TRUE_PLAYER_MOUSELOOK_ON;
 extern TextureContainer * pTextureLoad;
 
 bool MENU_NoActiveWindow();
-void GetTextSize(HFONT _hFont, const char* _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------
 // Exported global variables
