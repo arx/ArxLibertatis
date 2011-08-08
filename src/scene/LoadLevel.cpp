@@ -1217,7 +1217,6 @@ long DanaeLoadLevel(const fs::path & file) {
 
 extern void MCache_ClearAll();
 extern TextureContainer * MapMarkerTc;
-extern HANDLE LIGHTTHREAD;
 extern long DONT_CLEAR_SCENE;
 long FAST_RELEASE = 0;
 extern INTERACTIVE_OBJ * FlyingOverIO;
@@ -1334,12 +1333,6 @@ void DanaeClearLevel(long flag)
 	FlyingOverIO = NULL;
 
 	EERIE_PATHFINDER_Release();
-
-	if (LIGHTTHREAD != NULL)
-	{
-		TerminateThread(LIGHTTHREAD, 1);
-		LIGHTTHREAD = NULL;
-	}
 
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	RemoveAllBackgroundActions();

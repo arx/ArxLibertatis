@@ -1083,7 +1083,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const f
 // Does the matrix operation: [Q] = [A] * [B]. Note that the order of
 // this operation was changed from the previous version of the DXSDK.
 //-----------------------------------------------------------------------------
-VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b)
+void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b)
 {
 	float * pA = (float *)a;
 	float * pB = (float *)b;
@@ -1091,9 +1091,9 @@ VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 
 	memset(pM, 0, sizeof(EERIEMATRIX));
 
-	for (WORD i = 0; i < 4; i++)
-		for (WORD j = 0; j < 4; j++)
-			for (WORD k = 0; k < 4; k++)
+	for (size_t i = 0; i < 4; i++)
+		for (size_t j = 0; j < 4; j++)
+			for (size_t k = 0; k < 4; k++)
 				pM[4*i+j] +=  pA[4*i+k] * pB[4*k+j];
 
 	memcpy(q, pM, sizeof(EERIEMATRIX));

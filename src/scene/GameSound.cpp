@@ -334,7 +334,6 @@ static void ARX_SOUND_CreateCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
 static void ARX_SOUND_CreatePresenceMap();
 static float GetSamplePresenceFactor(const fs::path & name);
-LPTHREAD_START_ROUTINE UpdateSoundThread(char *);
 static void ARX_SOUND_LaunchUpdateThread();
 static void ARX_SOUND_KillUpdateThread();
 

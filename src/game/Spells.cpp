@@ -2637,7 +2637,7 @@ void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 //-----------------------------------------------------------------------------
 long TemporaryGetSpellTarget(const Vec3f *from)
 {
-	float mindist = FLT_MAX;
+	float mindist = std::numeric_limits<float>::max();
 	long found(0);
 
 	for (long i(1); i < inter.nbmax; i++)

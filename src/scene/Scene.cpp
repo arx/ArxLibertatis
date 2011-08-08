@@ -107,7 +107,6 @@ using namespace std;
 
 //-----------------------------------------------------------------------------
 extern long USE_LIGHT_OPTIM;
-extern HANDLE LIGHTTHREAD;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
 extern long DEBUG_FRUSTRUM;
@@ -3015,11 +3014,6 @@ void ARX_SCENE_Render(long flag) {
 
 	if (flag == 3)
 		return;
-
-	// If LightThread is running we suspend it to avoid too much performance
-	// decrease and eventual interference 
-	if (LIGHTTHREAD) 
-		SuspendThread(LIGHTTHREAD);
 	
 	float cval=(float)ACTIVECAM->clip3D+4;
 	long lcval = cval;
@@ -3432,7 +3426,5 @@ if (HALOCUR>0)
 		ARXDRAW_DrawAllLights(x0,z0,x1,z1);
 #endif
 
-	if (LIGHTTHREAD)
-		ResumeThread(LIGHTTHREAD);
 }
 
