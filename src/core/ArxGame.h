@@ -65,7 +65,7 @@ protected:
 	
 	void DisplayFrameworkError(HRESULT, APPMSGTYPE);
 	
-	HRESULT Initialize3DEnvironment();
+	bool Initialize3DEnvironment();
 	
 	bool Render3DEnvironment();
 	

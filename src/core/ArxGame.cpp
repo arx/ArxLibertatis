@@ -187,14 +187,11 @@ Anglef LASTCAMANGLE;
 INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
 INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
 
-
-//*************************************************************************************
-// DANAE()
 // ArxGame constructor. Sets attributes for the app.
-//*************************************************************************************
-ArxGame::ArxGame()
-{
-	m_bAppUseZBuffer  = true;
+ArxGame::ArxGame() {
+	
+	m_bAppUseZBuffer = true;
+	
 }
 
 bool ArxGame::Initialize()
@@ -359,16 +356,14 @@ bool ArxGame::Create() {
 	}
 	
 	// Initialize the 3D environment for the app
-	if (FAILED(hr = Initialize3DEnvironment()))
-	{
-		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
+	if(!Initialize3DEnvironment()) {
 		Cleanup3DEnvironment();
 		return false;
 	}
-
+	
 	// The app is ready to go
 	m_bReady = true;
-
+	
 	this->m_pFramework->ShowFrame();
 	return true;
 }
@@ -627,20 +622,19 @@ bool ArxGame::Change3DEnvironment() {
 	
 	// Release all scene objects that will be re-created for the new device
 	DeleteDeviceObjects();
-
+	
 	// Release framework objects, so a new device can be created
 	if(FAILED(hr = m_pFramework->DestroyObjects())) {
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		return false;
 	}
-
+	
 	// Check if going from fullscreen to windowed mode, or vice versa.
 	m_MainWindow->SetFullscreen(!m_pDeviceInfo->bWindowed);
 	
 	// Inform the framework class of the driver change. It will internally
 	// re-create valid surfaces, a d3ddevice, etc.
-	if(FAILED(hr = Initialize3DEnvironment())) {
-		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
+	if(!Initialize3DEnvironment()) {
 		return false;
 	}
 	
@@ -653,7 +647,7 @@ bool ArxGame::Change3DEnvironment() {
 // to initialize device specific objects. This code is structured to
 // handled any errors that may occur during initialization
 //*************************************************************************************
-HRESULT ArxGame::Initialize3DEnvironment() {
+bool ArxGame::Initialize3DEnvironment() {
 	
 	HRESULT hr;
 	DWORD dwFrameworkFlags = 0L;
@@ -669,7 +663,7 @@ HRESULT ArxGame::Initialize3DEnvironment() {
 		
 		if (SUCCEEDED(hr = InitDeviceObjects()))
 		{
-			return S_OK;
+			return true;
 		}
 		else
 		{
@@ -687,7 +681,10 @@ HRESULT ArxGame::Initialize3DEnvironment() {
 		D3DEnum_SelectDefaultDevice(&m_pDeviceInfo, D3DENUM_SOFTWAREONLY);
 		return Initialize3DEnvironment();
 	}
-	return hr;
+	
+	DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
+	
+	return false;
 }
 
 //*************************************************************************************
