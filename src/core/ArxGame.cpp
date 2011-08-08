@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "core/Win32Application.h"
+#include "core/ArxGame.h"
 
 #include <cstdio>
 
@@ -39,7 +39,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Localisation.h"
 #include "core/Resource.h"
-
 #include "core/Win32Window.h"
 
 #include "game/Inventory.h"

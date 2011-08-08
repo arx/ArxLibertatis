@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_CORE_H
 #define ARX_CORE_CORE_H
 
-#include "core/Win32Application.h"
+#include "core/ArxGame.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 

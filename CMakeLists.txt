@@ -298,11 +298,11 @@ set(AUDIO_DSOUND_SOURCES
 
 set(CORE_SOURCES
 	src/core/Application.cpp
+	src/core/ArxGame.cpp
 	src/core/Config.cpp
 	src/core/Core.cpp
 	src/core/GameTime.cpp
 	src/core/Localisation.cpp
-	src/core/Win32Application.cpp
 	src/core/Win32Window.cpp
 	src/core/Window.cpp
 )
