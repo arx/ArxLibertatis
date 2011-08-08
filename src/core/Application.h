@@ -162,6 +162,7 @@ private:
 	virtual bool InitSound() = 0;
 
 public:
+	
 	Window * GetWindow() { return m_MainWindow; }
 
 	bool m_bReady;

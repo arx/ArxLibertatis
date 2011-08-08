@@ -65,7 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
-#include "graphics/Frame.h"
 #include "graphics/Renderer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/font/FontCache.h"
@@ -88,23 +87,6 @@ Font* hFontControls = NULL;
 Font* hFontCredits	= NULL;
 Font* hFontInGame	= NULL;
 Font* hFontInGameNote = NULL;
- 
-
-//-----------------------------------------------------------------------------
-string FontError() {
-	LPVOID lpMsgBuf;
-	FormatMessage(
-	    FORMAT_MESSAGE_ALLOCATE_BUFFER |
-	    FORMAT_MESSAGE_FROM_SYSTEM |
-	    FORMAT_MESSAGE_IGNORE_INSERTS,
-	    NULL,
-	    GetLastError(),
-	    0, // Default language
-	    (LPTSTR) &lpMsgBuf,
-	    0,
-	    NULL);
-	return string("Font Error: ") + (LPCSTR)lpMsgBuf;
-}
 
 //-----------------------------------------------------------------------------
 void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect, Color col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
