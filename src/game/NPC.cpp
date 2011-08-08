@@ -172,7 +172,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 							{
 								float dist_limit = io->_npcdata->reach + io->physics.cyl.radius;
 								long count = 0;
-								float mindist = FLT_MAX;
+								float mindist = std::numeric_limits<float>::max();
 
 								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
 								{
@@ -570,7 +570,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 //*****************************************************************************
 static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl) {
 	long returnvalue = -1;
-	float distmax = FLT_MAX;
+	float distmax = std::numeric_limits<float>::max();
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for (long i = 0; i < eb->nbanchors; i++)
@@ -608,7 +608,7 @@ static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cy
 static long AnchorData_GetNearest_Except(Vec3f * pos, EERIE_CYLINDER * cyl, long except) {
 	
 	long returnvalue = -1;
-	float distmax = FLT_MAX;
+	float distmax = std::numeric_limits<float>::max();
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for (long i = 0; i < eb->nbanchors; i++)
@@ -1961,7 +1961,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	if	(target->GameFlags & GFLAG_NOGORE)
 		return;
 
-	float mindistSqr = FLT_MAX;
+	float mindistSqr = std::numeric_limits<float>::max();
 	long numsel = -1;
 	long goretex = -1;
 
@@ -2372,7 +2372,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 	io->_npcdata->strike_time += (short)FrameDiff;
 	ANIM_USE * ause = &io->animlayer[0];
 	ANIM_USE * ause1 = &io->animlayer[1];
-	float tdist = FLT_MAX;
+	float tdist = std::numeric_limits<float>::max();
 
 	if ((io->_npcdata->pathfind.listnb) && (ValidIONum(io->_npcdata->pathfind.truetarget))) {
 		tdist = distSqr(io->pos, inter.iobj[io->_npcdata->pathfind.truetarget]->pos);
@@ -2872,7 +2872,7 @@ extern long FRAME_COUNT;
 
 static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 {
-	float dis = FLT_MAX;
+	float dis = std::numeric_limits<float>::max();
 	IO_PHYSICS phys;
 	float TOLERANCE = 0.f;
 	float TOLERANCE2 = 0.f;
@@ -3140,7 +3140,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			return;
 	}
 
-	float _dist = FLT_MAX;
+	float _dist = std::numeric_limits<float>::max();
 	long CHANGE = 0;
 
 	Vec3f ForcedMove;
@@ -3821,7 +3821,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 	}
 
 	INTERACTIVE_OBJ * found_io = NULL;
-	float found_dist = FLT_MAX;
+	float found_dist = std::numeric_limits<float>::max();
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{

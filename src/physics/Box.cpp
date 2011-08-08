@@ -910,13 +910,13 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	memset(obj->pbox->vert, 0, sizeof(PHYSVERT)*obj->pbox->nb_physvert);
 
 	Vec3f cubmin, cubmax;
-	cubmin.x = FLT_MAX;
-	cubmin.y = FLT_MAX;
-	cubmin.z = FLT_MAX;
+	cubmin.x = std::numeric_limits<float>::max();
+	cubmin.y = std::numeric_limits<float>::max();
+	cubmin.z = std::numeric_limits<float>::max();
 
-	cubmax.x = -FLT_MAX;
-	cubmax.y = -FLT_MAX;
-	cubmax.z = -FLT_MAX;
+	cubmax.x = -std::numeric_limits<float>::max();
+	cubmax.y = -std::numeric_limits<float>::max();
+	cubmax.z = -std::numeric_limits<float>::max();
 
 	for (size_t k = 0; k < obj->vertexlist.size(); k++)
 	{

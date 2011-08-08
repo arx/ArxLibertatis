@@ -75,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 #include "animation/CinematicKeyframer.h"
 
+#include "core/ArxGame.h"
 #include "core/Config.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
@@ -232,7 +233,6 @@ extern EERIEMATRIX ProjectionMatrix;
 
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
-HINSTANCE hInstance;
 PROJECT Project;
 
 //-----------------------------------------------------------------------------
@@ -393,7 +393,6 @@ long USE_COLLISIONS = 1;
 long WILLLOADLEVEL = 0; // Is a LoadLevel command waiting ?
 long WILLSAVELEVEL = 0; // Is a SaveLevel command waiting ?
 long NODIRCREATION = 0; // No IO Directory Creation ?
-HWND MESH_REDUCTION_WINDOW = NULL;
 const char * GTE_TITLE;
 char * GTE_TEXT;
 long GTE_SIZE;
@@ -878,7 +877,6 @@ int main(int argc, char ** argv) {
 	(void)argc, (void)argv;
 	
 	LPSTR strCmdLine = GetCommandLine();
-	hInstance = GetModuleHandle(0);
 	
 	long i;
 	

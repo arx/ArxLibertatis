@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 
+#include "core/Application.h"
 #include "core/GameTime.h"
 #include "core/Dialog.h"
 #include "core/Core.h"

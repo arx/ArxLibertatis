@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_CORE_H
 #define ARX_CORE_CORE_H
 
-#include "core/ArxGame.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
@@ -76,7 +75,6 @@ extern EERIE_3DOBJ * cameraobj;
 extern EERIE_3DOBJ * markerobj;
 extern Vec3f lastteleport;
 extern EERIE_CAMERA bookcam;
-extern HINSTANCE hInstance;
 extern Vec2s DANAEMouse;
 extern EERIE_CAMERA subj, mapcam;
 extern Vec3f moveto;
@@ -111,7 +109,6 @@ extern long USE_COLLISIONS;
 extern long WILLLOADLEVEL; // Is a LoadLevel command waiting ?
 extern long WILLSAVELEVEL; // Is a SaveLevel command waiting ?
 extern long NODIRCREATION; // No IO Directory Creation ?
-extern HWND MESH_REDUCTION_WINDOW;
 extern const char * GTE_TITLE;
 extern char * GTE_TEXT;
 extern long GTE_SIZE;
@@ -180,11 +177,6 @@ void ManageQuakeFX();
 void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();
 void ManageNONCombatModeAnimations();
-
-#ifdef BUILD_EDITOR
-
-extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-#endif
 
 INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos);
 

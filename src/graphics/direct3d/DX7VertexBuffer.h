@@ -4,7 +4,7 @@
 
 #include <d3d.h>
 
-#include "core/Core.h"
+#include "core/Application.h"
 #include "graphics/Frame.h"
 #include "graphics/VertexBuffer.h"
 

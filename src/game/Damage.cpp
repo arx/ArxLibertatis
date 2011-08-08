@@ -1613,7 +1613,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 
 			long count = 0;
 			long count2 = 0;
-			float mindist = FLT_MAX;
+			float mindist = std::numeric_limits<float>::max();
 
 			for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1)
 			{

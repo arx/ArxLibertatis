@@ -118,10 +118,10 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 			minimap[SHOWLEVEL].height = ARX_CLEAN_WARN_CAST_FLOAT(minimap[SHOWLEVEL].tc->m_dwHeight); 
 			minimap[SHOWLEVEL].width = ARX_CLEAN_WARN_CAST_FLOAT(minimap[SHOWLEVEL].tc->m_dwWidth);
 
-			float minx = FLT_MAX;
-			float maxx = FLT_MIN;
-			float miny = FLT_MAX;
-			float maxy = FLT_MIN;
+			float minx = std::numeric_limits<float>::max();
+			float maxx = std::numeric_limits<float>::min();
+			float miny = std::numeric_limits<float>::max();
+			float maxy = std::numeric_limits<float>::min();
 			EERIEPOLY * ep;
 			EERIE_BKG_INFO * eg;
 

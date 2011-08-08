@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 
+#include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -674,7 +675,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
 {
 	if (source<0) return;
 
-	float nearest_dist = FLT_MAX;
+	float nearest_dist = std::numeric_limits<float>::max();
 	long nearest=-1;
 	long count=inter.iobj[source]->obj->nbgroups;
 
