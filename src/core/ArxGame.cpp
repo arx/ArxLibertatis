@@ -195,7 +195,6 @@ INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
 ArxGame::ArxGame()
 {
 	m_bAppUseZBuffer  = true;
-	m_fnConfirmDevice = NULL;
 }
 
 bool ArxGame::Initialize()
@@ -338,7 +337,7 @@ bool ArxGame::Create() {
 
 	// Enumerate available D3D devices. The callback is used so the app can
 	// confirm/reject each enumerated device depending on its capabilities.
-	if (FAILED(hr = D3DEnum_EnumerateDevices(m_fnConfirmDevice)))
+	if (FAILED(hr = D3DEnum_EnumerateDevices(NULL)))
 	{
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		return false;

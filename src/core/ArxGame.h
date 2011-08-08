@@ -55,8 +55,6 @@ protected:
 	void GoFor2DFX();
 	bool BeforeRun();
 	
-	HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
-	
 	// 3D Framework functions
 	
 	enum APPMSGTYPE {
