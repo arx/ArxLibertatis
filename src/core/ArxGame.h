@@ -57,9 +57,9 @@ protected:
 	// 3D Framework functions
 	void DisplayFrameworkError(HRESULT, DWORD);
 	HRESULT Initialize3DEnvironment();
-	HRESULT Render3DEnvironment();
-
-
+	
+	bool Render3DEnvironment();
+	
 public:
 	
 	ArxGame();

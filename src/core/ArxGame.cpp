@@ -430,16 +430,12 @@ void ArxGame::Run()
 	
 	m_RunLoop = true;
 
-	while (m_RunLoop)
-	{
+	while(m_RunLoop) {
+		
 		m_MainWindow->Tick();
-
-		if(m_MainWindow->HasFocus() && m_bReady)
-		{
-			HRESULT ret = Render3DEnvironment();
-
-			if(FAILED(ret))
-				m_RunLoop = false;
+		
+		if(m_MainWindow->HasFocus() && m_bReady) {
+			m_RunLoop = Render3DEnvironment();
 		}
 	}
 }
@@ -546,61 +542,66 @@ long MouseDragX, MouseDragY;
 // Render3DEnvironment()
 // Draws the scene.
 //*************************************************************************************
-HRESULT ArxGame::Render3DEnvironment()
-{
+bool ArxGame::Render3DEnvironment() {
+	
 	HRESULT hr;
 
 	// Check the cooperative level before rendering
-	if (FAILED(hr = m_pFramework->GetDirectDraw()->TestCooperativeLevel()))
-	{
+	if(FAILED(hr = m_pFramework->GetDirectDraw()->TestCooperativeLevel())) {
+		
 		printf("TestCooperativeLevel failed\n");
-		switch (hr)
-		{
+		switch(hr) {
+			
 			case DDERR_EXCLUSIVEMODEALREADYSET:
 			case DDERR_NOEXCLUSIVEMODE:
 				// Do nothing because some other app has exclusive mode
-				return S_OK;
-
+				return true;
+			
 			case DDERR_WRONGMODE:
-
+				
 				// The display mode changed on us. Resize accordingly
-				if (m_pDeviceInfo->bWindowed)
+				if(m_pDeviceInfo->bWindowed) {
 					return Change3DEnvironment();
-
+				}
 				break;
+			
 		}
-		return hr;
+		
+		return SUCCEEDED(hr);
 	}
-
+	
 	// Get the relative time, in seconds
-	if (FAILED(hr = FrameMove()))
-		return hr;
-
+	if(!FrameMove()) {
+		return false;
+	}
+	
 	// Render the scene as normal
-	if (FAILED(hr = Render()))
-		return hr;
-
+	if(!Render()) {
+		return false;
+	}
+	
 	// Show the frame on the primary surface.
-	if (FAILED(hr = m_pFramework->ShowFrame()))
-	{
+	if(FAILED(hr = m_pFramework->ShowFrame())) {
+		
 		printf("ShowFrame FAILED: %d %d <- look for this in ddraw.h\n", hr, hr&0xFFFF);
 		
-		if (DDERR_SURFACELOST != hr)
-			return hr;
-
+		if(DDERR_SURFACELOST != hr) {
+			return false;
+		}
+		
 		printf("RestoreSurfaces\n");
 		m_pFramework->RestoreSurfaces();
 		RestoreSurfaces();
 	}
-
-	return S_OK;
+	
+	return true;
 }
 
 //*************************************************************************************
 // Cleanup3DEnvironment()
 // Cleanup scene objects
 //*************************************************************************************
-VOID ArxGame::Cleanup3DEnvironment()
+void ArxGame::Cleanup3DEnvironment()
 {
 	m_bReady  = false;
 
