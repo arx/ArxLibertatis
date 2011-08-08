@@ -194,19 +194,8 @@ TextureContainer *	BasicInventorySkin=NULL;
 TextureContainer *	ThrowObject=NULL;
 ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
 E_ARX_STATE_MOUSE	eMouseState;
-Vec2s			bookclick;
-Vec2s			MemoMouse;
-
-#ifdef BUILD_EDITOR
-HWND CDP_PATHWAYS_Options = NULL;
-HWND CDP_IOOptions = NULL;
-HWND CDP_FogOptions = NULL;
-HWND CDP_LIGHTOptions = NULL;
-EERIE_LIGHT * CDP_EditLight = NULL;
-INTERACTIVE_OBJ * CDP_EditIO = NULL;
-FOG_DEF * CDP_EditFog = NULL;
-long LastSelectedLight = -1;
-#endif
+Vec2s bookclick;
+Vec2s MemoMouse;
 
 INVENTORY_DATA *	TSecondaryInventory;
 INTERACTIVE_OBJ * FlyingOverIO=NULL;

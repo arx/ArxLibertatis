@@ -46,18 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern float BOOKDECX;
 extern float BOOKDECY;
-#ifdef BUILD_EDITOR
-#include <windows.h>
-extern HWND CDP_PATHWAYS_Options;
-extern HWND CDP_IOOptions;
-extern HWND CDP_FogOptions;
-extern HWND CDP_LIGHTOptions;
-extern EERIE_LIGHT * CDP_EditLight;
-extern INTERACTIVE_OBJ * CDP_EditIO;
-struct FOG_DEF;
-extern FOG_DEF * CDP_EditFog;
-extern long LastSelectedLight;
-#endif
 
 //-----------------------------------------------------------------------------
 class INTERFACE_TC
