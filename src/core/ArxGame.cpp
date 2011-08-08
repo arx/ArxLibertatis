@@ -458,7 +458,7 @@ bool ArxGame::FrameMove() {
 // DisplayFrameworkError()
 // Displays error messages in a message box
 //*************************************************************************************
-VOID ArxGame::DisplayFrameworkError(HRESULT hr, DWORD dwType) {
+void ArxGame::DisplayFrameworkError(HRESULT hr, APPMSGTYPE dwType) {
 	switch (hr) {
 		case D3DENUMERR_NODIRECTDRAW:
 			LogError << "Unable to create DirectDraw";

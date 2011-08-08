@@ -72,13 +72,6 @@ struct D3DEnum_DeviceInfo;
 class CD3DFramework7;
 class Window;
 
-enum APPMSGTYPE
-{
-	MSG_NONE,
-	MSGERR_APPMUSTEXIT,
-	MSGWARN_SWITCHEDTOSOFTWARE
-};
-
 enum HideFlag {
 	HIDE_BACKGROUND = (1<<0),
 	HIDE_NPC        = (1<<1),

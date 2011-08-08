@@ -57,7 +57,15 @@ protected:
 	HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
 	
 	// 3D Framework functions
-	void DisplayFrameworkError(HRESULT, DWORD);
+	
+	enum APPMSGTYPE {
+		MSG_NONE,
+		MSGERR_APPMUSTEXIT,
+		MSGWARN_SWITCHEDTOSOFTWARE
+	};
+	
+	void DisplayFrameworkError(HRESULT, APPMSGTYPE);
+	
 	HRESULT Initialize3DEnvironment();
 	
 	bool Render3DEnvironment();
