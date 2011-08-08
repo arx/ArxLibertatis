@@ -113,7 +113,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/FilePath.h"
 #include "io/Filesystem.h"
-#include "io/Registry.h"
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
@@ -965,22 +964,6 @@ int main(int argc, char ** argv) {
 	ARX_EQUIPMENT_Init();
 	LogDebug << "AEQ Init";
 	memset(_CURRENTLOAD_,0,256);
-
-#ifdef BUILD_EDITOR
-	char temp[256];
-
-	Danae_Registry_Read("LastWorkingDir",temp,"");
-
-	if (temp[0]==0)	{
-		Danae_Registry_WriteValue("WND_IO_DlgProc_POSX",0);
-		Danae_Registry_WriteValue("WND_IO_DlgProc_POSY",0);
-		Danae_Registry_WriteValue("WND_LightPrecalc_POSX",0);
-		Danae_Registry_WriteValue("WND_LightPrecalc_POSY",0);
-		Danae_Registry_WriteValue("WND_LightOptions_POSX",0);
-		Danae_Registry_WriteValue("WND_LightOptions_POSY",0);
-		LogDebug << "RegData Read";
-	}
-#endif
 
 	ARX_SCRIPT_Timer_FirstInit(512);
 	LogDebug << "Timer Init";

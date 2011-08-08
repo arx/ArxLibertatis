@@ -402,7 +402,6 @@ set(IO_SOURCES
 	src/io/Logger.cpp
 	src/io/PakEntry.cpp
 	src/io/PakReader.cpp
-	src/io/Registry.cpp
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
 )
